@@ -1087,3 +1087,7 @@ caption {
 	border-bottom: 1px solid #BBB;
 	font-weight: bold;
 }
+
+.forum_post .staff_post {
+	background: #f1849a;
+}
