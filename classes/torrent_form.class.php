@@ -61,7 +61,7 @@ class TORRENT_FORM {
 		$this->ArchivesManga = $ArchivesManga;
 
 		if ($this->Torrent && $this->Torrent['GroupID']) {
-			$this->Disabled = ' disabled="disabled"';
+			$this->Disabled = ' readonly="readonly"';
 			$this->DisabledFlag = true;
 		}
 	}
@@ -103,7 +103,7 @@ class TORRENT_FORM {
 			if ($this->Torrent && $this->Torrent['GroupID']) {
 ?>
 			<input type="hidden" name="groupid" value="<?=display_str($this->Torrent['GroupID'])?>" />
-			<input type="hidden" name="type" value="<?=array_search($this->UploadForm, $this->Categories)?>" />
+			<input type="hidden" name="type" value="<?=display_str($this->Torrent['CategoryID'])?>" />
 <?
 			}
 			if ($this->Torrent && $this->Torrent['RequestID']) {
@@ -123,7 +123,7 @@ class TORRENT_FORM {
 			<tr>
 				<td class="label">Type:</td>
 				<td>
-					<select id="categories" name="type" onchange="Categories()"<?=$this->Disabled?>>
+					<select id="categories" name="type" onchange="Categories()"<?=($this->DisabledFlag) ? ' disabled="disabled"' : ''?>>
 <?
 			foreach (Misc::display_array($this->Categories) as $Index => $Cat) {
 				echo "\t\t\t\t\t\t<option value=\"$Index\"";
@@ -203,8 +203,10 @@ class TORRENT_FORM {
 			<tr id="javdb_tr">
 				<td class="label tooltip" title='Enter a JAV catalogue number, e.g., "CND-060"'>Catalogue Number:</td>
 				<td>
-					<input type="text" id="catalogue" name="catalogue" size="10" value="<?=display_str($Torrent['CatalogueNumber']) ?>"/>
-					 <input type="button" onclick="JavAutofill()" value="Autofill" <?=$this->Disabled?>></input>
+					<input type="text" id="catalogue" name="catalogue" size="10" value="<?=display_str($Torrent['CatalogueNumber']) ?>" <?=$this->Disabled?>/>
+<? if (!$this->DisabledFlag) { ?>
+					<input type="button" onclick="JavAutofill()" value="Autofill"></input>
+<? } ?>
 				</td>
 			</tr>
 			<tr id="title_tr">
@@ -403,7 +405,7 @@ class TORRENT_FORM {
 		G::$Cache->cache_value('genre_tags', $GenreTags, 3600*6);
 	}
 ?>
-					<select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;">
+					<select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;" <?=($this->DisabledFlag) ? ' disabled="disabled"' : ''?>>
 						<option>---</option>
 <? foreach (Misc::display_array($GenreTags) as $Genre) { ?>
 						<option value="<?=$Genre?>"><?=$Genre?></option>
@@ -459,8 +461,10 @@ class TORRENT_FORM {
 			<tr id="anidb_tr">
 				<td class="label">AniDB Autofill (optional):</td>
 				<td>
-					<input type="text" id="anidb" size="10" />
-					<input type="button" onclick="AnidbAutofill()" value="Autofill" <?=$this->Disabled?>/>
+					<input type="text" id="anidb" size="10" <?=$this->Disabled?>/>
+<? if (!$this->DisabledFlag) { ?>
+					<input type="button" onclick="AnidbAutofill()" value="Autofill"/>
+<? } ?>
 				</td>
 			</tr>
 			<tr id="title_tr">
@@ -655,7 +659,7 @@ class TORRENT_FORM {
 		G::$Cache->cache_value('genre_tags', $GenreTags, 3600*6);
 	}
 ?>
-					<select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;">
+					<select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;" <?=($this->DisabledFlag) ? ' disabled="disabled"' : ''?>>
 						<option>---</option>
 <? foreach (Misc::display_array($GenreTags) as $Genre) { ?>
 						<option value="<?=$Genre?>"><?=$Genre?></option>
@@ -707,7 +711,9 @@ class TORRENT_FORM {
 				<td class="label">nhentai URL (optional):</td>
         <td>
           <input type="text" id="catalogue" size="50" <?=$this->Disabled?> />
-					<input type="button" onclick="DoujAutofill()" value="Autofill" <?=$this->Disabled?>/>
+<? if (!$this->DisabledFlag) { ?>
+					<input type="button" onclick="DoujAutofill()" value="Autofill"/>
+<? } ?>
         </td>
 			</tr>
 			<tr id="title_tr">
@@ -832,7 +838,7 @@ class TORRENT_FORM {
 		G::$Cache->cache_value('genre_tags', $GenreTags, 3600*6);
 	}
 ?>
-					<select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;">
+					<select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;" <?=($this->DisabledFlag) ? ' disabled="disabled"' : ''?>>
 						<option>---</option>
 <? foreach (Misc::display_array($GenreTags) as $Genre) { ?>
 						<option value="<?=$Genre?>"><?=$Genre?></option>
@@ -889,6 +895,12 @@ class TORRENT_FORM {
 			</tr>
 <? } ?>
 			<tr>
+				<td class="label">Censored?:</td>
+				<td>
+					<input type="checkbox" name="censored" value="1" <?=(($Torrent['Censored'] ?? 1) ? 'checked ' : '')?>/>
+				</td>
+			</tr>
+			<tr>
 				<td class="label tooltip" title="Comma seperated list of tags">Tags:</td>
 				<td>
 <?
@@ -903,7 +915,7 @@ class TORRENT_FORM {
 		G::$Cache->cache_value('genre_tags', $GenreTags, 3600*6);
 	}
 ?>
-					<select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;">
+					<select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;" <?=($this->DisabledFlag) ? ' disabled="disabled"' : ''?>>
 						<option>---</option>
 <? foreach (Misc::display_array($GenreTags) as $Genre) { ?>
 						<option value="<?=$Genre?>"><?=$Genre?></option>
@@ -1081,7 +1093,7 @@ new TEXTAREA_PREVIEW('album_desc', 'album_desc', display_str($Torrent['GroupDesc
 		G::$Cache->cache_value('genre_tags', $GenreTags, 3600*6);
 	}
 ?>
-					<select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;">
+					<select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;" <?=($this->DisabledFlag) ? ' disabled="disabled"' : ''?>>
 						<option>---</option>
 <? foreach (Misc::display_array($GenreTags) as $Genre) { ?>
 						<option value="<?=$Genre?>"><?=$Genre?></option>

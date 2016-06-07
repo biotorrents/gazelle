@@ -16,6 +16,7 @@ if (!$NewRequest) {
 	}
 }
 
+$Disabled = "";
 
 if ($NewRequest && ($LoggedUser['BytesUploaded'] < 250 * 1024 * 1024 || !check_perms('site_submit_requests'))) {
 	error('You do not have enough uploaded to make a request.');
@@ -89,6 +90,8 @@ if ($NewRequest && !empty($_GET['artistid']) && is_number($_GET['artistid'])) {
 		WHERE tg.ID = ".$_GET['groupid']);
 	if (list($Title, $TitleJP, $Year, $Studio, $Series, $CatalogueNumber, $DLsiteID, $Image, $Tags, $CategoryID) = $DB->next_record()) {
 		$GroupID = trim($_REQUEST['groupid']);
+		$CategoryName = $Categories[$CategoryID - 1];
+		$Disabled = 'readonly="readonly"';
 	}
 }
 
@@ -119,7 +122,12 @@ View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'reques
 						Type
 					</td>
 					<td>
+<? if (!empty($Disabled)) { ?>
+						<input type="hidden" name="type" value="<?=$CategoryName?>" />
+						<select id="categories" name="type" onchange="Categories();" disabled="disabled">
+<? } else { ?>
 						<select id="categories" name="type" onchange="Categories();">
+<? } ?>
 <?		foreach (Misc::display_array($Categories) as $Cat) { ?>
 							<option value="<?=$Cat?>"<?=(!empty($CategoryName) && ($CategoryName === $Cat) ? ' selected="selected"' : '')?>><?=$Cat?></option>
 <?		} ?>
@@ -129,8 +137,10 @@ View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'reques
 				<tr id="cataloguenumber_tr">
 					<td class="label">Catalogue Number</td>
 					<td>
-						<input type="text" id="catalogue" name="cataloguenumber" size="15" value="<?=(isset($CatalogueNumber)?$CatalogueNumber:'') ?>" />
+						<input type="text" id="catalogue" name="cataloguenumber" size="15" value="<?=(isset($CatalogueNumber)?$CatalogueNumber:'') ?>" <?=$Disabled?>/>
+<? if (empty($Disabled)) { ?>
 						( <input type="button" onclick="JavAutofill()" value="Autofill" style="font-size:0.8em;"></input> )
+<? } ?>
 					</td>
 				</tr>
 				<tr id="artist_tr">
@@ -142,14 +152,16 @@ View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'reques
 			$First = true;
 			foreach ($ArtistForm as $Artist) {
 ?>
-						<input type="text" id="artist_0" name="artists[]"<? Users::has_autocomplete_enabled('other'); ?> size="45" value="<?=display_str($Artist['name']) ?>" />
-						<? if ($First) { ?><a href="#" onclick="AddArtistField(); return false;" class="brackets">+</a> <a href="#" onclick="RemoveArtistField(); return false;" class="brackets">&minus;</a><? } $First = false; ?>
+						<input type="text" id="artist_0" name="artists[]"<? Users::has_autocomplete_enabled('other'); ?> size="45" value="<?=display_str($Artist['name']) ?>" <?=$Disabled?>/>
+						<? if (empty($Disabled)) { if ($First) { ?><a href="#" onclick="AddArtistField(); return false;" class="brackets">+</a> <a href="#" onclick="RemoveArtistField(); return false;" class="brackets">&minus;</a><? } $First = false; } ?>
 						<br />
 <?
 			}
 		} else {
-?>						<input type="text" id="artist_0" name="artists[]"<? Users::has_autocomplete_enabled('other'); ?> size="45" onblur="CheckVA();" />
+?>						<input type="text" id="artist_0" name="artists[]"<? Users::has_autocomplete_enabled('other'); ?> size="45" onblur="CheckVA();" <?=$Disabled?>/>
+<? if (empty($Disabled)) { ?>
 						<a href="#" onclick="AddArtistField(); return false;" class="brackets">+</a> <a href="#" onclick="RemoveArtistField(); return false;" class="brackets">&minus;</a>
+<? } ?>
 <?
 		}
 ?>
@@ -158,19 +170,19 @@ View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'reques
 				<tr>
 					<td class="label">Title</td>
 					<td>
-						<input type="text" id="title" name="title" size="45" value="<?=(!empty($Title) ? $Title : '')?>" />
+						<input type="text" id="title" name="title" size="45" value="<?=(!empty($Title) ? $Title : '')?>" <?=$Disabled?>/>
 					</td>
 				</tr>
 				<tr>
 					<td class="label">Japanese Title</td>
 					<td>
-						<input type="text" id="title_jp" name="title_jp" size="45" value="<?=isset($TitleJP)?$TitleJP:''?>" />
+						<input type="text" id="title_jp" name="title_jp" size="45" value="<?=isset($TitleJP)?$TitleJP:''?>" <?=$Disabled?>/>
 					</td>
 				</tr>
 				<tr id="dlsiteid_tr">
 					<td class="label">DLSite ID</td>
 					<td>
-						<input type="text" id="dlsiteid" name="dlsiteid" size="15" value="<?=isset($DLsiteID)?$DLsiteID:''?>" />
+						<input type="text" id="dlsiteid" name="dlsiteid" size="15" value="<?=isset($DLsiteID)?$DLsiteID:''?>" <?=$Disabled?>/>
 					</td>
 				</tr>
 <?	} ?>
@@ -178,7 +190,7 @@ View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'reques
 				<tr id="image_tr">
 					<td class="label">Image</td>
 					<td>
-						<input type="text" id="image" name="image" size="45" value="<?=(!empty($Image) ? $Image : '')?>" />
+						<input type="text" id="image" name="image" size="45" value="<?=(!empty($Image) ? $Image : '')?>" <?=$Disabled?>/>
 					</td>
 				</tr>
 <?	} ?>
@@ -196,14 +208,19 @@ View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'reques
 		$GenreTags = $DB->collect('Name');
 		$Cache->cache_value('genre_tags', $GenreTags, 3600 * 6);
 	}
+
+	if (!empty($Disabled)) {
 ?>
-						<select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;">
+						<select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;" disabled="disabled">
+<? } else { ?>
+						<select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;" >
+<? } ?>
 							<option>---</option>
 <?	foreach (Misc::display_array($GenreTags) as $Genre) { ?>
 							<option value="<?=$Genre?>"><?=$Genre?></option>
 <?	} ?>
 						</select>
-						<input type="text" id="tags" name="tags" size="45" value="<?=(!empty($Tags) ? display_str($Tags) : '')?>"<? Users::has_autocomplete_enabled('other'); ?> />
+						<input type="text" id="tags" name="tags" size="45" value="<?=(!empty($Tags) ? display_str($Tags) : '')?>"<? Users::has_autocomplete_enabled('other'); ?> <?=$Disabled?>/>
 						<br />
 						Tags should be comma-separated, and you should use a period (".") to separate words inside a tag&#8202;&mdash;&#8202;e.g. "<strong class="important_text_alt">big.breasts</strong>".
 						<br /><br />
@@ -222,7 +239,7 @@ View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'reques
 				<tr>
 					<td class="label">Torrent group</td>
 					<td>
-						<?=site_url()?>torrents.php?id=<input type="text" name="groupid" value="<?=isset($GroupID)?$GroupID:''?>" size="15" /><br />
+						<?=site_url()?>torrents.php?id=<input type="text" name="groupid" value="<?=isset($GroupID)?$GroupID:''?>" size="15"/><br />
 						If this request matches a torrent group <span style="font-weight: bold;">already existing</span> on the site, please indicate that here.
 					</td>
 				</tr>

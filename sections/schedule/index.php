@@ -10,7 +10,7 @@ $ScheduleDebug = false;
 
 $PCount = chop(shell_exec("/usr/bin/pgrep -cf schedule.php"));
 if ($PCount > 3) {  // 3 because the cron job starts two processes and pgrep finds itself
-	die("schedule.php is already running. Exiting ($PCount)\n");
+  die("schedule.php is already running. Exiting ($PCount)\n");
 }
 
 $AS = check_perms('admin_schedule');
@@ -28,18 +28,18 @@ function run_all_in($Dir) {
 }
 
 if ((!isset($_REQUEST['key']) || $_REQUEST['key'] != SCHEDULE_KEY) && !$AS) {
-	error(403);
+  error(403);
 }
 
 if ($AS) {
-	authorize();
-	View::show_header();
-	echo '<div class="box">';
+  authorize();
+  View::show_header();
+  echo '<div class="box">';
 }
 
 $DB->query("
-	SELECT NextHour, NextDay, NextBiWeekly
-	FROM schedule");
+  SELECT NextHour, NextDay, NextBiWeekly
+  FROM schedule");
 list($Hour, $Day, $BiWeek) = $DB->next_record();
 
 $NextHour = date('H', time(date('H') + 1, 0, 0, date('m'), date('d'), date('Y')));
@@ -47,8 +47,8 @@ $NextDay = date('d', time(0, 0, 0, date('m'), date('d') + 1, date('Y')));
 $NextBiWeek = (date('d') < 22 && date('d') >= 8) ? 22 : 8;
 
 $DB->query("
-	UPDATE schedule
-	SET NextHour = $NextHour, NextDay = $NextDay, NextBiWeekly = $NextBiWeek");
+  UPDATE schedule
+  SET NextHour = $NextHour, NextDay = $NextDay, NextBiWeekly = $NextBiWeek");
 
 $sqltime = sqltime();
 
@@ -63,13 +63,13 @@ if (!(isset($_GET['notevery']) && $_GET['notevery'])) {
 //-------------- Run every hour ------------------------------------------//
 if ($Hour != $NextHour || (isset($_GET['runhour']) && $_GET['runhour'])) {
   run_all_in('hourly');
-	echo "Ran hourly functions".($AS?'<br>':"\n");
+  echo "Ran hourly functions".($AS?'<br>':"\n");
 }
 
 //-------------- Run every day -------------------------------------------//
 if ($Day != $NextDay || (isset($_GET['runday']) && $_GET['runday'])) {
   run_all_in('daily');
-	echo "Ran daily functions".($AS?'<br>':"\n");
+  echo "Ran daily functions".($AS?'<br>':"\n");
 }
 
 //-------------- Run every week -------------------------------------------//
@@ -81,24 +81,24 @@ if (($Day != $NextDay && date('w') == 0) || (isset($_GET['runweek']) && $_GET['r
 //--------------- Run twice per month -------------------------------------//
 if ($BiWeek != $NextBiWeek || (isset($_GET['runbiweek']) && $_GET['runbiweek'])) {
   run_all_in('biweekly');
-	echo "Ran bi-weekly functions".($AS?'<br>':"\n");
+  echo "Ran bi-weekly functions".($AS?'<br>':"\n");
 }
 
 //---------------- Run every month -----------------------------------------//
 if (($BiWeek != $NextBiWeek && $BiWeek == 8) || (isset($_GET['runmonth']) && $_GET['runmonth'])) {
   run_all_in('monthly');
-	echo "Ran monthly functions".($AS?'<br>':"\n");
+  echo "Ran monthly functions".($AS?'<br>':"\n");
 }
 
 //---------------- Run on request ------------------------------------------//
 if (isset($_GET['runmanual']) && $_GET['runmanual']) {
   run_all_in('manually');
-	echo "Ran manual functions".($AS?'<br>':"\n");
+  echo "Ran manual functions".($AS?'<br>':"\n");
 }
 
 if ($AS) {
-	echo '</div>';
-	View::show_footer();
+  echo '</div>';
+  View::show_footer();
 } else {
   echo "-------------------------\n\n";
 }
