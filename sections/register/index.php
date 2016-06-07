@@ -124,6 +124,12 @@ if (!empty($_REQUEST['confirm'])) {
 				DELETE FROM invites
 				WHERE InviteKey = '".db_string($_REQUEST['invite'])."'");
 
+			// Award invite badge to inviter if they don't have it
+			if (Badges::award_badge($InviterID, 136)) {
+				Misc::send_pm($InviterID, 0, 'You have received a badge!', "You have received a badge for inviting a user to the site.\n\nIt can be enabled from your user settings.");
+				$Cache->delete_value('user_badges_'.$InviterID);
+			}
+
 			$DB->query("
 				SELECT ID
 				FROM stylesheets
