@@ -47,7 +47,7 @@ class Users {
 	 *	int EffectiveClass - the highest level of their main and secondary classes
 	 */
 	public static function user_info($UserID) {
-		global $Classes, $SSL;
+		global $Classes;
 		$UserInfo = G::$Cache->get_value("user_info_$UserID");
 		// the !isset($UserInfo['Paranoia']) can be removed after a transition period
 		if (empty($UserInfo) || empty($UserInfo['ID']) || !isset($UserInfo['Paranoia']) || empty($UserInfo['Class'])) {
@@ -728,7 +728,7 @@ class Users {
     $TPL->set('ResetKey', $ResetKey);
     $TPL->set('IP', $_SERVER['REMOTE_ADDR']);
     $TPL->set('SITE_NAME', SITE_NAME);
-    $TPL->set('SITE_URL', NONSSL_SITE_URL);
+    $TPL->set('SITE_DOMAIN', SITE_DOMAIN); // TODO: Remove
 
     Misc::send_email($Email, 'Password reset information for ' . SITE_NAME, $TPL->get(), 'noreply');
   }

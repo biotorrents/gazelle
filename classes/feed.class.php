@@ -1,7 +1,5 @@
 <?
 class FEED {
-	var $UseSSL = true; // If we're using SSL for blog and news links
-
 	function open_feed() {
 		header("Content-type: application/xml; charset=UTF-8");
 		echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n","<rss xmlns:dc=\"http://purl.org/dc/elements/1.1/\" version=\"2.0\">\n\t<channel>\n";
@@ -12,7 +10,7 @@ class FEED {
 	}
 
 	function channel($Title, $Description, $Section = '') {
-		$Site = $this->UseSSL ? site_url() : site_url(false);
+		$Site = site_url();
 		echo "\t\t<title>$Title :: ". SITE_NAME. "</title>\n";
 		echo "\t\t<link>$Site$Section</link>\n";
 		echo "\t\t<description>$Description</description>\n";
@@ -28,7 +26,7 @@ class FEED {
 		} else {
 			$Date = date('r', strtotime($Date));
 		}
-		$Site = $this->UseSSL ? site_url() : site_url(false);
+		$Site = site_url();
 		$Item = "\t\t<item>\n";
 		$Item .= "\t\t\t<title><![CDATA[$Title]]></title>\n";
 		$Item .= "\t\t\t<description><![CDATA[$Description]]></description>\n";

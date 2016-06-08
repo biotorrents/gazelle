@@ -102,11 +102,9 @@ function display_array($Array, $Escape = array()) {
 
 /**
  * Print the site's URL including the appropriate URI scheme, including the trailing slash
- *
- * @param bool $SSL - whether the URL should be crafted for HTTPS or regular HTTP
  */
-function site_url($SSL = true) {
-	return $SSL ? 'https://' . SSL_SITE_URL . '/' : 'http://' . NONSSL_SITE_URL . '/';
+function site_url() {
+	return 'https://' . SITE_DOMAIN . '/';
 }
 
 header('Cache-Control: no-cache, must-revalidate, post-check=0, pre-check=0');
@@ -114,5 +112,4 @@ header('Pragma:');
 header('Expires: '.date('D, d M Y H:i:s', time() + (2 * 60 * 60)).' GMT');
 header('Last-Modified: '.date('D, d M Y H:i:s').' GMT');
 
-$Feed->UseSSL = (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
 require(SERVER_ROOT.'/sections/feeds/index.php');

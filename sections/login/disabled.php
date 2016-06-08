@@ -54,7 +54,7 @@ If you do not have access to an IRC client, you can use the WebIRC interface pro
 Please use your <?=SITE_NAME?> username.
 </p>
 <br />
-<form class="confirm_form" name="chat" action="<?echo 'https://chat.'.SSL_SITE_URL.BOT_DISABLED_CHAN?>" target="_blank" method="pre">
+<form class="confirm_form" name="chat" action="<?echo 'https://chat.'.SITE_DOMAIN.BOT_DISABLED_CHAN?>" target="_blank" method="pre">
 	<input type="text" name="nick" width="20" />
 	<input type="submit" value="Join WebIRC" />
 </form>

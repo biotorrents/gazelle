@@ -53,15 +53,12 @@ foreach ($ExtraTorrentsInsert as $ExtraTorrent) {
 		$Announce .= ' / Freeleech!';
 	}
 
-	$AnnounceSSL = $Announce . ' - ' . site_url() . "torrents.php?id=$GroupID / " . site_url() . "torrents.php?action=download&id=$ExtraTorrentID";
-	$Announce .= ' - ' . site_url() . "torrents.php?id=$GroupID / " . site_url() . "torrents.php?action=download&id=$ExtraTorrentID";
+	$Announce .= ' - https://' . SITE_DOMAIN . "/torrents.php?id=$GroupID / https://" . SITE_DOMAIN . "/torrents.php?action=download&id=$ExtraTorrentID";
 
-	$AnnounceSSL .= ' - ' . trim($Properties['TagList']);
 	$Announce .= ' - ' . trim($Properties['TagList']);
 
 	// ENT_QUOTES is needed to decode single quotes/apostrophes
-	send_irc('PRIVMSG #' . NONSSL_SITE_URL . '-announce :' . html_entity_decode($Announce, ENT_QUOTES));
-	send_irc('PRIVMSG #' . SSL_SITE_URL . '-announce-ssl :' . html_entity_decode($AnnounceSSL, ENT_QUOTES));
+	send_irc('PRIVMSG ' . BOT_ANNOUNCE_CHAN . ' :' . html_entity_decode($Announce, ENT_QUOTES));
 
 }
 ?>

@@ -266,17 +266,17 @@ if ($_POST['ResetEmailHistory'] && check_perms('users_edit_reset_keys')) {
 			INSERT INTO users_history_emails
 				(UserID, Email, Time, IP)
 			VALUES
-				('$UserID', '".DBCrypt::encrypt($Username.'@'.SITE_URL)."', '0000-00-00 00:00:00', '".DBCrypt::encrypt('127.0.0.1')."')");
+				('$UserID', '".DBCrypt::encrypt($Username.'@'.SITE_DOMAIN)."', '0000-00-00 00:00:00', '".DBCrypt::encrypt('127.0.0.1')."')");
 	} else {
 		$DB->query("
 			INSERT INTO users_history_emails
 				(UserID, Email, Time, IP)
 			VALUES
-				('$UserID', '".DBCrypt::encrypt($Username.'@'.SITE_URL)."', '0000-00-00 00:00:00', '".$Cur['IP']."')");
+				('$UserID', '".DBCrypt::encrypt($Username.'@'.SITE_DOMAIN)."', '0000-00-00 00:00:00', '".$Cur['IP']."')");
 	}
 	$DB->query("
 		UPDATE users_main
-		SET Email = '".DBCrypt::encrypt($Username.'@'.SITE_URL)."'
+		SET Email = '".DBCrypt::encrypt($Username.'@'.SITE_DOMAIN)."'
 		WHERE ID = '$UserID'");
 	$EditSummary[] = 'Email history cleared';
 }

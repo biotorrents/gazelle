@@ -30,25 +30,11 @@ if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])
 	$_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
 }
 
-$SSL = true; #(isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
 if (!isset($argv) && !empty($_SERVER['HTTP_HOST'])) {
-//Skip this block if running from cli or if the browser is old and shitty
-	if (!$SSL && $_SERVER['HTTP_HOST'] == 'www.'.NONSSL_SITE_URL) {
-		header('Location: http://'.NONSSL_SITE_URL.$_SERVER['REQUEST_URI']); die();
-	}
-	if ($SSL && $_SERVER['HTTP_HOST'] == 'www.'.NONSSL_SITE_URL) {
-		header('Location: https://'.SSL_SITE_URL.$_SERVER['REQUEST_URI']); die();
-	}
-	if (SSL_SITE_URL != NONSSL_SITE_URL) {
-		if (!$SSL && $_SERVER['HTTP_HOST'] == SSL_SITE_URL) {
-			header('Location: https://'.SSL_SITE_URL.$_SERVER['REQUEST_URI']); die();
-		}
-		if ($SSL && $_SERVER['HTTP_HOST'] == NONSSL_SITE_URL) {
-			header('Location: https://'.SSL_SITE_URL.$_SERVER['REQUEST_URI']); die();
-		}
-	}
-	if ($_SERVER['HTTP_HOST'] == 'www.m.'.NONSSL_SITE_URL) {
-		header('Location: http://m.'.NONSSL_SITE_URL.$_SERVER['REQUEST_URI']); die();
+  // Skip this block if running from cli or if the browser is old and shitty
+  // This should really be done in nginx config TODO: Remove
+	if ($_SERVER['HTTP_HOST'] == 'www.'.SITE_DOMAIN) {
+		header('Location: https://'.SITE_DOMAIN.$_SERVER['REQUEST_URI']); die();
 	}
 }
 

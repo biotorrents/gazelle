@@ -192,10 +192,8 @@ function json_print($Status, $Message) {
 
 /**
  * Print the site's URL including the appropriate URI scheme, including the trailing slash
- *
- * @param bool $SSL - whether the URL should be crafted for HTTPS or regular HTTP
  */
-function site_url($SSL = true) {
-	return $SSL ? 'https://' . SSL_SITE_URL . '/' : 'http://' . NONSSL_SITE_URL . '/';
+function site_url() {
+	return 'https://' . SITE_DOMAIN . '/';
 }
 ?>

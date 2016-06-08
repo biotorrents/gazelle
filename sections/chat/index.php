@@ -56,7 +56,7 @@ if (false && empty($IRCKey)) {
 		<div style="padding: 0px 10px 10px 20px;">
 			<p>If you have an IRC client, refer to <a href="wiki.php?action=article&amp;name=IRC">this wiki article</a> for information on how to connect.</p>
 		</div>
-    <iframe src="<?echo 'https://chat.'.SSL_SITE_URL?>" width="100%" height="600" style="border:0;">
+    <iframe src="<?echo 'https://chat.'.SITE_DOMAIN?>" width="100%" height="600" style="border:0;">
 		</iframe>
 	</div>
 </div>

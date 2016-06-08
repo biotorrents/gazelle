@@ -1,7 +1,7 @@
 <?
 
 define('FOOTER_FILE', SERVER_ROOT.'/design/privatefooter.php');
-$HTTPS = ($_SERVER['SERVER_PORT'] == 443) ? 'ssl_' : '';
+$HTTPS = true;
 $UseTooltipster = !isset(G::$LoggedUser['Tooltipster']) || G::$LoggedUser['Tooltipster'];
 
 ?>
@@ -75,7 +75,7 @@ if ($Mobile) { ?>
 		$StyleURLInfo = parse_url(G::$LoggedUser['StyleURL']);
 		if (substr(G::$LoggedUser['StyleURL'], -4) == '.css'
 				&& empty($StyleURLInfo['query']) && empty($StyleURLInfo['fragment'])
-				&& in_array($StyleURLInfo['host'], array(NONSSL_SITE_URL, SSL_SITE_URL))
+				&& ($StyleURLInfo['host'] == SITE_DOMAIN)
 				&& file_exists(SERVER_ROOT.$StyleURLInfo['path'])) {
 			$StyleURL = G::$LoggedUser['StyleURL'].'?v='.filemtime(SERVER_ROOT.$StyleURLInfo['path']);
 		} else {

@@ -281,9 +281,9 @@ class Text {
 			return false;
 		}
 		$Host = $URLInfo['host'];
-		// If for some reason your site does not require subdomains or contains a directory in the SITE_URL, revert to the line below.
-		//if ($Host == NONSSL_SITE_URL || $Host == SSL_SITE_URL || $Host == 'www.'.NONSSL_SITE_URL) {
-		if (empty($URLInfo['port']) && preg_match('/(\S+\.)*'.NONSSL_SITE_URL.'/', $Host)) {
+		// If for some reason your site does not require subdomains or contains a directory in the SITE_DOMAIN, revert to the line below.
+		//if ($Host == SITE_DOMAIN || $Host == 'www.'.SITE_DOMAIN) {
+		if (empty($URLInfo['port']) && preg_match('/(\S+\.)*'.SITE_DOMAIN.'/', $Host)) {
 			$URL = '';
 			if (!empty($URLInfo['path'])) {
 				$URL .= ltrim($URLInfo['path'], '/'); // Things break if the path starts with '//'
@@ -665,7 +665,6 @@ class Text {
 	}
 
 	private static function to_html ($Array) {
-		global $SSL;
 		self::$Levels++;
 		/*
 		 * Hax prevention
@@ -720,7 +719,7 @@ class Text {
 					$Str .= '<a href="rules.php?p=upload#'.urlencode(Format::undisplay_str($Rule)).'">'.preg_replace('/[aA-zZ]/', '', $Block['Val']).'</a>';
 					break;
 				case 'torrent':
-					$Pattern = '/('.NONSSL_SITE_URL.'\/torrents\.php.*[\?&]id=)?(\d+)($|&|\#).*/i';
+					$Pattern = '/('.SITE_DOMAIN.'\/torrents\.php.*[\?&]id=)?(\d+)($|&|\#).*/i';
 					$Matches = array();
 					if (preg_match($Pattern, $Block['Val'], $Matches)) {
 						if (isset($Matches[2])) {

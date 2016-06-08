@@ -6,8 +6,7 @@ if (PHP_VERSION_ID < 70000) {
 
 // Main settings
 define('SITE_NAME', 'Oppaitime'); //The name of your site
-define('NONSSL_SITE_URL', 'oppaiti.me'); //The FQDN of your site
-define('SSL_SITE_URL', 'oppaiti.me'); //The FQDN of your site, make this different if you are using a subdomain for ssl
+define('SITE_DOMAIN', 'oppaiti.me'); //The FQDN of your site
 define('SITE_IP', '8.8.8.8'); //The IP address by which your site can be publicly accessed
 define('SERVER_ROOT', '/var/www'); //The root of the server, used for includes, purpose is to shorten the path string
 
@@ -21,8 +20,7 @@ define('ANNOUNCE_URLS', [['https://tracker.'.SSL_SITE_URL.':34001',
 define('API_KEYS', ['ANIDB' => 'AAAAAAAAAAAAAAAA']);
 
 // Allows you to run static content off another server. Default is usually what you want.
-define('NONSSL_STATIC_SERVER', 'static/');
-define('SSL_STATIC_SERVER', 'static/');
+define('STATIC_SERVER', 'static/');
 
 // Keys
 define('ENCKEY', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); //Random key. The key for encryption
@@ -56,14 +54,6 @@ define('TRACKER_HOST', '8.8.8.8');
 define('TRACKER_PORT', 34000);
 define('TRACKER_SECRET', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); // Must be 32 characters and match site_password in Ocelot's config.cpp
 define('TRACKER_REPORTKEY', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); // Must be 32 characters and match report_password in Ocelot's config.cpp
-
-if (!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 80) {
-	define('SITE_URL', NONSSL_SITE_URL);
-	define('STATIC_SERVER', NONSSL_STATIC_SERVER);
-} else {
-	define('SITE_URL', SSL_SITE_URL);
-	define('STATIC_SERVER', SSL_STATIC_SERVER);
-}
 
 // Site settings
 define('DEBUG_MODE', false); //Set to false if you dont want everyone to see debug information, can be overriden with 'site_debug'

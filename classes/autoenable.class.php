@@ -122,7 +122,7 @@ class AutoEnable {
             $TPL = NEW TEMPLATE;
             if ($Status == self::APPROVED) {
                 $TPL->open(SERVER_ROOT . '/templates/enable_request_accepted.tpl');
-                $TPL->set('SITE_URL', NONSSL_SITE_URL);
+                $TPL->set('SITE_DOMAIN', SITE_DOMAIN);
             } else {
                 $TPL->open(SERVER_ROOT . '/templates/enable_request_denied.tpl');
             }

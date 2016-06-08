@@ -73,7 +73,7 @@ if (check_perms('admin_manage_blog')) {
 				$Cache->delete_value('staff_blog');
 				$Cache->delete_value('staff_blog_latest_time');
 
-        send_irc("PRIVMSG ".ADMIN_CHAN." :!mod New staff blog: " . $_POST['title'] . " - https://".SSL_SITE_URL."/staffblog.php#blog" . $DB->inserted_id());
+        send_irc("PRIVMSG ".ADMIN_CHAN." :!mod New staff blog: " . $_POST['title'] . " - https://".SITE_DOMAIN."/staffblog.php#blog" . $DB->inserted_id());
 
 				header('Location: staffblog.php');
 				break;

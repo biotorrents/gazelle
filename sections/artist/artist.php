@@ -273,7 +273,7 @@ foreach ($TorrentList as $Group) {
 
 			$SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : '';
 			$TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$LoggedUser['AuthKey']."&amp;torrent_pass=".$LoggedUser['torrent_pass'];
-			$TorrentMG = "magnet:?xt=urn:btih:".$Torrent['info_hash']."&as=https://".SSL_SITE_URL."/".str_replace('&amp;','%26',$TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=",ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Torrent['Size'];
+			$TorrentMG = "magnet:?xt=urn:btih:".$Torrent['info_hash']."&as=https://".SITE_DOMAIN."/".str_replace('&amp;','%26',$TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=",ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Torrent['Size'];
 ?>
 		<tr class="torrent_row groupid_<?=$GroupID?> group_torrent discog<?=$SnatchedTorrentClass . $SnatchedGroupClass . $HideTorrents?>">
 			<td colspan="2">
@@ -340,7 +340,7 @@ foreach ($TorrentList as $Group) {
 		$SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : '';
 
     $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$LoggedUser['AuthKey']."&amp;torrent_pass=".$LoggedUser['torrent_pass'];
-    $TorrentMG = "magnet:?xt=urn:btih:".$Torrent['info_hash']."&as=https://".SSL_SITE_URL."/".str_replace('&amp;','%26',$TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=",ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Torrent['Size'];
+    $TorrentMG = "magnet:?xt=urn:btih:".$Torrent['info_hash']."&as=https://".SITE_DOMAIN."/".str_replace('&amp;','%26',$TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=",ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Torrent['Size'];
 
 ?>
 		<tr class="torrent<?=$SnatchedTorrentClass . $SnatchedGroupClass?>">

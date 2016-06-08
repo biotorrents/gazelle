@@ -169,8 +169,6 @@ class ImageTools {
 	 * @return image proxy URL
 	 */
 	public static function proxy_url($Url, $CheckSize, $UserID, &$ExtraInfo) {
-		global $SSL;
-
 		if ($UserID) {
 			$ExtraInfo = "&amp;userid=$UserID";
 			if ($CheckSize === 'avatar' && !isset(self::$CheckedAvatars[$UserID])) {
@@ -185,10 +183,10 @@ class ImageTools {
 			}
 		}
 
-    if (preg_match('/^https:\/\/'.SITE_URL.'\//', $Url)) {
+    if (preg_match('/^https:\/\/'.SITE_DOMAIN.'\//', $Url)) {
       return $Url;
     } else {
-      return ($SSL ? 'https' : 'http') . '://' . SITE_URL . "/image.php?c=1&amp;i=" . urlencode($Url);
+      return 'https://' . SITE_DOMAIN . "/image.php?c=1&amp;i=" . urlencode($Url);
     }
 	}
 

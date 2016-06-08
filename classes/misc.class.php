@@ -6,18 +6,18 @@ class Misc {
 	 * @param string $To the email address to send it to.
 	 * @param string $Subject
 	 * @param string $Body
-	 * @param string $From The user part of the user@NONSSL_SITE_URL email address.
+	 * @param string $From The user part of the user@SITE_DOMAIN email address.
 	 * @param string $ContentType text/plain or text/html
 	 */
 	public static function send_email($To, $Subject, $Body, $From = 'noreply', $ContentType = 'text/plain') {
 		$Headers = 'MIME-Version: 1.0'."\r\n";
 		$Headers .= 'Content-type: '.$ContentType.'; charset=iso-8859-1'."\r\n";
-		$Headers .= 'From: '.SITE_NAME.' <'.$From.'@'.NONSSL_SITE_URL.'>'."\r\n";
-		$Headers .= 'Reply-To: '.$From.'@'.NONSSL_SITE_URL."\r\n";
+		$Headers .= 'From: '.SITE_NAME.' <'.$From.'@'.SITE_DOMAIN.'>'."\r\n";
+		$Headers .= 'Reply-To: '.$From.'@'.SITE_DOMAIN."\r\n";
 		$Headers .= 'X-Mailer: Project Gazelle'."\r\n";
-		$Headers .= 'Message-Id: <'.Users::make_secret().'@'.NONSSL_SITE_URL.">\r\n";
+		$Headers .= 'Message-Id: <'.Users::make_secret().'@'.SITE_DOMAIN.">\r\n";
 		$Headers .= 'X-Priority: 3'."\r\n";
-		mail($To, $Subject, $Body, $Headers, "-f $From@".NONSSL_SITE_URL);
+		mail($To, $Subject, $Body, $Headers, "-f $From@".SITE_DOMAIN);
 	}
 
 

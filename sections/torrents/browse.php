@@ -581,7 +581,7 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
 
 			$SnatchedTorrentClass = $Data['IsSnatched'] ? ' snatched_torrent' : '';
       $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$LoggedUser['AuthKey']."&amp;torrent_pass=".$LoggedUser['torrent_pass'];
-      $TorrentMG = "magnet:?xt=urn:btih:".$Data['info_hash']."&as=https://".SSL_SITE_URL."/".str_replace('&amp;','%26',$TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=",ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Data['Size'];
+      $TorrentMG = "magnet:?xt=urn:btih:".$Data['info_hash']."&as=https://".SITE_DOMAIN."/".str_replace('&amp;','%26',$TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=",ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Data['Size'];
 
 ?>
 	<tr class="group_torrent groupid_<?=$GroupID?> <?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGrouping'] == 1 ? ' hidden' : '')?>">
@@ -647,7 +647,7 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
 		}
 		$SnatchedTorrentClass = $Data['IsSnatched'] ? ' snatched_torrent' : '';
     $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$LoggedUser['AuthKey']."&amp;torrent_pass=".$LoggedUser['torrent_pass'];
-    $TorrentMG = "magnet:?xt=urn:btih:".$Data['info_hash']."&as=https://".SSL_SITE_URL."/".str_replace('&amp;','%26',$TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=",ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Data['Size'];
+    $TorrentMG = "magnet:?xt=urn:btih:".$Data['info_hash']."&as=https://".SITE_DOMAIN."/".str_replace('&amp;','%26',$TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=",ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Data['Size'];
 ?>
 	<tr class="torrent<?=$SnatchedTorrentClass . $SnatchedGroupClass?>">
 <?		if ($GroupResults) { ?>

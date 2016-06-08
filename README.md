@@ -35,7 +35,7 @@ We use new PHP password hashing features that automatically rehash your password
 
 * When a torrent is trumped, the new torrent is made freeleech to users who snatched the old torrent for a few days
 * An attempt has been made to support magnet links. This has shown partial success.
-* This codebase is expected to run over https only. No effort has been made to explicitely break non-ssl functionality, but no effort has been made to continue supporting it either.
+* This codebase is expected to run over https only.
 
 ## Bug Fixes
 

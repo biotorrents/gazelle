@@ -38,7 +38,7 @@ View::show_header('Donate');
 			<input type="hidden" name="business" value="<?=PAYPAL_ADDRESS?>" />
 			<input type="hidden" name="txn_id" value="0" />
 			<input type="hidden" name="payment_type" value="instant" />
-			<input type="text" name="payer_email" value="<?=$LoggedUser['Username']?>@<?=NONSSL_SITE_URL?>" />
+			<input type="text" name="payer_email" value="<?=$LoggedUser['Username']?>@<?=SITE_DOMAIN?>" />
 			<input type="hidden" name="mc_currency" value="<?=PAYPAL_CURRENCY?>" />
 			<input name="test" type="submit" value="Donate" />
 		</form>
