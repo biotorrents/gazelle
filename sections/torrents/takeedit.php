@@ -48,7 +48,7 @@ $Properties['AudioFormat'] = $_POST['audioformat'];
 $Properties['Subbing'] = $_POST['sub'];
 $Properties['Language'] = $_POST['lang'];
 $Properties['Subber']= $_POST['subber'];
-$Properties['Censored'] = (isset($_POST['censored'])) ? $_POST['censored'] : 0;
+$Properties['Censored'] = (isset($_POST['censored'])) ? 1 : 0;
 $Properties['Archive'] = (isset($_POST['archive']) && $_POST['archive'] != '---') ? $_POST['archive'] : '';
 
 if ($_POST['album_desc']) {
@@ -238,6 +238,8 @@ foreach ($Properties as $Key => $Value) {
 		$T[$Key] = null;
 	}
 }
+
+$T['Censored'] = $Properties['Censored'];
 
 
 //******************************************************************************//
