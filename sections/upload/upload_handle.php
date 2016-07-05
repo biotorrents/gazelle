@@ -112,7 +112,7 @@ switch ($Type) {
       '1','regex','Please set a valid resolution.', array('regex'=>'/^(SD)|([0-9]+(p|i))|([0-9]K)|([0-9]+x[0-9]+)$/'));
 
     $Validate->SetFields('audioformat',
-      '1','inarray','Please select a valid format.', array('inarray'=>$AudioFormats));
+      '1','inarray','Please select a valid audio format.', array('inarray'=>$AudioFormats));
 
     $Validate->SetFields('sub',
       '1','inarray','Please select a valid sub format.', array('inarray'=>$Subbing));
@@ -121,7 +121,7 @@ switch ($Type) {
 
   case 'Games':
     $Validate->SetFields('container',
-      '1','inarray','Please select a valid format.', array('inarray'=>array_merge($Containers, $ContainersGames)));
+      '1','inarray','Please select a valid container.', array('inarray'=>array_merge($Containers, $ContainersGames)));
 
   case 'Manga':
     if (!isset($_POST['groupid']) || !$_POST['groupid']) {
