@@ -76,7 +76,7 @@ if (!empty($ArtistForm)) {
 }
 
 require(SERVER_ROOT.'/classes/torrent_form.class.php');
-$TorrentForm = new TORRENT_FORM($Properties, $Err);
+$TorrentForm = new TORRENT_FORM($Properties ?? false, $Err ?? false);
 
 $GenreTags = $Cache->get_value('genre_tags');
 if (!$GenreTags) {

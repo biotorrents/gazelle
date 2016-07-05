@@ -28,7 +28,7 @@ class CommentsView {
 	 */
 	static function render_comment($AuthorID, $PostID, $Body, $AddedTime, $EditedUserID, $EditedTime, $Link, $Unread = false, $Header = '', $Tools = true) {
 		$UserInfo = Users::user_info($AuthorID);
-		$Header = '<strong>' . Users::format_username($AuthorID, true, true, true, true, false) . '</strong> ' . time_diff($AddedTime) . $Header;
+		$Header = Users::format_username($AuthorID, true, true, true, true, true) . time_diff($AddedTime) . $Header;
 ?>
 		<table class="forum_post box vertical_margin<?=(!Users::has_avatars_enabled() ? ' noavatar' : '') . ($Unread ? ' forum_unread' : '')?>" id="post<?=$PostID?>">
 			<colgroup>
