@@ -97,13 +97,13 @@ class TORRENT_FORM {
 <?    if (!$this->NewTorrent) { ?>
       <input type="hidden" name="action" value="takeedit" />
       <input type="hidden" name="torrentid" value="<?=display_str($this->TorrentID)?>" />
-      <input type="hidden" name="type" value="<?=display_str($this->Torrent['CategoryID'])?>" />
+      <input type="hidden" name="type" value="<?=display_str($this->Torrent['CategoryID']-1)?>" />
 <?
     } else {
       if ($this->Torrent && $this->Torrent['GroupID']) {
 ?>
       <input type="hidden" name="groupid" value="<?=display_str($this->Torrent['GroupID'])?>" />
-      <input type="hidden" name="type" value="<?=display_str($this->Torrent['CategoryID'])?>" />
+      <input type="hidden" name="type" value="<?=display_str($this->Torrent['CategoryID']-1)?>" />
 <?
       }
       if ($this->Torrent && $this->Torrent['RequestID']) {
