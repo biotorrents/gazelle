@@ -1,6 +1,6 @@
 This is Oppaitime's version of Gazelle
 
-Below is a list of differences between this version of Gazelle and What.cd's. Please note that these lists are far from complete.
+Below are some lists of differences between this version of Gazelle and What.cd's. Please note that these lists are far from complete.
 
 ## Major Changes
 
@@ -36,8 +36,4 @@ We use new PHP password hashing features that automatically rehash your password
 * When a torrent is trumped, the new torrent is made freeleech to users who snatched the old torrent for a few days.
 * Sends headers to tell cloudflare to use HTTP/2 Server Push for most resources.
 * An attempt has been made to support magnet links. This has shown partial success.
-* This codebase is expected to run over https only.
-
-## Bug Fixes
-
-* Count of torrent results is accurate from first page for much larger databases, but could still be improved to scale automatically.
+* This codebase expects to run over https only.

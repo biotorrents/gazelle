@@ -728,7 +728,7 @@ class Users {
     $TPL->set('ResetKey', $ResetKey);
     $TPL->set('IP', $_SERVER['REMOTE_ADDR']);
     $TPL->set('SITE_NAME', SITE_NAME);
-    $TPL->set('SITE_DOMAIN', SITE_DOMAIN); // TODO: Remove
+    $TPL->set('SITE_DOMAIN', SITE_DOMAIN);
 
     Misc::send_email($Email, 'Password reset information for ' . SITE_NAME, $TPL->get(), 'noreply');
   }

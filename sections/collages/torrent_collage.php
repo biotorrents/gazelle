@@ -334,7 +334,8 @@ View::show_header($Name, 'browse,collage,bbcode,voting,recommend,wall');
 			<div class="pad"><?=Text::full_format($Description)?></div>
 		</div>
 <?
-if (false) { // I'm effectively commenting this out until we maybe fix the collector at some point in the future - Azathoth
+// I'm actually commenting this out
+/*
 if (check_perms('zip_downloader')) {
 	if (isset($LoggedUser['Collector'])) {
 		list($ZIPList, $ZIPPrefs) = $LoggedUser['Collector'];
@@ -396,8 +397,9 @@ foreach ($ZIPOptions as $Option) {
 				</form>
 			</div>
 		</div>
-<? } 
-	}?>
+<? }
+*/
+?>
 		<div class="box box_info box_statistics_collage_torrents">
 			<div class="head"><strong>Statistics</strong></div>
 			<ul class="stats nobullet">

@@ -62,54 +62,27 @@ $DB->query("
   SET um.RequiredRatioWork = (1 - (t.SeedingAvg / s.NumSnatches))
   WHERE s.NumSnatches > 0");
 
-// Lower Limit, Req Ratio (0% seeded), Req Ratio (100% seeded)
-$RatioRequirements = array(
-  array(160 * 1024 * 1024 * 1024, 0.60, 0.50),
-  array(120 * 1024 * 1024 * 1024, 0.60, 0.40),
-  array(100 * 1024 * 1024 * 1024, 0.60, 0.30),
-  array(80  * 1024 * 1024 * 1024, 0.50, 0.20),
-  array(60  * 1024 * 1024 * 1024, 0.40, 0.10),
-  array(40  * 1024 * 1024 * 1024, 0.30, 0.00),
-  array(20  * 1024 * 1024 * 1024, 0.20, 0.00),
-  array(10  * 1024 * 1024 * 1024, 0.15, 0.00)
-);
 
-$DownloadBarrier = 200 * 1024 * 1024 * 1024;
-$DB->query("
-  UPDATE users_main
-  SET RequiredRatio = 0.60
-  WHERE Downloaded > $DownloadBarrier");
+// TODO: change from PHP_INT_MAX to INF when we get prepared statements working (because apparently that works)
+$DownloadBarrier = PHP_INT_MAX;
 
-
-foreach ($RatioRequirements as $Requirement) {
+foreach (RATIO_REQUIREMENTS as $Requirement) {
   list($Download, $Ratio, $MinRatio) = $Requirement;
 
   $DB->query("
     UPDATE users_main
     SET RequiredRatio = RequiredRatioWork * $Ratio
-    WHERE Downloaded >= '$Download'
-      AND Downloaded < '$DownloadBarrier'");
+    WHERE Downloaded >= $Download
+      AND Downloaded < $DownloadBarrier");
 
   $DB->query("
     UPDATE users_main
     SET RequiredRatio = $MinRatio
-    WHERE Downloaded >= '$Download'
-      AND Downloaded < '$DownloadBarrier'
+    WHERE Downloaded >= $Download
+      AND Downloaded < $DownloadBarrier
       AND RequiredRatio < $MinRatio");
 
-  /*$DB->query("
-    UPDATE users_main
-    SET RequiredRatio = $Ratio
-    WHERE Downloaded >= '$Download'
-      AND Downloaded < '$DownloadBarrier'
-      AND can_leech = '0'
-      AND Enabled = '1'");
-  */
   $DownloadBarrier = $Download;
 }
 
-$DB->query("
-  UPDATE users_main
-  SET RequiredRatio = 0.00
-  WHERE Downloaded < 5 * 1024 * 1024 * 1024");
 ?>

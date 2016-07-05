@@ -1,20 +1,21 @@
 <?php
-if (PHP_VERSION_ID < 70000) {
-	die("Gazelle requires PHP 7.0 or later to function properly");
+if (version_compare(PHP_VERSION, '7.0.0', '<')) {
+  die("Gazelle requires PHP 7.0 or later to function properly");
 }
 //date_default_timezone_set('EST');
 
 // Main settings
-define('SITE_NAME', 'Oppaitime'); //The name of your site
+define('SITE_NAME',   'Oppaitime'); //The name of your site
 define('SITE_DOMAIN', 'oppaiti.me'); //The FQDN of your site
-define('SITE_IP', '8.8.8.8'); //The IP address by which your site can be publicly accessed
 define('SERVER_ROOT', '/var/www'); //The root of the server, used for includes, purpose is to shorten the path string
 
 // Tracker urls to be added to torrent files ala bittorrent.org/beps/bep_0012.html
-define('ANNOUNCE_URLS', [['https://tracker.'.SSL_SITE_URL.':34001',
-                   'https://tracker2.'.SSL_SITE_URL.':34001',
-                   'https://tracker3.'.SSL_SITE_URL.':34001',
-                   'https://tracker4.'.SSL_SITE_URL.':34001']] );
+define('ANNOUNCE_URLS', [[
+  'https://tracker.'.SITE_DOMAIN.':34001',
+  'https://tracker2.'.SITE_DOMAIN.':34001',
+  'https://tracker3.'.SITE_DOMAIN.':34001',
+  'https://tracker4.'.SITE_DOMAIN.':34001'
+]]);
 
 // Don't hard code API keys for services
 define('API_KEYS', ['ANIDB' => 'AAAAAAAAAAAAAAAA']);
@@ -23,123 +24,123 @@ define('API_KEYS', ['ANIDB' => 'AAAAAAAAAAAAAAAA']);
 define('STATIC_SERVER', 'static/');
 
 // Keys
-define('ENCKEY', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); //Random key. The key for encryption
+define('ENCKEY',       'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); //Random key. The key for encryption
 define('SCHEDULE_KEY', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); // Random key. This key must be the argument to schedule.php for the schedule to work.
-define('RSS_HASH', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); //Random key. Used for generating unique RSS auth key.
+define('RSS_HASH',     'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); //Random key. Used for generating unique RSS auth key.
 
 // MySQL details
-define('SQLHOST', 'localhost'); //The MySQL host ip/fqdn
+define('SQLHOST',  'localhost'); //The MySQL host ip/fqdn
 define('SQLLOGIN', 'root');//The MySQL login
-define('SQLPASS', 'toor'); //The MySQL password
-define('SQLDB', 'gazelle'); //The MySQL database to use
-define('SQLPORT', 3306); //The MySQL port to connect on
-define('SQLSOCK', '/var/run/mysqld/mysqld.sock');
+define('SQLPASS',  'toor'); //The MySQL password
+define('SQLDB',    'gazelle'); //The MySQL database to use
+define('SQLPORT',  3306); //The MySQL port to connect on
+define('SQLSOCK',  '/var/run/mysqld/mysqld.sock');
 
 // Memcached details
 define('MEMCACHED_SERVERS',
-	[['host' => 'unix:///var/run/memcached.sock', 'port' => 0, 'buckets' => 1]]
+  [['host' => 'unix:///var/run/memcached.sock', 'port' => 0, 'buckets' => 1]]
 );
 
 // Sphinx details
-define('SPHINX_HOST', 'localhost');
-define('SPHINX_PORT', 9312);
-define('SPHINXQL_HOST', '127.0.0.1');
-define('SPHINXQL_PORT', 9306);
-define('SPHINXQL_SOCK', false);
+define('SPHINX_HOST',        'localhost');
+define('SPHINX_PORT',        9312);
+define('SPHINXQL_HOST',      '127.0.0.1');
+define('SPHINXQL_PORT',      9306);
+define('SPHINXQL_SOCK',      false);
 define('SPHINX_MAX_MATCHES', 1000); // Must be <= the server's max_matches variable (default 1000)
-define('SPHINX_INDEX', 'torrents');
+define('SPHINX_INDEX',       'torrents');
 
 // Ocelot details
-define('TRACKER_HOST', '8.8.8.8');
-define('TRACKER_PORT', 34000);
-define('TRACKER_SECRET', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); // Must be 32 characters and match site_password in Ocelot's config.cpp
+define('TRACKER_HOST',      '8.8.8.8');
+define('TRACKER_PORT',      34000);
+define('TRACKER_SECRET',    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); // Must be 32 characters and match site_password in Ocelot's config.cpp
 define('TRACKER_REPORTKEY', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); // Must be 32 characters and match report_password in Ocelot's config.cpp
 
 // Site settings
-define('DEBUG_MODE', false); //Set to false if you dont want everyone to see debug information, can be overriden with 'site_debug'
-define('DEBUG_WARNINGS', true); //Set to true if you want to see PHP warnings in the footer
+define('DEBUG_MODE',        false); //Set to false if you dont want everyone to see debug information, can be overriden with 'site_debug'
+define('DEBUG_WARNINGS',    true); //Set to true if you want to see PHP warnings in the footer
 define('OPEN_REGISTRATION', false); //Set to false to disable open regirstration, true to allow anyone to register
-define('USER_LIMIT', 0); //The maximum number of users the site can have, 0 for no limit
-define('STARTING_INVITES', 0); //# of invites to give to newly registered users
-define('BLOCK_TOR', false); //Set to true to block Tor users
-define('BLOCK_OPERA_MINI', false); //Set to true to block Opera Mini proxy
-define('DONOR_INVITES', 2);
-if (!defined('FEATURE_EMAIL_REENABLE')) {
-  define('FEATURE_EMAIL_REENABLE', true);
-}
+define('USER_LIMIT',        0); //The maximum number of users the site can have, 0 for no limit
+define('STARTING_INVITES',  0); //# of invites to give to newly registered users
+define('BLOCK_TOR',         false); //Set to true to block Tor users
+define('BLOCK_OPERA_MINI',  false); //Set to true to block Opera Mini proxy
+define('DONOR_INVITES',     2);
+
+// Features
+define('FEATURE_EMAIL_REENABLE', true);
 
 // User class IDs needed for automatic promotions. Found in the 'permissions' table
-// Name of class	Class ID (NOT level)
-define('ADMIN',		'1');
-define('USER',		'2');
-define('MEMBER',	'3');
-define('POWER',		'4');
-define('ELITE',		'5');
-define('VIP',		'21');
-define('TORRENT_MASTER','23');
-define('LEGEND',	'8');
-define('MOD',		'11');
-define('SYSOP',		'15');
-define('ARTIST',	'19');
-define('DONOR',		'20');
-define('POWER_TM',	'24');
-define('FLS_TEAM', '9000');
-define('FORUM_MOD', '9001');
+// Name of class  Class ID (NOT level)
+define('ADMIN',          '1');
+define('USER',           '2');
+define('MEMBER',         '3');
+define('POWER',          '4');
+define('ELITE',          '5');
+define('LEGEND',         '8');
+define('MOD',            '11');
+define('SYSOP',          '15');
+define('ARTIST',         '19');
+define('DONOR',          '20');
+define('VIP',            '21');
+define('TORRENT_MASTER', '23');
+define('POWER_TM',       '24');
+define('FLS_TEAM',       '9000');
+define('FORUM_MOD',      '9001');
 
 // Forums
-define('STAFF_FORUM', 7);
-define('DONOR_FORUM', 9);
-define('TRASH_FORUM_ID', 4);
+define('STAFF_FORUM',           7);
+define('DONOR_FORUM',           9);
+define('TRASH_FORUM_ID',        4);
 define('ANNOUNCEMENT_FORUM_ID', 10);
 
 // Pagination
 define('TORRENT_COMMENTS_PER_PAGE', 10);
-define('POSTS_PER_PAGE', 25);
-define('TOPICS_PER_PAGE', 50);
-define('TORRENTS_PER_PAGE', 50);
-define('REQUESTS_PER_PAGE', 25);
-define('MESSAGES_PER_PAGE', 25);
-define('LOG_ENTRIES_PER_PAGE', 50);
+define('POSTS_PER_PAGE',            25);
+define('TOPICS_PER_PAGE',           50);
+define('TORRENTS_PER_PAGE',         50);
+define('REQUESTS_PER_PAGE',         25);
+define('MESSAGES_PER_PAGE',         25);
+define('LOG_ENTRIES_PER_PAGE',      50);
 
 // Cache catalogues
 define('THREAD_CATALOGUE', 500); // Limit to THREAD_CATALOGUE posts per cache key.
 
 // IRC settings
-define('BOT_NICK', 'bot');
-define('BOT_SERVER', 'irc.'.SSL_SITE_URL); // IRC server address. Used for onsite chat tool.
-define('BOT_PORT', 6667);
-define('BOT_CHAN', '#bot');
-define('BOT_ANNOUNCE_CHAN', '#announce');
-define('BOT_REQUEST_CHAN', '#requests');
-define('BOT_STAFF_CHAN', '#staff');
-define('BOT_DISABLED_CHAN', '#disabled'); // Channel to refer disabled users to.
-define('BOT_HELP_CHAN', '#help');
-define('BOT_DEBUG_CHAN', '#debup');
-define('BOT_REPORT_CHAN', '#report');
-define('BOT_NICKSERV_PASS', '');
-define('BOT_INVITE_CHAN', '#invites'); // Channel for non-members seeking an interview
-define('BOT_INTERVIEW_CHAN', '#interview'); // Channel for the interviews
-define('BOT_INTERVIEW_NUM', 5);
-define('BOT_INTERVIEW_STAFF', '#interview-staff'); // Channel for the interviewers
-define('SOCKET_LISTEN_PORT', 51010);
+define('BOT_NICK',              'bot');
+define('BOT_SERVER',            'irc.'.SITE_DOMAIN); // IRC server address. Used for onsite chat tool.
+define('BOT_PORT',              6667);
+define('BOT_CHAN',              '#bot');
+define('BOT_ANNOUNCE_CHAN',     '#announce');
+define('BOT_REQUEST_CHAN',      '#requests');
+define('BOT_STAFF_CHAN',        '#staff');
+define('BOT_DISABLED_CHAN',     '#disabled'); // Channel to refer disabled users to.
+define('BOT_HELP_CHAN',         '#help');
+define('BOT_DEBUG_CHAN',        '#debug');
+define('BOT_REPORT_CHAN',       '#report');
+define('BOT_NICKSERV_PASS',     '');
+define('BOT_INVITE_CHAN',       '#invites'); // Channel for non-members seeking an interview
+define('BOT_INTERVIEW_CHAN',    '#interview'); // Channel for the interviews
+define('BOT_INTERVIEW_NUM',     5);
+define('BOT_INTERVIEW_STAFF',   '#interview-staff'); // Channel for the interviewers
+define('SOCKET_LISTEN_PORT',    51010);
 define('SOCKET_LISTEN_ADDRESS', '8.8.8.8');
-define('ADMIN_CHAN', '#admin');
-define('LAB_CHAN', '#lab');
-define('STATUS_CHAN', '#status');
+define('ADMIN_CHAN',            '#admin');
+define('LAB_CHAN',              '#lab');
+define('STATUS_CHAN',           '#status');
 
 // Miscellaneous values
-define('RANK_ONE_COST', 5);
-define('RANK_TWO_COST', 10);
-define('RANK_THREE_COST', 15);
-define('RANK_FOUR_COST', 20);
-define('RANK_FIVE_COST', 30);
-define('MAX_RANK', 6);
-define('MAX_EXTRA_RANK', 8);
+define('RANK_ONE_COST',    5);
+define('RANK_TWO_COST',    10);
+define('RANK_THREE_COST',  15);
+define('RANK_FOUR_COST',   20);
+define('RANK_FIVE_COST',   30);
+define('MAX_RANK',         6);
+define('MAX_EXTRA_RANK',   8);
 define('DONOR_FORUM_RANK', 6);
 define('MAX_SPECIAL_RANK', 3);
 
-$ForumsRevealVoters = array();
-$ForumsDoublePost = array();
+define('FORUMS_TO_REVEAL_VOTERS,      []);
+define('FORUMS_TO_ALLOW_DOUBLE_POST', []);
 
 $Categories = array('Movies', 'Anime', 'Manga', 'Games', 'Other');
 $GroupedCategories = $Categories;
@@ -164,103 +165,33 @@ $Bitrates = array('192', 'APS (VBR)', 'V2 (VBR)', 'V1 (VBR)', '256', 'APX (VBR)'
 $CollageCats = array(0=>'Personal', 1=>'Theme', 2=>'Staff picks', 3=>'Artists');
 
 $ReleaseTypes = array(1=>'Album', 3=>'Soundtrack', 5=>'EP', 6=>'Anthology', 7=>'Compilation', 9=>'Single', 11=>'Live album', 13=>'Remix', 14=>'Bootleg', 15=>'Interview', 16=>'Mixtape', 21=>'Unknown');
-//$ForumCats = array(1=>'Site', 5=>'Community', 10=>'Help', 8=>'Music', 20=>'Trash'); //No longer needed
-
-$ZIPGroups = array(
-	0 => 'MP3 (VBR) - High Quality',
-	1 => 'MP3 (VBR) - Low Quality',
-	2 => 'MP3 (CBR)',
-	3 => 'FLAC - Lossless',
-	4 => 'Others'
-);
-
-//3D array of attributes, OptionGroup, OptionNumber, Name
-$ZIPOptions = array(
-	'00' => array(0, 0, 'V0'),
-	'01' => array(0, 1, 'APX'),
-	'02' => array(0, 2, '256'),
-	'03' => array(0, 3, 'V1'),
-	'10' => array(1, 0, '224'),
-	'11' => array(1, 1, 'V2'),
-	'12' => array(1, 2, 'APS'),
-	'13' => array(1, 3, '192'),
-	'20' => array(2, 0, '320'),
-	'21' => array(2, 1, '256'),
-	'22' => array(2, 2, '224'),
-	'23' => array(2, 3, '192'),
-	'30' => array(3, 0, 'FLAC / 24bit / Vinyl'),
-	'31' => array(3, 1, 'FLAC / 24bit / DVD'),
-	'32' => array(3, 2, 'FLAC / 24bit / SACD'),
-	'33' => array(3, 3, 'FLAC / Log (100) / Cue'),
-	'34' => array(3, 4, 'FLAC / Log (100)'),
-	'35' => array(3, 5, 'FLAC / Log'),
-	'36' => array(3, 6, 'FLAC'),
-	'40' => array(4, 0, 'DTS'),
-	'41' => array(4, 1, 'Ogg Vorbis'),
-	'42' => array(4, 2, 'AAC - 320'),
-	'43' => array(4, 3, 'AAC - 256'),
-	'44' => array(4, 4, 'AAC - q5.5'),
-	'45' => array(4, 5, 'AAC - q5'),
-	'46' => array(4, 6, 'AAC - 192')
-);
 
 // Ratio requirements, in descending order
-// Columns: Download amount, required ratio, grace period
-$RatioRequirements = array(
-	//array(0, 0, date('Y-m-d H:i:s'))
-	array(200 * 1024 * 1024 * 1024, 0.60, date('Y-m-d H:i:s')),
-	array(160 * 1024 * 1024 * 1024, 0.60, date('Y-m-d H:i:s')),
-	array(120 * 1024 * 1024 * 1024, 0.50, date('Y-m-d H:i:s')),
-	array(100 * 1024 * 1024 * 1024, 0.40, date('Y-m-d H:i:s')),
-	array(80  * 1024 * 1024 * 1024, 0.30, date('Y-m-d H:i:s')),
-	array(60  * 1024 * 1024 * 1024, 0.20, date('Y-m-d H:i:s')),
-	array(40  * 1024 * 1024 * 1024, 0.15, date('Y-m-d H:i:s')),
-	array(20  * 1024 * 1024 * 1024, 0.10, date('Y-m-d H:i:s')),
-	array(10  * 1024 * 1024 * 1024, 0.05, date('Y-m-d H:i:s', time() - (60 * 60 * 24 * 14)))
-);
-
-//Captcha fonts should be located in /classes/fonts
-$CaptchaFonts = array(
-		'ARIBLK.TTF',
-		'IMPACT.TTF',
-		'TREBUC.TTF',
-		'TREBUCBD.TTF',
-		'TREBUCBI.TTF',
-		'TREBUCIT.TTF',
-		'VERDANA.TTF',
-		'VERDANAB.TTF',
-		'VERDANAI.TTF',
-		'VERDANAZ.TTF');
-//Captcha images should be located in /captcha
-$CaptchaBGs = array(
-		'captcha1.png',
-		'captcha2.png',
-		'captcha3.png',
-		'captcha4.png',
-		'captcha5.png',
-		'captcha6.png',
-		'captcha7.png',
-		'captcha8.png',
-		'captcha9.png');
-
-// Special characters, and what they should be converted to
-// Used for torrent searching
-$SpecialChars = array(
-		'&' => 'and'
-);
+// Columns: Download amount, Req Ratio (0% seeded), Req Ratio (100% seeded)
+define('RATIO_REQUIREMENTS', [
+  [200 * 1024**3, 0.60, 0.60],
+  [160 * 1024**3, 0.60, 0.50],
+  [120 * 1024**3, 0.50, 0.40],
+  [100 * 1024**3, 0.40, 0.30],
+  [80  * 1024**3, 0.30, 0.20],
+  [60  * 1024**3, 0.20, 0.10],
+  [40  * 1024**3, 0.15, 0.00],
+  [20  * 1024**3, 0.10, 0.00],
+  [10  * 1024**3, 0.05, 0.00],
+]);
 
 // God I wish I didn't have to do this but I just don't care anymore.
-$AutomatedBadgeIDs = array(
-	'DL' => array(
-		'8' => 10,
-		'16' => 11,
-		'32' => 12,
-		'64' => 13,
-		'128' => 14,
-		'256' => 15,
-		'512' => 16,
-		'1024' => 17,
-		'2048' => 18
-	)
-);
+define('AUTOMATED_BADGE_IDS', [
+  'DL' => [
+    '8' => 10,
+    '16' => 11,
+    '32' => 12,
+    '64' => 13,
+    '128' => 14,
+    '256' => 15,
+    '512' => 16,
+    '1024' => 17,
+    '2048' => 18
+  ]
+]);
 ?>

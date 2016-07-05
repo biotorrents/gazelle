@@ -10,7 +10,7 @@ define('EMAIL_REGEX','[_a-z0-9-]+([.+][_a-z0-9-]+)*@'.DOMAIN_REGEX);
 define('IMAGE_REGEX', URL_REGEX.'\/\S+\.(jpg|jpeg|tif|tiff|png|gif|bmp)(\?\S*)?');
 define('VIDEO_REGEX', URL_REGEX.'\/\S+\.(webm)(\?\S*)?');
 define('CSS_REGEX', URL_REGEX.'\/\S+\.css(\?\S*)?');
-define('SITELINK_REGEX', RESOURCE_REGEX.'(www)?'.preg_quote(SITE_DOMAIN, '/'));
+define('SITELINK_REGEX', RESOURCE_REGEX.'(www.)?'.preg_quote(SITE_DOMAIN, '/'));
 define('TORRENT_REGEX', SITELINK_REGEX.'\/torrents\.php\?(.*&)?torrentid=(\d+)'); // torrentid = group 4
 define('TORRENT_GROUP_REGEX', SITELINK_REGEX.'\/torrents\.php\?(.*&)?id=(\d+)'); // id = group 4
 define('ARTIST_REGEX', SITELINK_REGEX.'\/artist\.php\?(.*&)?id=(\d+)'); // id = group 4

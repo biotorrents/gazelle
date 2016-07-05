@@ -35,7 +35,7 @@
 			'SubscribeBox' => true
 		));
  */
-	global $HeavyInfo, $UserSubscriptions, $ThreadInfo, $ForumsDoublePost, $Document;
+	global $HeavyInfo, $UserSubscriptions, $ThreadInfo, $Document;
 
 	if (G::$LoggedUser['DisablePosting']) {
 		return;
@@ -135,7 +135,7 @@
 		}
 		if ($ThreadInfo['LastPostAuthorID'] == G::$LoggedUser['ID']
 			&& (check_perms('site_forums_double_post')
-				|| in_array($ForumID, $ForumsDoublePost))
+				|| in_array($ForumID, FORUMS_TO_ALLOW_DOUBLE_POST))
 		) {
 ?>
 							<input id="mergebox" type="checkbox" name="merge" tabindex="2" />
