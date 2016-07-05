@@ -20,6 +20,7 @@ $Validate = new VALIDATE;
 //******************************************************************************//
 
 $Properties=array();
+$_POST['type'] = $_POST['type'] + 1;
 $TypeID = (int)$_POST['type'];
 $Type = $Categories[$TypeID-1];
 $TorrentID = (int)$_POST['torrentid'];
