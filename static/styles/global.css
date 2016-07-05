@@ -601,19 +601,26 @@ tr.torrent .bookmark>a:after {
 	text-align: left;
 }
 
+.forum_post .colhead_dark div {
+  display: flex;
+}
+
+.forum_post .colhead_dark div > *{
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
 .donor_icon {
 	margin-left: 2px;
 	margin-right: 2px;
 	max-width: 16px;
 	max-height: 16px;
 	position: relative;
-	top: 2px;
 }
 
 .badge_icon {
 	margin: 0px 2px;
 	position: relative;
-	top: 2px;
 }
 
 .donation_info {

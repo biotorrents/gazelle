@@ -33,7 +33,8 @@ We use new PHP password hashing features that automatically rehash your password
 
 ## Minor Changes
 
-* When a torrent is trumped, the new torrent is made freeleech to users who snatched the old torrent for a few days
+* When a torrent is trumped, the new torrent is made freeleech to users who snatched the old torrent for a few days.
+* Sends headers to tell cloudflare to use HTTP/2 Server Push for most resources.
 * An attempt has been made to support magnet links. This has shown partial success.
 * This codebase is expected to run over https only.
 
