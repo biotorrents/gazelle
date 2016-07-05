@@ -33,7 +33,6 @@ if (!list($Countries, $Rank, $CountryUsers, $CountryMax, $CountryMin, $LogIncrem
 }
 
 if (!$ClassDistribution = $Cache->get_value('class_distribution')) {
-	include_once(SERVER_ROOT.'/classes/charts.class.php');
 	$DB->query("
 		SELECT p.Name, COUNT(m.ID) AS Users
 		FROM users_main AS m
@@ -41,125 +40,136 @@ if (!$ClassDistribution = $Cache->get_value('class_distribution')) {
 		WHERE m.Enabled = '1'
 		GROUP BY p.Name
 		ORDER BY Users DESC");
-	$ClassSizes = $DB->to_array();
-	$Pie = new PIE_CHART(750, 400, array('Other' => 1, 'Percentage' => 1));
-	foreach ($ClassSizes as $ClassSize) {
-		list($Label, $Users) = $ClassSize;
-		$Pie->add($Label, $Users);
-	}
-	$Pie->transparent();
-	$Pie->color('FF33CC');
-	$Pie->generate();
-	$ClassDistribution = $Pie->url();
+	$ClassDistribution = $DB->to_array();
 	$Cache->cache_value('class_distribution', $ClassDistribution, 3600 * 24 * 14);
 }
 if (!$PlatformDistribution = $Cache->get_value('platform_distribution')) {
-	include_once(SERVER_ROOT.'/classes/charts.class.php');
-
 	$DB->query("
 		SELECT OperatingSystem, COUNT(UserID) AS Users
 		FROM users_sessions
 		GROUP BY OperatingSystem
 		ORDER BY Users DESC");
 
-	$Platforms = $DB->to_array();
-	$Pie = new PIE_CHART(750, 400, array('Other' => 1, 'Percentage' => 1));
-	foreach ($Platforms as $Platform) {
-		list($Label, $Users) = $Platform;
-		$Pie->add($Label, $Users);
-	}
-	$Pie->transparent();
-	$Pie->color('8A00B8');
-	$Pie->generate();
-	$PlatformDistribution = $Pie->url();
+	$PlatformDistribution = $DB->to_array();
 	$Cache->cache_value('platform_distribution', $PlatformDistribution, 3600 * 24 * 14);
 }
 
 if (!$BrowserDistribution = $Cache->get_value('browser_distribution')) {
-	include_once(SERVER_ROOT.'/classes/charts.class.php');
-
 	$DB->query("
 		SELECT Browser, COUNT(UserID) AS Users
 		FROM users_sessions
 		GROUP BY Browser
 		ORDER BY Users DESC");
 
-	$Browsers = $DB->to_array();
-	$Pie = new PIE_CHART(750, 400, array('Other' => 1, 'Percentage' => 1));
-	foreach ($Browsers as $Browser) {
-		list($Label, $Users) = $Browser;
-		$Pie->add($Label, $Users);
-	}
-	$Pie->transparent();
-	$Pie->color('008AB8');
-	$Pie->generate();
-	$BrowserDistribution = $Pie->url();
+	$BrowserDistribution = $DB->to_array();
 	$Cache->cache_value('browser_distribution', $BrowserDistribution, 3600 * 24 * 14);
 }
 
 
 //Timeline generation
-if (!list($Labels, $InFlow, $OutFlow, $Max) = $Cache->get_value('users_timeline')) {
+if (!list($Labels, $InFlow, $OutFlow) = $Cache->get_value('users_timeline')) {
 	$DB->query("
-		SELECT DATE_FORMAT(JoinDate,'%b %y') AS Month, COUNT(UserID)
+		SELECT DATE_FORMAT(JoinDate,\"%b %Y\") AS Month, COUNT(UserID)
 		FROM users_info
 		GROUP BY Month
-		ORDER BY JoinDate DESC");
+		ORDER BY JoinDate DESC
+    LIMIT 1, 11");
 	$TimelineIn = array_reverse($DB->to_array());
 	$DB->query("
-		SELECT DATE_FORMAT(BanDate,'%b %y') AS Month, COUNT(UserID)
+		SELECT DATE_FORMAT(BanDate,\"%b %Y\") AS Month, COUNT(UserID)
 		FROM users_info
     WHERE BanDate > 0
 		GROUP BY Month
-		ORDER BY BanDate DESC");
+		ORDER BY BanDate DESC
+    LIMIT 1, 11");
 	$TimelineOut = array_reverse($DB->to_array());
-	foreach ($TimelineIn as $Month) {
-		list($Label, $Amount) = $Month;
-		if ($Amount > $Max) {
-			$Max = $Amount;
-		}
-	}
-	foreach ($TimelineOut as $Month) {
-		list($Label, $Amount) = $Month;
-		if ($Amount > $Max) {
-			$Max = $Amount;
-		}
-	}
 
 	$Labels = array();
-	foreach ($TimelineIn as $Month) {
-		list($Label, $Amount) = $Month;
-		$Labels[] = $Label;
-		$InFlow[] = number_format(($Amount / $Max) * 100, 4);
+	foreach($TimelineIn as $Month) {
+		list($Labels[], $InFlow[]) = $Month;
 	}
-	foreach ($TimelineOut as $Month) {
-		list($Label, $Amount) = $Month;
-		$OutFlow[] = number_format(($Amount / $Max) * 100, 4);
+	foreach($TimelineOut as $Month) {
+		list(, $OutFlow[]) = $Month;
 	}
-	$Cache->cache_value('users_timeline', array($Labels, $InFlow, $OutFlow, $Max), mktime(0, 0, 0, date('n') + 1, 2)); //Tested: fine for Dec -> Jan
+	$Cache->cache_value('users_timeline', array($Labels, $InFlow, $OutFlow), mktime(0, 0, 0, date('n') + 1, 2)); //Tested: fine for Dec -> Jan
 }
 //End timeline generation
 
-View::show_header('Detailed User Statistics');
+View::show_header('Detailed User Statistics', 'chart');
 ?>
 <h3 id="User_Flow"><a href="#User_Flow">User Flow</a></h3>
 <div class="box pad center">
-  <img src="<?=str_replace(['+','%26%2339%3B'],['%2B','%27'],ImageTools::process('https://chart.googleapis.com/chart?cht=lc&chs=880x160&chco=000D99,99000D&chg=0,-1,1,1&chxt=y,x&chxs=0,h&chxl=1:|'.implode('|', $Labels).'&chxr=0,0,'.$Max.'&chd=t:'.implode(',', $InFlow).'|'.implode(',', $OutFlow).'&chls=2,4,0&chdl=New+Registrations|Disabled+Users&chf=bg,s,FFFFFF00&.png'))?>" alt="User Flow Chart" />
+  <canvas class="chart" id="chart_user_timeline"></canvas>
+  <script>
+    new Chart($('#chart_user_timeline').raw().getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: <? print '["'.implode('","',$Labels).'"]'; ?>,
+        datasets: [ {
+          label: "New Registrations",
+          backgroundColor: "rgba(0,0,255,0.2)",
+          borderColor: "rgba(0,0,255,0.8)",
+          data: <? print "[".implode(",",$InFlow)."]"; ?>
+        }, {
+          label: "Disabled Users",
+          backgroundColor: "rgba(255,0,0,0.2)",
+          borderColor: "rgba(255,0,0,0.8)",
+          data: <? print "[".implode(",",$OutFlow)."]"; ?>
+        }]
+      }
+    })
+  </script>
 </div>
 <br />
 <h3 id="User_Classes"><a href="#User_Classes">User Classes</a></h3>
 <div class="box pad center">
-	<img src="<?=preg_replace('/\+/','%2B',ImageTools::process($ClassDistribution.'&.png'))?>" alt="User Class Distribution" />
+  <canvas class="chart" id="chart_user_classes"></canvas>
+  <script>
+    new Chart($('#chart_user_classes').raw().getContext('2d'), {
+      type: 'pie',
+      data: {
+        labels: <? print '["'.implode('","', array_column($ClassDistribution, 'Name')).'"]'; ?>,
+        datasets: [ {
+          data: <? print "[".implode(",", array_column($ClassDistribution, 'Users'))."]"; ?>,
+          backgroundColor: ['#8a00b8','#a944cb','#be71d8','#e8ccf1', '#f3e3f9', '#fbf6fd', '#ffffff']
+        }]
+      }
+    })
+  </script>
 </div>
 <br />
 <h3 id="User_Platforms"><a href="#User_Platforms">User Platforms</a></h3>
 <div class="box pad center">
-	<img src="<?=preg_replace('/\+/','%2B',ImageTools::process($PlatformDistribution.'&.png'))?>" alt="User Platform Distribution" />
+  <canvas class="chart" id="chart_user_platforms"></canvas>
+  <script>
+    new Chart($('#chart_user_platforms').raw().getContext('2d'), {
+      type: 'pie',
+      data: {
+        labels: <? print '["'.implode('","', array_column($PlatformDistribution, 'OperatingSystem')).'"]'; ?>,
+        datasets: [ {
+          data: <? print "[".implode(",", array_column($PlatformDistribution, 'Users'))."]"; ?>,
+          backgroundColor: ['#8a00b8','#9416bf','#9f2dc5','#a944cb','#b45bd2','#be71d8','#c988de','#d39fe5','#deb6eb','#e8ccf1', '#ffffff', '#ffffff', '#ffffff', '#ffffff']
+        }]
+      }
+    })
+  </script>
 </div>
 <br />
 <h3 id="User_Browsers"><a href="#User_Browsers">User Browsers</a></h3>
 <div class="box pad center">
-	<img src="<?=preg_replace('/\+/','%2B',ImageTools::process($BrowserDistribution.'&.png'))?>" alt="User Browsers Market Share" />
+  <canvas class="chart" id="chart_user_browsers"></canvas>
+  <script>
+    new Chart($('#chart_user_browsers').raw().getContext('2d'), {
+      type: 'pie',
+      data: {
+        labels: <? print '["'.implode('","', array_column($BrowserDistribution, 'Browser')).'"]'; ?>,
+        datasets: [ {
+          data: <? print "[".implode(",", array_column($BrowserDistribution, 'Users'))."]"; ?>,
+          backgroundColor: ['#8a00b8','#9416bf','#9f2dc5','#a944cb','#b45bd2','#be71d8','#c988de','#d39fe5','#deb6eb','#e8ccf1', '#ffffff', '#ffffff', '#ffffff', '#ffffff']
+        }]
+      }
+    })
+  </script>
 </div>
 <br />
 <h3 id="Geo_Dist_Map"><a href="#Geo_Dist_Map">Geographical Distribution Map</a></h3>
