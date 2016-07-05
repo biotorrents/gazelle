@@ -8,7 +8,7 @@ if (apc_exists('DBKEY')) {
     FROM users_info AS ui
       JOIN users_main AS um ON um.ID = ui.UserID
       LEFT JOIN users_levels AS ul ON ul.UserID = um.ID AND ul.PermissionID = '".CELEB."'
-    WHERE um.PermissionID IN ('".USER."', '".MEMBER	."')
+    WHERE um.PermissionID IN ('".USER."', '".MEMBER  ."')
       AND um.LastAccess < '".time_minus(3600 * 24 * 110, true)."'
       AND um.LastAccess > '".time_minus(3600 * 24 * 111, true)."'
       AND um.LastAccess != '0000-00-00 00:00:00'
@@ -27,7 +27,7 @@ if (apc_exists('DBKEY')) {
     FROM users_info AS ui
       JOIN users_main AS um ON um.ID = ui.UserID
       LEFT JOIN users_levels AS ul ON ul.UserID = um.ID AND ul.PermissionID = '".CELEB."'
-    WHERE um.PermissionID IN ('".USER."', '".MEMBER	."')
+    WHERE um.PermissionID IN ('".USER."', '".MEMBER  ."')
       AND um.LastAccess < '".time_minus(3600 * 24 * 30 * 4)."'
       AND um.LastAccess != '0000-00-00 00:00:00'
       AND ui.Donor = '0'

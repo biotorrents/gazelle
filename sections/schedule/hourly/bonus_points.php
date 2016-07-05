@@ -12,7 +12,7 @@ $getUsers = $DB->query("
   LEFT JOIN xbt_files_users AS x ON um.ID=x.uid
   LEFT JOIN torrents AS t ON t.ID=x.fid
   LEFT JOIN xbt_snatched AS xs ON x.uid=xs.uid AND x.fid=xs.fid
-  WHERE 
+  WHERE
     um.Enabled = '1'
     AND i.DisableNips = '0'
     AND x.active = 1

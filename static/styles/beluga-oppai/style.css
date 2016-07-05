@@ -66,7 +66,7 @@ body {
   font-family: 'Source Sans Pro',Helvetica,sans-serif;
   font-size: 10pt;
   color: #E9E9E9;
-	background-color: #23252a
+  background-color: #23252a
 }
 a {
   text-decoration: none;
@@ -2095,11 +2095,11 @@ a.last_read > svg {
   opacity: 0.7;
 }
 caption {
-	border-bottom: 1px dashed #666;
-	font-weight: bold;
+  border-bottom: 1px dashed #666;
+  font-weight: bold;
 }
 
 tbody .staff_post {
-	background: none;
-	background-color: #634852;
+  background: none;
+  background-color: #634852;
 }

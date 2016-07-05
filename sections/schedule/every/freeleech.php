@@ -7,22 +7,22 @@
 $TimeMinus = time_minus(3600 * 7);
 
 $DB->query("
-	SELECT DISTINCT GroupID
-	FROM torrents
-	WHERE FreeTorrent = '1'
-		AND FreeLeechType = '4'
-		AND Time < '$TimeMinus'");
+  SELECT DISTINCT GroupID
+  FROM torrents
+  WHERE FreeTorrent = '1'
+    AND FreeLeechType = '4'
+    AND Time < '$TimeMinus'");
 while (list($GroupID) = $DB->next_record()) {
-	$Cache->delete_value("torrents_details_$GroupID");
-	$Cache->delete_value("torrent_group_$GroupID");
+  $Cache->delete_value("torrents_details_$GroupID");
+  $Cache->delete_value("torrent_group_$GroupID");
 }
 $DB->query("
-	UPDATE torrents
-	SET FreeTorrent = '0',
-		FreeLeechType = '0'
-	WHERE FreeTorrent = '1'
-		AND FreeLeechType = '4'
-		AND Time < '$TimeMinus'");
+  UPDATE torrents
+  SET FreeTorrent = '0',
+    FreeLeechType = '0'
+  WHERE FreeTorrent = '1'
+    AND FreeLeechType = '4'
+    AND Time < '$TimeMinus'");
 
 */
 ?>

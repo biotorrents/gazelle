@@ -274,10 +274,10 @@ if ($NumResults > 0) { ?>
 <?          } ?>
             </td>
             <td><?=Users::format_username($UserID)?></td>
-            <td><?=display_str(DBCrypt::decrypt($Email))?></td> 
-            
+            <td><?=display_str(DBCrypt::decrypt($Email))?></td>
+
             <td><?=display_str(DBCrypt::decrypt($IP))?></td>
-            
+
             <td><?=display_str($UserAgent)?></td>
             <td><?=time_diff($Timestamp)?></td>
             <td><?=($BanReason == 3) ? '<b>Inactivity</b>' : 'Other'?></td>

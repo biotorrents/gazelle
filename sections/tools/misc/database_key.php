@@ -21,7 +21,7 @@ View::show_header('Database Encryption Key');
     <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
     <div style="display: flex;">
       <input type="text" name="dbkey" style="flex-grow: 1;" />
-      <input type="submit" name="submit" value="Update key" /> 
+      <input type="submit" name="submit" value="Update key" />
     </div>
   </form>
 </div>

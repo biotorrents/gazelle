@@ -2,9 +2,9 @@
 include(SERVER_ROOT.'/sections/torrents/functions.php');
 
 if (!empty($_GET['order_way']) && $_GET['order_way'] == 'asc') {
-	$OrderWay = 'asc';
+  $OrderWay = 'asc';
 } else {
-	$OrderWay = 'desc';
+  $OrderWay = 'desc';
 }
 
 if (empty($_GET['order_by']) || !isset(TorrentSearch::$SortOrders[$_GET['order_by']])) {
@@ -25,55 +25,55 @@ if ($Results === false) {
 }
 
 if ($NumResults == 0) {
-	json_die("success", array(
-		'results' => array()
-	));
+  json_die("success", array(
+    'results' => array()
+  ));
 }
 
 $Bookmarks = Bookmarks::all_bookmarks('torrent');
 
 $JsonGroups = array();
 foreach ($Results as $Key => $GroupID) {
-	$GroupInfo = $Groups[$GroupID];
-	if (empty($GroupInfo['Torrents'])) {
-		continue;
-	}
-	$CategoryID = $GroupInfo['CategoryID'];
-//	$ExtendedArtists = $GroupInfo['ExtendedArtists'];
-	$ExtendedArtists = $GroupInfo['Artists'];
-	$GroupCatalogueNumber = $GroupInfo['CatalogueNumber'];
-	$GroupName = $GroupInfo['Name'];
-	if ($GroupResults) {
-		$Torrents = $GroupInfo['Torrents'];
-		$GroupTime = $MaxSize = $TotalLeechers = $TotalSeeders = $TotalSnatched = 0;
-		foreach ($Torrents as $T) {
-			$GroupTime = max($GroupTime, strtotime($T['Time']));
+  $GroupInfo = $Groups[$GroupID];
+  if (empty($GroupInfo['Torrents'])) {
+    continue;
+  }
+  $CategoryID = $GroupInfo['CategoryID'];
+//  $ExtendedArtists = $GroupInfo['ExtendedArtists'];
+  $ExtendedArtists = $GroupInfo['Artists'];
+  $GroupCatalogueNumber = $GroupInfo['CatalogueNumber'];
+  $GroupName = $GroupInfo['Name'];
+  if ($GroupResults) {
+    $Torrents = $GroupInfo['Torrents'];
+    $GroupTime = $MaxSize = $TotalLeechers = $TotalSeeders = $TotalSnatched = 0;
+    foreach ($Torrents as $T) {
+      $GroupTime = max($GroupTime, strtotime($T['Time']));
       $MaxSize = max($MaxSize, $T['Size']);
-			$TotalLeechers += $T['Leechers'];
-			$TotalSeeders += $T['Seeders'];
-			$TotalSnatched += $T['Snatched'];
-		}
-	} else {
+      $TotalLeechers += $T['Leechers'];
+      $TotalSeeders += $T['Seeders'];
+      $TotalSnatched += $T['Snatched'];
+    }
+  } else {
     $TorrentID = $Key;
     $Torrents = array($TorrentID => $GroupInfo['Torrents'][$TorrentID]);
-	}
+  }
 
-	$TagList = explode(' ', str_replace('_', '.', $GroupInfo['TagList']));
-	$JsonArtists = array();
-	if (!empty($ExtendedArtists[1]) || !empty($ExtendedArtists[4]) || !empty($ExtendedArtists[5]) || !empty($ExtendedArtists[6])) {
-		unset($ExtendedArtists[2]);
-		unset($ExtendedArtists[3]);
-		$DisplayName = Artists::display_artists($ExtendedArtists, false, false, false);
-		foreach ($ExtendedArtists[1] as $Artist) {
-			$JsonArtists[] = array(
+  $TagList = explode(' ', str_replace('_', '.', $GroupInfo['TagList']));
+  $JsonArtists = array();
+  if (!empty($ExtendedArtists[1]) || !empty($ExtendedArtists[4]) || !empty($ExtendedArtists[5]) || !empty($ExtendedArtists[6])) {
+    unset($ExtendedArtists[2]);
+    unset($ExtendedArtists[3]);
+    $DisplayName = Artists::display_artists($ExtendedArtists, false, false, false);
+    foreach ($ExtendedArtists[1] as $Artist) {
+      $JsonArtists[] = array(
         'id' => (int)$Artist['id'],
         'name' => $Artist['name'],
         'aliasid' => (int)$Artist['id']
       );
-		}
-	} else {
-		$DisplayName = '';
-	}
+    }
+  } else {
+    $DisplayName = '';
+  }
 
   $JsonTorrents = array();
   foreach ($Torrents as $TorrentID => $Data) {

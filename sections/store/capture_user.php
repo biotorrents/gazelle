@@ -4,17 +4,17 @@ if (isset($_POST['target']) && isset($_POST['amount'])) {
   $TargetID = abs(intval($_POST['target']));
   $Amount = abs(intval($_POST['amount']));
 
-	$UserID = $LoggedUser['ID'];
+  $UserID = $LoggedUser['ID'];
 
-	$DB->query("
-		SELECT u.BonusPoints, p.Level
+  $DB->query("
+    SELECT u.BonusPoints, p.Level
     FROM users_main AS u
     LEFT JOIN permissions AS p ON u.PermissionID=p.ID
-		WHERE u.ID = $UserID");
-	if ($DB->has_results()) {
-		list($Points, $PLevel) = $DB->next_record();
+    WHERE u.ID = $UserID");
+  if ($DB->has_results()) {
+    list($Points, $PLevel) = $DB->next_record();
 
-		if ($Points < $Amount) {
+    if ($Points < $Amount) {
       error('Not enough points!'); }
     if ($UserID == $TargetID) {
       error("You can't capture yourself!"); }
@@ -23,7 +23,7 @@ if (isset($_POST['target']) && isset($_POST['amount'])) {
     $DB->query("SELECT COUNT(*) FROM slaves WHERE OwnerID = $UserID");
     if ($DB->next_record()[0] >= 6) {
       error('You own too many users already'); }
-    
+
     // Logic for capture success
     $DB->query("
       SELECT u.Uploaded,
@@ -55,36 +55,36 @@ if (isset($_POST['target']) && isset($_POST['amount'])) {
         (UserID, OwnerID)
         Values($TargetID, $UserID)");
     }
-	}
+  }
 
-	View::show_header('Store'); ?>
-	<div class="thin">
+  View::show_header('Store'); ?>
+  <div class="thin">
     <h2 id="general">Capture <?=($Captured?'Successful':'Failed')?></h2>
-		<div class="box pad" style="padding: 10px 10px 10px 20px;">
+    <div class="box pad" style="padding: 10px 10px 10px 20px;">
       <p><?=($Captured?'You successfully captured your target':'Your target eluded capture')?></p>
       <p><a href="/store.php">Back to Store</a> | <a href="/user.php?id=<?=$TargetID?>">Back to Profile</a></p>
-		</div>
-	</div>
-	<? View::show_footer(); 
+    </div>
+  </div>
+  <? View::show_footer();
 
 } else {
 
-	View::show_header('Store'); ?>
-	<div class="thin">
-		<div class="box pad" style="padding: 10px 10px 10px 20px; text-align: center;">
-			<form action="store.php" method="POST">
-				<input type="hidden" name="item" value="capture_user">
-				<strong>
-				  Enter the name of the user you want to capture and the nips you want to spend
-				</strong>
-				<br>
-				<input type="text" name="target_name" placeholder="Username">
-				<input type="text" name="amount" placeholder="Nips">
-				<input type="submit">
-			</form>
-			<p><a href="/store.php">Back to Store</a></p>
-		</div>
-	</div>
-	<? View::show_footer(); 
+  View::show_header('Store'); ?>
+  <div class="thin">
+    <div class="box pad" style="padding: 10px 10px 10px 20px; text-align: center;">
+      <form action="store.php" method="POST">
+        <input type="hidden" name="item" value="capture_user">
+        <strong>
+          Enter the name of the user you want to capture and the nips you want to spend
+        </strong>
+        <br>
+        <input type="text" name="target_name" placeholder="Username">
+        <input type="text" name="amount" placeholder="Nips">
+        <input type="submit">
+      </form>
+      <p><a href="/store.php">Back to Store</a></p>
+    </div>
+  </div>
+  <? View::show_footer();
 }
 ?>

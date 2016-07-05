@@ -1,12 +1,12 @@
 <?
 
 if (!$UserCount = $Cache->get_value('stats_user_count')) {
-	$DB->query("
-		SELECT COUNT(ID)
-		FROM users_main
-		WHERE Enabled = '1'");
-	list($UserCount) = $DB->next_record();
-	$Cache->cache_value('stats_user_count', $UserCount, 0);
+  $DB->query("
+    SELECT COUNT(ID)
+    FROM users_main
+    WHERE Enabled = '1'");
+  list($UserCount) = $DB->next_record();
+  $Cache->cache_value('stats_user_count', $UserCount, 0);
 }
 
 $UserID = $LoggedUser['ID'];
@@ -21,23 +21,23 @@ if (!apc_exists('DBKEY')) {
 authorize();
 
 $DB->query("
-	SELECT can_leech
-	FROM users_main
-	WHERE ID = $UserID");
+  SELECT can_leech
+  FROM users_main
+  WHERE ID = $UserID");
 list($CanLeech) = $DB->next_record();
 
 if ($LoggedUser['RatioWatch']
-	|| !$CanLeech
-	|| $LoggedUser['DisableInvites'] == '1'
-	|| $LoggedUser['Invites'] == 0
-	&& !check_perms('site_send_unlimited_invites')
-	|| (
-		$UserCount >= USER_LIMIT
-		&& USER_LIMIT != 0
-		&& !check_perms('site_can_invite_always')
-		)
-	) {
-		error(403);
+  || !$CanLeech
+  || $LoggedUser['DisableInvites'] == '1'
+  || $LoggedUser['Invites'] == 0
+  && !check_perms('site_send_unlimited_invites')
+  || (
+    $UserCount >= USER_LIMIT
+    && USER_LIMIT != 0
+    && !check_perms('site_can_invite_always')
+    )
+  ) {
+    error(403);
 }
 
 $Email = $_POST['email'];
@@ -49,26 +49,26 @@ $InviteReason = check_perms('users_invite_notes') ? db_string($_POST['reason']) 
 
 //MultiInvite
 if (strpos($Email, '|') !== false && check_perms('site_send_unlimited_invites')) {
-	$Emails = explode('|', $Email);
+  $Emails = explode('|', $Email);
 } else {
-	$Emails = array($Email);
+  $Emails = array($Email);
 }
 
 foreach ($Emails as $CurEmail) {
-	if (!preg_match("/^".EMAIL_REGEX."$/i", $CurEmail)) {
-		if (count($Emails) > 1) {
-			continue;
-		} else {
-			error('Invalid email.');
-			header('Location: user.php?action=invite');
-			die();
-		}
-	}
-	$DB->query("
-		SELECT Email
-		FROM invites
-		WHERE InviterID = ".$LoggedUser['ID']);
-	if ($DB->has_results()) {
+  if (!preg_match("/^".EMAIL_REGEX."$/i", $CurEmail)) {
+    if (count($Emails) > 1) {
+      continue;
+    } else {
+      error('Invalid email.');
+      header('Location: user.php?action=invite');
+      die();
+    }
+  }
+  $DB->query("
+    SELECT Email
+    FROM invites
+    WHERE InviterID = ".$LoggedUser['ID']);
+  if ($DB->has_results()) {
     while (list($MaybeEmail) = $DB->next_record()) {
       if (DBCrypt::decrypt($MaybeEmail) == $CurEmail) {
         error('You already have a pending invite to that address!');
@@ -76,8 +76,8 @@ foreach ($Emails as $CurEmail) {
         die();
       }
     }
-	}
-	$InviteKey = db_string(Users::make_secret());
+  }
+  $InviteKey = db_string(Users::make_secret());
 
   $DisabledChan = BOT_DISABLED_CHAN;
   $IRCServer = BOT_SERVER;
@@ -99,23 +99,23 @@ Thank you,
 $SiteName Staff
 EOT;
 
-	$DB->query("
-		INSERT INTO invites
-			(InviterID, InviteKey, Email, Expires, Reason)
-		VALUES
-			('$LoggedUser[ID]', '$InviteKey', '".DBCrypt::encrypt($CurEmail)."', '$InviteExpires', '$InviteReason')");
+  $DB->query("
+    INSERT INTO invites
+      (InviterID, InviteKey, Email, Expires, Reason)
+    VALUES
+      ('$LoggedUser[ID]', '$InviteKey', '".DBCrypt::encrypt($CurEmail)."', '$InviteExpires', '$InviteReason')");
 
-	if (!check_perms('site_send_unlimited_invites')) {
-		$DB->query("
-			UPDATE users_main
-			SET Invites = GREATEST(Invites, 1) - 1
-			WHERE ID = '$LoggedUser[ID]'");
-		$Cache->begin_transaction('user_info_heavy_'.$LoggedUser['ID']);
-		$Cache->update_row(false, array('Invites' => '-1'));
-		$Cache->commit_transaction(0);
-	}
+  if (!check_perms('site_send_unlimited_invites')) {
+    $DB->query("
+      UPDATE users_main
+      SET Invites = GREATEST(Invites, 1) - 1
+      WHERE ID = '$LoggedUser[ID]'");
+    $Cache->begin_transaction('user_info_heavy_'.$LoggedUser['ID']);
+    $Cache->update_row(false, array('Invites' => '-1'));
+    $Cache->commit_transaction(0);
+  }
 
-	Misc::send_email($CurEmail, 'You have been invited to '.SITE_NAME, $Message, 'noreply');
+  Misc::send_email($CurEmail, 'You have been invited to '.SITE_NAME, $Message, 'noreply');
 
 
 }

@@ -5,134 +5,134 @@
 }
 
 * {
-	margin: 0;
-	padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 html, body {
-	height: 100%;
+  height: 100%;
 }
 
 body {
-	font-family: Bitstream Vera Sans, Tahoma, sans-serif;
-	font-size: 11px;
-	color: #464646;
-	background-color: #fbc2e5;
+  font-family: Bitstream Vera Sans, Tahoma, sans-serif;
+  font-size: 11px;
+  color: #464646;
+  background-color: #fbc2e5;
 }
 
 table {
-	font-size: inherit;
+  font-size: inherit;
 }
 
 a {
-	color: #464646;
-	text-decoration: none;
+  color: #464646;
+  text-decoration: none;
 }
 
 a:hover {
-	color: #888888;
+  color: #888888;
 }
 
 input[type="text"], input[type="password"], input[type="email"] {
-	padding: 1px 3px 1px 3px;
-	font-family: "tahoma", "arial", "helvetica", "sans-serif";
-	font-size: 8pt;
-	width: 200px;
+  padding: 1px 3px 1px 3px;
+  font-family: "tahoma", "arial", "helvetica", "sans-serif";
+  font-size: 8pt;
+  width: 200px;
 }
 
 input[type="text"]:valid, input[type="password"]:valid, input[type="email"] {
-	border-style: none;
+  border-style: none;
 }
 
 input[type="text"]:invalid, input[type="password"]:invalid {
-	border-top-style: none;
-	border-bottom-style: none;
-	border-left-style: none;
-	border-right-style: solid 2px;
-	border-color: red;
+  border-top-style: none;
+  border-bottom-style: none;
+  border-left-style: none;
+  border-right-style: solid 2px;
+  border-color: red;
 }
 
 #head, #foot {
-	height: 30px;
-	width: 100%;
-	background-color: #461640;
-	overflow: hidden;
+  height: 30px;
+  width: 100%;
+  background-color: #461640;
+  overflow: hidden;
 }
 
 #foot {
-	text-align: center;
-	bottom: 0;
-	position: absolute;
+  text-align: center;
+  bottom: 0;
+  position: absolute;
 }
 
 #foot > span,#head > span {
-	line-height: 30px;
+  line-height: 30px;
 }
 
 #foot > span {
-	color: #a07c92;
+  color: #a07c92;
 }
 
 #foot a { 
-	color: #b98fa9;
+  color: #b98fa9;
 }
 
 #content {
   height: calc(100% - 60px);
   overflow-y: scroll;
   box-sizing: border-box;
-	background-repeat: no-repeat;
-	background-size: contain;
+  background-repeat: no-repeat;
+  background-size: contain;
   display: flex;
   align-items: center;
 }
 
 #maincontent {
-	margin: auto 10% auto auto;
-	background-color: transparent;
+  margin: auto 10% auto auto;
+  background-color: transparent;
 }
 
 #logo {
-	height: 60px;
-	width: 244px;
-	background-image: url('images/logo.svg');
-	background-repeat: no-repeat;
-	background-position: top left;
-	padding: 50px 0px 0px 0px;
-	background-size: contain;
-	text-align: center;
+  height: 60px;
+  width: 244px;
+  background-image: url('images/logo.svg');
+  background-repeat: no-repeat;
+  background-position: top left;
+  padding: 50px 0px 0px 0px;
+  background-size: contain;
+  text-align: center;
 }
 
 #logo ul {
-	float: left;
-	left: 50%;
-	margin: 2em auto;
-	position: relative;
+  float: left;
+  left: 50%;
+  margin: 2em auto;
+  position: relative;
 }
 
 #logo ul li {
-	float: left;
-	position: relative;
-	right: 50%;
-	margin: 0 1em 0 0;
-	list-style: none;
+  float: left;
+  position: relative;
+  right: 50%;
+  margin: 0 1em 0 0;
+  list-style: none;
 }
 
 .poetry {
-	width: 320px;
-	text-align: justify;
+  width: 320px;
+  text-align: justify;
 }
 
 .hidden {
-	display: none;
+  display: none;
 }
 
 .info {
-	color: green;
-	font-weight: bold;
+  color: green;
+  font-weight: bold;
 }
 
 .warning {
-	color: red;
-	font-weight: bold;
+  color: red;
+  font-weight: bold;
 }

@@ -3,7 +3,7 @@ ini_set('memory_limit', '1G');
 set_time_limit(0);
 
 if (!check_perms('site_debug')) {
-	error(403);
+  error(403);
 }
 
 View::show_header();
@@ -18,7 +18,7 @@ shell_exec('cut -d , -f 3-5 GeoIPv6.csv | tr -d " " >> GeoIPCountry.csv');
 shell_exec('rm GeoIPCountryCSV.zip GeoIPv6.csv.gz GeoIPCountryWhois.csv GeoIPv6.csv');
 
 if (($Blocks = file("GeoIPCountry.csv", FILE_IGNORE_NEW_LINES)) === false) {
-	echo 'Error';
+  echo 'Error';
 }
 
 echo 'There are '.count($Blocks).' blocks';
@@ -30,23 +30,23 @@ $DB->query("TRUNCATE TABLE geoip_country");
 
 $Values = array();
 foreach ($Blocks as $Index => $Block) {
-	list($StartIP, $EndIP, $CountryID) = explode(",", $Block);
-	$StartIP = trim($StartIP, '"');
-	$EndIP = trim($EndIP, '"');
-	$CountryID = trim($CountryID, '"');
-	$Values[] = "('$StartIP', '$EndIP', '".$CountryID."')";
-	if ($Index % $SplitOn == 0) {
-		$DB->query('
-			INSERT INTO geoip_country (StartIP, EndIP, Code)
-			VALUES '.implode(', ', $Values));
-		$Values = array();
-	}
+  list($StartIP, $EndIP, $CountryID) = explode(",", $Block);
+  $StartIP = trim($StartIP, '"');
+  $EndIP = trim($EndIP, '"');
+  $CountryID = trim($CountryID, '"');
+  $Values[] = "('$StartIP', '$EndIP', '".$CountryID."')";
+  if ($Index % $SplitOn == 0) {
+    $DB->query('
+      INSERT INTO geoip_country (StartIP, EndIP, Code)
+      VALUES '.implode(', ', $Values));
+    $Values = array();
+  }
 }
 
 if (count($Values) > 0) {
-	$DB->query("
-		INSERT INTO geoip_country (StartIP, EndIP, Code)
-		VALUES ".implode(', ', $Values));
+  $DB->query("
+    INSERT INTO geoip_country (StartIP, EndIP, Code)
+    VALUES ".implode(', ', $Values));
 }
 
 View::show_footer();

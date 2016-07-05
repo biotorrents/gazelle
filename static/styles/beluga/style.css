@@ -2034,11 +2034,11 @@ a.last_read > svg {
 }
 
 caption {
-	border-bottom: 1px dashed #666;
-	font-weight: bold;
+  border-bottom: 1px dashed #666;
+  font-weight: bold;
 }
 
 tbody .staff_post {
-	background: none;
-	background-color: #634852;
+  background: none;
+  background-color: #634852;
 }

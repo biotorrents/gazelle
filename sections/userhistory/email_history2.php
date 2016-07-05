@@ -181,7 +181,7 @@ if ($Old ?? false) {
       <td>Current IP <a href="userhistory.php?action=ips&amp;userid=<?=$UserID ?>" class="brackets">H</a></td>
       <td>Set from IP</td>
     </tr>
-<? 
+<?
 $Current['Email'] = apc_exists('DBKEY') ? DBCrypt::decrypt($Current['Email']) : '[Encrypted]';
 $Current['CurrentIP'] = apc_exists('DBKEY') ? DBCrypt::decrypt($Current['CurrentIP']) : '[Encrypted]';
 $Current['IP'] = apc_exists('DBKEY') ? DBCrypt::decrypt($Current['IP']) : '[Encrypted]';
@@ -324,7 +324,7 @@ if ($OldMatches ?? false) {
     if ($Match['Email'] == $Invite['Email']) {
       ++$i;
       // Match email is the same as the invite email
-      
+
       $Match['IP'] = apc_exists('DBKEY') ? DBCrypt::decrypt($Match['IP']) : '[Encrypted]';
 ?>
     <tr class="row hidden" id="matches_invite">

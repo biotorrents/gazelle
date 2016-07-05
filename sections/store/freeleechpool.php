@@ -6,26 +6,26 @@ if (isset($_POST['donation'])) {
     error('Invalid donation');
   }
 
-	$UserID = $LoggedUser['ID'];
+  $UserID = $LoggedUser['ID'];
 
-	$DB->query("
-		SELECT BonusPoints
-		FROM users_main
-		WHERE ID = $UserID");
-	if ($DB->has_results()) {
-		list($Points) = $DB->next_record();
+  $DB->query("
+    SELECT BonusPoints
+    FROM users_main
+    WHERE ID = $UserID");
+  if ($DB->has_results()) {
+    list($Points) = $DB->next_record();
 
-		if ($Points >= $Donation) {
+    if ($Points >= $Donation) {
 
       $PoolTipped = false;
 
-			$DB->query("
-				UPDATE users_main
-				SET BonusPoints = BonusPoints - $Donation
-				WHERE ID = $UserID");
-			$DB->query("
-				UPDATE site_options
-				SET Value = Value + $Donation
+      $DB->query("
+        UPDATE users_main
+        SET BonusPoints = BonusPoints - $Donation
+        WHERE ID = $UserID");
+      $DB->query("
+        UPDATE site_options
+        SET Value = Value + $Donation
         WHERE Name = 'FreeleechPool'");
       $Cache->delete_value('user_info_heavy_'.$UserID);
 
@@ -75,23 +75,23 @@ if (isset($_POST['donation'])) {
         }
       }
       $Cache->delete_value('shop_freeleech_list');
-		} else {
-			error("Not enough points to donate");
-		}
-	}
+    } else {
+      error("Not enough points to donate");
+    }
+  }
 
-	View::show_header('Store'); ?>
-	<div class="thin">
-		<h2 id="general">Donation Successful</h2>
-		<div class="box pad" style="padding: 10px 10px 10px 20px;">
-			<p>You donated <?=number_format($Donation)?> nips to the Freeleech Pool</p>
+  View::show_header('Store'); ?>
+  <div class="thin">
+    <h2 id="general">Donation Successful</h2>
+    <div class="box pad" style="padding: 10px 10px 10px 20px;">
+      <p>You donated <?=number_format($Donation)?> nips to the Freeleech Pool</p>
 <? if ($PoolTipped) { ?>
       <p>Your donation triggered a freeleech!</p>
 <? } ?>
-			<p><a href="/store.php">Back to Store</a></p>
-		</div>
-	</div>
-	<? View::show_footer(); 
+      <p><a href="/store.php">Back to Store</a></p>
+    </div>
+  </div>
+  <? View::show_footer();
 
 } else {
 
@@ -105,21 +105,21 @@ if (isset($_POST['donation'])) {
     $Pool = 0;
   }
 
-	View::show_header('Store'); ?>
-	<div class="thin">
-		<div class="box pad" style="padding: 10px 10px 10px 20px; text-align: center;">
-			<form action="store.php" method="POST">
-				<input type="hidden" name="item" value="freeleechpool">
-				<strong>
+  View::show_header('Store'); ?>
+  <div class="thin">
+    <div class="box pad" style="padding: 10px 10px 10px 20px; text-align: center;">
+      <form action="store.php" method="POST">
+        <input type="hidden" name="item" value="freeleechpool">
+        <strong>
         There are currently <?=number_format($Pool)?> nips in the Freeleech Pool
-				</strong>
-				<br><br>
-				<input type="text" name="donation" value="">
-				<input type="submit" value="Donate">
-			</form>
-			<p><a href="/store.php">Back to Store</a></p>
-		</div>
-	</div>
-	<? View::show_footer(); 
+        </strong>
+        <br><br>
+        <input type="text" name="donation" value="">
+        <input type="submit" value="Donate">
+      </form>
+      <p><a href="/store.php">Back to Store</a></p>
+    </div>
+  </div>
+  <? View::show_footer();
 }
 ?>

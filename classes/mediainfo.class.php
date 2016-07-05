@@ -664,7 +664,7 @@ class VideoSectionParser extends SectionParser {
         }
     }
     protected function compute_form_resolution() {
-				global $Resolutions;
+        global $Resolutions;
         $closest = null;
         if (isset($this->height)) {
             $resolutions = $Resolutions;

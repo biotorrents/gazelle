@@ -17,7 +17,7 @@ class LockedAccounts
      */
     public static function lock_account($UserID, $Type, $Message, $Reason, $LockedByUserID)
     {
-        
+
         if ($LockedByUserID == 0) {
             $Username = "System";
         } else {

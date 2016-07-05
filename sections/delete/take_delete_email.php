@@ -4,11 +4,11 @@ enforce_login();
 authorize();
 
 if (!isset($_POST['emails']) || !is_array($_POST['emails'])) {
-	error("Stop that.");
+  error("Stop that.");
 }
 
 if (!apc_exists('DBKEY')) {
-	error(403);
+  error(403);
 }
 
 $EncEmails = $_POST['emails'];
@@ -51,10 +51,10 @@ forEach ($EncEmails as $EncEmail) {
 //Okay I think everything checks out.
 
 $DB->query("
-	INSERT INTO email_delete_requests
-		(UserID, Email, Reason, Time)
-	VALUES
-		('$UserID', '".db_string($EncEmails[0])."', '".db_string($Reason)."', '".sqltime()."')");
+  INSERT INTO email_delete_requests
+    (UserID, Email, Reason, Time)
+  VALUES
+    ('$UserID', '".db_string($EncEmails[0])."', '".db_string($Reason)."', '".sqltime()."')");
 
 $Cache->delete_value('num_email_delete_requests');
 
@@ -62,11 +62,11 @@ View::show_header('Email Deletion Request');
 ?>
 
 <div class="thin">
-	<h2 id="general">Email Deletion Request</h2>
-	<div class="box pad" style="padding: 10px 10px 10px 20px;">
-		<p>Your request has been sent. Please wait for it to be acknowledged.</p>
-		<p>After it's accepted or denied by staff, you will receive a PM response.</p>
-		<p><a href="/index.php">Return</a></p>
-	</div>
+  <h2 id="general">Email Deletion Request</h2>
+  <div class="box pad" style="padding: 10px 10px 10px 20px;">
+    <p>Your request has been sent. Please wait for it to be acknowledged.</p>
+    <p>After it's accepted or denied by staff, you will receive a PM response.</p>
+    <p><a href="/index.php">Return</a></p>
+  </div>
 </div>
 <? View::show_footer(); ?>
