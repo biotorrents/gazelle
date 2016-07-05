@@ -42,7 +42,7 @@ if (!empty($_GET['e']) && in_array($_GET['e'],$Errors)) {
       }
   }
 
-  if (isset($Log)) {
+  if ($Log ?? false) {
     $Description .= ' <a href="log.php?search='.$Log.'">Search Log</a>';
   }
 
