@@ -568,7 +568,7 @@ if (check_perms('users_mod')) {
 	if ($NumEmailDeleteRequests === false) {
 		G::$DB->query("SELECT COUNT(*) FROM email_delete_requests");
 		list($NumEmailDeleteRequests) = G::$DB->next_record();
-		G::$Cache->cache_value('num_email_delete_request', $NumEmailDeleteRequests);
+		G::$Cache->cache_value('num_email_delete_requests', $NumEmailDeleteRequests);
 	}
 	if ($NumEmailDeleteRequests > 0) {
 		$ModBar[] = '<a href="tools.php?action=delete_email">' . $NumEmailDeleteRequests . " Email deletion request(s)</a>";
