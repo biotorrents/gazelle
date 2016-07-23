@@ -7,11 +7,7 @@ View::show_header('Clear a cache key');
 
 //Make sure the form was sent
 if (!empty($_GET['key'])) {
-  if (isset($_GET['submit']) && $_GET['submit'] == 'Multi') {
-    $Keys = array_map('trim', preg_split('/\s+/', $_GET['key']));
-  } else {
-    $Keys = [trim($_GET['key'])];
-  }
+  $Keys = array_map('trim', preg_split('/\s+/', $_GET['key']));
 }
 if (isset($Keys) && $_GET['type'] == 'clear') {
   foreach ($Keys as $Key) {
@@ -31,22 +27,8 @@ $MultiKeyTooltip = 'Enter cache keys delimited by any amount of whitespace.';
     <h2>Clear a cache key</h2>
   </div>
   <table class="layout" cellpadding="2" cellspacing="1" border="0" align="center">
-    <tr>
-      <td>Key</td>
-      <td>
-        <form class="manage_form" name="cache" method="get" action="">
-          <input type="hidden" name="action" value="clear_cache" />
-          <select name="type">
-            <option value="view">View</option>
-            <option value="clear">Clear</option>
-          </select>
-          <input type="text" name="key" id="key" class="inputtext" value="<?=(isset($_GET['key']) && (isset($_GET['submit']) && $_GET['submit'] != 'Multi') ? display_str($_GET['key']) : '')?>" />
-          <input type="submit" name="submit" value="Single" class="submit" />
-        </form>
-      </td>
-    </tr>
     <tr class="tooltip" title="<?=$MultiKeyTooltip?>">
-      <td>Multi-key</td>
+      <td>Keys</td>
       <td>
         <form class="manage_form" name="cache" method="get" action="">
           <input type="hidden" name="action" value="clear_cache" />
@@ -54,8 +36,8 @@ $MultiKeyTooltip = 'Enter cache keys delimited by any amount of whitespace.';
             <option value="view">View</option>
             <option value="clear">Clear</option>
           </select>
-          <textarea type="text" name="key" id="key" class="inputtext"><?=((isset($_GET['key']) && (isset($_GET['submit']) && $_GET['submit'] == 'Multi')) ? display_str($_GET['key']) : '')?></textarea>
-          <input type="submit" name="submit" value="Multi" class="submit" />
+          <textarea type="text" name="key" id="key" class="inputtext"><?=((isset($_GET['key']) && (isset($_GET['submit']))) ? display_str($_GET['key']) : '')?></textarea>
+          <input type="submit" name="submit" class="submit" />
         </form>
       </td>
     </tr>
