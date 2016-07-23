@@ -229,7 +229,7 @@ if ($DB->affected_rows() > 0 || !$Report) {
           $AffectedUsers[] = $UserID;
         }
       }
-      foreach ($AffectedUser as $UserID) {
+      foreach ($AffectedUsers as $UserID) {
         Tracker::update_tracker('add_token', array('info_hash' => rawurlencode($InfoHash), 'userid' => $UserID));
         $DB->query("
           INSERT INTO users_freeleeches (UserID, TorrentID, Time)
@@ -238,7 +238,7 @@ if ($DB->affected_rows() > 0 || !$Report) {
             Time = VALUES(Time),
             Expired = FALSE,
             Uses = 0");
-        Misc::send_pm($UserID, 0, "Torrent Deleted: ".$RawName, "A torrent you have snatched (or uploaded) has been trumped by a more recent torrent. This new torrent will be freeleech for you for the next 4 days.\r\n\r\nYou can find the new torrent [url=".site_url()."torrents.php?torrentid=$TorrentID]here[/url]");
+        Misc::send_pm($UserID, 0, "Torrent Deleted: ".$RawName, "A torrent you have snatched (or uploaded) has been trumped by a more recent torrent. This new torrent will be freeleech for you for the next 4 days.\r\n\r\nYou can find the new torrent [url=".site_url()."torrents.php?torrentid=$ExtraID]here[/url]");
       }
     }
   }
