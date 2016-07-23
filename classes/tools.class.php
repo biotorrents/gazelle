@@ -131,16 +131,10 @@ class Tools {
   public static function lookup_ip($IP) {
     //TODO: use the G::$Cache
     $Output = explode(' ',shell_exec('host -W 1 '.escapeshellarg($IP)));
-    if (count($Output) == 1 && empty($Output[0])) {
-      //No output at all implies the command failed
-      return '';
-    }
-
-    if (count($Output) != 5) {
-      return false;
-    } else {
-      return trim($Output[4]);
-    }
+    if (count($Output) == 1 && empty($Output[0]))  { return ''; }
+    if (count($Output) != 5)                       { return false; }
+    if ($Output[2].' '.$Output[3] == 'not found:') { return false; }
+    return trim($Output[4]);
   }
 
   /**
