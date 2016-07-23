@@ -277,6 +277,11 @@ class TorrentSearch {
           $Operator = self::$FieldOperators[''];
         }
         if (!empty($QueryParts['include'])) {
+          if ($Field == 'taglist') {
+            foreach ($QueryParts['include'] as $key => $Tag) {
+              $QueryParts['include'][$key] = '( '.$Tag.' | '.$Tag.':* )';
+            }
+          }
           $SearchString .= '( ' . implode($Operator, $QueryParts['include']) . ' ) ';
         }
         if (!empty($QueryParts['exclude'])) {

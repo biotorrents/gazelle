@@ -450,7 +450,7 @@ class Misc {
    */
   public static function sanitize_tag($Str) {
     $Str = strtolower($Str);
-    $Str = preg_replace('/[^a-z0-9.]/', '', $Str);
+    $Str = preg_replace('/[^a-z0-9:.]/', '', $Str);
     $Str = preg_replace('/(^[.,]*)|([.,]*$)/', '', $Str);
     $Str = htmlspecialchars($Str);
     $Str = db_string(trim($Str));
