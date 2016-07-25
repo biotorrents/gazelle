@@ -7,64 +7,70 @@ if (empty($_GET['url'])) {
 $url = $_GET['url'];
 
 $matches = array();
-preg_match('/^https?:\/\/nhentai.net\/g\/(\d+)\/?$/', $url, $matches);
+preg_match('/^https?:\/\/g\.e.hentai\.org\/g\/(\d+)\/([\w\d]+)\/?$/', $url, $matches);
 
-$id = (isset($matches[1])) ? $matches[1] : '';
+$gid = $matches[1] ?? '';
+$token = $matches[2] ?? '';
 
-if (empty($id)) {
+if (empty($gid) || empty($token)) {
   json_die("failure", "Invalid URL");
 }
 
-if ($Cache->get_value('doujin_json_'.$id)) {
-  json_die("success", $Cache->get_value('doujin_json_'.$id));
+if ($Cache->get_value('doujin_json_'.$gid) && false) {
+  json_die("success", $Cache->get_value('doujin_json_'.$gid));
 } else {
 
-  $url = 'http://nhentai.net/g/' . $id . '/json';
+  $data = json_encode(["method" => "gdata", "gidlist" => [[$gid, $token]], "namespace" => 1]);
+  $curl = curl_init('http://g.e-hentai.org/api.php');
+  curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+  curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json', 'Content-Length: '.strlen($data)]);
 
-  $json = file_get_contents($url);
+  $json = curl_exec($curl);
 
   if (empty($json)) {
     json_die("failure", "Could not get page");
   }
 
-  $json = json_decode($json, true);
+  $json = json_decode($json, true)["gmetadata"][0];
 
   $artists = array();
   $tags = array();
   $lang = NULL;
+  $circle = NULL;
   foreach ($json["tags"] as $tag) {
-    if ($tag[1] == "artist")
-      array_push($artists, ucwords($tag[2]));
-    elseif ($tag[1] == "tag")
-      array_push($tags, str_replace(' ', '.', $tag[2]));
-    elseif ($tag[1] == "language")
-      $lang = ucfirst($tag[2]);
-  }
+    if (strpos($tag, ':') !== false) {
+      list($namespace, $tag) = explode(':', $tag);
+    } else { $namespace = ''; }
 
-  switch($json['images']['cover']['t']) {
-    case 'j':
-      $covertype = "jpg";
-      break;
-    case 'p':
-      $covertype = "png";
-      break;
+    if ($namespace == "artist") {
+      array_push($artists, ucwords($tag));
+    } else if ($namespace == "language" && empty($lang)) {
+      $lang = ucfirst($tag);
+    } else if ($namespace == "group" && empty($circle)) {
+      $circle = ucfirst($tag);
+    } else {
+      if ($namespace) { $tag = $tag.':'.$namespace; }
+      array_push($tags, str_replace(' ', '.', $tag));
+    }
   }
-  $cover = 'http://i.nhentai.net/galleries/'.$json['media_id'].'/1.'.$covertype;
 
   $json_str = array(
-    'id' => $id,
-    'title' => $json['title']['english'],
-    'title_jp' => $json['title']['japanese'],
+    'id' => $gid,
+    'title' => $json['title'],
+    'title_jp' => $json['title_jpn'],
     'artists' => $artists,
+    'circle' => $circle,
     'year' => NULL,
     'tags' => $tags,
     'lang' => $lang,
-    'pages' => $json['num_pages'],
+    'pages' => $json['filecount'],
     'description' => '',
-    'cover' => $cover
+    'cover' => $json['thumb']
   );
 
-  $Cache->cache_value('doujin_json_'.$id, $json_str, 86400);
+  $Cache->cache_value('doujin_json_'.$gid, $json_str, 86400);
 
   json_die("success", $json_str);
 }

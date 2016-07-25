@@ -708,7 +708,7 @@ class TORRENT_FORM {
     <table cellpadding="3" cellspacing="1" border="0" class="layout slice" width="100%">
 <?    if ($this->NewTorrent) { ?>
       <tr id="catalogue_tr">
-        <td class="label">nhentai URL (optional):</td>
+        <td class="label">e-hentai URL (optional):</td>
         <td>
           <input type="text" id="catalogue" size="50" <?=$this->Disabled?> />
 <? if (!$this->DisabledFlag) { ?>
