@@ -282,21 +282,22 @@ class Text {
     }
     $Host = $URLInfo['host'];
     // If for some reason your site does not require subdomains or contains a directory in the SITE_DOMAIN, revert to the line below.
-    //if ($Host == SITE_DOMAIN || $Host == 'www.'.SITE_DOMAIN) {
-    if (empty($URLInfo['port']) && preg_match('/(\S+\.)*'.SITE_DOMAIN.'/', $Host)) {
-      $URL = '';
-      if (!empty($URLInfo['path'])) {
-        $URL .= ltrim($URLInfo['path'], '/'); // Things break if the path starts with '//'
+    if ($Host == SITE_DOMAIN || $Host == 'www.'.SITE_DOMAIN) {
+      if (empty($URLInfo['port']) && preg_match('/(\S+\.)*'.SITE_DOMAIN.'/', $Host)) {
+        $URL = '';
+        if (!empty($URLInfo['path'])) {
+          $URL .= ltrim($URLInfo['path'], '/'); // Things break if the path starts with '//'
+        }
+        if (!empty($URLInfo['query'])) {
+          $URL .= "?$URLInfo[query]";
+        }
+        if (!empty($URLInfo['fragment'])) {
+          $URL .= "#$URLInfo[fragment]";
+        }
+        return $URL ? "/$URL" : false;
+      } else {
+        return false;
       }
-      if (!empty($URLInfo['query'])) {
-        $URL .= "?$URLInfo[query]";
-      }
-      if (!empty($URLInfo['fragment'])) {
-        $URL .= "#$URLInfo[fragment]";
-      }
-      return $URL ? "/$URL" : false;
-    } else {
-      return false;
     }
 
   }
