@@ -7,7 +7,7 @@ if (empty($_GET['url'])) {
 $url = $_GET['url'];
 
 $matches = array();
-preg_match('/^https?:\/\/g\.e.hentai\.org\/g\/(\d+)\/([\w\d]+)\/?$/', $url, $matches);
+preg_match('/^https?:\/\/g?\.?e.hentai\.org\/g\/(\d+)\/([\w\d]+)\/?$/', $url, $matches);
 
 $gid = $matches[1] ?? '';
 $token = $matches[2] ?? '';
@@ -46,10 +46,10 @@ if ($Cache->get_value('doujin_json_'.$gid) && false) {
 
     if ($namespace == "artist") {
       array_push($artists, ucwords($tag));
-    } else if ($namespace == "language" && empty($lang)) {
-      $lang = ucfirst($tag);
-    } else if ($namespace == "group" && empty($circle)) {
-      $circle = ucfirst($tag);
+    } else if ($namespace == "language") {
+      $lang = empty($lang) ? ucfirst($tag) : $lang;
+    } else if ($namespace == "group") {
+      $circle = empty($circle) ? ucfirst($tag) : $circle;
     } else {
       if ($namespace) { $tag = $tag.':'.$namespace; }
       array_push($tags, str_replace(' ', '.', $tag));

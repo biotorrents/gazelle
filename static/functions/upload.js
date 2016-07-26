@@ -423,6 +423,7 @@ function DoujAutofill() {
               tags: 'tags',
               lang: 'lang',
               cover: 'image',
+              circle: 'series',
               pages: 'pages',
               description: 'release_desc' }
   var nh = $('#catalogue').raw().value
