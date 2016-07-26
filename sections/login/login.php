@@ -2,18 +2,10 @@
   <span id="no-cookies" class="hidden warning">You appear to have cookies disabled.<br /><br /></span>
   <noscript><span class="warning"><?=SITE_NAME?> requires JavaScript to function properly. Please enable JavaScript in your browser.</span><br /><br /></noscript>
 <?
-if (strtotime($BannedUntil) < time()) {
+if (!$Banned) {
 ?>
   <form class="auth_form" name="login" id="loginform" method="post" action="login.php">
 <?
-
-  if (!empty($BannedUntil) && $BannedUntil != '0000-00-00 00:00:00') {
-    $DB->query("
-      UPDATE login_attempts
-      SET BannedUntil = '0000-00-00 00:00:00', Attempts = '0'
-      WHERE ID = '".db_string($AttemptID)."'");
-    $Attempts = 0;
-  }
   if (isset($Err)) {
 ?>
   <span class="warning"><?=$Err?><br /><br /></span>
@@ -48,7 +40,7 @@ if (strtotime($BannedUntil) < time()) {
 <?
 } else {
 ?>
-  <span class="warning">You are banned from logging in for another <?=time_diff($BannedUntil)?>.</span>
+  <span class="warning">You are banned from logging in for a few hours.</span>
 <?
 }
 

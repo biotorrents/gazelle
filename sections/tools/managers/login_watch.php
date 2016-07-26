@@ -3,27 +3,22 @@ if (!check_perms('admin_login_watch')) {
   error(403);
 }
 
-if (isset($_POST['submit']) && isset($_POST['id']) && $_POST['submit'] == 'Unban' && is_number($_POST['id'])) {
+if (isset($_POST['submit']) && isset($_POST['ip']) && $_POST['submit'] == 'Unban') {
   authorize();
-  $DB->query('
-    DELETE FROM login_attempts
-    WHERE ID = '.$_POST['id']);
+  $Cache->delete_value('login_attempts_'.$_POST['ip']);
 }
 
 View::show_header('Login Watch');
 
-$DB->query('
-  SELECT
-    ID,
-    IP,
-    UserID,
-    LastAttempt,
-    Attempts,
-    BannedUntil,
-    Bans
-  FROM login_attempts
-  WHERE BannedUntil > "'.sqltime().'"
-  ORDER BY BannedUntil ASC');
+$AttemptIPs = $Cache->get_value('login_attempts');
+$AllAttempts = array();
+foreach($AttemptIPs as $IP => $Time) {
+  if (time() > $Time) { continue; }
+  list($Attempts, $Banned) = $Cache->get_value('login_attempts_'.$IP);
+  if (!isset($Attempts) && !isset($Banned)) { continue; }
+  $AllAttempts[] = [$IP, $Attempts, $Banned, $Time];
+}
+
 ?>
 <div class="thin">
   <div class="header">
@@ -32,26 +27,26 @@ $DB->query('
   <table width="100%">
     <tr class="colhead">
       <td>IP</td>
-      <td>User</td>
-      <td>Bans</td>
-      <td>Remaining</td>
+      <td>Attempts</td>
+      <td>Banned</td>
+      <td>Time</td>
       <td>Submit</td>
 <?  if (check_perms('admin_manage_ipbans')) { ?>
       <td>Submit</td>
 <?  } ?>
     </tr>
 <?
-while (list($ID, $IP, $UserID, $LastAttempt, $Attempts, $BannedUntil, $Bans) = $DB->next_record()) {
+while (list($IP, $Attempts, $Banned, $BannedUntil) = array_shift($AllAttempts)) {
 ?>
     <tr class="row">
       <td>
         <?=$IP?>
       </td>
       <td>
-        <? if ($UserID != 0) { echo Users::format_username($UserID, true, true, true, true); } ?>
+        <?=$Attempts?>
       </td>
       <td>
-        <?=$Bans?>
+        <?=($Banned?'Yes':'No')?>
       </td>
       <td>
         <?=time_diff($BannedUntil)?>
@@ -59,7 +54,7 @@ while (list($ID, $IP, $UserID, $LastAttempt, $Attempts, $BannedUntil, $Bans) = $
       <td>
         <form class="manage_form" name="bans" action="" method="post">
           <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
-          <input type="hidden" name="id" value="<?=$ID?>" />
+          <input type="hidden" name="ip" value="<?=$IP?>" />
           <input type="hidden" name="action" value="login_watch" />
           <input type="submit" name="submit" value="Unban" />
         </form>
@@ -68,11 +63,10 @@ while (list($ID, $IP, $UserID, $LastAttempt, $Attempts, $BannedUntil, $Bans) = $
       <td>
         <form class="manage_form" name="bans" action="" method="post">
           <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
-          <input type="hidden" name="id" value="<?=$ID?>" />
           <input type="hidden" name="action" value="ip_ban" />
           <input type="hidden" name="start" value="<?=$IP?>" />
           <input type="hidden" name="end" value="<?=$IP?>" />
-          <input type="hidden" name="notes" value="Banned per <?=$Bans?> bans on login watch." />
+          <input type="hidden" name="notes" value="Banned per <?=$Attempts?> bans on login watch." />
           <input type="submit" name="submit" value="IP Ban" />
         </form>
       </td>

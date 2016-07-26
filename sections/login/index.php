@@ -180,7 +180,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
 
     // Either a form for the user's email address, or a success message
     require('recover_step1.php');
-  } // End if (step 1)
+  }
 
 } // End password recovery
 
@@ -189,81 +189,24 @@ else {
   $Validate->SetFields('username', true, 'regex', 'You did not enter a valid username.', array('regex' => USERNAME_REGEX));
   $Validate->SetFields('password', '1', 'string', 'You entered an invalid password.', array('minlength' => '6', 'maxlength' => '307200'));
 
-  $DB->query("
-    SELECT ID, Attempts, Bans, BannedUntil
-    FROM login_attempts
-    WHERE IP = '".db_string($_SERVER['REMOTE_ADDR'])."'");
-  // Todo: handle IP encryption
-  list($AttemptID, $Attempts, $Bans, $BannedUntil) = $DB->next_record();
+  list($Attempts, $Banned) = $Cache->get_value('login_attempts_'.db_string($_SERVER['REMOTE_ADDR']));
 
   // Function to log a user's login attempt
-  function log_attempt($UserID) {
-    global $DB, $Cache, $AttemptID, $Attempts, $Bans, $BannedUntil;
-    if (!apc_exists('DBKEY')) { return; }
-    $IPStr = $_SERVER['REMOTE_ADDR'];
-    $IPA = substr($IPStr, 0, strcspn($IPStr, '.'));
-    $IP = Tools::ip_to_unsigned($IPStr);
-    if ($AttemptID) { // User has attempted to log in recently
-      $Attempts++;
-      if ($Attempts > 5) { // Only 6 allowed login attempts, ban user's IP
-        $BannedUntil = time_plus(60 * 60 * 6);
-        $DB->query("
-          UPDATE login_attempts
-          SET
-            LastAttempt = '".sqltime()."',
-            Attempts = '".db_string($Attempts)."',
-            BannedUntil = '".db_string($BannedUntil)."',
-            Bans = Bans + 1
-          WHERE ID = '".db_string($AttemptID)."'");
-
-        if ($Bans > 9) { // Automated bruteforce prevention
-          $DB->query("
-            SELECT Reason
-            FROM ip_bans
-            WHERE $IP BETWEEN FromIP AND ToIP");
-          if ($DB->has_results()) {
-            //Ban exists already, only add new entry if not for same reason
-            list($Reason) = $DB->next_record(MYSQLI_BOTH, false);
-            if ($Reason != 'Automated ban per >60 failed login attempts') {
-              $DB->query("
-                UPDATE ip_bans
-                SET Reason = CONCAT('Automated ban per >60 failed login attempts AND ', Reason)
-                WHERE FromIP = $IP
-                  AND ToIP = $IP");
-            }
-          } else {
-            //No ban
-            $DB->query("
-              INSERT IGNORE INTO ip_bans
-                (FromIP, ToIP, Reason)
-              VALUES
-                ('".$IP."','".$IP."', 'Automated ban per >60 failed login attempts')");
-            $Cache->delete_value("ip_bans_$IPA");
-          }
-        }
-      } else {
-        // User has attempted fewer than 6 logins
-        $DB->query("
-          UPDATE login_attempts
-          SET
-            LastAttempt = '".sqltime()."',
-            Attempts = '".db_string($Attempts)."',
-            BannedUntil = '0000-00-00 00:00:00'
-          WHERE ID = '".db_string($AttemptID)."'");
-      }
-    } else { // User has not attempted to log in recently
-      $Attempts = 1;
-      $DB->query("
-        INSERT INTO login_attempts
-          (UserID, IP, LastAttempt, Attempts)
-        VALUES
-          ('".db_string($UserID)."', '".db_string(DBCrypt::encrypt($IPStr))."', '".sqltime()."', 1)");
+  function log_attempt() {
+    global $DB, $Cache, $Attempts;
+    $Attempts = ($Attempts ?? 0) + 1;
+    $Cache->cache_value('login_attempts_'.db_string($_SERVER['REMOTE_ADDR']), array($Attempts, ($Attempts > 5)), 60*60*$Attempts);
+    $AllAttempts = $Cache->get_value('login_attempts');
+    $AllAttempts[$_SERVER['REMOTE_ADDR']] = time()+(60*60*$Attempts);
+    foreach($AllAttempts as $IP => $Time) {
+      if ($Time < time()) { unset($AllAttempts[$IP]); }
     }
-  } // end log_attempt function
+    $Cache->cache_value('login_attempts', $AllAttempts, 0);
+  }
 
   // If user has submitted form
   if (isset($_POST['username']) && !empty($_POST['username']) && isset($_POST['password']) && !empty($_POST['password'])) {
-    if (strtotime($BannedUntil) > time()) {
+    if ($Banned) {
       header("Location: login.php");
       die();
     }
@@ -282,7 +225,7 @@ else {
         WHERE Username = '".db_string($_POST['username'])."'
           AND Username != ''");
       list($UserID, $PermissionID, $CustomPermissions, $PassHash, $Enabled) = $DB->next_record(MYSQLI_NUM, array(2));
-      if (strtotime($BannedUntil) < time()) {
+      if (!$Banned) {
         if ($UserID && Users::check_password($_POST['password'], $PassHash)) {
           // Update hash if better algorithm available
           if (password_needs_rehash($PassHash, PASSWORD_DEFAULT)) {
@@ -303,7 +246,6 @@ else {
               setcookie('session', $Cookie, 0, '/', '', true, true);
             }
 
-            //TODO: another tracker might enable this for donors, I think it's too stupid to bother adding that
             // Because we <3 our staff
             $Permissions = Permissions::get_permissions($PermissionID);
             $CustomPermissions = unserialize($CustomPermissions);
@@ -348,7 +290,7 @@ else {
               die();
             }
           } else {
-            log_attempt($UserID);
+            log_attempt();
             if ($Enabled == 2) {
 
               // Save the username in a cookie for the disabled page
@@ -360,19 +302,19 @@ else {
             setcookie('keeplogged', '', time() + 60 * 60 * 24 * 365, '/', '', false);
           }
         } else {
-          log_attempt($UserID);
+          log_attempt();
 
           $Err = 'Your username or password was incorrect.';
           setcookie('keeplogged', '', time() + 60 * 60 * 24 * 365, '/', '', false);
         }
 
       } else {
-        log_attempt($UserID);
+        log_attempt();
         setcookie('keeplogged', '', time() + 60 * 60 * 24 * 365, '/', '', false);
       }
 
     } else {
-      log_attempt('0');
+      log_attempt();
       setcookie('keeplogged', '', time() + 60 * 60 * 24 * 365, '/', '', false);
     }
   }
