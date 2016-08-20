@@ -164,7 +164,7 @@ class Users {
           i.DisableNips,
           i.DisableRequests,
           i.DisableForums,
-          i.DisableTagging," . "
+          i.DisableTagging,
           i.SiteOptions,
           i.DownloadAlt,
           i.LastReadNews,
