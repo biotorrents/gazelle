@@ -742,7 +742,7 @@ class Torrents {
    * @param int $FreeNeutral 0 = normal, 1 = fl, 2 = nl
    * @param int $FreeLeechType 0 = Unknown, 1 = Staff picks, 2 = Perma-FL (Toolbox, etc.), 3 = Vanity House
    */
-  public static function freeleech_torrents($TorrentIDs, $FreeNeutral = 1, $FreeLeechType = 0) {
+  public static function freeleech_torrents($TorrentIDs, $FreeNeutral = 1, $FreeLeechType = 0, $Announce = true) {
     if (!is_array($TorrentIDs)) {
       $TorrentIDs = array($TorrentIDs);
     }
@@ -768,7 +768,7 @@ class Torrents {
       G::$Cache->delete_value("torrent_download_$TorrentID");
       Misc::write_log((G::$LoggedUser['Username']??'System')." marked torrent $TorrentID freeleech type $FreeLeechType");
       Torrents::write_group_log($GroupID, $TorrentID, (G::$LoggedUser['ID']??0), "marked as freeleech type $FreeLeechType", 0);
-      if ($FreeLeechType == 1 || $FreeLeechType == 3) {
+      if ($Announce && ($FreeLeechType == 1 || $FreeLeechType == 3)) {
         send_irc('PRIVMSG '.BOT_ANNOUNCE_CHAN.' FREELEECH - '.site_url()."torrents.php?id=$GroupID / ".site_url()."torrents.php?action=download&id=$TorrentID");
       }
     }

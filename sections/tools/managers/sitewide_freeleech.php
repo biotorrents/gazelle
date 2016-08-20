@@ -71,7 +71,7 @@ if (isset($_POST['type'])) {
           ('global', '" . (time() + (60 * 60 * $Duration)) . "', 'freeleech')
         ON DUPLICATE KEY UPDATE
           Value = CONVERT(Value, UNSIGNED INTEGER) + " . (60 * 60 * $Duration));
-      Torrents::freeleech_torrents($IDs, 1, 3);
+      Torrents::freeleech_torrents($IDs, 1, 3, false);
       echo("Success! Now run the indexer.");
     } else {
       error("RIP Oppaitime");
