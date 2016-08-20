@@ -176,6 +176,7 @@ function getCover(event) {
     coverCont.appendChild(document.createElement('img'))
   }
   $('#coverCont img')[0].src = image?image:'/static/common/noartwork/comedy.png'
+  coverCont.className = (event.clientX > (window.innerWidth/2)) ? 'left' : 'right'
   coverCont.style.display = 'block'
   //Preload next image
   if ($('.torrent_table, .request_table').length > 0) {
