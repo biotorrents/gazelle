@@ -121,6 +121,7 @@ input {
 
 button,input[type=button],input[type=submit] {
   font-family: 'Source Sans Pro',Helvetica,sans-serif;
+  font-size: 11px;
   background-color: #50aca7;
   padding: 10px 9px;
   border: none;
