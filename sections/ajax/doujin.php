@@ -16,7 +16,7 @@ if (empty($gid) || empty($token)) {
   json_die("failure", "Invalid URL");
 }
 
-if ($Cache->get_value('doujin_json_'.$gid) && false) {
+if ($Cache->get_value('doujin_json_'.$gid)) {
   json_die("success", $Cache->get_value('doujin_json_'.$gid));
 } else {
 
@@ -39,6 +39,7 @@ if ($Cache->get_value('doujin_json_'.$gid) && false) {
   $tags = array();
   $lang = NULL;
   $circle = NULL;
+  $censored = true;
   foreach ($json["tags"] as $tag) {
     if (strpos($tag, ':') !== false) {
       list($namespace, $tag) = explode(':', $tag);
@@ -50,6 +51,8 @@ if ($Cache->get_value('doujin_json_'.$gid) && false) {
       $lang = empty($lang) ? ucfirst($tag) : $lang;
     } else if ($namespace == "group") {
       $circle = empty($circle) ? ucfirst($tag) : $circle;
+    } else if ($tag == "uncensored") {
+      $censored = false;
     } else {
       if ($namespace) { $tag = $tag.':'.$namespace; }
       array_push($tags, str_replace(' ', '.', $tag));
@@ -58,10 +61,11 @@ if ($Cache->get_value('doujin_json_'.$gid) && false) {
 
   $json_str = array(
     'id' => $gid,
-    'title' => $json['title'],
-    'title_jp' => $json['title_jpn'],
+    'title' => html_entity_decode($json['title'], ENT_QUOTES),
+    'title_jp' => html_entity_decode($json['title_jpn'], ENT_QUOTES),
     'artists' => $artists,
     'circle' => $circle,
+    'censored' => $censored,
     'year' => NULL,
     'tags' => $tags,
     'lang' => $lang,
