@@ -115,28 +115,30 @@ foreach ($CurrArtists as $CurrArtist) {
       SELECT ArtistID
       FROM artists_group
       WHERE Name = '".db_string($CurrArtist)."'");
-    list($ArtistID) = $DB->next_record();
+    if ($DB->has_results()) {
+      list($ArtistID) = $DB->next_record();
 
-    $DB->query("
-      DELETE FROM torrents_artists
-      WHERE ArtistID = ".$ArtistID."
-        AND GroupID = ".$GroupID);
-
-    $DB->query("
-      SELECT GroupID
-      FROM torrents_artists
-      WHERE ArtistID = ".$ArtistID);
-
-    $Cache->delete_value('artist_groups_'.$ArtistID);
-
-    if (!$DB->has_results()) {
       $DB->query("
-        SELECT RequestID
-        FROM requests_artists
+        DELETE FROM torrents_artists
         WHERE ArtistID = ".$ArtistID."
-          AND ArtistID != 0");
+          AND GroupID = ".$GroupID);
+
+      $DB->query("
+        SELECT GroupID
+        FROM torrents_artists
+        WHERE ArtistID = ".$ArtistID);
+
+      $Cache->delete_value('artist_groups_'.$ArtistID);
+
       if (!$DB->has_results()) {
-        Artists::delete_artist($ArtistID);
+        $DB->query("
+          SELECT RequestID
+          FROM requests_artists
+          WHERE ArtistID = ".$ArtistID."
+            AND ArtistID != 0");
+        if (!$DB->has_results()) {
+          Artists::delete_artist($ArtistID);
+        }
       }
     }
   }
