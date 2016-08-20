@@ -295,68 +295,6 @@ class Users {
   }
 
   /**
-   * Generates a check list of release types, ordered by the user or default
-   * @param array $SiteOptions
-   * @param boolean $Default Returns the default list if true
-   */
-  public static function release_order(&$SiteOptions, $Default = false) {
-    global $ReleaseTypes;
-
-    $RT = $ReleaseTypes + array(
-      1024 => 'Guest Appearance',
-      1023 => 'Remixed By',
-      1022 => 'Composition',
-      1021 => 'Produced By');
-
-    if ($Default || empty($SiteOptions['SortHide'])) {
-      $Sort =& $RT;
-      $Defaults = !empty($SiteOptions['HideTypes']);
-    } else {
-      $Sort =& $SiteOptions['SortHide'];
-      $MissingTypes = array_diff_key($RT, $Sort);
-      if (!empty($MissingTypes)) {
-        foreach (array_keys($MissingTypes) as $Missing) {
-          $Sort[$Missing] = 0;
-        }
-      }
-    }
-
-    foreach ($Sort as $Key => $Val) {
-      if (isset($Defaults)) {
-        $Checked = $Defaults && isset($SiteOptions['HideTypes'][$Key]) ? ' checked="checked"' : '';
-      } else {
-        if (!isset($RT[$Key])) {
-          continue;
-        }
-        $Checked = $Val ? ' checked="checked"' : '';
-        $Val = $RT[$Key];
-      }
-
-      $ID = $Key. '_' . (int)(!!$Checked);
-
-              // The HTML is indented this far for proper indentation in the generated HTML
-              // on user.php?action=edit
-?>
-              <li class="sortable_item">
-                <label><input type="checkbox"<?=$Checked?> id="<?=$ID?>" /> <?=$Val?></label>
-              </li>
-<?
-    }
-  }
-
-  /**
-   * Returns the default order for the sort list in a JS-friendly string
-   * @return string
-   */
-  public static function release_order_default_js(&$SiteOptions) {
-    ob_start();
-    self::release_order($SiteOptions, true);
-    $HTML = ob_get_contents();
-    ob_end_clean();
-    return json_encode($HTML);
-  }
-
-  /**
    * Generate a random string
    *
    * @param Length
