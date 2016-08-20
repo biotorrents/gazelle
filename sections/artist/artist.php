@@ -242,7 +242,7 @@ foreach ($TorrentList as $Group) {
 ?>
         <td class="center">
           <div id="showimg_<?=$GroupID?>" class="<?=($ShowGroups ? 'hide' : 'show')?>_torrents">
-            <a class="tooltip show_torrents_link" onclick="toggle_group(<?=$GroupID?>, this, event);" title="Toggle this group (Hole &quot;Shift&quot; to toggle all groups)"></a>
+            <a class="tooltip show_torrents_link" onclick="toggle_group(<?=$GroupID?>, this, event);" title="Toggle this group (Hold &quot;Shift&quot; to toggle all groups)"></a>
           </div>
         </td>
         <td colspan="5" class="big_info">
