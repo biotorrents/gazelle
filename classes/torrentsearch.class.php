@@ -182,7 +182,7 @@ class TorrentSearch {
         ->order_by(self::$SortOrders[$OrderBy], $OrderWay);
     }
     $Offset = ($this->Page - 1) * $ResultLimit;
-    $MaxMatches = max($Offset + $ResultLimit, 1500);
+    $MaxMatches = max($Offset + $ResultLimit, SPHINX_MIN_MAX_MATCHES);
     $this->SphQL->from('torrents, delta')
       ->limit($Offset, $ResultLimit, $MaxMatches);
   }
