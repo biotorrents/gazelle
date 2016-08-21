@@ -318,7 +318,7 @@ class Users {
    */
   public static function check_password($Password, $Hash) {
     if (!$Password || !$Hash) { return false; }
-    return password_verify(base64_encode(hash("sha512", $Password)), $Hash);
+    return password_verify(hash("sha512", $Password, true), $Hash);
   }
 
   /**
@@ -328,7 +328,7 @@ class Users {
    * @return salted hash
    */
   public static function make_sec_hash($Str) {
-    return password_hash(base64_encode(hash("sha512", $Str)), PASSWORD_DEFAULT);
+    return password_hash(hash("sha512", $Str, true), PASSWORD_DEFAULT);
   }
 
   /**
