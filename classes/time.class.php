@@ -61,72 +61,37 @@ function time_diff($TimeStamp, $Levels = 2, $Span = true, $Lowercase = false) {
   $Return = '';
 
   if ($Years > 0 && $Levels > 0) {
-    if ($Years > 1) {
-      $Return .= "$Years years";
-    } else {
-      $Return .= "$Years year";
-    }
+    $Return .= "$Years year".(($Years > 1) ? 's' : '' );
     $Levels--;
   }
 
   if ($Months > 0 && $Levels > 0) {
-    if ($Return != '') {
-      $Return .= ', ';
-    }
-    if ($Months > 1) {
-      $Return .= "$Months months";
-    } else {
-      $Return .= "$Months month";
-    }
+    $Return .= ($Return != '') ? ', ' : '';
+    $Return .= "$Months month".(($Months > 1) ? 's' : '');
     $Levels--;
   }
 
   if ($Weeks > 0 && $Levels > 0) {
-    if ($Return != '') {
-      $Return .= ', ';
-    }
-    if ($Weeks > 1) {
-      $Return .= "$Weeks weeks";
-    } else {
-      $Return .= "$Weeks week";
-    }
+    $Return .= ($Return != '') ? ', ' : '';
+    $Return .= "$Weeks week".(($Weeks > 1) ? 's' : '');
     $Levels--;
   }
 
   if ($Days > 0 && $Levels > 0) {
-    if ($Return != '') {
-      $Return .= ', ';
-    }
-    if ($Days > 1) {
-      $Return .= "$Days days";
-    } else {
-      $Return .= "$Days day";
-    }
+    $Return .= ($Return != '') ? ', ' : '';
+    $Return .= "$Days day".(($Days > 1) ? 's' : '');
     $Levels--;
   }
 
   if ($Hours > 0 && $Levels > 0) {
-    if ($Return != '') {
-      $Return .= ', ';
-    }
-    if ($Hours > 1) {
-      $Return .= "$Hours hours";
-    } else {
-      $Return .= "$Hours hour";
-    }
+    $Return .= ($Return != '') ? ', ' : '';
+    $Return .= "$Hours hour".(($Hours > 1) ? 's' : '');
     $Levels--;
   }
 
   if ($Minutes > 0 && $Levels > 0) {
-    if ($Return != '') {
-      $Return .= ' and ';
-    }
-    if ($Minutes > 1) {
-      $Return .= "$Minutes mins";
-    } else {
-      $Return .= "$Minutes min";
-    }
-    $Levels--;
+    $Return .= ($Return != '') ? ' and ' : '';
+    $Return .= "$Minutes min".(($Minutes > 1) ? 's' : '');
   }
 
   if ($Return == '') {
