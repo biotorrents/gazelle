@@ -587,19 +587,6 @@ CREATE TABLE `log` (
   KEY `Time` (`Time`)
 ) ENGINE=InnoDB CHARSET=utf8;
 
-CREATE TABLE `login_attempts` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `UserID` int(10) unsigned NOT NULL,
-  `IP` varchar(90) NOT NULL,
-  `LastAttempt` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `Attempts` int(10) unsigned NOT NULL,
-  `BannedUntil` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `Bans` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `UserID` (`UserID`),
-  KEY `IP` (`IP`)
-) ENGINE=InnoDB CHARSET=utf8;
-
 CREATE TABLE `new_info_hashes` (
   `TorrentID` int(11) NOT NULL,
   `InfoHash` binary(20) DEFAULT NULL,
@@ -1667,7 +1654,7 @@ CREATE TABLE `users_push_notifications` (
 
 CREATE TABLE `users_sessions` (
   `UserID` int(10) NOT NULL,
-  `SessionID` char(32) NOT NULL,
+  `SessionID` char(64) NOT NULL,
   `KeepLogged` enum('0','1') NOT NULL DEFAULT '0',
   `Browser` varchar(40) DEFAULT NULL,
   `OperatingSystem` varchar(13) DEFAULT NULL,
