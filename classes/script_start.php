@@ -51,7 +51,6 @@ ob_start(); //Start a buffer, mainly in case there is a mysql error
 require(SERVER_ROOT.'/classes/debug.class.php'); //Require the debug class
 require(SERVER_ROOT.'/classes/mysql.class.php'); //Require the database wrapper
 require(SERVER_ROOT.'/classes/cache.class.php'); //Require the caching class
-require(SERVER_ROOT.'/classes/encrypt.class.php'); //Require the encryption class
 require(SERVER_ROOT.'/classes/time.class.php'); //Require the time class
 require(SERVER_ROOT.'/classes/paranoia.class.php'); //Require the paranoia check_paranoia function
 require(SERVER_ROOT.'/classes/regex.php');
@@ -63,7 +62,6 @@ $Debug->set_flag('Debug constructed');
 
 $DB = new DB_MYSQL;
 $Cache = new CACHE(MEMCACHED_SERVERS);
-$Enc = new CRYPT;
 
 // Autoload classes.
 require(SERVER_ROOT.'/classes/classloader.php');
@@ -93,12 +91,9 @@ list($Classes, $ClassLevels) = Users::get_classes();
 // Enabled - if the user's enabled or not
 // Permissions
 
-if (isset($_COOKIE['session'])) {
-  $LoginCookie = $Enc->decrypt($_COOKIE['session']);
-}
-if (isset($LoginCookie)) {
-  list($SessionID, $LoggedUser['ID']) = explode('|~|', $Enc->decrypt($LoginCookie));
-  $LoggedUser['ID'] = (int)$LoggedUser['ID'];
+if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
+  $SessionID = $_COOKIE['session'];
+  $LoggedUser['ID'] = (int)$_COOKIE['userid'];
 
   $UserID = $LoggedUser['ID']; //TODO: UserID should not be LoggedUser
 
@@ -138,7 +133,6 @@ if (isset($LoginCookie)) {
     $Cache->cache_value('enabled_'.$LoggedUser['ID'], $Enabled, 0);
   }
   if ($Enabled == 2) {
-
     logout();
   }
 

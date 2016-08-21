@@ -235,16 +235,10 @@ else {
               WHERE Username = '".db_string($_POST['username'])."'");
           }
           if ($Enabled == 1) {
-            $SessionID = Users::make_secret();
-            $Cookie = $Enc->encrypt($Enc->encrypt($SessionID.'|~|'.$UserID));
-
-            if (isset($_POST['keeplogged']) && $_POST['keeplogged']) {
-              $KeepLogged = 1;
-              setcookie('session', $Cookie, time() + 60 * 60 * 24 * 365, '/', '', true, true);
-            } else {
-              $KeepLogged = 0;
-              setcookie('session', $Cookie, 0, '/', '', true, true);
-            }
+            $SessionID = Users::make_secret(64);
+            $KeepLogged = ($_POST['keeplogged'] ?? false) ? 1 : 0;
+            setcookie('session', $SessionID, (time()+60*60*24*365)*$KeepLogged, '/', '', true, true);
+            setcookie('userid', $UserID, (time()+60*60*24*365)*$KeepLogged, '/', '', true, true);
 
             // Because we <3 our staff
             $Permissions = Permissions::get_permissions($PermissionID);
