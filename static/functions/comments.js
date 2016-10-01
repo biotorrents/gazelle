@@ -402,16 +402,15 @@ $(document).ready(function() {
         image = new Image();
         image.src = secondAvatar;
       }
-      $(this).mouseover(function() {
-//        $(this).fadeOut(fadeSpeed, function() {
-          $(this).attr("src", secondAvatar);
-//        }).fadeIn(fadeSpeed);
-      });
-      $(this).mouseout(function() {
-//        $(this).fadeOut(fadeSpeed, function() {
-          $(this).attr("src", originalAvatar);
-//        }).fadeIn(fadeSpeed);
-      });
+      var that = $(this)
+      $($(this).raw().parentNode.parentNode).hover(
+        function() {
+          that.attr("src", secondAvatar);
+        },
+        function() {
+          that.attr("src", originalAvatar);
+        }
+      );
       $(this).one("load", function() {
           var par = $(this).parents('.avatar');
           if (par.height()) {

@@ -224,21 +224,6 @@ echo $Val->GenerateJS('userform');
           </div>
         </td>
       </tr>
-      <tr id="tor_gdisp_artist_tr">
-        <td class="label tooltip" title="On artist pages, &quot;open&quot; will expand release type sections by default, and &quot;closed&quot; will collapse release type sections by default."><strong>Release type display (artist pages)</strong></td>
-        <td>
-          <ul class="options_list nobullet">
-            <li>
-              <input type="radio" name="discogview" id="discog_view_open" value="0"<?=$SiteOptions['DiscogView'] == 0 ? ' checked="checked"' : ''?> />
-              <label for="discog_view_open">Open</label>
-            </li>
-            <li>
-              <input type="radio" name="discogview" id="discog_view_closed" value="1"<?=$SiteOptions['DiscogView'] == 1 ? ' checked="checked"' : ''?> />
-              <label for="discog_view_closed">Closed</label>
-            </li>
-          </ul>
-        </td>
-      </tr>
       <tr id="tor_snatched_tr">
         <td class="label tooltip" title="Enabling the snatched torrents indicator will display &quot;Snatched!&quot; next to torrents you've snatched."><strong>Snatched torrents indicator</strong></td>
         <td>
@@ -246,7 +231,8 @@ echo $Val->GenerateJS('userform');
           <label for="showsnatched">Enable snatched torrents indicator</label>
         </td>
       </tr>
-<!--      <tr>
+<? /* ?>
+      <tr>
         <td class="label"><strong>Collage album art view</strong></td>
         <td>
           <select name="hidecollage" id="hidecollage">
@@ -254,7 +240,8 @@ echo $Val->GenerateJS('userform');
             <option value="1"<?=$SiteOptions['HideCollage'] == 1 ? ' selected="selected"' : ''?>>Hide album art</option>
           </select>
         </td>
-      </tr>-->
+        </tr>
+<? */ ?>
       <tr id="tor_cover_tor_tr">
         <td class="label tooltip" title="Enabling cover artwork for torrents will show cover artwork next to torrent information. Enabling additional cover artwork will display all additional cover artwork as well."><strong>Cover art (torrents)</strong></td>
         <td>
