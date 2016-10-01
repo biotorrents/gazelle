@@ -60,30 +60,24 @@ if ($UseTooltipster) { ?>
   <link rel="stylesheet" href="<?=STATIC_SERVER?>styles/tooltipster/style.css?v=<?=filemtime(SERVER_ROOT.'/static/styles/tooltipster/style.css')?>" type="text/css" media="screen" />
 <?
 }
-if ($Mobile) { ?>
-  <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0, user-scalable=no;" />
-  <link rel="stylesheet" type="text/css" href="<?=STATIC_SERVER ?>styles/mobile/style.css" />
+if (empty(G::$LoggedUser['StyleURL'])) {
+?>
+<link rel="stylesheet" type="text/css" title="<?=G::$LoggedUser['StyleName']?>" media="screen"
+    href="<?=STATIC_SERVER?>styles/<?=G::$LoggedUser['StyleName']?>/style.css?v=<?=filemtime(SERVER_ROOT.'/static/styles/'.G::$LoggedUser['StyleName'].'/style.css')?>" />
 <?
 } else {
-  if (empty(G::$LoggedUser['StyleURL'])) {
-?>
-  <link rel="stylesheet" type="text/css" title="<?=G::$LoggedUser['StyleName']?>" media="screen"
-      href="<?=STATIC_SERVER?>styles/<?=G::$LoggedUser['StyleName']?>/style.css?v=<?=filemtime(SERVER_ROOT.'/static/styles/'.G::$LoggedUser['StyleName'].'/style.css')?>" />
-<?
+  $StyleURLInfo = parse_url(G::$LoggedUser['StyleURL']);
+  if (substr(G::$LoggedUser['StyleURL'], -4) == '.css'
+      && empty($StyleURLInfo['query']) && empty($StyleURLInfo['fragment'])
+      && ($StyleURLInfo['host'] == SITE_DOMAIN)
+      && file_exists(SERVER_ROOT.$StyleURLInfo['path'])) {
+    $StyleURL = G::$LoggedUser['StyleURL'].'?v='.filemtime(SERVER_ROOT.$StyleURLInfo['path']);
   } else {
-    $StyleURLInfo = parse_url(G::$LoggedUser['StyleURL']);
-    if (substr(G::$LoggedUser['StyleURL'], -4) == '.css'
-        && empty($StyleURLInfo['query']) && empty($StyleURLInfo['fragment'])
-        && ($StyleURLInfo['host'] == SITE_DOMAIN)
-        && file_exists(SERVER_ROOT.$StyleURLInfo['path'])) {
-      $StyleURL = G::$LoggedUser['StyleURL'].'?v='.filemtime(SERVER_ROOT.$StyleURLInfo['path']);
-    } else {
-      $StyleURL = G::$LoggedUser['StyleURL'];
-    }
-?>
-  <link rel="stylesheet" type="text/css" media="screen" href="<?=$StyleURL?>" title="External CSS" />
-<?
+    $StyleURL = G::$LoggedUser['StyleURL'];
   }
+?>
+<link rel="stylesheet" type="text/css" media="screen" href="<?=$StyleURL?>" title="External CSS" />
+<?
 }
 $ExtraCSS = explode(',', $CSSIncludes);
 foreach ($ExtraCSS as $CSS) {
@@ -110,14 +104,14 @@ foreach ($Scripts as $Script) {
   if (trim($Script) == '') {
     continue;
   }
+  if (($ScriptStats = G::$Cache->get_value("script_stats_$Script")) === false || $ScriptStats['mtime'] != filemtime(STATIC_SERVER."functions/$Script.js")) {
+    $ScriptStats['mtime'] = filemtime(STATIC_SERVER."functions/$Script.js");
+    $ScriptStats['hash'] = base64_encode(hash_file(INTEGRITY_ALGO, STATIC_SERVER."functions/$Script.js", true));
+    $ScriptStats['algo'] = INTEGRITY_ALGO;
+    G::$Cache->cache_value("script_stats_$Script", $ScriptStats);
+  }
 ?>
-  <script
-      src="<?=STATIC_SERVER?>functions/<?=$Script?>.js?v=<?=filemtime(SERVER_ROOT.'/static/functions/'.$Script.'.js')?>"
-      type="text/javascript"></script>
-<?
-}
-if ($Mobile) { ?>
-  <script src="<?=STATIC_SERVER?>styles/mobile/style.js" type="text/javascript"></script>
+  <script src="<?=STATIC_SERVER."functions/$Script.js?v=$ScriptStats[mtime]"?>" type="text/javascript" integrity="<?="$ScriptStats[algo]-$ScriptStats[hash]"?>"></script>
 <?
 }
 

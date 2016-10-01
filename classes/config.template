@@ -23,6 +23,9 @@ define('API_KEYS', ['ANIDB' => 'AAAAAAAAAAAAAAAA']);
 // Allows you to run static content off another server. Default is usually what you want.
 define('STATIC_SERVER', 'static/');
 
+// The hashing algorithm used for SRI
+define('INTEGRITY_ALGO', 'sha256');
+
 // Keys
 define('ENCKEY',       'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); //Random key. The key for encryption
 define('SCHEDULE_KEY', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); // Random key. This key must be the argument to schedule.php for the schedule to work.
