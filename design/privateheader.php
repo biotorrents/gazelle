@@ -145,7 +145,7 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
 }
 ?>
 </head>
-<body id="<?=$Document == 'collages' ? 'collage' : $Document?>" onclick="hide_header_links()">
+<body id="<?=$Document == 'collages' ? 'collage' : $Document?>">
   <div id="wrapper">
     <h1 class="hidden"><?=SITE_NAME?></h1>
     <div id="header">
@@ -363,7 +363,7 @@ if (check_perms('site_send_unlimited_invites')) {
         </ul>
         <ul id="userinfo_minor"<?=$NewSubscriptions ? ' class="highlite"' : ''?>>
           <li>
-            <span class="brackets" onclick="toggle_header_links(event)">Links ▾</span>
+            <span id="header_links_menu" class="brackets">Links ▾</span>
             <ul>
               <li id="nav_inbox"<?=
                 Format::add_class($PageID, array('inbox'), 'active', true)?>>

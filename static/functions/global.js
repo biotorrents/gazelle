@@ -192,6 +192,10 @@ function ungetCover(event) {
 }
 
 $(function() {
+  if ($('#header_links_menu').length > 0) {
+    $('#header_links_menu')[0].addEventListener('click', toggle_header_links)
+    $('body')[0].addEventListener('click', hide_header_links)
+  }
   if ($('.request_table').length > 0) {
     var a = $('[cover]')[0]
     if (a) preload(a.attributes.cover.value)
