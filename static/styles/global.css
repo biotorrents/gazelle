@@ -783,6 +783,7 @@ div.torrent_artists {
   width: 50%;
   border: 1px solid transparent;
   box-sizing: border-box;
+  vertical-align: top;
 }
 
 /* Ratio Colors */
