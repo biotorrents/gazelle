@@ -853,6 +853,16 @@ div.torrent_artists {
   width: 100%;
 }
 
+.flex {
+  display: flex;
+}
+.flex > .grow {
+  flex-grow: 1
+}
+.flex > .shrink {
+  flex-shrink: 1
+}
+
 input[type="search"] {
   -webkit-appearance: textfield;
 }

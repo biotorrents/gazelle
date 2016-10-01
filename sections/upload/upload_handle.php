@@ -946,6 +946,7 @@ if ($Type == 'Comics') {
 
 // Clear cache
 $Cache->delete_value("torrents_details_$GroupID");
+$Cache->delete_value("contest_scores");
 
 // Allow deletion of this torrent now
 $Cache->delete_value("torrent_{$TorrentID}_lock");

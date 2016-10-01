@@ -461,6 +461,13 @@ if ($NotificationsManager->is_traditional(NotificationsManager::TORRENTS)) {
   $NotificationsManager->clear_notifications_array();
 }
 
+// Contests
+if ($ContestSettings = G::$Cache->get_value('contest_settings')) {
+  if (time() > $ContestSettings['start'] && time() < $ContestSettings['end']) {
+    $Alerts[] = '<a href="/contest.php">A Contest is Underway!</a>';
+  }
+}
+
 if (check_perms('users_mod')) {
   $ModBar[] = '<a href="tools.php">Toolbox</a>';
 }
