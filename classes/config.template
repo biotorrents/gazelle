@@ -143,7 +143,7 @@ define('MAX_EXTRA_RANK',   8);
 define('DONOR_FORUM_RANK', 6);
 define('MAX_SPECIAL_RANK', 3);
 
-define('FORUMS_TO_REVEAL_VOTERS,      []);
+define('FORUMS_TO_REVEAL_VOTERS',      []);
 define('FORUMS_TO_ALLOW_DOUBLE_POST', []);
 
 $Categories = array('Movies', 'Anime', 'Manga', 'Games', 'Other');
