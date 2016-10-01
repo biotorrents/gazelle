@@ -221,7 +221,6 @@ $Options['ShowTorFilter']       = (empty($_POST['showtfilter']) ? 0 : 1);
 $Options['ShowTags']            = (!empty($_POST['showtags']) ? 1 : 0);
 $Options['AutoSubscribe']       = (!empty($_POST['autosubscribe']) ? 1 : 0);
 $Options['DisableSmileys']      = (!empty($_POST['disablesmileys']) ? 1 : 0);
-$Options['Tooltipster']         = (!empty($_POST['usetooltipster']) ? 1 : 0);
 $Options['AutoloadCommStats']   = (check_perms('users_mod') && !empty($_POST['autoload_comm_stats']) ? 1 : 0);
 $Options['DisableAvatars']      = db_string($_POST['disableavatars']);
 $Options['Identicons']          = (!empty($_POST['identicons']) ? (int)$_POST['identicons'] : 0);

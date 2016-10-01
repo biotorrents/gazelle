@@ -1,7 +1,6 @@
 <?
 
 define('FOOTER_FILE', SERVER_ROOT.'/design/privatefooter.php');
-$UseTooltipster = !isset(G::$LoggedUser['Tooltipster']) || G::$LoggedUser['Tooltipster'];
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -55,11 +54,8 @@ if (isset(G::$LoggedUser['Notify'])) {
       title="<?=SITE_NAME?> - Other Torrents" />
   <link rel="stylesheet" type="text/css"
       href="<?=STATIC_SERVER?>styles/global.css?v=<?=filemtime(SERVER_ROOT.'/static/styles/global.css')?>" />
-<?
-if ($UseTooltipster) { ?>
   <link rel="stylesheet" href="<?=STATIC_SERVER?>styles/tooltipster/style.css?v=<?=filemtime(SERVER_ROOT.'/static/styles/tooltipster/style.css')?>" type="text/css" media="screen" />
 <?
-}
 if (empty(G::$LoggedUser['StyleURL'])) {
 ?>
 <link rel="stylesheet" type="text/css" title="<?=G::$LoggedUser['StyleName']?>" media="screen"
@@ -95,11 +91,7 @@ foreach ($ExtraCSS as $CSS) {
   </script>
 <?
 
-$Scripts = array_merge(array('jquery', 'script_start', 'ajax.class', 'global', 'jquery.autocomplete', 'autocomplete'), explode(',', $JSIncludes));
-if ($UseTooltipster) {
-  $Scripts[] = 'tooltipster';
-  $Scripts[] = 'tooltipster_settings';
-}
+$Scripts = array_merge(array('jquery', 'script_start', 'ajax.class', 'global', 'jquery.autocomplete', 'autocomplete', 'tooltipster', 'tooltipster_settings'), explode(',', $JSIncludes));
 foreach ($Scripts as $Script) {
   if (trim($Script) == '') {
     continue;

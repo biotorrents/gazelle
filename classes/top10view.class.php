@@ -65,7 +65,6 @@ class Top10View {
 
   private static function render_list($Url, $Name, $Image) {
     if (!empty($Image)) {
-      $UseTooltipster = !isset(G::$LoggedUser['Tooltipster']) || G::$LoggedUser['Tooltipster'];
       $Image = ImageTools::process($Image);
       $Title = "title=\"&lt;img class=&quot;large_tile&quot; src=&quot;$Image&quot; alt=&quot;&quot; /&gt;\"";
       $Name = display_str($Name);

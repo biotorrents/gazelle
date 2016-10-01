@@ -30,9 +30,8 @@ class View {
       require(SERVER_ROOT.'/design/publicheader.php');
     } else {
       // HTTP/2 Server Push headers for cloudflare
-      $TT = (!isset(G::$LoggedUser['Tooltipster']) || G::$LoggedUser['Tooltipster']);
-      $Scripts = array_merge(['jquery', 'script_start', 'ajax.class', 'global', 'jquery.autocomplete', 'autocomplete'], ($TT ? ['tooltipster', 'tooltipster_settings'] : []), explode(',', $JSIncludes));
-      $Styles = array_merge(($TT ? ['tooltipster'] : []), explode(',', $CSSIncludes));
+      $Scripts = array_merge(['jquery', 'script_start', 'ajax.class', 'global', 'jquery.autocomplete', 'autocomplete', 'tooltipster', 'tooltipster_settings'], explode(',', $JSIncludes));
+      $Styles = array_merge(['tooltipster'], explode(',', $CSSIncludes));
       foreach ($Scripts as $Script) {
         if (trim($Script) == '') { continue; }
         header('Link: </'.STATIC_SERVER.'functions/'.$Script.'.js?v='.filemtime(SERVER_ROOT.'/static/functions/'.$Script.'.js').'>; rel=preload;', false);

@@ -163,13 +163,6 @@ echo $Val->GenerateJS('userform');
           <input type="text" size="40" name="styleurl" id="styleurl" value="<?=display_str($StyleURL)?>" />
         </td>
       </tr>
-      <tr id="site_tooltips_tr">
-        <td class="label tooltip" title="Use styled tooltips instead of the browser's default when hovering elements with extra information (such as this one)."><strong>Styled tooltips</strong></td>
-        <td>
-          <input type="checkbox" name="usetooltipster" id="usetooltipster"<?=!isset($SiteOptions['Tooltipster']) || $SiteOptions['Tooltipster'] ? ' checked="checked"' : ''?> />
-          <label for="usetooltipster">Enable styled tooltips</label>
-        </td>
-      </tr>
 <?  if (check_perms('users_mod')) { ?>
       <tr id="site_autostats_tr">
         <td class="label tooltip" title="This is a staff-only feature to bypass the &quot;Show stats&quot; button for seeding, leeching, snatched, and downloaded stats on profile pages."><strong>Profile stats</strong></td>
