@@ -24,9 +24,9 @@ if ($DB->has_results()) {
   $Cache->delete_value('shop_freeleech_list');
 }
 
-// Also clear site_options for expired freeleech
+// Also clear misc table for expired freeleech
 $DB->query("
-  DELETE FROM site_options
-  WHERE Comment = 'freeleech'
-    AND CAST(Value AS UNSIGNED INTEGER) < " . date('U'));
+  DELETE FROM misc
+  WHERE Second = 'freeleech'
+    AND CAST(First AS UNSIGNED INTEGER) < " . date('U'));
 ?>

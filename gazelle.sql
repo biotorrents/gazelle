@@ -798,11 +798,11 @@ CREATE TABLE `site_history` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB CHARSET=utf8;
 
-CREATE TABLE `site_options` (
+CREATE TABLE `misc` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(64) NOT NULL,
-  `Value` tinytext NOT NULL,
-  `Comment` text NOT NULL,
+  `First` text NOT NULL,
+  `Second` text NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `Name` (`Name`),
   KEY `name_index` (`Name`)

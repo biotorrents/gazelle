@@ -541,9 +541,9 @@ if (!$Properties['GroupID']) {
 
 // Use this section to control freeleeches
 $DB->query("
-  SELECT Name, Value
-  FROM site_options
-  WHERE Comment = 'freeleech'");
+  SELECT First, Second
+  FROM misc
+  WHERE Second = 'freeleech'");
 if ($DB->has_results()) {
   $FreeLeechTags = $DB->to_array('Name');
   foreach ($FreeLeechTags as $Tag => $Exp) {

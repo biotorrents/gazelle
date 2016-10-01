@@ -24,15 +24,15 @@ if (isset($_POST['donation'])) {
         SET BonusPoints = BonusPoints - $Donation
         WHERE ID = $UserID");
       $DB->query("
-        UPDATE site_options
-        SET Value = Value + $Donation
+        UPDATE misc
+        SET First = First + $Donation
         WHERE Name = 'FreeleechPool'");
       $Cache->delete_value('user_info_heavy_'.$UserID);
 
       // Check to see if we're now over the target pool size
       $DB->query("
-        SELECT Value, Comment
-        FROM site_options
+        SELECT First, Second
+        FROM misc
         WHERE Name = 'FreeleechPool'");
       if ($DB->has_results()) {
         list($Pool, $Target) = $DB->next_record();
@@ -68,9 +68,9 @@ if (isset($_POST['donation'])) {
 
           $Target = rand(10000, 100000);
           $DB->query("
-            UPDATE site_options
-            SET Value = 0,
-                Comment = $Target
+            UPDATE misc
+            SET First = 0,
+                Second = $Target
             WHERE Name = 'FreeleechPool'");
         }
       }
@@ -96,8 +96,8 @@ if (isset($_POST['donation'])) {
 } else {
 
   $DB->query("
-    SELECT Value
-    FROM site_options
+    SELECT First
+    FROM misc
     WHERE Name = 'FreeleechPool'");
   if ($DB->has_results()) {
     list($Pool) = $DB->next_record();

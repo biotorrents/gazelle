@@ -32,8 +32,8 @@ if (isset($_POST['type'])) {
         $DB->query($Query);
 
         $DB->query("
-          INSERT INTO site_options
-            (Name, Value, Comment)
+          INSERT INTO misc
+            (Name, First, Second)
           VALUES
             ('" . $Tag . "', '" . (time() + (60 * 60 * $Duration)) . "', 'freeleech')
           ON DUPLICATE KEY UPDATE
@@ -65,8 +65,8 @@ if (isset($_POST['type'])) {
       $Query .= " ON DUPLICATE KEY UPDATE ExpiryTime = ExpiryTime + INTERVAL " . $Duration . " HOUR";
       $DB->query($Query);
       $DB->query("
-        INSERT INTO site_options
-          (Name, Value, Comment)
+        INSERT INTO misc
+          (Name, First, Second)
         VALUES
           ('global', '" . (time() + (60 * 60 * $Duration)) . "', 'freeleech')
         ON DUPLICATE KEY UPDATE

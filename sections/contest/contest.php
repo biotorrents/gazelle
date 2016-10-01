@@ -2,9 +2,9 @@
 if (!($ContestSettings = $Cache->get_value("contest_settings"))) {
   $DB->query("
   SELECT
-    Value,
-    Comment
-  FROM site_options
+    First,
+    Second
+  FROM misc
   WHERE
     Name='ContestRules'
     OR Name='ContestTimes'
