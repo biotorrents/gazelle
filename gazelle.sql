@@ -247,15 +247,6 @@ CREATE TABLE `comments_edits_tmp` (
   KEY `PostHistory` (`Page`,`PostID`,`EditTime`)
 ) ENGINE=InnoDB CHARSET=utf8;
 
-CREATE TABLE `concerts` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `ConcertID` int(10) NOT NULL,
-  `TopicID` int(10) NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `ConcertID` (`ConcertID`),
-  KEY `TopicID` (`TopicID`)
-) ENGINE=InnoDB CHARSET=utf8;
-
 CREATE TABLE `cover_art` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `GroupID` int(10) NOT NULL,

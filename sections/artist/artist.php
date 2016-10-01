@@ -443,9 +443,6 @@ if (check_perms('site_torrents_notify')) {
       <a href="artist.php?action=revert&amp;artistid=<?=$ArtistID?>&amp;revisionid=<?=$RevisionID?>&amp;auth=<?=$LoggedUser['AuthKey']?>" class="brackets">Revert to this revision</a>
 <?  } ?>
       <a href="artist.php?id=<?=$ArtistID?>#info" class="brackets">Info</a>
-<?  if (defined('LASTFM_API_KEY')) { ?>
-      <a href="artist.php?id=<?=$ArtistID?>#concerts" class="brackets">Concerts</a>
-<?  } ?>
       <a href="artist.php?id=<?=$ArtistID?>#artistcomments" class="brackets">Comments</a>
 <?  if (check_perms('site_delete_artist') && check_perms('torrents_delete')) { ?>
       <a href="artist.php?action=delete&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$LoggedUser['AuthKey']?>" class="brackets">Delete</a>
@@ -863,11 +860,7 @@ function require(file, callback) {
 //]]>
 </script>
 
-<? } // if $NumSimilar > 0 ?>
-<?
-if (defined('LASTFM_API_KEY')) {
-  include(SERVER_ROOT.'/sections/artist/concerts.php');
-}
+<? }
 
 // --- Comments ---
 $Pages = Format::get_pages($Page, $NumComments, TORRENT_COMMENTS_PER_PAGE, 9, '#comments');
