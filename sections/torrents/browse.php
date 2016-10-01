@@ -581,7 +581,14 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
 
       $SnatchedTorrentClass = $Data['IsSnatched'] ? ' snatched_torrent' : '';
       $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$LoggedUser['AuthKey']."&amp;torrent_pass=".$LoggedUser['torrent_pass'];
-      $TorrentMG = "magnet:?xt=urn:btih:".$Data['info_hash']."&as=https://".SITE_DOMAIN."/".str_replace('&amp;','%26',$TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=",ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Data['Size'];
+      if (!($TorrentFileName = $Cache->get_value('torrent_file_name_'.$TorrentID))) {
+        $DB->query("SELECT File FROM torrents_files WHERE TorrentID=".$TorrentID);
+        list($TorrentFile) = $DB->next_record(MYSQLI_NUM, false);
+        $Tor = new BencodeTorrent($TorrentFile);
+        $TorrentFileName = $Tor->Dec['info']['name'];
+        $Cache->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
+      }
+      $TorrentMG = "magnet:?dn=".rawurlencode($TorrentFileName)."&xt=urn:btih:".$Data['info_hash']."&as=https://".SITE_DOMAIN."/".str_replace('&amp;','%26',$TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=",ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Data['Size'];
 
 ?>
   <tr class="group_torrent groupid_<?=$GroupID?> <?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGrouping'] == 1 ? ' hidden' : '')?>">
@@ -647,7 +654,14 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
     }
     $SnatchedTorrentClass = $Data['IsSnatched'] ? ' snatched_torrent' : '';
     $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$LoggedUser['AuthKey']."&amp;torrent_pass=".$LoggedUser['torrent_pass'];
-    $TorrentMG = "magnet:?xt=urn:btih:".$Data['info_hash']."&as=https://".SITE_DOMAIN."/".str_replace('&amp;','%26',$TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=",ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Data['Size'];
+    if (!($TorrentFileName = $Cache->get_value('torrent_file_name_'.$TorrentID))) {
+      $DB->query("SELECT File FROM torrents_files WHERE TorrentID=".$TorrentID);
+      list($TorrentFile) = $DB->next_record(MYSQLI_NUM, false);
+      $Tor = new BencodeTorrent($TorrentFile);
+      $TorrentFileName = $Tor->Dec['info']['name'];
+      $Cache->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
+    }
+    $TorrentMG = "magnet:?dn=".rawurlencode($TorrentFileName)."&xt=urn:btih:".$Data['info_hash']."&as=https://".SITE_DOMAIN."/".str_replace('&amp;','%26',$TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=",ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Data['Size'];
 ?>
   <tr class="torrent<?=$SnatchedTorrentClass . $SnatchedGroupClass?>">
 <?    if ($GroupResults) { ?>
