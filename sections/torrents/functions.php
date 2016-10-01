@@ -305,7 +305,7 @@ function build_torrents_table($Cache, $DB, $LoggedUser, $GroupID, $GroupName, $G
     $ReportInfo .= "\n\t\t</table>";
   }
 
-  $CanEdit = (check_perms('torrents_edit') || (($UserID == $LoggedUser['ID'] && !$LoggedUser['DisableWiki']) && !($Remastered && !$RemasterYear)));
+  $CanEdit = (check_perms('torrents_edit') || (($UserID == $LoggedUser['ID'] && !$LoggedUser['DisableWiki'])));
 
   $RegenLink = check_perms('users_mod') ? ' <a href="torrents.php?action=regen_filelist&amp;torrentid=' . $TorrentID . '" class="brackets">Regenerate</a>' : '';
   $FileTable = '
