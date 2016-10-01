@@ -23,6 +23,16 @@ function toggleChecks(formElem, masterElem, elemSelector) {
 
 var lightbox = {
   init: function (image, size) {
+    if ($('#lightbox').length == 0 || $('#curtain').length == 0) {
+      var lightboxEl = document.createElement('div')
+      lightboxEl.id = 'lightbox'
+      lightboxEl.className = 'lightbox hidden'
+      var curtainEl = document.createElement('div')
+      curtainEl.id = 'curtain'
+      curtainEl.className = 'curtain hidden'
+      $('#wrapper')[0].appendChild(lightboxEl)
+      $('#wrapper')[0].appendChild(curtainEl)
+    }
     if (typeof(image) == 'string') {
       $('#lightbox').gshow().listen('click', lightbox.unbox).raw().innerHTML =
         '<p size="7" style="color: gray; font-size: 50px;">Loading...<p>';

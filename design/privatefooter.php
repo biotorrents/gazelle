@@ -54,8 +54,6 @@ $Debug->ocelot_table();
 <? } ?>
 
 </div>
-<div id="lightbox" class="lightbox hidden"></div>
-<div id="curtain" class="curtain hidden"></div>
 <?
 global $NotificationSpans;
 if (!empty($NotificationSpans)) {
@@ -64,12 +62,5 @@ if (!empty($NotificationSpans)) {
   }
 }
 ?>
-<!-- Extra divs, for stylesheet developers to add imagery -->
-<div id="extra1"><span></span></div>
-<div id="extra2"><span></span></div>
-<div id="extra3"><span></span></div>
-<div id="extra4"><span></span></div>
-<div id="extra5"><span></span></div>
-<div id="extra6"><span></span></div>
 </body>
 </html>
