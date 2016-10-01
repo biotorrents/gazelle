@@ -268,15 +268,13 @@ if ($Categories[$GroupCategoryID - 1] != 'Other') {
     </div>
 <?    if (check_perms('torrents_add_artist')) { ?>
     <div class="box box_addartists">
-      <div class="head"><strong>Add artist</strong><span style="float: right;" class="additional_add_artist"><a onclick="AddArtistField(); return false;" href="#" class="brackets">+</a></span></div>
+      <div class="head"><strong>Add artist</strong></div>
       <div class="body">
         <form class="add_form" name="artists" action="torrents.php" method="post">
-          <div id="AddArtists">
-            <input type="hidden" name="action" value="add_alias" />
-            <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
-            <input type="hidden" name="groupid" value="<?=$GroupID?>" />
-            <input type="text" id="artist" name="artistname[]" size="27"<? Users::has_autocomplete_enabled('other'); ?> />
-          </div>
+          <input type="hidden" name="action" value="add_alias" />
+          <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+          <input type="hidden" name="groupid" value="<?=$GroupID?>" />
+          <input type="text" id="artist" name="artistname[]" size="27"<? Users::has_autocomplete_enabled('other'); ?> />
           <input type="submit" value="Add" />
         </form>
       </div>
@@ -349,9 +347,9 @@ if (empty($LoggedUser['DisableTagging'])) {
           <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
           <input type="hidden" name="groupid" value="<?=$GroupID?>" />
           <input type="text" name="tagname" id="tagname" size="20"<? Users::has_autocomplete_enabled('other'); ?> />
-          <input type="submit" value="+" />
+          <input type="submit" value="Add" />
         </form>
-        <br /><br />
+        <br />
         <strong><a href="rules.php?p=tag" class="brackets">View tagging rules</a></strong>
       </div>
     </div>
