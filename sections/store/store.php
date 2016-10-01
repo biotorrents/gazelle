@@ -82,24 +82,24 @@ View::show_header('Store');
       </tr>
       <tr class="row">
         <td class="nobr">
-          <a href="store.php?item=upload_1000GB">1000GiB Upload</a>
+          <a href="store.php?item=upload_1000GB">1,000GiB Upload</a>
         </td>
         <td class="nobr">
           1,000,000 nips
         </td>
         <td class="nobr">
-          Purchase 1000GiB of upload
+          Purchase 1,000GiB of upload
         </td>
       </tr>
       <tr class="row">
         <td class="nobr">
-          <a href="store.php?item=1k_points">1000 nips</a>
+          <a href="store.php?item=1k_points">1,000 nips</a>
         </td>
         <td class="nobr">
           1GiB Upload
         </td>
         <td class="nobr">
-          Purchase 1000 nips
+          Purchase 1,000 nips
         </td>
       </tr>
       <tr class="row">
@@ -129,7 +129,7 @@ View::show_header('Store');
           <a href="store.php?item=1m_points">1,000,000 nips</a>
         </td>
         <td class="nobr">
-          1000GiB Upload
+          1,000GiB Upload
         </td>
         <td class="nobr">
           Purchase 1,000,000 nips
