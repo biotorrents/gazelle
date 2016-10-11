@@ -346,12 +346,6 @@ class Users {
   public static function format_username($UserID, $Badges = false, $IsWarned = true, $IsEnabled = true, $Class = false, $Title = false, $IsDonorForum = false) {
     global $Classes;
 
-    // This array is a hack that should be made less retarded, but whatevs
-    //               PermID => ShortForm
-
-    $SecondaryClasses = array(
-                 );
-
     if ($UserID == 0) {
       return 'System';
     }
@@ -429,16 +423,6 @@ class Users {
           . (G::$LoggedUser['ID'] === $UserID ? ' - Expires ' . date('Y-m-d H:i', strtotime($UserInfo['Warned'])) : '')
           . '" class="tooltip" /></a>' : '';
     $Str .= ($IsEnabled && $UserInfo['Enabled'] == 2) ? '<a href="rules.php"><img src="'.STATIC_SERVER.'common/symbols/disabled.png" alt="Banned" title="Disabled" class="tooltip" /></a>' : '';
-
-    if ($Badges) {
-      $ClassesDisplay = array();
-      foreach (array_intersect_key($SecondaryClasses, $UserInfo['ExtraClasses']) as $PermID => $PermShort) {
-        $ClassesDisplay[] = '<span class="tooltip secondary_class" title="'.$Classes[$PermID]['Name'].'">'.$PermShort.'</span>';
-      }
-      if (!empty($ClassesDisplay)) {
-        $Str .= '&nbsp;'.implode('&nbsp;', $ClassesDisplay);
-      }
-    }
 
     if ($Class) {
       foreach (array_keys($UserInfo['ExtraClasses']) as $ExtraClass) {
