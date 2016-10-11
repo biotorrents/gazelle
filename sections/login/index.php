@@ -184,6 +184,20 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
 
 } // End password recovery
 
+else if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'newlocation') {
+  if (isset($_REQUEST['key'])) {
+    if ($ASNCache = $Cache->get_value('new_location_'.$_REQUEST['key'])) {
+      $Cache->cache_value('new_location_'.$ASNCache['UserID'].'_'.$ASNCache['ASN'], true);
+      require('newlocation.php');
+      die();
+    } else {
+      error(403);
+    }
+  } else {
+    error(403);
+  }
+} // End new location
+
 // Normal login
 else {
   $Validate->SetFields('username', true, 'regex', 'You did not enter a valid username.', array('regex' => USERNAME_REGEX));
@@ -235,6 +249,46 @@ else {
               WHERE Username = '".db_string($_POST['username'])."'");
           }
           if ($Enabled == 1) {
+
+            // Check if the current login attempt is from a location previously logged in from
+            if (apc_exists('DBKEY')) {
+              $DB->query("
+                SELECT IP
+                FROM users_history_ips
+                WHERE UserID = $UserID");
+              $IPs = $DB->to_array(false, MYSQLI_NUM);
+              $QueryParts = array();
+              foreach ($IPs as $i => $IP) {
+                $IPs[$i] = DBCrypt::decrypt($IP[0]);
+              }
+              $IPs = array_unique($IPs);
+              if (count($IPs) > 0) { // Always allow first login
+                foreach ($IPs as $IP) {
+                  $QueryParts[] = "(StartIP<=INET6_ATON('$IP') AND EndIP>=INET6_ATON('$IP'))";
+                }
+                $DB->query('SELECT ASN FROM geoip_asn WHERE '.implode(' OR ', $QueryParts));
+                $PastASNs = array_column($DB->to_array(false, MYSQLI_NUM), 0);
+                $DB->query("SELECT ASN FROM geoip_asn WHERE StartIP<=INET_ATON('$_SERVER[REMOTE_ADDR]') AND EndIP>=INET_ATON('$_SERVER[REMOTE_ADDR]')");
+                list($CurrentASN) = $DB->next_record();
+
+                if (!in_array($CurrentASN, $PastASNs)) {
+                  // Never logged in from this location before
+                  if ($Cache->get_value('new_location_'.$UserID.'_'.$CurrentASN) !== true) {
+                    $DB->query("
+                      SELECT
+                        UserName,
+                        Email
+                      FROM users_main
+                      WHERE ID = $UserID");
+                    list($Username, $Email) = $DB->next_record();
+                    Users::authLocation($UserID, $Username, $CurrentASN, DBCrypt::decrypt($Email));
+                    require('newlocation.php');
+                    die();
+                  }
+                }
+              }
+            }
+
             $SessionID = Users::make_secret(64);
             $KeepLogged = ($_POST['keeplogged'] ?? false) ? 1 : 0;
             setcookie('session', $SessionID, (time()+60*60*24*365)*$KeepLogged, '/', '', true, true);

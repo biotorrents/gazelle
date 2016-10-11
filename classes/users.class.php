@@ -670,4 +670,27 @@ class Users {
 
     Misc::send_email($Email, 'Password reset information for ' . SITE_NAME, $TPL->get(), 'noreply');
   }
+
+
+  /*
+   * Authorize a new location
+   *
+   * @param int $UserID The user ID
+   * @param string $Username The username
+   * @param string $Email The email address
+   */
+  public static function authLocation($UserID, $Username, $ASN, $Email) {
+    $AuthKey = Users::make_secret();
+    G::$Cache->cache_value('new_location_'.$AuthKey, array('UserID'=>$UserID, 'ASN'=>$ASN), 3600*2);
+    require(SERVER_ROOT . '/classes/templates.class.php');
+    $TPL = NEW TEMPLATE;
+    $TPL->open(SERVER_ROOT . '/templates/new_location.tpl');
+    $TPL->set('Username', $Username);
+    $TPL->set('AuthKey', $AuthKey);
+    $TPL->set('IP', $_SERVER['REMOTE_ADDR']);
+    $TPL->set('SITE_NAME', SITE_NAME);
+    $TPL->set('SITE_DOMAIN', SITE_DOMAIN);
+
+    Misc::send_email($Email, 'Login from new location for '.SITE_NAME, $TPL->get(), 'noreply');
+  }
 }
