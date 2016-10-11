@@ -105,6 +105,11 @@ button, input[type=button], input[type=submit] {
   color: #000;
 }
 
+.spoilerButton {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .selected a {
   font-weight: bold;
   text-decoration: underline;
@@ -757,6 +762,15 @@ tr.torrent .bookmark>a:after {
 
 #inbox .body img {
   max-width: 830px;
+}
+
+#inbox .search_form input[type="search"] {
+  width: 100%;
+  margin: 10px 0px 0px;
+}
+
+#inbox .manage_form input[type="submit"] {
+  margin: 10px 7px 10px 0px;
 }
 
 #userform img {

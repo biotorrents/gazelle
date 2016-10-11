@@ -106,14 +106,14 @@ echo "\t\t$Pages\n";
 <?    } ?>
         </span>
         <br />
-        <input type="search" name="search" placeholder="<?=(!empty($_GET['search']) ? display_str($_GET['search']) : 'Search '.($Section === 'sentbox' ? 'sentbox' : 'inbox'))?>" style="width: 98%;" />
+        <input type="search" name="search" placeholder="<?=(!empty($_GET['search']) ? display_str($_GET['search']) : 'Search '.($Section === 'sentbox' ? 'sentbox' : 'inbox'))?>" />
       </div>
     </form>
     <form class="manage_form" name="messages" action="inbox.php" method="post" id="messageform">
       <input type="hidden" name="action" value="masschange" />
       <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
-      <input type="submit" name="read" value="Mark as read" />&nbsp;
-      <input type="submit" name="unread" value="Mark as unread" />&nbsp;
+      <input type="submit" name="read" value="Mark as read" />
+      <input type="submit" name="unread" value="Mark as unread" />
       <input type="submit" name="delete" value="Delete message(s)" />
 
       <table class="message_table checkboxes">
@@ -170,8 +170,8 @@ echo "\t\t$Pages\n";
     }
   } ?>
       </table>
-      <input type="submit" name="read" value="Mark as read" />&nbsp;
-      <input type="submit" name="unread" value="Mark as unread" />&nbsp;
+      <input type="submit" name="read" value="Mark as read" />
+      <input type="submit" name="unread" value="Mark as unread" />
       <input type="submit" name="delete" value="Delete message(s)" />
     </form>
 <? } ?>

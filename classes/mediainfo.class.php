@@ -371,8 +371,7 @@ class GeneralSectionParser extends SectionParser {
                 $value = preg_replace('#\[autourl(?:=.+)?\](.+)\[/autourl\]#', '$1', $value);
                 $this->filename = static::strip_path($value);
                 $this->lines[$this->index-1] = "Complete name : " . $this->filename;
-                if (strlen($this->filename) > 100)
-                    $this->filename = substr($this->filename, 0, 80) . '...' . substr($this->filename, -17);
+                $this->filename = substr($this->filename, 0, 150);
                 break;
             case "format":
                 $this->generalformat = $value;
