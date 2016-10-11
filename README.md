@@ -10,6 +10,12 @@ Using a database key [provided by staff](sections/tools/misc/database_key.php) a
 
 The rest of gazelle must be aware that some of the data it fetches from the DB is encrypted, and must have a fallback if that data is unavailable (the key is not in memory). You will see plenty of `if (!apc_exists('DBKEY')) {` in this codebase.
 
+#### Authorized Login Locations
+
+Whenever a login occurs from a location (determined by ASN) that hasn't logged into that account before, an email is sent to the account owner requesting that they authorize that location before the login will go through.
+
+This prevents most attacks that would be otherwise successful, as it requires an attacker to access the site from the same locations the actual user uses to login.
+
 #### Expunge Requests
 
 Users are able to view the data kept on them and [issue requests for the deletion of old information](sections/delete) to staff through a simple interface.
