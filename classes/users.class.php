@@ -677,6 +677,7 @@ class Users {
    *
    * @param int $UserID The user ID
    * @param string $Username The username
+   * @param int $ASN The ASN
    * @param string $Email The email address
    */
   public static function authLocation($UserID, $Username, $ASN, $Email) {
