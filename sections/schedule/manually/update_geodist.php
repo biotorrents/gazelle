@@ -16,4 +16,5 @@ $DB->query("
   GROUP BY g.Code
   ORDER BY Users DESC");
 $DB->query("DROP TABLE user_ips_decrypted");
+$Cache->delete_value('geodistribution');
 ?>
