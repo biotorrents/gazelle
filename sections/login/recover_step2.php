@@ -9,7 +9,7 @@ echo $Validate->GenerateJS('recoverform');
   <div style="width: 500px;">
     <span class="titletext">Reset your password - Final Step</span><br /><br />
 <?
-if (empty($Reset)) {
+if (empty($PassWasReset)) {
   if (!empty($Err)) {
 ?>
     <strong class="important_text"><?=display_str($Err)?></strong><br /><br />

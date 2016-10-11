@@ -57,7 +57,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
 
       if (!empty($_REQUEST['password'])) {
         // If the user has entered a password.
-        // If the user has not entered a password, $Reset is not set to 1, and the success message is not shown
+        // If the user has not entered a password, $PassWasReset is not set to 1, and the success message is not shown
         $Err = $Validate->ValidateForm($_REQUEST);
         if ($Err == '') {
           // Form validates without error, set new secret and password.
@@ -77,7 +77,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
               (UserID, ChangerIP, ChangeTime)
             VALUES
               ('$UserID', '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."', '".sqltime()."')");
-          $Reset = true; // Past tense form of "to reset", meaning that password has now been reset
+          $PassWasReset = true;
           $LoggedUser['ID'] = $UserID; // Set $LoggedUser['ID'] for logout_all_sessions() to work
           logout_all_sessions();
 
@@ -85,7 +85,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
       }
 
       // Either a form asking for them to enter the password
-      // Or a success message if $Reset is 1
+      // Or a success message if $PassWasReset is 1
       require('recover_step2.php');
 
     } else {
@@ -193,7 +193,7 @@ else {
 
   // Function to log a user's login attempt
   function log_attempt() {
-    global $DB, $Cache, $Attempts;
+    global $Cache, $Attempts;
     $Attempts = ($Attempts ?? 0) + 1;
     $Cache->cache_value('login_attempts_'.db_string($_SERVER['REMOTE_ADDR']), array($Attempts, ($Attempts > 5)), 60*60*$Attempts);
     $AllAttempts = $Cache->get_value('login_attempts');
