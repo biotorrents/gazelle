@@ -50,8 +50,8 @@ if (isset($_POST['submit'])) {
         }
 
         $Name = db_string($_POST['name']);
-        $Value = db_string($_POST['first']);
-        $Comment = db_string($_POST['second']);
+        $First = db_string($_POST['first']);
+        $Second = db_string($_POST['second']);
 
         if ($_POST['submit'] == 'Edit') {
             $DB->query("SELECT Name FROM misc WHERE ID = '" . db_string($_POST['id']) . "'");
@@ -104,13 +104,13 @@ View::show_header('Miscellaneous Values');
         <input type="hidden" name="action" value="misc_values" />
         <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
         <td>
-          <input type="text" size="40" name="name" />
+          <input type="text" size="20" name="name" />
         </td>
         <td>
-          <input type="text" size="20" name="first" />
+          <input type="text" size="60" name="first" />
         </td>
         <td>
-          <input type="text" size="75" name="second" />
+          <input type="text" size="60" name="second" />
         </td>
         <td>
           <input type="submit" name="submit" value="Create" />
@@ -126,13 +126,13 @@ while (list($ID, $Name, $First, $Second) = $DB->next_record()) {
         <input type="hidden" name="action" value="misc_values" />
         <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
         <td>
-          <input type="text" size="40" name="name" value="<?=$Name?>" />
+          <input type="text" size="20" name="name" value="<?=$Name?>" />
         </td>
         <td>
-          <input type="text" size="20" name="value" value="<?=$First?>" />
+          <input type="text" size="60" name="first" value="<?=$First?>" />
         </td>
         <td>
-          <input type="text" size="75" name="comment" value="<?=$Second?>" />
+          <input type="text" size="60" name="second" value="<?=$Second?>" />
         </td>
         <td>
           <input type="submit" name="submit" value="Edit" />
