@@ -268,7 +268,7 @@ else {
                 }
                 $DB->query('SELECT ASN FROM geoip_asn WHERE '.implode(' OR ', $QueryParts));
                 $PastASNs = array_column($DB->to_array(false, MYSQLI_NUM), 0);
-                $DB->query("SELECT ASN FROM geoip_asn WHERE StartIP<=INET_ATON('$_SERVER[REMOTE_ADDR]') AND EndIP>=INET_ATON('$_SERVER[REMOTE_ADDR]')");
+                $DB->query("SELECT ASN FROM geoip_asn WHERE StartIP<=INET6_ATON('$_SERVER[REMOTE_ADDR]') AND EndIP>=INET6_ATON('$_SERVER[REMOTE_ADDR]')");
                 list($CurrentASN) = $DB->next_record();
 
                 if (!in_array($CurrentASN, $PastASNs)) {
