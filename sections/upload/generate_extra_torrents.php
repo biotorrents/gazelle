@@ -48,17 +48,11 @@ foreach ($ExtraTorrents as $ExtraTorrent) {
     WHERE info_hash = '" . db_string($ThisInsert['InfoHash']) . "'");
   if ($DB->has_results()) {
     list($ExtraID) = $DB->next_record();
-    $DB->query("
-      SELECT TorrentID
-      FROM torrents_files
-      WHERE TorrentID = $ExtraID");
-    if ($DB->has_results()) {
+    if (file_exists(TORRENT_STORE.$ExtraID.'.torrent')) {
       $Err = "<a href=\"torrents.php?torrentid=$ExtraID\">The exact same torrent file already exists on the site!</a>";
     } else {
       //One of the lost torrents.
-      $DB->query("
-        INSERT INTO torrents_files (TorrentID, File)
-        VALUES ($ExtraID, '$ThisInsert[TorEnc]')");
+      file_put_contents(TORRENT_STORE.$ExtraID.'.torrent', $ThisInsert['TorEnc']);
       $Err = "<a href=\"torrents.php?torrentid=$ExtraID\">Thank you for fixing this torrent.</a>";
     }
   }

@@ -254,7 +254,7 @@ $T['Censored'] = $Properties['Censored'];
 
 $Tor = new BencodeTorrent($TorrentName, true);
 $PublicTorrent = $Tor->make_private(); // The torrent is now private.
-$TorEnc = db_string($Tor->encode());
+$TorEnc = $Tor->encode();
 $InfoHash = pack('H*', $Tor->info_hash());
 
 $DB->query("
@@ -263,17 +263,11 @@ $DB->query("
   WHERE info_hash = '".db_string($InfoHash)."'");
 if ($DB->has_results()) {
   list($ID) = $DB->next_record();
-  $DB->query("
-    SELECT TorrentID
-    FROM torrents_files
-    WHERE TorrentID = $ID");
-  if ($DB->has_results()) {
+  if (file_exists(TORRENT_STORE.$ID.'.torrent')) {
     $Err = '<a href="torrents.php?torrentid='.$ID.'">The exact same torrent file already exists on the site!</a>';
   } else {
     // A lost torrent
-    $DB->query("
-      INSERT INTO torrents_files (TorrentID, File)
-      VALUES ($ID, '$TorEnc')");
+    file_put_contents(TORRENT_STORE.$ID.'.torrent', $TorEnc);
     $Err = '<a href="torrents.php?torrentid='.$ID.'">Thank you for fixing this torrent</a>';
   }
 }
@@ -605,9 +599,7 @@ if ($T['FreeLeechType'] == 3) {
 //******************************************************************************//
 //--------------- Write torrent file -------------------------------------------//
 
-$DB->query("
-  INSERT INTO torrents_files (TorrentID, File)
-  VALUES ($TorrentID, '$TorEnc')");
+file_put_contents(TORRENT_STORE.$TorrentID.'.torrent', $TorEnc);
 Misc::write_log("Torrent $TorrentID ($LogName) (".number_format($TotalSize / (1024 * 1024), 2).' MB) was uploaded by ' . $LoggedUser['Username']);
 Torrents::write_group_log($GroupID, $TorrentID, $LoggedUser['ID'], 'uploaded ('.number_format($TotalSize / (1024 * 1024), 2).' MB)', 0);
 

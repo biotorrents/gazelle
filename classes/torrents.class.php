@@ -324,9 +324,7 @@ class Torrents {
       G::$Cache->decrement('num_torrent_reportsv2', $Reports);
     }
 
-    G::$DB->query("
-      DELETE FROM torrents_files
-      WHERE TorrentID = '$ID'");
+    unlink(TORRENT_STORE.$ID.'.torrent');
     G::$DB->query("
       DELETE FROM torrents_bad_tags
       WHERE TorrentID = $ID");
@@ -567,14 +565,12 @@ class Torrents {
     $QueryID = G::$DB->get_query_id();
 
     G::$DB->query("
-      SELECT tg.ID,
-        tf.File
-      FROM torrents_files AS tf
-        JOIN torrents AS t ON t.ID = tf.TorrentID
-        JOIN torrents_group AS tg ON tg.ID = t.GroupID
-      WHERE tf.TorrentID = $TorrentID");
+      SELECT GroupID
+      FROM torrents
+      WHERE ID = $TorrentID");
     if (G::$DB->has_results()) {
-      list($GroupID, $Contents) = G::$DB->next_record(MYSQLI_NUM, false);
+      list($GroupID) = G::$DB->next_record(MYSQLI_NUM, false);
+      $Contents = file_get_contents(TORRENT_STORE.$TorrentID.'.torrent');
       if (Misc::is_new_torrent($Contents)) {
         $Tor = new BencodeTorrent($Contents);
         $FilePath = (isset($Tor->Dec['info']['files']) ? Format::make_utf8($Tor->get_name()) : '');

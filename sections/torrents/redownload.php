@@ -76,20 +76,8 @@ $Collector = new TorrentsDL($DownloadsQ, "$Username's ".ucfirst($_GET['type']));
 while (list($Downloads, $GroupIDs) = $Collector->get_downloads('TorrentID')) {
   $Artists = Artists::get_artists($GroupIDs);
   $TorrentIDs = array_keys($GroupIDs);
-  $TorrentFilesQ = $DB->query('
-    SELECT TorrentID, File
-    FROM torrents_files
-    WHERE TorrentID IN ('.implode(',', $TorrentIDs).')', false);
-  if (is_int($TorrentFilesQ)) {
-    // Query failed. Let's not create a broken zip archive
-    foreach ($TorrentIDs as $TorrentID) {
-      $Download =& $Downloads[$TorrentID];
-      $Download['Artist'] = str_replace('–','-',Artists::display_artists($Artists[$Download['GroupID']], false, true, false));
-      $Collector->fail_file($Download);
-    }
-    continue;
-  }
-  while (list($TorrentID, $TorrentFile) = $DB->next_record(MYSQLI_NUM, false)) {
+  foreach ($TorrentIDs as $TorrentID) {
+    $TorrentFile = file_get_contents(TORRENT_STORE.$TorrentID.'.torrent');
     $Download =& $Downloads[$TorrentID];
     // unzip(1) corrupts files if an emdash is present. Replace them.
     $Download['Artist'] = str_replace('–','-',Artists::display_artists($Artists[$Download['GroupID']], false, true, false));

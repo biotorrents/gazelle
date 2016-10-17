@@ -27,11 +27,7 @@ foreach ($ExtraTorrentsInsert as $ExtraTorrent) {
   //******************************************************************************//
   //--------------- Write torrent file -------------------------------------------//
 
-  $DB->query("
-    INSERT INTO torrents_files
-      (TorrentID, File)
-    VALUES
-      ($ExtraTorrentID, '$ExtraTorrent[TorEnc]')");
+  file_put_contents(TORRENT_STORE.$ExtraTorrentID.'torrent', $ExtraTorrent['TorEnc']);
 
   Misc::write_log("Torrent $ExtraTorrentID ($LogName) (" . number_format($ExtraTorrent['TotalSize'] / (1024 * 1024), 2) . ' MB) was uploaded by ' . $LoggedUser['Username']);
   Torrents::write_group_log($GroupID, $ExtraTorrentID, $LoggedUser['ID'], 'uploaded (' . number_format($ExtraTorrent['TotalSize'] / (1024 * 1024), 2) . ' MB)', 0);

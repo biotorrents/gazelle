@@ -44,7 +44,6 @@ SELECT
 FROM torrents AS t
   INNER JOIN torrents_group AS tg ON tg.ID = t.GroupID AND tg.CategoryID = '1'
   INNER JOIN artists_group AS a ON a.ArtistID = tg.ArtistID AND a.ArtistID = '59721'
-  LEFT JOIN torrents_files AS f ON t.ID = f.TorrentID
 ORDER BY t.GroupID ASC, Rank DESC, t.Seeders ASC
 */
 
@@ -142,20 +141,9 @@ $DownloadsQ = $DB->query($SQL);
 $Collector = new TorrentsDL($DownloadsQ, $ArtistName);
 while (list($Downloads, $GroupIDs) = $Collector->get_downloads('GroupID')) {
   $Artists = Artists::get_artists($GroupIDs);
-  $TorrentFilesQ = $DB->query("
-    SELECT TorrentID, File
-    FROM torrents_files
-    WHERE TorrentID IN (".implode(',', array_keys($GroupIDs)).')', false);
-  if (is_int($TorrentFilesQ)) {
-    // Query failed. Let's not create a broken zip archive
-    foreach ($GroupIDs as $GroupID) {
-      $Download =& $Downloads[$GroupID];
-      $Download['Artist'] = Artists::display_artists($Artists[$GroupID], false, true, false);
-      $Collector->fail_file($Download);
-    }
-    continue;
-  }
-  while (list($TorrentID, $TorrentFile) = $DB->next_record(MYSQLI_NUM, false)) {
+  $TorrentIDs = array_keys($GroupIDs);
+  foreach ($TorrentIDs as $TorrentID) {
+    $TorrentFile = file_get_contents(TORRENT_STORE.$TorrentID.'.torrent');
     $GroupID = $GroupIDs[$TorrentID];
     $Download =& $Downloads[$GroupID];
     $Download['Artist'] = Artists::display_artists($Artists[$Download['GroupID']], false, true, false);

@@ -177,13 +177,8 @@ $DB->query("
   INSERT IGNORE INTO users_downloads (UserID, TorrentID, Time)
   VALUES ('$UserID', '$TorrentID', '".sqltime()."')");
 
-$DB->query("
-  SELECT File
-  FROM torrents_files
-  WHERE TorrentID = '$TorrentID'");
-
 Torrents::set_snatch_update_time($UserID, Torrents::SNATCHED_UPDATE_AFTERDL);
-list($Contents) = $DB->next_record(MYSQLI_NUM, false);
+$Contents = file_get_contents(TORRENT_STORE.$TorrentID.'.torrent');
 $FileName = TorrentsDL::construct_file_name($Info['PlainArtists'], $Name, $Year, $Media, $Format, $Encoding, $TorrentID, $DownloadAlt);
 
 if ($DownloadAlt) {

@@ -1181,12 +1181,6 @@ CREATE TABLE `torrents_bad_tags` (
   KEY `TimeAdded` (`TimeAdded`)
 ) ENGINE=InnoDB CHARSET=utf8;
 
-CREATE TABLE `torrents_files` (
-  `TorrentID` int(10) NOT NULL,
-  `File` mediumblob NOT NULL,
-  PRIMARY KEY (`TorrentID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
 CREATE TABLE `torrents_group` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `CategoryID` int(10) DEFAULT NULL,

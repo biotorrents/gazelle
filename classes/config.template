@@ -5,9 +5,10 @@ if (version_compare(PHP_VERSION, '7.0.0', '<')) {
 //date_default_timezone_set('EST');
 
 // Main settings
-define('SITE_NAME',   'Oppaitime'); //The name of your site
-define('SITE_DOMAIN', 'oppaiti.me'); //The FQDN of your site
-define('SERVER_ROOT', '/var/www'); //The root of the server, used for includes, purpose is to shorten the path string
+define('SITE_NAME',     'Oppaitime'); //The name of your site
+define('SITE_DOMAIN',   'oppaiti.me'); //The FQDN of your site
+define('SERVER_ROOT',   '/var/www'); //The root of the server, used for includes
+define('TORRENT_STORE', '/var/torrents/'); //Where torrent files are stored
 
 // Tracker urls to be added to torrent files ala bittorrent.org/beps/bep_0012.html
 define('ANNOUNCE_URLS', [[
