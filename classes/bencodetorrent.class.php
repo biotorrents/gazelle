@@ -122,11 +122,11 @@ class BencodeTorrent extends BencodeDecode {
    * Add the announce URL to a torrent
    */
   public static function add_announce_url($Data, $Url) {
-    return 'd8:announce'.strlen($Url).':'.$Url . substr($Data, 1);
+    return 'd8:announce'.strlen($Url).':'.$Url.substr($Data, 1);
   }
 
   /**
-   * Let's support announce lists
+   * Add list of announce URLs to a torrent
    */
   public static function add_announce_list($Data, $Urls) {
     $r = 'd13:announce-listl';
@@ -137,7 +137,6 @@ class BencodeTorrent extends BencodeDecode {
       }
       $r .= 'e';
     }
-    $r .= 'e' .substr($Data, 1);
-    return $r;
+    return $r.'e'.substr($Data, 1);
   }
 }

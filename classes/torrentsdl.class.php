@@ -239,6 +239,9 @@ class TorrentsDL {
     $Tor = new TORRENT(unserialize(base64_decode($TorrentData)), true);
     $Tor->set_announce_url($AnnounceURL);
     unset($Tor->Val['announce-list']);
+    if (!empty($AnnounceList)) {
+      $Tor->set_announce_list($AnnounceList);
+    }
     unset($Tor->Val['url-list']);
     unset($Tor->Val['libtorrent_resume']);
     return $Tor->enc();
