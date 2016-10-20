@@ -494,6 +494,13 @@ CREATE TABLE `geoip_country` (
   PRIMARY KEY (`StartIP`,`EndIP`)
 ) ENGINE=InnoDB CHARSET=utf8;
 
+CREATE TABLE `geoip_asn` (
+  `StartIP` varbinary(16) NOT NULL,
+  `EndIP` varbinary(16) NOT NULL,
+  `ASN` decimal(10,0) NOT NULL,
+  PRIMARY KEY (`StartIP`,`EndIP`)
+) ENGINE=InnoDB CHARSET=utf8;
+
 CREATE TABLE `group_log` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `GroupID` int(10) NOT NULL,
