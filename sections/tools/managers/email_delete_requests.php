@@ -24,42 +24,43 @@ if (isset($_GET['deny']) && isset($_GET['email'])) {
     DELETE FROM email_delete_requests
     WHERE Email = '$Email'");
 
-  if (!$Deny) {
-    $DB->query("
-      SELECT UserID
-      FROM users_history_emails
-      WHERE Email = '$Email'");
-
-    if (!$DB->has_results()) {
-      $Err = "That email doesn't exist.";
-    } else {
-      list($UserID) = $DB->next_record();
-      if ($UserID != $_GET['userid']) {
-        $Err = "The UserID is incorrect?";
-      } else {
-        $DB->query("
-          SELECT Email
-          FROM users_history_emails
-          WHERE UserID = '$UserID'");
-        $ToDelete = array();
-        while (list($EncEmail) = $DB->next_record()) {
-          if (DBCrypt::decrypt($Email) == DBCrypt::decrypt($EncEmail)) {
-            $ToDelete[] = $EncEmail;
-          }
-        }
-        forEach ($ToDelete as $DelEmail) {
-          $DB->query("
-            DELETE FROM users_history_emails
-            WHERE UserID = $UserID
-              AND Email = '$DelEmail'");
-        }
-        $Succ = "Email deleted.";
-        Misc::send_pm($UserID, 0, "Email Deletion Request Accepted.", "Your email deletion request has been accepted. What email? I don't know! We don't have it anymore!");
-      }
+  $DB->query("
+    SELECT UserID
+    FROM users_history_emails
+    WHERE Email = '$Email'");
+  if ($DB->has_results()) {
+    list($UserID) = $DB->next_record();
+    if ($UserID != $_GET['userid']) {
+      $Err = "The UserID is incorrect?";
     }
   } else {
-    $Succ = "Request denied.";
-    Misc::send_pm($UserID, 0, "Email Deletion Request Denied.", "Your email deletion request has been denied.\n\nIf you wish to discuss this matter further, please create a staff PM, or join #oppaitime-help on IRC to speak with a staff member.");
+    $Err = "That email doesn't exist.";
+  }
+
+  if (empty($Err)) {
+    if (!$Deny) {
+      $DB->query("
+        SELECT Email
+        FROM users_history_emails
+        WHERE UserID = '$UserID'");
+      $ToDelete = array();
+      while (list($EncEmail) = $DB->next_record()) {
+        if (DBCrypt::decrypt($Email) == DBCrypt::decrypt($EncEmail)) {
+          $ToDelete[] = $EncEmail;
+        }
+      }
+      forEach ($ToDelete as $DelEmail) {
+        $DB->query("
+          DELETE FROM users_history_emails
+          WHERE UserID = $UserID
+            AND Email = '$DelEmail'");
+      }
+      $Succ = "Email deleted.";
+      Misc::send_pm($UserID, 0, "Email Deletion Request Accepted.", "Your email deletion request has been accepted. What email? I don't know! We don't have it anymore!");
+    } else {
+      $Succ = "Request denied.";
+      Misc::send_pm($UserID, 0, "Email Deletion Request Denied.", "Your email deletion request has been denied.\n\nIf you wish to discuss this matter further, please create a staff PM, or join #oppaitime-help on IRC to speak with a staff member.");
+    }
   }
 
   $Cache->delete_value('num_email_delete_requests');
