@@ -119,6 +119,10 @@ if ($DB->has_results()) {
       $Err[] = "You cannot be promoted while warned";
     }
 
+    if ($LoggedUser['DisablePromotion']) {
+      $Err[] = "You have been banned from purchasing promotions";
+    }
+
     if ($BP < $Classes[$To]['Price']) {
       $Err[] = "Not enough points";
     }

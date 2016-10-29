@@ -162,6 +162,7 @@ class Users {
           i.DisableAvatar,
           i.DisablePM,
           i.DisableNips,
+          i.DisablePromotion,
           i.DisableRequests,
           i.DisableForums,
           i.DisableTagging,

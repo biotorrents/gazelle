@@ -78,6 +78,7 @@ $DisableUpload = isset($_POST['DisableUpload']) ? 1 : 0;
 $DisableWiki = isset($_POST['DisableWiki']) ? 1 : 0;
 $DisablePM = isset($_POST['DisablePM']) ? 1 : 0;
 $DisableNips = isset($_POST['DisableNips']) ? 1 : 0;
+$DisablePromotion = isset($_POST['DisablePromotion']) ? 1 : 0;
 $DisableIRC = isset($_POST['DisableIRC']) ? 1 : 0;
 $DisableRequests = isset($_POST['DisableRequests']) ? 1 : 0;
 $DisableLeech = isset($_POST['DisableLeech']) ? 0 : 1;
@@ -134,6 +135,7 @@ $DB->query("
     DisableWiki,
     DisablePM,
     DisableNips,
+    DisablePromotion,
     DisableIRC,
     DisableRequests,
     m.RequiredRatio,
@@ -655,7 +657,16 @@ if ($DisableNips != $Cur['DisableNips'] && check_perms('users_disable_any')) {
   $EditSummary[] = 'Nip earning ' . ($DisableNips ? 'disabled' : 'enabled');
   $HeavyUpdates['DisableNips'] = $DisableNips;
   if (!empty($UserReason)) {
-    Misc::send_pm($UserID, 0, 'Your Nip-earning ability has been disabled', "Your Nip-earning ability been disabled. The reason given was: [quote]{$UserReason}[/quote] If you would like to discuss this, please join ".BOT_DISABLED_CHAN.' on our IRC network. Instructions can be found [url='.site_url().'wiki.php?action=article&amp;name=IRC+-+How+to+join]here[/url].');
+    Misc::send_pm($UserID, 0, 'Your Nip-earning ability has been disabled', "Your Nip-earning ability has been disabled. The reason given was: [quote]{$UserReason}[/quote] If you would like to discuss this, please join ".BOT_DISABLED_CHAN.' on our IRC network. Instructions can be found [url='.site_url().'wiki.php?action=article&amp;name=IRC+-+How+to+join]here[/url].');
+  }
+}
+
+if ($DisablePromotion != $Cur['DisablePromotion'] && check_perms('users_disable_any')) {
+  $UpdateSet[] = "DisablePromotion = '$DisablePromotion'";
+  $EditSummary[] = 'Class purchasing ' . ($DisablePromotion ? 'disabled' : 'enabled');
+  $HeavyUpdates['DisablePromotion'] = $DisablePromotion;
+  if (!empty($UserReason)) {
+    Misc::send_pm($UserID, 0, 'Your promotion purchasing ability has been disabled', "Your promotion purchasing ability has been disabled. The reason given was: [quote]{$UserReason}[/quote] If you would like to discuss this, please join ".BOT_DISABLED_CHAN.' on our IRC network. Instructions can be found [url='.site_url().'wiki.php?action=article&amp;name=IRC+-+How+to+join]here[/url].');
   }
 }
 
