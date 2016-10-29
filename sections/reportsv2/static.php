@@ -573,7 +573,7 @@ if (count($Reports) === 0) {
         $Images = explode(' ', $Images);
         foreach ($Images as $Image) {
 ?>
-            <img style="max-width: 200px;" onclick="lightbox.init(this, 200);" src="<?=ImageTools::process($Image)?>" alt="Relevant image" />
+            <img style="max-width: 200px;" class="lightbox-init" src="<?=ImageTools::process($Image)?>" alt="Relevant image" />
 <?        } ?>
           </td>
         </tr>

@@ -192,7 +192,7 @@ View::show_header($Title, 'browse,comments,torrent,bbcode,recommend,cover_art,su
 <div id="covers">
 <div id="cover_div_<?=$Index?>">
 <?  if ($WikiImage != '') { ?>
-      <div><img width="100%" src="<?=ImageTools::process($WikiImage, true)?>" alt="<?=$AltName?>" onclick="lightbox.init('<?=ImageTools::process($WikiImage)?>', 245);" /></div>
+      <div><img width="100%" class="lightbox-init" src="<?=ImageTools::process($WikiImage, true)?>" alt="<?=$AltName?>" /></div>
 <?  } else { ?>
       <div><img width="100%" src="<?=STATIC_SERVER?>common/noartwork/comedy.png<? /*=$CategoryIcons[$GroupCategoryID - 1]*/ ?>" alt="<?=$Categories[$GroupCategoryID - 1]?>" class="brackets tooltip" title="<?=$Categories[$GroupCategoryID - 1]?>" height="220" border="0" /></div>
 <?
@@ -212,7 +212,7 @@ $Index++;
             $Src = 'src="' . ImageTools::process($Image, true) . '"';
           }
 ?>
-          <img id="cover_<?=$Index?>" width="100%" <?=$Src?> alt="<?=$Summary?>" onclick="lightbox.init('<?=ImageTools::process($Image)?>', 220);" />
+          <img id="cover_<?=$Index?>" class="lightbox-init" lightbox-img="<?=ImageTools::process($Image)?>" width="100%" <?=$Src?> alt="<?=$Summary?>" />
         </div>
         <ul class="stats nobullet">
           <li>
@@ -788,7 +788,7 @@ include(SERVER_ROOT.'/sections/torrents/voter_picks.php');
 <?
     foreach($Screenshots as $Screenshot) {
       $SSURL = ImageTools::process($Screenshot['Image'], false)
-      ?><img class='tooltip' title='<?=Users::format_username($Screenshot['UserID'], false, false, false)?> - <?=time_diff($Screenshot['Time'])?>' onclick="lightbox.init('<?=$SSURL?>', 220);" src="<?=$SSURL?>" /><?
+      ?><img class='tooltip lightbox-init' title='<?=Users::format_username($Screenshot['UserID'], false, false, false)?> - <?=time_diff($Screenshot['Time'])?>' src="<?=$SSURL?>" /><?
     }
 ?>
       </div>

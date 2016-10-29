@@ -219,4 +219,10 @@ $(function() {
       }
     })
   })
+
+  document.querySelectorAll('.lightbox-init').forEach(function(el) {
+    el.addEventListener('click', function(event) {
+      lightbox.init(el.attributes['lightbox-img']||el.src, el.attributes['lightbox-size']||el.width)
+    })
+  })
 })
