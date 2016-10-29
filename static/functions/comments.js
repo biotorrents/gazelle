@@ -391,34 +391,40 @@ StoreText.prototype = {
 };
 
 $(document).ready(function() {
-  var fadeSpeed = 0;
-  var avatars = new Array();
+  var fadeSpeed = 0
+  var avatars = new Array()
   $(".double_avatar").each(function() {
     if ($(this).data("gazelle-second-avatar")) {
-      var secondAvatar = $(this).data("gazelle-second-avatar");
-      var originalAvatar = $(this).attr("src");
+      var secondAvatar = $(this).data("gazelle-second-avatar")
+      var originalAvatar = $(this).attr("src")
       if ($.inArray(secondAvatar, avatars) == -1) {
-        avatars.push(secondAvatar);
-        image = new Image();
-        image.src = secondAvatar;
+        avatars.push(secondAvatar)
+        image = new Image()
+        image.src = secondAvatar
       }
       var that = $(this)
       $($(this).raw().parentNode.parentNode).hover(
         function() {
-          that.attr("src", secondAvatar);
+          that.attr("src", secondAvatar)
         },
         function() {
-          that.attr("src", originalAvatar);
+          that.attr("src", originalAvatar)
         }
       );
       $(this).one("load", function() {
-          var par = $(this).parents('.avatar');
+          var par = $(this).parents('.avatar')
           if (par.height()) {
-              par.raw().style.height = par.height()-2+'px';
+              par.raw().style.height = par.height()-2+'px'
           }
-      });
-      if(this.complete) $(this).load();
+      })
+      if (this.complete) $(this).load()
     }
 
-  });
-});
+  })
+
+  document.querySelectorAll('[quote-jump]').forEach(function(el) {
+    el.addEventListener('click', function(event) {
+      QuoteJump(event, el.attributes['quote-jump'].value)
+    })
+  })
+})

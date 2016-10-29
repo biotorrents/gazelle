@@ -827,7 +827,7 @@ class Text {
             if (isset($Exploded[1]) && (is_numeric($Exploded[1]) || (in_array($Exploded[1][0], array('a', 't', 'c', 'r')) && is_numeric(substr($Exploded[1], 1))))) {
               // the part after | is either a number or starts with a, t, c or r, followed by a number (forum post, artist comment, torrent comment, collage comment or request comment, respectively)
               $PostID = trim($Exploded[1]);
-              $Str .= '<a href="#" onclick="QuoteJump(event, \''.$PostID.'\'); return false;"><strong class="quoteheader">'.$Exploded[0].'</strong> wrote: </a>';
+              $Str .= '<a quote-jump="'.$PostID.'"><strong class="quoteheader">'.$Exploded[0].'</strong> wrote: </a>';
             }
             else {
               $Str .= '<strong class="quoteheader">'.$Exploded[0].'</strong> wrote: ';

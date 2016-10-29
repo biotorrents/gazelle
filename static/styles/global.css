@@ -96,7 +96,7 @@ div.collage_image {
   width: 20%;
 }
 
-[toggle-target] {
+[toggle-target], [quote-jump] {
   cursor: pointer;
 }
 
