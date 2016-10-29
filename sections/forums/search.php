@@ -334,7 +334,7 @@ while (list($ID, $Title, $ForumID, $ForumName, $LastTime, $PostID, $Body, $Threa
 <?
   }
   if ($Type == 'body') { ?>
-        <a href="#" onclick="$('#post_<?=$PostID?>_text').gtoggle(); return false;">(Show)</a> <span style="float: right;" class="tooltip last_read" title="Jump to post"><a href="forums.php?action=viewthread&amp;threadid=<?=$ID?><? if (!empty($PostID)) { echo "&amp;postid=$PostID#post$PostID"; } ?>"></a></span>
+        <a toggle-target="#post_<?=$PostID?>_text">(Show)</a> <span style="float: right;" class="tooltip last_read" title="Jump to post"><a href="forums.php?action=viewthread&amp;threadid=<?=$ID?><? if (!empty($PostID)) { echo "&amp;postid=$PostID#post$PostID"; } ?>"></a></span>
 <?  } ?>
       </td>
       <td>

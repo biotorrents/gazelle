@@ -283,7 +283,7 @@ if ($Old ?? false) {
     $Record['IP'] = apc_exists('DBKEY') ? DBCrypt::decrypt($Record['IP']) : '[Encrypted]';
 ?>
     <tr class="row">
-      <td><?=display_str($Record['Email'])?><?=(($MatchCount > 0) ? ' <a href="#" onclick="$(\'#matches_'.$j.'\').gtoggle(); return false;">('.$MatchCount.')</a>' : '')?></td>
+      <td><?=display_str($Record['Email'])?><?=(($MatchCount > 0) ? ' <a toggle-target="#matches_'.$j.'">('.$MatchCount.')</a>' : '')?></td>
       <td><?=time_diff($Record['StartTime'])?></td>
       <td><?=time_diff($Record['EndTime'])?></td>
       <td><?=time_diff($Record['ElapsedTime'])?></td>
@@ -353,7 +353,7 @@ $Invite['Email'] = apc_exists('DBKEY') ? DBCrypt::decrypt($Invite['Email']) : '[
 $Invite['IP'] = apc_exists('DBKEY') ? DBCrypt::decrypt($Invite['IP']) : '[Encrypted]';
 ?>
     <tr class="row">
-      <td><?=display_str($Invite['Email'])?><?=(($MatchCount > 0) ? ' <a href="#" onclick="$(\'#matches_invite\').gtoggle(); return false;">('.$MatchCount.')</a>' : '')?></td>
+      <td><?=display_str($Invite['Email'])?><?=(($MatchCount > 0) ? ' <a toggle-target="#matches_invite">('.$MatchCount.')</a>' : '')?></td>
       <td>Never</td>
       <td><?=time_diff($Invite['EndTime'])?></td>
       <td><?=time_diff($Invite['AccountAge'])?></td>

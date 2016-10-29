@@ -103,7 +103,7 @@ class DonationsView {
       <div class="box">
         <div class="head">
           <span><?=!empty($ProfileRewards['ProfileInfoTitle' . $i]) ? display_str($ProfileRewards['ProfileInfoTitle' . $i]) : "Extra Profile " . ($i + 1)?></span>
-          <span style="float: right;"><a href="#" onclick="$('#profilediv_<?=$i?>').gtoggle(); this.innerHTML = (this.innerHTML == 'Hide' ? 'Show' : 'Hide'); return false;" class="brackets">Hide</a></span>
+          <span style="float: right;"><a toggle-target="#profilediv_<?=$i?>" toggle-replace="Show" class="brackets">Hide</a></span>
         </div>
         <div class="pad profileinfo" id="profilediv_<?=$i?>">
 <?          echo Text::full_format($ProfileRewards['ProfileInfo' . $i]); ?>
@@ -121,7 +121,7 @@ class DonationsView {
 ?>
     <div class="box box2" id="donation_history_box">
       <div class="head">
-        Donation History <a href="#" onclick="$('#donation_history').gtoggle(); return false;" class="brackets" style="float: right;">Toggle</a>
+        Donation History <a toggle-target="#donation_history" class="brackets" style="float: right;">Toggle</a>
       </div>
       <div class="hidden" id="donation_history">
         <table cellpadding="6" cellspacing="1" border="0" class="border" width="100%">

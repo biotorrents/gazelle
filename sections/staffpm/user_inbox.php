@@ -24,7 +24,7 @@ $StaffPMs = $DB->query("
   <div class="header">
     <h2>Staff PMs</h2>
     <div class="linkbox">
-      <a href="#" onclick="$('#compose').gtoggle();" class="brackets">Compose new</a>
+      <a toggle-target="#compose" class="brackets">Compose new</a>
     </div>
   </div>
   <br />

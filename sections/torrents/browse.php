@@ -387,7 +387,7 @@ View::show_header('Browse Torrents', 'browse');
       <table class="layout cat_list" width="100%">
         <tr>
           <td class="label">
-            <a class="brackets" href="#" onclick="$('#taglist').gtoggle(); if (this.innerHTML == 'View tags') { this.innerHTML = 'Hide tags'; } else { this.innerHTML = 'View tags'; }; return false;"><?=(empty($LoggedUser['ShowTags']) ? 'View tags' : 'Hide tags')?></a>
+            <a class="brackets" toggle-target="#taglist" toggle-replace="<?=(empty($LoggedUser['ShowTags']) ? 'Hide tags' : 'View tags')?>"><?=(empty($LoggedUser['ShowTags']) ? 'View tags' : 'Hide tags')?></a>
           </td>
         </tr>
       </table>

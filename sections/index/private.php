@@ -457,7 +457,7 @@ $Cache->increment('usage_index');
   <div class="box" id="recommended">
     <div class="head colhead_dark">
       <strong>Latest Vanity House additions</strong>
-      <a href="#" onclick="$('#vanityhouse').gtoggle(); this.innerHTML = (this.innerHTML == 'Hide' ? 'Show' : 'Hide'); return false;" class="brackets">Show</a>
+      <a toggle-target="#vanityhouse", toggle-replace="Hide" class="brackets">Show</a>
     </div>
 
     <table class="torrent_table hidden" id="vanityhouse">
@@ -504,7 +504,7 @@ foreach ($News as $NewsItem) {
 <?  if (check_perms('admin_manage_news')) { ?>
         - <a href="tools.php?action=editnews&amp;id=<?=$NewsID?>" class="brackets">Edit</a>
 <?  } ?>
-      <span style="float: right;"><a href="#" onclick="$('#newsbody<?=$NewsID?>').gtoggle(); this.innerHTML = (this.innerHTML == 'Hide' ? 'Show' : 'Hide'); return false;" class="brackets">Hide</a></span>
+      <span style="float: right;"><a toggle-target="#newsbody<?=$NewsID?>" toggle-replace="Show" class="brackets">Hide</a></span>
       </div>
       <div id="newsbody<?=$NewsID?>" class="pad"><?=Text::full_format($Body)?></div>
     </div>

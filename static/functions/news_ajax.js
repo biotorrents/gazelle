@@ -32,9 +32,9 @@ function news_ajax(event, count, offset, privileged) {
           }));
           // I'm so happy with this condition statement.
           if (privileged) {
-            $('#news' + this[0]).append('<div class="head"><strong>' + this[1] + '</strong> ' + this[2] + ' - <a href="tools.php?action=editnews&amp;id=' + this[0] + '" class="brackets">Edit</a><span style="float: right;"><a class="brackets" onclick="$(\'#newsbody' + this[0] + '\').gtoggle(); this.innerHTML=(this.innerHTML == \'Hide\' ? \'Show\' : \'Hide\'); return false;" href="#">Hide</a></span></div>');
+            $('#news' + this[0]).append('<div class="head"><strong>' + this[1] + '</strong> ' + this[2] + ' - <a href="tools.php?action=editnews&amp;id=' + this[0] + '" class="brackets">Edit</a><span style="float: right;"><a class="brackets" toggle-target="#newsbody' + this[0] + '" toggle-replace="Show">Hide</a></span></div>');
           } else {
-            $('#news' + this[0]).append('<div class="head"><strong>' + this[1] + '</strong> ' + this[2] + '<span style="float: right;"><a class="brackets" onclick="$(\'#newsbody' + this[0] + '\').gtoggle(); this.innerHTML=(this.innerHTML == \'Hide\' ? \'Show\' : \'Hide\'); return false;" href="#">Hide</a></span></div>');
+            $('#news' + this[0]).append('<div class="head"><strong>' + this[1] + '</strong> ' + this[2] + '<span style="float: right;"><a class="brackets" toggle-target="#newsbody' + this[0] + '" toggle-replace="Show">Hide</a></span></div>');
           }
           $('#news' + this[0]).append('<div class="pad" id="newsbody'+this[0]+'">' + this[3] + '</div>');
         });

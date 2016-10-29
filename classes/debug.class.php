@@ -478,14 +478,14 @@ class DEBUG {
 ?>
   <table class="layout" width="100%">
     <tr>
-      <td align="left"><strong><a href="#" onclick="$('#debug_ocelot').gtoggle(); return false;" class="brackets">View</a> <?=number_format(count($OcelotRequests))?> Ocelot requests:</strong></td>
+      <td align="left"><strong><a toggle-target="#debug_ocelot" class="brackets">View</a> <?=number_format(count($OcelotRequests))?> Ocelot requests:</strong></td>
     </tr>
   </table>
   <table id="debug_ocelot" class="debug_table hidden" width="100%">
 <?    foreach ($OcelotRequests as $i => $Request) { ?>
     <tr>
       <td align="left" class="debug_data debug_ocelot_data">
-        <a href="#" onclick="$('#debug_ocelot_<?=$i?>').gtoggle(); return false"><?=display_str($Request['path'])?></a>
+        <a toggle-target="#debug_ocelot_<?=$i?>"><?=display_str($Request['path'])?></a>
         <pre id="debug_ocelot_<?=$i?>" class="hidden"><?=display_str($Request['response'])?></pre>
       </td>
       <td align="left" class="debug_info" style="width: 100px;">

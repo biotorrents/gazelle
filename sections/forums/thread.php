@@ -179,7 +179,7 @@ View::show_header($ThreadInfo['Title'] . ' &lt; '.$Forums[$ForumID]['Name'].' &l
     <div class="center">
       <a href="reports.php?action=report&amp;type=thread&amp;id=<?=$ThreadID?>" class="brackets">Report thread</a>
       <a href="#" onclick="Subscribe(<?=$ThreadID?>);return false;" id="subscribelink<?=$ThreadID?>" class="brackets"><?=(in_array($ThreadID, $UserSubscriptions) ? 'Unsubscribe' : 'Subscribe')?></a>
-      <a href="#" onclick="$('#searchthread').gtoggle(); this.innerHTML = (this.innerHTML == 'Search this thread' ? 'Hide search' : 'Search this thread'); return false;" class="brackets">Search this thread</a>
+      <a toggle-target="#searchthread" toggle-replace="Hide search" class="brackets">Search this thread</a>
     </div>
     <div id="searchthread" class="hidden center">
       <div style="display: inline-block;">
@@ -548,7 +548,7 @@ if (check_perms('site_moderate_forums')) {
   $Notes = G::$DB->to_array();
 ?>
   <br />
-  <h3 id="thread_notes">Thread notes</h3> <a href="#" onclick="$('#thread_notes_table').gtoggle(); return false;" class="brackets">Toggle</a>
+  <h3 id="thread_notes">Thread notes</h3> <a toggle-target="#thread_notes_table" class="brackets">Toggle</a>
   <form action="forums.php" method="post">
     <input type="hidden" name="action" value="take_topic_notes" />
     <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
@@ -582,7 +582,7 @@ if (check_perms('site_moderate_forums')) {
       <tr>
         <td class="label"><label for="sticky_thread_checkbox">Sticky</label></td>
         <td>
-          <input type="checkbox" id="sticky_thread_checkbox" onclick="$('#ranking_row').gtoggle();" name="sticky"<? if ($ThreadInfo['IsSticky']) { echo ' checked="checked"'; } ?> tabindex="2" />
+          <input type="checkbox" id="sticky_thread_checkbox" toggle-target="#ranking_row" name="sticky"<? if ($ThreadInfo['IsSticky']) { echo ' checked="checked"'; } ?> tabindex="2" />
         </td>
       </tr>
       <tr id="ranking_row"<?=!$ThreadInfo['IsSticky'] ? ' class="hidden"' : ''?>>

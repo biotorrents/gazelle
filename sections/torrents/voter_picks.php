@@ -39,7 +39,7 @@ if (count($Top10) > 0) {
 ?>
     <table class="box vote_matches_table" id="vote_matches">
       <tr class="colhead">
-        <td><a href="#">&uarr;</a>&nbsp;People who like this also liked... <a href="#" onclick="$('.votes_rows').gtoggle(); return false;" class="brackets" style="float: right;">Toggle</a></td>
+        <td><a href="#">&uarr;</a>&nbsp;People who like this also liked... <a toggle-target=".votes_rows" class="brackets" style="float: right;">Toggle</a></td>
       </tr>
 <?
   $Top10Groups = array_keys($Top10);

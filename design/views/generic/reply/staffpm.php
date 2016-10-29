@@ -22,6 +22,6 @@
 
         <input type="button" value="Preview" class="hidden button_preview_<?=$TextPrev->getID()?>" />
         <input type="submit" value="Send message" />
-        <input type="button" value="Hide" onclick="$('#compose').gtoggle(); return false;" />
+        <input type="button" value="Hide" toggle-target="#compose" />
       </form>
     </div>

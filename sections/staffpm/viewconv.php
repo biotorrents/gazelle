@@ -232,7 +232,7 @@ if ($ConvID = (int)$_GET['id']) {
   if ($Status != 'Resolved') { ?>
           <input type="button" value="Resolve" onclick="location.href='staffpm.php?action=resolve&amp;id=<?=$ConvID?>';" />
 <?    if ($IsFLS) { //Moved by request ?>
-          <input type="button" value="Common answers" onclick="$('#common_answers').gtoggle();" />
+          <input type="button" value="Common answers" toggle-target="#common_answers" />
 <?    } ?>
           <input type="button" id="previewbtn" value="Preview" class="hidden button_preview_<?=$TextPrev->getID()?>" />
           <input type="submit" value="Send message" />
@@ -242,7 +242,7 @@ if ($ConvID = (int)$_GET['id']) {
   }
   if (check_perms('users_give_donor')) { ?>
           <br />
-          <input type="button" value="Make Donor" onclick="$('#make_donor_form').gtoggle(); return false;" />
+          <input type="button" value="Make Donor" toggle-target="#make_donor_form" />
 <?  } ?>
         </form>
 <?  if (check_perms('users_give_donor')) { ?>

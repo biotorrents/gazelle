@@ -56,7 +56,7 @@ class TestingView {
         <div class="head">
           <span><?=self::render_method_definition($Method)?></span>
           <span style="float: right;">
-            <a href="#" class="brackets" onclick="$('#method_params_<?=$Index?>').gtoggle(); return false;">Params</a>
+            <a toggle-target="#method_params_<?=$Index?>" class="brackets">Params</a>
             <a href="#" class="brackets run" data-gazelle-id="<?=$Index?>" data-gazelle-class="<?=$ClassName?>" data-gazelle-method="<?=$MethodName?>">Run</a>
           </span>
         </div>

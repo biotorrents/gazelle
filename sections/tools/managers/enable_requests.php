@@ -139,8 +139,8 @@ $DB->set_query_id($QueryID);
     <a class="brackets tooltip" href="tools.php?action=enable_requests&amp;view=invalid_email&amp;<?=Format::get_url(array('view', 'action'))?>" title="Non-matching email address">Invalid Email</a>
     <a class="brackets tooltip" href="tools.php?action=enable_requests&amp;view=ip_overlap&amp;<?=Format::get_url(array('view', 'action'))?>" title="Requests with IP matches to other accounts">IP Overlap</a>
     <a class="brackets tooltip" href="tools.php?action=enable_requests&amp;view=manual_disable&amp;<?=Format::get_url(array('view', 'action'))?>" title="Requests for accounts that were not disabled for inactivity">Manual Disable</a>
-    <a class="brackets tooltip" href="" title="Show/Hide Search" onclick="$('#search_form').gtoggle(); return false;">Search</a>
-    <a class="brackets tooltip" href="" title="Show/Hide Search" onclick="$('#scores').gtoggle(); return false;">Scores</a>
+    <a class="brackets tooltip" title="Show/Hide Search" toggle-target="#search_form">Search</a>
+    <a class="brackets tooltip" title="Show/Hide Search" toggle-target="#scores">Scores</a>
 </div><br />
 <div class="thin">
     <table id="scores" class="hidden" style="width: 50%; margin: 0 auto;">

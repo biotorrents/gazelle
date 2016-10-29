@@ -96,6 +96,10 @@ div.collage_image {
   width: 20%;
 }
 
+[toggle-target] {
+  cursor: pointer;
+}
+
 button, input[type=button], input[type=submit] {
   cursor: pointer;
   background: #fff;

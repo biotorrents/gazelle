@@ -403,7 +403,7 @@ function build_torrents_table($Cache, $DB, $LoggedUser, $GroupID, $GroupName, $G
 <?  } ?>
               | <a href="torrents.php?torrentid=<?=($TorrentID)?>" class="tooltip" title="Permalink">PL</a>
             ]</span>
-            &raquo; <a href="#" onclick="$('#torrent_<?=($TorrentID)?>').gtoggle(); return false;"><?=($ExtraInfo)?></a>
+            &raquo; <a toggle-target="#torrent_<?=($TorrentID)?>"><?=($ExtraInfo)?></a>
           </td>
           <td class="number_column nobr"><?=(Format::get_size($Size))?></td>
           <td class="number_column"><?=(number_format($Snatched))?></td>

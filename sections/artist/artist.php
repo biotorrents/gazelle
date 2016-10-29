@@ -630,7 +630,7 @@ if (empty($SimilarArray)) {
       <div id="info" class="head">
         <a href="#">&uarr;</a>&nbsp;
         <strong>Information</strong>
-        <a href="#" class="brackets" onclick="$('#body').gtoggle(); return false;">Toggle</a>
+        <a class="brackets" toggle-target="#body">Toggle</a>
       </div>
       <div id="body" class="body"><?=Text::full_format($Body)?></div>
     </div>
@@ -656,7 +656,7 @@ if (count($Collages) > 0) {
     $Range = range(0,count($Collages) - 1);
     shuffle($Range);
     $Indices = array_slice($Range, 0, MAX_COLLAGES);
-    $SeeAll = ' <a href="#" onclick="$(\'.collage_rows\').gtoggle(); return false;">(See all)</a>';
+    $SeeAll = ' <a toggle-target=".collage_rows">(See all)</a>';
   } else {
     $Indices = range(0, count($Collages)-1);
     $SeeAll = '';

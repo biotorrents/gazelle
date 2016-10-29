@@ -210,4 +210,13 @@ $(function() {
     var a = $('[cover]')[0]
     if (a) preload(a.attributes.cover.value)
   }
+
+  document.querySelectorAll('[toggle-target]').forEach(function(el) {
+    el.addEventListener('click', function(event) {
+      $(el.attributes['toggle-target'].value).gtoggle()
+      if (el.attributes['toggle-replace']) {
+        [el.innerHTML, el.attributes['toggle-replace'].value] = [el.attributes['toggle-replace'].value, el.innerHTML]
+      }
+    })
+  })
 })

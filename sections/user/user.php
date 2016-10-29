@@ -646,7 +646,7 @@ if ($RatioWatchEnds != '0000-00-00 00:00:00'
     <div class="box">
       <div class="head">
         <?=!empty($InfoTitle) ? $InfoTitle : 'Profile';?>
-        <span style="float: right;"><a href="#" onclick="$('#profilediv').gtoggle(); this.innerHTML = (this.innerHTML == 'Hide' ? 'Show' : 'Hide'); return false;" class="brackets">Hide</a></span>&nbsp;
+        <span style="float: right;"><a toggle-target="#profilediv" toggle-replace="Show" class="brackets">Hide</a></span>&nbsp;
       </div>
       <div class="pad profileinfo" id="profilediv">
 <?
@@ -778,7 +778,7 @@ foreach ($Collages as $CollageInfo) {
     <div class="head">
       <?=display_str($CName)?> - <a href="collages.php?id=<?=$CollageID?>" class="brackets">See full</a>
       <span style="float: right;">
-        <a href="#" onclick="$('#collage<?=$CollageID?>_box .images').gtoggle(); this.innerHTML = (this.innerHTML == 'Hide' ? 'Show' : 'Hide'); return false;" class="brackets"><?=$FirstCol ? 'Hide' : 'Show' ?></a>
+        <a toggle-target="#collage<?=$CollageID?>_box .images" toggle-replace="<?=$FirstCol ? 'Show' : 'Hide' ?>" class="brackets"><?=$FirstCol ? 'Hide' : 'Show' ?></a>
       </span>
     </div>
     <div id="user_collage_images" class="collage_images">
@@ -828,7 +828,7 @@ if ((check_perms('users_view_invites')) && $Invited > 0) {
 ?>
     <div class="box" id="invitetree_box">
       <div class="head">
-        Invite Tree <span style="float: right"><a href="#" onclick="$('#invitetree').gtoggle(); return false;" class="brackets">Toggle</a></span>
+        Invite Tree <span style="float: right"><a toggle-target="#invitetree" class="brackets">Toggle</a></span>
       </div>
       <div id="invitetree" class="hidden">
 <?        $Tree->make_tree(); ?>
@@ -857,7 +857,7 @@ if (empty($LoggedUser['DisableRequests']) && check_paranoia_here('requestsvoted_
 ?>
     <div class="box" id="requests_box">
       <div class="head">
-        Requests <span style="float: right;"><a href="#" onclick="$('#requests').gtoggle(); return false;" class="brackets">Show</a></span>
+        Requests <span style="float: right;"><a toggle-target="#requests" class="brackets">Show</a></span>
       </div>
       <div id="requests" class="hidden">
         <table cellpadding="6" cellspacing="1" border="0" width="100%">
@@ -951,7 +951,7 @@ if (check_perms('users_mod', $Class) || $IsFLS) {
 ?>
     <div class="box" id="staffpms_box">
       <div class="head">
-        Staff PMs <a href="#" onclick="$('#staffpms').gtoggle(); return false;" class="brackets" style="float:right;">Toggle</a>
+        Staff PMs <a toggle-target="#staffpms" class="brackets" style="float:right;">Toggle</a>
       </div>
       <table width="100%" class="message_table hidden" id="staffpms">
         <tr class="colhead">
@@ -1026,7 +1026,7 @@ if (check_perms('users_mod', $Class)) { ?>
         Staff Notes
         <a href="#" name="admincommentbutton" onclick="ChangeTo('text'); return false;" class="brackets">Edit</a>
         <span style="float: right;">
-        <a href="#" onclick="$('#staffnotes').gtoggle(); return false;" class="brackets">Toggle</a>
+        <a toggle-target="#staffnotes" class="brackets">Toggle</a>
         </span>
       </div>
       <div id="staffnotes" class="pad">
