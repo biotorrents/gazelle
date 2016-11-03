@@ -139,7 +139,7 @@ View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'reques
           <td>
             <input type="text" id="catalogue" name="cataloguenumber" size="15" value="<?=(isset($CatalogueNumber)?$CatalogueNumber:'') ?>" <?=$Disabled?>/>
 <? if (empty($Disabled)) { ?>
-            ( <input type="button" onclick="JavAutofill()" value="Autofill" style="font-size:0.8em;"></input> )
+            ( <input type="button" autofill="jav" value="Autofill" style="font-size:0.8em;"></input> )
 <? } ?>
           </td>
         </tr>

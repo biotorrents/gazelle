@@ -205,7 +205,7 @@ class TORRENT_FORM {
         <td>
           <input type="text" id="catalogue" name="catalogue" size="10" value="<?=display_str($Torrent['CatalogueNumber']) ?>" <?=$this->Disabled?>/>
 <? if (!$this->DisabledFlag) { ?>
-          <input type="button" onclick="JavAutofill()" value="Autofill"></input>
+          <input type="button" autofill="jav" value="Autofill"></input>
 <? } ?>
         </td>
       </tr>
@@ -463,7 +463,7 @@ class TORRENT_FORM {
         <td>
           <input type="text" id="anidb" size="10" <?=$this->Disabled?>/>
 <? if (!$this->DisabledFlag) { ?>
-          <input type="button" onclick="AnidbAutofill()" value="Autofill"/>
+          <input type="button" autofill="anime" value="Autofill"/>
 <? } ?>
         </td>
       </tr>
@@ -712,7 +712,7 @@ class TORRENT_FORM {
         <td>
           <input type="text" id="catalogue" size="50" <?=$this->Disabled?> />
 <? if (!$this->DisabledFlag) { ?>
-          <input type="button" onclick="DoujAutofill()" value="Autofill"/>
+          <input type="button" autofill="douj" value="Autofill"/>
 <? } ?>
         </td>
       </tr>
