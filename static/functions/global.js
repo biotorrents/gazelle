@@ -201,6 +201,12 @@ function ungetCover(event) {
   coverCont.style.display = 'none'
 }
 
+// Apparently firefox doesn't implement NodeList.forEach until FF50
+// Remove this shim awter that's stable for a while
+if (typeof NodeList.prototype.forEach !== 'function') {
+  NodeList.prototype.forEach = Array.prototype.forEach
+}
+
 $(function() {
   if ($('#header_links_menu').length > 0) {
     $('#header_links_menu')[0].addEventListener('click', toggle_header_links)
