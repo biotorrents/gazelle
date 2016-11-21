@@ -145,13 +145,11 @@ echo $Val->GenerateJS('userform');
 <?  foreach ($Stylesheets as $Style) { ?>
             <div class="preview_wrapper">
               <div class="preview_image" name="<?=($Style['Name'])?>">
-                <a href="<?=STATIC_SERVER.'stylespreview/full_'.$Style['Name'].'.png'?>" target="_blank">
-                  <img src="<?=STATIC_SERVER.'stylespreview/thumb_'.$Style['Name'].'.png'?>" alt="<?=$Style['Name']?>" />
-                </a>
+                <img src="<?=STATIC_SERVER.'stylespreview/thumb_'.$Style['Name'].'.png'?>" alt="<?=$Style['Name']?>" />
+                <p class="preview_name">
+                  <label><input type="radio" name="stylesheet_gallery" value="<?=($Style['ID'])?>" /> <?=($Style['ProperName'])?></label>
+                </p>
               </div>
-              <p class="preview_name">
-                <label><input type="radio" name="stylesheet_gallery" value="<?=($Style['ID'])?>" /> <?=($Style['ProperName'])?></label>
-              </p>
             </div>
 <?  } ?>
           </div>

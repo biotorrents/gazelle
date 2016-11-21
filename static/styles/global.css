@@ -518,13 +518,11 @@ tr.torrent .bookmark>a:after {
 .preview_wrapper {
   position: relative;
   display: inline-block;
-  width: 29%;
-  height: 120px;
+  width: 40%;
   margin: 0 10px;
 }
 .preview_image {
   display: block;
-  height: 80px;
   cursor: pointer;
   overflow: hidden;
 }

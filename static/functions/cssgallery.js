@@ -14,7 +14,12 @@ $(document).ready(function () {
     var radiobutton = parent.find('input');
     radiobutton.prop('checked', true);
     $('select#stylesheet').val(radiobutton.attr('value'));
+    $('select#stylesheet').change();
     $('input#styleurl').val('');
+  })
+  // Passthrough image click to radio button
+  $('.preview_image').click(function(e) {
+    e.currentTarget.children[1].children[0].children[0].click()
   })
   // If the drop-down is changed, select the appropriate item in gallery, clear the custom CSS field
   $('select#stylesheet').change(function() {
@@ -44,4 +49,30 @@ $(document).ready(function () {
       $('#toggle_css_gallery').text($(this).is(':visible') ? 'Hide gallery' : 'Show gallery');
     });
   });
+  document.querySelectorAll('[name=style_additions\\[\\]]').forEach(function(el) {
+    el.addEventListener('change', function(e) {
+      if (e.target.checked) {
+        document.body.classList.add('style_'+e.target.value)
+      } else {
+        document.body.classList.remove('style_'+e.target.value)
+      }
+    })
+  })
+  var userstyle = $('link[rel=stylesheet][title]')[0]
+  $('select#stylesheet').on('change', function(e) {
+    var changetext = e.target.options[e.target.selectedIndex].text.toLowerCase()
+    userstyle.href = userstyle.href.replace(/\/[^\/]+?\/style.css/, '/'+changetext+'/style.css')
+    $('.style_addition').each(function(i, el){
+      if (el.id == 'style_addition_'+changetext) {
+        if (el.children.length) {
+          el.classList.remove('hidden')
+          $('#style_additions_tr')[0].classList.remove('hidden')
+        } else {
+          $('#style_additions_tr')[0].classList.add('hidden')
+        }
+      } else {
+        el.classList.add('hidden')
+      }
+    })
+  })
 });
