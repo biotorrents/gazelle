@@ -46,6 +46,7 @@ function Categories() {
       $('#resolution').gshow()
     }
     initAutocomplete()
+    initAutofill()
   });
 }
 
@@ -501,10 +502,12 @@ function MediaInfoExtract() {
   })
 }
 
-$(function() {
+function initAutofill() {
   document.querySelectorAll('[autofill]').forEach(function(el) {
     el.addEventListener('click', function(event) {
       ({'douj':DoujAutofill, 'anime':AnidbAutofill, 'jav':JavAutofill})[el.attributes['autofill'].value]()
     })
   })
-})
+}
+
+$(initAutofill)

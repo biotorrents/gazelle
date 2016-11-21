@@ -84,7 +84,7 @@ var lightbox = {
 window.onkeydown = function(e) {
   e = e || window.event
   if (e.keyCode == 37 || e.keyCode == 39) {
-    if ($('#lightbox') && !$('#lightbox').raw().classList.contains('hidden')) {
+    if ($('#lightbox').raw() && !$('#lightbox').raw().classList.contains('hidden')) {
       ($('[id!="lightbox"] > [src="'+$('#lightbox > img').raw().src+'"]').raw()[((e.keyCode==39)?'next':'previous')+'Sibling'].onclick||function(){})()
     }
   }
