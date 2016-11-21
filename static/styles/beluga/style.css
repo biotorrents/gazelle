@@ -1889,6 +1889,9 @@ tr.torrent:nth-of-type(even), tr.request:nth-of-type(even) {
   float: right
 }
 
+.tl_reported {
+  color: #e85a5a;
+}
 .tl_free {
   color: gold;
 }
