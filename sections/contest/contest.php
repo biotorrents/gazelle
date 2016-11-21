@@ -15,7 +15,7 @@ if (!($ContestSettings = $Cache->get_value("contest_settings"))) {
     list($Amount, $Currency)   = $DB->next_record();
   }
   $ContestSettings = array(
-    'query'  => $QueryPart ?? '1=2',
+    'query'  => html_entity_decode($QueryPart ?? '1=2', ENT_QUOTES),
     'rules'  => $Rules,
     'start'  => $StartTime ?? 0,
     'end'    => $EndTime ?? 0,
