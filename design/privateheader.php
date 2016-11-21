@@ -131,7 +131,12 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
 }
 ?>
 </head>
-<body id="<?=$Document == 'collages' ? 'collage' : $Document?>">
+<?
+  if (!empty(G::$LoggedUser['StyleAdditions'])) {
+    $BodyStyles = 'style_'.implode(' style_', G::$LoggedUser['StyleAdditions']);
+  }
+?>
+<body id="<?=$Document == 'collages' ? 'collage' : $Document?>" class="<?=($BodyStyles??'')?>">
   <div id="wrapper">
     <h1 class="hidden"><?=SITE_NAME?></h1>
     <div id="header">

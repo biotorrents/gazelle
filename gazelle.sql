@@ -1063,6 +1063,7 @@ CREATE TABLE `stylesheets` (
   `Name` varchar(255) NOT NULL,
   `Description` varchar(255) NOT NULL,
   `Default` enum('0','1') NOT NULL DEFAULT '0',
+  `Additions` text,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB CHARSET=utf8;
 

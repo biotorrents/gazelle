@@ -140,8 +140,8 @@ echo $Val->GenerateJS('userform');
             <option value="<?=($Style['ID'])?>"<?=$Style['ID'] == $StyleID ? ' selected="selected"' : ''?>><?=($Style['ProperName'])?></option>
 <?  } ?>
           </select>&nbsp;&nbsp;
-          <a href="#" id="toggle_css_gallery" class="brackets">Show gallery</a>
-          <div id="css_gallery">
+          <a toggle-target="#css_gallery" class="brackets">Show gallery</a>
+          <div id="css_gallery" class="hidden">
 <?  foreach ($Stylesheets as $Style) { ?>
             <div class="preview_wrapper">
               <div class="preview_image" name="<?=($Style['Name'])?>">
@@ -156,6 +156,24 @@ echo $Val->GenerateJS('userform');
 <?  } ?>
           </div>
         </td>
+      </tr>
+      <tr id="style_additions_tr" class="<?=$Stylesheets[$LoggedUser['StyleID']]['Additions'][0]?'':'hidden'?>">
+        <td class="label tooltip" title="Select changes that you want made to your chosen stylesheet"><strong>Stylesheet additions</strong></td>
+        <td> <?
+          foreach($Stylesheets as $Style) {
+            $StyleAdditions = explode('|',$Style['Additions']);
+            ?> <ul class="nobullet style_addition<?=$Style['ID']==$Stylesheets[$LoggedUser['StyleID']]['ID']?'':' hidden'?>" id="style_addition_<?=$Style['Name']?>"> <?
+            foreach($StyleAdditions as $i => $Addition) {
+              if ($Addition) { ?>
+                <li>
+                <input type="checkbox" name="style_additions[]" value="<?=$Addition?>" id="addition_<?=$Addition?>"<?=(in_array($Addition, $SiteOptions['StyleAdditions']??[])?' checked="checked"':'')?>>
+                  <label for="addition_<?=$Addition?>"><?=explode('|',$Style['ProperAdditions'])[$i]?></label>
+                </li>
+           <? }
+            }
+            ?> </ul> <?
+          }
+        ?> </td>
       </tr>
       <tr id="site_extstyle_tr">
         <td class="label tooltip" title="Providing a link to an externally-hosted stylesheet will override your default stylesheet selection."><strong>External stylesheet URL</strong></td>

@@ -28,7 +28,7 @@
 .group .cats_anime:after, .group .cats_movies:after,
 .group .cats_manga:after, .group .cats_games:after,
 .group .cats_other:after {
-  color: black;
+  color: black!important;
 }
 .cats_anime:after {
   content: "ANM";
@@ -83,11 +83,7 @@ b,strong {
   font-weight: 400!important
 }
 
-::selection {
-  background: #3eaca7
-}
-
-::-moz-selection {
+::selection, ::-moz-selection {
   background: #3eaca7
 }
 
@@ -442,7 +438,7 @@ p.min_padding {
 }
 
 .alertbar {
-  background: linear-gradient(#186c77,#20717c);
+  background-color: #186c77;
   text-align: center;
   color: #fff;
   font-size: 10pt;
@@ -658,12 +654,12 @@ input[value="Make Default"] {
   background: #055363!important;
   font-size: .9em!important;
   color: #fff!important;
-  padding: 0!important
+  padding: 0!important;
 }
 
 .ui-widget-header {
   background: none!important;
-  border: none!important
+  border: none!important;
 }
 
 .ui-state-default {
@@ -671,89 +667,78 @@ input[value="Make Default"] {
   border: none!important;
   width: 48px!important;
   height: 36px!important;
-  margin: 1px!important
+  margin: 1px!important;
 }
 
 .ui-state-default a {
   margin-left: 3px!important;
-  margin-top: 4px!important
+  margin-top: 4px!important;
 }
 
 .ui-state-active,.ui-tabs-selected,.ui-widget-content .ui-state-active,.ui-widget-header .ui-state-active {
   background: #2c2f36!important;
   color: #fff;
-  margin: 1px!important
+  margin: 1px!important;
 }
 
 .ui-state-hover,.ui-widget-content .ui-state-hover,.ui-widget-header .ui-state-hover {
   background: #222429!important;
-  color: #fff
+  color: #fff;
 }
 
 .ui-tabs {
   width: 636px!important;
   font-size: 1.1em!important;
-  background-color: #2c2f36!important
+  background-color: #2c2f36!important;
 }
 
 .ui-tabs .ui-tabs-panel {
-  background-color: #2c2f36!important
+  background-color: #2c2f36!important;
 }
 
 .ui-tabs-nav {
   width: 48px!important;
   margin-top: -8px!important;
   margin-bottom: -10px!important;
-  margin-left: -1px!important
+  margin-left: -1px!important;
 }
 
 .ui-tabs-panel {
-  width: 564px!important
+  width: 564px!important;
 }
 
 .ui-corner-all {
   -moz-border-radius: 0!important;
   -webkit-border-radius: 0!important;
-  border-radius: 0!important
+  border-radius: 0!important;
 }
 
 .ui-corner-left {
   border-top-left-radius: 0!important;
-  border-bottom-left-radius: 0!important
+  border-bottom-left-radius: 0!important;
 }
 
 .ui-autocomplete-loading {
   background-color: #2c2f36!important;
-  background-image: none!important
-}
-
-#lumen_exchange_dialog {
-  font-size: 1em!important;
-  padding: 0 0 0 40px!important;
-  background-color: #2c2f36!important
-}
-
-#lumen_exchange_dialog td[style="text-align: center; font-weight: bold;"] {
-  padding-right: 40px;
-  font-weight: 300!important
+  background-image: none!important;
 }
 
 .ui-dialog-titlebar.ui-widget-header.ui-corner-all.ui-helper-clearfix {
-  background-color: #2c2f36!important
+  background-color: #2c2f36!important;
 }
 
 #recommend td[width="1%"] {
-  color: transparent
+  color: transparent;
 }
 
 .welcome {
   font-size: 1em;
   background-color: #282828;
-  border: 1px solid #303030
+  border: 1px solid #303030;
 }
 
 .b1h,.b2bh,.b2h,.b3bh,.b3h,.b4bh,.b4h,.contenth {
-  background: none!important
+  background: none!important;
 }
 
 .b1bh,.b1h,.b2bh,.b2h,.b3bh,.b3h,.b4bh,.b4h {
@@ -761,13 +746,13 @@ input[value="Make Default"] {
   border-left: 0 solid #aaa!important;
   border-right: 0 solid #aaa!important;
   height: 2px;
-  margin: 0 1px
+  margin: 0 1px;
 }
 
 .contenth {
   border-left: 0 hidden!important;
   border-right: 0 hidden!important;
-  color: #fff!important
+  color: #fff!important;
 }
 
 .head {
@@ -782,42 +767,42 @@ input[value="Make Default"] {
 div[style="padding-top:8px;background-color:#322;color:#ecc;"] {
   padding-top: 8px!important;
   background-color: #c1696a!important;
-  color: #ecc!important
+  color: #ecc!important;
 }
 
 #reseed_box {
-  padding-bottom: 0
+  padding-bottom: 0;
 }
 
 #reseed_box .sign {
-  text-align: left
+  text-align: left;
 }
 
 #reseed_box #swapreseed {
   color: #85878F;
   position: relative;
-  left: 468px
+  left: 468px;
 }
 
 #reseed_box #swapreseed:hover {
-  color: #92d4a0
+  color: #92d4a0;
 }
 
 #reseed_box .head {
-  margin-bottom: 2px!important
+  margin-bottom: 2px!important;
 }
 
 .tags {
   font-style: italic;
-  padding: 0 0 0 20px
+  padding: 0 0 0 20px;
 }
 
 .tags a {
-  color: #7e7e7e
+  color: #7e7e7e;
 }
 
 ul.nobullet {
-  padding-bottom: 2px
+  padding-bottom: 2px;
 }
 
 ul.nobullet, ul.nobullet li {
@@ -2041,4 +2026,72 @@ caption {
 tbody .staff_post {
   background: none;
   background-color: #634852;
+}
+
+/* Pink Additions */
+
+body.style_pink .cats_anime:after { color: #78467f; }
+body.style_pink .group .cats_anime { background-color: #78467f; }
+body.style_pink .cats_movies:after { color: #4f3063; }
+body.style_pink .group .cats_movies { background-color: #4f3063; }
+body.style_pink .cats_manga:after { color: #9f5c9c; }
+body.style_pink .group .cats_manga { background-color: #9f5c9c; }
+body.style_pink .cats_games:after { color: #c871b9; }
+body.style_pink .group .cats_games { background-color: #c871b9; } 
+body.style_pink .cats_other:after { color: #ef86d5; }
+body.style_pink .group .cats_other { background-color: #ef86d5; }
+body.style_pink a:hover { color: #db7bc7; }
+body.style_pink ::selection,
+body.style_pink ::-moz-selection {
+  background: #8b518e;
+}
+body.style_pink button,
+body.style_pink input[type=button],
+body.style_pink input[type=submit] {
+  background-color: #8b518e;
+}
+body.style_pink button:hover,
+body.style_pink input[type=button]:hover,
+body.style_pink input[type=submit]:hover {
+  background-color: #643c72;
+}
+body.style_pink button:focus,
+body.style_pink input[type=button]:focus,
+body.style_pink input[type=submit]:focus {
+  background-color: #78467f;
+}
+body.style_pink #userinfo_stats { color: #db7bc7; }
+body.style_pink #menu > ul > li:nth-of-type(1) > a { background-color: #3b2655; }
+body.style_pink #menu > ul > li:nth-of-type(2) > a { background-color: #4f3063; }
+body.style_pink #menu > ul > li:nth-of-type(3) > a { background-color: #643c72; }
+body.style_pink #menu > ul > li:nth-of-type(4) > a { background-color: #78467f; }
+body.style_pink #menu > ul > li:nth-of-type(5) > a { background-color: #8b518e; }
+body.style_pink #menu > ul > li:nth-of-type(6) > a { background-color: #9f5c9c; }
+body.style_pink #menu > ul > li:nth-of-type(7) > a { background-color: #b367aa; }
+body.style_pink #menu > ul > li:nth-of-type(8) > a { background-color: #c871b9; }
+body.style_pink #menu > ul > li:nth-of-type(9) > a { background-color: #db7bc7; }
+body.style_pink #menu > ul > li:nth-of-type(10) > a { background-color: #ef86d5; }
+body.style_pink .alertbar { background-color: #4f3063; }
+body.style_pink .hide_torrents > .show_torrents_link:after,
+body.style_pink .show_torrents > .show_torrents_link:after,
+body.style_pink .show_torrents > .show_torrents_link:before {
+  background-color: #b367aa;
+}
+body.style_pink .forum_index td.read:after { background-color: #643c72; }
+body.style_pink .forum_index td.unread:after { background-color: #db7bc7; }
+body.style_pink .forum_index td.read_sticky:after,
+body.style_pink .forum_index td.read_locked_sticky:after {
+  border-bottom: 10px solid #643c72;
+}
+body.style_pink .forum_index td.read_locked:before,
+body.style_pink .forum_index td.read_locked_sticky:before {
+  background-color: #643c72;
+}
+body.style_pink .forum_index td.unread_sticky:after,
+body.style_pink .forum_index td.unread_locked_sticky:after {
+  border-bottom: 10px solid #db7bc7;
+}
+body.style_pink .forum_index td.unread_locked:before,
+body.style_pink .forum_index td.unread_locked_sticky:before {
+  background-color: #db7bc7;
 }

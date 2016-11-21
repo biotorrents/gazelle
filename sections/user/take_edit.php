@@ -212,9 +212,7 @@ if (!empty($LoggedUser['DefaultSearch'])) {
 }
 $Options['DisableGrouping2']    = (!empty($_POST['disablegrouping']) ? 0 : 1);
 $Options['TorrentGrouping']     = (!empty($_POST['torrentgrouping']) ? 1 : 0);
-//$Options['DiscogView']          = (!empty($_POST['discogview']) ? 1 : 0);
 $Options['PostsPerPage']        = (int)$_POST['postsperpage'];
-//$Options['HideCollage']         = (!empty($_POST['hidecollage']) ? 1 : 0);
 $Options['CollageCovers']       = (empty($_POST['collagecovers']) ? 0 : $_POST['collagecovers']);
 $Options['ShowTorFilter']       = (empty($_POST['showtfilter']) ? 0 : 1);
 $Options['ShowTags']            = (!empty($_POST['showtags']) ? 1 : 0);
@@ -235,6 +233,7 @@ $Options['HideLolicon']         = (int)!empty($_POST['hide_lolicon']);
 $Options['HideScat']            = (int)!empty($_POST['hide_scat']);
 $Options['HideSnuff']           = (int)!empty($_POST['hide_snuff']);
 $Options['AutoComplete']        = (int)$_POST['autocomplete'];
+$Options['StyleAdditions']      = $_POST['style_additions'] ?? [];
 
 if (isset($LoggedUser['DisableFreeTorrentTop10'])) {
   $Options['DisableFreeTorrentTop10'] = $LoggedUser['DisableFreeTorrentTop10'];

@@ -512,7 +512,6 @@ tr.torrent .bookmark>a:after {
 }
 /* Stylesheet gallery in user profile editing */
 #css_gallery {
-  display: none;
   overflow: hidden;
   margin-top: 10px;
 }

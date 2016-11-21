@@ -279,7 +279,9 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
       SELECT
         ID,
         LOWER(REPLACE(Name, " ", "_")) AS Name,
-        Name AS ProperName
+        Name AS ProperName,
+        LOWER(REPLACE(Additions, " ", "_")) AS Additions,
+        Additions AS ProperAdditions
       FROM stylesheets');
     $Stylesheets = $DB->to_array('ID', MYSQLI_BOTH);
     $Cache->cache_value('stylesheets', $Stylesheets, 0);
