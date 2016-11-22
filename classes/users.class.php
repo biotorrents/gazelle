@@ -319,7 +319,7 @@ class Users {
    */
   public static function check_password($Password, $Hash) {
     if (!$Password || !$Hash) { return false; }
-    return password_verify(hash("sha512", $Password, true), $Hash);
+    return password_verify(str_replace("\0","",hash("sha512", $Password, true)), $Hash);
   }
 
   /**
@@ -329,7 +329,7 @@ class Users {
    * @return salted hash
    */
   public static function make_sec_hash($Str) {
-    return password_hash(hash("sha512", $Str, true), PASSWORD_DEFAULT);
+    return password_hash(str_replace("\0","",hash("sha512", $Str, true)), PASSWORD_DEFAULT);
   }
 
   /**
