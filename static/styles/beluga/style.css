@@ -2028,6 +2028,22 @@ tbody .staff_post {
   background-color: #634852;
 }
 
+/* Fucking noty */
+.noty_bar {
+	border-left: #3eaca7 2px solid;
+}
+
+#noty_bottomRight_layout_container li {
+	background-color: #52555c !important;
+	color: #E9E9E9 !important;
+	border: none !important;
+}
+
+.noty_buttons {
+	background-color: #2c2f36 !important;
+	border-top: none !important;
+}
+
 /* Pink Additions */
 
 body.style_pink .cats_anime:after { color: #78467f; }
@@ -2094,4 +2110,7 @@ body.style_pink .forum_index td.unread_locked_sticky:after {
 body.style_pink .forum_index td.unread_locked:before,
 body.style_pink .forum_index td.unread_locked_sticky:before {
   background-color: #db7bc7;
+}
+body.style_pink .noty_bar {
+	border-left: #ef86d5 2px solid;
 }
