@@ -41,5 +41,6 @@ We use new PHP password hashing features that automatically rehash your password
 
 * When a torrent is trumped, the new torrent is made freeleech to users who snatched the old torrent for a few days.
 * Sends headers to tell cloudflare to use HTTP/2 Server Push for most resources.
-* An attempt has been made to support magnet links. This has shown partial success.
+* BTN-style magnet link support.
+* Support for optional per-user stylesheet additions and tweaks
 * This codebase expects to run over https only.
