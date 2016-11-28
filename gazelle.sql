@@ -1069,8 +1069,8 @@ CREATE TABLE `stylesheets` (
 
 CREATE TABLE `tag_aliases` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
-  `BadTag` varchar(30) DEFAULT NULL,
-  `AliasTag` varchar(30) DEFAULT NULL,
+  `BadTag` varchar(255) DEFAULT NULL,
+  `AliasTag` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `BadTag` (`BadTag`),
   KEY `AliasTag` (`AliasTag`)
