@@ -23,7 +23,7 @@ if ($DB->has_results()) {
     $Worked = true;
   } else {
     $Worked = false;
-    $ErrMessage = "Not enough Nips.";
+    $ErrMessage = "Not enough ".BONUS_POINTS.".";
   }
 }
 

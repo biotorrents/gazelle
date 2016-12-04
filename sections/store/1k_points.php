@@ -17,7 +17,7 @@ if ($DB->has_results()) {
       WHERE ID = $UserID");
     $DB->query("
       UPDATE users_info
-      SET AdminComment = CONCAT('".sqltime()." - Purchased 1,000 Nips from the store\n\n', AdminComment)
+      SET AdminComment = CONCAT('".sqltime()." - Purchased 1,000 ".BONUS_POINTS." from the store\n\n', AdminComment)
       WHERE UserID = $UserID");
     $Cache->delete_value('user_info_heavy_'.$UserID);
     $Cache->delete_value('user_stats_'.$UserID);

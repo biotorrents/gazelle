@@ -1,12 +1,12 @@
 <?
 enforce_login();
 
-if ($LoggedUser['DisableNips']) {
+if ($LoggedUser['DisablePoints']) {
   View::show_header('Store'); ?>
   <div class='thin'>
     <h2 id='general'>Denied</h2>
     <div class='box pad' style='padding: 10px 10px 10px 20px;'>
-      <p>You are not allowed to spend nips.</p>
+    <p>You are not allowed to spend <?=BONUS_POINTS?>.</p>
     </div>
   </div>
   <? View::show_footer();

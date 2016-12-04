@@ -161,7 +161,7 @@ class Users {
           i.DisableWiki,
           i.DisableAvatar,
           i.DisablePM,
-          i.DisableNips,
+          i.DisablePoints,
           i.DisablePromotion,
           i.DisableRequests,
           i.DisableForums,

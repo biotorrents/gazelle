@@ -84,7 +84,7 @@ if (isset($_POST['donation'])) {
   <div class="thin">
     <h2 id="general">Donation Successful</h2>
     <div class="box pad" style="padding: 10px 10px 10px 20px;">
-      <p>You donated <?=number_format($Donation)?> nips to the Freeleech Pool</p>
+      <p>You donated <?=number_format($Donation)?> <?=BONUS_POINTS?> to the Freeleech Pool</p>
 <? if ($PoolTipped) { ?>
       <p>Your donation triggered a freeleech!</p>
 <? } ?>
@@ -111,7 +111,7 @@ if (isset($_POST['donation'])) {
       <form action="store.php" method="POST">
         <input type="hidden" name="item" value="freeleechpool">
         <strong>
-        There are currently <?=number_format($Pool)?> nips in the Freeleech Pool
+        There are currently <?=number_format($Pool)?> <?=BONUS_POINTS?> in the Freeleech Pool
         </strong>
         <br><br>
         <input type="text" name="donation" value="">

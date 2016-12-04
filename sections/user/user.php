@@ -63,7 +63,7 @@ if (check_perms('users_mod')) { // Person viewing is a staff member
       i.DisableUpload,
       i.DisableWiki,
       i.DisablePM,
-      i.DisableNips,
+      i.DisablePoints,
       i.DisablePromotion,
       i.DisableIRC,
       i.DisableRequests," . "
@@ -84,7 +84,7 @@ if (check_perms('users_mod')) { // Person viewing is a staff member
     header("Location: log.php?search=User+$UserID");
   }
 
-  list($Username, $Email, $LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $CustomTitle, $torrent_pass, $Enabled, $Paranoia, $Invites, $DisableLeech, $Visible, $BonusPoints, $JoinDate, $Info, $Avatar, $AdminComment, $Donor, $Artist, $Warned, $SupportFor, $RestrictedForums, $PermittedForums, $InviterID, $InviterName, $ForumPosts, $RatioWatchEnds, $RatioWatchDownload, $DisableAvatar, $DisableInvites, $DisablePosting, $DisableForums, $DisableTagging, $DisableUpload, $DisableWiki, $DisablePM, $DisableNips, $DisablePromotion, $DisableIRC, $DisableRequests, $FLTokens, $CommentHash, $InfoTitle, $LockedAccount) = $DB->next_record(MYSQLI_NUM, array(8, 11));
+  list($Username, $Email, $LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $CustomTitle, $torrent_pass, $Enabled, $Paranoia, $Invites, $DisableLeech, $Visible, $BonusPoints, $JoinDate, $Info, $Avatar, $AdminComment, $Donor, $Artist, $Warned, $SupportFor, $RestrictedForums, $PermittedForums, $InviterID, $InviterName, $ForumPosts, $RatioWatchEnds, $RatioWatchDownload, $DisableAvatar, $DisableInvites, $DisablePosting, $DisableForums, $DisableTagging, $DisableUpload, $DisableWiki, $DisablePM, $DisablePoints, $DisablePromotion, $DisableIRC, $DisableRequests, $FLTokens, $CommentHash, $InfoTitle, $LockedAccount) = $DB->next_record(MYSQLI_NUM, array(8, 11));
 } else { // Person viewing is a normal user
   $DB->query("
     SELECT
@@ -270,12 +270,12 @@ if ($Avatar && Users::has_avatars_enabled()) {
     </div>
 <?
 }
-if (!$OwnProfile && !$LoggedUser['DisableNips']) { ?>
-    <div class='box nip_gift_box'>
-      <div class='head colhead_dark'>Send Nips</div>
+if (!$OwnProfile && !$LoggedUser['DisablePoints']) { ?>
+    <div class='box point_gift_box'>
+    <div class='head colhead_dark'>Send <?=BONUS_POINTS?></div>
       <div class="pad">
         <form action='user.php' method='post'>
-          <input type='hidden' name='action' value='nips' />
+          <input type='hidden' name='action' value='points' />
           <input type='hidden' name='to' value='<?=$UserID?>' />
           <input type='text' name='amount' placeholder='Amount' /><input type='submit' value='Send' /><br>
           <textarea name='message' rows='2' placeholder='Message'></textarea><br>
@@ -308,11 +308,11 @@ if ($LoggedUser['Class'] >= 200 || $DB->has_results()) { ?>
 ?>
       <p>This user is wild and level <?=$Level?></p>
 <?  if (!$OwnProfile) { ?>
-      <p>Try to capture them with nips? The more you spend, the higher the chance of capture</p>
+      <p>Try to capture them with <?=BONUS_POINTS?>? The more you spend, the higher the chance of capture</p>
       <form action='store.php' method='post'>
         <input type='hidden' name='item' value='capture_user' />
         <input type='hidden' name='target' value='<?=$UserID?>' />
-        <input type='text' name='amount' placeholder='Nips' /><input type='submit' value='Capture' />
+        <input type='text' name='amount' placeholder='<?=BONUS_POINTS?>' /><input type='submit' value='Capture' />
       </form>
 <?  }
   } ?>
@@ -1150,11 +1150,11 @@ if (check_perms('users_mod', $Class)) { ?>
         </td>
       </tr>
       <tr>
-        <td class="label">Nips:</td>
+      <td class="label"><?=BONUS_POINTS?>:</td>
         <td>
           <input type="text" size="20" name="BonusPoints" value="<?=$BonusPoints?>" />
 <?
-if (!$DisableNips) {
+if (!$DisablePoints) {
   $PointsRate = 0.5;
   $getTorrents = $DB->query("
     SELECT COUNT(DISTINCT x.fid) AS Torrents,
@@ -1178,11 +1178,11 @@ if (!$DisableNips) {
     $PointsRate += (0.67*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5,($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3));
   }
   $PointsRate = intval($PointsRate**0.95);
-  $PointsPerHour = number_format($PointsRate) . " nips/hour";
-  $PointsPerDay = number_format($PointsRate*24) . " nips/day";
+  $PointsPerHour = number_format($PointsRate)." ".BONUS_POINTS."/hour";
+  $PointsPerDay = number_format($PointsRate*24)." ".BONUS_POINTS."/day";
 } else {
-  $PointsPerHour = "0 nips/hour";
-  $PointsPerDay = "Nips disabled";
+  $PointsPerHour = "0 ".BONUS_POINTS."/hour";
+  $PointsPerDay = BONUS_POINTS." disabled";
 }
 ?>
           <?=$PointsPerHour?> (<?=$PointsPerDay?>)
@@ -1391,7 +1391,7 @@ if (!$DisableNips) {
           <input type="checkbox" name="DisableLeech" id="DisableLeech"<? if ($DisableLeech == 0) { ?> checked="checked"<? } ?> /> <label for="DisableLeech">Leech</label> |
           <input type="checkbox" name="DisableRequests" id="DisableRequests"<? if ($DisableRequests == 1) { ?> checked="checked"<? } ?> /> <label for="DisableRequests">Requests</label> |
           <input type="checkbox" name="DisableUpload" id="DisableUpload"<? if ($DisableUpload == 1) { ?> checked="checked"<? } ?> /> <label for="DisableUpload">Torrent upload</label> |
-          <input type="checkbox" name="DisableNips" id="DisableNips"<? if ($DisableNips == 1) { ?> checked="checked"<? } ?> /> <label for="DisableNips">Nips</label>
+          <input type="checkbox" name="DisablePoints" id="DisablePoints"<? if ($DisablePoints == 1) { ?> checked="checked"<? } ?> /> <label for="DisablePoints"><?=BONUS_POINTS?></label>
           <br /><br />
 
           <input type="checkbox" name="DisableTagging" id="DisableTagging"<? if ($DisableTagging == 1) { ?> checked="checked"<? } ?> /> <label for="DisableTagging" class="tooltip" title="This only disables a user's ability to delete tags.">Tagging</label> |

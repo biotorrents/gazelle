@@ -337,7 +337,7 @@ if (check_perms('site_send_unlimited_invites')) {
 <?  }
 ?>
           <li id="bonus_points">
-            <a href="wiki.php?action=article&amp;id=8">Nips</a>:
+            <a href="wiki.php?action=article&amp;id=8"><?=BONUS_POINTS?></a>:
             <span class="stat">
               <a href="store.php"><?=number_format(G::$LoggedUser['BonusPoints'])?></a>
             </span>

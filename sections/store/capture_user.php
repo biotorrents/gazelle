@@ -75,11 +75,11 @@ if (isset($_POST['target']) && isset($_POST['amount'])) {
       <form action="store.php" method="POST">
         <input type="hidden" name="item" value="capture_user">
         <strong>
-          Enter the name of the user you want to capture and the nips you want to spend
+        Enter the name of the user you want to capture and the <?=BONUS_POINTS?> you want to spend
         </strong>
         <br>
         <input type="text" name="target_name" placeholder="Username">
-        <input type="text" name="amount" placeholder="Nips">
+        <input type="text" name="amount" placeholder="<?=BONUS_POINTS?>">
         <input type="submit">
       </form>
       <p><a href="/store.php">Back to Store</a></p>

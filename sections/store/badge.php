@@ -39,7 +39,7 @@ if (!$BadgeID) {
         $Cache->delete_value("user_info_heavy_$UserID");
       }
     } else {
-      $Err = 'Not enough Nips.';
+      $Err = 'Not enough '.BONUS_POINTS.'.';
     }
   }
 }

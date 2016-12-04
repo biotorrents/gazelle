@@ -2,7 +2,7 @@
 $UserID = $LoggedUser['ID'];
 $PermID = $LoggedUser['PermissionID'];
 
-if (!$LoggedUser['DisableNips']) {
+if (!$LoggedUser['DisablePoints']) {
   $PointsRate = 0.5;
   $getTorrents = $DB->query("
     SELECT COUNT(DISTINCT x.fid) AS Torrents,
@@ -26,11 +26,11 @@ if (!$LoggedUser['DisableNips']) {
     $PointsRate += (0.55*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5,($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3));
   }
   $PointsRate = intval($PointsRate**0.95);
-  $PointsPerHour = number_format($PointsRate) . " nips/hour";
-  $PointsPerDay = number_format($PointsRate*24) . " nips/day";
+  $PointsPerHour = number_format($PointsRate) . " ".BONUS_POINTS."/hour";
+  $PointsPerDay = number_format($PointsRate*24) . " ".BONUS_POINTS."/day";
 } else {
-  $PointsPerHour = "0 nips/hour";
-  $PointsPerDay = "Nips disabled";
+  $PointsPerHour = "0 ".BONUS_POINTS."/hour";
+  $PointsPerDay = BONUS_POINTS." disabled";
 }
 
 //Include the header
@@ -39,7 +39,7 @@ View::show_header('Store');
 <div class="thin">
   <h2 id="general">Store</h2>
   <div class="box pad">
-    <h3 id="lists" style="float: left;">You have <?=number_format($LoggedUser['BonusPoints'])?> nips to spend</h3>
+    <h3 id="lists" style="float: left;">You have <?=number_format($LoggedUser['BonusPoints'])?> <?=BONUS_POINTS?> to spend</h3>
     <h3 id="lists" style="float: right;">You're making <?=$PointsPerHour?> (<?=$PointsPerDay?>)</h3>
     <table width="100%" class="store_table">
       <tr class="colhead">
@@ -52,7 +52,7 @@ View::show_header('Store');
           <a href="store.php?item=upload_1GB">1GiB Upload</a>
         </td>
         <td class="nobr">
-          1,000 nips
+          1,000 <?=BONUS_POINTS?>
         </td>
         <td class="nobr">
           Purchase 1GiB of upload
@@ -63,7 +63,7 @@ View::show_header('Store');
           <a href="store.php?item=upload_10GB">10GiB Upload</a>
         </td>
         <td class="nobr">
-          10,000 nips
+          10,000 <?=BONUS_POINTS?>
         </td>
         <td class="nobr">
           Purchase 10GiB of upload
@@ -74,7 +74,7 @@ View::show_header('Store');
           <a href="store.php?item=upload_100GB">100GiB Upload</a>
         </td>
         <td class="nobr">
-          100,000 nips
+          100,000 <?=BONUS_POINTS?>
         </td>
         <td class="nobr">
           Purchase 100GiB of upload
@@ -85,7 +85,7 @@ View::show_header('Store');
           <a href="store.php?item=upload_1000GB">1,000GiB Upload</a>
         </td>
         <td class="nobr">
-          1,000,000 nips
+          1,000,000 <?=BONUS_POINTS?>
         </td>
         <td class="nobr">
           Purchase 1,000GiB of upload
@@ -93,46 +93,46 @@ View::show_header('Store');
       </tr>
       <tr class="row">
         <td class="nobr">
-          <a href="store.php?item=1k_points">1,000 nips</a>
+          <a href="store.php?item=1k_points">1,000 <?=BONUS_POINTS?></a>
         </td>
         <td class="nobr">
           1GiB Upload
         </td>
         <td class="nobr">
-          Purchase 1,000 nips
+          Purchase 1,000 <?=BONUS_POINTS?>
         </td>
       </tr>
       <tr class="row">
         <td class="nobr">
-          <a href="store.php?item=10k_points">10,000 nips</a>
+          <a href="store.php?item=10k_points">10,000 <?=BONUS_POINTS?></a>
         </td>
         <td class="nobr">
           10GiB Upload
         </td>
         <td class="nobr">
-          Purchase 10,000 nips
+          Purchase 10,000 <?=BONUS_POINTS?>
         </td>
       </tr>
       <tr class="row">
         <td class="nobr">
-          <a href="store.php?item=100k_points">100,000 nips</a>
+          <a href="store.php?item=100k_points">100,000 <?=BONUS_POINTS?></a>
         </td>
         <td class="nobr">
           100GiB Upload
         </td>
         <td class="nobr">
-          Purchase 100,000 nips
+          Purchase 100,000 <?=BONUS_POINTS?>
         </td>
       </tr>
       <tr class="row">
         <td class="nobr">
-          <a href="store.php?item=1m_points">1,000,000 nips</a>
+          <a href="store.php?item=1m_points">1,000,000 <?=BONUS_POINTS?></a>
         </td>
         <td class="nobr">
           1,000GiB Upload
         </td>
         <td class="nobr">
-          Purchase 1,000,000 nips
+          Purchase 1,000,000 <?=BONUS_POINTS?>
         </td>
       </tr>
       <tr class="row">
@@ -140,7 +140,7 @@ View::show_header('Store');
           <a href="store.php?item=freeleechize">Freeleechize</a>
         </td>
         <td class="nobr">
-          20,000 nips
+          20,000 <?=BONUS_POINTS?>
         </td>
         <td class="nobr">
           Make a torrent freeleech (to everyone) for 24 hours
@@ -151,7 +151,7 @@ View::show_header('Store');
           <a href="store.php?item=title">Custom Title</a>
         </td>
         <td class="nobr">
-          50,000 nips
+          50,000 <?=BONUS_POINTS?>
         </td>
         <td class="nobr">
           Purchase a custom title
@@ -162,7 +162,7 @@ View::show_header('Store');
           <a href="store.php?item=invite">Invite</a>
         </td>
         <td class="nobr">
-          100,000 nips
+          100,000 <?=BONUS_POINTS?>
         </td>
         <td class="nobr">
           Purchase an invite for your friend
@@ -191,7 +191,7 @@ if (isset($To)) { ?>
           <a href="store.php?item=promotion">Promotion</a>
         </td>
         <td class="nobr">
-        <?=$To[1]?> nips
+        <?=$To[1]." ".BONUS_POINTS?>
         </td>
         <td class="nobr">
           Get promoted to <?=$To[0]?>
@@ -203,7 +203,7 @@ if (isset($To)) { ?>
           <a href="store.php?item=become_admin">Become Admin</a>
         </td>
         <td class="nobr">
-          4,294,967,296 nips
+          4,294,967,296 <?=BONUS_POINTS?>
         </td>
         <td class="nobr">
           Have your class changed to Sysop

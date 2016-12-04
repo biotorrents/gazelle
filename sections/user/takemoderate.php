@@ -77,7 +77,7 @@ $DisableTagging = isset($_POST['DisableTagging']) ? 1 : 0;
 $DisableUpload = isset($_POST['DisableUpload']) ? 1 : 0;
 $DisableWiki = isset($_POST['DisableWiki']) ? 1 : 0;
 $DisablePM = isset($_POST['DisablePM']) ? 1 : 0;
-$DisableNips = isset($_POST['DisableNips']) ? 1 : 0;
+$DisablePoints = isset($_POST['DisablePoints']) ? 1 : 0;
 $DisablePromotion = isset($_POST['DisablePromotion']) ? 1 : 0;
 $DisableIRC = isset($_POST['DisableIRC']) ? 1 : 0;
 $DisableRequests = isset($_POST['DisableRequests']) ? 1 : 0;
@@ -134,7 +134,7 @@ $DB->query("
     DisableUpload,
     DisableWiki,
     DisablePM,
-    DisableNips,
+    DisablePoints,
     DisablePromotion,
     DisableIRC,
     DisableRequests,
@@ -652,12 +652,12 @@ if ($DisablePM != $Cur['DisablePM'] && check_perms('users_disable_any')) {
   }
 }
 
-if ($DisableNips != $Cur['DisableNips'] && check_perms('users_disable_any')) {
-  $UpdateSet[] = "DisableNips = '$DisableNips'";
-  $EditSummary[] = 'Nip earning ' . ($DisableNips ? 'disabled' : 'enabled');
-  $HeavyUpdates['DisableNips'] = $DisableNips;
+if ($DisablePoints != $Cur['DisablePoints'] && check_perms('users_disable_any')) {
+  $UpdateSet[] = "DisablePoints = '$DisablePoints'";
+  $EditSummary[] = BONUS_POINTS.' earning ' . ($DisablePoints ? 'disabled' : 'enabled');
+  $HeavyUpdates['DisablePoints'] = $DisablePoints;
   if (!empty($UserReason)) {
-    Misc::send_pm($UserID, 0, 'Your Nip-earning ability has been disabled', "Your Nip-earning ability has been disabled. The reason given was: [quote]{$UserReason}[/quote] If you would like to discuss this, please join ".BOT_DISABLED_CHAN.' on our IRC network. Instructions can be found [url='.site_url().'wiki.php?action=article&amp;name=IRC+-+How+to+join]here[/url].');
+    Misc::send_pm($UserID, 0, 'Your '.BONUS_POINTS.'-earning ability has been disabled', "Your ".BONUS_POINTS."-earning ability has been disabled. The reason given was: [quote]{$UserReason}[/quote] If you would like to discuss this, please join ".BOT_DISABLED_CHAN.' on our IRC network. Instructions can be found [url='.site_url().'wiki.php?action=article&amp;name=IRC+-+How+to+join]here[/url].');
   }
 }
 

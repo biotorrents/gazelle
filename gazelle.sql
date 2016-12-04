@@ -1476,7 +1476,7 @@ CREATE TABLE `users_info` (
   `DisableUpload` enum('0','1') NOT NULL DEFAULT '0',
   `DisableWiki` enum('0','1') NOT NULL DEFAULT '0',
   `DisablePM` enum('0','1') NOT NULL DEFAULT '0',
-  `DisableNips` enum('0','1') NOT NULL DEFAULT '0',
+  `DisablePoints` enum('0','1') NOT NULL DEFAULT '0',
   `RatioWatchEnds` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `RatioWatchDownload` bigint(20) unsigned NOT NULL DEFAULT '0',
   `RatioWatchTimes` tinyint(1) unsigned NOT NULL DEFAULT '0',

@@ -1062,10 +1062,10 @@ input.inputtext:focus {
   max-width: 100%;
 }
 
-.nip_gift_box p {
+.point_gift_box p {
   margin: 7px 2px 0px;
 }
-.nip_gift_box input[type="text"], .nip_gift_box textarea {
+.point_gift_box input[type="text"], .point_gift_box textarea {
   width: 100%;
   box-sizing: border-box;
   margin-bottom: 3px;

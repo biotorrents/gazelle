@@ -18,6 +18,9 @@ define('ANNOUNCE_URLS', [[
   'https://tracker4.'.SITE_DOMAIN.':34001'
 ]]);
 
+// Name for bonus points currency
+define('BONUS_POINTS', 'Nips');
+
 // Don't hard code API keys for services
 define('API_KEYS', ['ANIDB' => 'AAAAAAAAAAAAAAAA']);
 

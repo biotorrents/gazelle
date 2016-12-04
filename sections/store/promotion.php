@@ -5,53 +5,53 @@ $GiB = 1024*1024*1024;
 $Classes = array(
   MEMBER => array(
     'Name'        => 'Modest Mounds', // name
-    'Price'        => 1000, // cost in nips
-    'MinUpload'    => 10, // minimum upload in GiB
-    'MinDownload'  => 1, // minimum download in GiB
+    'Price'       => 1000, // cost in points
+    'MinUpload'   => 10, // minimum upload in GiB
+    'MinDownload' => 1, // minimum download in GiB
     'MinUploads'  => 0, // minimum upload count
-    'NonSmall'     => 0, // must have at least this many non-doujin torrents or doujins with more than 50 pages
+    'NonSmall'    => 0, // must have at least this many non-doujin torrents or doujins with more than 50 pages
     'MinRatio'    => 0.7, // minimum ratio
     'TorUnique'   => false // do the uploads have to be unique groups?
   ),
   POWER => array(
     'Name'        => 'Well Endowed',
-    'Price'        => 10000,
-    'MinUpload'    => 100,
-    'MinDownload'  => 25,
+    'Price'       => 10000,
+    'MinUpload'   => 100,
+    'MinDownload' => 25,
     'MinUploads'  => 10,
-    'NonSmall'     => 2,
+    'NonSmall'    => 2,
     'MinRatio'    => 1.1,
-    'TorUnique'    => false
+    'TorUnique'   => false
   ),
   ELITE => array(
     'Name'        => 'Bombshell',
-    'Price'        => 30000,
-    'MinUpload'    => 500,
-    'MinDownload'  => 100,
+    'Price'       => 30000,
+    'MinUpload'   => 500,
+    'MinDownload' => 100,
     'MinUploads'  => 50,
-    'NonSmall'     => 12,
+    'NonSmall'    => 12,
     'MinRatio'    => 1.2,
-    'TorUnique'    => false
+    'TorUnique'   => false
   ),
   TORRENT_MASTER => array(
     'Name'        => 'Top Heavy',
-    'Price'        => 60000,
-    'MinUpload'    => 1024,
-    'MinDownload'  => 250,
+    'Price'       => 60000,
+    'MinUpload'   => 1024,
+    'MinDownload' => 250,
     'MinUploads'  => 250,
-    'NonSmall'     => 60,
+    'NonSmall'    => 60,
     'MinRatio'    => 1.3,
-    'TorUnique'    => false
+    'TorUnique'   => false
   ),
   POWER_TM => array(
     'Name'        => 'Titty Monster',
-    'Price'        => 100000,
-    'MinUpload'    => 1.5*1024,
-    'MinDownload'  => 500,
+    'Price'       => 100000,
+    'MinUpload'   => 1.5*1024,
+    'MinDownload' => 500,
     'MinUploads'  => 500,
-    'NonSmall'     => 160,
+    'NonSmall'    => 160,
     'MinRatio'    => 1.5,
-    'TorUnique'    => true
+    'TorUnique'   => true
   )
 );
 

@@ -95,8 +95,8 @@ switch ($_REQUEST['action']) {
     break;
   case 'take_update_rank':
     break;
-  case 'nips':
-    include(SERVER_ROOT.'/sections/user/nips.php');
+  case 'points':
+    include(SERVER_ROOT.'/sections/user/points.php');
     break;
   default:
     if (isset($_REQUEST['id'])) {

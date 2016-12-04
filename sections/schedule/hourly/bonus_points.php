@@ -14,7 +14,7 @@ $getUsers = $DB->query("
   LEFT JOIN xbt_snatched AS xs ON x.uid=xs.uid AND x.fid=xs.fid
   WHERE
     um.Enabled = '1'
-    AND i.DisableNips = '0'
+    AND i.DisablePoints = '0'
     AND x.active = 1
     AND x.completed = 0
     AND x.Remaining = 0
