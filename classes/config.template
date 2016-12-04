@@ -185,6 +185,8 @@ define('RATIO_REQUIREMENTS', [
   [10  * 1024**3, 0.05, 0.00],
 ]);
 
+define('TAG_NAMESPACES', ['male', 'female', 'parody', 'character']);
+
 // God I wish I didn't have to do this but I just don't care anymore.
 define('AUTOMATED_BADGE_IDS', [
   'DL' => [

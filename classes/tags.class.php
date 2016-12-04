@@ -136,8 +136,15 @@ class Tags {
       $ArtistName = "&amp;artistname=" . urlencode($ArtistName) . "&amp;action=advanced&amp;searchsubmit=1";
     }
     foreach ($this->Tags as $Tag) {
+			$Name = $Tag;
+			$Class = "";
+			$Split = explode(':', $Tag);
+			if (count($Split) > 1 && in_array($Split[1], TAG_NAMESPACES)) {
+				$Name = $Split[0];
+				$Class = "tag_" . $Split[1];
+			}
       if (empty($this->TagLink[$Tag])) {
-        $this->TagLink[$Tag] = '<a href="' . $Link . $Tag . $ArtistName . '">' . $Tag . '</a>';
+        $this->TagLink[$Tag] = '<a class="' . $Class . '" href="' . $Link . $Tag . $ArtistName . '">' . $Name . '</a>';
       }
     }
     return implode(', ', $this->TagLink);

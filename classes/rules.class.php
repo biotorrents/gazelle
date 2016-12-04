@@ -49,15 +49,26 @@ class Rules {
 
       <li>Only tag information on the title itself&#8202;&mdash;&#8202;<strong>not the individual release</strong>. Tags such as "<strong class="important_text">mkv</strong>", "<strong class="important_text">windows</strong>", "<strong class="important_text">scan</strong>", "<strong class="important_text">from.dlsite</strong>", etc. are strictly forbidden. Remember that these tags will be used for other versions of the same title.</li>
 
-      <li>Derivative works may be tagged with the name of the parent series or characters within the work. For example, tags such as "<strong class="important_text_alt">touhou</strong>" or "<strong class="important_text_alt">iori.minase</strong>" may be acceptable if they are being used on derivative (parody) works. These kinds of tags should NOT be used if the series is primarily erotic in nature. Characters should be tagged with the form "<strong class="important_text_alt">surname.firstname</strong>" if applicable.</li>
+      <li>Derivative works may be tagged with the name of the parent series or characters within the work. For example, tags such as "<strong class="tag_parody">touhou</strong>" or "<strong class="tag_character">iori.minase</strong>" may be acceptable if they are being used on derivative (parody) works. These kinds of tags should NOT be used if the series is primarily erotic in nature. Characters should be tagged with the form "<strong class="important_text_alt">surname.firstname</strong>" if applicable.</li>
 
       <li><strong>Tags should reflect significant aspects of a torrent.</strong> Don't tag something with "<strong class="important_text">blowjob</strong>" if there's only 30 seconds of dick-sucking. However, certain tags may be acceptable, such as "<strong class="important_text_alt">stockings</strong>", even if the torrent in question isn't centered around that fetish. Be smart.</li>
 
       <li><strong>Certain tags are strongly encouraged for appropriate uploads:</strong> "<strong class="important_text_alt">3d</strong>", "<strong class="important_text_alt">anthology</strong>", "<strong class="important_text_alt">yuri</strong>", "<strong class="important_text_alt">yaoi</strong>". People search for these kinds of things specifically, so tagging them properly will get you more snatches.</li>
 
-      <li>Tags for game genres such as "<strong class="important_text_alt">rpg</strong>", "<strong class="important_text_alt">visual.novel></strong>", or "<strong class="important_text_alt">nukige</strong>" are encouraged.</li>
+      <li>Tags for game genres such as "<strong class="important_text_alt">rpg</strong>", "<strong class="important_text_alt">visual.novel</strong>", or "<strong class="important_text_alt">nukige</strong>" are encouraged.</li>
 
       <li><strong>Certain tags are <strong class="important_text">required</strong> for appropriate uploads:</strong>"<strong class="important_text_alt">lolicon</strong>", "<strong class="important_text_alt">shotacon</strong>", "<strong class="important_text_alt">toddlercon</strong>". Failure to use these tags may result in punishment.</li>
+
+			<li><strong>Use tag namespaces when appropriate.</strong> Oppaitime allows for tag namespaces to aid with searching. For example, you may want to use the tags "<strong class="important_text_alt">masturbation:male</strong>" or "<strong class="important_text_alt">masturbation:female</strong>" instead of just "<strong class="important_text">masturbation</strong>". They can be used to make search queries more specific. Searching for "<strong class="important_texti_alt">masturbation</strong>" will show all torrents tagged with "<strong class="important_text_alt">masturbation</strong>", "<strong class="important_text_alt">masturbation:male</strong>", or "<strong class="important_text_alt">masturbation:female</strong>". However, searching for "<strong class="important_text_alt">masturbation:female</strong>" will ONLY show torrents with that tag. Tags with namespaces will appear differently depending on the namespace used, which include:
+				<ul>
+					<li><strong>:parody<strong> - Used to denote a parodied work: <strong class="tag_parody">touhou</strong>, <strong class="tag_parody">kantai.collection</strong></li>
+					<li><strong>:character</strong> - Used to denote a character in a parodied work: <strong class="tag_character">iori.minase</strong>, <strong class="tag_character">hakurei.reimu</strong></li>
+					<li><strong>:male</strong> - Used to denote that the tag refers to a male character: <strong class="tag_male">masturbation</strong>, <strong class="tag_male">teacher</strong></li>
+					<li><strong>:female</strong> - Used to denote that the tag refers to a female character: <strong class="tag_female">masturbation</strong>, <strong class="tag_female">shaved</strong></li>
+				</ul>
+
+				Note: gender namespaces should <strong class="important_text">NOT</strong> be used for tags where the gender is implied, such as "<strong class="important_text_alt">lolicon</strong>" or "<strong class="important_text_alt">shotacon</strong>".
+			</li>
 
       <li><strong>All uploads require a minimum of 5 tags.</strong></li>
 

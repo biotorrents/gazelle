@@ -92,6 +92,15 @@ if ($TorrentTags != '') {
     $Tags[$TagKey]['score'] = ($TagPositiveVotes[$TagKey] - $TagNegativeVotes[$TagKey]);
     $Tags[$TagKey]['id'] = $TorrentTagIDs[$TagKey];
     $Tags[$TagKey]['userid'] = $TorrentTagUserIDs[$TagKey];
+		$Tags[$TagKey]['display'] = $TagName;
+		$Tags[$TagKey]['class'] = "";
+
+		$Split = explode(':', $TagName);
+		if (count($Split) > 1 && in_array($Split[1], TAG_NAMESPACES)) {
+			$Tags[$TagKey]['display'] = $Split[0];
+			$Tags[$TagKey]['class'] = "tag_" . $Split[1];
+		}
+
   }
   uasort($Tags, 'compare');
 }
@@ -308,9 +317,10 @@ if (count($Tags) > 0) {
       <ul class="stats nobullet">
 <?
   foreach ($Tags as $TagKey=>$Tag) {
+
 ?>
         <li>
-          <a href="torrents.php?taglist=<?=$Tag['name']?>" style="float: left; display: block;"><?=display_str($Tag['name'])?></a>
+          <a href="torrents.php?taglist=<?=$Tag['name']?>" style="float: left; display: block;" class="<?=display_str($Tag['class'])?>" ><?=display_str($Tag['display'])?></a>
           <div style="float: right; display: block; letter-spacing: -1px;" class="edit_tags_votes">
           <a href="torrents.php?action=vote_tag&amp;way=up&amp;groupid=<?=$GroupID?>&amp;tagid=<?=$Tag['id']?>&amp;auth=<?=$LoggedUser['AuthKey']?>" title="Vote this tag up" class="brackets tooltip vote_tag_up">&and;</a>
           <?=$Tag['score']?>

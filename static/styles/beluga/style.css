@@ -2044,6 +2044,22 @@ tbody .staff_post {
 	border-top: none !important;
 }
 
+.tag_parody {
+	color: #e8ab3a !important;
+}
+
+.tag_character {
+	color: #529e63 !important;
+}
+
+.tag_male {
+	color: #3d77e2 !important;
+}
+
+.tag_female {
+	color: #e896e8 !important;
+}
+
 /* Pink Additions */
 
 body.style_pink .cats_anime:after { color: #78467f; }

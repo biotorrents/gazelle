@@ -1399,6 +1399,18 @@ div.pad#threadpoll p strong {
 .autocomplete-suggestion {
   padding:5px
 }
+.tag_parody {
+	background: #d2aa4b !important;
+}
+.tag_character {
+	background: #689f78 !important;
+}
+.tag_female {
+	background: #e993e9 !important;
+}
+.tag_male {
+	background: #5959f9 !important;
+}
 
 /* Fixed Header addition */
 body.style_fixed_header #menu, body.style_fixed_header .main-menu {

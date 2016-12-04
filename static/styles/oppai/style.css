@@ -1098,3 +1098,16 @@ caption {
 .forum_post .staff_post {
   background: #f1849a;
 }
+
+.tag_parody {
+	color: #e08e00 !important;
+}
+.tag_character {
+	color: #099809 !important;
+}
+.tag_female {
+	color: #d51b8a !important;
+}
+.tag_male {
+	color: #0000ff !important;
+}
