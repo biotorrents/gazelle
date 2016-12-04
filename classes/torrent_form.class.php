@@ -900,6 +900,7 @@ class TORRENT_FORM {
           <input type="checkbox" name="censored" value="1" <?=(($Torrent['Censored'] ?? 1) ? 'checked ' : '')?>/>
         </td>
       </tr>
+<? if ($this->NewTorrent) { ?>
       <tr>
         <td class="label tooltip" title="Comma seperated list of tags">Tags:</td>
         <td>
@@ -945,6 +946,7 @@ new TEXTAREA_PREVIEW('album_desc', 'album_desc', display_str($Torrent['GroupDesc
 ?>
         </td>
       </tr>
+<? } ?>
     </table>
 <?  }//function simple_form
 
