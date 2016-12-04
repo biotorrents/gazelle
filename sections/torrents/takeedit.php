@@ -254,7 +254,7 @@ $DB->query("
   WHERE ID = $TorrentID");
   */
 $DB->query("
-  SELECT Media, Container, Codec, Resolution, AudioFormat, Subbing, Language, Description, MediaInfo,  Censored, Archive, Subber
+  SELECT Media, Container, Codec, Resolution, AudioFormat, Subbing, Language, Description, MediaInfo, Censored, Archive, Subber
   FROM torrents
   WHERE ID = $TorrentID");
 $DBTorVals = $DB->to_array(false, MYSQLI_ASSOC);

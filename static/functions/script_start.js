@@ -83,34 +83,13 @@ function html_entity_decode(str) {
 }
 
 function get_size(size) {
-  var steps = 0;
+  var steps = 0
   while (size >= 1024) {
-    steps++;
-    size = size / 1024;
+    steps++
+    size = size / 1024
   }
-  var ext;
-  switch (steps) {
-    case 1: ext = ' B';
-        break;
-    case 1: ext = ' KB';
-        break;
-    case 2: ext = ' MB';
-        break;
-    case 3: ext = ' GB';
-        break;
-    case 4: ext = ' TB';
-        break;
-    case 5: ext = ' PB';
-        break;
-    case 6: ext = ' EB';
-        break;
-    case 7: ext = ' ZB';
-        break;
-    case 8: ext = ' EB';
-        break;
-    default: "0.00 MB";
-  }
-  return (size.toFixed(2) + ext);
+  var exts = ['B','KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB']
+  return (size.toFixed(2) + (exts[steps]||''))
 }
 
 function get_ratio_color(ratio) {
