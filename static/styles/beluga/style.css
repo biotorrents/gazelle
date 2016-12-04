@@ -1955,8 +1955,8 @@ a.last_read > svg {
   width: 0px;
   top: 9px;
   left: 6px;
-  border-left: 5px solid transparent; 
-  border-right: 5px solid transparent; 
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
 }
 .forum_index td.read_sticky:after,
 .forum_index td.read_locked_sticky:after {
@@ -2053,7 +2053,7 @@ body.style_pink .group .cats_movies { background-color: #4f3063; }
 body.style_pink .cats_manga:after { color: #9f5c9c; }
 body.style_pink .group .cats_manga { background-color: #9f5c9c; }
 body.style_pink .cats_games:after { color: #c871b9; }
-body.style_pink .group .cats_games { background-color: #c871b9; } 
+body.style_pink .group .cats_games { background-color: #c871b9; }
 body.style_pink .cats_other:after { color: #ef86d5; }
 body.style_pink .group .cats_other { background-color: #ef86d5; }
 body.style_pink a:hover { color: #db7bc7; }
