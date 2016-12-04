@@ -262,8 +262,7 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
           Torrents::update_hash($GroupID);
         }
       }
-
-    } // if ($Mode == MODE_MERGE)
+    }
 
     echo "\n".'<div class="box pad center"><strong>Success!</strong> Affected entries: '.number_format($TotalAffected).'</div>';
 
@@ -277,7 +276,7 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
       </td>
     </tr>
 <?
-      if (count($AffectedTorrents)) {
+      if (count($AffectedTorrents ?? [])) {
         foreach ($AffectedTorrents as $Row) {
           echo "\n\t\t<tr><td>$Row</td></tr>";
         }
@@ -289,7 +288,7 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
       </td>
     </tr>
 <?
-      if (count($AffectedRequests)) {
+      if (count($AffectedRequests ?? [])) {
         foreach ($AffectedRequests as $Row) {
           echo "\n\t\t<tr><td>$Row</td></tr>";
         }
@@ -298,10 +297,8 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
   </table>
 <?
     }
-
-  } // if (!$Err)
-
-} // if ( isset($_GET['tag']) || isset($_GET['replace']) )
+  }
+}
 
 echo '</div>';
 
