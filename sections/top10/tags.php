@@ -144,12 +144,15 @@ function generate_tag_table($Caption, $Tag, $Details, $Limit, $ShowVotes = true,
   $Rank = 0;
   foreach ($Details as $Detail) {
     $Rank++;
+    $Split = Tags::get_name_and_class($Detail['Name']);
+    $DisplayName = $Split['name'];
+    $Class = $Split['class'];
 
     // print row
 ?>
   <tr class="row">
     <td class="center"><?=$Rank?></td>
-    <td><a href="<?=$URLString?><?=$Detail['Name']?>"><?=$Detail['Name']?></a></td>
+    <td><a class="<?=$Class?>" href="<?=$URLString?><?=$Detail['Name']?>"><?=$DisplayName?></a></td>
     <td class="number_column"><?=number_format($Detail['Uses'])?></td>
 <?    if ($ShowVotes) { ?>
     <td class="number_column"><?=number_format($Detail['PosVotes'])?></td>

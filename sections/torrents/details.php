@@ -92,14 +92,10 @@ if ($TorrentTags != '') {
     $Tags[$TagKey]['score'] = ($TagPositiveVotes[$TagKey] - $TagNegativeVotes[$TagKey]);
     $Tags[$TagKey]['id'] = $TorrentTagIDs[$TagKey];
     $Tags[$TagKey]['userid'] = $TorrentTagUserIDs[$TagKey];
-		$Tags[$TagKey]['display'] = $TagName;
-		$Tags[$TagKey]['class'] = "";
 
-		$Split = explode(':', $TagName);
-		if (count($Split) > 1 && in_array($Split[1], TAG_NAMESPACES)) {
-			$Tags[$TagKey]['display'] = $Split[0];
-			$Tags[$TagKey]['class'] = "tag_" . $Split[1];
-		}
+    $Split = Tags::get_name_and_class($TagName);
+    $Tags[$TagKey]['display'] = $Split['name'];
+    $Tags[$TagKey]['class'] = $Split['class'];
 
   }
   uasort($Tags, 'compare');

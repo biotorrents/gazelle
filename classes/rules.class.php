@@ -67,8 +67,6 @@ class Rules {
           <li><strong>:male</strong> - Used to denote that the tag refers to a male character: <strong class="tag_male">masturbation</strong>, <strong class="tag_male">teacher</strong></li>
           <li><strong>:female</strong> - Used to denote that the tag refers to a female character: <strong class="tag_female">masturbation</strong>, <strong class="tag_female">shaved</strong></li>
         </ul>
-
-        Note: gender namespaces should <strong class="important_text">NOT</strong> be used for tags where the gender is implied, such as "<strong class="important_text_alt">lolicon</strong>" or "<strong class="important_text_alt">shotacon</strong>".
       </li>
 
       <li><strong>All uploads require a minimum of 5 tags.</strong></li>

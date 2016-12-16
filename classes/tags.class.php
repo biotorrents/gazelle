@@ -136,13 +136,9 @@ class Tags {
       $ArtistName = "&amp;artistname=" . urlencode($ArtistName) . "&amp;action=advanced&amp;searchsubmit=1";
     }
     foreach ($this->Tags as $Tag) {
-			$Name = $Tag;
-			$Class = "";
-			$Split = explode(':', $Tag);
-			if (count($Split) > 1 && in_array($Split[1], TAG_NAMESPACES)) {
-				$Name = $Split[0];
-				$Class = "tag_" . $Split[1];
-			}
+      $Split = self::get_name_and_class($Tag);
+      $Name = $Split['name'];
+      $Class = $Split['class'];
       if (empty($this->TagLink[$Tag])) {
         $this->TagLink[$Tag] = '<a class="' . $Class . '" href="' . $Link . $Tag . $ArtistName . '">' . $Name . '</a>';
       }
@@ -165,8 +161,12 @@ class Tags {
     if (!empty($ArtistName)) {
       $ArtistName = '&amp;artistname=' . urlencode($ArtistName) . '&amp;action=advanced&amp;searchsubmit=1';
     }
-    foreach (array_slice(self::sorted(), 0, $Max) as $TagName => $Total) { ?>
-      <li><a href="<?=$Link . display_str($TagName) . $ArtistName?>"><?=display_str($TagName)?></a> (<?=$Total?>)</li>
+    foreach (array_slice(self::sorted(), 0, $Max) as $Tag => $Total) {
+      $Split = self::get_name_and_class($Tag);
+      $Name = $Split['name'];
+      $Class = $Split['class'];
+    ?>
+      <li><a class="<?=$Class?>" href="<?=$Link . display_str($Name) . $ArtistName?>"><?=display_str($Name)?></a> (<?=$Total?>)</li>
 <?    }
   }
 
@@ -278,4 +278,22 @@ class Tags {
 
     return ['input' => $TagList, 'predicate' => implode(' ', $QueryParts)];
   }
+
+  /**
+   * Breaks a tag down into name and namespace class
+   * @param string $Tag Tag of the form 'tag' or 'tag:namespace'
+   * @return array Array keys name and class
+   *               name is the name of the tag without a namespace
+   *               class is the HTML class that should be applied to the tag, empty string if the tag has no namespace
+   */
+   public static function get_name_and_class($Tag) {
+			$Name = $Tag;
+			$Class = "";
+			$Split = explode(':', $Tag);
+			if (count($Split) > 1 && in_array($Split[1], TAG_NAMESPACES)) {
+				$Name = $Split[0];
+				$Class = "tag_" . $Split[1];
+			}
+      return array("name" => display_str($Name), "class" => display_str($Class));
+   }
 }
