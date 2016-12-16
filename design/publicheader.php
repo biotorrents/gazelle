@@ -12,9 +12,9 @@ define('FOOTER_FILE',SERVER_ROOT.'/design/publicfooter.php');
 <?
   $Scripts = ['jquery', 'script_start', 'ajax.class', 'cookie.class', 'storage.class', 'global'];
   foreach($Scripts as $Script) {
-    if (($ScriptStats = G::$Cache->get_value("script_stats_$Script")) === false || $ScriptStats['mtime'] != filemtime(STATIC_SERVER."functions/$Script.js")) {
-      $ScriptStats['mtime'] = filemtime(STATIC_SERVER."functions/$Script.js");
-      $ScriptStats['hash'] = base64_encode(hash_file(INTEGRITY_ALGO, STATIC_SERVER."functions/$Script.js", true));
+    if (($ScriptStats = G::$Cache->get_value("script_stats_$Script")) === false || $ScriptStats['mtime'] != filemtime(SERVER_ROOT.STATIC_SERVER."functions/$Script.js")) {
+      $ScriptStats['mtime'] = filemtime(SERVER_ROOT.STATIC_SERVER."functions/$Script.js");
+      $ScriptStats['hash'] = base64_encode(hash_file(INTEGRITY_ALGO, SERVER_ROOT.STATIC_SERVER."functions/$Script.js", true));
       $ScriptStats['algo'] = INTEGRITY_ALGO;
       G::$Cache->cache_value("script_stats_$Script", $ScriptStats);
     }
