@@ -263,20 +263,20 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && ((!check_perms('site
   //Increment this now to make sure we redirect to the correct page
   $ThreadInfo['Posts']++;
 
-	//Award a badge if necessary
-	$DB->query("
-		SELECT COUNT(ID)
-		FROM forums_posts
-		WHERE AuthorID = '$LoggedUser[ID]'");
-	list($UserPosts) = $DB->next_record(MYSQLI_NUM, false);
-	foreach (AUTOMATED_BADGE_IDS['Posts'] AS $Count => $Badge) {
-		if ((int) $UserPosts > $Count) {
-			$Success = Badges::award_badge($LoggedUser['ID'], $Badge);
-			if ($Success) {
-				Misc::send_pm($LoggedUser['ID'], 0, 'You have received a badge!', "You have received a badge for making ".$Count." forum posts.\n\nIt can be enabled from your user settings.");
-			}
-		}
-	}
+  //Award a badge if necessary
+  $DB->query("
+    SELECT COUNT(ID)
+    FROM forums_posts
+    WHERE AuthorID = '$LoggedUser[ID]'");
+  list($UserPosts) = $DB->next_record(MYSQLI_NUM, false);
+  foreach (AUTOMATED_BADGE_IDS['Posts'] AS $Count => $Badge) {
+    if ((int) $UserPosts >= $Count) {
+      $Success = Badges::award_badge($LoggedUser['ID'], $Badge);
+      if ($Success) {
+        Misc::send_pm($LoggedUser['ID'], 0, 'You have received a badge!', "You have received a badge for making ".$Count." forum posts.\n\nIt can be enabled from your user settings.");
+      }
+    }
+  }
 }
 
 Subscriptions::flush_subscriptions('forums', $TopicID);

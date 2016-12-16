@@ -119,17 +119,17 @@ if (isset($_POST['subscribe'])) {
 
 //Award a badge if necessary
 $DB->query("
-	SELECT COUNT(ID)
-	FROM forums_posts
-	WHERE AuthorID = '$LoggedUser[ID]'");
+  SELECT COUNT(ID)
+  FROM forums_posts
+  WHERE AuthorID = '$LoggedUser[ID]'");
 list($UserPosts) = $DB->next_record(MYSQLI_NUM, false);
 foreach (AUTOMATED_BADGE_IDS['Posts'] AS $Count => $Badge) {
-	if ((int) $UserPosts > $Count) {
-		$Success = Badges::award_badge($LoggedUser['ID'], $Badge);
-		if ($Success) {
-			Misc::send_pm($LoggedUser['ID'], 0, 'You have received a badge!', "You have received a badge for making ".$Count." forum posts.\n\nIt can be enabled from your user settings.");
-		}
-	}
+  if ((int) $UserPosts >= $Count) {
+    $Success = Badges::award_badge($LoggedUser['ID'], $Badge);
+    if ($Success) {
+      Misc::send_pm($LoggedUser['ID'], 0, 'You have received a badge!', "You have received a badge for making ".$Count." forum posts.\n\nIt can be enabled from your user settings.");
+    }
+  }
 }
 
 if (!$NoPoll) { // god, I hate double negatives...

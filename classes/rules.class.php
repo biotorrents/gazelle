@@ -25,6 +25,7 @@ class Rules {
       <li>Attempting to find a bug in the site code is absolutely fine. Misusing that knowledge is not, but we actively encourage users to try to find bugs and report them so they can be fixed. The discovery of significant bugs may result in a reward at the discretion of the staff. Do not be an asshole and try to flood the tracker or something and then come to us saying "lol I found bug gib reward"</li>
       <li>We're a community. Working together is what makes this place what it is. There are well over a thousand new torrents uploaded every day (pfffff) and, sadly, the staff are only a little psychic. If you come across something that violates a rule, report it, and help us better organize the site for you.</li>
       <li>We respect the wishes of other BitTorrent trackers that we agree with here, as we wish for them to do the same. Please refrain from posting full names or links to sites that do not want to be mentioned.</li>
+      <li>Don't reveal the criteria for hidden badges or we'll ban you, or yell at you, or maybe just ruin your stats and remove all your nips. But we'll probably ban you.</li>
     </ol>
 <?
   }
@@ -59,16 +60,16 @@ class Rules {
 
       <li><strong>Certain tags are <strong class="important_text">required</strong> for appropriate uploads:</strong>"<strong class="important_text_alt">lolicon</strong>", "<strong class="important_text_alt">shotacon</strong>", "<strong class="important_text_alt">toddlercon</strong>". Failure to use these tags may result in punishment.</li>
 
-			<li><strong>Use tag namespaces when appropriate.</strong> Oppaitime allows for tag namespaces to aid with searching. For example, you may want to use the tags "<strong class="important_text_alt">masturbation:male</strong>" or "<strong class="important_text_alt">masturbation:female</strong>" instead of just "<strong class="important_text">masturbation</strong>". They can be used to make search queries more specific. Searching for "<strong class="important_texti_alt">masturbation</strong>" will show all torrents tagged with "<strong class="important_text_alt">masturbation</strong>", "<strong class="important_text_alt">masturbation:male</strong>", or "<strong class="important_text_alt">masturbation:female</strong>". However, searching for "<strong class="important_text_alt">masturbation:female</strong>" will ONLY show torrents with that tag. Tags with namespaces will appear differently depending on the namespace used, which include:
-				<ul>
-					<li><strong>:parody<strong> - Used to denote a parodied work: <strong class="tag_parody">touhou</strong>, <strong class="tag_parody">kantai.collection</strong></li>
-					<li><strong>:character</strong> - Used to denote a character in a parodied work: <strong class="tag_character">iori.minase</strong>, <strong class="tag_character">hakurei.reimu</strong></li>
-					<li><strong>:male</strong> - Used to denote that the tag refers to a male character: <strong class="tag_male">masturbation</strong>, <strong class="tag_male">teacher</strong></li>
-					<li><strong>:female</strong> - Used to denote that the tag refers to a female character: <strong class="tag_female">masturbation</strong>, <strong class="tag_female">shaved</strong></li>
-				</ul>
+      <li><strong>Use tag namespaces when appropriate.</strong> Oppaitime allows for tag namespaces to aid with searching. For example, you may want to use the tags "<strong class="important_text_alt">masturbation:male</strong>" or "<strong class="important_text_alt">masturbation:female</strong>" instead of just "<strong class="important_text">masturbation</strong>". They can be used to make search queries more specific. Searching for "<strong class="important_texti_alt">masturbation</strong>" will show all torrents tagged with "<strong class="important_text_alt">masturbation</strong>", "<strong class="important_text_alt">masturbation:male</strong>", or "<strong class="important_text_alt">masturbation:female</strong>". However, searching for "<strong class="important_text_alt">masturbation:female</strong>" will ONLY show torrents with that tag. Tags with namespaces will appear differently depending on the namespace used, which include:
+        <ul>
+          <li><strong>:parody<strong> - Used to denote a parodied work: <strong class="tag_parody">touhou</strong>, <strong class="tag_parody">kantai.collection</strong></li>
+          <li><strong>:character</strong> - Used to denote a character in a parodied work: <strong class="tag_character">iori.minase</strong>, <strong class="tag_character">hakurei.reimu</strong></li>
+          <li><strong>:male</strong> - Used to denote that the tag refers to a male character: <strong class="tag_male">masturbation</strong>, <strong class="tag_male">teacher</strong></li>
+          <li><strong>:female</strong> - Used to denote that the tag refers to a female character: <strong class="tag_female">masturbation</strong>, <strong class="tag_female">shaved</strong></li>
+        </ul>
 
-				Note: gender namespaces should <strong class="important_text">NOT</strong> be used for tags where the gender is implied, such as "<strong class="important_text_alt">lolicon</strong>" or "<strong class="important_text_alt">shotacon</strong>".
-			</li>
+        Note: gender namespaces should <strong class="important_text">NOT</strong> be used for tags where the gender is implied, such as "<strong class="important_text_alt">lolicon</strong>" or "<strong class="important_text_alt">shotacon</strong>".
+      </li>
 
       <li><strong>All uploads require a minimum of 5 tags.</strong></li>
 
