@@ -185,7 +185,7 @@ function getCover(event) {
   if ($('#coverCont img').length == 0) {
     coverCont.appendChild(document.createElement('img'))
   }
-  $('#coverCont img')[0].src = image?image:'/static/common/noartwork/comedy.png'
+  $('#coverCont img')[0].src = image?image:'/static/common/noartwork/nocover.png'
   coverCont.className = (event.clientX > (window.innerWidth/2)) ? 'left' : 'right'
   coverCont.style.display = 'block'
   //Preload next image
