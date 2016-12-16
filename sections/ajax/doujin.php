@@ -58,6 +58,23 @@ if ($Cache->get_value('doujin_json_'.$gid)) {
       array_push($tags, str_replace(' ', '.', $tag));
     }
   }
+  
+  // get the cover for ants
+  $cover = $json['thumb'];
+  // and let's see if we can replace it with something better
+  $gallery_page = file_get_contents($url);
+  $re = '/'.preg_quote('-0px 0 no-repeat"><a href="').'(.*)'.preg_quote('"><img alt="01"').'/';
+  preg_match($re, $gallery_page, $galmatch);
+  // were we able to find the first page of the gallery?
+  if ($galmatch[1]) {
+	  $image_page = file_get_contents($galmatch[1]);
+	  $re = '/'.preg_quote('"><img id="img" src="').'(.*)'.preg_quote('" style=').'/';
+	  preg_match($re, $image_page, $imgmatch);
+	  // were we able to find the image url?
+	  if ($imgmatch[1]) {
+	    $cover = $imgmatch[1];
+	  }
+  }
 
   $json_str = array(
     'id' => $gid,
@@ -71,7 +88,7 @@ if ($Cache->get_value('doujin_json_'.$gid)) {
     'lang' => $lang,
     'pages' => $json['filecount'],
     'description' => '',
-    'cover' => $json['thumb']
+    'cover' => $cover
   );
 
   $Cache->cache_value('doujin_json_'.$gid, $json_str, 86400);
