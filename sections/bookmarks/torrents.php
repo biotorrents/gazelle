@@ -254,7 +254,7 @@ foreach ($GroupIDs as $GroupID) {
 <? */ ?>
 <div class='collage_image image_group_<?=$GroupID?>'>
       <a href="torrents.php?id=<?=$GroupID?>" class="bookmark_<?=$GroupID?>">
-<?  if (!$WikiImage) { 
+<?  if (!$WikiImage) {
       $WikiImage = STATIC_SERVER.'common/noartwork/nocover.png';
 } ?>
         <img class="tooltip_interactive" src="<?=ImageTools::process($WikiImage, true)?>" alt="<?=$DisplayName?>" title="<?=$DisplayName?> <br /> <?=$Tags?>" data-title-plain="<?="$DisplayName ($PlainTags)"?>" width="100%" />
