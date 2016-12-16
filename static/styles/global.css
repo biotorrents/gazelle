@@ -65,7 +65,7 @@ pre br {
 }
 
 .collage_images {
-  display: table;
+  display: block;
 }
 
 ul.collage_images li {

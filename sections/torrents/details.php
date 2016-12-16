@@ -199,7 +199,7 @@ View::show_header($Title, 'browse,comments,torrent,bbcode,recommend,cover_art,su
 <?  if ($WikiImage != '') { ?>
       <div><img width="100%" class="lightbox-init" src="<?=ImageTools::process($WikiImage, true)?>" alt="<?=$AltName?>" /></div>
 <?  } else { ?>
-      <div><img width="100%" src="<?=STATIC_SERVER?>common/noartwork/comedy.png<? /*=$CategoryIcons[$GroupCategoryID - 1]*/ ?>" alt="<?=$Categories[$GroupCategoryID - 1]?>" class="brackets tooltip" title="<?=$Categories[$GroupCategoryID - 1]?>" height="220" border="0" /></div>
+      <div><img width="100%" src="<?=STATIC_SERVER?>common/noartwork/nocover.png" alt="<?=$Categories[$GroupCategoryID - 1]?>" class="brackets tooltip" title="<?=$Categories[$GroupCategoryID - 1]?>" /></div>
 <?
   }
 $Index++;
