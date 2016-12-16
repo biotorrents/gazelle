@@ -40,8 +40,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
       FROM users_main AS m
         INNER JOIN users_info AS i ON i.UserID = m.ID
       WHERE i.ResetKey = '".db_string($_REQUEST['key'])."'
-        AND i.ResetKey != ''
-        AND m.Enabled = '1'");
+        AND i.ResetKey != ''");
     list($UserID, $Email, $Country, $Expires) = $DB->next_record();
 
     if (!apc_exists('DBKEY')) {
@@ -121,8 +120,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
         $DB->query("
           SELECT
             Email
-          FROM users_main
-          WHERE Enabled = '1'");
+          FROM users_main");
         while(list($EncEmail) = $DB->next_record()) {
           if ($_REQUEST['email'] == DBCrypt::decrypt($EncEmail)) {
             break; // $EncEmail is now the encrypted form of the given email from the database
@@ -135,8 +133,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
             Username,
             Email
           FROM users_main
-          WHERE Email = '$EncEmail'
-            AND Enabled = '1'");
+          WHERE Email = '$EncEmail'");
         list($UserID, $Username, $Email) = $DB->next_record();
         $Email = DBCrypt::decrypt($Email);
 
