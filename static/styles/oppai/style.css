@@ -1111,3 +1111,8 @@ caption {
 .tag_male {
 	color: #0000ff !important;
 }
+
+.collage_image:hover {
+  box-shadow: 0px 0px 0px 3px #fbc2e5;
+  position: relative;
+}

@@ -1411,6 +1411,10 @@ div.pad#threadpoll p strong {
 .tag_male {
 	background: #5959f9 !important;
 }
+.collage_image:hover {
+  box-shadow: 0px 0px 0px 3px #5aada5;
+  position: relative;
+}
 
 /* Fixed Header addition */
 body.style_fixed_header #menu, body.style_fixed_header .main-menu {

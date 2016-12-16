@@ -2028,6 +2028,11 @@ tbody .staff_post {
   background-color: #634852;
 }
 
+.collage_image:hover {
+  box-shadow: 0px 0px 0px 3px #88C796;
+  position: relative;
+}
+
 /* Fucking noty */
 .noty_bar {
 	border-left: #3eaca7 2px solid;
@@ -2129,4 +2134,7 @@ body.style_pink .forum_index td.unread_locked_sticky:before {
 }
 body.style_pink .noty_bar {
 	border-left: #ef86d5 2px solid;
+}
+body.style_pink .collage_image:hover {
+  box-shadow: 0px 0px 0px 3px #ef86d5;
 }
