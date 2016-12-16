@@ -183,10 +183,10 @@ class ImageTools {
       }
     }
 
-    if (preg_match('/^https:\/\/'.SITE_DOMAIN.'\//', $Url)) {
+    if (preg_match('/^https:\/\/('.SITE_DOMAIN.'|'.IMAGE_DOMAIN.')\//', $Url)) {
       return $Url;
     } else {
-      return 'https://' . SITE_DOMAIN . "/image.php?c=1&amp;i=" . urlencode($Url);
+      return 'https://'.IMAGE_DOMAIN.'?h='.rawurlencode(base64_encode(hash_hmac('sha256', $Url, IMAGE_PSK, true))).'&i='.urlencode($Url);
     }
   }
 

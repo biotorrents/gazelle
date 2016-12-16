@@ -7,6 +7,7 @@ if (version_compare(PHP_VERSION, '7.0.0', '<')) {
 // Main settings
 define('SITE_NAME',     'Oppaitime'); //The name of your site
 define('SITE_DOMAIN',   'oppaiti.me'); //The FQDN of your site
+define('IMAGE_DOMAIN',  'img.oppaiti.me'); //The FQDN of your image host
 define('SERVER_ROOT',   '/var/www/oppaiti.me'); //The root of the server, used for includes
 define('TORRENT_STORE', '/var/torrents/'); //Where torrent files are stored
 
@@ -32,6 +33,7 @@ define('INTEGRITY_ALGO', 'sha256');
 
 // Keys
 define('ENCKEY',       'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); //Random key. The key for encryption
+define('IMAGE_PSK',    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); //Pre-shared key for generating hmacs for the image proxy
 define('SCHEDULE_KEY', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); // Random key. This key must be the argument to schedule.php for the schedule to work.
 define('RSS_HASH',     'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); //Random key. Used for generating unique RSS auth key.
 
