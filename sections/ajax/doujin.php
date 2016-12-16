@@ -68,7 +68,7 @@ if ($Cache->get_value('doujin_json_'.$gid)) {
   // were we able to find the first page of the gallery?
   if ($galmatch[1]) {
 	  $image_page = file_get_contents($galmatch[1]);
-	  $re = '/'.preg_quote('"><img id="img" src="').'(.*)'.preg_quote('" style=').'/';
+	  $re = '/'.preg_quote('"><img src="').'([^<]*)'.preg_quote('" style=').'/';
 	  preg_match($re, $image_page, $imgmatch);
 	  // were we able to find the image url?
 	  if ($imgmatch[1]) {
