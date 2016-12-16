@@ -26,7 +26,7 @@ define('BONUS_POINTS', 'Nips');
 define('API_KEYS', ['ANIDB' => 'AAAAAAAAAAAAAAAA']);
 
 // Allows you to run static content off another server. Default is usually what you want.
-define('STATIC_SERVER', 'static/');
+define('STATIC_SERVER', '/static/');
 
 // The hashing algorithm used for SRI
 define('INTEGRITY_ALGO', 'sha256');

@@ -34,12 +34,12 @@ class View {
       $Styles = array_merge(['tooltipster'], explode(',', $CSSIncludes));
       foreach ($Scripts as $Script) {
         if (trim($Script) == '') { continue; }
-        header('Link: </'.STATIC_SERVER.'functions/'.$Script.'.js?v='.filemtime(SERVER_ROOT.'/static/functions/'.$Script.'.js').'>; rel=preload;', false);
+        header('Link: <'.STATIC_SERVER.'functions/'.$Script.'.js?v='.filemtime(SERVER_ROOT.STATIC_SERVER.'functions/'.$Script.'.js').'>; rel=preload;', false);
       }
-      header('Link: </'.STATIC_SERVER.'styles/global.css?v='.filemtime(SERVER_ROOT.'/static/styles/global.css').'>; rel=preload;', false);
+      header('Link: <'.STATIC_SERVER.'styles/global.css?v='.filemtime(SERVER_ROOT.STATIC_SERVER.'styles/global.css').'>; rel=preload;', false);
       foreach ($Styles as $Style) {
         if (trim($Style) == '') { continue; }
-        header('Link: </'.STATIC_SERVER.'styles/'.$Style.'/style.css?v='.filemtime(SERVER_ROOT.'/static/styles/'.$Style.'/style.css').'>; rel=preload;', false);
+        header('Link: <'.STATIC_SERVER.'styles/'.$Style.'/style.css?v='.filemtime(SERVER_ROOT.STATIC_SERVER.'styles/'.$Style.'/style.css').'>; rel=preload;', false);
       }
       require(SERVER_ROOT.'/design/privateheader.php');
     }
