@@ -122,7 +122,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
             Email
           FROM users_main");
         while(list($EncEmail) = $DB->next_record()) {
-          if ($_REQUEST['email'] == DBCrypt::decrypt($EncEmail)) {
+          if (strtolower($_REQUEST['email']) == strtolower(DBCrypt::decrypt($EncEmail))) {
             break; // $EncEmail is now the encrypted form of the given email from the database
           }
         }
