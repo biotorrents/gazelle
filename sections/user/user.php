@@ -135,6 +135,19 @@ $ForumPosts, $InviterID, $DisableInvites, $InviterName, $InfoTitle) = $DB->next_
 }
 $Email = apc_exists('DBKEY') ? DBCrypt::decrypt($Email) : '[Encrypted]';
 
+$DB->query("
+  SELECT SUM(t.Size)
+  FROM xbt_files_users AS xfu
+  JOIN torrents AS t on t.ID = xfu.fid
+  WHERE
+    xfu.uid = '$UserID'
+    AND xfu.active = 1
+    AND xfu.Remaining = 0");
+ if ($DB->has_results()) {
+  list($TotalSeeding) = $DB->next_record(MYSQLI_NUM, false);
+ }
+
+
 // Image proxy CTs
 $DisplayCustomTitle = $CustomTitle;
 if (check_perms('site_proxy_images') && !empty($CustomTitle)) {
@@ -347,6 +360,11 @@ if ($LoggedUser['Class'] >= 200 || $DB->has_results()) { ?>
   if (($Override = check_paranoia_here('requiredratio')) && isset($RequiredRatio)) {
 ?>
         <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Required Ratio: <span class="tooltip" title="<?=number_format((double)$RequiredRatio, 5)?>"><?=number_format((double)$RequiredRatio, 2)?></span></li>
+<?
+  }
+  if (($Override = check_paranoia_here('downloaded'))) {
+?>
+      <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Total Seeding: <span class="tooltip" title="<?=Format::get_size($TotalSeeding)?>"><?=Format::get_size($TotalSeeding)?></li>
 <?
   }
   if ($OwnProfile || ($Override = check_paranoia_here(false)) || check_perms('users_mod')) {
