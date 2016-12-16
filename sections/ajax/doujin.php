@@ -58,7 +58,7 @@ if ($Cache->get_value('doujin_json_'.$gid)) {
       array_push($tags, str_replace(' ', '.', $tag));
     }
   }
-  
+
   // get the cover for ants
   $cover = $json['thumb'];
   // and let's see if we can replace it with something better
