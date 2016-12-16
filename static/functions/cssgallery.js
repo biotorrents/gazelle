@@ -7,7 +7,7 @@ $(document).ready(function () {
     radiobutton.parent().parent().addClass('selected');
   }
   // If the input is clicked, redirect it to the overlay click event
-  $('input[name="stylesheet_gallery"]').change(function() {
+  $('input[name="stylesheet_gallery"]').click(function() {
     $('.preview_wrapper').removeClass('selected');
     var parent = $(this).parent();
     parent.addClass('selected');
