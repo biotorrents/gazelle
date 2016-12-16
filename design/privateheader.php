@@ -9,7 +9,7 @@ define('FOOTER_FILE', SERVER_ROOT.'/design/privatefooter.php');
   <title><?=display_str($PageTitle)?></title>
   <meta charset="utf-8" />
   <link rel="shortcut icon" href="favicon.ico?v=<?=md5_file('favicon.ico');?>" />
-  <link rel="search" type="application/opensearchdescription+xml" title="<?=SITE_NAME?>" href="/static/opensearch.xml">
+  <link rel="search" type="application/opensearchdescription+xml" title="<?=SITE_NAME?>" href="<?=STATIC_SERVER?>opensearch.xml">
   <link rel="alternate" type="application/rss+xml"
       href="feeds.php?feed=feed_news&amp;user=<?=G::$LoggedUser['ID']?>&amp;auth=<?=G::$LoggedUser['RSS_Auth']?>&amp;passkey=<?=G::$LoggedUser['torrent_pass']?>&amp;authkey=<?=G::$LoggedUser['AuthKey']?>"
       title="<?=SITE_NAME?> - News" />
@@ -53,13 +53,13 @@ if (isset(G::$LoggedUser['Notify'])) {
       href="feeds.php?feed=torrents_other&amp;user=<?=G::$LoggedUser['ID']?>&amp;auth=<?=G::$LoggedUser['RSS_Auth']?>&amp;passkey=<?=G::$LoggedUser['torrent_pass']?>&amp;authkey=<?=G::$LoggedUser['AuthKey']?>"
       title="<?=SITE_NAME?> - Other Torrents" />
   <link rel="stylesheet" type="text/css"
-      href="<?=STATIC_SERVER?>styles/global.css?v=<?=filemtime(SERVER_ROOT.'/static/styles/global.css')?>" />
-  <link rel="stylesheet" href="<?=STATIC_SERVER?>styles/tooltipster/style.css?v=<?=filemtime(SERVER_ROOT.'/static/styles/tooltipster/style.css')?>" type="text/css" media="screen" />
+      href="<?=STATIC_SERVER?>styles/global.css?v=<?=filemtime(SERVER_ROOT.STATIC_SERVER.'styles/global.css')?>" />
+  <link rel="stylesheet" href="<?=STATIC_SERVER?>styles/tooltipster/style.css?v=<?=filemtime(SERVER_ROOT.STATIC_SERVER.'styles/tooltipster/style.css')?>" type="text/css" media="screen" />
 <?
 if (empty(G::$LoggedUser['StyleURL'])) {
 ?>
 <link rel="stylesheet" type="text/css" title="<?=G::$LoggedUser['StyleName']?>" media="screen"
-    href="<?=STATIC_SERVER?>styles/<?=G::$LoggedUser['StyleName']?>/style.css?v=<?=filemtime(SERVER_ROOT.'/static/styles/'.G::$LoggedUser['StyleName'].'/style.css')?>" />
+    href="<?=STATIC_SERVER?>styles/<?=G::$LoggedUser['StyleName']?>/style.css?v=<?=filemtime(SERVER_ROOT.STATIC_SERVER.'styles/'.G::$LoggedUser['StyleName'].'/style.css')?>" />
 <?
 } else {
   $StyleURLInfo = parse_url(G::$LoggedUser['StyleURL']);
@@ -81,7 +81,7 @@ foreach ($ExtraCSS as $CSS) {
     continue;
   }
 ?>
-  <link rel="stylesheet" type="text/css" media="screen" href="<?=STATIC_SERVER."styles/$CSS/style.css?v=".filemtime(SERVER_ROOT."/static/styles/$CSS/style.css")?>" />
+  <link rel="stylesheet" type="text/css" media="screen" href="<?=STATIC_SERVER."styles/$CSS/style.css?v=".filemtime(SERVER_ROOT.STATIC_SERVER."styles/$CSS/style.css")?>" />
 <?
 }
 ?>
@@ -96,9 +96,9 @@ foreach ($Scripts as $Script) {
   if (trim($Script) == '') {
     continue;
   }
-  if (($ScriptStats = G::$Cache->get_value("script_stats_$Script")) === false || $ScriptStats['mtime'] != filemtime(STATIC_SERVER."functions/$Script.js")) {
-    $ScriptStats['mtime'] = filemtime(STATIC_SERVER."functions/$Script.js");
-    $ScriptStats['hash'] = base64_encode(hash_file(INTEGRITY_ALGO, STATIC_SERVER."functions/$Script.js", true));
+  if (($ScriptStats = G::$Cache->get_value("script_stats_$Script")) === false || $ScriptStats['mtime'] != filemtime(SERVER_ROOT.STATIC_SERVER."functions/$Script.js")) {
+    $ScriptStats['mtime'] = filemtime(SERVER_ROOT.STATIC_SERVER."functions/$Script.js");
+    $ScriptStats['hash'] = base64_encode(hash_file(INTEGRITY_ALGO, SERVER_ROOT.STATIC_SERVER."functions/$Script.js", true));
     $ScriptStats['algo'] = INTEGRITY_ALGO;
     G::$Cache->cache_value("script_stats_$Script", $ScriptStats);
   }
