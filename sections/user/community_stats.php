@@ -36,6 +36,7 @@ list($UniqueGroups) = $DB->next_record();
       <div class="head colhead_dark">Community</div>
       <ul class="stats nobullet">
         <li id="comm_posts">Forum posts: <?=number_format($ForumPosts)?> <a href="userhistory.php?action=posts&amp;userid=<?=$UserID?>" class="brackets">View</a></li>
+        <li id="comm_irc">IRC lines: <?=number_format($IRCLines)?></li>
 <?  if ($Override = check_paranoia_here('torrentcomments+')) { ?>
         <li id="comm_torrcomm"<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Torrent comments: <?=number_format($NumComments)?>
 <?        if ($Override = check_paranoia_here('torrentcomments')) { ?>

@@ -40,6 +40,7 @@ if (check_perms('users_mod')) { // Person viewing is a staff member
       m.can_leech,
       m.Visible,
       m.BonusPoints,
+      m.IRCLines,
       i.JoinDate,
       i.Info,
       i.Avatar,
@@ -84,7 +85,7 @@ if (check_perms('users_mod')) { // Person viewing is a staff member
     header("Location: log.php?search=User+$UserID");
   }
 
-  list($Username, $Email, $LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $CustomTitle, $torrent_pass, $Enabled, $Paranoia, $Invites, $DisableLeech, $Visible, $BonusPoints, $JoinDate, $Info, $Avatar, $AdminComment, $Donor, $Artist, $Warned, $SupportFor, $RestrictedForums, $PermittedForums, $InviterID, $InviterName, $ForumPosts, $RatioWatchEnds, $RatioWatchDownload, $DisableAvatar, $DisableInvites, $DisablePosting, $DisableForums, $DisableTagging, $DisableUpload, $DisableWiki, $DisablePM, $DisablePoints, $DisablePromotion, $DisableIRC, $DisableRequests, $FLTokens, $CommentHash, $InfoTitle, $LockedAccount) = $DB->next_record(MYSQLI_NUM, array(8, 11));
+  list($Username, $Email, $LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $CustomTitle, $torrent_pass, $Enabled, $Paranoia, $Invites, $DisableLeech, $Visible, $BonusPoints, $IRCLines, $JoinDate, $Info, $Avatar, $AdminComment, $Donor, $Artist, $Warned, $SupportFor, $RestrictedForums, $PermittedForums, $InviterID, $InviterName, $ForumPosts, $RatioWatchEnds, $RatioWatchDownload, $DisableAvatar, $DisableInvites, $DisablePosting, $DisableForums, $DisableTagging, $DisableUpload, $DisableWiki, $DisablePM, $DisablePoints, $DisablePromotion, $DisableIRC, $DisableRequests, $FLTokens, $CommentHash, $InfoTitle, $LockedAccount) = $DB->next_record(MYSQLI_NUM, array(8, 11));
 } else { // Person viewing is a normal user
   $DB->query("
     SELECT
@@ -107,6 +108,7 @@ if (check_perms('users_mod')) { // Person viewing is a staff member
       i.Avatar,
       m.FLTokens,
       m.BonusPoints,
+      m.IRCLines,
       i.Donor,
       i.Warned,
       COUNT(posts.id) AS ForumPosts,
@@ -128,7 +130,7 @@ if (check_perms('users_mod')) { // Person viewing is a staff member
 
     list($Username, $Email, $LastAccess, $IP, $Class, $Uploaded, $Downloaded,
 $RequiredRatio, $Enabled, $Paranoia, $Invites, $CustomTitle, $torrent_pass,
-$DisableLeech, $JoinDate, $Info, $Avatar, $FLTokens, $BonusPoints, $Donor, $Warned,
+$DisableLeech, $JoinDate, $Info, $Avatar, $FLTokens, $BonusPoints, $IRCLines, $Donor, $Warned,
 $ForumPosts, $InviterID, $DisableInvites, $InviterName, $InfoTitle) = $DB->next_record(MYSQLI_NUM, array(9, 11));
 }
 $Email = apc_exists('DBKEY') ? DBCrypt::decrypt($Email) : '[Encrypted]';
