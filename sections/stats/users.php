@@ -141,14 +141,38 @@ View::show_header('Detailed User Statistics', 'chart');
 <h3 id="User_Platforms"><a href="#User_Platforms">User Platforms</a></h3>
 <div class="box pad center">
   <canvas class="chart" id="chart_user_platforms"></canvas>
+  <?
+    $AllPlatforms = array_column($PlatformDistribution, 'OperatingSystem');
+    $SlicedPlatforms = (count($AllPlatforms) > 14) ? array_slice($AllPlatforms,0,13)+[13=>'Other'] : $AllPlatforms;
+    $AllUsers = array_column($PlatformDistribution, 'Users');
+    $SlicedUsers = (count($AllUsers) > 14) ? array_slice($AllUsers,0,13)+[13=>array_sum(array_slice($AllUsers,13))] : $AllUsers;
+    $Colors = [];
+    $Palette = ["blue"=>['#46B','#34A','#239','#128','#117'],"red"=>['#B45','#A34','#923'],"green"=>['#3B3','#2A2','#191','#080'],"purple"=>['#B3B','#A2A','#919','#808','#707','#606','#505','#404']];
+    $Counts = [0,0,0,0];
+    for ($i = 0; $i < count($SlicedPlatforms); $i++) {
+      if (preg_match('/Windows/i', $SlicedPlatforms[$i])) {
+        $Colors[] = $Palette["blue"][$Counts[0]];
+        $Counts[0]++;
+      } else if (preg_match('/Mac|OS ?X/i', $SlicedPlatforms[$i])) {
+        $Colors[] = $Palette["red"][$Counts[1]];
+        $Counts[1]++;
+      } else if (preg_match('/Linux|Ubuntu|Fedora/i', $SlicedPlatforms[$i])) {
+        $Colors[] = $Palette["green"][$Counts[2]];
+        $Counts[2]++;
+      } else {
+        $Colors[] = $Palette["purple"][$Counts[3]];
+        $Counts[3]++;
+      }
+    }
+  ?>
   <script>
     new Chart($('#chart_user_platforms').raw().getContext('2d'), {
       type: 'pie',
       data: {
-        labels: <? print '["'.implode('","', array_column($PlatformDistribution, 'OperatingSystem')).'"]'; ?>,
+        labels: ["<?=implode('","', $SlicedPlatforms)?>"],
         datasets: [ {
-          data: <? print "[".implode(",", array_column($PlatformDistribution, 'Users'))."]"; ?>,
-          backgroundColor: ['#8a00b8','#9416bf','#9f2dc5','#a944cb','#b45bd2','#be71d8','#c988de','#d39fe5','#deb6eb','#e8ccf1', '#ffffff', '#ffffff', '#ffffff', '#ffffff']
+          data: [<?=implode(",", $SlicedUsers)?>],
+            backgroundColor: ["<?=implode('","', $Colors)?>"]
         }]
       }
     })
@@ -158,14 +182,38 @@ View::show_header('Detailed User Statistics', 'chart');
 <h3 id="User_Browsers"><a href="#User_Browsers">User Browsers</a></h3>
 <div class="box pad center">
   <canvas class="chart" id="chart_user_browsers"></canvas>
+  <?
+    $AllBrowsers = array_column($BrowserDistribution, 'Browser');
+    $SlicedBrowsers = (count($AllBrowsers) > 7) ? array_slice($AllBrowsers,0,6)+[6=>'Other'] : $AllBrowsers;
+    $AllUsers = array_column($BrowserDistribution, 'Users');
+    $SlicedUsers = (count($AllUsers) > 7) ? array_slice($AllUsers,0,6)+[6=>array_sum(array_slice($AllUsers,6))] : $AllUsers;
+    $Colors = [];
+    $Palette = ["blue"=>['#46B','#34A'],"orange"=>['#F53','#E42'],"green"=>['#3B3','#2A2'],"purple"=>['#B3B','#A2A','#919','#808','#707','#606','#505','#404']];
+    $Counts = [0,0,0,0];
+    for ($i = 0; $i < count($SlicedBrowsers); $i++) {
+      if (preg_match('/Chrome/i', $SlicedBrowsers[$i])) {
+        $Colors[] = $Palette["green"][$Counts[0]];
+        $Counts[0]++;
+      } else if (preg_match('/Firefox/i', $SlicedBrowsers[$i])) {
+        $Colors[] = $Palette["orange"][$Counts[1]];
+        $Counts[1]++;
+      } else if (preg_match('/Safari/i', $SlicedBrowsers[$i])) {
+        $Colors[] = $Palette["blue"][$Counts[2]];
+        $Counts[2]++;
+      } else {
+        $Colors[] = $Palette["purple"][$Counts[3]];
+        $Counts[3]++;
+      }
+    }
+  ?>
   <script>
     new Chart($('#chart_user_browsers').raw().getContext('2d'), {
       type: 'pie',
       data: {
-        labels: <? print '["'.implode('","', array_column($BrowserDistribution, 'Browser')).'"]'; ?>,
+        labels: ["<?=implode('","', $SlicedBrowsers)?>"],
         datasets: [ {
-          data: <? print "[".implode(",", array_column($BrowserDistribution, 'Users'))."]"; ?>,
-          backgroundColor: ['#8a00b8','#9416bf','#9f2dc5','#a944cb','#b45bd2','#be71d8','#c988de','#d39fe5','#deb6eb','#e8ccf1', '#ffffff', '#ffffff', '#ffffff', '#ffffff']
+          data: [<?=implode(",", $SlicedUsers)?>],
+          backgroundColor: ["<?=implode('","', $Colors)?>"],
         }]
       }
     })
