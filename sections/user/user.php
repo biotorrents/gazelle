@@ -780,7 +780,6 @@ $DB->query("
   ORDER BY Featured DESC,
     Name ASC");
 $Collages = $DB->to_array(false, MYSQLI_NUM, false);
-$FirstCol = true;
 foreach ($Collages as $CollageInfo) {
   list($CollageID, $CName) = $CollageInfo;
   $DB->query("
@@ -798,13 +797,17 @@ foreach ($Collages as $CollageInfo) {
     <div class="head">
       <?=display_str($CName)?> - <a href="collages.php?id=<?=$CollageID?>" class="brackets">See full</a>
       <span style="float: right;">
-        <a toggle-target="#collage<?=$CollageID?>_box .images" toggle-replace="<?=$FirstCol ? 'Show' : 'Hide' ?>" class="brackets"><?=$FirstCol ? 'Hide' : 'Show' ?></a>
+        <a toggle-target="#collage<?=$CollageID?>_box .collage_images" toggle-replace="Show" class="brackets">Hide</a>
       </span>
     </div>
     <div id="user_collage_images" class="collage_images">
 <?  foreach ($Collage as $C) {
       $Group = Torrents::get_groups(array($C['GroupID']), true, true, false);
       extract(Torrents::array_group($Group[$C['GroupID']]));
+
+      if (!$C['WikiImage']) {
+        $C['WikiImage'] = STATIC_SERVER.'common/noartwork/nocover.png';
+      }
 
       $Name = '';
       $Name .= Artists::display_artists($Artists, false, true);
@@ -829,7 +832,6 @@ foreach ($Collages as $CollageInfo) {
     </script>
   </div>
 <?
-  $FirstCol = false;
 }
 ?>
   <!-- for the "jump to staff tools" button -->
