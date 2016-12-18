@@ -147,7 +147,7 @@ View::show_header('Detailed User Statistics', 'chart');
     $AllUsers = array_column($PlatformDistribution, 'Users');
     $SlicedUsers = (count($AllUsers) > 14) ? array_slice($AllUsers,0,13)+[13=>array_sum(array_slice($AllUsers,13))] : $AllUsers;
     $Colors = [];
-    $Palette = ["blue"=>['#46B','#34A','#239','#128','#117'],"red"=>['#B45','#A34','#923'],"green"=>['#3B3','#2A2','#191','#080'],"purple"=>['#B3B','#A2A','#919','#808','#707','#606','#505','#404']];
+    $Palette = ["blue"=>['#46B','#34A','#239','#128','#117','#006'],"red"=>['#B45','#A34','#923'],"green"=>['#3B3','#2A2','#191','#080'],"purple"=>['#B3B','#A2A','#919','#808','#707','#606','#505','#404']];
     $Counts = [0,0,0,0];
     for ($i = 0; $i < count($SlicedPlatforms); $i++) {
       if (preg_match('/Windows/i', $SlicedPlatforms[$i])) {
@@ -222,16 +222,16 @@ View::show_header('Detailed User Statistics', 'chart');
 <br />
 <h3 id="Geo_Dist_Map"><a href="#Geo_Dist_Map">Geographical Distribution Map</a></h3>
 <div class="box center">
-  <img src="<?=ImageTools::process('https://chart.googleapis.com/chart?cht=map:fixed=-55,-180,73,180&amp;chs=440x220&amp;chd=t:'.implode(',', $Rank).'&amp;chco=FFFFFF,EDEDED,1F0066&amp;chld='.implode('|', $Countries).'&amp;chf=bg,s,CCD6FF&.png')?>" alt="Geographical Distribution Map - Worldwide" />
-  <img src="<?=ImageTools::process('https://chart.googleapis.com/chart?cht=map:fixed=37,-26,65,67&amp;chs=440x220&amp;chs=440x220&amp;chd=t:'.implode(',', $Rank).'&amp;chco=FFFFFF,EDEDED,1F0066&amp;chld='.implode('|', $Countries).'&amp;chf=bg,s,CCD6FF&.png')?>" alt="Geographical Distribution Map - Europe" />
+  <img src="<?=ImageTools::process('https://chart.googleapis.com/chart?cht=map:fixed=-55,-180,73,180&chs=440x220&chd=t:'.implode(',', $Rank).'&chco=FFFFFF,EDEDED,1F0066&chld='.implode('|', $Countries).'&chf=bg,s,CCD6FF')?>" alt="Geographical Distribution Map - Worldwide" />
+  <img src="<?=ImageTools::process('https://chart.googleapis.com/chart?cht=map:fixed=37,-26,65,67&chs=440x220&chs=440x220&chd=t:'.implode(',', $Rank).'&chco=FFFFFF,EDEDED,1F0066&chld='.implode('|', $Countries).'&chf=bg,s,CCD6FF')?>" alt="Geographical Distribution Map - Europe" />
   <br />
-  <img src="<?=ImageTools::process('https://chart.googleapis.com/chart?cht=map:fixed=-46,-132,24,21.5&amp;chs=440x220&amp;chd=t:'.implode(',', $Rank).'&amp;chco=FFFFFF,EDEDED,1F0066&amp;chld='.implode('|', $Countries).'&amp;chf=bg,s,CCD6FF&.png')?>" alt="Geographical Distribution Map - South America" />
-  <img src="<?=ImageTools::process('https://chart.googleapis.com/chart?cht=map:fixed=-11,22,50,160&amp;chs=440x220&amp;chd=t:'.implode(',', $Rank).'&amp;chco=FFFFFF,EDEDED,1F0066&amp;chld='.implode('|', $Countries).'&amp;chf=bg,s,CCD6FF&.png')?>" alt="Geographical Distribution Map - Asia" />
+  <img src="<?=ImageTools::process('https://chart.googleapis.com/chart?cht=map:fixed=-46,-132,24,21.5&chs=440x220&chd=t:'.implode(',', $Rank).'&chco=FFFFFF,EDEDED,1F0066&chld='.implode('|', $Countries).'&chf=bg,s,CCD6FF')?>" alt="Geographical Distribution Map - South America" />
+  <img src="<?=ImageTools::process('https://chart.googleapis.com/chart?cht=map:fixed=-11,22,50,160&chs=440x220&chd=t:'.implode(',', $Rank).'&chco=FFFFFF,EDEDED,1F0066&chld='.implode('|', $Countries).'&chf=bg,s,CCD6FF')?>" alt="Geographical Distribution Map - Asia" />
   <br />
-  <img src="<?=ImageTools::process('https://chart.googleapis.com/chart?cht=map:fixed=-36,-57,37,100&amp;chs=440x220&amp;chd=t:'.implode(',', $Rank).'&amp;chco=FFFFFF,EDEDED,1F0066&amp;chld='.implode('|', $Countries).'&amp;chf=bg,s,CCD6FF&.png')?>" alt="Geographical Distribution Map - Africa" />
-  <img src="<?=ImageTools::process('https://chart.googleapis.com/chart?cht=map:fixed=14.8,15,45,86&amp;chs=440x220&amp;chd=t:'.implode(',', $Rank).'&amp;chco=FFFFFF,EDEDED,1F0066&amp;chld='.implode('|', $Countries).'&amp;chf=bg,s,CCD6FF&.png')?>" alt="Geographical Distribution Map - Middle East" />
+  <img src="<?=ImageTools::process('https://chart.googleapis.com/chart?cht=map:fixed=-36,-57,37,100&chs=440x220&chd=t:'.implode(',', $Rank).'&chco=FFFFFF,EDEDED,1F0066&chld='.implode('|', $Countries).'&chf=bg,s,CCD6FF')?>" alt="Geographical Distribution Map - Africa" />
+  <img src="<?=ImageTools::process('https://chart.googleapis.com/chart?cht=map:fixed=14.8,15,45,86&chs=440x220&chd=t:'.implode(',', $Rank).'&chco=FFFFFF,EDEDED,1F0066&chld='.implode('|', $Countries).'&chf=bg,s,CCD6FF')?>" alt="Geographical Distribution Map - Middle East" />
   <br />
-  <img src="<?=ImageTools::process('https://chart.googleapis.com/chart?chxt=y,x&amp;chg=0,-1,1,1&amp;chxs=0,h&amp;cht=bvs&amp;chco=76A4FB&amp;chs=880x300&amp;chd=t:'.implode(',', array_slice($CountryUsers, 0, 31)).'&amp;chxl=1:|'.implode('|', array_slice($Countries, 0, 31)).'|0:|'.implode('|', $LogIncrements).'&amp;chf=bg,s,FFFFFF00&.png')?>" alt="Number of users by country" />
+  <img src="<?=ImageTools::process('https://chart.googleapis.com/chart?chxt=y,x&chg=0,-1,1,1&chxs=0,h&cht=bvs&chco=76A4FB&chs=880x300&chd=t:'.implode(',', array_slice($CountryUsers, 0, 31)).'&chxl=1:|'.implode('|', array_slice($Countries, 0, 31)).'|0:|'.implode('|', $LogIncrements).'&chf=bg,s,FFFFFF00')?>" alt="Number of users by country" />
 </div>
 <?
 View::show_footer();
