@@ -2065,6 +2065,10 @@ tbody .staff_post {
 	color: #e896e8 !important;
 }
 
+.tex_img {
+  filter: invert(100%);
+}
+
 /* Pink Additions */
 
 body.style_pink .cats_anime:after { color: #78467f; }
