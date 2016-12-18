@@ -4,7 +4,7 @@ if (empty($_GET['url'])) {
   json_die();
 }
 
-$url = $_GET['url'];
+$url = str_replace('exhentai','e-hentai',$_GET['url']);
 
 $matches = array();
 preg_match('/^https?:\/\/g?\.?e.hentai\.org\/g\/(\d+)\/([\w\d]+)\/?$/', $url, $matches);
