@@ -26,12 +26,12 @@ $Feed = new FEED;
 
 define('QUERY_EXCEPTION', true); // Shut up debugging
 
-//******************************************************************************//
-//--------------- Set $Properties array ----------------------------------------//
-// This is used if the form doesn't validate, and when the time comes to enter  //
-// it into the database.                            //
-// Haha wow god i'm trying to restrict the database to only have fields for //
-// movies and not add anything for other categories but this is fucking dumb //
+//*****************************************************************************//
+//--------------- Set $Properties array ---------------------------------------//
+// This is used if the form doesn't validate, and when the time comes to enter //
+// it into the database.                                                       //
+// Haha wow god i'm trying to restrict the database to only have fields for    //
+// movies and not add anything for other categories but this is fucking dumb   //
 
 $Properties = array();
 $Type = $Categories[(int)$_POST['type']];
@@ -254,6 +254,7 @@ $T['Censored'] = $Properties['Censored'];
 
 $Tor = new BencodeTorrent($TorrentName, true);
 $PublicTorrent = $Tor->make_private(); // The torrent is now private.
+$UnsourcedTorrent = $Tor->make_sourced(); // The torrent now has the source field set.
 $TorEnc = $Tor->encode();
 $InfoHash = pack('H*', $Tor->info_hash());
 

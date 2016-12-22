@@ -679,4 +679,26 @@ class Users {
 
     Misc::send_email($Email, 'Login from new location for '.SITE_NAME, $TPL->get(), 'noreply');
   }
+  /*
+   * @return array of strings that can be added to next source flag ( [current, old] )
+   */
+  public static function get_upload_sources() {
+    if (!($SourceKey = G::$Cache->get_value('source_key_new'))) {
+      G::$Cache->cache_value('source_key_new', $SourceKey = [Users::make_secret(), time()]);
+    }
+    $SourceKeyOld = G::$Cache->get_value('source_key_old');
+    if ($SourceKey[1]-time() > 3600) {
+      G::$Cache->cache_value('source_key_old', $SourceKeyOld = $SourceKey);
+      G::$Cache->cache_value('source_key_new', $SourceKey = [Users::make_secret(), time()]);
+    }
+    G::$DB->query("
+      SELECT
+        COUNT(ID)
+      FROM torrents
+      WHERE UserID = ".G::$LoggedUser['ID']);
+    list($Uploads) = G::$DB->next_record();
+    $Source[0] = SITE_NAME.'-'.substr(hash('sha256', $SourceKey[0].G::$LoggedUser['ID'].$Uploads),0,10);
+    $Source[1] = $SourceKeyOld ? SITE_NAME.'-'.substr(hash('sha256', $SourceKeyOld[0].G::$LoggedUser['ID'].$Uploads),0,10) : $Source[0];
+    return $Source;
+  }
 }

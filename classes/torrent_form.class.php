@@ -77,9 +77,15 @@ class TORRENT_FORM {
 <div class="thin">
 <?    if ($this->NewTorrent) { ?>
   <p style="text-align: center;">
-    Your personal announce URL is:<br />
-    <input type="text" value="<?= ANNOUNCE_URLS[0][0] . '/' . G::$LoggedUser['torrent_pass'] . '/announce'?>" size="71" onclick="this.select();" readonly="readonly" />
+    If you would like to use your own torrent file, add the following to it:<br />
+<?      $Announces = call_user_func_array('array_merge', ANNOUNCE_URLS);
+        foreach ($Announces as $Announce) {
+?>
+    Announce: <input type="text" value="<?=$Announce . '/' . G::$LoggedUser['torrent_pass'] . '/announce'?>" size="74" onclick="this.select();" readonly="readonly" /> <br />
+<?      } ?>
+Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20" onclick="this.select();" readonly="readonly" />
     <p style="text-align: center;">
+        Otherwise, add none of it and simply redownload the torrent after uploading it. All of the above data will be added by the site.<br /><br />
     <strong<?=((!$Uploads)?' class="important_text"':'')?>>
         If you never have before, be sure to read this list of <a href="wiki.php?action=article&name=uploadingpitfalls">uploading pitfalls</a>
       </strong>

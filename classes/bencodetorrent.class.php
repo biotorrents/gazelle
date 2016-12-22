@@ -107,6 +107,22 @@ class BencodeTorrent extends BencodeDecode {
   }
 
   /**
+   * Add the "source" field to the torrent
+   *
+   * @return true if a change was required
+   */
+  public function make_sourced() {
+    $Sources = Users::get_upload_sources();
+    if (empty($this->Dec)) { return false; }
+    if (isset($this->Dec['info']['source']) && ($this->Dec['info']['source'] == $Sources[0] || $this->Dec['info']['source'] == $Sources[1])) {
+      return false;
+    }
+    $this->Dec['info']['source'] = $Sources[0];
+    ksort($this->Dec['info']);
+    return true;
+  }
+
+  /**
    * Calculate the torrent's info hash
    *
    * @return info hash in hexadecimal form
