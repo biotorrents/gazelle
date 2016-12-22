@@ -37,7 +37,7 @@ if (isset($_POST['type'])) {
           VALUES
             ('" . $Tag . "', '" . (time() + (60 * 60 * $Duration)) . "', 'freeleech')
           ON DUPLICATE KEY UPDATE
-            Value = CONVERT(Value, UNSIGNED INTEGER) + " . (60 * 60 * $Duration));
+            First = CONVERT(First, UNSIGNED INTEGER) + " . (60 * 60 * $Duration));
         Torrents::freeleech_torrents($IDs, 1, 3);
         echo("Success! Now run the indexer.");
       } else {
@@ -70,7 +70,7 @@ if (isset($_POST['type'])) {
         VALUES
           ('global', '" . (time() + (60 * 60 * $Duration)) . "', 'freeleech')
         ON DUPLICATE KEY UPDATE
-          Value = CONVERT(Value, UNSIGNED INTEGER) + " . (60 * 60 * $Duration));
+          First = CONVERT(First, UNSIGNED INTEGER) + " . (60 * 60 * $Duration));
       Torrents::freeleech_torrents($IDs, 1, 3, false);
       echo("Success! Now run the indexer.");
     } else {

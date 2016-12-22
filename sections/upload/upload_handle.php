@@ -535,7 +535,7 @@ if (!$Properties['GroupID']) {
 
 // Use this section to control freeleeches
 $DB->query("
-  SELECT First, Second
+  SELECT Name, First, Second
   FROM misc
   WHERE Second = 'freeleech'");
 if ($DB->has_results()) {
@@ -602,8 +602,8 @@ if ($T['FreeLeechType'] == 3) {
   $Expiry = 0;
   foreach ($FreeLeechTags as $Tag => $Exp) {
     if ($Tag == 'global' || in_array($Tag, $Tags)) {
-      if (((int) $FreeLeechTags[$Tag]['Value']) > $Expiry)
-        $Expiry = (int) $FreeLeechTags[$Tag]['Value'];
+      if (((int) $FreeLeechTags[$Tag]['First']) > $Expiry)
+        $Expiry = (int) $FreeLeechTags[$Tag]['First'];
     }
   }
   if ($Expiry > 0) {
@@ -658,16 +658,6 @@ if (trim($Properties['Image']) != '') {
       $Cache->cache_value("recent_uploads_$UserID", $RecentUploads, 0);
     } while (0);
   }
-}
-
-//******************************************************************************//
-//---------------------------------- Contest -----------------------------------//
-if ($Properties['LibraryImage'] != '') {
-  $DB->query("
-    INSERT INTO reportsv2
-      (ReporterID, TorrentID, Type, UserComment, Status, ReportedTime, Track, Image, ExtraID, Link)
-    VALUES
-      (0, $TorrentID, 'library', '".db_string(($Properties['MultiDisc'] ? 'Multi-disc' : ''))."', 'New', '".sqltime()."', '', '".db_string($Properties['LibraryImage'])."', '', '')");
 }
 
 //******************************************************************************//
