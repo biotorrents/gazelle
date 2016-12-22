@@ -552,6 +552,12 @@ if ($DB->has_results()) {
   $T['FreeLeechType'] = 0;
 }
 
+// movie and anime ISOs are neutral leech, and receive a BP bounty
+if (($Type == "Movies" || $Type == "Anime") && $T['Container'] == "'ISO'") {
+  $T['FreeTorrent'] = 2;
+  $T['FreeLeechType'] = 2;
+}
+
 // Torrent
 $DB->query("
   INSERT INTO torrents
@@ -572,6 +578,23 @@ $Debug->set_flag('upload: ocelot updated');
 // Prevent deletion of this torrent until the rest of the upload process is done
 // (expire the key after 10 minutes to prevent locking it for too long in case there's a fatal error below)
 $Cache->cache_value("torrent_{$TorrentID}_lock", true, 600);
+
+//give BP if necessary
+if (($Type == "Movies" || $Type == "Anime") && $T['Container'] == "'ISO'") {
+  $BPAmt = 2*($TotalSize / (1024*1024*1024))*1000;
+
+  $DB->query("
+    UPDATE users_main
+    SET BonusPoints = BonusPoints + $BPAmt
+    WHERE ID = $LoggedUser[ID]");
+
+   $DB->query("
+    UPDATE users_info
+    SET AdminComment = CONCAT('".sqltime()." - Received $BPAmt ".BONUS_POINTS." for uploading a torrent $TorrentID\n\n', AdminComment)
+    WHERE UserID = $LoggedUser[ID]");
+    $Cache->delete_value('user_info_heavy_'.$LoggedUser['ID']);
+    $Cache->delete_value('user_stats_'.$LoggedUser['ID']);
+}
 
 // Add to shop freeleeches if necessary
 if ($T['FreeLeechType'] == 3) {
