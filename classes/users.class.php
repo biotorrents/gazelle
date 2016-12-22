@@ -636,7 +636,7 @@ class Users {
    * @param string $Username The username
    * @param string $Email The email address
    */
-  public static function resetPassword($UserID, $Username, $Email) {
+  public static function reset_password($UserID, $Username, $Email) {
     $ResetKey = Users::make_secret();
     G::$DB->query("
       UPDATE users_info
@@ -665,7 +665,7 @@ class Users {
    * @param int $ASN The ASN
    * @param string $Email The email address
    */
-  public static function authLocation($UserID, $Username, $ASN, $Email) {
+  public static function auth_location($UserID, $Username, $ASN, $Email) {
     $AuthKey = Users::make_secret();
     G::$Cache->cache_value('new_location_'.$AuthKey, array('UserID'=>$UserID, 'ASN'=>$ASN), 3600*2);
     require(SERVER_ROOT . '/classes/templates.class.php');

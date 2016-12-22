@@ -140,7 +140,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
         if ($UserID) {
           // Email exists in the database
           // Set ResetKey, send out email, and set $Sent to 1 to show success page
-          Users::resetPassword($UserID, $Username, $Email);
+          Users::reset_password($UserID, $Username, $Email);
 
           $Sent = 1; // If $Sent is 1, recover_step1.php displays a success message
 
@@ -278,7 +278,7 @@ else {
                       FROM users_main
                       WHERE ID = $UserID");
                     list($Username, $Email) = $DB->next_record();
-                    Users::authLocation($UserID, $Username, $CurrentASN, DBCrypt::decrypt($Email));
+                    Users::auth_location($UserID, $Username, $CurrentASN, DBCrypt::decrypt($Email));
                     require('newlocation.php');
                     die();
                   }
