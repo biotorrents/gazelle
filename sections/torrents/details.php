@@ -510,7 +510,7 @@ foreach ($TorrentList as $Torrent) {
       WHERE TorrentID = $TorrentID");
     if ($DB->has_results()) {
       $ExpiryTime = $DB->next_record(MYSQLI_NUM, false)[0];
-      $ExtraInfo .= " <strong>(" . str_replace(['day','hour','min','Just now','s',' '],['d','h','m','0m'],time_diff($ExpiryTime, 1, false)) . ")</strong>";
+      $ExtraInfo .= " <strong>(" . str_replace(['week','day','hour','min','Just now','s',' '],['w','d','h','m','0m'],time_diff($ExpiryTime, 1, false)) . ")</strong>";
     }
   }
   if ($PersonalFL) { $ExtraInfo.=$AddExtra. Format::torrent_label('Personal Freeleech!'); $AddExtra=' / '; }

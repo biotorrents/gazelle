@@ -712,7 +712,7 @@ class Torrents {
           WHERE TorrentID = ".$Data['ID']);
         if (G::$DB->has_results()) {
           $ExpiryTime = G::$DB->next_record(MYSQLI_NUM, false)[0];
-          $Info[] = ($HTMLy ? Format::torrent_label('Freeleech!') : 'Freeleech!') . ($HTMLy ? " <strong>(" : " (") . str_replace(['day','hour','min','Just now','s',' '],['d','h','m','0m'],time_diff($ExpiryTime, 1, false)) . ($HTMLy ? ")</strong>" : ")");
+          $Info[] = ($HTMLy ? Format::torrent_label('Freeleech!') : 'Freeleech!') . ($HTMLy ? " <strong>(" : " (") . str_replace(['week','day','hour','min','Just now','s',' '],['w','d','h','m','0m'],time_diff($ExpiryTime, 1, false)) . ($HTMLy ? ")</strong>" : ")");
         } else {
           $Info[] = $HTMLy ? Format::torrent_label('Freeleech!') : 'Freeleech!';
         }
