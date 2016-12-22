@@ -16,6 +16,10 @@ Whenever a login occurs from a location (determined by ASN) that hasn't logged i
 
 This prevents most attacks that would be otherwise successful, as it requires an attacker to access the site from the same locations the actual user uses to login.
 
+#### Unique Infohashes
+
+Upon upload, torrent files are modified to contain a "source" field in the info dict containing the concatination of the site name and some generated junk data (unique per-torrent). This prevents infohash collisions with torrents cross-seeded from other sites in the same client, and also helps protect against some not particularly likely peer-leaking attacks.
+
 #### Expunge Requests
 
 Users are able to view the data kept on them and [issue requests for the deletion of old information](sections/delete) to staff through a simple interface.
