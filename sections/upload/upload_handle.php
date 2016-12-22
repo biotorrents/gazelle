@@ -153,7 +153,7 @@ switch ($Type) {
     }
 
       $Validate->SetFields('tags',
-        '1','string','You must enter at least one tag. Maximum length is 300 characters.', array('maxlength'=>300, 'minlength'=>2));
+        '1','string','You must enter at least five tag. Maximum length is 1500 characters.', array('maxlength'=>1500, 'minlength'=>2));
 
       $Validate->SetFields('image',
         '0','link','The image URL you entered was invalid.', array('maxlength'=>255, 'minlength'=>12));
