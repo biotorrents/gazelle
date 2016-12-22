@@ -211,6 +211,7 @@ if ($DB->affected_rows() > 0 || !$Report) {
       WHERE r.ID = $ReportID");
     if ($DB->has_results()) {
       list($ExtraID, $InfoHash) = $DB->next_record();
+      $ExtraID = explode(' ', $ExtraID)[0];
 
       $AffectedUsers = [];
       $DB->query("
