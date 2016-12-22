@@ -160,9 +160,11 @@ $encoded_artist = urlencode($encoded_artist);
     <div class="box box_tags">
       <div class="head"><strong>Tags</strong></div>
       <ul class="stats nobullet">
-<?  foreach ($Request['Tags'] as $TagID => $TagName) { ?>
+<?  foreach ($Request['Tags'] as $TagID => $TagName) {
+      $Split = Tags::get_name_and_class($TagName);
+?>
         <li>
-          <a href="torrents.php?taglist=<?=$TagName?>"><?=display_str($TagName)?></a>
+          <a class="<?=$Split['class']?>" href="torrents.php?taglist=<?=$TagName?>"><?=display_str($Split['name'])?></a>
           <br style="clear: both;" />
         </li>
 <?  } ?>
