@@ -16,15 +16,14 @@ $DB->query("
     r.FillerID,
     r.Title,
     u.Uploaded,
+    u.BonusPoints,
     r.GroupID,
     t.UserID,
-    u2.Uploaded
   FROM requests AS r
     LEFT JOIN torrents AS t ON t.ID = TorrentID
     LEFT JOIN users_main AS u ON u.ID = FillerID
-    LEFT JOIN users_main AS u2 ON u2.ID = t.UserID
   WHERE r.ID = $RequestID");
-list($CategoryID, $UserID, $FillerID, $Title, $Uploaded, $GroupID, $UploaderID, $UploaderUploaded) = $DB->next_record();
+list($CategoryID, $UserID, $FillerID, $Title, $Uploaded, $BonusPoints, $GroupID, $UploaderID) = $DB->next_record();
 
 if (!$UploaderID) {
   // If the torrent was deleted and we don't know who the uploader was, just assume it was the filler
@@ -58,32 +57,65 @@ $RequestVotes = Requests::get_votes_array($RequestID);
 
 //Remove Filler portion of bounty
 if (intval($RequestVotes['TotalBounty']*(1/4)) > $Uploaded) {
-  // If we can't take it all out of upload, zero that out and add whatever is left as download.
+  // If we can't take it all out of upload, attempt to take the rest out of bonus points
   $DB->query("
     UPDATE users_main
     SET Uploaded = 0
     WHERE ID = $FillerID");
-  $DB->query('
-    UPDATE users_main
-    SET Downloaded = Downloaded + '.intval($RequestVotes['TotalBounty']*(1/4) - $Uploaded)."
-    WHERE ID = $FillerID");
+  if (intval($RequestVotes['TotalBounty']*(1/4)-$Uploaded) > $BonusPoints) {
+    // If we can't take the rest as bonus points, turn the remaining bit to download
+    $DB->query("
+      UPDATE users_main
+      SET BonusPoints = 0
+      WHERE ID = $FillerID");
+    $DB->query('
+      UPDATE users_main
+      SET Downloaded = Downloaded + '.intval($RequestVotes['TotalBounty']*(1/4) - $Uploaded - $BonusPoints*1000)."
+      WHERE ID = $FillerID");
+  } else {
+    $DB->query('
+      UPDATE users_main
+      SET BonusPoints = BonusPoints - '.intval(($RequestVotes['TotalBounty']*(1/4) - $Uploaded)/1000)."
+      WHERE ID = $FillerID");
+  }
 } else {
   $DB->query('
     UPDATE users_main
     SET Uploaded = Uploaded - '.intval($RequestVotes['TotalBounty']*(1/4))."
     WHERE ID = $FillerID");
 }
+
+$DB->query("
+  SELECT
+    Uploaded,
+    BonusPoints
+  FROM users_main
+  WHERE ID = $UploaderID");
+list($UploaderUploaded, $UploaderBonusPoints) = $DB->next_record();
+
 //Remove Uploader portion of bounty
 if (intval($RequestVotes['TotalBounty']*(3/4)) > $UploaderUploaded) {
-  // If we can't take it all out of upload, zero that out and add whatever is left as download.
+  // If we can't take it all out of upload, attempt to take the rest out of bonus points
   $DB->query("
     UPDATE users_main
     SET Uploaded = 0
     WHERE ID = $UploaderID");
-  $DB->query('
-    UPDATE users_main
-    SET Downloaded = Downloaded + '.intval($RequestVotes['TotalBounty']*(3/4) - $UploaderUploaded)."
-    WHERE ID = $UploaderID");
+  if (intval($RequestVotes['TotalBounty']*(3/4) - $UploaderUploaded) > $UploaderBonusPoints) {
+    // If we can't take the rest as bonus points, turn the remaining bit to download
+    $DB->query("
+      UPDATE users_main
+      SET BonusPoints = 0
+      WHERE ID = $UploaderID");
+    $DB->query('
+      UPDATE users_main
+      SET Downloaded = Downloaded + '.intval($RequestVotes['TotalBounty']*(3/4) - $UploaderUploaded - $UploaderBonusPoints*1000)."
+      WHERE ID = $UploaderID");
+  } else {
+    $DB->query('
+      UPDATE users_main
+      SET BonusPoints = BonusPoints - '.intval(($RequestVotes['TotalBounty']*(3/4) - $UploaderUploaded)/1000)."
+      WHERE ID = $UploaderID");
+  }
 } else {
   $DB->query('
     UPDATE users_main
