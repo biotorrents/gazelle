@@ -135,7 +135,7 @@ View::show_header('Edit torrent group', 'upload');
 ?>
   <h3 id="screenshots_section"><?=($CategoryID == 3)?'Samples':'Screenshots'?></h3>
   <div class="box pad">
-    <p style="color: red;"><strong>Thumbs are not allowed as screenshots. Preview images consisting of multiple images are not allowed as screenshots. If you upload them, I swear to god I'm gonna fucking ban you. Read the god damn rules.</strong></p>
+    <p><strong class="important_text">Thumbs, promotional material, and preview images consisting of multiple images are not allowed as screenshots.</strong></p>
     <form class="edit_form" name="screenshots_form" action="torrents.php" method="post">
       <input type="hidden" name="action" value="screenshotedit" />
       <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
