@@ -363,7 +363,7 @@ if ($Type == 'Movies' || $Type == 'Anime' || $Type == 'Manga' || $Type == 'Games
   }
   if (!isset($GroupID) || !$GroupID) {
     foreach ($ArtistForm as $Num => $Artist) {
-      $DB->query("
+      /*$DB->query("
         SELECT
           tg.id,
           tg.WikiImage,
@@ -392,7 +392,7 @@ if ($Type == 'Movies' || $Type == 'Anime' || $Type == 'Manga' || $Type == 'Games
         //This torrent belongs in a group
         break;
 
-      } else {
+      } else {*/
         // The album hasn't been uploaded. Try to get the artist IDs
         $DB->query("
           SELECT
@@ -408,7 +408,7 @@ if ($Type == 'Movies' || $Type == 'Anime' || $Type == 'Manga' || $Type == 'Games
             }
           }
         }
-      }
+      //}
     }
   }
 }
