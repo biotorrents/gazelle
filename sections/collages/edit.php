@@ -17,7 +17,7 @@ if ($CategoryID == 0 && $UserID != $LoggedUser['ID'] && !check_perms('site_colla
   error(403);
 }
 
-View::show_header('Edit collage');
+View::show_header('Edit collection');
 
 if (!empty($Err)) {
   if (isset($ErrNoEscape)) {
@@ -29,7 +29,7 @@ if (!empty($Err)) {
 ?>
 <div class="thin">
   <div class="header">
-    <h2>Edit collage <a href="collages.php?id=<?=$CollageID?>"><?=$Name?></a></h2>
+    <h2>Edit collection <a href="collages.php?id=<?=$CollageID?>"><?=$Name?></a></h2>
   </div>
   <div class="box pad">
   <form class="edit_form" name="collage" action="collages.php" method="post">
@@ -95,7 +95,7 @@ if (check_perms('site_collages_delete')) { ?>
 
 <? } ?>
       <tr>
-        <td colspan="2" class="center"><input type="submit" value="Edit collage" /></td>
+        <td colspan="2" class="center"><input type="submit" value="Edit collection" /></td>
       </tr>
     </table>
   </form>

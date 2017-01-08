@@ -6,7 +6,7 @@ if (!check_perms('site_collages_subscribe')) {
   error(403);
 }
 
-View::show_header('Subscribed collages','browse,collage');
+View::show_header('Subscribed collections','browse,collage');
 
 $ShowAll = !empty($_GET['showall']);
 
@@ -43,19 +43,19 @@ $CollageSubs = $DB->to_array();
 ?>
 <div class="thin">
   <div class="header">
-    <h2>Subscribed collages<?=($ShowAll ? '' : ' with new additions')?></h2>
+    <h2>Subscribed collections<?=($ShowAll ? '' : ' with new additions')?></h2>
 
     <div class="linkbox">
 <?
 if ($ShowAll) {
 ?>
       <br /><br />
-      <a href="userhistory.php?action=subscribed_collages&amp;showall=0" class="brackets">Only display collages with new additions</a>&nbsp;&nbsp;&nbsp;
+      <a href="userhistory.php?action=subscribed_collages&amp;showall=0" class="brackets">Only display collections with new additions</a>&nbsp;&nbsp;&nbsp;
 <?
 } else {
 ?>
       <br /><br />
-      <a href="userhistory.php?action=subscribed_collages&amp;showall=1" class="brackets">Show all subscribed collages</a>&nbsp;&nbsp;&nbsp;
+      <a href="userhistory.php?action=subscribed_collages&amp;showall=1" class="brackets">Show all subscribed collections</a>&nbsp;&nbsp;&nbsp;
 <?
 }
 ?>
@@ -66,7 +66,7 @@ if ($ShowAll) {
 if (!$NumResults) {
 ?>
   <div class="center">
-    No subscribed collages<?=($ShowAll ? '' : ' with new additions')?>
+    No subscribed collections<?=($ShowAll ? '' : ' with new additions')?>
   </div>
 <?
 } else {

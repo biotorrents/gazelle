@@ -224,7 +224,7 @@ switch ($Short) {
     break;
   case 'collage':
 ?>
-  <p>You are reporting the collage:</p>
+  <p>You are reporting the collection:</p>
   <table class="box">
     <tr class="colhead">
       <td>Title</td>

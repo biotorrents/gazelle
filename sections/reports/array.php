@@ -13,7 +13,7 @@ $Types = array(
         <ul>
         <li>Torrent uploads</li>
         <li>Forum threads/posts</li>
-        <li>Collages</li>
+        <li>Collections</li>
         <li>Requests</li>
         </ul>",
         "These have their own specific section for reporting, found on their respective pages.",
@@ -62,10 +62,10 @@ $Types = array(
       )
     ),
     "collage" => array(
-      "title" => "Collage",
+      "title" => "Collection",
       "guidelines" => array(
-        "The report collage option is for reporting a collage which breaks one of the collage guidelines found on the <a href=\"rules.php?p=collages\">collage rules page</a>.",
-        "Collage rules are an interpreted concept, and it is up to staff to interpret these rules. If you feel like this collage might be a borderline case between allowed and not allowed, feel free to report it, and we will look into it.",
+        "The report collection option is for reporting a collection which breaks one of the collection guidelines found on the <a href=\"rules.php?p=collages\">collection rules page</a>.",
+        "Collection rules are an interpreted concept, and it is up to staff to interpret these rules. If you feel like this collection might be a borderline case between allowed and not allowed, feel free to report it, and we will look into it.",
         "We encourage all users to use this feature whenever possible. This will get quicker action than PMing a staff member will.",
         "In your report description below, please be specific and include as much information as possible that will help our staff resolve the issue."
       )

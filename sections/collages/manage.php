@@ -38,12 +38,12 @@ if (count($GroupIDs) > 0) {
   $TorrentList = array();
 }
 
-View::show_header("Manage collage: $Name", 'jquery-ui,jquery.tablesorter,sort');
+View::show_header("Manage collection: $Name", 'jquery-ui,jquery.tablesorter,sort');
 
 ?>
 <div class="thin">
   <div class="header">
-    <h2>Manage collage <a href="collages.php?id=<?=$CollageID?>"><?=$Name?></a></h2>
+    <h2>Manage collection <a href="collages.php?id=<?=$CollageID?>"><?=$Name?></a></h2>
   </div>
   <table width="100%" class="layout">
     <tr class="colhead"><td id="sorting_head">Sorting</td></tr>
