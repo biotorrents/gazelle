@@ -136,15 +136,12 @@ button:focus,input[type=button]:focus,input[type=submit]:focus {
 ::-webkit-input-placeholder {
   font-family: 'Source Sans Pro',Helvetica,sans-serif
 }
-
 :-moz-placeholder {
   font-family: 'Source Sans Pro',Helvetica,sans-serif
 }
-
 ::-moz-placeholder {
   font-family: 'Source Sans Pro',Helvetica,sans-serif
 }
-
 :-ms-input-placeholder {
   font-family: 'Source Sans Pro',Helvetica,sans-serif
 }
@@ -841,7 +838,7 @@ td.tdright {
 }
 
 .colhead {
-  background: #565961!important;
+  background: #565961;
   font-weight: 300;
   color: #fff
 }
@@ -1452,7 +1449,7 @@ pre {
 
 #forums .box.pad {
   padding: 0!important;
-  background-color: #23252a!important
+  background-color: #23252a;
 }
 
 #forums #content .thin>table.forum_post {
@@ -2142,3 +2139,55 @@ body.style_pink .noty_bar {
 body.style_pink .collage_image:hover {
   box-shadow: 0px 0px 0px 3px #ef86d5;
 }
+
+/* Haze Additions */
+
+body.style_haze {
+  background-color: #53565c;
+  background-image: url('images/haze.png');
+  background-attachment: fixed;
+  background-size: cover;
+}
+body.style_haze #logo > a {  color: white;}
+body.style_haze #searchbars {
+  background-color: rgba(24,32,41,0.05);
+}
+body.style_haze #searchbars input {
+  background: rgba(24,32,41,0.3);
+  border: none;
+}
+body.style_haze #menu li:nth-child(1) a { background: rgba(24,32,41,0.7); }
+body.style_haze #menu li:nth-child(2) a { background: rgba(24,32,41,0.65); }
+body.style_haze #menu li:nth-child(3) a { background: rgba(24,32,41,0.6); }
+body.style_haze #menu li:nth-child(4) a { background: rgba(24,32,41,0.55); }
+body.style_haze #menu li:nth-child(5) a { background: rgba(24,32,41,0.5); }
+body.style_haze #menu li:nth-child(6) a { background: rgba(24,32,41,0.45); }
+body.style_haze #menu li:nth-child(7) a { background: rgba(24,32,41,0.4); }
+body.style_haze #menu li:nth-child(8) a { background: rgba(24,32,41,0.35); }
+body.style_haze #menu li:nth-child(9) a { background: rgba(24,32,41,0.3); }
+body.style_haze #menu li:nth-child(10) a { background: rgba(24,32,41,0.25); }
+body.style_haze #menu li a:hover { background: white; color: black; }
+body.style_haze #userinfo_minor > li > ul { background: white; color: black; }
+body.style_haze #alerts .alertbar {background: rgba(24,32,41,0.4);}
+body.style_haze .colhead, body.style_haze .head {background: rgba(24,32,41,0.4);}
+body.style_haze .colhead_dark {background: rgba(24,32,41,0.5);}
+body.style_haze tr {background: rgba(75,75,75,0.35); border-bottom: none;}
+body.style_haze .box {background: rgba(75,75,75,0.35) !important;}
+body.style_haze select, body.style_haze input, body.style_haze textarea {background: rgba(24,32,41,0.3); border: none;}
+body.style_haze table tbody a, body.style_haze .main_column a, body.style_haze .sidebar a, body.style_haze .box a { color: rgba(255,255,255,0.6); }
+body.style_haze #userinfo_stats {color: rgba(255,255,255,0.6);}
+body.style_haze #userinfo_stats a {color: rgba(255,255,255,0.6);}
+body.style_haze #userinfo_stats .stat > span {color: white;}
+body.style_haze #userinfo_stats .stat > a {color: white;}
+body.style_haze .filter_torrents #ft_container tr {background: none;}
+body.style_haze tr.torrent, body.style_haze tr.request {background-color: rgba(24,32,41,0.6);}
+body.style_haze tr.torrent:nth-of-type(even), body.style_haze tr.request:nth-of-type(even) {background-color: rgba(24,32,41,0.4);}
+body.style_haze tr.group {background-color: rgba(24,32,41,0.7);}
+body.style_haze tr.group_torrent {background-color: rgba(24,32,41,0.75);}
+body.style_haze .body {background: none;}
+body.style_haze blockquote {background-color: rgba(24,32,41,0.4) !important; border: 1px solid rgba(255,255,255,0.36)}
+body.style_haze h2 a {color: rgba(255,255,255,0.6);}
+body.style_haze .linkbox a {color: rgba(255,255,255,0.7);}
+body.style_haze .noty_bar {border-left: none;}
+body.style_haze #noty_bottomRight_layout_container li {background-color: rgba(82, 85, 92, 0.59) !important}
+body.style_haze .noty_buttons {background-color: rgba(44, 47, 54, 0.6) !important}
