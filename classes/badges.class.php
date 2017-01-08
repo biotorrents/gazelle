@@ -9,7 +9,7 @@ class Badges {
   public static function get_badges($UserID) {
     $Result = array();
 
-    if (G::$Cache->get_value('user_badges_'.$UserID) !== false) {
+    if (G::$Cache->get_value('user_badges_'.$UserID)) {
       return G::$Cache->get_value('user_badges_'.$UserID);
     }
 
