@@ -86,7 +86,7 @@ if (!$debug && $Cache->get_value('jav_json_'.$cn)) {
     preg_match_all("/\[img\b[^\]]*\]([^\[]*?)\[\/img\](?!\[\/url)/is", $comments, $screens_t);
     if (isset($screens_t[1])) {
       $screens = $screens_t[1];
-      function f($s) { return !(preg_match('/(rapidgator)|(uploaded)|(javsecret)|(\.gif)|(google)|(thumb)|(imgur)/', $s)); }
+      function f($s) { return !(preg_match('/(rapidgator)|(uploaded)|(javsecret)|(\.gif)|(google)|(thumb)|(imgur)|(fileboom)/', $s)); }
       $screens = array_values(array_filter($screens, f));
     }
     if (preg_match('/http:\/\/imagetwist.com\/\S*jpg.html/', $comments, $twist)) {
