@@ -833,6 +833,12 @@ div.torrent_artists {
   max-width: 100%;
 }
 
+#covers img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .search_warning {
   position: absolute;
 }
