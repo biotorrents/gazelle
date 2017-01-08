@@ -75,6 +75,14 @@
     </tr>
     <tr class="row">
       <td class="nobr">
+        <a href="wiki.php?action=article&name=Spanish+Golden+Rules">Spanish</a>
+      </td>
+      <td class="nobr">
+        Reglas de Oro
+      </td>
+    </tr>
+    <tr class="row">
+      <td class="nobr">
         <a href="wiki.php?action=article&name=Finnish+Golden+Rules">Finnish</a>
       </td>
       <td class="nobr">
