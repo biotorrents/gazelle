@@ -8,6 +8,7 @@ define('FOOTER_FILE', SERVER_ROOT.'/design/privatefooter.php');
 <head>
   <title><?=display_str($PageTitle)?></title>
   <meta charset="utf-8" />
+  <meta id="auth_holder" userid="<?=G::$LoggedUser['ID']?>" authkey="<?=G::$LoggedUser['AuthKey']?>" />
   <link rel="shortcut icon" href="favicon.ico?v=<?=md5_file('favicon.ico');?>" />
   <link rel="search" type="application/opensearchdescription+xml" title="<?=SITE_NAME?>" href="<?=STATIC_SERVER?>opensearch.xml">
   <link rel="alternate" type="application/rss+xml"
@@ -84,12 +85,6 @@ foreach ($ExtraCSS as $CSS) {
   <link rel="stylesheet" type="text/css" media="screen" href="<?=STATIC_SERVER."styles/$CSS/style.css?v=".filemtime(SERVER_ROOT.STATIC_SERVER."styles/$CSS/style.css")?>" />
 <?
 }
-?>
-  <script type="text/javascript">
-    var authkey = "<?=G::$LoggedUser['AuthKey']?>";
-    var userid = <?=G::$LoggedUser['ID']?>;
-  </script>
-<?
 
 $Scripts = array_merge(array('jquery', 'script_start', 'ajax.class', 'global', 'jquery.autocomplete', 'autocomplete', 'tooltipster', 'tooltipster_settings'), explode(',', $JSIncludes));
 foreach ($Scripts as $Script) {
