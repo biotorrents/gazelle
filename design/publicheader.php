@@ -10,7 +10,7 @@ define('FOOTER_FILE',SERVER_ROOT.'/design/publicfooter.php');
   <link rel="shortcut icon" href="favicon.ico?v=<?=md5_file('favicon.ico');?>" />
   <link href="<?=STATIC_SERVER ?>styles/public/style.css?v=<?=filemtime(SERVER_ROOT.'/static/styles/public/style.css')?>" rel="stylesheet" type="text/css" />
 <?
-  $Scripts = ['jquery', 'script_start', 'ajax.class', 'cookie.class', 'storage.class', 'global'];
+  $Scripts = ['jquery', 'script_start', 'ajax.class', 'cookie.class', 'storage.class', 'global', 'public'];
   foreach($Scripts as $Script) {
     if (($ScriptStats = G::$Cache->get_value("script_stats_$Script")) === false || $ScriptStats['mtime'] != filemtime(SERVER_ROOT.STATIC_SERVER."functions/$Script.js")) {
       $ScriptStats['mtime'] = filemtime(SERVER_ROOT.STATIC_SERVER."functions/$Script.js");
