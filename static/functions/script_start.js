@@ -362,5 +362,7 @@ $.fn.extend({
   }
 });
 
-var authkey = document.head.children.auth_holder.attributes.authkey.value;
-var userid = parseInt(document.head.children.auth_holder.attributes.userid.value);
+if (document.head.children.auth_holder) {
+  var authkey = document.head.children.auth_holder.attributes.authkey.value;
+  var userid = parseInt(document.head.children.auth_holder.attributes.userid.value);
+}

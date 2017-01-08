@@ -50,13 +50,4 @@ if ($Attempts > 0) {
   Forgot your password? <a href="login.php?act=recover" class="tooltip" title="Recover your password" style="text-decoration: underline;">Reset it here!</a>
 <?
 }
-?>
-<script type="text/javascript">
-cookie.set('cookie_test', 1, 1);
-if (cookie.get('cookie_test') != null) {
-  cookie.del('cookie_test');
-} else {
-  $('#no-cookies').gshow();
-}
-</script>
-<? View::show_footer(); ?>
+View::show_footer(); ?>

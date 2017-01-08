@@ -23,7 +23,7 @@ define('FOOTER_FILE',SERVER_ROOT.'/design/publicfooter.php');
 <?
   }
   $img = array_diff(scandir(SERVER_ROOT.'/misc/bg', 1), array('.', '..')); ?>
-  <style> #content { background-image: url(<? echo("'/misc/bg/" . $img[rand(0,count($img)-1)] . "'"); ?>); }</style>
+  <meta id="bg_data" bg="<?=$img[rand(0,count($img)-1)]?>">
 </head>
 <body>
 <div id="head">
