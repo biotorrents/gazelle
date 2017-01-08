@@ -2,7 +2,7 @@
 if (version_compare(PHP_VERSION, '7.0.0', '<')) {
   die("Gazelle requires PHP 7.0 or later to function properly");
 }
-//date_default_timezone_set('EST');
+date_default_timezone_set('EST');
 
 // Main settings
 define('SITE_NAME',     'Oppaitime'); //The name of your site
