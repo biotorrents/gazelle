@@ -130,7 +130,7 @@ if (($Freeleeches = $Cache->get_value('shop_freeleech_list')) === false) {
   $DB->query("
     SELECT
       TorrentID,
-      GREATEST(NOW(), ExpiryTime),
+      UNIX_TIMESTAMP(ExpiryTime),
       Name,
       WikiImage
     FROM shop_freeleeches AS sf
@@ -149,7 +149,7 @@ if (count($Freeleeches)) {
 <?
   for ($i = 0; $i < count($Freeleeches); $i++) {
     list($ID, $ExpiryTime, $Name, $Image) = $Freeleeches[$i];
-    $DisplayTime = '('.str_replace(['week','day','hour','min','Just now','s',' '],['w','d','h','m','0m'],time_diff($ExpiryTime, 1, false)).') ';
+    $DisplayTime = '('.str_replace(['week','day','hour','min','Just now','s',' '],['w','d','h','m','0m'],time_diff(max($ExpiryTime, time()), 1, false)).') ';
     $DisplayName = '<a href="torrents.php?torrentid='.$ID.'"';
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
       $DisplayName .= " onmouseover=\"getCover(event)\" cover=\"".ImageTools::process($Image)."\" onmouseleave=\"ungetCover(event)\"";
