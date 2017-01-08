@@ -287,11 +287,11 @@ if ($Categories[$GroupCategoryID - 1] != 'Other') {
     <div class="box box_addartists">
       <div class="head"><strong>Add artist</strong></div>
       <div class="body">
-        <form class="add_form" name="artists" action="torrents.php" method="post">
+        <form class="flex_input_container" name="artists" action="torrents.php" method="post">
           <input type="hidden" name="action" value="add_alias" />
           <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
           <input type="hidden" name="groupid" value="<?=$GroupID?>" />
-          <input type="text" id="artist" name="artistname[]" size="27"<? Users::has_autocomplete_enabled('other'); ?> />
+          <input type="text" id="artist" name="artistname[]" <? Users::has_autocomplete_enabled('other'); ?> />
           <input type="submit" value="Add" />
         </form>
       </div>
@@ -360,11 +360,11 @@ if (empty($LoggedUser['DisableTagging'])) {
     <div class="box box_addtag">
       <div class="head"><strong>Add tag</strong></div>
       <div class="body">
-        <form class="add_form" name="tags" action="torrents.php" method="post">
+        <form class="flex_input_container" name="tags" action="torrents.php" method="post">
           <input type="hidden" name="action" value="add_tag" />
           <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
           <input type="hidden" name="groupid" value="<?=$GroupID?>" />
-          <input type="text" name="tagname" id="tagname" size="20"<? Users::has_autocomplete_enabled('other'); ?> />
+          <input type="text" name="tagname" id="tagname" <? Users::has_autocomplete_enabled('other'); ?> />
           <input type="submit" value="Add" />
         </form>
         <br />

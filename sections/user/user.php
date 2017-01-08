@@ -286,15 +286,18 @@ if ($Avatar && Users::has_avatars_enabled()) {
 <?
 }
 if (!$OwnProfile && !$LoggedUser['DisablePoints']) { ?>
-    <div class='box point_gift_box'>
-    <div class='head colhead_dark'>Send <?=BONUS_POINTS?></div>
+    <div class="box point_gift_box">
+    <div class="head colhead_dark">Send <?=BONUS_POINTS?></div>
       <div class="pad">
-        <form action='user.php' method='post'>
-          <input type='hidden' name='action' value='points' />
-          <input type='hidden' name='to' value='<?=$UserID?>' />
-          <input type='text' name='amount' placeholder='Amount' /><input type='submit' value='Send' /><br>
-          <textarea name='message' rows='2' placeholder='Message'></textarea><br>
-          <input type='checkbox' name='adjust' /> Adjust for tax?
+        <form action="user.php" method="post">
+          <input type="hidden" name="action" value="points">
+          <input type="hidden" name="to" value="<?=$UserID?>">
+          <div class="flex_input_container">
+            <input type="text" name="amount" placeholder="Amount">
+            <input type="submit" value="Send">
+          </div>
+          <textarea name="message" rows="2" placeholder="Message"></textarea>
+          <label><input type="checkbox" name="adjust"> Adjust for tax?</label>
         </form>
         <p>Note: 10% of your gift is taken as tax.</p>
       </div>

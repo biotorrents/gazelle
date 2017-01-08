@@ -1068,7 +1068,6 @@ input.inputtext:focus {
 .point_gift_box input[type="text"], .point_gift_box textarea {
   width: 100%;
   box-sizing: border-box;
-  margin-bottom: 3px;
 }
 .dead {
   opacity: 0.6;
