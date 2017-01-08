@@ -37,7 +37,7 @@ if (time_ago($Time) > 3600 * 24 * 7 && !check_perms('torrents_delete')) {
 }
 
 if ($Snatches > 4 && !check_perms('torrents_delete')) {
-  error('Torrent cannot be deleted because it has been snatched by more than 4 people. If you think there is as problem, contact staff.');
+  error('Torrent cannot be deleted because it has been snatched by more than 4 people. If you think there is a problem, contact staff.');
 }
 
 if ($ArtistName) {
