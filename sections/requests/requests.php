@@ -491,6 +491,8 @@ View::show_header($Title, 'requests');
       $IsFilled = false;
     }
 
+    $Title = empty($Request['Title']) ? (empty($Request['TitleRJ']) ? $Request['TitleJP'] : $Request['TitleRJ']) : $Request['Title'];
+
     if ($CategoryName != 'Other') {
       $ArtistForm = Requests::get_artists($RequestID);
       $ArtistLink = Artists::display_artists($ArtistForm, true, true);
@@ -498,7 +500,7 @@ View::show_header($Title, 'requests');
       if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
         $FullName .= 'onmouseover="getCover(event)" cover="'.ImageTools::process($Request['Image']).'" onmouseleave="ungetCover(event)" ';
       }
-      $FullName .= "dir=\"ltr\">$Request[Title]</span></a>";
+      $FullName .= "dir=\"ltr\">$Title</span></a>";
 
       $ExtraInfo = '';
 
@@ -513,7 +515,7 @@ View::show_header($Title, 'requests');
         $FullName .= " $ExtraInfo";
       }
     } else {
-      $FullName = "<a href=\"requests.php?action=view&amp;id=$RequestID\" dir=\"ltr\">$Request[Title]</a>";
+      $FullName = "<a href=\"requests.php?action=view&amp;id=$RequestID\" dir=\"ltr\">$Title</a>";
     }
     $Tags = $Request['Tags'];
 ?>

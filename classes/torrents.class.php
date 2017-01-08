@@ -81,7 +81,7 @@ class Torrents {
       $QueryID = G::$DB->get_query_id();
       G::$DB->query("
         SELECT
-          ID, Name, Year, CatalogueNumber, Pages, Studio, Series, DLSiteID, TagList, WikiImage, CategoryID
+          ID, Name, NameRJ, NameJP, Year, CatalogueNumber, Pages, Studio, Series, DLSiteID, TagList, WikiImage, CategoryID
         FROM torrents_group
         WHERE ID IN ($IDs)");
 
@@ -177,6 +177,8 @@ class Torrents {
     return array(
       'GroupID' => $Group['ID'],
       'GroupName' => $Group['Name'],
+      'GroupNameRJ' => $Group['NameRJ'],
+      'GroupNameJP' => $Group['NameJP'],
       'GroupYear' => $Group['Year'],
       'GroupCategoryID' => $Group['CategoryID'],
       'GroupCatalogueNumber' => $Group['CatalogueNumber'],

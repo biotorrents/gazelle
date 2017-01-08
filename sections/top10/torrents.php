@@ -153,6 +153,8 @@ $BaseQuery = '
     t.ID,
     g.ID,
     g.Name,
+    g.NameRJ,
+    g.NameJP,
     g.CategoryID,
     g.WikiImage,
     g.TagList,
@@ -447,7 +449,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit) {
   $Artists = Artists::get_artists($GroupIDs);
 
   foreach ($Details as $Detail) {
-    list($TorrentID, $GroupID, $GroupName, $GroupCategoryID, $WikiImage, $TagsList,
+    list($TorrentID, $GroupID, $GroupName, $GroupNameRJ, $GroupNameJP, $GroupCategoryID, $WikiImage, $TagsList,
       $Media, $Year, $Snatched, $Seeders, $Leechers, $Data, $Size) = $Detail;
 
     $IsBookmarked = Bookmarks::has_bookmarked('torrent', $GroupID);
@@ -466,7 +468,10 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit) {
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
       $DisplayName .= 'onmouseover="getCover(event)" cover="'.ImageTools::process($WikiImage, true).'" onmouseleave="ungetCover()" ';
     }
-    $DisplayName .= "dir=\"ltr\">$GroupName</a>";
+
+
+    $Name = empty($GroupName) ? (empty($GroupNameRJ) ? $GroupNameJP : $GroupNameRJ) : $GroupName;
+    $DisplayName .= "dir=\"ltr\">$Name</a>";
 
     // append extra info to torrent title
     $ExtraInfo = '';

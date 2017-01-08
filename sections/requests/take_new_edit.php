@@ -53,15 +53,19 @@ if (empty($CategoryID)) {
   error(0);
 }
 
-if (empty($_POST['title'])) {
-  $Err = 'You forgot to enter the title!';
-} else {
+if (empty($_POST['title']) && empty($_POST['title_rj']) && empty($_POST['title_jp'])) {
+  $Err = 'You must enter at least one title!';
+}
+
+if (!empty($_POST['title'])) {
   $Title = trim($_POST['title']);
 }
 
-if (empty($_POST['title_jp'])) {
-  $Err = 'You forgot to enter the Japanese title!';
-} else {
+if (!empty($_POST['title_rj'])) {
+  $TitleRJ = trim($_POST['title_rj']);
+}
+
+if (!empty($_POST['title_jp'])) {
   $TitleJP = trim($_POST['title_jp']);
 }
 
@@ -240,10 +244,10 @@ if (!isset($GroupID)) $GroupID = '';
 if ($NewRequest) {
   $DB->query('
     INSERT INTO requests (
-      UserID, TimeAdded, LastVote, CategoryID, Title, TitleJP, Image, Description,
+      UserID, TimeAdded, LastVote, CategoryID, Title, TitleRJ, TitleJP, Image, Description,
       CatalogueNumber, DLSiteID, Visible, GroupID)
     VALUES
-      ('.$LoggedUser['ID'].", '".sqltime()."', '".sqltime()."', $CategoryID, '".db_string($Title)."', '".db_string($TitleJP)."', '".db_string($Image)."', '".db_string($Description)."',
+      ('.$LoggedUser['ID'].", '".sqltime()."', '".sqltime()."', $CategoryID, '".db_string($Title)."', '".db_string($TitleRJ)."', '".db_string($TitleJP)."', '".db_string($Image)."', '".db_string($Description)."',
           '".db_string($CatalogueNumber)."', '".db_string($DLSiteID)."', '1', '$GroupID')");
 
   $RequestID = $DB->inserted_id();
@@ -253,6 +257,7 @@ if ($NewRequest) {
     UPDATE requests
     SET CategoryID = $CategoryID,
       Title = '".db_string($Title)."',
+      TitleRJ = '".db_string($TitleRJ)."',
       TitleJP = '".db_string($TitleJP)."',
       Image = '".db_string($Image)."',
       Description = '".db_string($Description)."',
@@ -409,12 +414,12 @@ if ($NewRequest) {
     WHERE ID = ".$LoggedUser['ID']);
   $Cache->delete_value('user_stats_'.$LoggedUser['ID']);
 
-
+  $AnnounceTitle = empty($Title) ? (empty($TitleRJ) ? $TitleJP : $TitleRJ) : $Title;
 
   if ($CategoryName != 'Other') {
-    $Announce = "\"$Title\"".(isset($ArtistForm)?(' - '.Artists::display_artists($ArtistForm, false, false)):'').' '.site_url()."requests.php?action=view&id=$RequestID - ".implode(' ', $Tags);
+    $Announce = "\"$AnnounceTitle\"".(isset($ArtistForm)?(' - '.Artists::display_artists($ArtistForm, false, false)):'').' '.site_url()."requests.php?action=view&id=$RequestID - ".implode(' ', $Tags);
   } else {
-    $Announce = "\"$Title\" - ".site_url()."requests.php?action=view&id=$RequestID - ".implode(' ', $Tags);
+    $Announce = "\"$AnnounceTitle\" - ".site_url()."requests.php?action=view&id=$RequestID - ".implode(' ', $Tags);
   }
   send_irc('PRIVMSG '.BOT_REQUEST_CHAN.' '.$Announce);
 

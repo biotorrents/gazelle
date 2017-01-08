@@ -179,7 +179,7 @@ View::show_header('Browse Torrents', 'browse');
         <tr id="album_torrent_name" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label"><!--Torrent name:--></td>
           <td colspan="3" class="ft_groupname">
-            <input type="search" spellcheck="false" size="65" name="groupname" class="inputtext smaller fti_advanced" placeholder="Torrent name" value="<?Format::form('groupname')?>" />
+            <input type="search" spellcheck="false" size="65" name="advgroupname" class="inputtext smaller fti_advanced" placeholder="Torrent name" value="<?Format::form('advgroupname')?>" />
           </td>
         </tr>
         <tr id="catalogue_number" class="ftr_advanced<?=$HideAdvanced?>">
@@ -482,7 +482,7 @@ View::show_header('Browse Torrents', 'browse');
   $GroupPages = $GroupInfo['Pages'];
   $GroupStudio = $GroupInfo['Studio'];
   $GroupDLsiteID = $GroupInfo['DLSiteID'];
-  $GroupName = $GroupInfo['Name'];
+  $GroupName = empty($GroupInfo['Name']) ? (empty($GroupInfo['NameRJ']) ? $GroupInfo['NameJP'] : $GroupInfo['NameRJ']) : $GroupInfo['Name'];
   if ($GroupResults) {
     $Torrents = $GroupInfo['Torrents'];
     $GroupTime = $MaxSize = $TotalLeechers = $TotalSeeders = $TotalSnatched = 0;

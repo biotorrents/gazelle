@@ -72,6 +72,8 @@ foreach ($GroupIDs as $GroupID) {
 
   $DisplayName = Artists::display_artists($Artists);
 
+  $GroupName = empty($GroupName) ? (empty($GroupNameRJ) ? $GroupNameJP : $GroupNameRJ) : $GroupName;
+
   $DisplayName .= '<a href="torrents.php?id='.$GroupID.'" class="tooltip" title="View torrent group" dir="ltr">'.$GroupName.'</a>';
   if ($GroupYear > 0) {
     $DisplayName = "$DisplayName [$GroupYear]";

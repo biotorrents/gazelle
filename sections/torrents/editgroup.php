@@ -40,6 +40,7 @@ $DB->query("
 $DB->query("
   SELECT
     tg.Name,
+    tg.NameRJ,
     tg.NameJP,
     wt.Image,
     wt.Body,
@@ -59,7 +60,7 @@ $DB->query("
 if (!$DB->has_results()) {
   error(404);
 }
-list($Name, $NameJP, $Image, $Body, $WikiImage, $WikiBody, $Year, $Studio, $Series, $DLsiteID, $CatalogueNumber, $Pages, $CategoryID, $DLsiteID) = $DB->next_record();
+list($Name, $NameRJ, $NameJP, $Image, $Body, $WikiImage, $WikiBody, $Year, $Studio, $Series, $DLsiteID, $CatalogueNumber, $Pages, $CategoryID, $DLsiteID) = $DB->next_record();
 
 $DB->query("
   SELECT
@@ -296,9 +297,15 @@ if ($CategoryID != 5) { ?>
           <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
           <input type="hidden" name="groupid" value="<?=$GroupID?>" />
           <tr>
-            <td class="label">Title: </td>
+            <td class="label">English Title: </td>
             <td>
               <input type="text" name="name" size="70" value="<?=$Name?>" />
+            </td>
+          </tr>
+          <tr>
+            <td class="label">Romaji Title: </td>
+            <td>
+              <input type="text" name="namerj" size="70" value="<?=$NameRJ?>" />
             </td>
           </tr>
           <tr>

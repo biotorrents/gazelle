@@ -94,6 +94,7 @@ class Requests {
           LastVote,
           CategoryID,
           Title,
+          TitleRJ,
           TitleJP,
           Image,
           Description,

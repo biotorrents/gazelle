@@ -74,6 +74,7 @@ foreach ($GroupIDs as $GroupID) {
   if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
     $DisplayName .= 'onmouseover="getCover(event)" cover="'.ImageTools::process($WikiImage, true).'" onmouseleave="ungetCover(event)" ';
   }
+  $GroupName = empty($GroupName) ? (empty($GroupNameRJ) ? $GroupNameJP : $GroupNameRJ) : $GroupName;
   $DisplayName .= "dir=\"ltr\">$GroupName</a>";
   if ($GroupYear > 0) {
     $DisplayName = "$DisplayName [$GroupYear]";

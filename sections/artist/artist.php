@@ -77,6 +77,7 @@ if (empty($LoggedUser['DisableRequests'])) {
         r.ID,
         r.CategoryID,
         r.Title,
+        r.TitleRJ,
         r.TitleJP,
         r.CatalogueNumber,
         r.DLSiteID,
@@ -212,6 +213,9 @@ foreach ($TorrentList as $Group) {
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
       $DisplayName .= 'onmouseover="getCover(event)" cover="'.ImageTools::process($WikiImage, true).'" onmouseleave="ungetCover()" ';
     }
+
+    $GroupName = empty($GroupName) ? (empty($GroupNameRJ) ? $GroupNameJP : $GroupNameRJ) : $GroupName;
+
     $DisplayName .= "dir=\"ltr\">$GroupName</a>";
 
     if ($GroupYear) {
@@ -312,6 +316,8 @@ foreach ($TorrentList as $Group) {
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
       $DisplayName .= "onmouseover=\"getCover(event)\" cover=\"".ImageTools::process($WikiImage, true)."\" onmouseleave=\"ungetCover(event)\" ";
     }
+
+    $GroupName = empty($GroupName) ? (empty($GroupNameRJ) ? $GroupNameJP : $GroupNameRJ) : $GroupName;
     $DisplayName .= "dir=\"ltr\">$GroupName</a>";
 
     if ($GroupYear) {
@@ -713,7 +719,7 @@ if ($NumRequests > 0) {
   $Tags = Requests::get_tags(array_keys($Requests));
   foreach ($Requests as $RequestID => $Request) {
       $CategoryName = $Categories[$Request['CategoryID'] - 1];
-      $Title = display_str($Request['Title']);
+      $Title = empty($Request['Title']) ? (empty($Request['TitleRJ']) ? display_str($Request['TitleJP']) : display_str($Request['TitleRJ'])) : display_str($Request['Title']);
       if ($CategoryName != 'Other') {
         $ArtistForm = Requests::get_artists($RequestID);
         $ArtistLink = Artists::display_artists($ArtistForm, true, true);

@@ -27,6 +27,8 @@ if ($Request['CategoryID'] === '0') {
   $CategoryName = $Categories[$Request['CategoryID'] - 1];
 }
 
+$Title = empty($Request['Title']) ? (empty($Request['TitleRJ']) ? $Request['TitleJP'] : $Request['TitleRJ']) : $Request['Title'];
+
 //Do we need to get artists?
 if ($CategoryName != 'Other') {
   $ArtistForm = Requests::get_artists($RequestID);
@@ -34,23 +36,31 @@ if ($CategoryName != 'Other') {
   $ArtistLink = Artists::display_artists($ArtistForm, true, true);
 
   if ($IsFilled) {
-    $DisplayLink = "$ArtistLink<a href=\"torrents.php?torrentid=$Request[TorrentID]\" dir=\"ltr\">$Request[Title]</a>";
+    $DisplayLink = "$ArtistLink<a href=\"torrents.php?torrentid=$Request[TorrentID]\" dir=\"ltr\">$Title</a>";
   } else {
-    $DisplayLink = $ArtistLink.'<span dir="ltr">'.$Request['Title']."</span>";
+    $DisplayLink = $ArtistLink.'<span dir="ltr">'.$Title."</span>";
   }
 
-  $FullName = $ArtistName.$Request['Title'];
+  $FullName = $ArtistName.$Title;
 
 } else {
   if ($IsFilled) {
-    $DisplayLink = "<a href=\"torrents.php?torrentid=$Request[TorrentID]\" dir=\"ltr\">$Request[Title]</a>";
+    $DisplayLink = "<a href=\"torrents.php?torrentid=$Request[TorrentID]\" dir=\"ltr\">$Title</a>";
   } else {
-    $DisplayLink = "<span dir=\"ltr\">$Request[Title]</span>";
+    $DisplayLink = "<span dir=\"ltr\">$Title</span>";
   }
-  $FullName = $Request['Title'];
+  $FullName = $Title;
 }
 
-$Extra = '<br />'.$Request['TitleJP'];
+$Extra = "";
+
+if (!empty($Request['TitleRJ']) && $Request['TitleRJ'] != $Title) {
+  $Extra .= '<br />' . $Request['TitleRJ'];
+}
+
+if (!empty($Request['TitleJP']) && $Request['TitleJP'] != $Title) {
+  $Extra .= '<br />' . $Request['TitleJP'];
+}
 
 if (!empty($Request['CatalogueNumber'])) {
   $Extra .= "<br />[$Request[CatalogueNumber]]";

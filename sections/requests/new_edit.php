@@ -33,6 +33,7 @@ if (!$NewRequest) {
     // Define these variables to simplify _GET['groupid'] requests later on
     $CategoryID = $Request['CategoryID'];
     $Title = $Request['Title'];
+    $TitleRJ = $Request['TitleRJ'];
     $TitleJP = $Request['TitleJP'];
     $CatalogueNumber = $Request['CatalogueNumber'];
     $DLsiteID = $Request['DLsiteID'];
@@ -75,6 +76,7 @@ if ($NewRequest && !empty($_GET['artistid']) && is_number($_GET['artistid'])) {
   $DB->query("
     SELECT
       tg.Name,
+      tg.NameRJ,
       tg.NameJP,
       tg.Year,
       tg.Studio,
@@ -88,7 +90,7 @@ if ($NewRequest && !empty($_GET['artistid']) && is_number($_GET['artistid'])) {
       JOIN torrents_tags AS tt ON tt.GroupID = tg.ID
       JOIN tags AS t ON t.ID = tt.TagID
     WHERE tg.ID = ".$_GET['groupid']);
-  if (list($Title, $TitleJP, $Year, $Studio, $Series, $CatalogueNumber, $DLsiteID, $Image, $Tags, $CategoryID) = $DB->next_record()) {
+  if (list($Title, $TitleRJ, $TitleJP, $Year, $Studio, $Series, $CatalogueNumber, $DLsiteID, $Image, $Tags, $CategoryID) = $DB->next_record()) {
     $GroupID = trim($_REQUEST['groupid']);
     $CategoryName = $Categories[$CategoryID - 1];
     $Disabled = 'readonly="readonly"';
@@ -174,9 +176,15 @@ View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'reques
           </td>
         </tr>
         <tr>
+          <td class="label">Romaji Title</td>
+          <td>
+            <input type="text" id="title_rj" name="title_rj" size="45" value="<?=(!empty($TitleRJ) ? $TitleRJ : '')?>" <?=$Disabled?>/>
+          </td>
+        </tr>
+        <tr>
           <td class="label">Japanese Title</td>
           <td>
-            <input type="text" id="title_jp" name="title_jp" size="45" value="<?=isset($TitleJP)?$TitleJP:''?>" <?=$Disabled?>/>
+            <input type="text" id="title_jp" name="title_jp" size="45" value="<?=!empty($TitleJP)?$TitleJP:''?>" <?=$Disabled?>/>
           </td>
         </tr>
         <tr id="dlsiteid_tr">

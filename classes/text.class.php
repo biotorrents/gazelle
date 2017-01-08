@@ -736,7 +736,8 @@ class Text {
                 if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
                   $Str .= " onmouseover=\"getCover(event)\" cover=\"".ImageTools::process($Group['WikiImage'], true)."\" onmouseleave=\"ungetCover(event)\"";
                 }
-                $Str .= '>'.$Group['Name'].'</a>';
+                $Name = empty($Group['Name']) ? (empty($Group['NameRJ']) ? $Group['NameJP'] : $Group['NameRJ']) : $Group['Name'];
+                $Str .= '>'.$Name.'</a>';
               } else {
                 $Str .= '[torrent]'.str_replace('[inlineurl]', '', $Block['Val']).'[/torrent]';
               }

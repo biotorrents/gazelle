@@ -216,10 +216,14 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         </td>
       </tr>
       <tr id="title_tr">
-        <td class="label">Title:</td>
+        <td class="label">English Title:</td>
         <td><input type="text" id="title" name="title" size="60" value="<?=display_str($Torrent['Title']) ?>" <?=$this->Disabled?>/></td>
       </tr>
-      <tr>
+      <tr id="title_rj_tr">
+        <td class="label">Romaji Title:</td>
+        <td><input type="text" id="title_rj" name="title_rj" size="60" value="<?=display_str($Torrent['TitleRJ']) ?>" <?=$this->Disabled?>/></td>
+      </tr>
+      <tr id="title_jp_tr">
         <td class="label">Japanese Title:</td>
         <td><input type="text" id="title_jp" name="title_jp" size="60" value="<?=display_str($Torrent['TitleJP']) ?>" <?=$this->Disabled?>/></td>
       </tr>
@@ -474,10 +478,14 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         </td>
       </tr>
       <tr id="title_tr">
-        <td class="label">Title:</td>
+        <td class="label">English Title:</td>
         <td><input type="text" id="title" name="title" size="60" value="<?=display_str($Torrent['Title']) ?>" <?=$this->Disabled?>/></td>
       </tr>
-      <tr>
+      <tr id="title_rj_tr">
+        <td class="label">Romaji Title:</td>
+        <td><input type="text" id="title_rj" name="title_rj" size="60" value="<?=display_str($Torrent['TitleRJ']) ?>" <?=$this->Disabled?>/></td>
+      </tr>
+      <tr id="title_jp_tr">
         <td class="label">Japanese Title:</td>
         <td><input type="text" id="title_jp" name="title_jp" size="60" value="<?=display_str($Torrent['TitleJP']) ?>" <?=$this->Disabled?>/></td>
       </tr>
@@ -723,10 +731,14 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         </td>
       </tr>
       <tr id="title_tr">
-        <td class="label">Title:</td>
+        <td class="label">English Title:</td>
         <td><input type="text" id="title" name="title" size="60" value="<?=display_str($Torrent['Title']) ?>" <?=$this->Disabled?> /></td>
       </tr>
-      <tr>
+      <tr id="title_rj_tr">
+        <td class="label">Romaji Title:</td>
+        <td><input type="text" id="title_rj" name="title_rj" size="60" value="<?=display_str($Torrent['TitleRJ']) ?>" <?=$this->Disabled?>/></td>
+      </tr>
+      <tr id="title_jp_tr">
         <td class="label">Japanese Title:</td>
         <td><input type="text" id="title_jp" name="title_jp" size="60" value="<?=display_str($Torrent['TitleJP']) ?>" <?=$this->Disabled?>/></td>
       </tr>
@@ -895,7 +907,11 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         <td class="label">Title:</td>
         <td><input type="text" id="title" name="title" size="60" value="<?=display_str($Torrent['Title']) ?>" <?=$this->Disabled?> /></td>
       </tr>
-      <tr>
+      <tr id="title_rj_tr">
+        <td class="label">Romaji Title:</td>
+        <td><input type="text" id="title_rj" name="title_rj" size="60" value="<?=display_str($Torrent['TitleRJ']) ?>" <?=$this->Disabled?>/></td>
+      </tr>
+      <tr id="title_jp_tr">
         <td class="label">Japanese Title:</td>
         <td><input type="text" id="title_jp" name="title_jp" size="60" value="<?=display_str($Torrent['TitleJP'])?>" <?=$this->Disabled?>/></td>
       </tr>
@@ -961,10 +977,14 @@ new TEXTAREA_PREVIEW('album_desc', 'album_desc', display_str($Torrent['GroupDesc
 ?>    <table cellpadding="3" cellspacing="1" border="0" class="layout slice" width="100%">
 <?    if ($this->NewTorrent) { ?>
       <tr id="title_tr">
-        <td class="label">Title:</td>
+        <td class="label">English Title:</td>
         <td><input type="text" id="title" name="title" size="60" value="<?=display_str($Torrent['Title'])?>" <?=$this->Disabled?> /></td>
       </tr>
-      <tr>
+      <tr id="title_rj_tr">
+        <td class="label">Romaji Title:</td>
+        <td><input type="text" id="title_rj" name="title_rj" size="60" value="<?=display_str($Torrent['TitleRJ']) ?>" <?=$this->Disabled?>/></td>
+      </tr>
+      <tr id="title_jp_tr">
         <td class="label">Japanese Title:</td>
         <td><input type="text" id="title_jp" name="title_jp" size="60" value="<?=display_str($Torrent['TitleJP'])?>" <?=$this->Disabled?> /></td>
       </tr>

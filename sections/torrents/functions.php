@@ -22,6 +22,7 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
     $SQL .= "
         g.ID,
         g.Name,
+        g.NameRJ,
         g.NameJP,
         g.Year,
         g.Studio,

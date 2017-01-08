@@ -38,6 +38,7 @@ $Type = $Categories[(int)$_POST['type']];
 $TypeID = $_POST['type'] + 1;
 $Properties['CategoryName'] = $Type;
 $Properties['Title'] = $_POST['title'];
+$Properties['TitleRJ'] = $_POST['title_rj'];
 $Properties['TitleJP'] = $_POST['title_jp'];
 $Properties['Year'] = $_POST['year'];
 
@@ -145,12 +146,12 @@ switch ($Type) {
   default:
     if (!isset($_POST['groupid']) || !$_POST['groupid']) {
       $Validate->SetFields('title',
-        '1','string','Title must be between 1 and 200 characters.', array('maxlength'=>200, 'minlength'=>1));
+        '0','string','Title must be between 1 and 300 characters.', array('maxlength'=>300, 'minlength'=>1));
+      $Validate->SetFields('title_rj',
+        '0','string', 'Romaji Title must be between 1 and 300 characters.', array('maxlength'=>300, 'minlength'=>1));
 
-    if (isset($_POST['title_jp'])) {
       $Validate->SetFields('title_jp',
-        '1','string','Japanese Title must be between 1 and 512 bytes.', array('maxlength'=>512, 'minlength'=>1));
-    }
+        '0','string','Japanese Title must be between 1 and 512 bytes.', array('maxlength'=>512, 'minlength'=>1));
 
       $Validate->SetFields('tags',
         '1','string','You must enter at least five tag. Maximum length is 1500 characters.', array('maxlength'=>1500, 'minlength'=>2));
@@ -172,6 +173,10 @@ $Err = $Validate->ValidateForm($_POST); // Validate the form
 
 if (count(explode(',', $Properties['TagList'])) < 5) {
   $Err = 'You must enter at least 5 tags.';
+}
+
+if (!(isset($_POST['title']) || isset($_POST['title_rj']) || isset($_POST['title_jp']))) {
+  $Err = 'You must enter at least one title.';
 }
 
 $File = $_FILES['file_input']; // This is our torrent file
@@ -448,9 +453,9 @@ if (!isset($GroupID) || !$GroupID) {
   // Create torrent group
   $DB->query("
     INSERT INTO torrents_group
-      (CategoryID, Name, NameJP, Year, Series, Studio, CatalogueNumber, Pages, Time, WikiBody, WikiImage, DLsiteID)
+      (CategoryID, Name, NameRJ, NameJP, Year, Series, Studio, CatalogueNumber, Pages, Time, WikiBody, WikiImage, DLsiteID)
     VALUES
-      ($TypeID, ".$T['Title'].", ".$T['TitleJP'].", ".$T['Year'].", ".$T['Series'].", ".$T['Studio'].", ".$T['CatalogueNumber'].", " . $T['Pages'] . ", '".sqltime()."', '".db_string($Body)."', ".$T['Image'].", ".$T['DLsiteID'].")");
+      ($TypeID, ".$T['Title'].", ".$T['TitleRJ'].", ".$T['TitleJP'].", ".$T['Year'].", ".$T['Series'].", ".$T['Studio'].", ".$T['CatalogueNumber'].", " . $T['Pages'] . ", '".sqltime()."', '".db_string($Body)."', ".$T['Image'].", ".$T['DLsiteID'].")");
   $GroupID = $DB->inserted_id();
   if ($Type == 'Movies' || $Type == 'Anime' || $Type == 'Manga' || $Type == 'Games') {
     foreach ($ArtistForm as $Num => $Artist) {
@@ -696,7 +701,8 @@ $Announce = '';
 if ($Type != 'Other') {
   $Announce .= Artists::display_artists($ArtistForm, false);
 }
-$Announce .= trim($Properties['Title']).' ';
+$Announce .= empty($Properties['Title']) ? (empty($Properties['TitleRJ']) ? trim($Properties['TitleJP']) : trim($Properties['TitleRJ'])) : trim($Properties['Title']);
+$Announce .= ' ';
 if ($Type != 'Other') {
   $Announce .= '['.Torrents::torrent_info($Properties, false, false, false).']';
 }

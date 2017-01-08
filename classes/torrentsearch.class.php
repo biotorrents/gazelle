@@ -51,7 +51,9 @@ class TorrentSearch {
     'dlsiteid' => 1,
     'filelist' => 1,
     'groupname' => 1,
+    'groupnamerj' => 1,
     'groupnamejp' => 1,
+    'advgroupname' => 1,
     'language' => 1,
     'media' => 1,
     'resolution' => 1,
@@ -74,7 +76,8 @@ class TorrentSearch {
 
   // Some form field names don't match the ones in the index
   private static $FormsToFields = array(
-    'searchstr' => '(groupname,groupnamejp,artistname,studio,series,dlsiteid,cataloguenumber,yearfulltext)');
+    'searchstr' => '(groupname,groupnamerj,groupnamejp,artistname,studio,series,dlsiteid,cataloguenumber,yearfulltext)',
+    'advgroupname' => '(groupname,groupnamerj,groupnamejp)');
 
   // Specify the operator type to use for fields. Empty key sets the default
   private static $FieldOperators = array(

@@ -21,10 +21,18 @@ $TorrentDetails = $TorrentCache[0];
 $TorrentList = $TorrentCache[1];
 
 // Group details
-list($WikiBody, $WikiImage, $GroupID, $GroupName, $GroupNameJP, $GroupYear,
+list($WikiBody, $WikiImage, $GroupID, $GroupName, $GroupNameRJ, $GroupNameJP, $GroupYear,
   $GroupStudio, $GroupSeries, $GroupCatalogueNumber, $GroupPages, $GroupCategoryID,
   $GroupDLsiteID, $GroupTime, $TorrentTags, $TorrentTagIDs, $TorrentTagUserIDs,
   $TagPositiveVotes, $TagNegativeVotes, $Screenshots, $GroupFlags) = array_values($TorrentDetails);
+
+if (!$GroupName) {
+  if (!$GroupNameRJ) {
+    $GroupName = $GroupNameJP;
+  } else {
+    $GroupName = $GroupNameRJ;
+  }
+}
 
 $DisplayName = "<span dir=\"ltr\">$GroupName</span><br />";
 $AltName = $GroupName; // Goes in the alt text of the image
@@ -32,6 +40,10 @@ $Title = $GroupName; // goes in <title>
 $WikiBody = Text::full_format($WikiBody);
 
 $Artists = Artists::get_artist($GroupID);
+
+if ($GroupNameRJ && $GroupNameRJ != $GroupName) {
+  $DisplayName .= "<span dir=\"ltr\">$GroupNameRJ</span><br />";
+}
 
 if ($GroupNameJP && $GroupNameJP != $GroupName) {
   $DisplayName .= "<span dir=\"ltr\">$GroupNameJP</span><br />";

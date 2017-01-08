@@ -690,6 +690,8 @@ if (check_paranoia_here('snatched')) {
       SELECT
         g.ID,
         g.Name,
+        g.NameRJ,
+        g.NameJP,
         g.WikiImage
       FROM xbt_snatched AS s
         INNER JOIN torrents AS t ON t.ID = s.fid
@@ -715,10 +717,12 @@ if (check_paranoia_here('snatched')) {
       <span style="float: right;"><a onclick="$('#recent_snatches_images').gtoggle(); this.innerHTML = (this.innerHTML == 'Hide' ? 'Show' : 'Hide'); wall('#recent_snatches_images', '.collage_image', [2,3]); return false;" class="brackets">Show</a></span>&nbsp;
     </div>
     <div id="recent_snatches_images" class="collage_images hidden">
-<?    foreach ($RecentSnatches as $RS) { ?>
+<?    foreach ($RecentSnatches as $RS) {
+        $RSName = empty($RS['Name']) ? (empty($RS['NameRJ']) ? $RS['NameJP'] : $RS['NameRJ']) : $RS['Name'];
+ ?>
       <div style='width: 100px;' class='collage_image' >
         <a href="torrents.php?id=<?=$RS['ID']?>">
-          <img class="tooltip" title="<?=display_str($RS['Artist'])?><?=display_str($RS['Name'])?>" src="<?=ImageTools::process($RS['WikiImage'], true)?>" alt="<?=display_str($RS['Artist'])?><?=display_str($RS['Name'])?>" width="100%" />
+          <img class="tooltip" title="<?=display_str($RS['Artist'])?><?=display_str($RSName)?>" src="<?=ImageTools::process($RS['WikiImage'], true)?>" alt="<?=display_str($RS['Artist'])?><?=display_str($RSName)?>" width="100%" />
         </a>
       </div>
 <?    } ?>
@@ -735,6 +739,8 @@ if (check_paranoia_here('uploads')) {
       SELECT
         g.ID,
         g.Name,
+        g.NameRJ,
+        g.NameJP,
         g.WikiImage
       FROM torrents_group AS g
         INNER JOIN torrents AS t ON t.GroupID = g.ID
@@ -758,10 +764,12 @@ if (check_paranoia_here('uploads')) {
       <span style="float: right;"><a onclick="$('#recent_uploads_images').gtoggle(); this.innerHTML = (this.innerHTML == 'Hide' ? 'Show' : 'Hide'); wall('#recent_uploads_images', '.collage_image', [2,3]); return false;" class="brackets">Show</a></span>&nbsp;
     </div>
     <div id="recent_uploads_images" class="collage_images hidden">
-<?    foreach ($RecentUploads as $RU) { ?>
+<?    foreach ($RecentUploads as $RU) {
+        $RUName = empty($RU['Name']) ? (empty($RU['NameRJ']) ? $RU['NameJP'] : $RU['NameRJ']) : $RU['Name'];
+?>
       <div style='width: 100px;' class='collage_image' >
         <a href="torrents.php?id=<?=$RU['ID']?>">
-          <img class="tooltip" title="<?=$RU['Artist']?><?=$RU['Name']?>" src="<?=ImageTools::process($RU['WikiImage'], true)?>" alt="<?=$RU['Artist']?><?=$RU['Name']?>" width="100%" />
+          <img class="tooltip" title="<?=$RU['Artist']?><?=$RUName?>" src="<?=ImageTools::process($RU['WikiImage'], true)?>" alt="<?=$RU['Artist']?><?=$RUName?>" width="100%" />
         </a>
       </div>
 <?    } ?>
@@ -912,6 +920,8 @@ if (empty($LoggedUser['DisableRequests']) && check_paranoia_here('requestsvoted_
       } elseif ($CategoryName == 'Audiobooks' || $CategoryName == 'Comedy') {
         $FullName = "<a href=\"requests.php?action=view&amp;id=$RequestID\">$Request[Title] [$Request[Year]]</a>";
       } else {
+        if (!$Request['Title']) { $Request['Title'] = $Request['TitleRJ']; }
+        if (!$Request['Title']) { $Request['Title'] = $Request['TitleJP']; }
         $FullName = "<a href=\"requests.php?action=view&amp;id=$RequestID\">$Request[Title]</a>";
       }
 ?>
