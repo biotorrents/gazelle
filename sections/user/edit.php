@@ -406,7 +406,7 @@ echo $Val->GenerateJS('userform');
         </td>
       </tr>
       <tr id="comm_badge_tr">
-        <td class="label tooltip" title="Select up to 5 badges to display next to your username."><strong>Displyed Badges</strong></td>
+        <td class="label tooltip" title="Select up to 5 badges to display next to your username."><strong>Displayed Badges</strong></td>
         <td>
 <?  $Badges = Badges::get_badges($UserID);
     if (empty($Badges)) {
