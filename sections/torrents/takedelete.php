@@ -28,8 +28,16 @@ $DB->query("
   WHERE t.ID = '$TorrentID'");
 list($UserID, $GroupID, $Size, $InfoHash, $Name, $ArtistName, $Time, $Snatches) = $DB->next_record(MYSQLI_NUM, false);
 
-if (($LoggedUser['ID'] != $UserID || time_ago($Time) > 3600 * 24 * 7 || $Snatches > 4) && !check_perms('torrents_delete')) {
+if ($LoggedUser['ID'] != $UserID && !check_perms('torrents_delete')) {
   error(403);
+}
+
+if (time_ago($Time) > 3600 * 24 * 7 && !check_perms('torrents_delete')) {
+  error('Torrent cannot be deleted because it is over one week old. If you think there is a problem, contact staff.');
+}
+
+if ($Snatches > 4 && !check_perms('torrents_delete')) {
+  error('Torrent cannot be deleted because it has been snatched by more than 4 people. If you think there is as problem, contact staff.');
 }
 
 if ($ArtistName) {
