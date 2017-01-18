@@ -106,7 +106,7 @@ CREATE TABLE `blog` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `UserID` int(10) unsigned NOT NULL,
   `Title` varchar(255) NOT NULL,
-  `Body` text NOT NULL,
+  `Body` text,
   `Time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `ThreadID` int(10) unsigned DEFAULT NULL,
   `Important` tinyint(4) NOT NULL DEFAULT '0',
@@ -165,7 +165,7 @@ CREATE TABLE `calendar` (
 CREATE TABLE `changelog` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `Message` text NOT NULL,
+  `Message` text,
   `Author` varchar(30) NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB CHARSET=utf8;
@@ -173,7 +173,7 @@ CREATE TABLE `changelog` (
 CREATE TABLE `collages` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `Name` varchar(100) NOT NULL DEFAULT '',
-  `Description` text NOT NULL,
+  `Description` text,
   `UserID` int(10) NOT NULL DEFAULT '0',
   `NumTorrents` int(4) NOT NULL DEFAULT '0',
   `Deleted` enum('0','1') DEFAULT '0',
@@ -283,7 +283,7 @@ CREATE TABLE `donations` (
   `Time` datetime NOT NULL,
   `Currency` varchar(5) NOT NULL DEFAULT 'USD',
   `Source` varchar(30) NOT NULL DEFAULT '',
-  `Reason` mediumtext NOT NULL,
+  `Reason` mediumtext,
   `Rank` int(10) DEFAULT '0',
   `AddedBy` int(10) DEFAULT '0',
   `TotalRank` int(10) DEFAULT '0',
@@ -313,10 +313,10 @@ CREATE TABLE `donor_rewards` (
   `CustomIcon` varchar(200) NOT NULL DEFAULT '',
   `SecondAvatar` varchar(200) NOT NULL DEFAULT '',
   `CustomIconLink` varchar(200) NOT NULL DEFAULT '',
-  `ProfileInfo1` text NOT NULL,
-  `ProfileInfo2` text NOT NULL,
-  `ProfileInfo3` text NOT NULL,
-  `ProfileInfo4` text NOT NULL,
+  `ProfileInfo1` text,
+  `ProfileInfo2` text,
+  `ProfileInfo3` text,
+  `ProfileInfo4` text,
   `ProfileInfoTitle1` varchar(255) NOT NULL,
   `ProfileInfoTitle2` varchar(255) NOT NULL,
   `ProfileInfoTitle3` varchar(255) NOT NULL,
@@ -343,7 +343,7 @@ CREATE TABLE `email_blacklist` (
   `UserID` int(10) NOT NULL,
   `Email` varchar(255) NOT NULL,
   `Time` datetime NOT NULL,
-  `Comment` text NOT NULL,
+  `Comment` text,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB CHARSET=utf8;
 
@@ -413,7 +413,7 @@ CREATE TABLE `forums_last_read_topics` (
 CREATE TABLE `forums_polls` (
   `TopicID` int(10) unsigned NOT NULL,
   `Question` varchar(255) NOT NULL,
-  `Answers` text NOT NULL,
+  `Answers` text,
   `Featured` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `Closed` enum('0','1') NOT NULL DEFAULT '0',
   PRIMARY KEY (`TopicID`)
@@ -481,7 +481,7 @@ CREATE TABLE `forums_topics` (
 CREATE TABLE `friends` (
   `UserID` int(10) unsigned NOT NULL,
   `FriendID` int(10) unsigned NOT NULL,
-  `Comment` text NOT NULL,
+  `Comment` text,
   PRIMARY KEY (`UserID`,`FriendID`),
   KEY `UserID` (`UserID`),
   KEY `FriendID` (`FriendID`)
@@ -596,7 +596,7 @@ CREATE TABLE `news` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `UserID` int(10) unsigned NOT NULL,
   `Title` varchar(255) NOT NULL,
-  `Body` text NOT NULL,
+  `Body` text,
   `Time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`ID`),
   KEY `UserID` (`UserID`),
@@ -616,7 +616,7 @@ CREATE TABLE `permissions` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Level` int(10) unsigned NOT NULL,
   `Name` varchar(25) NOT NULL,
-  `Values` text NOT NULL,
+  `Values` text,
   `DisplayStaff` enum('0','1') NOT NULL DEFAULT '0',
   `PermittedForums` varchar(150) NOT NULL DEFAULT '',
   `Secondary` tinyint(4) NOT NULL DEFAULT '0',
@@ -679,9 +679,9 @@ CREATE TABLE `reports` (
   `Status` enum('New','InProgress','Resolved') DEFAULT 'New',
   `ResolvedTime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `ReportedTime` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `Reason` text NOT NULL,
+  `Reason` text,
   `ClaimerID` int(10) unsigned NOT NULL DEFAULT '0',
-  `Notes` text NOT NULL,
+  `Notes` text,
   PRIMARY KEY (`ID`),
   KEY `Status` (`Status`),
   KEY `Type` (`Type`),
@@ -735,7 +735,7 @@ CREATE TABLE `requests` (
   `Title` varchar(255) DEFAULT NULL,
   `TitleJP` varchar(255) DEFAULT NULL,
   `Image` varchar(255) DEFAULT NULL,
-  `Description` text NOT NULL,
+  `Description` text,
   `CatalogueNumber` varchar(50) NOT NULL,
   `DLsiteID` varchar(50) DEFAULT NULL,
   `FillerID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -808,8 +808,8 @@ CREATE TABLE `site_history` (
 CREATE TABLE `misc` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(64) NOT NULL,
-  `First` text NOT NULL,
-  `Second` text NOT NULL,
+  `First` text,
+  `Second` text,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `Name` (`Name`),
   KEY `name_index` (`Name`)
@@ -999,7 +999,7 @@ CREATE TABLE `staff_blog` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `UserID` int(10) unsigned NOT NULL,
   `Title` varchar(255) NOT NULL,
-  `Body` text NOT NULL,
+  `Body` text,
   `Time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`ID`),
   KEY `UserID` (`UserID`),
@@ -1123,7 +1123,7 @@ CREATE TABLE `torrents` (
   `Censored` tinyint(1) NOT NULL DEFAULT '1',
   `info_hash` blob NOT NULL,
   `FileCount` int(6) NOT NULL,
-  `FileList` mediumtext NOT NULL,
+  `FileList` mediumtext,
   `FilePath` varchar(255) NOT NULL DEFAULT '',
   `Size` bigint(12) NOT NULL,
   `Leechers` int(6) NOT NULL DEFAULT '0',
@@ -1202,7 +1202,7 @@ CREATE TABLE `torrents_group` (
   `TagList` varchar(500) NOT NULL,
   `Time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `RevisionID` int(12) DEFAULT NULL,
-  `WikiBody` text NOT NULL,
+  `WikiBody` text,
   `WikiImage` varchar(255) NOT NULL,
   `DLsiteID` varchar(20) NOT NULL DEFAULT '',
   PRIMARY KEY (`ID`),
@@ -1216,8 +1216,8 @@ CREATE TABLE `torrents_group` (
 CREATE TABLE `torrents_logs_new` (
   `LogID` int(10) NOT NULL AUTO_INCREMENT,
   `TorrentID` int(10) NOT NULL DEFAULT '0',
-  `Log` mediumtext NOT NULL,
-  `Details` mediumtext NOT NULL,
+  `Log` mediumtext,
+  `Details` mediumtext,
   `Score` int(3) NOT NULL,
   `Revision` int(3) NOT NULL,
   `Adjusted` enum('1','0') NOT NULL DEFAULT '0',
@@ -1301,7 +1301,7 @@ CREATE TABLE `torrents_votes` (
 
 CREATE TABLE `user_questions` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
-  `Question` mediumtext NOT NULL,
+  `Question` mediumtext,
   `UserID` int(10) NOT NULL,
   `Date` datetime NOT NULL,
   PRIMARY KEY (`ID`),
@@ -1378,7 +1378,7 @@ CREATE TABLE `users_enable_requests` (
   `UserID` int(10) unsigned NOT NULL,
   `Email` varchar(255) NOT NULL,
   `IP` varchar(255) NOT NULL DEFAULT 'mIbUEUEmV93bF6C5i6cITAlcw3H7TKcaPzZZIMIZQNQ=',
-  `UserAgent` text NOT NULL,
+  `UserAgent` text,
   `Timestamp` datetime NOT NULL,
   `HandledTimestamp` datetime DEFAULT NULL,
   `Token` char(32) DEFAULT NULL,
@@ -1447,10 +1447,10 @@ CREATE TABLE `users_info` (
   `UserID` int(10) unsigned NOT NULL,
   `StyleID` int(10) unsigned NOT NULL,
   `StyleURL` varchar(255) DEFAULT NULL,
-  `Info` text NOT NULL,
+  `Info` text,
   `Avatar` varchar(255) NOT NULL,
-  `AdminComment` text NOT NULL,
-  `SiteOptions` text NOT NULL,
+  `AdminComment` text,
+  `SiteOptions` text,
   `ViewAvatars` enum('0','1') NOT NULL DEFAULT '1',
   `Donor` enum('0','1') NOT NULL DEFAULT '0',
   `Artist` enum('0','1') NOT NULL DEFAULT '0',
@@ -1524,7 +1524,7 @@ CREATE TABLE `users_main` (
   `Class` tinyint(2) NOT NULL DEFAULT '5',
   `Uploaded` bigint(20) unsigned NOT NULL DEFAULT '0',
   `Downloaded` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `Title` text NOT NULL,
+  `Title` text,
   `Enabled` enum('0','1','2') NOT NULL DEFAULT '0',
   `Paranoia` text,
   `Visible` enum('1','0') NOT NULL DEFAULT '1',
@@ -1578,9 +1578,9 @@ CREATE TABLE `users_notify_filters` (
   `ID` int(12) NOT NULL AUTO_INCREMENT,
   `UserID` int(10) NOT NULL,
   `Label` varchar(128) NOT NULL DEFAULT '',
-  `Artists` mediumtext NOT NULL,
-  `RecordLabels` mediumtext NOT NULL,
-  `Users` mediumtext NOT NULL,
+  `Artists` mediumtext,
+  `RecordLabels` mediumtext,
+  `Users` mediumtext,
   `Tags` varchar(500) NOT NULL DEFAULT '',
   `NotTags` varchar(500) NOT NULL DEFAULT '',
   `Categories` varchar(500) NOT NULL DEFAULT '',
@@ -1641,7 +1641,7 @@ CREATE TABLE `users_points_requests` (
 CREATE TABLE `users_push_notifications` (
   `UserID` int(10) NOT NULL,
   `PushService` tinyint(1) NOT NULL DEFAULT '0',
-  `PushOptions` text NOT NULL,
+  `PushOptions` text,
   PRIMARY KEY (`UserID`)
 ) ENGINE=InnoDB CHARSET=utf8;
 
@@ -1719,7 +1719,7 @@ CREATE TABLE `users_votes` (
 
 CREATE TABLE `users_warnings_forums` (
   `UserID` int(10) unsigned NOT NULL,
-  `Comment` text NOT NULL,
+  `Comment` text,
   PRIMARY KEY (`UserID`)
 ) ENGINE=InnoDB CHARSET=utf8;
 
