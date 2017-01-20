@@ -375,7 +375,7 @@ if ($LoggedUser['Class'] >= 200 || $DB->has_results()) { ?>
         <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>><a href="userhistory.php?action=token_history&amp;userid=<?=$UserID?>">Tokens</a>: <?=number_format($FLTokens)?></li>
 <?
   }
-  if (($OwnProfile || check_perms('users_mod')) && $Warned != '0000-00-00 00:00:00') {
+  if (($OwnProfile || check_perms('users_mod')) && $Warned != NULL) {
 ?>
         <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Warning expires in: <?=time_diff((date('Y-m-d H:i', strtotime($Warned))))?></li>
 <?  } ?>
@@ -654,7 +654,7 @@ DonationsView::render_donor_stats($UserID);
   </div>
   <div class="main_column">
 <?
-if ($RatioWatchEnds != '0000-00-00 00:00:00'
+if ($RatioWatchEnds != NULL
     && (time() < strtotime($RatioWatchEnds))
     && ($Downloaded * $RequiredRatio) > $Uploaded
     ) {
@@ -701,7 +701,7 @@ if (check_paranoia_here('snatched')) {
         INNER JOIN torrents_group AS g ON t.GroupID = g.ID
       WHERE s.uid = '$UserID'
         AND g.WikiImage != ''
-      GROUP BY g.ID
+      GROUP BY g.ID,s.tstamp
       ORDER BY s.tstamp DESC
       LIMIT 5");
     $RecentSnatches = $DB->to_array();
@@ -749,7 +749,7 @@ if (check_paranoia_here('uploads')) {
         INNER JOIN torrents AS t ON t.GroupID = g.ID
       WHERE t.UserID = '$UserID'
         AND g.WikiImage != ''
-      GROUP BY g.ID
+      GROUP BY g.ID,t.Time
       ORDER BY t.Time DESC
       LIMIT 5");
     $RecentUploads = $DB->to_array();
@@ -1324,10 +1324,10 @@ if (!$DisablePoints) {
       <tr>
         <td class="label">Warned:</td>
         <td>
-          <input type="checkbox" name="Warned"<? if ($Warned != '0000-00-00 00:00:00') { ?> checked="checked"<? } ?> />
+          <input type="checkbox" name="Warned"<? if ($Warned != NULL) { ?> checked="checked"<? } ?> />
         </td>
       </tr>
-<?    if ($Warned == '0000-00-00 00:00:00') { // user is not warned ?>
+<?    if ($Warned == NULL) { // user is not warned ?>
       <tr>
         <td class="label">Expiration:</td>
         <td>
@@ -1406,7 +1406,7 @@ if (!$DisablePoints) {
       </tr>
 <?  if (check_perms('users_disable_posts') || check_perms('users_disable_any')) {
     $DB->query("
-      SELECT DISTINCT Email, IP
+      SELECT DISTINCT Email, IP, Time
       FROM users_history_emails
       WHERE UserID = $UserID
       ORDER BY Time ASC");

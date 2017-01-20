@@ -39,7 +39,7 @@ $DB->query("
   UPDATE requests
   SET TorrentID = 0,
     FillerID = 0,
-    TimeFilled = '0000-00-00 00:00:00',
+    TimeFilled = NULL,
     Visible = 1
   WHERE ID = $RequestID");
 

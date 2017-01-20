@@ -114,25 +114,25 @@ if (count($History) === 1) {
   $Invite['EndTime'] = $Joined;
   $Invite['AccountAge'] = date(time() + time() - strtotime($Joined)); // Same as EndTime but without ' ago'
   $Invite['IP'] = $History[0]['IP'];
-  if ($Current['StartTime'] == '0000-00-00 00:00:00') {
+  if ($Current['StartTime'] == NULL) {
     $Current['StartTime'] = $Joined;
   }
 } else {
   foreach ($History as $Key => $Val) {
-    if (isset($History[$Key + 1]) && $History[$Key + 1]['Time'] == '0000-00-00 00:00:00' && $Val['Time'] != '0000-00-00 00:00:00') {
+    if (isset($History[$Key + 1]) && $History[$Key + 1]['Time'] == NULL && $Val['Time'] != NULL) {
       // Invited email
       $Invite['Email'] = $Val['Email'];
       $Invite['EndTime'] = $Joined;
       $Invite['AccountAge'] = date(time() + time() - strtotime($Joined)); // Same as EndTime but without ' ago'
       $Invite['IP'] = $Val['IP'];
 
-    } elseif (isset($History[$Key - 1]) && $History[$Key - 1]['Email'] != $Val['Email'] && $Val['Time'] != '0000-00-00 00:00:00') {
+    } elseif (isset($History[$Key - 1]) && $History[$Key - 1]['Email'] != $Val['Email'] && $Val['Time'] != NULL) {
       // Old email
       $i = 1;
       while ($Val['Email'] == $History[$Key + $i]['Email']) {
         $i++;
       }
-      $Old[$Key]['StartTime'] = (isset($History[$Key + $i]) && $History[$Key + $i]['Time'] != '0000-00-00 00:00:00') ? $History[$Key + $i]['Time'] : $Joined;
+      $Old[$Key]['StartTime'] = (isset($History[$Key + $i]) && $History[$Key + $i]['Time'] != NULL) ? $History[$Key + $i]['Time'] : $Joined;
       $Old[$Key]['EndTime'] = $Val['Time'];
       $Old[$Key]['IP'] = $Val['IP'];
       $Old[$Key]['ElapsedTime'] = date(time() + strtotime($Old[$Key]['EndTime']) - strtotime($Old[$Key]['StartTime']));

@@ -250,7 +250,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && ((!check_perms('site
     'AddedTime'=>$SQLTime,
     'Body'=>$Body,
     'EditedUserID'=>0,
-    'EditedTime'=>'0000-00-00 00:00:00',
+    'EditedTime'=>NULL,
     'Username'=>$LoggedUser['Username'] //TODO: Remove, it's never used?
     ));
   $Cache->commit_transaction(0);

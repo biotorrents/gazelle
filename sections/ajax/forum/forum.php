@@ -140,7 +140,7 @@ if (count($Forum) === 0) {
     $UserInfo = Users::user_info($LastAuthorID);
     $LastAuthorName = $UserInfo['Username'];
     // Bug fix for no last time available
-    if ($LastTime == '0000-00-00 00:00:00') {
+    if ($LastTime == NULL) {
       $LastTime = '';
     }
 

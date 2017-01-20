@@ -226,7 +226,7 @@ $DB->set_query_id($QueryID);
 if ($_POST['ResetRatioWatch'] && check_perms('users_edit_reset_keys')) {
   $DB->query("
     UPDATE users_info
-    SET RatioWatchEnds = '0000-00-00 00:00:00', RatioWatchDownload = '0', RatioWatchTimes = '0'
+    SET RatioWatchEnds = NULL, RatioWatchDownload = '0', RatioWatchTimes = '0'
     WHERE UserID = '$UserID'");
   $EditSummary[] = 'RatioWatch history reset';
 }
@@ -268,13 +268,13 @@ if ($_POST['ResetEmailHistory'] && check_perms('users_edit_reset_keys')) {
       INSERT INTO users_history_emails
         (UserID, Email, Time, IP)
       VALUES
-        ('$UserID', '".DBCrypt::encrypt($Username.'@'.SITE_DOMAIN)."', '0000-00-00 00:00:00', '".DBCrypt::encrypt('127.0.0.1')."')");
+        ('$UserID', '".DBCrypt::encrypt($Username.'@'.SITE_DOMAIN)."', NULL, '".DBCrypt::encrypt('127.0.0.1')."')");
   } else {
     $DB->query("
       INSERT INTO users_history_emails
         (UserID, Email, Time, IP)
       VALUES
-        ('$UserID', '".DBCrypt::encrypt($Username.'@'.SITE_DOMAIN)."', '0000-00-00 00:00:00', '".$Cur['IP']."')");
+        ('$UserID', '".DBCrypt::encrypt($Username.'@'.SITE_DOMAIN)."', NULL, '".$Cur['IP']."')");
   }
   $DB->query("
     UPDATE users_main
@@ -486,7 +486,7 @@ if (check_perms('users_edit_badges')) {
   $Cache->delete_value("user_badges_".$UserID);
 }
 
-if ($Warned == 1 && $Cur['Warned'] == '0000-00-00 00:00:00' && check_perms('users_warn')) {
+if ($Warned == 1 && $Cur['Warned'] == NULL && check_perms('users_warn')) {
   $Weeks = 'week' . ($WarnLength === 1 ? '' : 's');
   Misc::send_pm($UserID, 0, 'You have received a warning', "You have been [url=".site_url()."wiki.php?action=article&amp;id=218]warned for $WarnLength {$Weeks}[/url] by [user]".$LoggedUser['Username']."[/user]. The reason given was:
 [quote]{$WarnReason}[/quote]");
@@ -498,10 +498,10 @@ if ($Warned == 1 && $Cur['Warned'] == '0000-00-00 00:00:00' && check_perms('user
   $EditSummary[] = db_string($Msg);
   $LightUpdates['Warned'] = time_plus(3600 * 24 * 7 * $WarnLength);
 
-} elseif ($Warned == 0 && $Cur['Warned'] != '0000-00-00 00:00:00' && check_perms('users_warn')) {
-  $UpdateSet[] = "Warned = '0000-00-00 00:00:00'";
+} elseif ($Warned == 0 && $Cur['Warned'] != NULL && check_perms('users_warn')) {
+  $UpdateSet[] = "Warned = NULL";
   $EditSummary[] = 'warning removed';
-  $LightUpdates['Warned'] = '0000-00-00 00:00:00';
+  $LightUpdates['Warned'] = NULL;
 
 } elseif ($Warned == 1 && $ExtendWarning != '---' && check_perms('users_warn')) {
   $Weeks = 'week' . ($ExtendWarning === 1 ? '' : 's');
@@ -700,13 +700,13 @@ if ($EnableUser != $Cur['Enabled'] && check_perms('users_disable_users')) {
     Tracker::update_tracker('add_user', array('id' => $UserID, 'passkey' => $Cur['torrent_pass'], 'visible' => $VisibleTrIP));
 
     if (($Cur['Downloaded'] == 0) || ($Cur['Uploaded'] / $Cur['Downloaded'] >= $Cur['RequiredRatio'])) {
-      $UpdateSet[] = "i.RatioWatchEnds = '0000-00-00 00:00:00'";
+      $UpdateSet[] = "i.RatioWatchEnds = NULL";
       $CanLeech = 1;
       $UpdateSet[] = "m.can_leech = '1'";
       $UpdateSet[] = "i.RatioWatchDownload = '0'";
     } else {
       $EnableStr .= ' (Ratio: '.Format::get_ratio_html($Cur['Uploaded'], $Cur['Downloaded'], false).', RR: '.number_format($Cur['RequiredRatio'],2).')';
-      if ($Cur['RatioWatchEnds'] != '0000-00-00 00:00:00') {
+      if ($Cur['RatioWatchEnds'] != NULL) {
         $UpdateSet[] = "i.RatioWatchEnds = NOW()";
         $UpdateSet[] = "i.RatioWatchDownload = m.Downloaded";
         $CanLeech = 0;

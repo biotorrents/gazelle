@@ -18,7 +18,7 @@ if (!$News = $Cache->get_value('news')) {
   $Cache->cache_value('news_latest_title', $News[0][1], 0);
 }
 
-if ($LoggedUser['LastReadNews'] != $News[0][0]) {
+if ($LoggedUser['LastReadNews'] != $News[0][0] && count($News[0][0]) > 0) {
   $Cache->begin_transaction("user_info_heavy_$UserID");
   $Cache->update_row(false, array('LastReadNews' => $News[0][0]));
   $Cache->commit_transaction(0);
@@ -276,8 +276,15 @@ if (($RequestStats = $Cache->get_value('stats_requests')) === false) {
   list($RequestCount, $FilledCount) = $RequestStats;
 }
 
+// do not divide by zero
+if ($RequestCount > 0) {
+  $RequestsFilledPercent = $FilledCount / $RequestCount * 100;
+} else {
+  $RequestsFilledPercent = 0;
+}
+
 ?>
-        <li>Requests: <?=number_format($RequestCount)?> (<?=number_format($FilledCount / $RequestCount * 100, 2)?>% filled)</li>
+        <li>Requests: <?=number_format($RequestCount)?> (<?=number_format($RequestsFilledPercent, 2)?>% filled)</li>
 <?
 
 if ($SnatchStats = $Cache->get_value('stats_snatches')) {
