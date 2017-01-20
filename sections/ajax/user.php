@@ -308,7 +308,7 @@ if ($ParanoiaLevel == 0) {
 }
 
 //Bugfix for no access time available
-if ($LastAccess == '0000-00-00 00:00:00') {
+if ($LastAccess == NULL) {
   $LastAccess = '';
 }
 
@@ -342,7 +342,7 @@ json_print("success", array(
     'paranoia'      => (int)$ParanoiaLevel,
     'paranoiaText'  => $ParanoiaLevelText,
     'donor'         => ($Donor == 1),
-    'warned'        => ($Warned != '0000-00-00 00:00:00'),
+    'warned'        => ($Warned != NULL),
     'enabled'       => ($Enabled == '1' || $Enabled == '0' || !$Enabled),
     'passkey'       => $torrent_pass
   ),

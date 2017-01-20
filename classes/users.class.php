@@ -84,7 +84,7 @@ class Users {
             'Paranoia' => array(),
             'Artist' => false,
             'Donor' => false,
-            'Warned' => '0000-00-00 00:00:00',
+            'Warned' => NULL,
             'Avatar' => '',
             'Enabled' => 0,
             'Title' => '',
@@ -122,7 +122,7 @@ class Users {
       G::$DB->set_query_id($OldQueryID);
     }
     if (strtotime($UserInfo['Warned']) < time()) {
-      $UserInfo['Warned'] = '0000-00-00 00:00:00';
+      $UserInfo['Warned'] = NULL;
       G::$Cache->cache_value("user_info_$UserID", $UserInfo, 2592000);
     }
 
@@ -419,7 +419,7 @@ class Users {
       $Str .= Badges::display_badges(Badges::get_displayed_badges($UserID), true);
     }
 
-    $Str .= ($IsWarned && $UserInfo['Warned'] != '0000-00-00 00:00:00') ? '<a href="wiki.php?action=article&amp;id=218"'
+    $Str .= ($IsWarned && $UserInfo['Warned'] != NULL) ? '<a href="wiki.php?action=article&amp;id=218"'
           . '><img src="'.STATIC_SERVER.'common/symbols/warned.png" alt="Warned" title="Warned'
           . (G::$LoggedUser['ID'] === $UserID ? ' - Expires ' . date('Y-m-d H:i', strtotime($UserInfo['Warned'])) : '')
           . '" class="tooltip" /></a>' : '';

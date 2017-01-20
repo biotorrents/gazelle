@@ -162,7 +162,7 @@ if (!empty($_REQUEST['confirm'])) {
         INSERT INTO users_history_emails
           (UserID, Email, Time, IP)
         VALUES
-          ('$UserID', '".DBCrypt::encrypt($_REQUEST['email'])."', '0000-00-00 00:00:00', '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."')");
+          ('$UserID', '".DBCrypt::encrypt($_REQUEST['email'])."', NULL, '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."')");
 
       if ($_REQUEST['email'] != $InviteEmail) {
         $DB->query("
@@ -176,7 +176,7 @@ if (!empty($_REQUEST['confirm'])) {
 
       // Manage invite trees, delete invite
 
-      if ($InviterID !== null) {
+      if ($InviterID !== null && $InviterID !== 0) {
         $DB->query("
           SELECT TreePosition, TreeID, TreeLevel
           FROM invite_tree

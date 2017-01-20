@@ -23,7 +23,7 @@ foreach ($Thread as $Key => $Post) {
       'authorName' => $Username,
       'artist' => $Artist == 1,
       'donor' => $Donor == 1,
-      'warned' => ($Warned != '0000-00-00 00:00:00'),
+      'warned' => ($Warned != NULL),
       'avatar' => $Avatar,
       'enabled' => ($Enabled == 2 ? false : true),
       'userTitle' => $UserTitle

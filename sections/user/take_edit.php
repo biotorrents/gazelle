@@ -164,12 +164,12 @@ if ($CurEmail != $_POST['email']) {
       UPDATE users_history_emails
       SET Time = '".sqltime()."'
       WHERE UserID = '$UserID'
-        AND Time = '0000-00-00 00:00:00'");
+        AND Time = NULL");
     $DB->query("
       INSERT INTO users_history_emails
         (UserID, Email, Time, IP)
       VALUES
-        ('$UserID', '".DBCrypt::encrypt($NewEmail)."', '0000-00-00 00:00:00', '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."')");
+        ('$UserID', '".DBCrypt::encrypt($NewEmail)."', NULL, '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."')");
 
   } else {
     error($Err);

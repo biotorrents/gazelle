@@ -5,7 +5,7 @@ $DB->query("
   SELECT ID, torrent_pass
   FROM users_info AS i
     JOIN users_main AS m ON m.ID = i.UserID
-  WHERE i.RatioWatchEnds != '0000-00-00 00:00:00'
+  WHERE i.RatioWatchEnds != NULL
     AND i.RatioWatchDownload + 10 * 1024 * 1024 * 1024 < m.Downloaded
     AND m.Enabled = '1'
     AND m.can_leech = '1'");

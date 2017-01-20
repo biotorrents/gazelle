@@ -244,7 +244,7 @@ function get_group_requests($GroupID) {
       SELECT ID
       FROM requests
       WHERE GroupID = $GroupID
-        AND TimeFilled = '0000-00-00 00:00:00'");
+        AND TimeFilled = NULL");
     $Requests = $DB->collect('ID');
     $Cache->cache_value("requests_group_$GroupID", $Requests, 0);
   }
@@ -416,12 +416,12 @@ function build_torrents_table($Cache, $DB, $LoggedUser, $GroupID, $GroupName, $G
             <blockquote>
               Uploaded by <?=(Users::format_username($UserID, false, false, false))?> <?=time_diff($TorrentTime);?>
 <?  if ($Seeders == 0) {
-    if ($LastActive != '0000-00-00 00:00:00' && time() - strtotime($LastActive) >= 1209600) { ?>
+    if ($LastActive != NULL && time() - strtotime($LastActive) >= 1209600) { ?>
                 <br /><strong>Last active: <?=time_diff($LastActive);?></strong>
 <?    } else { ?>
                 <br />Last active: <?=time_diff($LastActive);?>
 <?    }
-    if ($LastActive != '0000-00-00 00:00:00' && time() - strtotime($LastActive) >= 345678 && time() - strtotime($LastReseedRequest) >= 864000) { ?>
+    if ($LastActive != NULL && time() - strtotime($LastActive) >= 345678 && time() - strtotime($LastReseedRequest) >= 864000) { ?>
                 <br /><a href="torrents.php?action=reseed&amp;torrentid=<?=($TorrentID)?>&amp;groupid=<?=($GroupID)?>" class="brackets">Request re-seed</a>
 <?    }
   } ?>
