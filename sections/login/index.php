@@ -68,7 +68,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
               m.PassHash = '".db_string(Users::make_sec_hash($_REQUEST['password']))."',
               i.ResetKey = '',
               m.LastLogin = NOW(),
-              i.ResetExpires IS NULL
+              i.ResetExpires = NULL
             WHERE m.ID = '$UserID'
               AND i.UserID = m.ID");
           $DB->query("
@@ -94,7 +94,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
         $DB->query("
           UPDATE users_info
           SET ResetKey = '',
-            ResetExpires IS NULL
+            ResetExpires = NULL
           WHERE UserID = '$UserID'");
         $_SESSION['reseterr'] = 'The link you were given has expired.'; // Error message to display on form
       }

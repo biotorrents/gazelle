@@ -13,6 +13,6 @@ while (list($UserID) = $DB->next_record()) {
 
 $DB->query("
   UPDATE users_info
-  SET Warned IS NULL
+  SET Warned = NULL
   WHERE Warned < '$sqltime'");
 ?>

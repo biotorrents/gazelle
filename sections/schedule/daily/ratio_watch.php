@@ -20,7 +20,7 @@ if (count($OffRatioWatch) > 0) {
   $DB->query("
     UPDATE users_info AS ui
       JOIN users_main AS um ON um.ID = ui.UserID
-    SET ui.RatioWatchEnds IS NULL,
+    SET ui.RatioWatchEnds = NULL,
       ui.RatioWatchDownload = '0',
       um.can_leech = '1',
       ui.AdminComment = CONCAT('$sqltime - Leeching re-enabled by adequate ratio.\n\n', ui.AdminComment)
@@ -53,7 +53,7 @@ if (count($OffRatioWatch) > 0) {
   $DB->query("
     UPDATE users_info AS ui
       JOIN users_main AS um ON um.ID = ui.UserID
-    SET ui.RatioWatchEnds IS NULL,
+    SET ui.RatioWatchEnds = NULL,
       ui.RatioWatchDownload = '0',
       um.can_leech = '1'
     WHERE ui.UserID IN(".implode(',', $OffRatioWatch).')');

@@ -260,7 +260,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
 
 ?>
   <div class="box thin clear">
-    <div class="head colhead_dark"><strong>Poll<? if ($Closed) { echo ' [Closed]'; } ?><? if ($Featured && $Featured !== NULL) { echo ' [Featured]'; } ?></strong> <a href="#" onclick="$('#threadpoll').gtoggle(); log_hit(); return false;" class="brackets">View</a></div>
+    <div class="head colhead_dark"><strong>Poll<? if ($Closed) { echo ' [Closed]'; } ?><? if ($Featured && !is_null($Featured)) { echo ' [Featured]'; } ?></strong> <a href="#" onclick="$('#threadpoll').gtoggle(); log_hit(); return false;" class="brackets">View</a></div>
     <div class="pad<? if (/*$LastRead !== null || */$ThreadInfo['IsLocked']) { echo ' hidden'; } ?>" id="threadpoll">
       <p><strong><?=display_str($Question)?></strong></p>
 <?  if ($UserResponse !== null || $Closed || $ThreadInfo['IsLocked'] || !Forums::check_forumperm($ForumID)) { ?>
@@ -383,7 +383,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
       </div>
 <?  }
   if (check_perms('forums_polls_moderate') && !$RevealVoters) {
-    if (!$Featured || $Featured == NULL) {
+    if (!$Featured || is_null($Featured)) {
 ?>
       <form class="manage_form" name="poll" action="forums.php" method="post">
         <input type="hidden" name="action" value="poll_mod" />

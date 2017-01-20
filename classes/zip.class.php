@@ -80,7 +80,7 @@ if (!extension_loaded('zlib')) {
 //Handles timestamps
 function dostime($TimeStamp = 0) {
   if (!is_number($TimeStamp)) { // Assume that $TimeStamp is SQL timestamp
-    if ($TimeStamp == NULL) {
+    if (is_null($TimeStamp)) {
       return 'Never';
     }
     $TimeStamp = strtotime($TimeStamp);
