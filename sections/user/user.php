@@ -375,7 +375,7 @@ if ($LoggedUser['Class'] >= 200 || $DB->has_results()) { ?>
         <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>><a href="userhistory.php?action=token_history&amp;userid=<?=$UserID?>">Tokens</a>: <?=number_format($FLTokens)?></li>
 <?
   }
-  if (($OwnProfile || check_perms('users_mod')) && $Warned != NULL) {
+  if (($OwnProfile || check_perms('users_mod')) && !is_null($Warned)) {
 ?>
         <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Warning expires in: <?=time_diff((date('Y-m-d H:i', strtotime($Warned))))?></li>
 <?  } ?>
@@ -654,7 +654,7 @@ DonationsView::render_donor_stats($UserID);
   </div>
   <div class="main_column">
 <?
-if ($RatioWatchEnds != NULL
+if (!is_null($RatioWatchEnds)
     && (time() < strtotime($RatioWatchEnds))
     && ($Downloaded * $RequiredRatio) > $Uploaded
     ) {
@@ -1324,10 +1324,10 @@ if (!$DisablePoints) {
       <tr>
         <td class="label">Warned:</td>
         <td>
-          <input type="checkbox" name="Warned"<? if ($Warned != NULL) { ?> checked="checked"<? } ?> />
+          <input type="checkbox" name="Warned"<? if (!is_null($Warned)) { ?> checked="checked"<? } ?> />
         </td>
       </tr>
-<?    if ($Warned == NULL) { // user is not warned ?>
+<?    if (is_null($Warned)) { // user is not warned ?>
       <tr>
         <td class="label">Expiration:</td>
         <td>

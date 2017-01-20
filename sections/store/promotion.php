@@ -115,7 +115,7 @@ if ($DB->has_results()) {
 
     }
 
-    if ($Warned != NULL) {
+    if (!is_null($Warned)) {
       $Err[] = "You cannot be promoted while warned";
     }
 

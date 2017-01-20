@@ -235,7 +235,7 @@ class Tools {
       SELECT Warned
       FROM users_info
       WHERE UserID = $UserID
-        AND Warned != NULL");
+        AND Warned IS NOT NULL");
     if (G::$DB->has_results()) {
       //User was already warned, appending new warning to old.
       list($OldDate) = G::$DB->next_record();
