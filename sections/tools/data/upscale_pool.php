@@ -23,7 +23,7 @@ $RS = $DB->query("
     m.RequiredRatio
   FROM users_main AS m
     LEFT JOIN users_info AS i ON i.UserID = m.ID
-  WHERE i.RatioWatchEnds != NULL
+  WHERE i.RatioWatchEnds IS NOT NULL
     AND m.Enabled = '1'
   ORDER BY i.RatioWatchEnds ASC
   LIMIT $Limit");
@@ -32,7 +32,7 @@ list($Results) = $DB->next_record();
 $DB->query("
   SELECT COUNT(UserID)
   FROM users_info
-  WHERE BanDate != NULL
+  WHERE BanDate IS NOT NULL
     AND BanReason = '2'");
 list($TotalDisabled) = $DB->next_record();
 $DB->set_query_id($RS);

@@ -87,7 +87,7 @@ $Criteria[] = array(
       FROM users_main
         JOIN users_info ON users_main.ID = users_info.UserID
       WHERE PermissionID = ".$L['From']."
-        AND Warned = NULL
+        AND Warned IS NULL
         AND Uploaded >= '$L[MinUpload]'
         AND (Uploaded / Downloaded >= '$L[MinRatio]' OR (Uploaded / Downloaded IS NULL))
         AND JoinDate < '$L[MaxTime]'

@@ -244,7 +244,7 @@ function get_group_requests($GroupID) {
       SELECT ID
       FROM requests
       WHERE GroupID = $GroupID
-        AND TimeFilled = NULL");
+        AND TimeFilled IS NULL");
     $Requests = $DB->collect('ID');
     $Cache->cache_value("requests_group_$GroupID", $Requests, 0);
   }

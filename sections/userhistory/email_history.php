@@ -60,7 +60,7 @@ if ($UsersOnly == 1) {
       LEFT JOIN geoip_country AS c ON INET_ATON(h.IP) BETWEEN c.StartIP AND c.EndIP
     WHERE h.UserID = '$UserID'
       AND h2.UserID > 0"
-      /*AND Time != NULL*/."
+      /*AND Time IS NOT NULL*/."
     ORDER BY Time DESC");
 } else {
   $DB->query("
@@ -81,7 +81,7 @@ if ($UsersOnly == 1) {
     FROM users_history_emails AS h
       LEFT JOIN geoip_country AS c ON INET_ATON(h.IP) BETWEEN c.StartIP AND c.EndIP
     WHERE UserID = '$UserID' "
-      /*AND Time != NULL*/."
+      /*AND Time IS NOT NULL*/."
     ORDER BY Time DESC");
 }
 $History = $DB->to_array();

@@ -11,7 +11,7 @@ if (apc_exists('DBKEY')) {
     WHERE um.PermissionID IN ('".USER."', '".MEMBER  ."')
       AND um.LastAccess < '".time_minus(3600 * 24 * 110, true)."'
       AND um.LastAccess > '".time_minus(3600 * 24 * 111, true)."'
-      AND um.LastAccess != NULL
+      AND um.LastAccess IS NOT NULL
       AND ui.Donor = '0'
       AND um.Enabled != '2'
       AND ul.UserID IS NULL
@@ -29,7 +29,7 @@ if (apc_exists('DBKEY')) {
       LEFT JOIN users_levels AS ul ON ul.UserID = um.ID AND ul.PermissionID = '".CELEB."'
     WHERE um.PermissionID IN ('".USER."', '".MEMBER  ."')
       AND um.LastAccess < '".time_minus(3600 * 24 * 30 * 4)."'
-      AND um.LastAccess != NULL
+      AND um.LastAccess IS NOT NULL
       AND ui.Donor = '0'
       AND um.Enabled != '2'
       AND ul.UserID IS NULL

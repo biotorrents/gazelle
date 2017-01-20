@@ -226,7 +226,7 @@ $DB->set_query_id($QueryID);
 if ($_POST['ResetRatioWatch'] && check_perms('users_edit_reset_keys')) {
   $DB->query("
     UPDATE users_info
-    SET RatioWatchEnds = NULL, RatioWatchDownload = '0', RatioWatchTimes = '0'
+    SET RatioWatchEnds IS NULL, RatioWatchDownload = '0', RatioWatchTimes = '0'
     WHERE UserID = '$UserID'");
   $EditSummary[] = 'RatioWatch history reset';
 }
@@ -499,7 +499,7 @@ if ($Warned == 1 && $Cur['Warned'] == NULL && check_perms('users_warn')) {
   $LightUpdates['Warned'] = time_plus(3600 * 24 * 7 * $WarnLength);
 
 } elseif ($Warned == 0 && $Cur['Warned'] != NULL && check_perms('users_warn')) {
-  $UpdateSet[] = "Warned = NULL";
+  $UpdateSet[] = "Warned IS NULL";
   $EditSummary[] = 'warning removed';
   $LightUpdates['Warned'] = NULL;
 
@@ -700,7 +700,7 @@ if ($EnableUser != $Cur['Enabled'] && check_perms('users_disable_users')) {
     Tracker::update_tracker('add_user', array('id' => $UserID, 'passkey' => $Cur['torrent_pass'], 'visible' => $VisibleTrIP));
 
     if (($Cur['Downloaded'] == 0) || ($Cur['Uploaded'] / $Cur['Downloaded'] >= $Cur['RequiredRatio'])) {
-      $UpdateSet[] = "i.RatioWatchEnds = NULL";
+      $UpdateSet[] = "i.RatioWatchEnds IS NULL";
       $CanLeech = 1;
       $UpdateSet[] = "m.can_leech = '1'";
       $UpdateSet[] = "i.RatioWatchDownload = '0'";

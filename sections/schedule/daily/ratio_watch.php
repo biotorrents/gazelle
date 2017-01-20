@@ -12,7 +12,7 @@ $UserQuery = $DB->query("
     FROM users_info AS i
       JOIN users_main AS m ON m.ID = i.UserID
     WHERE m.Uploaded/m.Downloaded >= m.RequiredRatio
-      AND i.RatioWatchEnds != NULL
+      AND i.RatioWatchEnds IS NOT NULL
       AND m.can_leech = '0'
       AND m.Enabled = '1'");
 $OffRatioWatch = $DB->collect('ID');
@@ -20,7 +20,7 @@ if (count($OffRatioWatch) > 0) {
   $DB->query("
     UPDATE users_info AS ui
       JOIN users_main AS um ON um.ID = ui.UserID
-    SET ui.RatioWatchEnds = NULL,
+    SET ui.RatioWatchEnds IS NULL,
       ui.RatioWatchDownload = '0',
       um.can_leech = '1',
       ui.AdminComment = CONCAT('$sqltime - Leeching re-enabled by adequate ratio.\n\n', ui.AdminComment)
@@ -46,14 +46,14 @@ $UserQuery = $DB->query("
       FROM users_info AS i
         JOIN users_main AS m ON m.ID = i.UserID
       WHERE m.Uploaded / m.Downloaded >= m.RequiredRatio
-        AND i.RatioWatchEnds != NULL
+        AND i.RatioWatchEnds IS NOT NULL
         AND m.Enabled = '1'");
 $OffRatioWatch = $DB->collect('ID');
 if (count($OffRatioWatch) > 0) {
   $DB->query("
     UPDATE users_info AS ui
       JOIN users_main AS um ON um.ID = ui.UserID
-    SET ui.RatioWatchEnds = NULL,
+    SET ui.RatioWatchEnds IS NULL,
       ui.RatioWatchDownload = '0',
       um.can_leech = '1'
     WHERE ui.UserID IN(".implode(',', $OffRatioWatch).')');
@@ -79,7 +79,7 @@ $DB->query("
   FROM users_info AS i
     JOIN users_main AS m ON m.ID = i.UserID
   WHERE m.Uploaded / m.Downloaded < m.RequiredRatio
-    AND i.RatioWatchEnds = NULL
+    AND i.RatioWatchEnds IS NULL
     AND m.Enabled = '1'
     AND m.can_leech = '1'");
 $OnRatioWatch = $DB->collect('ID');
@@ -114,7 +114,7 @@ $UserQuery = $DB->query("
     SELECT ID, torrent_pass
     FROM users_info AS i
       JOIN users_main AS m ON m.ID = i.UserID
-    WHERE i.RatioWatchEnds != NULL
+    WHERE i.RatioWatchEnds IS NOT NULL
       AND i.RatioWatchEnds < '$sqltime'
       AND m.Enabled = '1'
       AND m.can_leech != '0'");
