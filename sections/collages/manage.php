@@ -96,13 +96,11 @@ View::show_header("Manage collection: $Name", 'jquery-ui,jquery.tablesorter,sort
       unset($ExtendedArtists[3]);
       $DisplayName .= Artists::display_artists($ExtendedArtists, true, false);
     } elseif (count($Artists) > 0) {
-      $DisplayName .= Artists::display_artists(array('1' => $Artists), true, false);
+      $DisplayName .= Artists::display_artists($Artists, true, false);
     }
-    $TorrentLink = "<a href=\"torrents.php?id=$GroupID\" class=\"tooltip\" title=\"View torrent group\">$GroupName</a>";
+    $GroupNameLang = $GroupName ? $GroupName : ($GroupNameRJ ? $GroupNameRJ : $GroupNameJP);
+    $TorrentLink = "<a href=\"torrents.php?id=$GroupID\" class=\"tooltip\" title=\"View torrent group\">$GroupNameLang</a>";
     $GroupYear = $GroupYear > 0 ? $GroupYear : '';
-    if ($GroupVanityHouse) {
-      $DisplayName .= ' [<abbr class="tooltip" title="This is a Vanity House release">VH</abbr>]';
-    }
 ?>
       <tr class="drag row" id="li_<?=$GroupID?>">
         <form class="manage_form" name="collage" action="collages.php" method="post">
