@@ -5,7 +5,7 @@ View::show_header('Better');
 <div class="thin">
   <h3 id="general">Pursuit of Perfection</h3>
   <div class="box pad" style="padding: 10px 10px 10px 20px;">
-    <p>Here at <?=SITE_NAME?>, we believe that there's always room for improvement. To aid our effort in the pursuit of perfection, we've put together a few simple lists that can help you build ratio and help us improve our overall quality. Most lists feature 100 torrents at a time and update every 15 minutes.</p>
+    <p>Here at <?=SITE_NAME?>, we believe that there's always room for improvement. To aid our effort in the pursuit of perfection, we've put together a few simple lists that can help you build ratio or something and help us improve our overall quality. Most lists feature 20 random torrents selected upon page load.</p>
   </div>
   <h3 id="lists">Lists</h3>
   <div class="box pad" style="padding: 10px 10px 10px 20px;">
@@ -19,12 +19,21 @@ View::show_header('Better');
           <a href="better.php?method=screenshots">Screenshots</a>
         </td>
         <td class="nobr">
-          When a torrent doesn't have enough screenshots
+          When a torrent group doesn't have enough screenshots
         </td>
       </tr>
       <tr class="row">
         <td class="nobr">
-          <a href="better.php?method=encode">Encode</a>
+          <a href="better.php?method=covers&filter=all">Covers</a>
+        </td>
+        <td class="nobr">
+          When a torrent group doesn't have a cover
+        </td>
+      </tr>
+<!--
+      <tr class="row">
+        <td class="nobr">
+          <s><a href="better.php?method=encode">Encode</a></s>
         </td>
         <td class="nobr">
           When a high quality BD or ISO is available and we don't have any encodes of it
@@ -32,7 +41,7 @@ View::show_header('Better');
       </tr>
       <tr class="row">
         <td class="nobr">
-          <a href="better.php?method=snatch">Snatch</a>
+          <s><a href="better.php?method=snatch">Snatch</a></s>
         </td>
         <td class="nobr">
           Torrents you've already downloaded that can be encoded.
@@ -40,7 +49,7 @@ View::show_header('Better');
       </tr>
       <tr class="row">
         <td class="nobr">
-          <a href="better.php?method=upload">Upload</a>
+          <s><a href="better.php?method=upload">Upload</a></s>
         </td>
         <td class="nobr">
           Torrents you've uploaded that could be improved.
@@ -64,13 +73,13 @@ View::show_header('Better');
       </tr>
       <tr class="row">
         <td class="nobr">
-          <a href="better.php?method=files">File names</a>
+          <s><a href="better.php?method=files">File names</a></s>
         </td>
         <td class="nobr">
           Torrents that have been marked as having "Bad File Names".
         </td>
       </tr>
-
+-->
     </table>
   </div>
 </div>
