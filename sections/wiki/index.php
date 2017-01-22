@@ -25,50 +25,46 @@ if (!empty($_REQUEST['action'])) {
   switch ($_REQUEST['action']) {
     case 'create':
       if ($_POST['action']) {
-        include('takecreate.php');
+        include(SERVER_ROOT.'/sections/wiki/takecreate.php');
       } else {
-        include('create.php');
+        include(SERVER_ROOT.'/sections/wiki/create.php');
       }
       break;
     case 'edit':
       if ($_POST['action']) {
-        include('takeedit.php');
+        include(SERVER_ROOT.'/sections/wiki/takeedit.php');
       } else {
-        include('edit.php');
+        include(SERVER_ROOT.'/sections/wiki/edit.php');
       }
       break;
     case 'delete':
-      if ($_POST['action']) {
-        include('takedelete.php');
-      } else {
-        include('delete.php');
-      }
+      include(SERVER_ROOT.'/sections/wiki/delete.php');
       break;
     case 'revisions':
-      include('revisions.php');
+      include(SERVER_ROOT.'/sections/wiki/revisions.php');
       break;
     case 'compare':
-      include('compare.php');
+      include(SERVER_ROOT.'/sections/wiki/compare.php');
       break;
     case 'add_alias':
-      include('add_alias.php');
+      include(SERVER_ROOT.'/sections/wiki/add_alias.php');
       break;
     case 'delete_alias':
-      include('delete_alias.php');
+      include(SERVER_ROOT.'/sections/wiki/delete_alias.php');
       break;
     case 'browse':
-      include('wiki_browse.php');
+      include(SERVER_ROOT.'/sections/wiki/wiki_browse.php');
       break;
     case 'article':
-      include('article.php');
+      include(SERVER_ROOT.'/sections/wiki/article.php');
       break;
     case 'search':
-      include('search.php');
+      include(SERVER_ROOT.'/sections/wiki/search.php');
       break;
   }
 } else {
   $_GET['id'] = INDEX_ARTICLE;
-  include('article.php');
+  include(SERVER_ROOT.'/sections/wiki/article.php');
   //include('splash.php');
 }
 ?>
