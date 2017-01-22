@@ -39,7 +39,7 @@ if (!list($Question,$Answers,$Votes,$Featured,$Closed) = $Cache->get_value('poll
 }
 
 if (isset($_POST['feature'])) {
-  if (!$Featured || is_null($Featured)) {
+  if (!$Featured) {
     $Featured = sqltime();
     $Cache->cache_value('polls_featured',$TopicID,0);
     $DB->query('

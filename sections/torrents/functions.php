@@ -416,12 +416,12 @@ function build_torrents_table($Cache, $DB, $LoggedUser, $GroupID, $GroupName, $G
             <blockquote>
               Uploaded by <?=(Users::format_username($UserID, false, false, false))?> <?=time_diff($TorrentTime);?>
 <?  if ($Seeders == 0) {
-    if (!is_null($LastActive) && time() - strtotime($LastActive) >= 1209600) { ?>
+    if ($LastActive && time() - strtotime($LastActive) >= 1209600) { ?>
                 <br /><strong>Last active: <?=time_diff($LastActive);?></strong>
 <?    } else { ?>
                 <br />Last active: <?=time_diff($LastActive);?>
 <?    }
-    if (!is_null($LastActive) && time() - strtotime($LastActive) >= 345678 && time() - strtotime($LastReseedRequest) >= 864000) { ?>
+    if ($LastActive && time() - strtotime($LastActive) >= 345678 && time() - strtotime($LastReseedRequest) >= 864000) { ?>
                 <br /><a href="torrents.php?action=reseed&amp;torrentid=<?=($TorrentID)?>&amp;groupid=<?=($GroupID)?>" class="brackets">Request re-seed</a>
 <?    }
   } ?>

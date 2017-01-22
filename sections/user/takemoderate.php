@@ -486,7 +486,7 @@ if (check_perms('users_edit_badges')) {
   $Cache->delete_value("user_badges_".$UserID);
 }
 
-if ($Warned == 1 && is_null($Cur['Warned']) && check_perms('users_warn')) {
+if ($Warned == 1 && !$Cur['Warned'] && check_perms('users_warn')) {
   $Weeks = 'week' . ($WarnLength === 1 ? '' : 's');
   Misc::send_pm($UserID, 0, 'You have received a warning', "You have been [url=".site_url()."wiki.php?action=article&amp;id=218]warned for $WarnLength {$Weeks}[/url] by [user]".$LoggedUser['Username']."[/user]. The reason given was:
 [quote]{$WarnReason}[/quote]");
@@ -498,7 +498,7 @@ if ($Warned == 1 && is_null($Cur['Warned']) && check_perms('users_warn')) {
   $EditSummary[] = db_string($Msg);
   $LightUpdates['Warned'] = time_plus(3600 * 24 * 7 * $WarnLength);
 
-} elseif ($Warned == 0 && !is_null($Cur['Warned']) && check_perms('users_warn')) {
+} elseif ($Warned == 0 && $Cur['Warned'] && check_perms('users_warn')) {
   $UpdateSet[] = "Warned = NULL";
   $EditSummary[] = 'warning removed';
   $LightUpdates['Warned'] = NULL;
@@ -706,7 +706,7 @@ if ($EnableUser != $Cur['Enabled'] && check_perms('users_disable_users')) {
       $UpdateSet[] = "i.RatioWatchDownload = '0'";
     } else {
       $EnableStr .= ' (Ratio: '.Format::get_ratio_html($Cur['Uploaded'], $Cur['Downloaded'], false).', RR: '.number_format($Cur['RequiredRatio'],2).')';
-      if (!is_null($Cur['RatioWatchEnds'])) {
+      if ($Cur['RatioWatchEnds']) {
         $UpdateSet[] = "i.RatioWatchEnds = NOW()";
         $UpdateSet[] = "i.RatioWatchDownload = m.Downloaded";
         $CanLeech = 0;

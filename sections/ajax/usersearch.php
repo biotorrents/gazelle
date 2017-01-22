@@ -36,23 +36,23 @@ if (isset($_GET['username'])) {
 
 }
 
-$JsonUsers = array();
+$JsonUsers = [];
 foreach ($Results as $Result) {
   list($UserID, $Username, $Enabled, $PermissionID, $Donor, $Warned, $Avatar) = $Result;
 
-  $JsonUsers[] = array(
+  $JsonUsers[] = [
     'userId' => (int)$UserID,
     'username' => $Username,
     'donor' => $Donor == 1,
-    'warned' => !is_null($Warned),
+    'warned' => (bool)$Warned,
     'enabled' => ($Enabled == 2 ? false : true),
     'class' => Users::make_class_string($PermissionID),
     'avatar' => $Avatar
-  );
+  ];
 }
 
-json_die("success", array(
+json_die("success", [
   'currentPage' => (int)$Page,
   'pages' => ceil($NumResults / USERS_PER_PAGE),
   'results' => $JsonUsers
-));
+]);

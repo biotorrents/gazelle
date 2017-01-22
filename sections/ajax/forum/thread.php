@@ -247,7 +247,7 @@ foreach ($Thread as $Key => $Post) {
 
 
   $UserInfo = Users::user_info($EditedUserID);
-  $JsonPosts[] = array(
+  $JsonPosts[] = [
     'postId' => (int)$PostID,
     'addedTime' => $AddedTime,
     'bbBody' => $Body,
@@ -255,37 +255,33 @@ foreach ($Thread as $Key => $Post) {
     'editedUserId' => (int)$EditedUserID,
     'editedTime' => $EditedTime,
     'editedUsername' => $UserInfo['Username'],
-    'author' => array(
+    'author' => [
       'authorId' => (int)$AuthorID,
       'authorName' => $Username,
       'paranoia' => $Paranoia,
       'artist' => $Artist === '1',
       'donor' => $Donor === '1',
-      'warned' => !is_null($Warned),
+      'warned' => (bool)$Warned,
       'avatar' => $Avatar,
       'enabled' => $Enabled === '2' ? false : true,
       'userTitle' => $UserTitle
-    ),
-
-  );
+    ]
+  ];
 }
 
-print
-  json_encode(
-    array(
-      'status' => 'success',
-      'response' => array(
-        'forumId' => (int)$ForumID,
-        'forumName' => $Forums[$ForumID]['Name'],
-        'threadId' => (int)$ThreadID,
-        'threadTitle' => display_str($ThreadInfo['Title']),
-        'subscribed' => in_array($ThreadID, $UserSubscriptions),
-        'locked' => $ThreadInfo['IsLocked'] == 1,
-        'sticky' => $ThreadInfo['IsSticky'] == 1,
-        'currentPage' => (int)$Page,
-        'pages' => ceil($ThreadInfo['Posts'] / $PerPage),
-        'poll' => empty($JsonPoll) ? null : $JsonPoll,
-        'posts' => $JsonPosts
-      )
-    )
-  );
+print json_encode([
+  'status' => 'success',
+  'response' => [
+    'forumId' => (int)$ForumID,
+    'forumName' => $Forums[$ForumID]['Name'],
+    'threadId' => (int)$ThreadID,
+    'threadTitle' => display_str($ThreadInfo['Title']),
+    'subscribed' => in_array($ThreadID, $UserSubscriptions),
+    'locked' => $ThreadInfo['IsLocked'] == 1,
+    'sticky' => $ThreadInfo['IsSticky'] == 1,
+    'currentPage' => (int)$Page,
+    'pages' => ceil($ThreadInfo['Posts'] / $PerPage),
+    'poll' => empty($JsonPoll) ? null : $JsonPoll,
+    'posts' => $JsonPosts
+  ]
+]);

@@ -308,26 +308,24 @@ if ($ParanoiaLevel == 0) {
 }
 
 //Bugfix for no access time available
-if (is_null($LastAccess)) {
-  $LastAccess = '';
-}
+if (!$LastAccess) { $LastAccess = ''; }
 
 header('Content-Type: text/plain; charset=utf-8');
 
-json_print("success", array(
+json_print("success", [
   'username'    => $Username,
   'avatar'      => $Avatar,
   'isFriend'    => (bool)$Friend,
   'profileText' => Text::full_format($Info),
-  'stats'       => array(
+  'stats'       => [
     'joinedDate'    => $JoinDate,
     'lastAccess'    => $LastAccess,
     'uploaded'      => (int)$Uploaded,
     'downloaded'    => (int)$Downloaded,
     'ratio'         => (float)$Ratio,
     'requiredRatio' => (float)$RequiredRatio
-  ),
-  'ranks' => array(
+  ],
+  'ranks' => [
     'uploaded'    => (int)$UploadedRank,
     'downloaded'  => (int)$DownloadedRank,
     'uploads'     => (int)$UploadsRank,
@@ -336,17 +334,17 @@ json_print("success", array(
     'posts'       => (int)$PostRank,
     'artists'     => (int)$ArtistsRank,
     'overall'     => (int)$OverallRank
-  ),
-  'personal' => array(
+  ],
+  'personal' => [
     'class'         => $ClassLevels[$Class]['Name'],
     'paranoia'      => (int)$ParanoiaLevel,
     'paranoiaText'  => $ParanoiaLevelText,
     'donor'         => ($Donor == 1),
-    'warned'        => !is_null($Warned),
+    'warned'        => (bool)$Warned,
     'enabled'       => ($Enabled == '1' || $Enabled == '0' || !$Enabled),
     'passkey'       => $torrent_pass
-  ),
-  'community' => array(
+  ],
+  'community' => [
     'posts'           => (int)$ForumPosts,
     'torrentComments' => (int)$NumComments,
     'artistComments'  => (int)$NumArtistComments,
@@ -365,6 +363,6 @@ json_print("success", array(
     'snatched'        => (int)$Snatched,
     'invited'         => (int)$Invited,
     'artistsAdded'    => (int)$ArtistsAdded
-  )
-));
+  ]
+]);
 ?>

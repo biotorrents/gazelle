@@ -140,9 +140,7 @@ if (count($Forum) === 0) {
     $UserInfo = Users::user_info($LastAuthorID);
     $LastAuthorName = $UserInfo['Username'];
     // Bug fix for no last time available
-    if (is_null($LastTime)) {
-      $LastTime = '';
-    }
+    if (!$LastTime) { $LastTime = ''; }
 
     $JsonTopics[] = array(
       'topicId' => (int)$TopicID,

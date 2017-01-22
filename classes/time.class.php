@@ -4,14 +4,9 @@ if (!extension_loaded('date')) {
 }
 
 function time_ago($TimeStamp) {
+  if (!$TimeStamp) { return false; }
   if (!is_number($TimeStamp)) { // Assume that $TimeStamp is SQL timestamp
-    if (is_null($TimeStamp)) {
-      return false;
-    }
     $TimeStamp = strtotime($TimeStamp);
-  }
-  if ($TimeStamp == 0) {
-    return false;
   }
   return time() - $TimeStamp;
 }
@@ -21,14 +16,9 @@ function time_ago($TimeStamp) {
  * difference in text (e.g. "16 hours and 28 minutes", "1 day, 18 hours").
  */
 function time_diff($TimeStamp, $Levels = 2, $Span = true, $Lowercase = false) {
+  if (!$TimeStamp) { return 'Never'; }
   if (!is_number($TimeStamp)) { // Assume that $TimeStamp is SQL timestamp
-    if (is_null($TimeStamp)) {
-      return 'Never';
-    }
     $TimeStamp = strtotime($TimeStamp);
-  }
-  if ($TimeStamp == 0) {
-    return 'Never';
   }
   $Time = time() - $TimeStamp;
 

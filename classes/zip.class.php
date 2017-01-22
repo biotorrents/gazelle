@@ -76,21 +76,6 @@ http://www.fileformat.info/tool/hexdump.htm - Useful for analyzing ZIP files
 if (!extension_loaded('zlib')) {
   error('Zlib Extension not loaded.');
 }
-/*
-//Handles timestamps
-function dostime($TimeStamp = 0) {
-  if (!is_number($TimeStamp)) { // Assume that $TimeStamp is SQL timestamp
-    if (is_null($TimeStamp)) {
-      return 'Never';
-    }
-    $TimeStamp = strtotime($TimeStamp);
-  }
-  $Date = (($TimeStamp == 0) ? getdate() : getdate($TimeStamp));
-  $Hex = dechex((($Date['year'] - 1980) << 25) | ($Date['mon'] << 21) | ($Date['mday'] << 16) | ($Date['hours'] << 11) | ($Date['minutes'] << 5) | ($Date['seconds'] >> 1));
-  eval("\$Return = \"\x$Hex[6]$Hex[7]\x$Hex[4]$Hex[5]\x$Hex[2]$Hex[3]\x$Hex[0]$Hex[1]\";");
-  return $Return;
-}
-*/
 
 class Zip {
   public $ArchiveSize = 0; // Total size
@@ -116,7 +101,6 @@ class Zip {
     $this->Data .= "\x14\x00"; // Version requirements
     $this->Data .= "\x00\x08"; // Bit flag - 0x8 = UTF-8 file names
     $this->Data .= "\x08\x00"; // Compression
-    //$this->Data .= dostime($TimeStamp); // Last modified
     $this->Data .= "\x00\x00\x00\x00";
     $DataLength = strlen($FileData); // Saved as variable to avoid wasting CPU calculating it multiple times.
     $CRC32 = crc32($FileData); // Ditto.
