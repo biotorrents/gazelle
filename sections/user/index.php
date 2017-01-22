@@ -57,6 +57,9 @@ switch ($_REQUEST['action']) {
   case 'delete_invite':
     include('delete_invite.php');
     break;
+  case 'dupes':
+    include('manage_linked.php');
+    break;
   case 'sessions':
     include('sessions.php');
     break;
