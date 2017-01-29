@@ -29,7 +29,7 @@ if (!($Scores = $Cache->get_value("contest_scores"))) {
   SELECT
     u.Username,
     u.ID,
-    COUNT(*) AS Uploads
+    COUNT(DISTINCT tg.ID) AS Uploads
   FROM torrents AS t
   LEFT JOIN torrents_group AS tg ON t.groupID=tg.ID
   LEFT JOIN users_main AS u ON t.UserID=u.ID
