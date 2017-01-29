@@ -27,10 +27,23 @@ if (!$Banned) {
         <input type="password" name="password" id="password" class="inputtext" required="required" maxlength="307200" pattern=".{6,307200}" placeholder="Password" />
       </td>
     </tr>
+    <tr id="2fa_tr">
+      <td>Two-factor&nbsp;</td>
+      <td colspan="2">
+        <input type="text" name="twofa" id="twofa" class="inputtext" maxlength="6" pattern="[0-9]{6}" placeholder="2FA Verification Code" />
+      </td>
+    </tr>
     <tr>
       <td></td>
       <td>
-        <input type="checkbox" id="keeplogged" name="keeplogged" value="1"<?=(isset($_REQUEST['keeplogged']) && $_REQUEST['keeplogged']) ? ' checked="checked"' : ''?> />
+        <input type="checkbox" id="keep2fa" name="keep2fa" value="0">
+        <label for="keep2fa">Show 2FA</label>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <input type="checkbox" id="keeplogged" name="keeplogged" value="1"<?=(isset($_REQUEST['keeplogged']) && $_REQUEST['keeplogged']) ? ' checked="checked"' : ''?>>
         <label for="keeplogged">Remember me</label>
       </td>
       <td><input type="submit" name="login" value="Log in" class="submit" /></td>

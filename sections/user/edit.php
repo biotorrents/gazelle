@@ -1,4 +1,5 @@
 <?
+require(SERVER_ROOT.'/classes/twofa.class.php');
 $UserID = $_REQUEST['userid'];
 if (!is_number($UserID)) {
   error(404);
@@ -7,6 +8,7 @@ if (!is_number($UserID)) {
 $DB->query("
   SELECT
     m.Username,
+    m.TwoFactor,
     m.Email,
     m.IRCKey,
     m.Paranoia,
@@ -23,7 +25,9 @@ $DB->query("
     JOIN users_info AS i ON i.UserID = m.ID
     LEFT JOIN permissions AS p ON p.ID = m.PermissionID
   WHERE m.ID = '".db_string($UserID)."'");
-list($Username, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $DownloadAlt, $Class, $InfoTitle) = $DB->next_record(MYSQLI_NUM, array(3, 8));
+list($Username, $TwoFactor, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $DownloadAlt, $Class, $InfoTitle) = $DB->next_record(MYSQLI_NUM, array(3, 8));
+
+$TwoFA = new TwoFactorAuth(SITE_NAME);
 
 $Email = apc_exists('DBKEY') ? DBCrypt::decrypt($Email) : '[Encrypted]';
 
@@ -774,11 +778,29 @@ list($ArtistsAdded) = $DB->next_record();
           <p class="min_padding">When changing your email address, you must enter your current password in the "Current password" field before saving your changes.</p>
         </td>
       </tr>
+      <tr id="acc_2fa_tr">
+        <td class="label tooltip" title="This will let you enable 2-Factor Auth for your <?=SITE_NAME?> account. The use of your 2FA client will be required whenever you login after enabling it."><strong>2-Factor Auth</strong></td>
+        <td>
+          <? $TwoFASecret = empty($TwoFactor) ? $TwoFA->createSecret() : $TwoFactor; ?>
+          <div class="field_div">
+            <? if (!empty($TwoFactor)) { ?>
+            <p>2FA is enabled for this account with the following secret:</p>
+            <? } ?>
+            <img src="<?=$TwoFA->getQRCodeImageAsDataUri(SITE_NAME, $TwoFASecret)?>">
+            <input type="text" size="20" name="twofasecret" id="twofasecret" value="<?=$TwoFASecret?>" readonly><br>
+            <? if (empty($TwoFactor)) { ?>
+            <input type="text" size="20" maxlength="6" name="twofa" id="twofa" placeholder="Verification Code">
+            <p class="min_padding">To enable 2FA, scan the above QR code (or add the secret below it) to your 2FA client of choice, and enter a verification code it generates. Note that the verification code must not have expired when you save your profile.</p>
+            <p class="min_padding">When setting up 2FA, you must enter your current password in the "Current password" field before saving your changes.</p>
+            <? } ?>
+          </div>
+        </td>
+      </tr>
       <tr id="acc_password_tr">
         <td class="label"><strong>Change password</strong></td>
         <td>
           <div class="field_div">
-            <label>Current password:<br />
+            <label>Current password:<br>
             <input type="password" size="40" name="cur_pass" id="cur_pass" maxlength="307200" value="" /></label>
           </div>
           <div class="field_div">

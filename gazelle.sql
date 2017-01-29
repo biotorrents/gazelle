@@ -1519,6 +1519,7 @@ CREATE TABLE `users_main` (
   `Username` varchar(20) NOT NULL,
   `Email` varchar(255) NOT NULL,
   `PassHash` varchar(60) NOT NULL,
+  `TwoFactor` varchar(255) DEFAULT NULL,
   `IRCKey` char(32) DEFAULT NULL,
   `LastLogin` datetime,
   `LastAccess` datetime,

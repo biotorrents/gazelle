@@ -19,8 +19,11 @@ if (Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
   error('Your IP address has been banned.');
 }
 
-require(SERVER_ROOT.'/classes/validate.class.php');
-$Validate = NEW VALIDATE;
+require_once SERVER_ROOT.'/classes/twofa.class.php';
+require_once SERVER_ROOT.'/classes/validate.class.php';
+
+$Validate = new VALIDATE;
+$TwoFA = new TwoFactorAuth(SITE_NAME);
 
 if (array_key_exists('action', $_GET) && $_GET['action'] == 'disabled') {
   require('disabled.php');
@@ -231,11 +234,12 @@ else {
           PermissionID,
           CustomPermissions,
           PassHash,
+          TwoFactor,
           Enabled
         FROM users_main
         WHERE Username = '".db_string($_POST['username'])."'
           AND Username != ''");
-      list($UserID, $PermissionID, $CustomPermissions, $PassHash, $Enabled) = $DB->next_record(MYSQLI_NUM, array(2));
+      list($UserID, $PermissionID, $CustomPermissions, $PassHash, $TwoFactor, $Enabled) = $DB->next_record(MYSQLI_NUM, array(2));
       if (!$Banned) {
         if ($UserID && Users::check_password($_POST['password'], $PassHash)) {
           // Update hash if better algorithm available
@@ -245,110 +249,116 @@ else {
               SET PassHash = '".make_sec_hash($_POST['password'])."'
               WHERE Username = '".db_string($_POST['username'])."'");
           }
-          if ($Enabled == 1) {
 
-            // Check if the current login attempt is from a location previously logged in from
-            if (apc_exists('DBKEY')) {
-              $DB->query("
-                SELECT IP
-                FROM users_history_ips
-                WHERE UserID = $UserID");
-              $IPs = $DB->to_array(false, MYSQLI_NUM);
-              $QueryParts = array();
-              foreach ($IPs as $i => $IP) {
-                $IPs[$i] = DBCrypt::decrypt($IP[0]);
-              }
-              $IPs = array_unique($IPs);
-              if (count($IPs) > 0) { // Always allow first login
-                foreach ($IPs as $IP) {
-                  $QueryParts[] = "(StartIP<=INET6_ATON('$IP') AND EndIP>=INET6_ATON('$IP'))";
+          if (empty($TwoFactor) || $TwoFA->verifyCode($TwoFactor, $_POST['twofa'])) {
+            if ($Enabled == 1) {
+
+              // Check if the current login attempt is from a location previously logged in from
+              if (apc_exists('DBKEY')) {
+                $DB->query("
+                  SELECT IP
+                  FROM users_history_ips
+                  WHERE UserID = $UserID");
+                $IPs = $DB->to_array(false, MYSQLI_NUM);
+                $QueryParts = array();
+                foreach ($IPs as $i => $IP) {
+                  $IPs[$i] = DBCrypt::decrypt($IP[0]);
                 }
-                $DB->query('SELECT ASN FROM geoip_asn WHERE '.implode(' OR ', $QueryParts));
-                $PastASNs = array_column($DB->to_array(false, MYSQLI_NUM), 0);
-                $DB->query("SELECT ASN FROM geoip_asn WHERE StartIP<=INET6_ATON('$_SERVER[REMOTE_ADDR]') AND EndIP>=INET6_ATON('$_SERVER[REMOTE_ADDR]')");
-                list($CurrentASN) = $DB->next_record();
+                $IPs = array_unique($IPs);
+                if (count($IPs) > 0) { // Always allow first login
+                  foreach ($IPs as $IP) {
+                    $QueryParts[] = "(StartIP<=INET6_ATON('$IP') AND EndIP>=INET6_ATON('$IP'))";
+                  }
+                  $DB->query('SELECT ASN FROM geoip_asn WHERE '.implode(' OR ', $QueryParts));
+                  $PastASNs = array_column($DB->to_array(false, MYSQLI_NUM), 0);
+                  $DB->query("SELECT ASN FROM geoip_asn WHERE StartIP<=INET6_ATON('$_SERVER[REMOTE_ADDR]') AND EndIP>=INET6_ATON('$_SERVER[REMOTE_ADDR]')");
+                  list($CurrentASN) = $DB->next_record();
 
-                if (!in_array($CurrentASN, $PastASNs)) {
-                  // Never logged in from this location before
-                  if ($Cache->get_value('new_location_'.$UserID.'_'.$CurrentASN) !== true) {
-                    $DB->query("
-                      SELECT
-                        UserName,
-                        Email
-                      FROM users_main
-                      WHERE ID = $UserID");
-                    list($Username, $Email) = $DB->next_record();
-                    Users::auth_location($UserID, $Username, $CurrentASN, DBCrypt::decrypt($Email));
-                    require('newlocation.php');
-                    die();
+                  if (!in_array($CurrentASN, $PastASNs)) {
+                    // Never logged in from this location before
+                    if ($Cache->get_value('new_location_'.$UserID.'_'.$CurrentASN) !== true) {
+                      $DB->query("
+                        SELECT
+                          UserName,
+                          Email
+                        FROM users_main
+                        WHERE ID = $UserID");
+                      list($Username, $Email) = $DB->next_record();
+                      Users::auth_location($UserID, $Username, $CurrentASN, DBCrypt::decrypt($Email));
+                      require('newlocation.php');
+                      die();
+                    }
                   }
                 }
               }
-            }
 
-            $SessionID = Users::make_secret(64);
-            $KeepLogged = ($_POST['keeplogged'] ?? false) ? 1 : 0;
-            setcookie('session', $SessionID, (time()+60*60*24*365)*$KeepLogged, '/', '', true, true);
-            setcookie('userid', $UserID, (time()+60*60*24*365)*$KeepLogged, '/', '', true, true);
+              $SessionID = Users::make_secret(64);
+              $KeepLogged = ($_POST['keeplogged'] ?? false) ? 1 : 0;
+              setcookie('session', $SessionID, (time()+60*60*24*365)*$KeepLogged, '/', '', true, true);
+              setcookie('userid', $UserID, (time()+60*60*24*365)*$KeepLogged, '/', '', true, true);
 
-            // Because we <3 our staff
-            $Permissions = Permissions::get_permissions($PermissionID);
-            $CustomPermissions = unserialize($CustomPermissions);
-            if (isset($Permissions['Permissions']['site_disable_ip_history'])
-              || isset($CustomPermissions['site_disable_ip_history'])
-            ) {
-              $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-            }
+              // Because we <3 our staff
+              $Permissions = Permissions::get_permissions($PermissionID);
+              $CustomPermissions = unserialize($CustomPermissions);
+              if (isset($Permissions['Permissions']['site_disable_ip_history'])
+                || isset($CustomPermissions['site_disable_ip_history'])
+              ) {
+                $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+              }
 
-            $DB->query("
-              INSERT INTO users_sessions
-                (UserID, SessionID, KeepLogged, Browser, OperatingSystem, IP, LastUpdate, FullUA)
-              VALUES
-                ('$UserID', '".db_string($SessionID)."', '$KeepLogged', '$Browser', '$OperatingSystem', '".db_string(apc_exists('DBKEY')?DBCrypt::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0')."', '".sqltime()."', '".db_string($_SERVER['HTTP_USER_AGENT'])."')");
+              $DB->query("
+                INSERT INTO users_sessions
+                  (UserID, SessionID, KeepLogged, Browser, OperatingSystem, IP, LastUpdate, FullUA)
+                VALUES
+                  ('$UserID', '".db_string($SessionID)."', '$KeepLogged', '$Browser', '$OperatingSystem', '".db_string(apc_exists('DBKEY')?DBCrypt::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0')."', '".sqltime()."', '".db_string($_SERVER['HTTP_USER_AGENT'])."')");
 
-            $Cache->begin_transaction("users_sessions_$UserID");
-            $Cache->insert_front($SessionID, array(
-                'SessionID' => $SessionID,
-                'Browser' => $Browser,
-                'OperatingSystem' => $OperatingSystem,
-                'IP' => (apc_exists('DBKEY')?DBCrypt::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0'),
-                'LastUpdate' => sqltime()
-                ));
-            $Cache->commit_transaction(0);
+              $Cache->begin_transaction("users_sessions_$UserID");
+              $Cache->insert_front($SessionID, array(
+                  'SessionID' => $SessionID,
+                  'Browser' => $Browser,
+                  'OperatingSystem' => $OperatingSystem,
+                  'IP' => (apc_exists('DBKEY')?DBCrypt::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0'),
+                  'LastUpdate' => sqltime()
+                  ));
+              $Cache->commit_transaction(0);
 
-            $Sql = "
-              UPDATE users_main
-              SET
-                LastLogin = '".sqltime()."',
-                LastAccess = '".sqltime()."'
-              WHERE ID = '".db_string($UserID)."'";
+              $Sql = "
+                UPDATE users_main
+                SET
+                  LastLogin = '".sqltime()."',
+                  LastAccess = '".sqltime()."'
+                WHERE ID = '".db_string($UserID)."'";
 
-            $DB->query($Sql);
+              $DB->query($Sql);
 
-            if (!empty($_COOKIE['redirect'])) {
-              $URL = $_COOKIE['redirect'];
-              setcookie('redirect', '', time() - 60 * 60 * 24, '/', '', false);
-              header("Location: $URL");
-              die();
+              if (!empty($_COOKIE['redirect'])) {
+                $URL = $_COOKIE['redirect'];
+                setcookie('redirect', '', time() - 60 * 60 * 24, '/', '', false);
+                header("Location: $URL");
+                die();
+              } else {
+                header('Location: index.php');
+                die();
+              }
             } else {
-              header('Location: index.php');
-              die();
+              log_attempt();
+              if ($Enabled == 2) {
+
+                // Save the username in a cookie for the disabled page
+                setcookie('username', db_string($_POST['username']), time() + 60 * 60, '/', '', false);
+                header('Location: login.php?action=disabled');
+              } elseif ($Enabled == 0) {
+                $Err = 'Your account has not been confirmed.<br />Please check your email.';
+              }
+              setcookie('keeplogged', '', time() + 60 * 60 * 24 * 365, '/', '', false);
             }
           } else {
             log_attempt();
-            if ($Enabled == 2) {
-
-              // Save the username in a cookie for the disabled page
-              setcookie('username', db_string($_POST['username']), time() + 60 * 60, '/', '', false);
-              header('Location: login.php?action=disabled');
-            } elseif ($Enabled == 0) {
-              $Err = 'Your account has not been confirmed.<br />Please check your email.';
-            }
+            $Err = 'Two-factor authentication failed.';
             setcookie('keeplogged', '', time() + 60 * 60 * 24 * 365, '/', '', false);
           }
         } else {
           log_attempt();
-
           $Err = 'Your username or password was incorrect.';
           setcookie('keeplogged', '', time() + 60 * 60 * 24 * 365, '/', '', false);
         }

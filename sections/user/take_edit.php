@@ -29,6 +29,7 @@ $Val->SetFields('postsperpage', 1, "number", "You forgot to select your posts pe
 $Val->SetFields('collagecovers', 1, "number", "You forgot to select your collage option.");
 $Val->SetFields('avatar', 0, "regex", "You did not enter a valid avatar URL.", array('regex' => "/^".IMAGE_REGEX."$/i"));
 $Val->SetFields('email', 1, "email", "You did not enter a valid email address.");
+$Val->SetFields('twofa', 0, "regex", "You did not enter a valid 2FA verification code.", array('regex' => '/^[0-9]{6}$/'));
 $Val->SetFields('irckey', 0, "string", "You did not enter a valid IRC key. An IRC key must be between 6 and 32 characters long.", array('minlength' => 6, 'maxlength' => 32));
 $Val->SetFields('new_pass_1', 0, "regex", "You did not enter a valid password. A valid password is 6 characters or longer.", array('regex' => '/(?=^.{6,}$).*$/'));
 $Val->SetFields('new_pass_2', 1, "compare", "Your passwords do not match.", array('comparefield' => 'new_pass_1'));
@@ -176,10 +177,37 @@ if ($CurEmail != $_POST['email']) {
     header("Location: user.php?action=edit&userid=$UserID");
     die();
   }
-
-
 }
 //End email change
+
+//2FA activation
+if (isset($_POST['twofa'])) {
+  $DB->query("
+    SELECT TwoFactor, PassHash
+    FROM users_main
+    WHERE ID = $UserID");
+  list($TwoFactor, $PassHash) = $DB->next_record();
+  if (empty($TwoFactor)) {
+    if (!Users::check_password($_POST['cur_pass'], $PassHash)) {
+      error('You did not enter the correct password.');
+      header("Location: user.php?action=edit&userid=$UserID");
+      die();
+    }
+    require_once SERVER_ROOT.'/classes/twofa.class.php';
+    $TwoFA = new TwoFactorAuth(SITE_NAME);
+    if ($TwoFA->verifyCode($_POST['twofasecret'], $_POST['twofa'])) {
+      $DB->query("
+        UPDATE users_main
+        SET TwoFactor='".db_string($_POST['twofasecret'])."'
+        WHERE ID = $UserID");
+    } else {
+      error('Invalid 2FA verification code.');
+      header("Location: user.php?action=edit&userid=$UserID");
+      die();
+    }
+  }
+}
+//End 2FA
 
 if (!$Err && ($_POST['cur_pass'] || $_POST['new_pass_1'] || $_POST['new_pass_2'])) {
   $DB->query("
