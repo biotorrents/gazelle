@@ -21,7 +21,7 @@ if ($Cache->get_value('doujin_json_'.$gid)) {
 } else {
 
   $data = json_encode(["method" => "gdata", "gidlist" => [[$gid, $token]], "namespace" => 1]);
-  $curl = curl_init('http://g.e-hentai.org/api.php');
+  $curl = curl_init('http://e-hentai.org/api.php');
   curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
   curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
   curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
