@@ -615,6 +615,7 @@ class TorrentSearch {
     }
     $TorrentCount = count($AllTorrents);
     $this->SphQLTor = new SphinxqlQuery();
+    $this->SphQLTor->where_match('_all', 'fake', false);
     $this->SphQLTor->select('id')->from('torrents, delta');
     foreach ($this->UsedTorrentFields as $Field => $Term) {
       $this->SphQLTor->where_match($Term, $Field, false);
