@@ -174,12 +174,12 @@ if (check_paranoia_here(array('uploaded', 'downloaded', 'uploads+', 'requestsfil
 
 // Community section
 if (check_paranoia_here('snatched+')) {
-$DB->query("
-  SELECT COUNT(x.uid), COUNT(DISTINCT x.fid)
-  FROM xbt_snatched AS x
-    INNER JOIN torrents AS t ON t.ID = x.fid
-  WHERE x.uid = '$UserID'");
-list($Snatched, $UniqueSnatched) = $DB->next_record();
+  $DB->query("
+    SELECT COUNT(x.uid), COUNT(DISTINCT x.fid)
+    FROM xbt_snatched AS x
+      INNER JOIN torrents AS t ON t.ID = x.fid
+    WHERE x.uid = '$UserID'");
+  list($Snatched, $UniqueSnatched) = $DB->next_record();
 }
 
 if (check_paranoia_here('torrentcomments+')) {
