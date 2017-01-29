@@ -17,7 +17,14 @@
 .flex_input_container > input[type=text]{
   flex-grow: 1;
   box-sizing: border-box;
-  width: 100%;
+  width: 50%;
+}
+
+.body, .profileinfo {
+  word-wrap: break-word;
+  word-break: break-all;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 input, textarea {
