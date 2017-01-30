@@ -356,7 +356,7 @@ $SQL = "
     i.StyleID = '".db_string($_POST['stylesheet'])."',
     i.StyleURL = '".db_string($_POST['styleurl'])."',
     i.Avatar = '".db_string($_POST['avatar'])."',
-    i.SiteOptions = '".db_string(serialize($Options))."',
+    i.SiteOptions = '".db_string(json_encode($Options))."',
     i.NotifyOnQuote = '".db_string($Options['NotifyOnQuote'])."',
     i.Info = '".db_string($_POST['info'])."',
     i.InfoTitle = '".db_string($_POST['profile_title'])."',
@@ -364,7 +364,7 @@ $SQL = "
     i.UnseededAlerts = '$UnseededAlerts',
     m.Email = '".DBCrypt::encrypt($_POST['email'])."',
     m.IRCKey = '".db_string($_POST['irckey'])."',
-    m.Paranoia = '".db_string(serialize($Paranoia))."'";
+    m.Paranoia = '".db_string(json_encode($Paranoia))."'";
 
 if ($ResetPassword) {
   $ChangerIP = db_string(DBCrypt::encrypt($LoggedUser['IP']));

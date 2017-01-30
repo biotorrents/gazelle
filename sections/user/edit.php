@@ -35,7 +35,7 @@ if ($UserID != $LoggedUser['ID'] && !check_perms('users_edit_profiles', $Class))
   error(403);
 }
 
-$Paranoia = unserialize($Paranoia);
+$Paranoia = json_decode($Paranoia, true);
 if (!is_array($Paranoia)) {
   $Paranoia = array();
 }
@@ -57,7 +57,7 @@ function checked($Checked) {
 }
 
 if ($SiteOptions) {
-  $SiteOptions = unserialize($SiteOptions);
+  $SiteOptions = json_decode($SiteOptions, true);
 } else {
   $SiteOptions = array();
 }
@@ -65,7 +65,6 @@ if ($SiteOptions) {
 View::show_header("$Username &gt; Settings", 'user,password_validate,validate,cssgallery,preview_paranoia,bbcode,user_settings,donor_titles');
 
 
-var_dump($SiteOptions);
 
 $DonorRank = Donations::get_rank($UserID);
 $DonorIsVisible = Donations::is_visible($UserID);
