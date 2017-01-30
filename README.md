@@ -16,6 +16,10 @@ Whenever a login occurs from a location (determined by ASN) that hasn't logged i
 
 This prevents most attacks that would be otherwise successful, as it requires an attacker to access the site from the same locations the actual user uses to login.
 
+#### Two-Factor Authentication
+
+Despite our other (less intrusive) methods of protecting user accounts being more than sufficient for virtually all feasible attacks, we also ship optional 2FA should users feel the need to enable it.
+
 #### Unique Infohashes
 
 Upon upload, torrent files are modified to contain a "source" field in the info dict containing the concatination of the site name and some generated junk data (unique per-torrent). This prevents infohash collisions with torrents cross-seeded from other sites in the same client, and also helps protect against some not particularly likely peer-leaking attacks.
@@ -39,7 +43,6 @@ Like most gazelle forks, we've added a [bonus point system](sections/schedule/ho
 #### Modern password hashing
 
 We use new PHP password hashing features that automatically rehash your password when a better hashing algorithm is made available and employ prehashing to allow you to use a secure password of any length. Original gazelle would effectively truncate your password after around 72 characters (if the tracker even allowed you to use a password that long). This codebase does not have the same problem, and allows passwords of virtually unlimited length (over 30,000 characters by default) that remain useful after a few tens of characters.
-
 
 ## Minor Changes
 
