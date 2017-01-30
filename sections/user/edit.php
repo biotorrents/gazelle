@@ -25,7 +25,7 @@ $DB->query("
     JOIN users_info AS i ON i.UserID = m.ID
     LEFT JOIN permissions AS p ON p.ID = m.PermissionID
   WHERE m.ID = '".db_string($UserID)."'");
-list($Username, $TwoFactor, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $DownloadAlt, $Class, $InfoTitle) = $DB->next_record(MYSQLI_NUM, array(3, 8));
+list($Username, $TwoFactor, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $DownloadAlt, $Class, $InfoTitle) = $DB->next_record(MYSQLI_NUM, array(4, 9));
 
 $TwoFA = new TwoFactorAuth(SITE_NAME);
 
@@ -65,6 +65,7 @@ if ($SiteOptions) {
 View::show_header("$Username &gt; Settings", 'user,password_validate,validate,cssgallery,preview_paranoia,bbcode,user_settings,donor_titles');
 
 
+var_dump($SiteOptions);
 
 $DonorRank = Donations::get_rank($UserID);
 $DonorIsVisible = Donations::is_visible($UserID);
