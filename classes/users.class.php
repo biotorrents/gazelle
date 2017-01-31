@@ -95,7 +95,7 @@ class Users {
       } else {
         $UserInfo = G::$DB->next_record(MYSQLI_ASSOC, array('Paranoia', 'Title'));
         $UserInfo['CatchupTime'] = strtotime($UserInfo['CatchupTime']);
-        $UserInfo['Paranoia'] = unserialize($UserInfo['Paranoia']);
+        $UserInfo['Paranoia'] = json_decode($UserInfo['Paranoia'], true);
         if ($UserInfo['Paranoia'] === false) {
           $UserInfo['Paranoia'] = array();
         }
@@ -182,7 +182,7 @@ class Users {
       $HeavyInfo = G::$DB->next_record(MYSQLI_ASSOC, array('CustomPermissions', 'SiteOptions'));
 
       if (!empty($HeavyInfo['CustomPermissions'])) {
-        $HeavyInfo['CustomPermissions'] = unserialize($HeavyInfo['CustomPermissions']);
+        $HeavyInfo['CustomPermissions'] = json_decode($HeavyInfo['CustomPermissions'], true);
       } else {
         $HeavyInfo['CustomPermissions'] = array();
       }
@@ -232,7 +232,7 @@ class Users {
         unset($HeavyInfo['CustomForums']['']);
       }
 
-      $HeavyInfo['SiteOptions'] = unserialize($HeavyInfo['SiteOptions']);
+      $HeavyInfo['SiteOptions'] = json_decode($HeavyInfo['SiteOptions'], true);
       if (!empty($HeavyInfo['SiteOptions'])) {
         $HeavyInfo = array_merge($HeavyInfo, $HeavyInfo['SiteOptions']);
       }
@@ -268,7 +268,7 @@ class Users {
       FROM users_info
       WHERE UserID = $UserID");
     list($SiteOptions) = G::$DB->next_record(MYSQLI_NUM, false);
-    $SiteOptions = unserialize($SiteOptions);
+    $SiteOptions = json_decode($SiteOptions, true);
 
     // Get HeavyInfo
     $HeavyInfo = Users::user_heavy_info($UserID);
@@ -280,7 +280,7 @@ class Users {
     // Update DB
     G::$DB->query("
       UPDATE users_info
-      SET SiteOptions = '".db_string(serialize($SiteOptions))."'
+      SET SiteOptions = '".db_string(json_encode($SiteOptions, true))."'
       WHERE UserID = $UserID");
     G::$DB->set_query_id($QueryID);
 

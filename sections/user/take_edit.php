@@ -181,7 +181,7 @@ if ($CurEmail != $_POST['email']) {
 //End email change
 
 //2FA activation
-if (isset($_POST['twofa'])) {
+if (!empty($_POST['twofa'])) {
   $DB->query("
     SELECT TwoFactor, PassHash
     FROM users_main
