@@ -305,8 +305,8 @@ $Debug->set_flag('start function definitions');
 function logout() {
   global $SessionID;
   setcookie('session', '', time() - 60 * 60 * 24 * 365, '/', '', false);
+  setcookie('userid', '', time() - 60 * 60 * 24 * 365, '/', '', false);
   setcookie('keeplogged', '', time() - 60 * 60 * 24 * 365, '/', '', false);
-  setcookie('session', '', time() - 60 * 60 * 24 * 365, '/', '', false);
   if ($SessionID) {
 
     G::$DB->query("
