@@ -253,11 +253,9 @@ if (count($_GET)) {
     if (!empty($_GET['email'])) {
       if (isset($_GET['email_history'])) {
         $Distinct = 'DISTINCT ';
-        $Join['he'] = ' JOIN users_history_emails AS he ON he.UserID = um1.ID ';
-        $Where[] = ' he.Email '.$Match.wrap($_GET['email']);
-      } else {
-        $Where[] = 'um1.Email'.$Match.wrap($_GET['email']);
       }
+      $Join['the'] = ' JOIN users_emails_decrypted AS he ON he.ID = um1.ID ';
+      $Where[] = ' he.Email '.$Match.wrap($_GET['email']);
     }
 
     if (!empty($_GET['email_cnt']) && is_number($_GET['email_cnt'])) {
@@ -287,11 +285,9 @@ if (count($_GET)) {
     if (!empty($_GET['ip'])) {
       if (isset($_GET['ip_history'])) {
         $Distinct = 'DISTINCT ';
-        $Join['hi'] = ' JOIN users_history_ips AS hi ON hi.UserID = um1.ID ';
-        $Where[] = ' hi.IP '.$Match.wrap($_GET['ip'], '', true);
-      } else {
-        $Where[] = 'um1.IP'.$Match.wrap($_GET['ip'], '', true);
       }
+      $Join['tip'] = ' JOIN users_ips_decrypted AS tip ON tip.ID = um1.ID ';
+      $Where[] = ' tip.IP '.$Match.wrap($_GET['ip'], '', true);
     }
 
 
@@ -421,11 +417,11 @@ if (count($_GET)) {
     if ($_GET['disabled_ip']) {
       $Distinct = 'DISTINCT ';
       if ($_GET['ip_history']) {
-        if (!isset($Join['hi'])) {
-          $Join['hi'] = ' JOIN users_history_ips AS hi ON hi.UserID = um1.ID ';
+        if (!isset($Join['tip'])) {
+          $Join['tip'] = ' JOIN users_ips_decrypted AS tip ON tip.ID = um1.ID ';
         }
-        $Join['hi2'] = ' JOIN users_history_ips AS hi2 ON hi2.IP = hi.IP ';
-        $Join['um2'] = ' JOIN users_main AS um2 ON um2.ID = hi2.UserID AND um2.Enabled = \'2\' ';
+        $Join['tip2'] = ' JOIN users_ips_decrypted2 AS tip2 ON tip2.IP = tip.IP ';
+        $Join['um2'] = ' JOIN users_main AS um2 ON um2.ID = tip2.ID AND um2.Enabled = \'2\' ';
       } else {
         $Join['um2'] = ' JOIN users_main AS um2 ON um2.IP = um1.IP AND um2.Enabled = \'2\' ';
       }
@@ -801,9 +797,42 @@ View::show_header('User search');
 </div>
 <?
 if ($RunQuery) {
+  if (!empty($_GET['ip'])) {
+    if (isset($_GET['ip_history'])) {
+      $DB->query("SELECT UserID, IP FROM users_history_ips");
+    } else {
+      $DB->query("SELECT ID, IP FROM users_main");
+    }
+    while(list($ID, $EncIP) = $DB->next_record()) {
+      $IPs[] = $ID.", '".DBCrypt::decrypt($EncIP)."'";
+    }
+    $DB->query("CREATE TEMPORARY TABLE users_ips_decrypted (ID INT(10) UNSIGNED NOT NULL, IP VARCHAR(45) NOT NULL, PRIMARY KEY (ID,IP)) ENGINE=MEMORY");
+    $DB->query("INSERT IGNORE INTO users_ips_decrypted (ID, IP) VALUES(".implode("),(", $IPs).")");
+    if ($_GET['disabled_ip'] && $_GET['ip_history']) {
+      $DB->query("CREATE TEMPORARY TABLE users_ips_decrypted2 SELECT * FROM users_ips_decrypted");
+    }
+  }
+  if (!empty($_GET['email'])) {
+    if (isset($_GET['email_history'])) {
+      $DB->query("SELECT UserID, Email FROM users_history_emails");
+    } else {
+      $DB->query("SELECT ID, Email FROM users_main");
+    }
+    while(list($ID, $EncEmail) = $DB->next_record()) {
+      $Emails[] = $ID.", '".DBCrypt::decrypt($EncEmail)."'";
+    }
+    $DB->query("CREATE TEMPORARY TABLE users_emails_decrypted (ID INT(10) UNSIGNED NOT NULL, Email VARCHAR(255) NOT NULL, PRIMARY KEY (ID,Email)) ENGINE=MEMORY");
+    $DB->query("INSERT IGNORE INTO users_emails_decrypted (ID, Email) VALUES(".implode("),(", $Emails).")");
+  }
   $Results = $DB->query($SQL);
   $DB->query('SELECT FOUND_ROWS()');
   list($NumResults) = $DB->next_record();
+  if (!empty($_GET['ip'])) {
+    $DB->query("DROP TABLE users_ips_decrypted");
+  }
+  if (!empty($_GET['email'])) {
+    $DB->query("DROP TABLE users_emails_decrypted");
+  }
   $DB->set_query_id($Results);
 } else {
   $DB->query('SET @nothing = 0');
