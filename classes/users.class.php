@@ -95,8 +95,10 @@ class Users {
       } else {
         $UserInfo = G::$DB->next_record(MYSQLI_ASSOC, array('Paranoia', 'Title'));
         $UserInfo['CatchupTime'] = strtotime($UserInfo['CatchupTime']);
-        $UserInfo['Paranoia'] = json_decode($UserInfo['Paranoia'], true);
-        if ($UserInfo['Paranoia'] === false) {
+        if (!is_array($UserInfo['Paranoia'])) {
+          $UserInfo['Paranoia'] = json_decode($UserInfo['Paranoia'], true);
+        }
+        if (!$UserInfo['Paranoia']) {
           $UserInfo['Paranoia'] = array();
         }
         $UserInfo['Class'] = $Classes[$UserInfo['PermissionID']]['Level'];

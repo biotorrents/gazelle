@@ -164,7 +164,7 @@ if ($Preview == 1) {
     $Paranoia = $CustomParanoia;
   }
 } else {
-  $Paranoia = unserialize($Paranoia);
+  $Paranoia = json_decode($Paranoia, true);
   if (!is_array($Paranoia)) {
     $Paranoia = array();
   }
