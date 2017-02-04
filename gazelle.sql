@@ -849,6 +849,7 @@ CREATE TABLE `sphinx_delta` (
   `AudioFormat` varchar(255) DEFAULT NULL,
   `Subbing` varchar(255) DEFAULT NULL,
   `Language` varchar(255) DEFAULT NULL,
+  `Censored` tinyint(1) NOT NULL DEFAULT '1'
   `FileList` mediumtext,
   `Description` text,
   `VoteScore` float NOT NULL DEFAULT '0',
