@@ -174,6 +174,7 @@ View::show_header('Staff Tools');
 <?
   // begin Site Information category
   $ToolsHTML = "";
+  create_row("Database specifics", "tools.php?action=database_specifics", check_perms("site_debug"));
   create_row("Economic stats", "tools.php?action=economic_stats", check_perms("site_view_flow"));
 
   create_row("Invite pool", "tools.php?action=invite_pool", check_perms("users_view_invites"));
