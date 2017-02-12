@@ -27,7 +27,7 @@ $DB->query("
   WHERE m.ID = '".db_string($UserID)."'");
 list($Username, $TwoFactor, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $DownloadAlt, $Class, $InfoTitle) = $DB->next_record(MYSQLI_NUM, array(4, 9));
 
-$TwoFA = new TwoFactorAuth(SITE_NAME);
+$TwoFA = new TwoFactorAuth();
 
 $Email = apc_exists('DBKEY') ? DBCrypt::decrypt($Email) : '[Encrypted]';
 
