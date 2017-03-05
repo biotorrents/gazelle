@@ -133,6 +133,11 @@ function display_str($Str) {
  * @param string $Raw An IRC protocol snippet to send.
  */
 function send_irc($Raw) {
+  // don't bother talking to IRC in DEBUG_MODE
+  if (DEBUG_MODE) {
+    return;
+  }
+
   $IRCSocket = fsockopen(SOCKET_LISTEN_ADDRESS, SOCKET_LISTEN_PORT);
   $Raw = str_replace(array("\n", "\r"), '', $Raw);
   fwrite($IRCSocket, $Raw);

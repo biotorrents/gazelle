@@ -1,10 +1,16 @@
 <?
-if (!check_perms('site_debug')) {
-    error(403);
+// do not enforce in debug mode so we can set the encryption key w/o an account
+if (!DEBUG_MODE) {
+  if (!check_perms('site_debug')) {
+      error(403);
+  }
 }
 
 if (isset($_POST['dbkey'])) {
-  authorize();
+  // do not enforce in debug mode so we can set the encryption key w/o an account
+  if (!DEBUG_MODE) {
+    authorize();
+  }
   apc_store('DBKEY', hash('sha512', $_POST['dbkey']));
 }
 
