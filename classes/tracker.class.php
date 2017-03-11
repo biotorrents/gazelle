@@ -23,11 +23,6 @@ class Tracker {
     }
 
     $MaxAttempts = 3;
-    // don't wait around if we're debugging
-    if (DEBUG_MODE) {
-      $MaxAttempts = 1;
-    }
-
     $Err = false;
     if (self::send_request($Get, $MaxAttempts, $Err) === false) {
       send_irc("PRIVMSG #tracker :$MaxAttempts $Err $Get");
@@ -135,11 +130,7 @@ class Tracker {
       if ($Sleep) {
         sleep($Sleep);
       }
-
-      // spend some time retrying if we're not in DEBUG_MODE
-      if (!DEBUG_MODE) {
-        $Sleep = 6;
-      }
+      $Sleep = 6;
 
       // Send request
       $File = fsockopen(TRACKER_HOST, TRACKER_PORT, $ErrorNum, $ErrorString);

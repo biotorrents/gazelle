@@ -133,8 +133,8 @@ function display_str($Str) {
  * @param string $Raw An IRC protocol snippet to send.
  */
 function send_irc($Raw) {
-  // don't bother talking to IRC in DEBUG_MODE
-  if (DEBUG_MODE) {
+  // check if IRC is enabled
+  if (!FEATURE_IRC) {
     return;
   }
 

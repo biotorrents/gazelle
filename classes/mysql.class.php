@@ -222,32 +222,17 @@ class DB_MYSQL {
     }
     $QueryStartTime = microtime(true);
     $this->connect();
-
-    if (DEBUG_MODE) {
+    // In the event of a MySQL deadlock, we sleep allowing MySQL time to unlock, then attempt again for a maximum of 5 tries
+    for ($i = 1; $i < 6; $i++) {
       $this->QueryID = mysqli_query($this->LinkID, $Query);
-
-      // in DEBUG_MODE, return the full trace on a SQL error (super useful for debugging).
-      // do not attempt to retry to query
-      if (!$this->QueryID) {
-        echo '<pre>' . mysqli_error($this->LinkID) . '<br><br>';
-        debug_print_backtrace();
-        echo '</pre>';
-        die();
+      if (!in_array(mysqli_errno($this->LinkID), array(1213, 1205))) {
+        break;
       }
-    } else {
-      // In the event of a MySQL deadlock, we sleep allowing MySQL time to unlock, then attempt again for a maximum of 5 tries
-      for ($i = 1; $i < 6; $i++) {
-        $this->QueryID = mysqli_query($this->LinkID, $Query);
-        if (!in_array(mysqli_errno($this->LinkID), array(1213, 1205))) {
-          break;
-        }
-        $Debug->analysis('Non-Fatal Deadlock:', $Query, 3600 * 24);
-        trigger_error("Database deadlock, attempt $i");
+      $Debug->analysis('Non-Fatal Deadlock:', $Query, 3600 * 24);
+      trigger_error("Database deadlock, attempt $i");
 
-        sleep($i * rand(2, 5)); // Wait longer as attempts increase
-      }
+      sleep($i * rand(2, 5)); // Wait longer as attempts increase
     }
-
     $QueryEndTime = microtime(true);
     $this->Queries[] = array($Query, ($QueryEndTime - $QueryStartTime) * 1000, null);
     $this->Time += ($QueryEndTime - $QueryStartTime) * 1000;

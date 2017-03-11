@@ -275,7 +275,7 @@ else {
                   list($CurrentASN) = $DB->next_record();
 
                   // if we are in DEBUG_MODE, no need to enforce location restriction
-                  if (!in_array($CurrentASN, $PastASNs) && !DEBUG_MODE) {
+                  if (!in_array($CurrentASN, $PastASNs) && FEATURE_ENFORCE_LOCATIONS) {
                     // Never logged in from this location before
                     if ($Cache->get_value('new_location_'.$UserID.'_'.$CurrentASN) !== true) {
                       $DB->query("
@@ -295,14 +295,8 @@ else {
 
               $SessionID = Users::make_secret(64);
               $KeepLogged = ($_POST['keeplogged'] ?? false) ? 1 : 0;
-              if (DEBUG_MODE) {
-                // allow HTTP (non secure) cookies if running in DEBUG_MODE
-                setcookie('session', $SessionID, (time()+60*60*24*365)*$KeepLogged, '/', '', false, true);
-                setcookie('userid', $UserID, (time()+60*60*24*365)*$KeepLogged, '/', '', false, true);
-              } else {
-                setcookie('session', $SessionID, (time()+60*60*24*365)*$KeepLogged, '/', '', true, true);
-                setcookie('userid', $UserID, (time()+60*60*24*365)*$KeepLogged, '/', '', true, true);
-              }
+              setcookie('session', $SessionID, (time()+60*60*24*365)*$KeepLogged, '/', '', true, true);
+              setcookie('userid', $UserID, (time()+60*60*24*365)*$KeepLogged, '/', '', true, true);
 
               // Because we <3 our staff
               $Permissions = Permissions::get_permissions($PermissionID);

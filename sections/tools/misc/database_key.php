@@ -1,14 +1,14 @@
 <?
-// do not enforce in debug mode so we can set the encryption key w/o an account
-if (!DEBUG_MODE) {
+// if set, do not enforce login so we can set the encryption key w/o an account
+if (!FEATURE_SET_ENC_KEY_PUBLIC) {
   if (!check_perms('site_debug')) {
       error(403);
   }
 }
 
 if (isset($_POST['dbkey'])) {
-  // do not enforce in debug mode so we can set the encryption key w/o an account
-  if (!DEBUG_MODE) {
+  // if set, do not enforce login so we can set the encryption key w/o an account
+  if (!FEATURE_SET_ENC_KEY_PUBLIC) {
     authorize();
   }
   apc_store('DBKEY', hash('sha512', $_POST['dbkey']));
