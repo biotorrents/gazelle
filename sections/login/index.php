@@ -274,7 +274,7 @@ else {
                   $DB->query("SELECT ASN FROM geoip_asn WHERE StartIP<=INET6_ATON('$_SERVER[REMOTE_ADDR]') AND EndIP>=INET6_ATON('$_SERVER[REMOTE_ADDR]')");
                   list($CurrentASN) = $DB->next_record();
 
-                  // if we are in DEBUG_MODE, no need to enforce location restriction
+                  // if FEATURE_ENFORCE_LOCATIONS is enabled, require users to confirm new logins
                   if (!in_array($CurrentASN, $PastASNs) && FEATURE_ENFORCE_LOCATIONS) {
                     // Never logged in from this location before
                     if ($Cache->get_value('new_location_'.$UserID.'_'.$CurrentASN) !== true) {
