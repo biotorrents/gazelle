@@ -17,7 +17,10 @@ class Misc {
     $Headers .= 'X-Mailer: Project Gazelle'."\r\n";
     $Headers .= 'Message-Id: <'.Users::make_secret().'@'.SITE_DOMAIN.">\r\n";
     $Headers .= 'X-Priority: 3'."\r\n";
-    mail($To, $Subject, $Body, $Headers, "-f $From@".SITE_DOMAIN);
+    // check if email is enabled
+    if (FEATURE_SEND_EMAIL) {
+      mail($To, $Subject, $Body, $Headers, "-f $From@".SITE_DOMAIN);
+    }
   }
 
 
