@@ -10,7 +10,10 @@ if (isset($argv[1])) {
   $_REQUEST['action'] = $argv[1];
 } else {
   if (empty($_REQUEST['action']) || ($_REQUEST['action'] != 'public_sandbox' && $_REQUEST['action'] != 'ocelot')) {
-    enforce_login();
+    // if set, do not enforce login so we can set the encryption key w/o an account
+    if (!FEATURE_SET_ENC_KEY_PUBLIC) {
+      enforce_login();
+    }
   }
 }
 
