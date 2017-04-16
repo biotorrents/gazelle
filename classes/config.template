@@ -60,7 +60,7 @@ define('SPHINX_MAX_MATCHES', 1000); // Must be <= the server's max_matches varia
 define('SPHINX_INDEX',       'torrents');
 
 // Ocelot details
-define('TRACKER_HOST',      '8.8.8.8');
+define('TRACKER_HOST',      '0.0.0.0');
 define('TRACKER_PORT',      34000);
 define('TRACKER_SECRET',    'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); // Must be 32 characters and match site_password in Ocelot's config.cpp
 define('TRACKER_REPORTKEY', 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'); // Must be 32 characters and match report_password in Ocelot's config.cpp
@@ -132,7 +132,7 @@ define('BOT_INTERVIEW_CHAN',    '#interview'); // Channel for the interviews
 define('BOT_INTERVIEW_NUM',     5);
 define('BOT_INTERVIEW_STAFF',   '#interview-staff'); // Channel for the interviewers
 define('SOCKET_LISTEN_PORT',    51010);
-define('SOCKET_LISTEN_ADDRESS', '8.8.8.8');
+define('SOCKET_LISTEN_ADDRESS', '0.0.0.0');
 define('ADMIN_CHAN',            '#admin');
 define('LAB_CHAN',              '#lab');
 define('STATUS_CHAN',           '#status');
