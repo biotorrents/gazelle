@@ -5,6 +5,9 @@ if (isset($_GET['method'])) {
     case 'screenshots':
       include(SERVER_ROOT.'/sections/better/screenshots.php');
       break;
+    case 'covers':
+      include(SERVER_ROOT.'/sections/better/covers.php');
+      break;
     case 'encode':
       include(SERVER_ROOT.'/sections/better/encode.php');
       break;

@@ -515,12 +515,12 @@ foreach ($TorrentList as $Torrent) {
   // Freleechizer
   if ($FreeLeechType == '3') {
     $DB->query("
-      SELECT GREATEST(NOW(), ExpiryTime)
+      SELECT UNIX_TIMESTAMP(ExpiryTime)
       FROM shop_freeleeches
       WHERE TorrentID = $TorrentID");
     if ($DB->has_results()) {
       $ExpiryTime = $DB->next_record(MYSQLI_NUM, false)[0];
-      $ExtraInfo .= " <strong>(" . str_replace(['week','day','hour','min','Just now','s',' '],['w','d','h','m','0m'],time_diff($ExpiryTime, 1, false)) . ")</strong>";
+      $ExtraInfo .= " <strong>(" . str_replace(['week','day','hour','min','Just now','s',' '],['w','d','h','m','0m'],time_diff(max($ExpiryTime, time()), 1, false)) . ")</strong>";
     }
   }
   if ($PersonalFL) { $ExtraInfo.=$AddExtra. Format::torrent_label('Personal Freeleech!'); $AddExtra=' / '; }
@@ -698,7 +698,7 @@ if (count($Collages) > 0) {
 ?>
     <table class="box collage_table" id="collages">
       <tr class="colhead">
-        <td width="85%"><a href="#">&uarr;</a>&nbsp;This album is in <?=number_format(count($Collages))?> collage<?=((count($Collages) > 1) ? 's' : '')?><?=$SeeAll?></td>
+        <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=number_format(count($Collages))?> collection<?=((count($Collages) > 1) ? 's' : '')?><?=$SeeAll?></td>
         <td># torrents</td>
       </tr>
 <?  foreach ($Indices as $i) {
@@ -749,7 +749,7 @@ if (count($PersonalCollages) > 0) {
 ?>
     <table class="box collage_table" id="personal_collages">
       <tr class="colhead">
-        <td width="85%"><a href="#">&uarr;</a>&nbsp;This album is in <?=number_format(count($PersonalCollages))?> personal collage<?=((count($PersonalCollages) > 1) ? 's' : '')?><?=$SeeAll?></td>
+        <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=number_format(count($PersonalCollages))?> personal collection<?=((count($PersonalCollages) > 1) ? 's' : '')?><?=$SeeAll?></td>
         <td># torrents</td>
       </tr>
 <?  foreach ($Indices as $i) {

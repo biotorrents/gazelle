@@ -1,6 +1,6 @@
 <?php
 if (version_compare(PHP_VERSION, '7.0.0', '<')) {
-  die("Gazelle requires PHP 7.0 or later to function properly");
+  die("Gazelle requires PHP 7.0.0 or later to function properly");
 }
 //date_default_timezone_set('EST');
 
@@ -79,8 +79,8 @@ define('DONOR_INVITES',     2);
 define('FEATURE_EMAIL_REENABLE',     true);
 define('FEATURE_SEND_EMAIL',         true);  //Attempt to send email from the site
 define('FEATURE_IRC',                true);  //Attempt to send messages to IRC
-define('FEATURE_ENFORCE_LOCATIONS',  true);  //Require users to verify login from unknown devices
-define('FEATURE_SET_ENC_KEY_PUBLIC', false); //Allow the site encryption key to be set without an account
+define('FEATURE_ENFORCE_LOCATIONS',  true);  //Require users to verify login from unknown locations
+define('FEATURE_SET_ENC_KEY_PUBLIC', false); //Allow the site encryption key to be set without an account (Should only be used for initial setup)
 
 // User class IDs needed for automatic promotions. Found in the 'permissions' table
 // Name of class  Class ID (NOT level)

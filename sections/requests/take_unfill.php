@@ -18,7 +18,7 @@ $DB->query("
     u.Uploaded,
     u.BonusPoints,
     r.GroupID,
-    t.UserID,
+    t.UserID
   FROM requests AS r
     LEFT JOIN torrents AS t ON t.ID = TorrentID
     LEFT JOIN users_main AS u ON u.ID = FillerID

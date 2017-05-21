@@ -301,6 +301,7 @@ foreach ($TorrentList as $Group) {
     }
   } else {
     list($TorrentID, $Torrent) = each($Torrents);
+    if (!$TorrentID) { continue; }
 
     $TorrentTags = new Tags($TagList, false);
 

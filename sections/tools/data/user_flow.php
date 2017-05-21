@@ -5,44 +5,31 @@ if (!check_perms('site_view_flow')) {
 
 //Timeline generation
 if (!isset($_GET['page'])) {
-  if (!list($Labels, $InFlow, $OutFlow, $Max) = $Cache->get_value('users_timeline')) {
+  if (!list($Labels, $InFlow, $OutFlow) = $Cache->get_value('users_timeline')) {
     $DB->query("
-      SELECT DATE_FORMAT(JoinDate, '%b \'%y') AS Month, COUNT(UserID)
+      SELECT DATE_FORMAT(JoinDate, \"%b %y\") AS Month, COUNT(UserID)
       FROM users_info
       GROUP BY Month
       ORDER BY JoinDate DESC
-      LIMIT 1, 12");
+      LIMIT 1, 11");
     $TimelineIn = array_reverse($DB->to_array());
     $DB->query("
-      SELECT DATE_FORMAT(BanDate, '%b \'%y') AS Month, COUNT(UserID)
+      SELECT DATE_FORMAT(BanDate, \"%b %y\") AS Month, COUNT(UserID)
       FROM users_info
       WHERE BanDate > 0
       GROUP BY Month
       ORDER BY BanDate DESC
-      LIMIT 1, 12");
+      LIMIT 1, 11");
     $TimelineOut = array_reverse($DB->to_array());
+
+    $Labels = array();
     foreach ($TimelineIn as $Month) {
-      list($Label, $Amount) = $Month;
-      if ($Amount > $Max) {
-        $Max = $Amount;
-      }
+      list($Labels[], $InFlow[]) = $Month;
     }
     foreach ($TimelineOut as $Month) {
-      list($Label, $Amount) = $Month;
-      if ($Amount > $Max) {
-        $Max = $Amount;
-      }
+      list(, $OutFlow[]) = $Month;
     }
-    foreach ($TimelineIn as $Month) {
-      list($Label, $Amount) = $Month;
-      $Labels[] = $Label;
-      $InFlow[] = number_format(($Amount / $Max) * 100, 4);
-    }
-    foreach ($TimelineOut as $Month) {
-      list($Label, $Amount) = $Month;
-      $OutFlow[] = number_format(($Amount / $Max) * 100, 4);
-    }
-    $Cache->cache_value('users_timeline', array($Labels, $InFlow, $OutFlow, $Max), mktime(0, 0, 0, date('n') + 1, 2));
+    $Cache->cache_value('users_timeline', array($Labels, $InFlow, $OutFlow), mktime(0, 0, 0, date('n') + 1, 2));
   }
 }
 //End timeline generation
@@ -112,13 +99,32 @@ $RS = $DB->query("
 $DB->query('SELECT FOUND_ROWS()');
 list($Results) = $DB->next_record();
 
-View::show_header('User Flow');
+View::show_header('User Flow', 'chart');
 $DB->set_query_id($RS);
 ?>
 <div class="thin">
 <?  if (!isset($_GET['page'])) { ?>
-  <div class="box pad">
-    <img src="https://chart.googleapis.com/chart?cht=lc&amp;chs=820x160&amp;chco=000D99,99000D&amp;chg=0,-1,1,1&amp;chxt=y,x&amp;chxs=0,h&amp;chxl=1:|<?=implode('|', $Labels)?>&amp;chxr=0,0,<?=$Max?>&amp;chd=t:<?=implode(',', $InFlow)?>|<?=implode(',', $OutFlow)?>&amp;chls=2,4,0&amp;chdl=New+Registrations|Disabled+Users&amp;chf=bg,s,FFFFFF00" alt="User Flow vs. Time" />
+  <div class="box pad center">
+    <canvas class="chart" id="chart_user_timeline"></canvas>
+    <script>
+      new Chart($('#chart_user_timeline').raw().getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: <? print '["'.implode('","',$Labels).'"]'; ?>,
+          datasets: [ {
+            label: "New Registrations",
+            backgroundColor: "rgba(0,0,255,0.2)",
+            borderColor: "rgba(0,0,255,0.8)",
+            data: <? print "[".implode(",",$InFlow)."]"; ?>
+          }, {
+            label: "Disabled Users",
+            backgroundColor: "rgba(255,0,0,0.2)",
+            borderColor: "rgba(255,0,0,0.8)",
+            data: <? print "[".implode(",",$OutFlow)."]"; ?>
+          }]
+        }
+      })
+    </script>
   </div>
 <?  } ?>
   <div class="linkbox">

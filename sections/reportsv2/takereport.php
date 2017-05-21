@@ -132,6 +132,19 @@ $DB->query("
 
 $ReportID = $DB->inserted_id();
 
+$DB->query("
+  SELECT UserID
+  FROM torrents
+  WHERE ID = $TorrentID");
+list($UploaderID) = $DB->next_record();
+$DB->query("
+  SELECT Name, NameRJ, NameJP
+  FROM torrents_group
+  WHERE ID = $GroupID");
+list($GroupNameEng, $GroupNameRJ, $GroupNameJP) = $DB->next_record();
+$GroupName = $GroupNameEng ? $GroupNameEng : ($GroupNameRJ ? $GroupNameRJ : $GroupNameJP);
+
+Misc::send_pm($UploaderID, 0, "Torrent Reported: $GroupName", "Your torrent, \"[url=".site_url()."torrents.php?torrentid=$TorrentID]".$GroupName."[/url]\", was reported for the reason \"".$ReportType['title']."\".\n\nThe reporter also said: \"$Extra\"\n\nIf you think this report was in error, please contact staff. Failure to challenge some types of reports in a timely manner will be regarded as a lack of defense and may result in the torrent being deleted.");
 
 $Cache->delete_value("reports_torrent_$TorrentID");
 

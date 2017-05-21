@@ -11,6 +11,10 @@
   font-size: 110%;
 }
 
+.thin {
+  box-sizing: border-box;
+}
+
 .flex_input_container {
   display: flex;
 }
@@ -55,7 +59,11 @@ h2 .group_cat {
   background-size: 16px 16px;
 }
 
-pre br {
+code {
+  white-space: pre;
+}
+
+pre > br, code > br {
   line-height: 0px;
   display: none;
 }
