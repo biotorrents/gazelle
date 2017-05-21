@@ -168,7 +168,7 @@ $Codecs = array('h264', '10-bit h264', 'XviD', 'DivX', 'WMV', 'DVD5', 'DVD9', 'H
 $Resolutions = array('SD', '480p', '720p', '1080i', '1080p', '4K', 'Other');
 $AudioFormats = array('MP3', 'OGG', 'OGG 5.1', 'AAC', 'AAC 5.1', 'AC3', 'AC3 5.1', 'DTS 2.0', 'DTS 5.1', 'DTS-ES 6.1', 'FLAC 2.0', 'FLAC 5.1', 'FLAC 6.1', 'PCM 2.0', 'PCM 5.1', 'PCM 6.1', 'WMA', 'Real Audio', 'DTS-HD', 'DTS-HD MA');
 $Subbing = array('Softsubs', 'Hardsubs', 'RAW');
-$Languages = array('English', 'Japanese', 'Dual Language');
+$Languages = array('English', 'Japanese', 'Dual Language', 'None');
 $Archives = array('7z', 'zip', 'rar');
 $ArchivesManga = array('cbz', 'cbr', 'cb7');
 
