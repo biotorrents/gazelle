@@ -1187,13 +1187,49 @@ td {
   background:#1a1a1a
 }
 #menu {
-  background:#1d1d1d;background:rgba(0,0,0,0.6);border:1px solid transparent
+  background: #1d1d1d;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid transparent;
+
 }
+#menu > ul {
+  display: flex;
+  width: 850px;
+  margin: 0 auto;
+}
+#menu > ul > li {
+  position: relative;
+  flex: 1 1 auto;
+}
+.nav_dropdown > div {
+  position: absolute;
+  background-color: rgba(0,0,0,0.6);
+  width: 100%;
+  z-index: 99999;
+  margin-top: 14px;
+}
+#nav_links > #links_menu {
+  width: 120px;
+  margin-left: -68px;
+}
+.nav_dropdown > div > a {
+  display: none;
+  height: 32px;
+  line-height: 32px;
+}
+.nav_dropdown:hover > div > a {
+  display: block;
+}
+
 #userinfo_minor a,#menu ul>li>a {
   color:#fff
 }
 #header div#searchbars {
-  background:#131313;padding:4.5px 0
+  background: #131313;
+  padding: 4.5px 0;
+  display: flex;
+  width: 850px;
+  margin: 0 auto;
 }
 div#ft_container {
   background:#D0D0D0

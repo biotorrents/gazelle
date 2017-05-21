@@ -138,6 +138,66 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
       <div id="logo">
         <a href="index.php"></a>
       </div>
+      <div id="menu">
+        <ul>
+          <li id="nav_torrents"<?=
+            Format::add_class($PageID, ['torrents', false, false], 'active', true)?>>
+            <a href="torrents.php">Torrents</a>
+          </li>
+          <li id="nav_collages"<?=
+            Format::add_class($PageID, ['collages'], 'active', true)?>>
+            <a href="collages.php">Collections</a>
+          </li>
+          <li id="nav_requests"<?=
+            Format::add_class($PageID, ['requests'], 'active', true)?>>
+            <a href="requests.php">Requests</a>
+          </li>
+          <li id="nav_forums"<?=
+            Format::add_class($PageID, ['forums'], 'active', true)?>>
+            <a href="forums.php">Forums</a>
+          </li>
+          <li id="nav_irc"<?=
+            Format::add_class($PageID, ['chat'], 'active', true)?>>
+            <a href="chat.php">IRC</a>
+          </li>
+          <li id="nav_top10"<?=
+            Format::add_class($PageID, ['top10'], 'active', true)?>>
+            <a href="top10.php">Top 10</a>
+          </li>
+          <li id="nav_rules"<?=
+            Format::add_class($PageID, ['rules'], 'active', true)?>>
+            <a href="rules.php">Rules</a>
+          </li>
+          <li id="nav_wiki"<?=
+            Format::add_class($PageID, ['wiki'], 'active', true)?>>
+            <a href="wiki.php">Wiki</a>
+          </li>
+          <li id="nav_user" class="nav_dropdown" <?=Format::add_class($PageID, ['user', false, false], 'active', true, 'id')?>>
+            <a href="user.php?id=<?=G::$LoggedUser['ID']?>" class="username"><?=G::$LoggedUser['Username']?></a>
+            <div id="user_menu">
+              <a href="user.php?action=edit&amp;userid=<?=G::$LoggedUser['ID']?>">Edit</a>
+              <a href="logout.php?auth=<?=G::$LoggedUser['AuthKey']?>">Logout</a>
+            </div>
+          </li>
+          <li id="nav_links" class="nav_dropdown<?=$NewSubscriptions ? ' highlite' : ''?>">
+            <a>▾</a>
+            <div id="links_menu">
+              <a href="<?=Inbox::get_inbox_link(); ?>">Inbox</a>
+              <a href="staffpm.php">Staff Inbox</a>
+              <a href="torrents.php?type=uploaded&amp;userid=<?=G::$LoggedUser['ID']?>">Uploads</a>
+              <a href="bookmarks.php?type=torrents">Bookmarks</a>
+<?  if (check_perms('site_torrents_notify')) { ?>
+              <a href="user.php?action=notify">Notifications</a>
+<?  } ?>
+              <a href="userhistory.php?action=subscriptions">Subscriptions</a>
+              <a href="comments.php">Comments</a>
+              <a href="friends.php">Friends</a>
+              <a href="better.php">Better</a>
+            </div>
+          </li>
+        </ul>
+        </ul>
+      </div>
 <?
 if (isset(G::$LoggedUser['SearchType']) && G::$LoggedUser['SearchType']) { // Advanced search
   $UseAdvancedSearch = true;
@@ -146,143 +206,61 @@ if (isset(G::$LoggedUser['SearchType']) && G::$LoggedUser['SearchType']) { // Ad
 }
 ?>
       <div id="searchbars">
-        <ul>
-          <li id="searchbar_torrents">
-            <span class="hidden">Torrents: </span>
-            <form class="search_form" name="torrents" action="torrents.php" method="get">
+        <form class="search_form" name="torrents" action="torrents.php" method="get">
 <?  if ($UseAdvancedSearch) { ?>
-              <input type="hidden" name="action" value="advanced" />
+          <input type="hidden" name="action" value="advanced" />
 <?  } ?>
-              <input id="torrentssearch" accesskey="t" spellcheck="false"
-                  onfocus="if (this.value == 'Torrents') { this.value = ''; }"
-                  onblur="if (this.value == '') { this.value = 'Torrents'; }"
-                  value="Torrents" placeholder="Torrents" type="text" name="<?=$UseAdvancedSearch ? 'groupname' : 'searchstr' ?>" size="17" />
-            </form>
-          </li>
-          <li id="searchbar_artists">
-            <span class="hidden">Artist: </span>
-            <form class="search_form" name="artists" action="artist.php" method="get">
-              <input id="artistsearch"<?=Users::has_autocomplete_enabled('search');
-                  ?> accesskey="a"
-                  spellcheck="false" autocomplete="off"
-                  onfocus="if (this.value == 'Artists') { this.value = ''; }"
-                  onblur="if (this.value == '') { this.value = 'Artists'; }"
-                  value="Artists" placeholder="Artists" type="text" name="artistname" size="17" />
-            </form>
-          </li>
-          <li id="searchbar_requests">
-            <span class="hidden">Requests: </span>
-            <form class="search_form" name="requests" action="requests.php" method="get">
-              <input id="requestssearch" spellcheck="false"
-                  onfocus="if (this.value == 'Requests') { this.value = ''; }"
-                  onblur="if (this.value == '') { this.value = 'Requests'; }"
-                  value="Requests" placeholder="Requests" type="text" name="search" size="17" />
-            </form>
-          </li>
-          <li id="searchbar_forums">
-            <span class="hidden">Forums: </span>
-            <form class="search_form" name="forums" action="forums.php" method="get">
-              <input value="search" type="hidden" name="action" />
-              <input id="forumssearch"
-                  onfocus="if (this.value == 'Forums') { this.value = ''; }"
-                  onblur="if (this.value == '') { this.value = 'Forums'; }"
-                  value="Forums" placeholder="Forums" type="text" name="search" size="17" />
-            </form>
-          </li>
+          <input id="torrentssearch" accesskey="t" spellcheck="false"
+              onfocus="if (this.value == 'Torrents') { this.value = ''; }"
+              onblur="if (this.value == '') { this.value = 'Torrents'; }"
+              value="Torrents" placeholder="Torrents" type="text" name="<?=$UseAdvancedSearch ? 'groupname' : 'searchstr' ?>" size="17" />
+        </form>
+        <form class="search_form" name="artists" action="artist.php" method="get">
+          <input id="artistsearch"<?=Users::has_autocomplete_enabled('search');
+              ?> accesskey="a"
+              spellcheck="false" autocomplete="off"
+              onfocus="if (this.value == 'Artists') { this.value = ''; }"
+              onblur="if (this.value == '') { this.value = 'Artists'; }"
+              value="Artists" placeholder="Artists" type="text" name="artistname" size="17" />
+        </form>
+        <form class="search_form" name="requests" action="requests.php" method="get">
+          <input id="requestssearch" spellcheck="false"
+              onfocus="if (this.value == 'Requests') { this.value = ''; }"
+              onblur="if (this.value == '') { this.value = 'Requests'; }"
+              value="Requests" placeholder="Requests" type="text" name="search" size="17" />
+        </form>
+        <form class="search_form" name="forums" action="forums.php" method="get">
+          <input value="search" type="hidden" name="action" />
+          <input id="forumssearch"
+              onfocus="if (this.value == 'Forums') { this.value = ''; }"
+              onblur="if (this.value == '') { this.value = 'Forums'; }"
+              value="Forums" placeholder="Forums" type="text" name="search" size="17" />
+        </form>
 <!--
-          <li id="searchbar_wiki">
-            <span class="hidden">Wiki: </span>
-            <form class="search_form" name="wiki" action="wiki.php" method="get">
-              <input type="hidden" name="action" value="search" />
-              <input
-                  onfocus="if (this.value == 'Wiki') { this.value = ''; }"
-                  onblur="if (this.value == '') { this.value = 'Wiki'; }"
-                  value="Wiki" placeholder="Wiki" type="text" name="search" size="17" />
-            </form>
-          </li>
+        <form class="search_form" name="wiki" action="wiki.php" method="get">
+          <input type="hidden" name="action" value="search" />
+          <input
+              onfocus="if (this.value == 'Wiki') { this.value = ''; }"
+              onblur="if (this.value == '') { this.value = 'Wiki'; }"
+              value="Wiki" placeholder="Wiki" type="text" name="search" size="17" />
+        </form>
 -->
-          <li id="searchbar_log">
-            <span class="hidden">Log: </span>
-            <form class="search_form" name="log" action="log.php" method="get">
-              <input id="logsearch"
-                  onfocus="if (this.value == 'Log') { this.value = ''; }"
-                  onblur="if (this.value == '') { this.value = 'Log'; }"
-                  value="Log" placeholder="Log" type="text" name="search" size="17" />
-            </form>
-          </li>
-          <li id="searchbar_users">
-            <span class="hidden">Users: </span>
-            <form class="search_form" name="users" action="user.php" method="get">
-              <input type="hidden" name="action" value="search" />
-              <input
-                  id="userssearch"
-                  onfocus="if (this.value == 'Users') { this.value = ''; }"
-                  onblur="if (this.value == '') { this.value = 'Users'; }"
-                  value="Users" placeholder="Users" type="text" name="search" size="20" />
-            </form>
-          </li>
-        </ul>
-      </div>
-      <div id="menu">
-        <h4 class="hidden">Site Menu</h4>
-        <ul>
-          <li id="nav_index"<?=
-            Format::add_class($PageID, array('index'), 'active', true)?>>
-            <a href="index.php">Home</a>
-          </li>
-          <li id="nav_torrents"<?=
-            Format::add_class($PageID, array('torrents', false, false), 'active', true)?>>
-            <a href="torrents.php">Torrents</a>
-          </li>
-          <li id="nav_collages"<?=
-            Format::add_class($PageID, array('collages'), 'active', true)?>>
-            <a href="collages.php">Collections</a>
-          </li>
-          <li id="nav_requests"<?=
-            Format::add_class($PageID, array('requests'), 'active', true)?>>
-            <a href="requests.php">Requests</a>
-          </li>
-          <li id="nav_forums"<?=
-            Format::add_class($PageID, array('forums'), 'active', true)?>>
-            <a href="forums.php">Forums</a>
-          </li>
-          <li id="nav_irc"<?=
-            Format::add_class($PageID, array('chat'), 'active', true)?>>
-            <a href="chat.php">IRC</a>
-          </li>
-          <li id="nav_top10"<?=
-            Format::add_class($PageID, array('top10'), 'active', true)?>>
-            <a href="top10.php">Top 10</a>
-          </li>
-          <li id="nav_rules"<?=
-            Format::add_class($PageID, array('rules'), 'active', true)?>>
-            <a href="rules.php">Rules</a>
-          </li>
-          <li id="nav_wiki"<?=
-            Format::add_class($PageID, array('wiki'), 'active', true)?>>
-            <a href="wiki.php">Wiki</a>
-          </li>
-          <li id="nav_staff"<?=
-            Format::add_class($PageID, array('staff'), 'active', true)?>>
-            <a href="staff.php">Staff</a>
-          </li>
-        </ul>
+        <form class="search_form" name="log" action="log.php" method="get">
+          <input id="logsearch"
+              onfocus="if (this.value == 'Log') { this.value = ''; }"
+              onblur="if (this.value == '') { this.value = 'Log'; }"
+              value="Log" placeholder="Log" type="text" name="search" size="17" />
+        </form>
+        <form class="search_form" name="users" action="user.php" method="get">
+          <input type="hidden" name="action" value="search" />
+          <input
+              id="userssearch"
+              onfocus="if (this.value == 'Users') { this.value = ''; }"
+              onblur="if (this.value == '') { this.value = 'Users'; }"
+              value="Users" placeholder="Users" type="text" name="search" size="20" />
+        </form>
       </div>
       <div id="userinfo">
-        <ul id="userinfo_username">
-          <li id="nav_userinfo" <?=Format::add_class($PageID, array('user', false, false), 'active', true, 'id')?>>
-            <a href="user.php?id=<?=G::$LoggedUser['ID']?>" class="username"><?=G::$LoggedUser['Username']?></a>
-          </li>
-          <li id="nav_userclass">
-            <span class="hidden userclass"><?=$ClassLevels[G::$LoggedUser['Class']]['Name']?></span>
-          </li>
-          <li id="nav_useredit" class="brackets<?=Format::add_class($PageID, array('user','edit'), 'active', false)?>">
-            <a href="user.php?action=edit&amp;userid=<?=G::$LoggedUser['ID']?>">Edit</a>
-          </li>
-          <li id="nav_logout" class="brackets">
-            <a href="logout.php?auth=<?=G::$LoggedUser['AuthKey']?>">Logout</a>
-          </li>
-        </ul>
         <ul id="userinfo_major">
           <li id="nav_upload" class="brackets<?=Format::add_class($PageID, array('upload'), 'active', false)?>">
             <a href="upload.php">Upload</a>
@@ -301,6 +279,9 @@ if (check_perms('site_send_unlimited_invites')) {
           </li>
           <li id="nav_donate" class="brackets<?=Format::add_class($PageID, array('donate'), 'active', false)?>">
             <a href="donate.php">Donate</a>
+          </li>
+          <li id="nav_staff" class="brackets<?=Format::add_class($PageID, array('staff'), 'active', false)?>">
+            <a href="staff.php">Staff</a>
           </li>
         </ul>
         <ul id="userinfo_stats">
@@ -346,47 +327,6 @@ if (check_perms('site_send_unlimited_invites')) {
           </li>
 <?  }
 ?>
-        </ul>
-        <ul id="userinfo_minor"<?=$NewSubscriptions ? ' class="highlite"' : ''?>>
-          <li>
-            <span id="header_links_menu" class="brackets">Links ▾</span>
-            <ul>
-              <li id="nav_inbox"<?=
-                Format::add_class($PageID, array('inbox'), 'active', true)?>>
-                <a href="<?=Inbox::get_inbox_link(); ?>">Inbox</a>
-              </li>
-              <li id="nav_staffinbox"<?=
-                Format::add_class($PageID, array('staffpm'), 'active', true)?>>
-                <a href="staffpm.php">Staff Inbox</a>
-              </li>
-              <li id="nav_uploaded"<?=
-                Format::add_class($PageID, array('torrents', false, 'uploaded'), 'active', true, 'userid')?>>
-                <a href="torrents.php?type=uploaded&amp;userid=<?=G::$LoggedUser['ID']?>">Uploads</a>
-              </li>
-              <li id="nav_bookmarks"<?=
-                Format::add_class($PageID, array('bookmarks'), 'active', true)?>>
-                <a href="bookmarks.php?type=torrents">Bookmarks</a>
-              </li>
-<?  if (check_perms('site_torrents_notify')) { ?>
-              <li id="nav_notifications"<?=
-                Format::add_class($PageID, array(array('torrents', 'notify'), array('user', 'notify')), 'active', true, 'userid')?>>
-                <a href="user.php?action=notify">Notifications</a>
-              </li>
-<?  }
-  $ClassNames = $NewSubscriptions ? 'new-subscriptions' : '';
-  $ClassNames = trim($ClassNames.Format::add_class($PageID, array('userhistory', 'subscriptions'), 'active', false));
-?>
-              <li id="nav_subscriptions"<?=$ClassNames ? " class=\"$ClassNames\"" : ''?>>
-                <a href="userhistory.php?action=subscriptions">Subscriptions</a>
-              </li>
-              <li id="nav_comments"<?=
-                Format::add_class($PageID, array('comments'), 'active', true, 'userid')?>>
-                <a href="comments.php">Comments</a></li>
-              <li id="nav_friends"<?=
-                Format::add_class($PageID, array('friends'), 'active', true)?>>
-                <a href="friends.php">Friends</a></li>
-            </ul>
-          </li>
         </ul>
       </div>
     </div>
