@@ -526,14 +526,13 @@ class Torrents {
 
     G::$DB->query("
       REPLACE INTO sphinx_delta
-        (ID, GroupID, GroupName, TagList, Year, CataLogueNumber, CategoryID, Time,
-        Size, Snatched, Seeders, Leechers,
+        (ID, GroupID, GroupName, GroupNameRJ, GroupNameJP, TagList, Year, CatalogueNumber, CategoryID, Time,
+        Size, Snatched, Seeders, Leechers, Censored, Studio, Series, DLsiteID,
         FreeTorrent, Media, Container, Codec, Resolution, AudioFormat, Subbing, Language, Description,
         FileList, VoteScore, ArtistName)
       SELECT
-        t.ID, g.ID, Name, TagList, Year, CatalogueNumber, CategoryID, UNIX_TIMESTAMP(t.Time),
-        Size, Snatched, Seeders,
-        Leechers,
+        t.ID, g.ID, Name, NameRJ, NameJP, TagList, Year, CatalogueNumber, CategoryID, UNIX_TIMESTAMP(t.Time),
+        Size, Snatched, Seeders, Leechers, Censored, Studio, Series, DLsiteID,
         CAST(FreeTorrent AS CHAR), Media, Container, Codec, Resolution, AudioFormat, Subbing, Language, Description,
         REPLACE(REPLACE(FileList, '_', ' '), '/', ' ') AS FileList, $VoteScore, '".db_string($ArtistName)."'
       FROM torrents AS t
