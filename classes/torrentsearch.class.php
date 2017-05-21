@@ -13,6 +13,7 @@ class TorrentSearch {
     'seeders' => 'seeders',
     'leechers' => 'leechers',
     'snatched' => 'snatched',
+    'cataloguenumber' => 'cataloguenumber',
     'random' => 1);
 
   // Map of sort mode => attribute name for grouped torrent page
@@ -23,6 +24,7 @@ class TorrentSearch {
     'seeders' => 'sumseeders',
     'leechers' => 'sumleechers',
     'snatched' => 'sumsnatched',
+    'cataloguenumber' => 'cataloguenumber',
     'random' => 1);
 
   // Map of sort mode => aggregate expression required for some grouped sort orders
