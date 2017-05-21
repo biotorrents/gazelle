@@ -21,7 +21,7 @@ if ($Cache->get_value('doujin_json_'.$gid)) {
 } else {
 
   $data = json_encode(["method" => "gdata", "gidlist" => [[$gid, $token]], "namespace" => 1]);
-  $curl = curl_init('http://e-hentai.org/api.php');
+  $curl = curl_init('http://api.e-hentai.org/api.php');
   curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
   curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
   curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -63,7 +63,7 @@ if ($Cache->get_value('doujin_json_'.$gid)) {
   $cover = $json['thumb'];
   // and let's see if we can replace it with something better
   $gallery_page = file_get_contents($url);
-  $re = '/'.preg_quote('"><img id="img" src="').'([^<]*)'.preg_quote('" style=').'/';
+  $re = '/'.preg_quote('-0px 0 no-repeat"><a href="').'(.*)'.preg_quote('"><img alt="01"').'/';
   preg_match($re, $gallery_page, $galmatch);
   // were we able to find the first page of the gallery?
   if ($galmatch[1]) {
