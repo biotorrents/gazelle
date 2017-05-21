@@ -1,6 +1,6 @@
 <?
 //Include the header
-View::show_header('Collectoins Rules');
+View::show_header('Collection Rules');
 ?>
 <div class="thin">
   <div class="header">
