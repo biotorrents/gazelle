@@ -97,7 +97,7 @@ define('DONOR',          '20');
 define('VIP',            '21');
 define('TORRENT_MASTER', '23');
 define('POWER_TM',       '24');
-define('FLS_TEAM',       '9000');
+define('FLS_TEAM',       '33');
 define('FORUM_MOD',      '9001');
 
 // Forums
