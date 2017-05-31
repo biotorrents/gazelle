@@ -21,16 +21,16 @@ class Format {
     'seeding'  => 'tl_seeding',
     'leeching' => 'tl_leeching',
 
-    'freeleech'      => 'tl_free',
-    'neutral leech'    => 'tl_free tl_neutral',
-    'personal freeleech'=> 'tl_free tl_personal',
+    'freeleech'          => 'tl_free',
+    'neutral leech'      => 'tl_free tl_neutral',
+    'personal freeleech' => 'tl_free tl_personal',
 
-    'reported'    => 'tl_reported',
-    'bad tags'    => 'tl_reported tl_bad_tags',
-    'bad folders'  => 'tl_reported tl_bad_folders',
-    'bad file names'=> 'tl_reported tl_bad_file_names',
+    'reported'       => 'tl_reported',
+    'bad tags'       => 'tl_reported tl_bad_tags',
+    'bad folders'    => 'tl_reported tl_bad_folders',
+    'bad file names' => 'tl_reported tl_bad_file_names',
 
-    'uncensored'  => 'tl_notice'
+    'uncensored' => 'tl_notice'
   );
 
   /**

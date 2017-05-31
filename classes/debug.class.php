@@ -460,7 +460,7 @@ class DEBUG {
     <tr>
       <td align="left" class="debug_data debug_constants_data">
         <pre>
-<?=          display_str(print_r($Constants, true))?>
+<?=         display_str(print_r($Constants, true))?>
         </pre>
       </td>
     </tr>
@@ -518,7 +518,7 @@ class DEBUG {
     </tr>
   </table>
   <table id="debug_cache" class="debug_table hidden" width="100%">
-<?     foreach ($CacheKeys as $Key) { ?>
+<?    foreach ($CacheKeys as $Key) { ?>
     <tr>
       <td class="label nobr debug_info debug_cache_key">
         <a href="#" onclick="$('#debug_cache_<?=$Key?>').gtoggle(); return false;"><?=display_str($Key)?></a>
@@ -526,7 +526,7 @@ class DEBUG {
       </td>
       <td align="left" class="debug_data debug_cache_data">
         <pre id="debug_cache_<?=$Key?>" class="hidden">
-<?=          display_str(print_r(G::$Cache->get_value($Key, true), true))?>
+<?=         display_str(print_r(G::$Cache->get_value($Key, true), true))?>
         </pre>
       </td>
     </tr>
@@ -664,7 +664,7 @@ class DEBUG {
       </td>
       <td class="debug_data debug_loggedvars_data" align="left">
         <pre id="debug_loggedvars_<?=$ID?>" class="hidden">
-<?=          display_str(print_r($Data['data'], true))?>
+<?=         display_str(print_r($Data['data'], true))?>
         </pre>
       </td>
     </tr>

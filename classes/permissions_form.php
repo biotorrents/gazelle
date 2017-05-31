@@ -4,7 +4,7 @@
  ************ Permissions form ********************** user.php and tools.php ****
  ********************************************************************************
  ** This function is used to create both the class permissions form, and the   **
- ** user custom permissions form.                        **
+ ** user custom permissions form.                                              **
  ********************************************************************************/
 
 $PermissionsArray = array(

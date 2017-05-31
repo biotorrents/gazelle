@@ -1,7 +1,7 @@
 </div>
 <?php TEXTAREA_PREVIEW::JavaScript(); ?>
 <div id="footer">
-<?   if (!empty($Options['disclaimer'])) { ?>
+<?  if (!empty($Options['disclaimer'])) { ?>
   <br /><br />
   <div id="disclaimer_container" class="thin" style="text-align: center; margin-bottom: 20px;">
     None of the files shown here are actually hosted on this server. The links are provided solely by this site's users. These BitTorrent files are meant for the distribution of backup files. By downloading the BitTorrent file, you are claiming that you own the original file. The administrator of this site (<?=site_url()?>) holds NO RESPONSIBILITY if these files are misused in any way and cannot be held responsible for what its users post, or any other actions of it.

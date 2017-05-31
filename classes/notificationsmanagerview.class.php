@@ -103,7 +103,7 @@ class NotificationsManagerView {
 <?        self::render_checkbox(NotificationsManager::QUOTES); ?>
       </td>
     </tr>
-<?     if (check_perms('site_torrents_notify')) { ?>
+<?    if (check_perms('site_torrents_notify')) { ?>
       <tr>
         <td class="label tooltip" title="Enabling this will give you a notification when the torrent notification filters you have established are triggered.">
           <strong>Torrent notifications</strong>

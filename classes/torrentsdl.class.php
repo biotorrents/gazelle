@@ -139,17 +139,17 @@ class TorrentsDL {
     return "Collector Download Summary for $this->Title - " . SITE_NAME . "\r\n"
       . "\r\n"
       . "User:    {$this->User[Username]}\r\n"
-      . "Passkey:  {$this->User[torrent_pass]}\r\n"
+      . "Passkey: {$this->User[torrent_pass]}\r\n"
       . "\r\n"
       . "Time:    $Time\r\n"
       . "Used:    $Used\r\n"
       . "Date:    $Date\r\n"
       . "\r\n"
       . ($FilterStats !== false
-        ? "Torrent groups analyzed:  $this->NumFound\r\n"
-          . "Torrent groups filtered:  $NumSkipped\r\n"
+        ? "Torrent groups analyzed: $this->NumFound\r\n"
+          . "Torrent groups filtered: $NumSkipped\r\n"
         : "")
-      . "Torrents downloaded:    $this->NumAdded\r\n"
+      . "Torrents downloaded:   $this->NumAdded\r\n"
       . "\r\n"
       . "Total size of torrents (ratio hit): ".Format::get_size($this->Size)."\r\n"
       . ($NumSkipped

@@ -93,7 +93,7 @@ class Votes {
     //Inverse ncdf approximation by Peter John Acklam, implementation adapted to
     //PHP by Michael Nickerson, using Dr. Thomas Ziegler's C implementation as
     //a guide.  http://home.online.no/~pjacklam/notes/invnorm/index.html
-    //I have not checked the accuracy of this implementation.  Be aware that PHP
+    //I have not checked the accuracy of this implementation. Be aware that PHP
     //will truncate the coeficcients to 14 digits.
 
     //You have permission to use and distribute this function freely for
@@ -120,7 +120,7 @@ class Votes {
 
     //Define break-points.
     $p_low  = 0.02425;                   //Use lower region approx. below this
-    $p_high = 1 - $p_low;                 //Use upper region approx. above this
+    $p_high = 1 - $p_low;                //Use upper region approx. above this
 
     //Define/list variables (doesn't really need a definition)
     //$p (probability), $sigma (std. deviation), and $mu (mean) are user inputs

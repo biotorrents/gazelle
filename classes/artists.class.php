@@ -5,7 +5,7 @@ class Artists {
    *
    * @param array $GroupIDs
    * @return an array of the following form:
-   *   GroupID => {
+   *  GroupID => {
    *    [ArtistType] => {
    *      id, name, aliasid
    *    }

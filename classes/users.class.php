@@ -31,20 +31,20 @@ class Users {
    *
    * @param $UserID int   The UserID to get info for
    * @return array with the following keys:
-   *  int  ID
+   *  int     ID
    *  string  Username
-   *  int  PermissionID
-   *  array  Paranoia - $Paranoia array sent to paranoia.class
-   *  boolean  Artist
-   *  boolean  Donor
+   *  int     PermissionID
+   *  array   Paranoia - $Paranoia array sent to paranoia.class
+   *  boolean Artist
+   *  boolean Donor
    *  string  Warned - When their warning expires in international time format
    *  string  Avatar - URL
-   *  boolean  Enabled
+   *  boolean Enabled
    *  string  Title
    *  string  CatchupTime - When they last caught up on forums
-   *  boolean  Visible - If false, they don't show up on peer lists
-   *  array ExtraClasses - Secondary classes.
-   *  int EffectiveClass - the highest level of their main and secondary classes
+   *  boolean Visible - If false, they don't show up on peer lists
+   *  array   ExtraClasses - Secondary classes.
+   *  int     EffectiveClass - the highest level of their main and secondary classes
    */
   public static function user_info($UserID) {
     global $Classes;

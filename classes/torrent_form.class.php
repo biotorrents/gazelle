@@ -5,7 +5,7 @@
  ********************************************************************************
  ** This class is used to create both the upload form, and the 'edit torrent'  **
  ** form. It is broken down into several functions - head(), foot(),           **
- ** music_form() [music], audiobook_form() [Audiobooks and comedy], and         **
+ ** music_form() [music], audiobook_form() [Audiobooks and comedy], and        **
  ** simple_form() [everything else].                                           **
  **                                                                            **
  ** When it is called from the edit page, the forms are shortened quite a bit. **

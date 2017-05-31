@@ -236,7 +236,7 @@ class INVITE_TREE {
     }
 ?>
       <br />
-<?=      $Tree?>
+<?=     $Tree?>
     </div>
 <?
     G::$DB->set_query_id($QueryID);

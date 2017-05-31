@@ -268,7 +268,7 @@ class VALIDATE {
           }
           $ValItem .= ' || $(\'#'.$FieldKey.'year\').raw().value != "") {'."\r\n";
           $ValItem .= $ValItemHold;
-          $ValItem .= "  }\r\n";
+          $ValItem .= " }\r\n";
         } else {
           $ValItem .= $ValItemHold;
         }
@@ -281,7 +281,7 @@ class VALIDATE {
       }
 
       if (empty($Field['Required']) && $Field['Type'] != 'date') {
-        $ReturnJS .= '  if ($(\'#'.$FieldKey.'\').raw().value!="") {'."\r\n  ";
+        $ReturnJS .= '  if ($(\'#'.$FieldKey.'\').raw().value!="") {'."\r\n ";
         $ReturnJS .= $ValItem;
         $ReturnJS .= "  }\r\n";
       } else {

@@ -245,7 +245,7 @@ class TORRENT extends BENCODE_DICT {
   }
 
   // Returns an array of:
-  //   * the files in the torrent
+  //  * the files in the torrent
   //  * the total size of files described therein
   function file_list() {
     $FileList = array();
