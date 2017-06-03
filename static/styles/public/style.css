@@ -34,10 +34,13 @@ a:hover {
 }
 
 input[type="text"], input[type="password"], input[type="email"] {
-  padding: 1px 3px 1px 3px;
-  font-family: "tahoma", "arial", "helvetica", "sans-serif";
-  font-size: 8pt;
-  width: 200px;
+  color: black;
+  background-color: white;
+  padding: 0 0 0 6px;
+  font: 500 14px/29px Helvetica, Arial, sans-serif;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 3px;
 }
 
 input[type="text"]:valid, input[type="password"]:valid, input[type="email"] {
@@ -45,11 +48,20 @@ input[type="text"]:valid, input[type="password"]:valid, input[type="email"] {
 }
 
 input[type="text"]:invalid, input[type="password"]:invalid {
-  border-top-style: none;
-  border-bottom-style: none;
-  border-left-style: none;
-  border-right-style: solid 2px;
-  border-color: red;
+  border: none;
+  border-right: 2px solid red;
+}
+
+input[type="submit"] {
+  width: 100%;
+  background-color: white;
+  font: 500 14px/29px Helvetica, Arial, sans-serif;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+input[type="submit"]:hover {
+  background-color: #FFF7F7;
 }
 
 #head, #foot {
@@ -59,21 +71,26 @@ input[type="text"]:invalid, input[type="password"]:invalid {
   overflow: hidden;
 }
 
+#head {
+  text-align: right;
+}
+
 #foot {
   text-align: center;
   bottom: 0;
   position: absolute;
 }
 
-#foot > span,#head > span {
+#foot > span, #head > span {
   line-height: 30px;
+  margin: 10px;
 }
 
-#foot > span {
+#foot > span, #head > span {
   color: #a07c92;
 }
 
-#foot a {
+#foot a, #head a {
   color: #b98fa9;
 }
 
@@ -93,29 +110,11 @@ input[type="text"]:invalid, input[type="password"]:invalid {
 }
 
 #logo {
-  height: 60px;
-  width: 244px;
+  height: 100px;
   background-image: url('images/logo.svg');
   background-repeat: no-repeat;
-  background-position: top left;
-  padding: 50px 0px 0px 0px;
+  background-position: center;
   background-size: contain;
-  text-align: center;
-}
-
-#logo ul {
-  float: left;
-  left: 50%;
-  margin: 2em auto;
-  position: relative;
-}
-
-#logo ul li {
-  float: left;
-  position: relative;
-  right: 50%;
-  margin: 0 1em 0 0;
-  list-style: none;
 }
 
 .poetry {

@@ -26,19 +26,15 @@ define('FOOTER_FILE',SERVER_ROOT.'/design/publicfooter.php');
   <meta id="bg_data" bg="<?=$img[rand(0,count($img)-1)]?>">
 </head>
 <body>
-<div id="head">
-</div>
+<div id="head"><span>
+<a href="login.php">Log in</a>
+<? if (OPEN_REGISTRATION) { ?>
+ | <a href="register.php">Register</a>
+<? } ?>
+</span></div>
 <div id="content">
   <table class="layout" id="maincontent">
     <tr>
       <td align="center" valign="middle">
-        <div id="logo">
-          <ul>
-            <li><a href="index.php">Home</a></li>
-            <li><a href="login.php">Log in</a></li>
-<? if (OPEN_REGISTRATION) { ?>
-            <li><a href="register.php">Register</a></li>
-<? } ?>
-          </ul>
-        </div>
+        <a href="index.php"><div id="logo"></div></a>
 <?

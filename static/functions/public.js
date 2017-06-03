@@ -11,11 +11,4 @@ $(() => {
         $('#no-cookies').gshow();
     }
   }
-
-  if ($('#keep2fa').length) {
-    $('#2fa_tr').ghide()
-    $('#keep2fa')[0].onclick = (e) => {
-      $('#2fa_tr')[$('#keep2fa')[0].checked ? 'gshow' : 'ghide']()
-    }
-  }
 })

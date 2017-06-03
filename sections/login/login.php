@@ -16,37 +16,22 @@ if (!$Banned) {
 <?  } ?>
   <table class="layout">
     <tr>
-      <td>Username&nbsp;</td>
       <td colspan="2">
-        <input type="text" name="username" id="username" class="inputtext" required="required" maxlength="20" pattern="[A-Za-z0-9_?]{1,20}" autofocus="autofocus" placeholder="Username" />
+        <input type="text" name="username" id="username" class="inputtext" required="required" maxlength="20" pattern="[A-Za-z0-9_?]{1,20}" autofocus="autofocus" placeholder="Username" size="40" />
       </td>
     </tr>
     <tr>
-      <td>Password&nbsp;</td>
-      <td colspan="2">
+      <td>
         <input type="password" name="password" id="password" class="inputtext" required="required" maxlength="307200" pattern=".{6,307200}" placeholder="Password" />
       </td>
+      <td>
+        <input type="text" name="twofa" id="twofa" class="inputtext" maxlength="6" pattern="[0-9]{6}" placeholder="2FA" size="6" title="Leave blank if you have not enabled 2FA" />
+      </td>
     </tr>
-    <tr id="2fa_tr">
-      <td>Two-factor&nbsp;</td>
+    <tr>
       <td colspan="2">
-        <input type="text" name="twofa" id="twofa" class="inputtext" maxlength="6" pattern="[0-9]{6}" placeholder="2FA Verification Code" />
+        <input type="submit" name="login" value="Log in" class="submit" />
       </td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>
-        <input type="checkbox" id="keep2fa" name="keep2fa" value="0">
-        <label for="keep2fa">Show 2FA</label>
-      </td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>
-        <input type="checkbox" id="keeplogged" name="keeplogged" value="1"<?=(isset($_REQUEST['keeplogged']) && $_REQUEST['keeplogged']) ? ' checked="checked"' : ''?>>
-        <label for="keeplogged">Remember me</label>
-      </td>
-      <td><input type="submit" name="login" value="Log in" class="submit" /></td>
     </tr>
   </table>
   </form>

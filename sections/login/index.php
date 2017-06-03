@@ -294,9 +294,8 @@ else {
               }
 
               $SessionID = Users::make_secret(64);
-              $KeepLogged = ($_POST['keeplogged'] ?? false) ? 1 : 0;
-              setcookie('session', $SessionID, (time()+60*60*24*365)*$KeepLogged, '/', '', true, true);
-              setcookie('userid', $UserID, (time()+60*60*24*365)*$KeepLogged, '/', '', true, true);
+              setcookie('session', $SessionID, (time()+60*60*24*365), '/', '', true, true);
+              setcookie('userid', $UserID, (time()+60*60*24*365), '/', '', true, true);
 
               // Because we <3 our staff
               $Permissions = Permissions::get_permissions($PermissionID);
@@ -311,7 +310,7 @@ else {
                 INSERT INTO users_sessions
                   (UserID, SessionID, KeepLogged, Browser, OperatingSystem, IP, LastUpdate, FullUA)
                 VALUES
-                  ('$UserID', '".db_string($SessionID)."', '$KeepLogged', '$Browser', '$OperatingSystem', '".db_string(apc_exists('DBKEY')?DBCrypt::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0')."', '".sqltime()."', '".db_string($_SERVER['HTTP_USER_AGENT'])."')");
+                  ('$UserID', '".db_string($SessionID)."', '1', '$Browser', '$OperatingSystem', '".db_string(apc_exists('DBKEY')?DBCrypt::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0')."', '".sqltime()."', '".db_string($_SERVER['HTTP_USER_AGENT'])."')");
 
               $Cache->begin_transaction("users_sessions_$UserID");
               $Cache->insert_front($SessionID, array(
