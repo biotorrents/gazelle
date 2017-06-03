@@ -784,7 +784,7 @@ list($ArtistsAdded) = $DB->next_record();
           <? $TwoFASecret = empty($TwoFactor) ? $TwoFA->createSecret() : $TwoFactor; ?>
           <div class="field_div">
             <? if (!empty($TwoFactor)) { ?>
-            <p>2FA is enabled for this account with the following secret:</p>
+            <p class="min_padding">2FA is enabled for this account with the following secret:</p>
             <? } ?>
             <img src="<?=$TwoFA->getQRCodeImageAsDataUri(SITE_NAME, $TwoFASecret)?>">
             <input type="text" size="20" name="twofasecret" id="twofasecret" value="<?=$TwoFASecret?>" readonly><br>
@@ -792,6 +792,11 @@ list($ArtistsAdded) = $DB->next_record();
             <input type="text" size="20" maxlength="6" name="twofa" id="twofa" placeholder="Verification Code">
             <p class="min_padding">To enable 2FA, scan the above QR code (or add the secret below it) to your 2FA client of choice, and enter a verification code it generates. Note that the verification code must not have expired when you save your profile.</p>
             <p class="min_padding">When setting up 2FA, you must enter your current password in the "Current password" field before saving your changes.</p>
+            <p class="min_padding"><strong class="important_text">WARNING</strong>: Losing your 2FA key can make your account unrecoverable. Only enable it if you're sure you can handle it.
+            <? } else { ?>
+            <label><input type="checkbox" name="disable2fa" id="disable2fa" />
+            Disable 2FA</label>
+            <p class="min_padding">When disabling 2FA, you must enter your current password in the "Current Password" field before saving your changes</p>
             <? } ?>
           </div>
         </td>

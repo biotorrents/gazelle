@@ -207,6 +207,24 @@ if (!empty($_POST['twofa'])) {
     }
   }
 }
+
+//2FA deactivation
+if (isset($_POST['disable2fa'])) {
+  $DB->query("
+    SELECT PassHash
+    FROM users_main
+    WHERE ID = $UserID");
+  list($PassHash) = $DB->next_record();
+  if (!Users::check_password($_POST['cur_pass'], $PassHash)) {
+      error('You did not enter the correct password.');
+      header("Location: user.php?action=edit&userid=$UserID");
+      die();
+  }
+  $DB->query("
+    UPDATE users_main
+    SET TwoFactor=NULL
+    WHERE ID = $UserID");
+}
 //End 2FA
 
 if (!$Err && ($_POST['cur_pass'] || $_POST['new_pass_1'] || $_POST['new_pass_2'])) {
