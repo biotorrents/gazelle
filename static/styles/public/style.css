@@ -40,7 +40,6 @@ input[type="text"], input[type="password"], input[type="email"] {
   font: 500 14px/29px Helvetica, Arial, sans-serif;
   width: 100%;
   box-sizing: border-box;
-  border-radius: 3px;
 }
 
 input[type="text"]:valid, input[type="password"]:valid, input[type="email"] {
@@ -52,15 +51,23 @@ input[type="text"]:invalid, input[type="password"]:invalid {
   border-right: 2px solid red;
 }
 
-input[type="submit"] {
+#loginform > table {
+  border-spacing: 1px;
+}
+
+#loginform #username {
+  border-radius: 5px 5px 0 0;
+}
+
+#loginform input[type="submit"] {
   width: 100%;
   background-color: white;
   font: 500 14px/29px Helvetica, Arial, sans-serif;
   border: none;
-  border-radius: 3px;
+  border-radius: 0 0 5px 5px;
   cursor: pointer;
 }
-input[type="submit"]:hover {
+#loginform input[type="submit"]:hover {
   background-color: #FFF7F7;
 }
 
