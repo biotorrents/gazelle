@@ -513,7 +513,7 @@ foreach ($Categories as $CatKey => $CatName) {
     }
     $DisplayName .= '<a href="torrents.php?id='.$GroupID.'&amp;torrentid='.$TorrentID.'" ';
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-      $DisplayName .= 'onmouseover="getCover(event)" cover="'.ImageTools::process($WikiImage).'" onmouseleave="ungetCover()" ';
+      $DisplayName .= 'onmouseover="getCover(event)" data-cover="'.ImageTools::process($WikiImage).'" onmouseleave="ungetCover()" ';
     }
     $GroupName = empty($GroupName) ? (empty($GroupNameRJ) ? $GroupNameJP : $GroupNameRJ) : $GroupName;
     $DisplayName .= 'dir="ltr">'.$GroupName.'</a>';

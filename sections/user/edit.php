@@ -144,7 +144,7 @@ echo $Val->GenerateJS('userform');
             <option value="<?=($Style['ID'])?>"<?=$Style['ID'] == $StyleID ? ' selected="selected"' : ''?>><?=($Style['ProperName'])?></option>
 <?  } ?>
           </select>&nbsp;&nbsp;
-          <a toggle-target="#css_gallery" class="brackets">Show gallery</a>
+          <a data-toggle-target="#css_gallery" class="brackets">Show gallery</a>
           <div id="css_gallery" class="hidden">
 <?  foreach ($Stylesheets as $Style) { ?>
             <div class="preview_wrapper">

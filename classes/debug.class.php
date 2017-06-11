@@ -322,16 +322,16 @@ class DEBUG {
       return;
     }
 ?>
-  <table class="layout" width="100%">
+  <table class="layout">
     <tr>
-      <td align="left"><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_perf').gtoggle(); return false;" class="brackets">View</a> Performance Statistics:</strong></td>
+      <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_perf').gtoggle(); return false;" class="brackets">View</a> Performance Statistics:</strong></td>
     </tr>
   </table>
-  <table id="debug_perf" class="debug_table hidden" width="100%">
+  <table id="debug_perf" class="debug_table hidden">
 <?
     foreach ($Perf as $Stat => $Value) {
 ?>
-    <tr valign="top">
+    <tr class="valign_top">
       <td class="debug_perf_stat"><?=$Stat?></td>
       <td class="debug_perf_data"><?=$Value?></td>
     </tr>
@@ -347,16 +347,16 @@ class DEBUG {
       $Includes = $this->get_includes();
     }
 ?>
-  <table class="layout" width="100%">
+  <table class="layout">
     <tr>
-      <td align="left"><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_include').gtoggle(); return false;" class="brackets">View</a> <?=number_format(count($Includes))?> Includes:</strong></td>
+      <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_include').gtoggle(); return false;" class="brackets">View</a> <?=number_format(count($Includes))?> Includes:</strong></td>
     </tr>
   </table>
-  <table id="debug_include" class="debug_table hidden" width="100%">
+  <table id="debug_include" class="debug_table hidden">
 <?
     foreach ($Includes as $File) {
 ?>
-    <tr valign="top">
+    <tr class="valign_top">
       <td><?=$File?></td>
     </tr>
 <?
@@ -371,14 +371,14 @@ class DEBUG {
       $Classes = $this->get_classes();
     }
 ?>
-  <table class="layout" width="100%">
+  <table class="layout">
     <tr>
-      <td align="left"><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_classes').gtoggle(); return false;" class="brackets">View</a> Classes:</strong></td>
+      <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_classes').gtoggle(); return false;" class="brackets">View</a> Classes:</strong></td>
     </tr>
   </table>
-  <table id="debug_classes" class="debug_table hidden" width="100%">
+  <table id="debug_classes" class="debug_table hidden">
     <tr>
-      <td align="left">
+      <td>
         <pre>
 <?          print_r($Classes); echo "\n"; ?>
         </pre>
@@ -390,14 +390,14 @@ class DEBUG {
 
   public function extension_table() {
 ?>
-  <table class="layout" width="100%">
+  <table class="layout">
     <tr>
-      <td align="left"><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_extensions').gtoggle(); return false;" class="brackets">View</a> Extensions:</strong></td>
+      <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_extensions').gtoggle(); return false;" class="brackets">View</a> Extensions:</strong></td>
     </tr>
   </table>
-  <table id="debug_extensions" class="debug_table hidden" width="100%">
+  <table id="debug_extensions" class="debug_table hidden">
     <tr>
-      <td align="left">
+      <td>
         <pre>
 <?          print_r($this->get_extensions()); echo "\n"; ?>
         </pre>
@@ -415,31 +415,31 @@ class DEBUG {
       return;
     }
 ?>
-  <table class="layout" width="100%">
+  <table class="layout">
     <tr>
-      <td align="left"><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_flags').gtoggle(); return false;" class="brackets">View</a> Flags:</strong></td>
+      <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_flags').gtoggle(); return false;" class="brackets">View</a> Flags:</strong></td>
     </tr>
   </table>
-  <table id="debug_flags" class="debug_table hidden" width="100%">
-    <tr valign="top">
-      <td align="left" class="debug_flags_event"><strong>Event</strong></td>
-      <td align="left" class="debug_flags_time"><strong>Page time</strong></td>
+  <table id="debug_flags" class="debug_table hidden">
+    <tr class="valign_top">
+      <td class="debug_flags_event"><strong>Event</strong></td>
+      <td class="debug_flags_time"><strong>Page time</strong></td>
 <?    if ($Flags[0][3] !== false) { ?>
-      <td align="left" class="debug_flags_time"><strong>CPU time</strong></td>
+      <td class="debug_flags_time"><strong>CPU time</strong></td>
 <?    } ?>
-      <td align="left" class="debug_flags_memory"><strong>Memory</strong></td>
+      <td class="debug_flags_memory"><strong>Memory</strong></td>
     </tr>
 <?
     foreach ($Flags as $Flag) {
       list($Event, $MicroTime, $Memory, $CPUTime) = $Flag;
 ?>
-    <tr valign="top">
-      <td align="left"><?=$Event?></td>
-      <td align="left"><?=number_format($MicroTime, 3)?> ms</td>
+    <tr class="valign_top">
+      <td><?=$Event?></td>
+      <td><?=number_format($MicroTime, 3)?> ms</td>
 <?      if ($CPUTime !== false) { ?>
-      <td align="left"><?=number_format($CPUTime / 1000, 3)?> ms</td>
+      <td><?=number_format($CPUTime / 1000, 3)?> ms</td>
 <?      } ?>
-      <td align="left"><?=Format::get_size($Memory)?></td>
+      <td><?=Format::get_size($Memory)?></td>
     </tr>
 <?    } ?>
   </table>
@@ -451,14 +451,14 @@ class DEBUG {
       $Constants = $this->get_constants();
     }
 ?>
-  <table class="layout" width="100%">
+  <table class="layout">
     <tr>
-      <td align="left"><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_constants').gtoggle(); return false;" class="brackets">View</a> Constants:</strong></td>
+      <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_constants').gtoggle(); return false;" class="brackets">View</a> Constants:</strong></td>
     </tr>
   </table>
-  <table id="debug_constants" class="debug_table hidden" width="100%">
+  <table id="debug_constants" class="debug_table hidden">
     <tr>
-      <td align="left" class="debug_data debug_constants_data">
+      <td class="debug_data debug_constants_data">
         <pre>
 <?=         display_str(print_r($Constants, true))?>
         </pre>
@@ -476,22 +476,22 @@ class DEBUG {
       return;
     }
 ?>
-  <table class="layout" width="100%">
+  <table class="layout">
     <tr>
-      <td align="left"><strong><a toggle-target="#debug_ocelot" class="brackets">View</a> <?=number_format(count($OcelotRequests))?> Ocelot requests:</strong></td>
+      <td><strong><a data-toggle-target="#debug_ocelot" class="brackets">View</a> <?=number_format(count($OcelotRequests))?> Ocelot requests:</strong></td>
     </tr>
   </table>
-  <table id="debug_ocelot" class="debug_table hidden" width="100%">
+  <table id="debug_ocelot" class="debug_table hidden">
 <?    foreach ($OcelotRequests as $i => $Request) { ?>
     <tr>
-      <td align="left" class="debug_data debug_ocelot_data">
-        <a toggle-target="#debug_ocelot_<?=$i?>"><?=display_str($Request['path'])?></a>
+      <td class="debug_data debug_ocelot_data">
+        <a data-toggle-target="#debug_ocelot_<?=$i?>"><?=display_str($Request['path'])?></a>
         <pre id="debug_ocelot_<?=$i?>" class="hidden"><?=display_str($Request['response'])?></pre>
       </td>
-      <td align="left" class="debug_info" style="width: 100px;">
+      <td class="debug_info" style="width: 100px;">
         <?=display_str($Request['status'])?>
       </td>
-      <td align="left" class="debug_info debug_timing" style="width: 100px;">
+      <td class="debug_info debug_timing" style="width: 100px;">
         <?=number_format($Request['time'], 5)?> ms
       </td>
     </tr>
@@ -512,19 +512,19 @@ class DEBUG {
     $Header = ' '.number_format(count($CacheKeys))." $Header:";
 
 ?>
-  <table class="layout" width="100%">
+  <table class="layout">
     <tr>
-      <td align="left"><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_cache').gtoggle(); return false;" class="brackets">View</a><?=$Header?></strong></td>
+      <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_cache').gtoggle(); return false;" class="brackets">View</a><?=$Header?></strong></td>
     </tr>
   </table>
-  <table id="debug_cache" class="debug_table hidden" width="100%">
+  <table id="debug_cache" class="debug_table hidden">
 <?    foreach ($CacheKeys as $Key) { ?>
     <tr>
       <td class="label nobr debug_info debug_cache_key">
         <a href="#" onclick="$('#debug_cache_<?=$Key?>').gtoggle(); return false;"><?=display_str($Key)?></a>
         <a href="tools.php?action=clear_cache&amp;key=<?=$Key?>&amp;type=clear" target="_blank" class="brackets tooltip" title="Clear this cache key">Clear</a>
       </td>
-      <td align="left" class="debug_data debug_cache_data">
+      <td class="debug_data debug_cache_data">
         <pre id="debug_cache_<?=$Key?>" class="hidden">
 <?=         display_str(print_r(G::$Cache->get_value($Key, true), true))?>
         </pre>
@@ -543,24 +543,24 @@ class DEBUG {
       return;
     }
 ?>
-  <table class="layout" width="100%">
+  <table class="layout">
     <tr>
-      <td align="left"><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_error').gtoggle(); return false;" class="brackets">View</a> <?=number_format(count($Errors))?> Errors:</strong></td>
+      <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_error').gtoggle(); return false;" class="brackets">View</a> <?=number_format(count($Errors))?> Errors:</strong></td>
     </tr>
   </table>
-  <table id="debug_error" class="debug_table hidden" width="100%">
+  <table id="debug_error" class="debug_table hidden">
 <?
     foreach ($Errors as $Error) {
       list($Error, $Location, $Call, $Args) = $Error;
 ?>
-    <tr valign="top">
-      <td align="left" class="debug_info debug_error_call">
+    <tr class="valign_top">
+      <td class="debug_info debug_error_call">
         <?=display_str($Call)?>(<?=display_str($Args)?>)
       </td>
-      <td class="debug_data debug_error_data" align="left">
+      <td class="debug_data debug_error_data">
         <?=display_str($Error)?>
       </td>
-      <td align="left">
+      <td>
         <?=display_str($Location)?>
       </td>
     </tr>
@@ -580,12 +580,12 @@ class DEBUG {
     }
     $Header = ' '.number_format(count($Queries))." $Header:";
 ?>
-  <table class="layout" width="100%">
+  <table class="layout">
     <tr>
-      <td align="left"><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_database').gtoggle(); return false;" class="brackets">View</a><?=$Header?></strong></td>
+      <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_database').gtoggle(); return false;" class="brackets">View</a><?=$Header?></strong></td>
     </tr>
   </table>
-  <table id="debug_database" class="debug_table hidden" width="100%">
+  <table id="debug_database" class="debug_table hidden">
 <?
     foreach ($Queries as $Query) {
       $SQL = $Query[0] ?? null;
@@ -595,9 +595,9 @@ class DEBUG {
         $Warnings = implode('<br />', $Warnings);
       }
 ?>
-    <tr valign="top">
+    <tr class="valign_top">
       <td class="debug_data debug_query_data"><div><?=str_replace("\t", '&nbsp;&nbsp;', nl2br(display_str(trim($SQL))))?></div></td>
-      <td class="debug_info debug_query_time" style="width: 130px;" align="left"><?=number_format($Time, 5)?> ms</td>
+      <td class="debug_info debug_query_time" style="width: 130px;"><?=number_format($Time, 5)?> ms</td>
       <td class="debug_info debug_query_warnings"><?=$Warnings?></td>
     </tr>
 <?    } ?>
@@ -616,19 +616,19 @@ class DEBUG {
     }
     $Header = ' '.number_format(count($Queries))." $Header:";
 ?>
-  <table class="layout" width="100%">
+  <table class="layout">
     <tr>
-      <td align="left"><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_sphinx').gtoggle(); return false;" class="brackets">View</a><?=$Header?></strong></td>
+      <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_sphinx').gtoggle(); return false;" class="brackets">View</a><?=$Header?></strong></td>
     </tr>
   </table>
-  <table id="debug_sphinx" class="debug_table hidden" width="100%">
+  <table id="debug_sphinx" class="debug_table hidden">
 <?
     foreach ($Queries as $Query) {
       list($Params, $Time) = $Query;
 ?>
-    <tr valign="top">
+    <tr class="valign_top">
       <td class="debug_data debug_sphinx_data"><pre><?=str_replace("\t", '  ', $Params)?></pre></td>
-      <td class="debug_info debug_sphinx_time" style="width: 130px;" align="left"><?=number_format($Time, 5)?> ms</td>
+      <td class="debug_info debug_sphinx_time" style="width: 130px;"><?=number_format($Time, 5)?> ms</td>
     </tr>
 <?    } ?>
   </table>
@@ -646,23 +646,23 @@ class DEBUG {
     $Header = ' '.number_format(count($Vars))." $Header:";
 
 ?>
-  <table class="layout" width="100%">
+  <table class="layout">
     <tr>
-      <td align="left"><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_loggedvars').gtoggle(); return false;" class="brackets">View</a><?=$Header?></strong></td>
+      <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_loggedvars').gtoggle(); return false;" class="brackets">View</a><?=$Header?></strong></td>
     </tr>
   </table>
-  <table id="debug_loggedvars" class="debug_table hidden" width="100%">
+  <table id="debug_loggedvars" class="debug_table hidden">
 <?
     foreach ($Vars as $ID => $Var) {
       list($Key, $Data) = each($Var);
       $Size = count($Data['data']);
 ?>
     <tr>
-      <td align="left" class="debug_info debug_loggedvars_name">
+      <td class="debug_info debug_loggedvars_name">
         <a href="#" onclick="$('#debug_loggedvars_<?=$ID?>').gtoggle(); return false;"><?=display_str($Key)?></a> (<?=$Size . ($Size == 1 ? ' element' : ' elements')?>)
         <div><?=$Data['bt']['path'].':'.$Data['bt']['line'];?></div>
       </td>
-      <td class="debug_data debug_loggedvars_data" align="left">
+      <td class="debug_data debug_loggedvars_data">
         <pre id="debug_loggedvars_<?=$ID?>" class="hidden">
 <?=         display_str(print_r($Data['data'], true))?>
         </pre>

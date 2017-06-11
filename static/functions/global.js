@@ -170,7 +170,7 @@ function preload(image) {
 }
 
 function getCover(event) {
-  image = event.target.attributes.cover.value
+  image = event.target.attributes['data-cover'].value
   $('#coverCont img').remove()
   var coverCont = ($('#coverCont').length==0)?document.body.appendChild(document.createElement('div')):$('#coverCont')[0]
   coverCont.id = 'coverCont'
@@ -182,10 +182,10 @@ function getCover(event) {
   coverCont.style.display = 'block'
   //Preload next image
   if ($('.torrent_table, .request_table').length > 0) {
-    var as = $('[cover]')
+    var as = $('[data-cover]')
     var a = event.target
-    preload((as[as.toArray().indexOf(a)+1]||as[0]).attributes.cover.value)
-    preload((as[as.toArray().indexOf(a)-1]||as[0]).attributes.cover.value)
+    preload((as[as.toArray().indexOf(a)+1]||as[0]).attributes['data-cover'].value)
+    preload((as[as.toArray().indexOf(a)-1]||as[0]).attributes['data-cover'].value)
   }
 }
 function ungetCover(event) {
@@ -201,15 +201,15 @@ if (typeof NodeList.prototype.forEach !== 'function') {
 
 $(function() {
   if ($('.request_table').length > 0) {
-    var a = $('[cover]')[0]
-    if (a) preload(a.attributes.cover.value)
+    var a = $('[data-cover]')[0]
+    if (a) preload(a.attributes['data-cover'].value)
   }
 
-  document.querySelectorAll('[toggle-target]').forEach(function(el) {
+  document.querySelectorAll('[data-toggle-target]').forEach(function(el) {
     el.addEventListener('click', function(event) {
-      $(el.attributes['toggle-target'].value).gtoggle()
-      if (el.attributes['toggle-replace']) {
-        [el.innerHTML, el.attributes['toggle-replace'].value] = [el.attributes['toggle-replace'].value, el.innerHTML]
+      $(el.attributes['data-toggle-target'].value).gtoggle()
+      if (el.attributes['data-toggle-replace']) {
+        [el.innerHTML, el.attributes['data-toggle-replace'].value] = [el.attributes['data-toggle-replace'].value, el.innerHTML]
       }
     })
   })

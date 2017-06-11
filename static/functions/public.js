@@ -1,6 +1,6 @@
 $(() => {
-  if ($('#bg_data')) {
-    $('#content')[0].style.backgroundImage = "url(/misc/bg/"+$('#bg_data')[0].attributes.bg.value+")";
+  if ($('[name=bg_data]')) {
+    $('#content')[0].style.backgroundImage = "url(/misc/bg/"+$('[name=bg_data]')[0].attributes.content.value+")";
   }
 
   if ($('#no-cookies')) {

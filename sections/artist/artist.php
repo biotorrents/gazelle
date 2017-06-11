@@ -211,7 +211,7 @@ foreach ($TorrentList as $Group) {
 
     $DisplayName .= "<a href=\"torrents.php?id=$GroupID\" class=\"tooltip\" title=\"View torrent group\" ";
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-      $DisplayName .= 'onmouseover="getCover(event)" cover="'.ImageTools::process($WikiImage, true).'" onmouseleave="ungetCover()" ';
+      $DisplayName .= 'onmouseover="getCover(event)" data-cover="'.ImageTools::process($WikiImage, true).'" onmouseleave="ungetCover()" ';
     }
 
     $GroupName = empty($GroupName) ? (empty($GroupNameRJ) ? $GroupNameJP : $GroupNameRJ) : $GroupName;
@@ -315,7 +315,7 @@ foreach ($TorrentList as $Group) {
 
     $DisplayName .= "<a class=\"torrent_name\" href=\"torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID\" ";
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-      $DisplayName .= "onmouseover=\"getCover(event)\" cover=\"".ImageTools::process($WikiImage, true)."\" onmouseleave=\"ungetCover(event)\" ";
+      $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($WikiImage, true)."\" onmouseleave=\"ungetCover(event)\" ";
     }
 
     $GroupName = empty($GroupName) ? (empty($GroupNameRJ) ? $GroupNameJP : $GroupNameRJ) : $GroupName;
@@ -637,7 +637,7 @@ if (empty($SimilarArray)) {
       <div id="info" class="head">
         <a href="#">&uarr;</a>&nbsp;
         <strong>Information</strong>
-        <a class="brackets" toggle-target="#body">Toggle</a>
+        <a class="brackets" data-toggle-target="#body">Toggle</a>
       </div>
       <div id="body" class="body"><?=Text::full_format($Body)?></div>
     </div>
@@ -663,7 +663,7 @@ if (count($Collages) > 0) {
     $Range = range(0,count($Collages) - 1);
     shuffle($Range);
     $Indices = array_slice($Range, 0, MAX_COLLAGES);
-    $SeeAll = ' <a toggle-target=".collage_rows">(See all)</a>';
+    $SeeAll = ' <a data-toggle-target=".collage_rows">(See all)</a>';
   } else {
     $Indices = range(0, count($Collages)-1);
     $SeeAll = '';

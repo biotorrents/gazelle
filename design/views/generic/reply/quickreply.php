@@ -52,16 +52,6 @@
   if (!isset($InputTitle)) {
     $InputTitle = 'Post comment';
   }
-  if (!isset($Action)) {
-    $Action = '';
-  }
-
-  // TODO: Remove inline styles
-
-  // Old to do?
-  // TODO: Preview, come up with a standard, make it look like post or just a
-  // block of formatted BBcode, but decide and write some proper XHTML
-
 
   $ReplyText = new TEXTAREA_PREVIEW('body', 'quickpost', '',
       $TextareaCols, $TextareaRows, false, false, true, array(
@@ -95,18 +85,18 @@
             </tr>
             <tr>
 <?  if (Users::has_avatars_enabled()) { ?>
-              <td class="avatar" valign="top">
+              <td class="avatar valign_top">
                 <?=Users::show_avatar(G::$LoggedUser['Avatar'], G::$LoggedUser['ID'], G::$LoggedUser['Username'], (!isset($HeavyInfo['DisableAvatars']) || $HeavyInfo['DisableAvatars']))?>
               </td>
 <?  } ?>
-              <td class="body" valign="top">
+              <td class="body valign_top">
                 <div id="contentpreview" style="text-align: left;">
                   <div id="preview_<?=$ReplyText->getID()?>"></div>
                 </div>
               </td>
             </tr>
           </table>
-          <form class="send_form center" name="reply" id="quickpostform" action="<?=$Action?>" method="post"<? if (!check_perms('users_mod')) { ?> onsubmit="quickpostform.submit_button.disabled = true;"<? } ?>>
+          <form class="send_form center" name="reply" id="quickpostform" <?=isset($Action)?'action="'.$Action.'"':''?> method="post"<? if (!check_perms('users_mod')) { ?> onsubmit="quickpostform.submit_button.disabled = true;"<? } ?>>
             <input type="hidden" name="action" value="<?=$InputAction?>" />
             <input type="hidden" name="auth" value="<?=G::$LoggedUser['AuthKey']?>" />
             <input type="hidden" name="<?=$InputName?>" value="<?=$InputID?>" />

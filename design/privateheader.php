@@ -3,13 +3,14 @@
 define('FOOTER_FILE', SERVER_ROOT.'/design/privatefooter.php');
 
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <title><?=display_str($PageTitle)?></title>
   <meta charset="utf-8" />
-  <meta id="auth_holder" userid="<?=G::$LoggedUser['ID']?>" authkey="<?=G::$LoggedUser['AuthKey']?>" />
-  <link rel="shortcut icon" href="favicon.ico?v=<?=md5_file('favicon.ico');?>" />
+  <meta name="userid" content="<?=G::$LoggedUser['ID']?>" />
+  <meta name="authkey" content="<?=G::$LoggedUser['AuthKey']?>" />
+  <link rel="shortcut icon" href="favicon.ico?v=<?=md5_file('favicon.ico')?>" />
   <link rel="search" type="application/opensearchdescription+xml" title="<?=SITE_NAME?>" href="<?=STATIC_SERVER?>opensearch.xml">
   <link rel="alternate" type="application/rss+xml"
       href="feeds.php?feed=feed_news&amp;user=<?=G::$LoggedUser['ID']?>&amp;auth=<?=G::$LoggedUser['RSS_Auth']?>&amp;passkey=<?=G::$LoggedUser['torrent_pass']?>&amp;authkey=<?=G::$LoggedUser['AuthKey']?>"
@@ -195,7 +196,6 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
               <a href="better.php">Better</a>
             </div>
           </li>
-        </ul>
         </ul>
       </div>
 <?

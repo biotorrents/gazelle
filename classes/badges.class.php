@@ -125,9 +125,9 @@ class Badges {
 
     if (isset($Icon)) {
       if ($Tooltip) {
-        $html .= "<a class='badge_icon'><img class='tooltip' title='$Name</br>$Description' src='$Icon' /></a>";
+        $html .= '<a class="badge_icon"><img class="tooltip" alt="'.$Name.'" title="'.$Name.'</br>'.$Description.'" src="'.$Icon.'" /></a>';
       } else {
-        $html .= "<a class='badge_icon'><img title='$Name' src='$Icon' /></a>";
+        $html .= '<a class="badge_icon"><img alt="'.$Name.'" title="'.$Name.'" src="'.$Icon.'" /></a>';
       }
     }
 

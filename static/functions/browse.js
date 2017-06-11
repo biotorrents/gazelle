@@ -314,7 +314,7 @@ $(function() {
   }
   //Preload first result's cover
   if ($('#torrent_table').length > 0) {
-    var a = $('a[cover]')[0]
-    if (a) preload(a.attributes.cover.value)
+    var a = $('a[data-cover]')[0]
+    if (a) preload(a.attributes['data-cover'].value)
   }
 })

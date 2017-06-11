@@ -179,7 +179,7 @@ View::show_header($ThreadInfo['Title'] . ' &lt; '.$Forums[$ForumID]['Name'].' &l
     <div class="center">
       <a href="reports.php?action=report&amp;type=thread&amp;id=<?=$ThreadID?>" class="brackets">Report thread</a>
       <a href="#" onclick="Subscribe(<?=$ThreadID?>);return false;" id="subscribelink<?=$ThreadID?>" class="brackets"><?=(in_array($ThreadID, $UserSubscriptions) ? 'Unsubscribe' : 'Subscribe')?></a>
-      <a toggle-target="#searchthread" toggle-replace="Hide search" class="brackets">Search this thread</a>
+      <a data-toggle-target="#searchthread" data-toggle-replace="Hide search" class="brackets">Search this thread</a>
     </div>
     <div id="searchthread" class="hidden center">
       <div style="display: inline-block;">
@@ -187,7 +187,7 @@ View::show_header($ThreadInfo['Title'] . ' &lt; '.$Forums[$ForumID]['Name'].' &l
         <form class="search_form" name="forum_thread" action="forums.php" method="get">
           <input type="hidden" name="action" value="search" />
           <input type="hidden" name="threadid" value="<?=$ThreadID?>" />
-          <table cellpadding="6" cellspacing="1" border="0" class="layout border">
+          <table class="layout border">
             <tr>
               <td><strong>Search for:</strong></td>
               <td><input type="search" id="searchbox" name="search" size="70" /></td>
@@ -356,7 +356,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
   //User has not voted
 ?>
       <div id="poll_container">
-        <form class="vote_form" name="poll" id="poll" action="">
+        <form class="vote_form" name="poll" id="poll">
           <input type="hidden" name="action" value="poll" />
           <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
           <input type="hidden" name="large" value="1" />
@@ -479,7 +479,7 @@ foreach ($Thread as $Key => $Post) {
     $AuthorInfo = Users::user_info($AuthorID);
     if ($LoggedUser['Class'] >= $AuthorInfo['Class']) {
 ?>
-        <form class="manage_form hidden" name="user" id="warn<?=$PostID?>" action="" method="post">
+        <form class="manage_form hidden" name="user" id="warn<?=$PostID?>" method="post">
           <input type="hidden" name="action" value="warn" />
           <input type="hidden" name="postid" value="<?=$PostID?>" />
           <input type="hidden" name="userid" value="<?=$AuthorID?>" />
@@ -496,11 +496,11 @@ foreach ($Thread as $Key => $Post) {
   </tr>
   <tr>
 <?  if (Users::has_avatars_enabled()) { ?>
-    <td class="avatar" valign="top">
+    <td class="avatar valign_top">
     <?=Users::show_avatar($Avatar, $AuthorID, $Username, $HeavyInfo['DisableAvatars'], 150, true)?>
     </td>
 <?  } ?>
-    <td class="body" valign="top"<? if (!Users::has_avatars_enabled()) { echo ' colspan="2"'; } ?>>
+    <td class="body valign_top"<? if (!Users::has_avatars_enabled()) { echo ' colspan="2"'; } ?>>
       <div id="content<?=$PostID?>">
         <?=Text::full_format($Body) ?>
 <?  if ($EditedUserID) { ?>
@@ -512,8 +512,8 @@ foreach ($Thread as $Key => $Post) {
 <?    } ?>
         Last edited by
         <?=Users::format_username($EditedUserID, false, false, false, false, false, $IsDonorForum) ?> <?=time_diff($EditedTime, 2, true, true)?>
+        </div>
 <?  } ?>
-      </div>
       </div>
     </td>
   </tr>
@@ -548,12 +548,12 @@ if (check_perms('site_moderate_forums')) {
   $Notes = G::$DB->to_array();
 ?>
   <br />
-  <h3 id="thread_notes">Thread notes</h3> <a toggle-target="#thread_notes_table" class="brackets">Toggle</a>
+  <h3 id="thread_notes">Thread notes</h3> <a data-toggle-target="#thread_notes_table" class="brackets">Toggle</a>
   <form action="forums.php" method="post">
     <input type="hidden" name="action" value="take_topic_notes" />
     <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
     <input type="hidden" name="topicid" value="<?=$ThreadID?>" />
-    <table cellpadding="6" cellspacing="1" border="0" width="100%" class="layout border hidden" id="thread_notes_table">
+    <table class="layout border hidden" id="thread_notes_table">
 <?
   foreach ($Notes as $Note) {
 ?>
@@ -562,7 +562,7 @@ if (check_perms('site_moderate_forums')) {
   }
 ?>
       <tr>
-        <td colspan="2" class="center">
+        <td class="center">
           <div class="field_div textarea_wrap"><textarea id="topic_notes" name="body" cols="90" rows="3" onkeyup="resize('threadnotes');" style=" margin: 0px; width: 735px;"></textarea></div>
           <input type="submit" value="Save" />
         </td>
@@ -578,11 +578,11 @@ if (check_perms('site_moderate_forums')) {
     <input type="hidden" name="threadid" value="<?=$ThreadID?>" />
     <input type="hidden" name="page" value="<?=$Page?>" />
     </div>
-    <table cellpadding="6" cellspacing="1" border="0" width="100%" class="layout border slight_margin">
+    <table class="layout border slight_margin">
       <tr>
         <td class="label"><label for="sticky_thread_checkbox">Sticky</label></td>
         <td>
-          <input type="checkbox" id="sticky_thread_checkbox" toggle-target="#ranking_row" name="sticky"<? if ($ThreadInfo['IsSticky']) { echo ' checked="checked"'; } ?> tabindex="2" />
+          <input type="checkbox" id="sticky_thread_checkbox" data-toggle-target="#ranking_row" name="sticky"<? if ($ThreadInfo['IsSticky']) { echo ' checked="checked"'; } ?> tabindex="2" />
         </td>
       </tr>
       <tr id="ranking_row"<?=!$ThreadInfo['IsSticky'] ? ' class="hidden"' : ''?>>

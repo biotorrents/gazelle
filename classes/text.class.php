@@ -734,7 +734,7 @@ class Text {
                 }
                 $Str .= '"';
                 if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-                  $Str .= " onmouseover=\"getCover(event)\" cover=\"".ImageTools::process($Group['WikiImage'], true)."\" onmouseleave=\"ungetCover(event)\"";
+                  $Str .= " onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($Group['WikiImage'], true)."\" onmouseleave=\"ungetCover(event)\"";
                 }
                 $Name = empty($Group['Name']) ? (empty($Group['NameRJ']) ? $Group['NameJP'] : $Group['NameRJ']) : $Group['Name'];
                 $Str .= '>'.$Name.'</a>';
@@ -1008,7 +1008,7 @@ class Text {
     }
     if (count(self::$ProcessedSmileys) == 0 && count(self::$Smileys) > 0) {
       foreach (self::$Smileys as $Key => $Val) {
-        self::$ProcessedSmileys[$Key] = '<img border="0" src="'.STATIC_SERVER.'common/smileys/'.$Val.'" alt="" />';
+        self::$ProcessedSmileys[$Key] = '<img src="'.STATIC_SERVER.'common/smileys/'.$Val.'" alt="" />';
       }
       reset(self::$ProcessedSmileys);
     }

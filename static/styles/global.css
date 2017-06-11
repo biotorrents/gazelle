@@ -111,7 +111,7 @@ div.collage_image {
   width: 20%;
 }
 
-[toggle-target], [quote-jump] {
+[data-toggle-target], [quote-jump] {
   cursor: pointer;
 }
 
@@ -267,7 +267,7 @@ div#AddArtists a {
   width: 95%
 }
 
-td.label {
+td.label, .valign_top {
   vertical-align: top;
 }
 
@@ -721,6 +721,10 @@ tr.torrent .bookmark>a:after {
 
 .scale_image {
   max-width: 500px;
+}
+
+.display_block {
+  display: block;
 }
 
 .sidebar img {

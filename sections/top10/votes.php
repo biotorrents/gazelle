@@ -174,7 +174,7 @@ foreach ($TopVotes as $GroupID => $Group) {
 
   $DisplayName .= '<a href="torrents.php?id='.$GroupID.'" dir="ltr"';
   if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-    $DisplayName .= ' onmouseover="getCover(event)" cover="'.ImageTools::process($WikiImage, true).'" onmouseleave="ungetCover(event)"';
+    $DisplayName .= ' onmouseover="getCover(event)" data-cover="'.ImageTools::process($WikiImage, true).'" onmouseleave="ungetCover(event)"';
   }
   $DisplayName .= '>'.$GroupName.'</a>';
   if ($GroupYear > 0) {
@@ -272,7 +272,7 @@ foreach ($TopVotes as $GroupID => $Group) {
 
     $DisplayName = $Group['Rank'] .' - <a href="torrents.php?id='.$GroupID.'" dir="ltr"';
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-      $DisplayName .= ' onmouseover="getCover(event)" cover="'.ImageTools::process($WikiImage, true).'" onmouseleave="ungetCover(event)"';
+      $DisplayName .= ' onmouseover="getCover(event)" data-cover="'.ImageTools::process($WikiImage, true).'" onmouseleave="ungetCover(event)"';
     }
     $DisplayName .= '>'.$GroupName.'</a>';
     if ($Torrent['IsSnatched']) {

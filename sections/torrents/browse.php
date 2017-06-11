@@ -148,7 +148,7 @@ View::show_header('Browse Torrents', 'browse');
   <div class="header">
     <h2>Torrents</h2>
   </div>
-  <form class="search_form" name="torrents" method="get" action="" onsubmit="$(this).disableUnset();">
+  <form class="search_form" name="torrents" method="get" onsubmit="$(this).disableUnset();">
   <div class="box filter_torrents">
     <div class="head">
       <strong>
@@ -172,13 +172,13 @@ View::show_header('Browse Torrents', 'browse');
       <table class="layout">
         <tr id="artist_name" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label"><!--Artist name:--></td>
-          <td colspan="3" class="ft_artistname">
+          <td class="ft_artistname">
             <input type="search" spellcheck="false" size="65" name="artistname" class="inputtext smaller fti_advanced" placeholder="Artist name" value="<?Format::form('artistname')?>" />
           </td>
         </tr>
         <tr id="album_torrent_name" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label"><!--Torrent name:--></td>
-          <td colspan="3" class="ft_groupname">
+          <td class="ft_groupname">
             <input type="search" spellcheck="false" size="65" name="advgroupname" class="inputtext smaller fti_advanced" placeholder="Torrent name" value="<?Format::form('advgroupname')?>" />
           </td>
         </tr>
@@ -202,19 +202,19 @@ View::show_header('Browse Torrents', 'browse');
         </tr>
         <tr id="file_list" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label"><!--File list:--></td>
-          <td colspan="3" class="ft_filelist">
+          <td class="ft_filelist">
             <input type="search" spellcheck="false" size="65" name="filelist" class="inputtext fti_advanced" placeholder="File list" value="<?Format::form('filelist')?>" />
           </td>
         </tr>
         <tr id="torrent_description" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label"><!--<span title="Search torrent descriptions (not group information)" class="tooltip">Torrent description:</span>--></td>
-          <td colspan="3" class="ft_description">
+          <td class="ft_description">
             <input type="search" spellcheck="false" size="65" name="description" class="inputtext fti_advanced tooltip_left" placeholder="Torrent description" title="Search torrent descriptions (not group information)" value="<?Format::form('description')?>" />
           </td>
         </tr>
         <tr id="rip_specifics" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label">Release specifics:</td>
-          <td class="nobr ft_ripspecifics" colspan="3">
+          <td class="nobr ft_ripspecifics">
             <select id="container" name="container" class="ft_container fti_advanced">
               <option value="">Container</option>
   <?  foreach ($Containers as $Container) { ?>
@@ -264,13 +264,13 @@ View::show_header('Browse Torrents', 'browse');
         </tr>
         <tr id="subber" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label"><!--Translation Group:--></td>
-          <td colspan="3" class="ft_subber">
+          <td class="ft_subber">
             <input type="search" spellcheck="false" size="65" name="subber" class="inputtext smaller fti_advanced" placeholder="Translation Group" value="<?Format::form('subber')?>" />
           </td>
         </tr>
         <tr id="misc" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label">Misc:</td>
-          <td class="nobr ft_misc" colspan="3">
+          <td class="nobr ft_misc">
             <select name="freetorrent" class="ft_freetorrent fti_advanced">
               <option value="">Leech Status</option>
               <option value="1"<?Format::selected('freetorrent', 1)?>>Freeleech</option>
@@ -283,18 +283,17 @@ View::show_header('Browse Torrents', 'browse');
               <option value="1"<?Format::selected('censored', 1)?>>Censored</option>
               <option value="0"<?Format::selected('censored', 0)?>>Uncensored</option>
             </select>
-            </select>
           </td>
         </tr>
         <tr id="search_terms" class="ftr_basic<?=$HideBasic?>">
           <td class="label"><!--Search terms:--></td>
-          <td colspan="3" class="ftb_searchstr">
+          <td class="ftb_searchstr">
             <input type="search" spellcheck="false" size="48" name="searchstr" class="inputtext fti_basic" placeholder="Search terms" value="<?Format::form('searchstr')?>" />
           </td>
         </tr>
         <tr id="tagfilter">
           <td class="label"><!--<span title="Use !tag to exclude tag" class="tooltip">Tags (comma-separated):</span>--></td>
-          <td colspan="3" class="ft_taglist">
+          <td class="ft_taglist">
             <input type="search" size="37" id="tags" name="taglist" class="inputtext smaller tooltip_left" title="Use !tag to exclude tag" placeholder="Tags (comma separated)" value="<?=display_str($Search->get_terms('taglist'))?>"<? Users::has_autocomplete_enabled('other'); ?> />&nbsp;
             <input type="radio" name="tags_type" id="tags_type0" value="0"<?Format::selected('tags_type', 0, 'checked')?> /><label for="tags_type0"> Any</label>&nbsp;&nbsp;
             <input type="radio" name="tags_type" id="tags_type1" value="1"<?Format::selected('tags_type', 1, 'checked')?> /><label for="tags_type1"> All</label>
@@ -302,7 +301,7 @@ View::show_header('Browse Torrents', 'browse');
         </tr>
         <tr id="order">
           <td class="label">Order by:</td>
-          <td colspan="3" class="ft_order">
+          <td class="ft_order">
             <select name="order_by" style="width: auto;" class="ft_order_by">
               <option value="time"<?Format::selected('order_by', 'time')?>>Time added</option>
               <option value="year"<?Format::selected('order_by', 'year')?>>Year</option>
@@ -323,7 +322,7 @@ View::show_header('Browse Torrents', 'browse');
           <td class="label">
             <label for="group_results">Group by release:</label>
           </td>
-          <td colspan="3" class="ft_group_results">
+          <td class="ft_group_results">
             <input type="checkbox" value="1" name="group_results" id="group_results"<?=$GroupResults ? ' checked="checked"' : ''?> />
           </td>
         </tr>
@@ -369,7 +368,7 @@ View::show_header('Browse Torrents', 'browse');
   $x = 0;
   foreach ($GenreTags as $Tag) {
   ?>
-          <td width="12.5%"><a href="#" onclick="add_tag('<?=$Tag?>'); return false;"><?=$Tag?></a></td>
+          <td><a href="#" onclick="add_tag('<?=$Tag?>'); return false;"><?=$Tag?></a></td>
   <?
     $x++;
     if ($x % 7 == 0) {
@@ -385,10 +384,10 @@ View::show_header('Browse Torrents', 'browse');
   <? } ?>
         </tr>
       </table>
-      <table class="layout cat_list" width="100%">
+      <table class="layout cat_list">
         <tr>
           <td class="label">
-            <a class="brackets" toggle-target="#taglist" toggle-replace="<?=(empty($LoggedUser['ShowTags']) ? 'Hide tags' : 'View tags')?>"><?=(empty($LoggedUser['ShowTags']) ? 'View tags' : 'Hide tags')?></a>
+            <a class="brackets" data-toggle-target="#taglist" data-toggle-replace="<?=(empty($LoggedUser['ShowTags']) ? 'Hide tags' : 'View tags')?>"><?=(empty($LoggedUser['ShowTags']) ? 'View tags' : 'Hide tags')?></a>
           </td>
         </tr>
       </table>
@@ -448,7 +447,7 @@ View::show_header('Browse Torrents', 'browse');
       <td class="small"></td>
   <?  } ?>
       <td class="small cats_col"></td>
-      <td width="100%">Name / <a href="<?=header_link('year')?>">Year</a></td>
+      <td>Name / <a href="<?=header_link('year')?>">Year</a></td>
       <td>Files</td>
       <td><a href="<?=header_link('time')?>">Time</a></td>
       <td><a href="<?=header_link('size')?>">Size</a></td>
@@ -514,7 +513,7 @@ View::show_header('Browse Torrents', 'browse');
     $CoverArt = $GroupInfo['WikiImage'];
     $DisplayName .= "<a class=\"torrent_title\" href=\"torrents.php?id=$GroupID\" ";
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-      $DisplayName .= "onmouseover=\"getCover(event)\" cover=\"".ImageTools::process($CoverArt)."\" onmouseleave=\"ungetCover(event)\" ";
+      $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($CoverArt)."\" onmouseleave=\"ungetCover(event)\" ";
     }
     $DisplayName .= "dir=\"ltr\">$GroupName</a>";
     if ($GroupYear) {
@@ -627,7 +626,7 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
     $CoverArt = $GroupInfo['WikiImage'];
     $DisplayName .= "<a class=\"torrent_name\" href=\"torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID\" ";
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-      $DisplayName .= "onmouseover=\"getCover(event)\" cover=\"".ImageTools::process($CoverArt)."\" onmouseleave=\"ungetCover(event)\" ";
+      $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($CoverArt)."\" onmouseleave=\"ungetCover(event)\" ";
     }
     $DisplayName .= "dir=\"ltr\">$GroupName</a>";
     if (isset($GroupedCategories[$CategoryID - 1])) {

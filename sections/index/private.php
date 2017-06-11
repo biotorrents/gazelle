@@ -155,7 +155,7 @@ if (count($Freeleeches)) {
     $DisplayTime = '('.str_replace(['week','day','hour','min','Just now','s',' '],['w','d','h','m','0m'],time_diff($ExpiryTime, 1, false)).') ';
     $DisplayName = '<a href="torrents.php?torrentid='.$ID.'"';
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-      $DisplayName .= " onmouseover=\"getCover(event)\" cover=\"".ImageTools::process($Image)."\" onmouseleave=\"ungetCover(event)\"";
+      $DisplayName .= " onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($Image)."\" onmouseleave=\"ungetCover(event)\"";
     }
     $DisplayName .= '>'.($Name?$Name:($NameRJ?$NameRJ:$NameJP)).'</a>';
 ?>
@@ -467,7 +467,7 @@ $Cache->increment('usage_index');
   <div class="box" id="recommended">
     <div class="head colhead_dark">
       <strong>Latest Vanity House additions</strong>
-      <a toggle-target="#vanityhouse", toggle-replace="Hide" class="brackets">Show</a>
+      <a data-toggle-target="#vanityhouse", data-toggle-replace="Hide" class="brackets">Show</a>
     </div>
 
     <table class="torrent_table hidden" id="vanityhouse">
@@ -514,7 +514,7 @@ foreach ($News as $NewsItem) {
 <?  if (check_perms('admin_manage_news')) { ?>
         - <a href="tools.php?action=editnews&amp;id=<?=$NewsID?>" class="brackets">Edit</a>
 <?  } ?>
-      <span style="float: right;"><a toggle-target="#newsbody<?=$NewsID?>" toggle-replace="Show" class="brackets">Hide</a></span>
+      <span style="float: right;"><a data-toggle-target="#newsbody<?=$NewsID?>" data-toggle-replace="Show" class="brackets">Hide</a></span>
       </div>
       <div id="newsbody<?=$NewsID?>" class="pad"><?=Text::full_format($Body)?></div>
     </div>

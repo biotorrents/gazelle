@@ -54,7 +54,7 @@ foreach ($Results as $Result) {
 
   $DisplayName = "<a href=\"torrents.php?id=$ID\" class=\"tooltip\" title=\"View torrent group\" ";
   if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-    $DisplayName .= 'onmouseover="getCover(event)" cover="'.ImageTools::process($WikiImage, true).'" onmouseleave="ungetCover(event)" ';
+    $DisplayName .= 'onmouseover="getCover(event)" data-cover="'.ImageTools::process($WikiImage, true).'" onmouseleave="ungetCover(event)" ';
   }
   $DisplayName .= "dir=\"ltr\">$LangName</a>";
   if ($Year > 0) {

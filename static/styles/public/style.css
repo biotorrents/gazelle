@@ -122,6 +122,11 @@ input[type="submit"]:hover {
   text-align: justify;
 }
 
+.centered {
+  text-align: center;
+  vertical-align: middle;
+}
+
 .hidden {
   display: none;
 }

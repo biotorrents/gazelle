@@ -2,11 +2,11 @@
 global $LoggedUser;
 define('FOOTER_FILE',SERVER_ROOT.'/design/publicfooter.php');
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html>
 <head>
   <title><?=display_str($PageTitle)?></title>
-  <meta http-equiv="X-UA-Compatible" content="chrome=1; IE=edge" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <link rel="shortcut icon" href="favicon.ico?v=<?=md5_file('favicon.ico');?>" />
   <link href="<?=STATIC_SERVER ?>styles/public/style.css?v=<?=filemtime(SERVER_ROOT.'/static/styles/public/style.css')?>" rel="stylesheet" type="text/css" />
 <?
@@ -23,7 +23,7 @@ define('FOOTER_FILE',SERVER_ROOT.'/design/publicfooter.php');
 <?
   }
   $img = array_diff(scandir(SERVER_ROOT.'/misc/bg', 1), array('.', '..')); ?>
-  <meta id="bg_data" bg="<?=$img[rand(0,count($img)-1)]?>">
+  <meta name="bg_data" content="<?=$img[rand(0,count($img)-1)]?>">
 </head>
 <body>
 <div id="head"><span>
@@ -35,6 +35,6 @@ define('FOOTER_FILE',SERVER_ROOT.'/design/publicfooter.php');
 <div id="content">
   <table class="layout" id="maincontent">
     <tr>
-      <td align="center" valign="middle">
+      <td class="centered">
         <a href="index.php"><div id="logo"></div></a>
 <?
