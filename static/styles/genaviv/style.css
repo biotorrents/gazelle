@@ -1207,6 +1207,7 @@ td {
   width: 100%;
   z-index: 99999;
   margin-top: 14px;
+  left: 0;
 }
 #nav_links > #links_menu {
   width: 120px;

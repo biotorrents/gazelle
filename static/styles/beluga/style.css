@@ -322,6 +322,7 @@ p.min_padding {
   background: #509599;
   margin-top: 50px;
   z-index: 99999;
+  left: 0;
 }
 
 #menu > ul > .nav_dropdown:hover {

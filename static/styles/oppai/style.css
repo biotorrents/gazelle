@@ -214,6 +214,7 @@ ul.thin li { margin:0px 0px; padding:0px; }
   width: 100%;
   z-index: 99999;
   margin-top: 32px;
+  left: 0;
 }
 
 #nav_links > #links_menu {
