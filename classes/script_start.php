@@ -10,7 +10,12 @@
 /*------------------------------------------------------*/
 /********************************************************/
 require 'config.php'; //The config contains all site wide configuration information
-//Deal with dumbasses
+
+// Check for common setup pitfalls
+if (!ini_get('short_open_tag')) { die('short_open_tag must be On in php.ini'); }
+if (!extension_loaded('apcu')) { die('APCu extension not loaded'); }
+
+// Deal with dumbasses
 if (isset($_REQUEST['info_hash']) && isset($_REQUEST['peer_id'])) {
   die('d14:failure reason40:Invalid .torrent, try downloading again.e');
 }
