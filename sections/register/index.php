@@ -41,7 +41,7 @@ if (!empty($_REQUEST['confirm'])) {
   $Val->SetFields('agereq', true, 'checkbox', 'You did not select the box that says you are 18 years of age or older.');
   //$Val->SetFields('captcha', true, 'string', 'You did not enter a captcha code.', array('minlength' => 6, 'maxlength' => 6));
 
-  if (!apc_exists('DBKEY')) {
+  if (!apcu_exists('DBKEY')) {
     $Err = "Registration temporarily disabled due to degraded database access (security measure)";
   }
 

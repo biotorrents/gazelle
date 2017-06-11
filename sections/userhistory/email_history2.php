@@ -182,9 +182,9 @@ if ($Old ?? false) {
       <td>Set from IP</td>
     </tr>
 <?
-$Current['Email'] = apc_exists('DBKEY') ? DBCrypt::decrypt($Current['Email']) : '[Encrypted]';
-$Current['CurrentIP'] = apc_exists('DBKEY') ? DBCrypt::decrypt($Current['CurrentIP']) : '[Encrypted]';
-$Current['IP'] = apc_exists('DBKEY') ? DBCrypt::decrypt($Current['IP']) : '[Encrypted]';
+$Current['Email'] = apcu_exists('DBKEY') ? DBCrypt::decrypt($Current['Email']) : '[Encrypted]';
+$Current['CurrentIP'] = apcu_exists('DBKEY') ? DBCrypt::decrypt($Current['CurrentIP']) : '[Encrypted]';
+$Current['IP'] = apcu_exists('DBKEY') ? DBCrypt::decrypt($Current['IP']) : '[Encrypted]';
 ?>
     <tr class="row">
       <td><?=display_str($Current['Email'])?></td>
@@ -211,7 +211,7 @@ $Current['IP'] = apc_exists('DBKEY') ? DBCrypt::decrypt($Current['IP']) : '[Encr
 if ($CurrentMatches ?? false) {
   // Match on the current email
   foreach ($CurrentMatches as $Match) {
-    $Match['IP'] = apc_exists('DBKEY') ? DBCrypt::decrypt($Match['IP']) : '[Encrypted]';
+    $Match['IP'] = apcu_exists('DBKEY') ? DBCrypt::decrypt($Match['IP']) : '[Encrypted]';
 ?>
     <tr class="row">
       <td><?=$Match['Username']?></td>
@@ -279,8 +279,8 @@ if ($Old ?? false) {
     $Matches = ob_get_contents();
     ob_end_clean();
 
-    $Record['Email'] = apc_exists('DBKEY') ? DBCrypt::decrypt($Record['Email']) : '[Encrypted]';
-    $Record['IP'] = apc_exists('DBKEY') ? DBCrypt::decrypt($Record['IP']) : '[Encrypted]';
+    $Record['Email'] = apcu_exists('DBKEY') ? DBCrypt::decrypt($Record['Email']) : '[Encrypted]';
+    $Record['IP'] = apcu_exists('DBKEY') ? DBCrypt::decrypt($Record['IP']) : '[Encrypted]';
 ?>
     <tr class="row">
       <td><?=display_str($Record['Email'])?><?=(($MatchCount > 0) ? ' <a data-toggle-target="#matches_'.$j.'">('.$MatchCount.')</a>' : '')?></td>
@@ -325,7 +325,7 @@ if ($OldMatches ?? false) {
       ++$i;
       // Match email is the same as the invite email
 
-      $Match['IP'] = apc_exists('DBKEY') ? DBCrypt::decrypt($Match['IP']) : '[Encrypted]';
+      $Match['IP'] = apcu_exists('DBKEY') ? DBCrypt::decrypt($Match['IP']) : '[Encrypted]';
 ?>
     <tr class="row hidden" id="matches_invite">
       <td><?=$Match['Username']?></td>
@@ -349,8 +349,8 @@ $MatchCount = $i;
 $Matches = ob_get_contents();
 ob_end_clean();
 
-$Invite['Email'] = apc_exists('DBKEY') ? DBCrypt::decrypt($Invite['Email']) : '[Encrypted]';
-$Invite['IP'] = apc_exists('DBKEY') ? DBCrypt::decrypt($Invite['IP']) : '[Encrypted]';
+$Invite['Email'] = apcu_exists('DBKEY') ? DBCrypt::decrypt($Invite['Email']) : '[Encrypted]';
+$Invite['IP'] = apcu_exists('DBKEY') ? DBCrypt::decrypt($Invite['IP']) : '[Encrypted]';
 ?>
     <tr class="row">
       <td><?=display_str($Invite['Email'])?><?=(($MatchCount > 0) ? ' <a data-toggle-target="#matches_invite">('.$MatchCount.')</a>' : '')?></td>

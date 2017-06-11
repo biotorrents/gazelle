@@ -27,7 +27,7 @@ $DB->query("
   WHERE m.ID = '$PostID'
     AND u.UserID = ".$LoggedUser['ID']);
 list($Body) = $DB->next_record(MYSQLI_NUM);
-$Body = apc_exists('DBKEY') ? DBCrypt::decrypt($Body) : '[Encrypted]';
+$Body = apcu_exists('DBKEY') ? DBCrypt::decrypt($Body) : '[Encrypted]';
 
 // This gets sent to the browser, which echoes it wherever
 

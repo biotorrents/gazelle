@@ -133,7 +133,7 @@ $RequiredRatio, $Enabled, $Paranoia, $Invites, $CustomTitle, $torrent_pass,
 $DisableLeech, $JoinDate, $Info, $Avatar, $FLTokens, $BonusPoints, $IRCLines, $Donor, $Warned,
 $ForumPosts, $InviterID, $DisableInvites, $InviterName, $InfoTitle) = $DB->next_record(MYSQLI_NUM, array(9, 11));
 }
-$Email = apc_exists('DBKEY') ? DBCrypt::decrypt($Email) : '[Encrypted]';
+$Email = apcu_exists('DBKEY') ? DBCrypt::decrypt($Email) : '[Encrypted]';
 
 $DB->query("
   SELECT SUM(t.Size)
@@ -588,7 +588,7 @@ if ($ParanoiaLevel == 0) {
 <?  }
 
 if (check_perms('users_view_ips', $Class)) {
-  $IP = apc_exists('DBKEY') ? DBCrypt::decrypt($IP) : '[Encrypted]';
+  $IP = apcu_exists('DBKEY') ? DBCrypt::decrypt($IP) : '[Encrypted]';
 ?>
         <li>IP: <?=Tools::display_ip($IP)?></li>
         <li>Host: <?=Tools::get_host_by_ajax($IP)?></li>
@@ -1440,8 +1440,8 @@ if (!$DisablePoints) {
 <?
       foreach ($Emails as $Email) {
         list($Address, $IP) = $Email;
-        $IP = apc_exists('DBKEY') ? DBCrypt::decrypt($IP) : '[Encrypted]';
-        $Address = apc_exists('DBKEY') ? DBCrypt::decrypt($Address) : '[Encrypted]';
+        $IP = apcu_exists('DBKEY') ? DBCrypt::decrypt($IP) : '[Encrypted]';
+        $Address = apcu_exists('DBKEY') ? DBCrypt::decrypt($Address) : '[Encrypted]';
 ?>
             <option value="<?=display_str($Address)?>"><?=display_str($Address)?> - <?=display_str($IP)?></option>
 <?    } ?>

@@ -39,7 +39,7 @@ if (check_perms('site_advanced_search')) {
 
 $Err = $Val->ValidateForm($_POST);
 
-if (!apc_exists('DBKEY')) {
+if (!apcu_exists('DBKEY')) {
   $Err = "Cannot edit profile until database fully decrypted.";
 }
 

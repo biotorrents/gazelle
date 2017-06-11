@@ -11,7 +11,7 @@ if (!$UserCount = $Cache->get_value('stats_user_count')) {
 
 $UserID = $LoggedUser['ID'];
 
-if (!apc_exists('DBKEY')) {
+if (!apcu_exists('DBKEY')) {
   error('Invites disabled until database decrypted');
   header('Location: user.php?action=invite');
   die();

@@ -109,7 +109,7 @@ foreach ($History as $Key => $Values) {
     $Values['Time'] = $Joined;
   }
 
-  $ValuesIP = apc_exists('DBKEY') ? DBCrypt::decrypt($Values['IP']) : '[Encrypted]';
+  $ValuesIP = apcu_exists('DBKEY') ? DBCrypt::decrypt($Values['IP']) : '[Encrypted]';
 ?>
   <tr class="row">
     <td><?=display_str($Values['Email'])?></td>
@@ -128,7 +128,7 @@ foreach ($History as $Key => $Values) {
             AND ue.UserID != $UserID
             AND um.ID = ue.UserID");
     while (list($UserID2, $Time, $IP) = $DB->next_record()) {
-      $IP = apc_exists('DBKEY') ? DBCrypt::decrypt($IP) : '[Encrypted]';
+      $IP = apcu_exists('DBKEY') ? DBCrypt::decrypt($IP) : '[Encrypted]';
 ?>
   </tr>
   <tr>

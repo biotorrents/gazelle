@@ -187,7 +187,7 @@ $CanManageIPBans = check_perms('admin_manage_ipbans');
 foreach ($Results as $Index => $Result) {
   list($IP, $StartTime, $EndTime, $UserIDs, $UserStartTimes, $UserEndTimes, $Usernames, $UsersEnabled, $UsersDonor, $UsersWarned) = $Result;
 
-  $IP = apc_exists('DBKEY') ? DBCrypt::decrypt($IP) : '[Encrypted]';
+  $IP = apcu_exists('DBKEY') ? DBCrypt::decrypt($IP) : '[Encrypted]';
 
   $HasDupe = false;
   $UserIDs = explode('|', $UserIDs);

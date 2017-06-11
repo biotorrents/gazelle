@@ -15,7 +15,7 @@ if (!$_POST['userid'] || !is_number($_POST['userid'])) {
 authorize();
 // End checking for moronity
 
-if (!apc_exists('DBKEY')) {
+if (!apcu_exists('DBKEY')) {
   error('Decrypt database first');
 }
 

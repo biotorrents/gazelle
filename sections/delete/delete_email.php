@@ -4,7 +4,7 @@ if (!isset($_GET['emails']) || !is_array($_GET['emails'])) {
   error("Stop that.");
 }
 
-if (!apc_exists('DBKEY')) {
+if (!apcu_exists('DBKEY')) {
   error(403);
 }
 

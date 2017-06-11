@@ -29,7 +29,7 @@ list($Username, $TwoFactor, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID
 
 $TwoFA = new TwoFactorAuth();
 
-$Email = apc_exists('DBKEY') ? DBCrypt::decrypt($Email) : '[Encrypted]';
+$Email = apcu_exists('DBKEY') ? DBCrypt::decrypt($Email) : '[Encrypted]';
 
 if ($UserID != $LoggedUser['ID'] && !check_perms('users_edit_profiles', $Class)) {
   error(403);

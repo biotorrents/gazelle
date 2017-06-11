@@ -11,7 +11,7 @@ if (isset($_POST['dbkey'])) {
   if (!FEATURE_SET_ENC_KEY_PUBLIC) {
     authorize();
   }
-  apc_store('DBKEY', hash('sha512', $_POST['dbkey']));
+  apcu_store('DBKEY', hash('sha512', $_POST['dbkey']));
 }
 
 View::show_header('Database Encryption Key');
@@ -21,7 +21,7 @@ View::show_header('Database Encryption Key');
   <h2>Database Encryption Key</h2>
 </div>
 <div class="box pad slight_margin">
-  <h4>There is <?=((apc_exists('DBKEY') && apc_fetch('DBKEY'))?"already a":"NO")?> key loaded</h4>
+  <h4>There is <?=((apcu_exists('DBKEY') && apcu_fetch('DBKEY'))?"already a":"NO")?> key loaded</h4>
   <form class="create_form" name="db_key" action="" method="post">
     <input type="hidden" name="action" value="database_key" />
     <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />

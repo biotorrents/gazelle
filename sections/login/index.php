@@ -46,7 +46,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
         AND i.ResetKey != ''");
     list($UserID, $Email, $Country, $Expires) = $DB->next_record();
 
-    if (!apc_exists('DBKEY')) {
+    if (!apcu_exists('DBKEY')) {
       error('Database not fully decrypted. Please wait for staff to fix this and try again later');
     }
 
@@ -114,7 +114,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
     if (!empty($_REQUEST['email'])) {
       // User has entered email and submitted form
       $Err = $Validate->ValidateForm($_REQUEST);
-      if (!apc_exists('DBKEY')) {
+      if (!apcu_exists('DBKEY')) {
         $Err = 'Database not fully decrypted. Please wait for staff to fix this and try again.';
       }
 
@@ -254,7 +254,7 @@ else {
             if ($Enabled == 1) {
 
               // Check if the current login attempt is from a location previously logged in from
-              if (apc_exists('DBKEY')) {
+              if (apcu_exists('DBKEY')) {
                 $DB->query("
                   SELECT IP
                   FROM users_history_ips
@@ -310,14 +310,14 @@ else {
                 INSERT INTO users_sessions
                   (UserID, SessionID, KeepLogged, Browser, OperatingSystem, IP, LastUpdate, FullUA)
                 VALUES
-                  ('$UserID', '".db_string($SessionID)."', '1', '$Browser', '$OperatingSystem', '".db_string(apc_exists('DBKEY')?DBCrypt::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0')."', '".sqltime()."', '".db_string($_SERVER['HTTP_USER_AGENT'])."')");
+                  ('$UserID', '".db_string($SessionID)."', '1', '$Browser', '$OperatingSystem', '".db_string(apcu_exists('DBKEY')?DBCrypt::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0')."', '".sqltime()."', '".db_string($_SERVER['HTTP_USER_AGENT'])."')");
 
               $Cache->begin_transaction("users_sessions_$UserID");
               $Cache->insert_front($SessionID, array(
                   'SessionID' => $SessionID,
                   'Browser' => $Browser,
                   'OperatingSystem' => $OperatingSystem,
-                  'IP' => (apc_exists('DBKEY')?DBCrypt::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0'),
+                  'IP' => (apcu_exists('DBKEY')?DBCrypt::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0'),
                   'LastUpdate' => sqltime()
                   ));
               $Cache->commit_transaction(0);

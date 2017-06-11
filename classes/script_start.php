@@ -190,7 +190,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
      "UPDATE users_sessions
       SET ";
     // Only update IP if we have an encryption key in memory
-    if (apc_exists('DBKEY')) {
+    if (apcu_exists('DBKEY')) {
       $SessionQuery .= "IP = '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."', ";
     }
     $SessionQuery .=
@@ -206,7 +206,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
         'SessionID' => $SessionID,
         'Browser' => $Browser,
         'OperatingSystem' => $OperatingSystem,
-        'IP' => ((apc_exists('DBKEY')) ? DBCrypt::encrypt($_SERVER['REMOTE_ADDR']) : $UserSessions[$SessionID]['IP']),
+        'IP' => ((apcu_exists('DBKEY')) ? DBCrypt::encrypt($_SERVER['REMOTE_ADDR']) : $UserSessions[$SessionID]['IP']),
         'LastUpdate' => sqltime() );
     $Cache->insert_front($SessionID, $UsersSessionCache);
     $Cache->commit_transaction(0);
@@ -232,7 +232,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
 
   // IP changed
 
-  if (apc_exists('DBKEY') && DBCrypt::decrypt($LoggedUser['IP']) != $_SERVER['REMOTE_ADDR'] && !check_perms('site_disable_ip_history')) {
+  if (apcu_exists('DBKEY') && DBCrypt::decrypt($LoggedUser['IP']) != $_SERVER['REMOTE_ADDR'] && !check_perms('site_disable_ip_history')) {
 
     if (Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
       error('Your IP address has been banned.');

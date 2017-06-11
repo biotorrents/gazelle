@@ -49,7 +49,7 @@ $DB->query("
   </tr>
 <?
 while (list($ChangeTime, $ChangerIP) = $DB->next_record()) {
-  $ChangerIP = (apc_exists('DBKEY')) ? DBCrypt::decrypt($ChangerIP) : '[Encrypted]';
+  $ChangerIP = (apcu_exists('DBKEY')) ? DBCrypt::decrypt($ChangerIP) : '[Encrypted]';
 ?>
   <tr class="row">
     <td><?=time_diff($ChangeTime)?></td>

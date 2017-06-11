@@ -7,7 +7,7 @@ if (!isset($_POST['emails']) || !is_array($_POST['emails'])) {
   error("Stop that.");
 }
 
-if (!apc_exists('DBKEY')) {
+if (!apcu_exists('DBKEY')) {
   error(403);
 }
 

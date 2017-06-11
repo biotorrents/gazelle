@@ -1,7 +1,7 @@
 <?
 //------------- Disable inactive user accounts --------------------------//
 
-if (apc_exists('DBKEY')) {
+if (apcu_exists('DBKEY')) {
   // Send email
   $DB->query("
     SELECT um.Username, um.Email

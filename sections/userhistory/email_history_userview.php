@@ -10,7 +10,7 @@ if (!check_perms('users_mod') && !$Self) {
   error(403);
 }
 
-if (!apc_exists('DBKEY')) {
+if (!apcu_exists('DBKEY')) {
   error('The site is currently running with partial database access. Please wait for staff to fully decrypt it');
 }
 

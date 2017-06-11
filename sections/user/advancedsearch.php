@@ -866,8 +866,8 @@ echo $Pages;
     </tr>
 <?
 while (list($UserID, $Username, $Uploaded, $Downloaded, $Snatched, $Invitees, $Class, $Email, $Enabled, $IP, $Invites, $DisableInvites, $Warned, $Donor, $JoinDate, $LastAccess) = $DB->next_record()) {
-  $IP = apc_exists('DBKEY') ? DBCrypt::decrypt($IP) : '[Encrypted]';
-  $Email = apc_exists('DBKEY') ? DBCrypt::decrypt($Email) : '[Encrypted]';
+  $IP = apcu_exists('DBKEY') ? DBCrypt::decrypt($IP) : '[Encrypted]';
+  $Email = apcu_exists('DBKEY') ? DBCrypt::decrypt($Email) : '[Encrypted]';
 ?>
     <tr>
       <td><?=Users::format_username($UserID, true, true, true, true)?></td>
