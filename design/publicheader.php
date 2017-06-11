@@ -7,6 +7,7 @@ define('FOOTER_FILE',SERVER_ROOT.'/design/publicfooter.php');
 <head>
   <title><?=display_str($PageTitle)?></title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="theme-color" content="#461640">
   <link rel="shortcut icon" href="favicon.ico?v=<?=md5_file('favicon.ico');?>" />
   <link href="<?=STATIC_SERVER ?>styles/public/style.css?v=<?=filemtime(SERVER_ROOT.'/static/styles/public/style.css')?>" rel="stylesheet" type="text/css" />
 <?

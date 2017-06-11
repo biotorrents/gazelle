@@ -59,9 +59,17 @@ if (isset(G::$LoggedUser['Notify'])) {
   <link rel="stylesheet" href="<?=STATIC_SERVER?>styles/tooltipster/style.css?v=<?=filemtime(SERVER_ROOT.STATIC_SERVER.'styles/tooltipster/style.css')?>" type="text/css" media="screen" />
 <?
 if (empty(G::$LoggedUser['StyleURL'])) {
-?>
-<link rel="stylesheet" type="text/css" title="<?=G::$LoggedUser['StyleName']?>" media="screen"
-    href="<?=STATIC_SERVER?>styles/<?=G::$LoggedUser['StyleName']?>/style.css?v=<?=filemtime(SERVER_ROOT.STATIC_SERVER.'styles/'.G::$LoggedUser['StyleName'].'/style.css')?>" />
+  if (($StyleColors = G::$Cache->get_value('stylesheet_colors')) === false) {
+    G::$DB->query('SELECT LOWER(REPLACE(Name, " ", "_")) AS Name, Color FROM stylesheets WHERE COLOR IS NOT NULL');
+    while (list($StyleName, $StyleColor) = G::$DB->next_record()) {
+      $StyleColors[$StyleName] = $StyleColor;
+    }
+    G::$Cache->cache_value('stylesheet_colors', $StyleColors, 0);
+  }
+  if (isset($StyleColors[G::$LoggedUser['StyleName']])) { ?>
+<meta name="theme-color" content="<?=$StyleColors[G::$LoggedUser['StyleName']]?>">
+<? } ?>
+<link rel="stylesheet" type="text/css" title="<?=G::$LoggedUser['StyleName']?>" media="screen" href="<?=STATIC_SERVER?>styles/<?=G::$LoggedUser['StyleName']?>/style.css?v=<?=filemtime(SERVER_ROOT.STATIC_SERVER.'styles/'.G::$LoggedUser['StyleName'].'/style.css')?>" />
 <?
 } else {
   $StyleURLInfo = parse_url(G::$LoggedUser['StyleURL']);
