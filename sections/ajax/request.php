@@ -44,7 +44,7 @@ $ProjectCanEdit = (check_perms('project_team') && !$IsFilled && (($CategoryID ==
 $UserCanEdit = (!$IsFilled && $LoggedUser['ID'] == $Request['UserID'] && $VoteCount < 2);
 $CanEdit = ($UserCanEdit || $ProjectCanEdit || check_perms('site_moderate_requests'));
 
-$JsonTopContributors = array();
+$JsonTopContributors = [];
 $VoteMax = ($VoteCount < 5 ? $VoteCount : 5);
 for ($i = 0; $i < $VoteMax; $i++) {
   $User = array_shift($RequestVotes['Voters']);
@@ -58,7 +58,7 @@ reset($RequestVotes['Voters']);
 
 list($NumComments, $Page, $Thread) = Comments::load('requests', $RequestID, false);
 
-$JsonRequestComments = array();
+$JsonRequestComments = [];
 foreach ($Thread as $Key => $Post) {
   list($PostID, $AuthorID, $AddedTime, $Body, $EditedUserID, $EditedTime, $EditedUsername) = array_values($Post);
   list($AuthorID, $Username, $PermissionID, $Paranoia, $Artist, $Donor, $Warned, $Avatar, $Enabled, $UserTitle) = array_values(Users::user_info($AuthorID));
@@ -79,7 +79,7 @@ foreach ($Thread as $Key => $Post) {
   );
 }
 
-$JsonTags = array();
+$JsonTags = [];
 foreach ($Request['Tags'] as $Tag) {
   $JsonTags[] = $Tag;
 }

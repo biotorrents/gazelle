@@ -59,7 +59,7 @@ if (count($GroupIDs) === 0) {
 }
 
 $Groups = Torrents::get_groups(array_keys($GroupIDs));
-$TorrentGroups = array();
+$TorrentGroups = [];
 foreach ($Groups as $GroupID => $Group) {
   if (empty($Group['Torrents'])) {
     unset($Groups[$GroupID]);
@@ -71,7 +71,7 @@ foreach ($Groups as $GroupID => $Group) {
       $TorrentGroups[$Group['ID']] = array(
         $TorRemIdent => array(
           'FlacID' => 0,
-          'Formats' => array(),
+          'Formats' => [],
           'IsSnatched' => $Torrent['IsSnatched'],
           'Medium' => $Torrent['Media'],
           'RemasterTitle' => $Torrent['RemasterTitle'],
@@ -83,7 +83,7 @@ foreach ($Groups as $GroupID => $Group) {
     } elseif (!isset($TorrentGroups[$Group['ID']][$TorRemIdent])) {
       $TorrentGroups[$Group['ID']][$TorRemIdent] = array(
         'FlacID' => 0,
-        'Formats' => array(),
+        'Formats' => [],
         'IsSnatched' => $Torrent['IsSnatched'],
         'Medium' => $Torrent['Media'],
         'RemasterTitle' => $Torrent['RemasterTitle'],
@@ -173,7 +173,7 @@ foreach ($TorrentGroups as $GroupID => $Editions) {
     }
     $DisplayName .= ' ['.$Edition['Medium'].']';
 
-    $EditionInfo = array();
+    $EditionInfo = [];
     if (!empty($Edition['RemasterYear'])) {
       $ExtraInfo = $Edition['RemasterYear'];
     } else {

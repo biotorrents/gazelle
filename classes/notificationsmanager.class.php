@@ -58,9 +58,9 @@ class NotificationsManager {
   private $Settings;
   private $Skipped;
 
-  function __construct($UserID, $Skip = array(), $Load = true, $AutoSkip = true) {
+  function __construct($UserID, $Skip = [], $Load = true, $AutoSkip = true) {
     $this->UserID = $UserID;
-    $this->Notifications = array();
+    $this->Notifications = [];
     $this->Settings = self::get_settings($UserID);
     $this->Skipped = $Skip;
     if ($AutoSkip) {
@@ -110,7 +110,7 @@ class NotificationsManager {
 
   public function clear_notifications_array() {
     unset($this->Notifications);
-    $this->Notifications = array();
+    $this->Notifications = [];
   }
 
   private function create_notification($Type, $ID, $Message, $URL, $Importance) {
@@ -139,7 +139,7 @@ class NotificationsManager {
         FROM users_notifications_settings
         WHERE $Type != 0
           AND UserID IN ($UserIDs)");
-      $UserIDs = array();
+      $UserIDs = [];
       while (list($ID) = G::$DB->next_record()) {
         $UserIDs[] = $ID;
       }
@@ -147,7 +147,7 @@ class NotificationsManager {
       foreach ($UserIDs as $UserID) {
         $OneReads = G::$Cache->get_value("notifications_one_reads_$UserID");
         if (!$OneReads) {
-          $OneReads = array();
+          $OneReads = [];
         }
         array_unshift($OneReads, $this->create_notification($OneReads, "oneread_" . uniqid(), null, $Message, $URL, $Importance));
         $OneReads = array_filter($OneReads);
@@ -170,7 +170,7 @@ class NotificationsManager {
       FROM users_notifications_settings
       WHERE $Type != 0
         $UserWhere");
-    $IDs = array();
+    $IDs = [];
     while (list($ID) = G::$DB->next_record()) {
       $IDs[] = $ID;
     }
@@ -496,7 +496,7 @@ class NotificationsManager {
       FROM staff_pm_conversations
       WHERE Unread = true
         AND UserID = " . G::$LoggedUser['ID']);
-    $IDs = array();
+    $IDs = [];
     while (list($ID) = G::$DB->next_record()) {
       $IDs[] = $ID;
     }
@@ -518,7 +518,7 @@ class NotificationsManager {
       FROM pm_conversations_users
       WHERE Unread = '1'
         AND UserID = " . G::$LoggedUser['ID']);
-    $IDs = array();
+    $IDs = [];
     while (list($ID) = G::$DB->next_record()) {
       $IDs[] = $ID;
     }
@@ -541,7 +541,7 @@ class NotificationsManager {
       FROM users_notify_torrents
       WHERE UserID = ' " . G::$LoggedUser['ID'] . "'
         AND UnRead = '1'");
-    $IDs = array();
+    $IDs = [];
     while (list($ID) = G::$DB->next_record()) {
       $IDs[] = $ID;
     }
@@ -606,7 +606,7 @@ class NotificationsManager {
   public static function send_notification($UserID, $ID, $Type, $Message, $URL, $Importance = 'alert', $AutoExpire = false) {
     $Notifications = G::$Cache->get_value("user_cache_notifications_$UserID");
     if (empty($Notifications)) {
-      $Notifications = array();
+      $Notifications = [];
     }
     array_unshift($Notifications, $this->create_notification($Type, $ID, $Message, $URL, $Importance, $AutoExpire));
     G::$Cache->cache_value("user_cache_notifications_$UserID", $Notifications, 0);
@@ -644,7 +644,7 @@ class NotificationsManager {
       // A little cheat technique, gets all keys in the $_POST array starting with 'notifications_'
       $Settings = array_intersect_key($_POST, array_flip(preg_grep('/^notifications_/', array_keys($_POST))));
     }
-    $Update = array();
+    $Update = [];
     foreach (self::$Types as $Type) {
       $Popup = array_key_exists("notifications_{$Type}_popup", $Settings);
       $Traditional = array_key_exists("notifications_{$Type}_traditional", $Settings);

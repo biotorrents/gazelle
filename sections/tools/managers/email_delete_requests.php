@@ -43,7 +43,7 @@ if (isset($_GET['deny']) && isset($_GET['email'])) {
         SELECT Email
         FROM users_history_emails
         WHERE UserID = '$UserID'");
-      $ToDelete = array();
+      $ToDelete = [];
       while (list($EncEmail) = $DB->next_record()) {
         if (DBCrypt::decrypt($Email) == DBCrypt::decrypt($EncEmail)) {
           $ToDelete[] = $EncEmail;

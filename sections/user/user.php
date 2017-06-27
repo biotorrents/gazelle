@@ -159,14 +159,14 @@ if (check_perms('site_proxy_images') && !empty($CustomTitle)) {
 
 if ($Preview == 1) {
   if (strlen($ParanoiaString) == 0) {
-    $Paranoia = array();
+    $Paranoia = [];
   } else {
     $Paranoia = $CustomParanoia;
   }
 } else {
   $Paranoia = json_decode($Paranoia, true);
   if (!is_array($Paranoia)) {
-    $Paranoia = array();
+    $Paranoia = [];
   }
 }
 $ParanoiaLevel = 0;
@@ -921,7 +921,7 @@ if (empty($LoggedUser['DisableRequests']) && check_paranoia_here('requestsvoted_
               <div class="tags">
 <?
       $Tags = $Request['Tags'];
-      $TagList = array();
+      $TagList = [];
       foreach ($Tags as $TagID => $TagName) {
         $TagList[] = "<a href=\"requests.php?tags=$TagName\">".display_str($TagName).'</a>';
       }
@@ -1282,7 +1282,7 @@ if (!$DisablePoints) {
       FROM badges");
     if ($DB->has_results()) { //If the DB has no results here, something is dangerously fucked
       $AllBadges = $DB->to_array();
-      $UserBadgeIDs = array();
+      $UserBadgeIDs = [];
       foreach (Badges::get_badges($UserID) as $Badge) {
         $UserBadgeIDs[] = $Badge['BadgeID'];
       }

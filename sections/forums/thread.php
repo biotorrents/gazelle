@@ -145,7 +145,7 @@ if ($ThreadInfo['Posts'] <= $PerPage*$Page && $ThreadInfo['StickyPostID'] > $Las
 $UserSubscriptions = Subscriptions::get_subscriptions();
 
 if (empty($UserSubscriptions)) {
-  $UserSubscriptions = array();
+  $UserSubscriptions = [];
 }
 
 if (in_array($ThreadID, $UserSubscriptions)) {
@@ -227,7 +227,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
       GROUP BY Vote");
     $VoteArray = $DB->to_array(false, MYSQLI_NUM);
 
-    $Votes = array();
+    $Votes = [];
     foreach ($VoteArray as $VoteSet) {
       list($Key,$Value) = $VoteSet;
       $Votes[$Key] = $Value;
@@ -299,7 +299,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
       include(SERVER_ROOT.'/sections/staff/functions.php');
       $Staff = get_staff();
 
-      $StaffNames = array();
+      $StaffNames = [];
       foreach ($Staff as $Staffer) {
         $StaffNames[] = $Staffer['Username'];
       }
@@ -316,7 +316,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
       $StaffVotesTmp = $DB->to_array();
       $StaffCount = count($StaffNames);
 
-      $StaffVotes = array();
+      $StaffVotes = [];
       foreach ($StaffVotesTmp as $StaffVote) {
         list($Vote, $Names) = $StaffVote;
         $StaffVotes[$Vote] = $Names;

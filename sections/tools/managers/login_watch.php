@@ -11,7 +11,7 @@ if (isset($_POST['submit']) && isset($_POST['ip']) && $_POST['submit'] == 'Unban
 View::show_header('Login Watch');
 
 $AttemptIPs = $Cache->get_value('login_attempts');
-$AllAttempts = array();
+$AllAttempts = [];
 foreach($AttemptIPs as $IP => $Time) {
   if (time() > $Time) { continue; }
   list($Attempts, $Banned) = $Cache->get_value('login_attempts_'.$IP);

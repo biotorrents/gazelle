@@ -14,21 +14,21 @@
 
 class TORRENT_FORM {
   var $UploadForm = '';
-  var $Categories = array();
-  var $Formats = array();
-  var $Bitrates = array();
-  var $Media = array();
-  var $MediaManaga = array();
-  var $Containers = array();
-  var $ContainersGames = array();
-  var $Codecs = array();
-  var $Resolutions = array();
-  var $AudioFormats = array();
-  var $Subbing = array();
-  var $Languages = array();
-  var $Platform = array();
+  var $Categories = [];
+  var $Formats = [];
+  var $Bitrates = [];
+  var $Media = [];
+  var $MediaManaga = [];
+  var $Containers = [];
+  var $ContainersGames = [];
+  var $Codecs = [];
+  var $Resolutions = [];
+  var $AudioFormats = [];
+  var $Subbing = [];
+  var $Languages = [];
+  var $Platform = [];
   var $NewTorrent = false;
-  var $Torrent = array();
+  var $Torrent = [];
   var $Error = false;
   var $TorrentID = false;
   var $Disabled = '';

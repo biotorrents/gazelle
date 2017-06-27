@@ -64,7 +64,7 @@ $JsonTorrentDetails = array(
   'tags'            => $TagList
 );
 
-$JsonTorrentList = array();
+$JsonTorrentList = [];
 foreach ($TorrentList as $Torrent) {
   // Convert file list back to the old format
   $FileList = explode("\n", $Torrent['FileList']);

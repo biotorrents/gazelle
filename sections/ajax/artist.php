@@ -98,7 +98,7 @@ if ($Data) {
 }
 
 // Requests
-$Requests = array();
+$Requests = [];
 if (empty($LoggedUser['DisableRequests'])) {
   $Requests = $Cache->get_value("artists_requests_$ArtistID");
   if (!is_array($Requests)) {
@@ -122,7 +122,7 @@ if (empty($LoggedUser['DisableRequests'])) {
     if ($DB->has_results()) {
       $Requests = $DB->to_array('ID', MYSQLI_ASSOC, false);
     } else {
-      $Requests = array();
+      $Requests = [];
     }
     $Cache->cache_value("artists_requests_$ArtistID", $Requests);
   }
@@ -150,7 +150,7 @@ if (($Importances = $Cache->get_value("artist_groups_$ArtistID")) === false) {
   $Importances = $DB->to_array(false, MYSQLI_BOTH, false);
   $Cache->cache_value("artist_groups_$ArtistID", $Importances, 0);
 } else {
-  $GroupIDs = array();
+  $GroupIDs = [];
   foreach ($Importances as $Group) {
     $GroupIDs[] = $Group['GroupID'];
   }
@@ -158,12 +158,12 @@ if (($Importances = $Cache->get_value("artist_groups_$ArtistID")) === false) {
 if (count($GroupIDs) > 0) {
   $TorrentList = Torrents::get_groups($GroupIDs, true, true);
 } else {
-  $TorrentList = array();
+  $TorrentList = [];
 }
 $NumGroups = count($TorrentList);
 
 //Get list of used release types
-$UsedReleases = array();
+$UsedReleases = [];
 foreach ($TorrentList as $GroupID=>$Group) {
   if ($Importances[$GroupID]['Importance'] == '2') {
     $TorrentList[$GroupID]['ReleaseType'] = 1024;
@@ -201,8 +201,8 @@ if (!empty($ProducerAlbums)) {
 
 reset($TorrentList);
 
-$JsonTorrents = array();
-$Tags = array();
+$JsonTorrents = [];
+$Tags = [];
 $NumTorrents = $NumSeeders = $NumLeechers = $NumSnatches = 0;
 foreach ($GroupIDs as $GroupID) {
   if (!isset($TorrentList[$GroupID])) {
@@ -240,7 +240,7 @@ foreach ($GroupIDs as $GroupID) {
       $Tags[$Tag]['count']++;
     }
   }
-  $InnerTorrents = array();
+  $InnerTorrents = [];
   foreach ($Torrents as $Torrent) {
     $NumTorrents++;
     $NumSeeders += $Torrent['Seeders'];
@@ -290,7 +290,7 @@ foreach ($GroupIDs as $GroupID) {
   );
 }
 
-$JsonSimilar = array();
+$JsonSimilar = [];
 if (empty($SimilarArray)) {
   $DB->query("
     SELECT
@@ -328,7 +328,7 @@ if (empty($SimilarArray)) {
   }
 }
 
-$JsonRequests = array();
+$JsonRequests = [];
 foreach ($Requests as $RequestID => $Request) {
   $JsonRequests[] = array(
     'requestId' => (int)$RequestID,
@@ -369,7 +369,7 @@ if ($RevisionID) {
   $Key = "artist_$ArtistID";
 }
 
-$Data = array(array($Name, $Image, $Body, $NumSimilar, $SimilarArray, array(), array(), $VanityHouseArtist));
+$Data = array(array($Name, $Image, $Body, $NumSimilar, $SimilarArray, [], [], $VanityHouseArtist));
 
 $Cache->cache_value($Key, $Data, 3600);
 

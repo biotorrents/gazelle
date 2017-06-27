@@ -6,7 +6,7 @@ if (empty($_GET['url'])) {
 
 $url = str_replace('exhentai','e-hentai',$_GET['url']);
 
-$matches = array();
+$matches = [];
 preg_match('/^https?:\/\/g?\.?e.hentai\.org\/g\/(\d+)\/([\w\d]+)\/?$/', $url, $matches);
 
 $gid = $matches[1] ?? '';
@@ -35,8 +35,8 @@ if ($Cache->get_value('doujin_json_'.$gid)) {
 
   $json = json_decode($json, true)["gmetadata"][0];
 
-  $artists = array();
-  $tags = array();
+  $artists = [];
+  $tags = [];
   $lang = NULL;
   $circle = NULL;
   $censored = true;

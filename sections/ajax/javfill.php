@@ -70,7 +70,7 @@ if (!$debug && $Cache->get_value('jav_json_'.$cn)) {
   if ($jlib_page_en && $jlib_en->query('//*[@id="video_title"]')['length']) {
     $title = $jlib_en->query('//*[@id="video_title"]/h3/a')->item(0)->nodeValue;
     $title = substr($title, strlen($cn) + 1);
-    $idols = array();
+    $idols = [];
     foreach ($jlib_en->query('//*[starts-with(@id, "cast")]/span[1]/a') as $idol) {
       $idols[] = $idol->nodeValue;
     }
@@ -94,11 +94,12 @@ if (!$debug && $Cache->get_value('jav_json_'.$cn)) {
       $twist = new DOMDocument();
       $twist->loadHTML($twist_t);
       $twist = new DOMXPath($twist);
-      if ($twist->query('//img[@class="pic"]')->item(0))
+      if ($twist->query('//img[@class="pic"]')->item(0)) {
         $screens[] =  $twist->query('//img[@class="pic"]')->item(0)->getAttribute('src');
+      }
     }
     $desc = '';
-    $genres = array();
+    $genres = [];
     foreach ($jlib_en->query('//*[starts-with(@id, "genre")]/a') as $genre) {
       $genres[] =  str_replace(' ', '.', strtolower($genre->nodeValue));
     }

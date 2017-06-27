@@ -10,15 +10,15 @@ $FrontPageQ->select('groupid, id, seeders')
 $FrontPageQ->from('torrents, delta');
 $FrontPageQ->limit(0, 60, 60);
 $Results = $FrontPageQ->query()->to_array('id');
-$IDs = array();
-$Seeds = array();
+$IDs = [];
+$Seeds = [];
 foreach ($Results as $i) {
   $GroupCache = $Cache->get_value('torrent_group_'.$i['groupid']);
   if (!$GroupCache) continue;
   $IDs = array_merge($IDs, array_column($GroupCache['d']['Torrents'], 'ID'));
   $Seeds = array_merge($Seeds, array_column($GroupCache['d']['Torrents'], 'Seeders'));
 }
-$QueryParts = array();
+$QueryParts = [];
 for ($i = 0; $i < sizeof($IDs); $i++) {
   $QueryParts[] = '(ID='.$IDs[$i].' AND Seeders!='.$Seeds[$i].')';
 }

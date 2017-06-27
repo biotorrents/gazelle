@@ -1,5 +1,5 @@
 <?
-$ExtraTorrentsInsert = array();
+$ExtraTorrentsInsert = [];
 foreach ($ExtraTorrents as $ExtraTorrent) {
   $Name = $ExtraTorrent['Name'];
   $ExtraTorrentsInsert[$Name] = $ExtraTorrent;
@@ -18,7 +18,7 @@ foreach ($ExtraTorrents as $ExtraTorrent) {
   list($ExtraTotalSize, $ExtraFileList) = $ExtraTor->file_list();
   $ExtraDirName = isset($ExtraTor->Dec['info']['files']) ? Format::make_utf8($ExtraTor->get_name()) : '';
 
-  $ExtraTmpFileList = array();
+  $ExtraTmpFileList = [];
   foreach ($ExtraFileList as $ExtraFile) {
     list($ExtraSize, $ExtraName) = $ExtraFile;
 

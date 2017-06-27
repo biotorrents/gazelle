@@ -37,7 +37,7 @@ if ($ForumCats === false) {
   $DB->query('
     SELECT ID, Name
     FROM forums_categories');
-  $ForumCats = array();
+  $ForumCats = [];
   while (list($ID, $Name) = $DB->next_record()) {
     $ForumCats[$ID] = $Name;
   }

@@ -30,11 +30,11 @@ $Title = $Sneaky ? "$Username's bookmarked torrent groups" : 'Your bookmarked to
 
 // Loop through the result set, building up $Collage and $TorrentTable
 // Then we print them.
-$Collage = array();
+$Collage = [];
 $TorrentTable = '';
 
 $NumGroups = 0;
-$ArtistCount = array();
+$ArtistCount = [];
 
 list($GroupIDs, $CollageDataList, $TorrentList) = Users::get_bookmarks($UserID);
 foreach ($GroupIDs as $GroupID) {
@@ -269,7 +269,7 @@ foreach ($GroupIDs as $GroupID) {
 }
 
 $CollageCovers = isset($LoggedUser['CollageCovers']) ? (int)$LoggedUser['CollageCovers'] : 10;
-$CollagePages = array();
+$CollagePages = [];
 for ($i = 0; $i < $NumGroups / $CollageCovers; $i++) {
   $Groups = array_slice($Collage, $i * $CollageCovers, $CollageCovers);
   $CollagePage = '';

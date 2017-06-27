@@ -83,7 +83,7 @@ if (!list($Labels, $InFlow, $OutFlow) = $Cache->get_value('users_timeline')) {
     LIMIT 1, 11");
   $TimelineOut = array_reverse($DB->to_array());
 
-  $Labels = array();
+  $Labels = [];
   foreach($TimelineIn as $Month) {
     list($Labels[], $InFlow[]) = $Month;
   }

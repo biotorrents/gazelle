@@ -9,8 +9,8 @@ authorize();
 
 $GroupID = $_POST['groupid'];
 $Artists = explode(',', $_POST['artists']);
-$CleanArtists = array();
-$ArtistIDs = array();
+$CleanArtists = [];
+$ArtistIDs = [];
 $ArtistsString = '0';
 
 foreach ($Artists as $i => $Artist) {

@@ -40,7 +40,7 @@ if (isset($_POST['donation'])) {
         if ($Pool > $Target) {
           $PoolTipped = true;
           $NumTorrents = rand(2, 6);
-          $Torrents = array();
+          $Torrents = [];
           for ($i = 0; $i < $NumTorrents; $i++) {
             $TorrentSize = intval($Pool * (($i==$NumTorrents-1)?1:(rand(10,80)/100)) * 100000);
             $DB->query("

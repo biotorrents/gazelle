@@ -74,7 +74,7 @@ class Permissions {
     $Permissions = self::get_permissions($UserInfo['PermissionID']);
 
     // Manage 'special' inherited permissions
-    $BonusPerms = array();
+    $BonusPerms = [];
     $BonusCollages = 0;
     foreach ($UserInfo['ExtraClasses'] as $PermID => $Value) {
       $ClassPerms = self::get_permissions($PermID);
@@ -84,7 +84,7 @@ class Permissions {
     }
 
     if (empty($CustomPermissions)) {
-      $CustomPermissions = array();
+      $CustomPermissions = [];
     }
 
     $MaxCollages = $Permissions['Permissions']['MaxCollages'] + $BonusCollages;

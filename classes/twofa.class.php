@@ -7,7 +7,7 @@ class TwoFactorAuth {
   private $issuer;
   private static $_base32dict = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567=';
   private static $_base32;
-  private static $_base32lookup = array();
+  private static $_base32lookup = [];
   private static $_supportedalgos = array('sha1', 'sha256', 'sha512', 'md5');
 
   function __construct($issuer = null, $digits = 6, $period = 30, $algorithm = 'sha1') {

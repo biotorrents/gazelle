@@ -22,7 +22,7 @@ shell_exec('cut -d , -f 3-5 GeoIPv6.csv | tr -d " " >> GeoIPCountry.csv');
 
 if (($fd = fopen('GeoIPCountry.csv', 'r')) !== false) {
   $DB->query("TRUNCATE TABLE geoip_country");
-  $Values = array();
+  $Values = [];
   $Count = 0;
   while (($Data = fgetcsv($fd)) !== false) {
     list($StartIP, $EndIP, $CountryID) = $Data;
@@ -32,7 +32,7 @@ if (($fd = fopen('GeoIPCountry.csv', 'r')) !== false) {
       $DB->query("
         INSERT INTO geoip_country (StartIP, EndIP, Code)
         VALUES ".implode(', ', $Values));
-      $Values = array();
+      $Values = [];
     }
   }
   if (count($Values) > 0) {
@@ -52,7 +52,7 @@ shell_exec('unzip GeoIPASNum2.zip');
 
 if (($fd = fopen('GeoIPASNum2.csv', 'r')) !== false) {
   $DB->query("TRUNCATE TABLE geoip_asn");
-  $Values = array();
+  $Values = [];
   $Count = 0;
   while (($Data = fgetcsv($fd)) !== false) {
     list($StartIP, $EndIP, $ASN) = $Data;
@@ -63,7 +63,7 @@ if (($fd = fopen('GeoIPASNum2.csv', 'r')) !== false) {
       $DB->query("
         INSERT INTO geoip_asn (StartIP, EndIP, ASN)
         VALUES ".implode(', ', $Values));
-      $Values = array();
+      $Values = [];
     }
   }
   if (count($Values) > 0) {
@@ -82,7 +82,7 @@ shell_exec('wget http://download.maxmind.com/download/geoip/database/asnum/GeoIP
 shell_exec('unzip GeoIPASNum2v6.zip');
 
 if (($fd = fopen('GeoIPASNum2v6.csv', 'r')) !== false) {
-  $Values = array();
+  $Values = [];
   $Count = 0;
   while (($Data = fgetcsv($fd)) !== false) {
     list($ASN, $StartIP, $EndIP) = $Data;
@@ -93,7 +93,7 @@ if (($fd = fopen('GeoIPASNum2v6.csv', 'r')) !== false) {
       $DB->query("
         INSERT INTO geoip_asn (StartIP, EndIP, ASN)
         VALUES ".implode(', ', $Values));
-      $Values = array();
+      $Values = [];
     }
   }
   if (count($Values) > 0) {

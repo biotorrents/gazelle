@@ -1,5 +1,5 @@
 <?
-$IPs = array();
+$IPs = [];
 $DB->query("SELECT IP FROM users_main WHERE Enabled = '1'");
 while(list($EncIP) = $DB->next_record()) {
   $IPs[] = DBCrypt::decrypt($EncIP);

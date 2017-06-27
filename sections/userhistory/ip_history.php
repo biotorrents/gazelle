@@ -180,7 +180,7 @@ $Pages = Format::get_pages($Page, $NumResults, IPS_PER_PAGE, 9);
     </tr>
 <?
 $counter = 0;
-$IPs = array();
+$IPs = [];
 $Results = $DB->to_array();
 $CanManageIPBans = check_perms('admin_manage_ipbans');
 

@@ -68,7 +68,7 @@ if ($Data) {
 ob_start();
 
 // Requests
-$Requests = array();
+$Requests = [];
 if (empty($LoggedUser['DisableRequests'])) {
   $Requests = $Cache->get_value("artists_requests_$ArtistID");
   if (!is_array($Requests)) {
@@ -95,7 +95,7 @@ if (empty($LoggedUser['DisableRequests'])) {
     if ($DB->has_results()) {
       $Requests = $DB->to_array('ID', MYSQLI_ASSOC, false);
     } else {
-      $Requests = array();
+      $Requests = [];
     }
     $Cache->cache_value("artists_requests_$ArtistID", $Requests);
   }
@@ -116,7 +116,7 @@ if (($GroupIDs = $Cache->get_value("artist_groups_$ArtistID")) === false) {
 if (count($GroupIDs) > 0) {
   $TorrentList = Torrents::get_groups($GroupIDs, true, true);
 } else {
-  $TorrentList = array();
+  $TorrentList = [];
 }
 $NumGroups = count($TorrentList);
 
@@ -739,7 +739,7 @@ if ($NumRequests > 0) {
       }
 
       if (!empty($Tags[$RequestID])) {
-        $ReqTagList = array();
+        $ReqTagList = [];
         foreach ($Tags[$RequestID] as $TagID => $TagName) {
           $ReqTagList[] = "<a href=\"requests.php?tags=$TagName\">".display_str($TagName).'</a>';
         }
@@ -911,7 +911,7 @@ if ($RevisionID) {
   $Key = "artist_$ArtistID";
 }
 
-$Data = array(array($Name, $Image, $Body, $NumSimilar, $SimilarArray, array(), array(), $VanityHouseArtist));
+$Data = array(array($Name, $Image, $Body, $NumSimilar, $SimilarArray, [], [], $VanityHouseArtist));
 
 $Cache->cache_value($Key, $Data, 3600);
 ?>

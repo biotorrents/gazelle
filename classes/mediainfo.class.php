@@ -25,7 +25,7 @@ class ParseManager {
     public function __construct($string='') {
         $this->index = 0;
         $this->output = '';
-        $this->parsed_lines = array();
+        $this->parsed_lines = [];
         $this->set_string($string);
         $p = new SectionParser();
         $this->add_parser($p);
@@ -125,12 +125,12 @@ class ParseManager {
     }
 
     public function output_raw() {
-        $output = array();
+        $output = [];
         $sections = ['general', 'video', 'audio', 'text'];
 
         foreach($sections as $section) {
             if (isset($this->parsers[$section])) {
-                $output[$section] = array();
+                $output[$section] = [];
                 foreach($this->parsers[$section] as $index => $parser) {
                     $output[$section][$index] = $parser->output_raw();
                 }
@@ -162,7 +162,7 @@ class ParseManager {
 
     protected function new_mediainfo() {
         $this->output .= $this->output(false);
-        $this->parsed_lines = array();
+        $this->parsed_lines = [];
         foreach(array_keys($this->parsers) as $key) {
             if ($key != static::GENERIC_PARSER)
                 unset($this->parsers[$key]);
@@ -176,10 +176,10 @@ class SectionParser {
     protected $index;
 
 
-    public function __construct(&$lines=array(),&$i=0) {
+    public function __construct(&$lines=[],&$i=0) {
         $this->set_lines($lines,$i);
     }
-    public function set_lines(&$lines=array(),&$i=0){
+    public function set_lines(&$lines=[],&$i=0){
         $this->lines = &$lines;
         $this->index = &$i;
     }
@@ -277,7 +277,7 @@ class AudioSectionParser extends SectionParser {
     }
     public function output_raw() {
         $this->process_vars();
-        $output = array();
+        $output = [];
         $properties = [
             'audioformat', 'audiobitrate', 'audiochannels',
             'audiochannelpositions', 'audiotitle', 'audiolang', 'audioprofile',
@@ -400,7 +400,7 @@ class GeneralSectionParser extends SectionParser {
     }
     public function output_raw() {
         $this->process_vars();
-        $output = array();
+        $output = [];
         $properties = [
             'filename', 'generalformat', 'duration', 'filesize', 'form_codec',
             'form_releasegroup'
@@ -420,7 +420,7 @@ class GeneralSectionParser extends SectionParser {
                 $this->form_codec = '---';
                 break;
         }
-        $matches = array();
+        $matches = [];
         preg_match('/(?:^|.*\\|\/)\[(.*?)\].*$/',
             $this->filename, $matches);
         $this->form_releasegroup = $matches ? $matches[1] : '';
@@ -461,7 +461,7 @@ class TextSectionParser extends SectionParser {
     }
     public function output_raw() {
         $this->process_vars();
-        $output = array();
+        $output = [];
         $properties = [
             'title', 'language', 'format', 'default', 'processed_language',
             'form_format'
@@ -566,7 +566,7 @@ class VideoSectionParser extends SectionParser {
     }
     public function output_raw() {
         $this->process_vars();
-        $output = array();
+        $output = [];
         $properties = [
             'videoformat', 'videoformatversion', 'codec', 'width', 'height',
             'writinglibrary', 'frameratemode', 'framerate', 'aspectratio',

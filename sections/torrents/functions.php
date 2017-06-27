@@ -54,7 +54,7 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
     $DB->query($SQL);
 
     $TorrentDetails = $DB->next_record(MYSQLI_ASSOC);
-    $TorrentDetails['Screenshots'] = array();
+    $TorrentDetails['Screenshots'] = [];
 
     $DB->query("
       SELECT
@@ -234,7 +234,7 @@ function set_torrent_logscore($TorrentID) {
 
 function get_group_requests($GroupID) {
   if (empty($GroupID) || !is_number($GroupID)) {
-    return array();
+    return [];
   }
   global $DB, $Cache;
 

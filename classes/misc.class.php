@@ -173,7 +173,7 @@ class Misc {
     }
     list($AuthorName) = G::$DB->next_record();
 
-    $ThreadInfo = array();
+    $ThreadInfo = [];
     $ThreadInfo['IsLocked'] = 0;
     $ThreadInfo['IsSticky'] = 0;
 
@@ -242,14 +242,14 @@ class Misc {
         $Part1 = array_slice($Forum, 0, $Stickies, true); //Stickies
         $Part3 = array_slice($Forum, $Stickies, TOPICS_PER_PAGE - $Stickies - 1, true); //Rest of page
       } else {
-        $Part1 = array();
+        $Part1 = [];
         $Part3 = $Forum;
       }
       if (is_null($Part1)) {
-        $Part1 = array();
+        $Part1 = [];
       }
       if (is_null($Part3)) {
-        $Part3 = array();
+        $Part3 = [];
       }
       $Forum = $Part1 + $Part2 + $Part3;
       G::$Cache->cache_value("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
@@ -327,7 +327,7 @@ class Misc {
    * @return boolean true if (substring of) $Needle exists in $Haystack
    */
   public static function in_array_partial($Needle, $Haystack) {
-    static $Searches = array();
+    static $Searches = [];
     if (array_key_exists($Needle, $Searches)) {
       return $Searches[$Needle];
     }
@@ -381,7 +381,7 @@ class Misc {
    * @return array IDs
    */
   public static function get_tags($TagNames) {
-    $TagIDs = array();
+    $TagIDs = [];
     foreach ($TagNames as $Index => $TagName) {
       $Tag = G::$Cache->get_value("tag_id_$TagName");
       if (is_array($Tag)) {
@@ -469,7 +469,7 @@ class Misc {
    *  If array, it's a list of array keys not to escape.
    * @return mutated version of $Array with values escaped.
    */
-  public static function display_array($Array, $Escape = array()) {
+  public static function display_array($Array, $Escape = []) {
     foreach ($Array as $Key => $Val) {
       if ((!is_array($Escape) && $Escape == true) || !in_array($Key, $Escape)) {
         $Array[$Key] = display_str($Val);
@@ -484,7 +484,7 @@ class Misc {
    * @return array of results
    */
   public static function search_array($Array, $Key, $Value) {
-    $Results = array();
+    $Results = [];
     if (is_array($Array))
     {
       if (isset($Array[$Key]) && $Array[$Key] == $Value) {

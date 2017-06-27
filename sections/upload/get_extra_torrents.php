@@ -1,7 +1,7 @@
 <?
 //extra torrent files
-$ExtraTorrents = array();
-$DupeNames = array();
+$ExtraTorrents = [];
+$DupeNames = [];
 $DupeNames[] = $_FILES['file_input']['name'];
 
 if (isset($_POST['extra_format']) && isset($_POST['extra_bitrate'])) {

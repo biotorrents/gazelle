@@ -54,7 +54,7 @@ function check_paranoia($Property, $Paranoia, $UserClass, $UserID = false) {
     $Paranoia = json_decode($Paranoia, true);
   }
   if (!is_array($Paranoia)) {
-    $Paranoia = array();
+    $Paranoia = [];
   }
   if (is_array($Property)) {
     $all = true;

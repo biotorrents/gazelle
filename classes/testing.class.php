@@ -2,7 +2,7 @@
 
 class Testing {
   private static $ClassDirectories = array("classes");
-  private static $Classes = array();
+  private static $Classes = [];
 
   /**
    * Initialize the testasble classes into a map keyed by class name
@@ -87,7 +87,7 @@ class Testing {
       $ReflectionClass = $Class;
     }
     $ReflectionMethods = $ReflectionClass->getMethods();
-    $TestableMethods = array();
+    $TestableMethods = [];
     foreach($ReflectionMethods as $Method) {
       if ($Method->isPublic() && $Method->isStatic() && strpos($Method->getDocComment(), "@Test")) {
         $TestableMethods[] = $Method;
@@ -110,7 +110,7 @@ class Testing {
    */
   public static function get_undocumented_methods($Class) {
     $ReflectionClass = self::$Classes[$Class];
-    $Methods = array();
+    $Methods = [];
     foreach($ReflectionClass->getMethods() as $Method) {
       if (!$Method->getDocComment()) {
         $Methods[] = $Method;
@@ -124,7 +124,7 @@ class Testing {
    */
   public static function get_documented_methods($Class)  {
     $ReflectionClass = self::$Classes[$Class];
-    $Methods = array();
+    $Methods = [];
     foreach($ReflectionClass->getMethods() as $Method) {
       if ($Method->getDocComment()) {
         $Methods[] = $Method;

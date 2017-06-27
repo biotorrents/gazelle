@@ -36,7 +36,7 @@ if ($UserID != $LoggedUser['ID'] && !check_perms('users_edit_profiles', $Class))
 
 $Paranoia = json_decode($Paranoia, true);
 if (!is_array($Paranoia)) {
-  $Paranoia = array();
+  $Paranoia = [];
 }
 
 function paranoia_level($Setting) {
@@ -58,7 +58,7 @@ function checked($Checked) {
 if ($SiteOptions) {
   $SiteOptions = json_decode($SiteOptions, true);
 } else {
-  $SiteOptions = array();
+  $SiteOptions = [];
 }
 
 View::show_header("$Username &gt; Settings", 'user,password_validate,validate,cssgallery,preview_paranoia,bbcode,user_settings,donor_titles');

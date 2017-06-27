@@ -1,8 +1,8 @@
 <?
 //----------------------- Manage Ratio Watch ----------------------//
 
-$OffRatioWatch = array();
-$OnRatioWatch = array();
+$OffRatioWatch = [];
+$OnRatioWatch = [];
 
 // Take users off ratio watch and enable leeching
 $UserQuery = $DB->query("
@@ -84,7 +84,7 @@ $DB->query("
     AND m.can_leech = '1'");
 $OnRatioWatch = $DB->collect('ID');
 
-$WatchList = array();
+$WatchList = [];
 foreach ($OnRatioWatch as $UserID) {
   if (!Permissions::get_permissions_for_user($UserID)['site_ratio_watch_immunity'])
     $WatchList[] = $UserID;

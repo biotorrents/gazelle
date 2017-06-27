@@ -47,7 +47,7 @@ class FEED {
     global $Cache;
     $Entries = $Cache->get_value($CacheKey);
     if (!$Entries) {
-      $Entries = array();
+      $Entries = [];
     } else {
       foreach ($Entries as $Item) {
         echo str_replace(array('[[PASSKEY]]', '[[AUTHKEY]]'), array(display_str($PassKey), display_str($AuthKey)), $Item);
@@ -59,7 +59,7 @@ class FEED {
     global $Cache;
     $Entries = $Cache->get_value($CacheKey, true);
     if (!$Entries) {
-      $Entries = array();
+      $Entries = [];
     } else {
       if (count($Entries) >= 50) {
         array_pop($Entries);

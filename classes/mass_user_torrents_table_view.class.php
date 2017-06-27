@@ -171,7 +171,7 @@ class MASS_USER_TORRENTS_TABLE_VIEW {
   public function body () {
     if ($this->HasTorrents)
       foreach ($this->TorrentList as $GroupID => $Group) {
-        $Artists = array();
+        $Artists = [];
 
         extract($Group);
         extract($this->CollageDataList[$GroupID]);

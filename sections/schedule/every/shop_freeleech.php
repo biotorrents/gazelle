@@ -10,7 +10,7 @@ $DB->query("
   WHERE
     sf.ExpiryTime < '".$date."'");
 
-$TorrentIDs = array();
+$TorrentIDs = [];
 if ($DB->has_results()) {
   while (list($GroupID, $TorrentID) = $DB->next_record()) {
     $TorrentIDs[] = $TorrentID;

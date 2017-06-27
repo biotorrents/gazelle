@@ -5,7 +5,7 @@
 /*
 sleep(5);
 $GiB = 1024*1024*1024;
-$Criteria = array();
+$Criteria = [];
 $Criteria[] = array(
   'From' => USER,
   'To' => MEMBER,

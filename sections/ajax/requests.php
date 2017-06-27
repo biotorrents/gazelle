@@ -107,7 +107,7 @@ if ($Submitted && empty($_GET['show_filled'])) {
 if (!empty($_GET['formats'])) {
   $FormatArray = $_GET['formats'];
   if (count($FormatArray) !== count($Formats)) {
-    $FormatNameArray = array();
+    $FormatNameArray = [];
     foreach ($FormatArray as $Index => $MasterIndex) {
       if (isset($Formats[$MasterIndex])) {
         $FormatNameArray[$Index] = '"' . strtr(Sphinxql::sph_escape_string($Formats[$MasterIndex]), '-.', '  ') . '"';
@@ -127,7 +127,7 @@ if (!empty($_GET['formats'])) {
 if (!empty($_GET['media'])) {
   $MediaArray = $_GET['media'];
   if (count($MediaArray) !== count($Media)) {
-    $MediaNameArray = array();
+    $MediaNameArray = [];
     foreach ($MediaArray as $Index => $MasterIndex) {
       if (isset($Media[$MasterIndex])) {
         $MediaNameArray[$Index] = '"' . strtr(Sphinxql::sph_escape_string($Media[$MasterIndex]), '-.', '  ') . '"';
@@ -148,7 +148,7 @@ if (!empty($_GET['media'])) {
 if (!empty($_GET['bitrates'])) {
   $BitrateArray = $_GET['bitrates'];
   if (count($BitrateArray) !== count($Bitrates)) {
-    $BitrateNameArray = array();
+    $BitrateNameArray = [];
     foreach ($BitrateArray as $Index => $MasterIndex) {
       if (isset($Bitrates[$MasterIndex])) {
         $BitrateNameArray[$Index] = '"' . strtr(Sphinxql::sph_escape_string($Bitrates[$MasterIndex]), '-.', '  ') . '"';
@@ -169,7 +169,7 @@ if (!empty($_GET['bitrates'])) {
 if (!empty($_GET['search'])) {
   $SearchString = trim($_GET['search']);
   if ($SearchString !== '') {
-    $SearchWords = array('include' => array(), 'exclude' => array());
+    $SearchWords = array('include' => [], 'exclude' => []);
     $Words = explode(' ', $SearchString);
     foreach ($Words as $Word) {
       $Word = trim($Word);
@@ -198,7 +198,7 @@ if (!isset($_GET['tags_type']) || $_GET['tags_type'] === '1') {
   $_GET['tags_type'] = '0';
 }
 if (!empty($_GET['tags'])) {
-  $SearchTags = array('include' => array(), 'exclude' => array());
+  $SearchTags = array('include' => [], 'exclude' => []);
   $Tags = explode(',', $_GET['tags']);
   foreach ($Tags as $Tag) {
     $Tag = trim($Tag);
@@ -225,7 +225,7 @@ if (!empty($_GET['tags'])) {
 }
 
 if (isset($SearchWords)) {
-  $QueryParts = array();
+  $QueryParts = [];
   foreach ($SearchWords['include'] as $Word) {
     $QueryParts[] = Sphinxql::sph_escape_string($Word);
   }
@@ -311,10 +311,10 @@ if ($NumResults == 0) {
   json_die("success", array(
     'currentPage' => 1,
     'pages'       => 1,
-    'results'     => array()
+    'results'     => []
   ));
 } else {
-  $JsonResults = array();
+  $JsonResults = [];
   $Requests = Requests::get_requests(array_keys($SphRequests));
   foreach ($SphRequests as $RequestID => $SphRequest) {
     $Request = $Requests[$RequestID];

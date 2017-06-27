@@ -22,7 +22,7 @@ if (!isset($_GET['page'])) {
       LIMIT 1, 11");
     $TimelineOut = array_reverse($DB->to_array());
 
-    $Labels = array();
+    $Labels = [];
     foreach ($TimelineIn as $Month) {
       list($Labels[], $InFlow[]) = $Month;
     }

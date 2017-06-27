@@ -198,7 +198,7 @@ if (count($Forum) === 0) {
     list($TopicID, $Title, $AuthorID, $Locked, $Sticky, $PostCount, $LastID, $LastTime, $LastAuthorID) = array_values($Topic);
     // Build list of page links
     // Only do this if there is more than one page
-    $PageLinks = array();
+    $PageLinks = [];
     $ShownEllipses = false;
     $PagesText = '';
     $TopicPages = ceil($PostCount / $PerPage);

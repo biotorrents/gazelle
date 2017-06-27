@@ -260,7 +260,7 @@ else {
                   FROM users_history_ips
                   WHERE UserID = $UserID");
                 $IPs = $DB->to_array(false, MYSQLI_NUM);
-                $QueryParts = array();
+                $QueryParts = [];
                 foreach ($IPs as $i => $IP) {
                   $IPs[$i] = DBCrypt::decrypt($IP[0]);
                 }

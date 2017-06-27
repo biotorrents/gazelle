@@ -237,7 +237,7 @@ class TORRENT extends BENCODE_DICT {
   }
 
   function set_announce_list($UrlsList) {
-    $AnnounceList = new BENCODE_LIST(array(), true);
+    $AnnounceList = new BENCODE_LIST([], true);
     foreach ($UrlsList as $Urls) {
       $SubList = new BENCODE_LIST($Urls, true);
       unset($SubList->Str);
@@ -255,13 +255,13 @@ class TORRENT extends BENCODE_DICT {
   //  * the files in the torrent
   //  * the total size of files described therein
   function file_list() {
-    $FileList = array();
+    $FileList = [];
     if (!isset($this->Val['info']->Val['files'])) { // Single file mode
       $TotalSize = $this->Val['info']->Val['length'];
       $FileList[] = array($TotalSize, $this->get_name());
     } else { // Multiple file mode
-      $FileNames = array();
-      $FileSizes = array();
+      $FileNames = [];
+      $FileSizes = [];
       $TotalSize = 0;
       $Files = $this->Val['info']->Val['files']->Val;
       if (isset($Files[0]->Val['path.utf-8'])) {

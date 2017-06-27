@@ -134,7 +134,7 @@ class Forums {
       G::$DB->query("
         SELECT ID, Name
         FROM forums_categories");
-      $ForumCats = array();
+      $ForumCats = [];
       while (list ($ID, $Name) = G::$DB->next_record()) {
         $ForumCats[$ID] = $Name;
       }
@@ -180,7 +180,7 @@ class Forums {
       G::$DB->query("
         SELECT ForumID, ThreadID
         FROM forums_specific_rules");
-      $SpecificRules = array();
+      $SpecificRules = [];
       while (list($ForumID, $ThreadID) = G::$DB->next_record(MYSQLI_NUM, false)) {
         $SpecificRules[$ForumID][] = $ThreadID;
       }
@@ -189,7 +189,7 @@ class Forums {
         if (isset($SpecificRules[$ForumID])) {
           $Forum['SpecificRules'] = $SpecificRules[$ForumID];
         } else {
-          $Forum['SpecificRules'] = array();
+          $Forum['SpecificRules'] = [];
         }
       }
       G::$Cache->cache_value('forums_list', $Forums, 0);
@@ -205,7 +205,7 @@ class Forums {
     if (isset(G::$LoggedUser['CustomForums'])) {
       return (array)array_keys(G::$LoggedUser['CustomForums'], 1);
     } else {
-      return array();
+      return [];
     }
   }
 
@@ -217,7 +217,7 @@ class Forums {
     if (isset(G::$LoggedUser['CustomForums'])) {
       return (array)array_keys(G::$LoggedUser['CustomForums'], 0);
     } else {
-      return array();
+      return [];
     }
   }
 
@@ -232,7 +232,7 @@ class Forums {
     } else {
       $PerPage = POSTS_PER_PAGE;
     }
-    $TopicIDs = array();
+    $TopicIDs = [];
     foreach ($Forums as $Forum) {
       if (!empty($Forum['LastPostTopicID'])) {
         $TopicIDs[] = $Forum['LastPostTopicID'];
@@ -259,7 +259,7 @@ class Forums {
       $LastRead = G::$DB->to_array('TopicID', MYSQLI_ASSOC);
       G::$DB->set_query_id($QueryID);
     } else {
-      $LastRead = array();
+      $LastRead = [];
     }
     return $LastRead;
   }

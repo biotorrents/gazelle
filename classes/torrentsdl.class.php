@@ -9,7 +9,7 @@ class TorrentsDL {
   private $QueryRowNum = 0;
   private $Zip;
   private $IDBoundaries;
-  private $FailedFiles = array();
+  private $FailedFiles = [];
   private $NumAdded = 0;
   private $NumFound = 0;
   private $Size = 0;
@@ -35,7 +35,7 @@ class TorrentsDL {
     function add_passkey($Ann) {
       return (is_array($Ann)) ? array_map('add_passkey', $Ann) : $Ann."/".G::$LoggedUser['torrent_pass']."/announce";
     }
-    $this->AnnounceList = (sizeof(ANNOUNCE_URLS) == 1 && sizeof(ANNOUNCE_URLS[0]) == 1) ? array() : array_map('add_passkey', ANNOUNCE_URLS);
+    $this->AnnounceList = (sizeof(ANNOUNCE_URLS) == 1 && sizeof(ANNOUNCE_URLS[0]) == 1) ? [] : array_map('add_passkey', ANNOUNCE_URLS);
     $this->Zip = new Zip(Misc::file_string($Title));
   }
 
@@ -46,7 +46,7 @@ class TorrentsDL {
    * @return array with results and torrent group IDs or false if there are no results left
    */
   public function get_downloads($Key) {
-    $GroupIDs = $Downloads = array();
+    $GroupIDs = $Downloads = [];
     $OldQuery = G::$DB->get_query_id();
     G::$DB->set_query_id($this->QueryResult);
     if (!isset($this->IDBoundaries)) {
@@ -189,7 +189,7 @@ class TorrentsDL {
     if ($Year > 0) {
       $TorrentName .= " - $Year";
     }
-    $TorrentInfo = array();
+    $TorrentInfo = [];
     if ($Media != '') {
       $TorrentInfo[] = $Media;
     }
@@ -224,7 +224,7 @@ class TorrentsDL {
    * @param mixed $TorrentData bencoded torrent without announce URL (new format) or TORRENT object (old format)
    * @return bencoded string
    */
-  public static function get_file(&$TorrentData, $AnnounceURL, $AnnounceList = array()) {
+  public static function get_file(&$TorrentData, $AnnounceURL, $AnnounceList = []) {
     if (Misc::is_new_torrent($TorrentData)) {
       $Bencode = BencodeTorrent::add_announce_url($TorrentData, $AnnounceURL);
       if (!empty($AnnounceList)) {

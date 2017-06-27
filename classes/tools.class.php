@@ -60,7 +60,7 @@ class Tools {
    * @return the country of origin
    */
   public static function geoip($IP) {
-    static $IPs = array();
+    static $IPs = [];
     if (isset($IPs[$IP])) {
       return $IPs[$IP];
     }

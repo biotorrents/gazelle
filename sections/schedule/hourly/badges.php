@@ -3,7 +3,7 @@
 
 $GiB = 1024*1024*1024;
 
-$ModifiedIDs = array();
+$ModifiedIDs = [];
 
 // Download Badges
 foreach (AUTOMATED_BADGE_IDS['DL'] as $DL=>$Badge) {

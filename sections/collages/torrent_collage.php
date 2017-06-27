@@ -20,18 +20,18 @@ if (count($GroupIDs) > 0) {
   $TorrentList = Torrents::get_groups($GroupIDs);
   $UserVotes = Votes::get_user_votes($LoggedUser['ID']);
 } else {
-  $TorrentList = array();
+  $TorrentList = [];
 }
 
 // Loop through the result set, building up $Collage and $TorrentTable
 // Then we print them.
-$Collage = array();
+$Collage = [];
 $TorrentTable = '';
 
 $NumGroups = count($TorrentList);
 $NumGroupsByUser = 0;
-$TopArtists = array();
-$UserAdditions = array();
+$TopArtists = [];
+$UserAdditions = [];
 $Number = 0;
 
 foreach ($GroupIDs as $GroupID) {
@@ -272,7 +272,7 @@ if (!check_perms('site_collages_delete')
 
 // Silly hack for people who are on the old setting
 $CollageCovers = isset($LoggedUser['CollageCovers']) ? $LoggedUser['CollageCovers'] : 25 * (abs($LoggedUser['HideCollage'] - 1));
-$CollagePages = array();
+$CollagePages = [];
 
 for ($i = 0; $i < $NumGroups / $CollageCovers; $i++) {
   $Groups = array_slice($Collage, $i * $CollageCovers, $CollageCovers);

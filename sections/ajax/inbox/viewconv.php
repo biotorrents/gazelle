@@ -76,7 +76,7 @@ $DB->query("
   WHERE ConvID = '$ConvID'
   ORDER BY ID");
 
-$JsonMessages = array();
+$JsonMessages = [];
 while (list($SentDate, $SenderID, $Body, $MessageID) = $DB->next_record()) {
   $Body = apcu_exists('DBKEY') ? DBCrypt::decrypt($Body) : '[Encrypted]';
   $JsonMessage = array(

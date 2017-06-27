@@ -17,13 +17,13 @@ if (!check_perms('torrents_edit') && !check_perms('screenshots_add') && !check_p
   }
 }
 
-$Screenshots = isset($_POST['screenshots']) ? $_POST['screenshots'] : array();
+$Screenshots = isset($_POST['screenshots']) ? $_POST['screenshots'] : [];
 
 if (count($Screenshots) > 10) {
   error(0);
 }
 
-$ScreenshotsEscaped = array();
+$ScreenshotsEscaped = [];
 
 foreach ($Screenshots as $i => $Screenshot) {
   if (!preg_match('/^'.IMAGE_REGEX.'$/i', trim($Screenshot)))
@@ -37,7 +37,7 @@ $DB->query("
   WHERE GroupID = $GroupID");
 
 // $Old is an array of the form URL => UserID where UserID is the ID of the User who originally uploaded that image.
-$Old = array();
+$Old = [];
 if ($DB->has_results()) {
   while($S = $DB->next_record(MYSQLI_ASSOC)) {
     $Old[$S['Image']] = $S['UserID'];
@@ -58,7 +58,7 @@ if (!empty($Deleted)) {
   if (check_perms('screenshots_delete') || check_perms('torrents_edit')) {
     $DeleteList = $Deleted;
   } else {
-    $DeleteList = array();
+    $DeleteList = [];
     foreach ($Deleted as $S) {
       // If the user who submitted this request uploaded the image, add the image to the list.
       if ($Old[$S] == $LoggedUser['ID']) {

@@ -45,7 +45,7 @@ include(SERVER_ROOT.'/sections/log/sphinx.php');
   <tr class="nobr"><td colspan="2">Nothing found!</td></tr>
 <?
   }
-$Usernames = array();
+$Usernames = [];
 while (list($ID, $Message, $LogTime) = $DB->next_record()) {
   $MessageParts = explode(' ', $Message);
   $Message = '';

@@ -7,7 +7,7 @@ class Badges {
    * @return array of BadgeIDs
    */
   public static function get_badges($UserID) {
-    $Result = array();
+    $Result = [];
 
     if (G::$Cache->get_value('user_badges_'.$UserID)) {
       return G::$Cache->get_value('user_badges_'.$UserID);
@@ -64,7 +64,7 @@ class Badges {
    * @return array of BadgeIDs
    */
   public static function get_displayed_badges($UserID) {
-    $Result = array();
+    $Result = [];
 
     $Badges = self::get_badges($UserID);
 

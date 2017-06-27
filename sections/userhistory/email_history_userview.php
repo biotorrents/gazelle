@@ -20,11 +20,11 @@ $DB->query("
   WHERE h.UserID = '$UserID'");
 
 $EncEmails = $DB->collect("email");
-$Emails = array();
+$Emails = [];
 
 foreach ($EncEmails as $Enc) {
   if (!isset($Emails[DBCrypt::decrypt($Enc)])) {
-    $Emails[DBCrypt::decrypt($Enc)] = array();
+    $Emails[DBCrypt::decrypt($Enc)] = [];
   }
   $Emails[DBCrypt::decrypt($Enc)][] = $Enc;
 }

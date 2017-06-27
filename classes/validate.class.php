@@ -6,9 +6,9 @@ Finish the GenerateJS stuff
 //-----------------------------------*/
 
 class VALIDATE {
-  var $Fields = array();
+  var $Fields = [];
 
-  function SetFields($FieldName, $Required, $FieldType, $ErrorMessage, $Options = array()) {
+  function SetFields($FieldName, $Required, $FieldType, $ErrorMessage, $Options = []) {
     $this->Fields[$FieldName]['Type'] = strtolower($FieldType);
     $this->Fields[$FieldName]['Required'] = $Required;
     $this->Fields[$FieldName]['ErrorMessage'] = $ErrorMessage;

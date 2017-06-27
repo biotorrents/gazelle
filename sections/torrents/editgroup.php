@@ -69,7 +69,7 @@ $DB->query("
   WHERE GroupID = '".db_string($GroupID)."'");
 
 if ($DB->has_results()) {
-  $Screenshots = array();
+  $Screenshots = [];
   while ($S = $DB->next_record(MYSQLI_ASSOC, true)) {
     $Screenshots[] = $S;
   }

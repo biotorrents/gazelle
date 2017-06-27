@@ -33,7 +33,7 @@ define('QUERY_EXCEPTION', true); // Shut up debugging
 // Haha wow god i'm trying to restrict the database to only have fields for    //
 // movies and not add anything for other categories but this is fucking dumb   //
 
-$Properties = array();
+$Properties = [];
 $Type = $Categories[(int)$_POST['type']];
 $TypeID = $_POST['type'] + 1;
 $Properties['CategoryName'] = $Type;
@@ -196,8 +196,8 @@ if (!is_uploaded_file($TorrentName) || !filesize($TorrentName)) {
 
 $LogName = '';
 if (empty($Properties['GroupID']) && empty($ArtistForm) && ($Type == 'Movies' || $Type == 'Anime' || $Type == 'Manga' || $Type == 'Games')) {
-  $ArtistNames = array();
-  $ArtistForm = array();
+  $ArtistNames = [];
+  $ArtistForm = [];
   for ($i = 0; $i < count($Artists); $i++) {
     if (trim($Artists[$i]) != '') {
       if (!in_array($Artists[$i], $ArtistNames)) {
@@ -214,7 +214,7 @@ if (empty($Properties['GroupID']) && empty($ArtistForm) && ($Type == 'Movies' ||
       JOIN artists_group AS ag ON ta.ArtistID = ag.ArtistID
     WHERE ta.GroupID = ".$Properties['GroupID']."
     ORDER BY ag.Name ASC;");
-  $ArtistForm = array();
+  $ArtistForm = [];
   while (list($ArtistID, $ArtistName) = $DB->next_record(MYSQLI_BOTH, false)) {
     array_push($ArtistForm, array('id' => $ArtistID, 'name' => display_str($ArtistName)));
     array_push($ArtistsUnescaped, array('name' => $ArtistName));
@@ -231,7 +231,7 @@ if ($Err) { // Show the upload form, with the data the user entered
 
 // Strip out Amazon's padding
 $AmazonReg = '/(http:\/\/ecx.images-amazon.com\/images\/.+)(\._.*_\.jpg)/i';
-$Matches = array();
+$Matches = [];
 //What the fuck is $RegX what.cd devs?
 //if (preg_match($RegX, $Properties['Image'], $Matches)) {
 if (preg_match($AmazonReg, $Properties['Image'], $Matches)) {
@@ -243,7 +243,7 @@ ImageTools::blacklisted($Properties['Image']);
 //--------------- Make variables ready for database input ----------------------//
 
 // Shorten and escape $Properties for database input
-$T = array();
+$T = [];
 foreach ($Properties as $Key => $Value) {
   $T[$Key] = "'".db_string(trim($Value))."'";
   if (!$T[$Key]) {
@@ -285,8 +285,8 @@ if (isset($Tor->Dec['encrypted_files'])) {
 // File list and size
 list($TotalSize, $FileList) = $Tor->file_list();
 $NumFiles = count($FileList);
-$TmpFileList = array();
-$TooLongPaths = array();
+$TmpFileList = [];
+$TooLongPaths = [];
 $DirName = (isset($Tor->Dec['info']['files']) ? Format::make_utf8($Tor->get_name()) : '');
 $IgnoredLogFileNames = array('audiochecker.log', 'sox.log');
 check_name($DirName); // check the folder name against the blacklist
@@ -422,7 +422,7 @@ $IsNewGroup = !isset($GroupID) || !$GroupID;
 //----- Start inserts
 if ((!isset($GroupID) || !$GroupID) && ($Type != 'Other')) {
   //array to store which artists we have added already, to prevent adding an artist twice
-  $ArtistsAdded = array();
+  $ArtistsAdded = [];
   foreach ($ArtistForm as $Num => $Artist) {
     if (!isset($Artist['id']) || !$Artist['id']) {
       if (isset($ArtistsAdded[strtolower($Artist['name'])])) {
@@ -471,7 +471,7 @@ if (!isset($GroupID) || !$GroupID) {
   // Add screenshots
   $Screenshots = array_slice(array_filter(array_map("db_string", array_map("trim", array_unique(explode("\n", $Properties['Screenshots'])))), function ($s) { return preg_match('/^'.IMAGE_REGEX.'$/i', $s); }), 0, 10);
 
-  $values = array();
+  $values = [];
   foreach ($Screenshots as $s) {
     $values[] = "(" . $GroupID . ", " . $LoggedUser['ID'] . ", NOW(), '" . $s . "')";
   }
@@ -718,7 +718,7 @@ $Debug->set_flag('upload: announced on irc');
 
 // Manage notifications
 /*
-$UsedFormatBitrates = array();
+$UsedFormatBitrates = [];
 
 if (!$IsNewGroup) {
   // maybe there are torrents in the same release as the new torrent. Let's find out (for notifications)
@@ -759,8 +759,8 @@ if (empty($ArtistsUnescaped)) {
   $ArtistsUnescaped = $ArtistForm;
 }
 if (!empty($ArtistsUnescaped)) {
-  $ArtistNameList = array();
-  $GuestArtistNameList = array();
+  $ArtistNameList = [];
+  $GuestArtistNameList = [];
   foreach ($ArtistsUnescaped as $Importance => $Artists) {
     foreach ($Artists as $Artist) {
       if ($Importance == 1 || $Importance == 4 || $Importance == 5 || $Importance == 6) {
@@ -793,8 +793,8 @@ if (!empty($ArtistsUnescaped)) {
 }
 
 reset($Tags);
-$TagSQL = array();
-$NotTagSQL = array();
+$TagSQL = [];
+$NotTagSQL = [];
 foreach ($Tags as $Tag) {
   $TagSQL[] = " Tags LIKE '%|".db_string(trim($Tag))."|%' ";
   $NotTagSQL[] = " NotTags LIKE '%|".db_string(trim($Tag))."|%' ";
@@ -873,7 +873,7 @@ $DB->query("
 list($Paranoia) = $DB->next_record();
 $Paranoia = unserialize($Paranoia);
 if (!is_array($Paranoia)) {
-  $Paranoia = array();
+  $Paranoia = [];
 }
 if (!in_array('notifications', $Paranoia)) {
   $SQL .= " AND (Users LIKE '%|".$LoggedUser['ID']."|%' OR Users = '') ";
@@ -890,7 +890,7 @@ if ($DB->has_results()) {
   $InsertSQL = '
     INSERT IGNORE INTO users_notify_torrents (UserID, GroupID, TorrentID, FilterID)
     VALUES ';
-  $Rows = array();
+  $Rows = [];
   foreach ($UserArray as $User) {
     list($FilterID, $UserID, $Passkey) = $User;
     $Rows[] = "('$UserID', '$GroupID', '$TorrentID', '$FilterID')";

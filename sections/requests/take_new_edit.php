@@ -151,8 +151,8 @@ if (!empty($_POST['groupid'])) {
 
 //For refilling on error
 if ($CategoryName != 'Other') {
-  $ArtistNames = array();
-  $ArtistForm = array();
+  $ArtistNames = [];
+  $ArtistForm = [];
   for ($i = 0; $i < count($Artists); $i++) {
     if (trim($Artists[$i]) !== '') {
       if (!in_array($Artists[$i], $ArtistNames)) {
