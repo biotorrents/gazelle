@@ -46,42 +46,36 @@ View::show_header('Detailed torrent statistics', 'chart');
 
 <h3 id="Upload_Flow"><a href="#Upload_Flow">Uploads by month</a></h3>
 <div class="box pad center">
-  <canvas class="chart" id="chart_torrents_timeline"></canvas>
-  <script>
-    new Chart($('#chart_torrents_timeline').raw().getContext('2d'), {
-      type: 'line',
-      data: {
-        labels: <? print '["'.implode('","',$Labels).'"]'; ?>,
-        datasets: [ {
-          label: "New Torrents",
-          backgroundColor: "rgba(0,0,255,0.2)",
-          borderColor: "rgba(0,0,255,0.8)",
-          data: <? print "[".implode(",",$InFlow)."]"; ?>
-        }, {
-          label: "Deleted Torrents",
-          backgroundColor: "rgba(255,0,0,0.2)",
-          borderColor: "rgba(255,0,0,0.8)",
-          data: <? print "[".implode(",",$OutFlow)."]"; ?>
-        }]
-      }
-    })
-  </script>
+  <canvas class="chart" id="chart_torrents_timeline" data-chart='{
+    "type": "line",
+    "data": {
+      "labels": <? print '["'.implode('","',$Labels).'"]'; ?>,
+      "datasets": [ {
+        "label": "New Torrents",
+        "backgroundColor": "rgba(0,0,255,0.2)",
+        "borderColor": "rgba(0,0,255,0.8)",
+        "data": <? print "[".implode(",",$InFlow)."]"; ?>
+      }, {
+        "label": "Deleted Torrents",
+        "backgroundColor": "rgba(255,0,0,0.2)",
+        "borderColor": "rgba(255,0,0,0.8)",
+        "data": <? print "[".implode(",",$OutFlow)."]"; ?>
+      }]
+    }
+  }'></canvas>
 </div>
 <h3 id="Torrent_Categories"><a href="#Torrent_Categories">Torrents by category</a></h3>
 <div class="box pad center">
-  <canvas class="chart" id="chart_torrent_categories"></canvas>
-  <script>
-    new Chart($('#chart_torrent_categories').raw().getContext('2d'), {
-      type: 'pie',
-      data: {
-        labels: <? print '["'.implode('","', array_column($CategoryDistribution, 'CategoryID')).'"]'; ?>,
-        datasets: [ {
-          data: <? print "[".implode(",", array_column($CategoryDistribution, 'Torrents'))."]"; ?>,
-          backgroundColor: ['#8a00b8','#a944cb','#be71d8','#e8ccf1', '#f3e3f9', '#fbf6fd', '#ffffff']
-        }]
-      }
-    })
-  </script>
+  <canvas class="chart" id="chart_torrent_categories" data-chart='{
+    "type": "pie",
+    "data": {
+      "labels": <? print '["'.implode('","', array_column($CategoryDistribution, 'CategoryID')).'"]'; ?>,
+      "datasets": [ {
+        "data": <? print "[".implode(",", array_column($CategoryDistribution, 'Torrents'))."]"; ?>,
+        "backgroundColor": ["#8a00b8","#a944cb","#be71d8","#e8ccf1","#f3e3f9","#fbf6fd","#ffffff"]
+      }]
+    }
+  }'></canvas>
 </div>
 <?
 View::show_footer();

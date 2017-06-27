@@ -105,26 +105,23 @@ $DB->set_query_id($RS);
 <div class="thin">
 <?  if (!isset($_GET['page'])) { ?>
   <div class="box pad center">
-    <canvas class="chart" id="chart_user_timeline"></canvas>
-    <script>
-      new Chart($('#chart_user_timeline').raw().getContext('2d'), {
-        type: 'line',
-        data: {
-          labels: <? print '["'.implode('","',$Labels).'"]'; ?>,
-          datasets: [ {
-            label: "New Registrations",
-            backgroundColor: "rgba(0,0,255,0.2)",
-            borderColor: "rgba(0,0,255,0.8)",
-            data: <? print "[".implode(",",$InFlow)."]"; ?>
-          }, {
-            label: "Disabled Users",
-            backgroundColor: "rgba(255,0,0,0.2)",
-            borderColor: "rgba(255,0,0,0.8)",
-            data: <? print "[".implode(",",$OutFlow)."]"; ?>
-          }]
-        }
-      })
-    </script>
+    <canvas class="chart" id="chart_user_timeline" data-chart='{
+      "type": "line",
+      "data": {
+        "labels": <? print '["'.implode('","',$Labels).'"]'; ?>,
+        "datasets": [ {
+          "label": "New Registrations",
+          "backgroundColor": "rgba(0,0,255,0.2)",
+          "borderColor": "rgba(0,0,255,0.8)",
+          "data": <? print "[".implode(",",$InFlow)."]"; ?>
+        }, {
+          "label": "Disabled Users",
+          "backgroundColor": "rgba(255,0,0,0.2)",
+          "borderColor": "rgba(255,0,0,0.8)",
+          "data": <? print "[".implode(",",$OutFlow)."]"; ?>
+        }]
+      }
+    }'></canvas>
   </div>
 <?  } ?>
   <div class="linkbox">

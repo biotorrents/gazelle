@@ -98,48 +98,41 @@ View::show_header('Detailed User Statistics', 'chart');
 ?>
 <h3 id="User_Flow"><a href="#User_Flow">User Flow</a></h3>
 <div class="box pad center">
-  <canvas class="chart" id="chart_user_timeline"></canvas>
-  <script>
-    new Chart($('#chart_user_timeline').raw().getContext('2d'), {
-      type: 'line',
-      data: {
-        labels: <? print '["'.implode('","',$Labels).'"]'; ?>,
-        datasets: [ {
-          label: "New Registrations",
-          backgroundColor: "rgba(0,0,255,0.2)",
-          borderColor: "rgba(0,0,255,0.8)",
-          data: <? print "[".implode(",",$InFlow)."]"; ?>
-        }, {
-          label: "Disabled Users",
-          backgroundColor: "rgba(255,0,0,0.2)",
-          borderColor: "rgba(255,0,0,0.8)",
-          data: <? print "[".implode(",",$OutFlow)."]"; ?>
-        }]
-      }
-    })
-  </script>
+  <canvas class="chart" id="chart_user_timeline" data-chart='{
+    "type": "line",
+    "data": {
+      "labels": <? print '["'.implode('","',$Labels).'"]'; ?>,
+      "datasets": [ {
+        "label": "New Registrations",
+        "backgroundColor": "rgba(0,0,255,0.2)",
+        "borderColor": "rgba(0,0,255,0.8)",
+        "data": <? print "[".implode(",",$InFlow)."]"; ?>
+      }, {
+        "label": "Disabled Users",
+        "backgroundColor": "rgba(255,0,0,0.2)",
+        "borderColor": "rgba(255,0,0,0.8)",
+        "data": <? print "[".implode(",",$OutFlow)."]"; ?>
+      }]
+    }
+  }'></canvas>
 </div>
 <br />
 <h3 id="User_Classes"><a href="#User_Classes">User Classes</a></h3>
 <div class="box pad center">
-  <canvas class="chart" id="chart_user_classes"></canvas>
-  <script>
-    new Chart($('#chart_user_classes').raw().getContext('2d'), {
-      type: 'pie',
-      data: {
-        labels: <? print '["'.implode('","', array_column($ClassDistribution, 'Name')).'"]'; ?>,
-        datasets: [ {
-          data: <? print "[".implode(",", array_column($ClassDistribution, 'Users'))."]"; ?>,
-          backgroundColor: ['#8a00b8','#a944cb','#be71d8','#e8ccf1', '#f3e3f9', '#fbf6fd', '#ffffff']
-        }]
-      }
-    })
-  </script>
+  <canvas class="chart" id="chart_user_classes" data-chart='{
+    "type": "pie",
+    "data": {
+      "labels": <? print '["'.implode('","', array_column($ClassDistribution, 'Name')).'"]'; ?>,
+      "datasets": [ {
+        "data": <? print "[".implode(",", array_column($ClassDistribution, 'Users'))."]"; ?>,
+        "backgroundColor": ["#8a00b8","#a944cb","#be71d8","#e8ccf1","#f3e3f9","#fbf6fd","#ffffff"]
+      }]
+    }
+  }'></canvas>
 </div>
 <br />
 <h3 id="User_Platforms"><a href="#User_Platforms">User Platforms</a></h3>
 <div class="box pad center">
-  <canvas class="chart" id="chart_user_platforms"></canvas>
   <?
     $AllPlatforms = array_column($PlatformDistribution, 'OperatingSystem');
     $SlicedPlatforms = (count($AllPlatforms) > 14) ? array_slice($AllPlatforms,0,13)+[13=>'Other'] : $AllPlatforms;
@@ -164,23 +157,20 @@ View::show_header('Detailed User Statistics', 'chart');
       }
     }
   ?>
-  <script>
-    new Chart($('#chart_user_platforms').raw().getContext('2d'), {
-      type: 'pie',
-      data: {
-        labels: ["<?=implode('","', $SlicedPlatforms)?>"],
-        datasets: [ {
-          data: [<?=implode(",", $SlicedUsers)?>],
-            backgroundColor: ["<?=implode('","', $Colors)?>"]
-        }]
-      }
-    })
-  </script>
+  <canvas class="chart" id="chart_user_platforms" data-chart='{
+    "type": "pie",
+    "data": {
+      "labels": ["<?=implode('","', $SlicedPlatforms)?>"],
+      "datasets": [ {
+        "data": [<?=implode(",", $SlicedUsers)?>],
+          "backgroundColor": ["<?=implode('","', $Colors)?>"]
+      }]
+    }
+  }'></canvas>
 </div>
 <br />
 <h3 id="User_Browsers"><a href="#User_Browsers">User Browsers</a></h3>
 <div class="box pad center">
-  <canvas class="chart" id="chart_user_browsers"></canvas>
   <?
     $AllBrowsers = array_column($BrowserDistribution, 'Browser');
     $SlicedBrowsers = (count($AllBrowsers) > 7) ? array_slice($AllBrowsers,0,6)+[6=>'Other'] : $AllBrowsers;
@@ -205,18 +195,16 @@ View::show_header('Detailed User Statistics', 'chart');
       }
     }
   ?>
-  <script>
-    new Chart($('#chart_user_browsers').raw().getContext('2d'), {
-      type: 'pie',
-      data: {
-        labels: ["<?=implode('","', $SlicedBrowsers)?>"],
-        datasets: [ {
-          data: [<?=implode(",", $SlicedUsers)?>],
-          backgroundColor: ["<?=implode('","', $Colors)?>"],
-        }]
-      }
-    })
-  </script>
+  <canvas class="chart" id="chart_user_browsers" data-chart='{
+    "type": "pie",
+    "data": {
+      "labels": ["<?=implode('","', $SlicedBrowsers)?>"],
+      "datasets": [{
+        "data": [<?=implode(",", $SlicedUsers)?>],
+        "backgroundColor": ["<?=implode('","', $Colors)?>"]
+      }]
+    }
+  }'></canvas>
 </div>
 <br />
 <h3 id="Geo_Dist_Map"><a href="#Geo_Dist_Map">Geographical Distribution Map</a></h3>
