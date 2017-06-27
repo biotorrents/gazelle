@@ -1,6 +1,5 @@
 <?
 if (!list($Countries, $Rank, $CountryUsers, $CountryMax, $CountryMin, $LogIncrements) = $Cache->get_value('geodistribution')) {
-  include_once(SERVER_ROOT.'/classes/charts.class.php');
   $DB->query('
     SELECT Code, Users
     FROM users_geodistribution');
