@@ -1534,7 +1534,4 @@ if (!$DisablePoints) {
 ?>
   </div>
 </div>
-<script>
-$('.tooltip').tooltipster();
-</script>
 <? View::show_footer(); ?>

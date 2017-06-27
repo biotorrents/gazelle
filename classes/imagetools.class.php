@@ -184,6 +184,7 @@ class ImageTools {
     }
 
     if (preg_match('/^https:\/\/('.SITE_DOMAIN.'|'.IMAGE_DOMAIN.')\//', $Url) || $Url[0]=='/') {
+      if (strpos($Url, '?') === false) $Url .= '?';
       return $Url;
     } else {
       return 'https://'.IMAGE_DOMAIN.'/?h='.rawurlencode(base64_encode(hash_hmac('sha256', $Url, IMAGE_PSK, true))).'&i='.urlencode($Url);
