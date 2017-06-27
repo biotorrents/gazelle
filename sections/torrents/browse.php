@@ -453,7 +453,7 @@ View::show_header('Browse Torrents', 'browse');
       <td><a href="<?=header_link('size')?>">Size</a></td>
       <td class="sign snatches">
         <a href="<?=header_link('snatched')?>">
-          <img src="static/styles/<?=$LoggedUser['StyleName']?>/images/snatched.png" class="tooltip" alt="Snatches" title="Snatches" />
+          <svg width="15" height="15" fill="white" class="tooltip" alt="Snatches" title="Snatches" viewBox="3 0 88 98"><path d="M20 20 A43 43,0,1,0,77 23 L90 10 L55 10 L55 45 L68 32 A30.27 30.27,0,1,1,28 29"></path></svg>
         </a>
       </td>
       <td class="sign seeders">

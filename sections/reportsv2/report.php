@@ -77,7 +77,9 @@ View::show_header('Report', 'reportsv2,browse,torrent,bbcode,recommend');
       <tr class="colhead_dark">
         <td width="80%"><strong>Reported torrent</strong></td>
         <td><strong>Size</strong></td>
-        <td class="sign snatches"><img src="static/styles/<?=($LoggedUser['StyleName'])?>/images/snatched.png" class="tooltip" alt="Snatches" title="Snatches" /></td>
+        <td class="sign snatches">
+          <a><svg width="15" height="15" fill="white" class="tooltip" alt="Snatches" title="Snatches" viewBox="3 0 88 98"><path d="M20 20 A43 43,0,1,0,77 23 L90 10 L55 10 L55 45 L68 32 A30.27 30.27,0,1,1,28 29"></path></svg></a>
+        </td>
         <td class="sign seeders">
           <a><svg width="11" height="15" fill="white" class="tooltip" alt="Seeders" title="Seeders"><polygon points="0,7 5.5,0 11,7 8,7 8,15 3,15 3,7"></polygon></svg></a>
         </td>
