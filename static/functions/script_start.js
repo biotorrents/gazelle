@@ -362,7 +362,7 @@ $.fn.extend({
   }
 });
 
-if ($('meta[name=authkey]')) {
+if ($('meta[name=authkey]').raw()) {
   var authkey = $('meta[name=authkey]').raw().content;
   var userid = parseInt($('meta[name=userid]').raw().content);
 }
