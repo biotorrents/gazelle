@@ -12,6 +12,6 @@ if (isset($LoggedUser['ID'])) {
     }
   }
 } else {
-  include('public.php');
+  header('Location: login.php');
 }
 ?>

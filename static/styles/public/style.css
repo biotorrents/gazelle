@@ -124,11 +124,6 @@ input[type="text"]:invalid, input[type="password"]:invalid {
   background-size: contain;
 }
 
-.poetry {
-  width: 320px;
-  text-align: justify;
-}
-
 .centered {
   text-align: center;
   vertical-align: middle;
