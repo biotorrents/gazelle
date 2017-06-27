@@ -1457,7 +1457,6 @@ CREATE TABLE `users_info` (
   `ViewAvatars` enum('0','1') NOT NULL DEFAULT '1',
   `Donor` enum('0','1') NOT NULL DEFAULT '0',
   `Artist` enum('0','1') NOT NULL DEFAULT '0',
-  `DownloadAlt` enum('0','1') NOT NULL DEFAULT '0',
   `Warned` datetime,
   `SupportFor` varchar(255),
   `TorrentGrouping` enum('0','1','2') NOT NULL COMMENT '0=Open,1=Closed,2=Off',

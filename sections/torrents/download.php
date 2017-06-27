@@ -2,8 +2,7 @@
 if (!isset($_REQUEST['authkey']) || !isset($_REQUEST['torrent_pass'])) {
   enforce_login();
   $TorrentPass = $LoggedUser['torrent_pass'];
-  $DownloadAlt = $LoggedUser['DownloadAlt'];
-  $UserID     = $LoggedUser['ID'];
+  $UserID    = $LoggedUser['ID'];
   $AuthKey   = $LoggedUser['AuthKey'];
 } else {
   if (strpos($_REQUEST['torrent_pass'], '_') !== false) {
@@ -13,7 +12,7 @@ if (!isset($_REQUEST['authkey']) || !isset($_REQUEST['torrent_pass'])) {
   $UserInfo = $Cache->get_value('user_'.$_REQUEST['torrent_pass']);
   if (!is_array($UserInfo)) {
     $DB->query("
-      SELECT ID, DownloadAlt, la.UserID
+      SELECT ID, la.UserID
       FROM users_main AS m
         INNER JOIN users_info AS i ON i.UserID = m.ID
         LEFT JOIN locked_accounts AS la ON la.UserID = m.ID
@@ -23,7 +22,7 @@ if (!isset($_REQUEST['authkey']) || !isset($_REQUEST['torrent_pass'])) {
     $Cache->cache_value('user_'.$_REQUEST['torrent_pass'], $UserInfo, 3600);
   }
   $UserInfo = array($UserInfo);
-  list($UserID, $DownloadAlt, $Locked) = array_shift($UserInfo);
+  list($UserID, $Locked) = array_shift($UserInfo);
   if (!$UserID) {
     error(0);
   }
@@ -179,13 +178,9 @@ $DB->query("
 
 Torrents::set_snatch_update_time($UserID, Torrents::SNATCHED_UPDATE_AFTERDL);
 $Contents = file_get_contents(TORRENT_STORE.$TorrentID.'.torrent');
-$FileName = TorrentsDL::construct_file_name($Info['PlainArtists'], $Name, $Year, $Media, $Format, $Encoding, $TorrentID, $DownloadAlt);
+$FileName = TorrentsDL::construct_file_name($Info['PlainArtists'], $Name, $Year, $Media, $Format, $Encoding, $TorrentID);
 
-if ($DownloadAlt) {
-  header('Content-Type: text/plain; charset=utf-8');
-} elseif (!$DownloadAlt || $Failed) {
-  header('Content-Type: application/x-bittorrent; charset=utf-8');
-}
+header('Content-Type: application/x-bittorrent; charset=utf-8');
 header('Content-disposition: attachment; filename="'.$FileName.'"');
 
 function add_passkey($ann) {

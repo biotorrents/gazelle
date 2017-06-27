@@ -20,21 +20,21 @@ if ($UserID != $LoggedUser['ID'] && !check_perms('users_edit_profiles', $Permiss
 }
 
 $Val->SetFields('stylesheet', 1, "number", "You forgot to select a stylesheet.");
-$Val->SetFields('styleurl', 0, "regex", "You did not enter a valid stylesheet URL.", array('regex' => '/^'.CSS_REGEX.'$/i'));
+$Val->SetFields('styleurl', 0, "regex", "You did not enter a valid stylesheet URL.", ['regex' => '/^'.CSS_REGEX.'$/i']);
 // The next two are commented out because the drop-down menus were replaced with a check box and radio buttons
 //$Val->SetFields('disablegrouping', 0, "number", "You forgot to select your torrent grouping option.");
 //$Val->SetFields('torrentgrouping', 0, "number", "You forgot to select your torrent grouping option.");
-$Val->SetFields('postsperpage', 1, "number", "You forgot to select your posts per page option.", array('inarray' => array(25, 50, 100)));
-//$Val->SetFields('hidecollage', 1, "number", "You forgot to select your collage option.", array('minlength' => 0, 'maxlength' => 1));
+$Val->SetFields('postsperpage', 1, "number", "You forgot to select your posts per page option.", ['inarray' => [25, 50, 100]]);
+//$Val->SetFields('hidecollage', 1, "number", "You forgot to select your collage option.", ['minlength' => 0, 'maxlength' => 1]);
 $Val->SetFields('collagecovers', 1, "number", "You forgot to select your collage option.");
-$Val->SetFields('avatar', 0, "regex", "You did not enter a valid avatar URL.", array('regex' => "/^".IMAGE_REGEX."$/i"));
+$Val->SetFields('avatar', 0, "regex", "You did not enter a valid avatar URL.", ['regex' => "/^".IMAGE_REGEX."$/i"]);
 $Val->SetFields('email', 1, "email", "You did not enter a valid email address.");
-$Val->SetFields('twofa', 0, "regex", "You did not enter a valid 2FA verification code.", array('regex' => '/^[0-9]{6}$/'));
-$Val->SetFields('irckey', 0, "string", "You did not enter a valid IRC key. An IRC key must be between 6 and 32 characters long.", array('minlength' => 6, 'maxlength' => 32));
-$Val->SetFields('new_pass_1', 0, "regex", "You did not enter a valid password. A valid password is 6 characters or longer.", array('regex' => '/(?=^.{6,}$).*$/'));
-$Val->SetFields('new_pass_2', 1, "compare", "Your passwords do not match.", array('comparefield' => 'new_pass_1'));
+$Val->SetFields('twofa', 0, "regex", "You did not enter a valid 2FA verification code.", ['regex' => '/^[0-9]{6}$/']);
+$Val->SetFields('irckey', 0, "string", "You did not enter a valid IRC key. An IRC key must be between 6 and 32 characters long.", ['minlength' => 6, 'maxlength' => 32]);
+$Val->SetFields('new_pass_1', 0, "regex", "You did not enter a valid password. A valid password is 6 characters or longer.", ['regex' => '/(?=^.{6,}$).*$/']);
+$Val->SetFields('new_pass_2', 1, "compare", "Your passwords do not match.", ['comparefield' => 'new_pass_1']);
 if (check_perms('site_advanced_search')) {
-  $Val->SetFields('searchtype', 1, "number", "You forgot to select your default search preference.", array('minlength' => 0, 'maxlength' => 1));
+  $Val->SetFields('searchtype', 1, "number", "You forgot to select your default search preference.", ['minlength' => 0, 'maxlength' => 1]);
 }
 
 $Err = $Val->ValidateForm($_POST);
@@ -75,7 +75,7 @@ if (isset($_POST['p_snatched_c']) && isset($_POST['p_seeding_c']) && isset($_POS
 
 // if showing exactly 2 of stats, show all 3 of stats
 $StatsShown = 0;
-$Stats = array('downloaded', 'uploaded', 'ratio');
+$Stats = ['downloaded', 'uploaded', 'ratio'];
 foreach ($Stats as $S) {
   if (isset($_POST["p_$S"])) {
     $StatsShown++;
@@ -88,15 +88,15 @@ if ($StatsShown == 2) {
   }
 }
 
-$Paranoia = array();
-$Checkboxes = array('downloaded', 'uploaded', 'ratio', 'lastseen', 'requiredratio', 'invitedcount', 'artistsadded', 'notifications');
+$Paranoia = [];
+$Checkboxes = ['downloaded', 'uploaded', 'ratio', 'lastseen', 'requiredratio', 'invitedcount', 'artistsadded', 'notifications'];
 foreach ($Checkboxes as $C) {
   if (!isset($_POST["p_$C"])) {
     $Paranoia[] = $C;
   }
 }
 
-$SimpleSelects = array('torrentcomments', 'collages', 'collagecontribs', 'uploads', 'uniquegroups', 'perfectflacs', 'seeding', 'leeching', 'snatched');
+$SimpleSelects = ['torrentcomments', 'collages', 'collagecontribs', 'uploads', 'uniquegroups', 'perfectflacs', 'seeding', 'leeching', 'snatched'];
 foreach ($SimpleSelects as $S) {
   if (!isset($_POST["p_$S".'_c']) && !isset($_POST["p_$S".'_l'])) {
     // Very paranoid - don't show count or list
@@ -107,7 +107,7 @@ foreach ($SimpleSelects as $S) {
   }
 }
 
-$Bounties = array('requestsfilled', 'requestsvoted');
+$Bounties = ['requestsfilled', 'requestsvoted'];
 foreach ($Bounties as $B) {
   if (isset($_POST["p_$B".'_list'])) {
     $_POST["p_$B".'_count'] = 'on';
@@ -292,7 +292,7 @@ if (!empty($_POST['sorthide'])) {
     $Options['SortHide'][$E[0]] = $E[1];
   }
 } else {
-  $Options['SortHide'] = array();
+  $Options['SortHide'] = [];
 }
 
 if (check_perms('site_advanced_search')) {
@@ -306,7 +306,6 @@ unset($Options['ArtistNoRedirect']);
 unset($Options['ShowQueryList']);
 unset($Options['ShowCacheList']);
 
-$DownloadAlt = isset($_POST['downloadalt']) ? 1 : 0;
 $UnseededAlerts = isset($_POST['unseededalerts']) ? 1 : 0;
 
 Donations::update_rewards($UserID);
@@ -316,11 +315,11 @@ NotificationsManager::save_settings($UserID);
 if (!empty($_POST['badges'])) {
   $BadgeIDs = array_slice($_POST['badges'], 0, 5);
 } else {
-  $BadgeIDs = array();
+  $BadgeIDs = [];
 }
 
 $BadgesChanged = false;
-$NewBadges = array();
+$NewBadges = [];
 if ($Cache->get_value('user_badges_'.$UserID)) {
   $Badges = $Cache->get_value('user_badges_'.$UserID);
   foreach ($Badges as $Badge) {
@@ -334,7 +333,7 @@ if ($Cache->get_value('user_badges_'.$UserID)) {
       $Displayed = false;
       $BadgesChanged = true;
     }
-    $NewBadges[] = array('BadgeID' => $Badge['BadgeID'], 'Displayed' => $Displayed?'1':'0');
+    $NewBadges[] = ['BadgeID' => $Badge['BadgeID'], 'Displayed' => $Displayed?'1':'0'];
 
   }
 } else {
@@ -345,24 +344,18 @@ if ($BadgesChanged) {
 }
 // End Badge settings
 
-// Information on how the user likes to download torrents is stored in cache
-if ($DownloadAlt != $LoggedUser['DownloadAlt']) {
-  $Cache->delete_value('user_'.$LoggedUser['torrent_pass']);
-}
-
 $Cache->begin_transaction("user_info_$UserID");
-$Cache->update_row(false, array(
-    'Avatar' => display_str($_POST['avatar']),
-    'Paranoia' => $Paranoia
-));
+$Cache->update_row(false, [
+  'Avatar' => display_str($_POST['avatar']),
+  'Paranoia' => $Paranoia
+]);
 $Cache->commit_transaction(0);
 
 $Cache->begin_transaction("user_info_heavy_$UserID");
-$Cache->update_row(false, array(
-    'StyleID' => $_POST['stylesheet'],
-    'StyleURL' => display_str($_POST['styleurl']),
-    'DownloadAlt' => $DownloadAlt
-    ));
+$Cache->update_row(false, [
+  'StyleID' => $_POST['stylesheet'],
+  'StyleURL' => display_str($_POST['styleurl'])
+]);
 $Cache->update_row(false, $Options);
 $Cache->commit_transaction(0);
 
@@ -378,7 +371,6 @@ $SQL = "
     i.NotifyOnQuote = '".db_string($Options['NotifyOnQuote'])."',
     i.Info = '".db_string($_POST['info'])."',
     i.InfoTitle = '".db_string($_POST['profile_title'])."',
-    i.DownloadAlt = '$DownloadAlt',
     i.UnseededAlerts = '$UnseededAlerts',
     m.Email = '".DBCrypt::encrypt($_POST['email'])."',
     m.IRCKey = '".db_string($_POST['irckey'])."',
@@ -408,11 +400,11 @@ if (isset($_POST['resetpasskey'])) {
     VALUES
       ('$UserID', '$OldPassKey', '$NewPassKey', '$ChangerIP', '".sqltime()."')");
   $Cache->begin_transaction("user_info_heavy_$UserID");
-  $Cache->update_row(false, array('torrent_pass' => $NewPassKey));
+  $Cache->update_row(false, ['torrent_pass' => $NewPassKey]);
   $Cache->commit_transaction(0);
   $Cache->delete_value("user_$OldPassKey");
 
-  Tracker::update_tracker('change_passkey', array('oldpasskey' => $OldPassKey, 'newpasskey' => $NewPassKey));
+  Tracker::update_tracker('change_passkey', ['oldpasskey' => $OldPassKey, 'newpasskey' => $NewPassKey]);
 }
 
 $SQL .= "WHERE m.ID = '".db_string($UserID)."'";

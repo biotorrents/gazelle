@@ -18,14 +18,13 @@ $DB->query("
     i.StyleURL,
     i.SiteOptions,
     i.UnseededAlerts,
-    i.DownloadAlt,
     p.Level AS Class,
     i.InfoTitle
   FROM users_main AS m
     JOIN users_info AS i ON i.UserID = m.ID
     LEFT JOIN permissions AS p ON p.ID = m.PermissionID
   WHERE m.ID = '".db_string($UserID)."'");
-list($Username, $TwoFactor, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $DownloadAlt, $Class, $InfoTitle) = $DB->next_record(MYSQLI_NUM, array(4, 9));
+list($Username, $TwoFactor, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $Class, $InfoTitle) = $DB->next_record(MYSQLI_NUM, array(4, 9));
 
 $TwoFA = new TwoFactorAuth();
 
@@ -322,13 +321,6 @@ echo $Val->GenerateJS('userform');
         <td>
           <input type="checkbox" name="novotelinks" id="novotelinks"<?=!empty($SiteOptions['NoVoteLinks']) ? ' checked="checked"' : ''?> />
           <label for="novotelinks">Disable voting links</label>
-        </td>
-      </tr>
-      <tr id="tor_dltext_tr">
-        <td class="label tooltip" title="Some ISPs block the downloading of torrent files. Enable this option if you wish to download torrent files with a &quot;.txt&quot; file extension."><strong>Text file downloads</strong></td>
-        <td>
-          <input type="checkbox" name="downloadalt" id="downloadalt"<?=$DownloadAlt ? ' checked="checked"' : ''?> />
-          <label for="downloadalt">Enable downloading torrent files as text files</label>
         </td>
       </tr>
       <tr id="tor_hidequestionable_tr">

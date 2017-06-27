@@ -18,11 +18,11 @@ class Users {
       $Classes = G::$DB->to_array('ID');
       $ClassLevels = G::$DB->to_array('Level');
       G::$DB->set_query_id($QueryID);
-      G::$Cache->cache_value('classes', array($Classes, $ClassLevels), 0);
+      G::$Cache->cache_value('classes', [$Classes, $ClassLevels], 0);
     }
     $Debug->set_flag('Loaded permissions');
 
-    return array($Classes, $ClassLevels);
+    return [$Classes, $ClassLevels];
   }
 
 
@@ -77,29 +77,30 @@ class Users {
         GROUP BY m.ID");
 
       if (!G::$DB->has_results()) { // Deleted user, maybe?
-        $UserInfo = array(
-            'ID' => $UserID,
-            'Username' => '',
-            'PermissionID' => 0,
-            'Paranoia' => array(),
-            'Artist' => false,
-            'Donor' => false,
-            'Warned' => NULL,
-            'Avatar' => '',
-            'Enabled' => 0,
-            'Title' => '',
-            'CatchupTime' => 0,
-            'Visible' => '1',
-            'Levels' => '',
-            'Class' => 0);
+        $UserInfo = [
+          'ID'           => $UserID,
+          'Username'     => '',
+          'PermissionID' => 0,
+          'Paranoia'     => [],
+          'Artist'       => false,
+          'Donor'        => false,
+          'Warned'       => NULL,
+          'Avatar'       => '',
+          'Enabled'      => 0,
+          'Title'        => '',
+          'CatchupTime'  => 0,
+          'Visible'      => '1',
+          'Levels'       => '',
+          'Class'        => 0
+        ];
       } else {
-        $UserInfo = G::$DB->next_record(MYSQLI_ASSOC, array('Paranoia', 'Title'));
+        $UserInfo = G::$DB->next_record(MYSQLI_ASSOC, ['Paranoia', 'Title']);
         $UserInfo['CatchupTime'] = strtotime($UserInfo['CatchupTime']);
         if (!is_array($UserInfo['Paranoia'])) {
           $UserInfo['Paranoia'] = json_decode($UserInfo['Paranoia'], true);
         }
         if (!$UserInfo['Paranoia']) {
-          $UserInfo['Paranoia'] = array();
+          $UserInfo['Paranoia'] = [];
         }
         $UserInfo['Class'] = $Classes[$UserInfo['PermissionID']]['Level'];
       }
@@ -111,7 +112,7 @@ class Users {
       if (!empty($UserInfo['Levels'])) {
         $UserInfo['ExtraClasses'] = array_fill_keys(explode(',', $UserInfo['Levels']), 1);
       } else {
-        $UserInfo['ExtraClasses'] = array();
+        $UserInfo['ExtraClasses'] = [];
       }
       unset($UserInfo['Levels']);
       $EffectiveClass = $UserInfo['Class'];
@@ -169,7 +170,6 @@ class Users {
           i.DisableForums,
           i.DisableTagging,
           i.SiteOptions,
-          i.DownloadAlt,
           i.LastReadNews,
           i.LastReadBlog,
           i.RestrictedForums,
@@ -181,24 +181,22 @@ class Users {
         FROM users_main AS m
           INNER JOIN users_info AS i ON i.UserID = m.ID
         WHERE m.ID = '$UserID'");
-      $HeavyInfo = G::$DB->next_record(MYSQLI_ASSOC, array('CustomPermissions', 'SiteOptions'));
+      $HeavyInfo = G::$DB->next_record(MYSQLI_ASSOC, ['CustomPermissions', 'SiteOptions']);
 
+      $HeavyInfo['CustomPermissions'] = [];
       if (!empty($HeavyInfo['CustomPermissions'])) {
         $HeavyInfo['CustomPermissions'] = json_decode($HeavyInfo['CustomPermissions'], true);
-      } else {
-        $HeavyInfo['CustomPermissions'] = array();
       }
 
+      $RestrictedForums = [];
       if (!empty($HeavyInfo['RestrictedForums'])) {
         $RestrictedForums = array_map('trim', explode(',', $HeavyInfo['RestrictedForums']));
-      } else {
-        $RestrictedForums = array();
       }
       unset($HeavyInfo['RestrictedForums']);
+
+      $PermittedForums = [];
       if (!empty($HeavyInfo['PermittedForums'])) {
         $PermittedForums = array_map('trim', explode(',', $HeavyInfo['PermittedForums']));
-      } else {
-        $PermittedForums = array();
       }
       unset($HeavyInfo['PermittedForums']);
 
@@ -219,16 +217,15 @@ class Users {
         $PermittedForums = array_merge($PermittedForums, array_map('trim', explode(',', $Perms['PermittedForums'])));
       }
 
+      $HeavyInfo['CustomForums'] = null;
       if (!empty($PermittedForums) || !empty($RestrictedForums)) {
-        $HeavyInfo['CustomForums'] = array();
+        $HeavyInfo['CustomForums'] = [];
         foreach ($RestrictedForums as $ForumID) {
           $HeavyInfo['CustomForums'][$ForumID] = 0;
         }
         foreach ($PermittedForums as $ForumID) {
           $HeavyInfo['CustomForums'][$ForumID] = 1;
         }
-      } else {
-        $HeavyInfo['CustomForums'] = null;
       }
       if (isset($HeavyInfo['CustomForums'][''])) {
         unset($HeavyInfo['CustomForums']['']);
@@ -491,13 +488,12 @@ class Users {
       $GroupIDs = G::$DB->collect('GroupID');
       $BookmarkData = G::$DB->to_array('GroupID', MYSQLI_ASSOC);
       G::$DB->set_query_id($QueryID);
-      G::$Cache->cache_value("bookmarks_group_ids_$UserID",
-        array($GroupIDs, $BookmarkData), 3600);
+      G::$Cache->cache_value("bookmarks_group_ids_$UserID", [$GroupIDs, $BookmarkData], 3600);
     }
 
     $TorrentList = Torrents::get_groups($GroupIDs);
 
-    return array($GroupIDs, $BookmarkData, $TorrentList);
+    return [$GroupIDs, $BookmarkData, $TorrentList];
   }
 
   /**
@@ -669,7 +665,7 @@ class Users {
    */
   public static function auth_location($UserID, $Username, $ASN, $Email) {
     $AuthKey = Users::make_secret();
-    G::$Cache->cache_value('new_location_'.$AuthKey, array('UserID'=>$UserID, 'ASN'=>$ASN), 3600*2);
+    G::$Cache->cache_value('new_location_'.$AuthKey, ['UserID'=>$UserID, 'ASN'=>$ASN], 3600*2);
     require(SERVER_ROOT . '/classes/templates.class.php');
     $TPL = NEW TEMPLATE;
     $TPL->open(SERVER_ROOT . '/templates/new_location.tpl');

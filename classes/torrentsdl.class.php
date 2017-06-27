@@ -86,7 +86,7 @@ class TorrentsDL {
   public function add_file(&$TorrentData, $Info, $FolderName = '') {
     $FolderName = Misc::file_string($FolderName);
     $MaxPathLength = $FolderName ? (self::MaxPathLength - strlen($FolderName) - 1) : self::MaxPathLength;
-    $FileName = self::construct_file_name($Info['Artist'], $Info['Name'], $Info['Year'], $Info['Media'], $Info['Format'], $Info['Encoding'], $Info['TorrentID'], false, $MaxPathLength);
+    $FileName = self::construct_file_name($Info['Artist'], $Info['Name'], $Info['Year'], $Info['Media'], $Info['Format'], $Info['Encoding'], $Info['TorrentID'], $MaxPathLength);
     $this->Size += $Info['Size'];
     $this->NumAdded++;
     $this->Zip->add_file(self::get_file($TorrentData, $this->AnnounceURL, $this->AnnounceList), ($FolderName ? "$FolderName/" : "") . $FileName);
@@ -176,12 +176,11 @@ class TorrentsDL {
    *
    * @params most input variables are self-explanatory
    * @param int $TorrentID if given, append "-TorrentID" to torrent name
-   * @param bool $Txt whether to use .txt or .torrent as file extension
    * @param int $MaxLength maximum file name length
    * @return file name with at most $MaxLength characters
    */
-  public static function construct_file_name($Artist, $Album, $Year, $Media, $Format, $Encoding, $TorrentID = false, $Txt = false, $MaxLength = self::MaxPathLength) {
-    $MaxLength -= ($Txt ? 4 : 8);
+  public static function construct_file_name($Artist, $Album, $Year, $Media, $Format, $Encoding, $TorrentID = false, $MaxLength = self::MaxPathLength) {
+    $MaxLength -= 8; // ".torrent"
     if ($TorrentID !== false) {
       $MaxLength -= (strlen($TorrentID) + 1);
     }
@@ -215,9 +214,6 @@ class TorrentsDL {
     $TorrentName = Format::cut_string($TorrentName . $TorrentInfo, $MaxLength, true, false);
     if ($TorrentID !== false) {
       $TorrentName .= "-$TorrentID";
-    }
-    if ($Txt) {
-      return "$TorrentName.txt";
     }
     return "$TorrentName.torrent";
   }
