@@ -30,7 +30,7 @@ class View {
       require(SERVER_ROOT.'/design/publicheader.php');
     } else {
       // HTTP/2 Server Push headers for cloudflare
-      $Scripts = array_merge(['jquery', 'global', 'ajax.class', 'jquery.autocomplete', 'autocomplete', 'tooltipster', 'tooltipster_settings'], explode(',', $JSIncludes));
+      $Scripts = array_merge(['jquery', 'global', 'ajax.class', 'jquery.autocomplete', 'autocomplete', 'tooltipster'], explode(',', $JSIncludes));
       $Styles = array_merge(['tooltipster'], explode(',', $CSSIncludes));
       foreach ($Scripts as $Script) {
         if (trim($Script) == '') { continue; }

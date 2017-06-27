@@ -95,7 +95,7 @@ foreach ($ExtraCSS as $CSS) {
 <?
 }
 
-$Scripts = array_merge(array('jquery', 'global', 'ajax.class', 'jquery.autocomplete', 'autocomplete', 'tooltipster', 'tooltipster_settings'), explode(',', $JSIncludes));
+$Scripts = array_merge(array('jquery', 'global', 'ajax.class', 'jquery.autocomplete', 'autocomplete', 'tooltipster'), explode(',', $JSIncludes));
 foreach ($Scripts as $Script) {
   if (trim($Script) == '') { continue; }
   $Async = (in_array($Script, ['jquery','global','ajax.class'])) ? '' : 'async';
