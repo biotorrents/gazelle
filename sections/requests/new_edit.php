@@ -303,8 +303,6 @@ View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'reques
 <?  } ?>
       </table>
     </form>
-    <script type="text/javascript"><?=$NewRequest ? " Calculate();" : '' ?></script>
-    <script type="text/javascript">Categories();</script>
   </div>
 </div>
 <?

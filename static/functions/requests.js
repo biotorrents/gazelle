@@ -55,6 +55,7 @@ function Vote(amount, requestid) {
 }
 
 function Calculate() {
+  if (!$('#unit').raw()) { return; }
   var mul = (($('#unit').raw().options[$('#unit').raw().selectedIndex].value == 'mb') ? (1024*1024) : (1024*1024*1024));
   var amt = Math.floor($('#amount_box').raw().value * mul);
   if (amt > $('#current_uploaded').raw().value) {
@@ -232,9 +233,10 @@ function JavAutofill() {
 
 $(function() {
   Categories()
+  Calculate()
   document.querySelectorAll('[autofill]').forEach(function(el) {
     el.addEventListener('click', function(event) {
-      ({'douj':DoujAutofill, 'anime':AnidbAutofill, 'jav':JavAutofill})[el.attributes['autofill'].value]()
+      ({'jav':JavAutofill})[el.attributes['autofill'].value]()
     })
   })
 })
