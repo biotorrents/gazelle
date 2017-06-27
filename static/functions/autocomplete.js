@@ -4,7 +4,10 @@ var SELECTOR = '[data-gazelle-autocomplete="true"]';
 $(document).ready(initAutocomplete)
 
 function initAutocomplete() {
-  var url = new URL();
+  var url = {
+    path: window.location.pathname.split('/').reverse()[0].split(".")[0],
+    query: window.location.search.slice(1).split('&').reduce((a,b)=>Object.assign(a,{[b.split('=')[0]]:b.split('=')[1]}),{})
+  }
 
   $('#artistsearch' + SELECTOR).autocomplete({
     deferRequestBy: 300,

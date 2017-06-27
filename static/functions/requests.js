@@ -31,7 +31,7 @@ function Vote(amount, requestid) {
 
   ajax.get('requests.php?action=takevote&id=' + requestid + '&auth=' + authkey + '&amount=' + amount, function (response) {
       if (response == 'bankrupt') {
-        error_message("You do not have sufficient upload credit to add " + get_size(amount) + " to this request");
+        save_message("You do not have sufficient upload credit to add " + get_size(amount) + " to this request", true);
         return;
       } else if (response == 'dupesuccess') {
         //No increment

@@ -95,11 +95,10 @@ foreach ($ExtraCSS as $CSS) {
 <?
 }
 
-$Scripts = array_merge(array('jquery', 'script_start', 'ajax.class', 'global', 'jquery.autocomplete', 'autocomplete', 'tooltipster', 'tooltipster_settings'), explode(',', $JSIncludes));
+$Scripts = array_merge(array('jquery', 'global', 'ajax.class', 'jquery.autocomplete', 'autocomplete', 'tooltipster', 'tooltipster_settings'), explode(',', $JSIncludes));
 foreach ($Scripts as $Script) {
-  if (trim($Script) == '') {
-    continue;
-  }
+  if (trim($Script) == '') { continue; }
+  $Async = (in_array($Script, ['jquery','global','ajax.class'])) ? '' : 'async';
   if (($ScriptStats = G::$Cache->get_value("script_stats_$Script")) === false || $ScriptStats['mtime'] != filemtime(SERVER_ROOT.STATIC_SERVER."functions/$Script.js")) {
     $ScriptStats['mtime'] = filemtime(SERVER_ROOT.STATIC_SERVER."functions/$Script.js");
     $ScriptStats['hash'] = base64_encode(hash_file(INTEGRITY_ALGO, SERVER_ROOT.STATIC_SERVER."functions/$Script.js", true));
@@ -107,7 +106,7 @@ foreach ($Scripts as $Script) {
     G::$Cache->cache_value("script_stats_$Script", $ScriptStats);
   }
 ?>
-  <script src="<?=STATIC_SERVER."functions/$Script.js?v=$ScriptStats[mtime]"?>" type="text/javascript" integrity="<?="$ScriptStats[algo]-$ScriptStats[hash]"?>"></script>
+  <script src="<?=STATIC_SERVER."functions/$Script.js?v=$ScriptStats[mtime]"?>" type="text/javascript" integrity="<?="$ScriptStats[algo]-$ScriptStats[hash]"?>" <?=$Async?>></script>
 <?
 }
 

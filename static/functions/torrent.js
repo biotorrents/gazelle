@@ -130,7 +130,7 @@ function ArtistManagerSubmit() {
   $('#artists_selection').raw().value = Selection.join(',');
   if ((($('#artists_importance').raw().value != 1 && $('#artists_importance').raw().value != 4 && $('#artists_importance').raw().value != 6) || $('#manager_action').raw().value == 'delete') && MainSelectionCount == MainArtistCount) {
     if (!$('.error_message').raw()) {
-      error_message('All groups need to have at least one main artist, composer, or DJ.');
+      save_message('All groups need to have at least one main artist, composer, or DJ.', true);
     }
     $('.error_message').raw().scrollIntoView();
     return;
@@ -166,7 +166,7 @@ function Vote(amount, requestid) {
 
   ajax.get('requests.php?action=takevote&id=' + requestid + '&auth=' + authkey + '&amount=' + amount, function (response) {
       if (response == 'bankrupt') {
-        error_message("You do not have sufficient upload credit to add " + get_size(amount) + " to this request");
+        save_message("You do not have sufficient upload credit to add " + get_size(amount) + " to this request", true);
         return;
       } else if (response == 'dupesuccess') {
         //No increment

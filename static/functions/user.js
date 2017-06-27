@@ -127,7 +127,7 @@ function ParanoiaResetOn() {
   $('input[name=p_collages_l]').raw().checked = false;
 }
 
-addDOMLoadEvent(AlterParanoia);
+document.addEventListener("DOMContentLoaded", AlterParanoia);
 
 function ToggleWarningAdjust(selector) {
   if (selector.options[selector.selectedIndex].value == '---') {
@@ -139,7 +139,7 @@ function ToggleWarningAdjust(selector) {
   }
 }
 
-addDOMLoadEvent(ToggleIdenticons);
+document.addEventListener("DOMContentLoaded", ToggleIdenticons);
 function ToggleIdenticons() {
   var disableAvatars = $('#disableavatars');
   if (disableAvatars.size()) {

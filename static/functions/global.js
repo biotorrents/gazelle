@@ -1,3 +1,189 @@
+"use strict";
+
+//PHP ports
+function html_entity_decode(str) {
+  var el = document.createElement("div");
+  el.innerHTML = str;
+  for (var i = 0, ret = ''; i < el.childNodes.length; i++) {
+    ret += el.childNodes[i].nodeValue;
+  }
+  return ret;
+}
+
+function get_size(size) {
+  var steps = 0;
+  for (; size >= 1024; size /= 1024, steps++);
+  var exts = ['B','KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB']
+  return (size.toFixed(2) + (exts[steps]||''))
+}
+
+function ratio(a, b) {
+  var rc = 'r50';
+  for (var i of [[5,  '20'],[2,  '10'],[1,  '09'],[0.9,'08'],[0.8,'07'],[0.7,'06'],
+                 [0.6,'05'],[0.5,'04'],[0.4,'03'],[0.3,'02'],[0.2,'01'],[0.1,'00']]) {
+    if (a/b < i[0]) rc = 'r'+i[1];
+  }
+  if (b == 0) return a ? '<span class="r99">∞</span>' : '--';
+  return '<span class="'+rc+'">'+((a/b)-0.005).toFixed(2)+'</span>';
+}
+
+function save_message(message, err = false) {
+  var messageDiv = document.createElement("div");
+  messageDiv.className = err ? "error_message" : "save_message";
+  messageDiv.innerHTML = message;
+  $("#content").raw().insertBefore(messageDiv,$("#content").raw().firstChild);
+}
+
+$.fn.extend({
+  results: function () {
+    return this.size();
+  },
+  gshow: function () {
+    return this.remove_class('hidden');
+  },
+  ghide: function (force) {
+    return this.add_class('hidden', force);
+  },
+  gtoggle: function (force) {
+    if (this[0].className.split(' ').indexOf('hidden') == -1) {
+      this.add_class('hidden', force);
+    } else {
+      this.remove_class('hidden');
+    }
+    return this;
+  },
+  listen: function (event, callback) {
+    for (var i = 0, il = this.size(); i < il; i++) {
+      var object = this[i];
+      if (document.addEventListener) {
+        object.addEventListener(event, callback, false);
+      } else {
+        object.attachEvent('on' + event, callback);
+      }
+    }
+    return this;
+  },
+  add_class: function (class_name, force) {
+    for (var i = 0, il = this.size(); i < il; i++) {
+      var object = this[i];
+      if (object.className === '') {
+        object.className = class_name;
+      } else if (force || object.className.split(' ').indexOf(class_name) == -1) {
+        object.className = object.className + ' ' + class_name;
+      }
+    }
+    return this;
+  },
+  remove_class: function (class_name) {
+    for (var i = 0, il = this.size(); i < il; i++) {
+      var object = this[i];
+      var classes = object.className.split(' ');
+      var result = classes.indexOf(class_name);
+      if (result != -1) {
+        classes.splice(result, 1);
+        object.className = classes.join(' ');
+      }
+    }
+    return this;
+  },
+  has_class: function(class_name) {
+    for (var i = 0, il = this.size(); i < il; i++) {
+      var object = this[i];
+      var classes = object.className.split(' ');
+      if (classes.indexOf(class_name) != -1) {
+        return true;
+      }
+    }
+    return false;
+  },
+  toggle_class: function(class_name) {
+    for (var i = 0, il = this.size(); i < il; i++) {
+      var object = this[i];
+      var classes = object.className.split(' ');
+      var result = classes.indexOf(class_name);
+      if (result != -1) {
+        classes.splice(result, 1);
+        object.className = classes.join(' ');
+      } else {
+        if (object.className === '') {
+          object.className = class_name;
+        } else {
+          object.className = object.className + ' ' + class_name;
+        }
+      }
+    }
+    return this;
+  },
+  disable : function () {
+    $(this).prop('disabled', true);
+    return this;
+  },
+  enable : function () {
+    $(this).prop('disabled', false);
+    return this;
+  },
+  raw: function (number) {
+    if (typeof number == 'undefined') {
+      number = 0;
+    }
+    return $(this).get(number);
+  },
+  nextElementSibling: function () {
+    var here = this[0];
+    if (here.nextElementSibling) {
+      return $(here.nextElementSibling);
+    }
+    do {
+      here = here.nextSibling;
+    } while (here.nodeType != 1);
+    return $(here);
+  },
+  previousElementSibling: function () {
+    var here = this[0];
+    if (here.previousElementSibling) {
+      return $(here.previousElementSibling);
+    }
+    do {
+      here = here.nextSibling;
+    } while (here.nodeType != 1);
+    return $(here);
+  },
+  updateTooltip: function(tooltip) {
+    if ($.fn.tooltipster) {
+      $(this).tooltipster('update', tooltip);
+    } else {
+      $(this).attr('title', tooltip);
+    }
+    return this;
+  },
+
+  // Disable unset form elements to allow search URLs cleanups
+  disableUnset: function() {
+    $('input, select', this).filter(function() {
+      return $(this).val() === "";
+    }).disable();
+    return this;
+  },
+
+  // Prevent double submission of forms
+  preventDoubleSubmission: function() {
+    $(this).submit(function(e) {
+      var $form = $(this);
+      if ($form.data('submitted') === true) {
+        e.preventDefault();
+      } else {
+        $form.data('submitted', true);
+      }
+    });
+    return this;
+  }
+});
+
+if ($('meta[name=authkey]').raw()) {
+  var authkey = $('meta[name=authkey]').raw().content;
+  var userid = parseInt($('meta[name=userid]').raw().content);
+}
+
 /**
  * Check or uncheck checkboxes in formElem
  * If masterElem is false, toggle each box, otherwise use masterElem's status on all boxes
@@ -13,13 +199,6 @@ function toggleChecks(formElem, masterElem, elemSelector) {
     })
   }
 }
-
-//Lightbox stuff
-
-/*
- * If loading from a thumbnail, the lightbox is shown first with a "loading" screen
- * while the full size image loads, then the HTML of the lightbox is replaced with the image.
- */
 
 var lightbox = {
   init: function (image, size) {
@@ -49,7 +228,6 @@ var lightbox = {
       tmp.style.visibility = 'hidden';
       tmp.src = image.src;
       image.naturalWidth = tmp.width;
-      delete tmp;
     }
     if (image.naturalWidth > size) {
       lightbox.box(image);
@@ -90,38 +268,9 @@ window.onkeydown = function(e) {
   }
 }
 
-/* Still some issues
-function caps_check(e) {
-  if (e === undefined) {
-    e = window.event;
-  }
-  if (e.which === undefined) {
-    e.which = e.keyCode;
-  }
-  if (e.which > 47 && e.which < 58) {
-    return;
-  }
-  if ((e.which > 64 && e.which < 91 && !e.shiftKey) || (e.which > 96 && e.which < 123 && e.shiftKey)) {
-    $('#capslock').gshow();
-  }
-}
-*/
-
-function hexify(str) {
-  str = str.replace(/rgb\(|\)/g, "").split(",");
-  str[0] = parseInt(str[0], 10).toString(16).toLowerCase();
-  str[1] = parseInt(str[1], 10).toString(16).toLowerCase();
-  str[2] = parseInt(str[2], 10).toString(16).toLowerCase();
-  str[0] = (str[0].length == 1) ? '0' + str[0] : str[0];
-  str[1] = (str[1].length == 1) ? '0' + str[1] : str[1];
-  str[2] = (str[2].length == 1) ? '0' + str[2] : str[2];
-  return (str.join(""));
-}
-
 function resize(id) {
   var textarea = document.getElementById(id);
   if (textarea.scrollHeight > textarea.clientHeight) {
-    //textarea.style.overflowY = 'hidden';
     textarea.style.height = Math.min(1000, textarea.scrollHeight + textarea.style.fontSize) + 'px';
   }
 }
@@ -146,21 +295,6 @@ function remove_selection(index) {
   $('#opt' + index).raw().disabled = '';
 }
 
-// Thank you http://stackoverflow.com/questions/4578398/selecting-all-text-within-a-div-on-a-single-left-click-with-javascript
-function select_all(el) {
-  if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
-    var range = document.createRange();
-    range.selectNodeContents(el);
-    var sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-  } else if (typeof document.selection != "undefined" && typeof document.body.createTextRange != "undefined") {
-    var textRange = document.body.createTextRange();
-    textRange.moveToElementText(el);
-    textRange.select();
-  }
-}
-
 function preload(image) {
   var img = document.createElement('img')
   img.style.display = 'none'
@@ -170,7 +304,7 @@ function preload(image) {
 }
 
 function getCover(event) {
-  image = event.target.attributes['data-cover'].value
+  var image = event.target.attributes['data-cover'].value
   $('#coverCont img').remove()
   var coverCont = ($('#coverCont').length==0)?document.body.appendChild(document.createElement('div')):$('#coverCont')[0]
   coverCont.id = 'coverCont'
@@ -194,7 +328,7 @@ function ungetCover(event) {
 }
 
 // Apparently firefox doesn't implement NodeList.forEach until FF50
-// Remove this shim awter that's stable for a while
+// Remove this shim after that's stable for a while
 if (typeof NodeList.prototype.forEach !== 'function') {
   NodeList.prototype.forEach = Array.prototype.forEach
 }

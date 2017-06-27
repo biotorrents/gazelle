@@ -1,46 +1,12 @@
 $(document).ready(function() {
-  var url = new URL();
-  var query = url.query;
-  switch (url.path) {
-    case "forums":
-      if (query['action'] == "new") {
-        $("#newthreadform").validate();
-      }
-      break;
-    case "reports":
-      if (query['action'] == "report") {
-        $("#report_form").validate();
-      }
-      break;
-    case "inbox":
-      if (query['action'] == "viewconv" || query['action'] == "compose") {
-        $("#messageform").validate();
-      }
-      break;
-    case "user":
-      if (query['action'] == "notify") {
-        $("#filter_form").validate();
-      }
-      break;
-    case "requests":
-      if (query['action'] == "new") {
-        $("#request_form").preventDoubleSubmission();
-      }
-      break;
-    case "sitehistory":
-      if (query['action'] == "edit") {
-        $("#event_form").validate();
-      }
-      break;
-    case "tools":
-      if (query['action'] == "calendar") {
-        $("#event_form").validate();
-      }
-      if (query['action'] == "mass_pm") {
-        $("#messageform").validate();
-      }
-      break;
-    default:
-      break;
-  }
+  var path = window.location.pathname.split('/').reverse()[0].split(".")[0];
+  var action = (window.location.search.match(/action=([^&]+q)/)||[,''])[1];
+  if (path == "forums" && action == "new") $("#newthreadform").validate();
+  if (path == "reports" && action == "report") $("#report_form").validate();
+  if (path == "inbox" && (action == "viewconv" || action == "compose")) $("#messageform").validate();
+  if (path == "user" && action == "notify") $("#filter_form").validate();
+  if (path == "requests" && action == "new") $("#request_form").preventDoubleSubmission();
+  if (path == "sitehistory" && action == "edit") $("#event_form").validate();
+  if (path == "tools" && action == "calendar") $("#event_form").validate();
+  if (path == "tools" && action == "mass_pm") $("#messageform").validate();
 });

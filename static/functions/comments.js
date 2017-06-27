@@ -1,6 +1,6 @@
 var username;
 var postid;
-var url = new URL();
+var url = {path: window.location.pathname.split('/').reverse()[0].split('.')[0]};
 
 function QuoteJump(event, post) {
   var button = event.button;
@@ -42,12 +42,8 @@ function QuoteJump(event, post) {
   }
 }
 
-function Quote(post, user) {
-  Quote(post, user, false)
-}
-
 var original_post;
-function Quote(post, user, link) {
+function Quote(post, user, link = false) {
   username = user;
   postid = post;
 
@@ -65,7 +61,11 @@ function Quote(post, user, link) {
         }
       }).done(function(response) {
         $("#content" + postid).html(response['response']['body']);
-        select_all($("#content" + postid).get(0));
+        var range = document.createRange();
+        range.selectNodeContents($("#content" + postid).get(0));
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
       });
     } else {
       document.getSelection().removeAllRanges();
