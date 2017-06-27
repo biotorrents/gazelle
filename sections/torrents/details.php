@@ -143,7 +143,7 @@ View::show_header($Title, 'browse,comments,torrent,bbcode,recommend,cover_art,su
     <h2><?=$DisplayName?></h2>
     <div class="linkbox">
 <?  if (check_perms('site_edit_wiki')) { ?>
-      <a href="torrents.php?action=editgroup&amp;groupid=<?=$GroupID?>" class="brackets">Edit description</a>
+      <a href="torrents.php?action=editgroup&amp;groupid=<?=$GroupID?>" class="brackets">Edit group</a>
 <?  } ?>
       <a href="torrents.php?action=history&amp;groupid=<?=$GroupID?>" class="brackets">View history</a>
 <?  if ($RevisionID && check_perms('site_edit_wiki')) { ?>
@@ -550,7 +550,7 @@ foreach ($TorrentList as $Torrent) {
 <?  } ?>
             | <a href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>" class="tooltip" title="Report">RP</a>
 <?  if ($CanEdit) { ?>
-            | <a href="torrents.php?action=edit&amp;id=<?=$TorrentID ?>" class="tooltip" title="Edit">ED</a>
+            | <a href="torrents.php?action=edit&amp;id=<?=$TorrentID ?>" class="tooltip" title="Edit release">ED</a>
 <?  }
   if (check_perms('torrents_delete') || $UserID == $LoggedUser['ID']) { ?>
             | <a href="torrents.php?action=delete&amp;torrentid=<?=$TorrentID ?>" class="tooltip" title="Remove">RM</a>
