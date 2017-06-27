@@ -1884,25 +1884,24 @@ div.star-rating a,div.star-rating.star {
 }
 
 .pad {
-  padding: 1em
+  padding: 1em;
 }
 
 .home .extrapad {
-  padding: 0
+  padding: 0;
 }
 
 tr {
   background-color: #2c2f36;
-  border-bottom: 2px solid #2c2f36
+  border-bottom: 2px solid #2c2f36;
 }
-
-tr.row {
-  /* background-color: #none!important */
+.forum_post tr {
+  border-bottom: none;
 }
 
 .search_form .submit,.filter_tickets .submit,.filter_torrents .submit {
   text-align: right;
-  padding-top: 5px
+  padding-top: 5px;
 }
 
 .torrent_table tr.group {

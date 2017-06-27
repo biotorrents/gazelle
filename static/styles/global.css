@@ -736,6 +736,10 @@ tr.torrent .bookmark>a:after {
   max-width: 100%;
 }
 
+.avatar > a > img {
+  display: block;
+}
+
 #collage #reply_box img,
 #forums #reply_box img {
   max-width: 650px;
