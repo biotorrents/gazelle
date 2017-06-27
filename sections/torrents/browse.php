@@ -13,7 +13,7 @@ function header_link($SortKey, $DefaultWay = 'desc') {
   } else {
     $NewWay = $DefaultWay;
   }
-  return "torrents.php?order_way=$NewWay&amp;order_by=$SortKey&amp;".Format::get_url(array('order_way', 'order_by'));
+  return "torrents.php?order_way=$NewWay&amp;order_by=$SortKey&amp;".Format::get_url(['order_way', 'order_by']);
 }
 
 if (!empty($_GET['searchstr']) || !empty($_GET['groupname'])) {
@@ -41,7 +41,7 @@ if (!empty($_GET['searchstr']) || !empty($_GET['groupname'])) {
 
 // Setting default search options
 if (!empty($_GET['setdefault'])) {
-  $UnsetList = array('page', 'setdefault');
+  $UnsetList = ['page', 'setdefault'];
   $UnsetRegexp = '/(&|^)('.implode('|', $UnsetList).')=.*?(&|$)/i';
 
   $DB->query("
@@ -52,7 +52,7 @@ if (!empty($_GET['setdefault'])) {
   if (!empty($SiteOptions)) {
     $SiteOptions = unserialize($SiteOptions);
   } else {
-    $SiteOptions = array();
+    $SiteOptions = [];
   }
   $SiteOptions['DefaultSearch'] = preg_replace($UnsetRegexp, '', $_SERVER['QUERY_STRING']);
   $DB->query("
@@ -60,7 +60,7 @@ if (!empty($_GET['setdefault'])) {
     SET SiteOptions = '".db_string(serialize($SiteOptions))."'
     WHERE UserID = '".db_string($LoggedUser['ID'])."'");
   $Cache->begin_transaction("user_info_heavy_$UserID");
-  $Cache->update_row(false, array('DefaultSearch' => $SiteOptions['DefaultSearch']));
+  $Cache->update_row(false, ['DefaultSearch' => $SiteOptions['DefaultSearch']]);
   $Cache->commit_transaction(0);
 
 // Clearing default search options
@@ -77,7 +77,7 @@ if (!empty($_GET['setdefault'])) {
     SET SiteOptions = '".db_string(serialize($SiteOptions))."'
     WHERE UserID = '".db_string($LoggedUser['ID'])."'");
   $Cache->begin_transaction("user_info_heavy_$UserID");
-  $Cache->update_row(false, array('DefaultSearch' => ''));
+  $Cache->update_row(false, ['DefaultSearch' => '']);
   $Cache->commit_transaction(0);
 
 // Use default search options
@@ -266,6 +266,21 @@ View::show_header('Browse Torrents', 'browse');
           <td class="label"><!--Translation Group:--></td>
           <td class="ft_subber">
             <input type="search" spellcheck="false" size="65" name="subber" class="inputtext smaller fti_advanced" placeholder="Translation Group" value="<?Format::form('subber')?>" />
+          </td>
+        </tr>
+        <tr id="size" class="ftr_advanced<?=$HideAdvanced?>">
+          <td class="label">Size:</td>
+          <td class="ft_size">
+            <input type="size_min" spellcheck="false" size="6" name="size_min" class="inputtext smaller fti_advanced" placeholder="Min" value="<?Format::form('size_min')?>" /> -
+            <input type="size_max" spellcheck="false" size="6" name="size_max" class="inputtext smaller fti_advanced" placeholder="Max" value="<?Format::form('size_max')?>" />
+            <select name="size_unit" class="ft_size fti_advanced">
+              <option value="">Unit</option>
+              <option value="0"<?Format::selected('size_unit', 0)?>>B</option>
+              <option value="1"<?Format::selected('size_unit', 1)?>>KiB</option>
+              <option value="2"<?Format::selected('size_unit', 2)?>>MiB</option>
+              <option value="3"<?Format::selected('size_unit', 3)?>>GiB</option>
+              <option value="4"<?Format::selected('size_unit', 4)?>>TiB</option>
+            </select>
           </td>
         </tr>
         <tr id="misc" class="ftr_advanced<?=$HideAdvanced?>">
@@ -495,7 +510,7 @@ View::show_header('Browse Torrents', 'browse');
     }
   } else {
     $TorrentID = $Key;
-    $Torrents = array($TorrentID => $GroupInfo['Torrents'][$TorrentID]);
+    $Torrents = [$TorrentID => $GroupInfo['Torrents'][$TorrentID]];
   }
 
   $TorrentTags = new Tags($GroupInfo['TagList']);

@@ -6,7 +6,7 @@ class TorrentSearch {
   const SPH_BOOL_OR = ' | ';
 
   // Map of sort mode => attribute name for ungrouped torrent page
-  public static $SortOrders = array(
+  public static $SortOrders = [
     'year' => 'year',
     'time' => 'id',
     'size' => 'size',
@@ -14,10 +14,11 @@ class TorrentSearch {
     'leechers' => 'leechers',
     'snatched' => 'snatched',
     'cataloguenumber' => 'cataloguenumber',
-    'random' => 1);
+    'random' => 1
+  ];
 
   // Map of sort mode => attribute name for grouped torrent page
-  private static $SortOrdersGrouped = array(
+  private static $SortOrdersGrouped = [
     'year' => 'year',
     'time' => 'id',
     'size' => 'maxsize',
@@ -25,25 +26,29 @@ class TorrentSearch {
     'leechers' => 'sumleechers',
     'snatched' => 'sumsnatched',
     'cataloguenumber' => 'cataloguenumber',
-    'random' => 1);
+    'random' => 1
+  ];
 
   // Map of sort mode => aggregate expression required for some grouped sort orders
-  private static $AggregateExp = array(
+  private static $AggregateExp = [
     'size' => 'MAX(size) AS maxsize',
     'seeders' => 'SUM(seeders) AS sumseeders',
     'leechers' => 'SUM(leechers) AS sumleechers',
-    'snatched' => 'SUM(snatched) AS sumsnatched');
+    'snatched' => 'SUM(snatched) AS sumsnatched'
+  ];
 
   // Map of attribute name => global variable name with list of values that can be used for filtering
-  private static $Attributes = array(
+  private static $Attributes = [
     'filter_cat' => false,
     'releasetype' => 'ReleaseTypes',
     'freetorrent' => false,
     'censored' => false,
-    'year' => false);
+    'size_unit' => false,
+    'year' => false
+  ];
 
   // List of fields that can be used for fulltext searches
-  private static $Fields = array(
+  private static $Fields = [
     'artistname' => 1,
     'audioformat' => 1,
     'cataloguenumber' => 1,
@@ -64,37 +69,42 @@ class TorrentSearch {
     'studio' => 1,
     'subber' => 1,
     'subbing' => 1,
-    'taglist' => 1);
+    'taglist' => 1
+  ];
 
   // List of torrent-specific fields that can be used for filtering
-  private static $TorrentFields = array(
+  private static $TorrentFields = [
     'description' => 1,
     'encoding' => 1,
     'censored' => 1,
     'language' => 1,
     'filelist' => 1,
     'format' => 1,
-    'media' => 1);
+    'media' => 1
+  ];
 
   // Some form field names don't match the ones in the index
-  private static $FormsToFields = array(
+  private static $FormsToFields = [
     'searchstr' => '(groupname,groupnamerj,groupnamejp,artistname,studio,series,dlsiteid,cataloguenumber,yearfulltext)',
-    'advgroupname' => '(groupname,groupnamerj,groupnamejp)');
+    'advgroupname' => '(groupname,groupnamerj,groupnamejp)'
+  ];
 
   // Specify the operator type to use for fields. Empty key sets the default
-  private static $FieldOperators = array(
+  private static $FieldOperators = [
     '' => self::SPH_BOOL_AND,
     'encoding' => self::SPH_BOOL_OR,
     'format' => self::SPH_BOOL_OR,
-    'media' => self::SPH_BOOL_OR);
+    'media' => self::SPH_BOOL_OR
+  ];
 
   // Specify the separator character to use for fields. Empty key sets the default
-  private static $FieldSeparators = array(
+  private static $FieldSeparators = [
     '' => ' ',
     'encoding' => '|',
     'format' => '|',
     'media' => '|',
-    'taglist' => ',');
+    'taglist' => ','
+  ];
 
   // Primary SphinxqlQuery object used to get group IDs or torrent IDs for ungrouped searches
   private $SphQL;
@@ -109,7 +119,7 @@ class TorrentSearch {
   // Number of results
   private $NumResults = 0;
   // Array with info from all matching torrent groups
-  private $Groups = array();
+  private $Groups = [];
   // Whether any filters were used
   private $Filtered = false;
   // Whether the random sort order is selected
@@ -122,15 +132,15 @@ class TorrentSearch {
    *     'operator' => self::SPH_BOOL_AND | self::SPH_BOOL_OR
    * ]], ...
    */
-  private $Terms = array();
+  private $Terms = [];
   // Unprocessed search terms for retrieval
-  private $RawTerms = array();
+  private $RawTerms = [];
   // Storage for used torrent-specific attribute filters
   // ['Field name' => 'Search expression', ...]
-  private $UsedTorrentAttrs = array();
+  private $UsedTorrentAttrs = [];
   // Storage for used torrent-specific fulltext fields
   // ['Field name' => 'Search expression', ...]
-  private $UsedTorrentFields = array();
+  private $UsedTorrentFields = [];
 
   /**
    * Initialize and configure a TorrentSearch object
@@ -144,7 +154,7 @@ class TorrentSearch {
   public function __construct($GroupResults, $OrderBy, $OrderWay, $Page, $PageSize) {
     if ($GroupResults && !isset(self::$SortOrdersGrouped[$OrderBy])
         || !$GroupResults && !isset(self::$SortOrders[$OrderBy])
-        || !in_array($OrderWay, array('asc', 'desc'))
+        || !in_array($OrderWay, ['asc', 'desc'])
     ) {
       global $Debug;
       $ErrMsg = "TorrentSearch constructor arguments:\n" . print_r(func_get_args(), true);
@@ -199,7 +209,7 @@ class TorrentSearch {
    * @param array $Terms Array containing all search terms (e.g. $_GET)
    * @return array List of matching group IDs with torrent ID as key for ungrouped results
    */
-  public function query($Terms = array()) {
+  public function query($Terms = []) {
     $this->process_search_terms($Terms);
     $this->build_query();
     $this->run_query();
@@ -260,7 +270,7 @@ class TorrentSearch {
       if (isset(self::$FormsToFields[$Field])) {
         $Field = self::$FormsToFields[$Field];
       }
-      $QueryParts = array('include' => array(), 'exclude' => array());
+      $QueryParts = ['include' => [], 'exclude' => []];
       if (!empty($Words['include'])) {
         foreach ($Words['include'] as $Word) {
           $QueryParts['include'][] = Sphinxql::sph_escape_string($Word);
@@ -316,7 +326,7 @@ class TorrentSearch {
       }
       $this->RawTerms[$Key] = $Term;
     }
-    $this->post_process_fields();
+    $this->post_process();
   }
 
   /**
@@ -326,65 +336,55 @@ class TorrentSearch {
    * @param mixed $Value The filter's condition for a match
    */
   private function process_attribute($Attribute, $Value) {
-    if ($Value === '') {
-      return;
-    }
-    switch ($Attribute) {
-      case 'year':
-        if (!$this->search_year($Value)) {
-          return;
-        }
-        break;
+    if ($Value === '') { return; }
 
-      case 'freetorrent':
-        if ($Value == 3) {
-          $this->SphQL->where('freetorrent', 0, true);
-          $this->UsedTorrentAttrs['freetorrent'] = 3;
-        } elseif ($Value >= 0 && $Value < 3) {
-          $this->SphQL->where('freetorrent', $Value);
-          $this->UsedTorrentAttrs[$Attribute] = $Value;
-        } else {
-          return;
-        }
-        break;
-
-      case 'filter_cat':
-        if (!is_array($Value)) {
-          $Value = array_fill_keys(explode('|', $Value), 1);
-        }
-        $CategoryFilter = array();
-        foreach (array_keys($Value) as $Category) {
-          if (is_number($Category)) {
-            $CategoryFilter[] = $Category;
-          } else {
-            global $Categories;
-            $ValidValues = array_map('strtolower', $Categories);
-            if (($CategoryID = array_search(strtolower($Category), $ValidValues)) !== false) {
-              $CategoryFilter[] = $CategoryID + 1;
-            }
-          }
-        }
-        if (empty($CategoryFilter)) {
-          $CategoryFilter = 0;
-        }
-        $this->SphQL->where('categoryid', $CategoryFilter);
-        break;
-
-      default:
-        if (!is_number($Value) && self::$Attributes[$Attribute] !== false) {
-          // Check if the submitted value can be converted to a valid one
-          $ValidValuesVarname = self::$Attributes[$Attribute];
-          global $$ValidValuesVarname;
-          $ValidValues = array_map('strtolower', $$ValidValuesVarname);
-          if (($Value = array_search(strtolower($Value), $ValidValues)) === false) {
-            // Force the query to return 0 results if value is still invalid
-            $Value = max(array_keys($ValidValues)) + 1;
-          }
-        }
-        $this->SphQL->where($Attribute, $Value);
+    if ($Attribute === 'year') {
+      $this->search_year($Value);
+    } elseif ($Attribute === 'size_unit') {
+      // for the record, size_unit must appear in the GET parameters after size_min and size_max for this to work. Sorry.
+      if (is_numeric($this->RawTerms['size_min']) || is_numeric($this->RawTerms['size_max']))  {
+        $this->SphQL->where_between('size', [intval(($this->RawTerms['size_min'] ?? 0)*(1024**$Value)), intval(min(PHP_INT_MAX, ($this->RawTerms['size_max'] ?? INF)*(1024**$Value)))]);
+      }
+    } elseif ($Attribute === 'freetorrent') {
+      if ($Value == 3) {
+        $this->SphQL->where('freetorrent', 0, true);
+        $this->UsedTorrentAttrs['freetorrent'] = 3;
+      } elseif ($Value >= 0 && $Value < 3) {
+        $this->SphQL->where('freetorrent', $Value);
         $this->UsedTorrentAttrs[$Attribute] = $Value;
-        break;
+      }
+    } elseif ($Attribute === 'filter_cat') {
+      if (!is_array($Value)) {
+        $Value = array_fill_keys(explode('|', $Value), 1);
+      }
+      $CategoryFilter = [];
+      foreach (array_keys($Value) as $Category) {
+        if (is_number($Category)) {
+          $CategoryFilter[] = $Category;
+        } else {
+          global $Categories;
+          $ValidValues = array_map('strtolower', $Categories);
+          if (($CategoryID = array_search(strtolower($Category), $ValidValues)) !== false) {
+            $CategoryFilter[] = $CategoryID + 1;
+          }
+        }
+      }
+      $this->SphQL->where('categoryid', ($CategoryFilter ?? 0));
+    } else {
+      if (!is_number($Value) && self::$Attributes[$Attribute] !== false) {
+        // Check if the submitted value can be converted to a valid one
+        $ValidValuesVarname = self::$Attributes[$Attribute];
+        global $$ValidValuesVarname;
+        $ValidValues = array_map('strtolower', $$ValidValuesVarname);
+        if (($Value = array_search(strtolower($Value), $ValidValues)) === false) {
+          // Force the query to return 0 results if value is still invalid
+          $Value = max(array_keys($ValidValues)) + 1;
+        }
+      }
+      $this->SphQL->where($Attribute, $Value);
+      $this->UsedTorrentAttrs[$Attribute] = $Value;
     }
+
     $this->Filtered = true;
   }
 
@@ -413,7 +413,7 @@ class TorrentSearch {
   /**
    * Some fields may require post-processing
    */
-  private function post_process_fields() {
+  private function post_process() {
     if (isset($this->Terms['taglist'])) {
       // Replace bad tags with tag aliases
       $this->Terms['taglist'] = Tags::remove_aliases($this->Terms['taglist']);
@@ -424,7 +424,7 @@ class TorrentSearch {
       if (isset($this->Terms['taglist']['include'])) {
         $AllTags = $this->Terms['taglist']['include'];
       } else {
-        $AllTags = array();
+        $AllTags = [];
       }
       if (isset($this->Terms['taglist']['exclude'])) {
         $AllTags = array_merge($AllTags, $this->Terms['taglist']['exclude']);
@@ -501,7 +501,7 @@ class TorrentSearch {
         $this->SphQL->where_gt('year', $Years[0], true);
       } elseif (is_number($Years[0]) && is_number($Years[1])) {
         // Range: 2005 - 2009
-        $this->SphQL->where_between('year', array(min($Years), max($Years)));
+        $this->SphQL->where_between('year', [min($Years), max($Years)]);
       } else {
         // Invalid input
         return false;
@@ -609,7 +609,7 @@ class TorrentSearch {
    * were used to get primary results and they are grouped
    */
   private function filter_torrents_sph() {
-    $AllTorrents = array();
+    $AllTorrents = [];
     foreach ($this->Groups as $GroupID => $Group) {
       if (!empty($Group['Torrents'])) {
         $AllTorrents += array_fill_keys(array_keys($Group['Torrents']), $GroupID);
