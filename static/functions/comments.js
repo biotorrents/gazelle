@@ -430,5 +430,5 @@ document.querySelectorAll('[data-quote-jump]').forEach(function(el) {
 
 if ($('[data-autosave-text]').raw()) {
   var el = $('[data-autosave-text]').raw()
-  var storedTempTextarea = new StoreText(el.attributes['data-autosave-text'].value, el.id, $('[data-autosave-text] > [name="thread"]').raw().attributes['value'].value);
+  var storedTempTextarea = new StoreText(el.attributes['data-autosave-text'].value, el.id, $('[data-autosave-id]').raw().attributes['value'].value);
 }

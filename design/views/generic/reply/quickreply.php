@@ -99,7 +99,7 @@
           <form class="send_form center" name="reply" id="quickpostform" <?=isset($Action)?'action="'.$Action.'"':''?> method="post"<? if (!check_perms('users_mod')) { ?> onsubmit="quickpostform.submit_button.disabled = true;"<? } ?> <? if (!G::$LoggedUser['DisableAutoSave']) { ?>data-autosave-text="quickpost"<? } ?>>
             <input type="hidden" name="action" value="<?=$InputAction?>" />
             <input type="hidden" name="auth" value="<?=G::$LoggedUser['AuthKey']?>" />
-            <input type="hidden" name="<?=$InputName?>" value="<?=$InputID?>" />
+            <input type="hidden" name="<?=$InputName?>" data-autosave-id="<?=$InputID?>" value="<?=$InputID?>" />
             <div id="quickreplytext">
 <?
               echo $ReplyText->getBuffer();
