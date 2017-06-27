@@ -87,18 +87,6 @@ var collageShow = {
       $(el.parentNode).add_class('selected');
     }
 
-/*
-    wall = new freewall(ul)
-    wall.reset({
-      selector: '.collage_image',
-      cellW: 150,
-      cellH: 'auto',
-      gutterX: 2,
-      gutterY: 2
-    })
-    var cells = wall.container.find('.collage_image')
-    cells.find('img').load(function(){wall.fitWidth()})
-*/
     $('.collage_image img').load(function() {
       var test = true;
       $('.collage_image img').toArray().forEach(function(el) {
@@ -106,7 +94,6 @@ var collageShow = {
       })
       if (test) wall('.collage_images', '.collage_image', 4)
     })
-    console.log('fired')
     wall('.collage_images', '.collage_image', 4)
 
     // Toggle the page number links

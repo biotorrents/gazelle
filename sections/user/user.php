@@ -808,7 +808,7 @@ foreach ($Collages as $CollageInfo) {
         <a data-toggle-target="#collage<?=$CollageID?>_box .collage_images" data-toggle-replace="Show" class="brackets">Hide</a>
       </span>
     </div>
-    <div id="user_collage_images" class="collage_images">
+    <div id="user_collage_images" class="collage_images" data-wall-child=".collage_image" data-wall-size="5">
 <?  foreach ($Collage as $C) {
       $Group = Torrents::get_groups(array($C['GroupID']), true, true, false);
       extract(Torrents::array_group($Group[$C['GroupID']]));
@@ -828,16 +828,6 @@ foreach ($Collages as $CollageInfo) {
       </div>
 <?  } ?>
     </div>
-    <script>
-    $('#user_collage_images .collage_image img').load(function() {
-      var test = true
-      $('#user_collage_images .collage_image img').toArray().forEach(function(el) {
-        if (!el.complete) test = false
-      })
-      if (test) wall('#user_collage_images', '.collage_image', 5)
-    })
-    wall('#user_collage_images','.collage_image',5)
-    </script>
   </div>
 <?
 }

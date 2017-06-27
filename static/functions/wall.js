@@ -1,5 +1,5 @@
 function wall(parent, children, style, min) {
-  var min = min || 2
+  var min = +min || 2
   var b = $(parent+':not(.hidden)').raw()
   var bs = $(parent+':not(.hidden) '+children).toArray()
 
@@ -8,6 +8,7 @@ function wall(parent, children, style, min) {
   bs.forEach(function(el){el.style.width='';el.style.height=''})
 
   var rows = []
+  if (typeof(style) === 'string') { style = +style }
   if (typeof(style) === 'number') {
     for (var i=0; i<bs.length; i+=style)
       rows.push(bs.slice(i,i+style))
@@ -52,4 +53,18 @@ function wall(parent, children, style, min) {
       rows[i][j].style.margin = '1px'
     }
   }
+}
+
+if ($('[data-wall-child]').raw()) {
+  $('[data-wall-child]').each(function(i, el) {
+    wall('#'+el.id, el.attributes['data-wall-child'].value, el.attributes['data-wall-size'].value, el.attributes['data-wall-min']?el.attributes['data-wall-min']:false)
+    var sel = '#'+el.id+' '+el.attributes['data-wall-child'].value+' img'
+    $(sel).load(function() {
+      var test = true;
+      $(sel).each(function(j, img) {
+        if (!img.complete) test = false
+      })
+      if (test) wall('#'+el.id, el.attributes['data-wall-child'].value, el.attributes['data-wall-size'].value, el.attributes['data-wall-min']?el.attributes['data-wall-min']:false)
+    })
+  })
 }

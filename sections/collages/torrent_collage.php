@@ -561,7 +561,7 @@ if (!$LoggedUser['DisablePosting']) {
 if ($CollageCovers != 0) { ?>
     <div id="coverart" class="box">
       <div class="head" id="coverhead"><strong>Cover Art</strong></div>
-      <div class="collage_images" id="collage_page0">
+      <div class="collage_images" id="collage_page0" data-wall-child=".collage_image" data-wall-size="4" data-wall-min="2">
 <?
   $Page1 = array_slice($Collage, 0, $CollageCovers);
   foreach ($Page1 as $Group) {
@@ -570,16 +570,6 @@ if ($CollageCovers != 0) { ?>
 ?>
       </div>
     </div>
-    <script>
-      $('.collage_image img').load(function() {
-        var test = true
-        $('.collage_image img').toArray().forEach(function(el) {
-          if (!el.complete) test = false
-        })
-        if (test) wall('.collage_images', '.collage_image', 4, 2)
-      })
-      wall('.collage_images', '.collage_image', 4, 2)
-    </script>
 <?  if ($NumGroups > $CollageCovers) { ?>
     <div class="linkbox pager" style="clear: left;" id="pageslinksdiv">
       <span id="firstpage" class="invisible"><a href="#" class="pageslink" onclick="collageShow.page(0, this); return false;"><strong>&lt;&lt; First</strong></a> | </span>
@@ -592,7 +582,7 @@ if ($CollageCovers != 0) { ?>
       <span id="lastpage" class="<?=(ceil($NumGroups / $CollageCovers) == 2 ? 'invisible' : '')?>"> | <a href="#" class="pageslink" onclick="collageShow.page(<?=ceil($NumGroups / $CollageCovers) - 1?>, this); return false;"><strong>Last &gt;&gt;</strong></a></span>
     </div>
     <script type="text/javascript">//<![CDATA[
-      collageShow.init(<?=json_encode($CollagePages)?>);
+      $(document).ready(function(){collageShow.init(<?=json_encode($CollagePages)?>)});
     //]]></script>
 <?
   }

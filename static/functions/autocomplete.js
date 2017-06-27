@@ -4,6 +4,13 @@ var SELECTOR = '[data-gazelle-autocomplete="true"]';
 $(document).ready(initAutocomplete)
 
 function initAutocomplete() {
+  if (!$.Autocomplete) {
+    window.setTimeout(function() {
+      initAutocomplete();
+    }, 500)
+    return;
+  }
+
   var url = {
     path: window.location.pathname.split('/').reverse()[0].split(".")[0],
     query: window.location.search.slice(1).split('&').reduce((a,b)=>Object.assign(a,{[b.split('=')[0]]:b.split('=')[1]}),{})
