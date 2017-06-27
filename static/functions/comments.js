@@ -421,10 +421,14 @@ $(document).ready(function() {
     }
 
   })
-
-  document.querySelectorAll('[quote-jump]').forEach(function(el) {
-    el.addEventListener('click', function(event) {
-      QuoteJump(event, el.attributes['quote-jump'].value)
-    })
+})
+document.querySelectorAll('[quote-jump]').forEach(function(el) {
+  el.addEventListener('click', function(event) {
+    QuoteJump(event, el.attributes['quote-jump'].value)
   })
 })
+
+if ($('[data-autosave-text]').raw()) {
+  var el = $('[data-autosave-text]').raw()
+  var storedTempTextarea = new StoreText(el.attributes['data-autosave-text'].value, el.id, $('[data-autosave-text] > [name="thread"]').raw().attributes['value'].value);
+}

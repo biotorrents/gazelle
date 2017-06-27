@@ -96,7 +96,7 @@
               </td>
             </tr>
           </table>
-          <form class="send_form center" name="reply" id="quickpostform" <?=isset($Action)?'action="'.$Action.'"':''?> method="post"<? if (!check_perms('users_mod')) { ?> onsubmit="quickpostform.submit_button.disabled = true;"<? } ?>>
+          <form class="send_form center" name="reply" id="quickpostform" <?=isset($Action)?'action="'.$Action.'"':''?> method="post"<? if (!check_perms('users_mod')) { ?> onsubmit="quickpostform.submit_button.disabled = true;"<? } ?> <? if (!G::$LoggedUser['DisableAutoSave']) { ?>data-autosave-text="quickpost"<? } ?>>
             <input type="hidden" name="action" value="<?=$InputAction?>" />
             <input type="hidden" name="auth" value="<?=G::$LoggedUser['AuthKey']?>" />
             <input type="hidden" name="<?=$InputName?>" value="<?=$InputID?>" />
@@ -130,13 +130,6 @@
 ?>
               <input id="mergebox" type="checkbox" name="merge" tabindex="2" />
               <label for="mergebox">Merge</label>
-<?
-    }
-    if (!G::$LoggedUser['DisableAutoSave']) {
-?>
-              <script type="application/javascript">
-                var storedTempTextarea = new StoreText('quickpost', 'quickpostform', <?=$InputID?>);
-              </script>
 <?
     }
   }
