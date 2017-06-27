@@ -90,15 +90,14 @@ if ($RequestCategoryID !== '0' && $TorrentCategoryID !== $RequestCategoryID) {
 $CategoryName = $Categories[$RequestCategoryID - 1];
 
 if ($CategoryName != 'Other') {
-  //Commenting out as it's causing some issues with some users being unable to fill, unsure what it is, etc
   if ($RequestCatalogueNumber) {
-    if ($TorrentCatalogueNumber !== $RequestCatalogueNumber) {
+    if (str_replace('-', '', strtolower($TorrentCatalogueNumber)) !== str_replace('-', '', strtolower($RequestCatalogueNumber))) {
       $Err = "This request requires the catalogue number $RequestCatalogueNumber";
     }
   }
 
   if ($RequestDLSiteID) {
-    if ($TorrentDLSiteID !== $RequestDLSiteID) {
+    if (strtolower($TorrentDLSiteID) !== strtolower($RequestDLSiteID)) {
       $Err = "This request requires DLSite ID $RequestDLSiteID";
     }
   }
