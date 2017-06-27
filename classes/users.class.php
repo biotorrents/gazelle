@@ -468,7 +468,7 @@ class Users {
 
   public static function make_class_abbrev_string($ClassID) {
     global $Classes;
-    return '<acronym title="'.$Classes[$ClassID]['Name'].'">'.$Classes[$ClassID]['Abbreviation'].'</acronym>';
+    return '<abbr title="'.$Classes[$ClassID]['Name'].'">'.$Classes[$ClassID]['Abbreviation'].'</abbr>';
   }
 
   /**

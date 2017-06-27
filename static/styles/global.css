@@ -111,7 +111,7 @@ div.collage_image {
   width: 20%;
 }
 
-[data-toggle-target], [quote-jump] {
+[data-toggle-target], [data-quote-jump] {
   cursor: pointer;
 }
 
@@ -141,6 +141,10 @@ button, input[type=button], input[type=submit] {
 .collage td {
   padding: 0px;
   border: none;
+}
+
+abbr[title] {
+  text-decoration: none;
 }
 
 .line_new {

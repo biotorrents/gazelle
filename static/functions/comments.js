@@ -422,9 +422,9 @@ $(document).ready(function() {
 
   })
 })
-document.querySelectorAll('[quote-jump]').forEach(function(el) {
+document.querySelectorAll('[data-quote-jump]').forEach(function(el) {
   el.addEventListener('click', function(event) {
-    QuoteJump(event, el.attributes['quote-jump'].value)
+    QuoteJump(event, el.attributes['data-quote-jump'].value)
   })
 })
 
