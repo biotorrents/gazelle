@@ -831,6 +831,8 @@ CREATE TABLE `sphinx_delta` (
   `ID` int(10) NOT NULL,
   `GroupID` int(10) NOT NULL DEFAULT '0',
   `GroupName` varchar(255) DEFAULT NULL,
+  `GroupNameRJ` varchar(255) DEFAULT NULL,
+  `GroupNameJP` varchar(255) DEFAULT NULL,
   `ArtistName` varchar(2048) DEFAULT NULL,
   `TagList` varchar(728) DEFAULT NULL,
   `Year` int(4) DEFAULT NULL,
@@ -859,32 +861,6 @@ CREATE TABLE `sphinx_delta` (
   KEY `Size` (`Size`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE `sphinx_hash` (
-  `ID` int(10) NOT NULL,
-  `GroupID` int(10) NOT NULL DEFAULT '0',
-  `GroupName` varchar(255) DEFAULT NULL,
-  `ArtistName` varchar(2048) DEFAULT NULL,
-  `TagList` varchar(728) DEFAULT NULL,
-  `Year` int(4) DEFAULT NULL,
-  `CatalogueNumber` varchar(50) DEFAULT NULL,
-  `CategoryID` tinyint(2) DEFAULT NULL,
-  `Time` int(12) DEFAULT NULL,
-  `Size` bigint(20) DEFAULT NULL,
-  `Snatched` int(10) DEFAULT NULL,
-  `Seeders` int(10) DEFAULT NULL,
-  `Leechers` int(10) DEFAULT NULL,
-  `FreeTorrent` tinyint(1) DEFAULT NULL,
-  `Media` varchar(255) DEFAULT NULL,
-  `Container` varchar(255) DEFAULT NULL,
-  `Codec` varchar(255) DEFAULT NULL,
-  `Resolution` varchar(255) DEFAULT NULL,
-  `AudioFormat` varchar(255) DEFAULT NULL,
-  `Subbing` varchar(255) DEFAULT NULL,
-  `Language` varchar(255) DEFAULT NULL,
-  `FileList` mediumtext,
-  PRIMARY KEY (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
 CREATE TABLE `sphinx_index_last_pos` (
   `Type` varchar(16) NOT NULL DEFAULT '',
   `ID` int(11) DEFAULT NULL,
@@ -898,6 +874,7 @@ CREATE TABLE `sphinx_requests` (
   `LastVote` int(12) unsigned NOT NULL,
   `CategoryID` int(3) NOT NULL,
   `Title` varchar(255) DEFAULT NULL,
+  `TitleRJ` varchar(255) DEFAULT NULL,
   `TitleJP` varchar(255) DEFAULT NULL,
   `Year` int(4) DEFAULT NULL,
   `ArtistList` varchar(2048) DEFAULT NULL,
@@ -927,6 +904,7 @@ CREATE TABLE `sphinx_requests_delta` (
   `LastVote` int(12) unsigned DEFAULT NULL,
   `CategoryID` tinyint(4) DEFAULT NULL,
   `Title` varchar(255) DEFAULT NULL,
+  `TitleRJ` varchar(255) DEFAULT NULL,
   `TitleJP` varchar(255) DEFAULT NULL,
   `TagList` varchar(728) NOT NULL DEFAULT '',
   `ArtistList` varchar(2048) DEFAULT NULL,
@@ -976,6 +954,7 @@ CREATE TABLE `sphinx_t` (
 CREATE TABLE `sphinx_tg` (
   `id` int(11) NOT NULL,
   `name` varchar(300) DEFAULT NULL,
+  `namerj` varchar(300) DEFAULT NULL,
   `namejp` varchar(500) DEFAULT NULL,
   `tags` varchar(500) DEFAULT NULL,
   `year` smallint(6) DEFAULT NULL,
