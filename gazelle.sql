@@ -733,6 +733,7 @@ CREATE TABLE `requests` (
   `LastVote` datetime DEFAULT NULL,
   `CategoryID` int(3) NOT NULL,
   `Title` varchar(255) DEFAULT NULL,
+  `TitleRJ` varchar(255) DEFAULT NULL,
   `TitleJP` varchar(255) DEFAULT NULL,
   `Image` varchar(255) DEFAULT NULL,
   `Description` text,
