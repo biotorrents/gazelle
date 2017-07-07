@@ -1,17 +1,17 @@
-<?php
+<?
 $UserID = $LoggedUser['ID'];
 $BadgeID = $_GET['badge'];
 
-$ShopBadgeIDs = array(100, 101, 102, 103, 104, 105, 106, 107);
-$Prices = array(100 => 5000, 101 => 10000, 102 => 25000, 103 => 50000, 104 => 100000, 105 => 250000, 106 => 500000, 107 => 1000000);
+$ShopBadgeIDs = [100, 101, 102, 103, 104, 105, 106, 107];
+$Prices = [100 => 5000, 101 => 10000, 102 => 25000, 103 => 50000, 104 => 100000, 105 => 250000, 106 => 500000, 107 => 1000000];
 
 if (!$BadgeID) {
   $Err = 'No badge specified.';
 } elseif (!in_array($BadgeID, $ShopBadgeIDs)) {
   $Err = 'Invalid badge ID.';
-} elseif (Badges::has_badge($UserID, array('BadgeID' => $BadgeID))) {
+} elseif (Badges::has_badge($UserID, ['BadgeID' => $BadgeID])) {
   $Err = 'You already have this badge.';
-} elseif ($BadgeID != $ShopBadgeIDs[0] && !Badges::has_badge($UserID, array('BadgeID' => $ShopBadgeIDs[array_search($BadgeID, $ShopBadgeIDs)-1]))) {
+} elseif ($BadgeID != $ShopBadgeIDs[0] && !Badges::has_badge($UserID, ['BadgeID' => $ShopBadgeIDs[array_search($BadgeID, $ShopBadgeIDs)-1]])) {
   $Err = 'You haven\'t purchased the badges before this one!';
 } else {
   $DB->query("
@@ -20,7 +20,7 @@ if (!$BadgeID) {
     WHERE ID = $UserID");
   if ($DB->has_results()) {
     list($BP) =  $DB->next_record();
-    $BP = (int) $BP;
+    $BP = (int)$BP;
 
     if ($BP >= $Prices[$BadgeID]) {
       if (!Badges::award_badge($UserID, $BadgeID)) {

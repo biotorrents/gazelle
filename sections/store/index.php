@@ -61,6 +61,9 @@ if ($LoggedUser['DisablePoints']) {
       case 'badge':
         include(SERVER_ROOT.'/sections/store/badge.php');
         break;
+      case 'coinbadge':
+        include(SERVER_ROOT.'/sections/store/coinbadge.php');
+        break;
       case 'capture_user':
         include(SERVER_ROOT.'/sections/store/capture_user.php');
         break;
