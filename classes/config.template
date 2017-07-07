@@ -152,32 +152,32 @@ define('MAX_EXTRA_RANK',   8);
 define('DONOR_FORUM_RANK', 6);
 define('MAX_SPECIAL_RANK', 3);
 
-define('FORUMS_TO_REVEAL_VOTERS',      []);
+define('FORUMS_TO_REVEAL_VOTERS',     []);
 define('FORUMS_TO_ALLOW_DOUBLE_POST', []);
 
-$Categories = array('Movies', 'Anime', 'Manga', 'Games', 'Other');
+$Categories = ['Movies', 'Anime', 'Manga', 'Games', 'Other'];
 $GroupedCategories = $Categories;
-$CategoryIcons = array('music.png', 'apps.png', 'ebook.png', 'audiobook.png', 'elearning.png', 'comedy.png', 'comics.png');
+$CategoryIcons = ['music.png', 'apps.png', 'ebook.png', 'audiobook.png', 'elearning.png', 'comedy.png', 'comics.png'];
 
-$Media = array('TV', 'DVD', 'Bluray', 'HD DVD', 'VHS', 'VCD', 'LD', 'Web');
-$MediaManga = array('Scan', 'Web');
-$Platform = array('Windows', 'OS X', 'Linux', 'BSD', 'Flash', 'Java', 'Android', 'iOS', '3DS');
-$Containers = array('AVI', 'MKV', 'MP4', 'OGM', 'WMV', 'ISO', 'VOB IFO', 'TS', 'M2TS');
-$ContainersGames = array('ISO', 'BIN-CUE', 'Installer', 'Loose');
-$Codecs = array('h264', '10-bit h264', 'XviD', 'DivX', 'WMV', 'DVD5', 'DVD9', 'HEVC', 'MPEG-2');
-$Resolutions = array('SD', '480p', '720p', '1080i', '1080p', '4K', 'Other');
-$AudioFormats = array('MP3', 'OGG', 'OGG 5.1', 'AAC', 'AAC 5.1', 'AC3', 'AC3 5.1', 'DTS 2.0', 'DTS 5.1', 'DTS-ES 6.1', 'FLAC 2.0', 'FLAC 5.1', 'FLAC 6.1', 'PCM 2.0', 'PCM 5.1', 'PCM 6.1', 'WMA', 'Real Audio', 'DTS-HD', 'DTS-HD MA');
-$Subbing = array('Softsubs', 'Hardsubs', 'RAW');
-$Languages = array('English', 'Japanese', 'Dual Language', 'None');
-$Archives = array('7z', 'zip', 'rar');
-$ArchivesManga = array('cbz', 'cbr', 'cb7');
+$Media = ['TV', 'DVD', 'Bluray', 'HD DVD', 'VHS', 'VCD', 'LD', 'Web'];
+$MediaManga = ['Scan', 'Web'];
+$Platform = ['Windows', 'OS X', 'Linux', 'BSD', 'Flash', 'Java', 'Android', 'iOS', '3DS'];
+$Containers = ['AVI', 'MKV', 'MP4', 'OGM', 'WMV', 'ISO', 'VOB IFO', 'TS', 'M2TS'];
+$ContainersGames = ['ISO', 'BIN-CUE', 'Installer', 'Loose'];
+$Codecs = ['h264', '10-bit h264', 'XviD', 'DivX', 'WMV', 'DVD5', 'DVD9', 'HEVC', 'MPEG-2'];
+$Resolutions = ['SD', '480p', '720p', '1080i', '1080p', '4K', 'Other'];
+$AudioFormats = ['MP3', 'OGG', 'OGG 5.1', 'AAC', 'AAC 5.1', 'AC3', 'AC3 5.1', 'DTS 2.0', 'DTS 5.1', 'DTS-ES 6.1', 'FLAC 2.0', 'FLAC 5.1', 'FLAC 6.1', 'PCM 2.0', 'PCM 5.1', 'PCM 6.1', 'WMA', 'Real Audio', 'DTS-HD', 'DTS-HD MA'];
+$Subbing = ['Softsubs', 'Hardsubs', 'RAW'];
+$Languages = ['English', 'Japanese', 'Dual Language', 'None'];
+$Archives = ['7z', 'zip', 'rar'];
+$ArchivesManga = ['cbz', 'cbr', 'cb7'];
 
-$Formats = array('MP3', 'FLAC', 'Ogg Vorbis', 'AAC', 'AC3', 'DTS');
-$Bitrates = array('192', 'APS (VBR)', 'V2 (VBR)', 'V1 (VBR)', '256', 'APX (VBR)', 'V0 (VBR)', 'q8.x (VBR)', '320', 'Lossless', '24bit Lossless', 'Other');
+$Formats = ['MP3', 'FLAC', 'Ogg Vorbis', 'AAC', 'AC3', 'DTS'];
+$Bitrates = ['192', 'APS (VBR)', 'V2 (VBR)', 'V1 (VBR)', '256', 'APX (VBR)', 'V0 (VBR)', 'q8.x (VBR)', '320', 'Lossless', '24bit Lossless', 'Other'];
 
-$CollageCats = array(0=>'Personal', 1=>'Theme', 2=>'Staff picks', 3=>'Artists');
+$CollageCats = [0=>'Personal', 1=>'Theme', 2=>'Staff picks', 3=>'Artists'];
 
-$ReleaseTypes = array(1=>'Album', 3=>'Soundtrack', 5=>'EP', 6=>'Anthology', 7=>'Compilation', 9=>'Single', 11=>'Live album', 13=>'Remix', 14=>'Bootleg', 15=>'Interview', 16=>'Mixtape', 21=>'Unknown');
+$ReleaseTypes = [1=>'Album', 3=>'Soundtrack', 5=>'EP', 6=>'Anthology', 7=>'Compilation', 9=>'Single', 11=>'Live album', 13=>'Remix', 14=>'Bootleg', 15=>'Interview', 16=>'Mixtape', 21=>'Unknown'];
 
 // Ratio requirements, in descending order
 // Columns: Download amount, Req Ratio (0% seeded), Req Ratio (100% seeded)
