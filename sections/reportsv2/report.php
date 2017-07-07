@@ -107,7 +107,7 @@ View::show_header('Report', 'reportsv2,browse,torrent,bbcode,recommend');
         <tr>
           <td class="label">Reason:</td>
           <td>
-            <select id="type" name="type" onchange="ChangeReportType();">
+            <select id="type" name="type" class="change_report_type">
 <?
         if (!empty($Types[$CategoryID])) {
           $TypeList = $Types['master'] + $Types[$CategoryID];
@@ -144,8 +144,6 @@ View::show_header('Report', 'reportsv2,browse,torrent,bbcode,recommend');
         <input id="track" type="hidden" name="track" size="8" value="<?=(!empty($_POST['track']) ? display_str($_POST['track']) : '')?>" />
         <input id="link" type="hidden" name="link" size="50" value="<?=(!empty($_POST['link']) ? display_str($_POST['link']) : '')?>" />
         <input id="extra" type="hidden" name="extra" value="<?=(!empty($_POST['extra']) ? display_str($_POST['extra']) : '')?>" />
-
-        <script type="text/javascript">ChangeReportType();</script>
       </div>
     </div>
   <input type="submit" value="Submit report" />

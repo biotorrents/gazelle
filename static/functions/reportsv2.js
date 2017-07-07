@@ -224,3 +224,8 @@ function Switch(reportid, torrentid, otherid) {
 document.querySelectorAll('[data-load-report]').forEach(function(el) {
   Load(+el.attributes['data-load-report'].value);
 })
+
+if(document.querySelector('.change_report_type')) {
+  document.querySelector('.change_report_type').addEventListener('change', ChangeReportType);
+  ChangeReportType();
+}
