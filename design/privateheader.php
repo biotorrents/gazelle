@@ -220,7 +220,7 @@ if (isset(G::$LoggedUser['SearchType']) && G::$LoggedUser['SearchType']) { // Ad
           <input id="torrentssearch" accesskey="t" spellcheck="false"
               onfocus="if (this.value == 'Torrents') { this.value = ''; }"
               onblur="if (this.value == '') { this.value = 'Torrents'; }"
-              value="Torrents" placeholder="Torrents" type="text" name="<?=$UseAdvancedSearch ? 'groupname' : 'searchstr' ?>" size="17" />
+              value="Torrents" placeholder="Torrents" type="text" name="<?=$UseAdvancedSearch ? 'advgroupname' : 'searchstr' ?>" size="17" />
         </form>
         <form class="search_form" name="artists" action="artist.php" method="get">
           <input id="artistsearch"<?=Users::has_autocomplete_enabled('search');
