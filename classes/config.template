@@ -161,7 +161,7 @@ $CategoryIcons = array('music.png', 'apps.png', 'ebook.png', 'audiobook.png', 'e
 
 $Media = array('TV', 'DVD', 'Bluray', 'HD DVD', 'VHS', 'VCD', 'LD', 'Web');
 $MediaManga = array('Scan', 'Web');
-$Platform = array('Windows', 'OS X', 'Linux', 'BSD', 'Flash', 'Java', 'Android', 'iOS');
+$Platform = array('Windows', 'OS X', 'Linux', 'BSD', 'Flash', 'Java', 'Android', 'iOS', '3DS');
 $Containers = array('AVI', 'MKV', 'MP4', 'OGM', 'WMV', 'ISO', 'VOB IFO', 'TS', 'M2TS');
 $ContainersGames = array('ISO', 'BIN-CUE', 'Installer', 'Loose');
 $Codecs = array('h264', '10-bit h264', 'XviD', 'DivX', 'WMV', 'DVD5', 'DVD9', 'HEVC', 'MPEG-2');
