@@ -307,7 +307,7 @@ if (count($Reports) === 0) {
         WHERE ID = $ReportID");
       $Cache->decrement('num_torrent_reportsv2');
 ?>
-  <div id="report<?=$ReportID?>" class="report box pad center">
+  <div id="report<?=$ReportID?>" class="report box pad center" data-load-report="<?=$ReportID?>">
     <a href="reportsv2.php?view=report&amp;id=<?=$ReportID?>">Report <?=$ReportID?></a> for torrent <?=$TorrentID?> (deleted) has been automatically resolved. <input type="button" value="Hide" onclick="ClearReport(<?=$ReportID?>);" />
   </div>
 <?
@@ -349,7 +349,7 @@ if (count($Reports) === 0) {
         $BBName = "[url=artist.php?id=$ArtistID]".$ArtistName."[/url] - [url=torrents.php?id=$GroupID]$GroupName".($Year ? " ($Year)" : '')."[/url] [url=torrents.php?torrentid=$TorrentID][$Media][/url] ".' ('.number_format($Size / (1024 * 1024), 2).' MB)';
 //      }
 ?>
-  <div id="report<?=$ReportID?>">
+  <div id="report<?=$ReportID?>" data-load-report="<?=$ReportID?>">
     <form class="manage_form" name="report" id="reportform_<?=$ReportID?>" action="reports.php" method="post">
 <?
 /*
@@ -726,10 +726,6 @@ if (count($Reports) === 0) {
       </div>
     </form>
   </div>
-  <script type="text/javascript">//<![CDATA[
-    Load(<?=$ReportID?>);
-  //]]>
-  </script>
 <?
     }
   }
