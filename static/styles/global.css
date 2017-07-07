@@ -912,3 +912,7 @@ div.torrent_artists {
 input[type="search"] {
   -webkit-appearance: textfield;
 }
+
+#lightbox > img {
+  max-width: 100%;
+}
