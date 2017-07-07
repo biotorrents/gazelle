@@ -323,13 +323,6 @@ echo $Val->GenerateJS('userform');
           </select>
         </td>
       </tr>
-      <tr id="tor_voting_tr">
-        <td class="label tooltip" title="This option allows you to enable or disable &quot;up&quot; and &quot;down&quot; voting links on artist pages, collections, and snatched lists."><strong>Voting links</strong></td>
-        <td>
-          <input type="checkbox" name="novotelinks" id="novotelinks"<?=!empty($SiteOptions['NoVoteLinks']) ? ' checked="checked"' : ''?> />
-          <label for="novotelinks">Disable voting links</label>
-        </td>
-      </tr>
       <tr id="tor_hidequestionable_tr">
         <td class="label tooltip" title="Prevent torrents with these tags from showing up on the torrent search page"><strong>Content Filtering</strong></td>
         <td>

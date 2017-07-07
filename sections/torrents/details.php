@@ -297,8 +297,6 @@ if ($Categories[$GroupCategoryID - 1] != 'Other') {
 <?
     }
   }
-include(SERVER_ROOT.'/sections/torrents/vote_ranks.php');
-include(SERVER_ROOT.'/sections/torrents/vote.php');
 ?>
     <div class="box box_tags">
       <div class="head">
@@ -777,8 +775,6 @@ if (count($PersonalCollages) > 0) {
     </table>
 <?
 }
-// Matched Votes
-include(SERVER_ROOT.'/sections/torrents/voter_picks.php');
 ?>
     <div class="box torrent_description">
       <div class="head"><a href="#">&uarr;</a>&nbsp;<strong><?=(!empty($ReleaseType) ? $ReleaseTypes[$ReleaseType].' info' : 'Info' )?></strong></div>

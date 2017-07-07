@@ -40,18 +40,17 @@ class CACHE extends Memcache {
   protected $InTransaction = false;
   public $Time = 0;
   private $Servers = [];
-  private $PersistentKeys = array(
+  private $PersistentKeys = [
     'ajax_requests_*',
     'query_lock_*',
     'stats_*',
     'top10tor_*',
-    'top10votes_*',
     'users_snatched_*',
 
     // Cache-based features
     'global_notification',
     'notifications_one_reads_*',
-  );
+  ];
   private $ClearedKeys = [];
 
   public $CanClear = false;

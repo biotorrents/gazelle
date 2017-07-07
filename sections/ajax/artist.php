@@ -42,8 +42,7 @@ if (!empty($_GET['revisionid'])) { // if they're viewing an old revision
   $RevisionID = false;
 }
 if ($Data) {
-//  list($K, list($Name, $Image, $Body, $NumSimilar, $SimilarArray, , , $VanityHouseArtist)) = each($Data);
-  list($K, list($Name, $Image, $Body, $NumSimilar, $SimilarArray, , )) = each($Data);
+  list($K, list($Name, $Image, $Body)) = each($Data);
 } else {
   if ($RevisionID) {
   /*
@@ -290,44 +289,6 @@ foreach ($GroupIDs as $GroupID) {
   );
 }
 
-$JsonSimilar = [];
-if (empty($SimilarArray)) {
-  $DB->query("
-    SELECT
-      s2.ArtistID,
-      a.Name,
-      ass.Score,
-      ass.SimilarID
-    FROM artists_similar AS s1
-      JOIN artists_similar AS s2 ON s1.SimilarID = s2.SimilarID AND s1.ArtistID != s2.ArtistID
-      JOIN artists_similar_scores AS ass ON ass.SimilarID = s1.SimilarID
-      JOIN artists_group AS a ON a.ArtistID = s2.ArtistID
-    WHERE s1.ArtistID = '$ArtistID'
-    ORDER BY ass.Score DESC
-    LIMIT 30
-  ");
-  $SimilarArray = $DB->to_array();
-  foreach ($SimilarArray as $Similar) {
-    $JsonSimilar[] = array(
-      'artistId' => (int)$Similar['ArtistID'],
-      'name' => $Similar['Name'],
-      'score' => (int)$Similar['Score'],
-      'similarId' => (int)$Similar['SimilarID']
-    );
-  }
-  $NumSimilar = count($SimilarArray);
-} else {
-  //If data already exists, use it
-  foreach ($SimilarArray as $Similar) {
-    $JsonSimilar[] = array(
-      'artistId' => (int)$Similar['ArtistID'],
-      'name' => $Similar['Name'],
-      'score' => (int)$Similar['Score'],
-      'similarId' => (int)$Similar['SimilarID']
-    );
-  }
-}
-
 $JsonRequests = [];
 foreach ($Requests as $RequestID => $Request) {
   $JsonRequests[] = array(
@@ -369,7 +330,7 @@ if ($RevisionID) {
   $Key = "artist_$ArtistID";
 }
 
-$Data = array(array($Name, $Image, $Body, $NumSimilar, $SimilarArray, [], [], $VanityHouseArtist));
+$Data = array(array($Name, $Image, $Body));
 
 $Cache->cache_value($Key, $Data, 3600);
 
@@ -382,7 +343,6 @@ json_die("success", array(
   'body' => Text::full_format($Body),
   'vanityHouse' => $VanityHouseArtist == 1,
   'tags' => array_values($Tags),
-  'similarArtists' => $JsonSimilar,
   'statistics' => array(
     'numGroups' => $NumGroups,
     'numTorrents' => $NumTorrents,

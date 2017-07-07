@@ -53,28 +53,6 @@ CREATE TABLE `artists_group` (
   KEY `RevisionID` (`RevisionID`)
 ) ENGINE=InnoDB CHARSET=utf8;
 
-CREATE TABLE `artists_similar` (
-  `ArtistID` int(10) NOT NULL DEFAULT '0',
-  `SimilarID` int(12) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ArtistID`,`SimilarID`),
-  KEY `ArtistID` (`ArtistID`),
-  KEY `SimilarID` (`SimilarID`)
-) ENGINE=InnoDB CHARSET=utf8;
-
-CREATE TABLE `artists_similar_scores` (
-  `SimilarID` int(12) NOT NULL AUTO_INCREMENT,
-  `Score` int(10) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`SimilarID`),
-  KEY `Score` (`Score`)
-) ENGINE=InnoDB CHARSET=utf8;
-
-CREATE TABLE `artists_similar_votes` (
-  `SimilarID` int(12) NOT NULL,
-  `UserID` int(10) NOT NULL,
-  `Way` enum('up','down') NOT NULL DEFAULT 'up',
-  PRIMARY KEY (`SimilarID`,`UserID`,`Way`)
-) ENGINE=InnoDB CHARSET=utf8;
-
 CREATE TABLE `artists_tags` (
   `TagID` int(10) NOT NULL DEFAULT '0',
   `ArtistID` int(10) NOT NULL DEFAULT '0',
@@ -1275,16 +1253,6 @@ CREATE TABLE `torrents_tags_votes` (
   PRIMARY KEY (`GroupID`,`TagID`,`UserID`,`Way`)
 ) ENGINE=InnoDB CHARSET=utf8;
 
-CREATE TABLE `torrents_votes` (
-  `GroupID` int(10) NOT NULL,
-  `Ups` int(10) unsigned NOT NULL DEFAULT '0',
-  `Total` int(10) unsigned NOT NULL DEFAULT '0',
-  `Score` float NOT NULL DEFAULT '0',
-  PRIMARY KEY (`GroupID`),
-  KEY `Score` (`Score`),
-  CONSTRAINT `torrents_votes_ibfk_1` FOREIGN KEY (`GroupID`) REFERENCES `torrents_group` (`ID`) ON DELETE CASCADE
-) ENGINE=InnoDB CHARSET=utf8;
-
 CREATE TABLE `user_questions` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `Question` mediumtext,
@@ -1689,20 +1657,6 @@ CREATE TABLE `users_torrent_history_temp` (
   `SumTime` bigint(20) unsigned NOT NULL DEFAULT '0',
   `SeedingAvg` int(6) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`UserID`)
-) ENGINE=InnoDB CHARSET=utf8;
-
-CREATE TABLE `users_votes` (
-  `UserID` int(10) unsigned NOT NULL,
-  `GroupID` int(10) NOT NULL,
-  `Type` enum('Up','Down') DEFAULT NULL,
-  `Time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`UserID`,`GroupID`),
-  KEY `GroupID` (`GroupID`),
-  KEY `Type` (`Type`),
-  KEY `Time` (`Time`),
-  KEY `Vote` (`Type`,`GroupID`,`UserID`),
-  CONSTRAINT `users_votes_ibfk_1` FOREIGN KEY (`GroupID`) REFERENCES `torrents_group` (`ID`) ON DELETE CASCADE,
-  CONSTRAINT `users_votes_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `users_main` (`ID`) ON DELETE CASCADE
 ) ENGINE=InnoDB CHARSET=utf8;
 
 CREATE TABLE `users_warnings_forums` (

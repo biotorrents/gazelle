@@ -500,17 +500,6 @@ class Torrents {
           )
       WHERE ID = '$GroupID'");
 
-    // Fetch album vote score
-    G::$DB->query("
-      SELECT Score
-      FROM torrents_votes
-      WHERE GroupID = $GroupID");
-    if (G::$DB->has_results()) {
-      list($VoteScore) = G::$DB->next_record();
-    } else {
-      $VoteScore = 0;
-    }
-
     // Fetch album artists
     G::$DB->query("
       SELECT GROUP_CONCAT(ag.Name separator ' ')

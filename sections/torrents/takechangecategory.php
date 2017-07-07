@@ -96,7 +96,6 @@ $DB->query("
   FROM torrents
   WHERE GroupID = '$OldGroupID'");
 if (!$DB->has_results()) {
-  // TODO: votes etc.
   $DB->query("
     UPDATE comments
     SET PageID = '$GroupID'

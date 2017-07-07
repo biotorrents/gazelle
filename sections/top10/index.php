@@ -26,9 +26,6 @@ if (empty($_GET['type']) || $_GET['type'] == 'torrents') {
     case 'history':
       include(SERVER_ROOT.'/sections/top10/history.php');
       break;
-    case 'votes':
-      include(SERVER_ROOT.'/sections/top10/votes.php');
-      break;
     case 'donors':
       include(SERVER_ROOT.'/sections/top10/donors.php');
       break;

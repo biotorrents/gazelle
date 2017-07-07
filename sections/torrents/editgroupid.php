@@ -85,7 +85,6 @@ if (empty($_POST['confirm'])) {
     WHERE GroupID = '$OldGroupID'");
   list($TorrentsInGroup) = $DB->next_record();
   if ($TorrentsInGroup == 0) {
-    // TODO: votes etc!
     $DB->query("
       UPDATE comments
       SET PageID = '$GroupID'

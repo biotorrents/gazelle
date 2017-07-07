@@ -64,22 +64,4 @@ if (count($LogEntries) > 0) {
     VALUES $Values");
   echo "\nDeleted $i torrents for inactivity\n";
 }
-
-$DB->query("
-  SELECT SimilarID
-  FROM artists_similar_scores
-  WHERE Score <= 0");
-$SimilarIDs = implode(',', $DB->collect('SimilarID'));
-
-if ($SimilarIDs) {
-  $DB->query("
-    DELETE FROM artists_similar
-    WHERE SimilarID IN($SimilarIDs)");
-  $DB->query("
-    DELETE FROM artists_similar_scores
-    WHERE SimilarID IN($SimilarIDs)");
-  $DB->query("
-    DELETE FROM artists_similar_votes
-    WHERE SimilarID IN($SimilarIDs)");
-}
 ?>

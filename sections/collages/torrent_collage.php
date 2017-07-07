@@ -18,7 +18,6 @@ $GroupIDs = $DB->collect('GroupID');
 $Contributors = $DB->to_pair('GroupID', 'UserID', false);
 if (count($GroupIDs) > 0) {
   $TorrentList = Torrents::get_groups($GroupIDs);
-  $UserVotes = Votes::get_user_votes($LoggedUser['ID']);
 } else {
   $TorrentList = [];
 }
@@ -89,7 +88,6 @@ foreach ($GroupIDs as $GroupID) {
     $DisplayName .= " [$GroupDLSiteID]";
   }
   $SnatchedGroupClass = ($GroupFlags['IsSnatched'] ? ' snatched_group' : '');
-  $UserVote = isset($UserVotes[$GroupID]) ? $UserVotes[$GroupID]['Type'] : '';
   // Start an output buffer, so we can store this output in $TorrentTable
   ob_start();
 
@@ -118,7 +116,6 @@ foreach ($GroupIDs as $GroupID) {
           </span>
 <?
     }
-    Votes::vote_link($GroupID, $UserVote);
 ?>
           <div class="tags"><?=$TorrentTags->format()?></div>
         </td>
@@ -216,7 +213,6 @@ foreach ($GroupIDs as $GroupID) {
             | <a href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>" class="tooltip" title="Report">RP</a>
           </span>
           <strong><?=$DisplayName?></strong>
-<?    Votes::vote_link($GroupID, $UserVote); ?>
           <div class="tags"><?=$TorrentTags->format()?></div>
         </td>
         <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?></td>
@@ -283,7 +279,7 @@ for ($i = 0; $i < $NumGroups / $CollageCovers; $i++) {
   $CollagePages[] = $CollagePage;
 }
 
-View::show_header($Name, 'browse,collage,bbcode,voting,recommend,wall');
+View::show_header($Name, 'browse,collage,bbcode,recommend,wall');
 ?>
 <div class="thin">
   <div class="header">

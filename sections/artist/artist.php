@@ -6,16 +6,10 @@ function compare($X, $Y) {
   return($Y['count'] - $X['count']);
 }
 
-// Similar Artist Map
-include(SERVER_ROOT.'/classes/artists_similar.class.php');
-
-$UserVotes = Votes::get_user_votes($LoggedUser['ID']);
-
 $ArtistID = $_GET['id'];
 if (!is_number($ArtistID)) {
   error(0);
 }
-
 
 if (!empty($_GET['revisionid'])) { // if they're viewing an old revision
   $RevisionID = $_GET['revisionid'];
@@ -29,8 +23,7 @@ if (!empty($_GET['revisionid'])) { // if they're viewing an old revision
 }
 
 if ($Data) {
-  #list($K, list($Name, $Image, $Body, $NumSimilar, $SimilarArray, , , $VanityHouseArtist)) = each($Data);
-  list($K, list($Name, $Image, $Body, $NumSimilar, $SimilarArray)) = each($Data);
+  list($K, list($Name, $Image, $Body)) = each($Data);
 } else {
   if ($RevisionID) {
     $sql = "
@@ -262,10 +255,7 @@ foreach ($TorrentList as $Group) {
             <span class="add_bookmark float_right">
               <a style="float: right;" href="#" id="bookmarklink_torrent_<?=$GroupID?>" class="brackets" onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
             </span>
-<?  }
-    $VoteType = isset($UserVotes[$GroupID]['Type']) ? $UserVotes[$GroupID]['Type'] : '';
-    Votes::vote_link($GroupID, $VoteType);
-?>
+<?  } ?>
             <div class="tags"><?=$TorrentTags->format('torrents.php?taglist=', $Name)?></div>
           </div>
         </td>
@@ -411,7 +401,7 @@ $TorrentDisplayList = ob_get_clean();
 // Comments (must be loaded before View::show_header so that subscriptions and quote notifications are handled properly)
 list($NumComments, $Page, $Thread, $LastRead) = Comments::load('artist', $ArtistID);
 
-View::show_header($Name, 'browse,requests,bbcode,comments,voting,recommend,subscriptions');
+View::show_header($Name, 'browse,requests,bbcode,comments,recommend,subscriptions');
 ?>
 <div class="thin">
   <div class="header">
@@ -572,75 +562,6 @@ foreach ($ZIPOptions as $Option) {
         <li>Number of snatches: <?=number_format($NumSnatches)?></li>
       </ul>
     </div>
-<?
-
-
-if (empty($SimilarArray)) {
-  $DB->query("
-    SELECT
-      s2.ArtistID,
-      a.Name,
-      ass.Score,
-      ass.SimilarID
-    FROM artists_similar AS s1
-      JOIN artists_similar AS s2 ON s1.SimilarID = s2.SimilarID AND s1.ArtistID != s2.ArtistID
-      JOIN artists_similar_scores AS ass ON ass.SimilarID = s1.SimilarID
-      JOIN artists_group AS a ON a.ArtistID = s2.ArtistID
-    WHERE s1.ArtistID = '$ArtistID'
-    ORDER BY ass.Score DESC
-    LIMIT 30
-  ");
-  $SimilarArray = $DB->to_array();
-  $NumSimilar = count($SimilarArray);
-}
-?>
-    <div class="box box_artists">
-      <div class="head"><strong>Similar</strong></div>
-      <ul class="stats nobullet">
-<?  if ($NumSimilar == 0) { ?>
-        <li><span style="font-style: italic;">None found</span></li>
-<?
-  }
-  $First = true;
-  foreach ($SimilarArray as $SimilarArtist) {
-    list($Artist2ID, $Artist2Name, $Score, $SimilarID) = $SimilarArtist;
-    $Score = $Score / 100;
-    if ($First) {
-      $Max = $Score + 1;
-      $First = false;
-    }
-
-    $FontSize = (ceil(((($Score - 2) / $Max - 2) * 4))) + 8;
-
-?>
-        <li>
-          <span class="tooltip" title="<?=$Score?>"><a href="artist.php?id=<?=$Artist2ID?>" style="float: left; display: block;"><?=$Artist2Name?></a></span>
-          <div style="float: right; display: block; letter-spacing: -1px;">
-            <a href="artist.php?action=vote_similar&amp;artistid=<?=$ArtistID?>&amp;similarid=<?=$SimilarID?>&amp;way=up" class="tooltip brackets vote_artist_up" title="Vote up this similar artist. Use this when you feel that the two artists are quite similar.">&and;</a>
-            <a href="artist.php?action=vote_similar&amp;artistid=<?=$ArtistID?>&amp;similarid=<?=$SimilarID?>&amp;way=down" class="tooltip brackets vote_artist_down" title="Vote down this similar artist. Use this when you feel that the two artists are not all that similar.">&or;</a>
-<?    if (check_perms('site_delete_tag')) { ?>
-            <span class="remove remove_artist"><a href="artist.php?action=delete_similar&amp;similarid=<?=$SimilarID?>&amp;auth=<?=$LoggedUser['AuthKey']?>" class="tooltip brackets" title="Remove this similar artist">X</a></span>
-<?    } ?>
-          </div>
-          <br style="clear: both;" />
-        </li>
-<?    } ?>
-      </ul>
-    </div>
-    <div class="box box_addartists box_addartists_similar">
-      <div class="head"><strong>Add similar</strong></div>
-      <ul class="nobullet">
-        <li>
-          <form class="add_form" name="similar_artists" action="artist.php" method="post">
-            <input type="hidden" name="action" value="add_similar" />
-            <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
-            <input type="hidden" name="artistid" value="<?=$ArtistID?>" />
-            <input type="text" autocomplete="off" id="artistsimilar" name="artistname" size="20"<? Users::has_autocomplete_enabled('other'); ?> />
-            <input type="submit" value="+" />
-          </form>
-        </li>
-      </ul>
-    </div>
   </div>
   <div class="main_column">
     <div id="artist_information" class="box">
@@ -780,105 +701,6 @@ if ($NumRequests > 0) {
 <?
 }
 
-// Similar Artist Map
-
-if ($NumSimilar > 0) {
-  if ($SimilarData = $Cache->get_value("similar_positions_$ArtistID")) {
-    $Similar = new ARTISTS_SIMILAR($ArtistID, $Name);
-    $Similar->load_data($SimilarData);
-    if (!(current($Similar->Artists)->NameLength)) {
-      unset($Similar);
-    }
-  }
-  if (empty($Similar) || empty($Similar->Artists)) {
-    include(SERVER_ROOT.'/classes/image.class.php');
-    $Img = new IMAGE;
-    $Img->create(WIDTH, HEIGHT);
-    $Img->color(255, 255, 255, 127);
-
-    $Similar = new ARTISTS_SIMILAR($ArtistID, $Name);
-    $Similar->set_up();
-    $Similar->set_positions();
-    $Similar->background_image();
-
-    $SimilarData = $Similar->dump_data();
-
-    $Cache->cache_value("similar_positions_$ArtistID", $SimilarData, 3600 * 24);
-  }
-?>
-    <div id="similar_artist_map" class="box">
-      <div id="flipper_head" class="head">
-        <a href="#">&uarr;</a>&nbsp;
-        <strong id="flipper_title">Similar Map</strong>
-        <a id="flip_to" class="brackets" href="#" onclick="flipView(); return false;">Switch to cloud</a>
-      </div>
-      <div id="flip_view_1" style="display: block; width: <?=(WIDTH)?>px; height: <?=(HEIGHT)?>px; position: relative; background-image: url(static/similar/<?=($ArtistID)?>.png?t=<?=(time())?>);">
-<?
-  $Similar->write_artists();
-?>
-      </div>
-      <div id="flip_view_2" style="display: none; width: <?=WIDTH?>px; height: <?=HEIGHT?>px;">
-        <canvas width="<?=WIDTH?>px" height="<?=(HEIGHT - 20)?>px" id="similarArtistsCanvas"></canvas>
-        <div id="artistTags" style="display: none;">
-          <ul><li></li></ul>
-        </div>
-        <strong style="margin-left: 10px;"><a id="currentArtist" href="#null">Loading...</a></strong>
-      </div>
-    </div>
-
-<script type="text/javascript">//<![CDATA[
-var cloudLoaded = false;
-
-function flipView() {
-  var state = document.getElementById('flip_view_1').style.display == 'block';
-
-  if (state) {
-    document.getElementById('flip_view_1').style.display = 'none';
-    document.getElementById('flip_view_2').style.display = 'block';
-    document.getElementById('flipper_title').innerHTML = 'Similar Cloud';
-    document.getElementById('flip_to').innerHTML = 'Switch to map';
-
-    if (!cloudLoaded) {
-      require("static/functions/tagcanvas.js", function () {
-        require("static/functions/artist_cloud.js", function () {
-        });
-      });
-      cloudLoaded = true;
-    }
-  }
-  else {
-    document.getElementById('flip_view_1').style.display = 'block';
-    document.getElementById('flip_view_2').style.display = 'none';
-    document.getElementById('flipper_title').innerHTML = 'Similar Map';
-    document.getElementById('flip_to').innerHTML = 'Switch to cloud';
-  }
-}
-
-//TODO move this to global, perhaps it will be used elsewhere in the future
-//http://stackoverflow.com/questions/7293344/load-javascript-dynamically
-function require(file, callback) {
-  var script = document.getElementsByTagName('script')[0],
-  newjs = document.createElement('script');
-
-  // IE
-  newjs.onreadystatechange = function () {
-    if (newjs.readyState === 'loaded' || newjs.readyState === 'complete') {
-      newjs.onreadystatechange = null;
-      callback();
-    }
-  };
-  // others
-  newjs.onload = function () {
-    callback();
-  };
-  newjs.src = file;
-  script.parentNode.insertBefore(newjs, script);
-}
-//]]>
-</script>
-
-<? }
-
 // --- Comments ---
 $Pages = Format::get_pages($Page, $NumComments, TORRENT_COMMENTS_PER_PAGE, 9, '#comments');
 
@@ -919,7 +741,7 @@ if ($RevisionID) {
   $Key = "artist_$ArtistID";
 }
 
-$Data = array(array($Name, $Image, $Body, $NumSimilar, $SimilarArray, [], [], $VanityHouseArtist));
+$Data = array(array($Name, $Image, $Body));
 
 $Cache->cache_value($Key, $Data, 3600);
 ?>
