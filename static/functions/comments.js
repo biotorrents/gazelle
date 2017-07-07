@@ -414,7 +414,7 @@ $(document).ready(function() {
       $(this).one("load", function() {
           var par = $(this).parents('.avatar')
           if (par.height()) {
-              par.raw().style.height = par.height()-2+'px'
+              par.raw().style.height = par.height()+'px'
           }
       })
       if (this.complete) $(this).load()
