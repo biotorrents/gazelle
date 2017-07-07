@@ -532,20 +532,24 @@ foreach ($TorrentList as $Torrent) {
   if (!empty($BadFiles)) { $ExtraInfo.=$AddExtra. Format::torrent_label('Bad File Names'); $AddExtra=' / '; }
 
   $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$LoggedUser['AuthKey']."&amp;torrent_pass=".$LoggedUser['torrent_pass'];
-  if (!($TorrentFileName = $Cache->get_value('torrent_file_name_'.$TorrentID))) {
-    $TorrentFile = file_get_contents(TORRENT_STORE.$TorrentID.'.torrent');
-    $Tor = new BencodeTorrent($TorrentFile);
-    $TorrentFileName = $Tor->Dec['info']['name'];
-    $Cache->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
+  if (!empty(G::$LoggedUser) && (G::$LoggedUser['ShowMagnets'] ?? false)) {
+    if (!($TorrentFileName = $Cache->get_value('torrent_file_name_'.$TorrentID))) {
+      $TorrentFile = file_get_contents(TORRENT_STORE.$TorrentID.'.torrent');
+      $Tor = new BencodeTorrent($TorrentFile);
+      $TorrentFileName = $Tor->Dec['info']['name'];
+      $Cache->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
+    }
+    $TorrentMG = "magnet:?dn=".rawurlencode($TorrentFileName)."&xt=urn:btih:".$InfoHash."&as=https://".SITE_DOMAIN."/".str_replace('&amp;','%26',$TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=",ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Size;
   }
-  $TorrentMG = "magnet:?dn=".rawurlencode($TorrentFileName)."&xt=urn:btih:".$InfoHash."&as=https://".SITE_DOMAIN."/".str_replace('&amp;','%26',$TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=",ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Size;
 ?>
 
       <tr class="torrent_row groupid_<?=$GroupID?> group_torrent<?=($IsSnatched ? ' snatched_torrent' : '')?>" style="font-weight: normal;" id="torrent<?=$TorrentID?>">
         <td>
           <span>[ <a href="<?=$TorrentDL?>" class="tooltip" title="Download"><?=($HasFile ? 'DL' : 'Missing')?></a>
+<?  if (isset($TorrentMG)) { ?>
             | <a href="<?=$TorrentMG?>" class="tooltip" title="Magnet Link">MG</a>
-<?  if (Torrents::can_use_token($Torrent)) { ?>
+<?  }
+    if (Torrents::can_use_token($Torrent)) { ?>
             | <a href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>&amp;usetoken=1" class="tooltip" title="Use a FL Token" onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
 <?  } ?>
             | <a href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>" class="tooltip" title="Report">RP</a>

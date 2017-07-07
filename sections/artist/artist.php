@@ -279,16 +279,20 @@ foreach ($TorrentList as $Group) {
 
       $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : '';
       $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$LoggedUser['AuthKey']."&amp;torrent_pass=".$LoggedUser['torrent_pass'];
-      $TorrentMG = "magnet:?xt=urn:btih:".$Torrent['info_hash']."&as=https://".SITE_DOMAIN."/".str_replace('&amp;','%26',$TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=",ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Torrent['Size'];
+      if (!empty(G::$LoggedUser) && (G::$LoggedUser['ShowMagnets'] ?? false)) {
+        $TorrentMG = "magnet:?xt=urn:btih:".$Torrent['info_hash']."&as=https://".SITE_DOMAIN."/".str_replace('&amp;','%26',$TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=",ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Torrent['Size'];
+      }
 ?>
     <tr class="torrent_row groupid_<?=$GroupID?> group_torrent discog<?=$SnatchedTorrentClass . $SnatchedGroupClass . $HideTorrents?>">
       <td colspan="2">
           <span>
           [ <a href="<?=$TorrentDL?>" class="tooltip" title="Download">DL</a>
+<?  if (isset($TorrentMG)) { ?>
           | <a href="<?=$TorrentMG?>" class="tooltip" title="Magnet Link">MG</a>
-<? if (Torrents::can_use_token($Torrent)) { ?>
+<?  }
+    if (Torrents::can_use_token($Torrent)) { ?>
           | <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>&amp;usetoken=1" class="tooltip" title="Use a FL Token" onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
-<?    } ?>
+<?  } ?>
           | <a href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>" class="tooltip" title="Report">RP</a> ]
         </span>
         &nbsp;&nbsp;&raquo;&nbsp; <a href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"><?=Torrents::torrent_info($Torrent)?></a>
@@ -349,7 +353,9 @@ foreach ($TorrentList as $Group) {
     $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : '';
 
     $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$LoggedUser['AuthKey']."&amp;torrent_pass=".$LoggedUser['torrent_pass'];
-    $TorrentMG = "magnet:?xt=urn:btih:".$Torrent['info_hash']."&as=https://".SITE_DOMAIN."/".str_replace('&amp;','%26',$TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=",ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Torrent['Size'];
+    if (!empty(G::$LoggedUser) && (G::$LoggedUser['ShowMagnets'] ?? false)) {
+      $TorrentMG = "magnet:?xt=urn:btih:".$Torrent['info_hash']."&as=https://".SITE_DOMAIN."/".str_replace('&amp;','%26',$TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=",ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Torrent['Size'];
+    }
 
 ?>
     <tr class="torrent<?=$SnatchedTorrentClass . $SnatchedGroupClass?>">
@@ -360,8 +366,10 @@ foreach ($TorrentList as $Group) {
           <div class="float_right">
             <span>
             [ <a href="<?=$TorrentDL?>" class="tooltip" title="Download">DL</a>
+<?  if (isset($TorrentMG)) { ?>
             | <a href="<?=$TorrentMG?>" class="tooltip" title="Magnet Link">MG</a>
-<? if (Torrents::can_use_token($Torrent)) { ?>
+<?  }
+    if (Torrents::can_use_token($Torrent)) { ?>
             | <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>&amp;usetoken=1" class="tooltip" title="Use a FL Token" onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
 <?    } ?>
             | <a href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>" class="tooltip" title="Report">RP</a> ]

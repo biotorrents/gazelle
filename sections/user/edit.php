@@ -250,6 +250,13 @@ echo $Val->GenerateJS('userform');
           <label for="showsnatched">Enable snatched torrents indicator</label>
         </td>
       </tr>
+      <tr id="tor_magnet_tr">
+        <td class="label tooltip" title="Magnet links should only be used on clients with DHT disabled globally"><strong>Magnet links</strong></td>
+        <td>
+          <input type="checkbox" name="showmagnets" id="showmagnets"<?=!empty($SiteOptions['ShowMagnets']) ? ' checked="checked"' : '' ?> />
+          <label for="showmagnets">Show magnet links</label>
+        </td>
+      </tr>
 <? /* ?>
       <tr>
         <td class="label"><strong>Collage album art view</strong></td>
