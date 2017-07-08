@@ -325,12 +325,13 @@ CREATE TABLE `email_blacklist` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB CHARSET=utf8;
 
-CREATE TABLE `email_delete_requests` (
+CREATE TABLE `deletion_requests` (
   `UserID` int(10) unsigned NOT NULL,
-  `Email` varchar(255) NOT NULL,
+  `Value` varchar(255) NOT NULL,
+  `Type` varchar(255) NOT NULL,
   `Reason` text,
   `Time` datetime,
-  PRIMARY KEY (`UserID`,`Email`)
+  PRIMARY KEY (`UserID`,`Value`)
 ) ENGINE=InnoDB CHARSET=utf8;
 
 CREATE TABLE `featured_albums` (

@@ -15,22 +15,22 @@ if (!apcu_exists('DBKEY')) {
 }
 
 $DB->query("
-  SELECT DISTINCT Email
-  FROM users_history_emails
+  SELECT IP
+  FROM users_history_ips
   WHERE UserID = '$UserID'");
 
-$EncEmails = $DB->collect("Email");
-$Emails = [];
+$EncIPs = $DB->collect("IP");
+$IPs = [];
 
-foreach ($EncEmails as $Enc) {
-  if (!isset($Emails[DBCrypt::decrypt($Enc)])) {
-    $Emails[DBCrypt::decrypt($Enc)] = [];
+foreach ($EncIPs as $Enc) {
+  if (!isset($IPs[DBCrypt::decrypt($Enc)])) {
+    $IPs[DBCrypt::decrypt($Enc)] = [];
   }
-  $Emails[DBCrypt::decrypt($Enc)][] = $Enc;
+  $IPs[DBCrypt::decrypt($Enc)][] = $Enc;
 }
 
 $DB->query("
-  SELECT Email
+  SELECT IP
   FROM users_main
   WHERE ID = '$UserID'");
 
@@ -41,31 +41,31 @@ if (!$Self) {
   $DB->query("SELECT Username FROM users_main WHERE ID = '$UserID'");
   list($Username) = $DB->next_record();
 
-  View::show_header("Email history for $Username");
+  View::show_header("IP history for $Username");
 } else {
-  View::show_header("Your email history");
+  View::show_header("Your IP history");
 }
 
 ?>
 
 <div class="header">
 <? if ($Self) { ?>
-  <h2>Your email history</h2>
+  <h2>Your IP history</h2>
 <? } else { ?>
-  <h2>Email history for <a href="user.php?id=<?=$UserID ?>"><?=$Username ?></a></h2>
+  <h2>IP history for <a href="user.php?id=<?=$UserID?>"><?=$Username?></a></h2>
 <? } ?>
 </div>
 <table width="100%">
   <tr class="colhead">
-    <td>Email</td>
+    <td>IP</td>
     <td>Expunge</td>
   </tr>
-<? foreach ($Emails as $Email => $Encs) { ?>
+<? foreach ($IPs as $IP => $Encs) { ?>
   <tr class="row">
-    <td><?=display_str($Email)?></td>
+    <td><?=display_str($IP)?></td>
     <td>
-    <? if ($Email != $Curr) { ?>
-      <a href="delete.php?action=email&emails[]=<?=implode('&emails[]=', array_map('urlencode', $Encs))?>" class="brackets">X</a>
+    <? if ($IP != $Curr) { ?>
+      <a href="delete.php?action=ip&ips[]=<?=implode('&ips[]=', array_map('urlencode', $Encs))?>" class="brackets">X</a>
     <? } ?>
     </td>
   </tr>

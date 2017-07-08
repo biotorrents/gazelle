@@ -3,7 +3,7 @@
 enforce_login();
 authorize();
 
-if (!isset($_POST['emails']) || !is_array($_POST['emails'])) {
+if (!isset($_POST['ips']) || !is_array($_POST['ips'])) {
   error("Stop that.");
 }
 
@@ -11,18 +11,18 @@ if (!apcu_exists('DBKEY')) {
   error(403);
 }
 
-$EncEmails = $_POST['emails'];
+$EncIPs = $_POST['ips'];
 
 $Reason = $_POST['reason'] ?? '';
 
-forEach ($EncEmails as $EncEmail) {
+forEach ($EncIPs as $EncIP) {
   $DB->query("
     SELECT UserID
-    FROM users_history_emails
-    WHERE Email = '".db_string($EncEmail)."'");
+    FROM users_history_ips
+    WHERE IP = '".db_string($EncIP)."'");
 
   if (!$DB->has_results()) {
-    error('Email not found');
+    error('IP not found');
   }
 
   list($UserID) = $DB->next_record();
@@ -32,7 +32,7 @@ forEach ($EncEmails as $EncEmail) {
   }
 
   $DB->query("
-    SELECT Email
+    SELECT IP
     FROM users_main
     WHERE ID = '$UserID'");
 
@@ -43,8 +43,8 @@ forEach ($EncEmails as $EncEmail) {
   list($Curr) = $DB->next_record();
   $Curr = DBCrypt::decrypt($Curr);
 
-  if ($Curr == DBCrypt::decrypt($EncEmail)) {
-    error("You can't delete your current email.");
+  if ($Curr == DBCrypt::decrypt($EncIP)) {
+    error("You can't delete your current IP.");
   }
 }
 
@@ -54,15 +54,15 @@ $DB->query("
   INSERT INTO deletion_requests
     (UserID, Type, Value, Reason, Time)
   VALUES
-    ('$UserID', 'Email', '".db_string($EncEmails[0])."', '".db_string($Reason)."', '".sqltime()."')");
+    ('$UserID', 'IP', '".db_string($EncIPs[0])."', '".db_string($Reason)."', '".sqltime()."')");
 
 $Cache->delete_value('num_deletion_requests');
 
-View::show_header('Email Deletion Request');
+View::show_header('IP Address Deletion Request');
 ?>
 
 <div class="thin">
-  <h2 id="general">Email Deletion Request</h2>
+  <h2 id="general">IP Address Deletion Request</h2>
   <div class="box pad" style="padding: 10px 10px 10px 20px;">
     <p>Your request has been sent. Please wait for it to be acknowledged.</p>
     <p>After it's accepted or denied by staff, you will receive a PM response.</p>

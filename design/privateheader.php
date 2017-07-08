@@ -502,14 +502,14 @@ if (check_perms('admin_reports')) {
 }
 
 if (check_perms('users_mod')) {
-  $NumEmailDeleteRequests = G::$Cache->get_value('num_email_delete_requests');
-  if ($NumEmailDeleteRequests === false) {
-    G::$DB->query("SELECT COUNT(*) FROM email_delete_requests");
-    list($NumEmailDeleteRequests) = G::$DB->next_record();
-    G::$Cache->cache_value('num_email_delete_requests', $NumEmailDeleteRequests);
+  $NumDeleteRequests = G::$Cache->get_value('num_deletion_requests');
+  if ($NumDeleteRequests === false) {
+    G::$DB->query("SELECT COUNT(*) FROM deletion_requests");
+    list($NumDeleteRequests) = G::$DB->next_record();
+    G::$Cache->cache_value('num_deletion_requests', $NumDeleteRequests);
   }
-  if ($NumEmailDeleteRequests > 0) {
-    $ModBar[] = '<a href="tools.php?action=delete_email">' . $NumEmailDeleteRequests . " Email deletion request(s)</a>";
+  if ($NumDeleteRequests > 0) {
+    $ModBar[] = '<a href="tools.php?action=expunge_requests">' . $NumDeleteRequests . " Expunge request".($NumDeleteRequests > 1 ? 's' : '')."</a>";
   }
 }
 

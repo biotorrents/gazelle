@@ -224,6 +224,7 @@ if (check_perms('users_edit_profiles', $Class) || $LoggedUser['ID'] == $UserID) 
 if ($LoggedUser['ID'] == $UserID) {
 ?>
     <a href="userhistory.php?action=useremail&userid=<?=$UserID?>" class="brackets">Email History</a>
+    <a href="userhistory.php?action=userip&userid=<?=$UserID?>" class="brackets">IP History</a>
 <?
 }
 if (check_perms('users_view_invites', $Class)) {

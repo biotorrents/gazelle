@@ -37,6 +37,9 @@ if ($_GET['action']) {
     case 'useremail':
       include('email_history_userview.php');
       break;
+    case 'userip':
+      include('ip_history_userview.php');
+      break;
     case 'passkeys':
       //Load passkey history page
       include('passkey_history.php');

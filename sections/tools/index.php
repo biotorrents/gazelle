@@ -81,8 +81,8 @@ switch ($_REQUEST['action']) {
     include(SERVER_ROOT.'/sections/tools/managers/enable_requests.php');
     break;
 
-  case 'delete_email':
-    include(SERVER_ROOT.'/sections/tools/managers/email_delete_requests.php');
+  case 'expunge_requests':
+    include(SERVER_ROOT.'/sections/tools/managers/expunge_requests.php');
     break;
 
   case 'ajax_take_enable_request':

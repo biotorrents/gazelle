@@ -1,6 +1,6 @@
 <?
 
-if (!isset($_GET['emails']) || !is_array($_GET['emails'])) {
+if (!isset($_GET['ips']) || !is_array($_GET['ips'])) {
   error("Stop that.");
 }
 
@@ -8,23 +8,23 @@ if (!apcu_exists('DBKEY')) {
   error(403);
 }
 
-View::show_header('Email Expunge Request');
+View::show_header('IP Address Expunge Request');
 
 ?>
 
 <div class="header">
-  <h2>Email Expunge Request</h2>
+  <h2>IP Address Expunge Request</h2>
 </div>
-<form class="create_form box pad" name="emaildelete" action="delete.php" method="post">
+<form class="create_form box pad" name="ipdelete" action="delete.php" method="post">
   <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
-  <? foreach($_GET['emails'] as $email) { ?>
-  <input type="hidden" name="emails[]" value="<?=$email?>" />
+  <? foreach($_GET['ips'] as $ip) { ?>
+  <input type="hidden" name="ips[]" value="<?=$ip?>" />
   <? } ?>
-  <input type="hidden" name="action" value="takeemail" />
+  <input type="hidden" name="action" value="takeip" />
   <table cellspacing="1" cellpadding="3" border="0" class="layout" width="100%">
     <tr>
-      <td class="label">Email:</td>
-      <td><input type="text" size="30" value="<?=DBCrypt::decrypt($_GET['emails'][0])?>" disabled /></td>
+      <td class="label">IP:</td>
+      <td><input type="text" size="30" value="<?=DBCrypt::decrypt($_GET['ips'][0])?>" disabled /></td>
     </tr>
     <tr>
       <td class="label">Reason (Optional):</td>
