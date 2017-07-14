@@ -442,7 +442,7 @@ CREATE TABLE `forums_topics` (
   `IsSticky` enum('0','1') NOT NULL DEFAULT '0',
   `ForumID` int(3) NOT NULL,
   `NumPosts` int(10) NOT NULL DEFAULT '0',
-  `LastPostID` int(10) NOT NULL,
+  `LastPostID` int(10) NOT NULL DEFAULT '0',
   `LastPostTime` datetime,
   `LastPostAuthorID` int(10) NOT NULL,
   `StickyPostID` int(10) NOT NULL DEFAULT '0',
