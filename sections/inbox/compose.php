@@ -41,7 +41,7 @@ View::show_header('Compose', 'inbox,bbcode,jquery.validate,form_validate');
         <h3>Subject</h3>
         <input type="text" class="required" name="subject" size="95" value="<?=(!empty($Subject) ? $Subject : '')?>" /><br />
         <h3>Body</h3>
-        <textarea id="body" class="required" name="body" cols="95" rows="10" onkeyup="resize('body')"><?=(!empty($Body) ? $Body : '')?></textarea>
+        <textarea id="body" class="required" name="body" cols="95" rows="10" maxlength="49000" onkeyup="resize('body')"><?=(!empty($Body) ? $Body : '')?></textarea>
       </div>
       <div id="preview" class="hidden"></div>
       <div id="buttons" class="center">
