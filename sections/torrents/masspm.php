@@ -8,22 +8,15 @@ $TorrentID = $_GET['torrentid'];
 $DB->query("
   SELECT
     t.Media,
-    t.Format,
-    t.Encoding AS Bitrate,
-    t.RemasterYear,
-    t.Remastered,
-    t.RemasterTitle,
-    t.Scene,
     t.FreeTorrent,
+    t.GroupID,
+    t.UserID,
     t.Description AS TorrentDescription,
     tg.CategoryID,
     tg.Name AS Title,
     tg.Year,
     tg.ArtistID,
-    ag.Name AS ArtistName,
-    t.GroupID,
-    t.UserID,
-    t.FreeTorrent
+    ag.Name AS ArtistName
   FROM torrents AS t
     JOIN torrents_group AS tg ON tg.ID=t.GroupID
     LEFT JOIN artists_group AS ag ON ag.ArtistID=tg.ArtistID
