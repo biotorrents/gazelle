@@ -88,7 +88,7 @@ View::show_header('Forums &gt; '.$Forum['Name'].' &gt; New Topic', 'comments,bbc
         </tr>
         <tr>
           <td class="label">Body:</td>
-          <td><textarea id="posttext" class="required" style="width: 98%;" onkeyup="resize('posttext');" name="body" cols="90" rows="8"></textarea></td>
+          <td><textarea id="posttext" class="required bbcode_editor" style="width: 98%;" onkeyup="resize('posttext');" name="body" cols="90" rows="8"></textarea></td>
         </tr>
         <tr>
           <td></td>

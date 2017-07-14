@@ -217,6 +217,7 @@ pre {
 
 form textarea, form input {
   max-width: 100%;
+  box-sizing: border-box;
 }
 
 textarea {
@@ -268,7 +269,27 @@ div#AddArtists a {
 }
 
 #forums #quickpost {
-  width: 95%
+  width: 95%;
+}
+
+.bbcode_bar {
+  list-style: none;
+  margin: 0px 0px -4px;
+  box-sizing: border-box;
+  text-align: center;
+  display: inline-block;
+}
+.bbcode_bar > li {
+  display: inline-block;
+  margin: 0px;
+}
+.bbcode_bar > li > a {
+  display: inline-block;
+  height: 26px;
+  line-height: 26px;
+  cursor: pointer;
+  min-width: 20px;
+  margin: 0px 4px;
 }
 
 td.label, .valign_top {

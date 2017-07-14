@@ -1066,6 +1066,13 @@ input.inputtext {
 input.inputtext:focus {
   border-bottom: 1px solid #E197E5;
 }
+
+.bbcode_bar {
+  background: white;
+  border: 1px solid #c7c7c7;
+  border-bottom: none;
+}
+
 .collage_images .collage_image {
   margin: 1px;
   width: 121px;

@@ -1005,7 +1005,10 @@ ul.navigation a.selected {
 td.label {
   font-weight: 300;
   text-align: right;
-  width: 260px
+  width: 180px
+}
+.filter_torrents td.label {
+  width: 260px;
 }
 
 table.slice {
@@ -1496,7 +1499,7 @@ pre {
 }
 
 #forums .box.pad {
-  padding: 0!important;
+  padding: 1em 0;
   background-color: #23252a;
 }
 
@@ -1518,13 +1521,17 @@ pre {
   height: 387px
 }
 
+.textarea_wrap {
+  padding-top: 15px;
+}
+
 #quickpost {
   color: #eee!important;
   font-size: 1.1em!important
 }
 
 #quickpostform {
-  background-color: transparent
+  background-color: transparent;
 }
 
 #quickreplybuttons input[value=Editor] {
@@ -1535,8 +1542,10 @@ div.contenth #quickpost {
   right: -2px
 }
 
-#user .bbcode-btntoolbar,#user .bbcode-smileys {
-  background-color: #2c2f36!important
+.bbcode_bar {
+  background: #373a42;
+  border: 1px solid #5b5e64;
+  border-bottom: none;
 }
 
 #friends table[width="100%"] td {
