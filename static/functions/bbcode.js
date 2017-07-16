@@ -28,6 +28,7 @@ function wrapSelected(box, wrap, offset) {
 }
 
 function BBEditor(box) {
+  if (box.previousSibling.className == 'bbcode_bar') return
   let buttons = [
     {short:'B', name:'Bold', wrap:['[b]','[/b]']},
     {short:'I', name:'Italic', wrap:['[i]','[/i]']},
@@ -53,6 +54,11 @@ function BBEditor(box) {
   let bar = document.createElement('ul')
   bar.className = "bbcode_bar"
   bar.style.width = box.offsetWidth+'px'
+  // Let the DOM update and then snap the size again (twice)
+  setTimeout(function() {
+    bar.style.width = box.offsetWidth+'px'
+    bar.style.width = box.offsetWidth+'px'
+  }, 1)
   for (let button of buttons) {
     li = document.createElement('li')
     b = document.createElement('a')

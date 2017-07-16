@@ -118,23 +118,10 @@ function Edit_Form(post,key) {
   //If no edit is already going underway or a previous edit was finished, make the necessary dom changes.
   if (!$('#editbox' + postid).results() || $('#editbox' + postid + '.hidden').results()) {
     $('#reply_box').ghide();
-    if (location.href.match(/torrents\.php/)
-        || location.href.match(/artist\.php/)) {
-      boxWidth = "50";
-    } else {
-      boxWidth = "80";
-    }
+    boxWidth = (location.href.match(/torrents\.php/) || location.href.match(/artist\.php/)) ? "50" : "80";
     postuserid = $('#post' + postid + ' strong a').attr('href').split('=')[1];
-    if (postuserid != userid) {
-      pmbox = '<span id="pmbox' + postid + '"><label>PM user on edit? <input type="checkbox" name="pm" value="1" /></label></span>';
-    } else {
-      pmbox = '';
-    };
-    if (location.href.match(/forums\.php/)) {
-      inputname = "post";
-    } else {
-      inputname = "postid";
-    }
+    pmbox = (postuserid != userid) ? '<span id="pmbox' + postid + '"><label>PM user on edit? <input type="checkbox" name="pm" value="1" /></label></span>' : '';
+    inputname = (location.href.match(/forums\.php/)) ? "post" : "postid";
     $('#bar' + postid).raw().cancel = $('#content' + postid).raw().innerHTML;
     $('#bar' + postid).raw().oldbar = $('#bar' + postid).raw().innerHTML;
     $('#content' + postid).raw().innerHTML = "<div id=\"preview" + postid + "\"></div><form id=\"form" + postid + "\" method=\"post\" action=\"\">" + pmbox + "<input type=\"hidden\" name=\"auth\" value=\"" + authkey + "\" /><input type=\"hidden\" name=\"key\" value=\"" + key + "\" /><input type=\"hidden\" name=\"" + inputname + "\" value=\"" + postid + "\" /><textarea id=\"editbox" + postid + "\" onkeyup=\"resize('editbox" + postid + "');\" name=\"body\" cols=\"" + boxWidth + "\" rows=\"10\"></textarea></form>";
@@ -144,17 +131,12 @@ function Edit_Form(post,key) {
    * If editing is already underway and edit is pressed again, reset the post
    * (keeps current functionality, move into brackets to stop from happening).
    */
-  if (location.href.match(/forums\.php/)) {
-    ajax.get("?action=get_post&post=" + postid, function(response) {
-      $('#editbox' + postid).raw().value = html_entity_decode(response);
-      resize('editbox' + postid);
-    });
-  } else {
-    ajax.get("comments.php?action=get&postid=" + postid, function(response) {
-      $('#editbox' + postid).raw().value = html_entity_decode(response);
-      resize('editbox' + postid);
-    });
-  }
+  var post_endpoint = (location.href.match(/forums\.php/)) ? '?action=get_post&post=' : 'comments.php?action=get&postid=';
+  ajax.get(post_endpoint + postid, function(response) {
+    $('#editbox' + postid).raw().value = html_entity_decode(response);
+    resize('editbox' + postid);
+    BBEditor($('#editbox' + postid).raw());
+  });
 }
 
 function Cancel_Edit(postid) {
