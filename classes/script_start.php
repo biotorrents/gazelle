@@ -206,7 +206,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
         'SessionID' => $SessionID,
         'Browser' => $Browser,
         'OperatingSystem' => $OperatingSystem,
-        'IP' => ((apcu_exists('DBKEY')) ? DBCrypt::encrypt($_SERVER['REMOTE_ADDR']) : $UserSessions[$SessionID]['IP']),
+        'IP' => (apcu_exists('DBKEY') ? DBCrypt::encrypt($_SERVER['REMOTE_ADDR']) : $UserSessions[$SessionID]['IP']),
         'LastUpdate' => sqltime() );
     $Cache->insert_front($SessionID, $UsersSessionCache);
     $Cache->commit_transaction(0);

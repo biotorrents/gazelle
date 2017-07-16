@@ -28,7 +28,7 @@ if (!check_perms('users_view_keys', $Class)) {
   error(403);
 }
 
-View::show_header("PassKey history for $Username");
+View::show_header("Passkey history for $Username");
 
 $DB->query("
   SELECT
