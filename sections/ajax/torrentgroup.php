@@ -2,10 +2,6 @@
 
 require(SERVER_ROOT.'/sections/torrents/functions.php');
 
-// Seriously what the hell do these do
-$GroupAllowed = array('WikiBody', 'WikiImage', 'ID', 'Name', 'Year', 'RecordLabel', 'CatalogueNumber', 'ReleaseType', 'CategoryID', 'Time', 'VanityHouse');
-$TorrentAllowed = array('ID', 'Media', 'Format', 'Encoding', 'Remastered', 'RemasterYear', 'RemasterTitle', 'RemasterRecordLabel', 'RemasterCatalogueNumber', 'Scene', 'HasLog', 'HasCue', 'LogScore', 'FileCount', 'Size', 'Seeders', 'Leechers', 'Snatched', 'FreeTorrent', 'Time', 'Description', 'FileList', 'FilePath', 'UserID', 'Username');
-
 $GroupID = (int)$_GET['id'];
 $TorrentHash = (string)$_GET['hash'];
 
@@ -36,7 +32,7 @@ if (!$TorrentCache) {
 
 list($TorrentDetails, $TorrentList) = $TorrentCache;
 
-$Artiss = pullmediainfo(Artists::get_artist($GroupID));
+$Artists = pullmediainfo(Artists::get_artist($GroupID));
 
 if ($TorrentDetails['CategoryID'] == 0) {
   $CategoryName = 'Unknown';
@@ -46,7 +42,7 @@ if ($TorrentDetails['CategoryID'] == 0) {
 
 $TagList = explode('|', $TorrentDetails['GROUP_CONCAT(DISTINCT tags.Name SEPARATOR \'|\')']);
 
-$JsonTorrentDetails = array(
+$JsonTorrentDetails = [
   'wikiBody'        => Text::full_format($TorrentDetails['WikiBody']),
   'wikiImage'       => $TorrentDetails['WikiImage'],
   'id'              => (int)$TorrentDetails['ID'],
@@ -62,7 +58,7 @@ $JsonTorrentDetails = array(
   'time'            => $TorrentDetails['Time'],
   'isBookmarked'    => Bookmarks::has_bookmarked('torrent', $GroupID),
   'tags'            => $TagList
-);
+];
 
 $JsonTorrentList = [];
 foreach ($TorrentList as $Torrent) {
@@ -76,7 +72,7 @@ foreach ($TorrentList as $Torrent) {
   $Userinfo = Users::user_info($Torrent['UserID']);
   $Reports = Torrents::get_reports($Torrent['ID']);
   $Torrent['Reported'] = count($Reports) > 0;
-  $JsonTorrentList[] = array(
+  $JsonTorrentList[] = [
     'id'          => (int)$Torrent['ID'],
     'infoHash'    => $Torrent['InfoHash'],
     'media'       => $Torrent['Media'],
@@ -85,7 +81,7 @@ foreach ($TorrentList as $Torrent) {
     'resolution'  => $Torrent['Resolution'],
     'audioFormat' => $Torrent['AudioFormat'],
     'subbing'     => $Torrent['Subbing'],
-    'subber'      => $Torrent['Subber']
+    'subber'      => $Torrent['Subber'],
     'language'    => $Torrent['Language'],
     'censored'    => (bool)$Torrent['Censored'],
     'archive'     => $Torrent['Archive'],
@@ -103,7 +99,7 @@ foreach ($TorrentList as $Torrent) {
     'filePath'    => $Torrent['FilePath'],
     'userId'      => (int)$Torrent['UserID'],
     'username'    => $Userinfo['Username']
-  );
+  ];
 }
 
-json_die("success", array('group' => $JsonTorrentDetails, 'torrents' => $JsonTorrentList));
+json_die("success", ['group' => $JsonTorrentDetails, 'torrents' => $JsonTorrentList]);

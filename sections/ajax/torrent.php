@@ -1,10 +1,6 @@
 <?
 require(SERVER_ROOT.'/sections/torrents/functions.php');
 
-// What do these two variables even do?
-$GroupAllowed = array('WikiBody', 'WikiImage', 'ID', 'Name', 'Year', 'CatalogueNumber', 'ReleaseType', 'CategoryID', 'Time');
-$TorrentAllowed = array('ID', 'Media', 'Format', 'Encoding', 'FileCount', 'Size', 'Seeders', 'Leechers', 'Snatched', 'FreeTorrent', 'Time', 'Description', 'FileList', 'FilePath', 'UserID', 'Username');
-
 $TorrentID = (int)$_GET['id'];
 $TorrentHash = (string)$_GET['hash'];
 
@@ -51,7 +47,7 @@ if ($TorrentDetails['CategoryID'] == 0) {
 
 $TagList = explode('|', $TorrentDetails['GROUP_CONCAT(DISTINCT tags.Name SEPARATOR \'|\')']);
 
-$JsonTorrentDetails = array(
+$JsonTorrentDetails = [
   'wikiBody'        => Text::full_format($TorrentDetails['WikiBody']),
   'wikiImage'       => $TorrentDetails['WikiImage'],
   'id'              => (int)$TorrentDetails['ID'],
@@ -67,7 +63,7 @@ $JsonTorrentDetails = array(
   'time'            => $TorrentDetails['Time'],
   'isBookmarked'    => Bookmarks::has_bookmarked('torrent', $GroupID),
   'tags'            => $TagList
-);
+];
 
 $Torrent = $TorrentList[$TorrentID];
 
@@ -82,7 +78,7 @@ foreach ($FileList as &$File) {
 unset($File);
 $FileList = implode('|||', $FileList);
 $Userinfo = Users::user_info($Torrent['UserID']);
-$JsonTorrentList[] = array(
+$JsonTorrentList[] = [
   'id'          => (int)$Torrent['ID'],
   'infoHash'    => $Torrent['InfoHash'],
   'media'       => $Torrent['Media'],
@@ -109,6 +105,6 @@ $JsonTorrentList[] = array(
   'filePath'    => $Torrent['FilePath'],
   'userId'      => (int)$Torrent['UserID'],
   'username'    => $Userinfo['Username']
-);
+];
 
-json_die("success", array('group' => $JsonTorrentDetails, 'torrent' => array_pop($JsonTorrentList)));
+json_die("success", ['group' => $JsonTorrentDetails, 'torrent' => array_pop($JsonTorrentList)]);
