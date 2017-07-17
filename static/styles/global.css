@@ -207,10 +207,6 @@ pre {
   overflow: auto;
 }
 
-.hidden {
-  display: none;
-}
-
 .disable_grouping {
   display: none;
 }
@@ -936,4 +932,8 @@ input[type="search"] {
 
 #lightbox > img {
   max-width: 100%;
+}
+
+.hidden {
+  display: none;
 }

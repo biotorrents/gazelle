@@ -153,6 +153,7 @@ function Preview_Edit(postid) {
   ajax.post("ajax.php?action=preview","form" + postid, function(response) {
     $('#preview' + postid).raw().innerHTML = response;
     $('#editbox' + postid).ghide();
+    if ($('#editbox' + postid).raw().previousSibling.className == 'bbcode_bar') $($('#editbox' + postid).raw().previousSibling).ghide();
   });
 }
 
@@ -170,6 +171,7 @@ function Save_Edit(postid) {
       $('#preview' + postid).raw().innerHTML = response;
       $('#editbox' + postid).ghide();
       $('#pmbox' + postid).ghide();
+      if ($('#editbox' + postid).raw().previousSibling.className == 'bbcode_bar') $($('#editbox' + postid).raw().previousSibling).ghide();
     });
   } else {
     ajax.post("comments.php?action=take_edit","form" + postid, function (response) {
@@ -177,6 +179,7 @@ function Save_Edit(postid) {
       $('#preview' + postid).raw().innerHTML = response;
       $('#editbox' + postid).ghide();
       $('#pmbox' + postid).ghide();
+      if ($('#editbox' + postid).raw().previousSibling.className == 'bbcode_bar') $($('#editbox' + postid).raw().previousSibling).ghide();
     });
   }
 }
