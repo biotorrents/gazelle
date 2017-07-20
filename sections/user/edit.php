@@ -448,7 +448,7 @@ echo $Val->GenerateJS('userform');
         </td>
       </tr>
       <tr id="pers_avatar_tr">
-        <td class="label tooltip_interactive" title="Please link to an avatar which follows the &lt;a href=&quot;rules.php&quot;&gt;site rules&lt;/a&gt;. The avatar width should be 150 pixels and will be resized if necessary." data-title-plain="Please link to an avatar which follows the site rules. The avatar width should be 150 pixels and will be resized if necessary."><strong>Avatar URL</strong></td>
+        <td class="label tooltip_interactive" title="Please link to an avatar which does not exceed 512 kiB in size or 600 pixels in height" data-title-plain="Please link to an avatar which does not exceed 512 kiB in size or 600 pixels in height"><strong>Avatar URL</strong></td>
         <td>
           <input type="text" size="50" name="avatar" id="avatar" value="<?=display_str($Avatar)?>" />
         </td>

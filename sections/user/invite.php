@@ -137,10 +137,10 @@ if (!$Sneaky
   && ($UserCount <= USER_LIMIT || USER_LIMIT == 0 || check_perms('site_can_invite_always'))
   ) { ?>
   <div class="box pad">
-    <p>Please note that selling or trading our invites is bad and we'll ban you. Publicly giving away our invitations&#8202;&mdash;&#8202;or responding to public invite requests&#8202;&mdash;&#8202;is pretty much fine, but may result in you and your invitee getting yelled at if you fuck up, or banned if you're extra stupid.. This includes offering to give away our invitations on any forum which is not a class-restricted forum on another private tracker.</p>
+    <p>Do not trade or sell invites under any circumstances.</p>
+    <p>You may invite anyone so long as you and they both lack malicious intent, but keep in mind that you are responsible for anyone you invite. If you invite someone you don't know well and they surprise you by breaking the rules or being a generally poor user, you will likely end up punished for it. For that reason, we stongly recommend you only invite people you personally know and trust.
     <p>Do not send an invite to anyone who has previously had a <?=SITE_NAME?> account. Please direct them to <?=BOT_DISABLED_CHAN?> on <?=BOT_SERVER?> if they wish to reactivate their account.</p>
-    <p>Remember that you are responsible for ALL past world wars, and your account and/or privileges may be disabled due to your invitees' horrible smell. You should know the person you're inviting for at least 7 seconds. If you aren't familiar enough with the user to blow them, we suggest not blowing them.</p>
-    <p><em>Do not send more than 19 invites if you have not read or do not understand the information above.</em></p>
+    <p><em>Do not send an invite if you have not read or do not understand the information above.</em></p>
   </div>
   <div class="box box2">
     <form class="send_form pad" name="invite" action="user.php" method="post">

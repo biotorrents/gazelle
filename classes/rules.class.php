@@ -8,24 +8,13 @@ class Rules {
   public static function display_golden_rules() {
     ?>
     <ol>
-      <li>All staff decisions must be respected. If you take issue with a decision, you must do so privately with the staff member who issued the decision or with an administrator of the site. Complaining about staff decisions in public or otherwise disrespecting staff members WILL result in the offender being called a faggot.</li>
-      <li>Access to this website is a gift and a privilege, and it can be taken away from you for any reason (or no reason).</li>
-      <li>One account per person per lifetime. Anyone creating additional accounts will probably be banned. Additionally, unless your account is immune to <a href="wiki.php?action=article&name=inactivitypruning">inactivity pruning</a>, accounts are automatically disabled if one page load is not made at least once every four months.</li>
-      <li>Avatars must not exceed <span class="tooltip" title="524,288 bytes">512 kiB</span> or be vertically longer than 600 pixels. Avatars may contain nudity and offensive imagery, but must not be pictures of Spiderman</li>
-      <li>Do not post our torrent files on other sites. Your personal passkey is embedded in every torrent file. The tracker will automatically disable your account if you share your torrent files with others (maybe). You will not get your account back (maybe). This does not prohibit you from sharing the content of the torrents on other sites, but this does prohibit you from sharing the torrent file itself (i.e. the file with a ".torrent" file extension).</li>
-      <li>Any torrent you are seeding to this tracker must have <em>only</em> <?=SITE_NAME?>'s tracker URL in it. Adding another BitTorrent tracker's URL will cause incorrect data to be sent to our tracker, and you will be disabled for cheating. Similarly, your client must have DHT and PEX (peer exchange) disabled for all <?=SITE_NAME?> torrents.</li>
-      <li>This is a BitTorrent site which promotes sharing amongst the community. If you are not willing to give back to the community what you take from it, this site is not for you. In other words, we expect you to have an acceptable share ratio. If you download a torrent, please seed the copy you have until there are sufficient people seeding the torrent before you stop.</li>
-      <li>Feel free to browse the site using proxies or Tor. We reserve the right to scrutinize your activity more than normal in these cases, but no harm, no foul. This includes VPNs with dynamic IP addresses.</li>
-      <li>Invites should be offered in the Invites forum and nowhere else.</li>
-      <li>Selling <?=SITE_NAME?> invites is strictly prohibited and will result in a permanent ban. Responding to public requests for invites may also jeopardize your account and the accounts of those you invite from a public request if the person you invite turns out to be a total shitfuck.</li>
-      <li>Buying <?=SITE_NAME?> invites is discouraged, but if you did buy an invite, tell us who the seller is and we'll let you keep your account. If you don't tell us and we find out, you're banned, kiddo.</li>
-      <li>Trading or selling your account is strictly prohibited. If you no longer want your account, stop logging in and it will be automatically disabled for inactivity. Do not give your account to some asshole.</li>
-      <li>You are completely responsible for the people you invite. If your invitees are caught cheating or selling invites, not only will they be banned, so will you (or we'll take away your invite privs). Be careful who you invite. Invites are a precious commodity.</li>
-      <li>Be careful when sharing an IP address or a computer with a friend if they have (or have had) an account. We don't really care where you log in from, but from then on, your accounts will be permanently linked because we're using Gazelle, and if one of you violates the rules, both accounts might be disabled along with any other accounts linked by IP address if we get confused. This rule applies to logging into the site.</li>
-      <li>Attempting to find a bug in the site code is absolutely fine. Misusing that knowledge is not, but we actively encourage users to try to find bugs and report them so they can be fixed. The discovery of significant bugs may result in a reward at the discretion of the staff. Do not be an asshole and try to flood the tracker or something and then come to us saying "lol I found bug gib reward"</li>
-      <li>We're a community. Working together is what makes this place what it is. There are well over a thousand new torrents uploaded every day (pfffff) and, sadly, the staff are only a little psychic. If you come across something that violates a rule, report it, and help us better organize the site for you.</li>
-      <li>We respect the wishes of other BitTorrent trackers that we agree with here, as we wish for them to do the same. Please refrain from posting full names or links to sites that do not want to be mentioned.</li>
-      <li>Don't reveal the criteria for hidden badges or we'll ban you, or yell at you, or maybe just ruin your stats and remove all your nips. But we'll probably ban you.</li>
+      <li>Staff can do anything to anyone for any reason (or no reason). If you take issue with a decision, you must do so privately with the staff member who issued the decision or with an administrator of the site.</li>
+      <li>One account per person per lifetime.</li>
+      <li>Follow proper private bittorrent practices. Torrent files you download from this site are unique to you and should not be shared with others. Torrent files from this site should not be modified by adding additional trackers or enabling DHT or PEX under any circumstances.</li>
+      <li>Buying <?=SITE_NAME?> invites is not allowed. If staff discover you have purchased an invite, you will be banned for life. You will be given amnesty if you approach us before you are caught and reveal who your seller was. Waiting until after you are caught will get you nothing.</li>
+      <li>Accessing the site from any IP address is permitted, but your account will be linked with other accounts that have accessed the site from the same IP as you. As such, it is <em>recommended</em> that you don't use public networks, proxies, or VPNs to access the site.</li>
+      <li>Attempting to find a bug in the site code is allowed and sometimes even rewarded. Follow proper disclosure procedures by contacting staff about the issue well before disclosing it publicly. Do not misuse any bugs you may discover. Do not attempt to portray abuse as a bug in the hopes of a reward.</li>
+      <li>Don't reveal the criteria for hidden badges or events.</li>
     </ol>
 <?
   }
@@ -44,9 +33,7 @@ class Rules {
 
       <li>Avoid using multiple synonymous tags. Using both "<strong class="important_text">pissing</strong>" and "<strong class="important_text_alt">urination</strong>" is redundant and stupid&#8202;&mdash;&#8202;just use the official "<strong class="important_text_alt">urination</strong>" tag.</li>
 
-      <li>Do not add useless tags.</li>
-
-      <li><strong>If one more person tags something "<strong class="important_text">hentai</strong>" I swear to god I'm gonna go nuclear on your worthless ass.</strong></li>
+      <li>Do not add useless tags that are already covered by other metadata. If a torrent is in the JAV category, it should not be tagged <strong class="important_text">jav</strong>.</li>
 
       <li>Only tag information on the title itself&#8202;&mdash;&#8202;<strong>not the individual release</strong>. Tags such as "<strong class="important_text">mkv</strong>", "<strong class="important_text">windows</strong>", "<strong class="important_text">scan</strong>", "<strong class="important_text">from.dlsite</strong>", etc. are strictly forbidden. Remember that these tags will be used for other versions of the same title.</li>
 
