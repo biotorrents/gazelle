@@ -240,6 +240,7 @@ if ($DB->affected_rows() > 0 || !$Report) {
             Expired = FALSE,
             Uses = 0");
         Misc::send_pm($UserID, 0, "Torrent Deleted: ".$RawName, "A torrent you have snatched (or uploaded) has been trumped by a more recent torrent. This new torrent will be freeleech for you for the next 4 days.\r\n\r\nYou can find the new torrent [url=".site_url()."torrents.php?torrentid=$ExtraID]here[/url]");
+        $Cache->delete_value("users_tokens_$UserID");
       }
     }
   }
