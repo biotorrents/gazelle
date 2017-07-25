@@ -174,7 +174,10 @@ class INVITE_TREE {
           if ($LastClass == 'Torrent Celebrity') {
              $LastClass = 'Torrent Celebrities';
           } else {
-            $LastClass.='s';
+            // Prevent duplicate letterss
+            if (substr($LastClass, -1) != 's') {
+              $LastClass.='s';
+            }
           }
         }
         $LastClass = "$ClassCount $LastClass (" . number_format(($ClassCount / $Count) * 100) . '%)';
