@@ -88,7 +88,8 @@ View::show_header('Report', 'reportsv2,browse,torrent,bbcode,recommend');
         </td>
       </tr>
       <?
-      build_torrents_table($Cache, $DB, $LoggedUser, $GroupID, $GroupName, $GroupCategoryID, $TorrentList, $Types, $Username);
+      $LangName = $GroupName ? $GroupName : ($GroupNameRJ ? $GroupNameRJ : $GroupNameJP);
+      build_torrents_table($Cache, $DB, $LoggedUser, $GroupID, $LangName, $GroupCategoryID, $TorrentList, $Types, $Username);
       ?>
     </table>
   </div>
