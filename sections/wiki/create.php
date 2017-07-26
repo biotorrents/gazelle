@@ -1,5 +1,5 @@
 <?
-View::show_header('Create an article');
+View::show_header('Create an article', 'bbcode');
 ?>
 <div class="thin">
   <div class="box pad">
