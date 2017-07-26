@@ -436,14 +436,17 @@ foreach ($Thread as $Key => $Post) {
   }
   if ($PostID == $ThreadInfo['StickyPostID']) {
     echo ' sticky_post';
+  }
+  if (Permissions::is_mod($AuthorID)) {
+    echo ' staff_post';
   } ?>" id="post<?=$PostID?>">
   <colgroup>
 <?  if (Users::has_avatars_enabled()) { ?>
     <col class="col_avatar" />
-<?   } ?>
+<?  } ?>
     <col class="col_post_body" />
   </colgroup>
-  <tr class="colhead_dark<?=(Permissions::is_mod($AuthorID)) ? " staff_post" : ""?>">
+  <tr class="colhead_dark">
     <td colspan="<?=Users::has_avatars_enabled() ? 2 : 1?>">
       <div style="float: left;"><a class="post_id" href="forums.php?action=viewthread&amp;threadid=<?=$ThreadID?>&amp;postid=<?=$PostID?>#post<?=$PostID?>">#<?=$PostID?></a>
         <?=Users::format_username($AuthorID, true, true, true, true, true, $IsDonorForum);  echo "\n";?>

@@ -1,18 +1,16 @@
 /* latin-ext */
 @font-face {
-  font-family: 'Source Sans Pro';
+  font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
-  src: local('Source Sans Pro'), local('SourceSansPro-Regular'), url(../fonts/sourcesanspro-lne.woff2) format('woff2');
-  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+  src: local('Open Sans'), local('OpenSans'), url(../fonts/OpenSans.ttf) format('truetype');
 }
 /* latin */
 @font-face {
-  font-family: 'Source Sans Pro';
+  font-family: 'Open Sans';
   font-style: normal;
-  font-weight: 400;
-  src: local('Source Sans Pro'), local('SourceSansPro-Regular'), url(../fonts/sourcesanspro-ln.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+  font-weight: 600;
+  src: local('Open Sans Semibold'), local('OpenSans-Semibold'), url(../fonts/OpenSans-Semibold.ttf) format('truetype');
 }
 
 * {
@@ -33,7 +31,7 @@
 .cats_anime:after {
   content: "ANM";
   color: #3EACA7;
-  font-size: 18px;
+  font-size: 16px;
 }
 .group .cats_anime { background-color: #3EACA7; }
 .cats_movies:after {
@@ -45,13 +43,13 @@
 .cats_manga:after {
   content: "MNG";
   color: #88C796;
-  font-size: 18px;
+  font-size: 16px;
 }
 .group .cats_manga { background-color: #88C796; }
 .cats_games:after {
   content: "GAM";
   color: #4DC593;
-  font-size: 19px;
+  font-size: 16px;
 }
 .group .cats_games { background-color: #4DC593; }
 .cats_other:after {
@@ -63,41 +61,58 @@
 
 body {
   width: 100%;
-  font-family: 'Source Sans Pro',Helvetica,sans-serif;
-  font-size: 10pt;
-  color: #E9E9E9;
+  font-family: 'Open Sans',Helvetica,Arial,Tahoma,sans-serif;
+  font-size: 12px;
+  color: #c6c9c9;
   background-color: #23252a
+}
+
+.linkbox .brackets:after, .linkbox .brackets:before {
+  display: none;
 }
 
 a {
   text-decoration: none;
   border: none;
-  color: #85878f
+  color: #f0f0f0;
 }
 
-a:hover {
+a:hover, .torrent_table .group a:hover {
   color: #92d4a0
 }
 
 b,strong {
-  font-weight: 400!important
+  font-weight: 600
 }
 
 ::selection, ::-moz-selection {
   background: #3eaca7
 }
 
-h1,h2,h3,h4 {
-  font-weight: 300;
-  margin: 5px 0!important
+h1,h2,h3,h4,h5,h6 {
+  font-weight: 400;
+  color: #f0f0f0;
+  margin: 8px 0;
 }
 
-h2 {
-  font-size: 1.2em
+h1,h2 {
+  font-size: 23px;
 }
 
-h2,h3 {
-  text-align: center
+h3,h4 {
+  font-size: 18px;
+}
+
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+  color: #83e4a6;
+}
+
+#userform #settings_sections h2 {
+  font-size: 12px;
+  line-height: 1.6;
+}
+#userform #settings_sections h2 a, .rule_short {
+  color: #f0f0f0;
 }
 
 li {
@@ -116,7 +131,7 @@ input {
 }
 
 button,input[type=button],input[type=submit] {
-  font-family: 'Source Sans Pro',Helvetica,sans-serif;
+  font-family: 'Open Sans',Helvetica,Arial,Tahoma,sans-serif;
   background-color: #50aca7;
   color: #fff
 }
@@ -134,23 +149,23 @@ button:focus,input[type=button]:focus,input[type=submit]:focus {
 }
 
 ::-webkit-input-placeholder {
-  font-family: 'Source Sans Pro',Helvetica,sans-serif
+  font-family: 'Open Sans',Helvetica,Arial,Tahoma,sans-serif;
 }
 :-moz-placeholder {
-  font-family: 'Source Sans Pro',Helvetica,sans-serif
+  font-family: 'Open Sans',Helvetica,Arial,Tahoma,sans-serif
 }
 ::-moz-placeholder {
-  font-family: 'Source Sans Pro',Helvetica,sans-serif
+  font-family: 'Open Sans',Helvetica,Arial,Tahoma,sans-serif
 }
 :-ms-input-placeholder {
-  font-family: 'Source Sans Pro',Helvetica,sans-serif
+  font-family: 'Open Sans',Helvetica,Arial,Tahoma,sans-serif
 }
 
 select {
   background-color: #373a42;
   border: 1px solid #5b5e64;
   color: #fff;
-  font-family: 'Source Sans Pro'!important;
+  font-family: 'Open Sans',Helvetica,Arial,Tahoma,sans-serif;
   outline: 0
 }
 
@@ -158,7 +173,7 @@ textarea {
   background-color: #373a42;
   border: 1px solid #5b5e64;
   color: #fff;
-  font-family: 'Source Sans Pro';
+  font-family: 'Open Sans',Helvetica,Arial,Tahoma,sans-serif;
   font-size: 1.1em;
   padding: 2px 3px;
   margin: 4px 0px;
@@ -229,7 +244,6 @@ ul.thin li {
 }
 
 #footer {
-  font-size: .9em;
   margin-top: 2px;
   padding: 10px;
   text-align: center
@@ -253,7 +267,6 @@ p.min_padding {
 }
 
 .box {
-  font-size: .9em;
   background-color: #2c2f36!important;
   margin-bottom: 8px;
 }
@@ -285,12 +298,6 @@ p.min_padding {
 .main_column {
   width: 646px;
   float: left
-}
-
-#DonInfo {
-  font-size: .9em;
-  font-family: 'Source Sans Pro';
-  text-indent: 3pt!important
 }
 
 #logo {
@@ -377,6 +384,10 @@ p.min_padding {
   padding: 2px
 }
 
+#userinfo_major > li, #userinfo_stats > li, .linkbox .brackets {
+  margin-left: 8px;
+}
+
 #userinfo_minor > li, #userinfo_minor > li > span {
   float: right;
 }
@@ -394,7 +405,6 @@ p.min_padding {
 
 #userinfo_stats {
   color: #abd6ad;
-  font-size: 1.1em;
   width: auto;
   z-index: 1001
 }
@@ -486,7 +496,6 @@ p.min_padding {
   background-color: #4b907f;
   text-align: center;
   color: #fff;
-  font-size: 10pt;
   width: 900px;
   height: 18px;
   margin: 2px 0;
@@ -615,34 +624,18 @@ div.contenth textarea {
   background-color: #373a42;
   border: 1px solid #5b5e64;
   color: #fff;
-  font-family: 'Source Sans Pro',Helvetica,sans-serif;
+  font-family: 'Open Sans',Helvetica,Arial,Tahoma,sans-serif;
   font-size: 1.1em;
   padding: 2px 3px
-}
-
-div.bbcode-toolbar {
-  background: #23252a;
-  border-left: 0 hidden;
-  border-right: 0 hidden;
-  width: 900px;
-  padding-left: 40px
-}
-
-div.bbcode-smileys {
-  background: #23252a;
-  border-left: 0 hidden;
-  border-right: 0 hidden;
-  margin-top: -10px;
-  margin-bottom: 15px
-}
-
-div.bbcode-smileyshover {
-  background: #2c2f36
 }
 
 div.linkbox {
   text-align: center;
   padding: 5px
+}
+
+.linkbox > strong {
+  color: #83e4a6;
 }
 
 #banner {
@@ -686,7 +679,7 @@ input[value="Make Default"] {
 }
 
 .ui-widget {
-  font-family: 'Source Sans Pro',Helvetica,sans-serif;
+  font-family: 'Open Sans',Helvetica,Arial,Tahoma,sans-serif;
 }
 
 .ui-widget-overlay {
@@ -697,7 +690,6 @@ input[value="Make Default"] {
 .ui-widget-content {
   border: none!important;
   background: #055363!important;
-  font-size: .9em!important;
   color: #fff!important;
   padding: 0!important;
 }
@@ -800,19 +792,13 @@ input[value="Make Default"] {
   color: #fff!important;
 }
 
-.head {
-  font-size: 1.05em!important;
-  background: #52555c;
-  position: relative!important;
-  padding: 6px;
-  width: 100%;
-  box-sizing: border-box;
+.body, .head, .pad {
+  padding: 12px;
 }
 
-div[style="padding-top:8px;background-color:#322;color:#ecc;"] {
-  padding-top: 8px!important;
-  background-color: #c1696a!important;
-  color: #ecc!important;
+.head {
+  background: #52555c;
+  box-sizing: border-box;
 }
 
 #reseed_box {
@@ -863,6 +849,13 @@ td {
   padding: 5px
 }
 
+td:first-child {
+  padding-left: 12px;
+}
+td:last-child {
+  padding-right: 12px;
+}
+
 td.tdleft {
   text-align: left;
   padding: 5px
@@ -891,9 +884,9 @@ td.tdright {
   color: #fff
 }
 
-.colhead td,td.colhead {
-  padding-left: 5px;
-  padding-right: 5px
+.colhead td, .colhead_dark td, td.colhead {
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
 
 .colhead_dark {
@@ -1291,8 +1284,11 @@ form[action="inbox.php"] .box.pad table {
   border-width: 2px
 }
 
-table.forum_post {
-  margin-top: 2px
+.forum_post.forum_unread {
+  border-top: 2px solid #c7fada;
+}
+.forum_post.staff_post.forum_unread {
+  border-top: 2px solid #fac7df;
 }
 
 table.forum_post input[type=button] {
@@ -1547,6 +1543,9 @@ div.contenth #quickpost {
   border: 1px solid #5b5e64;
   border-bottom: none;
 }
+.bbcode_bar > li > a {
+  min-width: 15px;
+}
 
 #friends table[width="100%"] td {
   text-align: center
@@ -1712,10 +1711,6 @@ a.tab {
   text-align: center
 }
 
-#torrent_table {
-  font-size: 9pt
-}
-
 .sidebar .box .nobullet img {
   width: initial;
   margin: initial
@@ -1756,23 +1751,6 @@ a.tab {
 
 #content .home th:last-child {
   border-left: 1px solid #000
-}
-
-#content .home .of_the_month ul {
-  font-size: 1.2em
-}
-
-#content .home .month_rating {
-  font-family: 'Source Sans Pro';
-  font-size: 4em;
-  font-weight: 100!important;
-  color: #92d4a1;
-  position: relative;
-  top: -6px
-}
-
-#content .home .of_the_month b {
-  font-size: 1.3em
 }
 
 a.tab:hover {
@@ -1858,10 +1836,6 @@ div.star-rating a,div.star-rating.star {
   vertical-align: top;
   margin: 0;
   padding: 0
-}
-
-#requests .box.pad {
-  padding: 0!important
 }
 
 .info td {
@@ -1979,8 +1953,18 @@ a.last_read > svg {
   margin: 3px 6px;
 }
 
+.forum_index h3, .forum_list h3 {
+  margin-top: 24px;
+}
+.forum_index h4, .forum_list h4 {
+  font-size: 12px;
+}
+
 .forum_index td {
   position: relative;
+}
+.forum_index .row:nth-child(odd) {
+  background: #33363d;
 }
 .forum_index td.read:after, #forums td.unread:after {
   content: "";
@@ -2076,9 +2060,8 @@ caption {
   font-weight: bold;
 }
 
-tbody .staff_post {
-  background: none;
-  background-color: #634852;
+.staff_post .colhead_dark {
+  background: #634852;
 }
 
 .collage_image:hover {
@@ -2124,6 +2107,9 @@ tbody .staff_post {
 
 /* Pink Additions */
 
+body.style_pink h1 a, body.style_pink h2 a, body.style_pink h3 a, body.style_pink h4 a, body.style_pink h5 a, body.style_pink h6 a {
+  color: #df7cc2;
+}
 body.style_pink .cats_anime:after { color: #78467f; }
 body.style_pink .group .cats_anime { background-color: #78467f; }
 body.style_pink .cats_movies:after { color: #4f3063; }
@@ -2134,7 +2120,7 @@ body.style_pink .cats_games:after { color: #c871b9; }
 body.style_pink .group .cats_games { background-color: #c871b9; }
 body.style_pink .cats_other:after { color: #ef86d5; }
 body.style_pink .group .cats_other { background-color: #ef86d5; }
-body.style_pink a:hover { color: #db7bc7; }
+body.style_pink a:hover, body.style_pink .torrent_table .group a:hover { color: #db7bc7; }
 body.style_pink ::selection,
 body.style_pink ::-moz-selection {
   background: #8b518e;
@@ -2169,6 +2155,7 @@ body.style_pink #menu > ul > .nav_dropdown:hover,
 body.style_pink .nav_dropdown > div {
   background-color: #e295d2;
 }
+body.style_pink .linkbox > strong { color: #db7bc7; }
 body.style_pink .alertbar { background-color: #4f3063; }
 body.style_pink .hide_torrents > .show_torrents_link:after,
 body.style_pink .show_torrents > .show_torrents_link:after,
@@ -2192,6 +2179,9 @@ body.style_pink .forum_index td.unread_locked_sticky:after {
 body.style_pink .forum_index td.unread_locked:before,
 body.style_pink .forum_index td.unread_locked_sticky:before {
   background-color: #db7bc7;
+}
+body.style_pink .forum_post.forum_unread {
+  border-top: 2px solid #c1569b;
 }
 body.style_pink .noty_bar {
 	border-left: #ef86d5 2px solid;

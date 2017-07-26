@@ -1395,13 +1395,16 @@ textarea[name="body"]:focus,textarea[name="comment"]:focus,input[name="subject"]
   color:#f7f7f7
 }
 .autocomplete-suggestions {
-  background:#131313;color:#9a9a9a;
+  background:#131313;
+  color:#9a9a9a;
 }
 .autocomplete-selected {
-  background:#222!important;color:#9a9a9a;background-color:#1f1f1f!important
+  background: #222!important;
+  color:#9a9a9a;
+  background-color:#1f1f1f!important;
 }
 div.noty_bar {
-  border:1px solid #d0d0d0
+  border: 1px solid #d0d0d0;
 }
 .filter_torrents .box.pad {
   background:#D0D0D0
@@ -1409,11 +1412,25 @@ div.noty_bar {
 .forum_post tr.colhead_dark.notify_forums a,.forum_post tr.colhead a {
   color:#f7f7f7
 }
+.staff_post tr.colhead_dark > td, .staff_post tr.colhead_dark {
+  background: #d476d1;
+}
+.forum_post tr.colhead_dark > td, .forum_post tr.colhead_dark {
+  border-bottom: none!important;
+}
+.forum_post.forum_unread tr.colhead_dark {
+  border-top: 2px solid #76efe4;
+}
+.forum_post.staff_post.forum_unread tr.colhead_dark {
+  border-top: 2px solid #b159a6;
+}
 table#torrent_table strong {
   color:#313131
 }
 .alertbar {
-  padding:10px;background:#D0D0D0;text-align:center
+  padding:10px;
+  background:#D0D0D0;
+  text-align:center;
 }
 .box.filter_torrents .head,.colhead td,.colhead_dark td,tr.colhead,tr.colhead_dark,#inbox .box .head,#inbox .box .head,#reply_box h3,#inbox form .send_form #quickpost h3,.sidebar .box .head,.main_column .box .head.colhead_dark,.box.news_post .head,tr.colhead,tr.colhead_dark,.head.colhead_dark,.main_column .box .head {
   color:#F7F7F7;
