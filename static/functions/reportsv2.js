@@ -225,13 +225,15 @@ document.querySelectorAll('[data-load-report]').forEach(function(el) {
   Load(+el.attributes['data-load-report'].value);
 })
 
-var ReportSelectorInited = false;
 function ReportSelectorInit() {
-  if (!ReportSelectorInited && document.querySelector('.change_report_type')) {
+  if (document.querySelector('.change_report_type')) {
     document.querySelector('.change_report_type').addEventListener('change', ChangeReportType);
     ChangeReportType();
   }
 }
 
-document.addEventListener("DOMContentLoaded", ReportSelectorInit);
-ReportSelectorInit();
+if (document.readyState == 'complete') {
+  ReportSelectorInit();
+} else {
+  document.addEventListener("DOMContentLoaded", ReportSelectorInit);
+}

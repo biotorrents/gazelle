@@ -71,4 +71,10 @@ function BBEditor(box) {
   box.parentNode.insertBefore(bar, box)
 }
 
-$('.bbcode_editor').each(function(i, el) { BBEditor(el) })
+if (document.readyState == 'complete') {
+  $('.bbcode_editor').each(function(i, el) { BBEditor(el) })
+} else {
+  document.addEventListener("DOMContentLoaded", function() {
+    $('.bbcode_editor').each(function(i, el) { BBEditor(el) })
+  })
+}
