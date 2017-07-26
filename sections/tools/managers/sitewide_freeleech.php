@@ -38,7 +38,7 @@ if (isset($_POST['type'])) {
             ('" . $Tag . "', '" . (time() + (60 * 60 * $Duration)) . "', 'freeleech')
           ON DUPLICATE KEY UPDATE
             First = CONVERT(First, UNSIGNED INTEGER) + " . (60 * 60 * $Duration));
-        Torrents::freeleech_torrents($IDs, 1, 3);
+        Torrents::freeleech_torrents($IDs, 1, 3, false);
         echo("Success! Now run the indexer.");
       } else {
         error('No torrents with that tag exist.');
