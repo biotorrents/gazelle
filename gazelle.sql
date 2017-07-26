@@ -1473,6 +1473,7 @@ CREATE TABLE `users_main` (
   `Email` varchar(255) NOT NULL,
   `PassHash` varchar(60) NOT NULL,
   `TwoFactor` varchar(255) DEFAULT NULL,
+  `PublicKey` text,
   `IRCKey` char(32) DEFAULT NULL,
   `LastLogin` datetime,
   `LastAccess` datetime,
