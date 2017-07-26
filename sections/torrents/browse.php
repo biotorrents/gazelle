@@ -455,8 +455,7 @@ View::show_header('Browse Torrents', 'browse');
 
   <div class="linkbox"><?=$Pages?></div>
 
-  <div class="box">
-  <table class="torrent_table cats <?=$GroupResults ? 'grouping' : 'no_grouping'?>" id="torrent_table">
+  <table class="box torrent_table cats <?=$GroupResults ? 'grouping' : 'no_grouping'?>" id="torrent_table">
     <tr class="colhead">
   <?  if ($GroupResults) { ?>
       <td class="small"></td>
@@ -733,7 +732,6 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
 }
 ?>
 </table>
-</div>
 <div class="linkbox"><?=$Pages?></div>
 </div>
 <? View::show_footer(); ?>
