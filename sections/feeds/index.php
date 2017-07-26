@@ -126,53 +126,25 @@ switch ($_GET['feed']) {
     $Feed->channel('All Torrents', 'RSS feed for all new torrent uploads.');
     $Feed->retrieve('torrents_all', $_GET['authkey'], $_GET['passkey']);
     break;
-  case 'torrents_music':
-    $Feed->channel('Music Torrents', 'RSS feed for all new music torrents.');
-    $Feed->retrieve('torrents_music', $_GET['authkey'], $_GET['passkey']);
+  case 'torrents_movies':
+    $Feed->channel('Movie Torrents', 'RSS feed for all new music torrents.');
+    $Feed->retrieve('torrents_movies', $_GET['authkey'], $_GET['passkey']);
     break;
-  case 'torrents_apps':
-    $Feed->channel('Application Torrents', 'RSS feed for all new application torrents.');
-    $Feed->retrieve('torrents_apps', $_GET['authkey'], $_GET['passkey']);
+  case 'torrents_anime':
+    $Feed->channel('Anime Torrents', 'RSS feed for all new application torrents.');
+    $Feed->retrieve('torrents_anime', $_GET['authkey'], $_GET['passkey']);
     break;
-  case 'torrents_ebooks':
-    $Feed->channel('E-Book Torrents', 'RSS feed for all new e-book torrents.');
-    $Feed->retrieve('torrents_ebooks', $_GET['authkey'], $_GET['passkey']);
+  case 'torrents_manga':
+    $Feed->channel('Manga Torrents', 'RSS feed for all new e-book torrents.');
+    $Feed->retrieve('torrents_manga', $_GET['authkey'], $_GET['passkey']);
     break;
-  case 'torrents_abooks':
-    $Feed->channel('Audiobook Torrents', 'RSS feed for all new audiobook torrents.');
-    $Feed->retrieve('torrents_abooks', $_GET['authkey'], $_GET['passkey']);
+  case 'torrents_games':
+    $Feed->channel('Game Torrents', 'RSS feed for all new audiobook torrents.');
+    $Feed->retrieve('torrents_games', $_GET['authkey'], $_GET['passkey']);
     break;
-  case 'torrents_evids':
-    $Feed->channel('E-Learning Video Torrents', 'RSS feed for all new e-learning video torrents.');
-    $Feed->retrieve('torrents_evids', $_GET['authkey'], $_GET['passkey']);
-    break;
-  case 'torrents_comedy':
-    $Feed->channel('Comedy Torrents', 'RSS feed for all new comedy torrents.');
-    $Feed->retrieve('torrents_comedy', $_GET['authkey'], $_GET['passkey']);
-    break;
-  case 'torrents_comics':
-    $Feed->channel('Comic Torrents', 'RSS feed for all new comic torrents.');
-    $Feed->retrieve('torrents_comics', $_GET['authkey'], $_GET['passkey']);
-    break;
-  case 'torrents_mp3':
-    $Feed->channel('MP3 Torrents', 'RSS feed for all new mp3 torrents.');
-    $Feed->retrieve('torrents_mp3', $_GET['authkey'], $_GET['passkey']);
-    break;
-  case 'torrents_flac':
-    $Feed->channel('FLAC Torrents', 'RSS feed for all new FLAC torrents.');
-    $Feed->retrieve('torrents_flac', $_GET['authkey'], $_GET['passkey']);
-    break;
-  case 'torrents_vinyl':
-    $Feed->channel('Vinyl Sourced Torrents', 'RSS feed for all new vinyl sourced torrents.');
-    $Feed->retrieve('torrents_vinyl', $_GET['authkey'], $_GET['passkey']);
-    break;
-  case 'torrents_lossless':
-    $Feed->channel('Lossless Torrents', 'RSS feed for all new lossless uploads.');
-    $Feed->retrieve('torrents_lossless', $_GET['authkey'], $_GET['passkey']);
-    break;
-  case 'torrents_lossless24':
-    $Feed->channel('24bit Lossless Torrents', 'RSS feed for all new 24bit uploads.');
-    $Feed->retrieve('torrents_lossless24', $_GET['authkey'], $_GET['passkey']);
+  case 'torrents_other':
+    $Feed->channel('Other Torrents', 'RSS feed for all new e-learning video torrents.');
+    $Feed->retrieve('torrents_other', $_GET['authkey'], $_GET['passkey']);
     break;
   default:
     // Personalized torrents

@@ -918,43 +918,8 @@ while (list($UserID, $Passkey) = $DB->next_record()) {
 }
 
 $Feed->populate('torrents_all', $Item);
+$Feed->populate('torrents_'.strtolower($Type), $Item);
 $Debug->set_flag('upload: notifications handled');
-if ($Type == 'Music') {
-  $Feed->populate('torrents_music', $Item);
-  if ($Properties['Media'] == 'Vinyl') {
-    $Feed->populate('torrents_vinyl', $Item);
-  }
-  if ($Properties['Bitrate'] == 'Lossless') {
-    $Feed->populate('torrents_lossless', $Item);
-  }
-  if ($Properties['Bitrate'] == '24bit Lossless') {
-    $Feed->populate('torrents_lossless24', $Item);
-  }
-  if ($Properties['Format'] == 'MP3') {
-    $Feed->populate('torrents_mp3', $Item);
-  }
-  if ($Properties['Format'] == 'FLAC') {
-    $Feed->populate('torrents_flac', $Item);
-  }
-}
-if ($Type == 'Applications') {
-  $Feed->populate('torrents_apps', $Item);
-}
-if ($Type == 'E-Books') {
-  $Feed->populate('torrents_ebooks', $Item);
-}
-if ($Type == 'Audiobooks') {
-  $Feed->populate('torrents_abooks', $Item);
-}
-if ($Type == 'E-Learning Videos') {
-  $Feed->populate('torrents_evids', $Item);
-}
-if ($Type == 'Comedy') {
-  $Feed->populate('torrents_comedy', $Item);
-}
-if ($Type == 'Comics') {
-  $Feed->populate('torrents_comics', $Item);
-}
 
 // Clear cache
 $Cache->delete_value("torrents_details_$GroupID");
