@@ -418,7 +418,7 @@ class Users {
       $Str .= Badges::display_badges(Badges::get_displayed_badges($UserID), true);
     }
 
-    $Str .= ($IsWarned && $UserInfo['Warned']) ? '<a href="wiki.php?action=article&amp;id=218"'
+    $Str .= ($IsWarned && $UserInfo['Warned']) ? '<a href="wiki.php?action=article&amp;name=warnings"'
           . '><img src="'.STATIC_SERVER.'common/symbols/warned.png" alt="Warned" title="Warned'
           . (G::$LoggedUser['ID'] === $UserID ? ' - Expires ' . date('Y-m-d H:i', strtotime($UserInfo['Warned'])) : '')
           . '" class="tooltip" /></a>' : '';
