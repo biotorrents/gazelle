@@ -115,12 +115,13 @@ if (!$NumResults) {
       } elseif (count($Artists) > 0) {
         $DisplayName .= Artists::display_artists(array('1' => $Artists));
       }
-      $DisplayName .= "<a href=\"torrents.php?id=$GroupID\" class=\"tooltip\" title=\"View torrent group\" dir=\"ltr\">$GroupName</a>";
+      $DisplayName .= "<a href=\"torrents.php?id=$GroupID\" class=\"tooltip\" title=\"View torrent group\" ";
+      if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
+        $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($WikiImage)."\" onmouseleave=\"ungetCover(event)\" ";
+      }
+      $DisplayName .= "dir=\"ltr\">$GroupName</a>";
       if ($GroupYear > 0) {
         $DisplayName = "$DisplayName [$GroupYear]";
-      }
-      if ($GroupVanityHouse) {
-        $DisplayName .= ' [<abbr class="tooltip" title="This is a Vanity House release">VH</abbr>]';
       }
 
       $SnatchedGroupClass = $GroupFlags['IsSnatched'] ? ' snatched_group' : '';
@@ -136,11 +137,6 @@ if (!$NumResults) {
           </div>
         </td>
         <td colspan="5" class="big_info">
-<? if ($LoggedUser['CoverArt']) { ?>
-          <div class="group_image float_left clear">
-            <? ImageTools::cover_thumb($WikiImage, $GroupCategoryID) ?>
-          </div>
-<? } ?>
           <div class="group_info clear">
             <strong><?=$DisplayName?></strong>
             <div class="tags"><?=$TorrentTags->format()?></tags>
@@ -148,41 +144,8 @@ if (!$NumResults) {
         </td>
       </tr>
 <?
-        $LastRemasterYear = '-';
-        $LastRemasterTitle = '';
-        $LastRemasterRecordLabel = '';
-        $LastRemasterCatalogueNumber = '';
-        $LastMedia = '';
-
-        $EditionID = 0;
-        unset($FirstUnknown);
-
         foreach ($Torrents as $TorrentID => $Torrent) {
-
-          if ($Torrent['Remastered'] && !$Torrent['RemasterYear']) {
-            $FirstUnknown = !isset($FirstUnknown);
-          }
           $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : '';
-
-          if ($Torrent['RemasterTitle'] != $LastRemasterTitle
-            || $Torrent['RemasterYear'] != $LastRemasterYear
-            || $Torrent['RemasterRecordLabel'] != $LastRemasterRecordLabel
-            || $Torrent['RemasterCatalogueNumber'] != $LastRemasterCatalogueNumber
-            || $FirstUnknown
-            || $Torrent['Media'] != $LastMedia
-          ) {
-            $EditionID++;
-?>
-  <tr class="group_torrent groupid_<?=$CollageID . $GroupID?> edition<?=$SnatchedGroupClass?> hidden">
-    <td colspan="6" class="edition_info"><strong><a href="#" onclick="toggle_edition(<?=$CollageID?><?=$GroupID?>, <?=$EditionID?>, this, event);" class="tooltip" title="Collapse this edition. Hold &quot;Ctrl&quot; while clicking to collapse all editions in this torrent group.">&minus;</a> <?=Torrents::edition_string($Torrent, $Group)?></strong></td>
-  </tr>
-<?
-          }
-          $LastRemasterTitle = $Torrent['RemasterTitle'];
-          $LastRemasterYear = $Torrent['RemasterYear'];
-          $LastRemasterRecordLabel = $Torrent['RemasterRecordLabel'];
-          $LastRemasterCatalogueNumber = $Torrent['RemasterCatalogueNumber'];
-          $LastMedia = $Torrent['Media'];
 ?>
   <tr class="group_torrent groupid_<?=$CollageID . $GroupID?> edition_<?=$EditionID?> hidden<?=$SnatchedTorrentClass . $SnatchedGroupClass?>">
     <td colspan="2">
@@ -203,7 +166,11 @@ if (!$NumResults) {
 
         list($TorrentID, $Torrent) = each($Torrents);
 
-        $DisplayName = "<a href=\"torrents.php?id=$GroupID\" class=\"tooltip\" title=\"View torrent group\" dir=\"ltr\">$GroupName</a>";
+        $DisplayName = "<a href=\"torrents.php?id=$GroupID\" class=\"tooltip\" title=\"View torrent group\" ";
+        if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
+          $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($WikiImage)."\" onmouseleave=\"ungetCover(event)\" ";
+        }
+        $DisplayName .= "dir=\"ltr\">$GroupName</a>";
 
         if ($Torrent['IsSnatched']) {
           $DisplayName .= ' ' . Format::torrent_label('Snatched!');
@@ -220,11 +187,6 @@ if (!$NumResults) {
       </div>
     </td>
     <td class="big_info">
-<? if ($LoggedUser['CoverArt']) { ?>
-      <div class="group_image float_left clear">
-        <? ImageTools::cover_thumb($WikiImage, $GroupCategoryID) ?>
-      </div>
-<? } ?>
       <div class="group_info clear">
         <span>
           [ <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>" class="tooltip" title="Download">DL</a>
@@ -260,7 +222,8 @@ if (!$NumResults) {
   <!--</div>-->
   <table class="torrent_table<?=$ShowAll ? ' hidden' : ''?>" id="discog_table_<?=$CollageID?>">
     <tr class="colhead">
-      <td width="1%"><!-- expand/collapse --></td>
+      <td width="1%"></td>
+      <td></td>
       <td width="70%"><strong>Torrents</strong></td>
       <td>Size</td>
       <td class="sign snatches">
