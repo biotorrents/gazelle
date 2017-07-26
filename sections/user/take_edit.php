@@ -37,16 +37,13 @@ if (check_perms('site_advanced_search')) {
   $Val->SetFields('searchtype', 1, "number", "You forgot to select your default search preference.", ['minlength' => 0, 'maxlength' => 1]);
 }
 
-$Err = $Val->ValidateForm($_POST);
-
-if (!apcu_exists('DBKEY')) {
-  $Err = "Cannot edit profile until database fully decrypted.";
+$ValErr = $Val->ValidateForm($_POST);
+if ($ValErr) {
+  error($ValErr);
 }
 
-if ($Err) {
-  error($Err);
-  header("Location: user.php?action=edit&userid=$UserID");
-  die();
+if (!apcu_exists('DBKEY')) {
+  error("Cannot edit profile until database fully decrypted");
 }
 
 // Begin building $Paranoia
@@ -136,121 +133,96 @@ if (isset($_POST['p_donor_stats'])) {
 
 // End building $Paranoia
 
-
-// Email change
 $DB->query("
-  SELECT Email
+  SELECT Email, PassHash, TwoFactor, PublicKey, IRCKey
   FROM users_main
   WHERE ID = $UserID");
-list($CurEmail) = $DB->next_record();
+list($CurEmail, $CurPassHash, $CurTwoFA, $CurPublicKey, $CurIRCKey) = $DB->next_record();
+
+function require_password($Setting = false) {
+  global $CurPassHash;
+  if (empty($_POST['cur_pass'])) {
+    error('A setting you changed requires you to enter your current password'.($Setting ? ' (Setting: '.$Setting.')' : ''));
+  }
+  if (!Users::check_password($_POST['cur_pass'], $CurPassHash)) {
+    error('The password you entered was incorrect'.($Setting ? ' (Required by setting: '.$Setting.')' : ''));
+  }
+}
+
+// Email change
 $CurEmail = DBCrypt::decrypt($CurEmail);
 if ($CurEmail != $_POST['email']) {
-  if (!check_perms('users_edit_profiles')) { // Non-admins have to authenticate to change email
-    $DB->query("
-      SELECT PassHash
-      FROM users_main
-      WHERE ID = '".db_string($UserID)."'");
-    list($PassHash)=$DB->next_record();
-    if (!Users::check_password($_POST['cur_pass'], $PassHash)) {
-      $Err = 'You did not enter the correct password.';
-    }
+
+  // Non-admins have to authenticate to change email
+  if (!check_perms('users_edit_profiles')) {
+    require_password("Change Email");
   }
-  if (!$Err) {
-    $NewEmail = db_string($_POST['email']);
 
+  $NewEmail = db_string($_POST['email']);
 
-    //This piece of code will update the time of their last email change to the current time *not* the current change.
-    $ChangerIP = db_string($LoggedUser['IP']);
-    $DB->query("
-      UPDATE users_history_emails
-      SET Time = '".sqltime()."'
-      WHERE UserID = '$UserID'
-        AND Time IS NULL");
-    $DB->query("
-      INSERT INTO users_history_emails
-        (UserID, Email, Time, IP)
-      VALUES
-        ('$UserID', '".DBCrypt::encrypt($NewEmail)."', NULL, '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."')");
-
-  } else {
-    error($Err);
-    header("Location: user.php?action=edit&userid=$UserID");
-    die();
-  }
-}
-//End email change
-
-//2FA activation
-if (!empty($_POST['twofa'])) {
+  // Update the time of their last email change to the current time *not* the current change.
+  $ChangerIP = db_string($LoggedUser['IP']);
   $DB->query("
-    SELECT TwoFactor, PassHash
-    FROM users_main
-    WHERE ID = $UserID");
-  list($TwoFactor, $PassHash) = $DB->next_record();
-  if (empty($TwoFactor)) {
-    if (!Users::check_password($_POST['cur_pass'], $PassHash)) {
-      error('You did not enter the correct password.');
-      header("Location: user.php?action=edit&userid=$UserID");
-      die();
-    }
-    require_once SERVER_ROOT.'/classes/twofa.class.php';
-    $TwoFA = new TwoFactorAuth(SITE_NAME);
-    if ($TwoFA->verifyCode($_POST['twofasecret'], $_POST['twofa'])) {
-      $DB->query("
-        UPDATE users_main
-        SET TwoFactor='".db_string($_POST['twofasecret'])."'
-        WHERE ID = $UserID");
-    } else {
-      error('Invalid 2FA verification code.');
-      header("Location: user.php?action=edit&userid=$UserID");
-      die();
-    }
-  }
+    UPDATE users_history_emails
+    SET Time = '".sqltime()."'
+    WHERE UserID = '$UserID'
+      AND Time IS NULL");
+  $DB->query("
+    INSERT INTO users_history_emails
+      (UserID, Email, Time, IP)
+    VALUES
+      ('$UserID', '".DBCrypt::encrypt($NewEmail)."', NULL, '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."')");
+
 }
 
-//2FA deactivation
-if (isset($_POST['disable2fa'])) {
-  $DB->query("
-    SELECT PassHash
-    FROM users_main
-    WHERE ID = $UserID");
-  list($PassHash) = $DB->next_record();
-  if (!Users::check_password($_POST['cur_pass'], $PassHash)) {
-      error('You did not enter the correct password.');
-      header("Location: user.php?action=edit&userid=$UserID");
-      die();
-  }
+// PGP Key
+if ($CurPublicKey != $_POST['publickey']) {
+  require_password("Change Public Key");
   $DB->query("
     UPDATE users_main
-    SET TwoFactor=NULL
+    SET PublicKey = '".db_string($_POST['publickey'])."'
     WHERE ID = $UserID");
 }
-//End 2FA
 
-if (!$Err && ($_POST['cur_pass'] || $_POST['new_pass_1'] || $_POST['new_pass_2'])) {
-  $DB->query("
-    SELECT PassHash
-    FROM users_main
-    WHERE ID = '".db_string($UserID)."'");
-  list($PassHash) = $DB->next_record();
-
-  if (Users::check_password($_POST['cur_pass'], $PassHash)) {
-    if ($_POST['new_pass_1'] && $_POST['new_pass_2']) {
-      $ResetPassword = true;
-    }
+// 2FA activation
+if (!empty($_POST['twofa']) && empty($CurTwoFA)) {
+  require_password("Enable 2-Factor");
+  require_once SERVER_ROOT.'/classes/twofa.class.php';
+  $TwoFA = new TwoFactorAuth(SITE_NAME);
+  if ($TwoFA->verifyCode($_POST['twofasecret'], $_POST['twofa'])) {
+    $DB->query("
+      UPDATE users_main
+      SET TwoFactor='".db_string($_POST['twofasecret'])."'
+      WHERE ID = $UserID");
   } else {
-    $Err = 'You did not enter the correct password.';
+    error('Invalid 2FA verification code.');
   }
+}
+
+// 2FA deactivation
+if (isset($_POST['disable2fa'])) {
+  require_password("Disable 2-Factor");
+  $DB->query("
+    UPDATE users_main
+    SET TwoFactor = NULL
+    WHERE ID = $UserID");
+}
+
+if (!empty($_POST['new_pass_1']) && !empty($_POST['new_pass_2'])) {
+  require_password("Change Password");
+  $ResetPassword = true;
+}
+
+if ($CurIRCKey != $_POST['irckey']) {
+  require_password("Change IRC Key");
+}
+
+if (isset($_POST['resetpasskey'])) {
+  require_password("Reset Passkey");
 }
 
 if ($LoggedUser['DisableAvatar'] && $_POST['avatar'] != $U['Avatar']) {
-  $Err = 'Your avatar privileges have been revoked.';
-}
-
-if ($Err) {
-  error($Err);
-  header("Location: user.php?action=edit&userid=$UserID");
-  die();
+  error('Your avatar privileges have been revoked.');
 }
 
 if (!empty($LoggedUser['DefaultSearch'])) {

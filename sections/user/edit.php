@@ -9,6 +9,7 @@ $DB->query("
   SELECT
     m.Username,
     m.TwoFactor,
+    m.PublicKey,
     m.Email,
     m.IRCKey,
     m.Paranoia,
@@ -24,7 +25,7 @@ $DB->query("
     JOIN users_info AS i ON i.UserID = m.ID
     LEFT JOIN permissions AS p ON p.ID = m.PermissionID
   WHERE m.ID = '".db_string($UserID)."'");
-list($Username, $TwoFactor, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $Class, $InfoTitle) = $DB->next_record(MYSQLI_NUM, array(4, 9));
+list($Username, $TwoFactor, $PublicKey, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $Class, $InfoTitle) = $DB->next_record(MYSQLI_NUM, array(5, 10));
 
 $TwoFA = new TwoFactorAuth();
 
@@ -56,7 +57,7 @@ function checked($Checked) {
 }
 
 if ($SiteOptions) {
-  $SiteOptions = json_decode($SiteOptions, true);
+  $SiteOptions = json_decode($SiteOptions, true) ?? [];
 } else {
   $SiteOptions = [];
 }
@@ -162,13 +163,13 @@ echo $Val->GenerateJS('userform');
         <td class="label tooltip" title="Select changes that you want made to your chosen stylesheet"><strong>Stylesheet additions</strong></td>
         <td> <?
           foreach($Stylesheets as $Style) {
-            $StyleAdditions = explode('|',$Style['Additions']);
+            $StyleAdditions = explode('|', $Style['Additions']);
             ?> <ul class="nobullet style_addition<?=$Style['ID']==$Stylesheets[$LoggedUser['StyleID']]['ID']?'':' hidden'?>" id="style_addition_<?=$Style['Name']?>"> <?
             foreach($StyleAdditions as $i => $Addition) {
               if ($Addition) { ?>
                 <li>
                 <input type="checkbox" name="style_additions[]" value="<?=$Addition?>" id="addition_<?=$Addition?>"<?=(in_array($Addition, $SiteOptions['StyleAdditions']??[])?' checked="checked"':'')?>>
-                  <label for="addition_<?=$Addition?>"><?=explode('|',$Style['ProperAdditions'])[$i]?></label>
+                  <label for="addition_<?=$Addition?>"><?=explode('|', $Style['ProperAdditions'])[$i]?></label>
                 </li>
            <? }
             }
@@ -738,6 +739,15 @@ list($ArtistsAdded) = $DB->next_record();
           <strong>Access Settings</strong>
         </td>
       </tr>
+      <tr id="acc_currentpassword_tr">
+        <td class="label"><strong>Current Password</strong></td>
+        <td>
+          <div class="field_div">
+            <input type="password" size="40" name="cur_pass" id="cur_pass" maxlength="307200" value="" />
+          </div>
+          <strong class="important_text">When changing any of the settings in this section, you must enter your current password in this field before saving your changes</strong>
+        </td>
+      </tr>
       <tr id="acc_resetpk_tr">
         <td class="label tooltip_interactive" title="For information about the function of your passkey, please &lt;a href=&quot;<?=site_url()?>wiki.php?action=article&amp;amp;name=Passkey&quot;&gt;read this wiki article&lt;/a&gt;." data-title-plain="For information about the function of your passkey, please read the &quot;Passkey&quot; wiki article."><strong>Reset passkey</strong></td>
         <td>
@@ -754,7 +764,7 @@ list($ArtistsAdded) = $DB->next_record();
           <div class="field_div">
             <input type="text" size="50" name="irckey" id="irckey" value="<?=display_str($IRCKey)?>" />
           </div>
-          <p class="min_padding">If set, this key will be used instead of your site password when authenticating with <?=BOT_NICK?> on the <a href="wiki.php?action=article&amp;name=IRC">site's IRC network</a>. <span style="white-space: nowrap;">Please note:</span></p>
+          <p class="min_padding">This key will be used when authenticating with <?=BOT_NICK?> on the <a href="wiki.php?action=article&amp;name=IRC">site's IRC network</a>. <span style="white-space: nowrap;">Please note:</span></p>
           <ul>
             <li>This value is stored in plaintext and should not be your password.</li>
             <li>IRC keys must be between 6 and 32 characters.</li>
@@ -767,7 +777,14 @@ list($ArtistsAdded) = $DB->next_record();
           <div class="field_div">
             <input type="email" size="50" name="email" id="email" value="<?=display_str($Email)?>" />
           </div>
-          <p class="min_padding">When changing your email address, you must enter your current password in the "Current password" field before saving your changes.</p>
+        </td>
+      </tr>
+      <tr id="acc_publickey_tr">
+        <td class="label tooltip" title="This is your PGP public key. The matching private key can be used to prove ownership of your account should you lose access to your password or 2FA key. Only add a PGP key if you have taken proper precautions like creating a revocation certificate"><strong>PGP Public Key</strong></td>
+        <td>
+          <div class="field_div">
+            <textarea name="publickey" id="publickey" cols="64" rows="8"><?=display_str($PublicKey)?></textarea>
+          </div>
         </td>
       </tr>
       <tr id="acc_2fa_tr">
@@ -778,28 +795,22 @@ list($ArtistsAdded) = $DB->next_record();
             <? if (!empty($TwoFactor)) { ?>
             <p class="min_padding">2FA is enabled for this account with the following secret:</p>
             <? } ?>
-            <img src="<?=$TwoFA->getQRCodeImageAsDataUri(SITE_NAME, $TwoFASecret)?>">
+            <img src="<?=$TwoFA->getQRCodeImageAsDataUri(SITE_NAME, $TwoFASecret)?>"><br>
             <input type="text" size="20" name="twofasecret" id="twofasecret" value="<?=$TwoFASecret?>" readonly><br>
             <? if (empty($TwoFactor)) { ?>
             <input type="text" size="20" maxlength="6" name="twofa" id="twofa" placeholder="Verification Code">
             <p class="min_padding">To enable 2FA, scan the above QR code (or add the secret below it) to your 2FA client of choice, and enter a verification code it generates. Note that the verification code must not have expired when you save your profile.</p>
-            <p class="min_padding">When setting up 2FA, you must enter your current password in the "Current password" field before saving your changes.</p>
             <p class="min_padding"><strong class="important_text">WARNING</strong>: Losing your 2FA key can make your account unrecoverable. Only enable it if you're sure you can handle it.
             <? } else { ?>
             <label><input type="checkbox" name="disable2fa" id="disable2fa" />
             Disable 2FA</label>
-            <p class="min_padding">When disabling 2FA, you must enter your current password in the "Current Password" field before saving your changes</p>
             <? } ?>
           </div>
         </td>
       </tr>
       <tr id="acc_password_tr">
-        <td class="label"><strong>Change password</strong></td>
+        <td class="label"><strong>Password</strong></td>
         <td>
-          <div class="field_div">
-            <label>Current password:<br>
-            <input type="password" size="40" name="cur_pass" id="cur_pass" maxlength="307200" value="" /></label>
-          </div>
           <div class="field_div">
             <label>New password:<br />
             <input type="password" size="40" name="new_pass_1" id="new_pass_1" maxlength="307200" value="" /> <strong id="pass_strength"></strong></label>
