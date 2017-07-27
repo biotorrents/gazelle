@@ -495,9 +495,9 @@ function MediaInfoExtract() {
       var val = (val2 && val2 != val1 && (val1+val2 == 'EnglishJapanese' || val1+val2 == 'JapaneseEnglish')) ? 'Dual Language' : val1
       if (val) { $('[name=lang]').raw().value = val }
     } else if (sel == 'container') {
+      var containerTable = {'Matroska': 'MKV','MPEG-4': 'MP4','AVI': 'AVI','OGG': 'OGM','Windows Media': 'WMV'}
       var cont = getval(mi, 'Format')
-      var contel = $('[name=container]').raw()
-      if (cont == 'Matroska') { contel.value = 'MKV' }
+      if (containerTable[cont]) $('[name=container]').raw().value = containerTable[cont];
     }
   })
 }
