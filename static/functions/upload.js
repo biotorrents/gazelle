@@ -497,33 +497,21 @@ function MediaInfoExtract() {
     } else if (sel == 'container') {
       var containerTable = {'Matroska': 'MKV','MPEG-4': 'MP4','AVI': 'AVI','OGG': 'OGM','Windows Media': 'WMV'}
       var cont = getval(mi, 'Format')
-      if (containerTable[cont]) { $('[name=container]').raw().value = containerTable[cont] };
+      if (containerTable[cont]) { $('[name=container]').raw().value = containerTable[cont] }
     } else if (sel == 'codec') {
       var codecTable = {'WMV1':'WMV','VC-1':'WMV','HEVC':'HEVC'}
       var codec = getval(mi.slice(mi.search(/^Video$/m)), 'Format')
       var formatProfile = getval(mi.slice(mi.search(/^Video$/m)), 'Format profile')
       var codecID = getval(mi, 'Codec ID')
       var codel = $('[name=codec]').raw()
-      if (codec == 'AVC'){
-        if (formatProfile == 'High 10@L4' || formatProfile == 'High 10@L5.2') { 
-          codel.value = '10-bit h264' 
-        } 
-        else {
-          codel.value = 'h264'
-        } 
-      } 
+      if (codec == 'AVC') {
+        codel.value = (formatProfile.includes('High 10')) ? '10-bit h264' : 'h264'
+      }
       else if (codec == 'MPEG-4 Visual') {
-        if (codecID == 'XVID') { 
-          codel.value = 'XVID' 
-        }
-        else {
-          codel.value = 'DIVX'
-        } 
-      } 
-      else {
-        if (codecTable[codec]) {
-          codel.value = codecTable[codec] 
-        }
+        codel.value = (codecID == 'XVID') ? 'XVID' : 'DIVX'
+      }
+      else if (codecTable[codec]) {
+        codel.value = codecTable[codec]
       }
     }
   })
