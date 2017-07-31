@@ -20,10 +20,12 @@ if (Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
 }
 
 require_once SERVER_ROOT.'/classes/twofa.class.php';
+require_once SERVER_ROOT.'/classes/u2f.class.php';
 require_once SERVER_ROOT.'/classes/validate.class.php';
 
 $Validate = new VALIDATE;
 $TwoFA = new TwoFactorAuth(SITE_NAME);
+$U2F = new u2f\U2F('https://'.SITE_DOMAIN);
 
 if (array_key_exists('action', $_GET) && $_GET['action'] == 'disabled') {
   require('disabled.php');
@@ -293,52 +295,100 @@ else {
                 }
               }
 
-              $SessionID = Users::make_secret(64);
-              setcookie('session', $SessionID, (time()+60*60*24*365), '/', '', true, true);
-              setcookie('userid', $UserID, (time()+60*60*24*365), '/', '', true, true);
-
-              // Because we <3 our staff
-              $Permissions = Permissions::get_permissions($PermissionID);
-              $CustomPermissions = unserialize($CustomPermissions);
-              if (isset($Permissions['Permissions']['site_disable_ip_history'])
-                || isset($CustomPermissions['site_disable_ip_history'])
-              ) {
-                $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+              $U2FRegs = [];
+              $DB->query("
+                SELECT KeyHandle, PublicKey, Certificate, Counter, Valid
+                FROM u2f
+                WHERE UserID = $UserID");
+              // Needs to be an array of objects, so we can't use to_array()
+              while (list($KeyHandle, $PublicKey, $Certificate, $Counter, $Valid) = $DB->next_record()) {
+                $U2FRegs[] = (object)['keyHandle'=>$KeyHandle, 'publicKey'=>$PublicKey, 'certificate'=>$Certificate, 'counter'=>$Counter, 'valid'=>$Valid];
               }
 
-              $DB->query("
-                INSERT INTO users_sessions
-                  (UserID, SessionID, KeepLogged, Browser, OperatingSystem, IP, LastUpdate, FullUA)
-                VALUES
-                  ('$UserID', '".db_string($SessionID)."', '1', '$Browser', '$OperatingSystem', '".db_string(apcu_exists('DBKEY')?DBCrypt::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0')."', '".sqltime()."', '".db_string($_SERVER['HTTP_USER_AGENT'])."')");
+              if (sizeof($U2FRegs) > 0) {
+                // U2F is enabled for this account
+                if (isset($_POST['u2f-request']) && isset($_POST['u2f-response'])) {
+                  // Data from the U2F login page is present. Verify it.
+                  try {
+                    $U2FReg = $U2F->doAuthenticate(json_decode($_POST['u2f-request']), $U2FRegs, json_decode($_POST['u2f-response']));
+                    if ($U2FReg->valid != '1') throw new Exception('Token disabled.');
+                    $DB->query("UPDATE u2f
+                                SET Counter = ".($U2FReg->counter)."
+                                WHERE KeyHandle = '".db_string($U2FReg->keyHandle)."'
+                                AND UserID = $UserID");
+                  } catch (Exception $e) {
+                    $U2FErr = 'U2F key invalid. Error: '.($e->getMessage());
+                    if ($e->getMessage() == 'Token disabled.') {
+                      $U2FErr = 'This token was disabled due to suspected cloning. Contact staff for assistance';
+                    }
+                    if ($e->getMessage() == 'Counter too low.') {
+                      $BadHandle = json_decode($_POST['u2f-response'], true)['keyHandle'];
+                      $DB->query("UPDATE u2f
+                                  SET Valid = '0'
+                                  WHERE KeyHandle = '".db_string($BadHandle)."'
+                                  AND UserID = $UserID");
+                      $U2FErr = 'U2F counter too low. This token has been disabled due to suspected cloning. Contact staff for assistance.';
+                    }
+                  }
+                } else {
+                  // Data from the U2F login page is not present. Go there
+                  require('u2f.php');
+                  die();
+                }
+              }
 
-              $Cache->begin_transaction("users_sessions_$UserID");
-              $Cache->insert_front($SessionID, array(
+              if (sizeof($U2FRegs) == 0 || !isset($U2FErr)) {
+                $SessionID = Users::make_secret(64);
+                setcookie('session', $SessionID, (time()+60*60*24*365), '/', '', true, true);
+                setcookie('userid', $UserID, (time()+60*60*24*365), '/', '', true, true);
+
+                // Because we <3 our staff
+                $Permissions = Permissions::get_permissions($PermissionID);
+                $CustomPermissions = unserialize($CustomPermissions);
+                if (isset($Permissions['Permissions']['site_disable_ip_history'])
+                  || isset($CustomPermissions['site_disable_ip_history'])
+                ) {
+                  $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+                }
+
+                $DB->query("
+                  INSERT INTO users_sessions
+                    (UserID, SessionID, KeepLogged, Browser, OperatingSystem, IP, LastUpdate, FullUA)
+                  VALUES
+                    ('$UserID', '".db_string($SessionID)."', '1', '$Browser', '$OperatingSystem', '".db_string(apcu_exists('DBKEY')?DBCrypt::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0')."', '".sqltime()."', '".db_string($_SERVER['HTTP_USER_AGENT'])."')");
+
+                $Cache->begin_transaction("users_sessions_$UserID");
+                $Cache->insert_front($SessionID, [
                   'SessionID' => $SessionID,
                   'Browser' => $Browser,
                   'OperatingSystem' => $OperatingSystem,
                   'IP' => (apcu_exists('DBKEY')?DBCrypt::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0'),
                   'LastUpdate' => sqltime()
-                  ));
-              $Cache->commit_transaction(0);
+                ]);
+                $Cache->commit_transaction(0);
 
-              $Sql = "
-                UPDATE users_main
-                SET
-                  LastLogin = '".sqltime()."',
-                  LastAccess = '".sqltime()."'
-                WHERE ID = '".db_string($UserID)."'";
+                $Sql = "
+                  UPDATE users_main
+                  SET
+                    LastLogin = '".sqltime()."',
+                    LastAccess = '".sqltime()."'
+                  WHERE ID = '".db_string($UserID)."'";
 
-              $DB->query($Sql);
+                $DB->query($Sql);
 
-              if (!empty($_COOKIE['redirect'])) {
-                $URL = $_COOKIE['redirect'];
-                setcookie('redirect', '', time() - 60 * 60 * 24, '/', '', false);
-                header("Location: $URL");
-                die();
+                if (!empty($_COOKIE['redirect'])) {
+                  $URL = $_COOKIE['redirect'];
+                  setcookie('redirect', '', time() - 60 * 60 * 24, '/', '', false);
+                  header("Location: $URL");
+                  die();
+                } else {
+                  header('Location: index.php');
+                  die();
+                }
               } else {
-                header('Location: index.php');
-                die();
+                log_attempt();
+                $Err = $U2FErr;
+                setcookie('keeplogged', '', time() + 60 * 60 * 24 * 365, '/', '', false);
               }
             } else {
               log_attempt();

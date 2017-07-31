@@ -45,8 +45,11 @@ switch ($_REQUEST['action']) {
   case 'take_edit':
     include('take_edit.php');
     break;
+  case '2fa':
+    include('2fa.php');
+    break;
   case 'invitetree':
-    include(SERVER_ROOT.'/sections/user/invitetree.php');
+    include('invitetree.php');
     break;
   case 'invite':
     include('invite.php');

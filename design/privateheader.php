@@ -533,12 +533,12 @@ if (!empty($Alerts) || !empty($ModBar)) { ?>
 <?
   }
   if (!empty($ModBar)) { ?>
-        <div class="alertbar blend">
-          <?=implode(' | ', $ModBar); echo "\n"?>
+        <div class="alertbar modbar">
+          <?=implode(' ', $ModBar); echo "\n"?>
         </div>
 <?  }
 if (check_perms('site_debug') && !apcu_exists('DBKEY')) { ?>
-        <div class="alertbar" style="color: white; background: #B53939;">
+        <div class="alertbar error">
           Warning: <a href="tools.php?action=database_key">no DB key</a>
         </div>
 <?  } ?>

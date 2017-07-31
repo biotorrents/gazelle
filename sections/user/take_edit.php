@@ -29,7 +29,6 @@ $Val->SetFields('postsperpage', 1, "number", "You forgot to select your posts pe
 $Val->SetFields('collagecovers', 1, "number", "You forgot to select your collage option.");
 $Val->SetFields('avatar', 0, "regex", "You did not enter a valid avatar URL.", ['regex' => "/^".IMAGE_REGEX."$/i"]);
 $Val->SetFields('email', 1, "email", "You did not enter a valid email address.");
-$Val->SetFields('twofa', 0, "regex", "You did not enter a valid 2FA verification code.", ['regex' => '/^[0-9]{6}$/']);
 $Val->SetFields('irckey', 0, "string", "You did not enter a valid IRC key. An IRC key must be between 6 and 32 characters long.", ['minlength' => 6, 'maxlength' => 32]);
 $Val->SetFields('new_pass_1', 0, "regex", "You did not enter a valid password. A valid password is 6 characters or longer.", ['regex' => '/(?=^.{6,}$).*$/']);
 $Val->SetFields('new_pass_2', 1, "compare", "Your passwords do not match.", ['comparefield' => 'new_pass_1']);
@@ -134,10 +133,10 @@ if (isset($_POST['p_donor_stats'])) {
 // End building $Paranoia
 
 $DB->query("
-  SELECT Email, PassHash, TwoFactor, PublicKey, IRCKey
+  SELECT Email, PassHash, IRCKey
   FROM users_main
   WHERE ID = $UserID");
-list($CurEmail, $CurPassHash, $CurTwoFA, $CurPublicKey, $CurIRCKey) = $DB->next_record();
+list($CurEmail, $CurPassHash, $CurIRCKey) = $DB->next_record();
 
 function require_password($Setting = false) {
   global $CurPassHash;
@@ -173,39 +172,6 @@ if ($CurEmail != $_POST['email']) {
     VALUES
       ('$UserID', '".DBCrypt::encrypt($NewEmail)."', NULL, '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."')");
 
-}
-
-// PGP Key
-if ($CurPublicKey != $_POST['publickey']) {
-  require_password("Change Public Key");
-  $DB->query("
-    UPDATE users_main
-    SET PublicKey = '".db_string($_POST['publickey'])."'
-    WHERE ID = $UserID");
-}
-
-// 2FA activation
-if (!empty($_POST['twofa']) && empty($CurTwoFA)) {
-  require_password("Enable 2-Factor");
-  require_once SERVER_ROOT.'/classes/twofa.class.php';
-  $TwoFA = new TwoFactorAuth(SITE_NAME);
-  if ($TwoFA->verifyCode($_POST['twofasecret'], $_POST['twofa'])) {
-    $DB->query("
-      UPDATE users_main
-      SET TwoFactor='".db_string($_POST['twofasecret'])."'
-      WHERE ID = $UserID");
-  } else {
-    error('Invalid 2FA verification code.');
-  }
-}
-
-// 2FA deactivation
-if (isset($_POST['disable2fa'])) {
-  require_password("Disable 2-Factor");
-  $DB->query("
-    UPDATE users_main
-    SET TwoFactor = NULL
-    WHERE ID = $UserID");
 }
 
 if (!empty($_POST['new_pass_1']) && !empty($_POST['new_pass_2'])) {

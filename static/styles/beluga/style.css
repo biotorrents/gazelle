@@ -503,6 +503,14 @@ p.min_padding {
   vertical-align: middle
 }
 
+.alertbar.error {
+  background-color: #c73f3f;
+}
+
+.alertbar.warning {
+  background-color: #c58b09;
+}
+
 .alertbar a {
   display: inline-block;
   position: relative;
@@ -512,17 +520,17 @@ p.min_padding {
   text-decoration: underline
 }
 
-#alerts a, .alertbar a,.torrent_table .group a,.ui-state-hover,a.ui-state-hover,li.ui-state-hover {
+.alertbar.modbar > a {
+  margin: 0 5px;
+}
+
+.torrent_table .group a, .ui-state-hover, a.ui-state-hover, li.ui-state-hover {
   color: #FFF;
 }
 
 .alertbar a:hover,.tags a:hover {
   color: #fff;
   text-decoration: none;
-}
-
-.alertbar {
-  color: transparent;
 }
 
 .alertbar a[href="news.php"] {

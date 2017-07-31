@@ -934,6 +934,11 @@ input[type="search"] {
   max-width: 100%;
 }
 
+#publickey {
+  width: initial;
+  font-family: monospace;
+}
+
 .hidden {
   display: none;
 }

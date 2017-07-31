@@ -84,7 +84,7 @@ echo $Val->GenerateJS('userform');
   <div class="header">
     <h2><?=Users::format_username($UserID, false, false, false)?> &gt; Settings</h2>
   </div>
-  <form class="edit_form" name="user" id="userform" action="" method="post" autocomplete="off">
+  <form class="edit_form" name="user" id="userform" method="post" autocomplete="off">
   <div class="sidebar settings_sidebar">
     <div class="box box2" id="settings_sections">
       <div class="head">
@@ -739,13 +739,17 @@ list($ArtistsAdded) = $DB->next_record();
           <strong>Access Settings</strong>
         </td>
       </tr>
+      <tr id="acc_2fa_tr">
+        <td class="label tooltip" title="This page contains 2FA, U2F, and PGP settings"><strong>Account Security</strong></td>
+        <td><a href="user.php?action=2fa">Click here to view additional account security options</a></td>
+      </tr>
       <tr id="acc_currentpassword_tr">
         <td class="label"><strong>Current Password</strong></td>
         <td>
           <div class="field_div">
             <input type="password" size="40" name="cur_pass" id="cur_pass" maxlength="307200" value="" />
           </div>
-          <strong class="important_text">When changing any of the settings in this section, you must enter your current password in this field before saving your changes</strong>
+          <strong class="important_text">When changing any of the settings below, you must enter your current password in this field before saving your changes</strong>
         </td>
       </tr>
       <tr id="acc_resetpk_tr">
@@ -776,35 +780,6 @@ list($ArtistsAdded) = $DB->next_record();
         <td>
           <div class="field_div">
             <input type="email" size="50" name="email" id="email" value="<?=display_str($Email)?>" />
-          </div>
-        </td>
-      </tr>
-      <tr id="acc_publickey_tr">
-        <td class="label tooltip" title="This is your PGP public key. The matching private key can be used to prove ownership of your account should you lose access to your password or 2FA key. Only add a PGP key if you have taken proper precautions like creating a revocation certificate"><strong>PGP Public Key</strong></td>
-        <td>
-          <div class="field_div">
-            <textarea name="publickey" id="publickey" cols="64" rows="8"><?=display_str($PublicKey)?></textarea>
-          </div>
-        </td>
-      </tr>
-      <tr id="acc_2fa_tr">
-        <td class="label tooltip" title="This will let you enable 2-Factor Auth for your <?=SITE_NAME?> account. The use of your 2FA client will be required whenever you login after enabling it."><strong>2-Factor Auth</strong></td>
-        <td>
-          <? $TwoFASecret = empty($TwoFactor) ? $TwoFA->createSecret() : $TwoFactor; ?>
-          <div class="field_div">
-            <? if (!empty($TwoFactor)) { ?>
-            <p class="min_padding">2FA is enabled for this account with the following secret:</p>
-            <? } ?>
-            <img src="<?=$TwoFA->getQRCodeImageAsDataUri(SITE_NAME, $TwoFASecret)?>"><br>
-            <input type="text" size="20" name="twofasecret" id="twofasecret" value="<?=$TwoFASecret?>" readonly><br>
-            <? if (empty($TwoFactor)) { ?>
-            <input type="text" size="20" maxlength="6" name="twofa" id="twofa" placeholder="Verification Code">
-            <p class="min_padding">To enable 2FA, scan the above QR code (or add the secret below it) to your 2FA client of choice, and enter a verification code it generates. Note that the verification code must not have expired when you save your profile.</p>
-            <p class="min_padding"><strong class="important_text">WARNING</strong>: Losing your 2FA key can make your account unrecoverable. Only enable it if you're sure you can handle it.
-            <? } else { ?>
-            <label><input type="checkbox" name="disable2fa" id="disable2fa" />
-            Disable 2FA</label>
-            <? } ?>
           </div>
         </td>
       </tr>

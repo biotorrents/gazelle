@@ -360,7 +360,6 @@ ul.thin li { margin:0px 0px; padding:0px; }
 }
 
 .alertbar {
-  /* border: 1px solid #999; */
   background-color: #fbc2e5;
   text-align: center;
   color: #444;
@@ -369,10 +368,20 @@ ul.thin li { margin:0px 0px; padding:0px; }
   width: 350px;
   margin: 0 auto 0px auto;
   padding: 10px;
+  margin-bottom: 8px;
+}
+.alertbar.warning {
+  background-color: #ffe68a;
+}
+.alertbar.error {
+  background-color: #ff8a8a;
 }
 .alertbar a {
   color: #555;
   text-decoration: underline;
+}
+.alertbar.modbar a {
+  margin: 0px 5px;
 }
 .alertbar a:hover {
   color: #777;

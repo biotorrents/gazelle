@@ -1254,6 +1254,16 @@ CREATE TABLE `torrents_tags_votes` (
   PRIMARY KEY (`GroupID`,`TagID`,`UserID`,`Way`)
 ) ENGINE=InnoDB CHARSET=utf8;
 
+CREATE TABLE `u2f` (
+  `UserID` int(10) NOT NULL,
+  `KeyHandle` varchar(255) NOT NULL,
+  `PublicKey` varchar(255) NOT NULL,
+  `Certificate` text,
+  `Counter` int(10) NOT NULL DEFAULT '-1',
+  `Valid` enum('0','1') NOT NULL DEFAULT '1',
+  PRIMARY KEY (`UserID`,`KeyHandle`)
+) ENGINE=InnoDB CHARSET=utf8;
+
 CREATE TABLE `user_questions` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `Question` mediumtext,

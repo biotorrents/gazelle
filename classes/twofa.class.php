@@ -25,7 +25,7 @@ class TwoFactorAuth {
     self::$_base32lookup = array_flip(self::$_base32);
   }
 
-  public function createSecret($bits = 80) {
+  public function createSecret($bits = 210) {
     $secret = '';
     $bytes = ceil($bits / 5); //We use 5 bits of each byte (since we have a 32-character 'alphabet' / BASE32)
     $rnd = random_bytes($bytes);

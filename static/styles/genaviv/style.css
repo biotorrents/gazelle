@@ -111,10 +111,13 @@ span.r99,.r09,.r10,.r20,.r30,.r40,.r50 {
   border-bottom:2px solid #45847e!important
 }
 #header>#menu ul>li.active>a {
-  color:#32867d
+  color:#32867d;
 }
-#header .alertbar a {
-  color:#32867d
+.alertbar a {
+  color:#32867d;
+}
+.alertbar.modbar a {
+  margin: 0px 5px;
 }
 .box.filter_torrents .head,.colhead td,.colhead_dark td,tr.colhead,tr.colhead_dark,#inbox .box .head,#inbox .box .head,#reply_box h3,#inbox form .send_form #quickpost h3,.sidebar .box .head,.main_column .box .head.colhead_dark,.box.news_post .head,tr.colhead,tr.colhead_dark,.head.colhead_dark,.main_column .box .head {
   background:#5aada5;
@@ -200,7 +203,16 @@ span.last_read {
   text-shadow:none!important;color:inherit!important;font-size:inherit!important;font-family:inherit!important;
 }
 .alertbar {
-  padding:7px
+  text-align:center;
+  padding:10px;
+  background:#D0D0D0;
+  text-align:center;
+}
+.alertbar.warning {
+  color:#cc7100;
+}
+.alertbar.error {
+  color:#ff0000;
 }
 .sidebar .stats.nobullet a {
   padding:3px 6px
@@ -828,9 +840,6 @@ div#alerts {
 .forum-post__heading,.forum_post tr.colhead_dark,.forum_post .colhead_dark td {
   max-height:32px;padding-top:0;padding-bottom:0;height:32px;line-height:32px;
 }
-.alertbar {
-  text-align:center
-}
 .colhead td,.colhead_dark td,#inbox .box .head,.box.filter_torrents .head,#reply_box h3,tr .colhead_dark td,.sidebar .box .head,.main_column .box .head.colhead_dark,.box.news_post .head,tr.colhead,tr.colhead_dark,.head.colhead_dark,.main_column .box .head {
 
 }
@@ -1426,11 +1435,6 @@ div.noty_bar {
 }
 table#torrent_table strong {
   color:#313131
-}
-.alertbar {
-  padding:10px;
-  background:#D0D0D0;
-  text-align:center;
 }
 .box.filter_torrents .head,.colhead td,.colhead_dark td,tr.colhead,tr.colhead_dark,#inbox .box .head,#inbox .box .head,#reply_box h3,#inbox form .send_form #quickpost h3,.sidebar .box .head,.main_column .box .head.colhead_dark,.box.news_post .head,tr.colhead,tr.colhead_dark,.head.colhead_dark,.main_column .box .head {
   color:#F7F7F7;
