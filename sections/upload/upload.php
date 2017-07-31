@@ -1,12 +1,12 @@
 <?
 //**********************************************************************//
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Upload form ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-// This page relies on the TORRENT_FORM class. All it does is call    //
-// the necessary functions.                        //
+// This page relies on the TORRENT_FORM class. All it does is call      //
+// the necessary functions.                                             //
 //----------------------------------------------------------------------//
-// $Properties, $Err and $UploadForm are set in takeupload.php, and    //
-// are only used when the form doesn't validate and this page must be  //
-// called again.                            //
+// $Properties, $Err and $UploadForm are set in takeupload.php, and     //
+// are only used when the form doesn't validate and this page must be   //
+// called again.                                                        //
 //**********************************************************************//
 
 ini_set('max_file_uploads', '100');

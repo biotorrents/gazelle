@@ -36,6 +36,7 @@ define('QUERY_EXCEPTION', true); // Shut up debugging
 $Properties = [];
 $Type = $Categories[(int)$_POST['type']];
 $TypeID = $_POST['type'] + 1;
+$Properties['CategoryID'] = $TypeID;
 $Properties['CategoryName'] = $Type;
 $Properties['Title'] = $_POST['title'];
 $Properties['TitleRJ'] = $_POST['title_rj'];
