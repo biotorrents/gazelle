@@ -1235,23 +1235,11 @@ CREATE TABLE `torrents_screenshots` (
 CREATE TABLE `torrents_tags` (
   `TagID` int(10) NOT NULL DEFAULT '0',
   `GroupID` int(10) NOT NULL DEFAULT '0',
-  `PositiveVotes` int(6) NOT NULL DEFAULT '1',
-  `NegativeVotes` int(6) NOT NULL DEFAULT '1',
   `UserID` int(10) DEFAULT NULL,
   PRIMARY KEY (`TagID`,`GroupID`),
   KEY `TagID` (`TagID`),
   KEY `GroupID` (`GroupID`),
-  KEY `PositiveVotes` (`PositiveVotes`),
-  KEY `NegativeVotes` (`NegativeVotes`),
   KEY `UserID` (`UserID`)
-) ENGINE=InnoDB CHARSET=utf8;
-
-CREATE TABLE `torrents_tags_votes` (
-  `GroupID` int(10) NOT NULL,
-  `TagID` int(10) NOT NULL,
-  `UserID` int(10) NOT NULL,
-  `Way` enum('up','down') NOT NULL DEFAULT 'up',
-  PRIMARY KEY (`GroupID`,`TagID`,`UserID`,`Way`)
 ) ENGINE=InnoDB CHARSET=utf8;
 
 CREATE TABLE `u2f` (

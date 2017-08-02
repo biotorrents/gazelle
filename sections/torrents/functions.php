@@ -34,9 +34,7 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
         g.Time,
         GROUP_CONCAT(DISTINCT tags.Name SEPARATOR '|'),
         GROUP_CONCAT(DISTINCT tags.ID SEPARATOR '|'),
-        GROUP_CONCAT(tt.UserID SEPARATOR '|'),
-        GROUP_CONCAT(tt.PositiveVotes SEPARATOR '|'),
-        GROUP_CONCAT(tt.NegativeVotes SEPARATOR '|')
+        GROUP_CONCAT(tt.UserID SEPARATOR '|')
       FROM torrents_group AS g
         LEFT JOIN torrents_tags AS tt ON tt.GroupID = g.ID
         LEFT JOIN tags ON tags.ID = tt.TagID";

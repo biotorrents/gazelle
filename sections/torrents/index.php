@@ -139,12 +139,6 @@ if (!empty($_REQUEST['action'])) {
       include(SERVER_ROOT.'/sections/torrents/takemasspm.php');
       break;
 
-    case 'vote_tag':
-      enforce_login();
-      authorize();
-      include(SERVER_ROOT.'/sections/torrents/vote_tag.php');
-      break;
-
     case 'add_tag':
       enforce_login();
       include(SERVER_ROOT.'/sections/torrents/add_tag.php');

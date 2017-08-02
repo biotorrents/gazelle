@@ -22,7 +22,7 @@ $TorrentList = $TorrentCache[1];
 list($WikiBody, $WikiImage, $GroupID, $GroupName, $GroupNameRJ, $GroupNameJP, $GroupYear,
   $GroupStudio, $GroupSeries, $GroupCatalogueNumber, $GroupPages, $GroupCategoryID,
   $GroupDLsiteID, $GroupTime, $TorrentTags, $TorrentTagIDs, $TorrentTagUserIDs,
-  $TagPositiveVotes, $TagNegativeVotes, $Screenshots, $GroupFlags) = array_values($TorrentDetails);
+  $Screenshots, $GroupFlags) = array_values($TorrentDetails);
 
 if (!$GroupName) {
   if (!$GroupNameRJ) {
@@ -78,28 +78,15 @@ if ($GroupPages) {
 if ($GroupDLsiteID) {
   $DisplayName .= " [$GroupDLsiteID]";
 }
-/*
-if ($GroupVanityHouse) {
-  $DisplayName .= ' [Vanity House]';
-  $AltName .= ' [Vanity House]';
-}
-*/
-/*if ($GroupCategoryID == 1) {
-  $DisplayName .= ' ['.$ReleaseTypes[$ReleaseType].']';
-  $AltName .= ' ['.$ReleaseTypes[$ReleaseType].']';
-}*/
 
 $Tags = [];
 if ($TorrentTags != '') {
   $TorrentTags = explode('|', $TorrentTags);
   $TorrentTagIDs = explode('|', $TorrentTagIDs);
   $TorrentTagUserIDs = explode('|', $TorrentTagUserIDs);
-  $TagPositiveVotes = explode('|', $TagPositiveVotes);
-  $TagNegativeVotes = explode('|', $TagNegativeVotes);
 
   foreach ($TorrentTags as $TagKey => $TagName) {
     $Tags[$TagKey]['name'] = $TagName;
-    $Tags[$TagKey]['score'] = ($TagPositiveVotes[$TagKey] - $TagNegativeVotes[$TagKey]);
     $Tags[$TagKey]['id'] = $TorrentTagIDs[$TagKey];
     $Tags[$TagKey]['userid'] = $TorrentTagUserIDs[$TagKey];
 
@@ -110,13 +97,6 @@ if ($TorrentTags != '') {
   }
   uasort($Tags, 'compare');
 }
-
-/*if (check_perms('site_debug')) {
-  print_r($TorrentTags);
-  print_r($Tags);
-  print_r($TorrentTagUserIDs);
-  die();
-}*/
 
 $CoverArt = $Cache->get_value("torrents_cover_art_$GroupID");
 if (!$CoverArt) {
@@ -326,9 +306,6 @@ if (count($Tags) > 0) {
         <li>
           <a href="torrents.php?taglist=<?=$Tag['name']?>" style="float: left; display: block;" class="<?=display_str($Tag['class'])?>" ><?=display_str($Tag['display'])?></a>
           <div style="float: right; display: block; letter-spacing: -1px;" class="edit_tags_votes">
-          <a href="torrents.php?action=vote_tag&amp;way=up&amp;groupid=<?=$GroupID?>&amp;tagid=<?=$Tag['id']?>&amp;auth=<?=$LoggedUser['AuthKey']?>" title="Vote this tag up" class="brackets tooltip vote_tag_up">&and;</a>
-          <?=$Tag['score']?>
-          <a href="torrents.php?action=vote_tag&amp;way=down&amp;groupid=<?=$GroupID?>&amp;tagid=<?=$Tag['id']?>&amp;auth=<?=$LoggedUser['AuthKey']?>" title="Vote this tag down" class="brackets tooltip vote_tag_down">&or;</a>
 <?    if (check_perms('users_warn')) { ?>
           <a href="user.php?id=<?=$Tag['userid']?>" title="View the profile of the user that added this tag" class="brackets tooltip view_tag_user">U</a>
 <?    } ?>
@@ -336,7 +313,7 @@ if (count($Tags) > 0) {
           <span class="remove remove_tag"><a href="torrents.php?action=delete_tag&amp;groupid=<?=$GroupID?>&amp;tagid=<?=$Tag['id']?>&amp;auth=<?=$LoggedUser['AuthKey']?>" class="brackets tooltip" title="Remove tag">X</a></span>
 <?    } ?>
           </div>
-          <br style="clear: both;" />
+          <br>
         </li>
 <?
   }

@@ -3,10 +3,10 @@
 
 // error out on invalid requests (before caching)
 if (isset($_GET['details'])) {
-  if (in_array($_GET['details'],array('ut','ur','v'))) {
+  if (in_array($_GET['details'], ['ut','ur'])) {
     $Details = $_GET['details'];
   } else {
-    print json_encode(array('status' => 'failure'));
+    print json_encode(['status' => 'failure']);
     die();
   }
 } else {
@@ -15,7 +15,7 @@ if (isset($_GET['details'])) {
 
 // defaults to 10 (duh)
 $Limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
-$Limit = in_array($Limit, array(10, 100, 250)) ? $Limit : 10;
+$Limit = in_array($Limit, [10, 100, 250]) ? $Limit : 10;
 $OuterResults = [];
 
 if ($Details == 'all' || $Details == 'ut') {
@@ -24,9 +24,7 @@ if ($Details == 'all' || $Details == 'ut') {
       SELECT
         t.ID,
         t.Name,
-        COUNT(tt.GroupID) AS Uses,
-        SUM(tt.PositiveVotes - 1) AS PosVotes,
-        SUM(tt.NegativeVotes - 1) AS NegVotes
+        COUNT(tt.GroupID) AS Uses
       FROM tags AS t
         JOIN torrents_tags AS tt ON tt.TagID = t.ID
       GROUP BY tt.TagID
@@ -59,50 +57,24 @@ if ($Details == 'all' || $Details == 'ur') {
   $OuterResults[] = generate_tag_json('Most Used Request Tags', 'ur', $TopRequestTags, $Limit);
 }
 
-if ($Details == 'all' || $Details == 'v') {
-  if (!$TopVotedTags = $Cache->get_value("topvotedtag_$Limit")) {
-    $DB->query("
-      SELECT
-        t.ID,
-        t.Name,
-        COUNT(tt.GroupID) AS Uses,
-        SUM(tt.PositiveVotes - 1) AS PosVotes,
-        SUM(tt.NegativeVotes - 1) AS NegVotes
-      FROM tags AS t
-        JOIN torrents_tags AS tt ON tt.TagID = t.ID
-      GROUP BY tt.TagID
-      ORDER BY PosVotes DESC
-      LIMIT $Limit");
-    $TopVotedTags = $DB->to_array();
-    $Cache->cache_value("topvotedtag_$Limit", $TopVotedTags, 3600 * 12);
-  }
-
-  $OuterResults[] = generate_tag_json('Most Highly Voted Tags', 'v', $TopVotedTags, $Limit);
-}
-
-print
-  json_encode(
-    array(
-      'status' => 'success',
-      'response' => $OuterResults
-    )
-  );
+print json_encode([
+  'status' => 'success',
+  'response' => $OuterResults
+]);
 
 function generate_tag_json($Caption, $Tag, $Details, $Limit) {
   $results = [];
   foreach ($Details as $Detail) {
-    $results[] = array(
+    $results[] = [
       'name' => $Detail['Name'],
-      'uses' => (int)$Detail['Uses'],
-      'posVotes' => (int)$Detail['PosVotes'],
-      'negVotes' => (int)$Detail['NegVotes']
-    );
+      'uses' => (int)$Detail['Uses']
+    ];
   }
 
-  return array(
+  return [
     'caption' => $Caption,
     'tag' => $Tag,
     'limit' => (int)$Limit,
     'results' => $results
-    );
+  ];
 }

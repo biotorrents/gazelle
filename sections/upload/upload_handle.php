@@ -529,11 +529,10 @@ if (!$Properties['GroupID']) {
 
       $DB->query("
         INSERT INTO torrents_tags
-          (TagID, GroupID, UserID, PositiveVotes)
+          (TagID, GroupID, UserID)
         VALUES
-          ($TagID, $GroupID, $LoggedUser[ID], 10)
-        ON DUPLICATE KEY UPDATE
-          PositiveVotes = PositiveVotes + 1;
+          ($TagID, $GroupID, $LoggedUser[ID])
+        ON DUPLICATE KEY UPDATE TagID=TagID
       ");
     }
   }
@@ -718,34 +717,7 @@ send_irc('PRIVMSG '.BOT_ANNOUNCE_CHAN.' '.html_entity_decode($Announce, ENT_QUOT
 $Debug->set_flag('upload: announced on irc');
 
 // Manage notifications
-/*
-$UsedFormatBitrates = [];
 
-if (!$IsNewGroup) {
-  // maybe there are torrents in the same release as the new torrent. Let's find out (for notifications)
-  $GroupInfo = get_group_info($GroupID, true, 0, false);
-
-  $ThisMedia = display_str($Properties['Media']);
-
-  $ThisRemastered = display_str($Properties['Remastered']);
-  $ThisRemasterYear = display_str($Properties['RemasterYear']);
-  $ThisRemasterTitle = display_str($Properties['RemasterTitle']);
-  $ThisRemasterRecordLabel = display_str($Properties['RemasterRecordLabel']);
-  $ThisRemasterCatalogueNumber = display_str($Properties['RemasterCatalogueNumber']);
-
-  foreach ($GroupInfo[1] as $TorrentInfo) {
-    if (($TorrentInfo['Media'] == $ThisMedia)
-      && ($TorrentInfo['Remastered'] == $ThisRemastered)
-      && ($TorrentInfo['RemasterYear'] == (int)$ThisRemasterYear)
-      && ($TorrentInfo['RemasterTitle'] == $ThisRemasterTitle)
-      && ($TorrentInfo['RemasterRecordLabel'] == $ThisRemasterRecordLabel)
-      && ($TorrentInfo['RemasterCatalogueNumber'] == $ThisRemasterCatalogueNumber)
-      && ($TorrentInfo['ID'] != $TorrentID)) {
-      $UsedFormatBitrates[] = array('format' => $TorrentInfo['Format'], 'bitrate' => $TorrentInfo['Encoding']);
-    }
-  }
-}
-*/
 // For RSS
 $Item = $Feed->item($Title, Text::strip_bbcode($Body), 'torrents.php?action=download&amp;authkey=[[AUTHKEY]]&amp;torrent_pass=[[PASSKEY]]&amp;id='.$TorrentID, $LoggedUser['Username'], 'torrents.php?id='.$GroupID, trim($Properties['TagList']));
 

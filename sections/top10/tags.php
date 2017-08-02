@@ -1,7 +1,7 @@
 <?
 // error out on invalid requests (before caching)
 if (isset($_GET['details'])) {
-  if (in_array($_GET['details'],array('ut','ur','v'))) {
+  if (in_array($_GET['details'], ['ut','ur'])) {
     $Details = $_GET['details'];
   } else {
     error(404);
@@ -22,7 +22,7 @@ View::show_header('Top 10 Tags');
 
 // defaults to 10 (duh)
 $Limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
-$Limit = in_array($Limit, array(10,100,250)) ? $Limit : 10;
+$Limit = in_array($Limit, [10,100,250]) ? $Limit : 10;
 
 if ($Details == 'all' || $Details == 'ut') {
   if (!$TopUsedTags = $Cache->get_value('topusedtag_'.$Limit)) {
@@ -30,9 +30,7 @@ if ($Details == 'all' || $Details == 'ut') {
       SELECT
         t.ID,
         t.Name,
-        COUNT(tt.GroupID) AS Uses,
-        SUM(tt.PositiveVotes-1) AS PosVotes,
-        SUM(tt.NegativeVotes-1) AS NegVotes
+        COUNT(tt.GroupID) AS Uses
       FROM tags AS t
         JOIN torrents_tags AS tt ON tt.TagID=t.ID
       GROUP BY tt.TagID
@@ -51,8 +49,7 @@ if ($Details == 'all' || $Details == 'ur') {
       SELECT
         t.ID,
         t.Name,
-        COUNT(r.RequestID) AS Uses,
-        '',''
+        COUNT(r.RequestID) AS Uses
       FROM tags AS t
         JOIN requests_tags AS r ON r.TagID=t.ID
       GROUP BY r.TagID
@@ -62,28 +59,7 @@ if ($Details == 'all' || $Details == 'ur') {
     $Cache->cache_value('toprequesttag_'.$Limit, $TopRequestTags, 3600 * 12);
   }
 
-  generate_tag_table('Most Used Request Tags', 'ur', $TopRequestTags, $Limit, false, true);
-}
-
-if ($Details == 'all' || $Details == 'v') {
-  if (!$TopVotedTags = $Cache->get_value('topvotedtag_'.$Limit)) {
-    $DB->query("
-      SELECT
-        t.ID,
-        t.Name,
-        COUNT(tt.GroupID) AS Uses,
-        SUM(tt.PositiveVotes-1) AS PosVotes,
-        SUM(tt.NegativeVotes-1) AS NegVotes
-      FROM tags AS t
-        JOIN torrents_tags AS tt ON tt.TagID=t.ID
-      GROUP BY tt.TagID
-      ORDER BY PosVotes DESC
-      LIMIT $Limit");
-    $TopVotedTags = $DB->to_array();
-    $Cache->cache_value('topvotedtag_'.$Limit, $TopVotedTags, 3600 * 12);
-  }
-
-  generate_tag_table('Most Highly Voted Tags', 'v', $TopVotedTags, $Limit);
+  generate_tag_table('Most Used Request Tags', 'ur', $TopRequestTags, $Limit, true);
 }
 
 echo '</div>';
@@ -91,7 +67,7 @@ View::show_footer();
 exit;
 
 // generate a table based on data from most recent query to $DB
-function generate_tag_table($Caption, $Tag, $Details, $Limit, $ShowVotes = true, $RequestsTable = false) {
+function generate_tag_table($Caption, $Tag, $Details, $Limit, $RequestsTable = false) {
   if ($RequestsTable) {
     $URLString = 'requests.php?tags=';
   } else {
@@ -123,11 +99,7 @@ function generate_tag_table($Caption, $Tag, $Details, $Limit, $ShowVotes = true,
   <tr class="colhead">
     <td class="center">Rank</td>
     <td>Tag</td>
-    <td style="text-align: right;">Uses</td>
-<?  if ($ShowVotes) {  ?>
-    <td style="text-align: right;">Pos. votes</td>
-    <td style="text-align: right;">Neg. votes</td>
-<?  }  ?>
+    <td class="center">Uses</td>
   </tr>
 <?
   // in the unlikely event that query finds 0 rows...
@@ -154,10 +126,6 @@ function generate_tag_table($Caption, $Tag, $Details, $Limit, $ShowVotes = true,
     <td class="center"><?=$Rank?></td>
     <td><a class="<?=$Class?>" href="<?=$URLString?><?=$Detail['Name']?>"><?=$DisplayName?></a></td>
     <td class="number_column"><?=number_format($Detail['Uses'])?></td>
-<?    if ($ShowVotes) { ?>
-    <td class="number_column"><?=number_format($Detail['PosVotes'])?></td>
-    <td class="number_column"><?=number_format($Detail['NegVotes'])?></td>
-<?    } ?>
   </tr>
 <?
   }

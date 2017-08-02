@@ -35,7 +35,7 @@ if (!isset($_GET['id']) || !is_number($_GET['id'])) {
   list($WikiBody, $WikiImage, $GroupID, $GroupName, $GroupNameJP, $GroupYear,
     $GroupStudio, $GroupSeries, $GroupCatalogueNumber, $GroupCategoryID,
     $GroupDLSite, $GroupTime, $TorrentTags, $TorrentTagIDs, $TorrentTagUserIDs,
-    $TagPositiveVotes, $TagNegativeVotes, $Screenshots, $GroupFlags) = array_values($GroupDetails);
+    $Screenshots, $GroupFlags) = array_values($GroupDetails);
 
   $DisplayName = $GroupName;
   $AltName = $GroupName; // Goes in the alt text of the image

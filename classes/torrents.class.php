@@ -465,9 +465,6 @@ class Torrents {
       DELETE FROM torrents_tags
       WHERE GroupID = '$GroupID'");
     G::$DB->query("
-      DELETE FROM torrents_tags_votes
-      WHERE GroupID = '$GroupID'");
-    G::$DB->query("
       DELETE FROM bookmarks_torrents
       WHERE GroupID = '$GroupID'");
     G::$DB->query("

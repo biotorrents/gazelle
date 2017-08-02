@@ -23,10 +23,6 @@ if (list($TagName) = $DB->next_record()) {
 }
 
 $DB->query("
-  DELETE FROM torrents_tags_votes
-  WHERE GroupID = '$GroupID'
-    AND TagID = '$TagID'");
-$DB->query("
   DELETE FROM torrents_tags
   WHERE GroupID = '$GroupID'
     AND TagID = '$TagID'");

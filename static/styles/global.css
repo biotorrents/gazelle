@@ -695,14 +695,6 @@ tr.torrent .bookmark>a:after {
   margin-bottom: 10px;
 }
 
-.vote_tag_up, .vote_artist_up, .vote_album_up {
-  font-weight: bolder;
-}
-
-.vote_tag_down, .vote_artist_down, .vote_album_down {
-  font-weight: bolder;
-}
-
 .noborder {
   border: none;
 }
