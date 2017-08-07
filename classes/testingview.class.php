@@ -55,7 +55,7 @@ class TestingView {
       <div class="box box2">
         <div class="head">
           <span><?=self::render_method_definition($Method)?></span>
-          <span style="float: right;">
+          <span class="float_right">
             <a data-toggle-target="#method_params_<?=$Index?>" class="brackets">Params</a>
             <a href="#" class="brackets run" data-gazelle-id="<?=$Index?>" data-gazelle-class="<?=$ClassName?>" data-gazelle-method="<?=$MethodName?>">Run</a>
           </span>

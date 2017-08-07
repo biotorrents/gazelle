@@ -91,7 +91,7 @@ View::show_header('Gazelle Change Log', 'datetime_picker', 'datetime_picker');
     <div class="head">
       <span><?=$Change['Time2']?> by <?=$Change['Author']?></span>
 <?    if ($CanEdit) { ?>
-      <span style="float: right;">
+      <span class="float_right">
         <form id="delete_<?=$Change['ID']?>" method="post" action="">
           <input type="hidden" name="perform" value="remove" />
           <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />

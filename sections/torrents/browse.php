@@ -158,7 +158,7 @@ View::show_header('Browse Torrents', 'browse');
         <span id="ft_advanced_link" class="<?=$HideBasic?>"><a href="#" onclick="return toggleTorrentSearch('advanced');">Advanced</a></span>
         Search
       </strong>
-      <span style="float: right;">
+      <span class="float_right">
         <a href="#" onclick="return toggleTorrentSearch(0);" id="ft_toggle" class="brackets"><?=$HideFilter ? 'Show' : 'Hide'?></a>
       </span>
     </div>
@@ -407,7 +407,7 @@ View::show_header('Browse Torrents', 'browse');
         </tr>
       </table>
       <div class="submit ft_submit">
-        <span style="float: left;"><?=number_format($NumResults)?> Results</span>
+        <span class="float_left"><?=number_format($NumResults)?> Results</span>
         <input type="submit" value="Filter torrents" />
         <input type="hidden" name="action" id="ft_type" value="<?=($AdvancedSearch ? 'advanced' : 'basic')?>" />
         <input type="hidden" name="searchsubmit" value="1" />

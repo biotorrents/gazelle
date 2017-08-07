@@ -311,8 +311,8 @@ function build_torrents_table($Cache, $DB, $LoggedUser, $GroupID, $GroupName, $G
   <table class="filelist_table">
     <tr class="colhead_dark">
       <td>
-        <div class="filelist_title" style="float: left;">File Names' . $RegenLink . '</div>
-        <div class="filelist_path" style="float: right;">' . ($FilePath ? "/$FilePath/" : '') . '</div>
+        <div class="filelist_title float_left">File Names' . $RegenLink . '</div>
+        <div class="filelist_path float_right">' . ($FilePath ? "/$FilePath/" : '') . '</div>
       </td>
       <td>
         <strong>Size</strong>

@@ -249,11 +249,11 @@ foreach ($TorrentList as $Group) {
             <strong><?=$DisplayName?></strong>
 <?  if (Bookmarks::has_bookmarked('torrent', $GroupID)) { ?>
             <span class="remove_bookmark float_right">
-              <a style="float: right;" href="#" id="bookmarklink_torrent_<?=$GroupID?>" class="brackets" onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove bookmark</a>
+              <a class="float_right" href="#" id="bookmarklink_torrent_<?=$GroupID?>" class="brackets" onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove bookmark</a>
             </span>
 <?  } else { ?>
             <span class="add_bookmark float_right">
-              <a style="float: right;" href="#" id="bookmarklink_torrent_<?=$GroupID?>" class="brackets" onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
+              <a class="float_right" href="#" id="bookmarklink_torrent_<?=$GroupID?>" class="brackets" onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
             </span>
 <?  } ?>
             <div class="tags"><?=$TorrentTags->format('torrents.php?taglist=', $Name)?></div>
@@ -502,8 +502,8 @@ if (check_perms('site_torrents_notify')) {
 <? foreach ($ZIPList as $ListItem) { ?>
             <li id="list<?=$ListItem?>">
               <input type="hidden" name="list[]" value="<?=$ListItem?>" />
-              <span style="float: left;"><?=$ZIPOptions[$ListItem]['2']?></span>
-              <span class="remove remove_collector"><a href="#" onclick="remove_selection('<?=$ListItem?>'); return false;" style="float: right;" class="brackets tooltip" title="Remove format from the Collector">X</a></span>
+              <span class="float_left"><?=$ZIPOptions[$ListItem]['2']?></span>
+              <span class="remove remove_collector"><a href="#" onclick="remove_selection('<?=$ListItem?>'); return false;" class="float_right brackets tooltip" title="Remove format from the Collector">X</a></span>
               <br style="clear: all;" />
             </li>
 <? } ?>

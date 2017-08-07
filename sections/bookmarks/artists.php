@@ -66,7 +66,7 @@ foreach ($ArtistList as $Artist) {
     <tr class="row bookmark_<?=$ArtistID?>">
       <td>
         <a href="artist.php?id=<?=$ArtistID?>"><?=$Name?></a>
-        <span style="float: right;">
+        <span class="float_right">
 <?
   if (check_perms('site_torrents_notify')) {
     if (($Notify = $Cache->get_value('notify_artists_'.$LoggedUser['ID'])) === false) {

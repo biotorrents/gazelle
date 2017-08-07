@@ -65,7 +65,7 @@ if ($TotalQuestions > QUESTIONS_PER_PAGE) {
         <a class="post_id" href="questions.php#question<?=$Question['ID']?>">#<?=$Question['ID']?></a>
         <?=Users::format_username($Question['UserID'])?> - <?=time_diff($Question['Date'])?>
       </span>
-      <span style="float: right;">
+      <span class="float_right">
 <?        if ($Question['Responses'] > 0) { ?>
           <a href="#" id="<?=$Question['ID']?>" class="view_responses brackets"><?=$Question['Responses'] == 1 ? ("View " . $Question['Responses'] . " response") : ("View " . $Question['Responses'] . " responses")?></a>
           -

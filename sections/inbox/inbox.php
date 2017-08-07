@@ -94,7 +94,7 @@ echo "\t\t$Pages\n";
         <input type="radio" name="searchtype" value="user"<?=(empty($_GET['searchtype']) || $_GET['searchtype'] === 'user' ? ' checked="checked"' : '')?> /> User
         <input type="radio" name="searchtype" value="subject"<?=(!empty($_GET['searchtype']) && $_GET['searchtype'] === 'subject' ? ' checked="checked"' : '')?> /> Subject
         <input type="radio" name="searchtype" value="message"<?=(!empty($_GET['searchtype']) && $_GET['searchtype'] === 'message' ? ' checked="checked"' : '')?> /> Message
-        <span style="float: right;">
+        <span class="float_right">
 <?      // provide a temporary toggle for sorting PMs
     $ToggleTitle = 'Temporary toggle switch for sorting PMs. To permanently change the sorting behavior, edit the setting in your profile.';
     $BaseURL = 'inbox.php';

@@ -448,7 +448,7 @@ foreach ($Thread as $Key => $Post) {
   </colgroup>
   <tr class="colhead_dark">
     <td colspan="<?=Users::has_avatars_enabled() ? 2 : 1?>">
-      <div style="float: left;"><a class="post_id" href="forums.php?action=viewthread&amp;threadid=<?=$ThreadID?>&amp;postid=<?=$PostID?>#post<?=$PostID?>">#<?=$PostID?></a>
+      <div class="float_left"><a class="post_id" href="forums.php?action=viewthread&amp;threadid=<?=$ThreadID?>&amp;postid=<?=$PostID?>#post<?=$PostID?>">#<?=$PostID?></a>
         <?=Users::format_username($AuthorID, true, true, true, true, true, $IsDonorForum);  echo "\n";?>
         <?=time_diff($AddedTime, 2); echo "\n";?>
         - <a href="#quickpost" id="quote_<?=$PostID?>" onclick="Quote('<?=$PostID?>', '<?=$Username?>', true);" class="brackets">Quote</a>
@@ -461,7 +461,7 @@ foreach ($Thread as $Key => $Post) {
 <?
   }
   if ($PostID == $ThreadInfo['StickyPostID']) { ?>
-        <strong><span class="sticky_post_label" class="brackets">Sticky</span></strong>
+        <strong><span class="sticky_post_label brackets">Sticky</span></strong>
 <?    if (check_perms('site_moderate_forums')) { ?>
         - <a href="forums.php?action=sticky_post&amp;threadid=<?=$ThreadID?>&amp;postid=<?=$PostID?>&amp;remove=true&amp;auth=<?=$LoggedUser['AuthKey']?>" title="Unsticky this post" class="brackets tooltip">X</a>
 <?
@@ -475,7 +475,7 @@ foreach ($Thread as $Key => $Post) {
   }
 ?>
       </div>
-      <div id="bar<?=$PostID?>" style="float: right;">
+      <div id="bar<?=$PostID?>" class="float_right">
         <a href="reports.php?action=report&amp;type=post&amp;id=<?=$PostID?>" class="brackets">Report</a>
 <?
   if (check_perms('users_warn') && $AuthorID != $LoggedUser['ID']) {
@@ -645,7 +645,7 @@ if (check_perms('site_moderate_forums')) {
       <tr>
         <td colspan="2" class="center">
           <input type="submit" value="Edit thread" tabindex="2" />
-          <span style="float: right;">
+          <span class="float_right">
             <input type="submit" name="trash" value="Trash" tabindex="2" />
           </span>
         </td>

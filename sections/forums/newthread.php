@@ -40,7 +40,7 @@ View::show_header('Forums &gt; '.$Forum['Name'].' &gt; New Topic', 'comments,bbc
         <p><strong id="pollquestion"></strong></p>
         <div id="pollanswers"></div>
         <br /><input type="radio" name="vote" id="answer_0" value="0" /> <label for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br /><br />
-        <input type="button" style="float: left;" value="Vote" />
+        <input type="button" class="float_left" value="Vote" />
       </div>
     </div>
 <?  } ?>
@@ -53,11 +53,11 @@ View::show_header('Forums &gt; '.$Forum['Name'].' &gt; New Topic', 'comments,bbc
       </colgroup>
       <tr class="colhead_dark">
         <td colspan="<?=Users::has_avatars_enabled() ? 2 : 1 ?>">
-          <span style="float: left;"><a href="#newthreadpreview">#XXXXXX</a>
+          <span class="float_left"><a href="#newthreadpreview">#XXXXXX</a>
             by <strong><?=Users::format_username($LoggedUser['ID'], true, true, true, true, true)?></strong>
           Just now
           </span>
-          <span id="barpreview" style="float: right;">
+          <span id="barpreview" class="float_right">
             <a href="#newthreadpreview" class="brackets">Report</a>
             &nbsp;
             <a href="#">&uarr;</a>

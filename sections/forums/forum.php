@@ -235,7 +235,7 @@ if (count($Forum) === 0) {
   <tr class="row">
     <td class="<?=$Read?> <?=$Tooltip?>" title="<?=ucwords(str_replace('_', ' ', $Read))?>"></td>
     <td>
-      <span style="float: left;" class="last_topic">
+      <span class="float_left last_topic">
 <?
     $TopicLength = 75 - (2 * count($PageLinks));
     unset($PageLinks);
@@ -253,7 +253,7 @@ if (count($Forum) === 0) {
         <svg width="15" height="11"><polygon points="0,3 0,8 8,8 8,11 15,5.5 8,0 8,3"/></svg>
       </a>
 <?    } ?>
-      <span style="float: right;" class="last_poster">
+      <span class="float_right last_poster">
         by <?=Users::format_username($LastAuthorID, false, false, false, false, false)?> <?=time_diff($LastTime,1)?>
       </span>
     </td>

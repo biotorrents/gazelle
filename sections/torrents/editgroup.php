@@ -147,7 +147,7 @@ View::show_header('Edit torrent group', 'upload');
 <?
   if ($Contributed || check_perms('screenshots_add') || check_perms('torrents_edit')) {
 ?>
-          <a style="float: right;" onclick="AddScreenshotField()" class="brackets">+</a>
+          <a class="float_right brackets" onclick="AddScreenshotField()">+</a>
 <?
   }
 

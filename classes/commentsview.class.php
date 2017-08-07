@@ -39,7 +39,7 @@ class CommentsView {
       </colgroup>
       <tr class="colhead_dark">
         <td colspan="<?=(Users::has_avatars_enabled() ? 2 : 1)?>">
-          <div style="float: left;"><a class="post_id" href="<?=$Link?>">#<?=$PostID?></a>
+          <div class="float_left"><a class="post_id" href="<?=$Link?>">#<?=$PostID?></a>
             <?=$Header?>
 <?    if ($Tools) { ?>
             - <a href="#quickpost" onclick="Quote('<?=$PostID?>','<?=$UserInfo['Username']?>', true);" class="brackets">Quote</a>
@@ -50,7 +50,7 @@ class CommentsView {
             - <a href="#post<?=$PostID?>" onclick="Delete('<?=$PostID?>');" class="brackets">Delete</a>
 <?      } ?>
           </div>
-          <div id="bar<?=$PostID?>" style="float: right;">
+          <div id="bar<?=$PostID?>" class="float_right">
             <a href="reports.php?action=report&amp;type=comment&amp;id=<?=$PostID?>" class="brackets">Report</a>
 <?
       if (check_perms('users_warn') && $AuthorID != G::$LoggedUser['ID'] && G::$LoggedUser['Class'] >= $UserInfo['Class']) {

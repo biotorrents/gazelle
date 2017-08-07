@@ -223,7 +223,7 @@ if (empty($Results)) {
     </colgroup>
     <tr class="colhead_dark">
       <td colspan="<?=Users::has_avatars_enabled() ? 2 : 1 ?>">
-        <span style="float: left;">
+        <span class="float_left">
           <?=time_diff($AddedTime) ?>
           in <a href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>&amp;postid=<?=$PostID?>#post<?=$PostID?>" class="tooltip" title="<?=display_str($ThreadTitle)?>"><?=Format::cut_string($ThreadTitle, 75)?></a>
 <?
@@ -235,7 +235,7 @@ if (empty($Results)) {
 ?>
         </span>
 <?      if (!empty($LastRead)) { ?>
-        <span style="float: left;" class="tooltip last_read" title="Jump to last read">
+        <span class="float_left tooltip last_read" title="Jump to last read">
           <a href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>&amp;postid=<?=$LastRead?>#post<?=$LastRead?>"></a>
         </span>
 <?      }
@@ -244,8 +244,8 @@ if (empty($Results)) {
         </span>
 <?    }
 ?>
-        <span id="bar<?=$PostID ?>" style="float: right;">
-<?     if ($ViewingOwn && !in_array($TopicID, $UserSubscriptions)) { ?>
+        <span id="bar<?=$PostID ?>" class="float_right">
+<?    if ($ViewingOwn && !in_array($TopicID, $UserSubscriptions)) { ?>
           <a href="#" onclick="Subscribe(<?=$TopicID?>); $('.subscribelink<?=$TopicID?>').remove(); return false;" class="brackets subscribelink<?=$TopicID?>">Subscribe</a>
           &nbsp;
 <?     } ?>

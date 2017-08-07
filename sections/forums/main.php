@@ -68,7 +68,7 @@ foreach ($Forums as $Forum) {
     <td class="number_column">0</td>
 <? } else { ?>
     <td>
-      <span style="float: left;" class="last_topic">
+      <span class="float_left last_topic">
         <a href="forums.php?action=viewthread&amp;threadid=<?=$LastTopicID?>" class="tooltip" data-title-plain="<?=display_str($LastTopic)?>"><?=display_str(Format::cut_string($LastTopic, 50, 1))?></a>
       </span>
 <? if (!empty($LastRead[$LastTopicID])) { ?>
@@ -76,7 +76,7 @@ foreach ($Forums as $Forum) {
         <svg width="15" height="11"><polygon points="0,3 0,8 8,8 8,11 15,5.5 8,0 8,3"/></svg>
       </a>
 <? } ?>
-      <span style="float: right;" class="last_poster">by <?=Users::format_username($LastAuthorID, false, false, false)?> <?=time_diff($LastTime, 1)?></span>
+      <span class="float_right last_poster">by <?=Users::format_username($LastAuthorID, false, false, false)?> <?=time_diff($LastTime, 1)?></span>
     </td>
     <td class="number_column"><?=number_format($NumTopics)?></td>
     <td class="number_column"><?=number_format($NumPosts)?></td>

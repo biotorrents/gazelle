@@ -55,7 +55,7 @@ View::show_header($UserInfo['Username'] . "'s answers", 'questions,bbcode');
         <a class="post_id" href="questions.php?action=view_answers&amp;userid=<?=$UserID?>#question<?=$Question['ID']?>">#<?=$Question['ID']?></a>
         Question by <?=Users::format_username($Question['UserID'])?> - <?=time_diff($Question['QuestionDate'])?>
       </span>
-      <span style="float: right;">
+      <span class="float_right">
 <?    if ($Question['Responses'] > 0) { ?>
         <a href="#" data-gazelle-userid="<?=$UserID?>" id="<?=$Question['ID']?>" class="view_responses brackets"><?=$Question['Responses'] == 1 ? ("View " . $Question['Responses'] . " other response") : ("View " . $Question['Responses'] . " other responses")?></a>
         -

@@ -210,10 +210,10 @@ if (!$NumResults) {
   <table style="margin-top: 8px;" class="subscribed_collages_table">
     <tr class="colhead_dark">
       <td>
-        <span style="float: left;">
+        <span class="float_left">
           <strong><a href="collage.php?id=<?=$CollageID?>"><?=$CollageName?></a></strong> (<?=$NewTorrentCount?> new torrent<?=($NewTorrentCount == 1 ? '' : 's')?>)
         </span>&nbsp;
-        <span style="float: right;">
+        <span class="float_right">
           <a data-toggle-target="#discog_table_<?=$CollageID?>" data-toggle-replace="<?=($ShowAll ? 'Hide' : 'Show')?>" class="brackets"><?=($ShowAll ? 'Show' : 'Hide')?></a>&nbsp;&nbsp;&nbsp;<a href="userhistory.php?action=catchup_collages&amp;auth=<?=$LoggedUser['AuthKey']?>&amp;collageid=<?=$CollageID?>" class="brackets">Catch up</a>&nbsp;&nbsp;&nbsp;<a href="#" onclick="CollageSubscribe(<?=$CollageID?>); return false;" id="subscribelink<?=$CollageID?>" class="brackets">Unsubscribe</a>
         </span>
       </td>

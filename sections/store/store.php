@@ -39,8 +39,8 @@ View::show_header('Store');
 <div class="thin">
   <h2 id="general">Store</h2>
   <div class="box pad">
-    <h3 id="lists" style="float: left;">You have <?=number_format($LoggedUser['BonusPoints'])?> <?=BONUS_POINTS?> to spend</h3>
-    <h3 id="lists" style="float: right;">You're making <?=$PointsPerHour?> (<?=$PointsPerDay?>)</h3>
+    <h3 id="lists" class="float_left">You have <?=number_format($LoggedUser['BonusPoints'])?> <?=BONUS_POINTS?> to spend</h3>
+    <h3 id="lists" class="float_right">You're making <?=$PointsPerHour?> (<?=$PointsPerDay?>)</h3>
     <table width="100%" class="store_table">
       <tr class="colhead">
         <td style="width: 100px;">Item</td>

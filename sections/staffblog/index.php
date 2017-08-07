@@ -84,7 +84,7 @@ if (check_perms('admin_manage_blog')) {
     <div class="box box2 thin">
       <div class="head">
         <?=((empty($_GET['action'])) ? 'Create a staff blog post' : 'Edit staff blog post')?>
-        <span style="float: right;">
+        <span class="float_right">
           <a data-toggle-target="#postform" data-toggle-replace="<?=(($_REQUEST['action'] != 'editblog') ? 'Hide' : 'Show')?>" class="brackets"><?=(($_REQUEST['action'] != 'editblog') ? 'Show' : 'Hide')?></a>
         </span>
       </div>

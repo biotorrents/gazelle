@@ -24,11 +24,11 @@ View::show_header("Service Stats");
       <tr><td colspan="2"><strong>Threads (Active)</strong></td></tr>
       <tr>
         <td>Cache:</td>
-        <td><?=number_format($MemStats['threads'])?> <span style="float: right;">(100.000%)</span></td>
+        <td><?=number_format($MemStats['threads'])?> <span class="float_right">(100.000%)</span></td>
       </tr>
       <tr>
         <td<? if ($DBStats['Threads_connected']['Value'] / $DBStats['Threads_created']['Value'] > 0.7) { echo ' class="invalid" '; } ?>>Database:</td>
-        <td><?=number_format($DBStats['Threads_created']['Value'])?> <span style="float: right;">(<?=number_format(($DBStats['Threads_connected']['Value'] / $DBStats['Threads_created']['Value']) * 100,3)?>%)</span></td>
+        <td><?=number_format($DBStats['Threads_created']['Value'])?> <span class="float_right">(<?=number_format(($DBStats['Threads_connected']['Value'] / $DBStats['Threads_created']['Value']) * 100,3)?>%)</span></td>
       </tr>
       <tr><td colspan="2"></td></tr>
       <tr><td colspan="2"><strong>Connections</strong></td></tr>
@@ -52,7 +52,7 @@ View::show_header("Service Stats");
       </tr>
       <tr>
         <td<? if ($MemStats['bytes'] / $MemStats['limit_maxbytes'] > 0.85) { echo ' class="tooltip invalid" title="Evictions begin when storage exceeds 85%" '; } ?>>Cache Storage:</td>
-        <td><?=Format::get_size($MemStats['bytes'])?> <span style="float: right;">(<?=number_format(($MemStats['bytes'] / $MemStats['limit_maxbytes']) * 100, 3);?>%)</span></td>
+        <td><?=Format::get_size($MemStats['bytes'])?> <span class="float_right">(<?=number_format(($MemStats['bytes'] / $MemStats['limit_maxbytes']) * 100, 3);?>%)</span></td>
       </tr>
       <tr><td colspan="2"></td></tr>
       <tr><td colspan="2"><strong>Utilities</strong></td></tr>
@@ -96,47 +96,47 @@ View::show_header("Service Stats");
       <tr><td colspan="2"><strong>Get/Select (Success)</strong></td></tr>
       <tr>
         <td<? if ($MemStats['get_hits'] / $MemStats['cmd_get'] < 0.7) { echo ' class="invalid" '; } ?>>Cache:</td>
-        <td><?=number_format($MemStats['get_hits'])?> <span style="float: right;">(<?=number_format(($MemStats['get_hits'] / $MemStats['cmd_get']) * 100, 3);?>%)</span></td>
+        <td><?=number_format($MemStats['get_hits'])?> <span class="float_right">(<?=number_format(($MemStats['get_hits'] / $MemStats['cmd_get']) * 100, 3);?>%)</span></td>
       </tr>
       <tr>
         <td>Database:</td>
-        <td><?=number_format($DBStats['Com_select']['Value'])?> <span style="float: right;">(100.000%)</span></td>
+        <td><?=number_format($DBStats['Com_select']['Value'])?> <span class="float_right">(100.000%)</span></td>
       </tr>
       <tr><td colspan="2"><strong>Set/Insert (Success)</strong></td></tr>
       <tr>
         <td>Cache:</td>
-        <td><?=number_format($MemStats['cmd_set'])?> <span style="float: right;">(100.000%)</span></td>
+        <td><?=number_format($MemStats['cmd_set'])?> <span class="float_right">(100.000%)</span></td>
       </tr>
       <tr>
         <td>Database:</td>
-        <td><?=number_format($DBStats['Com_insert']['Value'])?> <span style="float: right;">(100.000%)</span></td>
+        <td><?=number_format($DBStats['Com_insert']['Value'])?> <span class="float_right">(100.000%)</span></td>
       </tr>
       <tr><td colspan="2"><strong>Increment/Decrement (Success)</strong></td></tr>
       <tr>
         <td<? if ($MemStats['incr_hits']/($MemStats['incr_hits'] + $MemStats['incr_misses']) < 0.7) { echo ' class="invalid" '; } ?>>Cache Increment:</td>
-        <td><?=number_format($MemStats['incr_hits'])?> <span style="float: right;">(<?=number_format(($MemStats['incr_hits'] / ($MemStats['incr_hits'] + $MemStats['incr_misses'])) * 100, 3);?>%)</span></td>
+        <td><?=number_format($MemStats['incr_hits'])?> <span class="float_right">(<?=number_format(($MemStats['incr_hits'] / ($MemStats['incr_hits'] + $MemStats['incr_misses'])) * 100, 3);?>%)</span></td>
       </tr>
       <tr>
         <td<? if ($MemStats['decr_hits'] / ($MemStats['decr_hits'] + $MemStats['decr_misses']) < 0.7) { echo ' class="invalid" '; } ?>>Cache Decrement:</td>
-        <td><?=number_format($MemStats['decr_hits'])?> <span style="float: right;">(<?=number_format(($MemStats['decr_hits'] / ($MemStats['decr_hits'] + $MemStats['decr_misses'])) * 100, 3);?>%)</span></td>
+        <td><?=number_format($MemStats['decr_hits'])?> <span class="float_right">(<?=number_format(($MemStats['decr_hits'] / ($MemStats['decr_hits'] + $MemStats['decr_misses'])) * 100, 3);?>%)</span></td>
       </tr>
       <tr><td colspan="2"><strong>CAS/Update (Success)</strong></td></tr>
       <tr>
         <td<? if ($MemStats['cas_hits'] > 0 && $MemStats['cas_hits'] / ($MemStats['cas_hits'] + $MemStats['cas_misses']) < 0.7) { echo ' class="tooltip invalid" title="More than 30% of the issued CAS commands were unnecessarily wasting time and resources." '; } elseif ($MemStats['cas_hits'] == 0) { echo ' class="tooltip notice" title="Disable CAS with the -C parameter and save resources since it is not used." '; } ?>>Cache:</td>
-        <td><?=number_format($MemStats['cas_hits'])?> <span style="float: right;">(<? if ($MemStats['cas_hits'] > 0) { echo number_format(($MemStats['cas_hits'] / ($MemStats['cas_hits'] + $MemStats['cas_misses'])) * 100, 3); } else { echo '0.000'; } ?>%)</span></td>
+        <td><?=number_format($MemStats['cas_hits'])?> <span class="float_right">(<? if ($MemStats['cas_hits'] > 0) { echo number_format(($MemStats['cas_hits'] / ($MemStats['cas_hits'] + $MemStats['cas_misses'])) * 100, 3); } else { echo '0.000'; } ?>%)</span></td>
       </tr>
       <tr>
         <td>Database:</td>
-        <td><?=number_format($DBStats['Com_update']['Value'])?> <span style="float: right;">(100.000%)</span></td>
+        <td><?=number_format($DBStats['Com_update']['Value'])?> <span class="float_right">(100.000%)</span></td>
       </tr>
       <tr><td colspan="2"><strong>Deletes (Success)</strong></td></tr>
       <tr>
         <td<? if ($MemStats['delete_hits'] / ($MemStats['delete_hits']+$MemStats['delete_misses']) < 0.7) { echo ' class="tooltip invalid" title="More than 30% of the issued delete commands were unnecessary wasting time and resources." '; } ?>>Cache:</td>
-        <td><?=number_format($MemStats['delete_hits'])?> <span style="float: right;">(<?=number_format(($MemStats['delete_hits'] / ($MemStats['delete_hits'] + $MemStats['delete_misses'])) * 100, 3);?>%)</span></td>
+        <td><?=number_format($MemStats['delete_hits'])?> <span class="float_right">(<?=number_format(($MemStats['delete_hits'] / ($MemStats['delete_hits'] + $MemStats['delete_misses'])) * 100, 3);?>%)</span></td>
       </tr>
       <tr>
         <td>Database:</td>
-        <td><?=number_format($DBStats['Com_delete']['Value'])?> <span style="float: right;">(100.000%)</span></td>
+        <td><?=number_format($DBStats['Com_delete']['Value'])?> <span class="float_right">(100.000%)</span></td>
       </tr>
       <tr><td colspan="2"></td></tr>
       <tr><td colspan="2"><strong>Special</strong></td></tr>

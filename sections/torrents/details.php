@@ -226,7 +226,7 @@ $Index++;
     if (check_perms('site_edit_wiki') && $WikiImage != '') { ?>
     <div id="add_cover_div">
       <div style="padding: 10px;">
-        <span style="float: right;" class="additional_add_artists">
+        <span class="additional_add_artists float_right">
           <a onclick="addCoverField(); return false;" href="#" class="brackets">Add alternate cover</a>
         </span>
       </div>
@@ -249,13 +249,13 @@ if ($Categories[$GroupCategoryID - 1] != 'Other') {
 ?>
     <div class="box box_artists">
       <div class="head"><strong>Artists</strong>
-      <?=check_perms('torrents_edit') ? '<span style="float: right;" class="edit_artists"><a onclick="ArtistManager(); return false;" href="#" class="brackets">Edit</a></span>' : ''?>
+      <?=check_perms('torrents_edit') ? '<span class="edit_artists"><a onclick="ArtistManager(); return false;" href="#" class="brackets float_right">Edit</a></span>' : ''?>
       </div>
       <ul class="stats nobullet" id="artist_list">
 <?      foreach ($Artists as $Num => $Artist) { ?>
         <li class="artist"><?=Artists::display_artist($Artist)?>
         <? if (check_perms('torrents_edit')) { ?>
-          <span class="remove remove_artist"><a href="javascript:void(0);" onclick="ajax.get('torrents.php?action=delete_alias&amp;auth=' + authkey + '&amp;groupid=<?=$GroupID?>&amp;artistid=<?=$Artist['id']?>&amp;importance=4'); this.parentNode.parentNode.style.display = 'none';" class="brackets tooltip" title="Remove artist">X</a></span>
+          <span class="remove remove_artist float_right"><a href="javascript:void(0);" onclick="ajax.get('torrents.php?action=delete_alias&amp;auth=' + authkey + '&amp;groupid=<?=$GroupID?>&amp;artistid=<?=$Artist['id']?>&amp;importance=4'); this.parentNode.parentNode.style.display = 'none';" class="brackets tooltip" title="Remove artist">X</a></span>
         <? } ?>
         </li>
 <?        } ?>
@@ -304,8 +304,8 @@ if (count($Tags) > 0) {
 
 ?>
         <li>
-          <a href="torrents.php?taglist=<?=$Tag['name']?>" style="float: left; display: block;" class="<?=display_str($Tag['class'])?>" ><?=display_str($Tag['display'])?></a>
-          <div style="float: right; display: block; letter-spacing: -1px;" class="edit_tags_votes">
+          <a href="torrents.php?taglist=<?=$Tag['name']?>" class="float_left <?=display_str($Tag['class'])?>" ><?=display_str($Tag['display'])?></a>
+          <div class="edit_tags_votes float_right">
 <?    if (check_perms('users_warn')) { ?>
           <a href="user.php?id=<?=$Tag['userid']?>" title="View the profile of the user that added this tag" class="brackets tooltip view_tag_user">U</a>
 <?    } ?>
@@ -424,8 +424,8 @@ foreach ($TorrentList as $Torrent) {
   <table class="filelist_table">
     <tr class="colhead_dark">
       <td>
-        <div class="filelist_title" style="float: left;">File Names' . $RegenLink . '</div>
-        <div class="filelist_path" style="float: right;">' . ($FilePath ? "/$FilePath/" : '') . '</div>
+        <div class="filelist_title float_left">File Names' . $RegenLink . '</div>
+        <div class="filelist_path float_right">' . ($FilePath ? "/$FilePath/" : '') . '</div>
       </td>
       <td class="nobr">
         <strong>Size</strong>
@@ -621,7 +621,7 @@ if (empty($LoggedUser['DisableRequests']) && count($Requests) > 0) {
     <div class="box">
       <div class="head">
         <span style="font-weight: bold;">Requests (<?=number_format(count($Requests))?>)</span>
-        <a data-toggle-target="#requests" data-toggle-replace="Hide" style="float: right;" class="brackets">Show</a>
+        <a data-toggle-target="#requests" data-toggle-replace="Hide" class="float_right brackets">Show</a>
       </div>
       <table id="requests" class="request_table hidden">
         <tr class="colhead">
@@ -763,7 +763,7 @@ if (count($PersonalCollages) > 0) {
 <?
     if (count($Screenshots) > 0) {
 ?>
-    <a style="float: right;" class='brackets' data-toggle-target=".torrent_screenshots" data-toggle-replace="Hide">Show</a>
+    <a class="float_right brackets" data-toggle-target=".torrent_screenshots" data-toggle-replace="Hide">Show</a>
 <?  }
 
     $DB->query("

@@ -667,7 +667,7 @@ if ($RatioWatchEnds && (time() < strtotime($RatioWatchEnds)) && ($Downloaded * $
     <div class="box">
       <div class="head">
         <?=!empty($InfoTitle) ? $InfoTitle : 'Profile';?>
-        <span style="float: right;"><a data-toggle-target="#profilediv" data-toggle-replace="Show" class="brackets">Hide</a></span>&nbsp;
+        <span class="float_right"><a data-toggle-target="#profilediv" data-toggle-replace="Show" class="brackets">Hide</a></span>&nbsp;
       </div>
       <div class="pad profileinfo" id="profilediv">
 <?
@@ -715,7 +715,7 @@ if (check_paranoia_here('snatched')) {
   <div class="box" id="recent_snatches">
     <div class="head">
       Recent Snatches
-      <span style="float: right;"><a onclick="$('#recent_snatches_images').gtoggle(); this.innerHTML = (this.innerHTML == 'Hide' ? 'Show' : 'Hide'); wall('#recent_snatches_images', '.collage_image', [2,3]); return false;" class="brackets">Show</a></span>&nbsp;
+      <span class="float_right"><a onclick="$('#recent_snatches_images').gtoggle(); this.innerHTML = (this.innerHTML == 'Hide' ? 'Show' : 'Hide'); wall('#recent_snatches_images', '.collage_image', [2,3]); return false;" class="brackets">Show</a></span>&nbsp;
     </div>
     <div id="recent_snatches_images" class="collage_images hidden">
 <?    foreach ($RecentSnatches as $RS) {
@@ -762,7 +762,7 @@ if (check_paranoia_here('uploads')) {
   <div class="box" id="recent_uploads">
     <div class="head">
       Recent Uploads
-      <span style="float: right;"><a onclick="$('#recent_uploads_images').gtoggle(); this.innerHTML = (this.innerHTML == 'Hide' ? 'Show' : 'Hide'); wall('#recent_uploads_images', '.collage_image', [2,3]); return false;" class="brackets">Show</a></span>&nbsp;
+      <span class="float_right"><a onclick="$('#recent_uploads_images').gtoggle(); this.innerHTML = (this.innerHTML == 'Hide' ? 'Show' : 'Hide'); wall('#recent_uploads_images', '.collage_image', [2,3]); return false;" class="brackets">Show</a></span>&nbsp;
     </div>
     <div id="recent_uploads_images" class="collage_images hidden">
 <?    foreach ($RecentUploads as $RU) {
@@ -805,7 +805,7 @@ foreach ($Collages as $CollageInfo) {
   <div class="box" id="collage<?=$CollageID?>_box">
     <div class="head">
       <?=display_str($CName)?> - <a href="collages.php?id=<?=$CollageID?>" class="brackets">See full</a>
-      <span style="float: right;">
+      <span class="float_right">
         <a data-toggle-target="#collage<?=$CollageID?>_box .collage_images" data-toggle-replace="Show" class="brackets">Hide</a>
       </span>
     </div>
@@ -849,7 +849,7 @@ if ((check_perms('users_view_invites')) && $Invited > 0) {
 ?>
     <div class="box" id="invitetree_box">
       <div class="head">
-        Invite Tree <span style="float: right"><a data-toggle-target="#invitetree" class="brackets">Toggle</a></span>
+        Invite Tree <span class="float_right"><a data-toggle-target="#invitetree" class="brackets">Toggle</a></span>
       </div>
       <div id="invitetree" class="hidden">
 <?        $Tree->make_tree(); ?>
@@ -878,7 +878,7 @@ if (empty($LoggedUser['DisableRequests']) && check_paranoia_here('requestsvoted_
 ?>
     <div class="box" id="requests_box">
       <div class="head">
-        Requests <span style="float: right;"><a data-toggle-target="#requests" class="brackets">Show</a></span>
+        Requests <span class="float_right"><a data-toggle-target="#requests" class="brackets">Show</a></span>
       </div>
       <div id="requests" class="hidden">
         <table cellpadding="6" cellspacing="1" border="0" width="100%">
@@ -974,7 +974,7 @@ if (check_perms('users_mod', $Class) || $IsFLS) {
 ?>
     <div class="box" id="staffpms_box">
       <div class="head">
-        Staff PMs <a data-toggle-target="#staffpms" class="brackets" style="float:right;">Toggle</a>
+        Staff PMs <a data-toggle-target="#staffpms" class="brackets float_right">Toggle</a>
       </div>
       <table width="100%" class="message_table hidden" id="staffpms">
         <tr class="colhead">
@@ -1048,7 +1048,7 @@ if (check_perms('users_mod', $Class)) { ?>
       <div class="head">
         Staff Notes
         <a href="#" name="admincommentbutton" onclick="ChangeTo('text'); return false;" class="brackets">Edit</a>
-        <span style="float: right;">
+        <span class="float_right">
         <a data-toggle-target="#staffnotes" class="brackets">Toggle</a>
         </span>
       </div>

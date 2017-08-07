@@ -73,10 +73,10 @@
             </colgroup>
             <tr class="colhead_dark">
               <td colspan="<?=(Users::has_avatars_enabled() ? 2 : 1)?>">
-                <div style="float: left;"><a href="#quickreplypreview">#XXXXXX</a>
+                <div class="float_left"><a href="#quickreplypreview">#XXXXXX</a>
                   by <strong><?=Users::format_username(G::$LoggedUser['ID'], true, true, true, true)?></strong> Just now
                 </div>
-                <div style="float: right;">
+                <div class="float_right">
                   <a href="#quickreplypreview" class="brackets">Report</a>
                   &nbsp;
                   <a href="#">&uarr;</a>

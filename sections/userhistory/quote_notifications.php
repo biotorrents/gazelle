@@ -150,15 +150,15 @@ foreach ($Results as $Result) {
   <table class="forum_post box vertical_margin noavatar">
     <tr class="colhead_dark notify_<?=$Result['Page']?>">
       <td colspan="2">
-        <span style="float: left;">
+        <span class="float_left">
           <?=$Links?>
           &gt; Quoted by <?=Users::format_username($Result['QuoterID'], false, false, false, false) . ' ' . time_diff($Result['Date']) ?>
           <?=($Result['UnRead'] ? ' <span class="new">(New!)</span>' : '')?>
         </span>
-        <span style="float: left;" class="tooltip last_read" title="Jump to quote">
+        <span class="float_left tooltip last_read" title="Jump to quote">
           <a href="<?=$JumpLink?>"></a>
         </span>
-        <span style="float: right;">
+        <span class="float_right">
           <a href="#">&uarr;</a>
         </span>
       </td>

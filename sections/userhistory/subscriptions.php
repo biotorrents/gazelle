@@ -208,17 +208,17 @@ if (!$NumResults) {
     </colgroup>
     <tr class="colhead_dark notify_<?=$Result['Page']?>">
       <td colspan="<?=Users::has_avatars_enabled() ? 2 : 1 ?>">
-        <span style="float: left;">
+        <span class="float_left">
           <?=$Links . ($Result['PostID'] < $Result['LastPost'] ? ' <span class="new">(New!)</span>' : '')?>
         </span>
         <a class="tooltip last_read" title="Jump to last read" href="<?=$JumpLink?>">
           <svg width="15" height="11"><polygon points="0,3 0,8 8,8 8,11 15,5.5 8,0 8,3"/></svg>
         </a>
 <?    if ($Result['Page'] == 'forums') { ?>
-        <span id="bar<?=$Result['PostID'] ?>" style="float: right;">
+        <span id="bar<?=$Result['PostID'] ?>" class="float_right">
           <a href="#" onclick="Subscribe(<?=$Result['PageID']?>); return false;" id="subscribelink<?=$Result['PageID']?>" class="brackets">Unsubscribe</a>
 <?    } else { ?>
-        <span id="bar_<?=$Result['Page'] . $Result['PostID'] ?>" style="float: right;">
+        <span id="bar_<?=$Result['Page'] . $Result['PostID'] ?>" class="float_right">
           <a href="#" onclick="SubscribeComments('<?=$Result['Page']?>', <?=$Result['PageID']?>); return false;" id="subscribelink_<?=$Result['Page'] . $Result['PageID']?>" class="brackets">Unsubscribe</a>
 <?    } ?>
           &nbsp;

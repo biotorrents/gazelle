@@ -514,7 +514,7 @@ foreach ($News as $NewsItem) {
 <?  if (check_perms('admin_manage_news')) { ?>
         - <a href="tools.php?action=editnews&amp;id=<?=$NewsID?>" class="brackets">Edit</a>
 <?  } ?>
-      <span style="float: right;"><a data-toggle-target="#newsbody<?=$NewsID?>" data-toggle-replace="Show" class="brackets">Hide</a></span>
+      <span class="float_right"><a data-toggle-target="#newsbody<?=$NewsID?>" data-toggle-replace="Show" class="brackets">Hide</a></span>
       </div>
       <div id="newsbody<?=$NewsID?>" class="pad"><?=Text::full_format($Body)?></div>
     </div>

@@ -197,7 +197,7 @@ function user_dupes_table($UserID) {
       <input type="hidden" id="form_comment_hash" name="form_comment_hash" value="<?=$CommentHash?>" />
       <div class="box box2" id="l_a_box">
         <div class="head">
-          Linked Accounts (<?=max($DupeCount - 1, 0)?>) <span style="float: right;"><a data-toggle-target=".linkedaccounts" class="brackets">Toggle</a></span>
+          Linked Accounts (<?=max($DupeCount - 1, 0)?>) <span class="float_right"><a data-toggle-target=".linkedaccounts" class="brackets">Toggle</a></span>
         </div>
         <table width="100%" class="layout hidden linkedaccounts">
           <?=($DupeCount ? "<tr>\n" : '')?>
@@ -235,7 +235,7 @@ function user_dupes_table($UserID) {
               <div id="editdupecomments" class="<?=($DupeCount ? 'hidden' : '')?>">
                 <textarea name="dupecomments" onkeyup="resize('dupecommentsbox');" id="dupecommentsbox" cols="65" rows="5" style="width: 98%;"><?=display_str($Comments)?></textarea>
               </div>
-              <span style="float: right;"><a href="#" onclick="$('#dupecomments').gtoggle(); $('#editdupecomments').gtoggle(); resize('dupecommentsbox'); return false;" class="brackets">Edit linked account comments</a></span>
+              <span class="float_right"><a href="#" onclick="$('#dupecomments').gtoggle(); $('#editdupecomments').gtoggle(); resize('dupecommentsbox'); return false;" class="brackets">Edit linked account comments</a></span>
             </td>
           </tr>
         </table>

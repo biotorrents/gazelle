@@ -460,7 +460,7 @@ foreach ($Categories as $CatKey => $CatName) {
         </tr>
       </table>
       <div class="submit">
-        <span style="float: left;"><?=number_format($TorrentCount)?> Results</span>
+        <span class="float_left"><?=number_format($TorrentCount)?> Results</span>
         <input type="submit" value="Search torrents" />
       </div>
     </form>
