@@ -54,7 +54,8 @@ $Properties['Container'] = isset($_POST['container']) ? $_POST['container'] : ''
 $Properties['Media'] = $_POST['media'];
 
 $Properties['Codec'] = isset($_POST['codec']) ? $_POST['codec'] : '';
-$Properties['Resolution'] = isset($_POST['resolution']) ? $_POST['resolution'] : '';
+if (!($_POST['resolution'] ?? false)) $_POST['resolution'] = $_POST['ressel'] ?? '';
+$Properties['Resolution'] = $_POST['resolution'] ?? '';
 $Properties['AudioFormat'] = isset($_POST['audioformat']) ? $_POST['audioformat'] : '';
 $Properties['Subbing'] = isset($_POST['sub']) ? $_POST['sub'] : '';
 $Properties['Language'] = isset($_POST['lang']) ? $_POST['lang'] : '';

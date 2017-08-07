@@ -323,7 +323,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
     }
 ?>
           </select>
-          <input type="text" id="resolution" name="resolution" size="10" class="hidden tooltip" title='Enter "Other" resolutions in the form ###x###' value="<?=$Torrent['Resolution']?>" readonly></input>
+          <input type="text" id="resolution" name="resolution" size="10" class="hidden tooltip" pattern="[0-9]+x[0-9]+" title='Enter "Other" resolutions in the form ###x###' value="<?=$Torrent['Resolution']?>" readonly></input>
           <script>
             if ($('#ressel').raw().value == "Other") {
               $('#resolution').raw().readOnly = false
@@ -573,7 +573,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
 <?
     foreach($this->Resolutions as $Res) {
       echo "\t\t\t\t\t\t<option value=\"$Res\"";
-      if ($Res == $Torrent['Resolution'] || (!isset($FoundRes) && isset($Torrent ['Resolution']) && $Res == "Other")) {
+      if ($Res == $Torrent['Resolution'] || (!isset($FoundRes) && isset($Torrent['Resolution']) && $Res == "Other")) {
         echo " selected";
         $FoundRes = true;
       }
