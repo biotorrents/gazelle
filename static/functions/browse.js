@@ -317,4 +317,6 @@ $(function() {
     var a = $('a[data-cover]')[0]
     if (a) preload(a.attributes['data-cover'].value)
   }
+  $('.add_artist_button').each(function(i, el) {el.addEventListener('click', AddArtistField)})
+  $('.remove_artist_button').each(function(i, el) {el.addEventListener('click', RemoveArtistField)})
 })

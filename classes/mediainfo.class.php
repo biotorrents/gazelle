@@ -88,7 +88,7 @@ class ParseManager {
         if (!isset($this->parsers['general'])) return $string;
 
         $midiv_start = '<div class="spoilerContainer hideContainer">
-            <input type="button" class="spoilerButton" onclick="BBCode.spoiler(this);" value="Show '.
+            <input type="button" class="spoilerButton" value="Show '.
             $this->parsers['general'][0]->filename.
             '" /><blockquote class="spoiler hidden">';
         $midiv_end = "</blockquote></div>";

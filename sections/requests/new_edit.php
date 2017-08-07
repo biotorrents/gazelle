@@ -155,14 +155,14 @@ View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'reques
       foreach ($ArtistForm as $Artist) {
 ?>
             <input type="text" id="artist_0" name="artists[]"<? Users::has_autocomplete_enabled('other'); ?> size="45" value="<?=display_str($Artist['name']) ?>" <?=$Disabled?>/>
-            <? if (empty($Disabled)) { if ($First) { ?><a href="#" onclick="AddArtistField(); return false;" class="brackets">+</a> <a href="#" onclick="RemoveArtistField(); return false;" class="brackets">&minus;</a><? } $First = false; } ?>
+            <? if (empty($Disabled)) { if ($First) { ?><a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a><? } $First = false; } ?>
             <br />
 <?
       }
     } else {
 ?>            <input type="text" id="artist_0" name="artists[]"<? Users::has_autocomplete_enabled('other'); ?> size="45" onblur="CheckVA();" <?=$Disabled?>/>
 <? if (empty($Disabled)) { ?>
-            <a href="#" onclick="AddArtistField(); return false;" class="brackets">+</a> <a href="#" onclick="RemoveArtistField(); return false;" class="brackets">&minus;</a>
+            <a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a>
 <? } ?>
 <?
     }

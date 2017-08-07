@@ -234,12 +234,12 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
           foreach ($Torrent['Artists'] as $Num => $Artist) { ?>
             <input type="text" id="idols_<?=$Num?>" name="idols[]" size="45" value="<?=display_str($Artist['name'])?>" <?=$this->Disabled?>/>
             <? if ($Num == 0) { ?>
-              <a href="#" onclick="AddArtistField(); return false;" class="brackets">+</a> <a href="#" onclick="RemoveArtistField(); return false;" class="brackets">&minus;</a>
+              <a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a>
             <? }
             }
           } else { ?>
             <input type="text" id="idols_0" name="idols[]" size="45" value="" <?=$this->Disabled?> />
-            <a href="#" onclick="AddArtistField(); return false;" class="brackets">+</a> <a href="#" onclick="RemoveArtistField(); return false;" class="brackets">&minus;</a>
+            <a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a>
 <?        } ?>
         </td>
       </tr>
@@ -496,12 +496,12 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
           foreach ($Torrent['Artists'] as $Num => $Artist) { ?>
             <input type="text" id="idols_<?=$Num?>" name="idols[]" size="45" value="<?=display_str($Artist['name'])?>" <?=$this->Disabled?> />
             <? if ($Num == 0) { ?>
-              <a href="#" onclick="AddArtistField(); return false;" class="brackets">+</a> <a href="#" onclick="RemoveArtistField(); return false;" class="brackets">&minus;</a>
+              <a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a>
             <? }
             }
           } else { ?>
             <input type="text" id="idols_0" name="idols[]" size="45" value="" <?=$this->Disabled?> />
-            <a href="#" onclick="AddArtistField(); return false;" class="brackets">+</a> <a href="#" onclick="RemoveArtistField(); return false;" class="brackets">&minus;</a>
+            <a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a>
 <?        } ?>
         </td>
       </tr>
@@ -749,12 +749,12 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
           foreach ($Torrent['Artists'] as $Num => $Artist) { ?>
             <input type="text" id="idols_<?=$Num?>" name="idols[]" size="45" value="<?=display_str($Artist['name'])?>" <?=$this->Disabled?> />
             <? if ($Num == 0) { ?>
-              <a href="#" onclick="AddArtistField(); return false;" class="brackets">+</a> <a href="#" onclick="RemoveArtistField(); return false;" class="brackets">&minus;</a>
+              <a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a>
             <? }
             }
           } else { ?>
             <input type="text" id="idols_0" name="idols[]" size="45" value="" <?=$this->Disabled?> />
-            <a href="#" onclick="AddArtistField(); return false;" class="brackets">+</a> <a href="#" onclick="RemoveArtistField(); return false;" class="brackets">&minus;</a>
+            <a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a>
 <?        } ?>
         </td>
       </tr>
@@ -995,12 +995,12 @@ new TEXTAREA_PREVIEW('album_desc', 'album_desc', display_str($Torrent['GroupDesc
           foreach ($Torrent['Artists'] as $Num => $Artist) { ?>
             <input type="text" id="idols_<?=$Num?>" name="idols[]" size="45" value="<?=display_str($Artist['name'])?>" <?=$this->Disabled?> />
             <? if ($Num == 0) { ?>
-              <a href="#" onclick="AddArtistField(); return false;" class="brackets">+</a> <a href="#" onclick="RemoveArtistField(); return false;" class="brackets">&minus;</a>
+              <a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a>
             <? }
             }
           } else { ?>
             <input type="text" id="idols_0" name="idols[]" size="45" value="" <?=$this->Disabled?> />
-            <a href="#" onclick="AddArtistField(); return false;" class="brackets">+</a> <a href="#" onclick="RemoveArtistField(); return false;" class="brackets">&minus;</a>
+            <a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a>
 <?        } ?>
         </td>
       </tr>

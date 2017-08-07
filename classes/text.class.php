@@ -4,7 +4,7 @@ class Text {
    * Array of valid tags; tag => max number of attributes
    * @var array $ValidTags
    */
-  private static $ValidTags = array('b'=>0, 'u'=>0, 'i'=>0, 's'=>0, '*'=>0, '#'=>0, 'ch'=>0, 'uch'=>0, 'artist'=>0, 'user'=>0, 'n'=>0, 'inlineurl'=>0, 'inlinesize'=>1, 'headline'=>1, 'align'=>1, 'color'=>1, 'colour'=>1, 'size'=>1, 'url'=>1, 'img'=>1, 'quote'=>1, 'pre'=>1, 'code'=>1, 'tex'=>0, 'hide'=>1, 'spoiler' => 1, 'plain'=>0, 'important'=>0, 'torrent'=>0, 'rule'=>0, 'mature'=>1, 'embed'=>0,
+  private static $ValidTags = array('b'=>0, 'u'=>0, 'i'=>0, 's'=>0, '*'=>0, '#'=>0, 'ch'=>0, 'uch'=>0, 'artist'=>0, 'user'=>0, 'n'=>0, 'inlineurl'=>0, 'inlinesize'=>1, 'headline'=>1, 'align'=>1, 'color'=>1, 'colour'=>1, 'size'=>1, 'url'=>1, 'img'=>1, 'quote'=>1, 'pre'=>1, 'code'=>1, 'tex'=>0, 'hide'=>1, 'spoiler' => 1, 'plain'=>0, 'important'=>0, 'torrent'=>0, 'rule'=>0, 'embed'=>0,
   );
 
   /**
@@ -563,9 +563,6 @@ class Text {
         case 'hide':
           $Array[$ArrayPos] = array('Type'=>'hide', 'Attr'=>$Attrib, 'Val'=>self::parse($Block));
           break;
-        case 'mature':
-          $Array[$ArrayPos] = array('Type'=>'mature', 'Attr'=>$Attrib, 'Val'=>self::parse($Block));
-          break;
         case 'embed':
           $Array[$ArrayPos] = array('Type'=>'embed', 'Val'=>$Block);
           break;
@@ -820,7 +817,7 @@ class Text {
           self::$NoImg++; // No images inside quote tags
           self::$InQuotes++;
           if (self::$InQuotes == self::$NestsBeforeHide) { //Put quotes that are nested beyond the specified limit in [hide] tags.
-            $Str .= '<strong>Older quotes</strong>: <a href="javascript:void(0);" onclick="BBCode.spoiler(this);">Show</a>';
+            $Str .= '<strong>Older quotes</strong>: <a class="spoilerButton">Show</a>';
             $Str .= '<blockquote class="hidden spoiler">';
           }
           if (!empty($Block['Attr'])) {
@@ -842,17 +839,8 @@ class Text {
           self::$InQuotes--;
           break;
         case 'hide':
-          $Str .= '<strong>'.(($Block['Attr']) ? $Block['Attr'] : 'Hidden text').'</strong>: <a href="javascript:void(0);" onclick="BBCode.spoiler(this);">Show</a>';
+          $Str .= '<strong>'.(($Block['Attr']) ? $Block['Attr'] : 'Hidden text').'</strong>: <a class="spoilerButton">Show</a>';
           $Str .= '<blockquote class="hidden spoiler">'.self::to_html($Block['Val']).'</blockquote>';
-          break;
-        case 'mature':
-          if (!empty($Block['Attr'])) {
-            $Str .= '<strong class="mature" style="font-size: 1.2em;">Mature content:</strong><strong> ' . $Block['Attr'] . '</strong><br /> <a href="javascript:void(0);" onclick="BBCode.spoiler(this);">Show</a>';
-            $Str .= '<blockquote class="hidden spoiler">'.self::to_html($Block['Val']).'</blockquote>';
-          }
-          else {
-            $Str .= '<strong>Use of the [mature] tag requires a description.</strong> The correct format is as follows: <strong>[mature=description] ...content... [/mature]</strong>, where "description" is a mandatory description of the post. Misleading descriptions will be penalized. For further information on our mature content policies, please refer to this <a href="wiki.php?action=article&amp;id=1063">wiki</a>.';
-          }
           break;
         case 'img':
           if (self::$NoImg > 0 && self::valid_url($Block['Val'])) {

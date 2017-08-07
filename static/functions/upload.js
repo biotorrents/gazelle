@@ -517,12 +517,12 @@ function MediaInfoExtract() {
   })
 }
 
-function initAutofill() {
-  document.querySelectorAll('[autofill]').forEach(function(el) {
+$(function() {
+  $('[autofill]').each(function(i, el) {
     el.addEventListener('click', function(event) {
       ({'douj':DoujAutofill, 'anime':AnidbAutofill, 'jav':JavAutofill})[el.attributes['autofill'].value]()
     })
   })
-}
-
-$(initAutofill)
+  $('.add_artist_button').each(function(i, el) {el.addEventListener('click', AddArtistField)})
+  $('.remove_artist_button').each(function(i, el) {el.addEventListener('click', RemoveArtistField)})
+})

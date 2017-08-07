@@ -598,7 +598,7 @@ foreach ($TorrentList as $Torrent) {
       } else {
 ?>
   <div class="spoilerContainer hideContainer">
-    <input type="button" class="spoilerButton" onclick="BBCode.spoiler(this);" value="Show MediaInfo" /><blockquote class="spoiler hidden">
+    <input type="button" class="spoilerButton" value="Show MediaInfo" /><blockquote class="spoiler hidden">
 <?
         echo Text::full_format($MediaInfo);
 ?>

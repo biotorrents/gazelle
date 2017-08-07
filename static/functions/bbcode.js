@@ -1,27 +1,25 @@
-var BBCode = {
-  spoiler: function(link) {
-    if ($(link.nextSibling).has_class('hidden')) {
-      $(link.nextSibling).gshow();
-      $(link).html('Hide');
-      if ($(link).attr("value")) {
-        $(link).attr("value", "Hide" + $(link).attr("value").substring(4))
-      }
-    } else {
-      $(link.nextSibling).ghide();
-      $(link).html('Show');
-      if ($(link).attr("value")) {
-        $(link).attr("value", "Show" + $(link).attr("value").substring(4))
-      }
+function BBSpoiler(link) {
+  if ($(link.nextSibling).has_class('hidden')) {
+    $(link.nextSibling).gshow();
+    $(link).html('Hide');
+    if ($(link).attr("value")) {
+      $(link).attr("value", "Hide" + $(link).attr("value").substring(4))
+    }
+  } else {
+    $(link.nextSibling).ghide();
+    $(link).html('Show');
+    if ($(link).attr("value")) {
+      $(link).attr("value", "Show" + $(link).attr("value").substring(4))
     }
   }
-};
+}
 
 function wrapSelected(box, wrap, offset) {
   if (!Array.isArray(wrap)) wrap = [wrap, wrap]
   if (wrap.length < 2) wrap[1] = wrap[0]
-  let s = box.selectionStart
-  let e = box.selectionEnd
-  let v = box.value
+  var s = box.selectionStart
+  var e = box.selectionEnd
+  var v = box.value
   box.value = v.slice(0,s)+wrap[0]+v.slice(s,e)+wrap[1]+v.slice(e)
   box.focus()
   box.selectionEnd = (offset!==undefined?s+offset:e+wrap[0].length)
@@ -71,10 +69,9 @@ function BBEditor(box) {
   box.parentNode.insertBefore(bar, box)
 }
 
-if (document.readyState == 'complete') {
+$(function() {
   $('.bbcode_editor').each(function(i, el) { BBEditor(el) })
-} else {
-  document.addEventListener("DOMContentLoaded", function() {
-    $('.bbcode_editor').each(function(i, el) { BBEditor(el) })
+  $('.spoilerButton').each(function(i, el) {
+    el.addEventListener("click", ()=>BBSpoiler(el))
   })
-}
+})

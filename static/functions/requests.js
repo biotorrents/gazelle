@@ -239,4 +239,6 @@ $(function() {
       ({'jav':JavAutofill})[el.attributes['autofill'].value]()
     })
   })
+  $('.add_artist_button').each(function(i, el) {el.addEventListener('click', AddArtistField)})
+  $('.remove_artist_button').each(function(i, el) {el.addEventListener('click', RemoveArtistField)})
 })

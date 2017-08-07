@@ -232,7 +232,7 @@ function ReportSelectorInit() {
   }
 }
 
-if (document.readyState == 'complete') {
+if (document.readyState != 'loading') {
   ReportSelectorInit();
 } else {
   document.addEventListener("DOMContentLoaded", ReportSelectorInit);

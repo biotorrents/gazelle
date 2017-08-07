@@ -200,7 +200,7 @@ if ($CategoryID == 1) {
         </td>
         <td id="idolfields">
           <input type="text" id="idol_0" name="idols[]" size="45" value="<?=$Artists[0]['name']?>"/>
-          <a onclick="AddArtistField()" class="brackets">+</a> <a onclick="RemoveArtistField()" class="brackets">&minus;</a>
+          <a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a>
 <?
   for ($i = 1; $i < count($Artists); $i++) {
     print '<br><input type="text" id="idol_'.$i.'" name="idols[]" size="45" value="'.$Artists[$i]['name'].'"/>';
