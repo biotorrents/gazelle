@@ -121,8 +121,11 @@ if (!$debug && $Cache->get_value('jav_json_'.$cn)) {
     if (!$year) {
        $year = substr($jdb->query("//div[@class='movieinfo']")[0]->childNodes[1]->childNodes[0]->nodeValue, strlen("Release Date: "), 4);
     }
-    if(!$image) {
+    if (!$image) {
       $image = $jdb->query('//*[@class="cover"]/a/img')->item(0)->getAttribute('src');
+    }
+    if (substr($image, 0, 2) == '//') {
+      $image = 'https:'.$image;
     }
     if (!$desc) {
       //Shit neither of the sites have descriptions
