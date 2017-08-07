@@ -2,6 +2,9 @@
   #content {
     background: none !important;
   }
+  table#maincontent {
+    margin: auto;
+  }
 }
 
 * {
