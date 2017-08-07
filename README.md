@@ -6,9 +6,9 @@ Below are some lists of differences between this version of Gazelle and What.cd'
 
 #### Integrated Database Encryption
 
-Using a database key [provided by staff](sections/tools/misc/database_key.php) and only ever stored as a hash in memory (via APC), the [integrated database encryption](classes/dbcrypt.class.php) is used to encrypt sensitive user data like IP addresses, emails, and private messages regardless of the underlying system gazelle is running on.
+Using a database key [provided by staff](sections/tools/misc/database_key.php) and only ever stored as a hash in memory (via APCu), the [integrated database encryption](classes/dbcrypt.class.php) is used to encrypt sensitive user data like IP addresses, emails, and private messages regardless of the underlying system gazelle is running on.
 
-The rest of gazelle must be aware that some of the data it fetches from the DB is encrypted, and must have a fallback if that data is unavailable (the key is not in memory). You will see plenty of `if (!apc_exists('DBKEY')) {` in this codebase.
+The rest of gazelle must be aware that some of the data it fetches from the DB is encrypted, and must have a fallback if that data is unavailable (the key is not in memory). You will see plenty of `if (!apcu_exists('DBKEY')) {` in this codebase.
 
 #### Authorized Login Locations
 
@@ -19,6 +19,10 @@ This prevents most attacks that would be otherwise successful, as it requires an
 #### Two-Factor Authentication
 
 Despite our other (less intrusive) methods of protecting user accounts being more than sufficient for virtually all feasible attacks, we also ship optional 2FA should users feel the need to enable it.
+
+#### Universal 2nd Factor
+
+Support for physical U2F tokens has also been added as an optional alternative to normal 2FA. U2F allows users to protect their account with something less likely to be lost or erased than 2FA keys stored on a phone.
 
 #### Unique Infohashes
 
@@ -42,7 +46,7 @@ Like most gazelle forks, we've added a [bonus point system](sections/schedule/ho
 
 #### Modern password hashing
 
-We use new PHP password hashing features that automatically rehash your password when a better hashing algorithm is made available and employ prehashing to allow you to use a secure password of any length. Original gazelle would effectively truncate your password after around 72 characters (if the tracker even allowed you to use a password that long). This codebase does not have the same problem, and allows passwords of virtually unlimited length (over 30,000 characters by default) that remain useful after a few tens of characters.
+We use modern PHP password hashing features that automatically rehash your password when a better hashing algorithm is made available and employ prehashing to allow you to use a secure password of any length. Original gazelle would effectively truncate your password after around 72 characters (if the tracker even allowed you to use a password that long). This codebase does not have the same problem, and allows passwords of virtually unlimited length (over 30,000 characters by default) that remain useful after a few tens of characters.
 
 ## Minor Changes
 
