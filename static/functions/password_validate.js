@@ -1,7 +1,4 @@
-/**
-*
-* Validates passwords to make sure they are powerful
-**/
+// Validates passwords to make sure they are powerful
 
 (function() {
 var CLEAR = 0;
