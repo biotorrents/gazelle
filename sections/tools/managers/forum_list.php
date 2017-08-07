@@ -53,9 +53,7 @@ $DB->query('
     Description,
     MinClassRead,
     MinClassWrite,
-    MinClassCreate,
-    AutoLock,
-    AutoLockWeeks
+    MinClassCreate
   FROM forums
   ORDER BY CategoryID, Sort ASC');
 ?>
@@ -72,12 +70,10 @@ $DB->query('
     <td>Min class read</td>
     <td>Min class write</td>
     <td>Min class create</td>
-    <td>Auto-lock</td>
-    <td>Auto-lock weeks</td>
     <td>Submit</td>
   </tr>
 <?
-while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinClassWrite, $MinClassCreate, $AutoLock, $AutoLockWeeks) = $DB->next_record()) {
+while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinClassWrite, $MinClassCreate) = $DB->next_record()) {
 ?>
   <tr class="row">
     <form class="manage_form" name="forums" action="" method="post">
@@ -116,12 +112,6 @@ while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinCla
         <select name="minclasscreate">
           <?=class_list($MinClassCreate)?>
         </select>
-      </td>
-      <td>
-        <input type="checkbox" name="autolock"<?=($AutoLock == '1') ? ' checked="checked"' : ''?> />
-      </td>
-      <td>
-        <input type="text" name="autolockweeks" value="<?=$AutoLockWeeks?>" />
       </td>
       <td>
         <input type="submit" name="submit" value="Edit" />
@@ -171,12 +161,6 @@ while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinCla
         <select name="minclasscreate">
           <?=class_list()?>
         </select>
-      </td>
-      <td>
-        <input type="checkbox" name="autolock" checked="checked" />
-      </td>
-      <td>
-        <input type="text" name="autolockweeks" value="4" />
       </td>
       <td>
         <input type="submit" value="Create" />

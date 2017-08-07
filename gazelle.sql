@@ -366,8 +366,6 @@ CREATE TABLE `forums` (
   `LastPostAuthorID` int(10) NOT NULL DEFAULT '0',
   `LastPostTopicID` int(10) NOT NULL DEFAULT '0',
   `LastPostTime` datetime,
-  `AutoLock` enum('0','1') DEFAULT '1',
-  `AutoLockWeeks` int(3) unsigned NOT NULL DEFAULT '4',
   PRIMARY KEY (`ID`),
   KEY `Sort` (`Sort`),
   KEY `MinClassRead` (`MinClassRead`)
