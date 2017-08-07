@@ -1,8 +1,8 @@
 <?php
 
 
-$Orders = array('Time', 'Name', 'Seeders', 'Leechers', 'Snatched', 'Size');
-$Ways = array('DESC' => 'Descending', 'ASC' => 'Ascending');
+$Orders = ['Time', 'Name', 'Seeders', 'Leechers', 'Snatched', 'Size'];
+$Ways = ['DESC' => 'Descending', 'ASC' => 'Ascending'];
 
 // The "order by x" links on columns headers
 function header_link($SortKey, $DefaultWay = 'DESC') {
@@ -251,6 +251,7 @@ if ((empty($_GET['search']) || trim($_GET['search']) === '')) {//&& $Order != 'N
       t.GroupID,
       t.ID AS TorrentID,
       $Time AS Time,
+      COALESCE(NULLIF(tg.Name, ''), NULLIF(tg.NameRJ, ''), tg.NameJP) AS Name,
       tg.CategoryID
     FROM $From
       JOIN torrents_group AS tg ON tg.ID = t.GroupID
@@ -283,7 +284,7 @@ if ((empty($_GET['search']) || trim($_GET['search']) === '')) {//&& $Order != 'N
         t.Seeders,
         t.Leechers,
         t.Snatched,
-        CONCAT_WS(' ', GROUP_CONCAT(ag.Name SEPARATOR ' '), ' ', tg.Name, ' ', tg.Year, ' ') AS Name,
+        CONCAT_WS(' ', GROUP_CONCAT(ag.Name SEPARATOR ' '), ' ', COALESCE(NULLIF(tg.Name,''), NULLIF(tg.NameRJ,''), tg.NameJP), ' ', tg.Year, ' ') AS Name,
         t.Size
       FROM $From
         JOIN torrents_group AS tg ON tg.ID = t.GroupID
