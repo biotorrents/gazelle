@@ -119,7 +119,7 @@ if (!$NumResults) {
       if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
         $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($WikiImage)."\" onmouseleave=\"ungetCover(event)\" ";
       }
-      $DisplayName .= "dir=\"ltr\">$GroupName</a>";
+      $DisplayName .= "dir=\"ltr\">".($GroupName ? $GroupName : ($GroupNameRJ ? $GroupNameRJ : $GroupNameJP))."</a>";
       if ($GroupYear > 0) {
         $DisplayName = "$DisplayName [$GroupYear]";
       }
@@ -170,7 +170,7 @@ if (!$NumResults) {
         if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
           $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($WikiImage)."\" onmouseleave=\"ungetCover(event)\" ";
         }
-        $DisplayName .= "dir=\"ltr\">$GroupName</a>";
+        $DisplayName .= "dir=\"ltr\">".($GroupName ? $GroupName : ($GroupNameRJ ? $GroupNameRJ : $GroupNameJP))."</a>";
 
         if ($Torrent['IsSnatched']) {
           $DisplayName .= ' ' . Format::torrent_label('Snatched!');
