@@ -6,11 +6,15 @@ $TwoFA = new TwoFactorAuth(SITE_NAME);
 $U2F = new u2f\U2F('https://'.SITE_DOMAIN);
 if ($Type = $_POST['type'] ?? false) {
   if ($Type == 'PGP') {
-    $DB->query("
-      UPDATE users_main
-      SET PublicKey = '".db_string($_POST['publickey'])."'
-      WHERE ID = $UserID");
-    $Message = 'Public key '.(empty($_POST['publickey']) ? 'removed' : 'updated') ;
+    if (!empty($_POST['publickey']) && (strpos($_POST['publickey'], 'BEGIN PGP PUBLIC KEY BLOCK') === false || strpos($_POST['publickey'], 'END PGP PUBLIC KEY BLOCK') === false)) {
+      $Error = "Invalid PGP public key";
+    } else {
+      $DB->query("
+        UPDATE users_main
+        SET PublicKey = '".db_string($_POST['publickey'])."'
+        WHERE ID = $UserID");
+      $Message = 'Public key '.(empty($_POST['publickey']) ? 'removed' : 'updated') ;
+    }
   }
   if ($Type == '2FA-E') {
     if ($TwoFA->verifyCode($_POST['twofasecret'], $_POST['twofa'])) {
