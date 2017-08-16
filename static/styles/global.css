@@ -111,7 +111,7 @@ div.collage_image {
   width: 20%;
 }
 
-[data-toggle-target], [data-quote-jump] {
+[data-toggle-target], [data-quote-jump], .clickable {
   cursor: pointer;
 }
 
@@ -925,6 +925,10 @@ input[type="search"] {
 
 #lightbox > img {
   max-width: 100%;
+}
+
+.filter_torrents #ft_basic > .clickable, .filter_torrents #ft_advanced > .clickable {
+  font-weight: 100;
 }
 
 #publickey {

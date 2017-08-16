@@ -152,14 +152,11 @@ View::show_header('Browse Torrents', 'browse');
   <div class="box filter_torrents">
     <div class="head">
       <strong>
-        <span id="ft_basic_text" class="<?=$HideBasic?>">Basic /</span>
-        <span id="ft_basic_link" class="<?=$HideAdvanced?>"><a href="#" onclick="return toggleTorrentSearch('basic');">Basic</a> /</span>
-        <span id="ft_advanced_text" class="<?=$HideAdvanced?>">Advanced</span>
-        <span id="ft_advanced_link" class="<?=$HideBasic?>"><a href="#" onclick="return toggleTorrentSearch('advanced');">Advanced</a></span>
-        Search
+        <span id="ft_basic" class="<?=$HideBasic?>">Basic Search (<a class="clickable" onclick="toggleTorrentSearch('advanced')">Advanced</a>)</span>
+        <span id="ft_advanced" class="<?=$HideAdvanced?>">Advanced Search (<a class="clickable" onclick="toggleTorrentSearch('basic')">Basic</a>)</span>
       </strong>
       <span class="float_right">
-        <a href="#" onclick="return toggleTorrentSearch(0);" id="ft_toggle" class="brackets"><?=$HideFilter ? 'Show' : 'Hide'?></a>
+        <a onclick="return toggleTorrentSearch(0);" id="ft_toggle" class="brackets"><?=$HideFilter ? 'Show' : 'Hide'?></a>
       </span>
     </div>
     <div id="ft_container" class="pad<?=$HideFilter ? ' hidden' : ''?>">

@@ -222,20 +222,16 @@ function toggleTorrentSearch(mode) {
     $('.fti_basic').enable();
     $('.ftr_advanced').ghide(true);
     $('.ftr_basic').gshow();
-    $('#ft_advanced_link').gshow();
-    $('#ft_advanced_text').ghide();
-    $('#ft_basic_link').ghide();
-    $('#ft_basic_text').gshow();
+    $('#ft_advanced').ghide();
+    $('#ft_basic').gshow();
     $('#ft_type').raw().value = 'basic';
   } else if (mode == 'advanced') {
     $('.fti_advanced').enable();
     $('.fti_basic').disable();
     $('.ftr_advanced').gshow();
     $('.ftr_basic').ghide();
-    $('#ft_advanced_link').ghide();
-    $('#ft_advanced_text').gshow();
-    $('#ft_basic_link').gshow();
-    $('#ft_basic_text').ghide();
+    $('#ft_advanced').gshow();
+    $('#ft_basic').ghide();
     $('#ft_type').raw().value = 'advanced';
   }
   return false;
