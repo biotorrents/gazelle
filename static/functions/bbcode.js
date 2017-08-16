@@ -26,7 +26,7 @@ function wrapSelected(box, wrap, offset) {
 }
 
 function BBEditor(box) {
-  if (box.previousSibling.className == 'bbcode_bar') return
+  if (box.previousSibling && box.previousSibling.className == 'bbcode_bar') return
   let buttons = [
     {short:'B', name:'Bold', wrap:['[b]','[/b]']},
     {short:'I', name:'Italic', wrap:['[i]','[/i]']},
