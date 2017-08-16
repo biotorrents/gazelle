@@ -517,12 +517,16 @@ function MediaInfoExtract() {
   })
 }
 
-$(function() {
+function initAutofill() {
   $('[autofill]').each(function(i, el) {
     el.addEventListener('click', function(event) {
       ({'douj':DoujAutofill, 'anime':AnidbAutofill, 'jav':JavAutofill})[el.attributes['autofill'].value]()
     })
   })
+}
+
+$(function() {
+  initAutofill()
   $('.add_artist_button').each(function(i, el) {el.addEventListener('click', AddArtistField)})
   $('.remove_artist_button').each(function(i, el) {el.addEventListener('click', RemoveArtistField)})
 })
