@@ -931,6 +931,17 @@ input[type="search"] {
   font-weight: 100;
 }
 
+.sidebar .box_tags > ul.stats > li {
+  display: flex;
+  justify-content: space-between;
+}
+.sidebar .box_tags > ul.stats > li > a {
+  word-break: break-all;
+}
+.edit_tags_votes {
+  display: flex;
+}
+
 #publickey {
   width: initial;
   font-family: monospace;

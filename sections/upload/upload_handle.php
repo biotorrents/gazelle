@@ -190,10 +190,6 @@ if (!is_uploaded_file($TorrentName) || !filesize($TorrentName)) {
   $Err = "You seem to have put something other than a torrent file into the upload field. (".$File['name'].").";
 }
 
-/*if ($Type == 'Music') {
-  include(SERVER_ROOT.'/sections/upload/get_extra_torrents.php');
-}*/
-
 //Multiple artists!
 
 $LogName = '';
@@ -290,7 +286,6 @@ $NumFiles = count($FileList);
 $TmpFileList = [];
 $TooLongPaths = [];
 $DirName = (isset($Tor->Dec['info']['files']) ? Format::make_utf8($Tor->get_name()) : '');
-$IgnoredLogFileNames = array('audiochecker.log', 'sox.log');
 check_name($DirName); // check the folder name against the blacklist
 foreach ($FileList as $File) {
   list($Size, $Name) = $File;

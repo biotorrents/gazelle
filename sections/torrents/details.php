@@ -304,7 +304,7 @@ if (count($Tags) > 0) {
 
 ?>
         <li>
-          <a href="torrents.php?taglist=<?=$Tag['name']?>" class="float_left <?=display_str($Tag['class'])?>" ><?=display_str($Tag['display'])?></a>
+          <a href="torrents.php?taglist=<?=$Tag['name']?>" class="<?=display_str($Tag['class'])?>" ><?=display_str($Tag['display'])?></a>
           <div class="edit_tags_votes float_right">
 <?    if (check_perms('users_warn')) { ?>
           <a href="user.php?id=<?=$Tag['userid']?>" title="View the profile of the user that added this tag" class="brackets tooltip view_tag_user">U</a>
@@ -313,7 +313,6 @@ if (count($Tags) > 0) {
           <span class="remove remove_tag"><a href="torrents.php?action=delete_tag&amp;groupid=<?=$GroupID?>&amp;tagid=<?=$Tag['id']?>&amp;auth=<?=$LoggedUser['AuthKey']?>" class="brackets tooltip" title="Remove tag">X</a></span>
 <?    } ?>
           </div>
-          <br>
         </li>
 <?
   }
