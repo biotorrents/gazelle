@@ -106,25 +106,22 @@ if (empty($_POST['description'])) {
   $Description = trim($_POST['description']);
 }
 
-if ($CategoryName != 'Other') {
-  if (empty($_POST['artists'])) {
-    $Err = 'You did not enter any artists.';
-  } else {
-    $Artists = $_POST['artists'];
-  }
+if (empty($_POST['artists']) && $CategoryName != 'Other') {
+  $Err = 'You did not enter any artists.';
+} else {
+  $Artists = $_POST['artists'];
+}
 
-  //Not required
-  if (!empty($_POST['cataloguenumber']) && $CategoryName == 'Movies') {
-    $CatalogueNumber = trim($_POST['cataloguenumber']);
-  } else {
-    $CatalogueNumber = '';
-  }
-  if (!empty($_POST['dlsiteid']) && $CategoryName == 'Games') {
-    $DLSiteID = trim($_POST['dlsiteid']);
-  } else {
-    $DLSiteID = '';
-  }
-
+//Not required
+if (!empty($_POST['cataloguenumber']) && $CategoryName == 'Movies') {
+  $CatalogueNumber = trim($_POST['cataloguenumber']);
+} else {
+  $CatalogueNumber = '';
+}
+if (!empty($_POST['dlsiteid']) && $CategoryName == 'Games') {
+  $DLSiteID = trim($_POST['dlsiteid']);
+} else {
+  $DLSiteID = '';
 }
 
 // GroupID
@@ -150,20 +147,18 @@ if (!empty($_POST['groupid'])) {
 }
 
 //For refilling on error
-if ($CategoryName != 'Other') {
-  $ArtistNames = [];
-  $ArtistForm = [];
-  for ($i = 0; $i < count($Artists); $i++) {
-    if (trim($Artists[$i]) !== '') {
-      if (!in_array($Artists[$i], $ArtistNames)) {
-        $ArtistForm[] = array('name' => trim($Artists[$i]));
-        $ArtistNames[] = trim($Artists[$i]);
-      }
+$ArtistNames = [];
+$ArtistForm = [];
+for ($i = 0; $i < count($Artists); $i++) {
+  if (trim($Artists[$i]) !== '') {
+    if (!in_array($Artists[$i], $ArtistNames)) {
+      $ArtistForm[] = array('name' => trim($Artists[$i]));
+      $ArtistNames[] = trim($Artists[$i]);
     }
   }
-  if (!isset($ArtistNames[0])) {
-    unset($ArtistForm);
-  }
+}
+if (!isset($ArtistNames[0])) {
+  unset($ArtistForm);
 }
 
 if (!empty($Err)) {
@@ -291,7 +286,7 @@ if ($GroupID) {
  * 2. For each artist that didn't exist, create an artist.
  * 3. Create a row in the requests_artists table for each artist, based on the ID.
  */
-if (isset($CategoryName) && $CategoryName != "Other" && isset($ArtistForm)) {
+if (isset($ArtistForm)) {
   foreach ($ArtistForm as $Num => $Artist) {
     //1. See if each artist given already exists and if it does, grab the ID.
     $DB->query("
@@ -416,11 +411,7 @@ if ($NewRequest) {
 
   $AnnounceTitle = empty($Title) ? (empty($TitleRJ) ? $TitleJP : $TitleRJ) : $Title;
 
-  if ($CategoryName != 'Other') {
-    $Announce = "\"$AnnounceTitle\"".(isset($ArtistForm)?(' - '.Artists::display_artists($ArtistForm, false, false)):'').' '.site_url()."requests.php?action=view&id=$RequestID - ".implode(' ', $Tags);
-  } else {
-    $Announce = "\"$AnnounceTitle\" - ".site_url()."requests.php?action=view&id=$RequestID - ".implode(' ', $Tags);
-  }
+  $Announce = "\"$AnnounceTitle\"".(isset($ArtistForm)?(' - '.Artists::display_artists($ArtistForm, false, false)):'').' '.site_url()."requests.php?action=view&id=$RequestID - ".implode(' ', $Tags);
   send_irc('PRIVMSG '.BOT_REQUEST_CHAN.' '.$Announce);
 
 } else {

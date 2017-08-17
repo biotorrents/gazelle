@@ -917,6 +917,30 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
       </tr>
 <? } ?>
       <tr>
+        <td class="label">Creators/Authors (Optional):</td>
+        <td id="idolfields">
+      <?      if (!empty($Torrent['Artists'])) {
+          foreach ($Torrent['Artists'] as $Num => $Artist) { ?>
+            <input type="text" id="idols_<?=$Num?>" name="idols[]" size="45" value="<?=display_str($Artist['name'])?>" <?=$this->Disabled?> />
+            <? if ($Num == 0) { ?>
+              <a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a>
+            <? }
+            }
+          } else { ?>
+            <input type="text" id="idols_0" name="idols[]" size="45" value="" <?=$this->Disabled?> />
+            <a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a>
+      <?        } ?>
+        </td>
+      </tr>
+      <tr>
+        <td class="label">Publisher (Optional):</td>
+        <td><input type="text" id="studio" name="studio" size="60" value="<?=display_str($Torrent['Studio']) ?>" <?=$this->Disabled?>/></td>
+      </tr>
+      <tr>
+        <td class="label">DLsite ID:</td>
+        <td><input type="text" id="dlsiteid" name="dlsiteid" size="8" maxlength="8" value="<?=display_str($Torrent['DLsiteID'])?>" <?=$this->Disabled?>/></td>
+      </tr>
+      <tr>
         <td class="label">Censored?:</td>
         <td>
           <input type="checkbox" name="censored" value="1" <?=(($Torrent['Censored'] ?? 1) ? 'checked ' : '')?>/>

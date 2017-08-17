@@ -493,29 +493,25 @@ View::show_header($Title, 'requests');
 
     $Title = empty($Request['Title']) ? (empty($Request['TitleRJ']) ? $Request['TitleJP'] : $Request['TitleRJ']) : $Request['Title'];
 
-    if ($CategoryName != 'Other') {
-      $ArtistForm = Requests::get_artists($RequestID);
-      $ArtistLink = Artists::display_artists($ArtistForm, true, true);
-      $FullName = "$ArtistLink<a href=\"requests.php?action=view&amp;id=$RequestID\"><span ";
-      if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-        $FullName .= 'onmouseover="getCover(event)" data-cover="'.ImageTools::process($Request['Image']).'" onmouseleave="ungetCover(event)" ';
-      }
-      $FullName .= "dir=\"ltr\">$Title</span></a>";
+    $ArtistForm = Requests::get_artists($RequestID);
+    $ArtistLink = Artists::display_artists($ArtistForm, true, true);
+    $FullName = "$ArtistLink<a href=\"requests.php?action=view&amp;id=$RequestID\"><span ";
+    if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
+      $FullName .= 'onmouseover="getCover(event)" data-cover="'.ImageTools::process($Request['Image']).'" onmouseleave="ungetCover(event)" ';
+    }
+    $FullName .= "dir=\"ltr\">$Title</span></a>";
 
-      $ExtraInfo = '';
+    $ExtraInfo = '';
 
-      if (!empty($Request['CatalogueNumber'])) {
-        $ExtraInfo .= " [$Request[CatalogueNumber]]";
-      }
+    if (!empty($Request['CatalogueNumber'])) {
+      $ExtraInfo .= " [$Request[CatalogueNumber]]";
+    }
 
-      if (!empty($Request['DLsiteID'])) {
-        $ExtraInfo .= " [$Request[DLsiteID]]";
-      }
-      if ($ExtraInfo) {
-        $FullName .= " $ExtraInfo";
-      }
-    } else {
-      $FullName = "<a href=\"requests.php?action=view&amp;id=$RequestID\" dir=\"ltr\">$Title</a>";
+    if (!empty($Request['DLsiteID'])) {
+      $ExtraInfo .= " [$Request[DLsiteID]]";
+    }
+    if ($ExtraInfo) {
+      $FullName .= " $ExtraInfo";
     }
     $Tags = $Request['Tags'];
 ?>

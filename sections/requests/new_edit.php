@@ -53,9 +53,7 @@ if (!$NewRequest) {
       error(403);
     }
 
-    if ($CategoryName != 'Other') {
-      $ArtistForm = Requests::get_artists($RequestID);
-    }
+    $ArtistForm = Requests::get_artists($RequestID);
 
     $Tags = implode(', ', $Request['Tags']);
   }

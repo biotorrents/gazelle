@@ -652,19 +652,15 @@ if ($NumRequests > 0) {
   foreach ($Requests as $RequestID => $Request) {
       $CategoryName = $Categories[$Request['CategoryID'] - 1];
       $Title = empty($Request['Title']) ? (empty($Request['TitleRJ']) ? display_str($Request['TitleJP']) : display_str($Request['TitleRJ'])) : display_str($Request['Title']);
-      if ($CategoryName != 'Other') {
-        $ArtistForm = Requests::get_artists($RequestID);
-        $ArtistLink = Artists::display_artists($ArtistForm, true, true);
-        $FullName = $ArtistLink."<a href=\"requests.php?action=view&amp;id=$RequestID\"><span dir=\"ltr\">$Title</span></a>";
+      $ArtistForm = Requests::get_artists($RequestID);
+      $ArtistLink = Artists::display_artists($ArtistForm, true, true);
+      $FullName = $ArtistLink."<a href=\"requests.php?action=view&amp;id=$RequestID\"><span dir=\"ltr\">$Title</span></a>";
 
-        if ($Request['CatalogueNumber']) {
-          $FullName .= " [$Request[CatalogueNumber]]";
-        }
-        if ($Request['DLSiteID']) {
-          $FullName.= " [$Request[DLSiteID]]";
-        }
-      } else {
-        $FullName = "<a href=\"requests.php?action=view&amp;id=$RequestID\" dir=\"ltr\">$Title</a>";
+      if ($Request['CatalogueNumber']) {
+        $FullName .= " [$Request[CatalogueNumber]]";
+      }
+      if ($Request['DLSiteID']) {
+        $FullName.= " [$Request[DLSiteID]]";
       }
 
       if (!empty($Tags[$RequestID])) {

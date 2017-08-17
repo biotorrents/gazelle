@@ -89,10 +89,14 @@ if (isset($Properties['GroupID'])) {
   $Properties['Artists'] = Artists::get_artist($Properties['GroupID']);
 }
 
-if ($Type == 'Movies' || $Type == 'Manga' || $Type == 'Anime' || $Type == 'Games' ) {
+if ($Type == 'Movies' || $Type == 'Manga' || $Type == 'Anime' || $Type == 'Games') {
   if (empty($_POST['idols'])) {
     $Err = "You didn't enter any goils";
   } else {
+    $Artists = $_POST['idols'];
+  }
+} elseif ($Type == 'Other') {
+  if (!empty($_POST['idols'])) {
     $Artists = $_POST['idols'];
   }
 }
@@ -193,7 +197,7 @@ if (!is_uploaded_file($TorrentName) || !filesize($TorrentName)) {
 //Multiple artists!
 
 $LogName = '';
-if (empty($Properties['GroupID']) && empty($ArtistForm) && ($Type == 'Movies' || $Type == 'Anime' || $Type == 'Manga' || $Type == 'Games')) {
+if (empty($Properties['GroupID']) && empty($ArtistForm)) {
   $ArtistNames = [];
   $ArtistForm = [];
   for ($i = 0; $i < count($Artists); $i++) {
@@ -205,7 +209,7 @@ if (empty($Properties['GroupID']) && empty($ArtistForm) && ($Type == 'Movies' ||
     }
   }
   $LogName .= Artists::display_artists($ArtistForm, false, true, false);
-} elseif (($Type == 'Movies' || $Type == 'Anime' || $Type == 'Manga' || $Type == 'Games') && empty($ArtistForm)) {
+} elseif (empty($ArtistForm)) {
   $DB->query("
     SELECT ta.ArtistID, ag.Name
     FROM torrents_artists AS ta
@@ -327,24 +331,53 @@ if (!preg_match('/^'.IMAGE_REGEX.'$/i', $Properties['Image'])) {
   $T['Image'] = "''";
 }
 
-if ($Type == 'Movies' || $Type == 'Anime' || $Type == 'Manga' || $Type == 'Games') {
-  // Does it belong in a group?
-  if ($Properties['GroupID']) {
-    $DB->query("
+// Does it belong in a group?
+if ($Properties['GroupID']) {
+  $DB->query("
+    SELECT
+      ID,
+      WikiImage,
+      WikiBody,
+      RevisionID,
+      Name,
+      Year,
+      TagList
+    FROM torrents_group
+    WHERE id = ".$Properties['GroupID']);
+  if ($DB->has_results()) {
+    // Don't escape tg.Name. It's written directly to the log table
+    list($GroupID, $WikiImage, $WikiBody, $RevisionID, $Properties['Title'], $Properties['Year'], $Properties['TagList']) = $DB->next_record(MYSQLI_NUM, array(4));
+    $Properties['TagList'] = str_replace(array(' ', '.', '_'), array(', ', '.', '.'), $Properties['TagList']);
+    if (!$Properties['Image'] && $WikiImage) {
+      $Properties['Image'] = $WikiImage;
+      $T['Image'] = "'".db_string($WikiImage)."'";
+    }
+    if (strlen($WikiBody) > strlen($Body)) {
+      $Body = $WikiBody;
+      if (!$Properties['Image'] || $Properties['Image'] == $WikiImage) {
+        $NoRevision = true;
+      }
+    }
+    $Properties['Artist'] = Artists::display_artists(Artists::get_artist($GroupID), false, false);
+  }
+}
+if (!isset($GroupID) || !$GroupID) {
+  foreach ($ArtistForm as $Num => $Artist) {
+    /*$DB->query("
       SELECT
-        ID,
-        WikiImage,
-        WikiBody,
-        RevisionID,
-        Name,
-        Year,
-        TagList
-      FROM torrents_group
-      WHERE id = ".$Properties['GroupID']);
+        tg.id,
+        tg.WikiImage,
+        tg.WikiBody,
+        tg.RevisionID
+      FROM torrents_group AS tg
+        LEFT JOIN torrents_artists AS ta ON ta.GroupID = tg.ID
+        LEFT JOIN artists_group AS ag ON ta.ArtistID = ag.ArtistID
+      WHERE ag.Name = '".db_string($Artist['name'])."'
+        AND tg.Name = ".$T['Title']."
+        AND tg.Year = ".$T['Year']);
+
     if ($DB->has_results()) {
-      // Don't escape tg.Name. It's written directly to the log table
-      list($GroupID, $WikiImage, $WikiBody, $RevisionID, $Properties['Title'], $Properties['Year'], $Properties['TagList']) = $DB->next_record(MYSQLI_NUM, array(4));
-      $Properties['TagList'] = str_replace(array(' ', '.', '_'), array(', ', '.', '.'), $Properties['TagList']);
+      list($GroupID, $WikiImage, $WikiBody, $RevisionID) = $DB->next_record();
       if (!$Properties['Image'] && $WikiImage) {
         $Properties['Image'] = $WikiImage;
         $T['Image'] = "'".db_string($WikiImage)."'";
@@ -355,58 +388,27 @@ if ($Type == 'Movies' || $Type == 'Anime' || $Type == 'Manga' || $Type == 'Games
           $NoRevision = true;
         }
       }
-      $Properties['Artist'] = Artists::display_artists(Artists::get_artist($GroupID), false, false);
-    }
-  }
-  if (!isset($GroupID) || !$GroupID) {
-    foreach ($ArtistForm as $Num => $Artist) {
-      /*$DB->query("
+      $ArtistForm = Artists::get_artist($GroupID);
+      //This torrent belongs in a group
+      break;
+
+    } else {*/
+      // The album hasn't been uploaded. Try to get the artist IDs
+      $DB->query("
         SELECT
-          tg.id,
-          tg.WikiImage,
-          tg.WikiBody,
-          tg.RevisionID
-        FROM torrents_group AS tg
-          LEFT JOIN torrents_artists AS ta ON ta.GroupID = tg.ID
-          LEFT JOIN artists_group AS ag ON ta.ArtistID = ag.ArtistID
-        WHERE ag.Name = '".db_string($Artist['name'])."'
-          AND tg.Name = ".$T['Title']."
-          AND tg.Year = ".$T['Year']);
-
+          ArtistID,
+          Name
+        FROM artists_group
+        WHERE Name = '".db_string($Artist['name'])."'");
       if ($DB->has_results()) {
-        list($GroupID, $WikiImage, $WikiBody, $RevisionID) = $DB->next_record();
-        if (!$Properties['Image'] && $WikiImage) {
-          $Properties['Image'] = $WikiImage;
-          $T['Image'] = "'".db_string($WikiImage)."'";
-        }
-        if (strlen($WikiBody) > strlen($Body)) {
-          $Body = $WikiBody;
-          if (!$Properties['Image'] || $Properties['Image'] == $WikiImage) {
-            $NoRevision = true;
+        while (list($ArtistID, $Name) = $DB->next_record(MYSQLI_NUM, false)) {
+          if (!strcasecmp($Artist['name'], $Name)) {
+            $ArtistForm[$Num] = array('id' => $ArtistID, 'name' => $Name);
+            break;
           }
         }
-        $ArtistForm = Artists::get_artist($GroupID);
-        //This torrent belongs in a group
-        break;
-
-      } else {*/
-        // The album hasn't been uploaded. Try to get the artist IDs
-        $DB->query("
-          SELECT
-            ArtistID,
-            Name
-          FROM artists_group
-          WHERE Name = '".db_string($Artist['name'])."'");
-        if ($DB->has_results()) {
-          while (list($ArtistID, $Name) = $DB->next_record(MYSQLI_NUM, false)) {
-            if (!strcasecmp($Artist['name'], $Name)) {
-              $ArtistForm[$Num] = array('id' => $ArtistID, 'name' => $Name);
-              break;
-            }
-          }
-        }
-      //}
-    }
+      }
+    //}
   }
 }
 
@@ -417,7 +419,7 @@ $LogName .= $Properties['Title'];
 $IsNewGroup = !isset($GroupID) || !$GroupID;
 
 //----- Start inserts
-if ((!isset($GroupID) || !$GroupID) && ($Type != 'Other')) {
+if ((!isset($GroupID) || !$GroupID)) {
   //array to store which artists we have added already, to prevent adding an artist twice
   $ArtistsAdded = [];
   foreach ($ArtistForm as $Num => $Artist) {
@@ -454,14 +456,12 @@ if (!isset($GroupID) || !$GroupID) {
     VALUES
       ($TypeID, ".$T['Title'].", ".$T['TitleRJ'].", ".$T['TitleJP'].", ".$T['Year'].", ".$T['Series'].", ".$T['Studio'].", ".$T['CatalogueNumber'].", " . $T['Pages'] . ", '".sqltime()."', '".db_string($Body)."', ".$T['Image'].", ".$T['DLsiteID'].")");
   $GroupID = $DB->inserted_id();
-  if ($Type == 'Movies' || $Type == 'Anime' || $Type == 'Manga' || $Type == 'Games') {
-    foreach ($ArtistForm as $Num => $Artist) {
-      $DB->query("
-        INSERT IGNORE INTO torrents_artists (GroupID, ArtistID, UserID)
-        VALUES ($GroupID, ".$Artist['id'].', '.$LoggedUser['ID'].")");
-      $Cache->increment('stats_album_count');
-      $Cache->delete_value('artist_groups_'.$Artist['id']);
-    }
+  foreach ($ArtistForm as $Num => $Artist) {
+    $DB->query("
+      INSERT IGNORE INTO torrents_artists (GroupID, ArtistID, UserID)
+      VALUES ($GroupID, ".$Artist['id'].', '.$LoggedUser['ID'].")");
+    $Cache->increment('stats_album_count');
+    $Cache->delete_value('artist_groups_'.$Artist['id']);
   }
   $Cache->increment('stats_group_count');
 
@@ -694,9 +694,8 @@ if (function_exists('fastcgi_finish_request')) {
 //--------------------------- IRC announce and feeds ---------------------------//
 $Announce = '';
 
-if ($Type != 'Other') {
-  $Announce .= Artists::display_artists($ArtistForm, false);
-}
+$Announce .= Artists::display_artists($ArtistForm, false);
+
 $Announce .= empty($Properties['Title']) ? (empty($Properties['TitleRJ']) ? trim($Properties['TitleJP']) : trim($Properties['TitleRJ'])) : trim($Properties['Title']);
 $Announce .= ' ';
 if ($Type != 'Other') {

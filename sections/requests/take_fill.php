@@ -89,19 +89,16 @@ if ($RequestCategoryID !== '0' && $TorrentCategoryID !== $RequestCategoryID) {
 
 $CategoryName = $Categories[$RequestCategoryID - 1];
 
-if ($CategoryName != 'Other') {
-  if ($RequestCatalogueNumber) {
-    if (str_replace('-', '', strtolower($TorrentCatalogueNumber)) !== str_replace('-', '', strtolower($RequestCatalogueNumber))) {
-      $Err = "This request requires the catalogue number $RequestCatalogueNumber";
-    }
+if ($RequestCatalogueNumber) {
+  if (str_replace('-', '', strtolower($TorrentCatalogueNumber)) !== str_replace('-', '', strtolower($RequestCatalogueNumber))) {
+    $Err = "This request requires the catalogue number $RequestCatalogueNumber";
   }
+}
 
-  if ($RequestDLSiteID) {
-    if (strtolower($TorrentDLSiteID) !== strtolower($RequestDLSiteID)) {
-      $Err = "This request requires DLSite ID $RequestDLSiteID";
-    }
+if ($RequestDLSiteID) {
+  if (strtolower($TorrentDLSiteID) !== strtolower($RequestDLSiteID)) {
+    $Err = "This request requires DLSite ID $RequestDLSiteID";
   }
-
 }
 
 // Fill request
@@ -117,13 +114,9 @@ $DB->query("
     TimeFilled = '".sqltime()."'
   WHERE ID = $RequestID");
 
-if ($CategoryName != 'Other') {
-  $ArtistForm = Requests::get_artists($RequestID);
-  $ArtistName = Artists::display_artists($ArtistForm, false, true);
-  $FullName = $ArtistName.$Title;
-} else {
-  $FullName = $Title;
-}
+$ArtistForm = Requests::get_artists($RequestID);
+$ArtistName = Artists::display_artists($ArtistForm, false, true);
+$FullName = $ArtistName.$Title;
 
 $DB->query("
   SELECT UserID

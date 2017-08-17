@@ -30,27 +30,17 @@ if ($Request['CategoryID'] === '0') {
 $Title = empty($Request['Title']) ? (empty($Request['TitleRJ']) ? $Request['TitleJP'] : $Request['TitleRJ']) : $Request['Title'];
 
 //Do we need to get artists?
-if ($CategoryName != 'Other') {
-  $ArtistForm = Requests::get_artists($RequestID);
-  $ArtistName = Artists::display_artists($ArtistForm, false, true);
-  $ArtistLink = Artists::display_artists($ArtistForm, true, true);
+$ArtistForm = Requests::get_artists($RequestID);
+$ArtistName = Artists::display_artists($ArtistForm, false, true);
+$ArtistLink = Artists::display_artists($ArtistForm, true, true);
 
-  if ($IsFilled) {
-    $DisplayLink = "$ArtistLink<a href=\"torrents.php?torrentid=$Request[TorrentID]\" dir=\"ltr\">$Title</a>";
-  } else {
-    $DisplayLink = $ArtistLink.'<span dir="ltr">'.$Title."</span>";
-  }
-
-  $FullName = $ArtistName.$Title;
-
+if ($IsFilled) {
+  $DisplayLink = "$ArtistLink<a href=\"torrents.php?torrentid=$Request[TorrentID]\" dir=\"ltr\">$Title</a>";
 } else {
-  if ($IsFilled) {
-    $DisplayLink = "<a href=\"torrents.php?torrentid=$Request[TorrentID]\" dir=\"ltr\">$Title</a>";
-  } else {
-    $DisplayLink = "<span dir=\"ltr\">$Title</span>";
-  }
-  $FullName = $Title;
+  $DisplayLink = $ArtistLink.'<span dir="ltr">'.$Title."</span>";
 }
+
+$FullName = $ArtistName.$Title;
 
 $Extra = "";
 
@@ -135,24 +125,26 @@ $encoded_artist = urlencode($encoded_artist);
     </div>
 <?
   }
-  if ($CategoryName != 'Other') {
-    $ArtistVariant = "";
-    switch ($CategoryName) {
-      case "Movies":
-        $ArtistVariant = "Idols";
-        break;
-      case "Anime":
-        $ArtistVariant = "Studios";
-        break;
-      case "Manga":
-        $ArtistVariant = "Artists";
-        break;
-      case "Games":
-        $ArtistVariant = "Developers";
-        break;
-      default:
-        $ArtistVariant = "Artists";
-    }
+  $ArtistVariant = "";
+  switch ($CategoryName) {
+    case "Movies":
+      $ArtistVariant = "Idols";
+      break;
+    case "Anime":
+      $ArtistVariant = "Studios";
+      break;
+    case "Manga":
+      $ArtistVariant = "Artists";
+      break;
+    case "Games":
+      $ArtistVariant = "Developers";
+      break;
+    case "Other":
+      $ArtistVariant = "Creators";
+      break;
+    default:
+      $ArtistVariant = "Artists";
+  }
 ?>
     <div class="box box_artists">
       <div class="head"><strong><?=$ArtistVariant?></strong></div>
@@ -164,7 +156,6 @@ $encoded_artist = urlencode($encoded_artist);
 <?    } ?>
       </ul>
     </div>
-<?  } ?>
     <div class="box box_tags">
       <div class="head"><strong>Tags</strong></div>
       <ul class="stats nobullet">
