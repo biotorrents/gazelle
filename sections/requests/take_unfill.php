@@ -45,13 +45,9 @@ $DB->query("
 
 $CategoryName = $Categories[$CategoryID - 1];
 
-if ($CategoryName != 'Other') {
-  $ArtistForm = Requests::get_artists($RequestID);
-  $ArtistName = Artists::display_artists($ArtistForm, false, true);
-  $FullName = $ArtistName.$Title;
-} else {
-  $FullName = $Title;
-}
+$ArtistForm = Requests::get_artists($RequestID);
+$ArtistName = Artists::display_artists($ArtistForm, false, true);
+$FullName = $ArtistName.$Title;
 
 $RequestVotes = Requests::get_votes_array($RequestID);
 

@@ -506,11 +506,7 @@ foreach ($Categories as $CatKey => $CatName) {
 
     $TorrentTags = new Tags($TagList);
 
-    if ($Categories[$GroupCategoryID-1] != 'Other') {
-      $DisplayName = Artists::display_artists($Artists);
-    } else {
-      $DisplayName = '';
-    }
+    $DisplayName = Artists::display_artists($Artists);
     $DisplayName .= '<a href="torrents.php?id='.$GroupID.'&amp;torrentid='.$TorrentID.'" ';
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
       $DisplayName .= 'onmouseover="getCover(event)" data-cover="'.ImageTools::process($WikiImage).'" onmouseleave="ungetCover()" ';

@@ -243,10 +243,6 @@ $Index++;
 <?    } ?>
 
   </div>
-<?
-if ($Categories[$GroupCategoryID - 1] != 'Other') {
-  $ShownWith = false;
-?>
     <div class="box box_artists">
       <div class="head"><strong>Artists</strong>
       <?=check_perms('torrents_edit') ? '<span class="edit_artists"><a onclick="ArtistManager(); return false;" href="#" class="brackets float_right">Edit</a></span>' : ''?>
@@ -276,7 +272,6 @@ if ($Categories[$GroupCategoryID - 1] != 'Other') {
     </div>
 <?
     }
-  }
 ?>
     <div class="box box_tags">
       <div class="head">
