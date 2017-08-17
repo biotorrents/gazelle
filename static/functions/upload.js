@@ -526,7 +526,7 @@ function initAutofill() {
 }
 
 $(function() {
-  initAutofill()
-  $('.add_artist_button').each(function(i, el) {el.addEventListener('click', AddArtistField)})
-  $('.remove_artist_button').each(function(i, el) {el.addEventListener('click', RemoveArtistField)})
+  initAutofill();
+  $(document).on('click', '.add_artist_button', AddArtistField);
+  $(document).on('click', '.remove_artist_button', RemoveArtistField);
 })
