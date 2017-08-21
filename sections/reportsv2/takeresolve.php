@@ -246,7 +246,7 @@ if ($DB->affected_rows() > 0 || !$Report) {
   }
 
   //Log and delete
-  if (isset($Escaped['delete']) && check_perms('users_mod')) {
+  if (isset($Escaped['delete']) && check_perms('torrents_delete')) {
     $DB->query("
       SELECT Username
       FROM users_main

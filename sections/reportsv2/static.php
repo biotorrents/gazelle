@@ -619,7 +619,7 @@ if (count($Reports) === 0) {
 <?        } ?>
             </select>
             <span id="options<?=$ReportID?>">
-<?        if (check_perms('users_mod')) { ?>
+<?        if (check_perms('torrents_delete')) { ?>
               <span class="tooltip" title="Delete torrent?">
                 <label for="delete<?=$ReportID?>"><strong>Delete</strong></label>
                 <input type="checkbox" name="delete" id="delete<?=$ReportID?>" />
