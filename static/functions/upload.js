@@ -47,6 +47,7 @@ function Categories() {
     }
     initAutocomplete()
     initAutofill()
+    $('.bbcode_editor').each(function(i, el) { BBEditor(el) })
   });
 }
 

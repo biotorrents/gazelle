@@ -153,7 +153,7 @@ function Preview_Edit(postid) {
   ajax.post("ajax.php?action=preview","form" + postid, function(response) {
     $('#preview' + postid).raw().innerHTML = response;
     $('#editbox' + postid).ghide();
-    if ($('#editbox' + postid).raw().previousSibling.className == 'bbcode_bar') $($('#editbox' + postid).raw().previousSibling).ghide();
+    if ($('#editbox' + postid).raw().previousSibling.classList.contains('bbcode_bar')) $($('#editbox' + postid).raw().previousSibling).ghide();
   });
 }
 
@@ -161,6 +161,7 @@ function Cancel_Preview(postid) {
   $('#bar' + postid).raw().innerHTML = "<input type=\"button\" value=\"Preview\" onclick=\"Preview_Edit(" + postid + ");\" /><input type=\"button\" value=\"Post\" onclick=\"Save_Edit(" + postid + ")\" /><input type=\"button\" value=\"Cancel\" onclick=\"Cancel_Edit(" + postid + ");\" />";
   $('#preview' + postid).raw().innerHTML = "";
   $('#editbox' + postid).gshow();
+  if ($('#editbox' + postid).raw().previousSibling.classList.contains('bbcode_bar')) $($('#editbox' + postid).raw().previousSibling).gshow();
 }
 
 function Save_Edit(postid) {
