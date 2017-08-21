@@ -50,6 +50,7 @@ $Properties['Subbing'] = $_POST['sub'];
 $Properties['Language'] = $_POST['lang'];
 $Properties['Subber']= $_POST['subber'];
 $Properties['Censored'] = (isset($_POST['censored'])) ? 1 : 0;
+$Properties['Anonymous'] = (isset($_POST['anonymous'])) ? 1 : 0;
 $Properties['Archive'] = (isset($_POST['archive']) && $_POST['archive'] != '---') ? $_POST['archive'] : '';
 
 if ($_POST['album_desc']) {
@@ -241,20 +242,15 @@ foreach ($Properties as $Key => $Value) {
 }
 
 $T['Censored'] = $Properties['Censored'];
+$T['Anonymous'] = $Properties['Anonymous'];
 
 
 //******************************************************************************//
 //--------------- Start database stuff -----------------------------------------//
 
 $DBTorVals = [];
-/*
 $DB->query("
-  SELECT Media, Format, Encoding, RemasterYear, Remastered, RemasterTItle, RemasterRecordLabel, RemasterCatalogueNumber, Scene, Description
-  FROM torrents
-  WHERE ID = $TorrentID");
-  */
-$DB->query("
-  SELECT Media, Container, Codec, Resolution, AudioFormat, Subbing, Language, Description, MediaInfo, Censored, Archive, Subber
+  SELECT Media, Container, Codec, Resolution, AudioFormat, Subbing, Language, Description, MediaInfo, Censored, Anonymous, Archive, Subber
   FROM torrents
   WHERE ID = $TorrentID");
 $DBTorVals = $DB->to_array(false, MYSQLI_ASSOC);
@@ -277,6 +273,7 @@ foreach ($DBTorVals as $Key => $Value) {
   }
 }
 $T['Censored'] = $Properties['Censored'];
+$T['Anonymous'] = $Properties['Anonymous'];
 
 // Update info for the torrent
 /*
@@ -307,7 +304,8 @@ $SQL = "
     Subber = $T[Subber],
     Archive = $T[Archive],
     MediaInfo = $T[MediaInfo],
-    Censored = $T[Censored],";
+    Censored = $T[Censored],
+    Anonymous = $T[Anonymous],";
 
 if (check_perms('torrents_freeleech')) {
   $SQL .= "FreeTorrent = $T[FreeLeech],";

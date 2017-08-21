@@ -103,8 +103,8 @@ $JsonTorrentList[] = [
   'mediaInfo'   => $Torrent['MediaInfo'],
   'fileList'    => $FileList,
   'filePath'    => $Torrent['FilePath'],
-  'userId'      => (int)$Torrent['UserID'],
-  'username'    => $Userinfo['Username']
+  'userId'      => (int)($Torrent['Anonymous'] ? 0 : $Torrent['UserID']),
+  'username'    => ($Torrent['Anonymous'] ? 'Anonymous' : $Userinfo['Username'])
 ];
 
 json_die("success", ['group' => $JsonTorrentDetails, 'torrent' => array_pop($JsonTorrentList)]);

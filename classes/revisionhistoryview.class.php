@@ -11,7 +11,9 @@ class RevisionHistoryView {
     <tr class="colhead">
       <td>Revision</td>
       <td>Date</td>
+<? if (check_perms('users_mod')) { ?>
       <td>User</td>
+<? } ?>
       <td>Summary</td>
     </tr>
 <?
@@ -25,9 +27,11 @@ class RevisionHistoryView {
       <td>
         <?=$Time?>
       </td>
+<? if (check_perms('users_mod')) { ?>
       <td>
         <?=Users::format_username($UserID, false, false, false)?>
       </td>
+<? } ?>
       <td>
         <?=($Summary ? $Summary : '(empty)')?>
       </td>

@@ -62,6 +62,7 @@ $Properties['Language'] = isset($_POST['lang']) ? $_POST['lang'] : '';
 $Properties['Subber'] = isset($_POST['subber']) ? $_POST['subber'] : '';
 $Properties['DLsiteID'] = (isset($_POST['dlsiteid'])) ? $_POST['dlsiteid'] : '';
 $Properties['Censored'] = (isset($_POST['censored'])) ? 1 : 0;
+$Properties['Anonymous'] = (isset($_POST['anonymous'])) ? 1 : 0;
 $Properties['Archive'] = (isset($_POST['archive']) && $_POST['archive'] != '---') ? $_POST['archive'] : '';
 if (isset($_POST['library_image'])) $Properties['LibraryImage'] = $_POST['library_image'];
 if (isset($_POST['tags'])) $Properties['TagList'] = implode(',',array_unique(explode(',', str_replace(' ','',$_POST['tags']))));
@@ -254,6 +255,7 @@ foreach ($Properties as $Key => $Value) {
 }
 
 $T['Censored'] = $Properties['Censored'];
+$T['Anonymous'] = $Properties['Anonymous'];
 
 
 //******************************************************************************//
@@ -564,11 +566,11 @@ if (($Type == "Movies" || $Type == "Anime") && ($T['Container'] == "'ISO'" || $T
 $DB->query("
   INSERT INTO torrents
     (GroupID, UserID, Media, Container, Codec, Resolution, AudioFormat,
-    Subbing, Language, Subber, Censored, Archive, info_hash, FileCount, FileList,
+    Subbing, Language, Subber, Censored, Anonymous, Archive, info_hash, FileCount, FileList,
     FilePath, Size, Time, Description, MediaInfo, FreeTorrent, FreeLeechType)
   VALUES
     ($GroupID, $LoggedUser[ID], $T[Media], $T[Container], $T[Codec], $T[Resolution], $T[AudioFormat],
-    $T[Subbing], $T[Language], $T[Subber], $T[Censored], $T[Archive],'".db_string($InfoHash)."', $NumFiles, '$FileString',
+    $T[Subbing], $T[Language], $T[Subber], $T[Censored], $T[Anonymous], $T[Archive],'".db_string($InfoHash)."', $NumFiles, '$FileString',
     '$FilePath', $TotalSize, '".sqltime()."', $T[TorrentDescription], $T[MediaInfo], '$T[FreeTorrent]', '$T[FreeLeechType]')");
 
 $Cache->increment('stats_torrent_count');

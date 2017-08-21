@@ -1083,6 +1083,7 @@ CREATE TABLE `torrents` (
   `Subbing` varchar(10) DEFAULT NULL,
   `Language` varchar(20) DEFAULT NULL,
   `Censored` tinyint(1) NOT NULL DEFAULT '1',
+  `Anonymous` tinyint(1) NOT NULL DEFAULT '0',
   `info_hash` blob NOT NULL,
   `FileCount` int(6) NOT NULL,
   `FileList` mediumtext,

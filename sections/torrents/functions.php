@@ -79,6 +79,7 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
         t.Subber,
         t.Language,
         t.Censored,
+        t.Anonymous,
         t.Archive,
         t.FileCount,
         t.Size,

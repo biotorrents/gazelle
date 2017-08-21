@@ -26,6 +26,7 @@ $DB->query("
     t.Language,
     t.Subber,
     t.Censored,
+    t.Anonymous,
     t.Archive,
     t.FreeTorrent,
     t.FreeLeechType,
@@ -66,32 +67,31 @@ if (($LoggedUser['ID'] != $Properties['UserID'] && !check_perms('torrents_edit')
 
 View::show_header('Edit torrent', 'upload,torrent');
 
-if (!($Properties['Remastered'] && !$Properties['RemasterYear']) || check_perms('edit_unknowns')) {
-  $TorrentForm = new TORRENT_FORM($Properties, $Err, false);
+$TorrentForm = new TORRENT_FORM($Properties, $Err, false);
 
-  $TorrentForm->head();
-  switch ($UploadForm) {
-    case 'Movies':
-      $TorrentForm->movies_form('');
-      break;
-    case 'Anime':
-      $TorrentForm->anime_form('');
-      break;
-    case 'Manga':
-      $TorrentForm->manga_form('');
-      break;
-    case 'Games':
-      $TorrentForm->game_form('');
-      break;
-    case 'Other':
-      $TorrentForm->simple_form();
-      break;
-    default:
-      $TorrentForm->movies_form('');
-  }
-  $TorrentForm->foot();
+$TorrentForm->head();
+switch ($UploadForm) {
+  case 'Movies':
+    $TorrentForm->movies_form('');
+    break;
+  case 'Anime':
+    $TorrentForm->anime_form('');
+    break;
+  case 'Manga':
+    $TorrentForm->manga_form('');
+    break;
+  case 'Games':
+    $TorrentForm->game_form('');
+    break;
+  case 'Other':
+    $TorrentForm->simple_form();
+    break;
+  default:
+    $TorrentForm->movies_form('');
 }
-if (check_perms('torrents_edit') && (check_perms('users_mod') || $Properties['CategoryID'] == 1)) {
+$TorrentForm->foot();
+
+if (check_perms('torrents_edit') || check_perms('users_mod')) {
 ?>
 <div class="thin">
 <?

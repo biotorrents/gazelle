@@ -97,8 +97,8 @@ foreach ($TorrentList as $Torrent) {
     'mediaInfo'   => $Torrent['MediaInfo'],
     'fileList'    => $FileList,
     'filePath'    => $Torrent['FilePath'],
-    'userId'      => (int)$Torrent['UserID'],
-    'username'    => $Userinfo['Username']
+    'userId'      => (int)($Torrent['Anonymous'] ? 0 : $Torrent['UserID']),
+    'username'    => ($Torrent['Anonymous'] ? 'Anonymous' : $Userinfo['Username'])
   ];
 }
 

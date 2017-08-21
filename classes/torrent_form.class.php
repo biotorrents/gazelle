@@ -185,6 +185,10 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
     }
 ?>
       <tr>
+        <td class="label tooltip" title="Checking this will hide your username from other users on the torrent details page. Stats will still be attributed to you.">Upload Anonymously:</td>
+        <td><input type="checkbox" name="anonymous" value="1" <?=(($Torrent['Anonymous'] ?? false) ? 'checked ' : '')?>/></td>
+      </tr>
+      <tr>
         <td colspan="2" style="text-align: center;">
           <p>Be sure that your torrent is approved by the <a href="rules.php?p=upload" target="_blank">rules</a>. Not doing this will result in a <strong class="important_text">warning</strong> or <strong class="important_text">worse</strong>.</p>
 <?    if ($this->NewTorrent) { ?>

@@ -364,7 +364,7 @@ function filelist($Str) {
 
 foreach ($TorrentList as $Torrent) {
   list($TorrentID, $Media, $Container, $Codec, $Resolution, $AudioFormat, $Subbing,
-    $Subber, $Language, $Censored, $Archive, $FileCount, $Size, $Seeders, $Leechers,
+    $Subber, $Language, $Censored, $Anonymous, $Archive, $FileCount, $Size, $Seeders, $Leechers,
     $Snatched, $FreeTorrent, $FreeLeechType, $TorrentTime, $Description, $MediaInfo, $FileList,
     $FilePath, $UserID, $LastActive, $InfoHash, $BadTags, $BadFolders, $BadFiles,
     $LastReseedRequest, $LogInDB, $HasFile, $PersonalFL, $IsSnatched, $IsSeeding, $IsLeeching
@@ -541,7 +541,7 @@ foreach ($TorrentList as $Torrent) {
         <td colspan="5">
           <div id="release_<?=$TorrentID?>" class="no_overflow">
             <blockquote>
-              Uploaded by <?=Users::format_username($UserID, false, false, false)?> <?=time_diff($TorrentTime);?>
+              Uploaded by <?=($Anonymous ? 'Anonymous' : Users::format_username($UserID, false, false, false))?> <?=time_diff($TorrentTime);?>
 <?  if ($Seeders == 0) {
     if ($LastActive && time() - strtotime($LastActive) >= 1209600) { ?>
             <br /><strong>Last active: <?=time_diff($LastActive); ?></strong>
@@ -775,8 +775,12 @@ if (count($PersonalCollages) > 0) {
       <div class="body torrent_screenshots hidden">
 <?
     foreach($Screenshots as $Screenshot) {
-      $SSURL = ImageTools::process($Screenshot['Image'], false)
-      ?><img class='tooltip lightbox-init' title='<?=Users::format_username($Screenshot['UserID'], false, false, false)?> - <?=time_diff($Screenshot['Time'])?>' src="<?=$SSURL?>" /><?
+      $SSURL = ImageTools::process($Screenshot['Image'], false);
+      if (check_perms('users_mod')) {
+        ?><img class='tooltip lightbox-init' title='<?=Users::format_username($Screenshot['UserID'], false, false, false)?> - <?=time_diff($Screenshot['Time'])?>' src="<?=$SSURL?>" /><?
+      } else {
+        ?><img class='tooltip lightbox-init' title='Added <?=time_diff($Screenshot['Time'])?>' src="<?=$SSURL?>" /><?
+      }
     }
 ?>
       </div>

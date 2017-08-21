@@ -6,10 +6,10 @@ if (!is_number($GroupID)) {
 
 View::show_header("History for Group $GroupID");
 
-$Groups = Torrents::get_groups(array($GroupID), true, true, false);
+$Groups = Torrents::get_groups([$GroupID], true, true, false);
 if (!empty($Groups[$GroupID])) {
   $Group = $Groups[$GroupID];
-  $Title = Artists::display_artists($Group['ExtendedArtists']).'<a href="torrents.php?id='.$GroupID.'">'.$Group['Name'].'</a>';
+  $Title = Artists::display_artists($Group['ExtendedArtists']).'<a href="torrents.php?id='.$GroupID.'">'.($Group['Name'] ? $Group['Name'] : ($Group['NameRJ'] ? $Group['NameRJ']: $Group['NameJP'])).'</a>';
 } else {
   $Title = "Group $GroupID";
 }
@@ -28,6 +28,7 @@ if (!empty($Groups[$GroupID])) {
       <td>Info</td>
     </tr>
 <?
+  $AnonTorrents = [];
   $Log = $DB->query("
       SELECT TorrentID, UserID, Info, Time
       FROM group_log
@@ -36,6 +37,11 @@ if (!empty($Groups[$GroupID])) {
   $LogEntries = $DB->to_array(false, MYSQLI_NUM);
   foreach ($LogEntries AS $LogEntry) {
     list($TorrentID, $UserID, $Info, $Time) = $LogEntry;
+    if (!isset($AnonTorrents[$TorrentID])) {
+      $DB->query("SELECT UserID, Anonymous FROM torrents WHERE ID=$TorrentID");
+      list($AnonUser, $IsAnon) = $DB->next_record();
+      $AnonTorrents[$TorrentID] = $IsAnon ? $AnonUser : -1;
+    }
 ?>
     <tr class="row">
       <td><?=$Time?></td>
@@ -61,8 +67,8 @@ if (!empty($Groups[$GroupID])) {
 <?        }
       } else { ?>
         <td></td>
-<?      }  ?>
-      <td><?=Users::format_username($UserID, false, false, false)?></td>
+<?      } ?>
+      <td><?=($UserID == $AnonTorrents[$TorrentID])?'Anonymous':Users::format_username($UserID, false, false, false)?></td>
       <td><?=$Info?></td>
     </tr>
 <?

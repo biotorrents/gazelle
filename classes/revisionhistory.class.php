@@ -7,11 +7,7 @@ class RevisionHistory {
    * @return array
    */
   public static function get_revision_history($Page, $PageID) {
-    if ($Page == 'artists') {
-      $Table = 'wiki_artists';
-    } else {
-      $Table = 'wiki_torrents';
-    }
+    $Table = ($Page == 'artists') ? 'wiki_artists' : 'wiki_torrents';
     $QueryID = G::$DB->get_query_id();
     G::$DB->query("
       SELECT
