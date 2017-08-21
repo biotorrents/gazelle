@@ -237,34 +237,6 @@ function toggleTorrentSearch(mode) {
   return false;
 }
 
-var ArtistFieldCount = 1;
-
-function AddArtistField() {
-  if (ArtistFieldCount >= 100) {
-    return;
-  }
-  var x = $('#AddArtists').raw();
-  x.appendChild(document.createElement("br"));
-  var ArtistField = document.createElement("input");
-  ArtistField.type = "text";
-  ArtistField.name = "aliasname[]";
-  ArtistField.size = "17";
-  x.appendChild(ArtistField);
-  x.appendChild(document.createTextNode(' '));
-  var Importance = document.createElement("select");
-  Importance.name = "importance[]";
-  Importance.innerHTML = '<option value="1">Main</option><option value="2">Guest</option><option value="4">Composer</option><option value="5">Conductor</option><option value="6">DJ / Compiler</option><option value="3">Remixer</option><option value="7">Producer</option>';
-  x.appendChild(Importance);
-  if ($("#artist").data("gazelle-autocomplete")) {
-    $(ArtistField).live('focus', function() {
-      $(ArtistField).autocomplete({
-        serviceUrl : 'artist.php?action=autocomplete'
-      });
-    });
-  }
-  ArtistFieldCount++;
-}
-
 var coverFieldCount = 0;
 var hasCoverAddButton = false;
 
@@ -313,6 +285,4 @@ $(function() {
     var a = $('a[data-cover]')[0]
     if (a) preload(a.attributes['data-cover'].value)
   }
-  $(document).on('click', '.add_artist_button', AddArtistField);
-  $(document).on('click', '.remove_artist_button', RemoveArtistField);
 })
