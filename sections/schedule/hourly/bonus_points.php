@@ -23,6 +23,7 @@ if ($DB->has_results()) {
   $QueryPart = '';
   while (list($UserID, $NumTorr, $TSize, $TTime, $TSeeds) = $DB->next_record()) {
     $Points = intval((0.5 + (0.55*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5,($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3)))**0.95);
+    if ($Points > 100000) $Points = 0;
     $QueryPart .= "WHEN $UserID THEN BonusPoints+$Points ";
     $Cache->delete_value('user_info_heavy_'.$UserID);
   }
