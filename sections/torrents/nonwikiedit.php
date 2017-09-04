@@ -104,7 +104,8 @@ foreach ($Artists as $Artist) {
       INSERT INTO torrents_artists
       (GroupID, ArtistID, UserID)
       VALUES
-      (".$GroupID.", ".$ArtistID.", ".$LoggedUser['ID'].")");
+      (".$GroupID.", ".$ArtistID.", ".$LoggedUser['ID'].")
+      ON DUPLICATE KEY UPDATE UserID=".$LoggedUser['ID']); // Why does this even happen
     $Cache->delete_value('artist_groups_'.$ArtistID);
   }
 }
