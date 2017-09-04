@@ -543,7 +543,7 @@ foreach ($TorrentList as $Torrent) {
         <td colspan="5">
           <div id="release_<?=$TorrentID?>" class="no_overflow">
             <blockquote>
-              Uploaded by <?=($Anonymous ? 'Anonymous' : Users::format_username($UserID, false, false, false))?> <?=time_diff($TorrentTime);?>
+              Uploaded by <?=($Anonymous ? '<em>Anonymous</em>' : Users::format_username($UserID, false, false, false))?> <?=time_diff($TorrentTime);?>
 <?  if ($Seeders == 0) {
     if ($LastActive && time() - strtotime($LastActive) >= 1209600) { ?>
             <br /><strong>Last active: <?=time_diff($LastActive); ?></strong>
