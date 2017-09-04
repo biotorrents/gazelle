@@ -494,7 +494,10 @@ foreach ($TorrentList as $Torrent) {
     }
   }
   if ($PersonalFL) { $ExtraInfo.=$AddExtra. Format::torrent_label('Personal Freeleech!'); $AddExtra=' / '; }
-  if ($Reported) { $ExtraInfo.=$AddExtra. Format::torrent_label('Reported'); $AddExtra=' / '; }
+  if ($Reported) {
+    $ExtraInfo.=$AddExtra.'<strong class="torrent_label tl_reported tooltip" title="Type: '.ucfirst($Reports[0]['Type']).'<br>Comment: '.htmlentities(htmlentities($Reports[0]['UserComment'])).'">Reported</strong>';
+    $AddExtra=' / ';
+  }
   if (!$Censored) { $ExtraInfo .= $AddExtra.Format::torrent_label('Uncensored'); $AddExtra=' / '; }
   if (!empty($BadTags)) { $ExtraInfo.=$AddExtra. Format::torrent_label('Bad Tags'); $AddExtra=' / '; }
   if (!empty($BadFolders)) { $ExtraInfo.=$AddExtra. Format::torrent_label('Bad Folders'); $AddExtra=' / '; }

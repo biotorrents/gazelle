@@ -616,7 +616,7 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
 <?      } ?>
         | <a href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>" class="tooltip" title="Report">RP</a> ]
       </span>
-      &raquo; <a href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"><?=Torrents::torrent_info($Data)?><? if ($Reported) { ?> / <strong class="torrent_label tl_reported">Reported</strong><? } ?></a>
+      &raquo; <a href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"><?=Torrents::torrent_info($Data)?><? if ($Reported) { ?> / <strong class="torrent_label tl_reported tooltip" title="Type: <?=ucfirst($Reports[0]['Type'])?><br>Comment: <?=htmlentities(htmlentities($Reports[0]['UserComment']))?>">Reported</strong><? } ?></a>
     </td>
     <td class="number_column"><?=$Data['FileCount']?></td>
     <td class="nobr"><?=time_diff($Data['Time'], 1)?></td>
@@ -713,7 +713,7 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
         </div>
         <?=$DisplayName?>
         <br />
-        <div style="display: inline;" class="torrent_info"><?=$ExtraInfo?><? if ($Reported) { ?> / <strong class="torrent_label tl_reported">Reported</strong><? } ?></div>
+        <div style="display: inline;" class="torrent_info"><?=$ExtraInfo?><? if ($Reported) { ?> / <strong class="torrent_label tl_reported tooltip" title="Type: <?=ucfirst($Reports[0]['Type'])?><br>Comment: <?=htmlentities(htmlentities($Reports[0]['UserComment']))?>">Reported</strong><? } ?></div>
         <div class="tags"><?=$TorrentTags->format("torrents.php?$Action&amp;taglist=")?></div>
       </div>
     </td>
