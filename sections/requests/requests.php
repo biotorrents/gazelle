@@ -2,14 +2,14 @@
 $SphQL = new SphinxqlQuery();
 $SphQL->select('id, votes, bounty')->from('requests, requests_delta');
 
-$SortOrders = array(
+$SortOrders = [
   'votes' => 'votes',
   'bounty' => 'bounty',
   'lastvote' => 'lastvote',
   'filled' => 'timefilled',
-  'year' => 'year',
   'created' => 'timeadded',
-  'random' => false);
+  'random' => false
+];
 
 if (empty($_GET['order']) || !isset($SortOrders[$_GET['order']])) {
   $_GET['order'] = 'created';
@@ -429,7 +429,7 @@ View::show_header($Title, 'requests');
     <tr class="colhead_dark">
       <td class="small cats_col"></td>
       <td style="width: 38%;" class="nobr">
-        <strong>Request Name</strong> / <a href="?order=year&amp;sort=<?=($OrderBy === 'year' ? $NewSort : 'desc')?>&amp;<?=$CurrentURL?>"><strong>Year</strong></a>
+        <strong>Request Name</strong>
       </td>
       <td class="nobr">
         <a href="?order=votes&amp;sort=<?=($OrderBy === 'votes' ? $NewSort : 'desc')?>&amp;<?=$CurrentURL?>"><strong>Votes</strong></a>
