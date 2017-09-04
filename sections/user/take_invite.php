@@ -40,7 +40,7 @@ if ($LoggedUser['RatioWatch']
     error(403);
 }
 
-$Email = $_POST['email'];
+$Email = trim($_POST['email']);
 $Username = $LoggedUser['Username'];
 $SiteName = SITE_NAME;
 $SiteURL = site_url();
