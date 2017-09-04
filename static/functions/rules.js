@@ -1,6 +1,6 @@
 function findRule() {
   var query_string = $('#search_string').val();
-  var q = query_string.replace(/\s+/gm, '').split('+');
+  var q = query_string.split('+').map(a=>a.trim());
   var regex = new Array();
   for (var i = 0; i < q.length; i++) {
     regex[i] = new RegExp(q[i], 'mi');
