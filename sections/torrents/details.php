@@ -137,7 +137,6 @@ View::show_header($Title, 'browse,comments,torrent,bbcode,recommend,cover_art,su
       <a href="#" id="bookmarklink_torrent_<?=$GroupID?>" class="add_bookmark brackets" onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
 <?  } ?>
       <a href="#" id="subscribelink_torrents<?=$GroupID?>" class="brackets" onclick="SubscribeComments('torrents', <?=$GroupID?>); return false;"><?=Subscriptions::has_subscribed_comments('torrents', $GroupID) !== false ? 'Unsubscribe' : 'Subscribe'?></a>
-<!-- <a href="#" id="recommend" class="brackets">Recommend</a> -->
 <?
   if ($Categories[$GroupCategoryID-1] == 'Movies' || $Categories[$GroupCategoryID-1] == 'Anime' || $Categories[$GroupCategoryID-1] == 'Manga' || $Categories[$GroupCategoryID-1] == 'Games') { ?>
       <a href="upload.php?groupid=<?=$GroupID?>" class="brackets">Add format</a>
@@ -474,8 +473,8 @@ foreach ($TorrentList as $Torrent) {
   if ($Archive) {
     $ExtraInfo .= $AddExtra.display_str('Archived ('.$Archive.')'); $AddExtra=' / ';
   }
-  if (!$ExtraInfo) {
-    $ExtraInfo = $GroupName ; $AddExtra=' / ';
+  if (!$ExtraInfo || $GroupCategoryID == 5) {
+    $ExtraInfo = $GroupName; $AddExtra=' / ';
   }
   if ($IsLeeching) { $ExtraInfo.=$AddExtra. Format::torrent_label('Leeching'); $AddExtra=' / '; }
   else if ($IsSeeding) { $ExtraInfo.=$AddExtra . Format::torrent_label('Seeding'); $AddExtra=' / '; }
