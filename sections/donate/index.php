@@ -1,4 +1,9 @@
 <?
+if (!FEATURE_DONATE) {
+  header('Location: index.php');
+  die();
+}
+
 //Module mini-config
 include(SERVER_ROOT.'/sections/donate/config.php');
 

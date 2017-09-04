@@ -284,9 +284,11 @@ if (check_perms('site_send_unlimited_invites')) {
           <li id="nav_invite" class="brackets<?=Format::add_class($PageID, array('user','invite'), 'active', false)?>">
             <a href="user.php?action=invite">Invite<?=$Invites?></a>
           </li>
+<? if (FEATURE_DONATE) { ?>
           <li id="nav_donate" class="brackets<?=Format::add_class($PageID, array('donate'), 'active', false)?>">
             <a href="donate.php">Donate</a>
           </li>
+<? } ?>
           <li id="nav_staff" class="brackets<?=Format::add_class($PageID, array('staff'), 'active', false)?>">
             <a href="staff.php">Staff</a>
           </li>

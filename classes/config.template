@@ -76,11 +76,12 @@ define('BLOCK_OPERA_MINI',  false); //Set to true to block Opera Mini proxy
 define('DONOR_INVITES',     2);
 
 // Features
-define('FEATURE_EMAIL_REENABLE',     true);
-define('FEATURE_SEND_EMAIL',         true);  //Attempt to send email from the site
-define('FEATURE_IRC',                true);  //Attempt to send messages to IRC
-define('FEATURE_ENFORCE_LOCATIONS',  true);  //Require users to verify login from unknown locations
-define('FEATURE_SET_ENC_KEY_PUBLIC', false); //Allow the site encryption key to be set without an account (Should only be used for initial setup)
+define('FEATURE_DONATE',             false); // Enable donation page
+define('FEATURE_EMAIL_REENABLE',     true);  // Send re-enable requests to user's email
+define('FEATURE_ENFORCE_LOCATIONS',  true);  // Require users to verify login from unknown locations
+define('FEATURE_IRC',                true);  // Attempt to send messages to IRC
+define('FEATURE_SEND_EMAIL',         true);  // Attempt to send email from the site
+define('FEATURE_SET_ENC_KEY_PUBLIC', false); // Allow the site encryption key to be set without an account (Should only be used for initial setup)
 
 // User class IDs needed for automatic promotions. Found in the 'permissions' table
 // Name of class  Class ID (NOT level)
