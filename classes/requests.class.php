@@ -110,6 +110,15 @@ class Requests {
       $Requests = G::$DB->to_array(false, MYSQLI_ASSOC, true);
       $Tags = self::get_tags(G::$DB->collect('ID', false));
       foreach ($Requests as $Request) {
+        $Request['AnonymousFill'] = false;
+        if ($Request['FillerID']) {
+          G::$DB->query("
+            SELECT Anonymous
+            FROM torrents
+            WHERE ID = ".$Request['TorrentID']);
+          list($Anonymous) = G::$DB->next_record();
+          if ($Anonymous) $Request['AnonymousFill'] = true;
+        }
         unset($NotFound[$Request['ID']]);
         $Request['Tags'] = isset($Tags[$Request['ID']]) ? $Tags[$Request['ID']] : [];
         $Found[$Request['ID']] = $Request;
