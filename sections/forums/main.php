@@ -14,14 +14,6 @@ foreach ($Forums as $Forum) {
   if (!Forums::check_forumperm($ForumID)) {
     continue;
   }
-  // No
-/*
-  if ($ForumID == DONOR_FORUM) {
-    $ForumDescription = Donations::get_forum_description();
-  }
-  $Tooltip = $ForumID == DONOR_FORUM ? 'tooltip_gold' : 'tooltip';
-*/
-  $Tooltip = 'tooltip';
 
   $ForumDescription = display_str($ForumDescription);
 
@@ -34,7 +26,7 @@ foreach ($Forums as $Forum) {
   <table class="forum_index">
     <tr class="colhead">
       <td style="width: 2%;"></td>
-      <td style="width: 25%;">Forum</td>
+      <td style="max-width: 25%;">Forum</td>
       <td>Last Post</td>
       <td style="width: 7%;">Topics</td>
       <td style="width: 7%;">Posts</td>
@@ -44,20 +36,12 @@ foreach ($Forums as $Forum) {
   }
 
   $Read = Forums::is_unread($Locked, $Sticky, $LastPostID, $LastRead, $LastTopicID, $LastTime) ? 'unread' : 'read';
-/* Removed per request, as distracting
-  if ($Locked) {
-    $Read .= '_locked';
-  }
-  if ($Sticky) {
-    $Read .= '_sticky';
-  }
-*/
 ?>
   <tr class="row">
-    <td class="<?=$Read?> <?=$Tooltip?>" title="<?=ucfirst($Read)?>"></td>
+    <td class="<?=$Read?> tooltip" title="<?=ucfirst($Read)?>"></td>
     <td>
       <h4 class="min_padding">
-        <a class="<?=$Tooltip?>" href="forums.php?action=viewforum&amp;forumid=<?=$ForumID?>" title="<?=display_str($ForumDescription)?>"><?=display_str($ForumName)?></a>
+        <a class="tooltip" href="forums.php?action=viewforum&amp;forumid=<?=$ForumID?>" title="<?=display_str($ForumDescription)?>"><?=display_str($ForumName)?></a>
       </h4>
     </td>
 <? if ($NumPosts == 0) { ?>
@@ -72,7 +56,7 @@ foreach ($Forums as $Forum) {
         <a href="forums.php?action=viewthread&amp;threadid=<?=$LastTopicID?>" class="tooltip" data-title-plain="<?=display_str($LastTopic)?>"><?=display_str(Format::cut_string($LastTopic, 50, 1))?></a>
       </span>
 <? if (!empty($LastRead[$LastTopicID])) { ?>
-      <a class="<?=$Tooltip?> last_read" title="Jump to last read" href="forums.php?action=viewthread&amp;threadid=<?=$LastTopicID?>&amp;page=<?=$LastRead[$LastTopicID]['Page']?>#post<?=$LastRead[$LastTopicID]['PostID']?>">
+      <a class="tooltip last_read" title="Jump to last read" href="forums.php?action=viewthread&amp;threadid=<?=$LastTopicID?>&amp;page=<?=$LastRead[$LastTopicID]['Page']?>#post<?=$LastRead[$LastTopicID]['PostID']?>">
         <svg width="15" height="11"><polygon points="0,3 0,8 8,8 8,11 15,5.5 8,0 8,3"/></svg>
       </a>
 <? } ?>
