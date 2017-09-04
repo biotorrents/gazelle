@@ -33,7 +33,7 @@
         $("#covers img").each(function() {
           $(this).attr("src", $(this).data("gazelle-temp-src"));
         });
-        $("#covers div").each(function() {
+        $("#covers > div").each(function() {
           $(this).show();
           $(this).after("<span class=\"cover_seperator\"><br /><hr /><br /></span>");
           $(".next_cover").hide();
@@ -43,7 +43,7 @@
       } else {
         show_all = false;
         $(this).text("Show all");
-        $("#covers div").each(function() {
+        $("#covers > div").each(function() {
           if ($(this).attr("class") != "head") {
             if ($(this).attr("id") != current) {
               $(this).hide();

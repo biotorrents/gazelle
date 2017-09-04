@@ -348,9 +348,7 @@ $(function() {
     })
   })
 
-  document.querySelectorAll('.lightbox-init').forEach(function(el) {
-    el.addEventListener('click', function(event) {
-      lightbox.init(el.attributes['lightbox-img']||el.src, el.attributes['lightbox-size']||el.width)
-    })
+  $(document).on('click', '.lightbox-init', function(e) {
+    lightbox.init(e.target.attributes['lightbox-img']||e.target.src, e.target.attributes['lightbox-size']||e.target.width)
   })
 })

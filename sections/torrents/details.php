@@ -206,7 +206,7 @@ $Index++;
             $Src = 'src="' . ImageTools::process($Image, true) . '"';
           }
 ?>
-          <img id="cover_<?=$Index?>" class="lightbox-init" lightbox-img="<?=ImageTools::process($Image)?>" width="100%" <?=$Src?> alt="<?=$Summary?>" />
+          <img id="cover_<?=$Index?>" class="lightbox-init" width="100%" <?=$Src?> alt="<?=$Summary?>" />
         </div>
         <ul class="stats nobullet">
           <li>
