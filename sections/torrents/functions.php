@@ -259,7 +259,7 @@ function build_torrents_table($Cache, $DB, $LoggedUser, $GroupID, $GroupName, $G
   $EditionID = 0;
   foreach ($TorrentList as $Torrent) {
   list($TorrentID, $Media, $Container, $Codec, $Resolution, $AudioFormat, $Subbing,
-  $Subber, $Language, $Censored, $Archive, $FileCount, $Size, $Seeders, $Leechers, $Snatched,
+  $Subber, $Language, $Censored, $Anonymous, $Archive, $FileCount, $Size, $Seeders, $Leechers, $Snatched,
   $FreeTorrent, $FreeLeechType, $TorrentTime, $Description, $MediaInfo, $FileList, $FilePath, $UserID,
   $LastActive, $InfoHash, $BadTags, $BadFolders, $BadFiles, $LastReseedRequest,
   $LogInDB, $HasFile, $PersonalFL, $IsSnatched, $IsSeeding, $IsLeeching) = array_values($Torrent);
