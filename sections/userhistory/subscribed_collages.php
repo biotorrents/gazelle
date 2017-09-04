@@ -130,10 +130,14 @@ if (!$NumResults) {
       ob_start();
       if (count($Torrents) > 1 || $GroupCategoryID == 1) {
 ?>
-      <tr class="group discog<?=$SnatchedGroupClass?>" id="group_<?=$CollageID?><?=$GroupID?>">
+      <tr class="group<?=$SnatchedGroupClass?>" id="group_<?=$CollageID?>_<?=$GroupID?>">
         <td class="center">
-          <div id="showimg_<?=$CollageID?><?=$GroupID?>" class="<?=($ShowGroups ? 'hide' : 'show')?>_torrents">
-            <a href="#" class="tooltip show_torrents_link" onclick="toggle_group(<?=$CollageID?><?=$GroupID?>, this, event);" title="Expand this group. Hold &quot;Ctrl&quot; while clicking to expand all groups on this page."></a>
+          <div id="showimg_<?=$CollageID?>_<?=$GroupID?>" class="<?=($ShowGroups ? 'hide' : 'show')?>_torrents">
+            <a class="tooltip show_torrents_link" onclick="toggle_group('<?=$CollageID?>_<?=$GroupID?>', this, event);" title="Toggle this group (Hold &quot;Shift&quot; to toggle all groups)"></a>
+          </div>
+        </td>
+        <td class="center cats_col">
+          <div title="<?=Format::pretty_category($GroupCategoryID)?>" class="tooltip <?=Format::css_category($GroupCategoryID)?>">
           </div>
         </td>
         <td colspan="5" class="big_info">
@@ -147,8 +151,8 @@ if (!$NumResults) {
         foreach ($Torrents as $TorrentID => $Torrent) {
           $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : '';
 ?>
-  <tr class="group_torrent groupid_<?=$CollageID . $GroupID?> edition_<?=$EditionID?> hidden<?=$SnatchedTorrentClass . $SnatchedGroupClass?>">
-    <td colspan="2">
+  <tr class="group_torrent groupid_<?=$CollageID?>_<?=$GroupID?> edition_<?=$EditionID?> hidden<?=$SnatchedTorrentClass . $SnatchedGroupClass?>">
+    <td colspan="3">
       <span>
         <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>" title="Download" class="brackets tooltip">DL</a>
       </span>
@@ -180,10 +184,10 @@ if (!$NumResults) {
         }
         $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : '';
 ?>
-  <tr class="torrent<?=$SnatchedTorrentClass?>" id="group_<?=$CollageID . $GroupID?>">
+  <tr class="torrent<?=$SnatchedTorrentClass?>" id="group_<?=$CollageID?>_<?=$GroupID?>">
     <td></td>
     <td class="center">
-      <div title="<?=$TorrentTags->title()?>" class="tooltip <?=Format::css_category($GroupCategoryID)?> <?=$TorrentTags->css_name()?>">
+      <div title="<?=Format::pretty_category($GroupCategoryID)?>" class="tooltip <?=Format::css_category($GroupCategoryID)?>">
       </div>
     </td>
     <td class="big_info">
@@ -222,9 +226,9 @@ if (!$NumResults) {
   <!--</div>-->
   <table class="torrent_table<?=$ShowAll ? ' hidden' : ''?>" id="discog_table_<?=$CollageID?>">
     <tr class="colhead">
-      <td width="1%"></td>
-      <td></td>
-      <td width="70%"><strong>Torrents</strong></td>
+      <td class="small"></td>
+      <td class="small cats_col"></td>
+      <td><strong>Torrents</strong></td>
       <td>Size</td>
       <td class="sign snatches">
         <a><svg width="15" height="15" fill="white" class="tooltip" alt="Snatches" title="Snatches" viewBox="3 0 88 98"><path d="M20 20 A43 43,0,1,0,77 23 L90 10 L55 10 L55 45 L68 32 A30.27 30.27,0,1,1,28 29"></path></svg></a>
