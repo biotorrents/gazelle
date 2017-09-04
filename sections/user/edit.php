@@ -409,8 +409,8 @@ echo $Val->GenerateJS('userform');
     if (empty($Badges)) {
       ?><span>You have no badges :(</span><?
     } else {
-      foreach ($Badges as $Key => $Badge) {
-        ?><input type="checkbox" name="badges[]" class="badge_checkbox" value="<?=$Badge['BadgeID']?>" <?=($Badge['Displayed'])?"checked ":""?>/><?=Badges::display_badge($Badge, true)?>
+      foreach ($Badges as $BadgeID => $Displayed) {
+        ?><input type="checkbox" name="badges[]" class="badge_checkbox" value="<?=$BadgeID?>" <?=($Displayed)?"checked ":""?>/><?=Badges::display_badge($BadgeID, true)?>
   <?    if (($Key+1) % 5 == 0) {
           ?><br /><?
         }

@@ -7,29 +7,7 @@ class Badges {
    * @return array of BadgeIDs
    */
   public static function get_badges($UserID) {
-    $Result = [];
-
-    if (G::$Cache->get_value('user_badges_'.$UserID)) {
-      return G::$Cache->get_value('user_badges_'.$UserID);
-    }
-
-    $QueryID = G::$DB->get_query_id();
-    G::$DB->query("
-      SELECT BadgeID, Displayed
-      FROM users_badges
-      WHERE UserID = ".$UserID);
-
-    if (G::$DB->has_results()) {
-      while (list($BadgeID, $Displayed) = G::$DB->next_record()) {
-        $Result[] = array('BadgeID' => $BadgeID, 'Displayed' => $Displayed);
-      }
-    }
-
-    G::$DB->set_query_id($QueryID);
-
-    G::$Cache->cache_value('user_badges_'.$UserID, $Result);
-
-    return $Result;
+    return Users::user_info($UserID)['Badges'];
   }
 
   /**
@@ -40,7 +18,7 @@ class Badges {
    * @return bool success?
    */
   public static function award_badge($UserID, $BadgeID) {
-    if (self::has_badge($UserID, array('BadgeID' => $BadgeID))) {
+    if (self::has_badge($UserID, $BadgeID)) {
       return false;
     } else {
       $QueryID = G::$DB->get_query_id();
@@ -51,7 +29,7 @@ class Badges {
           ($UserID, $BadgeID)");
       G::$DB->set_query_id($QueryID);
 
-      G::$Cache->delete_value('user_badges_'.$UserID);
+      G::$Cache->delete_value('user_info_'.$UserID);
 
       return true;
     }
@@ -68,8 +46,8 @@ class Badges {
 
     $Badges = self::get_badges($UserID);
 
-    foreach ($Badges as $Badge) {
-      if ($Badge['Displayed'])
+    foreach ($Badges as $Badge => $Displayed) {
+      if ($Displayed)
         $Result[] = $Badge;
     }
     return $Result;
@@ -79,67 +57,80 @@ class Badges {
    * Returns true if the given user owns the given badge
    *
    * @param int $UserID
-   * @param $Badge
+   * @param int $BadgeID
    * @return bool
    */
-  public static function has_badge($UserID, $Badge) {
+  public static function has_badge($UserID, $BadgeID) {
     $Badges = self::get_badges($UserID);
 
-    foreach ($Badges as $B) {
-      if ($B['BadgeID'] == $Badge['BadgeID'])
-        return true;
-    }
-
-    return false;
+    return array_key_exists($BadgeID, $Badges);
   }
 
   /**
    * Creates HTML for displaying a badge.
    *
-   * @param $Badge
+   * @param int $BadgeID
    * @param bool $Tooltip Should HTML contain a tooltip?
    * @return string HTML
    */
-  public static function display_badge($Badge, $Tooltip = false) {
+  public static function display_badge($BadgeID, $Tooltip = false) {
     $html = "";
 
-    if (G::$Cache->get_value('badge_'.$Badge['BadgeID'])) {
-      extract(G::$Cache->get_value('badge_'.$Badge['BadgeID']));
-    }
-    if (!isset($Icon)) {
-      $QueryID = G::$DB->get_query_id();
-      G::$DB->query("
-        SELECT
-        Icon, Name, Description
-        FROM badges
-        WHERE ID = ".$Badge['BadgeID']);
-
-      if (G::$DB->has_results()) {
-        list($Icon, $Name, $Description) = G::$DB->next_record();
-        G::$Cache->cache_value('badge_'.$Badge['BadgeID'], array('Icon' => $Icon, 'Name' => $Name, 'Description' => $Description));
-      }
-
-      G::$DB->set_query_id($QueryID);
-
-    }
-
-    if (isset($Icon)) {
-      if ($Tooltip) {
-        $html .= '<a class="badge_icon"><img class="tooltip" alt="'.$Name.'" title="'.$Name.'</br>'.$Description.'" src="'.$Icon.'" /></a>';
+    if (($Badges = G::$Cache->get_value('badges')) && array_key_exists($BadgeID, $Badges)) {
+      extract($Badges[$BadgeID]);
+    } else {
+      self::update_badge_cache();
+      if (($Badges = G::$Cache->get_value('badges')) && array_key_exists($BadgeID, $Badges)) {
+        extract($Badges[$BadgeID]);
       } else {
-        $html .= '<a class="badge_icon"><img alt="'.$Name.'" title="'.$Name.'" src="'.$Icon.'" /></a>';
+        global $Debug;
+        $Debug->analysis('Invalid BadgeID ' . $BadgeID . ' requested.');
       }
+    }
+
+    if ($Tooltip) {
+      $html .= '<a class="badge_icon"><img class="tooltip" alt="'.$Name.'" title="'.$Name.'</br>'.$Description.'" src="'.$Icon.'" /></a>';
+    } else {
+      $html .= '<a class="badge_icon"><img alt="'.$Name.'" title="'.$Name.'" src="'.$Icon.'" /></a>';
     }
 
     return $html;
   }
 
-  public static function display_badges($Badges, $Tooltip = false) {
+  public static function display_badges($BadgeIDs, $Tooltip = false) {
     $html = "";
-    foreach ($Badges as $Badge) {
-      $html .= self::display_badge($Badge, $Tooltip);
+    foreach ($BadgeIDs as $BadgeID) {
+      $html .= self::display_badge($BadgeID, $Tooltip);
     }
     return $html;
+  }
+
+  private static function update_badge_cache() {
+      $QueryID = G::$DB->get_query_id();
+
+      G::$DB->query("
+        SELECT
+        ID, Icon, Name, Description
+        FROM badges");
+
+      $badges = [];
+      if (G::$DB->has_results()) {
+        while(list($id, $icon, $name, $description) = G::$DB->next_record()) {
+          $badges[$id] = array('Icon' => $icon, 'Name' => $name, 'Description' => $Description);
+        }
+        G::$Cache->cache_value('badges', $badges);
+      }
+
+      G::$DB->set_query_id($QueryID);
+  }
+
+  public static function get_all_badges() {
+    if (($Badges = G::$Cache->get_value('badges'))) {
+      return $Badges;
+    } else {
+      update_badge_cache();
+      return G::$Cache->get_value('badges');
+    }
   }
 }
 ?>

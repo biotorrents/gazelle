@@ -256,36 +256,29 @@ if (!empty($_POST['badges'])) {
   $BadgeIDs = [];
 }
 
-$BadgesChanged = false;
 $NewBadges = [];
-if ($Cache->get_value('user_badges_'.$UserID)) {
-  $Badges = $Cache->get_value('user_badges_'.$UserID);
-  foreach ($Badges as $Badge) {
-    if (in_array($Badge['BadgeID'], $BadgeIDs)) { // Is the current badge in the list of badges the user wants to display?
-      $Displayed = true;
-      $DisplayedBadgeIDs[] = $Badge['BadgeID'];
-      if ($Badge['Displayed'] == 0) { // The user wants to display a badge that wasn't displayed before
-        $BadgesChanged = true;
-      }
-    } else { // The user no longer wants to display a badge that was displayed before
-      $Displayed = false;
+$BadgesChanged = false;
+$Badges = Users::user_info($UserID)['Badges'];
+foreach ($Badges as $BadgeID => $OldDisplayed) {
+  if (in_array($BadgeID, $BadgeIDs)) { // Is the current badge in the list of badges the user wants to display?
+    $Displayed = true;
+    $DisplayedBadgeIDs[] = $BadgeID;
+    if ($OldDisplayed == 0) { // The user wants to display a badge that wasn't displayed before
       $BadgesChanged = true;
     }
-    $NewBadges[] = ['BadgeID' => $Badge['BadgeID'], 'Displayed' => $Displayed?'1':'0'];
-
+  } else { // The user no longer wants to display a badge that was displayed before
+    $Displayed = false;
+    $BadgesChanged = true;
   }
-} else {
-  $BadgesChanged = true;
-}
-if ($BadgesChanged) {
-  $Cache->cache_value('user_badges_'.$UserID, $NewBadges);
+  $NewBadges[$BadgeID] = $Displayed?'1':'0';
 }
 // End Badge settings
 
 $Cache->begin_transaction("user_info_$UserID");
 $Cache->update_row(false, [
   'Avatar' => display_str($_POST['avatar']),
-  'Paranoia' => $Paranoia
+	'Paranoia' => $Paranoia,
+	'Badges' => $NewBadges
 ]);
 $Cache->commit_transaction(0);
 

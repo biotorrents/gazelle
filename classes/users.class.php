@@ -45,6 +45,7 @@ class Users {
    *  boolean Visible - If false, they don't show up on peer lists
    *  array   ExtraClasses - Secondary classes.
    *  int     EffectiveClass - the highest level of their main and secondary classes
+   *  array   Badges - list of all the user's badges of the form BadgeID => Displayed
    */
   public static function user_info($UserID) {
     global $Classes;
@@ -103,6 +104,19 @@ class Users {
           $UserInfo['Paranoia'] = [];
         }
         $UserInfo['Class'] = $Classes[$UserInfo['PermissionID']]['Level'];
+
+        G::$DB->query("
+          SELECT BadgeID, Displayed
+          FROM users_badges
+          WHERE UserID = ".$UserID);
+
+        if (G::$DB->has_results()) {
+          $Badges = [];
+          while (list($BadgeID, $Displayed) = G::$DB->next_record()) {
+            $Badges[$BadgeID] = $Displayed;
+          }
+          $UserInfo['Badges'] = $Badges;
+        }
       }
 
       if (isset($UserInfo['LockedAccount']) && $UserInfo['LockedAccount'] == "") {

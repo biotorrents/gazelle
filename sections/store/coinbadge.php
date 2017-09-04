@@ -20,7 +20,7 @@ View::show_header('Store');
 
 <div class="thin">
 
-<? if (isset($_GET['confirm']) && $_GET['confirm'] == 1) {
+<? if (isset($_GET['confirm']) && $_GET['confirm'] == 1 && !Badges::has_badge($UserID, 255)) {
   $DB->query("
     SELECT BonusPoints
     FROM users_main
@@ -68,12 +68,19 @@ View::show_header('Store');
     </div>
 <? } ?>
 <?
-} else { ?>
+} else {
+  if (Badges::has_badge($UserID, 255)) {
+?>
+  <h2 id="general">Oppaicoin Status</h2>
+<?
+  } else {
+?>
   <h2 id="general">Purchase Oppaicoin Badge?</h2>
+<? } ?>
   <div class="box pad">
     <p><?=number_format($Purchases)?> people have bought this badge</p>
     <p>Current cost: <?=number_format($Price)?> <?=BONUS_POINTS?></p>
-    <? if (Badges::has_badge($UserID, ['BadgeID' => 255])) { ?>
+    <? if (Badges::has_badge($UserID, 255)) { ?>
     <p>You already own this badge</p>
     <? } else { ?>
     <form action="store.php">

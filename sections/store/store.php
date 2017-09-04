@@ -246,7 +246,7 @@ if ($DB->has_results()) {
       $BadgeText = $Badge['Name']
 
 ?>
-        <td class="nobr"><?=Badges::display_badge($Badge)?><span class="badge_name" style="margin-left: 10px;"><?=$BadgeText?></span></td>
+        <td class="nobr"><?=Badges::display_badge($Badge['BadgeID'])?><span class="badge_name" style="margin-left: 10px;"><?=$BadgeText?></span></td>
         <td class="nobr"><?=$Badge['Description']?></td>
       </tr>
 <?
@@ -259,13 +259,10 @@ $DB->query("
   WHERE Name='Oppaicoin'");
 if ($DB->has_results()) {
   $CoinBadge = $DB->to_array()[0];
-  $BadgeText = $CoinBadge['Name'];
-  if (!Badges::has_badge($LoggedUser['ID'], $CoinBadge)) {
-    $BadgeText = '<a href="store.php?item=coinbadge">'.$BadgeText.'</a>';
-  }
+  $BadgeText = '<a href="store.php?item=coinbadge">'.$CoinBadge['Name'].'</a>';
 ?>
       <tr class="row">
-      <td class="nobr"><?=Badges::display_badge($CoinBadge)?><span class="badge_name" style="margin-left: 10px;"><?=$BadgeText?></span></td>
+      <td class="nobr"><?=Badges::display_badge($CoinBadge['BadgeID'])?><span class="badge_name" style="margin-left: 10px;"><?=$BadgeText?></span></td>
         <td class="nobr"><?=$CoinBadge['Description']?></td>
       </tr>
 <? } ?>

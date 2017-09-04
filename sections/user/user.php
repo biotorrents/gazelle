@@ -276,7 +276,7 @@ if ($Avatar && Users::has_avatars_enabled()) {
       </div>
     </div>
 <? }
-    $Badges = Badges::get_badges($UserID);
+    $Badges = array_keys(Badges::get_badges($UserID));
     if (!empty($Badges)) { ?>
     <div class="box">
       <div class="head colhead_dark">Badges</div>
@@ -1278,22 +1278,17 @@ if (!$DisablePoints) {
       <td class="label">Badges Owned:</td>
       <td>
 <?
-    $DB->query("
-      SELECT ID AS BadgeID, Icon, Name, Description
-      FROM badges");
-    if ($DB->has_results()) { //If the DB has no results here, something is dangerously fucked
-      $AllBadges = $DB->to_array();
-      $UserBadgeIDs = [];
-      foreach (Badges::get_badges($UserID) as $Badge) {
-        $UserBadgeIDs[] = $Badge['BadgeID'];
-      }
-      $i = 0;
-      foreach ($AllBadges as $Badge) {
-        ?><input type="checkbox" name="badges[]" class="badge_checkbox" value="<?=$Badge['BadgeID']?>" <?=(in_array($Badge['BadgeID'], $UserBadgeIDs))?" checked":""?>/><?=Badges::display_badge($Badge, true)?>
+    $AllBadges = Badges::get_all_badges();
+    $UserBadgeIDs = [];
+    foreach (array_keys(Badges::get_badges($UserID)) as $b) {
+      $UserBadgeIDs[] = $b;
+    }
+    $i = 0;
+    foreach (array_keys($AllBadges) as $BadgeID) {
+      ?><input type="checkbox" name="badges[]" class="badge_checkbox" value="<?=$BadgeID?>" <?=(in_array($BadgeID, $UserBadgeIDs))?" checked":""?>/><?=Badges::display_badge($BadgeID, true)?>
 <?      $i++;
-        if ($i % 8 == 0) {
-          echo "<br />";
-        }
+      if ($i % 8 == 0) {
+        echo "<br />";
       }
     }
 ?>
