@@ -162,7 +162,11 @@ View::show_header('Edit torrent group', 'upload');
               <a onclick="RemoveScreenshotField(this)" class="brackets">&minus;</a>
 <? } ?>
               <br />
-              <img class="tooltip lightbox-init" title='<?=Users::format_username($Screenshot['UserID'], false, false, false)?> - <?=time_diff($Screenshot['Time'])?>' style="width: 30%;" src="<?=$SSURL?>" />
+<?            if (check_perms('users_mod')) { ?>
+                <img class="tooltip lightbox-init" title='<?=Users::format_username($Screenshot['UserID'], false, false, false)?> - <?=time_diff($Screenshot['Time'])?>' src="<?=$SSURL?>" />
+<?            } else { ?>
+                <img class="tooltip lightbox-init" title='Added <?=time_diff($Screenshot['Time'])?>' src="<?=$SSURL?>" />
+<?            } ?>
             </div>
             <br />
 <? } ?>
