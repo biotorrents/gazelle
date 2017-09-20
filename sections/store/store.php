@@ -240,7 +240,7 @@ if ($DB->has_results()) {
 ?>
       <tr class="row">
 <?
-    if (($ID == 0 || Badges::has_badge($LoggedUser['ID'], $Badges[$ID-1])) && !Badges::has_badge($LoggedUser['ID'], $Badge))
+    if (($ID == 0 || Badges::has_badge($LoggedUser['ID'], $Badges[$ID-1]['BadgeID'])) && !Badges::has_badge($LoggedUser['ID'], $Badge['BadgeID']))
       $BadgeText = '<a href="store.php?item=badge&badge='.$Badge['BadgeID'].'">'.$Badge['Name'].'</a>';
     else
       $BadgeText = $Badge['Name']

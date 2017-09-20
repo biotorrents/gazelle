@@ -9,9 +9,9 @@ if (!$BadgeID) {
   $Err = 'No badge specified.';
 } elseif (!in_array($BadgeID, $ShopBadgeIDs)) {
   $Err = 'Invalid badge ID.';
-} elseif (Badges::has_badge($UserID, ['BadgeID' => $BadgeID])) {
+} elseif (Badges::has_badge($UserID, $BadgeID)) {
   $Err = 'You already have this badge.';
-} elseif ($BadgeID != $ShopBadgeIDs[0] && !Badges::has_badge($UserID, ['BadgeID' => $ShopBadgeIDs[array_search($BadgeID, $ShopBadgeIDs)-1]])) {
+} elseif ($BadgeID != $ShopBadgeIDs[0] && !Badges::has_badge($UserID, $ShopBadgeIDs[array_search($BadgeID, $ShopBadgeIDs)-1])) {
   $Err = 'You haven\'t purchased the badges before this one!';
 }
 
