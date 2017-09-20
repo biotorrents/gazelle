@@ -550,9 +550,13 @@ View::show_header($Title, 'requests');
 <?    } ?>
       </td>
       <td>
-<?    if ($IsFilled) { ?>
-        <a href="user.php?id=<?=$FillerInfo['ID']?>"><?=$FillerInfo['Username']?></a>
-<?    } else { ?>
+<?    if ($IsFilled) {
+        if ($Request['AnonymousFill']) { ?>
+          <em>Anonymous</em>
+<?      } else { ?>
+          <a href="user.php?id=<?=$FillerInfo['ID']?>"><?=$FillerInfo['Username']?></a>
+<?      }
+      } else { ?>
         &mdash;
 <?    } ?>
       </td>
