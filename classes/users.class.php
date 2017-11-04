@@ -110,13 +110,13 @@ class Users {
           FROM users_badges
           WHERE UserID = ".$UserID);
 
+        $Badges = [];
         if (G::$DB->has_results()) {
-          $Badges = [];
           while (list($BadgeID, $Displayed) = G::$DB->next_record()) {
             $Badges[$BadgeID] = $Displayed;
           }
-          $UserInfo['Badges'] = $Badges;
         }
+        $UserInfo['Badges'] = $Badges;
       }
 
       if (isset($UserInfo['LockedAccount']) && $UserInfo['LockedAccount'] == "") {
