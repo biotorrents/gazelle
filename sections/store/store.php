@@ -15,12 +15,12 @@ if (!$LoggedUser['DisablePoints']) {
     LEFT JOIN torrents AS t ON t.ID=x.fid
     LEFT JOIN xbt_snatched AS xs ON x.uid=xs.uid AND x.fid=xs.fid
     WHERE
-      um.ID = $UserID
+      um.ID = ?
       AND um.Enabled = '1'
       AND x.active = 1
       AND x.completed = 0
       AND x.Remaining = 0
-    GROUP BY um.ID");
+    GROUP BY um.ID", $UserID);
   if ($DB->has_results()) {
     list($NumTorr, $TSize, $TTime, $TSeeds) = $DB->next_record();
     $PointsRate += (0.55*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5,($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3));

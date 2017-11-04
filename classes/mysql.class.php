@@ -148,6 +148,7 @@ function db_array($Array, $DontEscape = [], $Quote = false) {
 class DB_MYSQL {
   public $LinkID = false;
   protected $QueryID = false;
+  protected $StatementID = false;
   protected $Record = [];
   protected $Row;
   protected $Errno = 0;
@@ -178,9 +179,6 @@ class DB_MYSQL {
     if ($this->Errno == 1194) {
       send_irc('PRIVMSG '.ADMIN_CHAN.' :'.$this->Error);
     }
-    /*if ($this->Errno == 1194) {
-      preg_match("Table '(\S+)' is marked as crashed and should be repaired", $this->Error, $Matches);
-    } */
     $Debug->analysis('!dev DB Error', $DBError, 3600 * 24);
     if (DEBUG_MODE || check_perms('site_debug') || isset($argv[1])) {
       echo '<pre>'.display_str($DBError).'</pre>';
@@ -205,7 +203,29 @@ class DB_MYSQL {
     mysqli_set_charset($this->LinkID, "utf8");
   }
 
-  function query($Query, $AutoHandle = 1) {
+  function query_p($Query, &...$BindVars) {
+    $QueryStartTime = microtime(true);
+    $this->connect();
+
+    $this->StatementID = mysqli_prepare($this->LinkID, $Query);
+    if (!empty($BindVars)) {
+      $Types = '';
+      $TypeMap = ['string'=>'s', 'double'=>'d', 'integer'=>'i', 'boolean'=>'i'];
+      foreach ($BindVars as $BindVar) {
+        $Types .= $TypeMap[gettype($BindVar)] ?? 'b';
+      }
+      mysqli_stmt_bind_param($this->StatementID, $Types, ...$BindVars);
+    }
+    mysqli_stmt_execute($this->StatementID);
+    $this->QueryID = mysqli_stmt_get_result($this->StatementID);
+    $QueryRunTime = (microtime(true) - $QueryStartTime) * 1000;
+    $this->Queries[] = [$Query, $QueryRunTime, null];
+    $this->Time += $QueryRunTime;
+
+    return $this->StatementID;
+  }
+
+  function query($Query, &...$BindVars) {
     global $Debug;
     /*
      * If there was a previous query, we store the warnings. We cannot do
@@ -223,58 +243,57 @@ class DB_MYSQL {
     $QueryStartTime = microtime(true);
     $this->connect();
 
-    if (DEBUG_MODE) {
-      $this->QueryID = mysqli_query($this->LinkID, $Query);
-
-      // in DEBUG_MODE, return the full trace on a SQL error (super useful for debugging).
-      // do not attempt to retry to query
-      if (!$this->QueryID) {
-        echo '<pre>' . mysqli_error($this->LinkID) . '<br><br>';
-        debug_print_backtrace();
-        echo '</pre>';
-        die();
-      }
-    } else {
-      // In the event of a MySQL deadlock, we sleep allowing MySQL time to unlock, then attempt again for a maximum of 5 tries
-      for ($i = 1; $i < 6; $i++) {
-        $this->QueryID = mysqli_query($this->LinkID, $Query);
-        if (!in_array(mysqli_errno($this->LinkID), array(1213, 1205))) {
-          break;
+    // In the event of a MySQL deadlock, we sleep allowing MySQL time to unlock, then attempt again for a maximum of 5 tries
+    for ($i = 1; $i < 6; $i++) {
+      $this->StatementID = mysqli_prepare($this->LinkID, $Query);
+      if (!empty($BindVars)) {
+        $Types = '';
+        $TypeMap = ['string'=>'s', 'double'=>'d', 'integer'=>'i', 'boolean'=>'i'];
+        foreach ($BindVars as $BindVar) {
+          $Types .= $TypeMap[gettype($BindVar)] ?? 'b';
         }
-        $Debug->analysis('Non-Fatal Deadlock:', $Query, 3600 * 24);
-        trigger_error("Database deadlock, attempt $i");
-
-        sleep($i * rand(2, 5)); // Wait longer as attempts increase
+        mysqli_stmt_bind_param($this->StatementID, $Types, ...$BindVars);
       }
+      mysqli_stmt_execute($this->StatementID);
+      $this->QueryID = mysqli_stmt_get_result($this->StatementID);
+
+      if (DEBUG_MODE) {
+        // in DEBUG_MODE, return the full trace on a SQL error (super useful
+        // for debugging). do not attempt to retry to query
+        if (!$this->QueryID) {
+          echo '<pre>' . mysqli_error($this->LinkID) . '<br><br>';
+          debug_print_backtrace();
+          echo '</pre>';
+          die();
+        }
+      }
+
+      if (!in_array(mysqli_errno($this->LinkID), array(1213, 1205))) {
+        break;
+      }
+      $Debug->analysis('Non-Fatal Deadlock:', $Query, 3600 * 24);
+      trigger_error("Database deadlock, attempt $i");
+
+      sleep($i * rand(2, 5)); // Wait longer as attempts increase
     }
 
     $QueryEndTime = microtime(true);
     $this->Queries[] = array($Query, ($QueryEndTime - $QueryStartTime) * 1000, null);
     $this->Time += ($QueryEndTime - $QueryStartTime) * 1000;
 
-    if (!$this->QueryID) {
+    if (!$this->QueryID && !$this->StatementID) {
       $this->Errno = mysqli_errno($this->LinkID);
       $this->Error = mysqli_error($this->LinkID);
-
-      if ($AutoHandle) {
-        $this->halt("Invalid Query: $Query");
-      } else {
-        return $this->Errno;
-      }
+      $this->halt("Invalid Query: $Query");
     }
 
-    /*
-    $QueryType = substr($Query, 0, 6);
-    if ($QueryType === 'DELETE' || $QueryType === 'UPDATE') {
-      if ($this->affected_rows() > 50) {
-        $Debug->analysis($this->affected_rows().' rows altered:', $Query, 3600 * 24);
-      }
-    }
-    */
     $this->Row = 0;
-    if ($AutoHandle) {
-      return $this->QueryID;
-    }
+    return $this->QueryID;
+  }
+
+  function reexec_query() {
+    mysqli_stmt_execute($this->StatementID);
+    $this->QueryID = mysqli_stmt_get_result($this->StatementID);
   }
 
   function query_unb($Query) {
