@@ -1,6 +1,5 @@
 <?
 View::show_header('Recover Password');
-echo $Validate->GenerateJS('recoverform');
 ?>
 <script src="<?=(STATIC_SERVER)?>functions/validate.js" type="text/javascript"></script>
 <script src="<?=(STATIC_SERVER)?>functions/password_validate.js" type="text/javascript"></script>
@@ -14,17 +13,18 @@ if (empty($PassWasReset)) {
 ?>
     <strong class="important_text"><?=display_str($Err)?></strong><br /><br />
 <?  } ?> Any password 6 characters or longer is accepted, but a strong password is 8 characters or longer, contains at least 1 lowercase and uppercase letter, and contains at least a number or symbol.<br /><br />
-    <table class="layout" cellpadding="2" cellspacing="1" border="0" align="center" width="100%">
-      <tr valign="top">
-        <td align="right" style="width: 100px;">Password&nbsp;</td>
-        <td align="left"><input type="password" name="password" id="new_pass_1" class="inputtext" /> <strong id="pass_strength"></strong></td>
-      </tr>
-      <tr valign="top">
-        <td align="right">Confirm Password&nbsp;</td>
-        <td align="left"><input type="password" name="verifypassword" id="new_pass_2" class="inputtext" /> <strong id="pass_match"></strong></td>
+    <table class="layout">
+      <tr>
+        <td><strong id="pass_strength"></strong></td>
+        <td><input type="password" name="password" id="new_pass_1" class="inputtext" size="40" placeholder="New password" pattern=".{6,307200}" required></td>
       </tr>
       <tr>
-        <td colspan="2" align="right"><input type="submit" name="reset" value="Reset!" class="submit" /></td>
+        <td><strong id="pass_match"></strong></td>
+        <td><input type="password" name="verifypassword" id="new_pass_2" class="inputtext" size="40" placeholder="Confirm password" pattern=".{6,307200}" required></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><input type="submit" name="reset" value="Reset!" class="submit"></td>
       </tr>
     </table>
 <? } else { ?>

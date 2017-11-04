@@ -2,7 +2,7 @@
 /*-- TODO ---------------------------//
 Writeup how to use the VALIDATE class, add in support for form id checks
 Complete the number and date validation
-Finish the GenerateJS stuff
+Remove the GenerateJS stuff
 //-----------------------------------*/
 
 class VALIDATE {
@@ -173,7 +173,6 @@ class VALIDATE {
 
   function GenerateJS($FormID) {
     $ReturnJS = "<script type=\"text/javascript\" language=\"javascript\">\r\n";
-    $ReturnJS .= "//<![CDATA[\r\n";
     $ReturnJS .= "function formVal() {\r\n";
     $ReturnJS .= "  clearErrors('$FormID');\r\n";
 
@@ -291,7 +290,6 @@ class VALIDATE {
     }
 
     $ReturnJS .= "}\r\n";
-    $ReturnJS .= "//]]>\r\n";
     $ReturnJS .= "</script>\r\n";
     return $ReturnJS;
   }

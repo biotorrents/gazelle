@@ -54,15 +54,15 @@ input[type="text"]:invalid, input[type="password"]:invalid {
   border-right: 2px solid red;
 }
 
-#loginform > table {
+#loginform > table, #recoverform > div > table {
   border-spacing: 1px;
 }
 
-#loginform #username {
+#loginform #username, #recoverform #new_pass_1 {
   border-radius: 5px 5px 0 0;
 }
 
-#loginform input[type="submit"] {
+#loginform input[type="submit"], #recoverform input[type="submit"] {
   width: 100%;
   background-color: white;
   font: 500 14px/29px Helvetica, Arial, sans-serif;
@@ -70,8 +70,14 @@ input[type="text"]:invalid, input[type="password"]:invalid {
   border-radius: 0 0 5px 5px;
   cursor: pointer;
 }
-#loginform input[type="submit"]:hover {
+#loginform input[type="submit"]:hover, #recoverform input[type="submit"]:hover {
   background-color: #FFF7F7;
+}
+
+#recoverform .layout td:first-child {
+  width: 140px;
+  text-align: right;
+  padding-right: 5px;
 }
 
 #head, #foot {
