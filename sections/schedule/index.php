@@ -52,7 +52,8 @@ $DB->query("
   UPDATE schedule
   SET NextHour = $NextHour, NextDay = $NextDay, NextBiWeekly = $NextBiWeek");
 
-echo date('Y-m-d H:i:s').$ASBreak;
+$sqltime = sqltime();
+echo $sqltime.$ASBreak;
 
 //-------------- Run every time ------------------------------------------//
 if (!(isset($_GET['notevery']) && $_GET['notevery'])) {
