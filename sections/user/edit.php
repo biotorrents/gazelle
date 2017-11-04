@@ -24,8 +24,8 @@ $DB->query("
   FROM users_main AS m
     JOIN users_info AS i ON i.UserID = m.ID
     LEFT JOIN permissions AS p ON p.ID = m.PermissionID
-  WHERE m.ID = '".db_string($UserID)."'");
-list($Username, $TwoFactor, $PublicKey, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $Class, $InfoTitle) = $DB->next_record(MYSQLI_NUM, array(5, 10));
+  WHERE m.ID = ?", $UserID);
+list($Username, $TwoFactor, $PublicKey, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $Class, $InfoTitle) = $DB->next_record(MYSQLI_NUM, [5, 10]);
 
 $TwoFA = new TwoFactorAuth();
 
@@ -706,7 +706,7 @@ $RequestsVotedListChecked = checked(!in_array('requestsvoted_list', $Paranoia));
 $DB->query("
   SELECT COUNT(UserID)
   FROM users_info
-  WHERE Inviter = '$UserID'");
+  WHERE Inviter = ?", $UserID);
 list($Invited) = $DB->next_record();
 ?>
       <tr id="para_invited_tr">
@@ -719,7 +719,7 @@ list($Invited) = $DB->next_record();
 $DB->query("
   SELECT COUNT(ArtistID)
   FROM torrents_artists
-  WHERE UserID = $UserID");
+  WHERE UserID = ?", $UserID);
 list($ArtistsAdded) = $DB->next_record();
 ?>
       <tr id="para_artistsadded_tr">

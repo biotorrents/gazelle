@@ -135,7 +135,7 @@ if (isset($_POST['p_donor_stats'])) {
 $DB->query("
   SELECT Email, PassHash, IRCKey
   FROM users_main
-  WHERE ID = $UserID");
+  WHERE ID = ?", $UserID);
 list($CurEmail, $CurPassHash, $CurIRCKey) = $DB->next_record();
 
 function require_password($Setting = false) {
@@ -157,20 +157,17 @@ if ($CurEmail != $_POST['email']) {
     require_password("Change Email");
   }
 
-  $NewEmail = db_string($_POST['email']);
-
   // Update the time of their last email change to the current time *not* the current change.
-  $ChangerIP = db_string($LoggedUser['IP']);
   $DB->query("
     UPDATE users_history_emails
-    SET Time = '".sqltime()."'
-    WHERE UserID = '$UserID'
-      AND Time IS NULL");
+    SET Time = NOW()
+    WHERE UserID = ?
+      AND Time IS NULL", $UserID);
   $DB->query("
     INSERT INTO users_history_emails
       (UserID, Email, Time, IP)
     VALUES
-      ('$UserID', '".DBCrypt::encrypt($NewEmail)."', NULL, '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."')");
+      (?, ?, NULL, ?)", $UserID, DBCrypt::encrypt($_POST['email']), DBCrypt::encrypt($_SERVER['REMOTE_ADDR']));
 
 }
 
@@ -308,28 +305,29 @@ $SQL = "
     m.Paranoia = '".db_string(json_encode($Paranoia))."'";
 
 if ($ResetPassword) {
-  $ChangerIP = db_string(DBCrypt::encrypt($LoggedUser['IP']));
+  $ChangerIP = DBCrypt::encrypt($LoggedUser['IP']);
   $PassHash = Users::make_sec_hash($_POST['new_pass_1']);
   $SQL.= ",m.PassHash = '".db_string($PassHash)."'";
   $DB->query("
     INSERT INTO users_history_passwords
       (UserID, ChangerIP, ChangeTime)
     VALUES
-      ('$UserID', '$ChangerIP', '".sqltime()."')");
+      (?, ?, NOW())", $UserID, $ChangerIP);
 }
 
 if (isset($_POST['resetpasskey'])) {
 
   $UserInfo = Users::user_heavy_info($UserID);
-  $OldPassKey = db_string($UserInfo['torrent_pass']);
-  $NewPassKey = db_string(Users::make_secret());
-  $ChangerIP = db_string(DBCrypt::encrypt($LoggedUser['IP']));
+  $OldPassKey = $UserInfo['torrent_pass'];
+  $NewPassKey = Users::make_secret();
+  $ChangerIP = DBCrypt::encrypt($LoggedUser['IP']);
   $SQL .= ",m.torrent_pass = '$NewPassKey'";
   $DB->query("
     INSERT INTO users_history_passkeys
       (UserID, OldPassKey, NewPassKey, ChangerIP, ChangeTime)
     VALUES
-      ('$UserID', '$OldPassKey', '$NewPassKey', '$ChangerIP', '".sqltime()."')");
+      (?, ?, ?, ?, NOW())",
+      $USerID, $OldPassKey, $NewPassKey, $ChangerIP);
   $Cache->begin_transaction("user_info_heavy_$UserID");
   $Cache->update_row(false, ['torrent_pass' => $NewPassKey]);
   $Cache->commit_transaction(0);
@@ -345,7 +343,7 @@ if ($BadgesChanged) {
   $DB->query("
     UPDATE users_badges
     SET Displayed = 0
-    WHERE UserID = $UserID");
+    WHERE UserID = ?", $UserID);
   if (!empty($BadgeIDs)) {
     $DB->query("
       UPDATE users_badges

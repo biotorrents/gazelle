@@ -44,8 +44,8 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
         i.ResetExpires
       FROM users_main AS m
         INNER JOIN users_info AS i ON i.UserID = m.ID
-      WHERE i.ResetKey = '".db_string($_REQUEST['key'])."'
-        AND i.ResetKey != ''");
+      WHERE i.ResetKey = ?
+        AND i.ResetKey != ''", $_REQUEST['key']);
     list($UserID, $Email, $Country, $Expires) = $DB->next_record();
 
     if (!apcu_exists('DBKEY')) {
@@ -70,17 +70,17 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
               users_main AS m,
               users_info AS i
             SET
-              m.PassHash = '".db_string(Users::make_sec_hash($_REQUEST['password']))."',
+              m.PassHash = ?,
               i.ResetKey = '',
               m.LastLogin = NOW(),
               i.ResetExpires = NULL
-            WHERE m.ID = '$UserID'
-              AND i.UserID = m.ID");
+            WHERE m.ID = ?
+              AND i.UserID = m.ID", Users::make_sec_hash($_REQUEST['password']), $UserID);
           $DB->query("
             INSERT INTO users_history_passwords
               (UserID, ChangerIP, ChangeTime)
             VALUES
-              ('$UserID', '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."', '".sqltime()."')");
+              (?, ?, NOW())", $UserID, DBCrypt::encrypt($_SERVER['REMOTE_ADDR']));
           $PassWasReset = true;
           $LoggedUser['ID'] = $UserID; // Set $LoggedUser['ID'] for logout_all_sessions() to work
           logout_all_sessions();
@@ -100,7 +100,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
           UPDATE users_info
           SET ResetKey = '',
             ResetExpires = NULL
-          WHERE UserID = '$UserID'");
+          WHERE UserID = ?", $UserID);
         $_SESSION['reseterr'] = 'The link you were given has expired.'; // Error message to display on form
       }
       // Show him the first form (enter email address)
@@ -138,7 +138,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
             Username,
             Email
           FROM users_main
-          WHERE Email = '$EncEmail'");
+          WHERE Email = ?", $EncEmail);
         list($UserID, $Username, $Email) = $DB->next_record();
         $Email = DBCrypt::decrypt($Email);
 
@@ -158,15 +158,15 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
           $DB->query("
             SELECT SessionID
             FROM users_sessions
-            WHERE UserID = '$UserID'");
+            WHERE UserID = ?", $UserID);
           while (list($SessionID) = $DB->next_record()) {
             $Cache->delete_value("session_$UserID"."_$SessionID");
           }
           $DB->query("
             UPDATE users_sessions
             SET Active = 0
-            WHERE UserID = '$UserID'
-              AND Active = 1");
+            WHERE UserID = ?
+              AND Active = 1", $UserID);
         } else {
           $Err = 'There is no user with that email address.';
         }
@@ -239,8 +239,8 @@ else {
           TwoFactor,
           Enabled
         FROM users_main
-        WHERE Username = '".db_string($_POST['username'])."'
-          AND Username != ''");
+        WHERE Username = ?
+          AND Username != ''", $_POST['username']);
       list($UserID, $PermissionID, $CustomPermissions, $PassHash, $TwoFactor, $Enabled) = $DB->next_record(MYSQLI_NUM, array(2));
       if (!$Banned) {
         if ($UserID && Users::check_password($_POST['password'], $PassHash)) {
@@ -248,8 +248,8 @@ else {
           if (password_needs_rehash($PassHash, PASSWORD_DEFAULT)) {
             $DB->query("
               UPDATE users_main
-              SET PassHash = '".make_sec_hash($_POST['password'])."'
-              WHERE Username = '".db_string($_POST['username'])."'");
+              SET PassHash = ?
+              WHERE Username = ?", make_sec_hash($_POST['password']), $_POST['username']);
           }
 
           if (empty($TwoFactor) || $TwoFA->verifyCode($TwoFactor, $_POST['twofa'])) {
@@ -260,7 +260,7 @@ else {
                 $DB->query("
                   SELECT IP
                   FROM users_history_ips
-                  WHERE UserID = $UserID");
+                  WHERE UserID = ?", $UserID);
                 $IPs = $DB->to_array(false, MYSQLI_NUM);
                 $QueryParts = [];
                 foreach ($IPs as $i => $IP) {
@@ -285,7 +285,7 @@ else {
                           UserName,
                           Email
                         FROM users_main
-                        WHERE ID = $UserID");
+                        WHERE ID = ?", $UserID);
                       list($Username, $Email) = $DB->next_record();
                       Users::auth_location($UserID, $Username, $CurrentASN, DBCrypt::decrypt($Email));
                       require('newlocation.php');
@@ -299,7 +299,7 @@ else {
               $DB->query("
                 SELECT KeyHandle, PublicKey, Certificate, Counter, Valid
                 FROM u2f
-                WHERE UserID = $UserID");
+                WHERE UserID = ?", $UserID);
               // Needs to be an array of objects, so we can't use to_array()
               while (list($KeyHandle, $PublicKey, $Certificate, $Counter, $Valid) = $DB->next_record()) {
                 $U2FRegs[] = (object)['keyHandle'=>$KeyHandle, 'publicKey'=>$PublicKey, 'certificate'=>$Certificate, 'counter'=>$Counter, 'valid'=>$Valid];
@@ -313,9 +313,10 @@ else {
                     $U2FReg = $U2F->doAuthenticate(json_decode($_POST['u2f-request']), $U2FRegs, json_decode($_POST['u2f-response']));
                     if ($U2FReg->valid != '1') throw new Exception('Token disabled.');
                     $DB->query("UPDATE u2f
-                                SET Counter = ".($U2FReg->counter)."
-                                WHERE KeyHandle = '".db_string($U2FReg->keyHandle)."'
-                                AND UserID = $UserID");
+                                SET Counter = ?
+                                WHERE KeyHandle = ?
+                                AND UserID = ?",
+                      $U2FReg->counter, $U2FReg->keyHandle, $UserID);
                   } catch (Exception $e) {
                     $U2FErr = 'U2F key invalid. Error: '.($e->getMessage());
                     if ($e->getMessage() == 'Token disabled.') {
@@ -325,8 +326,8 @@ else {
                       $BadHandle = json_decode($_POST['u2f-response'], true)['keyHandle'];
                       $DB->query("UPDATE u2f
                                   SET Valid = '0'
-                                  WHERE KeyHandle = '".db_string($BadHandle)."'
-                                  AND UserID = $UserID");
+                                  WHERE KeyHandle = ?
+                                  AND UserID = ?", $BadHandle, $UserID);
                       $U2FErr = 'U2F counter too low. This token has been disabled due to suspected cloning. Contact staff for assistance.';
                     }
                   }
