@@ -159,7 +159,7 @@ echo $Val->GenerateJS('userform');
           </div>
         </td>
       </tr>
-      <tr id="style_additions_tr" class="<?=$Stylesheets[$LoggedUser['StyleID']]['Additions'][0]?'':'hidden'?>">
+      <tr id="style_additions_tr" class="<?=($Stylesheets[$LoggedUser['StyleID']]['Additions'][0] ?? false)?'':'hidden'?>">
         <td class="label tooltip" title="Select changes that you want made to your chosen stylesheet"><strong>Stylesheet additions</strong></td>
         <td> <?
           foreach($Stylesheets as $Style) {
