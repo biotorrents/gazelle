@@ -437,7 +437,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         <td class="label">Screenshots:</td>
         <td>
           <textarea rows="8" cols="60" name="screenshots" id="screenshots"><?=display_str($Torrent['Screenshots'])?></textarea>
-          <p>Enter up to 10 links to screenshots for the torrent, one per line. The system will automatically remove malformed or invalid links, as well as any links after the 10th. <strong class="important_text">Remember to consult the <a href="/rules.php?p=upload#h1.4">rules for adding screenshots</a>.</strong></p>
+          <p>Enter up to 10 links to screenshots for the torrent, one per line. The system will automatically remove malformed or invalid links, as well as any links after the 10th. Remember to consult the <a href="/rules.php?p=upload#h1.4">rules for adding screenshots</a>.</p>
       </tr>
 <? } ?>
       <tr>
@@ -1168,7 +1168,7 @@ new TEXTAREA_PREVIEW('album_desc', 'album_desc', display_str($Torrent['GroupDesc
         <td class="label">Screenshots:</td>
         <td>
           <textarea rows="8" cols="60" name="screenshots" id="screenshots"><?=display_str($Torrent['Screenshots'])?></textarea>
-          <p>Enter up to 10 links to screenshots for the torrent, one per line. The system will automatically remove malformed or invalid links, as well as any links after the 10th. Remember to consult the <a href="/rules.php?p=upload#h1.4">rules for adding screenshots</a>.</p>
+          <p>Enter up to 10 links to screenshots for the torrent, one per line. The system will automatically remove malformed or invalid links, as well as any links after the 10th.<br><strong class="important_text">Remember to consult the <a href="/rules.php?p=upload#h1.4">rules for adding screenshots</a>. Promotional materials from a game's store page are NOT screenshots</strong></p>
       </tr>
 <? } ?>
       <tr>
