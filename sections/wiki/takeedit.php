@@ -65,7 +65,7 @@ if ($Read && $Edit) {
     MinClassEdit = '$Edit',";
 }
 $SQL .= "
-    Date = '".sqltime()."',
+    Date = NOW(),
     Author = '$LoggedUser[ID]'
   WHERE ID = '$P[id]'";
 $DB->query($SQL);

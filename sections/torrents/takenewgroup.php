@@ -71,7 +71,7 @@ if (empty($_POST['confirm'])) {
     INSERT INTO torrents_group
       (CategoryID, Name, Year, Time, WikiBody, WikiImage)
     VALUES
-      ('$CategoryID', '$Title', '$Year', '".sqltime()."', '', '')");
+      ('$CategoryID', '$Title', '$Year', NOW(), '', '')");
   $GroupID = $DB->inserted_id();
 
   $DB->query("

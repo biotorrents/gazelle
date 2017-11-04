@@ -7,7 +7,7 @@ if ($Message = db_string($_POST['message'])) {
       INSERT INTO staff_pm_conversations
         (Subject, Status, Level, UserID, Date)
       VALUES
-        ('$Subject', 'Unanswered', $_POST[level], $LoggedUser[ID], '".sqltime()."')"
+        ('$Subject', 'Unanswered', $_POST[level], $LoggedUser[ID], NOW())"
     );
 
     // New message
@@ -16,7 +16,7 @@ if ($Message = db_string($_POST['message'])) {
       INSERT INTO staff_pm_messages
         (UserID, SentDate, Message, ConvID)
       VALUES
-        ($LoggedUser[ID], '".sqltime()."', '$Message', $ConvID)"
+        ($LoggedUser[ID], NOW(), '$Message', $ConvID)"
     );
 
     header('Location: staffpm.php');
@@ -38,7 +38,7 @@ if ($Message = db_string($_POST['message'])) {
         INSERT INTO staff_pm_messages
           (UserID, SentDate, Message, ConvID)
         VALUES
-          (".$LoggedUser['ID'].", '".sqltime()."', '$Message', $ConvID)"
+          (".$LoggedUser['ID'].", NOW(), '$Message', $ConvID)"
       );
 
       // Update conversation
@@ -46,7 +46,7 @@ if ($Message = db_string($_POST['message'])) {
         // FLS/Staff
         $DB->query("
           UPDATE staff_pm_conversations
-          SET Date = '".sqltime()."',
+          SET Date = NOW(),
             Unread = true,
             Status = 'Open'
           WHERE ID = $ConvID");
@@ -55,7 +55,7 @@ if ($Message = db_string($_POST['message'])) {
         // User
         $DB->query("
           UPDATE staff_pm_conversations
-          SET Date = '".sqltime()."',
+          SET Date = NOW(),
             Unread = true,
             Status = 'Unanswered'
           WHERE ID = $ConvID");

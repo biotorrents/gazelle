@@ -490,7 +490,7 @@ if ($Warned == 1 && !$Cur['Warned'] && check_perms('users_warn')) {
   $Weeks = 'week' . ($WarnLength === 1 ? '' : 's');
   Misc::send_pm($UserID, 0, 'You have received a warning', "You have been [url=".site_url()."wiki.php?action=article&amp;name=warnings]warned for $WarnLength {$Weeks}[/url] by [user]".$LoggedUser['Username']."[/user]. The reason given was:
 [quote]{$WarnReason}[/quote]");
-  $UpdateSet[] = "Warned = '".sqltime()."' + INTERVAL $WarnLength WEEK";
+  $UpdateSet[] = "Warned = NOW() + INTERVAL $WarnLength WEEK";
   $Msg = "warned for $WarnLength $Weeks";
   if ($WarnReason) {
     $Msg .= " for \"$WarnReason\"";
@@ -734,7 +734,7 @@ if ($ResetPasskey == 1 && check_perms('users_edit_reset_keys')) {
     INSERT INTO users_history_passkeys
       (UserID, OldPassKey, NewPassKey, ChangerIP, ChangeTime)
     VALUES
-      ('$UserID', '".$Cur['torrent_pass']."', '$Passkey', '".DBCrypt::encrypt('0.0.0.0')."', '".sqltime()."')");
+      ('$UserID', '".$Cur['torrent_pass']."', '$Passkey', '".DBCrypt::encrypt('0.0.0.0')."', NOW())");
   Tracker::update_tracker('change_passkey', array('oldpasskey' => $Cur['torrent_pass'], 'newpasskey' => $Passkey));
 }
 

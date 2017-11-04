@@ -52,7 +52,7 @@ if (isset($_POST['Username'])) {
       INSERT INTO users_info
         (UserID, StyleID, AuthKey, JoinDate)
       VALUES
-        ('".db_string($UserID)."', '".db_string($StyleID)."', '".db_string($AuthKey)."', '".sqltime()."')");
+        ('".db_string($UserID)."', '".db_string($StyleID)."', '".db_string($AuthKey)."', NOW())");
 
     // Give the notification settings
     $DB->query("INSERT INTO users_notifications_settings (UserID) VALUES ('$UserID')");

@@ -73,7 +73,8 @@ class AutoEnable {
             G::$DB->query("
                 INSERT INTO users_enable_requests
                 (UserID, Email, IP, UserAgent, Timestamp)
-                VALUES ('$UserID', '".DBCrypt::encrypt($Email)."', '".DBCrypt::encrypt($IP)."', '$UserAgent', '".sqltime()."')");
+                VALUES (?, ?, ?, ?, NOW())",
+                $UserID, DBCrypt::encrypt($Email), DBCrypt::encrypt($IP), $UserAgent);
 
             // Cache the number of requests for the modbar
             G::$Cache->increment_value(self::CACHE_KEY_NAME);
@@ -174,7 +175,7 @@ class AutoEnable {
         // Update database values and decrement cache
         G::$DB->query("
                 UPDATE users_enable_requests
-                SET HandledTimestamp = '".sqltime()."',
+                SET HandledTimestamp = NOW(),
                     CheckedBy = '".G::$LoggedUser['ID']."',
                     Outcome = '$Status'
                 WHERE ID IN (".implode(',', $IDs).")");

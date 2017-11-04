@@ -27,7 +27,7 @@ if (!check_perms('admin_reports')) {
 $DB->query("
   UPDATE reports
   SET Status = 'Resolved',
-    ResolvedTime = '".sqltime()."',
+    ResolvedTime = NOW(),
     ResolverID = '".$LoggedUser['ID']."'
   WHERE ID = '".db_string($ReportID)."'");
 

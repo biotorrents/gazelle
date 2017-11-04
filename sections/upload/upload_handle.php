@@ -456,7 +456,7 @@ if (!isset($GroupID) || !$GroupID) {
     INSERT INTO torrents_group
       (CategoryID, Name, NameRJ, NameJP, Year, Series, Studio, CatalogueNumber, Pages, Time, WikiBody, WikiImage, DLsiteID)
     VALUES
-      ($TypeID, ".$T['Title'].", ".$T['TitleRJ'].", ".$T['TitleJP'].", ".$T['Year'].", ".$T['Series'].", ".$T['Studio'].", ".$T['CatalogueNumber'].", " . $T['Pages'] . ", '".sqltime()."', '".db_string($Body)."', ".$T['Image'].", ".$T['DLsiteID'].")");
+      ($TypeID, ".$T['Title'].", ".$T['TitleRJ'].", ".$T['TitleJP'].", ".$T['Year'].", ".$T['Series'].", ".$T['Studio'].", ".$T['CatalogueNumber'].", " . $T['Pages'] . ", NOW(), '".db_string($Body)."', ".$T['Image'].", ".$T['DLsiteID'].")");
   $GroupID = $DB->inserted_id();
   foreach ($ArtistForm as $Num => $Artist) {
     $DB->query("
@@ -485,7 +485,7 @@ if (!isset($GroupID) || !$GroupID) {
 } else {
   $DB->query("
     UPDATE torrents_group
-    SET Time = '".sqltime()."'
+    SET Time = NOW()
     WHERE ID = $GroupID");
   $Cache->delete_value("torrent_group_$GroupID");
   $Cache->delete_value("torrents_details_$GroupID");
@@ -498,7 +498,7 @@ if (!isset($NoRevision) || !$NoRevision) {
     INSERT INTO wiki_torrents
       (PageID, Body, UserID, Summary, Time, Image)
     VALUES
-      ($GroupID, $T[GroupDescription], $LoggedUser[ID], 'Uploaded new torrent', '".sqltime()."', $T[Image])");
+      ($GroupID, $T[GroupDescription], $LoggedUser[ID], 'Uploaded new torrent', NOW(), $T[Image])");
   $RevisionID = $DB->inserted_id();
 
   // Revision ID
@@ -571,7 +571,7 @@ $DB->query("
   VALUES
     ($GroupID, $LoggedUser[ID], $T[Media], $T[Container], $T[Codec], $T[Resolution], $T[AudioFormat],
     $T[Subbing], $T[Language], $T[Subber], $T[Censored], $T[Anonymous], $T[Archive],'".db_string($InfoHash)."', $NumFiles, '$FileString',
-    '$FilePath', $TotalSize, '".sqltime()."', $T[TorrentDescription], $T[MediaInfo], '$T[FreeTorrent]', '$T[FreeLeechType]')");
+    '$FilePath', $TotalSize, NOW(), $T[TorrentDescription], $T[MediaInfo], '$T[FreeTorrent]', '$T[FreeLeechType]')");
 
 $Cache->increment('stats_torrent_count');
 $TorrentID = $DB->inserted_id();

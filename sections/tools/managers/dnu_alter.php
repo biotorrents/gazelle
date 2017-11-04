@@ -43,14 +43,14 @@ if ($_POST['submit'] == 'Reorder') { // Reorder
         Name = '$P[name]',
         Comment = '$P[comment]',
         UserID = '$LoggedUser[ID]',
-        Time = '".sqltime()."'
+        Time = NOW()
       WHERE ID = '$P[id]'");
   } else { //Create
     $DB->query("
       INSERT INTO do_not_upload
         (Name, Comment, UserID, Time, Sequence)
       VALUES
-        ('$P[name]','$P[comment]','$LoggedUser[ID]','".sqltime()."', 9999)");
+        ('$P[name]','$P[comment]','$LoggedUser[ID]', NOW(), 9999)");
   }
 }
 

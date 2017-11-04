@@ -4,7 +4,7 @@
 // Clear old seed time history
 $DB->query("
   DELETE FROM users_torrent_history
-  WHERE Date < DATE('".sqltime()."' - INTERVAL 7 DAY) + 0");
+  WHERE Date < DATE(NOW() - INTERVAL 7 DAY) + 0");
 
 // Store total seeded time for each user in a temp table
 $DB->query("TRUNCATE TABLE users_torrent_history_temp");

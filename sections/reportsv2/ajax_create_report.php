@@ -77,7 +77,7 @@ $DB->query("
   INSERT INTO reportsv2
     (ReporterID, TorrentID, Type, UserComment, Status, ReportedTime, ExtraID)
   VALUES
-    (".db_string($LoggedUser['ID']).", $TorrentID, '$Type', '$Extra', 'New', '".sqltime()."', '$ExtraID')");
+    (".db_string($LoggedUser['ID']).", $TorrentID, '$Type', '$Extra', 'New', NOW(), '$ExtraID')");
 
 $ReportID = $DB->inserted_id();
 

@@ -73,7 +73,7 @@ if (empty($RevisionID)) { // edit
     INSERT INTO wiki_torrents
       (PageID, Body, Image, UserID, Summary, Time)
     VALUES
-      ('$GroupID', '".db_string($Body)."', '".db_string($Image)."', '$UserID', '$Summary', '".sqltime()."')");
+      ('$GroupID', '".db_string($Body)."', '".db_string($Image)."', '$UserID', '$Summary', NOW())");
 }
 else { // revert
   $DB->query("
@@ -88,7 +88,7 @@ else { // revert
   $DB->query("
     INSERT INTO wiki_torrents
       (PageID, Body, Image, UserID, Summary, Time)
-    SELECT '$GroupID', Body, Image, '$UserID', 'Reverted to revision $RevisionID', '".sqltime()."'
+    SELECT '$GroupID', Body, Image, '$UserID', 'Reverted to revision $RevisionID', NOW()
     FROM wiki_artists
     WHERE RevisionID = '$RevisionID'");
 }

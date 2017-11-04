@@ -83,7 +83,7 @@ $DB->query("
         UPDATE reportsv2
         SET
           Status = 'Resolved',
-          LastChangeTime = '".sqltime()."',
+          LastChangeTime = NOW(),
           ModComment = 'Report already dealt with (torrent deleted)'
         WHERE ID = $ReportID");
       $Cache->decrement('num_torrent_reportsv2');

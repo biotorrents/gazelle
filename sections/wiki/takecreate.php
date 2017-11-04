@@ -50,7 +50,7 @@ $DB->query("
   INSERT INTO wiki_articles
     (Revision, Title, Body, MinClassRead, MinClassEdit, Date, Author)
   VALUES
-    ('1', '$P[title]', '$P[body]', '$Read', '$Edit', '".sqltime()."', '$LoggedUser[ID]')");
+    ('1', '$P[title]', '$P[body]', '$Read', '$Edit', NOW(), '$LoggedUser[ID]')");
 
 $ArticleID = $DB->inserted_id();
 

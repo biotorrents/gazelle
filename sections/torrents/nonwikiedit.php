@@ -71,7 +71,7 @@ $DB->query("
 if ($OldYear != $Year) {
   $DB->query("
     INSERT INTO group_log (GroupID, UserID, Time, Info)
-    VALUES ('$GroupID', ".$LoggedUser['ID'].", '".sqltime()."', '".db_string("Year changed from $OldYear to $Year")."')");
+    VALUES ('$GroupID', ".$LoggedUser['ID'].", NOW(), '".db_string("Year changed from $OldYear to $Year")."')");
 }
 
 $DB->query("

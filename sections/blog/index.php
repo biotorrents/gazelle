@@ -88,7 +88,7 @@ if (check_perms('admin_manage_blog')) {
             ('".$LoggedUser['ID']."',
             '".db_string($_POST['title'])."',
             '".db_string($_POST['body'])."',
-            '".sqltime()."',
+            NOW(),
             $ThreadID,
             '".((isset($_POST['important']) && $_POST['important'] == '1') ? '1' : '0')."')");
         $Cache->delete_value('blog');

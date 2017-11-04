@@ -57,7 +57,7 @@ class Subscriptions {
         INSERT IGNORE INTO users_notify_quoted
           (UserID, QuoterID, Page, PageID, PostID, Date)
         VALUES
-          ('$UserID', '$QuoterID', '$Page', '$PageID', '$PostID', '" . sqltime() . "')");
+          ('$UserID', '$QuoterID', '$Page', '$PageID', '$PostID', NOW())");
       G::$Cache->delete_value("notify_quoted_$UserID");
       if ($Page == 'forums') {
         $URL = site_url() . "forums.php?action=viewthread&postid=$PostID";

@@ -82,7 +82,7 @@ foreach ($New as $Screenshot) {
     INSERT INTO torrents_screenshots
       (GroupID, UserID, Time, Image)
     VALUES
-      ($GroupID, $LoggedUser[ID], '".sqltime()."', '$Screenshot')");
+      ($GroupID, $LoggedUser[ID], NOW(), '$Screenshot')");
 }
 
 if (!empty($New)) {

@@ -47,7 +47,7 @@ foreach ($Tags as $TagName) {
       INSERT INTO group_log
         (GroupID, UserID, Time, Info)
       VALUES
-        ('$GroupID', ".$LoggedUser['ID'].", '".sqltime()."', '".db_string("Tag \"$TagName\" added to group")."')");
+        ('$GroupID', ".$LoggedUser['ID'].", NOW(), '".db_string("Tag \"$TagName\" added to group")."')");
   }
 }
 

@@ -43,7 +43,7 @@ View::show_header("Email history for $Username");
 $DB->query("
   SELECT
     m.Email,
-    '".sqltime()."' AS Time,
+    NOW() AS Time,
     m.IP,
     GROUP_CONCAT(h.UserID SEPARATOR '|') AS UserIDs,
     GROUP_CONCAT(h.Time SEPARATOR '|') AS UserSetTimes,

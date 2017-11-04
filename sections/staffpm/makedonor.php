@@ -26,16 +26,9 @@ if ((int)$Donor === 0) {
 } else {
   $Message .= ' ';
 }
-/*
-$DB->query("
-  INSERT INTO staff_pm_messages
-    (UserID, SentDate, Message, ConvID)
-  VALUES
-    (".$LoggedUser['ID'].", '".sqltime()."', '".db_string($Message)."', $ConvID)");
-*/
 $DB->query("
   UPDATE staff_pm_conversations
-  SET Date = '".sqltime()."',
+  SET Date = NOW(),
     Unread = true,
     Status = 'Resolved',
     ResolverID = ".$LoggedUser['ID']."

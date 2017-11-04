@@ -54,7 +54,7 @@ $DB->query("
   INSERT INTO deletion_requests
     (UserID, Type, Value, Reason, Time)
   VALUES
-    ('$UserID', 'IP', '".db_string($EncIPs[0])."', '".db_string($Reason)."', '".sqltime()."')");
+    ('$UserID', 'IP', '".db_string($EncIPs[0])."', '".db_string($Reason)."', NOW())");
 
 $Cache->delete_value('num_deletion_requests');
 

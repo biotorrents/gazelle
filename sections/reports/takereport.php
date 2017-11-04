@@ -66,7 +66,7 @@ $DB->query('
   INSERT INTO reports
     (UserID, ThingID, Type, ReportedTime, Reason)
   VALUES
-    ('.db_string($LoggedUser['ID']).", $ID, '$Short', '".sqltime()."', '".db_string($Reason)."')");
+    ('.db_string($LoggedUser['ID']).", $ID, '$Short', NOW(), '".db_string($Reason)."')");
 $ReportID = $DB->inserted_id();
 
 $Channels = [];

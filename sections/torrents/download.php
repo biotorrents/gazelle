@@ -174,7 +174,7 @@ if ($Image != '') {
 
 $DB->query("
   INSERT IGNORE INTO users_downloads (UserID, TorrentID, Time)
-  VALUES ('$UserID', '$TorrentID', '".sqltime()."')");
+  VALUES ('$UserID', '$TorrentID', NOW())");
 
 Torrents::set_snatch_update_time($UserID, Torrents::SNATCHED_UPDATE_AFTERDL);
 $Contents = file_get_contents(TORRENT_STORE.$TorrentID.'.torrent');

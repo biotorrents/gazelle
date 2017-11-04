@@ -78,7 +78,7 @@ if (($Escaped['resolve_type'] == 'manual' || $Escaped['resolve_type'] == 'dismis
     UPDATE reportsv2
     SET
       Status = 'Resolved',
-      LastChangeTime = '".sqltime()."',
+      LastChangeTime = NOW(),
       ModComment = '$Comment',
       ResolverID = '".$LoggedUser['ID']."'
     WHERE ID = '$ReportID'
@@ -125,7 +125,7 @@ if (!$TorrentExists) {
   $DB->query("
     UPDATE reportsv2
     SET Status = 'Resolved',
-      LastChangeTime = '".sqltime()."',
+      LastChangeTime = NOW(),
       ResolverID = '".$LoggedUser['ID']."',
       ModComment = 'Report already dealt with (torrent deleted).'
     WHERE ID = $ReportID");
@@ -138,7 +138,7 @@ if ($Report) {
   $DB->query("
     UPDATE reportsv2
     SET Status = 'Resolved',
-      LastChangeTime = '".sqltime()."',
+      LastChangeTime = NOW(),
       ResolverID = '".$LoggedUser['ID']."'
     WHERE ID = $ReportID
       AND Status != 'Resolved'");
@@ -163,7 +163,7 @@ if ($DB->affected_rows() > 0 || !$Report) {
       INSERT IGNORE INTO torrents_bad_tags
         (TorrentID, UserID, TimeAdded)
       VALUES
-        ($TorrentID, ".$LoggedUser['ID']." , '".sqltime()."')");
+        ($TorrentID, ".$LoggedUser['ID']." , NOW())");
     $DB->query("
       SELECT GroupID
       FROM torrents
@@ -178,7 +178,7 @@ if ($DB->affected_rows() > 0 || !$Report) {
       INSERT IGNORE INTO torrents_bad_folders
         (TorrentID, UserID, TimeAdded)
       VALUES
-        ($TorrentID, ".$LoggedUser['ID'].", '".sqltime()."')");
+        ($TorrentID, ".$LoggedUser['ID'].", NOW())");
     $DB->query("
       SELECT GroupID
       FROM torrents
@@ -192,7 +192,7 @@ if ($DB->affected_rows() > 0 || !$Report) {
       INSERT IGNORE INTO torrents_bad_files
         (TorrentID, UserID, TimeAdded)
       VALUES
-        ($TorrentID, ".$LoggedUser['ID'].", '".sqltime()."')");
+        ($TorrentID, ".$LoggedUser['ID'].", NOW())");
     $DB->query("
       SELECT GroupID
       FROM torrents

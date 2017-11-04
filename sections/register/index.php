@@ -144,13 +144,13 @@ if (!empty($_REQUEST['confirm'])) {
         INSERT INTO users_info
           (UserID, StyleID, AuthKey, Inviter, JoinDate, AdminComment)
         VALUES
-          ('$UserID', '$StyleID', '".db_string($AuthKey)."', '$InviterID', '".sqltime()."', '$InviteReason')");
+          ('$UserID', '$StyleID', '".db_string($AuthKey)."', '$InviterID', NOW(), '$InviteReason')");
 
       $DB->query("
         INSERT INTO users_history_ips
           (UserID, IP, StartTime)
         VALUES
-          ('$UserID', '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."', '".sqltime()."')");
+          ('$UserID', '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."', NOW())");
       $DB->query("
         INSERT INTO users_notifications_settings
           (UserID)
@@ -169,7 +169,7 @@ if (!empty($_REQUEST['confirm'])) {
           INSERT INTO users_history_emails
             (UserID, Email, Time, IP)
           VALUES
-            ('$UserID', '".DBCrypt::encrypt($InviteEmail)."', '".sqltime()."', '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."')");
+            ('$UserID', '".DBCrypt::encrypt($InviteEmail)."', NOW(), '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."')");
       }
 
 

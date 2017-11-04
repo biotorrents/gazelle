@@ -242,7 +242,7 @@ if ($NewRequest) {
       UserID, TimeAdded, LastVote, CategoryID, Title, TitleRJ, TitleJP, Image, Description,
       CatalogueNumber, DLSiteID, Visible, GroupID)
     VALUES
-      ('.$LoggedUser['ID'].", '".sqltime()."', '".sqltime()."', $CategoryID, '".db_string($Title)."', '".db_string($TitleRJ)."', '".db_string($TitleJP)."', '".db_string($Image)."', '".db_string($Description)."',
+      ('.$LoggedUser['ID'].", NOW(), NOW(), $CategoryID, '".db_string($Title)."', '".db_string($TitleRJ)."', '".db_string($TitleJP)."', '".db_string($Image)."', '".db_string($Description)."',
           '".db_string($CatalogueNumber)."', '".db_string($DLSiteID)."', '1', '$GroupID')");
 
   $RequestID = $DB->inserted_id();

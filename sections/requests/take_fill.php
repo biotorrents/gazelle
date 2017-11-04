@@ -111,7 +111,7 @@ $DB->query("
   UPDATE requests
   SET FillerID = $FillerID,
     TorrentID = $TorrentID,
-    TimeFilled = '".sqltime()."'
+    TimeFilled = NOW()
   WHERE ID = $RequestID");
 
 $ArtistForm = Requests::get_artists($RequestID);

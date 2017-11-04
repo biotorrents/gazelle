@@ -184,7 +184,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
   if (strtotime($UserSessions[$SessionID]['LastUpdate']) + 600 < time()) {
     $DB->query("
       UPDATE users_main
-      SET LastAccess = '".sqltime()."'
+      SET LastAccess = NOW()
       WHERE ID = '$LoggedUser[ID]'");
     $SessionQuery =
      "UPDATE users_sessions
@@ -196,7 +196,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     $SessionQuery .=
        "Browser = '$Browser',
         OperatingSystem = '$OperatingSystem',
-        LastUpdate = '".sqltime()."'
+        LastUpdate = NOW()
       WHERE UserID = '$LoggedUser[ID]'
         AND SessionID = '".db_string($SessionID)."'";
     $DB->query($SessionQuery);
@@ -254,7 +254,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     }
     $DB->query("
       UPDATE users_history_ips
-      SET EndTime = '".sqltime()."'
+      SET EndTime = NOW()
       WHERE EndTime IS NULL
         AND UserID = '$LoggedUser[ID]'
         AND IP = '$CurIP'");
@@ -262,7 +262,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
       INSERT IGNORE INTO users_history_ips
         (UserID, IP, StartTime)
       VALUES
-        ('$LoggedUser[ID]', '".DBCrypt::encrypt($NewIP)."', '".sqltime()."')");
+        ('$LoggedUser[ID]', '".DBCrypt::encrypt($NewIP)."', NOW())");
 
     $ipcc = Tools::geoip($NewIP);
     $DB->query("

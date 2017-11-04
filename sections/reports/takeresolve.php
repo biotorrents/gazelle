@@ -27,9 +27,9 @@ if (!check_perms('admin_reports')) {
 $DB->query("
   UPDATE reports
   SET Status = 'Resolved',
-    ResolvedTime = '".sqltime()."',
-    ResolverID = '".$LoggedUser['ID']."'
-  WHERE ID = '".db_string($ReportID)."'");
+    ResolvedTime = NOW(),
+    ResolverID = ?
+  WHERE ID = ?", $LoggedUser['ID'], $LoggedUser['ID']);
 
 $Channels = [];
 

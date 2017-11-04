@@ -50,7 +50,7 @@ switch ($Categories[$NewCategoryID-1]) {
       INSERT INTO torrents_group
         (ArtistID, CategoryID, Name, Year, ReleaseType, Time, WikiBody, WikiImage)
       VALUES
-        ($ArtistID, '1', '$Title', '$Year', '$ReleaseType', '".sqltime()."', '', '')");
+        ($ArtistID, '1', '$Title', '$Year', '$ReleaseType', NOW(), '', '')");
     $GroupID = $DB->inserted_id();
 
     $DB->query("
@@ -69,7 +69,7 @@ switch ($Categories[$NewCategoryID-1]) {
       INSERT INTO torrents_group
         (CategoryID, Name, Year, Time, WikiBody, WikiImage)
       VALUES
-        ($NewCategoryID, '$Title', '$Year', '".sqltime()."', '', '')");
+        ($NewCategoryID, '$Title', '$Year', NOW(), '', '')");
     $GroupID = $DB->inserted_id();
     break;
   case 'Applications':
@@ -80,7 +80,7 @@ switch ($Categories[$NewCategoryID-1]) {
       INSERT INTO torrents_group
         (CategoryID, Name, Time, WikiBody, WikiImage)
       VALUES
-        ($NewCategoryID, '$Title', '".sqltime()."', '', '')");
+        ($NewCategoryID, '$Title', NOW(), '', '')");
     $GroupID = $DB->inserted_id();
     break;
 }

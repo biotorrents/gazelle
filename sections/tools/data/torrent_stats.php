@@ -14,11 +14,11 @@ if (!$TorrentStats = $Cache->get_value('new_torrent_stats')) {
     FROM users_main
     WHERE Enabled = '1'");
   list($NumUsers) = $DB->next_record();
-  $DB->query("SELECT COUNT(ID), SUM(Size), SUM(FileCount) FROM torrents WHERE Time > SUBDATE('".sqltime()."', INTERVAL 1 DAY)");
+  $DB->query("SELECT COUNT(ID), SUM(Size), SUM(FileCount) FROM torrents WHERE Time > SUBDATE(NOW(), INTERVAL 1 DAY)");
   list($DayNum, $DaySize, $DayFiles) = $DB->next_record();
-  $DB->query("SELECT COUNT(ID), SUM(Size), SUM(FileCount) FROM torrents WHERE Time > SUBDATE('".sqltime()."', INTERVAL 7 DAY)");
+  $DB->query("SELECT COUNT(ID), SUM(Size), SUM(FileCount) FROM torrents WHERE Time > SUBDATE(NOW(), INTERVAL 7 DAY)");
   list($WeekNum, $WeekSize, $WeekFiles) = $DB->next_record();
-  $DB->query("SELECT COUNT(ID), SUM(Size), SUM(FileCount) FROM torrents WHERE Time > SUBDATE('".sqltime()."', INTERVAL 30 DAY)");
+  $DB->query("SELECT COUNT(ID), SUM(Size), SUM(FileCount) FROM torrents WHERE Time > SUBDATE(NOW(), INTERVAL 30 DAY)");
   list($MonthNum, $MonthSize, $MonthFiles) = $DB->next_record();
   $Cache->cache_value('new_torrent_stats', array($TorrentCount, $TotalSize, $TotalFiles,
             $NumUsers, $DayNum, $DaySize, $DayFiles,

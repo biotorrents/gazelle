@@ -68,7 +68,7 @@ class Misc {
         INSERT INTO pm_conversations_users
           (UserID, ConvID, InInbox, InSentbox, SentDate, ReceivedDate, UnRead)
         VALUES
-          ('$ToID', '$ConvID', '1','0','".sqltime()."', '".sqltime()."', '1')");
+          ('$ToID', '$ConvID', '1','0', NOW(), NOW(), '1')");
       if ($FromID == $ToID) {
         G::$DB->query("
           UPDATE pm_conversations_users
@@ -81,7 +81,7 @@ class Misc {
           INSERT INTO pm_conversations_users
             (UserID, ConvID, InInbox, InSentbox, SentDate, ReceivedDate, UnRead)
           VALUES
-            ('$FromID', '$ConvID', '0','1','".sqltime()."', '".sqltime()."', '0')");
+            ('$FromID', '$ConvID', '0','1', NOW(), NOW(), '0')");
       }
       $ToID = array($ToID);
     } else {
@@ -91,7 +91,7 @@ class Misc {
         SET
           InInbox = '1',
           UnRead = '1',
-          ReceivedDate = '".sqltime()."'
+          ReceivedDate = NOW()
         WHERE UserID IN (".implode(',', $ToID).")
           AND ConvID = '$ConvID'");
 
@@ -99,7 +99,7 @@ class Misc {
         UPDATE pm_conversations_users
         SET
           InSentbox = '1',
-          SentDate = '".sqltime()."'
+          SentDate = NOW()
         WHERE UserID = '$FromID'
           AND ConvID = '$ConvID'");
     }
@@ -109,7 +109,7 @@ class Misc {
       INSERT INTO pm_messages
         (SenderID, ConvID, SentDate, Body)
       VALUES
-        ('$FromID', '$ConvID', '".sqltime()."', '$Body')");
+        ('$FromID', '$ConvID', NOW(), '$Body')");
 
     // Update the cached new message count.
     foreach ($ToID as $ID) {
@@ -181,7 +181,7 @@ class Misc {
       INSERT INTO forums_topics
         (Title, AuthorID, ForumID, LastPostTime, LastPostAuthorID, CreatedTime)
       VALUES
-        ('$Title', '$AuthorID', '$ForumID', '".sqltime()."', '$AuthorID', '".sqltime()."')");
+        ('$Title', '$AuthorID', '$ForumID', NOW(), '$AuthorID', NOW())");
     $TopicID = G::$DB->inserted_id();
     $Posts = 1;
 
@@ -189,7 +189,7 @@ class Misc {
       INSERT INTO forums_posts
         (TopicID, AuthorID, AddedTime, Body)
       VALUES
-        ('$TopicID', '$AuthorID', '".sqltime()."', '$PostBody')");
+        ('$TopicID', '$AuthorID', NOW(), '$PostBody')");
     $PostID = G::$DB->inserted_id();
 
     G::$DB->query("
@@ -200,7 +200,7 @@ class Misc {
         LastPostID = '$PostID',
         LastPostAuthorID = '$AuthorID',
         LastPostTopicID = '$TopicID',
-        LastPostTime = '".sqltime()."'
+        LastPostTime = NOW()
       WHERE ID = '$ForumID'");
 
     G::$DB->query("
@@ -209,7 +209,7 @@ class Misc {
         NumPosts = NumPosts + 1,
         LastPostID = '$PostID',
         LastPostAuthorID = '$AuthorID',
-        LastPostTime = '".sqltime()."'
+        LastPostTime = NOW()
       WHERE ID = '$TopicID'");
 
     // Bump this topic to head of the cache
@@ -440,7 +440,7 @@ class Misc {
     $QueryID = G::$DB->get_query_id();
     G::$DB->query("
       INSERT INTO log (Message, Time)
-      VALUES ('" . db_string($Message) . "', '" . sqltime() . "')");
+      VALUES (?, NOW())", $Message);
     G::$DB->set_query_id($QueryID);
   }
 

@@ -173,7 +173,7 @@ switch ($_REQUEST['action']) {
 
     $DB->query("
       INSERT INTO news (UserID, Title, Body, Time)
-      VALUES ('$LoggedUser[ID]', '".db_string($_POST['title'])."', '".db_string($_POST['body'])."', '".sqltime()."')");
+      VALUES ('$LoggedUser[ID]', '".db_string($_POST['title'])."', '".db_string($_POST['body'])."', NOW())");
     $Cache->delete_value('news_latest_id');
     $Cache->delete_value('news_latest_title');
     $Cache->delete_value('news');

@@ -356,7 +356,7 @@ else {
                   INSERT INTO users_sessions
                     (UserID, SessionID, KeepLogged, Browser, OperatingSystem, IP, LastUpdate, FullUA)
                   VALUES
-                    ('$UserID', '".db_string($SessionID)."', '1', '$Browser', '$OperatingSystem', '".db_string(apcu_exists('DBKEY')?DBCrypt::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0')."', '".sqltime()."', '".db_string($_SERVER['HTTP_USER_AGENT'])."')");
+                    ('$UserID', '".db_string($SessionID)."', '1', '$Browser', '$OperatingSystem', '".db_string(apcu_exists('DBKEY')?DBCrypt::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0')."', NOW(), '".db_string($_SERVER['HTTP_USER_AGENT'])."')");
 
                 $Cache->begin_transaction("users_sessions_$UserID");
                 $Cache->insert_front($SessionID, [
@@ -371,8 +371,8 @@ else {
                 $Sql = "
                   UPDATE users_main
                   SET
-                    LastLogin = '".sqltime()."',
-                    LastAccess = '".sqltime()."'
+                    LastLogin = NOW(),
+                    LastAccess = NOW()
                   WHERE ID = '".db_string($UserID)."'";
 
                 $DB->query($Sql);

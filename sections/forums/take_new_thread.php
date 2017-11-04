@@ -82,14 +82,14 @@ $DB->query("
   INSERT INTO forums_topics
     (Title, AuthorID, ForumID, LastPostTime, LastPostAuthorID, CreatedTime)
   Values
-    ('".db_string($Title)."', '".$LoggedUser['ID']."', '$ForumID', '".sqltime()."', '".$LoggedUser['ID']."', '".sqltime()."')");
+    ('".db_string($Title)."', '".$LoggedUser['ID']."', '$ForumID', NOW(), '".$LoggedUser['ID']."', NOW())");
 $TopicID = $DB->inserted_id();
 
 $DB->query("
   INSERT INTO forums_posts
     (TopicID, AuthorID, AddedTime, Body)
   VALUES
-    ('$TopicID', '".$LoggedUser['ID']."', '".sqltime()."', '".db_string($Body)."')");
+    ('$TopicID', '".$LoggedUser['ID']."', NOW(), '".db_string($Body)."')");
 
 $PostID = $DB->inserted_id();
 
@@ -101,7 +101,7 @@ $DB->query("
     LastPostID       = '$PostID',
     LastPostAuthorID = '".$LoggedUser['ID']."',
     LastPostTopicID  = '$TopicID',
-    LastPostTime     = '".sqltime()."'
+    LastPostTime     = NOW()
   WHERE ID = '$ForumID'");
 
 $DB->query("
@@ -110,7 +110,7 @@ $DB->query("
     NumPosts         = NumPosts + 1,
     LastPostID       = '$PostID',
     LastPostAuthorID = '".$LoggedUser['ID']."',
-    LastPostTime     = '".sqltime()."'
+    LastPostTime     = NOW()
   WHERE ID = '$TopicID'");
 
 if (isset($_POST['subscribe'])) {

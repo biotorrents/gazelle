@@ -124,7 +124,7 @@ if (strpos($Result, 'VERIFIED') !== false || check_perms('site_debug')) {
     INSERT INTO donations
       (UserID, Amount, Email, Time)
     VALUES
-      ('".$_POST['custom']."', '".db_string($_POST['mc_gross'])."', '".db_string($_POST['payer_email'])."', '".sqltime()."')");
+      ('".$_POST['custom']."', '".db_string($_POST['mc_gross'])."', '".db_string($_POST['payer_email'])."', NOW())");
 } else {
   $DB->query("
     INSERT INTO ip_bans

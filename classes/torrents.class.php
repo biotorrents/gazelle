@@ -238,7 +238,8 @@ class Torrents {
       INSERT INTO group_log
         (GroupID, TorrentID, UserID, Info, Time, Hidden)
       VALUES
-        ($GroupID, $TorrentID, $UserID, '".db_string($Message)."', '".sqltime()."', $Hidden)");
+        (?, ?, ?, ?, NOW(), ?)",
+        $GroupID, $TorrentID, $UserID, $Message, $Hidden);
     G::$DB->set_query_id($QueryID);
   }
 
@@ -317,10 +318,10 @@ class Torrents {
       UPDATE reportsv2
       SET
         Status = 'Resolved',
-        LastChangeTime = '".sqltime()."',
+        LastChangeTime = NOW(),
         ModComment = 'Report already dealt with (torrent deleted)'
-      WHERE TorrentID = $ID
-        AND Status != 'Resolved'");
+      WHERE TorrentID = ?
+        AND Status != 'Resolved'", $ID);
     $Reports = G::$DB->affected_rows();
     if ($Reports) {
       G::$Cache->decrement('num_torrent_reportsv2', $Reports);
@@ -329,17 +330,17 @@ class Torrents {
     unlink(TORRENT_STORE.$ID.'.torrent');
     G::$DB->query("
       DELETE FROM torrents_bad_tags
-      WHERE TorrentID = $ID");
+      WHERE TorrentID = ?", $ID);
     G::$DB->query("
       DELETE FROM torrents_bad_folders
-      WHERE TorrentID = $ID");
+      WHERE TorrentID = ?", $ID);
     G::$DB->query("
       DELETE FROM torrents_bad_files
-      WHERE TorrentID = $ID");
+      WHERE TorrentID = ?", $ID);
 
     G::$DB->query("
       DELETE FROM shop_freeleeches
-      WHERE TorrentID = $ID");
+      WHERE TorrentID = ?", $ID);
     $FLs = G::$DB->affected_rows();
     if ($FLs) {
       G::$Cache->delete_value('shop_freeleech_list');
@@ -348,7 +349,7 @@ class Torrents {
     // Tells Sphinx that the group is removed
     G::$DB->query("
       REPLACE INTO sphinx_delta (ID, Time)
-      VALUES ($ID, UNIX_TIMESTAMP())");
+      VALUES (?, UNIX_TIMESTAMP())", $ID);
 
     G::$Cache->delete_value("torrent_download_$ID");
     G::$Cache->delete_value("torrent_group_$GroupID");
@@ -371,7 +372,7 @@ class Torrents {
     G::$DB->query("
       SELECT CategoryID
       FROM torrents_group
-      WHERE ID = '$GroupID'");
+      WHERE ID = ?", $GroupID);
     list($Category) = G::$DB->next_record();
     if ($Category == 1) {
       G::$Cache->decrement('stats_album_count');
@@ -384,7 +385,7 @@ class Torrents {
     G::$DB->query("
       SELECT CollageID
       FROM collages_torrents
-      WHERE GroupID = '$GroupID'");
+      WHERE GroupID = ?", $GroupID);
     if (G::$DB->has_results()) {
       $CollageIDs = G::$DB->collect('CollageID');
       G::$DB->query("
@@ -393,7 +394,7 @@ class Torrents {
         WHERE ID IN (".implode(', ', $CollageIDs).')');
       G::$DB->query("
         DELETE FROM collages_torrents
-        WHERE GroupID = '$GroupID'");
+        WHERE GroupID = ?", $GroupID);
 
       foreach ($CollageIDs as $CollageID) {
         G::$Cache->delete_value("collage_$CollageID");
@@ -406,12 +407,12 @@ class Torrents {
     G::$DB->query("
       SELECT ArtistID
       FROM torrents_artists
-      WHERE GroupID = $GroupID");
+      WHERE GroupID = ?", $GroupID);
     $Artists = G::$DB->collect('ArtistID');
 
     G::$DB->query("
       DELETE FROM torrents_artists
-      WHERE GroupID = '$GroupID'");
+      WHERE GroupID = ?", $GroupID);
 
     foreach ($Artists as $ArtistID) {
       if (empty($ArtistID)) {
@@ -423,14 +424,14 @@ class Torrents {
         FROM artists_group AS ag
           LEFT JOIN requests_artists AS ra ON ag.ArtistID = ra.ArtistID
         WHERE ra.ArtistID IS NOT NULL
-          AND ag.ArtistID = '$ArtistID'");
+          AND ag.ArtistID = ?", $ArtistID);
       list($ReqCount) = G::$DB->next_record();
       G::$DB->query("
         SELECT COUNT(ag.ArtistID)
         FROM artists_group AS ag
           LEFT JOIN torrents_artists AS ta ON ag.ArtistID = ta.ArtistID
         WHERE ta.ArtistID IS NOT NULL
-          AND ag.ArtistID = '$ArtistID'");
+          AND ag.ArtistID = ?", $ArtistID);
       list($GroupCount) = G::$DB->next_record();
       if (($ReqCount + $GroupCount) == 0) {
         //The only group to use this artist
@@ -445,12 +446,12 @@ class Torrents {
     G::$DB->query("
       SELECT ID
       FROM requests
-      WHERE GroupID = '$GroupID'");
+      WHERE GroupID = ?", $GroupID);
     $Requests = G::$DB->collect('ID');
     G::$DB->query("
       UPDATE requests
       SET GroupID = NULL
-      WHERE GroupID = '$GroupID'");
+      WHERE GroupID = ?", $GroupID);
     foreach ($Requests as $RequestID) {
       G::$Cache->delete_value("request_$RequestID");
     }
@@ -460,16 +461,16 @@ class Torrents {
 
     G::$DB->query("
       DELETE FROM torrents_group
-      WHERE ID = '$GroupID'");
+      WHERE ID = ?", $GroupID);
     G::$DB->query("
       DELETE FROM torrents_tags
-      WHERE GroupID = '$GroupID'");
+      WHERE GroupID = ?", $GroupID);
     G::$DB->query("
       DELETE FROM bookmarks_torrents
-      WHERE GroupID = '$GroupID'");
+      WHERE GroupID = ?", $GroupID);
     G::$DB->query("
       DELETE FROM wiki_torrents
-      WHERE PageID = '$GroupID'");
+      WHERE PageID = ?", $GroupID);
 
     G::$Cache->delete_value("torrents_details_$GroupID");
     G::$Cache->delete_value("torrent_group_$GroupID");
@@ -492,18 +493,18 @@ class Torrents {
           SELECT REPLACE(GROUP_CONCAT(tags.Name SEPARATOR ' '), '.', '_')
           FROM torrents_tags AS t
             INNER JOIN tags ON tags.ID = t.TagID
-          WHERE t.GroupID = '$GroupID'
+          WHERE t.GroupID = ?
           GROUP BY t.GroupID
           )
-      WHERE ID = '$GroupID'");
+      WHERE ID = ?", $GroupID, $GroupID);
 
     // Fetch album artists
     G::$DB->query("
       SELECT GROUP_CONCAT(ag.Name separator ' ')
       FROM torrents_artists AS ta
         JOIN artists_group AS ag ON ag.ArtistID = ta.ArtistID
-      WHERE ta.GroupID = $GroupID
-      GROUP BY ta.GroupID");
+      WHERE ta.GroupID = ?
+      GROUP BY ta.GroupID", $GroupID);
     if (G::$DB->has_results()) {
       list($ArtistName) = G::$DB->next_record(MYSQLI_NUM, false);
     } else {
@@ -520,23 +521,16 @@ class Torrents {
         t.ID, g.ID, Name, NameRJ, NameJP, TagList, Year, CatalogueNumber, CategoryID, UNIX_TIMESTAMP(t.Time),
         Size, Snatched, Seeders, Leechers, Censored, Studio, Series, DLsiteID,
         CAST(FreeTorrent AS CHAR), Media, Container, Codec, Resolution, AudioFormat, Subbing, Language, Description,
-        REPLACE(REPLACE(FileList, '_', ' '), '/', ' ') AS FileList, '".db_string($ArtistName)."'
+        REPLACE(REPLACE(FileList, '_', ' '), '/', ' ') AS FileList, ?
       FROM torrents AS t
         JOIN torrents_group AS g ON g.ID = t.GroupID
-      WHERE g.ID = $GroupID");
+      WHERE g.ID = ?", $ArtistName, $GroupID);
 
     G::$Cache->delete_value("torrents_details_$GroupID");
     G::$Cache->delete_value("torrent_group_$GroupID");
     G::$Cache->delete_value("torrent_group_light_$GroupID");
 
     $ArtistInfo = Artists::get_artist($GroupID);
-/*
-    foreach ($ArtistInfo as $Importances => $Importance) {
-      foreach ($Importance as $Artist) {
-        G::$Cache->delete_value('artist_groups_'.$Artist['id']); //Needed for at least freeleech change, if not others.
-      }
-    }
-*/
 
     G::$Cache->delete_value("groups_artists_$GroupID");
     G::$DB->set_query_id($QueryID);
@@ -554,7 +548,7 @@ class Torrents {
     G::$DB->query("
       SELECT GroupID
       FROM torrents
-      WHERE ID = $TorrentID");
+      WHERE ID = ?", $TorrentID);
     if (G::$DB->has_results()) {
       list($GroupID) = G::$DB->next_record(MYSQLI_NUM, false);
       $Contents = file_get_contents(TORRENT_STORE.$TorrentID.'.torrent');
@@ -572,8 +566,9 @@ class Torrents {
       $FileString = implode("\n", $TmpFileList);
       G::$DB->query("
         UPDATE torrents
-        SET Size = $TotalSize, FilePath = '".db_string($FilePath)."', FileList = '".db_string($FileString)."'
-        WHERE ID = $TorrentID");
+        SET Size = ?, FilePath = ?, FileList = ?
+        WHERE ID = ?",
+        $TotalSize, $FilePath, $FileString, $TorrentID);
       G::$Cache->delete_value("torrents_details_$GroupID");
     }
     G::$DB->set_query_id($QueryID);
@@ -696,7 +691,7 @@ class Torrents {
         G::$DB->query("
           SELECT UNIX_TIMESTAMP(ExpiryTime)
           FROM shop_freeleeches
-          WHERE TorrentID = ".$Data['ID']);
+          WHERE TorrentID = ?", $Data['ID']);
         if (G::$DB->has_results()) {
           $ExpiryTime = G::$DB->next_record(MYSQLI_NUM, false)[0];
           $Info[] = ($HTMLy ? Format::torrent_label('Freeleech!') : 'Freeleech!') . ($HTMLy ? " <strong>(" : " (") . str_replace(['week','day','hour','min','Just now','s',' '],['w','d','h','m','0m'],time_diff(max($ExpiryTime, time()), 1, false)) . ($HTMLy ? ")</strong>" : ")");
@@ -773,7 +768,7 @@ class Torrents {
     $QueryID = G::$DB->get_query_id();
 
     if (!is_array($GroupIDs)) {
-      $GroupIDs = array($GroupIDs);
+      $GroupIDs = [$GroupIDs];
     }
 
     G::$DB->query('
@@ -808,8 +803,8 @@ class Torrents {
         G::$DB->query("
           SELECT TorrentID
           FROM users_freeleeches
-          WHERE UserID = $UserID
-            AND Expired = 0");
+          WHERE UserID = ?
+            AND Expired = 0", $UserID);
         $TokenTorrents = array_fill_keys(G::$DB->collect('TorrentID', false), true);
         G::$DB->set_query_id($QueryID);
         G::$Cache->cache_value("users_tokens_$UserID", $TokenTorrents);
@@ -882,7 +877,7 @@ class Torrents {
           G::$DB->query("
             SELECT fid
             FROM xbt_snatched
-            WHERE uid = '$UserID'");
+            WHERE uid = ?", $UserID);
           while (list($ID) = G::$DB->next_record(MYSQLI_NUM, false)) {
             $SnatchedTorrents[$ID & $LastBucket][(int)$ID] = true;
           }
@@ -895,8 +890,8 @@ class Torrents {
           G::$DB->query("
             SELECT fid
             FROM xbt_snatched
-            WHERE uid = '$UserID'
-              AND tstamp >= $UpdateTime[last]");
+            WHERE uid = ?
+              AND tstamp >= ?", $UserID, $UpdateTime['last']);
           while (list($ID) = G::$DB->next_record(MYSQLI_NUM, false)) {
             $CurBucketID = $ID & $LastBucket;
             if ($SnatchedTorrents[$CurBucketID] === false) {
@@ -963,9 +958,9 @@ class Torrents {
           G::$DB->query("
             SELECT fid
             FROM xbt_files_users
-            WHERE uid = $UserID
+            WHERE uid = ?
               AND active = 1
-              AND Remaining = 0");
+              AND Remaining = 0", $UserID);
           while (list($ID) = G::$DB->next_record(MYSQLI_NUM, false)) {
             $SeedingTorrents[$ID & $LastBucket][(int)$ID] = true;
           }
@@ -978,10 +973,10 @@ class Torrents {
           G::$DB->query("
             SELECT fid
             FROM xbt_files_users
-            WHERE uid = '$UserID'
+            WHERE uid = ?
               AND active = 1
               AND Remaining = 0
-              AND mtime >= $UpdateTime[last]");
+              AND mtime >= ?", $UserID, $UpdateTime['last']);
           while (list($ID) = G::$DB->next_record(MYSQLI_NUM, false)) {
             $CurBucketID = $ID & $LastBucket;
             if ($SeedingTorrents[$CurBucketID] === false) {
@@ -1049,9 +1044,9 @@ class Torrents {
           G::$DB->query("
             SELECT fid
             FROM xbt_files_users
-            WHERE uid = $UserID
+            WHERE uid = ?
               AND active = 1
-              AND Remaining > 0");
+              AND Remaining > 0", $UserID);
           while (list($ID) = G::$DB->next_record(MYSQLI_NUM, false)) {
             $LeechingTorrents[$ID & $LastBucket][(int)$ID] = true;
           }
@@ -1064,10 +1059,10 @@ class Torrents {
           G::$DB->query("
             SELECT fid
             FROM xbt_files_users
-            WHERE uid = '$UserID'
+            WHERE uid = ?
               AND active = 1
               AND Remaining > 0
-              AND mtime >= $UpdateTime[last]");
+              AND mtime >= ?", $UserID, $UpdateTime['last']);
           while (list($ID) = G::$DB->next_record(MYSQLI_NUM, false)) {
             $CurBucketID = $ID & $LastBucket;
             if ($LeechingTorrents[$CurBucketID] === false) {
@@ -1217,8 +1212,8 @@ class Torrents {
           UserComment,
           ReportedTime
         FROM reportsv2
-        WHERE TorrentID = $TorrentID
-          AND Status != 'Resolved'");
+        WHERE TorrentID = ?
+          AND Status != 'Resolved'", $TorrentID);
       $Reports = G::$DB->to_array(false, MYSQLI_ASSOC, false);
       G::$DB->set_query_id($QueryID);
       G::$Cache->cache_value("reports_torrent_$TorrentID", $Reports, 0);
