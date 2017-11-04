@@ -87,7 +87,7 @@ function AlterParanoia() {
 
 function ParanoiaReset(checkbox, drops) {
   var selects = $('select');
-  for (var i = 0; i < selects.results(); i++) {
+  for (var i = 0; i < selects.length; i++) {
     if (selects.raw(i).name.match(/^p_/)) {
       if (drops == 0) {
         selects.raw(i).selectedIndex = 0;
@@ -100,7 +100,7 @@ function ParanoiaReset(checkbox, drops) {
     }
   }
   var checkboxes = $(':checkbox');
-  for (var i = 0; i < checkboxes.results(); i++) {
+  for (var i = 0; i < checkboxes.length; i++) {
     if (checkboxes.raw(i).name.match(/^p_/) && (checkboxes.raw(i).name != 'p_lastseen')) {
       if (checkbox == 3) {
         checkboxes.raw(i).checked = !(checkboxes.raw(i).name.match(/_list$/) || checkboxes.raw(i).name.match(/_l$/));
@@ -142,7 +142,7 @@ function ToggleWarningAdjust(selector) {
 document.addEventListener("DOMContentLoaded", ToggleIdenticons);
 function ToggleIdenticons() {
   var disableAvatars = $('#disableavatars');
-  if (disableAvatars.size()) {
+  if (disableAvatars.length) {
     var selected = disableAvatars[0].selectedIndex;
     if (selected == 2 || selected == 3) {
       $('#identicons').gshow();

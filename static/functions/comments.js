@@ -116,7 +116,7 @@ function Edit_Form(post,key) {
   postid = post;
   var boxWidth, postuserid, pmbox, inputname;
   //If no edit is already going underway or a previous edit was finished, make the necessary dom changes.
-  if (!$('#editbox' + postid).results() || $('#editbox' + postid + '.hidden').results()) {
+  if (!$('#editbox' + postid).length || $('#editbox' + postid + '.hidden').length) {
     $('#reply_box').ghide();
     boxWidth = (location.href.match(/torrents\.php/) || location.href.match(/artist\.php/)) ? "50" : "80";
     postuserid = $('#post' + postid + ' strong a').attr('href').split('=')[1];

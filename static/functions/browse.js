@@ -185,7 +185,7 @@ function toggle_edition(groupid, editionid, lnk, event) {
   var showing = $(clickedRow).nextElementSibling().has_class('hidden');
   var allEditions = event.ctrlKey;
   var group_rows = $('tr.groupid_' + groupid);
-  for (var i = 0; i < group_rows.results(); i++) {
+  for (var i = 0; i < group_rows.length; i++) {
     var row = $(group_rows.raw(i));
     if (row.has_class('edition') && (allEditions || row.raw(0) == clickedRow)) {
       var tooltip = showing

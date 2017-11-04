@@ -174,7 +174,7 @@ function Vote(amount, requestid) {
         votecount.innerHTML = (parseInt(votecount.innerHTML)) + 1;
       }
 
-      if ($('#total_bounty').results() > 0) {
+      if ($('#total_bounty').length > 0) {
         totalBounty = parseInt($('#total_bounty').raw().value);
         totalBounty += (amount * (1 - $('#request_tax').raw().value));
         $('#total_bounty').raw().value = totalBounty;

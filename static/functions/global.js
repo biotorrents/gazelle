@@ -35,16 +35,13 @@ function save_message(message, err = false) {
 }
 
 $.fn.extend({
-  results: function () {
-    return this.size();
-  },
-  gshow: function () {
+  gshow: function() {
     return this.remove_class('hidden');
   },
-  ghide: function (force) {
+  ghide: function(force) {
     return this.add_class('hidden', force);
   },
-  gtoggle: function (force) {
+  gtoggle: function(force) {
     if (this[0].className.split(' ').indexOf('hidden') == -1) {
       this.add_class('hidden', force);
     } else {
@@ -52,8 +49,8 @@ $.fn.extend({
     }
     return this;
   },
-  listen: function (event, callback) {
-    for (var i = 0, il = this.size(); i < il; i++) {
+  listen: function(event, callback) {
+    for (var i = 0; i < this.length; i++) {
       var object = this[i];
       if (document.addEventListener) {
         object.addEventListener(event, callback, false);
@@ -63,8 +60,8 @@ $.fn.extend({
     }
     return this;
   },
-  add_class: function (class_name, force) {
-    for (var i = 0, il = this.size(); i < il; i++) {
+  add_class: function(class_name, force) {
+    for (var i = 0; i < this.length; i++) {
       var object = this[i];
       if (object.className === '') {
         object.className = class_name;
@@ -74,8 +71,8 @@ $.fn.extend({
     }
     return this;
   },
-  remove_class: function (class_name) {
-    for (var i = 0, il = this.size(); i < il; i++) {
+  remove_class: function(class_name) {
+    for (var i = 0; i < this.length; i++) {
       var object = this[i];
       var classes = object.className.split(' ');
       var result = classes.indexOf(class_name);
@@ -87,7 +84,7 @@ $.fn.extend({
     return this;
   },
   has_class: function(class_name) {
-    for (var i = 0, il = this.size(); i < il; i++) {
+    for (var i = 0; i < this.length; i++) {
       var object = this[i];
       var classes = object.className.split(' ');
       if (classes.indexOf(class_name) != -1) {
@@ -97,7 +94,7 @@ $.fn.extend({
     return false;
   },
   toggle_class: function(class_name) {
-    for (var i = 0, il = this.size(); i < il; i++) {
+    for (var i = 0, il; i < this.length; i++) {
       var object = this[i];
       var classes = object.className.split(' ');
       var result = classes.indexOf(class_name);
@@ -114,21 +111,21 @@ $.fn.extend({
     }
     return this;
   },
-  disable : function () {
+  disable : function() {
     $(this).prop('disabled', true);
     return this;
   },
-  enable : function () {
+  enable : function() {
     $(this).prop('disabled', false);
     return this;
   },
-  raw: function (number) {
+  raw: function(number) {
     if (typeof number == 'undefined') {
       number = 0;
     }
     return $(this).get(number);
   },
-  nextElementSibling: function () {
+  nextElementSibling: function() {
     var here = this[0];
     if (here.nextElementSibling) {
       return $(here.nextElementSibling);
@@ -138,7 +135,7 @@ $.fn.extend({
     } while (here.nodeType != 1);
     return $(here);
   },
-  previousElementSibling: function () {
+  previousElementSibling: function() {
     var here = this[0];
     if (here.previousElementSibling) {
       return $(here.previousElementSibling);

@@ -30,7 +30,7 @@ function SubscribeComments(page, pageid) {
 function Collapse() {
   var collapseLink = $('#collapselink').raw();
   var hide = (collapseLink.innerHTML.substr(0,1) == 'H' ? 1 : 0);
-  if ($('.row').results() > 0) {
+  if ($('.row').length > 0) {
     $('.row').gtoggle();
   }
   if (hide) {

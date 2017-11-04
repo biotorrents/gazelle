@@ -439,7 +439,7 @@ $.extend($.validator, {
     },
 
     valid: function() {
-      return this.size() === 0;
+      return this.length === 0;
     },
 
     size: function() {
