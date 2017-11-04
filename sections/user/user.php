@@ -67,7 +67,7 @@ if (check_perms('users_mod')) { // Person viewing is a staff member
       i.DisablePoints,
       i.DisablePromotion,
       i.DisableIRC,
-      i.DisableRequests," . "
+      i.DisableRequests,
       m.FLTokens,
       SHA1(i.AdminComment),
       i.InfoTitle,
@@ -1102,7 +1102,7 @@ if (check_perms('users_mod', $Class)) { ?>
       if ($CurClass['Secondary']) {
         continue;
       }
-      if ($Class === $CurClass['Level']) {
+      if ($Class == $CurClass['Level']) {
         $Selected = ' selected="selected"';
       } else {
         $Selected = '';
