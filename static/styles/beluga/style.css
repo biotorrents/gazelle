@@ -99,6 +99,10 @@ h1,h2 {
   font-size: 23px;
 }
 
+#torrents .header h2 {
+  text-align: center;
+}
+
 h3,h4 {
   font-size: 18px;
 }
@@ -1186,38 +1190,6 @@ span.center_poll {
 
 .nobr {
   white-space: nowrap
-}
-
-form[action="inbox.php"] .box.pad.center {
-  margin: 0;
-  width: 900px;
-  padding: 0;
-  margin-top: 10px!important;
-  background: none!important
-}
-
-form[action="inbox.php"] .box.pad table {
-  background: initial!important
-}
-
-#kb .sidebar .box.pad {
-  margin-top: 2px
-}
-
-#tvnews .head {
-  height: initial
-}
-
-#tvnews .sidebar {
-  margin-top: 27px
-}
-
-#tvschedule td {
-  border: none
-}
-
-#collages td {
-  padding: 3px
 }
 
 #collages .sign,#torrents .sign {

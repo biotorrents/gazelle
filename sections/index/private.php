@@ -131,9 +131,7 @@ if (($Freeleeches = $Cache->get_value('shop_freeleech_list')) === false) {
     SELECT
       TorrentID,
       UNIX_TIMESTAMP(ExpiryTime),
-      Name,
-      NameRJ,
-      NameJP,
+      COALESCE(NULLIF(Name,''), NULLIF(NameRJ,''), NameJP) AS Name,
       WikiImage
     FROM shop_freeleeches AS sf
     LEFT JOIN torrents AS t on sf.TorrentID=t.ID
@@ -150,14 +148,14 @@ if (count($Freeleeches)) {
       <ul class="stats nobullet">
 <?
   for ($i = 0; $i < count($Freeleeches); $i++) {
-    list($ID, $ExpiryTime, $Name, $NameRJ, $NameJP, $Image) = $Freeleeches[$i];
+    list($ID, $ExpiryTime, $Name, $Image) = $Freeleeches[$i];
     if ($ExpiryTime < time()) { continue; }
     $DisplayTime = '('.str_replace(['week','day','hour','min','Just now','s',' '],['w','d','h','m','0m'],time_diff($ExpiryTime, 1, false)).') ';
     $DisplayName = '<a href="torrents.php?torrentid='.$ID.'"';
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
       $DisplayName .= " onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($Image)."\" onmouseleave=\"ungetCover(event)\"";
     }
-    $DisplayName .= '>'.($Name?$Name:($NameRJ?$NameRJ:$NameJP)).'</a>';
+    $DisplayName .= '>'.$Name.'</a>';
 ?>
         <li>
           <strong class="fl_time"><?=$DisplayTime?></strong>
@@ -412,21 +410,21 @@ if ($TopicID) {
 <?    } ?>
         </ul>
         <strong>Votes:</strong> <?=number_format($TotalVotes)?><br />
-<?   } else { ?>
+<?  } else { ?>
         <div id="poll_container">
         <form class="vote_form" name="poll" id="poll" action="">
           <input type="hidden" name="action" value="poll" />
           <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
           <input type="hidden" name="topicid" value="<?=$TopicID?>" />
-<?     foreach ($Answers as $i => $Answer) { ?>
+<?    foreach ($Answers as $i => $Answer) { ?>
           <input type="radio" name="vote" id="answer_<?=$i?>" value="<?=$i?>" />
           <label for="answer_<?=$i?>"><?=display_str($Answers[$i])?></label><br />
-<?     } ?>
+<?    } ?>
           <br /><input type="radio" name="vote" id="answer_0" value="0" /> <label for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br /><br />
           <input type="button" onclick="ajax.post('index.php', 'poll', function(response) { $('#poll_container').raw().innerHTML = response } );" value="Vote" />
         </form>
         </div>
-<?   } ?>
+<?  } ?>
         <br /><strong>Topic:</strong> <a href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>">Visit</a>
       </div>
     </div>

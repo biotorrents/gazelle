@@ -47,7 +47,7 @@ $sql .= "AS Date
     LEFT JOIN users_main AS um2 ON um2.ID = cu.ForwardedTo";
 
 if (!empty($_GET['search']) && $_GET['searchtype'] === 'message') {
-  $sql .=  ' JOIN pm_messages AS m ON c.ID = m.ConvID';
+  $sql .= ' JOIN pm_messages AS m ON c.ID = m.ConvID';
 }
 $sql .= " WHERE ";
 if (!empty($_GET['search'])) {

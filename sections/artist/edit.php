@@ -83,7 +83,7 @@ View::show_header('Edit artist');
     </form>
   </div>
 
-<? /*  <h2>Make into non-redirecting alias</h2>
+<? /* <h2>Make into non-redirecting alias</h2>
   <div class="box pad">
     <form class="merge_form" name="artist" action="artist.php" method="post">
       <input type="hidden" name="action" value="change_artistid" />

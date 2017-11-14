@@ -225,7 +225,7 @@ function user_dupes_table($UserID) {
     }
 ?>
           </tr>
-<?  }  ?>
+<?  } ?>
           <tr>
             <td colspan="5" align="left" style="border-top: thin solid;"><strong>Comments:</strong></td>
           </tr>

@@ -186,7 +186,7 @@ if (empty($ThreadID)) {
           <input type="checkbox" name="forums[]" value="<?=$Forum['ID']?>" data-category="forum_category_<?=$i?>" id="forum_<?=$Forum['ID']?>"<? if (isset($_GET['forums']) && in_array($Forum['ID'], $_GET['forums'])) { echo ' checked="checked"';} ?> />
           <label for="forum_<?=$Forum['ID']?>"><?=htmlspecialchars($Forum['Name'])?></label>
         </td>
-<?   }
+<?  }
   if ($Columns % 5) { ?>
         <td colspan="<?=(5 - ($Columns % 5))?>"></td>
 <?  } ?>

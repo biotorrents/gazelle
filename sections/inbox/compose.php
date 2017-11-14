@@ -3,7 +3,7 @@
 if (empty($Return)) {
   $ToID = $_GET['to'];
 /*
-   if ($ToID == $LoggedUser['ID']) {
+  if ($ToID == $LoggedUser['ID']) {
     error('You cannot start a conversation with yourself!');
     header('Location: ' . Inbox::get_inbox_link());
   }

@@ -28,9 +28,9 @@ $DB->query("
   FROM invites
   WHERE InviterID = '$UserID'
   ORDER BY Expires");
-$Pending =   $DB->to_array();
+$Pending = $DB->to_array();
 
-$OrderWays = array('username', 'email',  'joined', 'lastseen', 'uploaded', 'downloaded', 'ratio');
+$OrderWays = array('username', 'email', 'joined', 'lastseen', 'uploaded', 'downloaded', 'ratio');
 
 if (empty($_GET['order'])) {
   $CurrentOrder = 'id';

@@ -223,7 +223,7 @@ if ($ConvID = (int)$_GET['id']) {
             </optgroup>
           </select>
           <input type="button" onclick="Assign();" value="Assign" />
-<?  } elseif ($IsFLS) {  // FLS assign button ?>
+<?  } elseif ($IsFLS) { // FLS assign button ?>
           <input type="button" value="Assign to staff" onclick="location.href='staffpm.php?action=assign&amp;to=staff&amp;convid=<?=$ConvID?>';" />
           <input type="button" value="Assign to forum staff" onclick="location.href='staffpm.php?action=assign&amp;to=forum&amp;convid=<?=$ConvID?>';" />
 <?

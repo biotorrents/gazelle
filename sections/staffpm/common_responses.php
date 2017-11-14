@@ -11,9 +11,9 @@ View::show_header('Staff PMs', 'staffpm');
   <div class="header">
     <h2>Staff PMs - Manage common responses</h2>
     <div class="linkbox">
-<?   if ($IsStaff) { ?>
+<?  if ($IsStaff) { ?>
       <a href="staffpm.php" class="brackets">View your unanswered</a>
-<?   } ?>
+<?  } ?>
       <a href="staffpm.php?view=unanswered" class="brackets">View all unanswered</a>
       <a href="staffpm.php?view=open" class="brackets">View unresolved</a>
       <a href="staffpm.php?view=resolved" class="brackets">View resolved</a>

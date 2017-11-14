@@ -152,14 +152,14 @@ if (!$debug && $Cache->get_value('jav_json_'.$cn)) {
     'cn'          => $cn,
     'title'       => ($title ? $title : ''),
     'title_jp'    => ($title_jp ? $title_jp : ''),
-    'idols'        => ($idols ? $idols : []),
+    'idols'       => ($idols ? $idols : []),
     'year'        => ($year ? $year : ''),
     'studio'      => ($studio ? $studio : ''),
     'label'       => ($label ? $label : ''),
-    'image'        => ($image ? $image : ''),
-    'description'  => ($desc ? $desc : ''),
-    'tags'         => ($genres ? $genres : []),
-    'screens'      => ($screens ? $screens : []),
+    'image'       => ($image ? $image : ''),
+    'description' => ($desc ? $desc : ''),
+    'tags'        => ($genres ? $genres : []),
+    'screens'     => ($screens ? $screens : []),
     'degraded'    => $degraded
   );
 

@@ -116,9 +116,9 @@ switch ($Action) {
   default:
     $Action = 'torrents';
     $Field1 = 'torrents.GroupID';
-    $Field2 = 'torrents_group.Name';
+    $Field2 = "COALESCE(NULLIF(tg.Name,''),NULLIF(tg.NameRJ,''),tg.NameJP) AS Name";
     $Table = 'torrents';
-    $Join[] = 'JOIN torrents_group ON torrents.GroupID = torrents_group.ID';
+    $Join[] = 'JOIN torrents_group AS tg ON torrents.GroupID = tg.ID';
     if ($Type == 'uploaded') {
       $Conditions[] = "torrents.UserID = $UserID";
       $Conditions[] = 'comments.AddedTime > torrents.Time';

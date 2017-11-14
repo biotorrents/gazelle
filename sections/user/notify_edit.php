@@ -57,15 +57,15 @@ $i = 0;
 foreach ($Notifications as $N) { // $N stands for Notifications
   $i++;
   $NewFilter = $N['ID'] === false;
-  $N['Artists']    = implode(', ', explode('|', substr($N['Artists'], 1, -1)));
-  $N['Tags']      = implode(', ', explode('|', substr($N['Tags'], 1, -1)));
-  $N['NotTags']    = implode(', ', explode('|', substr($N['NotTags'], 1, -1)));
-  $N['ReleaseTypes']   = explode('|', substr($N['ReleaseTypes'], 1, -1));
+  $N['Artists']      = implode(', ', explode('|', substr($N['Artists'], 1, -1)));
+  $N['Tags']         = implode(', ', explode('|', substr($N['Tags'], 1, -1)));
+  $N['NotTags']      = implode(', ', explode('|', substr($N['NotTags'], 1, -1)));
+  $N['ReleaseTypes'] = explode('|', substr($N['ReleaseTypes'], 1, -1));
   $N['Categories']   = explode('|', substr($N['Categories'], 1, -1));
-  $N['Formats']     = explode('|', substr($N['Formats'], 1, -1));
-  $N['Encodings']   = explode('|', substr($N['Encodings'], 1, -1));
-  $N['Media']     = explode('|', substr($N['Media'], 1, -1));
-  $N['Users']     = explode('|', substr($N['Users'], 1, -1));
+  $N['Formats']      = explode('|', substr($N['Formats'], 1, -1));
+  $N['Encodings']    = explode('|', substr($N['Encodings'], 1, -1));
+  $N['Media']        = explode('|', substr($N['Media'], 1, -1));
+  $N['Users']        = explode('|', substr($N['Users'], 1, -1));
 
   $Usernames = '';
   foreach ($N['Users'] as $UserID) {

@@ -34,7 +34,7 @@ View::show_header('Ask the Staff', 'bbcode');
       </span>
     </div>
     <div class="pad">
-<?=      Text::full_format($Question['Question'])?>
+<?=     Text::full_format($Question['Question'])?>
     </div>
   </div>
   <div class="center box pad">

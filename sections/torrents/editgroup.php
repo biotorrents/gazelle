@@ -19,24 +19,6 @@ if (!is_number($GroupID) || !$GroupID) {
 }
 
 // Get the torrent group name and the body of the last revision
-/*
-$DB->query("
-  SELECT
-    tg.Name,
-    wt.Image,
-    wt.Body,
-    tg.WikiImage,
-    tg.WikiBody,
-    tg.Year,
-    tg.RecordLabel,
-    tg.CatalogueNumber,
-    tg.ReleaseType,
-    tg.CategoryID,
-    tg.VanityHouse
-  FROM torrents_group AS tg
-    LEFT JOIN wiki_torrents AS wt ON wt.RevisionID = tg.RevisionID
-  WHERE tg.ID = '$GroupID'");
-  */
 $DB->query("
   SELECT
     tg.Name,
@@ -216,7 +198,7 @@ if ($CategoryID == 1) {
         <tr>
           <td class="label">
 <? if ($CategoryID == 1) {
-    echo "Studio:";
+     echo "Studio:";
    } else {
      echo "Publisher:";
    }

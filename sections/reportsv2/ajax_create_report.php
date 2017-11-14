@@ -2,7 +2,7 @@
 /*
  * This page is for creating a report using AJAX.
  * It should have the following posted fields:
- *   [auth] => AUTH_KEY
+ *  [auth] => AUTH_KEY
  *  [torrentid] => TORRENT_ID
  *  [type] => TYPE
  *  [otherid] => OTHER_ID

@@ -27,7 +27,7 @@ foreach($Answers as $Answer) {
       </span>
     </div>
     <div class="pad">
-<?=      Text::full_format($Answer['Answer'])?>
+<?=     Text::full_format($Answer['Answer'])?>
     </div>
   </div>
 <?

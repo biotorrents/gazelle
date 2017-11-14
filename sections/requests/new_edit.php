@@ -255,9 +255,9 @@ View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'reques
           <td>
             <a href="torrents.php?id=<?=$GroupID?>"><?=site_url()?>torrents.php?id=<?=$GroupID?></a><br />
             This request <?=($NewRequest ? 'will be' : 'is')?> associated with the above torrent group.
-<?    if (!$NewRequest) {  ?>
+<?    if (!$NewRequest) { ?>
             If this is incorrect, please <a href="reports.php?action=report&amp;type=request&amp;id=<?=$RequestID?>">report this request</a> so that staff can fix it.
-<?     }  ?>
+<?    } ?>
             <input type="hidden" name="groupid" value="<?=$GroupID?>" />
           </td>
         </tr>

@@ -1,9 +1,9 @@
 <?
 //******************************************************************************//
 //--------------- Take edit ----------------------------------------------------//
-// This pages handles the backend of the 'edit torrent' function. It checks    //
-// the data, and if it all validates, it edits the values in the database    //
-// that correspond to the torrent in question.                  //
+// This pages handles the backend of the 'edit torrent' function. It checks     //
+// the data, and if it all validates, it edits the values in the database       //
+// that correspond to the torrent in question.                                  //
 //******************************************************************************//
 
 enforce_login();
@@ -16,7 +16,7 @@ $Validate = new VALIDATE;
 //******************************************************************************//
 //--------------- Set $Properties array ----------------------------------------//
 // This is used if the form doesn't validate, and when the time comes to enter  //
-// it into the database.                            //
+// it into the database.                                                        //
 //******************************************************************************//
 
 $Properties=[];

@@ -422,7 +422,7 @@ View::show_header($Title, 'requests');
   </form>
 <?    if (isset($PageLinks)) { ?>
   <div class="linkbox">
-    <?=  $PageLinks?>
+    <?= $PageLinks?>
   </div>
 <?    } ?>
   <table id="request_table" class="request_table border" cellpadding="6" cellspacing="1" border="0" width="100%">
@@ -535,7 +535,7 @@ View::show_header($Title, 'requests');
       </td>
       <td class="nobr">
         <span id="vote_count_<?=$RequestID?>"><?=number_format($VoteCount)?></span>
-<?     if (!$IsFilled && check_perms('site_vote')) { ?>
+<?    if (!$IsFilled && check_perms('site_vote')) { ?>
         &nbsp;&nbsp; <a href="javascript:Vote(0, <?=$RequestID?>)" class="brackets"><strong>+</strong></a>
 <?    } ?>
       </td>

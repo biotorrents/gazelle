@@ -123,7 +123,7 @@ if ($ShowGrouped) {
 
   if ($ShowUnread) {
     $sql .= '
-      AND (  (t.IsLocked = \'0\' OR t.IsSticky = \'1\')
+      AND ( (t.IsLocked = \'0\' OR t.IsSticky = \'1\')
           AND (l.PostID < t.LastPostID OR l.PostID IS NULL)
         ) ';
   }
@@ -218,7 +218,7 @@ if (empty($Results)) {
     <colgroup>
 <?    if (Users::has_avatars_enabled()) { ?>
       <col class="col_avatar" />
-<?     } ?>
+<?    } ?>
       <col class="col_post_body" />
     </colgroup>
     <tr class="colhead_dark">
@@ -248,7 +248,7 @@ if (empty($Results)) {
 <?    if ($ViewingOwn && !in_array($TopicID, $UserSubscriptions)) { ?>
           <a href="#" onclick="Subscribe(<?=$TopicID?>); $('.subscribelink<?=$TopicID?>').remove(); return false;" class="brackets subscribelink<?=$TopicID?>">Subscribe</a>
           &nbsp;
-<?     } ?>
+<?    } ?>
           <a href="#">&uarr;</a>
         </span>
       </td>
@@ -270,7 +270,7 @@ if (empty($Results)) {
           <br />
 <?        if (check_perms('site_moderate_forums')) { ?>
           <a href="#content<?=$PostID?>" onclick="LoadEdit(<?=$PostID?>, 1);">&laquo;</a>
-<?         } ?>
+<?        } ?>
           Last edited by
           <?=Users::format_username($EditedUserID, false, false, false) ?> <?=time_diff($EditedTime, 2, true, true)?>
 <?      } ?>
@@ -281,7 +281,7 @@ if (empty($Results)) {
   $DB->set_query_id($QueryID);
 ?>
   </table>
-<?   } ?>
+<?  } ?>
   <div class="linkbox">
 <?=$Pages?>
   </div>

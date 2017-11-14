@@ -94,13 +94,13 @@ $Pages = Format::get_pages($Page, $NumResults, MESSAGES_PER_PAGE, 9);
   <div class="header">
     <h2><?=$ViewString?> Staff PMs</h2>
     <div class="linkbox">
-<?   if ($IsStaff) { ?>
+<?  if ($IsStaff) { ?>
       <a href="staffpm.php" class="brackets">View your unanswered</a>
-<?   } ?>
+<?  } ?>
       <a href="staffpm.php?view=unanswered" class="brackets">View all unanswered</a>
       <a href="staffpm.php?view=open" class="brackets">View unresolved</a>
       <a href="staffpm.php?view=resolved" class="brackets">View resolved</a>
-<?   if ($IsStaff) { ?>
+<?  if ($IsStaff) { ?>
       <a href="staffpm.php?action=scoreboard" class="brackets">View scoreboard</a>
 <?  } ?>
     </div>
@@ -134,9 +134,9 @@ if (!$DB->has_results()) {
 ?>
       <table class="message_table<?=($ViewString != 'Resolved' && $IsStaff) ? ' checkboxes' : '' ?>">
         <tr class="colhead">
-<?   if ($ViewString != 'Resolved' && $IsStaff) { ?>
+<?  if ($ViewString != 'Resolved' && $IsStaff) { ?>
           <td width="10"><input type="checkbox" onclick="toggleChecks('messageform', this);" /></td>
-<?   } ?>
+<?  } ?>
           <td>Subject</td>
           <td>Sender</td>
           <td>Date</td>
@@ -179,9 +179,9 @@ if (!$DB->has_results()) {
     // Table row
 ?>
         <tr class="row">
-<?     if ($ViewString != 'Resolved' && $IsStaff) { ?>
+<?    if ($ViewString != 'Resolved' && $IsStaff) { ?>
           <td class="center"><input type="checkbox" name="id[]" value="<?=$ID?>" /></td>
-<?     } ?>
+<?    } ?>
           <td><a href="staffpm.php?action=viewconv&amp;id=<?=$ID?>"><?=display_str($Subject)?></a></td>
           <td><?=$UserStr?></td>
           <td><?=time_diff($Date, 2, true)?></td>
@@ -199,7 +199,7 @@ if (!$DB->has_results()) {
   // Close table and multiresolve form
 ?>
       </table>
-<?   if ($ViewString != 'Resolved' && $IsStaff) { ?>
+<?  if ($ViewString != 'Resolved' && $IsStaff) { ?>
       <div class="submit_div">
         <input type="submit" value="Resolve selected" />
       </div>

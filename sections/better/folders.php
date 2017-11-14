@@ -86,7 +86,7 @@ foreach ($TorrentsInfo as $TorrentID => $Info) {
         <?=$DisplayName?>
 <?  if (check_perms('admin_reports')) { ?>
         <a href="better.php?method=folders&amp;remove=<?=$TorrentID?>" class="brackets">X</a>
-<?   } ?>
+<?  } ?>
         <div class="tags"><?=$TorrentTags->format()?></div>
       </td>
     </tr>

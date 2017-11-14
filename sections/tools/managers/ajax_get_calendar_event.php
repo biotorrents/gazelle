@@ -41,7 +41,7 @@ if ($_GET['id']) {
   $Categories = Calendar::$Categories;
   foreach ($Categories as $Key => $Value) {
 ?>
-          <option  value="<?=$Key?>"<?=$Key == $Event['Category'] ? ' selected="selected"' : ''?>><?=$Value?></option>
+          <option value="<?=$Key?>"<?=$Key == $Event['Category'] ? ' selected="selected"' : ''?>><?=$Value?></option>
 <?  } ?>
         </select>
       </td>
@@ -54,7 +54,7 @@ if ($_GET['id']) {
   $Importances = Calendar::$Importances;
   foreach ($Importances as $Key => $Value) {
 ?>
-          <option  value="<?=$Key?>"<?=$Key == $Event['Importance'] ? ' selected="selected"' : ''?>><?=$Value?></option>
+          <option value="<?=$Key?>"<?=$Key == $Event['Importance'] ? ' selected="selected"' : ''?>><?=$Value?></option>
 <?  } ?>
         </select>
       </td>
@@ -67,7 +67,7 @@ if ($_GET['id']) {
   $Teams = Calendar::$Teams;
   foreach ($Teams as $Key => $Value) {
 ?>
-          <option  value="<?=$Key?>"<?=$Key == $Event['Team'] ? ' selected="selected"' : ''?>><?=$Value?></option>
+          <option value="<?=$Key?>"<?=$Key == $Event['Team'] ? ' selected="selected"' : ''?>><?=$Value?></option>
 <?  } ?>
         </select>
       </td>

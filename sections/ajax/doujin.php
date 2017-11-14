@@ -67,28 +67,28 @@ if ($Cache->get_value('doujin_json_'.$gid)) {
   preg_match($re, $gallery_page, $galmatch);
   // were we able to find the first page of the gallery?
   if ($galmatch[1]) {
-	  $image_page = file_get_contents($galmatch[1]);
+    $image_page = file_get_contents($galmatch[1]);
     $re = '/'.preg_quote('"><img id="img" src="').'([^<]*)'.preg_quote('" style=').'/';
-	  preg_match($re, $image_page, $imgmatch);
-	  // were we able to find the image url?
-	  if ($imgmatch[1]) {
-	    $cover = $imgmatch[1];
-	  }
+    preg_match($re, $image_page, $imgmatch);
+    // were we able to find the image url?
+    if ($imgmatch[1]) {
+      $cover = $imgmatch[1];
+    }
   }
 
   $json_str = array(
-    'id' => $gid,
-    'title' => html_entity_decode($json['title'], ENT_QUOTES),
-    'title_jp' => html_entity_decode($json['title_jpn'], ENT_QUOTES),
-    'artists' => $artists,
-    'circle' => $circle,
-    'censored' => $censored,
-    'year' => NULL,
-    'tags' => $tags,
-    'lang' => $lang,
-    'pages' => $json['filecount'],
+    'id'          => $gid,
+    'title'       => html_entity_decode($json['title'], ENT_QUOTES),
+    'title_jp'    => html_entity_decode($json['title_jpn'], ENT_QUOTES),
+    'artists'     => $artists,
+    'circle'      => $circle,
+    'censored'    => $censored,
+    'year'        => NULL,
+    'tags'        => $tags,
+    'lang'        => $lang,
+    'pages'       => $json['filecount'],
     'description' => '',
-    'cover' => $cover
+    'cover'       => $cover
   );
 
   $Cache->cache_value('doujin_json_'.$gid, $json_str, 86400);

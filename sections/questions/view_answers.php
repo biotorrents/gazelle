@@ -78,7 +78,7 @@ View::show_header($UserInfo['Username'] . "'s answers", 'questions,bbcode');
       </span>
     </div>
     <div class="pad">
-<?=      Text::full_format("[quote=" . $Question['Username'] . "]". $Question['Question'] . "[/quote]\n". $Question['Answer'])?>
+<?=     Text::full_format("[quote=" . $Question['Username'] . "]". $Question['Question'] . "[/quote]\n". $Question['Answer'])?>
     </div>
   </div>
 <?  } ?>

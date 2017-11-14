@@ -52,7 +52,7 @@ View::show_header('Staff Tools');
     <div class="permission_subcontainer">
       <table class="layout">
         <tr class="colhead"><td>Administration</td></tr>
-<?=        $ToolsHTML ?>
+<?=       $ToolsHTML ?>
       </table>
     </div>
 <?
@@ -71,7 +71,7 @@ View::show_header('Staff Tools');
     <div class="permission_subcontainer">
       <table class="layout">
         <tr class="colhead"><td>Announcements</td></tr>
-<?=        $ToolsHTML ?>
+<?=       $ToolsHTML ?>
       </table>
     </div>
 <?
@@ -86,7 +86,7 @@ View::show_header('Staff Tools');
     <div class="permission_subcontainer">
       <table class="layout">
         <tr class="colhead"><td>Community</td></tr>
-<?=        $ToolsHTML ?>
+<?=       $ToolsHTML ?>
       </table>
     </div>
 <?
@@ -104,7 +104,7 @@ View::show_header('Staff Tools');
     <div class="permission_subcontainer">
       <table class="layout">
         <tr class="colhead"><td>Finances</td></tr>
-<?=        $ToolsHTML ?>
+<?=       $ToolsHTML ?>
       </table>
     </div>
 <?  } ?>
@@ -124,7 +124,7 @@ View::show_header('Staff Tools');
     <div class="permission_subcontainer">
       <table class="layout">
         <tr class="colhead"><td>Queue</td></tr>
-<?=        $ToolsHTML ?>
+<?=       $ToolsHTML ?>
       </table>
     </div>
 <?
@@ -142,7 +142,7 @@ View::show_header('Staff Tools');
     <div class="permission_subcontainer">
       <table class="layout">
         <tr class="colhead"><td>Managers</td></tr>
-<?=        $ToolsHTML ?>
+<?=       $ToolsHTML ?>
       </table>
     </div>
 <?
@@ -163,7 +163,7 @@ View::show_header('Staff Tools');
     <div class="permission_subcontainer">
       <table class="layout">
         <tr class="colhead"><td>Developer Sandboxes</td></tr>
-<?=        $ToolsHTML ?>
+<?=       $ToolsHTML ?>
       </table>
     </div>
 <?  } ?>
@@ -188,7 +188,7 @@ View::show_header('Staff Tools');
     <div class="permission_subcontainer">
       <table class="layout">
         <tr class="colhead"><td>Site Information</td></tr>
-<?=        $ToolsHTML ?>
+<?=       $ToolsHTML ?>
       </table>
     </div>
 <?
@@ -211,7 +211,7 @@ View::show_header('Staff Tools');
     <div class="permission_subcontainer">
       <table class="layout">
         <tr class="colhead"><td>Torrents</td></tr>
-<?=        $ToolsHTML ?>
+<?=       $ToolsHTML ?>
       </table>
     </div>
 <?
@@ -233,7 +233,7 @@ View::show_header('Staff Tools');
     <div class="permission_subcontainer">
       <table class="layout">
         <tr class="colhead"><td>Development</td></tr>
-<?=        $ToolsHTML ?>
+<?=       $ToolsHTML ?>
       </table>
     </div>
 <?  } ?>

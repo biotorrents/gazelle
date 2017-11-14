@@ -5,7 +5,7 @@
 
 Things to expect in $_GET:
   ForumID: ID of the forum curently being browsed
-  page:  The page the user's on.
+  page: The page the user's on.
   page = 1 is the same as no page
 
 ********************************************************************************/

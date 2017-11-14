@@ -1,9 +1,9 @@
 <?
 //******************************************************************************//
 //--------------- Take mass PM -------------------------------------------------//
-// This pages handles the backend of the 'Send Mass PM' function. It checks      //
-// the data, and if it all validates, it sends a PM to everyone who snatched  //
-// the torrent.                                    //
+// This pages handles the backend of the 'Send Mass PM' function. It checks     //
+// the data, and if it all validates, it sends a PM to everyone who snatched    //
+// the torrent.                                                                 //
 //******************************************************************************//
 
 authorize();

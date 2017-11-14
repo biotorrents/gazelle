@@ -69,7 +69,7 @@ if (!is_array($Info) || !array_key_exists('PlainArtists', $Info) || empty($Info[
       t.Codec,
       tg.Year,
       tg.ID AS GroupID,
-      tg.Name,
+      COALESCE(NULLIF(tg.Name,''), NULLIF(tg.NameRJ,''), tg.NameJP) AS Name,
       tg.WikiImage,
       tg.CategoryID,
       t.Size,

@@ -684,7 +684,7 @@ if (count($Reports) === 0) {
             | <input type="button" value="Unclaim" onclick="GiveBack(<?=$ReportID?>);" />
 <?          } else { ?>
             | <input id="grab<?=$ReportID?>" type="button" value="Claim" onclick="Grab(<?=$ReportID?>);" />
-<?          }  ?>
+<?          } ?>
             | Multi-resolve <input type="checkbox" name="multi" id="multi<?=$ReportID?>" checked="checked" />
             | <input type="button" id="submit_<?=$ReportID?>" value="Submit" onclick="TakeResolve(<?=$ReportID?>);" />
           </td>
@@ -716,7 +716,7 @@ if (count($Reports) === 0) {
         </tr>
 <?          if ($GroupID) { ?>
         <tr>
-          <td  colspan="4" style="text-align: center;">
+          <td colspan="4" style="text-align: center;">
             <input id="grab<?=$ReportID?>" type="button" value="Claim" onclick="Grab(<?=$ReportID?>);" />
           </td>
         </tr>

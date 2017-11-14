@@ -4,7 +4,7 @@
  * It checks for (in order):
  * 1. The usual POST injections, then checks that things.
  * 2. Things that are required by the report type are filled
- *   ('1' in the report_fields array).
+ *    ('1' in the report_fields array).
  * 3. Things that are filled are filled with correct things.
  * 4. That the torrent you're reporting still exists.
  *
@@ -62,7 +62,7 @@ if (!empty($_POST['sitelink'])) {
 
 if (!empty($_POST['link'])) {
   //resource_type://domain:port/filepathname?query_string#anchor
-  //          http://    www      .foo.com                /bar
+  //          http://   www     .foo.com                /bar
   if (preg_match_all('/'.URL_REGEX.'/is', $_POST['link'], $Matches)) {
     $Links = implode(' ', $Matches[0]);
   } else {

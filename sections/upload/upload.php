@@ -120,7 +120,7 @@ $HideDNU = check_perms('torrents_hide_dnu') && !$NewDNU;
       <td width="50%"><strong>Name</strong></td>
       <td><strong>Comment</strong></td>
     </tr>
-<?   $TimeDiff = strtotime('-1 month', strtotime('now'));
+<?  $TimeDiff = strtotime('-1 month', strtotime('now'));
   foreach ($DNU as $BadUpload) {
     list($Name, $Comment, $Updated) = $BadUpload;
 ?>

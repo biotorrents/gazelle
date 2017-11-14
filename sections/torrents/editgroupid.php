@@ -75,7 +75,7 @@ if (empty($_POST['confirm'])) {
 
   $DB->query("
     UPDATE torrents
-    SET  GroupID = '$GroupID'
+    SET GroupID = '$GroupID'
     WHERE ID = $TorrentID");
 
   // Delete old torrent group if it's empty now
