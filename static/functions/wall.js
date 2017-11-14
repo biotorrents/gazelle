@@ -59,7 +59,7 @@ $(function() {
   $('[data-wall-child]').each(function(i, el) {
     wall('#'+el.id, el.attributes['data-wall-child'].value, el.attributes['data-wall-size'].value, el.attributes['data-wall-min']?el.attributes['data-wall-min']:false)
     var sel = '#'+el.id+' '+el.attributes['data-wall-child'].value+' img'
-    $(sel).load(function() {
+    $(sel).on('load', function() {
       var test = true;
       $(sel).each(function(j, img) {
         if (!img.complete) test = false
