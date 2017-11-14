@@ -29,7 +29,7 @@ $DB->query("
   WHERE ID = $RequestID");
 list($Filled) = $DB->next_record();
 
-if ($LoggedUser['BytesUploaded'] >= $Amount && $Filled === '0') {
+if ($LoggedUser['BytesUploaded'] >= $Amount && empty($Filled)) {
 
   // Create vote!
   $DB->query("
