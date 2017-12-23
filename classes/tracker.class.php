@@ -30,7 +30,7 @@ class Tracker {
 
     $Err = false;
     if (self::send_request($Get, $MaxAttempts, $Err) === false) {
-      send_irc("PRIVMSG #tracker :$MaxAttempts $Err $Get");
+      send_irc("PRIVMSG " . BOT_DEBUG_CHAN . " :$MaxAttempts $Err $Get");
       if (G::$Cache->get_value('ocelot_error_reported') === false) {
         send_irc('PRIVMSG ' . ADMIN_CHAN . " :Failed to update ocelot: $Err : $Get");
         G::$Cache->cache_value('ocelot_error_reported', true, 3600);
