@@ -49,8 +49,8 @@ $Properties['AudioFormat'] = $_POST['audioformat'];
 $Properties['Subbing'] = $_POST['sub'];
 $Properties['Language'] = $_POST['lang'];
 $Properties['Subber']= $_POST['subber'];
-$Properties['Censored'] = (isset($_POST['censored'])) ? 1 : 0;
-$Properties['Anonymous'] = (isset($_POST['anonymous'])) ? 1 : 0;
+$Properties['Censored'] = (isset($_POST['censored'])) ? '1' : '0';
+$Properties['Anonymous'] = (isset($_POST['anonymous'])) ? '1' : '0';
 $Properties['Archive'] = (isset($_POST['archive']) && $_POST['archive'] != '---') ? $_POST['archive'] : '';
 
 if ($_POST['album_desc']) {

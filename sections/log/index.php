@@ -105,7 +105,7 @@ while (list($ID, $Message, $LogTime) = $DB->next_record()) {
             $UserID = $MessageParts[++$i];
           }
           $URL = "user $UserID (<a href=\"user.php?id=$UserID\">".substr($MessageParts[++$i], 1, -1).'</a>)';
-        } elseif (in_array($MessageParts[$i - 1], array('deleted', 'uploaded', 'edited', 'created', 'recovered'))) {
+        } elseif (in_array($MessageParts[$i - 1], ['deleted', 'uploaded', 'edited', 'created', 'recovered'])) {
           $User = $MessageParts[++$i];
           if (substr($User, -1) == ':') {
             $User = substr($User, 0, -1);
@@ -115,15 +115,21 @@ while (list($ID, $Message, $LogTime) = $DB->next_record()) {
             $DB->query("
               SELECT ID
               FROM users_main
-              WHERE Username = _utf8 '" . db_string($User) . "'
-              COLLATE utf8_bin");
+              WHERE Username = ?", $User);
             list($UserID) = $DB->next_record();
             $Usernames[$User] = $UserID ? $UserID : '';
           } else {
             $UserID = $Usernames[$User];
           }
-          $DB->set_query_id($Log);
           $URL = $Usernames[$User] ? "<a href=\"user.php?id=$UserID\">$User</a>".($Colon ? ':' : '') : $User;
+          if (in_array($MessageParts[$i - 2], ['uploaded', 'edited'])) {
+            $DB->query("SELECT UserID, Anonymous FROM torrents WHERE ID = ?", $MessageParts[1]);
+            if ($DB->has_results()) {
+              list($UploaderID, $AnonTorrent) = $DB->next_record();
+              if ($AnonTorrent && $UploaderID == $UserID) $URL = '<em>Anonymous</em>';
+            }
+          }
+          $DB->set_query_id($Log);
         }
         $Message = "$Message by $URL";
         break;
