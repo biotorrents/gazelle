@@ -69,27 +69,7 @@ View::show_header('Edit torrent', 'upload,torrent');
 
 $TorrentForm = new TORRENT_FORM($Properties, $Err, false);
 
-$TorrentForm->head();
-switch ($UploadForm) {
-  case 'Movies':
-    $TorrentForm->movies_form('');
-    break;
-  case 'Anime':
-    $TorrentForm->anime_form('');
-    break;
-  case 'Manga':
-    $TorrentForm->manga_form('');
-    break;
-  case 'Games':
-    $TorrentForm->game_form('');
-    break;
-  case 'Other':
-    $TorrentForm->simple_form();
-    break;
-  default:
-    $TorrentForm->movies_form('');
-}
-$TorrentForm->foot();
+$TorrentForm->upload_form();
 
 if (check_perms('torrents_edit') || check_perms('users_mod')) {
 ?>
@@ -177,7 +157,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) {
       <tr>
         <td class="label">Change category</td>
         <td>
-          <select id="newcategoryid" name="newcategoryid" onchange="ChangeCategory(this.value);">
+          <select id="newcategoryid" name="newcategoryid">
 <?    foreach ($Categories as $CatID => $CatName) { ?>
             <option value="<?=($CatID + 1)?>"<?Format::selected('CategoryID', $CatID + 1, 'selected', $Properties)?>><?=($CatName)?></option>
 <?    } ?>

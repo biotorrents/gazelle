@@ -37,10 +37,6 @@ if (!in_array($UserID, $UserExceptions) && isset($_GET['action']) && in_array($_
 
 switch ($_GET['action']) {
   // things that (may be) used on the site
-  case 'upload_section':
-    // Gets one of the upload forms
-    require(SERVER_ROOT . '/sections/ajax/upload.php');
-    break;
   case 'preview':
     require('preview.php');
     break;

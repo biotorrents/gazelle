@@ -7,48 +7,102 @@ function DisplayTrans() {
 }
 
 function Categories() {
-  var save = {};
-  var form_elements = $('#dynamic_form input[name], #dynamic_form select, #dynamic_form textarea');
-  for (var i = 0; i < form_elements.length; i++) {
-    if (["Preview", "---", ""].indexOf(form_elements[i].value) == -1) {
-      if (form_elements[i].name.slice(-1) == '[]') {
-        save[form_elements[i].name] = save[form_elements[i].name] || new Array()
-        save[form_elements[i].name][form_elements[i].id.slice(form_elements[i].id.search(/[0-9]/))] = form_elements[i].value
-      } else if (form_elements[i].type == 'checkbox') {
-        save[form_elements[i].name] = form_elements[i].checked;
-      } else {
-        save[form_elements[i].name] = form_elements[i].value;
-      }
-    }
+  let def = ['title', 'title_rj', 'title_jp', 'year', 'lang', 'censored', 'tags', 'cover', 'group_desc', 'release_desc', 'anon']
+  let cats = [{
+    'javdb': {},
+    'idols': {name: 'Idol(s)'},
+    'studio': {name: 'Studio'},
+    'series': {name: 'Series'},
+    'media': {},
+    'container': {},
+    'codec': {},
+    'resolution': {},
+    'audio': {},
+    'sub': {},
+    'mediainfo': {},
+    'screenshots': {name: 'Screenshots'},
+    'group_desc': {notes: 'Contains information such as a description of the movie, a link to a JAV catalogue, etc.'},
+    'release_desc': {notes: 'Contains information such as encoder settings or watermarks'}
+  }, {
+    'anidb': {},
+    'idols': {name: 'Artist/Studio'},
+    'studio': false,
+    'series': {name: 'Circle (Optional)'},
+    'media': {},
+    'container': {},
+    'codec': {},
+    'resolution': {},
+    'audio': {},
+    'sub': {},
+    'mediainfo': {},
+    'tags': {notes: 'Remember to use the \'3d\' tag if your upload is 3DCG!'},
+    'screenshots': {name: 'Screenshots'},
+    'group_desc': {notes: 'Contains information such as a description of the anime, a link to AniDB, etc.'},
+    'release_desc': {notes: 'Contains information such as encoder settings or episode source differences'}
+  }, {
+    'ehentai': {},
+    'idols': {name: 'Artist'},
+    'studio': {name: 'Publisher (Optional)'},
+    'series': {name: 'Circle (Optional)'},
+    'pages': {},
+    'media_manga': {},
+    'archive_manga': {},
+    'trans': {name: 'Translation Group (optional)'},
+    'screenshots': {name: 'Samples'},
+    'group_desc': {notes: 'Contains information such as a description of the doujin.'},
+    'release_desc': {notes: 'Contains information such as formatting information.'}
+  }, {
+    'idols': {name: 'Developer'},
+    'series': {name: 'Circle (Optional)'},
+    'studio': {name: 'Publisher (Optional)'},
+    'dlsite': {},
+    'media_games': {},
+    'container_games': {},
+    'archive': {},
+    'trans': {name: 'Translation/Release Group (optional)'},
+    'tags': {notes: 'Tags you should consider, if appropriate: <strong>visual.novel</strong>, <strong>nukige</strong>'},
+    'screenshots': {name: 'Screenshots', notes: '<strong class="important_text">Promotional materials from a game\'s store page are NOT screenshots</strong>'},
+    'group_desc': {notes: 'Contains information such as a description of the game, its mechanics, etc.'},
+    'release_desc': {notes: 'Contains information such as <strong>version</strong>, install instructions, patching instructions, etc.'}
+  }, {
+    'idols': {name: 'Creators/Authors (Optional)'},
+    'studio': {name: 'Publisher (Optional)'},
+    'year': false,
+    'lang': false,
+    'dlsite': {},
+    'screenshots': {name: 'Screenshots'},
+    'release_desc': false
+  }]
+  let active = {}
+  for (let field of def) active[field] = {}
+  let category = 0
+  if ($('input[name="type"]').raw()) category = $('input[name="type"]').raw().value
+  if ($('#categories').raw()) category = $('#categories').raw().value
+  active = Object.assign(active, cats[category])
+
+  let hide = el => {
+    Array.from($(`#${el.id} input, #${el.id} select, #${el.id} textarea`)).forEach(inp => inp.disabled = true)
+    $(el).ghide()
+  }
+  let show = el => {
+    Array.from($(`#${el.id} input, #${el.id} select, #${el.id} textarea`)).forEach(inp => inp.disabled = false)
+    $(el).gshow()
   }
 
-  ajax.get('ajax.php?action=upload_section&categoryid=' + $('#categories').raw().value, function (response) {
-    $('#dynamic_form').raw().innerHTML = response;
-    initMultiButtons();
-    // Evaluate the code that generates previews.
-    eval($('#dynamic_form script.preview_code').html());
-
-    for (i in save) {
-      if (Array.isArray(save[i])) {
-        for (j in save[i]) {
-          if (!($('#'+i.slice(0,-2)+'_'+j).raw())) AddArtistField()
-          $('#'+i.slice(0,-2)+'_'+j).raw().value = save[i][j]
-        }
-      } else if (typeof(save[i]) == 'boolean') {
-        if ($('[name="'+i+'"]').raw()) $('[name="'+i+'"]').raw().checked = save[i]
-      } else {
-        if ($('[name="'+i+'"]').raw()) $('[name="'+i+'"]').raw().value = save[i]
+  let trs = $('#dynamic_form tr')
+  for (let tr of trs) {
+    let field = tr.id.slice(0,-3)
+    if (active[field]) {
+      if (active[field].name) {
+        tr.children[0].innerHTML = active[field].name
       }
+      let notes = $(`#${tr.id} p.notes`).raw()
+      if (notes) notes.innerHTML = active[field].notes||''
+      show(tr)
+    } else {
+      hide(tr)
     }
-    if ($('#categories').raw().value == "1") DisplayTrans()
-    if ($('#ressel').raw() && $('#ressel').raw().value == "Other") {
-      $('#resolution').raw().readOnly = false
-      $('#resolution').gshow()
-    }
-    initAutocomplete()
-    initAutofill()
-    $('.bbcode_editor').each(function(i, el) { BBEditor(el) })
-  });
+  }
 }
 
 function Bitrate() {
@@ -385,7 +439,7 @@ function JavAutofill() {
               image: 'image',
               tags: 'tags',
               description: 'album_desc' }
-  var cn = $('#catalogue').raw().value.toUpperCase()
+  var cn = $('#javdb_tr #catalogue').raw().value.toUpperCase()
   $.getJSON('/ajax.php?action=javfill&cn='+cn, function(data) {
     if (data.status != "success") {
       $('#catalogue').raw().value = 'Failed'
@@ -428,7 +482,7 @@ function DoujAutofill() {
               circle: 'series',
               pages: 'pages',
               description: 'release_desc' }
-  var nh = $('#catalogue').raw().value
+  var nh = $('#ehentai_tr #catalogue').raw().value
   $.getJSON('/ajax.php?action=doujin&url='+nh, function(data) {
     if (data.status != "success") {
       $('#catalogue').raw().value = 'Failed'
@@ -527,6 +581,7 @@ function initAutofill() {
 }
 
 $(function() {
+  Categories();
   initAutofill();
   $(document).on('click', '.add_artist_button', AddArtistField);
   $(document).on('click', '.remove_artist_button', RemoveArtistField);

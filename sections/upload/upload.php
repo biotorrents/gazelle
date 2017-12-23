@@ -137,32 +137,7 @@ $HideDNU = check_perms('torrents_hide_dnu') && !$NewDNU;
   </table>
 </div><?=($HideDNU ? '<br />' : '')?>
 <?
-$TorrentForm->head();
-switch ($UploadForm) {
-  case 'Movies':
-    $TorrentForm->movies_form($GenreTags);
-    break;
-  case 'Anime':
-    $TorrentForm->anime_form($Properties['CategoryID']);
-    break;
-  case 'Manga':
-    $TorrentForm->manga_form();
-    break;
-  case 'Games':
-    $TorrentForm->game_form($Properties['CategoryID']);
-    break;
-  case 'Other':
-    $TorrentForm->simple_form($Properties['CategoryID']);
-    break;
-  default:
-    $TorrentForm->movies_form($GenreTags);
-}
-$TorrentForm->foot();
-?>
-<script type="text/javascript">
-  //Format();
-  //Bitrate();
-</script>
-<?
+$TorrentForm->upload_form();
+
 View::show_footer();
 ?>
