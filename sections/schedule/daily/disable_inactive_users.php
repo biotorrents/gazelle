@@ -9,8 +9,8 @@ if (apcu_exists('DBKEY')) {
       JOIN users_main AS um ON um.ID = ui.UserID
       LEFT JOIN users_levels AS ul ON ul.UserID = um.ID AND ul.PermissionID = '".CELEB."'
     WHERE um.PermissionID IN ('".USER."', '".MEMBER ."')
-      AND um.LastAccess < '".time_minus(3600 * 24 * 110, true)."'
-      AND um.LastAccess > '".time_minus(3600 * 24 * 111, true)."'
+      AND um.LastAccess < (NOW() - INTERVAL 110 DAY)
+      AND um.LastAccess > (NOW() - INTERVAL 111 DAY)
       AND um.LastAccess IS NOT NULL
       AND ui.Donor = '0'
       AND um.Enabled != '2'
@@ -28,7 +28,7 @@ if (apcu_exists('DBKEY')) {
       JOIN users_main AS um ON um.ID = ui.UserID
       LEFT JOIN users_levels AS ul ON ul.UserID = um.ID AND ul.PermissionID = '".CELEB."'
     WHERE um.PermissionID IN ('".USER."', '".MEMBER ."')
-      AND um.LastAccess < '".time_minus(3600 * 24 * 30 * 4)."'
+      AND um.LastAccess < (NOW() - INTERVAL 120 DAY)
       AND um.LastAccess IS NOT NULL
       AND ui.Donor = '0'
       AND um.Enabled != '2'

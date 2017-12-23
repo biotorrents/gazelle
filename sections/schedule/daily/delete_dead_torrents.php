@@ -12,9 +12,9 @@ $DB->query("
   FROM torrents AS t
     JOIN torrents_group AS tg ON tg.ID = t.GroupID
   WHERE
-    (t.last_action < '".time_minus(3600 * 24 * 28)."' AND t.last_action IS NOT NULL)
+    (t.last_action < (NOW() - INTERVAL 28 DAY) AND t.last_action IS NOT NULL)
     OR
-    (t.Time < '".time_minus(3600 * 24 * 2)."' AND t.last_action IS NULL)");
+    (t.Time < (NOW() - INTERVAL 2 DAY) AND t.last_action IS NULL)");
 $Torrents = $DB->to_array(false, MYSQLI_NUM, false);
 echo 'Found '.count($Torrents)." inactive torrents to be deleted.\n";
 
