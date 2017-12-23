@@ -243,7 +243,7 @@ foreach ($GroupIDs as $GroupID) {
 <?  if (!$WikiImage) {
       $WikiImage = STATIC_SERVER.'common/noartwork/nocover.png';
     } ?>
-            <img class="tooltip_interactive" src="<?=ImageTools::process($WikiImage, true)?>" alt="<?=$DisplayName?>" title="<?=$DisplayName?> <br /> <?=$Tags?>" data-title-plain="<?="$DisplayName ($PlainTags)"?>" width="100%" />
+            <img class="tooltip_interactive" src="<?=ImageTools::process($WikiImage, true)?>" alt="<?=$DisplayName?>" title="<?=$DisplayName?> <br /> <div class='tags'><?=$Tags?></div>" data-title-plain="<?="$DisplayName ($PlainTags)"?>" width="100%" />
           </a>
         </div>
 <?
@@ -410,8 +410,8 @@ foreach ($ZIPOptions as $Option) {
     </div>
     <div class="box box_tags">
       <div class="head"><strong>Top Tags</strong></div>
-      <div class="pad">
-        <ol style="padding-left: 5px;">
+      <div class="pad tags">
+        <ol style="padding-left: 5px">
 <?
         Tags::format_top(5, 'collages.php?action=search&amp;tags=');
 ?>

@@ -918,11 +918,8 @@ a[rel="noreferrer"] img[style="max-width: 500px;"] {
 blockquote div[style="margin:20px; margin-top:5px"] {
   margin:5px 0 0!important;
 }
-table#collage_table td {
-  min-width:20%!important;display:table-cell;float:left
-}
 table#collage_table {
-  max-width:100%;display:table;position:relative;margin:0 auto;text-align:center;width:100%
+  max-width:100%;text-align:center;width:100%
 }
 table#collage_table img {
   min-width:100%
