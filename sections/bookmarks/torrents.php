@@ -363,7 +363,7 @@ if ($CollageCovers !== 0) { ?>
 ?>
       </div>
       <script>
-        $('.collage_image img').load(function() {
+        $('.collage_image img').on('load', function() {
           var test = true
           $('.collage_image img').toArray().forEach(function(el) {
             if (!el.complete) test = false
