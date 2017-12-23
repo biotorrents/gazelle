@@ -1600,6 +1600,16 @@ CREATE TABLE `users_push_notifications` (
   PRIMARY KEY (`UserID`)
 ) ENGINE=InnoDB CHARSET=utf8;
 
+CREATE TABLE `users_seedtime` (
+  `UserID` int(10) unsigned NOT NULL,
+  `TorrentID` int(10) unsigned NOT NULL,
+  `SeedTime` int(10) unsigned NOT NULL DEFAULT '0',
+  `Uploaded` bigint(20) NOT NULL DEFAULT '0',
+  `LastUpdate` datetime NOT NULL,
+  `Downloaded` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`UserID`,`TorrentID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `users_sessions` (
   `UserID` int(10) NOT NULL,
   `SessionID` char(64) NOT NULL,
@@ -1793,3 +1803,21 @@ INSERT INTO forums_categories (ID, Sort, Name) VALUES (10,10,'Help');
 INSERT INTO forums_categories (ID, Sort, Name) VALUES (8,8,'Music');
 
 INSERT INTO forums_categories (ID, Sort, Name) VALUES (20,20,'Trash');
+
+DELIMITER ;;
+CREATE TRIGGER update_seedtime
+  AFTER UPDATE ON `xbt_files_users`
+  FOR EACH ROW BEGIN
+    IF ( (OLD.timespent < NEW.timespent) AND (OLD.active = 1) AND (NEW.active = 1) ) THEN
+      INSERT INTO users_seedtime
+        (UserID, TorrentID, SeedTime, Uploaded, Downloaded, LastUpdate)
+        VALUES
+        (NEW.uid, NEW.fid, NEW.timespent, NEW.uploaded, NEW.downloaded, NOW())
+        ON DUPLICATE KEY UPDATE
+          SeedTime = SeedTime + (NEW.timespent - OLD.timespent),
+          Uploaded = Uploaded + (NEW.uploaded - OLD.uploaded),
+          Downloaded = Downloaded + (NEW.downloaded - OLD.downloaded),
+          LastUpdate = NOW();
+    END IF;
+  END;;
+DELIMITER ;
