@@ -311,6 +311,7 @@ function getCover(event) {
   $('#coverCont img')[0].src = image?image:'/static/common/noartwork/nocover.png'
   coverCont.className = (event.clientX > (window.innerWidth/2)) ? 'left' : 'right'
   coverCont.style.display = 'block'
+/*
   //Preload next image
   if ($('.torrent_table, .request_table').length > 0) {
     var as = $('[data-cover]')
@@ -318,6 +319,7 @@ function getCover(event) {
     preload((as[as.toArray().indexOf(a)+1]||as[0]).attributes['data-cover'].value)
     preload((as[as.toArray().indexOf(a)-1]||as[0]).attributes['data-cover'].value)
   }
+*/
 }
 function ungetCover(event) {
   $('#coverCont img').remove()
@@ -331,11 +333,12 @@ if (typeof NodeList.prototype.forEach !== 'function') {
 }
 
 $(function() {
+/*
   if ($('.request_table').length > 0) {
     var a = $('[data-cover]')[0]
     if (a) preload(a.attributes['data-cover'].value)
   }
-
+*/
   document.querySelectorAll('[data-toggle-target]').forEach(function(el) {
     el.addEventListener('click', function(event) {
       $(el.attributes['data-toggle-target'].value).gtoggle()

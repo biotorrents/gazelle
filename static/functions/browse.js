@@ -280,9 +280,11 @@ $(function() {
     var els = $('#torrent_table.grouping .colhead td:first-child(), #torrent_table.grouping .colhead_dark td:first-child(), #torrent_table.grouping .torrent td:first-child()')
     for (var i = 0; i < els.length; i++) { els[i].style.display = 'none' }
   }
+/*
   //Preload first result's cover
   if ($('#torrent_table').length > 0) {
     var a = $('a[data-cover]')[0]
     if (a) preload(a.attributes['data-cover'].value)
   }
+ */
 })
