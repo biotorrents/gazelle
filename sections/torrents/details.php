@@ -777,7 +777,7 @@ if (count($PersonalCollages) > 0) {
       <div class="body torrent_screenshots hidden">
 <?
     foreach($Screenshots as $Screenshot) {
-      $SSURL = ImageTools::process($Screenshot['Image'], false);
+      $SSURL = ImageTools::process($Screenshot['Image']);
       if (check_perms('users_mod')) {
         ?><img class='tooltip lightbox-init' title='<?=Users::format_username($Screenshot['UserID'], false, false, false)?> - <?=time_diff($Screenshot['Time'])?>' src="<?=$SSURL?>" /><?
       } else {
