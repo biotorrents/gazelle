@@ -28,31 +28,21 @@ if (!empty($Groups[$GroupID])) {
       <td>Info</td>
     </tr>
 <?
-  $AnonTorrents = [];
+  $DB->query("SELECT UserID FROM torrents WHERE GroupID = ? AND Anonymous='1'", $GroupID);
+  $AnonUsers = $DB->collect("UserID");
   $Log = $DB->query("
       SELECT TorrentID, UserID, Info, Time
       FROM group_log
-      WHERE GroupID = $GroupID
-      ORDER BY Time DESC");
+      WHERE GroupID = ?
+      ORDER BY Time DESC", $GroupID);
   $LogEntries = $DB->to_array(false, MYSQLI_NUM);
   foreach ($LogEntries AS $LogEntry) {
     list($TorrentID, $UserID, $Info, $Time) = $LogEntry;
-    if (!isset($AnonTorrents[$TorrentID])) {
-      $DB->query("SELECT UserID, Anonymous FROM torrents WHERE ID=$TorrentID");
-      list($AnonUser, $IsAnon) = $DB->next_record();
-      $AnonTorrents[$TorrentID] = $IsAnon ? $AnonUser : -1;
-    }
 ?>
     <tr class="row">
       <td><?=$Time?></td>
 <?
       if ($TorrentID != 0) {
-      /*
-        $DB->query("
-          SELECT Media, Format, Encoding
-          FROM torrents
-          WHERE ID = $TorrentID");
-      */
         $DB->query("
           SELECT Container, AudioFormat, Media
           FROM torrents
@@ -64,11 +54,11 @@ if (!empty($Groups[$GroupID])) {
           <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a></td><?
         } else { ?>
           <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a> (<?=$Container?>/<?=$AudioFormat?>/<?=$Media?>)</td>
-<?        }
+<?      }
       } else { ?>
         <td></td>
-<?      } ?>
-      <td><?=($UserID == $AnonTorrents[$TorrentID])?'Anonymous':Users::format_username($UserID, false, false, false)?></td>
+<?    } ?>
+      <td><?=in_array($UserID, $AnonUsers)?'Anonymous':Users::format_username($UserID, false, false, false)?></td>
       <td><?=$Info?></td>
     </tr>
 <?
