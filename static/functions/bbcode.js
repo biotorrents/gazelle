@@ -70,8 +70,6 @@ function BBEditor(box) {
 }
 
 $(function() {
-  $('.bbcode_editor').each(function(i, el) { BBEditor(el) })
-  $('.spoilerButton').each(function(i, el) {
-    el.addEventListener("click", ()=>BBSpoiler(el))
-  })
+  $('.bbcode_editor').each((i, el) => BBEditor(el))
+  $(document).on('click', '.spoilerButton', e=>BBSpoiler(e.target))
 })
