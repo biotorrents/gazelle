@@ -118,9 +118,9 @@ if (!empty($_GET['tags'])) {
       if (empty($Tag)) {
         continue;
       }
-      $TagList[] = "CONCAT(' ', tg.TagList, ' ') NOT LIKE '% ".db_string($Tag)." %'";
+      $TagList[] = "tg.TagList NOT RLIKE '[[:<:]]".db_string($Tag)."(:[^ ]+)?[[:>:]]'";
     } else {
-      $TagList[] = "CONCAT(' ', tg.TagList, ' ') LIKE '% ".db_string($Tag)." %'";
+      $TagList[] = "tg.TagList RLIKE '[[:<:]]".db_string($Tag)."(:[^ ]+)?[[:>:]]'";
     }
   }
   if (!empty($TagList)) {
