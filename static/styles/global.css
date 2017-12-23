@@ -932,3 +932,7 @@ input[type="search"] {
 .hidden {
   display: none;
 }
+
+form.edit_form[name=screenshots_form] input[type=text], form.edit_form[name=screenshots_form] img {
+  width: 400px;
+}
