@@ -378,12 +378,12 @@ StoreText.prototype = {
 
 $(document).ready(function() {
   var fadeSpeed = 0
-  var avatars = new Array()
+  var avatars = []
   $(".double_avatar").each(function() {
     if ($(this).data("gazelle-second-avatar")) {
       var secondAvatar = $(this).data("gazelle-second-avatar")
       var originalAvatar = $(this).attr("src")
-      if ($.inArray(secondAvatar, avatars) == -1) {
+      if (!avatars.includes(secondAvatar)) {
         avatars.push(secondAvatar)
         image = new Image()
         image.src = secondAvatar
@@ -403,7 +403,6 @@ $(document).ready(function() {
               par.raw().style.height = par.height()+'px'
           }
       })
-      if (this.complete) $(this).load()
     }
 
   })
