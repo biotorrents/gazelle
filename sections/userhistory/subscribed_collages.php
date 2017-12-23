@@ -76,7 +76,7 @@ if (!$NumResults) {
   $ShowGroups = 0;
 
   foreach ($CollageSubs as $Collage) {
-    unset($TorrentTable);
+    $TorrentTable = '';
 
     list($CollageID, $CollageName, $CollageSize, $LastVisit) = $Collage;
     $RS = $DB->query("
@@ -104,18 +104,14 @@ if (!$NumResults) {
       $Group = $TorrentList[$GroupID];
       extract(Torrents::array_group($Group));
 
-      $DisplayName = '';
-
       $TorrentTags = new Tags($TagList);
 
-      if (!empty($ExtendedArtists[1]) || !empty($ExtendedArtists[4]) || !empty($ExtendedArtists[5]) || !empty($ExtendedArtists[6])) {
-        unset($ExtendedArtists[2]);
-        unset($ExtendedArtists[3]);
-        $DisplayName .= Artists::display_artists($ExtendedArtists);
-      } elseif (count($Artists) > 0) {
-        $DisplayName .= Artists::display_artists(array('1' => $Artists));
+      $DisplayName = '';
+
+      if (isset($Artists)) {
+        $DisplayName .= '<div class="torrent_artists">'.Artists::display_artists($Artists).'</div> ';
       }
-      $DisplayName .= "<a href=\"torrents.php?id=$GroupID\" class=\"tooltip\" title=\"View torrent group\" ";
+      $DisplayName .= "<a class=\"torrent_title\" href=\"torrents.php?id=$GroupID\" ";
       if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
         $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($WikiImage)."\" onmouseleave=\"ungetCover(event)\" ";
       }
@@ -151,7 +147,7 @@ if (!$NumResults) {
         foreach ($Torrents as $TorrentID => $Torrent) {
           $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : '';
 ?>
-  <tr class="group_torrent groupid_<?=$CollageID?>_<?=$GroupID?> edition_<?=$EditionID?> hidden<?=$SnatchedTorrentClass . $SnatchedGroupClass?>">
+  <tr class="group_torrent groupid_<?=$CollageID?>_<?=$GroupID?> hidden<?=$SnatchedTorrentClass . $SnatchedGroupClass?>">
     <td colspan="3">
       <span>
         <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>" title="Download" class="brackets tooltip">DL</a>
@@ -170,7 +166,7 @@ if (!$NumResults) {
 
         list($TorrentID, $Torrent) = each($Torrents);
 
-        $DisplayName = "<a href=\"torrents.php?id=$GroupID\" class=\"tooltip\" title=\"View torrent group\" ";
+        $DisplayName = "<a class=\"torrent_title\" href=\"torrents.php?id=$GroupID\" ";
         if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
           $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($WikiImage)."\" onmouseleave=\"ungetCover(event)\" ";
         }
