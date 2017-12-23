@@ -42,7 +42,7 @@ $ChangeLog = $DB->to_array();
 $DB->query('SELECT FOUND_ROWS()');
 list($NumResults) = $DB->next_record();
 
-View::show_header('Gazelle Change Log', 'datetime_picker', 'datetime_picker');
+View::show_header('Gazelle Change Log');
 ?>
 <div class="thin">
   <h2>Gazelle Change Log</h2>
@@ -69,7 +69,7 @@ View::show_header('Gazelle Change Log', 'datetime_picker', 'datetime_picker');
         <div class="field_div" id="cl_date">
           <span class="label">Date:</span>
           <br />
-          <input type="text" class="date_picker" name="date" />
+          <input type="text" name="date" placeholder="YYYY-MM-DD" pattern="[1-2][0-9]{3}-[0-9]{2}-[0-9]{2}">
         </div>
         <div class="field_div" id="cl_author">
           <span class="label">Author:</span>

@@ -85,7 +85,7 @@ if (!empty($_GET['threadid']) && is_number($_GET['threadid'])) {
 }
 
 // Let's hope we got some results - start printing out the content.
-View::show_header('Forums &gt; Search', 'bbcode,forum_search,datetime_picker', 'datetime_picker');
+View::show_header('Forums &gt; Search', 'bbcode,forum_search');
 ?>
 <div class="thin">
   <div class="header">
@@ -110,9 +110,9 @@ View::show_header('Forums &gt; Search', 'bbcode,forum_search,datetime_picker', '
         <td><strong>Topic created:</strong></td>
         <td>
           After:
-          <input type="text" class="date_picker" name="thread_created_after" id="thread_created_after" value="<?=$ThreadAfterDate?>" />
+          <input type="text" name="thread_created_after" id="thread_created_after" placeholder="YYYY-MM-DD" pattern="[1-2][0-9]{3}-[0-9]{2}-[0-9]{2}" value="<?=$ThreadAfterDate?>" />
           Before:
-          <input type="text" class="date_picker" name="thread_created_before" id="thread_created_before" value="<?=$ThreadBeforeDate?>" />
+          <input type="text" name="thread_created_before" id="thread_created_before" placeholder="YYYY-MM-DD" pattern="[1-2][0-9]{3}-[0-9]{2}-[0-9]{2}" value="<?=$ThreadBeforeDate?>" />
         </td>
       </tr>
 <?
