@@ -44,7 +44,7 @@ if (!$ClassDistribution = $Cache->get_value('class_distribution')) {
 }
 if (!$PlatformDistribution = $Cache->get_value('platform_distribution')) {
   $DB->query("
-    SELECT OperatingSystem, COUNT(UserID) AS Users
+    SELECT OperatingSystem, COUNT(DISTINCT UserID) AS Users
     FROM users_sessions
     GROUP BY OperatingSystem
     ORDER BY Users DESC");
@@ -55,7 +55,7 @@ if (!$PlatformDistribution = $Cache->get_value('platform_distribution')) {
 
 if (!$BrowserDistribution = $Cache->get_value('browser_distribution')) {
   $DB->query("
-    SELECT Browser, COUNT(UserID) AS Users
+    SELECT Browser, COUNT(DISTINCT UserID) AS Users
     FROM users_sessions
     GROUP BY Browser
     ORDER BY Users DESC");
