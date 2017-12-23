@@ -188,3 +188,11 @@ function Vote(amount, requestid) {
     }
   );
 }
+
+$(() => {
+  $('.torrent_screenshots_box > .head > a[data-toggle-replace]').on('click', event => {
+    $('.torrent_screenshots > img').each((i, el) => {
+      el.src = $(el).data('src')
+    })
+  })
+})
