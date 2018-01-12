@@ -7,23 +7,25 @@ define('FOOTER_FILE', SERVER_ROOT.'/design/privatefooter.php');
 <html lang="en">
 <head>
   <title><?=display_str($PageTitle)?></title>
-  <meta charset="utf-8" />
-  <meta name="userid" content="<?=G::$LoggedUser['ID']?>" />
-  <meta name="authkey" content="<?=G::$LoggedUser['AuthKey']?>" />
-  <link rel="shortcut icon" href="favicon.ico?v=<?=md5_file('favicon.ico')?>" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="userid" content="<?=G::$LoggedUser['ID']?>">
+  <meta name="authkey" content="<?=G::$LoggedUser['AuthKey']?>">
+  <link rel="shortcut icon" href="favicon.ico?v=<?=md5_file('favicon.ico')?>">
+  <link rel="manifest" href="/manifest.php">
   <link rel="search" type="application/opensearchdescription+xml" title="<?=SITE_NAME?>" href="<?=STATIC_SERVER?>opensearch.xml">
   <link rel="alternate" type="application/rss+xml"
       href="feeds.php?feed=feed_news&amp;user=<?=G::$LoggedUser['ID']?>&amp;auth=<?=G::$LoggedUser['RSS_Auth']?>&amp;passkey=<?=G::$LoggedUser['torrent_pass']?>&amp;authkey=<?=G::$LoggedUser['AuthKey']?>"
-      title="<?=SITE_NAME?> - News" />
+      title="<?=SITE_NAME?> - News">
   <link rel="alternate" type="application/rss+xml"
       href="feeds.php?feed=feed_blog&amp;user=<?=G::$LoggedUser['ID']?>&amp;auth=<?=G::$LoggedUser['RSS_Auth']?>&amp;passkey=<?=G::$LoggedUser['torrent_pass']?>&amp;authkey=<?=G::$LoggedUser['AuthKey']?>"
-      title="<?=SITE_NAME?> - Blog" />
+      title="<?=SITE_NAME?> - Blog">
   <link rel="alternate" type="application/rss+xml"
       href="feeds.php?feed=feed_changelog&amp;user=<?=G::$LoggedUser['ID']?>&amp;auth=<?=G::$LoggedUser['RSS_Auth']?>&amp;passkey=<?=G::$LoggedUser['torrent_pass']?>&amp;authkey=<?=G::$LoggedUser['AuthKey']?>"
-      title="<?=SITE_NAME?> - Gazelle Change Log" />
+      title="<?=SITE_NAME?> - Gazelle Change Log">
   <link rel="alternate" type="application/rss+xml"
       href="feeds.php?feed=torrents_notify_<?=G::$LoggedUser['torrent_pass']?>&amp;user=<?=G::$LoggedUser['ID']?>&amp;auth=<?=G::$LoggedUser['RSS_Auth']?>&amp;passkey=<?=G::$LoggedUser['torrent_pass']?>&amp;authkey=<?=G::$LoggedUser['AuthKey']?>"
-      title="<?=SITE_NAME?> - P.T.N." />
+      title="<?=SITE_NAME?> - P.T.N.">
 <?
 if (isset(G::$LoggedUser['Notify'])) {
   foreach (G::$LoggedUser['Notify'] as $Filter) {
@@ -31,32 +33,32 @@ if (isset(G::$LoggedUser['Notify'])) {
 ?>
   <link rel="alternate" type="application/rss+xml"
       href="feeds.php?feed=torrents_notify_<?=$FilterID?>_<?=G::$LoggedUser['torrent_pass']?>&amp;user=<?=G::$LoggedUser['ID']?>&amp;auth=<?=G::$LoggedUser['RSS_Auth']?>&amp;passkey=<?=G::$LoggedUser['torrent_pass']?>&amp;authkey=<?=G::$LoggedUser['AuthKey']?>&amp;name=<?=urlencode($FilterName)?>"
-      title="<?=SITE_NAME?> - <?=display_str($FilterName)?>" />
+      title="<?=SITE_NAME?> - <?=display_str($FilterName)?>">
 <?
   }
 }
 ?>
   <link rel="alternate" type="application/rss+xml"
       href="feeds.php?feed=torrents_all&amp;user=<?=G::$LoggedUser['ID']?>&amp;auth=<?=G::$LoggedUser['RSS_Auth']?>&amp;passkey=<?=G::$LoggedUser['torrent_pass']?>&amp;authkey=<?=G::$LoggedUser['AuthKey']?>"
-      title="<?=SITE_NAME?> - All Torrents" />
+      title="<?=SITE_NAME?> - All Torrents">
   <link rel="alternate" type="application/rss+xml"
       href="feeds.php?feed=torrents_movies&amp;user=<?=G::$LoggedUser['ID']?>&amp;auth=<?=G::$LoggedUser['RSS_Auth']?>&amp;passkey=<?=G::$LoggedUser['torrent_pass']?>&amp;authkey=<?=G::$LoggedUser['AuthKey']?>"
-      title="<?=SITE_NAME?> - Movie Torrents" />
+      title="<?=SITE_NAME?> - Movie Torrents">
   <link rel="alternate" type="application/rss+xml"
       href="feeds.php?feed=torrents_anime&amp;user=<?=G::$LoggedUser['ID']?>&amp;auth=<?=G::$LoggedUser['RSS_Auth']?>&amp;passkey=<?=G::$LoggedUser['torrent_pass']?>&amp;authkey=<?=G::$LoggedUser['AuthKey']?>"
-      title="<?=SITE_NAME?> - Anime Torrents" />
+      title="<?=SITE_NAME?> - Anime Torrents">
   <link rel="alternate" type="application/rss+xml"
       href="feeds.php?feed=torrents_manga&amp;user=<?=G::$LoggedUser['ID']?>&amp;auth=<?=G::$LoggedUser['RSS_Auth']?>&amp;passkey=<?=G::$LoggedUser['torrent_pass']?>&amp;authkey=<?=G::$LoggedUser['AuthKey']?>"
-      title="<?=SITE_NAME?> - Manga Torrents" />
+      title="<?=SITE_NAME?> - Manga Torrents">
   <link rel="alternate" type="application/rss+xml"
       href="feeds.php?feed=torrents_games&amp;user=<?=G::$LoggedUser['ID']?>&amp;auth=<?=G::$LoggedUser['RSS_Auth']?>&amp;passkey=<?=G::$LoggedUser['torrent_pass']?>&amp;authkey=<?=G::$LoggedUser['AuthKey']?>"
-      title="<?=SITE_NAME?> - Games Torrents" />
+      title="<?=SITE_NAME?> - Games Torrents">
   <link rel="alternate" type="application/rss+xml"
       href="feeds.php?feed=torrents_other&amp;user=<?=G::$LoggedUser['ID']?>&amp;auth=<?=G::$LoggedUser['RSS_Auth']?>&amp;passkey=<?=G::$LoggedUser['torrent_pass']?>&amp;authkey=<?=G::$LoggedUser['AuthKey']?>"
-      title="<?=SITE_NAME?> - Other Torrents" />
+      title="<?=SITE_NAME?> - Other Torrents">
   <link rel="stylesheet" type="text/css"
-      href="<?=STATIC_SERVER?>styles/global.css?v=<?=filemtime(SERVER_ROOT.STATIC_SERVER.'styles/global.css')?>" />
-  <link rel="stylesheet" href="<?=STATIC_SERVER?>styles/tooltipster/style.css?v=<?=filemtime(SERVER_ROOT.STATIC_SERVER.'styles/tooltipster/style.css')?>" type="text/css" media="screen" />
+      href="<?=STATIC_SERVER?>styles/global.css?v=<?=filemtime(SERVER_ROOT.STATIC_SERVER.'styles/global.css')?>">
+  <link rel="stylesheet" href="<?=STATIC_SERVER?>styles/tooltipster/style.css?v=<?=filemtime(SERVER_ROOT.STATIC_SERVER.'styles/tooltipster/style.css')?>" type="text/css" media="screen">
 <?
 if (empty(G::$LoggedUser['StyleURL'])) {
   if (($StyleColors = G::$Cache->get_value('stylesheet_colors')) === false) {
@@ -69,7 +71,7 @@ if (empty(G::$LoggedUser['StyleURL'])) {
   if (isset($StyleColors[G::$LoggedUser['StyleName']])) { ?>
 <meta name="theme-color" content="<?=$StyleColors[G::$LoggedUser['StyleName']]?>">
 <? } ?>
-<link rel="stylesheet" type="text/css" title="<?=G::$LoggedUser['StyleName']?>" media="screen" href="<?=STATIC_SERVER?>styles/<?=G::$LoggedUser['StyleName']?>/style.css?v=<?=filemtime(SERVER_ROOT.STATIC_SERVER.'styles/'.G::$LoggedUser['StyleName'].'/style.css')?>" />
+<link rel="stylesheet" type="text/css" title="<?=G::$LoggedUser['StyleName']?>" media="screen" href="<?=STATIC_SERVER?>styles/<?=G::$LoggedUser['StyleName']?>/style.css?v=<?=filemtime(SERVER_ROOT.STATIC_SERVER.'styles/'.G::$LoggedUser['StyleName'].'/style.css')?>">
 <?
 } else {
   $StyleURLInfo = parse_url(G::$LoggedUser['StyleURL']);
@@ -82,7 +84,7 @@ if (empty(G::$LoggedUser['StyleURL'])) {
     $StyleURL = G::$LoggedUser['StyleURL'];
   }
 ?>
-<link rel="stylesheet" type="text/css" media="screen" href="<?=$StyleURL?>" title="External CSS" />
+<link rel="stylesheet" type="text/css" media="screen" href="<?=$StyleURL?>" title="External CSS">
 <?
 }
 $ExtraCSS = explode(',', $CSSIncludes);
@@ -91,7 +93,7 @@ foreach ($ExtraCSS as $CSS) {
     continue;
   }
 ?>
-  <link rel="stylesheet" type="text/css" media="screen" href="<?=STATIC_SERVER."styles/$CSS/style.css?v=".filemtime(SERVER_ROOT.STATIC_SERVER."styles/$CSS/style.css")?>" />
+  <link rel="stylesheet" type="text/css" media="screen" href="<?=STATIC_SERVER."styles/$CSS/style.css?v=".filemtime(SERVER_ROOT.STATIC_SERVER."styles/$CSS/style.css")?>">
 <?
 }
 

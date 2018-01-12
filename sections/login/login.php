@@ -17,7 +17,7 @@ if (!$Banned) {
   <table class="layout">
     <tr>
       <td colspan="2">
-        <input type="text" name="username" id="username" class="inputtext" required="required" maxlength="20" pattern="[A-Za-z0-9_?]{1,20}" autofocus="autofocus" placeholder="Username" size="40" />
+        <input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="username" id="username" class="inputtext" required="required" maxlength="20" pattern="[A-Za-z0-9_?]{1,20}" autofocus="autofocus" placeholder="Username" size="40" />
       </td>
     </tr>
     <tr>
@@ -25,7 +25,7 @@ if (!$Banned) {
         <input type="password" name="password" id="password" class="inputtext" required="required" maxlength="307200" pattern=".{6,307200}" placeholder="Password" />
       </td>
       <td>
-        <input type="text" name="twofa" id="twofa" class="inputtext" maxlength="6" pattern="[0-9]{6}" placeholder="2FA" size="6" title="Leave blank if you have not enabled 2FA" />
+        <input type="text" name="twofa" id="twofa" class="inputtext" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" placeholder="2FA" size="6" title="Leave blank if you have not enabled 2FA" />
       </td>
     </tr>
     <tr>

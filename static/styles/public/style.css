@@ -118,10 +118,11 @@ input[type="text"]:invalid, input[type="password"]:invalid {
   background-size: contain;
   display: flex;
   align-items: center;
+  margin: 0 10%;
 }
 
 #maincontent {
-  margin: auto 10% auto auto;
+  margin: auto 0 auto auto;
   background-color: transparent;
 }
 
