@@ -57,7 +57,7 @@ class Torrents {
         continue;
       }
       $Data = G::$Cache->get_value($Key . $GroupID, true);
-      if (!empty($Data) && is_array($Data) && $Data['ver'] == CACHE::GROUP_VERSION) {
+      if (!empty($Data) && is_array($Data) && $Data['ver'] == Cache::GROUP_VERSION) {
         unset($NotFound[$GroupID]);
         $Found[$GroupID] = $Data['d'];
       }
@@ -126,7 +126,7 @@ class Torrents {
       }
 
       foreach ($NotFound as $GroupID => $GroupInfo) {
-        G::$Cache->cache_value($Key . $GroupID, array('ver' => CACHE::GROUP_VERSION, 'd' => $GroupInfo), 0);
+        G::$Cache->cache_value($Key . $GroupID, array('ver' => Cache::GROUP_VERSION, 'd' => $GroupInfo), 0);
       }
 
       $Found = $NotFound + $Found;

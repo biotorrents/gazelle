@@ -16,8 +16,8 @@ require 'classes/config.php'; // The config contains all site-wide configuration
 require(SERVER_ROOT.'/classes/misc.class.php'); // Require the misc class
 require(SERVER_ROOT.'/classes/cache.class.php'); // Require the caching class
 require(SERVER_ROOT.'/classes/feed.class.php'); // Require the feeds class
-$Cache = NEW CACHE(MEMCACHED_SERVERS); // Load the caching class
-$Feed = NEW FEED; // Load the time class
+$Cache = new Cache(MEMCACHED_SERVERS); // Load the caching class
+$Feed = new FEED; // Load the time class
 
 function check_perms() {
   return false;

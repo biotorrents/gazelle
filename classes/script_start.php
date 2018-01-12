@@ -66,7 +66,7 @@ $Debug->handle_errors();
 $Debug->set_flag('Debug constructed');
 
 $DB = new DB_MYSQL;
-$Cache = new CACHE(MEMCACHED_SERVERS);
+$Cache = new Cache(MEMCACHED_SERVERS);
 
 // Autoload classes.
 require(SERVER_ROOT.'/classes/classloader.php');

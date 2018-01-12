@@ -12,7 +12,7 @@ however, this class has page caching functions superior to those of
 memcache.
 
 Also, Memcache::get and Memcache::set have been wrapped by
-CACHE::get_value and CACHE::cache_value. get_value uses the same argument
+Cache::get_value and Cache::cache_value. get_value uses the same argument
 as get, but cache_value only takes the key, the value, and the duration
 (no zlib).
 
@@ -24,14 +24,18 @@ memcached -d -m 8192 -l 10.10.0.1 -t8 -C
 
 |*************************************************************************/
 
-if (!extension_loaded('memcache')) {
+if (!extension_loaded('memcache') && !extension_loaded('memcached')) {
   die('Memcache Extension not loaded.');
 }
 
-class CACHE extends Memcache {
-  /**
-   * Torrent Group cache version
-   */
+if (class_exists('Memcached')) {
+  class MemcacheCompat extends Memcached {}
+} else {
+  class MemcacheCompat extends Memcache {}
+}
+
+class Cache extends MemcacheCompat {
+  // Torrent Group cache version
   const GROUP_VERSION = 5;
 
   public $CacheHits = [];
@@ -57,9 +61,14 @@ class CACHE extends Memcache {
   public $InternalCache = true;
 
   function __construct($Servers) {
+    if (is_subclass_of($this, 'Memcached')) parent::__construct();
     $this->Servers = $Servers;
     foreach ($Servers as $Server) {
-      $this->addServer($Server['host'], $Server['port'], true, $Server['buckets']);
+      if (is_subclass_of($this, 'Memcache')) {
+        $this->addServer($Server['host'], $Server['port'], true, $Server['buckets']);
+      } else {
+        $this->addServer(str_replace('unix://', '', $Server['host']), $Server['port'], $Server['buckets']);
+      }
     }
   }
 
@@ -79,7 +88,9 @@ class CACHE extends Memcache {
     if (empty($Key)) {
       trigger_error("Cache insert failed for empty key");
     }
-    if (!$this->set($Key, $Value, 0, $Duration)) {
+    $SetParams = [$Key, $Value, 0, $Duration];
+    if (is_subclass_of($this, 'Memcached')) unset($SetParams[2]);
+    if (!$this->set(...$SetParams)) {
       trigger_error("Cache insert failed for key $Key");
     }
     if ($this->InternalCache && array_key_exists($Key, $this->CacheHits)) {
@@ -98,7 +109,9 @@ class CACHE extends Memcache {
 
   public function replace_value($Key, $Value, $Duration = 2592000) {
     $StartTime = microtime(true);
-    $this->replace($Key, $Value, false, $Duration);
+    $ReplaceParams = [$Key, $Value, false, $Duration];
+    if (is_subclass_of($this, 'Memcached')) unset($ReplaceParams[2]);
+    $this->replace(...$ReplaceParams);
     if ($this->InternalCache && array_key_exists($Key, $this->CacheHits)) {
       $this->CacheHits[$Key] = $Value;
     }
