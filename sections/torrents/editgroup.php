@@ -180,7 +180,9 @@ if ($CategoryID == 1) {
 } elseif ($CategoryID == 3) {
   echo "Artist:";
 } elseif ($CategoryID == 4) {
-  echo "Developer";
+  echo "Developer:";
+} elseif ($CategoryID == 5) {
+  echo "Creator/Author:";
 }
 ?>
         </td>
@@ -194,7 +196,7 @@ if ($CategoryID == 1) {
 ?>
         </td>
       </tr>
-<? if ($CategoryID == 4 || $CategoryID == 3 || $CategoryID == 1) { ?>
+<? if ($CategoryID != 2) { ?>
         <tr>
           <td class="label">
 <? if ($CategoryID == 1) {
@@ -220,12 +222,14 @@ if ($CategoryID != 5) { ?>
           </td>
           <td><input type="text" id="series" name="series" size="60" value="<?=$Series?>"/></td>
 <? } ?>
+<? if ($CategoryID != 5) { ?>
         <tr>
           <td class="label">Year:</td>
           <td>
             <input type="text" name="year" size="10" value="<?=$Year?>" />
           </td>
         </tr>
+<? } ?>
 <? if ($CategoryID == 3) { ?>
         <tr>
           <td class="label">Pages:</td>
@@ -234,7 +238,7 @@ if ($CategoryID != 5) { ?>
           </td>
         </tr>
 <? } ?>
-<? if ($CategoryID == 4) { ?>
+<? if ($CategoryID == 4 || $CategoryID == 5) { ?>
         <tr>
           <td class="label">DLsite ID:</td>
           <td><input type="text" id="dlsiteid" name="dlsiteid" size="8" maxlength="8" value="<?=$DLsiteID?>"/></td>
