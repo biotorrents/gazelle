@@ -117,7 +117,7 @@ $encoded_artist = urlencode($encoded_artist);
 <?
     if (!empty($Request['Image'])) {
 ?>
-          <img style="width: 100%;" src="<?=ImageTools::process($Request['Image'], true)?>" alt="<?=$FullName?>" class="lightbox-init" />
+          <img style="width: 100%;" src="<?=ImageTools::process($Request['Image'], true)?>" lightbox-img="<?=ImageTools::process($Request['Image'])?>" alt="<?=$FullName?>" class="lightbox-init" />
 <?    } else { ?>
           <img style="width: 100%;" src="<?=STATIC_SERVER?>common/noartwork/<?=$CategoryIcons[$Request['CategoryID'] - 1]?>" alt="<?=$CategoryName?>" class="tooltip" title="<?=$CategoryName?>" height="220" border="0" />
 <?    } ?>
