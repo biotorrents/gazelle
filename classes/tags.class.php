@@ -183,7 +183,9 @@ class Tags {
       ORDER BY BadTag');
       $TagAliases = G::$DB->to_array(false, MYSQLI_ASSOC, false);
       // Unify tag aliases to be in_this_format as tags not in.this.format
-      array_walk_recursive($TagAliases, create_function('&$val', '$val = preg_replace("/\./","_", $val);'));
+      array_walk_recursive($TagAliases, function(&$val) {
+        $val = preg_replace("/\./","_", $val);
+      });
       // Clean up the array for smaller cache size
       foreach ($TagAliases as &$TagAlias) {
         foreach (array_keys($TagAlias) as $Key) {

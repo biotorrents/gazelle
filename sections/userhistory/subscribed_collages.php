@@ -164,7 +164,8 @@ if (!$NumResults) {
       } else {
         // Viewing a type that does not require grouping
 
-        list($TorrentID, $Torrent) = each($Torrents);
+        $TorrentID = key($Torrents);
+        $Torrent = current($Torrents);
 
         $DisplayName = "<a class=\"torrent_title\" href=\"torrents.php?id=$GroupID\" ";
         if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {

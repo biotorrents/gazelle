@@ -630,7 +630,8 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
   } else {
     // Viewing a type that does not require grouping
 
-    list($TorrentID, $Data) = each($Torrents);
+    $TorrentID = key($Torrents);
+    $Data = current($Torrents);
 
     $Reported = false;
     $Reports = Torrents::get_reports($TorrentID);

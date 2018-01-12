@@ -213,8 +213,9 @@ class Text {
     $Str = preg_replace('/(?<!'.$URLPrefix.')http(s)?:\/\//i', '$1[inlineurl]http$2://', $Str);
     $Str = preg_replace('/\[embed\]\[inlineurl\]/', '[embed]', $Str);
     // For anonym.to and archive.org links, remove any [inlineurl] in the middle of the link
-    $callback = create_function('$matches', 'return str_replace("[inlineurl]", "", $matches[0]);');
-    $Str = preg_replace_callback('/(?<=\[inlineurl\]|'.$URLPrefix.')(\S*\[inlineurl\]\S*)/m', $callback, $Str);
+    $Str = preg_replace_callback('/(?<=\[inlineurl\]|'.$URLPrefix.')(\S*\[inlineurl\]\S*)/m', function($matches) {
+      return str_replace("[inlineurl]", "", $matches[0]);
+    }, $Str);
 
     if (self::$TOC) {
       $Str = preg_replace('/(\={5})([^=].*)\1/i', '[headline=4]$2[/headline]', $Str);

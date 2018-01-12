@@ -172,7 +172,8 @@ foreach ($GroupIDs as $GroupID) {
   } else {
     // Viewing a type that does not require grouping
 
-    list($TorrentID, $Torrent) = each($Torrents);
+    $TorrentID = key($Torrents);
+    $Torrent = current($Torrents);
 
     $DisplayName = Artists::display_artists(Artists::get_artist($GroupID));
 

@@ -143,8 +143,7 @@ class BENCODE2 {
 class BENCODE_LIST extends BENCODE2 {
   function enc() {
     $Str = 'l';
-    reset($this->Val);
-    while (list($Key, $Value) = each($this->Val)) {
+    foreach ($this->Val as $Value) {
       $Str.=$this->encode($Value);
     }
     return $Str.'e';
@@ -177,8 +176,7 @@ class BENCODE_LIST extends BENCODE2 {
 class BENCODE_DICT extends BENCODE2 {
   function enc() {
     $Str = 'd';
-    reset($this->Val);
-    while (list($Key, $Value) = each($this->Val)) {
+    foreach ($this->Val as $Key => $Value) {
       $Str.=strlen($Key).':'.$Key.$this->encode($Value);
     }
     return $Str.'e';

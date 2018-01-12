@@ -654,7 +654,8 @@ class DEBUG {
   <table id="debug_loggedvars" class="debug_table hidden">
 <?
     foreach ($Vars as $ID => $Var) {
-      list($Key, $Data) = each($Var);
+      $Key = key($Var);
+      $Data = current($Var);
       $Size = count($Data['data']);
 ?>
     <tr>

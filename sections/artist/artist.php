@@ -23,7 +23,7 @@ if (!empty($_GET['revisionid'])) { // if they're viewing an old revision
 }
 
 if ($Data) {
-  list($K, list($Name, $Image, $Body)) = each($Data);
+  list($Name, $Image, $Body) = current($Data);
 } else {
   if ($RevisionID) {
     $sql = "
@@ -296,7 +296,8 @@ foreach ($TorrentList as $Group) {
 <?
     }
   } else {
-    list($TorrentID, $Torrent) = each($Torrents);
+    $TorrentID = key($Torrents);
+    $Torrent = current($Torrents);
     if (!$TorrentID) { continue; }
 
     $TorrentTags = new Tags($TagList, false);
