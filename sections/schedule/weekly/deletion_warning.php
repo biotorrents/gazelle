@@ -4,7 +4,7 @@ $DB->query("
   SELECT
     t.ID,
     t.GroupID,
-    tg.Name,
+    COALESCE(NULLIF(tg.Name,''), NULLIF(tg.NameRJ,''), tg.NameJP) AS Name,
     t.UserID
   FROM torrents AS t
     JOIN torrents_group AS tg ON tg.ID = t.GroupID
