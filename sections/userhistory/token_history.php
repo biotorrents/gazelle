@@ -38,7 +38,7 @@ if (isset($_GET['expire'])) {
     error(403);
   }
   $DB->query("
-    SELECT info_hash
+    SELECT HEX(info_hash)
     FROM torrents
     WHERE ID = $TorrentID");
   if (list($InfoHash) = $DB->next_record(MYSQLI_NUM, FALSE)) {
@@ -48,7 +48,7 @@ if (isset($_GET['expire'])) {
       WHERE UserID = $UserID
         AND TorrentID = $TorrentID");
     $Cache->delete_value("users_tokens_$UserID");
-    Tracker::update_tracker('remove_token', array('info_hash' => rawurlencode($InfoHash), 'userid' => $UserID));
+    Tracker::update_tracker('remove_token', ['info_hash' => substr('%'.chunk_split($InfoHash,2,'%'),0,-1), 'userid' => $UserID]);
   }
   header("Location: userhistory.php?action=token_history&userid=$UserID");
 }

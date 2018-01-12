@@ -12,13 +12,13 @@ if ($DB->has_results()) {
   }
 
   $DB->query("
-    SELECT uf.UserID, t.info_hash
+    SELECT uf.UserID, HEX(t.info_hash)
     FROM users_freeleeches AS uf
       JOIN torrents AS t ON uf.TorrentID = t.ID
     WHERE uf.Expired = FALSE
       AND uf.Time < (NOW() - INTERVAL 4 DAY)");
   while (list($UserID, $InfoHash) = $DB->next_record(MYSQLI_NUM, false)) {
-    Tracker::update_tracker('remove_token', array('info_hash' => rawurlencode($InfoHash), 'userid' => $UserID));
+    Tracker::update_tracker('remove_token', ['info_hash' => substr('%'.chunk_split($InfoHash,2,'%'),0,-1), 'userid' => $UserID]);
   }
   $DB->query("
     UPDATE users_freeleeches

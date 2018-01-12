@@ -94,7 +94,7 @@ if (($Escaped['resolve_type'] == 'manual' || $Escaped['resolve_type'] == 'dismis
     <tr>
       <td>
         <a href="reportsv2.php?view=report&amp;id=<?=$ReportID?>">Somebody has already resolved this report</a>
-        <input type="button" value="Clear" onclick="ClearReport(<?=$ReportID?>);" />
+        <input type="button" value="Clear" o nclick="ClearReport(<?=$ReportID?>);" />
       </td>
     </tr>
   </table>
@@ -205,7 +205,7 @@ if ($DB->affected_rows() > 0 || !$Report) {
     $DB->query("
       SELECT
         r.ExtraID,
-        t.info_hash
+        HEX(t.info_hash)
       FROM reportsv2 AS r
       LEFT JOIN torrents AS t ON r.ExtraID = t.ID
       WHERE r.ID = $ReportID");
@@ -231,7 +231,7 @@ if ($DB->affected_rows() > 0 || !$Report) {
         }
       }
       foreach ($AffectedUsers as $UserID) {
-        Tracker::update_tracker('add_token', array('info_hash' => rawurlencode($InfoHash), 'userid' => $UserID));
+        Tracker::update_tracker('add_token', ['info_hash' => substr('%'.chunk_split($InfoHash,2,'%'),0,-1), 'userid' => $UserID]);
         $DB->query("
           INSERT INTO users_freeleeches (UserID, TorrentID, Time)
           VALUES ($UserID, $ExtraID, NOW())

@@ -74,7 +74,7 @@ if (!is_array($Info) || !array_key_exists('PlainArtists', $Info) || empty($Info[
       tg.CategoryID,
       t.Size,
       t.FreeTorrent,
-      t.info_hash
+      HEX(t.info_hash)
     FROM torrents AS t
       INNER JOIN torrents_group AS tg ON tg.ID = t.GroupID
     WHERE t.ID = '".db_string($TorrentID)."'");
@@ -121,7 +121,7 @@ if ($_REQUEST['usetoken'] && $FreeTorrent == '0') {
     }
 
     // Let the tracker know about this
-    if (!Tracker::update_tracker('add_token', array('info_hash' => rawurlencode($InfoHash), 'userid' => $UserID))) {
+    if (!Tracker::update_tracker('add_token', ['info_hash' => substr('%'.chunk_split($InfoHash,2,'%'),0,-1), 'userid' => $UserID])) {
       error('Sorry! An error occurred while trying to register your token. Most often, this is due to the tracker being down or under heavy load. Please try again later.');
     }
 
