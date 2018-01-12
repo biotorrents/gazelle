@@ -103,7 +103,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
       <input type="hidden" name="type" value="<?=display_str($this->Torrent['CategoryID']-1)?>" />
 <?
       }
-      if ($this->Torrent && $this->Torrent['RequestID']) {
+      if ($this->Torrent && ($this->Torrent['RequestID'] ?? false)) {
 ?>
       <input type="hidden" name="requestid" value="<?=display_str($this->Torrent['RequestID'])?>" />
 <?
@@ -271,7 +271,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
       </tr>
       <tr id="dlsite_tr">
         <td class="label">DLsite ID</td>
-        <td><input type="text" id="dlsiteid" name="dlsiteid" size="8" maxlength="8" value="<?=display_str($Torrent['DLsiteID'])?>" <?=$this->Disabled?>/></td>
+        <td><input type="text" id="dlsiteid" name="dlsiteid" size="8" maxlength="8" value="<?=display_str($Torrent['DLsiteID']??'')?>" <?=$this->Disabled?>/></td>
       </tr>
 <? } ?>
       <tr id="media_tr">
@@ -282,7 +282,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
 <?
     foreach($this->Media as $Media) {
       echo "\t\t\t\t\t\t<option value=\"$Media\"";
-      if ($Media == $Torrent['Media']) {
+      if ($Media == ($Torrent['Media'] ?? false)) {
         echo " selected";
       }
       echo ">$Media</option>\n";
@@ -299,7 +299,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
 <?
     foreach($this->MediaManga as $Media) {
       echo "\t\t\t\t\t\t<option value=\"$Media\"";
-      if ($Media == $Torrent['Media']) {
+      if ($Media == ($Torrent['Media'] ?? false)) {
         echo " selected";
       }
       echo ">$Media</option>\n";
@@ -316,7 +316,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
 <?
     foreach($this->Platform as $Platform) {
       echo "\t\t\t\t\t\t<option value=\"$Platform\"";
-      if ($Platform == $Torrent['Media']) {
+      if ($Platform == ($Torrent['Media'] ?? false)) {
         echo " selected";
       }
       echo ">$Platform</option>\n";
@@ -333,7 +333,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
 <?
     foreach($this->Archives as $Archive) {
       echo "\t\t\t\t\t\t<option value=\"$Archive\"";
-      if ($Archive == $Torrent['Archive']) {
+      if ($Archive == ($Torrent['Archive'] ?? false)) {
         echo ' selected';
       }
       echo ">$Archive</option>\n";
@@ -350,7 +350,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
 <?
     foreach(array_merge($this->Archives, $this->ArchivesManga) as $Archive) {
       echo "\t\t\t\t\t\t<option value=\"$Archive\"";
-      if ($Archive == $Torrent['Archive']) {
+      if ($Archive == ($Torrent['Archive'] ?? false)) {
         echo ' selected';
       }
       echo ">$Archive</option>\n";
@@ -367,7 +367,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
 <?
     foreach($this->Containers as $Cont) {
       echo "\t\t\t\t\t\t<option value=\"$Cont\"";
-      if ($Cont == $Torrent['Container']) {
+      if ($Cont == ($Torrent['Container'] ?? false)) {
         echo " selected";
       }
       echo ">$Cont</option>\n";
@@ -384,7 +384,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
 <?
     foreach($this->ContainersGames as $Container) {
       echo "\t\t\t\t\t\t<option value=\"$Container\"";
-      if ($Container == $Torrent['Container']) {
+      if ($Container == ($Torrent['Container'] ?? false)) {
         echo " selected";
       }
       echo ">$Container</option>\n";
@@ -401,7 +401,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
 <?
     foreach($this->Codecs as $Codec) {
       echo "\t\t\t\t\t\t<option value=\"$Codec\"";
-      if ($Codec == $Torrent['Codec']) {
+      if ($Codec == ($Torrent['Codec'] ?? false)) {
         echo " selected";
       }
       echo ">$Codec</option>\n";
@@ -418,7 +418,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
 <?
     foreach($this->Resolutions as $Res) {
       echo "\t\t\t\t\t\t<option value=\"$Res\"";
-      if ($Res == $Torrent['Resolution'] || (!isset($FoundRes) && ($Torrent['Resolution'] ?? false) && $Res == "Other")) {
+      if ($Res == ($Torrent['Resolution'] ?? false) || (!isset($FoundRes) && ($Torrent['Resolution'] ?? false) && $Res == "Other")) {
         echo " selected";
         $FoundRes = true;
       }
@@ -426,7 +426,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
     }
 ?>
           </select>
-          <input type="text" id="resolution" name="resolution" size="10" class="hidden tooltip" pattern="[0-9]+x[0-9]+" title='Enter "Other" resolutions in the form ###x###' value="<?=$Torrent['Resolution']?>" readonly></input>
+          <input type="text" id="resolution" name="resolution" size="10" class="hidden tooltip" pattern="[0-9]+x[0-9]+" title='Enter "Other" resolutions in the form ###x###' value="<?=($Torrent['Resolution']??'')?>" readonly></input>
           <script>
             if ($('#ressel').raw().value == "Other") {
               $('#resolution').raw().readOnly = false
@@ -443,7 +443,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
 <?
     foreach($this->AudioFormats as $AudioFormat) {
       echo "\t\t\t\t\t\t<option value=\"$AudioFormat\"";
-      if  ($AudioFormat == $Torrent['AudioFormat']) {
+      if  ($AudioFormat == ($Torrent['AudioFormat'] ?? false)) {
         echo " selected";
       }
       echo ">$AudioFormat</option>\n";
@@ -460,7 +460,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
 <?
     foreach($this->Languages as $Language) {
       echo "\t\t\t\t\t\t<option value=\"$Language\"";
-      if ($Language == $Torrent['Language']) {
+      if ($Language == ($Torrent['Language'] ?? false)) {
         echo " selected";
       }
       echo ">$Language</option>\n";
@@ -477,7 +477,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
 <?
     foreach($this->Subbing as $Subbing) {
       echo "\t\t\t\t\t\t<option value=\"$Subbing\"";
-      if ($Subbing == $Torrent['Subbing']) {
+      if ($Subbing == ($Torrent['Subbing'] ?? false)) {
         echo " selected";
       }
       echo ">$Subbing</option>\n";
@@ -488,7 +488,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
       </tr>
       <tr id="trans_tr">
         <td class="label">Translation Group (optional)</td>
-        <td><input type="text" id="subber" name="subber" size="60" value="<?=display_str($Torrent['Subber']) ?>" /></td>
+        <td><input type="text" id="subber" name="subber" size="60" value="<?=display_str($Torrent['Subber']??'') ?>" /></td>
       </tr>
       <tr id="censored_tr">
         <td class="label">Censored?</td>
@@ -499,7 +499,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
       <tr id="mediainfo_tr">
         <td class="label">Media Info</td>
         <td>
-          <textarea name="mediainfo" id="mediainfo" onchange="MediaInfoExtract()"  rows="8" cols="60"><?=display_str($Torrent['MediaInfo'])?></textarea>
+          <textarea name="mediainfo" id="mediainfo" onchange="MediaInfoExtract()"  rows="8" cols="60"><?=display_str($Torrent['MediaInfo']??'')?></textarea>
         </td>
       </tr>
 <?    if ($this->NewTorrent) { ?>
@@ -553,7 +553,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         <td class="label">Torrent Description (optional)</td>
         <td>
           <p class="min_padding notes"></p>
-<?php new TEXTAREA_PREVIEW('release_desc', 'release_desc', display_str($Torrent['TorrentDescription']), 60, 8); ?>
+<?php new TEXTAREA_PREVIEW('release_desc', 'release_desc', display_str($Torrent['TorrentDescription']??''), 60, 8); ?>
         </td>
       </tr>
       <tr id="anon_tr">
