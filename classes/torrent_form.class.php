@@ -414,11 +414,11 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         <td class="label">Resolution</td>
         <td>
           <select id="ressel" name="ressel" onchange="SetResolution()">
-            <option>---</option>
+            <option value="">---</option>
 <?
     foreach($this->Resolutions as $Res) {
       echo "\t\t\t\t\t\t<option value=\"$Res\"";
-      if ($Res == $Torrent['Resolution'] || (!isset($FoundRes) && isset($Torrent['Resolution']) && $Res == "Other")) {
+      if ($Res == $Torrent['Resolution'] || (!isset($FoundRes) && ($Torrent['Resolution'] ?? false) && $Res == "Other")) {
         echo " selected";
         $FoundRes = true;
       }
