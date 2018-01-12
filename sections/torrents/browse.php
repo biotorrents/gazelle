@@ -524,7 +524,7 @@ View::show_header('Browse Torrents', 'browse');
     $CoverArt = $GroupInfo['WikiImage'];
     $DisplayName .= "<a class=\"torrent_title\" href=\"torrents.php?id=$GroupID\" ";
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-      $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($CoverArt)."\" onmouseleave=\"ungetCover(event)\" ";
+      $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($CoverArt, true)."\" onmouseleave=\"ungetCover(event)\" ";
     }
     $DisplayName .= "dir=\"ltr\">$GroupName</a>";
     if ($GroupYear) {
@@ -642,7 +642,7 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
     $CoverArt = $GroupInfo['WikiImage'];
     $DisplayName .= "<a class=\"torrent_name\" href=\"torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID\" ";
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-      $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($CoverArt)."\" onmouseleave=\"ungetCover(event)\" ";
+      $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($CoverArt, true)."\" onmouseleave=\"ungetCover(event)\" ";
     }
     $DisplayName .= "dir=\"ltr\">$GroupName</a>";
     if (isset($GroupedCategories[$CategoryID - 1])) {

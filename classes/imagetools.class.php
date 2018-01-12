@@ -11,12 +11,12 @@ class ImageTools {
    * @param string $Url image URL
    * @return image proxy URL
    */
-  public static function proxy_url($Url) {
+  public static function proxy_url($Url, $Thumb = false) {
     if (preg_match('/^https:\/\/('.SITE_DOMAIN.'|'.IMAGE_DOMAIN.')\//', $Url) || $Url[0]=='/') {
       if (strpos($Url, '?') === false) $Url .= '?';
       return $Url;
     } else {
-      return 'https://'.IMAGE_DOMAIN.'/?h='.rawurlencode(base64_encode(hash_hmac('sha256', $Url, IMAGE_PSK, true))).'&i='.urlencode($Url);
+      return 'https://'.IMAGE_DOMAIN.($Thumb?'/thumb/':'/').'?h='.rawurlencode(base64_encode(hash_hmac('sha256', $Url, IMAGE_PSK, true))).'&i='.urlencode($Url);
     }
   }
 
@@ -28,7 +28,7 @@ class ImageTools {
    */
   public static function process($Url = '', $Thumb = false) {
     // TODO: Thumbnailing
-    return $Url ? self::proxy_url($Url) : '';
+    return $Url ? self::proxy_url($Url, $Thumb) : '';
   }
 
   /**
