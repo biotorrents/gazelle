@@ -1,7 +1,7 @@
 <?
 //**********************************************************************//
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Edit form ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-// This page relies on the TORRENT_FORM class. All it does is call      //
+// This page relies on the TorrentForm class. All it does is call      //
 // the necessary functions.                                             //
 //----------------------------------------------------------------------//
 // At the bottom, there are grouping functions which are off limits to  //
@@ -67,7 +67,7 @@ if (($LoggedUser['ID'] != $Properties['UserID'] && !check_perms('torrents_edit')
 
 View::show_header('Edit torrent', 'upload,torrent');
 
-$TorrentForm = new TORRENT_FORM($Properties, $Err, false);
+$TorrentForm = new TorrentForm($Properties, $Err, false);
 
 $TorrentForm->upload_form();
 

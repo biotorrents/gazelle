@@ -1,7 +1,7 @@
 <?
 //**********************************************************************//
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Upload form ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-// This page relies on the TORRENT_FORM class. All it does is call      //
+// This page relies on the TorrentForm class. All it does is call      //
 // the necessary functions.                                             //
 //----------------------------------------------------------------------//
 // $Properties, $Err and $UploadForm are set in takeupload.php, and     //
@@ -77,7 +77,7 @@ if (!empty($ArtistForm)) {
 }
 
 require(SERVER_ROOT.'/classes/torrent_form.class.php');
-$TorrentForm = new TORRENT_FORM($Properties ?? false, $Err ?? false);
+$TorrentForm = new TorrentForm($Properties ?? false, $Err ?? false);
 
 $GenreTags = $Cache->get_value('genre_tags');
 if (!$GenreTags) {

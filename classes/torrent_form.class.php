@@ -3,7 +3,7 @@
 // This class is used in upload.php to display the upload form, and the edit
 // section of torrents.php to display a shortened version of the same form
 
-class TORRENT_FORM {
+class TorrentForm {
   var $UploadForm = '';
   var $Categories = [];
   var $Formats = [];
@@ -25,7 +25,7 @@ class TORRENT_FORM {
   var $Disabled = '';
   var $DisabledFlag = false;
 
-  function TORRENT_FORM($Torrent = false, $Error = false, $NewTorrent = true) {
+  function __construct($Torrent = false, $Error = false, $NewTorrent = true) {
 
     $this->NewTorrent = $NewTorrent;
     $this->Torrent = $Torrent;
