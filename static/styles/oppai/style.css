@@ -563,7 +563,7 @@ td, th {
 .colhead {
   background: #E197E5;
   font-weight: bold;
-  color: #ffffff;
+  color: #000;
 }
 
 td.colhead, .colhead td, .colhead th {

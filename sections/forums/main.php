@@ -56,7 +56,7 @@ foreach ($Forums as $Forum) {
         <a href="forums.php?action=viewthread&amp;threadid=<?=$LastTopicID?>" class="tooltip" data-title-plain="<?=display_str($LastTopic)?>"><?=display_str(Format::cut_string($LastTopic, 50, 1))?></a>
       </span>
 <? if (!empty($LastRead[$LastTopicID])) { ?>
-      <a class="tooltip last_read" title="Jump to last read" href="forums.php?action=viewthread&amp;threadid=<?=$LastTopicID?>&amp;page=<?=$LastRead[$LastTopicID]['Page']?>#post<?=$LastRead[$LastTopicID]['PostID']?>">
+      <a class="tooltip last_read" aria-label="Jump to last read" title="Jump to last read" href="forums.php?action=viewthread&amp;threadid=<?=$LastTopicID?>&amp;page=<?=$LastRead[$LastTopicID]['Page']?>#post<?=$LastRead[$LastTopicID]['PostID']?>">
         <svg width="15" height="11"><polygon points="0,3 0,8 8,8 8,11 15,5.5 8,0 8,3"/></svg>
       </a>
 <? } ?>

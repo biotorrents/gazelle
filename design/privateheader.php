@@ -144,7 +144,7 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
     <h1 class="hidden"><?=SITE_NAME?></h1>
     <div id="header">
       <div id="logo">
-        <a href="index.php"></a>
+        <a href="index.php" aria-label="Front page"></a>
       </div>
       <div id="menu">
         <ul>
@@ -215,56 +215,32 @@ if (isset(G::$LoggedUser['SearchType']) && G::$LoggedUser['SearchType']) { // Ad
       <div id="searchbars">
         <form class="search_form" name="torrents" action="torrents.php" method="get">
 <?  if ($UseAdvancedSearch) { ?>
-          <input type="hidden" name="action" value="advanced" />
+          <input type="hidden" name="action" value="advanced">
 <?  } ?>
-          <input id="torrentssearch" accesskey="t" spellcheck="false"
-              onfocus="if (this.value == 'Torrents') { this.value = ''; }"
-              onblur="if (this.value == '') { this.value = 'Torrents'; }"
-              value="Torrents" placeholder="Torrents" type="text" name="<?=$UseAdvancedSearch ? 'advgroupname' : 'searchstr' ?>" size="17" />
+          <input id="torrentssearch" aria-label="Search torrents" accesskey="t" spellcheck="false" autocomplete="off" placeholder="Torrents" type="text" name="<?=$UseAdvancedSearch ? 'advgroupname' : 'searchstr' ?>" size="17">
         </form>
         <form class="search_form" name="artists" action="artist.php" method="get">
-          <input id="artistsearch"<?=Users::has_autocomplete_enabled('search');
-              ?> accesskey="a"
-              spellcheck="false" autocomplete="off"
-              onfocus="if (this.value == 'Artists') { this.value = ''; }"
-              onblur="if (this.value == '') { this.value = 'Artists'; }"
-              value="Artists" placeholder="Artists" type="text" name="artistname" size="17" />
+          <input id="artistsearch"<?=Users::has_autocomplete_enabled('search')?> aria-label="Search artists" accesskey="a" spellcheck="false" autocomplete="off" placeholder="Artists" type="text" name="artistname" size="17">
         </form>
         <form class="search_form" name="requests" action="requests.php" method="get">
-          <input id="requestssearch" spellcheck="false"
-              onfocus="if (this.value == 'Requests') { this.value = ''; }"
-              onblur="if (this.value == '') { this.value = 'Requests'; }"
-              value="Requests" placeholder="Requests" type="text" name="search" size="17" />
+          <input id="requestssearch" aria-label="Search requests" spellcheck="false" autocomplete="off" placeholder="Requests" type="text" name="search" size="17">
         </form>
         <form class="search_form" name="forums" action="forums.php" method="get">
-          <input value="search" type="hidden" name="action" />
-          <input id="forumssearch"
-              onfocus="if (this.value == 'Forums') { this.value = ''; }"
-              onblur="if (this.value == '') { this.value = 'Forums'; }"
-              value="Forums" placeholder="Forums" type="text" name="search" size="17" />
+          <input value="search" type="hidden" name="action">
+          <input id="forumssearch" aria-label="Search forums" spellcheck="false" autocomplete="off" placeholder="Forums" type="text" name="search" size="17">
         </form>
 <!--
         <form class="search_form" name="wiki" action="wiki.php" method="get">
-          <input type="hidden" name="action" value="search" />
-          <input
-              onfocus="if (this.value == 'Wiki') { this.value = ''; }"
-              onblur="if (this.value == '') { this.value = 'Wiki'; }"
-              value="Wiki" placeholder="Wiki" type="text" name="search" size="17" />
+          <input type="hidden" name="action" value="search">
+          <input value="Wiki" placeholder="Wiki" type="text" name="search" size="17">
         </form>
 -->
         <form class="search_form" name="log" action="log.php" method="get">
-          <input id="logsearch"
-              onfocus="if (this.value == 'Log') { this.value = ''; }"
-              onblur="if (this.value == '') { this.value = 'Log'; }"
-              value="Log" placeholder="Log" type="text" name="search" size="17" />
+          <input id="logsearch" aria-label="Search log" spellcheck="false" autocomplete="off" placeholder="Log" type="text" name="search" size="17">
         </form>
         <form class="search_form" name="users" action="user.php" method="get">
-          <input type="hidden" name="action" value="search" />
-          <input
-              id="userssearch"
-              onfocus="if (this.value == 'Users') { this.value = ''; }"
-              onblur="if (this.value == '') { this.value = 'Users'; }"
-              value="Users" placeholder="Users" type="text" name="search" size="20" />
+          <input type="hidden" name="action" value="search">
+          <input id="userssearch" aria-label="Search users" spellcheck="false" autocomplete="off" placeholder="Users" type="text" name="search" size="20">
         </form>
       </div>
       <div id="userinfo">

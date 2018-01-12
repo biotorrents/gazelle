@@ -823,14 +823,12 @@ div.torrent_artists {
 /* Ratio Colors */
 .r00           { color: #FF0000; }
 .r01,.r02      { color: #FF1300; }
-.r03           { color: #FF2600; }
-.r04           { color: #FF4C00; }
-.r05,.r06      { color: #FF5E00; }
-.r07           { color: #FF7100; }
-.r08           { color: #FF9700; }
-.r09           { color: #FFAA00; }
-.r10           { color: #74C42E; }
-.r20,.r50,.r99 { color: #418B00; }
+.r03           { color: #b70000; }
+.r04           { color: #a20000; }
+.r05,.r06      { color: #8e0000; }
+.r07           { color: #983100; }
+.r08           { color: #8c4802; }
+.r09           { color: #7b5200; }
 
 #coverCont.left {
   left: 20px;

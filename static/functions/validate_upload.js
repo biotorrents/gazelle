@@ -26,4 +26,5 @@ $(() => {
       soft_error('You did not include a cover image, which is mandatory if one exists')
     }
   })
+  $('#tags').on('blur', e => $('#tags').raw().value = $('#tags').raw().value.split(',').map(t=>t.trim()).filter(t=>t).join(', '))
 })
