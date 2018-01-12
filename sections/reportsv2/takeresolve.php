@@ -94,7 +94,7 @@ if (($Escaped['resolve_type'] == 'manual' || $Escaped['resolve_type'] == 'dismis
     <tr>
       <td>
         <a href="reportsv2.php?view=report&amp;id=<?=$ReportID?>">Somebody has already resolved this report</a>
-        <input type="button" value="Clear" o nclick="ClearReport(<?=$ReportID?>);" />
+        <input type="button" value="Clear" onclick="ClearReport(<?=$ReportID?>);" />
       </td>
     </tr>
   </table>
