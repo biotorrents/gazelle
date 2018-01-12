@@ -1,6 +1,8 @@
 <?
 if (isset($_POST['title'])) {
 
+  if (strlen($_POST['title']) > 30) error("Title too long");
+
   $Title = htmlspecialchars($_POST['title'], ENT_QUOTES);
 
   $UserID = $LoggedUser['ID'];
@@ -17,12 +19,12 @@ if (isset($_POST['title'])) {
       $DB->query("
         UPDATE users_main
         SET BonusPoints = BonusPoints - 50000,
-            Title       = '$Title'
-        WHERE ID = $UserID");
+            Title = ?
+        WHERE ID = ?", $Title, $UserID);
       $DB->query("
         UPDATE users_info
-        SET AdminComment = CONCAT('".sqltime()." - Changed title to $Title via the store\n\n', AdminComment)
-        WHERE UserID = $UserID");
+        SET AdminComment = CONCAT(NOW(), ' - Changed title to ', ?, ' via the store\n\n', AdminComment)
+        WHERE UserID = ?", $Title, $UserID);
       $Cache->delete_value('user_info_'.$UserID);
       $Cache->delete_value('user_info_heavy_'.$UserID);
 
@@ -52,7 +54,7 @@ if (isset($_POST['title'])) {
           Enter the title you want
         </strong>
         <br>
-        <input type="text" name="title" value="">
+        <input type="text" name="title" maxlength="30" value="">
         <input type="submit">
       </form>
       <p><a href="/store.php">Back to Store</a></p>
