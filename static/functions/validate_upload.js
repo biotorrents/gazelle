@@ -1,28 +1,29 @@
-(function () {
-  $(document).ready(function () {
-    // Upload button is clicked
-    $("#post").click(function(e) {
-      // Make sure "Music" category is selected.
-      if ($("#categories").find(":selected").val() == 0) {
-        //checkHasMainArtist(e);
+$(() => {
+  $("#post").click(e => {
+    let hard_error = m => {
+      if (e.isDefaultPrevented()) return
+      alert(m)
+      e.preventDefault()
+    }
+    let soft_error = m => {
+      if (e.isDefaultPrevented()) return
+      if (!confirm(`${m}\n\nPress OK to upload anyway`)) {
+        e.preventDefault()
       }
-    });
+    }
 
-    /**
-     * Make sure a main artist is selected.
-     */
-    /*function checkHasMainArtist(e) {
-      var has_main = false;
-      $("select[id^=importance]").each(function() {
-        if ($(this).find(":selected").val() == 1) {
-          has_main = true;
-        }
-      });
-      if (!has_main) {
-        alert('A "Main" artist is required');
-        // Don't POST the form.
-        e.preventDefault();
-      }
-    }*/
-  });
-})();
+    if (!$('#file').raw().value) {
+      hard_error('No torrent file is selected')
+    }
+    if ($('#file').raw().value.slice(-8).toLowerCase() != '.torrent') {
+      soft_error('The file selected does not appear to be a .torrent file')
+    }
+    let mi = $('#mediainfo').raw().value
+    if (mi && (!mi.includes('General') || !mi.includes('Video'))) {
+      soft_error('Your MediaInfo does not appear to be from a valid MediaInfo utility')
+    }
+    if (!$('#image').raw().value) {
+      soft_error('You did not include a cover image, which is mandatory if one exists')
+    }
+  })
+})
