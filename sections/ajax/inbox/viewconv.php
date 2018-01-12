@@ -78,7 +78,7 @@ $DB->query("
 
 $JsonMessages = [];
 while (list($SentDate, $SenderID, $Body, $MessageID) = $DB->next_record()) {
-  $Body = apcu_exists('DBKEY') ? DBCrypt::decrypt($Body) : '[Encrypted]';
+  $Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[Encrypted]';
   $JsonMessage = array(
     'messageId' => (int)$MessageID,
     'senderId' => (int)$SenderID,

@@ -17,7 +17,7 @@ if (apcu_exists('DBKEY')) {
       AND ul.UserID IS NULL
     GROUP BY um.ID");
   while (list($Username, $Email) = $DB->next_record()) {
-    $Email = DBCrypt::decrypt($Email);
+    $Email = Crypto::decrypt($Email);
     $Body = "Hi $Username,\n\nIt has been almost 4 months since you used your account at ".site_url().". This is an automated email to inform you that your account will be disabled in 10 days if you do not sign in.";
     Misc::send_email($Email, 'Your '.SITE_NAME.' account is about to be disabled', $Body);
   }

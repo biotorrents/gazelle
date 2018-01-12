@@ -233,7 +233,7 @@ if ($_POST['ResetRatioWatch'] && check_perms('users_edit_reset_keys')) {
 
 if ($_POST['ResetIPHistory'] && check_perms('users_edit_reset_keys')) {
 
-  $GenericIP = DBCrypt::encrypt('127.0.0.1');
+  $GenericIP = Crypto::encrypt('127.0.0.1');
   $DB->query("
     DELETE FROM users_history_ips
     WHERE UserID = '$UserID'");
@@ -268,17 +268,17 @@ if ($_POST['ResetEmailHistory'] && check_perms('users_edit_reset_keys')) {
       INSERT INTO users_history_emails
         (UserID, Email, Time, IP)
       VALUES
-        ('$UserID', '".DBCrypt::encrypt($Username.'@'.SITE_DOMAIN)."', NULL, '".DBCrypt::encrypt('127.0.0.1')."')");
+        ('$UserID', '".Crypto::encrypt($Username.'@'.SITE_DOMAIN)."', NULL, '".Crypto::encrypt('127.0.0.1')."')");
   } else {
     $DB->query("
       INSERT INTO users_history_emails
         (UserID, Email, Time, IP)
       VALUES
-        ('$UserID', '".DBCrypt::encrypt($Username.'@'.SITE_DOMAIN)."', NULL, '".$Cur['IP']."')");
+        ('$UserID', '".Crypto::encrypt($Username.'@'.SITE_DOMAIN)."', NULL, '".$Cur['IP']."')");
   }
   $DB->query("
     UPDATE users_main
-    SET Email = '".DBCrypt::encrypt($Username.'@'.SITE_DOMAIN)."'
+    SET Email = '".Crypto::encrypt($Username.'@'.SITE_DOMAIN)."'
     WHERE ID = '$UserID'");
   $EditSummary[] = 'Email history cleared';
 }
@@ -696,7 +696,7 @@ if ($EnableUser != $Cur['Enabled'] && check_perms('users_disable_users')) {
     $TrackerUserUpdates = [];
   } elseif ($EnableUser == '1') {
     $Cache->increment('stats_user_count');
-    $VisibleTrIP = ($Visible && DBCrypt::decrypt($Cur['IP']) != '127.0.0.1') ? '1' : '0';
+    $VisibleTrIP = ($Visible && Crypto::decrypt($Cur['IP']) != '127.0.0.1') ? '1' : '0';
     Tracker::update_tracker('add_user', array('id' => $UserID, 'passkey' => $Cur['torrent_pass'], 'visible' => $VisibleTrIP));
 
     if (($Cur['Downloaded'] == 0) || ($Cur['Uploaded'] / $Cur['Downloaded'] >= $Cur['RequiredRatio'])) {
@@ -734,7 +734,7 @@ if ($ResetPasskey == 1 && check_perms('users_edit_reset_keys')) {
     INSERT INTO users_history_passkeys
       (UserID, OldPassKey, NewPassKey, ChangerIP, ChangeTime)
     VALUES
-      ('$UserID', '".$Cur['torrent_pass']."', '$Passkey', '".DBCrypt::encrypt('0.0.0.0')."', NOW())");
+      ('$UserID', '".$Cur['torrent_pass']."', '$Passkey', '".Crypto::encrypt('0.0.0.0')."', NOW())");
   Tracker::update_tracker('change_passkey', array('oldpasskey' => $Cur['torrent_pass'], 'newpasskey' => $Passkey));
 }
 

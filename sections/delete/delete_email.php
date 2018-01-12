@@ -24,7 +24,7 @@ View::show_header('Email Expunge Request');
   <table cellspacing="1" cellpadding="3" border="0" class="layout" width="100%">
     <tr>
       <td class="label">Email:</td>
-      <td><input type="text" size="30" value="<?=DBCrypt::decrypt($_GET['emails'][0])?>" disabled /></td>
+      <td><input type="text" size="30" value="<?=Crypto::decrypt($_GET['emails'][0])?>" disabled /></td>
     </tr>
     <tr>
       <td class="label">Reason (Optional):</td>

@@ -109,10 +109,10 @@ if ($DB->has_results()) {
 <?
   while (list($UserID, $IP, $IPCC, $Email, $Username, $PermissionID, $Uploaded, $Downloaded, $Enabled, $Donor, $Warned, $Joined, $Uses, $InviterID, $InviterIP, $InviterIPCC, $InviterEmail, $InviterUsername, $InviterPermissionID, $InviterUploaded, $InviterDownloaded, $InviterEnabled, $InviterDonor, $InviterWarned, $InviterJoined, $InviterUses) = $DB->next_record()) {
   $RowClass = $IP === $InviterIP ? 'warning' : '';
-  $Email = apcu_exists('DBKEY') ? DBCrypt::decrypt($Email) : '[Encrypted]';
-  $IP = apcu_exists('DBKEY') ? DBCrypt::decrypt($IP) : '[Encrypted]';
-  $InviterEmail = apcu_exists('DBKEY') ? DBCrypt::decrypt($InviterEmail) : '[Encrypted]';
-  $InviterIP = apcu_exists('DBKEY') ? DBCrypt::decrypt($InviterIP) : '[Encrypted]';
+  $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]';
+  $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
+  $InviterEmail = apcu_exists('DBKEY') ? Crypto::decrypt($InviterEmail) : '[Encrypted]';
+  $InviterIP = apcu_exists('DBKEY') ? Crypto::decrypt($InviterIP) : '[Encrypted]';
 ?>
     <tr class="<?=$RowClass?>">
       <td><?=Users::format_username($UserID, true, true, true, true)?><br /><?=Users::format_username($InviterID, true, true, true, true)?></td>

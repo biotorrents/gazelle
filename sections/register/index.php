@@ -80,7 +80,7 @@ if (!empty($_REQUEST['confirm'])) {
           $InviterID = 0;
         } else {
           list($InviterID, $InviteEmail, $InviteReason) = $DB->next_record(MYSQLI_NUM, false);
-          $InviteEmail = DBCrypt::decrypt($InviteEmail);
+          $InviteEmail = Crypto::decrypt($InviteEmail);
         }
       } else {
         $InviterID = 0;
@@ -114,7 +114,7 @@ if (!empty($_REQUEST['confirm'])) {
         INSERT INTO users_main
           (Username, Email, PassHash, torrent_pass, IP, PermissionID, Enabled, Invites, Uploaded, ipcc)
         VALUES
-          ('".db_string(trim($_POST['username']))."', '".DBCrypt::encrypt($_POST['email'])."', '".db_string(Users::make_sec_hash($_POST['password']))."', '".db_string($torrent_pass)."', '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."', '$Class', '$Enabled', '".STARTING_INVITES."', '1073741824', '$IPcc')");
+          ('".db_string(trim($_POST['username']))."', '".Crypto::encrypt($_POST['email'])."', '".db_string(Users::make_sec_hash($_POST['password']))."', '".db_string($torrent_pass)."', '".Crypto::encrypt($_SERVER['REMOTE_ADDR'])."', '$Class', '$Enabled', '".STARTING_INVITES."', '1073741824', '$IPcc')");
 
       $UserID = $DB->inserted_id();
 
@@ -150,7 +150,7 @@ if (!empty($_REQUEST['confirm'])) {
         INSERT INTO users_history_ips
           (UserID, IP, StartTime)
         VALUES
-          ('$UserID', '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."', NOW())");
+          ('$UserID', '".Crypto::encrypt($_SERVER['REMOTE_ADDR'])."', NOW())");
       $DB->query("
         INSERT INTO users_notifications_settings
           (UserID)
@@ -162,14 +162,14 @@ if (!empty($_REQUEST['confirm'])) {
         INSERT INTO users_history_emails
           (UserID, Email, Time, IP)
         VALUES
-          ('$UserID', '".DBCrypt::encrypt($_REQUEST['email'])."', NULL, '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."')");
+          ('$UserID', '".Crypto::encrypt($_REQUEST['email'])."', NULL, '".Crypto::encrypt($_SERVER['REMOTE_ADDR'])."')");
 
       if ($_REQUEST['email'] != $InviteEmail) {
         $DB->query("
           INSERT INTO users_history_emails
             (UserID, Email, Time, IP)
           VALUES
-            ('$UserID', '".DBCrypt::encrypt($InviteEmail)."', NOW(), '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."')");
+            ('$UserID', '".Crypto::encrypt($InviteEmail)."', NOW(), '".Crypto::encrypt($_SERVER['REMOTE_ADDR'])."')");
       }
 
 

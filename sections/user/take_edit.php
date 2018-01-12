@@ -149,7 +149,7 @@ function require_password($Setting = false) {
 }
 
 // Email change
-$CurEmail = DBCrypt::decrypt($CurEmail);
+$CurEmail = Crypto::decrypt($CurEmail);
 if ($CurEmail != $_POST['email']) {
 
   // Non-admins have to authenticate to change email
@@ -167,7 +167,7 @@ if ($CurEmail != $_POST['email']) {
     INSERT INTO users_history_emails
       (UserID, Email, Time, IP)
     VALUES
-      (?, ?, NULL, ?)", $UserID, DBCrypt::encrypt($_POST['email']), DBCrypt::encrypt($_SERVER['REMOTE_ADDR']));
+      (?, ?, NULL, ?)", $UserID, Crypto::encrypt($_POST['email']), Crypto::encrypt($_SERVER['REMOTE_ADDR']));
 
 }
 
@@ -300,12 +300,12 @@ $SQL = "
     i.Info = '".db_string($_POST['info'])."',
     i.InfoTitle = '".db_string($_POST['profile_title'])."',
     i.UnseededAlerts = '$UnseededAlerts',
-    m.Email = '".DBCrypt::encrypt($_POST['email'])."',
+    m.Email = '".Crypto::encrypt($_POST['email'])."',
     m.IRCKey = '".db_string($_POST['irckey'])."',
     m.Paranoia = '".db_string(json_encode($Paranoia))."'";
 
 if ($ResetPassword) {
-  $ChangerIP = DBCrypt::encrypt($LoggedUser['IP']);
+  $ChangerIP = Crypto::encrypt($LoggedUser['IP']);
   $PassHash = Users::make_sec_hash($_POST['new_pass_1']);
   $SQL.= ",m.PassHash = '".db_string($PassHash)."'";
   $DB->query("
@@ -320,7 +320,7 @@ if (isset($_POST['resetpasskey'])) {
   $UserInfo = Users::user_heavy_info($UserID);
   $OldPassKey = $UserInfo['torrent_pass'];
   $NewPassKey = Users::make_secret();
-  $ChangerIP = DBCrypt::encrypt($LoggedUser['IP']);
+  $ChangerIP = Crypto::encrypt($LoggedUser['IP']);
   $SQL .= ",m.torrent_pass = '$NewPassKey'";
   $DB->query("
     INSERT INTO users_history_passkeys

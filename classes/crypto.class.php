@@ -1,5 +1,5 @@
 <?
-class DBCrypt {
+class Crypto {
   /**
    * Encrypts input text for use in database
    *
@@ -10,7 +10,7 @@ class DBCrypt {
     if (apcu_exists('DBKEY')) {
       $iv_size = openssl_cipher_iv_length('AES-128-CBC');
       $iv = openssl_random_pseudo_bytes($iv_size);
-      $ret =  base64_encode($iv.openssl_encrypt($plaintext, 'AES-128-CBC', apcu_fetch('DBKEY'), OPENSSL_RAW_DATA, $iv));
+      $ret = base64_encode($iv.openssl_encrypt($plaintext, 'AES-128-CBC', apcu_fetch('DBKEY'), OPENSSL_RAW_DATA, $iv));
       return $ret;
     } else {
       return false;

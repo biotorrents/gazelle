@@ -86,8 +86,8 @@ $DB->set_query_id($RS);
     </tr>
 <?
   while (list($UserID, $IP, $InviteKey, $Expires, $Email) = $DB->next_record()) {
-    $IP = apcu_exists('DBKEY') ? DBCrypt::decrypt($IP) : '[Encrypted]';
-    $Email = apcu_exists('DBKEY') ? DBCrypt::decrypt($Email) : '[Encrypted]';
+    $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
+    $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]';
 ?>
     <tr class="row">
       <td><?=Users::format_username($UserID, true, true, true, true)?></td>

@@ -74,7 +74,7 @@ class AutoEnable {
                 INSERT INTO users_enable_requests
                 (UserID, Email, IP, UserAgent, Timestamp)
                 VALUES (?, ?, ?, ?, NOW())",
-                $UserID, DBCrypt::encrypt($Email), DBCrypt::encrypt($IP), $UserAgent);
+                $UserID, Crypto::encrypt($Email), Crypto::encrypt($IP), $UserAgent);
 
             // Cache the number of requests for the modbar
             G::$Cache->increment_value(self::CACHE_KEY_NAME);
@@ -132,7 +132,7 @@ class AutoEnable {
 
             foreach ($Results as $Result) {
                 list($Email, $ID, $UserID) = $Result;
-                $Email = DBCrypt::decrypt($Email);
+                $Email = Crypto::decrypt($Email);
                 $UserInfo[] = array($ID, $UserID);
 
                 if ($Status == self::APPROVED) {
@@ -264,7 +264,7 @@ class AutoEnable {
             } else {
                 // Good request, decrement cache value and enable account
                 G::$Cache->decrement_value(AutoEnable::CACHE_KEY_NAME);
-                $VisibleTrIP = ($Visible && DBCrypt::decrypt($IP) != '127.0.0.1') ? '1' : '0';
+                $VisibleTrIP = ($Visible && Crypto::decrypt($IP) != '127.0.0.1') ? '1' : '0';
                 Tracker::update_tracker('add_user', array('id' => $UserID, 'passkey' => $TorrentPass, 'visible' => $VisibleTrIP));
                 G::$DB->query("UPDATE users_main SET Enabled = '1', can_leech = '1' WHERE ID = '$UserID'");
                 G::$DB->query("UPDATE users_info SET BanReason = '0' WHERE UserID = '$UserID'");

@@ -50,7 +50,7 @@ class Misc {
     $UnescapedSubject = $Subject;
     $UnescapedBody = $Body;
     $Subject = db_string($Subject);
-    $Body = DBCrypt::encrypt(substr($Body, 0, 49135)); // 49135 -> encryption -> 65536 (max length in mysql)
+    $Body = Crypto::encrypt(substr($Body, 0, 49135)); // 49135 -> encryption -> 65536 (max length in mysql)
     if ($ToID == 0) {
       // Don't allow users to send messages to the system
       return;

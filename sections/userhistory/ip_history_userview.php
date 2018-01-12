@@ -23,10 +23,10 @@ $EncIPs = $DB->collect("IP");
 $IPs = [];
 
 foreach ($EncIPs as $Enc) {
-  if (!isset($IPs[DBCrypt::decrypt($Enc)])) {
-    $IPs[DBCrypt::decrypt($Enc)] = [];
+  if (!isset($IPs[Crypto::decrypt($Enc)])) {
+    $IPs[Crypto::decrypt($Enc)] = [];
   }
-  $IPs[DBCrypt::decrypt($Enc)][] = $Enc;
+  $IPs[Crypto::decrypt($Enc)][] = $Enc;
 }
 
 $DB->query("
@@ -35,7 +35,7 @@ $DB->query("
   WHERE ID = '$UserID'");
 
 list($Curr) = $DB->next_record();
-$Curr = DBCrypt::decrypt($Curr);
+$Curr = Crypto::decrypt($Curr);
 
 if (!$Self) {
   $DB->query("SELECT Username FROM users_main WHERE ID = '$UserID'");

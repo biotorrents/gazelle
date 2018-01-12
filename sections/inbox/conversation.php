@@ -83,7 +83,7 @@ $DB->query("
 <?
 
 while (list($SentDate, $SenderID, $Body, $MessageID) = $DB->next_record()) {
-  $Body = apcu_exists('DBKEY') ? DBCrypt::decrypt($Body) : '[Encrypted]';
+  $Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[Encrypted]';
 ?>
   <div class="box vertical_space">
     <div class="head" style="overflow: hidden;">

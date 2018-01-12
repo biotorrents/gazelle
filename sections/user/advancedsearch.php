@@ -804,7 +804,7 @@ if ($RunQuery) {
       $DB->query("SELECT ID, IP FROM users_main");
     }
     while(list($ID, $EncIP) = $DB->next_record()) {
-      $IPs[] = $ID.", '".DBCrypt::decrypt($EncIP)."'";
+      $IPs[] = $ID.", '".Crypto::decrypt($EncIP)."'";
     }
     $DB->query("CREATE TEMPORARY TABLE users_ips_decrypted (ID INT(10) UNSIGNED NOT NULL, IP VARCHAR(45) NOT NULL, PRIMARY KEY (ID,IP)) ENGINE=MEMORY");
     $DB->query("INSERT IGNORE INTO users_ips_decrypted (ID, IP) VALUES(".implode("),(", $IPs).")");
@@ -819,7 +819,7 @@ if ($RunQuery) {
       $DB->query("SELECT ID, Email FROM users_main");
     }
     while(list($ID, $EncEmail) = $DB->next_record()) {
-      $Emails[] = $ID.", '".DBCrypt::decrypt($EncEmail)."'";
+      $Emails[] = $ID.", '".Crypto::decrypt($EncEmail)."'";
     }
     $DB->query("CREATE TEMPORARY TABLE users_emails_decrypted (ID INT(10) UNSIGNED NOT NULL, Email VARCHAR(255) NOT NULL, PRIMARY KEY (ID,Email)) ENGINE=MEMORY");
     $DB->query("INSERT IGNORE INTO users_emails_decrypted (ID, Email) VALUES(".implode("),(", $Emails).")");
@@ -866,8 +866,8 @@ echo $Pages;
     </tr>
 <?
 while (list($UserID, $Username, $Uploaded, $Downloaded, $Snatched, $Invitees, $Class, $Email, $Enabled, $IP, $Invites, $DisableInvites, $Warned, $Donor, $JoinDate, $LastAccess) = $DB->next_record()) {
-  $IP = apcu_exists('DBKEY') ? DBCrypt::decrypt($IP) : '[Encrypted]';
-  $Email = apcu_exists('DBKEY') ? DBCrypt::decrypt($Email) : '[Encrypted]';
+  $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
+  $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]';
 ?>
     <tr>
       <td><?=Users::format_username($UserID, true, true, true, true)?></td>

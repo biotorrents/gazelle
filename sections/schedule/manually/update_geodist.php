@@ -2,7 +2,7 @@
 $IPs = [];
 $DB->query("SELECT IP FROM users_main WHERE Enabled = '1'");
 while(list($EncIP) = $DB->next_record()) {
-  $IPs[] = DBCrypt::decrypt($EncIP);
+  $IPs[] = Crypto::decrypt($EncIP);
 }
 $DB->query("CREATE TEMPORARY TABLE users_ips_decrypted (IP VARCHAR(45) NOT NULL)");
 $DB->query("INSERT INTO users_ips_decrypted (IP) VALUES('".implode("'),('", $IPs)."')");

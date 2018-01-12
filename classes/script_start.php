@@ -191,7 +191,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
       SET ";
     // Only update IP if we have an encryption key in memory
     if (apcu_exists('DBKEY')) {
-      $SessionQuery .= "IP = '".DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])."', ";
+      $SessionQuery .= "IP = '".Crypto::encrypt($_SERVER['REMOTE_ADDR'])."', ";
     }
     $SessionQuery .=
        "Browser = '$Browser',
@@ -206,7 +206,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
         'SessionID' => $SessionID,
         'Browser' => $Browser,
         'OperatingSystem' => $OperatingSystem,
-        'IP' => (apcu_exists('DBKEY') ? DBCrypt::encrypt($_SERVER['REMOTE_ADDR']) : $UserSessions[$SessionID]['IP']),
+        'IP' => (apcu_exists('DBKEY') ? Crypto::encrypt($_SERVER['REMOTE_ADDR']) : $UserSessions[$SessionID]['IP']),
         'LastUpdate' => sqltime() );
     $Cache->insert_front($SessionID, $UsersSessionCache);
     $Cache->commit_transaction(0);
@@ -232,7 +232,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
 
   // IP changed
 
-  if (apcu_exists('DBKEY') && DBCrypt::decrypt($LoggedUser['IP']) != $_SERVER['REMOTE_ADDR'] && !check_perms('site_disable_ip_history')) {
+  if (apcu_exists('DBKEY') && Crypto::decrypt($LoggedUser['IP']) != $_SERVER['REMOTE_ADDR'] && !check_perms('site_disable_ip_history')) {
 
     if (Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
       error('Your IP address has been banned.');
@@ -246,7 +246,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
       WHERE EndTime IS NULL
         AND UserID = '$LoggedUser[ID]'");
     while (list($EncIP) = $DB->next_record()) {
-      if (DBCrypt::decrypt($EncIP) == $CurIP) {
+      if (Crypto::decrypt($EncIP) == $CurIP) {
         $CurIP = $EncIP;
         // CurIP is now the encrypted IP that was already in the database (for matching)
         break;
@@ -262,15 +262,15 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
       INSERT IGNORE INTO users_history_ips
         (UserID, IP, StartTime)
       VALUES
-        ('$LoggedUser[ID]', '".DBCrypt::encrypt($NewIP)."', NOW())");
+        ('$LoggedUser[ID]', '".Crypto::encrypt($NewIP)."', NOW())");
 
     $ipcc = Tools::geoip($NewIP);
     $DB->query("
       UPDATE users_main
-      SET IP = '".DBCrypt::encrypt($NewIP)."', ipcc = '$ipcc'
+      SET IP = '".Crypto::encrypt($NewIP)."', ipcc = '$ipcc'
       WHERE ID = '$LoggedUser[ID]'");
     $Cache->begin_transaction('user_info_heavy_'.$LoggedUser['ID']);
-    $Cache->update_row(false, array('IP' => DBCrypt::encrypt($_SERVER['REMOTE_ADDR'])));
+    $Cache->update_row(false, array('IP' => Crypto::encrypt($_SERVER['REMOTE_ADDR'])));
     $Cache->commit_transaction(0);
 
 

@@ -73,7 +73,7 @@ View::show_header($Username.' &gt; Sessions');
 <?
   foreach ($UserSessions as $Session) {
     list($ThisSessionID, $Browser, $OperatingSystem, $IP, $LastUpdate) = array_values($Session);
-    $IP = apcu_exists('DBKEY') ? DBCrypt::decrypt($IP) : '[Encrypted]';
+    $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
 ?>
       <tr class="row">
         <td class="nobr"><?=$IP?></td>

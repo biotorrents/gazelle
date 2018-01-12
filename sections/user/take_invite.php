@@ -70,7 +70,7 @@ foreach ($Emails as $CurEmail) {
     WHERE InviterID = ".$LoggedUser['ID']);
   if ($DB->has_results()) {
     while (list($MaybeEmail) = $DB->next_record()) {
-      if (DBCrypt::decrypt($MaybeEmail) == $CurEmail) {
+      if (Crypto::decrypt($MaybeEmail) == $CurEmail) {
         error('You already have a pending invite to that address!');
         header('Location: user.php?action=invite');
         die();
@@ -103,7 +103,7 @@ EOT;
     INSERT INTO invites
       (InviterID, InviteKey, Email, Expires, Reason)
     VALUES
-      ('$LoggedUser[ID]', '$InviteKey', '".DBCrypt::encrypt($CurEmail)."', '$InviteExpires', '$InviteReason')");
+      ('$LoggedUser[ID]', '$InviteKey', '".Crypto::encrypt($CurEmail)."', '$InviteExpires', '$InviteReason')");
 
   if (!check_perms('site_send_unlimited_invites')) {
     $DB->query("

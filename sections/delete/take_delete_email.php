@@ -41,9 +41,9 @@ forEach ($EncEmails as $EncEmail) {
   }
 
   list($Curr) = $DB->next_record();
-  $Curr = DBCrypt::decrypt($Curr);
+  $Curr = Crypto::decrypt($Curr);
 
-  if ($Curr == DBCrypt::decrypt($EncEmail)) {
+  if ($Curr == Crypto::decrypt($EncEmail)) {
     error("You can't delete your current email.");
   }
 }

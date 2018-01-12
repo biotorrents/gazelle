@@ -46,7 +46,7 @@ if (isset($_GET['deny']) && isset($_GET['type']) && isset($_GET['value'])) {
         WHERE UserID = '$UserID'");
       $ToDelete = [];
       while (list($EncValue) = $DB->next_record()) {
-        if (DBCrypt::decrypt($Value) == DBCrypt::decrypt($EncValue)) {
+        if (Crypto::decrypt($Value) == Crypto::decrypt($EncValue)) {
           $ToDelete[] = $EncValue;
         }
       }
@@ -95,7 +95,7 @@ View::show_header("Expunge Requests");
     <tr>
       <td><?=Users::format_username($Request['UserID'])?></td>
       <td><?=$Request['Type']?></td>
-      <td><?=DBCrypt::decrypt($Request['Value'])?></td>
+      <td><?=Crypto::decrypt($Request['Value'])?></td>
       <td><?=display_str($Request['Reason'])?></td>
       <td><a href="tools.php?action=expunge_requests&auth=<?=$LoggedUser['AuthKey']?>&type=<?=strtolower($Request['Type'])?>&value=<?=urlencode($Request['Value'])?>&userid=<?=$Request['UserID']?>&deny=false" class="brackets">Accept</a></td>
       <td><a href="tools.php?action=expunge_requests&auth=<?=$LoggedUser['AuthKey']?>&type=<?=strtolower($Request['Type'])?>&value=<?=urlencode($Request['Value'])?>&userid=<?=$Request['UserID']?>&deny=true" class="brackets">Deny</a></td>

@@ -190,7 +190,7 @@ if (!empty($Pending)) {
 <?
   foreach ($Pending as $Invite) {
     list($InviteKey, $Email, $Expires) = $Invite;
-    $Email = apcu_exists('DBKEY') ? DBCrypt::decrypt($Email) : '[Encrypted]';
+    $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]';
 ?>
       <tr class="row">
         <td><?=display_str($Email)?></td>
@@ -219,7 +219,7 @@ if (!empty($Pending)) {
 <?
   foreach ($Invited as $User) {
     list($ID, $Email, $Uploaded, $Downloaded, $JoinDate, $LastAccess) = $User;
-    $Email = apcu_exists('DBKEY') ? DBCrypt::decrypt($Email) : '[Encrypted]'
+    $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'
 ?>
       <tr class="row">
         <td><?=Users::format_username($ID, true, true, true, true)?></td>

@@ -24,7 +24,7 @@
 <?  if (!empty($LastActive)) { ?>
   <p>
     <a href="user.php?action=sessions">
-      <span class="tooltip" title="Manage sessions">Last activity: </span><?=time_diff($LastActive['LastUpdate'])?><span class="tooltip" title="Manage sessions"> from <?=(apcu_exists('DBKEY')?(DBCrypt::decrypt($LastActive['IP'])):'[Encrypted]') ?></span>
+      <span class="tooltip" title="Manage sessions">Last activity: </span><?=time_diff($LastActive['LastUpdate'])?><span class="tooltip" title="Manage sessions"> from <?=(apcu_exists('DBKEY')?(Crypto::decrypt($LastActive['IP'])):'[Encrypted]') ?></span>
     </a>
   </p>
 <?  } ?>

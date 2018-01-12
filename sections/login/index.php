@@ -52,7 +52,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
       error('Database not fully decrypted. Please wait for staff to fix this and try again later');
     }
 
-    $Email = DBCrypt::decrypt($Email);
+    $Email = Crypto::decrypt($Email);
 
     if ($UserID && strtotime($Expires) > time()) {
       // If the user has requested a password change, and his key has not expired
@@ -80,7 +80,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
             INSERT INTO users_history_passwords
               (UserID, ChangerIP, ChangeTime)
             VALUES
-              (?, ?, NOW())", $UserID, DBCrypt::encrypt($_SERVER['REMOTE_ADDR']));
+              (?, ?, NOW())", $UserID, Crypto::encrypt($_SERVER['REMOTE_ADDR']));
           $PassWasReset = true;
           $LoggedUser['ID'] = $UserID; // Set $LoggedUser['ID'] for logout_all_sessions() to work
           logout_all_sessions();
@@ -127,7 +127,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
             Email
           FROM users_main");
         while(list($EncEmail) = $DB->next_record()) {
-          if (strtolower($_REQUEST['email']) == strtolower(DBCrypt::decrypt($EncEmail))) {
+          if (strtolower($_REQUEST['email']) == strtolower(Crypto::decrypt($EncEmail))) {
             break; // $EncEmail is now the encrypted form of the given email from the database
           }
         }
@@ -140,7 +140,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
           FROM users_main
           WHERE Email = ?", $EncEmail);
         list($UserID, $Username, $Email) = $DB->next_record();
-        $Email = DBCrypt::decrypt($Email);
+        $Email = Crypto::decrypt($Email);
 
         if ($UserID) {
           // Email exists in the database
@@ -264,7 +264,7 @@ else {
                 $IPs = $DB->to_array(false, MYSQLI_NUM);
                 $QueryParts = [];
                 foreach ($IPs as $i => $IP) {
-                  $IPs[$i] = DBCrypt::decrypt($IP[0]);
+                  $IPs[$i] = Crypto::decrypt($IP[0]);
                 }
                 $IPs = array_unique($IPs);
                 if (count($IPs) > 0) { // Always allow first login
@@ -287,7 +287,7 @@ else {
                         FROM users_main
                         WHERE ID = ?", $UserID);
                       list($Username, $Email) = $DB->next_record();
-                      Users::auth_location($UserID, $Username, $CurrentASN, DBCrypt::decrypt($Email));
+                      Users::auth_location($UserID, $Username, $CurrentASN, Crypto::decrypt($Email));
                       require('newlocation.php');
                       die();
                     }
@@ -356,14 +356,14 @@ else {
                   INSERT INTO users_sessions
                     (UserID, SessionID, KeepLogged, Browser, OperatingSystem, IP, LastUpdate, FullUA)
                   VALUES
-                    ('$UserID', '".db_string($SessionID)."', '1', '$Browser', '$OperatingSystem', '".db_string(apcu_exists('DBKEY')?DBCrypt::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0')."', NOW(), '".db_string($_SERVER['HTTP_USER_AGENT'])."')");
+                    ('$UserID', '".db_string($SessionID)."', '1', '$Browser', '$OperatingSystem', '".db_string(apcu_exists('DBKEY')?Crypto::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0')."', NOW(), '".db_string($_SERVER['HTTP_USER_AGENT'])."')");
 
                 $Cache->begin_transaction("users_sessions_$UserID");
                 $Cache->insert_front($SessionID, [
                   'SessionID' => $SessionID,
                   'Browser' => $Browser,
                   'OperatingSystem' => $OperatingSystem,
-                  'IP' => (apcu_exists('DBKEY')?DBCrypt::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0'),
+                  'IP' => (apcu_exists('DBKEY')?Crypto::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0'),
                   'LastUpdate' => sqltime()
                 ]);
                 $Cache->commit_transaction(0);

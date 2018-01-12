@@ -41,9 +41,9 @@ forEach ($EncIPs as $EncIP) {
   }
 
   list($Curr) = $DB->next_record();
-  $Curr = DBCrypt::decrypt($Curr);
+  $Curr = Crypto::decrypt($Curr);
 
-  if ($Curr == DBCrypt::decrypt($EncIP)) {
+  if ($Curr == Crypto::decrypt($EncIP)) {
     error("You can't delete your current IP.");
   }
 }

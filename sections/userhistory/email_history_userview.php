@@ -23,10 +23,10 @@ $EncEmails = $DB->collect("Email");
 $Emails = [];
 
 foreach ($EncEmails as $Enc) {
-  if (!isset($Emails[DBCrypt::decrypt($Enc)])) {
-    $Emails[DBCrypt::decrypt($Enc)] = [];
+  if (!isset($Emails[Crypto::decrypt($Enc)])) {
+    $Emails[Crypto::decrypt($Enc)] = [];
   }
-  $Emails[DBCrypt::decrypt($Enc)][] = $Enc;
+  $Emails[Crypto::decrypt($Enc)][] = $Enc;
 }
 
 $DB->query("
@@ -35,7 +35,7 @@ $DB->query("
   WHERE ID = '$UserID'");
 
 list($Curr) = $DB->next_record();
-$Curr = DBCrypt::decrypt($Curr);
+$Curr = Crypto::decrypt($Curr);
 
 if (!$Self) {
   $DB->query("SELECT Username FROM users_main WHERE ID = '$UserID'");
