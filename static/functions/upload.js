@@ -34,6 +34,7 @@ function Categories() {
     'resolution': {},
     'audio': {},
     'sub': {},
+    'trans': {name: 'Translation Group (optional)'},
     'mediainfo': {},
     'tags': {notes: 'Remember to use the \'3d\' tag if your upload is 3DCG!'},
     'screenshots': {name: 'Screenshots'},
