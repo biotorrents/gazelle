@@ -65,7 +65,13 @@ if (!$Self) {
     <td><?=display_str($IP)?></td>
     <td>
     <? if ($IP != $Curr) { ?>
-      <a href="delete.php?action=ip&ips[]=<?=implode('&ips[]=', array_map('urlencode', $Encs))?>" class="brackets">X</a>
+      <form action="delete.php" method="post">
+        <input type="hidden" name="action" value="ip">
+        <? foreach ($Encs as $Enc) { ?>
+        <input type="hidden" name="ips[]" value="<?=$Enc?>">
+        <? } ?>
+        <input type="submit" value="X">
+      </form>
     <? } ?>
     </td>
   </tr>

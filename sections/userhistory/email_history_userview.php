@@ -65,7 +65,13 @@ if (!$Self) {
     <td><?=display_str($Email)?></td>
     <td>
     <? if ($Email != $Curr) { ?>
-      <a href="delete.php?action=email&emails[]=<?=implode('&emails[]=', array_map('urlencode', $Encs))?>" class="brackets">X</a>
+      <form action="delete.php" method="post">
+        <input type="hidden" name="action" value="email">
+        <? foreach ($Encs as $Enc) { ?>
+        <input type="hidden" name="emails[]" value="<?=$Enc?>">
+        <? } ?>
+        <input type="submit" value="X">
+      </form>
     <? } ?>
     </td>
   </tr>
