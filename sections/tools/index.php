@@ -178,8 +178,6 @@ switch ($_REQUEST['action']) {
     $Cache->delete_value('news_latest_title');
     $Cache->delete_value('news');
 
-    NotificationsManager::send_push(NotificationsManager::get_push_enabled_users(), $_POST['title'], $_POST['body'], site_url() . 'index.php', NotificationsManager::NEWS);
-
     header('Location: index.php');
     break;
 

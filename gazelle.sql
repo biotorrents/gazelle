@@ -640,12 +640,6 @@ CREATE TABLE `pm_messages` (
   KEY `ConvID` (`ConvID`)
 ) ENGINE=InnoDB CHARSET=utf8;
 
-CREATE TABLE `push_notifications_usage` (
-  `PushService` varchar(10) NOT NULL,
-  `TimesUsed` int(10) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`PushService`)
-) ENGINE=InnoDB CHARSET=utf8;
-
 CREATE TABLE `reports` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `UserID` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1591,13 +1585,6 @@ CREATE TABLE `users_points_requests` (
   PRIMARY KEY (`RequestID`),
   KEY `UserID` (`UserID`),
   KEY `RequestID` (`RequestID`)
-) ENGINE=InnoDB CHARSET=utf8;
-
-CREATE TABLE `users_push_notifications` (
-  `UserID` int(10) NOT NULL,
-  `PushService` tinyint(1) NOT NULL DEFAULT '0',
-  `PushOptions` text,
-  PRIMARY KEY (`UserID`)
 ) ENGINE=InnoDB CHARSET=utf8;
 
 CREATE TABLE `users_seedtime` (

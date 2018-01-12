@@ -17,43 +17,8 @@ class NotificationsManagerView {
     }
   }
 
-  private static function render_push_settings() {
-    $PushService = self::$Settings['PushService'];
-    $PushOptions = unserialize(self::$Settings['PushOptions']);
-    if (empty($PushOptions['PushDevice'])) {
-      $PushOptions['PushDevice'] = '';
-    }
-    ?>
-    <tr>
-      <td class="label"><strong>Push notifications</strong></td>
-      <td>
-        <select name="pushservice" id="pushservice">
-          <option value="0"<? if (empty($PushService)) { ?> selected="selected"<? } ?>>Disable push notifications</option>
-          <option value="1"<? if ($PushService == 1) { ?> selected="selected"<? } ?>>Notify My Android</option>
-          <option value="2"<? if ($PushService == 2) { ?> selected="selected"<? } ?>>Prowl</option>
-<!--            No option 3, notifo died. -->
-          <option value="4"<? if ($PushService == 4) { ?> selected="selected"<? } ?>>Super Toasty</option>
-          <option value="5"<? if ($PushService == 5) { ?> selected="selected"<? } ?>>Pushover</option>
-          <option value="6"<? if ($PushService == 6) { ?> selected="selected"<? } ?>>PushBullet</option>
-        </select>
-        <div id="pushsettings" style="display: none;">
-          <label id="pushservice_title" for="pushkey">API key</label>
-          <input type="text" size="50" name="pushkey" id="pushkey" value="<?=display_str($PushOptions['PushKey'])?>" />
-          <label class="pushdeviceid" id="pushservice_device" for="pushdevice">Device ID</label>
-          <select class="pushdeviceid" name="pushdevice" id="pushdevice">
-            <option value="<?= display_str($PushOptions['PushDevice'])?>" selected="selected"><?= display_str($PushOptions['PushDevice'])?></option>
-          </select>
-          <br />
-          <a href="user.php?action=take_push&amp;push=1&amp;userid=<?=G::$LoggedUser['ID']?>&amp;auth=<?=G::$LoggedUser['AuthKey']?>" class="brackets">Test push</a>
-          <a href="wiki.php?action=article&amp;id=1017" class="brackets">View wiki guide</a>
-        </div>
-      </td>
-    </tr>
-<?  }
-
   public static function render_settings($Settings) {
     self::$Settings = $Settings;
-    self::render_push_settings();
 ?>
     <tr>
       <td class="label">
@@ -124,11 +89,10 @@ class NotificationsManagerView {
     </tr>
 <?  }
 
-  private static function render_checkbox($Name, $Traditional = false, $Push = true) {
+  private static function render_checkbox($Name, $Traditional = false) {
     $Checked = self::$Settings[$Name];
-    $PopupChecked = $Checked == NotificationsManager::OPT_POPUP || $Checked == NotificationsManager::OPT_POPUP_PUSH || !isset($Checked) ? ' checked="checked"' : '';
-    $TraditionalChecked = $Checked == NotificationsManager::OPT_TRADITIONAL || $Checked == NotificationsManager::OPT_TRADITIONAL_PUSH ? ' checked="checked"' : '';
-    $PushChecked = $Checked == NotificationsManager::OPT_TRADITIONAL_PUSH || $Checked == NotificationsManager::OPT_POPUP_PUSH || $Checked == NotificationsManager::OPT_PUSH ? ' checked="checked"' : '';
+    $PopupChecked = $Checked == NotificationsManager::OPT_POPUP || !isset($Checked) ? ' checked="checked"' : '';
+    $TraditionalChecked = $Checked == NotificationsManager::OPT_TRADITIONAL ? ' checked="checked"' : '';
 
 ?>
     <label>
@@ -139,12 +103,6 @@ class NotificationsManagerView {
     <label>
       <input type="checkbox" name="notifications_<?=$Name?>_traditional" id="notifications_<?=$Name?>_traditional"<?=$TraditionalChecked?> />
       Traditional
-    </label>
-<?    }
-    if ($Push) { ?>
-    <label>
-      <input type="checkbox" name="notifications_<?=$Name?>_push" id="notifications_<?=$Name?>_push"<?=$PushChecked?> />
-      Push
     </label>
 <?    }
   }

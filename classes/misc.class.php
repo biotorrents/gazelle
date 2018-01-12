@@ -137,8 +137,6 @@ class Misc {
           AND InInbox = '1'");
       list($UnRead) = G::$DB->next_record();
       G::$Cache->cache_value("inbox_new_$ID", $UnRead);
-
-      NotificationsManager::send_push($ID, "Message from $SenderName, Subject: $UnescapedSubject", $UnescapedBody, site_url() . 'inbox.php', NotificationsManager::INBOX);
     }
 
     G::$DB->set_query_id($QueryID);

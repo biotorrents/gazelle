@@ -101,7 +101,6 @@ if (check_perms('admin_manage_blog')) {
             VALUES ('$LoggedUser[ID]', $ThreadID)");
           $Cache->delete_value('subscriptions_user_'.$LoggedUser['ID']);
         }
-        NotificationsManager::send_push(NotificationsManager::get_push_enabled_users(), $_POST['title'], $_POST['body'], site_url() . 'index.php', NotificationsManager::BLOG);
 
         header('Location: blog.php');
         break;

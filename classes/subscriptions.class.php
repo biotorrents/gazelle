@@ -57,14 +57,14 @@ class Subscriptions {
         INSERT IGNORE INTO users_notify_quoted
           (UserID, QuoterID, Page, PageID, PostID, Date)
         VALUES
-          ('$UserID', '$QuoterID', '$Page', '$PageID', '$PostID', NOW())");
+          (    ?,               ?,               ?,      ?,       ?,   NOW())",
+          $Result['ID'], G::$LoggedUser['ID'], $Page, $PageID, $PostID);
       G::$Cache->delete_value("notify_quoted_$UserID");
       if ($Page == 'forums') {
         $URL = site_url() . "forums.php?action=viewthread&postid=$PostID";
       } else {
         $URL = site_url() . "comments.php?action=jump&postid=$PostID";
       }
-      NotificationsManager::send_push($UserID, 'New Quote!', 'Quoted by ' . G::$LoggedUser['Username'] . " $URL", $URL, NotificationsManager::QUOTES);
     }
     G::$DB->set_query_id($QueryID);
   }
