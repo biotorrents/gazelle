@@ -452,23 +452,6 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
           </select>
         </td>
       </tr>
-      <tr id="sub_tr">
-        <td class="label">Subbing</td>
-        <td>
-          <select name="sub">
-            <option>---</option>
-<?
-    foreach($this->Subbing as $Subbing) {
-      echo "\t\t\t\t\t\t<option value=\"$Subbing\"";
-      if ($Subbing == $Torrent['Subbing']) {
-        echo " selected";
-      }
-      echo ">$Subbing</option>\n";
-    }
-?>
-          </select>
-        </td>
-      </tr>
       <tr id="lang_tr">
         <td class="label">Language</td>
         <td>
@@ -481,6 +464,23 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         echo " selected";
       }
       echo ">$Language</option>\n";
+    }
+?>
+          </select>
+        </td>
+      </tr>
+      <tr id="sub_tr">
+        <td class="label">Subbing</td>
+        <td>
+          <select name="sub">
+            <option>---</option>
+<?
+    foreach($this->Subbing as $Subbing) {
+      echo "\t\t\t\t\t\t<option value=\"$Subbing\"";
+      if ($Subbing == $Torrent['Subbing']) {
+        echo " selected";
+      }
+      echo ">$Subbing</option>\n";
     }
 ?>
           </select>
