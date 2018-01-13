@@ -153,7 +153,7 @@ if (count($Freeleeches)) {
     $DisplayTime = '('.str_replace(['week','day','hour','min','Just now','s',' '],['w','d','h','m','0m'],time_diff($ExpiryTime, 1, false)).') ';
     $DisplayName = '<a href="torrents.php?torrentid='.$ID.'"';
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-      $DisplayName .= " onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($Image)."\" onmouseleave=\"ungetCover(event)\"";
+      $DisplayName .= " onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($Image, true)."\" onmouseleave=\"ungetCover(event)\"";
     }
     $DisplayName .= '>'.$Name.'</a>';
 ?>
