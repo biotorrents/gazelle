@@ -55,3 +55,17 @@ We use modern PHP password hashing features that automatically rehash your passw
 * BTN-style magnet link support.
 * Support for optional per-user stylesheet additions and tweaks
 * This codebase expects to run over https only.
+
+## Mascot
+
+<img align="left" alt="Gracie Gazelle" src="https://git.oppaiti.me/Oppaitime/Gazelle/raw/branch/master/static/common/mascot.png">
+
+**Gracie Gazelle**
+
+Gracie is a veteran pirate of the Digital Ocean. On land, predators form companies to hunt down prey. But in the lawless water, prey attack the predators' transports. Gracies steals resources from the rich and shares them with the poor and isolated people. Her great eyesight sees through the darkest corners of the Internet for her next target. Her charisma attracts countless salty goats to join her fleet. She proudly puts the forbidden share symbols on her hat and belt, and is now one of the most wanted women in the world.
+
+<small>High resolution downloads [here](https://git.oppaiti.me/Oppaitime/Gazelle/issues/34#issuecomment-99)</small>
+
+<small>Character design and bio by Tyson Tan, who offers mascot design services for free and open source software, free of charge, under a free license.</small>
+
+<small>Contact: [tysontan.com](https://tysontan.com) / <tysontan@mail.com></small>
