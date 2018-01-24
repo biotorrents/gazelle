@@ -3,12 +3,9 @@ class Forums {
   /**
    * Get information on a thread.
    *
-   * @param int $ThreadID
-   *          the thread ID.
-   * @param boolean $Return
-   *          indicates whether thread info should be returned.
-   * @param Boolean $SelectiveCache
-   *          cache thread info/
+   * @param int $ThreadID the thread ID.
+   * @param boolean $Return indicates whether thread info should be returned.
+   * @param Boolean $SelectiveCache cache thread info.
    * @return array holding thread information.
    */
   public static function get_thread_info($ThreadID, $Return = true, $SelectiveCache = false) {
@@ -29,8 +26,8 @@ class Forums {
         FROM forums_topics AS t
           JOIN forums_posts AS fp ON fp.TopicID = t.ID
           LEFT JOIN forums_polls AS p ON p.TopicID = t.ID
-        WHERE t.ID = '$ThreadID'
-        GROUP BY fp.TopicID");
+        WHERE t.ID = ?
+        GROUP BY fp.TopicID", $ThreadID);
       if (!G::$DB->has_results()) {
         G::$DB->set_query_id($QueryID);
         return null;
@@ -49,8 +46,8 @@ class Forums {
             ed.Username
             FROM forums_posts AS p
               LEFT JOIN users_main AS ed ON ed.ID = p.EditedUserID
-            WHERE p.TopicID = '$ThreadID'
-              AND p.ID = '" . $ThreadInfo['StickyPostID'] . "'");
+            WHERE p.TopicID = ?
+              AND p.ID = ?", $ThreadID, $ThreadInfo['StickyPostID']);
         list ($ThreadInfo['StickyPost']) = G::$DB->to_array(false, MYSQLI_ASSOC);
       }
       G::$DB->set_query_id($QueryID);
@@ -66,10 +63,8 @@ class Forums {
   /**
    * Checks whether user has permissions on a forum.
    *
-   * @param int $ForumID
-   *          the forum ID.
-   * @param string $Perm
-   *          the permissision to check, defaults to 'Read'
+   * @param int $ForumID the forum ID.
+   * @param string $Perm the permissision to check, defaults to 'Read'
    * @return boolean true if user has permission
    */
   public static function check_forumperm($ForumID, $Perm = 'Read') {
@@ -92,8 +87,7 @@ class Forums {
   /**
    * Gets basic info on a forum.
    *
-   * @param int $ForumID
-   *          the forum ID.
+   * @param int $ForumID the forum ID.
    */
   public static function get_forum_info($ForumID) {
     $Forum = G::$Cache->get_value("ForumInfo_$ForumID");
@@ -108,8 +102,8 @@ class Forums {
           COUNT(forums_topics.ID) AS Topics
         FROM forums
           LEFT JOIN forums_topics ON forums_topics.ForumID = forums.ID
-        WHERE forums.ID = '$ForumID'
-        GROUP BY ForumID");
+        WHERE forums.ID = ?
+        GROUP BY ForumID", $ForumID);
       if (!G::$DB->has_results()) {
         return false;
       }
@@ -251,11 +245,11 @@ class Forums {
               FROM forums_posts AS p
               WHERE p.TopicID = l.TopicID
                 AND p.ID <= l.PostID
-            ) / $PerPage
+            ) / ?
           ) AS Page
         FROM forums_last_read_topics AS l
         WHERE l.TopicID IN(" . implode(',', $TopicIDs) . ") AND
-          l.UserID = '" . G::$LoggedUser['ID'] . "'");
+          l.UserID = ?", $PerPage, G::$LoggedUser['ID']);
       $LastRead = G::$DB->to_array('TopicID', MYSQLI_ASSOC);
       G::$DB->set_query_id($QueryID);
     } else {

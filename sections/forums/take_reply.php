@@ -5,7 +5,7 @@ authorize();
 /*********************************************************************\
 //--------------Take Post--------------------------------------------//
 
-This page takes a forum post submission, validates it (TODO), and
+This page takes a forum post submission, validates it, and
 enters it into the database. The user is then redirected to their
 post.
 
@@ -19,33 +19,18 @@ $_POST['action'] is what the user is trying to do. It can be:
 
 \*********************************************************************/
 
-// Quick SQL injection checks
-
-if (isset($LoggedUser['PostsPerPage'])) {
-  $PerPage = $LoggedUser['PostsPerPage'];
-} else {
-  $PerPage = POSTS_PER_PAGE;
-}
-
-if (isset($_POST['thread']) && !is_number($_POST['thread'])) {
-  error(0);
-}
-if (isset($_POST['forum']) && !is_number($_POST['forum'])) {
-  error(0);
-}
-
 // If you're not sending anything, go back
 if ($_POST['body'] === '' || !isset($_POST['body'])) {
   header('Location: '.$_SERVER['HTTP_REFERER']);
   die();
 }
 
-$Body = $_POST['body'];
-
 if (!empty($LoggedUser['DisablePosting'])) {
   error('Your posting privileges have been removed.');
 }
 
+$PerPage = $LoggedUser['PostsPerPage'] ?? POSTS_PER_PAGE;
+$Body = $_POST['body'];
 $TopicID = $_POST['thread'];
 $ThreadInfo = Forums::get_thread_info($TopicID);
 if ($ThreadInfo === null) {
@@ -60,6 +45,9 @@ if (!Forums::check_forumperm($ForumID)) {
 if (!Forums::check_forumperm($ForumID, 'Write') || $LoggedUser['DisablePosting'] || $ThreadInfo['IsLocked'] == '1' && !check_perms('site_moderate_forums')) {
   error(403);
 }
+if (strlen($Body) > 500000) {
+  error('Your post is too large');
+}
 
 if (isset($_POST['subscribe']) && Subscriptions::has_subscribed($TopicID) === false) {
   Subscriptions::subscribe($TopicID);
@@ -71,27 +59,27 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && ((!check_perms('site
   $DB->query("
     SELECT ID, Body
     FROM forums_posts
-    WHERE TopicID = '$TopicID'
-      AND AuthorID = '".$LoggedUser['ID']."'
+    WHERE TopicID = ?
+      AND AuthorID = ?
     ORDER BY ID DESC
-    LIMIT 1");
+    LIMIT 1", $TopicID, $LoggedUser['ID']);
   list($PostID, $OldBody) = $DB->next_record(MYSQLI_NUM, false);
 
   //Edit the post
   $DB->query("
     UPDATE forums_posts
     SET
-      Body = CONCAT(Body,'\n\n".db_string($Body)."'),
-      EditedUserID = '".$LoggedUser['ID']."',
-      EditedTime = '$SQLTime'
-    WHERE ID = '$PostID'");
+      Body = CONCAT(Body, '\n\n', ?),
+      EditedUserID = ?,
+      EditedTime = ?
+    WHERE ID = ?", $Body, $LoggedUser['ID'], $SQLTime, $PostID);
 
   //Store edit history
   $DB->query("
     INSERT INTO comments_edits
       (Page, PostID, EditUser, EditTime, Body)
     VALUES
-      ('forums', $PostID, ".$LoggedUser['ID'].", '$SQLTime', '".db_string($OldBody)."')");
+      ('forums', ?, ?, ?, ?)", $PostID, $LoggedUser['ID'], $SQLTime, $OldBody);
   $Cache->delete_value("forums_edits_$PostID");
 
   //Get the catalogue it is in
@@ -104,7 +92,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && ((!check_perms('site
     $Key = ($ThreadInfo['Posts'] % THREAD_CATALOGUE) - 1;
   }
   if ($ThreadInfo['StickyPostID'] == $PostID) {
-    $ThreadInfo['StickyPost']['Body'] .= "\n\n$Body";
+    $ThreadInfo['StickyPost']['Body'] .= "\n\n".$Body;
     $ThreadInfo['StickyPost']['EditedUserID'] = $LoggedUser['ID'];
     $ThreadInfo['StickyPost']['EditedTime'] = $SQLTime;
     $Cache->cache_value("thread_$TopicID".'_info', $ThreadInfo, 0);
@@ -112,12 +100,12 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && ((!check_perms('site
 
   //Edit the post in the cache
   $Cache->begin_transaction("thread_$TopicID"."_catalogue_$CatalogueID");
-  $Cache->update_row($Key, array(
-      'Body' => $Cache->MemcacheDBArray[$Key]['Body']."\n\n$Body",
-      'EditedUserID' => $LoggedUser['ID'],
-      'EditedTime' => $SQLTime,
-      'Username' => $LoggedUser['Username']
-      ));
+  $Cache->update_row($Key, [
+    'Body' => $Cache->MemcacheDBArray[$Key]['Body']."\n\n$Body",
+    'EditedUserID' => $LoggedUser['ID'],
+    'EditedTime' => $SQLTime,
+    'Username' => $LoggedUser['Username']
+  ]);
   $Cache->commit_transaction(0);
 
 //Now we're dealing with a normal post
@@ -125,7 +113,8 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && ((!check_perms('site
   //Insert the post into the posts database
   $DB->query("
     INSERT INTO forums_posts (TopicID, AuthorID, AddedTime, Body)
-    VALUES ('$TopicID', '".$LoggedUser['ID']."', '$SQLTime', '".db_string($Body)."')");
+    VALUES (?, ?, ?, ?)",
+    $TopicID, $LoggedUser['ID'], $SQLTime, $Body);
 
   $PostID = $DB->inserted_id();
 
@@ -134,21 +123,21 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && ((!check_perms('site
     UPDATE forums
     SET
       NumPosts = NumPosts + 1,
-      LastPostID = '$PostID',
-      LastPostAuthorID = '".$LoggedUser['ID']."',
-      LastPostTopicID = '$TopicID',
-      LastPostTime = '$SQLTime'
-    WHERE ID = '$ForumID'");
+      LastPostID = ?,
+      LastPostAuthorID = ?,
+      LastPostTopicID = ?,
+      LastPostTime = ?
+    WHERE ID = ?", $PostID, $LoggedUser['ID'], $TopicID, $SQLTime, $ForumID);
 
   //Update the topic
   $DB->query("
     UPDATE forums_topics
     SET
       NumPosts = NumPosts + 1,
-      LastPostID = '$PostID',
-      LastPostAuthorID = '".$LoggedUser['ID']."',
-      LastPostTime = '$SQLTime'
-    WHERE ID = '$TopicID'");
+      LastPostID = ?,
+      LastPostAuthorID = ?,
+      LastPostTime = ?
+    WHERE ID = ?", $PostID, $LoggedUser['ID'], $SQLTime, $TopicID);
 
   // if cache exists modify it, if not, then it will be correct when selected next, and we can skip this block
   if ($Forum = $Cache->get_value("forums_$ForumID")) {
@@ -162,7 +151,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && ((!check_perms('site
       $Thread['LastPostID'] = $PostID; // Set post ID for read/unread
       $Thread['LastPostTime'] = $SQLTime; // Time of last post
       $Thread['LastPostAuthorID'] = $LoggedUser['ID']; // Last poster ID
-      $Part2 = array($TopicID => $Thread); // Bumped thread
+      $Part2 = [$TopicID => $Thread]; // Bumped thread
 
     // if we're bumping from an older page
     } else {
@@ -182,20 +171,22 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && ((!check_perms('site
             ISNULL(p.TopicID) AS NoPoll
           FROM forums_topics AS f
             LEFT JOIN forums_polls AS p ON p.TopicID = f.ID
-          WHERE f.ID = '$TopicID'");
+          WHERE f.ID = ?", $TopicID);
         list($AuthorID, $IsLocked, $IsSticky, $NumPosts, $NoPoll) = $DB->next_record();
-        $Part2 = array($TopicID => array(
-          'ID' => $TopicID,
-          'Title' => $ThreadInfo['Title'],
-          'AuthorID' => $AuthorID,
-          'IsLocked' => $IsLocked,
-          'IsSticky' => $IsSticky,
-          'NumPosts' => $NumPosts,
-          'LastPostID' => $PostID,
-          'LastPostTime' => $SQLTime,
-          'LastPostAuthorID' => $LoggedUser['ID'],
-          'NoPoll' => $NoPoll
-        )); //Bumped
+        $Part2 = [
+          $TopicID => [
+            'ID'               => $TopicID,
+            'Title'            => $ThreadInfo['Title'],
+            'AuthorID'         => $AuthorID,
+            'IsLocked'         => $IsLocked,
+            'IsSticky'         => $IsSticky,
+            'NumPosts'         => $NumPosts,
+            'LastPostID'       => $PostID,
+            'LastPostTime'     => $SQLTime,
+            'LastPostAuthorID' => $LoggedUser['ID'],
+            'NoPoll'           => $NoPoll
+          ]
+        ]; //Bumped
       } else {
         $Part2 = [];
       }
@@ -218,20 +209,20 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && ((!check_perms('site
     } else {
       $Forum = $Part1 + $Part2 + $Part3; //Merge it
     }
-    $Cache->cache_value("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
+    $Cache->cache_value("forums_$ForumID", [$Forum, '', 0, $Stickies], 0);
 
     //Update the forum root
     $Cache->begin_transaction('forums_list');
-    $Cache->update_row($ForumID, array(
-      'NumPosts'=>'+1',
-      'LastPostID'=>$PostID,
-      'LastPostAuthorID'=>$LoggedUser['ID'],
-      'LastPostTopicID'=>$TopicID,
-      'LastPostTime'=>$SQLTime,
-      'Title'=>$ThreadInfo['Title'],
-      'IsLocked'=>$ThreadInfo['IsLocked'],
-      'IsSticky'=>$ThreadInfo['IsSticky']
-      ));
+    $Cache->update_row($ForumID, [
+      'NumPosts'         => '+1',
+      'LastPostID'       => $PostID,
+      'LastPostAuthorID' => $LoggedUser['ID'],
+      'LastPostTopicID'  => $TopicID,
+      'LastPostTime'     => $SQLTime,
+      'Title'            => $ThreadInfo['Title'],
+      'IsLocked'         => $ThreadInfo['IsLocked'],
+      'IsSticky'         => $ThreadInfo['IsSticky']
+    ]);
     $Cache->commit_transaction(0);
   } else {
     //If there's no cache, we have no data, and if there's no data
@@ -244,20 +235,20 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && ((!check_perms('site
 
   //Insert the post into the thread catalogue (block of 500 posts)
   $Cache->begin_transaction("thread_$TopicID"."_catalogue_$CatalogueID");
-  $Cache->insert('', array(
-    'ID'=>$PostID,
-    'AuthorID'=>$LoggedUser['ID'],
-    'AddedTime'=>$SQLTime,
-    'Body'=>$Body,
-    'EditedUserID'=>0,
-    'EditedTime'=>NULL,
-    'Username'=>$LoggedUser['Username'] //TODO: Remove, it's never used?
-    ));
+  $Cache->insert('', [
+    'ID'           => $PostID,
+    'AuthorID'     => $LoggedUser['ID'],
+    'AddedTime'    => $SQLTime,
+    'Body'         => $Body,
+    'EditedUserID' => 0,
+    'EditedTime'   => NULL,
+    'Username'     => $LoggedUser['Username'] //TODO: Remove, it's never used?
+  ]);
   $Cache->commit_transaction(0);
 
   //Update the thread info
   $Cache->begin_transaction("thread_$TopicID".'_info');
-  $Cache->update_row(false, array('Posts' => '+1', 'LastPostAuthorID' => $LoggedUser['ID']));
+  $Cache->update_row(false, ['Posts' => '+1', 'LastPostAuthorID' => $LoggedUser['ID']]);
   $Cache->commit_transaction(0);
 
   //Increment this now to make sure we redirect to the correct page
