@@ -100,13 +100,11 @@ function Quote(post, user, link = false) {
       target += post;
     }
     ajax.get(requrl, function(response) {
-      if ($('#quickpost').raw().value !== '') {
-        $('#quickpost').raw().value = $('#quickpost').raw().value + "\n\n";
+      let postarea = ($('textarea').raw().name=='body') ? $('textarea').raw() : $('#quickpost').raw();
+      if (postarea.value !== '') {
+        postarea.value += "\n\n";
       }
-      $('#quickpost').raw().value = $('#quickpost').raw().value + "[quote=" + username + (link == true ? "|" + target : "") + "]" +
-        //response.replace(/(img|aud)(\]|=)/ig,'url$2').replace(/\[url\=(https?:\/\/[^\s\[\]<>"\'()]+?)\]\[url\](.+?)\[\/url\]\[\/url\]/gi, "[url]$1[/url]")
-        html_entity_decode(response)
-      + "[/quote]";
+      postarea.value += "[quote=" + username + (link == true ? "|" + target : "") + "]" + html_entity_decode(response) + "[/quote]";
       resize('quickpost');
     });
   }
