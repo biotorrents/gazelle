@@ -23,9 +23,9 @@ if (!empty($_GET['advanced']) && check_perms('site_advanced_top10')) {
     }
   }
 
-  if ($_GET['format']) {
-    if (in_array($_GET['format'], $Formats)) {
-      $Where[] = "t.Format='".db_string($_GET['format'])."'";
+  if ($_GET['category']) {
+    if (in_array($_GET['category'], $Categories)) {
+      $Where[] = "g.CategoryID = '".(array_search($_GET['category'], $Categories)+1)."'";
     }
   }
 
@@ -70,13 +70,14 @@ if (check_perms('site_advanced_top10')) {
         </td>
       </tr>
       <tr>
-        <td class="label">Format:</td>
+        <td class="label">Category:</td>
         <td>
-          <select name="format" style="width: auto;" class="ft_format">
+          <select name="category" style="width: auto;" class="ft_format">
             <option value="">Any</option>
-<?  foreach ($Formats as $FormatName) { ?>
-            <option value="<?=display_str($FormatName)?>"<? if (isset($_GET['format']) && $FormatName==$_GET['format']) { ?> selected="selected"<? } ?>><?=display_str($FormatName)?></option>
-<?  } ?>        </select>
+<?  foreach ($Categories as $CategoryName) { ?>
+            <option value="<?=display_str($CategoryName)?>"<?=(($CategoryName==($_GET['category']??false))?'selected="selected"':'')?>><?=display_str($CategoryName)?></option>
+<?  } ?>
+          </select>
         </td>
       </tr>
       <tr>
