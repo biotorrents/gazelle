@@ -698,7 +698,7 @@ $Announce = '';
 
 $Announce .= Artists::display_artists($ArtistForm, false);
 
-$Announce .= empty($Properties['Title']) ? (empty($Properties['TitleRJ']) ? trim($Properties['TitleJP']) : trim($Properties['TitleRJ'])) : trim($Properties['Title']);
+$Announce .= substr(trim(empty($Properties['Title']) ? (empty($Properties['TitleRJ']) ? $Properties['TitleJP'] : $Properties['TitleRJ']) : $Properties['Title']), 0, 100);
 $Announce .= ' ';
 if ($Type != 'Other') {
   $Announce .= '['.Torrents::torrent_info($Properties, false, false, false).']';
