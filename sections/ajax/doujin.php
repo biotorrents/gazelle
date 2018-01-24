@@ -76,7 +76,7 @@ if ($Cache->get_value('doujin_json_'.$gid)) {
     }
   }
 
-  $json_str = array(
+  $json_str = [
     'id'          => $gid,
     'title'       => html_entity_decode($json['title'], ENT_QUOTES),
     'title_jp'    => html_entity_decode($json['title_jpn'], ENT_QUOTES),
@@ -85,11 +85,11 @@ if ($Cache->get_value('doujin_json_'.$gid)) {
     'censored'    => $censored,
     'year'        => NULL,
     'tags'        => $tags,
-    'lang'        => $lang,
+    'lang'        => $lang??'Japanese',
     'pages'       => $json['filecount'],
     'description' => '',
     'cover'       => $cover
-  );
+  ];
 
   $Cache->cache_value('doujin_json_'.$gid, $json_str, 86400);
 
