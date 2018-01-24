@@ -128,7 +128,7 @@ class Badges {
     if (($Badges = G::$Cache->get_value('badges'))) {
       return $Badges;
     } else {
-      update_badge_cache();
+      self::update_badge_cache();
       return G::$Cache->get_value('badges');
     }
   }
