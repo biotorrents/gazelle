@@ -121,47 +121,10 @@ foreach ($GroupIDs as $GroupID) {
         </td>
       </tr>
 <?
-/*
-    $LastRemasterYear = '-';
-    $LastRemasterTitle = '';
-    $LastRemasterRecordLabel = '';
-    $LastRemasterCatalogueNumber = '';
-    $LastMedia = '';
-*/
-    $EditionID = 0;
-/*
-    unset($FirstUnknown);
-*/
     foreach ($Torrents as $TorrentID => $Torrent) {
-/*
-      if ($Torrent['Remastered'] && !$Torrent['RemasterYear']) {
-        $FirstUnknown = !isset($FirstUnknown);
-      }
-*/
       $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : '';
-/*
-      if ($Torrent['RemasterTitle'] != $LastRemasterTitle
-        || $Torrent['RemasterYear'] != $LastRemasterYear
-        || $Torrent['RemasterRecordLabel'] != $LastRemasterRecordLabel
-        || $Torrent['RemasterCatalogueNumber'] != $LastRemasterCatalogueNumber
-        || $FirstUnknown
-        || $Torrent['Media'] != $LastMedia
-      ) {
-        $EditionID++;
 ?>
-      <tr class="group_torrent groupid_<?=$GroupID?> edition<?=$SnatchedGroupClass . (!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGrouping'] == 1 ? ' hidden' : '')?>">
-        <td colspan="7" class="edition_info"><strong><a href="#" onclick="toggle_edition(<?=$GroupID?>, <?=$EditionID?>, this, event)" class="tooltip" title="Collapse this edition. Hold &quot;Ctrl&quot; while clicking to collapse all editions in this torrent group.">&minus;</a> <?=Torrents::edition_string($Torrent, $Group)?></strong></td>
-      </tr>
-<?
-      }
-      $LastRemasterTitle = $Torrent['RemasterTitle'];
-      $LastRemasterYear = $Torrent['RemasterYear'];
-      $LastRemasterRecordLabel = $Torrent['RemasterRecordLabel'];
-      $LastRemasterCatalogueNumber = $Torrent['RemasterCatalogueNumber'];
-      $LastMedia = $Torrent['Media'];
-      */
-?>
-      <tr class="group_torrent torrent_row groupid_<?=$GroupID?> edition_<?=$EditionID?><?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGrouping'] == 1 ? ' hidden' : '')?>">
+      <tr class="group_torrent torrent_row groupid_<?=$GroupID?> <?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGrouping'] == 1 ? ' hidden' : '')?>">
         <td colspan="3">
           <span class="brackets">
             <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>" class="tooltip" title="Download">DL</a>
@@ -185,10 +148,12 @@ foreach ($GroupIDs as $GroupID) {
     $TorrentID = key($Torrents);
     $Torrent = current($Torrents);
 
-    //$DisplayName = "<a href=\"torrents.php?id=$GroupID\" class=\"tooltip\" title=\"View torrent group\" dir=\"ltr\">$GroupName</a>";
-
-    if ($Torrent['IsSnatched']) {
-      $DisplayName .= ' ' . Format::torrent_label('Snatched!');
+    if ($Torrent['IsLeeching']) {
+      $DisplayName .= ' ' . Format::torrent_label('Leeching');
+    } else if ($Torrent['IsSeeding']) {
+      $DisplayName .= ' ' . Format::torrent_label('Seeding');
+    } else if ($Torrent['IsSnatched']) {
+      $DisplayName .= ' ' . Format::torrent_label('Snatched');
     }
     if ($Torrent['FreeTorrent'] == '1') {
       $DisplayName .= ' ' . Format::torrent_label('Freeleech!');
