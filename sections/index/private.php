@@ -150,7 +150,7 @@ if (count($Freeleeches)) {
   for ($i = 0; $i < count($Freeleeches); $i++) {
     list($ID, $ExpiryTime, $Name, $Image) = $Freeleeches[$i];
     if ($ExpiryTime < time()) { continue; }
-    $DisplayTime = '('.str_replace(['week','day','hour','min','Just now','s',' '],['w','d','h','m','0m'],time_diff($ExpiryTime, 1, false)).') ';
+    $DisplayTime = '('.str_replace(['year','month','week','day','hour','min','Just now','s',' '],['y','M','w','d','h','m','0m'],time_diff($ExpiryTime, 1, false)).') ';
     $DisplayName = '<a href="torrents.php?torrentid='.$ID.'"';
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
       $DisplayName .= " onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($Image, true)."\" onmouseleave=\"ungetCover(event)\"";
