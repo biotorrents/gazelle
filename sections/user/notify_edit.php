@@ -82,29 +82,29 @@ foreach ($Notifications as $N) { // $N stands for Notifications
   }
   if ($NewFilter && $NumFilters > 0) {
 ?>
-  <br /><br />
+  <br><br>
   <h3>Create a new notification filter</h3>
 <?  } elseif ($NumFilters > 0) { ?>
   <h3>
-    <a href="feeds.php?feed=torrents_notify_<?=$N['ID']?>_<?=$LoggedUser['torrent_pass']?>&amp;user=<?=$LoggedUser['ID']?>&amp;auth=<?=$LoggedUser['RSS_Auth']?>&amp;passkey=<?=$LoggedUser['torrent_pass']?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;name=<?=urlencode($N['Label'])?>"><img src="<?=STATIC_SERVER?>/common/symbols/rss.png" alt="RSS feed" /></a>
+    <a href="feeds.php?feed=torrents_notify_<?=$N['ID']?>_<?=$LoggedUser['torrent_pass']?>&amp;user=<?=$LoggedUser['ID']?>&amp;auth=<?=$LoggedUser['RSS_Auth']?>&amp;passkey=<?=$LoggedUser['torrent_pass']?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;name=<?=urlencode($N['Label'])?>"><img src="<?=STATIC_SERVER?>/common/symbols/rss.png" alt="RSS feed"></a>
     <?=display_str($N['Label'])?>
     <a href="user.php?action=notify_delete&amp;id=<?=$N['ID']?>&amp;auth=<?=$LoggedUser['AuthKey']?>" onclick="return confirm('Are you sure you want to delete this notification filter?')" class="brackets">Delete</a>
     <a data-toggle-target="#filter_<?=$N['ID']?>" class="brackets">Show</a>
   </h3>
 <?  } ?>
   <form class="box pad slight_margin <?=($NewFilter ? 'create_form' : 'edit_form')?>" id="<?=($NewFilter ? 'filter_form' : '')?>" name="notification" action="user.php" method="post">
-    <input type="hidden" name="formid" value="<?=$i?>" />
-    <input type="hidden" name="action" value="notify_handle" />
-    <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+    <input type="hidden" name="formid" value="<?=$i?>">
+    <input type="hidden" name="action" value="notify_handle">
+    <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>">
 <?  if (!$NewFilter) { ?>
-    <input type="hidden" name="id<?=$i?>" value="<?=$N['ID']?>" />
+    <input type="hidden" name="id<?=$i?>" value="<?=$N['ID']?>">
 <?  } ?>
     <table <?=(!$NewFilter ? 'id="filter_'.$N['ID'].'" class="layout hidden"' : 'class="layout"')?>>
 <?  if ($NewFilter) { ?>
       <tr>
         <td class="label"><strong>Notification filter name</strong></td>
         <td>
-          <input type="text" class="required" name="label<?=$i?>" style="width: 100%;" />
+          <input type="text" class="required" name="label<?=$i?>" style="width: 100%;">
           <p class="min_padding">A name for the notification filter set to tell different filters apart.</p>
         </td>
       </tr>
@@ -118,8 +118,8 @@ foreach ($Notifications as $N) { // $N stands for Notifications
         <td class="label"><strong>One of these artists</strong></td>
         <td>
           <textarea name="artists<?=$i?>" style="width: 100%;" rows="5"><?=display_str($N['Artists'])?></textarea>
-          <p class="min_padding">Comma-separated list&#8202;&mdash;&#8202;e.g. <em>Pink Floyd, Led Zeppelin, Neil Young</em></p>
-          <input type="checkbox" name="excludeva<?=$i?>" id="excludeva_<?=$N['ID']?>"<? if ($N['ExcludeVA'] == '1') { echo ' checked="checked"';} ?> />
+          <p class="min_padding">Comma-separated list&#8202;&mdash;&#8202;e.g. <em>Yumeno Aika, Pink Pineapple, Sayama Ai</em></p>
+          <input type="checkbox" name="excludeva<?=$i?>" id="excludeva_<?=$N['ID']?>"<? if ($N['ExcludeVA'] == '1') { echo ' checked="checked"';} ?>>
           <label for="excludeva_<?=$N['ID']?>">Exclude Various Artists releases</label>
         </td>
       </tr>
@@ -134,49 +134,22 @@ foreach ($Notifications as $N) { // $N stands for Notifications
         <td class="label"><strong>At least one of these tags</strong></td>
         <td>
           <textarea name="tags<?=$i?>" style="width: 100%;" rows="2"><?=display_str($N['Tags'])?></textarea>
-          <p class="min_padding">Comma-separated list&#8202;&mdash;&#8202;e.g. <em>rock, jazz, pop</em></p>
+          <p class="min_padding">Comma-separated list&#8202;&mdash;&#8202;e.g. <em>big.breasts, paizuri, nakadashi</em></p>
         </td>
       </tr>
       <tr>
         <td class="label"><strong>None of these tags</strong></td>
         <td>
           <textarea name="nottags<?=$i?>" style="width: 100%;" rows="2"><?=display_str($N['NotTags'])?></textarea>
-          <p class="min_padding">Comma-separated list&#8202;&mdash;&#8202;e.g. <em>rock, jazz, pop</em></p>
+          <p class="min_padding">Comma-separated list&#8202;&mdash;&#8202;e.g. <em>big.breasts, paizuri, nakadashi</em></p>
         </td>
       </tr>
       <tr>
         <td class="label"><strong>Only these categories</strong></td>
         <td>
 <?  foreach ($Categories as $Category) { ?>
-          <input type="checkbox" name="categories<?=$i?>[]" id="<?=$Category?>_<?=$N['ID']?>" value="<?=$Category?>"<? if (in_array($Category, $N['Categories'])) { echo ' checked="checked"';} ?> />
+          <input type="checkbox" name="categories<?=$i?>[]" id="<?=$Category?>_<?=$N['ID']?>" value="<?=$Category?>"<? if (in_array($Category, $N['Categories'])) { echo ' checked="checked"';} ?>>
           <label for="<?=$Category?>_<?=$N['ID']?>"><?=$Category?></label>
-<?  } ?>
-        </td>
-      </tr>
-      <tr>
-        <td class="label"><strong>Only these types</strong></td>
-        <td>
-<?  foreach ($ReleaseTypes as $ReleaseType) { ?>
-          <input type="checkbox" name="releasetypes<?=$i?>[]" id="<?=$ReleaseType?>_<?=$N['ID']?>" value="<?=$ReleaseType?>"<? if (in_array($ReleaseType, $N['ReleaseTypes'])) { echo ' checked="checked"';} ?> />
-          <label for="<?=$ReleaseType?>_<?=$N['ID']?>"><?=$ReleaseType?></label>
-<?  } ?>
-        </td>
-      </tr>
-      <tr>
-        <td class="label"><strong>Only these formats</strong></td>
-        <td>
-<?  foreach ($Formats as $Format) { ?>
-          <input type="checkbox" name="formats<?=$i?>[]" id="<?=$Format?>_<?=$N['ID']?>" value="<?=$Format?>"<? if (in_array($Format, $N['Formats'])) { echo ' checked="checked"';} ?> />
-          <label for="<?=$Format?>_<?=$N['ID']?>"><?=$Format?></label>
-<?  } ?>
-        </td>
-      </tr>
-      <tr>
-        <td class="label"><strong>Only these bitrates</strong></td>
-        <td>
-<?  foreach ($Bitrates as $Bitrate) { ?>
-          <input type="checkbox" name="bitrates<?=$i?>[]" id="<?=$Bitrate?>_<?=$N['ID']?>" value="<?=$Bitrate?>"<? if (in_array($Bitrate, $N['Encodings'])) { echo ' checked="checked"';} ?> />
-          <label for="<?=$Bitrate?>_<?=$N['ID']?>"><?=$Bitrate?></label>
 <?  } ?>
         </td>
       </tr>
@@ -184,29 +157,21 @@ foreach ($Notifications as $N) { // $N stands for Notifications
         <td class="label"><strong>Only these media</strong></td>
         <td>
 <?  foreach ($Media as $Medium) { ?>
-          <input type="checkbox" name="media<?=$i?>[]" id="<?=$Medium?>_<?=$N['ID']?>" value="<?=$Medium?>"<? if (in_array($Medium, $N['Media'])) { echo ' checked="checked"';} ?> />
+          <input type="checkbox" name="media<?=$i?>[]" id="<?=$Medium?>_<?=$N['ID']?>" value="<?=$Medium?>"<? if (in_array($Medium, $N['Media'])) { echo ' checked="checked"';} ?>>
           <label for="<?=$Medium?>_<?=$N['ID']?>"><?=$Medium?></label>
 <?  } ?>
         </td>
       </tr>
       <tr>
-        <td class="label"><strong>Between the years</strong></td>
-        <td>
-          <input type="text" name="fromyear<?=$i?>" value="<?=$N['FromYear']?>" size="6" />
-          and
-          <input type="text" name="toyear<?=$i?>" value="<?=$N['ToYear']?>" size="6" />
-        </td>
-      </tr>
-      <tr>
         <td class="label"><strong>Only new releases</strong></td>
         <td>
-          <input type="checkbox" name="newgroupsonly<?=$i?>" id="newgroupsonly_<?=$N['ID']?>"<? if ($N['NewGroupsOnly'] == '1') { echo ' checked="checked"';} ?> />
+          <input type="checkbox" name="newgroupsonly<?=$i?>" id="newgroupsonly_<?=$N['ID']?>"<? if ($N['NewGroupsOnly'] == '1') { echo ' checked="checked"';} ?>>
 <label for="newgroupsonly_<?=$N['ID']?>">Only notify for new releases, not new formats</label>
         </td>
       </tr>
       <tr>
         <td colspan="2" class="center">
-          <input type="submit" value="<?=($NewFilter ? 'Create filter' : 'Update filter')?>" />
+          <input type="submit" value="<?=($NewFilter ? 'Create filter' : 'Update filter')?>">
         </td>
       </tr>
     </table>

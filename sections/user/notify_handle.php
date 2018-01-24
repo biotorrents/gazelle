@@ -8,13 +8,8 @@ $FormID = '';
 $ArtistList = '';
 $TagList = '';
 $NotTagList = '';
-$ReleaseTypeList = '';
 $CategoryList = '';
-$FormatList = '';
-$EncodingList = '';
 $MediaList = '';
-$FromYear = 0;
-$ToYear = 0;
 $Users = '';
 $HasFilter = false;
 
@@ -76,31 +71,6 @@ if ($_POST['categories'.$FormID]) {
   $HasFilter = true;
 }
 
-if ($_POST['releasetypes'.$FormID]) {
-  $ReleaseTypeList = '|';
-  foreach ($_POST['releasetypes'.$FormID] as $ReleaseType) {
-    $ReleaseTypeList.=db_string(trim($ReleaseType)).'|';
-  }
-  $HasFilter = true;
-}
-
-if ($_POST['formats'.$FormID]) {
-  $FormatList = '|';
-  foreach ($_POST['formats'.$FormID] as $Format) {
-    $FormatList.=db_string(trim($Format)).'|';
-  }
-  $HasFilter = true;
-}
-
-
-if ($_POST['bitrates'.$FormID]) {
-  $EncodingList = '|';
-  foreach ($_POST['bitrates'.$FormID] as $Bitrate) {
-    $EncodingList.=db_string(trim($Bitrate)).'|';
-  }
-  $HasFilter = true;
-}
-
 if ($_POST['media'.$FormID]) {
   $MediaList = '|';
   foreach ($_POST['media'.$FormID] as $Medium) {
@@ -108,17 +78,6 @@ if ($_POST['media'.$FormID]) {
   }
   $HasFilter = true;
 }
-
-if ($_POST['fromyear'.$FormID] && is_number($_POST['fromyear'.$FormID])) {
-  $FromYear = trim($_POST['fromyear'.$FormID]);
-  $HasFilter = true;
-  if ($_POST['toyear'.$FormID] && is_number($_POST['toyear'.$FormID])) {
-    $ToYear = trim($_POST['toyear'.$FormID]);
-  } else {
-    $ToYear = date('Y') + 3;
-  }
-}
-
 
 if ($_POST['users'.$FormID]) {
   $Usernames = explode(',', $_POST['users'.$FormID]);
@@ -167,22 +126,17 @@ if ($_POST['id'.$FormID] && is_number($_POST['id'.$FormID])) {
       NewGroupsOnly='$NewGroupsOnly',
       Tags='$TagList',
       NotTags='$NotTagList',
-      ReleaseTypes='$ReleaseTypeList',
       Categories='$CategoryList',
-      Formats='$FormatList',
-      Encodings='$EncodingList',
       Media='$MediaList',
-      FromYear='$FromYear',
-      ToYear='$ToYear',
       Users ='$Users'
     WHERE ID='".$_POST['id'.$FormID]."'
       AND UserID='$LoggedUser[ID]'");
 } else {
   $DB->query("
     INSERT INTO users_notify_filters
-      (UserID, Label, Artists, ExcludeVA, NewGroupsOnly, Tags, NotTags, ReleaseTypes, Categories, Formats, Encodings, Media, FromYear, ToYear, Users)
+      (UserID, Label, Artists, ExcludeVA, NewGroupsOnly, Tags, NotTags, Categories, Media, Users)
     VALUES
-      ('$LoggedUser[ID]','".db_string($_POST['label'.$FormID])."','$ArtistList','$ExcludeVA','$NewGroupsOnly','$TagList', '$NotTagList', '$ReleaseTypeList','$CategoryList','$FormatList','$EncodingList','$MediaList', '$FromYear', '$ToYear', '$Users')");
+      ('$LoggedUser[ID]','".db_string($_POST['label'.$FormID])."','$ArtistList','$ExcludeVA','$NewGroupsOnly','$TagList','$NotTagList','$CategoryList','$MediaList','$Users')");
 }
 
 $Cache->delete_value('notify_filters_'.$LoggedUser['ID']);
