@@ -112,7 +112,7 @@ input[type="text"]:invalid, input[type="password"]:invalid {
 
 #content {
   height: calc(100% - 60px);
-  overflow-y: scroll;
+  overflow-y: auto;
   box-sizing: border-box;
   background-repeat: no-repeat;
   background-size: contain;
