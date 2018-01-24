@@ -206,7 +206,7 @@ foreach ($TorrentList as $Group) {
 
     $DisplayName .= "<a href=\"torrents.php?id=$GroupID\" class=\"tooltip\" title=\"View torrent group\" ";
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-      $DisplayName .= 'onmouseover="getCover(event)" data-cover="'.ImageTools::process($WikiImage, true).'" onmouseleave="ungetCover()" ';
+      $DisplayName .= 'onmouseover="getCover(event)" data-cover="'.ImageTools::process($WikiImage, 'thumb').'" onmouseleave="ungetCover()" ';
     }
 
     $GroupName = empty($GroupName) ? (empty($GroupNameRJ) ? $GroupNameJP : $GroupNameRJ) : $GroupName;
@@ -312,7 +312,7 @@ foreach ($TorrentList as $Group) {
 
     $DisplayName .= "<a class=\"torrent_name\" href=\"torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID\" ";
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-      $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($WikiImage, true)."\" onmouseleave=\"ungetCover(event)\" ";
+      $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($WikiImage, 'thumb')."\" onmouseleave=\"ungetCover(event)\" ";
     }
 
     $GroupName = empty($GroupName) ? (empty($GroupNameRJ) ? $GroupNameJP : $GroupNameRJ) : $GroupName;
@@ -463,7 +463,7 @@ if (check_perms('site_torrents_notify')) {
     <div class="box box_image">
       <div class="head"><strong><?=$Name?></strong></div>
       <div style="text-align: center; padding: 10px 0px;">
-        <img style="max-width: 220px;" class="lightbox-init" src="<?=ImageTools::process($Image, true)?>" alt="<?=$Name?>" />
+        <img style="max-width: 220px;" class="lightbox-init" src="<?=ImageTools::process($Image, 'thumb')?>" alt="<?=$Name?>" />
       </div>
     </div>
 <?  } ?>

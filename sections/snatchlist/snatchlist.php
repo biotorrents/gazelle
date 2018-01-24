@@ -41,7 +41,7 @@ View::show_header('Snatch List');
 foreach ($Torrents as $Torrent) {
   $DisplayName = "<a href=\"torrents.php?id=$Torrent[ID]&torrentid=$Torrent[TorrentID]\" ";
   if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-    $DisplayName .= 'onmouseover="getCover(event)" data-cover="'.ImageTools::process($Torrent['WikiImage'], true).'" onmouseleave="ungetCover(event)" ';
+    $DisplayName .= 'onmouseover="getCover(event)" data-cover="'.ImageTools::process($Torrent['WikiImage'], 'thumb').'" onmouseleave="ungetCover(event)" ';
   }
   $DisplayName .= "dir=\"ltr\">$Torrent[Name]</a>";
 

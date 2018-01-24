@@ -134,7 +134,7 @@ View::show_header('Edit torrent group', 'upload');
   }
 
   foreach($Screenshots as $i => $Screenshot) {
-    $SSURL = ImageTools::process($Screenshot['Image'], true);
+    $SSURL = ImageTools::process($Screenshot['Image'], 'thumb');
 ?>
             <div>
               <input type="text" size="45" id="ss_<?=$i?>" name="screenshots[]" value="<?=$Screenshot['Image']?>"/>

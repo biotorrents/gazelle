@@ -186,7 +186,7 @@ View::show_header($Title, 'browse,comments,torrent,bbcode,recommend,cover_art,su
 <div id="covers">
 <div id="cover_div_<?=$Index?>">
 <?  if ($WikiImage != '') { ?>
-      <div><img width="100%" class="lightbox-init" src="<?=ImageTools::process($WikiImage, true)?>" lightbox-img="<?=ImageTools::process($WikiImage)?>" alt="<?=$AltName?>" /></div>
+      <div><img width="100%" class="lightbox-init" src="<?=ImageTools::process($WikiImage, 'thumb')?>" lightbox-img="<?=ImageTools::process($WikiImage)?>" alt="<?=$AltName?>" /></div>
 <?  } else { ?>
       <div><img width="100%" src="<?=STATIC_SERVER?>common/noartwork/nocover.png" alt="<?=$Categories[$GroupCategoryID - 1]?>" class="brackets tooltip" title="<?=$Categories[$GroupCategoryID - 1]?>" /></div>
 <?
@@ -201,9 +201,9 @@ $Index++;
         <div>
 <?
           if (empty($LoggedUser['ShowExtraCovers'])) {
-            $Src = 'src="" data-gazelle-temp-src="' . ImageTools::process($Image, true) . '" lightbox-img="'.ImageTools::process($Image).'"';
+            $Src = 'src="" data-gazelle-temp-src="' . ImageTools::process($Image, 'thumb') . '" lightbox-img="'.ImageTools::process($Image).'"';
           } else {
-            $Src = 'src="' . ImageTools::process($Image, true) . '" lightbox-img="'.ImageTools::process($Image).'"';
+            $Src = 'src="' . ImageTools::process($Image, 'thumb') . '" lightbox-img="'.ImageTools::process($Image).'"';
           }
 ?>
           <img id="cover_<?=$Index?>" class="lightbox-init" width="100%" <?=$Src?> alt="<?=$Summary?>" />
@@ -778,7 +778,7 @@ if (count($PersonalCollages) > 0) {
 <?
     foreach($Screenshots as $Screenshot) {
       $SSURL = ImageTools::process($Screenshot['Image']);
-      $ThumbURL = ImageTools::process($Screenshot['Image'], true);
+      $ThumbURL = ImageTools::process($Screenshot['Image'], 'thumb');
       if (check_perms('users_mod')) {
         ?><img class='tooltip lightbox-init' title='<?=Users::format_username($Screenshot['UserID'], false, false, false)?> - <?=time_diff($Screenshot['Time'])?>' lightbox-img="<?=$SSURL?>" src="<?=$ThumbURL?>" /><?
       } else {

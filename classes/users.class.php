@@ -521,7 +521,7 @@ class Users {
    * @return string
    */
   public static function show_avatar($Avatar, $UserID, $Username, $Setting, $Size = 150, $ReturnHTML = true) {
-    $Avatar = ImageTools::process($Avatar);
+    $Avatar = ImageTools::process($Avatar, 'avatar');
     $Style = 'style="max-height: 400px;"';
     $AvatarMouseOverText = '';
     $SecondAvatar = '';
@@ -538,7 +538,7 @@ class Users {
       $AvatarMouseOverText = "alt=\"$Username's avatar\"";
     }
     if ($EnabledRewards['HasSecondAvatar'] && !empty($Rewards['SecondAvatar'])) {
-      $SecondAvatar = ' data-gazelle-second-avatar="' . ImageTools::process($Rewards['SecondAvatar']) . '"';
+      $SecondAvatar = ' data-gazelle-second-avatar="' . ImageTools::process($Rewards['SecondAvatar'], 'avatar') . '"';
     }
     // case 1 is avatars disabled
     switch ($Setting) {

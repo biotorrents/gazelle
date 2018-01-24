@@ -466,7 +466,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit) {
 
     $DisplayName .= "<a href=\"torrents.php?id=$GroupID&amp;torrentid=$TorrentID\" class=\"tooltip\" title=\"View torrent\" ";
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-      $DisplayName .= 'onmouseover="getCover(event)" data-cover="'.ImageTools::process($WikiImage, true).'" onmouseleave="ungetCover()" ';
+      $DisplayName .= 'onmouseover="getCover(event)" data-cover="'.ImageTools::process($WikiImage, 'thumb').'" onmouseleave="ungetCover()" ';
     }
 
 

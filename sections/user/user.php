@@ -723,7 +723,7 @@ if (check_paranoia_here('snatched')) {
  ?>
       <div style='width: 100px;' class='collage_image' >
         <a href="torrents.php?id=<?=$RS['ID']?>">
-          <img class="tooltip" title="<?=display_str($RS['Artist'])?><?=display_str($RSName)?>" src="<?=ImageTools::process($RS['WikiImage'], true)?>" alt="<?=display_str($RS['Artist'])?><?=display_str($RSName)?>" width="100%" />
+          <img class="tooltip" title="<?=display_str($RS['Artist'])?><?=display_str($RSName)?>" src="<?=ImageTools::process($RS['WikiImage'], 'thumb')?>" alt="<?=display_str($RS['Artist'])?><?=display_str($RSName)?>" width="100%" />
         </a>
       </div>
 <?    } ?>
@@ -770,7 +770,7 @@ if (check_paranoia_here('uploads')) {
 ?>
       <div style='width: 100px;' class='collage_image' >
         <a href="torrents.php?id=<?=$RU['ID']?>">
-          <img class="tooltip" title="<?=$RU['Artist']?><?=$RUName?>" src="<?=ImageTools::process($RU['WikiImage'], true)?>" alt="<?=$RU['Artist']?><?=$RUName?>" width="100%" />
+          <img class="tooltip" title="<?=$RU['Artist']?><?=$RUName?>" src="<?=ImageTools::process($RU['WikiImage'], 'thumb')?>" alt="<?=$RU['Artist']?><?=$RUName?>" width="100%" />
         </a>
       </div>
 <?    } ?>
@@ -824,7 +824,7 @@ foreach ($Collages as $CollageInfo) {
 ?>
       <div class="collage_image">
         <a href="torrents.php?id=<?=$GroupID?>">
-          <img class="tooltip" title="<?=$Name?>" src="<?=ImageTools::process($C['WikiImage'], true)?>" alt="<?=$Name?>" width="100%" />
+          <img class="tooltip" title="<?=$Name?>" src="<?=ImageTools::process($C['WikiImage'], 'thumb')?>" alt="<?=$Name?>" width="100%" />
         </a>
       </div>
 <?  } ?>

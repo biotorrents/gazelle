@@ -71,7 +71,7 @@ foreach ($GroupIDs as $GroupID) {
 
   $DisplayName .= "<a href=\"torrents.php?id=$GroupID\" ";
   if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-    $DisplayName .= 'onmouseover="getCover(event)" data-cover="'.ImageTools::process($WikiImage, true).'" onmouseleave="ungetCover(event)" ';
+    $DisplayName .= 'onmouseover="getCover(event)" data-cover="'.ImageTools::process($WikiImage, 'thumb').'" onmouseleave="ungetCover(event)" ';
   }
   $GroupName = empty($GroupName) ? (empty($GroupNameRJ) ? $GroupNameJP : $GroupNameRJ) : $GroupName;
   $DisplayName .= "dir=\"ltr\">$GroupName</a>";
@@ -244,7 +244,7 @@ foreach ($GroupIDs as $GroupID) {
 <?  if (!$WikiImage) {
       $WikiImage = STATIC_SERVER.'common/noartwork/nocover.png';
     } ?>
-            <img class="tooltip_interactive" src="<?=ImageTools::process($WikiImage, true)?>" alt="<?=$DisplayName?>" title="<?=$DisplayName?> <br /> <div class='tags'><?=$Tags?></div>" data-title-plain="<?="$DisplayName ($PlainTags)"?>" width="100%" />
+            <img class="tooltip_interactive" src="<?=ImageTools::process($WikiImage, 'thumb')?>" alt="<?=$DisplayName?>" title="<?=$DisplayName?> <br /> <div class='tags'><?=$Tags?></div>" data-title-plain="<?="$DisplayName ($PlainTags)"?>" width="100%" />
           </a>
         </div>
 <?

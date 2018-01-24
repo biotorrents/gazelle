@@ -265,7 +265,7 @@ if (empty($Results)) {
       }
       $DisplayName .= "<a href=\"torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID\" ";
       if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-         $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($GroupInfo['WikiImage'], true)."\" onmouseleave=\"ungetCover(event)\" ";
+         $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($GroupInfo['WikiImage'], 'thumb')."\" onmouseleave=\"ungetCover(event)\" ";
       }
       $DisplayName .= "class=\"tooltip\" title=\"View torrent\" dir=\"ltr\">" . $GroupInfo['Name'] . '</a>';
 

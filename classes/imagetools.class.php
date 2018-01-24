@@ -7,28 +7,19 @@
 class ImageTools {
 
   /**
-   * Create image proxy URL
-   * @param string $Url image URL
-   * @return image proxy URL
+   * Determine the image URL. This takes care of the image proxy and thumbnailing.
+   * @param string $Url
+   * @param string $Thumb image proxy scale profile to use
+   * @return string
    */
-  public static function proxy_url($Url, $Thumb = false) {
+  public static function process($Url = '', $Thumb = false) {
+    if (!$Url) return '';
     if (preg_match('/^https:\/\/('.SITE_DOMAIN.'|'.IMAGE_DOMAIN.')\//', $Url) || $Url[0]=='/') {
       if (strpos($Url, '?') === false) $Url .= '?';
       return $Url;
     } else {
-      return 'https://'.IMAGE_DOMAIN.($Thumb?'/thumb/':'/').'?h='.rawurlencode(base64_encode(hash_hmac('sha256', $Url, IMAGE_PSK, true))).'&i='.urlencode($Url);
+      return 'https://'.IMAGE_DOMAIN.($Thumb?"/$Thumb/":'/').'?h='.rawurlencode(base64_encode(hash_hmac('sha256', $Url, IMAGE_PSK, true))).'&i='.urlencode($Url);
     }
-  }
-
-  /**
-   * Determine the image URL. This takes care of the image proxy and thumbnailing.
-   * @param string $Url
-   * @param bool $Thumb
-   * @return string
-   */
-  public static function process($Url = '', $Thumb = false) {
-    // TODO: Thumbnailing
-    return $Url ? self::proxy_url($Url, $Thumb) : '';
   }
 
   /**
