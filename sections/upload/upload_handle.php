@@ -8,7 +8,7 @@
 
 // Maximum allowed size for uploaded files.
 // http://php.net/upload-max-filesize
-ini_set('upload_max_filesize', 2097152); // 2 Mibibytes
+ini_set('upload_max_filesize', 2097152); // 2 Mebibytes
 
 ini_set('max_file_uploads', 100);
 define('MAX_FILENAME_LENGTH', 180);

@@ -8,7 +8,7 @@ $DB->query("
     AND Time < (NOW() - INTERVAL 4 DAY)");
 if ($DB->has_results()) {
   while (list($UserID) = $DB->next_record()) {
-    $Cache->delete_value('users_tokens_'.$UserID[0]);
+    $Cache->delete_value("users_tokens_$UserID");
   }
 
   $DB->query("
