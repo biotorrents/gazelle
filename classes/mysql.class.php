@@ -149,6 +149,7 @@ class DB_MYSQL {
   public $LinkID = false;
   protected $QueryID = false;
   protected $StatementID = false;
+  protected $PreparedQuery = false;
   protected $Record = [];
   protected $Row;
   protected $Errno = 0;
@@ -203,8 +204,7 @@ class DB_MYSQL {
     mysqli_set_charset($this->LinkID, "utf8");
   }
 
-  function query_p($Query, &...$BindVars) {
-    $QueryStartTime = microtime(true);
+  function prepare_query($Query, &...$BindVars) {
     $this->connect();
 
     $this->StatementID = mysqli_prepare($this->LinkID, $Query);
@@ -216,13 +216,17 @@ class DB_MYSQL {
       }
       mysqli_stmt_bind_param($this->StatementID, $Types, ...$BindVars);
     }
+    $this->PreparedQuery = $Query;
+    return $this->StatementID;
+  }
+
+  function exec_prepared_query() {
+    $QueryStartTime = microtime(true);
     mysqli_stmt_execute($this->StatementID);
     $this->QueryID = mysqli_stmt_get_result($this->StatementID);
     $QueryRunTime = (microtime(true) - $QueryStartTime) * 1000;
-    $this->Queries[] = [$Query, $QueryRunTime, null];
+    $this->Queries[] = [$this->PreppedQuery, $QueryRunTime, null];
     $this->Time += $QueryRunTime;
-
-    return $this->StatementID;
   }
 
   function query($Query, &...$BindVars) {
@@ -289,11 +293,6 @@ class DB_MYSQL {
 
     $this->Row = 0;
     return $this->QueryID;
-  }
-
-  function reexec_query() {
-    mysqli_stmt_execute($this->StatementID);
-    $this->QueryID = mysqli_stmt_get_result($this->StatementID);
   }
 
   function query_unb($Query) {

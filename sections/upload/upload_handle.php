@@ -395,18 +395,23 @@ if (!isset($GroupID) || !$GroupID) {
   $Cache->increment('stats_group_count');
 
   // Add screenshots
-  $Screenshots = array_slice(array_filter(array_map("db_string", array_map("trim", array_unique(explode("\n", $T['Screenshots'])))), function ($s) { return preg_match('/^'.IMAGE_REGEX.'$/i', $s); }), 0, 10);
+  $Screenshots = explode("\n", $T['Screenshots']);
+  $Screenshots = array_map("trim", $Screenshots);
+  $Screenshots = array_filter($Screenshots, function($s) {
+    return preg_match('/^'.IMAGE_REGEX.'$/i', $s);
+  });
+  $Screenshots = array_unique($Screenshots);
+  $Screenshots = array_slice($Screenshots, 0, 10);
 
-  $values = [];
-  foreach ($Screenshots as $s) {
-    $values[] = "(" . $GroupID . ", " . $LoggedUser['ID'] . ", NOW(), '" . $s . "')";
-  }
-
-  if (!empty($values)) {
-    $DB->query("
+  if (!empty($Screenshots)) {
+    $Screenshot = '';
+    $DB->prepare_query("
       INSERT INTO torrents_screenshots
         (GroupID, UserID, Time, Image)
-      VALUES " . implode(", ", $values));
+      VALUES (?, ?, NOW(), ?)", $GroupID, $LoggedUser['ID'], $Screenshot);
+    foreach ($Screenshots as $Screenshot) {
+      $DB->exec_prepared_query();
+    }
   }
 
 } else {
