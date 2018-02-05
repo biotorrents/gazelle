@@ -292,7 +292,7 @@ if (check_perms('site_send_unlimited_invites')) {
 
   if (G::$LoggedUser['FLTokens'] > 0) { ?>
           <li id="fl_tokens">
-            <a href="wiki.php?action=article&amp;id=7">Tokens</a>:
+            <a href="wiki.php?action=article&amp;name=tokens">Tokens</a>:
             <span class="stat">
               <a href="userhistory.php?action=token_history&amp;userid=<?=G::$LoggedUser['ID']?>"><?=G::$LoggedUser['FLTokens']?></a>
             </span>
@@ -300,7 +300,7 @@ if (check_perms('site_send_unlimited_invites')) {
 <?  }
 ?>
           <li id="bonus_points">
-            <a href="wiki.php?action=article&amp;id=8"><?=BONUS_POINTS?></a>:
+            <a href="wiki.php?action=article&amp;name=bonuspoints"><?=BONUS_POINTS?></a>:
             <span class="stat">
               <a href="store.php"><?=number_format(G::$LoggedUser['BonusPoints'])?></a>
             </span>
@@ -316,6 +316,9 @@ if (check_perms('site_send_unlimited_invites')) {
 ?>
         </ul>
       </div>
+<? if (!apcu_exists('DBKEY')) { ?>
+      <a id="dbcrypt" class="tooltip" href="wiki.php?action=article&amp;name=databaseencryption" title="Database is not fully decrypted. Site functionality will be reduced until staff can provide the decryption key. Click to learn more."></a>
+<? } ?>
     </div>
 <?
 //Start handling alert bars

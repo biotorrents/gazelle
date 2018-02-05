@@ -934,3 +934,22 @@ input[type="search"] {
 form.edit_form[name=screenshots_form] input[type=text], form.edit_form[name=screenshots_form] img {
   width: 400px;
 }
+
+#dbcrypt {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+}
+#dbcrypt:after {
+  content: "!";
+  display: block;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
+  font-size: 20px;
+  font-weight: 600;
+  color: black;
+  background: red;
+  border-radius: 100px;
+}

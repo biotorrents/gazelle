@@ -83,7 +83,7 @@ $DB->query("
 <?
 
 while (list($SentDate, $SenderID, $Body, $MessageID) = $DB->next_record()) {
-  $Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[Encrypted]';
+  $Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[url=https://'.SITE_DOMAIN.'/wiki.php?action=article&name=databaseencryption][Encrypted][/url]';
 ?>
   <div class="box vertical_space">
     <div class="head" style="overflow: hidden;">
