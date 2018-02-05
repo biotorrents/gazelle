@@ -1,12 +1,8 @@
 <?
-if (!empty($_GET['filter']) && $_GET['filter'] == 'all') {
-  $Join = '';
-  $All = true;
-} else {
-  $Join = 'JOIN torrents AS t ON t.GroupID=tg.ID
-           JOIN xbt_snatched AS x ON x.fid = t.ID AND x.uid = '.$LoggedUser['ID'];
-  $All = false;
-}
+$All = (!empty($_GET['filter']) && $_GET['filter'] == 'all');
+$Join = $All ? '' : 
+  ('JOIN torrents AS t ON t.GroupID=tg.ID
+    JOIN xbt_snatched AS x ON x.fid = t.ID AND x.uid = '.$LoggedUser['ID']);
 
 View::show_header('Torrent groups with no screenshots');
 $DB->query("
