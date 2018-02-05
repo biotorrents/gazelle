@@ -15,6 +15,9 @@ $(() => {
     if (!$('#file').raw().value) {
       hard_error('No torrent file is selected')
     }
+    if ($('#release_desc').raw().value.length < 10) {
+      hard_error('The release description is too short')
+    }
     if ($('#file').raw().value.slice(-8).toLowerCase() != '.torrent') {
       soft_error('The file selected does not appear to be a .torrent file')
     }

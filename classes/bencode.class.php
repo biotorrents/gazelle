@@ -29,7 +29,7 @@ class Int64 {
  */
 class Bencode {
   private $DefaultKeys = array( // Get rid of everything except these keys to save some space
-      'created by', 'creation date', 'encoding', 'info');
+      'created by', 'creation date', 'encoding', 'info', 'comment');
   private $Data;
   public $Enc;
 

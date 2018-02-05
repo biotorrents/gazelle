@@ -61,7 +61,7 @@ class TorrentForm {
     G::$DB->query("
       SELECT COUNT(ID)
       FROM torrents
-      WHERE UserID = ".G::$LoggedUser['ID']);
+      WHERE UserID = ?", G::$LoggedUser['ID']);
     list($Uploads) = G::$DB->next_record();
 ?>
 
