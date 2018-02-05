@@ -267,21 +267,6 @@ $UnsourcedTorrent = $Tor->make_sourced(); // The torrent now has the source fiel
 $TorEnc = $Tor->encode();
 $InfoHash = pack('H*', $Tor->info_hash());
 
-$DB->query("
-  SELECT ID
-  FROM torrents
-  WHERE info_hash = '".db_string($InfoHash)."'");
-if ($DB->has_results()) {
-  list($ID) = $DB->next_record();
-  if (file_exists(TORRENT_STORE.$ID.'.torrent')) {
-    $Err = '<a href="torrents.php?torrentid='.$ID.'">The exact same torrent file already exists on the site!</a>';
-  } else {
-    // A lost torrent
-    file_put_contents(TORRENT_STORE.$ID.'.torrent', $TorEnc);
-    $Err = '<a href="torrents.php?torrentid='.$ID.'">Thank you for fixing this torrent</a>';
-  }
-}
-
 if (isset($Tor->Dec['encrypted_files'])) {
   $Err = 'This torrent contains an encrypted file list which is not supported here.';
 }
