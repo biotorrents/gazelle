@@ -543,7 +543,17 @@ foreach ($TorrentList as $Torrent) {
         <td colspan="5">
           <div id="release_<?=$TorrentID?>" class="no_overflow">
             <blockquote>
-              Uploaded by <?=($Anonymous ? '<em>Anonymous</em>' : Users::format_username($UserID, false, false, false))?> <?=time_diff($TorrentTime);?>
+              Uploaded by <?
+  if ($Anonymous) {
+    if (check_perms('users_mod')) { ?>
+      <em class="tooltip" title="<?=Users::user_info($UserID)['Username']?>">Anonymous</em>
+<?  } else {
+      ?><em>Anonymous</em><?
+    }
+  } else {
+    print Users::format_username($UserID, false, false, false);
+  }
+?> <?=time_diff($TorrentTime);?>
 <?  if ($Seeders == 0) {
     if ($LastActive && time() - strtotime($LastActive) >= 1209600) { ?>
             <br /><strong>Last active: <?=time_diff($LastActive); ?></strong>
