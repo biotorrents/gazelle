@@ -95,7 +95,7 @@ if ($NewRequest && !empty($_GET['artistid']) && is_number($_GET['artistid'])) {
   }
 }
 
-View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'requests,form_validate');
+View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'bbcode,requests,form_validate');
 ?>
 <div class="thin">
   <div class="header">
@@ -238,7 +238,7 @@ View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'reques
         <tr>
           <td class="label">Description</td>
           <td>
-            <textarea id="req_desc" name="description" cols="70" rows="7"><?=(!empty($Request['Description']) ? $Request['Description'] : '')?></textarea> <br />
+<?          new TEXTAREA_PREVIEW('description', 'req_desc', $Request['Description']??''); ?>
           </td>
         </tr>
 <?  if (check_perms('site_moderate_requests')) { ?>

@@ -116,11 +116,10 @@ if (!empty($ReceiverIDs) && (empty($LoggedUser['DisablePM']) || array_intersect(
       <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
       <input type="hidden" name="toid" value="<?=implode(',', $ReceiverIDs)?>" />
       <input type="hidden" name="convid" value="<?=$ConvID?>" />
-      <textarea id="quickpost" class="required" name="body" cols="90" rows="10" onkeyup="resize('quickpost');"></textarea> <br />
-      <div id="preview" class="box vertical_space body hidden"></div>
+<?    $Reply = new TEXTAREA_PREVIEW('body', 'quickpost', '', 90, 10, true, false); ?>
       <div id="buttons" class="center">
-        <input type="button" value="Preview" onclick="Quick_Preview();" />
-        <input type="submit" value="Send message" />
+        <input type="button" value="Preview" class="hidden button_preview_<?=$Reply->getID()?>">
+        <input type="submit" value="Send message">
       </div>
     </div>
   </form>

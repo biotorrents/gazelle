@@ -40,21 +40,20 @@ switch ($_GET['action']) {
   </div>
   <form class="<?= ($_GET['action'] == 'news') ? 'create_form' : 'edit_form';?>" name="news_post" action="tools.php" method="post">
     <div class="box pad">
-      <input type="hidden" name="action" value="<?= ($_GET['action'] == 'news') ? 'takenewnews' : 'takeeditnews';?>" />
-      <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+      <input type="hidden" name="action" value="<?= ($_GET['action'] == 'news') ? 'takenewnews' : 'takeeditnews';?>">
+      <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>">
 <? if ($_GET['action'] == 'editnews') { ?>
-      <input type="hidden" name="newsid" value="<?=$NewsID; ?>" />
+      <input type="hidden" name="newsid" value="<?=$NewsID; ?>">
 <? } ?>
       <h3>Title</h3>
-      <input type="text" name="title" size="95"<? if (!empty($Title)) { echo ' value="'.display_str($Title).'"'; } ?> />
+      <input type="text" name="title" size="95"<? if (!empty($Title)) { echo ' value="'.display_str($Title).'"'; } ?>>
 <!-- Why did someone add this?  <input type="datetime" name="datetime" value="<?=sqltime()?>" /> -->
-      <br />
+      <br>
       <h3>Body</h3>
-      <textarea name="body" cols="95" rows="15"><? if (!empty($Body)) { echo display_str($Body); } ?></textarea> <br /><br />
-
-
+<?    $Textarea = new TEXTAREA_PREVIEW('body', '', display_str($Body), 95, 15, true, false); ?>
       <div class="center">
-        <input type="submit" value="<?= ($_GET['action'] == 'news') ? 'Create news post' : 'Edit news post';?>" />
+        <input type="button" value="Preview" class="hidden button_preview_<?=$Textarea->getID()?>">
+        <input type="submit" value="<?= ($_GET['action'] == 'news') ? 'Create news post' : 'Edit news post';?>">
       </div>
     </div>
   </form>
