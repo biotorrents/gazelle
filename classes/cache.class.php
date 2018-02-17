@@ -394,12 +394,19 @@ class Cache extends MemcacheCompat {
   /**
    * Get cache server status
    *
-   * @return array (host => bool status, ...)
+   * @return array (host => int status, ...)
    */
   public function server_status() {
     $Status = [];
+    if (is_subclass_of($this, 'Memcached')) {
+      $MemcachedStats = $this->getStats();
+    }
     foreach ($this->Servers as $Server) {
-      $Status["$Server[host]:$Server[port]"] = $this->getServerStatus($Server['host'], $Server['port']);
+      if (is_subclass_of($this, 'Memcached')) {
+        $Status["$Server[host]:$Server[port]"] = gettype($MemcachedStats["$Server[host]:$Server[port]"]) == 'array' ? 1 : 0;
+      } else {
+        $Status["$Server[host]:$Server[port]"] = $this->getServerStatus($Server['host'], $Server['port']);
+      }
     }
     return $Status;
   }
