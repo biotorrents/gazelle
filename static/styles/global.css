@@ -102,6 +102,7 @@ ul.collage_images img {
 
 div.collage_image {
   width: 20%;
+  display: inline-block;
 }
 
 [data-toggle-target], [data-quote-jump], .clickable {

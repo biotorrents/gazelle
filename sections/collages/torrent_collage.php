@@ -105,7 +105,7 @@ foreach ($GroupIDs as $GroupID) {
           <div title="<?=$TorrentTags->title()?>" class="tooltip <?=Format::css_category($GroupCategoryID)?> <?=$TorrentTags->css_name()?>"></div>
         </td>
         <td colspan="5">
-          <strong><?=$DisplayName?></strong>
+          <?=$DisplayName?>
 <?    if (Bookmarks::has_bookmarked('torrent', $GroupID)) { ?>
           <span class="remove_bookmark float_right">
             <a class="float_right" href="#" id="bookmarklink_torrent_<?=$GroupID?>" class="remove_bookmark brackets" onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove bookmark</a>
@@ -178,7 +178,7 @@ foreach ($GroupIDs as $GroupID) {
 <?    } ?>
             | <a href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>" class="tooltip" title="Report">RP</a>
           </span>
-          <strong><?=$DisplayName?></strong>
+          <?=$DisplayName?>
           <div class="tags"><?=$TorrentTags->format()?></div>
         </td>
         <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?></td>
@@ -543,9 +543,9 @@ if ($CollageCovers != 0) { ?>
       <span id="nextpage"><a href="#" class="pageslink" onclick="collageShow.nextPage(); return false;"><strong>Next &gt;</strong></a></span>
       <span id="lastpage" class="<?=(ceil($NumGroups / $CollageCovers) == 2 ? 'invisible' : '')?>"> | <a href="#" class="pageslink" onclick="collageShow.page(<?=ceil($NumGroups / $CollageCovers) - 1?>, this); return false;"><strong>Last &gt;&gt;</strong></a></span>
     </div>
-    <script type="text/javascript">//<![CDATA[
-      $(document).ready(function(){collageShow.init(<?=json_encode($CollagePages)?>)});
-    //]]></script>
+    <script type="text/javascript">
+      $(()=>collageShow.init(<?=json_encode($CollagePages)?>));
+    </script>
 <?
   }
 }

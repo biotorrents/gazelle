@@ -675,14 +675,8 @@ if (empty($ArtistsUnescaped)) {
 if (!empty($ArtistsUnescaped)) {
   $ArtistNameList = [];
   $GuestArtistNameList = [];
-  foreach ($ArtistsUnescaped as $Importance => $Artists) {
-    foreach ($Artists as $Artist) {
-      if ($Importance == 1 || $Importance == 4 || $Importance == 5 || $Importance == 6) {
-        $ArtistNameList[] = "Artists LIKE '%|".db_string(str_replace('\\', '\\\\', $Artist['name']), true)."|%'";
-      } else {
-        $GuestArtistNameList[] = "Artists LIKE '%|".db_string(str_replace('\\', '\\\\', $Artist['name']), true)."|%'";
-      }
-    }
+  foreach ($ArtistsUnescaped as $Importance => $Artist) {
+    $ArtistNameList[] = "Artists LIKE '%|".db_string(str_replace('\\', '\\\\', $Artist['name']), true)."|%'";
   }
   // Don't add notification if >2 main artists or if tracked artist isn't a main artist
   if (count($ArtistNameList) > 2 || $Artist['name'] == 'Various Artists') {
