@@ -476,20 +476,20 @@ if ($DB->has_results()) {
   $FreeLeechTags = $DB->to_array('Name');
   foreach ($FreeLeechTags as $Tag => $Exp) {
     if ($Tag == 'global' || in_array($Tag, $Tags)) {
-      $T['FreeTorrent'] = 1;
-      $T['FreeLeechType'] = 3;
+      $T['FreeTorrent'] = '1';
+      $T['FreeLeechType'] = '3';
       break;
     }
   }
 } else {
-  $T['FreeTorrent'] = 0;
-  $T['FreeLeechType'] = 0;
+  $T['FreeTorrent'] = '0';
+  $T['FreeLeechType'] = '0';
 }
 
 // movie and anime ISOs are neutral leech, and receive a BP bounty
 if (($Type == 'Movies' || $Type == 'Anime') && ($T['Container'] == 'ISO' || $T['Container'] == 'M2TS' || $T['Container'] == 'VOB IFO')) {
-  $T['FreeTorrent'] = 2;
-  $T['FreeLeechType'] = 2;
+  $T['FreeTorrent'] = '2';
+  $T['FreeLeechType'] = '2';
 }
 
 // Torrent
