@@ -1,9 +1,7 @@
 <?
-
-/* replace
-$UserID = $LoggedUser['ID'];
 authorize();
-replace */
+
+$UserID = $LoggedUser['ID'];
 
 if (!isset($_POST['messages']) || !is_array($_POST['messages'])) {
   error('You forgot to select messages to delete.');
@@ -33,22 +31,24 @@ if (isset($_POST['delete'])) {
   $DB->query("
     UPDATE pm_conversations_users
     SET
-      InInbox='0',
-      InSentbox='0',
-      Sticky='0',
-      UnRead='0'
+      InInbox = '0',
+      InSentbox = '0',
+      Sticky = '0',
+      UnRead = '0'
     WHERE ConvID IN($ConvIDs)
-      AND UserID=$UserID");
+      AND UserID = $UserID");
 } elseif (isset($_POST['unread'])) {
   $DB->query("
     UPDATE pm_conversations_users
-    SET Unread='1'
-    WHERE ConvID IN($ConvIDs) AND UserID=$UserID");
+    SET Unread = '1'
+    WHERE ConvID IN($ConvIDs)
+    AND InInbox = '1'
+    AND UserID = $UserID");
 } elseif (isset($_POST['read'])) {
   $DB->query("
     UPDATE pm_conversations_users
-    SET Unread='0'
-    WHERE ConvID IN($ConvIDs) AND UserID=$UserID");
+    SET Unread = '0'
+    WHERE ConvID IN($ConvIDs) AND UserID = $UserID");
 }
 $Cache->delete_value('inbox_new_'.$UserID);
 
