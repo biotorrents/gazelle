@@ -524,7 +524,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
             <option value="<?=$Genre?>"><?=$Genre?></option>
 <? } ?>
           </select>
-          <input type="text" id="tags" name="tags" size="60" value="<?=display_str($Torrent['TagList']) ?>"<? Users::has_autocomplete_enabled('other'); ?> />
+          <input type="text" id="tags" name="tags" size="60" value="<?=display_str(implode(', ', explode(',', $Torrent['TagList']))) ?>"<? Users::has_autocomplete_enabled('other'); ?> />
           <p class="min_padding notes"></p>
         </td>
       </tr>
