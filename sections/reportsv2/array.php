@@ -32,7 +32,7 @@ $Types = array(
         'upload' => '0',
         'warn' => '0',
         'delete' => '1',
-        'pm' => '[rule]r1.1.3[/rule]. Your torrent was reported becasue it was a duplicate of another torrent.'
+        'pm' => '[rule]r1.1.4[/rule]. Your torrent was reported because it was a duplicate of another torrent.'
       )
     ),
     'banned' => array(
@@ -40,6 +40,7 @@ $Types = array(
       'reason' => '14',
       'title' => 'Specifically Banned',
       'report_messages' => array(
+        'Note that this report form is for content that is banned by name, not content that breaks a general uploading rule.',
         'Please specify exactly which entry on the Do Not Upload list this is violating.'
       ),
       'report_fields' => array(
