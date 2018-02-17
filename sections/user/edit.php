@@ -376,22 +376,11 @@ echo $Val->GenerateJS('userform');
         </td>
       </tr>
       <tr id="comm_avatars_tr">
-        <td class="label tooltip" title="This option allows you to disable all avatars, show all avatars (with a placeholder for users without avatars), show all avatars &lt;em&gt;or&lt;/em&gt; an identicon set (for users without avatars), or replace all avatars with an identicon set of your choosing." data-title-plain="This option allows you to disable all avatars, show all avatars (with a placeholder for users without avatars), show all avatars or an identicon set (for users without avatars), or replace all avatars with an identicon set of your choosing."><strong>Avatar display (posts)</strong></td>
+        <td class="label tooltip" title="This option allows you to disable all avatars or show all avatars with a placeholder for users without avatars." data-title-plain="This option allows you to disable all avatars or show all avatars with a placeholder for users without avatars."><strong>Avatar display (posts)</strong></td>
         <td>
-          <select name="disableavatars" id="disableavatars" onclick="ToggleIdenticons();">
+          <select name="disableavatars" id="disableavatars">
             <option value="1"<?=$SiteOptions['DisableAvatars'] == 1 ? ' selected="selected"' : ''?>>Disable avatars</option>
             <option value="0"<?=$SiteOptions['DisableAvatars'] == 0 ? ' selected="selected"' : ''?>>Show avatars</option>
-            <option value="2"<?=$SiteOptions['DisableAvatars'] == 2 ? ' selected="selected"' : ''?>>Show avatars or:</option>
-            <option value="3"<?=$SiteOptions['DisableAvatars'] == 3 ? ' selected="selected"' : ''?>>Replace all avatars with:</option>
-          </select>
-          <select name="identicons" id="identicons">
-            <option value="0"<?=$SiteOptions['Identicons'] == 0 ? ' selected="selected"' : ''?>>Identicon</option>
-            <option value="1"<?=$SiteOptions['Identicons'] == 1 ? ' selected="selected"' : ''?>>MonsterID</option>
-            <option value="2"<?=$SiteOptions['Identicons'] == 2 ? ' selected="selected"' : ''?>>Wavatar</option>
-            <option value="3"<?=$SiteOptions['Identicons'] == 3 ? ' selected="selected"' : ''?>>Retro</option>
-            <option value="4"<?=$SiteOptions['Identicons'] == 4 ? ' selected="selected"' : ''?>>Robots 1</option>
-            <option value="5"<?=$SiteOptions['Identicons'] == 5 ? ' selected="selected"' : ''?>>Robots 2</option>
-            <option value="6"<?=$SiteOptions['Identicons'] == 6 ? ' selected="selected"' : ''?>>Robots 3</option>
           </select>
         </td>
       </tr>
