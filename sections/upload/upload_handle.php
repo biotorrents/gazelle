@@ -270,8 +270,8 @@ if (count($TooLongPaths) > 0) {
   $Names = implode(' <br />', $TooLongPaths);
   $Err = "The torrent contained one or more files with too long a name:<br /> $Names";
 }
-$FilePath = db_string($DirName);
-$FileString = db_string(implode("\n", $TmpFileList));
+$FilePath = $DirName;
+$FileString = implode("\n", $TmpFileList);
 $Debug->set_flag('upload: torrent decoded');
 
 if (!empty($Err)) { // Show the upload form, with the data the user entered
