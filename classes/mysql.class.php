@@ -201,7 +201,7 @@ class DB_MYSQL {
         $this->halt('Connection failed (host:'.$this->Server.':'.$this->Port.')');
       }
     }
-    mysqli_set_charset($this->LinkID, "utf8");
+    mysqli_set_charset($this->LinkID, "utf8mb4");
   }
 
   function prepare_query($Query, &...$BindVars) {
