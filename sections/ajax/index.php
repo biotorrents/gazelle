@@ -153,14 +153,10 @@ switch ($_GET['action']) {
   case 'clear_user_notification':
     require(SERVER_ROOT . '/sections/ajax/clear_user_notification.php');
     break;
-  case 'anidb':
-    require(SERVER_ROOT . '/sections/ajax/anidb.php');
-    break;
-  case 'javfill':
-    require(SERVER_ROOT . '/sections/ajax/javfill.php');
-    break;
-  case 'doujin':
-    require(SERVER_ROOT . '/sections/ajax/doujin.php');
+  case 'autofill':
+    if ($_GET['cat'] == 'anime') require(SERVER_ROOT . '/sections/ajax/autofill/anime.php');
+    if ($_GET['cat'] == 'jav')   require(SERVER_ROOT . '/sections/ajax/autofill/jav.php');
+    if ($_GET['cat'] == 'manga') require(SERVER_ROOT . '/sections/ajax/autofill/manga.php');
     break;
   default:
     // If they're screwing around with the query string

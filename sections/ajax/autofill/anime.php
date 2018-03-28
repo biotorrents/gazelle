@@ -6,8 +6,8 @@ if (empty($_GET['aid'])) {
 
 $aid = $_GET['aid'];
 
-if ($Cache->get_value('anidb_json_'.$aid)) {
-  json_die("success", $Cache->get_value('anidb_json_'.$aid));
+if ($Cache->get_value('anime_fill_json_'.$aid)) {
+  json_die("success", $Cache->get_value('anime_fill_json_'.$aid));
 } else {
 
   $anidb_url = 'http://api.anidb.net:9001/httpapi?request=anime&client='.API_KEYS['ANIDB'].'&clientver=1&protover=1&aid='.$aid;
@@ -51,7 +51,7 @@ if ($Cache->get_value('anidb_json_'.$aid)) {
     'description' => $desc
   );
 
-  $Cache->cache_value('anidb_json_'.$aid, $json_str, 86400);
+  $Cache->cache_value('anime_fill_json_'.$aid, $json_str, 86400);
 
   json_die("success", $json_str);
 }

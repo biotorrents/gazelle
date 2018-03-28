@@ -12,8 +12,8 @@ if (!strpos($cn, '-')) {
   if ($m) { $cn = substr_replace($cn, '-', $m[0][1], 0); }
 }
 
-if (!$debug && $Cache->get_value('jav_json_'.$cn)) {
-  json_die('success', $Cache->get_value('jav_json_'.$cn));
+if (!$debug && $Cache->get_value('jav_fill_json_'.$cn)) {
+  json_die('success', $Cache->get_value('jav_fill_json_'.$cn));
 } else {
 
   $jlib_jp_url = ('http://www.javlibrary.com/ja/vl_searchbyid.php?keyword='.$cn);
@@ -163,7 +163,7 @@ if (!$debug && $Cache->get_value('jav_json_'.$cn)) {
     'degraded'    => $degraded
   );
 
-  $Cache->cache_value('jav_json_'.$cn, $json, 86400);
+  $Cache->cache_value('jav_fill_json_'.$cn, $json, 86400);
 
   json_die('success', $json);
 

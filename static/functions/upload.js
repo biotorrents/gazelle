@@ -402,7 +402,7 @@ function ToggleUnknown() {
   }
 }
 
-function AnidbAutofill() {
+function AnimeAutofill() {
   var map = { artist: 'idols_0',
               title: 'title',
               title_rj: 'title_rj',
@@ -410,7 +410,7 @@ function AnidbAutofill() {
               year: 'year',
               description: 'album_desc' }
   var aid = $('#anidb').raw().value
-  $.getJSON('/ajax.php?action=anidb&aid='+aid, function(data) {
+  $.getJSON('/ajax.php?action=autofill&cat=anime&aid='+aid, function(data) {
     if (data.status != "success") return
     for (i in data.response) {
       if (map[i] && !($('#'+map[i]).raw().value)) {
@@ -431,7 +431,7 @@ function JavAutofill() {
               tags: 'tags',
               description: 'album_desc' }
   var cn = $('#javdb_tr #catalogue').raw().value.toUpperCase()
-  $.getJSON('/ajax.php?action=javfill&cn='+cn, function(data) {
+  $.getJSON('/ajax.php?action=autofill&cat=jav&cn='+cn, function(data) {
     if (data.status != "success") {
       $('#catalogue').raw().value = 'Failed'
       return
@@ -462,7 +462,7 @@ function JavAutofill() {
   })
 }
 
-function DoujAutofill() {
+function MangaAutofill() {
   var map = {  artists: 'idols',
               title: 'title',
               title_jp: 'title_jp',
@@ -474,7 +474,7 @@ function DoujAutofill() {
               pages: 'pages',
               description: 'release_desc' }
   var nh = $('#ehentai_tr #catalogue').raw().value
-  $.getJSON('/ajax.php?action=doujin&url='+nh, function(data) {
+  $.getJSON('/ajax.php?action=autofill&cat=manga&url='+nh, function(data) {
     if (data.status != "success") {
       $('#catalogue').raw().value = 'Failed'
       return
@@ -566,7 +566,7 @@ function MediaInfoExtract() {
 function initAutofill() {
   $('[autofill]').each(function(i, el) {
     el.addEventListener('click', function(event) {
-      ({'douj':DoujAutofill, 'anime':AnidbAutofill, 'jav':JavAutofill})[el.attributes['autofill'].value]()
+      ({'douj':MangaAutofill, 'anime':AnimeAutofill, 'jav':JavAutofill})[el.attributes['autofill'].value]()
     })
   })
 }

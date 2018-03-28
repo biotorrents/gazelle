@@ -16,8 +16,8 @@ if (empty($gid) || empty($token)) {
   json_die("failure", "Invalid URL");
 }
 
-if ($Cache->get_value('doujin_json_'.$gid)) {
-  json_die("success", $Cache->get_value('doujin_json_'.$gid));
+if ($Cache->get_value('manga_fill_json_'.$gid)) {
+  json_die("success", $Cache->get_value('manga_fill_json_'.$gid));
 } else {
 
   $data = json_encode(["method" => "gdata", "gidlist" => [[$gid, $token]], "namespace" => 1]);
@@ -91,7 +91,7 @@ if ($Cache->get_value('doujin_json_'.$gid)) {
     'cover'       => $cover
   ];
 
-  $Cache->cache_value('doujin_json_'.$gid, $json_str, 86400);
+  $Cache->cache_value('manga_fill_json_'.$gid, $json_str, 86400);
 
   json_die("success", $json_str);
 }
