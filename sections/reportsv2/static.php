@@ -141,7 +141,6 @@ if (!$ID) {
   }
 }
 
-/*
 $DB->query("
   SELECT
     SQL_CALC_FOUND_ROWS
@@ -162,67 +161,7 @@ $DB->query("
     r.ExtraID,
     r.Link,
     r.LogMessage,
-    tg.Name,
-    tg.ID,
-    CASE COUNT(ta.GroupID)
-      WHEN 1 THEN aa.ArtistID
-      WHEN 0 THEN '0'
-      ELSE '0'
-    END AS ArtistID,
-    CASE COUNT(ta.GroupID)
-      WHEN 1 THEN aa.Name
-      WHEN 0 THEN ''
-      ELSE 'Various Artists'
-    END AS ArtistName,
-    tg.Year,
-    tg.CategoryID,
-    t.Time,
-    t.Remastered,
-    t.RemasterTitle,
-    t.RemasterYear,
-    t.Media,
-    t.Format,
-    t.Encoding,
-    t.Size,
-    t.HasCue,
-    t.HasLog,
-    t.LogScore,
-    t.UserID AS UploaderID,
-    uploader.Username
-  FROM reportsv2 AS r
-    LEFT JOIN torrents AS t ON t.ID = r.TorrentID
-    LEFT JOIN torrents_group AS tg ON tg.ID = t.GroupID
-    LEFT JOIN torrents_artists AS ta ON ta.GroupID = tg.ID AND ta.Importance = '1'
-    LEFT JOIN artists_alias AS aa ON aa.AliasID = ta.AliasID
-    LEFT JOIN users_main AS resolver ON resolver.ID = r.ResolverID
-    LEFT JOIN users_main AS reporter ON reporter.ID = r.ReporterID
-    LEFT JOIN users_main AS uploader ON uploader.ID = t.UserID
-  $Where
-  GROUP BY r.ID
-  $Order
-  LIMIT $Limit");
-*/
-$DB->query("
-  SELECT
-    SQL_CALC_FOUND_ROWS
-    r.ID,
-    r.ReporterID,
-    reporter.Username,
-    r.TorrentID,
-    r.Type,
-    r.UserComment,
-    r.ResolverID,
-    resolver.Username,
-    r.Status,
-    r.ReportedTime,
-    r.LastChangeTime,
-    r.ModComment,
-    r.Track,
-    r.Image,
-    r.ExtraID,
-    r.Link,
-    r.LogMessage,
-    tg.Name,
+    COALESCE(NULLIF(tg.Name, ''), NULLIF(tg.NameRJ, ''), tg.NameJP) AS Name,
     tg.ID,
     CASE COUNT(ta.GroupID)
       WHEN 1 THEN ag.ArtistID
@@ -477,46 +416,9 @@ if (count($Reports) === 0) {
         $First = true;
         $Extras = explode(' ', $ExtraIDs);
         foreach ($Extras as $ExtraID) {
-/*
           $DB->query("
             SELECT
-              tg.Name,
-              tg.ID,
-              CASE COUNT(ta.GroupID)
-                WHEN 1 THEN aa.ArtistID
-                WHEN 0 THEN '0'
-                ELSE '0'
-              END AS ArtistID,
-              CASE COUNT(ta.GroupID)
-                WHEN 1 THEN aa.Name
-                WHEN 0 THEN ''
-                ELSE 'Various Artists'
-              END AS ArtistName,
-              tg.Year,
-              t.Time,
-              t.Remastered,
-              t.RemasterTitle,
-              t.RemasterYear,
-              t.Media,
-              t.Format,
-              t.Encoding,
-              t.Size,
-              t.HasCue,
-              t.HasLog,
-              t.LogScore,
-              t.UserID AS UploaderID,
-              uploader.Username
-            FROM torrents AS t
-              LEFT JOIN torrents_group AS tg ON tg.ID = t.GroupID
-              LEFT JOIN torrents_artists AS ta ON ta.GroupID = tg.ID AND ta.Importance = '1'
-              LEFT JOIN artists_alias AS aa ON aa.AliasID = ta.AliasID
-              LEFT JOIN users_main AS uploader ON uploader.ID = t.UserID
-            WHERE t.ID = '$ExtraID'
-            GROUP BY tg.ID");
-*/
-          $DB->query("
-            SELECT
-              tg.Name,
+              COALESCE(NULLIF(tg.Name, ''), NULLIF(tg.NameRJ, ''), tg.NameJP) AS Name,
               tg.ID,
               ta.ArtistID,
               CASE COUNT(ta.GroupID)
@@ -535,8 +437,8 @@ if (count($Reports) === 0) {
               LEFT JOIN torrents_artists AS ta ON ta.GroupID = tg.ID
               LEFT JOIN artists_group AS ag ON ag.ArtistID = ta.ArtistID
               LEFT JOIN users_main AS uploader ON uploader.ID = t.UserID
-            WHERE t.ID = '$ExtraID'
-            GROUP BY tg.ID");
+            WHERE t.ID = ?
+            GROUP BY tg.ID", $ExtraID);
 
           list($ExtraGroupName, $ExtraGroupID, $ExtraArtistID, $ExtraArtistName, $ExtraYear, $ExtraTime,
             $ExtraMedia, $ExtraSize, $ExtraUploaderID, $ExtraUploaderName) = Misc::display_array($DB->next_record());
