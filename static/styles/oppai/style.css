@@ -594,6 +594,12 @@ td.colhead, .colhead td, .colhead th {
 .forum_post .colhead_dark {
   background: #F1CDF4;
 }
+.forum_post.staff_post .colhead_dark {
+  background: #f1849a;
+}
+.forum_post.sticky_post {
+  border: 3px solid #f1849a;
+}
 
 td.label {
   font-weight: bold;
@@ -1149,10 +1155,6 @@ input.inputtext:focus {
 caption {
   border-bottom: 1px solid #BBB;
   font-weight: bold;
-}
-
-.staff_post .colhead_dark {
-  background: #f1849a;
 }
 
 .tag_parody {

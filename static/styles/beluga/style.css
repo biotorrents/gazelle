@@ -1270,6 +1270,12 @@ span.center_poll {
 .forum_post.staff_post.forum_unread {
   border-top: 2px solid #fac7df;
 }
+.forum_post.staff_post .colhead_dark {
+  background: #634852;
+}
+.forum_post.sticky_post {
+  border: 3px solid #634852;
+}
 
 table.forum_post input[type=button] {
   margin-right: 2px
@@ -2038,10 +2044,6 @@ a.last_read > svg {
 caption {
   border-bottom: 1px dashed #666;
   font-weight: bold;
-}
-
-.staff_post .colhead_dark {
-  background: #634852;
 }
 
 .collage_image:hover {
