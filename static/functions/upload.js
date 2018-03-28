@@ -402,20 +402,10 @@ function ToggleUnknown() {
   }
 }
 
-function GroupRemaster() {
-  var remasters = json.decode($('#json_remasters').raw().value);
-  var index = $('#groupremasters').raw().options[$('#groupremasters').raw().selectedIndex].value;
-  if (index != "") {
-    $('#remaster_year').raw().value = remasters[index][1];
-    $('#remaster_title').raw().value = remasters[index][2];
-    $('#remaster_record_label').raw().value = remasters[index][3];
-    $('#remaster_catalogue_number').raw().value = remasters[index][4];
-  }
-}
-
 function AnidbAutofill() {
   var map = { artist: 'idols_0',
               title: 'title',
+              title_rj: 'title_rj',
               title_jp: 'title_jp',
               year: 'year',
               description: 'album_desc' }

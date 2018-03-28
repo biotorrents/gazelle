@@ -25,10 +25,15 @@ if ($Cache->get_value('anidb_json_'.$aid)) {
     json_die("failure", $anidb_xml->xpath('/error')[0]."");
   }
 
-  $title = $anidb_xml->xpath('//titles/title[@type = "main"]')[0].'';
-  $title = (empty($title))?$anidb_xml->xpath('//titles/title[@xml:lang = "en" and @type = "official"]')[0].'':$title;
+  $title = $anidb_xml->xpath('//titles/title[@xml:lang = "en" and @type = "official"]')[0].'';
+  $title = (empty($title))?$anidb_xml->xpath('//titles/title[@xml:lang = "en"]')[0].'':$title;
+  $title = (empty($title))?$anidb_xml->xpath('//titles/title[@type = "main"]')[0].'':$title;
+
+  $title_rj = $anidb_xml->xpath('//titles/title[@xml:lang = "x-jat" and @type = "official"]')[0].'';
+  $title_rj = (empty($title_rj))?$anidb_xml->xpath('//titles/title[@xml:lang = "x-jat"]')[0].'':$title_rj;
 
   $title_jp = $anidb_xml->xpath('//titles/title[@xml:lang = "ja" and @type = "official"]')[0].'';
+  $title_jp = (empty($title_jp))?$anidb_xml->xpath('//titles/title[@xml:lang = "ja"]')[0].'':$title_jp;
 
   $artist = $anidb_xml->xpath('//creators/name[@type = "Animation Work"]')[0].'';
 
@@ -39,6 +44,7 @@ if ($Cache->get_value('anidb_json_'.$aid)) {
   $json_str = array(
     'id' => $aid,
     'title' => $title,
+    'title_rj' => $title_rj,
     'title_jp' => $title_jp,
     'artist' => $artist,
     'year' => $year,
