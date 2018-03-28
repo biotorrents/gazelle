@@ -76,7 +76,7 @@ if (!empty($ArtistForm)) {
   $Properties['Artists'] = $ArtistForm;
 }
 
-require(SERVER_ROOT.'/classes/torrent_form.class.php');
+require_once(SERVER_ROOT.'/classes/torrent_form.class.php');
 $TorrentForm = new TorrentForm($Properties ?? false, $Err ?? false);
 
 $GenreTags = $Cache->get_value('genre_tags');

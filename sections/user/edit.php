@@ -1,5 +1,5 @@
 <?
-require(SERVER_ROOT.'/classes/twofa.class.php');
+require_once(SERVER_ROOT.'/classes/twofa.class.php');
 $UserID = $_REQUEST['userid'];
 if (!is_number($UserID)) {
   error(404);

@@ -119,7 +119,7 @@ class AutoEnable {
 
         if ($Status != self::DISCARDED) {
             // Prepare email
-            require(SERVER_ROOT . '/classes/templates.class.php');
+            require_once(SERVER_ROOT . '/classes/templates.class.php');
             $TPL = NEW TEMPLATE;
             if ($Status == self::APPROVED) {
                 $TPL->open(SERVER_ROOT . '/templates/enable_request_accepted.tpl');

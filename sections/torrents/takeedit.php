@@ -9,7 +9,7 @@
 enforce_login();
 authorize();
 
-require(SERVER_ROOT.'/classes/validate.class.php');
+require_once(SERVER_ROOT.'/classes/validate.class.php');
 
 $Validate = new VALIDATE;
 

@@ -656,7 +656,7 @@ class Users {
         ResetKey = '" . db_string($ResetKey) . "',
         ResetExpires = '" . time_plus(60 * 60) . "'
       WHERE UserID = '$UserID'");
-    require(SERVER_ROOT . '/classes/templates.class.php');
+    require_once(SERVER_ROOT . '/classes/templates.class.php');
     $TPL = NEW TEMPLATE;
     $TPL->open(SERVER_ROOT . '/templates/password_reset.tpl'); // Password reset template
     $TPL->set('Username', $Username);
@@ -680,7 +680,7 @@ class Users {
   public static function auth_location($UserID, $Username, $ASN, $Email) {
     $AuthKey = Users::make_secret();
     G::$Cache->cache_value('new_location_'.$AuthKey, ['UserID'=>$UserID, 'ASN'=>$ASN], 3600*2);
-    require(SERVER_ROOT . '/classes/templates.class.php');
+    require_once(SERVER_ROOT . '/classes/templates.class.php');
     $TPL = NEW TEMPLATE;
     $TPL->open(SERVER_ROOT . '/templates/new_location.tpl');
     $TPL->set('Username', $Username);

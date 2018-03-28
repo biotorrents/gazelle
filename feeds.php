@@ -11,11 +11,11 @@ if (isset($_GET['clearcache'])) {
   unset($_GET['clearcache']);
 }
 
-require 'classes/config.php'; // The config contains all site-wide configuration information as well as memcached rules
+require_once('classes/config.php'); // The config contains all site-wide configuration information as well as memcached rules
 
-require(SERVER_ROOT.'/classes/misc.class.php'); // Require the misc class
-require(SERVER_ROOT.'/classes/cache.class.php'); // Require the caching class
-require(SERVER_ROOT.'/classes/feed.class.php'); // Require the feeds class
+require_once(SERVER_ROOT.'/classes/misc.class.php'); // Require the misc class
+require_once(SERVER_ROOT.'/classes/cache.class.php'); // Require the caching class
+require_once(SERVER_ROOT.'/classes/feed.class.php'); // Require the feeds class
 $Cache = new Cache(MEMCACHED_SERVERS); // Load the caching class
 $Feed = new FEED; // Load the time class
 
