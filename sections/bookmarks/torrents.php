@@ -66,7 +66,7 @@ foreach ($GroupIDs as $GroupID) {
 
   $DisplayName .= '<a href="torrents.php?id='.$GroupID.'" ';
   if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-    $DisplayName .= 'onmouseover="getCover(event)" data-cover="'.ImageTools::process($WikiImage, 'thumb').'" onmouseleave="ungetCover(event)" ';
+    $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
   }
   $DisplayName .= ' class="tooltip" title="View torrent group" dir="ltr">'.$GroupName.'</a>';
   if ($GroupYear > 0) {
@@ -132,7 +132,7 @@ foreach ($GroupIDs as $GroupID) {
 
     $DisplayName .= '<a href="torrents.php?id='.$GroupID.'" ';
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-      $DisplayName .= 'onmouseover="getCover(event)" data-cover="'.ImageTools::process($WikiImage, 'thumb').'" onmouseleave="ungetCover(event)" ';
+      $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
     }
     $DisplayName .=' class="tooltip" title="View torrent group" dir="ltr">'.$GroupName.'</a>';
 

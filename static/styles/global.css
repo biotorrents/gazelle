@@ -831,16 +831,8 @@ div.torrent_artists {
 .r08           { color: #8c4802; }
 .r09           { color: #7b5200; }
 
-#coverCont.left {
-  left: 20px;
-  right: initial;
-}
-
 #coverCont {
   position: fixed;
-  right: 20px;
-  left: initial;
-  top: 20px;
   max-width: 30%;
   background-size: contain;
   background-repeat: no-repeat;

@@ -206,7 +206,7 @@ foreach ($TorrentList as $Group) {
 
     $DisplayName .= "<a href=\"torrents.php?id=$GroupID\" class=\"tooltip\" title=\"View torrent group\" ";
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-      $DisplayName .= 'onmouseover="getCover(event)" data-cover="'.ImageTools::process($WikiImage, 'thumb').'" onmouseleave="ungetCover()" ';
+      $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
     }
 
     $GroupName = empty($GroupName) ? (empty($GroupNameRJ) ? $GroupNameJP : $GroupNameRJ) : $GroupName;
@@ -312,7 +312,7 @@ foreach ($TorrentList as $Group) {
 
     $DisplayName .= "<a class=\"torrent_name\" href=\"torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID\" ";
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-      $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($WikiImage, 'thumb')."\" onmouseleave=\"ungetCover(event)\" ";
+      $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
     }
 
     $GroupName = empty($GroupName) ? (empty($GroupNameRJ) ? $GroupNameJP : $GroupNameRJ) : $GroupName;

@@ -2087,6 +2087,12 @@ caption {
   filter: invert(100%);
 }
 
+#coverCont {
+  font-size: 0;
+  padding: 5px;
+  background-color: #565960;
+}
+
 /* Pink Additions */
 
 body.style_pink h1 a, body.style_pink h2 a, body.style_pink h3 a, body.style_pink h4 a, body.style_pink h5 a, body.style_pink h6 a {

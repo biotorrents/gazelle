@@ -113,7 +113,7 @@ if (!$NumResults) {
       }
       $DisplayName .= "<a class=\"torrent_title\" href=\"torrents.php?id=$GroupID\" ";
       if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-        $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($WikiImage)."\" onmouseleave=\"ungetCover(event)\" ";
+        $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage).'" ';
       }
       $DisplayName .= "dir=\"ltr\">".($GroupName ? $GroupName : ($GroupNameRJ ? $GroupNameRJ : $GroupNameJP))."</a>";
       if ($GroupYear > 0) {
@@ -169,7 +169,7 @@ if (!$NumResults) {
 
         $DisplayName = "<a class=\"torrent_title\" href=\"torrents.php?id=$GroupID\" ";
         if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-          $DisplayName .= "onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($WikiImage)."\" onmouseleave=\"ungetCover(event)\" ";
+          $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage).'" ';
         }
         $DisplayName .= "dir=\"ltr\">".($GroupName ? $GroupName : ($GroupNameRJ ? $GroupNameRJ : $GroupNameJP))."</a>";
 

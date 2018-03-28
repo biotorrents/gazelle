@@ -732,7 +732,7 @@ class Text {
                 }
                 $Str .= '"';
                 if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-                  $Str .= " onmouseover=\"getCover(event)\" data-cover=\"".ImageTools::process($Group['WikiImage'], 'thumb')."\" onmouseleave=\"ungetCover(event)\"";
+                  $Str .= ' data-cover="'.ImageTools::process($Group['WikiImage'], 'thumb').'"';
                 }
                 $Name = empty($Group['Name']) ? (empty($Group['NameRJ']) ? $Group['NameJP'] : $Group['NameRJ']) : $Group['Name'];
                 $Str .= '>'.$Name.'</a>';

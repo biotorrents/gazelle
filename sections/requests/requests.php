@@ -497,7 +497,7 @@ View::show_header($Title, 'requests');
     $ArtistLink = Artists::display_artists($ArtistForm, true, true);
     $FullName = "$ArtistLink<a href=\"requests.php?action=view&amp;id=$RequestID\"><span ";
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-      $FullName .= 'onmouseover="getCover(event)" data-cover="'.ImageTools::process($Request['Image']).'" onmouseleave="ungetCover(event)" ';
+      $FullName .= 'data-cover="'.ImageTools::process($Request['Image']).'" ';
     }
     $FullName .= "dir=\"ltr\">$Title</span></a>";
 

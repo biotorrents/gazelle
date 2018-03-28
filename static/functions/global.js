@@ -300,17 +300,30 @@ function preload(image) {
   document.body.removeChild(img)
 }
 
+let coverListener
 function getCover(event) {
-  var image = event.target.attributes['data-cover'].value
+  let image = event.target.attributes['data-cover'].value
   $('#coverCont img').remove()
-  var coverCont = ($('#coverCont').length==0)?document.body.appendChild(document.createElement('div')):$('#coverCont')[0]
+  let coverCont = ($('#coverCont').length==0)?document.body.appendChild(document.createElement('div')):$('#coverCont')[0]
   coverCont.id = 'coverCont'
   if ($('#coverCont img').length == 0) {
     coverCont.appendChild(document.createElement('img'))
   }
   $('#coverCont img')[0].src = image?image:'/static/common/noartwork/nocover.png'
-  coverCont.className = (event.clientX > (window.innerWidth/2)) ? 'left' : 'right'
   coverCont.style.display = 'block'
+  coverListener = mevent => {
+    let wh = window.innerHeight, ch = coverCont.clientHeight, ph = mevent.clientY
+    let pos = (ph<wh/2) ? ((ph+ch+10>wh) ? wh-ch : ph+10) : ((ph-ch-10<0) ? 0 : ph-ch-10)
+    coverCont.style.top = pos+'px'
+    if (mevent.clientX > window.innerWidth/2) {
+      coverCont.style.left = "initial"
+      coverCont.style.right = window.innerWidth-mevent.clientX+10+"px"
+    } else {
+      coverCont.style.left = mevent.clientX+10+"px"
+      coverCont.style.right = "initial"
+    }
+  }
+  document.addEventListener("mousemove", coverListener)
   //Preload next image
   if ($('.torrent_table, .request_table').length > 0) {
     var as = $('[data-cover]')
@@ -322,6 +335,7 @@ function getCover(event) {
 function ungetCover(event) {
   $('#coverCont img').remove()
   coverCont.style.display = 'none'
+  document.removeEventListener("mousemove", coverListener)
 }
 
 // Apparently firefox doesn't implement NodeList.forEach until FF50
@@ -340,6 +354,8 @@ $(function() {
     })
   })
 
+  $(document).on('mouseover', '[data-cover]', getCover)
+  $(document).on('mouseleave', '[data-cover]', ungetCover)
   $(document).on('click', '.lightbox-init', function(e) {
     lightbox.init((e.target.attributes['lightbox-img']||[]).value||e.target.src, (e.target.attributes['lightbox-size']||[]).value||e.target.width)
   })

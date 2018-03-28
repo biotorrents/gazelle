@@ -71,7 +71,7 @@ foreach ($GroupIDs as $GroupID) {
 
   $DisplayName .= "<a href=\"torrents.php?id=$GroupID\" ";
   if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-    $DisplayName .= 'onmouseover="getCover(event)" data-cover="'.ImageTools::process($WikiImage, 'thumb').'" onmouseleave="ungetCover(event)" ';
+    $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
   }
   $GroupName = empty($GroupName) ? (empty($GroupNameRJ) ? $GroupNameJP : $GroupNameRJ) : $GroupName;
   $DisplayName .= "dir=\"ltr\">$GroupName</a>";

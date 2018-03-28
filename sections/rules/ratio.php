@@ -117,7 +117,7 @@ $GB = 1024*1024*1024;
         <br />
         <br />
         <div style="text-align: center;">
-        <img style="vertical-align: middle;" src="<?=ImageTools::process('https://chart.googleapis.com/chart?cht=tx&chf=bg,s,FFFFFF00&chl=%5Ctextrm%7B%28maximum+required+ratio%29+%2A+%281-%5Cfrac%7Bseeding%7D%7Bsnatched%7D%29%7D&ext=.png')?>" alt="required ratio = (maximum required ratio) * (1 - (seeding / snatched))" />
+        <img style="vertical-align: middle;" class="tex_img" src="<?=ImageTools::process('https://chart.googleapis.com/chart?cht=tx&chf=bg,s,FFFFFF00&chl=%5Ctextrm%7B%28maximum+required+ratio%29+%2A+%281-%5Cfrac%7Bseeding%7D%7Bsnatched%7D%29%7D&ext=.png')?>" alt="required ratio = (maximum required ratio) * (1 - (seeding / snatched))" />
         </div>
         <br />
         <br />
