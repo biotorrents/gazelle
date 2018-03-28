@@ -596,7 +596,7 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
       if (!empty(G::$LoggedUser) && (G::$LoggedUser['ShowMagnets'] ?? false)) {
         if (!($TorrentFileName = $Cache->get_value('torrent_file_name_'.$TorrentID))) {
           $TorrentFile = file_get_contents(TORRENT_STORE.$TorrentID.'.torrent');
-          $Tor = new BencodeTorrent($TorrentFile);
+          $Tor = new BencodeTorrent($TorrentFile, false, false);
           $TorrentFileName = $Tor->Dec['info']['name'];
           $Cache->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
         }
@@ -674,7 +674,7 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
     if (!empty(G::$LoggedUser) && (G::$LoggedUser['ShowMagnets'] ?? false)) {
       if (!($TorrentFileName = $Cache->get_value('torrent_file_name_'.$TorrentID))) {
         $TorrentFile = file_get_contents(TORRENT_STORE.$TorrentID.'.torrent');
-        $Tor = new BencodeTorrent($TorrentFile);
+        $Tor = new BencodeTorrent($TorrentFile, false, false);
         $TorrentFileName = $Tor->Dec['info']['name'];
         $Cache->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
       }

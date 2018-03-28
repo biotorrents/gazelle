@@ -18,7 +18,10 @@ class BencodeDecode extends Bencode {
    * @param bool $IsPath needs to be true if $Arg is a path
    * @return decoded data with a suitable structure
    */
-  function __construct($Arg = false, $IsPath = false) {
+  function __construct($Arg = false, $IsPath = false, $Strict = true) {
+    if (!$Strict) {
+      $this->ExitOnError = false;
+    }
     if ($Arg === false) {
       if (empty($this->Enc)) {
         return false;
@@ -169,13 +172,13 @@ class BencodeDecode extends Bencode {
       // The recursive nature of the class requires this to avoid duplicate error messages
       return false;
     }
-    if ($ErrMsg === false) {
-      printf("Malformed string. Invalid character at pos 0x%X: %s\n",
-          $this->Pos, str_replace(array("\r","\n"), array('',' '), htmlentities(substr($this->Data, $this->Pos, self::SnipLength))));
-    } else {
-      echo $ErrMsg;
-    }
     if ($this->ExitOnError) {
+      if ($ErrMsg === false) {
+        printf("Malformed string. Invalid character at pos 0x%X: %s\n",
+            $this->Pos, str_replace(array("\r","\n"), array('',' '), htmlentities(substr($this->Data, $this->Pos, self::SnipLength))));
+      } else {
+        echo $ErrMsg;
+      }
       exit();
     }
     $ErrorPos = $this->Pos;

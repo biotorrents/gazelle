@@ -26,9 +26,9 @@ $DB->query("
     LEFT JOIN artists_group AS ag ON ag.ArtistID = ta.ArtistID
     LEFT JOIN xbt_snatched AS x ON x.fid = t.ID
   WHERE t.ID = '$TorrentID'");
-list($UserID, $GroupID, $Size, $InfoHash, $Name, $ArtistName, $Time, $Snatches) = $DB->next_record(MYSQLI_NUM, false);
+list($UploaderID, $GroupID, $Size, $InfoHash, $Name, $ArtistName, $Time, $Snatches) = $DB->next_record(MYSQLI_NUM, false);
 
-if ($LoggedUser['ID'] != $UserID && !check_perms('torrents_delete')) {
+if ($LoggedUser['ID'] != $UploaderID && !check_perms('torrents_delete')) {
   error(403);
 }
 
