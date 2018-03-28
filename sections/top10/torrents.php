@@ -465,7 +465,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit) {
       $DisplayName = Artists::display_artists($Artists[$GroupID], true, true);
     }
 
-    $DisplayName .= "<a href=\"torrents.php?id=$GroupID&amp;torrentid=$TorrentID\" class=\"tooltip\" title=\"View torrent\" ";
+    $DisplayName .= "<a href=\"torrents.php?id=$GroupID&amp;torrentid=$TorrentID\" ";
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
       $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
     }
@@ -516,7 +516,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit) {
 
         <span><a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>" title="Download" class="brackets tooltip">DL</a></span>
 
-        <strong><?=$DisplayName?></strong> <?=$ExtraInfo?><? if ($Reported) { ?> - <strong class="torrent_label tl_reported">Reported</strong><? } ?>
+        <?=$DisplayName?> <?=$ExtraInfo?><? if ($Reported) { ?> - <strong class="torrent_label tl_reported">Reported</strong><? } ?>
 <?
     if ($IsBookmarked) {
 ?>
