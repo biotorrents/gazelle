@@ -492,8 +492,6 @@ foreach ($Thread as $Key => $Post) {
 <?    }
   }
 ?>
-        &nbsp;
-        <a href="#">&uarr;</a>
       </div>
     </td>
   </tr>
