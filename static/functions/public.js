@@ -11,4 +11,8 @@ $(() => {
         $('#no-cookies').gshow();
     }
   }
+
+  if (location.protocol != 'https:') {
+    alert("This Gazelle installation will not be functional unless accessed over HTTPS");
+  }
 })
