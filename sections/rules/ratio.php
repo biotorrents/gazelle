@@ -40,7 +40,7 @@ View::show_header('Ratio Requirements');
       <br />
       <table class="ratio_table">
         <tr class="colhead">
-          <td class="tooltip" title="These units are actually in base 2, not base 10. For example, there are 1,024 MB in 1 GB.">Amount Downloaded</td>
+          <td class="tooltip" title="These units are in base 2, not base 10. For example, there are 1,024 MiB in 1 GiB.">Amount Downloaded</td>
           <td>Required Ratio (0% seeded)</td>
           <td>Required Ratio (100% seeded)</td>
         </tr>
@@ -117,8 +117,7 @@ $GB = 1024*1024*1024;
         <br />
         <br />
         <div style="text-align: center;">
-          <img style="vertical-align: middle;" src="static/blank.gif" alt="required ratio = (maximum required ratio) * (1 - (seeding / snatched))"
-              onload="if (this.src.substr(this.src.length - 9, this.src.length) == 'blank.gif') { this.src = 'https://chart.googleapis.com/chart?cht=tx&amp;chf=bg,s,FFFFFF00&amp;chl=%5Ctextrm%7B%28maximum+required+ratio%29+%2A+%281-%5Cfrac%7Bseeding%7D%7Bsnatched%7D%29%7D&amp;chco=' + hexify(getComputedStyle(this.parentNode, null).color); }" />
+        <img style="vertical-align: middle;" src="<?=ImageTools::process('https://chart.googleapis.com/chart?cht=tx&chf=bg,s,FFFFFF00&chl=%5Ctextrm%7B%28maximum+required+ratio%29+%2A+%281-%5Cfrac%7Bseeding%7D%7Bsnatched%7D%29%7D&ext=.png')?>" alt="required ratio = (maximum required ratio) * (1 - (seeding / snatched))" />
         </div>
         <br />
         <br />
@@ -144,28 +143,26 @@ $GB = 1024*1024*1024;
       <li>If you stop seeding for one week, your required ratio will become the maximum required ratio (0% seeded) for your amount downloaded bracket. Once you have resumed seeding for a 72 hour
         period, your required ratio will decrease according to the above calculations.
       </li>
-      <li>If your download total is less than 5 GB, you won&apos;t be eligible for ratio watch, and you will not need a required ratio. In this circumstance, your required ratio will be zero
+      <li>If your download total is less than 10 GiB, you won't be eligible for ratio watch, and you will not need a required ratio. In this circumstance, your required ratio will be zero
         regardless of your seeding percentage.
       </li>
-      <li>If your download total is less than 20 GB and you are seeding a number of torrents equal to 100% of your snatches, your required ratio will be zero.</li>
-      <li>As your download total increases, your minimum (100% seeded) and maximum (0% seeded) required ratios taper together. After you have downloaded 100 GB, those values become equal to each
-        other. This means that users with download totals greater than or equal to 100 GB have a minimum required ratio (100% seeded) of 0.60 from that point forward.
+      <li>If your download total is less than 60 GiB and you are seeding a number of torrents equal to 100% of your snatches, your required ratio will be zero.</li>
+      <li>As your download total increases, your minimum (100% seeded) and maximum (0% seeded) required ratios taper together. After you have downloaded 200 GiB, those values become equal to each other. This means that users with download totals greater than or equal to 200 GiB have a minimum required ratio (100% seeded) of 0.60 from that point forward.
       </li>
     </ul>
-    <br />
-    <br />
+    <br>
+    <br>
     <strong>Required Ratio Example:</strong>
-    <br />
+    <br>
     <ul>
-      <li>In this example, Rippy has downloaded 25 GB. Rippy falls into the 20&ndash;30 GB amount downloaded bracket in the table above. Rippy&apos;s maximum required ratio (0% seeded) is 0.30, and his minimum required ratio (100% seeded) is 0.05.
+      <li>In this example, Alice has downloaded 65 GB. Alice falls into the 60&ndash;80 GiB amount downloaded bracket in the table above. Alice's maximum required ratio (0% seeded) is 0.40, and her minimum required ratio (100% seeded) is 0.10.
       </li>
-      <li>In this example, Rippy has snatched 90 torrents, and is currently seeding 45 torrents.</li>
-      <li>To calculate Rippy&apos;s actual required ratio, we take his maximum required ratio (0% seeded), which is 0.30, and multiply it by [1 &minus; (<var>seeding</var> / <var>snatched</var>)] (which is 0.50). Written out:
-        <samp>0.30 * [1 &minus; (45 / 90)] = 0.15</samp>
+      <li>In this example, Alice has snatched 90 torrents, and is currently seeding 45 torrents.</li>
+      <li>To calculate Alice's actual required ratio, we take her maximum required ratio (0% seeded), which is 0.40, and multiply it by [1 &minus; (<var>seeding</var> / <var>snatched</var>)] (which is 0.50). Written out:
+        <samp>0.40 * [1 &minus; (45 / 90)] = 0.20</samp>
       </li>
-      <li>The resulting required ratio is 0.15, which falls between the maximum required ratio of 0.30 and the minimum required ratio of 0.05 for his amount downloaded bracket.</li>
-      <li>If Rippy&apos;s on-site required ratio was listed as a value greater than the calculated value, this would be because he hadn&apos;t seeded those 45 torrents for a 72 hour period in the
-        last week. In this case, the system would not be counting all 45 torrents as seeded.
+      <li>The resulting required ratio is 0.20, which falls between the maximum required ratio of 0.40 and the minimum required ratio of 0.10 for her amount downloaded bracket.</li>
+      <li>If Alice's on-site required ratio was listed as a value greater than the calculated value, this would be because she hadn't seeded those 45 torrents for a 72 hour period in the last week. In this case, the system would not be counting all 45 torrents as seeded.
       </li>
     </ul>
     <br />
@@ -173,13 +170,11 @@ $GB = 1024*1024*1024;
     <strong>Ratio Watch Overview:</strong>
     <br />
     <ul>
-      <li>Everyone gets to download their first 5 GB before ratio watch eligibility begins.</li>
-      <li>If you&apos;ve downloaded more than 5 GB and your ratio does not meet or surpass your required ratio, you will be put on ratio watch and have <strong>two weeks</strong> to raise your
-        ratio above your required ratio.
+      <li>Everyone gets to download their first 10 GiB before ratio watch eligibility begins.</li>
+      <li>If you've downloaded more than 10 GiB and your ratio does not meet or surpass your required ratio, you will be put on ratio watch and have <strong>two weeks</strong> to raise your ratio above your required ratio.
       </li>
-      <li>If you download 10 GB while on ratio watch, your leeching privileges will automatically be disabled.</li>
-      <li>If you fail to leave ratio watch within a two week period, you will lose leeching privileges. After losing leeching privileges, you will be unable to download more data. Your account
-        will remain enabled.
+      <li>If you download 1i0 GB while on ratio watch, your leeching privileges will automatically be disabled.</li>
+      <li>If you fail to leave ratio watch within a two week period, you will lose leeching privileges. After losing leeching privileges, you will be unable to download more data. Your account will remain enabled.
       </li>
       <li>The ratio watch system is automated and cannot be interrupted by staff.</li>
     </ul>
@@ -193,8 +188,7 @@ $GB = 1024*1024*1024;
       </li>
       <li>If you fail to improve your ratio by the time ratio watch expires and lose leeching privileges, your required ratio will be temporarily set to the maximum possible requirement (as if 0% of snatched torrents were being seeded).
       </li>
-      <li>After losing leeching privileges, in order to adjust the required ratio so that it reflects the actual number of torrents being seeded, you must seed for a combined 72 hours within a weeklong period. After 72
-        hours of seeding occur, the required ratio will update to reflect your current seeding total, just as it would for a leech-enabled user.
+      <li>After losing leeching privileges, in order to adjust the required ratio so that it reflects the actual number of torrents being seeded, you must seed for a combined 72 hours within a weeklong period. After 72 hours of seeding occur, the required ratio will update to reflect your current seeding total, just as it would for a leech-enabled user.
       </li>
       <li>Leeching privileges will be restored once your ratio has become greater than or equal to your required ratio.</li>
     </ul>

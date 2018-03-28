@@ -9,9 +9,6 @@ View::show_header('Collection Rules');
   <div class="box pad rule_summary" style="padding: 10px 10px 10px 20px;">
     <ul>
       <li>
-      Collections in the Personal and Theme categories may be based on opinion. You must respect others' opinions whilst creating and populating Theme collections.
-      </li>
-      <li>
       Collection vandalism is taken very seriously, resulting in collection editing privileges being removed (at a minimum).
       </li>
       <li>
@@ -21,7 +18,7 @@ View::show_header('Collection Rules');
       A well-defined group of people, for instance Titty Monsters, or Interviewers, may create a Group Picks Theme collection with one pick per person, after having gained permission for the collection from Staff.
       </li>
       <li>
-      There may only be one collection per Theme. Dupe collections will be deleted.
+      There may only be one collection per Theme. Dupe collections will be deleted. The collection that is allowed to stay will be determined at staff discretion, with priority given to the most well maintained and oldest collection.
       </li>
       <li>
       Theme collections must be sensible, and reasonably broad. Those that do not fit this description will be deleted.
