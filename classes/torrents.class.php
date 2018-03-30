@@ -687,18 +687,11 @@ class Torrents {
     }
     if ($Data['FreeTorrent'] == '1') {
       if ($Data['FreeLeechType'] == '3') {
-        $QueryID = G::$DB->get_query_id();
-        G::$DB->query("
-          SELECT UNIX_TIMESTAMP(ExpiryTime)
-          FROM shop_freeleeches
-          WHERE TorrentID = ?", $Data['ID']);
-        if (G::$DB->has_results()) {
-          $ExpiryTime = G::$DB->next_record(MYSQLI_NUM, false)[0];
-          $Info[] = ($HTMLy ? Format::torrent_label('Freeleech!') : 'Freeleech!') . ($HTMLy ? " <strong>(" : " (") . str_replace(['week','day','hour','min','Just now','s',' '],['w','d','h','m','0m'],time_diff(max($ExpiryTime, time()), 1, false)) . ($HTMLy ? ")</strong>" : ")");
+        if ($Data['ExpiryTime']) {
+          $Info[] = ($HTMLy ? Format::torrent_label('Freeleech!') : 'Freeleech!') . ($HTMLy ? " <strong>(" : " (") . str_replace(['week','day','hour','min','Just now','s',' '],['w','d','h','m','0m'],time_diff(max(strtotime($Data['ExpiryTime']), time()), 1, false)) . ($HTMLy ? ")</strong>" : ")");
         } else {
           $Info[] = $HTMLy ? Format::torrent_label('Freeleech!') : 'Freeleech!';
         }
-        G::$DB->set_query_id($QueryID);
       } else {
         $Info[] = $HTMLy ? Format::torrent_label('Freeleech!') : 'Freeleech!';
       }
