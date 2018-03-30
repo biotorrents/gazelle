@@ -1532,6 +1532,10 @@ div.contenth #quickpost {
 .bbcode_bar > li > a {
   min-width: 15px;
 }
+.bbcode_bar .emoji_box {
+  border: 1px solid #5b5e63;
+  background-color: #373a42 !important;
+}
 
 #friends table[width="100%"] td {
   text-align: center

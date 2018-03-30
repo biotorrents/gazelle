@@ -1074,16 +1074,11 @@ h2,h3 {
 .forum_post td a img {
   display:inline-block;vertical-align:middle
 }
-#quickreplytext div.bbcode-btntoolbar {
-  text-align:center;
-}
-.torrent_info_row .linkbox,.torrent_info_row div#subtitle_manager a,.torrent_info_first_block.movie-page__torrent__panel a[href="#"] {
+.torrent_info_row .linkbox {
   font-family:'Proxima Nova','Lato','Segoe UI',sans-serif;font-size:0.75rem
 }
 .torrent_info_row .bbcode-table-guard a {
   width:100%;
-}
-.torrent_info_row .bbcode-table-guard a,.torrent_info_first_block.movie-page__torrent__panel {
   text-align:center;
 }
 .torrent_info_row>td {
@@ -1095,11 +1090,8 @@ h2,h3 {
 .forum_post td.body {
   padding-right:10px;padding-bottom:10px
 }
-.movie-tooltip__title-row,.movie-tooltip__tags,.movie-tooltip__ratings,.movie-tooltip__director-list,.movie-tooltip__trailer,.movie-tooltip__synopsis,.linkbox a.brackets {
+.linkbox a.brackets {
   padding-bottom:5px
-}
-.movie-tooltip__ratings div {
-  margin-right:4px
 }
 .linkbox a.brackets {
   display:inline-block;
@@ -1116,9 +1108,6 @@ span.user_title {
 
 body {
   background:#e1e3e4;color:#313131;
-}
-.thin>h2>a[href*="series.php"]:after,#header .new-subscriptions a:hover {
-  color:#313131
 }
 .torrent td,pre,blockquote {
   color:#777!important
@@ -1165,7 +1154,7 @@ td a {
 #torrents .torrent_table a[onclick*=toggle] strong {
   color:#000
 }
-#torrents .torrent_table a[onclick*=toggle],a.episode,tr.recentinternalrow>td:first-child,a[href*="torrents.php?id"],a[href*="torrents.php?id"][title="View Torrent"].season:hover,a[href*="torrents.php?id"][title="View Torrent"].episode {
+#torrents .torrent_table a[onclick*=toggle],tr.recentinternalrow>td:first-child,a[href*="torrents.php?id"],a[href*="torrents.php?id"][title="View Torrent"].season:hover,a[href*="torrents.php?id"][title="View Torrent"].episode {
   color:#777
 }
 .ui-tabs .ui-tabs-nav li.ui-state-default,div.ui-tabs-vertical .ui-tabs-nav li.ui-state-default {
@@ -1469,6 +1458,10 @@ div.pad#threadpoll p strong {
 .collage_image:hover {
   box-shadow: 0px 0px 0px 3px #5aada5;
   position: relative;
+}
+.bbcode_bar .emoji_box {
+  background-color: #e1e3e4;
+  border: 1px solid #d0d0d0;
 }
 
 /* Fixed Header addition */

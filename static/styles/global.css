@@ -282,6 +282,22 @@ div#AddArtists a {
   min-width: 20px;
   margin: 0px 4px;
 }
+.bbcode_bar .emoji_box {
+  position: absolute;
+  width: 200px;
+  height: 100px;
+  overflow-y: scroll;
+  padding: 8px;
+  font-size: 20px;
+}
+.bbcode_bar .emoji_box > a {
+  cursor: pointer;
+}
+.bbcode_bar .emoji_box > br {
+  content: "";
+  display: block;
+  margin-bottom: 15px;
+}
 
 td.label, .valign_top {
   vertical-align: top;
