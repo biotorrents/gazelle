@@ -6,7 +6,7 @@ Below are some lists of differences between this version of Gazelle and What.cd'
 
 #### Integrated Database Encryption
 
-Using a database key [provided by staff](sections/tools/misc/database_key.php) and only ever stored as a hash in memory (via APCu), the [integrated database encryption](classes/dbcrypt.class.php) is used to encrypt sensitive user data like IP addresses, emails, and private messages regardless of the underlying system gazelle is running on.
+Using a database key [provided by staff](sections/tools/misc/database_key.php) and only ever stored as a hash in memory (via APCu), the [integrated database encryption](classes/crypto.class.php) is used to encrypt sensitive user data like IP addresses, emails, and private messages regardless of the underlying system gazelle is running on.
 
 The rest of gazelle must be aware that some of the data it fetches from the DB is encrypted, and must have a fallback if that data is unavailable (the key is not in memory). You will see plenty of `if (!apcu_exists('DBKEY')) {` in this codebase.
 
