@@ -108,7 +108,7 @@ View::show_header('Invites', $JSIncludes);
       <a href="user.php?action=invitetree<? if ($Sneaky) { echo '&amp;userid='.$UserID; } ?>" class="brackets">Invite tree</a>
     </div>
   </div>
-<? if (!($UserCount <= USER_LIMIT || USER_LIMIT == 0 || check_perms('site_can_invite_always'))) { ?>
+<? if ($UserCount >= USER_LIMIT && USER_LIMIT != 0 && !check_perms('site_can_invite_always')) { ?>
   <div class="box pad notice">
     <p>Because the user limit has been reached you are unable to send invites at this time.</p>
   </div>
