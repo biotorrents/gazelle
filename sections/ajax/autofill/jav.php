@@ -110,19 +110,33 @@ if (!$debug && $Cache->get_value('jav_fill_json_'.$cn)) {
     if (!$title) {
       $title = substr($jdb->query('//h3')[0]->nodeValue, strlen($cn)+1);
     }
-    if (!idols) {
-      $idols_raw = $jdb->query("//div[@class='movieinfo']")[0]->childNodes[2]->childNodes[0]->childNodes;
-      foreach ($idols_raw as $key => $idol) {
-        if ($key % 2 != 0) {
-          $idols[] = $idol->nodeValue;
+    if (!$studio) {
+      $studio = $jdb->query("//b[contains(., 'Studio:')]")[0]->nextSibling->nodeValue;
+    }
+    if (!$label) {
+      $label = $jdb->query("//b[contains(., 'Label:')]")[0]->nextSibling->nodeValue;
+    }
+    if (!$idols) {
+      $idols_raw = $jdb->query("//b[contains(., 'Idol(s): ')]")[0]->nextSibling;
+
+      for ($i = 0; $i < 10; $i++) {
+        if ($idols_raw->tagName == "a") {
+          $idol_name = $idols_raw->nodeValue;
+          $idol_lower = strtolower(str_replace(' ', '-', $idol_name));
+          // ensure it's actually an idol name
+          if (strpos($idols_raw->attributes->item(0)->nodeValue, '.com/idols/' . $idol_lower) !== false) {
+            $idols[] = $idols_raw->nodeValue;
+          }
         }
+        $idols_raw = $idols_raw->nextSibling;
       }
     }
     if (!$year) {
-       $year = substr($jdb->query("//div[@class='movieinfo']")[0]->childNodes[1]->childNodes[0]->nodeValue, strlen("Release Date: "), 4);
+      // Assume year 2000+. JDB's oldest entry is from 2002.
+      $year = "20" . substr($jdb->query("//b[contains(., 'Release Date:')]")[0]->nextSibling->nodeValue, -2);
     }
     if (!$image) {
-      $image = $jdb->query('//*[@class="cover"]/a/img')->item(0)->getAttribute('src');
+      $image = $jdb->query("//img[contains(@alt, ' download or stream.')]")->item(0)->getAttribute('src');
     }
     if (substr($image, 0, 2) == '//') {
       $image = 'https:'.$image;
