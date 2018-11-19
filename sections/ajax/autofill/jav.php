@@ -108,7 +108,7 @@ if (!$debug && $Cache->get_value('jav_fill_json_'.$cn)) {
   }
   if ($jdb_page) {
     if (!$title) {
-      $title = substr($jdb->query('//h3')[0]->nodeValue, strlen($cn)+1);
+      $title = trim(substr($jdb->query("//h1[contains(@class, 'entry-title')]")[0]->nodeValue, strlen($cn) + 3));
     }
     if (!$studio) {
       $studio = $jdb->query("//b[contains(., 'Studio:')]")[0]->nextSibling->nodeValue;
@@ -132,8 +132,7 @@ if (!$debug && $Cache->get_value('jav_fill_json_'.$cn)) {
       }
     }
     if (!$year) {
-      // Assume year 2000+. JDB's oldest entry is from 2002.
-      $year = "20" . substr($jdb->query("//b[contains(., 'Release Date:')]")[0]->nextSibling->nodeValue, -2);
+      $year = substr($jdb->query("//b[contains(., 'Release Date:')]")[0]->nextSibling->nodeValue, 1, 4);
     }
     if (!$image) {
       $image = $jdb->query("//img[contains(@alt, ' download or stream.')]")->item(0)->getAttribute('src');
