@@ -634,7 +634,7 @@ class NotificationsManager {
     return $Results;
   }
 
-  public static function save_settings($UserID, $Settings) {
+  public static function save_settings($UserID, $Settings = false) {
     if (!is_array($Settings)) {
       // A little cheat technique, gets all keys in the $_POST array starting with 'notifications_'
       $Settings = array_intersect_key($_POST, array_flip(preg_grep('/^notifications_/', array_keys($_POST))));
