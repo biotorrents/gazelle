@@ -45,7 +45,7 @@
 define("PARANOIA_ALLOWED", 1);
 define("PARANOIA_OVERRIDDEN", 2);
 
-function check_paranoia($Property, $Paranoia, $UserClass, $UserID = false) {
+function check_paranoia($Property, $Paranoia = false, $UserClass = false, $UserID = false) {
   global $Classes;
   if ($Property == false) {
     return false;
