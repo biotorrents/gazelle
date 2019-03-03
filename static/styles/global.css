@@ -645,6 +645,10 @@ tr.torrent .bookmark>a:after {
   margin-right: 2px;
 }
 
+.forum_post blockquote {
+  overflow-x: auto;
+}
+
 .donor_icon {
   margin-left: 2px;
   margin-right: 2px;
