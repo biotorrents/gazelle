@@ -7,7 +7,7 @@ class Tools {
    */
   public static function site_ban_ip($IP) {
     global $Debug;
-    $A = substr($IP, 0, strcspn($IP, '.'));
+    $A = substr($IP, 0, strcspn($IP, '.:'));
     $IPNum = Tools::ip_to_unsigned($IP);
     $IPBans = G::$Cache->get_value('ip_bans_'.$A);
     if (!is_array($IPBans)) {
