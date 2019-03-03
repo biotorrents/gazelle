@@ -660,7 +660,7 @@ $Debug->set_flag('upload: announced on irc');
 // Manage notifications
 
 // For RSS
-$Item = $Feed->item($Title, Text::strip_bbcode($Body), 'torrents.php?action=download&amp;authkey=[[AUTHKEY]]&amp;torrent_pass=[[PASSKEY]]&amp;id='.$TorrentID, $LoggedUser['Username'], 'torrents.php?id='.$GroupID, trim($T['TagList']));
+$Item = $Feed->item($Title, Text::strip_bbcode($Body), 'torrents.php?action=download&amp;authkey=[[AUTHKEY]]&amp;torrent_pass=[[PASSKEY]]&amp;id='.$TorrentID, $Properties['Anonymous'] ? 'Anonymous' : $LoggedUser['Username'], 'torrents.php?id='.$GroupID, trim($T['TagList']));
 
 
 //Notifications
