@@ -102,7 +102,9 @@ class Cache extends MemcacheCompat {
   // Wrapper for Memcache::add, with the zlib option removed and default duration of 30 days
   public function add_value($Key, $Value, $Duration = 2592000) {
     $StartTime = microtime(true);
-    $Added = $this->add($Key, $Value, 0, $Duration);
+    $AddParams = [$Key, $Value, false, $Duration];
+    if (is_subclass_of($this, 'Memcached')) unset($AddParams[2]);
+    $Added = $this->add(...$AddParams);
     $this->Time += (microtime(true) - $StartTime) * 1000;
     return $Added;
   }
