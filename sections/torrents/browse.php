@@ -47,18 +47,14 @@ if (!empty($_GET['setdefault'])) {
   $DB->query("
     SELECT SiteOptions
     FROM users_info
-    WHERE UserID = '".db_string($LoggedUser['ID'])."'");
+    WHERE UserID = ?", $LoggedUser['ID']);
   list($SiteOptions) = $DB->next_record(MYSQLI_NUM, false);
-  if (!empty($SiteOptions)) {
-    $SiteOptions = unserialize($SiteOptions);
-  } else {
-    $SiteOptions = [];
-  }
+  $SiteOptions = json_decode($SiteOptions, true) ?? [];
   $SiteOptions['DefaultSearch'] = preg_replace($UnsetRegexp, '', $_SERVER['QUERY_STRING']);
   $DB->query("
     UPDATE users_info
-    SET SiteOptions = '".db_string(serialize($SiteOptions))."'
-    WHERE UserID = '".db_string($LoggedUser['ID'])."'");
+    SET SiteOptions = ?
+    WHERE UserID = ?", json_encode($SiteOptions), $LoggedUser['ID']);
   $Cache->begin_transaction("user_info_heavy_$UserID");
   $Cache->update_row(false, ['DefaultSearch' => $SiteOptions['DefaultSearch']]);
   $Cache->commit_transaction(0);
@@ -68,14 +64,14 @@ if (!empty($_GET['setdefault'])) {
   $DB->query("
     SELECT SiteOptions
     FROM users_info
-    WHERE UserID = '".db_string($LoggedUser['ID'])."'");
+    WHERE UserID = ?", $LoggedUser['ID']);
   list($SiteOptions) = $DB->next_record(MYSQLI_NUM, false);
-  $SiteOptions = unserialize($SiteOptions);
+  $SiteOptions = json_decode($SiteOptions, true) ?? [];
   $SiteOptions['DefaultSearch'] = '';
   $DB->query("
     UPDATE users_info
-    SET SiteOptions = '".db_string(serialize($SiteOptions))."'
-    WHERE UserID = '".db_string($LoggedUser['ID'])."'");
+    SET SiteOptions = ?
+    WHERE UserID = ?", json_encode($SiteOptions), $LoggedUser['ID']);
   $Cache->begin_transaction("user_info_heavy_$UserID");
   $Cache->update_row(false, ['DefaultSearch' => '']);
   $Cache->commit_transaction(0);
