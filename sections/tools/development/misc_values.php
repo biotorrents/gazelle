@@ -40,7 +40,7 @@ if (isset($_POST['submit'])) {
   $Name = db_string($_POST['name']);
         $DB->query("DELETE FROM misc WHERE Name = '" . $Name . "'");
     } else {
-        $Val->SetFields('name', '1', 'regex', 'The name must be separated by underscores. No spaces are allowed.', array('regex' => '/^[a-z][_a-z0-9]{0,63}$/i'));
+        $Val->SetFields('name', '1', 'regex', 'The name must be separated by underscores. No spaces are allowed.', array('regex' => '/^[a-z][:_a-z0-9]{0,63}$/i'));
         $Val->SetFields('first', '1', 'string', 'You must specify the first value.');
         $Val->SetFields('second', '1', 'string', 'You must specify the second value.');
 

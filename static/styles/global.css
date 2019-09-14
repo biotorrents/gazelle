@@ -24,6 +24,10 @@
   width: 50%;
 }
 
+#contest div#content > div.flex > div.grow {
+  min-width: 50%;
+}
+
 input, textarea {
   border: 1px solid #c7c7c7;
   background-color: white;

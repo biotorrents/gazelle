@@ -252,8 +252,8 @@ if ($NewRequest) {
     UPDATE requests
     SET CategoryID = $CategoryID,
       Title = '".db_string($Title)."',
-      TitleRJ = '".db_string($TitleRJ)."',
-      TitleJP = '".db_string($TitleJP)."',
+      TitleRJ = '".db_string($TitleRJ??"")."',
+      TitleJP = '".db_string($TitleJP??"")."',
       Image = '".db_string($Image)."',
       Description = '".db_string($Description)."',
       CatalogueNumber = '".db_string($CatalogueNumber)."',

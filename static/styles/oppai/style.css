@@ -9,6 +9,7 @@
 .cats_movies { width: 28px; height: 28px; background: url('images/movies.png') no-repeat center center; }
 .cats_manga { width: 28px; height: 28px; background: url('images/manga.png') no-repeat center center; }
 .cats_games { width: 28px; height: 28px; background: url('images/games.png') no-repeat center center; }
+.cats_audio { width: 28px; height: 28px; background: url('images/audiobook.png') no-repeat center center; }
 .cats_other { width: 28px; height: 28px; background: url('images/other.png') no-repeat center center; }
 /* Global */
 * {
@@ -612,8 +613,7 @@ table.slice {
 }
 
 .error_message {
-  border: 1px solid #666;
-  padding: 3px 0px 3px 0px;
+  padding: 8px 0px;
   background-color: #AF2525;
   text-align: center;
   color: white;
@@ -621,11 +621,10 @@ table.slice {
 }
 
 .save_message {
-  border: 1px solid #666;
-  padding: 3px 0px 3px 0px;
-  background-color: #F4E649;
+  padding: 8px 0px;
+  background-color: #F8C2E8;
   text-align: center;
-  color: #492802;
+  color: #555555;
   font-weight: bold;
 }
 

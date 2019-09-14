@@ -394,7 +394,6 @@ View::show_header('Uploading Rules', 'rules');
             <li id="r5.1.2"><a href="#5.1"><strong>&uarr;</strong></a> <a href="#5.1.2">5.1.2.</a>
               <strong>Some examples of acceptable content are:</strong>
               <ul>
-                <li>Erotic Audio</li>
                 <li>Official Image Packs</li>
                 <li>Sex Manuals</li>
               </ul>
@@ -405,7 +404,7 @@ View::show_header('Uploading Rules', 'rules');
           </ul>
         </div>
 
-      <h5 id="h5.3"><a href="#h5.3k"><strong>&uarr;</strong></a> <a href="#h5.3">5.3.</a> Duplicates &amp; Trumping</h5>
+      <h5 id="h5.2"><a href="#h5.2k"><strong>&uarr;</strong></a> <a href="#h5.2">5.2.</a> Duplicates &amp; Trumping</h5>
         <div class="box pad" style="padding: 10px 10px 10px 20px;">
           <ul>
             <li id="r5.2.1"><a href="#5.2"><strong>&uarr;</strong></a> <a href="#5.2.1">5.2.1.</a>

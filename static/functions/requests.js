@@ -139,6 +139,10 @@ function Categories() {
     $('#artist_tr').gshow();
     $('#dlsiteid_tr').gshow();
     $('#cataloguenumber_tr').ghide();
+  } else if (cat == "Audio") {
+    $('#artist_tr').gshow();
+    $('#dlsiteid_tr').ghide();
+    $('#cataloguenumber_tr').ghide();
   } else {
     $('#artist_tr').ghide();
     $('#cataloguenumber_tr').ghide();

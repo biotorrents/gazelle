@@ -167,7 +167,12 @@ if (!$NumResults) {
         $TorrentID = key($Torrents);
         $Torrent = current($Torrents);
 
-        $DisplayName = "<a class=\"torrent_title\" href=\"torrents.php?id=$GroupID\" ";
+        $DisplayName = '';
+
+        if (isset($Artists)) {
+          $DisplayName .= '<div class="torrent_artists">'.Artists::display_artists($Artists).'</div> ';
+        }
+        $DisplayName .= "<a class=\"torrent_title\" href=\"torrents.php?id=$GroupID\" ";
         if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
           $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage).'" ';
         }

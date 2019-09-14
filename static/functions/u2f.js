@@ -498,7 +498,7 @@ $(function() {
     var req = JSON.parse($('[name="u2f-request"]').raw().value);
     var sigs = JSON.parse($('[name="u2f-sigs"]').raw().value);
     if (req) {
-      u2f.register(req.appID, [req], sigs, function(data) {
+      u2f.register(req.appId, [req], sigs, function(data) {
         if (data.errorCode) {
           console.log('U2F Register Error: ' + Object.keys(u2f.ErrorCodes).find(k => u2f.ErrorCodes[k] == data.errorCode));
           return;

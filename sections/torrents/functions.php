@@ -413,7 +413,17 @@ function build_torrents_table($Cache, $DB, $LoggedUser, $GroupID, $GroupName, $G
         <tr class="<?=(isset($ReleaseType)?'releases_'.$ReleaseType:'')?> groupid_<?=($GroupID)?> edition_<?=($EditionID)?> torrentdetails pad<? if (!isset($_GET['torrentid']) || $_GET['torrentid'] != $TorrentID) { ?> hidden<? } ?>" id="torrent_<?=($TorrentID)?>">
           <td colspan="5">
             <blockquote>
-              Uploaded by <?=(Users::format_username($UserID, false, false, false))?> <?=time_diff($TorrentTime);?>
+              Uploaded by <?
+  if ($Anonymous) {
+    if (check_perms('users_mod')) { ?>
+      <em class="tooltip" title="<?=Users::user_info($UserID)['Username']?>">Anonymous</em>
+<?  } else {
+      ?><em>Anonymous</em><?
+    }
+  } else {
+    print (Users::format_username($UserID, false, false, false));
+  }
+?> <?=time_diff($TorrentTime);?>
 <?  if ($Seeders == 0) {
     if ($LastActive && time() - strtotime($LastActive) >= 1209600) { ?>
                 <br /><strong>Last active: <?=time_diff($LastActive);?></strong>

@@ -64,13 +64,13 @@ if (!$Body) {
   $Image = $WikiImage;
 }
 
-View::show_header('Edit torrent group', 'upload');
+View::show_header('Edit torrent group', 'upload,bbcode');
 
 // Start printing form
 ?>
 <div class="thin">
   <div class="header">
-    <h2>Edit <a href="torrents.php?id=<?=$GroupID?>"><?=$Name?></a></h2>
+    <h2>Edit <a href="torrents.php?id=<?=$GroupID?>"><?=($Name ? $Name : ($NameRJ ? $NameRJ : $NameJP))?></a></h2>
   </div>
   <div class="box pad">
     <form class="edit_form" name="torrent_group" action="torrents.php" method="post">
@@ -81,22 +81,8 @@ View::show_header('Edit torrent group', 'upload');
         <h3>Image:</h3>
         <input type="text" name="image" size="92" value="<?=$Image?>" /><br />
         <h3>Torrent group description:</h3>
-        <textarea name="body" cols="91" rows="20"><?=$Body?></textarea><br />
-<?/*  if ($CategoryID == 1) { ?>
-        <h3>Release type:
-          <select id="releasetype" name="releasetype">
-<?    foreach ($ReleaseTypes as $Key => $Val) { ?>
-            <option value="<?=$Key?>"<?=($Key == $ReleaseType ? ' selected="selected"' : '')?>><?=$Val?></option>
-<?    } ?>
-          </select>
-        </h3>
-<?    if (check_perms('torrents_edit_vanityhouse')) { ?>
-        <h3>
-          <label>Vanity House: <input type="checkbox" name="vanity_house" value="1" <?=($VanityHouse ? 'checked="checked" ' : '')?>/></label>
-        </h3>
+        <textarea class="bbcode_editor" name="body" cols="91" rows="20"><?=$Body?></textarea><br />
 <?
-    }
-  }*/
   $DB->query("
     SELECT UserID
     FROM torrents

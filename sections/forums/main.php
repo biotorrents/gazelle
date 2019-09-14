@@ -23,7 +23,7 @@ foreach ($Forums as $Forum) {
   </table>
 <? } ?>
 <h3><?=$ForumCats[$CategoryID]?></h3>
-  <table class="forum_index">
+  <table class="forum_index alternate_rows">
     <tr class="colhead">
       <td style="width: 2%;"></td>
       <td style="max-width: 25%;">Forum</td>

@@ -18,14 +18,14 @@
   padding: 0
 }
 
-.cats_anime, .cats_movies, .cats_manga, .cats_games, .cats_other {
+.cats_anime, .cats_movies, .cats_manga, .cats_games, .cats_audio, .cats_other {
   width: 38px!important;
   height: 38px!important;
   line-height: 38px;
 }
 .group .cats_anime:after, .group .cats_movies:after,
 .group .cats_manga:after, .group .cats_games:after,
-.group .cats_other:after {
+.group .cats_audio:after, .group .cats_other:after {
   color: black!important;
 }
 .cats_anime:after {
@@ -52,6 +52,12 @@
   font-size: 16px;
 }
 .group .cats_games { background-color: #4DC593; }
+.cats_audio:after {
+  content: "AUD";
+  color: #77C5D4;
+  font-size: 18px;
+}
+.group .cats_audio { background-color: #77C5D4; }
 .cats_other:after {
   content: "OTH";
   color: #0D5968;
@@ -861,10 +867,10 @@ td {
   padding: 5px
 }
 
-td:first-child {
+#torrents .torrent_table td:first-child, td:first-child {
   padding-left: 12px;
 }
-td:last-child {
+#torrents .torrent_table td:last-child, td:last-child {
   padding-right: 12px;
 }
 
@@ -1030,7 +1036,7 @@ table.slice {
 
 .save_message {
   margin-top: 2px;
-  background-color: #93d4a2;
+  background-color: #93d4a2!important;
   text-align: center;
   color: #fff;
   padding: 10px
@@ -1192,10 +1198,8 @@ span.center_poll {
   white-space: nowrap
 }
 
-#collages .sign,#torrents .sign {
+#collages .sign, #torrents .sign {
   padding: 5px;
-  position: relative;
-  left: -5px
 }
 
 .filter_torrents {
@@ -1953,7 +1957,7 @@ a.last_read > svg {
 .forum_index td {
   position: relative;
 }
-.forum_index .row:nth-child(odd) {
+.alternate_rows .row:nth-child(odd) {
   background: #33363d;
 }
 .forum_index td.read:after, #forums td.unread:after {

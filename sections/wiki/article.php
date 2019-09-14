@@ -48,7 +48,7 @@ View::show_header($Title,'wiki,bbcode');
     <div class="linkbox">
       <a href="wiki.php?action=create" class="brackets">Create</a>
 <? if ($Edit <= $LoggedUser['EffectiveClass']) { ?>
-      <a href="wiki.php?action=edit&amp;id=<?=$ArticleID?>" class="brackets">Contribute</a>
+      <a href="wiki.php?action=edit&amp;id=<?=$ArticleID?>" class="brackets">Edit</a>
       <a href="wiki.php?action=revisions&amp;id=<?=$ArticleID?>" class="brackets">History</a>
 <? } ?>
 <? if (check_perms('admin_manage_wiki') && $_GET['id'] != INDEX_ARTICLE) { ?>

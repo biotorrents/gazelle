@@ -274,6 +274,12 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         <td><input type="text" id="dlsiteid" name="dlsiteid" size="8" maxlength="8" value="<?=display_str($Torrent['DLsiteID']??'')?>" <?=$this->Disabled?>/></td>
       </tr>
 <? } ?>
+      <tr id="mediainfo_tr">
+        <td class="label">Media Info</td>
+        <td>
+          <textarea name="mediainfo" id="mediainfo" onchange="MediaInfoExtract()"  rows="8" cols="60"><?=display_str($Torrent['MediaInfo']??'')?></textarea>
+        </td>
+      </tr>
       <tr id="media_tr">
         <td class="label">Media</td>
         <td>
@@ -494,12 +500,6 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         <td class="label">Censored?</td>
         <td>
           <input type="checkbox" name="censored" value="1" <?=(($Torrent['Censored'] ?? 1) ? 'checked ' : '')?>/>
-        </td>
-      </tr>
-      <tr id="mediainfo_tr">
-        <td class="label">Media Info</td>
-        <td>
-          <textarea name="mediainfo" id="mediainfo" onchange="MediaInfoExtract()"  rows="8" cols="60"><?=display_str($Torrent['MediaInfo']??'')?></textarea>
         </td>
       </tr>
 <?    if ($this->NewTorrent) { ?>

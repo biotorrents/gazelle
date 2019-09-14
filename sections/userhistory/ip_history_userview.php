@@ -55,7 +55,7 @@ if (!$Self) {
   <h2>IP history for <a href="user.php?id=<?=$UserID?>"><?=$Username?></a></h2>
 <? } ?>
 </div>
-<table width="100%">
+<table class="alternate_rows" width="100%">
   <tr class="colhead">
     <td>IP</td>
     <td>Expunge</td>

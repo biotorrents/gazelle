@@ -162,7 +162,7 @@ $CategoryIcons = ['music.png', 'apps.png', 'ebook.png', 'audiobook.png', 'elearn
 
 $Media = ['TV', 'DVD', 'Bluray', 'HD DVD', 'VHS', 'VCD', 'LD', 'Web'];
 $MediaManga = ['Scan', 'Web'];
-$Platform = ['Windows', 'OS X', 'Linux', 'Multi-Platform', 'Flash', 'Java', 'Android', 'iOS', '3DS'];
+$Platform = ['Windows', 'OS X', 'Linux', 'BSD', 'Flash', 'Java', 'Android', 'iOS', '3DS'];
 $Containers = ['AVI', 'MKV', 'MP4', 'OGM', 'WMV', 'ISO', 'VOB IFO', 'TS', 'M2TS'];
 $ContainersGames = ['ISO', 'BIN-CUE', 'Installer', 'Loose'];
 $Codecs = ['h264', '10-bit h264', 'XviD', 'DivX', 'WMV', 'DVD5', 'DVD9', 'HEVC', 'MPEG-2'];

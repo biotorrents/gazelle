@@ -248,6 +248,7 @@ if (empty($Results)) {
         // If $GroupInfo['ID'] is unset, the torrent group associated with the torrent doesn't exist
         continue;
       }
+      $GroupName = empty($GroupInfo['Name']) ? (empty($GroupInfo['NameRJ']) ? $GroupInfo['NameJP'] : $GroupInfo['NameRJ']) : $GroupInfo['Name'];
       $TorrentInfo = $GroupInfo['Torrents'][$TorrentID];
       // generate torrent's title
       $DisplayName = '';
@@ -267,7 +268,7 @@ if (empty($Results)) {
       if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
          $DisplayName .= 'data-cover="'.ImageTools::process($GroupInfo['WikiImage'], 'thumb').'" ';
       }
-      $DisplayName .= "class=\"tooltip\" title=\"View torrent\" dir=\"ltr\">" . $GroupInfo['Name'] . '</a>';
+      $DisplayName .= "class=\"tooltip\" title=\"View torrent\" dir=\"ltr\">" . $GroupName . '</a>';
 
       $GroupCategoryID = $GroupInfo['CategoryID'];
 /*

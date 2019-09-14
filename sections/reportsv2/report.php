@@ -32,10 +32,10 @@ if (!isset($_GET['id']) || !is_number($_GET['id'])) {
   }
 
   // Group details
-  list($WikiBody, $WikiImage, $GroupID, $GroupName, $GroupNameJP, $GroupYear,
-    $GroupStudio, $GroupSeries, $GroupCatalogueNumber, $GroupCategoryID,
-    $GroupDLSite, $GroupTime, $TorrentTags, $TorrentTagIDs, $TorrentTagUserIDs,
-    $Screenshots, $GroupFlags) = array_values($GroupDetails);
+  list($WikiBody, $WikiImage, $GroupID, $GroupName, $GroupNameRJ, $GroupNameJP,
+    $GroupYear, $GroupStudio, $GroupSeries, $GroupCatalogueNumber,
+    $GroupCategoryID, $GroupDLSite, $GroupTime, $TorrentTags, $TorrentTagIDs,
+    $TorrentTagUserIDs, $Screenshots, $GroupFlags) = array_values($GroupDetails);
 
   $DisplayName = $GroupName;
   $AltName = $GroupName; // Goes in the alt text of the image

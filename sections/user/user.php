@@ -237,7 +237,7 @@ if (check_perms('admin_manage_permissions', $Class)) {
     <a href="user.php?action=permissions&amp;userid=<?=$UserID?>" class="brackets">Permissions</a>
 <?
 }
-if (check_perms('users_view_ips', $Class)) {
+if ($LoggedUser['ID'] == $UserID || check_perms('users_view_ips', $Class)) {
 ?>
     <a href="user.php?action=sessions&amp;userid=<?=$UserID?>" class="brackets">Sessions</a>
 <?
@@ -1178,7 +1178,7 @@ if (check_perms('users_mod', $Class)) { ?>
           <input type="text" size="20" name="BonusPoints" value="<?=$BonusPoints?>" />
 <?
 if (!$DisablePoints) {
-  $PointsRate = 0.5;
+  $PointsRate = 0;
   $getTorrents = $DB->query("
     SELECT COUNT(DISTINCT x.fid) AS Torrents,
            SUM(t.Size) AS Size,
@@ -1198,9 +1198,9 @@ if (!$DisablePoints) {
     GROUP BY um.ID");
   if ($DB->has_results()) {
     list($NumTorr, $TSize, $TTime, $TSeeds) = $DB->next_record();
-    $PointsRate += (0.67*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5,($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3));
+    $PointsRate = (0.5 + (0.55*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5,($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3)))**0.95;
   }
-  $PointsRate = intval($PointsRate**0.95);
+  $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints/1440)), 0));
   $PointsPerHour = number_format($PointsRate)." ".BONUS_POINTS."/hour";
   $PointsPerDay = number_format($PointsRate*24)." ".BONUS_POINTS."/day";
 } else {

@@ -158,7 +158,7 @@ View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'bbcode
 <?
       }
     } else {
-?>            <input type="text" id="artist_0" name="artists[]"<? Users::has_autocomplete_enabled('other'); ?> size="45" onblur="CheckVA();" <?=$Disabled?>/>
+?>            <input type="text" id="artist_0" name="artists[]"<? Users::has_autocomplete_enabled('other'); ?> size="45" <?=$Disabled?>/>
 <? if (empty($Disabled)) { ?>
             <a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a>
 <? } ?>

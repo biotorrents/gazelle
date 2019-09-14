@@ -1,6 +1,6 @@
 <?php
 
-if (!check_perms('site_moderate_forums') || empty($_POST['id'])) {
+if (!check_perms('admin_reports') || empty($_POST['id'])) {
   print
     json_encode(
       array(
@@ -12,13 +12,12 @@ if (!check_perms('site_moderate_forums') || empty($_POST['id'])) {
 
 $ID = (int)$_POST['id'];
 
-$Notes = str_replace("<br />", "\n", $_POST['notes']);
-$Notes = db_string($Notes);
+$Notes = $_POST['notes'];
 
 $DB->query("
   UPDATE reports
-  SET Notes = '$Notes'
-  WHERE ID = '$ID'");
+  SET Notes = ?
+  WHERE ID = ?", $Notes, $ID);
 print
   json_encode(
     array(

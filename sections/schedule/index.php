@@ -27,7 +27,7 @@ function run_all_in($Dir) {
   }
 }
 
-if ((!isset($_REQUEST['key']) || $_REQUEST['key'] != SCHEDULE_KEY) && !$AS) {
+if ((!isset($_REQUEST['key']) || $_REQUEST['key'] != SCHEDULE_KEY) && (!isset($argv[1]) || $argv[1] != SCHEDULE_KEY) && !$AS) {
   error(403);
 }
 

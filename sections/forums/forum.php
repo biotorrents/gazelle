@@ -152,7 +152,7 @@ $Pages = Format::get_pages($Page, $Forums[$ForumID]['NumTopics'], TOPICS_PER_PAG
 echo $Pages;
 ?>
   </div>
-  <table class="forum_index" width="100%">
+  <table class="forum_index alternate_rows" width="100%">
     <tr class="colhead">
       <td style="width: 2%;"></td>
       <td>Latest</td>

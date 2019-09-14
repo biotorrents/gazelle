@@ -92,11 +92,11 @@ if (isset($Properties['GroupID'])) {
 
 if ($Type == 'Movies' || $Type == 'Manga' || $Type == 'Anime' || $Type == 'Games') {
   if (empty($_POST['idols'])) {
-    $Err = "You didn't enter any goils";
+    $Err = "You didn't enter any artists/idols";
   } else {
     $Artists = $_POST['idols'];
   }
-} elseif ($Type == 'Other') {
+} else {
   if (!empty($_POST['idols'])) {
     $Artists = $_POST['idols'];
   }
@@ -211,8 +211,8 @@ if (empty($Properties['GroupID']) && empty($ArtistForm)) {
     SELECT ta.ArtistID, ag.Name
     FROM torrents_artists AS ta
       JOIN artists_group AS ag ON ta.ArtistID = ag.ArtistID
-    WHERE ta.GroupID = ".$Properties['GroupID']."
-    ORDER BY ag.Name ASC;");
+    WHERE ta.GroupID = ?
+    ORDER BY ag.Name ASC", $Properties['GroupID']);
   $ArtistForm = [];
   while (list($ArtistID, $ArtistName) = $DB->next_record(MYSQLI_BOTH, false)) {
     array_push($ArtistForm, array('id' => $ArtistID, 'name' => display_str($ArtistName)));
@@ -468,6 +468,9 @@ if (!$T['GroupID']) {
 
 
 // Use this section to control freeleeches
+$T['FreeTorrent'] = '0';
+$T['FreeLeechType'] = '0';
+
 $DB->query("
   SELECT Name, First, Second
   FROM misc
@@ -481,9 +484,6 @@ if ($DB->has_results()) {
       break;
     }
   }
-} else {
-  $T['FreeTorrent'] = '0';
-  $T['FreeLeechType'] = '0';
 }
 
 // movie and anime ISOs are neutral leech, and receive a BP bounty
@@ -525,7 +525,7 @@ $Debug->set_flag('upload: ocelot updated');
 $Cache->cache_value("torrent_{$TorrentID}_lock", true, 600);
 
 //give BP if necessary
-if (($Type == "Movies" || $Type == "Anime") && ($T['Container'] == "'ISO'" || $T['Container'] == "'M2TS'" || $T['Container'] == "'VOB IFO'")) {
+if (($Type == "Movies" || $Type == "Anime") && ($T['Container'] == 'ISO' || $T['Container'] == 'M2TS' || $T['Container'] == 'VOB IFO')) {
   $BPAmt = (int) 2*($TotalSize / (1024*1024*1024))*1000;
 
   $DB->query("

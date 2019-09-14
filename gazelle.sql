@@ -730,7 +730,7 @@ CREATE TABLE `requests` (
 CREATE TABLE `requests_artists` (
   `RequestID` int(10) unsigned NOT NULL,
   `ArtistID` int(10) NOT NULL,
-  PRIMARY KEY (`RequestID`)
+  PRIMARY KEY (`RequestID`, `ArtistID`)
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 CREATE TABLE `requests_tags` (

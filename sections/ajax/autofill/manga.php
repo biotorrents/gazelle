@@ -23,6 +23,7 @@ if ($Cache->get_value('manga_fill_json_'.$gid)) {
   $data = json_encode(["method" => "gdata", "gidlist" => [[$gid, $token]], "namespace" => 1]);
   $curl = curl_init('http://api.e-hentai.org/api.php');
   curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+  curl_setopt($curl, CURLOPT_TIMEOUT, 10);
   curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
   curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
   curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json', 'Content-Length: '.strlen($data)]);
@@ -76,16 +77,23 @@ if ($Cache->get_value('manga_fill_json_'.$gid)) {
     }
   }
 
+  $title = html_entity_decode($json['title'], ENT_QUOTES);
+  $title = preg_replace("/\(([^()]*+|(?R))*\)/","", $title);
+  $title = trim(preg_replace("/\[([^\[\]]*+|(?R))*\]/","", $title));
+  $title_jp = html_entity_decode($json['title_jpn'], ENT_QUOTES);
+  $title_jp = preg_replace("/\(([^()]*+|(?R))*\)/","", $title_jp);
+  $title_jp = trim(preg_replace("/\[([^\[\]]*+|(?R))*\]/","", $title_jp));
+
   $json_str = [
     'id'          => $gid,
-    'title'       => html_entity_decode($json['title'], ENT_QUOTES),
-    'title_jp'    => html_entity_decode($json['title_jpn'], ENT_QUOTES),
+    'title'       => $title,
+    'title_jp'    => $title_jp,
     'artists'     => $artists,
     'circle'      => $circle,
     'censored'    => $censored,
     'year'        => NULL,
     'tags'        => $tags,
-    'lang'        => $lang??'Japanese',
+    'lang'        => $lang ?? 'Japanese',
     'pages'       => $json['filecount'],
     'description' => '',
     'cover'       => $cover

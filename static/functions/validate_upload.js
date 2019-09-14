@@ -23,7 +23,7 @@ $(() => {
       soft_error('The file selected does not appear to be a .torrent file')
     }
     let mi = $('#mediainfo').raw().value
-    if (mi && (!mi.includes('General') || !mi.includes('Video'))) {
+    if (mi && (!mi.includes('General') || (!mi.includes('Video') && !mi.includes('Audio')))) {
       soft_error('Your MediaInfo does not appear to be from a valid MediaInfo utility')
     }
     if (!$('#image').raw().value) {

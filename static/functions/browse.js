@@ -274,10 +274,3 @@ function ToggleEditionRows() {
   $('#edition_label').gtoggle();
   $('#edition_catalogue').gtoggle();
 }
-
-$(function() {
-  if (!$('.group').length) {
-    var els = $('#torrent_table.grouping .colhead td:first-child(), #torrent_table.grouping .colhead_dark td:first-child(), #torrent_table.grouping .torrent td:first-child()')
-    for (var i = 0; i < els.length; i++) { els[i].style.display = 'none' }
-  }
-})

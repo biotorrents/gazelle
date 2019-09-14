@@ -3,6 +3,7 @@
 
 $getUsers = $DB->query("
   SELECT um.ID,
+         um.BonusPoints,
          COUNT(DISTINCT x.fid) AS Torrents,
          SUM(t.Size) AS Size,
          SUM(xs.seedtime) AS Seedtime,
@@ -21,11 +22,14 @@ $getUsers = $DB->query("
   GROUP BY um.ID");
 if ($DB->has_results()) {
   $QueryPart = '';
-  while (list($UserID, $NumTorr, $TSize, $TTime, $TSeeds) = $DB->next_record()) {
-    $Points = intval((0.5 + (0.55*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5,($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3)))**0.95);
+  while (list($UserID, $BonusPoints, $NumTorr, $TSize, $TTime, $TSeeds) = $DB->next_record()) {
+    $Points = (0.5 + (0.55*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5,($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3)))**0.95;
+    $Points = intval(max(min($Points, ($Points * 2) - ($BonusPoints/1440)), 0));
     if ($Points > 100000) $Points = 0;
-    $QueryPart .= "WHEN $UserID THEN BonusPoints+$Points ";
-    $Cache->delete_value('user_info_heavy_'.$UserID);
+    if ($Points > 0) {
+      $QueryPart .= "WHEN $UserID THEN BonusPoints+$Points ";
+      $Cache->delete_value('user_info_heavy_'.$UserID);
+    }
   }
 
   $DB->query("

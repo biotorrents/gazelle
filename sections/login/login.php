@@ -1,6 +1,5 @@
 <? View::show_header('Login'); ?>
   <span id="no-cookies" class="hidden warning">You appear to have cookies disabled.<br /><br /></span>
-  <noscript><span class="warning"><?=SITE_NAME?> requires JavaScript to function properly. Please enable JavaScript in your browser.</span><br /><br /></noscript>
 <?
 if (!$Banned) {
 ?>

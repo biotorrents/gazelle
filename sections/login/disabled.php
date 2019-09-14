@@ -9,29 +9,29 @@ if (isset($_POST['email']) && FEATURE_EMAIL_REENABLE) {
     $Output = "Please enter a valid email address.";
   }
 
-  $Output .= "<br /><br /><a href='login.php?action=disabled'>Back</a>";
+  $Output .= "<br><br><a href='login.php?action=disabled'>Back</a>";
 }
 
 if ((empty($_POST['submit']) || empty($_POST['username'])) && !isset($Output)) {
 ?>
 <p class="warning">
-Your account has been disabled.<br />
-This is either due to inactivity or rule violation(s).<br /><br /></p>
+Your account has been disabled.<br>
+This is either due to inactivity or rule violation(s).<br><br></p>
 <? if (FEATURE_EMAIL_REENABLE) { ?>
-If you believe your account was in good standing and was disabled for inactivity, you may request it be re-enabled via email using the form below.<br />
-Please note that you will need access to the email account associated with your account at <?=SITE_NAME?> for this to work;<br />
-if you do not, please see the section after this form.<br /><br />
+If you believe your account was in good standing and was disabled for inactivity, you may request it be re-enabled via email using the form below.<br>
+Please use an email service that actually delivers mail. Outlook/Hotmail is known not to.<br>
+Most requests are handled within minutes. If a day or two goes by without a response, try again with a different email or try asking in IRC.<br><br>
 <form action="" method="POST">
   <input type="email" class="inputtext" placeholder="Email Address" name="email" required /> <input type="submit" value="Submit" />
   <input type="hidden" name="username" value="<?=$_COOKIE['username']?>" />
 </form><br /><br />
 <? } ?>
-If you are unsure why your account is disabled, or you wish to discuss this with staff, come to our IRC network at: <?=BOT_SERVER?><br />
-And join <?=BOT_DISABLED_CHAN?><br /><br />
-<strong>Be honest.</strong> At this point, lying will get you nowhere.<br /><br /><br />
+If you are unsure why your account is disabled, or you wish to discuss this with staff, come to our IRC network at: <?=BOT_SERVER?><br>
+And join <?=BOT_DISABLED_CHAN?><br><br>
+<strong>Be honest.</strong> At this point, lying will get you nowhere.<br /><br><br>
 </p>
 
-<strong>Before joining the disabled channel, please read our <br /> <span style="color: gold;">Golden Rules</span> which can be found <a style="color: #1464F4;" href="#" onclick="toggle_visibility('golden_rules')">here</a>.</strong> <br /><br />
+<strong>Before joining the disabled channel, please read our <br> <span>Golden Rules</span> which can be found <a style="color: #1464F4;" href="#" onclick="toggle_visibility('golden_rules')">here</a>.</strong> <br><br>
 
 <script type="text/javascript">
 function toggle_visibility(id) {

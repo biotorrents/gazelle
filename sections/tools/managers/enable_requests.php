@@ -312,9 +312,9 @@ if ($NumResults > 0) { ?>
 ?>
     </div>
 <div style="padding-bottom: 11px;">
-    <input type="submit" id="outcome" value="Approve Selected" />
-    <input type="submit" id="outcome" value="Reject Selected" />
-    <input type="submit" id="outcome" value="Discard Selected" />
+    <input type="submit" id="multi" value="Approve Selected" />
+    <input type="submit" id="multi" value="Reject Selected" />
+    <input type="submit" id="multi" value="Discard Selected" />
 </div>
 <? } else { ?>
     <h2 align="center">No new pending auto enable requests<?=($_GET['view'] == 'main') ? '' : ' in this view'?></h2>

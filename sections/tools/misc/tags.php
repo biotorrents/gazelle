@@ -5,18 +5,19 @@ if (!check_perms('users_mod')) {
 }
 
 // validation functions
-$Val->SetFields('tag', true, 'string', 'Enter a single tag to search for.', array('maxlength'=>'200', 'minlength'=>'2'));
-$Val->SetFields('replace', true, 'string', 'Enter a single replacement tag.', array('maxlength'=>'200', 'minlength'=>'2'));
+$Val->SetFields('tag', true, 'string', 'Enter a single tag to search for.', ['maxlength'=>'200', 'minlength'=>'2']);
+$Val->SetFields('replace', false, 'string', 'Enter a single replacement tag.', ['maxlength'=>'200', 'minlength'=>'2']);
 
 echo $Val->GenerateJS('tagform');
 
 // some constants to make programmers' lives easier
 define('MODE_RENAME', 0);
 define('MODE_MERGE', 1);
+define('MODE_DELETE', 2);
 
 ?>
 <div class="thin">
-  <h3>Merge/Rename Tags</h3>
+  <h3>Merge/Rename/Delete Tags</h3>
   <form action="tools.php" method="get" name="tagform" id="tagform" onsubmit="return formVal();">
     <input type="hidden" name="action" value="edit_tags" />
     <table>
@@ -28,7 +29,7 @@ define('MODE_MERGE', 1);
           <input type="text" name="tag" id="tag" />
         </td>
         <td class="label">
-          Rename to/merge with tag:
+          Rename to/merge with tag (empty to delete):
         </td>
         <td>
           <input type="text" name="replace" id="replace" />
@@ -39,7 +40,7 @@ define('MODE_MERGE', 1);
       </tr>
       <tr>
         <td class="center" colspan="5">
-          <input type="submit" value="Rename/Merge Tags" />
+          <input type="submit" value="Process Tag" />
         </td>
       </tr>
     </table>
@@ -74,8 +75,8 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
     $DB->query("
       SELECT ID
       FROM tags
-      WHERE Name = '$Tag'
-      LIMIT 1;");
+      WHERE Name = ?
+      LIMIT 1", $Tag);
     if (!$DB->has_results()) {
       echo "
         <div class=\"box pad center\">
@@ -88,17 +89,22 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
     list($TagID) = $DB->next_record();
 
     // 2) check if replacement exists
-    $DB->query("
-      SELECT ID
-      FROM tags
-      WHERE Name = '$Replacement'
-      LIMIT 1;");
-    if (!$DB->has_results() ) {
-      $Mode = MODE_RENAME;
+    $ReplacementID = null;
+    if ($Replacement) {
+      $DB->query("
+        SELECT ID
+        FROM tags
+        WHERE Name = ?
+        LIMIT 1", $Replacement);
+      if (!$DB->has_results() ) {
+        $Mode = MODE_RENAME;
+        list($ReplacementID) = $DB->next_record();
+      } else {
+        $Mode = MODE_MERGE;
+      }
     } else {
-      $Mode = MODE_MERGE;
+      $Mode = MODE_DELETE;
     }
-    list($ReplacementID) = $DB->next_record();
 
     if ($_GET['list']) {
       $AffectedTorrents = [];
@@ -113,7 +119,7 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
           LEFT JOIN torrents_artists AS ta ON ta.GroupID = tg.ID
           LEFT JOIN artists_group AS ag ON ag.ArtistID = ta.ArtistID
           JOIN torrents_tags AS t ON t.GroupID = tg.ID
-        WHERE t.TagID = $TagID;");
+        WHERE t.TagID = ?", $TagID);
       while (list($TorrentID, $ArtistID, $ArtistName, $TorrentName) = $DB->next_record()) {
         $Row = ($ArtistName ? "<a href=\"artist.php?id=$ArtistID\">$ArtistName</a> - " : '');
         $Row.= "<a href=\"torrents.php?id=$TorrentID\">".display_str($TorrentName).'</a>';
@@ -131,7 +137,7 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
           LEFT JOIN requests_artists AS ra ON r.ID = ra.RequestID
           LEFT JOIN artists_group AS ag ON ag.ArtistID = ra.ArtistID
           JOIN requests_tags AS t ON t.RequestID = r.ID
-        WHERE t.TagID = $TagID;");
+        WHERE t.TagID = ?", $TagID);
       while (list($RequestID, $ArtistID, $ArtistName, $RequestName) = $DB->next_record()) {
         $Row = ($ArtistName ? "<a href=\"artist.php?id=$ArtistID\">$ArtistName</a> - " : '');
         $Row.= "<a href=\"requests.php?action=viewrequest&amp;id=$RequestID\">".display_str($RequestName).'</a>';
@@ -160,7 +166,32 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
           Torrents::update_hash($GroupID);
         }
       }
-    } else {
+    } elseif ($Mode == MODE_DELETE) {
+      // EASY! just delete the tag
+      // 5) delete the tag
+      $DB->query("
+        DELETE FROM tags
+        WHERE ID = ?", $TagID);
+
+      // 6) get a list of the affected groups
+      $DB->query("
+        SELECT GroupID
+        FROM torrents_tags
+        WHERE TagID = ?", $TagID);
+      $AffectedGroups = $DB->to_array();
+
+      // 7) remove the tag from the groups
+      $DB->query("
+        DELETE FROM torrents_tags
+        WHERE TagID = ?", $TagID);
+      $TotalAffected = $DB->affected_rows();
+
+      // 8) update the newly tagless groups
+      foreach ($AffectedGroups as $AffectedGroup) {
+        list($GroupID) = $AffectedGroup;
+        Torrents::update_hash($GroupID);
+      }
+    } elseif ($Mode == MODE_MERGE) {
       // HARD! merge two tags together and update usage
       // 5) remove dupe tags from torrents
       //  (torrents that have both "old tag" and "replacement tag" set)

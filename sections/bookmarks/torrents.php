@@ -210,13 +210,15 @@ foreach ($GroupIDs as $GroupID) {
 
 $CollageCovers = isset($LoggedUser['CollageCovers']) ? (int)$LoggedUser['CollageCovers'] : 10;
 $CollagePages = [];
-for ($i = 0; $i < $NumGroups / $CollageCovers; $i++) {
-  $Groups = array_slice($Collage, $i * $CollageCovers, $CollageCovers);
-  $CollagePage = '';
-  foreach ($Groups as $Group) {
-    $CollagePage .= $Group;
+if ($CollageCovers > 0) {
+  for ($i = 0; $i < $NumGroups / $CollageCovers; $i++) {
+    $Groups = array_slice($Collage, $i * $CollageCovers, $CollageCovers);
+    $CollagePage = '';
+    foreach ($Groups as $Group) {
+      $CollagePage .= $Group;
+    }
+    $CollagePages[] = $CollagePage;
   }
-  $CollagePages[] = $CollagePage;
 }
 
 View::show_header($Title, 'browse,collage,wall');

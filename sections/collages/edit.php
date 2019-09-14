@@ -17,13 +17,13 @@ if ($CategoryID == 0 && $UserID != $LoggedUser['ID'] && !check_perms('site_colla
   error(403);
 }
 
-View::show_header('Edit collection');
+View::show_header('Edit collection', 'bbcode');
 
 if (!empty($Err)) {
   if (isset($ErrNoEscape)) {
-    echo '<div class="save_message error">'.$Err.'</div>';
+    echo '<div class="box save_message error">'.$Err.'</div>';
   } else {
-    echo '<div class="save_message error">'.display_str($Err).'</div>';
+    echo '<div class="box save_message error">'.display_str($Err).'</div>';
   }
 }
 ?>
@@ -65,7 +65,7 @@ if ($CategoryID > 0 || check_perms('site_collages_delete')) { ?>
       <tr>
         <td class="label">Description</td>
         <td>
-          <textarea name="description" id="description" cols="60" rows="10"><?=$Description?></textarea>
+          <textarea class="bbcode_editor" name="description" id="description" cols="60" rows="10"><?=$Description?></textarea>
         </td>
       </tr>
       <tr>

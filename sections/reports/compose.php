@@ -1,5 +1,5 @@
 <?
-if (!check_perms('site_moderate_forums')) {
+if (!check_perms('admin_reports')) {
   error(403);
 }
 
@@ -30,7 +30,7 @@ if (!empty($LoggedUser['DisablePM']) && !isset($StaffIDs[$ToID])) {
 $DB->query("
   SELECT Username
   FROM users_main
-  WHERE ID = '$ToID'");
+  WHERE ID = ?", $ToID);
 list($ComposeToUsername) = $DB->next_record();
 if (!$ComposeToUsername) {
   error(404);
@@ -43,7 +43,7 @@ switch ($Type) {
     $DB->query("
       SELECT Username
       FROM users_main
-      WHERE ID = $ThingID");
+      WHERE ID = ?", $ThingID);
     if (!$DB->has_results()) {
       $Error = 'No user with the reported ID found';
     } else {
@@ -57,7 +57,7 @@ switch ($Type) {
     $DB->query("
       SELECT Title
       FROM requests
-      WHERE ID = $ThingID");
+      WHERE ID = ?", $ThingID);
     if (!$DB->has_results()) {
       $Error = 'No request with the reported ID found';
     } else {
@@ -70,7 +70,7 @@ switch ($Type) {
     $DB->query("
       SELECT Name
       FROM collages
-      WHERE ID = $ThingID");
+      WHERE ID = ?", $ThingID);
     if (!$DB->has_results()) {
       $Error = 'No collage with the reported ID found';
     } else {
@@ -83,7 +83,7 @@ switch ($Type) {
     $DB->query("
       SELECT Title
       FROM forums_topics
-      WHERE ID = $ThingID");
+      WHERE ID = ?", $ThingID);
     if (!$DB->has_results()) {
       $Error = 'No forum thread with the reported ID found';
     } else {
@@ -110,7 +110,7 @@ switch ($Type) {
             AND p2.ID <= p.ID
         ) AS PostNum
       FROM forums_posts AS p
-      WHERE p.ID = $ThingID");
+      WHERE p.ID = ?", $ThingID);
     if (!$DB->has_results()) {
       $Error = 'No forum post with the reported ID found';
     } else {
@@ -123,7 +123,7 @@ switch ($Type) {
     $DB->query("
       SELECT 1
       FROM comments
-      WHERE ID = $ThingID");
+      WHERE ID = ?", $ThingID);
     if (!$DB->has_results()) {
       $Error = 'No comment with the reported ID found';
     } else {
@@ -142,7 +142,7 @@ if (isset($Error)) {
 $DB->query("
   SELECT Reason
   FROM reports
-  WHERE ID = $ReportID");
+  WHERE ID = ?", $ReportID);
 list($Reason) = $DB->next_record();
 
 $Body = "You reported $TypeLink for the reason:\n[quote]{$Reason}[/quote]";

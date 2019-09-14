@@ -101,7 +101,7 @@ li#nav_subscriptions.new-subscriptions a {
 .box.filter_torrents .head a:hover,.box.filter_torrents .head a:focus,.forum_post .colhead a:hover,.forum_post .colhead_dark a:focus,#inbox .box .head a:focus,#inbox .box .head a:hover {
   color:#32867d
 }
-#request_table .rowb td:first-of-type>a:nth-child(2n),#request_table .rowa td>a:nth-child(2n) {
+#request_table .row td:first-of-type > a:nth-child(2n) {
   color:#32867d
 }
 span.r99,.r09,.r10,.r20,.r30,.r40,.r50 {
@@ -687,7 +687,7 @@ form.search_form input[type="submit"],form.search_form input[type="button"] {
 .hidden,div#quickreplytext br {
   display:none
 }
-#request_table .rowb td:first-of-type>a,#request_table .rowa td>a {
+#request_table .rowa td > a {
   font-weight:600
 }
 .big_info .group_info.clear span {

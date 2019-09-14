@@ -29,7 +29,7 @@ function ratio(a, b) {
 
 function save_message(message, err = false) {
   var messageDiv = document.createElement("div");
-  messageDiv.className = err ? "error_message" : "save_message";
+  messageDiv.className = err ? "error_message box" : "save_message box";
   messageDiv.innerHTML = message;
   $("#content").raw().insertBefore(messageDiv,$("#content").raw().firstChild);
 }
@@ -360,3 +360,13 @@ $(function() {
     lightbox.init((e.target.attributes['lightbox-img']||[]).value||e.target.src, (e.target.attributes['lightbox-size']||[]).value||e.target.width)
   })
 })
+
+/*
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    reg.update()
+  }).catch(err => {
+    console.log("Failed to register service worker: ", err)
+  })
+}
+*/

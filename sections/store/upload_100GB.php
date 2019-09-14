@@ -1,6 +1,7 @@
 <?
 $Purchase = "100GiB of upload";
 $UserID = $LoggedUser['ID'];
+$Cost = 130000;
 
 $DB->query("
   SELECT BonusPoints
@@ -9,10 +10,10 @@ $DB->query("
 if ($DB->has_results()) {
   list($Points) = $DB->next_record();
 
-  if ($Points >= 100000) {
+  if ($Points >= $Cost) {
     $DB->query("
       UPDATE users_main
-      SET BonusPoints = BonusPoints - 100000,
+      SET BonusPoints = BonusPoints - $Cost,
           Uploaded    = Uploaded + 107374182400
       WHERE ID = $UserID");
     $DB->query("

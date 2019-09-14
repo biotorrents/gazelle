@@ -3,9 +3,10 @@ $UserID = $LoggedUser['ID'];
 $PermID = $LoggedUser['PermissionID'];
 
 if (!$LoggedUser['DisablePoints']) {
-  $PointsRate = 0.5;
+  $PointsRate = 0;
   $getTorrents = $DB->query("
-    SELECT COUNT(DISTINCT x.fid) AS Torrents,
+    SELECT um.BonusPoints,
+           COUNT(DISTINCT x.fid) AS Torrents,
            SUM(t.Size) AS Size,
            SUM(xs.seedtime) AS Seedtime,
            SUM(t.Seeders) AS Seeders
@@ -22,10 +23,10 @@ if (!$LoggedUser['DisablePoints']) {
       AND x.Remaining = 0
     GROUP BY um.ID", $UserID);
   if ($DB->has_results()) {
-    list($NumTorr, $TSize, $TTime, $TSeeds) = $DB->next_record();
-    $PointsRate += (0.55*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5,($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3));
+    list($BonusPoints, $NumTorr, $TSize, $TTime, $TSeeds) = $DB->next_record();
+    $PointsRate = (0.5 + (0.55*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5,($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3)))**0.95;
   }
-  $PointsRate = intval($PointsRate**0.95);
+  $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints/1440)), 0));
   $PointsPerHour = number_format($PointsRate) . " ".BONUS_POINTS."/hour";
   $PointsPerDay = number_format($PointsRate*24) . " ".BONUS_POINTS."/day";
 } else {
@@ -52,7 +53,7 @@ View::show_header('Store');
           <a href="store.php?item=upload_1GB">1GiB Upload</a>
         </td>
         <td class="nobr">
-          1,000 <?=BONUS_POINTS?>
+          1,300 <?=BONUS_POINTS?>
         </td>
         <td class="nobr">
           Purchase 1GiB of upload
@@ -63,7 +64,7 @@ View::show_header('Store');
           <a href="store.php?item=upload_10GB">10GiB Upload</a>
         </td>
         <td class="nobr">
-          10,000 <?=BONUS_POINTS?>
+          13,000 <?=BONUS_POINTS?>
         </td>
         <td class="nobr">
           Purchase 10GiB of upload
@@ -74,7 +75,7 @@ View::show_header('Store');
           <a href="store.php?item=upload_100GB">100GiB Upload</a>
         </td>
         <td class="nobr">
-          100,000 <?=BONUS_POINTS?>
+          130,000 <?=BONUS_POINTS?>
         </td>
         <td class="nobr">
           Purchase 100GiB of upload
@@ -85,7 +86,7 @@ View::show_header('Store');
           <a href="store.php?item=upload_1000GB">1,000GiB Upload</a>
         </td>
         <td class="nobr">
-          1,000,000 <?=BONUS_POINTS?>
+          1,300,000 <?=BONUS_POINTS?>
         </td>
         <td class="nobr">
           Purchase 1,000GiB of upload
@@ -96,7 +97,7 @@ View::show_header('Store');
           <a href="store.php?item=1k_points">1,000 <?=BONUS_POINTS?></a>
         </td>
         <td class="nobr">
-          1GiB Upload
+          1.3GiB Upload
         </td>
         <td class="nobr">
           Purchase 1,000 <?=BONUS_POINTS?>
@@ -107,7 +108,7 @@ View::show_header('Store');
           <a href="store.php?item=10k_points">10,000 <?=BONUS_POINTS?></a>
         </td>
         <td class="nobr">
-          10GiB Upload
+          13GiB Upload
         </td>
         <td class="nobr">
           Purchase 10,000 <?=BONUS_POINTS?>
@@ -118,7 +119,7 @@ View::show_header('Store');
           <a href="store.php?item=100k_points">100,000 <?=BONUS_POINTS?></a>
         </td>
         <td class="nobr">
-          100GiB Upload
+          130GiB Upload
         </td>
         <td class="nobr">
           Purchase 100,000 <?=BONUS_POINTS?>
@@ -129,7 +130,7 @@ View::show_header('Store');
           <a href="store.php?item=1m_points">1,000,000 <?=BONUS_POINTS?></a>
         </td>
         <td class="nobr">
-          1,000GiB Upload
+          1,300GiB Upload
         </td>
         <td class="nobr">
           Purchase 1,000,000 <?=BONUS_POINTS?>

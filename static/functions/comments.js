@@ -401,6 +401,7 @@ $(document).ready(function() {
               par.raw().style.height = par.height()+'px'
           }
       })
+      if (this.complete) $(this).load()
     }
 
   })

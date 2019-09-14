@@ -11,10 +11,10 @@ class AutoEnable {
     const CACHE_KEY_NAME = 'num_enable_requests';
 
     // The default request rejected message
-    const REJECTED_MESSAGE = "Your request to re-enable your account has been rejected.<br />This may be because a request is already pending for your username, or because a recent request was denied.<br /><br />You are encouraged to discuss this with staff by visiting %s on %s";
+    const REJECTED_MESSAGE = "Your request to re-enable your account has been rejected.<br>This may be because a request is already pending for your username, or because a recent request was denied.<br><br>You are encouraged to discuss this with staff by visiting %s on %s";
 
     // The default request received message
-    const RECEIVED_MESSAGE = "Your request to re-enable your account has been received. You can expect a reply message in your email within 48 hours.<br />If you do not receive an email after 48 hours have passed, please visit us on IRC for assistance.";
+    const RECEIVED_MESSAGE = "Your request to re-enable your account has been received. Most requests are responded to within minutes. Remember to check your spam.<br>If you do not receive an email after 48 hours have passed, please visit us on IRC for assistance.";
 
     /**
      * Handle a new enable request
@@ -31,7 +31,7 @@ class AutoEnable {
 
         // Get the user's ID
         G::$DB->query("
-                SELECT um.ID
+                SELECT um.ID, ui.BanReason
                 FROM users_main AS um
                 JOIN users_info ui ON ui.UserID = um.ID
                 WHERE um.Username = '$Username'
@@ -39,7 +39,7 @@ class AutoEnable {
 
         if (G::$DB->has_results()) {
             // Make sure the user can make another request
-            list($UserID) = G::$DB->next_record();
+            list($UserID, $BanReason) = G::$DB->next_record();
             G::$DB->query("
             SELECT 1 FROM users_enable_requests
             WHERE UserID = '$UserID'
@@ -51,9 +51,8 @@ class AutoEnable {
                     OR
                     (
                       Timestamp > NOW() - INTERVAL 2 MONTH
-                        AND
-                          (Outcome = '".self::DENIED."'
-                             OR Outcome = '".self::DISCARDED."')
+                      AND
+                      Outcome = '".self::DENIED."'
                     )
                   )");
         }
@@ -75,12 +74,16 @@ class AutoEnable {
                 (UserID, Email, IP, UserAgent, Timestamp)
                 VALUES (?, ?, ?, ?, NOW())",
                 $UserID, Crypto::encrypt($Email), Crypto::encrypt($IP), $UserAgent);
+            $RequestID = G::$DB->inserted_id();
 
             // Cache the number of requests for the modbar
             G::$Cache->increment_value(self::CACHE_KEY_NAME);
             setcookie('username', '', time() - 60 * 60, '/', '', false);
             $Output = self::RECEIVED_MESSAGE;
             Tools::update_user_notes($UserID, sqltime() . " - Enable request " . G::$DB->inserted_id() . " received from $IP\n\n");
+            if ($BanReason == 3) {
+              //self::handle_requests([$RequestID], self::APPROVED, "Automatically approved (inactivity)");
+            }
         }
 
         return $Output;
@@ -140,8 +143,8 @@ class AutoEnable {
                     $Token = db_string(Users::make_secret());
                     G::$DB->query("
                         UPDATE users_enable_requests
-                        SET Token = '$Token'
-                        WHERE ID = '$ID'");
+                        SET Token = ?
+                        WHERE ID = ?", $Token, $ID);
                     $TPL->set('TOKEN', $Token);
                 }
 
@@ -159,11 +162,17 @@ class AutoEnable {
         }
 
         // User notes stuff
+        $StaffID = G::$LoggedUser['ID'] ?? 0;
         G::$DB->query("
             SELECT Username
             FROM users_main
-            WHERE ID = '" . G::$LoggedUser['ID'] . "'");
-        list($StaffUser) = G::$DB->next_record();
+            WHERE ID = ?", $StaffID);
+        if (G::$DB->has_results()) {
+          list($StaffUser) = G::$DB->next_record();
+        } else {
+          $StaffUser = "System";
+          $StaffID = 0;
+        }
 
         foreach ($UserInfo as $User) {
             list($ID, $UserID) = $User;
@@ -176,9 +185,9 @@ class AutoEnable {
         G::$DB->query("
                 UPDATE users_enable_requests
                 SET HandledTimestamp = NOW(),
-                    CheckedBy = '".G::$LoggedUser['ID']."',
-                    Outcome = '$Status'
-                WHERE ID IN (".implode(',', $IDs).")");
+                    CheckedBy = ?,
+                    Outcome = ?
+                WHERE ID IN (".implode(',', $IDs).")", $StaffID, $Status);
         G::$Cache->decrement_value(self::CACHE_KEY_NAME, count($IDs));
     }
 

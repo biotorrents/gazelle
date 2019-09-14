@@ -66,6 +66,17 @@ function Categories() {
     'group_desc': {notes: 'Contains information such as a description of the game, its mechanics, etc.'},
     'release_desc': {notes: 'Contains information such as <strong>version</strong>, install instructions, patching instructions, etc.'}
   }, {
+    'idols': {name: 'Voices (Optional)'},
+    'studio': {name: 'Publisher (Optional)'},
+    'mediainfo': {},
+    'audio': {},
+    'year': false,
+    'lang': false,
+    'dlsite': {},
+    'screenshots': {name: 'Samples'},
+    'group_desc': {notes: 'Contains information such as a description of the audio work.'},
+    'release_desc': {notes: 'Contains information specific to the release.'}
+  }, {
     'idols': {name: 'Creators/Authors (Optional)'},
     'studio': {name: 'Publisher (Optional)'},
     'year': false,

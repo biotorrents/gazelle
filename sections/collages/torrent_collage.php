@@ -236,13 +236,15 @@ if (!check_perms('site_collages_delete')
 $CollageCovers = isset($LoggedUser['CollageCovers']) ? $LoggedUser['CollageCovers'] : 25 * (abs($LoggedUser['HideCollage'] - 1));
 $CollagePages = [];
 
-for ($i = 0; $i < $NumGroups / $CollageCovers; $i++) {
-  $Groups = array_slice($Collage, $i * $CollageCovers, $CollageCovers);
-  $CollagePage = '';
-  foreach ($Groups as $Group) {
-    $CollagePage .= $Group;
+if ($CollageCovers) {
+  for ($i = 0; $i < $NumGroups / $CollageCovers; $i++) {
+    $Groups = array_slice($Collage, $i * $CollageCovers, $CollageCovers);
+    $CollagePage = '';
+    foreach ($Groups as $Group) {
+      $CollagePage .= $Group;
+    }
+    $CollagePages[] = $CollagePage;
   }
-  $CollagePages[] = $CollagePage;
 }
 
 View::show_header($Name, 'browse,collage,bbcode,recommend,wall');

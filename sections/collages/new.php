@@ -1,5 +1,5 @@
 <?
-View::show_header('Create a collection');
+View::show_header('Create a collection', 'bbcode');
 
 if (!check_perms('site_collages_renamepersonal')) {
   $ChangeJS = " onchange=\"if ( this.options[this.selectedIndex].value == '0') { $('#namebox').ghide(); $('#personal').gshow(); } else { $('#namebox').gshow(); $('#personal').ghide(); }\"";
@@ -66,7 +66,7 @@ if (($CollageCount < $LoggedUser['Permissions']['MaxCollages']) && check_perms('
       <tr>
         <td class="label">Description</td>
         <td>
-          <textarea name="description" id="description" cols="60" rows="10"><?=display_str($Description)?></textarea>
+          <textarea class="bbcode_editor" name="description" id="description" cols="60" rows="10"><?=display_str($Description)?></textarea>
         </td>
       </tr>
       <tr>
