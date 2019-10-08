@@ -1,8 +1,8 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
-CREATE DATABASE gazelle CHARACTER SET utf8mb4;
+CREATE DATABASE gazelle_production CHARACTER SET utf8mb4;
 
-USE gazelle;
+USE gazelle_production;
 
 CREATE TABLE `api_applications` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
