@@ -74,7 +74,7 @@ if (isset($_POST['type'])) {
       Torrents::freeleech_torrents($IDs, 1, 3, false);
       echo("Success! Now run the indexer.");
     } else {
-      error("RIP Oppaitime");
+      error("RIP BioTorrents.de");
     }
   }
 } else {

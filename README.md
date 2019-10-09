@@ -1,4 +1,4 @@
-This is Oppaitime's version of Gazelle
+This is BioTorrents.de's version of Gazelle
 
 Below are some lists of differences between this version of Gazelle and What.cd's. Please note that these lists are far from complete.
 
