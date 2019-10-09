@@ -5,6 +5,6 @@
   <InputEncoding>UTF-8</InputEncoding>
   <OutputEncoding>UTF-8</OutputEncoding>
   <AdultContent>true</AdultContent>
-  <Image height="16" width="16" type="image/vnd.microsoft.icon">https://oppaiti.me/favicon.ico</Image>
+  <Image height="16" width="16" type="image/vnd.microsoft.icon">https://oppaiti.me/favicon.png</Image>
   <Url type="text/html" template="https://oppaiti.me/torrents.php?searchstr={searchTerms}"/>
 </OpenSearchDescription>
