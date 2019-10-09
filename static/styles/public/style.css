@@ -127,11 +127,13 @@ input[type="text"]:invalid, input[type="password"]:invalid {
 }
 
 #logo {
-  height: 100px;
-  background-image: url('images/logo.svg');
+  width: 250px;
+  height: 50px;
+  background-image: url('images/logo.png');
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
+  margin: 0 0 0 auto;
 }
 
 .centered {
