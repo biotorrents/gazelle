@@ -7,6 +7,7 @@ function DisplayTrans() {
 }
 
 function Categories() {
+  /*
   let def = ['title', 'title_rj', 'title_jp', 'year', 'lang', 'censored', 'tags', 'cover', 'group_desc', 'release_desc', 'anon']
   let cats = [{
     'javdb': {},
@@ -115,6 +116,7 @@ function Categories() {
       hide(tr)
     }
   }
+  */
 }
 
 function Bitrate() {
