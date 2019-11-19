@@ -6,18 +6,18 @@
 class TorrentForm {
   var $UploadForm = '';
   var $Categories = [];
-  var $Formats = [];
-  var $Bitrates = [];
+  #var $Formats = [];
+  #var $Bitrates = [];
   var $Media = [];
-  var $MediaManaga = [];
+  #var $MediaManga = [];
   var $Containers = [];
-  var $ContainersGames = [];
+  #var $ContainersGames = [];
   var $Codecs = [];
   var $Resolutions = [];
-  var $AudioFormats = [];
-  var $Subbing = [];
-  var $Languages = [];
-  var $Platform = [];
+  #var $AudioFormats = [];
+  #var $Subbing = [];
+  #var $Languages = [];
+  #var $Platform = [];
   var $NewTorrent = false;
   var $Torrent = [];
   var $Error = false;
@@ -31,25 +31,26 @@ class TorrentForm {
     $this->Torrent = $Torrent;
     $this->Error = $Error;
 
-    global $UploadForm, $Categories, $Formats, $Bitrates, $Media, $MediaManga, $TorrentID, $Containers, $ContainersGames, $Codecs, $Resolutions, $AudioFormats, $Subbing, $Languages, $Platform, $Archives, $ArchivesManga;
+    global $UploadForm, $Categories, $Media, $TorrentID, $Containers, $Codecs, $Resolutions, $Archives;
+    #global $UploadForm, $Categories, $Formats, $Bitrates, $Media, $MediaManga, $TorrentID, $Containers, $ContainersGames, $Codecs, $Resolutions, $AudioFormats, $Subbing, $Languages, $Platform, $Archives, $ArchivesManga;
 
     $this->UploadForm = $UploadForm;
     $this->Categories = $Categories;
-    $this->Formats = $Formats;
-    $this->Bitrates = $Bitrates;
+    #$this->Formats = $Formats;
+    #$this->Bitrates = $Bitrates;
     $this->Media = $Media;
-    $this->MediaManga = $MediaManga;
+    #$this->MediaManga = $MediaManga;
     $this->Containers = $Containers;
-    $this->ContainersGames = $ContainersGames;
+    #$this->ContainersGames = $ContainersGames;
     $this->Codecs = $Codecs;
     $this->Resolutions = $Resolutions;
-    $this->AudioFormats = $AudioFormats;
-    $this->Subbing = $Subbing;
-    $this->Languages = $Languages;
+    #$this->AudioFormats = $AudioFormats;
+    #$this->Subbing = $Subbing;
+    #$this->Languages = $Languages;
     $this->TorrentID = $TorrentID;
-    $this->Platform = $Platform;
+    #$this->Platform = $Platform;
     $this->Archives = $Archives;
-    $this->ArchivesManga = $ArchivesManga;
+    #$this->ArchivesManga = $ArchivesManga;
 
     if ($this->Torrent && $this->Torrent['GroupID']) {
       $this->Disabled = ' readonly="readonly"';
@@ -114,7 +115,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
 <?    if ($this->NewTorrent) { ?>
     <table cellpadding="3" cellspacing="1" border="0" class="layout" width="100%">
       <tr>
-        <td class="label">Torrent file</td>
+        <td class="label">Torrent File</td>
         <td><input id="file" type="file" name="file_input" size="50" /></td>
       </tr>
       <tr>
@@ -199,7 +200,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
     <table cellpadding="3" cellspacing="1" border="0" class="layout slice" width="100%">
 <? if ($this->NewTorrent) { ?>
       <tr id="javdb_tr">
-        <td class="label tooltip" title='Enter a JAV catalogue number, e.g., "CND-060"'>Catalogue Number</td>
+        <td class="label tooltip" title='RefSeq accession number, e.g., NM_000202.8'>Accession Number</td>
         <td>
           <input type="text" id="catalogue" name="catalogue" size="10" value="<?=display_str($Torrent['CatalogueNumber']) ?>" <?=$this->Disabled?>/>
 <? if (!$this->DisabledFlag) { ?>
@@ -226,19 +227,19 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         </td>
       </tr>
       <tr id="title_tr">
-        <td class="label">English Title</td>
+        <td class="label">Sequence Name</td>
         <td><input type="text" id="title" name="title" size="60" value="<?=display_str($Torrent['Title']) ?>" <?=$this->Disabled?>/></td>
       </tr>
       <tr id="title_rj_tr">
-        <td class="label">Romaji Title</td>
+        <td class="label">Organism</td>
         <td><input type="text" id="title_rj" name="title_rj" size="60" value="<?=display_str($Torrent['TitleRJ']) ?>" <?=$this->Disabled?>/></td>
       </tr>
       <tr id="title_jp_tr">
-        <td class="label">Japanese Title</td>
+        <td class="label">Strain/Variety</td>
         <td><input type="text" id="title_jp" name="title_jp" size="60" value="<?=display_str($Torrent['TitleJP']) ?>" <?=$this->Disabled?>/></td>
       </tr>
       <tr id="idols_tr">
-        <td class="label">Idol(s)</td>
+        <td class="label">Collaborator(s)</td>
         <td id="idolfields">
 <?      if (!empty($Torrent['Artists'])) {
           foreach ($Torrent['Artists'] as $Num => $Artist) { ?>
@@ -254,34 +255,20 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         </td>
       </tr>
       <tr id="studio_tr">
-        <td class="label">Studio</td>
+        <td class="label">Department/Lab</td>
         <td><input type="text" id="studio" name="studio" size="60" value="<?=display_str($Torrent['Studio']) ?>" <?=$this->Disabled?>/></td>
       </tr>
       <tr id="series_tr">
-        <td class="label">Series</td>
+        <td class="label">Location</td>
         <td><input type="text" id="series" name="series" size="60" value="<?=display_str($Torrent['Series']) ?>" <?=$this->Disabled?>/></td>
       </tr>
       <tr id="year_tr">
         <td class="label">Year</td>
         <td><input type="text" id="year" name="year" maxlength="4" size="5" value="<?=display_str($Torrent['Year']) ?>" <?=$this->Disabled?>/></td>
       </tr>
-      <tr id="pages_tr">
-        <td class="label">Pages</td>
-        <td><input type="text" id="pages" name="pages" maxlength="5" size="5" value="<?=display_str($Torrent['Pages']) ?>" <?=$this->Disabled?> /></td>
-      </tr>
-      <tr id="dlsite_tr">
-        <td class="label">DLsite ID</td>
-        <td><input type="text" id="dlsiteid" name="dlsiteid" size="8" maxlength="8" value="<?=display_str($Torrent['DLsiteID']??'')?>" <?=$this->Disabled?>/></td>
-      </tr>
 <? } ?>
-      <tr id="mediainfo_tr">
-        <td class="label">Media Info</td>
-        <td>
-          <textarea name="mediainfo" id="mediainfo" onchange="MediaInfoExtract()"  rows="8" cols="60"><?=display_str($Torrent['MediaInfo']??'')?></textarea>
-        </td>
-      </tr>
       <tr id="media_tr">
-        <td class="label">Media</td>
+        <td class="label">Platform</td>
         <td>
           <select name="media">
             <option>---</option>
@@ -292,40 +279,6 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         echo " selected";
       }
       echo ">$Media</option>\n";
-    }
-?>
-          </select>
-        </td>
-      </tr>
-      <tr id="media_manga_tr">
-        <td class="label">Media</td>
-        <td>
-          <select name="media">
-            <option>---</option>
-<?
-    foreach($this->MediaManga as $Media) {
-      echo "\t\t\t\t\t\t<option value=\"$Media\"";
-      if ($Media == ($Torrent['Media'] ?? false)) {
-        echo " selected";
-      }
-      echo ">$Media</option>\n";
-    }
-?>
-          </select>
-        </td>
-      </tr>
-      <tr id="media_games_tr">
-        <td class="label">Platform</td>
-        <td>
-          <select id="platform" name="media">
-            <option>---</option>
-<?
-    foreach($this->Platform as $Platform) {
-      echo "\t\t\t\t\t\t<option value=\"$Platform\"";
-      if ($Platform == ($Torrent['Media'] ?? false)) {
-        echo " selected";
-      }
-      echo ">$Platform</option>\n";
     }
 ?>
           </select>
@@ -348,25 +301,8 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
           </select>
         </td>
       </tr>
-      <tr id="archive_manga_tr">
-        <td class='label'>Archive</td>
-        <td>
-          <select name='archive'>
-            <option>---</option>
-<?
-    foreach(array_merge($this->Archives, $this->ArchivesManga) as $Archive) {
-      echo "\t\t\t\t\t\t<option value=\"$Archive\"";
-      if ($Archive == ($Torrent['Archive'] ?? false)) {
-        echo ' selected';
-      }
-      echo ">$Archive</option>\n";
-    }
-?>
-          </select>
-        </td>
-      </tr>
       <tr id="container_tr">
-        <td class="label">Container</td>
+        <td class="label">Format</td>
         <td>
           <select name="container">
             <option>---</option>
@@ -382,25 +318,8 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
           </select>
         </td>
       </tr>
-      <tr id="container_games_tr">
-        <td class="label">Container</td>
-        <td>
-          <select id="container" name="container">
-            <option>---</option>
-<?
-    foreach($this->ContainersGames as $Container) {
-      echo "\t\t\t\t\t\t<option value=\"$Container\"";
-      if ($Container == ($Torrent['Container'] ?? false)) {
-        echo " selected";
-      }
-      echo ">$Container</option>\n";
-    }
-?>
-          </select>
-        </td>
-      </tr>
       <tr id="codec_tr">
-        <td class="label">Codecs</td>
+        <td class="label">License</td>
         <td>
           <select name="codec">
             <option>---</option>
@@ -417,7 +336,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         </td>
       </tr>
       <tr id="resolution_tr">
-        <td class="label">Resolution</td>
+        <td class="label">Assembly Level</td>
         <td>
           <select id="ressel" name="ressel" onchange="SetResolution()">
             <option value="">---</option>
@@ -441,63 +360,8 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
           </script>
         </td>
       </tr>
-      <tr id="audio_tr">
-        <td class="label">Audio</td>
-        <td>
-          <select name="audioformat">
-            <option>---</option>
-<?
-    foreach($this->AudioFormats as $AudioFormat) {
-      echo "\t\t\t\t\t\t<option value=\"$AudioFormat\"";
-      if  ($AudioFormat == ($Torrent['AudioFormat'] ?? false)) {
-        echo " selected";
-      }
-      echo ">$AudioFormat</option>\n";
-    }
-?>
-          </select>
-        </td>
-      </tr>
-      <tr id="lang_tr">
-        <td class="label">Language</td>
-        <td>
-          <select name="lang">
-            <option>---</option>
-<?
-    foreach($this->Languages as $Language) {
-      echo "\t\t\t\t\t\t<option value=\"$Language\"";
-      if ($Language == ($Torrent['Language'] ?? false)) {
-        echo " selected";
-      }
-      echo ">$Language</option>\n";
-    }
-?>
-          </select>
-        </td>
-      </tr>
-      <tr id="sub_tr">
-        <td class="label">Subbing</td>
-        <td>
-          <select name="sub">
-            <option>---</option>
-<?
-    foreach($this->Subbing as $Subbing) {
-      echo "\t\t\t\t\t\t<option value=\"$Subbing\"";
-      if ($Subbing == ($Torrent['Subbing'] ?? false)) {
-        echo " selected";
-      }
-      echo ">$Subbing</option>\n";
-    }
-?>
-          </select>
-        </td>
-      </tr>
-      <tr id="trans_tr">
-        <td class="label">Translation Group (optional)</td>
-        <td><input type="text" id="subber" name="subber" size="60" value="<?=display_str($Torrent['Subber']??'') ?>" /></td>
-      </tr>
       <tr id="censored_tr">
-        <td class="label">Censored?</td>
+        <td class="label">Original?</td>
         <td>
           <input type="checkbox" name="censored" value="1" <?=(($Torrent['Censored'] ?? 1) ? 'checked ' : '')?>/>
         </td>
@@ -529,33 +393,26 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         </td>
       </tr>
       <tr id="cover_tr">
-        <td class="label">Cover Image</td>
+        <td class="label">Picture</td>
         <td><input type="text" id="image" name="image" size="60" value="<?=display_str($Torrent['Image']) ?>"<?=$this->Disabled?> /></td>
       </tr>
 <? if (!$this->DisabledFlag && $this->NewTorrent) { ?>
       <tr id="screenshots_tr">
-        <td class="label">Screenshots</td>
+        <td class="label">Publications</td>
         <td>
           <textarea rows="8" cols="60" name="screenshots" id="screenshots"><?=display_str($Torrent['Screenshots'])?></textarea>
-          <p>Enter up to 10 links to samples for the torrent, one per line. The system will automatically remove malformed or invalid links, as well as any links after the 10th. Remember to consult the <a href="/rules.php?p=upload#h1.4">rules for adding screenshots</a>.</p>
+          <p>Enter up to 10 links to studies for the torrent, one per line. The system will automatically remove malformed or invalid links, as well as any links after the 10th. Remember to consult the <a href="/rules.php?p=upload#h1.4">rules for adding publications</a>.</p>
           <p class="min_padding notes"></p>
       </tr>
 <? } ?>
       <tr id="group_desc_tr">
-        <td class="label">Torrent Group Description</td>
+        <td class="label">Sequence Description</td>
         <td>
           <p class="min_padding notes"></p>
 <?php new TEXTAREA_PREVIEW('album_desc', 'album_desc', display_str($Torrent['GroupDescription']), 60, 8, !$this->DisabledFlag, !$this->DisabledFlag, false, array($this->Disabled)); ?>
         </td>
       </tr>
 <?    } ?>
-      <tr id="release_desc_tr">
-        <td class="label">Torrent Description (optional)</td>
-        <td>
-          <p class="min_padding notes"></p>
-<?php new TEXTAREA_PREVIEW('release_desc', 'release_desc', display_str($Torrent['TorrentDescription']??''), 60, 8); ?>
-        </td>
-      </tr>
       <tr id="anon_tr">
         <td class="label tooltip" title="Checking this will hide your username from other users on the torrent details page. Stats will still be attributed to you.">Upload Anonymously</td>
         <td><input type="checkbox" name="anonymous" value="1" <?=(($Torrent['Anonymous'] ?? false) ? 'checked ' : '')?>/></td>
