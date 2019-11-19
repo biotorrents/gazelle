@@ -73,15 +73,15 @@ if (isset($_POST['release'])) {
 }
 
 $Properties['GroupDescription'] = trim($_POST['album_desc']);
-$Properties['TorrentDescription'] = $_POST['release_desc'];
-$Properties['MediaInfo'] = $_POST['mediainfo'];
+#$Properties['TorrentDescription'] = $_POST['release_desc'];
+#$Properties['MediaInfo'] = $_POST['mediainfo'];
 $Properties['Screenshots'] = isset($_POST['screenshots']) ? $_POST['screenshots'] : "";
 
 if ($_POST['album_desc']) {
   $Properties['GroupDescription'] = trim($_POST['album_desc']);
 } elseif ($_POST['desc']) {
   $Properties['GroupDescription'] = trim($_POST['desc']);
-  $Properties['MediaInfo'] = $_POST['mediainfo'];
+  #$Properties['MediaInfo'] = $_POST['mediainfo'];
 }
 
 if (isset($_POST['groupid'])) $Properties['GroupID'] = $_POST['groupid'];
@@ -147,8 +147,10 @@ switch ($Type) {
     $Validate->SetFields('lang',
       '1','inarray','Please select a valid language.', array('inarray'=>$Languages));
 
+    /*
     $Validate->SetFields('release_desc',
       '0','string','The release description has a minimum length of 10 characters.', array('maxlength'=>1000000, 'minlength'=>10));
+    */
 
   default:
     if (!isset($_POST['groupid']) || !$_POST['groupid']) {
@@ -498,6 +500,23 @@ $DB->query("
     (GroupID, UserID, Media, Container, Codec, Resolution,
     AudioFormat, Subbing, Language, Subber, Censored,
     Anonymous, Archive, info_hash, FileCount, FileList, FilePath, Size, Time,
+    Description, FreeTorrent, FreeLeechType)
+  VALUES
+    ( ?, ?, ?, ?, ?, ?,
+      ?, ?, ?, ?, ?,
+      ?, ?, ?, ?, ?, ?, ?, NOW(),
+      ?, ?, ? )",
+  $GroupID, $LoggedUser['ID'], $T['Media'], $T['Container'], $T['Codec'], $T['Resolution'],
+  $T['AudioFormat'], $T['Subbing'], $T['Language'], $T['Subber'], $T['Censored'],
+  $T['Anonymous'], $T['Archive'], $InfoHash, $NumFiles, $FileString, $FilePath, $TotalSize,
+  $T['TorrentDescription'], $T['FreeTorrent'], $T['FreeLeechType']);
+
+  /* Original DB query
+  $DB->query("
+  INSERT INTO torrents
+    (GroupID, UserID, Media, Container, Codec, Resolution,
+    AudioFormat, Subbing, Language, Subber, Censored,
+    Anonymous, Archive, info_hash, FileCount, FileList, FilePath, Size, Time,
     Description, MediaInfo, FreeTorrent, FreeLeechType)
   VALUES
     ( ?, ?, ?, ?, ?, ?,
@@ -508,6 +527,7 @@ $DB->query("
   $T['AudioFormat'], $T['Subbing'], $T['Language'], $T['Subber'], $T['Censored'],
   $T['Anonymous'], $T['Archive'], $InfoHash, $NumFiles, $FileString, $FilePath, $TotalSize,
   $T['TorrentDescription'], $T['MediaInfo'], $T['FreeTorrent'], $T['FreeLeechType']);
+  */
 
 $Cache->increment('stats_torrent_count');
 $TorrentID = $DB->inserted_id();
