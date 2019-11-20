@@ -1157,7 +1157,7 @@ CREATE TABLE `torrents_group` (
   `Series` varchar(80) NOT NULL DEFAULT '',
   `CatalogueNumber` varchar(80) NOT NULL DEFAULT '',
   `Pages` smallint(5) unsigned DEFAULT NULL,
-  `TagList` varchar(500) NOT NULL,
+  `TagList` varchar(500) NOT NULL DEFAULT '',
   `Time` datetime,
   `RevisionID` int(12) DEFAULT NULL,
   `WikiBody` text,
