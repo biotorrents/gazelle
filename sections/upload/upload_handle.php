@@ -111,6 +111,7 @@ if (!empty($_POST['requestid'])) {
 
 $Validate->SetFields('type', '1', 'inarray', 'Please select a valid type.', array('inarray' => array_keys($Categories)));
 switch ($Type) {
+  /*
   case 'Movies':
   case 'Anime':
     $Validate->SetFields('codec',
@@ -147,7 +148,6 @@ switch ($Type) {
     $Validate->SetFields('lang',
       '1','inarray','Please select a valid language.', array('inarray'=>$Languages));
 
-    /*
     $Validate->SetFields('release_desc',
       '0','string','The release description has a minimum length of 10 characters.', array('maxlength'=>1000000, 'minlength'=>10));
     */
