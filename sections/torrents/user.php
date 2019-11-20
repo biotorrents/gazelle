@@ -353,46 +353,25 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
           <td class="label"><strong>Release specifics:</strong></td>
           <td class="nobr" colspan="3">
             <select id="container" name="container" class="ft_container">
-              <option value="">Container</option>
+              <option value="">Format</option>
 <?  foreach ($Containers as $ContainerName) { ?>
-              <option value="<?=display_str($ContainerName); ?>"<?Format::selected('container', $ContainerName)?>><?=display_str($ContainerName); ?></option>
-<?  } ?>
-<?  foreach ($ContainersGames as $ContainerName) { ?>
               <option value="<?=display_str($ContainerName); ?>"<?Format::selected('container', $ContainerName)?>><?=display_str($ContainerName); ?></option>
 <?  } ?>
             </select>
             <select id="codec" name="codec" class="ft_codec">
-              <option value="">Codec</option>
+              <option value="">License</option>
 <?  foreach ($Codecs as $CodecName) { ?>
               <option value="<?=display_str($CodecName); ?>"<?Format::selected('codec', $CodecName)?>><?=display_str($CodecName); ?></option>
 <?  } ?>
             </select>
-            <select id="audioformat" name="audioformat" class="ft_audioformat">
-              <option value="">AudioFormat</option>
-<?  foreach ($AudioFormats as $AudioFormatName) { ?>
-              <option value="<?=display_str($AudioFormatName); ?>"<?Format::selected('audioformat', $AudioFormatName)?>><?=display_str($AudioFormatName); ?></option>
-<?  } ?>
-            </select>
             <select id="resolution" name="resolution" class="ft_resolution">
-              <option value="">Resolution</option>
+              <option value="">Assembly Level</option>
 <?  foreach ($Resolutions as $ResolutionName) { ?>
               <option value="<?=display_str($ResolutionName); ?>"<?Format::selected('resolution', $ResolutionName)?>><?=display_str($ResolutionName); ?></option>
 <?  } ?>
             </select>
-            <select id="language" name="language" class="ft_language">
-              <option value="">Language</option>
-<?  foreach ($Languages as $LanguageName) { ?>
-              <option value="<?=display_str($LanguageName); ?>"<?Format::selected('language', $LanguageName)?>><?=display_str($LanguageName); ?></option>
-<?  } ?>
-            </select>
-            <select id="subbing" name="subbing" class="ft_subbing">
-              <option value="">Subs</option>
-<?  foreach ($Subbing as $SubbingName) { ?>
-              <option value="<?=display_str($SubbingName); ?>"<?Format::selected('subbing', $SubbingName)?>><?=display_str($SubbingName); ?></option>
-<?  } ?>
-            </select>
             <select name="media" class="ft_media">
-              <option value="">Media</option>
+              <option value="">Platform</option>
 <?  foreach ($Media as $MediaName) { ?>
               <option value="<?=display_str($MediaName); ?>"<?Format::selected('media',$MediaName)?>><?=display_str($MediaName); ?></option>
 <?  } ?>
@@ -404,9 +383,9 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
           <td class="label"><strong>Misc:</strong></td>
           <td class="nobr" colspan="3">
             <select name="censored" class="ft_censored">
-              <option value="3">Censored?</option>
-              <option value="1"<?Format::selected('censored', 1)?>>Censored</option>
-              <option value="0"<?Format::selected('censored', 0)?>>Uncensored</option>
+              <option value="3">Original?</option>
+              <option value="1"<?Format::selected('censored', 1)?>>Original</option>
+              <option value="0"<?Format::selected('censored', 0)?>>Not Original</option>
             </select>
           </td>
         </tr>
