@@ -181,12 +181,6 @@ View::show_header('Browse Torrents', 'browse');
             <input type="search" size="19" name="cataloguenumber" class="inputtext smallest fti_advanced" placeholder="Catalogue number" value="<?Format::form('cataloguenumber')?>" />
           </td>
         </tr>
-          <tr id="dlsiteid" class="ftr_advanced<?=$HideAdvanced?>">
-          <td class="label"><!--DLSite ID:--></td>
-          <td class="ft_dlsiteid">
-            <input type="search" size="12" name="dlsiteid" class="inputtext smallest fti_advanced" placeholder="DLSite ID" value="<?Format::form('dlsiteid')?>" />
-          </td>
-        </tr>
         <tr id="year" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label"><!--Year:--></td>
           <td class="ft_year">
@@ -209,56 +203,29 @@ View::show_header('Browse Torrents', 'browse');
           <td class="label">Release specifics:</td>
           <td class="nobr ft_ripspecifics">
             <select id="container" name="container" class="ft_container fti_advanced">
-              <option value="">Container</option>
+              <option value="">Format</option>
   <?  foreach ($Containers as $Container) { ?>
-              <option value="<?=display_str($Container);?>" <?Format::selected('container', $Container)?>><?=display_str($Container);?></option>
-  <?  } ?>
-  <?  foreach ($ContainersGames as $Container) { ?>
               <option value="<?=display_str($Container);?>" <?Format::selected('container', $Container)?>><?=display_str($Container);?></option>
   <?  } ?>
             </select>
             <select name="codec" class="ft_codec fti_advanced">
-              <option value="">Codec</option>
+              <option value="">License</option>
   <?  foreach ($Codecs as $Codec) { ?>
               <option value="<?=display_str($Codec); ?>"<?Format::selected('codec', $Codec)?>><?=display_str($Codec); ?></option>
   <?  } ?>
             </select>
-            <select name="audioformat" class="ft_audioformat fti_advanced">
-              <option value="">AudioFormat</option>
-  <?  foreach ($AudioFormats as $AudioFormat) { ?>
-              <option value="<?=display_str($AudioFormat); ?>"<?Format::selected('audioformat', $AudioFormat)?>><?=display_str($AudioFormat); ?></option>
-  <?  } ?>
-            </select>
             <select name="media" class="ft_media fti_advanced">
-              <option value="">Media</option>
+              <option value="">Platform</option>
   <?  foreach ($Media as $MediaName) { ?>
               <option value="<?=display_str($MediaName); ?>"<?Format::selected('media', $MediaName)?>><?=display_str($MediaName); ?></option>
   <?  } ?>
             </select>
             <select name="resolution" class="ft_resolution fti_advanced">
-              <option value="">Resolution</option>
+              <option value="">Assembly Level</option>
   <?  foreach ($Resolutions as $Resolution) { ?>
               <option value="<?=display_str($Resolution); ?>"<?Format::selected('resolution', $Resolution)?>><?=display_str($Resolution); ?></option>
   <?  } ?>
             </select>
-            <select name="language" class="ft_language fti_advanced">
-              <option value="">Language</option>
-  <?  foreach ($Languages as $Language) { ?>
-              <option value="<?=display_str($Language); ?>"<?Format::selected('language', $Language)?>><?=display_str($Language); ?></option>
-  <?  } ?>
-            </select>
-            <select name="subbing" class="ft_subbing fti_advanced">
-              <option value="">Subs</option>
-  <?  foreach ($Subbing as $Sub) { ?>
-              <option value="<?=display_str($Sub); ?>"<?Format::selected('subbing', $Sub)?>><?=display_str($Sub); ?></option>
-  <?  } ?>
-            </select>
-          </td>
-        </tr>
-        <tr id="subber" class="ftr_advanced<?=$HideAdvanced?>">
-          <td class="label"><!--Translation Group:--></td>
-          <td class="ft_subber">
-            <input type="search" spellcheck="false" size="65" name="subber" class="inputtext smaller fti_advanced" placeholder="Translation Group" value="<?Format::form('subber')?>" />
           </td>
         </tr>
         <tr id="size" class="ftr_advanced<?=$HideAdvanced?>">
@@ -287,9 +254,9 @@ View::show_header('Browse Torrents', 'browse');
               <option value="0"<?Format::selected('freetorrent', 0)?>>Normal</option>
             </select>
             <select name="censored" class="ft_censored fti_advanced">
-              <option value="">Censored?</option>
-              <option value="1"<?Format::selected('censored', 1)?>>Censored</option>
-              <option value="0"<?Format::selected('censored', 0)?>>Uncensored</option>
+              <option value="">Original?</option>
+              <option value="1"<?Format::selected('censored', 1)?>>Original</option>
+              <option value="0"<?Format::selected('censored', 0)?>>Not Original</option>
             </select>
           </td>
         </tr>
