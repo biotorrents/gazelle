@@ -378,6 +378,20 @@ if (!isset($GroupID) || !$GroupID) {
     INSERT INTO torrents_group
       (CategoryID, Name, NameRJ, NameJP, Year,
       Series, Studio, CatalogueNumber, Pages, Time,
+      WikiBody, WikiImage)
+    VALUES
+      ( ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, NOW(),
+        ?, ? )",
+    $TypeID, $T['Title'], $T['TitleRJ'], $T['TitleJP'], $T['Year'],
+    $T['Series'], $T['Studio'], $T['CatalogueNumber'], $T['Pages'],
+    $Body, $T['Image']);
+
+    /* Original DB query
+      $DB->query("
+    INSERT INTO torrents_group
+      (CategoryID, Name, NameRJ, NameJP, Year,
+      Series, Studio, CatalogueNumber, Pages, Time,
       WikiBody, WikiImage, DLsiteID)
     VALUES
       ( ?, ?, ?, ?, ?,
@@ -386,6 +400,8 @@ if (!isset($GroupID) || !$GroupID) {
     $TypeID, $T['Title'], $T['TitleRJ'], $T['TitleJP'], $T['Year'],
     $T['Series'], $T['Studio'], $T['CatalogueNumber'], $T['Pages'],
     $Body, $T['Image'], $T['DLsiteID']);
+    */
+
   $GroupID = $DB->inserted_id();
   foreach ($ArtistForm as $Num => $Artist) {
     $DB->query("
