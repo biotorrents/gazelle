@@ -360,12 +360,6 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
           </script>
         </td>
       </tr>
-      <tr id="censored_tr">
-        <td class="label">Original?</td>
-        <td>
-          <input type="checkbox" name="censored" value="1" <?=(($Torrent['Censored'] ?? 1) ? 'checked ' : '')?>/>
-        </td>
-      </tr>
 <?    if ($this->NewTorrent) { ?>
       <tr id="tags_tr">
         <td class="label tooltip" title="Comma seperated list of tags">Tags</td>
