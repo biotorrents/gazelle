@@ -1,10 +1,10 @@
 /* Layout (Torrents page) */
 
 /* We're going to opt for the category icon method for now, tags_* is also available */
-.cats_dna { width: 38px; height: 38px; background: url('/static/common/caticons/dna.png') no-repeat center center; }
-.cats_rna { width: 38px; height: 38px; background: url('/static/common/caticons/rna.png') no-repeat center center; }
-.cats_protein { width: 38px; height: 38px; background: url('/static/common/caticons/protein.png') no-repeat center center; }
-.cats_other { width: 38px; height: 38px; background: url('/static/common/caticons/other.png') no-repeat center center; }
+.cats_dna { width: 36px; height: 36px; background: url('/static/common/caticons/dna.png') no-repeat center center; }
+.cats_rna { width: 36px; height: 36px; background: url('/static/common/caticons/rna.png') no-repeat center center; }
+.cats_protein { width: 36px; height: 36px; background: url('/static/common/caticons/protein.png') no-repeat center center; }
+.cats_other { width: 36px; height: 36px; background: url('/static/common/caticons/other.png') no-repeat center center; }
 /* Unused categories
 .cats_ebooks { width: 28px; height: 28px; background: url('images/ebook.png') no-repeat center center; }
 .cats_elearningvideos { width: 28px; height: 28px; background: url('images/elearning.png') no-repeat center center; }
