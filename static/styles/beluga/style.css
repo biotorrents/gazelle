@@ -18,40 +18,40 @@
   padding: 0
 }
 
-.cats_anime, .cats_movies, .cats_manga, .cats_games, .cats_audio, .cats_other {
+.cats_dna, .cats_rna, .cats_protein, .cats_other {
   width: 38px!important;
   height: 38px!important;
   line-height: 38px;
 }
-.group .cats_anime:after, .group .cats_movies:after,
-.group .cats_manga:after, .group .cats_games:after,
-.group .cats_audio:after, .group .cats_other:after {
+.group .cats_dna:after, .group .cats_rna:after,
+.group .cats_protein:after, .group .cats_other:after {
   color: black!important;
 }
-.cats_anime:after {
-  content: "ANM";
+.cats_dna:after {
+  content: "DNA";
   color: #3EACA7;
   font-size: 16px;
 }
-.group .cats_anime { background-color: #3EACA7; }
-.cats_movies:after {
-  content: "JAV";
+.group .cats_dna { background-color: #3EACA7; }
+.cats_rna:after {
+  content: "RNA";
   color: #1D818E;
   font-size: 20px;
 }
-.group .cats_movies { background-color: #1D818E; }
-.cats_manga:after {
-  content: "MNG";
+.group .cats_rna { background-color: #1D818E; }
+.cats_protein:after {
+  content: "PROT";
   color: #88C796;
   font-size: 16px;
 }
-.group .cats_manga { background-color: #88C796; }
-.cats_games:after {
-  content: "GAM";
+.group .cats_protein { background-color: #88C796; }
+.cats_other:after {
+  content: "MISC";
   color: #4DC593;
   font-size: 16px;
 }
-.group .cats_games { background-color: #4DC593; }
+.group .cats_other { background-color: #4DC593; }
+/* Unused categories
 .cats_audio:after {
   content: "AUD";
   color: #77C5D4;
@@ -64,6 +64,7 @@
   font-size: 19px;
 }
 .group .cats_other { background-color: #0D5968; }
+*/
 
 body {
   width: 100%;
@@ -2106,16 +2107,18 @@ caption {
 body.style_pink h1 a, body.style_pink h2 a, body.style_pink h3 a, body.style_pink h4 a, body.style_pink h5 a, body.style_pink h6 a {
   color: #df7cc2;
 }
-body.style_pink .cats_anime:after { color: #78467f; }
-body.style_pink .group .cats_anime { background-color: #78467f; }
-body.style_pink .cats_movies:after { color: #4f3063; }
-body.style_pink .group .cats_movies { background-color: #4f3063; }
-body.style_pink .cats_manga:after { color: #9f5c9c; }
-body.style_pink .group .cats_manga { background-color: #9f5c9c; }
-body.style_pink .cats_games:after { color: #c871b9; }
-body.style_pink .group .cats_games { background-color: #c871b9; }
+body.style_pink .cats_dna:after { color: #78467f; }
+body.style_pink .group .cats_dna { background-color: #78467f; }
+body.style_pink .cats_rna:after { color: #4f3063; }
+body.style_pink .group .cats_rna { background-color: #4f3063; }
+body.style_pink .cats_protein:after { color: #9f5c9c; }
+body.style_pink .group .cats_protein { background-color: #9f5c9c; }
+body.style_pink .cats_other:after { color: #c871b9; }
+body.style_pink .group .cats_other { background-color: #c871b9; }
+/* Unused categories
 body.style_pink .cats_other:after { color: #ef86d5; }
 body.style_pink .group .cats_other { background-color: #ef86d5; }
+*/
 body.style_pink a:hover, body.style_pink .torrent_table .group a:hover { color: #db7bc7; }
 body.style_pink ::selection,
 body.style_pink ::-moz-selection {
