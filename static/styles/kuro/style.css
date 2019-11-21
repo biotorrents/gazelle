@@ -1,14 +1,15 @@
 /* Layout (Torrents page) */
 
 /* We're going to opt for the category icon method for now, tags_* is also available */
-.cats_applications { width: 28px; height: 28px; background: url('images/apps.png') no-repeat center center; }
-.cats_audiobooks { width: 28px; height: 28px; background: url('images/audiobook.png') no-repeat center center; }
-.cats_comedy { width: 28px; height: 28px; background: url('images/comedy.png') no-repeat center center; }
-.cats_comics { width: 28px; height: 28px; background: url('images/comics.png') no-repeat center center; }
+.cats_dna { width: 38px; height: 38px; background: url('images/dna.png') no-repeat center center; }
+.cats_rna { width: 38px; height: 38px; background: url('images/rna.png') no-repeat center center; }
+.cats_protein { width: 38px; height: 38px; background: url('images/protein.png') no-repeat center center; }
+.cats_other { width: 38px; height: 38px; background: url('images/other.png') no-repeat center center; }
+/* Unused categories
 .cats_ebooks { width: 28px; height: 28px; background: url('images/ebook.png') no-repeat center center; }
 .cats_elearningvideos { width: 28px; height: 28px; background: url('images/elearning.png') no-repeat center center; }
-
 .cats_music { width: 28px; height: 28px; background: url('images/music.png') no-repeat center center; }
+*/
 
 /* Global */
 

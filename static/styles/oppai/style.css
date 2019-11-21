@@ -5,12 +5,16 @@
 }
 
 /* We're going to opt for the category icon method for now, tags_* is also available */
-.cats_anime { width: 28px; height: 28px; background: url('images/anime.png') no-repeat center center; }
-.cats_movies { width: 28px; height: 28px; background: url('images/movies.png') no-repeat center center; }
-.cats_manga { width: 28px; height: 28px; background: url('images/manga.png') no-repeat center center; }
-.cats_games { width: 28px; height: 28px; background: url('images/games.png') no-repeat center center; }
-.cats_audio { width: 28px; height: 28px; background: url('images/audiobook.png') no-repeat center center; }
-.cats_other { width: 28px; height: 28px; background: url('images/other.png') no-repeat center center; }
+.cats_dna { width: 38px; height: 38px; background: url('images/dna.png') no-repeat center center; }
+.cats_rna { width: 38px; height: 38px; background: url('images/rna.png') no-repeat center center; }
+.cats_protein { width: 38px; height: 38px; background: url('images/protein.png') no-repeat center center; }
+.cats_other { width: 38px; height: 38px; background: url('images/other.png') no-repeat center center; }
+/* Unused categories
+.cats_ebooks { width: 28px; height: 28px; background: url('images/ebook.png') no-repeat center center; }
+.cats_elearningvideos { width: 28px; height: 28px; background: url('images/elearning.png') no-repeat center center; }
+.cats_music { width: 28px; height: 28px; background: url('images/music.png') no-repeat center center; }
+*/
+
 /* Global */
 * {
   padding: 0em;
