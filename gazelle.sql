@@ -1731,7 +1731,7 @@ CREATE TABLE `xbt_files_users` (
   `active` tinyint(1) NOT NULL DEFAULT '0',
   `announced` int(11) NOT NULL,
   `completed` tinyint(1) NOT NULL DEFAULT '0',
-  `downloaded` bigint(20) NOT NULL,
+  `downloaded` bigint(20) NOT NULL DEFAULT '0',
   `remaining` bigint(20) NOT NULL,
   `uploaded` bigint(20) NOT NULL,
   `upspeed` int(10) unsigned NOT NULL,
