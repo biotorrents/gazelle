@@ -1728,7 +1728,7 @@ CREATE TABLE `xbt_client_whitelist` (
 
 CREATE TABLE `xbt_files_users` (
   `uid` int(11) NOT NULL,
-  `active` tinyint(1) NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '0',
   `announced` int(11) NOT NULL,
   `completed` tinyint(1) NOT NULL DEFAULT '0',
   `downloaded` bigint(20) NOT NULL,
