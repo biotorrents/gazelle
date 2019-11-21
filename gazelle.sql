@@ -1067,7 +1067,7 @@ CREATE TABLE `top_snatchers` (
 
 CREATE TABLE `torrents` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
-  `GroupID` int(10) NOT NULL,
+  `GroupID` int(10) NOT NULL DEFAULT NULL,
   `UserID` int(10) DEFAULT NULL,
   `Media` varchar(20) DEFAULT NULL,
   `Container` varchar(20) DEFAULT NULL,
@@ -1078,11 +1078,11 @@ CREATE TABLE `torrents` (
   `Language` varchar(20) DEFAULT NULL,
   `Censored` tinyint(1) NOT NULL DEFAULT '1',
   `Anonymous` tinyint(1) NOT NULL DEFAULT '0',
-  `info_hash` blob NOT NULL,
-  `FileCount` int(6) NOT NULL,
+  `info_hash` blob NOT NULL DEFAULT NULL,
+  `FileCount` int(6) NOT NULL DEFAULT NULL,
   `FileList` mediumtext,
   `FilePath` varchar(255) NOT NULL DEFAULT '',
-  `Size` bigint(12) NOT NULL,
+  `Size` bigint(12) NOT NULL DEFAULT NULL,
   `Leechers` int(6) NOT NULL DEFAULT '0',
   `Seeders` int(6) NOT NULL DEFAULT '0',
   `last_action` datetime,
