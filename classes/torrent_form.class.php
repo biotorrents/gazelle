@@ -405,14 +405,21 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
           <p class="min_padding notes"></p>
       </tr>
 <? } ?>
-      <tr id="group_desc_tr">
-        <td class="label">Sequence Description</td>
+<tr id="group_desc_tr">
+        <td class="label">Torrent Group Description</td>
         <td>
           <p class="min_padding notes"></p>
 <?php new TEXTAREA_PREVIEW('album_desc', 'album_desc', display_str($Torrent['GroupDescription']), 60, 8, !$this->DisabledFlag, !$this->DisabledFlag, false, array($this->Disabled)); ?>
         </td>
       </tr>
 <?    } ?>
+      <tr id="release_desc_tr">
+        <td class="label">Torrent Description (optional)</td>
+        <td>
+          <p class="min_padding notes"></p>
+<?php new TEXTAREA_PREVIEW('release_desc', 'release_desc', display_str($Torrent['TorrentDescription']??''), 60, 8); ?>
+        </td>
+      </tr>
       <tr id="anon_tr">
         <td class="label tooltip" title="Checking this will hide your username from other users on the torrent details page. Stats will still be attributed to you.">Upload Anonymously</td>
         <td><input type="checkbox" name="anonymous" value="1" <?=(($Torrent['Anonymous'] ?? false) ? 'checked ' : '')?>/></td>
