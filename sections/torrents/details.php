@@ -471,7 +471,7 @@ foreach ($TorrentList as $Torrent) {
     }
   }
   if ($Archive) {
-    $ExtraInfo .= $AddExtra.display_str('Archived ('.$Archive.')'); $AddExtra=' / ';
+    $ExtraInfo .= $AddExtra.display_str($Archive); $AddExtra=' / ';
   }
   if (!$ExtraInfo || $GroupCategoryID == 5) {
     $ExtraInfo = $GroupName; $AddExtra=' / ';
