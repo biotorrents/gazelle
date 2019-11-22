@@ -497,7 +497,7 @@ foreach ($TorrentList as $Torrent) {
     $ExtraInfo.=$AddExtra.'<strong class="torrent_label tl_reported tooltip" title="Type: '.ucfirst($Reports[0]['Type']).'<br>Comment: '.htmlentities(htmlentities($Reports[0]['UserComment'])).'">Reported</strong>';
     $AddExtra=' / ';
   }
-  if (!$Censored) { $ExtraInfo .= $AddExtra.Format::torrent_label('Uncensored'); $AddExtra=' / '; }
+  #if (!$Censored) { $ExtraInfo .= $AddExtra.Format::torrent_label('Uncensored'); $AddExtra=' / '; }
   if (!empty($BadTags)) { $ExtraInfo.=$AddExtra. Format::torrent_label('Bad Tags'); $AddExtra=' / '; }
   if (!empty($BadFolders)) { $ExtraInfo.=$AddExtra. Format::torrent_label('Bad Folders'); $AddExtra=' / '; }
   if (!empty($BadFiles)) { $ExtraInfo.=$AddExtra. Format::torrent_label('Bad File Names'); $AddExtra=' / '; }
