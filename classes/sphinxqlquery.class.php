@@ -40,7 +40,7 @@ class SphinxqlQuery {
   /**
    * Specify the indexes to use in the search
    *
-   * @param string $Indexes comma separated list of indexes
+   * @param string $Indexes comma-separated list of indexes
    * @return current Sphinxql query object
    */
   public function from($Indexes) {

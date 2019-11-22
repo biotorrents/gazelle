@@ -269,7 +269,7 @@ View::show_header('Browse Torrents', 'browse');
         <tr id="tagfilter">
           <td class="label"><!--<span title="Use !tag to exclude tag" class="tooltip">Tags (comma-separated):</span>--></td>
           <td class="ft_taglist">
-            <input type="search" size="37" id="tags" name="taglist" class="inputtext smaller tooltip_left" title="Use !tag to exclude tag" placeholder="Tags (comma separated)" value="<?=display_str($Search->get_terms('taglist'))?>"<? Users::has_autocomplete_enabled('other'); ?> aria-label="Tags to search">&nbsp;
+            <input type="search" size="37" id="tags" name="taglist" class="inputtext smaller tooltip_left" title="Use !tag to exclude tag" placeholder="Tags (comma-separated)" value="<?=display_str($Search->get_terms('taglist'))?>"<? Users::has_autocomplete_enabled('other'); ?> aria-label="Tags to search">&nbsp;
             <input type="radio" name="tags_type" id="tags_type0" value="0"<?Format::selected('tags_type', 0, 'checked')?> /><label for="tags_type0"> Any</label>&nbsp;&nbsp;
             <input type="radio" name="tags_type" id="tags_type1" value="1"<?Format::selected('tags_type', 1, 'checked')?> /><label for="tags_type1"> All</label>
           </td>
