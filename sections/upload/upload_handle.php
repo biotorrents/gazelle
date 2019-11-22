@@ -556,7 +556,9 @@ if ($TorrentID !== 0) {
   ]);
   $Debug->set_flag('upload: ocelot updated');
 } else {
-  $TorrentID_debug = $DB->query = "SELECT MAX(ID) FROM torrents" + 1;
+  $TorrentID_debug = $DB->query("
+    SELECT MAX(ID) FROM torrents
+  ");
   var_dump($TorrentID_debug);
   error(0);
 }
