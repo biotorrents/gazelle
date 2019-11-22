@@ -173,7 +173,7 @@ $GB = 1024*1024*1024;
       <li>Everyone gets to download their first 10 GiB before ratio watch eligibility begins.</li>
       <li>If you've downloaded more than 10 GiB and your ratio does not meet or surpass your required ratio, you will be put on ratio watch and have <strong>two weeks</strong> to raise your ratio above your required ratio.
       </li>
-      <li>If you download 1i0 GB while on ratio watch, your leeching privileges will automatically be disabled.</li>
+      <li>If you download 10 GB while on ratio watch, your leeching privileges will automatically be disabled.</li>
       <li>If you fail to leave ratio watch within a two week period, you will lose leeching privileges. After losing leeching privileges, you will be unable to download more data. Your account will remain enabled.
       </li>
       <li>The ratio watch system is automated and cannot be interrupted by staff.</li>
