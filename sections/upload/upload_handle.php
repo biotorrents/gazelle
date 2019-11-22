@@ -546,12 +546,20 @@ $Cache->increment('stats_torrent_count');
 $TorrentID = $DB->inserted_id();
 $Tor->Dec['comment'] = 'https://'.SITE_DOMAIN.'/torrents.php?torrentid='.$TorrentID;
 
-Tracker::update_tracker('add_torrent', [
-  'id'          => $TorrentID,
-  'info_hash'   => rawurlencode($InfoHash),
-  'freetorrent' => $T['FreeTorrent']
-]);
-$Debug->set_flag('upload: ocelot updated');
+# Mitigate $TorrentID = 0 bug on some uploads
+# @todo Investigate this further and properly fix
+if ($TorrentID !== 0) {
+  Tracker::update_tracker('add_torrent', [
+    'id'          => $TorrentID,
+    'info_hash'   => rawurlencode($InfoHash),
+    'freetorrent' => $T['FreeTorrent']
+  ]);
+  $Debug->set_flag('upload: ocelot updated');
+} else {
+  $TorrentID_debug = $DB->query = "SELECT MAX(ID) FROM torrents" + 1;
+  var_dump($TorrentID_debug);
+  error(0);
+}
 
 // Prevent deletion of this torrent until the rest of the upload process is done
 // (expire the key after 10 minutes to prevent locking it for too long in case there's a fatal error below)
