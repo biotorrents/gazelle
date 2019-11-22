@@ -73,7 +73,7 @@ if (isset($_POST['release'])) {
 }
 
 $Properties['GroupDescription'] = trim($_POST['album_desc']);
-#$Properties['TorrentDescription'] = $_POST['release_desc'];
+$Properties['TorrentDescription'] = $_POST['release_desc'];
 #$Properties['MediaInfo'] = $_POST['mediainfo'];
 $Properties['Screenshots'] = isset($_POST['screenshots']) ? $_POST['screenshots'] : "";
 
@@ -514,16 +514,13 @@ if (($Type == 'Movies' || $Type == 'Anime') && ($T['Container'] == 'ISO' || $T['
 $DB->query("
   INSERT INTO torrents
     (GroupID, UserID, Media, Container, Codec, Resolution,
-    AudioFormat, Subbing, Language, Subber, Censored,
     Anonymous, Archive, info_hash, FileCount, FileList, FilePath, Size, Time,
     Description, FreeTorrent, FreeLeechType)
   VALUES
     ( ?, ?, ?, ?, ?, ?,
-      ?, ?, ?, ?, ?,
       ?, ?, ?, ?, ?, ?, ?, NOW(),
       ?, ?, ? )",
   $GroupID, $LoggedUser['ID'], $T['Media'], $T['Container'], $T['Codec'], $T['Resolution'],
-  $T['AudioFormat'], $T['Subbing'], $T['Language'], $T['Subber'], $T['Censored'],
   $T['Anonymous'], $T['Archive'], $InfoHash, $NumFiles, $FileString, $FilePath, $TotalSize,
   $T['TorrentDescription'], $T['FreeTorrent'], $T['FreeLeechType']);
 
