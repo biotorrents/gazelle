@@ -115,11 +115,11 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
 <?    if ($this->NewTorrent) { ?>
     <table cellpadding="3" cellspacing="1" border="0" class="layout" width="100%">
       <tr>
-        <td class="label">Torrent File</td>
+        <td class="label tooltip" title="Use the above announce URL and set the private flag in your BitTorrent client">Torrent File</td>
         <td><input id="file" type="file" name="file_input" size="50" /></td>
       </tr>
       <tr>
-        <td class="label">Type</td>
+        <td class="label tooltip" title="What alphabet the sequence uses, n.b., plasmids fit in the Other category">Type</td>
         <td>
           <select id="categories" name="type" onchange="Categories()"<?=($this->DisabledFlag) ? ' disabled="disabled"' : ''?>>
 <?
@@ -200,7 +200,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
     <table cellpadding="3" cellspacing="1" border="0" class="layout slice" width="100%">
 <? if ($this->NewTorrent) { ?>
       <tr id="javdb_tr">
-        <td class="label tooltip" title='RefSeq accession number, e.g., NM_000202.8'>Accession Number</td>
+        <td class="label tooltip" title="RefSeq accession number, e.g., NM_001183340.1">Accession Number</td>
         <td>
           <input type="text" id="catalogue" name="catalogue" size="10" value="<?=display_str($Torrent['CatalogueNumber']) ?>" <?=$this->Disabled?>/>
 <? if (!$this->DisabledFlag) { ?>
@@ -227,19 +227,19 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         </td>
       </tr>
       <tr id="title_tr">
-        <td class="label">Sequence Name</td>
+        <td class="label tooltip" title="FASTA definition line, e.g., Alcohol dehydrogenase ADH1">Sequence Name</td>
         <td><input type="text" id="title" name="title" size="60" value="<?=display_str($Torrent['Title']) ?>" <?=$this->Disabled?>/></td>
       </tr>
       <tr id="title_rj_tr">
-        <td class="label">Organism</td>
+        <td class="label tooltip" title="FASTA organism line binomial nomenclature, e.g., Saccharomyces cerevisiae">Organism</td>
         <td><input type="text" id="title_rj" name="title_rj" size="60" value="<?=display_str($Torrent['TitleRJ']) ?>" <?=$this->Disabled?>/></td>
       </tr>
       <tr id="title_jp_tr">
-        <td class="label">Strain/Variety</td>
+        <td class="label tooltip" title="FASTA organism line if applicable, e.g., S288C">Strain/Variety</td>
         <td><input type="text" id="title_jp" name="title_jp" size="60" value="<?=display_str($Torrent['TitleJP']) ?>" <?=$this->Disabled?>/></td>
       </tr>
       <tr id="idols_tr">
-        <td class="label">Collaborator(s)</td>
+        <td class="label tooltip" title="FASTA authors line, e.g., Robert K. Mortimer and David Schild">Collaborator(s)</td>
         <td id="idolfields">
 <?      if (!empty($Torrent['Artists'])) {
           foreach ($Torrent['Artists'] as $Num => $Artist) { ?>
@@ -255,20 +255,20 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         </td>
       </tr>
       <tr id="studio_tr">
-        <td class="label">Department/Lab</td>
+        <td class="label tooltip" title="Who produced the sequence, e.g., Lawrence Berkeley Laboratory">Department/Lab</td>
         <td><input type="text" id="studio" name="studio" size="60" value="<?=display_str($Torrent['Studio']) ?>" <?=$this->Disabled?>/></td>
       </tr>
       <tr id="series_tr">
-        <td class="label">Location</td>
+        <td class="label tooltip" title="Their physical location, e.g., Berkeley, CA">Location</td>
         <td><input type="text" id="series" name="series" size="60" value="<?=display_str($Torrent['Series']) ?>" <?=$this->Disabled?>/></td>
       </tr>
       <tr id="year_tr">
-        <td class="label">Year</td>
+        <td class="label tooltip" title="What year they published the sequence in">Year</td>
         <td><input type="text" id="year" name="year" maxlength="4" size="5" value="<?=display_str($Torrent['Year']) ?>" <?=$this->Disabled?>/></td>
       </tr>
 <? } ?>
       <tr id="media_tr">
-        <td class="label">Platform</td>
+        <td class="label tooltip" title="What class of sequencing technology they used">Platform</td>
         <td>
           <select name="media">
             <option>---</option>
@@ -285,7 +285,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         </td>
       </tr>
       <tr id="archive_tr">
-        <td class='label'>Archive</td>
+        <td class="label tooltip" title="How the data is archived and compressed">Archive</td>
         <td>
           <select name='archive'>
             <option>---</option>
@@ -302,7 +302,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         </td>
       </tr>
       <tr id="container_tr">
-        <td class="label">Format</td>
+        <td class="label tooltip" title="What file format the sequence is in">Format</td>
         <td>
           <select name="container">
             <option>---</option>
@@ -319,7 +319,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         </td>
       </tr>
       <tr id="codec_tr">
-        <td class="label">License</td>
+        <td class="label tooltip" title="What license the collaborators released the data under">License</td>
         <td>
           <select name="codec">
             <option>---</option>
@@ -336,7 +336,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         </td>
       </tr>
       <tr id="resolution_tr">
-        <td class="label">Assembly Level</td>
+        <td class="label tooltip" title="How complete the sequence data is">Assembly Level</td>
         <td>
           <select id="ressel" name="ressel" onchange="SetResolution()">
             <option value="">---</option>
@@ -362,7 +362,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
       </tr>
 <?    if ($this->NewTorrent) { ?>
       <tr id="tags_tr">
-        <td class="label tooltip" title="Comma seperated list of tags">Tags</td>
+        <td class="label tooltip" title="Comma-seperated list of tags, n.b., use vanity.house for data you produced">Tags</td>
         <td>
 <?
   $GenreTags = G::$Cache->get_value('genre_tags');
@@ -387,12 +387,12 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         </td>
       </tr>
       <tr id="cover_tr">
-        <td class="label">Picture</td>
+        <td class="label tooltip" title="A meaningful picture, e.g., of the specimen">Picture</td>
         <td><input type="text" id="image" name="image" size="60" value="<?=display_str($Torrent['Image']) ?>"<?=$this->Disabled?> /></td>
       </tr>
 <? if (!$this->DisabledFlag && $this->NewTorrent) { ?>
       <tr id="screenshots_tr">
-        <td class="label">Publications</td>
+        <td class="label tooltip" title="Relevant publications that use the data">Publications</td>
         <td>
           <textarea rows="8" cols="60" name="screenshots" id="screenshots"><?=display_str($Torrent['Screenshots'])?></textarea>
           <p>Enter up to 10 links to studies for the torrent, one per line. The system will automatically remove malformed or invalid links, as well as any links after the 10th. Remember to consult the <a href="/rules.php?p=upload#h1.4">rules for adding publications</a>.</p>
@@ -400,7 +400,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
       </tr>
 <? } ?>
 <tr id="group_desc_tr">
-        <td class="label">Torrent Group Description</td>
+        <td class="label tooltip" title="General info about the gene or protein's function or significance">Torrent Group Description</td>
         <td>
           <p class="min_padding notes"></p>
 <?php new TEXTAREA_PREVIEW('album_desc', 'album_desc', display_str($Torrent['GroupDescription']), 60, 8, !$this->DisabledFlag, !$this->DisabledFlag, false, array($this->Disabled)); ?>
@@ -408,20 +408,20 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
       </tr>
 <?    } ?>
       <tr id="release_desc_tr">
-        <td class="label">Torrent Description (optional)</td>
+        <td class="label tooltip" title="Specific info about what protocols and equipment helped generate the data">Torrent Description (optional)</td>
         <td>
           <p class="min_padding notes"></p>
 <?php new TEXTAREA_PREVIEW('release_desc', 'release_desc', display_str($Torrent['TorrentDescription']??''), 60, 8); ?>
         </td>
       </tr>
       <tr id="censored_tr">
-        <td class="label">Aligned Sequence?</td>
+        <td class="label tooltip" title="Whether the torrent contains raw reads or alignment data">Aligned Sequence?</td>
         <td>
           <input type="checkbox" name="censored" value="1" <?=(($Torrent['Censored'] ?? 0) ? 'checked ' : '')?>/>
         </td>
       </tr>
       <tr id="anon_tr">
-        <td class="label tooltip" title="Checking this will hide your username from other users on the torrent details page. Stats will still be attributed to you.">Upload Anonymously?</td>
+        <td class="label tooltip" title="Hide your username from other users on the torrent details page">Upload Anonymously?</td>
         <td><input type="checkbox" name="anonymous" value="1" <?=(($Torrent['Anonymous'] ?? false) ? 'checked ' : '')?>/></td>
       </tr>
     </table>
