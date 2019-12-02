@@ -414,8 +414,14 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
 <?php new TEXTAREA_PREVIEW('release_desc', 'release_desc', display_str($Torrent['TorrentDescription']??''), 60, 8); ?>
         </td>
       </tr>
+      <tr id="censored_tr">
+        <td class="label">Aligned Sequence?</td>
+        <td>
+          <input type="checkbox" name="censored" value="1" <?=(($Torrent['Censored'] ?? 0) ? 'checked ' : '')?>/>
+        </td>
+      </tr>
       <tr id="anon_tr">
-        <td class="label tooltip" title="Checking this will hide your username from other users on the torrent details page. Stats will still be attributed to you.">Upload Anonymously</td>
+        <td class="label tooltip" title="Checking this will hide your username from other users on the torrent details page. Stats will still be attributed to you.">Upload Anonymously?</td>
         <td><input type="checkbox" name="anonymous" value="1" <?=(($Torrent['Anonymous'] ?? false) ? 'checked ' : '')?>/></td>
       </tr>
     </table>

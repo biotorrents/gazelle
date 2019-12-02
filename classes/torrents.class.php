@@ -675,11 +675,9 @@ class Torrents {
     if (!empty($Data['Archive'])) {
       $Info[] = $Data['Archive'];
     }
-    /*
     if (isset($Data['Censored']) && !$Data['Censored']) {
-      $Info[] = $HTMLy ? Format::torrent_label('Uncensored') : 'Uncensored';
+      $Info[] = $HTMLy ? Format::torrent_label('Unaligned') : 'Unaligned';
     }
-    */
     if ($Data['IsLeeching']) {
       $Info[] = $HTMLy ? Format::torrent_label('Leeching') : 'Leeching';
     } else if ($Data['IsSeeding']) {

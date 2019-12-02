@@ -254,9 +254,9 @@ View::show_header('Browse Torrents', 'browse');
               <option value="0"<?Format::selected('freetorrent', 0)?>>Normal</option>
             </select>
             <select name="censored" class="ft_censored fti_advanced">
-              <option value="">Original?</option>
-              <option value="1"<?Format::selected('censored', 1)?>>Original</option>
-              <option value="0"<?Format::selected('censored', 0)?>>Not Original</option>
+              <option value="">Aligned Sequence?</option>
+              <option value="1"<?Format::selected('censored', 1)?>>Aligned</option>
+              <option value="0"<?Format::selected('censored', 0)?>>Unaligned</option>
             </select>
           </td>
         </tr>

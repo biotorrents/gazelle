@@ -5,14 +5,8 @@
 .cats_rna { width: 36px; height: 36px; background: url('/static/common/caticons/rna.png') no-repeat center center; }
 .cats_protein { width: 36px; height: 36px; background: url('/static/common/caticons/protein.png') no-repeat center center; }
 .cats_other { width: 36px; height: 36px; background: url('/static/common/caticons/other.png') no-repeat center center; }
-/* Unused categories
-.cats_ebooks { width: 28px; height: 28px; background: url('images/ebook.png') no-repeat center center; }
-.cats_elearningvideos { width: 28px; height: 28px; background: url('images/elearning.png') no-repeat center center; }
-.cats_music { width: 28px; height: 28px; background: url('images/music.png') no-repeat center center; }
-*/
 
 /* Global */
-
 * {
   padding: 0em;
   margin: 0em;

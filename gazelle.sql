@@ -1078,7 +1078,7 @@ CREATE TABLE `torrents` (
   `Language` varchar(20) DEFAULT NULL,
   `Censored` tinyint(1) NOT NULL DEFAULT '1',
   `Anonymous` tinyint(1) NOT NULL DEFAULT '0',
-  `info_hash` blob NOT NULL DEFAULT NULL,
+  `info_hash` blob NOT NULL,
   `FileCount` int(6) NOT NULL DEFAULT NULL,
   `FileList` mediumtext,
   `FilePath` varchar(255) NOT NULL DEFAULT '',

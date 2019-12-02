@@ -383,9 +383,9 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
           <td class="label"><strong>Misc:</strong></td>
           <td class="nobr" colspan="3">
             <select name="censored" class="ft_censored">
-              <option value="3">Original?</option>
-              <option value="1"<?Format::selected('censored', 1)?>>Original</option>
-              <option value="0"<?Format::selected('censored', 0)?>>Not Original</option>
+              <option value="3">Aligned Sequence?</option>
+              <option value="1"<?Format::selected('censored', 1)?>>Aligned</option>
+              <option value="0"<?Format::selected('censored', 0)?>>Unaligned</option>
             </select>
           </td>
         </tr>

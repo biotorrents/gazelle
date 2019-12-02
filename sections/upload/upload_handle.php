@@ -74,6 +74,7 @@ if (isset($_POST['release'])) {
 
 $Properties['GroupDescription'] = trim($_POST['album_desc']);
 $Properties['TorrentDescription'] = $_POST['release_desc'];
+$Properties['MediaInfo'] = '';
 #$Properties['MediaInfo'] = $_POST['mediainfo'];
 $Properties['Screenshots'] = isset($_POST['screenshots']) ? $_POST['screenshots'] : "";
 
@@ -81,6 +82,7 @@ if ($_POST['album_desc']) {
   $Properties['GroupDescription'] = trim($_POST['album_desc']);
 } elseif ($_POST['desc']) {
   $Properties['GroupDescription'] = trim($_POST['desc']);
+  $Properties['MediaInfo'] = '';
   #$Properties['MediaInfo'] = $_POST['mediainfo'];
 }
 
@@ -150,7 +152,7 @@ switch ($Type) {
 
     $Validate->SetFields('release_desc',
       '0','string','The release description has a minimum length of 10 characters.', array('maxlength'=>1000000, 'minlength'=>10));
-    */
+  */
 
   default:
     if (!isset($_POST['groupid']) || !$_POST['groupid']) {
@@ -378,20 +380,6 @@ if (!isset($GroupID) || !$GroupID) {
     INSERT INTO torrents_group
       (CategoryID, Name, NameRJ, NameJP, Year,
       Series, Studio, CatalogueNumber, Pages, Time,
-      WikiBody, WikiImage)
-    VALUES
-      ( ?, ?, ?, ?, ?,
-        ?, ?, ?, ?, NOW(),
-        ?, ? )",
-    $TypeID, $T['Title'], $T['TitleRJ'], $T['TitleJP'], $T['Year'],
-    $T['Series'], $T['Studio'], $T['CatalogueNumber'], $T['Pages'],
-    $Body, $T['Image']);
-
-    /* Original DB query
-      $DB->query("
-    INSERT INTO torrents_group
-      (CategoryID, Name, NameRJ, NameJP, Year,
-      Series, Studio, CatalogueNumber, Pages, Time,
       WikiBody, WikiImage, DLsiteID)
     VALUES
       ( ?, ?, ?, ?, ?,
@@ -400,8 +388,6 @@ if (!isset($GroupID) || !$GroupID) {
     $TypeID, $T['Title'], $T['TitleRJ'], $T['TitleJP'], $T['Year'],
     $T['Series'], $T['Studio'], $T['CatalogueNumber'], $T['Pages'],
     $Body, $T['Image'], $T['DLsiteID']);
-    */
-
   $GroupID = $DB->inserted_id();
   foreach ($ArtistForm as $Num => $Artist) {
     $DB->query("
@@ -514,20 +500,6 @@ if (($Type == 'Movies' || $Type == 'Anime') && ($T['Container'] == 'ISO' || $T['
 $DB->query("
   INSERT INTO torrents
     (GroupID, UserID, Media, Container, Codec, Resolution,
-    Anonymous, Archive, info_hash, FileCount, FileList, FilePath, Size, Time,
-    Description, FreeTorrent, FreeLeechType)
-  VALUES
-    ( ?, ?, ?, ?, ?, ?,
-      ?, ?, ?, ?, ?, ?, ?, NOW(),
-      ?, ?, ? )",
-  $GroupID, $LoggedUser['ID'], $T['Media'], $T['Container'], $T['Codec'], $T['Resolution'],
-  $T['Anonymous'], $T['Archive'], $InfoHash, $NumFiles, $FileString, $FilePath, $TotalSize,
-  $T['TorrentDescription'], $T['FreeTorrent'], $T['FreeLeechType']);
-
-  /* Original DB query
-  $DB->query("
-  INSERT INTO torrents
-    (GroupID, UserID, Media, Container, Codec, Resolution,
     AudioFormat, Subbing, Language, Subber, Censored,
     Anonymous, Archive, info_hash, FileCount, FileList, FilePath, Size, Time,
     Description, MediaInfo, FreeTorrent, FreeLeechType)
@@ -540,28 +512,17 @@ $DB->query("
   $T['AudioFormat'], $T['Subbing'], $T['Language'], $T['Subber'], $T['Censored'],
   $T['Anonymous'], $T['Archive'], $InfoHash, $NumFiles, $FileString, $FilePath, $TotalSize,
   $T['TorrentDescription'], $T['MediaInfo'], $T['FreeTorrent'], $T['FreeLeechType']);
-  */
 
 $Cache->increment('stats_torrent_count');
 $TorrentID = $DB->inserted_id();
 $Tor->Dec['comment'] = 'https://'.SITE_DOMAIN.'/torrents.php?torrentid='.$TorrentID;
 
-# Mitigate $TorrentID = 0 bug on some uploads
-# @todo Investigate this further and properly fix
-if ($TorrentID !== 0) {
-  Tracker::update_tracker('add_torrent', [
-    'id'          => $TorrentID,
-    'info_hash'   => rawurlencode($InfoHash),
-    'freetorrent' => $T['FreeTorrent']
-  ]);
-  $Debug->set_flag('upload: ocelot updated');
-} else {
-  $TorrentID_debug = $DB->query("
-    SELECT MAX(ID) FROM torrents
-  ");
-  var_dump($TorrentID_debug);
-  error(0);
-}
+Tracker::update_tracker('add_torrent', [
+  'id'          => $TorrentID,
+  'info_hash'   => rawurlencode($InfoHash),
+  'freetorrent' => $T['FreeTorrent']
+]);
+$Debug->set_flag('upload: ocelot updated');
 
 // Prevent deletion of this torrent until the rest of the upload process is done
 // (expire the key after 10 minutes to prevent locking it for too long in case there's a fatal error below)

@@ -55,20 +55,6 @@
   letter-spacing: -2px;
 }
 .group .cats_other { background-color: #4DC593; }
-/* Unused categories
-.cats_audio:after {
-  content: "AUD";
-  color: #77C5D4;
-  font-size: 18px;
-}
-.group .cats_audio { background-color: #77C5D4; }
-.cats_other:after {
-  content: "OTH";
-  color: #0D5968;
-  font-size: 19px;
-}
-.group .cats_other { background-color: #0D5968; }
-*/
 
 body {
   width: 100%;
