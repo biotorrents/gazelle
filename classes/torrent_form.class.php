@@ -204,7 +204,7 @@ Source: <input type="text" value="<?=Users::get_upload_sources()[0]?>" size="20"
         <td>
           <input type="text" id="catalogue" name="catalogue" size="10" value="<?=display_str($Torrent['CatalogueNumber']) ?>" <?=$this->Disabled?>/>
 <? if (!$this->DisabledFlag) { ?>
-          <input type="button" autofill="jav" value="Autofill"></input>
+          <input type="button" autofill="jav" value="Autofill" style="background: lightgrey; pointer-events: none;"></input>
 <? } ?>
         </td>
       </tr>
