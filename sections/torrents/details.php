@@ -453,7 +453,8 @@ foreach ($TorrentList as $Torrent) {
   if ($Container) { $ExtraInfo.=$AddExtra.display_str($Container); $AddExtra=' / '; }
   if ($Codec) { $ExtraInfo.=$AddExtra.display_str($Codec); $AddExtra=' / '; }
   if ($Resolution) { $ExtraInfo.=$AddExtra.display_str($Resolution); $AddExtra=' / '; }
-  if ($AudioFormat) { $ExtraInfo.=$AddExtra.display_str($AudioFormat); $AddExtra=' / '; }
+  #if ($AudioFormat) { $ExtraInfo.=$AddExtra.display_str($AudioFormat); $AddExtra=' / '; }
+  /*
   if ($Language) {
     if ($Subber && ($GroupCategoryID == 3 || $GroupCategoryID == 4)) {
       $ExtraInfo.=$AddExtra.display_str($Language.' ('.$Subber.')'); $AddExtra=' / ';
@@ -461,6 +462,8 @@ foreach ($TorrentList as $Torrent) {
       $ExtraInfo.=$AddExtra.display_str($Language); $AddExtra=' / ';
     }
   }
+  */
+  /*
   if ($Subbing) {
     if ($Subber) {
       if (($GroupCategoryID == 2 || $GroupCategoryID == 1) &&  $Subbing != "RAW") {
@@ -470,6 +473,7 @@ foreach ($TorrentList as $Torrent) {
       $ExtraInfo.=$AddExtra.display_str($Subbing); $AddExtra=' / ';
     }
   }
+  */
   if ($Archive) {
     $ExtraInfo .= $AddExtra.display_str($Archive); $AddExtra=' / ';
   }

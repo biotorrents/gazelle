@@ -653,9 +653,12 @@ class Torrents {
     if (!empty($Data['Resolution'])) {
       $Info[] = $Data['Resolution'];
     }
+    /*
     if (!empty($Data['AudioFormat'])) {
       $Info[] = $Data['AudioFormat'];
     }
+    */
+    /*
     if (!empty($Data['Language'])) {
       if (!empty($Data['Subber']) && isset($Data['CategoryID']) && ($Data['CategoryID'] == 3 || $Data['CategoryID'] == 4)) {
         $Info[] = $Data['Language']." (".$Data['Subber'].")";
@@ -663,6 +666,8 @@ class Torrents {
         $Info[] = $Data['Language'];
       }
     }
+    */
+    /*
     if (!empty($Data['Subbing'])) {
       if (!empty($Data['Subber'])) {
         if (isset($Data['CategoryID']) && ($Data['CategoryID'] == 2 || $Data['CategoryID'] == 1) && $Data['Subbing'] != "RAW") {
@@ -672,6 +677,7 @@ class Torrents {
         $Info[] = $Data['Subbing'];
       }
     }
+    */
     if (!empty($Data['Archive'])) {
       $Info[] = $Data['Archive'];
     }
