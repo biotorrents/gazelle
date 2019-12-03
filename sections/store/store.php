@@ -50,46 +50,46 @@ View::show_header('Store');
       </tr>
       <tr class="row">
         <td class="nobr">
-          <a href="store.php?item=upload_1GB">1GiB Upload</a>
+          <a href="store.php?item=upload_1GB">1 GiB Upload</a>
         </td>
         <td class="nobr">
           1,300 <?=BONUS_POINTS?>
         </td>
         <td class="nobr">
-          Purchase 1GiB of upload
+          Purchase 1 GiB of upload
         </td>
       </tr>
       <tr class="row">
         <td class="nobr">
-          <a href="store.php?item=upload_10GB">10GiB Upload</a>
+          <a href="store.php?item=upload_10GB">10 GiB Upload</a>
         </td>
         <td class="nobr">
           13,000 <?=BONUS_POINTS?>
         </td>
         <td class="nobr">
-          Purchase 10GiB of upload
+          Purchase 10 GiB of upload
         </td>
       </tr>
       <tr class="row">
         <td class="nobr">
-          <a href="store.php?item=upload_100GB">100GiB Upload</a>
+          <a href="store.php?item=upload_100GB">100 GiB Upload</a>
         </td>
         <td class="nobr">
           130,000 <?=BONUS_POINTS?>
         </td>
         <td class="nobr">
-          Purchase 100GiB of upload
+          Purchase 100 GiB of upload
         </td>
       </tr>
       <tr class="row">
         <td class="nobr">
-          <a href="store.php?item=upload_1000GB">1,000GiB Upload</a>
+          <a href="store.php?item=upload_1000GB">1,000 GiB Upload</a>
         </td>
         <td class="nobr">
           1,300,000 <?=BONUS_POINTS?>
         </td>
         <td class="nobr">
-          Purchase 1,000GiB of upload
+          Purchase 1,000 GiB of upload
         </td>
       </tr>
       <tr class="row">
@@ -97,7 +97,7 @@ View::show_header('Store');
           <a href="store.php?item=1k_points">1,000 <?=BONUS_POINTS?></a>
         </td>
         <td class="nobr">
-          1.3GiB Upload
+          1.3 GiB Upload
         </td>
         <td class="nobr">
           Purchase 1,000 <?=BONUS_POINTS?>
@@ -108,7 +108,7 @@ View::show_header('Store');
           <a href="store.php?item=10k_points">10,000 <?=BONUS_POINTS?></a>
         </td>
         <td class="nobr">
-          13GiB Upload
+          13 GiB Upload
         </td>
         <td class="nobr">
           Purchase 10,000 <?=BONUS_POINTS?>
@@ -119,7 +119,7 @@ View::show_header('Store');
           <a href="store.php?item=100k_points">100,000 <?=BONUS_POINTS?></a>
         </td>
         <td class="nobr">
-          130GiB Upload
+          130 GiB Upload
         </td>
         <td class="nobr">
           Purchase 100,000 <?=BONUS_POINTS?>
@@ -130,7 +130,7 @@ View::show_header('Store');
           <a href="store.php?item=1m_points">1,000,000 <?=BONUS_POINTS?></a>
         </td>
         <td class="nobr">
-          1,300GiB Upload
+          1,300 GiB Upload
         </td>
         <td class="nobr">
           Purchase 1,000,000 <?=BONUS_POINTS?>
@@ -167,47 +167,6 @@ View::show_header('Store');
         </td>
         <td class="nobr">
           Purchase an invite for your friend
-        </td>
-      </tr>
-<? switch ($PermID) {
-  case USER:
-    $To = array('Modest Mounds', '1,000');
-    break;
-  case MEMBER:
-    $To = array('Well Endowed', '10,000');
-    break;
-  case POWER:
-    $To = array('Bombshell', '30,000');
-    break;
-  case ELITE:
-    $To = array('Top Heavy', '60,000');
-    break;
-  case TORRENT_MASTER:
-    $To = array('Titty Monster', '100,000');
-    break;
-}
-if (isset($To)) { ?>
-      <tr class="row">
-        <td class="nobr">
-          <a href="store.php?item=promotion">Promotion</a>
-        </td>
-        <td class="nobr">
-        <?=$To[1]." ".BONUS_POINTS?>
-        </td>
-        <td class="nobr">
-          Get promoted to <?=$To[0]?>
-        </td>
-      </tr>
-<? } ?>
-      <tr class="row">
-        <td class="nobr">
-          <a href="store.php?item=become_admin">Become Admin</a>
-        </td>
-        <td class="nobr">
-          4,294,967,296 <?=BONUS_POINTS?>
-        </td>
-        <td class="nobr">
-          Have your class changed to Sysop
         </td>
       </tr>
       <tr class="row">
