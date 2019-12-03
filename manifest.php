@@ -1,7 +1,9 @@
-<? require 'classes/config.php'; ?>
+<?php
+require 'classes/config.php'; ?>
+
 {
-  "name": "<?=SITE_NAME?>",
-  "short_name": "<?=SITE_NAME?>",
+  "name": "<?= SITE_NAME ?>",
+  "short_name": "<?= SITE_NAME ?>",
   "start_url": "index.php",
   "display": "standalone",
   "background_color": "#FCC2E6",
