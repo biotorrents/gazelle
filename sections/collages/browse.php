@@ -160,14 +160,14 @@ $Collages = $DB->to_array();
 $DB->query('SELECT FOUND_ROWS()');
 list($NumResults) = $DB->next_record();
 
-View::show_header(($BookmarkView) ? 'Your bookmarked collectionss' : 'Browse collections');
+View::show_header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
 ?>
 <div class="thin">
   <div class="header">
 <?  if ($BookmarkView) { ?>
     <h2>Your bookmarked collections</h2>
 <?  } else { ?>
-    <h2>Browse collections<?=(!empty($UserLink) ? (isset($CollageIDs) ? " with contributions by $UserLink" : " started by $UserLink") : '')?></h2>
+    <h2>Collections<?=(!empty($UserLink) ? (isset($CollageIDs) ? " with contributions by $UserLink" : " started by $UserLink") : '')?></h2>
 <?  } ?>
   </div>
 <?  if (!$BookmarkView) { ?>
