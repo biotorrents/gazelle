@@ -489,10 +489,12 @@ if ($DB->has_results()) {
 }
 
 // movie and anime ISOs are neutral leech, and receive a BP bounty
+/*
 if (($Type == 'Movies' || $Type == 'Anime') && ($T['Container'] == 'ISO' || $T['Container'] == 'M2TS' || $T['Container'] == 'VOB IFO')) {
   $T['FreeTorrent'] = '2';
   $T['FreeLeechType'] = '2';
 }
+*/
 
 // Torrent
 $DB->query("
