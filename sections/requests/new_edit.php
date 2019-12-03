@@ -239,7 +239,7 @@ View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'bbcode
         </tr>
 <?  } elseif (!empty($GroupID) && ($CategoryID != 5) && ($CategoryID != 0)) { ?>
         <tr>
-          <td class="label">Torrent group</td>
+          <td class="label">Torrent Group</td>
           <td>
             <a href="torrents.php?id=<?=$GroupID?>"><?=site_url()?>torrents.php?id=<?=$GroupID?></a><br />
             This request <?=($NewRequest ? 'will be' : 'is')?> associated with the above torrent group.
