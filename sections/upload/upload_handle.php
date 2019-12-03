@@ -74,16 +74,14 @@ if (isset($_POST['release'])) {
 
 $Properties['GroupDescription'] = trim($_POST['album_desc']);
 $Properties['TorrentDescription'] = $_POST['release_desc'];
-$Properties['MediaInfo'] = '';
-#$Properties['MediaInfo'] = $_POST['mediainfo'];
+$Properties['MediaInfo'] = 'nil';
 $Properties['Screenshots'] = isset($_POST['screenshots']) ? $_POST['screenshots'] : "";
 
 if ($_POST['album_desc']) {
   $Properties['GroupDescription'] = trim($_POST['album_desc']);
 } elseif ($_POST['desc']) {
   $Properties['GroupDescription'] = trim($_POST['desc']);
-  $Properties['MediaInfo'] = '';
-  #$Properties['MediaInfo'] = $_POST['mediainfo'];
+  $Properties['MediaInfo'] = 'nil';
 }
 
 if (isset($_POST['groupid'])) $Properties['GroupID'] = $_POST['groupid'];
