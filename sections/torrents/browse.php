@@ -284,7 +284,7 @@ View::show_header('Browse Torrents', 'browse');
               <option value="snatched"<?Format::selected('order_by', 'snatched')?>>Snatched</option>
               <option value="seeders"<?Format::selected('order_by', 'seeders')?>>Seeders</option>
               <option value="leechers"<?Format::selected('order_by', 'leechers')?>>Leechers</option>
-              <option value="cataloguenumber"<?Format::selected('order_by', 'cataloguenumber')?>>Catalogue Number</option>
+              <option value="cataloguenumber"<?Format::selected('order_by', 'cataloguenumber')?>>Accession Number</option>
               <option value="random"<?Format::selected('order_by', 'random')?>>Random</option>
             </select>
             <select name="order_way" class="ft_order_way" aria-label="Direction to order">
