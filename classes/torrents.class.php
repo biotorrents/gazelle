@@ -681,8 +681,10 @@ class Torrents {
     if (!empty($Data['Archive'])) {
       $Info[] = $Data['Archive'];
     }
-    if (isset($Data['Censored']) && !$Data['Censored']) {
-      $Info[] = $HTMLy ? Format::torrent_label('Unaligned') : 'Unaligned';
+    if ($Data['Censored'] === 1) {
+      $Info[] = 'Aligned';
+    } else {
+      $Info[] = 'Unaligned';
     }
     if ($Data['IsLeeching']) {
       $Info[] = $HTMLy ? Format::torrent_label('Leeching') : 'Leeching';
@@ -710,7 +712,6 @@ class Torrents {
     }
     return implode(' / ', $Info);
   }
-
 
   /**
    * Will freeleech / neutral leech / normalise a set of torrents

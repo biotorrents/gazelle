@@ -477,6 +477,13 @@ foreach ($TorrentList as $Torrent) {
   if ($Archive) {
     $ExtraInfo .= $AddExtra.display_str($Archive); $AddExtra=' / ';
   }
+  if ($Censored) {
+    $ExtraInfo .= $AddExtra.display_str('Aligned');
+    $AddExtra=' / ';
+  } else {
+    $ExtraInfo .= $AddExtra.display_str('Unaligned');
+    $AddExtra=' / ';
+  }
   if (!$ExtraInfo || $GroupCategoryID == 5) {
     $ExtraInfo = $GroupName; $AddExtra=' / ';
   }
@@ -501,7 +508,6 @@ foreach ($TorrentList as $Torrent) {
     $ExtraInfo.=$AddExtra.'<strong class="torrent_label tl_reported tooltip" title="Type: '.ucfirst($Reports[0]['Type']).'<br>Comment: '.htmlentities(htmlentities($Reports[0]['UserComment'])).'">Reported</strong>';
     $AddExtra=' / ';
   }
-  if (!$Censored) { $ExtraInfo .= $AddExtra.Format::torrent_label('Unaligned'); $AddExtra=' / '; }
   if (!empty($BadTags)) { $ExtraInfo.=$AddExtra. Format::torrent_label('Bad Tags'); $AddExtra=' / '; }
   if (!empty($BadFolders)) { $ExtraInfo.=$AddExtra. Format::torrent_label('Bad Folders'); $AddExtra=' / '; }
   if (!empty($BadFiles)) { $ExtraInfo.=$AddExtra. Format::torrent_label('Bad File Names'); $AddExtra=' / '; }
