@@ -166,19 +166,19 @@ View::show_header('Browse Torrents', 'browse');
         <tr id="artist_name" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label"><!--Artist name:--></td>
           <td class="ft_artistname">
-            <input type="search" spellcheck="false" size="65" name="artistname" class="inputtext smaller fti_advanced" placeholder="Artist name" value="<?Format::form('artistname')?>" />
+            <input type="search" spellcheck="false" size="65" name="artistname" class="inputtext smaller fti_advanced" placeholder="Collaborator Name" value="<?Format::form('artistname')?>" />
           </td>
         </tr>
         <tr id="album_torrent_name" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label"><!--Torrent name:--></td>
           <td class="ft_groupname">
-            <input type="search" spellcheck="false" size="65" name="advgroupname" class="inputtext smaller fti_advanced" placeholder="Torrent name" value="<?Format::form('advgroupname')?>" />
+            <input type="search" spellcheck="false" size="65" name="advgroupname" class="inputtext smaller fti_advanced" placeholder="Sequence Name" value="<?Format::form('advgroupname')?>" />
           </td>
         </tr>
         <tr id="catalogue_number" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label"><!--Catalogue number:--></td>
           <td class="ft_cataloguenumber">
-            <input type="search" size="19" name="cataloguenumber" class="inputtext smallest fti_advanced" placeholder="Catalogue number" value="<?Format::form('cataloguenumber')?>" />
+            <input type="search" size="19" name="cataloguenumber" class="inputtext smallest fti_advanced" placeholder="Accession Number" value="<?Format::form('cataloguenumber')?>" />
           </td>
         </tr>
         <tr id="year" class="ftr_advanced<?=$HideAdvanced?>">
@@ -190,17 +190,17 @@ View::show_header('Browse Torrents', 'browse');
         <tr id="file_list" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label"><!--File list:--></td>
           <td class="ft_filelist">
-            <input type="search" spellcheck="false" size="65" name="filelist" class="inputtext fti_advanced" placeholder="File list" value="<?Format::form('filelist')?>" />
+            <input type="search" spellcheck="false" size="65" name="filelist" class="inputtext fti_advanced" placeholder="File List" value="<?Format::form('filelist')?>" />
           </td>
         </tr>
         <tr id="torrent_description" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label"><!--<span title="Search torrent descriptions (not group information)" class="tooltip">Torrent description:</span>--></td>
           <td class="ft_description">
-            <input type="search" spellcheck="false" size="65" name="description" class="inputtext fti_advanced tooltip_left" placeholder="Torrent description" title="Search torrent descriptions (not group information)" value="<?Format::form('description')?>" />
+            <input type="search" spellcheck="false" size="65" name="description" class="inputtext fti_advanced tooltip_left" placeholder="Torrent Description" title="Search torrent descriptions (not group information)" value="<?Format::form('description')?>" />
           </td>
         </tr>
         <tr id="rip_specifics" class="ftr_advanced<?=$HideAdvanced?>">
-          <td class="label">Release specifics:</td>
+          <td class="label">Release Specifics</td>
           <td class="nobr ft_ripspecifics">
             <select id="container" name="container" class="ft_container fti_advanced">
               <option value="">Format</option>
@@ -229,7 +229,7 @@ View::show_header('Browse Torrents', 'browse');
           </td>
         </tr>
         <tr id="size" class="ftr_advanced<?=$HideAdvanced?>">
-          <td class="label">Size:</td>
+          <td class="label">Size</td>
           <td class="ft_size">
             <input type="size_min" spellcheck="false" size="6" name="size_min" class="inputtext smaller fti_advanced" placeholder="Min" value="<?Format::form('size_min')?>" /> -
             <input type="size_max" spellcheck="false" size="6" name="size_max" class="inputtext smaller fti_advanced" placeholder="Max" value="<?Format::form('size_max')?>" />
@@ -244,7 +244,7 @@ View::show_header('Browse Torrents', 'browse');
           </td>
         </tr>
         <tr id="misc" class="ftr_advanced<?=$HideAdvanced?>">
-          <td class="label">Misc:</td>
+          <td class="label">Misc</td>
           <td class="nobr ft_misc">
             <select name="freetorrent" class="ft_freetorrent fti_advanced">
               <option value="">Leech Status</option>
@@ -275,10 +275,10 @@ View::show_header('Browse Torrents', 'browse');
           </td>
         </tr>
         <tr id="order">
-          <td class="label">Order by:</td>
+          <td class="label">Order By</td>
           <td class="ft_order">
             <select name="order_by" style="width: auto;" class="ft_order_by" aria-label="Property to order by">
-              <option value="time"<?Format::selected('order_by', 'time')?>>Time added</option>
+              <option value="time"<?Format::selected('order_by', 'time')?>>Time Added</option>
               <option value="year"<?Format::selected('order_by', 'year')?>>Year</option>
               <option value="size"<?Format::selected('order_by', 'size')?>>Size</option>
               <option value="snatched"<?Format::selected('order_by', 'snatched')?>>Snatched</option>
@@ -295,7 +295,7 @@ View::show_header('Browse Torrents', 'browse');
         </tr>
         <tr id="search_group_results">
           <td class="label">
-            <label for="group_results">Group by release:</label>
+            <label for="group_results">Group by Release?</label>
           </td>
           <td class="ft_group_results">
             <input type="checkbox" value="1" name="group_results" id="group_results"<?=$GroupResults ? ' checked="checked"' : ''?> />
