@@ -118,9 +118,7 @@ View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'bbcode
         </tr>
 <?  if ($NewRequest || $CanEdit) { ?>
         <tr>
-          <td class="label">
-            Type
-          </td>
+          <td class="label tooltip" title="What alphabet the sequence uses, n.b., plasmids fit in the Other category">Type</td>
           <td>
 <? if (!empty($Disabled)) { ?>
             <input type="hidden" name="type" value="<?=$CategoryName?>" />
@@ -168,40 +166,34 @@ View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'bbcode
           </td>
         </tr>
         <tr>
-          <td class="label">Title</td>
+          <td class="label tooltip" title="FASTA definition line, e.g., Alcohol dehydrogenase ADH1">Sequence Name</td>
           <td>
             <input type="text" id="title" name="title" size="45" value="<?=(!empty($Title) ? $Title : '')?>" <?=$Disabled?>/>
           </td>
         </tr>
         <tr>
-          <td class="label">Romaji Title</td>
+          <td class="label tooltip" title="FASTA organism line binomial nomenclature, e.g., Saccharomyces cerevisiae">Organism</td>
           <td>
             <input type="text" id="title_rj" name="title_rj" size="45" value="<?=(!empty($TitleRJ) ? $TitleRJ : '')?>" <?=$Disabled?>/>
           </td>
         </tr>
         <tr>
-          <td class="label">Japanese Title</td>
+          <td class="label tooltip" title="FASTA organism line if applicable, e.g., S288C">Strain/Variety</td>
           <td>
             <input type="text" id="title_jp" name="title_jp" size="45" value="<?=!empty($TitleJP)?$TitleJP:''?>" <?=$Disabled?>/>
-          </td>
-        </tr>
-        <tr id="dlsiteid_tr">
-          <td class="label">DLSite ID</td>
-          <td>
-            <input type="text" id="dlsiteid" name="dlsiteid" size="15" value="<?=isset($DLsiteID)?$DLsiteID:''?>" <?=$Disabled?>/>
           </td>
         </tr>
 <?  } ?>
 <?  if ($NewRequest || $CanEdit) { ?>
         <tr id="image_tr">
-          <td class="label">Image</td>
+          <td class="label tooltip" title="A meaningful picture, e.g., of the specimen">Picture</td>
           <td>
             <input type="text" id="image" name="image" size="45" value="<?=(!empty($Image) ? $Image : '')?>" <?=$Disabled?>/>
           </td>
         </tr>
 <?  } ?>
         <tr>
-          <td class="label">Tags</td>
+          <td class="label tooltip" title="Comma-seperated list of tags, n.b., use vanity.house for data you produced">Tags</td>
           <td>
 <?
   $GenreTags = $Cache->get_value('genre_tags');
@@ -227,10 +219,6 @@ View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'bbcode
 <?  } ?>
             </select>
             <input type="text" id="tags" name="tags" size="45" value="<?=(!empty($Tags) ? display_str($Tags) : '')?>"<? Users::has_autocomplete_enabled('other'); ?> <?=$Disabled?>/>
-            <br />
-            Tags should be comma-separated, and you should use a period (".") to separate words inside a tag&#8202;&mdash;&#8202;e.g. "<strong class="important_text_alt">big.breasts</strong>".
-            <br /><br />
-            There is a list of official tags to the left of the text box. Please use these tags instead of "unofficial" tags (e.g. use the official "<strong class="important_text_alt">nakadashi</strong>" tag, instead of an unofficial "<strong class="important_text">creampie</strong>" tag.).
           </td>
         </tr>
 <?  if ($NewRequest || $CanEdit) { ?>
@@ -264,7 +252,7 @@ View::show_header(($NewRequest ? 'Create a request' : 'Edit a request'), 'bbcode
 <?  }
   if ($NewRequest) { ?>
         <tr id="voting">
-          <td class="label">Bounty (MB)</td>
+          <td class="label tooltip" title="How much upload credit the fulfiller wins">Bounty</td>
           <td>
             <input type="text" id="amount_box" size="8" value="<?=(!empty($Bounty) ? $Bounty : '100')?>" onchange="Calculate();" />
             <select id="unit" name="unit" onchange="Calculate();">
