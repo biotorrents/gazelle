@@ -31,7 +31,7 @@ if (isset($_REQUEST['addtokens'])) {
   while (list($UserID) = $DB->next_record()) {
     $Cache->delete_value("user_info_heavy_$UserID");
   }
-  $message = '<strong>' . number_format($Tokens) . 'freeleech tokens added to all enabled users' . (!isset($_REQUEST['leechdisabled']) ? ' with enabled leeching privs' : '') . '.</strong><br /><br />';
+  $message = '<strong>' . number_format($Tokens) . ' freeleech tokens added to all enabled users' . (!isset($_REQUEST['leechdisabled']) ? ' with enabled leeching privs' : '') . '.</strong><br /><br />';
 } elseif (isset($_REQUEST['cleartokens'])) {
   authorize();
   $Tokens = $_REQUEST['numtokens'];
