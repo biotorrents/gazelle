@@ -55,7 +55,7 @@ if (($CollageCount < $LoggedUser['Permissions']['MaxCollages']) && check_perms('
           <br />
           <ul>
             <li><strong>Theme</strong> - A collection containing releases that all relate to a certain theme</li>
-            <li><strong>Staff picks</strong> - A listing of recommendations picked by the staff on special occasions.</li>
+            <li><strong>Staff Picks</strong> - A listing of recommendations picked by the staff on special occasions.</li>
 <?
   if (($CollageCount < $LoggedUser['Permissions']['MaxCollages']) && check_perms('site_collages_personal')) { ?>
             <li><strong>Personal</strong> - You can put whatever you want here. It is your own personal collection.</li>
