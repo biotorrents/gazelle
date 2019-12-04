@@ -64,7 +64,7 @@ $Properties['Subber'] = isset($_POST['subber']) ? $_POST['subber'] : '';
 $Properties['DLsiteID'] = (isset($_POST['dlsiteid'])) ? $_POST['dlsiteid'] : '';
 $Properties['Censored'] = (isset($_POST['censored'])) ? '1' : '0';
 $Properties['Anonymous'] = (isset($_POST['anonymous'])) ? '1' : '0';
-$Properties['Archive'] = (isset($_POST['archive']) && $_POST['archive'] != '---') ? $_POST['archive'] : '';
+$Properties['Archive'] = (isset($_POST['archive']) && $_POST['archive'] !== '---') ? $_POST['archive'] : '';
 if (isset($_POST['library_image'])) {
     $Properties['LibraryImage'] = $_POST['library_image'];
 }
@@ -99,7 +99,7 @@ if (isset($Properties['GroupID'])) {
     $Properties['Artists'] = Artists::get_artist($Properties['GroupID']);
 }
 
-if ($Type == 'Movies' || $Type == 'Manga' || $Type == 'Anime' || $Type == 'Games') {
+if ($Type === 'Movies' || $Type === 'Manga' || $Type === 'Anime' || $Type === 'Games') {
     if (empty($_POST['idols'])) {
         $Err = "You didn't enter any artists/idols";
     } else {
@@ -146,7 +146,7 @@ switch ($Type) {
     if (!isset($_POST['groupid']) || !$_POST['groupid']) {
       $Validate->SetFields('year',
         '1','number','The year of the original release must be entered.', array('maxlength'=>3000, 'minlength'=>1800));
-      if ($Type == 'Manga') {
+      if ($Type === 'Manga') {
         $Validate->SetFields('pages',
           '1', 'number', 'That is not a valid page count', array('minlength'=>1));
       }
@@ -239,7 +239,7 @@ if (empty($Properties['GroupID']) && empty($ArtistForm)) {
     $ArtistNames = [];
     $ArtistForm = [];
     for ($i = 0; $i < count($Artists); $i++) {
-        if (trim($Artists[$i]) != '') {
+        if (trim($Artists[$i]) !== '') {
             if (!in_array($Artists[$i], $ArtistNames)) {
                 $ArtistForm[$i] = array('name' => Artists::normalise_artist_name($Artists[$i]));
                 array_push($ArtistNames, $ArtistForm[$i]['name']);
@@ -352,7 +352,7 @@ if ($T['GroupID']) {
         }
         if (strlen($WikiBody) > strlen($Body)) {
             $Body = $WikiBody;
-            if (!$T['Image'] || $T['Image'] == $WikiImage) {
+            if (!$T['Image'] || $T['Image'] === $WikiImage) {
                 $NoRevision = true;
             }
         }
@@ -379,15 +379,15 @@ if (!isset($GroupID) || !$GroupID) {
     }
 }
 
-//Needs to be here as it isn't set for add format until now
+// Needs to be here as it isn't set for add format until now
 $LogName .= $T['Title'];
 
-//For notifications--take note now whether it's a new group
+// For notifications---take note now whether it's a new group
 $IsNewGroup = !isset($GroupID) || !$GroupID;
 
 //----- Start inserts
 if ((!isset($GroupID) || !$GroupID)) {
-    //array to store which artists we have added already, to prevent adding an artist twice
+    // Array to store which artists we have added already, to prevent adding an artist twice
     $ArtistsAdded = [];
     foreach ($ArtistForm as $Num => $Artist) {
         if (!isset($Artist['id']) || !$Artist['id']) {
@@ -527,7 +527,7 @@ $DB->query("
 if ($DB->has_results()) {
     $FreeLeechTags = $DB->to_array('Name');
     foreach ($FreeLeechTags as $Tag => $Exp) {
-        if ($Tag == 'global' || in_array($Tag, $Tags)) {
+        if ($Tag === 'global' || in_array($Tag, $Tags)) {
             $T['FreeTorrent'] = '1';
             $T['FreeLeechType'] = '3';
             break;
@@ -537,7 +537,7 @@ if ($DB->has_results()) {
 
 // Movie and anime ISOs are neutral leech, and receive a BP bounty
 /*
-if (($Type == 'Movies' || $Type == 'Anime') && ($T['Container'] == 'ISO' || $T['Container'] == 'M2TS' || $T['Container'] == 'VOB IFO')) {
+if (($Type === 'Movies' || $Type === 'Anime') && ($T['Container'] === 'ISO' || $T['Container'] === 'M2TS' || $T['Container'] === 'VOB IFO')) {
   $T['FreeTorrent'] = '2';
   $T['FreeLeechType'] = '2';
 }
@@ -580,8 +580,8 @@ $DB->query(
     $T['FreeLeechType']
 );
 
-$Cache->increment('stats_torrent_count');
 $TorrentID = $DB->inserted_id();
+$Cache->increment('stats_torrent_count');
 $Tor->Dec['comment'] = 'https://'.SITE_DOMAIN.'/torrents.php?torrentid='.$TorrentID;
 
 Tracker::update_tracker('add_torrent', [
@@ -595,8 +595,8 @@ $Debug->set_flag('upload: ocelot updated');
 // (expire the key after 10 minutes to prevent locking it for too long in case there's a fatal error below)
 $Cache->cache_value("torrent_{$TorrentID}_lock", true, 600);
 
-//give BP if necessary
-if (($Type == "Movies" || $Type == "Anime") && ($T['Container'] == 'ISO' || $T['Container'] == 'M2TS' || $T['Container'] == 'VOB IFO')) {
+// Give BP if necessary
+if (($Type === "Movies" || $Type === "Anime") && ($T['Container'] === 'ISO' || $T['Container'] === 'M2TS' || $T['Container'] === 'VOB IFO')) {
     $BPAmt = (int) 2*($TotalSize / (1024*1024*1024))*1000;
 
     $DB->query("
@@ -613,11 +613,11 @@ if (($Type == "Movies" || $Type == "Anime") && ($T['Container'] == 'ISO' || $T['
 }
 
 // Add to shop freeleeches if necessary
-if ($T['FreeLeechType'] == 3) {
+if ($T['FreeLeechType'] === 3) {
     // Figure out which duration to use
     $Expiry = 0;
     foreach ($FreeLeechTags as $Tag => $Exp) {
-        if ($Tag == 'global' || in_array($Tag, $Tags)) {
+        if ($Tag === 'global' || in_array($Tag, $Tags)) {
             if (((int) $FreeLeechTags[$Tag]['First']) > $Expiry) {
                 $Expiry = (int) $FreeLeechTags[$Tag]['First'];
             }
@@ -649,12 +649,12 @@ $Debug->set_flag('upload: sphinx updated');
 //******************************************************************************//
 //---------------------- Recent Uploads ----------------------------------------//
 
-if (trim($T['Image']) != '') {
+if (trim($T['Image']) !== '') {
     $RecentUploads = $Cache->get_value("recent_uploads_$UserID");
     if (is_array($RecentUploads)) {
         do {
             foreach ($RecentUploads as $Item) {
-                if ($Item['ID'] == $GroupID) {
+                if ($Item['ID'] === $GroupID) {
                     break 2;
                 }
             }
@@ -718,7 +718,7 @@ $Announce .= Artists::display_artists($ArtistForm, false);
 
 $Announce .= substr(trim(empty($T['Title']) ? (empty($T['TitleRJ']) ? $T['TitleJP'] : $T['TitleRJ']) : $T['Title']), 0, 100);
 $Announce .= ' ';
-if ($Type != 'Other') {
+if ($Type !== 'Other') {
     $Announce .= '['.Torrents::torrent_info($T, false, false, false).']';
 }
 $Title = '['.$T['CategoryName'].'] '.$Announce;
@@ -752,7 +752,7 @@ if (!empty($ArtistsUnescaped)) {
         $ArtistNameList[] = "Artists LIKE '%|".db_string(str_replace('\\', '\\\\', $Artist['name']), true)."|%'";
     }
     // Don't add notification if >2 main artists or if tracked artist isn't a main artist
-    if (count($ArtistNameList) > 2 || $Artist['name'] == 'Various Artists') {
+    if (count($ArtistNameList) > 2 || $Artist['name'] === 'Various Artists') {
         $SQL .= " AND (ExcludeVA = '0' AND (";
         $SQL .= implode(' OR ', array_merge($ArtistNameList, $GuestArtistNameList));
         $SQL .= " OR Artists = '')) AND (";
@@ -829,7 +829,7 @@ if ($T['Year']) {
 } else {
     $SQL .= " AND (FromYear = 0 AND ToYear = 0) ";
 }
-$SQL .= " AND UserID != '".$LoggedUser['ID']."' ";
+$SQL .= " AND UserID !== '".$LoggedUser['ID']."' ";
 
 $DB->query("
   SELECT Paranoia
@@ -844,7 +844,7 @@ if (!in_array('notifications', $Paranoia)) {
     $SQL .= " AND (Users LIKE '%|".$LoggedUser['ID']."|%' OR Users = '') ";
 }
 
-$SQL .= " AND UserID != '".$LoggedUser['ID']."' ";
+$SQL .= " AND UserID !== '".$LoggedUser['ID']."' ";
 $DB->query($SQL);
 $Debug->set_flag('upload: notification query finished');
 
