@@ -27,26 +27,25 @@ class Rules {
   public static function display_site_tag_rules($OnUpload = false) {
     ?>
     <ul>
-      <li>Tags should be comma-separated, and you should use a period (".") to separate words inside a tag &mdash; e.g. "<strong class="important_text_alt">big.breasts</strong>".</li>
+      <li><strong>Please use the "<strong class="important_text_alt">vanity.house</strong>" tag for sequences that you or your lab produced.</strong> This helps us promote the DIYbio community's original contributions.</li>
 
-      <li>There is a list of official tags <?=($OnUpload ? 'to the left of the text box' : 'on <a href="upload.php">the torrent upload page</a>')?>. Please use these tags instead of "unofficial" tags (e.g. use the official "<strong class="important_text_alt">paizuri</strong>" tag, instead of an unofficial "<strong class="important_text">titfuck</strong>" tag).</strong></li>
+      <li>Tags should be comma-separated, and you should use a period (".") to separate words inside a tag &mdash; e.g., "<strong class="important_text_alt">gram.negative</strong>".</li>
 
-      <li>Avoid using multiple synonymous tags. Using both "<strong class="important_text">pissing</strong>" and "<strong class="important_text_alt">urination</strong>" is redundant and stupid &mdash; just use the official "<strong class="important_text_alt">urination</strong>" tag.</li>
+      <li>There is a list of official tags <?=($OnUpload ? 'to the left of the text box' : 'on <a href="upload.php">the torrent upload page</a>')?>. Please use these tags instead of "unofficial" tags (e.g., use the official "<strong class="important_text_alt">fungi</strong>" tag, instead of an unofficial "<strong class="important_text">mushrooms</strong>" tag).</strong></li>
 
-      <li>Do not add useless tags that are already covered by other metadata. If a torrent is in the JAV category, it should not be tagged <strong class="important_text">jav</strong>.</li>
+      <li>Avoid using multiple synonymous tags. Using both "<strong class="important_text">cyanobacteria</strong>" and "<strong class="important_text_alt">bacteria</strong>" is redundant and stupid &mdash; just use the official "<strong class="important_text_alt">bacteria</strong>" tag.</li>
 
-      <li>Only tag information related to the group itself &mdash; <strong>not the individual release</strong>. Tags such as "<strong class="important_text">mkv</strong>", "<strong class="important_text">windows</strong>", "<strong class="important_text">scan</strong>", "<strong class="important_text">from.dlsite</strong>", etc. are strictly forbidden. Remember that these tags will be used for other releases in the same group.</li>
+      <li>Do not add useless tags that are already covered by other metadata. If a torrent is in the DNA category, it should not be tagged <strong class="important_text">dna</strong>.</li>
 
-      <li>Derivative works may be tagged with the name of the parent series or characters within the work. For example, tags such as "<strong class="tag_parody">touhou</strong>" or "<strong class="tag_character">iori.minase</strong>" may be acceptable if they are being used on derivative (parody) works. These kinds of tags should NOT be used if the series is primarily erotic in nature. Characters should be tagged with the form "<strong class="important_text_alt">surname.firstname</strong>" if applicable.</li>
+      <li>Only tag information related to the group itself &mdash; <strong>not the individual release</strong>. Tags such as "<strong class="important_text">apollo.100</strong>", "<strong class="important_text">hiseq.2500</strong>", etc., are strictly forbidden. Remember that these tags will be used for other releases in the same group.</li>
 
-      <li><strong>Tags should reflect significant aspects of a torrent.</strong> Don't tag something with "<strong class="important_text">blowjob</strong>" if there's only 30 seconds of dick-sucking. However, certain tags may be acceptable, such as "<strong class="important_text_alt">stockings</strong>", even if the torrent in question isn't centered around that fetish. Be smart.</li>
+      <li><strong>Certain tags are strongly encouraged for appropriate uploads:</strong> "<strong class="important_text_alt">archaea</strong>", "<strong class="important_text_alt">bacteria</strong>", "<strong class="important_text_alt">fungi</strong>", "<strong class="important_text_alt">animals</strong>", "<strong class="important_text_alt">plants</strong>", "<strong class="important_text_alt">plasmids</strong>". People search for these kinds of things specifically, so tagging them properly will get you more snatches.</li>
 
-      <li><strong>Certain tags are strongly encouraged for appropriate uploads:</strong> "<strong class="important_text_alt">3d</strong>", "<strong class="important_text_alt">anthology</strong>", "<strong class="important_text_alt">yuri</strong>", "<strong class="important_text_alt">yaoi</strong>". People search for these kinds of things specifically, so tagging them properly will get you more snatches.</li>
-
-      <li>Tags for game genres such as "<strong class="important_text_alt">rpg</strong>", "<strong class="important_text_alt">visual.novel</strong>", or "<strong class="important_text_alt">nukige</strong>" are encouraged.</li>
-
+      <!--
       <li><strong>Certain tags are <strong class="important_text">required</strong> for appropriate uploads:</strong>"<strong class="important_text_alt">lolicon</strong>", "<strong class="important_text_alt">shotacon</strong>", "<strong class="important_text_alt">toddlercon</strong>". Failure to use these tags may result in punishment.</li>
+      -->
 
+      <!--
       <li><strong>Use tag namespaces when appropriate.</strong> BioTorrents.de allows for tag namespaces to aid with searching. For example, you may want to use the tags "<strong class="important_text_alt">masturbation:male</strong>" or "<strong class="important_text_alt">masturbation:female</strong>" instead of just "<strong class="important_text">masturbation</strong>". They can be used to make search queries more specific. Searching for "<strong class="important_texti_alt">masturbation</strong>" will show all torrents tagged with "<strong class="important_text_alt">masturbation</strong>", "<strong class="important_text_alt">masturbation:male</strong>", or "<strong class="important_text_alt">masturbation:female</strong>". However, searching for "<strong class="important_text_alt">masturbation:female</strong>" will ONLY show torrents with that tag. Tags with namespaces will appear differently depending on the namespace used, which include:
         <ul>
           <li><strong>:parody</strong> - Used to denote a parodied work: <strong class="tag_parody">touhou</strong>, <strong class="tag_parody">kantai.collection</strong></li>
@@ -55,8 +54,9 @@ class Rules {
           <li><strong>:female</strong> - Used to denote that the tag refers to a female character: <strong class="tag_female">masturbation</strong>, <strong class="tag_female">shaved</strong></li>
         </ul>
       </li>
+      -->
 
-      <li><strong>All uploads require a minimum of 5 tags.</strong> Do not add unrelated tags just to meet the 5 tag requirement. If you can't think of 5 tags for your content, watch/read/play through it again until you can.</li>
+      <li><strong>All uploads require a minimum of 5 tags.</strong> Do not add unrelated tags just to meet the 5 tag requirement. If you can't think of 5 tags for your content, study it again until you can.</li>
 
       <li><strong>You should be able to build up a list of tags using only the official tags <?=($OnUpload ? 'to the left of the text box' : 'on <a href="upload.php">the torrent upload page</a>')?>.</strong> If you are in any doubt about whether or not a tag is acceptable, do not add it.</li>
     </ul>
