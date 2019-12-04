@@ -324,25 +324,6 @@ echo $Val->GenerateJS('userform');
           </select>
         </td>
       </tr>
-      <tr id="tor_hidequestionable_tr">
-        <td class="label tooltip" title="Prevent torrents with these tags from showing up on the torrent search page"><strong>Content Filtering</strong></td>
-        <td>
-          <ul class="nobullet">
-            <li>
-              <input type="checkbox" name="hide_lolicon" id="hide_lolicon"<?=($SiteOptions['HideLolicon']) ? ' checked="checked"' : ''?> />
-              <label for="hide_lolicon">Hide results with Lolicon, Shotacon, or Toddlercon</label>
-            </li>
-            <li>
-              <input type="checkbox" name="hide_scat" id="hide_scat"<?=($SiteOptions['HideScat']) ? ' checked="checked"' : ''?> />
-              <label for="hide_scat">Hide results with Scat</label>
-            </li>
-            <li>
-              <input type="checkbox" name="hide_snuff" id="hide_snuff"<?=($SiteOptions['HideSnuff']) ? ' checked="checked"' : ''?> />
-              <label for="hide_snuff">Hide results with Snuff</label>
-            </li>
-          </ul>
-        </td>
-      </tr>
     </table>
     <table cellpadding="6" cellspacing="1" border="0" width="100%" class="layout border user_options" id="community_settings">
       <tr class="colhead_dark">
