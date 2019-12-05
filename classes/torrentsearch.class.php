@@ -300,7 +300,7 @@ class TorrentSearch
                     $Operator = self::$FieldOperators[''];
                 }
                 if (!empty($QueryParts['include'])) {
-                    if ($Field == 'taglist') {
+                    if ($Field === 'taglist') {
                         foreach ($QueryParts['include'] as $key => $Tag) {
                             $QueryParts['include'][$key] = '( '.$Tag.' | '.$Tag.':* )';
                         }
@@ -357,7 +357,7 @@ class TorrentSearch
                 $this->SphQL->where_between('size', [intval(($this->RawTerms['size_min'] ?? 0)*(1024**$Value)), intval(min(PHP_INT_MAX, ($this->RawTerms['size_max'] ?? INF)*(1024**$Value)))]);
             }
         } elseif ($Attribute === 'freetorrent') {
-            if ($Value == 3) {
+            if ($Value === 3) {
                 $this->SphQL->where('freetorrent', 0, true);
                 $this->UsedTorrentAttrs['freetorrent'] = 3;
             } elseif ($Value >= 0 && $Value < 3) {
@@ -618,7 +618,7 @@ class TorrentSearch
      */
     private function process_results()
     {
-        if (count($this->SphResults) == 0) {
+        if (count($this->SphResults) === 0) {
             return;
         }
         $this->Groups = Torrents::get_groups($this->SphResults);
@@ -692,10 +692,10 @@ class TorrentSearch
     {
         if (isset($this->UsedTorrentAttrs['freetorrent'])) {
             $FilterValue = $this->UsedTorrentAttrs['freetorrent'];
-            if ($FilterValue == '3' && $Torrent['FreeTorrent'] == '0') {
+            if ($FilterValue === '3' && $Torrent['FreeTorrent'] === '0') {
                 // Either FL or NL is ok
                 return false;
-            } elseif ($FilterValue != '3' && $FilterValue != (int)$Torrent['FreeTorrent']) {
+            } elseif ($FilterValue !== '3' && $FilterValue !== (int)$Torrent['FreeTorrent']) {
                 return false;
             }
         }
