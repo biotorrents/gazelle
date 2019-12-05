@@ -263,7 +263,7 @@ View::show_header('Browse Torrents', 'browse');
         <tr id="search_terms" class="ftr_basic<?=$HideBasic?>">
           <td class="label"><!--Search terms:--></td>
           <td class="ftb_searchstr">
-            <input type="search" spellcheck="false" size="48" name="searchstr" class="inputtext fti_basic" placeholder="Search terms" value="<?Format::form('searchstr')?>" aria-label="Terms to search">
+            <input type="search" spellcheck="false" size="48" name="searchstr" class="inputtext fti_basic" placeholder="Search Terms" value="<?Format::form('searchstr')?>" aria-label="Terms to search">
           </td>
         </tr>
         <tr id="tagfilter">
