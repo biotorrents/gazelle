@@ -3,7 +3,7 @@ function Vote(amount, requestid) {
     amount = parseInt($('#amount').raw().value);
   }
   if (amount == 0) {
-     amount = 20 * 1024 * 1024;
+    amount = 20 * 1024 * 1024;
   }
 
   var index;
@@ -30,33 +30,33 @@ function Vote(amount, requestid) {
   }
 
   ajax.get('requests.php?action=takevote&id=' + requestid + '&auth=' + authkey + '&amount=' + amount, function (response) {
-      if (response == 'bankrupt') {
-        save_message("You do not have sufficient upload credit to add " + get_size(amount) + " to this request", true);
-        return;
-      } else if (response == 'dupesuccess') {
-        //No increment
-      } else if (response == 'success') {
-        votecount.innerHTML = (parseInt(votecount.innerHTML)) + 1;
-      }
-
-      if ($('#total_bounty').length > 0) {
-        totalBounty = parseInt($('#total_bounty').raw().value);
-        totalBounty += (amount * (1 - $('#request_tax').raw().value));
-        $('#total_bounty').raw().value = totalBounty;
-        $('#formatted_bounty').raw().innerHTML = get_size(totalBounty);
-
-        save_message("Your vote of " + get_size(amount) + ", adding a " + get_size(amount * (1 - $('#request_tax').raw().value)) + " bounty, has been added");
-        $('#button').raw().disabled = true;
-      } else {
-        save_message("Your vote of " + get_size(amount) + " has been added");
-      }
+    if (response == 'bankrupt') {
+      save_message("You do not have sufficient upload credit to add " + get_size(amount) + " to this request", true);
+      return;
+    } else if (response == 'dupesuccess') {
+      //No increment
+    } else if (response == 'success') {
+      votecount.innerHTML = (parseInt(votecount.innerHTML)) + 1;
     }
+
+    if ($('#total_bounty').length > 0) {
+      totalBounty = parseInt($('#total_bounty').raw().value);
+      totalBounty += (amount * (1 - $('#request_tax').raw().value));
+      $('#total_bounty').raw().value = totalBounty;
+      $('#formatted_bounty').raw().innerHTML = get_size(totalBounty);
+
+      save_message("Your vote of " + get_size(amount) + ", adding a " + get_size(amount * (1 - $('#request_tax').raw().value)) + " bounty, has been added");
+      $('#button').raw().disabled = true;
+    } else {
+      save_message("Your vote of " + get_size(amount) + " has been added");
+    }
+  }
   );
 }
 
 function Calculate() {
   if (!$('#unit').raw()) { return; }
-  var mul = (($('#unit').raw().options[$('#unit').raw().selectedIndex].value == 'mb') ? (1024*1024) : (1024*1024*1024));
+  var mul = (($('#unit').raw().options[$('#unit').raw().selectedIndex].value == 'mb') ? (1024 * 1024) : (1024 * 1024 * 1024));
   var amt = Math.floor($('#amount_box').raw().value * mul);
   if (amt > $('#current_uploaded').raw().value) {
     $('#new_uploaded').raw().innerHTML = "You can't afford that request!";
@@ -64,8 +64,8 @@ function Calculate() {
     $('#bounty_after_tax').raw().innerHTML = "0.00 MB";
     $('#button').raw().disabled = true;
   } else if (isNaN($('#amount_box').raw().value)
-      || (window.location.search.indexOf('action=new') != -1 && $('#amount_box').raw().value * mul < 100 * 1024 * 1024)
-      || (window.location.search.indexOf('action=view') != -1 && $('#amount_box').raw().value * mul < 20 * 1024 * 1024)) {
+    || (window.location.search.indexOf('action=new') != -1 && $('#amount_box').raw().value * mul < 100 * 1024 * 1024)
+    || (window.location.search.indexOf('action=view') != -1 && $('#amount_box').raw().value * mul < 20 * 1024 * 1024)) {
     $('#new_uploaded').raw().innerHTML = get_size(($('#current_uploaded').raw().value));
     $('#new_bounty').raw().innerHTML = "0.00 MB";
     $('#bounty_after_tax').raw().innerHTML = "0.00 MB";
@@ -81,47 +81,48 @@ function Calculate() {
 }
 
 function AddArtistField() {
-    var ArtistCount = document.getElementsByName("artists[]").length;
-    if (ArtistCount >= 200) {
-      return;
-    }
-    var ArtistField = document.createElement("input");
-    ArtistField.type = "text";
-    ArtistField.id = "artist_" + ArtistCount;
-    ArtistField.name = "artists[]";
-    ArtistField.size = 45;
+  var ArtistCount = document.getElementsByName("artists[]").length;
+  if (ArtistCount >= 200) {
+    return;
+  }
+  var ArtistField = document.createElement("input");
+  ArtistField.type = "text";
+  ArtistField.id = "artist_" + ArtistCount;
+  ArtistField.name = "artists[]";
+  ArtistField.size = 45;
 
-    var x = $('#artistfields').raw();
-    x.appendChild(document.createElement("br"));
-    x.appendChild(ArtistField);
+  var x = $('#artistfields').raw();
+  x.appendChild(document.createElement("br"));
+  x.appendChild(ArtistField);
 
-    if ($("#artist").data("gazelle-autocomplete")) {
-      $(ArtistField).live('focus', function() {
-        $(ArtistField).autocomplete({
-          serviceUrl : 'artist.php?action=autocomplete'
-        });
+  if ($("#artist").data("gazelle-autocomplete")) {
+    $(ArtistField).live('focus', function () {
+      $(ArtistField).autocomplete({
+        serviceUrl: 'artist.php?action=autocomplete'
       });
-    }
+    });
+  }
 
-    ArtistCount++;
+  ArtistCount++;
 }
 
 function RemoveArtistField() {
-    var ArtistCount = document.getElementsByName("artists[]").length;
-    if (ArtistCount == 1) {
-      return;
-    }
-    var x = $('#artistfields').raw();
+  var ArtistCount = document.getElementsByName("artists[]").length;
+  if (ArtistCount == 1) {
+    return;
+  }
+  var x = $('#artistfields').raw();
 
-    while (x.lastChild.tagName != "INPUT") {
-      x.removeChild(x.lastChild);
-    }
+  while (x.lastChild.tagName != "INPUT") {
     x.removeChild(x.lastChild);
-    x.removeChild(x.lastChild); //Remove trailing new line.
-    ArtistCount--;
+  }
+  x.removeChild(x.lastChild);
+  x.removeChild(x.lastChild); // Remove trailing new line.
+  ArtistCount--;
 }
 
 function Categories() {
+  /*
   var cat = $('#categories').raw() ? $('#categories').raw().options[$('#categories').raw().selectedIndex].value : '';
   if (cat == "Movies") {
     $('#artist_tr').gshow();
@@ -148,6 +149,7 @@ function Categories() {
     $('#cataloguenumber_tr').ghide();
     $('#dlsiteid_tr').ghide();
   }
+  */
 }
 
 function add_tag() {
@@ -199,15 +201,17 @@ function ToggleLogScore() {
 }
 
 function JavAutofill() {
-   var map = { cn: 'javdb',
-                idols: 'artist',
-               title: 'title',
-               title_jp: 'title_jp',
-               image: 'image',
-               tags: 'tags',
-               description: 'req_desc' }
+  var map = {
+    cn: 'javdb',
+    idols: 'artist',
+    title: 'title',
+    title_jp: 'title_jp',
+    image: 'image',
+    tags: 'tags',
+    description: 'req_desc'
+  }
   var cn = $('#catalogue').raw().value.toUpperCase()
-  $.getJSON('/ajax.php?action=javfill&cn='+cn, function(data) {
+  $.getJSON('/ajax.php?action=javfill&cn=' + cn, function (data) {
     if (data.status != "success") {
       $('#catalogue').raw().value = 'Failed'
       return
@@ -218,29 +222,29 @@ function JavAutofill() {
       if (Array.isArray(data.response[i])) {
         for (j in data.response[i]) {
           if (i == 'idols') {
-            if (!($('#'+map[i]+'_'+j).raw())) {
+            if (!($('#' + map[i] + '_' + j).raw())) {
               AddArtistField()
             }
-            $('#'+map[i]+'_'+j).raw().value = data.response[i][j]
+            $('#' + map[i] + '_' + j).raw().value = data.response[i][j]
           }
-          if (map[i] == 'tags' && !($('#'+map[i]).raw().value)) {
-            $('#'+map[i]).raw().value = data.response[i].join(', ')
+          if (map[i] == 'tags' && !($('#' + map[i]).raw().value)) {
+            $('#' + map[i]).raw().value = data.response[i].join(', ')
           }
         }
       }
-      if (map[i] && $('#'+map[i]).raw() && !($('#'+map[i]).raw().value)) {
-        $('#'+map[i]).raw().value = data.response[i]
+      if (map[i] && $('#' + map[i]).raw() && !($('#' + map[i]).raw().value)) {
+        $('#' + map[i]).raw().value = data.response[i]
       }
     }
   })
 }
 
-$(function() {
+$(function () {
   Categories()
   Calculate()
-  document.querySelectorAll('[autofill]').forEach(function(el) {
-    el.addEventListener('click', function(event) {
-      ({'jav':JavAutofill})[el.attributes['autofill'].value]()
+  document.querySelectorAll('[autofill]').forEach(function (el) {
+    el.addEventListener('click', function (event) {
+      ({ 'jav': JavAutofill })[el.attributes['autofill'].value]()
     })
   })
   $(document).on('click', '.add_artist_button', AddArtistField);
