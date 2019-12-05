@@ -48,7 +48,7 @@ View::show_header('Donate');
       receive the following perks upon unlocking it:</p>
 
     <ul>
-      <li>Our eternal love, as represented by the nipple you get next to your name</li>
+      <li>Our eternal love, as represented by the heart you get next to your name</li>
       <!--<li><a href="/wiki.php?action=article&amp;id=8">Inactivity</a> timer immunity</li>
       <li>Access to the <a href="/user.php?action=notify">notifications system</a></li>
       <li>Two <a href="/user.php?action=invite">invites</a></li>
