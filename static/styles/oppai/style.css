@@ -6,7 +6,9 @@
 
 /* We're going to opt for the category icon method for now, tags_* is also available */
 .cats_dna { width: 36px; height: 36px; background: url('/static/common/caticons/dna.png') no-repeat center center; }
-.cats_rna { width: 36px; height: 36px; background: url('/static/common/caticons/rna.png') no-repeat center center; }
+.cats_mrna { width: 36px; height: 36px; background: url('/static/common/caticons/rna.png') no-repeat center center; }
+.cats_rrna { width: 36px; height: 36px; background: url('/static/common/caticons/rna.png') no-repeat center center; }
+.cats_trna { width: 36px; height: 36px; background: url('/static/common/caticons/rna.png') no-repeat center center; }
 .cats_protein { width: 36px; height: 36px; background: url('/static/common/caticons/protein.png') no-repeat center center; }
 .cats_other { width: 36px; height: 36px; background: url('/static/common/caticons/other.png') no-repeat center center; }
 
@@ -401,7 +403,6 @@ input.hidden {
 
 /* Layout (Any page) */
 
-
 .thin {
   width: 850px;
   margin: 0px auto;
@@ -579,7 +580,6 @@ td.colhead, .colhead td, .colhead th {
   font-weight: bold;
 }
 
-
 .colhead .sign {
   padding: 0px 8px 0px 8px;
   font-size: 12pt;
@@ -638,7 +638,6 @@ table.slice {
 ul.nobullet {
   display: inline-block;
 }
-
 
 /* Layout (home page) */
 
@@ -834,9 +833,7 @@ blockquote {
   border: 1px solid #BBB;
 }
 
-
 /* Layout (Inbox) */
-
 
 tr.unreadpm {
   background-color: #ECC;
