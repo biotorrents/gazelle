@@ -1,4 +1,5 @@
 $(() => {
+  /*
   $("#post").click(e => {
     let hard_error = m => {
       if (e.isDefaultPrevented()) return
@@ -34,4 +35,5 @@ $(() => {
     }
   })
   $('#tags').on('blur', e => $('#tags').raw().value = $('#tags').raw().value.split(',').map(t=>t.trim()).filter(t=>t).join(', '))
+  */
 })
