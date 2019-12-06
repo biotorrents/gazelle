@@ -183,7 +183,7 @@ switch ($Type) {
             'title_jp',
             '0',
             'string',
-            'Strain/Variety must be between 1 and 512 bytes.',
+            'Strain/Variety must be between 1 and 512 characters.',
             array('maxlength'=>512, 'minlength'=>1)
         );
 
