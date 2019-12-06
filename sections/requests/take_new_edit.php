@@ -4,7 +4,6 @@
 //----------------- Take request -----------------------------------------------//
 authorize();
 
-
 if ($_POST['action'] !== 'takenew' && $_POST['action'] !== 'takeedit') {
     error(0);
 }
@@ -113,6 +112,7 @@ if (empty($_POST['artists']) && $CategoryName !== 'Other') {
 }
 
 // Not required
+/*
 if (!empty($_POST['cataloguenumber']) && $CategoryName === 'Movies') {
     $CatalogueNumber = trim($_POST['cataloguenumber']);
 } else {
@@ -123,6 +123,7 @@ if (!empty($_POST['dlsiteid']) && $CategoryName === 'Games') {
 } else {
     $DLSiteID = '';
 }
+*/
 
 // GroupID
 if (!empty($_POST['groupid'])) {
@@ -324,7 +325,7 @@ if (isset($ArtistForm)) {
         ($RequestID, ".$Artist['id'].")");
         $Cache->delete_value('artists_requests_'.$Artist['id']);
     }
-    // End Music only
+    // End music only
 } else {
     // Not a music request anymore, delete music only fields.
     if (!$NewRequest) {
@@ -367,7 +368,7 @@ if (isset($ArtistForm)) {
     }
 }
 
-//Tags
+// Tags
 if (!$NewRequest) {
     $DB->query("
     DELETE FROM requests_tags
