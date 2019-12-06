@@ -237,7 +237,7 @@ if ($CategoryName === 'Music') {
 */
 
 if (!isset($GroupID)) {
-    $GroupID = '';
+    $GroupID = 0;
 }
 
 // Query time!
