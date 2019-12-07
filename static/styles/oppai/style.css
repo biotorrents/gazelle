@@ -5,12 +5,12 @@
 }
 
 /* We're going to opt for the category icon method for now, tags_* is also available */
-.cats_dna { width: 36px; height: 36px; background: url('/static/common/caticons/dna.png') no-repeat center center; }
-.cats_mrna { width: 36px; height: 36px; background: url('/static/common/caticons/rna.png') no-repeat center center; }
-.cats_rrna { width: 36px; height: 36px; background: url('/static/common/caticons/rna.png') no-repeat center center; }
-.cats_trna { width: 36px; height: 36px; background: url('/static/common/caticons/rna.png') no-repeat center center; }
-.cats_protein { width: 36px; height: 36px; background: url('/static/common/caticons/protein.png') no-repeat center center; }
-.cats_other { width: 36px; height: 36px; background: url('/static/common/caticons/other.png') no-repeat center center; }
+.cats_dna { width: 36px; height: 36px; background: url('/static/common/bioicons/dna.png') no-repeat center center; }
+.cats_mrna { width: 36px; height: 36px; background: url('/static/common/bioicons/rna.png') no-repeat center center; }
+.cats_rrna { width: 36px; height: 36px; background: url('/static/common/bioicons/rna.png') no-repeat center center; }
+.cats_trna { width: 36px; height: 36px; background: url('/static/common/bioicons/rna.png') no-repeat center center; }
+.cats_protein { width: 36px; height: 36px; background: url('/static/common/bioicons/protein.png') no-repeat center center; }
+.cats_other { width: 36px; height: 36px; background: url('/static/common/bioicons/other.png') no-repeat center center; }
 
 /* Global */
 * {
