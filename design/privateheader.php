@@ -11,7 +11,7 @@ define('FOOTER_FILE', SERVER_ROOT.'/design/privatefooter.php');
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="userid" content="<?=G::$LoggedUser['ID']?>">
   <meta name="authkey" content="<?=G::$LoggedUser['AuthKey']?>">
-  <link rel="shortcut icon" href="/static/common/icon.png?v=<?=md5_file('/static/common/icon.png')?>">
+  <link rel="shortcut icon" href="static/common/icon.png?v=<?=md5_file('static/common/icon.png')?>">
   <link rel="manifest" href="/manifest.php">
   <link rel="search" type="application/opensearchdescription+xml" title="<?=SITE_NAME?>" href="<?=STATIC_SERVER?>opensearch.xml">
   <link rel="alternate" type="application/rss+xml"

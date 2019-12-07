@@ -9,7 +9,7 @@ define('FOOTER_FILE',SERVER_ROOT.'/design/publicfooter.php');
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#461640">
-  <link rel="shortcut icon" href="/static/common/icon.png?v=<?=md5_file('/static/common/icon.png');?>">
+  <link rel="shortcut icon" href="static/common/icon.png?v=<?=md5_file('static/common/icon.png');?>">
   <link rel="manifest" href="/manifest.php">
   <link href="<?=STATIC_SERVER ?>styles/public/style.css?v=<?=filemtime(SERVER_ROOT.'/static/styles/public/style.css')?>" rel="stylesheet" type="text/css">
 <?
