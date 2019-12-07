@@ -309,7 +309,7 @@ function getCover(event) {
   if ($('#coverCont img').length == 0) {
     coverCont.appendChild(document.createElement('img'))
   }
-  $('#coverCont img')[0].src = image?image:'/static/common/noartwork/nocover.jpg'
+  $('#coverCont img')[0].src = image?image:'/static/common/noartwork/music.png'
   coverCont.style.display = 'block'
   coverListener = mevent => {
     let wh = window.innerHeight, ch = coverCont.clientHeight, ph = mevent.clientY
