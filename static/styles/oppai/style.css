@@ -148,7 +148,7 @@ ul.thin li { margin:0px 0px; padding:0px; }
 #logo {
   width: 250px;
   height: 50px;
-  background: url('images/logo.png') no-repeat center center;
+  background: url('/static/common/logo.png') no-repeat center center;
   margin: 0 0 0 10%;
 }
 

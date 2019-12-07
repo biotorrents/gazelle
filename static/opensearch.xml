@@ -5,6 +5,6 @@
   <InputEncoding>UTF-8</InputEncoding>
   <OutputEncoding>UTF-8</OutputEncoding>
   <AdultContent>true</AdultContent>
-  <Image height="16" width="16" type="image/vnd.microsoft.icon">https://biotorrents.de/favicon.png</Image>
+  <Image height="16" width="16" type="image/png">https://biotorrents.de/static/common/icon.png</Image>
   <Url type="text/html" template="https://biotorrents.de/torrents.php?searchstr={searchTerms}"/>
 </OpenSearchDescription>

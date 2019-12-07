@@ -10,7 +10,7 @@ require 'classes/config.php'; ?>
   "theme_color": "#451740",
   "icons": [{
     "src": "static/common/icon.png",
-    "sizes": "512x512",
+    "sizes": "120x120",
     "type": "image/png"
   }]
 }
