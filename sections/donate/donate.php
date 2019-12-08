@@ -15,55 +15,80 @@ $DonorPerms = Permissions::get_permissions(DONOR);
 
 View::show_header('Donate');
 ?>
+
 <div class="thin">
   <span class="donation_info_title">Why donate?</span>
   <div class="box pad donation_info">
-    <p><?=SITE_NAME?> has no advertisements, is not sponsored, and
-      provides its services free of charge. For these reasons, <?=SITE_NAME?>'s financial obligations can only be met with the help
-      of voluntary user donations. Supporting <?=SITE_NAME?> is and
-      will always remain voluntary. If you are financially able, help pay <?=SITE_NAME?>'s bills by donating. <?=SITE_NAME?>'s survival is up to you.</p>
+    <p>
+      <?= SITE_NAME ?> has no advertisements, is not sponsored, and provides its services free of charge.
+      For these reasons, <?= SITE_NAME ?>'s financial obligations can only be met with the help of voluntary user donations.
+      Supporting <?= SITE_NAME ?> is and will always remain voluntary.
+      If you are financially able, help pay <?= SITE_NAME ?>'s bills by donating.
+      <?=SITE_NAME?>'s survival is up to you.
+    </p>
 
-    <p><?=SITE_NAME?> uses all voluntary donations to cover the costs
-      of running the site, tracker, and IRC network. These costs represent the hardware the site runs on (e.g., servers,
-      upgrades, fixes, etc.), and recurring operating expenses (e.g., hosting, bandwidth, power, etc.).</p>
+    <p>
+      <?= SITE_NAME ?> uses all voluntary donations to cover the costs of running the site, tracker, and IRC network.
+      These costs represent the hardware the site runs on (e.g., servers, upgrades, fixes),
+      and recurring operating expenses (e.g., hosting, bandwidth, power).
+    </p>
 
-    <p>Please note that <?=SITE_NAME?> is a nonprofit organization.
+    <p>
+      Please note that <?= SITE_NAME ?> is a nonprofit organization.
       No staff member or other individual responsible for the site's operation personally profits from user donations.
-      As a donor, your financial support is exclusively applied to operating costs. When you donate you aren't paying
-      the <?=SITE_NAME?> Staff, purchasing upload credit, or buying
-      the ability to download. When you donate you are paying <?=SITE_NAME?>'s bills.</p>
+      As a donor, your financial support is exclusively applied to operating costs.
+      When you donate you aren't paying the <?= SITE_NAME ?> Staff, purchasing upload credit, or buying the ability to download.
+      When you donate you are paying <?= SITE_NAME ?>'s bills.
+    </p>
 
-    <p><?=SITE_NAME?>'s Donor Rank system is currently available to
-      all credited donors. This system provides donors with perks. Some of these perks are cosmetic (e.g., a donor icon
-      added to your account), some are one-time benefits (e.g., additional invites), and others modify specific site
-      options (e.g., additional profile information boxes, or personal collages). Please see the <a
-        href="/wiki.php?action=article&name=donorfaq">Donor Rank System FAQ Document</a> for more information about
-      these benefits.</p>
+    <p>
+      <?= SITE_NAME ?>'s Donor Rank system is currently available to all credited donors.
+      This system provides donors with perks.
+      Some of these perks are cosmetic (e.g., a donor icon added to your account), some are one-time benefits (e.g., additional invites),
+      and others modify specific site options (e.g., additional profile information boxes, or personal collages).
+      Please see the <a href="/wiki.php?action=article&name=donorfaq">Donor Rank System FAQ Document</a> for more information about these benefits.
+    </p>
   </div>
 
   <span class="donation_info_title">What you will receive for donating</span>
   <div class="box pad donation_info">
-    <p>Any donation or contribution option listed above gives you the opportunity to receive Donor Points. After
-      acquiring your first Donor Point, your account will unlock Donor Rank #1. This rank will last forever, and you'll
-      receive the following perks upon unlocking it:</p>
+    <p>
+      Please see <a href="https://www.patreon.com/biotorrents" target="_blank"><?= SITE_NAME ?>'s Patreon</a> for a detailed overview of funding goals.
+      There are some benefits to donating that culmulate at each tier pledged.
+      Each tier's awards include those already listed.
+      Bitcoin donations are privately negotiable.
+
+      <ul>
+        <li><strong>Bronze:</strong> A donor badge and forum access for your user account on the BioTorrents.de website</li>
+        <li><strong>Silver:</strong> Unlimited API calls to the BioTorrents.de database</li>
+        <li><strong>Gold:</strong> Monthly Skype calls to discuss wetlab and software ideas.
+          My expertise includes fungal biotechnology, nonprofit administration, and LEMP development</li>
+        <li><strong>Sponsor a Seedbox:</strong> Shell access to, and share ratio credit from, a seedbox that I manage on your behalf.
+          Please understand that network services beyond the scope of seedbox administration should be negotiated separately</li>
+      </ul>
+
+      <!-- Any donation or contribution option listed above gives you the opportunity to receive Donor Points.
+      After acquiring your first Donor Point, your account will unlock Donor Rank #1.
+      This rank will last forever, and you'll receive the following perks upon unlocking it:</p>
 
     <ul>
       <li>Our eternal love, as represented by the heart you get next to your name</li>
-      <!--<li><a href="/wiki.php?action=article&amp;id=8">Inactivity</a> timer immunity</li>
+      <li><a href="/wiki.php?action=article&amp;id=8">Inactivity</a> timer immunity</li>
       <li>Access to the <a href="/user.php?action=notify">notifications system</a></li>
       <li>Two <a href="/user.php?action=invite">invites</a></li>
       <li><a href="/collages.php">Collage</a> creation privileges</li>
       <li>Personal collage creation privileges</li>
-      <li>One additional personal collage</li>-->
+      <li>One additional personal collage</li>
       <li>A warm, fuzzy feeling</li>
       <li>Absolutely nothing else</li>
-    </ul>
+    </ul> -->
 
-    <p>Be reminded that when you make a donation, you aren't "purchasing" Donor Ranks, invites, or any <?=SITE_NAME?>-specific benefit. When donating, you are helping
-      <?=SITE_NAME?> pay its bills, and your donation should be made
-      in this spirit. The <?=SITE_NAME?> Staff does its best to
-      recognize <?=SITE_NAME?>'s financial supporters in a fair and
-      fun way, but all Donor Perks are subject to change or cancellation at any time, without notice.</p>
+    <p>
+      Be reminded that when you make a donation, you aren't "purchasing" Donor Ranks, invites, or any <?= SITE_NAME ?>-specific benefit.
+      When donating, you are helping <?= SITE_NAME ?> pay its bills, and your donation should be made in this spirit.
+      The <?= SITE_NAME ?> Staff does its best to recognize <?= SITE_NAME ?>'s financial supporters in a fair and fun way,
+      but all Donor Perks are subject to change or cancellation at any time, without notice.
+    </p>
   </div>
 
   <span class="donation_info_title">What you won't receive for donating</span>
