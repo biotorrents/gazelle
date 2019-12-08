@@ -215,7 +215,7 @@ class TorrentForm
             }
         } ?>
 
-      <!-- Rules notice (displays just before submit) -->
+      <!-- Rules notice and submit button -->
       <tr>
         <td colspan="2" style="text-align: center;">
           <p>Be sure that your torrent is approved by the <a href="rules.php?p=upload" target="_blank">rules</a>.
@@ -229,9 +229,9 @@ class TorrentForm
           <input id="post" type="submit"
           <?php
             if ($this->NewTorrent) {
-                echo ' value="Upload torrent"';
+                echo ' value="Upload"';
             } else {
-                echo ' value="Edit torrent"';
+                echo ' value="Edit"';
             } ?>
           />
         </td>
