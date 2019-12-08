@@ -6,7 +6,7 @@
  * To include it in a section use this example.
 
     View::parse('generic/reply/quickreply.php', array(
-      'InputTitle' => 'Post reply',
+      'InputTitle' => 'Post',
       'InputName' => 'thread',
       'InputID' => $ThreadID,
       'ForumID' => $ForumID,
@@ -28,7 +28,7 @@
  * Example:
 
     View::parse('generic/reply/quickreply.php', array(
-      'InputTitle' => 'Post Comment',
+      'InputTitle' => 'Comment',
       'InputName' => 'groupid',
       'InputID' => $GroupID,
       'TextareaCols' => 65,
@@ -50,7 +50,7 @@
     $InputAction = 'reply';
   }
   if (!isset($InputTitle)) {
-    $InputTitle = 'Post Comment';
+    $InputTitle = 'Comment';
   }
 
   $ReplyText = new TEXTAREA_PREVIEW('body', 'quickpost', '',
@@ -135,7 +135,7 @@
   }
 ?>
               <input type="button" value="Preview" class="hidden button_preview_<?=$ReplyText->getID()?>" tabindex="1" />
-              <input type="submit" value="Post reply" id="submit_button" tabindex="1" />
+              <input type="submit" value="Post" id="submit_button" tabindex="1" />
             </div>
           </form>
         </div>

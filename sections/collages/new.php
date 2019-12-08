@@ -81,7 +81,7 @@ if (($CollageCount < $LoggedUser['Permissions']['MaxCollages']) && check_perms('
         </td>
       </tr>
       <tr>
-        <td colspan="2" class="center"><input type="submit" value="Create collection" /></td>
+        <td colspan="2" class="center"><input type="submit" value="Create" /></td>
       </tr>
     </table>
   </form>

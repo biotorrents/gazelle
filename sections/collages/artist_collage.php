@@ -232,7 +232,7 @@ foreach ($CommentList as $Comment) {
 if (!$LoggedUser['DisablePosting']) {
 ?>
     <div class="box box_addcomment">
-      <div class="head"><strong>Add comment</strong></div>
+      <div class="head"><strong>Comment</strong></div>
       <form class="send_form" name="comment" id="quickpostform" onsubmit="quickpostform.submit_button.disabled = true;" action="comments.php" method="post">
         <input type="hidden" name="action" value="take_post" />
         <input type="hidden" name="page" value="collages" />
@@ -243,7 +243,7 @@ if (!$LoggedUser['DisablePosting']) {
             <textarea name="body" cols="24" rows="5"></textarea>
           </div>
           <div class="submit_div">
-            <input type="submit" id="submit_button" value="Add comment" />
+            <input type="submit" id="submit_button" value="Post" />
           </div>
         </div>
       </form>
@@ -257,7 +257,7 @@ if (!$LoggedUser['DisablePosting']) {
 if ($CollageCovers != 0) {
 ?>
     <div id="coverart" class="box">
-      <div class="head" id="coverhead"><strong>Cover Art</strong></div>
+      <div class="head" id="coverhead"><strong>Pictures</strong></div>
       <ul class="collage_images" id="collage_page0">
 <?
   $Page1 = array_slice($Collage, 0, $CollageCovers);

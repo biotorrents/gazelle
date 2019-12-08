@@ -183,17 +183,17 @@ View::show_header($ThreadInfo['Title'] . ' &lt; '.$Forums[$ForumID]['Name'].' &l
     </div>
     <div id="searchthread" class="hidden center">
       <div style="display: inline-block;">
-        <h3>Search this thread:</h3>
+        <h3>Search This Thread</h3>
         <form class="search_form" name="forum_thread" action="forums.php" method="get">
           <input type="hidden" name="action" value="search" />
           <input type="hidden" name="threadid" value="<?=$ThreadID?>" />
           <table class="layout border">
             <tr>
-              <td><strong>Search for:</strong></td>
+              <td><strong>Search Terms</strong></td>
               <td><input type="search" id="searchbox" name="search" size="70" /></td>
             </tr>
             <tr>
-              <td><strong>Posted by:</strong></td>
+              <td><strong>Posted By</strong></td>
               <td><input type="search" id="username" name="user" placeholder="Username" size="70" /></td>
             </tr>
             <tr>
@@ -532,7 +532,7 @@ foreach ($Thread as $Key => $Post) {
 if (!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
   if (Forums::check_forumperm($ForumID, 'Write') && !$LoggedUser['DisablePosting']) {
     View::parse('generic/reply/quickreply.php', array(
-      'InputTitle' => 'Post reply',
+      'InputTitle' => 'Reply',
       'InputName' => 'thread',
       'InputID' => $ThreadID,
       'ForumID' => $ForumID,
@@ -549,7 +549,7 @@ if (check_perms('site_moderate_forums')) {
   $Notes = G::$DB->to_array();
 ?>
   <br />
-  <h3 id="thread_notes">Thread notes</h3> <a data-toggle-target="#thread_notes_table" class="brackets">Toggle</a>
+  <h3 id="thread_notes">Notes</h3> <a data-toggle-target="#thread_notes_table" class="brackets">Toggle</a>
   <form action="forums.php" method="post">
     <input type="hidden" name="action" value="take_topic_notes" />
     <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
@@ -571,7 +571,7 @@ if (check_perms('site_moderate_forums')) {
     </table>
   </form>
   <br />
-  <h3>Edit thread</h3>
+  <h3>Edit</h3>
   <form class="edit_form" name="forum_thread" action="forums.php" method="post">
     <div>
     <input type="hidden" name="action" value="mod_thread" />
@@ -605,7 +605,7 @@ if (check_perms('site_moderate_forums')) {
         </td>
       </tr>
       <tr>
-        <td class="label"><label for="move_thread_selector">Move thread</label></td>
+        <td class="label"><label for="move_thread_selector">Move</label></td>
         <td>
           <select name="forumid" id="move_thread_selector" tabindex="2">
 <?
@@ -634,7 +634,7 @@ if (check_perms('site_moderate_forums')) {
       </tr>
 <?  if (check_perms('site_admin_forums')) { ?>
       <tr>
-        <td class="label"><label for="delete_thread_checkbox">Delete thread</label></td>
+        <td class="label"><label for="delete_thread_checkbox">Delete</label></td>
         <td>
           <input type="checkbox" id="delete_thread_checkbox" name="delete" tabindex="2" />
         </td>
@@ -642,7 +642,7 @@ if (check_perms('site_moderate_forums')) {
 <?  } ?>
       <tr>
         <td colspan="2" class="center">
-          <input type="submit" value="Edit thread" tabindex="2" />
+          <input type="submit" value="Edit" tabindex="2" />
           <span class="float_right">
             <input type="submit" name="trash" value="Trash" tabindex="2" />
           </span>
