@@ -20,9 +20,6 @@ function Categories() {
       'container': {},
       'codec': {},
       'resolution': {},
-      'audio': {},
-      'sub': {},
-      'mediainfo': {},
       'screenshots': {},
       'group_desc': {},
       'release_desc': {}
@@ -35,9 +32,6 @@ function Categories() {
       'container': {},
       'codec': {},
       'resolution': {},
-      'audio': {},
-      'sub': {},
-      'mediainfo': {},
       'screenshots': {},
       'group_desc': {},
       'release_desc': {}
@@ -50,9 +44,6 @@ function Categories() {
       'container': {},
       'codec': {},
       'resolution': {},
-      'audio': {},
-      'sub': {},
-      'mediainfo': {},
       'screenshots': {},
       'group_desc': {},
       'release_desc': {}
@@ -65,9 +56,6 @@ function Categories() {
       'container_games': {},
       'codec': {},
       'resolution': {},
-      'audio': {},
-      'sub': {},
-      'mediainfo': {},
       'screenshots': {},
       'group_desc': {},
       'release_desc': {}
@@ -80,9 +68,6 @@ function Categories() {
       'container': {},
       'codec': {},
       'resolution': {},
-      'audio': {},
-      'sub': {},
-      'mediainfo': {},
       'screenshots': {},
       'group_desc': {},
       'release_desc': {}
@@ -122,21 +107,25 @@ function Categories() {
 }
 
 function Bitrate() {
+  /*
   $('#other_bitrate').raw().value = '';
   if ($('#bitrate').raw().options[$('#bitrate').raw().selectedIndex].value == 'Other') {
     $('#other_bitrate_span').gshow();
   } else {
     $('#other_bitrate_span').ghide();
   }
+  */
 }
 
 function AltBitrate() {
+  /*
   if ($('#other_bitrate').raw().value >= 320) {
     $('#vbr').raw().disabled = true;
     $('#vbr').raw().checked = false;
   } else {
     $('#vbr').raw().disabled = false;
   }
+  */
 }
 
 function add_tag() {
@@ -361,14 +350,17 @@ function RemoveScreenshotField(el) {
 }
 
 function CheckVA() {
+  /*
   if ($('#artist').raw().value.toLowerCase().trim().match(/^(va|various(\sa|a)rtis(t|ts)|various)$/)) {
     $('#vawarning').gshow();
   } else {
     $('#vawarning').ghide();
   }
+  */
 }
 
 function CheckYear() {
+  /*
   var media = $('#media').raw().options[$('#media').raw().selectedIndex].text;
   if (media == "---" || media == "Vinyl" || media == "Soundboard" || media == "Cassette") {
     media = "old";
@@ -386,9 +378,11 @@ function CheckYear() {
   } else {
     $('#yearwarning').ghide();
   }
+  */
 }
 
 function ToggleUnknown() {
+  /*
   if ($('#unknown').raw().checked) {
     $('#remaster_year').raw().value = "";
     $('#remaster_title').raw().value = "";
@@ -414,6 +408,7 @@ function ToggleUnknown() {
       $('#groupremasters').raw().disabled = false;
     }
   }
+  */
 }
 
 function AnimeAutofill() {
@@ -532,6 +527,7 @@ function SetResolution() {
 }
 
 function MediaInfoExtract() {
+  /*
   const mi = $('#mediainfo').raw().value
   function getval(mi, key) {
     var match = mi.match(new RegExp('^' + key + '\\s*:\\s*(.*)', 'mi'))
@@ -581,6 +577,7 @@ function MediaInfoExtract() {
       }
     }
   })
+  */
 }
 
 function initAutofill() {
