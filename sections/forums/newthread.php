@@ -83,11 +83,11 @@ View::show_header('Forums &gt; '.$Forum['Name'].' &gt; New Topic', 'comments,bbc
       <input type="hidden" name="forum" value="<?=$ForumID?>" />
       <table id="newthreadtext" class="layout">
         <tr>
-          <td class="label">Title:</td>
+          <td class="label">Title</td>
           <td><input id="title" class="required" type="text" name="title" style="width: 98%;" /></td>
         </tr>
         <tr>
-          <td class="label">Body:</td>
+          <td class="label">Body</td>
           <td><textarea id="posttext" class="required bbcode_editor" style="width: 98%;" onkeyup="resize('posttext');" name="body" cols="90" rows="8"></textarea></td>
         </tr>
         <tr>
@@ -139,11 +139,11 @@ if (check_perms('forums_polls_create')) {
           </td>
         </tr>
         <tr id="poll_question" class="hidden">
-          <td class="label">Question:</td>
+          <td class="label">Question</td>
           <td><input type="text" name="question" id="pollquestionfield" class="required" style="width: 98%;" /></td>
         </tr>
         <tr id="poll_answers" class="hidden">
-          <td class="label">Answers:</td>
+          <td class="label">Answers</td>
           <td id="answer_block">
             <input type="text" name="answers[]" class="required" style="width: 90%;" />
             <a href="#" onclick="AddAnswerField();return false;" class="brackets">+</a>
@@ -159,7 +159,7 @@ if (check_perms('forums_polls_create')) {
       <div id="buttons" class="center">
         <input type="button" value="Preview" onclick="Newthread_Preview(1);" id="newthreadpreviewbutton" />
         <input type="button" value="Editor" onclick="Newthread_Preview(0);" id="newthreadeditbutton" class="hidden" />
-        <input type="submit" class="submit" id="submit_button" value="Create thread" />
+        <input type="submit" class="submit" id="submit_button" value="Create" />
       </div>
     </form>
   </div>

@@ -28,7 +28,7 @@
  * Example:
 
     View::parse('generic/reply/quickreply.php', array(
-      'InputTitle' => 'Post comment',
+      'InputTitle' => 'Post Comment',
       'InputName' => 'groupid',
       'InputID' => $GroupID,
       'TextareaCols' => 65,
@@ -50,7 +50,7 @@
     $InputAction = 'reply';
   }
   if (!isset($InputTitle)) {
-    $InputTitle = 'Post comment';
+    $InputTitle = 'Post Comment';
   }
 
   $ReplyText = new TEXTAREA_PREVIEW('body', 'quickpost', '',

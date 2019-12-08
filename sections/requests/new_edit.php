@@ -343,9 +343,10 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
             <input type="hidden" id="current_downloaded"
               value="<?= $LoggedUser['BytesDownloaded'] ?>" />
             <ul>
-              <!-- <li>Bounty: <span id="bounty_after_tax">90.00 MB</span></li> -->
-              <li>Uploaded: <span id="new_uploaded"><?= Format::get_size($LoggedUser['BytesUploaded']) ?></span></li>
-              <li>Ratio: <span id="new_ratio"><?= Format::get_ratio_html($LoggedUser['BytesUploaded'], $LoggedUser['BytesDownloaded']) ?></span></li>
+              <!-- @todo Return this feature
+              <li><strong>Bounty:</strong> <span id="bounty_after_tax">90.00 MB</span></li> -->
+              <li><strong>Uploaded:</strong> <span id="new_uploaded"><?= Format::get_size($LoggedUser['BytesUploaded']) ?></span></li>
+              <li><strong>Ratio:</strong> <span id="new_ratio"><?= Format::get_ratio_html($LoggedUser['BytesUploaded'], $LoggedUser['BytesDownloaded']) ?></span></li>
             </ul>
           </td>
         </tr>

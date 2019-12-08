@@ -467,7 +467,6 @@ if (!isset($GroupID) || !$GroupID) {
         (GroupID, UserID, Time, Image)
       VALUES (?, ?, NOW(), ?)", $GroupID, $LoggedUser['ID'], $Screenshot);
         foreach ($Screenshots as $Screenshot) {
-            $DB->db_string($Screenshot); # Maybe unnecessary
             $DB->exec_prepared_query();
         }
     }
@@ -546,7 +545,7 @@ if ($DB->has_results()) {
 // Download doesn't count, upload does
 if (($TotalSize > 53687091200)) { # 50 GiB
   $T['FreeTorrent'] = '2';
-  $T['FreeLeechType'] = '2';
+    $T['FreeLeechType'] = '2';
 }
 
 // Torrent
@@ -770,18 +769,18 @@ if (!empty($ArtistsUnescaped)) {
         $SQL .= " OR Artists = '')) AND (";
     } else {
     */
-        $SQL .= " AND (";
-        if (!empty($GuestArtistNameList)) {
-            $SQL .= "(ExcludeVA = '0' AND (";
-            $SQL .= implode(' OR ', $GuestArtistNameList);
-            $SQL .= ')) OR ';
-        }
-        if (count($ArtistNameList) > 0) {
-            $SQL .= implode(' OR ', $ArtistNameList);
-            $SQL .= " OR ";
-        }
-        $SQL .= "Artists = '') AND (";
-    #}
+    $SQL .= " AND (";
+    if (!empty($GuestArtistNameList)) {
+        $SQL .= "(ExcludeVA = '0' AND (";
+        $SQL .= implode(' OR ', $GuestArtistNameList);
+        $SQL .= ')) OR ';
+    }
+    if (count($ArtistNameList) > 0) {
+        $SQL .= implode(' OR ', $ArtistNameList);
+        $SQL .= " OR ";
+    }
+    $SQL .= "Artists = '') AND (";
+#}
 } else {
     $SQL .= "AND (Artists = '') AND (";
 }
