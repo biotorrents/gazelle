@@ -49,7 +49,7 @@ class Comments {
    * @param int $PostID
    * @param string $NewBody
    * @param bool $SendPM If true, send a PM to the author of the comment informing him about the edit
-   * @todo move permission check out of here/remove hardcoded error(404)
+   * @todo Move permission check out of here/remove hardcoded error(404)
    */
   public static function edit($PostID, $NewBody, $SendPM = false) {
     $QueryID = G::$DB->get_query_id();

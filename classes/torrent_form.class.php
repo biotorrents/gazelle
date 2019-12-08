@@ -10,7 +10,7 @@ class TorrentForm
     #var $Formats = [];
     #var $Bitrates = [];
     public $Media = [];
-    var $MediaManga = [];
+    public $MediaManga = [];
     public $Containers = [];
     #var $ContainersGames = [];
     public $Codecs = [];
@@ -212,9 +212,8 @@ class TorrentForm
         </td>
       </tr>
       <?php
-          }
-        }
-      ?>
+            }
+        } ?>
 
       <!-- Rules notice and submit button -->
       <tr>
@@ -330,8 +329,8 @@ class TorrentForm
       One per field, e.g., Robert K. Mortimer [+] David Schild<br />
       <?php
         if (!empty($Torrent['Artists'])) {
-          foreach ($Torrent['Artists'] as $Num => $Artist) {
-      ?>
+            foreach ($Torrent['Artists'] as $Num => $Artist) {
+                ?>
       <input type="text" id="idols_<?= $Num ?>" name="idols[]"
         size="45" value="<?= display_str($Artist['name']) ?>"
         <?= $this->Disabled ?>/>
@@ -340,9 +339,9 @@ class TorrentForm
       <a class="remove_artist_button brackets">&minus;</a>
       <?php
             }
-          }
+            }
         } else {
-      ?>
+            ?>
       <input type="text" id="idols_0" name="idols[]" size="45" value="" <?= $this->Disabled ?> />
       <a class="add_artist_button brackets">+</a>
       <a class="remove_artist_button brackets">&minus;</a>
@@ -586,7 +585,7 @@ class TorrentForm
 
   <!-- Boolean options -->
   <tr id="censored_tr">
-    <td class="label">Aligned Sequence?</td>
+    <td class="label">Aligned Sequence</td>
     <td>
       <input type="checkbox" name="censored" value="1"
         <?= (($Torrent['Censored'] ?? 0) ? 'checked ' : '') ?>/>
@@ -595,7 +594,7 @@ class TorrentForm
   </tr>
 
   <tr id="anon_tr">
-    <td class="label">Upload Anonymously?</td>
+    <td class="label">Upload Anonymously</td>
     <td>
       <input type="checkbox" name="anonymous" value="1"
         <?= (($Torrent['Anonymous'] ?? false) ? 'checked ' : '') ?>/>

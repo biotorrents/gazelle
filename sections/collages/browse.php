@@ -20,7 +20,7 @@ if (!empty($_GET['type'])) {
 }
 
 if (!empty($_GET['search'])) {
-  // What are we looking for? Let's make sure it isn't dangerous.
+  // What are we looking for? Let's make sure it isn't dangerous
   $Search = db_string(trim($_GET['search']));
   // Break search string down into individual words
   $Words = explode(' ', $Search);
@@ -176,13 +176,13 @@ View::show_header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections
       <div><input type="hidden" name="action" value="search" /></div>
       <table cellpadding="6" cellspacing="1" border="0" class="layout" width="100%">
         <tr id="search_terms">
-          <td class="label">Search terms:</td>
+          <td class="label">Search Terms</td>
           <td>
             <input type="search" name="search" size="70" value="<?=(!empty($_GET['search']) ? display_str($_GET['search']) : '')?>" />
           </td>
         </tr>
         <tr id="tagfilter">
-          <td class="label">Tags (comma-separated):</td>
+          <td class="label">Tags (comma-separated)</td>
           <td>
             <input type="text" id="tags" name="tags" size="70" value="<?=(!empty($_GET['tags']) ? display_str($_GET['tags']) : '')?>"<? Users::has_autocomplete_enabled('other'); ?> />&nbsp;
             <input type="radio" name="tags_type" id="tags_type0" value="0"<?Format::selected('tags_type', 0, 'checked')?> /><label for="tags_type0"> Any</label>&nbsp;&nbsp;
@@ -190,7 +190,7 @@ View::show_header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections
           </td>
         </tr>
         <tr id="categories">
-          <td class="label">Categories:</td>
+          <td class="label">Categories</td>
           <td>
 <?    foreach ($CollageCats as $ID => $Cat) { ?>
             <input type="checkbox" value="1" name="cats[<?=$ID?>]" id="cats_<?=$ID?>"<? if (in_array($ID, $Categories)) { echo ' checked="checked"'; } ?> />
@@ -199,14 +199,14 @@ View::show_header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections
           </td>
         </tr>
         <tr id="search_name_description">
-          <td class="label">Search in:</td>
+          <td class="label">Search In</td>
           <td>
             <input type="radio" name="type" value="c.name" <? if ($Type === 'c.name') { echo 'checked="checked" '; } ?>/> Names&nbsp;&nbsp;
             <input type="radio" name="type" value="description" <? if ($Type === 'description') { echo 'checked="checked" '; } ?>/> Descriptions
           </td>
         </tr>
         <tr id="order_by">
-          <td class="label">Order by:</td>
+          <td class="label">Order By</td>
           <td>
             <select name="order_by" class="ft_order_by">
 <?    foreach ($OrderVals as $Cur) { ?>
