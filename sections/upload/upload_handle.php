@@ -449,12 +449,12 @@ if (!isset($GroupID) || !$GroupID) {
     $Cache->increment('stats_group_count');
 
     // Add screenshots
+    // @todo Clear DB_MYSQL::exec_prepared_query() errors
     $Screenshots = explode("\n", $T['Screenshots']);
     $Screenshots = array_map('trim', $Screenshots);
 
     $Screenshots = array_filter($Screenshots, function ($s) {
         return preg_match('/^'.DOI_REGEX.'$/i', $s);
-        #return preg_match('/^'.IMAGE_REGEX.'$/i', $s);
     });
 
     $Screenshots = array_unique($Screenshots);
@@ -467,6 +467,7 @@ if (!isset($GroupID) || !$GroupID) {
         (GroupID, UserID, Time, Image)
       VALUES (?, ?, NOW(), ?)", $GroupID, $LoggedUser['ID'], $Screenshot);
         foreach ($Screenshots as $Screenshot) {
+            $DB->db_string($Screenshot); # Maybe unnecessary
             $DB->exec_prepared_query();
         }
     }

@@ -1,4 +1,5 @@
 <?
+
 //-----------------------------------------------------------------------------------
 /////////////////////////////////////////////////////////////////////////////////////
 /*//-- MySQL wrapper class ----------------------------------------------------------
@@ -45,7 +46,6 @@ db_string($str);
 
   USE THIS FUNCTION EVERY TIME YOU USE AN UNVALIDATED USER-SUPPLIED VALUE IN
   A DATABASE QUERY!
-
 
 //--------- Advanced usage ---------------------------------------------------------
 
@@ -111,7 +111,6 @@ set_query_id($ResultSet)
 
   Of course, this example is contrived, but you get the point.
 
-
 -------------------------------------------------------------------------------------
 *///---------------------------------------------------------------------------------
 
@@ -119,12 +118,12 @@ if (!extension_loaded('mysqli')) {
   die('Mysqli Extension not loaded.');
 }
 
-//Handles escaping
+// Handles escaping
 function db_string($String, $DisableWildcards = false) {
   global $DB;
-  //Escape
+  // Escape
   $String = $DB->escape_str($String);
-  //Remove user input wildcards
+  // Remove user input wildcards
   if ($DisableWildcards) {
     $String = str_replace(array('%','_'), array('\%','\_'), $String);
   }
@@ -144,7 +143,7 @@ function db_array($Array, $DontEscape = [], $Quote = false) {
   return $Array;
 }
 
-//TODO: revisit access levels once Drone is replaced by ZeRobot
+// @todo Revisit access levels once Drone is replaced by ZeRobot
 class DB_MYSQL {
   public $LinkID = false;
   protected $QueryID = false;
@@ -262,8 +261,8 @@ class DB_MYSQL {
       $this->QueryID = mysqli_stmt_get_result($this->StatementID);
 
       if (DEBUG_MODE) {
-        // in DEBUG_MODE, return the full trace on a SQL error (super useful
-        // for debugging). do not attempt to retry to query
+        // In DEBUG_MODE, return the full trace on a SQL error (super useful
+        // For debugging). do not attempt to retry to query
         if (!$this->QueryID) {
           echo '<pre>' . mysqli_error($this->LinkID) . '<br><br>';
           debug_print_backtrace();
@@ -329,8 +328,8 @@ class DB_MYSQL {
   }
 
   /*
-   * returns an integer with the number of rows found
-   * returns a string if the number of rows found exceeds MAXINT
+   * Returns an integer with the number of rows found
+   * Returns a string if the number of rows found exceeds MAXINT
    */
   function record_count() {
     if ($this->QueryID) {
@@ -339,8 +338,8 @@ class DB_MYSQL {
   }
 
   /*
-   * returns true if the query exists and there were records found
-   * returns false if the query does not exist or if there were 0 records returned
+   * Returns true if the query exists and there were records found
+   * Returns false if the query does not exist or if there were 0 records returned
    */
   function has_results() {
     return ($this->QueryID && $this->record_count() !== 0);
@@ -356,7 +355,7 @@ class DB_MYSQL {
     return mysqli_get_host_info($this->LinkID);
   }
 
-  // You should use db_string() instead.
+  // You should use db_string() instead
   function escape_str($Str) {
     $this->connect(0);
     if (is_array($Str)) {
@@ -428,7 +427,7 @@ class DB_MYSQL {
 
   /**
    * This function determines whether the last query caused warning messages
-   * and stores them in $this->Queries.
+   * and stores them in $this->Queries
    */
   function warnings() {
     $Warnings = [];
@@ -436,7 +435,7 @@ class DB_MYSQL {
       $e = mysqli_get_warnings($this->LinkID);
       do {
         if ($e->errno == 1592) {
-          // 1592: Unsafe statement written to the binary log using statement format since BINLOG_FORMAT = STATEMENT.
+          // 1592: Unsafe statement written to the binary log using statement format since BINLOG_FORMAT = STATEMENT
           continue;
         }
         $Warnings[] = 'Code ' . $e->errno . ': ' . display_str($e->message);
