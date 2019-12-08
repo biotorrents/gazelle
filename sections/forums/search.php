@@ -127,10 +127,10 @@ if (empty($ThreadID)) {
           <input type="radio" name="type" id="type_title" value="title"<?php if ($Type == 'title') {
         echo ' checked="checked"';
     } ?> />
-          <label for="type_title">Titles</label>
+          <label for="type_title">Titles</label>&nbsp;&nbsp;
           <input type="radio" name="type" id="type_body" value="body"<?php if ($Type == 'body') {
         echo ' checked="checked"';
-    } ?> />&nbsp;&nbsp;
+    } ?> />
           <label for="type_body">Body</label>
         </td>
       </tr>
