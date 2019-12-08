@@ -334,7 +334,7 @@ class TorrentForm
       <input type="text" id="idols_<?= $Num ?>" name="idols[]"
         size="45" value="<?= display_str($Artist['name']) ?>"
         <?= $this->Disabled ?>/>
-      <?php if ($Num == 0) { ?>
+      <?php if ($Num === 0) { ?>
       <a class="add_artist_button brackets">+</a>
       <a class="remove_artist_button brackets">&minus;</a>
       <?php
@@ -584,7 +584,7 @@ class TorrentForm
     </tr>
   <?php } ?>
 
-  <!-- Artist description -->
+  <!-- Album description -->
   <tr id="group_desc_tr">
     <td class="label">Torrent Group Description</td>
     <td>

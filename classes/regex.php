@@ -14,4 +14,4 @@ define('SITELINK_REGEX', RESOURCE_REGEX.'(www.)?'.preg_quote(SITE_DOMAIN, '/'));
 define('TORRENT_REGEX', SITELINK_REGEX.'\/torrents\.php\?(.*&)?torrentid=(\d+)'); // torrentid = group 4
 define('TORRENT_GROUP_REGEX', SITELINK_REGEX.'\/torrents\.php\?(.*&)?id=(\d+)'); // id = group 4
 define('ARTIST_REGEX', SITELINK_REGEX.'\/artist\.php\?(.*&)?id=(\d+)'); // id = group 4
-define('DOI_REGEX', '/^10.\d{4,9}/[-._;()/:A-Z0-9]+$/i'); # https://www.crossref.org/blog/dois-and-matching-regular-expressions/
+define('DOI_REGEX', '10.\d{4,9}\/[-._;()\/:A-Z0-9]+'); # https://www.crossref.org/blog/dois-and-matching-regular-expressions/

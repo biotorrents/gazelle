@@ -1,4 +1,5 @@
 <?php
+
 /*-- TODO ---------------------------//
 Writeup how to use the VALIDATE class, add in support for form id checks
 Complete the number and date validation
@@ -14,6 +15,7 @@ class VALIDATE
         $this->Fields[$FieldName]['Type'] = strtolower($FieldType);
         $this->Fields[$FieldName]['Required'] = $Required;
         $this->Fields[$FieldName]['ErrorMessage'] = $ErrorMessage;
+
         if (!empty($Options['maxlength'])) {
             $this->Fields[$FieldName]['MaxLength'] = $Options['maxlength'];
         }

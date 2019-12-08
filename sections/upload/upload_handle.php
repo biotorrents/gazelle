@@ -10,7 +10,10 @@
 // Maximum allowed size for uploaded files
 // https://php.net/upload-max-filesize
 ini_set('upload_max_filesize', 2097152); // 2 MiB
-ini_set('max_file_uploads', 100);
+
+# Allow many uncompressed files,
+# e.g., http://academictorrents.com/details/5a447ff50062194bd58dd11c0fedead59e6d873c/tech
+ini_set('max_file_uploads', 65535);
 define('MAX_FILENAME_LENGTH', 180);
 
 include(SERVER_ROOT.'/classes/validate.class.php');
@@ -82,7 +85,7 @@ if (isset($_POST['release'])) {
 $Properties['GroupDescription'] = trim($_POST['album_desc']);
 $Properties['TorrentDescription'] = $_POST['release_desc'];
 $Properties['MediaInfo'] = 'nil';
-$Properties['Screenshots'] = isset($_POST['screenshots']) ? $_POST['screenshots'] : "";
+$Properties['Screenshots'] = isset($_POST['screenshots']) ? $_POST['screenshots'] : '';
 
 if ($_POST['album_desc']) {
     $Properties['GroupDescription'] = trim($_POST['album_desc']);
@@ -168,7 +171,7 @@ switch ($Type) {
             'title',
             '0',
             'string',
-            'Sequence Name must be between 1 and 300 characters.', # `torrents_group` limits
+            'Torrent Title must be between 1 and 300 characters.', # `torrents_group` limits
             array('maxlength'=>300, 'minlength'=>1)
         );
         $Validate->SetFields(
@@ -382,7 +385,7 @@ if (!isset($GroupID) || !$GroupID) {
 // Needs to be here as it isn't set for add format until now
 $LogName .= $T['Title'];
 
-// For notifications---take note now whether it's a new group
+// For notifications. Take note now whether it's a new group
 $IsNewGroup = !isset($GroupID) || !$GroupID;
 
 //----- Start inserts
@@ -447,10 +450,13 @@ if (!isset($GroupID) || !$GroupID) {
 
     // Add screenshots
     $Screenshots = explode("\n", $T['Screenshots']);
-    $Screenshots = array_map("trim", $Screenshots);
+    $Screenshots = array_map('trim', $Screenshots);
+
     $Screenshots = array_filter($Screenshots, function ($s) {
-        return preg_match('/^'.IMAGE_REGEX.'$/i', $s);
+        return preg_match('/^'.DOI_REGEX.'$/i', $s);
+        #return preg_match('/^'.IMAGE_REGEX.'$/i', $s);
     });
+
     $Screenshots = array_unique($Screenshots);
     $Screenshots = array_slice($Screenshots, 0, 10);
 
@@ -535,9 +541,9 @@ if ($DB->has_results()) {
     }
 }
 
-// Torrents over 100 GiB are neutral leech
+// Torrents over a size in bytes are neutral leech
 // Download doesn't count, upload does
-if (($TotalSize > 107374182400)) { # 100 GiB
+if (($TotalSize > 53687091200)) { # 50 GiB
   $T['FreeTorrent'] = '2';
   $T['FreeLeechType'] = '2';
 }
@@ -595,6 +601,7 @@ $Debug->set_flag('upload: ocelot updated');
 $Cache->cache_value("torrent_{$TorrentID}_lock", true, 600);
 
 // Give BP if necessary
+// @todo Repurpose this
 if (($Type === "Movies" || $Type === "Anime") && ($T['Container'] === 'ISO' || $T['Container'] === 'M2TS' || $T['Container'] === 'VOB IFO')) {
     $BPAmt = (int) 2*($TotalSize / (1024*1024*1024))*1000;
 
@@ -682,17 +689,21 @@ if (trim($T['Image']) !== '') {
 if ($PublicTorrent) {
     View::show_header('Warning'); ?>
 <h1>Warning</h1>
-<p><strong>Your torrent has been uploaded - but you must re-download your torrent file from <a
-      href="torrents.php?id=<?=$GroupID?>&torrentid=<?=$TorrentID?>">here</a>
-    because the site modified it to make it private.</strong></p>
+<p>
+  <strong>Your torrent has been uploaded but you must re-download your torrent file from
+  <a href="torrents.php?id=<?=$GroupID?>&torrentid=<?=$TorrentID?>">here</a>
+  because the site modified it to make it private.</strong>
+</p>
 <?php
   View::show_footer();
 } elseif ($UnsourcedTorrent) {
     View::show_header('Warning'); ?>
 <h1>Warning</h1>
-<p><strong>Your torrent has been uploaded - but you must re-download your torrent file from <a
-      href="torrents.php?id=<?=$GroupID?>&torrentid=<?=$TorrentID?>">here</a>
-    because the site modified it to add a source flag.</strong></p>
+<p>
+  <strong>Your torrent has been uploaded but you must re-download your torrent file from
+  <a href="torrents.php?id=<?=$GroupID?>&torrentid=<?=$TorrentID?>">here</a>
+  because the site modified it to add a source flag.</strong>
+</p>
 <?php
   View::show_footer();
 } elseif ($RequestID) {
