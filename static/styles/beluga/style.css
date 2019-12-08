@@ -18,16 +18,17 @@
   padding: 0
 }
 
-.cats_dna, .cats_mrna, .cats_rrna, .cats_trna, .cats_protein, .cats_other {
+.cats_dna, .cats_rna, .cats_protein, .cats_imaging, .cats_other {
   /* width: 36px!important; */
   height: 36px!important;
   line-height: 36px;
 }
-.group .cats_dna:after, .group .cats_mrna:after,
-.group .cats_rrna:after, .group .cats_trna:after,
-.group .cats_protein:after, .group .cats_other:after {
+.group .cats_dna:after, .group .cats_rna:after, .group .cats_protein:after,
+.group .cats_imaging:after, .group .cats_other:after {
   color: black!important;
 }
+
+/* DNA */
 .cats_dna:after {
   content: "DNA";
   color: #3EACA7;
@@ -35,41 +36,52 @@
   letter-spacing: -2px;
 }
 .group .cats_dna { background-color: #3EACA7; }
-.cats_mrna:after {
-  content: "mRNA";
+
+/* RNA */
+.cats_rna:after {
+  content: "RNA";
   color: #1D818E;
   font-size: 18px;
   letter-spacing: -2px;
 }
-.group .cats_mrna { background-color: #1D818E; }
-.cats_rrna:after {
-  content: "rRNA";
+.group .cats_rna { background-color: #1D818E; }
+
+/* Protein */
+.cats_protein:after {
+  content: "PROT";
   color: #88C796;
   font-size: 18px;
   letter-spacing: -2px;
 }
-.group .cats_rrna { background-color: #88C796; }
-.cats_trna:after {
-  content: "tRNA";
+.group .cats_protein { background-color: #88C796; }
+
+/* Imaging */
+.cats_imaging:after {
+  content: "IMG";
   color: #4DC593;
   font-size: 18px;
   letter-spacing: -2px;
 }
-.group .cats_trna { background-color: #4DC593; }
-.cats_protein:after {
-  content: "PROT";
+.group .cats_imaging { background-color: #4DC593; }
+
+/* Other */
+.cats_other:after {
+  content: "MISC";
   color: #77C5D4;
   font-size: 18px;
   letter-spacing: -2px;
 }
-.group .cats_protein { background-color: #77C5D4; }
-.cats_other:after {
-  content: "MISC";
+.group .cats_other { background-color: #77C5D4; }
+
+/* Unused
+.cats_unused:after {
+  content: "NIL";
   color: #0D5968;
   font-size: 18px;
   letter-spacing: -2px;
 }
-.group .cats_other { background-color: #0D5968; }
+.group .cats_unused { background-color: #0D5968; }
+*/
 
 body {
   width: 100%;

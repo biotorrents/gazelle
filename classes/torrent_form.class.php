@@ -10,7 +10,7 @@ class TorrentForm
     #var $Formats = [];
     #var $Bitrates = [];
     public $Media = [];
-    #var $MediaManga = [];
+    var $MediaManga = [];
     public $Containers = [];
     #var $ContainersGames = [];
     public $Codecs = [];
@@ -32,7 +32,7 @@ class TorrentForm
         $this->Torrent = $Torrent;
         $this->Error = $Error;
 
-        global $UploadForm, $Categories, $Media, $TorrentID, $Containers, $Codecs, $Resolutions, $Archives;
+        global $UploadForm, $Categories, $Media,  $MediaManga, $TorrentID, $Containers, $Codecs, $Resolutions, $Archives;
         #global $UploadForm, $Categories, $Formats, $Bitrates, $Media, $MediaManga, $TorrentID, $Containers, $ContainersGames, $Codecs, $Resolutions, $AudioFormats, $Subbing, $Languages, $Platform, $Archives, $ArchivesManga;
 
         $this->UploadForm = $UploadForm;
@@ -40,7 +40,7 @@ class TorrentForm
         #$this->Formats = $Formats;
         #$this->Bitrates = $Bitrates;
         $this->Media = $Media;
-        #$this->MediaManga = $MediaManga;
+        $this->MediaManga = $MediaManga;
         $this->Containers = $Containers;
         #$this->ContainersGames = $ContainersGames;
         $this->Codecs = $Codecs;
@@ -212,14 +212,17 @@ class TorrentForm
         </td>
       </tr>
       <?php
-            }
-        } ?>
+          }
+        }
+      ?>
 
       <!-- Rules notice and submit button -->
       <tr>
         <td colspan="2" style="text-align: center;">
-          <p>Be sure that your torrent is approved by the <a href="rules.php?p=upload" target="_blank">rules</a>.
-          Not doing this will result in a <strong class="important_text">warning</strong> or <strong class="important_text">worse</strong>.</p>
+          <p>
+            Be sure that your torrent is approved by the <a href="rules.php?p=upload" target="_blank">rules</a>.
+            Not doing this will result in a <strong class="important_text">warning</strong> or <strong class="important_text">worse</strong>.
+          </p>
           <?php if ($this->NewTorrent) { ?>
           <p>
             After uploading the torrent, you will have a one hour grace period during which no one other than you can fill requests with this torrent.
@@ -291,7 +294,7 @@ class TorrentForm
 
   <!-- Three title fields -->
   <tr id="title_tr">
-    <td class="label">Sequence Name</td>
+    <td class="label">Torrent Title</td>
     <td>
       <input type="text" id="title" name="title" size="60"
         value="<?= display_str($Torrent['Title']) ?>"
@@ -301,13 +304,12 @@ class TorrentForm
   </tr>
 
   <tr id="title_rj_tr">
-    <td class="label tooltip" title="">Organism
-    </td>
+    <td class="label" title="">Organism</td>
     <td>
       <input type="text" id="title_rj" name="title_rj" size="60"
         value="<?= display_str($Torrent['TitleRJ']) ?>"
         <?= $this->Disabled ?>/><br />
-      Organism line binomial nomenclature, e.g., <em>Saccharomyces cerevisiae</em>
+      Organism line binomial, e.g., <em>Saccharomyces cerevisiae</em>
     </td>
   </tr>
 
@@ -317,7 +319,7 @@ class TorrentForm
       <input type="text" id="title_jp" name="title_jp" size="60"
         value="<?= display_str($Torrent['TitleJP']) ?>"
         <?= $this->Disabled ?>/><br />
-      Organism line if applicable, e.g., S288C
+      Organism line if any, e.g., S288C
     </td>
   </tr>
 
@@ -325,7 +327,7 @@ class TorrentForm
   <tr id="idols_tr">
     <td class="label tooltip" title="">Authors(s)</td>
     <td id="idolfields">
-      One author per field, e.g., Robert K. Mortimer [+] David Schild<br />
+      One per field, e.g., Robert K. Mortimer [+] David Schild<br />
       <?php
         if (!empty($Torrent['Artists'])) {
           foreach ($Torrent['Artists'] as $Num => $Artist) {
@@ -367,7 +369,7 @@ class TorrentForm
       <input type="text" id="series" name="series" size="60"
         value="<?= display_str($Torrent['Series']) ?>"
         <?= $this->Disabled ?>/><br />
-      Its physical location, e.g., Berkeley, CA
+      Physical location, e.g., Berkeley, CA
     </td>
   </tr>
 
@@ -417,7 +419,7 @@ class TorrentForm
               echo ">$Cont</option>\n";
           } ?>
       </select><br />
-      The data's file format
+      Data file format
     </td>
   </tr>
 
@@ -450,7 +452,7 @@ class TorrentForm
           $('#resolution').gshow()
         }
       </script><br />
-      How complete the sequence is
+      How complete the data is
     </td>
   </tr>
 
@@ -469,7 +471,7 @@ class TorrentForm
               echo ">$Archive</option>\n";
           } ?>
       </select><br />
-      Its compression algorithm
+      Compression algorithm
     </td>
   </tr>
 
@@ -530,7 +532,7 @@ class TorrentForm
       <input type="text" id="image" name="image" size="60"
         value="<?= display_str($Torrent['Image']) ?>"
         <?= $this->Disabled ?> /><br />
-      A meaningful picture, e.g., of the specimen
+      A meaningful picture, e.g., the specimen or a thumbnail
     </td>
   </tr>
 

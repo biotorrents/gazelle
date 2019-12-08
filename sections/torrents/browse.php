@@ -166,13 +166,13 @@ View::show_header('Browse Torrents', 'browse');
         <tr id="artist_name" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label"><!--Artist name:--></td>
           <td class="ft_artistname">
-            <input type="search" spellcheck="false" size="65" name="artistname" class="inputtext smaller fti_advanced" placeholder="Collaborator Name" value="<?Format::form('artistname')?>" />
+            <input type="search" spellcheck="false" size="65" name="artistname" class="inputtext smaller fti_advanced" placeholder="Author Name" value="<?Format::form('artistname')?>" />
           </td>
         </tr>
         <tr id="album_torrent_name" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label"><!--Torrent name:--></td>
           <td class="ft_groupname">
-            <input type="search" spellcheck="false" size="65" name="advgroupname" class="inputtext smaller fti_advanced" placeholder="Sequence Name" value="<?Format::form('advgroupname')?>" />
+            <input type="search" spellcheck="false" size="65" name="advgroupname" class="inputtext smaller fti_advanced" placeholder="Torrent Title" value="<?Format::form('advgroupname')?>" />
           </td>
         </tr>
         <tr id="catalogue_number" class="ftr_advanced<?=$HideAdvanced?>">

@@ -752,11 +752,13 @@ if (!empty($ArtistsUnescaped)) {
         $ArtistNameList[] = "Artists LIKE '%|".db_string(str_replace('\\', '\\\\', $Artist['name']), true)."|%'";
     }
     // Don't add notification if >2 main artists or if tracked artist isn't a main artist
+    /*
     if (count($ArtistNameList) > 2 || $Artist['name'] === 'Various Artists') {
         $SQL .= " AND (ExcludeVA = '0' AND (";
         $SQL .= implode(' OR ', array_merge($ArtistNameList, $GuestArtistNameList));
         $SQL .= " OR Artists = '')) AND (";
     } else {
+    */
         $SQL .= " AND (";
         if (!empty($GuestArtistNameList)) {
             $SQL .= "(ExcludeVA = '0' AND (";
@@ -768,7 +770,7 @@ if (!empty($ArtistsUnescaped)) {
             $SQL .= " OR ";
         }
         $SQL .= "Artists = '') AND (";
-    }
+    #}
 } else {
     $SQL .= "AND (Artists = '') AND (";
 }

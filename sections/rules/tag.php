@@ -1,11 +1,11 @@
 <?
 //Include the header
-View::show_header('Tagging rules');
+View::show_header('Tagging Rules');
 ?>
 <!-- General Rules -->
 <div class="thin">
   <div class="header">
-    <h3 id="general">Tagging rules</h3>
+    <h3 id="general">Tagging Rules</h3>
   </div>
   <div class="box pad rule_summary" style="padding: 10px 10px 10px 20px;">
 <?    Rules::display_site_tag_rules(false) ?>
