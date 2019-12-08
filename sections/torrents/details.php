@@ -34,7 +34,7 @@ if (!$GroupName) {
 
 $DisplayName = "<span dir=\"ltr\">$GroupName</span><br />";
 $AltName = $GroupName; // Goes in the alt text of the image
-$Title = $GroupName; // goes in <title>
+$Title = $GroupName; // Goes in <title>
 $WikiBody = Text::full_format($WikiBody);
 
 $Artists = Artists::get_artist($GroupID);

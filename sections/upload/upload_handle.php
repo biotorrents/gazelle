@@ -1,4 +1,5 @@
 <?php
+
 //****************************************************************************//
 //--------------- Take upload ------------------------------------------------//
 // This pages handles the backend of the torrent upload function. It checks   //
@@ -6,12 +7,12 @@
 // the data to the database and the torrent to the disk.                      //
 //****************************************************************************//
 
-// Maximum allowed size for uploaded files.
-// http://php.net/upload-max-filesize
-ini_set('upload_max_filesize', 2097152); // 2 Mebibytes
-
+// Maximum allowed size for uploaded files
+// https://php.net/upload-max-filesize
+ini_set('upload_max_filesize', 2097152); // 2 MiB
 ini_set('max_file_uploads', 100);
 define('MAX_FILENAME_LENGTH', 180);
+
 include(SERVER_ROOT.'/classes/validate.class.php');
 include(SERVER_ROOT.'/classes/feed.class.php');
 include(SERVER_ROOT.'/sections/torrents/functions.php');
@@ -23,8 +24,6 @@ authorize();
 $Validate = new VALIDATE;
 $Feed = new FEED;
 
-define('QUERY_EXCEPTION', true); // Shut up debugging
-
 //*****************************************************************************//
 //--------------- Set $Properties array ---------------------------------------//
 // This is used if the form doesn't validate, and when the time comes to enter //
@@ -35,6 +34,7 @@ define('QUERY_EXCEPTION', true); // Shut up debugging
 $Properties = [];
 $Type = $Categories[(int)$_POST['type']];
 $TypeID = $_POST['type'] + 1;
+
 $Properties['CategoryID'] = $TypeID;
 $Properties['CategoryName'] = $Type;
 $Properties['Title'] = $_POST['title'];
