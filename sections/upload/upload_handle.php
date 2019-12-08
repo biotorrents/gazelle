@@ -168,23 +168,23 @@ switch ($Type) {
             'title',
             '0',
             'string',
-            'Sequence Name must be between 1 and 512 characters.',
-            array('maxlength'=>512, 'minlength'=>1)
+            'Sequence Name must be between 1 and 300 characters.', # `torrents_group` limits
+            array('maxlength'=>300, 'minlength'=>1)
         );
         $Validate->SetFields(
             'title_rj',
             '0',
             'string',
-            'Organism must be between 1 and 512 characters.',
-            array('maxlength'=>512, 'minlength'=>1)
+            'Organism must be between 1 and 300 characters.',
+            array('maxlength'=>300, 'minlength'=>1)
         );
 
         $Validate->SetFields(
             'title_jp',
             '0',
             'string',
-            'Strain/Variety must be between 1 and 512 characters.',
-            array('maxlength'=>512, 'minlength'=>1)
+            'Strain/Variety must be between 1 and 300 characters.',
+            array('maxlength'=>300, 'minlength'=>1)
         );
 
         $Validate->SetFields(
@@ -535,13 +535,12 @@ if ($DB->has_results()) {
     }
 }
 
-// Movie and anime ISOs are neutral leech, and receive a BP bounty
-/*
-if (($Type === 'Movies' || $Type === 'Anime') && ($T['Container'] === 'ISO' || $T['Container'] === 'M2TS' || $T['Container'] === 'VOB IFO')) {
+// Torrents over 100 GiB are neutral leech
+// Download doesn't count, upload does
+if (($TotalSize > 107374182400)) { # 100 GiB
   $T['FreeTorrent'] = '2';
   $T['FreeLeechType'] = '2';
 }
-*/
 
 // Torrent
 $DB->query(

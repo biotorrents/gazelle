@@ -12,7 +12,7 @@ class TorrentForm
     public $Media = [];
     public $MediaManga = [];
     public $Containers = [];
-    #var $ContainersGames = [];
+    public $ContainersGames = [];
     public $Codecs = [];
     public $Resolutions = [];
     #var $AudioFormats = [];
@@ -32,7 +32,7 @@ class TorrentForm
         $this->Torrent = $Torrent;
         $this->Error = $Error;
 
-        global $UploadForm, $Categories, $Media,  $MediaManga, $TorrentID, $Containers, $Codecs, $Resolutions, $Archives;
+        global $UploadForm, $Categories, $Media,  $MediaManga, $TorrentID, $Containers, $ContainersGames, $Codecs, $Resolutions, $Archives;
         #global $UploadForm, $Categories, $Formats, $Bitrates, $Media, $MediaManga, $TorrentID, $Containers, $ContainersGames, $Codecs, $Resolutions, $AudioFormats, $Subbing, $Languages, $Platform, $Archives, $ArchivesManga;
 
         $this->UploadForm = $UploadForm;
@@ -42,7 +42,7 @@ class TorrentForm
         $this->Media = $Media;
         $this->MediaManga = $MediaManga;
         $this->Containers = $Containers;
-        #$this->ContainersGames = $ContainersGames;
+        $this->ContainersGames = $ContainersGames;
         $this->Codecs = $Codecs;
         $this->Resolutions = $Resolutions;
         #$this->AudioFormats = $AudioFormats;
@@ -399,9 +399,28 @@ class TorrentForm
               echo ">$Media</option>\n";
           } ?>
       </select><br />
-      Class of sequencing technology used
+      Class of technology used
     </td>
   </tr>
+
+  <!-- Alternate media -->
+  <tr id="media_manga_tr">
+    <td class="label">Platform</td>
+      <td>
+        <select name="media">
+          <option>---</option>
+          <?php
+            foreach ($this->MediaManga as $Media) {
+                echo "\t\t\t\t\t\t<option value=\"$Media\"";
+                if ($Media === ($Torrent['Media'] ?? false)) {
+                    echo " selected";
+                }
+                echo ">$Media</option>\n";
+            } ?>
+          </select><br />
+          Class of technology used
+        </td>
+      </tr>
 
   <!-- Container -->
   <tr id="container_tr">
@@ -421,6 +440,25 @@ class TorrentForm
       Data file format
     </td>
   </tr>
+
+  <!-- Alternate container -->
+  <tr id="container_games_tr">
+    <td class="label">Format</td>
+    <td>
+      <select id="container" name="container">
+        <option>---</option>
+        <?php
+          foreach ($this->ContainersGames as $Container) {
+              echo "\t\t\t\t\t\t<option value=\"$Container\"";
+              if ($Container === ($Torrent['Container'] ?? false)) {
+                  echo " selected";
+              }
+              echo ">$Container</option>\n";
+          } ?>
+          </select><br />
+          Data file format
+        </td>
+      </tr>
 
   <!-- Resolution -->
   <tr id="resolution_tr">
@@ -542,7 +580,7 @@ class TorrentForm
     <td>
       <textarea rows="8" cols="60" name="screenshots"
         id="screenshots"><?= display_str($Torrent['Screenshots'])?></textarea>
-      Up to ten DOI numbers relevant to the torrent, one per line
+      Up to ten DOI numbers, one per line
     </tr>
   <?php } ?>
 
@@ -563,7 +601,7 @@ class TorrentForm
           array($this->Disabled)
       );
       ?><br />
-      General info about the gene or protein's function or significance
+      General info about the object of study's function or significance
     </td>
   </tr>
   <?php } # Ends if NewTorrent line 499?>
@@ -579,7 +617,7 @@ class TorrentForm
           display_str($Torrent['TorrentDescription'] ?? ''),
           60,
       ); ?><br />
-      Specific info about the protocols and equipment relevant to this data
+      Specific info about the protocols and equipment relevant to <em>this</em> data
     </td>
   </tr>
 
