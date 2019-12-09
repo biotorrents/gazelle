@@ -1,4 +1,6 @@
 <?
+
+# Headers, cache, etc.
 $debug = false;
 
 if (empty($_GET['cn'])) {
@@ -16,6 +18,54 @@ if (!$debug && $Cache->get_value('jav_fill_json_'.$cn)) {
   json_die('success', $Cache->get_value('jav_fill_json_'.$cn));
 } else {
 
+  # Query the API
+  # @todo Valida to change $db
+
+/* @todo
+ * switch $category:
+ *   case 'DNA' || 'RNA':
+ *     if $number = refseq_regex:
+ *        $db = 'refseq';
+ *     break;
+ *   case 'Protein':
+ *     if $number = uniprot_regex:
+ *        $db = 'uniprot';
+ *     break;
+ *   default:
+ *     error 'invalid number';
+ *     break;
+ */
+$id = 'NM_001183340.1';
+
+# Assemble the esearch URL
+$base = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
+$url = $base . "esummary.fcgi?db=$db&id=$id&version=2.0";
+
+# Post the esearch URL
+$output = file_get_contents($url);
+
+# Parse WebEnv and QueryKey
+#$web = $1 if ($output =~ /<WebEnv>(\S+)<\/WebEnv>/);
+#$key = $1 if ($output =~ /<QueryKey>(\d+)<\/QueryKey>/);
+
+### Include this code for ESearch-ESummary
+# Assemble the esummary URL
+$url = $base . "esummary.fcgi?db=$db&query_key=$key&WebEnv=$web";
+
+# Post the esummary URL
+$docsums = file_get_contents($url);
+print "$docsums";
+
+### Include this code for ESearch-EFetch
+# Assemble the efetch URL
+$url = $base . "efetch.fcgi?db=$db&query_key=$key&WebEnv=$web";
+$url .= "&rettype=abstract&retmode=text";
+
+# Post the efetch URL
+$data = file_get_contents($url);
+print "$data";
+
+  /*
   $jlib_jp_url = ('http://www.javlibrary.com/ja/vl_searchbyid.php?keyword='.$cn);
   $jlib_en_url = ('http://www.javlibrary.com/en/vl_searchbyid.php?keyword='.$cn);
   $jdb_url     = ('http://javdatabase.com/movies/'.$cn.'/');
@@ -141,7 +191,7 @@ if (!$debug && $Cache->get_value('jav_fill_json_'.$cn)) {
       $image = 'https:'.$image;
     }
     if (!$desc) {
-      //Shit neither of the sites have descriptions
+      // Shit neither of the sites have descriptions
       $desc = '';
     }
   }
@@ -179,5 +229,5 @@ if (!$debug && $Cache->get_value('jav_fill_json_'.$cn)) {
   $Cache->cache_value('jav_fill_json_'.$cn, $json, 86400);
 
   json_die('success', $json);
-
+*/
 }

@@ -262,11 +262,12 @@ class TorrentForm
         value="<?= display_str($Torrent['CatalogueNumber']) ?>"
         <?= $this->Disabled ?>/>
       <?php if (!$this->DisabledFlag) { ?>
-        <input type="button" autofill="jav" value="Autofill"
-          style="background: lightgrey; pointer-events: none;">
+        <input type="button" autofill="jav" value="Autofill">
         </input>
         Coming Soon!<br />
-        RefSeq accession number, e.g., NM_001183340.1
+        <!-- Autofill only supports RefSeq and UniProt; -->
+        Enter any ID number that corresponds to the data,
+        preferring RefSeq and UniProt
       <?php } ?>
     </td>
   </tr>

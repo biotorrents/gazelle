@@ -48,7 +48,7 @@ function Categories() {
       'group_desc': {},
       'release_desc': {}
     }, { // Imaging
-      //'javdb': {},
+      'javdb': {},
       'idols': {},
       'studio': {},
       'series': {},
@@ -60,7 +60,7 @@ function Categories() {
       'group_desc': {},
       'release_desc': {}
     }, { // Other
-      //'javdb': {},
+      'javdb': {},
       'idols': {},
       'studio': {},
       'series': {},
