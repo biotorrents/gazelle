@@ -23,8 +23,7 @@ View::show_header('Donate');
       <?= SITE_NAME ?> has no advertisements, is not sponsored, and provides its services free of charge.
       For these reasons, <?= SITE_NAME ?>'s financial obligations can only be met with the help of voluntary user donations.
       Supporting <?= SITE_NAME ?> is and will always remain voluntary.
-      If you are financially able, help pay <?= SITE_NAME ?>'s bills by donating.
-      <?=SITE_NAME?>'s survival is up to you.
+      If you are financially able, please help pay <?= SITE_NAME ?>'s bills by donating.
     </p>
 
     <p>
@@ -34,19 +33,9 @@ View::show_header('Donate');
     </p>
 
     <p>
-      Please note that <?= SITE_NAME ?> is a nonprofit organization.
       No staff member or other individual responsible for the site's operation personally profits from user donations.
       As a donor, your financial support is exclusively applied to operating costs.
-      When you donate you aren't paying the <?= SITE_NAME ?> Staff, purchasing upload credit, or buying the ability to download.
       When you donate you are paying <?= SITE_NAME ?>'s bills.
-    </p>
-
-    <p>
-      <?= SITE_NAME ?>'s Donor Rank system is currently available to all credited donors.
-      This system provides donors with perks.
-      Some of these perks are cosmetic (e.g., a donor icon added to your account), some are one-time benefits (e.g., additional invites),
-      and others modify specific site options (e.g., additional profile information boxes, or personal collages).
-      Please see the <a href="/wiki.php?action=article&name=donorfaq">Donor Rank System FAQ Document</a> for more information about these benefits.
     </p>
   </div>
 

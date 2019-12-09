@@ -112,14 +112,14 @@ $encoded_artist = urlencode($encoded_artist);
   <div class="sidebar">
 <?  if ($Request['CategoryID'] !== '0') { ?>
     <div class="box box_image box_image_albumart box_albumart"><!-- .box_albumart deprecated -->
-      <div class="head"><strong>Cover</strong></div>
+      <div class="head"><strong>Picture</strong></div>
       <div id="covers">
 <?
     if (!empty($Request['Image'])) {
 ?>
           <img style="width: 100%;" src="<?=ImageTools::process($Request['Image'], 'thumb')?>" lightbox-img="<?=ImageTools::process($Request['Image'])?>" alt="<?=$FullName?>" class="lightbox-init" />
 <?    } else { ?>
-          <img style="width: 100%;" src="<?=STATIC_SERVER?>common/noartwork/<?=$CategoryIcons[$Request['CategoryID'] - 1]?>" alt="<?=$CategoryName?>" class="tooltip" title="<?=$CategoryName?>" height="220" border="0" />
+          <img style="width: 100%;" src="<?=STATIC_SERVER?>common/noartwork/music.png" alt="<?=$CategoryName?>" class="tooltip" title="<?=$CategoryName?>" height="220" border="0" />
 <?    } ?>
       </div>
     </div>

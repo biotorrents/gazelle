@@ -97,23 +97,23 @@ View::show_header('Forums &gt; '. $Forums[$ForumID]['Name'], '', '');
               <td>
                 <input type="hidden" name="action" value="search" />
                 <input type="hidden" name="forums[]" value="<?=$ForumID?>" />
-                <strong>Search for:</strong>
+                <strong>Search Terms</strong>
               </td>
               <td>
                 <input type="search" id="searchbox" name="search" size="70" />
               </td>
             </tr>
             <tr>
-              <td><strong>Search in:</strong></td>
+              <td><strong>Search In</strong></td>
               <td>
                 <input type="radio" name="type" id="type_title" value="title" checked="checked" />
-                <label for="type_title">Titles</label>
+                <label for="type_title">Title</label>&nbsp;&nbsp;
                 <input type="radio" name="type" id="type_body" value="body" />
-                <label for="type_body">Post bodies</label>
+                <label for="type_body">Body</label>
               </td>
             </tr>
             <tr>
-              <td><strong>Posted by:</strong></td>
+              <td><strong>Posted By</strong></td>
               <td><input type="search" id="username" name="user" placeholder="Username" size="70" /></td>
             </tr>
             <tr>
