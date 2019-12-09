@@ -74,24 +74,37 @@ class TorrentForm
     If you would like to use your own torrent file, add the following to it.
     Otherwise, add none of it and redownload the torrent file after uploading it.
     All of the above data will be added to it by the site.
-    <strong>If you never have before, be sure to read this list of <a href="wiki.php?action=article&name=uploadingpitfalls">uploading pitfalls</a></strong>.
+    <strong>If you never have before, be sure to read this list of
+      <a href="wiki.php?action=article&name=uploadingpitfalls">uploading pitfalls</a></strong>.
   </p>
 
   <p style="text-align: center;">
     <?php
       $Announces = call_user_func_array('array_merge', ANNOUNCE_URLS);
         foreach ($Announces as $Announce) {
-            # Loop through tracker URLs
-    ?>
+            # Loop through tracker URLs?>
     <strong>Announce</strong>
-    <input type="text" value="<?= $Announce . '/' . G::$LoggedUser['torrent_pass'] . '/announce' ?>"
+
+    <?php
+    # Buying into the shit coding style
+    # Just trying to mirror content on a Tier 2 public tracker
+    if (!strstr($Announce, 'openbittorrent')) {
+        ?>
+    <input type="text"
+      value="<?= $Announce . '/' . G::$LoggedUser['torrent_pass'] . '/announce' ?>"
       size="74" onclick="this.select();" readonly="readonly" /> <br />
     <?php
+    } else { ?>
+    <input type="text" value="<?= $Announce ?>" size="74"
+      onclick="this.select();" readonly="readonly" /> <br />
+    <?php
+
+    }
         } ?>
 
     <strong>Source</strong>
-    <input type="text" value="<?= Users::get_upload_sources()[0] ?>" size="20"
-      onclick="this.select();" readonly="readonly" />
+    <input type="text" value="<?= Users::get_upload_sources()[0] ?>"
+      size="20" onclick="this.select();" readonly="readonly" />
   </p>
 
   <!-- Error display -->
@@ -102,7 +115,7 @@ class TorrentForm
             echo "\t".'<p style="color: red; text-align: center;">' . $this->Error . "</p>\n";
         } ?>
   </p>
-  
+
   <!-- Torrent form hidden values -->
   <form class="create_form box pad" name="torrent" action="" enctype="multipart/form-data" method="post"
     onsubmit="$('#post').raw().disabled = 'disabled';">
@@ -149,9 +162,8 @@ class TorrentForm
       <tr>
         <td class="label">Type</td>
         <td>
-          <select id="categories" name="type" onchange="Categories()"
-            <?= ($this->DisabledFlag) ? ' disabled="disabled"' : '' ?>>
-          <?php
+          <select id="categories" name="type" onchange="Categories()" <?= ($this->DisabledFlag) ? ' disabled="disabled"' : '' ?>>
+            <?php
             foreach (Misc::display_array($this->Categories) as $Index => $Cat) {
                 echo "\t\t\t\t\t\t<option value=\"$Index\"";
                 if ($Cat == $this->Torrent['CategoryName']) {
@@ -220,16 +232,17 @@ class TorrentForm
         <td colspan="2" style="text-align: center;">
           <p>
             Be sure that your torrent is approved by the <a href="rules.php?p=upload" target="_blank">rules</a>.
-            Not doing this will result in a <strong class="important_text">warning</strong> or <strong class="important_text">worse</strong>.
+            Not doing this will result in a <strong class="important_text">warning</strong> or <strong
+              class="important_text">worse</strong>.
           </p>
           <?php if ($this->NewTorrent) { ?>
           <p>
-            After uploading the torrent, you will have a one hour grace period during which no one other than you can fill requests with this torrent.
+            After uploading the torrent, you will have a one hour grace period during which no one other than you can
+            fill requests with this torrent.
             Make use of this time wisely, and <a href="requests.php">search the list of requests</a>.
           </p>
           <?php } ?>
-          <input id="post" type="submit"
-          <?php
+          <input id="post" type="submit" <?php
             if ($this->NewTorrent) {
                 echo ' value="Upload"';
             } else {
@@ -262,12 +275,12 @@ class TorrentForm
         value="<?= display_str($Torrent['CatalogueNumber']) ?>"
         <?= $this->Disabled ?>/>
       <?php if (!$this->DisabledFlag) { ?>
-        <input type="button" autofill="jav" value="Autofill">
-        </input>
-        Coming Soon!<br />
-        <!-- Autofill only supports RefSeq and UniProt; -->
-        Enter any ID number that corresponds to the data,
-        preferring RefSeq and UniProt
+      <input type="button" autofill="jav" value="Autofill">
+      </input>
+      Coming Soon!<br />
+      <!-- Autofill only supports RefSeq and UniProt; -->
+      Enter any ID number that corresponds to the data,
+      preferring RefSeq and UniProt
       <?php } ?>
     </td>
   </tr>
@@ -333,7 +346,8 @@ class TorrentForm
             foreach ($Torrent['Artists'] as $Num => $Artist) {
                 ?>
       <input type="text" id="idols_<?= $Num ?>" name="idols[]"
-        size="45" value="<?= display_str($Artist['name']) ?>"
+        size="45"
+        value="<?= display_str($Artist['name']) ?>"
         <?= $this->Disabled ?>/>
       <?php if ($Num === 0) { ?>
       <a class="add_artist_button brackets">+</a>
@@ -407,10 +421,10 @@ class TorrentForm
   <!-- Alternate media -->
   <tr id="media_manga_tr">
     <td class="label">Platform</td>
-      <td>
-        <select name="media">
-          <option>---</option>
-          <?php
+    <td>
+      <select name="media">
+        <option>---</option>
+        <?php
             foreach ($this->MediaManga as $Media) {
                 echo "\t\t\t\t\t\t<option value=\"$Media\"";
                 if ($Media === ($Torrent['Media'] ?? false)) {
@@ -418,10 +432,10 @@ class TorrentForm
                 }
                 echo ">$Media</option>\n";
             } ?>
-          </select><br />
-          Class of technology used
-        </td>
-      </tr>
+      </select><br />
+      Class of technology used
+    </td>
+  </tr>
 
   <!-- Container -->
   <tr id="container_tr">
@@ -456,10 +470,10 @@ class TorrentForm
               }
               echo ">$Container</option>\n";
           } ?>
-          </select><br />
-          Data file format
-        </td>
-      </tr>
+      </select><br />
+      Data file format
+    </td>
+  </tr>
 
   <!-- Resolution -->
   <tr id="resolution_tr">
@@ -528,7 +542,8 @@ class TorrentForm
               echo ">$Codec</option>\n";
           } ?>
       </select><br />
-      Please see <a href="http://www.dcc.ac.uk/resources/how-guides/license-research-data" target="_blank">How to License Research Data</a>
+      Please see <a href="http://www.dcc.ac.uk/resources/how-guides/license-research-data" target="_blank">How to
+        License Research Data</a>
     </td>
   </tr>
 
@@ -558,8 +573,10 @@ class TorrentForm
       </select>
       <input type="text" id="tags" name="tags" size="60"
         value="<?= display_str(implode(', ', explode(',', $Torrent['TagList']))) ?>"
-        <?php Users::has_autocomplete_enabled('other'); ?> /><br />
-      Comma-seperated list of tags, n.b., use <strong class="important_text_alt">vanity.house</strong> for data you produced
+        <?php Users::has_autocomplete_enabled('other'); ?>
+      /><br />
+      Comma-seperated list of tags, n.b., use <strong class="important_text_alt">vanity.house</strong> for data you
+      produced
     </td>
   </tr>
 
@@ -582,7 +599,7 @@ class TorrentForm
       <textarea rows="8" cols="60" name="screenshots"
         id="screenshots"><?= display_str($Torrent['Screenshots'])?></textarea>
       Up to ten DOI numbers, one per line
-    </tr>
+  </tr>
   <?php } ?>
 
   <!-- Album description -->
@@ -626,8 +643,7 @@ class TorrentForm
   <tr id="censored_tr">
     <td class="label">Aligned Sequence</td>
     <td>
-      <input type="checkbox" name="censored" value="1"
-        <?= (($Torrent['Censored'] ?? 0) ? 'checked ' : '') ?>/>
+      <input type="checkbox" name="censored" value="1" <?= (($Torrent['Censored'] ?? 0) ? 'checked ' : '') ?>/>
       Whether the torrent contains raw reads or alignment data
     </td>
   </tr>
@@ -635,8 +651,7 @@ class TorrentForm
   <tr id="anon_tr">
     <td class="label">Upload Anonymously</td>
     <td>
-      <input type="checkbox" name="anonymous" value="1"
-        <?= (($Torrent['Anonymous'] ?? false) ? 'checked ' : '') ?>/>
+      <input type="checkbox" name="anonymous" value="1" <?= (($Torrent['Anonymous'] ?? false) ? 'checked ' : '') ?>/>
       Hide your username from other users on the torrent details page
     </td>
   </tr>

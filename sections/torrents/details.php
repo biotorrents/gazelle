@@ -120,204 +120,253 @@ View::show_header($Title, 'browse,comments,torrent,bbcode,recommend,cover_art,su
 ?>
 <div class="thin">
   <div class="header">
-    <h2><?=$DisplayName?></h2>
+    <h2><?=$DisplayName?>
+    </h2>
     <div class="linkbox">
-<?php  if (check_perms('site_edit_wiki')) { ?>
-      <a href="torrents.php?action=editgroup&amp;groupid=<?=$GroupID?>" class="brackets">Edit group</a>
-<?php  } ?>
-      <a href="torrents.php?action=history&amp;groupid=<?=$GroupID?>" class="brackets">View history</a>
-<?php  if ($RevisionID && check_perms('site_edit_wiki')) { ?>
-      <a href="torrents.php?action=revert&amp;groupid=<?=$GroupID ?>&amp;revisionid=<?=$RevisionID ?>&amp;auth=<?=$LoggedUser['AuthKey']?>" class="brackets">Revert to this revision</a>
-<?php
+      <?php  if (check_perms('site_edit_wiki')) { ?>
+      <a href="torrents.php?action=editgroup&amp;groupid=<?=$GroupID?>"
+        class="brackets">Edit group</a>
+      <?php  } ?>
+      <a href="torrents.php?action=history&amp;groupid=<?=$GroupID?>"
+        class="brackets">View history</a>
+      <?php  if ($RevisionID && check_perms('site_edit_wiki')) { ?>
+      <a href="torrents.php?action=revert&amp;groupid=<?=$GroupID ?>&amp;revisionid=<?=$RevisionID ?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+        class="brackets">Revert to this revision</a>
+      <?php
   }
   if (Bookmarks::has_bookmarked('torrent', $GroupID)) {
       ?>
-      <a href="#" id="bookmarklink_torrent_<?=$GroupID?>" class="remove_bookmark brackets" onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove bookmark</a>
-<?php
+      <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
+        class="remove_bookmark brackets"
+        onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove
+        bookmark</a>
+      <?php
   } else { ?>
-      <a href="#" id="bookmarklink_torrent_<?=$GroupID?>" class="add_bookmark brackets" onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
-<?php  } ?>
-      <a href="#" id="subscribelink_torrents<?=$GroupID?>" class="brackets" onclick="SubscribeComments('torrents', <?=$GroupID?>); return false;"><?=Subscriptions::has_subscribed_comments('torrents', $GroupID) !== false ? 'Unsubscribe' : 'Subscribe'?></a>
-<?php
+      <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
+        class="add_bookmark brackets"
+        onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
+      <?php  } ?>
+      <a href="#" id="subscribelink_torrents<?=$GroupID?>"
+        class="brackets"
+        onclick="SubscribeComments('torrents', <?=$GroupID?>); return false;"><?=Subscriptions::has_subscribed_comments('torrents', $GroupID) !== false ? 'Unsubscribe' : 'Subscribe'?></a>
+      <?php
   if ($Categories[$GroupCategoryID-1] == 'Movies' || $Categories[$GroupCategoryID-1] == 'Anime' || $Categories[$GroupCategoryID-1] == 'Manga' || $Categories[$GroupCategoryID-1] == 'Games') { ?>
-      <a href="upload.php?groupid=<?=$GroupID?>" class="brackets">Add format</a>
-<?php
+      <a href="upload.php?groupid=<?=$GroupID?>" class="brackets">Add
+        format</a>
+      <?php
   }
   if (check_perms('site_submit_requests')) { ?>
-      <a href="requests.php?action=new&amp;groupid=<?=$GroupID?>" class="brackets">Request format</a>
-<?php  } ?>
-      <a href="torrents.php?action=grouplog&amp;groupid=<?=$GroupID?>" class="brackets">View log</a>
+      <a href="requests.php?action=new&amp;groupid=<?=$GroupID?>"
+        class="brackets">Request format</a>
+      <?php  } ?>
+      <a href="torrents.php?action=grouplog&amp;groupid=<?=$GroupID?>"
+        class="brackets">View log</a>
     </div>
   </div>
-<?php /* Misc::display_recommend($GroupID, "torrent"); */ ?>
+  <?php /* Misc::display_recommend($GroupID, "torrent"); */ ?>
   <div class="sidebar">
-    <div class="box box_image box_image_albumart box_albumart"><!-- .box_albumart deprecated -->
+    <div class="box box_image box_image_albumart box_albumart">
+      <!-- .box_albumart deprecated -->
       <div class="head">
         <strong><?=(count($CoverArt) > 0 ? 'Pictures (' . (count($CoverArt) + 1) . ')' : 'Picture')?></strong>
-<?php
+        <?php
       if (count($CoverArt) > 0) {
           if (empty($LoggedUser['ShowExtraCovers'])) {
               for ($Index = 0; $Index <= count($CoverArt); $Index++) { ?>
-        <span id="cover_controls_<?=($Index)?>"<?=($Index > 0 ? ' style="display: none;"' : '')?>>
-<?php            if ($Index == count($CoverArt)) { ?>
-            <a class="brackets prev_cover" data-gazelle-prev-cover="<?=($Index - 1)?>" href="#">Prev</a>
-            <a class="brackets show_all_covers" href="#">Show all</a>
-            <span class="brackets next_cover">Next</span>
-<?php            } elseif ($Index > 0) { ?>
-            <a class="brackets prev_cover" data-gazelle-prev-cover="<?=($Index - 1)?>" href="#">Prev</a>
-            <a class="brackets show_all_covers" href="#">Show all</a>
-            <a class="brackets next_cover" data-gazelle-next-cover="<?=($Index + 1)?>" href="#">Next</a>
-<?php            } elseif ($Index == 0 && count($CoverArt) > 0) { ?>
-            <span class="brackets prev_cover">Prev</span>
-            <a class="brackets show_all_covers" href="#">Show all</a>
-            <a class="brackets next_cover" data-gazelle-next-cover="<?=($Index + 1)?>" href="#">Next</a>
-<?php            } ?>
+        <span id="cover_controls_<?=($Index)?>" <?=($Index > 0 ? ' style="display: none;"' : '')?>>
+          <?php            if ($Index == count($CoverArt)) { ?>
+          <a class="brackets prev_cover"
+            data-gazelle-prev-cover="<?=($Index - 1)?>"
+            href="#">Prev</a>
+          <a class="brackets show_all_covers" href="#">Show all</a>
+          <span class="brackets next_cover">Next</span>
+          <?php            } elseif ($Index > 0) { ?>
+          <a class="brackets prev_cover"
+            data-gazelle-prev-cover="<?=($Index - 1)?>"
+            href="#">Prev</a>
+          <a class="brackets show_all_covers" href="#">Show all</a>
+          <a class="brackets next_cover"
+            data-gazelle-next-cover="<?=($Index + 1)?>"
+            href="#">Next</a>
+          <?php            } elseif ($Index == 0 && count($CoverArt) > 0) { ?>
+          <span class="brackets prev_cover">Prev</span>
+          <a class="brackets show_all_covers" href="#">Show all</a>
+          <a class="brackets next_cover"
+            data-gazelle-next-cover="<?=($Index + 1)?>"
+            href="#">Next</a>
+          <?php            } ?>
         </span>
-<?php
+        <?php
           }
           } else { ?>
         <span>
           <a class="brackets show_all_covers" href="#">Hide</a>
         </span>
-<?php
+        <?php
         }
       } ?>
       </div>
-<?php $Index = 0; ?>
-<div id="covers">
-<div id="cover_div_<?=$Index?>">
-<?php  if ($WikiImage != '') { ?>
-      <div><img width="100%" class="lightbox-init" src="<?=ImageTools::process($WikiImage, 'thumb')?>" lightbox-img="<?=ImageTools::process($WikiImage)?>" alt="<?=$AltName?>" /></div>
-<?php  } else { ?>
-      <div><img width="100%" src="<?=STATIC_SERVER?>common/noartwork/music.png" alt="<?=$Categories[$GroupCategoryID - 1]?>" class="brackets tooltip" title="<?=$Categories[$GroupCategoryID - 1]?>" /></div>
-<?php
+      <?php $Index = 0; ?>
+      <div id="covers">
+        <div id="cover_div_<?=$Index?>">
+          <?php  if ($WikiImage != '') { ?>
+          <div><img width="100%" class="lightbox-init"
+              src="<?=ImageTools::process($WikiImage, 'thumb')?>"
+              lightbox-img="<?=ImageTools::process($WikiImage)?>"
+              alt="<?=$AltName?>" /></div>
+          <?php  } else { ?>
+          <div><img width="100%"
+              src="<?=STATIC_SERVER?>common/noartwork/music.png"
+              alt="<?=$Categories[$GroupCategoryID - 1]?>"
+              class="brackets tooltip"
+              title="<?=$Categories[$GroupCategoryID - 1]?>" /></div>
+          <?php
   }
 $Index++;
 ?>
-</div>
-<?php      foreach ($CoverArt as $Cover) {
+        </div>
+        <?php      foreach ($CoverArt as $Cover) {
     list($ImageID, $Image, $Summary, $AddedBy) = $Cover; ?>
-          <div id="cover_div_<?=$Index?>"<?=(empty($LoggedUser['ShowExtraCovers']) ? ' style="display: none;"' : '')?>>
-        <div>
-<?php
+        <div id="cover_div_<?=$Index?>" <?=(empty($LoggedUser['ShowExtraCovers']) ? ' style="display: none;"' : '')?>>
+          <div>
+            <?php
           if (empty($LoggedUser['ShowExtraCovers'])) {
               $Src = 'src="" data-gazelle-temp-src="' . ImageTools::process($Image, 'thumb') . '" lightbox-img="'.ImageTools::process($Image).'"';
           } else {
               $Src = 'src="' . ImageTools::process($Image, 'thumb') . '" lightbox-img="'.ImageTools::process($Image).'"';
           } ?>
-          <img id="cover_<?=$Index?>" class="lightbox-init" width="100%" <?=$Src?> alt="<?=$Summary?>" />
+            <img id="cover_<?=$Index?>" class="lightbox-init"
+              width="100%" <?=$Src?> alt="<?=$Summary?>" />
+          </div>
+          <ul class="stats nobullet">
+            <li>
+              <?=$Summary?>
+              <?=(check_perms('users_mod') ? ' added by ' . Users::format_username($AddedBy, false, false, false, false, false) : '')?>
+              <span class="remove remove_cover_art"><a href="#"
+                  onclick="if (confirm('Do not delete valid alternative cover art. Are you sure you want to delete this cover art?') == true) { ajax.get('torrents.php?action=remove_cover_art&amp;auth=<?=$LoggedUser['AuthKey']?>&amp;id=<?=$ImageID?>&amp;groupid=<?=$GroupID?>'); this.parentNode.parentNode.parentNode.style.display = 'none'; this.parentNode.parentNode.parentNode.previousElementSibling.style.display = 'none'; } else { return false; }"
+                  class="brackets tooltip" title="Remove image">X</a></span>
+            </li>
+          </ul>
         </div>
-        <ul class="stats nobullet">
-          <li>
-            <?=$Summary?>
-            <?=(check_perms('users_mod') ? ' added by ' . Users::format_username($AddedBy, false, false, false, false, false) : '')?>
-            <span class="remove remove_cover_art"><a href="#" onclick="if (confirm('Do not delete valid alternative cover art. Are you sure you want to delete this cover art?') == true) { ajax.get('torrents.php?action=remove_cover_art&amp;auth=<?=$LoggedUser['AuthKey']?>&amp;id=<?=$ImageID?>&amp;groupid=<?=$GroupID?>'); this.parentNode.parentNode.parentNode.style.display = 'none'; this.parentNode.parentNode.parentNode.previousElementSibling.style.display = 'none'; } else { return false; }" class="brackets tooltip" title="Remove image">X</a></span>
-          </li>
-        </ul>
-      </div>
-<?php
+        <?php
         $Index++;
 } ?>
-    </div>
+      </div>
 
-<?php
+      <?php
     if (check_perms('site_edit_wiki') && $WikiImage != '') { ?>
-    <div id="add_cover_div">
-      <div style="padding: 10px;">
-        <span class="additional_add_artists float_right">
-          <a onclick="addCoverField(); return false;" href="#" class="brackets">Add alternate cover</a>
-        </span>
+      <div id="add_cover_div">
+        <div style="padding: 10px;">
+          <span class="additional_add_artists float_right">
+            <a onclick="addCoverField(); return false;" href="#" class="brackets">Add alternate cover</a>
+          </span>
+        </div>
+        <div class="body">
+          <form class="add_form" name="covers" id="add_covers_form" action="torrents.php" method="post">
+            <div id="add_cover">
+              <input type="hidden" name="action" value="add_cover_art" />
+              <input type="hidden" name="auth"
+                value="<?=$LoggedUser['AuthKey']?>" />
+              <input type="hidden" name="groupid"
+                value="<?=$GroupID?>" />
+            </div>
+          </form>
+        </div>
       </div>
-      <div class="body">
-        <form class="add_form" name="covers" id="add_covers_form" action="torrents.php" method="post">
-          <div id="add_cover">
-            <input type="hidden" name="action" value="add_cover_art" />
-            <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
-            <input type="hidden" name="groupid" value="<?=$GroupID?>" />
-          </div>
-        </form>
-      </div>
-    </div>
-<?php    } ?>
+      <?php    } ?>
 
-  </div>
+    </div>
     <div class="box box_artists">
       <div class="head"><strong>Author(s)</strong>
-      <?=check_perms('torrents_edit') ? '<span class="edit_artists"><a onclick="ArtistManager(); return false;" href="#" class="brackets float_right">Edit</a></span>' : ''?>
+        <?=check_perms('torrents_edit') ? '<span class="edit_artists"><a onclick="ArtistManager(); return false;" href="#" class="brackets float_right">Edit</a></span>' : ''?>
       </div>
       <ul class="stats nobullet" id="artist_list">
-<?php      foreach ($Artists as $Num => $Artist) { ?>
+        <?php      foreach ($Artists as $Num => $Artist) { ?>
         <li class="artist"><?=Artists::display_artist($Artist)?>
-        <?php if (check_perms('torrents_edit')) { ?>
-          <span class="remove remove_artist float_right"><a href="javascript:void(0);" onclick="ajax.get('torrents.php?action=delete_alias&amp;auth=' + authkey + '&amp;groupid=<?=$GroupID?>&amp;artistid=<?=$Artist['id']?>&amp;importance=4'); this.parentNode.parentNode.style.display = 'none';" class="brackets tooltip" title="Remove artist">X</a></span>
-        <?php } ?>
+          <?php if (check_perms('torrents_edit')) { ?>
+          <span class="remove remove_artist float_right"><a href="javascript:void(0);"
+              onclick="ajax.get('torrents.php?action=delete_alias&amp;auth=' + authkey + '&amp;groupid=<?=$GroupID?>&amp;artistid=<?=$Artist['id']?>&amp;importance=4'); this.parentNode.parentNode.style.display = 'none';"
+              class="brackets tooltip" title="Remove artist">X</a></span>
+          <?php } ?>
         </li>
-<?php        } ?>
+        <?php        } ?>
       </ul>
     </div>
-<?php    if (check_perms('torrents_add_artist')) { ?>
+    <?php    if (check_perms('torrents_add_artist')) { ?>
     <div class="box box_addartists">
       <div class="head"><strong>Add Author</strong></div>
       <div class="body">
         <form class="flex_input_container" name="artists" action="torrents.php" method="post">
           <input type="hidden" name="action" value="add_alias" />
-          <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
-          <input type="hidden" name="groupid" value="<?=$GroupID?>" />
-          <input type="text" id="artist" name="artistname[]" <?php Users::has_autocomplete_enabled('other'); ?> />
+          <input type="hidden" name="auth"
+            value="<?=$LoggedUser['AuthKey']?>" />
+          <input type="hidden" name="groupid"
+            value="<?=$GroupID?>" />
+          <input type="text" id="artist" name="artistname[]" <?php Users::has_autocomplete_enabled('other'); ?>
+          />
           <input type="submit" value="Add" />
         </form>
       </div>
     </div>
-<?php
+    <?php
     }
 ?>
     <div class="box box_tags">
       <div class="head">
         <strong>Tags</strong>
-<?php
+        <?php
         $DeletedTag = $Cache->get_value("deleted_tags_$GroupID".'_'.$LoggedUser['ID']);
         if (!empty($DeletedTag)) { ?>
-          <form style="display: none;" id="undo_tag_delete_form" name="tags" action="torrents.php" method="post">
-            <input type="hidden" name="action" value="add_tag" />
-            <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
-            <input type="hidden" name="groupid" value="<?=$GroupID?>" />
-            <input type="hidden" name="tagname" value="<?=$DeletedTag?>" />
-            <input type="hidden" name="undo" value="true" />
-          </form>
-          <a class="brackets" href="#" onclick="$('#undo_tag_delete_form').raw().submit(); return false;">Undo delete</a>
+        <form style="display: none;" id="undo_tag_delete_form" name="tags" action="torrents.php" method="post">
+          <input type="hidden" name="action" value="add_tag" />
+          <input type="hidden" name="auth"
+            value="<?=$LoggedUser['AuthKey']?>" />
+          <input type="hidden" name="groupid"
+            value="<?=$GroupID?>" />
+          <input type="hidden" name="tagname"
+            value="<?=$DeletedTag?>" />
+          <input type="hidden" name="undo" value="true" />
+        </form>
+        <a class="brackets" href="#" onclick="$('#undo_tag_delete_form').raw().submit(); return false;">Undo delete</a>
 
-<?php        } ?>
+        <?php        } ?>
       </div>
-<?php
+      <?php
 if (count($Tags) > 0) {
             ?>
       <ul class="stats nobullet">
-<?php
+        <?php
   foreach ($Tags as $TagKey=>$Tag) {
       ?>
         <li>
-          <a href="torrents.php?taglist=<?=$Tag['name']?>" class="<?=display_str($Tag['class'])?>" ><?=display_str($Tag['display'])?></a>
+          <a href="torrents.php?taglist=<?=$Tag['name']?>"
+            class="<?=display_str($Tag['class'])?>"><?=display_str($Tag['display'])?></a>
           <div class="edit_tags_votes float_right">
-<?php    if (check_perms('users_warn')) { ?>
-          <a href="user.php?id=<?=$Tag['userid']?>" title="View the profile of the user that added this tag" class="brackets tooltip view_tag_user">U</a>
-<?php    } ?>
-<?php    if (empty($LoggedUser['DisableTagging']) && check_perms('site_delete_tag')) { ?>
-          <span class="remove remove_tag"><a href="torrents.php?action=delete_tag&amp;groupid=<?=$GroupID?>&amp;tagid=<?=$Tag['id']?>&amp;auth=<?=$LoggedUser['AuthKey']?>" class="brackets tooltip" title="Remove tag">X</a></span>
-<?php    } ?>
+            <?php    if (check_perms('users_warn')) { ?>
+            <a href="user.php?id=<?=$Tag['userid']?>"
+              title="View the profile of the user that added this tag" class="brackets tooltip view_tag_user">U</a>
+            <?php    } ?>
+            <?php    if (empty($LoggedUser['DisableTagging']) && check_perms('site_delete_tag')) { ?>
+            <span class="remove remove_tag"><a
+                href="torrents.php?action=delete_tag&amp;groupid=<?=$GroupID?>&amp;tagid=<?=$Tag['id']?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+                class="brackets tooltip" title="Remove tag">X</a></span>
+            <?php    } ?>
           </div>
         </li>
-<?php
+        <?php
   } ?>
       </ul>
-<?php
+      <?php
         } else { // The "no tags to display" message was wrapped in <ul> tags to pad the text.
 ?>
-      <ul><li>There are no tags to display.</li></ul>
-<?php
+      <ul>
+        <li>There are no tags to display.</li>
+      </ul>
+      <?php
 }
 ?>
     </div>
-<?php
+    <?php
 if (empty($LoggedUser['DisableTagging'])) {
     ?>
     <div class="box box_addtag">
@@ -325,35 +374,47 @@ if (empty($LoggedUser['DisableTagging'])) {
       <div class="body">
         <form class="flex_input_container" name="tags" action="torrents.php" method="post">
           <input type="hidden" name="action" value="add_tag" />
-          <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
-          <input type="hidden" name="groupid" value="<?=$GroupID?>" />
-          <input type="text" name="tagname" id="tagname" <?php Users::has_autocomplete_enabled('other'); ?> />
+          <input type="hidden" name="auth"
+            value="<?=$LoggedUser['AuthKey']?>" />
+          <input type="hidden" name="groupid"
+            value="<?=$GroupID?>" />
+          <input type="text" name="tagname" id="tagname" <?php Users::has_autocomplete_enabled('other'); ?>
+          />
           <input type="submit" value="Add" />
         </form>
         <br />
         <strong><a href="rules.php?p=tag" class="brackets">View tagging rules</a></strong>
       </div>
     </div>
-<?php
+    <?php
 }
 ?>
   </div>
   <div class="main_column">
     <div class="box">
-    <table class="torrent_table details<?=$GroupFlags['IsSnatched'] ? ' snatched' : ''?>" id="torrent_details">
-      <tr class="colhead_dark">
-        <td width="80%"><strong>Torrents</strong></td>
-        <td><strong>Size</strong></td>
-        <td class="sign snatches">
-          <a><svg width="15" height="15" fill="white" class="tooltip" alt="Snatches" title="Snatches" viewBox="3 0 88 98"><path d="M20 20 A43 43,0,1,0,77 23 L90 10 L55 10 L55 45 L68 32 A30.27 30.27,0,1,1,28 29"></path></svg></a>
-        <td class="sign seeders">
-          <a><svg width="11" height="15" fill="white" class="tooltip" alt="Seeders" title="Seeders"><polygon points="0,7 5.5,0 11,7 8,7 8,15 3,15 3,7"></polygon></svg></a>
-        </td>
-        <td class="sign leechers">
-          <a><svg width="11" height="15" fill="white" class="tooltip" alt="Leechers" title="Leechers"><polygon points="0,8 5.5,15 11,8 8,8 8,0 3,0 3,8"></polygon></svg></a>
-        </td>
-      </tr>
-<?php
+      <table
+        class="torrent_table details<?=$GroupFlags['IsSnatched'] ? ' snatched' : ''?>"
+        id="torrent_details">
+        <tr class="colhead_dark">
+          <td width="80%"><strong>Torrents</strong></td>
+          <td><strong>Size</strong></td>
+          <td class="sign snatches">
+            <a><svg width="15" height="15" fill="white" class="tooltip" alt="Snatches" title="Snatches"
+                viewBox="3 0 88 98">
+                <path d="M20 20 A43 43,0,1,0,77 23 L90 10 L55 10 L55 45 L68 32 A30.27 30.27,0,1,1,28 29"></path>
+              </svg></a>
+          <td class="sign seeders">
+            <a><svg width="11" height="15" fill="white" class="tooltip" alt="Seeders" title="Seeders">
+                <polygon points="0,7 5.5,0 11,7 8,7 8,15 3,15 3,7"></polygon>
+              </svg></a>
+          </td>
+          <td class="sign leechers">
+            <a><svg width="11" height="15" fill="white" class="tooltip" alt="Leechers" title="Leechers">
+                <polygon points="0,8 5.5,15 11,8 8,8 8,0 3,0 3,8"></polygon>
+              </svg></a>
+          </td>
+        </tr>
+        <?php
 function filelist($Str)
 {
     return "</td><td>".Format::get_size($Str[1])."</td></tr>";
@@ -560,81 +621,118 @@ foreach ($TorrentList as $Torrent) {
         $TorrentMG = "magnet:?dn=".rawurlencode($TorrentFileName)."&xt=urn:btih:".$InfoHash."&as=https://".SITE_DOMAIN."/".str_replace('&amp;', '%26', $TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=", ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Size;
     } ?>
 
-      <tr class="torrent_row groupid_<?=$GroupID?> group_torrent<?=($IsSnatched ? ' snatched_torrent' : '')?>" style="font-weight: normal;" id="torrent<?=$TorrentID?>">
-        <td>
-          <span>[ <a href="<?=$TorrentDL?>" class="tooltip" title="Download"><?=($HasFile ? 'DL' : 'Missing')?></a>
-<?php  if (isset($TorrentMG)) { ?>
-            | <a href="<?=$TorrentMG?>" class="tooltip" title="Magnet Link">MG</a>
-<?php  }
+        <tr
+          class="torrent_row groupid_<?=$GroupID?> group_torrent<?=($IsSnatched ? ' snatched_torrent' : '')?>"
+          style="font-weight: normal;" id="torrent<?=$TorrentID?>">
+          <td>
+            <span>[ <a href="<?=$TorrentDL?>" class="tooltip"
+                title="Download"><?=($HasFile ? 'DL' : 'Missing')?></a>
+              <?php  if (isset($TorrentMG)) { ?>
+              | <a href="<?=$TorrentMG?>" class="tooltip"
+                title="Magnet Link">MG</a>
+              <?php  }
     if (Torrents::can_use_token($Torrent)) { ?>
-            | <a href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>&amp;usetoken=1" class="tooltip" title="Use a FL Token" onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
-<?php  } ?>
-            | <a href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>" class="tooltip" title="Report">RP</a>
-<?php  if ($CanEdit) { ?>
-            | <a href="torrents.php?action=edit&amp;id=<?=$TorrentID ?>" class="tooltip" title="Edit release">ED</a>
-<?php  }
+              | <a
+                href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>&amp;usetoken=1"
+                class="tooltip" title="Use a FL Token"
+                onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
+              <?php  } ?>
+              | <a
+                href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>"
+                class="tooltip" title="Report">RP</a>
+              <?php  if ($CanEdit) { ?>
+              | <a
+                href="torrents.php?action=edit&amp;id=<?=$TorrentID ?>"
+                class="tooltip" title="Edit release">ED</a>
+              <?php  }
     if (check_perms('torrents_delete') || $UserID == $LoggedUser['ID']) { ?>
-            | <a href="torrents.php?action=delete&amp;torrentid=<?=$TorrentID ?>" class="tooltip" title="Remove">RM</a>
-<?php  } ?>
-            | <a href="torrents.php?torrentid=<?=$TorrentID ?>" class="tooltip" title="Permalink">PL</a>
-          ]</span>
-          &raquo; <a data-toggle-target="#torrent_<?=$TorrentID?>"><?=$ExtraInfo; ?></a>
-        </td>
-        <td class="number_column nobr"><?=Format::get_size($Size)?></td>
-        <td class="number_column"><?=number_format($Snatched)?></td>
-        <td class="number_column"><?=number_format($Seeders)?></td>
-        <td class="number_column"><?=number_format($Leechers)?></td>
-      </tr>
-      <tr class=" groupid_<?=$GroupID?> torrentdetails pad <?php if (!isset($_GET['torrentid']) || $_GET['torrentid'] != $TorrentID) { ?>hidden<?php } ?>" id="torrent_<?=$TorrentID; ?>">
-        <td colspan="5">
-          <div id="release_<?=$TorrentID?>" class="no_overflow">
-            <blockquote>
-              Uploaded by <?php
+              | <a
+                href="torrents.php?action=delete&amp;torrentid=<?=$TorrentID ?>"
+                class="tooltip" title="Remove">RM</a>
+              <?php  } ?>
+              | <a href="torrents.php?torrentid=<?=$TorrentID ?>"
+                class="tooltip" title="Permalink">PL</a>
+              ]</span>
+            &raquo; <a
+              data-toggle-target="#torrent_<?=$TorrentID?>"><?=$ExtraInfo; ?></a>
+          </td>
+          <td class="number_column nobr"><?=Format::get_size($Size)?>
+          </td>
+          <td class="number_column"><?=number_format($Snatched)?>
+          </td>
+          <td class="number_column"><?=number_format($Seeders)?>
+          </td>
+          <td class="number_column"><?=number_format($Leechers)?>
+          </td>
+        </tr>
+        <tr
+          class=" groupid_<?=$GroupID?> torrentdetails pad <?php if (!isset($_GET['torrentid']) || $_GET['torrentid'] != $TorrentID) { ?>hidden<?php } ?>"
+          id="torrent_<?=$TorrentID; ?>">
+          <td colspan="5">
+            <div id="release_<?=$TorrentID?>" class="no_overflow">
+              <blockquote>
+                Uploaded by <?php
   if ($Anonymous) {
       if (check_perms('users_mod')) { ?>
-      <em class="tooltip" title="<?=Users::user_info($UserID)['Username']?>">Anonymous</em>
-<?php  } else {
+                <em class="tooltip"
+                  title="<?=Users::user_info($UserID)['Username']?>">Anonymous</em>
+                <?php  } else {
           ?><em>Anonymous</em><?php
       }
   } else {
       print Users::format_username($UserID, false, false, false);
   } ?> <?=time_diff($TorrentTime); ?>
-<?php  if ($Seeders == 0) {
+                <?php  if ($Seeders == 0) {
       if ($LastActive && time() - strtotime($LastActive) >= 1209600) { ?>
-            <br /><strong>Last active: <?=time_diff($LastActive); ?></strong>
-<?php    } else { ?>
-            <br />Last active: <?=time_diff($LastActive); ?>
-<?php    }
+                <br /><strong>Last active: <?=time_diff($LastActive); ?></strong>
+                <?php    } else { ?>
+                <br />Last active: <?=time_diff($LastActive); ?>
+                <?php    }
   }
 
     if (($Seeders == 0 && $LastActive && time() - strtotime($LastActive) >= 345678 && time() - strtotime($LastReseedRequest) >= 864000) || check_perms('users_mod')) { ?>
-            <br /><a href="torrents.php?action=reseed&amp;torrentid=<?=$TorrentID?>&amp;groupid=<?=$GroupID?>" class="brackets">Request re-seed</a>
-<?php  } ?>
-            </blockquote>
-          </div>
-<?php  if (check_perms('site_moderate_requests')) { ?>
-          <div class="linkbox">
-            <a href="torrents.php?action=masspm&amp;id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>" class="brackets">Mass PM snatchers</a>
-          </div>
-<?php  } ?>
-          <div class="linkbox">
-            <a href="#" class="brackets" onclick="show_peers('<?=$TorrentID?>', 0); return false;">View peer list</a>
-<?php  if (check_perms('site_view_torrent_snatchlist')) { ?>
-            <a href="#" class="brackets tooltip" onclick="show_downloads('<?=$TorrentID?>', 0); return false;" title="View the list of users that have clicked the &quot;DL&quot; button.">View download list</a>
-            <a href="#" class="brackets tooltip" onclick="show_snatches('<?=$TorrentID?>', 0); return false;" title="View the list of users that have reported a snatch to the tracker.">View snatch list</a>
-<?php  } ?>
-            <a href="#" class="brackets" onclick="show_files('<?=$TorrentID?>'); return false;">View file list</a>
-<?php  if ($Reported) { ?>
-            <a href="#" class="brackets" onclick="show_reported('<?=$TorrentID?>'); return false;">View report information</a>
-<?php  } ?>
-          </div>
-          <div id="peers_<?=$TorrentID?>" class="hidden"></div>
-          <div id="downloads_<?=$TorrentID?>" class="hidden"></div>
-          <div id="snatches_<?=$TorrentID?>" class="hidden"></div>
-          <div id="files_<?=$TorrentID?>" class="hidden"><?=$FileTable?></div>
-<?php  if ($Reported) { ?>
-          <div id="reported_<?=$TorrentID?>" class="hidden"><?=$ReportInfo?></div>
-<?php
+                <br /><a
+                  href="torrents.php?action=reseed&amp;torrentid=<?=$TorrentID?>&amp;groupid=<?=$GroupID?>"
+                  class="brackets">Request re-seed</a>
+                <?php  } ?>
+              </blockquote>
+            </div>
+            <?php  if (check_perms('site_moderate_requests')) { ?>
+            <div class="linkbox">
+              <a href="torrents.php?action=masspm&amp;id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"
+                class="brackets">Mass PM snatchers</a>
+            </div>
+            <?php  } ?>
+            <div class="linkbox">
+              <a href="#" class="brackets"
+                onclick="show_peers('<?=$TorrentID?>', 0); return false;">View
+                peer list</a>
+              <?php  if (check_perms('site_view_torrent_snatchlist')) { ?>
+              <a href="#" class="brackets tooltip"
+                onclick="show_downloads('<?=$TorrentID?>', 0); return false;"
+                title="View the list of users that have clicked the &quot;DL&quot; button.">View download list</a>
+              <a href="#" class="brackets tooltip"
+                onclick="show_snatches('<?=$TorrentID?>', 0); return false;"
+                title="View the list of users that have reported a snatch to the tracker.">View snatch list</a>
+              <?php  } ?>
+              <a href="#" class="brackets"
+                onclick="show_files('<?=$TorrentID?>'); return false;">View
+                file list</a>
+              <?php  if ($Reported) { ?>
+              <a href="#" class="brackets"
+                onclick="show_reported('<?=$TorrentID?>'); return false;">View
+                report information</a>
+              <?php  } ?>
+            </div>
+            <div id="peers_<?=$TorrentID?>" class="hidden"></div>
+            <div id="downloads_<?=$TorrentID?>" class="hidden"></div>
+            <div id="snatches_<?=$TorrentID?>" class="hidden"></div>
+            <div id="files_<?=$TorrentID?>" class="hidden"><?=$FileTable?>
+            </div>
+            <?php  if ($Reported) { ?>
+            <div id="reported_<?=$TorrentID?>" class="hidden"><?=$ReportInfo?>
+            </div>
+            <?php
   }
     if (!empty($Description)) {
         echo "\n<blockquote>".Text::full_format($Description).'</blockquote>';
@@ -646,48 +744,56 @@ foreach ($TorrentList as $Torrent) {
             echo $parsed;
         } else {
             ?>
-  <div class="spoilerContainer hideContainer">
-    <input type="button" class="spoilerButton" value="Show BibTeX" /><blockquote class="spoiler hidden">
-<?php
+            <div class="spoilerContainer hideContainer">
+              <?php
+# Make a filename
+$filename = "BioTorrents.de-$TorrentID";
 
-# Make a BibTeX citation
-$bibtex = "
-<pre>
-@misc{ BioTorrents.de-$TorrentID,";
+            # Make a BibTeX citation
+            $bibtex = "
+@misc{ $filename,";
 
-foreach ($Artists as $Num => $Artist) {
-  $bibtex .= "\n  author = {".Artists::display_artist($Artist)."},";
-}
+            foreach ($Artists as $Num => $Artist) {
+                $bibtex .= "\n  author  = {".Artists::display_artist($Artist)."},";
+            }
 
-if(!empty($GroupNameRJ)) {
-  $bibtex .= "\n  title  = {".$GroupName." -- $GroupNameRJ $GroupNameJP},";
-} else {
-  $bibtex .= "\n  title  = {".$GroupName."},";
-}
+            if (!empty($GroupNameRJ)) {
+                $bibtex .= "\n  subtitle= {".$GroupNameRJ." ".$GroupNameJP."},";
+            }
   
-$bibtex .= "
-  year   = {".$GroupYear."},
-  url    = \href{https://biotorrents.de/torrents.php?torrentid=$TorrentID},
-  note   = {Online; accessed ".strftime('%Y-%m-%d')."},
-},
-</pre>";
+            $bibtex .= "
+  title   = {".$GroupName."},
+  year    = {".$GroupYear."},
+  url     = \href{https://biotorrents.de/torrents.php?torrentid=$TorrentID},
+  note    = {Online; accessed ".strftime('%Y-%m-%d')."},
+},"; ?>
 
-echo $bibtex;
-?>
+              <!-- @todo Download BibTeX citation feature
+<form method="post" action="download.php">
+<input type="hidden" name="file" id="file" value="<?=urlencode($filename)?>"
+              />
+              <input type="hidden" name="content" id="content"
+                value="<?=urlencode($bibtex)?>" />
+              <button type="submit">Download BibTeX</button>
+              </form>
+              -->
 
-    </blockquote>
-  </div>
-<?php
+              <!-- Both tags must be on the same line -->
+              <input type="button" class="spoilerButton" value="Show BibTeX" /><blockquote class="spoiler hidden">
+                <?="<pre>$bibtex</pre>"?>
+              </blockquote>
+            </div>
+            <?php
         }
         echo '</blockquote>';
     } ?>
-        </td>
-      </tr>
-<?php
+          </td>
+        </tr>
+        <?php
 } ?>
-    </table>
+      </table>
     </div>
-<?php
+    <?php
 $Requests = get_group_requests($GroupID);
 if (empty($LoggedUser['DisableRequests']) && count($Requests) > 0) {
     ?>
@@ -702,7 +808,7 @@ if (empty($LoggedUser['DisableRequests']) && count($Requests) > 0) {
           <td>Votes</td>
           <td>Bounty</td>
         </tr>
-<?php  foreach ($Requests as $Request) {
+        <?php  foreach ($Requests as $Request) {
         $RequestVotes = Requests::get_votes_array($Request['ID']);
 
         $RequestDesc = substr(explode('\n', Text::strip_bbcode($Request['Description']), 2)[0], 0, 70);
@@ -710,20 +816,25 @@ if (empty($LoggedUser['DisableRequests']) && count($Requests) > 0) {
             $RequestDesc = substr($RequestDesc, 0, 67) . '...';
         } ?>
         <tr class="requestrows row">
-          <td><a href="requests.php?action=view&amp;id=<?=$Request['ID']?>"><?=$RequestDesc?></a></td>
+          <td><a
+              href="requests.php?action=view&amp;id=<?=$Request['ID']?>"><?=$RequestDesc?></a></td>
           <td>
-            <span id="vote_count_<?=$Request['ID']?>"><?=count($RequestVotes['Voters'])?></span>
-<?php      if (check_perms('site_vote')) { ?>
-            &nbsp;&nbsp; <a href="javascript:Vote(0, <?=$Request['ID']?>)" class="brackets">+</a>
-<?php      } ?>
+            <span
+              id="vote_count_<?=$Request['ID']?>"><?=count($RequestVotes['Voters'])?></span>
+            <?php      if (check_perms('site_vote')) { ?>
+            &nbsp;&nbsp; <a
+              href="javascript:Vote(0, <?=$Request['ID']?>)"
+              class="brackets">+</a>
+            <?php      } ?>
           </td>
-          <td><?=Format::get_size($RequestVotes['TotalBounty'])?></td>
+          <td><?=Format::get_size($RequestVotes['TotalBounty'])?>
+          </td>
         </tr>
-<?php
+        <?php
     } ?>
       </table>
     </div>
-<?php
+    <?php
 }
 $Collages = $Cache->get_value("torrent_collages_$GroupID");
 if (!is_array($Collages)) {
@@ -750,28 +861,31 @@ if (count($Collages) > 0) {
     } ?>
     <table class="box collage_table" id="collages">
       <tr class="colhead">
-        <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=number_format(count($Collages))?> collection<?=((count($Collages) > 1) ? 's' : '')?><?=$SeeAll?></td>
+        <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=number_format(count($Collages))?> collection<?=((count($Collages) > 1) ? 's' : '')?><?=$SeeAll?>
+        </td>
         <td># torrents</td>
       </tr>
-<?php  foreach ($Indices as $i) {
+      <?php  foreach ($Indices as $i) {
         list($CollageName, $CollageTorrents, $CollageID) = $Collages[$i];
         unset($Collages[$i]); ?>
       <tr>
         <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-        <td class="number_column"><?=number_format($CollageTorrents)?></td>
+        <td class="number_column"><?=number_format($CollageTorrents)?>
+        </td>
       </tr>
-<?php
+      <?php
     }
     foreach ($Collages as $Collage) {
         list($CollageName, $CollageTorrents, $CollageID) = $Collage; ?>
       <tr class="collage_rows hidden">
         <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-        <td class="number_column"><?=number_format($CollageTorrents)?></td>
+        <td class="number_column"><?=number_format($CollageTorrents)?>
+        </td>
       </tr>
-<?php
+      <?php
     } ?>
     </table>
-<?php
+    <?php
 }
 
 $PersonalCollages = $Cache->get_value("torrent_collages_personal_$GroupID");
@@ -800,48 +914,54 @@ if (count($PersonalCollages) > 0) {
     } ?>
     <table class="box collage_table" id="personal_collages">
       <tr class="colhead">
-        <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=number_format(count($PersonalCollages))?> personal collection<?=((count($PersonalCollages) > 1) ? 's' : '')?><?=$SeeAll?></td>
+        <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=number_format(count($PersonalCollages))?> personal
+          collection<?=((count($PersonalCollages) > 1) ? 's' : '')?><?=$SeeAll?>
+        </td>
         <td># torrents</td>
       </tr>
-<?php  foreach ($Indices as $i) {
+      <?php  foreach ($Indices as $i) {
         list($CollageName, $CollageTorrents, $CollageID) = $PersonalCollages[$i];
         unset($PersonalCollages[$i]); ?>
       <tr>
         <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-        <td class="number_column"><?=number_format($CollageTorrents)?></td>
+        <td class="number_column"><?=number_format($CollageTorrents)?>
+        </td>
       </tr>
-<?php
+      <?php
     }
     foreach ($PersonalCollages as $Collage) {
         list($CollageName, $CollageTorrents, $CollageID) = $Collage; ?>
       <tr class="personal_rows hidden">
         <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-        <td class="number_column"><?=number_format($CollageTorrents)?></td>
+        <td class="number_column"><?=number_format($CollageTorrents)?>
+        </td>
       </tr>
-<?php
+      <?php
     } ?>
     </table>
-<?php
+    <?php
 }
 ?>
     <div class="box torrent_description">
-      <div class="head"><a href="#">&uarr;</a>&nbsp;<strong><?=(!empty($ReleaseType) ? $ReleaseTypes[$ReleaseType].' info' : 'Info')?></strong></div>
+      <div class="head"><a href="#">&uarr;</a>&nbsp;<strong><?=(!empty($ReleaseType) ? $ReleaseTypes[$ReleaseType].' info' : 'Info')?></strong>
+      </div>
       <div class="body"><?php if ($WikiBody != '') {
     echo $WikiBody;
 } else {
     echo 'There is no information on this torrent.';
-} ?></div>
+} ?>
+      </div>
     </div>
     <div class="box torrent_screenshots_box <?php if (!count($Screenshots)) {
     echo 'dead';
 } ?>">
       <div class="head"><a href="#">&uarr;</a>&nbsp;<strong>
-      Publications (<?= count($Screenshots) ?>)</strong>
-<?php
+          Publications (<?= count($Screenshots) ?>)</strong>
+        <?php
     if (count($Screenshots) > 0) {
         ?>
-    <a class="float_right brackets" data-toggle-target=".torrent_screenshots" data-toggle-replace="Show">Hide</a>
-<?php
+        <a class="float_right brackets" data-toggle-target=".torrent_screenshots" data-toggle-replace="Show">Hide</a>
+        <?php
     }
 
     $DB->query("
@@ -851,8 +971,9 @@ if (count($PersonalCollages) > 0) {
 
     if (in_array($LoggedUser['ID'], $DB->collect('UserID')) || check_perms('torrents_edit') || check_perms('screenshots_add') || check_perms('screenshots_delete')) {
         ?>
-    <a class="brackets" href="torrents.php?action=editgroup&groupid=<?=$GroupID?>#screenshots_section">Add/Remove</a>
-<?php
+        <a class="brackets"
+          href="torrents.php?action=editgroup&groupid=<?=$GroupID?>#screenshots_section">Add/Remove</a>
+        <?php
     }
 ?>
       </div>
@@ -861,7 +982,7 @@ if (count($PersonalCollages) > 0) {
     echo '<p>Sci-Hub links open in a new tab. Image proxy integration is coming soon.</p>';
 } ?>
         <ul>
-<?php
+          <?php
     foreach ($Screenshots as $Screenshot) {
         echo '<li><a href="https://sci-hub.'.SCI_HUB.'/'.$Screenshot['Image'].'" target="_blank">'.$Screenshot['Image'].'</a></li>';
 
@@ -881,23 +1002,28 @@ if (count($PersonalCollages) > 0) {
 ?>
         </ul>
       </div>
-      <script>try{$('.torrent_screenshots>img').last().raw().style.width=($('.torrent_screenshots>img').length%2+1)*50+'%'}catch(e){}</script>
+      <script>
+        try {
+          $('.torrent_screenshots>img').last().raw().style.width = ($('.torrent_screenshots>img').length % 2 + 1) * 50 +
+            '%'
+        } catch (e) {}
+      </script>
     </div>
-<?php
+    <?php
 // --- Comments ---
 $Pages = Format::get_pages($Page, $NumComments, TORRENT_COMMENTS_PER_PAGE, 9, '#comments');
 ?>
-  <div id="torrent_comments">
-    <div class="linkbox"><a name="comments"></a>
-      <?=$Pages?>
-    </div>
-<?php
+    <div id="torrent_comments">
+      <div class="linkbox"><a name="comments"></a>
+        <?=$Pages?>
+      </div>
+      <?php
 CommentsView::render_comments($Thread, $LastRead, "torrents.php?id=$GroupID");
 ?>
-    <div class="linkbox">
-      <?=$Pages?>
-    </div>
-<?php
+      <div class="linkbox">
+        <?=$Pages?>
+      </div>
+      <?php
   View::parse('generic/reply/quickreply.php', array(
     'InputName' => 'pageid',
     'InputID' => $GroupID,
@@ -910,4 +1036,4 @@ CommentsView::render_comments($Thread, $LastRead, "torrents.php?id=$GroupID");
     </div>
   </div>
 </div>
-<?php View::show_footer(); ?>
+<?php View::show_footer();
