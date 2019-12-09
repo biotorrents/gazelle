@@ -770,10 +770,10 @@ $filename = "BioTorrents.de-$TorrentID";
 
               <!-- @todo Download BibTeX citation feature
 <form method="post" action="download.php">
-<input type="hidden" name="file" id="file" value="<?=urlencode($filename)?>"
+<input type="hidden" name="file" id="file" value="< ? = urlencode($filename) ? >"
               />
               <input type="hidden" name="content" id="content"
-                value="<?=urlencode($bibtex)?>" />
+                value="< ? = urlencode($bibtex) ? >" />
               <button type="submit">Download BibTeX</button>
               </form>
               -->
