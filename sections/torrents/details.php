@@ -639,7 +639,7 @@ foreach ($TorrentList as $Torrent) {
     if (!empty($Description)) {
         echo "\n<blockquote>".Text::full_format($Description).'</blockquote>';
     }
-    if (!empty($MediaInfo)) {
+    if (!empty($MediaInfo) && $MediaInfo === 'nil') { # Kludge
         $parsed = MediaInfo::parse($MediaInfo);
         echo "\n<blockquote>";
         if (!empty($parsed)) {
@@ -649,23 +649,26 @@ foreach ($TorrentList as $Torrent) {
   <div class="spoilerContainer hideContainer">
     <input type="button" class="spoilerButton" value="Show BibTeX" /><blockquote class="spoiler hidden">
 <?php
-            echo 'Coming Soon!';
-            /*
-            # @todo Seriously consider another way to do this
-            $bibtex .= '<pre>';
-            $bibtex .= "@misc{ BioTorrents.de-$TorrentID,";
-            $bibtex .= "  author = \"$Artist1 and $Artist2 and $ArtistN and $UserID\",";
-            $bibtex .= "  title  = \"$Title\",";
-            $bibtex .= "  year   = \"2019\",";
-            $bibtex .= "  url    = \"https://biotorrents.de/torrents.php?torrentid=$TorrentID\",";
-            $bibtex .= "  note   = \"Online; accessed $Y-m-d\",";
-            $bibtex = '}';
-            $bibtex .= '</pre>';
 
-            echo $bibtex;
-            #echo Text::full_format($MediaInfo);
-            */
-        ?>
+# Make a BibTeX citation
+$bibtex = "
+<pre>
+@misc{ BioTorrents.de-$TorrentID,";
+
+  foreach ($Artists as $Num => $Artist) {
+    $bibtex .= "\n  author = '".Artists::display_artist($Artist)."',";
+  }
+  
+$bibtex .= "
+  title  = '$GroupName',
+  year   = '$GroupYear',
+  url    = 'https://biotorrents.de/torrents.php?torrentid=$TorrentID',
+  note   = 'Online; accessed ".strftime('%Y-%m-%d')."',
+}";
+
+echo $bibtex;
+?>
+
     </blockquote>
   </div>
 <?php
