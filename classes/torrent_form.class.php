@@ -357,7 +357,7 @@ class TorrentForm
       <input type="text" id="studio" name="studio" size="60"
         value="<?= display_str($Torrent['Studio']) ?>"
         <?= $this->Disabled ?>/><br />
-      First author's institution, e.g., Lawrence Berkeley Laboratory
+      Last author's institution, e.g., Lawrence Berkeley Laboratory
     </td>
   </tr>
 
@@ -368,7 +368,7 @@ class TorrentForm
       <input type="text" id="series" name="series" size="60"
         value="<?= display_str($Torrent['Series']) ?>"
         <?= $this->Disabled ?>/><br />
-      Physical location, e.g., Berkeley, CA
+      Physical location, e.g., Berkeley, CA 94720
     </td>
   </tr>
 

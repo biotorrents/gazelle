@@ -4,7 +4,7 @@ View::show_header('Ratio Requirements');
 ?>
 <div class="thin">
   <div class="header">
-    <h2 class="center">Ratio Rules</h2>
+    <h2 class="center">Ratio</h2>
   </div>
   <div class="box pad rule_summary">
     <br />

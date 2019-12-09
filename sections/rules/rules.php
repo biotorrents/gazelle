@@ -5,7 +5,7 @@ View::show_header('Rule Index');
 <!-- General Rules -->
 <div class="thin">
   <div class="header">
-    <h3 id="general">Golden Rules</h3>
+    <h2 id="general" class="center">Golden Rules</h2>
   </div>
   <div class="box pad rule_summary" style="padding: 10px 10px 10px 20px;">
 <? Rules::display_golden_rules(); ?>
