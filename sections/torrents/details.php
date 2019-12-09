@@ -655,16 +655,22 @@ $bibtex = "
 <pre>
 @misc{ BioTorrents.de-$TorrentID,";
 
-  foreach ($Artists as $Num => $Artist) {
-    $bibtex .= "\n  author = '".Artists::display_artist($Artist)."',";
-  }
+foreach ($Artists as $Num => $Artist) {
+  $bibtex .= "\n  author = {".Artists::display_artist($Artist)."},";
+}
+
+if(!empty($GroupNameRJ)) {
+  $bibtex .= "\n  title  = {".$GroupName."---$GroupNameRJ $GroupNameJP},";
+} else {
+  $bibtex .= "\n  title  = {".$GroupName."},";
+}
   
 $bibtex .= "
-  title  = '$GroupName',
-  year   = '$GroupYear',
+  year   = {".$GroupYear."},
   url    = \href{https://biotorrents.de/torrents.php?torrentid=$TorrentID},
-  note   = 'Online; accessed ".strftime('%Y-%m-%d')."',
-},";
+  note   = {Online; accessed ".strftime('%Y-%m-%d')."},
+},
+</pre>";
 
 echo $bibtex;
 ?>
