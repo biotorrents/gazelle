@@ -11,7 +11,7 @@ View::show_header('Uploading Rules', 'rules');
   <br />
   <form class="search_form" name="rules" onsubmit="return false" action="">
     <input type="text" id="search_string" value="Filter (empty to reset)" />
-    <span id="Index">Searching for <strong>upload</strong> returns all rules containing the term.
+    <span id="Index">Searching for <strong>upload</strong> returns all rules containing that term.
     Searching for <strong>upload+trump</strong> returns all rules containing both terms</span>
   </form>
   <br />
@@ -65,7 +65,7 @@ View::show_header('Uploading Rules', 'rules');
       <h4 id="def"><a href="#defk"><strong>&uarr;</strong></a> Definitions</h4>
       <div class="box pad" style="padding: 10px 10px 10px 20px;">
         <ul>
-          <li><b>Torrent</b> - Broadly used as a noun to describe a .torrent file, the files associated with it, and any associated metadata indexed by the site. Used as a verb to describe the act of downloading or uploading data from or to the swarm.</li>
+          <li><b>Torrent</b> - Broadly used as a noun to describe a <code>.torrent</code> file, the files associated with it, and any associated metadata indexed by the site. Used as a verb to describe the act of downloading or uploading data from or to the swarm.</li>
           <li><b>Swarm</b> - All peers associated with a given torrent.</li>
           <li><b>Peer</b> - A client that has announced to the tracker and is part of the swarm.</b>
           <li><b>Seed</b> - When used as a verb, describes the act of uploading torrent content to other peers. When used as a noun, describes a peer who has all of content associated with a torrent as is able to upload to peers. Sometimes referred to as a seeder.</li>
@@ -219,7 +219,7 @@ View::show_header('Uploading Rules', 'rules');
             <li id="r1.3.3"><a href="#h1.3"><strong>&uarr;</strong></a> <a href="#r1.3.3">1.3.3.</a>
               <strong>Torrent packs, database rips, etc., are strictly prohibited.</strong>
               They may not be uploaded under any circumstance, e.g., Wikipedia English Official Offline Edition 2014-07-07.
-              Torrent "packs" containing mixed samples are allowed if under 10 GiB and corresponding to one finished experiment.
+              Torrent "packs" containing mixed samples are allowed if the torrent is under 10 GiB and the data corresponds to one finished experiment.
             </li>
 
             <li id="r1.3.4"><a href="#h1.3"><strong>&uarr;</strong></a> <a href="#r1.3.4">1.3.4.</a>

@@ -156,7 +156,7 @@ class TorrentForm
         <td class="label">Torrent File</td>
         <td><input id="file" type="file" name="file_input" size="50" /><br />
           Use the above announce URL and set the private flag in your BitTorrent client, e.g.,
-          <pre>mktorrent -p -a &lt;announce&gt; &lt;target folder&gt;</pre>
+          <code>mktorrent -p -a &lt;announce&gt; &lt;target folder&gt;</code>
         </td>
       </tr>
       <tr>
@@ -277,7 +277,7 @@ class TorrentForm
       <?php if (!$this->DisabledFlag) { ?>
       <input type="button" autofill="jav" value="Autofill">
       </input>
-      Coming Soon!<br />
+      <em>Coming Soon!</em><br />
       <!-- Autofill only supports RefSeq and UniProt; -->
       Enter any ID number that corresponds to the data,
       preferring RefSeq and UniProt
