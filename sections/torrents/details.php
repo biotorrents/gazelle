@@ -660,7 +660,7 @@ foreach ($Artists as $Num => $Artist) {
 }
 
 if(!empty($GroupNameRJ)) {
-  $bibtex .= "\n  title  = {".$GroupName."---$GroupNameRJ $GroupNameJP},";
+  $bibtex .= "\n  title  = {".$GroupName." -- $GroupNameRJ $GroupNameJP},";
 } else {
   $bibtex .= "\n  title  = {".$GroupName."},";
 }
