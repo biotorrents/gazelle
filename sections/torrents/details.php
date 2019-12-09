@@ -848,7 +848,9 @@ if (count($PersonalCollages) > 0) {
 ?>
       </div>
       <div class="body torrent_screenshots">
-        <p>Sci-Hub links open in a new tab. Image proxy integration is coming soon.</p>
+        <?php if (!empty($Screenshots)) {
+    echo '<p>Sci-Hub links open in a new tab. Image proxy integration is coming soon.</p>';
+} ?>
         <ul>
 <?php
     foreach ($Screenshots as $Screenshot) {

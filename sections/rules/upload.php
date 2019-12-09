@@ -112,7 +112,7 @@ View::show_header('Uploading Rules', 'rules');
             </li>
 
             <li id="r1.1.5"><a href="#h1.1"><strong>&uarr;</strong></a> <a href="#r1.1.5">1.1.5.</a>
-              <strong>Archived files in uploads under 10 GiB are not allowed.</strong>
+              <strong>Archived files in uploads under 5 GiB are not allowed.</strong>
               Specific archival rules can be found in their respective sections.
             </li>
 
@@ -150,7 +150,7 @@ View::show_header('Uploading Rules', 'rules');
             <li id="r1.2.2"><a href="#h2.1"><strong>&uarr;</strong></a> <a href="#r1.2.2">1.2.2.</a>
               <strong>Directories should have meaningful titles.</strong>
               "Title - Accession Number" or "Lab - Title."
-              The minimum acceptable is "Title", although it is preferable to include more information.
+              The minimum acceptable is "Title," although it is preferable to include more information.
               Uploads that do not follow this rule are trumpable.
             </li>
 
@@ -171,8 +171,6 @@ View::show_header('Uploading Rules', 'rules');
               A torrent with unnecessary nested folders is trumpable by a torrent with such folders removed.
               For single-part torrents, all files must be included in the main torrent folder.
               For multi-part torrents, the main torrent folder may include sub-folders that hold the file contents for each of the parts.
-              Additional folders are unnecessary because they do nothing to improve the organization of the torrent.
-              If you are uncertain about what to do for other cases, PM a staff member for guidance.
             </li>
 
             <li id="r1.2.6"><a href="#h2.1"><strong>&uarr;</strong></a> <a href="#r1.2.6">1.2.6.</a>
@@ -232,7 +230,7 @@ View::show_header('Uploading Rules', 'rules');
 
             <li id="r1.3.5"><a href="#h1.3"><strong>&uarr;</strong></a> <a href="#r1.3.5">1.3.5.</a>
               <strong>Multi-part archives</strong>
-              for torrents under 50 GiB.
+              for torrents under 10 GiB.
             </li>
           </ul>
         </div>
@@ -257,8 +255,9 @@ View::show_header('Uploading Rules', 'rules');
 
             <li id="r2.1.3"><a href="#h2.1"><strong>&uarr;</strong></a> <a href="#r2.1.3">2.1.3.</a>
               <strong>Accession Number.</strong>
-              For nucleotide and amino acid sequences, ReqSeq database search and metadata autofill is in development.
-              You're encouraged to add an accession number whenever the <?= SITE_NAME ?> and NCBI data hashes match.
+              For nucleotide, amino acid sequences or whatever number the source repository uses.
+              RefSeq and UniProt integration is in development.
+              You're encouraged to add an accession number whenever the <?= SITE_NAME ?> and repo data hashes match.
             </li>
 
             <li id="r2.1.4"><a href="#h2.1"><strong>&uarr;</strong></a> <a href="#r2.1.4">2.1.4.</a>
@@ -275,20 +274,20 @@ View::show_header('Uploading Rules', 'rules');
 
             <li id="r2.1.6"><a href="#h2.1"><strong>&uarr;</strong></a> <a href="#r2.1.6">2.1.6.</a>
               <strong>Strain/Variety.</strong>
-              The cultivar's name if known.
+              The strain's name if known.
             </li>
 
             <li id="r2.1.7"><a href="#h2.1"><strong>&uarr;</strong></a> <a href="#r2.1.7">2.1.7.</a>
               <strong>Authors(s).</strong>
               The upload form supports multiple authors per torrent.
-              Please limit yourself to perhaps the top three authors on the paper announcing the data release.
-              Do an author search before uploading so you get their names right.
-              ORCiD integration and author info populating is in development.
+              Please limit yourself to the top four authors on the paper for the release.
+              Do an author search before uploading to get their names right.
+              ORCiD integration is in development.
             </li>
 
             <li id="r2.1.8"><a href="#h2.1"><strong>&uarr;</strong></a> <a href="#r2.1.8">2.1.8.</a>
               <strong>Department/Lab.</strong>
-              This should correspond to the lab that did the experiments or the last author's home lab.
+              The lab that did the experiments or the last author's home lab.
               Please use "Unaffiliated" for anonymous or unknown labs.
             </li>
 
@@ -296,31 +295,31 @@ View::show_header('Uploading Rules', 'rules');
               <strong>Location.</strong>
               The lab's physical location as City, (State || Country) Postal Code.
               For example, Berkeley, CA 94720 or Berlin, Germany 10117.
-              Please use "Unknown" for anonymous or unknown labs.
+              Please use "Unknown" if needed.
             </li>
 
             <li id="r2.1.10"><a href="#h2.1"><strong>&uarr;</strong></a> <a href="#r2.1.10">2.1.10.</a>
               <strong>Year.</strong>
               The year the data was first published.
-              It should correspond to the publication announcing the data.
+              The publication that announced the data.
             </li>
 
             <li id="r2.1.11"><a href="#h2.1"><strong>&uarr;</strong></a> <a href="#r2.1.11">2.1.11.</a>
               <strong>Platform.</strong>
-              The class of technology this data comes from.
+              The class of technology the data comes from.
               What sequencing or imaging technique is it the output of?
-              Please post in <a href="forums.php?action=viewforum&forumid=<?= SUGGESTIONS_FORUM_ID ?>">the suggestions forum</a>
+              <a href="forums.php?action=viewforum&forumid=<?= SUGGESTIONS_FORUM_ID ?>">Please post in the suggestions forum</a>
               if you'd like to request a new platform.
-              Note that the available platforms change for the Imaging category.
+              Note that the platforms change for the Imaging category.
             </li>
 
             <li id="r2.1.12"><a href="#h2.1"><strong>&uarr;</strong></a> <a href="#r2.1.12">2.1.12.</a>
               <strong>Format.</strong>
               The file format of the data itself.
               What programs do you need to work with the data?
-              Please post in <a href="forums.php?action=viewforum&forumid=<?= SUGGESTIONS_FORUM_ID ?>">the suggestions forum</a>
+              <a href="forums.php?action=viewforum&forumid=<?= SUGGESTIONS_FORUM_ID ?>">Please post in the suggestions forum</a>
               if you'd like to request a new format.
-              Note that the available formats change for the Imaging category.
+              Note that the formats change for the Imaging category.
             </li>
 
             <li id="r2.1.13"><a href="#h2.1"><strong>&uarr;</strong></a> <a href="#r2.1.13">2.1.13.</a>
@@ -335,30 +334,30 @@ View::show_header('Uploading Rules', 'rules');
               <strong>License.</strong>
               <?= SITE_NAME ?> only allows permissive licenses.
               If your data is original, please consider licensing it under the available options.
-              The "Unknown" option is to be compatible with web releases.
+              The "Unknown" option is for compatibility with existing web releases.
             </li>
 
             <li id="r2.1.15"><a href="#h2.1"><strong>&uarr;</strong></a> <a href="#r2.1.15">2.1.15.</a>
               <strong>Tags.</strong>
               Please select at least five appropriate tags.
-              Don't use irrelevant tags and consider making new tags a last resort.
-              Please post in <a href="forums.php?action=viewforum&forumid=<?= SUGGESTIONS_FORUM_ID ?>">the suggestions forum</a>
+              Don't use irrelevant tags, and consider making new tags a last resort.
+              <a href="forums.php?action=viewforum&forumid=<?= SUGGESTIONS_FORUM_ID ?>">Please post in the suggestions forum</a>
               if you'd like to request a new official tag.
             </li>
 
             <li id="r2.1.16"><a href="#h2.1"><strong>&uarr;</strong></a> <a href="#r2.1.16">2.1.16.</a>
               <strong>Picture.</strong>
               Please upload a meaningful picture, especially if you plan to add the torrent to a collection.
-              This can be a photo of the specimen sequenced or a representative photo of the organism; a sample from an imaging dataset;
+              A photo of the specimen sequenced or a representative photo of the organism; a sample from an imaging dataset;
               a screenshot of a useful table from the publication; or another similarly informative picture.
             </li>
 
             <li id="r2.1.17"><a href="#h2.1"><strong>&uarr;</strong></a> <a href="#r2.1.17">2.1.17.</a>
               <strong>Publications.</strong>
-              Up to 10 publications may be uploaded to a group.
-              You technically shouldn't be able to upload more than that anyway.
               DOI numbers should be well-formed, one per line.
               The upload system currently discards malformed DOI numbers instead of extracting them from arbitrary strings.
+              If your research is a URI, please use the Torrent Group Description field.
+              10 publication limit.
             </li>
 
             <li id="r2.1.18"><a href="#h2.1"><strong>&uarr;</strong></a> <a href="#r2.1.18">2.1.18.</a>
