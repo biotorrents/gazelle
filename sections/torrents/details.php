@@ -662,9 +662,9 @@ $bibtex = "
 $bibtex .= "
   title  = '$GroupName',
   year   = '$GroupYear',
-  url    = 'https://biotorrents.de/torrents.php?torrentid=$TorrentID',
+  url    = \href{https://biotorrents.de/torrents.php?torrentid=$TorrentID},
   note   = 'Online; accessed ".strftime('%Y-%m-%d')."',
-}";
+},";
 
 echo $bibtex;
 ?>
