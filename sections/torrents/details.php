@@ -779,9 +779,9 @@ $filename = "BioTorrents.de-$TorrentID";
               -->
 
               <!-- Both tags must be on the same line -->
-              <input type="button" class="spoilerButton" value="Show BibTeX" /><blockquote class="spoiler hidden">
-                <?="<pre>$bibtex</pre>"?>
-              </blockquote>
+              <input type="button" class="spoilerButton" value="Show BibTeX" /><pre class="hidden">
+                <?=$bibtex?>
+              </pre>
             </div>
             <?php
         }
