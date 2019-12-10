@@ -802,7 +802,7 @@ table.forum_unread {
 }
 
 td.avatar {
-  width: 100px;
+  max-width: 150px;
   padding: 0px;
 }
 
