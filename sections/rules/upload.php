@@ -43,7 +43,7 @@ View::show_header('Uploading Rules', 'rules');
       <h4 id="Intro"><a href="#Introk"><strong>&uarr;</strong></a> Introduction</h4>
         <div class="box pad" style="padding: 10px 10px 10px 20px;">
         <p>
-          <?= SITE_NAME ?> is the global DIYbio community's distrubuted data repository.
+          <?= SITE_NAME ?> is the global DIYbio community's distributed data repository.
           The content includes richly annotated and searchable biological sequence and medical imaging data.
           It follows the example of private BitTorrent sites to
           <a href="https://www.cambridge.org/core/services/aop-cambridge-core/content/view/2F379FE0CB50DF502F0075119FD3E060/S1744137417000650a.pdf/institutional_solutions_to_freeriding_in_peertopeer_networks_a_case_study_of_online_pirate_communities.pdf" target="_blank">address the free-rider problem</a>
@@ -112,7 +112,7 @@ View::show_header('Uploading Rules', 'rules');
             </li>
 
             <li id="r1.1.5"><a href="#h1.1"><strong>&uarr;</strong></a> <a href="#r1.1.5">1.1.5.</a>
-              <strong>Archived files in uploads under 5 GiB are not allowed.</strong>
+              <strong>Archived files in uploads under 2 GiB are not allowed.</strong>
               Specific archival rules can be found in their respective sections.
             </li>
 

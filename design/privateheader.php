@@ -168,7 +168,7 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
           </li>
           <li id="nav_irc"<?=
             Format::add_class($PageID, ['chat'], 'active', true)?>>
-            <a href="https://biotorrents.slack.com" target="_blank">Slack</a>
+            <a href="https://join.slack.com/t/biotorrents/shared_invite/<?=SLACK_INVITE?>" target="_blank">Slack</a>
           </li>
           <li id="nav_top10"<?=
             Format::add_class($PageID, ['top10'], 'active', true)?>>

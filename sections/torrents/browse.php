@@ -166,36 +166,34 @@ View::show_header('Browse Torrents', 'browse');
     <svg title="Your profile settings exclude some results" class="search_warning tooltip" width="10" height="15"><rect x=3 width="4" height="10" rx="2" ry="2"/><circle cx="5" cy="13" r="2"/></svg>
 <?php } ?>
       <table class="layout">
+      <tr id="catalogue_number" class="ftr_advanced<?=$HideAdvanced?>">
+          <td class="label"><!--Catalogue number:--></td>
+          <td class="ft_cataloguenumber">
+            <input type="search" size="19" name="cataloguenumber" class="inputtext smallest fti_advanced" placeholder="Accession Number" value="<?Format::form('cataloguenumber')?>" />
+          </td>
+        </tr>
+
+      <tr id="album_torrent_name" class="ftr_advanced<?=$HideAdvanced?>">
+          <td class="label"><!--Torrent name:--></td>
+          <td class="ft_groupname">
+            <input type="search" spellcheck="false" size="65" name="advgroupname" class="inputtext smaller fti_advanced" placeholder="Torrent Title" value="<?Format::form('advgroupname')?>" />
+          </td>
+        </tr>
+
         <tr id="artist_name" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label"><!--Artist name:--></td>
           <td class="ft_artistname">
             <input type="search" spellcheck="false" size="65" name="artistname" class="inputtext smaller fti_advanced" placeholder="Author Name" value="<?Format::form('artistname')?>" />
           </td>
         </tr>
-        <tr id="album_torrent_name" class="ftr_advanced<?=$HideAdvanced?>">
-          <td class="label"><!--Torrent name:--></td>
-          <td class="ft_groupname">
-            <input type="search" spellcheck="false" size="65" name="advgroupname" class="inputtext smaller fti_advanced" placeholder="Torrent Title" value="<?Format::form('advgroupname')?>" />
-          </td>
-        </tr>
-        <tr id="catalogue_number" class="ftr_advanced<?=$HideAdvanced?>">
-          <td class="label"><!--Catalogue number:--></td>
-          <td class="ft_cataloguenumber">
-            <input type="search" size="19" name="cataloguenumber" class="inputtext smallest fti_advanced" placeholder="Accession Number" value="<?Format::form('cataloguenumber')?>" />
-          </td>
-        </tr>
+
         <tr id="year" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label"><!--Year:--></td>
           <td class="ft_year">
             <input type="search" name="year" class="inputtext smallest fti_advanced" placeholder="Year" value="<?Format::form('year')?>" size="12" />
           </td>
         </tr>
-        <tr id="file_list" class="ftr_advanced<?=$HideAdvanced?>">
-          <td class="label"><!--File list:--></td>
-          <td class="ft_filelist">
-            <input type="search" spellcheck="false" size="65" name="filelist" class="inputtext fti_advanced" placeholder="File List" value="<?Format::form('filelist')?>" />
-          </td>
-        </tr>
+
         <tr id="torrent_description" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label"><!--<span title="Search torrent descriptions (not group information)" class="tooltip">Torrent description:</span>--></td>
           <td class="ft_description">
@@ -203,39 +201,60 @@ View::show_header('Browse Torrents', 'browse');
             Search torrent descriptions (not group information)
           </td>
         </tr>
+
+        <tr id="file_list" class="ftr_advanced<?=$HideAdvanced?>">
+          <td class="label"><!--File list:--></td>
+          <td class="ft_filelist">
+            <input type="search" spellcheck="false" size="65" name="filelist" class="inputtext fti_advanced" placeholder="File List" value="<?Format::form('filelist')?>" />
+          </td>
+        </tr>
+
         <tr id="rip_specifics" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label">Specifics</td>
           <td class="nobr ft_ripspecifics">
+          
+          <select name="media" class="ft_media fti_advanced">
+              <option value="">Seq Platform</option>
+  <?php  foreach ($Media as $MediaName) { ?>
+              <option value="<?=display_str($MediaName); ?>"<?Format::selected('media', $MediaName)?>><?=display_str($MediaName); ?></option>
+  <?php  } ?>
+            </select>
+
             <select id="container" name="container" class="ft_container fti_advanced">
-              <option value="">Format</option>
+              <option value="">Seq Format</option>
   <?php  foreach ($Containers as $Container) { ?>
               <option value="<?=display_str($Container);?>" <?Format::selected('container', $Container)?>><?=display_str($Container);?></option>
   <?php  } ?>
             </select>
+
+            <select name="media" class="ft_media fti_advanced">
+              <option value="">Img Platform</option>
+  <?  foreach ($MediaManga as $MediaName) { ?>
+              <option value="<?=display_str($MediaName); ?>"<?Format::selected('media', $MediaName)?>><?=display_str($MediaName); ?></option>
+  <?  } ?>
+            </select>
+
+            <select id="container" name="container" class="ft_container fti_advanced">
+              <option value="">Img Format</option>
+  <?php  foreach ($ContainersGames as $Container) { ?>
+              <option value="<?=display_str($Container);?>" <?Format::selected('container', $Container)?>><?=display_str($Container);?></option>
+  <?php  } ?>
+            </select>
+
             <select name="codec" class="ft_codec fti_advanced">
               <option value="">License</option>
   <?php  foreach ($Codecs as $Codec) { ?>
               <option value="<?=display_str($Codec); ?>"<?Format::selected('codec', $Codec)?>><?=display_str($Codec); ?></option>
   <?php  } ?>
             </select>
-            <select name="media" class="ft_media fti_advanced">
-              <option value="">Platform</option>
-  <?php  foreach ($Media as $MediaName) { ?>
-              <option value="<?=display_str($MediaName); ?>"<?Format::selected('media', $MediaName)?>><?=display_str($MediaName); ?></option>
-  <?php  } ?>
-            </select>
-            <select name="resolution" class="ft_resolution fti_advanced">
-              <option value="">Assembly Level</option>
-  <?php  foreach ($Resolutions as $Resolution) { ?>
-              <option value="<?=display_str($Resolution); ?>"<?Format::selected('resolution', $Resolution)?>><?=display_str($Resolution); ?></option>
-  <?php  } ?>
-            </select>
+
+            
           </td>
         </tr>
         <tr id="size" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label">Size</td>
           <td class="ft_size">
-            <input type="size_min" spellcheck="false" size="6" name="size_min" class="inputtext smaller fti_advanced" placeholder="Min" value="<?Format::form('size_min')?>" /> -
+            <input type="size_min" spellcheck="false" size="6" name="size_min" class="inputtext smaller fti_advanced" placeholder="Min" value="<?Format::form('size_min')?>" /> &ndash;
             <input type="size_max" spellcheck="false" size="6" name="size_max" class="inputtext smaller fti_advanced" placeholder="Max" value="<?Format::form('size_max')?>" />
             <select name="size_unit" class="ft_size fti_advanced">
               <option value="">Unit</option>
@@ -250,17 +269,25 @@ View::show_header('Browse Torrents', 'browse');
         <tr id="misc" class="ftr_advanced<?=$HideAdvanced?>">
           <td class="label">Misc</td>
           <td class="nobr ft_misc">
+          <select name="resolution" class="ft_resolution fti_advanced">
+              <option value="">Assembly Level</option>
+  <?php  foreach ($Resolutions as $Resolution) { ?>
+              <option value="<?=display_str($Resolution); ?>"<?Format::selected('resolution', $Resolution)?>><?=display_str($Resolution); ?></option>
+  <?php  } ?>
+            </select>
+
+            <select name="censored" class="ft_censored fti_advanced">
+              <option value="">Alignment</option>
+              <option value="1"<?Format::selected('censored', 1)?>>Aligned</option>
+              <option value="0"<?Format::selected('censored', 0)?>>Unaligned</option>
+            </select>
+
             <select name="freetorrent" class="ft_freetorrent fti_advanced">
               <option value="">Leech Status</option>
               <option value="1"<?Format::selected('freetorrent', 1)?>>Freeleech</option>
               <option value="2"<?Format::selected('freetorrent', 2)?>>Neutral Leech</option>
               <option value="3"<?Format::selected('freetorrent', 3)?>>Either</option>
               <option value="0"<?Format::selected('freetorrent', 0)?>>Normal</option>
-            </select>
-            <select name="censored" class="ft_censored fti_advanced">
-              <option value="">Alignment</option>
-              <option value="1"<?Format::selected('censored', 1)?>>Aligned</option>
-              <option value="0"<?Format::selected('censored', 0)?>>Unaligned</option>
             </select>
           </td>
         </tr>
