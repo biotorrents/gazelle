@@ -737,31 +737,33 @@ foreach ($TorrentList as $Torrent) {
     if (!empty($Description)) {
         echo "\n<blockquote>".Text::full_format($Description).'</blockquote>';
     }
-    if (!empty($MediaInfo) && $MediaInfo === 'nil') { # Kludge
+    /*
+    if (!empty($MediaInfo) || $MediaInfo === 'nil') { # Kludge
         $parsed = MediaInfo::parse($MediaInfo);
         echo "\n<blockquote>";
         if (!empty($parsed)) {
             echo $parsed;
         } else {
-            ?>
+          */
+    echo "\n<blockquote>"; ?>
             <div class="spoilerContainer hideContainer">
               <?php
 # Make a filename
 $filename = "BioTorrents.de-$TorrentID";
 
-            # Make a BibTeX citation
-            $bibtex = "
+    # Make a BibTeX citation
+    $bibtex = "
 @misc{ $filename,";
 
-            foreach ($Artists as $Num => $Artist) {
-                $bibtex .= "\n  author  = {".Artists::display_artist($Artist)."},";
-            }
+    foreach ($Artists as $Num => $Artist) {
+        $bibtex .= "\n  author  = {".Artists::display_artist($Artist)."},";
+    }
 
-            if (!empty($GroupNameRJ)) {
-                $bibtex .= "\n  subtitle= {".$GroupNameRJ." ".$GroupNameJP."},";
-            }
+    if (!empty($GroupNameRJ)) {
+        $bibtex .= "\n  subtitle= {".$GroupNameRJ." ".$GroupNameJP."},";
+    }
   
-            $bibtex .= "
+    $bibtex .= "
   title   = {".$GroupName."},
   year    = {".$GroupYear."},
   url     = \href{https://biotorrents.de/torrents.php?torrentid=$TorrentID},
@@ -784,13 +786,13 @@ $filename = "BioTorrents.de-$TorrentID";
               </pre>
             </div>
             <?php
-        }
+        #}
         echo '</blockquote>';
-    } ?>
+} ?>
           </td>
         </tr>
         <?php
-} ?>
+#}?>
       </table>
     </div>
     <?php

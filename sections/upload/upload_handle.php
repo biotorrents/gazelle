@@ -543,7 +543,7 @@ if ($DB->has_results()) {
 
 // Torrents over a size in bytes are neutral leech
 // Download doesn't count, upload does
-if (($TotalSize > 53687091200)) { # 50 GiB
+if (($TotalSize > 10737418240)) { # 10 GiB
   $T['FreeTorrent'] = '2';
     $T['FreeLeechType'] = '2';
 }
