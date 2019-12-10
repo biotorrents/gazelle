@@ -522,7 +522,7 @@ class Users {
    */
   public static function show_avatar($Avatar, $UserID, $Username, $Setting, $Size = 0, $ReturnHTML = true) {
     $Avatar = ImageTools::process($Avatar, 'avatar');
-    $Style = 'style="max-width: 150px; max-height: 300px;"';
+    $Style = 'style="max-width: 245px; max-height: 420px;"';
     $AvatarMouseOverText = '';
     $SecondAvatar = '';
     $Class = 'class="double_avatar"';
