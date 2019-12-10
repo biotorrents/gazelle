@@ -759,7 +759,7 @@ $filename = "BioTorrents.de-$TorrentID";
         $bibtex .= "\n  author  = {".Artists::display_artist($Artist)."},";
     }
 
-    if (!empty($GroupNameRJ)) {
+    if (!empty($GroupNameRJ) || !empty($GroupNameJP)) {
         $bibtex .= "\n  subtitle= {".$GroupNameRJ." ".$GroupNameJP."},";
     }
   
