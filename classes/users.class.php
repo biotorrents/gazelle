@@ -520,9 +520,9 @@ class Users {
    * @param string $ReturnHTML
    * @return string
    */
-  public static function show_avatar($Avatar, $UserID, $Username, $Setting, $Size = 0, $ReturnHTML = true) {
+  public static function show_avatar($Avatar, $UserID, $Username, $Setting, $Size = 120, $ReturnHTML = true) {
     $Avatar = ImageTools::process($Avatar, 'avatar');
-    $Style = 'style="max-width: 245px; max-height: 420px;"';
+    $Style = 'style="max-height: 300px;"';
     $AvatarMouseOverText = '';
     $SecondAvatar = '';
     $Class = 'class="double_avatar"';
@@ -544,12 +544,10 @@ class Users {
     switch ($Setting) {
       case 0:
         if (!empty($Avatar)) {
-          $ToReturn = ($ReturnHTML ? "<a href=\"user.php?id=$UserID\"><img src=\"$Avatar\" $Style $AvatarMouseOverText$SecondAvatar $Class /></a>" : $Avatar);
-          #$ToReturn = ($ReturnHTML ? "<a href=\"user.php?id=$UserID\"><img src=\"$Avatar\" ".($Size?"width=\"$Size\" ":"")."$Style $AvatarMouseOverText$SecondAvatar $Class /></a>" : $Avatar);
+          $ToReturn = ($ReturnHTML ? "<a href=\"user.php?id=$UserID\"><img src=\"$Avatar\" ".($Size?"width=\"$Size\" ":"")."$Style $AvatarMouseOverText$SecondAvatar $Class /></a>" : $Avatar);
         } else {
           $URL = STATIC_SERVER.'common/avatars/default.png';
-          $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" $Style $AvatarMouseOverText$SecondAvatar />" : $URL);
-          #$ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar />" : $URL);
+          $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar />" : $URL);
         }
         break;
       case 2:
