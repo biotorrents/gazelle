@@ -2,7 +2,7 @@
 authorize();
 
 include(SERVER_ROOT.'/classes/validate.class.php');
-$Val = new VALIDATE;
+$Val = new Validate;
 
 $P = [];
 $P = db_array($_POST);

@@ -24,8 +24,8 @@ include(SERVER_ROOT.'/classes/file_checker.class.php');
 enforce_login();
 authorize();
 
-$Validate = new VALIDATE;
-$Feed = new FEED;
+$Validate = new Validate;
+$Feed = new Feed;
 
 //*****************************************************************************//
 //--------------- Set $Properties array ---------------------------------------//

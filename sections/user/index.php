@@ -7,7 +7,7 @@ Make sure all constants are defined in config.php and not in random files
 *****************************************************************/
 enforce_login();
 include(SERVER_ROOT."/classes/validate.class.php");
-$Val = NEW VALIDATE;
+$Val = NEW Validate;
 
 if (empty($_REQUEST['action'])) {
   $_REQUEST['action'] = '';

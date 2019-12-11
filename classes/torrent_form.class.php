@@ -98,7 +98,6 @@ class TorrentForm
     <input type="text" value="<?= $Announce ?>" size="74"
       onclick="this.select();" readonly="readonly" /> <br />
     <?php
-
     }
         } ?>
 
@@ -152,15 +151,23 @@ class TorrentForm
     <!-- New torrent options: file and category -->
     <?php if ($this->NewTorrent) { ?>
     <table cellpadding="3" cellspacing="1" border="0" class="layout" width="100%">
+
       <tr>
-        <td class="label">Torrent File</td>
+        <td class="label">
+          Torrent File
+          <strong class="important_text">*</strong>
+        </td>
         <td><input id="file" type="file" name="file_input" size="50" /><br />
           Use the above announce URL and set the private flag in your BitTorrent client, e.g.,
           <code>mktorrent -p -a &lt;announce&gt; &lt;target folder&gt;</code>
         </td>
       </tr>
+
       <tr>
-        <td class="label">Type</td>
+        <td class="label">
+          Type
+          <strong class="important_text">*</strong>
+        </td>
         <td>
           <select id="categories" name="type" onchange="Categories()" <?= ($this->DisabledFlag) ? ' disabled="disabled"' : '' ?>>
             <?php
@@ -195,6 +202,7 @@ class TorrentForm
         if (!$this->NewTorrent) {
             if (check_perms('torrents_freeleech')) {
                 ?>
+
       <tr id="freetorrent">
         <td class="label">Freeleech</td>
         <td>
@@ -223,6 +231,7 @@ class TorrentForm
           </select>
         </td>
       </tr>
+
       <?php
             }
         } ?>
@@ -268,6 +277,7 @@ class TorrentForm
 <!-- Catalogue number field -->
 <table cellpadding="3" cellspacing="1" border="0" class="layout slice" width="100%">
   <?php if ($this->NewTorrent) { ?>
+
   <tr id="javdb_tr">
     <td class="label tooltip" title="">Accession Number</td>
     <td>
@@ -275,9 +285,8 @@ class TorrentForm
         value="<?= display_str($Torrent['CatalogueNumber']) ?>"
         <?= $this->Disabled ?>/>
       <?php if (!$this->DisabledFlag) { ?>
-      <input type="button" autofill="jav" value="Autofill">
-      </input>
-      <em>Coming Soon!</em><br />
+      <input type="button" autofill="jav" value="Autofill" style="pointer-events: none; opacity: 0.5;">
+      </input><br />
       <!-- Autofill only supports RefSeq and UniProt; -->
       Enter any ID number that corresponds to the data,
       preferring RefSeq and UniProt
@@ -295,6 +304,7 @@ class TorrentForm
       <?php } ?>
     </td>
   </tr>
+
   <tr id="ehentai_tr" class="hidden">
     <td class="label">e-hentai URL (optional)</td>
     <td>
@@ -307,7 +317,10 @@ class TorrentForm
 
   <!-- Three title fields -->
   <tr id="title_tr">
-    <td class="label">Torrent Title</td>
+    <td class="label">
+      Torrent Title
+      <strong class="important_text">*</strong>
+    </td>
     <td>
       <input type="text" id="title" name="title" size="60"
         value="<?= display_str($Torrent['Title']) ?>"
@@ -338,15 +351,18 @@ class TorrentForm
 
   <!-- Multiple artists -->
   <tr id="idols_tr">
-    <td class="label tooltip" title="">Authors(s)</td>
+    <td class="label">
+      Authors(s)
+      <strong class="important_text">*</strong>
+    </td>
     <td id="idolfields">
       One per field, e.g., Robert K. Mortimer [+] David Schild<br />
       <?php
         if (!empty($Torrent['Artists'])) {
             foreach ($Torrent['Artists'] as $Num => $Artist) {
                 ?>
-      <input type="text" id="idols_<?= $Num ?>" name="idols[]"
-        size="45"
+      <input type="text" id="idols_<?= $Num ?>"
+        name="idols[]" size="45"
         value="<?= display_str($Artist['name']) ?>"
         <?= $this->Disabled ?>/>
       <?php if ($Num === 0) { ?>
@@ -367,7 +383,10 @@ class TorrentForm
 
   <!-- Production studio -->
   <tr id="studio_tr">
-    <td class="label">Department/Lab</td>
+    <td class="label">
+      Department/Lab
+      <strong class="important_text">*</strong>
+    </td>
     <td>
       <input type="text" id="studio" name="studio" size="60"
         value="<?= display_str($Torrent['Studio']) ?>"
@@ -389,7 +408,10 @@ class TorrentForm
 
   <!-- Year -->
   <tr id="year_tr">
-    <td class="label">Year</td>
+    <td class="label">
+      Year
+      <strong class="important_text">*</strong>
+    </td>
     <td>
       <input type="text" id="year" name="year" maxlength="4" size="5"
         value="<?= display_str($Torrent['Year']) ?>"
@@ -401,7 +423,10 @@ class TorrentForm
   <!-- Media type -->
   <?php } # Ends if NewTorrent line 256?>
   <tr id="media_tr">
-    <td class="label">Platform</td>
+    <td class="label">
+      Platform
+      <strong class="important_text">*</strong>
+    </td>
     <td>
       <select name="media">
         <option>---</option>
@@ -420,7 +445,10 @@ class TorrentForm
 
   <!-- Alternate media -->
   <tr id="media_manga_tr">
-    <td class="label">Platform</td>
+    <td class="label">
+      Platform
+      <strong class="important_text">*</strong>
+    </td>
     <td>
       <select name="media">
         <option>---</option>
@@ -439,10 +467,13 @@ class TorrentForm
 
   <!-- Container -->
   <tr id="container_tr">
-    <td class="label">Format</td>
+    <td class="label">
+      Format
+      <strong class="important_text">*</strong>
+    </td>
     <td>
       <select name="container">
-        <option>---</option>
+        <option value="Autofill">Autofill</option>
         <?php
           foreach ($this->Containers as $Cont) {
               echo "\t\t\t\t\t\t<option value=\"$Cont\"";
@@ -452,16 +483,19 @@ class TorrentForm
               echo ">$Cont</option>\n";
           } ?>
       </select><br />
-      Data file format
+      Data file format, or detect from file list
     </td>
   </tr>
 
   <!-- Alternate container -->
   <tr id="container_games_tr">
-    <td class="label">Format</td>
+    <td class="label">
+      Format
+      <strong class="important_text">*</strong>
+    </td>
     <td>
       <select id="container" name="container">
-        <option>---</option>
+        <option value="Autofill">Autofill</option>
         <?php
           foreach ($this->ContainersGames as $Container) {
               echo "\t\t\t\t\t\t<option value=\"$Container\"";
@@ -471,13 +505,16 @@ class TorrentForm
               echo ">$Container</option>\n";
           } ?>
       </select><br />
-      Data file format
+      Data file format, or detect from file list
     </td>
   </tr>
 
   <!-- Resolution -->
   <tr id="resolution_tr">
-    <td class="label">Assembly Level</td>
+    <td class="label">
+      Assembly Level
+      <strong class="important_text">*</strong>
+    </td>
     <td>
       <select id="ressel" name="ressel" onchange="SetResolution()">
         <option value="">---</option>
@@ -510,10 +547,13 @@ class TorrentForm
 
   <!-- Compression -->
   <tr id="archive_tr">
-    <td class="label">Archive</td>
+    <td class="label">
+      Archive
+      <strong class="important_text">*</strong>
+    </td>
     <td>
       <select name='archive'>
-        <option>---</option>
+        <option value="Autofill">Autofill</option>
         <?php
           foreach ($this->Archives as $Archive) {
               echo "\t\t\t\t\t\t<option value=\"$Archive\"";
@@ -523,13 +563,16 @@ class TorrentForm
               echo ">$Archive</option>\n";
           } ?>
       </select><br />
-      Compression algorithm
+      Compression algorithm, or detect from file list
     </td>
   </tr>
 
   <!-- Encoding -->
   <tr id="codec_tr">
-    <td class="label">License</td>
+    <td class="label">
+      License
+      <strong class="important_text">*</strong>
+    </td>
     <td>
       <select name="codec">
         <option>---</option>
@@ -550,7 +593,10 @@ class TorrentForm
   <!-- Tags -->
   <?php if ($this->NewTorrent) { ?>
   <tr id="tags_tr">
-    <td class="label">Tags</td>
+    <td class="label">
+      Tags
+      <strong class="important_text">*</strong>
+    </td>
     <td>
       <?php
         $GenreTags = G::$Cache->get_value('genre_tags');
@@ -604,7 +650,10 @@ class TorrentForm
 
   <!-- Album description -->
   <tr id="group_desc_tr">
-    <td class="label">Torrent Group Description</td>
+    <td class="label">
+      Torrent Group Description
+      <strong class="important_text">*</strong>
+    </td>
     <td>
       <?php
         new TEXTAREA_PREVIEW(

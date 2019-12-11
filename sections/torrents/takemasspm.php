@@ -11,7 +11,7 @@ authorize();
 enforce_login();
 
 require_once(SERVER_ROOT.'/classes/validate.class.php');
-$Validate = new VALIDATE;
+$Validate = new Validate;
 
 $TorrentID = (int)$_POST['torrentid'];
 $GroupID = (int)$_POST['groupid'];

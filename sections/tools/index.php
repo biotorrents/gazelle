@@ -41,10 +41,10 @@ if (substr($_REQUEST['action'],0,16) == 'rerender_gallery' && !isset($argv[1])) 
 }
 
 include(SERVER_ROOT.'/classes/validate.class.php');
-$Val = new VALIDATE;
+$Val = new Validate;
 
 include(SERVER_ROOT.'/classes/feed.class.php');
-$Feed = new FEED;
+$Feed = new Feed;
 
 switch ($_REQUEST['action']) {
   case 'phpinfo':

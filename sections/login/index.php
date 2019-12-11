@@ -23,7 +23,7 @@ require_once SERVER_ROOT.'/classes/twofa.class.php';
 require_once SERVER_ROOT.'/classes/u2f.class.php';
 require_once SERVER_ROOT.'/classes/validate.class.php';
 
-$Validate = new VALIDATE;
+$Validate = new Validate;
 $TwoFA = new TwoFactorAuth(SITE_NAME);
 $U2F = new u2f\U2F('https://'.SITE_DOMAIN);
 

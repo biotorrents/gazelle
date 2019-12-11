@@ -1,12 +1,11 @@
 <?php
 
 /*-- TODO ---------------------------//
-Writeup how to use the VALIDATE class, add in support for form id checks
+Writeup how to use the Validate class, add in support for form id checks
 Complete the number and date validation
-Remove the GenerateJS stuff
 //-----------------------------------*/
 
-class VALIDATE
+class Validate
 {
     public $Fields = [];
 
@@ -170,6 +169,8 @@ class VALIDATE
 
   public function GenerateJS($FormID)
   {
+      return true;
+
       /*
       $ReturnJS = "<script type=\"text/javascript\" language=\"javascript\">\r\n";
       $ReturnJS .= "function formVal() {\r\n";

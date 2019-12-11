@@ -11,7 +11,7 @@ if (isset($LoggedUser)) {
 
 include(SERVER_ROOT.'/classes/validate.class.php');
 
-$Val = NEW VALIDATE;
+$Val = NEW Validate;
 
 if (!empty($_REQUEST['confirm'])) {
   // Confirm registration

@@ -1,5 +1,5 @@
 <?
-class FEED {
+class Feed {
   function open_feed() {
     header("Content-type: application/xml; charset=UTF-8");
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n","<rss xmlns:dc=\"http://purl.org/dc/elements/1.1/\" version=\"2.0\">\n\t<channel>\n";
