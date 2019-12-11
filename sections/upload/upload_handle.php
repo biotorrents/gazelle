@@ -122,92 +122,89 @@ if (!empty($_POST['requestid'])) {
 //******************************************************************************//
 //--------------- Validate data in upload form ---------------------------------//
 
-$Validate->SetFields('type', '1', 'inarray', 'Please select a valid type.', array('inarray' => array_keys($Categories)));
+$Validate->SetFields(
+    'type',
+    '1',
+    'inarray',
+    'Please select a valid type.',
+    array('inarray' => array_keys($Categories))
+);
+
 switch ($Type) {
-  /*
-  case 'Movies':
-  case 'Anime':
-    $Validate->SetFields('codec',
-      '1','inarray','Please select a valid codec.', array('inarray'=>$Codecs));
-
-    $Validate->SetFields('resolution',
-      '1','regex','Please set a valid resolution.', array('regex'=>'/^(SD)|([0-9]+(p|i))|([0-9]K)|([0-9]+x[0-9]+)$/'));
-
-    $Validate->SetFields('audioformat',
-      '1','inarray','Please select a valid audio format.', array('inarray'=>$AudioFormats));
-
-    $Validate->SetFields('sub',
-      '1','inarray','Please select a valid sub format.', array('inarray'=>$Subbing));
-
-    $Validate->SetFields('censored', '1', 'inarray', 'Set valid censoring', array('inarray'=>array(0, 1)));
-
-  case 'Games':
-    $Validate->SetFields('container',
-      '1','inarray','Please select a valid container.', array('inarray'=>array_merge($Containers, $ContainersGames)));
-
-  case 'Manga':
+    /*
+  case 'Imaging':
     if (!isset($_POST['groupid']) || !$_POST['groupid']) {
-      $Validate->SetFields('year',
-        '1','number','The year of the original release must be entered.', array('maxlength'=>3000, 'minlength'=>1800));
-      if ($Type === 'Manga') {
-        $Validate->SetFields('pages',
-          '1', 'number', 'That is not a valid page count', array('minlength'=>1));
-      }
-    }
-
-    $Validate->SetFields('media',
-      '1','inarray','Please select a valid media/platform.', array('inarray'=>array_merge($Media, $MediaManga, $Platform)));
-
-    $Validate->SetFields('lang',
-      '1','inarray','Please select a valid language.', array('inarray'=>$Languages));
-
-    $Validate->SetFields('release_desc',
-      '0','string','The release description has a minimum length of 10 characters.', array('maxlength'=>1000000, 'minlength'=>10));
-  */
-
-  default:
-    if (!isset($_POST['groupid']) || !$_POST['groupid']) {
-        $Validate->SetFields(
-            'title',
-            '0',
-            'string',
-            'Torrent Title must be between 1 and 300 characters.', # `torrents_group` limits
-            array('maxlength'=>300, 'minlength'=>1)
+        $Validate->SetFields( # torrents.Media
+            'media',
+            '1',
+            'inarray',
+            'Please select a valid platform.',
+            array('inarray'=>array_merge($Media, $MediaManga, $Platform))
         );
-        $Validate->SetFields(
+
+        $Validate->SetFields( # torrents.Container
+            'container',
+            '1',
+            'inarray',
+            'Please select a valid format.',
+            array('inarray'=>array_merge($Containers, $ContainersGames))
+        );
+    }
+break;
+*/
+
+default:
+    if (!isset($_POST['groupid']) || !$_POST['groupid']) {
+        $Validate->SetFields( # torrents_group.Name
+            'title',
+            '1',
+            'string',
+            'Torrent Title must be between 1 and 255 characters.',
+            array('maxlength'=>255, 'minlength'=>1)
+        );
+
+        $Validate->SetFields( # torrents_group.NameRJ
             'title_rj',
             '0',
             'string',
-            'Organism must be between 1 and 300 characters.',
-            array('maxlength'=>300, 'minlength'=>1)
+            'Organism must be between 0 and 255 characters.',
+            array('maxlength'=>255, 'minlength'=>0)
         );
 
-        $Validate->SetFields(
+        $Validate->SetFields( # torrents_group.NameJP
             'title_jp',
             '0',
             'string',
-            'Strain/Variety must be between 1 and 300 characters.',
-            array('maxlength'=>300, 'minlength'=>1)
+            'Strain/Variety must be between 0 and 255 characters.',
+            array('maxlength'=>255, 'minlength'=>0)
         );
 
-        $Validate->SetFields(
+        $Validate->SetFields( # torrents_group.Year
+            'year',
+            '1',
+            'number',
+            'The year of the original release must be entered.',
+            array('maxlength'=>4, 'minlength'=>4)
+        );
+
+        $Validate->SetFields( # torrents_group.TagList
             'tags',
             '1',
             'string',
-            'You must enter at least five tags. Maximum length is 1500 characters.',
-            array('maxlength'=>1500, 'minlength'=>2)
+            'You must enter at least five tags. Maximum length is 500 characters.',
+            array('maxlength'=>500, 'minlength'=>5)
         );
 
-        $Validate->SetFields(
+        $Validate->SetFields( # torrents_group.WikiImage
             'image',
             '0',
             'link',
             'The image URL you entered was invalid.',
-            array('maxlength'=>255, 'minlength'=>12)
+            array('maxlength'=>255, 'minlength'=>10)
         );
     }
 
-    $Validate->SetFields(
+    $Validate->SetFields( # torrents_group.WikiBody
         'album_desc',
         '1',
         'string',
@@ -690,9 +687,10 @@ if ($PublicTorrent) {
     View::show_header('Warning'); ?>
 <h1>Warning</h1>
 <p>
-  <strong>Your torrent has been uploaded but you must re-download your torrent file from
-  <a href="torrents.php?id=<?=$GroupID?>&torrentid=<?=$TorrentID?>">here</a>
-  because the site modified it to make it private.</strong>
+    <strong>Your torrent has been uploaded but you must re-download your torrent file from
+        <a
+            href="torrents.php?id=<?=$GroupID?>&torrentid=<?=$TorrentID?>">here</a>
+        because the site modified it to make it private.</strong>
 </p>
 <?php
   View::show_footer();
@@ -700,9 +698,10 @@ if ($PublicTorrent) {
     View::show_header('Warning'); ?>
 <h1>Warning</h1>
 <p>
-  <strong>Your torrent has been uploaded but you must re-download your torrent file from
-  <a href="torrents.php?id=<?=$GroupID?>&torrentid=<?=$TorrentID?>">here</a>
-  because the site modified it to add a source flag.</strong>
+    <strong>Your torrent has been uploaded but you must re-download your torrent file from
+        <a
+            href="torrents.php?id=<?=$GroupID?>&torrentid=<?=$TorrentID?>">here</a>
+        because the site modified it to add a source flag.</strong>
 </p>
 <?php
   View::show_footer();

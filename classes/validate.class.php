@@ -169,8 +169,6 @@ class Validate
 
   public function GenerateJS($FormID)
   {
-      return true;
-
       /*
       $ReturnJS = "<script type=\"text/javascript\" language=\"javascript\">\r\n";
       $ReturnJS .= "function formVal() {\r\n";

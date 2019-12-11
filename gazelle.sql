@@ -1149,9 +1149,9 @@ CREATE TABLE `torrents_bad_tags` (
 CREATE TABLE `torrents_group` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `CategoryID` int(10) DEFAULT NULL,
-  `Name` varchar(300) DEFAULT NULL,
-  `NameRJ` varchar(300) DEFAULT NULL,
-  `NameJP` varchar(300) DEFAULT NULL,
+  `Name` varchar(255) DEFAULT NULL,
+  `NameRJ` varchar(255) DEFAULT NULL,
+  `NameJP` varchar(255) DEFAULT NULL,
   `Year` int(4) DEFAULT NULL,
   `Studio` varchar(80) NOT NULL DEFAULT '',
   `Series` varchar(80) NOT NULL DEFAULT '',

@@ -576,7 +576,7 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
         $Data['CategoryID'] = $CategoryID;
         // All of the individual torrents in the group
 
-        //Get report info for each torrent, use the cache if available, if not, add to it.
+        // Get report info for each torrent, use the cache if available, if not, add to it.
         $Reported = false;
         $Reports = Torrents::get_reports($TorrentID);
         if (count($Reports) > 0) {
