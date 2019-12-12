@@ -1,6 +1,7 @@
 /*
-  TODO: Document.
+  todo: Document
 */
+
 "use strict";
 var cookie = {
   get: function (cookie_name) {

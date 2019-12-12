@@ -169,6 +169,8 @@ if (count($Freeleeches)) {
 <?
 }
 ?>
+
+<!-- Stats -->
     <div class="box">
       <div class="head colhead_dark"><strong>Stats</strong></div>
       <ul class="stats nobullet">
@@ -260,7 +262,7 @@ if (($ArtistCount = $Cache->get_value('stats_artist_count')) === false) {
         <li>Torrent Groups: <?=number_format($GroupCount)?></li>
         <li>Artists: <?=number_format($ArtistCount)?></li>
 <?
-//End Torrent Stats
+// End Torrent Stats
 
 if (($RequestStats = $Cache->get_value('stats_requests')) === false) {
   $DB->query("
@@ -277,7 +279,7 @@ if (($RequestStats = $Cache->get_value('stats_requests')) === false) {
   list($RequestCount, $FilledCount) = $RequestStats;
 }
 
-// do not divide by zero
+// Do not divide by zero
 if ($RequestCount > 0) {
   $RequestsFilledPercent = $FilledCount / $RequestCount * 100;
 } else {
@@ -295,7 +297,7 @@ if ($SnatchStats = $Cache->get_value('stats_snatches')) {
 }
 
 if (($PeerStats = $Cache->get_value('stats_peers')) === false) {
-  //Cache lock!
+  // Cache lock!
   $PeerStatsLocked = $Cache->get_value('stats_peers_lock');
   if (!$PeerStatsLocked) {
     $Cache->cache_value('stats_peers_lock', 1, 30);
@@ -330,6 +332,8 @@ if (!$PeerStatsLocked) {
         <li>Seeder/leecher ratio: <?=$Ratio?></li>
       </ul>
     </div>
+
+    <!-- Polls -->
 <?
 if (($TopicID = $Cache->get_value('polls_featured')) === false) {
   $DB->query("
@@ -388,6 +392,7 @@ if ($TopicID) {
   list($UserResponse) = $DB->next_record();
 
 ?>
+
     <div class="box">
       <div class="head colhead_dark"><strong>Poll<? if ($Closed) { echo ' [Closed]'; } ?></strong></div>
       <div class="pad">
@@ -430,7 +435,7 @@ if ($TopicID) {
     </div>
 <?
 }
-//polls();
+// polls();
 ?>
   </div>
   <div class="main_column">

@@ -7,7 +7,7 @@
 --   * Ocelot tokens:      char(32)
 --   * Tag lists:          varchar(500)
 --
--- @todo Finish explaining the schema
+-- todo: Finish explaining the schema
 
 SET FOREIGN_KEY_CHECKS = 0;
 

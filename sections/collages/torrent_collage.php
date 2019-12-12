@@ -4,7 +4,7 @@ function compare($X, $Y) {
 }
 
 // Build the data for the collage and the torrent list
-// TODO: Cache this
+// todo: Cache this
 $DB->query("
   SELECT
     ct.GroupID,

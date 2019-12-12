@@ -599,7 +599,8 @@ class NotificationsManager {
   }
 
 /*
-  // TODO: Figure out what these functions are supposed to do and fix them
+  // todo: Figure out what these functions are supposed to do and fix them
+  
   public static function send_notification($UserID, $ID, $Type, $Message, $URL, $Importance = 'alert', $AutoExpire = false) {
     $Notifications = G::$Cache->get_value("user_cache_notifications_$UserID");
     if (empty($Notifications)) {

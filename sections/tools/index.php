@@ -351,7 +351,7 @@ switch ($_REQUEST['action']) {
     break;
 
   case 'ip_ban':
-    //TODO: Clean up DB table ip_bans.
+    // todo: Clean up DB table ip_bans
     include(SERVER_ROOT.'/sections/tools/managers/bans.php');
     break;
   case 'quick_ban':

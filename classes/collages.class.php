@@ -33,7 +33,7 @@ class Collages
         list($CollageCount) = G::$DB->next_record();
 
         if ($CollageCount >= G::$LoggedUser['Permissions']['MaxCollages']) {
-            // @todo Fix this, the query was for COUNT(ID), so I highly doubt that this works... - Y
+            // todo: Fix this, the query was for COUNT(ID), so I highly doubt that this works... - Y
             list($CollageID) = G::$DB->next_record();
             header('Location: collage.php?id='.$CollageID);
             die();

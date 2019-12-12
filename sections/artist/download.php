@@ -1,5 +1,5 @@
 <?
-//TODO: freeleech in ratio hit calculations, in addition to a warning of whats freeleech in the Summary.txt
+// todo: Freeleech in ratio hit calculations, in addition to a warning of whats freeleech in the Summary.txt
 /*
 This page is something of a hack so those
 easily scared off by funky solutions, don't

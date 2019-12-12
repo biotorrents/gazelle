@@ -433,7 +433,7 @@ $DB->query("
   WHERE ID = $GroupID");
 list($Name) = $DB->next_record(MYSQLI_NUM, false);
 
-Misc::write_log("Torrent $TorrentID ($Name) in group $GroupID was edited by ".$LoggedUser['Username']." ($LogDetails)"); // TODO: this is probably broken
+Misc::write_log("Torrent $TorrentID ($Name) in group $GroupID was edited by ".$LoggedUser['Username']." ($LogDetails)"); // todo: This is probably broken
 Torrents::write_group_log($GroupID, $TorrentID, $LoggedUser['ID'], $LogDetails, 0);
 $Cache->delete_value("torrents_details_$GroupID");
 $Cache->delete_value("torrent_download_$TorrentID");

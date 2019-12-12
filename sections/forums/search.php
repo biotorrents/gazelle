@@ -1,6 +1,6 @@
 <?php
 
-// @todo Clean up this fucking mess
+// todo: Clean up this fucking mess
 
 /*
 Forums search result page

@@ -102,8 +102,8 @@ define('FLS_TEAM',       '33');
 define('FORUM_MOD',      '9001');
 
 // Forums
-define('STAFF_FORUM',           0); # @todo
-define('DONOR_FORUM',           0); # @todo
+define('STAFF_FORUM',           0); # todo
+define('DONOR_FORUM',           0); # todo
 define('TRASH_FORUM_ID',        8);
 define('ANNOUNCEMENT_FORUM_ID', 1);
 

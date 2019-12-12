@@ -7,7 +7,7 @@
 spl_autoload_register(function ($ClassName) {
   $FilePath = SERVER_ROOT . '/classes/' . strtolower($ClassName) . '.class.php';
   if (!file_exists($FilePath)) {
-    // TODO: Rename the following classes to conform with the code guidelines
+    // todo: Rename the following classes to conform with the code guidelines
     switch ($ClassName) {
       case 'MASS_USER_BOOKMARKS_EDITOR':
         $FileName = 'mass_user_bookmarks_editor.class';

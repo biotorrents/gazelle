@@ -1,8 +1,8 @@
 <?
-//TODO: Developer, add resend last donation when available AND add missing headers to Test IPN
+// todo: Developer, add resend last donation when available AND add missing headers to Test IPN
 enforce_login();
 
-//Include the header
+// Include the header
 if ($LoggedUser['RatioWatch']) {
   error('Due to the high volume of payment disputes, we do not accept donations from users on ratio watch. Sorry.');
 }

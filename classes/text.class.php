@@ -868,7 +868,7 @@ class Text {
           if (!self::valid_url($Block['Val'], '\.(mp3|ogg|wav)')) {
             $Str .= '[aud]'.$Block['Val'].'[/aud]';
           } else {
-            //TODO: Proxy this for staff?
+            // todo: Proxy this for staff?
             $Str .= '<audio controls="controls" src="'.$Block['Val'].'"><a rel="noreferrer" target="_blank" href="'.$Block['Val'].'">'.$Block['Val'].'</a></audio>';
           }
           break;

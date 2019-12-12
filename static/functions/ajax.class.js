@@ -1,5 +1,5 @@
 /*
-  TODO: Further optimize serialize function
+  todo: Further optimize serialize function
 
   UPDATE: We were forced to create an individual XHR for each request
   to avoid race conditions on slower browsers where the request would
@@ -18,7 +18,6 @@
     $('#quickpost').raw().value = "[quote="+username+"]" + ajax.response + "[/quote]";
   }
   ajax.get("?action=get_post&post=" + postid);
-
 */
 "use strict";
 var ajax = {
@@ -96,13 +95,14 @@ var ajax = {
     return query.substr(0, query.length - 1);
   }
 };
-//Bookmarks
+
+// Bookmarks
 function Bookmark(type, id, newName) {
   var bmLinks = $('#bookmarklink_' + type + '_' + id + ', .bookmarklink_' + type + '_' + id);
   var oldName = bmLinks.html();
-  ajax.get("bookmarks.php?action=add&type=" + type + "&auth=" + authkey + "&id=" + id, function() {
+  ajax.get("bookmarks.php?action=add&type=" + type + "&auth=" + authkey + "&id=" + id, function () {
     bmLinks.parent('.remove_bookmark, .add_bookmark').toggleClass('add_bookmark remove_bookmark');
-    bmLinks.html(newName).attr('title', 'Remove bookmark').removeAttr('onclick').off('click').click(function() {
+    bmLinks.html(newName).attr('title', 'Remove bookmark').removeAttr('onclick').off('click').click(function () {
       Unbookmark(type, id, oldName);
       return false;
     });
@@ -111,7 +111,7 @@ function Bookmark(type, id, newName) {
 
 function Unbookmark(type, id, newName) {
   if (window.location.pathname.indexOf('bookmarks.php') != -1) {
-    ajax.get("bookmarks.php?action=remove&type=" + type + "&auth=" + authkey + "&id=" + id, function() {
+    ajax.get("bookmarks.php?action=remove&type=" + type + "&auth=" + authkey + "&id=" + id, function () {
       $('#group_' + id).remove();
       $('.image_group_' + id).remove();
       $('.groupid_' + id).remove();
@@ -121,9 +121,9 @@ function Unbookmark(type, id, newName) {
   } else {
     var bmLinks = $('#bookmarklink_' + type + '_' + id + ', .bookmarklink_' + type + '_' + id);
     var oldName = bmLinks.html();
-    ajax.get("bookmarks.php?action=remove&type=" + type + "&auth=" + authkey + "&id=" + id, function() {
+    ajax.get("bookmarks.php?action=remove&type=" + type + "&auth=" + authkey + "&id=" + id, function () {
       bmLinks.parent('.remove_bookmark, .add_bookmark').toggleClass('add_bookmark remove_bookmark');
-      bmLinks.html(newName).attr('title', 'Add bookmark').removeAttr('onclick').off('click').click(function() {
+      bmLinks.html(newName).attr('title', 'Add bookmark').removeAttr('onclick').off('click').click(function () {
         Bookmark(type, id, oldName);
         return false;
       });

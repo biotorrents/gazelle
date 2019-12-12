@@ -1,5 +1,7 @@
-<?
-//TODO: make this use the cache version of the thread, save the db query
+<?php
+
+// todo: make this use the cache version of the thread, save the db query
+
 /*********************************************************************\
 //--------------Get Post--------------------------------------------//
 
@@ -13,7 +15,7 @@ $_GET['post'], which is the ID of the post.
 
 // Quick SQL injection check
 if (!$_GET['post'] || !is_number($_GET['post'])) {
-  error(0);
+    error(0);
 }
 
 // Variables for database input
@@ -32,5 +34,3 @@ $Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[Encrypted]';
 // This gets sent to the browser, which echoes it wherever
 
 echo trim($Body);
-
-?>

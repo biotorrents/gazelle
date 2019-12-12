@@ -1,5 +1,5 @@
 <?
-//TODO: Redo HTML
+// todo: Redo HTML
 if (!check_perms('admin_manage_permissions')) {
   error(403);
 }

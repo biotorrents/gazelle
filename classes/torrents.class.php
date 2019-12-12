@@ -229,7 +229,9 @@ class Torrents {
    * @param int $TorrentID
    * @param int $UserID
    * @param string $Message
-   * @param boolean $Hidden Currently does fuck all. TODO: Fix that.
+   * @param boolean $Hidden Currently does fuck all.
+   * 
+   * todo: Fix that
    */
   public static function write_group_log($GroupID, $TorrentID, $UserID, $Message, $Hidden) {
     global $Time;

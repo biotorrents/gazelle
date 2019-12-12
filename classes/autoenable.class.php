@@ -307,7 +307,7 @@ class AutoEnable {
         }
 
         if (!empty($IP)) {
-            // TODO: make this work with encrypted IPs
+            // todo: Make this work with encrypted IPs
             $Where[] = "uer.IP = '$IP'";
         }
 

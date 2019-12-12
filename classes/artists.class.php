@@ -83,7 +83,7 @@ class Artists
 
     /**
      * Format an array of artists for display.
-     * TODO: Revisit the logic of this, see if we can helper-function the copypasta.
+     * todo: Revisit the logic of this, see if we can helper-function the copypasta.
      *
      * @param array Artists an array of the form output by get_artists
      * @param boolean $MakeLink if true, the artists will be links, if false, they will be text.
@@ -199,7 +199,7 @@ class Artists
     /**
      * Remove LRM (left-right-marker) and trims, because people copypaste carelessly.
      * If we don't do this, we get seemingly duplicate artist names.
-     * TODO: make stricter, e.g. on all whitespace characters or Unicode normalisation
+     * todo: make stricter, e.g. on all whitespace characters or Unicode normalisation
      *
      * @param string $ArtistName
      */

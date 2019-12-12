@@ -357,8 +357,8 @@ class TorrentForm
         if (!empty($Torrent['Artists'])) {
             foreach ($Torrent['Artists'] as $Num => $Artist) {
                 ?>
-      <input type="text" id="idols_<?= $Num ?>"
-        name="idols[]" size="45"
+      <input type="text" id="idols_<?= $Num ?>" name="idols[]"
+        size="45"
         value="<?= display_str($Artist['name']) ?>"
         <?= $this->Disabled ?>/>
       <?php if ($Num === 0) { ?>
@@ -417,8 +417,8 @@ class TorrentForm
   </tr>
   <?php } # Ends if NewTorrent line 256?>
 
-    <!-- Encoding -->
-    <tr id="codec_tr">
+  <!-- Encoding -->
+  <tr id="codec_tr">
     <td class="label">
       License
       <strong class="important_text">*</strong>
@@ -483,8 +483,8 @@ class TorrentForm
     </td>
   </tr>
 
-    <!-- Resolution -->
-    <tr id="resolution_tr">
+  <!-- Resolution -->
+  <tr id="resolution_tr">
     <td class="label">
       Assembly Level
       <strong class="important_text">*</strong>
@@ -519,7 +519,7 @@ class TorrentForm
     </td>
   </tr>
 
-  <!-- Container -->
+  <!-- Three container fields -->
   <tr id="container_tr">
     <td class="label">
       Format
@@ -529,19 +529,15 @@ class TorrentForm
       <select name="container">
         <option value="Autofill">Autofill</option>
         <?php
-          foreach ($this->Containers as $Cont) {
-              echo "\t\t\t\t\t\t<option value=\"$Cont\"";
-              if ($Cont === ($Torrent['Container'] ?? false)) {
-                  echo " selected";
-              }
-              echo ">$Cont</option>\n";
+          foreach ($this->Containers as $Name => $Container) {
+              echo "<option value='$Name'>$Name</option>\n";
           } ?>
       </select><br />
       Data file format, or detect from file list
     </td>
   </tr>
 
-  <!-- Alternate container 1 -->
+  <!-- 2 -->
   <tr id="container_games_tr">
     <td class="label">
       Format
@@ -551,20 +547,16 @@ class TorrentForm
       <select id="container" name="container">
         <option value="Autofill">Autofill</option>
         <?php
-          foreach ($this->ContainersGames as $Container) {
-              echo "\t\t\t\t\t\t<option value=\"$Container\"";
-              if ($Container === ($Torrent['Container'] ?? false)) {
-                  echo " selected";
-              }
-              echo ">$Container</option>\n";
+          foreach ($this->ContainersGames as $Name => $Container) {
+              echo "<option value='$Name'>$Name</option>\n";
           } ?>
       </select><br />
       Data file format, or detect from file list
     </td>
   </tr>
 
-    <!-- Alternate container 2 -->
-    <tr id="container_prot_tr">
+  <!-- 3 -->
+  <tr id="container_prot_tr">
     <td class="label">
       Format
       <strong class="important_text">*</strong>
@@ -573,12 +565,8 @@ class TorrentForm
       <select id="container" name="container">
         <option value="Autofill">Autofill</option>
         <?php
-          foreach ($this->ContainersProt as $Container) {
-              echo "\t\t\t\t\t\t<option value=\"$Container\"";
-              if ($Container === ($Torrent['Container'] ?? false)) {
-                  echo " selected";
-              }
-              echo ">$Container</option>\n";
+          foreach ($this->ContainersProt as $Name => $Container) {
+              echo "<option value='$Name'>$Name</option>\n";
           } ?>
       </select><br />
       Data file format, or detect from file list
@@ -595,12 +583,12 @@ class TorrentForm
       <select name='archive'>
         <option value="Autofill">Autofill</option>
         <?php
-          foreach ($this->Archives as $Archive) {
-              echo "\t\t\t\t\t\t<option value=\"$Archive\"";
+          foreach ($this->Archives as $Name => $Archive) {
+              echo "\t\t\t\t\t\t<option value=\"$Name\"";
               if ($Archive === ($Torrent['Archive'] ?? false)) {
                   echo ' selected';
               }
-              echo ">$Archive</option>\n";
+              echo ">$Name</option>\n";
           } ?>
       </select><br />
       Compression algorithm, or detect from file list

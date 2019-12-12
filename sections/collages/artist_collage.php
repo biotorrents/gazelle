@@ -1,5 +1,5 @@
 <?
-// TODO: Cache this
+// todo: Cache this
 $DB->query("
   SELECT
     ca.ArtistID,

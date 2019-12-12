@@ -1,6 +1,6 @@
 <?php
 
-/*-- TODO ---------------------------//
+/*-- todo ---------------------------//
 Writeup how to use the Validate class, add in support for form id checks
 Complete the number and date validation
 //-----------------------------------*/
@@ -44,7 +44,7 @@ class Validate
         foreach ($this->Fields as $FieldKey => $Field) {
             $ValidateVar = $ValidateArray[$FieldKey];
 
-            # @todo Change this to a switch statement
+            # todo: Change this to a switch statement
             if ($ValidateVar !== '' || !empty($Field['Required']) || $Field['Type'] === 'date') {
                 if ($Field['Type'] === 'string') {
                     if (isset($Field['MaxLength'])) {
@@ -63,6 +63,7 @@ class Validate
                     } elseif (strlen($ValidateVar) < $MinLength) {
                         return $Field['ErrorMessage'];
                     }
+
                 } elseif ($Field['Type'] === 'number') {
                     if (isset($Field['MaxLength'])) {
                         $MaxLength = $Field['MaxLength'];
@@ -90,6 +91,7 @@ class Validate
                     } elseif ($ValidateVar < $MinLength) {
                         return $Field['ErrorMessage']."$MinLength";
                     }
+
                 } elseif ($Field['Type'] === 'email') {
                     if (isset($Field['MaxLength'])) {
                         $MaxLength = $Field['MaxLength'];
@@ -109,6 +111,7 @@ class Validate
                     } elseif (strlen($ValidateVar) < $MinLength) {
                         return $Field['ErrorMessage'];
                     }
+
                 } elseif ($Field['Type'] === 'link') {
                     if (isset($Field['MaxLength'])) {
                         $MaxLength = $Field['MaxLength'];
@@ -128,6 +131,7 @@ class Validate
                     } elseif (strlen($ValidateVar) < $MinLength) {
                         return $Field['ErrorMessage'];
                     }
+
                 } elseif ($Field['Type'] === 'username') {
                     if (isset($Field['MaxLength'])) {
                         $MaxLength = $Field['MaxLength'];
@@ -147,18 +151,22 @@ class Validate
                     } elseif (strlen($ValidateVar) < $MinLength) {
                         return $Field['ErrorMessage'];
                     }
+
                 } elseif ($Field['Type'] === 'checkbox') {
                     if (!isset($ValidateArray[$FieldKey])) {
                         return $Field['ErrorMessage'];
                     }
+
                 } elseif ($Field['Type'] === 'compare') {
                     if ($ValidateArray[$Field['CompareField']] !== $ValidateVar) {
                         return $Field['ErrorMessage'];
                     }
+
                 } elseif ($Field['Type'] === 'inarray') {
                     if (array_search($ValidateVar, $Field['InArray']) === false) {
                         return $Field['ErrorMessage'];
                     }
+
                 } elseif ($Field['Type'] === 'regex') {
                     if (!preg_match($Field['Regex'], $ValidateVar)) {
                         return $Field['ErrorMessage'];

@@ -1,6 +1,6 @@
 <?php
 
-# @todo Go through line by line
+# todo: Go through line by line
 
 include(SERVER_ROOT.'/sections/torrents/functions.php');
 

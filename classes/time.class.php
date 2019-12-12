@@ -116,7 +116,7 @@ function time_minus($Offset, $Fuzzy = false) {
 }
 
 // This is never used anywhere with $timestamp set
-// TODO: Why don't we just use NOW() in the sql queries?
+// todo: Why don't we just use NOW() in the sql queries?
 function sqltime($timestamp = NULL) {
   return date('Y-m-d H:i:s', ($timestamp ?? time()));
 }

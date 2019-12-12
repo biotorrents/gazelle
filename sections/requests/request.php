@@ -322,7 +322,7 @@ $encoded_artist = urlencode($encoded_artist);
             <input id="total_bounty" type="hidden" value="<?=$RequestVotes['TotalBounty']?>" />
 
             <ul>
-              <!-- @todo Return this feature
+              <!-- todo: Return this feature
               <li><strong>Bounty:</strong> <span id="bounty_after_tax">0.00 MiB</span></li> -->
               <li><strong>Uploaded:</strong> <span id="new_uploaded"><?= Format::get_size($LoggedUser['BytesUploaded']) ?></span></li>
               <li><strong>Ratio:</strong> <span id="new_ratio"><?= Format::get_ratio_html($LoggedUser['BytesUploaded'],$LoggedUser['BytesDownloaded']) ?></span></li>

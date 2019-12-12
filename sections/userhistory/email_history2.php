@@ -29,7 +29,7 @@ if (!check_perms('users_view_email', $Class)) {
   error(403);
 }
 
-// TODO: Is this even used?
+// todo: Is this even used?
 $UsersOnly = $_GET['usersonly'] ?? false;
 
 $DB->query("

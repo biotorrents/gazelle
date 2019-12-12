@@ -31,7 +31,7 @@ $Feed = new Feed;
 //--------------- Set $Properties array ---------------------------------------//
 // This is used if the form doesn't validate, and when the time comes to enter //
 // it into the database.                 
-// @todo Do something about this mess
+// todo: Do something about this mess
 //****************************************************************************//
 
 $Properties = [];
@@ -131,7 +131,7 @@ $Validate->SetFields(
     array('inarray' => array_keys($Categories))
 );
 
-# @todo Remove the switch statement
+# todo: Remove the switch statement
 switch ($Type) {
     /*
   case 'Imaging':
@@ -237,8 +237,19 @@ default:
             '1',
             'inarray',
             'Please select a valid format.',
+            array('inarray' => array_merge($Containers, $ContainersGames, ContainersProt))
+        );
+
+        /*
+        # torrents.Container
+        $Validate->SetFields(
+            'container',
+            '1',
+            'inarray',
+            'Please select a valid format.',
             array('inarray' => array_merge($Containers, $ContainersGames))
         );
+        */
 
         # torrents_group.TagList
         $Validate->SetFields(
@@ -509,7 +520,7 @@ if (!isset($GroupID) || !$GroupID) {
     $Cache->increment('stats_group_count');
 
     // Add screenshots
-    // @todo Clear DB_MYSQL::exec_prepared_query() errors
+    // todo: Clear DB_MYSQL::exec_prepared_query() errors
     $Screenshots = explode("\n", $T['Screenshots']);
     $Screenshots = array_map('trim', $Screenshots);
 
@@ -661,7 +672,7 @@ $Debug->set_flag('upload: ocelot updated');
 $Cache->cache_value("torrent_{$TorrentID}_lock", true, 600);
 
 // Give BP if necessary
-// @todo Repurpose this
+// todo: Repurpose this
 if (($Type === "Movies" || $Type === "Anime") && ($T['Container'] === 'ISO' || $T['Container'] === 'M2TS' || $T['Container'] === 'VOB IFO')) {
     $BPAmt = (int) 2*($TotalSize / (1024*1024*1024))*1000;
 

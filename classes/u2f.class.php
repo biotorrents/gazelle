@@ -299,7 +299,7 @@ class U2F {
     if (openssl_verify($dataToVerify, $signature, $pemKey, 'sha256') === 1) {
       $ctr = unpack("Nctr", substr($signData, 1, 4));
       $counter = $ctr['ctr'];
-      /* TODO: wrap-around should be handled somehow.. */
+      /* todo: wrap-around should be handled somehow... */
       if ($counter > $reg->counter) {
         $reg->counter = $counter;
         return $reg;

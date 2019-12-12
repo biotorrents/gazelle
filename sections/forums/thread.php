@@ -1,5 +1,7 @@
 <?php
-//TODO: Normalize thread_*_info don't need to waste all that ram on things that are already in other caches
+
+// todo: Normalize thread_*_info don't need to waste all that ram on things that are already in other caches
+
 /**********|| Page to show individual threads || ********************************\
 
 Things to expect in $_GET:

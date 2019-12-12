@@ -1,5 +1,5 @@
 /*
-  TODO: Move to more efficient structure used in ajax.class.
+  todo: Move to more efficient structure used in ajax.class
 
   Example Usage:
   <script type="text/javascript">
@@ -12,6 +12,7 @@
     }
   </script>
 */
+
 "use strict";
 var count = {
   update: function (Offset) {

@@ -3,7 +3,7 @@
 /*
  * Force file downloads
  * Currently used to download BibTeX citations
- * @todo Make this work with POST and display Show/Hide and Download buttons on the same line
+ * todo: Make this work with POST and display Show/Hide and Download buttons on the same line
  *
 
 if (isset($_POST['file']) && isset($_POST['content'])) {

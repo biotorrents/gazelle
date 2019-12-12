@@ -302,7 +302,7 @@ if ($ResultCount == 0) {
     $TorrentTags = new Tags($Group['TagList']);
 
     foreach ($Group['Editions'] as $RemIdent => $Edition) {
-      // TODO: point to the correct FLAC (?)
+      // todo: Point to the correct FLAC (?)
       $FlacID = array_search(true, $Edition['FlacIDs']);
       $DisplayName = $ArtistNames . "<a href=\"torrents.php?id=$GroupID&amp;torrentid=$FlacID#torrent$FlacID\" class=\"tooltip\" title=\"View torrent\" dir=\"ltr\">$GroupName</a>";
       if ($GroupYear > 0) {

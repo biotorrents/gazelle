@@ -49,7 +49,8 @@ class Comments {
    * @param int $PostID
    * @param string $NewBody
    * @param bool $SendPM If true, send a PM to the author of the comment informing him about the edit
-   * @todo Move permission check out of here/remove hardcoded error(404)
+   * 
+   * todo: Move permission check out of here/remove hardcoded error(404)
    */
   public static function edit($PostID, $NewBody, $SendPM = false) {
     $QueryID = G::$DB->get_query_id();
@@ -113,7 +114,7 @@ class Comments {
       Misc::send_pm($AuthorID, 0, $PMSubject, $PMBody);
     }
 
-    return true; // TODO: this should reflect whether or not the update was actually successful, e.g. by checking G::$DB->affected_rows after the UPDATE query
+    return true; // todo: This should reflect whether or not the update was actually successful, e.g., by checking G::$DB->affected_rows after the UPDATE query
   }
 
   /**

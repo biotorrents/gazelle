@@ -236,7 +236,7 @@ if (check_perms('site_advanced_search')) {
   unset($Options['SearchType']);
 }
 
-//TODO: Remove the following after a significant amount of time
+// todo: Remove the following after a significant amount of time
 unset($Options['ArtistNoRedirect']);
 unset($Options['ShowQueryList']);
 unset($Options['ShowCacheList']);

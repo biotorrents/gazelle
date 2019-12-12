@@ -777,7 +777,7 @@ $filename = "BioTorrents.de-$TorrentID";
   note    = {Online; accessed ".strftime('%Y-%m-%d')."},
 },"; ?>
 
-              <!-- @todo Download BibTeX citation feature
+              <!-- todo: Download BibTeX citation feature
 <form method="post" action="download.php">
 <input type="hidden" name="file" id="file" value="< ? = urlencode($filename) ? >"
               />
@@ -1000,7 +1000,7 @@ if (count($PersonalCollages) > 0) {
         $ThumbURL = ImageTools::process($Screenshot['Image'], 'thumb');
         */
 
-      /* @todo Bring this back
+      /* todo: Bring this back
       if (check_perms('users_mod')) {
         ?><img class='tooltip lightbox-init' title='<?=Users::format_username($Screenshot['UserID'], false, false, false)?> - <?=time_diff($Screenshot['Time'])?>' lightbox-img="<?=$SSURL?>" src="<?=$ThumbURL?>" /><?
       } else {

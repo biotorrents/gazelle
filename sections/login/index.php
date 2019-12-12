@@ -1,6 +1,6 @@
 <?php
 
-/*-- TODO ---------------------------//
+/*-- todo ---------------------------//
 Add the JavaScript validation into the display page using the class
 //-----------------------------------*/
 

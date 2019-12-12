@@ -1,5 +1,5 @@
 <?
-//TODO
+// todo
 /*****************************************************************
 Finish removing the take[action] pages and utilize the index correctly
 Should the advanced search really only show if they match 3 perms?

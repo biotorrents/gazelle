@@ -32,7 +32,7 @@ function check_name($Name) {
    * These characters are invalid in NTFS on Windows systems:
    *    : ? / < > \ * | "
    *
-   * TODO: Add "/" to the blacklist. Adding "/" to the blacklist causes problems with nested dirs, apparently.
+   * todo: Add "/" to the blacklist. Adding "/" to the blacklist causes problems with nested dirs, apparently
    *
    * Only the following characters need to be escaped (see the link below):
    *    \ - ^ ]

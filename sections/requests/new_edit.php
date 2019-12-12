@@ -1,6 +1,6 @@
 <?php
 
-# @todo Fix multiple authors and bounty preview
+# todo: Fix multiple authors and bounty preview
 
 /*
  * Yeah, that's right, edit and new are the same place again.
@@ -350,7 +350,7 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
             <input type="hidden" id="current_downloaded"
               value="<?= $LoggedUser['BytesDownloaded'] ?>" />
             <ul>
-              <!-- @todo Return this feature
+              <!-- todo: Return this feature
               <li><strong>Bounty:</strong> <span id="bounty_after_tax">90.00 MB</span></li> -->
               <li><strong>Uploaded:</strong> <span id="new_uploaded"><?= Format::get_size($LoggedUser['BytesUploaded']) ?></span>
               </li>

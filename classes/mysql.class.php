@@ -143,7 +143,7 @@ function db_array($Array, $DontEscape = [], $Quote = false) {
   return $Array;
 }
 
-// @todo Revisit access levels once Drone is replaced by ZeRobot
+// todo: Revisit access levels once Drone is replaced by ZeRobot
 class DB_MYSQL {
   public $LinkID = false;
   protected $QueryID = false;

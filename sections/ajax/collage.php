@@ -32,7 +32,7 @@ if ($CollageData) {
   $SetCache = true;
 }
 
-// TODO: Cache this
+// todo: Cache this
 $DB->query("
   SELECT GroupID
   FROM collages_torrents

@@ -1,7 +1,7 @@
 <?
 authorize();
 
-//TODO: Remove all the stupid queries that could get their information just as easily from the cache
+// todo: Remove all the stupid queries that could get their information just as easily from the cache
 /*********************************************************************\
 //--------------Take Post--------------------------------------------//
 
@@ -242,7 +242,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $LoggedUser['ID'] && ((!check_perms('site
     'Body'         => $Body,
     'EditedUserID' => 0,
     'EditedTime'   => NULL,
-    'Username'     => $LoggedUser['Username'] //TODO: Remove, it's never used?
+    'Username'     => $LoggedUser['Username'] // todo: Remove, it's never used?
   ]);
   $Cache->commit_transaction(0);
 

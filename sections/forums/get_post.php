@@ -1,5 +1,5 @@
 <?
-//TODO: make this use the cache version of the thread, save the db query
+// todo: make this use the cache version of the thread, save the db query
 /*********************************************************************\
 //--------------Get Post--------------------------------------------//
 

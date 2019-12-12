@@ -19,9 +19,9 @@ if (!$debug && $Cache->get_value('jav_fill_json_'.$cn)) {
 } else {
 
   # Query the API
-  # @todo Valida to change $db
+  # todo: Validate to change $db
 
-/* @todo
+/* todo
  * switch $category:
  *   case 'DNA' || 'RNA':
  *     if $number = refseq_regex:

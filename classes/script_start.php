@@ -37,7 +37,8 @@ if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])
 
 if (!isset($argv) && !empty($_SERVER['HTTP_HOST'])) {
   // Skip this block if running from cli or if the browser is old and shitty
-  // This should really be done in nginx config TODO: Remove
+  // This should really be done in nginx config
+  // todo: Remove
   if ($_SERVER['HTTP_HOST'] == 'www.'.SITE_DOMAIN) {
     header('Location: https://'.SITE_DOMAIN.$_SERVER['REQUEST_URI']); die();
   }
@@ -73,7 +74,7 @@ require(SERVER_ROOT.'/classes/classloader.php');
 
 // Note: G::initialize is called twice.
 // This is necessary as the code inbetween (initialization of $LoggedUser) makes use of G::$DB and G::$Cache.
-// TODO: remove one of the calls once we're moving everything into that class
+// todo: Remove one of the calls once we're moving everything into that class
 G::initialize();
 
 //Begin browser identification
@@ -84,7 +85,7 @@ $OperatingSystem = UserAgent::operating_system($_SERVER['HTTP_USER_AGENT']);
 $Debug->set_flag('start user handling');
 
 // Get classes
-// TODO: Remove these globals, replace by calls into Users
+// todo: Remove these globals, replace by calls into Users
 list($Classes, $ClassLevels) = Users::get_classes();
 
 //-- Load user information
@@ -100,7 +101,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
   $SessionID = $_COOKIE['session'];
   $LoggedUser['ID'] = (int)$_COOKIE['userid'];
 
-  $UserID = $LoggedUser['ID']; //TODO: UserID should not be LoggedUser
+  $UserID = $LoggedUser['ID']; //todo: UserID should not be LoggedUser
 
   if (!$LoggedUser['ID'] || !$SessionID) {
     logout();
@@ -292,7 +293,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     $Cache->cache_value('stylesheets', $Stylesheets, 0);
   }
 
-  //A9 TODO: Clean up this messy solution
+  // todo: Clean up this messy solution
   $LoggedUser['StyleName'] = $Stylesheets[$LoggedUser['StyleID']]['Name'];
 
   if (empty($LoggedUser['Username'])) {

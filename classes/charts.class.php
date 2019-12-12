@@ -144,7 +144,7 @@ class PIE_CHART extends GOOGLE_CHARTS {
 
 
 class LOG_BAR_GRAPH extends GOOGLE_CHARTS {
-  //TODO: Finish.
+  // todo: Finish
   public function __construct ($Base, $Width, $Height, $Options = []) {
     parent::__construct('lc', $Width, $Height, $Options);
   }
