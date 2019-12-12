@@ -95,29 +95,30 @@ class Artists
         if (!empty($Artists)) {
             $ampersand = ($Escape) ? ' &amp; ' : ' & ';
             $link = '';
-
+    
             switch (count($Artists)) {
-        case 0:
-          break;
-        case 3:
-          $link .= Artists::display_artist($Artists[2], $MakeLink, $Escape). ", ";
-        break;
-        case 2:
-          $link .= Artists::display_artist($Artists[1], $MakeLink, $Escape). ", ";
-        break;
-        case 1:
-          $link .= Artists::display_artist($Artists[0], $MakeLink, $Escape).($IncludeHyphen?' – ':'');
-          break;
-        default:
-        $link = Artists::display_artist($Artists[0], $MakeLink, $Escape).' et al.'.($IncludeHyphen?' – ':'');
-      }
-
+            case 0:
+              break;
+            case 3:
+              $link .= Artists::display_artist($Artists[2], $MakeLink, $Escape). ", ";
+              // no break
+            case 2:
+              $link .= Artists::display_artist($Artists[1], $MakeLink, $Escape). ", ";
+              // no break
+            case 1:
+              $link .= Artists::display_artist($Artists[0], $MakeLink, $Escape).($IncludeHyphen? ' – ':'');
+              break;
+            default:
+            $link = Artists::display_artist($Artists[0], $MakeLink, $Escape).'  et al.'.($IncludeHyphen? ' – ':'');
+            #$link = "Various".($IncludeHyphen?' – ':'');
+        }
+    
             return $link;
         } else {
             return '';
         }
     }
-
+    
     /**
      * Formats a single artist name.
      *

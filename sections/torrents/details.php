@@ -33,7 +33,7 @@ if (!$GroupName) {
     }
 }
 
-$DisplayName = "<span dir=\"ltr\">$GroupName</span><br />";
+$DisplayName = "<span dir='ltr'>$GroupName</span><br />";
 $AltName = $GroupName; // Goes in the alt text of the image
 $Title = $GroupName; // Goes in <title>
 $WikiBody = Text::full_format($WikiBody);
@@ -41,11 +41,11 @@ $WikiBody = Text::full_format($WikiBody);
 $Artists = Artists::get_artist($GroupID);
 
 if ($GroupNameRJ && $GroupNameRJ != $GroupName) {
-    $DisplayName .= "<span dir=\"ltr\">$GroupNameRJ</span><br />";
+    $DisplayName .= "<span dir='ltr'>$GroupNameRJ</span><br />";
 }
 
 if ($GroupNameJP && $GroupNameJP != $GroupName) {
-    $DisplayName .= "<span dir=\"ltr\">$GroupNameJP</span><br />";
+    $DisplayName .= "<span dir='ltr'>$GroupNameJP</span><br />";
 }
 
 if ($Artists) {
@@ -446,7 +446,7 @@ foreach ($TorrentList as $Torrent) {
                 $ReporterID = $Report['ReporterID'];
                 $Reporter = Users::user_info($ReporterID);
                 $ReporterName = $Reporter['Username'];
-                $ReportLinks = "<a href=\"user.php?id=$ReporterID\">$ReporterName</a> <a href=\"reportsv2.php?view=report&amp;id=$Report[ID]\">reported it</a>";
+                $ReportLinks = "<a href='user.php?id=$ReporterID'>$ReporterName</a> <a href='reportsv2.php?view=report&amp;id=$Report[ID]'>reported it</a>";
             } else {
                 $ReportLinks = 'Someone reported it';
             }
@@ -456,7 +456,7 @@ foreach ($TorrentList as $Torrent) {
             } elseif (isset($Types['master'][$Report['Type']])) {
                 $ReportType = $Types['master'][$Report['Type']];
             } else {
-                //There was a type but it wasn't an option!
+                // There was a type but it wasn't an option!
                 $ReportType = $Types['master']['other'];
             }
             $ReportInfo .= "
@@ -492,13 +492,13 @@ foreach ($TorrentList as $Torrent) {
                 $Name = str_replace(' ', '&nbsp;', substr($Name, 0, $Spaces)) . substr($Name, $Spaces);
             }
             $FileSize = substr($File, $NameEnd + 3, -3);
-            $FileTable .= sprintf("\n<tr class=\"row\"><td>%s</td><td class=\"number_column nobr\">%s</td></tr>", $Name, Format::get_size($FileSize));
+            $FileTable .= sprintf("\n<tr class='row'><td>%s</td><td class='number_column nobr'>%s</td></tr>", $Name, Format::get_size($FileSize));
         }
     } else {
         $FileListSplit = explode("\n", $FileList);
         foreach ($FileListSplit as $File) {
             $FileInfo = Torrents::filelist_get_file($File);
-            $FileTable .= sprintf("\n<tr class=\"row\"><td>%s</td><td class=\"number_column nobr\">%s</td></tr>", $FileInfo['name'], Format::get_size($FileInfo['size']));
+            $FileTable .= sprintf("\n<tr class='row'><td>%s</td><td class='number_column nobr'>%s</td></tr>", $FileInfo['name'], Format::get_size($FileInfo['size']));
         }
     }
     $FileTable .= '
@@ -507,8 +507,8 @@ foreach ($TorrentList as $Torrent) {
     $ExtraInfo = ''; // String that contains information on the torrent (e.g. format and encoding)
   $AddExtra = ''; // Separator between torrent properties
 
-  // similar to Torrents::torrent_info()
-    if ($Media && $GroupCategoryID != 5) {
+  // Similar to Torrents::torrent_info()
+    if ($Media) {
         $ExtraInfo.=display_str($Media);
         $AddExtra=" / ";
     }
@@ -524,11 +524,16 @@ foreach ($TorrentList as $Torrent) {
         $ExtraInfo.=$AddExtra.display_str($Resolution);
         $AddExtra=' / ';
     }
-    #if ($AudioFormat) { $ExtraInfo.=$AddExtra.display_str($AudioFormat); $AddExtra=' / '; }
+    /*
+    if ($AudioFormat) {
+      $ExtraInfo.=$AddExtra.display_str($AudioFormat);
+      $AddExtra=' / '; }
+      */
     /*
     if ($Language) {
       if ($Subber && ($GroupCategoryID == 3 || $GroupCategoryID == 4)) {
-        $ExtraInfo.=$AddExtra.display_str($Language.' ('.$Subber.')'); $AddExtra=' / ';
+        $ExtraInfo.=$AddExtra.display_str($Language.' ('.$Subber.')');
+        $AddExtra=' / ';
       } else {
         $ExtraInfo.=$AddExtra.display_str($Language); $AddExtra=' / ';
       }
@@ -556,7 +561,7 @@ foreach ($TorrentList as $Torrent) {
         $ExtraInfo .= $AddExtra.display_str('Unaligned');
         $AddExtra=' / ';
     }
-    if (!$ExtraInfo || $GroupCategoryID == 5) {
+    if (!$ExtraInfo) {
         $ExtraInfo = $GroupName;
         $AddExtra=' / ';
     }
@@ -737,6 +742,7 @@ foreach ($TorrentList as $Torrent) {
     if (!empty($Description)) {
         echo "\n<blockquote>".Text::full_format($Description).'</blockquote>';
     }
+    
     /*
     if (!empty($MediaInfo) || $MediaInfo === 'nil') { # Kludge
         $parsed = MediaInfo::parse($MediaInfo);
@@ -745,6 +751,7 @@ foreach ($TorrentList as $Torrent) {
             echo $parsed;
         } else {
           */
+
     echo "\n<blockquote>"; ?>
             <div class="spoilerContainer hideContainer">
               <?php

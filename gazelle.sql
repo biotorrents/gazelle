@@ -1,3 +1,14 @@
+-- Please see the limits for kinds of fields below.
+--
+--   * Gazelle ID numbers: int(10)
+--   * Accession numbers:  varchar(50)
+--   * Gazelle titles:     varchar(50)
+--   * Torrent titles:     varchar(255)
+--   * Ocelot tokens:      char(32)
+--   * Tag lists:          varchar(500)
+--
+-- @todo Finish explaining the schema
+
 SET FOREIGN_KEY_CHECKS = 0;
 
 CREATE DATABASE gazelle_production CHARACTER SET utf8mb4;
@@ -7,7 +18,7 @@ USE gazelle_production;
 CREATE TABLE `api_applications` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `UserID` int(10) NOT NULL,
-  `Token` char(32) NOT NULL,
+  `Token` char(32) NOT NULL, -- Ocelot 32-character limit
   `Name` varchar(50) NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB CHARSET=utf8mb4;
@@ -15,7 +26,7 @@ CREATE TABLE `api_applications` (
 CREATE TABLE `api_users` (
   `UserID` int(10) NOT NULL,
   `AppID` int(10) NOT NULL,
-  `Token` char(32) NOT NULL,
+  `Token` char(32) NOT NULL, -- Ocelot 32-character limit
   `State` enum('0','1','2') NOT NULL DEFAULT '0',
   `Time` datetime,
   `Access` text,
@@ -677,7 +688,7 @@ CREATE TABLE `reportsv2` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ReporterID` int(10) unsigned NOT NULL DEFAULT '0',
   `TorrentID` int(10) unsigned NOT NULL DEFAULT '0',
-  `Type` varchar(20) DEFAULT '',
+  `Type` varchar(25) DEFAULT '',
   `UserComment` text,
   `ResolverID` int(10) unsigned NOT NULL DEFAULT '0',
   `Status` enum('New','InProgress','Resolved') DEFAULT 'New',
@@ -822,9 +833,9 @@ CREATE TABLE `sphinx_delta` (
   `Resolution` varchar(255) DEFAULT NULL,
   `AudioFormat` varchar(255) DEFAULT NULL,
   `Subbing` varchar(255) DEFAULT NULL,
-  `Studio` varchar(80) DEFAULT NULL,
-  `Series` varchar(80) DEFAULT NULL,
-  `DLsiteID` varchar(20) DEFAULT NULL,
+  `Studio` varchar(100) DEFAULT NULL,
+  `Series` varchar(100) DEFAULT NULL,
+  `DLsiteID` varchar(25) DEFAULT NULL,
   `Language` varchar(255) DEFAULT NULL,
   `Censored` tinyint(1) NOT NULL DEFAULT '1',
   `FileList` mediumtext,
@@ -834,7 +845,7 @@ CREATE TABLE `sphinx_delta` (
   PRIMARY KEY (`ID`),
   KEY `GroupID` (`GroupID`),
   KEY `Size` (`Size`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `sphinx_index_last_pos` (
   `Type` varchar(16) NOT NULL DEFAULT '',
@@ -911,13 +922,13 @@ CREATE TABLE `sphinx_t` (
   `leechers` int(11) NOT NULL,
   `time` int(11) NOT NULL,
   `freetorrent` tinyint(4) NOT NULL,
-  `media` varchar(15) NOT NULL,
-  `container` varchar(15) NOT NULL,
-  `resolution` varchar(15) NOT NULL,
-  `codec` varchar(15) NOT NULL,
-  `audioformat` varchar(15) NOT NULL,
-  `subbing` varchar(15) NOT NULL,
-  `language` varchar(15) NOT NULL,
+  `media` varchar(25) NOT NULL,
+  `container` varchar(25) NOT NULL,
+  `resolution` varchar(25) NOT NULL,
+  `codec` varchar(25) NOT NULL,
+  `audioformat` varchar(25) NOT NULL,
+  `subbing` varchar(25) NOT NULL,
+  `language` varchar(25) NOT NULL,
   `filelist` mediumtext,
   `description` text,
   `subber` varchar(30) NOT NULL,
@@ -928,14 +939,14 @@ CREATE TABLE `sphinx_t` (
 
 CREATE TABLE `sphinx_tg` (
   `id` int(11) NOT NULL,
-  `name` varchar(300) DEFAULT NULL,
-  `namerj` varchar(300) DEFAULT NULL,
-  `namejp` varchar(500) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `namerj` varchar(255) DEFAULT NULL,
+  `namejp` varchar(255) DEFAULT NULL,
   `tags` varchar(500) DEFAULT NULL,
   `year` smallint(6) DEFAULT NULL,
-  `cnumber` varchar(80) DEFAULT NULL,
-  `studio` varchar(300) DEFAULT NULL,
-  `series` varchar(300) DEFAULT NULL,
+  `cnumber` varchar(50) DEFAULT NULL,
+  `studio` varchar(255) DEFAULT NULL,
+  `series` varchar(255) DEFAULT NULL,
   `catid` smallint(6) DEFAULT NULL,
   `dlsid` varchar(15) NOT NULL,
   PRIMARY KEY (`id`)
@@ -1069,13 +1080,13 @@ CREATE TABLE `torrents` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `GroupID` int(10) NOT NULL DEFAULT '0',
   `UserID` int(10) DEFAULT NULL,
-  `Media` varchar(20) DEFAULT NULL,
-  `Container` varchar(20) DEFAULT NULL,
-  `Codec` varchar(20) DEFAULT NULL,
-  `Resolution` varchar(20) DEFAULT NULL,
+  `Media` varchar(25) DEFAULT NULL,
+  `Container` varchar(25) DEFAULT NULL,
+  `Codec` varchar(25) DEFAULT NULL,
+  `Resolution` varchar(25) DEFAULT NULL,
   `AudioFormat` varchar(10) DEFAULT NULL,
   `Subbing` varchar(10) DEFAULT NULL,
-  `Language` varchar(20) DEFAULT NULL,
+  `Language` varchar(25) DEFAULT NULL,
   `Censored` tinyint(1) NOT NULL DEFAULT '1',
   `Anonymous` tinyint(1) NOT NULL DEFAULT '0',
   `info_hash` blob NOT NULL,
@@ -1094,7 +1105,7 @@ CREATE TABLE `torrents` (
   `Snatched` int(10) unsigned NOT NULL DEFAULT '0',
   `balance` bigint(20) NOT NULL DEFAULT '0',
   `LastReseedRequest` datetime,
-  `Subber` varchar(300) NOT NULL DEFAULT '',
+  `Subber` varchar(255) NOT NULL DEFAULT '',
   `Archive` varchar(10) NOT NULL DEFAULT '',
   PRIMARY KEY (`ID`),
   UNIQUE KEY `InfoHash` (`info_hash`(40)),
@@ -1153,16 +1164,16 @@ CREATE TABLE `torrents_group` (
   `NameRJ` varchar(255) DEFAULT NULL,
   `NameJP` varchar(255) DEFAULT NULL,
   `Year` int(4) DEFAULT NULL,
-  `Studio` varchar(80) NOT NULL DEFAULT '',
-  `Series` varchar(80) NOT NULL DEFAULT '',
-  `CatalogueNumber` varchar(80) NOT NULL DEFAULT '',
+  `Studio` varchar(100) NOT NULL DEFAULT '',
+  `Series` varchar(100) NOT NULL DEFAULT '',
+  `CatalogueNumber` varchar(50) NOT NULL DEFAULT '',
   `Pages` smallint(5) unsigned DEFAULT NULL,
   `TagList` varchar(500) NOT NULL DEFAULT '',
   `Time` datetime,
   `RevisionID` int(12) DEFAULT NULL,
   `WikiBody` text,
   `WikiImage` varchar(255) NOT NULL,
-  `DLsiteID` varchar(20) NOT NULL DEFAULT '',
+  `DLsiteID` varchar(25) NOT NULL DEFAULT '',
   PRIMARY KEY (`ID`),
   KEY `CategoryID` (`CategoryID`),
   KEY `Name` (`Name`(255)),
@@ -1195,7 +1206,7 @@ CREATE TABLE `torrents_peerlists` (
   PRIMARY KEY (`TorrentID`),
   KEY `GroupID` (`GroupID`),
   KEY `Stats` (`TorrentID`,`Seeders`,`Leechers`,`Snatches`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `torrents_peerlists_compare` (
   `TorrentID` int(11) NOT NULL,
@@ -1206,7 +1217,7 @@ CREATE TABLE `torrents_peerlists_compare` (
   PRIMARY KEY (`TorrentID`),
   KEY `GroupID` (`GroupID`),
   KEY `Stats` (`TorrentID`,`Seeders`,`Leechers`,`Snatches`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `torrents_recommended` (
   `GroupID` int(10) NOT NULL,
@@ -1460,7 +1471,7 @@ CREATE TABLE `users_levels` (
 
 CREATE TABLE `users_main` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `Username` varchar(20) NOT NULL,
+  `Username` varchar(25) NOT NULL,
   `Email` varchar(255) NOT NULL,
   `PassHash` varchar(60) NOT NULL,
   `TwoFactor` varchar(255) DEFAULT NULL,
@@ -1720,8 +1731,8 @@ CREATE TABLE `wiki_torrents` (
 
 CREATE TABLE `xbt_client_whitelist` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `peer_id` varchar(20) DEFAULT NULL,
-  `vstring` varchar(200) DEFAULT '',
+  `peer_id` varchar(25) DEFAULT NULL,
+  `vstring` varchar(255) DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `peer_id` (`peer_id`)
 ) ENGINE=InnoDB CHARSET=utf8mb4;
@@ -1743,7 +1754,7 @@ CREATE TABLE `xbt_files_users` (
   `peer_id` binary(20) NOT NULL DEFAULT '\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0',
   `fid` int(11) NOT NULL,
   `mtime` int(11) NOT NULL,
-  `ip` varchar(15) NOT NULL DEFAULT '',
+  `ip` varchar(15) NOT NULL DEFAULT '', -- Max IPv4 address length
   `seeder` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`peer_id`,`fid`,`uid`),
   KEY `remaining_idx` (`remaining`),
@@ -1756,7 +1767,7 @@ CREATE TABLE `xbt_snatched` (
   `uid` int(11) NOT NULL DEFAULT '0',
   `tstamp` int(11) NOT NULL,
   `fid` int(11) NOT NULL,
-  `IP` varchar(15) NOT NULL,
+  `IP` varchar(15) NOT NULL, -- Max IPv4 address length
   `seedtime` int(11) NOT NULL DEFAULT '0',
   KEY `fid` (`fid`),
   KEY `tstamp` (`tstamp`),
@@ -1777,7 +1788,7 @@ INSERT INTO wiki_revisions (ID, Revision, Title, Body, Date, Author) VALUES (1, 
 
 INSERT INTO forums (ID, CategoryID, Sort, Name, Description, MinClassRead, MinClassWrite, MinClassCreate, NumTopics, NumPosts, LastPostID, LastPostAuthorID, LastPostTopicID, LastPostTime) VALUES (1, 1, 20, 'Your Site', 'Totally rad forum', 100, 100, 100, 0, 0, 0, 0, 0, NULL), (2, 5, 30, 'Chat', 'Expect this to fill up with spam', 100, 100, 100, 0, 0, 0, 0, 0, NULL), (3, 10, 40, 'Help!', 'I fell down and I cant get up', 100, 100, 100, 0, 0, 0, 0, 0, NULL), (4, 20, 100, 'Trash', 'Every thread ends up here eventually', 100, 500, 500, 0, 0, 0, 0, 0, NULL);
 
-INSERT INTO tags (ID, Name, TagType, Uses, UserID) VALUES (1, 'foo', 'genre', 0, 1),(2, 'bar', 'genre', 0, 1),(3, 'baz', 'genre', 0, 1);
+INSERT INTO tags (ID, Name, TagType, Uses, UserID) VALUES (1, 'one', 'genre', 0, 1),(2, 'two', 'genre', 0, 1),(3, 'three', 'genre', 0, 1),(3, 'four', 'genre', 0, 1),(3, 'five', 'genre', 0, 1);
 
 INSERT INTO schedule (NextHour, NextDay, NextBiWeekly) VALUES (0,0,0);
 

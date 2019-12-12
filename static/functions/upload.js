@@ -43,7 +43,7 @@ function Categories() {
       'studio': {},
       'series': {},
       'media': {},
-      'container': {},
+      'container_prot': {},
       'resolution': {},
       'archive': {},
       'codec': {},

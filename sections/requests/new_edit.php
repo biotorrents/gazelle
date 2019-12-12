@@ -100,7 +100,8 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
 <!-- HTML title -->
 <div class="thin">
   <div class="header">
-    <h2><?= ($NewRequest ? 'Create Request' : 'Edit Request') ?></h2>
+    <h2><?= ($NewRequest ? 'Create Request' : 'Edit Request') ?>
+    </h2>
   </div>
 
   <!-- New request hidden fields -->
@@ -120,7 +121,8 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
       <!-- Main table -->
       <table class="layout">
         <tr>
-          <td colspan="2" class="center">Please make sure your request follows <a href="rules.php?p=requests">the request rules</a>!</td>
+          <td colspan="2" class="center">Please make sure your request follows <a href="rules.php?p=requests">the
+              request rules</a>!</td>
         </tr>
         <?php  if ($NewRequest || $CanEdit) { ?>
 
@@ -183,7 +185,7 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
               <?= $Disabled ?>/>
           </td>
         </tr>
-        <?php  } # Ends if NewRequest line 123 ?>
+        <?php  } # Ends if NewRequest line 123?>
 
         <!-- Multiple artists -->
         <tr id="artist_tr">
@@ -191,33 +193,31 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
           <td id="artistfields">
             <?php
               if (!empty($ArtistForm)) {
-                $First = true;
-                foreach ($ArtistForm as $Artist) {
-                  # Cycle autocomplete
-            ?>
+                  $First = true;
+                  foreach ($ArtistForm as $Artist) {
+                      # Cycle autocomplete?>
             <input type="text" id="artist_0" name="artists[]" <?php Users::has_autocomplete_enabled('other'); ?>
             size="45" value="<?= display_str($Artist['name']) ?>" <?= $Disabled ?>/>
             <?php
               if (empty($Disabled)) {
-                if ($First) { ?>
+                  if ($First) { ?>
             <a class="add_artist_button brackets">+</a>
             <a class="remove_artist_button brackets">&minus;</a>
             <?php
                 }
-                $First = false;
-              }
-            ?>
+                  $First = false;
+              } ?>
             <br />
             <?php
-                }
+                  }
               } else {
-            ?>
+                  ?>
             <input type="text" id="artist_0" name="artists[]" <?php Users::has_autocomplete_enabled('other'); ?>
             size="45" <?= $Disabled ?>/>
             <?php if (empty($Disabled)) { ?>
             <a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a>
             <?php
-                } 
+                }
               }
             ?>
           </td>
@@ -242,30 +242,31 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
             <?php
               $GenreTags = $Cache->get_value('genre_tags');
                 if (!$GenreTags) {
-                  $DB->query('
+                    $DB->query('
                     SELECT Name
                     FROM tags
                     WHERE TagType = \'genre\'
                     ORDER BY Name');
-                  $GenreTags = $DB->collect('Name');
-                  $Cache->cache_value('genre_tags', $GenreTags, 3600 * 6);
+                    $GenreTags = $DB->collect('Name');
+                    $Cache->cache_value('genre_tags', $GenreTags, 3600 * 6);
                 }
 
                 if (!empty($Disabled)) {
-            ?>
+                    ?>
             <select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;" disabled="disabled">
-            <?php } else { ?>
-            <select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;">
-              <?php } ?>
-              <option>---</option>
-              <?php foreach (Misc::display_array($GenreTags) as $Genre) { ?>
-              <option value="<?= $Genre ?>"><?= $Genre ?>
-              </option>
-              <?php  } ?>
-            </select>
-            <input type="text" id="tags" name="tags" size="45"
-              value="<?= (!empty($Tags) ? display_str($Tags) : '') ?>"
-              <?php Users::has_autocomplete_enabled('other'); ?>
+              <?php
+                } else { ?>
+              <select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;">
+                <?php } ?>
+                <option>---</option>
+                <?php foreach (Misc::display_array($GenreTags) as $Genre) { ?>
+                <option value="<?= $Genre ?>"><?= $Genre ?>
+                </option>
+                <?php  } ?>
+              </select>
+              <input type="text" id="tags" name="tags" size="45"
+                value="<?= (!empty($Tags) ? display_str($Tags) : '') ?>"
+                <?php Users::has_autocomplete_enabled('other'); ?>
               <?= $Disabled ?>/>
           </td>
         </tr>
@@ -283,7 +284,8 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
         <tr>
           <td class="label">Torrent Group</td>
           <td>
-            If this request matches a torrent group <strong>already existing</strong> on the site, please indicate that here.<br />
+            If this request matches a torrent group <strong>already existing</strong> on the site, please indicate that
+            here.<br />
             <?= site_url() ?>torrents.php?id=<input type="text"
               name="groupid"
               value="<?= isset($GroupID)?$GroupID:'' ?>"
@@ -295,17 +297,20 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
             #&& ($CategoryID !== 5) # ?
             #&& ($CategoryID !== 0) # ?
             ) {
-        ?>
+              ?>
 
         <!-- Torrent group admin -->
         <tr>
           <td class="label">Torrent Group</td>
           <td>
             <a href="torrents.php?id=<?= $GroupID ?>"><?= site_url() ?>torrents.php?id=<?= $GroupID ?></a><br />
-            This request <?= ($NewRequest ? 'will be' : 'is') ?> associated with the above torrent group.
+            This request <?= ($NewRequest ? 'will be' : 'is') ?>
+            associated with the above torrent group.
             <?php if (!$NewRequest) { ?>
             If this is incorrect, please
-            <a href="reports.php?action=report&amp;type=request&amp;id=<?= $RequestID ?>">report this request</a>
+            <a
+              href="reports.php?action=report&amp;type=request&amp;id=<?= $RequestID ?>">report
+              this request</a>
             so that staff can fix it.
             <?php } ?>
             <input type="hidden" name="groupid"
@@ -314,7 +319,8 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
         </tr>
 
         <!-- Bounty -->
-        <?php  } if ($NewRequest) { ?>
+        <?php
+          } if ($NewRequest) { ?>
         <tr id="voting">
           <td class="label">Bounty</td>
           <td>
@@ -328,7 +334,8 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
               </option>
             </select>
             <input type="button" value="Preview" onclick="Calculate();" />
-            <strong>The system deducts <?= ($RequestTax * 100) ?>% as tax</strong>
+            <strong>The system deducts <?= ($RequestTax * 100) ?>% as
+              tax</strong>
           </td>
         </tr>
 
@@ -345,8 +352,10 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
             <ul>
               <!-- @todo Return this feature
               <li><strong>Bounty:</strong> <span id="bounty_after_tax">90.00 MB</span></li> -->
-              <li><strong>Uploaded:</strong> <span id="new_uploaded"><?= Format::get_size($LoggedUser['BytesUploaded']) ?></span></li>
-              <li><strong>Ratio:</strong> <span id="new_ratio"><?= Format::get_ratio_html($LoggedUser['BytesUploaded'], $LoggedUser['BytesDownloaded']) ?></span></li>
+              <li><strong>Uploaded:</strong> <span id="new_uploaded"><?= Format::get_size($LoggedUser['BytesUploaded']) ?></span>
+              </li>
+              <li><strong>Ratio:</strong> <span id="new_ratio"><?= Format::get_ratio_html($LoggedUser['BytesUploaded'], $LoggedUser['BytesDownloaded']) ?></span>
+              </li>
             </ul>
           </td>
         </tr>

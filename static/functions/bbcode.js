@@ -61,6 +61,7 @@ function EmojiBox(box) {
 }
 
 function BBEditor(box) {
+  // @todo Integrate BioJS functions here
   if (box.previousSibling && box.previousSibling.className == 'bbcode_bar') return
   let buttons = [
     {short:'B', name:'Bold', wrap:['[b]','[/b]']},

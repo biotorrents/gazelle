@@ -44,6 +44,7 @@ class Validate
         foreach ($this->Fields as $FieldKey => $Field) {
             $ValidateVar = $ValidateArray[$FieldKey];
 
+            # @todo Change this to a switch statement
             if ($ValidateVar !== '' || !empty($Field['Required']) || $Field['Type'] === 'date') {
                 if ($Field['Type'] === 'string') {
                     if (isset($Field['MaxLength'])) {

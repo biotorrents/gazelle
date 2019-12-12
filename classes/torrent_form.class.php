@@ -13,6 +13,7 @@ class TorrentForm
     public $MediaManga = [];
     public $Containers = [];
     public $ContainersGames = [];
+    public $ContainersProt = [];
     public $Codecs = [];
     public $Resolutions = [];
     #var $AudioFormats = [];
@@ -32,7 +33,7 @@ class TorrentForm
         $this->Torrent = $Torrent;
         $this->Error = $Error;
 
-        global $UploadForm, $Categories, $Media,  $MediaManga, $TorrentID, $Containers, $ContainersGames, $Codecs, $Resolutions, $Archives;
+        global $UploadForm, $Categories, $Media,  $MediaManga, $TorrentID, $Containers, $ContainersGames, $ContainersProt, $Codecs, $Resolutions, $Archives;
         #global $UploadForm, $Categories, $Formats, $Bitrates, $Media, $MediaManga, $TorrentID, $Containers, $ContainersGames, $Codecs, $Resolutions, $AudioFormats, $Subbing, $Languages, $Platform, $Archives, $ArchivesManga;
 
         $this->UploadForm = $UploadForm;
@@ -43,6 +44,7 @@ class TorrentForm
         $this->MediaManga = $MediaManga;
         $this->Containers = $Containers;
         $this->ContainersGames = $ContainersGames;
+        $this->ContainersProt = $ContainersProt;
         $this->Codecs = $Codecs;
         $this->Resolutions = $Resolutions;
         #$this->AudioFormats = $AudioFormats;
@@ -153,10 +155,7 @@ class TorrentForm
     <table cellpadding="3" cellspacing="1" border="0" class="layout" width="100%">
 
       <tr>
-        <td class="label">
-          Torrent File
-          <strong class="important_text">*</strong>
-        </td>
+        <td class="label">Torrent File</td>
         <td><input id="file" type="file" name="file_input" size="50" /><br />
           Use the above announce URL and set the private flag in your BitTorrent client, e.g.,
           <code>mktorrent -p -a &lt;announce&gt; &lt;target folder&gt;</code>
@@ -164,10 +163,7 @@ class TorrentForm
       </tr>
 
       <tr>
-        <td class="label">
-          Type
-          <strong class="important_text">*</strong>
-        </td>
+        <td class="label">Type</td>
         <td>
           <select id="categories" name="type" onchange="Categories()" <?= ($this->DisabledFlag) ? ' disabled="disabled"' : '' ?>>
             <?php
@@ -419,9 +415,32 @@ class TorrentForm
       Original publication year
     </td>
   </tr>
+  <?php } # Ends if NewTorrent line 256?>
+
+    <!-- Encoding -->
+    <tr id="codec_tr">
+    <td class="label">
+      License
+      <strong class="important_text">*</strong>
+    </td>
+    <td>
+      <select name="codec">
+        <option>---</option>
+        <?php
+          foreach ($this->Codecs as $Codec) {
+              echo "\t\t\t\t\t\t<option value=\"$Codec\"";
+              if ($Codec === ($Torrent['Codec'] ?? false)) {
+                  echo " selected";
+              }
+              echo ">$Codec</option>\n";
+          } ?>
+      </select><br />
+      Please see <a href="http://www.dcc.ac.uk/resources/how-guides/license-research-data" target="_blank">How to
+        License Research Data</a>
+    </td>
+  </tr>
 
   <!-- Media type -->
-  <?php } # Ends if NewTorrent line 256?>
   <tr id="media_tr">
     <td class="label">
       Platform
@@ -429,7 +448,6 @@ class TorrentForm
     </td>
     <td>
       <select name="media">
-        <option>---</option>
         <?php
           foreach ($this->Media as $Media) {
               echo "\t\t\t\t\t\t<option value=\"$Media\"";
@@ -465,52 +483,8 @@ class TorrentForm
     </td>
   </tr>
 
-  <!-- Container -->
-  <tr id="container_tr">
-    <td class="label">
-      Format
-      <strong class="important_text">*</strong>
-    </td>
-    <td>
-      <select name="container">
-        <option value="Autofill">Autofill</option>
-        <?php
-          foreach ($this->Containers as $Cont) {
-              echo "\t\t\t\t\t\t<option value=\"$Cont\"";
-              if ($Cont === ($Torrent['Container'] ?? false)) {
-                  echo " selected";
-              }
-              echo ">$Cont</option>\n";
-          } ?>
-      </select><br />
-      Data file format, or detect from file list
-    </td>
-  </tr>
-
-  <!-- Alternate container -->
-  <tr id="container_games_tr">
-    <td class="label">
-      Format
-      <strong class="important_text">*</strong>
-    </td>
-    <td>
-      <select id="container" name="container">
-        <option value="Autofill">Autofill</option>
-        <?php
-          foreach ($this->ContainersGames as $Container) {
-              echo "\t\t\t\t\t\t<option value=\"$Container\"";
-              if ($Container === ($Torrent['Container'] ?? false)) {
-                  echo " selected";
-              }
-              echo ">$Container</option>\n";
-          } ?>
-      </select><br />
-      Data file format, or detect from file list
-    </td>
-  </tr>
-
-  <!-- Resolution -->
-  <tr id="resolution_tr">
+    <!-- Resolution -->
+    <tr id="resolution_tr">
     <td class="label">
       Assembly Level
       <strong class="important_text">*</strong>
@@ -545,6 +519,72 @@ class TorrentForm
     </td>
   </tr>
 
+  <!-- Container -->
+  <tr id="container_tr">
+    <td class="label">
+      Format
+      <strong class="important_text">*</strong>
+    </td>
+    <td>
+      <select name="container">
+        <option value="Autofill">Autofill</option>
+        <?php
+          foreach ($this->Containers as $Cont) {
+              echo "\t\t\t\t\t\t<option value=\"$Cont\"";
+              if ($Cont === ($Torrent['Container'] ?? false)) {
+                  echo " selected";
+              }
+              echo ">$Cont</option>\n";
+          } ?>
+      </select><br />
+      Data file format, or detect from file list
+    </td>
+  </tr>
+
+  <!-- Alternate container 1 -->
+  <tr id="container_games_tr">
+    <td class="label">
+      Format
+      <strong class="important_text">*</strong>
+    </td>
+    <td>
+      <select id="container" name="container">
+        <option value="Autofill">Autofill</option>
+        <?php
+          foreach ($this->ContainersGames as $Container) {
+              echo "\t\t\t\t\t\t<option value=\"$Container\"";
+              if ($Container === ($Torrent['Container'] ?? false)) {
+                  echo " selected";
+              }
+              echo ">$Container</option>\n";
+          } ?>
+      </select><br />
+      Data file format, or detect from file list
+    </td>
+  </tr>
+
+    <!-- Alternate container 2 -->
+    <tr id="container_prot_tr">
+    <td class="label">
+      Format
+      <strong class="important_text">*</strong>
+    </td>
+    <td>
+      <select id="container" name="container">
+        <option value="Autofill">Autofill</option>
+        <?php
+          foreach ($this->ContainersProt as $Container) {
+              echo "\t\t\t\t\t\t<option value=\"$Container\"";
+              if ($Container === ($Torrent['Container'] ?? false)) {
+                  echo " selected";
+              }
+              echo ">$Container</option>\n";
+          } ?>
+      </select><br />
+      Data file format, or detect from file list
+    </td>
+  </tr>
+
   <!-- Compression -->
   <tr id="archive_tr">
     <td class="label">
@@ -564,29 +604,6 @@ class TorrentForm
           } ?>
       </select><br />
       Compression algorithm, or detect from file list
-    </td>
-  </tr>
-
-  <!-- Encoding -->
-  <tr id="codec_tr">
-    <td class="label">
-      License
-      <strong class="important_text">*</strong>
-    </td>
-    <td>
-      <select name="codec">
-        <option>---</option>
-        <?php
-          foreach ($this->Codecs as $Codec) {
-              echo "\t\t\t\t\t\t<option value=\"$Codec\"";
-              if ($Codec === ($Torrent['Codec'] ?? false)) {
-                  echo " selected";
-              }
-              echo ">$Codec</option>\n";
-          } ?>
-      </select><br />
-      Please see <a href="http://www.dcc.ac.uk/resources/how-guides/license-research-data" target="_blank">How to
-        License Research Data</a>
     </td>
   </tr>
 

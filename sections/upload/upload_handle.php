@@ -13,8 +13,8 @@ ini_set('upload_max_filesize', 2097152); // 2 MiB
 
 # Allow many uncompressed files,
 # e.g., http://academictorrents.com/details/5a447ff50062194bd58dd11c0fedead59e6d873c/tech
-ini_set('max_file_uploads', 65535);
-define('MAX_FILENAME_LENGTH', 180);
+ini_set('max_file_uploads', 10000);
+define('MAX_FILENAME_LENGTH', 255);
 
 include(SERVER_ROOT.'/classes/validate.class.php');
 include(SERVER_ROOT.'/classes/feed.class.php');
@@ -30,9 +30,9 @@ $Feed = new Feed;
 //*****************************************************************************//
 //--------------- Set $Properties array ---------------------------------------//
 // This is used if the form doesn't validate, and when the time comes to enter //
-// it into the database.                                                       //
-// Haha wow god i'm trying to restrict the database to only have fields for    //
-// movies and not add anything for other categories but this is fucking dumb   //
+// it into the database.                 
+// @todo Do something about this mess
+//****************************************************************************//
 
 $Properties = [];
 $Type = $Categories[(int)$_POST['type']];
@@ -44,21 +44,18 @@ $Properties['Title'] = $_POST['title'];
 $Properties['TitleRJ'] = $_POST['title_rj'];
 $Properties['TitleJP'] = $_POST['title_jp'];
 $Properties['Year'] = $_POST['year'];
-
 $Properties['Studio'] = isset($_POST['studio']) ? $_POST['studio'] : '';
-
 $Properties['Series'] = isset($_POST['series']) ? $_POST['series'] : '';
-
 $Properties['CatalogueNumber'] = isset($_POST['catalogue']) ? $_POST['catalogue'] : '';
 $Properties['Pages'] = isset($_POST['pages']) ? $_POST['pages'] : 0;
 $Properties['Container'] = isset($_POST['container']) ? $_POST['container'] : '';
-
 $Properties['Media'] = $_POST['media'];
-
 $Properties['Codec'] = isset($_POST['codec']) ? $_POST['codec'] : '';
+
 if (!($_POST['resolution'] ?? false)) {
     $_POST['resolution'] = $_POST['ressel'] ?? '';
 }
+
 $Properties['Resolution'] = $_POST['resolution'] ?? '';
 $Properties['AudioFormat'] = 'nil';
 $Properties['Subbing'] = 'nil';
@@ -68,12 +65,15 @@ $Properties['DLsiteID'] = (isset($_POST['dlsiteid'])) ? $_POST['dlsiteid'] : '';
 $Properties['Censored'] = (isset($_POST['censored'])) ? '1' : '0';
 $Properties['Anonymous'] = (isset($_POST['anonymous'])) ? '1' : '0';
 $Properties['Archive'] = (isset($_POST['archive']) && $_POST['archive'] !== '---') ? $_POST['archive'] : '';
+
 if (isset($_POST['library_image'])) {
     $Properties['LibraryImage'] = $_POST['library_image'];
 }
+
 if (isset($_POST['tags'])) {
     $Properties['TagList'] = implode(',', array_unique(explode(',', str_replace(' ', '', $_POST['tags']))));
 }
+
 if (isset($_POST['image'])) {
     $Properties['Image'] = $_POST['image'];
 }
@@ -122,6 +122,7 @@ if (!empty($_POST['requestid'])) {
 //******************************************************************************//
 //--------------- Validate data in upload form ---------------------------------//
 
+# torrents_group.CategoryID
 $Validate->SetFields(
     'type',
     '1',
@@ -130,24 +131,27 @@ $Validate->SetFields(
     array('inarray' => array_keys($Categories))
 );
 
+# @todo Remove the switch statement
 switch ($Type) {
     /*
   case 'Imaging':
     if (!isset($_POST['groupid']) || !$_POST['groupid']) {
-        $Validate->SetFields( # torrents.Media
+        # torrents.Media
+        $Validate->SetFields(
             'media',
             '1',
             'inarray',
             'Please select a valid platform.',
-            array('inarray'=>array_merge($Media, $MediaManga, $Platform))
+            array('inarray' => array_merge($Media, $MediaManga, $Platform))
         );
 
-        $Validate->SetFields( # torrents.Container
+        # torrents.Container
+        $Validate->SetFields(
             'container',
             '1',
             'inarray',
             'Please select a valid format.',
-            array('inarray'=>array_merge($Containers, $ContainersGames))
+            array('inarray' => array_merge($Containers, $ContainersGames))
         );
     }
 break;
@@ -155,63 +159,122 @@ break;
 
 default:
     if (!isset($_POST['groupid']) || !$_POST['groupid']) {
-        $Validate->SetFields( # torrents_group.Name
+        # torrents_group.CatalogueNumber
+        $Validate->SetFields(
+            'catalogue',
+            '0',
+            'string',
+            'Accession Number must be between 0 and 50 characters.',
+            array('maxlength' => 50, 'minlength' => 0)
+        );
+
+        # torrents_group.Name
+        $Validate->SetFields(
             'title',
             '1',
             'string',
-            'Torrent Title must be between 1 and 255 characters.',
-            array('maxlength'=>255, 'minlength'=>1)
+            'Torrent Title must be between 5 and 255 characters.',
+            array('maxlength' => 255, 'minlength' => 5)
         );
 
-        $Validate->SetFields( # torrents_group.NameRJ
+        # torrents_group.NameRJ
+        $Validate->SetFields(
             'title_rj',
             '0',
             'string',
             'Organism must be between 0 and 255 characters.',
-            array('maxlength'=>255, 'minlength'=>0)
+            array('maxlength' => 255, 'minlength' => 0)
         );
 
-        $Validate->SetFields( # torrents_group.NameJP
+        # torrents_group.NameJP
+        $Validate->SetFields(
             'title_jp',
             '0',
             'string',
             'Strain/Variety must be between 0 and 255 characters.',
-            array('maxlength'=>255, 'minlength'=>0)
+            array('maxlength' => 255, 'minlength' => 0)
         );
 
-        $Validate->SetFields( # torrents_group.Year
+        # torrents_group.Studio
+        $Validate->SetFields(
+           'studio',
+            '0',
+            'string',
+            'Department/Lab must be between 0 and 100 characters.',
+            array('maxlength' => 100, 'minlength' => 0)
+        );
+
+        # torrents_group.Series
+        $Validate->SetFields(
+            'series',
+            '0',
+            'string',
+            'Location must be between 0 and 100 characters.',
+            array('maxlength' => 100, 'minlength' => 0)
+        );
+
+        # torrents_group.Year
+        $Validate->SetFields(
             'year',
             '1',
             'number',
             'The year of the original release must be entered.',
-            array('maxlength'=>4, 'minlength'=>4)
+            array('maxlength' => 4, 'minlength' => 4)
         );
 
-        $Validate->SetFields( # torrents_group.TagList
+        # torrents.Media
+        $Validate->SetFields(
+            'media',
+            '1',
+            'inarray',
+            'Please select a valid platform.',
+            array('inarray' => array_merge($Media, $MediaManga, $Platform))
+        );
+
+        # torrents.Container
+        $Validate->SetFields(
+            'container',
+            '1',
+            'inarray',
+            'Please select a valid format.',
+            array('inarray' => array_merge($Containers, $ContainersGames))
+        );
+
+        # torrents_group.TagList
+        $Validate->SetFields(
             'tags',
             '1',
             'string',
             'You must enter at least five tags. Maximum length is 500 characters.',
-            array('maxlength'=>500, 'minlength'=>5)
+            array('maxlength' => 500, 'minlength' => 10)
         );
 
-        $Validate->SetFields( # torrents_group.WikiImage
+        # torrents_group.WikiImage
+        $Validate->SetFields(
             'image',
             '0',
             'link',
             'The image URL you entered was invalid.',
-            array('maxlength'=>255, 'minlength'=>10)
+            array('maxlength' => 255, 'minlength' => 10) # x.yz/a.bc
         );
     }
 
-    $Validate->SetFields( # torrents_group.WikiBody
+    # torrents_group.WikiBody
+    $Validate->SetFields(
         'album_desc',
         '1',
         'string',
-        'The description has a minimum length of 10 characters.',
-        array('maxlength'=>1000000, 'minlength'=>10)
+        'The description must be between 10 and 65535 characters.',
+        array('maxlength' => 65535, 'minlength' => 10)
     );
-    #$Validate->SetFields('groupid', '0', 'number', 'Group ID was not numeric.');
+
+    # torrents_group.ID
+    $Validate->SetFields(
+        'groupid',
+        '0',
+        'number',
+        'Group ID was not numeric.'
+    );
 }
 
 $Err = $Validate->ValidateForm($_POST); // Validate the form
