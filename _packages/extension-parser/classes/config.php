@@ -74,11 +74,11 @@ $ContainersProt = [
 ];
 
 $Archives = [
-  '7z' => ['7z'],
-  'bzip2' => ['bz2', 'bzip2'],
-  'gzip' => ['gz', 'gzip', 'tgz', 'tpz'],
+  '7z'     => ['7z'],
+  'bzip2'  => ['bz2', 'bzip2'],
+  'gzip'   => ['gz', 'gzip', 'tgz', 'tpz'],
   'Pickle' => ['pickle', 'pkl'],
-  'RAR' => ['rar', 'rev'],
-  'ZIP' => ['zip', 'zipx'],
-  'None' => [''],
+  'RAR'    => ['rar', 'rev'],
+  'ZIP'    => ['zip', 'zipx'],
+  'None'   => [''],
 ];

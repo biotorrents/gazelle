@@ -30,7 +30,7 @@ $Feed = new Feed;
 //*****************************************************************************//
 //--------------- Set $Properties array ---------------------------------------//
 // This is used if the form doesn't validate, and when the time comes to enter //
-// it into the database.                 
+// it into the database.
 // todo: Do something about this mess
 //****************************************************************************//
 
@@ -197,7 +197,7 @@ default:
 
         # torrents_group.Studio
         $Validate->SetFields(
-           'studio',
+            'studio',
             '0',
             'string',
             'Department/Lab must be between 0 and 100 characters.',
@@ -213,6 +213,7 @@ default:
             array('maxlength' => 100, 'minlength' => 0)
         );
 
+        /* todo: Fix the year validation
         # torrents_group.Year
         $Validate->SetFields(
             'year',
@@ -221,6 +222,7 @@ default:
             'The year of the original release must be entered.',
             array('maxlength' => 4, 'minlength' => 4)
         );
+        */
 
         # torrents.Media
         $Validate->SetFields(
@@ -228,16 +230,7 @@ default:
             '1',
             'inarray',
             'Please select a valid platform.',
-            array('inarray' => array_merge($Media, $MediaManga, $Platform))
-        );
-
-        # torrents.Container
-        $Validate->SetFields(
-            'container',
-            '1',
-            'inarray',
-            'Please select a valid format.',
-            array('inarray' => array_merge($Containers, $ContainersGames, ContainersProt))
+            array('inarray' => array_merge($Media, $MediaManga))
         );
 
         /*
@@ -279,6 +272,7 @@ default:
         array('maxlength' => 65535, 'minlength' => 10)
     );
 
+    /* todo: Fix the Group ID validation
     # torrents_group.ID
     $Validate->SetFields(
         'groupid',
@@ -286,6 +280,7 @@ default:
         'number',
         'Group ID was not numeric.'
     );
+    */
 }
 
 $Err = $Validate->ValidateForm($_POST); // Validate the form
@@ -392,6 +387,24 @@ if (!empty($Err)) { // Show the upload form, with the data the user entered
     $UploadForm = $Type;
     include(SERVER_ROOT.'/sections/upload/upload.php');
     die();
+}
+
+//******************************************************************************//
+//--------------- Autofill format and archive ----------------------------------//
+
+if ($T['Container'] === 'Autofill' || $T['Archive'] === 'Autofill') {
+# torrents.Container
+$Validate->ParseExtensions(
+    $Tor->file_list(),
+    array_merge($Containers, $ContainersGames, $ContainersProt)
+);
+/*
+# torrents.Archive
+$Validate->ParseExtensions(
+    $Tor->file_list(),
+    array_merge($Containers, $ContainersGames, $ContainersProt)
+);
+*/
 }
 
 //******************************************************************************//

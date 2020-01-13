@@ -448,6 +448,7 @@ class TorrentForm
     </td>
     <td>
       <select name="media">
+      <option value="">---</option>
         <?php
           foreach ($this->Media as $Media) {
               echo "\t\t\t\t\t\t<option value=\"$Media\"";

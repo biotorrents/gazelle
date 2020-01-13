@@ -35,17 +35,20 @@ if (!$Banned) {
       <td colspan="2">
         <input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="username"
           id="username" class="inputtext" required="required" maxlength="20" pattern="[A-Za-z0-9_?]{1,20}"
-          autofocus="autofocus" placeholder="Username" size="40" />
+          autofocus="autofocus" placeholder="Username" size="40"
+          autocomplete="username" />
       </td>
     </tr>
     <tr>
       <td>
         <input type="password" name="password" id="password" class="inputtext" required="required" maxlength="307200"
-          pattern=".{6,307200}" placeholder="Password" />
+          pattern=".{6,307200}" placeholder="Password"
+          autocomplete="current-password" />
       </td>
       <td>
         <input type="text" name="twofa" id="twofa" class="inputtext" maxlength="6" pattern="[0-9]{6}"
-          inputmode="numeric" placeholder="2FA" size="6" title="Leave blank if you have not enabled 2FA" />
+          inputmode="numeric" placeholder="2FA" size="6" title="Leave blank if you have not enabled 2FA"
+          autocomplete="one-time-code" />
       </td>
     </tr>
     <tr>
