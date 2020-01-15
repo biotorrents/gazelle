@@ -1042,9 +1042,6 @@ ol {
   font-size: 100%;
   font-weight: 100;
 }
-.group_info > a:last-of-type {
-  text-decoration: underline;
-}
 
 .recent_snatches_images, .recent_uploads_images {
   position: relative;

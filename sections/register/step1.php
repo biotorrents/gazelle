@@ -26,7 +26,7 @@ if (empty($Sent)) {
       </td>
     </tr>
     <tr valign="top">
-      <td align="right">Email address&nbsp;</td>
+      <td align="right">Email Address&nbsp;</td>
       <td align="left">
         <input type="email" name="email" id="email" class="inputtext" placeholder="Email" value="<?=(!empty($_REQUEST['email']) ? display_str($_REQUEST['email']) : (!empty($InviteEmail) ? display_str($InviteEmail) : ''))?>" />
       </td>
@@ -38,9 +38,9 @@ if (empty($Sent)) {
       </td>
     </tr>
     <tr valign="top">
-      <td align="right">Verify password&nbsp;</td>
+      <td align="right">Verify Password&nbsp;</td>
       <td align="left">
-        <input type="password" name="confirm_password" id="new_pass_2" class="inputtext" placeholder="Verify password" /> <strong id="pass_match"></strong>
+        <input type="password" name="confirm_password" id="new_pass_2" class="inputtext" placeholder="Verify Password" /> <strong id="pass_match"></strong>
         <p>An acceptable password is 6 characters or longer (please make it longer)</p>
       </td>
     </tr>
@@ -48,21 +48,21 @@ if (empty($Sent)) {
       <td></td>
       <td align="left">
         <input type="checkbox" name="readrules" id="readrules" value="1"<? if (!empty($_REQUEST['readrules'])) { ?> checked="checked"<? } ?> />
-        <label for="readrules">I will read the rules.</label>
+        <label for="readrules">I will read the rules</label>
       </td>
     </tr>
     <tr valign="top">
       <td></td>
       <td align="left">
         <input type="checkbox" name="readwiki" id="readwiki" value="1"<? if (!empty($_REQUEST['readwiki'])) { ?> checked="checked"<? } ?> />
-        <label for="readwiki">I will read the wiki.</label>
+        <label for="readwiki">I will read the wiki</label>
       </td>
     </tr>
     <tr valign="top">
       <td></td>
       <td align="left">
         <input type="checkbox" name="agereq" id="agereq" value="1"<? if (!empty($_REQUEST['agereq'])) { ?> checked="checked"<? } ?> />
-        <label for="agereq">I am 18 years of age or older.</label>
+        <label for="agereq">I am 18 years of age or older</label>
       </td>
     </tr>
     <tr>
