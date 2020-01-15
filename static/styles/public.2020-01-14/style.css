@@ -19,8 +19,8 @@ html, body {
 body {
   font-family: Bitstream Vera Sans, Tahoma, sans-serif;
   font-size: 11px;
-  color: black;
-  background: url('/static/common/hiware.png');
+  color: #464646;
+  background-color: #fbc2e5;
 }
 
 table {
@@ -28,13 +28,12 @@ table {
 }
 
 a {
-  color: white;
+  color: #464646;
   text-decoration: none;
 }
 
 a:hover {
-  color:white;
-  text-decoration: underline;
+  color: #888888;
 }
 
 input[type="text"], input[type="password"], input[type="email"] {
@@ -65,14 +64,14 @@ input[type="text"]:invalid, input[type="password"]:invalid {
 
 #loginform input[type="submit"], #recoverform input[type="submit"] {
   width: 100%;
-  background-color: #fff9c7;
+  background-color: white;
   font: 500 14px/29px Helvetica, Arial, sans-serif;
   border: none;
   border-radius: 0 0 5px 5px;
   cursor: pointer;
 }
 #loginform input[type="submit"]:hover, #recoverform input[type="submit"]:hover {
-  background-color: #fbe180;
+  background-color: #FFF7F7;
 }
 
 #recoverform .layout td:first-child {
@@ -84,7 +83,7 @@ input[type="text"]:invalid, input[type="password"]:invalid {
 #head, #foot {
   height: 30px;
   width: 100%;
-  background-color: #016670;
+  background-color: #461640;
   overflow: hidden;
 }
 
@@ -104,15 +103,11 @@ input[type="text"]:invalid, input[type="password"]:invalid {
 }
 
 #foot > span, #head > span {
-  color: black;
+  color: #a07c92;
 }
 
 #foot a, #head a {
-  color: white;
-}
-
-#foot a:hover, #head a:hover {
-  color: white;
+  color: #b98fa9;
 }
 
 #content {
@@ -134,7 +129,7 @@ input[type="text"]:invalid, input[type="password"]:invalid {
 #logo {
   width: 250px;
   height: 50px;
-  background-image: url('/static/common/logo-bw.png');
+  background-image: url('/static/common/logo.png');
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;

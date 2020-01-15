@@ -164,7 +164,7 @@ View::show_header('Uploading Rules', 'rules');
           "10 GiB or 10,000 files."
           Compression is required if your torrent is > 10 GiB or if it contains > 10,000 files.
           Otherwise, please compress text files if it reduces the torrent size by > 30%.
-          Never compress torrents < 2 GiB or binary files < 10 GiB. Multipart archives are only allowed for torrents> 10
+          Never compress torrents < 2 GiB or binary files < 10 GiB. Multipart archives are only allowed for torrents > 10
             GiB.
         </li>
 

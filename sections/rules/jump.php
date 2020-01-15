@@ -70,49 +70,6 @@
         These rules govern what tags can and cannot be added.
       </td>
     </tr>
-    <tr class="colhead">
-      <td colspan="2">Other languages (Please note, these are community-maintained and are subject to error.)</td>
-    </tr>
-    <tr class="row">
-      <td class="nobr">
-        <a href="wiki.php?action=article&name=Spanish+Golden+Rules">Spanish</a>
-      </td>
-      <td class="nobr">
-        Reglas de Oro
-      </td>
-    </tr>
-    <tr class="row">
-      <td class="nobr">
-        <a href="wiki.php?action=article&name=Finnish+Golden+Rules">Finnish</a>
-      </td>
-      <td class="nobr">
-        Säännöt suomeksi
-      </td>
-    </tr>
-    <tr class="row">
-      <td class="nobr">
-        <a href="wiki.php?action=article&name=German+Golden+Rules">Deutsch</a>
-      </td>
-      <td class="nobr">
-        Die Regeln auf Deutsch
-      </td>
-    </tr>
-    <tr class="row">
-      <td class="nobr">
-        <a href="wiki.php?action=article&name=Swedish+Golden+Rules">Svensk</a>
-      </td>
-      <td class="nobr">
-        Svenska Regler
-      </td>
-    </tr>
-    <tr class="row">
-      <td class="nobr">
-        <a href="wiki.php?action=article&name=French+Golden+Rules">Français</a>
-      </td>
-      <td class="nobr">
-        Les règles d'or
-      </td>
-    </tr>
   </table>
 </div>
 <!-- END Other Sections -->
