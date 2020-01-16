@@ -18,13 +18,13 @@
   padding: 0
 }
 
-.cats_dna, .cats_rna, .cats_protein, .cats_imaging, .cats_other {
+.cats_dna, .cats_rna, .cats_protein, .cats_imaging, .cats_extras {
   /* width: 36px!important; */
   height: 36px!important;
   line-height: 36px;
 }
 .group .cats_dna:after, .group .cats_rna:after, .group .cats_protein:after,
-.group .cats_imaging:after, .group .cats_other:after {
+.group .cats_imaging:after, .group .cats_extras:after {
   color: black!important;
 }
 
@@ -64,14 +64,14 @@
 }
 .group .cats_imaging { background-color: #4DC593; }
 
-/* Other */
-.cats_other:after {
-  content: "MISC";
+/* Extras */
+.cats_extras:after {
+  content: "XTRA";
   color: #77C5D4;
   font-size: 18px;
   letter-spacing: -2px;
 }
-.group .cats_other { background-color: #77C5D4; }
+.group .cats_extras { background-color: #77C5D4; }
 
 /* Unused
 .cats_unused:after {
@@ -2121,16 +2121,22 @@ caption {
 body.style_pink h1 a, body.style_pink h2 a, body.style_pink h3 a, body.style_pink h4 a, body.style_pink h5 a, body.style_pink h6 a {
   color: #df7cc2;
 }
+
 body.style_pink .cats_dna:after { color: #78467f; }
 body.style_pink .group .cats_dna { background-color: #78467f; }
-body.style_pink .cats_mrna:after { color: #4f3063; }
-body.style_pink .group .cats_mrna { background-color: #4f3063; }
-body.style_pink .cats_rrna:after { color: #9f5c9c; }
-body.style_pink .group .cats_rrna { background-color: #9f5c9c; }
-body.style_pink .cats_trna:after { color: #c871b9; }
-body.style_pink .group .cats_trna { background-color: #c871b9; }
-body.style_pink .cats_other:after { color: #ef86d5; }
-body.style_pink .group .cats_other { background-color: #ef86d5; }
+
+body.style_pink .cats_rna:after { color: #4f3063; }
+body.style_pink .group .cats_rna { background-color: #4f3063; }
+
+body.style_pink .cats_protein:after { color: #9f5c9c; }
+body.style_pink .group .cats_protein { background-color: #9f5c9c; }
+
+body.style_pink .cats_imaging:after { color: #c871b9; }
+body.style_pink .group .cats_imaging { background-color: #c871b9; }
+
+body.style_pink .cats_extras:after { color: #ef86d5; }
+body.style_pink .group .cats_extras { background-color: #ef86d5; }
+
 body.style_pink a:hover, body.style_pink .torrent_table .group a:hover { color: #db7bc7; }
 body.style_pink ::selection,
 body.style_pink ::-moz-selection {

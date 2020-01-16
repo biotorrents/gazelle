@@ -222,8 +222,10 @@ View::show_header('Browse Torrents', 'browse');
 
             <select id="container" name="container" class="ft_container fti_advanced">
               <option value="">Seq Format</option>
-  <?php  foreach ($Containers as $Container) { ?>
-              <option value="<?=display_str($Container);?>" <?Format::selected('container', $Container)?>><?=display_str($Container);?></option>
+  <?php  foreach ($Containers as $Key => $Container) { ?>
+              <option value="<?=display_str($Key);?>" <?Format::selected('container', $Key)?>><?=display_str($Key);?></option>
+  <?php  } foreach ($ContainersProt as $Key => $ContainerProt) { ?>
+  <option value="<?=display_str($Key);?>" <?Format::selected('container', $Key)?>><?=display_str($Key);?></option>
   <?php  } ?>
             </select>
 
@@ -236,8 +238,8 @@ View::show_header('Browse Torrents', 'browse');
 
             <select id="container" name="container" class="ft_container fti_advanced">
               <option value="">Img Format</option>
-  <?php  foreach ($ContainersGames as $Container) { ?>
-              <option value="<?=display_str($Container);?>" <?Format::selected('container', $Container)?>><?=display_str($Container);?></option>
+  <?php  foreach ($ContainersGames as $Key => $Container) { ?>
+              <option value="<?=display_str($Key);?>" <?Format::selected('container', $Key)?>><?=display_str($Key);?></option>
   <?php  } ?>
             </select>
 

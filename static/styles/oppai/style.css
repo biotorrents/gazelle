@@ -9,7 +9,7 @@
 .cats_rna { width: 36px; height: 36px; background: url('/static/common/bioicons/rna.png') no-repeat center center; }
 .cats_protein { width: 36px; height: 36px; background: url('/static/common/bioicons/protein.png') no-repeat center center; }
 .cats_imaging { width: 36px; height: 36px; background: url('/static/common/bioicons/imaging.png') no-repeat center center; }
-.cats_other { width: 36px; height: 36px; background: url('/static/common/bioicons/other.png') no-repeat center center; }
+.cats_extras { width: 36px; height: 36px; background: url('/static/common/bioicons/extras.png') no-repeat center center; }
 
 
 /* Global */
@@ -55,14 +55,14 @@ a:hover {
 }
 
 button, input[type=button], input[type=submit] {
-  background: #fff9c7;
+  background: #fbe180;
   box-shadow: 2px 2px 10px -5px gray;
 }
 button:hover, input[type=button]:hover, input[type=submit]:hover {
-  background: #fbe180;
+  background: #fff9c7;
 }
 button:focus, input[type=button]:focus, input[type=submit]:focus {
-  background: #fbe180;
+  background: #fff9c7;
 }
 
 .spoilerButton {
@@ -157,7 +157,7 @@ ul.thin li { margin:0px 0px; padding:0px; }
 #logo {
   width: 250px;
   height: 50px;
-  background: url('/static/common/logo-bw.png') no-repeat center center;
+  background: url('/static/common/logo.black.png') no-repeat center center;
   margin: 0 0 0 10%;
 }
 
@@ -787,7 +787,7 @@ ul.poll li.graph {
 .read_locked{background: url(images/locked_read.png) no-repeat center center;}
 .unread{background: url(images/unread.png) no-repeat center center;}
 .read{background: url(images/read.png) no-repeat center center;}
-strong.quoteheader {color: #000;}
+strong.quoteheader {color: black;}
 
 tr.row:nth-of-type(odd) {
   background-color: white;
@@ -803,7 +803,7 @@ table.forum_post td {
 }
 
 table.forum_unread {
-  border: 2px solid #F0BBD6;
+  border: 2px solid red;
 }
 
 td.avatar {

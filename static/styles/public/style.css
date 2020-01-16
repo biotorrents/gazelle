@@ -28,12 +28,12 @@ table {
 }
 
 a {
-  color: white;
+  color: #016670;
   text-decoration: none;
 }
 
 a:hover {
-  color:white;
+  color: black;
   text-decoration: underline;
 }
 
@@ -65,14 +65,14 @@ input[type="text"]:invalid, input[type="password"]:invalid {
 
 #loginform input[type="submit"], #recoverform input[type="submit"] {
   width: 100%;
-  background-color: #fff9c7;
+  background-color: #fbe180;
   font: 500 14px/29px Helvetica, Arial, sans-serif;
   border: none;
   border-radius: 0 0 5px 5px;
   cursor: pointer;
 }
 #loginform input[type="submit"]:hover, #recoverform input[type="submit"]:hover {
-  background-color: #fbe180;
+  background-color: #fff9c7;
 }
 
 #recoverform .layout td:first-child {
@@ -134,7 +134,7 @@ input[type="text"]:invalid, input[type="password"]:invalid {
 #logo {
   width: 250px;
   height: 50px;
-  background-image: url('/static/common/logo-bw.png');
+  background-image: url('/static/common/logo.black.png');
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;

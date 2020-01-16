@@ -176,7 +176,7 @@ class TorrentForm
             }
           ?>
           </select><br />
-          What alphabet the sequence uses, n.b., plasmids fit in the Other category
+          What alphabet the sequence uses, unless it's images or supplemental data
         </td>
       </tr>
     </table>

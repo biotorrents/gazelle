@@ -163,9 +163,8 @@ View::show_header('Uploading Rules', 'rules');
           <strong>Compression.</strong>
           "10 GiB or 10,000 files."
           Compression is required if your torrent is > 10 GiB or if it contains > 10,000 files.
-          Otherwise, please compress text files if it reduces the torrent size by > 30%.
-          Never compress torrents < 2 GiB or binary files < 10 GiB. Multipart archives are only allowed for torrents > 10
-            GiB.
+          Otherwise, please compress text files only if it reduces the torrent size by > 30% and avoid compressing binary files.
+          Multipart archives are only allowed for torrents > 10 GiB.
         </li>
 
         <li id="r1.10"><a href="#h1"><strong>&uarr;</strong></a> <a href="#r1.10">1.10</a>
@@ -183,11 +182,9 @@ View::show_header('Uploading Rules', 'rules');
           <strong>Supplemental Packs.</strong>
           I strongly recommend <a href="https://semver.org/" target="_blank">Semantic Versioning</a> for your original
           data.
-          Supplemental packs may include a collection of documents, utilities, protocols, metadata, etc., specifically
-          prepared for release.
+          Supplemental packs may include a collection of citations, documents, utilities, protocols, metadata, disk images, etc., specifically prepared for release.
           The collection should be a separate torrent if the collection constitutes a project in its own right.
-          But if you have, e.g., 100 MiB of XML and no other metadata for 5 GB of photos, please include it in the main
-          torrent.
+          If you only have metadata generated in the data processing workflow, please include it in the main torrent.
         </li>
       </ul>
     </div>
@@ -197,7 +194,7 @@ View::show_header('Uploading Rules', 'rules');
       <ul>
         <li id="r2.1"><a href="#h2"><strong>&uarr;</strong></a> <a href="#r2.1">2.1</a>
           <strong>Multiple Formats Allowed.</strong>
-          It's fine if there's an EMBL and a FASTA of the same data. If you need to convert a dataset for your analysis,
+          It's fine if there's an EMBL and a FASTA of the same data. If you need to convert a dataset for your own analysis,
           please upload a quality conversion with supplemetal info.
           Remember that small, one-shot metadata are better included with the data, and collections of docs and utils
           are better separate from it.
@@ -213,6 +210,7 @@ View::show_header('Uploading Rules', 'rules');
           Please add a link in the old data's Torrent Group Description to the new data.
           Git repos can be trumped at the commit and patch levels.
           Then normal SemVer rules take effect for properly tagged releases.
+          In an ideal world, only releases tagged with a specific version number would be allowed because this is BitTorrent's main strength.
         </li>
 
         <li id="r2.3"><a href="#h2"><strong>&uarr;</strong></a> <a href="#r2.3">2.3</a>
@@ -225,10 +223,12 @@ View::show_header('Uploading Rules', 'rules');
         </li>
 
         <li id="r2.4"><a href="#h2"><strong>&uarr;</strong></a> <a href="#r2.4">2.4</a>
-          <strong>Two Weeks Unseeded.</strong>
-          If you have the original torrent files for the inactive torrent, reseed those original files instead of
-          uploading a new torrent.
-          Uploading a replacement torrent should be done only when the original files are unavailable.
+          <strong>One Month Unseeded.</strong>
+          Please try requesting a reseed before anything.
+          This sends a mass PM to all snatchers asking them to resume seeding the files.
+          If you have the original torrent files for the inactive torrent, reseed those instead of uploading a new torrent. 
+          Uploading a replacement torrent should be done only when the original files are unavailable and/or the torrent hasn't been seeded for a month.
+          The site automatically deletes dead torrents after 6 months.
         </li>
 
         <li id="r2.5"><a href="#h2"><strong>&uarr;</strong></a> <a href="#r2.5">2.5</a>
@@ -245,6 +245,8 @@ View::show_header('Uploading Rules', 'rules');
           Add the announce URL as the only item on the tracker list and click the checkbox marked private.
           Please don't share <code>.torrent</code> files because they have your passkey embedded in them.
           This passkey lets the tracker know who's uploading and downloading, and leaking it will nuke your ratio.
+          It's okay to share the files themselves any way you see fit.
+          Automatic mirroring to OpenBitTorrent is in development.
           <br /><br />
         </li>
 
@@ -253,15 +255,15 @@ View::show_header('Uploading Rules', 'rules');
           The categories loosely follow the central dogma.
           It depends on what alphabet the sequence uses, e.g., ACGT vs. ACGU.
           All medical imaging data goes in the Imaging category.
-          All extra documentation, custom scripts, etc., goes in Documents.
-          Plasmids and things that don't quite fit go in Other.
+          <!-- All extra documentation, custom scripts, etc., goes in Documents. -->
+          Toolkits and other things that aren't strictly biology data go in Extras.
           <br /><br />
         </li>
 
         <li id="r3.3"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.3">3.3</a>
           <strong>Accession Number.</strong>
-          Please add accession numbers when the data source issued them.
-          The number can be any format but it must correspond to the actual torrent data.
+          Please add accession numbers if they come with the data or if you acquired them for your own data.
+          The number can be any format but it must correspond to the actual nucleotide or amino acid sequences represented on disk.
           Don't add accession numbers just because the metadata matches.
           RefSeq and UniProt integration is in development.
           <br /><br />
@@ -269,7 +271,7 @@ View::show_header('Uploading Rules', 'rules');
 
         <li id="r3.4"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.4">3.4</a>
           <strong>Torrent Title.</strong>
-          A short description of the torrent contents.
+          A short description of the torrent contents such as a FASTA definition line.
           It doesn't need to match the folders but it should tell you what the data is at a glance.
           Please avoid adding other metadata such as Strain, Platform, etc., with a dedicated field.
           <br /><br />
@@ -278,22 +280,24 @@ View::show_header('Uploading Rules', 'rules');
         <li id="r3.5"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.5">3.5</a>
           <strong>Organism.</strong>
           The relevant organism's binomial name and optional subspecies.
-          Please use <em>Genus species subspecies</em> and no terms such as var. and subsp.
-          Multiple organisms and a FASTA/GenBank parser are both in development.
+          Please use <em>Genus species subspecies</em> and not terms such as var. and subsp.
+          Multiple organisms and a way to autofill from FASTA/GenBank headers are both in development.
           <br /><br />
         </li>
 
         <li id="r3.6"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.6">3.6</a>
           <strong>Strain/Variety.</strong>
           The strain's name if known.
-          This should correspond to a specific cell line or breed.
+          This should correspond to a specific cell line, cultivar, or breed.
+          If the species is <em>H. sapiens</em> and the subject's race is known and relevant, e.g., as in a torrent of gene sequences related to sickle cell anemia, please add it here.
           Otherwise, please omit it.
+          Do not put any identifying patient data here or anywhere else.
           <br /><br />
         </li>
 
         <li id="r3.7"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.7">3.7</a>
           <strong>Authors(s).</strong>
-          The Author field should contain only the author name.
+          The Author field should contain only the author name and no titles.
           The upload form supports multiple authors.
           Do a search before uploading to get their names right.
           Consistent author naming makes browsing easier because it groups torrents on a common page.
@@ -348,7 +352,7 @@ View::show_header('Uploading Rules', 'rules');
             href="forums.php?action=viewforum&forumid=<?= SUGGESTIONS_FORUM_ID ?>">Please
             post in the suggestions forum</a>
           if you'd like to request a new format.
-          Note that the formats change for the Imaging category.
+          Note that the formats change for the Protein and Imaging categories.
           A file extension parser is in development.
           <br /><br />
         </li>
@@ -360,7 +364,7 @@ View::show_header('Uploading Rules', 'rules');
           The options correspond in higher conceptual language to:
           a single piece of information, structural information, especially deep or broad information, and an exhaustive
           source.
-          Please use the Other option if you'd like to enter a resolution such as "420 subjects."
+          Please use the Other option if you'd like to enter a specific resolution such as "420 subjects from Boston."
           <br /><br />
         </li>
 
@@ -397,7 +401,7 @@ View::show_header('Uploading Rules', 'rules');
           DOI numbers should be well-formed, one per line.
           The system currently discards malformed DOI numbers instead of extracting them from arbitrary strings.
           An auto-extract feature is in development.
-          If your research is a URI, please use the Torrent Group Description field.
+          If your research is a URI, please use the Torrent Group Description field for now.
           <br /><br />
         </li>
 
@@ -413,14 +417,14 @@ View::show_header('Uploading Rules', 'rules');
           <strong>Torrent Description.</strong>
           Specific info about the protocols and equipment relevant to <em>this</em> data.
           This text is hidden by default.
-          It displays when you click the Torrent Title next to [ DL | ... | PL ].
+          It displays when you click the Torrent Title next to [ DL | PL ].
           Please discuss materials and methods here.
           <br /><br />
         </li>
 
         <li id="r3.20"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.20">3.20</a>
           <strong>Aligned Sequence.</strong>
-          Does the data come with any metadata of an analytical nature, such as alignment data (mandatory)?
+          Does the data come with any metadata of an analytical nature, such as alignment data (mandatory if checked)?
           If so, does the torrent folder contain the scripts used to generate the metadata (optional)?
           <br /><br />
         </li>
