@@ -51,25 +51,25 @@ class TorrentSearch
     // List of fields that can be used for fulltext searches
     private static $Fields = [
     'artistname' => 1,
-    'audioformat' => 1,
+    #'audioformat' => 1,
     'cataloguenumber' => 1,
     'codec' => 1,
     'container' => 1,
     'description' => 1,
-    'dlsiteid' => 1,
+    #'dlsiteid' => 1,
     'filelist' => 1,
     'groupname' => 1,
     'groupnamerj' => 1,
     'groupnamejp' => 1,
     'advgroupname' => 1,
-    'language' => 1,
+    #'language' => 1,
     'media' => 1,
     'resolution' => 1,
     'searchstr' => 1,
     'series' => 1,
     'studio' => 1,
-    'subber' => 1,
-    'subbing' => 1,
+    #'subber' => 1,
+    #'subbing' => 1,
     'taglist' => 1
   ];
 
@@ -86,8 +86,11 @@ class TorrentSearch
 
     // Some form field names don't match the ones in the index
     private static $FormsToFields = [
-    'searchstr' => '(groupname,groupnamerj,groupnamejp,artistname,studio,series,dlsiteid,cataloguenumber,yearfulltext)',
-    'advgroupname' => '(groupname,groupnamerj,groupnamejp)'
+        # todo: Make these filters significantly less broad
+        'searchstr' => '*',
+        'advgroupname' => '*'
+        #'searchstr' => '(groupname,groupnamerj,groupnamejp,artistname,studio,series,dlsiteid,cataloguenumber,yearfulltext)',
+        #'advgroupname' => '(groupname,groupnamerj,groupnamejp)'
   ];
 
     // Specify the operator type to use for fields. Empty key sets the default
@@ -201,7 +204,7 @@ class TorrentSearch
         }
         $Offset = ($this->Page - 1) * $ResultLimit;
         $MinMax = G::$Cache->get_value('sphinx_min_max_matches');
-        $MaxMatches = max($Offset + $ResultLimit, $MinMax ? $MinMax : 2000);
+        $MaxMatches = max($Offset + $ResultLimit, $MinMax ? $MinMax : 1000); # todo: Keep an eye on this
         $this->SphQL->from('torrents, delta')
       ->limit($Offset, $ResultLimit, $MaxMatches);
     }

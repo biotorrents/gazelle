@@ -20,14 +20,19 @@ View::show_header('Donate');
   <span class="donation_info_title">Why donate?</span>
   <div class="box pad donation_info">
     <p>
-      <?= SITE_NAME ?> has no advertisements, is not sponsored, and provides its services free of charge.
-      For these reasons, <?= SITE_NAME ?>'s financial obligations can only be met with the help of voluntary user donations.
-      Supporting <?= SITE_NAME ?> is and will always remain voluntary.
-      If you are financially able, please help pay <?= SITE_NAME ?>'s bills by donating.
+      <?= SITE_NAME ?> has no advertisements, is not sponsored, and
+      provides its services free of charge.
+      For these reasons, <?= SITE_NAME ?>'s financial obligations can
+      only be met with the help of voluntary user donations.
+      Supporting <?= SITE_NAME ?> is and will always remain
+      voluntary.
+      If you are financially able, please help pay <?= SITE_NAME ?>'s
+      bills by donating.
     </p>
 
     <p>
-      <?= SITE_NAME ?> uses all voluntary donations to cover the costs of running the site, tracker, and IRC network.
+      <?= SITE_NAME ?> uses all voluntary donations to cover the
+      costs of running the site, tracker, and IRC network.
       These costs represent the hardware the site runs on (e.g., servers, upgrades, fixes),
       and recurring operating expenses (e.g., hosting, bandwidth, power).
     </p>
@@ -42,18 +47,22 @@ View::show_header('Donate');
   <span class="donation_info_title">What you will receive for donating</span>
   <div class="box pad donation_info">
     <p>
-      Please see <a href="https://www.patreon.com/biotorrents" target="_blank"><?= SITE_NAME ?>'s Patreon</a> for a detailed overview of funding goals.
+      Please see <a href="https://www.patreon.com/biotorrents" target="_blank"><?= SITE_NAME ?>'s Patreon</a> for a detailed overview of funding
+      goals.
       There are some benefits to donating that culmulate at each tier pledged.
       Each tier's awards include those already listed.
       Bitcoin donations are privately negotiable.
 
       <ul>
-        <li><strong>Bronze:</strong> A donor badge and forum access for your user account on the BioTorrents.de website</li>
+        <li><strong>Bronze:</strong> A donor badge and forum access for your user account on the BioTorrents.de website
+        </li>
         <li><strong>Silver:</strong> Unlimited API calls to the BioTorrents.de database</li>
         <li><strong>Gold:</strong> Monthly Skype calls to discuss wetlab and software ideas.
           My expertise includes fungal biotechnology, nonprofit administration, and LEMP development</li>
-        <li><strong>Sponsor a Seedbox:</strong> Shell access to, and share ratio credit from, a seedbox that I manage on your behalf.
-          Please understand that network services beyond the scope of seedbox administration should be negotiated separately</li>
+        <li><strong>Sponsor a Seedbox:</strong> Shell access to, and share ratio credit from, a seedbox that I manage on
+          your behalf.
+          Please understand that network services beyond the scope of seedbox administration should be negotiated
+          separately</li>
       </ul>
 
       <!-- Any donation or contribution option listed above gives you the opportunity to receive Donor Points.
@@ -72,12 +81,13 @@ View::show_header('Donate');
       <li>Absolutely nothing else</li>
     </ul> -->
 
-    <p>
-      Be reminded that when you make a donation, you aren't "purchasing" Donor Ranks, invites, or any <?= SITE_NAME ?>-specific benefit.
-      When donating, you are helping <?= SITE_NAME ?> pay its bills, and your donation should be made in this spirit.
-      The <?= SITE_NAME ?> Staff does its best to recognize <?= SITE_NAME ?>'s financial supporters in a fair and fun way,
-      but all Donor Perks are subject to change or cancellation at any time, without notice.
-    </p>
+      <p>
+        Be reminded that when you make a donation, you aren't "purchasing" Donor Ranks, invites, or any <?= SITE_NAME ?>-specific benefit.
+        When donating, you are helping <?= SITE_NAME ?> pay its
+        bills, and your donation should be made in this spirit.
+        The <?= SITE_NAME ?> staff does its best to recognize <?= SITE_NAME ?>'s financial supporters in a fair and fun way,
+        but all Donor Perks are subject to change or cancellation at any time, without notice.
+      </p>
   </div>
 
   <span class="donation_info_title">What you won't receive for donating</span>

@@ -29,7 +29,7 @@ define('FOOTER_FILE', SERVER_ROOT.'/design/publicfooter.php');
 </head>
 <body>
 <div id="head"><span>
-<a href="login.php">Log in</a>
+<a href="login.php">Log In</a>
 <?php if (OPEN_REGISTRATION) { ?>
  | <a href="register.php">Register</a>
 <?php } ?>

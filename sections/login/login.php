@@ -51,7 +51,7 @@ if (!$Banned) {
     </tr>
     <tr>
       <td colspan="2">
-        <input type="submit" name="login" value="Log in" class="submit" />
+        <input type="submit" name="login" value="Log In" class="submit" />
       </td>
     </tr>
   </table>
