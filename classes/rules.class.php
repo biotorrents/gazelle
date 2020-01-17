@@ -7,7 +7,7 @@ class Rules {
    */
   public static function display_golden_rules() {
     ?>
-    <ol>
+    <ul>
       <li>Staff can do anything to anyone for any reason (or no reason). If you take issue with a decision, you must do so privately with the staff member who issued the decision or with an administrator of the site.</li>
       <li>One account per person per lifetime.</li>
       <li>Follow proper private BitTorrent practices. Torrent files you download from this site are unique to you and should not be shared with others. Torrent files from this site should not be modified by adding additional trackers or enabling DHT or PEX under any circumstances.</li>
@@ -15,7 +15,7 @@ class Rules {
       <li>Accessing the site from any IP address is permitted, but your account will be linked with other accounts that have accessed the site from the same IP as you. As such, it is <em>recommended</em> that you don't use public networks, proxies, or VPNs to access the site.</li>
       <li>Attempting to find a bug in the site code is allowed and sometimes even rewarded. Follow proper disclosure procedures by contacting staff about the issue well before disclosing it publicly. Do not misuse any bugs you may discover. Do not attempt to portray abuse as a bug in the hopes of a reward.</li>
       <li>Don't reveal the criteria for hidden badges or events.</li>
-    </ol>
+    </ul>
 <?
   }
 
@@ -72,7 +72,7 @@ class Rules {
         <ul>
       <li>Let's treat the biology boards like how the Shroomery used to be: each thread a set of resourceful diverse wisdom worth using permalinks to. It's okay if the boards are slow, that's why there are only a few of them.</li>
       <li>Please discuss site news in the corresponding Announcements thread instead of making a new General thread. Discussing science-related news in General is highly encouraged, but discussing political news is much less so. Thank you.</li>
-      <li>No advertising, referrals, affiliate links, cryptocurrency pumps, or calls to action that involve using a financial instrument. You're banned on the spot. The exceptions: cryptocurrencies that derive their value from work performed on distributed science computation networks, e.g., Curecoin, FoldingCoin, and Gridcoin.</li>
+      <li>No advertising, referrals, affiliate links, cryptocurrency pumps, or calls to action that involve using a financial instrument. You'll be banned on the spot. The exceptions: cryptocurrencies that derive their value from work performed on distributed science computation networks, e.g., Curecoin, FoldingCoin, and Gridcoin.</li>
       <li>Feel free to post announcements for your own projects, even and especially if they're commercial ones, in the General board. Limit all discussion of trading biomaterials, including bulk giveaways, to the Marketplace forum available to Power Users.</li>
       <li>Please be modest when talking about your uploads. It's unnecessary to announce your uploads because Gazelle logs everything (at least one this is encrypted). If someone asks for help on his project and your upload fits the bill, go write a post!</li>
       <li>Use descriptive and specific subject lines. This helps others decide whether your particular words of "wisdom" relate to a topic they care about.</li>
@@ -94,7 +94,7 @@ class Rules {
       <li>Don't send mass alerts with <code>@channel</code>, <code>@everyone</code>, or <code>@here</code>. It's obnoxious and you should handle anything genuinely important on the boards.</li>
       <li>Flooding is irritating and you'll get kicked for it. This includes "now playing" scripts, large amounts of irrelevant text such as lorem ipsum, and unfunny non sequiturs.</li>
       <li>Impersonating other members &mdash; particularly staff members &mdash; will not go unpunished. Please remember that the Slack channels are publicly accessible.</li>
-      <li>Please use the threaded conversation in Slack and avoid replying to threads with new messages or crossposting replies to the main channel.</li>
+      <li>Please use the threaded conversations feature in Slack and avoid replying to threads with new messages or crossposting replies to the main channel.</li>
       <li>Announce and bot channels are in development, as standard IRC instead of Slack for obvious reasons. Any IRC bots you have must authenticate with your own username and IRC key, and set the <code>+B</code> usermode on themselves.</li>
 <?
   }

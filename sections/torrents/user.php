@@ -334,7 +334,8 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
 
 <div class="thin">
   <div class="header">
-    <h2><a href="user.php?id=<?= $UserID ?>"><?= $User['Username'] ?></a><?= "'s $Action torrents" ?></h2>
+    <h2><a href="user.php?id=<?= $UserID ?>"><?= $User['Username'] ?></a><?= "'s $Action torrents" ?>
+    </h2>
   </div>
   <div class="box pad">
     <form class="search_form" name="torrents" action="" method="get">
@@ -344,20 +345,26 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
         <tr>
           <td class="label"><strong>Search Terms</strong></td>
           <td>
-            <input type="hidden" name="type" value="<?= $_GET['type'] ?>" />
-            <input type="hidden" name="userid" value="<?= $UserID ?>" />
-            <input type="search" name="search" size="60" value="<?php Format::form('search') ?>" />
+            <input type="hidden" name="type"
+              value="<?= $_GET['type'] ?>" />
+            <input type="hidden" name="userid"
+              value="<?= $UserID ?>" />
+            <input type="search" name="search" size="60"
+              value="<?php Format::form('search') ?>" />
           </td>
         </tr>
 
-        <!-- Specifics -->
+        <!--
+        Specifics
+        todo: Make like the Seq/Img Format fields in browse.php
+        -->
         <tr>
           <td class="label"><strong>Specifics</strong></td>
           <td class="nobr" colspan="3">
             <select id="container" name="container" class="ft_container">
               <option value="">Format</option>
-              <?php foreach ($Containers as $ContainerName) { ?>
-              <option value="<?= display_str($ContainerName); ?>"<?php Format::selected('container', $ContainerName) ?>><?= display_str($ContainerName); ?>
+              <?php foreach ($Containers as $Key => $ContainerName) { ?>
+              <option value="<?= display_str($Key); ?>" <?php Format::selected('container', $Key) ?>><?= display_str($Key); ?>
               </option>
               <?php } ?>
             </select>
@@ -365,7 +372,7 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <select id="codec" name="codec" class="ft_codec">
               <option value="">License</option>
               <?php foreach ($Codecs as $CodecName) { ?>
-              <option value="<?= display_str($CodecName); ?>"<?php Format::selected('codec', $CodecName) ?>><?= display_str($CodecName); ?>
+              <option value="<?= display_str($CodecName); ?>" <?php Format::selected('codec', $CodecName) ?>><?= display_str($CodecName); ?>
               </option>
               <?php } ?>
             </select>
@@ -373,7 +380,8 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <select id="resolution" name="resolution" class="ft_resolution">
               <option value="">Assembly Level</option>
               <?php foreach ($Resolutions as $ResolutionName) { ?>
-              <option value="<?= display_str($ResolutionName); ?>"<?php Format::selected('resolution', $ResolutionName) ?>><?= display_str($ResolutionName); ?>
+              <option value="<?= display_str($ResolutionName); ?>"
+                <?php Format::selected('resolution', $ResolutionName) ?>><?= display_str($ResolutionName); ?>
               </option>
               <?php } ?>
             </select>
@@ -381,7 +389,7 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <select name="media" class="ft_media">
               <option value="">Platform</option>
               <?php foreach ($Media as $MediaName) { ?>
-              <option value="<?= display_str($MediaName); ?>"<?php Format::selected('media', $MediaName) ?>><?= display_str($MediaName); ?>
+              <option value="<?= display_str($MediaName); ?>" <?php Format::selected('media', $MediaName) ?>><?= display_str($MediaName); ?>
               </option>
               <?php } ?>
             </select>
@@ -394,8 +402,10 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
           <td class="nobr" colspan="3">
             <select name="censored" class="ft_censored">
               <option value="3">Alignment</option>
-              <option value="1"<?Format::selected('censored', 1)?>>Aligned</option>
-              <option value="0"<?Format::selected('censored', 0)?>>Unaligned</option>
+              <option value="1" <?Format::selected('censored', 1)?>>Aligned
+              </option>
+              <option value="0" <?Format::selected('censored', 0)?>>Unaligned
+              </option>
             </select>
           </td>
         </tr>
@@ -404,9 +414,12 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
         <tr>
           <td class="label"><strong>Tags</strong></td>
           <td>
-            <input type="search" name="tags" size="60" value="<?php Format::form('tags') ?>" />&nbsp;
-            <input type="radio" name="tags_type" id="tags_type0" value="0"<?php Format::selected('tags_type', 0, 'checked') ?> /><label for="tags_type0"> Any</label>&nbsp;&nbsp;
-            <input type="radio" name="tags_type" id="tags_type1" value="1"<?php Format::selected('tags_type', 1, 'checked') ?> /><label for="tags_type1"> All</label><br />
+            <input type="search" name="tags" size="60"
+              value="<?php Format::form('tags') ?>" />&nbsp;
+            <input type="radio" name="tags_type" id="tags_type0" value="0" <?php Format::selected('tags_type', 0, 'checked') ?>
+            /><label for="tags_type0"> Any</label>&nbsp;&nbsp;
+            <input type="radio" name="tags_type" id="tags_type1" value="1" <?php Format::selected('tags_type', 1, 'checked') ?>
+            /><label for="tags_type1"> All</label><br />
             Use !tag to exclude tags
           </td>
         </tr>
@@ -417,14 +430,14 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
           <td>
             <select name="order" class="ft_order_by">
               <?php foreach ($Orders as $OrderText) { ?>
-              <option value="<?= $OrderText ?>"<?php Format::selected('order', $OrderText) ?>><?= $OrderText ?>
+              <option value="<?= $OrderText ?>" <?php Format::selected('order', $OrderText) ?>><?= $OrderText ?>
               </option>
               <?php } ?>
             </select>
 
             <select name="way" class="ft_order_way">
               <?php foreach ($Ways as $WayKey=>$WayText) { ?>
-              <option value="<?= $WayKey ?>"<?php Format::selected('way', $WayKey) ?>><?= $WayText ?>
+              <option value="<?= $WayKey ?>" <?php Format::selected('way', $WayKey) ?>><?= $WayText ?>
               </option>
               <?php } ?>
             </select>
@@ -434,7 +447,7 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
 
       <!-- Categories -->
       <table class="layout cat_list">
-<?php
+        <?php
 $x = 0;
 reset($Categories);
 foreach ($Categories as $CatKey => $CatName) {
@@ -442,17 +455,20 @@ foreach ($Categories as $CatKey => $CatName) {
         if ($x > 0) {
             ?>
         </tr>
-<?php
+        <?php
         } ?>
         <tr>
-<?php
+          <?php
     }
     $x++; ?>
           <td>
-            <input type="checkbox" name="categories[<?= ($CatKey+1) ?>]" id="cat_<?= ($CatKey+1) ?>" value="1"<?php if (isset($_GET['categories'][$CatKey + 1])) { ?> checked="checked"<?php } ?> />
+            <input type="checkbox"
+              name="categories[<?= ($CatKey+1) ?>]"
+              id="cat_<?= ($CatKey+1) ?>" value="1" <?php if (isset($_GET['categories'][$CatKey + 1])) { ?>
+            checked="checked"<?php } ?> />
             <label for="cat_<?= ($CatKey + 1) ?>"><?= $CatName ?></label>
           </td>
-<?php
+          <?php
 }
 ?>
         </tr>
@@ -460,45 +476,63 @@ foreach ($Categories as $CatKey => $CatName) {
 
       <!-- Submit -->
       <div class="submit">
-        <span class="float_left"><?= number_format($TorrentCount) ?> Results</span>
+        <span class="float_left"><?= number_format($TorrentCount) ?>
+          Results</span>
         <input type="submit" value="Search" />
       </div>
     </form>
   </div>
 
   <!-- Results table -->
-<?php if (count($GroupIDs) === 0) { ?>
+  <?php if (count($GroupIDs) === 0) { ?>
   <div class="center">
     Nothing found!
   </div>
-<?php } else { ?>
-  <div class="linkbox"><?=$Pages?></div>
+  <?php } else { ?>
+  <div class="linkbox"><?=$Pages?>
+  </div>
   <div class="box">
-  <table class="torrent_table cats" width="100%">
-    <tr class="colhead">
-      <td class="cats_col"></td>
-      <td><a href="<?= header_link('Name', 'ASC') ?>">Torrent</a></td>
-      <td><a href="<?= header_link('Time') ?>">Time</a></td>
-      <td><a href="<?= header_link('Size') ?>">Size</a></td>
-      <td class="sign snatches">
-        <a href="<?= header_link('Snatched') ?>">
-          <svg width="15" height="15" fill="black" class="tooltip" alt="Snatches" title="Snatches" viewBox="3 0 88 98"><path d="M20 20 A43 43,0,1,0,77 23 L90 10 L55 10 L55 45 L68 32 A30.27 30.27,0,1,1,28 29"></path></svg>
-        </a>
-      </td>
-      <td class="sign seeders">
-        <a href="<?= header_link('Seeders') ?>">
-          <svg width="11" height="15" fill="black" class="tooltip" alt="Seeders" title="Seeders"><polygon points="0,7 5.5,0 11,7 8,7 8,15 3,15 3,7"></polygon></svg>
-        </a>
-      </td>
-      <td class="sign leechers">
-        <a href="<?= header_link('Leechers') ?>">
-          <svg width="11" height="15" fill="black" class="tooltip" alt="Leechers" title="Leechers"><polygon points="0,8 5.5,15 11,8 8,8 8,0 3,0 3,8"></polygon></svg>
-        </a>
-      </td>
-    </tr>
+    <table class="torrent_table cats" width="100%">
+      <tr class="colhead">
+        <td class="cats_col"></td>
+        <td><a
+            href="<?= header_link('Name', 'ASC') ?>">Torrent</a>
+        </td>
+        <td><a
+            href="<?= header_link('Time') ?>">Time</a>
+        </td>
+        <td><a
+            href="<?= header_link('Size') ?>">Size</a>
+        </td>
+        <td class="sign snatches">
+          <a
+            href="<?= header_link('Snatched') ?>">
+            <svg width="15" height="15" fill="black" class="tooltip" alt="Snatches" title="Snatches"
+              viewBox="3 0 88 98">
+              <path d="M20 20 A43 43,0,1,0,77 23 L90 10 L55 10 L55 45 L68 32 A30.27 30.27,0,1,1,28 29"></path>
+            </svg>
+          </a>
+        </td>
+        <td class="sign seeders">
+          <a
+            href="<?= header_link('Seeders') ?>">
+            <svg width="11" height="15" fill="black" class="tooltip" alt="Seeders" title="Seeders">
+              <polygon points="0,7 5.5,0 11,7 8,7 8,15 3,15 3,7"></polygon>
+            </svg>
+          </a>
+        </td>
+        <td class="sign leechers">
+          <a
+            href="<?= header_link('Leechers') ?>">
+            <svg width="11" height="15" fill="black" class="tooltip" alt="Leechers" title="Leechers">
+              <polygon points="0,8 5.5,15 11,8 8,8 8,0 3,0 3,8"></polygon>
+            </svg>
+          </a>
+        </td>
+      </tr>
 
-    <!-- Results list -->
-<?php
+      <!-- Results list -->
+      <?php
   $PageSize = 0;
   foreach ($TorrentsInfo as $TorrentID => $Info) {
       list($GroupID, , $Time) = array_values($Info);
@@ -532,31 +566,48 @@ foreach ($Categories as $CatKey => $CatName) {
           $DisplayName .= " - $ExtraInfo";
       } ?>
 
-    <tr class="torrent torrent_row<?= ($Torrent['IsSnatched'] ? ' snatched_torrent' : '') . ($GroupFlags['IsSnatched'] ? ' snatched_group' : '') ?>">
-      <td class="center cats_col">
-        <div title="<?= Format::pretty_category($GroupCategoryID) ?>" class="tooltip <?= Format::css_category($GroupCategoryID) ?>"></div>
-      </td>
-      <td class="big_info">
-        <div class="group_info clear">
-          <span class="torrent_links_block">
-            [ <a href="torrents.php?action=download&amp;id=<?= $TorrentID ?>&amp;authkey=<?= $LoggedUser['AuthKey'] ?>&amp;torrent_pass=<?= $LoggedUser['torrent_pass'] ?>" class="tooltip" title="Download">DL</a>
-            | <a href="reportsv2.php?action=report&amp;id=<?= $TorrentID ?>" class="tooltip" title="Report">RP</a> ]
-          </span>
-          <?php echo "$DisplayName\n"; ?>
-          <div class="tags"><?= $TorrentTags->format('torrents.php?type='.$Action.'&amp;userid='.$UserID.'&amp;tags=') ?></div>
-        </div>
-      </td>
-      <td class="nobr"><?= time_diff($Time, 1) ?></td>
-      <td class="number_column nobr"><?= Format::get_size($Torrent['Size']) ?></td>
-      <td class="number_column"><?= number_format($Torrent['Snatched']) ?></td>
-      <td class="number_column<?= (($Torrent['Seeders'] === 0) ? ' r00' : '') ?>"><?= number_format($Torrent['Seeders']) ?></td>
-      <td class="number_column"><?= number_format($Torrent['Leechers']) ?></td>
-    </tr>
-<?php
+      <tr
+        class="torrent torrent_row<?= ($Torrent['IsSnatched'] ? ' snatched_torrent' : '') . ($GroupFlags['IsSnatched'] ? ' snatched_group' : '') ?>">
+        <td class="center cats_col">
+          <div
+            title="<?= Format::pretty_category($GroupCategoryID) ?>"
+            class="tooltip <?= Format::css_category($GroupCategoryID) ?>">
+          </div>
+        </td>
+        <td class="big_info">
+          <div class="group_info clear">
+            <span class="torrent_links_block">
+              [ <a
+                href="torrents.php?action=download&amp;id=<?= $TorrentID ?>&amp;authkey=<?= $LoggedUser['AuthKey'] ?>&amp;torrent_pass=<?= $LoggedUser['torrent_pass'] ?>"
+                class="tooltip" title="Download">DL</a>
+              | <a
+                href="reportsv2.php?action=report&amp;id=<?= $TorrentID ?>"
+                class="tooltip" title="Report">RP</a> ]
+            </span>
+            <?php echo "$DisplayName\n"; ?>
+            <div class="tags"><?= $TorrentTags->format('torrents.php?type='.$Action.'&amp;userid='.$UserID.'&amp;tags=') ?>
+            </div>
+          </div>
+        </td>
+        <td class="nobr"><?= time_diff($Time, 1) ?>
+        </td>
+        <td class="number_column nobr"><?= Format::get_size($Torrent['Size']) ?>
+        </td>
+        <td class="number_column"><?= number_format($Torrent['Snatched']) ?>
+        </td>
+        <td
+          class="number_column<?= (($Torrent['Seeders'] === 0) ? ' r00' : '') ?>">
+          <?= number_format($Torrent['Seeders']) ?>
+        </td>
+        <td class="number_column"><?= number_format($Torrent['Leechers']) ?>
+        </td>
+      </tr>
+      <?php
   } ?>
-  </table>
+    </table>
   </div>
-<?php  } ?>
-  <div class="linkbox"><?= $Pages ?></div>
+  <?php  } ?>
+  <div class="linkbox"><?= $Pages ?>
+  </div>
 </div>
-<?php View::show_footer(); ?>
+<?php View::show_footer();

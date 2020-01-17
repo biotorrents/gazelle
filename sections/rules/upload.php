@@ -12,7 +12,7 @@ View::show_header('Uploading Rules', 'rules');
   <form class="search_form" name="rules" onsubmit="return false" action="">
     <input type="text" id="search_string" value="Filter (empty to reset)" />
     <span id="Index">Searching for <strong>upload</strong> returns all rules containing that term.
-      Searching for <strong>upload+trump</strong> returns all rules containing both terms</span>
+      Searching for <strong>upload+trump</strong> returns all rules containing both terms.</span>
   </form>
   <br />
   <div class="before_rules">
