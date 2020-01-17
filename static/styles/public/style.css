@@ -67,7 +67,7 @@ input[type="text"]:invalid, input[type="password"]:invalid {
   border-radius: 5px 5px 0 0;
 }
 
-#loginform input[type="submit"], #recoverform input[type="submit"] {
+#loginform input[type="submit"], #recoverform input[type="submit"], input[type="submit"] {
   width: 100%;
   background-color: #fbe180;
   font: 500 14px/29px Helvetica, Arial, sans-serif;
@@ -75,7 +75,7 @@ input[type="text"]:invalid, input[type="password"]:invalid {
   border-radius: 0 0 5px 5px;
   cursor: pointer;
 }
-#loginform input[type="submit"]:hover, #recoverform input[type="submit"]:hover {
+#loginform input[type="submit"]:hover, #recoverform input[type="submit"]:hover, input[type="submit"]:hover {
   background-color: #fff9c7;
 }
 

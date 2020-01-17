@@ -24,7 +24,7 @@ if (empty($Sent) || (!empty($Sent) && $Sent != 1)) {
       </td>
       </tr>
       <tr>
-        <td colspan="2" align="right"><input type="submit" name="reset" value="Reset!" class="submit" /></td>
+        <td colspan="2" align="right"><input type="submit" name="reset" value="Reset" class="submit" /></td>
       </tr>
     </table>
 <?php
