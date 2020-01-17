@@ -97,7 +97,7 @@ if (!empty($_REQUEST['confirm'])) {
         FROM users_main
         LIMIT 1");
             $UserCount = $DB->record_count();
-            if ($UserCount =0= 0) {
+            if ($UserCount === 0) {
                 $NewInstall = true;
                 $Class = SYSOP;
                 $Enabled = '1';
