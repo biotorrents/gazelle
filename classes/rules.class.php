@@ -27,19 +27,19 @@ class Rules {
   public static function display_site_tag_rules($OnUpload = false) {
     ?>
     <ul>
-      <li><strong>Please use the "<strong class="important_text_alt">vanity.house</strong>" tag for sequences that you or your lab produced.</strong> This helps us promote the DIYbio community's original contributions.</li>
+      <li><strong>Please use the <strong class="important_text_alt">vanity.house</strong> tag for sequences that you or your lab produced.</strong> This helps us promote the DIYbio community's original contributions.</li>
 
-      <li>Tags should be comma-separated, and you should use a period (".") to separate words inside a tag &mdash; e.g., "<strong class="important_text_alt">gram.negative</strong>".</li>
+      <li>Tags should be comma-separated, and you should use a period to separate words inside a tag, e.g., <strong class="important_text_alt">gram.negative</strong>.</li>
 
-      <li>There is a list of official tags <?=($OnUpload ? 'to the left of the text box' : 'on <a href="upload.php">the torrent upload page</a>')?>. Please use these tags instead of "unofficial" tags (e.g., use the official "<strong class="important_text_alt">fungi</strong>" tag, instead of an unofficial "<strong class="important_text">mushrooms</strong>" tag).</strong></li>
+      <li>There is a list of official tags <?=($OnUpload ? 'to the left of the text box' : 'on <a href="upload.php">the torrent upload page</a>')?>. Please use these tags instead of "unofficial" tags, e.g., use the official <strong class="important_text_alt">fungi</strong> tag instead of an unofficial <strong class="important_text">mushrooms</strong> tag.</li>
 
-      <li>Avoid using multiple synonymous tags. Using both "<strong class="important_text">cyanobacteria</strong>" and "<strong class="important_text_alt">bacteria</strong>" is redundant and stupid &mdash; just use the official "<strong class="important_text_alt">bacteria</strong>" tag.</li>
+      <li>Avoid using multiple synonymous tags. Using both <strong class="important_text">cyanobacteria</strong> and <strong class="important_text_alt">bacteria</strong> is redundant and stupid &mdash; just use the official <strong class="important_text_alt">bacteria</strong>.</li>
 
-      <li>Do not add useless tags that are already covered by other metadata. If a torrent is in the DNA category, it should not be tagged <strong class="important_text">dna</strong>.</li>
+      <li>Don't add useless tags that are already covered by other metadata. If a torrent is in the DNA category, please don't tag it <strong class="important_text">dna</strong>.</li>
 
-      <li>Only tag information related to the group itself &mdash; <strong>not the individual release</strong>. Tags such as "<strong class="important_text">apollo.100</strong>", "<strong class="important_text">hiseq.2500</strong>", etc., are strictly forbidden. Remember that these tags will be used for other releases in the same group.</li>
+      <li>Only tag information related to the group itself &mdash; <strong>not the individual release</strong>. Tags such as <strong class="important_text">apollo.100</strong>, <strong class="important_text">hiseq.2500</strong>, etc., are strictly forbidden. Remember that these tags will be used for other releases in the same group.</li>
 
-      <li><strong>Certain tags are strongly encouraged for appropriate uploads:</strong> "<strong class="important_text_alt">archaea</strong>", "<strong class="important_text_alt">bacteria</strong>", "<strong class="important_text_alt">fungi</strong>", "<strong class="important_text_alt">animals</strong>", "<strong class="important_text_alt">plants</strong>", "<strong class="important_text_alt">plasmids</strong>". People search for these kinds of things specifically, so tagging them properly will get you more snatches.</li>
+      <li><strong>Certain tags are strongly encouraged for appropriate uploads:</strong> <strong class="important_text_alt">archaea</strong>, <strong class="important_text_alt">bacteria</strong>, <strong class="important_text_alt">fungi</strong>, <strong class="important_text_alt">animals</strong>, <strong class="important_text_alt">plants</strong>, <strong class="important_text_alt">plasmids</strong>. People search for these kinds of things specifically, so tagging them properly will get you more snatches.</li>
 
       <!--
       <li><strong>Certain tags are <strong class="important_text">required</strong> for appropriate uploads:</strong>"<strong class="important_text_alt">lolicon</strong>", "<strong class="important_text_alt">shotacon</strong>", "<strong class="important_text_alt">toddlercon</strong>". Failure to use these tags may result in punishment.</li>
@@ -56,9 +56,9 @@ class Rules {
       </li>
       -->
 
-      <li><strong>All uploads require a minimum of 5 tags.</strong> Do not add unrelated tags just to meet the 5 tag requirement. If you can't think of 5 tags for your content, study it again until you can.</li>
+      <li><strong>All uploads require a minimum of 5 tags.</strong> Please don't add unrelated tags just to meet the 5 tag requirement. If you can't think of 5 tags for your content, study it again until you can.</li>
 
-      <li><strong>You should be able to build up a list of tags using only the official tags <?=($OnUpload ? 'to the left of the text box' : 'on <a href="upload.php">the torrent upload page</a>')?>.</strong> If you are in any doubt about whether or not a tag is acceptable, do not add it.</li>
+      <li><strong>You should be able to build up a list of tags using only the official tags <?=($OnUpload ? 'to the left of the text box' : 'on <a href="upload.php">the torrent upload page</a>')?>.</strong> If you doubt whether or not a tag is acceptable, please omit it for now and send a staff PM to request a new official tag or an approved alias.</li>
     </ul>
 <?
   }
@@ -69,22 +69,17 @@ class Rules {
    */
   public static function display_forum_rules() {
     ?>
-    <ol>
-      <li>Many forums have their own set of rules. Make sure you read and take note of these rules before you attempt to post in one of these forums.</li>
-      <li>No commercial advertising or referral schemes. This includes any scheme in which the poster gets personal gain from users clicking a link. You will be immediately banned for this, no questions asked.</li>
-      <li>No asking for money for any reason whatsoever. We don't know or care about your friend who lost everything, or dying relative who wants to enjoy their last few moments alive by being given lots of money.</li>
-      <li>Do not inappropriately advertise your uploads. In special cases, it is acceptable to mention new uploads in an approved thread, but be sure to carefully read the thread's rules before posting. It is also acceptable to discuss releases you have uploaded when conversing about the title itself. Blatant attempts to advertise your uploads outside of the appropriate forums or threads may result in a warning or loss of privileges.</li>
-      <li>No posting requests in forums. There's a requests link at the top of the page for a reason.</li>
-      <li>Be sure you read all the sticky threads in a forum before you post.</li>
+        <ul>
+      <li>Let's treat the biology boards like how the Shroomery used to be: each thread a set of resourceful diverse wisdom worth using permalinks to. It's okay if the boards are slow, that's why there are only a few of them.</li>
+      <li>Please discuss site news in the corresponding Announcements thread instead of making a new General thread. Discussing science-related news in General is highly encouraged, but discussing political news is much less so. Thank you.</li>
+      <li>No advertising, referrals, affiliate links, cryptocurrency pumps, or calls to action that involve using a financial instrument. You're banned on the spot. The exceptions: cryptocurrencies that derive their value from work performed on distributed science computation networks, e.g., Curecoin, FoldingCoin, and Gridcoin.</li>
+      <li>Feel free to post announcements for your own projects, even and especially if they're commercial ones, in the General board. Limit all discussion of trading biomaterials, including bulk giveaways, to the Marketplace forum available to Power Users.</li>
+      <li>Please be modest when talking about your uploads. It's unnecessary to announce your uploads because Gazelle logs everything (at least one this is encrypted). If someone asks for help on his project and your upload fits the bill, go write a post!</li>
       <li>Use descriptive and specific subject lines. This helps others decide whether your particular words of "wisdom" relate to a topic they care about.</li>
-      <li>Don't post comments that don't add anything to the discussion. This generally includes any post without its own substance, such as "I agree" or "haha". These kinds of posts are annoying to people who are trying to actually find some information in a thread.</li>
-      <li>Refrain from quoting excessively. When quoting someone, use only the portion of the quote that is absolutely necessary.</li>
-      <li>Do not post any potentially malicious links without sufficient warning.</li>
-      <li>Don't waste other people's bandwidth by posting images with a large file size.</li>
-      <li>Only offer or request invites to other trackers in designated forums. If you can't find the invite forum, it's because you don't have access to it and should not post about it.</li>
-      <li>No language other than English (and Japanese, when relevant) is permitted in the forums.</li>
-      <li>Some things that <em>are</em> allowed include mature and graphic content, political and religious discussions, and insults. You are welcome to express whatever inflammatory opinions you want as long as you don't go overboard with it.</li>
-    </ol>
+      <li>Don't post comments that don't add anything to the discussion, such as "I agree" or "haha." Bottle the trained dopamine response to social media because comment reactions are an unlikely feature.</li>
+      <li>Please refrain from quoting excessively. When quoting someone, use only the necessary parts of the quote. Avoid quoting more than 3 levels deep.</li>
+      <li>Don't post potentially malicious links without sufficient warning, or post pictures > 2 MiB. Please only speak English as stated in the Upload rules.</li>
+    </ul>
 <?
   }
 
@@ -94,22 +89,13 @@ class Rules {
    */
   public static function display_irc_chat_rules() {
     ?>
-    <ol>
-      <li>Staff have the final decision. If a staff member says stop and you continue, expect repercussions.</li>
-      <li>Do not leave Caps Lock enabled all the time. It gets annoying, and you will likely get yourself kicked.</li>
-      <li>No opinions, especially related to race, religion, politics, etc are allowed. Failure to comply with a request to cease having an opinion WILL be considered a thoughtcrime and you WILL be reeducated.</li>
-      <li>Flooding is irritating and will warrant you a kick if it isn't funny enough or if an admin is cranky. This includes, but is not limited to, automatic "now playing" scripts, pasting large amounts of irrelevant text, and multiple consecutive lines with no relevance to the conversation at hand.</li>
-      <li>Impersonation of other members &mdash; particularly staff members &mdash; will not go unpunished. If you are uncertain of a user's identity, check their vhost</li>
-      <li>Spamming is <b>strictly</b> forbidden unless it's funny. This includes, but is not limited to, personal sites, online auctions, and cans of blended meat.</li>
-      <li>Obsessive annoyance &mdash; both to other users and staff &mdash; will not be tolerated.</li>
-      <li>Do not PM, DCC, or Query anyone you don't know or have never talked to without asking first; this applies specifically to staff.</li>
-      <li>No language other than English is permitted in the official IRC channels.</li>
-      <li>Bots are not permitted in official channels with the exception of <strong>#BioTorrents.de-announce</strong> and <strong>#BioTorrents.de-requests</strong>.</li>
-      <li>Any bots you have on IRC should authenticate with Udon using your own username and IRC key</li>
-      <li>Bots must identify themselves by setting the +B usermode on themselves.</li>
-      <li>Unofficial channels are <em>not</em> policed by staff. Any content or discussion that goes on in unofficial channels shoud be treated as part of an unrelated public irc network.</li>
-      <li><strong>Read the channel topic before asking questions.</strong></li>
-    </ol>
+      <li>BioTorrents.de's Slack channels are just are another quiet hangout you can stack your app with so you look cool at conferences.</li>
+      <li>Please use <code>#general</code> for the usual chit-chat, <code>#development</code> for questions about the Gazelle software, and <code>#disabled</code> to get help recovering your account.</li>
+      <li>Don't send mass alerts with <code>@channel</code>, <code>@everyone</code>, or <code>@here</code>. It's obnoxious and you should handle anything genuinely important on the boards.</li>
+      <li>Flooding is irritating and you'll get kicked for it. This includes "now playing" scripts, large amounts of irrelevant text such as lorem ipsum, and unfunny non sequiturs.</li>
+      <li>Impersonating other members &mdash; particularly staff members &mdash; will not go unpunished. Please remember that the Slack channels are publicly accessible.</li>
+      <li>Please use the threaded conversation in Slack and avoid replying to threads with new messages or crossposting replies to the main channel.</li>
+      <li>Announce and bot channels are in development, as standard IRC instead of Slack for obvious reasons. Any IRC bots you have must authenticate with your own username and IRC key, and set the <code>+B</code> usermode on themselves.</li>
 <?
   }
 }

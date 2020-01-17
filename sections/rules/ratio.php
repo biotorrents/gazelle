@@ -8,7 +8,7 @@ View::show_header('Ratio Requirements');
   </div>
   <div class="box pad rule_summary">
     <br />
-    <strong>Ratio System Overview:</strong>
+    <strong>Ratio System Overview</strong>
     <br />
     <ul>
       <li>Your <strong>ratio</strong> is calculated by dividing the amount of data you&apos;ve uploaded by the amount of data you&apos;ve downloaded. You can view your ratio in the site header or in the &quot;stats&quot; section of your user profile.
@@ -21,7 +21,7 @@ View::show_header('Ratio Requirements');
     </ul>
     <br />
     <br />
-    <strong>Required Ratio Overview:</strong>
+    <strong>Required Ratio Overview</strong>
     <br />
     <ul>
       <li>Your required ratio represents the minimum ratio you must maintain to avoid ratio watch. You can view your required ratio in the site header after the word &quot;required&quot; or in the &quot;stats&quot; section of your user profile.
@@ -102,7 +102,7 @@ $GB = 1024*1024*1024;
     </div>
     <br />
     <br />
-    <strong>Required Ratio Calculation:</strong>
+    <strong>Required Ratio Calculation</strong>
     <br />
     <ul>
       <li>
@@ -137,7 +137,7 @@ $GB = 1024*1024*1024;
     </ul>
     <br />
     <br />
-    <strong>Required Ratio Details:</strong>
+    <strong>Required Ratio Details</strong>
     <br />
     <ul>
       <li>If you stop seeding for one week, your required ratio will become the maximum required ratio (0% seeded) for your amount downloaded bracket. Once you have resumed seeding for a 72 hour
@@ -152,7 +152,7 @@ $GB = 1024*1024*1024;
     </ul>
     <br>
     <br>
-    <strong>Required Ratio Example:</strong>
+    <strong>Required Ratio Example</strong>
     <br>
     <ul>
       <li>In this example, Alice has downloaded 65 GB. Alice falls into the 60&ndash;80 GiB amount downloaded bracket in the table above. Alice's maximum required ratio (0% seeded) is 0.40, and her minimum required ratio (100% seeded) is 0.10.
@@ -167,7 +167,7 @@ $GB = 1024*1024*1024;
     </ul>
     <br />
     <br />
-    <strong>Ratio Watch Overview:</strong>
+    <strong>Ratio Watch Overview</strong>
     <br />
     <ul>
       <li>Everyone gets to download their first 10 GiB before ratio watch eligibility begins.</li>
@@ -180,7 +180,7 @@ $GB = 1024*1024*1024;
     </ul>
     <br />
     <br />
-    <strong>Leaving Ratio Watch:</strong>
+    <strong>Leaving Ratio Watch</strong>
     <br />
     <ul>
       <li>To leave ratio watch, you must either raise your ratio by uploading more, or lower your required ratio by seeding more. Your ratio must be equal to or above your required ratio in

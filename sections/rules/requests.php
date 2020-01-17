@@ -15,10 +15,10 @@ View::show_header('Request Rules');
         <strong>Do not make requests for torrents that break the rules.</strong> It is your responsibility that the request follows the rules. Your request will be deleted, and you will not get your bounty back. Requests cannot be more specific than the upload (and trumping) rules.
       </li>
       <li>
-        <strong>Put format specifics in the request description.</strong> If you're requesting a particular format, assembly level, etc., put that information in the request description. Do not put it in the title of the request.
+        <strong>Put format specifics in the request description.</strong> If you're requesting a particular platform, file format, etc., put that information in the request description. Do not put it in the title of the request.
       </li>
       <li>
-        <strong>Only one sequence per request.</strong> No requests for multiple sequences or vague requirements. You may ask for any of several formats, but you cannot demand all of them. For example, you may ask for either a FASTA or GenBank, but not both formats.
+        <strong>Only one torrent per request.</strong> No requests for multiple data or vague requirements. You may ask for any of several formats, but you cannot demand all of them. For example, you may ask for either a FASTA or a GenBank, but not both formats.
       </li>
       <li>
         <strong>When uploading to fill a request, use the [Upload request] link on the request's page.</strong> This will autofill some of the metadata for the torrent, such as title and artist. This prevents some errors that may cause your upload to break the rules, have your request unfilled, have your bounty removed, and possibly cause you to receive a warning.

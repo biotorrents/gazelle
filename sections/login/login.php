@@ -2,7 +2,7 @@
 View::show_header('Login');
 ?>
 
-<span id="no-cookies" class="hidden warning">You appear to have cookies disabled.<br /><br /></span>
+<p id="no-cookies" class="hidden warning">You appear to have cookies disabled.</p>
 
 <?php
 if (!$Banned) {
@@ -14,23 +14,21 @@ if (!$Banned) {
   if (isset($Err)) {
       ?>
 
-  <span class="warning"><?=$Err?><br /><br /></span>
+  <p class="warning"><?=$Err?></p>
 
   <?php
   } ?>
 
   <?php if ($Attempts > 0) { ?>
 
-  You have <span class="info"><?=(6 - $Attempts)?></span> attempts
-  remaining.<br /><br />
-  <strong>WARNING:</strong> You will be banned for 6 hours after your login attempts run out!<br /><br />
+  <div class="notice">
+    <p>You have <span class="info"><?=(6 - $Attempts)?></span> attempts remaining.</p>
+    <p><strong>You'll be banned for 6 hours after your login attempts run out!</strong></p>
+  </div>
 
   <?php } ?>
 
-  <table class="layout">
-
-    <!-- todo: Put index page stats here -->
-
+  <table class="layout" width="250px">
     <tr>
       <td colspan="2">
         <input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="username"
@@ -61,16 +59,14 @@ if (!$Banned) {
 <?php
 } else {
       ?>
-<span class="warning">You are banned from logging in for a few hours.</span>
+<p class="warning">You are banned from logging in for a few hours.</p>
 <?php
   }
 
 if ($Attempts > 0) {
     ?>
 
-<br /><br />
-Forgot your password? <a href="login.php?act=recover" class="tooltip" title="Recover your password"
-  style="text-decoration: underline;">Reset it here!</a>
+<p>Forgot your password? <a href="login.php?act=recover" class="tooltip" title="Recover your password">Reset it here!</a></p>
 
 <?php
 }
