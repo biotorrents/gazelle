@@ -417,7 +417,7 @@ View::show_header('Uploading Rules', 'rules');
           <strong>Torrent Description.</strong>
           Specific info about the protocols and equipment relevant to <em>this</em> data.
           This text is hidden by default.
-          It displays when you click the Torrent Title next to [ DL | PL ].
+          It displays when you click the Torrent Title next to [ DL | RP ].
           Please discuss materials and methods here.
           <br /><br />
         </li>
