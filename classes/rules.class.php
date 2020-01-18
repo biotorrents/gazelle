@@ -10,6 +10,8 @@ class Rules
     {
         ?>
 <ul>
+<li><strong>No personally identifying patient data is allowed anywhere on the site.</strong></li>
+
   <li>Staff can do anything to anyone for any reason (or no reason). If you take issue with a decision, you must do so
     privately with the staff member who issued the decision or with an administrator of the site.</li>
 

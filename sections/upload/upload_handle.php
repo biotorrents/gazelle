@@ -57,7 +57,7 @@ if (!($_POST['resolution'] ?? false)) {
 }
 
 $Properties['Resolution'] = $_POST['resolution'] ?? '';
-$Properties['AudioFormat'] = 'nil';
+$Properties['AudioFormat'] = $_POST['audioformat'] ?? '';
 $Properties['Subbing'] = 'nil';
 $Properties['Language'] = 'nil';
 $Properties['Subber'] = isset($_POST['subber']) ? $_POST['subber'] : '';
@@ -102,6 +102,7 @@ if (isset($Properties['GroupID'])) {
     $Properties['Artists'] = Artists::get_artist($Properties['GroupID']);
 }
 
+# todo: Make this more generalized
 if ($Type === 'Movies' || $Type === 'Manga' || $Type === 'Anime' || $Type === 'Games') {
     if (empty($_POST['idols'])) {
         $Err = "You didn't enter any artists/idols";
@@ -168,13 +169,22 @@ default:
             array('maxlength' => 50, 'minlength' => 0)
         );
 
+        # torrents.AudioFormat
+        $Validate->SetFields(
+            'audioformat',
+            '0',
+            'string',
+            'Version must be between 0 and 10 characters.',
+            array('maxlength' => 10, 'minlength' => 0)
+        );
+        
         # torrents_group.Name
         $Validate->SetFields(
             'title',
             '1',
             'string',
-            'Torrent Title must be between 5 and 255 characters.',
-            array('maxlength' => 255, 'minlength' => 5)
+            'Torrent Title must be between 10 and 255 characters.',
+            array('maxlength' => 255, 'minlength' => 10)
         );
 
         # torrents_group.NameRJ
@@ -268,8 +278,8 @@ default:
         'album_desc',
         '1',
         'string',
-        'The description must be between 10 and 65535 characters.',
-        array('maxlength' => 65535, 'minlength' => 10)
+        'The description must be between 100 and 65535 characters.',
+        array('maxlength' => 65535, 'minlength' => 100)
     );
 
     /* todo: Fix the Group ID validation
@@ -285,6 +295,7 @@ default:
 
 $Err = $Validate->ValidateForm($_POST); // Validate the form
 
+# todo: Move all this validation code to the Validate class
 if (count(explode(',', $Properties['TagList'])) < 5) {
     $Err = 'You must enter at least 5 tags.';
 }
@@ -393,18 +404,18 @@ if (!empty($Err)) { // Show the upload form, with the data the user entered
 //--------------- Autofill format and archive ----------------------------------//
 
 if ($T['Container'] === 'Autofill' || $T['Archive'] === 'Autofill') {
-# torrents.Container
-$Validate->ParseExtensions(
+    # torrents.Container
+    $Validate->ParseExtensions(
     $Tor->file_list(),
     array_merge($Containers, $ContainersGames, $ContainersProt)
 );
-/*
-# torrents.Archive
-$Validate->ParseExtensions(
-    $Tor->file_list(),
-    array_merge($Containers, $ContainersGames, $ContainersProt)
-);
-*/
+    /*
+    # torrents.Archive
+    $Validate->ParseExtensions(
+        $Tor->file_list(),
+        array_merge($Containers, $ContainersGames, $ContainersProt)
+    );
+    */
 }
 
 //******************************************************************************//

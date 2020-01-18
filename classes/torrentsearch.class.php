@@ -51,7 +51,7 @@ class TorrentSearch
     // List of fields that can be used for fulltext searches
     private static $Fields = [
     'artistname' => 1,
-    #'audioformat' => 1,
+    'audioformat' => 1,
     'cataloguenumber' => 1,
     'codec' => 1,
     'container' => 1,

@@ -54,7 +54,7 @@ if (!empty($_GET['format'])) {
 }
 
 # Get release specifics
-if (isset($_GET['container']) && in_array($_GET['container'], array_unique(array_merge($Containers, $ContainersGames)))) {
+if (isset($_GET['container']) && in_array($_GET['container'], array_unique(array_merge($Containers, $ContainersGames, $ContainersProt)))) {
     $SearchWhere[] = "t.Container = '".db_string($_GET['container'])."'";
 }
 

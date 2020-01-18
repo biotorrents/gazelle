@@ -13,6 +13,7 @@ function Categories() {
   let cats = [
     { // DNA
       'javdb': {},
+      'audio': {},
       'idols': {},
       'studio': {},
       'series': {},
@@ -26,6 +27,7 @@ function Categories() {
       'release_desc': {}
     }, { // RNA
       'javdb': {},
+      'audio': {},
       'idols': {},
       'studio': {},
       'series': {},
@@ -39,6 +41,7 @@ function Categories() {
       'release_desc': {}
     }, { // Protein
       'javdb': {},
+      'audio': {},
       'idols': {},
       'studio': {},
       'series': {},
@@ -52,6 +55,7 @@ function Categories() {
       'release_desc': {}
     }, { // Imaging
       'javdb': {},
+      'audio': {},
       'idols': {},
       'studio': {},
       'series': {},
@@ -63,8 +67,9 @@ function Categories() {
       'screenshots': {},
       'group_desc': {},
       'release_desc': {}
-    }, { // Other
+    }, { // Extras
       'javdb': {},
+      'audio': {},
       'idols': {},
       'studio': {},
       'series': {},

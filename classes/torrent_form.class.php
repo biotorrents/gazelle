@@ -16,7 +16,7 @@ class TorrentForm
     public $ContainersProt = [];
     public $Codecs = [];
     public $Resolutions = [];
-    #var $AudioFormats = [];
+    var $AudioFormats = [];
     #var $Subbing = [];
     #var $Languages = [];
     #var $Platform = [];
@@ -47,7 +47,7 @@ class TorrentForm
         $this->ContainersProt = $ContainersProt;
         $this->Codecs = $Codecs;
         $this->Resolutions = $Resolutions;
-        #$this->AudioFormats = $AudioFormats;
+        $this->AudioFormats = $AudioFormats;
         #$this->Subbing = $Subbing;
         #$this->Languages = $Languages;
         $this->TorrentID = $TorrentID;
@@ -155,7 +155,10 @@ class TorrentForm
     <table cellpadding="3" cellspacing="1" border="0" class="layout" width="100%">
 
       <tr>
-        <td class="label">Torrent File</td>
+        <td class="label">
+        Torrent File
+        <strong class="important_text">*</strong>
+        </td>
         <td><input id="file" type="file" name="file_input" size="50" /><br />
           Use the above announce URL and set the private flag in your BitTorrent client, e.g.,
           <code>mktorrent -p -a &lt;announce&gt; &lt;target folder&gt;</code>
@@ -163,7 +166,10 @@ class TorrentForm
       </tr>
 
       <tr>
-        <td class="label">Type</td>
+        <td class="label">
+        Category
+        <strong class="important_text">*</strong>
+        </td>
         <td>
           <select id="categories" name="type" onchange="Categories()" <?= ($this->DisabledFlag) ? ' disabled="disabled"' : '' ?>>
             <?php
@@ -308,6 +314,17 @@ class TorrentForm
       <?php if (!$this->DisabledFlag) { ?>
       <input type="button" autofill="douj" value="Autofill" />
       <?php } ?>
+    </td>
+  </tr>
+
+  <!-- Semantic Versioning -->
+    <tr id="audio_tr">
+    <td class="label">Version</td>
+    <td>
+      <input type="text" id="audioformat" name="audioformat" size="10"
+        pattern="\d+\.\d+\.\d+" value="<?= display_str($Torrent['AudioFormat']) ?>"
+        <?= $this->Disabled ?>/><br />
+      Please see <a href="https://semver.org target="_blank">Semantic Versioning</a>; start with 0.1.0
     </td>
   </tr>
 
@@ -458,7 +475,7 @@ class TorrentForm
               echo ">$Media</option>\n";
           } ?>
       </select><br />
-      Class of technology used
+      The class of technology used
     </td>
   </tr>
 
@@ -480,7 +497,7 @@ class TorrentForm
                 echo ">$Media</option>\n";
             } ?>
       </select><br />
-      Class of technology used
+      The class of technology used
     </td>
   </tr>
 
@@ -516,7 +533,7 @@ class TorrentForm
           $('#resolution').gshow()
         }
       </script><br />
-      How complete the data is
+      How complete the data is, specifically or conceptually
     </td>
   </tr>
 
@@ -627,8 +644,7 @@ class TorrentForm
         value="<?= display_str(implode(', ', explode(',', $Torrent['TagList']))) ?>"
         <?php Users::has_autocomplete_enabled('other'); ?>
       /><br />
-      Comma-seperated list of tags, n.b., use <strong class="important_text_alt">vanity.house</strong> for data you
-      produced
+      Comma-seperated list of at least 5 tags
     </td>
   </tr>
 
@@ -674,7 +690,7 @@ class TorrentForm
           array($this->Disabled)
       );
       ?><br />
-      General info about the object of study's function or significance
+      General info about the torrent subject's function or significance
     </td>
   </tr>
   <?php } # Ends if NewTorrent line 499?>
@@ -690,16 +706,16 @@ class TorrentForm
           display_str($Torrent['TorrentDescription'] ?? ''),
           60,
       ); ?><br />
-      Specific info about the protocols and equipment relevant to <em>this</em> data
+      Specific info about the protocols and equipment used to produce the data
     </td>
   </tr>
 
   <!-- Boolean options -->
   <tr id="censored_tr">
-    <td class="label">Aligned Sequence</td>
+    <td class="label">Aligned/Annotated</td>
     <td>
       <input type="checkbox" name="censored" value="1" <?= (($Torrent['Censored'] ?? 0) ? 'checked ' : '') ?>/>
-      Whether the torrent contains raw reads or alignment data
+      Whether the torrent contains alignments, annotations, or other structural metadata
     </td>
   </tr>
 
