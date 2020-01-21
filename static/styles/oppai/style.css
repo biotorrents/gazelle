@@ -310,7 +310,7 @@ ul.thin li { margin:0px 0px; padding:0px; }
   border: 1px solid transparent;
   box-sizing: border-box;
   padding: 2px 2px 2px 4px;
-  font-size: 0.9em;
+  /* font-size: 0.9em; */
   background-color: white;
   width: 100%;
   color: black;
@@ -371,11 +371,10 @@ ul.thin li { margin:0px 0px; padding:0px; }
   text-align: center;
   color: black;
   font-weight: bold;
-  font-size: 0.95em;
+  /* font-size: 0.95em; */
   width: 350px;
-  margin: 0 auto 0px auto;
+  margin: 2em auto;
   padding: 10px;
-  margin-bottom: 8px;
 }
 .alertbar.warning {
   background-color: #ffe68a;
@@ -618,7 +617,7 @@ table.slice {
 }
 
 .error_message {
-  padding: 8px 0px;
+  padding: 10px;
   background-color: #AF2525;
   text-align: center;
   color: white;
@@ -626,10 +625,12 @@ table.slice {
 }
 
 .save_message {
-  padding: 8px 0px;
-  background-color: #F8C2E8;
+  padding: 10px;
+  width: 50%;
+  margin: 2em auto;
+  background: #fbe180;
   text-align: center;
-  color: #555555;
+  color: black;
   font-weight: bold;
 }
 
