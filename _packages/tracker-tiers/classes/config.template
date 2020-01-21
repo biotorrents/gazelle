@@ -1,5 +1,7 @@
 <?php
 
+# ...
+
 // Tracker urls to be added to torrent files à la http://bittorrent.org/beps/bep_0012.html
 define('ANNOUNCE_URLS', [
   [ # Tier 1
@@ -11,3 +13,5 @@ define('ANNOUNCE_URLS', [
     'udp://tracker.leechers-paradise.org:6969/announce'
   ]
 ]);
+
+# ...

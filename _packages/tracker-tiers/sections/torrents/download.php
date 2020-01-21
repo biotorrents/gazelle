@@ -18,3 +18,5 @@ $UserAnnounceList = array(array_map('add_passkey', ANNOUNCE_URLS[0]), ANNOUNCE_U
 echo TorrentsDL::get_file($Contents, $UserAnnounceURL, $UserAnnounceList);
 
 define('SKIP_NO_CACHE_HEADERS', 1);
+
+# EOF

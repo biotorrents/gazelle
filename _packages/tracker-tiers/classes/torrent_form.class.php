@@ -1,3 +1,5 @@
+<!-- ... -->
+
 <p style="text-align: center;">
   <?php
     $Announces = ANNOUNCE_URLS[0];
@@ -17,3 +19,5 @@
   <input type="text" value="<?= Users::get_upload_sources()[0] ?>"
     size="20" onclick="this.select();" readonly="readonly" />
 </p>
+
+<!-- ... -->
