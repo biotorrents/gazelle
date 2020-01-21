@@ -16,7 +16,7 @@ class TorrentForm
     public $ContainersProt = [];
     public $Codecs = [];
     public $Resolutions = [];
-    var $AudioFormats = [];
+    public $AudioFormats = [];
     #var $Subbing = [];
     #var $Languages = [];
     #var $Platform = [];
@@ -82,26 +82,18 @@ class TorrentForm
 
   <p style="text-align: center;">
     <?php
-      $Announces = call_user_func_array('array_merge', ANNOUNCE_URLS);
-        foreach ($Announces as $Announce) {
-            # Loop through tracker URLs?>
+      $Announces = ANNOUNCE_URLS[0];
+      #$Announces = call_user_func_array('array_merge', ANNOUNCE_URLS);
+      foreach ($Announces as $Announce) {
+          # Loop through tracker URLs
+            ?>
     <strong>Announce</strong>
-
-    <?php
-    # Buying into the shit coding style
-    # Just trying to mirror content on a Tier 2 public tracker
-    if (!strstr($Announce, 'openbittorrent')) {
-        ?>
     <input type="text"
       value="<?= $Announce . '/' . G::$LoggedUser['torrent_pass'] . '/announce' ?>"
       size="74" onclick="this.select();" readonly="readonly" /> <br />
     <?php
-    } else { ?>
-    <input type="text" value="<?= $Announce ?>" size="74"
-      onclick="this.select();" readonly="readonly" /> <br />
-    <?php
-    }
-        } ?>
+      }
+    ?>
 
     <strong>Source</strong>
     <input type="text" value="<?= Users::get_upload_sources()[0] ?>"
@@ -156,8 +148,8 @@ class TorrentForm
 
       <tr>
         <td class="label">
-        Torrent File
-        <strong class="important_text">*</strong>
+          Torrent File
+          <strong class="important_text">*</strong>
         </td>
         <td><input id="file" type="file" name="file_input" size="50" /><br />
           Use the above announce URL and set the private flag in your BitTorrent client, e.g.,
@@ -167,8 +159,8 @@ class TorrentForm
 
       <tr>
         <td class="label">
-        Category
-        <strong class="important_text">*</strong>
+          Category
+          <strong class="important_text">*</strong>
         </td>
         <td>
           <select id="categories" name="type" onchange="Categories()" <?= ($this->DisabledFlag) ? ' disabled="disabled"' : '' ?>>
@@ -318,13 +310,13 @@ class TorrentForm
   </tr>
 
   <!-- Semantic Versioning -->
-    <tr id="audio_tr">
+  <tr id="audio_tr">
     <td class="label">Version</td>
     <td>
-      <input type="text" id="audioformat" name="audioformat" size="10"
-        pattern="\d+\.\d+\.\d+" value="<?= display_str($Torrent['AudioFormat']) ?>"
+      <input type="text" id="audioformat" name="audioformat" size="10" pattern="\d+\.\d+\.\d+"
+        value="<?= display_str($Torrent['AudioFormat']) ?>"
         <?= $this->Disabled ?>/><br />
-      Please see <a href="https://semver.org target="_blank">Semantic Versioning</a>; start with 0.1.0
+      Please see <a href="https://semver.org target=" _blank">Semantic Versioning</a>; start with 0.1.0
     </td>
   </tr>
 
@@ -465,7 +457,7 @@ class TorrentForm
     </td>
     <td>
       <select name="media">
-      <option value="">---</option>
+        <option value="">---</option>
         <?php
           foreach ($this->Media as $Media) {
               echo "\t\t\t\t\t\t<option value=\"$Media\"";
@@ -545,7 +537,7 @@ class TorrentForm
     </td>
     <td>
       <select name="container">
-      <option value="">---</option>
+        <option value="">---</option>
         <?php
           foreach ($this->Containers as $Name => $Container) {
               echo "<option value='$Name'>$Name</option>\n";
@@ -563,7 +555,7 @@ class TorrentForm
     </td>
     <td>
       <select id="container" name="container">
-      <option value="">---</option>
+        <option value="">---</option>
         <?php
           foreach ($this->ContainersGames as $Name => $Container) {
               echo "<option value='$Name'>$Name</option>\n";
@@ -581,7 +573,7 @@ class TorrentForm
     </td>
     <td>
       <select id="container" name="container">
-      <option value="">---</option>
+        <option value="">---</option>
         <?php
           foreach ($this->ContainersProt as $Name => $Container) {
               echo "<option value='$Name'>$Name</option>\n";
@@ -599,7 +591,7 @@ class TorrentForm
     </td>
     <td>
       <select name='archive'>
-      <option value="">---</option>
+        <option value="">---</option>
         <?php
           foreach ($this->Archives as $Name => $Archive) {
               echo "\t\t\t\t\t\t<option value=\"$Name\"";
