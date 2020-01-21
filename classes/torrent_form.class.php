@@ -545,7 +545,7 @@ class TorrentForm
     </td>
     <td>
       <select name="container">
-        <option value="Autofill">Autofill</option>
+      <option value="">---</option>
         <?php
           foreach ($this->Containers as $Name => $Container) {
               echo "<option value='$Name'>$Name</option>\n";
@@ -563,7 +563,7 @@ class TorrentForm
     </td>
     <td>
       <select id="container" name="container">
-        <option value="Autofill">Autofill</option>
+      <option value="">---</option>
         <?php
           foreach ($this->ContainersGames as $Name => $Container) {
               echo "<option value='$Name'>$Name</option>\n";
@@ -581,7 +581,7 @@ class TorrentForm
     </td>
     <td>
       <select id="container" name="container">
-        <option value="Autofill">Autofill</option>
+      <option value="">---</option>
         <?php
           foreach ($this->ContainersProt as $Name => $Container) {
               echo "<option value='$Name'>$Name</option>\n";
@@ -599,7 +599,7 @@ class TorrentForm
     </td>
     <td>
       <select name='archive'>
-        <option value="Autofill">Autofill</option>
+      <option value="">---</option>
         <?php
           foreach ($this->Archives as $Name => $Archive) {
               echo "\t\t\t\t\t\t<option value=\"$Name\"";
