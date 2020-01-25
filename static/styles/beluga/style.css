@@ -18,12 +18,12 @@
   padding: 0
 }
 
-.cats_dna, .cats_rna, .cats_protein, .cats_imaging, .cats_extras {
+.cats_dna, .cats_rna, .cats_proteins, .cats_imaging, .cats_extras {
   /* width: 36px!important; */
   height: 36px!important;
   line-height: 36px;
 }
-.group .cats_dna:after, .group .cats_rna:after, .group .cats_protein:after,
+.group .cats_dna:after, .group .cats_rna:after, .group .cats_proteins:after,
 .group .cats_imaging:after, .group .cats_extras:after {
   color: black!important;
 }
@@ -47,13 +47,13 @@
 .group .cats_rna { background-color: #1D818E; }
 
 /* Protein */
-.cats_protein:after {
+.cats_proteins:after {
   content: "PROT";
   color: #88C796;
   font-size: 18px;
   letter-spacing: -2px;
 }
-.group .cats_protein { background-color: #88C796; }
+.group .cats_proteins { background-color: #88C796; }
 
 /* Imaging */
 .cats_imaging:after {
@@ -2128,8 +2128,8 @@ body.style_pink .group .cats_dna { background-color: #78467f; }
 body.style_pink .cats_rna:after { color: #4f3063; }
 body.style_pink .group .cats_rna { background-color: #4f3063; }
 
-body.style_pink .cats_protein:after { color: #9f5c9c; }
-body.style_pink .group .cats_protein { background-color: #9f5c9c; }
+body.style_pink .cats_proteins:after { color: #9f5c9c; }
+body.style_pink .group .cats_proteins { background-color: #9f5c9c; }
 
 body.style_pink .cats_imaging:after { color: #c871b9; }
 body.style_pink .group .cats_imaging { background-color: #c871b9; }

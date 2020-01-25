@@ -40,7 +40,7 @@ class TorrentsDL
             return (is_array($Ann)) ? array_map('add_passkey', $Ann) : $Ann.'/'.G::$LoggedUser['torrent_pass'].'/announce';
         }
 
-        $this->AnnounceList = array(array_map('add_passkey', ANNOUNCE_URLS[0]), ANNOUNCE_URLS[1]);
+        $this->AnnounceList = (sizeof(ANNOUNCE_URLS) === 1 && sizeof(ANNOUNCE_URLS[0]) === 1) ? [] : array(array_map('add_passkey', ANNOUNCE_URLS[0]), ANNOUNCE_URLS[1]);
         #$this->AnnounceList = (sizeof(ANNOUNCE_URLS) === 1 && sizeof(ANNOUNCE_URLS[0]) === 1) ? [] : array_map('add_passkey', ANNOUNCE_URLS);
         $this->Zip = new Zip(Misc::file_string($Title));
     }
@@ -238,13 +238,18 @@ class TorrentsDL
      * @param mixed $TorrentData bencoded torrent without announce URL (new format) or TORRENT object (old format)
      * @return bencoded string
      */
-    public static function get_file(&$TorrentData, $AnnounceURL, $AnnounceList = [])
+    public static function get_file(&$TorrentData, $AnnounceURL, $AnnounceList = [], $WebSeeds = [])
     {
         if (Misc::is_new_torrent($TorrentData)) {
             $Bencode = BencodeTorrent::add_announce_url($TorrentData, $AnnounceURL);
             if (!empty($AnnounceList)) {
                 $Bencode = BencodeTorrent::add_announce_list($Bencode, $AnnounceList);
             }
+            /* todo: Support web seeds
+            if (!empty($WebSeeds)) {
+                $Bencode = BencodeTorrent::add_web_seeds($Bencode, $WebSeeds);
+            }
+            */
             return $Bencode;
         }
         $Tor = new TORRENT(unserialize(base64_decode($TorrentData)), true);

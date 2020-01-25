@@ -189,7 +189,7 @@ function add_passkey($Ann)
 }
 
 $UserAnnounceURL = ANNOUNCE_URLS[0][0].'/'.$TorrentPass.'/announce';
-$UserAnnounceList = array(array_map('add_passkey', ANNOUNCE_URLS[0]), ANNOUNCE_URLS[1]);
+$UserAnnounceList = (sizeof(ANNOUNCE_URLS) === 1 && sizeof(ANNOUNCE_URLS[0]) === 1) ? [] : array(array_map('add_passkey', ANNOUNCE_URLS[0]), ANNOUNCE_URLS[1]);
 #$UserAnnounceList = (sizeof(ANNOUNCE_URLS) === 1 && sizeof(ANNOUNCE_URLS[0]) === 1) ? [] : array_map('add_passkey', ANNOUNCE_URLS);
 
 echo TorrentsDL::get_file($Contents, $UserAnnounceURL, $UserAnnounceList);
