@@ -2,24 +2,24 @@
 
 // This class is used in upload.php to display the upload form, and the edit
 // section of torrents.php to display a shortened version of the same form
-
 class TorrentForm
 {
     public $UploadForm = '';
     public $Categories = [];
-    #var $Formats = [];
-    #var $Bitrates = [];
+    #public $Formats = [];
+    #public $Bitrates = [];
     public $Media = [];
     public $MediaManga = [];
     public $Containers = [];
     public $ContainersGames = [];
     public $ContainersProt = [];
+    public $ContainersExtra = [];
     public $Codecs = [];
     public $Resolutions = [];
-    public $AudioFormats = [];
-    #var $Subbing = [];
-    #var $Languages = [];
-    #var $Platform = [];
+    #public $AudioFormats = [];
+    #public $Subbing = [];
+    #public $Languages = [];
+    #public $Platform = [];
     public $NewTorrent = false;
     public $Torrent = [];
     public $Error = false;
@@ -33,7 +33,7 @@ class TorrentForm
         $this->Torrent = $Torrent;
         $this->Error = $Error;
 
-        global $UploadForm, $Categories, $Media,  $MediaManga, $TorrentID, $Containers, $ContainersGames, $ContainersProt, $Codecs, $Resolutions, $Archives;
+        global $UploadForm, $Categories, $Media,  $MediaManga, $TorrentID, $Containers, $ContainersGames, $ContainersProt, $ContainersExtra, $Codecs, $Resolutions, $Archives;
         #global $UploadForm, $Categories, $Formats, $Bitrates, $Media, $MediaManga, $TorrentID, $Containers, $ContainersGames, $Codecs, $Resolutions, $AudioFormats, $Subbing, $Languages, $Platform, $Archives, $ArchivesManga;
 
         $this->UploadForm = $UploadForm;
@@ -45,9 +45,10 @@ class TorrentForm
         $this->Containers = $Containers;
         $this->ContainersGames = $ContainersGames;
         $this->ContainersProt = $ContainersProt;
+        $this->ContainersExtra = $ContainersExtra;
         $this->Codecs = $Codecs;
         $this->Resolutions = $Resolutions;
-        $this->AudioFormats = $AudioFormats;
+        #$this->AudioFormats = $AudioFormats;
         #$this->Subbing = $Subbing;
         #$this->Languages = $Languages;
         $this->TorrentID = $TorrentID;
@@ -69,7 +70,10 @@ class TorrentForm
           WHERE UserID = ?", G::$LoggedUser['ID']);
         list($Uploads) = G::$DB->next_record(); ?>
 
-<!-- Everything until the catalogue number field-->
+<!--
+  Everything until the catalogue number field
+  Server-side torrent scrubbing admonishment
+-->
 <div class="thin">
   <?php if ($this->NewTorrent) { ?>
   <p style="text-align: center;">
@@ -80,6 +84,11 @@ class TorrentForm
       <a href="wiki.php?action=article&name=uploadingpitfalls">uploading pitfalls</a></strong>.
   </p>
 
+  <!--
+    Announce URLs displayed on the form
+    They're added to torrents in classes/torrentsdl.class.php
+    BioTorrents.de Gazelle supports tiered swarms, T1 private and T2 public
+  -->
   <p style="text-align: center;">
     <?php
       $Announces = ANNOUNCE_URLS[0];
@@ -95,6 +104,7 @@ class TorrentForm
       }
     ?>
 
+    <!-- Source -->
     <strong>Source</strong>
     <input type="text" value="<?= Users::get_upload_sources()[0] ?>"
       size="20" onclick="this.select();" readonly="readonly" />
@@ -185,6 +195,7 @@ class TorrentForm
       <?php
     }
 
+    # Make the endmatter
     public function foot()
     {
         $Torrent = $this->Torrent; ?>
@@ -258,17 +269,17 @@ class TorrentForm
   </form>
 </div>
 
-<!-- Okay, finally the real form -->
 <?php
     } # End
 
+    # Okay, finally the real form
     public function upload_form()
     {
         $QueryID = G::$DB->get_query_id();
         $this->head();
         $Torrent = $this->Torrent; ?>
 
-<!-- Catalogue number field -->
+<!-- Catalogue number autofill -->
 <table cellpadding="3" cellspacing="1" border="0" class="layout slice" width="100%">
   <?php if ($this->NewTorrent) { ?>
 
@@ -288,7 +299,7 @@ class TorrentForm
     </td>
   </tr>
 
-  <!-- Other autofill options -->
+  <!-- Autofill 2 -->
   <tr id="anidb_tr" class="hidden">
     <td class="label">AniDB Autofill (optional)</td>
     <td>
@@ -299,6 +310,7 @@ class TorrentForm
     </td>
   </tr>
 
+  <!-- Autofill 3 -->
   <tr id="ehentai_tr" class="hidden">
     <td class="label">e-hentai URL (optional)</td>
     <td>
@@ -334,6 +346,7 @@ class TorrentForm
     </td>
   </tr>
 
+  <!-- 2 -->
   <tr id="title_rj_tr">
     <td class="label" title="">Organism</td>
     <td>
@@ -344,6 +357,7 @@ class TorrentForm
     </td>
   </tr>
 
+  <!-- 3 -->
   <tr id="title_jp_tr">
     <td class="label">Strain/Variety</td>
     <td>
@@ -493,8 +507,107 @@ class TorrentForm
     </td>
   </tr>
 
-  <!-- Resolution -->
-  <tr id="resolution_tr">
+  <!-- Multiple container fields -->
+  <tr id="container_tr">
+    <td class="label">
+      Format
+      <strong class="important_text">*</strong>
+    </td>
+    <td>
+      <select name="container">
+        <option value="">---</option>
+        <option value="Autofill">Autofill</option>
+        <?php
+          foreach ($this->Containers as $Name => $Container) {
+              echo "<option value='$Name'>$Name</option>\n";
+          } ?>
+      </select><br />
+      Data file format, or detect from file list
+    </td>
+  </tr>
+
+  <!-- 2 -->
+  <tr id="container_games_tr">
+    <td class="label">
+      Format
+      <strong class="important_text">*</strong>
+    </td>
+    <td>
+      <select id="container" name="container">
+        <option value="">---</option>
+        <option value="Autofill">Autofill</option>
+        <?php
+          foreach ($this->ContainersGames as $Name => $Container) {
+              echo "<option value='$Name'>$Name</option>\n";
+          } ?>
+      </select><br />
+      Data file format, or detect from file list
+    </td>
+  </tr>
+
+  <!-- 3 -->
+  <tr id="container_prot_tr">
+    <td class="label">
+      Format
+      <strong class="important_text">*</strong>
+    </td>
+    <td>
+      <select id="container" name="container">
+        <option value="">---</option>
+        <option value="Autofill">Autofill</option>
+        <?php
+          foreach ($this->ContainersProt as $Name => $Container) {
+              echo "<option value='$Name'>$Name</option>\n";
+          } ?>
+      </select><br />
+      Data file format, or detect from file list
+    </td>
+  </tr>
+
+    <!-- 4 -->
+    <tr id="container_extra_tr">
+    <td class="label">
+      Format
+      <strong class="important_text">*</strong>
+    </td>
+    <td>
+      <select id="container" name="container">
+        <option value="">---</option>
+        <option value="Autofill">Autofill</option>
+        <?php
+          foreach ($this->ContainersExtra as $Name => $Container) {
+              echo "<option value='$Name'>$Name</option>\n";
+          } ?>
+      </select><br />
+      Data file format, or detect from file list
+    </td>
+  </tr>
+
+  <!-- Compression -->
+  <tr id="archive_tr">
+    <td class="label">
+      Archive
+      <strong class="important_text">*</strong>
+    </td>
+    <td>
+      <select name='archive'>
+        <option value="">---</option>
+        <option value="Autofill">Autofill</option>
+        <?php
+          foreach ($this->Archives as $Name => $Archive) {
+              echo "\t\t\t\t\t\t<option value=\"$Name\"";
+              if ($Archive === ($Torrent['Archive'] ?? false)) {
+                  echo ' selected';
+              }
+              echo ">$Name</option>\n";
+          } ?>
+      </select><br />
+      Compression algorithm, or detect from file list
+    </td>
+  </tr>
+
+    <!-- Resolution -->
+    <tr id="resolution_tr">
     <td class="label">
       Assembly Level
       <strong class="important_text">*</strong>
@@ -520,88 +633,12 @@ class TorrentForm
         readonly>
       </input>
       <script>
-        if ($('#ressel').raw().value == "Other") {
+        if ($('#ressel').raw().value === 'Other') {
           $('#resolution').raw().readOnly = false
           $('#resolution').gshow()
         }
       </script><br />
       How complete the data is, specifically or conceptually
-    </td>
-  </tr>
-
-  <!-- Three container fields -->
-  <tr id="container_tr">
-    <td class="label">
-      Format
-      <strong class="important_text">*</strong>
-    </td>
-    <td>
-      <select name="container">
-        <option value="">---</option>
-        <?php
-          foreach ($this->Containers as $Name => $Container) {
-              echo "<option value='$Name'>$Name</option>\n";
-          } ?>
-      </select><br />
-      Data file format, or detect from file list
-    </td>
-  </tr>
-
-  <!-- 2 -->
-  <tr id="container_games_tr">
-    <td class="label">
-      Format
-      <strong class="important_text">*</strong>
-    </td>
-    <td>
-      <select id="container" name="container">
-        <option value="">---</option>
-        <?php
-          foreach ($this->ContainersGames as $Name => $Container) {
-              echo "<option value='$Name'>$Name</option>\n";
-          } ?>
-      </select><br />
-      Data file format, or detect from file list
-    </td>
-  </tr>
-
-  <!-- 3 -->
-  <tr id="container_prot_tr">
-    <td class="label">
-      Format
-      <strong class="important_text">*</strong>
-    </td>
-    <td>
-      <select id="container" name="container">
-        <option value="">---</option>
-        <?php
-          foreach ($this->ContainersProt as $Name => $Container) {
-              echo "<option value='$Name'>$Name</option>\n";
-          } ?>
-      </select><br />
-      Data file format, or detect from file list
-    </td>
-  </tr>
-
-  <!-- Compression -->
-  <tr id="archive_tr">
-    <td class="label">
-      Archive
-      <strong class="important_text">*</strong>
-    </td>
-    <td>
-      <select name='archive'>
-        <option value="">---</option>
-        <?php
-          foreach ($this->Archives as $Name => $Archive) {
-              echo "\t\t\t\t\t\t<option value=\"$Name\"";
-              if ($Archive === ($Torrent['Archive'] ?? false)) {
-                  echo ' selected';
-              }
-              echo ">$Name</option>\n";
-          } ?>
-      </select><br />
-      Compression algorithm, or detect from file list
     </td>
   </tr>
 
@@ -651,6 +688,18 @@ class TorrentForm
     </td>
   </tr>
 
+  <!-- FTP/HTTP mirrors -->
+  <?php if (!$this->DisabledFlag && $this->NewTorrent) { ?>
+  <tr id="mirrors_tr">
+    <td class="label">Mirrors</td>
+    <td>
+      <textarea rows="1" cols="60" name="mirrors"
+        id="mirrors"><?= display_str($Torrent['Mirrors'])?></textarea>
+        <strong class="important_text">Experimental.</strong>
+      Up to two FTP/HTTP addresses that either point directly to a file, or for multi-file torrents, to the enclosing folder
+  </tr>
+  <?php } ?>
+  
   <!-- Sample pictures/links -->
   <?php if (!$this->DisabledFlag && $this->NewTorrent) { ?>
   <tr id="screenshots_tr">
@@ -685,7 +734,7 @@ class TorrentForm
       General info about the torrent subject's function or significance
     </td>
   </tr>
-  <?php } # Ends if NewTorrent line 499?>
+  <?php } # Ends if NewTorrent line 646?>
 
   <!-- Torrent description -->
   <tr id="release_desc_tr">

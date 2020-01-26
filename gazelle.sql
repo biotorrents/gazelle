@@ -1236,6 +1236,15 @@ CREATE TABLE `torrents_screenshots` (
   PRIMARY KEY (`ID`,`GroupID`,`Image`)
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
+CREATE TABLE `torrents_mirrors` (
+  `ID` int(10) NOT NULL AUTO_INCREMENT,
+  `GroupID` int(10) NOT NULL,
+  `UserID` int(10) NOT NULL,
+  `Time` datetime,
+  `Resource` varchar(255) NOT NULL,
+  PRIMARY KEY (`ID`,`GroupID`,`Resource`)
+) ENGINE=InnoDB CHARSET=utf8mb4;
+
 CREATE TABLE `torrents_tags` (
   `TagID` int(10) NOT NULL DEFAULT '0',
   `GroupID` int(10) NOT NULL DEFAULT '0',

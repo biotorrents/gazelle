@@ -6,38 +6,38 @@ $GroupID = (int)$_GET['id'];
 $TorrentHash = (string)$_GET['hash'];
 
 if ($GroupID && $TorrentHash) {
-  json_die("failure", "bad parameters");
+    json_die("failure", "bad parameters");
 }
 
 if ($TorrentHash) {
-  if (!is_valid_torrenthash($TorrentHash)) {
-    json_die("failure", "bad hash parameter");
-  } else {
-    $GroupID = (int)torrenthash_to_groupid($TorrentHash);
-    if (!$GroupID) {
-      json_die("failure", "bad hash parameter");
+    if (!is_valid_torrenthash($TorrentHash)) {
+        json_die("failure", "bad hash parameter");
+    } else {
+        $GroupID = (int)torrenthash_to_groupid($TorrentHash);
+        if (!$GroupID) {
+            json_die("failure", "bad hash parameter");
+        }
     }
-  }
 }
 
 if ($GroupID <= 0) {
-  json_die("failure", "bad id parameter");
+    json_die("failure", "bad id parameter");
 }
 
 $TorrentCache = get_group_info($GroupID, true, 0, true, true);
 
 if (!$TorrentCache) {
-  json_die("failure", "bad id parameter");
+    json_die("failure", "bad id parameter");
 }
 
 list($TorrentDetails, $TorrentList) = $TorrentCache;
 
 $Artists = pullmediainfo(Artists::get_artist($GroupID));
 
-if ($TorrentDetails['CategoryID'] == 0) {
-  $CategoryName = 'Unknown';
+if ($TorrentDetails['CategoryID'] === 0) {
+    $CategoryName = 'Unknown';
 } else {
-  $CategoryName = $Categories[$TorrentDetails['CategoryID'] - 1];
+    $CategoryName = $Categories[$TorrentDetails['CategoryID'] - 1];
 }
 
 $TagList = explode('|', $TorrentDetails['GROUP_CONCAT(DISTINCT tags.Name SEPARATOR \'|\')']);
@@ -62,17 +62,17 @@ $JsonTorrentDetails = [
 
 $JsonTorrentList = [];
 foreach ($TorrentList as $Torrent) {
-  // Convert file list back to the old format
-  $FileList = explode("\n", $Torrent['FileList']);
-  foreach ($FileList as &$File) {
-    $File = Torrents::filelist_old_format($File);
-  }
-  unset($File);
-  $FileList = implode('|||', $FileList);
-  $Userinfo = Users::user_info($Torrent['UserID']);
-  $Reports = Torrents::get_reports($Torrent['ID']);
-  $Torrent['Reported'] = count($Reports) > 0;
-  $JsonTorrentList[] = [
+    // Convert file list back to the old format
+    $FileList = explode("\n", $Torrent['FileList']);
+    foreach ($FileList as &$File) {
+        $File = Torrents::filelist_old_format($File);
+    }
+    unset($File);
+    $FileList = implode('|||', $FileList);
+    $Userinfo = Users::user_info($Torrent['UserID']);
+    $Reports = Torrents::get_reports($Torrent['ID']);
+    $Torrent['Reported'] = count($Reports) > 0;
+    $JsonTorrentList[] = [
     'id'          => (int)$Torrent['ID'],
     'infoHash'    => $Torrent['InfoHash'],
     'media'       => $Torrent['Media'],

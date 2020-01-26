@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class for functions related to the features involving torrent downloads
  */
@@ -18,6 +19,7 @@ class TorrentsDL
     private $User;
     private $AnnounceURL;
     private $AnnounceList;
+    private $WebSeeds;
 
     /**
      * Create a Zip object and store the query results
@@ -42,6 +44,7 @@ class TorrentsDL
 
         $this->AnnounceList = (sizeof(ANNOUNCE_URLS) === 1 && sizeof(ANNOUNCE_URLS[0]) === 1) ? [] : array(array_map('add_passkey', ANNOUNCE_URLS[0]), ANNOUNCE_URLS[1]);
         #$this->AnnounceList = (sizeof(ANNOUNCE_URLS) === 1 && sizeof(ANNOUNCE_URLS[0]) === 1) ? [] : array_map('add_passkey', ANNOUNCE_URLS);
+        $this->WebSeeds = [];
         $this->Zip = new Zip(Misc::file_string($Title));
     }
 
@@ -242,23 +245,28 @@ class TorrentsDL
     {
         if (Misc::is_new_torrent($TorrentData)) {
             $Bencode = BencodeTorrent::add_announce_url($TorrentData, $AnnounceURL);
+
+            # Announce list
             if (!empty($AnnounceList)) {
                 $Bencode = BencodeTorrent::add_announce_list($Bencode, $AnnounceList);
             }
-            /* todo: Support web seeds
+
+            # Web seeds
             if (!empty($WebSeeds)) {
                 $Bencode = BencodeTorrent::add_web_seeds($Bencode, $WebSeeds);
             }
-            */
             return $Bencode;
         }
+
         $Tor = new TORRENT(unserialize(base64_decode($TorrentData)), true);
         $Tor->set_announce_url($AnnounceURL);
         unset($Tor->Val['announce-list']);
+
         if (!empty($AnnounceList)) {
             $Tor->set_announce_list($AnnounceList);
         }
-        unset($Tor->Val['url-list']);
+
+        #unset($Tor->Val['url-list']);
         unset($Tor->Val['libtorrent_resume']);
         return $Tor->enc();
     }

@@ -1,9 +1,10 @@
 <?php
+
 require(SERVER_ROOT.'/sections/torrents/functions.php');
 
 $GroupID = (int)$_GET['id'];
 if ($GroupID === 0) {
-  error('Bad ID parameter', true);
+    error('Bad ID parameter', true);
 }
 
 $TorrentDetails = get_group_info($GroupID, true, 0, false);

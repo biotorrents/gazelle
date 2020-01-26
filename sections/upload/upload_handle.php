@@ -86,6 +86,7 @@ $Properties['GroupDescription'] = trim($_POST['album_desc']);
 $Properties['TorrentDescription'] = $_POST['release_desc'];
 $Properties['MediaInfo'] = 'nil';
 $Properties['Screenshots'] = isset($_POST['screenshots']) ? $_POST['screenshots'] : '';
+$Properties['Mirrors'] = isset($_POST['mirrors']) ? $_POST['mirrors'] : '';
 
 if ($_POST['album_desc']) {
     $Properties['GroupDescription'] = trim($_POST['album_desc']);
@@ -406,9 +407,9 @@ if (!empty($Err)) { // Show the upload form, with the data the user entered
 if ($T['Container'] === 'Autofill' || $T['Archive'] === 'Autofill') {
     # torrents.Container
     $Validate->ParseExtensions(
-    $Tor->file_list(),
-    array_merge($Containers, $ContainersGames, $ContainersProt)
-);
+        $Tor->file_list(),
+        array_merge($Containers, $ContainersGames, $ContainersProt)
+    );
     /*
     # torrents.Archive
     $Validate->ParseExtensions(
@@ -555,6 +556,25 @@ if (!isset($GroupID) || !$GroupID) {
     $Screenshots = array_unique($Screenshots);
     $Screenshots = array_slice($Screenshots, 0, 10);
 
+
+    # Add optional web seeds similar to screenshots
+    # Support an arbitrary and limited number of sources
+    $Mirrors = explode("\n", $T['Mirrors']);
+    $Mirrors = array_map('trim', $Mirrors);
+
+    $Mirrors = array_filter($Mirrors, function ($s) {
+        return preg_match('/^'.URL_REGEX.'$/i', $s);
+    });
+
+    $Mirrors = array_unique($Mirrors);
+    $Mirrors = array_slice($Mirrors, 0, 2);
+
+    # Downgrade TLS on resource URIs
+    # Required for BEP 19 compatibility
+    $Mirrors = str_ireplace('tps://', 'tp://', $Mirrors);
+
+    # Perform the DB inserts here
+    # Screenshots (Publications)
     if (!empty($Screenshots)) {
         $Screenshot = '';
         $DB->prepare_query("
@@ -565,6 +585,20 @@ if (!isset($GroupID) || !$GroupID) {
             $DB->exec_prepared_query();
         }
     }
+
+    # Mirrors
+    if (!empty($Mirrors)) {
+        $Mirror = '';
+        $DB->prepare_query("
+        INSERT INTO torrents_mirrors
+          (GroupID, UserID, Time, Resource)
+        VALUES (?, ?, NOW(), ?)", $GroupID, $LoggedUser['ID'], $Mirror);
+        foreach ($Mirrors as $Mirror) {
+            $DB->exec_prepared_query();
+        }
+    }
+
+# Main if/else
 } else {
     $DB->query("
     UPDATE torrents_group
