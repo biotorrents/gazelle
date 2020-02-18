@@ -1,4 +1,5 @@
 <?php
+
 /*******************************************************************************
 |~~~~ Gazelle bencode parser                         ~~~~|
 --------------------------------------------------------------------------------
@@ -158,12 +159,12 @@ class BENCODE_LIST extends BENCODE2
 
             if ($Type === 'e') { // End of list
                 $this->Pos += 1;
-                unset($this->Str); // Since we're finished parsing the string, we don't need to store it anymore. Benchmarked - this makes the parser run way faster.
+                unset($this->Str); // Since we're finished parsing the string, we don't need to store it anymore. Benchmarked - this makes the parser run way faster
                 return;
             }
 
-            // Decode the bencoded element.
-            // This function changes $this->Pos and $this->Val, so you don't have to.
+            // Decode the bencoded element
+            // This function changes $this->Pos and $this->Val, so you don't have to
             $this->decode($Type, $Key);
             ++$Key;
         }
@@ -193,7 +194,7 @@ class BENCODE_DICT extends BENCODE2
         while ($this->Pos<$Length) {
             if ($this->Str[$this->Pos] === 'e') { // End of dictionary
                 $this->Pos += 1;
-                unset($this->Str); // Since we're finished parsing the string, we don't need to store it anymore. Benchmarked - this makes the parser run way faster.
+                unset($this->Str); // Since we're finished parsing the string, we don't need to store it anymore. Benchmarked - this makes the parser run way faster
                 return;
             }
 
@@ -219,14 +220,13 @@ class BENCODE_DICT extends BENCODE2
             // $Type now indicates what type of element we're dealing with
             // It's either an integer (string), 'i' (an integer), 'l' (a list), 'd' (a dictionary), or 'e' (end of dictionary/list)
 
-            // Decode the bencoded element.
-            // This function changes $this->Pos and $this->Val, so you don't have to.
+            // Decode the bencoded element
+            // This function changes $this->Pos and $this->Val, so you don't have to
             $this->decode($Type, $Key);
         }
         return true;
     }
 }
-
 
 class TORRENT extends BENCODE_DICT
 {
@@ -328,7 +328,7 @@ class TORRENT extends BENCODE_DICT
             return true; // Torrent is private
         } else {
             // Torrent is not private!
-            // add private tracker flag and sort info dictionary
+            // Add private tracker flag and sort info dictionary
             $this->Val['info']->Val['private'] = 1;
             ksort($this->Val['info']->Val);
             return false;

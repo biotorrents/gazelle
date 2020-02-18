@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The decode class is simple and straightforward. The only thing to
  * note is that empty dictionaries are represented by boolean trues
@@ -92,7 +93,7 @@ class BencodeDecode extends Bencode
       case 'i':
         $this->Pos++;
         $Value = substr($this->Data, $this->Pos, strpos($this->Data, 'e', $this->Pos) - $this->Pos);
-        if (!ctype_digit($Value) && !($Value[0] == '-' && ctype_digit(substr($Value, 1)))) {
+        if (!ctype_digit($Value) && !($Value[0] === '-' && ctype_digit(substr($Value, 1)))) {
             return $this->error();
         }
         $this->Pos += strlen($Value) + 1;
@@ -101,7 +102,7 @@ class BencodeDecode extends Bencode
       case 'l':
         $Value = [];
         $this->Pos++;
-        while ($this->Data[$this->Pos] != 'e') {
+        while ($this->Data[$this->Pos] !== 'e') {
             if ($this->Pos >= $this->Length) {
                 return $this->error();
             }
@@ -113,7 +114,7 @@ class BencodeDecode extends Bencode
       case 'd':
         $Value = [];
         $this->Pos++;
-        while ($this->Data[$this->Pos] != 'e') {
+        while ($this->Data[$this->Pos] !== 'e') {
             $Length = substr($this->Data, $this->Pos, strpos($this->Data, ':', $this->Pos) - $this->Pos);
             if (!ctype_digit($Length)) {
                 return $this->error();

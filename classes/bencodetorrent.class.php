@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Torrent class that contains some convenient functions related to torrent meta data
  */
@@ -92,7 +93,7 @@ class BencodeTorrent extends BencodeDecode
         if (empty($this->Dec)) {
             return false;
         }
-        return isset($this->Dec['info']['private']) && Int64::get($this->Dec['info']['private']) == 1;
+        return isset($this->Dec['info']['private']) && Int64::get($this->Dec['info']['private']) === 1;
     }
     
     /**
@@ -124,7 +125,7 @@ class BencodeTorrent extends BencodeDecode
         if (empty($this->Dec)) {
             return false;
         }
-        if (isset($this->Dec['info']['source']) && ($this->Dec['info']['source'] == $Sources[0] || $this->Dec['info']['source'] == $Sources[1])) {
+        if (isset($this->Dec['info']['source']) && ($this->Dec['info']['source'] === $Sources[0] || $this->Dec['info']['source'] === $Sources[1])) {
             return false;
         }
         $this->Dec['info']['source'] = $Sources[0];

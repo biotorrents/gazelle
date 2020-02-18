@@ -262,10 +262,16 @@ class TorrentsDL
         $Tor->set_announce_url($AnnounceURL);
         unset($Tor->Val['announce-list']);
 
+        # Announce list
         if (!empty($AnnounceList)) {
             $Tor->set_announce_list($AnnounceList);
         }
 
+        # Web seeds
+        if (!empty($WebSeeds)) {
+            $Tor->add_web_seeds($WebSeeds);
+        }
+        
         #unset($Tor->Val['url-list']);
         unset($Tor->Val['libtorrent_resume']);
         return $Tor->enc();
