@@ -177,7 +177,7 @@ class TorrentForm
             <?php
             foreach (Misc::display_array($this->Categories) as $Index => $Cat) {
                 echo "\t\t\t\t\t\t<option value=\"$Index\"";
-                if ($Cat == $this->Torrent['CategoryName']) {
+                if ($Cat === $this->Torrent['CategoryName']) {
                     echo ' selected="selected"';
                 }
                 echo ">$Cat</option>\n";
