@@ -1,4 +1,5 @@
-<?
+<?php
+
 // peerupdate.php is apparently shit so this is a crappy bandaid to fix the problem of
 // all the cached "0 seeds" on the first search page from peerupdate missing the changes.
 // It used to be in a sandbox that I just ran whenever I saw something wrong with
@@ -13,22 +14,22 @@ $Results = $FrontPageQ->query()->to_array('id');
 $IDs = [];
 $Seeds = [];
 foreach ($Results as $i) {
-  $GroupCache = $Cache->get_value('torrent_group_'.$i['groupid']);
-  if (!$GroupCache) continue;
-  $IDs = array_merge($IDs, array_column($GroupCache['d']['Torrents'], 'ID'));
-  $Seeds = array_merge($Seeds, array_column($GroupCache['d']['Torrents'], 'Seeders'));
+    $GroupCache = $Cache->get_value('torrent_group_'.$i['groupid']);
+    if (!$GroupCache) {
+        continue;
+    }
+    $IDs = array_merge($IDs, array_column($GroupCache['d']['Torrents'], 'ID'));
+    $Seeds = array_merge($Seeds, array_column($GroupCache['d']['Torrents'], 'Seeders'));
 }
 $QueryParts = [];
 for ($i = 0; $i < sizeof($IDs); $i++) {
-  $QueryParts[] = '(ID='.$IDs[$i].' AND Seeders!='.$Seeds[$i].')';
+    $QueryParts[] = '(ID='.$IDs[$i].' AND Seeders!='.$Seeds[$i].')';
 }
 $query = 'SELECT GroupID FROM torrents WHERE '.implode(' OR ', $QueryParts);
 
 $DB->query($query);
 if ($DB->has_results()) {
-  foreach($DB->collect('GroupID') as $GID) {
-    $Cache->delete_value('torrent_group_'.$GID);
-  }
+    foreach ($DB->collect('GroupID') as $GID) {
+        $Cache->delete_value('torrent_group_'.$GID);
+    }
 }
-
-?>

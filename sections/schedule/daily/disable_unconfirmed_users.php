@@ -1,7 +1,8 @@
-<?
+<?php
+
 //------------- Disable unconfirmed users ------------------------------//
 
-// get a list of user IDs for clearing cache keys
+// Get a list of user IDs for clearing cache keys
 $DB->query("
   SELECT UserID
   FROM users_info AS ui
@@ -11,7 +12,7 @@ $DB->query("
     AND um.Enabled != '2'");
 $UserIDs = $DB->collect('UserID');
 
-// disable the users
+// Disable the users
 $DB->query("
   UPDATE users_info AS ui
     JOIN users_main AS um ON um.ID = ui.UserID
@@ -24,10 +25,9 @@ $DB->query("
     AND um.Enabled != '2'");
 $Cache->decrement('stats_user_count', $DB->affected_rows());
 
-// clear the appropriate cache keys
+// Clear the appropriate cache keys
 foreach ($UserIDs as $UserID) {
-  $Cache->delete_value("user_info_$UserID");
+    $Cache->delete_value("user_info_$UserID");
 }
 
 echo "disabled unconfirmed\n";
-?>

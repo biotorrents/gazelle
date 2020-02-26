@@ -1,4 +1,5 @@
-<?
+<?php
+
 //------------- Hide old requests ---------------------------------------//
 
 $DB->query("
@@ -6,4 +7,3 @@ $DB->query("
   SET Visible = 0
   WHERE TimeFilled < (NOW() - INTERVAL 7 DAY)
     AND TimeFilled IS NOT NULL");
-?>

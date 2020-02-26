@@ -1,4 +1,5 @@
-<?
+<?php
+
 //------------- Update Hit 'n Runs --------------------------------------//
 
 // This will never work until we start keeping track of upload/download stats
@@ -30,4 +31,3 @@ while(list($UserID, $HnR) = $DB->next_record()) {
     $DB->set_query_id($getUsers);
   }
 } */
-?>

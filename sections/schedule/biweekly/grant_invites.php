@@ -1,4 +1,5 @@
-<?
+<?php
+
 //------------- Give out invites! ---------------------------------------//
 
 /*
@@ -14,7 +15,6 @@ Every TORRENT_MASTER whose total invitee ratio is above 3.0 and total invitee up
 This cascades, so if you qualify for the last bonus group, you also qualify for the first two and will receive three bonus invites.
 
 The bonus invites cannot put a user over their cap.
-
 */
 
 $DB->query("
@@ -32,12 +32,12 @@ $DB->query("
 
 $UserIDs = $DB->collect('ID');
 if (count($UserIDs) > 0) {
-  foreach ($UserIDs as $UserID) {
-      $Cache->begin_transaction("user_info_heavy_$UserID");
-      $Cache->update_row(false, array('Invites' => '+1'));
-      $Cache->commit_transaction(0);
-  }
-  $DB->query('
+    foreach ($UserIDs as $UserID) {
+        $Cache->begin_transaction("user_info_heavy_$UserID");
+        $Cache->update_row(false, array('Invites' => '+1'));
+        $Cache->commit_transaction(0);
+    }
+    $DB->query('
     UPDATE users_main
     SET Invites = Invites + 1
     WHERE ID IN ('.implode(',', $UserIDs).')');
@@ -48,7 +48,7 @@ $BonusReqs = array(
   array(2.0, 10 * 1024 * 1024 * 1024),
   array(3.0, 20 * 1024 * 1024 * 1024));
 
-// Since MySQL doesn't like subselecting from the target table during an update, we must create a temporary table.
+// Since MySQL doesn't like subselecting from the target table during an update, we must create a temporary table
 
 $DB->query("
   CREATE TEMPORARY TABLE temp_sections_schedule_index
@@ -75,12 +75,12 @@ $DB->query("
 
 $UserIDs = $DB->collect('ID');
 if (count($UserIDs) > 0) {
-  foreach ($UserIDs as $UserID) {
-      $Cache->begin_transaction("user_info_heavy_$UserID");
-      $Cache->update_row(false, array('Invites' => '+1'));
-      $Cache->commit_transaction(0);
-  }
-  $DB->query('
+    foreach ($UserIDs as $UserID) {
+        $Cache->begin_transaction("user_info_heavy_$UserID");
+        $Cache->update_row(false, array('Invites' => '+1'));
+        $Cache->commit_transaction(0);
+    }
+    $DB->query('
     UPDATE users_main
     SET Invites = Invites + 1
     WHERE ID IN ('.implode(',', $UserIDs).')');
@@ -103,12 +103,12 @@ $DB->query("
 
 $UserIDs = $DB->collect('ID');
 if (count($UserIDs) > 0) {
-  foreach ($UserIDs as $UserID) {
-      $Cache->begin_transaction("user_info_heavy_$UserID");
-      $Cache->update_row(false, array('Invites' => '+1'));
-      $Cache->commit_transaction(0);
-  }
-  $DB->query('
+    foreach ($UserIDs as $UserID) {
+        $Cache->begin_transaction("user_info_heavy_$UserID");
+        $Cache->update_row(false, array('Invites' => '+1'));
+        $Cache->commit_transaction(0);
+    }
+    $DB->query('
     UPDATE users_main
     SET Invites = Invites + 1
     WHERE ID IN ('.implode(',', $UserIDs).')');
@@ -128,14 +128,13 @@ $DB->query("
 
 $UserIDs = $DB->collect('ID');
 if (count($UserIDs) > 0) {
-  foreach ($UserIDs as $UserID) {
-      $Cache->begin_transaction("user_info_heavy_$UserID");
-      $Cache->update_row(false, array('Invites' => '+1'));
-      $Cache->commit_transaction(0);
-  }
-  $DB->query('
+    foreach ($UserIDs as $UserID) {
+        $Cache->begin_transaction("user_info_heavy_$UserID");
+        $Cache->update_row(false, array('Invites' => '+1'));
+        $Cache->commit_transaction(0);
+    }
+    $DB->query('
     UPDATE users_main
     SET Invites = Invites + 1
     WHERE ID IN ('.implode(',', $UserIDs).')');
 }
-?>

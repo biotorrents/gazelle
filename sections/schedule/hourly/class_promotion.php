@@ -1,4 +1,5 @@
-<?
+<?php
+
 //------------- Promote users -------------------------------------------//
 
 // Disabled in favor of store-based promotions
@@ -51,7 +52,8 @@ $Criteria[] = array(
         FROM torrents
         WHERE UserID = users_main.ID
       ) >= 300');
-/*$Criteria[] = array(
+
+$Criteria[] = array(
   'From' => POWER_TM,
   'To' => ELITE_TM,
   'MinUpload' => 2 * 1024 * 1024 * 1024 * 1024,
@@ -111,7 +113,7 @@ $Criteria[] = array(
       SET PermissionID = ".$L['To']."
       WHERE ID IN(".implode(',', $UserIDs).')');
     foreach ($UserIDs as $UserID) {
-      /*$Cache->begin_transaction("user_info_$UserID");
+      $Cache->begin_transaction("user_info_$UserID");
       $Cache->update_row(false, array('PermissionID' => $L['To']));
       $Cache->commit_transaction(0);
       $Cache->delete_value("user_info_$UserID");
@@ -155,7 +157,7 @@ $Criteria[] = array(
       SET PermissionID = ".$L['From']."
       WHERE ID IN(".implode(',', $UserIDs).')');
     foreach ($UserIDs as $UserID) {
-      /*$Cache->begin_transaction("user_info_$UserID");
+      $Cache->begin_transaction("user_info_$UserID");
       $Cache->update_row(false, array('PermissionID' => $L['From']));
       $Cache->commit_transaction(0);
       $Cache->delete_value("user_info_$UserID");
@@ -171,4 +173,3 @@ $Criteria[] = array(
   }
  }
 */
-?>

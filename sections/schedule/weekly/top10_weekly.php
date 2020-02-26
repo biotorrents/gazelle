@@ -1,4 +1,5 @@
-<?
+<?php
+
 //------------------- Weekly Top 10 History -----------------//
 
 $DB->query("
@@ -8,7 +9,7 @@ $HistoryID = $DB->inserted_id();
 
 $Top10 = $Cache->get_value('top10tor_week_10');
 if ($Top10 === false) {
-  $DB->query("
+    $DB->query("
     SELECT
       t.ID,
       g.ID,
@@ -29,53 +30,52 @@ if ($Top10 === false) {
     ORDER BY (t.Seeders + t.Leechers) DESC
     LIMIT 10;");
 
-  $Top10 = $DB->to_array();
+    $Top10 = $DB->to_array();
 }
 
 $i = 1;
 foreach ($Top10 as $Torrent) {
-  list($TorrentID, $GroupID, $GroupName, $GroupCategoryID,
+    list($TorrentID, $GroupID, $GroupName, $GroupCategoryID,
     $WikiImage, $TorrentTags, $Media, $Year, $GroupYear,
     $Snatched, $Seeders, $Leechers, $Data) = $Torrent;
 
-  $DisplayName = '';
+    $DisplayName = '';
 
-  $Artists = Artists::get_artist($GroupID);
+    $Artists = Artists::get_artist($GroupID);
 
-  if (!empty($Artists)) {
-    $DisplayName = Artists::display_artists($Artists, false, true);
-  }
+    if (!empty($Artists)) {
+        $DisplayName = Artists::display_artists($Artists, false, true);
+    }
 
-  $DisplayName .= $GroupName;
+    $DisplayName .= $GroupName;
 
-  if ($GroupCategoryID == 1 && $GroupYear > 0) {
-    $DisplayName .= " [$GroupYear]";
-  }
+    if ($GroupCategoryID === 1 && $GroupYear > 0) {
+        $DisplayName .= " [$GroupYear]";
+    }
 
-  // append extra info to torrent title
-  $ExtraInfo = '';
-  $AddExtra = '';
-  if ($Media) {
-    $ExtraInfo .= $AddExtra.$Media;
-    $AddExtra = ' / ';
-  }
-  if ($Year > 0) {
-    $ExtraInfo .= $AddExtra.$Year;
-    $AddExtra = ' ';
-  }
-  if ($ExtraInfo != '') {
-    $ExtraInfo = "- [$ExtraInfo]";
-  }
+    // Append extra info to torrent title
+    $ExtraInfo = '';
+    $AddExtra = '';
+    if ($Media) {
+        $ExtraInfo .= $AddExtra.$Media;
+        $AddExtra = ' / ';
+    }
+    if ($Year > 0) {
+        $ExtraInfo .= $AddExtra.$Year;
+        $AddExtra = ' ';
+    }
+    if ($ExtraInfo !== '') {
+        $ExtraInfo = "- [$ExtraInfo]";
+    }
 
-  $TitleString = "$DisplayName $ExtraInfo";
+    $TitleString = "$DisplayName $ExtraInfo";
 
-  $TagString = str_replace('|', ' ', $TorrentTags);
+    $TagString = str_replace('|', ' ', $TorrentTags);
 
-  $DB->query("
+    $DB->query("
     INSERT INTO top10_history_torrents
       (HistoryID, Rank, TorrentID, TitleString, TagString)
     VALUES
       ($HistoryID, $i, $TorrentID, '" . db_string($TitleString) . "', '" . db_string($TagString) . "')");
-  $i++;
+    $i++;
 }
-?>

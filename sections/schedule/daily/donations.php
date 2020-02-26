@@ -1,3 +1,3 @@
-<?
+<?php
+
 Donations::schedule();
-?>

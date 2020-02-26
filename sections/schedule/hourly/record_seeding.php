@@ -1,4 +1,5 @@
-<?
+<?php
+
 //------------- Record who's seeding how much, used for ratio watch
 
 $DB->query("TRUNCATE TABLE users_torrent_history_temp");
@@ -37,4 +38,3 @@ $DB->query("
   ON DUPLICATE KEY UPDATE
     Time = Time + UNIX_TIMESTAMP(NOW()) - LastTime,
     LastTime = UNIX_TIMESTAMP(NOW())");
-?>

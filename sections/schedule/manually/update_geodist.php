@@ -1,8 +1,9 @@
-<?
+<?php
+
 $IPs = [];
 $DB->query("SELECT IP FROM users_main WHERE Enabled = '1'");
-while(list($EncIP) = $DB->next_record()) {
-  $IPs[] = Crypto::decrypt($EncIP);
+while (list($EncIP) = $DB->next_record()) {
+    $IPs[] = Crypto::decrypt($EncIP);
 }
 $DB->query("CREATE TEMPORARY TABLE users_ips_decrypted (IP VARCHAR(45) NOT NULL)");
 $DB->query("INSERT INTO users_ips_decrypted (IP) VALUES('".implode("'),('", $IPs)."')");
@@ -17,4 +18,3 @@ $DB->query("
   ORDER BY Users DESC");
 $DB->query("DROP TABLE users_ips_decrypted");
 $Cache->delete_value('geodistribution');
-?>
