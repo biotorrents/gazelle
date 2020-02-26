@@ -80,22 +80,27 @@ function Calculate() {
   }
 }
 
+var ArtistCount = 1;
+
 function AddArtistField() {
-  var ArtistCount = document.getElementsByName("artists[]").length;
+  window.getSelection().removeAllRanges()
+  ArtistCount = $('input[name="artists[]"]').length;
+
   if (ArtistCount >= 200) {
     return;
   }
   var ArtistField = document.createElement("input");
   ArtistField.type = "text";
-  ArtistField.id = "artist_" + ArtistCount;
+  ArtistField.id = "artists_" + ArtistCount;
   ArtistField.name = "artists[]";
   ArtistField.size = 45;
 
   var x = $('#artistfields').raw();
   x.appendChild(document.createElement("br"));
   x.appendChild(ArtistField);
+  x.appendChild(document.createTextNode('\n'));
 
-  if ($("#artist_0").data("gazelle-autocomplete")) {
+  if ($("#artists_0").data("gazelle-autocomplete")) {
     $(ArtistField).on('focus', function () {
       $(ArtistField).autocomplete({
         deferRequestBy: 300,
@@ -108,21 +113,20 @@ function AddArtistField() {
 }
 
 function RemoveArtistField() {
-  var ArtistCount = document.getElementsByName("artists[]").length;
+  window.getSelection().removeAllRanges()
+  ArtistCount = $('input[name="artists[]"]').length;
   if (ArtistCount == 1) {
     return;
   }
   var x = $('#artistfields').raw();
-
-  while (x.lastChild.tagName != "INPUT") {
+  for (i = 0; i < 3; i++) {
     x.removeChild(x.lastChild);
   }
-  x.removeChild(x.lastChild);
-  x.removeChild(x.lastChild); //Remove trailing new line.
   ArtistCount--;
 }
 
 function Categories() {
+  /*
   var cat = $('#categories').raw() ? $('#categories').raw().options[$('#categories').raw().selectedIndex].value : '';
   if (cat == "Movies") {
     $('#artist_tr').gshow();
@@ -149,6 +153,7 @@ function Categories() {
     $('#cataloguenumber_tr').ghide();
     $('#dlsiteid_tr').ghide();
   }
+  */
 }
 
 function add_tag() {

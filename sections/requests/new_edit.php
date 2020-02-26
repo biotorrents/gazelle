@@ -128,7 +128,10 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
 
         <!-- Category -->
         <tr>
-          <td class="label">Type</td>
+          <td class="label">
+            Category
+            <strong class="important_text">*</strong>
+          </td>
           <td>
             <?php if (!empty($Disabled)) { ?>
             <input type="hidden" name="type"
@@ -153,14 +156,17 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
               value="<?= (isset($CatalogueNumber)?$CatalogueNumber:'') ?>"
               <?= $Disabled ?>/>
             <?php if (empty($Disabled)) { ?>
-            <input type="button" autofill="jav" value="Autofill"></input>
+            <input type="button" autofill="jav" value="Autofill" style="pointer-events: none; opacity: 0.5;"></input>
             <?php } ?>
           </td>
         </tr>
 
-        <!-- Three titles -->
+        <!-- Three title fields -->
         <tr>
-          <td class="label">Torrent Title</td>
+          <td class="label">
+            Torrent Title
+            <strong class="important_text">*</strong>
+          </td>
           <td>
             <input type="text" id="title" name="title" size="45"
               value="<?= (!empty($Title) ? $Title : '') ?>"
@@ -168,6 +174,7 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
           </td>
         </tr>
 
+        <!-- 2 -->
         <tr>
           <td class="label">Organism</td>
           <td>
@@ -177,6 +184,7 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
           </td>
         </tr>
 
+        <!-- 3 -->
         <tr>
           <td class="label">Strain/Variety</td>
           <td>
@@ -189,37 +197,38 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
 
         <!-- Multiple artists -->
         <tr id="artist_tr">
-          <td class="label">Author(s)</td>
+          <td class="label">
+            Authors(s)
+            <strong class="important_text">*</strong>
+          </td>
           <td id="artistfields">
+            <p id="vawarning" class="hidden">
+              Please use the multiple artists feature rather than using "Various Artists."
+            </p>
             <?php
-              if (!empty($ArtistForm)) {
-                  $First = true;
-                  foreach ($ArtistForm as $Artist) {
-                      # Cycle autocomplete?>
+    if (!empty($ArtistForm)) {
+        $First = true;
+        foreach ($ArtistForm as $Artist) {
+            ?>
             <input type="text" id="artist_0" name="artists[]" <?php Users::has_autocomplete_enabled('other'); ?>
-            size="45" value="<?= display_str($Artist['name']) ?>" <?= $Disabled ?>/>
-            <?php
-              if (empty($Disabled)) {
-                  if ($First) { ?>
-            <a class="add_artist_button brackets">+</a>
-            <a class="remove_artist_button brackets">&minus;</a>
-            <?php
-                }
-                  $First = false;
-              } ?>
+            size="45" value="<?=display_str($Artist['name']) ?>" <?=$Disabled?>/>
+            <?php if (empty($Disabled)) {
+                if ($First) { ?><a class="add_artist_button brackets">+</a> <a
+              class="remove_artist_button brackets">&minus;</a><?php }
+                $First = false;
+            } ?>
             <br />
             <?php
-                  }
-              } else {
-                  ?>
-            <input type="text" id="artist_0" name="artists[]" <?php Users::has_autocomplete_enabled('other'); ?>
-            size="45" <?= $Disabled ?>/>
+        }
+    } else {
+        ?> <input type="text" id="artist_0" name="artists[]" <?php Users::has_autocomplete_enabled('other'); ?>
+            size="45" <?=$Disabled?>/>
             <?php if (empty($Disabled)) { ?>
             <a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a>
+            <?php } ?>
             <?php
-                }
-              }
-            ?>
+    }
+?>
           </td>
         </tr>
 
@@ -237,7 +246,10 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
 
         <!-- Tags -->
         <tr>
-          <td class="label">Tags</td>
+          <td class="label">
+            Tags
+            <strong class="important_text">*</strong>
+          </td>
           <td>
             <?php
               $GenreTags = $Cache->get_value('genre_tags');
@@ -273,7 +285,10 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
 
         <!-- Description -->
         <tr>
-          <td class="label">Description</td>
+          <td class="label">
+            Request Description
+            <strong class="important_text">*</strong>
+          </td>
           <td>
             <?php new TEXTAREA_PREVIEW('description', 'req_desc', $Request['Description']??''); ?>
           </td>
