@@ -380,10 +380,10 @@ class TorrentForm
         if (!empty($Torrent['Artists'])) {
             foreach ($Torrent['Artists'] as $Num => $Artist) {
                 ?>
-      <input type="text" id="idols_<?= $Num ?>" name="idols[]"
+      <input type="text" id="idols_<?=$Num?>" name="idols[]"
         size="45"
-        value="<?= display_str($Artist['name']) ?>"
-        <?= $this->Disabled ?>/>
+        value="<?=display_str($Artist['name'])?>"
+        <?=$this->Disabled?><?php Users::has_autocomplete_enabled('other'); ?>/>
       <?php if ($Num === 0) { ?>
       <a class="add_artist_button brackets">+</a>
       <a class="remove_artist_button brackets">&minus;</a>
@@ -392,7 +392,7 @@ class TorrentForm
             }
         } else {
             ?>
-      <input type="text" id="idols_0" name="idols[]" size="45" value="" <?= $this->Disabled ?> />
+      <input type="text" id="idols_0" name="idols[]" size="45" value="" <?=$this->Disabled?><?php Users::has_autocomplete_enabled('other'); ?>/>
       <a class="add_artist_button brackets">+</a>
       <a class="remove_artist_button brackets">&minus;</a>
       <?php
@@ -564,8 +564,8 @@ class TorrentForm
     </td>
   </tr>
 
-    <!-- 4 -->
-    <tr id="container_extra_tr">
+  <!-- 4 -->
+  <tr id="container_extra_tr">
     <td class="label">
       Format
       <strong class="important_text">*</strong>
@@ -606,8 +606,8 @@ class TorrentForm
     </td>
   </tr>
 
-    <!-- Resolution -->
-    <tr id="resolution_tr">
+  <!-- Resolution -->
+  <tr id="resolution_tr">
     <td class="label">
       Assembly Level
       <strong class="important_text">*</strong>
@@ -695,11 +695,12 @@ class TorrentForm
     <td>
       <textarea rows="1" cols="60" name="mirrors"
         id="mirrors"><?= display_str($Torrent['Mirrors'])?></textarea>
-        <strong class="important_text">Experimental.</strong>
-      Up to two FTP/HTTP addresses that either point directly to a file, or for multi-file torrents, to the enclosing folder
+      <strong class="important_text">Experimental.</strong>
+      Up to two FTP/HTTP addresses that either point directly to a file, or for multi-file torrents, to the enclosing
+      folder
   </tr>
   <?php } ?>
-  
+
   <!-- Sample pictures/links -->
   <?php if (!$this->DisabledFlag && $this->NewTorrent) { ?>
   <tr id="screenshots_tr">

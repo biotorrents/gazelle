@@ -192,16 +192,14 @@ class Validate
     {
         # Make $Tor->file_list() output manageable
         $UnNested = array_values($FileList[1]);
-        /*
         $Sorted = usort($UnNested, function ($a, $b) {
-            return $b[0] <=> $a[0];
+            return $b[0] > $a[0];
         });
-        */
-        $TopTen = array_slice($UnNested, 0, 10); # Good
+        $TopTen = array_slice($Sorted, 0, 10); # Good
         $Result = [];
 
         print_r('<pre>');
-        var_dump($TopTen);
+        var_dump($Sorted);
         print_r('</pre>');
 
 

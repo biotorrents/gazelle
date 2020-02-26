@@ -598,7 +598,7 @@ if (!isset($GroupID) || !$GroupID) {
         }
     }
 
-# Main if/else
+    # Main if/else
 } else {
     $DB->query("
     UPDATE torrents_group

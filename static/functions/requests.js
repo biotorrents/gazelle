@@ -95,10 +95,11 @@ function AddArtistField() {
   x.appendChild(document.createElement("br"));
   x.appendChild(ArtistField);
 
-  if ($("#artist").data("gazelle-autocomplete")) {
-    $(ArtistField).live('focus', function () {
+  if ($("#artist_0").data("gazelle-autocomplete")) {
+    $(ArtistField).on('focus', function () {
       $(ArtistField).autocomplete({
-        serviceUrl: 'artist.php?action=autocomplete'
+        deferRequestBy: 300,
+        serviceUrl: ARTIST_AUTOCOMPLETE_URL
       });
     });
   }
@@ -117,12 +118,11 @@ function RemoveArtistField() {
     x.removeChild(x.lastChild);
   }
   x.removeChild(x.lastChild);
-  x.removeChild(x.lastChild); // Remove trailing new line.
+  x.removeChild(x.lastChild); //Remove trailing new line.
   ArtistCount--;
 }
 
 function Categories() {
-  /*
   var cat = $('#categories').raw() ? $('#categories').raw().options[$('#categories').raw().selectedIndex].value : '';
   if (cat == "Movies") {
     $('#artist_tr').gshow();
@@ -149,7 +149,6 @@ function Categories() {
     $('#cataloguenumber_tr').ghide();
     $('#dlsiteid_tr').ghide();
   }
-  */
 }
 
 function add_tag() {

@@ -200,9 +200,10 @@ View::show_header('Browse Torrents', 'browse');
               <!--Artist name:-->
             </td>
             <td class="ft_artistname">
-              <input type="search" spellcheck="false" size="65" name="artistname" class="inputtext smaller fti_advanced"
-                placeholder="Author Name"
-                value="<?Format::form('artistname')?>" />
+              <input type="search" spellcheck="false" size="65" id="artist" name="artistname"
+                class="inputtext smaller fti_advanced" placeholder="Author Name"
+                value="<?Format::form('artistname')?>"
+                <?php Users::has_autocomplete_enabled('other'); ?>/>
             </td>
           </tr>
 

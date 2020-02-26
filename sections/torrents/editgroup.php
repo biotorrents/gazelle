@@ -196,8 +196,9 @@ if ($CategoryID == 1) {
 ?>
           </td>
           <td id="idolfields">
-            <input type="text" id="idol_0" name="idols[]" size="45"
-              value="<?=$Artists[0]['name']?>" />
+            <input type="text" id="idols_0" name="idols[]" size="45"
+              value="<?=$Artists[0]['name']?>"
+              <?php Users::has_autocomplete_enabled('other'); ?>/>
             <a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a>
             <?php
   for ($i = 1; $i < count($Artists); $i++) {
