@@ -1,6 +1,6 @@
 <?php
 
-# Line 224
+# Line 222
 # Sequencing Formats
 #
 # https://www.ncbi.nlm.nih.gov/sra/docs/submitformats/
@@ -25,6 +25,7 @@ $Containers = [
   'SwissProt'  => ['dat'],
   'VCF'        => ['vcf'],
   'Plain'      => ['csv', 'txt'],
+  'Other'      => [],
 ];
 
 # Imaging Formats
@@ -41,7 +42,7 @@ $ContainersGames = [
   'PNG'       => ['png'],
   'TIFF'      => ['tif', 'tiff'],
   'WebP'      => ['webp'],
-  'Other'     => [''],
+  'Other'     => [],
 ];
 
 # Protein Formats
@@ -75,6 +76,7 @@ $ContainersProt = [
   'TraML'          => ['traml'],
   'ULVAC-PHI'      => ['tdc'],
   'Plain'          => ['csv', 'txt'],
+  'Other'          => [],
 ];
 
 # Extra Formats
@@ -96,7 +98,8 @@ $ContainersExtra = [
   'Excel'            => ['xls', 'xlt', 'xlm', 'xlsx', 'xlsm', 'xltx', 'xltm', 'xlsb', 'xla', 'xlam', 'xll', 'xlw'],
   'PowerPoint'       => ['ppt', 'pot', 'pps', 'pptx', 'pptm', 'potx', 'potm', 'ppam', 'ppsx', 'ppsm', 'sldx', 'sldm'],
   'PDF'              => ['pdf', 'fdf', 'xfdf'],
-  'Other'            => [''],
+  'Plain'            => ['csv', 'txt'],
+  'Other'            => [],
 ];
 
 $Archives = [
@@ -106,6 +109,6 @@ $Archives = [
   'Pickle'   => ['pickle', 'pkl'],
   'RAR'      => ['rar', 'rev'],
   'ZIP'      => ['zip', 'zipx'],
-  'None'     => [''],
+  'None'     => [],
 ];
-# Line 330
+# Line 331

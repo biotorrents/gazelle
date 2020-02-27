@@ -186,108 +186,46 @@ class Validate
      * and 100 other small files, and get the format of the actual data.
      *
      * todo: Incorporate into the main function (remove if statements first)
-     * todo: Make this work with a more robust object than $Tor->file_list()
      */
-    public function ParseExtensions($FileList, $FileTypes)
+    public function ParseExtensions($FileList, $Category, $FileTypes)
     {
         # Make $Tor->file_list() output manageable
         $UnNested = array_values($FileList[1]);
-        $Sorted = usort($UnNested, function ($a, $b) {
-            return $b[0] > $a[0];
-        });
-        $TopTen = array_slice($Sorted, 0, 10); # Good
+        $Sorted = (usort($UnNested, function ($a, $b) {
+            return $b <=> $a; # Workaround because ↑ returns true
+        }) === true) ? array_values($UnNested) : null;
+        
+        # Harvest the wheat
+        $TopTen = array_slice($Sorted, 0, 10);
         $Result = [];
 
-        print_r('<pre>');
-        var_dump($Sorted);
-        print_r('</pre>');
-
-
         foreach ($TopTen as $TopTen) {
-            $Extensions = explode('.', strtolower($TopTen[1]));
+            # How many extensions to keep
+            $Extensions = array_slice(explode('.', strtolower($TopTen[1])), -2, 2);
+    
+            print_r('<pre>');
+            var_dump($FileTypes);
+            print_r('</pre>');
+
             $Result = array_filter($Extensions, function ($a) {
                 foreach ($FileTypes as $FileType) {
                     in_array($a, $FileType);
                 }
             });
+
             /*
-            foreach ($FileTypes as $Key => $FileTypes) {
-                print_r('<pre>');
-
-            var_dump($UnNested);
-            var_dump( $FileTypes[$Key]);
-            print_r('</pre>');
-
-        }
-        */
-        }
-        /*
-        foreach ($TopTen as $TopTen) {
-            $Extensions = explode('.', strtolower($TopTen[1]));
-            #foreach ($FileTypes as $Key => $FileTypes) {
-                print_r('<pre>');
-                #$Result = (in_array($Extensions, $FileTypes)) ? $FileTypes[$Key] : false;
-                var_dump($Extensions);
+            foreach ($FileTypes as $k => $FileType) {
                 var_dump(array_intersect($Extensions, $FileTypes));
-                print_r('</pre>');
-
-            #}
-            print_r('<pre>');
-            //var_dump(array_intersect($Extensions, $FileTypes));
-            //var_dump($Extensions);
-            print_r('</pre>');
-
+            }
+            */
         }
-        */
+
         print_r('<pre>');
-        #var_dump(array_intersect($UnNested, $FileTypes));
-        #print_r($Sorted);
+        print_r('===== RESULTS =====');
         print_r($Result);
         print_r('</pre>');
- 
-        /*
-        while ($Result === false) {
-           foreach ($UnNested as $Key => $UnNested) {
-               $Exploded = explode('.', strtolower($UnNested[1]));
-               foreach ($Needles as $Key => $Needle) {
-                   $ID = array_search($Exploded, $Needle);
-                   var_dump($Needle[$ID]);
-               }
-               $dump = array_filter($Exploded, function($s){
-                   foreach ($Needles as $Type => $Extension) {
-                       return array_search($s, $Extension);
-                   }
-               });
-               #var_dump($dump);
-               /*
-               if (array_search($Needle, $Exploded, true)) {
-                   $Result = $Needles;
-               #break;
-               }
-           }
 
-         }
-        */
-#var_dump($Result);
-        /*
-#do {
-    foreach ($UnNested as $UnNested) {
-        $Exploded = explode('.', strtolower($UnNested[1]));
-            #var_dump(in_array(vals($names), $Explode));
-
-        }
-/*
-        if (array_intersect($names, $Exploded)) {
-            $result = array_search($Exploded, $names);
-
-        }
-        *
-    }
-#} while ($result !== false);
-print_r($result);
-
-
-*/
+        # To be continued
     }
 
     public function GenerateJS($FormID)

@@ -40,9 +40,26 @@ $TypeID = $_POST['type'] + 1;
 
 $Properties['CategoryID'] = $TypeID;
 $Properties['CategoryName'] = $Type;
+
+# todo: Associate containers with categories beforehand
+# It may have to happen structurally in config.php, e.g.,
+# $Categories = [
+#   'GazelleName' => [$Name, $Icon, $Description, $Containers],
+#    ...
+#  ];
+$Properties['ArchiveTypes'] = $Archives;
+$Properties['FileTypes'] = [
+    'DNA'      => $Containers,
+    'RNA'      => $Containers,
+    'Proteins' => $ContainersProt,
+    'Imaging'  => $ContainersGames,
+    'Extras'   => $ContainersExtra
+];
+
 $Properties['Title'] = $_POST['title'];
 $Properties['TitleRJ'] = $_POST['title_rj'];
 $Properties['TitleJP'] = $_POST['title_jp'];
+
 $Properties['Year'] = $_POST['year'];
 $Properties['Studio'] = isset($_POST['studio']) ? $_POST['studio'] : '';
 $Properties['Series'] = isset($_POST['series']) ? $_POST['series'] : '';
@@ -404,17 +421,32 @@ if (!empty($Err)) { // Show the upload form, with the data the user entered
 //******************************************************************************//
 //--------------- Autofill format and archive ----------------------------------//
 
-if ($T['Container'] === 'Autofill' || $T['Archive'] === 'Autofill') {
+if ($T['Container'] === 'Autofill') {
     # torrents.Container
     $Validate->ParseExtensions(
+        # $FileList
         $Tor->file_list(),
-        array_merge($Containers, $ContainersGames, $ContainersProt)
+
+        # $Category
+        $T['CategoryName'],
+
+        # $FileTypes
+        $T['FileTypes'],
     );
+}
+
+if ($T['Archive'] === 'Autofill') {
     /*
     # torrents.Archive
     $Validate->ParseExtensions(
+        # $FileList
         $Tor->file_list(),
-        array_merge($Containers, $ContainersGames, $ContainersProt)
+
+        # $Category
+        $T['CategoryName'],
+
+        # $FileTypes
+        $T['FileTypes'],
     );
     */
 }

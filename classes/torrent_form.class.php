@@ -81,7 +81,7 @@ class TorrentForm
     Otherwise, add none of it and redownload the torrent file after uploading it.
     All of the above data will be added to it by the site.
     <strong>If you never have before, be sure to read this list of
-      <a href="wiki.php?action=article&name=uploadingpitfalls">uploading pitfalls</a></strong>.
+      <a href="wiki.php?action=article&name=uploadingpitfalls">uploading pitfalls</a>.</strong>
   </p>
 
   <!--
