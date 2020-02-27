@@ -193,36 +193,20 @@ class Validate
         $UnNested = array_values($FileList[1]);
         $Sorted = (usort($UnNested, function ($a, $b) {
             return $b <=> $a; # Workaround because ↑ returns true
-        }) === true) ? array_values($UnNested) : null;
+        }) === true) ? $UnNested : null;
         
         # Harvest the wheat
         $TopTen = array_slice($Sorted, 0, 10);
-        $Result = [];
+        $Match = null;
 
-        foreach ($TopTen as $TopTen) {
-            # How many extensions to keep
+        do {
             $Extensions = array_slice(explode('.', strtolower($TopTen[1])), -2, 2);
-    
-            print_r('<pre>');
-            var_dump($FileTypes);
-            print_r('</pre>');
-
-            $Result = array_filter($Extensions, function ($a) {
-                foreach ($FileTypes as $FileType) {
-                    in_array($a, $FileType);
-                }
-            });
-
-            /*
-            foreach ($FileTypes as $k => $FileType) {
-                var_dump(array_intersect($Extensions, $FileTypes));
-            }
-            */
-        }
+            #array_shift(something)
+        } while ($i > 0);
 
         print_r('<pre>');
         print_r('===== RESULTS =====');
-        print_r($Result);
+        print_r($Matches);
         print_r('</pre>');
 
         # To be continued

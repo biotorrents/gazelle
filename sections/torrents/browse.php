@@ -250,7 +250,7 @@ View::show_header('Browse Torrents', 'browse');
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Seq Platform</option>
                 <?php  foreach ($Media as $MediaName) { ?>
-                <option value="<?=display_str($MediaName); ?>
+                <option value="<?=display_str($MediaName); ?>"
                 <?Format::selected('media', $MediaName)?>><?=display_str($MediaName); ?>
                 </option>
                 <?php  } ?>
@@ -270,7 +270,7 @@ View::show_header('Browse Torrents', 'browse');
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Img Platform</option>
                 <?php  foreach ($MediaManga as $MediaName) { ?>
-                <option value="<?=display_str($MediaName); ?>
+                <option value="<?=display_str($MediaName); ?>"
                 <?Format::selected('media', $MediaName)?>><?=display_str($MediaName); ?>
                 </option>
                 <?php  } ?>
@@ -316,7 +316,7 @@ View::show_header('Browse Torrents', 'browse');
               <select name="resolution" class="ft_resolution fti_advanced">
                 <option value="">Assembly Level</option>
                 <?php  foreach ($Resolutions as $Resolution) { ?>
-                <option value="<?=display_str($Resolution); ?>
+                <option value="<?=display_str($Resolution); ?>"
                 <?Format::selected('resolution', $Resolution)?>><?=display_str($Resolution); ?>
                 </option>
                 <?php  } ?>
