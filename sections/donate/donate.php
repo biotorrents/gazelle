@@ -22,11 +22,11 @@ View::show_header('Donate');
     <p>
       <?= SITE_NAME ?> has no advertisements, is not sponsored, and
       provides its services free of charge.
-      For these reasons, <?= SITE_NAME ?>'s financial obligations can
+      For these reasons, its financial obligations can
       only be met with the help of voluntary user donations.
       Supporting <?= SITE_NAME ?> is and will always remain
       voluntary.
-      If you are financially able, please help pay <?= SITE_NAME ?>'s
+      If you are financially able, please help pay its
       bills by donating.
     </p>
 
@@ -41,6 +41,13 @@ View::show_header('Donate');
       No staff member or other individual responsible for the site's operation personally profits from user donations.
       As a donor, your financial support is exclusively applied to operating costs.
       When you donate you are paying <?= SITE_NAME ?>'s bills.
+    </p>
+
+    <p>
+    If you prefer to make a tax-deductible donation to an organization beyond my financial grasp, donations to the
+    <a href="https://www.boslab.org/donate" target="_blank">Boston Open Science Laboratory (BosLab)</a>
+    are honored the same as direct donations.
+    Please note in the comment field that your donation is on behalf of <?= SITE_NAME ?> from your username.
     </p>
   </div>
 

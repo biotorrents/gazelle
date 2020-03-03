@@ -32,6 +32,7 @@ $DB->query("
     t.FreeTorrent,
     t.FreeLeechType,
     t.Description AS TorrentDescription,
+    t.FileList,
     t.MediaInfo,
     tg.CategoryID,
     tg.Name AS Title,
@@ -62,7 +63,7 @@ if (!$Properties) {
 
 $UploadForm = $Categories[$Properties['CategoryID'] - 1];
 
-if (($LoggedUser['ID'] != $Properties['UserID'] && !check_perms('torrents_edit')) || $LoggedUser['DisableWiki']) {
+if (($LoggedUser['ID'] !== $Properties['UserID'] && !check_perms('torrents_edit')) || $LoggedUser['DisableWiki']) {
     error(403);
 }
 
@@ -73,11 +74,14 @@ $TorrentForm = new TorrentForm($Properties, $Err, false);
 $TorrentForm->upload_form();
 
 if (check_perms('torrents_edit') || check_perms('users_mod')) {
+    # Start the HTML edit form
     ?>
 <div class="thin">
   <?php
-  if ($Properties['CategoryID'] != 5) {
+  #if ($Properties['CategoryID'] !== 5) {
       ?>
+
+  <br />
   <div class="header">
     <h2>Change Group</h2>
   </div>
@@ -107,6 +111,8 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) {
       </table>
     </form>
   </div>
+  <br />
+
   <h2>Split off into new group</h2>
   <div class="box pad">
     <form class="split_form" name="torrent_group" action="torrents.php" method="post">
@@ -158,8 +164,9 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) {
     </form>
   </div>
   <br />
+
   <?php
-  }
+  #}
     if (check_perms('users_mod')) { ?>
   <h2>Change Category</h2>
   <div class="box pad">
@@ -186,17 +193,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) {
               <?php    } ?>
             </select>
           </td>
-        <tr id="split_releasetype">
-          <td class="label">Release type</td>
-          <td>
-            <select name="releasetype">
-              <?php    foreach ($ReleaseTypes as $RTID => $ReleaseType) { ?>
-              <option value="<?=($RTID)?>"><?=($ReleaseType)?>
-              </option>
-              <?php    } ?>
-            </select>
-          </td>
-        </tr>
+          </tr>
         <tr id="split_artist">
           <td class="label">Artist</td>
           <td>

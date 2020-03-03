@@ -220,6 +220,9 @@ class Validate
                     if (in_array($Match, $SearchMe[1])) {
                         return $SearchMe[0];
                         break;
+                    } else {
+                        return 'Other';
+                    break;
                     }
                 }
             }

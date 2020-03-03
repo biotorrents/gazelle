@@ -25,27 +25,6 @@ $TypeID = (int)$_POST['type'];
 $Type = $Categories[$TypeID-1];
 $TorrentID = (int)$_POST['torrentid'];
 
-# todo: Associate containers with categories beforehand
-# It may have to happen structurally in config.php, e.g.,
-# $Categories = [
-#   'GazelleName' => [$Name, $Icon, $Description, $Containers],
-#    ...
-#  ];
-$Properties['FileTypes'] = [
-  'DNA'      => $Containers,
-  'RNA'      => $Containers,
-  'Proteins' => $ContainersProt,
-  'Imaging'  => $ContainersGames,
-  'Extras'   => $ContainersExtra
-];
-$Properties['ArchiveTypes'] = [
-  'DNA'      => $Archives,
-  'RNA'      => $Archives,
-  'Proteins' => $Archives,
-  'Imaging'  => $Archives,
-  'Extras'   => $Archives
-];
-
 $Properties['Remastered'] = (isset($_POST['remaster']))? 1 : 0;
 if ($Properties['Remastered']) {
     $Properties['UnknownRelease'] = (isset($_POST['unknown'])) ? 1 : 0;
@@ -76,7 +55,7 @@ $Properties['Subber']= $_POST['subber'];
 
 $Properties['Censored'] = (isset($_POST['censored'])) ? '1' : '0';
 $Properties['Anonymous'] = (isset($_POST['anonymous'])) ? '1' : '0';
-$Properties['Archive'] = (isset($_POST['archive']) && $_POST['archive'] != '---') ? $_POST['archive'] : '';
+$Properties['Archive'] = (isset($_POST['archive']) && $_POST['archive'] !== '---') ? $_POST['archive'] : '';
 
 if ($_POST['album_desc']) {
     $Properties['GroupDescription'] = $_POST['album_desc'];
@@ -126,7 +105,8 @@ if ($LoggedUser['ID'] != $UserID && !check_perms('torrents_edit')) {
     error(403);
 }
 
-/* todo: Check strict equality and untangle features
+/*
+todo: Check strict equality and untangle features
 if ($Remastered === '1' && !$RemasterYear && !check_perms('edit_unknowns')) {
   error(403);
 }
@@ -281,14 +261,12 @@ if ($Properties['Remastered'] && !$Properties['RemasterYear']) {
 }
 
 // Strip out Amazon's padding
-/*
 $AmazonReg = '/(http:\/\/ecx.images-amazon.com\/images\/.+)(\._.*_\.jpg)/i';
 $Matches = [];
 if (preg_match($RegX, $Properties['Image'], $Matches)) {
     $Properties['Image'] = $Matches[1].'.jpg';
 }
 ImageTools::blacklisted($Properties['Image']);
-*/
 
 if ($Err) { // Show the upload form, with the data the user entered
     if (check_perms('site_debug')) {
@@ -312,6 +290,55 @@ foreach ($Properties as $Key => $Value) {
 $T['Censored'] = $Properties['Censored'];
 $T['Anonymous'] = $Properties['Anonymous'];
 
+//******************************************************************************//
+//--------------- Autofill format and archive ----------------------------------//
+
+# Load FileList in lieu of $Tor object
+$T['FileList'] = $DB->query("
+  SELECT FileList
+  FROM torrents
+  WHERE ID = $TorrentID");
+
+if (!$DB->has_results()) {
+    error(404);
+}
+
+# Call the extension parser
+if ($T['Container'] === 'Autofill') {
+    # torrents.Container
+    $T['Container'] = $Validate->ParseExtensions(
+
+        # $FileList
+        $T['FileList'],
+
+        # $Category
+        $T['CategoryName'],
+
+        # $FileTypes
+        $T['FileTypes'],
+    );
+}
+
+if ($T['Archive'] === 'Autofill') {
+    # torrents.Archive
+    $T['Archive'] = $Validate->ParseExtensions(
+
+        # $FileList
+        $Tor->file_list(),
+
+        # $Category
+        $T['CategoryName'],
+
+        # $FileTypes
+        $T['ArchiveTypes'],
+    );
+}
+
+print_r('<pre>');
+var_dump($T['FileList']);
+var_dump($T['CategoryName'],);
+var_dump($T['FileTypes'],);
+var_dump($T['ArchiveTypes'],);
 
 //******************************************************************************//
 //--------------- Start database stuff -----------------------------------------//

@@ -261,7 +261,12 @@ View::show_header('Browse Torrents', 'browse');
                 <?php  foreach ($Containers as $Key => $Container) { ?>
                 <option value="<?=display_str($Key);?>" <?Format::selected('container', $Key)?>><?=display_str($Key);?>
                 </option>
-                <?php  } foreach ($ContainersProt as $Key => $ContainerProt) { ?>
+                <?php  } ?>
+              </select>
+
+              <select id=" container" name="container" class="ft_container fti_advanced">
+                <option value="">Prot Format</option>
+                <?php  foreach ($Containers as $Key => $Container) { ?>
                 <option value="<?=display_str($Key);?>" <?Format::selected('container', $Key)?>><?=display_str($Key);?>
                 </option>
                 <?php  } ?>
