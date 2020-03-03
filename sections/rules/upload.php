@@ -249,11 +249,12 @@ View::show_header('Uploading Rules', 'rules');
       <ul>
         <li id="r3.1"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.1">3.1</a>
           <strong>Torrent File.</strong>
-          Add the announce URL as the only item on the tracker list and click the checkbox marked private.
-          Please don't share <code>.torrent</code> files because they have your passkey embedded in them.
+          Please click the checkbox marked private and optionally add the announce URL when you make the torrent.
+          The site will force torrent privacy and dynamically construct <code>.torrent</code> files with your passkey embedded.
           This passkey lets the tracker know who's uploading and downloading, and leaking it will nuke your ratio.
+          Please don't share any <code>.torrent</code> files you download for this reason.
+          I'm formalizing a process to release GPG-signed torrents and a redacted database schema (no user data) after the site's inevitable demise.
           It's okay to share the files themselves any way you see fit.
-          <?= SITE_NAME ?> maintains a 2nd tier public swarm for tracker redundancy.
           <br /><br />
         </li>
 
@@ -277,8 +278,8 @@ View::show_header('Uploading Rules', 'rules');
 
         <li id="r3.4"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.4">3.4</a>
           <strong>Version.</strong>
-          Similar to the accession number field, version information should only exist if the original data is versioned or if you versioned your own data (recommended).
-          Any scheme is acceptable but Semantic Versioning is trongly encouraged.
+          Similar to the accession number field, version information should only exist if the original data is versioned, or if you versioned your own data (recommended).
+          Any schema is acceptable but Semantic Versioning is strongly encouraged.
           <br /><br />
         </li>
 
@@ -286,7 +287,7 @@ View::show_header('Uploading Rules', 'rules');
           <strong>Torrent Title.</strong>
           A short description of the torrent contents such as a FASTA definition line.
           It doesn't need to match the folders but it should tell you what the data is at a glance.
-          Please avoid adding other metadata such as Strain, Platform, etc., with a dedicated field.
+          Please avoid adding other metadata such as strain, platform, etc., with a dedicated field.
           <br /><br />
         </li>
 
@@ -311,8 +312,7 @@ View::show_header('Uploading Rules', 'rules');
         <li id="r3.8"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.8">3.8</a>
           <strong>Authors(s).</strong>
           The Author field should contain only the author name and no titles.
-          The upload form supports multiple authors.
-          Do a search before uploading to get their names right.
+          The upload form supports multiple authors, which will autocomplete.
           Consistent author naming makes browsing easier because it groups torrents on a common page.
           ORCiD integration is in development.
           <br /><br />
@@ -349,7 +349,7 @@ View::show_header('Uploading Rules', 'rules');
           <strong>License.</strong>
           <?= SITE_NAME ?> only allows permissive licenses.
           If your data is original, please consider licensing it under one of the available options.
-          The "Unspecified" option is for compatibility with existing releases.
+          The "Unspecified" option is for compatibility with existing releases of variable metadata completeness.
           <br /><br />
         </li>
 
@@ -413,6 +413,7 @@ View::show_header('Uploading Rules', 'rules');
           A photo of the sequence sample or a representative photo of the organism; an example (preferably not a
           thumbnail collection) from an imaging dataset;
           a screenshot of a useful table from the publication; or another similarly informative picture.
+          No picture is better than an irrelevant one.
           <br /><br />
         </li>
 
@@ -422,7 +423,7 @@ View::show_header('Uploading Rules', 'rules');
           <a href="https://www.bittorrent.org/beps/bep_0019.html" target="_blank">BEP 19 (GetRight style)</a>.
           Please note that not all clients support web seeds, and of those that do, having too many may cause problems for you.
           The web seeds must be unencrypted.
-          The site will automatically rewrite <code>ftps://</code> and <code>https://</code> web addresses.
+          The site automatically rewrites <code>ftps://</code> and <code>https://</code> web addresses.
           Additionally, the contents of the FTP/HTTP folder must correspond exactly to the contents of the <code>.torrent</code> file.
           Given these caveats, it's worth documenting the data source for accuracy's sake and to let people save ratio here.
 
