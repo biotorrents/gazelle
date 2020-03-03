@@ -336,9 +336,9 @@ if ($T['Archive'] === 'Autofill') {
 
 print_r('<pre>');
 var_dump($T['FileList']);
-var_dump($T['CategoryName'],);
-var_dump($T['FileTypes'],);
-var_dump($T['ArchiveTypes'],);
+var_dump($T['CategoryName'], );
+var_dump($T['FileTypes'], );
+var_dump($T['ArchiveTypes'], );
 
 //******************************************************************************//
 //--------------- Start database stuff -----------------------------------------//

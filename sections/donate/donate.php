@@ -47,7 +47,7 @@ View::show_header('Donate');
     If you prefer to make a tax-deductible donation to an organization beyond my financial grasp, donations to the
     <a href="https://www.boslab.org/donate" target="_blank">Boston Open Science Laboratory (BosLab)</a>
     are honored the same as direct donations.
-    Please note in the comment field that your donation is on behalf of <?= SITE_NAME ?> from your username.
+    Please note in the comment field that your donation is on <?= SITE_NAME ?>'s behalf and to credit your username.
     </p>
   </div>
 
@@ -57,16 +57,16 @@ View::show_header('Donate');
       Please see <a href="https://www.patreon.com/biotorrents" target="_blank"><?= SITE_NAME ?>'s Patreon</a> for a detailed overview of funding
       goals.
       There are some benefits to donating that culmulate at each tier pledged.
-      Each tier's awards include those already listed.
+      Each tier's awards include those already listed, and the tier system only applies to recurring donations.
       Bitcoin donations are privately negotiable.
 
       <ul>
-        <li><strong>Bronze:</strong> A donor badge and forum access for your user account on the BioTorrents.de website
+        <li><strong>Bronze.</strong> A donor badge and forum access for your user account on the BioTorrents.de website
         </li>
-        <li><strong>Silver:</strong> Unlimited API calls to the BioTorrents.de database</li>
-        <li><strong>Gold:</strong> Monthly Skype calls to discuss wetlab and software ideas.
-          My expertise includes fungal biotechnology, nonprofit administration, and LEMP development</li>
-        <li><strong>Sponsor a Seedbox:</strong> Shell access to, and share ratio credit from, a seedbox that I manage on
+        <li><strong>Silver.</strong> Unlimited API calls to the BioTorrents.de database</li>
+        <li><strong>Gold.</strong> Monthly Skype calls to discuss wetlab and software ideas.
+          My expertise includes fungal biotechnology, nonprofit administration, and LEMP+ development</li>
+        <li><strong>Sponsor a Seedbox.</strong> Shell access to, and share ratio credit from, a seedbox that I manage on
           your behalf.
           Please understand that network services beyond the scope of seedbox administration should be negotiated
           separately</li>
