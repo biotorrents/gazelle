@@ -28,7 +28,6 @@ class TorrentForm
   </td>
   <td>
     <select name="container">
-      <option value="">---</option>
       <option value="Autofill">Autofill</option>
       <?php
         foreach ($this->Containers as $Name => $Container) {
@@ -47,7 +46,6 @@ class TorrentForm
   </td>
   <td>
     <select id="container" name="container">
-      <option value="">---</option>
       <option value="Autofill">Autofill</option>
       <?php
         foreach ($this->ContainersGames as $Name => $Container) {
@@ -66,7 +64,6 @@ class TorrentForm
   </td>
   <td>
     <select id="container" name="container">
-      <option value="">---</option>
       <option value="Autofill">Autofill</option>
       <?php
         foreach ($this->ContainersProt as $Name => $Container) {
@@ -85,7 +82,6 @@ class TorrentForm
   </td>
   <td>
     <select id="container" name="container">
-      <option value="">---</option>
       <option value="Autofill">Autofill</option>
       <?php
         foreach ($this->ContainersExtra as $Name => $Container) {
@@ -104,7 +100,6 @@ class TorrentForm
   </td>
   <td>
     <select name='archive'>
-      <option value="">---</option>
       <option value="Autofill">Autofill</option>
       <?php
         foreach ($this->Archives as $Name => $Archive) {

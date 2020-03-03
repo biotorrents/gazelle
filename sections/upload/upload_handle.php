@@ -47,13 +47,19 @@ $Properties['CategoryName'] = $Type;
 #   'GazelleName' => [$Name, $Icon, $Description, $Containers],
 #    ...
 #  ];
-$Properties['ArchiveTypes'] = $Archives;
 $Properties['FileTypes'] = [
     'DNA'      => $Containers,
     'RNA'      => $Containers,
     'Proteins' => $ContainersProt,
     'Imaging'  => $ContainersGames,
     'Extras'   => $ContainersExtra
+];
+$Properties['ArchiveTypes'] = [
+    'DNA'      => $Archives,
+    'RNA'      => $Archives,
+    'Proteins' => $Archives,
+    'Imaging'  => $Archives,
+    'Extras'   => $Archives
 ];
 
 $Properties['Title'] = $_POST['title'];
@@ -423,7 +429,8 @@ if (!empty($Err)) { // Show the upload form, with the data the user entered
 
 if ($T['Container'] === 'Autofill') {
     # torrents.Container
-    $Validate->ParseExtensions(
+    $T['Container'] = $Validate->ParseExtensions(
+
         # $FileList
         $Tor->file_list(),
 
@@ -436,9 +443,9 @@ if ($T['Container'] === 'Autofill') {
 }
 
 if ($T['Archive'] === 'Autofill') {
-    /*
     # torrents.Archive
-    $Validate->ParseExtensions(
+    $T['Archive'] = $Validate->ParseExtensions(
+
         # $FileList
         $Tor->file_list(),
 
@@ -446,9 +453,8 @@ if ($T['Archive'] === 'Autofill') {
         $T['CategoryName'],
 
         # $FileTypes
-        $T['FileTypes'],
+        $T['ArchiveTypes'],
     );
-    */
 }
 
 //******************************************************************************//

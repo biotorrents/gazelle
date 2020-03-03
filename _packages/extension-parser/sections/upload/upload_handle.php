@@ -22,6 +22,7 @@ $Properties['Containers'] = [
 //--------------- Autofill format and archive ----------------------------------//
 
 if ($T['Container'] === 'Autofill') {
+
     # torrents.Container
     $Validate->ParseExtensions(
         # $FileList
@@ -36,7 +37,7 @@ if ($T['Container'] === 'Autofill') {
 }
 
 if ($T['Archive'] === 'Autofill') {
-    /*
+
     # torrents.Archive
     $Validate->ParseExtensions(
         # $FileList
@@ -48,6 +49,5 @@ if ($T['Archive'] === 'Autofill') {
         # $FileTypes
         $T['FileTypes'],
     );
-    */
 }
 # Line 452
