@@ -49,7 +49,7 @@ View::show_header('Uploading Rules', 'rules');
         <p>
           Please read this entire page carefully because it explains how the tracker organizes the content.
           Referring to this page often will help you search faster and upload smarter.
-          I'll also go line-by-line through <a href="upload.php">the upload form</a>.
+          I'll also go line-by-line through the <a href="upload.php">upload form</a>.
         </p>
 
         <p>
@@ -161,7 +161,7 @@ View::show_header('Uploading Rules', 'rules');
 
         <li id="r1.9"><a href="#h1"><strong>&uarr;</strong></a> <a href="#r1.9">1.9</a>
           <strong>Compression.</strong>
-          "10 GiB or 10,000 files."
+          "10 GB or 10,000 files."
           Compression is required if your torrent is > 10 GiB or if it contains > 10,000 files.
           Otherwise, please compress text files only if it reduces the torrent size by > 30% and avoid compressing binary files.
           Multipart archives are only allowed for torrents > 10 GiB.
@@ -198,7 +198,7 @@ View::show_header('Uploading Rules', 'rules');
           please upload a quality conversion with supplemetal info.
           Remember that small, one-shot metadata are better included with the data, and collections of docs and utils
           are better separate from it.
-          If only the header is different and it follows the "10 GiB or 10,000 files" rule, uncompressed torrents trump
+          If only the header is different and it follows the "10 GB or 10,000 files" rule, uncompressed torrents trump
           compressed ones.
           It should be easy for others with the same data to change a line and check out the new torrent.
         </li>
@@ -234,6 +234,13 @@ View::show_header('Uploading Rules', 'rules');
         <li id="r2.5"><a href="#h2"><strong>&uarr;</strong></a> <a href="#r2.5">2.5</a>
           <strong>Watermarks.</strong>
           Data without watermarks trumps watermarked data.
+          </li>
+
+          <li id="r2.6"><a href="#h2"><strong>&uarr;</strong></a> <a href="#r2.6">2.6</a>
+          <strong>Stupid Compression.</strong>
+          If someone uploads, e.g., a gzip of 1000 images, you can trump the torrent with an uncompressed version.
+          Likewise, a compressed torrent with folders of 10,000 reads each is trumpable by one where the file structure is visible, even if the data itself is compressed.
+          </li>
       </ul>
     </div>
 
@@ -246,17 +253,16 @@ View::show_header('Uploading Rules', 'rules');
           Please don't share <code>.torrent</code> files because they have your passkey embedded in them.
           This passkey lets the tracker know who's uploading and downloading, and leaking it will nuke your ratio.
           It's okay to share the files themselves any way you see fit.
-          Automatic mirroring to OpenBitTorrent is in development.
+          <?= SITE_NAME ?> maintains a 2nd tier public swarm for tracker redundancy.
           <br /><br />
         </li>
 
         <li id="r3.2"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.2">3.2</a>
-          <strong>Type.</strong>
+          <strong>Category.</strong>
           The categories loosely follow the central dogma.
-          It depends on what alphabet the sequence uses, e.g., ACGT vs. ACGU.
+          It depends on what alphabet the sequence uses, e.g., ACGT vs. ACGU vs. amino acids.
           All medical imaging data goes in the Imaging category.
-          <!-- All extra documentation, custom scripts, etc., goes in Documents. -->
-          Toolkits and other things that aren't strictly biology data go in Extras.
+          Toolkits, documentation, disk images, and other things that aren't strictly biology data go in Extras.
           <br /><br />
         </li>
 
@@ -265,11 +271,18 @@ View::show_header('Uploading Rules', 'rules');
           Please add accession numbers if they come with the data or if you acquired them for your own data.
           The number can be any format but it must correspond to the actual nucleotide or amino acid sequences represented on disk.
           Don't add accession numbers just because the metadata matches.
-          RefSeq and UniProt integration is in development.
+          RefSeq and UniProt integration, including autofill, is in development.
           <br /><br />
         </li>
 
         <li id="r3.4"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.4">3.4</a>
+          <strong>Version.</strong>
+          Similar to the accession number field, version information should only exist if the original data is versioned or if you versioned your own data (recommended).
+          Any scheme is acceptable but Semantic Versioning is trongly encouraged.
+          <br /><br />
+        </li>
+
+        <li id="r3.5"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.5">3.5</a>
           <strong>Torrent Title.</strong>
           A short description of the torrent contents such as a FASTA definition line.
           It doesn't need to match the folders but it should tell you what the data is at a glance.
@@ -277,7 +290,7 @@ View::show_header('Uploading Rules', 'rules');
           <br /><br />
         </li>
 
-        <li id="r3.5"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.5">3.5</a>
+        <li id="r3.6"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.6">3.6</a>
           <strong>Organism.</strong>
           The relevant organism's binomial name and optional subspecies.
           Please use <em>Genus species subspecies</em> and not terms such as var. and subsp.
@@ -285,7 +298,7 @@ View::show_header('Uploading Rules', 'rules');
           <br /><br />
         </li>
 
-        <li id="r3.6"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.6">3.6</a>
+        <li id="r3.7"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.7">3.7</a>
           <strong>Strain/Variety.</strong>
           The strain's name if known.
           This should correspond to a specific cell line, cultivar, or breed.
@@ -295,7 +308,7 @@ View::show_header('Uploading Rules', 'rules');
           <br /><br />
         </li>
 
-        <li id="r3.7"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.7">3.7</a>
+        <li id="r3.8"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.8">3.8</a>
           <strong>Authors(s).</strong>
           The Author field should contain only the author name and no titles.
           The upload form supports multiple authors.
@@ -305,14 +318,14 @@ View::show_header('Uploading Rules', 'rules');
           <br /><br />
         </li>
 
-        <li id="r3.8"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.8">3.8</a>
+        <li id="r3.9"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.9">3.9</a>
           <strong>Department/Lab.</strong>
           The lab that did the experiments or the last author's home lab.
           Please use "Unaffiliated" for anonymous or unknown labs.
           <br /><br />
         </li>
 
-        <li id="r3.9"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.9">3.9</a>
+        <li id="r3.10"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.10">3.10</a>
           <strong>Location.</strong>
           The lab's physical location in one of the below formats.
           <ul>
@@ -325,14 +338,22 @@ View::show_header('Uploading Rules', 'rules');
           <br /><br />
         </li>
 
-        <li id="r3.10"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.10">3.10</a>
+        <li id="r3.11"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.11">3.11</a>
           <strong>Year.</strong>
           The year the data was first published.
           The publication that announced the data.
           <br /><br />
         </li>
 
-        <li id="r3.11"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.11">3.11</a>
+        <li id="r3.12"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.12">3.12</a>
+          <strong>License.</strong>
+          <?= SITE_NAME ?> only allows permissive licenses.
+          If your data is original, please consider licensing it under one of the available options.
+          The "Unspecified" option is for compatibility with existing releases.
+          <br /><br />
+        </li>
+
+        <li id="r3.13"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.13">3.13</a>
           <strong>Platform.</strong>
           The class of technology the data comes from.
           What sequencing or imaging technique is it the output of?
@@ -340,11 +361,11 @@ View::show_header('Uploading Rules', 'rules');
             href="forums.php?action=viewforum&forumid=<?= SUGGESTIONS_FORUM_ID ?>">Please
             post in the suggestions forum</a>
           if you'd like to request a new platform.
-          Note that the platforms change for the Imaging category.
+          Note that the platforms change for each category.
           <br /><br />
         </li>
 
-        <li id="r3.12"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.12">3.12</a>
+        <li id="r3.14"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.14">3.14</a>
           <strong>Format.</strong>
           The file format of the data.
           What programs do you need to work with the data?
@@ -352,12 +373,19 @@ View::show_header('Uploading Rules', 'rules');
             href="forums.php?action=viewforum&forumid=<?= SUGGESTIONS_FORUM_ID ?>">Please
             post in the suggestions forum</a>
           if you'd like to request a new format.
-          Note that the formats change for the Protein and Imaging categories.
-          A file extension parser is in development.
+          Note that the formats change for each category.
+          You can elect to have the site detect the data format by its file extension.
           <br /><br />
         </li>
 
-        <li id="r3.13"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.13">3.13</a>
+        <li id="r3.15"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.15">3.15</a>
+          <strong>Archive.</strong>
+          The compression algorithm used, if any.
+          You can elect to have the site detect the archive format by its file extension.
+          <br /><br />
+        </li>
+
+        <li id="r3.16"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.16">3.16</a>
           <strong>Assembly Level.</strong>
           The resolution of the data.
           How much information about the organism does it represent?
@@ -368,15 +396,7 @@ View::show_header('Uploading Rules', 'rules');
           <br /><br />
         </li>
 
-        <li id="r3.14"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.14">3.14</a>
-          <strong>License.</strong>
-          <?= SITE_NAME ?> only allows permissive licenses.
-          If your data is original, please consider licensing it under one of the available options.
-          The "Unspecified" option is for compatibility with existing releases.
-          <br /><br />
-        </li>
-
-        <li id="r3.15"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.15">3.15</a>
+        <li id="r3.17"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.17">3.17</a>
           <strong>Tags.</strong>
           Please select at least five appropriate tags.
           Don't use irrelevant tags, and consider making new tags as a last resort.
@@ -387,7 +407,7 @@ View::show_header('Uploading Rules', 'rules');
           <br /><br />
         </li>
 
-        <li id="r3.16"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.16">3.16</a>
+        <li id="r3.18"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.18">3.18</a>
           <strong>Picture.</strong>
           Please upload a meaningful picture, especially if you plan to add the torrent to a collection.
           A photo of the sequence sample or a representative photo of the organism; an example (preferably not a
@@ -396,16 +416,29 @@ View::show_header('Uploading Rules', 'rules');
           <br /><br />
         </li>
 
-        <li id="r3.17"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.17">3.17</a>
-          <strong>Publications.</strong>
-          DOI numbers should be well-formed, one per line.
-          The system currently discards malformed DOI numbers instead of extracting them from arbitrary strings.
-          An auto-extract feature is in development.
-          If your research is a URI, please use the Torrent Group Description field for now.
+        <li id="r3.19"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.19">3.19</a>
+          <strong>Mirrors.</strong>
+          <?= SITE_NAME ?> supports up to two FTP/HTTP web seeds on an experimental basis according to
+          <a href="https://www.bittorrent.org/beps/bep_0019.html" target="_blank">BEP 19 (GetRight style)</a>.
+          Please note that not all clients support web seeds, and of those that do, having too many may cause problems for you.
+          The web seeds must be unencrypted.
+          The site will automatically rewrite <code>ftps://</code> and <code>https://</code> web addresses.
+          Additionally, the contents of the FTP/HTTP folder must correspond exactly to the contents of the <code>.torrent</code> file.
+          Given these caveats, it's worth documenting the data source for accuracy's sake and to let people save ratio here.
+
           <br /><br />
         </li>
 
-        <li id="r3.18"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.18">3.18</a>
+        <li id="r3.20"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.20">3.20</a>
+          <strong>Publications.</strong>
+          DOI numbers should be well-formed, one per line.
+          The site currently discards malformed DOI numbers instead of extracting them from arbitrary strings.
+          An auto-extract and metadata fetching are in development.
+          If your research is a normal URI, please use the Torrent Group Description field.
+          <br /><br />
+        </li>
+
+        <li id="r3.21"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.21">3.21</a>
           <strong>Torrent Group Description.</strong>
           General info about the object of study's function or significance.
           This is the main body text on a torrent's page.
@@ -413,7 +446,7 @@ View::show_header('Uploading Rules', 'rules');
           <br /><br />
         </li>
 
-        <li id="r3.19"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.19">3.19</a>
+        <li id="r3.22"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.22">3.22</a>
           <strong>Torrent Description.</strong>
           Specific info about the protocols and equipment relevant to <em>this</em> data.
           This text is hidden by default.
@@ -422,14 +455,14 @@ View::show_header('Uploading Rules', 'rules');
           <br /><br />
         </li>
 
-        <li id="r3.20"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.20">3.20</a>
-          <strong>Aligned Sequence.</strong>
+        <li id="r3.23"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.23">3.23</a>
+          <strong>Aligned/Annotated.</strong>
           Does the data come with any metadata of an analytical nature, such as alignment data (mandatory if checked)?
           If so, does the torrent folder contain the scripts used to generate the metadata (optional)?
           <br /><br />
         </li>
 
-        <li id="r3.21"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.21">3.21</a>
+        <li id="r3.24"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.24">3.24</a>
           <strong>Upload Anonymously.</strong>
           You'll still get upload credit even if you hide your username from the torrent details.
           I believe it's still visible to sysops.
