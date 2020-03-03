@@ -55,8 +55,8 @@ $Properties['Subber']= $_POST['subber'];
 $Properties['Censored'] = (isset($_POST['censored'])) ? '1' : '0';
 $Properties['Anonymous'] = (isset($_POST['anonymous'])) ? '1' : '0';
 
-$Properties['Container'] = (isset($_POST['container']) && $_POST['container'] !== '---') ? $_POST['container'] : 'Other';
-$Properties['Archive'] = (isset($_POST['archive']) && $_POST['archive'] !== '---') ? $_POST['archive'] : 'None';
+$Properties['Container'] = (isset($_POST['container']) && $_POST['container'] !== '---') ? $_POST['container'] : '';
+$Properties['Archive'] = (isset($_POST['archive']) && $_POST['archive'] !== '---') ? $_POST['archive'] : '';
 
 if ($_POST['album_desc']) {
     $Properties['GroupDescription'] = $_POST['album_desc'];
@@ -291,6 +291,9 @@ foreach ($Properties as $Key => $Value) {
 $T['Censored'] = $Properties['Censored'];
 $T['Anonymous'] = $Properties['Anonymous'];
 
+$T['Container'] = $Properties['Container'];
+$T['Archive'] = $Properties['Archive'];
+
 //******************************************************************************//
 //--------------- Autofill format and archive ----------------------------------//
 
@@ -301,8 +304,8 @@ $T['Anonymous'] = $Properties['Anonymous'];
 # Disable the extension parser for edits
 # todo: Make this work with $T['FileList']
 if ($T['Container'] === 'Autofill'
-|| $T['Archive'] === 'Autofill') {
-    $Err = "Extension parsing is only possible for new uploads";
+ || $T['Archive'] === 'Autofill') {
+    $Err = 'Extension parsing is only possible for new uploads';
     error($Err);
 }
     
