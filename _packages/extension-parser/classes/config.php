@@ -101,14 +101,4 @@ $ContainersExtra = [
   'Plain'            => ['csv', 'txt'],
   'Other'            => [],
 ];
-
-$Archives = [
-  '7z'       => ['7z'],
-  'bzip2'    => ['bz2', 'bzip2'],
-  'gzip'     => ['gz', 'gzip', 'tgz', 'tpz'],
-  'Pickle'   => ['pickle', 'pkl'],
-  'RAR'      => ['rar', 'rev'],
-  'ZIP'      => ['zip', 'zipx'],
-  'None'     => [],
-];
-# Line 331
+# Line 321

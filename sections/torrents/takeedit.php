@@ -45,7 +45,6 @@ $Properties['Encoding'] = $_POST['bitrate'];
 $Properties['TorrentDescription'] = $_POST['release_desc'];
 $Properties['MediaInfo'] = $_POST['mediainfo'];
 $Properties['Name'] = $_POST['title'];
-$Properties['Container'] = $_POST['container'];
 $Properties['Codec'] = $_POST['codec'];
 $Properties['Resolution'] = $_POST['resolution'];
 $Properties['AudioFormat'] = $_POST['audioformat'];
@@ -55,7 +54,9 @@ $Properties['Subber']= $_POST['subber'];
 
 $Properties['Censored'] = (isset($_POST['censored'])) ? '1' : '0';
 $Properties['Anonymous'] = (isset($_POST['anonymous'])) ? '1' : '0';
-$Properties['Archive'] = (isset($_POST['archive']) && $_POST['archive'] !== '---') ? $_POST['archive'] : '';
+
+$Properties['Container'] = (isset($_POST['container']) && $_POST['container'] !== '---') ? $_POST['container'] : 'Other';
+$Properties['Archive'] = (isset($_POST['archive']) && $_POST['archive'] !== '---') ? $_POST['archive'] : 'None';
 
 if ($_POST['album_desc']) {
     $Properties['GroupDescription'] = $_POST['album_desc'];
@@ -294,52 +295,17 @@ $T['Anonymous'] = $Properties['Anonymous'];
 //--------------- Autofill format and archive ----------------------------------//
 
 # Load FileList in lieu of $Tor object
-$T['FileList'] = $DB->query("
-  SELECT FileList
-  FROM torrents
-  WHERE ID = $TorrentID");
+# todo: Format the output for  $Validate->ParseExtensions()
+#var_dump($T['FileList']);
 
-if (!$DB->has_results()) {
-    error(404);
+# Disable the extension parser for edits
+# todo: Make this work with $T['FileList']
+if ($T['Container'] === 'Autofill'
+|| $T['Archive'] === 'Autofill') {
+    $Err = "Extension parsing is only possible for new uploads";
+    error($Err);
 }
-
-# Call the extension parser
-if ($T['Container'] === 'Autofill') {
-    # torrents.Container
-    $T['Container'] = $Validate->ParseExtensions(
-
-        # $FileList
-        $T['FileList'],
-
-        # $Category
-        $T['CategoryName'],
-
-        # $FileTypes
-        $T['FileTypes'],
-    );
-}
-
-if ($T['Archive'] === 'Autofill') {
-    # torrents.Archive
-    $T['Archive'] = $Validate->ParseExtensions(
-
-        # $FileList
-        $Tor->file_list(),
-
-        # $Category
-        $T['CategoryName'],
-
-        # $FileTypes
-        $T['ArchiveTypes'],
-    );
-}
-
-print_r('<pre>');
-var_dump($T['FileList']);
-var_dump($T['CategoryName'], );
-var_dump($T['FileTypes'], );
-var_dump($T['ArchiveTypes'], );
-
+    
 //******************************************************************************//
 //--------------- Start database stuff -----------------------------------------//
 
@@ -408,7 +374,8 @@ if (check_perms('torrents_freeleech')) {
 }
 
 if (check_perms('users_mod')) {
-    /*  if ($T[Format] != "'FLAC'") {
+    /*
+    if ($T[Format] !== "'FLAC'") {
         $SQL .= "
           HasLog = '0',
           HasCue = '0',";
@@ -508,7 +475,7 @@ list($GroupID, $Time) = $DB->next_record();
 
 // Competition
 if (strtotime($Time) > 1241352173) {
-    if ($_POST['log_score'] == '100') {
+    if ($_POST['log_score'] === '100') {
         $DB->query("
       INSERT IGNORE into users_points (GroupID, UserID, Points)
       VALUES ('$GroupID', '$UserID', '1')");

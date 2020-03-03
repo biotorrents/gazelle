@@ -1,64 +1,23 @@
 <?php
 
-# Line 28
-# todo: Associate containers with categories beforehand
-# It may have to happen structurally in config.php, e.g.,
-# $Categories = [
-#   'GazelleName' => [$Name, $Icon, $Description, $Containers],
-#    ...
-#  ];
-$Properties['CategoryID'] = $TypeID;
-$Properties['CategoryName'] = $Type;
-$Properties['FileTypes'] = [
-  'DNA'      => $Containers,
-  'RNA'      => $Containers,
-  'Proteins' => $ContainersProt,
-  'Imaging'  => $ContainersGames,
-  'Extras'   => $ContainersExtra
-];
-$Properties['ArchiveTypes'] = [
-  'DNA'      => $Archives,
-  'RNA'      => $Archives,
-  'Proteins' => $Archives,
-  'Imaging'  => $Archives,
-  'Extras'   => $Archives
-];
-# Line 49
+# Line 58
+$Properties['Container'] = (isset($_POST['container']) && $_POST['container'] !== '---') ? $_POST['container'] : 'Other';
+$Properties['Archive'] = (isset($_POST['archive']) && $_POST['archive'] !== '---') ? $_POST['archive'] : 'None';
+# Line 59
 
-# Line 313
-$T['FileTypes'] = $Properties['FileTypes'];
-$T['ArchiveTypes'] = $Properties['FileTypes'];
-
+# Line 294
 //******************************************************************************//
 //--------------- Autofill format and archive ----------------------------------//
 
-if ($T['Container'] === 'Autofill') {
-    # torrents.Container
-    $T['Container'] = $Validate->ParseExtensions(
+# Load FileList in lieu of $Tor object
+# todo: Format the output for  $Validate->ParseExtensions()
+#var_dump($T['FileList']);
 
-        # $FileList
-        $Tor->file_list(),
-
-        # $Category
-        $T['CategoryName'],
-
-        # $FileTypes
-        $T['FileTypes'],
-    );
+# Disable the extension parser for edits
+# todo: Make this work with $T['FileList']
+if ($T['Container'] === 'Autofill'
+|| $T['Archive'] === 'Autofill') {
+    $Err = "Extension parsing is only possible for new uploads";
+    error($Err);
 }
-
-if ($T['Archive'] === 'Autofill') {
-    # torrents.Archive
-    $T['Archive'] = $Validate->ParseExtensions(
-
-        # $FileList
-        $Tor->file_list(),
-
-        # $Category
-        $T['CategoryName'],
-
-        # $FileTypes
-        $T['ArchiveTypes'],
-    );
-}
-# Line 347
+# Line 307

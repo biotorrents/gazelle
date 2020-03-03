@@ -193,7 +193,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) {
               <?php    } ?>
             </select>
           </td>
-          </tr>
+        </tr>
         <tr id="split_artist">
           <td class="label">Artist</td>
           <td>

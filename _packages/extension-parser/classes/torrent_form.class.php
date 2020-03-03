@@ -20,97 +20,113 @@ class TorrentForm
 ?>
 
 <!-- Line 510 -->
-<!-- Multiple container fields -->
-<tr id="container_tr">
-  <td class="label">
-    Format
-    <strong class="important_text">*</strong>
-  </td>
-  <td>
-    <select name="container">
-      <option value="Autofill">Autofill</option>
-      <?php
-        foreach ($this->Containers as $Name => $Container) {
-            echo "<option value='$Name'>$Name</option>\n";
-        } ?>
-    </select><br />
-    Data file format, or detect from file list
-  </td>
-</tr>
+  <!-- Multiple container fields -->
+  <tr id="container_tr">
+    <td class="label">
+      Format
+      <strong class="important_text">*</strong>
+    </td>
+    <td>
+      <select id="container" name="container">
+        <option value="Autofill">Autofill</option>
+        <?php
+            foreach ($this->Containers as $Name => $Container) {
+                echo "\t\t\t\t\t\t<option value=\"$Name\"";
+                if ($Name === ($Torrent['Container'] ?? false)) {
+                    echo " selected";
+                }
+                echo ">$Name</option>\n";
+            } ?>
+      </select><br />
+      Data file format, or detect from file list
+    </td>
+  </tr>
 
-<!-- 2 -->
-<tr id="container_games_tr">
-  <td class="label">
-    Format
-    <strong class="important_text">*</strong>
-  </td>
-  <td>
-    <select id="container" name="container">
-      <option value="Autofill">Autofill</option>
-      <?php
-        foreach ($this->ContainersGames as $Name => $Container) {
-            echo "<option value='$Name'>$Name</option>\n";
-        } ?>
-    </select><br />
-    Data file format, or detect from file list
-  </td>
-</tr>
+  <!-- 2 -->
+  <tr id="container_games_tr">
+    <td class="label">
+      Format
+      <strong class="important_text">*</strong>
+    </td>
+    <td>
+      <select id="container" name="container">
+        <option value="Autofill">Autofill</option>
+        <?php
+            foreach ($this->ContainersGames as $Name => $Container) {
+                echo "\t\t\t\t\t\t<option value=\"$Name\"";
+                if ($Name === ($Torrent['Container'] ?? false)) {
+                    echo " selected";
+                }
+                echo ">$Name</option>\n";
+            } ?>
+      </select><br />
+      Data file format, or detect from file list
+    </td>
+  </tr>
 
-<!-- 3 -->
-<tr id="container_prot_tr">
-  <td class="label">
-    Format
-    <strong class="important_text">*</strong>
-  </td>
-  <td>
-    <select id="container" name="container">
-      <option value="Autofill">Autofill</option>
-      <?php
-        foreach ($this->ContainersProt as $Name => $Container) {
-            echo "<option value='$Name'>$Name</option>\n";
-        } ?>
-    </select><br />
-    Data file format, or detect from file list
-  </td>
-</tr>
+  <!-- 3 -->
+  <tr id="container_prot_tr">
+    <td class="label">
+      Format
+      <strong class="important_text">*</strong>
+    </td>
+    <td>
+      <select id="container" name="container">
+        <option value="Autofill">Autofill</option>
+        <?php
+            foreach ($this->ContainersProt as $Name => $Container) {
+                echo "\t\t\t\t\t\t<option value=\"$Name\"";
+                if ($Name === ($Torrent['Container'] ?? false)) {
+                    echo " selected";
+                }
+                echo ">$Name</option>\n";
+            } ?>
+      </select><br />
+      Data file format, or detect from file list
+    </td>
+  </tr>
 
-<!-- 4 -->
-<tr id="container_extra_tr">
-  <td class="label">
-    Format
-    <strong class="important_text">*</strong>
-  </td>
-  <td>
-    <select id="container" name="container">
-      <option value="Autofill">Autofill</option>
-      <?php
-        foreach ($this->ContainersExtra as $Name => $Container) {
-            echo "<option value='$Name'>$Name</option>\n";
-        } ?>
-    </select><br />
-    Data file format, or detect from file list
-  </td>
-</tr>
+  <!-- 4 -->
+  <tr id="container_extra_tr">
+    <td class="label">
+      Format
+      <strong class="important_text">*</strong>
+    </td>
+    <td>
+      <select id="container" name="container">
+        <option value="Autofill">Autofill</option>
+        <?php
+            foreach ($this->ContainersExtra as $Name => $Container) {
+                echo "\t\t\t\t\t\t<option value=\"$Name\"";
+                if ($Name === ($Torrent['Container'] ?? false)) {
+                    echo " selected";
+                }
+                echo ">$Name</option>\n";
+            } ?>
+      </select><br />
+      Data file format, or detect from file list
+    </td>
+  </tr>
 
-<!-- Compression -->
-<tr id="archive_tr">
-  <td class="label">
-    Archive
-    <strong class="important_text">*</strong>
-  </td>
-  <td>
-    <select name='archive'>
-      <option value="Autofill">Autofill</option>
-      <?php
-        foreach ($this->Archives as $Name => $Archive) {
-            echo "\t\t\t\t\t\t<option value=\"$Name\"";
-            if ($Archive === ($Torrent['Archive'] ?? false)) {
-                echo ' selected';
-            }
-            echo ">$Name</option>\n";
-        } ?>
-    </select><br />
-    Compression algorithm, or detect from file list
-  </td>
-</tr>
-<!-- Line 607 -->
+  <!-- Compression -->
+  <tr id="archive_tr">
+    <td class="label">
+      Archive
+      <strong class="important_text">*</strong>
+    </td>
+    <td>
+      <select id="archive" name="archive">
+        <option value="Autofill">Autofill</option>
+        <?php
+            foreach ($this->Archives as $Name => $Archive) {
+                echo "\t\t\t\t\t\t<option value=\"$Name\"";
+                if ($Name === ($Torrent['Archive'] ?? false)) {
+                    echo " selected";
+                }
+                echo ">$Name</option>\n";
+            } ?>
+      </select><br />
+      Compression algorithm, or detect from file list
+    </td>
+  </tr>
+<!-- Line 618 -->

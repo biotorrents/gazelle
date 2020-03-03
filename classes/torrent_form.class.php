@@ -471,7 +471,7 @@ class TorrentForm
     </td>
     <td>
       <select name="media">
-        <option value="">---</option>
+        <option>---</option>
         <?php
           foreach ($this->Media as $Media) {
               echo "\t\t\t\t\t\t<option value=\"$Media\"";
@@ -514,12 +514,16 @@ class TorrentForm
       <strong class="important_text">*</strong>
     </td>
     <td>
-      <select name="container">
+      <select id="container" name="container">
         <option value="Autofill">Autofill</option>
         <?php
-          foreach ($this->Containers as $Name => $Container) {
-              echo "<option value='$Name'>$Name</option>\n";
-          } ?>
+            foreach ($this->Containers as $Name => $Container) {
+                echo "\t\t\t\t\t\t<option value=\"$Name\"";
+                if ($Name === ($Torrent['Container'] ?? false)) {
+                    echo " selected";
+                }
+                echo ">$Name</option>\n";
+            } ?>
       </select><br />
       Data file format, or detect from file list
     </td>
@@ -535,9 +539,13 @@ class TorrentForm
       <select id="container" name="container">
         <option value="Autofill">Autofill</option>
         <?php
-          foreach ($this->ContainersGames as $Name => $Container) {
-              echo "<option value='$Name'>$Name</option>\n";
-          } ?>
+            foreach ($this->ContainersGames as $Name => $Container) {
+                echo "\t\t\t\t\t\t<option value=\"$Name\"";
+                if ($Name === ($Torrent['Container'] ?? false)) {
+                    echo " selected";
+                }
+                echo ">$Name</option>\n";
+            } ?>
       </select><br />
       Data file format, or detect from file list
     </td>
@@ -553,9 +561,13 @@ class TorrentForm
       <select id="container" name="container">
         <option value="Autofill">Autofill</option>
         <?php
-          foreach ($this->ContainersProt as $Name => $Container) {
-              echo "<option value='$Name'>$Name</option>\n";
-          } ?>
+            foreach ($this->ContainersProt as $Name => $Container) {
+                echo "\t\t\t\t\t\t<option value=\"$Name\"";
+                if ($Name === ($Torrent['Container'] ?? false)) {
+                    echo " selected";
+                }
+                echo ">$Name</option>\n";
+            } ?>
       </select><br />
       Data file format, or detect from file list
     </td>
@@ -571,9 +583,13 @@ class TorrentForm
       <select id="container" name="container">
         <option value="Autofill">Autofill</option>
         <?php
-          foreach ($this->ContainersExtra as $Name => $Container) {
-              echo "<option value='$Name'>$Name</option>\n";
-          } ?>
+            foreach ($this->ContainersExtra as $Name => $Container) {
+                echo "\t\t\t\t\t\t<option value=\"$Name\"";
+                if ($Name === ($Torrent['Container'] ?? false)) {
+                    echo " selected";
+                }
+                echo ">$Name</option>\n";
+            } ?>
       </select><br />
       Data file format, or detect from file list
     </td>
@@ -586,16 +602,16 @@ class TorrentForm
       <strong class="important_text">*</strong>
     </td>
     <td>
-      <select name='archive'>
+      <select id="archive" name="archive">
         <option value="Autofill">Autofill</option>
         <?php
-          foreach ($this->Archives as $Name => $Archive) {
-              echo "\t\t\t\t\t\t<option value=\"$Name\"";
-              if ($Archive === ($Torrent['Archive'] ?? false)) {
-                  echo ' selected';
-              }
-              echo ">$Name</option>\n";
-          } ?>
+            foreach ($this->Archives as $Name => $Archive) {
+                echo "\t\t\t\t\t\t<option value=\"$Name\"";
+                if ($Name === ($Torrent['Archive'] ?? false)) {
+                    echo " selected";
+                }
+                echo ">$Name</option>\n";
+            } ?>
       </select><br />
       Compression algorithm, or detect from file list
     </td>
@@ -609,7 +625,7 @@ class TorrentForm
     </td>
     <td>
       <select id="ressel" name="ressel" onchange="SetResolution()">
-        <option value="">---</option>
+        <option>---</option>
         <?php
           foreach ($this->Resolutions as $Res) {
               echo "\t\t\t\t\t\t<option value=\"$Res\"";

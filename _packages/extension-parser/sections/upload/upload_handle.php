@@ -7,24 +7,30 @@
 #   'GazelleName' => [$Name, $Icon, $Description, $Containers],
 #    ...
 #  ];
-$Properties['Archives'] = $Archives;
-$Properties['Containers'] = [
+$Properties['FileTypes'] = [
     'DNA'      => $Containers,
     'RNA'      => $Containers,
     'Proteins' => $ContainersProt,
     'Imaging'  => $ContainersGames,
     'Extras'   => $ContainersExtra
 ];
-# Line 57
+$Properties['ArchiveTypes'] = [
+    'DNA'      => $Archives,
+    'RNA'      => $Archives,
+    'Proteins' => $Archives,
+    'Imaging'  => $Archives,
+    'Extras'   => $Archives
+];
+# Line 63
 
-# Line 421
+# Line 427
 //******************************************************************************//
 //--------------- Autofill format and archive ----------------------------------//
 
 if ($T['Container'] === 'Autofill') {
-
     # torrents.Container
-    $Validate->ParseExtensions(
+    $T['Container'] = $Validate->ParseExtensions(
+
         # $FileList
         $Tor->file_list(),
 
@@ -37,9 +43,9 @@ if ($T['Container'] === 'Autofill') {
 }
 
 if ($T['Archive'] === 'Autofill') {
-
     # torrents.Archive
-    $Validate->ParseExtensions(
+    $T['Archive'] = $Validate->ParseExtensions(
+
         # $FileList
         $Tor->file_list(),
 
@@ -47,7 +53,7 @@ if ($T['Archive'] === 'Autofill') {
         $T['CategoryName'],
 
         # $FileTypes
-        $T['FileTypes'],
+        $T['ArchiveTypes'],
     );
 }
-# Line 452
+# Line 458
