@@ -1,5 +1,6 @@
-<?
-$Purchase = "100GiB of upload";
+<?php
+
+$Purchase = "100 GiB of upload";
 $UserID = $LoggedUser['ID'];
 $Cost = 130000;
 
@@ -8,25 +9,25 @@ $DB->query("
   FROM users_main
   WHERE ID = $UserID");
 if ($DB->has_results()) {
-  list($Points) = $DB->next_record();
+    list($Points) = $DB->next_record();
 
-  if ($Points >= $Cost) {
-    $DB->query("
+    if ($Points >= $Cost) {
+        $DB->query("
       UPDATE users_main
       SET BonusPoints = BonusPoints - $Cost,
           Uploaded    = Uploaded + 107374182400
       WHERE ID = $UserID");
-    $DB->query("
+        $DB->query("
       UPDATE users_info
       SET AdminComment = CONCAT('".sqltime()." - Purchased 100GiB upload from the store\n\n', AdminComment)
       WHERE UserID = $UserID");
-    $Cache->delete_value('user_info_heavy_'.$UserID);
-    $Cache->delete_value('user_stats_'.$UserID);
-    $Worked = true;
-  } else {
-    $Worked = false;
-    $ErrMessage = "Not enough points";
-  }
+        $Cache->delete_value('user_info_heavy_'.$UserID);
+        $Cache->delete_value('user_stats_'.$UserID);
+        $Worked = true;
+    } else {
+        $Worked = false;
+        $ErrMessage = "Not enough points";
+    }
 }
 
 View::show_header('Store'); ?>
@@ -37,4 +38,4 @@ View::show_header('Store'); ?>
     <p><a href="/store.php">Back to Store</a></p>
   </div>
 </div>
-<? View::show_footer(); ?>
+<?php View::show_footer(); ?>
