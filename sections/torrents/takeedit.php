@@ -55,8 +55,8 @@ $Properties['Subber']= $_POST['subber'];
 $Properties['Censored'] = (isset($_POST['censored'])) ? '1' : '0';
 $Properties['Anonymous'] = (isset($_POST['anonymous'])) ? '1' : '0';
 
-$Properties['Container'] = (isset($_POST['container']) && $_POST['container'] !== '---') ? $_POST['container'] : '';
-$Properties['Archive'] = (isset($_POST['archive']) && $_POST['archive'] !== '---') ? $_POST['archive'] : '';
+$Properties['Container'] = (isset($_POST['container']) && $_POST['container'] !== 'Autofill') ? $_POST['container'] : '';
+$Properties['Archive'] = (isset($_POST['archive']) && $_POST['archive'] !== 'Autofill') ? $_POST['archive'] : '';
 
 if ($_POST['album_desc']) {
     $Properties['GroupDescription'] = $_POST['album_desc'];
@@ -183,6 +183,7 @@ switch ($Type) {
         'Remaster catalogue number must be between 2 and 80 characters',
         array('maxlength' => 80, 'minlength' => 2)
     );
+    */
 
     $Validate->SetFields(
         'format',
@@ -192,6 +193,7 @@ switch ($Type) {
         array('inarray' => $Formats)
     );
 
+    /*
     $Validate->SetFields(
         'bitrate',
         '1',
@@ -227,6 +229,7 @@ switch ($Type) {
             array('inarray' => $Bitrates)
         );
     }
+    */
 
     $Validate->SetFields(
         'media',
@@ -236,6 +239,7 @@ switch ($Type) {
         array('inarray' => $Media)
     );
 
+    /*
     $Validate->SetFields(
         'release_desc',
         '0',
@@ -252,6 +256,7 @@ switch ($Type) {
 
 $Err = $Validate->ValidateForm($_POST); // Validate the form
 
+/*
 if ($Properties['Remastered'] && !$Properties['RemasterYear']) {
     // Unknown Edit!
     if ($LoggedUser['ID'] === $UserID || check_perms('edit_unknowns')) {
@@ -260,6 +265,7 @@ if ($Properties['Remastered'] && !$Properties['RemasterYear']) {
         $Err = "You may not edit someone else's upload to unknown release";
     }
 }
+*/
 
 // Strip out Amazon's padding
 $AmazonReg = '/(http:\/\/ecx.images-amazon.com\/images\/.+)(\._.*_\.jpg)/i';
@@ -322,22 +328,20 @@ $DBTorVals = $DBTorVals[0];
 $LogDetails = '';
 foreach ($DBTorVals as $Key => $Value) {
     $Value = "'$Value'";
-    if ($Value != $T[$Key]) {
+    if ($Value !== $T[$Key]) {
         if (!isset($T[$Key])) {
             continue;
         }
-        if ((empty($Value) && empty($T[$Key])) || ($Value == "'0'" && $T[$Key] == "''")) {
+        if ((empty($Value) && empty($T[$Key])) || ($Value === "'0'" && $T[$Key] === "''")) {
             continue;
         }
-        if ($LogDetails == '') {
+        if ($LogDetails === '') {
             $LogDetails = "$Key: $Value -> ".$T[$Key];
         } else {
             $LogDetails = "$LogDetails, $Key: $Value -> ".$T[$Key];
         }
     }
 }
-$T['Censored'] = $Properties['Censored'];
-$T['Anonymous'] = $Properties['Anonymous'];
 
 // Update info for the torrent
 /*
@@ -359,14 +363,14 @@ $SQL = "
   UPDATE torrents
   SET
     Media = $T[Media],
-    Container = $T[Container],
+    Container = '$T[Container]',
     Codec = $T[Codec],
     Resolution = $T[Resolution],
     AudioFormat = $T[AudioFormat],
     Subbing = $T[Subbing],
     Language = $T[Language],
     Subber = $T[Subber],
-    Archive = $T[Archive],
+    Archive = '$T[Archive]',
     MediaInfo = $T[MediaInfo],
     Censored = $T[Censored],
     Anonymous = $T[Anonymous],";

@@ -53,7 +53,7 @@ class Rules
   <li>Tags should be comma-separated, and you should use a period to separate words inside a tag, e.g., <strong
       class="important_text_alt">gram.negative</strong>.</li>
 
-  <li>There is a list of official tags <?=($OnUpload ? 'to the left of the text box' : 'on <a href="upload.php">the torrent upload page</a>')?>.
+  <li>There is a list of official tags <?=($OnUpload ? 'to the left of the text box' : 'on the <a href="upload.php">upload page</a>')?>.
     Please use these tags instead of "unofficial" tags, e.g., use the official <strong
       class="important_text_alt">fungi</strong> tag instead of an unofficial <strong
       class="important_text">mushrooms</strong> tag.</li>
@@ -89,7 +89,7 @@ class Rules
   <li><strong>All uploads require a minimum of 5 tags.</strong> Please don't add unrelated tags just to meet the 5 tag
     requirement. If you can't think of 5 tags for your content, study it again until you can.</li>
 
-  <li><strong>You should be able to build up a list of tags using only the official tags <?=($OnUpload ? 'to the left of the text box' : 'on <a href="upload.php">the torrent upload page</a>')?>.</strong>
+  <li><strong>You should be able to build up a list of tags using only the official tags <?=($OnUpload ? 'to the left of the text box' : 'on the <a href="upload.php">upload page</a>')?>.</strong>
     If you doubt whether or not a tag is acceptable, please omit it for now and send a staff PM to request a new
     official tag or an approved alias.</li>
 </ul>
@@ -112,8 +112,8 @@ class Rules
     Thank you.</li>
 
   <li>No advertising, referrals, affiliate links, cryptocurrency pumps, or calls to action that involve using a
-    financial instrument. You'll be banned on the spot. The exceptions: cryptocurrencies that derive their value from
-    work performed on distributed science computation networks, i.e., Curecoin, FoldingCoin, and Gridcoin.</li>
+    financial instrument. You'll be banned on the spot. The exceptions: discussions about cryptocurrencies that derive their value from
+    work performed on distributed science networks, i.e., Curecoin, FoldingCoin, and Gridcoin.</li>
 
   <li>Feel free to post announcements for your own projects, even and especially if they're commercial ones, in the
     General board. Limit all discussion of trading biomaterials, including bulk giveaways, to the Marketplace forum
@@ -133,7 +133,7 @@ class Rules
     quoting more than 3 levels deep.</li>
 
   <li>Don't post potentially malicious links without sufficient warning, or post pictures > 2 MiB. Please only speak
-    English as stated in the Upload rules.</li>
+    English as stated in the upload rules.</li>
 </ul>
 <?php
     }

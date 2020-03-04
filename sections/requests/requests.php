@@ -522,7 +522,9 @@ View::show_header($Title, 'requests');
         <div title="<?=Format::pretty_category($Request['CategoryID'])?>" class="tooltip <?=Format::css_category($Request['CategoryID'])?>"></div>
       </td>
       <td>
+          <div id="request_name">
         <?=$FullName?>
+        </div>
         <div class="tags">
 <?php
     $TagList = [];

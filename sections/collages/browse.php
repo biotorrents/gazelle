@@ -319,7 +319,7 @@ foreach ($Collages as $Collage) {
       <a href="collages.php?action=search&amp;cats[<?=(int)$CategoryID?>]=1"><?=$CollageCats[(int)$CategoryID]?></a>
     </td>
     <td>
-      <a href="collages.php?id=<?=$ID?>"><?=$Name?></a>
+      <a id="collage_name" href="collages.php?id=<?=$ID?>"><?=$Name?></a>
 <?  if ($BookmarkView) { ?>
       <span class="float_right">
         <a href="#" onclick="Unbookmark('collage', <?=$ID?>, ''); return false;" class="brackets">Remove bookmark</a>

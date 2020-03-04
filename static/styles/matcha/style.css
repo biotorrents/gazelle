@@ -758,7 +758,12 @@ ul.poll li.graph {
 
 .torrent_table tr .center, #collage_table td {
   vertical-align: middle;
-  text-align: center;
+  /* text-align: center; */
+}
+
+#collage_name,
+#request_name {
+  font-weight: bold;
 }
 
 .group_torrent span {
