@@ -139,13 +139,19 @@ if (!$Sneaky
   && ($UserCount <= USER_LIMIT || USER_LIMIT === 0 || check_perms('site_can_invite_always'))
   ) { ?>
   <div class="box pad">
-    <p>Do not trade or sell invites under any circumstances.</p>
-    <p>You may invite anyone so long as you and they both lack malicious intent, but keep in mind that you are
-      responsible for anyone you invite. If you invite someone you don't know well and they surprise you by breaking the
-      rules or being a generally poor user, you will likely end up punished for it. For that reason, we stongly
-      recommend you only invite people you personally know and trust.
-      <p>Do not send an invite to anyone who has previously had a <?=SITE_NAME?> account. Please direct them to <?=BOT_DISABLED_CHAN?> on <?=BOT_SERVER?> if they wish to reactivate their account.</p>
-      <p><em>Do not send an invite if you have not read or do not understand the information above.</em></p>
+    <p>
+    Do not trade or sell invites under any circumstances.
+    Do not send an invite to anyone who has previously had a <?=SITE_NAME?> account.
+    Please direct them to <code>#disabled</code> on Slack if they wish to reactivate their account.
+    </p>
+
+    <p>
+    You may invite anyone so long as you and they both lack malicious intent, but keep in mind that you are responsible for anyone you invite.
+    If you invite someone you don't know well and they surprise you by breaking the rules or being a generally poor user, you will likely end up punished for it.
+    For that reason, we stongly recommend you only invite people you personally know and trust.
+</p>
+
+      <p><strong>Do not send an invite if you have not read or do not understand the information above.</strong></p>
   </div>
   <div class="box box2">
     <form class="send_form pad" name="invite" action="user.php" method="post">
