@@ -2,7 +2,7 @@
 
 class Torrents
 {
-  const FILELIST_DELIM = 0xF7; // Hex for &divide; Must be the same as phrase_boundary in sphinx.conf!
+    const FILELIST_DELIM = 0xF7; // Hex for &divide; Must be the same as phrase_boundary in sphinx.conf!
   const SNATCHED_UPDATE_INTERVAL = 3600; // How often we want to update users' snatch lists
   const SNATCHED_UPDATE_AFTERDL = 300; // How long after a torrent download we want to update a user's snatch lists
 
@@ -1230,7 +1230,7 @@ class Torrents
         return $EditionName;
     }
 
-    //Used to get reports info on a unison cache in both browsing pages and torrent pages.
+    // Used to get reports info on a unison cache in both browsing pages and torrent pages.
     public static function get_reports($TorrentID)
     {
         $Reports = G::$Cache->get_value("reports_torrent_$TorrentID");

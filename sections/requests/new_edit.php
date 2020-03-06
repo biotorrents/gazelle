@@ -121,8 +121,8 @@ View::show_header(($NewRequest ? 'Create Request' : 'Edit Request'), 'bbcode,req
       <!-- Main table -->
       <table class="layout">
         <tr>
-          <td colspan="2" class="center">Please make sure your request follows <a href="rules.php?p=requests">the
-              request rules</a>!</td>
+          <td colspan="2" class="center">Please make sure your request follows the
+            <a href="rules.php?p=requests">request rules</a>!</td>
         </tr>
         <?php  if ($NewRequest || $CanEdit) { ?>
 

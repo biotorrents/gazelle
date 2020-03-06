@@ -13,41 +13,40 @@ if (!isset($_REQUEST['authkey']) || !isset($_REQUEST['torrent_pass'])) {
     $UserInfo = $Cache->get_value('user_'.$_REQUEST['torrent_pass']);
     if (!is_array($UserInfo)) {
         $DB->query("
-        SELECT ID, la.UserID
-          FROM users_main AS m
+      SELECT ID, la.UserID
+      FROM users_main AS m
         INNER JOIN users_info AS i ON i.UserID = m.ID
         LEFT JOIN locked_accounts AS la ON la.UserID = m.ID
-          WHERE m.torrent_pass = '".db_string($_REQUEST['torrent_pass'])."'
-          AND m.Enabled = '1'");
+      WHERE m.torrent_pass = '".db_string($_REQUEST['torrent_pass'])."'
+        AND m.Enabled = '1'");
         $UserInfo = $DB->next_record();
         $Cache->cache_value('user_'.$_REQUEST['torrent_pass'], $UserInfo, 3600);
     }
-
     $UserInfo = array($UserInfo);
     list($UserID, $Locked) = array_shift($UserInfo);
     if (!$UserID) {
         error(0);
     }
-
     $TorrentPass = $_REQUEST['torrent_pass'];
     $AuthKey = $_REQUEST['authkey'];
 
-    if ($Locked === $UserID) {
+    if ($Locked == $UserID) {
         header('HTTP/1.1 403 Forbidden');
         die();
     }
 }
 
 $TorrentID = $_REQUEST['id'];
+
 if (!is_number($TorrentID)) {
     error(0);
 }
 
 /*
- * uTorrent Remote and various scripts redownload .torrent files periodically.
- * To prevent this retardation from blowing bandwidth etc., let's block it
- * if the .torrent file has been downloaded four times before
-*/
+  uTorrent Remote and various scripts redownload .torrent files periodically.
+  To prevent this retardation from blowing bandwidth etc., let's block it
+  if the .torrent file has been downloaded four times before
+ */
 $ScriptUAs = array('BTWebClient*', 'Python-urllib*', 'python-requests*');
 if (Misc::in_array_partial($_SERVER['HTTP_USER_AGENT'], $ScriptUAs)) {
     $DB->query("
@@ -56,7 +55,6 @@ if (Misc::in_array_partial($_SERVER['HTTP_USER_AGENT'], $ScriptUAs)) {
     WHERE UserID = $UserID
       AND TorrentID = $TorrentID
     LIMIT 4");
-
     if ($DB->record_count() === 4) {
         error('You have already downloaded this torrent file four times. If you need to download it again, please do so from your browser.', true);
         die();
@@ -75,36 +73,29 @@ if (!is_array($Info) || !array_key_exists('PlainArtists', $Info) || empty($Info[
       COALESCE(NULLIF(tg.Name,''), NULLIF(tg.NameRJ,''), tg.NameJP) AS Name,
       tg.WikiImage,
       tg.CategoryID,
-      tm.Resource,
       t.Size,
       t.FreeTorrent,
       HEX(t.info_hash)
     FROM torrents AS t
       INNER JOIN torrents_group AS tg ON tg.ID = t.GroupID
-      LEFT JOIN torrents_mirrors AS tm ON tm.ID = t.GroupID
     WHERE t.ID = '".db_string($TorrentID)."'");
-
     if (!$DB->has_results()) {
         error(404);
     }
-
     $Info = array($DB->next_record(MYSQLI_NUM, array(4, 5, 6, 10)));
     $Artists = Artists::get_artist($Info[0][4], false);
     $Info['Artists'] = Artists::display_artists($Artists, false, true);
     $Info['PlainArtists'] = Artists::display_artists($Artists, false, true, false);
     $Cache->cache_value("torrent_download_$TorrentID", $Info, 0);
 }
-
 if (!is_array($Info[0])) {
     error(404);
 }
-
-list($Media, $Format, $Encoding, $Year, $GroupID, $Name, $Image, $CategoryID, $Resources, $Size, $FreeTorrent, $InfoHash) = array_shift($Info); // Used for generating the filename
+list($Media, $Format, $Encoding, $Year, $GroupID, $Name, $Image, $CategoryID, $Size, $FreeTorrent, $InfoHash) = array_shift($Info); // used for generating the filename
 $Artists = $Info['Artists'];
 
 // If he's trying use a token on this, we need to make sure he has one,
 // deduct it, add this to the FLs table, and update his cache key.
-// todo: Make sure strict equality works
 if ($_REQUEST['usetoken'] && $FreeTorrent == '0') {
     if (isset($LoggedUser)) {
         $FLTokens = $LoggedUser['FLTokens'];
@@ -135,16 +126,16 @@ if ($_REQUEST['usetoken'] && $FreeTorrent == '0') {
 
         if (!Torrents::has_token($TorrentID)) {
             $DB->query("
-            INSERT INTO users_freeleeches (UserID, TorrentID, Time)
-            VALUES ($UserID, $TorrentID, NOW())
-            ON DUPLICATE KEY UPDATE
-              Time = VALUES(Time),
-              Expired = FALSE,
-              Uses = Uses + 1");
+        INSERT INTO users_freeleeches (UserID, TorrentID, Time)
+        VALUES ($UserID, $TorrentID, NOW())
+        ON DUPLICATE KEY UPDATE
+          Time = VALUES(Time),
+          Expired = FALSE,
+          Uses = Uses + 1");
             $DB->query("
-            UPDATE users_main
-            SET FLTokens = FLTokens - 1
-            WHERE ID = $UserID");
+        UPDATE users_main
+        SET FLTokens = FLTokens - 1
+        WHERE ID = $UserID");
 
             // Fix for downloadthemall messing with the cached token count
             $UInfo = Users::user_heavy_info($UserID);
@@ -159,7 +150,7 @@ if ($_REQUEST['usetoken'] && $FreeTorrent == '0') {
     }
 }
 
-// Stupid Recent Snatches on User Page
+// Stupid Recent Snatches On User Page
 if ($Image != '') {
     $RecentSnatches = $Cache->get_value("recent_snatches_$UserID");
     if (!empty($RecentSnatches)) {
@@ -191,16 +182,15 @@ $FileName = TorrentsDL::construct_file_name($Info['PlainArtists'], $Name, $Year,
 header('Content-Type: application/x-bittorrent; charset=utf-8');
 header('Content-disposition: attachment; filename="'.$FileName.'"');
 
-function add_passkey($Ann)
+function add_passkey($ann)
 {
     global $TorrentPass;
-    return (is_array($Ann)) ? array_map('add_passkey', $Ann) : $Ann.'/'.$TorrentPass.'/announce';
+    return (is_array($ann)) ? array_map("add_passkey", $ann) : $ann."/".$TorrentPass."/announce";
 }
-
-$UserAnnounceURL = ANNOUNCE_URLS[0][0].'/'.$TorrentPass.'/announce';
+$UserAnnounceURL = ANNOUNCE_URLS[0][0]."/".$TorrentPass."/announce";
 $UserAnnounceList = (sizeof(ANNOUNCE_URLS) === 1 && sizeof(ANNOUNCE_URLS[0]) === 1) ? [] : array(array_map('add_passkey', ANNOUNCE_URLS[0]), ANNOUNCE_URLS[1]);
-#$UserAnnounceList = (sizeof(ANNOUNCE_URLS) === 1 && sizeof(ANNOUNCE_URLS[0]) === 1) ? [] : array_map('add_passkey', ANNOUNCE_URLS);
+#$UserAnnounceList = (sizeof(ANNOUNCE_URLS) == 1 && sizeof(ANNOUNCE_URLS[0]) == 1) ? [] : array_map("add_passkey", ANNOUNCE_URLS);
 
-echo TorrentsDL::get_file($Contents, $UserAnnounceURL, $UserAnnounceList, $Resources);
+echo TorrentsDL::get_file($Contents, $UserAnnounceURL, $UserAnnounceList);
 
 define('SKIP_NO_CACHE_HEADERS', 1);

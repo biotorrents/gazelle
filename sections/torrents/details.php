@@ -1,4 +1,5 @@
 <?php
+
 function compare($X, $Y)
 {
     return($Y['name'] < $X['name']);
@@ -964,12 +965,12 @@ if (count($PersonalCollages) > 0) {
       </div>
     </div>
 
-        <!-- Mirrors -->
-        <div class="box torrent_mirrors_box <?php if (!count($Mirrors)) {
+    <!-- Mirrors -->
+    <div class="box torrent_mirrors_box <?php if (!count($Mirrors)) {
     echo 'dead';
 } ?>">
       <div class="head"><a href="#">&uarr;</a>&nbsp;<strong>
-      Mirrors (<?= count($Mirrors) ?>)</strong>
+          Mirrors (<?= count($Mirrors) ?>)</strong>
         <?php
     if (count($Mirrors) > 0) {
         ?>

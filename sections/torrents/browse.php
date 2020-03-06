@@ -250,7 +250,7 @@ View::show_header('Browse Torrents', 'browse');
             <td class="nobr ft_ripspecifics">
 
               <select name="media" class="ft_media fti_advanced">
-                <option value="">DNA/RNA/Proteins</option>
+                <option value="">Sequencing</option>
                 <?php  foreach ($Media as $MediaName) { ?>
                 <option value="<?=display_str($MediaName); ?>"
                 <?Format::selected('media', $MediaName)?>><?=display_str($MediaName); ?>
@@ -318,7 +318,7 @@ View::show_header('Browse Torrents', 'browse');
                 <option value="">Assembly Level</option>
                 <?php  foreach ($Resolutions as $Resolution) { ?>
                 <option value="<?=display_str($Resolution); ?>"
-                <?Format::selected('resolution', $Resolution)?>><?=display_str($Resolution); ?>"
+                <?Format::selected('resolution', $Resolution)?>><?=display_str($Resolution); ?>
                 </option>
                 <?php  } ?>
               </select>

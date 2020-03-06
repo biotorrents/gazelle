@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class for functions related to the features involving torrent downloads
  */
@@ -19,7 +18,6 @@ class TorrentsDL
     private $User;
     private $AnnounceURL;
     private $AnnounceList;
-    private $WebSeeds;
 
     /**
      * Create a Zip object and store the query results
@@ -31,20 +29,17 @@ class TorrentsDL
     public function __construct(&$QueryResult, $Title)
     {
         G::$Cache->InternalCache = false; // The internal cache is almost completely useless for this
-        Zip::unlimit(); // Need more memory and longer timeout
-        $this->QueryResult = $QueryResult;
+    Zip::unlimit(); // Need more memory and longer timeout
+    $this->QueryResult = $QueryResult;
         $this->Title = $Title;
         $this->User = G::$LoggedUser;
-        $this->AnnounceURL = ANNOUNCE_URLS[0][0].'/'.G::$LoggedUser['torrent_pass'].'/announce';
-
+        $this->AnnounceURL = ANNOUNCE_URLS[0][0]."/".G::$LoggedUser['torrent_pass']."/announce";
         function add_passkey($Ann)
         {
-            return (is_array($Ann)) ? array_map('add_passkey', $Ann) : $Ann.'/'.G::$LoggedUser['torrent_pass'].'/announce';
+            return (is_array($Ann)) ? array_map('add_passkey', $Ann) : $Ann."/".G::$LoggedUser['torrent_pass']."/announce";
         }
-
         $this->AnnounceList = (sizeof(ANNOUNCE_URLS) === 1 && sizeof(ANNOUNCE_URLS[0]) === 1) ? [] : array(array_map('add_passkey', ANNOUNCE_URLS[0]), ANNOUNCE_URLS[1]);
-        #$this->AnnounceList = (sizeof(ANNOUNCE_URLS) === 1 && sizeof(ANNOUNCE_URLS[0]) === 1) ? [] : array_map('add_passkey', ANNOUNCE_URLS);
-        $this->WebSeeds = [];
+        #$this->AnnounceList = (sizeof(ANNOUNCE_URLS) == 1 && sizeof(ANNOUNCE_URLS[0]) == 1) ? [] : array_map('add_passkey', ANNOUNCE_URLS);
         $this->Zip = new Zip(Misc::file_string($Title));
     }
 
@@ -241,38 +236,22 @@ class TorrentsDL
      * @param mixed $TorrentData bencoded torrent without announce URL (new format) or TORRENT object (old format)
      * @return bencoded string
      */
-    public static function get_file(&$TorrentData, $AnnounceURL, $AnnounceList = [], $WebSeeds = [])
+    public static function get_file(&$TorrentData, $AnnounceURL, $AnnounceList = [])
     {
         if (Misc::is_new_torrent($TorrentData)) {
             $Bencode = BencodeTorrent::add_announce_url($TorrentData, $AnnounceURL);
-
-            # Announce list
             if (!empty($AnnounceList)) {
                 $Bencode = BencodeTorrent::add_announce_list($Bencode, $AnnounceList);
             }
-
-            # Web seeds
-            if (!empty($WebSeeds)) {
-                $Bencode = BencodeTorrent::add_web_seeds($Bencode, $WebSeeds);
-            }
             return $Bencode;
         }
-
         $Tor = new TORRENT(unserialize(base64_decode($TorrentData)), true);
         $Tor->set_announce_url($AnnounceURL);
         unset($Tor->Val['announce-list']);
-
-        # Announce list
         if (!empty($AnnounceList)) {
             $Tor->set_announce_list($AnnounceList);
         }
-
-        # Web seeds
-        if (!empty($WebSeeds)) {
-            $Tor->add_web_seeds($WebSeeds);
-        }
-        
-        #unset($Tor->Val['url-list']);
+        unset($Tor->Val['url-list']);
         unset($Tor->Val['libtorrent_resume']);
         return $Tor->enc();
     }

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Torrent class that contains some convenient functions related to torrent meta data
  */
@@ -93,9 +92,8 @@ class BencodeTorrent extends BencodeDecode
         if (empty($this->Dec)) {
             return false;
         }
-        return isset($this->Dec['info']['private']) && Int64::get($this->Dec['info']['private']) === 1;
+        return isset($this->Dec['info']['private']) && Int64::get($this->Dec['info']['private']) == 1;
     }
-    
     /**
      * Add the "private" flag to the torrent
      *
@@ -125,7 +123,7 @@ class BencodeTorrent extends BencodeDecode
         if (empty($this->Dec)) {
             return false;
         }
-        if (isset($this->Dec['info']['source']) && ($this->Dec['info']['source'] === $Sources[0] || $this->Dec['info']['source'] === $Sources[1])) {
+        if (isset($this->Dec['info']['source']) && ($this->Dec['info']['source'] == $Sources[0] || $this->Dec['info']['source'] == $Sources[1])) {
             return false;
         }
         $this->Dec['info']['source'] = $Sources[0];
@@ -160,22 +158,6 @@ class BencodeTorrent extends BencodeDecode
     public static function add_announce_list($Data, $Urls)
     {
         $r = 'd13:announce-listl';
-        for ($i = 0; $i < count($Urls); $i++) {
-            $r .= 'l';
-            for ($j = 0; $j < count($Urls[$i]); $j++) {
-                $r .= strlen($Urls[$i][$j]).':'.$Urls[$i][$j];
-            }
-            $r .= 'e';
-        }
-        return $r.'e'.substr($Data, 1);
-    }
-
-    /**
-     * Add list of web seeds to a torrent
-     */
-    public static function add_web_seeds($Data, $Urls)
-    {
-        $r = 'd8:url-listl';
         for ($i = 0; $i < count($Urls); $i++) {
             $r .= 'l';
             for ($j = 0; $j < count($Urls[$i]); $j++) {
