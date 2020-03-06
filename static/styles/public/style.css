@@ -18,7 +18,7 @@ html, body {
 
 body {
   font-family: Bitstream Vera Sans, Tahoma, sans-serif;
-  font-size: 11px;
+  font-size: 0.75em;
   color: black;
   background: url('/static/common/hiware.png');
 }

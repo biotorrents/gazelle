@@ -139,6 +139,7 @@ if ($AdvancedSearch) {
     $HideAdvanced = ' hidden';
 }
 
+# Start the search form
 View::show_header('Browse Torrents', 'browse');
 
 ?>
@@ -173,7 +174,7 @@ View::show_header('Browse Torrents', 'browse');
           <tr id="catalogue_number"
             class="ftr_advanced<?=$HideAdvanced?>">
             <td class="label">
-              <!--Catalogue number:-->
+              <!-- Catalogue Number -->
             </td>
             <td class="ft_cataloguenumber">
               <input type="search" size="19" name="cataloguenumber" class="inputtext smallest fti_advanced"
@@ -185,7 +186,7 @@ View::show_header('Browse Torrents', 'browse');
           <tr id="album_torrent_name"
             class="ftr_advanced<?=$HideAdvanced?>">
             <td class="label">
-              <!--Torrent name:-->
+              <!-- Torrent Name -->
             </td>
             <td class="ft_groupname">
               <input type="search" spellcheck="false" size="65" name="advgroupname"
@@ -197,7 +198,7 @@ View::show_header('Browse Torrents', 'browse');
           <tr id="artist_name"
             class="ftr_advanced<?=$HideAdvanced?>">
             <td class="label">
-              <!--Artist name:-->
+              <!-- Artist Name -->
             </td>
             <td class="ft_artistname">
               <input type="search" spellcheck="false" size="65" id="artist" name="artistname"
@@ -209,7 +210,7 @@ View::show_header('Browse Torrents', 'browse');
 
           <tr id="year" class="ftr_advanced<?=$HideAdvanced?>">
             <td class="label">
-              <!--Year:-->
+              <!-- Year -->
             </td>
             <td class="ft_year">
               <input type="search" name="year" class="inputtext smallest fti_advanced" placeholder="Year"
@@ -221,7 +222,7 @@ View::show_header('Browse Torrents', 'browse');
           <tr id="torrent_description"
             class="ftr_advanced<?=$HideAdvanced?>">
             <td class="label">
-              <!--<span title="Search torrent descriptions (not group information)" class="tooltip">Torrent description:</span>-->
+              <!-- Torrent Description -->
             </td>
             <td class="ft_description">
               <input type="search" spellcheck="false" size="65" name="description" class="inputtext fti_advanced"
@@ -233,7 +234,7 @@ View::show_header('Browse Torrents', 'browse');
 
           <tr id="file_list" class="ftr_advanced<?=$HideAdvanced?>">
             <td class="label">
-              <!--File list:-->
+              <!-- File List -->
             </td>
             <td class="ft_filelist">
               <input type="search" spellcheck="false" size="65" name="filelist" class="inputtext fti_advanced"
@@ -242,13 +243,14 @@ View::show_header('Browse Torrents', 'browse');
             </td>
           </tr>
 
+          <!-- Platforms -->
           <tr id="rip_specifics"
             class="ftr_advanced<?=$HideAdvanced?>">
-            <td class="label">Specifics</td>
+            <td class="label">Platforms</td>
             <td class="nobr ft_ripspecifics">
 
               <select name="media" class="ft_media fti_advanced">
-                <option value="">Seq Platform</option>
+                <option value="">DNA/RNA/Proteins</option>
                 <?php  foreach ($Media as $MediaName) { ?>
                 <option value="<?=display_str($MediaName); ?>"
                 <?Format::selected('media', $MediaName)?>><?=display_str($MediaName); ?>
@@ -256,8 +258,25 @@ View::show_header('Browse Torrents', 'browse');
                 <?php  } ?>
               </select>
 
+              <select name="media" class="ft_media fti_advanced">
+                <option value="">Imaging</option>
+                <?php  foreach ($MediaManga as $MediaName) { ?>
+                <option value="<?=display_str($MediaName); ?>"
+                <?Format::selected('media', $MediaName)?>><?=display_str($MediaName); ?>
+                </option>
+                <?php  } ?>
+              </select>
+            </td>
+          </tr>
+
+          <!-- Formats -->
+          <tr id="rip_specifics"
+            class="ftr_advanced<?=$HideAdvanced?>">
+            <td class="label">Formats</td>
+            <td class="nobr ft_ripspecifics">
+
               <select id=" container" name="container" class="ft_container fti_advanced">
-                <option value="">Seq Format</option>
+                <option value="">DNA/RNA</option>
                 <?php  foreach ($Containers as $Key => $Container) { ?>
                 <option value="<?=display_str($Key);?>" <?Format::selected('container', $Key)?>><?=display_str($Key);?>
                 </option>
@@ -265,64 +284,41 @@ View::show_header('Browse Torrents', 'browse');
               </select>
 
               <select id=" container" name="container" class="ft_container fti_advanced">
-                <option value="">Prot Format</option>
+                <option value="">Proteins</option>
                 <?php  foreach ($ContainersProt as $Key => $Container) { ?>
                 <option value="<?=display_str($Key);?>" <?Format::selected('container', $Key)?>><?=display_str($Key);?>
                 </option>
                 <?php  } ?>
               </select>
 
-              <select name="media" class="ft_media fti_advanced">
-                <option value="">Img Platform</option>
-                <?php  foreach ($MediaManga as $MediaName) { ?>
-                <option value="<?=display_str($MediaName); ?>"
-                <?Format::selected('media', $MediaName)?>><?=display_str($MediaName); ?>
+              <select id=" container" name="container" class="ft_container fti_advanced">
+                <option value="">Imaging</option>
+                <?php  foreach ($ContainersGames as $Key => $Container) { ?>
+                <option value="<?=display_str($Key);?>" <?Format::selected('container', $Key)?>><?=display_str($Key);?>
                 </option>
                 <?php  } ?>
               </select>
 
               <select id=" container" name="container" class="ft_container fti_advanced">
-                <option value="">Img Format</option>
-                <?php  foreach ($ContainersGames as $Key => $Container) { ?>
+                <option value="">Extras</option>
+                <?php  foreach ($ContainersExtra as $Key => $Container) { ?>
                 <option value="<?=display_str($Key);?>" <?Format::selected('container', $Key)?>><?=display_str($Key);?>
                 </option>
                 <?php  } ?>
               </select>
             </td>
           </tr>
-          <tr id="size" class="ftr_advanced<?=$HideAdvanced?>">
-            <td class="label">Size</td>
-            <td class="ft_size">
-              <input type="size_min" spellcheck="false" size="6" name="size_min" class="inputtext smaller fti_advanced"
-                placeholder="Min"
-                value="<?Format::form('size_min')?>" />
-              &ndash;
-              <input type="size_max" spellcheck="false" size="6" name="size_max" class="inputtext smaller fti_advanced"
-                placeholder="Max"
-                value="<?Format::form('size_max')?>" />
-              <select name="size_unit" class="ft_size fti_advanced">
-                <option value="">Unit</option>
-                <option value="0" <?Format::selected('size_unit', 0)?>>B
-                </option>
-                <option value="1" <?Format::selected('size_unit', 1)?>>KiB
-                </option>
-                <option value="2" <?Format::selected('size_unit', 2)?>>MiB
-                </option>
-                <option value="3" <?Format::selected('size_unit', 3)?>>GiB
-                </option>
-                <option value="4" <?Format::selected('size_unit', 4)?>>TiB
-                </option>
-              </select>
-            </td>
-          </tr>
+
+          <!-- Misc -->
           <tr id="misc" class="ftr_advanced<?=$HideAdvanced?>">
             <td class="label">Misc</td>
             <td class="nobr ft_misc">
+
               <select name="resolution" class="ft_resolution fti_advanced">
                 <option value="">Assembly Level</option>
                 <?php  foreach ($Resolutions as $Resolution) { ?>
                 <option value="<?=display_str($Resolution); ?>"
-                <?Format::selected('resolution', $Resolution)?>><?=display_str($Resolution); ?>
+                <?Format::selected('resolution', $Resolution)?>><?=display_str($Resolution); ?>"
                 </option>
                 <?php  } ?>
               </select>
@@ -356,9 +352,38 @@ View::show_header('Browse Torrents', 'browse');
               </select>
             </td>
           </tr>
+
+          <!-- Size -->
+          <tr id="size" class="ftr_advanced<?=$HideAdvanced?>">
+            <td class="label">Size</td>
+            <td class="ft_size">
+              <input type="size_min" spellcheck="false" size="6" name="size_min" class="inputtext smaller fti_advanced"
+                placeholder="Min"
+                value="<?Format::form('size_min')?>" />
+              &ndash;
+              <input type="size_max" spellcheck="false" size="6" name="size_max" class="inputtext smaller fti_advanced"
+                placeholder="Max"
+                value="<?Format::form('size_max')?>" />
+              <select name="size_unit" class="ft_size fti_advanced">
+                <option value="">Unit</option>
+                <option value="0" <?Format::selected('size_unit', 0)?>>B
+                </option>
+                <option value="1" <?Format::selected('size_unit', 1)?>>KiB
+                </option>
+                <option value="2" <?Format::selected('size_unit', 2)?>>MiB
+                </option>
+                <option value="3" <?Format::selected('size_unit', 3)?>>GiB
+                </option>
+                <option value="4" <?Format::selected('size_unit', 4)?>>TiB
+                </option>
+              </select>
+            </td>
+          </tr>
+
+          <!-- Start basic search options -->
           <tr id="search_terms" class="ftr_basic<?=$HideBasic?>">
             <td class="label">
-              <!--Search terms:-->
+              <!-- Search Terms -->
             </td>
             <td class="ftb_searchstr">
               <input type="search" spellcheck="false" size="48" name="searchstr" class="inputtext fti_basic"
@@ -367,9 +392,10 @@ View::show_header('Browse Torrents', 'browse');
                 aria-label="Terms to search">
             </td>
           </tr>
+
           <tr id="tagfilter">
             <td class="label">
-              <!--<span title="Use !tag to exclude tag" class="tooltip">Tags (comma-separated):</span>-->
+              <!-- Tags (comma-separated) -->
             </td>
             <td class="ft_taglist">
               <input type="search" size="37" id="tags" name="taglist" class="inputtext smaller"
@@ -384,6 +410,7 @@ View::show_header('Browse Torrents', 'browse');
               Use !tag to exclude tags
             </td>
           </tr>
+
           <tr id="order">
             <td class="label">Order By</td>
             <td class="ft_order">
@@ -405,6 +432,7 @@ View::show_header('Browse Torrents', 'browse');
                 <option value="random" <?Format::selected('order_by', 'random')?>>Random
                 </option>
               </select>
+
               <select name="order_way" class="ft_order_way" aria-label="Direction to order">
                 <option value="desc" <?Format::selected('order_way', 'desc')?>>Descending
                 </option>
@@ -413,6 +441,7 @@ View::show_header('Browse Torrents', 'browse');
               </select>
             </td>
           </tr>
+
           <tr id="search_group_results">
             <td class="label">
               <label for="group_results">Group Torrents</label>
@@ -423,6 +452,7 @@ View::show_header('Browse Torrents', 'browse');
             </td>
           </tr>
         </table>
+
         <table class="layout cat_list ft_cat_list">
           <?php
   $x = 0;
@@ -521,7 +551,9 @@ View::show_header('Browse Torrents', 'browse');
     <p>Make sure all names are spelled correctly, or try making your search less specific.</p>
   </div>
 </div>
-<?php    View::show_footer();die();
+<?php
+View::show_footer();
+die();
   }
 
   if ($NumResults < ($Page - 1) * TORRENTS_PER_PAGE + 1) {
@@ -712,7 +744,7 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
         $Data['CategoryID'] = $CategoryID;
         // All of the individual torrents in the group
 
-        // Get report info for each torrent, use the cache if available, if not, add to it.
+        // Get report info for each torrent, use the cache if available, if not, add to it
         $Reported = false;
         $Reports = Torrents::get_reports($TorrentID);
         if (count($Reports) > 0) {

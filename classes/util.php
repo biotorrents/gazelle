@@ -1,4 +1,5 @@
-<?
+<?php
+
 // This is a file of miscellaneous functions that are called so damn often
 // that it'd just be annoying to stick them in namespaces.
 
@@ -9,30 +10,33 @@
  * @return bool
  */
 if (PHP_INT_SIZE === 4) {
-  function is_number($Str) {
-    if ($Str === null || $Str === '') {
-      return false;
+    function is_number($Str)
+    {
+        if ($Str === null || $Str === '') {
+            return false;
+        }
+        if (is_int($Str)) {
+            return true;
+        }
+        if ($Str[0] === '-' || $Str[0] === '+') { // Leading plus/minus signs are ok
+            $Str[0] = 0;
+        }
+        return ltrim($Str, "0..9") === '';
     }
-    if (is_int($Str)) {
-      return true;
-    }
-    if ($Str[0] == '-' || $Str[0] == '+') { // Leading plus/minus signs are ok
-      $Str[0] = 0;
-    }
-    return ltrim($Str, "0..9") === '';
-  }
 } else {
-  function is_number($Str) {
-    return $Str == strval(intval($Str));
-  }
+    function is_number($Str)
+    {
+        return $Str == strval(intval($Str));
+    }
 }
 
-function is_date($Date) {
-  list($Y, $M, $D) = explode('-', $Date);
-  if (checkdate($M, $D, $Y)) {
-    return true;
-  }
-  return false;
+function is_date($Date)
+{
+    list($Y, $M, $D) = explode('-', $Date);
+    if (checkdate($M, $D, $Y)) {
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -42,16 +46,17 @@ function is_date($Date) {
  * @param array $Keys list of keys to check
  * @param mixed $Error error code or string to pass to the error() function if a key isn't numeric
  */
-function assert_numbers(&$Base, $Keys, $Error = 0) {
-  // make sure both arguments are arrays
-  if (!is_array($Base) || !is_array($Keys)) {
-    return;
-  }
-  foreach ($Keys as $Key) {
-    if (!isset($Base[$Key]) || !is_number($Base[$Key])) {
-      error($Error);
+function assert_numbers(&$Base, $Keys, $Error = 0)
+{
+    // Make sure both arguments are arrays
+    if (!is_array($Base) || !is_array($Keys)) {
+        return;
     }
-  }
+    foreach ($Keys as $Key) {
+        if (!isset($Base[$Key]) || !is_number($Base[$Key])) {
+            error($Error);
+        }
+    }
 }
 
 /**
@@ -61,12 +66,13 @@ function assert_numbers(&$Base, $Keys, $Error = 0) {
  * @return true if $Value is "truthy", false if it is "non-truthy" or null if $Value was not
  *         a bool-like value
  */
-function is_bool_value($Value) {
-  if (is_bool($Value)) {
-    return $Value;
-  }
-  if (is_string($Value)) {
-    switch (strtolower($Value)) {
+function is_bool_value($Value)
+{
+    if (is_bool($Value)) {
+        return $Value;
+    }
+    if (is_string($Value)) {
+        switch (strtolower($Value)) {
       case 'true':
       case 'yes':
       case 'on':
@@ -78,15 +84,15 @@ function is_bool_value($Value) {
       case '0':
         return false;
     }
-  }
-  if (is_numeric($Value)) {
-    if ($Value == 1) {
-      return true;
-    } elseif ($Value == 0) {
-      return false;
     }
-  }
-  return null;
+    if (is_numeric($Value)) {
+        if ($Value === 1) {
+            return true;
+        } elseif ($Value === 0) {
+            return false;
+        }
+    }
+    return null;
 }
 
 /**
@@ -96,16 +102,17 @@ function is_bool_value($Value) {
  * @param string $Str
  * @return string escaped string.
  */
-function display_str($Str) {
-  if ($Str === null || $Str === false || is_array($Str)) {
-    return '';
-  }
-  if ($Str != '' && !is_number($Str)) {
-    $Str = Format::make_utf8($Str);
-    $Str = mb_convert_encoding($Str, 'HTML-ENTITIES', 'UTF-8');
-    $Str = preg_replace("/&(?![A-Za-z]{0,4}\w{2,3};|#[0-9]{2,6};)/m", '&amp;', $Str);
+function display_str($Str)
+{
+    if ($Str === null || $Str === false || is_array($Str)) {
+        return '';
+    }
+    if ($Str !== '' && !is_number($Str)) {
+        $Str = Format::make_utf8($Str);
+        $Str = mb_convert_encoding($Str, 'HTML-ENTITIES', 'UTF-8');
+        $Str = preg_replace("/&(?![A-Za-z]{0,4}\w{2,3};|#[0-9]{2,6};)/m", '&amp;', $Str);
 
-    $Replace = array(
+        $Replace = array(
       "'",'"',"<",">",
       '&#128;','&#130;','&#131;','&#132;','&#133;','&#134;','&#135;','&#136;',
       '&#137;','&#138;','&#139;','&#140;','&#142;','&#145;','&#146;','&#147;',
@@ -113,7 +120,7 @@ function display_str($Str) {
       '&#156;','&#158;','&#159;'
     );
 
-    $With = array(
+        $With = array(
       '&#39;','&quot;','&lt;','&gt;',
       '&#8364;','&#8218;','&#402;','&#8222;','&#8230;','&#8224;','&#8225;','&#710;',
       '&#8240;','&#352;','&#8249;','&#338;','&#381;','&#8216;','&#8217;','&#8220;',
@@ -121,29 +128,28 @@ function display_str($Str) {
       '&#339;','&#382;','&#376;'
     );
 
-    $Str = str_replace($Replace, $With, $Str);
-  }
-  return $Str;
+        $Str = str_replace($Replace, $With, $Str);
+    }
+    return $Str;
 }
-
 
 /**
  * Send a message to an IRC bot listening on SOCKET_LISTEN_PORT
  *
  * @param string $Raw An IRC protocol snippet to send.
  */
-function send_irc($Raw) {
-  // check if IRC is enabled
-  if (!FEATURE_IRC) {
-    return;
-  }
+function send_irc($Raw)
+{
+    // Check if IRC is enabled
+    if (!FEATURE_IRC) {
+        return;
+    }
 
-  $IRCSocket = fsockopen(SOCKET_LISTEN_ADDRESS, SOCKET_LISTEN_PORT);
-  $Raw = str_replace(array("\n", "\r"), '', $Raw);
-  fwrite($IRCSocket, $Raw);
-  fclose($IRCSocket);
+    $IRCSocket = fsockopen(SOCKET_LISTEN_ADDRESS, SOCKET_LISTEN_PORT);
+    $Raw = str_replace(array("\n", "\r"), '', $Raw);
+    fwrite($IRCSocket, $Raw);
+    fclose($IRCSocket);
 }
-
 
 /**
  * Display a critical error and kills the page.
@@ -154,51 +160,55 @@ function send_irc($Raw) {
  * @param boolean $NoHTML If true, the header/footer won't be shown, just the description.
  * @param string $Log If true, the user is given a link to search $Log in the site log.
  */
-function error($Error, $NoHTML = false, $Log = false) {
-  global $Debug;
-  require(SERVER_ROOT.'/sections/error/index.php');
-  $Debug->profile();
-  die();
+function error($Error, $NoHTML = false, $Log = false)
+{
+    global $Debug;
+    require(SERVER_ROOT.'/sections/error/index.php');
+    $Debug->profile();
+    die();
 }
-
 
 /**
  * Convenience function. See doc in permissions.class.php
  */
-function check_perms($PermissionName, $MinClass = 0) {
-  return Permissions::check_perms($PermissionName, $MinClass);
+function check_perms($PermissionName, $MinClass = 0)
+{
+    return Permissions::check_perms($PermissionName, $MinClass);
 }
 
-function get_permissions_for_user($UserID, $CustomPermissions = false) {
-  return Permissions::get_permissions_for_user($UserID, $CustomPermissions = false);
+function get_permissions_for_user($UserID, $CustomPermissions = false)
+{
+    return Permissions::get_permissions_for_user($UserID, $CustomPermissions = false);
 }
 
 /**
  * Print JSON status result with an optional message and die.
  * DO NOT USE THIS FUNCTION!
  */
-function json_die($Status, $Message) {
-  json_print($Status, $Message);
-  die();
+function json_die($Status, $Message)
+{
+    json_print($Status, $Message);
+    die();
 }
 
 /**
  * Print JSON status result with an optional message.
  */
-function json_print($Status, $Message) {
-  if ($Status == 'success' && $Message) {
-    print json_encode(array('status' => $Status, 'response' => $Message));
-  } elseif ($Message) {
-    print json_encode(array('status' => $Status, 'error' => $Message));
-  } else {
-    print json_encode(array('status' => $Status, 'response' => []));
-  }
+function json_print($Status, $Message)
+{
+    if ($Status === 'success' && $Message) {
+        print json_encode(array('status' => $Status, 'response' => $Message));
+    } elseif ($Message) {
+        print json_encode(array('status' => $Status, 'error' => $Message));
+    } else {
+        print json_encode(array('status' => $Status, 'response' => []));
+    }
 }
 
 /**
  * Print the site's URL including the appropriate URI scheme, including the trailing slash
  */
-function site_url() {
-  return 'https://' . SITE_DOMAIN . '/';
+function site_url()
+{
+    return 'https://' . SITE_DOMAIN . '/';
 }
-?>

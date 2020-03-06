@@ -1,7 +1,9 @@
 <?php
+
 global $LoggedUser;
 define('FOOTER_FILE', SERVER_ROOT.'/design/publicfooter.php');
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,6 +14,7 @@ define('FOOTER_FILE', SERVER_ROOT.'/design/publicfooter.php');
   <link rel="shortcut icon" href="static/common/icon.png?v=<?=md5_file('static/common/icon.png');?>">
   <link rel="manifest" href="/manifest.php">
   <link href="<?=STATIC_SERVER ?>styles/public/style.css?v=<?=filemtime(SERVER_ROOT.'/static/styles/public/style.css')?>" rel="stylesheet" type="text/css">
+
 <?php
   $Scripts = ['jquery', 'global', 'ajax.class', 'cookie.class', 'storage.class', 'public', 'u2f'];
   foreach ($Scripts as $Script) {
@@ -27,6 +30,7 @@ define('FOOTER_FILE', SERVER_ROOT.'/design/publicfooter.php');
   $img = array_diff(scandir(SERVER_ROOT.'/misc/bg', 1), array('.', '..')); ?>
   <meta name="bg_data" content="<?=$img[rand(0, count($img)-1)]?>">
 </head>
+
 <body>
 <div id="head"><span>
 <a href="login.php">Log In</a>

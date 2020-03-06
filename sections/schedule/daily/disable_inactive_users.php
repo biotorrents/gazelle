@@ -8,7 +8,7 @@ if (apcu_exists('DBKEY')) {
     SELECT um.Username, um.Email
     FROM users_info AS ui
       JOIN users_main AS um ON um.ID = ui.UserID
-      LEFT JOIN users_levels AS ul ON ul.UserID = um.ID AND ul.PermissionID = '".CELEB."'
+      LEFT JOIN users_levels AS ul ON ul.UserID = um.ID AND ul.PermissionID = '".VIP."'
     WHERE um.PermissionID IN ('".USER."', '".MEMBER ."')
       AND um.LastAccess < (NOW() - INTERVAL 110 DAY)
       AND um.LastAccess > (NOW() - INTERVAL 111 DAY)
@@ -27,7 +27,7 @@ if (apcu_exists('DBKEY')) {
     SELECT um.ID
     FROM users_info AS ui
       JOIN users_main AS um ON um.ID = ui.UserID
-      LEFT JOIN users_levels AS ul ON ul.UserID = um.ID AND ul.PermissionID = '".CELEB."'
+      LEFT JOIN users_levels AS ul ON ul.UserID = um.ID AND ul.PermissionID = '".VIP."'
     WHERE um.PermissionID IN ('".USER."', '".MEMBER ."')
       AND um.LastAccess < (NOW() - INTERVAL 120 DAY)
       AND um.LastAccess IS NOT NULL
