@@ -253,7 +253,8 @@ else {
           }
 
           if (empty($TwoFactor) || $TwoFA->verifyCode($TwoFactor, $_POST['twofa'])) {
-            if ($Enabled == 1) {
+            # todo: Make sure the type is (int)
+            if ($Enabled === '1') {
 
               // Check if the current login attempt is from a location previously logged in from
               if (apcu_exists('DBKEY')) {
@@ -276,7 +277,7 @@ else {
                   $DB->query("SELECT ASN FROM geoip_asn WHERE StartIP<=INET6_ATON('$_SERVER[REMOTE_ADDR]') AND EndIP>=INET6_ATON('$_SERVER[REMOTE_ADDR]')");
                   list($CurrentASN) = $DB->next_record();
 
-                  // if FEATURE_ENFORCE_LOCATIONS is enabled, require users to confirm new logins
+                  // If FEATURE_ENFORCE_LOCATIONS is enabled, require users to confirm new logins
                   if (!in_array($CurrentASN, $PastASNs) && FEATURE_ENFORCE_LOCATIONS) {
                     // Never logged in from this location before
                     if ($Cache->get_value('new_location_'.$UserID.'_'.$CurrentASN) !== true) {
@@ -398,7 +399,8 @@ else {
                 // Save the username in a cookie for the disabled page
                 setcookie('username', db_string($_POST['username']), time() + 60 * 60, '/', '', false);
                 header('Location: login.php?action=disabled');
-              } elseif ($Enabled == 0) {
+                # todo: Make sure the type is (int)
+              } elseif ($Enabled === '0') {
                 $Err = 'Your account has not been confirmed.<br />Please check your email.';
               }
               setcookie('keeplogged', '', time() + 60 * 60 * 24 * 365, '/', '', false);
