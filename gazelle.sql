@@ -1481,8 +1481,8 @@ CREATE TABLE `users_levels` (
 
 CREATE TABLE `users_main` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `Username` varchar(25) NOT NULL,
-  `Email` varchar(255) NOT NULL,
+  `Username` varchar(25) NOT NULL DEFAULT '',
+  `Email` varchar(255) NOT NULL DEFAULT '',
   `PassHash` varchar(60) NOT NULL,
   `TwoFactor` varchar(255) DEFAULT NULL,
   `PublicKey` text,
