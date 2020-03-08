@@ -149,7 +149,7 @@ class Rules
   conferences.</li>
 
 <li>Please use <code>#general</code> for the usual chit-chat, <code>#development</code> for questions about the Gazelle
-  software, and <code>#disabled</code> to get help recovering your account.</li>
+  software, and <code>#support</code> to get help with your account.</li>
 
 <li>Don't send mass alerts with <code>@channel</code>, <code>@everyone</code>, or <code>@here</code>. It's obnoxious and
   you should handle anything genuinely important on the boards.</li>

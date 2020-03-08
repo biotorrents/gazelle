@@ -280,12 +280,13 @@ View::show_header('Uploading Rules', 'rules');
           <strong>Version.</strong>
           Similar to the accession number field, version information should only exist if the original data is versioned, or if you versioned your own data (recommended).
           Any schema is acceptable but Semantic Versioning is strongly encouraged.
+          You must use x.y.z numbering as with SemVer.
           <br /><br />
         </li>
 
         <li id="r3.5"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.5">3.5</a>
           <strong>Torrent Title.</strong>
-          A short description of the torrent contents such as a FASTA definition line.
+          A short description of the torrent contents such as a FASTA definition line or publication title.
           It doesn't need to match the folders but it should tell you what the data is at a glance.
           Please avoid adding other metadata such as strain, platform, etc., with a dedicated field.
           <br /><br />
@@ -303,7 +304,7 @@ View::show_header('Uploading Rules', 'rules');
           <strong>Strain/Variety.</strong>
           The strain's name if known.
           This should correspond to a specific cell line, cultivar, or breed.
-          If the species is <em>H. sapiens</em> and the subject's race is known and relevant, e.g., as in a torrent of gene sequences related to sickle cell anemia, please add it here.
+          If the species is <em>H. sapiens</em> and the subject's ethnicity is known and relevant, e.g., as in a torrent of gene sequences related to sickle cell anemia, please add it here.
           Otherwise, please omit it.
           Do not put any identifying patient data here or anywhere else.
           <br /><br />

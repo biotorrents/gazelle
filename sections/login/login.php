@@ -2,6 +2,8 @@
 View::show_header('Login');
 ?>
 
+<p style="text-align: center;">A platform to share <em>biological sequence</em><br />and <em>medical imaging</em> data</p>
+
 <p id="no-cookies" class="hidden warning">You appear to have cookies disabled.</p>
 
 <?php

@@ -1,4 +1,4 @@
-<?
+<?php
 //Include the header
 View::show_header('Ratio Requirements');
 ?>
@@ -44,7 +44,7 @@ View::show_header('Ratio Requirements');
           <td>Required Ratio (0% seeded)</td>
           <td>Required Ratio (100% seeded)</td>
         </tr>
-<?
+<?php
 $DL = $LoggedUser['BytesDownloaded'];
 $GB = 1024*1024*1024;
 ?>
@@ -195,8 +195,8 @@ $GB = 1024*1024*1024;
     <br />
     <br />
   </div>
-<? include('jump.php'); ?>
+<?php include('jump.php'); ?>
 </div>
-<?
+<?php
   View::show_footer();
 ?>

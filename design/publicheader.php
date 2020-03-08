@@ -37,7 +37,7 @@ define('FOOTER_FILE', SERVER_ROOT.'/design/publicfooter.php');
 <?php if (OPEN_REGISTRATION) { ?>
  | <a href="register.php">Register</a>
 <?php } ?>
-| <a href="mailto:help@biotorrents.de?subject=[TxID <?= strtoupper(bin2hex(random_bytes(2))) ?>] Vague subject lines ignored">Support</a>
+| <a href="mailto:support@biotorrents.de?subject=[TxID <?= strtoupper(bin2hex(random_bytes(2))) ?>] Vague subject lines ignored">Support</a>
 </span></div>
 <div id="content">
 
