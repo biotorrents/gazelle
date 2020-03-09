@@ -3,8 +3,8 @@
 class Torrents
 {
     const FILELIST_DELIM = 0xF7; // Hex for &divide; Must be the same as phrase_boundary in sphinx.conf!
-  const SNATCHED_UPDATE_INTERVAL = 3600; // How often we want to update users' snatch lists
-  const SNATCHED_UPDATE_AFTERDL = 300; // How long after a torrent download we want to update a user's snatch lists
+    const SNATCHED_UPDATE_INTERVAL = 3600; // How often we want to update users' snatch lists
+    const SNATCHED_UPDATE_AFTERDL = 300; // How long after a torrent download we want to update a user's snatch lists
 
   /**
    * Function to get data and torrents for an array of GroupIDs. Order of keys doesn't matter
@@ -181,23 +181,23 @@ class Torrents
     public static function array_group(array &$Group)
     {
         return array(
-      'GroupID' => $Group['ID'],
-      'GroupName' => $Group['Name'],
-      'GroupNameRJ' => $Group['NameRJ'],
-      'GroupNameJP' => $Group['NameJP'],
-      'GroupYear' => $Group['Year'],
-      'GroupCategoryID' => $Group['CategoryID'],
-      'GroupCatalogueNumber' => $Group['CatalogueNumber'],
-      'GroupPages' => $Group['Pages'],
-      'GroupDLSiteID' => ($Group['DLSiteID'] ?? ''),
-      'GroupStudio' => $Group['Studio'],
-      'GroupSeries' => $Group['Series'],
-      'GroupFlags' => ($Group['Flags'] ?? ''),
-      'TagList' => $Group['TagList'],
-      'WikiImage' => $Group['WikiImage'],
-      'Torrents' => $Group['Torrents'],
-      'Artists' => $Group['Artists']
-    );
+          'GroupID' => $Group['ID'],
+          'GroupName' => $Group['Name'],
+          'GroupNameRJ' => $Group['NameRJ'],
+          'GroupNameJP' => $Group['NameJP'],
+          'GroupYear' => $Group['Year'],
+          'GroupCategoryID' => $Group['CategoryID'],
+          'GroupCatalogueNumber' => $Group['CatalogueNumber'],
+          'GroupPages' => $Group['Pages'],
+          'GroupDLSiteID' => ($Group['DLSiteID'] ?? ''),
+          'GroupStudio' => $Group['Studio'],
+          'GroupSeries' => $Group['Series'],
+          'GroupFlags' => ($Group['Flags'] ?? ''),
+          'TagList' => $Group['TagList'],
+          'WikiImage' => $Group['WikiImage'],
+          'Torrents' => $Group['Torrents'],
+          'Artists' => $Group['Artists']
+        );
     }
 
     /**
@@ -771,7 +771,7 @@ class Torrents
             G::$Cache->delete_value("torrent_download_$TorrentID");
             Misc::write_log((G::$LoggedUser['Username']??'System')." marked torrent $TorrentID freeleech type $FreeLeechType");
             Torrents::write_group_log($GroupID, $TorrentID, (G::$LoggedUser['ID']??0), "marked as freeleech type $FreeLeechType", 0);
-            if ($Announce && ($FreeLeechType == 1 || $FreeLeechType == 3)) {
+            if ($Announce && ($FreeLeechType === 1 || $FreeLeechType === 3)) {
                 send_irc('PRIVMSG '.BOT_ANNOUNCE_CHAN.' FREELEECH - '.site_url()."torrents.php?id=$GroupID / ".site_url()."torrents.php?action=download&id=$TorrentID");
             }
         }

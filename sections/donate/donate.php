@@ -52,7 +52,7 @@ View::show_header('Donate');
   <div class="box pad donation_info">
     <p>
       <?= SITE_NAME ?> accepts donations on a tactful array of platforms.
-      We also accept tax-deductible donations on behalf of the
+      We also accept <strong>tax-deductible donations</strong> on behalf of the
       <a href="https://www.boslab.org/donate" target="_blank">Boston Open Science Laboratory (BosLab)</a>,
       a registered 501c3.
       Please use the memo field on BosLab's PayPal form to credit your <?= SITE_NAME ?> account.
@@ -83,8 +83,8 @@ View::show_header('Donate');
       </ul>
 
     <p>
-      I also accept private donations of cash and cash equivalents, including Bitcoin and other cryptocurrencies.
-      Besides gift transactions sent to my personal PayPal account, I'll also accept USPS money orders in the mail.
+      I also accept private donations of cash and cash equivalents, including <strong>Bitcoin</strong> and other cryptocurrencies.
+      Besides gift transactions sent to my personal <strong>PayPal</strong> account, I'll also accept <strong>USPS money orders</strong> in the mail.
       I can generate unique cryptocurrency addresses for donations in Bitcoin, Litecoin, Curecoin, and Namecoin.
       Please use <a href="https://pgp.mit.edu/pks/lookup?op=get&search=0x760EBED7CFE266D7" target="_blank">GPG key 760EBED7CFE266D7</a> if you desire.
     </p>
