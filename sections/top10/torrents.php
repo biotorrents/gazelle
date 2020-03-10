@@ -1,4 +1,5 @@
 <?php
+
 $Where = [];
 
 if (!empty($_GET['advanced']) && check_perms('site_advanced_top10')) {
@@ -10,12 +11,12 @@ if (!empty($_GET['advanced']) && check_perms('site_advanced_top10')) {
         $Tags = explode(',', str_replace('.', '_', trim($_GET['tags'])));
         foreach ($Tags as $Tag) {
             $Tag = preg_replace('/[^a-z0-9_]/', '', $Tag);
-            if ($Tag != '') {
+            if ($Tag !== '') {
                 $TagWhere[] = "g.TagList REGEXP '[[:<:]]".db_string($Tag)."[[:>:]]'";
             }
         }
         if (!empty($TagWhere)) {
-            if ($_GET['anyall'] == 'any') {
+            if ($_GET['anyall'] === 'any') {
                 $Where[] = '('.implode(' OR ', $TagWhere).')';
             } else {
                 $Where[] = '('.implode(' AND ', $TagWhere).')';
@@ -49,59 +50,65 @@ View::show_header("Top $Limit Torrents", 'browse');
 ?>
 
 <div class="thin">
-  <div class="header">
-    <h2>Top <?=$Limit?> Torrents</h2>
-    <?php Top10View::render_linkbox("torrents"); ?>
-  </div>
-<?php
+    <div class="header">
+        <h2>Top <?=$Limit?> Torrents</h2>
+        <?php Top10View::render_linkbox("torrents"); ?>
+    </div>
+    <?php
 
 if (check_perms('site_advanced_top10')) {
     ?>
-  <div class="box pad">
-  <form class="search_form" name="torrents" action="" method="get">
-    <input type="hidden" name="advanced" value="1" />
-    <table cellpadding="6" cellspacing="1" border="0" class="layout" width="100%">
-      <tr id="tagfilter">
-        <td class="label">Tags (comma-separated)</td>
-        <td class="ft_taglist">
-          <input type="text" name="tags" id="tags" size="75" value="<?php if (!empty($_GET['tags'])) {
+    <div class="box pad">
+        <form class="search_form" name="torrents" action="" method="get">
+            <input type="hidden" name="advanced" value="1" />
+            <table cellpadding="6" cellspacing="1" border="0" class="layout" width="100%">
+                <tr id="tagfilter">
+                    <td class="label">Tags (comma-separated)</td>
+                    <td class="ft_taglist">
+                        <input type="text" name="tags" id="tags" size="75" value="<?php if (!empty($_GET['tags'])) {
         echo display_str($_GET['tags']);
-    } ?>"<?php Users::has_autocomplete_enabled('other'); ?> />&nbsp;
-          <input type="radio" id="rdoAll" name="anyall" value="all"<?=((!isset($_GET['anyall'])||$_GET['anyall']!='any')?' checked="checked"':'')?> /><label for="rdoAll"> All</label>&nbsp;&nbsp;
-          <input type="radio" id="rdoAny" name="anyall" value="any"<?=((!isset($_GET['anyall'])||$_GET['anyall']=='any')?' checked="checked"':'')?> /><label for="rdoAny"> Any</label>
-        </td>
-      </tr>
-      <tr>
-        <td class="label">Category</td>
-        <td>
-          <select name="category" style="width: auto;" class="ft_format">
-            <option value="">Any</option>
-<?php  foreach ($Categories as $CategoryName) { ?>
-            <option value="<?=display_str($CategoryName)?>"<?=(($CategoryName==($_GET['category']??false))?'selected="selected"':'')?>><?=display_str($CategoryName)?></option>
-<?php  } ?>
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2" class="center">
-          <input type="submit" value="Search" />
-        </td>
-      </tr>
-    </table>
-  </form>
-  </div>
-<?php
+    } ?>" <?php Users::has_autocomplete_enabled('other'); ?>
+                        />&nbsp;
+                        <input type="radio" id="rdoAll" name="anyall" value="all" <?=((!isset($_GET['anyall'])||$_GET['anyall']!=='any')?' checked="checked"':'')?>
+                        /><label for="rdoAll"> All</label>&nbsp;&nbsp;
+                        <input type="radio" id="rdoAny" name="anyall" value="any" <?=((!isset($_GET['anyall'])||$_GET['anyall']==='any')?' checked="checked"':'')?>
+                        /><label for="rdoAny"> Any</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">Category</td>
+                    <td>
+                        <select name="category" style="width: auto;" class="ft_format">
+                            <option value="">Any</option>
+                            <?php  foreach ($Categories as $CategoryName) { ?>
+                            <option
+                                value="<?=display_str($CategoryName)?>"
+                                <?=(($CategoryName===($_GET['category']??false))?'selected="selected"':'')?>><?=display_str($CategoryName)?>
+                            </option>
+                            <?php  } ?>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="center">
+                        <input type="submit" value="Search" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <?php
 }
 
 // Default setting to have them shown
 $DisableFreeTorrentTop10 = (isset($LoggedUser['DisableFreeTorrentTop10']) ? $LoggedUser['DisableFreeTorrentTop10'] : 0);
 // Did they just toggle it?
 if (isset($_GET['freeleech'])) {
-    // what did they choose?
-    $NewPref = (($_GET['freeleech'] == 'hide') ? 1 : 0);
+    // What did they choose?
+    $NewPref = (($_GET['freeleech'] === 'hide') ? 1 : 0);
 
     // Pref id different
-    if ($NewPref != $DisableFreeTorrentTop10) {
+    if ($NewPref !== $DisableFreeTorrentTop10) {
         $DisableFreeTorrentTop10 = $NewPref;
         Users::update_site_options($LoggedUser['ID'], array('DisableFreeTorrentTop10' => $DisableFreeTorrentTop10));
     }
@@ -122,7 +129,7 @@ if (!empty($FreeleechToggleQuery)) {
 
 $FreeleechToggleQuery .= 'freeleech=' . $FreeleechToggleName;
 
-$GroupByToggleName = ((isset($_GET['groups']) && $_GET['groups'] == 'show') ? 'hide' : 'show');
+$GroupByToggleName = ((isset($_GET['groups']) && $_GET['groups'] === 'show') ? 'hide' : 'show');
 $GroupByToggleQuery = Format::get_url(array('freeleech', 'groups'));
 
 if (!empty($GroupByToggleQuery)) {
@@ -133,19 +140,23 @@ $GroupByToggleQuery .= 'groups=' . $GroupByToggleName;
 
 $GroupBySum = '';
 $GroupBy = '';
-if (isset($_GET['groups']) && $_GET['groups'] == 'show') {
+if (isset($_GET['groups']) && $_GET['groups'] === 'show') {
     $GroupBy = ' GROUP BY g.ID ';
     $GroupBySum = md5($GroupBy);
 }
 
 ?>
-  <div style="text-align: right;" class="linkbox">
-    <a href="top10.php?<?=$FreeleechToggleQuery?>" class="brackets"><?=ucfirst($FreeleechToggleName)?> freeleech in Top 10</a>
-<?php    if (check_perms('users_mod')) { ?>
-      <a href="top10.php?<?=$GroupByToggleQuery?>" class="brackets"><?=ucfirst($GroupByToggleName)?> top groups</a>
-<?php    } ?>
-  </div>
-<?php
+    <div style="text-align: right;" class="linkbox">
+        <a href="top10.php?<?=$FreeleechToggleQuery?>"
+            class="brackets"><?=ucfirst($FreeleechToggleName)?>
+            freeleech in Top 10</a>
+        <?php if (check_perms('users_mod')) { ?>
+        <a href="top10.php?<?=$GroupByToggleQuery?>"
+            class="brackets"><?=ucfirst($GroupByToggleName)?> top
+            groups</a>
+        <?php } ?>
+    </div>
+    <?php
 
 if (!empty($Where)) {
     $Where = '('.implode(' AND ', $Where).')';
@@ -173,7 +184,7 @@ $BaseQuery = '
   FROM torrents AS t
     LEFT JOIN torrents_group AS g ON g.ID = t.GroupID';
 
-if ($Details == 'all' || $Details == 'day') {
+if ($Details === 'all' || $Details === 'day') {
     $TopTorrentsActiveLastDay = $Cache->get_value('top10tor_day_'.$Limit.$WhereSum.$GroupBySum);
     if ($TopTorrentsActiveLastDay === false) {
         if ($Cache->get_query_lock('top10')) {
@@ -197,7 +208,7 @@ if ($Details == 'all' || $Details == 'day') {
     }
     generate_torrent_table('Most Active Torrents Uploaded in the Past Day', 'day', $TopTorrentsActiveLastDay, $Limit);
 }
-if ($Details == 'all' || $Details == 'week') {
+if ($Details === 'all' || $Details === 'week') {
     $TopTorrentsActiveLastWeek = $Cache->get_value('top10tor_week_'.$Limit.$WhereSum.$GroupBySum);
     if ($TopTorrentsActiveLastWeek === false) {
         if ($Cache->get_query_lock('top10')) {
@@ -222,7 +233,7 @@ if ($Details == 'all' || $Details == 'week') {
     generate_torrent_table('Most Active Torrents Uploaded in the Past Week', 'week', $TopTorrentsActiveLastWeek, $Limit);
 }
 
-if ($Details == 'all' || $Details == 'month') {
+if ($Details === 'all' || $Details === 'month') {
     $TopTorrentsActiveLastMonth = $Cache->get_value('top10tor_month_'.$Limit.$WhereSum.$GroupBySum);
     if ($TopTorrentsActiveLastMonth === false) {
         if ($Cache->get_query_lock('top10')) {
@@ -246,13 +257,13 @@ if ($Details == 'all' || $Details == 'month') {
     generate_torrent_table('Most Active Torrents Uploaded in the Past Month', 'month', $TopTorrentsActiveLastMonth, $Limit);
 }
 
-if ($Details == 'all' || $Details == 'year') {
+if ($Details === 'all' || $Details === 'year') {
     $TopTorrentsActiveLastYear = $Cache->get_value('top10tor_year_'.$Limit.$WhereSum.$GroupBySum);
     if ($TopTorrentsActiveLastYear === false) {
         if ($Cache->get_query_lock('top10')) {
             // IMPORTANT NOTE - we use WHERE t.Seeders>200 in order to speed up this query. You should remove it!
             $Query = $BaseQuery.' WHERE ';
-            if ($Details == 'all' && !$Filtered) {
+            if ($Details === 'all' && !$Filtered) {
 //        $Query .= 't.Seeders>=200 AND ';
                 if (!empty($Where)) {
                     $Query .= $Where.' AND ';
@@ -276,13 +287,13 @@ if ($Details == 'all' || $Details == 'year') {
     generate_torrent_table('Most Active Torrents Uploaded in the Past Year', 'year', $TopTorrentsActiveLastYear, $Limit);
 }
 
-if ($Details == 'all' || $Details == 'overall') {
+if ($Details === 'all' || $Details === 'overall') {
     $TopTorrentsActiveAllTime = $Cache->get_value('top10tor_overall_'.$Limit.$WhereSum.$GroupBySum);
     if ($TopTorrentsActiveAllTime === false) {
         if ($Cache->get_query_lock('top10')) {
             // IMPORTANT NOTE - we use WHERE t.Seeders>500 in order to speed up this query. You should remove it!
             $Query = $BaseQuery;
-            if ($Details=='all' && !$Filtered) {
+            if ($Details === 'all' && !$Filtered) {
                 //$Query .= "t.Seeders>=500 ";
                 if (!empty($Where)) {
                     $Query .= ' WHERE '.$Where;
@@ -305,7 +316,7 @@ if ($Details == 'all' || $Details == 'overall') {
     generate_torrent_table('Most Active Torrents of All Time', 'overall', $TopTorrentsActiveAllTime, $Limit);
 }
 
-if (($Details == 'all' || $Details == 'snatched') && !$Filtered) {
+if (($Details === 'all' || $Details === 'snatched') && !$Filtered) {
     $TopTorrentsSnatched = $Cache->get_value('top10tor_snatched_'.$Limit.$WhereSum.$GroupBySum);
     if ($TopTorrentsSnatched === false) {
         if ($Cache->get_query_lock('top10')) {
@@ -328,13 +339,13 @@ if (($Details == 'all' || $Details == 'snatched') && !$Filtered) {
     generate_torrent_table('Most Snatched Torrents', 'snatched', $TopTorrentsSnatched, $Limit);
 }
 
-if (($Details == 'all' || $Details == 'data') && !$Filtered) {
+if (($Details === 'all' || $Details === 'data') && !$Filtered) {
     $TopTorrentsTransferred = $Cache->get_value('top10tor_data_'.$Limit.$WhereSum.$GroupBySum);
     if ($TopTorrentsTransferred === false) {
         if ($Cache->get_query_lock('top10')) {
             // IMPORTANT NOTE - we use WHERE t.Snatched>100 in order to speed up this query. You should remove it!
             $Query = $BaseQuery;
-            if ($Details=='all') {
+            if ($Details === 'all') {
                 //$Query .= " WHERE t.Snatched>=100 ";
                 if (!empty($Where)) {
                     $Query .= ' WHERE '.$Where;
@@ -355,7 +366,7 @@ if (($Details == 'all' || $Details == 'data') && !$Filtered) {
     generate_torrent_table('Most Data Transferred Torrents', 'data', $TopTorrentsTransferred, $Limit);
 }
 
-if (($Details == 'all' || $Details == 'seeded') && !$Filtered) {
+if (($Details === 'all' || $Details === 'seeded') && !$Filtered) {
     $TopTorrentsSeeded = $Cache->get_value('top10tor_seeded_'.$Limit.$WhereSum.$GroupBySum);
     if ($TopTorrentsSeeded === false) {
         if ($Cache->get_query_lock('top10')) {
@@ -380,6 +391,7 @@ if (($Details == 'all' || $Details == 'seeded') && !$Filtered) {
 
 ?>
 </div>
+
 <?php
 View::show_footer();
 
@@ -387,63 +399,78 @@ View::show_footer();
 function generate_torrent_table($Caption, $Tag, $Details, $Limit)
 {
     global $LoggedUser, $Categories, $ReleaseTypes, $GroupBy; ?>
-    <h3>Top <?="$Limit $Caption"?>
-<?php  if (empty($_GET['advanced'])) { ?>
+<h3>Top <?="$Limit $Caption"?>
+    <?php  if (empty($_GET['advanced'])) { ?>
     <small class="top10_quantity_links">
-<?php
+        <?php
     switch ($Limit) {
       case 100: ?>
-        - <a href="top10.php?details=<?=$Tag?>" class="brackets">Top 10</a>
+        - <a href="top10.php?details=<?=$Tag?>" class="brackets">Top
+            10</a>
         - <span class="brackets">Top 100</span>
-        - <a href="top10.php?type=torrents&amp;limit=250&amp;details=<?=$Tag?>" class="brackets">Top 250</a>
-<?php        break;
+        - <a href="top10.php?type=torrents&amp;limit=250&amp;details=<?=$Tag?>"
+            class="brackets">Top 250</a>
+        <?php        break;
       case 250: ?>
-        - <a href="top10.php?details=<?=$Tag?>" class="brackets">Top 10</a>
-        - <a href="top10.php?type=torrents&amp;limit=100&amp;details=<?=$Tag?>" class="brackets">Top 100</a>
+        - <a href="top10.php?details=<?=$Tag?>" class="brackets">Top
+            10</a>
+        - <a href="top10.php?type=torrents&amp;limit=100&amp;details=<?=$Tag?>"
+            class="brackets">Top 100</a>
         - <span class="brackets">Top 250</span>
-<?php        break;
+        <?php        break;
       default: ?>
         - <span class="brackets">Top 10</span>
-        - <a href="top10.php?type=torrents&amp;limit=100&amp;details=<?=$Tag?>" class="brackets">Top 100</a>
-        - <a href="top10.php?type=torrents&amp;limit=250&amp;details=<?=$Tag?>" class="brackets">Top 250</a>
-<?php    } ?>
+        - <a href="top10.php?type=torrents&amp;limit=100&amp;details=<?=$Tag?>"
+            class="brackets">Top 100</a>
+        - <a href="top10.php?type=torrents&amp;limit=250&amp;details=<?=$Tag?>"
+            class="brackets">Top 250</a>
+        <?php    } ?>
     </small>
-<?php  } ?>
-    </h3>
-  <table class="torrent_table cats numbering border">
-  <tr class="colhead">
-    <td class="center" style="width: 15px;"></td>
-    <td class="cats_col"></td>
-    <td>Name</td>
-    <td style="text-align: right;">Size</td>
-    <td style="text-align: right;">Data</td>
-    <td style="text-align: right;" class="sign snatches"><svg width="15" height="15" fill="black" class="tooltip" alt="Snatches" title="Snatches" viewBox="3 0 88 98"><path d="M20 20 A43 43,0,1,0,77 23 L90 10 L55 10 L55 45 L68 32 A30.27 30.27,0,1,1,28 29"></path></svg></td>
-    <td style="text-align: right;" class="sign seeders"><svg width="11" height="15" fill="black" class="tooltip" alt="Seeders" title="Seeders"><polygon points="0,7 5.5,0 11,7 8,7 8,15 3,15 3,7"></polygon></svg></td>
-    <td style="text-align: right;" class="sign leechers"><svg width="11" height="15" fill="black" class="tooltip" alt="Leechers" title="Leechers"><polygon points="0,8 5.5,15 11,8 8,8 8,0 3,0 3,8"></polygon></svg></td>
-    <td style="text-align: right;">Peers</td>
-  </tr>
-<?php
+    <?php  } ?>
+</h3>
+<table class="torrent_table cats numbering border">
+    <tr class="colhead">
+        <td class="center" style="width: 15px;"></td>
+        <td class="cats_col"></td>
+        <td>Name</td>
+        <td style="text-align: right;">Size</td>
+        <td style="text-align: right;">Data</td>
+        <td style="text-align: right;" class="sign snatches"><svg width="15" height="15" fill="black" class="tooltip"
+                alt="Snatches" title="Snatches" viewBox="3 0 88 98">
+                <path d="M20 20 A43 43,0,1,0,77 23 L90 10 L55 10 L55 45 L68 32 A30.27 30.27,0,1,1,28 29"></path>
+            </svg></td>
+        <td style="text-align: right;" class="sign seeders"><svg width="11" height="15" fill="black" class="tooltip"
+                alt="Seeders" title="Seeders">
+                <polygon points="0,7 5.5,0 11,7 8,7 8,15 3,15 3,7"></polygon>
+            </svg></td>
+        <td style="text-align: right;" class="sign leechers"><svg width="11" height="15" fill="black" class="tooltip"
+                alt="Leechers" title="Leechers">
+                <polygon points="0,8 5.5,15 11,8 8,8 8,0 3,0 3,8"></polygon>
+            </svg></td>
+        <td style="text-align: right;">Peers</td>
+    </tr>
+    <?php
   // Server is already processing a top10 query. Starting another one will make things slow
   if ($Details === false) {
       ?>
     <tr class="row">
-      <td colspan="9" class="center">
-        Server is busy processing another top list request. Please try again in a minute.
-      </td>
+        <td colspan="9" class="center">
+            Server is busy processing another top list request. Please try again in a minute
+        </td>
     </tr>
-    </table><br />
+</table><br />
 <?php
     return;
   }
-    // iIn the unlikely event that query finds 0 rows...
+    // In the unlikely event that query finds 0 rows...
     if (empty($Details)) {
         ?>
-    <tr class="row">
-      <td colspan="9" class="center">
-        Found no torrents matching the criteria.
-      </td>
-    </tr>
-    </table><br />
+<tr class="row">
+    <td colspan="9" class="center">
+        Found no torrents matching the criteria
+    </td>
+</tr>
+</table><br />
 <?php
     return;
     }
@@ -481,23 +508,23 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
         // Append extra info to torrent title
         $ExtraInfo = '';
         $AddExtra = '';
+
         if (empty($GroupBy)) {
-            if ($Media) {
-                $ExtraInfo .= $AddExtra.$Media;
-                $AddExtra = ' / ';
-            }
             if ($Year > 0) {
-                $ExtraInfo .= $AddExtra.$Year;
-                $AddExtra = ' ';
+                $ExtraInfo .= $Year;
             }
+
+            if ($Media) {
+                $ExtraInfo .= " / $Media";
+            }
+
             if ($IsSnatched) {
-                if ($GroupCategoryID != 5) {
-                    $ExtraInfo .= ' / ';
-                }
-                $ExtraInfo .= Format::torrent_label('Snatched!');
+                $ExtraInfo .= ' / ';
+                $ExtraInfo .= Format::torrent_label('Snatched!', 'bold');
             }
-            if ($ExtraInfo != '') {
-                $ExtraInfo = "- [$ExtraInfo]";
+
+            if ($ExtraInfo !== '') {
+                $ExtraInfo = "<br />$ExtraInfo";
             }
         }
 
@@ -511,41 +538,59 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
         }
 
         // Print row?>
-  <tr class="torrent row<?=($IsBookmarked ? ' bookmarked' : '') . ($IsSnatched ? ' snatched_torrent' : '')?>">
+<tr
+    class="torrent row<?=($IsBookmarked ? ' bookmarked' : '') . ($IsSnatched ? ' snatched_torrent' : '')?>">
     <td style="padding: 8px; text-align: center;"><strong><?=$Rank?></strong></td>
-    <td class="center cats_col"><div title="<?=Format::pretty_category($GroupCategoryID)?>" class="tooltip <?=Format::css_category($GroupCategoryID)?>"></div></td>
+    <td class="center cats_col">
+        <div title="<?=Format::pretty_category($GroupCategoryID)?>"
+            class="tooltip <?=Format::css_category($GroupCategoryID)?>">
+        </div>
+    </td>
     <td class="big_info">
-      <div class="group_info clear">
+        <div class="group_info clear">
 
-        <span><a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>" title="Download" class="brackets tooltip">DL</a></span>
+            <span><a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>"
+                    title="Download" class="brackets tooltip">DL</a></span>
 
-        <?=$DisplayName?> <?=$ExtraInfo?><?php if ($Reported) { ?> - <strong class="torrent_label tl_reported">Reported</strong><?php } ?>
-<?php
+            <?=$DisplayName?> <?=$ExtraInfo?><?php if ($Reported) { ?> - <strong
+                class="torrent_label tl_reported">Reported</strong><?php } ?>
+            <?php
     if ($IsBookmarked) {
         ?>
-        <span class="remove_bookmark float_right">
-          <a href="#" id="bookmarklink_torrent_<?=$GroupID?>" class="bookmarklink_torrent_<?=$GroupID?> brackets" onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove bookmark</a>
-        </span>
-<?php
+            <span class="remove_bookmark float_right">
+                <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
+                    class="bookmarklink_torrent_<?=$GroupID?> brackets"
+                    onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove
+                    bookmark</a>
+            </span>
+            <?php
     } else { ?>
-        <span class="add_bookmark float_right">
-          <a href="#" id="bookmarklink_torrent_<?=$GroupID?>" class="bookmarklink_torrent_<?=$GroupID?> brackets" onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
-        </span>
-<?php    } ?>
-        <div class="tags"><?=$TorrentTags->format()?></div>
-      </div>
+            <span class="add_bookmark float_right">
+                <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
+                    class="bookmarklink_torrent_<?=$GroupID?> brackets"
+                    onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
+            </span>
+            <?php    } ?>
+            <div class="tags"><?=$TorrentTags->format()?>
+            </div>
+        </div>
     </td>
-    <td class="number_column nobr"><?=Format::get_size($Size)?></td>
-    <td class="number_column nobr"><?=Format::get_size($Data)?></td>
-    <td class="number_column"><?=number_format((double)$Snatched)?></td>
-    <td class="number_column"><?=number_format((double)$Seeders)?></td>
-    <td class="number_column"><?=number_format((double)$Leechers)?></td>
-    <td class="number_column"><?=number_format($Seeders + $Leechers)?></td>
-  </tr>
+    <td class="number_column nobr"><?=Format::get_size($Size)?>
+    </td>
+    <td class="number_column nobr"><?=Format::get_size($Data)?>
+    </td>
+    <td class="number_column"><?=number_format((double)$Snatched)?>
+    </td>
+    <td class="number_column"><?=number_format((double)$Seeders)?>
+    </td>
+    <td class="number_column"><?=number_format((double)$Leechers)?>
+    </td>
+    <td class="number_column"><?=number_format($Seeders + $Leechers)?>
+    </td>
+</tr>
 <?php
     } // foreach ($Details as $Detail)
 ?>
-  </table><br />
+</table><br />
 <?php
 }
-?>
