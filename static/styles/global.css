@@ -235,6 +235,10 @@ strong.important_text_alt {
   font-weight: bold;
 }
 
+strong.bold {
+  font-weight: bold;
+}
+
 .invalid, .warning, .error, .new {
   color: #ff0000;
 }

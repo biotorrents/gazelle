@@ -1,4 +1,5 @@
 <?php
+
 if (!extension_loaded('mysqli')) {
     error('Mysqli Extension not loaded.');
 }
@@ -14,7 +15,6 @@ class Sphinxql extends mysqli
 
     public static $Queries = [];
     public static $Time = 0.0;
-
 
     /**
      * Initialize Sphinxql object

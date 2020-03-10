@@ -60,7 +60,7 @@ class Torrents
                 continue;
             }
             $Data = G::$Cache->get_value($Key . $GroupID, true);
-            if (!empty($Data) && is_array($Data) && $Data['ver'] == Cache::GROUP_VERSION) {
+            if (!empty($Data) && is_array($Data) && $Data['ver'] === Cache::GROUP_VERSION) {
                 unset($NotFound[$GroupID]);
                 $Found[$GroupID] = $Data['d'];
             }
@@ -83,10 +83,10 @@ class Torrents
             $NotFound = [];
             $QueryID = G::$DB->get_query_id();
             G::$DB->query("
-        SELECT
-          ID, Name, NameRJ, NameJP, Year, CatalogueNumber, Pages, Studio, Series, DLSiteID, TagList, WikiImage, CategoryID
-        FROM torrents_group
-        WHERE ID IN ($IDs)");
+                SELECT
+                 ID, Name, NameRJ, NameJP, Year, CatalogueNumber, Pages, Studio, Series, DLSiteID, TagList, WikiImage, CategoryID
+                FROM torrents_group
+                WHERE ID IN ($IDs)");
 
             while ($Group = G::$DB->next_record(MYSQLI_ASSOC, true)) {
                 $NotFound[$Group['ID']] = $Group;
@@ -115,15 +115,15 @@ class Torrents
             if ($Torrents) {
                 $QueryID = G::$DB->get_query_id();
                 G::$DB->query("
-          SELECT
-            ID, GroupID, Media, Container, Codec, Resolution, AudioFormat,
-            Language, Subbing, Subber, Censored, Archive, FileCount, FreeTorrent,
-            Size, Leechers, Seeders, Snatched, Time, f.ExpiryTime, ID AS HasFile,
-            FreeLeechType, hex(info_hash) as info_hash
-          FROM torrents
-          LEFT JOIN shop_freeleeches AS f ON f.TorrentID=ID
-          WHERE GroupID IN ($IDs)
-          ORDER BY GroupID, Media, Container, Codec, ID");
+                    SELECT
+                      ID, GroupID, Media, Container, Codec, Resolution, AudioFormat,
+                      Language, Subbing, Subber, Censored, Archive, FileCount, FreeTorrent,
+                      Size, Leechers, Seeders, Snatched, Time, f.ExpiryTime, ID AS HasFile,
+                      FreeLeechType, hex(info_hash) as info_hash
+                    FROM torrents
+                      LEFT JOIN shop_freeleeches AS f ON f.TorrentID=ID
+                    WHERE GroupID IN ($IDs)
+                    ORDER BY GroupID, Media, Container, Codec, ID");
                 while ($Torrent = G::$DB->next_record(MYSQLI_ASSOC, true)) {
                     $NotFound[$Torrent['GroupID']]['Torrents'][$Torrent['ID']] = $Torrent;
                 }
@@ -137,7 +137,7 @@ class Torrents
             $Found = $NotFound + $Found;
         }
 
-        // Filter out orphans (elements that are == false)
+        // Filter out orphans (elements that are === false)
         $Found = array_filter($Found);
 
         if ($GetArtists) {
@@ -208,20 +208,25 @@ class Torrents
      */
     public static function torrent_properties(&$Torrent, &$Flags)
     {
+        # FL Token
         $Torrent['PersonalFL'] = empty($Torrent['FreeTorrent']) && self::has_token($Torrent['ID']);
-        if ($Torrent['IsSnatched'] = self::has_snatched($Torrent['ID'])) {
+
+        # Snatched
+        if ($Torrent['IsSnatched'] === self::has_snatched($Torrent['ID'])) {
             $Flags['IsSnatched'] = true;
         } else {
             $Flags['IsSnatched'] = false;
         }
 
-        if ($Torrent['IsSeeding'] = self::is_seeding($Torrent['ID'])) {
+        # Seeding
+        if ($Torrent['IsSeeding'] === self::is_seeding($Torrent['ID'])) {
             $Flags['IsSeeding'] = true;
         } else {
             $Flags['IsSeeding'] = false;
         }
 
-        if ($Torrent['IsLeeching'] = self::is_leeching($Torrent['ID'])) {
+        # Leeching
+        if ($Torrent['IsLeeching'] === self::is_leeching($Torrent['ID'])) {
             $Flags['IsLeeching'] = true;
         } else {
             $Flags['IsLeeching'] = false;
@@ -664,23 +669,45 @@ class Torrents
     public static function torrent_info($Data, $ShowMedia = true, $ShowEdition = false, $HTMLy = true)
     {
         $Info = [];
+
+        # Platform
         if ($ShowMedia && !empty($Data['Media'])) {
-            $Info[] = $Data['Media'];
+            $Info[] = display_str($Data['Media']);
         }
+
+        # Format
         if (!empty($Data['Container'])) {
-            $Info[] = $Data['Container'];
+            $Info[] = display_str($Data['Container']);
         }
-        if (!empty($Data['Codec'])) {
-            $Info[] = $Data['Codec'];
+
+        # Archive
+        if (!empty($Data['Archive'])) {
+            $Info[] = display_str($Data['Archive']);
         }
+
+        # Resolution
         if (!empty($Data['Resolution'])) {
-            $Info[] = $Data['Resolution'];
+            $Info[] = display_str($Data['Resolution']);
         }
+        
+        # License
+        if (!empty($Data['Codec'])) {
+            $Info[] = display_str($Data['Codec']);
+        }
+
+        # Alignned/Annotated
+        if ($Data['Censored'] === 1) {
+            $Info[] = 'Aligned';
+        } else {
+            $Info[] = 'Unaligned';
+        }
+
         /*
         if (!empty($Data['AudioFormat'])) {
           $Info[] = $Data['AudioFormat'];
         }
         */
+
         /*
         if (!empty($Data['Language'])) {
           if (!empty($Data['Subber']) && isset($Data['CategoryID']) && ($Data['CategoryID'] == 3 || $Data['CategoryID'] == 4)) {
@@ -690,6 +717,7 @@ class Torrents
           }
         }
         */
+
         /*
         if (!empty($Data['Subbing'])) {
           if (!empty($Data['Subber'])) {
@@ -701,38 +729,31 @@ class Torrents
           }
         }
         */
-        if (!empty($Data['Archive'])) {
-            $Info[] = $Data['Archive'];
-        }
-        if ($Data['Censored'] === 1) {
-            $Info[] = 'Aligned';
-        } else {
-            $Info[] = 'Unaligned';
-        }
+
         if ($Data['IsLeeching']) {
-            $Info[] = $HTMLy ? Format::torrent_label('Leeching') : 'Leeching';
+            $Info[] = $HTMLy ? Format::torrent_label('Leeching', 'important_text') : 'Leeching';
         } elseif ($Data['IsSeeding']) {
-            $Info[] = $HTMLy ? Format::torrent_label('Seeding') : 'Seeding';
+            $Info[] = $HTMLy ? Format::torrent_label('Seeding', 'important_text_alt') : 'Seeding';
         } elseif ($Data['IsSnatched']) {
-            $Info[] = $HTMLy ? Format::torrent_label('Snatched') : 'Snatched';
+            $Info[] = $HTMLy ? Format::torrent_label('Snatched', 'bold') : 'Snatched';
         }
-        # todo: Check strict equality
-        if ($Data['FreeTorrent'] == '1') {
-            if ($Data['FreeLeechType'] == '3') {
+
+        if ($Data['FreeTorrent'] === '1') {
+            if ($Data['FreeLeechType'] === '3') {
                 if ($Data['ExpiryTime']) {
-                    $Info[] = ($HTMLy ? Format::torrent_label('Freeleech!') : 'Freeleech!') . ($HTMLy ? " <strong>(" : " (") . str_replace(['week','day','hour','min','Just now','s',' '], ['w','d','h','m','0m'], time_diff(max(strtotime($Data['ExpiryTime']), time()), 1, false)) . ($HTMLy ? ")</strong>" : ")");
+                    $Info[] = ($HTMLy ? Format::torrent_label('Freeleech!', 'important_text_alt') : 'Freeleech!') . ($HTMLy ? " <strong>(" : " (") . str_replace(['week','day','hour','min','Just now','s',' '], ['w','d','h','m','0m'], time_diff(max(strtotime($Data['ExpiryTime']), time()), 1, false)) . ($HTMLy ? ")</strong>" : ")");
                 } else {
-                    $Info[] = $HTMLy ? Format::torrent_label('Freeleech!') : 'Freeleech!';
+                    $Info[] = $HTMLy ? Format::torrent_label('Freeleech!', 'important_text_alt') : 'Freeleech!';
                 }
             } else {
-                $Info[] = $HTMLy ? Format::torrent_label('Freeleech!') : 'Freeleech!';
+                $Info[] = $HTMLy ? Format::torrent_label('Freeleech!', 'important_text_alt') : 'Freeleech!';
             }
         }
         if ($Data['FreeTorrent'] == '2') {
-            $Info[] = $HTMLy ? Format::torrent_label('Neutral Leech!') : 'Neutral Leech!';
+            $Info[] = $HTMLy ? Format::torrent_label('Neutral Leech!', 'bold') : 'Neutral Leech!';
         }
         if ($Data['PersonalFL']) {
-            $Info[] = $HTMLy ? Format::torrent_label('Personal Freeleech!') : 'Personal Freeleech!';
+            $Info[] = $HTMLy ? Format::torrent_label('Personal Freeleech!', 'important_text_alt') : 'Personal Freeleech!';
         }
         return implode(' / ', $Info);
     }

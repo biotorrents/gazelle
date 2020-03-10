@@ -25,7 +25,7 @@ if (!empty($_GET['searchstr']) || !empty($_GET['groupname'])) {
         $InfoHash = $_GET['groupname'];
     }
 
-    // Search by infohash
+    // Search by info hash
     if ($InfoHash = is_valid_torrenthash($InfoHash)) {
         $InfoHash = db_string(pack('H*', $InfoHash));
         $DB->query("
@@ -111,15 +111,22 @@ if (empty($_GET['order_by']) || !isset(TorrentSearch::$SortOrders[$_GET['order_b
 
 $Page = !empty($_GET['page']) ? (int) $_GET['page'] : 1;
 $Search = new TorrentSearch($GroupResults, $OrderBy, $OrderWay, $Page, TORRENTS_PER_PAGE);
+
+# Three profile toggle options
 if (isset($LoggedUser['HideLolicon']) && $LoggedUser['HideLolicon'] === 1) {
     $Search->insert_hidden_tags('!lolicon !shotacon !toddlercon');
 }
+
+# 2
 if (isset($LoggedUser['HideScat']) && $LoggedUser['HideScat'] === 1) {
     $Search->insert_hidden_tags('!scat');
 }
+
+# 3
 if (isset($LoggedUser['HideSnuff']) && $LoggedUser['HideSnuff'] === 1) {
     $Search->insert_hidden_tags('!snuff');
 }
+
 $Results = $Search->query($_GET);
 $Groups = $Search->get_groups();
 $NumResults = $Search->record_count();
@@ -140,9 +147,11 @@ if ($AdvancedSearch) {
 }
 
 # Start the search form
+# Fortunately it's very easy to search via
+# torrentsearch.class.php
 View::show_header('Browse Torrents', 'browse');
-
 ?>
+
 <div class="thin widethin">
   <div class="header">
     <h2>Torrents</h2>
@@ -162,35 +171,42 @@ View::show_header('Browse Torrents', 'browse');
       </div>
       <div id="ft_container"
         class="pad<?=$HideFilter ? ' hidden' : ''?>">
-        <?php if ((isset($LoggedUser['HideLolicon']) && $LoggedUser['HideLolicon'] === 1)
-   || (isset($LoggedUser['HideScat'])    && $LoggedUser['HideScat']    === 1)
-   || (isset($LoggedUser['HideSnuff'])   && $LoggedUser['HideSnuff']   === 1)
-   ) { ?>
+        <?php
+        # Three profile toggles
+        if ((isset($LoggedUser['HideLolicon']) && $LoggedUser['HideLolicon'] === 1)
+         || (isset($LoggedUser['HideScat'])    && $LoggedUser['HideScat']    === 1)
+         || (isset($LoggedUser['HideSnuff'])   && $LoggedUser['HideSnuff']   === 1)
+        ) { ?>
         <svg title="Your profile settings exclude some results" class="search_warning tooltip" width="10" height="15">
           <rect x=3 width="4" height="10" rx="2" ry="2" />
           <circle cx="5" cy="13" r="2" /></svg>
-        <?php } ?>
+        <?php
+        } ?>
+
         <table class="layout">
-          <tr id="catalogue_number"
+          <tr id="numbers"
             class="ftr_advanced<?=$HideAdvanced?>">
             <td class="label">
-              <!-- Catalogue Number -->
+              <!--
+                Catalogue Number / AudioFormat
+                Accession Number / Version
+              -->
             </td>
-            <td class="ft_cataloguenumber">
-              <input type="search" size="19" name="cataloguenumber" class="inputtext smallest fti_advanced"
-                placeholder="Accession Number"
-                value="<?Format::form('cataloguenumber')?>" />
+            <td class="ft_numbers">
+              <input type="search" size="30" name="numbers" class="inputtext smallest fti_advanced"
+                placeholder="Accession Number / Version"
+                value="<?Format::form('numbers')?>" />
             </td>
           </tr>
 
           <tr id="album_torrent_name"
             class="ftr_advanced<?=$HideAdvanced?>">
             <td class="label">
-              <!-- Torrent Name -->
+              <!-- Torrent Title / Organism / Strain or Variety -->
             </td>
             <td class="ft_groupname">
               <input type="search" spellcheck="false" size="65" name="advgroupname"
-                class="inputtext smaller fti_advanced" placeholder="Torrent Title"
+                class="inputtext smaller fti_advanced" placeholder="Torrent Title / Organism / Strain or Variety"
                 value="<?Format::form('advgroupname')?>" />
             </td>
           </tr>
@@ -202,20 +218,26 @@ View::show_header('Browse Torrents', 'browse');
             </td>
             <td class="ft_artistname">
               <input type="search" spellcheck="false" size="65" id="artist" name="artistname"
-                class="inputtext smaller fti_advanced" placeholder="Author Name"
+                class="inputtext smaller fti_advanced" placeholder="Author (ORCiD pending)"
                 value="<?Format::form('artistname')?>"
                 <?php Users::has_autocomplete_enabled('other'); ?>/>
             </td>
           </tr>
 
-          <tr id="year" class="ftr_advanced<?=$HideAdvanced?>">
+          <tr id="location" class="ftr_advanced<?=$HideAdvanced?>">
             <td class="label">
-              <!-- Year -->
+              <!-- Studio / Series -->
             </td>
-            <td class="ft_year">
+            <td class="ft_location">
+              <input type="search" name="location" class="inputtext smallest fti_advanced"
+                placeholder="Department or Lab / Location"
+                value="<?Format::form('location')?>"
+                size="40" />
+
+              <!-- Year -->
               <input type="search" name="year" class="inputtext smallest fti_advanced" placeholder="Year"
                 value="<?Format::form('year')?>"
-                size="12" />
+                size="20" />
             </td>
           </tr>
 
@@ -239,7 +261,8 @@ View::show_header('Browse Torrents', 'browse');
             <td class="ft_filelist">
               <input type="search" spellcheck="false" size="65" name="filelist" class="inputtext fti_advanced"
                 placeholder="File List"
-                value="<?Format::form('filelist')?>" />
+                value="<?Format::form('filelist')?>" /><br /><br />
+              Universal Search finds info hashes
             </td>
           </tr>
 
@@ -252,7 +275,7 @@ View::show_header('Browse Torrents', 'browse');
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Sequencing</option>
                 <?php  foreach ($Media as $MediaName) { ?>
-                <option value="<?=display_str($MediaName); ?>"
+                <option value="<?=display_str($MediaName); # pcs-comment-start; keep quote ?>"
                 <?Format::selected('media', $MediaName)?>><?=display_str($MediaName); ?>
                 </option>
                 <?php  } ?>
@@ -261,7 +284,7 @@ View::show_header('Browse Torrents', 'browse');
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Imaging</option>
                 <?php  foreach ($MediaManga as $MediaName) { ?>
-                <option value="<?=display_str($MediaName); ?>"
+                <option value="<?=display_str($MediaName); # pcs-comment-start; keep quote ?>"
                 <?Format::selected('media', $MediaName)?>><?=display_str($MediaName); ?>
                 </option>
                 <?php  } ?>
@@ -275,36 +298,40 @@ View::show_header('Browse Torrents', 'browse');
             <td class="label">Formats</td>
             <td class="nobr ft_ripspecifics">
 
+              <!-- 1 -->
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">DNA/RNA</option>
-                <?php  foreach ($Containers as $Key => $Container) { ?>
+                <?php foreach ($Containers as $Key => $Container) { ?>
                 <option value="<?=display_str($Key);?>" <?Format::selected('container', $Key)?>><?=display_str($Key);?>
                 </option>
-                <?php  } ?>
+                <?php } ?>
               </select>
 
+              <!-- 2 -->
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">Proteins</option>
-                <?php  foreach ($ContainersProt as $Key => $Container) { ?>
+                <?php foreach ($ContainersProt as $Key => $Container) { ?>
                 <option value="<?=display_str($Key);?>" <?Format::selected('container', $Key)?>><?=display_str($Key);?>
                 </option>
-                <?php  } ?>
+                <?php } ?>
               </select>
 
+              <!-- 3 -->
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">Imaging</option>
-                <?php  foreach ($ContainersGames as $Key => $Container) { ?>
+                <?php foreach ($ContainersGames as $Key => $Container) { ?>
                 <option value="<?=display_str($Key);?>" <?Format::selected('container', $Key)?>><?=display_str($Key);?>
                 </option>
-                <?php  } ?>
+                <?php } ?>
               </select>
 
+              <!-- 4 -->
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">Extras</option>
-                <?php  foreach ($ContainersExtra as $Key => $Container) { ?>
-                <option value="<?=display_str($Key);?>" <?Format::selected('container', $Key)?>><?=display_str($Key);?>
+                <?php foreach ($ContainersExtra as $Key => $Container) { ?>
+                  <option value="<?=display_str($Key);?>" <?Format::selected('container', $Key)?>><?=display_str($Key);?>
                 </option>
-                <?php  } ?>
+                <?php } ?>
               </select>
             </td>
           </tr>
@@ -317,12 +344,13 @@ View::show_header('Browse Torrents', 'browse');
               <select name="resolution" class="ft_resolution fti_advanced">
                 <option value="">Assembly Level</option>
                 <?php  foreach ($Resolutions as $Resolution) { ?>
-                <option value="<?=display_str($Resolution); ?>"
+                <option value="<?=display_str($Resolution); # pcs-comment-start; keep quote ?>"
                 <?Format::selected('resolution', $Resolution)?>><?=display_str($Resolution); ?>
                 </option>
                 <?php  } ?>
               </select>
 
+              <!-- Aligned/Censored -->
               <select name=" censored" class="ft_censored fti_advanced">
                 <option value="">Alignment</option>
                 <option value="1" <?Format::selected('censored', 1)?>>Aligned
@@ -331,6 +359,7 @@ View::show_header('Browse Torrents', 'browse');
                 </option>
               </select>
 
+              <!-- Leech Status -->
               <select name="freetorrent" class="ft_freetorrent fti_advanced">
                 <option value="">Leech Status</option>
                 <option value="1" <?Format::selected('freetorrent', 1)?>>Freeleech
@@ -343,6 +372,7 @@ View::show_header('Browse Torrents', 'browse');
                 </option>
               </select>
 
+              <!-- Codec/License -->
               <select name="codec" class="ft_codec fti_advanced">
                 <option value="">License</option>
                 <?php  foreach ($Codecs as $Codec) { ?>
@@ -383,11 +413,11 @@ View::show_header('Browse Torrents', 'browse');
           <!-- Start basic search options -->
           <tr id="search_terms" class="ftr_basic<?=$HideBasic?>">
             <td class="label">
-              <!-- Search Terms -->
+              <!-- Universal Search -->
             </td>
             <td class="ftb_searchstr">
               <input type="search" spellcheck="false" size="48" name="searchstr" class="inputtext fti_basic"
-                placeholder="Search Terms"
+                placeholder="Universal Search"
                 value="<?Format::form('searchstr')?>"
                 aria-label="Terms to search">
             </td>
@@ -411,6 +441,7 @@ View::show_header('Browse Torrents', 'browse');
             </td>
           </tr>
 
+          <!-- Order By -->
           <tr id="order">
             <td class="label">Order By</td>
             <td class="ft_order">
@@ -442,6 +473,7 @@ View::show_header('Browse Torrents', 'browse');
             </td>
           </tr>
 
+          <!-- Use torrent groups? -->
           <tr id="search_group_results">
             <td class="label">
               <label for="group_results">Group Torrents</label>
@@ -455,19 +487,19 @@ View::show_header('Browse Torrents', 'browse');
 
         <table class="layout cat_list ft_cat_list">
           <?php
-  $x = 0;
-  reset($Categories);
-  foreach ($Categories as $CatKey => $CatName) {
-      if ($x % 7 === 0) {
-          if ($x > 0) {
-              ?>
+            $x = 0;
+            reset($Categories);
+            foreach ($Categories as $CatKey => $CatName) {
+                if ($x % 7 === 0) {
+                    if ($x > 0) {
+                        ?>
           </tr>
           <?php
-          } ?>
+                    } ?>
           <tr>
             <?php
-      }
-      $x++; ?>
+                }
+                $x++; ?>
             <td>
               <input type="checkbox"
                 name="filter_cat[<?=($CatKey + 1)?>]"
@@ -476,8 +508,7 @@ View::show_header('Browse Torrents', 'browse');
               <label for="cat_<?=($CatKey + 1)?>"><?=$CatName?></label>
             </td>
             <?php
-  }
-  ?>
+            } ?>
           </tr>
         </table>
         <table
@@ -490,7 +521,7 @@ View::show_header('Browse Torrents', 'browse');
       $DB->query('
       SELECT Name
       FROM tags
-      WHERE TagType = \'genre\'
+        WHERE TagType = \'genre\'
       ORDER BY Name');
       $GenreTags = $DB->collect('Name');
       $Cache->cache_value('genre_tags', $GenreTags, 3600 * 6);
@@ -516,6 +547,8 @@ View::show_header('Browse Torrents', 'browse');
             <?php } ?>
           </tr>
         </table>
+
+        <!-- Categories -->
         <table class="layout cat_list">
           <tr>
             <td class="label">
@@ -524,6 +557,8 @@ View::show_header('Browse Torrents', 'browse');
             </td>
           </tr>
         </table>
+
+        <!-- Result count and submit button -->
         <div class="submit ft_submit">
           <span class="float_left"><?=number_format($NumResults)?>
             Results</span>
@@ -534,21 +569,23 @@ View::show_header('Browse Torrents', 'browse');
           <input type="button" value="Reset"
             onclick="location.href = 'torrents.php<?php if (isset($_GET['action']) && $_GET['action'] === 'advanced') { ?>?action=advanced<?php } ?>'" />
           &nbsp;&nbsp;
-          <?php    if ($Search->has_filters()) { ?>
+          <?php if ($Search->has_filters()) { ?>
           <input type="submit" name="setdefault" value="Make Default" />
-          <?php    }
+          <?php }
 
       if (!empty($LoggedUser['DefaultSearch'])) { ?>
           <input type="submit" name="cleardefault" value="Clear Default" />
-          <?php    } ?>
+          <?php } ?>
         </div>
       </div>
     </div>
   </form>
+
+  <!-- No results message -->
   <?php if ($NumResults === 0) { ?>
   <div class="torrents_nomatch box pad" align="center">
-    <h2>Your search did not match anything.</h2>
-    <p>Make sure all names are spelled correctly, or try making your search less specific.</p>
+    <h2>Your search did not match anything</h2>
+    <p>Make sure all names are spelled correctly, or try making your search less specific</p>
   </div>
 </div>
 <?php
@@ -559,14 +596,17 @@ die();
   if ($NumResults < ($Page - 1) * TORRENTS_PER_PAGE + 1) {
       $LastPage = ceil($NumResults / TORRENTS_PER_PAGE);
       $Pages = Format::get_pages(0, $NumResults, TORRENTS_PER_PAGE); ?>
+
 <div class="torrents_nomatch box pad" align="center">
-  <h2>The requested page contains no matches.</h2>
+  <h2>The requested page contains no matches</h2>
   <p>You are requesting page <?=$Page?>, but the search returned only
-    <?=number_format($LastPage) ?> pages.</p>
+    <?=number_format($LastPage) ?> pages</p>
 </div>
+
 <div class="linkbox">Go to page <?=$Pages?>
 </div>
 </div>
+
 <?php
     View::show_footer();
       die();
@@ -581,6 +621,7 @@ die();
 <div class="linkbox"><?=$Pages?>
 </div>
 
+<!-- Results table headings -->
 <table
   class="box torrent_table cats <?=$GroupResults ? 'grouping' : 'no_grouping'?>"
   id="torrent_table">
@@ -669,28 +710,44 @@ die();
           // These torrents are in a group
           $CoverArt = $GroupInfo['WikiImage'];
           $DisplayName .= "<a class=\"torrent_title\" href=\"torrents.php?id=$GroupID\" ";
+
+          # No cover art
           if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
               $DisplayName .= 'data-cover="'.ImageTools::process($CoverArt, 'thumb').'" ';
           }
+
+          # Japanese
           $DisplayName .= "dir=\"ltr\">$GroupName</a>";
+
+          # Year
           if ($GroupYear) {
-              $DisplayName .= " [$GroupYear]";
+              $DisplayName .= "<br />$GroupYear";
           }
+        
+          # Studio
           if ($GroupStudio) {
-              $DisplayName .= " [$GroupStudio]";
+              $DisplayName .= " / $GroupStudio";
           }
+
+          # Catalogue Number
           if ($GroupCatalogueNumber) {
-              $DisplayName .= " [$GroupCatalogueNumber]";
+              $DisplayName .= " / $GroupCatalogueNumber";
           }
+
+          /*
           if ($GroupPages) {
               $DisplayName .= " [{$GroupPages}p]";
           }
+          */
+
+          /*
           if ($GroupDLsiteID) {
               $DisplayName .= " [$GroupDLsiteID]";
-          } ?>
+          }
+          */ ?>
   <tr class="group<?=$SnatchedGroupClass?>">
     <?php
-$ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGrouping'] === 1); ?>
+      $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGrouping'] === 1); ?>
     <td class="center">
       <div id="showimg_<?=$GroupID?>"
         class="<?=($ShowGroups ? 'hide' : 'show')?>_torrents">
@@ -699,14 +756,19 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
           title="Toggle this group (Hold &quot;Shift&quot; to toggle all groups)"></a>
       </div>
     </td>
+
+    <!-- Category icon -->
     <td class="center cats_col">
       <div title="<?=Format::pretty_category($CategoryID)?>"
         class="tooltip <?=Format::css_category($CategoryID)?>">
       </div>
     </td>
+
+    <!-- [ DL | RP ] and [Bookmark] -->
     <td colspan="2" class="big_info">
       <div class="group_info clear">
         <?=$DisplayName?>
+
         <?php  if (in_array($GroupID, $Bookmarks)) { ?>
         <span class="remove_bookmark float_right">
           <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
@@ -714,6 +776,7 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
             onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove
             bookmark</a>
         </span>
+
         <?php  } else { ?>
         <span class="add_bookmark float_right">
           <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
@@ -722,14 +785,21 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
         </span>
         <?php  } ?>
         <br />
+
+        <!-- Tags -->
         <div class="tags"><?=$TorrentTags->format('torrents.php?'.$Action.'&amp;taglist=')?>
         </div>
       </div>
     </td>
+
+    <!-- Time -->
     <td class="nobr"><?=time_diff($GroupTime, 1)?>
     </td>
-    <td class="number_column nobr"><?=Format::get_size($MaxSize)?>
-      (Max)</td>
+
+    <!-- Size -->
+    <td class="number_column nobr"><?=Format::get_size($MaxSize)?>(Max)</td>
+
+    <!-- Snatches, seeders, and leechers -->
     <td class="number_column"><?=number_format($TotalSnatched)?>
     </td>
     <td
@@ -739,6 +809,7 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
     <td class="number_column"><?=number_format($TotalLeechers)?>
     </td>
   </tr>
+
   <?php
     foreach ($Torrents as $TorrentID => $Data) {
         $Data['CategoryID'] = $CategoryID;
@@ -761,6 +832,7 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
                 $TorrentFileName = $Tor->Dec['info']['name'];
                 $Cache->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
             }
+            # Magnet link 1337 h4x
             $TorrentMG = "magnet:?dn=".rawurlencode($TorrentFileName)."&xt=urn:btih:".$Data['info_hash']."&as=https://".SITE_DOMAIN."/".str_replace('&amp;', '%26', $TorrentDL)."&tr=".implode("/".$LoggedUser['torrent_pass']."/announce&tr=", ANNOUNCE_URLS[0])."/".$LoggedUser['torrent_pass']."/announce&xl=".$Data['Size'];
         } ?>
   <tr
@@ -769,16 +841,16 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
       <span>
         [ <a href="<?=$TorrentDL?>" class="tooltip"
           title="Download"><?=$Data['HasFile'] ? 'DL' : 'Missing'?></a>
-        <?php      if (isset($TorrentMG)) { ?>
+        <?php if (isset($TorrentMG)) { ?>
         | <a href="<?=$TorrentMG?>" class="tooltip"
           title="Magnet Link">MG</a>
-        <?php      }
+        <?php }
         if (Torrents::can_use_token($Data)) { ?>
         | <a
           href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>&amp;usetoken=1"
           class="tooltip" title="Use a FL Token"
           onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
-        <?php      } ?>
+        <?php } ?>
         | <a
           href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>"
           class="tooltip" title="Report">RP</a> ]
@@ -807,7 +879,6 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
     }
       } else {
           // Viewing a type that does not require grouping
-
           $TorrentID = key($Torrents);
           $Data = current($Torrents);
 
@@ -817,29 +888,47 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
               $Reported = true;
           }
 
+          # Main search result title link
           $Data['CategoryID'] = $CategoryID;
           $CoverArt = $GroupInfo['WikiImage'];
           $DisplayName .= "<a class=\"torrent_name\" href=\"torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID\" ";
+
           if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
               $DisplayName .= 'data-cover="'.ImageTools::process($CoverArt, 'thumb').'" ';
           }
+
+          # Japanese
           $DisplayName .= "dir=\"ltr\">$GroupName</a>";
+
           if (isset($GroupedCategories[$CategoryID - 1])) {
+              # Year
+              # Sh!t h4x; Year is mandatory
               if ($GroupYear) {
-                  $DisplayName .= " [$GroupYear]";
+                  $DisplayName .= "<br /> $GroupYear";
               }
+
+              # Studio
               if ($GroupStudio) {
-                  $DisplayName .= " [$GroupStudio]";
+                  $DisplayName .= " &ndash; $GroupStudio";
               }
+
+              # Catalogue Number
               if ($GroupCatalogueNumber) {
-                  $DisplayName .= " [$GroupCatalogueNumber]";
+                  $DisplayName .= " &ndash; $GroupCatalogueNumber";
               }
+
+              /*
               if ($GroupPages) {
                   $DisplayName .= " [{$GroupPages}p]";
               }
+              */
+
+              /*
               if ($GroupDLsiteID) {
                   $DisplayName .= " [$GroupDLsiteID]";
               }
+              */
+              
               $ExtraInfo = Torrents::torrent_info($Data, true, true);
           } elseif ($Data['IsSnatched']) {
               $ExtraInfo = Format::torrent_label('Snatched!');
@@ -860,9 +949,9 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
           } ?>
   <tr
     class="torrent<?=$SnatchedTorrentClass . $SnatchedGroupClass?>">
-    <?php    if ($GroupResults) { ?>
+    <?php if ($GroupResults) { ?>
     <td></td>
-    <?php    } ?>
+    <?php } ?>
     <td class="center cats_col">
       <div title="<?=Format::pretty_category($CategoryID)?>"
         class="tooltip <?=Format::css_category($CategoryID)?>"></div>
@@ -873,35 +962,35 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
           <span>
             [ <a href="<?=$TorrentDL?>" class="tooltip"
               title="Download">DL</a>
-            <?php    if (isset($TorrentMG)) { ?>
+            <?php if (isset($TorrentMG)) { ?>
             | <a href="<?=$TorrentMG?>" class="tooltip"
               title="Magnet Link">MG</a>
-            <?php    }
+            <?php }
           if (Torrents::can_use_token($Data)) { ?>
             | <a
               href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>&amp;usetoken=1"
               class="tooltip" title="Use a FL Token"
               onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
-            <?php    } ?>
+            <?php } ?>
             | <a
               href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>"
               class="tooltip" title="Report">RP</a> ]
           </span>
           <br />
-          <?php  if (in_array($GroupID, $Bookmarks)) { ?>
+          <?php if (in_array($GroupID, $Bookmarks)) { ?>
           <span class="remove_bookmark float_right">
             <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
               class="brackets"
               onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove
               bookmark</a>
           </span>
-          <?php  } else { ?>
+          <?php } else { ?>
           <span class="add_bookmark float_right">
             <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
               class="brackets"
               onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
           </span>
-          <?php  } ?>
+          <?php } ?>
         </div>
         <?=$DisplayName?>
         <br />
@@ -936,4 +1025,5 @@ $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGr
 <div class="linkbox"><?=$Pages?>
 </div>
 </div>
-<?php View::show_footer();
+<?php
+View::show_footer();

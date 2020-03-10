@@ -1,4 +1,5 @@
 <?php
+
 class Format
 {
 
@@ -47,7 +48,7 @@ class Format
     public static function cut_string($Str, $Length, $Hard = false, $ShowDots = true)
     {
         if (mb_strlen($Str, 'UTF-8') > $Length) {
-            if ($Hard == 0) {
+            if ($Hard === 0) {
                 // Not hard, cut at closest word
                 $CutDesc = mb_substr($Str, 0, $Length, 'UTF-8');
                 $DescArr = explode(' ', $CutDesc);
@@ -130,7 +131,7 @@ class Format
         $Ratio = self::get_ratio($Dividend, $Divisor);
 
         if ($Ratio === false) {
-            return '--';
+            return '&ndash;';
         }
         if ($Ratio === '∞') {
             return '<span class="tooltip r99" title="Infinite">∞</span>';
@@ -156,10 +157,10 @@ class Format
      */
     public static function get_ratio($Dividend, $Divisor, $Decimal = 2)
     {
-        if ($Divisor == 0 && $Dividend == 0) {
+        if ($Divisor === 0 && $Dividend === 0) {
             return false;
         }
-        if ($Divisor == 0) {
+        if ($Divisor === 0) {
             return '∞';
         }
         return number_format(max($Dividend / $Divisor - (0.5 / pow(10, $Decimal)), 0), $Decimal);
@@ -206,6 +207,7 @@ class Format
     {
         if (!isset($_GET['page'])) {
             $Page = ceil($DefaultResult / $PerPage);
+            # todo: Strict equality breaks comment fetching
             if ($Page == 0) {
                 $Page = 1;
             }
@@ -224,7 +226,7 @@ class Format
     }
 
     // A9 magic. Some other poor soul can write the phpdoc.
-    // For data stored in memcached catalogues (giant arrays), e.g. forum threads
+    // For data stored in memcached catalogues (giant arrays), e.g., forum threads
     public static function catalogue_limit($Page, $PerPage, $CatalogueSize = 500)
     {
         $CatalogueID = floor(($PerPage * $Page - $PerPage) / $CatalogueSize);
@@ -237,7 +239,8 @@ class Format
         return array_slice($Catalogue, (($PerPage * $Page - $PerPage) % $CatalogueSize), $PerPage, true);
     }
 
-    /* Get pages
+    /*
+     * Get pages
      * Returns a page list, given certain information about the pages.
      *
      * @param int $StartPage: The current record the page you're on starts with.
@@ -285,7 +288,7 @@ class Format
             $StartPosition = max($StartPosition, 1);
 
             $QueryString = self::get_url(array('page', 'post'));
-            if ($QueryString != '') {
+            if ($QueryString !== '') {
                 $QueryString = "&amp;$QueryString";
             }
 
@@ -299,7 +302,7 @@ class Format
 
             if (!$Mobile) {
                 for ($i = $StartPosition; $i <= $StopPage; $i++) {
-                    if ($i != $StartPage) {
+                    if ($i !== $StartPage) {
                         $Pages .= "<a href=\"$Location?page=$i$QueryString$Anchor\">";
                     }
                     $Pages .= '<strong>';
@@ -310,7 +313,7 @@ class Format
                     }
 
                     $Pages .= '</strong>';
-                    if ($i != $StartPage) {
+                    if ($i !== $StartPage) {
                         $Pages .= '</a>';
                     }
                     if ($i < $StopPage) {
@@ -346,7 +349,7 @@ class Format
         $Size = (double)$Size;
         for ($Steps = 0; abs($Size) >= 1024 && $Steps < count($Units); $Size /= 1024, $Steps++) {
         }
-        if (func_num_args() == 1 && $Steps >= 4) {
+        if (func_num_args() === 1 && $Steps >= 4) {
             $Levels++;
         }
         return number_format($Size, $Levels) . ' ' . $Units[$Steps];
@@ -445,7 +448,7 @@ class Format
             $Array = $_GET;
         }
         if (isset($Array[$Name]) && $Array[$Name] !== '') {
-            if ($Array[$Name] == $Value) {
+            if ($Array[$Name] === $Value) {
                 echo " $Attribute=\"$Attribute\"";
             }
         }
@@ -515,7 +518,7 @@ class Format
      */
     public static function make_utf8($Str)
     {
-        if ($Str != '') {
+        if ($Str !== '') {
             if (self::is_utf8($Str)) {
                 $Encoding = 'UTF-8';
             }
@@ -525,7 +528,7 @@ class Format
             if (empty($Encoding)) {
                 $Encoding = 'ISO-8859-1';
             }
-            if ($Encoding == 'UTF-8') {
+            if ($Encoding === 'UTF-8') {
                 return $Str;
             } else {
                 return @mb_convert_encoding($Str, 'UTF-8', $Encoding);
@@ -543,15 +546,15 @@ class Format
     {
         return preg_match(
             '%^(?:
-      [\x09\x0A\x0D\x20-\x7E]              // ASCII
-      | [\xC2-\xDF][\x80-\xBF]             // non-overlong 2-byte
-      | \xE0[\xA0-\xBF][\x80-\xBF]         // excluding overlongs
-      | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  // straight 3-byte
-      | \xED[\x80-\x9F][\x80-\xBF]         // excluding surrogates
-      | \xF0[\x90-\xBF][\x80-\xBF]{2}      // planes 1-3
-      | [\xF1-\xF3][\x80-\xBF]{3}          // planes 4-15
-      | \xF4[\x80-\x8F][\x80-\xBF]{2}      // plane 16
-      )*$%xs',
+            [\x09\x0A\x0D\x20-\x7E]            // ASCII
+          | [\xC2-\xDF][\x80-\xBF]             // Non-overlong 2-byte
+          | \xE0[\xA0-\xBF][\x80-\xBF]         // Excluding overlongs
+          | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  // Straight 3-byte
+          | \xED[\x80-\x9F][\x80-\xBF]         // Excluding surrogates
+          | \xF0[\x90-\xBF][\x80-\xBF]{2}      // Planes 1-3
+          | [\xF1-\xF3][\x80-\xBF]{3}          // Planes 4-15
+          | \xF4[\x80-\x8F][\x80-\xBF]{2}      // Plane 16
+            )*$%xs',
             $Str
         );
     }

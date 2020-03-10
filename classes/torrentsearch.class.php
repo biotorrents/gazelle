@@ -1,4 +1,5 @@
 <?php
+
 class TorrentSearch
 {
     const TAGS_ANY = 0;
@@ -50,26 +51,28 @@ class TorrentSearch
 
     // List of fields that can be used for fulltext searches
     private static $Fields = [
-    'artistname' => 1,
-    'audioformat' => 1,
-    'cataloguenumber' => 1,
-    'codec' => 1,
-    'container' => 1,
-    'description' => 1,
-    #'dlsiteid' => 1,
+    'artistname' => 1, # Author
+    'audioformat' => 1, # Version
+    'cataloguenumber' => 1, # Accession Number
+    'numbers' => 1, # Combined ↑
+    'codec' => 1, # License
+    'container' => 1, # Format
+    'description' => 1, # Not group desc
+    'dlsiteid' => 1,
     'filelist' => 1,
-    'groupname' => 1,
-    'groupnamerj' => 1,
-    'groupnamejp' => 1,
+    'groupname' => 1, # Title
+    'groupnamerj' => 1, # Organism
+    'groupnamejp' => 1, # Strain
     'advgroupname' => 1,
-    #'language' => 1,
-    'media' => 1,
-    'resolution' => 1,
+    'language' => 1,
+    'media' => 1, # Platform
+    'resolution' => 1, # Assembly Level
     'searchstr' => 1,
-    'series' => 1,
-    'studio' => 1,
-    #'subber' => 1,
-    #'subbing' => 1,
+    'series' => 1, # Location
+    'studio' => 1, # Department/Lab
+    'location' => 1,
+    'subber' => 1,
+    'subbing' => 1,
     'taglist' => 1
   ];
 
@@ -86,9 +89,11 @@ class TorrentSearch
 
     // Some form field names don't match the ones in the index
     private static $FormsToFields = [
-        # todo: Make these filters significantly less broad
+        # todo: Keep testing the granularity of filter combos
         'searchstr' => '*',
-        'advgroupname' => '*'
+        'advgroupname' => '*', # todo: Fix this ;)
+        'numbers' => '(cataloguenumber,audioformat)',
+        'location' => '(studio,series)'
         #'searchstr' => '(groupname,groupnamerj,groupnamejp,artistname,studio,series,dlsiteid,cataloguenumber,yearfulltext)',
         #'advgroupname' => '(groupname,groupnamerj,groupnamejp)'
   ];
