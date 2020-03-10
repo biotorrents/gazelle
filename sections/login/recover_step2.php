@@ -1,10 +1,13 @@
 <?php
+
 View::show_header('Recover Password');
 ?>
+
 <script src="<?=(STATIC_SERVER)?>functions/validate.js" type="text/javascript">
 </script>
 <script src="<?=(STATIC_SERVER)?>functions/password_validate.js"
   type="text/javascript"></script>
+
 <form class="auth_form" name="recovery" id="recoverform" method="post" action="" onsubmit="return formVal();">
   <input type="hidden" name="key"
     value="<?=display_str($_REQUEST['key'])?>" />
@@ -23,12 +26,12 @@ if (empty($PassWasReset)) {
       <tr>
         <td><strong id="pass_strength"></strong></td>
         <td><input type="password" name="password" id="new_pass_1" class="inputtext" size="40"
-            placeholder="New Password" pattern=".{6,307200}" required></td>
+            placeholder="New Password" pattern=".{6,307200}" required style="width: 250px !important;"></td>
       </tr>
       <tr>
         <td><strong id="pass_match"></strong></td>
         <td><input type="password" name="verifypassword" id="new_pass_2" class="inputtext" size="40"
-            placeholder="Confirm Password" pattern=".{6,307200}" required></td>
+            placeholder="Confirm Password" pattern=".{6,307200}" required style="width: 250px !important;"></td>
       </tr>
       <tr>
         <td></td>
@@ -42,5 +45,6 @@ if (empty($PassWasReset)) {
     <?php } ?>
   </div>
 </form>
+
 <?php
 View::show_footer(['recover' => true]);

@@ -40,9 +40,9 @@ define('FOOTER_FILE', SERVER_ROOT.'/design/publicfooter.php');
 
 <body>
   <div id="head"><span>
-      <!-- <a href="login.php">Log In</a> -->
+      <a href="login.php">Log In</a>
       <?php if (OPEN_REGISTRATION) { ?>
-      <a href="register.php">Register</a>
+      | <a href="register.php">Register</a>
       <?php } ?>
       | <a
         href="mailto:support@biotorrents.de?subject=[TxID <?= strtoupper(bin2hex(random_bytes(2))) ?>] Vague subject lines ignored">Support</a>

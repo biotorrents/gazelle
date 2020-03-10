@@ -42,7 +42,9 @@ p {
   margin: 1em 0;
 }
 
-input[type="text"], input[type="password"], input[type="email"] {
+input[type="text"],
+input[type="password"],
+input[type="email"] {
   color: black;
   background-color: white;
   padding: 0 0 0 6px;
