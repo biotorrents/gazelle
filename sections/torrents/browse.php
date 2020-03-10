@@ -355,7 +355,7 @@ View::show_header('Browse Torrents', 'browse');
                 <option value="">Alignment</option>
                 <option value="1" <?Format::selected('censored', 1)?>>Aligned
                 </option>
-                <option value="0" <?Format::selected('censored', 0)?>>Unaligned
+                <option value="0" <?Format::selected('censored', 0)?>>Not Aligned
                 </option>
               </select>
 
@@ -706,6 +706,9 @@ die();
 
       $SnatchedGroupClass = $GroupInfo['Flags']['IsSnatched'] ? ' snatched_group' : '';
 
+      # Similar to the logic down the page, and on
+      # torrents.class.php and sections/artist/artist.php
+      # todo: Find out exactly whhere this displays (it's not the search results)
       if ($GroupResults && (count($Torrents) > 1 && isset($GroupedCategories[$CategoryID - 1]))) {
           // These torrents are in a group
           $CoverArt = $GroupInfo['WikiImage'];
@@ -721,17 +724,17 @@ die();
 
           # Year
           if ($GroupYear) {
-              $DisplayName .= "<br />$GroupYear";
+              $DisplayName .= "<br /><a href='torrents.php?action=advanced&year=$GroupYear'>$GroupYear</a>";
           }
         
           # Studio
           if ($GroupStudio) {
-              $DisplayName .= " / $GroupStudio";
+              $DisplayName .= " &ndash; <a href='torrents.php?action=advanced&location=$GroupStudio'>$GroupStudio</a>";
           }
 
           # Catalogue Number
           if ($GroupCatalogueNumber) {
-              $DisplayName .= " / $GroupCatalogueNumber";
+              $DisplayName .= " &ndash; <a href='torrents.php?action=advanced&numbers=$GroupCatalogueNumber'>$GroupCatalogueNumber</a>";
           }
 
           /*
@@ -889,6 +892,7 @@ die();
           }
 
           # Main search result title link
+          # These are the main torrent search results
           $Data['CategoryID'] = $CategoryID;
           $CoverArt = $GroupInfo['WikiImage'];
           $DisplayName .= "<a class=\"torrent_name\" href=\"torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID\" ";
@@ -904,17 +908,17 @@ die();
               # Year
               # Sh!t h4x; Year is mandatory
               if ($GroupYear) {
-                  $DisplayName .= "<br /> $GroupYear";
+                  $DisplayName .= "<br /><a href='torrents.php?action=advanced&year=$GroupYear'>$GroupYear</a>";
               }
 
               # Studio
               if ($GroupStudio) {
-                  $DisplayName .= " &ndash; $GroupStudio";
+                  $DisplayName .= " &ndash; <a href='torrents.php?action=advanced&location=$GroupStudio'>$GroupStudio</a>";
               }
 
               # Catalogue Number
               if ($GroupCatalogueNumber) {
-                  $DisplayName .= " &ndash; $GroupCatalogueNumber";
+                  $DisplayName .= " &ndash; <a href='torrents.php?action=advanced&numbers=$GroupCatalogueNumber'>$GroupCatalogueNumber</a>";
               }
 
               /*

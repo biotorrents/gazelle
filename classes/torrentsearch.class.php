@@ -57,6 +57,7 @@ class TorrentSearch
     'numbers' => 1, # Combined ↑
     'codec' => 1, # License
     'container' => 1, # Format
+    'archive' => 0, # todo
     'description' => 1, # Not group desc
     'dlsiteid' => 1,
     'filelist' => 1,

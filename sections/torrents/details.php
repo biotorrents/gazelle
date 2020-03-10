@@ -582,7 +582,7 @@ foreach ($TorrentList as $Torrent) {
         $ExtraInfo .= $AddExtra.display_str('Aligned');
         $AddExtra=' / ';
     } else {
-        $ExtraInfo .= $AddExtra.display_str('Unaligned');
+        $ExtraInfo .= $AddExtra.display_str('Not Aligned');
         $AddExtra=' / ';
     }
 

@@ -531,15 +531,17 @@ p.min_padding {
 }
 
 .tags {
-  padding: 0px 0px 0px 20px;
+  padding: 0 0 0 2em;
   font-style: italic;
 }
 
-.tags a {
+.tags a,
+a.search_link {
   color: black;
 }
 
-.tags a:hover {
+.tags a:hover,
+a:hover.search_link {
   color: black;
   text-decoration: underline;
 }

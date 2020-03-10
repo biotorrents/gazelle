@@ -404,7 +404,7 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
               <option value="3">Alignment</option>
               <option value="1" <?Format::selected('censored', 1)?>>Aligned
               </option>
-              <option value="0" <?Format::selected('censored', 0)?>>Unaligned
+              <option value="0" <?Format::selected('censored', 0)?>>Not Aligned
               </option>
             </select>
           </td>
