@@ -212,21 +212,21 @@ class Torrents
         $Torrent['PersonalFL'] = empty($Torrent['FreeTorrent']) && self::has_token($Torrent['ID']);
 
         # Snatched
-        if ($Torrent['IsSnatched'] === self::has_snatched($Torrent['ID'])) {
+        if ($Torrent['IsSnatched'] = self::has_snatched($Torrent['ID'])) {
             $Flags['IsSnatched'] = true;
         } else {
             $Flags['IsSnatched'] = false;
         }
 
         # Seeding
-        if ($Torrent['IsSeeding'] === self::is_seeding($Torrent['ID'])) {
+        if ($Torrent['IsSeeding'] = self::is_seeding($Torrent['ID'])) {
             $Flags['IsSeeding'] = true;
         } else {
             $Flags['IsSeeding'] = false;
         }
 
         # Leeching
-        if ($Torrent['IsLeeching'] === self::is_leeching($Torrent['ID'])) {
+        if ($Torrent['IsLeeching'] = self::is_leeching($Torrent['ID'])) {
             $Flags['IsLeeching'] = true;
         } else {
             $Flags['IsLeeching'] = false;
