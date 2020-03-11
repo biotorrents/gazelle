@@ -232,10 +232,10 @@ default:
         # torrents_group.Studio
         $Validate->SetFields(
             'studio',
-            '0',
+            '1',
             'string',
-            'Department/Lab must be between 0 and 100 characters.',
-            array('maxlength' => 100, 'minlength' => 0)
+            'Department/Lab must be between 10 and 100 characters.',
+            array('maxlength' => 100, 'minlength' => 10)
         );
 
         # torrents_group.Series

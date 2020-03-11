@@ -231,6 +231,7 @@ switch ($Type) {
     }
     */
 
+    /* Broken 2020-03-10
     $Validate->SetFields(
         'media',
         '1',
@@ -238,6 +239,7 @@ switch ($Type) {
         'Not a valid media',
         array('inarray' => $Media)
     );
+    */
 
     /*
     $Validate->SetFields(

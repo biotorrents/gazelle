@@ -71,7 +71,7 @@ class TorrentSearch
     'searchstr' => 1,
     'series' => 1, # Location
     'studio' => 1, # Department/Lab
-    'location' => 1,
+    'location' => 1, # Combined ↑
     'subber' => 1,
     'subbing' => 1,
     'taglist' => 1
@@ -701,6 +701,22 @@ class TorrentSearch
     {
         if (isset($this->UsedTorrentAttrs['freetorrent'])) {
             $FilterValue = $this->UsedTorrentAttrs['freetorrent'];
+            if ($FilterValue === 3 && $Torrent['FreeTorrent'] === 0) {
+                // Either FL or NL is ok
+                return false;
+            } elseif ($FilterValue !== 3 && $FilterValue !== (int)$Torrent['FreeTorrent']) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+/* Not integers
+    private function filter_torrent_internal($Torrent)
+    {
+        if (isset($this->UsedTorrentAttrs['freetorrent'])) {
+            $FilterValue = $this->UsedTorrentAttrs['freetorrent'];
             if ($FilterValue === '3' && $Torrent['FreeTorrent'] === '0') {
                 // Either FL or NL is ok
                 return false;
@@ -711,3 +727,4 @@ class TorrentSearch
         return true;
     }
 }
+*/

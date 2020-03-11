@@ -157,7 +157,7 @@ class Rules
 <li>Flooding is irritating and you'll get kicked for it. This includes "now playing" scripts, large amounts of
   irrelevant text such as lorem ipsum, and unfunny non sequiturs.</li>
 
-<li>Impersonating other members &mdash; particularly staff members &mdash; will not go unpunished. Please remember that
+<li>Impersonating other members, particularly staff members, will not go unpunished. Please remember that
   the Slack channels are publicly accessible.</li>
 
 <li>Please use the threaded conversations feature in Slack and avoid replying to threads with new messages or

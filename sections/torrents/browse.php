@@ -708,7 +708,6 @@ die();
 
       # Similar to the logic down the page, and on
       # torrents.class.php and sections/artist/artist.php
-      # todo: Find out exactly whhere this displays (it's not the search results)
       if ($GroupResults && (count($Torrents) > 1 && isset($GroupedCategories[$CategoryID - 1]))) {
           // These torrents are in a group
           $CoverArt = $GroupInfo['WikiImage'];
@@ -859,11 +858,9 @@ die();
           class="tooltip" title="Report">RP</a> ]
       </span>
           <a
-          href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"
-          class="torrent_label tl_reported tooltip search_link">
-            <strong>[Details]</strong>
-            <?=Torrents::torrent_info($Data)?>
-          </a>
+          href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>#torrent<?=$TorrentID?>"
+          class="torrent_label tl_reported tooltip search_link"><strong>Details</strong></a>
+          / <?=Torrents::torrent_info($Data)?>
           <?php if ($Reported) { ?>
             / <strong
               class="torrent_label tl_reported tooltip search_link important_text"
@@ -1005,8 +1002,9 @@ die();
         </div>
         <?=$DisplayName?>
         <br />
-        <div style="display: inline;" class="torrent_info"><?=$ExtraInfo?><?php if ($Reported) { ?> / <strong
-            class="torrent_label tl_reported tooltip"
+        <div style="display: inline;" class="torrent_info"><?=$ExtraInfo?><?php if ($Reported) { ?>
+        / <strong
+            class="torrent_label tl_reported tooltip important_text"
             title="Type: <?=ucfirst($Reports[0]['Type'])?><br>Comment: <?=htmlentities(htmlentities($Reports[0]['UserComment']))?>">Reported</strong><?php } ?>
         </div>
         <div class="tags"><?=$TorrentTags->format("torrents.php?$Action&amp;taglist=")?>

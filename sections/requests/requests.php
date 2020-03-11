@@ -560,7 +560,7 @@ View::show_header($Title, 'requests');
           <a href="user.php?id=<?=$FillerInfo['ID']?>"><?=$FillerInfo['Username']?></a>
 <?php      }
             } else { ?>
-        &mdash;
+        &ndash;
 <?php    } ?>
       </td>
       <td>
