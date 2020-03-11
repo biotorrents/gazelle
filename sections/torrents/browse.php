@@ -858,10 +858,17 @@ die();
           href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>"
           class="tooltip" title="Report">RP</a> ]
       </span>
-      &raquo; <a
-        href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"><?=Torrents::torrent_info($Data)?><?php if ($Reported) { ?> / <strong
-          class="torrent_label tl_reported tooltip"
-          title="Type: <?=ucfirst($Reports[0]['Type'])?><br>Comment: <?=htmlentities(htmlentities($Reports[0]['UserComment']))?>">Reported</strong><?php } ?></a>
+          <a
+          href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"
+          class="torrent_label tl_reported tooltip search_link">
+            <strong>[Details]</strong>
+            <?=Torrents::torrent_info($Data)?>
+          </a>
+          <?php if ($Reported) { ?>
+            / <strong
+              class="torrent_label tl_reported tooltip search_link important_text"
+              title="Type: <?=ucfirst($Reports[0]['Type'])?><br>
+                Comment: <?=htmlentities(htmlentities($Reports[0]['UserComment']))?>">Reported</strong><?php } ?>
     </td>
     <td class="number_column"><?=$Data['FileCount']?>
     </td>
