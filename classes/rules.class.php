@@ -109,6 +109,8 @@ class Rules
 
   <li>Please discuss site news in the corresponding Announcements thread instead of making a new General thread.
     Discussing science-related news in General is highly encouraged, but discussing political news is much less so.
+    But don't self-censor, e.g., you can discuss the political and economic factors of the 2019-nCoV outbreak,
+    but you can't start a thread about trade deals and hope to steer it toward biology.
     Thank you.</li>
 
   <li>No advertising, referrals, affiliate links, cryptocurrency pumps, or calls to action that involve using a

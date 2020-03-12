@@ -1,6 +1,7 @@
-<?
+<?php
 
-class AutoEnable {
+class AutoEnable
+{
 
     // Constants for database values
     const APPROVED = 1;
@@ -11,10 +12,10 @@ class AutoEnable {
     const CACHE_KEY_NAME = 'num_enable_requests';
 
     // The default request rejected message
-    const REJECTED_MESSAGE = "Your request to re-enable your account has been rejected.<br>This may be because a request is already pending for your username, or because a recent request was denied.<br><br>You are encouraged to discuss this with staff by visiting %s on %s";
+    const REJECTED_MESSAGE = "Your request to re-enable your account has been rejected.<br /><br />This may be because a request is already pending for your username, or because a recent request was denied.<br /><br />You are encouraged to discuss this with staff by visiting %s on %s";
 
     // The default request received message
-    const RECEIVED_MESSAGE = "Your request to re-enable your account has been received. Most requests are responded to within minutes. Remember to check your spam.<br>If you do not receive an email after 48 hours have passed, please visit us on IRC for assistance.";
+    const RECEIVED_MESSAGE = "Your request to re-enable your account has been received. Most requests are responded to within minutes. Remember to check your spam.<br /><br />If you do not receive an email after 48 hours have passed, please visit us on IRC for assistance.";
 
     /**
      * Handle a new enable request
@@ -23,7 +24,8 @@ class AutoEnable {
      * @param string $Email The user's email address
      * @return string The output
      */
-    public static function new_request($Username, $Email) {
+    public static function new_request($Username, $Email)
+    {
         if (empty($Username)) {
             header("Location: login.php");
             die();
@@ -69,11 +71,16 @@ class AutoEnable {
             // New disable activation request
             $UserAgent = db_string($_SERVER['HTTP_USER_AGENT']);
 
-            G::$DB->query("
+            G::$DB->query(
+                "
                 INSERT INTO users_enable_requests
                 (UserID, Email, IP, UserAgent, Timestamp)
                 VALUES (?, ?, ?, ?, NOW())",
-                $UserID, Crypto::encrypt($Email), Crypto::encrypt($IP), $UserAgent);
+                $UserID,
+                Crypto::encrypt($Email),
+                Crypto::encrypt($IP),
+                $UserAgent
+            );
             $RequestID = G::$DB->inserted_id();
 
             // Cache the number of requests for the modbar
@@ -82,7 +89,7 @@ class AutoEnable {
             $Output = self::RECEIVED_MESSAGE;
             Tools::update_user_notes($UserID, sqltime() . " - Enable request " . G::$DB->inserted_id() . " received from $IP\n\n");
             if ($BanReason == 3) {
-              //self::handle_requests([$RequestID], self::APPROVED, "Automatically approved (inactivity)");
+                //self::handle_requests([$RequestID], self::APPROVED, "Automatically approved (inactivity)");
             }
         }
 
@@ -96,7 +103,8 @@ class AutoEnable {
      * @param int $Status The status to mark the requests as
      * @param string $Comment The staff member comment
      */
-    public static function handle_requests($IDs, $Status, $Comment) {
+    public static function handle_requests($IDs, $Status, $Comment)
+    {
         if ($Status != self::APPROVED && $Status != self::DENIED && $Status != self::DISCARDED) {
             error(404);
         }
@@ -123,7 +131,7 @@ class AutoEnable {
         if ($Status != self::DISCARDED) {
             // Prepare email
             require_once(SERVER_ROOT . '/classes/templates.class.php');
-            $TPL = NEW TEMPLATE;
+            $TPL = new TEMPLATE;
             if ($Status == self::APPROVED) {
                 $TPL->open(SERVER_ROOT . '/templates/enable_request_accepted.tpl');
                 $TPL->set('SITE_DOMAIN', SITE_DOMAIN);
@@ -168,10 +176,10 @@ class AutoEnable {
             FROM users_main
             WHERE ID = ?", $StaffID);
         if (G::$DB->has_results()) {
-          list($StaffUser) = G::$DB->next_record();
+            list($StaffUser) = G::$DB->next_record();
         } else {
-          $StaffUser = "System";
-          $StaffID = 0;
+            $StaffUser = "System";
+            $StaffID = 0;
         }
 
         foreach ($UserInfo as $User) {
@@ -196,7 +204,8 @@ class AutoEnable {
      *
      * @param int $ID The request ID
      */
-    public static function unresolve_request($ID) {
+    public static function unresolve_request($ID)
+    {
         $ID = (int) $ID;
 
         if (empty($ID)) {
@@ -235,12 +244,13 @@ class AutoEnable {
      * @param int $Outcome The outcome integer
      * @return string The formatted output string
      */
-    public static function get_outcome_string($Outcome) {
+    public static function get_outcome_string($Outcome)
+    {
         if ($Outcome == self::APPROVED) {
             $String = "Approved";
-        } else if ($Outcome == self::DENIED) {
+        } elseif ($Outcome == self::DENIED) {
             $String = "Rejected";
-        } else if ($Outcome == self::DISCARDED) {
+        } elseif ($Outcome == self::DISCARDED) {
             $String = "Discarded";
         } else {
             $String = "---";
@@ -255,7 +265,8 @@ class AutoEnable {
      * @param string $Token The token
      * @return string The error output, or an empty string
      */
-    public static function handle_token($Token) {
+    public static function handle_token($Token)
+    {
         $Token = db_string($Token);
         G::$DB->query("
             SELECT uer.UserID, uer.HandledTimestamp, um.torrent_pass, um.Visible, um.IP
@@ -299,7 +310,8 @@ class AutoEnable {
      * @param boolean $Checked Should checked requests be included?
      * @return array The WHERE conditions for the query
      */
-    public static function build_search_query($Username, $IP, $SubmittedBetween, $SubmittedTimestamp1, $SubmittedTimestamp2, $HandledUsername, $HandledBetween, $HandledTimestamp1, $HandledTimestamp2, $OutcomeSearch, $Checked) {
+    public static function build_search_query($Username, $IP, $SubmittedBetween, $SubmittedTimestamp1, $SubmittedTimestamp2, $HandledUsername, $HandledBetween, $HandledTimestamp1, $HandledTimestamp2, $OutcomeSearch, $Checked)
+    {
         $Where = [];
 
         if (!empty($Username)) {
@@ -312,7 +324,7 @@ class AutoEnable {
         }
 
         if (!empty($SubmittedTimestamp1)) {
-            switch($SubmittedBetween) {
+            switch ($SubmittedBetween) {
                 case 'on':
                     $Where[] = "DATE(uer.Timestamp) = DATE('$SubmittedTimestamp1')";
                     break;
@@ -333,7 +345,7 @@ class AutoEnable {
         }
 
         if (!empty($HandledTimestamp1)) {
-            switch($HandledBetween) {
+            switch ($HandledBetween) {
                 case 'on':
                     $Where[] = "DATE(uer.HandledTimestamp) = DATE('$HandledTimestamp1')";
                     break;
