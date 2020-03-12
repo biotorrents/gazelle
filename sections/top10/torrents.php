@@ -65,7 +65,7 @@ if (check_perms('site_advanced_top10')) {
                 <tr id="tagfilter">
                     <td class="label">Tags (comma-separated)</td>
                     <td class="ft_taglist">
-                        <input type="text" name="tags" id="tags" size="75" value="<?php if (!empty($_GET['tags'])) {
+                        <input type="text" name="tags" id="tags" size="65" value="<?php if (!empty($_GET['tags'])) {
         echo display_str($_GET['tags']);
     } ?>" <?php Users::has_autocomplete_enabled('other'); ?>
                         />&nbsp;

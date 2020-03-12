@@ -1,4 +1,5 @@
 <?php
+
 $SphQL = new SphinxqlQuery();
 $SphQL->select('id, votes, bounty')->from('requests, requests_delta');
 
@@ -316,163 +317,193 @@ View::show_header($Title, 'requests');
 ?>
 
 <div class="thin">
-  <div class="header">
-    <h2><?=$Title?></h2>
-  </div>
-  <div class="linkbox">
-<?php  if (!$BookmarkView) {
+    <div class="header">
+        <h2><?=$Title?>
+        </h2>
+    </div>
+    <div class="linkbox">
+        <?php  if (!$BookmarkView) {
     if (check_perms('site_submit_requests')) { ?>
-    <a href="requests.php?action=new" class="brackets">New request</a>
-    <a href="requests.php?type=created" class="brackets">My requests</a>
-<?php    }
+        <a href="requests.php?action=new" class="brackets">New request</a>
+        <a href="requests.php?type=created" class="brackets">My requests</a>
+        <?php    }
     if (check_perms('site_vote')) { ?>
-    <a href="requests.php?type=voted" class="brackets">Requests I've voted on</a>
-<?php    } ?>
-    <a href="bookmarks.php?type=requests" class="brackets">Bookmarked requests</a>
-<?php
+        <a href="requests.php?type=voted" class="brackets">Requests I've voted on</a>
+        <?php    } ?>
+        <a href="bookmarks.php?type=requests" class="brackets">Bookmarked requests</a>
+        <?php
 } else { ?>
-    <a href="bookmarks.php?type=torrents" class="brackets">Torrents</a>
-    <a href="bookmarks.php?type=artists" class="brackets">Artists</a>
-    <a href="bookmarks.php?type=collages" class="brackets">Collections</a>
-    <a href="bookmarks.php?type=requests" class="brackets">Requests</a>
-<?php  } ?>
-  </div>
-<?php  if ($BookmarkView && $NumResults === 0) { ?>
-  <div class="box pad" align="center">
-    <h2>You have not bookmarked any requests.</h2>
-  </div>
-<?php  } else { ?>
-  <form class="search_form" name="requests" action="" method="get">
-<?php    if ($BookmarkView) { ?>
-    <input type="hidden" name="action" value="view" />
-    <input type="hidden" name="type" value="requests" />
-<?php    } elseif (isset($_GET['type'])) { ?>
-    <input type="hidden" name="type" value="<?=$_GET['type']?>" />
-<?php    } ?>
-    <input type="hidden" name="submit" value="true" />
-<?php    if (!empty($_GET['userid']) && is_number($_GET['userid'])) { ?>
-    <input type="hidden" name="userid" value="<?=$_GET['userid']?>" />
-<?php    } ?>
-    <div class="box pad">
-    <table cellpadding="6" cellspacing="1" border="0" class="layout" width="100%">
-      <tr id="search_terms">
-        <td class="label"><!--Search Terms--></td>
-        <td>
-          <input type="search" name="search" size="60" class="inputtext" placeholder="Search Terms" value="<?php if (isset($_GET['search'])) {
+        <a href="bookmarks.php?type=torrents" class="brackets">Torrents</a>
+        <a href="bookmarks.php?type=artists" class="brackets">Artists</a>
+        <a href="bookmarks.php?type=collages" class="brackets">Collections</a>
+        <a href="bookmarks.php?type=requests" class="brackets">Requests</a>
+        <?php  } ?>
+    </div>
+    <?php  if ($BookmarkView && $NumResults === 0) { ?>
+    <div class="box pad" align="center">
+        <h2>You have not bookmarked any requests.</h2>
+    </div>
+    <?php  } else { ?>
+    <form class="search_form" name="requests" action="" method="get">
+        <?php    if ($BookmarkView) { ?>
+        <input type="hidden" name="action" value="view" />
+        <input type="hidden" name="type" value="requests" />
+        <?php    } elseif (isset($_GET['type'])) { ?>
+        <input type="hidden" name="type"
+            value="<?=$_GET['type']?>" />
+        <?php    } ?>
+        <input type="hidden" name="submit" value="true" />
+        <?php    if (!empty($_GET['userid']) && is_number($_GET['userid'])) { ?>
+        <input type="hidden" name="userid"
+            value="<?=$_GET['userid']?>" />
+        <?php    } ?>
+        <div class="box pad">
+            <table cellpadding="6" cellspacing="1" border="0" class="layout" width="100%">
+
+                <tr id="search_terms">
+                    <td class="label">
+                        <!--Search Terms-->
+                    </td>
+                    <td>
+                        <input type="search" name="search" size="60" class="inputtext" placeholder="Search Terms" value="<?php if (isset($_GET['search'])) {
         echo display_str($_GET['search']);
     } ?>" />
-        </td>
-      </tr>
-      <tr id="tagfilter">
-        <td class="label"><!--Tags (comma-separated)--></td>
-        <td>
-          <input type="search" name="tags" id="tags" size="49" class="inputtext" placeholder="Tags (comma-separated)" value="<?=!empty($TagNames) ? display_str($TagNames) : ''?>"<?php Users::has_autocomplete_enabled('other'); ?> />&nbsp;
-          <input type="radio" name="tags_type" id="tags_type0" value="0"<?php Format::selected('tags_type', 0, 'checked')?> /><label for="tags_type0"> Any</label>&nbsp;&nbsp;
-          <input type="radio" name="tags_type" id="tags_type1" value="1"<?php Format::selected('tags_type', 1, 'checked')?> /><label for="tags_type1"> All</label>
-        </td>
-      </tr>
-      <tr id="include_filled">
-        <td class="label"><label for="include_filled_box">Include Filled</label></td>
-        <td>
-          <input type="checkbox" id="include_filled_box" name="show_filled"<?php if (!$Submitted || !empty($_GET['show_filled']) || (!$Submitted && !empty($_GET['type']) && $_GET['type'] === 'filled')) { ?> checked="checked"<?php } ?> />
-        </td>
-      </tr>
-      <tr id="include_old">
-        <td class="label"><label for="include_old_box">Include Old</label></td>
-        <td>
-          <input type="checkbox" id="include_old_box" name="showall"<?php if (!empty($_GET['showall'])) { ?> checked="checked"<?php } ?> />
-        </td>
-      </tr>
-<?php    /* ?>
-      <tr>
-        <td class="label">Requested by:</td>
-        <td>
-          <input type="search" name="requester" size="75" value="<?=display_str($_GET['requester'])?>" />
-        </td>
-      </tr>
-<?    */ ?>
-    </table>
-    <table class="layout cat_list">
-<?php
+                    </td>
+                </tr>
+
+                <tr id="tagfilter">
+                    <td class="label">
+                        <!--Tags (comma-separated)-->
+                    </td>
+                    <td>
+                        <input type="search" name="tags" id="tags" size="50" class="inputtext"
+                            placeholder="Tags (comma-separated)"
+                            value="<?=!empty($TagNames) ? display_str($TagNames) : ''?>"
+                            <?php Users::has_autocomplete_enabled('other'); ?>
+                        />&nbsp;
+                        <input type="radio" name="tags_type" id="tags_type0" value="0" <?php Format::selected('tags_type', 0, 'checked')?>
+                        /><label for="tags_type0"> Any</label>&nbsp;&nbsp;
+                        <input type="radio" name="tags_type" id="tags_type1" value="1" <?php Format::selected('tags_type', 1, 'checked')?>
+                        /><label for="tags_type1"> All</label>
+                    </td>
+                </tr>
+
+                <?php /*
+                <tr>
+                  <td class="label"><!-- Requested By --></td>
+                    <td>
+                      <input type="search" name="requester" size="60" class="inputtext" placeholder="Requested By" value="<?=display_str($_GET['requester'])?>" />
+                    </td>
+                </tr>
+                */ ?>
+
+                <tr id="include_filled">
+                    <td class="label"><label for="include_filled_box">Include Filled</label></td>
+                    <td>
+                        <input type="checkbox" id="include_filled_box" name="show_filled" <?php if (!$Submitted || !empty($_GET['show_filled']) || (!$Submitted && !empty($_GET['type']) && $_GET['type'] === 'filled')) { ?>
+                        checked="checked"<?php } ?> />
+                    </td>
+                </tr>
+
+                <tr id="include_old">
+                    <td class="label"><label for="include_old_box">Include Old</label></td>
+                    <td>
+                        <input type="checkbox" id="include_old_box" name="showall" <?php if (!empty($_GET['showall'])) { ?>
+                        checked="checked"<?php } ?> />
+                    </td>
+                </tr>
+            </table>
+            <table class="layout cat_list">
+                <?php
     $x = 1;
     reset($Categories);
     foreach ($Categories as $CatKey => $CatName) {
         if ($x % 8 === 0 || $x === 1) {
             ?>
-        <tr>
-<?php
+                <tr>
+                    <?php
         } ?>
-          <td>
-            <input type="checkbox" name="filter_cat[<?=($CatKey + 1) ?>]" id="cat_<?=($CatKey + 1) ?>" value="1"<?php if (isset($_GET['filter_cat'][$CatKey + 1])) { ?> checked="checked"<?php } ?> />
-            <label for="cat_<?=($CatKey + 1) ?>"><?=$CatName?></label>
-          </td>
-<?php      if ($x % 7 === 0) { ?>
-        </tr>
-<?php
+                    <td>
+                        <input type="checkbox"
+                            name="filter_cat[<?=($CatKey + 1) ?>]"
+                            id="cat_<?=($CatKey + 1) ?>" value="1"
+                            <?php if (isset($_GET['filter_cat'][$CatKey + 1])) { ?>
+                        checked="checked"<?php } ?> />
+                        <label for="cat_<?=($CatKey + 1) ?>"><?=$CatName?></label>
+                    </td>
+                    <?php      if ($x % 7 === 0) { ?>
+                </tr>
+                <?php
       }
         $x++;
     }
 ?>
-    </table>
-    <table class="layout">
-      <tr>
-        <td colspan="2" class="center">
-          <input type="submit" value="Search" />
-        </td>
-      </tr>
-    </table>
+            </table>
+            <table class="layout">
+                <tr>
+                    <td colspan="2" class="center">
+                        <input type="submit" value="Search" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+    <?php    if (isset($PageLinks)) { ?>
+    <div class="linkbox">
+        <?= $PageLinks?>
     </div>
-  </form>
-<?php    if (isset($PageLinks)) { ?>
-  <div class="linkbox">
-    <?= $PageLinks?>
-  </div>
-<?php    } ?>
-  <table id="request_table" class="request_table border" cellpadding="6" cellspacing="1" border="0" width="100%">
-    <tr class="colhead_dark">
-      <td class="small cats_col"></td>
-      <td style="width: 38%;" class="nobr">
-        <strong>Request Name</strong>
-      </td>
-      <td class="nobr">
-        <a href="?order=votes&amp;sort=<?=($OrderBy === 'votes' ? $NewSort : 'desc')?>&amp;<?=$CurrentURL?>"><strong>Votes</strong></a>
-      </td>
-      <td class="nobr">
-        <a href="?order=bounty&amp;sort=<?=($OrderBy === 'bounty' ? $NewSort : 'desc')?>&amp;<?=$CurrentURL?>"><strong>Bounty</strong></a>
-      </td>
-      <td class="nobr">
-        <a href="?order=filled&amp;sort=<?=($OrderBy === 'filled' ? $NewSort : 'desc')?>&amp;<?=$CurrentURL?>"><strong>Filled</strong></a>
-      </td>
-      <td class="nobr">
-        <strong>Filled by</strong>
-      </td>
-      <td class="nobr">
-        <strong>Requested by</strong>
-      </td>
-      <td class="nobr">
-        <a href="?order=created&amp;sort=<?=($OrderBy === 'created' ? $NewSort : 'desc')?>&amp;<?=$CurrentURL?>"><strong>Created</strong></a>
-      </td>
-      <td class="nobr">
-        <a href="?order=lastvote&amp;sort=<?=($OrderBy === 'lastvote' ? $NewSort : 'desc')?>&amp;<?=$CurrentURL?>"><strong>Last vote</strong></a>
-      </td>
-    </tr>
-<?php
+    <?php    } ?>
+    <table id="request_table" class="request_table border" cellpadding="6" cellspacing="1" border="0" width="100%">
+        <tr class="colhead_dark">
+            <td class="small cats_col"></td>
+            <td style="width: 38%;" class="nobr">
+                <strong>Request Name</strong>
+            </td>
+            <td class="nobr">
+                <a
+                    href="?order=votes&amp;sort=<?=($OrderBy === 'votes' ? $NewSort : 'desc')?>&amp;<?=$CurrentURL?>"><strong>Votes</strong></a>
+            </td>
+            <td class="nobr">
+                <a
+                    href="?order=bounty&amp;sort=<?=($OrderBy === 'bounty' ? $NewSort : 'desc')?>&amp;<?=$CurrentURL?>"><strong>Bounty</strong></a>
+            </td>
+            <td class="nobr">
+                <a
+                    href="?order=filled&amp;sort=<?=($OrderBy === 'filled' ? $NewSort : 'desc')?>&amp;<?=$CurrentURL?>"><strong>Filled</strong></a>
+            </td>
+            <td class="nobr">
+                <strong>Filled by</strong>
+            </td>
+            <td class="nobr">
+                <strong>Requested by</strong>
+            </td>
+            <td class="nobr">
+                <a
+                    href="?order=created&amp;sort=<?=($OrderBy === 'created' ? $NewSort : 'desc')?>&amp;<?=$CurrentURL?>"><strong>Created</strong></a>
+            </td>
+            <td class="nobr">
+                <a
+                    href="?order=lastvote&amp;sort=<?=($OrderBy === 'lastvote' ? $NewSort : 'desc')?>&amp;<?=$CurrentURL?>"><strong>Last
+                        vote</strong></a>
+            </td>
+        </tr>
+        <?php
     if ($NumResults === 0) {
         // not viewing bookmarks but no requests found
 ?>
-    <tr class="row">
-      <td colspan="8">
-        Nothing found!
-      </td>
-    </tr>
-<?php
+        <tr class="row">
+            <td colspan="8">
+                Nothing found!
+            </td>
+        </tr>
+        <?php
     } elseif ($Page === 0) { ?>
-    <tr class="row">
-      <td colspan="8">
-        The requested page contains no matches!
-      </td>
-    </tr>
-<?php
+        <tr class="row">
+            <td colspan="8">
+                The requested page contains no matches!
+            </td>
+        </tr>
+        <?php
     } else {
         $TimeCompare = 1267643718; // Requests v2 was implemented 2010-03-03 20:15:18
         $Requests = Requests::get_requests(array_keys($SphRequests));
@@ -517,72 +548,79 @@ View::show_header($Title, 'requests');
                 $FullName .= " $ExtraInfo";
             }
             $Tags = $Request['Tags']; ?>
-    <tr class="request">
-      <td class="center cats_col">
-        <div title="<?=Format::pretty_category($Request['CategoryID'])?>" class="tooltip <?=Format::css_category($Request['CategoryID'])?>"></div>
-      </td>
-      <td>
-          <div id="request_name">
-        <?=$FullName?>
-        </div>
-        <div class="tags">
-<?php
+        <tr class="request">
+            <td class="center cats_col">
+                <div title="<?=Format::pretty_category($Request['CategoryID'])?>"
+                    class="tooltip <?=Format::css_category($Request['CategoryID'])?>">
+                </div>
+            </td>
+            <td>
+                <div id="request_name">
+                    <?=$FullName?>
+                </div>
+                <div class="tags">
+                    <?php
     $TagList = [];
             foreach ($Request['Tags'] as $TagID => $TagName) {
                 $Split = Tags::get_name_and_class($TagName);
                 $TagList[] = '<a class="'.$Split['class'].'" href="?tags='.$TagName.($BookmarkView ? '&amp;type=requests' : '').'">'.display_str($Split['name']).'</a>';
             }
             $TagList = implode(', ', $TagList); ?>
-          <?=$TagList?>
-        </div>
-      </td>
-      <td class="nobr">
-        <span id="vote_count_<?=$RequestID?>"><?=number_format($VoteCount)?></span>
-<?php    if (!$IsFilled && check_perms('site_vote')) { ?>
-        &nbsp;&nbsp; <a href="javascript:Vote(0, <?=$RequestID?>)" class="brackets"><strong>+</strong></a>
-<?php    } ?>
-      </td>
-      <td class="number_column nobr">
-        <?=Format::get_size($Bounty)?>
-      </td>
-      <td class="nobr">
-<?php    if ($IsFilled) { ?>
-        <a href="torrents.php?<?=(strtotime($Request['TimeFilled']) < $TimeCompare ? 'id=' : 'torrentid=') . $Request['TorrentID']?>"><strong><?=time_diff($Request['TimeFilled'], 1)?></strong></a>
-<?php    } else { ?>
-        <strong>No</strong>
-<?php    } ?>
-      </td>
-      <td>
-<?php    if ($IsFilled) {
+                    <?=$TagList?>
+                </div>
+            </td>
+            <td class="nobr">
+                <span id="vote_count_<?=$RequestID?>"><?=number_format($VoteCount)?></span>
+                <?php    if (!$IsFilled && check_perms('site_vote')) { ?>
+                &nbsp;&nbsp; <a
+                    href="javascript:Vote(0, <?=$RequestID?>)"
+                    class="brackets"><strong>+</strong></a>
+                <?php    } ?>
+            </td>
+            <td class="number_column nobr">
+                <?=Format::get_size($Bounty)?>
+            </td>
+            <td class="nobr">
+                <?php    if ($IsFilled) { ?>
+                <a
+                    href="torrents.php?<?=(strtotime($Request['TimeFilled']) < $TimeCompare ? 'id=' : 'torrentid=') . $Request['TorrentID']?>"><strong><?=time_diff($Request['TimeFilled'], 1)?></strong></a>
+                <?php    } else { ?>
+                <strong>No</strong>
+                <?php    } ?>
+            </td>
+            <td>
+                <?php    if ($IsFilled) {
                 if ($Request['AnonymousFill']) { ?>
-          <em>Anonymous</em>
-<?php      } else { ?>
-          <a href="user.php?id=<?=$FillerInfo['ID']?>"><?=$FillerInfo['Username']?></a>
-<?php      }
+                <em>Anonymous</em>
+                <?php      } else { ?>
+                <a
+                    href="user.php?id=<?=$FillerInfo['ID']?>"><?=$FillerInfo['Username']?></a>
+                <?php      }
             } else { ?>
-        &ndash;
-<?php    } ?>
-      </td>
-      <td>
-        <a href="user.php?id=<?=$Request['UserID']?>"><?=Users::format_username($Request['UserID'], false, false, false)?></a>
-      </td>
-      <td class="nobr">
-        <?=time_diff($Request['TimeAdded'], 1)?>
-      </td>
-      <td class="nobr">
-        <?=time_diff($Request['LastVote'], 1)?>
-      </td>
-    </tr>
-<?php
+                &ndash;
+                <?php    } ?>
+            </td>
+            <td>
+                <a
+                    href="user.php?id=<?=$Request['UserID']?>"><?=Users::format_username($Request['UserID'], false, false, false)?></a>
+            </td>
+            <td class="nobr">
+                <?=time_diff($Request['TimeAdded'], 1)?>
+            </td>
+            <td class="nobr">
+                <?=time_diff($Request['LastVote'], 1)?>
+            </td>
+        </tr>
+        <?php
         } // foreach
     } // else
   } // if ($BookmarkView && $NumResults < 1)
 ?>
-  </table>
-<?php if (isset($PageLinks)) { ?>
-  <div class="linkbox">
-    <?=$PageLinks?>
-  </div>
-<?php } ?>
+    </table>
+    <?php if (isset($PageLinks)) { ?>
+    <div class="linkbox">
+        <?=$PageLinks?>
+    </div>
+    <?php } ?>
 </div>
-<?php View::show_footer(); ?>
+<?php View::show_footer();
