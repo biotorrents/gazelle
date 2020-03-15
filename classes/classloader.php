@@ -1,14 +1,15 @@
-<?
+<?php
+
 /**
  * Load classes automatically when they're needed
  *
  * @param string $ClassName class name
  */
 spl_autoload_register(function ($ClassName) {
-  $FilePath = SERVER_ROOT . '/classes/' . strtolower($ClassName) . '.class.php';
-  if (!file_exists($FilePath)) {
-    // todo: Rename the following classes to conform with the code guidelines
-    switch ($ClassName) {
+    $FilePath = SERVER_ROOT . '/classes/' . strtolower($ClassName) . '.class.php';
+    if (!file_exists($FilePath)) {
+        // todo: Rename the following classes to conform with the code guidelines
+        switch ($ClassName) {
       case 'MASS_USER_BOOKMARKS_EDITOR':
         $FileName = 'mass_user_bookmarks_editor.class';
         break;
@@ -29,7 +30,7 @@ spl_autoload_register(function ($ClassName) {
       default:
         die("Couldn't import class $ClassName");
     }
-    $FilePath = SERVER_ROOT . "/classes/$FileName.php";
-  }
-  require_once($FilePath);
+        $FilePath = SERVER_ROOT . "/classes/$FileName.php";
+    }
+    require_once($FilePath);
 });

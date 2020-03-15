@@ -1,8 +1,8 @@
 <?php
 
+# todo: Check strict equality gently
 class AutoEnable
 {
-
     // Constants for database values
     const APPROVED = 1;
     const DENIED = 2;
@@ -33,11 +33,11 @@ class AutoEnable
 
         // Get the user's ID
         G::$DB->query("
-                SELECT um.ID, ui.BanReason
-                FROM users_main AS um
-                JOIN users_info ui ON ui.UserID = um.ID
-                WHERE um.Username = '$Username'
-                  AND um.Enabled = '2'");
+        SELECT um.ID, ui.BanReason
+        FROM users_main AS um
+          JOIN users_info ui ON ui.UserID = um.ID
+          WHERE um.Username = '$Username'
+          AND um.Enabled = '2'");
 
         if (G::$DB->has_results()) {
             // Make sure the user can make another request
@@ -46,17 +46,17 @@ class AutoEnable
             SELECT 1 FROM users_enable_requests
             WHERE UserID = '$UserID'
               AND (
-                    (
-                      Timestamp > NOW() - INTERVAL 1 WEEK
-                        AND HandledTimestamp IS NULL
-                    )
-                    OR
-                    (
-                      Timestamp > NOW() - INTERVAL 2 MONTH
-                      AND
-                      Outcome = '".self::DENIED."'
-                    )
-                  )");
+                (
+                  Timestamp > NOW() - INTERVAL 1 WEEK
+                  AND HandledTimestamp IS NULL
+                )
+                OR
+                (
+                  Timestamp > NOW() - INTERVAL 2 MONTH
+                  AND
+                  Outcome = '".self::DENIED."'
+                )
+            )");
         }
 
         $IP = $_SERVER['REMOTE_ADDR'];
@@ -92,7 +92,6 @@ class AutoEnable
                 //self::handle_requests([$RequestID], self::APPROVED, "Automatically approved (inactivity)");
             }
         }
-
         return $Output;
     }
 
@@ -132,6 +131,7 @@ class AutoEnable
             // Prepare email
             require_once(SERVER_ROOT . '/classes/templates.class.php');
             $TPL = new TEMPLATE;
+
             if ($Status == self::APPROVED) {
                 $TPL->open(SERVER_ROOT . '/templates/enable_request_accepted.tpl');
                 $TPL->set('SITE_DOMAIN', SITE_DOMAIN);
@@ -172,9 +172,9 @@ class AutoEnable
         // User notes stuff
         $StaffID = G::$LoggedUser['ID'] ?? 0;
         G::$DB->query("
-            SELECT Username
-            FROM users_main
-            WHERE ID = ?", $StaffID);
+        SELECT Username
+        FROM users_main
+          WHERE ID = ?", $StaffID);
         if (G::$DB->has_results()) {
             list($StaffUser) = G::$DB->next_record();
         } else {
@@ -191,11 +191,11 @@ class AutoEnable
 
         // Update database values and decrement cache
         G::$DB->query("
-                UPDATE users_enable_requests
-                SET HandledTimestamp = NOW(),
-                    CheckedBy = ?,
-                    Outcome = ?
-                WHERE ID IN (".implode(',', $IDs).")", $StaffID, $Status);
+        UPDATE users_enable_requests
+        SET HandledTimestamp = NOW(),
+          CheckedBy = ?,
+          Outcome = ?
+          WHERE ID IN (".implode(',', $IDs).")", $StaffID, $Status);
         G::$Cache->decrement_value(self::CACHE_KEY_NAME, count($IDs));
     }
 
@@ -213,10 +213,10 @@ class AutoEnable
         }
 
         G::$DB->query("
-            SELECT UserID
-            FROM users_enable_requests
-            WHERE Outcome = '" . self::DISCARDED . "'
-              AND ID = '$ID'");
+        SELECT UserID
+        FROM users_enable_requests
+          WHERE Outcome = '" . self::DISCARDED . "'
+          AND ID = '$ID'");
 
         if (!G::$DB->has_results()) {
             error(404);
@@ -225,16 +225,16 @@ class AutoEnable
         }
 
         G::$DB->query("
-            SELECT Username
-            FROM users_main
-            WHERE ID = '" . G::$LoggedUser['ID'] . "'");
+        SELECT Username
+        FROM users_main
+          WHERE ID = '" . G::$LoggedUser['ID'] . "'");
         list($StaffUser) = G::$DB->next_record();
 
         Tools::update_user_notes($UserID, sqltime() . " - Enable request $ID unresolved by [user]" . $StaffUser . '[/user]' . "\n\n");
         G::$DB->query("
-            UPDATE users_enable_requests
-            SET Outcome = NULL, HandledTimestamp = NULL, CheckedBy = NULL
-            WHERE ID = '$ID'");
+        UPDATE users_enable_requests
+        SET Outcome = NULL, HandledTimestamp = NULL, CheckedBy = NULL
+          WHERE ID = '$ID'");
         G::$Cache->increment_value(self::CACHE_KEY_NAME);
     }
 
@@ -269,10 +269,10 @@ class AutoEnable
     {
         $Token = db_string($Token);
         G::$DB->query("
-            SELECT uer.UserID, uer.HandledTimestamp, um.torrent_pass, um.Visible, um.IP
-            FROM users_enable_requests AS uer
-            LEFT JOIN users_main AS um ON uer.UserID = um.ID
-            WHERE Token = '$Token'");
+        SELECT uer.UserID, uer.HandledTimestamp, um.torrent_pass, um.Visible, um.IP
+        FROM users_enable_requests AS uer
+          LEFT JOIN users_main AS um ON uer.UserID = um.ID
+          WHERE Token = '$Token'");
 
         if (G::$DB->has_results()) {
             list($UserID, $Timestamp, $TorrentPass, $Visible, $IP) = G::$DB->next_record();
@@ -294,7 +294,6 @@ class AutoEnable
         } else {
             $Err = "Invalid token.";
         }
-
         return $Err;
     }
 

@@ -14,10 +14,11 @@ class NotificationsManager
     const INFO = 'confirmation';
 
     public static $Importances = array(
-    'important' => self::IMPORTANT,
-    'critical' => self::CRITICAL,
-    'warning' => self::WARNING,
-    'info' => self::INFO);
+        'important' => self::IMPORTANT,
+        'critical' => self::CRITICAL,
+        'warning' => self::WARNING,
+        'info' => self::INFO
+    );
 
     // Types. These names must correspond to column names in users_notifications_settings
     const NEWS = 'News';
@@ -78,27 +79,35 @@ class NotificationsManager
             if (!isset($this->Skipped[self::NEWS])) {
                 $this->load_news();
             }
+
             if (!isset($this->Skipped[self::BLOG])) {
                 $this->load_blog();
             }
+
             // if (!isset($this->Skipped[self::STAFFBLOG])) {
             //   $this->load_staff_blog();
             // }
+
             if (!isset($this->Skipped[self::STAFFPM])) {
                 $this->load_staff_pms();
             }
+
             if (!isset($this->Skipped[self::INBOX])) {
                 $this->load_inbox();
             }
+
             if (!isset($this->Skipped[self::TORRENTS])) {
                 $this->load_torrent_notifications();
             }
+
             if (!isset($this->Skipped[self::COLLAGES])) {
                 $this->load_collage_subscriptions();
             }
+
             if (!isset($this->Skipped[self::QUOTES])) {
                 $this->load_quote_notifications();
             }
+            
             if (!isset($this->Skipped[self::SUBSCRIPTIONS])) {
                 $this->load_subscriptions();
             }

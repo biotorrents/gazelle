@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The decode class is simple and straightforward. The only thing to
  * note is that empty dictionaries are represented by boolean trues
@@ -24,6 +25,7 @@ class BencodeDecode extends Bencode
         if (!$Strict) {
             $this->ExitOnError = false;
         }
+
         if ($Arg === false) {
             if (empty($this->Enc)) {
                 return false;
@@ -48,6 +50,7 @@ class BencodeDecode extends Bencode
         if (empty($Path)) {
             return false;
         }
+
         if (!$this->Data = @file_get_contents($Path, FILE_BINARY)) {
             return $this->error("Error: file '$Path' could not be opened.\n");
         }
@@ -67,12 +70,15 @@ class BencodeDecode extends Bencode
         } elseif (!$this->Data) {
             $this->Data = $this->Enc;
         }
+
         if (!$this->Data) {
             return false;
         }
+
         $this->Length = strlen($this->Data);
         $this->Pos = 0;
         $this->Dec = $this->_bdec();
+
         if ($this->Pos < $this->Length) {
             // Not really necessary, but if the torrent is invalid, it's better to warn than to silently truncate it
             return $this->error();
@@ -151,12 +157,15 @@ class BencodeDecode extends Bencode
         if ($Data === false) {
             $Data = $this->Dec;
         }
+
         if (Int64::is_int($Data)) {
             return Int64::get($Data);
         }
+
         if (is_bool($Data)) {
             return [];
         }
+
         if (is_array($Data)) {
             $Output = [];
             foreach ($Data as $Key => $Val) {
@@ -179,6 +188,7 @@ class BencodeDecode extends Bencode
             // The recursive nature of the class requires this to avoid duplicate error messages
             return false;
         }
+
         if ($this->ExitOnError) {
             if ($ErrMsg === false) {
                 printf(
@@ -191,6 +201,7 @@ class BencodeDecode extends Bencode
             }
             exit();
         }
+        
         $ErrorPos = $this->Pos;
         return false;
     }

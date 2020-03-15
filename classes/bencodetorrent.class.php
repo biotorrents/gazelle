@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Torrent class that contains some convenient functions related to torrent meta data
  */
@@ -18,6 +19,7 @@ class BencodeTorrent extends BencodeDecode
         if (empty($this->Dec)) {
             return false;
         }
+
         $InfoDict =& $this->Dec['info'];
         if (!isset($InfoDict['files'])) {
             // Single-file torrent
@@ -32,6 +34,7 @@ class BencodeTorrent extends BencodeDecode
             if (isset($InfoDict['path.utf-8']['files'][0])) {
                 $this->PathKey = 'path.utf-8';
             }
+            
             foreach ($InfoDict['files'] as $File) {
                 $TmpPath = [];
                 foreach ($File[$this->PathKey] as $SubPath) {

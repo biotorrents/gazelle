@@ -54,6 +54,7 @@ class Bencode
         } else {
             $Data =& $Arg;
         }
+
         if ($Keys === true) {
             $this->Data = $Data;
         } elseif ($Keys === false) {
@@ -63,9 +64,11 @@ class Bencode
         } else {
             $this->Data = isset($Data[$Keys]) ? $Data[$Keys] : false;
         }
+
         if (!$this->Data) {
             return false;
         }
+
         $this->Enc = $this->_benc();
         return $this->Enc;
     }
@@ -81,17 +84,20 @@ class Bencode
             if (Int64::is_int($this->Data)) { // Integer
                 return 'i'.Int64::get($this->Data).'e';
             }
+
             if ($this->Data === true) { // Empty dictionary
                 return 'de';
             }
             return strlen($this->Data).':'.$this->Data; // String
         }
+
         if (empty($this->Data) || Int64::is_int(key($this->Data))) {
             $IsDict = false;
         } else {
             $IsDict = true;
             ksort($this->Data); // Dictionaries must be sorted
         }
+        
         $Ret = $IsDict ? 'd' : 'l';
         foreach ($this->Data as $Key => $Value) {
             if ($IsDict) {

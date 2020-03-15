@@ -1,4 +1,5 @@
 <?php
+
 class Artists
 {
 
@@ -23,10 +24,12 @@ class Artists
     {
         $Results = [];
         $DBs = [];
+
         foreach ($GroupIDs as $GroupID) {
             if (!is_number($GroupID)) {
                 continue;
             }
+
             $Artists = G::$Cache->get_value('groups_artists_'.$GroupID);
             if (is_array($Artists)) {
                 $Results[$GroupID] = $Artists;
@@ -34,25 +37,29 @@ class Artists
                 $DBs[] = $GroupID;
             }
         }
+
         if (count($DBs) > 0) {
             $IDs = implode(',', $DBs);
             if (empty($IDs)) {
                 $IDs = "null";
             }
+
             $QueryID = G::$DB->get_query_id();
             G::$DB->query("
-        SELECT ta.GroupID,
-          ta.ArtistID,
-          ag.Name
-        FROM torrents_artists AS ta
-          JOIN artists_group AS ag ON ta.ArtistID = ag.ArtistID
-        WHERE ta.GroupID IN ($IDs)
-        ORDER BY ta.GroupID ASC,
-          ag.Name ASC;");
+            SELECT ta.GroupID,
+              ta.ArtistID,
+              ag.Name
+            FROM torrents_artists AS ta
+              JOIN artists_group AS ag ON ta.ArtistID = ag.ArtistID
+              WHERE ta.GroupID IN ($IDs)
+              ORDER BY ta.GroupID ASC,
+              ag.Name ASC;");
+
             while (list($GroupID, $ArtistID, $ArtistName) = G::$DB->next_record(MYSQLI_BOTH, false)) {
                 $Results[$GroupID][] = array('id' => $ArtistID, 'name' => $ArtistName);
                 $New[$GroupID][] = array('id' => $ArtistID, 'name' => $ArtistName);
             }
+
             G::$DB->set_query_id($QueryID);
             foreach ($DBs as $GroupID) {
                 if (isset($New[$GroupID])) {
@@ -61,6 +68,7 @@ class Artists
                     G::$Cache->cache_value('groups_artists_'.$GroupID, []);
                 }
             }
+
             $Missing = array_diff($GroupIDs, array_keys($Results));
             if (!empty($Missing)) {
                 $Results += array_fill_keys($Missing, []);
@@ -112,7 +120,6 @@ class Artists
             $link = Artists::display_artist($Artists[0], $MakeLink, $Escape).'  et al.'.($IncludeHyphen? ' – ':'');
             #$link = "Various".($IncludeHyphen?' – ':'');
         }
-    
             return $link;
         } else {
             return '';
@@ -150,17 +157,18 @@ class Artists
     {
         $QueryID = G::$DB->get_query_id();
         G::$DB->query("
-      SELECT Name
-      FROM artists_group
-      WHERE ArtistID = ".$ArtistID);
+        SELECT Name
+        FROM artists_group
+          WHERE ArtistID = ".$ArtistID);
         list($Name) = G::$DB->next_record(MYSQLI_NUM, false);
 
         // Delete requests
         G::$DB->query("
-      SELECT RequestID
-      FROM requests_artists
-      WHERE ArtistID = $ArtistID
-        AND ArtistID != 0");
+        SELECT RequestID
+        FROM requests_artists
+          WHERE ArtistID = $ArtistID
+          AND ArtistID != 0");
+
         $Requests = G::$DB->to_array();
         foreach ($Requests as $Request) {
             list($RequestID) = $Request;
@@ -192,6 +200,7 @@ class Artists
         } else {
             $Username = 'System';
         }
+        
         Misc::write_log("Artist $ArtistID ($Name) was deleted by $Username");
         G::$DB->set_query_id($QueryID);
     }

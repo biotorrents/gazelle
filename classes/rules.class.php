@@ -1,4 +1,5 @@
 <?php
+
 class Rules
 {
 
@@ -10,7 +11,7 @@ class Rules
     {
         ?>
 <ul>
-<li><strong>No personally identifying patient data is allowed anywhere on the site.</strong></li>
+  <li><strong>No personally identifying patient data is allowed anywhere on the site.</strong></li>
 
   <li>Staff can do anything to anyone for any reason (or no reason). If you take issue with a decision, you must do so
     privately with the staff member who issued the decision or with an administrator of the site.</li>
@@ -114,7 +115,8 @@ class Rules
     Thank you.</li>
 
   <li>No advertising, referrals, affiliate links, cryptocurrency pumps, or calls to action that involve using a
-    financial instrument. You'll be banned on the spot. The exceptions: discussions about cryptocurrencies that derive their value from
+    financial instrument. You'll be banned on the spot. The exceptions: discussions about cryptocurrencies that derive
+    their value from
     work performed on distributed science networks, i.e., Curecoin, FoldingCoin, and Gridcoin.</li>
 
   <li>Feel free to post announcements for your own projects, even and especially if they're commercial ones, in the

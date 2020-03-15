@@ -1,4 +1,5 @@
 <?php
+
 class View
 {
     /**
@@ -21,12 +22,13 @@ class View
         if ($PageTitle !== '') {
             $PageTitle .= ' :: ';
         }
+
         $PageTitle .= SITE_NAME;
         $PageID = array(
-      $Document, // Document
-      empty($_REQUEST['action']) ? false : $_REQUEST['action'], // Action
-      empty($_REQUEST['type']) ? false : $_REQUEST['type'] // Type
-    );
+            $Document, // Document
+            empty($_REQUEST['action']) ? false : $_REQUEST['action'], // Action
+            empty($_REQUEST['type']) ? false : $_REQUEST['type'] // Type
+        );
 
         if (!is_array(G::$LoggedUser) || empty(G::$LoggedUser['ID']) || $PageTitle === 'Recover Password :: ' . SITE_NAME) {
             require(SERVER_ROOT.'/design/publicheader.php');
@@ -34,12 +36,14 @@ class View
             // HTTP/2 Server Push headers for cloudflare
             $Scripts = array_merge(['jquery', 'global', 'ajax.class', 'jquery.autocomplete', 'autocomplete', 'tooltipster'], explode(',', $JSIncludes));
             $Styles = array_merge(['tooltipster'], explode(',', $CSSIncludes));
+
             foreach ($Scripts as $Script) {
                 if (trim($Script) === '') {
                     continue;
                 }
                 header('Link: <'.STATIC_SERVER.'functions/'.$Script.'.js?v='.filemtime(SERVER_ROOT.STATIC_SERVER.'functions/'.$Script.'.js').'>; rel=preload; as=script;', false);
             }
+
             header('Link: <'.STATIC_SERVER.'styles/global.css?v='.filemtime(SERVER_ROOT.STATIC_SERVER.'styles/global.css').'>; rel=preload; as=style', false);
             foreach ($Styles as $Style) {
                 if (trim($Style) === '') {
@@ -47,7 +51,7 @@ class View
                 }
                 header('Link: <'.STATIC_SERVER.'styles/'.$Style.'/style.css?v='.filemtime(SERVER_ROOT.STATIC_SERVER.'styles/'.$Style.'/style.css').'>; rel=preload; as=style;', false);
             }
-            require(SERVER_ROOT.'/design/privateheader.php');
+            require SERVER_ROOT.'/design/privateheader.php';
         }
     }
 
@@ -63,9 +67,9 @@ class View
     {
         global $ScriptStartTime, $SessionID, $UserSessions, $Debug, $Time, $Mobile;
         if (!is_array(G::$LoggedUser) || (isset($Options['recover']) && $Options['recover'] === true)) {
-            require(SERVER_ROOT.'/design/publicfooter.php');
+            require SERVER_ROOT.'/design/publicfooter.php';
         } else {
-            require(SERVER_ROOT.'/design/privatefooter.php');
+            require SERVER_ROOT.'/design/privatefooter.php';
         }
     }
 
@@ -91,13 +95,14 @@ class View
         if (isset($LoadedTemplates[$TemplateName])) {
             $ClassName = $LoadedTemplates[$TemplateName];
         } else {
-            include(SERVER_ROOT.'/design/' . $TemplateName . '.php');
+            include SERVER_ROOT.'/design/'.$TemplateName.'.php';
 
             // Turn template_name into TemplateName
             $ClassNameParts = explode('_', $TemplateName);
             foreach ($ClassNameParts as $Index => $Part) {
                 $ClassNameParts[$Index] = ucfirst($Part);
             }
+            
             $ClassName = implode($ClassNameParts). 'Template';
             $LoadedTemplates[$TemplateName] = $ClassName;
         }
