@@ -1,4 +1,4 @@
-<?
+<?php
 
 /**
  * Class to manage locked accounts
@@ -17,8 +17,7 @@ class LockedAccounts
      */
     public static function lock_account($UserID, $Type, $Message, $Reason, $LockedByUserID)
     {
-
-        if ($LockedByUserID == 0) {
+        if ($LockedByUserID === 0) {
             $Username = "System";
         } else {
             G::$DB->query("SELECT Username FROM users_main WHERE ID = '" . $LockedByUserID . "'");
@@ -26,8 +25,9 @@ class LockedAccounts
         }
 
         G::$DB->query("
-                INSERT INTO locked_accounts (UserID, Type)
-                VALUES ('" . $UserID . "', " . $Type . ")");
+        INSERT INTO locked_accounts (UserID, Type)
+          VALUES ('" . $UserID . "', " . $Type . ")");
+          
         Tools::update_user_notes($UserID, sqltime() . " - " . db_string($Message) . " by $Username\nReason: " . db_string($Reason) . "\n\n");
         G::$Cache->delete_value('user_info_' . $UserID);
     }
@@ -43,7 +43,7 @@ class LockedAccounts
      */
     public static function unlock_account($UserID, $Type, $Message, $Reason, $UnlockedByUserID)
     {
-        if ($UnlockedByUserID == 0) {
+        if ($UnlockedByUserID === 0) {
             $Username = "System";
         } else {
             G::$DB->query("SELECT Username FROM users_main WHERE ID = '" . $UnlockedByUserID . "'");
@@ -52,7 +52,7 @@ class LockedAccounts
 
         G::$DB->query("DELETE FROM locked_accounts WHERE UserID = '$UserID' AND Type = '". $Type ."'");
 
-        if (G::$DB->affected_rows() == 1) {
+        if (G::$DB->affected_rows() === 1) {
             G::$Cache->delete_value("user_info_" . $UserID);
             Tools::update_user_notes($UserID, sqltime() . " - " . db_string($Message) . " by $Username\nReason: " . db_string($Reason) . "\n\n");
         }

@@ -5,7 +5,6 @@ class Top10View
     public static function render_linkbox($Selected)
     {
         ?>
-
 <div class="linkbox">
   <a href="top10.php?type=torrents" class="brackets"><?=self::get_selected_link("Torrents", $Selected === "torrents")?></a>
   <a href="top10.php?type=users" class="brackets"><?=self::get_selected_link("Users", $Selected === "users")?></a>
@@ -14,7 +13,6 @@ class Top10View
   <a href="top10.php?type=donors" class="brackets"><?=self::get_selected_link("Donors", $Selected === "donors")?></a>
   <?php } ?>
 </div>
-
 <?php
     }
 
@@ -45,7 +43,6 @@ class Top10View
     {
         if (!empty($Image)) {
             $Name = display_str($Name); ?>
-
 <li>
   <a
     href="<?=$Url?><?=$Name?>">

@@ -57,6 +57,7 @@ class SphinxqlResult
         while ($Row = $this->fetch_array()) {
             $Return[] = $Row[$Key];
         }
+
         $this->data_seek(0);
         return $Return;
     }
@@ -78,6 +79,7 @@ class SphinxqlResult
                 $Return[] = $Row;
             }
         }
+
         $this->data_seek(0);
         return $Return;
     }
@@ -95,6 +97,7 @@ class SphinxqlResult
         while ($Row = $this->fetch_array()) {
             $Return[$Row[$Key1]] = $Row[$Key2];
         }
+        
         $this->data_seek(0);
         return $Return;
     }

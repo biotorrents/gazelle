@@ -43,6 +43,7 @@ class TEXTAREA_PREVIEW_SUPER
         if (self::$Textareas === 0) {
             return;
         }
+
         if (self::$Exectuted === false && $all) {
             View::parse('generic/textarea/script.phtml');
         }
@@ -70,6 +71,7 @@ class TEXTAREA_PREVIEW_SUPER
             }
             $script[] = sprintf('[%s]', $a);
         }
+
         if (!empty($script)) {
             View::parse('generic/textarea/script_factory.phtml', array('script' => join(', ', $script)));
         }
@@ -155,16 +157,16 @@ class TEXTAREA_PREVIEW extends TEXTAREA_PREVIEW_SUPER
      * It's important to have the right IDs as they make the JS function properly.
      */
     public function __construct(
-      $Name,
-      $ID = '',
-      $Value = '',
-      $Cols = 50,
-      $Rows = 10,
-      $Preview = true,
-      $Buttons = true,
-      $Buffer = false,
-      array $ExtraAttributes = []
-  ) {
+        $Name,
+        $ID = '',
+        $Value = '',
+        $Cols = 50,
+        $Rows = 10,
+        $Preview = true,
+        $Buttons = true,
+        $Buffer = false,
+        array $ExtraAttributes = []
+    ) {
         $this->id = parent::$Textareas;
         parent::$Textareas += 1;
         array_push(parent::$_ID, $ID);
@@ -184,14 +186,14 @@ class TEXTAREA_PREVIEW extends TEXTAREA_PREVIEW_SUPER
         }
 
         $this->buffer = View::parse('generic/textarea/textarea.phtml', array(
-      'ID' => $ID,
-      'NID' => $this->id,
-      'Name' => &$Name,
-      'Value' => &$Value,
-      'Cols' => &$Cols,
-      'Rows' => &$Rows,
-      'Attributes' => &$Attributes
-    ), $Buffer);
+            'ID' => $ID,
+            'NID' => $this->id,
+            'Name' => &$Name,
+            'Value' => &$Value,
+            'Cols' => &$Cols,
+            'Rows' => &$Rows,
+            'Attributes' => &$Attributes
+        ), $Buffer);
 
         if ($Buttons === true) {
             $this->buttons();

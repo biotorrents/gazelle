@@ -1,5 +1,7 @@
 <?php
 
+# todo: Replace this with https://github.com/OPSnet/bencode-torrent
+
 /**
  * Torrent class that contains some convenient functions related to torrent meta data
  */
@@ -34,7 +36,7 @@ class BencodeTorrent extends BencodeDecode
             if (isset($InfoDict['path.utf-8']['files'][0])) {
                 $this->PathKey = 'path.utf-8';
             }
-            
+
             foreach ($InfoDict['files'] as $File) {
                 $TmpPath = [];
                 foreach ($File[$this->PathKey] as $SubPath) {

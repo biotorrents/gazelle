@@ -2,39 +2,38 @@
 
 class Format
 {
-
-  /**
-   * Torrent Labels
-   * Map a common display string to a CSS class
-   * Indexes are lower case
-   * Note the "tl_" prefix for "torrent label"
-   *
-   * There are five basic types:
-   * * tl_free (leech status)
-   * * tl_snatched
-   * * tl_reported
-   * * tl_approved
-   * * tl_notice (default)
-   *
-   * @var array Strings
-   */
+    /**
+     * Torrent Labels
+     * Map a common display string to a CSS class
+     * Indexes are lower case
+     * Note the "tl_" prefix for "torrent label"
+     *
+     * There are five basic types:
+     * * tl_free (leech status)
+     * * tl_snatched
+     * * tl_reported
+     * * tl_approved
+     * * tl_notice (default)
+     *
+     * @var array Strings
+     */
     private static $TorrentLabels = array(
-    'default'  => 'tl_notice',
-    'snatched' => 'tl_snatched',
-    'seeding'  => 'tl_seeding',
-    'leeching' => 'tl_leeching',
+        'default'  => 'tl_notice',
+        'snatched' => 'tl_snatched',
+        'seeding'  => 'tl_seeding',
+        'leeching' => 'tl_leeching',
 
-    'freeleech'          => 'tl_free',
-    'neutral leech'      => 'tl_free tl_neutral',
-    'personal freeleech' => 'tl_free tl_personal',
+        'freeleech'          => 'tl_free',
+        'neutral leech'      => 'tl_free tl_neutral',
+        'personal freeleech' => 'tl_free tl_personal',
 
-    'reported'       => 'tl_reported',
-    'bad tags'       => 'tl_reported tl_bad_tags',
-    'bad folders'    => 'tl_reported tl_bad_folders',
-    'bad file names' => 'tl_reported tl_bad_file_names',
+        'reported'       => 'tl_reported',
+        'bad tags'       => 'tl_reported tl_bad_tags',
+        'bad folders'    => 'tl_reported tl_bad_folders',
+        'bad file names' => 'tl_reported tl_bad_file_names',
 
-    'uncensored' => 'tl_notice'
-  );
+        'uncensored' => 'tl_notice'
+    );
 
     /**
      * Shorten a string
@@ -82,36 +81,47 @@ class Format
         if ($Ratio < 0.1) {
             return 'r00';
         }
+
         if ($Ratio < 0.2) {
             return 'r01';
         }
+
         if ($Ratio < 0.3) {
             return 'r02';
         }
+
         if ($Ratio < 0.4) {
             return 'r03';
         }
+
         if ($Ratio < 0.5) {
             return 'r04';
         }
+
         if ($Ratio < 0.6) {
             return 'r05';
         }
+
         if ($Ratio < 0.7) {
             return 'r06';
         }
+
         if ($Ratio < 0.8) {
             return 'r07';
         }
+
         if ($Ratio < 0.9) {
             return 'r08';
         }
+
         if ($Ratio < 1) {
             return 'r09';
         }
+
         if ($Ratio < 2) {
             return 'r10';
         }
+
         if ($Ratio < 5) {
             return 'r20';
         }
@@ -133,9 +143,11 @@ class Format
         if ($Ratio === false) {
             return '&ndash;';
         }
+
         if ($Ratio === '∞') {
             return '<span class="tooltip r99" title="Infinite">∞</span>';
         }
+
         if ($Color) {
             $Ratio = sprintf(
                 '<span class="tooltip %s" title="%s">%s</span>',
@@ -144,7 +156,6 @@ class Format
                 $Ratio
             );
         }
-
         return $Ratio;
     }
 
@@ -160,6 +171,7 @@ class Format
         if ($Divisor === 0 && $Dividend === 0) {
             return false;
         }
+
         if ($Divisor === 0) {
             return '∞';
         }
@@ -180,9 +192,11 @@ class Format
             $Separator = $Escape ? '&amp;' : '&';
             $QueryItems = null;
             parse_str($_SERVER['QUERY_STRING'], $QueryItems);
+
             foreach ($Exclude as $Key) {
                 unset($QueryItems[$Key]);
             }
+
             if ($Sort) {
                 ksort($QueryItems);
             }
@@ -217,6 +231,7 @@ class Format
                 error(0);
             }
             $Page = $_GET['page'];
+
             if ($Page <= 0) {
                 $Page = 1;
             }
@@ -262,6 +277,7 @@ class Format
         $Location = "$Document.php";
         $StartPage = ceil($StartPage);
         $TotalPages = 0;
+
         if ($TotalRecords > 0) {
             $StartPage = min($StartPage, ceil($TotalRecords / $ItemsPerPage));
 
@@ -305,6 +321,7 @@ class Format
                     if ($i !== $StartPage) {
                         $Pages .= "<a href=\"$Location?page=$i$QueryString$Anchor\">";
                     }
+
                     $Pages .= '<strong>';
                     if ($i * $ItemsPerPage > $TotalRecords) {
                         $Pages .= ((($i - 1) * $ItemsPerPage) + 1)."-$TotalRecords";
@@ -316,6 +333,7 @@ class Format
                     if ($i !== $StartPage) {
                         $Pages .= '</a>';
                     }
+
                     if ($i < $StopPage) {
                         $Pages .= ' | ';
                     }
@@ -329,6 +347,7 @@ class Format
                 $Pages .= "<a href=\"$Location?page=$TotalPages$QueryString$Anchor\"><strong> Last »</strong></a>";
             }
         }
+
         if ($TotalPages > 1) {
             return $Pages;
         }
@@ -347,8 +366,10 @@ class Format
     {
         $Units = array('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB');
         $Size = (double)$Size;
+
         for ($Steps = 0; abs($Size) >= 1024 && $Steps < count($Units); $Size /= 1024, $Steps++) {
         }
+
         if (func_num_args() === 1 && $Steps >= 4) {
             $Levels++;
         }
@@ -369,15 +390,15 @@ class Format
             $Number = $Number / 1000;
         }
         switch ($Steps) {
-      case 0: return round($Number); break;
-      case 1: return round($Number, 2).'k'; break;
-      case 2: return round($Number, 2).'M'; break;
-      case 3: return round($Number, 2).'G'; break;
-      case 4: return round($Number, 2).'T'; break;
-      case 5: return round($Number, 2).'P'; break;
-      default:
-        return round($Number, 2).'E + '.$Steps * 3;
-    }
+          case 0: return round($Number); break;
+          case 1: return round($Number, 2).'k'; break;
+          case 2: return round($Number, 2).'M'; break;
+          case 3: return round($Number, 2).'G'; break;
+          case 4: return round($Number, 2).'T'; break;
+          case 5: return round($Number, 2).'P'; break;
+          default:
+            return round($Number, 2).'E + '.$Steps * 3;
+        }
     }
 
     /**
@@ -393,13 +414,14 @@ class Format
         if (empty($Unit)) {
             return $Value ? round($Value) : 0;
         }
+
         switch (strtolower($Unit[0])) {
-      case 'k': return round($Value * 1024);
-      case 'm': return round($Value * 1048576);
-      case 'g': return round($Value * 1073741824);
-      case 't': return round($Value * 1099511627776);
-      default: return 0;
-    }
+          case 'k': return round($Value * 1024);
+          case 'm': return round($Value * 1048576);
+          case 'g': return round($Value * 1073741824);
+          case 't': return round($Value * 1099511627776);
+          default: return 0;
+        }
     }
 
     /**
@@ -447,6 +469,7 @@ class Format
         if (empty($Array)) {
             $Array = $_GET;
         }
+
         if (isset($Array[$Name]) && $Array[$Name] !== '') {
             if ($Array[$Name] === $Value) {
                 echo " $Attribute=\"$Attribute\"";
@@ -473,6 +496,7 @@ class Format
         if ($UserIDKey && isset($_REQUEST[$UserIDKey]) && G::$LoggedUser['ID'] != $_REQUEST[$UserIDKey]) {
             return '';
         }
+
         $Pass = true;
         if (!is_array($Tests)) {
             // Scalars are nice and easy
@@ -489,6 +513,7 @@ class Format
             // Loop to the end of the array or until we find a matching test
             foreach ($Tests as $Test) {
                 $Pass = true;
+
                 // If $Pass remains true after this test, it's a match
                 foreach ($Test as $Type => $Part) {
                     if (!isset($Target[$Type]) || $Target[$Type] !== $Part) {
@@ -496,14 +521,17 @@ class Format
                         break;
                     }
                 }
+
                 if ($Pass) {
                     break;
                 }
             }
         }
+
         if (!$Pass) {
             return '';
         }
+
         if ($AddAttribute) {
             return " class=\"$ClassName\"";
         }
@@ -522,12 +550,15 @@ class Format
             if (self::is_utf8($Str)) {
                 $Encoding = 'UTF-8';
             }
+
             if (empty($Encoding)) {
                 $Encoding = mb_detect_encoding($Str, 'UTF-8, ISO-8859-1');
             }
+
             if (empty($Encoding)) {
                 $Encoding = 'ISO-8859-1';
             }
+
             if ($Encoding === 'UTF-8') {
                 return $Str;
             } else {
@@ -592,6 +623,7 @@ class Format
         if (empty($Class)) {
             $Class = self::find_torrent_label_class($Text);
         }
+        
         return sprintf(
             '<strong class="torrent_label tooltip %1$s" title="%2$s" style="white-space: nowrap;">%2$s</strong>',
             display_str($Class),

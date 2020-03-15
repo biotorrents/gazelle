@@ -3,7 +3,7 @@
 class UserAgent
 {
     private static $Browsers = array(
-    //Less popular
+    // Less popular
     'Shiira'     => 'Shiira',
     'Songbird'   => 'Songbird',
     'SeaMonkey'  => 'SeaMonkey',
@@ -18,25 +18,25 @@ class UserAgent
     'libcurl'    => 'cURL',
     'midori'     => 'Midori',
     'Blackberry' => 'BlackBerry Browser',
-    //Big names
+    // Big names
     'Firefox' => 'Firefox',
     'OPR'     => 'Opera Blink', # Opera 15+ (the version running Blink)
     'Opera'   => 'Opera',
     'Chrome'  => 'Chrome',
     'Safari'  => 'Safari',
-    //Put Chrome Frame above IE
+    // Put Chrome Frame above IE
     'chromeframe' => 'Chrome Frame',
     'x-clock'     => 'Chrome Frame',
     'MSIE'        => 'Internet Explorer',
     'Trident'     => 'Internet Explorer',
-    //Firefox versions
+    // Firefox versions
     'Shiretoko'    => 'Firefox (Experimental)',
     'Minefield'    => 'Firefox (Experimental)',
     'GranParadiso' => 'Firefox (Experimental)',
     'Namoroka'     => 'Firefox (Experimental)',
     'AppleWebKit'  => 'WebKit',
     'Mozilla'      => 'Mozilla'
-    //Weird shit
+    // Weird shit
     /*
     'WWW-Mechanize' => 'Perl',
     'Wget'          => 'Wget',
@@ -48,7 +48,7 @@ class UserAgent
   );
 
     private static $OperatingSystems = array(
-    //Mobile
+    // Mobile
     'SymbianOS'    => 'Symbian',
     'blackberry'   => 'BlackBerry',
     'iphone'       => 'iPhone',
@@ -58,7 +58,7 @@ class UserAgent
     'mot-razr'     => 'Motorola Razr',
   //'tablet PC'    => 'Windows RT',
   //'ARM; Trident' => 'Windows RT',
-    //Windows
+    // Windows
     'Windows NT 10.0' => 'Windows 10',
     'Windows NT 6.4'  => 'Windows 10',
     'Windows NT 6.3'  => 'Windows 8.1',
@@ -88,11 +88,11 @@ class UserAgent
     'win16'           => 'Windows 3.1',
   //'windows'         => 'Windows',
     'cros'            => 'Chrome OS',
-    //OS X
+    // OS X
     'os x'      => 'Mac OS X',
     'macintosh' => 'Mac OS X',
     'darwin'    => 'Mac OS X',
-    //Less popular
+    // Less popular
     'ubuntu'  => 'Ubuntu',
     'debian'  => 'Debian',
     'fedora'  => 'Fedora',
@@ -105,7 +105,7 @@ class UserAgent
     'unix'    => 'Unix',
     'Sun OS'  => 'Sun',
     'Sun'     => 'Sun',
-    //Weird shit
+    // Weird shit
     /*
     'WWW-Mechanize' => 'Perl',
     'Wget'          => 'Wget',
@@ -114,7 +114,7 @@ class UserAgent
     'Java'          => 'Java',
     'RSS'           => 'RSS Downloader',
     */
-    //Catch-all
+    // Catch-all
     'win' => 'Windows',
     'mac' => 'Mac OS X'
   );
@@ -124,6 +124,7 @@ class UserAgent
         if (empty($UserAgentString)) {
             return 'Hidden';
         }
+
         foreach (self::$OperatingSystems as $String => $OperatingSystem) {
             if (stripos($UserAgentString, $String) !== false) {
                 return $OperatingSystem;
@@ -150,6 +151,7 @@ class UserAgent
         if (empty($UserAgentString)) {
             return 'Hidden';
         }
+
         $Return = 'Unknown';
         foreach (self::$Browsers as $String => $Browser) {
             if (strpos($UserAgentString, $String) !== false) {
@@ -157,6 +159,7 @@ class UserAgent
                 break;
             }
         }
+        
         if (self::mobile($UserAgentString)) {
             $Return .= ' Mobile';
         }

@@ -1,4 +1,5 @@
 <?php
+
 class IRC_DB extends DB_MYSQL
 {
     public function halt($Msg)
@@ -35,6 +36,7 @@ abstract class IRC_BOT
       if (isset($_SERVER['HOME']) && is_dir($_SERVER['HOME']) && getcwd() !== $_SERVER['HOME']) {
           chdir($_SERVER['HOME']);
       }
+
       ob_end_clean();
       restore_error_handler(); // Avoid PHP error logging
       set_time_limit(0);
@@ -56,11 +58,14 @@ abstract class IRC_BOT
         } else {
             $IrcAddress = 'tcp://' . BOT_SERVER . ':' . BOT_PORT;
         }
+
         while (!$this->Socket = stream_socket_client($IrcAddress, $ErrNr, $ErrStr)) {
             sleep(15);
         }
+
         stream_set_blocking($this->Socket, 0);
         $this->Connecting = false;
+
         if ($Reconnect) {
             $this->post_connect();
         }
@@ -147,6 +152,7 @@ abstract class IRC_BOT
         // This is used to prevent messages from getting truncated
         $Text = wordwrap($Text, 460, "\n", true);
         $TextArray = explode("\n", $Text);
+
         foreach ($TextArray as $Text) {
             $this->send_raw("PRIVMSG $Channel :$Text");
         }
@@ -181,12 +187,15 @@ abstract class IRC_BOT
     {
         G::$Cache->InternalCache = false;
         stream_set_timeout($this->Socket, 10000000000);
+
         while ($this->State === 1) {
             $NullSock = null;
             $Sockets = array($this->Socket, $this->ListenSocket);
+
             if (stream_select($Sockets, $NullSock, $NullSock, null) === false) {
                 die();
             }
+
             foreach ($Sockets as $Socket) {
                 if ($Socket === $this->Socket) {
                     $this->irc_events();
@@ -195,6 +204,7 @@ abstract class IRC_BOT
                     $this->listener_events();
                 }
             }
+            
             G::$DB->LinkID = false;
             G::$DB->Queries = [];
         }
