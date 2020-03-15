@@ -76,7 +76,7 @@ View::show_header("View request: $FullName", 'comments,requests,bbcode,subscript
 
 <div class="thin">
   <div class="header">
-    <h2><a href="requests.php">Requests</a> &gt; <?=$CategoryName?> &gt; <?=$DisplayLink?></h2>
+    <h2><a href="requests.php">Requests</a> › <?=$CategoryName?> › <?=$DisplayLink?></h2>
     <div class="linkbox">
 <?  if ($CanEdit) { ?>
       <a href="requests.php?action=edit&amp;id=<?=$RequestID?>" class="brackets">Edit</a>

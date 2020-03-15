@@ -1,6 +1,8 @@
-<?
-class UserAgent {
-  private static $Browsers = array(
+<?php
+
+class UserAgent
+{
+    private static $Browsers = array(
     //Less popular
     'Shiira'     => 'Shiira',
     'Songbird'   => 'Songbird',
@@ -45,7 +47,7 @@ class UserAgent {
     */
   );
 
-  private static $OperatingSystems = array(
+    private static $OperatingSystems = array(
     //Mobile
     'SymbianOS'    => 'Symbian',
     'blackberry'   => 'BlackBerry',
@@ -117,44 +119,47 @@ class UserAgent {
     'mac' => 'Mac OS X'
   );
 
-  public static function operating_system(&$UserAgentString) {
-    if (empty($UserAgentString)) {
-      return 'Hidden';
-    }
-    foreach (self::$OperatingSystems as $String => $OperatingSystem) {
-      if (stripos($UserAgentString, $String) !== false) {
-        return $OperatingSystem;
-      }
-    }
-    return 'Unknown';
-  }
-
-  public static function mobile(&$UserAgentString) {
-    if (strpos($UserAgentString, 'iPad') !== false) {
-      return false;
+    public static function operating_system(&$UserAgentString)
+    {
+        if (empty($UserAgentString)) {
+            return 'Hidden';
+        }
+        foreach (self::$OperatingSystems as $String => $OperatingSystem) {
+            if (stripos($UserAgentString, $String) !== false) {
+                return $OperatingSystem;
+            }
+        }
+        return 'Unknown';
     }
 
-    // "Mobi" catches "Mobile" too
-    if (strpos($UserAgentString, 'Device') || strpos($UserAgentString, 'Mobi') || strpos($UserAgentString, 'Mini') || strpos($UserAgentString, 'webOS')) {
-      return true;
-    }
-    return false;
-  }
+    public static function mobile(&$UserAgentString)
+    {
+        if (strpos($UserAgentString, 'iPad') !== false) {
+            return false;
+        }
 
-  public static function browser(&$UserAgentString) {
-    if (empty($UserAgentString)) {
-      return 'Hidden';
+        // "Mobi" catches "Mobile" too
+        if (strpos($UserAgentString, 'Device') || strpos($UserAgentString, 'Mobi') || strpos($UserAgentString, 'Mini') || strpos($UserAgentString, 'webOS')) {
+            return true;
+        }
+        return false;
     }
-    $Return = 'Unknown';
-    foreach (self::$Browsers as $String => $Browser) {
-      if (strpos($UserAgentString, $String) !== false) {
-        $Return = $Browser;
-        break;
-      }
+
+    public static function browser(&$UserAgentString)
+    {
+        if (empty($UserAgentString)) {
+            return 'Hidden';
+        }
+        $Return = 'Unknown';
+        foreach (self::$Browsers as $String => $Browser) {
+            if (strpos($UserAgentString, $String) !== false) {
+                $Return = $Browser;
+                break;
+            }
+        }
+        if (self::mobile($UserAgentString)) {
+            $Return .= ' Mobile';
+        }
+        return $Return;
     }
-    if (self::mobile($UserAgentString)) {
-      $Return .= ' Mobile';
-    }
-    return $Return;
-  }
 }

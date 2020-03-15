@@ -1,4 +1,5 @@
 <?php
+
 class GOOGLE_CHARTS
 {
     protected $URL = 'https://chart.googleapis.com/chart';
@@ -11,6 +12,7 @@ class GOOGLE_CHARTS
         if ($Width * $Height > 300000 || $Height > 1000 || $Width > 1000) {
             trigger_error('Tried to make chart too large.');
         }
+
         $this->URL .= "?cht=$Type&amp;chs={$Width}x$Height";
         $this->Options = $Options;
     }
@@ -20,6 +22,7 @@ class GOOGLE_CHARTS
         if ($Number === -1) {
             return '__';
         }
+
         $CharKey = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-.';
         return $CharKey[floor($Number / 64)].$CharKey[floor($Number % 64)];
     }
@@ -40,6 +43,7 @@ class GOOGLE_CHARTS
         if (!empty($Color)) {
             $this->URL .= '&amp;chts='.$Color;
         }
+
         if (!empty($Size)) {
             $this->URL .= ','.$Size;
         }
@@ -99,6 +103,7 @@ class AREA_GRAPH extends GOOGLE_CHARTS
         $Max = max($this->Data);
         $Min = ((isset($this->Options['Break'])) ? $Min = min($this->Data) : 0);
         $Data = [];
+
         foreach ($this->Data as $Value) {
             $Data[] = $this->encode((($Value - $Min) / ($Max - $Min)) * 4095);
         }
@@ -136,6 +141,7 @@ class PIE_CHART extends GOOGLE_CHARTS
         foreach ($this->Data as $Key => $Value) {
             $ThisPercentage = number_format(($Value / $Sum) * 100, 2);
             $ThisData = ($Value / $Sum) * 4095;
+
             if ($Other && $ThisPercentage < 1) {
                 $OtherPercentage += $ThisPercentage;
                 $OtherData += $ThisData;
@@ -143,11 +149,13 @@ class PIE_CHART extends GOOGLE_CHARTS
                 unset($Labels[$Key]);
                 continue;
             }
+
             if ($LabelPercent) {
                 $Labels[$Key] .= ' ('.$ThisPercentage.'%)';
             }
             $Data[] = $this->encode($ThisData);
         }
+
         if ($OtherPercentage > 0) {
             $OtherLabel = 'Other';
             if ($LabelPercent) {
@@ -178,6 +186,7 @@ class LOG_BAR_GRAPH extends GOOGLE_CHARTS
         $Max = max($this->Data);
         $Min = ((isset($this->Options['Break'])) ? $Min = min($this->Data) : 0);
         $Data = [];
+
         foreach ($this->Data as $Value) {
             $Data[] = $this->encode((($Value - $Min) / ($Max - $Min)) * 4095);
         }
@@ -209,6 +218,7 @@ class POLL_GRAPH extends GOOGLE_CHARTS
         $Increment = ($Max / $Sum) * 25; // * 100% / 4divisions
         $Data = [];
         $Labels = [];
+        
         foreach ($this->Data as $Key => $Value) {
             $Data[] = $this->encode(($Value / $Max) * 4095);
             $Labels[] = '@t'.str_replace(array(' ', ','), array('+', '\,'), $this->Labels[$Key]).',000000,1,'.round((($Key + 1) / $Count) - (12 / $Height), 2).':0,12';

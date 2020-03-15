@@ -1,6 +1,10 @@
 <?php
 
+# todo: Leverage this class to parse file extensions
+# Work the expension parser on the upload form into this class
+
 $ComicsExtensions = array_fill_keys(array('cbr', 'cbz', 'gif', 'jpeg', 'jpg', 'pdf', 'png'), true);
+
 $MusicExtensions = array_fill_keys(
     array(
     'ac3', 'accurip', 'azw3', 'chm', 'cue', 'djv', 'djvu', 'doc', 'dts', 'epub', 'ffp',
@@ -8,6 +12,7 @@ $MusicExtensions = array_fill_keys(
     'md5', 'mobi', 'mp3', 'mp4', 'nfo', 'pdf', 'pls', 'png', 'rtf', 'sfv', 'txt'),
     true
 );
+
 $Keywords = array(
   'ahashare.com', 'demonoid.com', 'demonoid.me', 'djtunes.com', 'h33t', 'housexclusive.net',
   'limetorrents.com', 'mixesdb.com', 'mixfiend.blogstop', 'mixtapetorrent.blogspot',
@@ -23,11 +28,13 @@ function check_name($Name)
 {
     global $Keywords;
     $NameLC = strtolower($Name);
+
     foreach ($Keywords as &$Value) {
         if (strpos($NameLC, $Value) !== false) {
             forbidden_error($Name);
         }
     }
+
     if (preg_match('/INCOMPLETE~\*/i', $Name)) {
         forbidden_error($Name);
     }
@@ -52,11 +59,11 @@ function check_name($Name)
 function check_extensions($Type, $Name)
 {
     global $MusicExtensions, $ComicsExtensions;
-    if ($Type == 'Music' || $Type == 'Audiobooks' || $Type == 'Comedy' || $Type == 'E-Books') {
+    if ($Type === 'Music' || $Type === 'Audiobooks' || $Type === 'Comedy' || $Type === 'E-Books') {
         if (!isset($MusicExtensions[get_file_extension($Name)])) {
             invalid_error($Name);
         }
-    } elseif ($Type == 'Comics') {
+    } elseif ($Type === 'Comics') {
         if (!isset($ComicsExtensions[get_file_extension($Name)])) {
             invalid_error($Name);
         }
