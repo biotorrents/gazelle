@@ -1,3 +1,4 @@
 _packages/**/.git/**
 classes/config.php
 .DS_Store
+*.sw*

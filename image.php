@@ -1,4 +1,5 @@
 <?php
+
 // Functions and headers needed by the image proxy
 error_reporting(E_COMPILE_ERROR|E_RECOVERABLE_ERROR|E_ERROR|E_CORE_ERROR);
 
@@ -105,4 +106,4 @@ function image_height($Type, $Data)
 }
 
 define('SKIP_NO_CACHE_HEADERS', 1);
-require('classes/script_start.php'); // script_start contains all we need and includes sections/image/index.php
+require 'classes/script_start.php'; // script_start.php contains all we need and includes sections/image/index.php

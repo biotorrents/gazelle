@@ -1,4 +1,5 @@
 <?php
+
 class Feed
 {
     public function open_feed()
@@ -25,12 +26,14 @@ class Feed
     }
 
     public function item($Title, $Description, $Page, $Creator, $Comments = '', $Category = '', $Date = '')
-    { // Escape with CDATA, otherwise the feed breaks.
+    {
+        // Escape with CDATA, otherwise the feed breaks.
         if ($Date === '') {
             $Date = date('r');
         } else {
             $Date = date('r', strtotime($Date));
         }
+
         $Site = site_url();
         $Item = "\t\t<item>\n";
         $Item .= "\t\t\t<title><![CDATA[$Title]]></title>\n";
@@ -38,12 +41,15 @@ class Feed
         $Item .= "\t\t\t<pubDate>$Date</pubDate>\n";
         $Item .= "\t\t\t<link>$Site$Page</link>\n";
         $Item .= "\t\t\t<guid>$Site$Page</guid>\n";
+
         if ($Comments !== '') {
             $Item .= "\t\t\t<comments>$Site$Comments</comments>\n";
         }
+
         if ($Category !== '') {
             $Item .= "\t\t\t<category><![CDATA[$Category]]></category>\n";
         }
+
         $Item .= "\t\t\t<dc:creator>$Creator</dc:creator>\n\t\t</item>\n";
         return $Item;
     }
@@ -52,6 +58,7 @@ class Feed
     {
         global $Cache;
         $Entries = $Cache->get_value($CacheKey);
+
         if (!$Entries) {
             $Entries = [];
         } else {
@@ -65,6 +72,7 @@ class Feed
     {
         global $Cache;
         $Entries = $Cache->get_value($CacheKey, true);
+
         if (!$Entries) {
             $Entries = [];
         } else {
@@ -72,6 +80,7 @@ class Feed
                 array_pop($Entries);
             }
         }
+        
         array_unshift($Entries, $Item);
         $Cache->cache_value($CacheKey, $Entries, 0); // inf cache
     }
