@@ -11,30 +11,29 @@ class UserRank
         $QueryID = G::$DB->get_query_id();
 
         G::$DB->query("
-      DROP TEMPORARY TABLE IF EXISTS temp_stats");
+        DROP TEMPORARY TABLE IF EXISTS temp_stats");
 
         G::$DB->query("
-      CREATE TEMPORARY TABLE temp_stats (
-        ID int(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        Val bigint(20) NOT NULL
-      );");
+        CREATE TEMPORARY TABLE temp_stats (
+          ID int(10) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+          Val bigint(20) NOT NULL
+        );");
 
         G::$DB->query("
-      INSERT INTO temp_stats (Val) ".
-      $Query);
+        INSERT INTO temp_stats (Val) ".
+        $Query);
 
         G::$DB->query("
-      SELECT COUNT(ID)
-      FROM temp_stats");
+        SELECT COUNT(ID)
+        FROM temp_stats");
         list($UserCount) = G::$DB->next_record();
 
         G::$DB->query("
-      SELECT MIN(Val)
-      FROM temp_stats
-      GROUP BY CEIL(ID / (".(int)$UserCount." / 100));");
+        SELECT MIN(Val)
+        FROM temp_stats
+          GROUP BY CEIL(ID / (".(int)$UserCount." / 100));");
 
         $Table = G::$DB->to_array();
-
         G::$DB->set_query_id($QueryID);
 
         // Give a little variation to the cache length, so all the tables don't expire at the same time
@@ -46,60 +45,66 @@ class UserRank
     private static function table_query($TableName)
     {
         switch ($TableName) {
-      case 'uploaded':
-        $Query =  "
+        case 'uploaded':
+          $Query =  "
           SELECT Uploaded
           FROM users_main
           WHERE Enabled = '1'
             AND Uploaded > 0
           ORDER BY Uploaded;";
-        break;
-      case 'downloaded':
-        $Query =  "
+          break;
+
+        case 'downloaded':
+          $Query =  "
           SELECT Downloaded
           FROM users_main
           WHERE Enabled = '1'
             AND Downloaded > 0
           ORDER BY Downloaded;";
-        break;
-      case 'uploads':
-        $Query = "
+          break;
+
+        case 'uploads':
+          $Query = "
           SELECT COUNT(t.ID) AS Uploads
           FROM users_main AS um
             JOIN torrents AS t ON t.UserID = um.ID
           WHERE um.Enabled = '1'
           GROUP BY um.ID
           ORDER BY Uploads;";
-        break;
-      case 'requests':
-        $Query = "
+          break;
+
+        case 'requests':
+          $Query = "
           SELECT COUNT(r.ID) AS Requests
           FROM users_main AS um
             JOIN requests AS r ON r.FillerID = um.ID
           WHERE um.Enabled = '1'
           GROUP BY um.ID
           ORDER BY Requests;";
-        break;
-      case 'posts':
-        $Query = "
+          break;
+
+        case 'posts':
+          $Query = "
           SELECT COUNT(p.ID) AS Posts
           FROM users_main AS um
             JOIN forums_posts AS p ON p.AuthorID = um.ID
           WHERE um.Enabled = '1'
           GROUP BY um.ID
           ORDER BY Posts;";
-        break;
-      case 'bounty':
-        $Query = "
+          break;
+
+        case 'bounty':
+          $Query = "
           SELECT SUM(rv.Bounty) AS Bounty
           FROM users_main AS um
             JOIN requests_votes AS rv ON rv.UserID = um.ID
           WHERE um.Enabled = '1' " .
           "GROUP BY um.ID
           ORDER BY Bounty;";
-        break;
-      case 'artists':
-        $Query = "
+          break;
+
+        case 'artists':
+          $Query = "
           SELECT COUNT(ta.ArtistID) AS Artists
           FROM torrents_artists AS ta
             JOIN torrents_group AS tg ON tg.ID = ta.GroupID
@@ -107,8 +112,8 @@ class UserRank
           WHERE t.UserID != ta.UserID
           GROUP BY tg.ID
           ORDER BY Artists ASC";
-        break;
-    }
+          break;
+        }
         return $Query;
     }
 
@@ -130,6 +135,7 @@ class UserRank
                 G::$Cache->delete_value(self::PREFIX.$TableName.'_lock');
             }
         }
+
         $LastPercentile = 0;
         foreach ($Table as $Row) {
             list($CurValue) = $Row;
@@ -147,10 +153,12 @@ class UserRank
         if ($Ratio > 1) {
             $Ratio = 1;
         }
+
         $TotalScore = 0;
         if (in_array(false, func_get_args(), true)) {
             return false;
         }
+        
         $TotalScore += $Uploaded * 15;
         $TotalScore += $Downloaded * 8;
         $TotalScore += $Uploads * 25;

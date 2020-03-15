@@ -32,19 +32,22 @@ class DEBUG
         if ($Errors > MAX_ERRORS && !defined('ERROR_EXCEPTION')) {
             $Reason[] = $Errors.' PHP errors';
         }
+
         /*
         $Queries = count($this->get_queries());
         if ($Queries > MAX_QUERIES && !defined('QUERY_EXCEPTION')) {
           $Reason[] = $Queries.' Queries';
         }
         */
+
         $Ram = memory_get_usage(true);
         if ($Ram > MAX_MEMORY && !defined('MEMORY_EXCEPTION')) {
             $Reason[] = Format::get_size($Ram).' RAM used';
         }
 
-        G::$DB->warnings(); // see comment in MYSQL::query
-        /*$Queries = $this->get_queries();
+        G::$DB->warnings(); // See comment in MYSQL::query
+        /*
+        $Queries = $this->get_queries();
         $DBWarningCount = 0;
         foreach ($Queries as $Query) {
           if (!empty($Query[2])) {
@@ -53,7 +56,8 @@ class DEBUG
         }
         if ($DBWarningCount) {
           $Reason[] = $DBWarningCount . ' DB warning(s)';
-        }*/
+        }
+        */
 
         $CacheStatus = G::$Cache->server_status();
         if (in_array(0, $CacheStatus) && !G::$Cache->get_value('cache_fail_reported')) {
@@ -75,7 +79,6 @@ class DEBUG
             $this->analysis(implode(', ', $Reason));
             return true;
         }
-
         return false;
     }
 
@@ -87,21 +90,22 @@ class DEBUG
         }
         $Identifier = Users::make_secret(5);
         G::$Cache->cache_value(
-        'analysis_'.$Identifier,
-        array(
-        'url' => $_SERVER['REQUEST_URI'],
-        'message' => $Report,
-        'errors' => $this->get_errors(true),
-        'queries' => $this->get_queries(),
-        'flags' => $this->get_flags(),
-        'includes' => $this->get_includes(),
-        'cache' => $this->get_cache_keys(),
-        'vars' => $this->get_logged_vars(),
-        'perf' => $this->get_perf(),
-        'ocelot' => $this->get_ocelot_requests()
-      ),
-        $Time
-    );
+            'analysis_'.$Identifier,
+            array(
+                'url' => $_SERVER['REQUEST_URI'],
+                'message' => $Report,
+                'errors' => $this->get_errors(true),
+                'queries' => $this->get_queries(),
+                'flags' => $this->get_flags(),
+                'includes' => $this->get_includes(),
+                'cache' => $this->get_cache_keys(),
+                'vars' => $this->get_logged_vars(),
+                'perf' => $this->get_perf(),
+                'ocelot' => $this->get_ocelot_requests()
+            ),
+            $Time
+        );
+
         $RequestURI = !empty($_SERVER['REQUEST_URI']) ? substr($_SERVER['REQUEST_URI'], 1) : '';
         send_irc('PRIVMSG '.LAB_CHAN." :{$Message} $Document ".site_url()."tools.php?action=analysis&case=$Identifier ".site_url().$RequestURI);
     }
@@ -121,9 +125,11 @@ class DEBUG
     {
         $BackTrace = debug_backtrace();
         $ID = Users::make_secret(5);
+
         if (!$VarName) {
             $VarName = $ID;
         }
+
         $File = array('path' => substr($BackTrace[0]['file'], strlen(SERVER_ROOT)), 'line' => $BackTrace[0]['line']);
         $this->LoggedVars[$ID] = array($VarName => array('bt' => $File, 'data' => $Var));
     }
@@ -134,7 +140,7 @@ class DEBUG
         $this->Flags[] = array($Event, (microtime(true) - $ScriptStartTime) * 1000, memory_get_usage(true), $this->get_cpu_time());
     }
 
-    //This isn't in the constructor because $this is not available, and the function cannot be made static
+    // This isn't in the constructor because $this is not available, and the function cannot be made static
     public function handle_errors()
     {
         //error_reporting(E_ALL ^ E_STRICT | E_WARNING | E_DEPRECATED | E_ERROR | E_PARSE); //E_STRICT disabled
@@ -151,6 +157,7 @@ class DEBUG
             if (!is_int($Key) || !is_int($LastKey) || $Key != $LastKey + 1) {
                 $Return[$Key] .= "'$Key' => ";
             }
+
             if ($Val === true) {
                 $Return[$Key] .= 'true';
             } elseif ($Val === false) {
@@ -164,6 +171,7 @@ class DEBUG
             } elseif (is_array($Val)) {
                 $Return[$Key] .= 'array('.$this->format_args($Val).')';
             }
+
             $LastKey = $Key;
         }
         return implode(', ', $Return);
@@ -171,47 +179,47 @@ class DEBUG
 
     public function php_error_handler($Level, $Error, $File, $Line)
     {
-        //Who added this, it's still something to pay attention to...
+        // Who added this, it's still something to pay attention to...
         if (stripos('Undefined index', $Error) !== false) {
             //return true;
         }
 
-        $Steps = 1; //Steps to go up in backtrace, default one
+        $Steps = 1; // Steps to go up in backtrace, default one
         $Call = '';
         $Args = '';
         $Tracer = debug_backtrace();
 
-        //This is in case something in this function goes wrong and we get stuck with an infinite loop
+        // This is in case something in this function goes wrong and we get stuck with an infinite loop
         if (isset($Tracer[$Steps]['function'], $Tracer[$Steps]['class']) && $Tracer[$Steps]['function'] == 'php_error_handler' && $Tracer[$Steps]['class'] == 'DEBUG') {
             return true;
         }
 
-        //If this error was thrown, we return the function which threw it
+        // If this error was thrown, we return the function which threw it
         if (isset($Tracer[$Steps]['function']) && $Tracer[$Steps]['function'] == 'trigger_error') {
             $Steps++;
             $File = $Tracer[$Steps]['file'];
             $Line = $Tracer[$Steps]['line'];
         }
 
-        //At this time ONLY Array strict typing is fully supported.
-        //Allow us to abuse strict typing (IE: function test(Array))
+        // At this time ONLY Array strict typing is fully supported.
+        // Allow us to abuse strict typing (IE: function test(Array))
         if (preg_match('/^Argument (\d+) passed to \S+ must be an (array), (array|string|integer|double|object) given, called in (\S+) on line (\d+) and defined$/', $Error, $Matches)) {
             $Error = 'Type hinting failed on arg '.$Matches[1]. ', expected '.$Matches[2].' but found '.$Matches[3];
             $File = $Matches[4];
             $Line = $Matches[5];
         }
 
-        //Lets not be repetative
+        // Let's not be repetative
         if (($Tracer[$Steps]['function'] == 'include' || $Tracer[$Steps]['function'] == 'require') && isset($Tracer[$Steps]['args'][0]) && $Tracer[$Steps]['args'][0] == $File) {
             unset($Tracer[$Steps]['args']);
         }
 
-        //Class
+        // Class
         if (isset($Tracer[$Steps]['class'])) {
             $Call .= $Tracer[$Steps]['class'].'::';
         }
 
-        //Function & args
+        // Function & args
         if (isset($Tracer[$Steps]['function'])) {
             $Call .= $Tracer[$Steps]['function'];
             if (isset($Tracer[$Steps]['args'][0])) {
@@ -219,7 +227,7 @@ class DEBUG
             }
         }
 
-        //Shorten the path & we're done
+        // Shorten the path & we're done
         $File = str_replace(SERVER_ROOT, '', $File);
         $Error = str_replace(SERVER_ROOT, '', $Error);
 
@@ -238,8 +246,9 @@ class DEBUG
             $PageTime = (microtime(true) - $ScriptStartTime);
             $CPUTime = $this->get_cpu_time();
             $Perf = array(
-        'Memory usage' => Format::get_size(memory_get_usage(true)),
-        'Page process time' => number_format($PageTime, 3).' s');
+                'Memory usage' => Format::get_size(memory_get_usage(true)),
+                'Page process time' => number_format($PageTime, 3).' s');
+
             if ($CPUTime) {
                 $Perf['CPU time'] = number_format($CPUTime / 1000000, 3).' s';
             }
@@ -255,7 +264,7 @@ class DEBUG
 
     public function get_errors($Light = false)
     {
-        //Because the cache can't take some of these variables
+        // Because the cache can't take some of these variables
         if ($Light) {
             foreach ($this->Errors as $Key => $Value) {
                 $this->Errors[$Key][3] = '';
@@ -347,6 +356,7 @@ class DEBUG
         if (empty($Perf)) {
             return;
         } ?>
+
 <table class="layout">
   <tr>
     <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_perf').gtoggle(); return false;"
@@ -374,12 +384,20 @@ class DEBUG
         if (!is_array($Includes)) {
             $Includes = $this->get_includes();
         } ?>
+
 <table class="layout">
   <tr>
-    <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_include').gtoggle(); return false;"
-          class="brackets">View</a> <?=number_format(count($Includes))?> Includes:</strong></td>
+    <td>
+      <strong>
+        <a href="#" onclick="$(this).parents('.layout').next('#debug_include').gtoggle(); return false;"
+          class="brackets">View</a>
+        <?=number_format(count($Includes))?>
+        Includes:
+      </strong>
+    </td>
   </tr>
 </table>
+
 <table id="debug_include" class="debug_table hidden">
   <?php
     foreach ($Includes as $File) {
@@ -401,15 +419,22 @@ class DEBUG
         } ?>
 <table class="layout">
   <tr>
-    <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_classes').gtoggle(); return false;"
-          class="brackets">View</a> Classes:</strong></td>
+    <td>
+      <strong>
+        <a href="#" onclick="$(this).parents('.layout').next('#debug_classes').gtoggle(); return false;"
+          class="brackets">View</a>
+        Classes:
+      </strong>
+    </td>
   </tr>
 </table>
+
 <table id="debug_classes" class="debug_table hidden">
   <tr>
     <td>
       <pre>
-<?php          print_r($Classes);
+<?php
+print_r($Classes);
         echo "\n"; ?>
         </pre>
     </td>
@@ -423,15 +448,21 @@ class DEBUG
         ?>
 <table class="layout">
   <tr>
-    <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_extensions').gtoggle(); return false;"
-          class="brackets">View</a> Extensions:</strong></td>
+    <td>
+      <strong>
+        <a href="#" onclick="$(this).parents('.layout').next('#debug_extensions').gtoggle(); return false;"
+          class="brackets">View</a>
+        Extensions:
+      </strong>
+    </td>
   </tr>
 </table>
 <table id="debug_extensions" class="debug_table hidden">
   <tr>
     <td>
       <pre>
-<?php          print_r($this->get_extensions());
+<?php
+print_r($this->get_extensions());
         echo "\n"; ?>
         </pre>
     </td>
@@ -445,24 +476,33 @@ class DEBUG
         if (!is_array($Flags)) {
             $Flags = $this->get_flags();
         }
+
         if (empty($Flags)) {
             return;
         } ?>
+
 <table class="layout">
   <tr>
-    <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_flags').gtoggle(); return false;"
-          class="brackets">View</a> Flags:</strong></td>
+    <td>
+      <strong>
+        <a href="#" onclick="$(this).parents('.layout').next('#debug_flags').gtoggle(); return false;"
+          class="brackets">View</a>
+        Flags:
+      </strong>
+    </td>
   </tr>
 </table>
+
 <table id="debug_flags" class="debug_table hidden">
   <tr class="valign_top">
     <td class="debug_flags_event"><strong>Event</strong></td>
     <td class="debug_flags_time"><strong>Page time</strong></td>
-    <?php    if ($Flags[0][3] !== false) { ?>
+    <?php if ($Flags[0][3] !== false) { ?>
     <td class="debug_flags_time"><strong>CPU time</strong></td>
-    <?php    } ?>
+    <?php } ?>
     <td class="debug_flags_memory"><strong>Memory</strong></td>
   </tr>
+
   <?php
     foreach ($Flags as $Flag) {
         list($Event, $MicroTime, $Memory, $CPUTime) = $Flag; ?>
@@ -470,9 +510,9 @@ class DEBUG
     <td><?=$Event?>
     </td>
     <td><?=number_format($MicroTime, 3)?> ms</td>
-    <?php      if ($CPUTime !== false) { ?>
+    <?php if ($CPUTime !== false) { ?>
     <td><?=number_format($CPUTime / 1000, 3)?> ms</td>
-    <?php      } ?>
+    <?php } ?>
     <td><?=Format::get_size($Memory)?>
     </td>
   </tr>
@@ -487,17 +527,24 @@ class DEBUG
         if (!is_array($Constants)) {
             $Constants = $this->get_constants();
         } ?>
+
 <table class="layout">
   <tr>
-    <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_constants').gtoggle(); return false;"
-          class="brackets">View</a> Constants:</strong></td>
+    <td>
+      <strong>
+        <a href="#" onclick="$(this).parents('.layout').next('#debug_constants').gtoggle(); return false;"
+          class="brackets">View</a>
+        Constants:
+      </strong>
+    </td>
   </tr>
 </table>
+
 <table id="debug_constants" class="debug_table hidden">
   <tr>
     <td class="debug_data debug_constants_data">
       <pre>
-<?=         display_str(print_r($Constants, true))?>
+<?=display_str(print_r($Constants, true))?>
         </pre>
     </td>
   </tr>
@@ -510,23 +557,32 @@ class DEBUG
         if (!is_array($OcelotRequests)) {
             $OcelotRequests = $this->get_ocelot_requests();
         }
+
         if (empty($OcelotRequests)) {
             return;
         } ?>
+
 <table class="layout">
   <tr>
-    <td><strong><a data-toggle-target="#debug_ocelot" class="brackets">View</a> <?=number_format(count($OcelotRequests))?> Ocelot requests:</strong>
+    <td>
+      <strong>
+        <a data-toggle-target="#debug_ocelot" class="brackets">View</a>
+        <?=number_format(count($OcelotRequests))?>
+        Ocelot requests:
+      </strong>
     </td>
   </tr>
 </table>
+
 <table id="debug_ocelot" class="debug_table hidden">
-  <?php    foreach ($OcelotRequests as $i => $Request) { ?>
+  <?php foreach ($OcelotRequests as $i => $Request) { ?>
   <tr>
     <td class="debug_data debug_ocelot_data">
       <a data-toggle-target="#debug_ocelot_<?=$i?>"><?=display_str($Request['path'])?></a>
       <pre id="debug_ocelot_<?=$i?>"
         class="hidden"><?=display_str($Request['response'])?></pre>
     </td>
+
     <td class="debug_info" style="width: 100px;">
       <?=display_str($Request['status'])?>
     </td>
@@ -534,7 +590,7 @@ class DEBUG
       <?=number_format($Request['time'], 5)?> ms
     </td>
   </tr>
-  <?php    } ?>
+  <?php } ?>
 </table>
 <?php
     }
@@ -546,18 +602,26 @@ class DEBUG
             $CacheKeys = $this->get_cache_keys();
             $Header .= ' ('.number_format($this->get_cache_time(), 5).' ms)';
         }
+
         if (empty($CacheKeys)) {
             return;
         }
         $Header = ' '.number_format(count($CacheKeys))." $Header:"; ?>
+
 <table class="layout">
   <tr>
-    <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_cache').gtoggle(); return false;"
-          class="brackets">View</a><?=$Header?></strong></td>
+    <td>
+      <strong>
+        <a href="#" onclick="$(this).parents('.layout').next('#debug_cache').gtoggle(); return false;"
+          class="brackets">View</a>
+        <?=$Header?>
+      </strong>
+    </td>
   </tr>
 </table>
+
 <table id="debug_cache" class="debug_table hidden">
-  <?php    foreach ($CacheKeys as $Key) { ?>
+  <?php foreach ($CacheKeys as $Key) { ?>
   <tr>
     <td class="label nobr debug_info debug_cache_key">
       <a href="#"
@@ -567,11 +631,11 @@ class DEBUG
     </td>
     <td class="debug_data debug_cache_data">
       <pre id="debug_cache_<?=$Key?>" class="hidden">
-<?=         display_str(print_r(G::$Cache->get_value($Key, true), true))?>
+<?=display_str(print_r(G::$Cache->get_value($Key, true), true))?>
         </pre>
     </td>
   </tr>
-  <?php    } ?>
+  <?php } ?>
 </table>
 <?php
     }
@@ -581,13 +645,21 @@ class DEBUG
         if (!is_array($Errors)) {
             $Errors = $this->get_errors();
         }
+
         if (empty($Errors)) {
             return;
         } ?>
+
 <table class="layout">
   <tr>
-    <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_error').gtoggle(); return false;"
-          class="brackets">View</a> <?=number_format(count($Errors))?> Errors:</strong></td>
+    <td>
+      <strong>
+        <a href="#" onclick="$(this).parents('.layout').next('#debug_error').gtoggle(); return false;"
+          class="brackets">View</a>
+        <?=number_format(count($Errors))?>
+        Errors:
+      </strong>
+    </td>
   </tr>
 </table>
 <table id="debug_error" class="debug_table hidden">
@@ -618,30 +690,41 @@ class DEBUG
             $Queries = $this->get_queries();
             $Header .= ' ('.number_format($this->get_query_time(), 5).' ms)';
         }
+
         if (empty($Queries)) {
             return;
         }
         $Header = ' '.number_format(count($Queries))." $Header:"; ?>
+
 <table class="layout">
   <tr>
-    <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_database').gtoggle(); return false;"
-          class="brackets">View</a><?=$Header?></strong></td>
+    <td>
+      <strong>
+        <a href="#" onclick="$(this).parents('.layout').next('#debug_database').gtoggle(); return false;"
+          class="brackets">View</a>
+        <?=$Header?>
+      </strong>
+    </td>
   </tr>
 </table>
+
 <table id="debug_database" class="debug_table hidden">
   <?php
     foreach ($Queries as $Query) {
         $SQL = $Query[0] ?? null;
         $Time = $Query[1] ?? null;
         $Warnings = $Query[2] ?? null;
+
         if ($Warnings !== null) {
             $Warnings = implode('<br />', $Warnings);
         } ?>
+
   <tr class="valign_top">
     <td class="debug_data debug_query_data">
       <div><?=str_replace("\t", '&nbsp;&nbsp;', nl2br(display_str(trim($SQL))))?>
       </div>
     </td>
+
     <td class="debug_info debug_query_time" style="width: 130px;"><?=number_format($Time, 5)?> ms</td>
     <td class="debug_info debug_query_warnings"><?=$Warnings?>
     </td>
@@ -659,14 +742,21 @@ class DEBUG
             $Queries = $this->get_sphinxql_queries();
             $Header .= ' ('.number_format($this->get_sphinxql_time(), 5).' ms)';
         }
+
         if (empty($Queries)) {
             return;
         }
         $Header = ' '.number_format(count($Queries))." $Header:"; ?>
+
 <table class="layout">
   <tr>
-    <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_sphinx').gtoggle(); return false;"
-          class="brackets">View</a><?=$Header?></strong></td>
+    <td>
+      <strong>
+        <a href="#" onclick="$(this).parents('.layout').next('#debug_sphinx').gtoggle(); return false;"
+          class="brackets">View</a>
+        <?=$Header?>
+      </strong>
+    </td>
   </tr>
 </table>
 <table id="debug_sphinx" class="debug_table hidden">
@@ -695,12 +785,19 @@ class DEBUG
             $Vars = $this->LoggedVars;
         }
         $Header = ' '.number_format(count($Vars))." $Header:"; ?>
+
 <table class="layout">
   <tr>
-    <td><strong><a href="#" onclick="$(this).parents('.layout').next('#debug_loggedvars').gtoggle(); return false;"
-          class="brackets">View</a><?=$Header?></strong></td>
+    <td>
+      <strong>
+        <a href="#" onclick="$(this).parents('.layout').next('#debug_loggedvars').gtoggle(); return false;"
+          class="brackets">View</a>
+        <?=$Header?>
+      </strong>
+    </td>
   </tr>
 </table>
+
 <table id="debug_loggedvars" class="debug_table hidden">
   <?php
     foreach ($Vars as $ID => $Var) {
@@ -710,13 +807,15 @@ class DEBUG
   <tr>
     <td class="debug_info debug_loggedvars_name">
       <a href="#"
-        onclick="$('#debug_loggedvars_<?=$ID?>').gtoggle(); return false;"><?=display_str($Key)?></a> (<?=$Size . ($Size == 1 ? ' element' : ' elements')?>)
-      <div><?=$Data['bt']['path'].':'.$Data['bt']['line']; ?>
+        onclick="$('#debug_loggedvars_<?=$ID?>').gtoggle(); return false;"><?=display_str($Key)?></a>
+      (<?=$Size . ($Size == 1 ? ' element' : ' elements')?>)
+      <div>
+        <?=$Data['bt']['path'].':'.$Data['bt']['line']; ?>
       </div>
     </td>
     <td class="debug_data debug_loggedvars_data">
       <pre id="debug_loggedvars_<?=$ID?>" class="hidden">
-<?=         display_str(print_r($Data['data'], true))?>
+<?=display_str(print_r($Data['data'], true))?>
         </pre>
     </td>
   </tr>

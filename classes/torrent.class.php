@@ -1,5 +1,7 @@
 <?php
 
+# todo: Rplace with https://github.com/OPSnet/bencode-torrent
+
 /*******************************************************************************
 |~~~~ Gazelle bencode parser                         ~~~~|
 --------------------------------------------------------------------------------
@@ -67,18 +69,18 @@ the BENCODE_DICT class.
 class BENCODE2
 {
     public $Val; // Decoded array
-  public $Pos = 1; // Pointer that indicates our position in the string
-  public $Str = ''; // Torrent string
+    public $Pos = 1; // Pointer that indicates our position in the string
+    public $Str = ''; // Torrent string
 
-  public function __construct($Val, $IsParsed = false)
-  {
-      if (!$IsParsed) {
-          $this->Str = $Val;
-          $this->dec();
-      } else {
-          $this->Val = $Val;
-      }
-  }
+    public function __construct($Val, $IsParsed = false)
+    {
+        if (!$IsParsed) {
+            $this->Str = $Val;
+            $this->dec();
+        } else {
+            $this->Val = $Val;
+        }
+    }
 
     // Decode an element based on the type. The type is really just an indicator.
     public function decode($Type, $Key)
@@ -139,8 +141,10 @@ class BENCODE_LIST extends BENCODE2
         if (empty($this->Val)) {
             return 'le';
         }
+
         $Str = 'l';
         reset($this->Val);
+
         foreach ($this->Val as $Value) {
             $Str.=$this->encode($Value);
         }
@@ -152,6 +156,7 @@ class BENCODE_LIST extends BENCODE2
     {
         $Key = 0; // Array index
         $Length = strlen($this->Str);
+
         while ($this->Pos < $Length) {
             $Type = $this->Str[$this->Pos];
             // $Type now indicates what type of element we're dealing with
@@ -179,8 +184,10 @@ class BENCODE_DICT extends BENCODE2
         if (empty($this->Val)) {
             return 'de';
         }
+
         $Str = 'd';
         reset($this->Val);
+
         foreach ($this->Val as $Key => $Value) {
             $Str.=strlen($Key).':'.$Key.$this->encode($Value);
         }
@@ -273,11 +280,13 @@ class TORRENT extends BENCODE_DICT
             $FileSizes = [];
             $TotalSize = 0;
             $Files = $this->Val['info']->Val['files']->Val;
+
             if (isset($Files[0]->Val['path.utf-8'])) {
                 $PathKey = 'path.utf-8';
             } else {
                 $PathKey = 'path';
             }
+
             foreach ($Files as $File) {
                 $FileSize = $File->Val['length'];
                 $TotalSize += $FileSize;
@@ -286,6 +295,7 @@ class TORRENT extends BENCODE_DICT
                 $FileSizes[] = $FileSize;
                 $FileNames[] = $FileName;
             }
+
             natcasesort($FileNames);
             foreach ($FileNames as $Index => $FileName) {
                 $FileList[] = array($FileSizes[$Index], $FileName);
@@ -318,7 +328,7 @@ class TORRENT extends BENCODE_DICT
         unset($this->Val['azureus_properties']);
 
         // Remove web-seeds
-        #unset($this->Val['url-list']);
+        unset($this->Val['url-list']);
 
         // Remove libtorrent resume info
         unset($this->Val['libtorrent_resume']);

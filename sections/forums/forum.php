@@ -278,12 +278,17 @@ if (count($Forum) === 0) {
         }
     } ?>
   </table>
+
   <div class="breadcrumbs">
-    <a href="forums.php">Forums</a> › <?=$ForumName?>
+    <p>
+      <a href="forums.php">Forums</a> › <?=$ForumName?>
+    </p>
   </div>
+
   <div class="linkbox pager">
     <?=$Pages?>
   </div>
+
   <div class="linkbox"><a
       href="forums.php?action=catchup&amp;forumid=<?=$ForumID?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
       class="brackets">Catch up</a></div>

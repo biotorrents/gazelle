@@ -18,21 +18,27 @@ class Validate
         if (!empty($Options['maxlength'])) {
             $this->Fields[$FieldName]['MaxLength'] = $Options['maxlength'];
         }
+
         if (!empty($Options['minlength'])) {
             $this->Fields[$FieldName]['MinLength'] = $Options['minlength'];
         }
+
         if (!empty($Options['comparefield'])) {
             $this->Fields[$FieldName]['CompareField'] = $Options['comparefield'];
         }
+
         if (!empty($Options['allowperiod'])) {
             $this->Fields[$FieldName]['AllowPeriod'] = $Options['allowperiod'];
         }
+
         if (!empty($Options['allowcomma'])) {
             $this->Fields[$FieldName]['AllowComma'] = $Options['allowcomma'];
         }
+
         if (!empty($Options['inarray'])) {
             $this->Fields[$FieldName]['InArray'] = $Options['inarray'];
         }
+
         if (!empty($Options['regex'])) {
             $this->Fields[$FieldName]['Regex'] = $Options['regex'];
         }
@@ -52,6 +58,7 @@ class Validate
                     } else {
                         $MaxLength = 255;
                     }
+
                     if (isset($Field['MinLength'])) {
                         $MinLength = $Field['MinLength'];
                     } else {
@@ -69,6 +76,7 @@ class Validate
                     } else {
                         $MaxLength = '';
                     }
+
                     if (isset($Field['MinLength'])) {
                         $MinLength = $Field['MinLength'];
                     } else {
@@ -79,6 +87,7 @@ class Validate
                     if (isset($Field['AllowPeriod'])) {
                         $Match .= '.';
                     }
+
                     if (isset($Field['AllowComma'])) {
                         $Match .= ',';
                     }
@@ -115,6 +124,7 @@ class Validate
                     } else {
                         $MaxLength = 255;
                     }
+
                     if (isset($Field['MinLength'])) {
                         $MinLength = $Field['MinLength'];
                     } else {
@@ -134,6 +144,7 @@ class Validate
                     } else {
                         $MaxLength = 20;
                     }
+                    
                     if (isset($Field['MinLength'])) {
                         $MinLength = $Field['MinLength'];
                     } else {

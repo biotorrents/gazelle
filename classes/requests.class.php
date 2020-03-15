@@ -10,42 +10,43 @@ class Requests
     public static function update_sphinx_requests($RequestID)
     {
         $QueryID = G::$DB->get_query_id();
-
         G::$DB->query("
-      SELECT REPLACE(t.Name, '.', '_')
-      FROM tags AS t
-        JOIN requests_tags AS rt ON t.ID = rt.TagID
-      WHERE rt.RequestID = $RequestID");
+        SELECT REPLACE(t.Name, '.', '_')
+        FROM tags AS t
+          JOIN requests_tags AS rt ON t.ID = rt.TagID
+          WHERE rt.RequestID = $RequestID");
+
         $TagList = G::$DB->collect(0, false);
         $TagList = db_string(implode(' ', $TagList));
 
         G::$DB->query("
-      REPLACE INTO sphinx_requests_delta (
-        ID, UserID, TimeAdded, LastVote, CategoryID, Title, TagList,
-        CatalogueNumber, DLSiteID, FillerID, TorrentID,
-        TimeFilled, Visible, Votes, Bounty)
-      SELECT
-        ID, r.UserID, UNIX_TIMESTAMP(TimeAdded) AS TimeAdded,
-        UNIX_TIMESTAMP(LastVote) AS LastVote, CategoryID, Title, '$TagList',
-        CatalogueNumber, DLSiteID, FillerID, TorrentID,
-        UNIX_TIMESTAMP(TimeFilled) AS TimeFilled, Visible,
-        COUNT(rv.UserID) AS Votes, SUM(rv.Bounty) >> 10 AS Bounty
-      FROM requests AS r
-        LEFT JOIN requests_votes AS rv ON rv.RequestID = r.ID
-      WHERE ID = $RequestID
-      GROUP BY r.ID");
+        REPLACE INTO sphinx_requests_delta (
+          ID, UserID, TimeAdded, LastVote, CategoryID, Title, TagList,
+          CatalogueNumber, DLSiteID, FillerID, TorrentID,
+          TimeFilled, Visible, Votes, Bounty)
+        SELECT
+          ID, r.UserID, UNIX_TIMESTAMP(TimeAdded) AS TimeAdded,
+          UNIX_TIMESTAMP(LastVote) AS LastVote, CategoryID, Title, '$TagList',
+          CatalogueNumber, DLSiteID, FillerID, TorrentID,
+          UNIX_TIMESTAMP(TimeFilled) AS TimeFilled, Visible,
+          COUNT(rv.UserID) AS Votes, SUM(rv.Bounty) >> 10 AS Bounty
+        FROM requests AS r
+          LEFT JOIN requests_votes AS rv ON rv.RequestID = r.ID
+        WHERE ID = $RequestID
+          GROUP BY r.ID");
+
         G::$DB->query("
-      UPDATE sphinx_requests_delta
-      SET ArtistList = (
+        UPDATE sphinx_requests_delta
+        SET ArtistList = (
           SELECT GROUP_CONCAT(ag.Name SEPARATOR ' ')
           FROM requests_artists AS ra
             JOIN artists_group AS ag ON ag.ArtistID = ra.ArtistID
           WHERE ra.RequestID = $RequestID
-          GROUP BY NULL
-          )
-      WHERE ID = $RequestID");
-        G::$DB->set_query_id($QueryID);
+            GROUP BY NULL
+        )
+          WHERE ID = $RequestID");
 
+        G::$DB->set_query_id($QueryID);
         G::$Cache->delete_value("request_$RequestID");
     }
 
@@ -68,12 +69,14 @@ class Requests
                 unset($RequestIDs[$i], $Found[$GroupID], $NotFound[$GroupID]);
                 continue;
             }
+
             $Data = G::$Cache->get_value("request_$RequestID");
             if (!empty($Data)) {
                 unset($NotFound[$RequestID]);
                 $Found[$RequestID] = $Data;
             }
         }
+
         // Make sure there's something in $RequestIDs, otherwise the SQL will break
         if (count($RequestIDs) === 0) {
             return [];
@@ -81,47 +84,50 @@ class Requests
         $IDs = implode(',', array_keys($NotFound));
 
         /*
-          Don't change without ensuring you change everything else that uses get_requests()
-        */
+         * Don't change without ensuring you change everything else that uses get_requests()
+         */
 
         if (count($NotFound) > 0) {
             $QueryID = G::$DB->get_query_id();
-
             G::$DB->query("
-        SELECT
-          ID,
-          UserID,
-          TimeAdded,
-          LastVote,
-          CategoryID,
-          Title,
-          TitleRJ,
-          TitleJP,
-          Image,
-          Description,
-          CatalogueNumber,
-          DLsiteID,
-          FillerID,
-          TorrentID,
-          TimeFilled,
-          GroupID
-        FROM requests
-        WHERE ID IN ($IDs)
-        ORDER BY ID");
+            SELECT
+              ID,
+              UserID,
+              TimeAdded,
+              LastVote,
+              CategoryID,
+              Title,
+              TitleRJ,
+              TitleJP,
+              Image,
+              Description,
+              CatalogueNumber,
+              DLsiteID,
+              FillerID,
+              TorrentID,
+              TimeFilled,
+              GroupID
+            FROM requests
+              WHERE ID IN ($IDs)
+              ORDER BY ID");
+
             $Requests = G::$DB->to_array(false, MYSQLI_ASSOC, true);
             $Tags = self::get_tags(G::$DB->collect('ID', false));
+
             foreach ($Requests as $Request) {
                 $Request['AnonymousFill'] = false;
                 if ($Request['FillerID']) {
                     G::$DB->query("
-            SELECT Anonymous
-            FROM torrents
-            WHERE ID = ".$Request['TorrentID']);
+                    SELECT Anonymous
+                    FROM torrents
+                      WHERE ID = ".$Request['TorrentID']);
+
                     list($Anonymous) = G::$DB->next_record();
                     if ($Anonymous) {
                         $Request['AnonymousFill'] = true;
                     }
                 }
+
                 unset($NotFound[$Request['ID']]);
                 $Request['Tags'] = isset($Tags[$Request['ID']]) ? $Tags[$Request['ID']] : [];
                 $Found[$Request['ID']] = $Request;
@@ -166,15 +172,17 @@ class Requests
             $Results = [];
             $QueryID = G::$DB->get_query_id();
             G::$DB->query("
-        SELECT
-          ra.ArtistID,
-          ag.Name
-        FROM requests_artists AS ra
-          JOIN artists_group AS ag ON ra.ArtistID = ag.ArtistID
-        WHERE ra.RequestID = $RequestID
-        ORDER BY ag.Name ASC;");
+            SELECT
+              ra.ArtistID,
+              ag.Name
+            FROM requests_artists AS ra
+              JOIN artists_group AS ag ON ra.ArtistID = ag.ArtistID
+            WHERE ra.RequestID = $RequestID
+              ORDER BY ag.Name ASC;");
+
             $ArtistRaw = G::$DB->to_array();
             G::$DB->set_query_id($QueryID);
+
             foreach ($ArtistRaw as $ArtistRow) {
                 list($ArtistID, $ArtistName) = $ArtistRow;
                 $Results[] = array('id' => $ArtistID, 'name' => $ArtistName);
@@ -189,21 +197,25 @@ class Requests
         if (empty($RequestIDs)) {
             return [];
         }
+
         if (is_array($RequestIDs)) {
             $RequestIDs = implode(',', $RequestIDs);
         }
+
         $QueryID = G::$DB->get_query_id();
         G::$DB->query("
-      SELECT
-        rt.RequestID,
-        rt.TagID,
-        t.Name
-      FROM requests_tags AS rt
-        JOIN tags AS t ON rt.TagID = t.ID
-      WHERE rt.RequestID IN ($RequestIDs)
-      ORDER BY rt.TagID ASC");
+        SELECT
+          rt.RequestID,
+          rt.TagID,
+          t.Name
+        FROM requests_tags AS rt
+          JOIN tags AS t ON rt.TagID = t.ID
+        WHERE rt.RequestID IN ($RequestIDs)
+          ORDER BY rt.TagID ASC");
+
         $Tags = G::$DB->to_array(false, MYSQLI_NUM, false);
         G::$DB->set_query_id($QueryID);
+
         $Results = [];
         foreach ($Tags as $TagsRow) {
             list($RequestID, $TagID, $TagName) = $TagsRow;
@@ -218,18 +230,19 @@ class Requests
         if (!is_array($RequestVotes)) {
             $QueryID = G::$DB->get_query_id();
             G::$DB->query("
-        SELECT
-          rv.UserID,
-          rv.Bounty,
-          u.Username
-        FROM requests_votes AS rv
-          LEFT JOIN users_main AS u ON u.ID = rv.UserID
-        WHERE rv.RequestID = $RequestID
-        ORDER BY rv.Bounty DESC");
+            SELECT
+              rv.UserID,
+              rv.Bounty,
+              u.Username
+            FROM requests_votes AS rv
+              LEFT JOIN users_main AS u ON u.ID = rv.UserID
+            WHERE rv.RequestID = $RequestID
+              ORDER BY rv.Bounty DESC");
+
             if (!G::$DB->has_results()) {
                 return array(
-          'TotalBounty' => 0,
-          'Voters' => []);
+                    'TotalBounty' => 0,
+                    'Voters' => []);
             }
             $Votes = G::$DB->to_array();
 

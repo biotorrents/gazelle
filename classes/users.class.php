@@ -15,19 +15,19 @@ class Users
         if (!$Classes || !$ClassLevels) {
             $QueryID = G::$DB->get_query_id();
             G::$DB->query('
-        SELECT ID, Name, Abbreviation, Level, Secondary
-        FROM permissions
-        ORDER BY Level');
+            SELECT ID, Name, Abbreviation, Level, Secondary
+            FROM permissions
+              ORDER BY Level');
+
             $Classes = G::$DB->to_array('ID');
             $ClassLevels = G::$DB->to_array('Level');
             G::$DB->set_query_id($QueryID);
             G::$Cache->cache_value('classes', [$Classes, $ClassLevels], 0);
         }
-        $Debug->set_flag('Loaded permissions');
 
+        $Debug->set_flag('Loaded permissions');
         return [$Classes, $ClassLevels];
     }
-
 
     /**
      * Get user info, is used for the current user and usernames all over the site.
@@ -59,60 +59,62 @@ class Users
             $OldQueryID = G::$DB->get_query_id();
 
             G::$DB->query("
-        SELECT
-          m.ID,
-          m.Username,
-          m.PermissionID,
-          m.Paranoia,
-          i.Artist,
-          i.Donor,
-          i.Warned,
-          i.Avatar,
-          m.Enabled,
-          m.Title,
-          i.CatchupTime,
-          m.Visible,
-          la.Type AS LockedAccount,
-          GROUP_CONCAT(ul.PermissionID SEPARATOR ',') AS Levels
-        FROM users_main AS m
-          INNER JOIN users_info AS i ON i.UserID = m.ID
-          LEFT JOIN locked_accounts AS la ON la.UserID = m.ID
-          LEFT JOIN users_levels AS ul ON ul.UserID = m.ID
-        WHERE m.ID = '$UserID'
-        GROUP BY m.ID");
+            SELECT
+              m.ID,
+              m.Username,
+              m.PermissionID,
+              m.Paranoia,
+              i.Artist,
+              i.Donor,
+              i.Warned,
+              i.Avatar,
+              m.Enabled,
+              m.Title,
+              i.CatchupTime,
+              m.Visible,
+              la.Type AS LockedAccount,
+            GROUP_CONCAT(ul.PermissionID SEPARATOR ',') AS Levels
+            FROM users_main AS m
+              INNER JOIN users_info AS i ON i.UserID = m.ID
+              LEFT JOIN locked_accounts AS la ON la.UserID = m.ID
+              LEFT JOIN users_levels AS ul ON ul.UserID = m.ID
+            WHERE m.ID = '$UserID'
+              GROUP BY m.ID");
 
             if (!G::$DB->has_results()) { // Deleted user, maybe?
                 $UserInfo = [
-          'ID'           => $UserID,
-          'Username'     => '',
-          'PermissionID' => 0,
-          'Paranoia'     => [],
-          'Artist'       => false,
-          'Donor'        => false,
-          'Warned'       => null,
-          'Avatar'       => '',
-          'Enabled'      => 0,
-          'Title'        => '',
-          'CatchupTime'  => 0,
-          'Visible'      => '1',
-          'Levels'       => '',
-          'Class'        => 0
-        ];
+                    'ID'           => $UserID,
+                    'Username'     => '',
+                    'PermissionID' => 0,
+                    'Paranoia'     => [],
+                    'Artist'       => false,
+                    'Donor'        => false,
+                    'Warned'       => null,
+                    'Avatar'       => '',
+                    'Enabled'      => 0,
+                    'Title'        => '',
+                    'CatchupTime'  => 0,
+                    'Visible'      => '1',
+                    'Levels'       => '',
+                    'Class'        => 0
+                ];
             } else {
                 $UserInfo = G::$DB->next_record(MYSQLI_ASSOC, ['Paranoia', 'Title']);
                 $UserInfo['CatchupTime'] = strtotime($UserInfo['CatchupTime']);
+
                 if (!is_array($UserInfo['Paranoia'])) {
                     $UserInfo['Paranoia'] = json_decode($UserInfo['Paranoia'], true);
                 }
+
                 if (!$UserInfo['Paranoia']) {
                     $UserInfo['Paranoia'] = [];
                 }
                 $UserInfo['Class'] = $Classes[$UserInfo['PermissionID']]['Level'];
 
                 G::$DB->query("
-          SELECT BadgeID, Displayed
-          FROM users_badges
-          WHERE UserID = ".$UserID);
+                SELECT BadgeID, Displayed
+                FROM users_badges
+                  WHERE UserID = ".$UserID);
 
                 $Badges = [];
                 if (G::$DB->has_results()) {
@@ -132,6 +134,7 @@ class Users
             } else {
                 $UserInfo['ExtraClasses'] = [];
             }
+
             unset($UserInfo['Levels']);
             $EffectiveClass = $UserInfo['Class'];
             foreach ($UserInfo['ExtraClasses'] as $Class => $Val) {
@@ -142,11 +145,11 @@ class Users
             G::$Cache->cache_value("user_info_$UserID", $UserInfo, 2592000);
             G::$DB->set_query_id($OldQueryID);
         }
+
         if (strtotime($UserInfo['Warned']) < time()) {
             $UserInfo['Warned'] = null;
             G::$Cache->cache_value("user_info_$UserID", $UserInfo, 2592000);
         }
-
         return $UserInfo;
     }
 
@@ -164,43 +167,44 @@ class Users
         if (empty($HeavyInfo)) {
             $QueryID = G::$DB->get_query_id();
             G::$DB->query("
-        SELECT
-          m.Invites,
-          m.torrent_pass,
-          m.IP,
-          m.CustomPermissions,
-          m.can_leech AS CanLeech,
-          i.AuthKey,
-          i.RatioWatchEnds,
-          i.RatioWatchDownload,
-          i.StyleID,
-          i.StyleURL,
-          i.DisableInvites,
-          i.DisablePosting,
-          i.DisableUpload,
-          i.DisableWiki,
-          i.DisableAvatar,
-          i.DisablePM,
-          i.DisablePoints,
-          i.DisablePromotion,
-          i.DisableRequests,
-          i.DisableForums,
-          i.DisableTagging,
-          i.SiteOptions,
-          i.LastReadNews,
-          i.LastReadBlog,
-          i.RestrictedForums,
-          i.PermittedForums,
-          m.FLTokens,
-          m.BonusPoints,
-          m.HnR,
-          m.PermissionID
-        FROM users_main AS m
-          INNER JOIN users_info AS i ON i.UserID = m.ID
-        WHERE m.ID = '$UserID'");
-            $HeavyInfo = G::$DB->next_record(MYSQLI_ASSOC, ['CustomPermissions', 'SiteOptions']);
+            SELECT
+              m.Invites,
+              m.torrent_pass,
+              m.IP,
+              m.CustomPermissions,
+              m.can_leech AS CanLeech,
+              i.AuthKey,
+              i.RatioWatchEnds,
+              i.RatioWatchDownload,
+              i.StyleID,
+              i.StyleURL,
+              i.DisableInvites,
+              i.DisablePosting,
+              i.DisableUpload,
+              i.DisableWiki,
+              i.DisableAvatar,
+              i.DisablePM,
+              i.DisablePoints,
+              i.DisablePromotion,
+              i.DisableRequests,
+              i.DisableForums,
+              i.DisableTagging,
+              i.SiteOptions,
+              i.LastReadNews,
+              i.LastReadBlog,
+              i.RestrictedForums,
+              i.PermittedForums,
+              m.FLTokens,
+              m.BonusPoints,
+              m.HnR,
+              m.PermissionID
+            FROM users_main AS m
+              INNER JOIN users_info AS i ON i.UserID = m.ID
+              WHERE m.ID = '$UserID'");
 
+            $HeavyInfo = G::$DB->next_record(MYSQLI_ASSOC, ['CustomPermissions', 'SiteOptions']);
             $HeavyInfo['CustomPermissions'] = [];
+
             if (!empty($HeavyInfo['CustomPermissions'])) {
                 $HeavyInfo['CustomPermissions'] = json_decode($HeavyInfo['CustomPermissions'], true);
             }
@@ -218,9 +222,10 @@ class Users
             unset($HeavyInfo['PermittedForums']);
 
             G::$DB->query("
-        SELECT PermissionID
-        FROM users_levels
-        WHERE UserID = $UserID");
+            SELECT PermissionID
+            FROM users_levels
+              WHERE UserID = $UserID");
+
             $PermIDs = G::$DB->collect('PermissionID');
             foreach ($PermIDs as $PermID) {
                 $Perms = Permissions::get_permissions($PermID);
@@ -228,6 +233,7 @@ class Users
                     $PermittedForums = array_merge($PermittedForums, array_map('trim', explode(',', $Perms['PermittedForums'])));
                 }
             }
+
             $Perms = Permissions::get_permissions($HeavyInfo['PermissionID']);
             unset($HeavyInfo['PermissionID']);
             if (!empty($Perms['PermittedForums'])) {
@@ -240,10 +246,12 @@ class Users
                 foreach ($RestrictedForums as $ForumID) {
                     $HeavyInfo['CustomForums'][$ForumID] = 0;
                 }
+
                 foreach ($PermittedForums as $ForumID) {
                     $HeavyInfo['CustomForums'][$ForumID] = 1;
                 }
             }
+
             if (isset($HeavyInfo['CustomForums'][''])) {
                 unset($HeavyInfo['CustomForums']['']);
             }
@@ -255,7 +263,6 @@ class Users
             unset($HeavyInfo['SiteOptions']);
 
             G::$DB->set_query_id($QueryID);
-
             G::$Cache->cache_value("user_info_heavy_$UserID", $HeavyInfo, 0);
         }
         return $HeavyInfo;
@@ -273,6 +280,7 @@ class Users
         if (!is_number($UserID)) {
             error(0);
         }
+
         if (empty($NewOptions)) {
             return false;
         }
@@ -281,9 +289,10 @@ class Users
 
         // Get SiteOptions
         G::$DB->query("
-      SELECT SiteOptions
-      FROM users_info
-      WHERE UserID = $UserID");
+        SELECT SiteOptions
+        FROM users_info
+          WHERE UserID = $UserID");
+
         list($SiteOptions) = G::$DB->next_record(MYSQLI_NUM, false);
         $SiteOptions = json_decode($SiteOptions, true);
 
@@ -296,9 +305,9 @@ class Users
 
         // Update DB
         G::$DB->query("
-      UPDATE users_info
-      SET SiteOptions = '".db_string(json_encode($SiteOptions, true))."'
-      WHERE UserID = $UserID");
+        UPDATE users_info
+        SET SiteOptions = '".db_string(json_encode($SiteOptions, true))."'
+          WHERE UserID = $UserID");
         G::$DB->set_query_id($QueryID);
 
         // Update cache
@@ -370,12 +379,12 @@ class Users
     {
         global $Classes;
 
-        if ($UserID == 0) {
+        if ($UserID === 0) {
             return 'System';
         }
 
         $UserInfo = self::user_info($UserID);
-        if ($UserInfo['Username'] == '') {
+        if ($UserInfo['Username'] === '') {
             return "Unknown [$UserID]";
         }
 
@@ -404,9 +413,10 @@ class Users
         }
         if ($Badges) {
             $DonorRank = Donations::get_rank($UserID);
-            if ($DonorRank == 0 && $UserInfo['Donor'] == 1) {
+            if ($DonorRank == 0 && $UserInfo['Donor'] === 1) {
                 $DonorRank = 1;
             }
+
             if ($ShowDonorIcon && $DonorRank > 0) {
                 $IconLink = 'donate.php';
                 $IconImage = 'donor.png';
@@ -415,12 +425,15 @@ class Users
                 $SpecialRank = Donations::get_special_rank($UserID);
                 $EnabledRewards = Donations::get_enabled_rewards($UserID);
                 $DonorRewards = Donations::get_rewards($UserID);
+
                 if ($EnabledRewards['HasDonorIconMouseOverText'] && !empty($DonorRewards['IconMouseOverText'])) {
                     $IconText = display_str($DonorRewards['IconMouseOverText']);
                 }
+
                 if ($EnabledRewards['HasDonorIconLink'] && !empty($DonorRewards['CustomIconLink'])) {
                     $IconLink = display_str($DonorRewards['CustomIconLink']);
                 }
+
                 if ($EnabledRewards['HasCustomDonorIcon'] && !empty($DonorRewards['CustomIcon'])) {
                     $IconImage = ImageTools::process($DonorRewards['CustomIcon']);
                 } else {
@@ -431,6 +444,7 @@ class Users
                     } elseif ($DonorRank >= MAX_RANK) {
                         $DonorHeart = 5;
                     }
+
                     if ($DonorHeart === 1) {
                         $IconImage = STATIC_SERVER . 'common/symbols/donor.png';
                     } else {
@@ -442,16 +456,20 @@ class Users
             $Str .= Badges::display_badges(Badges::get_displayed_badges($UserID), true);
         }
 
-        $Str .= ($IsWarned && $UserInfo['Warned']) ? '<a href="wiki.php?action=article&amp;name=warnings"'
-          . '><img src="'.STATIC_SERVER.'common/symbols/warned.png" alt="Warned" title="Warned'
-          . (G::$LoggedUser['ID'] === $UserID ? ' - Expires ' . date('Y-m-d H:i', strtotime($UserInfo['Warned'])) : '')
-          . '" class="tooltip" /></a>' : '';
-        $Str .= ($IsEnabled && $UserInfo['Enabled'] == 2) ? '<a href="rules.php"><img src="'.STATIC_SERVER.'common/symbols/disabled.png" alt="Banned" title="Disabled" class="tooltip" /></a>' : '';
+        $Str .= ($IsWarned && $UserInfo['Warned'])
+          ? '<a href="wiki.php?action=article&amp;name=warnings"'.'><img src="'.STATIC_SERVER.'common/symbols/warned.png" alt="Warned" title="Warned'.(G::$LoggedUser['ID'] === $UserID ? ' - Expires '.date('Y-m-d H:i', strtotime($UserInfo['Warned']))
+          : '').'" class="tooltip" /></a>'
+          : '';
+
+        $Str .= ($IsEnabled && $UserInfo['Enabled'] === 2)
+          ? '<a href="rules.php"><img src="'.STATIC_SERVER.'common/symbols/disabled.png" alt="Banned" title="Disabled" class="tooltip" /></a>'
+          : '';
 
         if ($Class) {
             foreach (array_keys($UserInfo['ExtraClasses']) as $ExtraClass) {
                 $Str .= ' ['.Users::make_class_abbrev_string($ExtraClass).']';
             }
+
             if ($Title) {
                 $Str .= ' <strong>('.Users::make_class_string($UserInfo['PermissionID']).')</strong>';
             } else {
@@ -463,12 +481,12 @@ class Users
             // Image proxy CTs
             if (check_perms('site_proxy_images') && !empty($UserInfo['Title'])) {
                 $UserInfo['Title'] = preg_replace_callback(
-            '~src=("?)(http.+?)(["\s>])~',
-            function ($Matches) {
-                return 'src=' . $Matches[1] . ImageTools::process($Matches[2]) . $Matches[3];
-            },
-            $UserInfo['Title']
-        );
+                    '~src=("?)(http.+?)(["\s>])~',
+                    function ($Matches) {
+                        return 'src=' . $Matches[1] . ImageTools::process($Matches[2]) . $Matches[3];
+                    },
+                    $UserInfo['Title']
+                );
             }
 
             if ($UserInfo['Title']) {
@@ -510,10 +528,11 @@ class Users
         } else {
             $QueryID = G::$DB->get_query_id();
             G::$DB->query("
-        SELECT GroupID, Sort, `Time`
-        FROM bookmarks_torrents
-        WHERE UserID = $UserID
-        ORDER BY Sort, `Time` ASC");
+            SELECT GroupID, Sort, `Time`
+            FROM bookmarks_torrents
+              WHERE UserID = $UserID
+              ORDER BY Sort, `Time` ASC");
+
             $GroupIDs = G::$DB->collect('GroupID');
             $BookmarkData = G::$DB->to_array('GroupID', MYSQLI_ASSOC);
             G::$DB->set_query_id($QueryID);
@@ -521,7 +540,6 @@ class Users
         }
 
         $TorrentList = Torrents::get_groups($GroupIDs);
-
         return [$GroupIDs, $BookmarkData, $TorrentList];
     }
 
@@ -548,29 +566,34 @@ class Users
             $Rewards = Donations::get_rewards($UserID);
             $AvatarMouseOverText = $Rewards['AvatarMouseOverText'];
         }
+
         if (!empty($AvatarMouseOverText)) {
             $AvatarMouseOverText =  "title=\"$AvatarMouseOverText\" alt=\"$AvatarMouseOverText\"";
         } else {
             $AvatarMouseOverText = "alt=\"$Username's avatar\"";
         }
+
         if ($EnabledRewards['HasSecondAvatar'] && !empty($Rewards['SecondAvatar'])) {
             $SecondAvatar = ' data-gazelle-second-avatar="' . ImageTools::process($Rewards['SecondAvatar'], 'avatar') . '"';
         }
-        // case 1 is avatars disabled
+
+        // Case 1 is avatars disabled
         switch ($Setting) {
-      case 0:
-        if (!empty($Avatar)) {
-            $ToReturn = ($ReturnHTML ? "<a href=\"user.php?id=$UserID\"><img src=\"$Avatar\" ".($Size?"width=\"$Size\" ":"")."$Style $AvatarMouseOverText$SecondAvatar $Class /></a>" : $Avatar);
-        } else {
-            $URL = STATIC_SERVER.'common/avatars/default.png';
-            $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar />" : $URL);
-        }
-        break;
-      case 2:
-        $ShowAvatar = true;
-        // no break
-      case 3:
-        switch (G::$LoggedUser['Identicons']) {
+        case 0:
+          if (!empty($Avatar)) {
+              $ToReturn = ($ReturnHTML ? "<a href=\"user.php?id=$UserID\"><img src=\"$Avatar\" ".($Size?"width=\"$Size\" ":"")."$Style $AvatarMouseOverText$SecondAvatar $Class /></a>" : $Avatar);
+          } else {
+              $URL = STATIC_SERVER.'common/avatars/default.png';
+              $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar />" : $URL);
+          }
+          break;
+
+        case 2:
+          $ShowAvatar = true;
+          // no break
+
+        case 3:
+          switch (G::$LoggedUser['Identicons']) {
           case 0:
             $Type = 'identicon';
             break;
@@ -598,29 +621,32 @@ class Users
           default:
             $Type = 'identicon';
         }
-        $Rating = 'pg';
-        if (!isset($Robot) || !$Robot) {
-            $URL = 'https://secure.gravatar.com/avatar/'.md5(strtolower(trim($Username)))."?s=$Size&amp;d=$Type&amp;r=$Rating";
-        } else {
-            $URL = 'https://robohash.org/'.md5($Username)."?set=set$Type&amp;size={$Size}x$Size";
+
+          $Rating = 'pg';
+          if (!isset($Robot) || !$Robot) {
+              $URL = 'https://secure.gravatar.com/avatar/'.md5(strtolower(trim($Username)))."?s=$Size&amp;d=$Type&amp;r=$Rating";
+          } else {
+              $URL = 'https://robohash.org/'.md5($Username)."?set=set$Type&amp;size={$Size}x$Size";
+          }
+
+          if ($ShowAvatar === true && !empty($Avatar)) {
+              $ToReturn = ($ReturnHTML ? "<img src=\"$Avatar\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar $Class />" : $Avatar);
+          } else {
+              $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText $Class />" : $URL);
+          }
+          break;
+
+        default:
+          $URL = STATIC_SERVER.'common/avatars/default.png';
+          $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar $Class/>" : $URL);
         }
-        if ($ShowAvatar == true && !empty($Avatar)) {
-            $ToReturn = ($ReturnHTML ? "<img src=\"$Avatar\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar $Class />" : $Avatar);
-        } else {
-            $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText $Class />" : $URL);
-        }
-        break;
-      default:
-        $URL = STATIC_SERVER.'common/avatars/default.png';
-        $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar $Class/>" : $URL);
-    }
         return $ToReturn;
     }
 
     public static function has_avatars_enabled()
     {
         global $HeavyInfo;
-        return isset($HeavyInfo['DisableAvatars']) && ($HeavyInfo['DisableAvatars'] != 1);
+        return isset($HeavyInfo['DisableAvatars']) && ($HeavyInfo['DisableAvatars'] !== 1);
     }
 
     /**
@@ -639,23 +665,26 @@ class Users
             $Enabled = true;
         } elseif (G::$LoggedUser['AutoComplete'] !== 1) {
             switch ($Type) {
-        case 'search':
-          if (G::$LoggedUser['AutoComplete'] == 2) {
-              $Enabled = true;
-          }
-          break;
-        case 'other':
-          if (G::$LoggedUser['AutoComplete'] != 2) {
-              $Enabled = true;
-          }
-          break;
-      }
+            case 'search':
+              if (G::$LoggedUser['AutoComplete'] === 2) {
+                  $Enabled = true;
+              }
+              break;
+
+            case 'other':
+              if (G::$LoggedUser['AutoComplete'] !== 2) {
+                  $Enabled = true;
+              }
+              break;
+            }
         }
+
         if ($Enabled && $Output) {
             echo ' data-gazelle-autocomplete="true"';
         }
+
         if (!$Output) {
-            // don't return a boolean if you're echoing HTML
+            // Don't return a boolean if you're echoing HTML
             return $Enabled;
         }
     }
@@ -671,12 +700,13 @@ class Users
     {
         $ResetKey = Users::make_secret();
         G::$DB->query("
-      UPDATE users_info
-      SET
-        ResetKey = '" . db_string($ResetKey) . "',
-        ResetExpires = '" . time_plus(60 * 60) . "'
-      WHERE UserID = '$UserID'");
-        require_once(SERVER_ROOT . '/classes/templates.class.php');
+        UPDATE users_info
+        SET
+          ResetKey = '" . db_string($ResetKey) . "',
+          ResetExpires = '" . time_plus(60 * 60) . "'
+        WHERE UserID = '$UserID'");
+
+        require_once SERVER_ROOT . '/classes/templates.class.php';
         $TPL = new TEMPLATE;
         $TPL->open(SERVER_ROOT . '/templates/password_reset.tpl'); // Password reset template
         $TPL->set('Username', $Username);
@@ -687,7 +717,6 @@ class Users
 
         Misc::send_email($Email, 'Password reset information for ' . SITE_NAME, $TPL->get(), 'noreply');
     }
-
 
     /*
      * Authorize a new location
@@ -701,7 +730,8 @@ class Users
     {
         $AuthKey = Users::make_secret();
         G::$Cache->cache_value('new_location_'.$AuthKey, ['UserID'=>$UserID, 'ASN'=>$ASN], 3600*2);
-        require_once(SERVER_ROOT . '/classes/templates.class.php');
+
+        require_once SERVER_ROOT . '/classes/templates.class.php';
         $TPL = new TEMPLATE;
         $TPL->open(SERVER_ROOT . '/templates/new_location.tpl');
         $TPL->set('Username', $Username);
@@ -720,16 +750,19 @@ class Users
         if (!($SourceKey = G::$Cache->get_value('source_key_new'))) {
             G::$Cache->cache_value('source_key_new', $SourceKey = [Users::make_secret(), time()]);
         }
+
         $SourceKeyOld = G::$Cache->get_value('source_key_old');
         if ($SourceKey[1]-time() > 3600) {
             G::$Cache->cache_value('source_key_old', $SourceKeyOld = $SourceKey);
             G::$Cache->cache_value('source_key_new', $SourceKey = [Users::make_secret(), time()]);
         }
+
         G::$DB->query("
-      SELECT
-        COUNT(ID)
-      FROM torrents
-      WHERE UserID = ".G::$LoggedUser['ID']);
+        SELECT
+          COUNT(ID)
+        FROM torrents
+          WHERE UserID = ".G::$LoggedUser['ID']);
+          
         list($Uploads) = G::$DB->next_record();
         $Source[0] = SITE_NAME.'-'.substr(hash('sha256', $SourceKey[0].G::$LoggedUser['ID'].$Uploads), 0, 10);
         $Source[1] = $SourceKeyOld ? SITE_NAME.'-'.substr(hash('sha256', $SourceKeyOld[0].G::$LoggedUser['ID'].$Uploads), 0, 10) : $Source[0];

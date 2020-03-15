@@ -15,52 +15,57 @@ class Forums
         if ((!$ThreadInfo = G::$Cache->get_value('thread_' . $ThreadID . '_info')) || !isset($ThreadInfo['Ranking'])) {
             $QueryID = G::$DB->get_query_id();
             G::$DB->query("
-        SELECT
-          t.Title,
-          t.ForumID,
-          t.IsLocked,
-          t.IsSticky,
-          COUNT(fp.id) AS Posts,
-          t.LastPostAuthorID,
-          ISNULL(p.TopicID) AS NoPoll,
-          t.StickyPostID,
-          t.AuthorID as OP,
-          t.Ranking
-        FROM forums_topics AS t
-          JOIN forums_posts AS fp ON fp.TopicID = t.ID
-          LEFT JOIN forums_polls AS p ON p.TopicID = t.ID
-        WHERE t.ID = ?
-        GROUP BY fp.TopicID", $ThreadID);
+            SELECT
+              t.Title,
+              t.ForumID,
+              t.IsLocked,
+              t.IsSticky,
+              COUNT(fp.id) AS Posts,
+              t.LastPostAuthorID,
+              ISNULL(p.TopicID) AS NoPoll,
+              t.StickyPostID,
+              t.AuthorID as OP,
+              t.Ranking
+            FROM forums_topics AS t
+              JOIN forums_posts AS fp ON fp.TopicID = t.ID
+              LEFT JOIN forums_polls AS p ON p.TopicID = t.ID
+            WHERE t.ID = ?
+            GROUP BY fp.TopicID", $ThreadID);
+
             if (!G::$DB->has_results()) {
                 G::$DB->set_query_id($QueryID);
                 return null;
             }
+
             $ThreadInfo = G::$DB->next_record(MYSQLI_ASSOC, false);
             if ($ThreadInfo['StickyPostID']) {
                 $ThreadInfo['Posts']--;
                 G::$DB->query(
-            "SELECT
-            p.ID,
-            p.AuthorID,
-            p.AddedTime,
-            p.Body,
-            p.EditedUserID,
-            p.EditedTime,
-            ed.Username
-            FROM forums_posts AS p
-              LEFT JOIN users_main AS ed ON ed.ID = p.EditedUserID
-            WHERE p.TopicID = ?
-              AND p.ID = ?",
-            $ThreadID,
-            $ThreadInfo['StickyPostID']
-        );
+                    "
+                SELECT
+                  p.ID,
+                  p.AuthorID,
+                  p.AddedTime,
+                  p.Body,
+                  p.EditedUserID,
+                  p.EditedTime,
+                  ed.Username
+                FROM forums_posts AS p
+                  LEFT JOIN users_main AS ed ON ed.ID = p.EditedUserID
+                WHERE p.TopicID = ?
+                  AND p.ID = ?",
+                    $ThreadID,
+                    $ThreadInfo['StickyPostID']
+                );
                 list($ThreadInfo['StickyPost']) = G::$DB->to_array(false, MYSQLI_ASSOC);
             }
+
             G::$DB->set_query_id($QueryID);
             if (!$SelectiveCache || !$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky']) {
                 G::$Cache->cache_value('thread_' . $ThreadID . '_info', $ThreadInfo, 0);
             }
         }
+        
         if ($Return) {
             return $ThreadInfo;
         }
@@ -79,12 +84,15 @@ class Forums
         if (isset(G::$LoggedUser['CustomForums'][$ForumID]) && G::$LoggedUser['CustomForums'][$ForumID] == 1) {
             return true;
         }
+
         if ($ForumID == DONOR_FORUM && Donations::has_donor_forum(G::$LoggedUser['ID'])) {
             return true;
         }
+
         if ($Forums[$ForumID]['MinClass' . $Perm] > G::$LoggedUser['Class'] && (!isset(G::$LoggedUser['CustomForums'][$ForumID]) || G::$LoggedUser['CustomForums'][$ForumID] == 0)) {
             return false;
         }
+        
         if (isset(G::$LoggedUser['CustomForums'][$ForumID]) && G::$LoggedUser['CustomForums'][$ForumID] == 0) {
             return false;
         }
@@ -102,24 +110,25 @@ class Forums
         if (!$Forum) {
             $QueryID = G::$DB->get_query_id();
             G::$DB->query("
-        SELECT
-          Name,
-          MinClassRead,
-          MinClassWrite,
-          MinClassCreate,
-          COUNT(forums_topics.ID) AS Topics
-        FROM forums
-          LEFT JOIN forums_topics ON forums_topics.ForumID = forums.ID
-        WHERE forums.ID = ?
-        GROUP BY ForumID", $ForumID);
+            SELECT
+              Name,
+              MinClassRead,
+              MinClassWrite,
+              MinClassCreate,
+              COUNT(forums_topics.ID) AS Topics
+            FROM forums
+              LEFT JOIN forums_topics ON forums_topics.ForumID = forums.ID
+            WHERE forums.ID = ?
+              GROUP BY ForumID", $ForumID);
+
             if (!G::$DB->has_results()) {
                 return false;
             }
+
             // Makes an array, with $Forum['Name'], etc.
             $Forum = G::$DB->next_record(MYSQLI_ASSOC);
 
             G::$DB->set_query_id($QueryID);
-
             G::$Cache->cache_value("ForumInfo_$ForumID", $Forum, 86400);
         }
         return $Forum;
@@ -135,12 +144,14 @@ class Forums
         if ($ForumCats === false) {
             $QueryID = G::$DB->get_query_id();
             G::$DB->query("
-        SELECT ID, Name
-        FROM forums_categories");
+            SELECT ID, Name
+            FROM forums_categories");
+
             $ForumCats = [];
             while (list($ID, $Name) = G::$DB->next_record()) {
                 $ForumCats[$ID] = $Name;
             }
+
             G::$DB->set_query_id($QueryID);
             G::$Cache->cache_value('forums_categories', $ForumCats, 0);
         }
@@ -156,38 +167,40 @@ class Forums
         if (!$Forums = G::$Cache->get_value('forums_list')) {
             $QueryID = G::$DB->get_query_id();
             G::$DB->query("
-        SELECT
-          f.ID,
-          f.CategoryID,
-          f.Name,
-          f.Description,
-          f.MinClassRead AS MinClassRead,
-          f.MinClassWrite AS MinClassWrite,
-          f.MinClassCreate AS MinClassCreate,
-          f.NumTopics,
-          f.NumPosts,
-          f.LastPostID,
-          f.LastPostAuthorID,
-          f.LastPostTopicID,
-          f.LastPostTime,
-          0 AS SpecificRules,
-          t.Title,
-          t.IsLocked AS Locked,
-          t.IsSticky AS Sticky
-        FROM forums AS f
-          JOIN forums_categories AS fc ON fc.ID = f.CategoryID
-          LEFT JOIN forums_topics AS t ON t.ID = f.LastPostTopicID
-        GROUP BY f.ID
-        ORDER BY fc.Sort, fc.Name, f.CategoryID, f.Sort");
+            SELECT
+              f.ID,
+              f.CategoryID,
+              f.Name,
+              f.Description,
+              f.MinClassRead AS MinClassRead,
+              f.MinClassWrite AS MinClassWrite,
+              f.MinClassCreate AS MinClassCreate,
+              f.NumTopics,
+              f.NumPosts,
+              f.LastPostID,
+              f.LastPostAuthorID,
+              f.LastPostTopicID,
+              f.LastPostTime,
+              0 AS SpecificRules,
+              t.Title,
+              t.IsLocked AS Locked,
+              t.IsSticky AS Sticky
+            FROM forums AS f
+              JOIN forums_categories AS fc ON fc.ID = f.CategoryID
+              LEFT JOIN forums_topics AS t ON t.ID = f.LastPostTopicID
+            GROUP BY f.ID
+              ORDER BY fc.Sort, fc.Name, f.CategoryID, f.Sort");
             $Forums = G::$DB->to_array('ID', MYSQLI_ASSOC, false);
 
             G::$DB->query("
-        SELECT ForumID, ThreadID
-        FROM forums_specific_rules");
+            SELECT ForumID, ThreadID
+            FROM forums_specific_rules");
+
             $SpecificRules = [];
             while (list($ForumID, $ThreadID) = G::$DB->next_record(MYSQLI_NUM, false)) {
                 $SpecificRules[$ForumID][] = $ThreadID;
             }
+
             G::$DB->set_query_id($QueryID);
             foreach ($Forums as $ForumID => &$Forum) {
                 if (isset($SpecificRules[$ForumID])) {
@@ -239,30 +252,33 @@ class Forums
         } else {
             $PerPage = POSTS_PER_PAGE;
         }
+
         $TopicIDs = [];
         foreach ($Forums as $Forum) {
             if (!empty($Forum['LastPostTopicID'])) {
                 $TopicIDs[] = $Forum['LastPostTopicID'];
             }
         }
+
         if (!empty($TopicIDs)) {
             $QueryID = G::$DB->get_query_id();
             G::$DB->query("
-        SELECT
-          l.TopicID,
-          l.PostID,
-          CEIL(
-            (
-              SELECT
-                COUNT(p.ID)
-              FROM forums_posts AS p
-              WHERE p.TopicID = l.TopicID
-                AND p.ID <= l.PostID
-            ) / ?
-          ) AS Page
-        FROM forums_last_read_topics AS l
-        WHERE l.TopicID IN(" . implode(',', $TopicIDs) . ") AND
-          l.UserID = ?", $PerPage, G::$LoggedUser['ID']);
+            SELECT
+              l.TopicID,
+              l.PostID,
+              CEIL(
+                (
+                  SELECT
+                  COUNT(p.ID)
+                  FROM forums_posts AS p
+                    WHERE p.TopicID = l.TopicID
+                    AND p.ID <= l.PostID
+                ) / ?
+              ) AS Page
+            FROM forums_last_read_topics AS l
+              WHERE l.TopicID IN(" . implode(',', $TopicIDs) . ") AND
+              l.UserID = ?", $PerPage, G::$LoggedUser['ID']);
+
             $LastRead = G::$DB->to_array('TopicID', MYSQLI_ASSOC);
             G::$DB->set_query_id($QueryID);
         } else {
@@ -283,12 +299,14 @@ class Forums
         if ($UserID === null) {
             $UserID = G::$LoggedUser['ID'];
         }
+
         $QueryID = G::$DB->get_query_id();
         G::$DB->query("
-      INSERT INTO forums_topic_notes
-        (TopicID, AuthorID, AddedTime, Body)
-      VALUES
-        (?, ?, NOW(), ?)", $TopicID, $UserID, $Note);
+        INSERT INTO forums_topic_notes
+          (TopicID, AuthorID, AddedTime, Body)
+        VALUES
+          (?, ?, NOW(), ?)", $TopicID, $UserID, $Note);
+
         G::$DB->set_query_id($QueryID);
         return (bool)G::$DB->affected_rows();
     }
@@ -318,17 +336,21 @@ class Forums
         // I couldn't come up with a good name, please rename this if you can. -- Y
         $RestrictedForums = self::get_restricted_forums();
         $PermittedForums = self::get_permitted_forums();
+
         if (Donations::has_donor_forum(G::$LoggedUser['ID']) && !in_array(DONOR_FORUM, $PermittedForums)) {
             $PermittedForums[] = DONOR_FORUM;
         }
+
         $SQL = "((f.MinClassRead <= '" . G::$LoggedUser['Class'] . "'";
         if (count($RestrictedForums)) {
             $SQL .= " AND f.ID NOT IN ('" . implode("', '", $RestrictedForums) . "')";
         }
+
         $SQL .= ')';
         if (count($PermittedForums)) {
             $SQL .= " OR f.ID IN ('" . implode("', '", $PermittedForums) . "')";
         }
+        
         $SQL .= ')';
         return $SQL;
     }

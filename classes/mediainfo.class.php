@@ -253,7 +253,7 @@ class SectionParser
     }
 
     public static function strip_path($string)
-    { // remove filepath
+    { // Remove filepath
         $string = str_replace("\\", "/", $string);
         $path_parts = pathinfo($string);
         return $path_parts['basename'];
@@ -502,7 +502,7 @@ class GeneralSectionParser extends SectionParser
             case 'mpeg-ts':
                 $this->form_codec = 'MPEG-TS';
                 break;
-            // We can't determine if it's DVD5 or DVD9, so don't guess.
+            // We can't determine if it's DVD5 or DVD9, so don't guess
             case 'mpeg-ps':
                 $this->form_codec = '---';
                 break;
@@ -760,8 +760,7 @@ class VideoSectionParser extends SectionParser
         switch (strtolower($codec)) {
             case 'x264':
             case 'h264':
-                return strtolower($this->bitdepth) == '10 bits' ?
-                    'h264 10-bit' : 'h264';
+                return strtolower($this->bitdepth) == '10 bits' ? 'h264 10-bit' : 'h264';
             case 'h265':
                 return 'h265';
             case 'xvid':

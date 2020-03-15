@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class for functions related to the features involving torrent downloads
  */
@@ -29,19 +30,23 @@ class TorrentsDL
     public function __construct(&$QueryResult, $Title)
     {
         G::$Cache->InternalCache = false; // The internal cache is almost completely useless for this
-    Zip::unlimit(); // Need more memory and longer timeout
-    $this->QueryResult = $QueryResult;
+        Zip::unlimit(); // Need more memory and longer timeout
+        $this->QueryResult = $QueryResult;
         $this->Title = $Title;
         $this->User = G::$LoggedUser;
         $this->AnnounceURL = ANNOUNCE_URLS[0][0]."/".G::$LoggedUser['torrent_pass']."/announce";
+
         function add_passkey($Ann)
         {
             return (is_array($Ann)) ? array_map('add_passkey', $Ann) : $Ann."/".G::$LoggedUser['torrent_pass']."/announce";
         }
+
         # todo: Probably not working, but no need yet
         $this->AnnounceList = (sizeof(ANNOUNCE_URLS[0]) === 1 && sizeof(ANNOUNCE_URLS[0][0]) === 1) ? [] : array_map('add_passkey', ANNOUNCE_URLS[0]);
+
         # Tracker tiers (pending)
         #$this->AnnounceList = (sizeof(ANNOUNCE_URLS) === 1 && sizeof(ANNOUNCE_URLS[0]) === 1) ? [] : array(array_map('add_passkey', ANNOUNCE_URLS[0]), ANNOUNCE_URLS[1]);
+        
         # Original Oppaitime
         #$this->AnnounceList = (sizeof(ANNOUNCE_URLS) == 1 && sizeof(ANNOUNCE_URLS[0]) == 1) ? [] : array_map('add_passkey', ANNOUNCE_URLS);
         $this->Zip = new Zip(Misc::file_string($Title));
@@ -58,6 +63,7 @@ class TorrentsDL
         $GroupIDs = $Downloads = [];
         $OldQuery = G::$DB->get_query_id();
         G::$DB->set_query_id($this->QueryResult);
+
         if (!isset($this->IDBoundaries)) {
             if ($Key == 'TorrentID') {
                 $this->IDBoundaries = false;
@@ -65,6 +71,7 @@ class TorrentsDL
                 $this->IDBoundaries = G::$DB->to_pair($Key, 'TorrentID', false);
             }
         }
+
         $Found = 0;
         while ($Download = G::$DB->next_record(MYSQLI_ASSOC, false)) {
             if (!$this->IDBoundaries || $Download['TorrentID'] == $this->IDBoundaries[$Download[$Key]]) {
@@ -76,6 +83,7 @@ class TorrentsDL
                 }
             }
         }
+
         $this->NumFound += $Found;
         G::$DB->set_query_id($OldQuery);
         if (empty($Downloads)) {
@@ -200,21 +208,27 @@ class TorrentsDL
         if ($TorrentID !== false) {
             $MaxLength -= (strlen($TorrentID) + 1);
         }
+
         $TorrentArtist = Misc::file_string($Artist);
         $TorrentName = Misc::file_string($Album);
+
         if ($Year > 0) {
             $TorrentName .= " - $Year";
         }
+
         $TorrentInfo = [];
-        if ($Media != '') {
+        if ($Media !== '') {
             $TorrentInfo[] = $Media;
         }
-        if ($Format != '') {
+
+        if ($Format !== '') {
             $TorrentInfo[] = $Format;
         }
-        if ($Encoding != '') {
+
+        if ($Encoding !== '') {
             $TorrentInfo[] = $Encoding;
         }
+
         if (!empty($TorrentInfo)) {
             $TorrentInfo = ' (' . Misc::file_string(implode(' - ', $TorrentInfo)) . ')';
         } else {
@@ -249,12 +263,15 @@ class TorrentsDL
             }
             return $Bencode;
         }
+
         $Tor = new TORRENT(unserialize(base64_decode($TorrentData)), true);
         $Tor->set_announce_url($AnnounceURL);
+
         unset($Tor->Val['announce-list']);
         if (!empty($AnnounceList)) {
             $Tor->set_announce_list($AnnounceList);
         }
+        
         unset($Tor->Val['url-list']);
         unset($Tor->Val['libtorrent_resume']);
         return $Tor->enc();
