@@ -51,18 +51,17 @@ class Cache extends MemcacheCompat
     public $Time = 0;
     private $Servers = [];
     private $PersistentKeys = [
-    'ajax_requests_*',
-    'query_lock_*',
-    'stats_*',
-    'top10tor_*',
-    'users_snatched_*',
+        'ajax_requests_*',
+        'query_lock_*',
+        'stats_*',
+        'top10tor_*',
+        'users_snatched_*',
 
-    // Cache-based features
-    'global_notification',
-    'notifications_one_reads_*',
-  ];
+            // Cache-based features
+            'global_notification',
+            'notifications_one_reads_*',
+    ];
     private $ClearedKeys = [];
-
     public $CanClear = false;
     public $InternalCache = true;
 
@@ -71,6 +70,7 @@ class Cache extends MemcacheCompat
         if (is_subclass_of($this, 'Memcached')) {
             parent::__construct();
         }
+
         $this->Servers = $Servers;
         foreach ($Servers as $Server) {
             if (is_subclass_of($this, 'Memcache')) {
@@ -99,13 +99,16 @@ class Cache extends MemcacheCompat
         if (empty($Key)) {
             trigger_error('Cache insert failed for empty key');
         }
+
         $SetParams = [$Key, $Value, 0, $Duration];
         if (is_subclass_of($this, 'Memcached')) {
             unset($SetParams[2]);
         }
+
         if (!$this->set(...$SetParams)) {
             trigger_error("Cache insert failed for key $Key");
         }
+
         if ($this->InternalCache && array_key_exists($Key, $this->CacheHits)) {
             $this->CacheHits[$Key] = $Value;
         }
@@ -125,10 +128,12 @@ class Cache extends MemcacheCompat
     {
         $StartTime = microtime(true);
         $ReplaceParams = [$Key, $Value, false, $Duration];
+
         if (is_subclass_of($this, 'Memcached')) {
             unset($ReplaceParams[2]);
         }
         $this->replace(...$ReplaceParams);
+
         if ($this->InternalCache && array_key_exists($Key, $this->CacheHits)) {
             $this->CacheHits[$Key] = $Value;
         }
@@ -140,6 +145,7 @@ class Cache extends MemcacheCompat
         if (!$this->InternalCache) {
             $NoCache = true;
         }
+
         $StartTime = microtime(true);
         if (empty($Key)) {
             trigger_error('Cache retrieval failed for empty key');
@@ -158,6 +164,7 @@ class Cache extends MemcacheCompat
                         }
                     }
                 }
+
                 $this->delete($Key);
                 $this->Time += (microtime(true) - $StartTime) * 1000;
                 return false;
@@ -186,6 +193,7 @@ class Cache extends MemcacheCompat
         if ($Return !== false) {
             $this->CacheHits[$Key] = $NoCache ? null : $Return;
         }
+
         $this->Time += (microtime(true) - $StartTime) * 1000;
         return $Return;
     }
@@ -197,9 +205,11 @@ class Cache extends MemcacheCompat
         if (empty($Key)) {
             trigger_error('Cache deletion failed for empty key');
         }
+
         if (!$this->delete($Key)) {
             //trigger_error("Cache delete failed for key $Key");
         }
+
         unset($this->CacheHits[$Key]);
         $this->Time += (microtime(true) - $StartTime) * 1000;
     }
@@ -208,6 +218,7 @@ class Cache extends MemcacheCompat
     {
         $StartTime = microtime(true);
         $NewVal = $this->increment($Key, $Value);
+
         if (isset($this->CacheHits[$Key])) {
             $this->CacheHits[$Key] = $NewVal;
         }
@@ -218,6 +229,7 @@ class Cache extends MemcacheCompat
     {
         $StartTime = microtime(true);
         $NewVal = $this->decrement($Key, $Value);
+
         if (isset($this->CacheHits[$Key])) {
             $this->CacheHits[$Key] = $NewVal;
         }
@@ -235,6 +247,7 @@ class Cache extends MemcacheCompat
             $this->MemcacheDBKey = '';
             return false;
         }
+
         $this->MemcacheDBArray = $Value;
         $this->MemcacheDBKey = $Key;
         $this->InTransaction = true;
@@ -253,6 +266,7 @@ class Cache extends MemcacheCompat
         if (!$this->InTransaction) {
             return false;
         }
+
         $this->cache_value($this->MemcacheDBKey, $this->MemcacheDBArray, $Time);
         $this->InTransaction = false;
     }
@@ -263,6 +277,7 @@ class Cache extends MemcacheCompat
         if (!$this->InTransaction) {
             return false;
         }
+
         $Array = $this->MemcacheDBArray;
         if (is_array($Rows)) {
             $i = 0;
@@ -285,15 +300,18 @@ class Cache extends MemcacheCompat
         if (!$this->InTransaction) {
             return false;
         }
+
         if ($Row === false) {
             $UpdateArray = $this->MemcacheDBArray;
         } else {
             $UpdateArray = $this->MemcacheDBArray[$Row];
         }
+
         foreach ($Values as $Key => $Value) {
             if (!array_key_exists($Key, $UpdateArray)) {
                 trigger_error('Bad transaction key ('.$Key.') for cache '.$this->MemcacheDBKey);
             }
+
             if ($Value === '+1') {
                 if (!is_number($UpdateArray[$Key])) {
                     trigger_error('Tried to increment non-number ('.$Key.') for cache '.$this->MemcacheDBKey);
@@ -308,6 +326,7 @@ class Cache extends MemcacheCompat
                 $UpdateArray[$Key] = $Value; // Otherwise, just alter value
             }
         }
+
         if ($Row === false) {
             $this->MemcacheDBArray = $UpdateArray;
         } else {
@@ -322,20 +341,24 @@ class Cache extends MemcacheCompat
         if (!$this->InTransaction) {
             return false;
         }
+
         if ($Row === false) {
             $UpdateArray = $this->MemcacheDBArray;
         } else {
             $UpdateArray = $this->MemcacheDBArray[$Row];
         }
+
         foreach ($Values as $Key => $Value) {
             if (!array_key_exists($Key, $UpdateArray)) {
                 trigger_error("Bad transaction key ($Key) for cache ".$this->MemcacheDBKey);
             }
+
             if (!is_number($Value)) {
                 trigger_error("Tried to increment with non-number ($Key) for cache ".$this->MemcacheDBKey);
             }
             $UpdateArray[$Key] += $Value; // Increment value
         }
+
         if ($Row === false) {
             $this->MemcacheDBArray = $UpdateArray;
         } else {
@@ -349,6 +372,7 @@ class Cache extends MemcacheCompat
         if (!$this->InTransaction) {
             return false;
         }
+
         if ($Key === '') {
             array_unshift($this->MemcacheDBArray, $Value);
         } else {
@@ -362,6 +386,7 @@ class Cache extends MemcacheCompat
         if (!$this->InTransaction) {
             return false;
         }
+
         if ($Key === '') {
             array_push($this->MemcacheDBArray, $Value);
         } else {
@@ -374,6 +399,7 @@ class Cache extends MemcacheCompat
         if (!$this->InTransaction) {
             return false;
         }
+
         if ($Key === '') {
             $this->MemcacheDBArray[] = $Value;
         } else {
@@ -386,6 +412,7 @@ class Cache extends MemcacheCompat
         if (!$this->InTransaction) {
             return false;
         }
+
         if (!isset($this->MemcacheDBArray[$Row])) {
             trigger_error("Tried to delete non-existent row ($Row) for cache ".$this->MemcacheDBKey);
         }
@@ -435,6 +462,7 @@ class Cache extends MemcacheCompat
         if (is_subclass_of($this, 'Memcached')) {
             $MemcachedStats = $this->getStats();
         }
+        
         foreach ($this->Servers as $Server) {
             if (is_subclass_of($this, 'Memcached')) {
                 $Status["$Server[host]:$Server[port]"] = gettype($MemcachedStats["$Server[host]:$Server[port]"]) === 'array' ? 1 : 0;
