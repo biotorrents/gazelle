@@ -1,16 +1,17 @@
-<?
+<?php
+
 /*
-User subscription page
-*/
+ * User subscription page
+ */
 
 if (isset($LoggedUser['PostsPerPage'])) {
-  $PerPage = $LoggedUser['PostsPerPage'];
+    $PerPage = $LoggedUser['PostsPerPage'];
 } else {
-  $PerPage = POSTS_PER_PAGE;
+    $PerPage = POSTS_PER_PAGE;
 }
 list($Page, $Limit) = Format::page_limit($PerPage);
 
-View::show_header('Subscriptions','subscriptions,bbcode');
+View::show_header('Subscriptions', 'subscriptions,bbcode');
 
 $ShowUnread = (!isset($_GET['showunread']) && !isset($HeavyInfo['SubscriptionsUnread']) || isset($HeavyInfo['SubscriptionsUnread']) && !!$HeavyInfo['SubscriptionsUnread'] || isset($_GET['showunread']) && !!$_GET['showunread']);
 $ShowCollapsed = (!isset($_GET['collapse']) && !isset($HeavyInfo['SubscriptionsCollapse']) || isset($HeavyInfo['SubscriptionsCollapse']) && !!$HeavyInfo['SubscriptionsCollapse'] || isset($_GET['collapse']) && !!$_GET['collapse']);
@@ -85,6 +86,7 @@ $DB->query("
   GROUP BY t.ID)
   ORDER BY LastPostTime DESC
   LIMIT $Limit");
+
 $Results = $DB->to_array(false, MYSQLI_ASSOC, false);
 $DB->query('SELECT FOUND_ROWS()');
 list($NumResults) = $DB->next_record();
@@ -93,63 +95,68 @@ $Debug->log_var($Results, 'Results');
 
 $TorrentGroups = $Requests = [];
 foreach ($Results as $Result) {
-  if ($Result['Page'] == 'torrents') {
-    $TorrentGroups[] = $Result['PageID'];
-  } elseif ($Result['Page'] == 'requests') {
-    $Requests[] = $Result['PageID'];
-  }
+    if ($Result['Page'] === 'torrents') {
+        $TorrentGroups[] = $Result['PageID'];
+    } elseif ($Result['Page'] === 'requests') {
+        $Requests[] = $Result['PageID'];
+    }
 }
 
 $TorrentGroups = Torrents::get_groups($TorrentGroups, true, true, false);
 $Requests = Requests::get_requests($Requests);
-
 ?>
+
 <div class="thin">
   <div class="header">
-    <h2>Subscriptions<?=$ShowUnread ? ' with unread posts' . ($NumResults ? ' (' . $NumResults . ' new)' : '') : ''?></h2>
+    <h2>Subscriptions<?=$ShowUnread ? ' with unread posts' . ($NumResults ? ' (' . $NumResults . ' new)' : '') : ''?>
+    </h2>
 
     <div class="linkbox">
-<?
+      <?php
 if (!$ShowUnread) {
-?>
+    ?>
       <br /><br />
-      <a href="userhistory.php?action=subscriptions&amp;showunread=1" class="brackets">Only display subscriptions with unread replies</a>&nbsp;&nbsp;&nbsp;
-<?
+      <a href="userhistory.php?action=subscriptions&amp;showunread=1" class="brackets">Only display subscriptions with
+        unread replies</a>&nbsp;&nbsp;&nbsp;
+      <?php
 } else {
-?>
+        ?>
       <br /><br />
-      <a href="userhistory.php?action=subscriptions&amp;showunread=0" class="brackets">Show all subscriptions</a>&nbsp;&nbsp;&nbsp;
-<?
-}
+      <a href="userhistory.php?action=subscriptions&amp;showunread=0" class="brackets">Show all
+        subscriptions</a>&nbsp;&nbsp;&nbsp;
+      <?php
+    }
 if ($NumResults) {
-?>
-      <a href="#" onclick="Collapse(); return false;" id="collapselink" class="brackets"><?=$ShowCollapsed ? 'Show' : 'Hide' ?> post bodies</a>&nbsp;&nbsp;&nbsp;
-<?
+    ?>
+      <a href="#" onclick="Collapse(); return false;" id="collapselink" class="brackets"><?=$ShowCollapsed ? 'Show' : 'Hide' ?>
+        post bodies</a>&nbsp;&nbsp;&nbsp;
+      <?php
 }
 ?>
-      <a href="userhistory.php?action=catchup&amp;auth=<?=$LoggedUser['AuthKey']?>" class="brackets">Catch up</a>&nbsp;&nbsp;&nbsp;
-      <a href="userhistory.php?action=posts&amp;userid=<?=$LoggedUser['ID']?>" class="brackets">Go to post history</a>&nbsp;&nbsp;&nbsp;
+      <a href="userhistory.php?action=catchup&amp;auth=<?=$LoggedUser['AuthKey']?>"
+        class="brackets">Catch up</a>&nbsp;&nbsp;&nbsp;
+      <a href="userhistory.php?action=posts&amp;userid=<?=$LoggedUser['ID']?>"
+        class="brackets">Go to post history</a>&nbsp;&nbsp;&nbsp;
       <a href="userhistory.php?action=quote_notifications" class="brackets">Quote notifications</a>&nbsp;&nbsp;&nbsp;
     </div>
   </div>
-<?
+  <?php
 if (!$NumResults) {
-?>
+    ?>
   <div class="center">
     No subscriptions<?=$ShowUnread ? ' with unread posts' : ''?>
   </div>
-<?
+  <?php
 } else {
-?>
+        ?>
   <div class="linkbox">
-<?
+    <?php
   $Pages = Format::get_pages($Page, $NumResults, $PerPage, 11);
-  echo $Pages;
-?>
+        echo $Pages; ?>
   </div>
-<?
+  <?php
   foreach ($Results as $Result) {
-    switch ($Result['Page']) {
+      switch ($Result['Page']) {
       case 'artist':
         $Links = 'Artist: <a href="artist.php?id=' . $Result['PageID'] . '">' . display_str($Result['Name']) . '</a>';
         $JumpLink = 'artist.php?id=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
@@ -160,30 +167,32 @@ if (!$NumResults) {
         break;
       case 'requests':
         if (!isset($Requests[$Result['PageID']])) {
-          continue;
+            continue;
         }
         $Request = $Requests[$Result['PageID']];
         $CategoryName = $Categories[$CategoryID - 1];
 
         $Links = 'Request: ';
+        /*
         if ($CategoryName == 'Music' || $CategoryName == 'Audiobooks' || $CategoryName == 'Comedy') {
-          $Links .= ($CategoryName == 'Music' ? Artists::display_artists(Requests::get_artists($Result['PageID'])) : '') . '<a href="requests.php?action=view&amp;id=' . $Result['PageID'] . '" dir="ltr">' . $Request['Title'] . " [" . $Request['Year'] . "]</a>";
+            $Links .= ($CategoryName == 'Music' ? Artists::display_artists(Requests::get_artists($Result['PageID'])) : '') . '<a href="requests.php?action=view&amp;id=' . $Result['PageID'] . '" dir="ltr">' . $Request['Title'] . " [" . $Request['Year'] . "]</a>";
         } else {
-          $Links .= '<a href="requests.php?action=view&amp;id=' . $Result['PageID'] . '">' . $Request['Title'] . "</a>";
-        }
+          */
+            $Links .= '<a href="requests.php?action=view&amp;id=' . $Result['PageID'] . '">' . $Request['Title'] . "</a>";
+        #} # else
         $JumpLink = 'requests.php?action=view&amp;id=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
         break;
       case 'torrents':
         if (!isset($TorrentGroups[$Result['PageID']])) {
-          continue;
+            continue;
         }
         $GroupInfo = $TorrentGroups[$Result['PageID']];
         $Links = 'Torrent: ' . Artists::display_artists($GroupInfo['ExtendedArtists']) . '<a href="torrents.php?id=' . $GroupInfo['ID'] . '" dir="ltr">' . $GroupInfo['Name'] . '</a>';
         if ($GroupInfo['Year'] > 0) {
-          $Links .= " [" . $GroupInfo['Year'] . "]";
+            $Links .= " [" . $GroupInfo['Year'] . "]";
         }
         if ($GroupInfo['ReleaseType'] > 0) {
-          $Links .= " [" . $ReleaseTypes[$GroupInfo['ReleaseType']] . "]";
+            $Links .= " [" . $ReleaseTypes[$GroupInfo['ReleaseType']] . "]";
         }
         $JumpLink = 'torrents.php?id=' . $GroupInfo['ID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
         break;
@@ -197,59 +206,77 @@ if (!$NumResults) {
         break;
       default:
         error(0);
-    }
-?>
-  <table class="forum_post box vertical_margin<?=(!Users::has_avatars_enabled() ? ' noavatar' : '')?>">
+    } ?>
+
+  <table
+    class="forum_post box vertical_margin<?=(!Users::has_avatars_enabled() ? ' noavatar' : '')?>">
     <colgroup>
-<?    if (Users::has_avatars_enabled()) { ?>
+      <?php if (Users::has_avatars_enabled()) { ?>
       <col class="col_avatar" />
-<?    } ?>
+      <?php } ?>
       <col class="col_post_body" />
     </colgroup>
-    <tr class="colhead_dark notify_<?=$Result['Page']?>">
+    <tr
+      class="colhead_dark notify_<?=$Result['Page']?>">
       <td colspan="<?=Users::has_avatars_enabled() ? 2 : 1 ?>">
         <span class="float_left">
           <?=$Links . ($Result['PostID'] < $Result['LastPost'] ? ' <span class="new">(New!)</span>' : '')?>
         </span>
-        <a class="tooltip last_read" title="Jump to last read" href="<?=$JumpLink?>">
-          <svg width="15" height="11"><polygon points="0,3 0,8 8,8 8,11 15,5.5 8,0 8,3"/></svg>
+        <a class="tooltip last_read" title="Jump to last read"
+          href="<?=$JumpLink?>">
+          <svg width="15" height="11">
+            <polygon points="0,3 0,8 8,8 8,11 15,5.5 8,0 8,3" /></svg>
         </a>
-<?    if ($Result['Page'] == 'forums') { ?>
-        <span id="bar<?=$Result['PostID'] ?>" class="float_right">
-          <a href="#" onclick="Subscribe(<?=$Result['PageID']?>); return false;" id="subscribelink<?=$Result['PageID']?>" class="brackets">Unsubscribe</a>
-<?    } else { ?>
-        <span id="bar_<?=$Result['Page'] . $Result['PostID'] ?>" class="float_right">
-          <a href="#" onclick="SubscribeComments('<?=$Result['Page']?>', <?=$Result['PageID']?>); return false;" id="subscribelink_<?=$Result['Page'] . $Result['PageID']?>" class="brackets">Unsubscribe</a>
-<?    } ?>
-          &nbsp;
-          <a href="#">&uarr;</a>
-        </span>
+        <?php if ($Result['Page'] === 'forums') { ?>
+        <span id="bar<?=$Result['PostID'] ?>"
+          class="float_right">
+          <a href="#"
+            onclick="Subscribe(<?=$Result['PageID']?>); return false;"
+            id="subscribelink<?=$Result['PageID']?>"
+            class="brackets">Unsubscribe</a>
+          <?php } else { ?>
+          <span
+            id="bar_<?=$Result['Page'] . $Result['PostID'] ?>"
+            class="float_right">
+            <a href="#"
+              onclick="SubscribeComments('<?=$Result['Page']?>', <?=$Result['PageID']?>); return false;"
+              id="subscribelink_<?=$Result['Page'] . $Result['PageID']?>"
+              class="brackets">Unsubscribe</a>
+            <?php } ?>
+            &nbsp;
+            <a href="#">&uarr;</a>
+          </span>
       </td>
     </tr>
-<?    if (!empty($Result['LastReadBody'])) { // if a user is subscribed to a topic/comments but hasn't accessed the site ever, LastReadBody will be null - in this case we don't display a post. ?>
-    <tr class="row<?=$ShowCollapsed ? ' hidden' : '' ?>">
-<?      if (Users::has_avatars_enabled()) { ?>
+    <?php if (!empty($Result['LastReadBody'])) { // if a user is subscribed to a topic/comments but hasn't accessed the site ever, LastReadBody will be null - in this case we don't display a post.?>
+    <tr
+      class="row<?=$ShowCollapsed ? ' hidden' : '' ?>">
+      <?php if (Users::has_avatars_enabled()) { ?>
       <td class="avatar" valign="top">
         <?=Users::show_avatar($Result['LastReadAvatar'], $Result['LastReadUserID'], $Result['LastReadUsername'], $HeavyInfo['DisableAvatars'])?>
       </td>
-<?      } ?>
+      <?php } ?>
       <td class="body" valign="top">
         <div class="content3">
           <?=Text::full_format($Result['LastReadBody']) ?>
-<?      if ($Result['LastReadEditedUserID']) { ?>
+          <?php if ($Result['LastReadEditedUserID']) { ?>
           <br /><br />
-          Last edited by <?=Users::format_username($Result['LastReadEditedUserID'], false, false, false) ?> <?=time_diff($Result['LastReadEditedTime'])?>
-<?      } ?>
+          Last edited by <?=Users::format_username($Result['LastReadEditedUserID'], false, false, false) ?>
+          <?=time_diff($Result['LastReadEditedTime'])?>
+          <?php } ?>
         </div>
       </td>
     </tr>
-<?    } ?>
+    <?php } ?>
   </table>
-<?  } ?>
+  <?php
+  } ?>
+
   <div class="linkbox">
-<?=$Pages?>
+    <?=$Pages?>
   </div>
-<? }?>
+  <?php
+    }?>
 </div>
-<?
-View::show_footer();
+
+<?php View::show_footer();

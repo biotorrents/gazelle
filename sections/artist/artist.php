@@ -167,7 +167,7 @@ foreach ($TorrentList as $GroupID => $Group) {
 }
 
 $OpenTable = false;
-$ShowGroups = !isset($LoggedUser['TorrentGrouping']) || $LoggedUser['TorrentGrouping'] == 0;
+$ShowGroups = !isset($LoggedUser['TorrentGrouping']) || $LoggedUser['TorrentGrouping'] === 0;
 $HideTorrents = ($ShowGroups ? '' : ' hidden');
 $OldGroupID = 0;
 ?>
@@ -242,7 +242,7 @@ foreach ($TorrentList as $Group) {
         $SnatchedGroupClass = ($GroupFlags['IsSnatched'] ? ' snatched_group' : ''); ?>
     <tr class="group<?=$SnatchedGroupClass?>">
       <?php
-    $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGrouping'] == 1); ?>
+    $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGrouping'] === 1); ?>
       <td class="center">
         <div id="showimg_<?=$GroupID?>"
           class="<?=($ShowGroups ? 'hide' : 'show')?>_torrents">
@@ -315,7 +315,7 @@ foreach ($TorrentList as $Group) {
       <td class="number_column"><?=number_format($Torrent['Snatched'])?>
       </td>
       <td
-        class="number_column<?=(($Torrent['Seeders'] == 0) ? ' r00' : '')?>">
+        class="number_column<?=(($Torrent['Seeders'] === 0) ? ' r00' : '')?>">
         <?=number_format($Torrent['Seeders'])?>
       </td>
       <td class="number_column"><?=number_format($Torrent['Leechers'])?>
@@ -443,7 +443,7 @@ foreach ($TorrentList as $Group) {
       <td class="number_column"><?=number_format($Torrent['Snatched'])?>
       </td>
       <td
-        class="number_column<?=(($Torrent['Seeders'] == 0) ? ' r00' : '')?>">
+        class="number_column<?=(($Torrent['Seeders'] === 0) ? ' r00' : '')?>">
         <?=number_format($Torrent['Seeders'])?>
       </td>
       <td class="number_column"><?=number_format($Torrent['Leechers'])?>
@@ -560,7 +560,7 @@ if (check_perms('site_torrents_notify')) {
               value="<?=$Name?>" />
             <input type="hidden" name="action" value="advanced" />
             <input type="text" autocomplete="off" id="filelist" name="filelist" size="20" />
-            <input type="submit" value="&gt;" />
+            <input type="submit" value="»" />
           </form>
         </li>
       </ul>

@@ -1,4 +1,5 @@
-<?
+<?php
+
 /*
 New post page
 
@@ -11,21 +12,33 @@ Information to be expected in $_GET:
 
 $ForumID = $_GET['forumid'];
 if (!is_number($ForumID)) {
-  error(404);
+    error(404);
 }
+
 $Forum = Forums::get_forum_info($ForumID);
 if ($Forum === false) {
-  error(404);
+    error(404);
 }
-
 
 if (!Forums::check_forumperm($ForumID, 'Write') || !Forums::check_forumperm($ForumID, 'Create')) {
-  error(403);
+    error(403);
 }
-View::show_header('Forums &gt; '.$Forum['Name'].' &gt; New Topic', 'comments,bbcode,jquery.validate,form_validate');
+
+View::show_header('Forums › '.$Forum['Name'].' › New Topic', 'comments,bbcode,jquery.validate,form_validate');
 ?>
+
 <div class="thin">
-  <h2><a href="forums.php">Forums</a> &gt; <a href="forums.php?action=viewforum&amp;forumid=<?=$ForumID?>"><?=$Forum['Name']?></a> &gt; <span id="newthreadtitle">New Topic</span></h2>
+  <h2>
+    <a href="forums.php">Forums</a>
+    ›
+    <a href="forums.php?action=viewforum&amp;forumid=<?=$ForumID?>">
+      <?=$Forum['Name']?></a>
+    ›
+    <span id="newthreadtitle">
+      New Topic
+    </span>
+  </h2>
+
   <div class="hidden" id="newthreadpreview">
     <div class="linkbox">
       <div class="center">
@@ -33,29 +46,31 @@ View::show_header('Forums &gt; '.$Forum['Name'].' &gt; New Topic', 'comments,bbc
         <a href="#" onclick="return false;" class="brackets"><?=!empty($HeavyInfo['AutoSubscribe']) ? 'Unsubscribe' : 'Subscribe'?></a>
       </div>
     </div>
-<?  if (check_perms('forums_polls_create')) { ?>
+    <?php if (check_perms('forums_polls_create')) { ?>
     <div class="box thin clear hidden" id="pollpreview">
-      <div class="head colhead_dark"><strong>Poll</strong> <a data-toggle-target="#threadpoll" class="brackets">View</a></div>
+      <div class="head colhead_dark"><strong>Poll</strong> <a data-toggle-target="#threadpoll" class="brackets">View</a>
+      </div>
       <div class="pad" id="threadpoll">
         <p><strong id="pollquestion"></strong></p>
         <div id="pollanswers"></div>
-        <br /><input type="radio" name="vote" id="answer_0" value="0" /> <label for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br /><br />
+        <br /><input type="radio" name="vote" id="answer_0" value="0" /> <label
+          for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br /><br />
         <input type="button" class="float_left" value="Vote" />
       </div>
     </div>
-<?  } ?>
+    <?php } ?>
     <table class="forum_post box vertical_margin" style="text-align: left;">
       <colgroup>
-<?  if (Users::has_avatars_enabled()) { ?>
+        <?php if (Users::has_avatars_enabled()) { ?>
         <col class="col_avatar" />
-<?  } ?>
+        <?php } ?>
         <col class="col_post_body" />
       </colgroup>
       <tr class="colhead_dark">
         <td colspan="<?=Users::has_avatars_enabled() ? 2 : 1 ?>">
           <span class="float_left"><a href="#newthreadpreview">#XXXXXX</a>
             by <strong><?=Users::format_username($LoggedUser['ID'], true, true, true, true, true)?></strong>
-          Just now
+            Just now
           </span>
           <span id="barpreview" class="float_right">
             <a href="#newthreadpreview" class="brackets">Report</a>
@@ -65,11 +80,11 @@ View::show_header('Forums &gt; '.$Forum['Name'].' &gt; New Topic', 'comments,bbc
         </td>
       </tr>
       <tr>
-<?  if (Users::has_avatars_enabled()) { ?>
+        <?php if (Users::has_avatars_enabled()) { ?>
         <td class="avatar" valign="top">
           <?=Users::show_avatar($LoggedUser['Avatar'], $LoggedUser['ID'], $LoggedUser['Username'], $HeavyInfo['DisableAvatars'])?>
         </td>
-<?  } ?>
+        <?php } ?>
         <td class="body" valign="top">
           <div id="contentpreview" style="text-align: left;"></div>
         </td>
@@ -79,7 +94,8 @@ View::show_header('Forums &gt; '.$Forum['Name'].' &gt; New Topic', 'comments,bbc
   <div class="box pad">
     <form class="create_form" name="forum_thread" action="" id="newthreadform" method="post">
       <input type="hidden" name="action" value="new" />
-      <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+      <input type="hidden" name="auth"
+        value="<?=$LoggedUser['AuthKey']?>" />
       <input type="hidden" name="forum" value="<?=$ForumID?>" />
       <table id="newthreadtext" class="layout">
         <tr>
@@ -88,28 +104,31 @@ View::show_header('Forums &gt; '.$Forum['Name'].' &gt; New Topic', 'comments,bbc
         </tr>
         <tr>
           <td class="label">Body</td>
-          <td><textarea id="posttext" class="required bbcode_editor" style="width: 98%;" onkeyup="resize('posttext');" name="body" cols="90" rows="8"></textarea></td>
+          <td><textarea id="posttext" class="required bbcode_editor" style="width: 98%;" onkeyup="resize('posttext');"
+              name="body" cols="90" rows="8"></textarea></td>
         </tr>
         <tr>
           <td></td>
           <td>
-            <input id="subscribebox" type="checkbox" name="subscribe"<?=!empty($HeavyInfo['AutoSubscribe']) ? ' checked="checked"' : ''?> onchange="$('#subscribeboxpreview').raw().checked=this.checked;" />
+            <input id="subscribebox" type="checkbox" name="subscribe" <?=!empty($HeavyInfo['AutoSubscribe']) ? ' checked="checked"' : ''?>
+            onchange="$('#subscribeboxpreview').raw().checked=this.checked;" />
             <label for="subscribebox">Subscribe to topic</label>
           </td>
         </tr>
-<?
+        <?php
 if (check_perms('forums_polls_create')) {
-?>
-        <script type="text/javascript">//<![CDATA[
-        var AnswerCount = 1;
+    ?>
+        <script type="text/javascript">
+          //<![CDATA[
+          var AnswerCount = 1;
 
-        function AddAnswerField() {
+          function AddAnswerField() {
             if (AnswerCount >= 25) {
               return;
             }
             var AnswerField = document.createElement("input");
             AnswerField.type = "text";
-            AnswerField.id = "answer_"+AnswerCount;
+            AnswerField.id = "answer_" + AnswerCount;
             AnswerField.className = "required";
             AnswerField.name = "answers[]";
             AnswerField.style.width = "90%";
@@ -118,9 +137,9 @@ if (check_perms('forums_polls_create')) {
             x.appendChild(document.createElement("br"));
             x.appendChild(AnswerField);
             AnswerCount++;
-        }
+          }
 
-        function RemoveAnswerField() {
+          function RemoveAnswerField() {
             if (AnswerCount == 1) {
               return;
             }
@@ -129,8 +148,8 @@ if (check_perms('forums_polls_create')) {
               x.removeChild(x.lastChild);
             }
             AnswerCount--;
-        }
-        //]]>
+          }
+          //]]>
         </script>
         <tr>
           <td colspan="2" class="center">
@@ -150,10 +169,12 @@ if (check_perms('forums_polls_create')) {
             <a href="#" onclick="RemoveAnswerField();return false;" class="brackets">&minus;</a>
           </td>
         </tr>
-<? } ?>
+        <?php
+} ?>
       </table>
       <div id="subscribediv" class="hidden">
-        <input id="subscribeboxpreview" type="checkbox" name="subscribe"<?=!empty($HeavyInfo['AutoSubscribe']) ? ' checked="checked"' : '' ?> />
+        <input id="subscribeboxpreview" type="checkbox" name="subscribe" <?=!empty($HeavyInfo['AutoSubscribe']) ? ' checked="checked"' : '' ?>
+        />
         <label for="subscribebox">Subscribe to topic</label>
       </div>
       <div id="buttons" class="center">
@@ -164,4 +185,5 @@ if (check_perms('forums_polls_create')) {
     </form>
   </div>
 </div>
-<? View::show_footer(); ?>
+
+<?php View::show_footer();

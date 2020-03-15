@@ -52,6 +52,7 @@ function assert_numbers(&$Base, $Keys, $Error = 0)
     if (!is_array($Base) || !is_array($Keys)) {
         return;
     }
+
     foreach ($Keys as $Key) {
         if (!isset($Base[$Key]) || !is_number($Base[$Key])) {
             error($Error);
@@ -71,20 +72,22 @@ function is_bool_value($Value)
     if (is_bool($Value)) {
         return $Value;
     }
+
     if (is_string($Value)) {
         switch (strtolower($Value)) {
-      case 'true':
-      case 'yes':
-      case 'on':
-      case '1':
-        return true;
-      case 'false':
-      case 'no':
-      case 'off':
-      case '0':
-        return false;
+            case 'true':
+            case 'yes':
+            case 'on':
+            case '1':
+                return true;
+            case 'false':
+            case 'no':
+            case 'off':
+            case '0':
+                return false;
+        }
     }
-    }
+
     if (is_numeric($Value)) {
         if ($Value === 1) {
             return true;
@@ -92,6 +95,7 @@ function is_bool_value($Value)
             return false;
         }
     }
+
     return null;
 }
 
@@ -107,26 +111,27 @@ function display_str($Str)
     if ($Str === null || $Str === false || is_array($Str)) {
         return '';
     }
+
     if ($Str !== '' && !is_number($Str)) {
         $Str = Format::make_utf8($Str);
         $Str = mb_convert_encoding($Str, 'HTML-ENTITIES', 'UTF-8');
         $Str = preg_replace("/&(?![A-Za-z]{0,4}\w{2,3};|#[0-9]{2,6};)/m", '&amp;', $Str);
 
         $Replace = array(
-      "'",'"',"<",">",
-      '&#128;','&#130;','&#131;','&#132;','&#133;','&#134;','&#135;','&#136;',
-      '&#137;','&#138;','&#139;','&#140;','&#142;','&#145;','&#146;','&#147;',
-      '&#148;','&#149;','&#150;','&#151;','&#152;','&#153;','&#154;','&#155;',
-      '&#156;','&#158;','&#159;'
-    );
+            "'",'"',"<",">",
+            '&#128;','&#130;','&#131;','&#132;','&#133;','&#134;','&#135;','&#136;',
+            '&#137;','&#138;','&#139;','&#140;','&#142;','&#145;','&#146;','&#147;',
+            '&#148;','&#149;','&#150;','&#151;','&#152;','&#153;','&#154;','&#155;',
+            '&#156;','&#158;','&#159;'
+        );
 
         $With = array(
-      '&#39;','&quot;','&lt;','&gt;',
-      '&#8364;','&#8218;','&#402;','&#8222;','&#8230;','&#8224;','&#8225;','&#710;',
-      '&#8240;','&#352;','&#8249;','&#338;','&#381;','&#8216;','&#8217;','&#8220;',
-      '&#8221;','&#8226;','&#8211;','&#8212;','&#732;','&#8482;','&#353;','&#8250;',
-      '&#339;','&#382;','&#376;'
-    );
+            '&#39;','&quot;','&lt;','&gt;',
+            '&#8364;','&#8218;','&#402;','&#8222;','&#8230;','&#8224;','&#8225;','&#710;',
+            '&#8240;','&#352;','&#8249;','&#338;','&#381;','&#8216;','&#8217;','&#8220;',
+            '&#8221;','&#8226;','&#8211;','&#8212;','&#732;','&#8482;','&#353;','&#8250;',
+            '&#339;','&#382;','&#376;'
+        );
 
         $Str = str_replace($Replace, $With, $Str);
     }
@@ -147,6 +152,7 @@ function send_irc($Raw)
 
     $IRCSocket = fsockopen(SOCKET_LISTEN_ADDRESS, SOCKET_LISTEN_PORT);
     $Raw = str_replace(array("\n", "\r"), '', $Raw);
+
     fwrite($IRCSocket, $Raw);
     fclose($IRCSocket);
 }
@@ -163,7 +169,7 @@ function send_irc($Raw)
 function error($Error, $NoHTML = false, $Log = false)
 {
     global $Debug;
-    require(SERVER_ROOT.'/sections/error/index.php');
+    require SERVER_ROOT.'/sections/error/index.php';
     $Debug->profile();
     die();
 }
