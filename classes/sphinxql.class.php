@@ -73,8 +73,10 @@ class Sphinxql extends mysqli
         if ($this->Connected || $this->connect_errno) {
             return;
         }
+
         global $Debug;
         $Debug->set_flag("Connecting to Sphinx server $this->Ident");
+
         for ($Attempt = 0; $Attempt < 3; $Attempt++) {
             parent::__construct($this->Server, '', '', '', $this->Port, $this->Socket);
             if (!$this->connect_errno) {
@@ -83,6 +85,7 @@ class Sphinxql extends mysqli
             }
             sleep(1);
         }
+
         if ($this->connect_errno) {
             $Errno = $this->connect_errno;
             $Error = $this->connect_error;
@@ -105,6 +108,7 @@ class Sphinxql extends mysqli
         global $Debug;
         $ErrorMsg = 'SphinxQL ('.$this->Ident.'): '.strval($Msg);
         $Debug->analysis('SphinxQL Error', $ErrorMsg, 3600*24);
+
         if ($Halt === true && (DEBUG_MODE || check_perms('site_debug'))) {
             echo '<pre>'.display_str($ErrorMsg).'</pre>';
             die();
@@ -125,22 +129,22 @@ class Sphinxql extends mysqli
         return strtr(
             strtolower($String),
             array(
-      '('=>'\\\\(',
-      ')'=>'\\\\)',
-      '|'=>'\\\\|',
-      '-'=>'\\\\-',
-      '@'=>'\\\\@',
-      '~'=>'\\\\~',
-      '&'=>'\\\\&',
-      '\''=>'\\\'',
-      '<'=>'\\\\<',
-      '!'=>'\\\\!',
-      '"'=>'\\\\"',
-      '/'=>'\\\\/',
-      '*'=>'\\\\*',
-      '$'=>'\\\\$',
-      '^'=>'\\\\^',
-      '\\'=>'\\\\\\\\')
+            '('=>'\\\\(',
+            ')'=>'\\\\)',
+            '|'=>'\\\\|',
+            '-'=>'\\\\-',
+            '@'=>'\\\\@',
+            '~'=>'\\\\~',
+            '&'=>'\\\\&',
+            '\''=>'\\\'',
+            '<'=>'\\\\<',
+            '!'=>'\\\\!',
+            '"'=>'\\\\"',
+            '/'=>'\\\\/',
+            '*'=>'\\\\*',
+            '$'=>'\\\\$',
+            '^'=>'\\\\^',
+            '\\'=>'\\\\\\\\')
         );
     }
 

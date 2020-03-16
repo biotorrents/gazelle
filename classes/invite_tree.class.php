@@ -21,59 +21,61 @@ class INVITE_TREE
     public function make_tree()
     {
         $QueryID = G::$DB->get_query_id();
-
         $UserID = $this->UserID; ?>
+
 <div class="invitetree pad">
   <?php
     G::$DB->query("
-      SELECT TreePosition, TreeID, TreeLevel
-      FROM invite_tree
+    SELECT TreePosition, TreeID, TreeLevel
+    FROM invite_tree
       WHERE UserID = $UserID");
-        list($TreePosition, $TreeID, $TreeLevel) = G::$DB->next_record(MYSQLI_NUM, false);
 
+        list($TreePosition, $TreeID, $TreeLevel) = G::$DB->next_record(MYSQLI_NUM, false);
         if (!$TreeID) {
             return;
         }
+
         G::$DB->query("
-      SELECT TreePosition
-      FROM invite_tree
-      WHERE TreeID = $TreeID
-        AND TreeLevel = $TreeLevel
-        AND TreePosition > $TreePosition
-      ORDER BY TreePosition ASC
-      LIMIT 1");
+        SELECT TreePosition
+        FROM invite_tree
+          WHERE TreeID = $TreeID
+          AND TreeLevel = $TreeLevel
+          AND TreePosition > $TreePosition
+        ORDER BY TreePosition ASC
+          LIMIT 1");
+
         if (G::$DB->has_results()) {
             list($MaxPosition) = G::$DB->next_record(MYSQLI_NUM, false);
         } else {
             $MaxPosition = false;
         }
         $TreeQuery = G::$DB->query("
-      SELECT
-        it.UserID,
-        Enabled,
-        PermissionID,
-        Donor,
-        Uploaded,
-        Downloaded,
-        Paranoia,
-        TreePosition,
-        TreeLevel
-      FROM invite_tree AS it
-        JOIN users_main AS um ON um.ID = it.UserID
-        JOIN users_info AS ui ON ui.UserID = it.UserID
-      WHERE TreeID = $TreeID
-        AND TreePosition > $TreePosition".
-        ($MaxPosition ? " AND TreePosition < $MaxPosition" : '')."
-        AND TreeLevel > $TreeLevel
-      ORDER BY TreePosition");
+        SELECT
+          it.UserID,
+          Enabled,
+          PermissionID,
+          Donor,
+          Uploaded,
+          Downloaded,
+          Paranoia,
+          TreePosition,
+          TreeLevel
+        FROM invite_tree AS it
+          JOIN users_main AS um ON um.ID = it.UserID
+          JOIN users_info AS ui ON ui.UserID = it.UserID
+        WHERE TreeID = $TreeID
+          AND TreePosition > $TreePosition".
+          ($MaxPosition ? " AND TreePosition < $MaxPosition" : '')."
+          AND TreeLevel > $TreeLevel
+        ORDER BY TreePosition");
 
         $PreviousTreeLevel = $TreeLevel;
 
         // Stats for the summary
-    $MaxTreeLevel = $TreeLevel; // The deepest level (this changes)
-    $OriginalTreeLevel = $TreeLevel; // The level of the user we're viewing
-    $BaseTreeLevel = $TreeLevel + 1; // The level of users invited by our user
-    $Count = 0;
+        $MaxTreeLevel = $TreeLevel; // The deepest level (this changes)
+        $OriginalTreeLevel = $TreeLevel; // The level of the user we're viewing
+        $BaseTreeLevel = $TreeLevel + 1; // The level of users invited by our user
+        $Count = 0;
         $Branches = 0;
         $DisabledCount = 0;
         $DonorCount = 0;
@@ -93,7 +95,7 @@ class INVITE_TREE
         ob_start();
         while (list($ID, $Enabled, $Class, $Donor, $Uploaded, $Downloaded, $Paranoia, $TreePosition, $TreeLevel) = G::$DB->next_record(MYSQLI_NUM, false)) {
 
-      // Do stats
+            // Do stats
             $Count++;
 
             if ($TreeLevel > $MaxTreeLevel) {
@@ -110,6 +112,7 @@ class INVITE_TREE
             if ($Enabled == 2) {
                 $DisabledCount++;
             }
+
             if ($Donor) {
                 $DonorCount++;
             }
@@ -128,7 +131,9 @@ class INVITE_TREE
                 echo "\t</li>\n\t<li>\n";
             }
             $UserClass = $Classes[$Class]['Level']; ?>
-  <strong><?=Users::format_username($ID, true, true, ($Enabled != 2 ? false : true), true)?></strong>
+  <strong>
+    <?=Users::format_username($ID, true, true, ($Enabled != 2 ? false : true), true)?>
+  </strong>
   <?php
       if (check_paranoia(array('uploaded', 'downloaded'), $Paranoia, $UserClass)) {
           $TotalUpload += $Uploaded;
@@ -164,6 +169,7 @@ class INVITE_TREE
                 if ($ClassCount == 0) {
                     continue;
                 }
+
                 $LastClass = Users::make_class_string($ClassID);
                 if ($ClassCount > 1) {
                     if ($LastClass == 'Torrent Celebrity') {
@@ -175,10 +181,11 @@ class INVITE_TREE
                         }
                     }
                 }
-                $LastClass = "$ClassCount $LastClass (" . number_format(($ClassCount / $Count) * 100) . '%)';
 
+                $LastClass = "$ClassCount $LastClass (" . number_format(($ClassCount / $Count) * 100) . '%)';
                 $ClassStrings[] = $LastClass;
             }
+
             if (count($ClassStrings) > 1) {
                 array_pop($ClassStrings);
                 echo implode(', ', $ClassStrings);
@@ -186,24 +193,29 @@ class INVITE_TREE
             } else {
                 echo $LastClass;
             }
+
             echo '. ';
             echo $DisabledCount;
             echo ($DisabledCount == 1) ? ' user is' : ' users are';
             echo ' disabled (';
+
             if ($DisabledCount == 0) {
                 echo '0%)';
             } else {
                 echo number_format(($DisabledCount / $Count) * 100) . '%)';
             }
+
             echo ', and ';
             echo $DonorCount;
             echo ($DonorCount == 1) ? ' user has' : ' users have';
             echo ' donated (';
+
             if ($DonorCount == 0) {
                 echo '0%)';
             } else {
                 echo number_format(($DonorCount / $Count) * 100) . '%)';
             }
+
             echo '. </p>';
 
             echo '<p style="font-weight: bold;">';
@@ -233,8 +245,9 @@ class INVITE_TREE
             }
         } ?>
     <br />
-    <?=     $Tree?>
+    <?=$Tree?>
 </div>
+
 <?php
     G::$DB->set_query_id($QueryID);
     }

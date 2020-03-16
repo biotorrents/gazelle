@@ -210,11 +210,13 @@ class Text
         $Str = preg_replace('/\[\\[(ch|uch)]\]/i', '', $Str);
         $Str = preg_replace('/\[ch\]/i', '[ch][/ch]', $Str);
         $Str = preg_replace('/\[uch\]/i', '[uch][/uch]', $Str);
+
         //Inline links
         $URLPrefix = '(\[url\]|\[url\=|\[img\=|\[img\])';
         $Str = preg_replace('/'.$URLPrefix.'\s+/i', '$1', $Str);
         $Str = preg_replace('/(?<!'.$URLPrefix.')http(s)?:\/\//i', '$1[inlineurl]http$2://', $Str);
         $Str = preg_replace('/\[embed\]\[inlineurl\]/', '[embed]', $Str);
+
         // For anonym.to and archive.org links, remove any [inlineurl] in the middle of the link
         $Str = preg_replace_callback('/(?<=\[inlineurl\]|'.$URLPrefix.')(\S*\[inlineurl\]\S*)/m', function ($matches) {
             return str_replace("[inlineurl]", "", $matches[0]);
@@ -255,17 +257,18 @@ class Text
     {
         $Regex = '/^';
         $Regex .= '(https?|ftps?|irc):\/\/'; // protocol
-    $Regex .= '(\w+(:\w+)?@)?'; // user:pass@
-    $Regex .= '(';
+        $Regex .= '(\w+(:\w+)?@)?'; // user:pass@
+        $Regex .= '(';
         $Regex .= '(([0-9]{1,3}\.){3}[0-9]{1,3})|'; // IP or...
-    $Regex .= '(([a-z0-9\-\_]+\.)+\w{2,6})'; // sub.sub.sub.host.com
-    $Regex .= ')';
+        $Regex .= '(([a-z0-9\-\_]+\.)+\w{2,6})'; // sub.sub.sub.host.com
+        $Regex .= ')';
         $Regex .= '(:[0-9]{1,5})?'; // port
-    $Regex .= '\/?'; // slash?
-    $Regex .= '(\/?[0-9a-z\-_.,\?&=@~%\/:;()+|!#]+)*'; // /file
-    if (!empty($Extension)) {
-        $Regex.=$Extension;
-    }
+        $Regex .= '\/?'; // slash?
+        $Regex .= '(\/?[0-9a-z\-_.,\?&=@~%\/:;()+|!#]+)*'; // /file
+
+        if (!empty($Extension)) {
+            $Regex.=$Extension;
+        }
 
         // Query string
         if ($Inline) {
@@ -287,6 +290,7 @@ class Text
             return false;
         }
         $Host = $URLInfo['host'];
+
         // If for some reason your site does not require subdomains or contains a directory in the SITE_DOMAIN, revert to the line below.
         if ($Host === SITE_DOMAIN || $Host === 'www.'.SITE_DOMAIN) {
             if (empty($URLInfo['port']) && preg_match('/(\S+\.)*'.SITE_DOMAIN.'/', $Host)) {
@@ -294,9 +298,11 @@ class Text
                 if (!empty($URLInfo['path'])) {
                     $URL .= ltrim($URLInfo['path'], '/'); // Things break if the path starts with '//'
                 }
+
                 if (!empty($URLInfo['query'])) {
                     $URL .= "?$URLInfo[query]";
                 }
+
                 if (!empty($URLInfo['fragment'])) {
                     $URL .= "#$URLInfo[fragment]";
                 }
@@ -422,9 +428,11 @@ class Text
           if ($CloseTag === false) { // block finishes with URL
               $CloseTag = $Len;
           }
+
           if (preg_match('/[!,.?:]+$/', substr($Str, $i, $CloseTag), $Match)) {
               $CloseTag -= strlen($Match[0]);
           }
+
           $URL = substr($Str, $i, $CloseTag);
           if (substr($URL, -1) === ')' && substr_count($URL, '(') < substr_count($URL, ')')) {
               $CloseTag--;
@@ -448,6 +456,7 @@ class Text
           if ($CloseTag === false) { // block finishes with list
               $CloseTag = $Len;
           }
+
           $Block = substr($Str, $i, $CloseTag - $i); // Get the list
         $i = $CloseTag; // 5d) Move the pointer past the end of the [/close] tag.
       } else {
@@ -492,54 +501,64 @@ class Text
 
             // 6) Depending on what type of tag we're dealing with, create an array with the attribute and block.
             switch ($TagName) {
-        case 'inlineurl':
-          $Array[$ArrayPos] = array('Type'=>'inlineurl', 'Attr'=>$Block, 'Val'=>'');
-          break;
-        case 'url':
-          $Array[$ArrayPos] = array('Type'=>'img', 'Attr'=>$Attrib, 'Val'=>$Block);
-          if (empty($Attrib)) { // [url]http://...[/url] - always set URL to attribute
-              $Array[$ArrayPos] = array('Type'=>'url', 'Attr'=>$Block, 'Val'=>'');
-          } else {
-              $Array[$ArrayPos] = array('Type'=>'url', 'Attr'=>$Attrib, 'Val'=>self::parse($Block));
-          }
-          break;
-        case 'quote':
-          $Array[$ArrayPos] = array('Type'=>'quote', 'Attr'=>self::parse($Attrib), 'Val'=>self::parse($Block));
-          break;
-        case 'img':
-        case 'image':
-          if (empty($Block)) {
-              $Block = $Attrib;
-          }
-          $Array[$ArrayPos] = array('Type'=>'img', 'Val'=>$Block);
-          break;
-        case 'aud':
-        case 'mp3':
-        case 'audio':
-          if (empty($Block)) {
-              $Block = $Attrib;
-          }
-          $Array[$ArrayPos] = array('Type'=>'aud', 'Val'=>$Block);
-          break;
-        case 'user':
-          $Array[$ArrayPos] = array('Type'=>'user', 'Val'=>$Block);
-          break;
-        case 'artist':
-          $Array[$ArrayPos] = array('Type'=>'artist', 'Val'=>$Block);
-          break;
-        case 'torrent':
-          $Array[$ArrayPos] = array('Type'=>'torrent', 'Val'=>$Block);
-          break;
-        case 'tex':
-          $Array[$ArrayPos] = array('Type'=>'tex', 'Val'=>$Block);
-          break;
-        case 'rule':
-          $Array[$ArrayPos] = array('Type'=>'rule', 'Val'=>$Block);
-          break;
-        case 'pre':
-        case 'code':
-        case 'plain':
-          $Block = strtr($Block, array('[inlineurl]' => ''));
+            case 'inlineurl':
+              $Array[$ArrayPos] = array('Type'=>'inlineurl', 'Attr'=>$Block, 'Val'=>'');
+              break;
+
+            case 'url':
+              $Array[$ArrayPos] = array('Type'=>'img', 'Attr'=>$Attrib, 'Val'=>$Block);
+              if (empty($Attrib)) { // [url]http://...[/url] - always set URL to attribute
+                  $Array[$ArrayPos] = array('Type'=>'url', 'Attr'=>$Block, 'Val'=>'');
+              } else {
+                  $Array[$ArrayPos] = array('Type'=>'url', 'Attr'=>$Attrib, 'Val'=>self::parse($Block));
+              }
+              break;
+
+            case 'quote':
+              $Array[$ArrayPos] = array('Type'=>'quote', 'Attr'=>self::parse($Attrib), 'Val'=>self::parse($Block));
+              break;
+
+            case 'img':
+            case 'image':
+              if (empty($Block)) {
+                  $Block = $Attrib;
+              }
+              $Array[$ArrayPos] = array('Type'=>'img', 'Val'=>$Block);
+              break;
+
+            case 'aud':
+            case 'mp3':
+            case 'audio':
+              if (empty($Block)) {
+                  $Block = $Attrib;
+              }
+              $Array[$ArrayPos] = array('Type'=>'aud', 'Val'=>$Block);
+              break;
+
+            case 'user':
+              $Array[$ArrayPos] = array('Type'=>'user', 'Val'=>$Block);
+              break;
+
+            case 'artist':
+              $Array[$ArrayPos] = array('Type'=>'artist', 'Val'=>$Block);
+              break;
+            case 'torre
+            nt':
+              $Array[$ArrayPos] = array('Type'=>'torrent', 'Val'=>$Block);
+              break;
+
+            case 'tex':
+              $Array[$ArrayPos] = array('Type'=>'tex', 'Val'=>$Block);
+              break;
+
+            case 'rule':
+              $Array[$ArrayPos] = array('Type'=>'rule', 'Val'=>$Block);
+              break;
+
+            case 'pre':
+            case 'code':
+            case 'plain':
+              $Block = strtr($Block, array('[inlineurl]' => ''));
 
           $Callback = function ($matches) {
               $n = $matches[2];
@@ -550,23 +569,25 @@ class Text
               }
               return $text;
           };
-          $Block = preg_replace_callback('/\[(headline)\=(\d)\](.*?)\[\/\1\]/i', $Callback, $Block);
 
+          $Block = preg_replace_callback('/\[(headline)\=(\d)\](.*?)\[\/\1\]/i', $Callback, $Block);
           $Block = preg_replace('/\[inlinesize\=3\](.*?)\[\/inlinesize\]/i', '====$1====', $Block);
           $Block = preg_replace('/\[inlinesize\=5\](.*?)\[\/inlinesize\]/i', '===$1===', $Block);
           $Block = preg_replace('/\[inlinesize\=7\](.*?)\[\/inlinesize\]/i', '==$1==', $Block);
-
           $Array[$ArrayPos] = array('Type'=>$TagName, 'Val'=>$Block);
           break;
-        case 'spoiler':
-        case 'hide':
-          $Array[$ArrayPos] = array('Type'=>'hide', 'Attr'=>$Attrib, 'Val'=>self::parse($Block));
-          break;
-        case 'embed':
-          $Array[$ArrayPos] = array('Type'=>'embed', 'Val'=>$Block);
-          break;
-        case '#':
-        case '*':
+          
+          case 'spoiler':
+          case 'hide':
+            $Array[$ArrayPos] = array('Type'=>'hide', 'Attr'=>$Attrib, 'Val'=>self::parse($Block));
+            break;
+
+          case 'embed':
+            $Array[$ArrayPos] = array('Type'=>'embed', 'Val'=>$Block);
+            break;
+
+          case '#':
+          case '*':
             $Array[$ArrayPos] = array('Type'=>'list');
             $Array[$ArrayPos]['Val'] = explode("[$TagName]", $Block);
             $Array[$ArrayPos]['ListType'] = $TagName === '*' ? 'ul' : 'ol';
@@ -574,22 +595,22 @@ class Text
             foreach ($Array[$ArrayPos]['Val'] as $Key=>$Val) {
                 $Array[$ArrayPos]['Val'][$Key] = self::parse(trim($Val));
             }
-          break;
-        case 'n':
-          $ArrayPos--;
-          break; // n serves only to disrupt bbcode (backwards compatibility - use [pre])
-        default:
-          if ($WikiLink == true) {
-              $Array[$ArrayPos] = array('Type'=>'wiki','Val'=>$TagName);
-          } else {
+            break;
 
-            // Basic tags, like [b] or [size=5]
+          case 'n':
+            $ArrayPos--;
+            break; // n serves only to disrupt bbcode (backwards compatibility - use [pre])
 
-              $Array[$ArrayPos] = array('Type'=>$TagName, 'Val'=>self::parse($Block));
-              if (!empty($Attrib) && $MaxAttribs > 0) {
-                  $Array[$ArrayPos]['Attr'] = strtolower($Attrib);
-              }
-          }
+          default:
+            if ($WikiLink == true) {
+                $Array[$ArrayPos] = array('Type'=>'wiki','Val'=>$TagName);
+            } else {
+                // Basic tags, like [b] or [size=5]
+                $Array[$ArrayPos] = array('Type'=>$TagName, 'Val'=>self::parse($Block));
+                if (!empty($Attrib) && $MaxAttribs > 0) {
+                    $Array[$ArrayPos]['Attr'] = strtolower($Attrib);
+                }
+            }
       }
 
             $ArrayPos++; // 7) Increment array pointer, start again (past the end of the [/close] tag)
@@ -614,6 +635,7 @@ class Text
                 if ($i === 0 && $n > 1) {
                     $off = $n - $level;
                 }
+
                 self::headline_level($n, $level, $list, $i, $off);
                 $list .= sprintf('<li><a href="#%2$s">%1$s</a>', $t[1], $t[2]);
                 $level = $t[0];
@@ -684,243 +706,266 @@ class Text
         if (self::$Levels > self::$MaximumNests) {
             return $Block['Val']; // Hax prevention, breaks upon exceeding nests.
         }
+
         $Str = '';
         foreach ($Array as $Block) {
             if (is_string($Block)) {
                 $Str .= self::smileys($Block);
                 continue;
             }
+
             if (self::$Levels < self::$MaximumNests) {
                 switch ($Block['Type']) {
-        case 'b':
-          $Str .= '<strong>'.self::to_html($Block['Val']).'</strong>';
-          break;
-        case 'u':
-          $Str .= '<span style="text-decoration: underline;">'.self::to_html($Block['Val']).'</span>';
-          break;
-        case 'i':
-          $Str .= '<span style="font-style: italic;">'.self::to_html($Block['Val'])."</span>";
-          break;
-        case 's':
-          $Str .= '<span style="text-decoration: line-through;">'.self::to_html($Block['Val']).'</span>';
-          break;
-        case 'important':
-          $Str .= '<strong class="important_text">'.self::to_html($Block['Val']).'</strong>';
-          break;
-        case 'user':
-          $Str .= '<a href="user.php?action=search&amp;search='.urlencode($Block['Val']).'">'.$Block['Val'].'</a>';
-          break;
-        case 'artist':
-          $Str .= '<a href="artist.php?artistname='.urlencode(Format::undisplay_str($Block['Val'])).'">'.$Block['Val'].'</a>';
-          break;
-        case 'rule':
-          $Rule = trim(strtolower($Block['Val']));
-          if ($Rule[0] != 'r' && $Rule[0] != 'h') {
-              $Rule = 'r'.$Rule;
-          }
-          $Str .= '<a href="rules.php?p=upload#'.urlencode(Format::undisplay_str($Rule)).'">'.preg_replace('/[aA-zZ]/', '', $Block['Val']).'</a>';
-          break;
-        case 'torrent':
-          $Pattern = '/('.SITE_DOMAIN.'\/torrents\.php.*[\?&]id=)?(\d+)($|&|\#).*/i';
-          $Matches = [];
-          if (preg_match($Pattern, $Block['Val'], $Matches)) {
-              if (isset($Matches[2])) {
-                  $GroupID = $Matches[2];
-                  $Groups = Torrents::get_groups(array($GroupID), true, true, false);
-                  if ($Groups[$GroupID]) {
-                      $Group = $Groups[$GroupID];
-                      $Str .= Artists::display_artists($Group['Artists']).'<a href="torrents.php?id='.$GroupID;
-                      if (preg_match('/torrentid=(\d+)/i', $Block['Val'], $Matches)) {
-                          $Str .= '&torrentid='.$Matches[1];
+                    case 'b':
+                      $Str .= '<strong>'.self::to_html($Block['Val']).'</strong>';
+                      break;
+
+                    case 'u':
+                      $Str .= '<span style="text-decoration: underline;">'.self::to_html($Block['Val']).'</span>';
+                      break;
+
+                    case 'i':
+                      $Str .= '<span style="font-style: italic;">'.self::to_html($Block['Val'])."</span>";
+                      break;
+
+                    case 's':
+                      $Str .= '<span style="text-decoration: line-through;">'.self::to_html($Block['Val']).'</span>';
+                      break;
+
+                    case 'important':
+                      $Str .= '<strong class="important_text">'.self::to_html($Block['Val']).'</strong>';
+                      break;
+
+                    case 'user':
+                      $Str .= '<a href="user.php?action=search&amp;search='.urlencode($Block['Val']).'">'.$Block['Val'].'</a>';
+                      break;
+
+                    case 'artist':
+                      $Str .= '<a href="artist.php?artistname='.urlencode(Format::undisplay_str($Block['Val'])).'">'.$Block['Val'].'</a>';
+                      break;
+
+                    case 'rule':
+                      $Rule = trim(strtolower($Block['Val']));
+                      if ($Rule[0] != 'r' && $Rule[0] != 'h') {
+                          $Rule = 'r'.$Rule;
                       }
-                      $Str .= '"';
-                      if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-                          $Str .= ' data-cover="'.ImageTools::process($Group['WikiImage'], 'thumb').'"';
+                      $Str .= '<a href="rules.php?p=upload#'.urlencode(Format::undisplay_str($Rule)).'">'.preg_replace('/[aA-zZ]/', '', $Block['Val']).'</a>';
+                      break;
+
+                    case 'torrent':
+                      $Pattern = '/('.SITE_DOMAIN.'\/torrents\.php.*[\?&]id=)?(\d+)($|&|\#).*/i';
+                      $Matches = [];
+                      if (preg_match($Pattern, $Block['Val'], $Matches)) {
+                          if (isset($Matches[2])) {
+                              $GroupID = $Matches[2];
+                              $Groups = Torrents::get_groups(array($GroupID), true, true, false);
+                              if ($Groups[$GroupID]) {
+                                  $Group = $Groups[$GroupID];
+                                  $Str .= Artists::display_artists($Group['Artists']).'<a href="torrents.php?id='.$GroupID;
+                                  if (preg_match('/torrentid=(\d+)/i', $Block['Val'], $Matches)) {
+                                      $Str .= '&torrentid='.$Matches[1];
+                                  }
+                                  $Str .= '"';
+                                  if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
+                                      $Str .= ' data-cover="'.ImageTools::process($Group['WikiImage'], 'thumb').'"';
+                                  }
+                                  $Name = empty($Group['Name']) ? (empty($Group['NameRJ']) ? $Group['NameJP'] : $Group['NameRJ']) : $Group['Name'];
+                                  $Str .= '>'.$Name.'</a>';
+                              } else {
+                                  $Str .= '[torrent]'.str_replace('[inlineurl]', '', $Block['Val']).'[/torrent]';
+                              }
+                          }
+                      } else {
+                          $Str .= '[torrent]'.str_replace('[inlineurl]', '', $Block['Val']).'[/torrent]';
                       }
-                      $Name = empty($Group['Name']) ? (empty($Group['NameRJ']) ? $Group['NameJP'] : $Group['NameRJ']) : $Group['Name'];
-                      $Str .= '>'.$Name.'</a>';
-                  } else {
-                      $Str .= '[torrent]'.str_replace('[inlineurl]', '', $Block['Val']).'[/torrent]';
-                  }
-              }
-          } else {
-              $Str .= '[torrent]'.str_replace('[inlineurl]', '', $Block['Val']).'[/torrent]';
-          }
-          break;
-        case 'wiki':
-          $Str .= '<a href="wiki.php?action=article&amp;name='.urlencode($Block['Val']).'">'.$Block['Val'].'</a>';
-          break;
-        case 'tex':
-          $Str .= '<img class="tex_img" style="vertical-align: middle;" src="'.STATIC_SERVER.'blank.gif" onload="if (this.src.substr(this.src.length - 9, this.src.length) == \'blank.gif\') { this.src = \''.ImageTools::process('https://chart.googleapis.com/chart?cht=tx&chf=bg,s,FFFFFF00&chl='.urlencode(mb_convert_encoding($Block['Val'], 'UTF-8', 'HTML-ENTITIES'))).'\'; }" alt="'.$Block['Val'].'" />';
-          break;
-        case 'plain':
-          $Str .= $Block['Val'];
-          break;
-        case 'pre':
-          $Str .= '<pre>'.$Block['Val'].'</pre>';
-          break;
-        case 'code':
-          $Str .= '<code>'.$Block['Val'].'</code>';
-          break;
-        case 'ch':
-          $Str .= '<input type="checkbox" checked="checked" disabled="disabled">';
-          break;
-        case 'uch':
-          $Str .= '<input type="checkbox" disabled="disabled">';
-          break;
-        case 'list':
-          $Str .= "<$Block[ListType] class=\"postlist\">";
-          foreach ($Block['Val'] as $Line) {
-              $Str .= '<li>'.self::to_html($Line).'</li>';
-          }
-          $Str .= '</'.$Block['ListType'].'>';
-          break;
-        case 'align':
-          $ValidAttribs = array('left', 'center', 'right');
-          if (!in_array($Block['Attr'], $ValidAttribs)) {
-              $Str .= '[align='.$Block['Attr'].']'.self::to_html($Block['Val']).'[/align]';
-          } else {
-              $Str .= '<div style="text-align: '.$Block['Attr'].';">'.self::to_html($Block['Val']).'</div>';
-          }
-          break;
-        case 'color':
-        case 'colour':
-          $ValidAttribs = array('aqua', 'black', 'blue', 'fuchsia', 'green', 'grey', 'lime', 'maroon', 'navy', 'olive', 'purple', 'red', 'silver', 'teal', 'white', 'yellow');
-          if (!in_array($Block['Attr'], $ValidAttribs) && !preg_match('/^#[0-9a-f]{6}$/', $Block['Attr'])) {
-              $Str .= '[color='.$Block['Attr'].']'.self::to_html($Block['Val']).'[/color]';
-          } else {
-              $Str .= '<span style="color: '.$Block['Attr'].';">'.self::to_html($Block['Val']).'</span>';
-          }
-          break;
-        case 'headline':
-          $text = self::to_html($Block['Val']);
-          $raw = self::raw_text($Block['Val']);
-          if (!in_array($Block['Attr'], self::$HeadlineLevels)) {
-              $Str .= sprintf('%1$s%2$s%1$s', str_repeat('=', $Block['Attr'] + 1), $text);
-          } else {
-              $id = '_' . crc32($raw . self::$HeadlineID);
-              if (self::$InQuotes === 0) {
-                  self::$Headlines[] = array($Block['Attr'], $raw, $id);
-              }
+                      break;
 
-              $Str .= sprintf('<h%1$d id="%3$s">%2$s</h%1$d>', ($Block['Attr'] + 2), $text, $id);
-              self::$HeadlineID++;
-          }
-          break;
-        case 'inlinesize':
-        case 'size':
-          $ValidAttribs = array('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
-          if (!in_array($Block['Attr'], $ValidAttribs)) {
-              $Str .= '[size='.$Block['Attr'].']'.self::to_html($Block['Val']).'[/size]';
-          } else {
-              $Str .= '<span class="size'.$Block['Attr'].'">'.self::to_html($Block['Val']).'</span>';
-          }
-          break;
-        case 'quote':
-          self::$NoImg++; // No images inside quote tags
-          self::$InQuotes++;
-          if (self::$InQuotes == self::$NestsBeforeHide) { //Put quotes that are nested beyond the specified limit in [hide] tags.
-              $Str .= '<strong>Older quotes</strong>: <a class="spoilerButton">Show</a>';
-              $Str .= '<blockquote class="hidden spoiler">';
-          }
-          if (!empty($Block['Attr'])) {
-              $Exploded = explode('|', self::to_html($Block['Attr']));
-              if (isset($Exploded[1]) && (is_numeric($Exploded[1]) || (in_array($Exploded[1][0], array('a', 't', 'c', 'r')) && is_numeric(substr($Exploded[1], 1))))) {
-                  // the part after | is either a number or starts with a, t, c or r, followed by a number (forum post, artist comment, torrent comment, collage comment or request comment, respectively)
-                  $PostID = trim($Exploded[1]);
-                  $Str .= '<a data-quote-jump="'.$PostID.'"><strong class="quoteheader">'.$Exploded[0].'</strong> wrote: </a>';
-              } else {
-                  $Str .= '<strong class="quoteheader">'.$Exploded[0].'</strong> wrote: ';
-              }
-          }
-          $Str .= '<blockquote>'.self::to_html($Block['Val']).'</blockquote>';
-          if (self::$InQuotes == self::$NestsBeforeHide) { //Close quote the deeply nested quote [hide].
-            $Str .= '</blockquote><br />'; // Ensure new line after quote train hiding
-          }
-          self::$NoImg--;
-          self::$InQuotes--;
-          break;
-        case 'hide':
-          $Str .= '<strong>'.(($Block['Attr']) ? $Block['Attr'] : 'Hidden text').'</strong>: <a class="spoilerButton">Show</a>';
-          $Str .= '<blockquote class="hidden spoiler">'.self::to_html($Block['Val']).'</blockquote>';
-          break;
-        case 'img':
-          if (self::$NoImg > 0 && self::valid_url($Block['Val'])) {
-              $Str .= '<a rel="noreferrer" target="_blank" href="'.$Block['Val'].'">'.$Block['Val'].'</a> (image)';
-              break;
-          }
-          if (!self::valid_url($Block['Val'], '\.(jpe?g|gif|png|bmp|tiff)')) {
-              $Str .= '[img]'.$Block['Val'].'[/img]';
-          } else {
-              $LocalURL = self::local_url($Block['Val']);
-              if ($LocalURL) {
-                  $Str .= '<img class="scale_image lightbox-init" alt="'.$Block['Val'].'" src="'.$LocalURL.'" />';
-              } else {
-                  $Str .= '<img class="scale_image lightbox-init" alt="'.$Block['Val'].'" src="'.ImageTools::process($Block['Val']).'" />';
-              }
-          }
-          break;
+                    case 'wiki':
+                      $Str .= '<a href="wiki.php?action=article&amp;name='.urlencode($Block['Val']).'">'.$Block['Val'].'</a>';
+                      break;
 
-        case 'aud':
-          if (self::$NoImg > 0 && self::valid_url($Block['Val'])) {
-              $Str .= '<a rel="noreferrer" target="_blank" href="'.$Block['Val'].'">'.$Block['Val'].'</a> (audio)';
-              break;
-          }
-          if (!self::valid_url($Block['Val'], '\.(mp3|ogg|wav)')) {
-              $Str .= '[aud]'.$Block['Val'].'[/aud]';
-          } else {
-              // todo: Proxy this for staff?
-              $Str .= '<audio controls="controls" src="'.$Block['Val'].'"><a rel="noreferrer" target="_blank" href="'.$Block['Val'].'">'.$Block['Val'].'</a></audio>';
-          }
-          break;
+                    case 'tex':
+                      $Str .= '<img class="tex_img" style="vertical-align: middle;" src="'.STATIC_SERVER.'blank.gif" onload="if (this.src.substr(this.src.length - 9, this.src.length) == \'blank.gif\') { this.src = \''.ImageTools::process('https://chart.googleapis.com/chart?cht=tx&chf=bg,s,FFFFFF00&chl='.urlencode(mb_convert_encoding($Block['Val'], 'UTF-8', 'HTML-ENTITIES'))).'\'; }" alt="'.$Block['Val'].'" />';
+                      break;
 
-        case 'url':
-          // Make sure the URL has a label
-          if (empty($Block['Val'])) {
-              $Block['Val'] = $Block['Attr'];
-              $NoName = true; // If there isn't a Val for this
-          } else {
-              $Block['Val'] = self::to_html($Block['Val']);
-              $NoName = false;
-          }
+                    case 'plain':
+                      $Str .= $Block['Val'];
+                      break;
 
-          if (!self::valid_url($Block['Attr'])) {
-              $Str .= '[url='.$Block['Attr'].']'.$Block['Val'].'[/url]';
-          } else {
-              $LocalURL = self::local_url($Block['Attr']);
-              if ($LocalURL) {
-                  if ($NoName) {
-                      $Block['Val'] = substr($LocalURL, 1);
-                  }
-                  $Str .= '<a href="'.$LocalURL.'">'.$Block['Val'].'</a>';
-              } else {
-                  $Str .= '<a rel="noreferrer" target="_blank" href="'.$Block['Attr'].'">'.$Block['Val'].'</a>';
-              }
-          }
-          break;
+                    case 'pre':
+                      $Str .= '<pre>'.$Block['Val'].'</pre>';
+                      break;
 
-        case 'inlineurl':
-          if (!self::valid_url($Block['Attr'], '', true)) {
-              $Array = self::parse($Block['Attr']);
-              $Block['Attr'] = $Array;
-              $Str .= self::to_html($Block['Attr']);
-          } else {
-              $LocalURL = self::local_url($Block['Attr']);
-              if ($LocalURL) {
-                  $Str .= '<a href="'.$LocalURL.'">'.substr($LocalURL, 1).'</a>';
-              } else {
-                  $Str .= '<a rel="noreferrer" target="_blank" href="'.$Block['Attr'].'">'.$Block['Attr'].'</a>';
-              }
-          }
+                    case 'code':
+                      $Str .= '<code>'.$Block['Val'].'</code>';
+                      break;
 
-          break;
-        case 'embed':
-          $Val = str_replace(' ', '', $Block['Val']);
-          if (self::valid_url($Val) && substr($Val, -4) === 'webm') {
-              $Str .= '<video class="webm" preload controls><source src="'.ImageTools::process($Val).'" /></video>';
-          }
-          break;
-      }
+                    case 'ch':
+                      $Str .= '<input type="checkbox" checked="checked" disabled="disabled">';
+                      break;
+
+                    case 'uch':
+                      $Str .= '<input type="checkbox" disabled="disabled">';
+                      break;
+
+                    case 'list':
+                      $Str .= "<$Block[ListType] class=\"postlist\">";
+                      foreach ($Block['Val'] as $Line) {
+                          $Str .= '<li>'.self::to_html($Line).'</li>';
+                      }
+                      $Str .= '</'.$Block['ListType'].'>';
+                      break;
+
+                    case 'align':
+                      $ValidAttribs = array('left', 'center', 'right');
+                      if (!in_array($Block['Attr'], $ValidAttribs)) {
+                          $Str .= '[align='.$Block['Attr'].']'.self::to_html($Block['Val']).'[/align]';
+                      } else {
+                          $Str .= '<div style="text-align: '.$Block['Attr'].';">'.self::to_html($Block['Val']).'</div>';
+                      }
+                      break;
+
+                    case 'color':
+                      case 'colour':
+                        $ValidAttribs = array('aqua', 'black', 'blue', 'fuchsia', 'green', 'grey', 'lime', 'maroon', 'navy', 'olive', 'purple', 'red', 'silver', 'teal', 'white', 'yellow');
+                        if (!in_array($Block['Attr'], $ValidAttribs) && !preg_match('/^#[0-9a-f]{6}$/', $Block['Attr'])) {
+                            $Str .= '[color='.$Block['Attr'].']'.self::to_html($Block['Val']).'[/color]';
+                        } else {
+                            $Str .= '<span style="color: '.$Block['Attr'].';">'.self::to_html($Block['Val']).'</span>';
+                        }
+                        break;
+
+                    case 'headline':
+                      $text = self::to_html($Block['Val']);
+                      $raw = self::raw_text($Block['Val']);
+                      if (!in_array($Block['Attr'], self::$HeadlineLevels)) {
+                          $Str .= sprintf('%1$s%2$s%1$s', str_repeat('=', $Block['Attr'] + 1), $text);
+                      } else {
+                          $id = '_' . crc32($raw . self::$HeadlineID);
+                          if (self::$InQuotes === 0) {
+                              self::$Headlines[] = array($Block['Attr'], $raw, $id);
+                          }
+                          $Str .= sprintf('<h%1$d id="%3$s">%2$s</h%1$d>', ($Block['Attr'] + 2), $text, $id);
+                          self::$HeadlineID++;
+                      }
+                      break;
+
+                    case 'inlinesize':
+                    case 'size':
+                      $ValidAttribs = array('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+                      if (!in_array($Block['Attr'], $ValidAttribs)) {
+                          $Str .= '[size='.$Block['Attr'].']'.self::to_html($Block['Val']).'[/size]';
+                      } else {
+                          $Str .= '<span class="size'.$Block['Attr'].'">'.self::to_html($Block['Val']).'</span>';
+                      }
+                      break;
+
+                    case 'quote':
+                      self::$NoImg++; // No images inside quote tags
+                      self::$InQuotes++;
+                      if (self::$InQuotes == self::$NestsBeforeHide) { // Put quotes that are nested beyond the specified limit in [hide] tags.
+                          $Str .= '<strong>Older quotes</strong>: <a class="spoilerButton">Show</a>';
+                          $Str .= '<blockquote class="hidden spoiler">';
+                      }
+                      if (!empty($Block['Attr'])) {
+                          $Exploded = explode('|', self::to_html($Block['Attr']));
+                          if (isset($Exploded[1]) && (is_numeric($Exploded[1]) || (in_array($Exploded[1][0], array('a', 't', 'c', 'r')) && is_numeric(substr($Exploded[1], 1))))) {
+                              // The part after | is either a number or starts with a, t, c or r, followed by a number (forum post, artist comment, torrent comment, collage comment or request comment, respectively)
+                              $PostID = trim($Exploded[1]);
+                              $Str .= '<a data-quote-jump="'.$PostID.'"><strong class="quoteheader">'.$Exploded[0].'</strong> wrote: </a>';
+                          } else {
+                              $Str .= '<strong class="quoteheader">'.$Exploded[0].'</strong> wrote: ';
+                          }
+                      }
+                      $Str .= '<blockquote>'.self::to_html($Block['Val']).'</blockquote>';
+                      if (self::$InQuotes == self::$NestsBeforeHide) { //Close quote the deeply nested quote [hide].
+                        $Str .= '</blockquote><br />'; // Ensure new line after quote train hiding
+                      }
+                      self::$NoImg--;
+                      self::$InQuotes--;
+                      break;
+
+                    case 'hide':
+                      $Str .= '<strong>'.(($Block['Attr']) ? $Block['Attr'] : 'Hidden text').'</strong>: <a class="spoilerButton">Show</a>';
+                      $Str .= '<blockquote class="hidden spoiler">'.self::to_html($Block['Val']).'</blockquote>';
+                      break;
+
+                    case 'img':
+                      if (self::$NoImg > 0 && self::valid_url($Block['Val'])) {
+                          $Str .= '<a rel="noreferrer" target="_blank" href="'.$Block['Val'].'">'.$Block['Val'].'</a> (image)';
+                          break;
+                      }
+                      if (!self::valid_url($Block['Val'], '\.(jpe?g|gif|png|bmp|tiff)')) {
+                          $Str .= '[img]'.$Block['Val'].'[/img]';
+                      } else {
+                          $LocalURL = self::local_url($Block['Val']);
+                          if ($LocalURL) {
+                              $Str .= '<img class="scale_image lightbox-init" alt="'.$Block['Val'].'" src="'.$LocalURL.'" />';
+                          } else {
+                              $Str .= '<img class="scale_image lightbox-init" alt="'.$Block['Val'].'" src="'.ImageTools::process($Block['Val']).'" />';
+                          }
+                      }
+                      break;
+
+                    case 'aud':
+                      if (self::$NoImg > 0 && self::valid_url($Block['Val'])) {
+                          $Str .= '<a rel="noreferrer" target="_blank" href="'.$Block['Val'].'">'.$Block['Val'].'</a> (audio)';
+                          break;
+                      }
+                    if (!self::valid_url($Block['Val'], '\.(mp3|ogg|wav)')) {
+                        $Str .= '[aud]'.$Block['Val'].'[/aud]';
+                    } else {
+                        // todo: Proxy this for staff?
+                        $Str .= '<audio controls="controls" src="'.$Block['Val'].'"><a rel="noreferrer" target="_blank" href="'.$Block['Val'].'">'.$Block['Val'].'</a></audio>';
+                    }
+                      break;
+
+                    case 'url':
+                      // Make sure the URL has a label
+                      if (empty($Block['Val'])) {
+                          $Block['Val'] = $Block['Attr'];
+                          $NoName = true; // If there isn't a Val for this
+                      } else {
+                          $Block['Val'] = self::to_html($Block['Val']);
+                          $NoName = false;
+                      }
+                      if (!self::valid_url($Block['Attr'])) {
+                          $Str .= '[url='.$Block['Attr'].']'.$Block['Val'].'[/url]';
+                      } else {
+                          $LocalURL = self::local_url($Block['Attr']);
+                          if ($LocalURL) {
+                              if ($NoName) {
+                                  $Block['Val'] = substr($LocalURL, 1);
+                              }
+                              $Str .= '<a href="'.$LocalURL.'">'.$Block['Val'].'</a>';
+                          } else {
+                              $Str .= '<a rel="noreferrer" target="_blank" href="'.$Block['Attr'].'">'.$Block['Val'].'</a>';
+                          }
+                      }
+                      break;
+
+                    case 'inlineurl':
+                      if (!self::valid_url($Block['Attr'], '', true)) {
+                          $Array = self::parse($Block['Attr']);
+                          $Block['Attr'] = $Array;
+                          $Str .= self::to_html($Block['Attr']);
+                      } else {
+                          $LocalURL = self::local_url($Block['Attr']);
+                          if ($LocalURL) {
+                              $Str .= '<a href="'.$LocalURL.'">'.substr($LocalURL, 1).'</a>';
+                          } else {
+                              $Str .= '<a rel="noreferrer" target="_blank" href="'.$Block['Attr'].'">'.$Block['Attr'].'</a>';
+                          }
+                      }
+                      break;
+
+                    case 'embed':
+                      $Val = str_replace(' ', '', $Block['Val']);
+                      if (self::valid_url($Val) && substr($Val, -4) === 'webm') {
+                          $Str .= '<video class="webm" preload controls><source src="'.ImageTools::process($Val).'" /></video>';
+                      }
+                      break;
+                    }
             }
         }
         self::$Levels--;
@@ -936,58 +981,59 @@ class Text
                 continue;
             }
             switch ($Block['Type']) {
-        case 'headline':
-          break;
-        case 'b':
-        case 'u':
-        case 'i':
-        case 's':
-        case 'color':
-        case 'size':
-        case 'quote':
-        case 'align':
+            case 'headline':
+              break;
 
-          $Str .= self::raw_text($Block['Val']);
-          break;
-        case 'tex': //since this will never strip cleanly, just remove it
-          break;
-        case 'artist':
-        case 'user':
-        case 'wiki':
-        case 'pre':
-        case 'code':
-        case 'aud':
-        case 'img':
-          $Str .= $Block['Val'];
-          break;
-        case 'list':
-          foreach ($Block['Val'] as $Line) {
-              $Str .= $Block['Tag'].self::raw_text($Line);
-          }
-          break;
+            case 'b':
+            case 'u':
+            case 'i':
+            case 's':
+            case 'color':
+            case 'size':
+            case 'quote':
+            case 'align':
+              $Str .= self::raw_text($Block['Val']);
+              break;
 
-        case 'url':
-          // Make sure the URL has a label
-          if (empty($Block['Val'])) {
-              $Block['Val'] = $Block['Attr'];
-          } else {
-              $Block['Val'] = self::raw_text($Block['Val']);
-          }
+            case 'tex': // Since this will never strip cleanly, just remove it
+              break;
 
-          $Str .= $Block['Val'];
-          break;
+            case 'artist':
+            case 'user':
+            case 'wiki':
+            case 'pre':
+            case 'code':
+            case 'aud':
+            case 'img':
+              $Str .= $Block['Val'];
+              break;
 
-        case 'inlineurl':
-          if (!self::valid_url($Block['Attr'], '', true)) {
-              $Array = self::parse($Block['Attr']);
-              $Block['Attr'] = $Array;
-              $Str .= self::raw_text($Block['Attr']);
-          } else {
-              $Str .= $Block['Attr'];
-          }
+            case 'list':
+              foreach ($Block['Val'] as $Line) {
+                  $Str .= $Block['Tag'].self::raw_text($Line);
+              }
+              break;
 
-          break;
-      }
+            case 'url':
+              // Make sure the URL has a label
+              if (empty($Block['Val'])) {
+                  $Block['Val'] = $Block['Attr'];
+              } else {
+                  $Block['Val'] = self::raw_text($Block['Val']);
+              }
+              $Str .= $Block['Val'];
+              break;
+
+            case 'inlineurl':
+              if (!self::valid_url($Block['Attr'], '', true)) {
+                  $Array = self::parse($Block['Attr']);
+                  $Block['Attr'] = $Array;
+                  $Str .= self::raw_text($Block['Attr']);
+              } else {
+                  $Str .= $Block['Attr'];
+              }
+              break;
+            }
         }
         return $Str;
     }
@@ -997,12 +1043,14 @@ class Text
         if (!empty(G::$LoggedUser['DisableSmileys'])) {
             return $Str;
         }
+
         if (count(self::$ProcessedSmileys) == 0 && count(self::$Smileys) > 0) {
             foreach (self::$Smileys as $Key => $Val) {
                 self::$ProcessedSmileys[$Key] = '<img src="'.STATIC_SERVER.'common/smileys/'.$Val.'" alt="" />';
             }
             reset(self::$ProcessedSmileys);
         }
+        
         $Str = strtr($Str, self::$ProcessedSmileys);
         return $Str;
     }
