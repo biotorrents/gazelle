@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>BioTorrents.de</ShortName>
+  <Description>Search torrents on BioTorrents.de</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <OutputEncoding>UTF-8</OutputEncoding>
+  <AdultContent>true</AdultContent>
+  <Image height="16" width="16" type="image/png">https://biotorrents.de/static/common/icon.png</Image>
+  <Url type="text/html" template="https://biotorrents.de/torrents.php?searchstr={searchTerms}"/>
+</OpenSearchDescription>

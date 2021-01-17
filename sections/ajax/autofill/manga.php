@@ -1,0 +1,106 @@
+<?php
+#declare(strict_types=1);
+
+if (empty($_GET['url'])) {
+    json_die();
+}
+
+$url = str_replace('exhentai', 'e-hentai', $_GET['url']);
+
+$matches = [];
+preg_match('/^https?:\/\/g?\.?e.hentai\.org\/g\/(\d+)\/([\w\d]+)\/?$/', $url, $matches);
+
+$gid = $matches[1] ?? '';
+$token = $matches[2] ?? '';
+
+if (empty($gid) || empty($token)) {
+    json_die("failure", "Invalid URL");
+}
+
+if ($Cache->get_value('manga_fill_json_'.$gid)) {
+    json_die("success", $Cache->get_value('manga_fill_json_'.$gid));
+} else {
+    $data = json_encode(["method" => "gdata", "gidlist" => [[$gid, $token]], "namespace" => 1]);
+    $curl = curl_init('http://api.e-hentai.org/api.php');
+    curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+    curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json', 'Content-Length: '.strlen($data)]);
+
+    $json = curl_exec($curl);
+
+    if (empty($json)) {
+        json_die("failure", "Could not get page");
+    }
+
+    $json = json_decode($json, true)["gmetadata"][0];
+
+    $artists = [];
+    $tags = [];
+    $lang = null;
+    $circle = null;
+    $censored = true;
+    foreach ($json["tags"] as $tag) {
+        if (strpos($tag, ':') !== false) {
+            list($namespace, $tag) = explode(':', $tag);
+        } else {
+            $namespace = '';
+        }
+
+        if ($namespace == "artist") {
+            array_push($artists, ucwords($tag));
+        } elseif ($namespace == "group") {
+            $circle = empty($circle) ? ucfirst($tag) : $circle;
+        } elseif ($tag == "uncensored") {
+            $censored = false;
+        } else {
+            if ($namespace) {
+                $tag = $tag.':'.$namespace;
+            }
+            array_push($tags, str_replace(' ', '.', $tag));
+        }
+    }
+
+    // get the cover for ants
+    $cover = $json['thumb'];
+    // and let's see if we can replace it with something better
+    $gallery_page = file_get_contents($url);
+    $re = '/'.preg_quote('-0px 0 no-repeat"><a href="').'(.*)'.preg_quote('"><img alt="01"').'/';
+    preg_match($re, $gallery_page, $galmatch);
+    // were we able to find the first page of the gallery?
+    if ($galmatch[1]) {
+        $image_page = file_get_contents($galmatch[1]);
+        $re = '/'.preg_quote('"><img id="img" src="').'([^<]*)'.preg_quote('" style=').'/';
+        preg_match($re, $image_page, $imgmatch);
+        // were we able to find the image url?
+        if ($imgmatch[1]) {
+            $cover = $imgmatch[1];
+        }
+    }
+
+    $title = html_entity_decode($json['title'], ENT_QUOTES);
+    $title = preg_replace("/\(([^()]*+|(?R))*\)/", "", $title);
+    $title = trim(preg_replace("/\[([^\[\]]*+|(?R))*\]/", "", $title));
+    $title_jp = html_entity_decode($json['title_jpn'], ENT_QUOTES);
+    $title_jp = preg_replace("/\(([^()]*+|(?R))*\)/", "", $title_jp);
+    $title_jp = trim(preg_replace("/\[([^\[\]]*+|(?R))*\]/", "", $title_jp));
+
+    $json_str = [
+    'id'          => $gid,
+    'title'       => $title,
+    'title_jp'    => $title_jp,
+    'artists'     => $artists,
+    'circle'      => $circle,
+    'censored'    => $censored,
+    'year'        => null,
+    'tags'        => $tags,
+    'lang'        => $lang ?? 'Japanese',
+    'description' => '',
+    'cover'       => $cover
+  ];
+
+    $Cache->cache_value('manga_fill_json_'.$gid, $json_str, 86400);
+
+    json_die("success", $json_str);
+}

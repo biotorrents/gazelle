@@ -1,0 +1,9 @@
+classes/config.php
+_packages/**/.git/**
+
+static/styles/*.css
+static/styles/assets/fonts/**
+static/common/badges/**
+
+.DS_Store
+*.sw*

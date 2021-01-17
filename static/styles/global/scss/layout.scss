@@ -1,0 +1,138 @@
+/*
+ * Flex elements
+ */
+
+.flex {
+    display: flex;
+}
+
+/* Grow and shrink */
+.flex > .grow {
+    flex-grow: 1;
+}
+
+.flex > .shrink {
+    flex-shrink: 1;
+}
+
+/* Text input */
+.flex_input_container {
+    display: flex;
+}
+
+.flex_input_container > input[type="text"] {
+    flex-grow: 1;
+    box-sizing: border-box;
+    width: 50%;
+}
+
+/*
+ * Misc
+ */
+
+.hidden {
+    display: none;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+/* Textarea */
+.textarea_wrap {
+    margin-bottom: 0.5rem;
+}
+
+.textarea_wrap:last-of-type {
+    margin-bottom: 0;
+}
+
+/* Floaters */
+.float_left {
+    float: left;
+}
+
+.float_right {
+    float: right;
+}
+
+.float_clear {
+    clear: both;
+}
+
+/* Images */
+img {
+    border: none;
+}
+
+.webm {
+    max-width: 100%;
+}
+
+/* Donor hearts and badges */
+.donor_icon {
+    margin-left: 2px;
+    margin-right: 2px;
+    max-width: 16px;
+    max-height: 16px;
+    position: relative;
+}
+
+.badge_icon {
+    margin: 0px 2px;
+    position: relative;
+}
+
+.donation_info {
+    padding: 10px 10px 10px 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+}
+
+.donation_info_title {
+    display: block;
+    font-size: 1.75em;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+/* Image dimension limits */
+img {
+    max-width: 100%;
+}
+
+/* Covers */
+#coverCont {
+    position: fixed;
+    max-width: 30%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 9999;
+}
+
+#coverCont img {
+    max-width: 100%;
+}
+
+#covers img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/**
+ * Donate button
+ * PNG to avoid the botnet
+ */
+.donate_button {
+    margin: 2rem auto;
+
+    img {
+        height: 2rem;
+    }
+}

@@ -1,0 +1,216 @@
+/**
+ * Fonts
+ *
+ * Enables sitewide access to the font engine.
+ * All themes can use the font toggle options.
+ */
+
+/* Font Path */
+$font-path: "assets/fonts/";
+
+/**
+ * Font Awesome
+ */
+
+@import "assets/fonts/fa/css/all.min.css";
+$FontAwesome: "Font Awesome 5 Free";
+
+.fa,
+.fab,
+.fad,
+.fal,
+.far,
+.fas {
+    font-family: $FontAwesome;
+}
+
+/**
+ * Noto Sans
+ */
+
+$NotoSans: "NotoSans-SemiCondensed";
+$NotoSansBold: "NotoSans-SemiCondensedBold";
+$NotoSansItalic: "NotoSans-SemiCondensedItalic";
+
+@font-face {
+    font-family: "NotoSans-SemiCondensed";
+    src: url($font-path + "noto/woff2/NotoSans-SemiCondensed.woff2");
+}
+
+@font-face {
+    font-family: "NotoSans-SemiCondensedBold";
+    src: url($font-path + "noto/woff2/NotoSans-SemiCondensedBold.woff2");
+}
+
+@font-face {
+    font-family: "NotoSans-SemiCondensedItalic";
+    src: url($font-path + "noto/woff2/NotoSans-SemiCondensedItalic.woff2");
+}
+
+/**
+ * Noto Serif
+ */
+
+$NotoSerif: "NotoSerif-SemiCondensed";
+$NotoSerifBold: "NotoSerif-SemiCondensedBold";
+$NotoSerifItalic: "NotoSerif-SemiCondensedItalic";
+
+@font-face {
+    font-family: "NotoSerif-SemiCondensedBold";
+    src: url($font-path + "noto/woff2/NotoSerif-SemiCondensedBold.woff2");
+}
+
+@font-face {
+    font-family: "NotoSerif-SemiCondensed";
+    src: url($font-path + "noto/woff2/NotoSerif-SemiCondensed.woff2");
+}
+
+@font-face {
+    font-family: "NotoSerif-SemiCondensedItalic";
+    src: url($font-path + "noto/woff2/NotoSerif-SemiCondensedItalic.woff2");
+}
+
+/**
+ * Noto Mono
+ */
+
+$NotoMono: "NotoSansMono-SemiCondensed";
+$NotoMonoBold: "NotoSansMono-SemiCondensed";
+
+@font-face {
+    font-family: "NotoSansMono-SemiCondensed";
+    src: url($font-path + "noto/woff2/NotoSansMono-SemiCondensed.woff2");
+}
+
+@font-face {
+    font-family: "NotoSansMono-SemiCondensedBold";
+    src: url($font-path + "noto/woff2/NotoSansMono-SemiCondensedBold.woff2");
+}
+
+/**
+ * Comic Neue
+ */
+
+$ComicNeue: "ComicNeue-Regular";
+$ComicNeueBold: "ComicNeue-Bold";
+$ComicNeueItalic: "ComicNeue-Italic";
+
+@font-face {
+    font-family: "ComicNeue-Regular";
+    src: url($font-path + "comic/ComicNeue-Regular.woff2");
+}
+
+@font-face {
+    font-family: "ComicNeue-Bold";
+    src: url($font-path + "comic/ComicNeue-Bold.woff2");
+}
+
+@font-face {
+    font-family: "ComicNeue-Italic";
+    src: url($font-path + "comic/ComicNeue-Italic.woff2");
+}
+
+/**
+ * OpenDyslexic
+ */
+
+$OpenDyslexic: "OpenDyslexic-Regular";
+$OpenDyslexicBold: "OpenDyslexic-Bold";
+$OpenDyslexicItalic: "OpenDyslexic-Italic";
+
+@font-face {
+    font-family: "OpenDyslexic-Regular";
+    src: url($font-path + "dyslex/OpenDyslexic-Regular.woff");
+}
+
+@font-face {
+    font-family: "OpenDyslexic-Bold";
+    src: url($font-path + "dyslex/OpenDyslexic-Bold.woff");
+}
+
+@font-face {
+    font-family: "OpenDyslexic-Italic";
+    src: url($font-path + "dyslex/OpenDyslexic-Italic.woff");
+}
+
+/*
+ * Theme Options
+ */
+
+@mixin font-styles($b, $i) {
+    b,
+    strong {
+        font-family: $b;
+        font-weight: normal;
+    }
+
+    /* Font Awesome exception to the Comic Sans rule */
+    i:not(.fa):not(.fab):not(.fad):not(.fal):not(.far):not(.fas),
+    em:not(.fa):not(.fab):not(.fad):not(.fal):not(.far):not(.fas) {
+        font-family: $i;
+        font-style: normal;
+    }
+}
+
+body.style_noto_sans {
+    font-family: $NotoSans, sans-serif;
+    @include font-styles($NotoSansBold, $NotoSansItalic);
+}
+
+body.style_noto_serif {
+    font-family: $NotoSerif, serif;
+    @include font-styles($NotoSerifBold, $NotoSerifItalic);
+}
+
+body.style_opendyslexic {
+    font-family: $OpenDyslexic, sans-serif;
+    @include font-styles($OpenDyslexicBold, $OpenDyslexicItalic);
+}
+
+body.style_comic_neue {
+    font-family: $ComicNeue, sans-serif;
+    @include font-styles($ComicNeueBold, $ComicNeueItalic);
+}
+
+/**
+ * beluga
+ */
+
+/* latin-ext */
+@font-face {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 400;
+    src: url($font-path + "misc/woff2/OpenSans-Regular.woff2");
+}
+
+/* latin */
+@font-face {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 600;
+    src: url($font-path + "misc/woff2/OpenSans-SemiBold.woff2");
+}
+
+/**
+ * genaviv
+ */
+
+/* latin-ext */
+@font-face {
+    font-family: "Source Sans Pro";
+    font-style: normal;
+    font-weight: 400;
+    src: url($font-path + "misc/woff2/SourceSansPro-Regular.woff2");
+    unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* latin */
+@font-face {
+    font-family: "Source Sans Pro";
+    font-style: normal;
+    font-weight: 400;
+    src: url($font-path + "misc/woff2/SourceSansPro-Regular.woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215,
+        U+E0FF, U+EFFD, U+F000;
+}

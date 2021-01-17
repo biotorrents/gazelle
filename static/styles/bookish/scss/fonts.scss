@@ -1,0 +1,222 @@
+/*
+ * Base typography
+ */
+
+body {
+    background: white;
+    color: black;
+    font-family: $NotoSans;
+    font-size: 0.75rem;
+
+    b,
+    strong {
+        font-family: $NotoSansBold;
+        font-weight: normal;
+    }
+
+    i,
+    em {
+        font-family: $NotoSansItalic;
+        font-style: normal;
+    }
+}
+
+header,
+.header {
+    margin: 2rem;
+    text-align: center;
+}
+
+.torrent_form {
+    label {
+        font-weight: bold;
+    }
+
+    .required {
+        &:after {
+            color: red;
+            content: "*";
+        }
+    }
+}
+
+/* Links */
+a {
+    color: black;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: $lb900;
+    text-decoration: none;
+}
+
+/* Tags */
+.tags {
+    font-style: italic;
+
+    a,
+    a.search_link {
+        color: black;
+        text-decoration: none;
+    }
+
+    a:hover,
+    a:hover.search_link {
+        color: black;
+        text-decoration: underline;
+    }
+}
+
+/* Dupe for grouped "Details" on browse.php */
+a.search_link {
+    color: black;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+/**
+ * Blockquotes, figures, and captions
+ */
+
+blockquote {
+    margin: 0.5em 2rem;
+    padding: 1rem;
+    @include transparent-border($A: 0.1);
+}
+
+caption {
+    font-style: italic;
+}
+
+/* code, pre */
+code,
+pre {
+    font-family: $NotoMono;
+    margin-bottom: 1rem;
+    word-wrap: break-word;
+    /* word-wrap: pre; */
+
+    b,
+    strong {
+        font-family: $NotoMonoBold;
+    }
+}
+
+ul {
+    margin-left: 1rem;
+}
+
+/* Markdown Extra new features */
+hr {
+    @include transparent-border($A: 0.1);
+    margin: 2rem auto;
+    width: 66%;
+}
+
+.footnotes {
+    /* display: flex; */
+
+    ol {
+        margin: -0.5rem 0 0 -1rem;
+        display: flex;
+        flex-direction: column;
+
+        li:before {
+            /* display: none; */
+        }
+    }
+
+    p {
+        /* align-self: flex-start; */
+    }
+}
+
+/* Font Awesome ugliness fix */
+.footnote-backref {
+    font-family: sans-serif;
+}
+
+/* Definition lists */
+dl {
+    margin-top: 0.5rem;
+
+    dt {
+        font-variant: small-caps;
+        font-size: larger;
+    }
+
+    dd {
+        margin: 0 0 0.5rem 0.5rem;
+    }
+}
+
+textarea {
+    font-family: $NotoMono;
+
+    b,
+    strong {
+        font-family: $NotoMonoBold;
+    }
+}
+
+/* nobullet */
+ul.nobullet,
+.tags .tags ul.nobullet {
+    /* display: inline-block; */
+    margin: 0;
+
+    li {
+        list-style-type: none;
+    }
+}
+
+/* Bullets (home page) */
+ul.stats li {
+    padding: 0 0 1px 0;
+}
+
+ul.poll li {
+    padding: 0 0 0 10px;
+    margin: 0;
+    clear: left;
+
+    .graph {
+        margin-bottom: 3px;
+        padding-left: 20px;
+    }
+}
+
+/* ToC */
+.navigation_list {
+    margin-bottom: 1rem;
+}
+
+/* Disclaimer */
+#disclaimer_container {
+    color: rgba(0, 0, 0, 0.5);
+    max-width: 50%;
+    margin: auto;
+}
+
+/* Alerts, Toolbox, etc. */
+.alertbar {
+    a {
+        color: black;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+}
+
+/* Last edited */
+/*
+.last_edited {
+  opacity: 0.75;
+}
+*/

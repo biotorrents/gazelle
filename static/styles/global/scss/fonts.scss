@@ -1,0 +1,131 @@
+html {
+    font-size: 16px;
+    line-height: 1.6;
+    /* line-height: 1.6; */
+}
+
+/*
+ * Classes
+ */
+
+.center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
+
+.nobr {
+    white-space: nowrap;
+}
+
+/* Brackets [Bookmark] */
+.brackets {
+    text-indent: 0px;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.brackets:before {
+    content: "[";
+}
+
+.brackets:after {
+    content: "]";
+}
+
+/* GPG keys */
+#publickey {
+    font-family: monospace;
+    width: initial;
+}
+
+/* <pre> spacing fix */
+/*
+code,
+pre {
+    white-space: pre;
+}
+*/
+
+pre br,
+code br {
+    display: none;
+}
+
+/* Good/bad examples on rules pages */
+.important_text {
+    color: red;
+}
+
+.important_text_alt {
+    color: green;
+}
+
+.important_text_semi {
+    color: orange;
+}
+
+.invalid,
+.warning,
+.error,
+.new {
+    color: red;
+}
+
+/* Autocomplete */
+.autocomplete-suggestions {
+    color: #000;
+    margin-top: 5px;
+    border: 1px solid #999;
+    background: #fff;
+    overflow: auto;
+
+    strong {
+        font-weight: normal;
+        color: #3399ff;
+    }
+}
+
+.autocomplete-suggestion {
+    padding: 2px 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.autocomplete-selected {
+    background: #f0f0f0;
+}
+
+/**
+ * Ordered lists
+ * https://stackoverflow.com/a/2730079
+ */
+
+/* No IE6/7 */
+html>/**/body ol {
+    list-style-type: none;
+    counter-reset: level1;
+}
+
+ol li:before {
+    content: counter(level1) ". ";
+    counter-increment: level1;
+}
+
+ol li ol {
+    list-style-type: none;
+    counter-reset: level2;
+}
+
+ol li ol li:before {
+    content: counter(level1) "." counter(level2) " ";
+    counter-increment: level2;
+}
+
+/* For IE6/7 */
+ol li span {
+    margin: 0 5px 0 -25px;
+}

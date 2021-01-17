@@ -1,0 +1,28 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+BioTorrents.de positively confirms that the integrity of our system is sound:
+all our infrastructure is in our control, we have not been compromised or
+suffered a data breach, we have not disclosed any private encryption keys, and
+we have not been forced to modify our system to allow access or information
+leakage to a third party.
+
+Date:	2020-01-15
+Key:	760EBED7CFE266D7
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCgAGBQJeHz0nAAoJEHYOvtfP4mbX7e4P+QEL8lCHXIOJr99F6oZshFpS
+jaN3uCzXocOfjyeLJROjUWqyF0l8xD5xj2ent8iDxYDrJsG5IYvB5cGiWPAxvvP9
+Qi+Kb7uDAfTfNf9uNIATUmZ0n8DOT61VIXI+s78E5PPZ0KyN6USRvnFj0lpPfv6f
+BB+B989PseugU3P/NT1/LDuz5H2qaP9/32fKQ720pLnMGilPdqLSVQRCZbm2M7FO
+vg1qvaUXTyFx5ScpOHHzHBQXQPMPx7r4icYTWmwEPvI7dJdSuMk9pLx/+lxsTs+1
+k2QliA97rNT/1Qp+5zk1MQmvOg5/3ATyotpl+Y0nsXvxcS75UMnw9Y7iRD9tgqTY
+MPNFnbL5vlhUYK01w6T87JR7PiOrCPM8VFFQqo8de8gZoBJDbmdQTkX92w/1SDGe
+B5kHod3Vf7Q9CHDkrjy7ozOcfLgkqj9R80G8u5VFwBG28Kgangyvp1m+Umw3BbZr
+zUb6eZyi6cwq3muUVhO4mCB/ZX+MJT57QQ3qcsrpxQpUN1jjAkXSZX9rF/Nd8XA/
+KqF6IU4K8T5lvG8P5/Y/Ur2WgJc2FEXd76WBA2ykovmO8e6zXQz/tFrx0x+8Z0zd
+yTq5NZq/23L5UXT8bBHkFCUFzsgVfX8PV6WsU99SjVs9mnlHo8O8vfeCvDgpKM4K
+sRN9RxOv0/GXn0ZYNp6i
+=0HIZ
+-----END PGP SIGNATURE-----

@@ -1,0 +1,175 @@
+@mixin center-all {
+}
+
+table {
+    /* border: 2px solid rgba(0, 0, 0, 0.01); */
+    border-collapse: collapse;
+    width: 100%;
+
+    /*
+    * {
+        vertical-align: middle;
+    }
+    */
+
+    tr {
+        background-color: white;
+    }
+
+    td,
+    th {
+        padding: 0.5rem;
+        text-align: left;
+    }
+}
+
+/**
+ * Torrent form
+ */
+.torrent_form,
+#dynamic_form {
+    /* margin-bottom: 2rem; */
+
+    label {
+        float: right;
+    }
+
+    td {
+        vertical-align: top;
+    }
+}
+
+/* Classes */
+.colhead {
+    background: $lb100;
+    font-weight: bold;
+    color: black;
+}
+
+td.colhead,
+.colhead td,
+.colhead th {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.colhead .sign,
+.colhead_dark .sign {
+    padding: 0 1rem;
+    vertical-align: middle;
+    text-align: center;
+    font-weight: bold;
+}
+
+.colhead .sign {
+    padding: 0 1rem;
+    font-weight: bold;
+}
+
+.colhead_dark {
+    background: $lb100;
+    color: black;
+}
+
+/* Torrent and collage tables */
+.torrent_table,
+.collage_table {
+    tr.group {
+        background-color: white;
+
+        td.center:first-child {
+            padding: 3px;
+            width: 21px;
+        }
+    }
+
+    tr.group_torrent {
+        background-color: white;
+
+        span {
+            float: right;
+        }
+    }
+
+    tr.torrent {
+        background-color: white;
+    }
+
+    tr.torrent:nth-child(2n),
+    tr.row:nth-child(2n) {
+        background-color: whitesmoke;
+    }
+
+    tr.torrent:nth-child(2n-1),
+    tr.row:nth-child(2n-1) {
+        background-color: white;
+    }
+
+    tr .center,
+    td {
+        vertical-align: middle;
+        /* text-align: center; */
+    }
+    div.tags {
+        font-weight: normal;
+        max-width: 500px;
+    }
+}
+
+.torrent_table .group_torrent .torrent span {
+    font-weight: normal;
+    float: right;
+}
+
+/* Forums */
+.forum_post .colhead_dark {
+    background: $lb100;
+}
+
+.forum_post.staff_post .colhead_dark {
+    background: $lb200;
+}
+
+.forum_post.sticky_post {
+    border: 2px solid $lb200;
+}
+
+td.label {
+    font-weight: bold;
+    text-align: right;
+    width: 180px;
+}
+
+table.slice {
+    margin-top: -1px;
+}
+
+/* Get rid of extraneous padding in the Top Contributors box */
+#request_top_contrib {
+    border: none;
+
+    tr:first-child th {
+        border-top: 0;
+    }
+
+    tr:last-child td {
+        border-bottom: 0;
+    }
+
+    tr td:first-child,
+    tr th:first-child,
+    tr td:nth-child(2),
+    tr th:nth-child(2) {
+        border-left: 0;
+        border-top: 0;
+    }
+
+    tr td:last-child,
+    tr th:last-child {
+        border-right: 0;
+    }
+}
+
+#request_table {
+    margin-bottom: 0.5rem;
+}
