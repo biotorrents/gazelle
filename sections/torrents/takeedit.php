@@ -51,7 +51,7 @@ $Properties['Name'] = $_POST['title'];
 $Properties['Container'] = $_POST['container'];
 $Properties['Codec'] = $_POST['codec'];
 $Properties['Resolution'] = $_POST['resolution'];
-$Properties['AudioFormat'] = $_POST['audioformat'];
+$Properties['Version'] = $_POST['version'];
 $Properties['Censored'] = (isset($_POST['censored'])) ? '1' : '0';
 $Properties['Anonymous'] = (isset($_POST['anonymous'])) ? '1' : '0';
 $Properties['Archive'] = (isset($_POST['archive']) && $_POST['archive'] != '---') ? $_POST['archive'] : '';
@@ -260,7 +260,7 @@ $T['Anonymous'] = $Properties['Anonymous'];
 
 $DBTorVals = [];
 $DB->query("
-  SELECT Media, Container, Codec, Resolution, AudioFormat, Description, Censored, Anonymous, Archive
+  SELECT Media, Container, Codec, Resolution, Version, Description, Censored, Anonymous, Archive
   FROM torrents
   WHERE ID = $TorrentID");
 
@@ -313,7 +313,7 @@ $SQL = "
     Container = $T[Container],
     Codec = $T[Codec],
     Resolution = $T[Resolution],
-    AudioFormat = $T[AudioFormat],
+    Version = $T[Version],
     Archive = $T[Archive],
     Censored = $T[Censored],
     Anonymous = $T[Anonymous],";

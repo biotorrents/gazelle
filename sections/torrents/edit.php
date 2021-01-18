@@ -24,7 +24,7 @@ SELECT
   t.`Container`,
   t.`Codec`,
   t.`Resolution`,
-  t.`AudioFormat`,
+  t.`Version`,
   t.`Censored`,
   t.`Anonymous`,
   t.`Archive`,

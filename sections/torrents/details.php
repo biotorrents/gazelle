@@ -432,7 +432,7 @@ function filelist($Str)
 
 # FreeTorrent is a string
 foreach ($TorrentList as $Torrent) {
-    list($TorrentID, $Media, $Container, $Codec, $Resolution, $AudioFormat,
+    list($TorrentID, $Media, $Container, $Codec, $Resolution, $Version,
     $Censored, $Anonymous, $Archive, $FileCount, $Size, $Seeders, $Leechers,
     $Snatched, $FreeTorrent, $FreeLeechType, $TorrentTime, $Description, $FileList,
     $FilePath, $UserID, $LastActive, $InfoHash, $BadTags, $BadFolders, $BadFiles,
@@ -540,9 +540,9 @@ foreach ($TorrentList as $Torrent) {
     }
 
     /*
-    if ($AudioFormat) {
-        $ExtraInfo.=$AddExtra.display_str($AudioFormat);
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Accession Number">'.display_str($AudioFormat).'</x>';
+    if ($Version) {
+        $ExtraInfo.=$AddExtra.display_str($Version);
+        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Accession Number">'.display_str($Version).'</x>';
     }
     */
 

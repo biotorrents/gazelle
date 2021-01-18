@@ -69,7 +69,7 @@ if (!is_array($Info) || !array_key_exists('PlainArtists', $Info) || empty($Info[
     $DB->query("
       SELECT
         t.Media,
-        t.AudioFormat,
+        t.Version,
         t.Codec,
         tg.Year,
         tg.ID AS GroupID,

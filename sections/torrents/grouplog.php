@@ -46,16 +46,16 @@ if (!empty($Groups[$GroupID])) {
 <?
       if ($TorrentID != 0) {
         $DB->query("
-          SELECT Container, AudioFormat, Media
+          SELECT Container, Version, Media
           FROM torrents
           WHERE ID = $TorrentID");
-        list($Container, $AudioFormat, $Media) = $DB->next_record();
+        list($Container, $Version, $Media) = $DB->next_record();
         if (!$DB->has_results()) { ?>
           <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a> (Deleted)</td><?
         } elseif ($Media == '') { ?>
           <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a></td><?
         } else { ?>
-          <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a> (<?=$Container?>/<?=$AudioFormat?>/<?=$Media?>)</td>
+          <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a> (<?=$Container?>/<?=$Version?>/<?=$Media?>)</td>
 <?php }
       } else { ?>
         <td></td>

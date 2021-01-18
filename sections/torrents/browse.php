@@ -197,7 +197,6 @@ View::show_header('Browse Torrents', 'browse');
           <tr id="numbers" class="ftr_advanced<?=$HideAdvanced?>">
             <td class="label">
               <!--
-                Catalogue Number / AudioFormat
                 Accession Number / Version
               -->
             </td>

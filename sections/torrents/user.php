@@ -77,9 +77,8 @@ if (isset($_GET['codec'])
     $SearchWhere[] = "t.Codec = '".db_string($_GET['codec'])."'";
 }
 
-if (isset($_GET['audioformat'])
- && in_array($_GET['audioformat'], $AudioFormats)) {
-    $SearchWhere[] = "t.AudioFormat = '".db_string($_GET['audioformat'])."'";
+if (isset($_GET['version']) {
+    $SearchWhere[] = "t.Version = '".db_string($_GET['version'])."'";
 }
 
 if (isset($_GET['resolution'])

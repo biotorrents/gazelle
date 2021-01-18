@@ -48,7 +48,7 @@ class TorrentForm
 
     # Deprecated
     #public $Formats = [];
-    #public $AudioFormats = [];
+    #public $Versions = [];
     #public $Bitrates = [];
     #public $Platform = [];
 
@@ -64,7 +64,7 @@ class TorrentForm
     {
         # See classes/config.php
         global $UploadForm, $Categories, $TorrentID, $SeqPlatforms, $GraphPlatforms, $ImgPlatforms, $DocPlatforms, $RawPlatforms, $SeqFormats, $ProtFormats, $GraphXmlFormats, $GraphTxtFormats, $ImgFormats, $MapVectorFormats, $MapRasterFormats, $BinDocFormats, $CpuGenFormats, $PlainFormats, $Codecs, $Archives, $Resolutions;
-        #global $UploadForm, $Categories, $Formats, $Bitrates, $Media, $MediaManga, $TorrentID, $Containers, $ContainersGames, $Codecs, $Resolutions, $AudioFormats, $Platform, $Archives, $ArchivesManga;
+        #global $UploadForm, $Categories, $Formats, $Bitrates, $Media, $MediaManga, $TorrentID, $Containers, $ContainersGames, $Codecs, $Resolutions, $Platform, $Archives, $ArchivesManga;
 
         # Gazelle
         $this->NewTorrent = $NewTorrent;
@@ -110,7 +110,6 @@ class TorrentForm
         # Deprecated
         #$this->ArchivesManga = $ArchivesManga;
         #$this->Formats = $Formats;
-        #$this->AudioFormats = $AudioFormats;
         #$this->Bitrates = $Bitrates;
         #$this->Platform = $Platform;
 
@@ -604,21 +603,21 @@ HTML;
          * Semantic Version
          */
         
-        $AudioFormat = display_str($Torrent['AudioFormat']);
+        $Version = display_str($Torrent['Version']);
         echo <<<HTML
         <tr id="audio_tr">
           <td>
-            <label for="audioformat">
+            <label for="version">
               Version
             </label>
           </td>
 
           <td>
             <input type="text"
-              id="audioformat" name="audioformat"
+              id="version" name="version"
               size="12" pattern="\d+\.*\d*\.*\d*"
               placeholder="Start with 0.1.0"
-              value="$AudioFormat" />
+              value="$Version" />
             
             <p>
               Please see

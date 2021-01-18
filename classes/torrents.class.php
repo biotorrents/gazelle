@@ -100,7 +100,7 @@ class Torrents
                 $QueryID = G::$DB->get_query_id();
                 G::$DB->query("
                   SELECT
-                  ID, GroupID, Media, Container, Codec, Resolution, AudioFormat,
+                  ID, GroupID, Media, Container, Codec, Resolution, Version,
                     Censored, Archive, FileCount, FreeTorrent,
                     Size, Leechers, Seeders, Snatched, Time, f.ExpiryTime, ID AS HasFile,
                     FreeLeechType, hex(info_hash) as info_hash
@@ -515,12 +515,12 @@ class Torrents
         REPLACE INTO sphinx_delta
           (ID, GroupID, GroupName, GroupTitle2, GroupNameJP, TagList, Year, CatalogueNumber, CategoryID, Time,
           Size, Snatched, Seeders, Leechers, Censored, Studio, Series,
-          FreeTorrent, Media, Container, Codec, Resolution, AudioFormat, Description,
+          FreeTorrent, Media, Container, Codec, Resolution, Version, Description,
           FileList, ArtistName)
         SELECT
           t.ID, g.ID, Name, Title2, NameJP, TagList, Year, CatalogueNumber, CategoryID, UNIX_TIMESTAMP(t.Time),
           Size, Snatched, Seeders, Leechers, Censored, Studio, Series,
-          CAST(FreeTorrent AS CHAR), Media, Container, Codec, Resolution, AudioFormat, Description,
+          CAST(FreeTorrent AS CHAR), Media, Container, Codec, Resolution, Version, Description,
           REPLACE(REPLACE(FileList, '_', ' '), '/', ' ') AS FileList, ?
         FROM torrents AS t
           JOIN torrents_group AS g ON g.ID = t.GroupID
@@ -716,8 +716,8 @@ class Torrents
         }
 
         /*
-        if (!empty($Data['AudioFormat'])) {
-          $Info[] = $Data['AudioFormat'];
+        if (!empty($Data['Version'])) {
+          $Info[] = $Data['Version'];
         }
         */
 

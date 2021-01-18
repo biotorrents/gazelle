@@ -55,7 +55,7 @@ if (!($_POST['resolution'] ?? false)) {
 }
 
 $Properties['Resolution'] = $_POST['resolution'] ?? '';
-$Properties['AudioFormat'] = $_POST['audioformat'] ?? '';
+$Properties['Version'] = $_POST['version'] ?? '';
 $Properties['Censored'] = (isset($_POST['censored'])) ? '1' : '0';
 $Properties['Anonymous'] = (isset($_POST['anonymous'])) ? '1' : '0';
 $Properties['Archive'] = (isset($_POST['archive']) && $_POST['archive'] !== '---') ? $_POST['archive'] : '';
@@ -164,9 +164,9 @@ default:
             array('maxlength' => 50, 'minlength' => 0)
         );
 
-        # torrents.AudioFormat
+        # torrents.Version
         $Validate->SetFields(
-            'audioformat',
+            'version',
             '0',
             'string',
             'Version must be between 0 and 10 characters.',
@@ -714,7 +714,7 @@ $DB->query(
     "
   INSERT INTO torrents
     (GroupID, UserID, Media, Container, Codec, Resolution,
-    AudioFormat, Censored,
+    Version, Censored,
     Anonymous, Archive, info_hash, FileCount, FileList, FilePath, Size, Time,
     Description, FreeTorrent, FreeLeechType)
   VALUES
@@ -728,7 +728,7 @@ $DB->query(
     $T['Container'],
     $T['Codec'],
     $T['Resolution'],
-    $T['AudioFormat'],
+    $T['Version'],
     $T['Censored'],
     $T['Anonymous'],
     $T['Archive'],

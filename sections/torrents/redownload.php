@@ -60,7 +60,7 @@ $DownloadsQ = $DB->query("
     t.Container,
     t.Codec,
     t.Resolution,
-    t.AudioFormat,
+    t.Version,
     tg.Year,
     tg.Name,
     t.Size

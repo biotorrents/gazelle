@@ -101,7 +101,7 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
           t.Container,
           t.Codec,
           t.Resolution,
-          t.AudioFormat,
+          t.Version,
           t.Censored,
           t.Anonymous,
           t.Archive,
@@ -297,7 +297,7 @@ function build_torrents_table($Cache, $DB, $LoggedUser, $GroupID, $GroupName, $G
 
     $EditionID = 0;
     foreach ($TorrentList as $Torrent) {
-        list($TorrentID, $Media, $Container, $Codec, $Resolution, $AudioFormat,
+        list($TorrentID, $Media, $Container, $Codec, $Resolution, $Version,
   $Censored, $Anonymous, $Archive, $FileCount, $Size, $Seeders, $Leechers, $Snatched,
   $FreeTorrent, $FreeLeechType, $TorrentTime, $Description, $FileList, $FilePath, $UserID,
   $LastActive, $InfoHash, $BadTags, $BadFolders, $BadFiles, $LastReseedRequest,

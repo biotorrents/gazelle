@@ -53,7 +53,7 @@ class TorrentSearch
     // List of fields that can be used for fulltext searches
     private static $Fields = [
         'artistname' => 1, # Author
-        'audioformat' => 1, # Version
+        'Version' => 1, # Version
         'cataloguenumber' => 1, # Accession Number
         'numbers' => 1, # Combined &uarr;
         'codec' => 1, # License
@@ -89,7 +89,7 @@ class TorrentSearch
         # todo: Keep testing the granularity of filter combos
         'searchstr' => '*',
         'advgroupname' => '*', # todo: Fix this ;)
-        'numbers' => '(cataloguenumber,audioformat)',
+        'numbers' => '(cataloguenumber,version)',
         'location' => '(studio,series)',
         #'searchstr' => '(groupname,GroupTitle2,groupnamejp,artistname,studio,series,cataloguenumber,yearfulltext)',
         #'advgroupname' => '(groupname,GroupTitle2,groupnamejp)',
