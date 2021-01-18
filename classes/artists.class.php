@@ -196,7 +196,7 @@ class Artists
             FROM
               `requests`
             WHERE
-              `ID` = $RequestID
+              `ID` = '$RequestID'
             ");
 
             G::$DB->query("
@@ -204,7 +204,7 @@ class Artists
             FROM
               `requests_votes`
             WHERE
-              `RequestID` = $RequestID
+              `RequestID` = '$RequestID'
             ");
 
             G::$DB->query("
@@ -212,7 +212,7 @@ class Artists
             FROM
               `requests_tags`
             WHERE
-              `RequestID` = $RequestID
+              `RequestID` = '$RequestID'
             ");
 
             G::$DB->query("
@@ -220,7 +220,7 @@ class Artists
             FROM
               `requests_artists`
             WHERE
-              `RequestID` = $RequestID
+              `RequestID` = '$RequestID'
             ");
         }
 
@@ -230,7 +230,7 @@ class Artists
         FROM
           `artists_group`
         WHERE
-          `ArtistID` = $ArtistID
+          `ArtistID` = '$ArtistID'
         ");
         G::$Cache->decrement('stats_artist_count');
 
@@ -240,7 +240,7 @@ class Artists
         FROM
           `wiki_artists`
         WHERE
-          `PageID` = $ArtistID
+          `PageID` = '$ArtistID'
         ");
 
         // Delete tags
@@ -249,7 +249,7 @@ class Artists
         FROM
           `artists_tags`
         WHERE
-          `ArtistID` = $ ArtistID
+          `ArtistID` = '$ArtistID'
         ");
 
         // Delete artist comments, subscriptions and quote notifications

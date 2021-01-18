@@ -11,6 +11,24 @@ declare(strict_types = 1);
 class Security
 {
     /**
+     * ID check
+     *
+     * Makes sure a number ID is valid,
+     * e.g., a page ID requested by GET.
+     * Optionally call authorize().
+     */
+    public function idCheck($id, $auth)
+    {
+        if (!$id || !is_int($id)) {
+            error(400);
+        }
+        
+        if ($auth) {
+            authorize();
+        }
+    }
+
+    /**
      * Setup pitfalls
      *
      * A series of quick sanity checks during app init.

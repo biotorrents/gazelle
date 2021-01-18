@@ -58,7 +58,7 @@ SELECT
 FROM
   `torrents_screenshots`
 WHERE
-  TorrentID = '".db_string($TorrentID)."'
+  `GroupID` = '$GroupID'
 ");
 
 if ($DB->has_results()) {
@@ -79,10 +79,8 @@ View::show_header(
     'Edit torrent group',
     'upload,bbcode,vendor/easymde.min',
     'vendor/easymde.min'
-);
+); ?>
 
-// Start printing form
-?>
 <h2 class="header">
   Edit
   <a href="torrents.php?id=<?=$GroupID?>"><?=($Name ? $Name : ($Title2 ? $Title2 : $NameJP))?></a>
@@ -101,7 +99,7 @@ View::show_header(
       Picture
     </h3>
 
-    <input type="text" name="image" size="92" value="<?=$Image?>" />
+    <input type="text" name="image" size="80" value="<?=$Image?>" />
     <br /><br />
 
     <h3>
@@ -130,7 +128,7 @@ new TEXTAREA_PREVIEW(
       Edit Summary
     </h3>
 
-    <input type="text" name="summary" size="92" />
+    <input type="text" name="summary" size="80" />
     <br />
 
     <div class="center pad">
@@ -264,11 +262,17 @@ new TEXTAREA_PREVIEW(
         </td>
 
         <td>
-          <input type="checkbox" id="unfreeleech" name="unfreeleech" /><label for="unfreeleech"> Reset</label>
-          <input type="checkbox" id="freeleech" name="freeleech" /><label for="freeleech"> Freeleech</label>
-          <input type="checkbox" id="neutralleech" name="neutralleech" /><label for="neutralleech"> Neutral
-            Leech</label>
+          <input type="checkbox" id="unfreeleech" name="unfreeleech" />
+          <label for="unfreeleech"> Reset</label>
+
+          <input type="checkbox" id="freeleech" name="freeleech" />
+          <label for="freeleech"> Freeleech</label>
+
+          <input type="checkbox" id="neutralleech" name="neutralleech" />
+          <label for="neutralleech"> Neutral Leech</label>
+
           because
+
           <select name="freeleechtype">
             <?php $FL = array('N/A', 'Staff Pick', 'Perma-FL', 'Freeleechizer', 'Site-Wide FL');
     foreach ($FL as $Key => $FLType) { ?>
@@ -282,7 +286,7 @@ new TEXTAREA_PREVIEW(
     </table>
 
     <div class="center pad">
-    <input type="submit" value="Edit" />
+      <input type="submit" value="Edit" />
     </div>
   </form>
 </div>
@@ -370,5 +374,7 @@ new TEXTAREA_PREVIEW(
     </div>
   </form>
 </div>
-<?php } ?>
-<?php View::show_footer();
+<?php
+}
+
+View::show_footer();

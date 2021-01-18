@@ -477,7 +477,7 @@ foreach ($TorrentList as $Torrent) {
         </td>
       </tr>';
         }
-        $ReportInfo .= "\n\t\t</table>";
+        $ReportInfo .= "</table>";
     }
 
     $CanEdit = (check_perms('torrents_edit') || (($UserID == $LoggedUser['ID'] && !$LoggedUser['DisableWiki']) && !($Remastered && !$RemasterYear)));
@@ -516,39 +516,40 @@ foreach ($TorrentList as $Torrent) {
   </table>';
 
     $ExtraInfo = ''; // String that contains information on the torrent (e.g., format and encoding)
-    $AddExtra = '&thinsp;|&thinsp;'; // Separator between torrent properties
+    $AddExtra = '&Tab;|&Tab;'; // Separator between torrent properties
 
   // Similar to Torrents::torrent_info()
     if ($Media) {
-        $ExtraInfo .= display_str($Media);
+        $ExtraInfo .= '<x style="tooltip" title="Platform">'.display_str($Media).'</x>';
     }
 
     if ($Container) {
-        $ExtraInfo .= $AddExtra . display_str($Container);
+        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Format">'.display_str($Container).'</x>';
     }
 
     if ($Archive) {
-        $ExtraInfo .= $AddExtra . display_str($Archive);
+        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Archive">'.display_str($Archive).'</x>';
     }
 
     if ($Codec) {
-        $ExtraInfo .= $AddExtra . display_str($Codec);
+        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="License">'.display_str($Codec).'</x>';
     }
 
     if ($Resolution) {
-        $ExtraInfo .= $AddExtra . display_str($Resolution);
+        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Scope">'.display_str($Resolution).'</x>';
     }
 
     /*
     if ($AudioFormat) {
         $ExtraInfo.=$AddExtra.display_str($AudioFormat);
+        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Accession Number">'.display_str($AudioFormat).'</x>';
     }
     */
 
     if ($Censored) {
-        $ExtraInfo .= $AddExtra . display_str('Aligned');
+        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Aligned/Annotated">Yes</x>';
     } else {
-        $ExtraInfo .= $AddExtra . display_str('Not Aligned');
+        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Aligned/Annotated">No</x>';
     }
 
     if (!$ExtraInfo) {
@@ -556,19 +557,19 @@ foreach ($TorrentList as $Torrent) {
     }
 
     if ($IsLeeching) {
-        $ExtraInfo .= $AddExtra . Format::torrent_label('Leeching', 'important_text_semi');
+        $ExtraInfo .= $AddExtra.Format::torrent_label('Leeching', 'important_text_semi');
     } elseif ($IsSeeding) {
-        $ExtraInfo .= $AddExtra . Format::torrent_label('Seeding', 'important_text_alt');
+        $ExtraInfo .= $AddExtra.Format::torrent_label('Seeding', 'important_text_alt');
     } elseif ($IsSnatched) {
-        $ExtraInfo .= $AddExtra . Format::torrent_label('Snatched', 'bold');
+        $ExtraInfo .= $AddExtra.Format::torrent_label('Snatched', 'bold');
     }
 
     if ($FreeTorrent === '1') {
-        $ExtraInfo .= $AddExtra . Format::torrent_label('Freeleech', 'important_text_alt');
+        $ExtraInfo .= $AddExtra.Format::torrent_label('Freeleech', 'important_text_alt');
     }
 
     if ($FreeTorrent === '2') {
-        $ExtraInfo .= $AddExtra . Format::torrent_label('Neutral Leech', 'bold');
+        $ExtraInfo .= $AddExtra.Format::torrent_label('Neutral Leech', 'bold');
     }
 
     // Freleechizer
@@ -585,25 +586,25 @@ foreach ($TorrentList as $Torrent) {
     }
 
     if ($PersonalFL) {
-        $ExtraInfo .= $AddExtra . Format::torrent_label('Personal Freeleech', 'important_text_alt');
+        $ExtraInfo .= $AddExtra.Format::torrent_label('Personal Freeleech', 'important_text_alt');
     }
 
     if ($Reported) {
         $HtmlReportType = ucfirst($Reports[0]['Type']);
         $HtmlReportComment = htmlentities(htmlentities($Reports[0]['UserComment']));
-        $ExtraInfo .= $AddExtra . "<strong class='torrent_label tl_reported tooltip' title='Type: $HtmlReportType<br>Comment: $HtmlReportComment'>".Format::torrent_label('Reported', 'important_text')."</strong>";
+        $ExtraInfo .= $AddExtra."<strong class='torrent_label tl_reported tooltip' title='Type: $HtmlReportType<br>Comment: $HtmlReportComment'>".Format::torrent_label('Reported', 'important_text')."</strong>";
     }
 
     if (!empty($BadTags)) {
-        $ExtraInfo .= $AddExtra . Format::torrent_label('Bad Tags', 'important_text');
+        $ExtraInfo .= $AddExtra.Format::torrent_label('Bad Tags', 'important_text');
     }
 
     if (!empty($BadFolders)) {
-        $ExtraInfo .= $AddExtra . Format::torrent_label('Bad Folders', 'important_text');
+        $ExtraInfo .= $AddExtra.Format::torrent_label('Bad Folders', 'important_text');
     }
 
     if (!empty($BadFiles)) {
-        $ExtraInfo .= $AddExtra . Format::torrent_label('Bad File Names', 'important_text');
+        $ExtraInfo .= $AddExtra.Format::torrent_label('Bad File Names', 'important_text');
     }
 
     $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$LoggedUser['AuthKey']."&amp;torrent_pass=".$LoggedUser['torrent_pass'];

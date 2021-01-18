@@ -84,7 +84,7 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
         FROM
           `torrents_mirrors`
         WHERE
-          TorrentID = '$TorrentID'
+          `GroupID` = '$GroupID'
         ");
   
         if ($DB->has_results()) {
