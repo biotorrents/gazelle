@@ -75,12 +75,15 @@ echo '</pre>';
     </li>
 
     <li>
-      No advertising, referrals, affiliate links, cryptocurrency pumps, or calls to action that involve using a
-      financial
-      instrument.
+      No advertising, referrals, cryptocurrency pumps, or calls to action that involve using a financial instrument.
       You'll be banned on the spot.
       The exceptions: discussions about cryptocurrencies that derive their value from work performed on distributed
       science networks, i.e., Curecoin, FoldingCoin, and Gridcoin.
+    </li>
+
+    <li>
+      All affiliate links must be labelled <code>(affiliate link)</code> and they must be related to the discussion,
+      in a context where only you would personally benefit if someone used the link.
     </li>
 
     <li>
