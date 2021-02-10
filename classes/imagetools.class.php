@@ -16,12 +16,13 @@ class ImageTools
     public static function process($Url = '', $Thumb = false)
     {
         $ENV = ENV::go();
+        $Psk = $ENV->getPriv('IMAGE_PSK');
 
         if (!$Url) {
             return '';
         }
         
-        if (preg_match('/^https:\/\/('.SITE_DOMAIN.'|'.$ENV->IMAGE_DOMAIN.')\//', $Url) || $Url[0] === '/') {
+        if (preg_match('/^https:\/\/('.$ENV->SITE_DOMAIN.'|'.$ENV->IMAGE_DOMAIN.')\//', $Url) || $Url[0] === '/') {
             if (strpos($Url, '?') === false) {
                 $Url .= '?';
             }
@@ -31,7 +32,7 @@ class ImageTools
             . $ENV->IMAGE_DOMAIN
             . ($Thumb?"/$Thumb/":'/')
             . '?h='
-            . rawurlencode(base64_encode(hash_hmac('sha256', $Url, IMAGE_PSK, true)))
+            . rawurlencode(base64_encode(hash_hmac('sha256', $Url, $Psk, true)))
             . '&i='
             . urlencode($Url);
         }

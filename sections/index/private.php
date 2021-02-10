@@ -3,7 +3,7 @@
 
 $ENV = ENV::go();
 Text::$TOC = true;
-$NewsCount = 3;
+$NewsCount = 1;
 
 if (!$News = $Cache->get_value('news')) {
     $DB->query("

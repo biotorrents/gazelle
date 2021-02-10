@@ -255,7 +255,7 @@ foreach ($GroupIDs as $GroupID) {
     <?php if (!$WikiImage) {
         $WikiImage = STATIC_SERVER.'common/noartwork/music.png';
     } ?>
-    
+
     <img class="tooltip"
       src="<?=ImageTools::process($WikiImage, 'thumb')?>"
       alt="<?=$DisplayName?>"
@@ -316,8 +316,8 @@ View::show_header($Title, 'browse,collage,wall');
 <!--content-->
 <?php
   View::show_footer();
-  error();
 } ?>
+
 <div class="sidebar">
   <div class="box box_info box_statistics_bookmarked_torrents">
     <div class="head"><strong>Stats</strong></div>

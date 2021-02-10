@@ -8,10 +8,6 @@
 // the data to the database and the torrent to the disk.                      //
 //****************************************************************************//
 
-// https://php.net/upload-max-filesize
-ini_set('upload_max_filesize', 2097152); // 2 MiB
-ini_set('max_file_uploads', 10000);
-
 include SERVER_ROOT.'/classes/validate.class.php';
 include SERVER_ROOT.'/classes/feed.class.php';
 include SERVER_ROOT.'/sections/torrents/functions.php';

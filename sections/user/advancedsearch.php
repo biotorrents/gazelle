@@ -1,8 +1,10 @@
 <?php
 #declare(strict_types = 1);
 
+$ENV = ENV::go();
+
 if (!empty($_GET['search'])) {
-    if (preg_match('/^'.IP_REGEX.'$/', $_GET['search'])) {
+    if (preg_match('/^'.$ENV->IP_REGEX.'$/', $_GET['search'])) {
         $_GET['ip'] = $_GET['search'];
     } elseif (preg_match('/^'.EMAIL_REGEX.'$/i', $_GET['search'])) {
         $_GET['email'] = $_GET['search'];

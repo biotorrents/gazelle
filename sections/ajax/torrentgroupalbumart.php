@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 require SERVER_ROOT.'/sections/torrents/functions.php';
 
@@ -11,12 +12,10 @@ $TorrentDetails = get_group_info($GroupID, true, 0, false);
 $TorrentDetails = $TorrentDetails[0];
 $Image = $TorrentDetails['WikiImage'];
 
-/*
 // Handle no artwork
 if (!$Image) {
-    $Image = STATIC_SERVER.'common/noartwork/'.$CategoryIcons[$TorrentDetails['CategoryID'] - 1];
+    $Image = STATIC_SERVER.'common/noartwork/music.png';
 }
-*/
 
 json_die('success', array(
   'picture' => $Image

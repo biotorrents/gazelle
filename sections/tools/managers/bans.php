@@ -1,36 +1,40 @@
 <?php
+#declare(strict_types=1);
+
+$ENV = ENV::go();
+
 if (!check_perms('admin_manage_ipbans')) {
-  error(403);
+    error(403);
 }
 
 if (isset($_POST['submit'])) {
-  authorize();
+    authorize();
 
-  $IPA = substr($_POST['start'], 0, strcspn($_POST['start'], '.'));
-  if ($_POST['submit'] == 'Delete') { //Delete
-    if (!is_number($_POST['id']) || $_POST['id'] == '') {
-      error(0);
-    }
-    $DB->query('DELETE FROM ip_bans WHERE ID='.$_POST['id']);
-    $Cache->delete_value('ip_bans_'.$IPA);
-  } else { //Edit & Create, Shared Validation
-    $Val->SetFields('start', '1','regex','You must include the starting IP address.',array('regex'=>'/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/i'));
-    $Val->SetFields('end', '1','regex','You must include the ending IP address.',array('regex'=>'/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/i'));
-    $Val->SetFields('notes', '1','string','You must include the reason for the ban.');
-    $Err=$Val->ValidateForm($_POST); // Validate the form
-    if ($Err) {
-      error($Err);
-    }
+    $IPA = substr($_POST['start'], 0, strcspn($_POST['start'], '.'));
+    if ($_POST['submit'] == 'Delete') { //Delete
+        if (!is_number($_POST['id']) || $_POST['id'] == '') {
+            error(0);
+        }
+        $DB->query('DELETE FROM ip_bans WHERE ID='.$_POST['id']);
+        $Cache->delete_value('ip_bans_'.$IPA);
+    } else { //Edit & Create, Shared Validation
+        $Val->SetFields('start', '1', 'regex', 'You must include the starting IP address.', array('regex'=>'/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/i'));
+        $Val->SetFields('end', '1', 'regex', 'You must include the ending IP address.', array('regex'=>'/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/i'));
+        $Val->SetFields('notes', '1', 'string', 'You must include the reason for the ban.');
+        $Err=$Val->ValidateForm($_POST); // Validate the form
+        if ($Err) {
+            error($Err);
+        }
 
-    $Notes = db_string($_POST['notes']);
-    $Start = Tools::ip_to_unsigned($_POST['start']); //Sanitized by Validation regex
+        $Notes = db_string($_POST['notes']);
+        $Start = Tools::ip_to_unsigned($_POST['start']); //Sanitized by Validation regex
     $End = Tools::ip_to_unsigned($_POST['end']); //See above
 
     if ($_POST['submit'] == 'Edit') { //Edit
-      if (empty($_POST['id']) || !is_number($_POST['id'])) {
-        error(404);
-      }
-      $DB->query("
+        if (empty($_POST['id']) || !is_number($_POST['id'])) {
+            error(404);
+        }
+        $DB->query("
         UPDATE ip_bans
         SET
           FromIP=$Start,
@@ -38,14 +42,14 @@ if (isset($_POST['submit'])) {
           Reason='$Notes'
         WHERE ID='".$_POST['id']."'");
     } else { //Create
-      $DB->query("
+        $DB->query("
         INSERT INTO ip_bans
           (FromIP, ToIP, Reason)
         VALUES
           ('$Start','$End', '$Notes')");
     }
-    $Cache->delete_value('ip_bans_'.$IPA);
-  }
+        $Cache->delete_value('ip_bans_'.$IPA);
+    }
 }
 
 define('BANS_PER_PAGE', '20');
@@ -61,15 +65,15 @@ $sql = "
   FROM ip_bans ";
 
 if (!empty($_REQUEST['notes'])) {
-  $sql .= "WHERE Reason LIKE '%".db_string($_REQUEST['notes'])."%' ";
+    $sql .= "WHERE Reason LIKE '%".db_string($_REQUEST['notes'])."%' ";
 }
 
-if (!empty($_REQUEST['ip']) && preg_match('/'.IP_REGEX.'/', $_REQUEST['ip'])) {
-  if (!empty($_REQUEST['notes'])) {
-    $sql .= "AND '".Tools::ip_to_unsigned($_REQUEST['ip'])."' BETWEEN FromIP AND ToIP ";
-  } else {
-    $sql .= "WHERE '".Tools::ip_to_unsigned($_REQUEST['ip'])."' BETWEEN FromIP AND ToIP ";
-  }
+if (!empty($_REQUEST['ip']) && preg_match('/'.$ENV->IP_REGEX.'/', $_REQUEST['ip'])) {
+    if (!empty($_REQUEST['notes'])) {
+        $sql .= "AND '".Tools::ip_to_unsigned($_REQUEST['ip'])."' BETWEEN FromIP AND ToIP ";
+    } else {
+        $sql .= "WHERE '".Tools::ip_to_unsigned($_REQUEST['ip'])."' BETWEEN FromIP AND ToIP ";
+    }
 }
 
 $sql .= "ORDER BY FromIP ASC";
@@ -95,12 +99,14 @@ $DB->set_query_id($Bans);
         <td class="label"><label for="ip">IP address:</label></td>
         <td>
           <input type="hidden" name="action" value="ip_ban" />
-          <input type="search" id="ip" name="ip" size="20" value="<?=(!empty($_GET['ip']) ? display_str($_GET['ip']) : '')?>" />
+          <input type="search" id="ip" name="ip" size="20"
+            value="<?=(!empty($_GET['ip']) ? display_str($_GET['ip']) : '')?>" />
         </td>
         <td class="label"><label for="notes">Notes:</label></td>
         <td>
           <input type="hidden" name="action" value="ip_ban" />
-          <input type="search" id="notes" name="notes" size="60" value="<?=(!empty($_GET['notes']) ? display_str($_GET['notes']) : '')?>" />
+          <input type="search" id="notes" name="notes" size="60"
+            value="<?=(!empty($_GET['notes']) ? display_str($_GET['notes']) : '')?>" />
         </td>
         <td>
           <input type="submit" value="Search" />
@@ -113,12 +119,13 @@ $DB->set_query_id($Bans);
 
 <h3>Manage</h3>
 <div class="linkbox">
-<?=$PageLinks?>
+  <?=$PageLinks?>
 </div>
 <table width="100%">
   <tr class="colhead">
     <td colspan="2">
-      <span class="tooltip" title="The IP addresses specified are &#42;inclusive&#42;. The left box is the beginning of the IP address range, and the right box is the end of the IP address range.">Range</span>
+      <span class="tooltip"
+        title="The IP addresses specified are &#42;inclusive&#42;. The left box is the beginning of the IP address range, and the right box is the end of the IP address range.">Range</span>
     </td>
     <td>Notes</td>
     <td>Submit</td>
@@ -126,7 +133,8 @@ $DB->set_query_id($Bans);
   <tr class="row">
     <form class="create_form" name="ban" action="" method="post">
       <input type="hidden" name="action" value="ip_ban" />
-      <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+      <input type="hidden" name="auth"
+        value="<?=$LoggedUser['AuthKey']?>" />
       <td colspan="2">
         <input type="text" size="12" name="start" />
         <input type="text" size="12" name="end" />
@@ -139,22 +147,24 @@ $DB->set_query_id($Bans);
       </td>
     </form>
   </tr>
-<?
+  <?php
 while (list($ID, $Start, $End, $Reason) = $DB->next_record()) {
-  $Start = long2ip($Start);
-  $End = long2ip($End);
-?>
+    $Start = long2ip($Start);
+    $End = long2ip($End); ?>
   <tr class="row">
     <form class="manage_form" name="ban" action="" method="post">
       <input type="hidden" name="id" value="<?=$ID?>" />
       <input type="hidden" name="action" value="ip_ban" />
-      <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+      <input type="hidden" name="auth"
+        value="<?=$LoggedUser['AuthKey']?>" />
       <td colspan="2">
-        <input type="text" size="12" name="start" value="<?=$Start?>" />
+        <input type="text" size="12" name="start"
+          value="<?=$Start?>" />
         <input type="text" size="12" name="end" value="<?=$End?>" />
       </td>
       <td>
-        <input type="text" size="72" name="notes" value="<?=$Reason?>" />
+        <input type="text" size="72" name="notes"
+          value="<?=$Reason?>" />
       </td>
       <td>
         <input type="submit" name="submit" value="Edit" />
@@ -162,11 +172,11 @@ while (list($ID, $Start, $End, $Reason) = $DB->next_record()) {
       </td>
     </form>
   </tr>
-<?
+  <?php
 }
 ?>
 </table>
 <div class="linkbox">
-<?=$PageLinks?>
+  <?=$PageLinks?>
 </div>
-<? View::show_footer(); ?>
+<?php View::show_footer();

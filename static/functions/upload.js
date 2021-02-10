@@ -17,9 +17,9 @@ function Categories() {
     'series', // Location
     'year', // Year
     'codec', // License
-    // Platform changes below
-    'resolution', // Scope
-    // Format changes below
+    // Platform *changes below*
+    'resolution', // Scope *changes below*
+    // Format *changes below*
     'archive', // Archive
     'tags', // Tags
     'cover', // Picture
@@ -115,36 +115,6 @@ function Categories() {
       hide(tr)
     }
   }
-}
-
-
-/**
- * Bitrate
- */
-function Bitrate() {
-  /*
-  $('#other_bitrate').raw().value = '';
-  if ($('#bitrate').raw().options[$('#bitrate').raw().selectedIndex].value == 'Other') {
-    $('#other_bitrate_span').gshow();
-  } else {
-    $('#other_bitrate_span').ghide();
-  }
-  */
-}
-
-
-/**
- * AltBitrate
- */
-function AltBitrate() {
-  /*
-  if ($('#other_bitrate').raw().value >= 320) {
-    $('#vbr').raw().disabled = true;
-    $('#vbr').raw().checked = false;
-  } else {
-    $('#vbr').raw().disabled = false;
-  }
-  */
 }
 
 
@@ -416,80 +386,6 @@ function AddScreenshotField() {
 function RemoveScreenshotField(el) {
   var sss = $('[name="screenshots[]"]')
   el.parentElement.remove()
-}
-
-
-/**
- * CheckVA
- */
-function CheckVA() {
-  /*
-  if ($('#artist').raw().value.toLowerCase().trim().match(/^(va|various(\sa|a)rtis(t|ts)|various)$/)) {
-    $('#vawarning').gshow();
-  } else {
-    $('#vawarning').ghide();
-  }
-  */
-}
-
-
-/**
- * CheckYear
- */
-function CheckYear() {
-  /*
-  var media = $('#media').raw().options[$('#media').raw().selectedIndex].text;
-  if (media == "---" || media == "Vinyl" || media == "Soundboard" || media == "Cassette") {
-    media = "old";
-  }
-  var year = $('#year').val();
-  var unknown = $('#unknown').prop('checked');
-  if (year < 1982 && year != '' && media != "old" && !unknown) {
-    $('#yearwarning').gshow();
-    $('#remaster').raw().checked = true;
-    $('#remaster_true').gshow();
-  } else if (unknown) {
-    $('#remaster').raw().checked = true;
-    $('#yearwarning').ghide();
-    $('#remaster_true').gshow();
-  } else {
-    $('#yearwarning').ghide();
-  }
-  */
-}
-
-
-/**
- * ToggleUnknown
- */
-function ToggleUnknown() {
-  /*
-  if ($('#unknown').raw().checked) {
-    $('#remaster_year').raw().value = "";
-    $('#remaster_title').raw().value = "";
-    $('#remaster_record_label').raw().value = "";
-    $('#remaster_catalogue_number').raw().value = "";
-
-    if ($('#groupremasters').raw()) {
-      $('#groupremasters').raw().selectedIndex = 0;
-      $('#groupremasters').raw().disabled = true;
-    }
-
-    $('#remaster_year').raw().disabled = true;
-    $('#remaster_title').raw().disabled = true;
-    $('#remaster_record_label').raw().disabled = true;
-    $('#remaster_catalogue_number').raw().disabled = true;
-  } else {
-    $('#remaster_year').raw().disabled = false;
-    $('#remaster_title').raw().disabled = false;
-    $('#remaster_record_label').raw().disabled = false;
-    $('#remaster_catalogue_number').raw().disabled = false;
-
-    if ($('#groupremasters').raw()) {
-      $('#groupremasters').raw().disabled = false;
-    }
-  }
-  */
 }
 
 

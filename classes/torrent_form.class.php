@@ -82,8 +82,6 @@ class TorrentForm
         $this->ImgPlatforms = $ImgPlatforms;
         $this->DocPlatforms = $DocPlatforms;
         $this->RawPlatforms = $RawPlatforms;
-        #$this->Media = $Media;
-        #$this->MediaManga = $MediaManga;
        
         # Formats
         # See classes/config.php
@@ -97,21 +95,11 @@ class TorrentForm
         $this->BinDocFormats = $BinDocFormats;
         $this->CpuGenFormats = $CpuGenFormats;
         $this->PlainFormats = $PlainFormats;
-        #$this->Containers = $Containers;
-        #$this->ContainersGames = $ContainersGames;
-        #$this->ContainersProt = $ContainersProt;
-        #$this->ContainersExtra = $ContainersExtra;
         
         # Misc
         $this->Codecs = $Codecs;
         $this->Archives = $Archives;
         $this->Resolutions = $Resolutions;
-
-        # Deprecated
-        #$this->ArchivesManga = $ArchivesManga;
-        #$this->Formats = $Formats;
-        #$this->Bitrates = $Bitrates;
-        #$this->Platform = $Platform;
 
         # Quick constructor test
         if ($this->Torrent && $this->Torrent['GroupID']) {
@@ -263,8 +251,7 @@ HTML;
         <input type="hidden" name="submit" value="true" />
         <input type="hidden" name="auth" value="$AuthKey" />
 HTML;
-        
-        
+
         if (!$this->NewTorrent) {
             # Edit form hidden fields
             $TorrentID = display_str($this->TorrentID);
@@ -296,7 +283,6 @@ HTML;
 HTML;
             }
         } # else
-    
 
         /**
          * Start printing the torrent form
@@ -304,6 +290,7 @@ HTML;
         $HTML .= '<table class="torrent_form">';
         return $HTML;
     }
+
 
     /**
      * New torrent options: file
@@ -393,7 +380,6 @@ HTML;
         $Torrent = $this->Torrent;
         echo '<table class="torrent_form>';
 
-
         /**
          * Freeleech type
          */
@@ -428,7 +414,6 @@ HTML;
                 <select name="freeleechtype">
 HTML;
 
-
                 /**
                  * Freeleech reasons
                  */
@@ -449,7 +434,6 @@ HTML;
 HTML;
             }
         } # fi !NewTorrent
-
 
         /**
          * Rules notice
@@ -480,7 +464,6 @@ HTML;
         }
         
         echo '</aside></td></tr>';
-
 
         /**
          * Submit button
@@ -515,15 +498,17 @@ HTML;
         $ENV = ENV::go();
 
         $QueryID = G::$DB->get_query_id();
-        #$this->head();
-        #echo $this->basicInfo();
         $Torrent = $this->Torrent;
-        
+
+        # Moved to their own functions
+        #echo $this->head();
+        #echo $this->basicInfo();
+
         # Start printing the form
         echo '<h2 class="header">Torrent Form</h2>';
         echo '<table class="torrent_form">';
 
-
+        
         /**
          * Accession Number
          *
@@ -911,7 +896,7 @@ HTML;
          * Takes an ID, label, torrent, and media list.
          * Returns a media select option as on upload.php.
          */
-        function mediaSelect($trID = '', $Label = '', $Torrent = [], $Media = [])
+        function mediaSelect($trID = '', $Label = '', $Torrent = [], $Media = [], $Desc = '')
         {
             echo <<<HTML
                 <tr id="$trID">
