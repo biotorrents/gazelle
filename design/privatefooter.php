@@ -3,27 +3,21 @@ declare(strict_types=1);
 
 $ENV = ENV::go();
 $Sep = '&emsp;';
-#$Sep = '&ensp;&middot;&ensp;';
 
 # End <div#content>, begin <footer>
 # This needs to be <main>, in each page
 echo $HTML = '</div></main><footer>';
 
-/*
 # Disclaimer
-if (!empty($Options['disclaimer'])) {
+#if (!empty($Options['disclaimer'])) {
     echo $HTML = <<<HTML
-    <div id="disclaimer_container">
-      None of the files shown here are actually hosted on this server.
-      The links are provided solely by this site's users.
-      These BitTorrent files are meant for the distribution of backup files.
-      By downloading the BitTorrent file, you are claiming that you own the original file.
-      The administrator of this site ($ENV->SITE_DOMAIN) holds <em>no responsibility</em>
-      if these files are misused in any way and cannot be held responsible for what its users post.
+    <div id="disclaimer">
+      No data are hosted on $ENV->SITE_NAME's servers.
+      All torrents are user-generated content.
+      Torrents without a specified license may be protected by copyright.
     </div>
 HTML;
-}
-*/
+#}
 
 # Sessions
 if (count($UserSessions) > 1) {
@@ -104,9 +98,9 @@ echo $HTML = <<<HTML
 </p>
 HTML;
 
+# Start debug
 if (DEBUG_MODE || check_perms('site_debug')) {
     echo $HTML = <<<HTML
-<!-- Begin Debugging -->
 <div id="site_debug">
 HTML;
 
@@ -121,9 +115,9 @@ HTML;
 
     echo $HTML = <<<HTML
 </div>
-<!-- End Debugging -->
 HTML;
 }
+# End debug
 
 global $NotificationSpans;
 if (!empty($NotificationSpans)) {
