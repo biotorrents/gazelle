@@ -79,7 +79,6 @@ $PermissionsArray = array(
   'torrents_delete_fast' => 'Can delete more than 3 torrents at a time.',
   'torrents_freeleech' => 'Can make torrents freeleech.',
   'torrents_search_fast' => 'Rapid search (for scripts).',
-  'torrents_hide_dnu' => 'Hide the Do Not Upload list by default.',
   'torrents_fix_ghosts' => 'Can fix "ghost" groups on artist pages.',
   'screenshots_add' => 'Can add screenshots to any torrent and delete their own screenshots.',
   'screenshots_delete' => 'Can delete any screenshot from any torrent.',
@@ -93,7 +92,6 @@ $PermissionsArray = array(
   'admin_create_users' => 'Can create users through an administrative form.',
   'admin_donor_log' => 'Can view the donor log.',
   'admin_manage_ipbans' => 'Can manage IP bans.',
-  'admin_dnu' => 'Can manage do not upload list.',
   'admin_clear_cache' => 'Can clear cached.',
   'admin_whitelist' => 'Can manage the list of allowed clients.',
   'admin_manage_permissions' => 'Can edit permission classes/user permissions.',
@@ -232,7 +230,6 @@ function permissions_form()
     display_perm('edit_unknowns', 'Can edit unknown release information.');
     display_perm('torrents_edit_vanityhouse', 'Can mark groups as part of Vanity House.');
     display_perm('artist_edit_vanityhouse', 'Can mark artists as part of Vanity House.');
-    display_perm('torrents_hide_dnu', 'Hide the Do Not Upload list by default.');
     display_perm('torrents_fix_ghosts', 'Can fix ghost groups on artist pages.');
     display_perm('screenshots_add', 'Can add screenshots to any torrent and delete their own screenshots.');
     display_perm('screenshots_delete', 'Can delete any screenshot from any torrent.'); ?>
@@ -259,7 +256,6 @@ function permissions_form()
     display_perm('admin_create_users', 'Can create users through an administrative form');
     display_perm('admin_donor_log', 'Can view the donor log');
     display_perm('admin_manage_ipbans', 'Can manage IP bans');
-    display_perm('admin_dnu', 'Can manage do not upload list');
     display_perm('admin_clear_cache', 'Can clear cached pages');
     display_perm('admin_whitelist', 'Can manage the list of allowed clients.');
     display_perm('admin_manage_permissions', 'Can edit permission classes/user permissions.');

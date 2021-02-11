@@ -1212,7 +1212,7 @@ HTML;
 
             $GenreTags = G::$Cache->get_value('genre_tags');
             if (!$GenreTags) {
-                $DB->query("
+                G::$DB->query("
                 SELECT
                   `Name`
                 FROM
@@ -1223,7 +1223,7 @@ HTML;
                   `Name`
                 ");
 
-                $GenreTags = $DB->collect('Name');
+                $GenreTags = G::$DB->collect('Name');
                 G::$Cache->cache_value('genre_tags', $GenreTags, 3600*6);
             }
           

@@ -60,7 +60,6 @@ $Load = sys_getloadavg();
   
 echo $HTML = <<<HTML
 <p>
-  Site and design
   &copy;
   $Year
   $ENV->SITE_NAME

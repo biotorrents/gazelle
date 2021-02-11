@@ -116,14 +116,6 @@ switch ($_REQUEST['action']) {
     include SERVER_ROOT.'/sections/tools/managers/email_blacklist_search.php';
     break;
 
-  case 'dnu':
-    include SERVER_ROOT.'/sections/tools/managers/dnu_list.php';
-    break;
-
-  case 'dnu_alter':
-    include SERVER_ROOT.'/sections/tools/managers/dnu_alter.php';
-    break;
-
   case 'editnews':
   case 'news':
     include SERVER_ROOT.'/sections/tools/managers/news.php';
