@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 enforce_login();
 $ENV = ENV::go();
@@ -10,7 +11,7 @@ if (!$UserCount = $Cache->get_value('stats_user_count')) {
       FROM users_main
       WHERE Enabled = '1'");
     list($UserCount) = $DB->next_record();
-    $Cache->cache_value('stats_user_count', $UserCount, 0); // Infinite cache
+    $Cache->cache_value('stats_user_count', $UserCount, 0); // inf cache
 }
 
 $DonorPerms = Permissions::get_permissions(DONOR);
@@ -25,13 +26,11 @@ View::show_header('Donate');
   <div class="box pad">
     <p>
       <?= $ENV->SITE_NAME ?> has no advertisements, is not sponsored,
-      and
-      provides its services free of charge.
+      and provides its services free of charge.
       For these reasons, its main income source is voluntary user donations.
-      Supporting <?= $ENV->SITE_NAME ?> is and will always remain
-      voluntary.
+      Supporting the site is and will remain voluntary.
       If you're financially able, please help pay its bills by donating.
-      We use the donations to cover the costs of running the site, tracker, and IRC network.
+      We use the donations to cover the costs of running the site and tracker.
     </p>
 
     <p>
@@ -43,38 +42,35 @@ View::show_header('Donate');
     </p>
 
     <p>
-      <?= $ENV->SITE_NAME ?> currently operates on a shoestring
-      budget.
+      <?= $ENV->SITE_NAME ?> operates on a shoestring budget.
       The costs of running the site, and all its technical and legal infrastructure, are minimal by design.
-      Keeping costs in a range that I can pay out of pocket helps ensure the site doesn't depend on donations to exist.
       Please find a detailed site budget below.
     </p>
 
     <ul>
       <li>
-        <strong>Tracker Server.</strong>
-        We currently use one budget VPS at 2.50€ per month, and can add more at the same price as needed.
+        <strong>Server.</strong>
+        We currently use one budget VPS at 2.50€ per month, and can add more as needed.
       </li>
 
       <li>
-        <strong>Seedbox Server.</strong>
-        A dedicated seedbox from <a href="https://pulsedmedia.com/clients/aff.php?aff=1275" target="_blank">Pulsed Media
-          (affiliate link)</a> costs 75€ per year.
+        <strong>Seedbox.</strong>
+        A dedicated seedbox from
+        <a href="https://pulsedmedia.com/clients/aff.php?aff=1275" target="_blank">Pulsed Media (affiliate link)</a>
+        is 75€ per year.
         Please see the <a href="/user.php?id=28">seedbox user account stats</a>.
       </li>
 
       <li>
-        <strong>Domain Name.</strong>
-        The site domain name costs $15 per year. The SSL certificate is gratis.
+        <strong>Domain.</strong>
+        The domain name is $15 per year.
+        The SSL certificate is gratis.
       </li>
 
       <li>
-        <strong>Parent Company.</strong>
-        <a href="https://wyobiz.wyo.gov/Business/FilingDetails.aspx?eFNum=002156042142181219185041207069159249164249226198"
-          target="_blank">Omics Tools LLC</a>
-        is <?= $ENV->SITE_NAME ?>'s parent company.
-        It costs $100 per year in filing fees plus $125 per year for resident agent services.
-        The resident agent may cost $50 in subsequent years but I wanted to do it right the first time.
+        <strong>Company.</strong>
+        Omics Tools LLC is <?= $ENV->SITE_NAME ?>'s parent company.
+        It's $50 per year in filing fees and $125 for resident agent services.
       </li>
     </ul>
   </div>
@@ -86,22 +82,19 @@ View::show_header('Donate');
 
   <div class="box pad">
     <p>
-      <?= $ENV->SITE_NAME ?> accepts donations on a tactful array of
-      platforms.
+      <?= $ENV->SITE_NAME ?> accepts a tactful array of donations.
       We also accept <strong>tax-deductible donations</strong> on behalf of the
       <a href="https://www.boslab.org/donate" target="_blank">Boston Open Science Laboratory (BosLab)</a>,
       a registered 501c3.
-      Please use the memo field on BosLab's PayPal form to credit your <?= $ENV->SITE_NAME ?> account.
-      <strong>From: your username on <?= $ENV->SITE_NAME ?>'s behalf,
-        CC:
-        ohm at biotorrents dot de.</strong>
+      Please use the memo field to credit your account:
+      <strong>your username ℅ <?= $ENV->SITE_NAME ?>.</strong>
     </p>
 
     <p>
-      Unlike affiliate donations to BosLab, where the funds are beyond my control, direct donations are used exclusively
-      for <?= $ENV->SITE_NAME ?>'s operating costs.
+      Unlike affiliate donations to BosLab, where the funds are beyond our control,
+      direct donations are used exclusively for <?= $ENV->SITE_NAME ?>'s operating costs.
       Please see <a href="https://www.patreon.com/biotorrents" target="_blank"><?= $ENV->SITE_NAME ?>'s Patreon</a>
-      for a detailed overview of funding goals.
+      for an overview of funding goals.
     </p>
 
     <figure class="donate_button">
@@ -119,23 +112,23 @@ View::show_header('Donate');
     <ul>
       <li>
         <strong>Silver.</strong>
-        $2 per month recurring donation.
+        $2 per month recurring.
       </li>
 
       <li>
         <strong>Gold.</strong>
-        $5 per month recurring donation.
+        $5 per month recurring.
       </li>
     </ul>
 
     <p>
-      I also accept private donations of cash and cash equivalents, including <strong>Bitcoin</strong> and other
-      cryptocurrencies.
-      Besides gift transactions sent to my personal <strong>PayPal</strong> account, I'll also accept <strong>USPS money
-        orders</strong> in the mail.
-      I can generate unique cryptocurrency addresses for donations in Bitcoin, Litecoin, and Curecoin.
-      Please use <a href="https://pgp.mit.edu/pks/lookup?op=get&search=0x760EBED7CFE266D7" target="_blank">GPG key
-        760EBED7CFE266D7</a> if you desire.
+      We also accept private donations of cash and cash equivalents,
+      including <strong>Bitcoin</strong> and other cryptocurrencies:
+      Monero, Litecoin, and Curecoin.
+      <strong>PayPal</strong> and <strong>USPS money orders</strong> are also options.
+      Please use
+      <a href="https://pgp.mit.edu/pks/lookup?op=get&search=0x760EBED7CFE266D7" target="_blank">GPG 760EBED7CFE266D7</a>
+      if you wish.
     </p>
   </div>
 
@@ -148,7 +141,7 @@ View::show_header('Donate');
     <p>
       <?= $ENV->SITE_NAME ?> understands that not everyone who wants
       to help may feel comfortable donating.
-      Please consider getting involved with development and the <?= $ENV->SITE_NAME ?> community instead.
+      Please consider getting involved with development and the community instead.
       Note that Donor Points are only awarded for monetary transactions and not volunteer work.
       There are many ways to provide alternative support, use your imagination!
     </p>
@@ -169,8 +162,15 @@ View::show_header('Donate');
         <a href="https://twitter.com/hashtag/P2Pbio" target="_blank">#P2Pbio</a>
       </li>
 
-      <li>Citing <?= $ENV->SITE_NAME ?> in your research
-        <br /><br />
+      <li>
+        Making artwork, icons, and media to advertise the site
+      </li>
+
+      <li>
+        Asking friends in academic, industry, and media to check it out
+      </li>
+
+      <li>Citing <?= $ENV->SITE_NAME ?> in your research:<br />
         <pre>
 @misc{ BioTorrents.de,
   author = {Omics Tools LLC},
@@ -182,13 +182,6 @@ View::show_header('Donate');
         </pre>
       </li>
 
-      <li>
-        Making artwork, icons, and media to advertise the site and replace the emoji
-      </li>
-
-      <li>
-        Asking friends in academic, industry, and the media to consider the project
-      </li>
     </ul>
   </div>
 

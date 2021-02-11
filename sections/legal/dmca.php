@@ -8,7 +8,7 @@ View::show_header('DMCA');
 
 <section class="tldr">
   <p>
-    <em>If</em> you're a copyright owner or an agent thereof,
+    <em>If</em> you're a copyright owner or agent thereof,
     <em>and</em> you believe that user-generated content (UGC) on the domain https://biotorrents.de infringes your
     copyrights:
     <em>then</em> you may notify our Digital Millennium Copyright Act (DMCA) agent in writing.
@@ -19,15 +19,15 @@ View::show_header('DMCA');
     <li>
       Identification of the copyrighted work claimed to have been infringed.
       <em>Please include your copyright registration number or proof of status pending.</em>
-      Copyright infringement claims for U.S. works require registration.
+      Claims for U.S. works require registration.
       Requests without a registration number will be ignored.
     </li>
 
     <li>
       Identification of the material that is claimed to be infringing.
-      To speed up request processing, please include:
-      (1) the torrent's permalink <code>[PL]</code> URI exactly as it appears, <em>and</em>
-      (2) the corresponding BitTorrent <code>info_hash</code>.
+      To speed up processing, please include:
+      (1) the permalink <code>[PL]</code> URI, <em>and</em>
+      (2) the BitTorrent <code>info_hash</code>.
     </li>
 
     <li>
@@ -68,15 +68,14 @@ View::show_header('DMCA');
   </p>
 
   <p>
-    Circumstances that may delay request processing, including not limited:
+    Circumstances that may delay processing, including not limited:
   </p>
 
   <ul class="p">
 
     <li>
       URI formulations that violate BioTorrents.de's normal access rules,
-      e.g., unsecured HTTP or the <code>www</code> subdomain,
-      <em>or</em> requests that fail to identify a specific piece of UGC.
+      e.g., unsecured HTTP, <em>or</em> requests that fail to identify specific pieces of UGC.
     </li>
 
     <li>
@@ -85,7 +84,7 @@ View::show_header('DMCA');
     </li>
 
     <li>
-      Requests signed by other means than 256-bit Ed25519 or 4096-bit RSA,
+      Requests signed by other means than Ed25519 or RSA 4096,
       or encoded in other formats than UTF-8 or ASCII plaintext.
     </li>
 
@@ -100,8 +99,8 @@ View::show_header('DMCA');
       <a href="https://tools.ietf.org/html/rfc7208">RFC 7208 (SPF)</a>,
       <a href="https://tools.ietf.org/html/rfc8463">RFC 8463 (DKIM)</a>, and
       <a href="https://tools.ietf.org/html/rfc7489">RFC 7489 (DMARC)</a>.
-      Requests from free mailboxes such as Gmail, ProtonMail, Yahoo, etc.
-      Any email in violation of
+      Requests from free mailboxes such as Gmail, ProtonMail, etc.
+      Any email that violates
       <a href="https://www.law.cornell.edu/uscode/text/15/7704">15 USC 7704(a)</a>.
     </li>
 
@@ -132,17 +131,18 @@ View::show_header('DMCA');
   </p>
 
   <p>
-    Please remember that under
+    Remember that under
     <a href="https://www.law.cornell.edu/uscode/text/17/512">17 USC 512(f)</a>,
-    any person who knowingly materially misrepresents infringement may be subject to liability.
-  </p>
-
-  <p>
-    Consult your legal counsel or see 17 USC 512(c)(3) to confirm these requirements.
-    Please also see
+    anyone who knowingly materially misrepresents infringement may be subject to liability.
+    Also see
     <a href="https://www.law.cornell.edu/uscode/text/17/108">17 USC 108</a>.
   </p>
 
+  <p>
+    Please use
+    <a href="https://pgp.mit.edu/pks/lookup?op=get&search=0x760EBED7CFE266D7" target="_blank">GPG 760EBED7CFE266D7</a>
+    if you wish.
+  </p>
 </section>
 
 <?php View::show_footer();
