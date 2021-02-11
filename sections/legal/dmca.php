@@ -8,170 +8,141 @@ View::show_header('DMCA');
 
 <section class="tldr">
   <p>
-    See
-    <a href="https://www.law.cornell.edu/uscode/text/17/512">17 U.S. Code § 512 - Limitations on liability relating to
-      material online</a>.
-  </p>
-
-  <p>
-    We are compliant to all valid requests.
-    A valid request strictly complies with all requirements in this document.
-    Do not submit a request unless it adheres to the specifications described below.
-  </p>
-
-  <p>
-    BioTorrents.de respects the intellectual property rights of others.
-    It is therefore our policy to expeditiously process, investigate, and address notices of alleged infringement.
-  </p>
-
-  <p>
-    <em>If</em> you are a copyright owner or an agent thereof,
-    <em>and</em> you reasonably believe that user-supplied content on the domain biotorrents.de infringes your
+    <em>If</em> you're a copyright owner or an agent thereof,
+    <em>and</em> you believe that user-generated content (UGC) on the domain https://biotorrents.de infringes your
     copyrights:
-    <em>then</em> you may submit a notification pursuant to the Digital Millennium Copyright Act (DMCA) by providing our
-    Designated Copyright Agent with the following information in writing.
-  </p>
-
-  <p>
-    All DMCA notice and takedown requests must be sent by email to dmca at biotorrents dot de with the
-    subject line "DMCA notice and takedown request."
-    Additionally, all requests must include the information below, in the format described, to be eligible for
-    processing in the specified way.
-    Requests that don't comply with the requirements below will be considered invalid and silently dismissed.
+    <em>then</em> you may notify our Digital Millennium Copyright Act (DMCA) agent in writing.
   </p>
 
   <ul class="p">
 
     <li>
-      A physical and/or electronic signature of a person authorized to act on behalf of the owner of an exclusive right
-      that is allegedly infringed.
-      <em>If</em> the only signature supplied is a handwritten depiction,
-      <em>then</em> it must be accompanied by a digital signature.
-      Acceptable digital signatures are Ed25519 keys of exactly 256 bits, and RSA keys of at least 2048 bits.
-      All other algorithms and key sizes are "considered harmful" and therefore unable to produce a valid signature.
+      Identification of the copyrighted work claimed to have been infringed.
+      <em>Please include your copyright registration number or proof of status pending.</em>
+      Copyright infringement claims for U.S. works require registration.
+      Requests without a registration number will be ignored.
     </li>
 
     <li>
-      Identification of the material that is claimed to be infringing or to be the subject of infringing activity and
-      that is to be removed or access to which is to be disabled,
-      and information reasonably sufficient to permit BioTorrents.de to locate the material.
-      Two pieces of information are necessary for a request to be considered valid:
-      (1) the permalink [PL] torrent page URI, and
-      (2) and the <a href="https://www.bittorrent.org/beps/bep_0003.html">BitTorrent <code>info_hash</code></a>.
+      Identification of the material that is claimed to be infringing.
+      To speed up request processing, please include:
+      (1) the torrent's permalink <code>[PL]</code> URI exactly as it appears, <em>and</em>
+      (2) the corresponding BitTorrent <code>info_hash</code>.
     </li>
 
     <li>
-      No third-party services shall be included,
-      nor any subdomains of biotorrents.de,
-      nor any formulations of the URI that violate BioTorrents.de's normal access paradigm,
-      such as unencrypted HTTP or the <code>www</code> subdomain.
+      A statement that you have a good faith belief that use of the material in the manner complained of is not
+      authorized by the copyright owner, its agent, or the law.
     </li>
 
     <li>
-      One request per DMCA notice, and one DMCA notice per copyrighted work claimed to have been infringed.
-      Duplicate and/or subsequent requests will be ignored regardless of the outcome of the first request,
-      including silent dismissal in the case of a malformed request.
-      Additionally, BioTorrents.de reserves the right to block or filter malicious senders if more than one malformed
-      request is ever sent,
-      no matter how much time has passed since the last request.
+      A statement that the information in the notification is accurate, and under penalty of perjury,
+      that you're authorized to act on behalf of the owner of an exclusive right that is allegedly infringed.
+    </li>
+
+
+    <li>
+      Your physical or electronic signature, or of someone authorized to act on your behalf.
     </li>
 
     <li>
-      Information reasonably sufficient to permit BioTorrents.de to contact the complaining party,
-      such as an address, telephone number, and an electronic mail address at which the complaining party may be
-      contacted.
-      All three pieces of information are <em>required</em> for the request to be considered valid.
+      Information reasonably sufficient to permit BioTorrents.de to contact you,
+      such as an address, telephone number, and email.
+    </li>
+  </ul>
+
+  <p>
+    Because a high percentage of DMCA takedown notices are invalid or abusive,
+    BioTorrents.de reserves the right to ignore requests for unregistered works.
+  </p>
+
+  <p>
+    BioTorrents.de authenticates all valid requests.
+    As a stopgap pending investigation,
+    access to the targets of valid requests will be expeditiously disabled.
+  </p>
+
+  <p>
+    All relevant parties will be notified and updated during the investigation.
+    The targets of successful claims will then be deleted.
+  </p>
+
+  <p>
+    Circumstances that may delay request processing, including not limited:
+  </p>
+
+  <ul class="p">
+
+    <li>
+      URI formulations that violate BioTorrents.de's normal access rules,
+      e.g., unsecured HTTP or the <code>www</code> subdomain,
+      <em>or</em> requests that fail to identify a specific piece of UGC.
     </li>
 
     <li>
-      The address must be a legitimate street address located in the U.S. that can accept USPS Certified Mail for the
-      complaining party.
-      The telephone number must not be a VoIP number.
-      It must start with, and include every time it appears, the +1 country code.
-      The email address must use a private domain
-      <em>and</em> the mail server must comply with at least two of the following:
+      Generic or boilerplate statements.
+      Neither statement should contain passages with quoted online search results.
+    </li>
+
+    <li>
+      Requests signed by other means than 256-bit Ed25519 or 4096-bit RSA,
+      or encoded in other formats than UTF-8 or ASCII plaintext.
+    </li>
+
+
+    <li>
+      PO boxes, addresses outside the U.S., or addresses that can't accept USPS Certified Mail.
+      VoIP telephone numbers or numbers without a <code>+1</code> country code.
+    </li>
+
+    <li>
+      Email servers that don't comply with at least two of:
       <a href="https://tools.ietf.org/html/rfc7208">RFC 7208 (SPF)</a>,
       <a href="https://tools.ietf.org/html/rfc8463">RFC 8463 (DKIM)</a>, and
       <a href="https://tools.ietf.org/html/rfc7489">RFC 7489 (DMARC)</a>.
-      The request email domain must not be from a free email provider,
-      e.g., Gmail, Hotmail, Yahoo, AOL, etc.
-    </li>
-
-    <li>
-      Three forms of ID to authenticate the information above.
-      This supplemental requirement inherits the U.S. Department of State's
-      <a href="https://eforms.state.gov/Forms/ds11.PDF">Form DS-11</a>
-      requirements to obtain a U.S. passport.
-      The IDs, taken together, must contain at least:
-      a full legal name, a valid street address, a date of birth, and a recent photograph.
-    </li>
-
-    <li>
-      A statement that the complaining party has a good faith belief that use of the material in the manner complained
-      of is not authorized by the copyright owner, its agent, or the law.
-      This statement must be greater than 100 words for the request to be considered valid.
-    </li>
-
-    <li>
-      A statement that the information in the notification is accurate, and under penalty of perjury, that the
-      complaining party is authorized to act on behalf of the owner of an exclusive right that is allegedly infringed.
-      This statement must be greater than 100 words for the request to be considered valid.
-    </li>
-
-    <li>
-      Neither of the two essays above may contain plagiarized passages exemplified as
-      "about fifteen or so words that yield no specific results in a quoted web search."
-    </li>
-
-    <li>
-      All requests must be in plain text encoded in either UTF-8 or ASCII to be considered valid.
-      Any request sent with HTML formatting or unnecessary attachments, or sent pursuant to the
-      <a href="https://www.fcc.gov/general/can-spam">CAN-SPAM Act of 2003</a>,
-      will not be processed.
-    </li>
-
-    <li>
-      In the case of a valid request processed in favor of the complaining party,
-      we only delete the torrent from BioTorrents.de using normal software features.
-      Any cache among our users, hardware, and software will not qualify for additional action,
-      regardless of how long it takes for the content to be removed in the course of normal usage.
-      None of the infringing data would've ever been stored on BioTorrents.de's servers in any case.
-    </li>
-
-    <li>
-      All processed requests will be published unredacted in full, including all documentation, attachments,
-      supplementary material in any media, and any further correspondence.
-      BioTorrents.de reserves the right to publish all relevant materials and commentary on any number of platforms at
-      our sole discretion for all legal purposes.
-      Publication can happen at any point in the process, either before or after the content's deletion.
-    </li>
-
-    <li>
-      Confidentiality notices, such as those appearing in an email signature, will not be honored.
-      Additionally, including such a notice for any reason is grounds for silent dismissal as an "unnecessary
-      attachment,"
-      regardless of which party or software appends it before delivery.
-    </li>
-
-    <li>
-      Personal or attorney notices will not be processed.
-      Valid requests must come from companies or DMCA agents.
-      An EIN, filing number, and U.S. filing state is required for all requests,
-      to prove the existence in good standing of the entity making the request.
-    </li>
-
-    <li>
-      No requests will be processed outside the normal business hours of 9:00&ndash;17:00 EST,
-      nor on <a href="https://www.law.cornell.edu/uscode/text/5/6103">5 U.S. Code § 6103</a> federal holidays.
+      Requests from free mailboxes such as Gmail, ProtonMail, Yahoo, etc.
+      Any email in violation of
+      <a href="https://www.law.cornell.edu/uscode/text/15/7704">15 USC 7704(a)</a>.
     </li>
 
   </ul>
 
   <p>
-    Please note that under Section 512(f) of the DMCA, any person who knowingly materially misrepresents infringement
-    may be subject to liability.
-    Consult your legal counsel or See 17 U.S. Code § 512(c)(3) to confirm these requirements.
+    Our agent to receive notifications of claimed infringement is:
   </p>
+
+  <p>
+    <strong>
+      Address
+    </strong>
+    <br />
+
+    Copyright Manager<br />
+    Omics Tools LLC<br />
+    30 N Gould St Ste 4000<br />
+    Sheridan, WY 82801
+  </p>
+
+  <p>
+    <strong>
+      Email
+    </strong>
+    <br />
+    dmca at biotorrents dot de
+  </p>
+
+  <p>
+    Please remember that under
+    <a href="https://www.law.cornell.edu/uscode/text/17/512">17 USC 512(f)</a>,
+    any person who knowingly materially misrepresents infringement may be subject to liability.
+  </p>
+
+  <p>
+    Consult your legal counsel or see 17 USC 512(c)(3) to confirm these requirements.
+    Please also see
+    <a href="https://www.law.cornell.edu/uscode/text/17/108">17 USC 108</a>.
+  </p>
+
 </section>
 
 <?php View::show_footer();
