@@ -129,7 +129,7 @@ View::show_header('DMCA'); ?>
 
   <p>
     Please use
-    <a href="https://pgp.mit.edu/pks/lookup?op=get&search=0x760EBED7CFE266D7" target="_blank">GPG 760EBED7CFE266D7</a>
+    <a href="/sections/legal/pubkey.txt">GPG 760EBED7CFE266D7</a>
     if you wish.
   </p>
 </section>
