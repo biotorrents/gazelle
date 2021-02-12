@@ -8,9 +8,9 @@ View::show_header('DMCA');
 
 <section class="tldr">
   <p>
-    <em>If</em> you're a copyright owner or agent thereof,
-    <em>and</em> you believe that user-generated content (UGC) on the domain https://biotorrents.de infringes your
-    copyrights:
+    <em>If</em> you're a copyright owner or agent of one,
+    <em>and</em> you believe that user-generated content (UGC) on the domain
+    https://biotorrents.de infringes your copyrights:
     <em>then</em> you may notify our Digital Millennium Copyright Act (DMCA) agent in writing.
   </p>
 
@@ -135,6 +135,7 @@ View::show_header('DMCA');
     <a href="https://www.law.cornell.edu/uscode/text/17/512">17 USC 512(f)</a>,
     anyone who knowingly materially misrepresents infringement may be subject to liability.
     Also see
+    <a href="https://www.law.cornell.edu/uscode/text/17/107">17 USC 107</a> and
     <a href="https://www.law.cornell.edu/uscode/text/17/108">17 USC 108</a>.
   </p>
 

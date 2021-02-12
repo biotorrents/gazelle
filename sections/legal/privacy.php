@@ -1,135 +1,260 @@
 <?php
 declare(strict_types=1);
 
-View::show_header('Privacy');
-?>
+View::show_header('Privacy'); ?>
 
 <h2>Privacy Policy</h2>
 
 <section class="tldr">
-  <p>
-    At BioTorrents.de, accessible from https://biotorrents.de, one of our main priorities is the privacy of our
-    visitors.
-    This Privacy Policy document contains types of information that is collected and recorded by BioTorrents.de and how
-    we use it.
-  </p>
 
   <p>
-    If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact
-    us.
+    This policy explains how Omics Tools LLC handles the personal data we collect from you when you use our website.
+    You grant consent on account registration by checking the box that reads,
+    "I consent to the privacy policy and may revoke my consent at any time."
   </p>
 
 
-  <h3>General Data Protection Regulation (GDPR)</h3>
+  <h3>
+    Data collection: what and how
+  </h3>
 
   <p>
-    We are a Data Controller of your information.
+    We collect usernames, email addresses, GPG keys,
+    passphrases, API keys, site activity and preferences,
+    IP addresses, and server error logs.
   </p>
 
   <p>
-    BioTorrents.de's legal basis for collecting and using the personal information described in this Privacy Policy
-    depends on the Personal Information we collect and the specific context in which we collect the information:
+    We don't collect access logs or compile personal data for any commercial reason.
+    Also, we explicitly deny all known browser features, including not limited:
+    camera, microphone, sensors, wake-lock, USB, encrypted media, autoplay, etc.
+  </p>
+
+  <p>
+    You directly provide us with most of the data we collect.
+    We collect and process your personal data when you
   </p>
 
   <ul>
-    <li>BioTorrents.de needs to perform a contract with you</li>
-    <li>You have given BioTorrents.de permission to do so</li>
-    <li>Processing your personal information is in BioTorrents.de's legitimate interests</li>
-    <li>BioTorrents.de needs to comply with the law</li>
+    <li>
+      register online for our services,
+    </li>
+
+    <li>
+      query the tracker for BitTorrent peers,
+    </li>
+
+    <li>
+      participate in our forums and chat rooms, and
+    </li>
+
+    <li>
+      use our website with cookies or API keys.
+    </li>
+  </ul>
+  <br />
+
+
+  <h3>
+    Data use and storage
+  </h3>
+
+  <p>
+    We only use your data to manage your account and administer the site.
+    We never sell or otherwise provide data to third parties, except under subpoena.
+  </p>
+
+  <p>
+    All data read, written, or deleted under this policy will only be managed by SQL queries,
+    and any data returned will only be provided as database dumps.
+  </p>
+
+  <p>
+    We securely store your data in our hardened MariaDB instance.
+    Only Unix socket connections are allowed, and certain services like IRC are denied.
+    Database tools aren't accessible on the public internet.
+  </p>
+
+  <p>
+    Email and IP addresses, and private messages between users,
+    are encrypted and then decrypted in memory.
+    Certain data is hashed before storage and therefore unrecoverable,
+    including passphrases and API keys.
+    Please don't request ciphertext.
+  </p>
+
+  <p>
+    We'll keep your data for your account's lifetime.
+    Once this period expires, we'll delete your data by written request.
+  </p>
+
+
+  <h3>
+    GDPR data protection rights
+  </h3>
+
+  <p>
+    We'd like to make sure you're fully aware of your data protection rights.
+    Every user is entitled to GDPR protections regardless of their jurisdiction:
+  </p>
+
+  <ul class="p">
+    <li>
+      <strong>Access.</strong>
+      You have the right to request copies of your personal data.
+      We may charge a small fee for this service.
+    </li>
+
+    <li>
+      <strong>Rectification.</strong>
+      You have the right to request that we correct what you believe is inaccurate,
+      and to request that we complete what you believe is not.
+    </li>
+
+    <li>
+      <strong>Erasure.</strong>
+      You have the right to request that we erase your personal data, under certain conditions.
+    </li>
+
+    <li>
+      <strong>Restrict Processing.</strong>
+      You have the right to request that we restrict processing your personal data,
+      under certain conditions.
+    </li>
+
+    <li>
+      <strong>Object to Processing.</strong>
+      You have the right to object to our processing your personal data, under certain conditions.
+    </li>
+
+    <li>
+      <strong>Data Portability.</strong>
+      You have the right to request that we transfer data we've collected to you or others,
+      under certain conditions.
+    </li>
   </ul>
 
   <p>
-    BioTorrents.de will retain your personal information only for as long as is necessary for the purposes set out in
-    this Privacy Policy.
-    We will retain and use your information to the extent necessary to comply with our legal obligations, resolve
-    disputes, and enforce our policies.
+    If you make a request, we have one month to respond.
+    Please contact us if you'd like to exercise any of these rights.
+  </p>
+
+
+  <h3>
+    Cookies: what and how
+  </h3>
+
+  <p>
+    Cookies are text files placed on your computer to store functional information.
+    When you log into our website, we save cookies to your browser's local storage.
   </p>
 
   <p>
-    If you are a resident of the European Economic Area (EEA), you have certain data protection rights.
-    If you wish to be informed what Personal Information we hold about you and if you want it to be removed from our
-    systems, please contact us.
+    We strongly encourage you to use an updated browser with sandboxed tabs,
+    and to set your browser to deny disk permissions and to wipe transient data on shutdown.
   </p>
 
   <p>
-    In certain circumstances, you have the following data protection rights:
+    We use cookies to keep you signed in.
+    Our secure session cookie parameters include
   </p>
 
   <ul>
-    <li>The right to access, update or to delete the information we have on you</li>
-    <li>The right of rectification</li>
-    <li>The right to object</li>
-    <li>The right of restriction</li>
-    <li>The right to data portability</li>
-    <li>The right to withdraw consent</li>
-  </ul><br />
+    <li>
+      one-day expiry time,
+    </li>
 
+    <li>
+      scoped to https://biotorrents.de,
+    </li>
 
-  <h3>Log Files</h3>
+    <li>
+      TLS 1.2+ transmission only,
+    </li>
+
+    <li>
+      unavailable to JavaScript APIs, and
+    </li>
+
+    <li>
+      strict same-origin policy.
+    </li>
+  </ul>
 
   <p>
-    BioTorrents.de only logs server errors.
-    The information collected by log files include internet protocol (IP) addresses, browser type, date and time stamp,
-    and referring/exit pages.
-    These are not linked to any information that is personally identifiable.
-    The purpose of the information is for administering the site.
+    You can set your browser to deny cookies
+    but our website won't function as intended.
   </p>
 
 
-  <h3>Cookies and Web Beacons</h3>
+  <h3>
+    Other websites' policies
+  </h3>
 
   <p>
-    Like any other website, BioTorrents.de uses "cookies."
-    These cookies are used to store information including visitors' preferences, and the pages on the website that the
-    visitor accessed or visited.
-    The information is used to optimize the users' experience by customizing our web page content based on visitors'
-    browser type and/or other information.
+    BioTorrents.de links to other websites.
+    Our privacy policy only applies to our website.
+    If you click an external link, please read their privacy policy.
   </p>
 
 
-  <h3>Third Party Privacy Policies</h3>
+  <h3>
+    Changes to our policy
+  </h3>
 
   <p>
-    BioTorrents.de's Privacy Policy does not apply to other advertisers or websites.
-    Thus, we are advising you to consult the respective Privacy Policies of these third-party ad servers for more
-    detailed information.
-    It may include their practices and instructions about how to opt-out of certain options.
-  </p>
-
-  <p>
-    You can choose to disable cookies through your individual browser options.
-    To know more detailed information about cookie management with specific web browsers, it can be found at the
-    browsers' respective websites.
+    We regularly review our policy and publish updates here.
+    Updates will usually describe new security developments.
+    We last updated this policy on 2021-02-11.
   </p>
 
 
-  <h3>Children's Information</h3>
+  <h3>
+    How to contact us
+  </h3>
 
   <p>
-    Another part of our priority is adding protection for children while using the internet.
-    We encourage parents and guardians to observe, participate in, and/or monitor and guide their online activity.
+    If you have any questions about our policy,
+    the data we hold on you,
+    or you'd like to exercise one of your data protection rights,
+    please don't hesitate to contact us.
   </p>
 
   <p>
-    BioTorrents.de does not knowingly collect any Personal Identifiable Information from children under the age of 13.
-    If you think that your child provided this kind of information on our website, we strongly encourage you to contact
-    us immediately and we will do our best efforts to promptly remove such information from our records.
+    <strong>
+      Address
+    </strong>
+    <br />
+
+    Data Protection Officer<br />
+    Omics Tools LLC<br />
+    30 N Gould St Ste 4000<br />
+    Sheridan, WY 82801
+  </p>
+
+  <p>
+    <strong>
+      Email
+    </strong>
+    <br />
+    gdpr at biotorrents dot de
+  </p>
+
+  <p>
+    Please use
+    <a href="https://pgp.mit.edu/pks/lookup?op=get&search=0x760EBED7CFE266D7" target="_blank">GPG 760EBED7CFE266D7</a>
+    if you wish.
   </p>
 
 
-  <h3>Online Privacy Policy Only</h3>
+  <h3>
+    How to contact the appropriate authority
+  </h3>
 
   <p>
-    Our Privacy Policy applies only to our online activities and is valid for visitors to our website with regards to
-    the information that they shared and/or collect in BioTorrents.de.
-    This policy is not applicable to any information collected offline or via channels other than this website.
-  </p>
-
-
-  <h3>Consent</h3>
-
-  <p>
-    By using our website, you hereby consent to our Privacy Policy and agree to its terms.
+    Should you wish to report a complaint,
+    or if you feel that we haven't satisfactorily addressed your concerns,
+    contact the Information Commissioner's Office.
   </p>
 </section>
 

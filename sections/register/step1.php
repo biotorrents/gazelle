@@ -35,9 +35,9 @@ if (empty($Sent)) { ?>
     <tr valign="top">
       <td align="left">
         <p>
-          Use common sense when choosing your username.
-          <strong>Do not choose a username that can be associated with your real name.</strong>
-          If you do so, we will not be changing it for you.
+          Use common sense when picking your username.
+          <strong>Don't choose one associated with your real name.</strong>
+          If you do, we won't be changing it for you.
         </p>
 
         <input type="text" name="username" id="username" class="inputtext" placeholder="Username"
@@ -71,9 +71,17 @@ if (empty($Sent)) { ?>
 
     <tr valign="top">
       <td align="left">
+        <input type="checkbox" name="agereq" id="agereq" value="1" <?php if (!empty($_REQUEST['agereq'])) { ?>
+        checked="checked"<?php } ?> />
+        <label for="agereq">I'm 18 years or older</label>
+      </td>
+    </tr>
+
+    <tr valign="top">
+      <td align="left">
         <input type="checkbox" name="readrules" id="readrules" value="1" <?php if (!empty($_REQUEST['readrules'])) { ?>
         checked="checked"<?php } ?> />
-        <label for="readrules">I will read the rules</label>
+        <label for="readrules">I'll read the site rules and wiki</label>
       </td>
     </tr>
 
@@ -81,16 +89,9 @@ if (empty($Sent)) { ?>
       <td align="left">
         <input type="checkbox" name="readwiki" id="readwiki" value="1" <?php if (!empty($_REQUEST['readwiki'])) { ?>
         checked="checked"<?php } ?> />
-        <label for="readwiki">I will read the wiki</label>
-      </td>
-    </tr>
-
-    <tr valign="top">
-      <td align="left">
-        <input type="checkbox" name="agereq" id="agereq" value="1" <?php if (!empty($_REQUEST['agereq'])) { ?>
-        checked="checked"<?php } ?> />
-        <label for="agereq">I am 18 years of age or older</label>
+        <label for="readwiki">I consent to the privacy policy and may revoke my consent at any time</label>
         <br /><br />
+
       </td>
     </tr>
 

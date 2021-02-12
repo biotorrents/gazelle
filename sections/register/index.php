@@ -7,10 +7,9 @@ $ENV = ENV::go();
 
 /*
 if (isset($LoggedUser)) {
-
-  // Silly user, what are you doing here!
-  header('Location: index.php');
-  error();
+    // Silly user, what are you doing here!
+    header('Location: index.php');
+    error();
 }
 */
 
@@ -35,14 +34,13 @@ if (!empty($_REQUEST['confirm'])) {
         include('step2.php');
     }
 } elseif ($ENV->OPEN_REGISTRATION || !empty($_REQUEST['invite'])) {
-    $Val->SetFields('username', true, 'regex', 'You did not enter a valid username.', array('regex' => USERNAME_REGEX));
-    $Val->SetFields('email', true, 'email', 'You did not enter a valid email address.');
-    $Val->SetFields('password', true, 'regex', 'Your password must be at least 6 characters long.', array('regex'=>'/(?=^.{6,}$).*$/'));
-    $Val->SetFields('confirm_password', true, 'compare', 'Your passwords do not match.', array('comparefield' => 'password'));
-    $Val->SetFields('readrules', true, 'checkbox', 'You did not select the box that says you will read the rules.');
-    $Val->SetFields('readwiki', true, 'checkbox', 'You did not select the box that says you will read the wiki.');
-    $Val->SetFields('agereq', true, 'checkbox', 'You did not select the box that says you are 18 years of age or older.');
-    //$Val->SetFields('captcha', true, 'string', 'You did not enter a captcha code.', array('minlength' => 6, 'maxlength' => 6));
+    $Val->SetFields('username', true, 'regex', "You didn't enter a valid username.", array('regex' => USERNAME_REGEX));
+    $Val->SetFields('email', true, 'email', "You didn't enter a valid email address.");
+    $Val->SetFields('password', true, 'regex', "Your password was too short.", array('regex'=>'/(?=^.{6,}$).*$/'));
+    $Val->SetFields('confirm_password', true, 'compare', "Your passwords don't match.", array('comparefield' => 'password'));
+    $Val->SetFields('readrules', true, 'checkbox', "You didn't agree to read the rules and wiki.");
+    $Val->SetFields('readwiki', true, 'checkbox', "You didn't provide consent to the privacy policy.");
+    $Val->SetFields('agereq', true, 'checkbox', "You didn't confirm that you're of legal age.");
 
     if (!apcu_exists('DBKEY')) {
         $Err = "Registration temporarily disabled due to degraded database access (security measure).";
@@ -51,15 +49,11 @@ if (!empty($_REQUEST['confirm'])) {
     if (!empty($_POST['submit'])) {
         // User has submitted registration form
         $Err = $Val->ValidateForm($_REQUEST);
-        /*
-        if (!$Err && strtolower($_SESSION['captcha']) !== strtolower($_REQUEST['captcha'])) {
-          $Err = 'You did not enter the correct captcha code.';
-        }
-        */
+
         if (!$Err) {
             // Don't allow a username of "0" or "1" due to PHP's type juggling
             if (trim($_POST['username']) === '0' || trim($_POST['username']) === '1') {
-                $Err = 'You cannot have a username of "0" or "1."';
+                $Err = "You can't have a username of 0 or 1.";
             }
 
             $DB->query("
@@ -69,7 +63,7 @@ if (!empty($_REQUEST['confirm'])) {
             list($UserCount) = $DB->next_record();
 
             if ($UserCount) {
-                $Err = 'There is already someone registered with that username.';
+                $Err = "There's already someone registered with that username.";
                 $_REQUEST['username'] = '';
             }
 
@@ -79,7 +73,7 @@ if (!empty($_REQUEST['confirm'])) {
           FROM invites
           WHERE InviteKey = '".db_string($_REQUEST['invite'])."'");
                 if (!$DB->has_results()) {
-                    $Err = 'Invite does not exist.';
+                    $Err = "The invite code is invalid.";
                     $InviterID = 0;
                 } else {
                     list($InviterID, $InviteEmail, $InviteReason) = $DB->next_record(MYSQLI_NUM, false);
@@ -137,13 +131,13 @@ if (!empty($_REQUEST['confirm'])) {
         DELETE FROM invites
         WHERE InviteKey = '".db_string($_REQUEST['invite'])."'");
 
-	    // Award invite badge to inviter if they don't have it
-	    /*
-            if (Badges::award_badge($InviterID, 136)) {
-                Misc::send_pm($InviterID, 0, 'You have received a badge!', "You have received a badge for inviting a user to the site.\n\nIt can be enabled from your user settings.");
-                $Cache->delete_value('user_badges_'.$InviterID);
-	    }
-	     */
+            // Award invite badge to inviter if they don't have it
+            /*
+                if (Badges::award_badge($InviterID, 136)) {
+                    Misc::send_pm($InviterID, 0, 'You have received a badge!', "You have received a badge for inviting a user to the site.\n\nIt can be enabled from your user settings.");
+                    $Cache->delete_value('user_badges_'.$InviterID);
+            }
+             */
 
             $DB->query("
         SELECT ID

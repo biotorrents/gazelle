@@ -50,7 +50,11 @@ View::show_header('Donate');
     <ul>
       <li>
         <strong>Server.</strong>
-        We currently use one budget VPS at 2.50€ per month, and can add more as needed.
+        We use one budget VPS at 2.50€ per month and may add more as needed.
+        Please consider using our
+        <a href="https://hetzner.cloud/?ref=mzIDQWTHipNB" target="_blank">affiliate link</a>.
+        You'd receive 20€ credit, effectively paying your server for 8 months.
+        BioTorrents would receive 10€ credit after a year, paying our server for 4 months.
       </li>
 
       <li>
@@ -70,7 +74,8 @@ View::show_header('Donate');
       <li>
         <strong>Company.</strong>
         Omics Tools LLC is <?= $ENV->SITE_NAME ?>'s parent company.
-        It's $50 per year in filing fees and $125 for resident agent services.
+        It's $50 per year for annual reports and $125 for resident agent services.
+        Also, DMCA agent registration is $6.
       </li>
     </ul>
   </div>
@@ -126,6 +131,9 @@ View::show_header('Donate');
       including <strong>Bitcoin</strong> and other cryptocurrencies:
       Monero, Litecoin, and Curecoin.
       <strong>PayPal</strong> and <strong>USPS money orders</strong> are also options.
+    </p>
+
+    <p>
       Please use
       <a href="https://pgp.mit.edu/pks/lookup?op=get&search=0x760EBED7CFE266D7" target="_blank">GPG 760EBED7CFE266D7</a>
       if you wish.
