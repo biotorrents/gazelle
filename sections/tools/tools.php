@@ -100,8 +100,6 @@ View::show_header('Staff Tools');
 
   // begin Finances category
   $ToolsHTML = "";
-  create_row("Bitcoin donations (balance)", "tools.php?action=bitcoin_balance", check_perms("admin_donor_log"));
-  create_row("Bitcoin donations (unprocessed)", "tools.php?action=bitcoin_unproc", check_perms("admin_donor_log"));
   create_row("Donation log", "tools.php?action=donation_log", check_perms("admin_donor_log"));
   create_row("Donor rewards", "tools.php?action=donor_rewards", check_perms("users_mod"));
 

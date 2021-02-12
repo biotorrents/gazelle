@@ -297,13 +297,6 @@ CREATE TABLE `donations` (
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 -- 2020-03-09
-CREATE TABLE `donations_bitcoin` (
-  `BitcoinAddress` varchar(35) NOT NULL, -- https://en.bitcoin.it/wiki/Address
-  `Amount` decimal(24,8) NOT NULL,
-  KEY `BitcoinAddress` (`BitcoinAddress`,`Amount`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
--- 2020-03-09
 CREATE TABLE `donor_forum_usernames` (
   `UserID` int NOT NULL DEFAULT '0',
   `Prefix` varchar(30) NOT NULL DEFAULT '',
@@ -1429,7 +1422,6 @@ CREATE TABLE `users_info` (
   `ResetExpires` datetime,
   `JoinDate` datetime,
   `Inviter` int DEFAULT NULL,
-  `BitcoinAddress` varchar(34) DEFAULT NULL,
   `WarnedTimes` int NOT NULL DEFAULT '0',
   `DisableAvatar` enum('0','1') NOT NULL DEFAULT '0',
   `DisableInvites` enum('0','1') NOT NULL DEFAULT '0',
@@ -1465,7 +1457,6 @@ CREATE TABLE `users_info` (
   KEY `Inviter` (`Inviter`),
   KEY `RatioWatchEnds` (`RatioWatchEnds`),
   KEY `RatioWatchDownload` (`RatioWatchDownload`),
-  KEY `BitcoinAddress` (`BitcoinAddress`(4)),
   KEY `AuthKey` (`AuthKey`),
   KEY `ResetKey` (`ResetKey`)
 ) ENGINE=InnoDB CHARSET=utf8mb4;

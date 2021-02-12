@@ -5,8 +5,6 @@ if (!check_perms('admin_donor_log')) {
     error(403);
 }
 
-include(SERVER_ROOT.'/sections/donate/config.php');
-
 define('DONATIONS_PER_PAGE', 50);
 list($Page, $Limit) = Format::page_limit(DONATIONS_PER_PAGE);
 

@@ -381,14 +381,6 @@ switch ($_REQUEST['action']) {
     include SERVER_ROOT.'/sections/tools/finances/donation_log.php';
     break;
 
-  case 'bitcoin_unproc':
-    include SERVER_ROOT.'/sections/tools/finances/bitcoin_unproc.php';
-    break;
-
-  case 'bitcoin_balance':
-    include SERVER_ROOT.'/sections/tools/finances/bitcoin_balance.php';
-    break;
-
   case 'donor_rewards':
     include SERVER_ROOT.'/sections/tools/finances/donor_rewards.php';
     break;

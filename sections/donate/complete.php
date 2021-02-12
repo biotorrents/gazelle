@@ -1,12 +1,14 @@
 <?php
+declare(strict_types=1);
 
 enforce_login();
-View::show_header('Donation Complete');
-?>
+View::show_header('Donation Complete'); ?>
+
 <div>
   <div class="header">
     <h3 id="forums">Donation Complete</h3>
   </div>
+
   <div class="box">
     <p>
       Thank you for your donation!

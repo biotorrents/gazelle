@@ -272,13 +272,6 @@ class Donations
         G::$DB->set_query_id($QueryID);
     }
 
-    public static function schedule()
-    {
-        self::$IsSchedule = true;
-        DonationsBitcoin::find_new_donations();
-        self::expire_ranks();
-    }
-
     public static function expire_ranks()
     {
         $QueryID = G::$DB->get_query_id();
