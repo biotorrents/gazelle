@@ -6,6 +6,7 @@
   <a href="/legal.php?p=dmca">DMCA</a>
 </footer>
 
+<script src="$ENV->STATIC_SERVER/functions/vendor/instantpage.js" type="module"></script>
 </body>
 
 </html>

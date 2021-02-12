@@ -125,4 +125,9 @@ if (!empty($NotificationSpans)) {
     }
 }
 
-echo $HTML = '</footer></body></html>';
+echo $HTML = <<<HTML
+    </footer>
+    <script src="$ENV->STATIC_SERVER/functions/vendor/instantpage.js" type="module"></script>
+  </body>
+</html>
+HTML;

@@ -1162,7 +1162,7 @@ ul .invitetree {
 
 input[type="button"],
 input[type="submit"] {
-    background: #111 url(images/alert-overlay.png) repeat-x;
+    background: #111 /*url(images/alert-overlay.png)*/ repeat-x;
     display: inline-block;
     padding: 3px 6px 4px;
     margin: 3px;
@@ -1213,7 +1213,7 @@ input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="search"] {
-    background: #111 url(images/alert-overlay.png) repeat-x;
+    background: #111 /*url(images/alert-overlay.png)*/ repeat-x;
     display: inline-block;
     padding: 3px;
     margin: 3px;
@@ -1244,7 +1244,7 @@ input[type="password"]:active {
 }
 
 input[disabled="disabled"] {
-    background: #4f4f4f url(images/alert-overlay.png) repeat-x;
+    background: #4f4f4f /*url(images/alert-overlay.png)*/ repeat-x;
     color: #dfdfdf;
 }
 input[disabled="disabled"]:hover,
