@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 # Formerly Rules::display_golden_rules()
 $ENV = ENV::go();
@@ -17,7 +18,7 @@ View::show_header('Golden rules');
       <li>
         <strong>
           <a href="https://www.dol.gov/general/ppii" target="_blank">Personal Identifiable Information (PII)</a>
-          is not allowed anywhere on the site without specific staff approval.
+          isn't allowed anywhere on the site without explicit consent.
         </strong>
       </li>
 

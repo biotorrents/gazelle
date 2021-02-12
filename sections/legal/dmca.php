@@ -8,7 +8,7 @@ View::show_header('DMCA');
 
 <section class="tldr">
   <p>
-    <em>If</em> you're a copyright owner or agent of one,
+    <em>If</em> you're a copyright owner or an agent of one,
     <em>and</em> you believe that user-generated content (UGC) on the domain
     https://biotorrents.de infringes your copyrights:
     <em>then</em> you may notify our Digital Millennium Copyright Act (DMCA) agent in writing.
@@ -46,18 +46,18 @@ View::show_header('DMCA');
     </li>
 
     <li>
-      Information reasonably sufficient to permit BioTorrents.de to contact you,
+      Information reasonably sufficient to permit us to contact you,
       such as an address, telephone number, and email.
     </li>
   </ul>
 
   <p>
     Because a high percentage of DMCA takedown notices are invalid or abusive,
-    BioTorrents.de reserves the right to ignore requests for unregistered works.
+    Omics Tools LLC reserves the right to ignore requests for unregistered works.
   </p>
 
   <p>
-    BioTorrents.de authenticates all valid requests.
+    We authenticate all valid requests.
     As a stopgap pending investigation,
     access to the targets of valid requests will be expeditiously disabled.
   </p>
@@ -85,7 +85,7 @@ View::show_header('DMCA');
 
     <li>
       Requests signed by other means than Ed25519 or RSA 4096,
-      or encoded in other formats than UTF-8 or ASCII plaintext.
+      or encoded in other formats than UTF-8 or ASCII.
     </li>
 
 
