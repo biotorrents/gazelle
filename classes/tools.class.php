@@ -1,6 +1,6 @@
 <?php
+#declare(strict_types=1);
 
-# todo: Check strick equality gently
 class Tools
 {
     /**
@@ -60,45 +60,6 @@ class Tools
         return $IPnum;
     }
 
-    /**
-     * Geolocate an IP address using the database
-     *
-     * @param $IP the ip to fetch the country for
-     * @return the country of origin
-     */
-    public static function geoip($IP)
-    {
-        static $IPs = [];
-        if (isset($IPs[$IP])) {
-            return $IPs[$IP];
-        }
-
-        if (is_number($IP)) {
-            $Long = $IP;
-        } else {
-            $Long = Tools::ip_to_unsigned($IP);
-        }
-
-        if (!$Long || $Long == 2130706433) { // No need to check cc for 127.0.0.1
-            return false;
-        }
-
-        $QueryID = G::$DB->get_query_id();
-        G::$DB->query("
-        SELECT EndIP, Code
-        FROM geoip_country
-          WHERE $Long >= StartIP
-          ORDER BY StartIP DESC
-          LIMIT 1");
-
-        if ((!list($EndIP, $Country) = G::$DB->next_record()) || $EndIP < $Long) {
-            $Country = '?';
-        }
-
-        G::$DB->set_query_id($QueryID);
-        $IPs[$IP] = $Country;
-        return $Country;
-    }
 
     /**
      * Gets the hostname for an IP address
@@ -169,16 +130,7 @@ class Tools
      */
     public static function display_ip($IP)
     {
-        $Line = display_str($IP).' ('.Tools::get_country_code_by_ajax($IP).') ';
-        $Line .= '<a href="user.php?action=search&amp;ip_history=on&amp;ip='.display_str($IP).'&amp;matchtype=strict" title="Search" class="brackets tooltip">S</a>';
-        return $Line;
-    }
-
-    public static function get_country_code_by_ajax($IP)
-    {
-        static $ID = 0;
-        ++$ID;
-        return '<span id="cc_'.$ID.'">Resolving CC...<script type="text/javascript">ajax.get(\'tools.php?action=get_cc&ip='.$IP.'\', function(cc) {$(\'#cc_'.$ID.'\').raw().innerHTML = cc;});</script></span>';
+        return $Line = '<a href="user.php?action=search&amp;ip_history=on&amp;ip='.display_str($IP).'&amp;matchtype=strict" title="Search" class="brackets tooltip">S</a>';
     }
 
 

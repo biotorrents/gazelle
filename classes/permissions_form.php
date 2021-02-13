@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /********************************************************************************
  ************ Permissions form ********************** user.php and tools.php ****
@@ -98,7 +99,6 @@ $PermissionsArray = array(
   'admin_schedule' => 'Can run the site schedule.',
   'admin_login_watch' => 'Can manage login watch.',
   'admin_manage_wiki' => 'Can manage wiki access.',
-  'admin_update_geoip' => 'Can update geoIP data.',
   'site_collages_recover' => 'Can recover \'deleted\' collages.',
   'torrents_add_artist' => 'Can add artists to any group.',
   'edit_unknowns' => 'Can edit unknown release information.',
@@ -261,8 +261,7 @@ function permissions_form()
     display_perm('admin_manage_permissions', 'Can edit permission classes/user permissions.');
     display_perm('admin_schedule', 'Can run the site schedule.');
     display_perm('admin_login_watch', 'Can manage login watch.');
-    display_perm('admin_manage_wiki', 'Can manage wiki access.');
-    display_perm('admin_update_geoip', 'Can update geoIP data.'); ?>
+    display_perm('admin_manage_wiki', 'Can manage wiki access.'); ?>
         </td>
       </tr>
     </table>

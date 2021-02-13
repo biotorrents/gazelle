@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 /***********************************************
  * This file displays the list of available tools in the staff toolbox.
@@ -167,7 +168,6 @@ View::show_header('Staff Tools');
   create_row("Service stats", "tools.php?action=service_stats", check_perms("site_debug"));
   create_row("Miscellaneous values", "tools.php?action=misc_values", check_perms('users_mod'));
   create_row("Tracker info", "tools.php?action=ocelot_info", check_perms("users_mod"));
-  create_row("Update GeoIP", "tools.php?action=update_geoip", check_perms("admin_update_geoip"));
 
   if ($ToolsHTML) {
       ?>
@@ -229,7 +229,7 @@ View::show_header('Staff Tools');
         <tr class="colhead">
           <td>Torrents</td>
         </tr>
-        <?=       $ToolsHTML ?>
+        <?= $ToolsHTML ?>
       </table>
     </div>
     <?php

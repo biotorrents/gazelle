@@ -208,7 +208,6 @@ function notify($Channel, $Message)
             . $LoggedUser['Username']
             . ")" : $_SERVER['REMOTE_ADDR']
             . " ("
-            . Tools::geoip($_SERVER['REMOTE_ADDR'])
         . ")")
         
         . " accessing https://"

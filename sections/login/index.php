@@ -46,7 +46,6 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
         SELECT
           m.ID,
           m.Email,
-          m.ipcc,
           i.ResetExpires
         FROM users_main AS m
           INNER JOIN users_info AS i ON i.UserID = m.ID
@@ -283,26 +282,36 @@ else {
                         # todo: Make sure the type is (int)
                         if ($Enabled === '1') {
 
-              // Check if the current login attempt is from a location previously logged in from
+                            // Check if the current login attempt is from a location previously logged in from
                             if (apcu_exists('DBKEY')) {
                                 $DB->query("
-                                SELECT IP
-                                FROM users_history_ips
-                                  WHERE UserID = ?", $UserID);
+                                SELECT
+                                  `IP`
+                                FROM
+                                  `users_history_ips`
+                                WHERE
+                                  `UserID` = '$UserID'
+                                ");
+
                                 $IPs = $DB->to_array(false, MYSQLI_NUM);
                                 $QueryParts = [];
+
                                 foreach ($IPs as $i => $IP) {
                                     $IPs[$i] = Crypto::decrypt($IP[0]);
                                 }
+
                                 $IPs = array_unique($IPs);
                                 if (count($IPs) > 0) { // Always allow first login
                                     foreach ($IPs as $IP) {
                                         $QueryParts[] = "(StartIP<=INET6_ATON('$IP') AND EndIP>=INET6_ATON('$IP'))";
                                     }
+
+                                    /*
                                     $DB->query('SELECT ASN FROM geoip_asn WHERE '.implode(' OR ', $QueryParts));
                                     $PastASNs = array_column($DB->to_array(false, MYSQLI_NUM), 0);
                                     $DB->query("SELECT ASN FROM geoip_asn WHERE StartIP<=INET6_ATON('$_SERVER[REMOTE_ADDR]') AND EndIP>=INET6_ATON('$_SERVER[REMOTE_ADDR]')");
                                     list($CurrentASN) = $DB->next_record();
+                                    */
 
                                     // If FEATURE_ENFORCE_LOCATIONS is enabled, require users to confirm new logins
                                     if (!in_array($CurrentASN, $PastASNs) && $ENV->FEATURE_ENFORCE_LOCATIONS) {
@@ -310,10 +319,14 @@ else {
                                         if ($Cache->get_value('new_location_'.$UserID.'_'.$CurrentASN) !== true) {
                                             $DB->query("
                                             SELECT
-                                              UserName,
-                                              Email
-                                            FROM users_main
-                                              WHERE ID = ?", $UserID);
+                                              `UserName`,
+                                              `Email`
+                                            FROM
+                                              `users_main`
+                                            WHERE
+                                              `ID` = '$UserID'
+                                            ");
+                                            
                                             list($Username, $Email) = $DB->next_record();
                                             Users::auth_location($UserID, $Username, $CurrentASN, Crypto::decrypt($Email));
                                             require('newlocation.php');

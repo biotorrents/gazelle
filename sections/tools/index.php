@@ -25,12 +25,6 @@ if (!isset($_REQUEST['action'])) {
     #error('Need to set an "action" parameter in sections/tools/tools.php.');
 }
 
-if (substr($_REQUEST['action'], 0, 12) === 'update_geoip' && !isset($argv[1])) {
-    if (!check_perms('site_debug')) {
-        error(403);
-    }
-}
-
 if (substr($_REQUEST['action'], 0, 16) === 'rerender_gallery' && !isset($argv[1])) {
     if (!check_perms('site_debug')) {
         error(403);
@@ -419,10 +413,6 @@ switch ($_REQUEST['action']) {
   // END Data
 
   // Misc
-  case 'update_geoip':
-    include SERVER_ROOT.'/sections/tools/development/update_geoip.php';
-    break;
-
   case 'dupe_ips':
     include SERVER_ROOT.'/sections/tools/misc/dupe_ip.php';
     break;

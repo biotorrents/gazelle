@@ -308,15 +308,6 @@ if (count($_GET)) {
             $Join['la'] .= ' JOIN locked_accounts AS la ON la.UserID = um1.ID ';
         }
 
-
-        if (!empty($_GET['cc'])) {
-            if ($_GET['cc_op'] == 'equal') {
-                $Where[] = "um1.ipcc = '".db_string($_GET['cc'])."'";
-            } else {
-                $Where[] = "um1.ipcc != '".db_string($_GET['cc'])."'";
-            }
-        }
-
         if (!empty($_GET['tracker_ip'])) {
             $Distinct = 'DISTINCT ';
             $Join['xfu'] = ' JOIN xbt_files_users AS xfu ON um1.ID = xfu.uid ';
@@ -1131,7 +1122,7 @@ while (list($UserID, $Username, $Uploaded, $Downloaded, $Snatched, $Invitees, $C
       <td><?=Format::get_ratio_html($Uploaded, $Downloaded)?>
       </td>
       <td style="word-break: break-all;"><?=display_str($IP)?>
-        (<?=Tools::get_country_code_by_ajax($IP)?>)</td>
+      </td>
       <td><?=display_str($Email)?>
       </td>
       <td><?=time_diff($JoinDate)?>
@@ -1170,7 +1161,9 @@ while (list($UserID, $Username, $Uploaded, $Downloaded, $Snatched, $Invitees, $C
 ?>
   </table>
 </div>
+
 <div class="linkbox">
   <?=$Pages?>
 </div>
+
 <?php View::show_footer();

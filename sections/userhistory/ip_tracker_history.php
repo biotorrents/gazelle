@@ -1,4 +1,6 @@
 <?php
+#declare(strict_types=1);
+
 /************************************************************************
 ||------------|| User IP history page ||---------------------------||
 
@@ -13,12 +15,12 @@ user.
 define('IPS_PER_PAGE', 25);
 
 if (!check_perms('users_mod')) {
-  error(403);
+    error(403);
 }
 
 $UserID = $_GET['userid'];
 if (!is_number($UserID)) {
-  error(404);
+    error(404);
 }
 
 $DB->query("
@@ -30,7 +32,7 @@ $DB->query("
 list($Username, $Class) = $DB->next_record();
 
 if (!check_perms('users_view_ips', $Class)) {
-  error(403);
+    error(403);
 }
 
 $UsersOnly = $_GET['usersonly'];
@@ -38,15 +40,17 @@ $UsersOnly = $_GET['usersonly'];
 View::show_header("Tracker IP address history for $Username");
 ?>
 <script type="text/javascript">
-function ShowIPs(rowname) {
-  $('tr[name="'+rowname+'"]').gtoggle();
-}
+  function ShowIPs(rowname) {
+    $('tr[name="' + rowname + '"]').gtoggle();
+  }
 </script>
-<?
+<?php
 list($Page, $Limit) = Format::page_limit(IPS_PER_PAGE);
 
 $Perms = get_permissions_for_user($UserID);
-if ($Perms['site_disable_ip_history']) $Limit = 0;
+if ($Perms['site_disable_ip_history']) {
+    $Limit = 0;
+}
 
 $TrackerIps = $DB->query("
   SELECT IP, fid, tstamp
@@ -65,38 +69,38 @@ $Pages = Format::get_pages($Page, $NumResults, IPS_PER_PAGE, 9);
 ?>
 <div>
   <div class="header">
-    <h2>Tracker IP address history for <a href="user.php?id=<?=$UserID?>"><?=$Username?></a></h2>
+    <h2>Tracker IP address history for <a
+        href="user.php?id=<?=$UserID?>"><?=$Username?></a></h2>
   </div>
-  <div class="linkbox"><?=$Pages?></div>
+  <div class="linkbox"><?=$Pages?>
+  </div>
   <table>
     <tr class="colhead">
       <td>IP address</td>
       <td>Torrent</td>
       <td>Time</td>
     </tr>
-<?
+    <?php
 $Results = $DB->to_array();
 foreach ($Results as $Index => $Result) {
-  list($IP, $TorrentID, $Time) = $Result;
-
-?>
-  <tr class="row">
-    <td>
-      <?=$IP?> (<?=Tools::get_country_code_by_ajax($IP)?>)<br /><?=Tools::get_host_by_ajax($IP)?>
-      <a href="http://whatismyipaddress.com/ip/<?=display_str($IP)?>" class="brackets tooltip" title="Search WIMIA.com">WI</a>
-    </td>
-    <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a></td>
-    <td><?=date('Y-m-d g:i:s', $Time)?></td>
-  </tr>
-<?
+    list($IP, $TorrentID, $Time) = $Result; ?>
+    <tr class="row">
+      <td>
+        <?=$IP?><br /><?=Tools::get_host_by_ajax($IP)?>
+        <a href="http://whatismyipaddress.com/ip/<?=display_str($IP)?>"
+          class="brackets tooltip" title="Search WIMIA.com">WI</a>
+      </td>
+      <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a></td>
+      <td><?=date('Y-m-d g:i:s', $Time)?>
+      </td>
+    </tr>
+    <?php
 }
 ?>
-</table>
-<div class="linkbox">
-  <?=$Pages?>
-</div>
+  </table>
+  <div class="linkbox">
+    <?=$Pages?>
+  </div>
 </div>
 
-<?
-View::show_footer();
-?>
+<?php View::show_footer();

@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 if (!check_perms('users_view_ips') || !check_perms('users_view_email')) {
     error(403);
@@ -33,7 +34,6 @@ $RS = "
     SQL_CALC_FOUND_ROWS
     m.ID,
     m.IP,
-    m.ipcc,
     m.Email,
     m.Username,
     m.PermissionID,
@@ -50,7 +50,6 @@ $RS = "
     ) AS Uses,
     im.ID,
     im.IP,
-    im.ipcc,
     im.Email,
     im.Username,
     im.PermissionID,
@@ -115,7 +114,7 @@ if ($DB->has_results()) {
   </tr>
 
   <?php
-  while (list($UserID, $IP, $IPCC, $Email, $Username, $PermissionID, $Uploaded, $Downloaded, $Enabled, $Donor, $Warned, $Joined, $Uses, $InviterID, $InviterIP, $InviterIPCC, $InviterEmail, $InviterUsername, $InviterPermissionID, $InviterUploaded, $InviterDownloaded, $InviterEnabled, $InviterDonor, $InviterWarned, $InviterJoined, $InviterUses) = $DB->next_record()) {
+  while (list($UserID, $IP, $Email, $Username, $PermissionID, $Uploaded, $Downloaded, $Enabled, $Donor, $Warned, $Joined, $Uses, $InviterID, $InviterIP, $InviterEmail, $InviterUsername, $InviterPermissionID, $InviterUploaded, $InviterDownloaded, $InviterEnabled, $InviterDonor, $InviterWarned, $InviterJoined, $InviterUses) = $DB->next_record()) {
       $RowClass = $IP === $InviterIP ? 'warning' : '';
       $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]';
       $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
@@ -184,11 +183,6 @@ if ($DB->has_results()) {
         <a href="http://whatismyipaddress.com/ip/<?=display_str($InviterIP)?>"
           title="WI" class="brackets tooltip">WI</a>
       </span><br />
-    </td>
-
-    <td>
-      <?=$IPCC?><br />
-      <?=$InviterIPCC?>
     </td>
 
     <td>

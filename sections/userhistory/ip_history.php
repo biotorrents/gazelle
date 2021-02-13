@@ -1,4 +1,6 @@
 <?php
+#declare(strict_types=1);
+
 /************************************************************************
 ||------------|| User IP history page ||---------------------------||
 
@@ -14,7 +16,7 @@ define('IPS_PER_PAGE', 25);
 
 $UserID = $_GET['userid'];
 if (!is_number($UserID)) {
-  error(404);
+    error(404);
 }
 
 $DB->query("
@@ -27,69 +29,71 @@ $DB->query("
 list($Username, $Class) = $DB->next_record();
 
 if (!check_perms('users_view_ips', $Class)) {
-  error(403);
+    error(403);
 }
 
 $UsersOnly = isset($_GET['usersonly']) ? $_GET['usersonly'] : 0;
 
 if (isset($_POST['ip'])) {
-  $SearchIP = db_string(str_replace("*", "%", trim($_POST['ip'])));
-  $SearchIPQuery = " AND h1.IP LIKE '$SearchIP' ";
+    $SearchIP = db_string(str_replace("*", "%", trim($_POST['ip'])));
+    $SearchIPQuery = " AND h1.IP LIKE '$SearchIP' ";
 } else {
-  $SearchIPQuery = "";
+    $SearchIPQuery = "";
 }
 
 View::show_header("IP address history for $Username");
 ?>
-<script type="text/javascript">//<![CDATA[
-function ShowIPs(rowname) {
-  $('tr[name="' + rowname + '"]').gtoggle();
+<script type="text/javascript">
+  //<![CDATA[
+  function ShowIPs(rowname) {
+    $('tr[name="' + rowname + '"]').gtoggle();
 
-}
-function Ban(ip, id, elemID) {
-  var notes = prompt("Enter notes for this ban");
-  if (notes != null && notes.length > 0) {
-    var xmlhttp;
-    if (window.XMLHttpRequest) {
-      xmlhttp = new XMLHttpRequest();
-    } else {
-      xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    xmlhttp.onreadystatechange=function() {
-      if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-        document.getElementById(elemID).innerHTML = "<strong>[Banned]</strong>";
-      }
-    }
-    xmlhttp.open("GET", "tools.php?action=quick_ban&perform=create&ip=" + ip + "&notes=" + notes, true);
-    xmlhttp.send();
   }
 
-}
-/*
-function UnBan(ip, id, elemID) {
-    var xmlhttp;
-    if (window.XMLHttpRequest) {
-      xmlhttp = new XMLHttpRequest();
-    } else {
-      xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    xmlhttp.onreadystatechange = function() {
-      if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-        document.getElementById(elemID).innerHTML = "Ban";
-        document.getElementById(elemID).onclick = function() { Ban(ip, id, elemID); return false; };
+  function Ban(ip, id, elemID) {
+    var notes = prompt("Enter notes for this ban");
+    if (notes != null && notes.length > 0) {
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
       }
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          document.getElementById(elemID).innerHTML = "<strong>[Banned]</strong>";
+        }
+      }
+      xmlhttp.open("GET", "tools.php?action=quick_ban&perform=create&ip=" + ip + "&notes=" + notes, true);
+      xmlhttp.send();
     }
-    xmlhttp.open("GET","tools.php?action=quick_ban&perform=delete&id=" + id + "&ip=" + ip, true);
-    xmlhttp.send();
-}
-*/
-//]]>
+
+  }
+  /*
+  function UnBan(ip, id, elemID) {
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        xmlhttp = new XMLHttpRequest();
+      } else {
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          document.getElementById(elemID).innerHTML = "Ban";
+          document.getElementById(elemID).onclick = function() { Ban(ip, id, elemID); return false; };
+        }
+      }
+      xmlhttp.open("GET","tools.php?action=quick_ban&perform=delete&id=" + id + "&ip=" + ip, true);
+      xmlhttp.send();
+  }
+  */
+  //]]>
 </script>
-<?
+<?php
 list($Page, $Limit) = Format::page_limit(IPS_PER_PAGE);
 
 if ($UsersOnly == 1) {
-  $RS = $DB->query("
+    $RS = $DB->query("
     SELECT
       SQL_CALC_FOUND_ROWS
       h1.IP,
@@ -112,7 +116,7 @@ if ($UsersOnly == 1) {
     ORDER BY h1.StartTime DESC
     LIMIT $Limit");
 } else {
-  $RS = $DB->query("
+    $RS = $DB->query("
     SELECT
       SQL_CALC_FOUND_ROWS
       h1.IP,
@@ -143,130 +147,153 @@ $Pages = Format::get_pages($Page, $NumResults, IPS_PER_PAGE, 9);
 ?>
 <div>
   <div class="header">
-    <h2>IP address history for <a href="user.php?id=<?=$UserID?>"><?=$Username?></a></h2>
+    <h2>IP address history for <a
+        href="user.php?id=<?=$UserID?>"><?=$Username?></a></h2>
     <div class="linkbox">
-<?php if ($UsersOnly) { ?>
-      <a href="userhistory.php?action=ips&amp;userid=<?=$UserID?>" class="brackets">View all IP addresses</a>
-<?php } else { ?>
-      <a href="userhistory.php?action=ips&amp;userid=<?=$UserID?>&amp;usersonly=1" class="brackets">View IP addresses with users</a>
-<?php } ?>
+      <?php if ($UsersOnly) { ?>
+      <a href="userhistory.php?action=ips&amp;userid=<?=$UserID?>"
+        class="brackets">View all IP addresses</a>
+      <?php } else { ?>
+      <a href="userhistory.php?action=ips&amp;userid=<?=$UserID?>&amp;usersonly=1"
+        class="brackets">View IP addresses with users</a>
+      <?php } ?>
     </div>
-<?php if ($Pages) { ?>
-    <div class="linkbox pager"><?=$Pages?></div>
-<?php } ?>
+    <?php if ($Pages) { ?>
+    <div class="linkbox pager"><?=$Pages?>
+    </div>
+    <?php } ?>
   </div>
   <table>
     <tr class="colhead">
       <td>IP address search</td>
     </tr>
 
-    <tr><td>
-      <form class="search_form" name="ip_log" method="post" action="">
-        <input type="text" name="ip" />
-        <input type="submit" value="Search" />
-        Wildcard (*) search examples: 127.0.* or 1*2.0.*.1 or *.*.*.*
-      </form>
-    </td></tr>
+    <tr>
+      <td>
+        <form class="search_form" name="ip_log" method="post" action="">
+          <input type="text" name="ip" />
+          <input type="submit" value="Search" />
+          Wildcard (*) search examples: 127.0.* or 1*2.0.*.1 or *.*.*.*
+        </form>
+      </td>
+    </tr>
   </table>
 
   <table id="iphistory">
     <tr class="colhead">
       <td>IP address</td>
-      <td>Started <a href="#" onclick="$('#iphistory td:nth-child(2), #iphistory td:nth-child(4)').ghide(); $('#iphistory td:nth-child(3), #iphistory td:nth-child(5)').gshow(); return false;" class="brackets">Toggle</a></td>
-      <td class="hidden">Started <a href="#" onclick="$('#iphistory td:nth-child(2), #iphistory td:nth-child(4)').gshow(); $('#iphistory td:nth-child(3), #iphistory td:nth-child(5)').ghide(); return false;" class="brackets">Toggle</a></td>
+      <td>Started <a href="#"
+          onclick="$('#iphistory td:nth-child(2), #iphistory td:nth-child(4)').ghide(); $('#iphistory td:nth-child(3), #iphistory td:nth-child(5)').gshow(); return false;"
+          class="brackets">Toggle</a></td>
+      <td class="hidden">Started <a href="#"
+          onclick="$('#iphistory td:nth-child(2), #iphistory td:nth-child(4)').gshow(); $('#iphistory td:nth-child(3), #iphistory td:nth-child(5)').ghide(); return false;"
+          class="brackets">Toggle</a></td>
       <td>Ended</td>
       <td class="hidden">Ended</td>
       <td>Elapsed</td>
     </tr>
-<?
+    <?php
 $counter = 0;
 $IPs = [];
 $Results = $DB->to_array();
 $CanManageIPBans = check_perms('admin_manage_ipbans');
 
 foreach ($Results as $Index => $Result) {
-  list($IP, $StartTime, $EndTime, $UserIDs, $UserStartTimes, $UserEndTimes, $Usernames, $UsersEnabled, $UsersDonor, $UsersWarned) = $Result;
+    list($IP, $StartTime, $EndTime, $UserIDs, $UserStartTimes, $UserEndTimes, $Usernames, $UsersEnabled, $UsersDonor, $UsersWarned) = $Result;
 
-  $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
+    $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
 
-  $HasDupe = false;
-  $UserIDs = explode('|', $UserIDs);
-  if (!$EndTime) {
-    $EndTime = sqltime();
-  }
-  if ($UserIDs[0] != 0) {
-    $HasDupe = true;
-    $UserStartTimes = explode('|', $UserStartTimes);
-    $UserEndTimes = explode('|', $UserEndTimes);
-    $Usernames = explode('|', $Usernames);
-    $UsersEnabled = explode('|', $UsersEnabled);
-    $UsersDonor = explode('|', $UsersDonor);
-    $UsersWarned = explode('|', $UsersWarned);
-  }
-?>
+    $HasDupe = false;
+    $UserIDs = explode('|', $UserIDs);
+    if (!$EndTime) {
+        $EndTime = sqltime();
+    }
+    if ($UserIDs[0] != 0) {
+        $HasDupe = true;
+        $UserStartTimes = explode('|', $UserStartTimes);
+        $UserEndTimes = explode('|', $UserEndTimes);
+        $Usernames = explode('|', $Usernames);
+        $UsersEnabled = explode('|', $UsersEnabled);
+        $UsersDonor = explode('|', $UsersDonor);
+        $UsersWarned = explode('|', $UsersWarned);
+    } ?>
     <tr class="row">
       <td>
-        <?=$IP?> (<?=Tools::get_country_code_by_ajax($IP)?>)<?
+        <?=$IP?>
+        <?php
   if ($CanManageIPBans) {
-    if (!isset($IPs[$IP])) {
-      $sql = "
+      if (!isset($IPs[$IP])) {
+          $sql = "
         SELECT ID, FromIP, ToIP
         FROM ip_bans
         WHERE '".Tools::ip_to_unsigned($IP)."' BETWEEN FromIP AND ToIP
         LIMIT 1";
-      $DB->query($sql);
+          $DB->query($sql);
 
-      if ($DB->has_results()) {
-        $IPs[$IP] = true;
-?>
+          if ($DB->has_results()) {
+              $IPs[$IP] = true; ?>
         <strong>[Banned]</strong>
-<?
-      } else {
-        $IPs[$IP] = false;
-?>
-        <a id="<?=$counter?>" href="#" onclick="Ban('<?=$IP?>', '', '<?=$counter?>'); this.onclick = null; return false;" class="brackets">Ban</a>
-<?
+        <?php
+          } else {
+              $IPs[$IP] = false; ?>
+        <a id="<?=$counter?>" href="#"
+          onclick="Ban('<?=$IP?>', '', '<?=$counter?>'); this.onclick = null; return false;"
+          class="brackets">Ban</a>
+        <?php
+          }
+          $counter++;
       }
-      $counter++;
-    }
-  }
-?>
+  } ?>
         <br />
         <?=Tools::get_host_by_ajax($IP)?>
         <?=($HasDupe ? '<a href="#" onclick="ShowIPs('.$Index.'); return false;">('.count($UserIDs).')</a>' : '(0)')?>
       </td>
-      <td><?=time_diff($StartTime)?></td>
-      <td class="hidden"><?=$StartTime?></td>
-      <td><?=time_diff($EndTime)?></td>
-      <td class="hidden"><?=$EndTime?></td>
-      <td><?//time_diff(strtotime($StartTime), strtotime($EndTime)); ?></td>
+      <td><?=time_diff($StartTime)?>
+      </td>
+      <td class="hidden"><?=$StartTime?>
+      </td>
+      <td><?=time_diff($EndTime)?>
+      </td>
+      <td class="hidden"><?=$EndTime?>
+      </td>
+      <td>
+        <?//time_diff(strtotime($StartTime), strtotime($EndTime));?>
+      </td>
     </tr>
-<?
+    <?php
   if ($HasDupe) {
-    $HideMe = (count($UserIDs) > 10);
-    foreach ($UserIDs as $Key => $Val) {
-      if (!$UserEndTimes[$Key]) {
-        $UserEndTimes[$Key] = sqltime();
-      }
-?>
-    <tr class="row<?=($HideMe ? ' hidden' : '')?>" name="<?=$Index?>">
-      <td>&nbsp;&nbsp;&#187;&nbsp;<?=Users::format_username($Val, true, true, true)?></td>
-      <td><?=time_diff($UserStartTimes[$Key])?></td>
-      <td class="hidden"><?=$UserStartTimes[$Key]?></td>
-      <td><?=time_diff($UserEndTimes[$Key])?></td>
-      <td class="hidden"><?=$UserEndTimes[$Key]?></td>
-      <td><?//time_diff(strtotime($UserStartTimes[$Key]), strtotime($UserEndTimes[$Key])); ?></td>
+      $HideMe = (count($UserIDs) > 10);
+      foreach ($UserIDs as $Key => $Val) {
+          if (!$UserEndTimes[$Key]) {
+              $UserEndTimes[$Key] = sqltime();
+          } ?>
+    <tr
+      class="row<?=($HideMe ? ' hidden' : '')?>"
+      name="<?=$Index?>">
+      <td>&nbsp;&nbsp;&#187;&nbsp;<?=Users::format_username($Val, true, true, true)?>
+      </td>
+      <td><?=time_diff($UserStartTimes[$Key])?>
+      </td>
+      <td class="hidden"><?=$UserStartTimes[$Key]?>
+      </td>
+      <td><?=time_diff($UserEndTimes[$Key])?>
+      </td>
+      <td class="hidden"><?=$UserEndTimes[$Key]?>
+      </td>
+      <td>
+        <?//time_diff(strtotime($UserStartTimes[$Key]), strtotime($UserEndTimes[$Key]));?>
+      </td>
     </tr>
-<?
-
-    }
+    <?php
+      }
   }
 }
 ?>
   </table>
+
   <div class="linkbox">
     <?=$Pages?>
   </div>
 </div>
-<?
-View::show_footer();
+
+<?php View::show_footer();

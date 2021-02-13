@@ -417,12 +417,6 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
         VALUES
           ('$LoggedUser[ID]', '".Crypto::encrypt($NewIP)."', NOW())");
 
-        $ipcc = Tools::geoip($NewIP);
-        $DB->query("
-        UPDATE users_main
-        SET IP = '".Crypto::encrypt($NewIP)."', ipcc = '$ipcc'
-          WHERE ID = '$LoggedUser[ID]'");
-
         $Cache->begin_transaction('user_info_heavy_'.$LoggedUser['ID']);
         $Cache->update_row(false, array('IP' => Crypto::encrypt($_SERVER['REMOTE_ADDR'])));
         $Cache->commit_transaction(0);

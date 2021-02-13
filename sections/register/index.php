@@ -105,11 +105,10 @@ if (!empty($_REQUEST['confirm'])) {
                 $Enabled = '0';
             }
 
-            $IPcc = Tools::geoip($_SERVER['REMOTE_ADDR']);
 
             $DB->query("
         INSERT INTO users_main
-          (Username, Email, PassHash, torrent_pass, IP, PermissionID, Enabled, Invites, FLTokens, Uploaded, ipcc)
+          (Username, Email, PassHash, torrent_pass, IP, PermissionID, Enabled, Invites, FLTokens, Uploaded)
         VALUES
           ('".db_string(trim($_POST['username']))."',
           '".Crypto::encrypt($_POST['email'])."',
@@ -120,8 +119,7 @@ if (!empty($_REQUEST['confirm'])) {
           '$Enabled',
           '".$ENV->STARTING_INVITES."',
           '".$ENV->STARTING_TOKENS."',
-          '".$ENV->STARTING_UPLOAD."',
-          '$IPcc')
+          '".$ENV->STARTING_UPLOAD."')
           ");
 
             $UserID = $DB->inserted_id();
