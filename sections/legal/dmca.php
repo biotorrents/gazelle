@@ -129,7 +129,7 @@ View::show_header('DMCA'); ?>
 
   <p>
     Please use
-    <a href="/sections/legal/pubkey.txt">GPG 760EBED7CFE266D7</a>
+    <a href="/sections/legal/pubkey.txt">GPG A1D095A5DEC74A8B</a>
     if you wish.
   </p>
 </section>

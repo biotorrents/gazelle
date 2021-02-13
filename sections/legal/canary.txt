@@ -1,28 +1,27 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA512
 
-BioTorrents.de positively confirms that the integrity of our system is sound:
-all our infrastructure is in our control, we have not been compromised or
-suffered a data breach, we have not disclosed any private encryption keys, and
-we have not been forced to modify our system to allow access or information
-leakage to a third party.
+BioTorrents.de confirms our system's integrity:
+ - under our exclusive control,
+ - not compromised or data breached,
+ - no forced user data disclosure,
+ - and no forced software updates.
 
-Date:	2020-01-15
-Key:	760EBED7CFE266D7
+Updated 2021-02-12.
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCgAGBQJeHz0nAAoJEHYOvtfP4mbX7e4P+QEL8lCHXIOJr99F6oZshFpS
-jaN3uCzXocOfjyeLJROjUWqyF0l8xD5xj2ent8iDxYDrJsG5IYvB5cGiWPAxvvP9
-Qi+Kb7uDAfTfNf9uNIATUmZ0n8DOT61VIXI+s78E5PPZ0KyN6USRvnFj0lpPfv6f
-BB+B989PseugU3P/NT1/LDuz5H2qaP9/32fKQ720pLnMGilPdqLSVQRCZbm2M7FO
-vg1qvaUXTyFx5ScpOHHzHBQXQPMPx7r4icYTWmwEPvI7dJdSuMk9pLx/+lxsTs+1
-k2QliA97rNT/1Qp+5zk1MQmvOg5/3ATyotpl+Y0nsXvxcS75UMnw9Y7iRD9tgqTY
-MPNFnbL5vlhUYK01w6T87JR7PiOrCPM8VFFQqo8de8gZoBJDbmdQTkX92w/1SDGe
-B5kHod3Vf7Q9CHDkrjy7ozOcfLgkqj9R80G8u5VFwBG28Kgangyvp1m+Umw3BbZr
-zUb6eZyi6cwq3muUVhO4mCB/ZX+MJT57QQ3qcsrpxQpUN1jjAkXSZX9rF/Nd8XA/
-KqF6IU4K8T5lvG8P5/Y/Ur2WgJc2FEXd76WBA2ykovmO8e6zXQz/tFrx0x+8Z0zd
-yTq5NZq/23L5UXT8bBHkFCUFzsgVfX8PV6WsU99SjVs9mnlHo8O8vfeCvDgpKM4K
-sRN9RxOv0/GXn0ZYNp6i
-=0HIZ
+iQIzBAEBCgAdFiEEAYUanUikDJomLCqjodCVpd7HSosFAmAnHa0ACgkQodCVpd7H
+SovM7RAAr598dxNLjUEGxauG2/DJj5Uv9jUFumhZ6CCgEAIg9H69SUN7coDnth7j
+6Z0EncuY264pgNLzCkTZjh92b3inMAD7yiYG8cfBC9xbrL/2BX7UBYuW0vzCzY1D
+RXab1N1DIYzAWVRJDzMM2/4cZ9Lhe5cyAom2XCRitRnZRZ6Su2Mcv0gtsAcC8ejL
+MIf/6zCgrac0gftfe+izociDc3U6LxBklsBOEdPro63ZXM0T3EN80c3JdkSsd3zY
+uEcEe1EZR0rmSQkMEuaFzYWgKUzJncyPzoOtEJgkkwF5T/8XmuSZ0ggl/JDUPwLR
+Z3AM4ajPbCWkYq9jCwm8WjZY8qvmFtkkcEMQeZAKZDwX7HAKdIxk0Ce1KHxqb6x6
+YrqhH6SvLS/Td6HZVxoirs75M4dvEkF85Cx6SSSke2Z/c1UtCTmcdR7hBrxPcHRc
+rj77ndKZ9hwQvv/gh0nYLCEXlYczwuKNFZP5OpHJ5CcfpRYQwT2Pw0K1HHP9Od73
+jzuP0YaMANKZbKqCwf4bGplWg3o3XCvCuF7/rG6zUSTCLSb/c54MYLsh6a5YCPQ3
+jgN1mtzw7NBbh2gJohdkCc+weCGzaLGl6ABZn5FxLv+BN7ORx0PUM/3+I3bAgzwr
+xJ8jJU5T8/z5aCRqgUb9aOMe9lfx+aS8UTAW9qCG5MDi5Sc3n/A=
+=9R94
 -----END PGP SIGNATURE-----
