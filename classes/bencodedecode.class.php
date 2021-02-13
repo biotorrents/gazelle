@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 /**
  * The decode class is simple and straightforward. The only thing to

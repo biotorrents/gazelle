@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 //require_once 'mass_user_torrents_editor.class.php';
 

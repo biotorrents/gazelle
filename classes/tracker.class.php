@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 // TODO: Turn this into a class with nice functions like update_user, delete_torrent, etc.
 class Tracker

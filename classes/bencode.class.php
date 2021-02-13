@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 /**
  * If we're running a 32bit PHP version, we use small objects to store ints.

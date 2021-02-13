@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 # https://github.com/Yubico/php-u2flib-server/blob/master/src/u2flib_server/U2F.php
 

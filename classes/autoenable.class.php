@@ -1,6 +1,6 @@
 <?php
+#declare(strict_types=1);
 
-# todo: Check strict equality gently
 class AutoEnable
 {
     // Constants for database values

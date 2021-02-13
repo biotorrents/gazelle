@@ -103,7 +103,7 @@ CREATE TABLE `artists_group` (
   `ArtistID` int NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) NOT NULL DEFAULT '',
   `ORCiD` varchar(20) NOT NULL DEFAULT '', -- todo
-  `RevisionID` int DEFAULT NULL, -- todo: 12 vs. 10?
+  `RevisionID` int DEFAULT NULL,
   `LastCommentID` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`ArtistID`,`Name`),
   KEY `RevisionID` (`RevisionID`)
@@ -179,7 +179,7 @@ CREATE TABLE `bookmarks_torrents` (
   `UserID` int NOT NULL,
   `GroupID` int NOT NULL,
   `Time` datetime,
-  `Sort` int NOT NULL DEFAULT '0', -- todo: 11 vs. 10?
+  `Sort` int NOT NULL DEFAULT '0',
   UNIQUE KEY `groups_users` (`GroupID`,`UserID`),
   KEY `UserID` (`UserID`),
   KEY `GroupID` (`GroupID`)
@@ -567,7 +567,7 @@ CREATE TABLE `log` (
 
 -- 2020-03-09
 CREATE TABLE `misc` (
-  `ID` int NOT NULL AUTO_INCREMENT, -- todo: 11 vs. 10?
+  `ID` int NOT NULL AUTO_INCREMENT,
   `Name` varchar(64) NOT NULL,
   `First` text,
   `Second` text,
@@ -590,7 +590,7 @@ CREATE TABLE `news` (
 
 -- 2020-03-09
 CREATE TABLE `new_info_hashes` (
-  `TorrentID` int NOT NULL, -- todo: 11 vs. 10?
+  `TorrentID` int NOT NULL,
   `InfoHash` binary(20) DEFAULT NULL,
   PRIMARY KEY (`TorrentID`),
   KEY `InfoHash` (`InfoHash`)
@@ -601,8 +601,8 @@ CREATE TABLE `ocelot_query_times` (
   `buffer` enum('users','torrents','snatches','peers') NOT NULL,
   `starttime` datetime,
   `ocelotinstance` datetime,
-  `querylength` int NOT NULL, -- todo: 11 vs. 10?
-  `timespent` int NOT NULL, -- todo
+  `querylength` int NOT NULL,
+  `timespent` int NOT NULL,
   UNIQUE KEY `starttime` (`starttime`)
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
@@ -623,7 +623,7 @@ CREATE TABLE `permissions` (
 
 -- 2020-03-09
 CREATE TABLE `pm_conversations` (
-  `ID` int NOT NULL AUTO_INCREMENT, -- todo: 12 vs. 10?
+  `ID` int NOT NULL AUTO_INCREMENT,
   `Subject` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB CHARSET=utf8mb4;
@@ -631,14 +631,14 @@ CREATE TABLE `pm_conversations` (
 -- 2020-03-09
 CREATE TABLE `pm_conversations_users` (
   `UserID` int NOT NULL DEFAULT '0',
-  `ConvID` int NOT NULL DEFAULT '0', -- todo: 12 vs. 10?
+  `ConvID` int NOT NULL DEFAULT '0',
   `InInbox` enum('1','0') NOT NULL,
   `InSentbox` enum('1','0') NOT NULL,
   `SentDate` datetime,
   `ReceivedDate` datetime,
   `UnRead` enum('1','0') NOT NULL DEFAULT '1',
   `Sticky` enum('1','0') NOT NULL DEFAULT '0',
-  `ForwardedTo` int NOT NULL DEFAULT '0', -- todo: 12 vs. 10?
+  `ForwardedTo` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`UserID`,`ConvID`),
   KEY `InInbox` (`InInbox`),
   KEY `InSentbox` (`InSentbox`),
@@ -652,8 +652,8 @@ CREATE TABLE `pm_conversations_users` (
 
 -- 2020-03-09
 CREATE TABLE `pm_messages` (
-  `ID` int NOT NULL AUTO_INCREMENT, -- todo: 12 vs. 10?
-  `ConvID` int NOT NULL DEFAULT '0', -- todo
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `ConvID` int NOT NULL DEFAULT '0',
   `SentDate` datetime,
   `SenderID` int NOT NULL DEFAULT '0',
   `Body` text,
@@ -809,14 +809,14 @@ CREATE TABLE `site_history` (
 
 -- 2020-03-09
 CREATE TABLE `slaves` (
-  `UserID` int NOT NULL DEFAULT '0', -- todo: 11 vs. 10?
-  `OwnerID` int NOT NULL DEFAULT '0', -- todo
+  `UserID` int NOT NULL DEFAULT '0',
+  `OwnerID` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`UserID`)
 ) ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_swedish_ci;
 
 -- 2020-03-09
 CREATE TABLE `sphinx_a` (
-  `gid` int DEFAULT NULL, -- todo: 11 vs. 10?
+  `gid` int DEFAULT NULL,
   `aname` text,
   KEY `gid` (`gid`)
 ) ENGINE=InnoDB CHARSET=utf8mb4;
@@ -859,7 +859,7 @@ CREATE TABLE `sphinx_delta` (
 -- 2020-03-09
 CREATE TABLE `sphinx_index_last_pos` (
   `Type` varchar(16) NOT NULL DEFAULT '', -- todo: 16 vs. 25 vs. 50?
-  `ID` int DEFAULT NULL, -- todo: 11 vs. 10?
+  `ID` int DEFAULT NULL,
   PRIMARY KEY (`Type`)
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
@@ -867,8 +867,8 @@ CREATE TABLE `sphinx_index_last_pos` (
 CREATE TABLE `sphinx_requests` (
   `ID` int unsigned NOT NULL,
   `UserID` int unsigned NOT NULL DEFAULT '0',
-  `TimeAdded` int unsigned NOT NULL, -- todo: 12 vs. 10?
-  `LastVote` int unsigned NOT NULL, -- todo
+  `TimeAdded` int unsigned NOT NULL,
+  `LastVote` int unsigned NOT NULL,
   `CategoryID` int NOT NULL,
   `Title` varchar(255) DEFAULT NULL,
   `Title2` varchar(255) DEFAULT NULL,
@@ -878,7 +878,7 @@ CREATE TABLE `sphinx_requests` (
   `CatalogueNumber` varchar(50) NOT NULL,
   `FillerID` int unsigned NOT NULL DEFAULT '0',
   `TorrentID` int unsigned NOT NULL DEFAULT '0',
-  `TimeFilled` int unsigned NOT NULL, -- todo: 12 vs. 10?
+  `TimeFilled` int unsigned NOT NULL,
   `Visible` binary(1) NOT NULL DEFAULT '1',
   `Bounty` bigint unsigned NOT NULL DEFAULT '0',
   `Votes` int unsigned NOT NULL DEFAULT '0',
@@ -897,8 +897,8 @@ CREATE TABLE `sphinx_requests` (
 CREATE TABLE `sphinx_requests_delta` (
   `ID` int unsigned NOT NULL,
   `UserID` int unsigned NOT NULL DEFAULT '0',
-  `TimeAdded` int unsigned DEFAULT NULL, -- todo: 12 vs. 10?
-  `LastVote` int unsigned DEFAULT NULL, -- todo
+  `TimeAdded` int unsigned DEFAULT NULL,
+  `LastVote` int unsigned DEFAULT NULL,
   `CategoryID` tinyint DEFAULT NULL,
   `Title` varchar(255) DEFAULT NULL,
   `Title2` varchar(255) DEFAULT NULL,
@@ -908,7 +908,7 @@ CREATE TABLE `sphinx_requests_delta` (
   `CatalogueNumber` varchar(50) DEFAULT NULL,
   `FillerID` int unsigned NOT NULL DEFAULT '0',
   `TorrentID` int unsigned NOT NULL DEFAULT '0',
-  `TimeFilled` int unsigned DEFAULT NULL, -- todo: 12 vs. 10?
+  `TimeFilled` int unsigned DEFAULT NULL,
   `Visible` binary(1) NOT NULL DEFAULT '1',
   `Bounty` bigint unsigned NOT NULL DEFAULT '0',
   `Votes` int unsigned NOT NULL DEFAULT '0',
@@ -924,14 +924,14 @@ CREATE TABLE `sphinx_requests_delta` (
 
 -- 2020-03-09
 CREATE TABLE `sphinx_t` (
-  `id` int NOT NULL, -- todo: 11 vs. 10?
-  `gid` int NOT NULL, -- todo
-  `uid` int NOT NULL, -- todo
+  `id` int NOT NULL,
+  `gid` int NOT NULL,
+  `uid` int NOT NULL,
   `size` bigint NOT NULL,
-  `snatched` int NOT NULL, -- todo: 11 vs. 10?
-  `seeders` int NOT NULL, -- todo
-  `leechers` int NOT NULL, -- todo
-  `time` int NOT NULL, -- todo
+  `snatched` int NOT NULL,
+  `seeders` int NOT NULL,
+  `leechers` int NOT NULL,
+  `time` int NOT NULL,
   `freetorrent` tinyint NOT NULL,
   `media` varchar(25) NOT NULL,
   `container` varchar(25) NOT NULL,
@@ -947,12 +947,12 @@ CREATE TABLE `sphinx_t` (
 
 -- 2020-03-09
 CREATE TABLE `sphinx_tg` (
-  `id` int NOT NULL, -- todo: 11 vs. 10?
+  `id` int NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `Title2` varchar(255) DEFAULT NULL,
   `namejp` varchar(255) DEFAULT NULL,
   `tags` varchar(500) DEFAULT NULL,
-  `year` smallint DEFAULT NULL, -- todo: 6 vs. 4?
+  `year` smallint DEFAULT NULL,
   `cnumber` varchar(50) DEFAULT NULL,
   `studio` varchar(255) DEFAULT NULL,
   `series` varchar(255) DEFAULT NULL,
@@ -983,15 +983,15 @@ CREATE TABLE `staff_blog_visits` (
 
 -- 2020-03-09
 CREATE TABLE `staff_pm_conversations` (
-  `ID` int NOT NULL AUTO_INCREMENT, -- todo: 11 vs. 10?
+  `ID` int NOT NULL AUTO_INCREMENT,
   `Subject` text,
-  `UserID` int DEFAULT NULL, -- todo: 11 vs. 10?
+  `UserID` int DEFAULT NULL,
   `Status` enum('Open','Unanswered','Resolved') DEFAULT NULL,
-  `Level` int DEFAULT NULL, -- todo: 11 vs. 10?
-  `AssignedToUser` int DEFAULT NULL, -- todo
+  `Level` int DEFAULT NULL,
+  `AssignedToUser` int DEFAULT NULL,
   `Date` datetime DEFAULT NULL,
   `Unread` tinyint DEFAULT NULL,
-  `ResolverID` int DEFAULT NULL, -- todo: 11 vs. 10?
+  `ResolverID` int DEFAULT NULL,
   PRIMARY KEY (`ID`),
   KEY `StatusAssigned` (`Status`,`AssignedToUser`),
   KEY `StatusLevel` (`Status`,`Level`)
@@ -999,17 +999,17 @@ CREATE TABLE `staff_pm_conversations` (
 
 -- 2020-03-09
 CREATE TABLE `staff_pm_messages` (
-  `ID` int NOT NULL AUTO_INCREMENT, -- todo: 11 vs. 10?
-  `UserID` int DEFAULT NULL, -- todo
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `UserID` int DEFAULT NULL,
   `SentDate` datetime DEFAULT NULL,
   `Message` text,
-  `ConvID` int DEFAULT NULL, -- todo: 11 vs. 10?
+  `ConvID` int DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 -- 2020-03-09
 CREATE TABLE `staff_pm_responses` (
-  `ID` int NOT NULL AUTO_INCREMENT, -- todo: 11 vs. 10?
+  `ID` int NOT NULL AUTO_INCREMENT,
   `Message` text,
   `Name` text,
   PRIMARY KEY (`ID`)
@@ -1343,11 +1343,6 @@ CREATE TABLE `users_freeleeches` (
   PRIMARY KEY (`UserID`,`TorrentID`),
   KEY `Time` (`Time`),
   KEY `Expired_Time` (`Expired`,`Time`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-CREATE TABLE `users_geodistribution` (
-  `Code` varchar(2) NOT NULL,
-  `Users` int NOT NULL
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 CREATE TABLE `users_history_emails` (

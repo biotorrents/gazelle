@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 /**
  * Class for functions related to the features involving torrent downloads

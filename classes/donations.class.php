@@ -8,7 +8,7 @@ class Donations
 {
     private static $IsSchedule = false;
 
-    public static function regular_donate($UserID, $DonationAmount, $Source, $Reason, $Currency = 'EUR')
+    public static function regular_donate($UserID, $DonationAmount, $Source, $Reason, $Currency = 'USD')
     {
         self::donate(
             $UserID,
