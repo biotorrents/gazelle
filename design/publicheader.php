@@ -3,23 +3,20 @@ declare(strict_types=1);
 
 $ENV = ENV::go();
 global $LoggedUser;
-?>
 
+echo <<<HTML
 <!doctype html>
 <html>
 
 <head>
-  <title>
-    <?= display_str($PageTitle) ?>
-  </title>
+  <title>$PageTitle</title>
+HTML;
 
-  <?= View::commonMeta(); ?>
+echo View::commonMeta();
+echo "<link href='$ENV->STATIC_SERVER/styles/public.css?v="
+     . filemtime(SERVER_ROOT.'/static/styles/public.css')
+     . "' rel='stylesheet' type='text/css'>";
 
-  <link
-    href="<?=STATIC_SERVER ?>styles/public.css?v=<?=filemtime(SERVER_ROOT.'/static/styles/public.css')?>"
-    rel="stylesheet" type="text/css">
-
-  <?php
 # Load JS
 $Scripts = array_filter(
     array_merge(
@@ -57,22 +54,30 @@ echo View::pushAsset(
 # Only Noto Sans available on public pages
 "$ENV->STATIC_SERVER/styles/assets/fonts/noto/woff2/NotoSans-SemiCondensed.woff2",
     'font'
-); ?>
+);
+
+echo <<<HTML
 </head>
 
 <body>
   <header>
     <a href="login.php">Log In</a>
+HTML;
 
-    <?php if ($ENV->OPEN_REGISTRATION) { ?>
-    <a href="register.php">Register</a>
-    <?php } ?>
+if ($ENV->OPEN_REGISTRATION) {
+    echo '<a href="register.php">Register</a>';
+}
 
-    <a
-      href="mailto:help@biotorrents.de?subject=[TxID <?= strtoupper(bin2hex(random_bytes(2))) ?>] Vague subject lines ignored">Support</a>
+$Email = $ENV->HELP->Email;
+$Subject = $ENV->HELP->Subject;
+$Body = $ENV->HELP->Body;
+echo "<a href='mailto:$Email?subject=$Subject&body=$Body'>Support</a>";
+
+echo <<<HTML
   </header>
 
-  <main>
-    <h1 id="logo">
-      <a href="/" aria-label="Front page"></a>
-    </h1>
+<main>
+  <h1 id="logo">
+    <a href="/" aria-label="Front page"></a>
+  </h1>
+HTML;
