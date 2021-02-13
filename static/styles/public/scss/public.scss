@@ -210,3 +210,10 @@ main {
     margin-left: -50%;
     overflow-y: scroll;
 }
+
+#logo::after {
+    content: "℠";
+    font-size: 0.75rem;
+    font-weight: normal;
+    margin-left: 100%;
+}
