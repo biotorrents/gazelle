@@ -14,7 +14,6 @@ View::show_header('DMCA'); ?>
   </p>
 
   <ul class="p">
-
     <li>
       Identification of the copyrighted work you claim is infringed.
       <em>Please include your copyright registration number or proof of status pending.</em>

@@ -102,53 +102,35 @@ View::show_header('Privacy'); ?>
 
 
   <h3>
-    GDPR data protection rights
+    GDPR: European Union residents
   </h3>
 
   <p>
-    EU residents are entitled to GDPR protections.
-    Please attach a screenshot of your profile page to prove account ownership,
-    and redact sensitive data if you wish.
+    <a href="https://gdpr-info.eu/art-14-gdpr/">Art. 14 GDPR ¶ 5(a) and (b)</a>, and
+    <a href="https://gdpr-info.eu/art-27-gdpr/">Art. 27 ¶ 2</a> apply.
+    Accordingly, we haven't designated an EU representative.
+    Generally, we don't collect any personal data as defined in
+    <a href="https://gdpr-info.eu/art-4-gdpr/">Art. 4</a>
+    except what you voluntarily provide us.
   </p>
 
-  <ul class="p">
-    <li>
-      <strong>Access.</strong>
-      You have the right to request copies of your personal data.
-      We may charge a small fee for this service.
-    </li>
+  <p>
+    We don't pass information to any 3rd-party processors or share it with anyone.
+    We only use it to communicate with you for our mutual business purposes,
+    and we'll be happy to delete your information
+    to the extent you don't enter into a business relationship with us.
+  </p>
 
-    <li>
-      <strong>Rectification.</strong>
-      You have the right to request we correct what you believe is inaccurate,
-      and to request we complete what you believe is not.
-    </li>
 
-    <li>
-      <strong>Erasure.</strong>
-      You have the right to request we erase your personal data on certain conditions.
-    </li>
-
-    <li>
-      <strong>Restrict Processing.</strong>
-      You have the right to request we restrict processing your personal data on certain conditions.
-    </li>
-
-    <li>
-      <strong>Object to Processing.</strong>
-      You have the right to object to our processing your personal data on certain conditions.
-    </li>
-
-    <li>
-      <strong>Data Portability.</strong>
-      You have the right to request we transfer personal data we've collected to you or to others,
-      on certain conditions.
-    </li>
-  </ul>
+  <h3>
+    CCPA: California residents
+  </h3>
 
   <p>
-    If you make a request, we have one month to respond.
-    Please contact us if you'd like to exercise these rights.
+    We're exempt from the California Consumer Privacy Act pursuant to
+    <a href="https://ccpa-info.com/home/1798-140-definitions/">CIV 1798.140(c)(1)(A)</a>.
+    Nonetheless, we'll be happy to delete your information
+    to the extent you don't enter into a business relationship with us.
   </p>
 
 
@@ -210,7 +192,7 @@ View::show_header('Privacy'); ?>
   </h3>
 
   <p>
-    We last updated this policy on 2021-02-12.
+    We last updated this policy on 2021-02-13.
   </p>
 
 
@@ -242,7 +224,7 @@ View::show_header('Privacy'); ?>
       Email
     </strong>
     <br />
-    gdpr at biotorrents dot de
+    privacy at biotorrents dot de
   </p>
 
   <p>

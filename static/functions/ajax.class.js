@@ -19,7 +19,9 @@
   }
   ajax.get("?action=get_post&post=" + postid);
 */
+
 "use strict";
+
 var ajax = {
   get: function (url, callback) {
     var req = new XMLHttpRequest();
@@ -34,6 +36,7 @@ var ajax = {
     req.open("GET", url, true);
     req.send(null);
   },
+
   post: function (url, data, callback) {
     var req = new XMLHttpRequest();
     var params = ajax.serialize(data);
@@ -49,6 +52,7 @@ var ajax = {
     req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     req.send(params);
   },
+
   serialize: function (data) {
     var query = '',
       elements;
@@ -60,9 +64,11 @@ var ajax = {
       elements = document.getElementById(data).elements;
       for (var i = 0, il = elements.length; i < il; i++) {
         var element = elements[i];
+
         if (!element || element.disabled || element.name === '') {
           continue;
         }
+
         switch (element.type) {
           case 'text':
           case 'hidden':
@@ -71,6 +77,7 @@ var ajax = {
           case 'select-one':
             query += element.name + '=' + encodeURIComponent(element.value) + '&';
             break;
+
           case 'select-multiple':
             for (var j = 0, jl = element.options.length; j < jl; j++) {
               var current = element.options[j];
@@ -79,11 +86,13 @@ var ajax = {
               }
             }
             break;
+
           case 'radio':
             if (element.checked) {
               query += element.name + '=' + encodeURIComponent(element.value) + '&';
             }
             break;
+
           case 'checkbox':
             if (element.checked) {
               query += element.name + '=' + encodeURIComponent(element.value) + '&';
@@ -100,6 +109,7 @@ var ajax = {
 function Bookmark(type, id, newName) {
   var bmLinks = $('#bookmarklink_' + type + '_' + id + ', .bookmarklink_' + type + '_' + id);
   var oldName = bmLinks.html();
+
   ajax.get("bookmarks.php?action=add&type=" + type + "&auth=" + authkey + "&id=" + id, function () {
     bmLinks.parent('.remove_bookmark, .add_bookmark').toggleClass('add_bookmark remove_bookmark');
     bmLinks.html(newName).attr('title', 'Remove bookmark').removeAttr('onclick').off('click').click(function () {
@@ -121,6 +131,7 @@ function Unbookmark(type, id, newName) {
   } else {
     var bmLinks = $('#bookmarklink_' + type + '_' + id + ', .bookmarklink_' + type + '_' + id);
     var oldName = bmLinks.html();
+
     ajax.get("bookmarks.php?action=remove&type=" + type + "&auth=" + authkey + "&id=" + id, function () {
       bmLinks.parent('.remove_bookmark, .add_bookmark').toggleClass('add_bookmark remove_bookmark');
       bmLinks.html(newName).attr('title', 'Add bookmark').removeAttr('onclick').off('click').click(function () {
