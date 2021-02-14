@@ -303,7 +303,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
 
     // Create LoggedUser array
     $LoggedUser = array_merge($HeavyInfo, $LightInfo, $UserStats);
-    $LoggedUser['RSS_Auth'] = md5($LoggedUser['ID'] . RSS_HASH . $LoggedUser['torrent_pass']);
+    $LoggedUser['RSS_Auth'] = md5($LoggedUser['ID'] . $ENV->getPriv('RSS_HASH') . $LoggedUser['torrent_pass']);
 
     // $LoggedUser['RatioWatch'] as a bool to disable things for users on Ratio Watch
     $LoggedUser['RatioWatch'] = (

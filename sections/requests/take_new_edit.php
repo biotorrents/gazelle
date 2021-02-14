@@ -190,7 +190,7 @@ if ($NewRequest) {
       TitleJP = '".db_string($TitleJP??"")."',
       Image = '".db_string($Image)."',
       Description = '".db_string($Description)."',
-      CatalogueNumber = '".db_string($CatalogueNumber)."',
+      CatalogueNumber = '".db_string($CatalogueNumber)."'
     WHERE ID = $RequestID");
 
     // We need to be able to delete artists/tags

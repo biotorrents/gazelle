@@ -1,4 +1,7 @@
 <?php
+#declare(strict_types=1);
+
+$ENV = ENV::go();
 
 // This page is run every 15 minutes by cron
 // todo: See if strict equality will break everything
@@ -31,8 +34,8 @@ function run_all_in($Dir)
     }
 }
 
-if ((!isset($_REQUEST['key']) || $_REQUEST['key'] !== SCHEDULE_KEY)
-    #&& (!isset($argv[1]) || $argv[1] !== SCHEDULE_KEY)
+if ((!isset($_REQUEST['key']) || $_REQUEST['key'] !== $ENV->getPriv('SCHEDULE_KEY'))
+    #|| (!isset($argv[1]) || $argv[1] !== $ENV->getPriv('SCHEDULE_KEY'))
     && !$AS) {
     error(403);
 }

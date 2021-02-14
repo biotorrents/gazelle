@@ -5,7 +5,7 @@ html {
 }
 
 /*
- * Classes
+ * Spacing classes
  */
 
 .center {
@@ -52,6 +52,23 @@ pre {
 pre br,
 code br {
     display: none;
+}
+
+/*
+ * Torrent form
+*/
+
+.torrent_form {
+    label {
+        font-weight: bold;
+    }
+
+    .required {
+        &:after {
+            color: red;
+            content: "*";
+        }
+    }
 }
 
 /* Good/bad examples on rules pages */

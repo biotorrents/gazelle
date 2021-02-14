@@ -27,19 +27,6 @@ header,
     text-align: center;
 }
 
-.torrent_form {
-    label {
-        font-weight: bold;
-    }
-
-    .required {
-        &:after {
-            color: red;
-            content: "*";
-        }
-    }
-}
-
 /* Links */
 a {
     color: black;

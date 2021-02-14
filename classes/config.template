@@ -73,7 +73,7 @@ ENV::setPub('SEP', '⸬'); # e.g., News ⸬ BioTorrents.de
 ENV::setPub('CRUMB', '›'); # e.g., Forums › Board › Thread
 
 # The FQDN of your site, e.g., dev.biotorrents.de
-( # Old format: ternary
+( # Old format
     !$ENV->DEV
         ? define('SITE_DOMAIN', 'biotorrents.de') # Production
         : define('SITE_DOMAIN', 'dev.biotorrents.de') # Development
@@ -90,7 +90,7 @@ ENV::setPub(
 ENV::setPub('IMAGE_DOMAIN', 'pics.biotorrents.de');
 
 # The root of the server, used for includes, e.g., /var/www/html/dev.biotorrents.de/
-( # Old format: ternary
+( # Old format
     !$ENV->DEV
         ? define('SERVER_ROOT', '/var/www/html/biotorrents.de/') # Production
         : define('SERVER_ROOT', '/var/www/html/dev.biotorrents.de/') # Development
@@ -104,7 +104,7 @@ ENV::setPub(
 );
 
 # Where torrent files are stored, e.g., /var/www/torrents-dev/
-( # Old format: ternary
+( # Old format
     !$ENV->DEV
         ? define('TORRENT_STORE', '/var/www/torrents/') # Production
         : define('TORRENT_STORE', '/var/www/torrents-dev/') # Development
@@ -126,6 +126,21 @@ ENV::setPub('SRI', 'sha384');
 
 
 /**
+ * Tech support
+ */
+
+$TechSupport = [
+  'Email' => 'help@biotorrents.de',
+  'Subject' => '[TxID '.strtoupper(bin2hex(random_bytes(2))).'] Specific subject line with TxID intact',
+  'Body' => 'A detailed description of how you reach the error and the full text of any site messages you may receive.'
+];
+ENV::setPub(
+    'HELP',
+    new RecursiveArrayObject($TechSupport)
+);
+
+
+/**
  * App keys
  *
  * Separate keys for development and production.
@@ -141,22 +156,16 @@ if (!$ENV->DEV) {
     ENV::setPriv('ENCKEY', '00000000000000000000000000000000');
   
     # Alphanumeric random key. This key must be the argument to schedule.php for the schedule to work
-    define('SCHEDULE_KEY', '00000000000000000000000000000000');
     ENV::setPriv('SCHEDULE_KEY', '00000000000000000000000000000000');
   
     # Random key. Used for generating unique RSS auth key
-    define('RSS_HASH', '00000000000000000000000000000000');
     ENV::setPriv('RSS_HASH', '00000000000000000000000000000000');
 }
 
 # Development
 else {
     ENV::setPriv('ENCKEY', '00000000000000000000000000000000');
-
-    define('SCHEDULE_KEY', '00000000000000000000000000000000');
     ENV::setPriv('SCHEDULE_KEY', '00000000000000000000000000000000');
-    
-    define('RSS_HASH', '00000000000000000000000000000000');
     ENV::setPriv('RSS_HASH', '00000000000000000000000000000000');
 }
 
@@ -190,32 +199,23 @@ else {
  */
 
 # Ocelot connection, e.g., 0.0.0.0
-define('TRACKER_HOST', '0.0.0.0');
 ENV::setPriv('TRACKER_HOST', '0.0.0.0');
 
  # Production
- if (!$ENV->DEV) {
-     define('TRACKER_PORT', 34000);
-     ENV::setPriv('TRACKER_PORT', 34000);
+if (!$ENV->DEV) {
+    ENV::setPriv('TRACKER_PORT', 34000);
   
-     # Must be 32 alphanumeric characters and match site_password in ocelot.conf
-     define('TRACKER_SECRET', '00000000000000000000000000000000');
-     ENV::setPriv('TRACKER_SECRET', '00000000000000000000000000000000');
+    # Must be 32 alphanumeric characters and match site_password in ocelot.conf
+    ENV::setPriv('TRACKER_SECRET', '00000000000000000000000000000000');
 
-     # Must be 32 alphanumeric characters and match report_password in ocelot.conf
-     define('TRACKER_REPORTKEY', '00000000000000000000000000000000');
-     ENV::setPriv('TRACKER_REPORTKEY', '00000000000000000000000000000000');
- }
+    # Must be 32 alphanumeric characters and match report_password in ocelot.conf
+    ENV::setPriv('TRACKER_REPORTKEY', '00000000000000000000000000000000');
+}
 
 # Development
 else {
-    define('TRACKER_PORT', 34001);
     ENV::setPriv('TRACKER_PORT', 34001);
-  
-    define('TRACKER_SECRET', '00000000000000000000000000000000');
     ENV::setPriv('TRACKER_SECRET', '00000000000000000000000000000000');
-  
-    define('TRACKER_REPORTKEY', '00000000000000000000000000000000');
     ENV::setPriv('TRACKER_REPORTKEY', '00000000000000000000000000000000');
 }
 
@@ -254,13 +254,13 @@ if (!$ENV->DEV) {
 else {
     define('ANNOUNCE_URLS', [
       [ # Tier 1
-        'https://devtr.biotorrents.de:443',
+        'https://trx.biotorrents.de:443',
       ], [] # Tier 2
     ]);
 
     $AnnounceURLs = [
       [ # Tier 1
-        'https://devtr.biotorrents.de:443',
+        'https://trx.biotorrents.de:443',
       ], [], # Tier 2
     ];
     ENV::setPub(
@@ -398,8 +398,6 @@ ENV::setPub('USER_LIMIT', 0);
 ENV::setPub('STARTING_INVITES', 2);
 ENV::setPub('STARTING_TOKENS', 2);
 ENV::setPub('STARTING_UPLOAD', 5368709120);
-
-define('DONOR_INVITES', 2);
 ENV::setPub('DONOR_INVITES', 2);
 
 # Bonus Points
@@ -426,10 +424,10 @@ ENV::setPub(
     'PASSWORD_ADVICE',
     <<<HTML
     <p>
-      Any password of 15 characters or longer will be accepted, but a strong password
+      Any password 15 characters or longer is accepted, but a strong password
       <ul>
-        <li>is really a pass<em>phrase</em> with uppercase and lowercase letters and many small words,</li>
-        <li>that contains numbers and symbols, including complex Unicode characters like emoji.</li>
+        <li>is a pass<em>phrase</em> of mixed case with many small words,</li>
+        <li>that contains complex characters including Unicode and emoji.</li>
       </ul>
     </p>
 HTML
@@ -470,21 +468,21 @@ ENV::setPub(
  */
 
 #       Name of class     Class ID (not level)
-define('ADMIN',          '1');
-define('USER',           '2');
-define('MEMBER',         '3');
-define('POWER',          '4');
-define('ELITE',          '5');
-define('LEGEND',         '8');
-define('MOD',            '11');
-define('SYSOP',          '15');
-define('ARTIST',         '19');
-define('DONOR',          '20');
-define('VIP',            '21');
+define('ADMIN', '1');
+define('USER', '2');
+define('MEMBER', '3');
+define('POWER', '4');
+define('ELITE', '5');
+define('LEGEND', '8');
+define('MOD', '11');
+define('SYSOP', '15');
+define('ARTIST', '19');
+define('DONOR', '20');
+define('VIP', '21');
 define('TORRENT_MASTER', '23');
-define('POWER_TM',       '24');
-define('FLS_TEAM',       '33');
-define('FORUM_MOD',      '9001');
+define('POWER_TM', '24');
+define('FLS_TEAM', '33');
+define('FORUM_MOD', '9001');
 
 
 /**
@@ -563,15 +561,15 @@ $AutomatedBadgeIDs = [
   ],
 
   'Posts' => [
-    '5'    => 60,
-    '10'   => 61,
-    '25'   => 62,
-    '50'   => 63,
-    '100'  => 64,
-    '250'  => 65,
-    '500'  => 66,
-    '1000' => 67,
-    '2500' => 68,
+    '5'    => 30,
+    '10'   => 31,
+    '25'   => 32,
+    '50'   => 33,
+    '100'  => 34,
+    '250'  => 35,
+    '500'  => 36,
+    '1000' => 37,
+    '2500' => 38,
   ]
 ];
 ENV::setPub(
@@ -608,7 +606,7 @@ ENV::setPub(
  *     . $InstanceID;
  */
 
-$DatabaseFields = [
+$DB = [
   'AccessionNumber' => [
     'Label' => 'Accession Number',
     'Selector' => ['DOI' => 'javdb', 'RefSeq' => 'anidb', 'UniProt' => 'ehentai'],
@@ -639,8 +637,8 @@ $DatabaseFields = [
   # etc.
 ];
 ENV::setPub(
-    'DBMAP',
-    new RecursiveArrayObject($DatabaseFields)
+    'META',
+    new RecursiveArrayObject($DB)
 );
 
 

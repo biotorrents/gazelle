@@ -355,7 +355,7 @@ HTML;
                   <p id="category_description" class="">
                   <!-- $Cat->Description will live here -->
                   Please see the
-                  <a href="https://dev.biotorrents.de/wiki.php?action=article&name=categories">Categories Wiki</a>
+                  <a href="/wiki.php?action=article&name=categories">Categories Wiki</a>
                   for details
                   </p>
                 </td>

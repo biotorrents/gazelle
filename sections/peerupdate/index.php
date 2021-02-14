@@ -1,7 +1,11 @@
 <?php
+#declare(strict_types=1);
+
+$ENV = ENV::go();
 
 // We keep torrent groups cached. However, the peer counts change often, so our solutions are to not cache them for long, or to update them. Here is where we updated them.
-if ((!isset($argv[1]) || $argv[1]!=SCHEDULE_KEY) && !check_perms('admin_schedule')) { // authorization, Fix to allow people with perms hit this page.
+if ((!isset($argv[1]) || $argv[1]!== $ENV->getPriv('SCHEDULE_KEY'))
+&& !check_perms('admin_schedule')) { // auth fix to let people with perms hit this page
     error(403);
 }
 
@@ -50,6 +54,7 @@ $RowNum = 0;
 $LastGroupID = 0;
 $UpdatedKeys = $UncachedGroups = 0;
 list($TorrentID, $GroupID, $Seeders, $Leechers, $Snatches) = $DB->next_record(MYSQLI_NUM, false);
+
 while ($TorrentID) {
     if ($LastGroupID != $GroupID) {
         $CachedData = $Cache->get_value("torrent_group_$GroupID");
@@ -62,6 +67,7 @@ while ($TorrentID) {
         }
         $LastGroupID = $GroupID;
     }
+
     while ($LastGroupID == $GroupID) {
         $RowNum++;
         if (isset($CachedStats) && is_array($CachedStats[$TorrentID])) {
@@ -72,6 +78,7 @@ while ($TorrentID) {
             $Changed = true;
             unset($OldValues);
         }
+
         if (!($RowNum % $StepSize)) {
             $DB->query("
         SELECT *
@@ -84,6 +91,7 @@ while ($TorrentID) {
         $LastGroupID = $GroupID;
         list($TorrentID, $GroupID, $Seeders, $Leechers, $Snatches) = $DB->next_record(MYSQLI_NUM, false);
     }
+    
     if ($Changed) {
         $Cache->cache_value("torrent_group_$LastGroupID", $CachedData, 0);
         unset($CachedStats);

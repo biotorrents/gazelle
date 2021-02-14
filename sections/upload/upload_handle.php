@@ -256,8 +256,8 @@ default:
             'resolution',
             '1',
             'string',
-            'Scope must be between 5 and 20 characters.',
-            array('maxlength' => 20, 'minlength' => 5)
+            'Scope must be between 4 and 20 characters.',
+            array('maxlength' => 20, 'minlength' => 4)
         );
         
         # torrents_group.TagList

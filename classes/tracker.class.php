@@ -20,8 +20,10 @@ class Tracker
      */
     public static function update_tracker($Action, $Updates, $ToIRC = false)
     {
+        $ENV = ENV::go();
+
         // Build request
-        $Get = TRACKER_SECRET . "/update?action=$Action";
+        $Get = $ENV->getPriv('TRACKER_SECRET') . "/update?action=$Action";
         foreach ($Updates as $Key => $Value) {
             $Get .= "&$Key=$Value";
         }
@@ -102,10 +104,13 @@ class Tracker
      */
     private static function get_stats($Type, $Params = false)
     {
-        if (!defined('TRACKER_REPORTKEY')) {
+        $ENV = ENV::go();
+
+        if (!defined($ENV->getPriv('TRACKER_REPORTKEY'))) {
             return false;
         }
-        $Get = TRACKER_REPORTKEY . '/report?';
+
+        $Get = $ENV->getPriv('TRACKER_REPORTKEY') . '/report?';
         if ($Type === self::STATS_MAIN) {
             $Get .= 'get=stats';
         } elseif ($Type === self::STATS_USER && !empty($Params['key'])) {
@@ -113,10 +118,12 @@ class Tracker
         } else {
             return false;
         }
+
         $Response = self::send_request($Get);
         if ($Response === false) {
             return false;
         }
+
         $Stats = [];
         foreach (explode("\n", $Response) as $Stat) {
             list($Val, $Key) = explode(" ", $Stat, 2);
@@ -124,6 +131,7 @@ class Tracker
         }
         return $Stats;
     }
+
 
     /**
      * Send a request to the tracker
@@ -135,6 +143,8 @@ class Tracker
      */
     private static function send_request($Get, $MaxAttempts = 1, &$Err = false)
     {
+        $ENV = ENV::go();
+
         $Header = "GET /$Get HTTP/1.1\r\nConnection: Close\r\n\r\n";
         $Attempts = 0;
         $Sleep = 0;
@@ -152,7 +162,13 @@ class Tracker
             }
 
             // Send request
-            $File = fsockopen(TRACKER_HOST, TRACKER_PORT, $ErrorNum, $ErrorString);
+            $File = fsockopen(
+                $ENV->getPriv('TRACKER_HOST'),
+                $ENV->getPriv('TRACKER_PORT'),
+                $ErrorNum,
+                $ErrorString
+            );
+            
             if ($File) {
                 if (fwrite($File, $Header) === false) {
                     $Err = "Failed to fwrite()";
@@ -169,6 +185,7 @@ class Tracker
             while (!feof($File)) {
                 $Response .= fread($File, 1024);
             }
+
             $DataStart = strpos($Response, "\r\n\r\n") + 4;
             $DataEnd = strrpos($Response, "\n");
             if ($DataEnd > $DataStart) {
@@ -176,17 +193,20 @@ class Tracker
             } else {
                 $Data = "";
             }
+
             $Status = substr($Response, $DataEnd + 1);
             if ($Status == "success") {
                 $Success = true;
             }
         }
-        $Request = array(
-      'path' => substr($Get, strpos($Get, '/')),
-      'response' => ($Success ? $Data : $Response),
-      'status' => ($Success ? 'ok' : 'failed'),
-      'time' => 1000 * (microtime(true) - $StartTime)
-    );
+
+        $Request = [
+            'path' => substr($Get, strpos($Get, '/')),
+            'response' => ($Success ? $Data : $Response),
+            'status' => ($Success ? 'ok' : 'failed'),
+            'time' => 1000 * (microtime(true) - $StartTime)
+        ];
+
         self::$Requests[] = $Request;
         if ($Success) {
             return $Data;

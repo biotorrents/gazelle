@@ -23,6 +23,7 @@ if (
     error(400, $NoHTML = true);
 }
 
+# Initialize
 require_once 'classes/env.class.php';
 $ENV = ENV::go();
 
@@ -45,7 +46,7 @@ if (!$Enabled = $Cache->get_value("enabled_$User")) {
 }
 
 # Check for RSS auth
-if (md5($User.RSS_HASH.$_GET['passkey']) !== $_GET['auth'] || (int) $Enabled !== 1) {
+if (md5($User.$ENV->getPriv('RSS_HASH').$_GET['passkey']) !== $_GET['auth'] || (int) $Enabled !== 1) {
     $Feed->open_feed();
     $Feed->channel('Blocked', 'RSS feed.');
     $Feed->close_feed();
