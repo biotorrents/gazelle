@@ -50,32 +50,22 @@ View::show_header('Donate');
     <ul>
       <li>
         <strong>Server.</strong>
-        We use one budget VPS at 2.50€ per month and may add more as needed.
+        We use two budget VPS at 2.50€ per month each.
         Please consider using our
         <a href="https://hetzner.cloud/?ref=mzIDQWTHipNB" target="_blank">affiliate link</a>.
-        You'd receive 20€ credit, effectively paying your server for 8 months.
-        BioTorrents would receive 10€ credit after a year, paying our server for 4 months.
-      </li>
-
-      <li>
-        <strong>Seedbox.</strong>
-        A dedicated seedbox from
-        <a href="https://pulsedmedia.com/clients/aff.php?aff=1275" target="_blank">Pulsed Media (affiliate link)</a>
-        is 75€ per year.
-        Please see the <a href="/user.php?id=28">seedbox user account stats</a>.
+        You'd receive 20€ credit, and BioTorrents.de would receive 10€ credit after that.
       </li>
 
       <li>
         <strong>Domain.</strong>
         The domain name is $15 per year.
-        The SSL certificate is gratis.
+        The TLS certificates are gratis.
       </li>
 
       <li>
         <strong>Company.</strong>
         Omics Tools LLC is <?= $ENV->SITE_NAME ?>'s parent company.
         It's $50 per year for annual reports and $125 for resident agent services.
-        Also, DMCA agent registration is $6.
       </li>
     </ul>
   </div>

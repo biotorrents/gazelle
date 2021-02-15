@@ -2,18 +2,10 @@
 declare(strict_types=1);
 
 $ENV = ENV::go();
-View::show_header('Recover Password');
-?>
+View::show_header('Recover Password', 'validate,password_validate');
 
-<h2>Reset your password</h2>
+echo '<h2>Reset your password</h2>';
 
-<script src="<?=(STATIC_SERVER)?>functions/validate.js" type="text/javascript">
-</script>
-
-<script src="<?=(STATIC_SERVER)?>functions/password_validate.js"
-  type="text/javascript"></script>
-
-<?php
 if (empty($PassWasReset)) {
     if (!empty($Err)) { ?>
 <strong class="important_text"><?=display_str($Err)?></strong><br /><br />

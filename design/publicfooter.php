@@ -1,3 +1,9 @@
+<?php
+declare(strict_types=1);
+
+$ENV = ENV::go();
+
+echo <<<HTML
 </main>
 
 <footer>
@@ -10,3 +16,4 @@
 </body>
 
 </html>
+HTML;

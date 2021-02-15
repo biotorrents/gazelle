@@ -34,11 +34,12 @@ if ($LoggedUser['LastReadNews'] !== $News[0][0] && count($News) > 0) {
     $LoggedUser['LastReadNews'] = $News[0][0];
 }
 
-View::show_header('News', 'bbcode,news_ajax');
+View::show_header('News', 'news_ajax');
+#View::show_header('News', 'bbcode,news_ajax');
 ?>
 <div>
   <div class="sidebar">
-    <?php #include 'connect.php'; ?>
+    <?php #include 'connect.php';?>
 
     <?php
     # Staff blog
@@ -49,7 +50,7 @@ if (check_perms('users_mod')) { ?>
       </div>
       <?php
 if (($Blog = $Cache->get_value('staff_blog')) === false) {
-        $DB->query("
+    $DB->query("
     SELECT
       b.ID,
       um.Username,
@@ -59,9 +60,9 @@ if (($Blog = $Cache->get_value('staff_blog')) === false) {
     FROM staff_blog AS b
       LEFT JOIN users_main AS um ON b.UserID = um.ID
     ORDER BY Time DESC");
-        $Blog = $DB->to_array(false, MYSQLI_NUM);
-        $Cache->cache_value('staff_blog', $Blog, 1209600);
-    }
+    $Blog = $DB->to_array(false, MYSQLI_NUM);
+    $Cache->cache_value('staff_blog', $Blog, 1209600);
+}
     if (($SBlogReadTime = $Cache->get_value('staff_blog_read_'.$LoggedUser['ID'])) === false) {
         $DB->query("
     SELECT Time

@@ -10,7 +10,7 @@ Add the JavaScript validation into the display page using the class
 //-----------------------------------*/
 
 // Allow users to reset their password while logged in
-if (!empty($LoggedUser['ID']) && $_REQUEST['act'] != 'recover') {
+if (!empty($LoggedUser['ID']) && $_REQUEST['act'] !== 'recover') {
     header('Location: index.php');
     error();
 }
@@ -24,6 +24,7 @@ if (Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
     error('Your IP address has been banned.');
 }
 
+# Initialize
 require_once SERVER_ROOT.'/classes/twofa.class.php';
 require_once SERVER_ROOT.'/classes/u2f.class.php';
 require_once SERVER_ROOT.'/classes/validate.class.php';
@@ -33,28 +34,28 @@ $TwoFA = new TwoFactorAuth($ENV->SITE_NAME);
 $U2F = new u2f\U2F('https://'.SITE_DOMAIN);
 
 # todo: Test strict equality very gently here
-if (array_key_exists('action', $_GET) && $_GET['action'] == 'disabled') {
+if (array_key_exists('action', $_GET) && $_GET['action'] === 'disabled') {
     require('disabled.php');
     error();
 }
 
-if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
+if (isset($_REQUEST['act']) && $_REQUEST['act'] === 'recover') {
     // Recover password
     if (!empty($_REQUEST['key'])) {
         // User has entered a new password, use step 2
         $DB->query("
         SELECT
-          m.ID,
-          m.Email,
-          i.ResetExpires
-        FROM users_main AS m
-          INNER JOIN users_info AS i ON i.UserID = m.ID
-          WHERE i.ResetKey = ?
-          AND i.ResetKey != ''", $_REQUEST['key']);
+          m.`ID`,
+          m.`Email`,
+          i.`ResetExpires`
+        FROM `users_main` AS m
+          INNER JOIN `users_info` AS i ON i.`UserID` = m.`ID`
+          WHERE i.`ResetKey` = ?
+          AND i.`ResetKey` != ''", $_REQUEST['key']);
         list($UserID, $Email, $Country, $Expires) = $DB->next_record();
 
         if (!apcu_exists('DBKEY')) {
-            error('Database not fully decrypted. Please wait for staff to fix this and try again later');
+            error('Database not fully decrypted. Please wait for staff to fix this and try again later.');
         }
 
         $Email = Crypto::decrypt($Email);
@@ -65,27 +66,33 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
             $Validate->SetFields('verifypassword', '1', 'compare', 'Your passwords did not match.', array('comparefield' => 'password'));
 
             if (!empty($_REQUEST['password'])) {
-                // If the user has entered a password.
-                // If the user has not entered a password, $PassWasReset is not set to 1, and the success message is not shown
+                // If the user entered a password.
+                // If not, $PassWasReset !== 1, success message hidden.
                 $Err = $Validate->ValidateForm($_REQUEST);
                 if ($Err == '') {
                     // Form validates without error, set new secret and password.
-                    $DB->query("
+                    $DB->query(
+                        "
                     UPDATE
-                      users_main AS m,
-                      users_info AS i
+                      `users_main` AS m,
+                      `users_info` AS i
                     SET
-                      m.PassHash = ?,
-                      i.ResetKey = '',
-                      m.LastLogin = NOW(),
-                      i.ResetExpires = NULL
-                      WHERE m.ID = ?
-                      AND i.UserID = m.ID", Users::make_sec_hash($_REQUEST['password']), $UserID);
+                      m.`PassHash` = ?,
+                      i.`ResetKey` = '',
+                      m.`LastLogin` = NOW(),
+                      i.`ResetExpires` = NULL
+                      WHERE m.`ID` = ?
+                      AND i.`UserID` = m.`ID`",
+                        Users::make_sec_hash($_REQUEST['password']),
+                        $UserID
+                    );
+
                     $DB->query("
-                    INSERT INTO users_history_passwords
-                      (UserID, ChangerIP, ChangeTime)
+                    INSERT INTO `users_history_passwords`
+                      (`UserID`, `ChangerIP`, `ChangeTime`)
                     VALUES
                       (?, ?, NOW())", $UserID, Crypto::encrypt($_SERVER['REMOTE_ADDR']));
+
                     $PassWasReset = true;
                     $LoggedUser['ID'] = $UserID; // Set $LoggedUser['ID'] for logout_all_sessions() to work
                     logout_all_sessions();
@@ -193,7 +200,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
                       AND `Active` = 1
                     ");
                 } else {
-                    $Err = 'There is no user with that email address';
+                    $Err = 'There is no user with that email address.';
                 }
             }
         } elseif (!empty($_SESSION['reseterr'])) {
@@ -209,7 +216,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] == 'recover') {
     }
 } // End password recovery
 
-elseif (isset($_REQUEST['act']) && $_REQUEST['act'] == 'newlocation') {
+elseif (isset($_REQUEST['act']) && $_REQUEST['act'] === 'newlocation') {
     if (isset($_REQUEST['key'])) {
         if ($ASNCache = $Cache->get_value('new_location_'.$_REQUEST['key'])) {
             $Cache->cache_value('new_location_'.$ASNCache['UserID'].'_'.$ASNCache['ASN'], true);
@@ -226,7 +233,7 @@ elseif (isset($_REQUEST['act']) && $_REQUEST['act'] == 'newlocation') {
 // Normal login
 else {
     $Validate->SetFields('username', true, 'regex', 'You did not enter a valid username', array('regex' => USERNAME_REGEX));
-    $Validate->SetFields('password', '1', 'string', 'You entered an invalid password', array('minlength' => '6', 'maxlength' => '307200'));
+    $Validate->SetFields('password', '1', 'string', 'You entered an invalid password', array('minlength' => '15', 'maxlength' => '307200'));
 
     list($Attempts, $Banned) = $Cache->get_value('login_attempts_'.db_string($_SERVER['REMOTE_ADDR']));
 
@@ -306,12 +313,10 @@ else {
                                         $QueryParts[] = "(StartIP<=INET6_ATON('$IP') AND EndIP>=INET6_ATON('$IP'))";
                                     }
 
-                                    /*
                                     $DB->query('SELECT ASN FROM geoip_asn WHERE '.implode(' OR ', $QueryParts));
                                     $PastASNs = array_column($DB->to_array(false, MYSQLI_NUM), 0);
                                     $DB->query("SELECT ASN FROM geoip_asn WHERE StartIP<=INET6_ATON('$_SERVER[REMOTE_ADDR]') AND EndIP>=INET6_ATON('$_SERVER[REMOTE_ADDR]')");
                                     list($CurrentASN) = $DB->next_record();
-                                    */
 
                                     // If FEATURE_ENFORCE_LOCATIONS is enabled, require users to confirm new logins
                                     if (!in_array($CurrentASN, $PastASNs) && $ENV->FEATURE_ENFORCE_LOCATIONS) {

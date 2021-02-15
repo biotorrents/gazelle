@@ -49,7 +49,7 @@ $Styles = array_filter(
     array_merge(
         [
           'vendor/jquery-ui.min',
-          'assets/fonts/fa/css/all.min',
+          #'assets/fonts/fa/css/all.min',
           'global'
         ],
         explode(',', $CSSIncludes)

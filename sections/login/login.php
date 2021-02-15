@@ -1,8 +1,7 @@
 <?php
 declare(strict_types=1);
 
-View::show_header('Login');
-?>
+View::show_header('Login'); ?>
 
 <p class="center mouseless">
   A platform to share <strong>biological sequence</strong><br />
@@ -51,6 +50,7 @@ if (!$Banned) { ?>
         <input type="password" minlength="15" name="password" id="password" class="inputtext" required="required"
           maxlength="307200" pattern=".{15,307200}" placeholder="Password" autocomplete="current-password" />
       </td>
+
       <td>
         <input type="text" name="twofa" id="twofa" class="inputtext" maxlength="6" pattern="[0-9]{6}"
           inputmode="numeric" placeholder="2FA" size="6" title="Leave blank if you have not enabled 2FA"
@@ -70,7 +70,7 @@ if (!$Banned) { ?>
 } # if !$Banned
 else { ?>
 <p class="error">
-  You are banned from logging in for a few hours.
+  You're banned from logging in for a few hours.
 </p>
 <?php
   }

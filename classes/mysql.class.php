@@ -115,6 +115,7 @@ if (!extension_loaded('mysqli')) {
     error('Mysqli Extension not loaded.');
 }
 
+
 /**
  * db_string
  * Handles escaping
@@ -143,6 +144,7 @@ function db_string($String, $DisableWildcards = false)
     return $String;
 }
 
+
 /**
  * db_array
  */
@@ -159,6 +161,7 @@ function db_array($Array, $DontEscape = [], $Quote = false)
     }
     return $Array;
 }
+
 
 // todo: Revisit access levels once Drone is replaced by ZeRobot
 class DB_MYSQL
@@ -182,19 +185,39 @@ class DB_MYSQL
     protected $Port = 0;
     protected $Socket = '';
 
+    protected $Key = '';
+    protected $Cert = '';
+    protected $CA = '';
+
+
     /**
      * __construct
      */
-    public function __construct($Database = null, $User = null, $Pass = null, $Server = null, $Port = null, $Socket = null)
-    {
+    public function __construct(
+        $Database = null,
+        $User = null,
+        $Pass = null,
+        $Server = null,
+        $Port = null,
+        $Socket = null,
+        $Key = null,
+        $Cert = null,
+        $CA = null
+    ) {
         $ENV = ENV::go();
+
         $this->Database = $ENV->getPriv('SQLDB');
         $this->User = $ENV->getPriv('SQLLOGIN');
         $this->Pass = $ENV->getPriv('SQLPASS');
         $this->Server = $ENV->getPriv('SQLHOST');
         $this->Port = $ENV->getPriv('SQLPORT');
         $this->Socket = $ENV->getPriv('SQLSOCK');
+
+        $this->Key = $ENV->getPriv('SQL_KEY');
+        $this->Cert = $ENV->getPriv('SQL_CERT');
+        $this->CA = $ENV->getPriv('SQL_CA');
     }
+
 
     /**
      * halt
@@ -220,13 +243,35 @@ class DB_MYSQL
         }
     }
 
+
     /**
      * connect
      */
     public function connect()
     {
         if (!$this->LinkID) {
-            $this->LinkID = mysqli_connect($this->Server, $this->User, $this->Pass, $this->Database, $this->Port, $this->Socket); // defined in config.php
+            $this->LinkID = mysqli_init();
+
+            mysqli_ssl_set(
+                $this->LinkID,
+                $this->Key,
+                $this->Cert,
+                $this->Ca,
+                null,
+                null
+            );
+
+            mysqli_real_connect(
+                $this->LinkID,
+                $this->Server,
+                $this->User,
+                $this->Pass,
+                $this->Database,
+                $this->Port,
+                $this->Socket,
+                MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT
+            );
+
             if (!$this->LinkID) {
                 $this->Errno = mysqli_connect_errno();
                 $this->Error = mysqli_connect_error();
@@ -235,7 +280,8 @@ class DB_MYSQL
         }
         mysqli_set_charset($this->LinkID, "utf8mb4");
     }
-     
+
+
     /**
      * prepare_query
      */
@@ -258,6 +304,7 @@ class DB_MYSQL
         return $this->StatementID;
     }
 
+
     /**
      * exec_prepared_query
      */
@@ -270,6 +317,7 @@ class DB_MYSQL
         $this->Queries[] = [$this->PreppedQuery, $QueryRunTime, null];
         $this->Time += $QueryRunTime;
     }
+
 
     /**
      * Runs a raw query assuming pre-sanitized input. However, attempting to self sanitize (such
@@ -360,6 +408,7 @@ class DB_MYSQL
         return $this->QueryID;
     }
 
+
     /**
      * inserted_id
      */
@@ -369,6 +418,7 @@ class DB_MYSQL
             return mysqli_insert_id($this->LinkID);
         }
     }
+
 
     /**
      * next_record
@@ -388,6 +438,7 @@ class DB_MYSQL
         }
     }
 
+
     /**
      * close
      */
@@ -401,6 +452,7 @@ class DB_MYSQL
         }
     }
 
+
     /*
      * Returns an integer with the number of rows found
      * Returns a string if the number of rows found exceeds MAXINT
@@ -412,6 +464,7 @@ class DB_MYSQL
         }
     }
 
+
     /*
      * Returns true if the query exists and there were records found
      * Returns false if the query does not exist or if there were 0 records returned
@@ -420,6 +473,7 @@ class DB_MYSQL
     {
         return ($this->QueryID && $this->record_count() !== 0);
     }
+
 
     /**
      * affected_rows
@@ -431,6 +485,7 @@ class DB_MYSQL
         }
     }
 
+
     /**
      * info
      */
@@ -438,6 +493,7 @@ class DB_MYSQL
     {
         return mysqli_get_host_info($this->LinkID);
     }
+
 
     // Creates an array from a result set
     // If $Key is set, use the $Key column in the result set as the array key
@@ -461,6 +517,7 @@ class DB_MYSQL
         return $Return;
     }
 
+
     //  Loops through the result set, collecting the $ValField column into an array with $KeyField as keys
     public function to_pair($KeyField, $ValField, $Escape = true)
     {
@@ -480,6 +537,7 @@ class DB_MYSQL
         return $Return;
     }
 
+
     //  Loops through the result set, collecting the $Key column into an array
     public function collect($Key, $Escape = true)
     {
@@ -496,6 +554,7 @@ class DB_MYSQL
     /**
      * Useful extras from OPS
      */
+
 
     /**
      * Runs a prepared_query using placeholders and returns the matched row.
@@ -514,6 +573,7 @@ class DB_MYSQL
         $this->set_query_id($qid);
         return $result;
     }
+
 
     /**
      * Runs a prepared_query using placeholders and returns the first element
@@ -545,6 +605,7 @@ class DB_MYSQL
         $this->Row = 0;
     }
 
+
     /**
      * get_query_id
      */
@@ -552,6 +613,7 @@ class DB_MYSQL
     {
         return $this->QueryID;
     }
+
 
     /**
      * beginning
@@ -561,6 +623,7 @@ class DB_MYSQL
         mysqli_data_seek($this->QueryID, 0);
         $this->Row = 0;
     }
+
 
     /**
      * This function determines whether the last query caused warning messages
@@ -581,76 +644,4 @@ class DB_MYSQL
         }
         $this->Queries[count($this->Queries) - 1][2] = $Warnings;
     }
-
-
-    /**
-     * todo: Work this into Bio Gazelle
-     * @see https://github.com/OPSnet/Gazelle/blob/master/app/DB.php
-     */
-
-    /**
-     * Soft delete a row from a table <t> by inserting it into deleted_<t> and then delete from <t>
-     * @param string $schema the schema name
-     * @param string $table the table name
-     * @param array $condition Must be an array of arrays, e.g. [[column_name, column_value]] or [[col1, val1], [col2, val2]]
-     *                         Will be used to identify the row (or rows) to delete
-     * @param boolean $delete whether to delete the matched rows
-     * @return array 2 elements, true/false and message if false
-     * /
-    public function softDelete($schema, $table, array $condition, $delete = true)
-    {
-        $sql = 'SELECT column_name, column_type FROM information_schema.columns WHERE table_schema = ? AND table_name = ? ORDER BY 1';
-        $this->db->prepared_query($sql, $schema, $table);
-        $t1 = $this->db->to_array();
-        $n1 = count($t1);
-
-        $softDeleteTable = 'deleted_' . $table;
-        $this->db->prepared_query($sql, $schema, $softDeleteTable);
-        $t2 = $this->db->to_array();
-        $n2 = count($t2);
-
-        if (!$n1) {
-            return [false, "No such table $table"];
-        } elseif (!$n2) {
-            return [false, "No such table $softDeleteTable"];
-        } elseif ($n1 != $n2) {
-            // tables do not have the same number of columns
-            return [false, "$table and $softDeleteTable column count mismatch ($n1 != $n2)"];
-        }
-
-        $column = [];
-        for ($i = 0; $i < $n1; ++$i) {
-            // a column does not have the same name or datatype
-            if (strtolower($t1[$i][0]) != strtolower($t2[$i][0]) || $t1[$i][1] != $t2[$i][1]) {
-                return [false, "{$table}: column {$t1[$i][0]} name or datatype mismatch {$t1[$i][0]}:{$t2[$i][0]} {$t1[$i][1]}:{$t2[$i][1]}"];
-            }
-            $column[] = $t1[$i][0];
-        }
-        $columnList = implode(', ', $column);
-        $conditionList = implode(' AND ', array_map(function ($c) {
-            return "{$c[0]} = ?";
-        }, $condition));
-        $argList = array_map(function ($c) {
-            return $c[1];
-        }, $condition);
-
-        $sql = "INSERT INTO $softDeleteTable
-                  ($columnList)
-            SELECT $columnList
-            FROM $table
-            WHERE $conditionList";
-        $this->db->prepared_query($sql, ...$argList);
-        if ($this->db->affected_rows() == 0) {
-            return [false, "condition selected 0 rows"];
-        }
-
-        if (!$delete) {
-            return [true, "rows affected: " . $this->db->affected_rows()];
-        }
-
-        $sql = "DELETE FROM $table WHERE $conditionList";
-        $this->db->prepared_query($sql, ...$argList);
-        return [true, "rows deleted: " . $this->db->affected_rows()];
-    }
-    */
 }
