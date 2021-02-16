@@ -1212,7 +1212,7 @@ CREATE TABLE `torrents_recommended` (
   KEY `Time` (`Time`)
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
-CREATE TABLE `torrents_screenshots` (
+CREATE TABLE `torrents_doi` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `TorrentID` int NOT NULL,
   `UserID` int NOT NULL,

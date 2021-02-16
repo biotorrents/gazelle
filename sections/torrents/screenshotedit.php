@@ -39,9 +39,9 @@ SELECT
   `UserID`,
   `URI`
 FROM
-  `torrents_screenshots`
+  `torrents_doi`
 WHERE
-  `GroupID` = '$GroupID'
+  `TorrentID` = '$GroupID'
 ");
 
 // $Old is an array of the form URL => UserID where UserID is the ID of the User who originally uploaded that image.
@@ -81,7 +81,7 @@ if (!empty($Deleted)) {
         $DB->prepare_query("
         DELETE
         FROM
-          `torrents_screenshots`
+          `torrents_doi`
         WHERE
           `URI` = '$ScreenDel'
         ");
@@ -100,8 +100,8 @@ if (!empty($New)) {
     $Screenshot = '';
     $DB->prepare_query(
         "
-    INSERT INTO `torrents_screenshots`
-      (`GroupID`, `UserID`, `Time`, `URI`)
+    INSERT INTO `torrents_doi`
+      (`TorrentID`, `UserID`, `Time`, `URI`)
     VALUES
       (?, ?, NOW(), ?)",
         $GroupID,

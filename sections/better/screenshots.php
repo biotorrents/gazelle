@@ -23,7 +23,7 @@ WHERE
   SELECT DISTINCT
     `TorrentID`
   FROM
-    `torrents_screenshots`
+    `torrents_doi`
   )
 ORDER BY
   RAND()

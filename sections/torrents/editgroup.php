@@ -56,9 +56,9 @@ SELECT
   `Time`,
   `URI`
 FROM
-  `torrents_screenshots`
+  `torrents_doi`
 WHERE
-  `GroupID` = '$GroupID'
+  `TorrentID` = '$GroupID'
 ");
 
 if ($DB->has_results()) {

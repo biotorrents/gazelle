@@ -63,9 +63,9 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
           `Time`,
           `URI`
         FROM
-          `torrents_screenshots`
+          `torrents_doi`
         WHERE
-          `GroupID` = '$GroupID'
+          `TorrentID` = '$GroupID'
         ");
 
         if ($DB->has_results()) {

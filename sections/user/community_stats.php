@@ -128,7 +128,7 @@ list($UniqueGroups) = $DB->next_record();
   if ($Override = check_paranoia_here('screenshotcount')) {
   $DB->query("
     SELECT COUNT(*)
-    FROM torrents_screenshots
+    FROM torrents_doi
     WHERE UserID = '$UserID'");
   list($Screenshots) = $DB->next_record();
 ?>

@@ -602,8 +602,8 @@ if (!isset($GroupID) || !$GroupID) {
     if (!empty($Screenshots)) {
         $Screenshot = '';
         $DB->prepare_query("
-          INSERT INTO torrents_screenshots
-            (GroupID, UserID, Time, Image)
+          INSERT INTO torrents_doi
+            (TorrentID, UserID, Time, URI)
           VALUES (?, ?, NOW(), ?)", $GroupID, $LoggedUser['ID'], $Screenshot);
 
         foreach ($Screenshots as $Screenshot) {
