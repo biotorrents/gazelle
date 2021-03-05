@@ -1,3 +1,12 @@
+/**
+ * RGB color intensity border
+ * For semi-transparent elements,
+ * e.g., unread forum post borders
+ */
+@mixin transparent-border($R: 0, $G: 0, $B: 0, $A: 1) {
+    border: 2px solid rgba($R, $G, $B, $A);
+}
+
 /* Torrent labels for the Format class */
 .tl_notice,
 .tl_snatched {

@@ -6,16 +6,16 @@ $Sep = '&emsp;';
 
 # End <div#content>, begin <footer>
 # This needs to be <main>, in each page
-echo $HTML = '</div></main><footer>';
+echo $HTML = '</div></main><footer class="halfwide">';
 
 # Disclaimer
 #if (!empty($Options['disclaimer'])) {
     echo $HTML = <<<HTML
-    <div id="disclaimer">
+    <p>
       No data are hosted on $ENV->SITE_NAME's servers.
       All torrents are user-generated content.
       Torrents without a specified license may be protected by copyright.
-    </div>
+</p>
 HTML;
 #}
 

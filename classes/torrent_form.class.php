@@ -435,10 +435,10 @@ HTML;
             }
         } # fi !NewTorrent
 
-        /**
-         * Rules notice
-         */
-        echo <<<HTML
+        # For new torrents only
+        if ($this->NewTorrent) {
+            # Rules notice
+            echo <<<HTML
         <tr>
           <td>
             <aside class="torrent_upload">
@@ -451,8 +451,7 @@ HTML;
               </p>
 HTML;
 
-        # For new torrents only
-        if ($this->NewTorrent) {
+            # Request fill notice
             echo <<<HTML
             <p>
               After uploading the torrent, you will have a one hour grace period.
@@ -461,9 +460,9 @@ HTML;
               <a href="requests.php">search the list of requests</a>.
             </p>
 HTML;
+            echo '</aside></td></tr>';
         }
         
-        echo '</aside></td></tr>';
 
         /**
          * Submit button

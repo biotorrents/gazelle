@@ -20,15 +20,6 @@ $lb900: #01579b;
 /* The shadow under floating elements */
 $shadow: 2px 2px 10px -2px slategray;
 
-/**
- * RGB color intensity border
- * For semi-transparent elements,
- * e.g., unread forum post borders
- */
-@mixin transparent-border($R: 0, $G: 0, $B: 0, $A: 1) {
-    border: 2px solid rgba($R, $G, $B, $A);
-}
-
 /*
  * Common elements
  */
@@ -46,6 +37,15 @@ $shadow: 2px 2px 10px -2px slategray;
 
 #request_table .request:nth-of-type(odd) {
     background: whitesmoke;
+}
+
+/**
+ * RGB color intensity border
+ * For semi-transparent elements,
+ * e.g., unread forum post borders
+ */
+@mixin transparent-border($R: 0, $G: 0, $B: 0, $A: 1) {
+    border: 2px solid rgba($R, $G, $B, $A);
 }
 
 /**

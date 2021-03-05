@@ -111,39 +111,6 @@ div.linkbox {
     }
 }
 
-/**
- * Aside elements
- */
-aside {
-    max-width: 66%;
-
-    p {
-        text-align: center;
-    }
-
-    /**
-     * "Please consult the Upload Rules"
-     * admonishment on torrent_form.class.php.
-     */
-    &.upload_notice {
-        @include transparent-border($R: 255, $A: 0.5);
-        margin: 1rem auto;
-        text-align: center;
-    }
-
-    /* Announce and source */
-    &.announce_source {
-        margin: 1rem auto;
-    }
-
-    /* Torrent upload error */
-    &.upload_error {
-        color: red;
-        margin: 2rem auto;
-        font-size: larger;
-    }
-}
-
 /* Misc */
 .torrents_nomatch {
     margin-top: 1rem;

@@ -50,10 +50,7 @@ View::show_header('Donate');
     <ul>
       <li>
         <strong>Server.</strong>
-        We use two budget VPS at 2.50€ per month each.
-        Please consider using our
-        <a href="https://hetzner.cloud/?ref=mzIDQWTHipNB" target="_blank">affiliate link</a>.
-        You'd receive 20€ credit, and BioTorrents.de would receive 10€ credit after that.
+        We use two budget VPSes at 2.50€ per month each.
       </li>
 
       <li>
