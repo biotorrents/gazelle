@@ -96,10 +96,10 @@ class Validate
                 return $Err = "One or more files has the forbidden characters $BadChars:\n" . display_str($Suspect);
             
             default:
-                return null;
+                return;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -159,7 +159,7 @@ class Validate
         return true;
     }
       
-    /*
+    /**
      * These characters are invalid on Windows NTFS:
      *   : ? / < > \ * | "
      *
@@ -293,7 +293,7 @@ class Validate
         'week'
         */
                 
-        return null;
+        return;
     }
     
 

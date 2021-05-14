@@ -116,7 +116,7 @@ class TorrentsDL
         $this->Zip->add_file(self::get_file($TorrentData, $this->AnnounceURL, $this->AnnounceList), ($FolderName ? "$FolderName/" : "") . $FileName);
 
         usleep(25000); // We don't want to send much faster than the client can receive
-        return null;
+        return;
     }
 
     /**

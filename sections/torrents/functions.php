@@ -141,7 +141,7 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
             header('Location: log.php?search='.(empty($_GET['torrentid']) ? "Group+$GroupID" : "Torrent+$_GET[torrentid]"));
             error();
         } elseif (count($TorrentList) === 0 && $ApiCall == true) {
-            return null;
+            return;
         }
 
         if (in_array(0, $DB->collect('Seeders'))) {
@@ -190,7 +190,7 @@ function get_torrent_info($TorrentID, $Return = true, $RevisionID = 0, $Personal
         }
     } else {
         if ($Return) {
-            return null;
+            return;
         }
     }
 }
@@ -219,7 +219,7 @@ function torrenthash_to_torrentid($Str)
     if ($TorrentID) {
         return $TorrentID;
     }
-    return null;
+    return;
 }
 
 function torrenthash_to_groupid($Str)
@@ -234,7 +234,7 @@ function torrenthash_to_groupid($Str)
     if ($GroupID) {
         return $GroupID;
     }
-    return null;
+    return;
 }
 
 function torrentid_to_groupid($TorrentID)
@@ -249,7 +249,7 @@ function torrentid_to_groupid($TorrentID)
     if ($GroupID) {
         return $GroupID;
     }
-    return null;
+    return;
 }
 
 // After adjusting / deleting logs, recalculate the score for the torrent

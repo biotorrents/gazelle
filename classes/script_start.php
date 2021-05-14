@@ -8,7 +8,7 @@ require_once 'security.class.php';
 # Initialize
 $ENV = ENV::go();
 $Security = new Security();
-$Security->setupPitfalls();
+$Security->SetupPitfalls();
 
 
 /*-- Script Start Class --------------------------------*/

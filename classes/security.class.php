@@ -11,21 +11,20 @@ declare(strict_types = 1);
 class Security
 {
     /**
-     * ID check
+     * Check ID
      *
      * Makes sure a number ID is valid,
      * e.g., a page ID requested by GET.
-     * Optionally call authorize().
      */
-    public function idCheck($id, $auth)
+    public function CheckID($ID)
     {
-        if (!$id || !is_int($id)) {
+        $ID = (int) $ID;
+
+        if (!is_int($ID) || $ID < 1) {
             error(400);
         }
-        
-        if ($auth) {
-            authorize();
-        }
+
+        return;
     }
 
     /**
@@ -34,7 +33,7 @@ class Security
      * A series of quick sanity checks during app init.
      * Previously in classes/script_start.php.
      */
-    public function setupPitfalls()
+    public function SetupPitfalls()
     {
         # short_open_tag
         if (!ini_get('short_open_tag')) {

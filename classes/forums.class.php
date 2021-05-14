@@ -46,7 +46,7 @@ class Forums
 
             if (!G::$DB->has_results()) {
                 G::$DB->set_query_id($QueryID);
-                return null;
+                return;
             }
 
             $ThreadInfo = G::$DB->next_record(MYSQLI_ASSOC, false);

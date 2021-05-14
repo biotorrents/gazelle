@@ -1,24 +1,14 @@
 <?php
-#declare(strict_types = 1);
+declare(strict_types = 1);
 
-/************************************************************************
-||------------|| Edit torrent group wiki page ||-----------------------||
+/**
+ * Edit torrent group wiki page
+ *
+ * The page inserts a new revision into the wiki_torrents table,
+ * and clears the cache for the torrent group page.
+ */
 
-This page is the page that is displayed when someone feels like editing
-a torrent group's wiki page.
-
-It is called when $_GET['action'] === 'edit'. $_GET['groupid'] is the
-ID of the torrent group and must be set.
-
-The page inserts a new revision into the wiki_torrents table, and clears
-the cache for the torrent group page.
-
-************************************************************************/
-
-$GroupID = $_GET['groupid'];
-if (!is_number($GroupID) || !$GroupID) {
-    error(0);
-}
+Security::CheckID($_GET['groupid']);
 
 // Get the torrent group name and the body of the last revision
 $DB->query("

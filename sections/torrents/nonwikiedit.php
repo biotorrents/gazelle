@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-$GroupID = (int) $_POST['groupid'];
-Security::idCheck($GroupID, true);
+Security::CheckID($_POST['groupid']);
+authorize();
 
 // Usual perm checks
 if (!check_perms('torrents_edit')) {
