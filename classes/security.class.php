@@ -18,6 +18,9 @@ class Security
      */
     public function CheckID($ID)
     {
+        # Temporary failsafe
+        # (int) 'dingus' = 0
+        # (int) 3.14 = 3
         $ID = (int) $ID;
 
         if (!is_int($ID) || $ID < 1) {

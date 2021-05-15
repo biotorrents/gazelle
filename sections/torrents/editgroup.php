@@ -8,10 +8,11 @@ declare(strict_types = 1);
  * and clears the cache for the torrent group page.
  */
 
-Security::CheckID($_GET['groupid']);
+$GroupID = $_GET['groupid'];
+Security::CheckID($GroupID);
 
 // Get the torrent group name and the body of the last revision
-$DB->query("
+$DB->prepare_query("
 SELECT
   tg.`Name`,
   tg.`Title2`,
@@ -31,15 +32,16 @@ LEFT JOIN `wiki_torrents` AS wt
 ON
   wt.`RevisionID` = tg.`RevisionID`
 WHERE
-  tg.`ID` = '".db_string($GroupID)."'
+  tg.`ID` = '$GroupID'
 ");
+$DB->exec_prepared_query();
 
 if (!$DB->has_results()) {
     error(404);
 }
 list($Name, $Title2, $NameJP, $Image, $Body, $WikiImage, $WikiBody, $Year, $Studio, $Series, $CatalogueNumber, $CategoryID) = $DB->next_record();
 
-$DB->query("
+$DB->prepare_query("
 SELECT
   `ID`,
   `UserID`,
@@ -50,6 +52,7 @@ FROM
 WHERE
   `TorrentID` = '$GroupID'
 ");
+$DB->exec_prepared_query();
 
 if ($DB->has_results()) {
     $Screenshots = [];

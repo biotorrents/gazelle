@@ -128,6 +128,7 @@ function db_string($String, $DisableWildcards = false)
     # Connect and mysqli_real_escape_string()
     # Previously called $DB->escape_str, now below
     # todo: Fix the bad escapes everywhere; see below
+
     #if (!is_string($String)) { # This is the correct way,
     if (is_array($String)) { # but this prevents errors
         error('Attempted to escape non-string.', $NoHTML = true);
@@ -163,7 +164,6 @@ function db_array($Array, $DontEscape = [], $Quote = false)
 }
 
 
-// todo: Revisit access levels once Drone is replaced by ZeRobot
 class DB_MYSQL
 {
     public $LinkID = false;
@@ -256,7 +256,7 @@ class DB_MYSQL
                 $this->LinkID,
                 $this->Key,
                 $this->Cert,
-                $this->Ca,
+                $this->CA,
                 null,
                 null
             );
@@ -453,7 +453,7 @@ class DB_MYSQL
     }
 
 
-    /*
+    /**
      * Returns an integer with the number of rows found
      * Returns a string if the number of rows found exceeds MAXINT
      */
@@ -465,7 +465,7 @@ class DB_MYSQL
     }
 
 
-    /*
+    /**
      * Returns true if the query exists and there were records found
      * Returns false if the query does not exist or if there were 0 records returned
      */
