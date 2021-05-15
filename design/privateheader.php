@@ -471,42 +471,6 @@ if (check_perms('site_send_unlimited_invites')) {
 $Alerts = [];
 $ModBar = [];
 
-// Staff blog
-if (check_perms('users_mod')) {
-    global $SBlogReadTime, $LatestSBlogTime;
-    if (!$SBlogReadTime && ($SBlogReadTime = G::$Cache->get_value('staff_blog_read_'.G::$LoggedUser['ID'])) === false) {
-        G::$DB->query("
-          SELECT Time
-          FROM staff_blog_visits
-          WHERE UserID = ".G::$LoggedUser['ID']);
-
-        if (list($SBlogReadTime) = G::$DB->next_record()) {
-            $SBlogReadTime = strtotime($SBlogReadTime);
-        } else {
-            $SBlogReadTime = 0;
-        }
-        G::$Cache->cache_value('staff_blog_read_'.G::$LoggedUser['ID'], $SBlogReadTime, 1209600);
-    }
-
-    if (!$LatestSBlogTime && ($LatestSBlogTime = G::$Cache->get_value('staff_blog_latest_time')) === false) {
-        G::$DB->query("
-          SELECT MAX(Time)
-          FROM staff_blog");
-        list($LatestSBlogTime) = G::$DB->next_record();
-
-        if ($LatestSBlogTime) {
-            $LatestSBlogTime = strtotime($LatestSBlogTime);
-        } else {
-            $LatestSBlogTime = 0;
-        }
-        G::$Cache->cache_value('staff_blog_latest_time', $LatestSBlogTime, 1209600);
-    }
-
-    if ($SBlogReadTime < $LatestSBlogTime) {
-        $Alerts[] = '<a href="staffblog.php">New staff blog post!</a>';
-    }
-}
-
 // Inbox
 if ($NotificationsManager->is_traditional(NotificationsManager::INBOX)) {
     $NotificationsManager->load_inbox();

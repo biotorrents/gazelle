@@ -24,7 +24,6 @@ class NotificationsManager
     // Types. These names must correspond to column names in users_notifications_settings
     const NEWS = 'News';
     const BLOG = 'Blog';
-    const STAFFBLOG = 'StaffBlog';
     const STAFFPM = 'StaffPM';
     const INBOX = 'Inbox';
     const QUOTES = 'Quotes';
@@ -84,10 +83,6 @@ class NotificationsManager
             if (!isset($this->Skipped[self::BLOG])) {
                 $this->load_blog();
             }
-
-            // if (!isset($this->Skipped[self::STAFFBLOG])) {
-            //   $this->load_staff_blog();
-            // }
 
             if (!isset($this->Skipped[self::STAFFPM])) {
                 $this->load_staff_pms();
@@ -310,43 +305,6 @@ class NotificationsManager
         }
         if ($MyBlog < $CurrentBlog) {
             $this->create_notification(self::BLOG, $CurrentBlog, "Blog: $Title", "blog.php#blog$CurrentBlog", self::IMPORTANT);
-        }
-    }
-
-    public function load_staff_blog()
-    {
-        if (check_perms('users_mod')) {
-            global $SBlogReadTime, $LatestSBlogTime;
-            if (!$SBlogReadTime && ($SBlogReadTime = G::$Cache->get_value('staff_blog_read_' . G::$LoggedUser['ID'])) === false) {
-                $QueryID = G::$DB->get_query_id();
-                G::$DB->query("
-                SELECT Time
-                FROM staff_blog_visits
-                  WHERE UserID = " . G::$LoggedUser['ID']);
-                if (list($SBlogReadTime) = G::$DB->next_record()) {
-                    $SBlogReadTime = strtotime($SBlogReadTime);
-                } else {
-                    $SBlogReadTime = 0;
-                }
-                G::$DB->set_query_id($QueryID);
-                G::$Cache->cache_value('staff_blog_read_' . G::$LoggedUser['ID'], $SBlogReadTime, 1209600);
-            }
-            if (!$LatestSBlogTime && ($LatestSBlogTime = G::$Cache->get_value('staff_blog_latest_time')) === false) {
-                $QueryID = G::$DB->get_query_id();
-                G::$DB->query('
-                SELECT MAX(Time)
-                FROM staff_blog');
-                if (list($LatestSBlogTime) = G::$DB->next_record()) {
-                    $LatestSBlogTime = strtotime($LatestSBlogTime);
-                } else {
-                    $LatestSBlogTime = 0;
-                }
-                G::$DB->set_query_id($QueryID);
-                G::$Cache->cache_value('staff_blog_latest_time', $LatestSBlogTime, 1209600);
-            }
-            if ($SBlogReadTime < $LatestSBlogTime) {
-                $this->create_notification(self::STAFFBLOG, 0, 'New Staff Blog Post!', 'staffblog.php', self::IMPORTANT);
-            }
         }
     }
 

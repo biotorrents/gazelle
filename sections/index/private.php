@@ -35,66 +35,24 @@ if ($LoggedUser['LastReadNews'] !== $News[0][0] && count($News) > 0) {
 }
 
 View::show_header('News', 'news_ajax');
-#View::show_header('News', 'bbcode,news_ajax');
 ?>
-<div>
-  <div class="sidebar">
-    <?php #include 'connect.php';?>
 
+<div class="sidebar">
+  <?php #include 'connect.php';?>
+
+  <ul class="stats nobullet">
     <?php
-    # Staff blog
-if (check_perms('users_mod')) { ?>
-    <div class="box">
-      <div class="head colhead_dark">
-        <strong><a href="staffblog.php">Latest staff blog posts</a></strong>
-      </div>
-      <?php
-if (($Blog = $Cache->get_value('staff_blog')) === false) {
-    $DB->query("
-    SELECT
-      b.ID,
-      um.Username,
-      b.Title,
-      b.Body,
-      b.Time
-    FROM staff_blog AS b
-      LEFT JOIN users_main AS um ON b.UserID = um.ID
-    ORDER BY Time DESC");
-    $Blog = $DB->to_array(false, MYSQLI_NUM);
-    $Cache->cache_value('staff_blog', $Blog, 1209600);
-}
-    if (($SBlogReadTime = $Cache->get_value('staff_blog_read_'.$LoggedUser['ID'])) === false) {
-        $DB->query("
-    SELECT Time
-    FROM staff_blog_visits
-    WHERE UserID = ".$LoggedUser['ID']);
-        if (list($SBlogReadTime) = $DB->next_record()) {
-            $SBlogReadTime = strtotime($SBlogReadTime);
-        } else {
-            $SBlogReadTime = 0;
-        }
-        $Cache->cache_value('staff_blog_read_'.$LoggedUser['ID'], $SBlogReadTime, 1209600);
-    } ?>
-      <ul class="stats nobullet">
-        <?php
 $End = min(count($Blog), 5);
     for ($i = 0; $i < $End; $i++) {
         list($BlogID, $Author, $Title, $Body, $BlogTime) = $Blog[$i];
         $BlogTime = strtotime($BlogTime); ?>
-        <li>
-          <?=$SBlogReadTime < $BlogTime ? '<strong>' : ''?><?=($i + 1)?>.
-          <a href="staffblog.php#blog<?=$BlogID?>"><?=$Title?></a>
-          <?=$SBlogReadTime < $BlogTime ? '</strong>' : ''?>
-        </li>
-        <?php
-    } ?>
-      </ul>
-    </div>
     <?php
-} ?>
-    <div class="box">
-      <div class="head colhead_dark"><strong><a href="blog.php">Latest blog posts</a></strong></div>
-      <?php
+    } ?>
+  </ul>
+
+  <div class="box">
+    <div class="head colhead_dark"><strong><a href="blog.php">Latest blog posts</a></strong></div>
+    <?php
 if (($Blog = $Cache->get_value('blog')) === false) {
         $DB->query("
     SELECT
@@ -113,8 +71,8 @@ if (($Blog = $Cache->get_value('blog')) === false) {
         $Cache->cache_value('blog', $Blog, 1209600);
     }
 ?>
-      <ul class="stats nobullet">
-        <?php
+    <ul class="stats nobullet">
+      <?php
 if (count($Blog) < 5) {
     $Limit = count($Blog);
 } else {
@@ -122,16 +80,16 @@ if (count($Blog) < 5) {
 }
 for ($i = 0; $i < $Limit; $i++) {
     list($BlogID, $Author, $AuthorID, $Title, $Body, $BlogTime, $ThreadID) = $Blog[$i]; ?>
-        <li>
-          <?=($i + 1)?>. <a
-            href="blog.php#blog<?=$BlogID?>"><?=$Title?></a>
-        </li>
-        <?php
+      <li>
+        <?=($i + 1)?>. <a
+          href="blog.php#blog<?=$BlogID?>"><?=$Title?></a>
+      </li>
+      <?php
 }
 ?>
-      </ul>
-    </div>
-    <?php
+    </ul>
+  </div>
+  <?php
 if (($Freeleeches = $Cache->get_value('shop_freeleech_list')) === false) {
     $DB->query("
     SELECT
@@ -149,11 +107,11 @@ if (($Freeleeches = $Cache->get_value('shop_freeleech_list')) === false) {
 }
 if (count($Freeleeches)) {
     ?>
-    <div class="box">
-      <div class="head colhead_dark"><strong><a
-            href="torrents.php?freetorrent=1&order_by=seeders&order_way=asc">Freeleeches</a></strong></div>
-      <ul class="stats nobullet">
-        <?php
+  <div class="box">
+    <div class="head colhead_dark"><strong><a
+          href="torrents.php?freetorrent=1&order_by=seeders&order_way=asc">Freeleeches</a></strong></div>
+    <ul class="stats nobullet">
+      <?php
   for ($i = 0; $i < count($Freeleeches); $i++) {
       list($ID, $ExpiryTime, $Name, $Image) = $Freeleeches[$i];
       if ($ExpiryTime < time()) {
@@ -165,26 +123,26 @@ if (count($Freeleeches)) {
           $DisplayName .= ' data-cover="'.ImageTools::process($Image, 'thumb').'"';
       }
       $DisplayName .= '>'.$Name.'</a>'; ?>
-        <li>
-          <strong class="fl_time"><?=$DisplayTime?></strong>
-          <?=$DisplayName?>
-        </li>
-        <?php
+      <li>
+        <strong class="fl_time"><?=$DisplayTime?></strong>
+        <?=$DisplayName?>
+      </li>
+      <?php
   } ?>
-      </ul>
-    </div>
-    <?php
+    </ul>
+  </div>
+  <?php
 }
 ?>
 
-    <!-- Stats -->
-    <div class="box">
-      <div class="head colhead_dark"><strong>Stats</strong></div>
-      <ul class="stats nobullet">
-        <?php if (USER_LIMIT > 0) { ?>
-        <li>Maximum users: <?=number_format(USER_LIMIT) ?>
-        </li>
-        <?php
+  <!-- Stats -->
+  <div class="box">
+    <div class="head colhead_dark"><strong>Stats</strong></div>
+    <ul class="stats nobullet">
+      <?php if (USER_LIMIT > 0) { ?>
+      <li>Maximum users: <?=number_format(USER_LIMIT) ?>
+      </li>
+      <?php
 }
 
 if (($UserCount = $Cache->get_value('stats_user_count')) === false) {
@@ -197,11 +155,11 @@ if (($UserCount = $Cache->get_value('stats_user_count')) === false) {
 }
 $UserCount = (int)$UserCount;
 ?>
-        <li>
-          Enabled users: <?=number_format($UserCount)?>
-          <a href="stats.php?action=users" class="brackets">Details</a>
-        </li>
-        <?php
+      <li>
+        Enabled users: <?=number_format($UserCount)?>
+        <a href="stats.php?action=users" class="brackets">Details</a>
+      </li>
+      <?php
 
 if (($UserStats = $Cache->get_value('stats_users')) === false) {
     $DB->query("
@@ -228,15 +186,15 @@ if (($UserStats = $Cache->get_value('stats_users')) === false) {
     $Cache->cache_value('stats_users', $UserStats, 0);
 }
 ?>
-        <li>Users active today: <?=number_format($UserStats['Day'])?> (<?=number_format($UserStats['Day'] / $UserCount * 100, 2)?>%)
-        </li>
-        <li>Users active this week: <?=number_format($UserStats['Week'])?>
-          (<?=number_format($UserStats['Week'] / $UserCount * 100, 2)?>%)
-        </li>
-        <li>Users active this month: <?=number_format($UserStats['Month'])?>
-          (<?=number_format($UserStats['Month'] / $UserCount * 100, 2)?>%)
-        </li>
-        <?php
+      <li>Users active today: <?=number_format($UserStats['Day'])?> (<?=number_format($UserStats['Day'] / $UserCount * 100, 2)?>%)
+      </li>
+      <li>Users active this week: <?=number_format($UserStats['Week'])?>
+        (<?=number_format($UserStats['Week'] / $UserCount * 100, 2)?>%)
+      </li>
+      <li>Users active this month: <?=number_format($UserStats['Month'])?>
+        (<?=number_format($UserStats['Month'] / $UserCount * 100, 2)?>%)
+      </li>
+      <?php
 
 if (($TorrentCount = $Cache->get_value('stats_torrent_count')) === false) {
     $DB->query("
@@ -262,12 +220,12 @@ if (($TorrentSizeTotal = $Cache->get_value('stats_torrent_size_total')) === fals
     $Cache->cache_value('stats_torrent_size_total', $TorrentSizeTotal, 86400); // 1 day cache
 }
 ?>
-        <li>
-          Total size of torrents:
-          <?=Format::get_size($TorrentSizeTotal)?>
-        </li>
+      <li>
+        Total size of torrents:
+        <?=Format::get_size($TorrentSizeTotal)?>
+      </li>
 
-        <?php
+      <?php
 if (($ArtistCount = $Cache->get_value('stats_artist_count')) === false) {
     $DB->query("
     SELECT COUNT(ArtistID)
@@ -277,17 +235,17 @@ if (($ArtistCount = $Cache->get_value('stats_artist_count')) === false) {
 }
 
 ?>
-        <li>
-          Torrents:
-          <?=number_format($TorrentCount)?>
-          <a href="stats.php?action=torrents" class="brackets">Details</a>
-        </li>
+      <li>
+        Torrents:
+        <?=number_format($TorrentCount)?>
+        <a href="stats.php?action=torrents" class="brackets">Details</a>
+      </li>
 
-        <li>Torrent Groups: <?=number_format($GroupCount)?>
-        </li>
-        <li>Artists: <?=number_format($ArtistCount)?>
-        </li>
-        <?php
+      <li>Torrent Groups: <?=number_format($GroupCount)?>
+      </li>
+      <li>Artists: <?=number_format($ArtistCount)?>
+      </li>
+      <?php
 // End Torrent Stats
 
 if (($RequestStats = $Cache->get_value('stats_requests')) === false) {
@@ -313,14 +271,14 @@ if ($RequestCount > 0) {
 }
 
 ?>
-        <li>Requests: <?=number_format($RequestCount)?> (<?=number_format($RequestsFilledPercent, 2)?>% filled)</li>
-        <?php
+      <li>Requests: <?=number_format($RequestCount)?> (<?=number_format($RequestsFilledPercent, 2)?>% filled)</li>
+      <?php
 
 if ($SnatchStats = $Cache->get_value('stats_snatches')) {
     ?>
-        <li>Snatches: <?=number_format($SnatchStats)?>
-        </li>
-        <?php
+      <li>Snatches: <?=number_format($SnatchStats)?>
+      </li>
+      <?php
 }
 
 if (($PeerStats = $Cache->get_value('stats_peers')) === false) {
@@ -353,19 +311,19 @@ if (!$PeerStatsLocked) {
     $PeerCount = $SeederCount = $LeecherCount = $Ratio = 'Server busy';
 }
 ?>
-        <li>Peers: <?=$PeerCount?>
-        </li>
-        <li>Seeders: <?=$SeederCount?>
-        </li>
-        <li>Leechers: <?=$LeecherCount?>
-        </li>
-        <li>Seeder/leecher ratio: <?=$Ratio?>
-        </li>
-      </ul>
-    </div>
+      <li>Peers: <?=$PeerCount?>
+      </li>
+      <li>Seeders: <?=$SeederCount?>
+      </li>
+      <li>Leechers: <?=$LeecherCount?>
+      </li>
+      <li>Seeder/leecher ratio: <?=$Ratio?>
+      </li>
+    </ul>
+  </div>
 
-    <!-- Polls -->
-    <?php
+  <!-- Polls -->
+  <?php
 if (($TopicID = $Cache->get_value('polls_featured')) === false) {
     $DB->query("
     SELECT TopicID
@@ -422,17 +380,17 @@ if ($TopicID) {
       AND TopicID = '$TopicID'");
     list($UserResponse) = $DB->next_record(); ?>
 
-    <div class="box">
-      <div class="head colhead_dark"><strong>Poll<?php if ($Closed) {
+  <div class="box">
+    <div class="head colhead_dark"><strong>Poll<?php if ($Closed) {
         echo ' [Closed]';
     } ?>
-        </strong>
-      </div>
-      <div class="pad">
-        <p><strong><?=display_str($Question)?></strong></p>
-        <?php if ($UserResponse !== null || $Closed) { ?>
-        <ul class="poll nobullet">
-          <?php foreach ($Answers as $i => $Answer) {
+      </strong>
+    </div>
+    <div class="pad">
+      <p><strong><?=display_str($Question)?></strong></p>
+      <?php if ($UserResponse !== null || $Closed) { ?>
+      <ul class="poll nobullet">
+        <?php foreach ($Answers as $i => $Answer) {
         if ($TotalVotes > 0) {
             $Ratio = $Votes[$i] / $MaxVotes;
             $Percent = $Votes[$i] / $TotalVotes;
@@ -440,48 +398,48 @@ if ($TopicID) {
             $Ratio = 0;
             $Percent = 0;
         } ?>
-          <li<?=((!empty($UserResponse) && ($UserResponse == $i))?' class="poll_your_answer"':'')?>><?=display_str($Answers[$i])?> (<?=number_format($Percent * 100, 2)?>%)</li>
-            <li class="graph">
-              <span class="center_poll"
-                style="width: <?=round($Ratio * 140)?>px;"></span>
-              <br />
-            </li>
-            <?php
+        <li<?=((!empty($UserResponse) && ($UserResponse == $i))?' class="poll_your_answer"':'')?>><?=display_str($Answers[$i])?> (<?=number_format($Percent * 100, 2)?>%)</li>
+          <li class="graph">
+            <span class="center_poll"
+              style="width: <?=round($Ratio * 140)?>px;"></span>
+            <br />
+          </li>
+          <?php
     } ?>
-        </ul>
-        <strong>Votes:</strong> <?=number_format($TotalVotes)?><br />
-        <?php } else { ?>
-        <div id="poll_container">
-          <form class="vote_form" name="poll" id="poll" action="">
-            <input type="hidden" name="action" value="poll" />
-            <input type="hidden" name="auth"
-              value="<?=$LoggedUser['AuthKey']?>" />
-            <input type="hidden" name="topicid"
-              value="<?=$TopicID?>" />
-            <?php foreach ($Answers as $i => $Answer) { ?>
-            <input type="radio" name="vote" id="answer_<?=$i?>"
-              value="<?=$i?>" />
-            <label for="answer_<?=$i?>"><?=display_str($Answers[$i])?></label><br />
-            <?php } ?>
-            <br /><input type="radio" name="vote" id="answer_0" value="0" /> <label
-              for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br /><br />
-            <input type="button"
-              onclick="ajax.post('index.php', 'poll', function(response) { $('#poll_container').raw().innerHTML = response } );"
-              value="Vote" />
-          </form>
-        </div>
-        <?php } ?>
-        <br /><strong>Topic:</strong> <a
-          href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>">Visit</a>
+      </ul>
+      <strong>Votes:</strong> <?=number_format($TotalVotes)?><br />
+      <?php } else { ?>
+      <div id="poll_container">
+        <form class="vote_form" name="poll" id="poll" action="">
+          <input type="hidden" name="action" value="poll" />
+          <input type="hidden" name="auth"
+            value="<?=$LoggedUser['AuthKey']?>" />
+          <input type="hidden" name="topicid"
+            value="<?=$TopicID?>" />
+          <?php foreach ($Answers as $i => $Answer) { ?>
+          <input type="radio" name="vote" id="answer_<?=$i?>"
+            value="<?=$i?>" />
+          <label for="answer_<?=$i?>"><?=display_str($Answers[$i])?></label><br />
+          <?php } ?>
+          <br /><input type="radio" name="vote" id="answer_0" value="0" /> <label
+            for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br /><br />
+          <input type="button"
+            onclick="ajax.post('index.php', 'poll', function(response) { $('#poll_container').raw().innerHTML = response } );"
+            value="Vote" />
+        </form>
       </div>
+      <?php } ?>
+      <br /><strong>Topic:</strong> <a
+        href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>">Visit</a>
     </div>
-    <?php
+  </div>
+  <?php
 }
 // polls();
 ?>
-  </div>
-  <div class="main_column">
-    <?php
+</div>
+<div class="main_column">
+  <?php
 
 $Recommend = $Cache->get_value('recommend');
 $Recommend_artists = $Cache->get_value('recommend_artists');
@@ -508,14 +466,14 @@ if (!is_array($Recommend) || !is_array($Recommend_artists)) {
 
 if (count($Recommend) >= 4) {
     $Cache->increment('usage_index'); ?>
-    <div class="box" id="recommended">
-      <div class="head colhead_dark">
-        <strong>Latest Vanity House additions</strong>
-        <a data-toggle-target="#vanityhouse" , data-toggle-replace="Hide" class="brackets">Show</a>
-      </div>
+  <div class="box" id="recommended">
+    <div class="head colhead_dark">
+      <strong>Latest Vanity House additions</strong>
+      <a data-toggle-target="#vanityhouse" , data-toggle-replace="Hide" class="brackets">Show</a>
+    </div>
 
-      <table class="torrent_table hidden" id="vanityhouse">
-        <?php
+    <table class="torrent_table hidden" id="vanityhouse">
+      <?php
   foreach ($Recommend as $Recommendations) {
       list($GroupID, $UserID, $Username, $GroupName, $TagList) = $Recommendations;
       $TagsStr = '';
@@ -531,19 +489,19 @@ if (count($Recommend) >= 4) {
           }
           $TagStr = "<br />\n<div class=\"tags\">".implode(', ', $TagLinks).'</div>';
       } ?>
-        <tr>
-          <td>
-            <?=Artists::display_artists($Recommend_artists[$GroupID]) ?>
-            <a href="torrents.php?id=<?=$GroupID?>"><?=$GroupName?></a> (by <?=Users::format_username($UserID, false, false, false)?>)
-            <?=$TagStr?>
-          </td>
-        </tr>
-        <?php
+      <tr>
+        <td>
+          <?=Artists::display_artists($Recommend_artists[$GroupID]) ?>
+          <a href="torrents.php?id=<?=$GroupID?>"><?=$GroupName?></a> (by <?=Users::format_username($UserID, false, false, false)?>)
+          <?=$TagStr?>
+        </td>
+      </tr>
+      <?php
   } ?>
-      </table>
-    </div>
-    <!-- END recommendations section -->
-    <?php
+    </table>
+  </div>
+  <!-- END recommendations section -->
+  <?php
 }
 
 $Count = 0;
@@ -552,47 +510,47 @@ foreach ($News as $NewsItem) {
     if (strtotime($NewsTime) > time()) {
         continue;
     } ?>
-    <div id="news<?=$NewsID?>" class="box news_post">
-      <div class="head">
-        <strong>
-          <?=$Title?>
-        </strong>
+  <div id="news<?=$NewsID?>" class="box news_post">
+    <div class="head">
+      <strong>
+        <?=$Title?>
+      </strong>
 
-        <?=time_diff($NewsTime)?>
+      <?=time_diff($NewsTime)?>
 
-        <?php if (check_perms('admin_manage_news')) { ?>
-        &ndash;
-        <a href="tools.php?action=editnews&amp;id=<?=$NewsID?>"
-          class="brackets">Edit</a>
-        <?php } ?>
+      <?php if (check_perms('admin_manage_news')) { ?>
+      &ndash;
+      <a href="tools.php?action=editnews&amp;id=<?=$NewsID?>"
+        class="brackets">Edit</a>
+      <?php } ?>
 
-        <span class="float_right">
-          <a data-toggle-target="#newsbody<?=$NewsID?>"
-            data-toggle-replace="Show" class="brackets">Hide</a>
-        </span>
-      </div>
-
-      <div id="newsbody<?=$NewsID?>" class="pad">
-        <?=Text::full_format($Body)?>
-      </div>
+      <span class="float_right">
+        <a data-toggle-target="#newsbody<?=$NewsID?>"
+          data-toggle-replace="Show" class="brackets">Hide</a>
+      </span>
     </div>
 
-    <?php
+    <div id="newsbody<?=$NewsID?>" class="pad">
+      <?=Text::full_format($Body)?>
+    </div>
+  </div>
+
+  <?php
   if (++$Count > ($NewsCount - 1)) {
       break;
   }
 }
 ?>
-    <div id="more_news" class="box">
-      <div class="head">
-        <em><span><a href="#"
-              onclick="news_ajax(event, 3, <?=$NewsCount?>, <?=check_perms('admin_manage_news') ? 1 : 0; ?>); return false;">Click
-              to load more news</a>.</span> To browse old news posts, <a
-            href="forums.php?action=viewforum&amp;forumid=<?=$ENV->ANNOUNCEMENT_FORUM?>">click
-            here</a>.</em>
-      </div>
+  <div id="more_news" class="box">
+    <div class="head">
+      <em><span><a href="#"
+            onclick="news_ajax(event, 3, <?=$NewsCount?>, <?=check_perms('admin_manage_news') ? 1 : 0; ?>); return false;">Click
+            to load more news</a>.</span> To browse old news posts, <a
+          href="forums.php?action=viewforum&amp;forumid=<?=$ENV->ANNOUNCEMENT_FORUM?>">click
+          here</a>.</em>
     </div>
   </div>
+</div>
 </div>
 <?php
 View::show_footer(array('disclaimer'=>true));
