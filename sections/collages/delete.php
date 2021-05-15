@@ -1,4 +1,5 @@
-<?
+<?php
+#declare(strict_types=1);
 
 $CollageID = $_GET['collageid'];
 if (!is_number($CollageID) || !$CollageID) {

@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 if (isset($_POST['target']) && isset($_POST['amount'])) {
     $TargetID = abs(intval($_POST['target']));

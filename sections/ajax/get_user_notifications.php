@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 $Skip = [];
 $Skip[] = db_string($_GET['skip']);

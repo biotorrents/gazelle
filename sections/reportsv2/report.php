@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 /*
  * This is the frontend of reporting a torrent, it's what users see when

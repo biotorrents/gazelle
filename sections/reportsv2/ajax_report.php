@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 /*
  * The backend to changing the report type when making a report.

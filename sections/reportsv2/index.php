@@ -1,4 +1,5 @@
-<?
+<?php
+#declare(strict_types=1);
 
 /*
  * This is the index page, it is pretty much reponsible only for the switch statement.

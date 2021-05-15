@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 $DB->query("
   INSERT INTO top10_history (Date, Type)

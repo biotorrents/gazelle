@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 // BP shop freeleeches
 $date = date('Y-m-d H:i:s');

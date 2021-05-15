@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 // Love or hate, this makes things a hell of a lot faster
 if ($Hour % 2 === 0) {

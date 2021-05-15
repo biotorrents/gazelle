@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 $FriendID = (int)$_POST['friend'];
 $Type = $_POST['type'];

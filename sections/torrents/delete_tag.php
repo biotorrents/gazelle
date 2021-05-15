@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 if (!empty($LoggedUser['DisableTagging']) || !check_perms('site_delete_tag')) {
     error(403);

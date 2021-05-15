@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 // Expire old FL tokens and clear cache where needed
 $DB->query("

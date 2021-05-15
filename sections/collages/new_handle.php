@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 authorize();
 include(SERVER_ROOT.'/classes/validate.class.php');

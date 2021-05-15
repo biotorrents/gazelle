@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 // This will never work until we start keeping track of upload/download stats
 // past the end of a session

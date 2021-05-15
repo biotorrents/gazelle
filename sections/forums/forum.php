@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 /**********|| Page to show individual forums || ********************************\
 

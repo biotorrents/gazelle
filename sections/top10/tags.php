@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 // Error out on invalid requests (before caching)
 if (isset($_GET['details'])) {

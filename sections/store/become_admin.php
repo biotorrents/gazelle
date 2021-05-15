@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 $Purchase = "Admin status";
 $UserID = $LoggedUser['ID'];

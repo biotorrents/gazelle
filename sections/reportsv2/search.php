@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 /*
  * todo: I'm not writing documentation for this page until I write this page >.>

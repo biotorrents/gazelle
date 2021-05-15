@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 if (empty($_GET['nojump'])) {
     $ArticleID = Wiki::alias_to_id($_GET['search']);

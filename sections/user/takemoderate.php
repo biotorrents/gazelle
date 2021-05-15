@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 // Are they being tricky blighters?
 if (!$_POST['userid'] || !is_number($_POST['userid'])) {

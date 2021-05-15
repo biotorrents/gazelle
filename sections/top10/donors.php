@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 View::show_header('Top 10 Donors');
 ?>

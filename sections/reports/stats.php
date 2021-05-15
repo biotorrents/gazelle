@@ -1,4 +1,5 @@
-<?
+<?php
+#declare(strict_types=1);
 
 if (!check_perms('admin_reports') && !check_perms('site_moderate_forums')) {
   error(403);

@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 if (isset($LoggedUser['ID']) || !isset($_GET['token']) || !FEATURE_EMAIL_REENABLE) {
     header('Location: index.php');

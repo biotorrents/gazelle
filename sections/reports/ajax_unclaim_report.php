@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 if (!check_perms('site_moderate_forums') || empty($_POST['id']) || empty($_POST['remove'])) {
   print

@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 /***************************************************************
 * Temp handler for changing the category for a single torrent.

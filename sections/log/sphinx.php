@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 if (!empty($_GET['page']) && is_number($_GET['page'])) {
     $Page = min(SPHINX_MAX_MATCHES / LOG_ENTRIES_PER_PAGE, $_GET['page']);

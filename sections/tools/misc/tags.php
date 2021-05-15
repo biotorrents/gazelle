@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 View::show_header('Batch Tag Editor', 'validate');
 if (!check_perms('users_mod')) {

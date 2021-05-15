@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 enforce_login();
 if (!check_perms('site_moderate_forums')) {

@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 # todo: Not working since 2020-04-24
 if (isset($_POST['donation'])) {

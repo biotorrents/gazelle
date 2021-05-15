@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 // Begin user stats
 if (($UserCount = $Cache->get_value('stats_user_count')) === false) {

@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 # https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt
 $eff_large_wordlist = [

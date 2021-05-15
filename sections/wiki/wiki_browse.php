@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 $Title = 'Browse wiki articles';
 if (!empty($_GET['letter'])) {

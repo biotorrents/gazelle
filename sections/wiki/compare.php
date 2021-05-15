@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 // Diff function by Leto of StC
 function diff($OldText, $NewText)

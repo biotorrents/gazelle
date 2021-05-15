@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 list($Page, $Limit) = Format::page_limit(LOG_ENTRIES_PER_PAGE);
 

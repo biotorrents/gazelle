@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 // todo: Cache this
 $DB->query("

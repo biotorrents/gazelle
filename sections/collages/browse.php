@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 define('COLLAGES_PER_PAGE', 25);
 

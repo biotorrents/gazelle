@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 // Send warnings to uploaders of torrents that will be deleted this week
 $DB->query("

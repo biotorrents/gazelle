@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 $AgoMins = time_minus(60 * 30);
 $AgoDays = time_minus(3600 * 24 * 30);

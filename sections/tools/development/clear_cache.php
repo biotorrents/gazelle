@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 if (!check_perms('users_mod') || !check_perms('admin_clear_cache')) {
     error(403);

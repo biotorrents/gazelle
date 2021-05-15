@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 $getUsers = $DB->query("
   SELECT um.ID,

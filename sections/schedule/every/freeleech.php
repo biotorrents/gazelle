@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 // We use this to control 6 hour freeleeches. They're actually 7 hours, but don't tell anyone.
 /*

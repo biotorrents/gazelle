@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 enforce_login();
 define('INDEX_ARTICLE', '1');

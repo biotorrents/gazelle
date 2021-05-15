@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 $SphQL = new SphinxqlQuery();
 $SphQL->where_match('_all', 'fake', false);

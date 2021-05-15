@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 authorize();
 if (!check_perms('site_torrents_notify')) {

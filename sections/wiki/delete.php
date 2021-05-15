@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 if (!check_perms('admin_manage_wiki')) {
     error(403);

@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 // Don't allow bigger queries than specified below regardless of called function
 $SizeLimit = 10;

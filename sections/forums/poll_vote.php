@@ -1,4 +1,5 @@
-<?
+<?php
+#declare(strict_types=1);
 
 if (!isset($_POST['topicid']) || !is_number($_POST['topicid'])) {
   error(0, true);

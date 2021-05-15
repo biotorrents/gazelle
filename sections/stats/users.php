@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 
 if (!$ClassDistribution = $Cache->get_value('class_distribution')) {

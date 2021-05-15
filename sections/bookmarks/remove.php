@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 authorize();
 if (!Bookmarks::can_bookmark($_GET['type'])) {

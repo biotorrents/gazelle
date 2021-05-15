@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 if (!empty($_GET['id']) && is_number($_GET['id'])) {
     // Visiting article via ID

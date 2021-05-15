@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 enforce_login();
 if (!defined('LOG_ENTRIES_PER_PAGE')) {

@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 # Load the dictionary
 require_once 'wordlist.php';

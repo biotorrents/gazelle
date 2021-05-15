@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 $DB->query("
   UPDATE xbt_snatched AS xs

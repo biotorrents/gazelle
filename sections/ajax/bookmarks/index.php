@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types=1);
 
 // Number of users per page
 define('BOOKMARKS_PER_PAGE', '20');
