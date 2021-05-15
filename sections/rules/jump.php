@@ -1,3 +1,8 @@
+<?php
+declare(strict_types=1);
+
+?>
+
 <h3 id="jump">Other sections</h3>
 <div class="box pad rule_table">
   <table>

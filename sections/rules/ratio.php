@@ -1,5 +1,5 @@
 <?php
-#declare(strict_types=1);
+declare(strict_types=1);
 
 View::show_header('Ratio requirements');
 ?>

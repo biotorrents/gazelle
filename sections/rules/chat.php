@@ -1,5 +1,5 @@
 <?php
-#declare(strict_types=1);
+declare(strict_types=1);
 
 # Formerly Rules::display_forum_rules()
 # and Rules::display_irc_chat_rules()
