@@ -794,20 +794,6 @@ CREATE TABLE `shop_freeleeches` (
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 -- 2020-03-09
-CREATE TABLE `site_history` (
-  `ID` int NOT NULL AUTO_INCREMENT,
-  `Title` varchar(255) DEFAULT NULL,
-  `Url` varchar(255) NOT NULL DEFAULT '',
-  `Category` tinyint DEFAULT NULL,
-  `SubCategory` tinyint DEFAULT NULL,
-  `Tags` mediumtext,
-  `AddedBy` int DEFAULT NULL,
-  `Date` datetime DEFAULT NULL,
-  `Body` mediumtext,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
--- 2020-03-09
 CREATE TABLE `slaves` (
   `UserID` int NOT NULL DEFAULT '0',
   `OwnerID` int NOT NULL DEFAULT '0',
@@ -959,26 +945,6 @@ CREATE TABLE `sphinx_tg` (
   `catid` smallint DEFAULT NULL,
   `dlsid` varchar(15) NOT NULL, -- todo: 15 vs. 25 vs. 50?
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
--- 2020-03-09
-CREATE TABLE `staff_blog` (
-  `ID` int unsigned NOT NULL AUTO_INCREMENT,
-  `UserID` int unsigned NOT NULL,
-  `Title` varchar(255) NOT NULL,
-  `Body` text,
-  `Time` datetime,
-  PRIMARY KEY (`ID`),
-  KEY `UserID` (`UserID`),
-  KEY `Time` (`Time`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
--- 2020-03-09
-CREATE TABLE `staff_blog_visits` (
-  `UserID` int unsigned NOT NULL,
-  `Time` datetime,
-  UNIQUE KEY `UserID` (`UserID`),
-  CONSTRAINT `staff_blog_visits_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `users_main` (`ID`) ON DELETE CASCADE
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 -- 2020-03-09
