@@ -32,14 +32,14 @@ SELECT
   t.`FreeLeechType`,
   t.`Description` AS TorrentDescription,
   t.`FileList`,
-  tg.`CategoryID`,
-  tg.`Name` AS Title,
-  tg.`Title2` AS Title2,
-  tg.`NameJP` AS TitleJP,
-  tg.`Year`,
-  tg.`Studio`,
-  tg.`Series`,
-  tg.`CatalogueNumber`,
+  tg.`category_id`,
+  tg.`title` AS title,
+  tg.`subject` AS subject,
+  tg.`object` AS object,
+  tg.`published`,
+  tg.`workgroup`,
+  tg.`location`,
+  tg.`identifier`,
   ag.`Name` AS ArtistName,
   t.`GroupID`,
   t.`UserID`,
@@ -50,10 +50,10 @@ FROM
   `torrents` AS t
 LEFT JOIN `torrents_group` AS tg
 ON
-  tg.`ID` = t.`GroupID`
+  tg.`id` = t.`GroupID`
 LEFT JOIN `torrents_artists` AS ta
 ON
-  tg.`ID` = ta.`GroupID`
+  tg.`id` = ta.`GroupID`
 LEFT JOIN `artists_group` AS ag
 ON
   ag.`ArtistID` = ta.`ArtistID`

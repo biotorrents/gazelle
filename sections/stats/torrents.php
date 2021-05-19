@@ -53,15 +53,15 @@ if (!list($Labels, $InFlow, $OutFlow, $Max) = $Cache->get_value('torrents_timeli
 if (!$CategoryDistribution = $Cache->get_value('category_distribution')) {
     $DB->query("
     SELECT
-      tg.`CategoryID`,
+      tg.`category_id`,
       COUNT(t.`ID`) AS Torrents
     FROM
       `torrents` AS t
     JOIN `torrents_group` AS tg
     ON
-      tg.`ID` = t.`GroupID`
+      tg.`id` = t.`GroupID`
     GROUP BY
-      tg.`CategoryID`
+      tg.`category_id`
     ORDER BY
       `Torrents`
     DESC

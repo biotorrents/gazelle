@@ -41,7 +41,7 @@ foreach ($Scripts as $Script) {
 }
 
 # Load CSS
-$Styles = ['global', 'public'];
+$Styles = ['vendor/normalize', 'global', 'public'];
 foreach ($Styles as $Style) {
     echo View::pushAsset(
         "$ENV->STATIC_SERVER/styles/$Style.css",

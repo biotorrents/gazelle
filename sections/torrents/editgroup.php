@@ -9,30 +9,30 @@ declare(strict_types = 1);
  */
 
 $GroupID = $_GET['groupid'];
-Security::CheckID($GroupID);
+Security::checkInt($GroupID);
 
 // Get the torrent group name and the body of the last revision
 $DB->prepare_query("
 SELECT
-  tg.`Name`,
-  tg.`Title2`,
-  tg.`NameJP`,
+  tg.`title`,
+  tg.`subject`,
+  tg.`object`,
   wt.`Image`,
   wt.`Body`,
-  tg.`WikiImage`,
-  tg.`WikiBody`,
-  tg.`Year`,
-  tg.`Studio`,
-  tg.`Series`,
-  tg.`CatalogueNumber`,
-  tg.`CategoryID`
+  tg.`picture`,
+  tg.`description`,
+  tg.`year`,
+  tg.`labratory`,
+  tg.`location`,
+  tg.`identifier`,
+  tg.`category_id`
 FROM
   `torrents_group` AS tg
 LEFT JOIN `wiki_torrents` AS wt
 ON
-  wt.`RevisionID` = tg.`RevisionID`
+  wt.`RevisionID` = tg.`revision_id`
 WHERE
-  tg.`ID` = '$GroupID'
+  tg.`id` = '$GroupID'
 ");
 $DB->exec_prepared_query();
 

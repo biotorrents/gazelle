@@ -93,15 +93,26 @@ for ($i = 0; $i < $Limit; $i++) {
 if (($Freeleeches = $Cache->get_value('shop_freeleech_list')) === false) {
     $DB->query("
     SELECT
-      TorrentID,
-      UNIX_TIMESTAMP(ExpiryTime),
-      COALESCE(NULLIF(Name,''), NULLIF(Title2,''), NameJP) AS Name,
-      WikiImage
-    FROM shop_freeleeches AS sf
-    LEFT JOIN torrents AS t on sf.TorrentID=t.ID
-    LEFT JOIN torrents_group AS tg ON tg.ID=t.GroupID
-    ORDER BY ExpiryTime ASC
-    LIMIT 10");
+      `TorrentID`,
+      UNIX_TIMESTAMP(`ExpiryTime`),
+      COALESCE(
+        NULLIF(`title`, ''),
+        NULLIF(`subject`, ''),
+        `object`
+      ) AS `Name`,
+      `picture`
+    FROM
+      `shop_freeleeches` AS sf
+    LEFT JOIN `torrents` AS t
+    ON
+      sf.`TorrentID` = t.`ID`
+    LEFT JOIN `torrents_group` AS tg
+    ON
+      tg.`id` = t.`GroupID`
+    ORDER BY
+      `ExpiryTime` ASC
+    LIMIT 10
+    ");
     $Freeleeches = $DB->to_array();
     $Cache->cache_value('shop_freeleech_list', $Freeleeches, 1209600);
 }
@@ -447,16 +458,25 @@ $Recommend_artists = $Cache->get_value('recommend_artists');
 if (!is_array($Recommend) || !is_array($Recommend_artists)) {
     $DB->query("
     SELECT
-      tr.GroupID,
-      tr.UserID,
-      u.Username,
-      tg.Name,
-      tg.TagList
-    FROM torrents_recommended AS tr
-      JOIN torrents_group AS tg ON tg.ID = tr.GroupID
-      LEFT JOIN users_main AS u ON u.ID = tr.UserID
-    ORDER BY tr.Time DESC
-    LIMIT 10");
+      tr.`GroupID`,
+      tr.`UserID`,
+      u.`Username`,
+      tg.`title`,
+      tg.`tag_list`
+    FROM
+      `torrents_recommended` AS tr
+    JOIN `torrents_group` AS tg
+    ON
+      tg.`id` = tr.`GroupID`
+    LEFT JOIN `users_main` AS u
+    ON
+      u.`ID` = tr.`UserID`
+    ORDER BY
+      tr.`Time`
+    DESC
+    LIMIT 10
+    ");
+    
     $Recommend = $DB->to_array();
     $Cache->cache_value('recommend', $Recommend, 1209600);
 

@@ -191,7 +191,7 @@ $OldGroupID = 0;
     <?php
 
 foreach ($TorrentList as $Group) {
-    extract(Torrents::array_group($TorrentList[$Group['ID']]), EXTR_OVERWRITE);
+    extract(Torrents::array_group($TorrentList[$Group['id']]), EXTR_OVERWRITE);
 
     if ($GroupID === $OldGroupID) {
         continue;

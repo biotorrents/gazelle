@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-Security::CheckID($_POST['groupid']);
+Security::checkInt($_POST['groupid']);
 authorize();
 
 // Usual perm checks

@@ -164,48 +164,32 @@ if (!empty($Where)) {
     $WhereSum = '';
 }
 
-$BaseQuery = '
-  SELECT
-    t.ID,
-    g.ID,
-    g.Name,
-    g.Title2,
-    g.NameJP,
-    g.CategoryID,
-    g.WikiImage,
-    g.TagList,
-    t.Media,
-    g.Year,
-    g.Studio,
-    t.Snatched,
-    t.Seeders,
-    t.Leechers,
-    ((t.Size * t.Snatched) + (t.Size * 0.5 * t.Leechers)) AS Data,
-    t.Size
-  FROM torrents AS t
-    LEFT JOIN torrents_group AS g ON g.ID = t.GroupID';
-
-/*
-$BaseQuery = '
-  SELECT
-    t.ID,
-    g.ID,
-    g.Name,
-    g.Title2,
-    g.NameJP,
-    g.CategoryID,
-    g.WikiImage,
-    g.TagList,
-    t.Media,
-    g.Year,
-    t.Snatched,
-    t.Seeders,
-    t.Leechers,
-    ((t.Size * t.Snatched) + (t.Size * 0.5 * t.Leechers)) AS Data,
-    t.Size
-  FROM torrents AS t
-    LEFT JOIN torrents_group AS g ON g.ID = t.GroupID';
-*/
+$BaseQuery = "
+SELECT
+  t.`ID`,
+  g.`id`,
+  g.`title`,
+  g.`subject`,
+  g.`object`,
+  g.`category_id`,
+  g.`picture`,
+  g.`tag_list`,
+  t.`Media`,
+  g.`published`,
+  g.`workgroup`,
+  t.`Snatched`,
+  t.`Seeders`,
+  t.`Leechers`,
+  (
+    (t.`Size` * t.`Snatched`) +(t.`Size` * 0.5 * t.`Leechers`)
+  ) AS `Data`,
+  t.`Size`
+FROM
+  `torrents` AS t
+LEFT JOIN `torrents_group` AS g
+ON
+  g.`id` = t.`GroupID`
+";
 
 if ($Details === 'all' || $Details === 'day') {
     $TopTorrentsActiveLastDay = $Cache->get_value('top10tor_day_'.$Limit.$WhereSum.$GroupBySum);
@@ -447,26 +431,32 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
         <?php
     switch ($Limit) {
       case 100: ?>
-        &ndash; <a href="top10.php?details=<?=$Tag?>" class="brackets">Top
+        &ndash; <a href="top10.php?details=<?=$Tag?>"
+            class="brackets">Top
             10</a>
         &ndash; <span class="brackets">Top 100</span>
-        &ndash; <a href="top10.php?type=torrents&amp;limit=250&amp;details=<?=$Tag?>"
+        &ndash; <a
+            href="top10.php?type=torrents&amp;limit=250&amp;details=<?=$Tag?>"
             class="brackets">Top 250</a>
         <?php break;
 
       case 250: ?>
-        &ndash; <a href="top10.php?details=<?=$Tag?>" class="brackets">Top
+        &ndash; <a href="top10.php?details=<?=$Tag?>"
+            class="brackets">Top
             10</a>
-        &ndash; <a href="top10.php?type=torrents&amp;limit=100&amp;details=<?=$Tag?>"
+        &ndash; <a
+            href="top10.php?type=torrents&amp;limit=100&amp;details=<?=$Tag?>"
             class="brackets">Top 100</a>
         &ndash; <span class="brackets">Top 250</span>
         <?php break;
 
       default: ?>
         &ndash; <span class="brackets">Top 10</span>
-        &ndash; <a href="top10.php?type=torrents&amp;limit=100&amp;details=<?=$Tag?>"
+        &ndash; <a
+            href="top10.php?type=torrents&amp;limit=100&amp;details=<?=$Tag?>"
             class="brackets">Top 100</a>
-        &ndash; <a href="top10.php?type=torrents&amp;limit=250&amp;details=<?=$Tag?>"
+        &ndash; <a
+            href="top10.php?type=torrents&amp;limit=250&amp;details=<?=$Tag?>"
             class="brackets">Top 250</a>
         <?php } ?>
     </small>
@@ -481,13 +471,13 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
         <td style="text-align: right;">Size</td>
         <td style="text-align: right;">Data</td>
         <td style="text-align: right;" class="sign snatches">
-        ↻
+            ↻
         </td>
         <td style="text-align: right;" class="sign seeders">
-        &uarr;
+            &uarr;
         </td>
         <td style="text-align: right;" class="sign leechers">
-        &darr;
+            &darr;
         </td>
         <td style="text-align: right;">Peers</td>
     </tr>

@@ -11,20 +11,23 @@ declare(strict_types = 1);
 class Security
 {
     /**
-     * Check ID
+     * Check integer
      *
      * Makes sure a number ID is valid,
      * e.g., a page ID requested by GET.
      */
-    public function CheckID($ID)
+    public function checkInt($IDs)
     {
         # Temporary failsafe
         # (int) 'dingus' = 0
         # (int) 3.14 = 3
-        $ID = (int) $ID;
+        $IDs = (is_array($IDs) ?: [(int) $IDs]);
+        foreach ($IDs as $ID) {
+            $ID = (int) $ID;
 
-        if (!is_int($ID) || $ID < 1) {
-            error(400);
+            if (!is_int($ID) || $ID < 1) {
+                error(400);
+            }
         }
 
         return;

@@ -86,7 +86,6 @@ if ($DonorIsVisible === null) {
 extract(Donations::get_enabled_rewards($UserID));
 $Rewards = Donations::get_rewards($UserID);
 $ProfileRewards = Donations::get_profile_rewards($UserID);
-$DonorTitles = Donations::get_titles($UserID);
 ?>
 
 <div>
@@ -746,47 +745,6 @@ HTML;
           <td>
             <input type="text" size="50" name="donor_icon_custom_url" id="donor_icon_custom_url"
               value="<?=$Rewards['CustomIcon']?>" />
-          </td>
-        </tr>
-        <?php }
-
-# Donor forum honorific
-  if ($HasDonorForum) { ?>
-        <tr id="pers_donorforum_tr">
-          <td class="label">
-            <strong>Donor forum honorific</strong>
-          </td>
-
-          <td>
-            <div>
-              <label>
-                <strong>Prefix</strong>
-                <input type="text" size="30" maxlength="30" name="donor_title_prefix" id="donor_title_prefix"
-                  value="<?=$DonorTitles['Prefix']?>" />
-              </label>
-            </div>
-
-            <div>
-              <label>
-                <strong>Suffix</strong>
-                <input type="text" size="30" maxlength="30" name="donor_title_suffix" id="donor_title_suffix"
-                  value="<?=$DonorTitles['Suffix']?>" />
-              </label>
-            </div>
-
-            <div>
-              <label>
-                <strong>Hide comma</strong>
-                <input type="checkbox" id="donor_title_comma" name="donor_title_comma" <?=!$DonorTitles['UseComma'] ? ' checked="checked"' : '' ?>
-                />
-              </label>
-            </div>
-
-            <strong>Preview</strong>
-            <span id="donor_title_prefix_preview"></span>
-            <?=$Username?>
-            <span id="donor_title_comma_preview">,</span>
-            <span id="donor_title_suffix_preview"></span>
           </td>
         </tr>
         <?php } ?>

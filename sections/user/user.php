@@ -365,46 +365,9 @@ if (!$OwnProfile && !$LoggedUser['DisablePoints']) { ?>
         <p>Note: 10% of your gift is taken as tax.</p>
       </div>
     </div>
-    <?php
-}
-$DB->query("
-  SELECT u.Username
-  FROM slaves AS s
-  LEFT JOIN users_main AS u ON u.ID = s.OwnerID
-  WHERE s.UserID = $UserID");
-if ($LoggedUser['Class'] >= 200 || $DB->has_results()) { ?>
-    <div class='box ownership_box'>
-      <div class='head colhead_dark'>Ownership</div>
-      <div class="pad">
-        <?php if ($DB->has_results()) { ?>
-        <p>This user is owned by <?=($DB->next_record()['Username'])?>
-        </p>
-        <?php } else {
-    $DB->query("
-      SELECT u.Uploaded, u.Downloaded, u.BonusPoints, COUNT(t.UserID)
-      FROM users_main AS u
-      LEFT JOIN torrents AS t ON u.ID=t.UserID
-      WHERE u.ID = $UserID");
-    list($Upload, $Download, $Points, $Uploads) = $DB->next_record();
-    $Level = intval(((($Uploads**0.35)*1.5)+1) * max(($Upload+($Points*1000000)-$Download)/(1024**3), 1)); ?>
-        <p>This user is wild and level <?=$Level?>
-        </p>
-        <?php if (!$OwnProfile) { ?>
-        <p>Try to capture them with <?=BONUS_POINTS?>? The more you
-          spend, the higher the chance of capture</p>
-        <form action='store.php' method='post'>
-          <input type='hidden' name='item' value='capture_user' />
-          <input type='hidden' name='target' value='<?=$UserID?>' />
-          <input type='text' name='amount'
-            placeholder='<?=BONUS_POINTS?>' /><input type='submit'
-            value='Capture' />
-        </form>
-        <?php }
-} ?>
-      </div>
-    </div>
     <?php } ?>
-    <div class="box box_info box_userinfo_stats">
+
+<div class="box box_info box_userinfo_stats">
       <div class="head colhead_dark">Statistics</div>
       <ul class="stats nobullet">
         <li>Joined: <?=$JoinedDate?>
@@ -837,17 +800,17 @@ if (check_paranoia_here('snatched')) {
     if ($RecentSnatches === false) {
         $DB->query("
       SELECT
-        g.ID,
-        g.Name,
-        g.Title2,
-        g.NameJP,
-        g.WikiImage
+        g.`id`,
+        g.`title`,
+        g.`subject`,
+        g.`object`,
+        g.`picture`
       FROM xbt_snatched AS s
         INNER JOIN torrents AS t ON t.ID = s.fid
-        INNER JOIN torrents_group AS g ON t.GroupID = g.ID
+        INNER JOIN torrents_group AS g ON t.GroupID = g.`id`
       WHERE s.uid = '$UserID'
-        AND g.WikiImage != ''
-      GROUP BY g.ID,s.tstamp
+        AND g.`picture` != ''
+      GROUP BY g.`id`,s.tstamp
       ORDER BY s.tstamp DESC
       LIMIT 5");
         $RecentSnatches = $DB->to_array();
@@ -893,16 +856,16 @@ if (check_paranoia_here('uploads')) {
     if ($RecentUploads === false) {
         $DB->query("
       SELECT
-        g.ID,
-        g.Name,
-        g.Title2,
-        g.NameJP,
-        g.WikiImage
+        g.`id`,
+        g.`title`,
+        g.`subject`,
+        g.`object`,
+        g.`picture`
       FROM torrents_group AS g
-        INNER JOIN torrents AS t ON t.GroupID = g.ID
+        INNER JOIN torrents AS t ON t.GroupID = g.`id`
       WHERE t.UserID = '$UserID'
-        AND g.WikiImage != ''
-      GROUP BY g.ID,t.Time
+        AND g.`picture` != ''
+      GROUP BY g.`id`,t.Time
       ORDER BY t.Time DESC
       LIMIT 5");
         $RecentUploads = $DB->to_array();
@@ -955,10 +918,10 @@ foreach ($Collages as $CollageInfo) {
     list($CollageID, $CName) = $CollageInfo;
     $DB->query("
     SELECT ct.GroupID,
-      tg.WikiImage,
-      tg.CategoryID
+      tg.`picture`,
+      tg.`category_id`
     FROM collages_torrents AS ct
-      JOIN torrents_group AS tg ON tg.ID = ct.GroupID
+      JOIN torrents_group AS tg ON tg.`id` = ct.GroupID
     WHERE ct.CollageID = '$CollageID'
     ORDER BY ct.Sort
     LIMIT 5");
@@ -1020,6 +983,7 @@ if ((check_perms('users_view_invites')) && $Invited > 0) {
         <?php $Tree->make_tree(); ?>
       </div>
     </div>
+</div>
     <?php
 }
 

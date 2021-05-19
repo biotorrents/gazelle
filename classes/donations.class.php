@@ -1,13 +1,14 @@
 <?php
 declare(strict_types=1);
 
-define('BTC_API_URL', 'https://api.bitcoinaverage.com/ticker/global/EUR/');
-define('USD_API_URL', 'http://www.google.com/ig/calculator?hl=en&q=1USD=?EUR');
-
 class Donations
 {
     private static $IsSchedule = false;
 
+
+    /**
+     * regular_donate
+     */
     public static function regular_donate($UserID, $DonationAmount, $Source, $Reason, $Currency = 'USD')
     {
         self::donate(
@@ -23,6 +24,10 @@ class Donations
         );
     }
 
+
+    /**
+     * donate
+     */
     public static function donate($UserID, $Args)
     {
         $UserID = (int) $UserID;
@@ -220,6 +225,10 @@ class Donations
         G::$DB->set_query_id($QueryID);
     }
 
+
+    /**
+     * calculate_special_rank
+     */
     private static function calculate_special_rank($UserID)
     {
         $UserID = (int) $UserID;
@@ -272,6 +281,10 @@ class Donations
         G::$DB->set_query_id($QueryID);
     }
 
+
+    /**
+     * expire_ranks
+     */
     public static function expire_ranks()
     {
         $QueryID = G::$DB->get_query_id();
@@ -309,11 +322,19 @@ class Donations
         G::$DB->set_query_id($QueryID);
     }
 
+
+    /**
+     * calculate_rank
+     */
     private static function calculate_rank($Amount)
     {
         return floor($Amount / 5);
     }
 
+
+    /**
+     * update_rank
+     */
     public static function update_rank($UserID, $Rank, $TotalRank, $Reason)
     {
         $Rank = (int) $Rank;
@@ -332,6 +353,10 @@ class Donations
         );
     }
 
+
+    /**
+     * hide_stats
+     */
     public static function hide_stats($UserID)
     {
         $QueryID = G::$DB->get_query_id();
@@ -345,6 +370,10 @@ class Donations
         G::$DB->set_query_id($QueryID);
     }
 
+
+    /**
+     * show_stats
+     */
     public static function show_stats($UserID)
     {
         $QueryID = G::$DB->get_query_id();
@@ -358,6 +387,10 @@ class Donations
         G::$DB->set_query_id($QueryID);
     }
 
+
+    /**
+     * is_visible
+     */
     public static function is_visible($UserID)
     {
         $QueryID = G::$DB->get_query_id();
@@ -375,11 +408,16 @@ class Donations
         return $HasResults;
     }
 
+
+    /**
+     * has_donor_forum
+     */
     public static function has_donor_forum($UserID)
     {
         $ENV = ENV::go();
         return self::get_rank($UserID) >= $ENV->DONOR_FORUM_RANK || self::get_special_rank($UserID) >= MAX_SPECIAL_RANK;
     }
+
 
     /**
      * Put all the common donor info in the same cache key to save some cache calls
@@ -452,26 +490,46 @@ class Donations
         return $DonorInfo;
     }
 
+
+    /**
+     * get_rank
+     */
     public static function get_rank($UserID)
     {
         return self::get_donor_info($UserID)['Rank'];
     }
 
+
+    /**
+     * get_special_rank
+     */
     public static function get_special_rank($UserID)
     {
         return self::get_donor_info($UserID)['SRank'];
     }
 
+
+    /**
+     * get_total_rank
+     */
     public static function get_total_rank($UserID)
     {
         return self::get_donor_info($UserID)['TotRank'];
     }
 
+
+    /**
+     * get_donation_time
+     */
     public static function get_donation_time($UserID)
     {
         return self::get_donor_info($UserID)['Time'];
     }
 
+
+    /**
+     * get_personal_collages
+     */
     public static function get_personal_collages($UserID)
     {
         $DonorInfo = self::get_donor_info($UserID);
@@ -483,30 +541,10 @@ class Donations
         return $Collages;
     }
 
-    public static function get_titles($UserID)
-    {
-        $Results = G::$Cache->get_value("donor_title_$UserID");
-        if ($Results === false) {
-            $QueryID = G::$DB->get_query_id();
 
-            G::$DB->query("
-            SELECT
-              `Prefix`,
-              `Suffix`,
-              `UseComma`
-            FROM
-              `donor_forum_usernames`
-            WHERE
-              `UserID` = '$UserID'
-            ");
-
-            $Results = G::$DB->next_record();
-            G::$DB->set_query_id($QueryID);
-            G::$Cache->cache_value("donor_title_$UserID", $Results, 0);
-        }
-        return $Results;
-    }
-
+    /**
+     * get_enabled_rewards
+     */
     public static function get_enabled_rewards($UserID)
     {
         $Rewards = [];
@@ -553,11 +591,19 @@ class Donations
         return $Rewards;
     }
 
+
+    /**
+     * get_rewards
+     */
     public static function get_rewards($UserID)
     {
         return self::get_donor_info($UserID)['Rewards'];
     }
 
+
+    /**
+     * get_profile_rewards
+     */
     public static function get_profile_rewards($UserID)
     {
         $Results = G::$Cache->get_value("donor_profile_rewards_$UserID");
@@ -587,6 +633,10 @@ class Donations
         return $Results;
     }
 
+
+    /**
+     * add_profile_info_reward
+     */
     private static function add_profile_info_reward($Counter, &$Insert, &$Values, &$Update)
     {
         if (isset($_POST["profile_title_" . $Counter]) && isset($_POST["profile_info_" . $Counter])) {
@@ -603,6 +653,10 @@ class Donations
         }
     }
 
+
+    /**
+     * update_rewards
+     */
     public static function update_rewards($UserID)
     {
         $Rank = self::get_rank($UserID);
@@ -663,7 +717,6 @@ class Donations
                 $Values[] = "'$CustomIcon'";
                 $Update[] = "CustomIcon = '$CustomIcon'";
             }
-            self::update_titles($UserID, $_POST['donor_title_prefix'], $_POST['donor_title_suffix'], $_POST['donor_title_comma']);
             $Counter++;
         }
 
@@ -705,37 +758,10 @@ class Donations
         G::$Cache->delete_value("donor_info_$UserID");
     }
 
-    public static function update_titles($UserID, $Prefix, $Suffix, $UseComma)
-    {
-        $QueryID = G::$DB->get_query_id();
-        $Prefix = trim(db_string($Prefix));
-        $Suffix = trim(db_string($Suffix));
-        $UseComma = empty($UseComma);
 
-        G::$DB->query("
-        INSERT INTO `donor_forum_usernames`(
-          `UserID`,
-          `Prefix`,
-          `Suffix`,
-          `UseComma`
-        )
-        VALUES(
-          '$UserID',
-          '$Prefix',
-          '$Suffix',
-          '$UseComma'
-        )
-        ON DUPLICATE KEY
-        UPDATE
-          `Prefix` = '$Prefix',
-          `Suffix` = '$Suffix',
-          `UseComma` = '$UseComma'
-        ");
-
-        G::$Cache->delete_value("donor_title_$UserID");
-        G::$DB->set_query_id($QueryID);
-    }
-
+    /**
+     * get_donation_history
+     */
     public static function get_donation_history($UserID)
     {
         $UserID = (int) $UserID;
@@ -743,7 +769,6 @@ class Donations
             error(404);
         }
 
-        # todo: Investigate Rank in donations table
         $QueryID = G::$DB->get_query_id();
         G::$DB->query("
         SELECT
@@ -770,6 +795,10 @@ class Donations
         return $DonationHistory;
     }
 
+
+    /**
+     * get_rank_expiration
+     */
     public static function get_rank_expiration($UserID)
     {
         $DonorInfo = self::get_donor_info($UserID);
@@ -789,6 +818,10 @@ class Donations
         return $Return;
     }
 
+
+    /**
+     * get_leaderboard_position
+     */
     public static function get_leaderboard_position($UserID)
     {
         $UserID = (int) $UserID;
@@ -823,11 +856,19 @@ class Donations
         return $Position;
     }
 
+
+    /**
+     * is_donor
+     */
     public static function is_donor($UserID)
     {
         return self::get_rank($UserID) > 0;
     }
 
+
+    /**
+     * currency_exchange
+     */
     public static function currency_exchange($Amount, $Currency)
     {
         if (!self::is_valid_currency($Currency)) {
@@ -849,11 +890,19 @@ class Donations
         return round($Amount, 2);
     }
 
+
+    /**
+     * is_valid_currency
+     */
     public static function is_valid_currency($Currency)
     {
         return $Currency === 'EUR' || $Currency === 'BTC' || $Currency === 'USD';
     }
 
+
+    /**
+     * btc_to_euro
+     */
     public static function btc_to_euro($Amount)
     {
         $Rate = G::$Cache->get_value('btc_rate');
@@ -863,6 +912,10 @@ class Donations
         return $Rate * $Amount;
     }
 
+
+    /**
+     * usd_to_euro
+     */
     public static function usd_to_euro($Amount)
     {
         $Rate = G::$Cache->get_value('usd_rate');

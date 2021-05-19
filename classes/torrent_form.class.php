@@ -1285,7 +1285,7 @@ HTML;
         /**
          * Mirrors
          *
-         * This should be in the `torrents` table not `torrents_group`.
+         * This should be in the `torrents` table not `torrents_group.`
          * The intended use is for web seeds, Dat mirrors, etc.
          */
         if (!$this->DisabledFlag && $this->NewTorrent) {

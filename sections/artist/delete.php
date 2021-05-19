@@ -1,11 +1,13 @@
-<?
+<?php
+
+/*
 /************************************************************************
 ||------------|| Delete artist ||--------------------------------------||
 
 This is a very powerful page - it deletes an artist, and all associated
 requests and torrents. It is called when $_GET['action'] == 'delete'.
 
-************************************************************************/
+************************************************************************
 
 authorize();
 
@@ -34,23 +36,26 @@ $DB->query("
 $Count = $DB->record_count();
 if ($DB->has_results()) {
 ?>
-  <div>
-    There are still torrents that have <a href="artist.php?id=<?=$ArtistID?>" class="tooltip" title="View artist" dir="ltr"><?=$Name?></a> as an artist.<br />
-    Please remove the artist from these torrents manually before attempting to delete.<br />
-    <div class="box pad">
-      <ul>
-<?
+<div>
+  There are still torrents that have <a
+    href="artist.php?id=<?=$ArtistID?>" class="tooltip"
+    title="View artist" dir="ltr"><?=$Name?></a> as an artist.<br />
+  Please remove the artist from these torrents manually before attempting to delete.<br />
+  <div class="box pad">
+    <ul>
+      <?
   while (list($GroupName, $GroupID) = $DB->next_record(MYSQLI_NUM, true)) {
 ?>
-        <li>
-          <a href="torrents.php?id=<?=$GroupID?>" class="tooltip" title="View torrent group" dir="ltr"><?=$GroupName?></a>
-        </li>
-<?
+      <li>
+        <a href="torrents.php?id=<?=$GroupID?>" class="tooltip"
+          title="View torrent group" dir="ltr"><?=$GroupName?></a>
+      </li>
+      <?
   }
 ?>
-      </ul>
-    </div>
+    </ul>
   </div>
+</div>
 <?
 }
 
@@ -62,32 +67,36 @@ $DB->query("
 $Count += $DB->record_count();
 if ($DB->has_results()) {
 ?>
-  <div>
-    There are still requests that have <a href="artist.php?id=<?=$ArtistID?>" class="tooltip" title="View artist" dir="ltr"><?=$Name?></a> as an artist.<br />
-    Please remove the artist from these requests manually before attempting to delete.<br />
-    <div class="box pad">
-      <ul>
-<?
+<div>
+  There are still requests that have <a
+    href="artist.php?id=<?=$ArtistID?>" class="tooltip"
+    title="View artist" dir="ltr"><?=$Name?></a> as an artist.<br />
+  Please remove the artist from these requests manually before attempting to delete.<br />
+  <div class="box pad">
+    <ul>
+      <?
   while (list($RequestName, $RequestID) = $DB->next_record(MYSQLI_NUM, true)) {
 ?>
-        <li>
-          <a href="requests.php?action=view&amp;id=<?=$RequestID?>" class="tooltip" title="View request" dir="ltr"><?=$RequestName?></a>
-        </li>
-<?
+      <li>
+        <a href="requests.php?action=view&amp;id=<?=$RequestID?>"
+          class="tooltip" title="View request" dir="ltr"><?=$RequestName?></a>
+      </li>
+      <?
   }
 ?>
-      </ul>
-    </div>
+    </ul>
   </div>
+</div>
 <?
 }
 
 if ($Count == 0) {
   Artists::delete_artist($ArtistID);
 ?>
-  <div class="box pad">
-    Artist "<?=$Name?>" deleted!
-  </div>
+<div class="box pad">
+  Artist "<?=$Name?>" deleted!
+</div>
 <?
 }
 View::show_footer();?>
+*/

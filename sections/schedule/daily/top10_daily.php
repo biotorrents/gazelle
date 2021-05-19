@@ -9,25 +9,33 @@ $HistoryID = $DB->inserted_id();
 $Top10 = $Cache->get_value('top10tor_day_10');
 if ($Top10 === false) {
     $DB->query("
-      SELECT
-        t.ID,
-        g.ID,
-        g.Name,
-        g.CategoryID,
-        g.WikiImage,
-        g.TagList,
-        t.Media,
-        g.Year,
-        t.Snatched,
-        t.Seeders,
-        t.Leechers,
-        ((t.Size * t.Snatched) + (t.Size * 0.5 * t.Leechers)) AS Data
-      FROM torrents AS t
-        LEFT JOIN torrents_group AS g ON g.ID = t.GroupID
-      WHERE t.Seeders > 0
-        AND t.Time > ('$sqltime' - INTERVAL 1 DAY)
-      ORDER BY (t.Seeders + t.Leechers) DESC
-      LIMIT 10;");
+    SELECT
+      t.`ID`,
+      g.`id`,
+      g.`title`,
+      g.`category_id`,
+      g.`picture`,
+      g.`tag_list`,
+      t.`Media`,
+      g.`published`,
+      t.`Snatched`,
+      t.`Seeders`,
+      t.`Leechers`,
+      (
+        (t.`Size` * t.`Snatched`) +(t.`Size` * 0.5 * t.`Leechers`)
+      ) AS `Data`
+    FROM
+      `torrents` AS t
+    LEFT JOIN `torrents_group` AS g
+    ON
+      g.`id` = t.`GroupID`
+    WHERE
+      t.`Seeders` > 0 AND t.`Time` >('$sqltime' - INTERVAL 1 DAY)
+    ORDER BY
+      (t.`Seeders` + t.`Leechers`)
+    DESC
+    LIMIT 10;
+    ");
     $Top10 = $DB->to_array();
 }
 

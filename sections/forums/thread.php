@@ -516,7 +516,7 @@ foreach ($Thread as $Key => $Post) {
     <td colspan="<?=Users::has_avatars_enabled() ? 2 : 1?>">
       <div class="float_left"><a class="post_id"
           href="forums.php?action=viewthread&amp;threadid=<?=$ThreadID?>&amp;postid=<?=$PostID?>#post<?=$PostID?>">#<?=$PostID?></a>
-        <?=Users::format_username($AuthorID, true, true, true, true, true, $IsDonorForum);
+        <?=Users::format_username($AuthorID, true, true, true, true, true);
     echo "\n"; ?>
         <?=time_diff($AddedTime, 2);
     echo "\n"; ?>
@@ -598,7 +598,7 @@ foreach ($Thread as $Key => $Post) {
             onclick="LoadEdit('forums', <?=$PostID?>, 1); return false;">&laquo;</a>
           <?php } ?>
           Last edited by
-          <?=Users::format_username($EditedUserID, false, false, false, false, false, $IsDonorForum) ?>
+          <?=Users::format_username($EditedUserID, false, false, false, false, false) ?>
           <?=time_diff($EditedTime, 2, true, true)?>
         </div>
         <?php } ?>

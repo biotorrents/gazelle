@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types = 1);
 
-include SERVER_ROOT.'/sections/torrents/functions.php';
+require_once SERVER_ROOT.'/sections/torrents/functions.php';
 
 // The "order by x" links on columns headers
 function header_link($SortKey, $DefaultWay = 'desc')
@@ -805,8 +805,7 @@ die();
               # Emoji in classes/astists.class.php
               $Label = '&ensp;';
               $DisplayName .= $Label.'<div class="torrent_artists">'.Artists::display_artists($Artists).'</div>';
-          }
-         ?>
+          } ?>
   <tr class="group<?=$SnatchedGroupClass?>">
     <?php
       $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGrouping'] === 1); ?>
