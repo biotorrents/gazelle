@@ -1597,7 +1597,6 @@ CREATE TABLE `users_notify_filters` (
   `Media` varchar(500) NOT NULL DEFAULT '',
   `FromYear` int NOT NULL DEFAULT '0',
   `ToYear` int NOT NULL DEFAULT '0',
-  `ExcludeVA` enum('1','0') NOT NULL DEFAULT '0',
   `NewGroupsOnly` enum('1','0') NOT NULL DEFAULT '0',
   `ReleaseTypes` varchar(500) NOT NULL DEFAULT '',
   PRIMARY KEY (`ID`),

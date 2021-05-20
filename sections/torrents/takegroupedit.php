@@ -1,30 +1,32 @@
 <?php
 #declare(strict_types = 1);
 
-authorize();
+/**
+ * Input validation
+ */
 
-// Quick SQL injection check
-if (!$_REQUEST['groupid'] || !is_number($_REQUEST['groupid'])) {
-    error(404);
-}
+# User permissions
+authorize();
 
 if (!check_perms('site_edit_wiki')) {
     error(403);
 }
 
-// Variables for database input
-$UserID = $LoggedUser['ID'];
-$GroupID = $_REQUEST['groupid'];
+# Variables for database input
+$UserID = (int) $LoggedUser['ID'];
+$GroupID = (int) $_REQUEST['groupid'];
 
-if (!empty($_GET['action']) && $_GET['action'] === 'revert') { // if we're reverting to a previous revision
-    $RevisionID = $_GET['revisionid'];
-    if (!is_number($RevisionID)) {
-        error(400);
-    }
+Security::checkInt([$UserID, $GroupID]);
 
-    // To cite from merge: "Everything is legit, let's just confim they're not retarded"
+# If we're reverting to a previous revision
+if (!empty($_GET['action']) && $_GET['action'] === 'revert') {
+    $RevisionID = (int) $_GET['revisionid'];
+    Security::checkInt($RevisionID);
+
+    # To cite from merge: "Everything is legit, let's just confim they're not retarded"
     if (empty($_GET['confirm'])) {
-        View::show_header(); ?>
+        View::show_header();
+    } ?>
 
 <!-- Start HTML -->
 <div class="center">
@@ -104,12 +106,15 @@ $Image = db_string($Image);
 
 // Update torrents table (technically, we don't need the RevisionID column, but we can use it for a join which is nice and fast)
 $DB->query("
-  UPDATE torrents_group
-  SET
-    RevisionID = '$RevisionID',
-    WikiBody = '$Body',
-    WikiImage = '$Image'
-  WHERE ID='$GroupID'");
+UPDATE
+  `torrents_group`
+SET
+  `revision_id` = '$RevisionID',
+  `description` = '$Body',
+  `picture` = '$Image'
+WHERE
+  `id` = '$GroupID'
+");
 
 // There we go, all done!
 

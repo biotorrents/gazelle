@@ -6,6 +6,7 @@ declare(strict_types = 1);
  *
  * Designed to hold common authentication functions from various sources:
  *  - classes/script_start.php
+ *  - "Quick SQL injection check"
  */
 
 class Security
@@ -16,16 +17,17 @@ class Security
      * Makes sure a number ID is valid,
      * e.g., a page ID requested by GET.
      */
-    public function checkInt($IDs)
+    public function checkInt(mixed $ID)
+    #public function checkInt(int|array $ID) # Union types need PHP 8 - unbelievable!
     {
-        # Temporary failsafe
-        # (int) 'dingus' = 0
-        # (int) 3.14 = 3
-        $IDs = (is_array($IDs) ?: [(int) $IDs]);
-        foreach ($IDs as $ID) {
-            $ID = (int) $ID;
+        # Cast single ID to array
+        if (!is_array($ID)) {
+            $ID = [$ID];
+        }
 
-            if (!is_int($ID) || $ID < 1) {
+        # Check each ID supplied
+        foreach ($ID as $ID) {
+            if (!ID || !is_int($ID) || $ID < 1) {
                 error(400);
             }
         }
@@ -33,13 +35,14 @@ class Security
         return;
     }
 
+
     /**
      * Setup pitfalls
      *
      * A series of quick sanity checks during app init.
      * Previously in classes/script_start.php.
      */
-    public function SetupPitfalls()
+    public function setupPitfalls()
     {
         # short_open_tag
         if (!ini_get('short_open_tag')) {
@@ -62,6 +65,7 @@ class Security
 
         return;
     }
+
 
     /**
      * UserID checks

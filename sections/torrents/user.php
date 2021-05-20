@@ -49,10 +49,6 @@ $SearchWhere = [];
 if (!empty($_GET['format'])) {
     if (in_array($_GET['format'], $Formats)) {
         $SearchWhere[] = "t.Format = '".db_string($_GET['format'])."'";
-        /*
-        } elseif ($_GET['format'] === 'perfectflac') {
-            $_GET['filter'] = 'perfectflac';
-        */
     }
 }
 
@@ -226,32 +222,6 @@ switch ($_GET['type']) {
   default:
     error(404);
 }
-
-/*
-if (!empty($_GET['filter'])) {
-    if ($_GET['filter'] === 'perfectflac') {
-        if (!check_paranoia('perfectflacs', $User['Paranoia'], $UserClass, $UserID)) {
-            error(403);
-        }
-        $ExtraWhere .= " AND t.Format = 'FLAC'";
-        if (empty($_GET['media'])) {
-            $ExtraWhere .= "
-        AND (
-          t.LogScore = 100 OR
-          t.Media IN ('Vinyl', 'WEB', 'DVD', 'Soundboard', 'Cassette', 'SACD', 'Blu-ray', 'DAT')
-          )";
-        } elseif (strtoupper($_GET['media']) === 'CD' && empty($_GET['log'])) {
-            $ExtraWhere .= "
-        AND t.LogScore = 100";
-        }
-    } elseif ($_GET['filter'] === 'uniquegroup') {
-        if (!check_paranoia('uniquegroups', $User['Paranoia'], $UserClass, $UserID)) {
-            error(403);
-        }
-        $GroupBy = 'tg.ID';
-    }
-}
-*/
 
 if (empty($GroupBy)) {
     $GroupBy = 't.ID';
@@ -534,15 +504,18 @@ foreach ($Categories as $CatKey => $CatName) {
         </td>
 
         <td class="sign snatches">
-          <a href="<?= header_link('Snatched') ?>">↻</a>
+          <a
+            href="<?= header_link('Snatched') ?>">↻</a>
         </td>
 
         <td class="sign seeders">
-          <a href="<?= header_link('Seeders') ?>">&uarr;</a>
+          <a
+            href="<?= header_link('Seeders') ?>">&uarr;</a>
         </td>
 
         <td class="sign leechers">
-          <a href="<?= header_link('Leechers') ?>">&darr;</a>
+          <a
+            href="<?= header_link('Leechers') ?>">&darr;</a>
         </td>
       </tr>
 

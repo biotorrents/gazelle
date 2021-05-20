@@ -24,7 +24,6 @@ $DB->query("
     ID,
     Label,
     Artists,
-    ExcludeVA,
     NewGroupsOnly,
     Tags,
     NotTags,
@@ -46,7 +45,6 @@ $Notifications[] = array(
   'ID' => false,
   'Label' => '',
   'Artists' => '',
-  'ExcludeVA' => false,
   'NewGroupsOnly' => true,
   'Tags' => '',
   'NotTags' => '',
@@ -148,15 +146,6 @@ foreach ($Notifications as $N) { // $N stands for Notifications
           <textarea name="artists<?=$i?>" style="width: 100%;"
             rows="5"><?=display_str($N['Artists'])?></textarea>
           Comma-separated list, e.g., Yumeno Aika, Pink Pineapple
-          <!--
-          <input type="checkbox" name="excludeva<?=$i?>"
-          id="excludeva_<?=$N['ID']?>" <?php if ($N['ExcludeVA'] === '1') {
-        echo ' checked="checked"';
-    } ?>>
-          <label
-            for="excludeva_<?=$N['ID']?>">Exclude
-            Various Artists releases</label>
-          -->
         </td>
       </tr>
 

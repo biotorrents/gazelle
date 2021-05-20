@@ -26,7 +26,7 @@ if (!$Tables = $Cache->get_value('database_table_stats')) {
 }
 
 # todo: Remove Google Charts dependency
-require SERVER_ROOT.'/classes/charts.class.php';
+require_once SERVER_ROOT.'/classes/charts.class.php';
 $Pie = new PIE_CHART(750, 400, array('Other'=>1,'Percentage'=>1,'Sort'=>1));
 
 // Begin sorting

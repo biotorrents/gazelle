@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require SERVER_ROOT.'/sections/torrents/functions.php';
+require_once SERVER_ROOT.'/sections/torrents/functions.php';
 
 $GroupID = (int) $_GET['id'];
 if ($GroupID === 0) {

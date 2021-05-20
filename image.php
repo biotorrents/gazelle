@@ -112,5 +112,4 @@ function image_height($Type, $Data)
   }
 }
 
-define('SKIP_NO_CACHE_HEADERS', 1);
 require_once 'classes/script_start.php'; // script_start.php contains all we need and includes sections/image/index.php

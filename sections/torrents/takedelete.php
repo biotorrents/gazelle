@@ -1,15 +1,15 @@
-<?
+<?php
 #declare(strict_types = 1);
 
 authorize();
 
 $TorrentID = $_POST['torrentid'];
 if (!$TorrentID || !is_number($TorrentID)) {
-  error(404);
+    error(404);
 }
 
 if ($Cache->get_value("torrent_{$TorrentID}_lock")) {
-  error('Torrent cannot be deleted because the upload process is not completed yet. Please try again later.');
+    error('Torrent cannot be deleted because the upload process is not completed yet. Please try again later.');
 }
 
 $DB->query("
@@ -31,28 +31,28 @@ $DB->query("
 list($UploaderID, $GroupID, $Size, $InfoHash, $Name, $ArtistName, $Time, $Snatches) = $DB->next_record(MYSQLI_NUM, false);
 
 if ($LoggedUser['ID'] != $UploaderID && !check_perms('torrents_delete')) {
-  error(403);
+    error(403);
 }
 
 if (time_ago($Time) > 3600 * 24 * 7 && !check_perms('torrents_delete')) {
-  error('Torrent cannot be deleted because it is over one week old. If you think there is a problem, contact staff.');
+    error('Torrent cannot be deleted because it is over one week old. If you think there is a problem, contact staff.');
 }
 
 if ($Snatches > 4 && !check_perms('torrents_delete')) {
-  error('Torrent cannot be deleted because it has been snatched by more than 4 people. If you think there is a problem, contact staff.');
+    error('Torrent cannot be deleted because it has been snatched by more than 4 people. If you think there is a problem, contact staff.');
 }
 
 if ($ArtistName) {
-  $Name = "$ArtistName - $Name";
+    $Name = "$ArtistName - $Name";
 }
 
 if (isset($_SESSION['logged_user']['multi_delete'])) {
-  if ($_SESSION['logged_user']['multi_delete'] >= 3 && !check_perms('torrents_delete_fast')) {
-    error('You have recently deleted 3 torrents. Please contact a staff member if you need to delete more.');
-  }
-  $_SESSION['logged_user']['multi_delete']++;
+    if ($_SESSION['logged_user']['multi_delete'] >= 3 && !check_perms('torrents_delete_fast')) {
+        error('You have recently deleted 3 torrents. Please contact a staff member if you need to delete more.');
+    }
+    $_SESSION['logged_user']['multi_delete']++;
 } else {
-  $_SESSION['logged_user']['multi_delete'] = 1;
+    $_SESSION['logged_user']['multi_delete'] = 1;
 }
 
 $InfoHash = unpack('H*', $InfoHash);
@@ -65,5 +65,5 @@ View::show_header('Torrent deleted');
 <div>
   <h3>Torrent was successfully deleted.</h3>
 </div>
-<?
-View::show_footer();
+
+<?php View::show_footer();

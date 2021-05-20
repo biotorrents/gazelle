@@ -1,31 +1,34 @@
 <?php
 #declare(strict_types=1);
 
-//****************************************************************************//
-//--------------- Take upload ------------------------------------------------//
-// This pages handles the backend of the torrent upload function. It checks   //
-// the data, and if it all validates, it builds the torrent file, then writes //
-// the data to the database and the torrent to the disk.                      //
-//****************************************************************************//
+/**
+ * Take upload
+ *
+ * This pages handles the backend of the torrent upload function.
+ * It checks the data, and if it all validates, it builds the torrent file,
+ * then writes the data to the database and the torrent to the disk.
+ */
 
-include SERVER_ROOT.'/classes/validate.class.php';
-include SERVER_ROOT.'/classes/feed.class.php';
-include SERVER_ROOT.'/sections/torrents/functions.php';
+$ENV = ENV::go();
+$Feed = new Feed;
+$Validate = new Validate;
+
+require_once "$ENV->SERVER_ROOT/classes/feed.class.php";
+require_once "$ENV->SERVER_ROOT/classes/validate.class.php";
+require_once "$ENV->SERVER_ROOT/sections/torrents/functions.php";
 
 enforce_login();
 authorize();
 
-$ENV = ENV::go();
-$Validate = new Validate;
-$Feed = new Feed;
 
-
-//*****************************************************************************//
-//--------------- Set $Properties array ---------------------------------------//
-// This is used if the form doesn't validate, and when the time comes to enter //
-// it into the database.
-// todo: Do something about this mess
-//****************************************************************************//
+/**
+ * Set $Properties array
+ *
+ * This is used if the form doesn't validate,
+ * and when the time comes to enter it into the database.
+ *
+ * todo: Do something about this mess
+ */
 
 $Properties = [];
 $Type = $Categories[(int) $_POST['type']];
@@ -102,8 +105,10 @@ if (!empty($_POST['requestid'])) {
     $Properties['RequestID'] = $RequestID;
 }
 
-//******************************************************************************//
-//--------------- Validate data in upload form ---------------------------------//
+
+/**
+ * Validate data in upload form
+ */
 
 # Submit button
 $Validate->SetFields(
@@ -114,7 +119,7 @@ $Validate->SetFields(
     array('inarray' => array_keys($Categories))
 );
 
-# torrents_group.CategoryID
+# torrents_group.category_id
 $Validate->SetFields(
     'type',
     '1',
@@ -123,181 +128,153 @@ $Validate->SetFields(
     array('inarray' => array_keys($Categories))
 );
 
-# todo: Remove the switch statement
-switch ($Type) {
-    /*
-  case 'Imaging':
-    if (!isset($_POST['groupid']) || !$_POST['groupid']) {
-        # torrents.Media
-        $Validate->SetFields(
-            'media',
-            '1',
-            'inarray',
-            'Please select a valid platform.',
-            array('inarray' => array_merge($Media, $MediaManga, $Platform))
-        );
-
-        # torrents.Container
-        $Validate->SetFields(
-            'container',
-            '1',
-            'inarray',
-            'Please select a valid format.',
-            array('inarray' => array_merge($Containers, $ContainersGames))
-        );
-    }
-break;
-*/
-
-default:
-    if (!isset($_POST['groupid']) || !$_POST['groupid']) {
-        # torrents_group.CatalogueNumber
-        $Validate->SetFields(
-            'catalogue',
-            '0',
-            'string',
-            'Accession Number must be between 0 and 50 characters.',
-            array('maxlength' => 50, 'minlength' => 0)
-        );
-
-        # torrents.Version
-        $Validate->SetFields(
-            'version',
-            '0',
-            'string',
-            'Version must be between 0 and 10 characters.',
-            array('maxlength' => 10, 'minlength' => 0)
-        );
-        
-        # torrents_group.Name
-        $Validate->SetFields(
-            'title',
-            '1',
-            'string',
-            'Torrent Title must be between 10 and 255 characters.',
-            array('maxlength' => 255, 'minlength' => 10)
-        );
-
-        # torrents_group.Title2
-        $Validate->SetFields(
-            'title_rj',
-            '0',
-            'string',
-            'Organism must be between 0 and 255 characters.',
-            array('maxlength' => 255, 'minlength' => 0)
-        );
-
-        # torrents_group.NameJP
-        $Validate->SetFields(
-            'title_jp',
-            '0',
-            'string',
-            'Strain/Variety must be between 0 and 255 characters.',
-            array('maxlength' => 255, 'minlength' => 0)
-        );
-
-        # torrents_group.Studio
-        $Validate->SetFields(
-            'studio',
-            '1',
-            'string',
-            'Department/Lab must be between 0 and 100 characters.',
-            array('maxlength' => 100, 'minlength' => 0)
-        );
-
-        # torrents_group.Series
-        $Validate->SetFields(
-            'series',
-            '0',
-            'string',
-            'Location must be between 0 and 100 characters.',
-            array('maxlength' => 100, 'minlength' => 0)
-        );
-
-        /* todo: Fix the year validation
-        # torrents_group.Year
-        $Validate->SetFields(
-            'year',
-            '1',
-            'number',
-            'The year of the original release must be entered.',
-            array('maxlength' => 4, 'minlength' => 4)
-        );
-        */
-
-        # torrents.Media
-        $Validate->SetFields(
-            'media',
-            '1',
-            'inarray',
-            'Please select a valid platform.',
-            array('inarray' => array_merge(
-                $SeqPlatforms,
-                $GraphPlatforms,
-                $ImgPlatforms,
-                $DocPlatforms,
-                $RawPlatforms
-            ))
-        );
-
-        /*
-        # torrents.Container
-        $Validate->SetFields(
-            'container',
-            '1',
-            'inarray',
-            'Please select a valid format.',
-            array('inarray' => array_merge($Containers, $ContainersGames))
-        );
-        */
-
-        # torrents.Resolution
-        $Validate->SetFields(
-            'resolution',
-            '1',
-            'string',
-            'Scope must be between 4 and 20 characters.',
-            array('maxlength' => 20, 'minlength' => 4)
-        );
-        
-        # torrents_group.TagList
-        $Validate->SetFields(
-            'tags',
-            '1',
-            'string',
-            'You must enter at least five tags. Maximum length is 500 characters.',
-            array('maxlength' => 500, 'minlength' => 10)
-        );
-
-        # torrents_group.WikiImage
-        $Validate->SetFields(
-            'image',
-            '0',
-            'link',
-            'The image URL you entered was invalid.',
-            array('maxlength' => 255, 'minlength' => 10) # x.yz/a.bc
-        );
-    }
-
-    # torrents_group.WikiBody
+if (!$_POST['groupid']) {
+    # torrents_group.CatalogueNumber
     $Validate->SetFields(
-        'album_desc',
+        'catalogue',
+        '0',
+        'string',
+        'Accession Number must be between 0 and 50 characters.',
+        array('maxlength' => 50, 'minlength' => 0)
+    );
+
+    # torrents.Version
+    $Validate->SetFields(
+        'version',
+        '0',
+        'string',
+        'Version must be between 0 and 10 characters.',
+        array('maxlength' => 10, 'minlength' => 0)
+    );
+        
+    # torrents_group.title
+    $Validate->SetFields(
+        'title',
         '1',
         'string',
-        'The description must be between 100 and 65535 characters.',
-        array('maxlength' => 65535, 'minlength' => 100)
+        'Torrent Title must be between 10 and 255 characters.',
+        array('maxlength' => 255, 'minlength' => 10)
     );
 
-    /* todo: Fix the Group ID validation
-    # torrents_group.ID
+    # torrents_group.subject
     $Validate->SetFields(
-        'groupid',
+        'title_rj',
         '0',
+        'string',
+        'Organism must be between 0 and 255 characters.',
+        array('maxlength' => 255, 'minlength' => 0)
+    );
+
+    # torrents_group.object
+    $Validate->SetFields(
+        'title_jp',
+        '0',
+        'string',
+        'Strain/Variety must be between 0 and 255 characters.',
+        array('maxlength' => 255, 'minlength' => 0)
+    );
+
+    # torrents_group.workgroup
+    $Validate->SetFields(
+        'studio',
+        '1',
+        'string',
+        'Department/Lab must be between 0 and 100 characters.',
+        array('maxlength' => 100, 'minlength' => 0)
+    );
+
+    # torrents_group.location
+    $Validate->SetFields(
+        'series',
+        '0',
+        'string',
+        'Location must be between 0 and 100 characters.',
+        array('maxlength' => 100, 'minlength' => 0)
+    );
+
+    /* todo: Fix the year validation
+    # torrents_group.published
+    $Validate->SetFields(
+        'year',
+        '1',
         'number',
-        'Group ID was not numeric.'
+        'The year of the original release must be entered.',
+        array('maxlength' => 4, 'minlength' => 4)
     );
     */
+
+    # torrents.Media
+    $Validate->SetFields(
+        'media',
+        '1',
+        'inarray',
+        'Please select a valid platform.',
+        array('inarray' => array_merge(
+            $SeqPlatforms,
+            $GraphPlatforms,
+            $ImgPlatforms,
+            $DocPlatforms,
+            $RawPlatforms
+        ))
+    );
+
+    /*
+    # torrents.Container
+    $Validate->SetFields(
+        'container',
+        '1',
+        'inarray',
+        'Please select a valid format.',
+        array('inarray' => array_merge($Containers, $ContainersGames))
+    );
+    */
+
+    # torrents.Resolution
+    $Validate->SetFields(
+        'resolution',
+        '1',
+        'string',
+        'Scope must be between 4 and 20 characters.',
+        array('maxlength' => 20, 'minlength' => 4)
+    );
+        
+    # torrents_group.tag_list
+    $Validate->SetFields(
+        'tags',
+        '1',
+        'string',
+        'You must enter at least five tags. Maximum length is 500 characters.',
+        array('maxlength' => 500, 'minlength' => 10)
+    );
+
+    # torrents_group.picture
+    $Validate->SetFields(
+        'image',
+        '0',
+        'link',
+        'The image URL you entered was invalid.',
+        array('maxlength' => 255, 'minlength' => 10) # x.yz/a.bc
+    );
 }
+
+# torrents_group.description
+$Validate->SetFields(
+    'album_desc',
+    '1',
+    'string',
+    'The description must be between 100 and 65535 characters.',
+    array('maxlength' => 65535, 'minlength' => 100)
+);
+
+/* todo: Fix the Group ID validation
+# torrents_group.id
+$Validate->SetFields(
+    'groupid',
+    '0',
+    'number',
+    'Group ID was not numeric.'
+);
+*/
 
 $Err = $Validate->ValidateForm($_POST); // Validate the form
 
@@ -351,20 +328,25 @@ if (empty($Properties['GroupID']) && empty($ArtistForm)) {
 
 if ($Err) { // Show the upload form, with the data the user entered
     $UploadForm = $Type;
-    include SERVER_ROOT.'/sections/upload/upload.php' ;
+    require_once SERVER_ROOT.'/sections/upload/upload.php' ;
     error(400, $NoHTML = true);
 }
 
 ImageTools::blacklisted($Properties['Image']);
 
-//******************************************************************************//
-//--------------- Make variables ready for database input ----------------------//
 
-// Prepared SQL statements do this for us, so there is nothing to do here anymore
+/**
+ * Make variables ready for database input
+ *
+ * Prepared SQL statements do this for us,
+ * so there is nothing to do here anymore.
+ */
 $T = $Properties;
 
-//******************************************************************************//
-//--------------- Generate torrent file ----------------------------------------//
+
+/**
+ * Generate torrent file
+ */
 
 $Tor = new BencodeTorrent($TorrentName, true);
 $PublicTorrent = $Tor->make_private(); // The torrent is now private
@@ -451,16 +433,19 @@ if (!preg_match('/^'.IMAGE_REGEX.'$/i', $T['Image'])) {
 // Does it belong in a group?
 if ($T['GroupID']) {
     $DB->query("
-      SELECT
-        ID,
-        WikiImage,
-        WikiBody,
-        RevisionID,
-        Name,
-        Year,
-        TagList
-      FROM torrents_group
-        WHERE id = ?", $T['GroupID']);
+    SELECT
+      `id`,
+      `picture`,
+      `description`,
+      `revision_id`,
+      `title`,
+      `published`,
+      `tag_list`
+    FROM
+      `torrents_group`
+    WHERE
+      `id` = $T[GroupID]
+    ");
 
     if ($DB->has_results()) {
         // Don't escape tg.Name. It's written directly to the log table
@@ -835,11 +820,12 @@ if (trim($T['Image']) !== '') {
     }
 }
 
-//******************************************************************************//
-//------------------------------- Post-processing ------------------------------//
-/* Because tracker updates and notifications can be slow, we're
- * redirecting the user to the destination page and flushing the buffers
- * to make it seem like the PHP process is working in the background.
+
+/**
+ * Post-processing
+ *
+ * Because tracker updates and notifications can be slow, we're redirecting the user to the destination page
+ * and flushing the buffers to make it seem like the PHP process is working in the background.
  */
 
 if ($PublicTorrent) {
@@ -879,8 +865,10 @@ if (function_exists('fastcgi_finish_request')) {
     ob_start(); // So we don't keep sending data to the client
 }
 
-//******************************************************************************//
-//--------------------------- IRC announce and feeds ---------------------------//
+
+/**
+ * IRC announce and feeds
+ */
 
 $Announce = '';
 
@@ -978,31 +966,13 @@ if (!empty($ArtistsUnescaped)) {
         $ArtistNameList[] = "Artists LIKE '%|".db_string(str_replace('\\', '\\\\', $Artist['name']), true)."|%'";
     }
 
-    // Don't add notification if >2 main artists or if tracked artist isn't a main artist
-    /*
-    if (count($ArtistNameList) > 2 || $Artist['name'] === 'Various Artists') {
-        $SQL .= " AND (ExcludeVA = '0' AND (";
-        $SQL .= implode(' OR ', array_merge($ArtistNameList, $GuestArtistNameList));
-        $SQL .= " OR Artists = '')) AND (";
-    } else {
-    */
-
     $SQL .= " AND (";
-
-    /*
-    if (!empty($GuestArtistNameList)) {
-        $SQL .= "(ExcludeVA = '0' AND (";
-        $SQL .= implode(' OR ', $GuestArtistNameList);
-        $SQL .= ')) OR ';
-    }
-    */
 
     if (count($ArtistNameList) > 0) {
         $SQL .= implode(' OR ', $ArtistNameList);
         $SQL .= " OR ";
     }
     $SQL .= "Artists = '') AND (";
-#}
 } else {
     $SQL .= "AND (Artists = '') AND (";
 }
@@ -1022,13 +992,6 @@ $SQL .= implode(' OR ', $TagSQL);
 $SQL .= ") AND !(".implode(' OR ', $NotTagSQL).')';
 $SQL .= " AND (Categories LIKE '%|".db_string(trim($Type))."|%' OR Categories = '') ";
 
-/*
-if ($T['ReleaseType']) {
-    $SQL .= " AND (ReleaseTypes LIKE '%|".db_string(trim($ReleaseTypes[$T['ReleaseType']]))."|%' OR ReleaseTypes = '') ";
-} else {
-    $SQL .= " AND (ReleaseTypes = '') ";
-}
-*/
 
 /*
   Notify based on the following:
@@ -1036,17 +999,10 @@ if ($T['ReleaseType']) {
     2. If they set NewGroupsOnly to 1, it must also be the first torrent in the group to match the formatbitrate filter on the notification
 */
 
-/*
 if ($T['Format']) {
     $SQL .= " AND (Formats LIKE '%|".db_string(trim($T['Format']))."|%' OR Formats = '') ";
 } else {
     $SQL .= " AND (Formats = '') ";
-}
-
-if ($_POST['bitrate']) {
-    $SQL .= " AND (Encodings LIKE '%|".db_string(trim($_POST['bitrate']))."|%' OR Encodings = '') ";
-} else {
-    $SQL .= " AND (Encodings = '') ";
 }
 
 if ($T['Media']) {
@@ -1054,7 +1010,6 @@ if ($T['Media']) {
 } else {
     $SQL .= " AND (Media = '') ";
 }
-*/
 
 // Either they aren't using NewGroupsOnly
 $SQL .= "AND ((NewGroupsOnly = '0' ";
@@ -1062,14 +1017,12 @@ $SQL .= "AND ((NewGroupsOnly = '0' ";
 $SQL .= ") OR ( NewGroupsOnly = '1' ";
 $SQL .= '))';
 
-/*
 if ($T['Year']) {
     $SQL .= " AND (('".db_string(trim($T['Year']))."' BETWEEN FromYear AND ToYear)
       OR (FromYear = 0 AND ToYear = 0)) ";
 } else {
     $SQL .= " AND (FromYear = 0 AND ToYear = 0) ";
 }
-*/
 
 $SQL .= " AND UserID != '".$LoggedUser['ID']."' ";
 
@@ -1145,9 +1098,9 @@ $Feed->populate('torrents_all', $Item);
 $Feed->populate('torrents_'.strtolower($Type), $Item);
 $Debug->set_flag('upload: notifications handled');
 
-// Clear cache
+# Clear cache
 $Cache->delete_value("torrents_details_$GroupID");
 $Cache->delete_value("contest_scores");
 
-// Allow deletion of this torrent now
+# Allow deletion of this torrent now
 $Cache->delete_value("torrent_{$TorrentID}_lock");

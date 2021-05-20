@@ -211,4 +211,3 @@ $UserAnnounceList = (sizeof(ANNOUNCE_URLS[0]) === 1 && sizeof(ANNOUNCE_URLS[0][0
 #$UserAnnounceList = (sizeof(ANNOUNCE_URLS) == 1 && sizeof(ANNOUNCE_URLS[0]) == 1) ? [] : array_map("add_passkey", ANNOUNCE_URLS);
 
 echo TorrentsDL::get_file($Contents, $UserAnnounceURL, $UserAnnounceList);
-define('SKIP_NO_CACHE_HEADERS', 1);
