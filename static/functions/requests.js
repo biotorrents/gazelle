@@ -188,7 +188,7 @@ function JavAutofill() {
     description: 'req_desc'
   }
   var cn = $('#catalogue').raw().value.toUpperCase()
-  $.getJSON('/ajax.php?action=javfill&cn=' + cn, function (data) {
+  $.getJSON('/api.php?action=javfill&cn=' + cn, function (data) {
     if (data.status != "success") {
       $('#catalogue').raw().value = 'Failed'
       return

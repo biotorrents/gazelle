@@ -403,7 +403,7 @@ function AnimeAutofill() {
   }
 
   var aid = $('#anidb').raw().value
-  $.getJSON('/ajax.php?action=autofill&cat=anime&aid=' + aid, function (data) {
+  $.getJSON('/api.php?action=autofill&cat=anime&aid=' + aid, function (data) {
     if (data.status != "success") return
     for (i in data.response) {
       if (map[i] && !($('#' + map[i]).raw().value)) {
@@ -431,7 +431,7 @@ function JavAutofill() {
   }
 
   var cn = $('#javdb_tr #catalogue').raw().value.toUpperCase()
-  $.getJSON('/ajax.php?action=autofill&cat=jav&cn=' + cn, function (data) {
+  $.getJSON('/api.php?action=autofill&cat=jav&cn=' + cn, function (data) {
     if (data.status != "success") {
       $('#catalogue').raw().value = 'Failed'
       return
@@ -484,7 +484,7 @@ function MangaAutofill() {
   }
 
   var nh = $('#ehentai_tr #catalogue').raw().value
-  $.getJSON('/ajax.php?action=autofill&cat=manga&url=' + nh, function (data) {
+  $.getJSON('/api.php?action=autofill&cat=manga&url=' + nh, function (data) {
     if (data.status != "success") {
       $('#catalogue').raw().value = 'Failed'
       return

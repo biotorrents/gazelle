@@ -29,8 +29,6 @@
 
       if (password1.length == 0 && password2.length == 0) {
         enableSubmit();
-      } else if (getStrong() == true) {
-        validatePassword(password1);
       }
     });
 
@@ -58,23 +56,6 @@
     });
 
   });
-
-  function validatePassword(password) {
-    if (isUserPage()) {
-      $.ajax({
-        type: 'POST',
-        dataType: 'text',
-        url: 'ajax.php?action=password_validate',
-        data: 'password=' + password,
-        async: false,
-        success: function (value) {
-          if (value == 'false') {
-            setStatus(COMMON);
-          }
-        }
-      });
-    }
-  }
 
   function calculateComplexity(password) {
     var length = password.length;

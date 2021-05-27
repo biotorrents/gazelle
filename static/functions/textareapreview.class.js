@@ -1,4 +1,5 @@
 var TextareaPreview;
+
 $(document).ready(function () {
   'use strict';
 
@@ -81,15 +82,11 @@ $(document).ready(function () {
     },
 
     post: function () {
-      $.post('ajax.php?action=preview',
+      $.post('api.php?action=preview',
         { body: this.el.textarea.val() },
         $.proxy(this.html, this),
         'html'
       );
-
-      // .fail(function (jqXHR, textStatus) {
-      //   alert('Request failed: ' + textStatus);
-      // });
     },
 
     html: function (data) {

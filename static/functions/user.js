@@ -12,7 +12,7 @@ function ChangeTo(to) {
         }
 
     } else if (to == "links") {
-        ajax.post("ajax.php?action=preview", "form", function (response) {
+        ajax.post("api.php?action=preview", "form", function (response) {
             $('#admincommentlinks').raw().innerHTML = response;
             $('#admincomment').ghide();
             $('#admincommentlinks').gshow();
@@ -184,7 +184,7 @@ function togglePassKey(key) {
 function commStats(userid) {
     $('.user_commstats').html('Loading&hellip;');
     console.log(userid);
-    ajax.get('ajax.php?action=community_stats&userid=' + userid, function (JSONresponse) {
+    ajax.get('api.php?action=community_stats&userid=' + userid, function (JSONresponse) {
         var response = JSON.parse(JSONresponse) || false;
         console.log(response);
 

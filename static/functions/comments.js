@@ -70,7 +70,7 @@ function Quote(post, user, link = false) {
 
       $.ajax({
         type: "POST",
-        url: "ajax.php?action=raw_bbcode",
+        url: "api.php?action=raw_bbcode",
         dataType: "json",
         data: {
           "postid": postid
@@ -198,7 +198,7 @@ function Cancel_Edit(postid) {
  */
 function Preview_Edit(postid) {
   $('#bar' + postid).raw().innerHTML = "<input type=\"button\" value=\"Editor\" onclick=\"Cancel_Preview(" + postid + ");\" /><input type=\"button\" value=\"Post\" onclick=\"Save_Edit(" + postid + ")\" /><input type=\"button\" value=\"Cancel\" onclick=\"Cancel_Edit(" + postid + ");\" />";
-  ajax.post("ajax.php?action=preview", "form" + postid, function (response) {
+  ajax.post("api.php?action=preview", "form" + postid, function (response) {
     $('#preview' + postid).raw().innerHTML = response;
     $('#editbox' + postid).ghide();
     if ($('#editbox' + postid).raw().previousSibling.classList.contains('bbcode_bar')) $($('#editbox' + postid).raw().previousSibling).ghide();
@@ -268,7 +268,7 @@ function Quick_Preview() {
   var quickreplybuttons;
   $('#post_preview').raw().value = "Make changes";
   $('#post_preview').raw().preview = true;
-  ajax.post("ajax.php?action=preview", "quickpostform", function (response) {
+  ajax.post("api.php?action=preview", "quickpostform", function (response) {
     $('#quickreplypreview').gshow();
     $('#contentpreview').raw().innerHTML = response;
     $('#quickreplytext').ghide();
@@ -295,7 +295,7 @@ function Newthread_Preview(mode) {
   $('#newthreadpreviewbutton').gtoggle();
   $('#newthreadeditbutton').gtoggle();
   if (mode) { // Preview
-    ajax.post("ajax.php?action=preview", "newthreadform", function (response) {
+    ajax.post("api.php?action=preview", "newthreadform", function (response) {
       $('#contentpreview').raw().innerHTML = response;
     });
     $('#newthreadtitle').raw().innerHTML = $('#title').raw().value;

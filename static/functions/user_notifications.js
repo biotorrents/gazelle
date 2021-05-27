@@ -131,7 +131,7 @@ function createNoty(type, id, message, url, importance) {
 function clear(type, id) {
   $.ajax({
     type: 'POST',
-    url: 'ajax.php?action=clear_user_notification',
+    url: 'api.php?action=clear_user_notification',
     dataType: 'json',
     data: {
       'type': type,
