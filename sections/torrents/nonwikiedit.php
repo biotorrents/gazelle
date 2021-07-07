@@ -1,8 +1,10 @@
 <?php
 declare(strict_types=1);
 
-Security::checkInt($_POST['groupid']);
 authorize();
+
+$GroupID = (int) $_GET['groupid'];
+Security::checkInt($GroupID);
 
 // Usual perm checks
 if (!check_perms('torrents_edit')) {

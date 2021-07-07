@@ -17,16 +17,9 @@ class Security
      * Makes sure a number ID is valid,
      * e.g., a page ID requested by GET.
      */
-    public function checkInt($ID)
-    #public function checkInt(int|array $ID) # Union types need PHP 8 - unbelievable!
+    public function checkInt(...$IDs)
     {
-        # Cast single ID to array
-        if (!is_array($ID)) {
-            $ID = [$ID];
-        }
-
-        # Check each ID supplied
-        foreach ($ID as $ID) {
+        foreach ($IDs as $ID) {
             if (!ID || !is_int($ID) || $ID < 1) {
                 error(400);
             }

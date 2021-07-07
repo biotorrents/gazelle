@@ -15,7 +15,7 @@ if (!check_perms('site_edit_wiki')) {
 # Variables for database input
 $user_id = (int) $LoggedUser['ID'];
 $group_id = (int) $_REQUEST['groupid'];
-Security::checkInt([$user_id, $group_id]);
+Security::checkInt($user_id, $group_id);
 
 # If we're reverting to a previous revision
 if (!empty($_GET['action']) && $_GET['action'] === 'revert') {
