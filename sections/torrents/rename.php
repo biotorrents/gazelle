@@ -1,58 +1,65 @@
 <?php
 #declare(strict_types=1);
 
+/**
+ * Input validation
+ */
+
 authorize();
 
-$GroupID = $_POST['groupid'];
-$NewTitle1 = $_POST['name'];
-$NewTitle2 = $_POST['Title2'];
-$NewTitle3 = $_POST['namejp'];
+$group_id = (int) $_POST['groupid'];
+Security::checkInt($group_id);
 
-$DB->query(
-    "
+$NewTitle = $_POST['name'];
+$NewSubject = $_POST['Title2'];
+$NewObject = $_POST['namejp'];
+
+$DB->prepare_query("
 SELECT
   `ID`
 FROM
   `torrents`
 WHERE
-  `GroupID` = ".db_string($GroupID)."
-  AND `UserID` = ".$LoggedUser['ID']
-);
+  `GroupID` = '$group_id' AND `UserID` = '$LoggedUser[ID]'
+");
+$DB->exec_prepared_query();
+
 $Contributed = $DB->has_results();
-
-if (!$GroupID || !is_number($GroupID)) {
-    error(404);
-}
-
 if (!($Contributed || check_perms('torrents_edit'))) {
     error(403);
 }
 
-#if (empty($NewName) && empty($NewRJ) && empty($NewJP)) {
-if (empty($NewTitle1)) { # Title2, Title3 optional
+# NewSubject, NewObject optional
+if (empty($NewTitle)) {
     error('Torrent groups must have a name');
 }
 
-$DB->query("
+$DB->prepare_query("
 UPDATE
   `torrents_group`
 SET
-  `Name` = '".db_string($NewTitle1)."',
-  `Title2` = '".db_string($NewTitle2)."',
-  `NameJP` = '".db_string($NewTitle3)."'
+  `title` = '$NewTitle',
+  `subject` = '$NewSubject',
+  `object` = '$NewObject'
 WHERE
-  `ID` = '$GroupID'
+  `id` = '$group_id'
 ");
-$Cache->delete_value("torrents_details_$GroupID");
+$DB->exec_prepared_query();
 
-Torrents::update_hash($GroupID);
+$Cache->delete_value("torrents_details_$group_id");
+Torrents::update_hash($group_id);
 
 $DB->query("
-  SELECT `Name`, `Title2`, `NameJP`
-  FROM `torrents_group`
-  WHERE `ID` = '$GroupID'
+SELECT
+  `title`,
+  `subject`,
+  `object`
+FROM
+  `torrents_group`
+WHERE
+  `id` = '$group_id'
 ");
-list($OldName, $OldRJ, $OldJP) = $DB->next_record(MYSQLI_NUM, false);
+list($OldTitle, $OldSubject, $OldObject) = $DB->next_record(MYSQLI_NUM, false);
 
 # Map metadata over generic database fields
 # todo: Work into $ENV in classes/config.php
@@ -60,19 +67,19 @@ $Title1 = 'Title';
 $Title2 = 'Organism';
 $Title3 = 'Strain/Variety';
 
-if ($OldName !== $NewTitle1) {
-    Misc::write_log("Torrent Group $GroupID ($OldName)'s $Title1 was changed to '$NewTitle1' from '$OldName' by ".$LoggedUser['Username']);
-    Torrents::write_group_log($GroupID, 0, $LoggedUser['ID'], "$Title1 changed to '$NewTitle1' from '$OldName'", 0);
+if ($OldTitle !== $NewTitle) {
+    Misc::write_log("Torrent Group $group_id ($OldTitle)'s $Title1 was changed to '$NewTitle' from '$OldTitle' by ".$LoggedUser['Username']);
+    Torrents::write_group_log($group_id, 0, $LoggedUser['ID'], "$Title1 changed to '$NewTitle' from '$OldTitle'", 0);
 }
 
-if ($OldRJ !== $NewTitle2) {
-    Misc::write_log("Torrent Group $GroupID ($OldRJ)'s $Title2 was changed to '$NewTitle2' from '$OldRJ' by ".$LoggedUser['Username']);
-    Torrents::write_group_log($GroupID, 0, $LoggedUser['ID'], "$Title2 changed to '$NewTitle2' from '$OldRJ'", 0);
+if ($OldSubject !== $NewSubject) {
+    Misc::write_log("Torrent Group $group_id ($OldSubject)'s $Title2 was changed to '$NewSubject' from '$OldSubject' by ".$LoggedUser['Username']);
+    Torrents::write_group_log($group_id, 0, $LoggedUser['ID'], "$Title2 changed to '$NewSubject' from '$OldSubject'", 0);
 }
 
-if ($OldJP !== $NewTitle3) {
-    Misc::write_log("Torrent Group $GroupID ($OldJP)'s $Title3 was changed to '$NewTitle3' from '$OldJP' by ".$LoggedUser['Username']);
-    Torrents::write_group_log($GroupID, 0, $LoggedUser['ID'], "$Title3 changed to '$NewTitle3' from '$OldJP'", 0);
+if ($OldObject !== $NewObject) {
+    Misc::write_log("Torrent Group $group_id ($OldObject)'s $Title3 was changed to '$NewObject' from '$OldObject' by ".$LoggedUser['Username']);
+    Torrents::write_group_log($group_id, 0, $LoggedUser['ID'], "$Title3 changed to '$NewObject' from '$OldObject'", 0);
 }
 
-header("Location: torrents.php?id=$GroupID");
+header("Location: torrents.php?id=$group_id");

@@ -545,7 +545,7 @@ class Torrents
      *
      * @param int $GroupID
      */
-    public static function update_hash($GroupID)
+    public static function update_hash(int $GroupID)
     {
         $QueryID = G::$DB->get_query_id();
 
@@ -575,18 +575,19 @@ class Torrents
 
         // Fetch album artists
         G::$DB->query("
-        SELECT GROUP_CONCAT(ag.Name separator ' ')
-        FROM torrents_artists AS ta
-          JOIN artists_group AS ag ON ag.ArtistID = ta.ArtistID
-          WHERE ta.GroupID = ?
-        GROUP BY ta.GroupID", $GroupID);
+        SELECT GROUP_CONCAT(ag.`Name` separator ' ')
+        FROM `torrents_artists` AS `ta`
+          JOIN `artists_group` AS ag ON ag.`ArtistID` = ta.`ArtistID`
+          WHERE ta.`GroupID` = '$GroupID'
+        GROUP BY ta.`GroupID`
+        ");
         if (G::$DB->has_results()) {
             list($ArtistName) = G::$DB->next_record(MYSQLI_NUM, false);
         } else {
             $ArtistName = '';
         }
 
-        G::$DB->query("
+        G::$DB->prepare_query("
         REPLACE
         INTO sphinx_delta(
           `ID`,
@@ -619,28 +620,28 @@ class Torrents
         SELECT
           t.`ID`,
           g.`id`,
-          `Name`,
-          `Title2`,
-          `NameJP`,
-          `TagList`,
-          `Year`,
-          `CatalogueNumber`,
-          `CategoryID`,
+          g.`title`,
+          g.`subject`,
+          g.`object`,
+          g.`tag_list`,
+          g.`published`,
+          g.`identifier`,
+          g.`category_id`,
           UNIX_TIMESTAMP(t.`Time`),
-          `Size`,
-          `Snatched`,
-          `Seeders`,
-          `Leechers`,
-          `Censored`,
-          `Studio`,
-          `Series`,
+          t.`Size`,
+          t.`Snatched`,
+          t.`Seeders`,
+          t.`Leechers`,
+          t.`Censored`,
+          g.`workgroup`,
+          g.`location`,
           CAST(`FreeTorrent` AS CHAR),
-          `Media`,
-          `Container`,
-          `Codec`,
-          `Resolution`,
-          `Version`,
-          `Description`,
+          t.`Media`,
+          t.`Container`,
+          t.`Codec`,
+          t.`Resolution`,
+          t.`Version`,
+          t.`Description`,
         REPLACE
           (
         REPLACE
@@ -657,13 +658,13 @@ class Torrents
         WHERE
           g.`id` = '$GroupID'
         ");
+        G::$DB->exec_prepared_query();
 
         G::$Cache->delete_value("torrents_details_$GroupID");
         G::$Cache->delete_value("torrent_group_$GroupID");
         G::$Cache->delete_value("torrent_group_light_$GroupID");
 
         $ArtistInfo = Artists::get_artist($GroupID);
-
         G::$Cache->delete_value("groups_artists_$GroupID");
         G::$DB->set_query_id($QueryID);
     }

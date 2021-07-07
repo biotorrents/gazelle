@@ -64,8 +64,8 @@ if ($DB->has_results()) {
 $Artists = Artists::get_artists(array($GroupID))[$GroupID];
 
 if (!$Body) {
-    $Body = $WikiBody;
-    $Image = $WikiImage;
+    $Body = $description;
+    $Image = $picture;
 }
 
 View::show_header(
@@ -76,7 +76,7 @@ View::show_header(
 
 <h2 class="header">
   Edit
-  <a href="torrents.php?id=<?=$GroupID?>"><?=($Name ? $Name : ($Title2 ? $Title2 : $NameJP))?></a>
+  <a href="torrents.php?id=<?=$GroupID?>"><?=($title ? $title : ($subject ? $subject : $object))?></a>
 </h2>
 
 <div class="box pad">
@@ -101,7 +101,7 @@ View::show_header(
 
     <?php
 new TEXTAREA_PREVIEW(
-    'body', # $Name breaks "Rename (will not merge)"
+    'body', # $title breaks "Rename (will not merge)"
     $ID = 'body',
     $Value = display_str($Body) ?? '',
 );
@@ -308,7 +308,7 @@ new TEXTAREA_PREVIEW(
 
         <td>
           <input type="text" name="name" size="70"
-            value="<?=$Name?>" />
+            value="<?=$title?>" />
         </td>
       </tr>
 
@@ -318,8 +318,8 @@ new TEXTAREA_PREVIEW(
         </td>
 
         <td>
-          <input type="text" name="Title2" size="70"
-            value="<?=$Title2?>" />
+          <input type="text" name="subject" size="70"
+            value="<?=$subject?>" />
         </td>
       </tr>
 

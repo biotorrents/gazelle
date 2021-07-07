@@ -12,7 +12,7 @@ if (!check_perms('torrents_edit')) {
     FROM
       `torrents`
     WHERE
-      `GroupID` = '$GroupID'
+      `GroupID` = '$group_id'
     ");
 
     if (!in_array($LoggedUser['ID'], $DB->collect('UserID'))) {
@@ -38,25 +38,25 @@ if (check_perms('torrents_freeleech')
         error(404);
     }
 
-    Torrents::freeleech_groups($GroupID, $Free, $FreeType);
+    Torrents::freeleech_groups($group_id, $Free, $FreeType);
 }
 
 $Artists = $_POST['idols'];
 
 // Escape fields
-$Studio = db_string($_POST['studio']);
-$Series = db_string($_POST['series']);
-$Year = db_string((int)$_POST['year']);
-$CatalogueNumber = db_string($_POST['catalogue']);
+$workgroup = db_string($_POST['studio']);
+$location = db_string($_POST['series']);
+$published = db_string((int)$_POST['year']);
+$identifier = db_string($_POST['catalogue']);
 
 // Get some info for the group log
 $DB->query("
 SELECT
-  `Year`
+  `published`
 FROM
   `torrents_group`
 WHERE
-  `ID` = '$GroupID'
+  `id` = '$group_id'
 ");
 list($OldYear) = $DB->next_record();
 
@@ -64,22 +64,22 @@ $DB->query("
 UPDATE
   `torrents_group`
 SET
-  `Year` = '$Year',
-  `CatalogueNumber` = '$CatalogueNumber',
-  `Studio` = '$Studio',
-  `Series` = '$Series'
+  `published` = '$published',
+  `identifier` = '$identifier',
+  `workgroup` = '$workgroup',
+  `location` = '$location'
 WHERE
-  `ID` = '$GroupID'
+  `id` = '$group_id'
 ");
 
-if ($OldYear !== $Year) {
-    $Message = db_string("Year changed from $OldYear to $Year");
+if ($OldYear !== $published) {
+    $Message = db_string("Year changed from $OldYear to $published");
+
     $DB->query("
-    INSERT INTO `group_log`
-      (`GroupID`, `UserID`, `Time`, `Info`)
+    INSERT INTO `group_log`(`GroupID`, `UserID`, `Time`, `Info`)
     VALUES(
-      '$GroupID',
-      ".$LoggedUser['ID'].",
+      '$group_id',
+      '$LoggedUser[ID]',
       NOW(),
       '$Message')
     ");
@@ -94,7 +94,7 @@ JOIN `torrents_artists` AS ta
 ON
   ag.`ArtistID` = ta.`ArtistID`
 WHERE
-  ta.`GroupID` = '$GroupID'
+  ta.`GroupID` = '$group_id'
 ");
 
 while ($r = $DB->next_record(MYSQLI_ASSOC, true)) {
@@ -123,18 +123,17 @@ foreach ($Artists as $Artist) {
             $ArtistID = $DB->inserted_id();
         }
 
-        $DB->query(
-            "
+        $DB->query("
         INSERT INTO `torrents_artists`(`GroupID`, `ArtistID`, `UserID`)
         VALUES(
-          '$GroupID',
+          '$group_id',
           '$ArtistID',
-          ".$LoggedUser['ID']."
+          '$LoggedUser[ID]'
         )
         ON DUPLICATE KEY
         UPDATE
-          `UserID` = ".$LoggedUser['ID']
-        ); // Why does this even happen
+          `UserID` = '$LoggedUser[ID]'
+        "); // Why does this even happen
         $Cache->delete_value('artist_groups_'.$ArtistID);
     }
 }
@@ -161,7 +160,7 @@ foreach ($CurrArtists as $CurrArtist) {
               `torrents_artists`
             WHERE
               `ArtistID` = '$ArtistID'
-              AND `GroupID` = '$GroupID'
+              AND `GroupID` = '$group_id'
             ");
 
             $DB->query("
@@ -200,13 +199,13 @@ SELECT
 FROM
   `torrents`
 WHERE
-  `GroupID` = '$GroupID'
+  `GroupID` = '$group_id'
 ");
 
 while (list($TorrentID) = $DB->next_record()) {
     $Cache->delete_value("torrent_download_$TorrentID");
 }
 
-Torrents::update_hash($GroupID);
-$Cache->delete_value("torrents_details_$GroupID");
-header("Location: torrents.php?id=$GroupID");
+Torrents::update_hash($group_id);
+$Cache->delete_value("torrents_details_$group_id");
+header("Location: torrents.php?id=$group_id");

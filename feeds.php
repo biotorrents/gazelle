@@ -1,42 +1,58 @@
 <?php
 declare(strict_types = 1);
 
-/*-- Feed Start Class ----------------------------------*/
-/*------------------------------------------------------*/
-/* Simplified version of script_start, used for the     */
-/* sitewide RSS system.                                 */
-/*------------------------------------------------------*/
-/********************************************************/
+/**
+ * Feed start class
+ *
+ * Simplified version of script_start,
+ * used for the sitewide RSS system.
+ */
 
-// Let's prevent people from clearing feeds
+# Let's prevent people from clearing feeds
 if (isset($_GET['clearcache'])) {
     unset($_GET['clearcache']);
 }
 
 require_once 'classes/config.php';
-require_once SERVER_ROOT.'/classes/misc.class.php';
-require_once SERVER_ROOT.'/classes/cache.class.php';
-require_once SERVER_ROOT.'/classes/feed.class.php';
-
 $ENV = ENV::go();
-$Cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS')); // Load the caching class
-$Feed = new Feed; // Load the time class
 
+require_once "$ENV->SERVER_ROOT/classes/misc.class.php";
+require_once "$ENV->SERVER_ROOT/classes/cache.class.php";
+require_once "$ENV->SERVER_ROOT/classes/feed.class.php";
+
+# Load the caching class
+$Cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
+
+# Load the time class
+$Feed = new Feed;
+
+
+/**
+ * check_perms
+ */
 function check_perms()
 {
     return false;
 }
 
+
+/**
+ * is_number
+ */
 function is_number($Str)
 {
     if ($Str < 0) {
         return false;
     }
 
-    // We're converting input to an int, then string, and comparing to the original
+    # We're converting input to an int, then string, and comparing to the original
     return ($Str === strval(intval($Str)));
 }
 
+
+/**
+ * display_str
+ */
 function display_str($Str)
 {
     if ($Str !== '') {
@@ -62,21 +78,29 @@ function display_str($Str)
 
         $Str = str_replace($Replace, $With, $Str);
     }
+
     return $Str;
 }
 
+
+/**
+ * make_utf8
+ */
 function make_utf8($Str)
 {
     if ($Str !== '') {
         if (is_utf8($Str)) {
             $Encoding = 'UTF-8';
         }
+
         if (empty($Encoding)) {
             $Encoding = mb_detect_encoding($Str, 'UTF-8, ISO-8859-1');
         }
+
         if (empty($Encoding)) {
             $Encoding = 'ISO-8859-1';
         }
+
         if ($Encoding === 'UTF-8') {
             return $Str;
         } else {
@@ -85,6 +109,10 @@ function make_utf8($Str)
     }
 }
 
+
+/**
+ * is_utf8
+ */
 function is_utf8($Str)
 {
     return preg_match(
@@ -102,6 +130,10 @@ function is_utf8($Str)
     );
 }
 
+
+/**
+ * display_array
+ */
 function display_array($Array, $Escape = [])
 {
     foreach ($Array as $Key => $Val) {
@@ -109,20 +141,29 @@ function display_array($Array, $Escape = [])
             $Array[$Key] = display_str($Val);
         }
     }
+
     return $Array;
 }
 
+
 /**
- * Print the site's URL including the appropriate URI scheme, including the trailing slash
+ * site_url
+ *
+ * Print the site's URL and appropriate URI scheme,
+ * including the trailing slash.
  */
 function site_url()
 {
-    return 'https://' . SITE_DOMAIN . '/';
+    $ENV = ENV::go();
+    return "https://$ENV->SITE_DOMAIN/";
 }
 
+
+# Set the headers
 header('Cache-Control: no-cache, must-revalidate, post-check=0, pre-check=0');
 header('Pragma:');
 header('Expires: '.date('D, d M Y H:i:s', time() + (2 * 60 * 60)).' GMT');
 header('Last-Modified: '.date('D, d M Y H:i:s').' GMT');
 
-require_once SERVER_ROOT.'/sections/feeds/index.php';
+# Load the feeds section
+require_once "$ENV->SERVER_ROOT/sections/feeds/index.php";

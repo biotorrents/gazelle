@@ -118,7 +118,8 @@ if (!extension_loaded('mysqli')) {
 
 /**
  * db_string
- * Handles escaping
+ *
+ * Handles escaping.
  */
 function db_string($String, $DisableWildcards = false)
 {

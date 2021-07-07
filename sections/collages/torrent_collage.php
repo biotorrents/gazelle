@@ -46,7 +46,7 @@ foreach ($GroupIDs as $GroupID) {
     $Group = $TorrentList[$GroupID];
     extract(Torrents::array_group($Group));
     $UserID = $Contributors[$GroupID];
-    $TorrentTags = new Tags($TagList);
+    $TorrentTags = new Tags($tag_list);
 
     // Handle stats and stuff
     $Number++;
@@ -74,28 +74,28 @@ foreach ($GroupIDs as $GroupID) {
     $DisplayName .= "<a class='torrent_title' href='torrents.php?id=$GroupID' ";
 
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-        $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
+        $DisplayName .= 'data-cover="'.ImageTools::process($picture, 'thumb').'" ';
     }
 
-    $GroupName = empty($GroupName) ? (empty($GroupTitle2) ? $GroupNameJP : $GroupTitle2) : $GroupName;
-    $DisplayName .= "dir='ltr'>$GroupName</a>";
+    $title = empty($title) ? (empty($subject) ? $object : $subject) : $title;
+    $DisplayName .= "dir='ltr'>$title</a>";
 
     # Year
-    if ($GroupYear) {
+    if ($published) {
         $Label = '<br />📅&nbsp;';
-        $DisplayName .= $Label."<a href='torrents.php?action=search&year=$GroupYear'>$GroupYear</a>";
+        $DisplayName .= $Label."<a href='torrents.php?action=search&year=$published'>$published</a>";
     }
           
     # Studio
-    if ($GroupStudio) {
+    if ($workgroup) {
         $Label = '&ensp;📍&nbsp;';
-        $DisplayName .= $Label."<a href='torrents.php?action=search&location=$GroupStudio'>$GroupStudio</a>";
+        $DisplayName .= $Label."<a href='torrents.php?action=search&location=$workgroup'>$workgroup</a>";
     }
 
     # Catalogue Number
-    if ($GroupCatalogueNumber) {
+    if ($identifier) {
         $Label = '&ensp;🔑&nbsp;';
-        $DisplayName .= $Label."<a href='torrents.php?action=search&numbers=$GroupCatalogueNumber'>$GroupCatalogueNumber</a>";
+        $DisplayName .= $Label."<a href='torrents.php?action=search&numbers=$identifier'>$identifier</a>";
     }
 
     # Authors
@@ -284,7 +284,7 @@ foreach ($GroupIDs as $GroupID) {
     $DisplayName = '';
 
     #$DisplayName .= Artists::display_artists($Artists, false);
-    $DisplayName .= $GroupName;
+    $DisplayName .= $title;
 
     if ($GroupYear > 0) {
         $DisplayName = "$DisplayName [$GroupYear]";
@@ -295,11 +295,11 @@ foreach ($GroupIDs as $GroupID) {
 
 <div class="collage_image image_group_<?=$GroupID?>">
   <a href="torrents.php?id=<?=$GroupID?>">
-    <?php if (!$WikiImage) {
-        $WikiImage = STATIC_SERVER.'common/noartwork/music.png';
+    <?php if (!$picture) {
+        $picture = STATIC_SERVER.'common/noartwork/music.png';
     } ?>
     <img class="tooltip_interactive"
-      src="<?=ImageTools::process($WikiImage, 'thumb')?>"
+      src="<?=ImageTools::process($picture, 'thumb')?>"
       alt="<?=$DisplayName?>"
       title="<?=$DisplayName?>"
       data-title-plain="<?="$DisplayName ($PlainTags)"?>"
