@@ -17,29 +17,33 @@ class UserRank
     {
         $QueryID = G::$DB->get_query_id();
 
-        G::$DB->query("
+        G::$DB->prepare_query("
         DROP TEMPORARY TABLE IF EXISTS
           `temp_stats`
         ");
+        G::$DB->exec_prepared_query();
 
-        G::$DB->query("
+        G::$DB->prepare_query("
         CREATE TEMPORARY TABLE `temp_stats`(
           `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
           `value` BIGINT NOT NULL
         );
         ");
+        G::$DB->exec_prepared_query();
 
-        G::$DB->query("
+        G::$DB->prepare_query("
         INSERT INTO `temp_stats`(`value`) "
         . $Query
         );
+        G::$DB->exec_prepared_query();
 
-        G::$DB->query("
+        G::$DB->prepare_query("
         SELECT
           COUNT(`id`)
         FROM
           `temp_stats`
         ");
+        G::$DB->exec_prepared_query();
         list($UserCount) = G::$DB->next_record();
 
         $UserCount = (int) $UserCount;
@@ -51,6 +55,7 @@ class UserRank
         GROUP BY
           CEIL(`id` /($UserCount / 100));
         ");
+        G::$DB->exec_prepared_query();
 
         $Table = G::$DB->to_array();
         G::$DB->set_query_id($QueryID);

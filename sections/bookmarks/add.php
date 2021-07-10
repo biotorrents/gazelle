@@ -71,20 +71,20 @@ if (!$DB->has_results()) {
         $Cache->delete_value("bookmarks_group_ids_$UserID");
         $DB->query("
         SELECT
-          `Name`,
-          `Year`,
-          `WikiBody`,
-          `TagList`
+          `title`,
+          `year`,
+          `description`,
+          `tag_list`
         FROM
           `torrents_group`
         WHERE
-          `ID` = $PageID
+          `id` = $PageID
         ");
 
         list($GroupTitle, $Year, $Body, $TagList) = $DB->next_record();
         $TagList = str_replace('_', '.', $TagList);
 
-        $DB->query("
+        $DB->prepare_query("
         SELECT
           `ID`,
           `Media`,
@@ -94,8 +94,9 @@ if (!$DB->has_results()) {
         FROM
           `torrents`
         WHERE
-          `GroupID` = $PageID
+          `GroupID` = '$PageID'
         ");
+        $DB->exec_prepared_query();
 
         // RSS feed stuff
         while ($Torrent = $DB->next_record()) {

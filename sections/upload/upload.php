@@ -22,14 +22,14 @@ View::show_header(
 
 if (empty($Properties) && !empty($_GET['groupid']) && is_number($_GET['groupid'])) {
     $GroupID = $_GET['groupid'];
-    $DB->query("
+    $DB->prepare_query("
       SELECT
         tg.`id` as GroupID,
         tg.`category_id`,
         tg.`title` AS Title,
         tg.`subject`,
         tg.`object` AS TitleJP,
-        tg.`published`,
+        tg.`year`,
         tg.`workgroup`,
         tg.`location`,
         tg.`identifier`,
@@ -40,6 +40,7 @@ if (empty($Properties) && !empty($_GET['groupid']) && is_number($_GET['groupid']
       WHERE tg.`id` = '$GroupID'
       GROUP BY tg.`id`
       ");
+    $DB->exec_prepared_query();
 
     if ($DB->has_results()) {
         list($Properties) = $DB->to_array(false, MYSQLI_BOTH);

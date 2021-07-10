@@ -59,7 +59,7 @@ SELECT
   t.`Encoding`,
   IF(
     t.`RemasterYear` = 0,
-    tg.`published`,
+    tg.`year`,
     t.`RemasterYear`
   ) AS `Year`,
   tg.`title`,

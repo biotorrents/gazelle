@@ -11,12 +11,12 @@ if (!empty($_GET['filter']) && $_GET['filter'] === 'all') {
       t.`GroupID` = tg.`id`
     JOIN `xbt_snatched` AS x
     ON
-      x.`fid` = t.`ID` AND x.`uid` = $LoggedUser[ID]
+      x.`fid` = t.`ID` AND x.`uid` = '$LoggedUser[ID]'
     ";
     $All = false;
 }
 
-$DB->query("
+$DB->prepare_query("
 SELECT SQL_CALC_FOUND_ROWS
   tg.`id`
 FROM
@@ -28,6 +28,7 @@ ORDER BY
   RAND()
 LIMIT 20
 ");
+$DB->exec_prepared_query();
 
 $Groups = $DB->to_array('id', MYSQLI_ASSOC);
 $DB->query('SELECT FOUND_ROWS()');
@@ -95,4 +96,5 @@ foreach ($Results as $Result) {
 } ?>
   </table>
 </div>
+
 <?php View::show_footer();

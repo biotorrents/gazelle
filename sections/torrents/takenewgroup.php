@@ -1,25 +1,29 @@
 <?php
 #declare(strict_types = 1);
 
-/***************************************************************
-* This page handles the backend of the "new group" function
-* which splits a torrent off into a new group.
-****************************************************************/
+/**
+ * This page handles the backend of the "new group" function
+ * which splits a torrent off into a new group.
+ */
 
+# Validate permissions
 authorize();
 
 if (!check_perms('torrents_edit')) {
     error(403);
 }
 
+# Set variables
 $OldGroupID = $_POST['oldgroupid'];
 $TorrentID = $_POST['torrentid'];
 $ArtistName = db_string(trim($_POST['artist']));
 $Title = db_string(trim($_POST['title']));
 $Year = db_string(trim($_POST['year']));
 
-if (!is_number($OldGroupID) || !is_number($TorrentID) || !is_number($Year) || !$OldGroupID || !$TorrentID || !$Year || empty($Title) || empty($ArtistName)) {
-    error(0);
+# Digits, check 'em
+Security::checkInt($OldGroupID, $TorrentID, $Year);
+if (empty($Title) || empty($ArtistName)) {
+    error(400);
 }
 
 // Everything is legit, let's just confim they're not retarded

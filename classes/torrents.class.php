@@ -86,13 +86,13 @@ class Torrents
             $NotFound = [];
             $QueryID = G::$DB->get_query_id();
 
-            G::$DB->query("
+            G::$DB->prepare_query("
             SELECT
               `id`,
               `title`,
               `subject`,
               `object`,
-              `published`,
+              `year`,
               `identifier`,
               `workgroup`,
               `location`,
@@ -104,6 +104,7 @@ class Torrents
             WHERE
               `id` IN($IDs)
             ");
+            G::$DB->exec_prepared_query();
 
             while ($Group = G::$DB->next_record(MYSQLI_ASSOC, true)) {
                 $NotFound[$Group['id']] = $Group;
@@ -421,7 +422,7 @@ class Torrents
 
         Misc::write_log("Group $GroupID automatically deleted (No torrents have this group).");
 
-        G::$DB->query("
+        G::$DB->prepare_query("
         SELECT
           `category_id`
         FROM
@@ -429,9 +430,11 @@ class Torrents
         WHERE
           `id` = '$GroupID'
         ");
+        G::$DB->exec_prepared_query();
         list($Category) = G::$DB->next_record();
 
-        if ($Category == 1) {
+        # todo: Check strict equality here
+        if ($Category === 1) {
             G::$Cache->decrement('stats_album_count');
         }
         G::$Cache->decrement('stats_group_count');
@@ -514,25 +517,41 @@ class Torrents
         // Comments
         Comments::delete_page('torrents', $GroupID);
 
-        G::$DB->query("
+        G::$DB->prepare_query("
         DELETE
         FROM
           `torrents_group`
         WHERE
           `id` = '$GroupID'
         ");
+        G::$DB->exec_prepared_query();
 
-        G::$DB->query("
-        DELETE FROM torrents_tags
-          WHERE GroupID = ?", $GroupID);
+        G::$DB->prepare_query("
+        DELETE
+        FROM
+          `torrents_tags`
+        WHERE
+          `GroupID` = '$GroupID'
+        ");
+        G::$DB->exec_prepared_query();
 
-        G::$DB->query("
-        DELETE FROM bookmarks_torrents
-          WHERE GroupID = ?", $GroupID);
+        G::$DB->prepare_query("
+        DELETE
+        FROM
+          `bookmarks_torrents`
+        WHERE
+          `GroupID` = '$GroupID'
+        ");
+        G::$DB->exec_prepared_query();
 
-        G::$DB->query("
-        DELETE FROM wiki_torrents
-          WHERE PageID = ?", $GroupID);
+        G::$DB->prepare_query("
+        DELETE
+        FROM
+          `wiki_torrents`
+        WHERE
+          `PageID` = '$GroupID'
+        ");
+        G::$DB->exec_prepared_query();
 
         G::$Cache->delete_value("torrents_details_$GroupID");
         G::$Cache->delete_value("torrent_group_$GroupID");
@@ -549,7 +568,7 @@ class Torrents
     {
         $QueryID = G::$DB->get_query_id();
 
-        G::$DB->query("
+        G::$DB->prepare_query("
         UPDATE
           `torrents_group`
         SET
@@ -572,15 +591,18 @@ class Torrents
         WHERE
           `ID` = '$GroupID'
         ");
+        G::$DB->exec_prepared_query();
 
         // Fetch album artists
-        G::$DB->query("
+        G::$DB->prepare_query("
         SELECT GROUP_CONCAT(ag.`Name` separator ' ')
         FROM `torrents_artists` AS `ta`
           JOIN `artists_group` AS ag ON ag.`ArtistID` = ta.`ArtistID`
           WHERE ta.`GroupID` = '$GroupID'
         GROUP BY ta.`GroupID`
         ");
+        G::$DB->exec_prepared_query();
+
         if (G::$DB->has_results()) {
             list($ArtistName) = G::$DB->next_record(MYSQLI_NUM, false);
         } else {

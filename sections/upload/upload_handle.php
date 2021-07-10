@@ -129,7 +129,7 @@ $Validate->SetFields(
 );
 
 if (!$_POST['groupid']) {
-    # torrents_group.CatalogueNumber
+    # torrents_group.identifier
     $Validate->SetFields(
         'catalogue',
         '0',
@@ -193,7 +193,7 @@ if (!$_POST['groupid']) {
     );
 
     /* todo: Fix the year validation
-    # torrents_group.published
+    # torrents_group.year
     $Validate->SetFields(
         'year',
         '1',
@@ -432,23 +432,24 @@ if (!preg_match('/^'.IMAGE_REGEX.'$/i', $T['Image'])) {
 
 // Does it belong in a group?
 if ($T['GroupID']) {
-    $DB->query("
+    $DB->prepare_query("
     SELECT
       `id`,
       `picture`,
       `description`,
       `revision_id`,
       `title`,
-      `published`,
+      `year`,
       `tag_list`
     FROM
       `torrents_group`
     WHERE
       `id` = $T[GroupID]
     ");
+    $DB->exec_prepared_query();
 
     if ($DB->has_results()) {
-        // Don't escape tg.Name. It's written directly to the log table
+        // Don't escape tg.title. It's written directly to the log table
         list($GroupID, $WikiImage, $WikiBody, $RevisionID, $T['Title'], $T['Year'], $T['TagList']) = $DB->next_record(MYSQLI_NUM, array(4));
         $T['TagList'] = str_replace(array(' ', '.', '_'), array(', ', '.', '.'), $T['TagList']);
 
@@ -521,12 +522,12 @@ if ((!isset($GroupID) || !$GroupID)) {
 
 if (!isset($GroupID) || !$GroupID) {
     // Create torrent group
-    $DB->query(
+    $DB->prepare_query(
         "
       INSERT INTO torrents_group
-        (CategoryID, Name, Title2, NameJP, Year,
-        Series, Studio, CatalogueNumber, Time,
-        WikiBody, WikiImage)
+        (`category_id`, `title`, `subject`, `object`, `year`,
+        `location`, `workgroup`, `identifier`, `timestamp`,
+        `description`, `picture`)
       VALUES
         ( ?, ?, ?, ?, ?,
           ?, ?, ?, NOW(),
@@ -542,6 +543,7 @@ if (!isset($GroupID) || !$GroupID) {
         $Body,
         $T['Image']
     );
+    $DB->exec_prepared_query();
 
     $GroupID = $DB->inserted_id();
     foreach ($ArtistForm as $Num => $Artist) {
@@ -631,10 +633,15 @@ if (!isset($NoRevision) || !$NoRevision) {
     $RevisionID = $DB->inserted_id();
 
     // Revision ID
-    $DB->query("
-      UPDATE torrents_group
-      SET RevisionID = ?
-        WHERE ID = ?", $RevisionID, $GroupID);
+    $DB->prepare_query("
+    UPDATE
+      `torrents_group`
+    SET
+      `revision_id` = '$RevisionID'
+    WHERE
+      `id` = '$GroupID'
+    ");
+    $DB->exec_prepared_query();
 }
 
 // Tags

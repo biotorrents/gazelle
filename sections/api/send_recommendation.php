@@ -1,5 +1,5 @@
 <?php
-#declare(strict_types=1);
+declare(strict_types=1);
 
 $FriendID = (int) $_POST['friend'];
 $Type = $_POST['type'];
@@ -12,7 +12,7 @@ if (empty($FriendID) || empty($Type) || empty($ID)) {
 }
 
 // Make sure the recipient is on your friends list and not some random dude.
-$DB->query("
+$DB->prepare_query("
 SELECT
   f.`FriendID`,
   u.`Username`
@@ -27,6 +27,7 @@ ON
 WHERE
   f.`UserID` = '$LoggedUser[ID]' AND f.`FriendID` = '$FriendID'
 ");
+$DB->exec_prepared_query();
 
 if (!$DB->has_results()) {
     echo json_encode(array('status' => 'error', 'response' => 'Not on friend list.'));
@@ -49,7 +50,7 @@ switch ($Type) {
     WHERE
       `id` = '$ID'
     ");
-      break;
+    break;
 
     case 'artist':
     $Article = 'an';
@@ -74,6 +75,9 @@ switch ($Type) {
     WHERE
       `ID` = '$ID'
     ");
+    break;
+
+    default:
     break;
 }
 

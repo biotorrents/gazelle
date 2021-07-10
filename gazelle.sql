@@ -1188,14 +1188,14 @@ CREATE TABLE `torrents_bad_tags` (
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
--- 2021-05-16
+-- 2021-07-08
 CREATE TABLE `torrents_group` (
   `id` int NOT NULL AUTO_INCREMENT,
   `category_id` tinyint DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `subject` varchar(255) DEFAULT NULL,
   `object` varchar(255) DEFAULT NULL,
-  `published` smallint DEFAULT NULL, -- todo: Change to date
+  `year` smallint DEFAULT NULL,
   `workgroup` varchar(255) DEFAULT NULL,
   `location` varchar(255) DEFAULT NULL,
   `identifier` varchar(50) DEFAULT NULL,
@@ -1208,7 +1208,7 @@ CREATE TABLE `torrents_group` (
   PRIMARY KEY (`id`),
   KEY `category_id` (`category_id`),
   KEY `title` (`title`),
-  KEY `published` (`published`),
+  KEY `year` (`year`),
   KEY `timestamp` (`timestamp`),
   KEY `revision_id` (`revision_id`);
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

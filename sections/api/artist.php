@@ -138,7 +138,7 @@ if (($Importances = $Cache->get_value("artist_groups_$ArtistID")) === false) {
     SELECT DISTINCTROW
       ta.`GroupID`,
       ta.`Importance`,
-      tg.`published`
+      tg.`year`
     FROM
       `torrents_artists` AS ta
     JOIN `torrents_group` AS tg
@@ -147,7 +147,7 @@ if (($Importances = $Cache->get_value("artist_groups_$ArtistID")) === false) {
     WHERE
       ta.`ArtistID` = '$ArtistID'
     ORDER BY
-      tg.`published`,
+      tg.`year`,
       tg.`Name`
     DESC
     ");

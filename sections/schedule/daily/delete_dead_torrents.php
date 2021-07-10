@@ -28,7 +28,7 @@ echo 'Found '.count($Torrents)." inactive torrents to be deleted.\n";
 $LogEntries = $DeleteNotes = [];
 
 // Exceptions for inactivity deletion
-$InactivityExceptionsMade = []; // UserID => expiry time of exception
+$InactivityExceptionsMade = [2]; // UserID => expiry time of exception
 
 $i = 0;
 foreach ($Torrents as $Torrent) {
