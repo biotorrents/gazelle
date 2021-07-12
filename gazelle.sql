@@ -1858,12 +1858,12 @@ INSERT INTO `permissions` (`ID`, `Level`, `Name`, `Values`, `DisplayStaff`) VALU
 
 
 INSERT INTO `stylesheets` (`ID`, `Name`, `Description`, `Default`, `Additions`, `Color`) VALUES
-  (1, 'matcha', 'BioTorrents.de Stylesheet', '0', 'radio=noto_sans;radio=noto_serif;radio=opendyslexic;radio=comic_neue', '#000000'),
-  (2, 'bookish', 'Template Stylesheet', '1', 'radio=noto_sans;radio=noto_serif;radio=opendyslexic;radio=comic_neue', '#000000'),
-  (3, 'oppai', 'Oppaitime Stylesheet', '0', 'radio=noto_sans;radio=noto_serif;radio=opendyslexic;radio=comic_neue', '#fbc2e5'),
-  (4, 'beluga', 'Beluga Stylesheet', '0', 'radio=noto_sans;radio=noto_serif;radio=opendyslexic;radio=comic_neue;checkbox=pink;checkbox=haze', '#23252a'),
-  (5, 'genaviv', 'Genaviv Stylesheet', '0', 'radio=noto_sans;radio=noto_serif;radio=opendyslexic;radio=comic_neue;checkbox=fixed_header', '#0a0a0a'),
-  (6, 'postmod', 'What.cd Stylesheet', '0', 'radio=noto_sans;radio=noto_serif;radio=opendyslexic;radio=comic_neue', '#000000');
+  (1, 'matcha', 'BioTorrents.de Stylesheet', '0', 'select=noto_sans;select=luxi_sans;select=cmodern_sans;select=noto_serif;select=luxi_serif;select=cmodern_serif;select=opendyslexic;select=comic_neue', '#000000'),
+  (2, 'bookish', 'Template Stylesheet', '1', 'select=noto_sans;select=luxi_sans;select=cmodern_sans;select=noto_serif;select=luxi_serif;select=cmodern_serif;select=opendyslexic;select=comic_neue', '#000000'),
+  (3, 'oppai', 'Oppaitime Stylesheet', '0', 'select=noto_sans;select=luxi_sans;select=cmodern_sans;select=noto_serif;select=luxi_serif;select=cmodern_serif;select=opendyslexic;select=comic_neue', '#fbc2e5'),
+  (4, 'beluga', 'Beluga Stylesheet', '0', 'select=noto_sans;select=luxi_sans;select=cmodern_sans;select=noto_serif;select=luxi_serif;select=cmodern_serif;select=opendyslexic;select=comic_neue;checkbox=pink;checkbox=haze', '#23252a'),
+  (5, 'genaviv', 'Genaviv Stylesheet', '0', 'select=noto_sans;select=luxi_sans;select=cmodern_sans;select=noto_serif;select=luxi_serif;select=cmodern_serif;select=opendyslexic;select=comic_neue;checkbox=fixed_header', '#0a0a0a'),
+  (6, 'postmod', 'What.cd Stylesheet', '0', 'select=noto_sans;select=luxi_sans;select=cmodern_sans;select=noto_serif;select=luxi_serif;select=cmodern_serif;select=opendyslexic;select=comic_neue;', '#000000');
 
 
 INSERT INTO `wiki_articles` (`ID`, `Revision`, `Title`, `Body`, `MinClassRead`, `MinClassEdit`, `Date`, `Author`) VALUES

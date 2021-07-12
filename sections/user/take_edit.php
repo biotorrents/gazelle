@@ -1,12 +1,13 @@
 <?php
 #declare(strict_types=1);
 
-authorize();
-$UserID = $_REQUEST['userid'];
+/**
+ * START CHECKS
+ */
 
-if (!is_number($UserID)) {
-    error(404);
-}
+authorize();
+$UserID = (int) $_REQUEST['userid'];
+Security::checkInt($UserID);
 
 // For this entire page, we should generally be using $UserID not $LoggedUser['ID'] and $U[] not $LoggedUser[]
 $U = Users::user_info($UserID);
@@ -50,6 +51,10 @@ if ($ValErr) {
 if (!apcu_exists('DBKEY')) {
     error("Cannot edit profile until database fully decrypted");
 }
+
+/**
+ * END CHECKS
+ */
 
 // Begin building $Paranoia
 // Reduce the user's input paranoia until it becomes consistent

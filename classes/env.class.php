@@ -139,10 +139,14 @@ class ENV
             error('$ENV->fromJson() expects a string.');
         }
 
-        # Decode to array and construct RAO
-        return $RAO = new RecursiveArrayObject(
-            json_decode($str, true)
-        );
+        $json = json_decode($str, true);
+        
+        if (json_last_error() === JSON_ERROR_NONE) {
+            # Decode to array and construct RAO
+            return new RecursiveArrayObject($json);
+        } else {
+            error('Unable to parse JSON in $ENV->fromJson().');
+        }
     }
 
 
@@ -159,7 +163,7 @@ class ENV
             $obj = (array) $obj;
         }
 
-        return $RAO = new RecursiveArrayObject(
+        return new RecursiveArrayObject(
             array_unique($this->toArray($obj))
         );
     }
@@ -227,7 +231,7 @@ class ENV
 
         # Map the sanitized function name
         # to a mapped array conversion
-        return $RAO = new RecursiveArrayObject(
+        return new RecursiveArrayObject(
             array_map(
                 $fn,
                 array_map(

@@ -52,7 +52,7 @@ foreach ($Styles as $Style) {
 # Fonts
 echo View::pushAsset(
 # Only Noto Sans available on public pages
-"$ENV->STATIC_SERVER/styles/assets/fonts/noto/woff2/NotoSans-SemiCondensed.woff2",
+"$ENV->STATIC_SERVER/styles/assets/fonts/noto/NotoSans-SemiCondensed.woff2",
     'font'
 );
 

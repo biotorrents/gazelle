@@ -34,17 +34,17 @@ $NotoSansItalic: "NotoSans-SemiCondensedItalic";
 
 @font-face {
     font-family: "NotoSans-SemiCondensed";
-    src: url($font-path + "noto/woff2/NotoSans-SemiCondensed.woff2");
+    src: url($font-path + "noto/NotoSans-SemiCondensed.woff2");
 }
 
 @font-face {
     font-family: "NotoSans-SemiCondensedBold";
-    src: url($font-path + "noto/woff2/NotoSans-SemiCondensedBold.woff2");
+    src: url($font-path + "noto/NotoSans-SemiCondensedBold.woff2");
 }
 
 @font-face {
     font-family: "NotoSans-SemiCondensedItalic";
-    src: url($font-path + "noto/woff2/NotoSans-SemiCondensedItalic.woff2");
+    src: url($font-path + "noto/NotoSans-SemiCondensedItalic.woff2");
 }
 
 /**
@@ -56,18 +56,18 @@ $NotoSerifBold: "NotoSerif-SemiCondensedBold";
 $NotoSerifItalic: "NotoSerif-SemiCondensedItalic";
 
 @font-face {
-    font-family: "NotoSerif-SemiCondensedBold";
-    src: url($font-path + "noto/woff2/NotoSerif-SemiCondensedBold.woff2");
+    font-family: "NotoSerif-SemiCondensed";
+    src: url($font-path + "noto/NotoSerif-SemiCondensed.woff2");
 }
 
 @font-face {
-    font-family: "NotoSerif-SemiCondensed";
-    src: url($font-path + "noto/woff2/NotoSerif-SemiCondensed.woff2");
+    font-family: "NotoSerif-SemiCondensedBold";
+    src: url($font-path + "noto/NotoSerif-SemiCondensedBold.woff2");
 }
 
 @font-face {
     font-family: "NotoSerif-SemiCondensedItalic";
-    src: url($font-path + "noto/woff2/NotoSerif-SemiCondensedItalic.woff2");
+    src: url($font-path + "noto/NotoSerif-SemiCondensedItalic.woff2");
 }
 
 /**
@@ -75,16 +75,154 @@ $NotoSerifItalic: "NotoSerif-SemiCondensedItalic";
  */
 
 $NotoMono: "NotoSansMono-SemiCondensed";
-$NotoMonoBold: "NotoSansMono-SemiCondensed";
+$NotoMonoBold: "NotoSansMono-SemiCondensedBold";
 
 @font-face {
     font-family: "NotoSansMono-SemiCondensed";
-    src: url($font-path + "noto/woff2/NotoSansMono-SemiCondensed.woff2");
+    src: url($font-path + "noto/NotoSansMono-SemiCondensed.woff2");
 }
 
 @font-face {
     font-family: "NotoSansMono-SemiCondensedBold";
-    src: url($font-path + "noto/woff2/NotoSansMono-SemiCondensedBold.woff2");
+    src: url($font-path + "noto/NotoSansMono-SemiCondensedBold.woff2");
+}
+
+/**
+ * Luxi Sans
+ */
+
+$LuxiSans: "LuxiSans";
+$LuxiSansBold: "LuxiSans-Bold";
+$LuxiSansItalic: "LuxiSans-Italic";
+
+@font-face {
+    font-family: "LuxiSans";
+    src: url($font-path + "luxi/LuxiSans.woff2");
+}
+
+@font-face {
+    font-family: "LuxiSans-Bold";
+    src: url($font-path + "luxi/LuxiSans-Bold.woff2");
+}
+
+@font-face {
+    font-family: "LuxiSans-Italic";
+    src: url($font-path + "luxi/LuxiSans-Italic.woff2");
+}
+
+/**
+ * Luxi Serif
+ */
+
+$LuxiSerif: "LuxiSerif";
+$LuxiSerifBold: "LuxiSerif-Bold";
+$LuxiSerifItalic: "LuxiSerif-Italic";
+
+@font-face {
+    font-family: "LuxiSerif";
+    src: url($font-path + "luxi/LuxiSerif.woff2");
+}
+
+@font-face {
+    font-family: "LuxiSerif-Bold";
+    src: url($font-path + "luxi/LuxiSerif-Bold.woff2");
+}
+
+@font-face {
+    font-family: "LuxiSerif-Italic";
+    src: url($font-path + "luxi/LuxiSerif-Italic.woff2");
+}
+
+/**
+ * Luxi Mono
+ */
+
+$LuxiMono: "LuxiMono";
+$LuxiMonoBold: "LuxiMono-Bold";
+$LuxiMonoItalic: "LuxiMono-Italic";
+
+@font-face {
+    font-family: "LuxiMono";
+    src: url($font-path + "luxi/LuxiMono.woff2");
+}
+
+@font-face {
+    font-family: "LuxiMono-Bold";
+    src: url($font-path + "luxi/LuxiMono-Bold.woff2");
+}
+
+@font-face {
+    font-family: "LuxiMono-Italic";
+    src: url($font-path + "luxi/LuxiMono-Italic.woff2");
+}
+
+/**
+ * Computer Modern Sans
+ */
+
+$CModernSans: "CMUSansSerif";
+$CModernSansBold: "CMUSansSerif-Bold";
+$CModernSansItalic: "CMUSansSerif-Oblique";
+
+@font-face {
+    font-family: "CMUSansSerif";
+    src: url($font-path + "cmodern/CMUSansSerif.woff2");
+}
+
+@font-face {
+    font-family: "CMUSansSerif-Bold";
+    src: url($font-path + "cmodern/CMUSansSerif-Bold.woff2");
+}
+
+@font-face {
+    font-family: "CMUSansSerif-Oblique";
+    src: url($font-path + "cmodern/CMUSansSerif-Oblique.woff2");
+}
+
+/**
+ * Computer Modern Serif
+ */
+
+$CModernSerif: "CMUSerif-Roman";
+$CModernSerifBold: "CMUSerif-Bold";
+$CModernSerifItalic: "CMUSerif-Italic";
+
+@font-face {
+    font-family: "CMUSerif-Roman";
+    src: url($font-path + "cmodern/CMUSerif-Roman.woff2");
+}
+
+@font-face {
+    font-family: "CMUSerif-Bold";
+    src: url($font-path + "cmodern/CMUSerif-Bold.woff2");
+}
+
+@font-face {
+    font-family: "CMUSerif-Italic";
+    src: url($font-path + "cmodern/CMUSerif-Italic.woff2");
+}
+
+/**
+ * Computer Modern Mono
+ */
+
+$CModernMono: "CMUTypewriter-Regular";
+$CModernMonoBold: "CMUTypewriter-Bold";
+$CModernMonoItalic: "CMUTypewriter-Italic";
+
+@font-face {
+    font-family: "CMUTypewriter-Regular";
+    src: url($font-path + "cmodern/CMUTypewriter-Regular.woff2");
+}
+
+@font-face {
+    font-family: "CMUTypewriter-Bold";
+    src: url($font-path + "cmodern/CMUTypewriter-Bold.woff2");
+}
+
+@font-face {
+    font-family: "CMUTypewriter-Italic";
+    src: url($font-path + "cmodern/CMUTypewriter-Italic.woff2");
 }
 
 /**
@@ -120,24 +258,24 @@ $OpenDyslexicItalic: "OpenDyslexic-Italic";
 
 @font-face {
     font-family: "OpenDyslexic-Regular";
-    src: url($font-path + "dyslex/OpenDyslexic-Regular.woff");
+    src: url($font-path + "dyslex/OpenDyslexic-Regular.woff2");
 }
 
 @font-face {
     font-family: "OpenDyslexic-Bold";
-    src: url($font-path + "dyslex/OpenDyslexic-Bold.woff");
+    src: url($font-path + "dyslex/OpenDyslexic-Bold.woff2");
 }
 
 @font-face {
     font-family: "OpenDyslexic-Italic";
-    src: url($font-path + "dyslex/OpenDyslexic-Italic.woff");
+    src: url($font-path + "dyslex/OpenDyslexic-Italic.woff2");
 }
 
 /*
  * Theme Options
  */
 
-@mixin font-styles($b, $i) {
+@mixin font-styles($b, $i, $m, $mb, $mi: null) {
     b,
     strong {
         font-family: $b;
@@ -150,26 +288,78 @@ $OpenDyslexicItalic: "OpenDyslexic-Italic";
         font-family: $i;
         font-style: normal;
     }
+
+    code,
+    pre,
+    tt {
+        font-family: $m;
+        margin-bottom: 1rem;
+        word-wrap: break-word;
+        /* word-wrap: pre; */
+
+        b,
+        strong {
+            font-family: $mb;
+            font-weight: normal;
+        }
+
+        i,
+        em {
+            /* Noto Mono workaround: no italics */
+            @if ($mi) {
+                font-family: $mi;
+                font-style: normal;
+            }
+        }
+    }
 }
 
+/* Noto Sans */
 body.style_noto_sans {
     font-family: $NotoSans, sans-serif;
-    @include font-styles($NotoSansBold, $NotoSansItalic);
+    @include font-styles($NotoSansBold, $NotoSansItalic, $NotoMono, $NotoMonoBold);
 }
 
+/* Noto Serif */
 body.style_noto_serif {
     font-family: $NotoSerif, serif;
-    @include font-styles($NotoSerifBold, $NotoSerifItalic);
+    @include font-styles($NotoSerifBold, $NotoSerifItalic, $NotoMono, $NotoMonoBold);
 }
 
+/* Luxi Sans */
+body.style_luxi_sans {
+    font-family: $LuxiSans, sans-serif;
+    @include font-styles($LuxiSansBold, $LuxiSansItalic, $LuxiMono, $LuxiMonoBold, $LuxiMonoItalic);
+}
+
+/* Luxi Serif */
+body.style_luxi_serif {
+    font-family: $LuxiSerif, serif;
+    @include font-styles($LuxiSerifBold, $LuxiSerifItalic, $LuxiMono, $LuxiMonoBold, $LuxiMonoItalic);
+}
+
+/* Computer Modern Sans */
+body.style_cmodern_sans {
+    font-family: $CModernSans, sans-serif;
+    @include font-styles($CModernSansBold, $CModernSansItalic, $CModernMono, $CModernMonoBold, $CModernMonoItalic);
+}
+
+/* Computer Modern Serif */
+body.style_cmodern_serif {
+    font-family: $CModernSerif, serif;
+    @include font-styles($CModernSerifBold, $CModernSerifItalic, $CModernMono, $CModernMonoBold, $CModernMonoItalic);
+}
+
+/* OpenDyslexic */
 body.style_opendyslexic {
     font-family: $OpenDyslexic, sans-serif;
-    @include font-styles($OpenDyslexicBold, $OpenDyslexicItalic);
+    @include font-styles($OpenDyslexicBold, $OpenDyslexicItalic, $NotoMono, $NotoMonoBold);
 }
 
+/* Comic Neue */
 body.style_comic_neue {
     font-family: $ComicNeue, sans-serif;
-    @include font-styles($ComicNeueBold, $ComicNeueItalic);
+    @include font-styles($ComicNeueBold, $ComicNeueItalic, $NotoMono, $NotoMonoBold);
 }
 
 /**
@@ -181,7 +371,7 @@ body.style_comic_neue {
     font-family: "Open Sans";
     font-style: normal;
     font-weight: 400;
-    src: url($font-path + "misc/woff2/OpenSans-Regular.woff2");
+    src: url($font-path + "misc/OpenSans-Regular.woff2");
 }
 
 /* latin */
@@ -189,7 +379,7 @@ body.style_comic_neue {
     font-family: "Open Sans";
     font-style: normal;
     font-weight: 600;
-    src: url($font-path + "misc/woff2/OpenSans-SemiBold.woff2");
+    src: url($font-path + "misc/OpenSans-SemiBold.woff2");
 }
 
 /**
@@ -201,7 +391,7 @@ body.style_comic_neue {
     font-family: "Source Sans Pro";
     font-style: normal;
     font-weight: 400;
-    src: url($font-path + "misc/woff2/SourceSansPro-Regular.woff2");
+    src: url($font-path + "misc/SourceSansPro-Regular.woff2");
     unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
 }
 
@@ -210,7 +400,7 @@ body.style_comic_neue {
     font-family: "Source Sans Pro";
     font-style: normal;
     font-weight: 400;
-    src: url($font-path + "misc/woff2/SourceSansPro-Regular.woff2");
+    src: url($font-path + "misc/SourceSansPro-Regular.woff2");
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215,
         U+E0FF, U+EFFD, U+F000;
 }
