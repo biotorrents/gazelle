@@ -8,8 +8,8 @@ declare(strict_types = 1);
  * and clears the cache for the torrent group page.
  */
 
-$GroupID = (int) $_GET['groupid'];
-Security::checkInt($GroupID);
+$group_id = (int) $_GET['groupid'];
+Security::checkInt($group_id);
 
 // Get the torrent group name and the body of the last revision
 $DB->prepare_query("
@@ -21,7 +21,7 @@ SELECT
   wt.`Body`,
   tg.`picture`,
   tg.`description`,
-  tg.`published`,
+  tg.`year`,
   tg.`workgroup`,
   tg.`location`,
   tg.`identifier`,
@@ -32,7 +32,7 @@ LEFT JOIN `wiki_torrents` AS wt
 ON
   wt.`RevisionID` = tg.`revision_id`
 WHERE
-  tg.`id` = '$GroupID'
+  tg.`id` = '$group_id'
 ");
 $DB->exec_prepared_query();
 
@@ -50,7 +50,7 @@ SELECT
 FROM
   `torrents_doi`
 WHERE
-  `TorrentID` = '$GroupID'
+  `TorrentID` = '$group_id'
 ");
 $DB->exec_prepared_query();
 
@@ -61,7 +61,7 @@ if ($DB->has_results()) {
     }
 }
 
-$Artists = Artists::get_artists(array($GroupID))[$GroupID];
+$Artists = Artists::get_artists(array($group_id))[$group_id];
 
 if (!$Body) {
     $Body = $description;
@@ -76,7 +76,7 @@ View::show_header(
 
 <h2 class="header">
   Edit
-  <a href="torrents.php?id=<?=$GroupID?>"><?=($title ? $title : ($subject ? $subject : $object))?></a>
+  <a href="torrents.php?id=<?=$group_id?>"><?=($title ? $title : ($subject ? $subject : $object))?></a>
 </h2>
 
 <div class="box pad">
@@ -86,7 +86,7 @@ View::show_header(
     <input type="hidden" name="auth"
       value="<?=$LoggedUser['AuthKey']?>" />
 
-    <input type="hidden" name="groupid" value="<?=$GroupID?>" />
+    <input type="hidden" name="groupid" value="<?=$group_id?>" />
 
     <h3>
       Picture
@@ -112,7 +112,7 @@ new TEXTAREA_PREVIEW(
   FROM
     `torrents`
   WHERE
-    `GroupID` = '$GroupID'
+    `GroupID` = '$group_id'
   ");
   $Contributed = in_array($LoggedUser['ID'], $DB->collect('UserID'));
 ?>
@@ -146,7 +146,7 @@ new TEXTAREA_PREVIEW(
     <input type="hidden" name="auth"
       value="<?=$LoggedUser['AuthKey']?>" />
 
-    <input type="hidden" name="groupid" value="<?=$GroupID?>" />
+    <input type="hidden" name="groupid" value="<?=$group_id?>" />
 
     <table cellpadding="3" cellspacing="1" border="0" class="layout" width="100%">
       <tr>
@@ -184,7 +184,7 @@ new TEXTAREA_PREVIEW(
     <input type="hidden" name="auth"
       value="<?=$LoggedUser['AuthKey']?>" />
 
-    <input type="hidden" name="groupid" value="<?=$GroupID?>" />
+    <input type="hidden" name="groupid" value="<?=$group_id?>" />
 
     <table cellpadding="3" cellspacing="1" border="0" class="layout" width="100%">
       <tr>
@@ -211,7 +211,7 @@ new TEXTAREA_PREVIEW(
 
         <td>
           <input type="text" id="studio" name="studio" size="60"
-            value="<?=$Studio?>" />
+            value="<?=$workgroup?>" />
         </td>
       </tr>
 
@@ -222,7 +222,7 @@ new TEXTAREA_PREVIEW(
 
         <td>
           <input type="text" id="series" name="series" size="60"
-            value="<?=$Series?>" />
+            value="<?=$location?>" />
         </td>
       </tr>
 
@@ -233,7 +233,7 @@ new TEXTAREA_PREVIEW(
 
         <td>
           <input type="text" name="year" size="10"
-            value="<?=$Year?>" />
+            value="<?=$year?>" />
         </td>
       </tr>
 
@@ -244,7 +244,7 @@ new TEXTAREA_PREVIEW(
 
         <td>
           <input type="text" name="catalogue" size="40"
-            value="<?=$CatalogueNumber?>" />
+            value="<?=$identifier?>" />
         </td>
       </tr>
 
@@ -299,7 +299,7 @@ new TEXTAREA_PREVIEW(
       <input type="hidden" name="auth"
         value="<?=$LoggedUser['AuthKey']?>" />
 
-      <input type="hidden" name="groupid" value="<?=$GroupID?>" />
+      <input type="hidden" name="groupid" value="<?=$group_id?>" />
 
       <tr>
         <td class="label">
@@ -355,7 +355,7 @@ new TEXTAREA_PREVIEW(
     <input type="hidden" name="auth"
       value="<?=$LoggedUser['AuthKey']?>" />
 
-    <input type="hidden" name="groupid" value="<?=$GroupID?>" />
+    <input type="hidden" name="groupid" value="<?=$group_id?>" />
 
     <h3>
       Target torrent group ID

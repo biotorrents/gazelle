@@ -17,7 +17,7 @@ if ($Top10 === false) {
       g.`picture`,
       g.`tag_list`,
       t.`Media`,
-      g.`published`,
+      g.`year`,
       t.`Snatched`,
       t.`Seeders`,
       t.`Leechers`,

@@ -646,7 +646,7 @@ class Torrents
           g.`subject`,
           g.`object`,
           g.`tag_list`,
-          g.`published`,
+          g.`year`,
           g.`identifier`,
           g.`category_id`,
           UNIX_TIMESTAMP(t.`Time`),

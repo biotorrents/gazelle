@@ -36,7 +36,7 @@ SELECT
   tg.`title` AS title,
   tg.`subject` AS subject,
   tg.`object` AS object,
-  tg.`published`,
+  tg.`year`,
   tg.`workgroup`,
   tg.`location`,
   tg.`identifier`,

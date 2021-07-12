@@ -175,7 +175,7 @@ SELECT
   g.`picture`,
   g.`tag_list`,
   t.`Media`,
-  g.`published`,
+  g.`year`,
   g.`workgroup`,
   t.`Snatched`,
   t.`Seeders`,

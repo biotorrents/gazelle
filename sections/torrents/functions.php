@@ -27,7 +27,7 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
           g.`title`,
           g.`subject`,
           g.`object`,
-          g.`published`,
+          g.`year`,
           g.`workgroup`,
           g.`location`,
           g.`identifier`,
