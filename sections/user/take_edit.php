@@ -326,18 +326,6 @@ if (isset($_POST['resetpasskey'])) {
     $ChangerIP = Crypto::encrypt($LoggedUser['IP']);
     $SQL .= ",m.torrent_pass = '$NewPassKey'";
 
-    $DB->query(
-        "
-      INSERT INTO users_history_passkeys
-        (UserID, OldPassKey, NewPassKey, ChangerIP, ChangeTime)
-      VALUES
-        (?, ?, ?, ?, NOW())",
-        $USerID,
-        $OldPassKey,
-        $NewPassKey,
-        $ChangerIP
-    );
-
     $Cache->begin_transaction("user_info_heavy_$UserID");
     $Cache->update_row(false, ['torrent_pass' => $NewPassKey]);
     $Cache->commit_transaction(0);

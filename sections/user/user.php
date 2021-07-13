@@ -563,14 +563,7 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
       FROM users_history_passwords
       WHERE UserID = '$UserID'");
       list($PasswordChanges) = $DB->next_record();
-      if (check_perms('users_view_keys', $Class)) {
-          $DB->query("
-        SELECT COUNT(*)
-        FROM users_history_passkeys
-        WHERE UserID = '$UserID'");
-          list($PasskeyChanges) = $DB->next_record();
-      }
-      if (check_perms('users_view_ips', $Class)) {
+     if (check_perms('users_view_ips', $Class)) {
           $DB->query("
         SELECT COUNT(DISTINCT IP)
         FROM xbt_snatched
@@ -592,14 +585,7 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
         <?php
       }
       }
-      if (check_perms('users_view_keys', $Class)) {
-          ?>
-        <li>Passkeys: <?=number_format($PasskeyChanges)?> <a
-            href="userhistory.php?action=passkeys&amp;userid=<?=$UserID?>"
-            class="brackets">View</a></li>
-        <?php
-      }
-      if (check_perms('users_mod', $Class)) {
+     if (check_perms('users_mod', $Class)) {
           ?>
         <li>Passwords: <?=number_format($PasswordChanges)?> <a
             href="userhistory.php?action=passwords&amp;userid=<?=$UserID?>"

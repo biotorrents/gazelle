@@ -1409,15 +1409,6 @@ CREATE TABLE `users_freeleeches` (
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
-CREATE TABLE `users_history_passkeys` (
-  `UserID` int NOT NULL,
-  `OldPassKey` varchar(32) DEFAULT NULL,
-  `NewPassKey` varchar(32) DEFAULT NULL,
-  `ChangeTime` datetime DEFAULT NULL,
-  `ChangerIP` varchar(90) DEFAULT NULL
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
 CREATE TABLE `users_history_passwords` (
   `UserID` int NOT NULL,
   `ChangeTime` datetime DEFAULT NULL,
