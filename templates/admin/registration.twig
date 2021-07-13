@@ -73,15 +73,6 @@
                 {{- user.inviter.email -}}
             </td>
             <td style="vertical-align: top">
-                <a href="userhistory.php?action=email&amp;userid={{ user.id }}" title="Email History" class="brackets tooltip">H</a>
-                <a href="/user.php?action=search&amp;email_history=on&amp;email={{ user.email }}" title="Email Search" class="brackets tooltip">S</a>
-        {%- if user.inviter -%}
-                <br />
-                <a href="userhistory.php?action=email&amp;userid={{ user.inviter.id }}" title="Email History" class="brackets tooltip">H</a>
-                <a href="/user.php?action=search&amp;email_history=on&amp;email={{ user.inviter.email }}" title="Email Search" class="brackets tooltip">S</a>
-        {%- endif -%}
-            </td>
-            <td style="vertical-align: top">
                 <span style="float: left">
                 {{- user.ipaddr -}}
         {%- if user.inviter.id -%}

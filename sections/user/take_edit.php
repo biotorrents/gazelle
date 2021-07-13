@@ -172,19 +172,6 @@ if ($CurEmail !== $_POST['email']) {
     if (!check_perms('users_edit_profiles')) {
         require_password("Change Email");
     }
-
-    // Update the time of their last email change to the current time *not* the current change.
-    $DB->query("
-      UPDATE users_history_emails
-      SET Time = NOW()
-      WHERE UserID = ?
-        AND Time IS NULL", $UserID);
-
-    $DB->query("
-      INSERT INTO users_history_emails
-        (UserID, Email, Time, IP)
-      VALUES
-        (?, ?, NULL, ?)", $UserID, Crypto::encrypt($_POST['email']), Crypto::encrypt($_SERVER['REMOTE_ADDR']));
 }
 
 if (!empty($_POST['new_pass_1']) && !empty($_POST['new_pass_2'])) {

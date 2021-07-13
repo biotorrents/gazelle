@@ -269,32 +269,6 @@ if ($_POST['ResetIPHistory'] && check_perms('users_edit_reset_keys')) {
       WHERE UserID = $UserID");
 }
 
-if ($_POST['ResetEmailHistory'] && check_perms('users_edit_reset_keys')) {
-    $DB->query("
-      DELETE FROM users_history_emails
-      WHERE UserID = '$UserID'");
-
-    if ($_POST['ResetIPHistory']) {
-        $DB->query("
-          INSERT INTO users_history_emails
-            (UserID, Email, Time, IP)
-          VALUES
-        ('$UserID', '".Crypto::encrypt($Username.'@'.SITE_DOMAIN)."', NULL, '".Crypto::encrypt('127.0.0.1')."')");
-    } else {
-        $DB->query("
-          INSERT INTO users_history_emails
-            (UserID, Email, Time, IP)
-          VALUES
-            ('$UserID', '".Crypto::encrypt($Username.'@'.SITE_DOMAIN)."', NULL, '".$Cur['IP']."')");
-    }
-
-    $DB->query("
-      UPDATE users_main
-      SET Email = '".Crypto::encrypt($Username.'@'.SITE_DOMAIN)."'
-      WHERE ID = '$UserID'");
-    $EditSummary[] = 'Email history cleared';
-}
-
 if ($_POST['ResetSnatchList'] && check_perms('users_edit_reset_keys')) {
     $DB->query("
       DELETE FROM xbt_snatched

@@ -136,23 +136,11 @@ if ($DB->has_results()) {
       <span class="float_left">
         <?=display_str($Email)?>
       </span>
-      <span class="float_right">
-        <a href="userhistory.php?action=email&amp;userid=<?=$UserID?>"
-          title="History" class="brackets tooltip">H</a>
-        <a href="/user.php?action=search&amp;email_history=on&amp;email=<?=display_str($Email)?>"
-          title="Search" class="brackets tooltip">S</a>
-      </span><br />
 
       <span class="float_left">
         <?=display_str($InviterEmail)?>
       </span>
 
-      <span class="float_right">
-        <a href="userhistory.php?action=email&amp;userid=<?=$InviterID?>"
-          title="History" class="brackets tooltip">H</a>
-        <a href="/user.php?action=search&amp;email_history=on&amp;email=<?=display_str($InviterEmail)?>"
-          title="Search" class="brackets tooltip">S</a>
-      </span><br />
     </td>
 
     <td>

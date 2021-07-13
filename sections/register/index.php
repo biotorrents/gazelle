@@ -164,20 +164,6 @@ if (!empty($_REQUEST['confirm'])) {
         VALUES
           ('$UserID')");
 
-            $DB->query("
-        INSERT INTO users_history_emails
-          (UserID, Email, Time, IP)
-        VALUES
-          ('$UserID', '".Crypto::encrypt($_REQUEST['email'])."', NULL, '".Crypto::encrypt($_SERVER['REMOTE_ADDR'])."')");
-
-            if ($_REQUEST['email'] != $InviteEmail) {
-                $DB->query("
-          INSERT INTO users_history_emails
-            (UserID, Email, Time, IP)
-          VALUES
-            ('$UserID', '".Crypto::encrypt($InviteEmail)."', NOW(), '".Crypto::encrypt($_SERVER['REMOTE_ADDR'])."')");
-            }
-
             // Manage invite trees, delete invite
             if ($InviterID !== null && $InviterID !== 0) {
                 $DB->query("

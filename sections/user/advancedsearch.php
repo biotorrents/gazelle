@@ -257,36 +257,9 @@ if (count($_GET)) {
         }
 
         if (!empty($_GET['email'])) {
-            if (isset($_GET['email_history'])) {
-                $Distinct = 'DISTINCT ';
-            }
             $Join['the'] = ' JOIN users_emails_decrypted AS he ON he.ID = um1.ID ';
             $Where[] = ' he.Email '.$Match.wrap($_GET['email']);
         }
-
-        if (!empty($_GET['email_cnt']) && is_number($_GET['email_cnt'])) {
-            $Query = "
-        SELECT UserID
-        FROM users_history_emails
-        GROUP BY UserID
-        HAVING COUNT(DISTINCT Email) ";
-            if ($_GET['emails_opt'] === 'equal') {
-                $operator = '=';
-            }
-            if ($_GET['emails_opt'] === 'above') {
-                $operator = '>';
-            }
-            if ($_GET['emails_opt'] === 'below') {
-                $operator = '<';
-            }
-            $Query .= $operator.' '.$_GET['email_cnt'];
-            $DB->query($Query);
-            $Users = implode(',', $DB->collect('UserID'));
-            if (!empty($Users)) {
-                $Where[] = "um1.ID IN ($Users)";
-            }
-        }
-
 
         if (!empty($_GET['ip'])) {
             if (isset($_GET['ip_history'])) {
@@ -654,12 +627,6 @@ View::show_header('User search');
       echo ' checked="checked"' ;
   } ?> />
               <label for="ip_history">IP history</label>
-            </li>
-            <li>
-              <input type="checkbox" name="email_history" id="email_history" <?php if ($_GET['email_history']) {
-      echo ' checked="checked"' ;
-  } ?> />
-              <label for="email_history">Email history</label>
             </li>
           </ul>
         </td>
@@ -1061,11 +1028,7 @@ if ($RunQuery) {
                     }
                 }
                 if (!empty($_GET['email'])) {
-                    if (isset($_GET['email_history'])) {
-                        $DB->query("SELECT UserID, Email FROM users_history_emails");
-                    } else {
                         $DB->query("SELECT ID, Email FROM users_main");
-                    }
                     while (list($ID, $EncEmail) = $DB->next_record()) {
                         $Emails[] = $ID.", '".Crypto::decrypt($EncEmail)."'";
                     }

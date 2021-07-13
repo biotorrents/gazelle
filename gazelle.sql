@@ -1409,15 +1409,6 @@ CREATE TABLE `users_freeleeches` (
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
-CREATE TABLE `users_history_emails` (
-  `UserID` int NOT NULL,
-  `Email` varchar(255) DEFAULT NULL,
-  `Time` datetime DEFAULT NULL,
-  `IP` varchar(90) DEFAULT NULL,
-  KEY `UserID` (`UserID`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
 CREATE TABLE `users_history_ips` (
   `UserID` int NOT NULL,
   `IP` varchar(90) NOT NULL DEFAULT '0.0.0.0',

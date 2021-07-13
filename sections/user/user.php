@@ -275,8 +275,6 @@ if (check_perms('users_edit_profiles', $Class) || $LoggedUser['ID'] == $UserID) 
 }
 if ($LoggedUser['ID'] == $UserID) {
     ?>
-    <a href="userhistory.php?action=useremail&userid=<?=$UserID?>"
-      class="brackets">Email History</a>
     <a href="userhistory.php?action=userip&userid=<?=$UserID?>"
       class="brackets">IP History</a>
     <?php
@@ -591,24 +589,11 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
           AND IP != ''");
           list($TrackerIPs) = $DB->next_record();
       }
-      if (check_perms('users_view_email', $Class)) {
-          $DB->query("
-        SELECT COUNT(*)
-        FROM users_history_emails
-        WHERE UserID = '$UserID'");
-          list($EmailChanges) = $DB->next_record();
-      } ?>
+      ?>
     <div class="box box_info box_userinfo_history">
       <div class="head colhead_dark">History</div>
       <ul class="stats nobullet">
-        <?php if (check_perms('users_view_email', $Class)) { ?>
-        <li>Emails: <?=number_format($EmailChanges)?> <a
-            href="userhistory.php?action=email2&amp;userid=<?=$UserID?>"
-            class="brackets">View</a>&nbsp;<a
-            href="userhistory.php?action=email&amp;userid=<?=$UserID?>"
-            class="brackets">Legacy view</a></li>
         <?php
-    }
       if (check_perms('users_view_ips', $Class)) {
           ?>
         <li>IPs: <?=number_format($IPChanges)?> <a
@@ -683,10 +668,6 @@ if ($ParanoiaLevel == 0) {
             title="<?=$ParanoiaLevel?>"><?=$ParanoiaLevelText?></span></li>
         <?php if (check_perms('users_view_email', $Class) || $OwnProfile) { ?>
         <li>Email: <a href="mailto:<?=display_str($Email)?>"><?=display_str($Email)?></a>
-          <?php if (check_perms('users_view_email', $Class)) { ?>
-          <a href="user.php?action=search&amp;email_history=on&amp;email=<?=display_str($Email)?>"
-            title="Search" class="brackets tooltip">S</a>
-          <?php } ?>
         </li>
         <?php }
 
@@ -1463,8 +1444,6 @@ if (!$DisablePoints) {
           <input type="checkbox" name="ResetAuthkey" id="ResetAuthkey" /> <label for="ResetAuthkey">Authkey</label> |
           <input type="checkbox" name="ResetIPHistory" id="ResetIPHistory" /> <label for="ResetIPHistory">IP
             history</label> |
-          <input type="checkbox" name="ResetEmailHistory" id="ResetEmailHistory" /> <label for="ResetEmailHistory">Email
-            history</label>
           <br />
           <input type="checkbox" name="ResetSnatchList" id="ResetSnatchList" /> <label for="ResetSnatchList">Snatch
             list</label> |
@@ -1610,12 +1589,7 @@ if (!$DisablePoints) {
         </td>
       </tr>
       <?php if (check_perms('users_disable_posts') || check_perms('users_disable_any')) {
-        $DB->query("
-      SELECT DISTINCT Email, IP, Time
-      FROM users_history_emails
-      WHERE UserID = $UserID
-      ORDER BY Time ASC");
-        $Emails = $DB->to_array(); ?>
+       ?>
       <tr>
         <td class="label">Disable:</td>
         <td>
@@ -1669,19 +1643,8 @@ if (!$DisablePoints) {
       <tr>
         <td class="label">Hacked:</td>
         <td>
-          <input type="checkbox" name="SendHackedMail" id="SendHackedMail" /> <label for="SendHackedMail">Send hacked
-            account email</label> to
-          <select name="HackedEmail">
-            <?php
-      foreach ($Emails as $Email) {
-          list($Address, $IP) = $Email;
-          $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
-          $Address = apcu_exists('DBKEY') ? Crypto::decrypt($Address) : '[Encrypted]'; ?>
-            <option value="<?=display_str($Address)?>"><?=display_str($Address)?> - <?=display_str($IP)?>
-            </option>
-            <?php
-      } ?>
-          </select>
+          <input type="checkbox" name="SendHackedMail" id="SendHackedMail" />
+          <label for="SendHackedMail">Send hacked account email</label>
         </td>
       </tr>
 
