@@ -557,12 +557,6 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
       </ul>
     </div>
     <?php
-  if (check_perms('users_mod', $Class) || check_perms('users_view_ips', $Class) || check_perms('users_view_keys', $Class)) {
-      $DB->query("
-      SELECT COUNT(*)
-      FROM users_history_passwords
-      WHERE UserID = '$UserID'");
-      list($PasswordChanges) = $DB->next_record();
      if (check_perms('users_view_ips', $Class)) {
           $DB->query("
         SELECT COUNT(DISTINCT IP)
@@ -587,9 +581,6 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
       }
      if (check_perms('users_mod', $Class)) {
           ?>
-        <li>Passwords: <?=number_format($PasswordChanges)?> <a
-            href="userhistory.php?action=passwords&amp;userid=<?=$UserID?>"
-            class="brackets">View</a></li>
         <li>Stats: N/A <a
             href="userhistory.php?action=stats&amp;userid=<?=$UserID?>"
             class="brackets">View</a></li>
@@ -597,8 +588,7 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
       } ?>
       </ul>
     </div>
-    <?php
-  } ?>
+
     <div class="box box_info box_userinfo_personal">
       <div class="head colhead_dark">Personal</div>
       <ul class="stats nobullet">

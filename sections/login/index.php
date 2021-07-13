@@ -84,12 +84,6 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] === 'recover') {
                         $UserID
                     );
 
-                    $DB->query("
-                    INSERT INTO `users_history_passwords`
-                      (`UserID`, `ChangerIP`, `ChangeTime`)
-                    VALUES
-                      (?, ?, NOW())", $UserID, Crypto::encrypt($_SERVER['REMOTE_ADDR']));
-
                     $PassWasReset = true;
                     $LoggedUser['ID'] = $UserID; // Set $LoggedUser['ID'] for logout_all_sessions() to work
                     logout_all_sessions();

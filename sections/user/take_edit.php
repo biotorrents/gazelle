@@ -311,12 +311,6 @@ if ($ResetPassword) {
     $ChangerIP = Crypto::encrypt($LoggedUser['IP']);
     $PassHash = Users::make_sec_hash($_POST['new_pass_1']);
     $SQL.= ",m.PassHash = '".db_string($PassHash)."'";
-
-    $DB->query("
-      INSERT INTO users_history_passwords
-        (UserID, ChangerIP, ChangeTime)
-      VALUES
-        (?, ?, NOW())", $UserID, $ChangerIP);
 }
 
 if (isset($_POST['resetpasskey'])) {
