@@ -1,8 +1,6 @@
 <?php
 #declare(strict_types=1);
 
-# Unsure if require_once is needed here
-require_once 'classes/env.class.php';
 $ENV = ENV::go();
 
 /*-- todo ---------------------------//
@@ -33,7 +31,6 @@ $Validate = new Validate;
 $TwoFA = new TwoFactorAuth($ENV->SITE_NAME);
 $U2F = new u2f\U2F('https://'.SITE_DOMAIN);
 
-# todo: Test strict equality very gently here
 if (array_key_exists('action', $_GET) && $_GET['action'] === 'disabled') {
     require('disabled.php');
     error();

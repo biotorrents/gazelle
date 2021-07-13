@@ -65,7 +65,7 @@ if (empty($Sent)) { ?>
         <input type="password" minlength="15" name="confirm_password" id="new_pass_2" class="inputtext"
           placeholder="Confirm Password" />
         <strong id="pass_match"></strong>
-        <?= $ENV->PASSWORD_ADVICE ?>
+        <?= $ENV->PW_ADVICE ?>
       </td>
     </tr>
 

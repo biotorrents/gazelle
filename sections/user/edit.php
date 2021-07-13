@@ -1398,7 +1398,7 @@ list($ArtistsAdded) = $DB->next_record();
             </div>
 
             <p class="setting_description">
-              <?= $ENV->PASSWORD_ADVICE ?>
+              <?= $ENV->PW_ADVICE ?>
             </p>
           </td>
         </tr>

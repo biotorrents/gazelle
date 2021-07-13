@@ -270,6 +270,7 @@ class DB_MYSQL
                 $this->Database,
                 $this->Port,
                 $this->Socket,
+                # Needed for self-signed certs
                 MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT
             );
 
@@ -289,8 +290,8 @@ class DB_MYSQL
     public function prepare_query($Query, &...$BindVars)
     {
         $this->connect();
-
         $this->StatementID = mysqli_prepare($this->LinkID, $Query);
+
         if (!empty($BindVars)) {
             $Types = '';
             $TypeMap = ['string'=>'s', 'double'=>'d', 'integer'=>'i', 'boolean'=>'i'];

@@ -57,6 +57,10 @@
 
   });
 
+
+  /**
+   * calculateComplexity
+   */
   function calculateComplexity(password) {
     var length = password.length;
     var username;
@@ -103,10 +107,20 @@
     }
   }
 
+
+  /**
+   * isStrongPassword
+   * 
+   * $ENV-PW_MIN is still harcoded here.
+   */
   function isStrongPassword(password) {
-    return /(?=^.{6,}$).*$/.test(password);
+    return /(?=^.{15,}$).*$/.test(password);
   }
 
+
+  /**
+   * checkMatching
+   */
   function checkMatching(password1, password2) {
     if (password2.length > 0) {
       if (password1 == password2 && getStrong() == true) {
@@ -124,10 +138,18 @@
     }
   }
 
+
+  /**
+   * getStrong
+   */
   function getStrong() {
     return $("#pass_strength").text() == "Strong";
   }
 
+
+  /**
+   * setStatus
+   */
   function setStatus(strength) {
     if (strength == WEAK) {
       disableSubmit();
@@ -164,14 +186,26 @@
     }
   }
 
+
+  /**
+   * disableSubmit
+   */
   function disableSubmit() {
     $('input[type="submit"]').attr('disabled', 'disabled');
   }
 
+
+  /**
+   * enableSubmit
+   */
   function enableSubmit() {
     $('input[type="submit"]').removeAttr('disabled');
   }
 
+
+  /**
+   * isUserPage
+   */
   function isUserPage() {
     return window.location.pathname.indexOf(USER_PATH) != -1;
   }

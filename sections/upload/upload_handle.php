@@ -793,7 +793,10 @@ if ($T['FreeLeechType'] === 3) {
 //******************************************************************************//
 //--------------- Write torrent file -------------------------------------------//
 
-file_put_contents(TORRENT_STORE.$TorrentID.'.torrent', $Tor->encode());
+$FileName = "$ENV->TORRENT_STORE/$TorrentID.torrent";
+file_put_contents($FileName, $Tor->encode());
+chmod($FileName, 0400);
+
 Misc::write_log("Torrent $TorrentID ($LogName) (".number_format($TotalSize / (1024 * 1024), 2).' MB) was uploaded by ' . $LoggedUser['Username']);
 Torrents::write_group_log($GroupID, $TorrentID, $LoggedUser['ID'], 'uploaded ('.number_format($TotalSize / (1024 * 1024), 2).' MB)', 0);
 

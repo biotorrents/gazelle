@@ -47,8 +47,7 @@ if (!$Banned) { ?>
 
     <tr>
       <td>
-        <input type="password" minlength="15" name="password" id="password" class="inputtext" required="required"
-          maxlength="307200" pattern=".{15,307200}" placeholder="Password" autocomplete="current-password" />
+        <?= Input::passphrase() ?>
       </td>
 
       <td>

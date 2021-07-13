@@ -421,7 +421,7 @@ ENV::setPub('BLOCK_OPERA_MINI', true);
 # Misc stuff like generic reusable snippets
 # Example of a variable using heredoc syntax
 ENV::setPub(
-    'PASSWORD_ADVICE',
+    'PW_ADVICE',
     <<<HTML
     <p>
       Any password 15 characters or longer is accepted, but a strong password
