@@ -122,18 +122,7 @@ class Tools
         return trim($Output[4]);
     }
 
-    /**
-     * Format an IP address with links to IP history.
-     *
-     * @param string IP
-     * @return string The HTML
-     */
-    public static function display_ip($IP)
-    {
-        return $Line = '<a href="user.php?action=search&amp;ip_history=on&amp;ip='.display_str($IP).'&amp;matchtype=strict" title="Search" class="brackets tooltip">S</a>';
-    }
-
-
+    
     /**
      * Disable an array of users.
      *

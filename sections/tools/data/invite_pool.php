@@ -116,7 +116,7 @@ $DB->set_query_id($RS);
     </td>
 
     <td>
-      <?=Tools::display_ip($IP)?>
+      <?=display_str($IP)?>
     </td>
 
     <td>

@@ -237,38 +237,6 @@ if ($_POST['ResetRatioWatch'] && check_perms('users_edit_reset_keys')) {
     $EditSummary[] = 'RatioWatch history reset';
 }
 
-if ($_POST['ResetIPHistory'] && check_perms('users_edit_reset_keys')) {
-    $GenericIP = Crypto::encrypt('127.0.0.1');
-    $DB->query("
-      DELETE FROM users_history_ips
-      WHERE UserID = '$UserID'");
-
-    $DB->query("
-      UPDATE users_main
-      SET IP = '$GenericIP'
-      WHERE ID = '$UserID'");
-
-    $DB->query("
-      UPDATE xbt_snatched
-      SET IP = ''
-      WHERE uid = '$UserID'");
-
-    $DB->query("
-      UPDATE users_history_passwords
-      SET ChangerIP = ''
-      WHERE UserID = $UserID");
-
-    $DB->query("
-      UPDATE users_history_passkeys
-      SET ChangerIP = ''
-      WHERE UserID = $UserID");
-
-    $DB->query("
-      UPDATE users_sessions
-      SET IP = '$GenericIP'
-      WHERE UserID = $UserID");
-}
-
 if ($_POST['ResetSnatchList'] && check_perms('users_edit_reset_keys')) {
     $DB->query("
       DELETE FROM xbt_snatched

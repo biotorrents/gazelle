@@ -70,21 +70,6 @@
             <input type="text" name="lastfm" size="20" value="{{ lastfm }}" />
         </td>
         </tr>
-
-        <tr>
-        <td class="nobr" colspan="2">
-        <h4>Extra</h4>
-        <ul class="options_list nobullet">
-            <li title="Only display users that have a disabled account linked by IP address">
-                <input type="checkbox" name="disabled_ip" id="disabled_ip"{{ checked(check_disabled_ip) }} />
-                <label for="disabled_ip">Disabled accounts linked by IP</label>
-            </li>
-            <li>
-                <input type="checkbox" name="ip_history" id="ip_history"{{ checked(check_ip_history) }} />
-                <label title="Disabled accounts linked by IP must also be checked" for="ip_history">IP history</label>
-            </li>
-        </ul>
-        </tr>
     </table></td>
 
 {# new column #}

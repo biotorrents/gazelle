@@ -39,7 +39,6 @@ $PermissionsArray = array(
   'site_recommend_own' => 'Can recommend own torrents.',
   'site_manage_recommendations' => 'Recommendations management access.',
   'site_delete_tag' => 'Can delete tags.',
-  'site_disable_ip_history' => 'Disable IP history.',
   'zip_downloader' => 'Download multiple torrents at once.',
   'site_debug' => 'Developer access.',
   'site_proxy_images' => 'Image proxy & anti-canary.',
@@ -154,7 +153,6 @@ HTML;
     display_perm('site_recommend_own', 'Can add own torrents to recommendations list.');
     display_perm('site_manage_recommendations', 'Can edit recommendations list.');
     display_perm('site_delete_tag', 'Can delete tags.');
-    display_perm('site_disable_ip_history', 'Disable IP history.');
     display_perm('zip_downloader', 'Download multiple torrents at once.');
     display_perm('site_debug', 'View site debug tables.');
     display_perm('site_proxy_images', 'Proxy images through the server.');

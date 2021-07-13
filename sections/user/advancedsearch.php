@@ -262,9 +262,6 @@ if (count($_GET)) {
         }
 
         if (!empty($_GET['ip'])) {
-            if (isset($_GET['ip_history'])) {
-                $Distinct = 'DISTINCT ';
-            }
             $Join['tip'] = ' JOIN users_ips_decrypted AS tip ON tip.ID = um1.ID ';
             $Where[] = ' tip.IP '.$Match.wrap($_GET['ip'], '', true);
         }
@@ -386,15 +383,7 @@ if (count($_GET)) {
 
         if ($_GET['disabled_ip']) {
             $Distinct = 'DISTINCT ';
-            if ($_GET['ip_history']) {
-                if (!isset($Join['tip'])) {
-                    $Join['tip'] = ' JOIN users_ips_decrypted AS tip ON tip.ID = um1.ID ';
-                }
-                $Join['tip2'] = ' JOIN users_ips_decrypted2 AS tip2 ON tip2.IP = tip.IP ';
-                $Join['um2'] = ' JOIN users_main AS um2 ON um2.ID = tip2.ID AND um2.Enabled = \'2\' ';
-            } else {
                 $Join['um2'] = ' JOIN users_main AS um2 ON um2.IP = um1.IP AND um2.Enabled = \'2\' ';
-            }
         }
 
         if (!empty($_GET['passkey'])) {
@@ -619,17 +608,6 @@ View::show_header('User search');
         </td>
       </tr>
       <tr>
-        <td class="label nobr">Extra:</td>
-        <td>
-          <ul class="options_list nobullet">
-            <li>
-              <input type="checkbox" name="ip_history" id="ip_history" <?php if ($_GET['ip_history']) {
-      echo ' checked="checked"' ;
-  } ?> />
-              <label for="ip_history">IP history</label>
-            </li>
-          </ul>
-        </td>
         <td class="label nobr">Ratio:</td>
         <td width="30%">
           <select name="ratio">
@@ -1013,19 +991,12 @@ View::show_header('User search');
 <?php
 if ($RunQuery) {
                 if (!empty($_GET['ip'])) {
-                    if (isset($_GET['ip_history'])) {
-                        $DB->query("SELECT UserID, IP FROM users_history_ips");
-                    } else {
                         $DB->query("SELECT ID, IP FROM users_main");
-                    }
                     while (list($ID, $EncIP) = $DB->next_record()) {
                         $IPs[] = $ID.", '".Crypto::decrypt($EncIP)."'";
                     }
                     $DB->query("CREATE TEMPORARY TABLE users_ips_decrypted (ID INT(10) UNSIGNED NOT NULL, IP VARCHAR(45) NOT NULL, PRIMARY KEY (ID,IP)) ENGINE=MEMORY");
                     $DB->query("INSERT IGNORE INTO users_ips_decrypted (ID, IP) VALUES(".implode("),(", $IPs).")");
-                    if ($_GET['disabled_ip'] && $_GET['ip_history']) {
-                        $DB->query("CREATE TEMPORARY TABLE users_ips_decrypted2 SELECT * FROM users_ips_decrypted");
-                    }
                 }
                 if (!empty($_GET['email'])) {
                         $DB->query("SELECT ID, Email FROM users_main");

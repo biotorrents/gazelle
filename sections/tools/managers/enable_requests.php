@@ -47,8 +47,6 @@ switch ($_GET['view']) {
     case 'perfect':
         $Where[] = "um.`Email` = uer.`Email`";
         $Joins[] = "JOIN `users_main` um ON um.`ID` = uer.`UserID`";
-        $Where[] = "uer.`IP` = (SELECT `IP` FROM `users_history_ips` uhi1 WHERE uhi1.`StartTime` = (SELECT MAX(`StartTime`) FROM `users_history_ips` uhi2 WHERE uhi2.`UserID` = uer.`UserID` ORDER BY `StartTime` DESC LIMIT 1))";
-        $Where[] = "(SELECT 1 FROM `users_history_ips` uhi WHERE uhi.`IP` = uer.`IP` AND uhi.`UserID` != uer.`UserID`) IS NULL";
         $Where[] = "ui.`BanReason` = '3'";
         break;
 
@@ -61,10 +59,6 @@ switch ($_GET['view']) {
     case 'invalid_email':
         $Joins[] = "JOIN `users_main` um ON um.`ID` = uer.`UserID`";
         $Where[] = "um.`Email` != uer.`Email`";
-        break;
-
-    case 'ip_overlap':
-        $Joins[] = "JOIN `users_history_ips` uhi ON uhi.`IP` = uer.`IP` AND uhi.`UserID` != uer.`UserID`";
         break;
 
     case 'manual_disable':

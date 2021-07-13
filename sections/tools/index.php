@@ -413,10 +413,6 @@ switch ($_REQUEST['action']) {
   // END Data
 
   // Misc
-  case 'dupe_ips':
-    include SERVER_ROOT.'/sections/tools/misc/dupe_ip.php';
-    break;
-
   case 'clear_cache':
     include SERVER_ROOT.'/sections/tools/development/clear_cache.php';
     break;

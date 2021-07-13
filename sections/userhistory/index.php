@@ -9,27 +9,8 @@ enforce_login();
 
 if ($_GET['action']) {
     switch ($_GET['action']) {
-    case 'ips':
-      //Load IP history page
-      include('ip_history.php');
-      break;
-
     case 'tracker_ips':
       include('ip_tracker_history.php');
-      break;
-
-    case 'passwords':
-      //Load Password history page
-      include('password_history.php');
-      break;
-
-    case 'userip':
-      include('ip_history_userview.php');
-      break;
-
-    case 'passkeys':
-      //Load passkey history page
-      include('passkey_history.php');
       break;
 
     case 'posts':

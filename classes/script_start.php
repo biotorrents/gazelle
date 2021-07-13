@@ -319,11 +319,6 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     // Change necessary triggers in external components
     $Cache->CanClear = check_perms('admin_clear_cache');
 
-    // Because we <3 our staff
-    if (check_perms('site_disable_ip_history')) {
-        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-    }
-
     // Update LastUpdate every 10 minutes
     if (strtotime($UserSessions[$SessionID]['LastUpdate']) + 600 < time()) {
         $DB->query("
@@ -383,39 +378,13 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     }
 
     // IP changed
-    if (apcu_exists('DBKEY') && Crypto::decrypt($LoggedUser['IP']) != $_SERVER['REMOTE_ADDR'] && !check_perms('site_disable_ip_history')) {
+    if (apcu_exists('DBKEY') && Crypto::decrypt($LoggedUser['IP']) != $_SERVER['REMOTE_ADDR']) {
         if (Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
             error('Your IP address has been banned.');
         }
 
         $CurIP = db_string($LoggedUser['IP']);
         $NewIP = db_string($_SERVER['REMOTE_ADDR']);
-        $DB->query("
-        SELECT IP
-        FROM users_history_ips
-          WHERE EndTime IS NULL
-          AND UserID = '$LoggedUser[ID]'");
-
-        while (list($EncIP) = $DB->next_record()) {
-            if (Crypto::decrypt($EncIP) == $CurIP) {
-                $CurIP = $EncIP;
-                // CurIP is now the encrypted IP that was already in the database (for matching)
-                break;
-            }
-        }
-
-        $DB->query("
-        UPDATE users_history_ips
-        SET EndTime = NOW()
-          WHERE EndTime IS NULL
-          AND UserID = '$LoggedUser[ID]'
-          AND IP = '$CurIP'");
-
-        $DB->query("
-        INSERT IGNORE INTO users_history_ips
-          (UserID, IP, StartTime)
-        VALUES
-          ('$LoggedUser[ID]', '".Crypto::encrypt($NewIP)."', NOW())");
 
         $Cache->begin_transaction('user_info_heavy_'.$LoggedUser['ID']);
         $Cache->update_row(false, array('IP' => Crypto::encrypt($_SERVER['REMOTE_ADDR'])));

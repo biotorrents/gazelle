@@ -144,7 +144,6 @@ View::show_header('Staff Tools');
   $ToolsHTML = "";
   create_row("Email blacklist", "tools.php?action=email_blacklist", check_perms("users_view_email"));
   create_row("IP address bans", "tools.php?action=ip_ban", check_perms("admin_manage_ipbans"));
-  create_row("Duplicate IP addresses", "tools.php?action=dupe_ips", check_perms("users_view_ips"));
   create_row("Manipulate invite tree", "tools.php?action=manipulate_tree", check_perms("users_mod"));
 
   if ($ToolsHTML) {

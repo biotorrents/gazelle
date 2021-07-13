@@ -273,12 +273,6 @@ if (check_perms('users_edit_profiles', $Class) || $LoggedUser['ID'] == $UserID) 
       class="brackets">Settings</a>
     <?php
 }
-if ($LoggedUser['ID'] == $UserID) {
-    ?>
-    <a href="userhistory.php?action=userip&userid=<?=$UserID?>"
-      class="brackets">IP History</a>
-    <?php
-}
 if (check_perms('users_view_invites', $Class)) {
     ?>
     <a href="user.php?action=invite&amp;userid=<?=$UserID?>"
@@ -579,11 +573,6 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
       if (check_perms('users_view_ips', $Class)) {
           $DB->query("
         SELECT COUNT(DISTINCT IP)
-        FROM users_history_ips
-        WHERE UserID = '$UserID'");
-          list($IPChanges) = $DB->next_record();
-          $DB->query("
-        SELECT COUNT(DISTINCT IP)
         FROM xbt_snatched
         WHERE uid = '$UserID'
           AND IP != ''");
@@ -596,11 +585,6 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
         <?php
       if (check_perms('users_view_ips', $Class)) {
           ?>
-        <li>IPs: <?=number_format($IPChanges)?> <a
-            href="userhistory.php?action=ips&amp;userid=<?=$UserID?>"
-            class="brackets">View</a>&nbsp;<a
-            href="userhistory.php?action=ips&amp;userid=<?=$UserID?>&amp;usersonly=1"
-            class="brackets">View users</a></li>
         <?php if (check_perms('users_view_ips', $Class) && check_perms('users_mod', $Class)) { ?>
         <li>Tracker IPs: <?=number_format($TrackerIPs)?> <a
             href="userhistory.php?action=tracker_ips&amp;userid=<?=$UserID?>"
@@ -673,7 +657,7 @@ if ($ParanoiaLevel == 0) {
 
 if (check_perms('users_view_ips', $Class)) {
     $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]'; ?>
-        <li>IP: <?=Tools::display_ip($IP)?>
+        <li>IP: <?=display_str($IP)?>
         </li>
         <li>Host: <?=Tools::get_host_by_ajax($IP)?>
         </li>
@@ -1442,8 +1426,6 @@ if (!$DisablePoints) {
             watch</label> |
           <input type="checkbox" name="ResetPasskey" id="ResetPasskey" /> <label for="ResetPasskey">Passkey</label> |
           <input type="checkbox" name="ResetAuthkey" id="ResetAuthkey" /> <label for="ResetAuthkey">Authkey</label> |
-          <input type="checkbox" name="ResetIPHistory" id="ResetIPHistory" /> <label for="ResetIPHistory">IP
-            history</label> |
           <br />
           <input type="checkbox" name="ResetSnatchList" id="ResetSnatchList" /> <label for="ResetSnatchList">Snatch
             list</label> |
