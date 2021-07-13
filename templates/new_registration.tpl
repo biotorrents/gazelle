@@ -1,7 +1,8 @@
-Thank you for joining {{SITE_NAME}}.
+This email is to confirm the account you just created at {{SITE_NAME}}
 
-Please click the link below to confirm your account {{Username}} (you have 24 hours).
+You have 24 hours to click the link below and finish the registration process for the account created with the username: {{Username}}
 
-https://{{SITE_DOMAIN}}/register.php?confirm={{TorrentKey}}
+https://{{SITE_URL}}/register.php?confirm={{TorrentKey}}
 
--- {{SITE_NAME}}
+Thank you,
+{{SITE_NAME}} Staff
