@@ -1,9 +1,35 @@
-classes/config.php
-_packages/**/.git/**
+# https://github.com/OPSnet/Gazelle/blob/master/.gitignore
 
-static/styles/*.css
-static/styles/assets/fonts/**
-static/common/badges/**
-
-.DS_Store
+# backup files
+*.bak
 *.sw*
+*~
+
+# home folder
+.DS_Store
+.bash_history
+.cache/
+.config/
+.histfile
+.lesshst
+.local/
+.npm-global/
+.npm/
+.npmrc
+.php_history
+.pki/
+.profile
+.wget-hsts
+.zsh*
+__MACOSX/
+
+# app files
+/cache
+/classes/config.php
+/node_modules
+/vendor
+
+# heavy assets
+/static/common/badges/**
+/static/styles/**/*.css
+/static/styles/assets/fonts/**

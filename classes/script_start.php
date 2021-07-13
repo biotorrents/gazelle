@@ -1,11 +1,10 @@
 <?php
 #declare(strict_types=1);
 
-# https://www.php.net/manual/en/language.oop5.autoload.php
+# Initialize
 require_once 'config.php';
 require_once 'security.class.php';
 
-# Initialize
 $ENV = ENV::go();
 $Security = new Security();
 $Security->SetupPitfalls();
@@ -57,12 +56,12 @@ if (!defined('PHP_WINDOWS_VERSION_MAJOR')) {
 }
 ob_start(); // Start a buffer, mainly in case there is a mysql error
 
-require SERVER_ROOT.'/classes/debug.class.php'; // Require the debug class
-require SERVER_ROOT.'/classes/mysql.class.php'; // Require the database wrapper
-require SERVER_ROOT.'/classes/cache.class.php'; // Require the caching class
-require SERVER_ROOT.'/classes/time.class.php'; // Require the time class
-require SERVER_ROOT.'/classes/paranoia.class.php'; // Require the paranoia check_paranoia function
-require SERVER_ROOT.'/classes/util.php';
+require_once SERVER_ROOT.'/classes/debug.class.php'; // Require the debug class
+require_once SERVER_ROOT.'/classes/mysql.class.php'; // Require the database wrapper
+require_once SERVER_ROOT.'/classes/cache.class.php'; // Require the caching class
+require_once SERVER_ROOT.'/classes/time.class.php'; // Require the time class
+require_once SERVER_ROOT.'/classes/paranoia.class.php'; // Require the paranoia check_paranoia function
+require_once SERVER_ROOT.'/classes/util.php';
 
 $Debug = new DEBUG;
 $Debug->handle_errors();
@@ -72,7 +71,8 @@ $DB = new DB_MYSQL;
 $Cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
 
 // Autoload classes.
-require SERVER_ROOT.'/classes/autoload.php';
+require_once SERVER_ROOT.'/vendor/autoload.php';
+#require_once SERVER_ROOT.'/classes/autoload.php';
 
 // Note: G::initialize is called twice.
 // This is necessary as the code inbetween (initialization of $LoggedUser) makes use of G::$DB and G::$Cache.
