@@ -53,7 +53,7 @@ $RS = "
     im.Enabled,
     ii.Donor,
     ii.Warned,
-    ii.JoinDate,
+    ii.JoinDate
   FROM users_main AS m
     LEFT JOIN users_info AS i ON i.UserID = m.ID
     LEFT JOIN users_main AS im ON i.Inviter = im.ID

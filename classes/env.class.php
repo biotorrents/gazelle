@@ -29,7 +29,7 @@ class ENV
 
 
     /**
-     * __functions()
+     * __functions
      */
 
     # Prevents outside construction
@@ -45,6 +45,15 @@ class ENV
     {
         return trigger_error(
             'clone() not allowed',
+            E_USER_ERROR
+        );
+    }
+
+    # Prevents unserializing
+    public function __wakeup()
+    {
+        return trigger_error(
+            'wakeup() not allowed',
             E_USER_ERROR
         );
     }
@@ -263,6 +272,7 @@ class RecursiveArrayObject extends \ArrayObject
         return $this;
     }
 
+
     /**
      * __set
      */
@@ -274,6 +284,7 @@ class RecursiveArrayObject extends \ArrayObject
             $this->offsetSet($name, $value);
         }
     }
+
 
     /**
      * __get
@@ -289,6 +300,7 @@ class RecursiveArrayObject extends \ArrayObject
         }
     }
 
+
     /**
      * __isset
      */
@@ -297,6 +309,7 @@ class RecursiveArrayObject extends \ArrayObject
         return array_key_exists($name, $this);
     }
 
+    
     /**
      * __unset
      */
