@@ -12,8 +12,6 @@ declare(strict_types=1);
  * and this page must be called again.
  */
 
-ini_set('max_file_uploads', '100');
-
 View::show_header(
     'Upload',
     'upload,bbcode,vendor/easymde.min',
@@ -119,14 +117,6 @@ if (!$GenreTags) {
     $Cache->cache_value('genre_tags', $GenreTags, 3600 * 6);
 }
 
-# Page contents
-echo $TorrentForm->uploadNotice();
-echo $TorrentForm->announceSource();
-echo $TorrentForm->error();
-
-# Stuff inside the table layout
-echo $TorrentForm->head();
-echo $TorrentForm->basicInfo();
-echo $TorrentForm->upload_form();
-
+# Twig based class
+$TorrentForm->render();
 View::show_footer();
