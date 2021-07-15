@@ -14,14 +14,6 @@ class TorrentForm
      * recursively copying parts to arrays in place as needed.
      */
     
-    # Platforms
-    # See classes/config.php
-    public $SeqPlatforms = [];
-    public $GraphPlatforms = [];
-    public $ImgPlatforms = [];
-    public $DocPlatforms = [];
-    public $RawPlatforms = [];
-
     # Formats
     # See classes/config.php
     public $SeqFormats = [];
@@ -34,10 +26,6 @@ class TorrentForm
     public $BinDocFormats = [];
     public $CpuGenFormats = [];
     public $PlainFormats = [];
-
-    # Misc
-    public $Codecs = [];
-    public $Archives = [];
     public $Resolutions = [];
 
     # Gazelle
@@ -51,7 +39,8 @@ class TorrentForm
     public function __construct($Torrent = false, $Error = false, $NewTorrent = true)
     {
         # See classes/config.php
-        global $UploadForm, $Categories, $TorrentID, $SeqPlatforms, $GraphPlatforms, $ImgPlatforms, $DocPlatforms, $RawPlatforms, $SeqFormats, $ProtFormats, $GraphXmlFormats, $GraphTxtFormats, $ImgFormats, $MapVectorFormats, $MapRasterFormats, $BinDocFormats, $CpuGenFormats, $PlainFormats, $Codecs, $Archives, $Resolutions;
+        global $UploadForm, $Categories, $TorrentID, $SeqFormats, $ProtFormats, $GraphXmlFormats, $GraphTxtFormats, $ImgFormats, $MapVectorFormats, $MapRasterFormats, $BinDocFormats, $CpuGenFormats, $PlainFormats, $Resolutions;
+        #global $UploadForm, $Categories, $TorrentID, $SeqPlatforms, $GraphPlatforms, $ImgPlatforms, $DocPlatforms, $RawPlatforms, $SeqFormats, $ProtFormats, $GraphXmlFormats, $GraphTxtFormats, $ImgFormats, $MapVectorFormats, $MapRasterFormats, $BinDocFormats, $CpuGenFormats, $PlainFormats, $Codecs, $Archives, $Resolutions;
         #global $UploadForm, $Categories, $Formats, $Bitrates, $Media, $MediaManga, $TorrentID, $Containers, $ContainersGames, $Codecs, $Resolutions, $Platform, $Archives, $ArchivesManga;
 
         # Gazelle
@@ -63,15 +52,8 @@ class TorrentForm
         $this->Categories = $Categories;
         $this->TorrentID = $TorrentID;
 
-        # Platforms
-        # See classes/config.php
-        $this->SeqPlatforms = $SeqPlatforms;
-        $this->GraphPlatforms = $GraphPlatforms;
-        $this->ImgPlatforms = $ImgPlatforms;
-        $this->DocPlatforms = $DocPlatforms;
-        $this->RawPlatforms = $RawPlatforms;
-       
         # Formats
+        # See classes/config.php
         $this->SeqFormats = $SeqFormats;
         $this->ProtFormats = $ProtFormats;
         $this->GraphXmlFormats = $GraphXmlFormats;
@@ -82,10 +64,6 @@ class TorrentForm
         $this->BinDocFormats = $BinDocFormats;
         $this->CpuGenFormats = $CpuGenFormats;
         $this->PlainFormats = $PlainFormats;
-        
-        # Misc
-        $this->Codecs = $Codecs;
-        $this->Archives = $Archives;
         $this->Resolutions = $Resolutions;
 
         # Quick constructor test
@@ -579,7 +557,6 @@ HTML;
          */
         if ($this->NewTorrent) {
             $TorrentLocation = display_str($Torrent['Series']);
-
             echo $Twig->render(
                 'torrent_form/location.html',
                 [
@@ -601,21 +578,14 @@ HTML;
          * Year
          */
         $TorrentYear = display_str($Torrent['Year']);
-        echo <<<HTML
-        <tr id="year_tr">
-          <td>
-            <label for="year" class="required">
-              Year
-            </label>
-          </td>
-          
-          <td>
-            <input type="text" id="year" name="year"
-              maxlength="4" size="15" placeholder="Publication year"
-              value="$TorrentYear" />
-          </td>
-        </tr>
-HTML;
+
+        echo $Twig->render(
+            'torrent_form/year.html',
+            [
+            'db' => $ENV->DB->year,
+            'location' => $TorrentYear,
+          ]
+        );
 
 
         /**
@@ -640,14 +610,14 @@ HTML;
               <option>---</option>
 HTML;
 
-        foreach ($this->Codecs as $Codec) {
-            echo "<option value='$Codec'";
+        foreach ($ENV->META->Licenses as $License) {
+            echo "<option value='$License'";
 
-            if ($Codec === ($Torrent['Codec'] ?? false)) {
+            if ($License === ($Torrent['Codec'] ?? false)) {
                 echo " selected";
             }
             
-            echo ">$Codec</option>\n";
+            echo ">$License</option>\n";
         }
 
         echo <<<HTML
@@ -729,7 +699,7 @@ HTML;
                 $trID = 'media_tr',
                 $Label = 'Platform',
                 $Torrent = $Torrent,
-                $Media = $this->SeqPlatforms
+                $Media = $ENV->META->Platforms->Sequences
             );
             
 
@@ -740,7 +710,10 @@ HTML;
                 $trID = 'media_graphs_tr',
                 $Label = 'Platform',
                 $Torrent = $Torrent,
-                $Media = array_merge($this->GraphPlatforms, $this->SeqPlatforms)
+                $Media = $ENV->flatten([
+                    $ENV->META->Platforms->Graphs,
+                    $ENV->META->Platforms->Sequences
+                ])
             );
             
 
@@ -751,18 +724,21 @@ HTML;
                 $trID = 'media_scalars_vectors_tr',
                 $Label = 'Platform',
                 $Torrent = $Torrent,
-                $Media = array_merge($this->GraphPlatforms, $this->ImgPlatforms)
+                $Media = $ENV->flatten([
+                    $ENV->META->Platforms->Graphs,
+                    $ENV->META->Platforms->Images
+                ])
             );
 
 
             /**
-             * Platform: Scalars/Vectors
+             * Platform: Images
              */
             mediaSelect(
                 $trID = 'media_images_tr',
                 $Label = 'Platform',
                 $Torrent = $Torrent,
-                $Media = $this->ImgPlatforms
+                $Media = $ENV->META->Platforms->Images
             );
 
 
@@ -773,7 +749,7 @@ HTML;
                 $trID = 'media_documents_tr',
                 $Label = 'Platform',
                 $Torrent = $Torrent,
-                $Media = $this->DocPlatforms
+                $Media = $ENV->META->Platforms->Documents
             );
 
 
@@ -784,7 +760,7 @@ HTML;
                 $trID = 'media_machine_data_tr',
                 $Label = 'Platform',
                 $Torrent = $Torrent,
-                $Media = $this->RawPlatforms
+                $Media = $ENV->META->Platforms->Raw
             );
         } # fi NewTorrent
         else {
@@ -850,7 +826,7 @@ HTML;
             $trID = 'container_tr',
             $Label = 'Format',
             $Torrent = $Torrent,
-            $FileTypes = array_merge($this->SeqFormats, $this->ProtFormats, $this->PlainFormats)
+            $FileTypes = array_merge(($ENV->CATS->{1}->Formats))
         );
         
 
@@ -872,7 +848,7 @@ HTML;
             $trID = 'container_scalars_vectors_tr',
             $Label = 'Format',
             $Torrent = $Torrent,
-            $FileTypes = array_merge($this->ImgFormats, $this->SeqFormats, $this->ProtFormats, $this->PlainFormats)
+            $FileTypes = $ENV->flatten($ENV->CATS->{5}->Formats)
         );
 
 

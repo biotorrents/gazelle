@@ -39,18 +39,11 @@ declare(strict_types=1);
  *   );
  */
 
-# https://www.php.net/manual/en/language.oop5.autoload.php
-require_once 'env.class.php';
-
 # Initialize
+require_once 'env.class.php';
 $ENV = ENV::go();
 ENV::setPub('PHP_MIN', '7.4.0');
 ENV::setPub('DEV', true);
-
-# Modern PHP
-if (version_compare($ENV->PHP_MIN, '7.4.0', '<')) {
-    throw new Exception("Gazelle requires PHP > $ENV->PHP_MIN");
-}
 
 
 /**
@@ -88,6 +81,9 @@ ENV::setPub(
 
 # The FQDN of your image host, e.g., pics.biotorrents.de
 ENV::setPub('IMAGE_DOMAIN', 'pics.biotorrents.de');
+
+# Web root. Currently used for Twig but may also include config files
+ENV::setPub('WEB_ROOT', '/var/www/');
 
 # The root of the server, used for includes, e.g., /var/www/html/dev.biotorrents.de/
 ( # Old format
@@ -148,25 +144,29 @@ ENV::setPub(
  */
 
 # Pre-shared key for generating hmacs for the image proxy
-ENV::setPriv('IMAGE_PSK', '00000000000000000000000000000000');
+ENV::setPriv('IMAGE_PSK', '');
 
  # Production
 if (!$ENV->DEV) {
     # Unused in OT Gazelle. Currently used for API token auth
-    ENV::setPriv('ENCKEY', '00000000000000000000000000000000');
+    ENV::setPriv('ENCKEY', '');
   
     # Alphanumeric random key. This key must be the argument to schedule.php for the schedule to work
-    ENV::setPriv('SCHEDULE_KEY', '00000000000000000000000000000000');
+    ENV::setPriv('SCHEDULE_KEY', '');
   
     # Random key. Used for generating unique RSS auth key
-    ENV::setPriv('RSS_HASH', '00000000000000000000000000000000');
+    ENV::setPriv('RSS_HASH', '');
+
+    # System API key. Used for getting resources via Json->fetch()
+    ENV::setPriv('SELF_API', '');
 }
 
 # Development
 else {
-    ENV::setPriv('ENCKEY', '00000000000000000000000000000000');
-    ENV::setPriv('SCHEDULE_KEY', '00000000000000000000000000000000');
-    ENV::setPriv('RSS_HASH', '00000000000000000000000000000000');
+    ENV::setPriv('ENCKEY', '');
+    ENV::setPriv('SCHEDULE_KEY', '');
+    ENV::setPriv('RSS_HASH', '');
+    ENV::setPriv('SELF_API', '');
 }
 
 
@@ -175,22 +175,27 @@ else {
  */
 
 # Common info
-ENV::setPriv('SQLHOST', 'localhost');
-ENV::setPriv('SQLSOCK', '/var/run/mysqld/mysqld.sock');
+ENV::setPriv('SQLHOST', '10.0.0.3');
 ENV::setPriv('SQLPORT', 3306);
+#ENV::setPriv('SQLSOCK', '/var/run/mysqld/mysqld.sock');
+
+# TLS client certs
+ENV::setPriv('SQL_CERT', "/var/www/sql-keys/client-cert.pem");
+ENV::setPriv('SQL_KEY', "/var/www/sql-keys/client-key.pem");
+ENV::setPriv('SQL_CA', "/var/www/sql-keys/ca.pem");
 
  # Production
  if (!$ENV->DEV) {
      ENV::setPriv('SQLDB', 'gazelle_production');
      ENV::setPriv('SQLLOGIN', 'gazelle_production');
-     ENV::setPriv('SQLPASS', '00000000000000000000000000000000');
+     ENV::setPriv('SQLPASS', '');
  }
 
 # Development
 else {
     ENV::setPriv('SQLDB', 'gazelle_development');
     ENV::setPriv('SQLLOGIN', 'gazelle_development');
-    ENV::setPriv('SQLPASS', '00000000000000000000000000000000');
+    ENV::setPriv('SQLPASS', '');
 }
 
 
@@ -206,17 +211,17 @@ if (!$ENV->DEV) {
     ENV::setPriv('TRACKER_PORT', 34000);
   
     # Must be 32 alphanumeric characters and match site_password in ocelot.conf
-    ENV::setPriv('TRACKER_SECRET', '00000000000000000000000000000000');
+    ENV::setPriv('TRACKER_SECRET', '');
 
     # Must be 32 alphanumeric characters and match report_password in ocelot.conf
-    ENV::setPriv('TRACKER_REPORTKEY', '00000000000000000000000000000000');
+    ENV::setPriv('TRACKER_REPORTKEY', '');
 }
 
 # Development
 else {
     ENV::setPriv('TRACKER_PORT', 34001);
-    ENV::setPriv('TRACKER_SECRET', '00000000000000000000000000000000');
-    ENV::setPriv('TRACKER_REPORTKEY', '00000000000000000000000000000000');
+    ENV::setPriv('TRACKER_SECRET', '');
+    ENV::setPriv('TRACKER_REPORTKEY', '');
 }
 
 
@@ -319,7 +324,7 @@ else {
  */
 
 # IRC server address. Used for onsite chat tool
-define('BOT_SERVER', 'irc.'.SITE_DOMAIN);
+define('BOT_SERVER', "irc.$ENV->SITE_DOMAIN");
 define('SOCKET_LISTEN_ADDRESS', 'localhost');
 define('SOCKET_LISTEN_PORT', 51010);
 define('BOT_NICK', 'ebooks');
@@ -337,7 +342,7 @@ define('DISABLED_CHAN', '#support');
 # Slack invite link
 ENV::setPub(
     'SLACK_INVITE',
-    '00000000000000000000000000000000'
+    ''
 );
 
 
@@ -357,7 +362,7 @@ ENV::setPub(
 ENV::setPub('FEATURE_DONATE', true);
 
 # Send re-enable requests to user's email
-define('FEATURE_EMAIL_REENABLE', true);  //
+define('FEATURE_EMAIL_REENABLE', true);
 ENV::setPub('FEATURE_EMAIL_REENABLE', true);
 
 # Require users to verify login from unknown locations
@@ -378,9 +383,21 @@ ENV::setPub('FEATURE_SET_ENC_KEY_PUBLIC', false);
  * Settings
  */
 
-# Set to false if you don't want everyone to see debug information; can be overriden with 'site_debug'
-define('DEBUG_MODE', false);
-ENV::setPub('DEBUG_MODE', false);
+# Production
+if (!$ENV->DEV) {
+    # Set to false if you don't want everyone to see debug information; can be overriden with 'site_debug'
+    define('DEBUG_MODE', false);
+    ENV::setPub('DEBUG_MODE', false);
+}
+
+# Development
+else {
+    define('DEBUG_MODE', false);
+    ENV::setPub('DEBUG_MODE', false);
+
+    # Gazelle's debug mode is broken, so let's use PHP errors instead
+    error_reporting(E_ALL);
+}
 
 # Set to false to disable open registration, true to allow anyone to register
 ENV::setPub(
@@ -418,13 +435,17 @@ ENV::setPub(
 # Set to true to block Opera Mini proxy
 ENV::setPub('BLOCK_OPERA_MINI', true);
 
+# Password length limits
+ENV::setPub('PW_MIN', 15); # Brute force
+ENV::setPub('PW_MAX', 10000); # DDoS; default 307200
+
 # Misc stuff like generic reusable snippets
 # Example of a variable using heredoc syntax
 ENV::setPub(
     'PW_ADVICE',
     <<<HTML
     <p>
-      Any password 15 characters or longer is accepted, but a strong password
+      Any password $ENV->PW_MIN characters or longer is accepted, but a strong password
       <ul>
         <li>is a pass<em>phrase</em> of mixed case with many small words,</li>
         <li>that contains complex characters including Unicode and emoji.</li>
@@ -451,13 +472,10 @@ ENV::setPub(
 
 # Semantic Scholar
 # https://api.semanticscholar.org
-ENV::setPub(
-    'SS',
-    [
-      'Paper' => 'https://api.semanticscholar.org/v1/paper/',
-      'Author' => 'https://api.semanticscholar.org/v1/author/',
-    ]
-);
+ENV::setPub('SS', 'https://api.semanticscholar.org/v1/paper/');
+
+# IP Geolocation
+ENV::setPub('IP_GEO', 'https://tools.keycdn.com/geo.json?host=');
 
 
 /**
@@ -579,77 +597,13 @@ ENV::setPub(
 
 
 /**
- * Metadata abstraction map
+ * Site categories and meta
  *
- * A set of 'label' → $DB->query() mappings.
- * The database should store generic data, e.g.,
- *  - Title1, Title2, Title3
- *  - Creator, Affiliation, Location
- *
- * Then Gazelle's job is to map text labels over the fields in HTML.
- * So $Input->Print($ID = $ENV->Creator) would print an Author form input.
- *
- * The structure:
- *   $ENV->DBMAP =
- *     (DatabaseField
- *       ->(
- *         Label->TextLabel,
- *         OldField->Oppaitime,
- *       )
- *     );
- *
- * An example:
- *   $Title1 = $ENV->DBMAP->Title1;
- *   $ElementID =
- *     strtolower($Title1->Label)
- *     . '_class_label_'
- *     . $InstanceID;
+ * THIS IS THE OLD FORMAT AND WILL GO AWAY.
+ * PLEASE SEE $ENV->{DB,META,CATS} BELOW.
  */
 
-$DB = [
-  'AccessionNumber' => [
-    'Label' => 'Accession Number',
-    'Selector' => ['DOI' => 'javdb', 'RefSeq' => 'anidb', 'UniProt' => 'ehentai'],
-    'OldField' => 'CatalogueNumber',
-    'Description' => 'RefSeq and UniProt preferred',
-  ],
-
-  'Title1' => [
-    'Label' => 'Torrent Title',
-    'Selector' => ['title'],
-    'OldField' => 'Name',
-    'Description' => 'Definition line, e.g., Alcohol dehydrogenase ADH1',
-  ],
-
-  'Title2' => [
-    'Label' => 'Organism',
-    'Selector' => ['DOI' => 'javdb_tr', 'RefSeq' => 'anidb_tr', 'UniProt' => 'ehentai_tr'],
-    'OldField' => 'NameRJ',
-    'Description' => 'Organism line binomial, e.g., Saccharomyces cerevisiae',
-  ],
-
-  'Title3' => [
-    'Label' => 'Strain/Variety',
-    'Selector' => ['DOI' => 'javdb_tr', 'RefSeq' => 'anidb_tr', 'UniProt' => 'ehentai_tr'],
-    'OldField' => 'NameJP',
-    'Description' => 'Organism line if any, e.g., S288C',
-  ],
-  # etc.
-];
-ENV::setPub(
-    'META',
-    new RecursiveArrayObject($DB)
-);
-
-
-/**
- * Site Categories
- * v2 modular ontology
- */
-
-# Main Categories
-# Old OT Gazelle format
-# https://www.ncbi.nlm.nih.gov/books/NBK25464/
+# Categories
 $Categories = [
   'Sequences',
   'Graphs',
@@ -672,39 +626,9 @@ $PlainFormats = [
   'JSON'  => ['json'],
   'Text'  => ['txt'],
   'XML'   => ['xml'],
-  'Other' => [''],
-];
-
-
-/**
- * Sequences
- */
-
-# Platforms
-$SeqPlatforms = [
-  # DNA
-  'Complete Genomics',
-  'cPAS-BGI/MGI',
-  'Helicos',
-  'Illumina HiSeq',
-  'Illumina MiSeq',
-  'Ion Torrent',
-  'Microfluidics',
-  'Nanopore',
-  'PacBio',
-  'Roche 454',
-  'Sanger',
-  'SOLiD',
-  # RNA, Protein, etc.
-  'De Novo',
-  'HPLC',
-  'Mass Spec',
-  'RNA-Seq',
-  'Other',
 ];
 
 # Sequence Formats
-# https://www.ncbi.nlm.nih.gov/sra/docs/submitformats/
 $SeqFormats = [
   'BAM'        => ['bam'],
   'CRAM'       => ['cram'],
@@ -729,7 +653,6 @@ $SeqFormats = [
 
 # Protein Formats
 # DON'T PARSE RAW FILES. TOO MANY COMPETING VENDORS
-# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3518119/
 $ProtFormats = [
   'ABI/Sciex'      => ['t2d', 'wiff'],
   'APML'           => ['apml'],
@@ -758,42 +681,6 @@ $ProtFormats = [
   'ULVAC-PHI'      => ['tdc'],
 ];
 
-
-/**
- * Graphs
- */
-
-# Graph Platforms
-# https://en.wikipedia.org/wiki/Graph_drawing#Software
-$GraphPlatforms = [
-  'BioFabric',
-  'BioTapestry',
-  'Cytoscape',
-  'Edraw Max',
-  'GenMAPP',
-  'Gephi',
-  'graph-tool',
-  'Graphviz',
-  'InCroMAP',
-  'LaNet-vi',
-  'Linkurious',
-  'MATLAB',
-  'MEGA',
-  'Maple',
-  'Mathematica',
-  #'Microsoft Automatic Graph Layout',
-  'NetworkX',
-  'Other',
-  'PGF/TikZ',
-  'PathVisio',
-  'Pathview',
-  'R',
-  'Systrip',
-  'Tom Sawyer Software',
-  'Tulip',
-  'yEd',
-];
-
 # XML Graph Formats
 $GraphXmlFormats = [
   'DGML'    => ['dgml'],
@@ -814,28 +701,6 @@ $GraphTxtFormats = [
   'TGF'    => ['tgf'],
 ];
 
-
-/**
- * Images
- */
-
-# Image Platforms
-$ImgPlatforms = [
-  'CT/CAT',
-  'ECG',
-  'Elastography',
-  'FNIR/NIRS',
-  'MPI',
-  'MRI/NMR',
-  'Microscopy',
-  'Photoacoustic',
-  'Photography',
-  'Scint/SPECT/PET',
-  'Ultrasound',
-  'X-Rays',
-  'Other',
-];
-
 # Image Formats
 # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3948928/
 $ImgFormats = [
@@ -851,11 +716,6 @@ $ImgFormats = [
   'TIFF'      => ['tif', 'tiff'],
   'WebP'      => ['webp'],
 ];
-
-
-/**
- * Spatial
- */
 
 # Vector Map Formats
 $MapVectorFormats = [
@@ -901,22 +761,6 @@ $MapRasterFormats = [
   'RPF'       => ['cadrg', 'cib'],
 ];
 
-
-/**
- *  Documents
- */
-
-$DocPlatforms = [
-  # Composed
-  'Literature',
-  'Software',
-  # Generated
-  'Kernel',
-  'Metadata',
-  'Notebook',
-  'Other',
-];
-
 # Binary Document Formats
 # https://en.wikipedia.org/wiki/OpenDocument
 # https://en.wikipedia.org/wiki/List_of_Microsoft_Office_filename_extensions
@@ -941,64 +785,8 @@ $CpuGenFormats = [
   'Ontology'     => ['cgif', 'cl', 'clif', 'csv', 'htm', 'html', 'kif', 'obo', 'owl', 'rdf', 'rdfa', 'rdfs', 'rif', 'tsv', 'xcl', 'xht', 'xhtml', 'xml'],
 ];
 
-
-/**
- *  Machine Data
- */
-
-$RawPlatforms = [
-  'Binary',
-  'Text',
-];
-
-# Archives
-$Archives = [
-  '7z'       => ['7z'],
-  'bzip2'    => ['bz2', 'bzip2'],
-  'gzip'     => ['gz', 'gzip', 'tgz', 'tpz'],
-  'Pickle'   => ['pickle', 'pkl'],
-  'RAR'      => ['rar', 'rev'],
-  'tar'      => ['tar'],
-  'ZIP'      => ['zip', 'zipx'],
-  'None'     => [''],
-];
-
-# Licenses
-$Codecs = [
-  'BSD-2',
-  'BSD-3',
-  'CC BY',
-  'CC BY-SA',
-  'CC BY-ND',
-  'CC BY-NC',
-  'CC BY-NC-SA',
-  'CC BY-NC-ND',
-  'GNU GPL',
-  'GNU LGPL',
-  'GNU AGPL',
-  'GNU FDL',
-  'MIT',
-  'ODC-By',
-  'ODC-ODbL',
-  'OpenMTA',
-  'Public Domain',
-  'Unspecified',
-  'Other',
-];
-
 # Resolutions
 $Resolutions = [
-  'Nano',
-  'Micro',
-  'Milli',
-  'Centi',
-  'Kilo',
-  'Mega',
-  'Giga',
-  'Tera',
-];
-
-$SeqResolutions = [
   'Contig',
   'Scaffold',
   'Chromosome',
@@ -1007,50 +795,519 @@ $SeqResolutions = [
   'Transcriptome',
 ];
 
-$LocResolutions = [
-  'Organization',
-  'Locality',
-  'State',
-  'Province',
-  'Country',
-  'Continent',
-  'World',
-];
 
-$XmlResolutions = [
-  'Value',
-  'Attribute',
-  'Group',
-  'Element',
-  'Schema',
-];
+/**
+ * $ENV->DB
+ *
+ * One flat array with all possible torrent/group fields.
+ * These are mostly used in Twig templates as {{ db.title }}.
+ * Meta abstraction layer for flavor text *around* DB fields.
+ * Gazelle's job is to query the right tables, which will shift.
+ */
 
-$ScalarResolutions = [
-  'Area',
-  'Density',
-  'Distance',
-  'Energy',
-  'Mass',
-  'Speed',
-  'Temperature',
-  'Time',
-  'Volume',
-  'Work',
-];
+$DB = [
+    # torrents_group
+    'category_id' => ['name' => 'Category', 'desc' => ''],
+    'title' => ['name' => 'Torrent Title', 'desc' => 'Definition line, e.g., Alcohol dehydrogenase ADH1'],
+    'subject' => ['name' => 'Organism', 'desc' => 'Organism line binomial, e.g., Saccharomyces cerevisiae'],
+    'object' => ['name' => 'Strain/Variety', 'desc' => 'Organism line if any, e.g., S288C'],
+    'year' => ['name' => 'Year', 'desc' => 'Publication year'],
+    'workgroup' => ['name' => 'Department/Lab', 'desc' => "Last author's institution, e.g., Lawrence Berkeley Laboratory"],
+    'location' => ['name' => 'Location', 'desc' => 'Physical location, e.g., Berkeley, CA 94720'],
+    'identifier' => ['name' => 'Accession Number', 'desc' => 'RefSeq and UniProt preferred'],
+    'tag_list' => ['name' => 'Tag List', 'desc' => 'Comma-seperated list of at least 5 tags'],
+    'timestamp' => ['name' => 'Uploaded On', 'desc' => ''],
+    'revision_id' => ['name' => 'Revision ID', 'desc' => ''],
+    'description' => ['name' => 'Group Description', 'desc' => ''],
+    'picture' => ['name' => 'Picture', 'desc' => 'A meaningful picture, e.g., the specimen or a thumbnail'],
 
-$VectorResolutions = [
-  'Acceleration',
-  'Displacement',
-  'Force',
-  'Polarization',
-  'Momentum',
-  'Position',
-  'Thrust',
-  'Velocity',
-  'Weight',
+    # From the non-renamed `torrents` table
+    'version' => ['name' => 'Version', 'desc' => 'Start with 0.1.0', 'note' => 'Please see <a href="https://semver.org target=" _blank">Semantic Versioning</a>'],
 ];
+ENV::setPub(
+    'DB',
+    new RecursiveArrayObject($DB)
+);
 
-# Collage categories
+
+/**
+ * $ENV->META
+ *
+ * Main metadata object.
+ * Responsible for defining field values.
+ * These eventually go into the database,
+ * so take care to define them well here.
+ * Avoid nesting > 3 levels deep.
+ */
+$META = [
+
+    /**
+     * 1.
+     * PLATFORMS
+     */
+
+    'Platforms' => [
+
+        /**
+         * 2.
+         * Sequences
+         */
+        'Sequences' => [
+            # DNA
+            'Complete Genomics',
+            'cPAS-BGI/MGI',
+            'Helicos',
+            'Illumina HiSeq',
+            'Illumina MiSeq',
+            'Ion Torrent',
+            'Microfluidics',
+            'Nanopore',
+            'PacBio',
+            'Roche 454',
+            'Sanger',
+            'SOLiD',
+            # RNA, Protein, etc.
+            'De Novo',
+            'HPLC',
+            'Mass Spec',
+            'RNA-Seq',
+        ],
+
+        /**
+         * 2.
+         * Graphs
+         * https://en.wikipedia.org/wiki/Graph_drawing#Software
+         */
+        'Graphs' => [
+            'BioFabric',
+            'BioTapestry',
+            'Cytoscape',
+            'Edraw Max',
+            'GenMAPP',
+            'Gephi',
+            'graph-tool',
+            'Graphviz',
+            'InCroMAP',
+            'LaNet-vi',
+            'Linkurious',
+            'MATLAB',
+            'MEGA',
+            'Maple',
+            'Mathematica',
+            #'Microsoft Automatic Graph Layout',
+            'NetworkX',
+            'PGF/TikZ',
+            'PathVisio',
+            'Pathview',
+            'R',
+            'Systrip',
+            'Tom Sawyer Software',
+            'Tulip',
+            'yEd',
+        ],
+
+        /**
+         * 2.
+         * Images
+         */
+        'Images' => [
+            'CT/CAT',
+            'ECG',
+            'Elastography',
+            'FNIR/NIRS',
+            'MPI',
+            'MRI/NMR',
+            'Microscopy',
+            'Photoacoustic',
+            'Photography',
+            'Scint/SPECT/PET',
+            'Ultrasound',
+            'X-Rays',
+        ],
+
+        /**
+         * 2.
+         * Documents
+         */
+        'Documents' => [
+            # Composed
+            'Literature',
+            'Software',
+            # Generated
+            'Kernel',
+            'Metadata',
+            'Notebook',
+        ],
+    
+        /**
+         * 2.
+         * Machine Data
+         */
+        'Raw' => [
+            'Binary',
+            'Text',
+        ],
+    ], # End $this->META->Platforms
+
+    /**
+     * 1.
+     * FORMATS
+     */
+
+    'Formats' => [
+
+        /**
+         * 2.
+         * Plain
+         */
+        'Plain' => [
+            'CSV'   => ['csv'], # 3
+            'JSON'  => ['json'], # 3
+            'Text'  => ['txt'], # 3
+            'XML'   => ['xml'], # etc.
+        ],
+
+        /**
+         * 2.
+         * Archives
+         */
+        'Archives' => [
+            '7z'       => ['7z'],
+            'bzip2'    => ['bz2', 'bzip2'],
+            'gzip'     => ['gz', 'gzip', 'tgz', 'tpz'],
+            'Pickle'   => ['pickle', 'pkl'],
+            'RAR'      => ['rar', 'rev'],
+            'tar'      => ['tar'],
+            'ZIP'      => ['zip', 'zipx'],
+            'None'     => [''],
+        ],
+
+        /**
+         * 2.
+         * Sequences
+         * https://www.ncbi.nlm.nih.gov/sra/docs/submitformats/
+         */
+        'Sequences' => [
+            'BAM'        => ['bam'],
+            'CRAM'       => ['cram'],
+            'EMBL'       => ['embl'],
+            'FASTA'      => ['fa', 'fasta', 'fsa'],
+            'FASTA+QUAL' => ['qual'],
+            'CSFASTA'    => ['csfa', 'csfasta', 'csfsa'],
+            'FASTQ'      => ['fastq', 'fq', 'sanfastq'],
+            'GFF'        => ['gff', 'gff2', 'gff3'],
+            'GTF'        => ['gtf'],
+            'GenBank'    => ['gb', 'gbk', 'genbank'],
+            'HDF5'       => ['bash5', 'baxh5', 'fast5', 'h5', 'hdf5'],
+            'PIR'        => ['pir'],
+            'QSeq'       => ['qseq'],
+            'SAM'        => ['sam'],
+            'SFF'        => ['sff'],
+            'SRF'        => ['srf'],
+            'SnapGene'   => ['dna', 'seq'],
+            'SwissProt'  => ['dat'],
+            'VCF'        => ['vcf'],
+        ],
+
+        /**
+         * 2.
+         * Proteins
+         * https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3518119/
+         */
+        'Proteins' => [
+            'ABI/Sciex'      => ['t2d', 'wiff'],
+            'APML'           => ['apml'],
+            'ASF'            => ['asf'],
+            'Agilent/Bruker' => ['baf', 'd', 'fid', 'tdf', 'yep'],
+            'BlibBuild'      => ['blib'],
+            'Bruker/Varian'  => ['sms', 'xms'],
+            'Finnigan'       => ['dat', 'ms'],
+            'ION-TOF'        => ['ita', 'itm'],
+            'JCAMP-DX'       => ['jdx'],
+            'MGF'            => ['mgf'],
+            'MS2'            => ['ms2'],
+            'MSF'            => ['msf'],
+            'mzData'         => ['mzdata'],
+            'mzML'           => ['mzml'],
+            'mzXML'          => ['mzxml'],
+            'OMSSA'          => ['omssa', 'omx'],
+            'PEFF'           => ['peff'],
+            'pepXML'         => ['pepxml'],
+            'protXML'        => ['protxml'],
+            'Shimadzu'       => ['lcd', 'qgd', 'spc'],
+            'Skyline'        => ['sky', 'skyd'],
+            'TPP/SPC'        => ['dta'],
+            'Tandem'         => ['tandem'],
+            'TraML'          => ['traml'],
+            'ULVAC-PHI'      => ['tdc'],
+        ],
+
+        /**
+         * 2.
+         * Graph XML
+         */
+        'GraphXml' => [
+            'DGML'    => ['dgml'],
+            'DotML'   => ['dotml'],
+            'GEXF'    => ['gexf'],
+            'GXL'     => ['gxl'],
+            'GraphML' => ['graphml'],
+            'XGMML'   => ['xgmml'],
+        ],
+
+        /**
+         * 2.
+         * Graph plain
+         */
+        'GraphTxt' => [
+            'DOT'    => ['gv'],
+            'GML'    => ['gml'],
+            'LCF'    => ['lcf'],
+            'Newick' => ['xsd', 'sgf'],
+            'SIF'    => ['sif'],
+            'TGF'    => ['tgf'],
+        ],
+        
+        /**
+         * 2.
+         * Image vector
+         */
+        'ImgVector' => [
+            'AI'        => ['ai'],
+            'CorelDRAW' => ['cdr'],
+            'EPS'       => ['eps', 'epsf', 'epsi'],
+            'SVG'       => ['svg'],
+            'WMF'       => ['emf', 'emz', 'wmf', 'wmz'],
+        ],
+
+        /**
+         * 2.
+         * Image raster
+         */
+        'ImgRaster' => [
+            'Analyze'   => ['hdr', 'img'],
+            'Interfile' => ['h33'],
+            'DICOM'     => ['dcm', 'dicom'],
+            'HDF5'      => ['bash5', 'baxh5', 'fast5', 'h5', 'hdf5'],
+            'NIfTI'     => ['nii', 'nifti'],
+            'MINC'      => ['minc', 'mnc'],
+            'JPEG'      => ['jfif', 'jpeg', 'jpg'],
+            'JPEG 2000' => ['j2k', 'jp2', 'jpf', 'jpm', 'jpx', 'mj2'],
+            'PNG'       => ['png'],
+            'TIFF'      => ['tif', 'tiff'],
+            'WebP'      => ['webp'],
+        ],
+    
+        /**
+         * 2.
+         * Map vector
+         */
+        'MapVector' => [
+            'AutoCAD DXF'       => ['dxf'],
+            'Cartesian (XYZ)'   => ['xyz'],
+            'DLG'               => ['dlg'],
+            'Esri TIN'          => ['adf', 'dbf'],
+            'GML'               => ['gml'],
+            'GeoJSON'           => ['geojson'],
+            'ISFC'              => ['isfc'],
+            'KML'               => ['kml', 'kmzv'],
+            # DAT omitted
+            # https://en.wikipedia.org/wiki/MapInfo_TAB_format
+            'MapInfo TAB'       => ['tab', 'ind', 'map', 'id'],
+            'Measure Map Pro'   => ['mmp'],
+            'NTF'               => ['ntf'],
+            # DBF omitted
+            # https://en.wikipedia.org/wiki/Shapefile
+            'Shapefile'         => ['shp', 'shx'],
+            'Spatial Data File' => ['sdf', 'sdf3', 'sif', 'kif'],
+            'SOSI'              => ['sosi'],
+            'SVG'               => ['svg'],
+            'TIGER'             => ['tiger'],
+            'VPF'               => ['vpf'],
+        ],
+
+        /**
+         * 2.
+         * Map raster
+         */
+        'MapRaster' => [
+            'ADRG'      => ['adrg'],
+            'Binary'    => ['bsq', 'bip', 'bil'],
+            'DRG'       => ['drg'],
+            'ECRG'      => ['ecrg'],
+            'ECW'       => ['ecw'],
+            # DAT and ASC omitted (common)
+            # https://support.esri.com/en/technical-article/000008526
+            # https://web.archive.org/web/20150128024528/http://docs.codehaus.org/display/GEOTOOLS/ArcInfo+ASCII+Grid+format
+            'Esri Grid' => ['adf', 'nit', 'asc', 'grd'],
+            'GeoTIFF'   => ['tfw'],
+            #'IMG'       => ['img'],
+            #'JPEG 2000' => ['j2k', 'jp2', 'jpf', 'jpm', 'jpx', 'mj2'],
+            'MrSID'     => ['sid'],
+            'netCDF'    => ['nc'],
+            'RPF'       => ['cadrg', 'cib'],
+        ],
+
+        /**
+         * 2.
+         * Binary documents
+         */
+        'BinDoc' => [
+            'OpenDocument' => ['odt', 'fodt', 'ods', 'fods', 'odp', 'fodp', 'odg', 'fodg', 'odf'],
+            'Word'         => ['doc', 'dot', 'wbk', 'docx', 'docm', 'dotx', 'dotm', 'docb'],
+            'PowerPoint'   => ['ppt', 'pot', 'pps', 'pptx', 'pptm', 'potx', 'potm', 'ppam', 'ppsx', 'ppsm', 'sldx', 'sldm'],
+            'Excel'        => ['xls', 'xlt', 'xlm', 'xlsx', 'xlsm', 'xltx', 'xltm', 'xlsb', 'xla', 'xlam', 'xll', 'xlw'],
+            'PDF'          => ['pdf', 'fdf', 'xfdf'],
+        ],
+    
+        /**
+         * 2.
+         * Extra formats
+         */
+        'CpuGen' => [
+            'Docker'       => ['dockerfile'],
+            'Hard Disk'    => ['fvd', 'dmg', 'esd', 'qcow', 'qcow2', 'qcow3', 'smi', 'swm', 'vdi', 'vhd', 'vhdx', 'vmdk', 'wim'],
+            'Optical Disc' => ['bin', 'ccd', 'cso', 'cue', 'daa', 'isz', 'mdf', 'mds', 'mdx', 'nrg', 'uif'],
+            'Python'       => ['pxd', 'py', 'py3', 'pyc', 'pyd', 'pyde', 'pyi', 'pyo', 'pyp', 'pyt', 'pyw', 'pywz', 'pyx', 'pyz', 'rpy', 'xpy'],
+            'Jupyter'      => ['ipynb'],
+            'Ontology'     => ['cgif', 'cl', 'clif', 'csv', 'htm', 'html', 'kif', 'obo', 'owl', 'rdf', 'rdfa', 'rdfs', 'rif', 'tsv', 'xcl', 'xht', 'xhtml', 'xml'],
+        ],
+    ], # End $this->META->Formats
+
+
+    /**
+     * 1.
+     * SCOPES
+     */
+
+    'Scopes' => [
+
+        /**
+         * 2.
+         * SI
+         */
+        'SI' => [
+            'Nano',
+            'Micro',
+            'Milli',
+            'Centi',
+            'Kilo',
+            'Mega',
+            'Giga',
+            'Tera',
+        ],
+
+        /**
+         * 2.
+         * Sequences
+         */
+        'Sequences' => [
+            'Contig',
+            'Scaffold',
+            'Chromosome',
+            'Genome',
+            'Proteome',
+            'Transcriptome',
+        ],
+
+        /**
+         * 2.
+         * Locations
+         */
+        'Locations' => [
+            'Organization',
+            'Locality',
+            'State',
+            'Province',
+            'Country',
+            'Continent',
+            'World',
+        ],
+
+        /**
+         * 2.
+         * XML
+         */
+        'XML' => [
+            'Value',
+            'Attribute',
+            'Group',
+            'Element',
+            'Schema',
+        ],
+    
+        /**
+         * 2.
+         * Scalar
+         */
+        'Scalar' => [
+            'Area',
+            'Density',
+            'Distance',
+            'Energy',
+            'Mass',
+            'Speed',
+            'Temperature',
+            'Time',
+            'Volume',
+            'Work',
+        ],
+    
+        /**
+         * 2.
+         * Vector
+         */
+        'Vector' => [
+            'Acceleration',
+            'Displacement',
+            'Force',
+            'Polarization',
+            'Momentum',
+            'Position',
+            'Thrust',
+            'Velocity',
+            'Weight',
+        ],
+    ], # End $this->META->Scopes
+
+    /**
+     * 1.
+     * LICENSES
+     */
+
+    'Licenses' => [
+        'BSD-2',
+        'BSD-3',
+        'CC BY',
+        'CC BY-SA',
+        'CC BY-ND',
+        'CC BY-NC',
+        'CC BY-NC-SA',
+        'CC BY-NC-ND',
+        'GNU GPL',
+        'GNU LGPL',
+        'GNU AGPL',
+        'GNU FDL',
+        'MIT',
+        'ODC-By',
+        'ODC-ODbL',
+        'OpenMTA',
+        'Public Domain',
+        'Unspecified',
+    ], # End $this->META->Licenses
+];
+ENV::setPub(
+    'META',
+    new RecursiveArrayObject($META)
+);
+
+
+/**
+ * Categories
+ * https://www.ncbi.nlm.nih.gov/books/NBK25464/
+ */
+
+$CatIcons = "$ENV->STATIC_SERVER/common/bioicons";
 $CollageCats = [
   0 => 'Personal',
   1 => 'Theme',
@@ -1058,170 +1315,170 @@ $CollageCats = [
   3 => 'Group Picks',
 ];
 
-
-/**
- * Now for the good stuff.
- * The short names are for convenience.
- * It should be easy enough to find and replace,
- * e.g., if you want to use other names.
- */
-
-$CatIcons = '/static/common/bioicons/';
 $CATS = [
-      'SEQ' => [
+    1 => [
         'ID' => 1,
         'Name' => 'Sequences',
-        'Icon' => $CatIcons.'sequences.png',
-        'Platforms' => $SeqPlatforms,
-        'Formats' => [
-          'NucleoSeq' => $SeqFormats,
-          'ProtSeq' => $ProtFormats,
-          'Plain' => $PlainFormats
-        ],
+        'Icon' => "$CatIcons/sequences.png",
         'Description' => "For data that's ACGT, ACGU, amino acid letters on disk.",
-      ],
+        'Platforms' => $ENV->META->Platforms->Sequences,
+        'Formats' => [
+            $ENV->META->Formats->Sequences,
+            $ENV->META->Formats->Proteins,
+            $ENV->META->Formats->Plain,
+            /*
+            'Sequences' => $ENV->META->Formats->Sequences,
+            'Proteins' => $ENV->META->Formats->Proteins,
+            'Plain' => $ENV->META->Formats->Plain,
+            */
+        ],
+    ],
 
-      'GRF' => [
+    2 => [
         'ID' => 2,
         'Name' => 'Graphs',
-        'Icon' => $CatIcons.'graphs.png',
-        'Platforms' => $GraphPlatforms,
-        'Formats' => [
-          'GraphXml' => $GraphXmlFormats,
-          'GraphTxt' => $GraphTxtFormats,
-          'Plain' => $PlainFormats
-        ],
+        'Icon' => "$CatIcons/graphs.png",
         'Description' => 'For pathway and regulatory network data, structured taxonomies, etc.',
-      ],
+        'Platforms' => $ENV->META->Platforms->Graphs,
+        'Formats' => [
+            'GraphXml' => $ENV->META->Formats->GraphXml,
+            'GraphTxt' => $ENV->META->Formats->GraphTxt,
+            'Plain' => $ENV->META->Formats->Plain,
+        ],
+    ],
 
-      'SYS' => [
+    3 => [
         'ID' => 3,
         'Name' => 'Systems',
-        'Icon' => $CatIcons.'systems.png',
-        'Platforms' => $GraphPlatforms,
-        'Formats' => [
-          'GraphXml' => $GraphXmlFormats,
-          'GraphTxt' => $GraphTxtFormats,
-          'Plain' => $PlainFormats
-        ],
+        'Icon' => "$CatIcons/systems.png",
         'Description' => 'For data that examines one facet broadly, not one subject deeply.',
-      ],
+        'Platforms' => $ENV->META->Platforms->Graphs,
+        'Formats' => [
+            'GraphXml' => $ENV->META->Formats->GraphXml,
+            'GraphTxt' => $ENV->META->Formats->GraphTxt,
+            'Plain' => $ENV->META->Formats->Plain,
+        ],
+    ],
 
-      'GEO' => [
+    4 => [
         'ID' => 4,
         'Name' => 'Geometric',
-        'Icon' => $CatIcons.'geometric.png',
-        'Platforms' => $GraphPlatforms,
-        'Formats' => [
-          'GraphXml' => $GraphXmlFormats,
-          'GraphTxt' => $GraphTxtFormats,
-          'Plain' => $PlainFormats
-        ],
+        'Icon' => "$CatIcons/geometric.png",
         'Description' => "For structured data (XML, etc.) that describes the subject's orientation in space.",
-      ],
+        'Platforms' => $ENV->META->Platforms->Graphs,
+        'Formats' => [
+            'GraphXml' => $ENV->META->Formats->GraphXml,
+            'GraphTxt' => $ENV->META->Formats->GraphTxt,
+            'Plain' => $ENV->META->Formats->Plain,
+        ],
+    ],
 
-      'SCV' => [
+    5 => [
         'ID' => 5,
         'Name' => 'Scalars/Vectors',
-        'Icon' => $CatIcons.'scalars_vectors.png',
-        'Platforms' => $GraphPlatforms,
-        'Formats' => [
-          'GraphXml' => $GraphXmlFormats,
-          'GraphTxt' => $GraphTxtFormats,
-          'Plain' => $PlainFormats
-        ],
+        'Icon' => "$CatIcons/scalars_vectors.png",
         'Description' => 'For data that describes observations over time and/or space.',
-      ],
+        'Platforms' => $ENV->META->Platforms->Graphs,
+        'Formats' => [
+            'GraphXml' => $ENV->META->Formats->GraphXml,
+            'GraphTxt' => $ENV->META->Formats->GraphTxt,
+            'Plain' => $ENV->META->Formats->Plain,
+        ],
+    ],
 
-      'PTRN' => [
+    6 => [
         'ID' => 6,
         'Name' => 'Patterns',
-        'Icon' => $CatIcons.'patterns.png',
-        'Platforms' => $GraphPlatforms,
-        'Formats' => [
-          'GraphXml' => $GraphXmlFormats,
-          'GraphTxt' => $GraphTxtFormats,
-          'Plain' => $PlainFormats
-        ],
+        'Icon' => "$CatIcons/patterns.png",
         'Description' => 'For data that describes recurring structures in nature such as common pathways or motifs in the proteome or metabolome.',
-      ],
+        'Platforms' => $ENV->META->Platforms->Graphs,
+        'Formats' => [
+            'GraphXml' => $ENV->META->Formats->GraphXml,
+            'GraphTxt' => $ENV->META->Formats->GraphTxt,
+            'Plain' => $ENV->META->Formats->Plain,
+        ],
+    ],
 
-      'CNST' => [
+    7 => [
         'ID' => 7,
         'Name' => 'Constraints',
-        'Icon' => $CatIcons.'constraints.png',
-        'Platforms' => $GraphPlatforms,
-        'Formats' => [
-          'GraphXml' => $GraphXmlFormats,
-          'GraphTxt' => $GraphTxtFormats,
-          'Plain' => $PlainFormats
-        ],
+        'Icon' => "$CatIcons/constraints.png",
         'Description' => 'For data that records experimental control behavior, checks readings against known physical constants, tracks the thermodynamic limits of reactions, etc.',
-      ],
+        'Platforms' => $ENV->META->Platforms->Graphs,
+        'Formats' => [
+            'GraphXml' => $ENV->META->Formats->GraphXml,
+            'GraphTxt' => $ENV->META->Formats->GraphTxt,
+            'Plain' => $ENV->META->Formats->Plain,
+        ],
+    ],
 
-      'IMG' => [
+    8 => [
         'ID' => 8,
         'Name' => 'Images',
-        'Icon' => $CatIcons.'images.png',
-        'Platforms' => $ImgPlatforms,
-        'Formats' => [
-          'ImgRaster' => $ImgFormats,
-          #'ImgVector' => $ImgFormats,
-          'Plain' => $PlainFormats
-        ],
+        'Icon' => "$CatIcons/images.png",
         'Description' => 'For data you can look at!',
-      ],
+        'Platforms' => $ENV->META->Platforms->Images,
+        'Formats' => [
+            'ImgRaster' => $ENV->META->Formats->ImgRaster,
+            'ImgVector' => $ENV->META->Formats->ImgVector,
+            'Plain' => $ENV->META->Formats->Plain,
+        ],
+    ],
 
-      'SPAT' => [
+    9 => [
         'ID' => 9,
         'Name' => 'Spatial',
-        'Icon' => $CatIcons.'spatial.png',
-        'Platforms' => $GraphPlatforms,
-        'Formats' => [
-          'MapVector' => $MapVectorFormats,
-          'MapRaster' => $MapRasterFormats,
-          'ImgRaster' => $ImgFormats,
-          'Plain' => $PlainFormats
-        ],
+        'Icon' => "$CatIcons/spatial.png",
         'Description' => "For data that's limited to specific locations or otherwise describes macroscopic space.",
-      ],
+        'Platforms' => $ENV->META->Platforms->Graphs,
+        'Formats' => [
+            'MapRaster' => $ENV->META->Formats->MapRaster,
+            'MapVector' => $ENV->META->Formats->MapVector,
+            'ImgRaster' => $ENV->META->Formats->ImgRaster,
+            'ImgVector' => $ENV->META->Formats->ImgVector,
+            'Plain' => $ENV->META->Formats->Plain,
+        ],
+    ],
 
-      'MOD' => [
+    10 => [
         'ID' => 10,
         'Name' => 'Models',
-        'Icon' => $CatIcons.'models.png',
-        'Platforms' => $GraphPlatforms,
-        'Formats' => [
-          'MapVector' => $MapVectorFormats,
-          'MapRaster' => $MapRasterFormats,
-          'ImgRaster' => $ImgFormats,
-          'Plain' => $PlainFormats
-        ],
+        'Icon' => "$CatIcons/models.png",
         'Description' => 'For projections, simulations, and other hypothetical or computer-generated data.',
-      ],
+        'Platforms' => $ENV->META->Platforms->Graphs,
+        'Formats' => [
+            'MapRaster' => $ENV->META->Formats->MapRaster,
+            'MapVector' => $ENV->META->Formats->MapVector,
+            'ImgRaster' => $ENV->META->Formats->ImgRaster,
+            'ImgVector' => $ENV->META->Formats->ImgVector,
+            'Plain' => $ENV->META->Formats->Plain,
+        ],
+    ],
 
-      'DOC' => [
+    11 => [
         'ID' => 11,
         'Name' => 'Documents',
-        'Icon' => $CatIcons.'documents.png',
-        'Platforms' => $DocPlatforms,
-        'Formats' => [
-          'BinDoc' => $BinDocFormats,
-          'CpuGen' => $CpuGenFormats,
-          'Plain' => $PlainFormats
-        ],
+        'Icon' => "$CatIcons/documents.png",
         'Description' => 'For documentation, software, disk images, and literature datasets.',
-      ],
+        'Platforms' => $ENV->META->Platforms->Documents,
+        'Formats' => [
+            'BinDoc' => $ENV->META->Formats->BinDoc,
+            'CpuGen' => $ENV->META->Formats->CpuGen,
+            'Plain' => $ENV->META->Formats->Plain,
+        ],
+    ],
 
-      'RAW' => [
+    12 => [
         'ID' => 12,
         'Name' => 'Machine Data',
-        'Icon' => $CatIcons.'machine_data.png',
-        'Platforms' => $RawPlatforms,
-        'Formats' => ['Plain' => $PlainFormats],
+        'Icon' => "$CatIcons/machine_data.png",
         'Description' => 'For raw reads and machine data of any category.',
-      ],
-    ];
+        'Platforms' => $ENV->META->Platforms->Raw,
+        'Formats' => [
+            'Plain' => $ENV->META->Formats->Plain,
+        ],
+    ],
+];
 ENV::setPub(
     'CATS',
     new RecursiveArrayObject($CATS)

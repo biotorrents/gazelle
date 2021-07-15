@@ -209,13 +209,7 @@ if (!$_POST['groupid']) {
         '1',
         'inarray',
         'Please select a valid platform.',
-        array('inarray' => array_merge(
-            $SeqPlatforms,
-            $GraphPlatforms,
-            $ImgPlatforms,
-            $DocPlatforms,
-            $RawPlatforms
-        ))
+        array('inarray' => $ENV->flatten($ENV->META->Platforms))
     );
 
     /*
@@ -413,10 +407,10 @@ if ($T['Archive'] === 'Autofill') {
         $Tor->file_list(),
 
         # $Category
-        array_keys($Archives),
+        array_keys($ENV->META->Formats->Archives),
 
         # $FileTypes
-        array_merge($Archives),
+        array_merge($ENV->META->Formats->Archives),
     );
 }
 

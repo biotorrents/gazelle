@@ -37,6 +37,8 @@ class Security
      */
     public function setupPitfalls()
     {
+        $ENV = ENV::go();
+
         # short_open_tag
         if (!ini_get('short_open_tag')) {
             error('short_open_tag != On in php.ini');
@@ -45,6 +47,11 @@ class Security
         # apcu
         if (!extension_loaded('apcu')) {
             error('APCu extension not loaded');
+        }
+
+        # Bad PHP version
+        if (version_compare($ENV->PHP_MIN, '7.4.0', '<')) {
+            error("Gazelle requires PHP > $ENV->PHP_MIN.");
         }
 
         # Deal with dumbasses

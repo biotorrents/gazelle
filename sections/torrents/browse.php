@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
+$ENV = ENV::go();
+
 require_once SERVER_ROOT.'/sections/torrents/functions.php';
 
 // The "order by x" links on columns headers
@@ -276,7 +278,7 @@ View::show_header('Browse Torrents', 'browse');
 
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Sequences</option>
-                <?php foreach ($SeqPlatforms as $Platform) { ?>
+                <?php foreach ($ENV->META->Platforms->Sequences as $Platform) { ?>
                 <option
                   value="<?=display_str($Platform); # pcs-comment-start; keep quote?>"
                   <?Format::selected('media', $Platform)?>><?=display_str($Platform); ?>
@@ -286,7 +288,7 @@ View::show_header('Browse Torrents', 'browse');
 
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Graphs</option>
-                <?php foreach ($GraphPlatforms as $Platform) { ?>
+                <?php foreach ($ENV->META->Platforms->Graphs as $Platform) { ?>
                 <option
                   value="<?=display_str($Platform); # pcs-comment-start; keep quote?>"
                   <?Format::selected('media', $Platform)?>><?=display_str($Platform); ?>
@@ -296,7 +298,7 @@ View::show_header('Browse Torrents', 'browse');
 
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Images</option>
-                <?php foreach ($ImgPlatforms as $Platform) { ?>
+                <?php foreach ($ENV->META->Platforms->Images as $Platform) { ?>
                 <option
                   value="<?=display_str($Platform); # pcs-comment-start; keep quote?>"
                   <?Format::selected('media', $Platform)?>><?=display_str($Platform); ?>
@@ -306,7 +308,7 @@ View::show_header('Browse Torrents', 'browse');
 
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Documents</option>
-                <?php foreach ($DocPlatforms as $Platform) { ?>
+                <?php foreach ($ENV->META->Platforms->Documents as $Platform) { ?>
                 <option
                   value="<?=display_str($Platform); # pcs-comment-start; keep quote?>"
                   <?Format::selected('media', $Platform)?>><?=display_str($Platform); ?>
@@ -417,9 +419,9 @@ View::show_header('Browse Torrents', 'browse');
               <!-- Codec/License -->
               <select name="codec" class="ft_codec fti_advanced">
                 <option value="">License</option>
-                <?php foreach ($Codecs as $Codec) { ?>
-                <option value="<?=display_str($Codec); ?>"
-                  <?Format::selected('codec', $Codec)?>><?=display_str($Codec); ?>
+                <?php foreach ($ENV->META->Licenses as $License) { ?>
+                <option value="<?=display_str($License); ?>"
+                  <?Format::selected('codec', $License)?>><?=display_str($License); ?>
                 </option>
                 <?php } ?>
               </select>

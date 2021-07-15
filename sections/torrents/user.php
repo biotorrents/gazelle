@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
+$ENV = ENV::go();
+
 $Orders = ['Time', 'Name', 'Seeders', 'Leechers', 'Snatched', 'Size'];
 $Ways = ['DESC' => 'Descending', 'ASC' => 'Ascending'];
 
@@ -54,7 +56,7 @@ if (!empty($_GET['format'])) {
 
 # Get release specifics
 if (isset($_GET['container'])
- && in_array($_GET['container'], array_unique(array_merge($SeqFormats, $ProtFormats, $GraphXmlFormats, $GraphTxtFormats, $ImgFormats, $MapVectorFormats, $MapRasterFormats, $BinDocFormats, $CpuGenFormats, $PlainFormats)))) {
+ && in_array($_GET['container'], $ENV-flatten($ENV->META->Formats))) {
     $SearchWhere[] = "t.Container = '".db_string($_GET['container'])."'";
 }
 
@@ -64,21 +66,21 @@ if (isset($_GET['bitrate'])
 }
 
 if (isset($_GET['media'])
- && in_array($_GET['media'], array_unique(array_merge($SeqPlatforms, $GraphPlatforms, $ImgPlatforms, $DocPlatforms, $RawPlatforms)))) {
+ && in_array($_GET['media'], $ENV-flatten($ENV->META->Platforms))) {
     $SearchWhere[] = "t.Media = '".db_string($_GET['media'])."'";
 }
 
 if (isset($_GET['codec'])
- && in_array($_GET['codec'], $Codecs)) {
+ && in_array($_GET['codec'], $ENV->META->Licenses)) {
     $SearchWhere[] = "t.Codec = '".db_string($_GET['codec'])."'";
 }
 
-if (isset($_GET['version']) {
+if (isset($_GET['version'])) {
     $SearchWhere[] = "t.Version = '".db_string($_GET['version'])."'";
 }
 
 if (isset($_GET['resolution'])
- && in_array($_GET['resolution'], $Resolutions)) {
+ && in_array($_GET['resolution'], $ENV->flatten($ENV->META->Scopes))) {
     $SearchWhere[] = "t.Resolution = '".db_string($_GET['resolution'])."'";
 }
 
@@ -360,8 +362,8 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
 
             <select id="codec" name="codec" class="ft_codec">
               <option value="">License</option>
-              <?php foreach ($Codecs as $CodecName) { ?>
-              <option value="<?= display_str($CodecName); ?>" <?php Format::selected('codec', $CodecName) ?>><?= display_str($CodecName); ?>
+              <?php foreach ($ENV->META->Licenses as $License) { ?>
+              <option value="<?= display_str($License); ?>" <?php Format::selected('codec', $License) ?>><?= display_str($License); ?>
               </option>
               <?php } ?>
             </select>

@@ -179,6 +179,33 @@ class ENV
 
 
     /**
+     * flatten
+     *
+     * Takes an $ENV node (Recursive ArrayObject)
+     * and flattens out the multi-dimensionality.
+     * Returns a single, non-deduplicated array.
+     */
+    public function flatten($arr)
+    {
+        $new = array();
+
+        foreach ($arr as $k => $v) {
+            if (is_object($v)) {
+                $v = $this->toArray($v);
+            }
+    
+            if (is_array($v)) {
+                $new = array_merge($new, $this->flatten($v));
+            } else {
+                $new[$k] = $v;
+            }
+        }
+
+        return $new;
+    }
+
+
+    /**
      * map
      *
      * Simple array_map() object wrapper.
