@@ -2,8 +2,9 @@
 declare(strict_types=1);
 
 $ENV = ENV::go();
-View::show_header('Recover Password', 'validate,password_validate');
+$Twig = Twig::go();
 
+View::show_header('Recover Password', 'validate,password_validate');
 echo '<h2>Reset your password</h2>';
 
 if (empty($PassWasReset)) {
@@ -22,11 +23,12 @@ if (empty($PassWasReset)) {
       </td>
 
       <td>
-        <?= Input::passphrase($Name = 'password', $ID='new_pass_1', $Placeholder = 'New passphrase') ?>
-        <!--
-        <input type="password" minlength="15" name="password" id="new_pass_1" class="inputtext" size="40"
-          placeholder="New Password" pattern=".{15,307200}" required style="width: 250px !important;">
-        -->
+        <?=
+        $Twig->render('input/passphrase.html', [
+          'name' => 'password',
+          'id' => 'new_pass_1',
+          'placeholder' => 'New passphrase'
+        ]) ?>
       </td>
     </tr>
 
@@ -35,11 +37,12 @@ if (empty($PassWasReset)) {
         <strong id="pass_match"></strong>
       </td>
       <td>
-        <?= Input::passphrase($Name = 'verifypassword', $ID='new_pass_2', $Placeholder = 'Confirm passphrase') ?>
-        <!--
-        <input type="password" minlength="15" name="verifypassword" id="new_pass_2" class="inputtext" size="40"
-          placeholder="Confirm Password" pattern=".{15,307200}" required style="width: 250px !important;">
-        -->
+      <?=
+        $Twig->render('input/passphrase.html', [
+          'name' => 'verifypassword',
+          'id' => 'new_pass_2',
+          'placeholder' => 'Confirm passphrase'
+        ]) ?>
       </td>
     </tr>
 

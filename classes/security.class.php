@@ -39,23 +39,38 @@ class Security
     {
         $ENV = ENV::go();
 
+        # Bad PHP version
+        if (version_compare(PHP_VERSION, $ENV->PHP_MIN, '<')) {
+            error("Gazelle requires PHP > $ENV->PHP_MIN.");
+        }
+
         # short_open_tag
         if (!ini_get('short_open_tag')) {
-            error('short_open_tag != On in php.ini');
+            error('short_open_tag != On in php.ini.');
         }
 
         # apcu
         if (!extension_loaded('apcu')) {
-            error('APCu extension not loaded');
+            error('APCu extension php-apcu not loaded.');
         }
 
-        # Bad PHP version
-        if (version_compare($ENV->PHP_MIN, '7.4.0', '<')) {
-            error("Gazelle requires PHP > $ENV->PHP_MIN.");
+        # mbstring
+        if (!extension_loaded('mbstring')) {
+            error('Multibyte string extension php-mbstring not loaded.');
+        }
+
+        # memcache
+        if (!extension_loaded('memcache')) {
+            error('memcached extension php-memcache not loaded.');
+        }
+
+        # blake3
+        if ($ENV->FEATURE_SEQHASH && !extension_loaded('blake3')) {
+            error('Please install and enable the php-blake3 extension.');
         }
 
         # Deal with dumbasses
-        if (isset($_REQUEST['info_hash']) && isset($_REQUEST['peer_id'])) {
+        if (isset($_REQUEST['info_hash']) || isset($_REQUEST['peer_id'])) {
             error(
                 'd14:failure reason40:Invalid .torrent, try downloading again.e',
                 $NoHTML = true,

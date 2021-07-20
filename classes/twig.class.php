@@ -60,13 +60,16 @@ class Twig
     private static function factory(): \Twig\Environment
     {
         $ENV = ENV::go();
+
+        # https://twig.symfony.com/doc/3.x/api.html
         $Twig = new \Twig\Environment(
             new \Twig\Loader\FilesystemLoader("$ENV->SERVER_ROOT/templates"),
             [
                 'auto_reload' => true,
-                'autoescape' => 'html',
-                'cache' => "$ENV->WEB_ROOT/cache/twig"
+                'autoescape' => 'name',
+                'cache' => "$ENV->WEB_ROOT/cache/twig",
                 #'debug' => DEBUG_MODE,
+                'strict_variables' => true,
         ]
         );
 

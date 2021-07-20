@@ -1,9 +1,11 @@
 # BioTorrents.de Gazelle
 
 This software is twice removed from the original
-[What.cd Gazelle](https://github.com/WhatCD/Gazelle):
-it's based on the security hardened PHP7 fork
+[What.cd Gazelle](https://github.com/WhatCD/Gazelle).
+It's based on the security hardened PHP7 fork
 [Oppaitime Gazelle](https://git.oppaiti.me/Oppaitime/Gazelle).
+It shares several features with
+[Orpheus Gazelle](https://github.com/OPSnet/Gazelle).
 The goal is to organize a functional database with pleasant interfaces,
 and render insightful views using data from robust external sources.
 
@@ -23,6 +25,7 @@ BioTorrents.de supports an array of
 with the appropriate bold/italic glyphs and monospace.
 These options are available to every theme.
 Font Awesome 5 is also universally available.
+[Download the fonts](https://docs.biotorrents.de/dl/fonts.tgz).
 
 ## Markdown support
 
@@ -36,30 +39,46 @@ Support for the default Gazelle recursive regex BBcode parser.
 ## $ENV recursive singleton
 
 [The site configuration](classes/config.template.php)
-is being migrated to a format govered by
-[the ENV special class](classes/env.class.php)
-for modified ArrayObjects.
-This is useful for several reasons:
-
-- prevents multiple configs loaded in memory;
-- ensures the config's immutability;
-- doesn't pollute the constants table;
-- allows public (echoed) and private (accessed) values;
-- supports large, nested static metadata structures;
-- able to scope access to the function level;
-- easy to extend ENV with new class methods;
-- good interoperability potential with JSON; and
-- native PHP ArrayObject support with Array compatibility.
+is being migrated to a format govered by the
+[ENV special class](classes/env.class.php)
+for modified recursive ArrayObjects.
 
 ## Twig template system
 
-Similar to ENV,
-[the Twig interface](classes/twig.class.php)
+Similar to ENV, the
+[Twig interface](classes/twig.class.php)
 operates as a singleton because it's an external module with its own cache.
 Twig provides a security benefit by escaping rendered output,
 and a secondary benefit of clarifying the PHP running the site sections.
-Several custom filters are available from
-[Orpheus Gazelle](https://github.com/OPSnet/Gazelle).
+Several custom filters are available from OPS.
+
+## Active data minimization
+
+BioTorrents.de has
+[real lawyer-vetted policies](templates/legal).
+In the process of matching the tech to the legal word,
+we dropped support for a number of compromising features:
+
+- Bitcoin, PayPal, and currency exchange API and system calls;
+- Bitcoin addresses, user donation history, and similar metadata; and
+- IP address and geolocation, email address, passphrase, and passkey history.
+
+Besides that, BioTorrents has several passive developments in progress:
+
+- prepare all queries with parameterized statements;
+- declare strict mode at the top of every PHP and JS file;
+- check strict equality and strong typing, including function arguments;
+- run all files through generic formatters such as PHP-CS-Fixer; and
+- move all external libraries to uncomplicated package management.
+
+## Minor changes
+
+- Database crypto bumped up to AES-256
+- Good subresource integrity support
+- Configurable HTTP status code errors
+- Integrated diceware passphrase generator
+- TLS database connections
+- Semantic HTML5 themes (WIP)
 
 # Changelog: WCD → OT
 

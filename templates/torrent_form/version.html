@@ -10,10 +10,10 @@
       name="version"
       size="12"
       pattern="\d+\.*\d*\.*\d*"
-      placeholder="{{ db.desc}}"
+      placeholder="{{ db.desc }}"
       value="{{ version }}"
     />
 
-    <p>{{ note }}</p>
+    <p>{{ db.note|raw }}</p>
   </td>
 </tr>

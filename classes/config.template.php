@@ -1,3 +1,4 @@
+
 <?php
 declare(strict_types=1);
 
@@ -19,7 +20,7 @@ declare(strict_types=1);
  *   $LongArray = [];
  *   ENV::setPub(
  *     'CONFIG',
- *     new RecursiveArrayObject($LongArray)
+ *     $ENV->convert($LongArray)
  *   );
  *
  *   $ENV = ENV::go();
@@ -32,9 +33,8 @@ declare(strict_types=1);
  *
  *   var_dump(
  *     $ENV->dedupe(
- *       $ENV->CATS->SEQ->Platforms,
- *       $ENV->CATS->IMG->Platforms->toArray(),
- *       [$MapVectorFormats, $MapRasterFormats, $PlainFormats]
+ *       $ENV->META->Formats->Sequences,
+ *       $ENV->META->Formats->Proteins->toArray()
  *     )
  *   );
  */
@@ -42,6 +42,8 @@ declare(strict_types=1);
 # Initialize
 require_once 'env.class.php';
 $ENV = ENV::go();
+
+# Basic info
 ENV::setPub('PHP_MIN', '7.4.0');
 ENV::setPub('DEV', true);
 
@@ -132,7 +134,7 @@ $TechSupport = [
 ];
 ENV::setPub(
     'HELP',
-    new RecursiveArrayObject($TechSupport)
+    $ENV->convert($TechSupport)
 );
 
 
@@ -180,9 +182,9 @@ ENV::setPriv('SQLPORT', 3306);
 #ENV::setPriv('SQLSOCK', '/var/run/mysqld/mysqld.sock');
 
 # TLS client certs
-ENV::setPriv('SQL_CERT', "/var/www/sql-keys/client-cert.pem");
-ENV::setPriv('SQL_KEY', "/var/www/sql-keys/client-key.pem");
-ENV::setPriv('SQL_CA', "/var/www/sql-keys/ca.pem");
+ENV::setPriv('SQL_CERT', "$ENV->WEB_ROOT/sql-keys/client-cert.pem");
+ENV::setPriv('SQL_KEY', "$ENV->WEB_ROOT/sql-keys/client-key.pem");
+ENV::setPriv('SQL_CA', "$ENV->WEB_ROOT/sql-keys/ca.pem");
 
  # Production
  if (!$ENV->DEV) {
@@ -251,7 +253,7 @@ if (!$ENV->DEV) {
     ];
     ENV::setPub(
         'ANNOUNCE_URLS',
-        new RecursiveArrayObject($AnnounceURLs)
+        $ENV->convert($AnnounceURLs)
     );
 }
 
@@ -270,7 +272,7 @@ else {
     ];
     ENV::setPub(
         'ANNOUNCE_URLS',
-        new RecursiveArrayObject($AnnounceURLs)
+        $ENV->convert($AnnounceURLs)
     );
 }
 
@@ -377,6 +379,10 @@ ENV::setPub('FEATURE_SEND_EMAIL', true);
 # Allow the site encryption key to be set without an account
 # (should only be used for initial setup)
 ENV::setPub('FEATURE_SET_ENC_KEY_PUBLIC', false);
+
+# Attempt to support the Seqhash algorithm
+# https://blog.libredna.org/post/seqhash/
+ENV::setPub('FEATURE_SEQHASH', true);
 
 
 /**
@@ -592,7 +598,7 @@ $AutomatedBadgeIDs = [
 ];
 ENV::setPub(
     'AUTOMATED_BADGE_IDS',
-    new RecursiveArrayObject($AutomatedBadgeIDs)
+    $ENV->convert($AutomatedBadgeIDs)
 );
 
 
@@ -822,11 +828,13 @@ $DB = [
     'picture' => ['name' => 'Picture', 'desc' => 'A meaningful picture, e.g., the specimen or a thumbnail'],
 
     # From the non-renamed `torrents` table
-    'version' => ['name' => 'Version', 'desc' => 'Start with 0.1.0', 'note' => 'Please see <a href="https://semver.org target=" _blank">Semantic Versioning</a>'],
+    'version' => ['name' => 'Version', 'desc' => 'Start with 0.1.0', 'note' => 'Please see <a href="https://semver.org" target="_blank">Semantic Versioning</a>'],
+    'license' => ['name' => 'License', 'desc' => '', 'note' => 'Please see <a href="http://www.dcc.ac.uk/resources/how-guides/license-research-data" target="_blank">How to License Research Data</a>'],
+    'mirrors' => ['name' => 'Mirrors', 'desc' => 'Up to two FTP/HTTP addresses that either point directly to a file, or for multi-file torrents, to the enclosing folder'],
 ];
 ENV::setPub(
     'DB',
-    new RecursiveArrayObject($DB)
+    $ENV->convert($DB)
 );
 
 
@@ -947,7 +955,7 @@ $META = [
             'Binary',
             'Text',
         ],
-    ], # End $this->META->Platforms
+    ], # End $ENV->META->Platforms
 
     /**
      * 1.
@@ -1172,7 +1180,7 @@ $META = [
             'Jupyter'      => ['ipynb'],
             'Ontology'     => ['cgif', 'cl', 'clif', 'csv', 'htm', 'html', 'kif', 'obo', 'owl', 'rdf', 'rdfa', 'rdfs', 'rif', 'tsv', 'xcl', 'xht', 'xhtml', 'xml'],
         ],
-    ], # End $this->META->Formats
+    ], # End $ENV->META->Formats
 
 
     /**
@@ -1268,7 +1276,7 @@ $META = [
             'Velocity',
             'Weight',
         ],
-    ], # End $this->META->Scopes
+    ], # End $ENV->META->Scopes
 
     /**
      * 1.
@@ -1294,11 +1302,11 @@ $META = [
         'OpenMTA',
         'Public Domain',
         'Unspecified',
-    ], # End $this->META->Licenses
+    ], # End $ENV->META->Licenses
 ];
 ENV::setPub(
     'META',
-    new RecursiveArrayObject($META)
+    $ENV->convert($META)
 );
 
 
@@ -1322,16 +1330,16 @@ $CATS = [
         'Icon' => "$CatIcons/sequences.png",
         'Description' => "For data that's ACGT, ACGU, amino acid letters on disk.",
         'Platforms' => $ENV->META->Platforms->Sequences,
-        'Formats' => [
-            $ENV->META->Formats->Sequences,
-            $ENV->META->Formats->Proteins,
-            $ENV->META->Formats->Plain,
+        'Formats' => array_merge([
             /*
             'Sequences' => $ENV->META->Formats->Sequences,
             'Proteins' => $ENV->META->Formats->Proteins,
             'Plain' => $ENV->META->Formats->Plain,
             */
-        ],
+            $ENV->META->Formats->Sequences,
+            $ENV->META->Formats->Proteins,
+            $ENV->META->Formats->Plain,
+        ]),
     ],
 
     2 => [
@@ -1481,7 +1489,7 @@ $CATS = [
 ];
 ENV::setPub(
     'CATS',
-    new RecursiveArrayObject($CATS)
+    $ENV->convert($CATS)
 );
 
 

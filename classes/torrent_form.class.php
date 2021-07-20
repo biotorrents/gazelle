@@ -444,7 +444,7 @@ HTML;
         $Version = display_str($Torrent['Version']);
 
         echo $Twig->render(
-            'torrent_form/identifier.html',
+            'torrent_form/version.html',
             [
               'db' => $ENV->DB->version,
               'version' => $Version,
@@ -583,7 +583,7 @@ HTML;
             'torrent_form/year.html',
             [
             'db' => $ENV->DB->year,
-            'location' => $TorrentYear,
+            'year' => $TorrentYear,
           ]
         );
 
@@ -699,7 +699,7 @@ HTML;
                 $trID = 'media_tr',
                 $Label = 'Platform',
                 $Torrent = $Torrent,
-                $Media = $ENV->META->Platforms->Sequences
+                $Media = $ENV->CATS->{1}->Platforms
             );
             
 
@@ -710,10 +710,7 @@ HTML;
                 $trID = 'media_graphs_tr',
                 $Label = 'Platform',
                 $Torrent = $Torrent,
-                $Media = $ENV->flatten([
-                    $ENV->META->Platforms->Graphs,
-                    $ENV->META->Platforms->Sequences
-                ])
+                $Media = $ENV->CATS->{2}->Platforms
             );
             
 
@@ -724,10 +721,7 @@ HTML;
                 $trID = 'media_scalars_vectors_tr',
                 $Label = 'Platform',
                 $Torrent = $Torrent,
-                $Media = $ENV->flatten([
-                    $ENV->META->Platforms->Graphs,
-                    $ENV->META->Platforms->Images
-                ])
+                $Media = $ENV->CATS->{5}->Platforms
             );
 
 
@@ -738,7 +732,7 @@ HTML;
                 $trID = 'media_images_tr',
                 $Label = 'Platform',
                 $Torrent = $Torrent,
-                $Media = $ENV->META->Platforms->Images
+                $Media = $ENV->CATS->{8}->Platforms
             );
 
 
@@ -749,7 +743,7 @@ HTML;
                 $trID = 'media_documents_tr',
                 $Label = 'Platform',
                 $Torrent = $Torrent,
-                $Media = $ENV->META->Platforms->Documents
+                $Media = $ENV->CATS->{11}->Platforms
             );
 
 
@@ -760,7 +754,7 @@ HTML;
                 $trID = 'media_machine_data_tr',
                 $Label = 'Platform',
                 $Torrent = $Torrent,
-                $Media = $ENV->META->Platforms->Raw
+                $Media = $ENV->CATS->{12}->Platforms
             );
         } # fi NewTorrent
         else {
@@ -826,7 +820,7 @@ HTML;
             $trID = 'container_tr',
             $Label = 'Format',
             $Torrent = $Torrent,
-            $FileTypes = array_merge(($ENV->CATS->{1}->Formats))
+            $FileTypes = $ENV->CATS->{1}->Formats
         );
         
 
@@ -837,7 +831,7 @@ HTML;
             $trID = 'container_graphs_tr',
             $Label = 'Format',
             $Torrent = $Torrent,
-            $FileTypes = array_merge($this->GraphXmlFormats, $this->GraphTxtFormats, $this->SeqFormats, $this->ProtFormats, $this->PlainFormats)
+            #$FileTypes = array_column($ENV->META, $Formats)
         );
 
 
@@ -1030,21 +1024,13 @@ HTML;
             $TorrentImage = display_str($Torrent['Image']);
             $Disabled = $this->Disabled;
 
-            echo <<<HTML
-            <tr id="cover_tr">
-            <td>
-              <label for="image">
-                Picture
-              </label>
-            </td>
-            
-            <td>
-              <input type="text" id="image" name="image" size="60"
-                placeholder="A meaningful picture, e.g., the specimen or a thumbnail"
-                value="$TorrentImage" $Disabled? />
-            </td>
-          </tr>
-HTML;
+            echo $Twig->render(
+                'torrent_form/picture.html',
+                [
+                    'db' => $ENV->DB->picture,
+                    'picture' => $TorrentImage,
+                ]
+            );
         }
 
 
@@ -1056,21 +1042,13 @@ HTML;
          */
         if (!$this->DisabledFlag && $this->NewTorrent) {
             $TorrentMirrors = display_str($Torrent['Mirrors']);
-            echo <<<HTML
-            <tr id="mirrors_tr">
-              <td>
-                <label for="mirrors">
-                  Mirrors
-                </label>
-              </td>
-              
-              <td>
-                <!-- Needs to be all on one line -->
-                <textarea rows="2" name="mirrors" id="mirrors"
-                  placeholder="Up to two FTP/HTTP addresses that either point directly to a file, or for multi-file torrents, to the enclosing folder">$TorrentMirrors</textarea>
-              </td>
-            </tr>
-HTML;
+            echo $Twig->render(
+                'torrent_form/mirrors.html',
+                [
+                  'db' => $ENV->DB->mirrors,
+                  'mirrors' => $TorrentMirrors,
+              ]
+            );
         }
 
 

@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+$ENV = ENV::go();
+$Twig = Twig::go();
+
 View::show_header('Login'); ?>
 
 <p class="center mouseless">
@@ -47,7 +50,15 @@ if (!$Banned) { ?>
 
     <tr>
       <td>
-        <?= Input::passphrase() ?>
+        <?=
+        $Twig->render('input/passphrase.html', [
+          'name' => 'password',
+          'id' => 'password',
+          'placeholder' => 'Passphrase',
+          'pw_min' => $ENV->PW_MIN,
+          'pw_max' => $ENV->PW_MAX,
+          'advice' => false,
+        ]) ?>
       </td>
 
       <td>
@@ -76,8 +87,8 @@ else { ?>
 
 if ($Attempts > 0) { ?>
 <p class="center">
-  Forgot your password?
-  <a href="login.php?act=recover" class="tooltip" title="Recover your password">Reset it here!</a>
+  Forgot your passphrase?
+  <a href="login.php?act=recover" class="tooltip" title="Recover your passphrase">Reset it here!</a>
 </p>
 
 <?php
