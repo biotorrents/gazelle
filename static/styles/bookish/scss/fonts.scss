@@ -42,7 +42,8 @@ a {
 }
 
 a:hover {
-    color: $lb900;
+    color: $SkeletonFocus;
+    /* color: $lb900; */
     text-decoration: none;
 }
 
@@ -102,7 +103,7 @@ pre {
 }
 
 ul {
-    margin-left: 1rem;
+    margin-left: 0.5rem;
 }
 
 /* Markdown Extra new features */

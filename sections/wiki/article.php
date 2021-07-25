@@ -83,7 +83,7 @@ View::show_header($Title, 'wiki,bbcode');
         <form class="search_form" name="articles" action="wiki.php" method="get">
           <input type="hidden" name="action" value="search" />
           <input type="search" placeholder="Search articles" name="search" size="20" />
-          <input value="Search" type="submit" class="hidden" />
+          <input value="Search" type="submit" class="hidden button-primary" />
         </form>
 
         <br style="line-height: 10px;" />

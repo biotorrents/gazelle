@@ -130,7 +130,7 @@ function generate_user_table($Caption, $Tag, $Details, $Limit)
       <?php } ?>
     </small>
   </h3>
-  <table class="border">
+  <table class="border top10_table">
     <tr class="colhead">
       <td class="center">Rank</td>
       <td>User</td>

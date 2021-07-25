@@ -65,7 +65,7 @@ function generate_user_table($Caption, $Results, $Limit)
     </small>
   </h3>
 
-  <table class="border">
+  <table class="border top10_table">
     <tr class="colhead">
       <td class="center">Position</td>
       <td>User</td>

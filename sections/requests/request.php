@@ -244,7 +244,7 @@ $encoded_artist = urlencode($encoded_artist);
     <div class="box">
       <div class="head"><strong>Info</strong></div>
       <div class="pad">
-        <table class="layout">
+        <table class="layout request_form">
           <tr>
             <td class="label">Created</td>
             <td>
@@ -318,16 +318,16 @@ $encoded_artist = urlencode($encoded_artist);
           <tr id="voting">
             <td class="label">Custom Vote</td>
             <td>
-              These units are in base 2, not base 10, e.g., there are 1,024 MiB in 1 GiB
+              These units are in base 2, not base 10, e.g., there are 1,024 MiB in 1 GiB.
+              <strong>The system deducts <?= ($RequestTax * 100) ?>% as tax.</strong>
+              <br />
+
               <input type="text" id="amount_box" size="8" onchange="Calculate();" />
               <select id="unit" name="unit" onchange="Calculate();">
                 <option value="mb">MiB</option>
                 <option value="gb">GiB</option>
               </select>
               <input type="button" value="Preview" onclick="Calculate();" />
-              <strong>The system deducts <?= ($RequestTax * 100) ?>%
-                as tax</strong>
-
             </td>
           </tr>
           <tr>

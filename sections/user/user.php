@@ -1514,7 +1514,7 @@ if (!$DisablePoints) {
       <?php } ?>
     </table>
     <?php if (check_perms('users_disable_any')) { ?>
-    <table class="layout box">
+    <table class="layout box" id="user_lock_account">
       <tr class="colhead">
         <td colspan="2">
           Lock Account
@@ -1703,7 +1703,7 @@ if (!$DisablePoints) {
 
       <tr>
         <td align="right" colspan="2">
-          <input type="submit" value="Save changes" />
+          <input type="submit" class="button-primary" value="Save changes" />
         </td>
       </tr>
     </table>

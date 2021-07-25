@@ -39,12 +39,13 @@ if (!$Banned) { ?>
   </aside>
   <?php } ?>
 
-  <table>
+  <br />
+  <table class="login_form">
     <tr>
       <td colspan="2">
         <input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="username"
           id="username" class="inputtext" required="required" maxlength="20" pattern="[A-Za-z0-9_?]{1,20}"
-          autofocus="autofocus" placeholder="Username" size="40" autocomplete="username" />
+          autofocus="autofocus" placeholder="Username" size="35" autocomplete="username" />
       </td>
     </tr>
 
@@ -69,9 +70,15 @@ if (!$Banned) { ?>
     </tr>
 
     <tr>
-      <td colspan="2">
-        <input type="submit" name="login" value="Log In" class="submit" />
+      <td colspan="4">
+        <input type="submit" name="login" value="Log In" class="submit button-primary" />
+
+        <?php if ($ENV->OPEN_REGISTRATION) { ?>
+          &ensp;
+          <a href="/register.php" class="button">Register</a>
+          <?php } ?>
       </td>
+
     </tr>
   </table>
 </form>

@@ -59,6 +59,7 @@ aside {
     &.upload_notice {
         @include transparent-border($R: 255, $A: 0.5);
         margin: 1rem auto;
+        padding-top: 1rem;
         text-align: center;
     }
 
@@ -73,6 +74,19 @@ aside {
         color: red;
         margin: 2rem auto;
         font-size: larger;
+    }
+}
+
+/**
+ * Footer
+ */
+
+footer {
+    margin-top: 2rem;
+    width: 100%;
+
+    p {
+        text-align: center;
     }
 }
 

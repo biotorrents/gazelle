@@ -53,7 +53,7 @@ View::show_header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="layout">
+      <table class="layout admin_tools">
         <tr class="colhead">
           <td>Administration</td>
         </tr>
@@ -72,7 +72,7 @@ View::show_header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="layout">
+      <table class="layout admin_tools">
         <tr class="colhead">
           <td>Announcements</td>
         </tr>
@@ -89,7 +89,7 @@ View::show_header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="layout">
+      <table class="layout admin_tools">
         <tr class="colhead">
           <td>Community</td>
         </tr>
@@ -107,7 +107,7 @@ View::show_header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="layout">
+      <table class="layout admin_tools">
         <tr class="colhead">
           <td>Finances</td>
         </tr>
@@ -130,7 +130,7 @@ View::show_header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="layout">
+      <table class="layout admin_tools">
         <tr class="colhead">
           <td>Queue</td>
         </tr>
@@ -149,7 +149,7 @@ View::show_header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="layout">
+      <table class="layout admin_tools">
         <tr class="colhead">
           <td>Managers</td>
         </tr>
@@ -171,7 +171,7 @@ View::show_header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="layout">
+      <table class="layout admin_tools">
         <tr class="colhead">
           <td>Development</td>
         </tr>
@@ -200,7 +200,7 @@ View::show_header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="layout">
+      <table class="layout admin_tools">
         <tr class="colhead">
           <td>Site Information</td>
         </tr>
@@ -224,7 +224,7 @@ View::show_header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="layout">
+      <table class="layout admin_tools">
         <tr class="colhead">
           <td>Torrents</td>
         </tr>

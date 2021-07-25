@@ -383,14 +383,14 @@ function error($Error = 1, $NoHTML = false, $Log = false, $Debug = true) # , $JS
      * Append $Log
      * Formerly in sections/error/index.php
      */
-    if ($Log ?? false) {
+    if ($Log) {
         $Message .= " <a href='log.php?search=$Title'>Search Log</a>";
     }
 
     /**
      * Append $Debug
      */
-    if ($Debug ?? false) {
+    if ($Debug) {
         $DateTime = strftime('%c', $_SERVER['REQUEST_TIME']);
         $BackTrace = debug_string_backtrace();
 

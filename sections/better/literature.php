@@ -3,38 +3,37 @@ declare(strict_types=1);
 
 $All = (!empty($_GET['filter']) && $_GET['filter'] === 'all');
 $Join = $All
-? ''
-: (
-    'JOIN torrents AS t ON t.GroupID=tg.ID
-    JOIN xbt_snatched AS x ON x.fid = t.ID AND x.uid = '
-    . $LoggedUser['ID']
-);
+    ? ''
+    : ("
+        JOIN `torrents` AS t ON t.`GroupID` = tg.`id`
+        JOIN `xbt_snatched` AS x ON x.`fid` = t.`ID`
+        AND x.`uid` = '$LoggedUser[ID]'
+    ");
 
 View::show_header('Torrent groups with no publications');
 
 $DB->query("
 SELECT SQL_CALC_FOUND_ROWS
-  tg.`ID`
+  tg.`id`
 FROM
   `torrents_group` AS tg
 $Join
 WHERE
-  tg.`ID` NOT IN(
+  tg.`id` NOT IN(
   SELECT DISTINCT
-    `TorrentID`
+    `group_id`
   FROM
-    `torrents_doi`
+    `literature`
   )
 ORDER BY
   RAND()
 LIMIT 20
 ");
 
-$Groups = $DB->to_array('ID', MYSQLI_ASSOC);
+$Groups = $DB->to_array('id', MYSQLI_ASSOC);
 $DB->query('SELECT FOUND_ROWS()');
 list($NumResults) = $DB->next_record();
-$Results = Torrents::get_groups(array_keys($Groups));
-?>
+$Results = Torrents::get_groups(array_keys($Groups)); ?>
 
 <div class="header">
   <?php if ($All) { ?>
@@ -67,22 +66,22 @@ $Results = Torrents::get_groups(array_keys($Groups));
     <?php
 foreach ($Results as $Result) {
     extract($Result);
-    $LangName = $Name ? $Name : ($Title2 ? $Title2 : $NameJP);
-    $TorrentTags = new Tags($TagList);
+    $LangName = $title ? $title : ($subject ? $subject : $object);
+    $TorrentTags = new Tags($tag_list);
 
-    $DisplayName = "<a href='torrents.php?id=$ID' ";
+    $DisplayName = "<a href='torrents.php?id=$id' ";
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-        $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
+        $DisplayName .= 'data-cover="'.ImageTools::process($picture, 'thumb').'" ';
     }
     $DisplayName .= ">$LangName</a>";
 
-    if ($Year > 0) {
-        $DisplayName .= " [$Year]";
+    if ($year > 0) {
+        $DisplayName .= " [$year]";
     } ?>
 
     <tr class="torrent">
       <td>
-        <div class="<?=Format::css_category($CategoryID)?>"></div>
+        <div class="<?=Format::css_category($category_id)?>"></div>
       </td>
 
       <td>

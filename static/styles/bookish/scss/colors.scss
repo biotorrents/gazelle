@@ -17,6 +17,11 @@ $lb700: #0288d1;
 $lb800: #0277bd;
 $lb900: #01579b;
 
+/* Skeleton CSS */
+$SkeletonDefault: #33c3f0;
+$SkeletonFocus: #1eaedb;
+$SkeletonHalfdark: scale-color($SkeletonFocus, $lightness: -50%);
+
 /* The shadow under floating elements */
 $shadow: 2px 2px 10px -2px slategray;
 
@@ -25,6 +30,7 @@ $shadow: 2px 2px 10px -2px slategray;
  */
 
 /* Alternating tables */
+/*
 #request_table .request:nth-of-type(even) {
     background: white;
 }
@@ -32,6 +38,7 @@ $shadow: 2px 2px 10px -2px slategray;
 #request_table .request:nth-of-type(odd) {
     background: whitesmoke;
 }
+*/
 
 /**
  * RGB color intensity border

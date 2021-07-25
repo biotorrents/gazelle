@@ -322,7 +322,7 @@ $Index++;
             value="<?=$GroupID?>" />
           <input type="text" id="artist" name="artistname[]" <?php Users::has_autocomplete_enabled('other'); ?>
           />
-          <input type="submit" value="Add" />
+          <input type="submit" class="button-primary" value="Add" />
         </form>
       </div>
     </div>
@@ -396,7 +396,7 @@ $Index++;
             value="<?=$GroupID?>" />
           <input type="text" name="tagname" id="tagname" <?php Users::has_autocomplete_enabled('other'); ?>
           />
-          <input type="submit" value="Add" />
+          <input type="submit" class="button-primary" value="Add" />
         </form>
         <br />
         <strong><a href="rules.php?p=tag" class="brackets">View tagging rules</a></strong>

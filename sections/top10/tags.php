@@ -108,7 +108,7 @@ function generate_tag_table($Caption, $Tag, $Details, $Limit, $RequestsTable = f
     </small>
   </h3>
 
-  <table class="border">
+  <table class="border top10_table">
     <tr class="colhead">
       <td class="center">Rank</td>
       <td>Tag</td>

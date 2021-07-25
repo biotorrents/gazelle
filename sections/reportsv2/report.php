@@ -1,12 +1,14 @@
 <?php
 #declare(strict_types=1);
 
-/*
+/**
  * This is the frontend of reporting a torrent, it's what users see when
  * they visit reportsv2.php?id=xxx
  */
 
-include(SERVER_ROOT.'/sections/torrents/functions.php');
+$ENV = ENV::go();
+
+require_once "$ENV->SERVER_ROOT/sections/torrents/functions.php";
 
 // If we're not coming from torrents.php, check we're being returned because of an error.
 if (!isset($_GET['id']) || !is_number($_GET['id'])) {
@@ -16,11 +18,11 @@ if (!isset($_GET['id']) || !is_number($_GET['id'])) {
 } else {
     $TorrentID = $_GET['id'];
     $DB->query("
-    SELECT tg.CategoryID, t.GroupID, u.Username
-    FROM torrents_group AS tg
-      LEFT JOIN torrents AS t ON t.GroupID = tg.ID
-      LEFT JOIN users_main AS u ON t.UserID = u.ID
-    WHERE t.ID = " . $_GET['id']);
+    SELECT tg.`category_id`, t.`GroupID`, u.`Username`
+    FROM `torrents_group` AS tg
+      LEFT JOIN `torrents` AS t ON t.`GroupID` = tg.`id`
+      LEFT JOIN `users_main` AS u ON t.`UserID` = u.`ID`
+    WHERE t.`ID` = " . $_GET['id']);
     list($CategoryID, $GroupID, $Username) = $DB->next_record();
     $Artists = Artists::get_artist($GroupID);
     $TorrentCache = get_group_info($GroupID, true);
@@ -137,7 +139,7 @@ View::show_header('Report', 'reportsv2,browse,torrent,bbcode,recommend');
 
       <div id="dynamic_form">
 <?php
-        /*
+        /**
          * THIS IS WHERE SEXY AJAX COMES IN
          * The following malarky is needed so that if you get sent back here, the fields are filled in.
          */
@@ -149,8 +151,7 @@ View::show_header('Report', 'reportsv2,browse,torrent,bbcode,recommend');
         <input id="extra" type="hidden" name="extra" value="<?=(!empty($_POST['extra']) ? display_str($_POST['extra']) : '')?>" />
       </div>
     </div>
-  <input type="submit" value="Report" />
+  <input type="submit" class="button-primary" value="Report" />
   </form>
 </div>
-<?php
-View::show_footer();
+<?php View::show_footer();

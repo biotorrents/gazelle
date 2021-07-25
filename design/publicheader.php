@@ -41,7 +41,7 @@ foreach ($Scripts as $Script) {
 }
 
 # Load CSS
-$Styles = ['vendor/normalize', 'global', 'public'];
+$Styles = ['vendor/normalize', 'vendor/skeleton', 'global', 'public'];
 foreach ($Styles as $Style) {
     echo View::pushAsset(
         "$ENV->STATIC_SERVER/styles/$Style.css",
@@ -68,12 +68,15 @@ if ($ENV->OPEN_REGISTRATION) {
     echo '<a href="register.php">Register</a>';
 }
 
+/*
 $Email = $ENV->HELP->Email;
 $Subject = $ENV->HELP->Subject;
 $Body = $ENV->HELP->Body;
 echo "<a href='mailto:$Email?subject=$Subject&body=$Body'>Support</a>";
+*/
 
 echo <<<HTML
+    <a href="https://github.com/biotorrents/gazelle/issues" target="_blank">Support</a>
   </header>
 
 <main>

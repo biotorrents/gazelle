@@ -1,6 +1,6 @@
 /**
  * Fixes needed to use skeleton.css
- * to its best advantage
+ * to its best no-fuss advantage
  */
 
 /* Set heading fonts 50% of default and bump down a level */
@@ -66,19 +66,44 @@ h6 {
     }
 }
 
+/* Forum list headings */
 table.forum_index {
     h4 {
         margin: 0 !important;
     }
 }
 
+/* Checkbox and radio labels */
 label,
 legend {
     display: inline !important;
 }
 
+/* Tables usually containing forms */
+/* browse */
 table.torrent_search,
-table.torrent_requests {
+/* request search */ table.torrent_requests,
+/* forum list */ table.forum_index,
+/* upload form */ table.torrent_form,
+/* new request? */ table.request_form,
+/* forum thread */ table.new_thread,
+/* toolbox */ table.admin_tools,
+/* BP */ table.store_table,
+/* rule sections */ div.rule_table,
+/* client rules */ table.clients_table,
+/* login */ table.login_form,
+/* requests? */form.create_form,
+/* top10 */ form.search_form,
+/* start user management */
+table#user_info_box,
+table#warn_user_box,
+table#user_lock_account,
+table#user_privs_box,
+table#session_box,
+table#donation_box,
+table#donor_points_box,
+table#submit_box
+/* end user management */ {
     th,
     td {
         border-bottom: 0 !important;
@@ -86,28 +111,47 @@ table.torrent_requests {
     }
 }
 
+/* Duplicate input rules here */
 input,
 input[type="search"],
 input[type="text"] {
     margin: 0 !important;
 }
 
-ul {
-    list-style: circle !important;
+input,
+textarea,
+select,
+fieldset {
+    margin-bottom: 0 !important;
 }
 
+/* Block elements */
 pre,
 blockquote,
 dl,
 figure,
 table,
-p,
 ul,
 ol,
 form {
     margin-bottom: 0 !important;
 }
 
+/* Inline code */
 code {
     padding: 0 !important;
+}
+
+/* Unordered lists */
+ul {
+    list-style: circle outside !important;
+}
+
+/* Nested lists */
+ul ul,
+ul ol,
+ol ol,
+ol ul {
+    margin: 0 !important;
+    font-size: 100% !important;
 }

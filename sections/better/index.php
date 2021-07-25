@@ -9,8 +9,8 @@ if (isset($_GET['method'])) {
       require_once SERVER_ROOT.'/sections/better/single.php';
       break;
   
-    case 'screenshots':
-      require_once SERVER_ROOT.'/sections/better/screenshots.php';
+    case 'literature':
+      require_once SERVER_ROOT.'/sections/better/literature.php';
       break;
 
     case 'covers':

@@ -1,6 +1,18 @@
-@mixin center-all {
+/**
+ * Tables
+ */
+
+@mixin alternating-rows {
+    tr:nth-child(2n) {
+        background: whitesmoke;
+    }
+
+    tr:nth-child(2n-1) {
+        background: white;
+    }
 }
 
+/* Every table */
 table {
     width: 100%;
 
@@ -8,16 +20,41 @@ table {
         font-size: 120%;
     }
 
-    /*
-    tr {
-        background-color: white;
+    td,
+    td:first-child {
+        padding: 0.5rem !important;
     }
-    */
+}
+
+/* Special tables */
+.torrent_table,
+.collage_table,
+.request_table,
+.top10_table {
+    @include alternating-rows;
+
+    th,
+    td {
+        border-bottom: 1px solid #e1e1e1;
+    }
+}
+
+.torrent_table,
+.collage_table {
+    div.tags {
+        font-weight: normal;
+        max-width: 500px;
+    }
+
+    span {
+        float: right;
+    }
 }
 
 /**
  * Torrent form
  */
+
 .torrent_form,
 #dynamic_form {
     /* margin-bottom: 2rem; */
@@ -35,6 +72,7 @@ table {
  * colhead
  * The main table heading.
  */
+
 .colhead {
     padding: 0.5em 0;
     border-bottom: 1px solid #e1e1e1;
@@ -56,88 +94,33 @@ table {
 }
 
 /* Torrent and collage tables */
-.torrent_table,
-.collage_table {
-    tr:nth-child(2n) {
-        background-color: whitesmoke;
-    }
-
-    tr:nth-child(2n-1) {
-        background-color: white;
-    }
-
-    div.tags {
-        font-weight: normal;
-        max-width: 500px;
-    }
-
-    span {
-        float: right;
-    }
-}
-
-/*
-.torrent_table,
-.collage_table {
-    tr.group {
-        background-color: white;
-
-        td.center:first-child {
-            padding: 3px;
-            width: 21px;
-        }
-    }
-
-    tr.group_torrent {
-        background-color: white;
-
-        span {
-            float: right;
-        }
-    }
-
-    tr.torrent {
-        background-color: white;
-    }
-
-    tr.torrent:nth-child(2n),
-    tr.row:nth-child(2n) {
-        background-color: whitesmoke;
-    }
-
-    tr.torrent:nth-child(2n-1),
-    tr.row:nth-child(2n-1) {
-        background-color: white;
-    }
-
-    tr .center,
-    td {
-        vertical-align: middle;
-        /* text-align: center; * /
-    }
-    div.tags {
-        font-weight: normal;
-        max-width: 500px;
-    }
-}
-*/
-
 .torrent_table .group_torrent .torrent span {
     font-weight: normal;
     float: right;
 }
 
-/* Forums */
+/**
+ * Forums
+ */
+
+@mixin forum-post($color) {
+    background-color: $color;
+    border-bottom: 1px solid #e1e1e1;
+    font-size: 120%;
+}
+
 .forum_post .colhead_dark {
-    background: $lb100;
+    @include forum-post(white);
+    /* background: $lb100; */
 }
 
 .forum_post.staff_post .colhead_dark {
-    background: $lb200;
+    @include forum-post(whitesmoke);
+    /* background: $lb200; */
 }
 
 .forum_post.sticky_post {
-    border: 2px solid $lb200;
+    border: 2px solid $SkeletonDefault;
 }
 
 td.label {

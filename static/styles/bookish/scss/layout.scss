@@ -26,11 +26,11 @@
 
 /* Logo */
 #logo {
-    background: url("/static/common/logos/bookish.png") no-repeat center;
+    background: url("/static/common/logos/torrents.bio.png") no-repeat center;
     background-size: contain;
     width: 250px;
     height: 50px;
-    margin: 0 0 0 10%;
+    margin: 0.5rem 0 0.25rem 10%;
 
     a {
         border: none;
@@ -42,15 +42,6 @@
     a:hover {
         border: none;
     }
-}
-
-/* Content container */
-.box {
-    background-color: white;
-    /* border: 2px solid rgba(0, 0, 0, 0.01); */
-    margin: auto;
-    margin-bottom: 1rem;
-    width: 100%;
 }
 
 /* Main column and sidebar */
@@ -76,6 +67,11 @@
     float: right;
 }
 
+/* Box: soon to be <section> */
+.box {
+    margin-bottom: 1rem;
+}
+
 /* Links */
 div.linkbox {
     text-align: center;
@@ -96,7 +92,10 @@ div.linkbox {
     margin-top: 1rem;
 }
 
-/* Torrents page */
+/**
+ * Torrents page
+ */
+
 .show_torrents {
     width: 21px;
     height: 28px;
@@ -143,18 +142,16 @@ div.linkbox {
     text-align: center;
 }
 
-.torrent_table,
-.torrent_table td {
-    border: none;
-}
+/**
+ * Text elements
+ */
 
-/* Text elements */
 p {
-    margin: 1em 0.5rem;
+    margin-bottom: 1rem;
 }
 
 li {
-    margin: 0.5em 2rem;
+    margin: 0 1rem;
 }
 
 .torrent_title {
@@ -241,7 +238,8 @@ ul .invitetree {
 
 .center_poll {
     height: 0.75rem;
-    background: $lb50;
+    background: $SkeletonDefault;
+    /* background: $lb50; */
     border-radius: 0;
     float: left;
     margin: 0.25rem 0;

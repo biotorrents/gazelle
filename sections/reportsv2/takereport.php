@@ -1,5 +1,6 @@
 <?
-/*
+
+/**
  * This page handles the backend from when a user submits a report.
  * It checks for (in order):
  * 1. The usual POST injections, then checks that things.
@@ -56,8 +57,6 @@ if (!empty($_POST['sitelink'])) {
   } else {
     $Err = 'The permalink was incorrect. It should look like '.site_url().'torrents.php?torrentid=12345';
   }
-} else {
-  $ExtraIDs = '';
 }
 
 if (!empty($_POST['link'])) {
@@ -108,7 +107,7 @@ if (!$DB->has_results()) {
 list($GroupID) = $DB->next_record();
 
 if (!empty($Err)) {
-  error($Err);
+  error($Error = $Err, $Debug = false);
   include(SERVER_ROOT.'/sections/reportsv2/report.php');
   error();
 }

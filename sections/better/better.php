@@ -42,7 +42,7 @@ View::show_header('Better');
 
     <tr class="row">
       <td class="nobr">
-        <a href="better.php?method=screenshots&filter=all">Publications</a>
+        <a href="better.php?method=literature&filter=all">Publications</a>
       </td>
 
       <td class="nobr">

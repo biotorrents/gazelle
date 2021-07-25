@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 enforce_login();
 if (!check_perms('site_upload')) {
-    error(403);
+    error('Please read the site wiki for information on how to become a Member and gain upload privileges.', $Debug = false);
 }
 
 if ($LoggedUser['DisableUpload']) {
-    error('Your upload privileges have been revoked.');
+    error('Your upload privileges have been revoked.', $Debug = false);
 }
 
 // Build the page

@@ -388,8 +388,8 @@ HTML;
 
         echo <<<HTML
               <tr>
-                <td>
-                  <input id="post" type="submit" value="$Value" />
+                <td class="center">
+                  <input id="post" type="submit" value="$Value" class="button-primary" />
                 </td>
               </tr>
             </table> <!-- torrent_form -->

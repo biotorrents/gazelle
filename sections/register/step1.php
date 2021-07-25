@@ -39,6 +39,7 @@ if (empty($Sent)) { ?>
           <strong>Don't choose one associated with your real name.</strong>
           If you do, we won't be changing it for you.
         </p>
+        <br />
 
         <input type="text" name="username" id="username" class="inputtext" placeholder="Username"
           value="<?=(!empty($_REQUEST['username']) ? display_str($_REQUEST['username']) : '')?>" />
@@ -96,7 +97,7 @@ if (empty($Sent)) { ?>
     </tr>
 
     <tr>
-      <td colspan="2" align="right"><input type="submit" name="submit" value="Submit" class="submit" /></td>
+      <td colspan="2" align="right"><input type="submit" name="submit" value="Submit" class="submit button-primary" /></td>
     </tr>
   </table>
 </form>

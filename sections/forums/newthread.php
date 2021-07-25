@@ -103,7 +103,7 @@ View::show_header(
       <input type="hidden" name="auth"
         value="<?=$LoggedUser['AuthKey']?>" />
       <input type="hidden" name="forum" value="<?=$ForumID?>" />
-      <table id="newthreadtext" class="layout">
+      <table id="newthreadtext" class="layout new_thread">
         <tr>
           <td class="label">Title</td>
           <td><input id="title" class="required" type="text" name="title" style="width: 98%;" /></td>
@@ -196,7 +196,7 @@ if (check_perms('forums_polls_create')) {
       <div id="buttons" class="center">
         <input type="button" value="Preview" onclick="Newthread_Preview(1);" id="newthreadpreviewbutton" />
         <input type="button" value="Editor" onclick="Newthread_Preview(0);" id="newthreadeditbutton" class="hidden" />
-        <input type="submit" class="submit" id="submit_button" value="Create" />
+        <input type="submit" class="submit button-primary" id="submit_button" value="Create" />
       </div>
     </form>
   </div>

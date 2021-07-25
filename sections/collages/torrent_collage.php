@@ -580,13 +580,12 @@ foreach ($UserAdditions as $UserID => $Additions) {
             value="<?=$LoggedUser['AuthKey']?>" />
           <input type="hidden" name="collageid"
             value="<?=$CollageID?>" />
-          <div>
-            <input type="text" size="20" name="url" />
-          </div>
+
           <div class="submit_div">
-            <input type="submit" value="Add" />
+            <input type="text" size="20" name="url" />
+            <input type="submit" class="button-primary" value="Add" />
           </div>
-          <span style="font-style: italic;">Enter the URL of a torrent group on the site.</span>
+          <p>Enter the URL of a torrent group on the site.</p>
         </form>
       </div>
 
@@ -668,7 +667,7 @@ if (!$LoggedUser['DisablePosting']) {
             <textarea name="body" cols="24" rows="5"></textarea>
           </div>
           <div class="submit_div">
-            <input type="submit" id="submit_button" value="Post" />
+            <input type="submit" id="submit_button" class="button-primary" value="Post" />
           </div>
         </div>
       </form>

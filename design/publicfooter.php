@@ -8,6 +8,7 @@ echo <<<HTML
 
 <footer>
   <a href="https://github.com/biotorrents/gazelle" target="_blank">GitHub</a>
+  <a href="https://docs.biotorrents.de" target="_blank">API</a>
   <a href="/legal.php?p=privacy">Privacy</a>
   <a href="/legal.php?p=dmca">DMCA</a>
 </footer>
