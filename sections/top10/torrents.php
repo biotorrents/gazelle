@@ -92,7 +92,7 @@ if (check_perms('site_advanced_top10')) {
                 </tr>
                 <tr>
                     <td colspan="2" class="center">
-                        <input type="submit" value="Search" />
+                        <input type="submit" class="button-primary" value="Search" />
                     </td>
                 </tr>
             </table>

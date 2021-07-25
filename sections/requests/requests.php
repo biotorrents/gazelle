@@ -443,7 +443,7 @@ View::show_header($Title, 'requests');
             <table class="layout">
                 <tr>
                     <td colspan="2" class="center">
-                        <input type="submit" value="Search" />
+                        <input type="submit" class="button-primary" value="Search" />
                     </td>
                 </tr>
             </table>

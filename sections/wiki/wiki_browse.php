@@ -68,7 +68,7 @@ while (list($ID, $Title, $Date, $UserID) = $DB->next_record()) { ?>
       <input type="hidden" name="action" value="search" />
       <input type="hidden" name="nojump" value="1" />
       <input type="search" name="search" size="80" />
-      <input value="Search" type="submit" class="hidden" />
+      <input value="Search" type="submit" class="hidden button-primary" />
     </form>
     <br />
 

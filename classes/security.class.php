@@ -64,6 +64,11 @@ class Security
             error('memcached extension php-memcache not loaded.');
         }
 
+        # mysqli
+        if (!extension_loaded('mysqli')) {
+            error('mysqli extension php-mysql not loaded.');
+        }
+        
         # blake3
         if ($ENV->FEATURE_BIOPHP && !extension_loaded('blake3')) {
             error('Please install and enable the php-blake3 extension.');

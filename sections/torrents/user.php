@@ -50,43 +50,43 @@ if (!empty($_GET['way']) && array_key_exists($_GET['way'], $Ways)) {
 $SearchWhere = [];
 if (!empty($_GET['format'])) {
     if (in_array($_GET['format'], $Formats)) {
-        $SearchWhere[] = "t.Format = '".db_string($_GET['format'])."'";
+        $SearchWhere[] = "t.`Format` = '".db_string($_GET['format'])."'";
     }
 }
 
 # Get release specifics
 if (isset($_GET['container'])
  && in_array($_GET['container'], $ENV-flatten($ENV->META->Formats))) {
-    $SearchWhere[] = "t.Container = '".db_string($_GET['container'])."'";
+    $SearchWhere[] = "t.`Container` = '".db_string($_GET['container'])."'";
 }
 
 if (isset($_GET['bitrate'])
  && in_array($_GET['bitrate'], $Bitrates)) {
-    $SearchWhere[] = "t.Encoding = '".db_string($_GET['bitrate'])."'";
+    $SearchWhere[] = "t.`Encoding` = '".db_string($_GET['bitrate'])."'";
 }
 
 if (isset($_GET['media'])
  && in_array($_GET['media'], $ENV-flatten($ENV->META->Platforms))) {
-    $SearchWhere[] = "t.Media = '".db_string($_GET['media'])."'";
+    $SearchWhere[] = "t.`Media` = '".db_string($_GET['media'])."'";
 }
 
 if (isset($_GET['codec'])
  && in_array($_GET['codec'], $ENV->META->Licenses)) {
-    $SearchWhere[] = "t.Codec = '".db_string($_GET['codec'])."'";
+    $SearchWhere[] = "t.`Codec` = '".db_string($_GET['codec'])."'";
 }
 
 if (isset($_GET['version'])) {
-    $SearchWhere[] = "t.Version = '".db_string($_GET['version'])."'";
+    $SearchWhere[] = "t.`Version` = '".db_string($_GET['version'])."'";
 }
 
 if (isset($_GET['resolution'])
  && in_array($_GET['resolution'], $ENV->flatten($ENV->META->Scopes))) {
-    $SearchWhere[] = "t.Resolution = '".db_string($_GET['resolution'])."'";
+    $SearchWhere[] = "t.`Resolution` = '".db_string($_GET['resolution'])."'";
 }
 
 if (isset($_GET['censored'])
  && in_array($_GET['censored'], array(1, 0))) {
-    $SearchWhere[] = "t.Censored = '".db_string($_GET['censored'])."'";
+    $SearchWhere[] = "t.`Censored` = '".db_string($_GET['censored'])."'";
 }
 
 if (!empty($_GET['categories'])) {
@@ -95,7 +95,7 @@ if (!empty($_GET['categories'])) {
         if (!is_number($Cat)) {
             error(0);
         }
-        $Cats[] = "tg.CategoryID = '".db_string($Cat)."'";
+        $Cats[] = "tg.`category_id` = '".db_string($Cat)."'";
     }
     $SearchWhere[] = '('.implode(' OR ', $Cats).')';
 }
@@ -120,9 +120,9 @@ if (!empty($_GET['tags'])) {
             if (empty($Tag)) {
                 continue;
             }
-            $TagList[] = "tg.TagList NOT RLIKE '[[:<:]]".db_string($Tag)."(:[^ ]+)?[[:>:]]'";
+            $TagList[] = "tg.`tag_list` NOT RLIKE '[[:<:]]".db_string($Tag)."(:[^ ]+)?[[:>:]]'";
         } else {
-            $TagList[] = "tg.TagList RLIKE '[[:<:]]".db_string($Tag)."(:[^ ]+)?[[:>:]]'";
+            $TagList[] = "tg.`tag_list` RLIKE '[[:<:]]".db_string($Tag)."(:[^ ]+)?[[:>:]]'";
         }
     }
 
@@ -151,74 +151,74 @@ switch ($_GET['type']) {
     if (!check_paranoia('snatched', $User['Paranoia'], $UserClass, $UserID)) {
         error(403);
     }
-    $Time = 'xs.tstamp';
-    $UserField = 'xs.uid';
+    $Time = 'xs.`tstamp`';
+    $UserField = 'xs.`uid`';
     $ExtraWhere = '';
     $From = "
-      xbt_snatched AS xs
-        JOIN torrents AS t ON t.ID = xs.fid";
+      `xbt_snatched` AS xs
+        JOIN `torrents` AS t ON t.`ID` = xs.`fid`";
     break;
 
   case 'seeding':
     if (!check_paranoia('seeding', $User['Paranoia'], $UserClass, $UserID)) {
         error(403);
     }
-    $Time = '(xfu.mtime - xfu.timespent)';
-    $UserField = 'xfu.uid';
+    $Time = '(xfu.`mtime` - xfu.`timespent`)';
+    $UserField = 'xfu.`uid`';
     $ExtraWhere = '
-      AND xfu.active = 1
-      AND xfu.Remaining = 0';
+      AND xfu.`active` = 1
+      AND xfu.`Remaining` = 0';
     $From = "
-      xbt_files_users AS xfu
-        JOIN torrents AS t ON t.ID = xfu.fid";
+      `xbt_files_users` AS xfu
+        JOIN `torrents` AS t ON t.`ID` = xfu.`fid`";
     break;
 
   case 'contest':
-    $Time = 'unix_timestamp(t.Time)';
-    $UserField = 't.UserID';
+    $Time = 'unix_timestamp(t.`Time`)';
+    $UserField = 't.`UserID`';
     $ExtraWhere = "
-      AND t.ID IN (
-        SELECT TorrentID
-        FROM library_contest
-        WHERE UserID = $UserID
+      AND t.`ID` IN (
+        SELECT `TorrentID`
+        FROM `library_contest`
+        WHERE `UserID` = $UserID
       )";
-    $From = 'torrents AS t';
+    $From = '`torrents` AS t';
     break;
 
   case 'leeching':
     if (!check_paranoia('leeching', $User['Paranoia'], $UserClass, $UserID)) {
         error(403);
     }
-    $Time = '(xfu.mtime - xfu.timespent)';
-    $UserField = 'xfu.uid';
+    $Time = '(xfu.`mtime` - xfu.`timespent`)';
+    $UserField = 'xfu.`uid`';
     $ExtraWhere = '
-      AND xfu.active = 1
-      AND xfu.Remaining > 0';
+      AND xfu.`active` = 1
+      AND xfu.`Remaining` > 0';
     $From = "
-      xbt_files_users AS xfu
-        JOIN torrents AS t ON t.ID = xfu.fid";
+      `xbt_files_users` AS xfu
+        JOIN `torrents` AS t ON t.`ID` = xfu.`fid`";
     break;
 
   case 'uploaded':
     if ((empty($_GET['filter']) || $_GET['filter'] !== 'perfectflac') && !check_paranoia('uploads', $User['Paranoia'], $UserClass, $UserID)) {
         error(403);
     }
-    $Time = 'unix_timestamp(t.Time)';
-    $UserField = 't.UserID';
+    $Time = 'unix_timestamp(t.`Time`)';
+    $UserField = 't.`UserID`';
     $ExtraWhere = '';
-    $From = "torrents AS t";
+    $From = "`torrents` AS t";
     break;
 
   case 'downloaded':
     if (!check_perms('site_view_torrent_snatchlist')) {
         error(403);
     }
-    $Time = 'unix_timestamp(ud.Time)';
-    $UserField = 'ud.UserID';
+    $Time = 'unix_timestamp(ud.`Time`)';
+    $UserField = 'ud.`UserID`';
     $ExtraWhere = '';
     $From = "
-      users_downloads AS ud
-        JOIN torrents AS t ON t.ID = ud.TorrentID";
+      `users_downloads` AS ud
+        JOIN `torrents` AS t ON t.`ID` = ud.`TorrentID`";
     break;
     
   default:
@@ -226,7 +226,7 @@ switch ($_GET['type']) {
 }
 
 if (empty($GroupBy)) {
-    $GroupBy = 't.ID';
+    $GroupBy = 't.`ID`';
 }
 
 if ((empty($_GET['search'])
@@ -234,13 +234,13 @@ if ((empty($_GET['search'])
     $SQL = "
       SELECT
         SQL_CALC_FOUND_ROWS
-        t.GroupID,
-        t.ID AS TorrentID,
+        t.`GroupID`,
+        t.`ID` AS TorrentID,
         $Time AS Time,
-        COALESCE(NULLIF(tg.Name, ''), NULLIF(tg.Title2, ''), tg.NameJP) AS Name,
-        tg.CategoryID
+        COALESCE(NULLIF(tg.`title`, ''), NULLIF(tg. subject, ''), tg.`object`) AS Name,
+        tg.`category_id`
       FROM $From
-        JOIN torrents_group AS tg ON tg.ID = t.GroupID
+        JOIN `torrents_group` AS tg ON tg.`id` = t.`GroupID`
       WHERE $UserField = '$UserID'
         $ExtraWhere
         $SearchWhere
@@ -249,38 +249,38 @@ if ((empty($_GET['search'])
       LIMIT $Limit";
 } else {
     $DB->query("
-      CREATE TEMPORARY TABLE temp_sections_torrents_user (
-        GroupID int(10) unsigned not null,
-        TorrentID int(10) unsigned not null,
-        Time int(12) unsigned not null,
-        CategoryID int(3) unsigned,
-        Seeders int(6) unsigned,
-        Leechers int(6) unsigned,
-        Snatched int(10) unsigned,
-        Name mediumtext,
-        Size bigint(12) unsigned,
-      PRIMARY KEY (TorrentID)) CHARSET=utf8");
+      CREATE TEMPORARY TABLE `temp_sections_torrents_user` (
+        `GroupID` int(10) unsigned not null,
+        `TorrentID` int(10) unsigned not null,
+        `Time` int(12) unsigned not null,
+        `CategoryID` int(3) unsigned,
+        `Seeders` int(6) unsigned,
+        `Leechers` int(6) unsigned,
+        `Snatched` int(10) unsigned,
+        `Name` mediumtext,
+        `Size` bigint(12) unsigned,
+      PRIMARY KEY (`TorrentID`)) CHARSET=utf8");
 
     $DB->query("
-      INSERT IGNORE INTO temp_sections_torrents_user
+      INSERT IGNORE INTO `temp_sections_torrents_user`
       SELECT
-        t.GroupID,
-        t.ID AS TorrentID,
+        t.`GroupID`,
+        t.`ID` AS TorrentID,
         $Time AS Time,
-        tg.CategoryID,
-        t.Seeders,
-        t.Leechers,
-        t.Snatched,
-        CONCAT_WS(' ', GROUP_CONCAT(ag.Name SEPARATOR ' '), ' ', COALESCE(NULLIF(tg.Name,''), NULLIF(tg.Title2,''), tg.NameJP), ' ', tg.Year, ' ') AS Name,
-        t.Size
+        tg.`category_id`,
+        t.`Seeders`,
+        t.`Leechers`,
+        t.`Snatched`,
+        CONCAT_WS(' ', GROUP_CONCAT(ag.`Name` SEPARATOR ' '), ' ', COALESCE(NULLIF(tg.`title`,''), NULLIF(tg.`subject`,''), tg.`object`), ' ', tg.`year`, ' ') AS Name,
+        t.`Size`
       FROM $From
-        JOIN torrents_group AS tg ON tg.ID = t.GroupID
-        LEFT JOIN torrents_artists AS ta ON ta.GroupID = tg.ID
-        LEFT JOIN artists_group AS ag ON ag.ArtistID = ta.ArtistID
+        JOIN `torrents_group` AS tg ON tg.`id` = t.`GroupID`
+        LEFT JOIN `torrents_artists` AS ta ON ta.`GroupID` = tg.`id`
+        LEFT JOIN `artists_group` AS ag ON ag.`ArtistID` = ta.`ArtistID`
       WHERE $UserField = '$UserID'
         $ExtraWhere
         $SearchWhere
-      GROUP BY TorrentID, Time");
+      GROUP BY `TorrentID`, `Time`");
 
     if (!empty($_GET['search']) && trim($_GET['search']) !== '') {
         $Words = array_unique(explode(' ', db_string($_GET['search'])));
@@ -289,15 +289,15 @@ if ((empty($_GET['search'])
     $SQL = "
       SELECT
         SQL_CALC_FOUND_ROWS
-        GroupID,
-        TorrentID,
-        Time,
-        CategoryID
-      FROM temp_sections_torrents_user";
+        `GroupID`,
+        `TorrentID`,
+        `Time`,
+        `CategoryID`
+      FROM `temp_sections_torrents_user`";
 
     if (!empty($Words)) {
         $SQL .= "
-          WHERE Name LIKE '%".implode("%' AND Name LIKE '%", $Words)."%'";
+          WHERE `Name` LIKE '%".implode("%' AND `Name` LIKE '%", $Words)."%'";
     }
 
     $SQL .= "
@@ -470,7 +470,7 @@ foreach ($Categories as $CatKey => $CatName) {
           <?= number_format($TorrentCount) ?>
           Results
         </span>
-        <input type="submit" value="Search" />
+        <input type="submit" class="button-primary" value="Search" />
       </div>
     </form>
   </div>

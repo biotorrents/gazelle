@@ -68,7 +68,7 @@ class Twig
                 'auto_reload' => true,
                 'autoescape' => 'name',
                 'cache' => "$ENV->WEB_ROOT/cache/twig",
-                #'debug' => DEBUG_MODE,
+                'debug' => $ENV->DEV,
                 'strict_variables' => true,
         ]
         );

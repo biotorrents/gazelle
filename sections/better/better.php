@@ -24,7 +24,7 @@ View::show_header('Better');
 </h3>
 
 <div class="box pad">
-  <table>
+  <table class="better_list">
     <tr class="colhead">
       <td style="width: 150px;">Method</td>
       <td style="width: 400px;">Additional Information</td>
@@ -42,11 +42,11 @@ View::show_header('Better');
 
     <tr class="row">
       <td class="nobr">
-        <a href="better.php?method=literature&filter=all">Publications</a>
+        <a href="better.php?method=literature&filter=all">DOI numbers</a>
       </td>
 
       <td class="nobr">
-        When a torrent group doesn't have a publication
+        Torrent groups without citations, for enhanced metadata support
       </td>
     </tr>
 
@@ -55,7 +55,7 @@ View::show_header('Better');
         <a href="better.php?method=covers&filter=all">Pictures</a>
       </td>
       <td class="nobr">
-        When a torrent group doesn't have a picture
+        Torrent groups without pictures, for at-a-glance context
       </td>
     </tr>
 

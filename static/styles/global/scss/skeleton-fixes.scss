@@ -85,7 +85,8 @@ table.torrent_search,
 /* request search */ table.torrent_requests,
 /* forum list */ table.forum_index,
 /* upload form */ table.torrent_form,
-/* new request? */ table.request_form,
+/* requests? */ table.request_form,
+/* new request */ form#request_form,
 /* forum thread */ table.new_thread,
 /* toolbox */ table.admin_tools,
 /* BP */ table.store_table,
@@ -94,6 +95,7 @@ table.torrent_search,
 /* login */ table.login_form,
 /* requests? */form.create_form,
 /* top10 */ form.search_form,
+/* edit collage */ table.collage_edit,
 /* start user management */
 table#user_info_box,
 table#warn_user_box,
@@ -102,8 +104,11 @@ table#user_privs_box,
 table#session_box,
 table#donation_box,
 table#donor_points_box,
-table#submit_box
-/* end user management */ {
+table#submit_box,
+/* end user management */
+/* notif filters */ form[name="notification"],
+/* wiki search */ table.wiki_browse,
+/* better.php */ table.better_list {
     th,
     td {
         border-bottom: 0 !important;

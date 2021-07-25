@@ -66,18 +66,19 @@ foreach ($GroupIDs as $GroupID) {
         }
     }
 
-    $TorrentTags = new Tags($TagList);
-    $DisplayName = Artists::display_artists($Artists);
-    $GroupName = empty($GroupName) ? (empty($GroupTitle2) ? $GroupNameJP : $GroupTitle2) : $GroupName;
+    $TorrentTags = new Tags($tag_list);
+    $DisplayName = '';
+    #$DisplayName = Artists::display_artists($Artists);
+    $GroupName = empty($title) ? (empty($subject) ? $object : $subject) : $title;
     
     $DisplayName .= '<a href="torrents.php?id='.$GroupID.'" ';
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-        $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
+        $DisplayName .= 'data-cover="'.ImageTools::process($picture, 'thumb').'" ';
     }
 
     $DisplayName .= ' class="tooltip" title="View torrent group" dir="ltr">'.$GroupName.'</a>';
-    if ($GroupYear > 0) {
-        $DisplayName = "$DisplayName [$GroupYear]";
+    if ($year > 0) {
+        $DisplayName = "$DisplayName [$year]";
     }
     $SnatchedGroupClass = $GroupFlags['IsSnatched'] ? ' snatched_group' : '';
 
@@ -159,11 +160,12 @@ foreach ($GroupIDs as $GroupID) {
         $TorrentID = key($Torrents);
         $Torrent = current($Torrents);
 
-        $DisplayName = Artists::display_artists(Artists::get_artist($GroupID));
+        $DisplayName = '';
+        #$DisplayName = Artists::display_artists(Artists::get_artist($GroupID));
         $DisplayName .= '<a href="torrents.php?id='.$GroupID.'" ';
 
         if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-            $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
+            $DisplayName .= 'data-cover="'.ImageTools::process($picture, 'thumb').'" ';
         }
 
         $DisplayName .=' class="tooltip" title="View torrent group" dir="ltr">'.$GroupName.'</a>';
@@ -241,8 +243,8 @@ foreach ($GroupIDs as $GroupID) {
     #$DisplayName .= Artists::display_artists($Artists, false);
     $DisplayName .= $GroupName;
 
-    if ($GroupYear > 0) {
-        $DisplayName = "$DisplayName [$GroupYear]";
+    if ($year > 0) {
+        $DisplayName = "$DisplayName [$year]";
     }
 
     $Tags = display_str($TorrentTags->format());
@@ -252,12 +254,12 @@ foreach ($GroupIDs as $GroupID) {
   <a href="torrents.php?id=<?=$GroupID?>"
     class="bookmark_<?=$GroupID?>">
 
-    <?php if (!$WikiImage) {
-        $WikiImage = STATIC_SERVER.'common/noartwork/music.png';
+    <?php if (!$picture) {
+        $picture = STATIC_SERVER.'common/noartwork/music.png';
     } ?>
 
     <img class="tooltip"
-      src="<?=ImageTools::process($WikiImage, 'thumb')?>"
+      src="<?=ImageTools::process($picture, 'thumb')?>"
       alt="<?=$DisplayName?>"
       title="<?=$DisplayName?>"
       data-title-plain="<?=$DisplayName?>" width="100%" />

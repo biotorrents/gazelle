@@ -4,6 +4,7 @@
 if (!check_perms('site_torrents_notify')) {
     error(403);
 }
+
 View::show_header(
     'Manage notifications',
     'vendor/jquery.validate.min,form_validate'
@@ -21,22 +22,23 @@ View::show_header(
   <?php
 $DB->query("
   SELECT
-    ID,
-    Label,
-    Artists,
-    NewGroupsOnly,
-    Tags,
-    NotTags,
-    ReleaseTypes,
-    Categories,
-    Formats,
-    Encodings,
-    Media,
-    FromYear,
-    ToYear,
-    Users
-  FROM users_notify_filters
-  WHERE UserID=$LoggedUser[ID]");
+    `ID`,
+    `Label`,
+    `Artists`,
+    `NewGroupsOnly`,
+    `Tags`,
+    `NotTags`,
+    `ReleaseTypes`,
+    `Categories`,
+    `Formats`,
+    `Encodings`,
+    `Media`,
+    `FromYear`,
+    `ToYear`,
+    `Users`
+  FROM `users_notify_filters`
+  WHERE `UserID` = $LoggedUser[ID]
+");
 
 $NumFilters = $DB->record_count();
 
@@ -82,9 +84,11 @@ foreach ($Notifications as $N) { // $N stands for Notifications
     if ($N['FromYear'] === 0) {
         $N['FromYear'] = '';
     }
+
     if ($N['ToYear'] === 0) {
         $N['ToYear'] = '';
     }
+
     if ($NewFilter && $NumFilters > 0) {
         ?>
   <br><br>
@@ -207,7 +211,7 @@ foreach ($Notifications as $N) { // $N stands for Notifications
 
       <tr>
         <td colspan="2" class="center">
-          <input type="submit"
+          <input type="submit" class="button-primary"
             value="<?=($NewFilter ? 'Create' : 'Update')?>">
         </td>
       </tr>

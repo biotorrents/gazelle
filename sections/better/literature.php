@@ -12,7 +12,7 @@ $Join = $All
 
 View::show_header('Torrent groups with no publications');
 
-$DB->query("
+$DB->prepared_query("
 SELECT SQL_CALC_FOUND_ROWS
   tg.`id`
 FROM
@@ -38,21 +38,21 @@ $Results = Torrents::get_groups(array_keys($Groups)); ?>
 <div class="header">
   <?php if ($All) { ?>
   <h2>
-    All groups with no publications
+    All groups with no DOI numbers
   </h2>
 
   <?php } else { ?>
   <h2>
-    Torrent groups with no publications that you have snatched
+    Torrent groups with no DOI numbers that you have snatched
   </h2>
   <?php } ?>
 
   <div class="linkbox">
     <a href="better.php" class="brackets">Back to better.php list</a>
     <?php if ($All) { ?>
-    <a href="better.php?method=screenshots" class="brackets">Show only those you have snatched</a>
+    <a href="better.php?method=literature" class="brackets">Show only those you have snatched</a>
     <?php } else { ?>
-    <a href="better.php?method=screenshots&amp;filter=all" class="brackets">Show all</a>
+    <a href="better.php?method=literature&amp;filter=all" class="brackets">Show all</a>
     <?php } ?>
   </div>
 </div>

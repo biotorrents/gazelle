@@ -29,17 +29,6 @@ $shadow: 2px 2px 10px -2px slategray;
  * Common elements
  */
 
-/* Alternating tables */
-/*
-#request_table .request:nth-of-type(even) {
-    background: white;
-}
-
-#request_table .request:nth-of-type(odd) {
-    background: whitesmoke;
-}
-*/
-
 /**
  * RGB color intensity border
  * For semi-transparent elements,
@@ -69,8 +58,8 @@ input[type="file"] {
  * (torrent form, API keys use their own)
  */
 @mixin alertbar($bg) {
-    background: $bg;
-    box-shadow: $shadow;
+    background: change-color($bg, $alpha: 0.25);
+    /* box-shadow: $shadow; */
     text-align: center;
     color: black;
     font-weight: bold;
@@ -78,22 +67,42 @@ input[type="file"] {
     width: 33%;
     margin: 2em auto;
     padding: 1rem;
+    border-radius: 4px;
+    border: 1px solid $bg;
 }
 
+/*
+@mixin alertbar($bg) {
+    background: $bg;
+    box-shadow: $shadow;
+    text-align: center;
+    color: black;
+    font-weight: bold;
+    /* font-size: 0.95rem; * /
+    width: 33%;
+    margin: 2em auto;
+    padding: 1rem;
+}
+*/
+
 .alertbar {
-    @include alertbar($lb100);
+    @include alertbar(gold);
+    /* @include alertbar($lb100); */
 
     .warning {
-        background: #ffe0b2;
+        background: orange;
+        /* background: #ffe0b2; */
     }
 
     .error {
-        background: #ffcdd2;
+        background: red;
+        /* background: #ffcdd2; */
     }
 }
 
 .token_error {
-    @include alertbar(#ffcdd2);
+    @include alertbar(pink);
+    /* @include alertbar(#ffcdd2); */
 }
 
 .modbar a {

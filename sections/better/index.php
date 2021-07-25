@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-enforce_login();
+#enforce_login();
 
 if (isset($_GET['method'])) {
     switch ($_GET['method']) {

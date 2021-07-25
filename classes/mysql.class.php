@@ -111,10 +111,6 @@ set_query_id($ResultSet)
 -------------------------------------------------------------------------------------
 *///---------------------------------------------------------------------------------
 
-if (!extension_loaded('mysqli')) {
-    error('Mysqli Extension not loaded.');
-}
-
 
 /**
  * db_string
@@ -285,9 +281,27 @@ class DB_MYSQL
 
 
     /**
-     * prepare_query
+     * Prepare and execute a prepared query returning the result set.
+     *
+     * Utility function that wraps DB_MYSQL::prepare and DB_MYSQL::execute
+     * as most times, the query is going to be one-off and this will save
+     * on keystrokes. If you do plan to be executing a prepared query
+     * multiple times with different bound parameters, you'll want to call
+     * the two functions separately instead of this function.
+     *
+     * @param $Query
+     * @param mixed ...$Parameters
+     * @return bool|mysqli_result
      */
-    public function prepare_query($Query, &...$BindVars)
+    public function prepared_query($Query, ...$Parameters) {
+        $this->prepare($Query);
+        return $this->execute(...$Parameters);
+    }
+
+    /**
+     * prepare
+     */
+    public function prepare($Query, &...$BindVars)
     {
         $this->connect();
         $this->StatementID = mysqli_prepare($this->LinkID, $Query);
@@ -306,11 +320,17 @@ class DB_MYSQL
         return $this->StatementID;
     }
 
+    # Compatibility function for the old name
+    public function prepare_query($Query, &...$BindVars)
+    {
+        return $this->prepare($Query, $BindVars);
+    }
+
 
     /**
-     * exec_prepared_query
+     * execute
      */
-    public function exec_prepared_query()
+    public function execute()
     {
         $QueryStartTime = microtime(true);
         mysqli_stmt_execute($this->StatementID);
@@ -318,6 +338,12 @@ class DB_MYSQL
         $QueryRunTime = (microtime(true) - $QueryStartTime) * 1000;
         $this->Queries[] = [$this->PreppedQuery, $QueryRunTime, null];
         $this->Time += $QueryRunTime;
+    }
+
+    # Compatibility function for the old name
+    public function exec_prepared_query()
+    {
+        return $this->execute();
     }
 
 

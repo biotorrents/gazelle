@@ -361,7 +361,7 @@ $encoded_artist = urlencode($encoded_artist);
                   <li><strong>Ratio:</strong> <span id="new_ratio"><?= Format::get_ratio_html($LoggedUser['BytesUploaded'], $LoggedUser['BytesDownloaded']) ?></span>
                   </li>
                 </ul>
-                <input type="button" id="button" value="Vote!" disabled="disabled" onclick="Vote();" />
+                <input type="button" id="button" value="Vote!" class="button-primary" disabled="disabled" onclick="Vote();" />
               </form>
             </td>
           </tr>
@@ -413,7 +413,7 @@ $encoded_artist = urlencode($encoded_artist);
                 </div>
                 <?php } ?>
                 <div class="submit_div">
-                  <input type="submit" value="Fill" />
+                  <input type="submit" class="button-primary" value="Fill" />
                 </div>
               </form>
             </td>
