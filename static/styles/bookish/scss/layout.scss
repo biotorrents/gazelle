@@ -1,21 +1,4 @@
 /*
- * Body
- */
-
-* {
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    /* min-width: 800px; */
-}
-
-ol {
-    margin-left: 1rem;
-}
-
-/*
  * Basic structure
  */
 
@@ -24,10 +7,6 @@ ol {
     margin-bottom: 2rem;
     padding: 0;
     width: 100%;
-}
-
-.head {
-    margin-bottom: 0.5rem;
 }
 
 #content {
@@ -85,7 +64,7 @@ ol {
 }
 
 .main_column {
-    @include column-flex(65%);
+    @include column-flex(64%);
 
     table {
         margin-bottom: 1rem;
@@ -93,7 +72,7 @@ ol {
 }
 
 .sidebar {
-    @include column-flex(35%);
+    @include column-flex(34%);
     float: right;
 }
 
@@ -101,17 +80,6 @@ ol {
 div.linkbox {
     text-align: center;
     padding: 0.5rem;
-}
-
-.pad {
-    padding: 0 !important;
-    /* padding: 1rem; */
-
-    h3,
-    h4 {
-        margin-top: 0;
-        padding-top: 0;
-    }
 }
 
 /* Misc */
@@ -171,11 +139,6 @@ div.linkbox {
     border: none;
 }
 
-.torrent_table tr {
-    /* vertical-align: top; */
-    vertical-align: middle;
-}
-
 .torrent_table .number_column {
     text-align: center;
 }
@@ -186,14 +149,6 @@ div.linkbox {
 }
 
 /* Text elements */
-h1,
-h2,
-h3,
-h4 {
-    margin: 0.5em 0;
-    font-weight: bold;
-}
-
 p {
     margin: 1em 0.5rem;
 }

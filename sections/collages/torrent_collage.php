@@ -231,11 +231,7 @@ foreach ($GroupIDs as $GroupID) {
   id="group_<?=$GroupID?>">
   <td></td>
 
-  <td class="center">
-    <div title="<?=$TorrentTags->title()?>"
-      class="tooltip <?=Format::css_category($GroupCategoryID)?> <?=$TorrentTags->css_name()?>">
-    </div>
-  </td>
+  <td></td>
 
   <td>
     <span class="brackets">

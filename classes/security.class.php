@@ -65,7 +65,7 @@ class Security
         }
 
         # blake3
-        if ($ENV->FEATURE_SEQHASH && !extension_loaded('blake3')) {
+        if ($ENV->FEATURE_BIOPHP && !extension_loaded('blake3')) {
             error('Please install and enable the php-blake3 extension.');
         }
 

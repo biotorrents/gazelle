@@ -516,7 +516,15 @@ function json_print($Status, $Message)
  */
 function json_error($Code)
 {
-    echo json_encode(add_json_info(['status' => 'failure', 'error' => $Code, 'response' => []]));
+    echo json_encode(
+        add_json_info(
+            [
+                'status' => 'failure',
+                'error' => $Code,
+                'response' => []
+            ]
+        )
+    );
     die();
 }
 

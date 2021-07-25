@@ -50,6 +50,7 @@ $Styles = array_filter(
         [
           'vendor/jquery-ui.min',
           'vendor/normalize',
+          'vendor/skeleton',
           #'assets/fonts/fa/css/all.min',
           'global'
         ],

@@ -137,9 +137,11 @@ class ENV
      * toArray
      *
      * Takes an object and returns an array.
+     * @param object|string $obj Thing to turn into an array
+     * @return $new New recursive array with $obj contents
      * @see https://ben.lobaugh.net/blog/567/php-recursively-convert-an-object-to-an-array
      */
-    public function toArray(object $obj)
+    public function toArray($obj)
     {
         if (is_object($obj)) {
             $obj = (array) $obj;
@@ -242,10 +244,10 @@ class ENV
      * string(32) "52963afccc006d2bce3c890ad9e8f73a"
      *
      * @param string $fn Callback function
-     * @param object $obj Object to operate on
+     * @param object|string $obj Object or property to operate on
      * @return object $RAO Mapped RecursiveArrayObject
      */
-    public function map(string $fn = '', object $obj = null)
+    public function map(string $fn = '', $obj = null)
     {
         # Set a default function if desired
         if (empty($fn) && !is_object($fn)) {

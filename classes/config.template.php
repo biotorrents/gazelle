@@ -382,7 +382,7 @@ ENV::setPub('FEATURE_SET_ENC_KEY_PUBLIC', false);
 
 # Attempt to support the Seqhash algorithm
 # https://blog.libredna.org/post/seqhash/
-ENV::setPub('FEATURE_SEQHASH', true);
+ENV::setPub('FEATURE_BIOPHP', true);
 
 
 /**

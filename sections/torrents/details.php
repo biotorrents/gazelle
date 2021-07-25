@@ -413,16 +413,16 @@ $Index++;
         class="torrent_table details<?=$GroupFlags['IsSnatched'] ? ' snatched' : ''?>"
         id="torrent_details">
         <tr class="colhead_dark">
-          <td width="80%"><strong>Torrents</strong></td>
-          <td><strong>Size</strong></td>
-          <td class="sign snatches">
+          <th width="80%"><strong>Torrents</strong></th>
+          <th><strong>Size</strong></th>
+          <th class="sign snatches">
             ↻
-          <td class="sign seeders">
+          <th class="sign seeders">
             &uarr;
-          </td>
-          <td class="sign leechers">
+          </th>
+          <th class="sign leechers">
             &darr;
-          </td>
+          </th>
         </tr>
         <?php
 function filelist($Str)

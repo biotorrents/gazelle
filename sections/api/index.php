@@ -266,6 +266,7 @@ switch ($_GET['action']) {
   */
 
   case 'autofill':
+    require_once "$ENV->SERVER_ROOT/sections/api/autofill/doi.php";
     /*
     if ($_GET['cat'] === 'anime') {
         require_once "$ENV->SERVER_ROOT/sections/api/autofill/anime.php";

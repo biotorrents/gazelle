@@ -76,7 +76,7 @@ class TorrentForm
 
     /**
      * ====================
-     * = Twig based class =
+     * = Twig-based class =
      * ====================
     */
 
@@ -403,7 +403,7 @@ HTML;
      * upload_form
      *
      * Finally the "real" upload form.
-     * Contains all the field you'd expect.
+     * Contains all the fields you'd expect.
      *
      * This is currently one enormous function.
      * It has sub-functions, variables, and everything.
@@ -438,7 +438,7 @@ HTML;
 
 
         /**
-         * Semantic Version
+         * Version
          */
         
         $Version = display_str($Torrent['Version']);
@@ -774,6 +774,7 @@ HTML;
          */
         function formatSelect($trID = '', $Label = '', $Torrent = [], $FileTypes = [])
         {
+            #var_dump($FileTypes);
             echo <<<HTML
             <tr id="$trID">
               <td>
@@ -781,21 +782,24 @@ HTML;
                   $Label
                 <label>
               </td>
-              
+
               <td>
                 <select id="container" name="container">
                   <option value="Autofill">Autofill</option>
 HTML;
 
-            foreach ($FileTypes as $Type => $Extensions) {
-                echo "<option value='$Type'";
+            foreach ($FileTypes as $FileType) {
+                foreach ($FileType as $Type => $Extensions) {
+                    echo "<option value='$Type'";
 
-                if ($Type === ($Torrent['Container'] ?? false)) {
-                    echo ' selected';
+                    if ($Type === ($Torrent['Container'] ?? false)) {
+                        echo ' selected';
+                    }
+
+                    echo ">$Type</option>\n";
                 }
-
-                echo ">$Type</option>\n";
             }
+        
 
             echo <<<HTML
                 </select>
@@ -832,6 +836,7 @@ HTML;
             $Label = 'Format',
             $Torrent = $Torrent,
             #$FileTypes = array_column($ENV->META, $Formats)
+            $FileTypes = $ENV->CATS->{2}->Formats
         );
 
 
@@ -842,7 +847,8 @@ HTML;
             $trID = 'container_scalars_vectors_tr',
             $Label = 'Format',
             $Torrent = $Torrent,
-            $FileTypes = $ENV->flatten($ENV->CATS->{5}->Formats)
+            #$FileTypes = $ENV->flatten($ENV->CATS->{5}->Formats)
+            $FileTypes = $ENV->CATS->{5}->Formats
         );
 
 
@@ -853,7 +859,8 @@ HTML;
             $trID = 'container_images_tr',
             $Label = 'Format',
             $Torrent = $Torrent,
-            $FileTypes = array_merge($this->ImgFormats, $this->PlainFormats)
+            #$FileTypes = array_merge($this->ImgFormats)
+            $FileTypes = $ENV->CATS->{8}->Formats
         );
 
 
@@ -864,7 +871,8 @@ HTML;
             $trID = 'container_spatial_tr',
             $Label = 'Format',
             $Torrent = $Torrent,
-            $FileTypes = array_merge($this->MapVectorFormats, $this->MapRasterFormats, $this->ImgFormats, $this->PlainFormats)
+            #$FileTypes = array_merge($this->MapVectorFormats, $this->MapRasterFormats, $this->ImgFormats, $this->PlainFormats)
+            $FileTypes = $ENV->CATS->{9}->Formats
         );
 
 
@@ -875,7 +883,8 @@ HTML;
             $trID = 'container_documents_tr',
             $Label = 'Format',
             $Torrent = $Torrent,
-            $FileTypes = array_merge($this->BinDocFormats, $this->CpuGenFormats, $this->PlainFormats)
+            #$FileTypes = array_merge($this->BinDocFormats, $this->CpuGenFormats, $this->PlainFormats)
+            $FileTypes = $ENV->CATS->{11}->Formats
         );
 
 
@@ -886,7 +895,8 @@ HTML;
             $trID = 'archive_tr',
             $Label = 'Archive',
             $Torrent = $Torrent,
-            $FileTypes = $this->Archives
+            # $ENV->Archives nests -1 deep
+            $FileTypes = [$ENV->META->Formats->Archives]
         );
 
 
@@ -1078,6 +1088,22 @@ HTML;
               </td>
             </tr>
 HTML;
+        }
+
+
+        /**
+         * Seqhash
+         */
+
+        if ($ENV->FEATURE_BIOPHP && !$this->DisabledFlag && $this->NewTorrent) {
+            $TorrentSeqhash = display_str($Torrent['Seqhash']);
+            echo $Twig->render(
+                'torrent_form/seqhash.html',
+                [
+                    'db' => $ENV->DB->seqhash,
+                    'seqhash' => $TorrentSeqhash,
+                ]
+            );
         }
 
 

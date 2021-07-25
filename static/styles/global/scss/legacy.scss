@@ -47,6 +47,7 @@ textarea {
     outline: none;
 }
 
+/* 2021-07-24
 select {
     padding: 5px 10px;
     background-color: white;
@@ -58,6 +59,7 @@ select {
     -moz-appearance: none;
     appearance: none;
 }
+*/
 
 h2 .group_cat {
     height: 16px;
@@ -129,6 +131,7 @@ div.collage_image {
     cursor: pointer;
 }
 
+/* 2021-07-24
 button,
 input[type="button"],
 input[type="submit"] {
@@ -139,6 +142,7 @@ input[type="submit"] {
     border: none;
     color: #000;
 }
+*/
 
 .spoilerButton {
     cursor: pointer;
@@ -582,6 +586,7 @@ tr.torrent .bookmark > a:after {
  * Fix long release descriptions overflowing containers (all browsers).
  * Fix flowing issues in the report resolving pages.
  */
+/* 2021-07-24
 .wrap_overflow,
 .filelist_table td,
 .reportinfo_table,
@@ -593,6 +598,7 @@ tr.torrent .bookmark > a:after {
     word-break: break-word;
     hyphens: auto;
 }
+*/
 
 .filelist_table td:first-child {
     word-break: break-all;
@@ -1051,21 +1057,29 @@ div.torrent_artists {
 }
 */
 
+/* 2021-07-24
 .flex {
     display: flex;
 }
+*/
 
+/* 2021-07-24
 .flex > .grow {
     flex-grow: 1;
 }
+*/
 
+/* 2021-07-24
 .flex > .shrink {
     flex-shrink: 1;
 }
+*/
 
+/* 2021-07-24
 input[type="search"] {
     -webkit-appearance: textfield;
 }
+*/
 
 #lightbox > img {
     max-width: 100%;
@@ -1089,10 +1103,12 @@ input[type="search"] {
     display: flex;
 }
 
+/* 2021-07-24
 #publickey {
     width: initial;
     font-family: monospace;
 }
+*/
 
 .hidden {
     display: none;
@@ -1103,12 +1119,15 @@ form.edit_form[name="screenshots_form"] img {
     width: 400px;
 }
 
+/* 2021-07-24
 #dbcrypt {
     position: fixed;
     top: 10px;
     right: 10px;
 }
+*/
 
+/* 2021-07-24
 #dbcrypt:after {
     content: "!";
     display: block;
@@ -1122,3 +1141,4 @@ form.edit_form[name="screenshots_form"] img {
     background: red;
     border-radius: 100px;
 }
+*/

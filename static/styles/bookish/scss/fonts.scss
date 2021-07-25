@@ -27,6 +27,14 @@ header,
     text-align: center;
 }
 
+/* Section headers ("box" class heading) */
+.head {
+    padding: 0.5em 0;
+    font-size: 120%;
+    border-bottom: 1px solid #e1e1e1;
+    margin-bottom: 1rem;
+}
+
 /* Links */
 a {
     color: black;

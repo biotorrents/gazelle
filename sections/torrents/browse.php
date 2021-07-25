@@ -195,7 +195,7 @@ View::show_header('Browse Torrents', 'browse');
         <?php
         } ?>
 
-        <table class="layout">
+        <table class="layout torrent_search">
           <tr id="numbers" class="ftr_advanced<?=$HideAdvanced?>">
             <td class="label">
               <!--
@@ -607,17 +607,25 @@ View::show_header('Browse Torrents', 'browse');
           </tr>
         </table>
 
-        <!-- Result count and submit button -->
+        <!-- Result count, submit, and reset -->
         <div class="submit ft_submit">
-          <span class="float_left"><?=number_format($NumResults)?>
-            Results</span>
-          <input type="submit" value="Search" />
+          <span class="float_left">
+            <?=number_format($NumResults)?>
+            Results
+          </span>
+
+          <input type="submit" value="Search" class="button-primary"/>
+
           <input type="hidden" name="action" id="ft_type"
             value="<?=($AdvancedSearch ? 'advanced' : 'basic')?>" />
+
           <input type="hidden" name="searchsubmit" value="1" />
+
           <input type="button" value="Reset" <input type="button" value="Reset"
             onclick="window.location.href = 'torrents.php<?php if (isset($_GET['action']) && $_GET['action'] === 'advanced') { ?>?action=advanced<?php } ?>'" />
+
           &emsp;
+
           <?php if ($Search->has_filters()) { ?>
           <input type="submit" name="setdefault" value="Make Default" />
           <?php }

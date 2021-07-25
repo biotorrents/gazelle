@@ -24,12 +24,6 @@ $shadow: 2px 2px 10px -2px slategray;
  * Common elements
  */
 
-.head {
-    background: #b3e5fc;
-    color: black;
-    padding: 0.5em 1rem;
-}
-
 /* Alternating tables */
 #request_table .request:nth-of-type(even) {
     background: white;
@@ -51,37 +45,6 @@ $shadow: 2px 2px 10px -2px slategray;
 /**
  * Fancy torrent search input
  */
-@mixin common-elements() {
-    border: none;
-    background: white;
-    font-size: 100%;
-    margin: 0 0.25rem;
-    padding: 0.5rem;
-    outline: none;
-}
-
-input,
-input[type="search"],
-input[type="text"] {
-    @include common-elements;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    transition: ease-in-out 0.1s;
-
-    &:focus {
-        border-bottom: 1px solid $lb100;
-    }
-}
-
-select,
-input[type="select"] {
-    @include common-elements;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 0;
-
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-}
 
 checkbox,
 input[type="checkbox"] {
@@ -91,27 +54,6 @@ input[type="checkbox"] {
 
 input[type="file"] {
     border: none;
-}
-
-/* Buttons */
-button:not(.editor-toolbar button),
-input[type="button"],
-input[type="submit"] {
-    background: $lb200;
-    border: none;
-    border-radius: 0.25rem;
-    box-shadow: $shadow;
-    margin: 0 0.25rem;
-    padding: 0.75rem 1rem;
-    cursor: pointer;
-
-    &:hover {
-        background: $lb50;
-    }
-
-    &:focus {
-        background: $lb300;
-    }
 }
 
 /**

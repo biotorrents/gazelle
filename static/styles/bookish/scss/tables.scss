@@ -2,25 +2,17 @@
 }
 
 table {
-    /* border: 2px solid rgba(0, 0, 0, 0.01); */
-    border-collapse: collapse;
     width: 100%;
 
-    /*
-    * {
-        vertical-align: middle;
+    th {
+        font-size: 120%;
     }
-    */
 
+    /*
     tr {
         background-color: white;
     }
-
-    td,
-    th {
-        padding: 0.5rem;
-        text-align: left;
-    }
+    */
 }
 
 /**
@@ -39,18 +31,15 @@ table {
     }
 }
 
-/* Classes */
+/**
+ * colhead
+ * The main table heading.
+ */
 .colhead {
-    background: $lb100;
+    padding: 0.5em 0;
+    border-bottom: 1px solid #e1e1e1;
+    font-size: 120%;
     font-weight: bold;
-    color: black;
-}
-
-td.colhead,
-.colhead td,
-.colhead th {
-    padding-left: 10px;
-    padding-right: 10px;
 }
 
 .colhead .sign,
@@ -66,12 +55,28 @@ td.colhead,
     font-weight: bold;
 }
 
-.colhead_dark {
-    background: $lb100;
-    color: black;
+/* Torrent and collage tables */
+.torrent_table,
+.collage_table {
+    tr:nth-child(2n) {
+        background-color: whitesmoke;
+    }
+
+    tr:nth-child(2n-1) {
+        background-color: white;
+    }
+
+    div.tags {
+        font-weight: normal;
+        max-width: 500px;
+    }
+
+    span {
+        float: right;
+    }
 }
 
-/* Torrent and collage tables */
+/*
 .torrent_table,
 .collage_table {
     tr.group {
@@ -108,13 +113,14 @@ td.colhead,
     tr .center,
     td {
         vertical-align: middle;
-        /* text-align: center; */
+        /* text-align: center; * /
     }
     div.tags {
         font-weight: normal;
         max-width: 500px;
     }
 }
+*/
 
 .torrent_table .group_torrent .torrent span {
     font-weight: normal;
