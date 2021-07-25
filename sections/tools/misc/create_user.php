@@ -110,7 +110,7 @@ if (isset($_POST['Username'])) {
       </tr>
       <tr>
         <td colspan="2" align="right">
-          <input type="submit" name="submit" value="Create User" class="submit" />
+          <input type="submit" name="submit" value="Create User" class="submit button-primary" />
         </td>
       </tr>
     </table>

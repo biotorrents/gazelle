@@ -180,7 +180,7 @@ View::show_header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections
         <input type="hidden" name="action" value="search" />
       </div>
 
-      <table cellpadding="6" cellspacing="1" border="0" class="layout torrent_search" width="100%">
+      <table cellpadding="6" cellspacing="1" border="0" class="skeleton-fix" width="100%">
         <tr id="search_terms">
           <td class="label"></td>
           <td>

@@ -112,7 +112,7 @@ if (isset($_POST['torrents'])) {
                 <option value="m" <?=$_POST['scale'] == 'm' ? 'selected' : ''?>>MB</option>
                 <option value="g" <?=!isset($_POST['scale']) || $_POST['scale'] == 'g' ? 'selected' : ''?>>GB</option>
             </select><br /><br />
-            <input type="submit" value="Submit" />
+            <input type="submit" class="button-primary" value="Submit" />
         </form>
     </div>
 </div>

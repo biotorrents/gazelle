@@ -244,7 +244,7 @@ $encoded_artist = urlencode($encoded_artist);
     <div class="box">
       <div class="head"><strong>Info</strong></div>
       <div class="pad">
-        <table class="layout request_form">
+        <table class="request_form skeleton-fix">
           <tr>
             <td class="label">Created</td>
             <td>

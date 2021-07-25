@@ -567,17 +567,6 @@ CREATE TABLE `invite_tree` (
 
 
 -- 2020-03-09
-CREATE TABLE `label_aliases` (
-  `ID` int NOT NULL AUTO_INCREMENT,
-  `BadLabel` varchar(100) NOT NULL, -- todo: 100 vs. 255?
-  `AliasLabel` varchar(100) NOT NULL, -- todo
-  PRIMARY KEY (`ID`),
-  KEY `BadLabel` (`BadLabel`),
-  KEY `AliasLabel` (`AliasLabel`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
--- 2020-03-09
 CREATE TABLE `last_sent_email` (
   `UserID` int NOT NULL,
   PRIMARY KEY (`UserID`)

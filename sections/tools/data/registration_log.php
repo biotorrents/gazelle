@@ -80,7 +80,7 @@ $DB->set_query_id($QueryID);
   <input type="hidden" name="action" value="registration_log" />
   Joined after: <input type="date" name="after_date" />
   Joined before: <input type="date" name="before_date" />
-  <input type="submit" />
+  <input type="submit" class="button-primary" />
 </form>
 
 <?php

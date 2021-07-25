@@ -53,7 +53,7 @@ View::show_header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="layout admin_tools">
+      <table class="admin-tools skeleton-fix">
         <tr class="colhead">
           <td>Administration</td>
         </tr>
@@ -72,7 +72,7 @@ View::show_header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="layout admin_tools">
+      <table class="admin-tools skeleton-fix">
         <tr class="colhead">
           <td>Announcements</td>
         </tr>
@@ -89,7 +89,7 @@ View::show_header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="layout admin_tools">
+      <table class="admin-tools skeleton-fix">
         <tr class="colhead">
           <td>Community</td>
         </tr>
@@ -107,7 +107,7 @@ View::show_header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="layout admin_tools">
+      <table class="admin-tools skeleton-fix">
         <tr class="colhead">
           <td>Finances</td>
         </tr>
@@ -124,13 +124,12 @@ View::show_header('Staff Tools');
   // begin Queue category
   $ToolsHTML = "";
   create_row("Auto-Enable requests", "tools.php?action=enable_requests", check_perms("users_mod"));
-  create_row("Email deletion requests", "tools.php?action=delete_email", check_perms("users_mod"));
   create_row("Login watch", "tools.php?action=login_watch", check_perms("admin_login_watch"));
 
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="layout admin_tools">
+      <table class="admin-tools skeleton-fix">
         <tr class="colhead">
           <td>Queue</td>
         </tr>
@@ -149,7 +148,7 @@ View::show_header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="layout admin_tools">
+      <table class="admin-tools skeleton-fix">
         <tr class="colhead">
           <td>Managers</td>
         </tr>
@@ -171,7 +170,7 @@ View::show_header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="layout admin_tools">
+      <table class="admin-tools skeleton-fix">
         <tr class="colhead">
           <td>Development</td>
         </tr>
@@ -200,7 +199,7 @@ View::show_header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="layout admin_tools">
+      <table class="admin-tools skeleton-fix">
         <tr class="colhead">
           <td>Site Information</td>
         </tr>
@@ -215,7 +214,6 @@ View::show_header('Staff Tools');
   create_row("Collage recovery", "collages.php?action=recover", check_perms("site_collages_recover"));
   create_row("Manage freeleech tokens", "tools.php?action=tokens", check_perms("users_mod"));
   create_row("Multiple freeleech", "tools.php?action=multiple_freeleech", check_perms("users_mod"));
-  create_row("Label aliases", "tools.php?action=label_aliases", check_perms("users_mod"));
   create_row("Tag aliases", "tools.php?action=tag_aliases", check_perms("users_mod"));
   create_row("Batch tag editor", "tools.php?action=edit_tags", check_perms("users_mod"));
   create_row("Official tags manager", "tools.php?action=official_tags", check_perms("users_mod"));
@@ -224,7 +222,7 @@ View::show_header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="layout admin_tools">
+      <table class="admin-tools skeleton-fix">
         <tr class="colhead">
           <td>Torrents</td>
         </tr>

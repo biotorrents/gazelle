@@ -119,7 +119,7 @@ View::show_header("Service Stats"); ?>
             <input type="hidden" name="auth"
               value="<?=$LoggedUser['AuthKey']?>" />
             <input type="hidden" name="global_flush" value="1" />
-            <input type="submit" value="Flush" />
+            <input type="submit" class="button-primary" value="Flush" />
           </form>
         </td>
       </tr>

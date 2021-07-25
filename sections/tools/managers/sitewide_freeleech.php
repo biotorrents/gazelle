@@ -94,7 +94,7 @@ if (isset($_POST['type'])) {
         <br />
         <input id="tag_duration" type="number" name="duration" placeholder="Duration (hours)" value="" />
         <br />
-        <input type="submit" value="RELEASE THE LEECH" />
+        <input type="submit" class="button-primary" value="RELEASE THE LEECH" />
       </form>
     </div>
     <div class="box text-align: center;">
@@ -106,7 +106,7 @@ if (isset($_POST['type'])) {
         <br />
         <input id="global_duration" type="number" name="duration" placeholder="Duration (hours)" value="" />
         <br />
-        <input type="submit" value="RELEASE THE LEECH" />
+        <input type="submit" class="button-primary" value="RELEASE THE LEECH" />
     </div>
   </div>
   <? View::show_footer();

@@ -1,4 +1,6 @@
 <?
+#declare(strict_types = 1);
+
 if (!check_perms('admin_whitelist')) {
   error(403);
 }
@@ -28,7 +30,7 @@ $DB->query('
         <input type="text" size="10" name="peer_id" placeholder="Peer ID" />
       </td>
       <td>
-        <input type="submit" value="Create" />
+        <input type="submit" class="button-primary" value="Create" />
       </td>
     </tr>
   </table>
@@ -56,7 +58,7 @@ while (list($ID, $Client, $Peer_ID) = $DB->next_record()) {
         <input type="text" size="10" name="peer_id" value="<?=$Peer_ID?>" />
       </td>
       <td>
-        <input type="submit" name="submit" value="Edit" />
+        <input type="submit" name="submit" class="button-primary" value="Edit" />
         <input type="submit" name="submit" value="Delete" />
       </td>
     </tr>

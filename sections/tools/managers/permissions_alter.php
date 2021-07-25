@@ -25,7 +25,7 @@ View::show_header('Manage Permissions', 'validate');
     <a href="tools.php?action=permissions" class="brackets">Back to permission list</a>
     <a href="tools.php" class="brackets">Back to tools</a>
   </div>
-  <table class="permission_head layout box">
+  <table class="permission_head skeleton-fix">
     <tr>
       <td class="label">Permission name</td>
       <td><input type="text" name="name" id="name"

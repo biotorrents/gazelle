@@ -44,7 +44,7 @@ list ($NumResults) = $DB->next_record();
   <input type="hidden" name="action" value="email_blacklist" />
   <input type="email" name="email" size="30" placeholder="Email" />
   <input type="search" name="comment" size="60" placeholder="Comment" />
-  <input type="submit" value="Search" />
+  <input type="submit" class="button-primary" value="Search" />
 </form>
 <div class="linkbox pager">
   <br />
@@ -68,8 +68,8 @@ list ($NumResults) = $DB->next_record();
       <input type="hidden" name="action" value="email_blacklist_alter" />
       <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
       <td><input type="text" name="email" size="30" /></td>
-      <td colspan="2"><input type="text" name="comment" size="60" /></td>
-      <td><input type="submit" value="Create" /></td>
+      <td colspan="2"><input type="text" name="comment" size="50" /></td>
+      <td><input type="submit" class="button-primary" value="Create" /></td>
     </form>
   </tr>
 <?
@@ -83,10 +83,10 @@ list ($NumResults) = $DB->next_record();
         <input type="hidden" name="id" value="<?=$Result['ID']?>" />
         <input type="email" name="email" value="<?=display_str($Result['Email'])?>" size="30" />
       </td>
-      <td><input type="text" name="comment" value="<?=display_str($Result['Comment'])?>" size="60" /></td>
+      <td><input type="text" name="comment" value="<?=display_str($Result['Comment'])?>" size="50" /></td>
       <td><?=Users::format_username($Result ['UserID'], false, false, false)?><br /><?=time_diff($Result ['Time'], 1)?></td>
       <td>
-        <input type="submit" name="submit" value="Edit" />
+        <input type="submit" name="submit" class="button-primary" value="Edit" />
         <input type="submit" name="submit" value="Delete" />
       </td>
     </form>

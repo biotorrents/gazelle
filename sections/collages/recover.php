@@ -39,7 +39,7 @@ View::show_header('Collage recovery!');
           <input type="text" name="collage_id" size="8" />
         </div>
         <div class="submit_div">
-          <input value="Recover!" type="submit" />
+          <input value="Recover" class="button-primary" type="submit" />
         </div>
       </form>
     </div>

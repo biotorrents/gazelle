@@ -45,7 +45,7 @@ View::show_header(
       <div id="preview" class="hidden"></div>
       <div id="buttons" class="center">
         <input type="button" value="Preview" onclick="Quick_Preview();" />
-        <input type="submit" value="Send message" />
+        <input type="submit" class="button-primary" value="Send message" />
       </div>
     </div>
   </form>

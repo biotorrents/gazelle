@@ -78,7 +78,7 @@ $Textarea = new TEXTAREA_PREVIEW(
 ); ?>
 
       <div class="center">
-        <input type="submit"
+        <input type="submit" class="button-primary"
           value="<?= ($_GET['action'] === 'news') ? 'Create news post' : 'Edit news post';?>">
       </div>
     </div>

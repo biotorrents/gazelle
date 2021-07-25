@@ -109,7 +109,7 @@ $DB->set_query_id($Bans);
             value="<?=(!empty($_GET['notes']) ? display_str($_GET['notes']) : '')?>" />
         </td>
         <td>
-          <input type="submit" value="Search" />
+          <input type="submit" class="button-primary" value="Search" />
         </td>
       </tr>
     </table>
@@ -143,7 +143,7 @@ $DB->set_query_id($Bans);
         <input type="text" size="72" name="notes" />
       </td>
       <td>
-        <input type="submit" name="submit" value="Create" />
+        <input type="submit" name="submit" class="button-primary" value="Create" />
       </td>
     </form>
   </tr>

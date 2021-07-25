@@ -1180,7 +1180,7 @@ if (check_perms('users_mod', $Class)) { ?>
       </div>
     </div>
 
-    <table class="layout box" id="user_info_box">
+    <table class="box skeleton-fix" id="user_info_box">
       <tr class="colhead">
         <td colspan="2">
           User Information
@@ -1452,7 +1452,7 @@ if (!$DisablePoints) {
     </table>
 
     <?php if (check_perms('users_warn')) { ?>
-    <table class="layout box" id="warn_user_box">
+    <table class="box skeleton-fix" id="warn_user_box">
       <tr class="colhead">
         <td colspan="2">
           Warnings
@@ -1514,7 +1514,7 @@ if (!$DisablePoints) {
       <?php } ?>
     </table>
     <?php if (check_perms('users_disable_any')) { ?>
-    <table class="layout box" id="user_lock_account">
+    <table class="box skeleton-fix" id="user_lock_account">
       <tr class="colhead">
         <td colspan="2">
           Lock Account
@@ -1540,7 +1540,7 @@ if (!$DisablePoints) {
       </tr>
     </table>
     <?php }  ?>
-    <table class="layout box" id="user_privs_box">
+    <table class="box skeleton-fix" id="user_privs_box">
       <tr class="colhead">
         <td colspan="2">
           User Privileges
@@ -1661,7 +1661,7 @@ if (!$DisablePoints) {
   } ?>
     </table>
     <?php if (check_perms('users_logout')) { ?>
-    <table class="layout box" id="session_box">
+    <table class="box skeleton-fix" id="session_box">
       <tr class="colhead">
         <td colspan="2">
           Session
@@ -1682,7 +1682,7 @@ if (!$DisablePoints) {
       DonationsView::render_mod_donations($UserID);
   }
 ?>
-    <table class="layout box" id="submit_box">
+    <table class="box skeleton-fix" id="submit_box">
       <tr class="colhead">
         <td colspan="2">
           Submit

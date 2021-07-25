@@ -419,7 +419,7 @@ HTML;
 
         # Start printing the form
         echo '<h2 class="header">Torrent Form</h2>';
-        echo '<table class="torrent_form">';
+        echo '<table class="torrent_form skeleton-fix">';
 
         
         /**

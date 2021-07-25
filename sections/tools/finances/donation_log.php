@@ -145,7 +145,7 @@ if (empty($_GET['email']) && empty($_GET['source']) && empty($_GET['username']) 
       </tr>
       <tr>
         <td>
-          <input type="submit" value="Search donation log" />
+          <input type="submit" class="button-primary" value="Search donation log" />
         </td>
       </tr>
     </table>

@@ -435,7 +435,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
         <br />
         <br />
         <?php } ?>
-        <input type="button"
+        <input type="button" class="button-primary"
           onclick="ajax.post('index.php','poll',function(response) { $('#poll_container').raw().innerHTML = response});"
           value="Vote" />
       </form>
@@ -470,9 +470,9 @@ if ($ThreadInfo['NoPoll'] == 0) {
   </div>
 </div>
 <?php
-} //End Polls
+} // End Polls
 
-//Sqeeze in stickypost
+// Sqeeze in stickypost
 if ($ThreadInfo['StickyPostID']) {
     if ($ThreadInfo['StickyPostID'] != $Thread[0]['ID']) {
         array_unshift($Thread, $ThreadInfo['StickyPost']);
@@ -634,6 +634,7 @@ if (!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
     ));
       }
   }
+
 if (check_perms('site_moderate_forums')) {
     G::$DB->query("
       SELECT ID, AuthorID, AddedTime, Body
@@ -670,7 +671,7 @@ if (check_perms('site_moderate_forums')) {
           $ID = 'topic_notes',
       ); ?>
         </div>
-        <input type="submit" value="Save" />
+        <input type="submit" class="button-primary" value="Save" />
       </td>
     </tr>
   </table>

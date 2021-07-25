@@ -186,7 +186,7 @@ echo $Pages;
   </div>
 </div>
 
-<table class="forum_index alternate_rows" width="100%">
+<table class="forum_index skeleton-fix">
   <tr class="colhead">
     <td style="width: 2%;"></td>
     <td>Latest</td>

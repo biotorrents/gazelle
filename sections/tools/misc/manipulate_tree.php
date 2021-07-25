@@ -109,7 +109,7 @@ if ($_POST['id']) {
           if ($_POST['perform'] === 'inviteprivs') { echo ' selected="selected"'; } ?>>Disable invites privileges</option>
           </select>
         </td>
-        <td align="left"><input type="submit" value="Go" /></td>
+        <td align="left"><input type="submit" class="button-primary" value="Go" /></td>
       </tr>
     </table>
   </form>

@@ -24,7 +24,7 @@ View::show_header('Better');
 </h3>
 
 <div class="box pad">
-  <table class="better_list">
+  <table class="skeleton-fix">
     <tr class="colhead">
       <td style="width: 150px;">Method</td>
       <td style="width: 400px;">Additional Information</td>

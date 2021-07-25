@@ -205,10 +205,6 @@ switch ($_REQUEST['action']) {
     include SERVER_ROOT.'/sections/tools/managers/tag_aliases.php';
     break;
 
-  case 'label_aliases':
-    include SERVER_ROOT.'/sections/tools/managers/label_aliases.php';
-    break;
-
   case 'global_notification':
     include SERVER_ROOT.'/sections/tools/managers/global_notification.php';
     break;
