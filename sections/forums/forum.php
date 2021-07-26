@@ -145,7 +145,7 @@ View::show_header("Forums $ENV->CRUMB ".$Forums[$ForumID]['Name']);
 
             <tr>
               <td colspan="2" style="text-align: center;">
-                <input type="submit" name="submit" value="Search" />
+                <input type="submit" name="submit" class="button-primary" value="Search" />
               </td>
             </tr>
           </table>

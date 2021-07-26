@@ -349,7 +349,7 @@ if (!$OwnProfile && !$LoggedUser['DisablePoints']) { ?>
           <input type="hidden" name="to" value="<?=$UserID?>">
           <div class="flex_input_container">
             <input type="text" name="amount" placeholder="Amount">
-            <input type="submit" value="Send">
+            <input type="submit" class="button-primary" value="Send">
           </div>
           <textarea name="message" rows="2" placeholder="Message"></textarea>
           <label><input type="checkbox" name="adjust"> Adjust for tax?</label>

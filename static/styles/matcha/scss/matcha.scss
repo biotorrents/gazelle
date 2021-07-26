@@ -209,18 +209,7 @@ ul.thin li { margin: 0px 0px; padding: 0px; }
     padding: 1em 0;
     text-align: center;
     width: 100%;
-    /*
-    opacity: 0;
-    transition: ease-in-out 0.2s;
-    transition-delay: 0.5s;
-    */
 }
-
-/*
-#footer:hover {
-  opacity: 1;
-}
-*/
 
 #logo {
     background: url("/static/common/logos/matcha.png") no-repeat center;
@@ -537,23 +526,6 @@ input.hidden {
     /* margin-bottom: 10px; */
 }
 
-/*
- .main_column {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  max-width: 85%;
-}
-
-.main_column table {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  margin-bottom: 1em;
-  /* margin-bottom: 10px; *
-}
-*/
-
 .box {
     /* font-size: 8pt; */
     background-color: white;
@@ -569,15 +541,6 @@ input.hidden {
     float: right;
     width: 250px;
 }
-
-/*
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  float: right;
-  width: 250px;
-}
-*/
 
 /*
  * Generic Layout

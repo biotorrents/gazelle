@@ -173,13 +173,20 @@ main {
 }
 
 #logo {
-    /* width: 250px; */
+    width: 220px;
     height: 50px;
     background-image: url("/static/common/logos/torrents.bio.png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
-    margin: 1em 0;
+    margin: 1rem auto;
+
+    &:after {
+        content: "℠";
+        font-size: 0.75rem;
+        font-weight: normal;
+        margin-left: 100%;
+    }
 }
 
 /**
@@ -187,6 +194,7 @@ main {
  */
 
 .center {
+    margin: auto;
     text-align: center;
     vertical-align: middle;
 }
@@ -199,8 +207,11 @@ main {
     cursor: default;
 }
 
+.login_form,
+.create_form,
 .notice {
-    width: 250px;
+    margin: auto;
+    max-width: 220px;
 }
 
 .info {
@@ -219,11 +230,4 @@ main {
     height: 500px;
     margin-left: -50%;
     overflow-y: scroll;
-}
-
-#logo::after {
-    content: "℠";
-    font-size: 0.75rem;
-    font-weight: normal;
-    margin-left: 93%;
 }

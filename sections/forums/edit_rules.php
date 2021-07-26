@@ -69,7 +69,7 @@ View::show_header();
         </td>
 
         <td>
-          <input type="submit" name="add" value="Add thread" />
+          <input type="submit" name="add" class="button-primary" value="Add thread" />
         </td>
       </form>
 

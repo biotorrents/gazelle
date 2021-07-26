@@ -34,8 +34,8 @@ $shadow: 2px 2px 10px -2px slategray;
  * For semi-transparent elements,
  * e.g., unread forum post borders
  */
-@mixin transparent-border($R: 0, $G: 0, $B: 0, $A: 1) {
-    border: 2px solid rgba($R, $G, $B, $A);
+@mixin transparent-border($color, $alpha) {
+    border: 2px solid change-color($color, $alpha);
 }
 
 /**
@@ -86,7 +86,7 @@ input[type="file"] {
 */
 
 .alertbar {
-    @include alertbar(gold);
+    @include alertbar(silver);
     /* @include alertbar($lb100); */
 
     .warning {
@@ -111,7 +111,7 @@ input[type="file"] {
 
 /* Inbox */
 tr.unreadpm {
-    background: #ffe0b2;
+    background: change-color(gold, $alpha: 0.25);
 }
 
 /* Used for loli/scat profile options */
@@ -125,9 +125,11 @@ tr.unreadpm {
 #coverCont {
     padding: 0.5rem;
     box-shadow: $shadow;
+    background: change-color(black, $alpha: 0.5);
 
     img {
         background: white;
-        border: 2px solid $lb700;
+        /* @include transparent-border($color: red, $alpha: 0.25); */
+        /* border: 2px solid $lb700; */
     }
 }

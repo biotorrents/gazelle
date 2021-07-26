@@ -120,7 +120,8 @@ table {
 }
 
 .forum_post.sticky_post {
-    border: 2px solid $SkeletonDefault;
+    border: 2px solid change-color(gold, $alpha: 0.5);
+    /* border: 2px solid $SkeletonDefault; */
 }
 
 td.label {

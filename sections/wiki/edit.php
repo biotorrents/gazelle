@@ -57,7 +57,7 @@ $ReplyText = new TEXTAREA_PREVIEW(
           <input type="button" value="Preview"
             class="hidden button_preview_<?=$ReplyText->getID()?>"
             tabindex="1" />
-          <input type="submit" value="Submit" />
+          <input type="submit" class="button-primary" value="Submit" />
         </div>
       </div>
     </form>

@@ -4,29 +4,41 @@
  *
  * https://git.oppaiti.me/Oppaitime/Gazelle/src/branch/master/static/styles/global.css
  */
+/* 2021-07-26
 .box h3 {
     font-size: 140%;
 }
+*/
 
+/* 2021-07-26
 .box h4 {
     font-size: 130%;
 }
+*/
 
+/* 2021-07-26
 .box h5 {
     font-size: 120%;
 }
+*/
 
+/* 2021-07-26
 .box h6 {
     font-size: 110%;
 }
+*/
 
+/* 2021-07-26
 .thin {
     box-sizing: border-box;
 }
+*/
 
+/* 2021-07-26
 .flex_input_container {
     display: flex;
 }
+*/
 
 .flex_input_container > input[type="text"] {
     flex-grow: 1;
@@ -168,17 +180,23 @@ abbr[title] {
     text-decoration: none;
 }
 
+/* 2021-07-26
 .line_new {
     color: green;
 }
+*/
 
+/* 2021-07-26
 .line_deleted {
     color: red;
 }
+*/
 
+/* 2021-07-26
 .line_moved {
     color: blue;
 }
+*/
 
 /* 2020-12-12
 .line_unchanged {
@@ -190,41 +208,57 @@ abbr[title] {
 }
 */
 
+/* 2021-07-26
 .log2 {
     color: yellow;
 }
+*/
 
+/* 2021-07-26
 .log3 {
     color: #0e88c6;
 }
+*/
 
+/* 2021-07-26
 .log4 {
     font-weight: bold;
 }
+*/
 
+/* 2021-07-26
 .log5 {
     text-decoration: underline;
 }
+*/
 
+/* 2021-07-26
 .good {
     font-weight: bold;
     color: green;
 }
+*/
 
+/* 2021-07-26
 .bad {
     font-weight: bold;
     color: red;
 }
+*/
 
+/* 2021-07-26
 .goodish {
     font-weight: bold;
     color: #35bf00;
 }
+*/
 
+/* 2021-07-26
 .badish {
     font-weight: bold;
     color: #e5b244;
 }
+*/
 
 pre {
     overflow: auto;
@@ -245,10 +279,12 @@ textarea {
     box-sizing: border-box;
 }
 
+/* 2021-07-26
 a.beta {
     font-weight: bold;
     color: #ff0000;
 }
+*/
 
 /* 2020-12-17
 strong.important_text {
@@ -1004,6 +1040,7 @@ div.torrent_artists {
 }
 */
 
+/* 2021-07-25
 #coverCont {
     position: fixed;
     max-width: 30%;
@@ -1011,16 +1048,21 @@ div.torrent_artists {
     background-repeat: no-repeat;
     z-index: 9999;
 }
+*/
 
+/* 2021-07-25
 #coverCont img {
     max-width: 100%;
 }
+*/
 
+/* 2021-07-25
 #covers img {
     display: block;
     margin-left: auto;
     margin-right: auto;
 }
+*/
 
 .search_warning {
     position: absolute;

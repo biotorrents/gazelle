@@ -98,7 +98,7 @@ while (list($Revision, $Title, $AuthorID, $Date) = $DB->next_record()) { ?>
 
       <tr>
         <td class="center" colspan="6">
-          <input type="submit" value="Compare" />
+          <input type="submit" class="button-primary" value="Compare" />
         </td>
       </tr>
     </table>
