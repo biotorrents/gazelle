@@ -18,7 +18,7 @@ if (!is_number($_GET['id'])) {
 }
 
 $PageID = $_GET['id'];
-$DB->query("
+$DB->prepared_query("
 SELECT
   `UserID`
 FROM
@@ -29,7 +29,7 @@ WHERE
 
 if (!$DB->has_results()) {
     if ($Type === 'torrent') {
-        $DB->query("
+        $DB->prepared_query("
         SELECT
           MAX(`Sort`)
         FROM
@@ -44,7 +44,7 @@ if (!$DB->has_results()) {
         }
 
         $Sort += 1;
-        $DB->query("
+        $DB->prepared_query("
         INSERT IGNORE
         INTO $Table(`UserID`, $Col, `Time`, `Sort`)
         VALUES(
@@ -55,7 +55,7 @@ if (!$DB->has_results()) {
         )
         ");
     } else {
-        $DB->query("
+        $DB->prepared_query("
         INSERT IGNORE
         INTO $Table(`UserID`, $Col, `Time`)
         VALUES(
@@ -69,7 +69,7 @@ if (!$DB->has_results()) {
     $Cache->delete_value('bookmarks_'.$Type.'_'.$LoggedUser['ID']);
     if ($Type === 'torrent') {
         $Cache->delete_value("bookmarks_group_ids_$UserID");
-        $DB->query("
+        $DB->prepared_query("
         SELECT
           `title`,
           `year`,
@@ -115,7 +115,7 @@ if (!$DB->has_results()) {
             $Feed->populate('torrents_bookmarks_t_'.$LoggedUser['torrent_pass'], $Item);
         }
     } elseif ($Type === 'request') {
-        $DB->query("
+        $DB->prepared_query("
         SELECT
           `UserID`
         FROM

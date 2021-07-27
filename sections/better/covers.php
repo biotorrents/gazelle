@@ -31,7 +31,7 @@ LIMIT 20
 $DB->exec_prepared_query();
 
 $Groups = $DB->to_array('id', MYSQLI_ASSOC);
-$DB->query('SELECT FOUND_ROWS()');
+$DB->prepared_query('SELECT FOUND_ROWS()');
 list($NumResults) = $DB->next_record();
 $Results = Torrents::get_groups(array_keys($Groups));
 

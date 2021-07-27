@@ -2,7 +2,7 @@
 declare(strict_types = 1);
 
 if (($Results = $Cache->get_value('better_single_groupids')) === false) {
-    $DB->query("
+    $DB->prepared_query("
     SELECT
       t.`ID` AS `TorrentID`,
       t.`GroupID` AS `GroupID`
