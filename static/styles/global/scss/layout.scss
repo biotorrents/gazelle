@@ -57,7 +57,7 @@ aside {
      * admonishment on torrent_form.class.php.
      */
     &.upload_notice {
-        @include transparent-border($R: 255, $A: 0.5);
+        @include transparent-border($c: red, $a: 0.5);
         margin: 1rem auto;
         padding-top: 1rem;
         text-align: center;

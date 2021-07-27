@@ -1808,11 +1808,10 @@ INSERT INTO `permissions` (`ID`, `Level`, `Name`, `Values`, `DisplayStaff`) VALU
 
 
 INSERT INTO `stylesheets` (`ID`, `Name`, `Description`, `Default`, `Additions`, `Color`) VALUES
-  (1, 'bookish', 'BioTorrents.de Stylesheet', '1', 'select=noto_sans;select=luxi_sans;select=cmodern_sans;select=noto_serif;select=luxi_serif;select=cmodern_serif;select=opendyslexic;select=comic_neue', '#000000'),
-  (2, 'matcha', 'Alternate Stylesheet', '0', 'select=noto_sans;select=luxi_sans;select=cmodern_sans;select=noto_serif;select=luxi_serif;select=cmodern_serif;select=opendyslexic;select=comic_neue', '#000000'),
-  (3, 'postmod', 'What.cd Stylesheet', '0', 'select=noto_sans;select=luxi_sans;select=cmodern_sans;select=noto_serif;select=luxi_serif;select=cmodern_serif;select=opendyslexic;select=comic_neue;', '#000000');
-  (4, 'oppai', 'Oppaitime Stylesheet', '0', 'select=noto_sans;select=luxi_sans;select=cmodern_sans;select=noto_serif;select=luxi_serif;select=cmodern_serif;select=opendyslexic;select=comic_neue', '#fbc2e5'),
-  (5, 'beluga', 'Beluga Stylesheet', '0', 'select=noto_sans;select=luxi_sans;select=cmodern_sans;select=noto_serif;select=luxi_serif;select=cmodern_serif;select=opendyslexic;select=comic_neue;checkbox=pink;checkbox=haze', '#23252a'),
+  (1, 'bookish', 'BioTorrents.de Stylesheet', '1', 'select=noto_sans;select=luxi_sans;select=cmodern_sans;select=noto_serif;select=luxi_serif;select=cmodern_serif;select=opendyslexic;select=comic_neue;checkbox=matcha', '#000000'),
+  (2, 'postmod', 'What.cd Stylesheet', '0', 'select=noto_sans;select=luxi_sans;select=cmodern_sans;select=noto_serif;select=luxi_serif;select=cmodern_serif;select=opendyslexic;select=comic_neue;', '#000000'),
+  (3, 'oppai', 'Oppaitime Stylesheet', '0', 'select=noto_sans;select=luxi_sans;select=cmodern_sans;select=noto_serif;select=luxi_serif;select=cmodern_serif;select=opendyslexic;select=comic_neue', '#fbc2e5'),
+  (4, 'beluga', 'Beluga Stylesheet', '0', 'select=noto_sans;select=luxi_sans;select=cmodern_sans;select=noto_serif;select=luxi_serif;select=cmodern_serif;select=opendyslexic;select=comic_neue;checkbox=pink;checkbox=haze', '#23252a');
 
 
 INSERT INTO `wiki_articles` (`ID`, `Revision`, `Title`, `Body`, `MinClassRead`, `MinClassEdit`, `Date`, `Author`) VALUES

@@ -65,7 +65,9 @@ a:hover {
 }
 
 /* Dupe for grouped "Details" on browse.php */
-a.search_link {
+a.search_link,
+a.brackets,
+table#taglist a {
     color: black;
     text-decoration: none;
 
@@ -81,7 +83,7 @@ a.search_link {
 blockquote {
     margin: 0.5em 2rem;
     padding: 1rem;
-    @include transparent-border($color: black, $alpha: 0.1);
+    @include transparent-border($c: purple, $a: 0.1);
 }
 
 caption {
@@ -108,7 +110,7 @@ ul {
 
 /* Markdown Extra new features */
 hr {
-    @include transparent-border($color: black, $alpha: 0.1);
+    @include transparent-border($c: black, $a: 0.5);
     margin: 2rem auto;
     width: 66%;
 }

@@ -69,7 +69,7 @@ h6 {
 /* Forum list headings */
 table.forum_index {
     h4 {
-        margin: 0 !important;
+        margin: 0.25rem !important;
     }
 }
 
@@ -88,9 +88,9 @@ legend {
 /* requests? */form.create_form,
 /* top10 and many */ form.search_form,
 /* edit collage */ table.collage_edit,
+/* forum lists */ table.forum_index,
 /* notif filters */ form[name="notification"],
 /* GENERIC */ table.skeleton-fix {
-    th,
     td {
         border-bottom: 0 !important;
         padding: 0.25rem !important;
