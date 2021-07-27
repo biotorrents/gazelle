@@ -22,7 +22,7 @@ $DB = NEW DB_MYSQL;
 
 * Making a query
 
-$DB->query("
+$DB->prepared_query("
   SELECT *
   FROM table...");
 
@@ -92,14 +92,14 @@ set_query_id($ResultSet)
   This class can only hold one result set at a time. Using set_query_id allows
   you to set the result set that the class is using to the result set in
   $ResultSet. This result set should have been obtained earlier by using
-  $DB->query().
+  $DB->prepared_query().
 
   Example:
 
-  $FoodRS = $DB->query("
+  $FoodRS = $DB->prepared_query("
       SELECT *
       FROM food");
-  $DB->query("
+  $DB->prepared_query("
     SELECT *
     FROM drink");
   $Drinks = $DB->next_record();

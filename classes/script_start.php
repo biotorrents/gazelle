@@ -225,7 +225,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
 
     $UserSessions = $Cache->get_value("users_sessions_$UserID");
     if (!is_array($UserSessions)) {
-        $DB->query(
+        $DB->prepared_query(
             "
         SELECT
           SessionID,
@@ -250,7 +250,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     // Check if user is enabled
     $Enabled = $Cache->get_value('enabled_'.$LoggedUser['ID']);
     if ($Enabled === false) {
-        $DB->query("
+        $DB->prepared_query("
         SELECT Enabled
           FROM users_main
           WHERE ID = '$LoggedUser[ID]'");
@@ -267,7 +267,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     // Up/Down stats
     $UserStats = $Cache->get_value('user_stats_'.$LoggedUser['ID']);
     if (!is_array($UserStats)) {
-        $DB->query("
+        $DB->prepared_query("
         SELECT Uploaded AS BytesUploaded, Downloaded AS BytesDownloaded, RequiredRatio
         FROM users_main
           WHERE ID = '$LoggedUser[ID]'");
@@ -321,7 +321,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
 
     // Update LastUpdate every 10 minutes
     if (strtotime($UserSessions[$SessionID]['LastUpdate']) + 600 < time()) {
-        $DB->query("
+        $DB->prepared_query("
         UPDATE users_main
         SET LastAccess = NOW()
         WHERE ID = '$LoggedUser[ID]'
@@ -343,7 +343,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
         WHERE UserID = '$LoggedUser[ID]'
         AND SessionID = '".db_string($SessionID)."'";
 
-        $DB->query($SessionQuery);
+        $DB->prepared_query($SessionQuery);
         $Cache->begin_transaction("users_sessions_$UserID");
         $Cache->delete_row($SessionID);
 
@@ -362,7 +362,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     if (isset($LoggedUser['Permissions']['site_torrents_notify'])) {
         $LoggedUser['Notify'] = $Cache->get_value('notify_filters_'.$LoggedUser['ID']);
         if (!is_array($LoggedUser['Notify'])) {
-            $DB->query("
+            $DB->prepared_query("
             SELECT ID, Label
             FROM users_notify_filters
               WHERE UserID = '$LoggedUser[ID]'");
@@ -394,7 +394,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     // Get stylesheets
     $Stylesheets = $Cache->get_value('stylesheets');
     if (!is_array($Stylesheets)) {
-        $DB->query('
+        $DB->prepared_query('
         SELECT
           ID,
           LOWER(REPLACE(Name, " ", "_")) AS Name,
@@ -429,7 +429,7 @@ function logout()
     setcookie('keeplogged', '', time() - 60 * 60 * 24 * 365, '/', '', false);
 
     if ($SessionID) {
-        G::$DB->query("
+        G::$DB->prepared_query("
         DELETE FROM users_sessions
           WHERE UserID = '" . G::$LoggedUser['ID'] . "'
           AND SessionID = '".db_string($SessionID)."'");
@@ -451,7 +451,7 @@ function logout_all_sessions()
 {
     $UserID = G::$LoggedUser['ID'];
 
-    G::$DB->query("
+    G::$DB->prepared_query("
     DELETE FROM users_sessions
       WHERE UserID = '$UserID'");
 
