@@ -9,7 +9,7 @@ if (!isset($_POST['article']) || !is_number($_POST['article'])) {
 
 $ArticleID = (int)$_POST['article'];
 
-$DB->query("SELECT MinClassEdit FROM wiki_articles WHERE ID = $ArticleID");
+$DB->prepared_query("SELECT MinClassEdit FROM wiki_articles WHERE ID = $ArticleID");
 list($MinClassEdit) = $DB->next_record();
 
 if ($MinClassEdit > $LoggedUser['EffectiveClass']) {
@@ -20,7 +20,7 @@ $NewAlias = Wiki::normalize_alias($_POST['alias']);
 $Dupe = Wiki::alias_to_id($_POST['alias']);
 
 if ($NewAlias !== '' && $NewAlias!== 'addalias' && $Dupe === false) { // Not null, and not dupe
-    $DB->query("INSERT INTO wiki_aliases (Alias, UserID, ArticleID) VALUES ('$NewAlias', '$LoggedUser[ID]', '$ArticleID')");
+    $DB->prepared_query("INSERT INTO wiki_aliases (Alias, UserID, ArticleID) VALUES ('$NewAlias', '$LoggedUser[ID]', '$ArticleID')");
 } else {
     error('The alias you attempted to add was either null or already in the database.');
 }

@@ -29,7 +29,7 @@ if ($Letter !== '1') {
 }
 
 $sql .= " ORDER BY Title";
-$DB->query($sql);
+$DB->prepared_query($sql);
 ?>
 
 <div>

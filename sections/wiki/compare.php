@@ -64,7 +64,7 @@ function get_body($ID, $Rev)
     if ((int) $Rev === $Revision) {
         $Str = $Body;
     } else {
-        $DB->query("
+        $DB->prepared_query("
           SELECT Body
           FROM wiki_revisions
           WHERE ID = '$ID'
@@ -84,9 +84,12 @@ if (!isset($_GET['old'])
   || !is_number($_GET['old'])
   || !is_number($_GET['new'])
   || !is_number($_GET['id'])
-  || $_GET['old'] > $_GET['new']
 ) {
-    error(0);
+    error(400);
+}
+
+if ($_GET['old'] > $_GET['new']) {
+    error('The new revision compared must be newer than the old revision to compare against.');
 }
 
 $ArticleID = (int) $_GET['id'];

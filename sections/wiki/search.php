@@ -154,7 +154,7 @@ $DB->set_query_id($RS);
 
         <tr>
           <td colspan="4" class="center">
-            <input type="submit" value="Search" />
+            <input type="submit" class="button-primary" value="Search" />
           </td>
         </tr>
       </table>

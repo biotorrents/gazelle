@@ -55,7 +55,7 @@ if ($MyRevision !== $OldRevision) {
 }
 
 // Store previous revision
-$DB->query("
+$DB->prepared_query("
   INSERT INTO wiki_revisions
     (ID, Revision, Title, Body, Date, Author)
   VALUES
@@ -80,6 +80,6 @@ $SQL .= "
     Author = '$LoggedUser[ID]'
   WHERE ID = '$P[id]'";
 
-$DB->query($SQL);
+$DB->prepared_query($SQL);
 Wiki::flush_article($ArticleID);
 header("Location: wiki.php?action=article&id=$ArticleID");

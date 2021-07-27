@@ -58,7 +58,7 @@ View::show_header("Revisions of ".$Title);
       </tr>
 
       <?php
-$DB->query("
+$DB->prepared_query("
   SELECT
     Revision,
     Title,
