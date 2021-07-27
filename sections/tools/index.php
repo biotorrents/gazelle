@@ -80,10 +80,6 @@ switch ($_REQUEST['action']) {
     include SERVER_ROOT.'/sections/tools/managers/enable_requests.php';
     break;
 
-  case 'expunge_requests':
-    include SERVER_ROOT.'/sections/tools/managers/expunge_requests.php';
-    break;
-
   case 'ajax_take_enable_request':
     if (FEATURE_EMAIL_REENABLE) {
         include SERVER_ROOT.'/sections/tools/managers/ajax_take_enable_request.php';

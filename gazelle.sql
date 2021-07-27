@@ -291,17 +291,6 @@ CREATE TABLE `cover_art` (
 
 
 -- 2020-03-09
-CREATE TABLE `deletion_requests` (
-  `UserID` int unsigned NOT NULL,
-  `Value` varchar(255) NOT NULL,
-  `Type` varchar(255) NOT NULL,
-  `Reason` text,
-  `Time` datetime,
-  PRIMARY KEY (`UserID`,`Value`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
--- 2020-03-09
 CREATE TABLE `donations` (
   `UserID` int NOT NULL,
   `Amount` decimal(6,2) NOT NULL,

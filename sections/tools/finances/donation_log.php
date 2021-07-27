@@ -58,20 +58,20 @@ if ($DateSearch) {
 $SQL .= "
   ORDER BY d.Time DESC
   LIMIT $Limit";
-$DB->query($SQL);
+$DB->prepared_query($SQL);
 $Donations = $DB->to_array();
 
-$DB->query('SELECT FOUND_ROWS()');
+$DB->prepared_query('SELECT FOUND_ROWS()');
 list($Results) = $DB->next_record();
 
-$DB->query("SELECT SUM(Amount) FROM donations");
+$DB->prepared_query("SELECT SUM(Amount) FROM donations");
 list($Total) = $DB->next_record();
 
 /*
 if (empty($_GET['email']) && empty($_GET['username']) && empty($_GET['source']) && !isset($_GET['page']) && !$DonationTimeline = $Cache->get_value('donation_timeline')) {
     include(SERVER_ROOT.'/classes/charts.class.php');
 
-    $DB->query("
+    $DB->prepared_query("
     SELECT DATE_FORMAT(Time,'%b \'%y') AS Month, SUM(Amount)
     FROM donations
     GROUP BY Month

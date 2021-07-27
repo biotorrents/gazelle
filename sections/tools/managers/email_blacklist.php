@@ -20,7 +20,7 @@ if (!empty($_POST['comment'])) {
   }
   $Where .= " Comment LIKE '%$Comment%'";
 }
-$DB->query("
+$DB->prepared_query("
   SELECT
     SQL_CALC_FOUND_ROWS
     ID,
@@ -33,7 +33,7 @@ $DB->query("
   ORDER BY Time DESC
   LIMIT $Limit");
 $Results = $DB->to_array(false, MYSQLI_ASSOC, false);
-$DB->query('SELECT FOUND_ROWS()');
+$DB->prepared_query('SELECT FOUND_ROWS()');
 list ($NumResults) = $DB->next_record();
 ?>
 <div class="header">

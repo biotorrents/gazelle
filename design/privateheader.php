@@ -609,19 +609,6 @@ if (check_perms('admin_reports')) {
     }
 }
 
-if (check_perms('users_mod')) {
-    $NumDeleteRequests = G::$Cache->get_value('num_deletion_requests');
-    if ($NumDeleteRequests === false) {
-        G::$DB->query("SELECT COUNT(*) FROM deletion_requests");
-        list($NumDeleteRequests) = G::$DB->next_record();
-        G::$Cache->cache_value('num_deletion_requests', $NumDeleteRequests);
-    }
-
-    if ($NumDeleteRequests > 0) {
-        $ModBar[] = '<a href="tools.php?action=expunge_requests">' . $NumDeleteRequests . " Expunge request".($NumDeleteRequests > 1 ? 's' : '')."</a>";
-    }
-}
-
 if (check_perms('users_mod') && FEATURE_EMAIL_REENABLE) {
     $NumEnableRequests = G::$Cache->get_value(AutoEnable::CACHE_KEY_NAME);
     if ($NumEnableRequests === false) {

@@ -10,7 +10,7 @@ else {
   $JSON['status'] = 'success';
 }
 
-$DB->query("
+$DB->prepared_query("
   SELECT
     ID,
     UserID,
