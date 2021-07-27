@@ -21,7 +21,7 @@ if ($CategoryID == 0 && $UserID != $LoggedUser['ID'] && !check_perms('site_colla
 
 View::show_header(
     'Edit',
-    'bbcode,vendor/easymde.min',
+    'vendor/easymde.min',
     'vendor/easymde.min'
 );
 

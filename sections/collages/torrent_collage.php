@@ -340,7 +340,7 @@ if ($CollageCovers) {
 
 View::show_header(
     $Name,
-    'browse,collage,bbcode,recommend,wall'
+    'browse,collage,recommend,wall'
 );
 ?>
 

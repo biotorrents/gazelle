@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 View::show_header(
     'Upload',
-    'upload,bbcode,vendor/easymde.min',
+    'upload,vendor/easymde.min',
     'vendor/easymde.min'
 );
 

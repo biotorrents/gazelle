@@ -29,7 +29,7 @@ list($Name) = $DB->next_record();
 // Start printing
 View::show_header(
     "Comments for collage $Name",
-    'comments,bbcode,subscriptions,vendor/easymde.min',
+    'comments,subscriptions,vendor/easymde.min',
     'vendor/easymde.min'
 );
 ?>

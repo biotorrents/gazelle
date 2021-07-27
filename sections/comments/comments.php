@@ -275,7 +275,7 @@ switch ($Action) {
 }
 $Links = implode(' ', $ActionLinks) . (count($TypeLinks) ? '<br />' . implode(' ', $TypeLinks) : '');
 
-View::show_header($Title, 'bbcode,comments');
+View::show_header($Title, 'comments');
 ?><div>
   <div class="header">
     <h2><?=$Header?></h2>

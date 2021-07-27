@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 View::show_header(
     'Create an article',
-    'bbcode,vendor/easymde.min',
+    'vendor/easymde.min',
     'vendor/easymde.min'
 );
 ?>

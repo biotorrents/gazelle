@@ -92,7 +92,7 @@ if (($LoggedUser['ID'] !== $Properties['UserID']
  * Commenting only to see it better.
  */
 
-View::show_header('Edit torrent', 'upload,torrent,bbcode');
+View::show_header('Edit torrent', 'upload,torrent');
 $TorrentForm = new TorrentForm(
     $Torrent = $Properties,
     $Error = $Err,

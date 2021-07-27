@@ -28,7 +28,7 @@ if (!Forums::check_forumperm($ForumID, 'Write') || !Forums::check_forumperm($For
 $ENV = ENV::go();
 View::show_header(
     "Forums $ENV->CRUMB ".$Forum['Name']." $ENV->CRUMB New Topic",
-    'comments,bbcode,vendor/jquery.validate.min,form_validate,vendor/easymde.min',
+    'comments,vendor/jquery.validate.min,form_validate,vendor/easymde.min',
     'vendor/easymde.min'
 );
 ?>

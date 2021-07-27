@@ -172,7 +172,7 @@ if ($QuoteNotificationsCount === false || $QuoteNotificationsCount > 0) {
 // Start printing
 View::show_header(
     $ThreadInfo['Title'].' &rsaquo; '.$Forums[$ForumID]['Name'].' &rsaquo; Forums',
-    'comments,subscriptions,bbcode,vendor/easymde.min',
+    'comments,subscriptions,vendor/easymde.min',
     ($IsDonorForum ?? 'donor,').'vendor/easymde.min'
 );
 ?>

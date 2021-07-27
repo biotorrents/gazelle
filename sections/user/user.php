@@ -233,7 +233,7 @@ function check_paranoia_here($Setting)
 
 View::show_header(
     $Username,
-    'vendor/imagesloaded.min,user,bbcode,requests,comments,info_paster,wall'
+    'vendor/imagesloaded.min,user,requests,comments,info_paster,wall'
 );
 
 ?>

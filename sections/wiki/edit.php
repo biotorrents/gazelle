@@ -15,7 +15,7 @@ if ($Edit > $LoggedUser['EffectiveClass']) {
 
 View::show_header(
     'Edit '.$Title,
-    'bbcode,vendor/easymde.min',
+    'vendor/easymde.min',
     'vendor/easymde.min'
 );
 ?>

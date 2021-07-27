@@ -70,7 +70,7 @@ if (!$Body) {
 
 View::show_header(
     'Edit torrent group',
-    'upload,bbcode,vendor/easymde.min',
+    'upload,vendor/easymde.min',
     'vendor/easymde.min'
 ); ?>
 

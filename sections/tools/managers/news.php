@@ -8,7 +8,7 @@ if (!check_perms('admin_manage_news')) {
 
 View::show_header(
     'Manage news',
-    'bbcode,vendor/easymde.min',
+    'vendor/easymde.min',
     'vendor/easymde.min'
 );
 

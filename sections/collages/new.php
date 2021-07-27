@@ -3,7 +3,7 @@
 
 View::show_header(
     'Create a collection',
-    'bbcode,vendor/easymde.min',
+    'vendor/easymde.min',
     'vendor/easymde.min'
 );
 

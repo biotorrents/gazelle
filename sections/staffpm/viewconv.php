@@ -33,7 +33,7 @@ if ($ConvID = (int)$_GET['id']) {
 
     View::show_header(
         'Staff PM',
-        'staffpm,bbcode,vendor/easymde.min',
+        'staffpm,vendor/easymde.min',
         'vendor/easymde.min'
     );
 

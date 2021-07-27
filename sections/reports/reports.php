@@ -13,7 +13,7 @@ list($Page, $Limit) = Format::page_limit(REPORTS_PER_PAGE);
 include(SERVER_ROOT . '/sections/reports/array.php');
 
 // Header
-View::show_header('Reports', 'bbcode,reports');
+View::show_header('Reports', 'reports');
 
 if (isset($_GET['id']) && $_GET['id'] && is_number($_GET['id'])) {
   $View = 'Single report';

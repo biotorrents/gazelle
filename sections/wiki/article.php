@@ -49,7 +49,7 @@ if ($Read > $LoggedUser['EffectiveClass']) {
 $TextBody = Text::full_format($Body, false);
 $TOC = Text::parse_toc(0);
 
-View::show_header($Title, 'wiki,bbcode');
+View::show_header($Title, 'wiki');
 ?>
 
 <div>
