@@ -29,7 +29,7 @@ if (!$BadgeID) {
 
 if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
     if (!isset($Err)) {
-        $DB->query("
+        $DB->prepared_query("
           SELECT BonusPoints
           FROM users_main
           WHERE ID = $UserID");
@@ -42,12 +42,12 @@ if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
                 if (!Badges::award_badge($UserID, $BadgeID)) {
                     $Err = 'Could not award badge, unknown error occurred.';
                 } else {
-                    $DB->query("
+                    $DB->prepared_query("
                       UPDATE users_main
                       SET BonusPoints = BonusPoints - " . $Prices[$BadgeID] ."
                       WHERE ID = $UserID");
 
-                    $DB->query("
+                    $DB->prepared_query("
                       UPDATE users_info
                       SET AdminComment = CONCAT('".sqltime()." - Purchased badge $BadgeID from store\n\n', AdminComment)
                       WHERE UserID = $UserID");

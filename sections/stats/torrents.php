@@ -7,7 +7,7 @@ DESC
 LIMIT 1, 12
 */
 if (!list($Labels, $InFlow, $OutFlow, $Max) = $Cache->get_value('torrents_timeline')) {
-    $DB->query("
+    $DB->prepared_query("
     SELECT
       DATE_FORMAT(`Time`, '%b %Y') AS Month,
       COUNT(`ID`)
@@ -23,7 +23,7 @@ if (!list($Labels, $InFlow, $OutFlow, $Max) = $Cache->get_value('torrents_timeli
     ");
     $TimelineIn = array_reverse($DB->to_array());
 
-    $DB->query("
+    $DB->prepared_query("
     SELECT
       DATE_FORMAT(`Time`, '%b %Y') AS Month,
       COUNT(`ID`)
@@ -51,7 +51,7 @@ if (!list($Labels, $InFlow, $OutFlow, $Max) = $Cache->get_value('torrents_timeli
 }
 
 if (!$CategoryDistribution = $Cache->get_value('category_distribution')) {
-    $DB->query("
+    $DB->prepared_query("
     SELECT
       tg.`category_id`,
       COUNT(t.`ID`) AS Torrents

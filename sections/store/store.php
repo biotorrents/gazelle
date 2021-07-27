@@ -6,7 +6,7 @@ $PermID = $LoggedUser['PermissionID'];
 
 if (!$LoggedUser['DisablePoints']) {
     $PointsRate = 0;
-    $getTorrents = $DB->query("
+    $getTorrents = $DB->prepared_query("
       SELECT um.BonusPoints,
         COUNT(DISTINCT x.fid) AS Torrents,
         SUM(t.Size) AS Size,
@@ -271,7 +271,7 @@ View::show_header('Store');
       </tr>
 
       <?php
-$DB->query("
+$DB->prepared_query("
   SELECT ID AS BadgeID, Name, Description
   FROM badges
   WHERE ID IN (40, 41, 42, 43, 44, 45, 46, 47, 48)
