@@ -10,7 +10,7 @@ if (isset($_POST['global_flush'])) {
     $Cache->flush();
 }
 
-$DB->query('SHOW GLOBAL STATUS');
+$DB->prepared_query('SHOW GLOBAL STATUS');
 $DBStats = $DB->to_array('Variable_name');
 $MemStats = $Cache->getStats();
 

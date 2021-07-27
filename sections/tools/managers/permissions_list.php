@@ -18,7 +18,7 @@ function confirmDelete(id) {
     </div>
   </div>
 <?
-$DB->query("
+$DB->prepared_query("
   SELECT
     p.ID,
     p.Name,

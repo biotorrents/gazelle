@@ -14,6 +14,7 @@ if (!fs.isDirectory(rootPath) || !fs.isDirectory(rootPath + '/' + staticPath) ||
   console.log(JSON.stringify(returnStatus));
   phantom.exit();
 }
+
 fs.changeWorkingDirectory(toolsMiscPath);
 if (!fs.exists('render_base.html')) {
   // Rendering base doesn't exist, who broke things?
@@ -28,6 +29,7 @@ page.open('render_base.html', function () {
     width: 1200,
     height: 1000
   };
+
   // Switch to specific stylesheet subdirectory
   fs.changeWorkingDirectory(rootPath + '/' + staticPath + 'styles/' + system.args[3] + '/');
   if (!fs.isWritable(fs.workingDirectory)) {
@@ -36,6 +38,7 @@ page.open('render_base.html', function () {
     console.log(JSON.stringify(returnStatus));
     phantom.exit();
   }
+
   fs.write('preview.html', page.content, 'w');
   if (!fs.isFile('preview.html')) {
     // Failed to store specific preview file.
@@ -43,6 +46,7 @@ page.open('render_base.html', function () {
     console.log(JSON.stringify(returnStatus));
     phantom.exit();
   }
+
   page.close();
   returnStatus.status = 0;
   console.log(JSON.stringify(returnStatus));

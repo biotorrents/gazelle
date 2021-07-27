@@ -21,7 +21,7 @@ switch ($_GET['action']) {
     if (is_number($_POST['newsid'])) {
         authorize();
 
-        $DB->query("
+        $DB->prepared_query("
         UPDATE news
         SET Title = '".db_string($_POST['title'])."', Body = '".db_string($_POST['body'])."'
         WHERE ID = '".db_string($_POST['newsid'])."'");
@@ -36,7 +36,7 @@ switch ($_GET['action']) {
   case 'editnews':
     if (is_number($_GET['id'])) {
         $NewsID = $_GET['id'];
-        $DB->query("
+        $DB->prepared_query("
         SELECT Title, Body
         FROM news
         WHERE ID = $NewsID");
@@ -86,7 +86,7 @@ $Textarea = new TEXTAREA_PREVIEW(
 
   <h2>News archive</h2>
   <?php
-$DB->query('
+$DB->prepared_query('
   SELECT
     ID,
     Title,

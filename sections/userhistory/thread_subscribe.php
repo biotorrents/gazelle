@@ -12,7 +12,7 @@ if (!is_number($_GET['topicid'])) {
 
 $TopicID = (int)$_GET['topicid'];
 
-$DB->query("
+$DB->prepared_query("
   SELECT f.ID
   FROM forums_topics AS t
     JOIN forums AS f ON f.ID = t.ForumID

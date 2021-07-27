@@ -35,7 +35,7 @@ $ShowCollapsed = (!isset($_GET['collapse']) && !isset($HeavyInfo['SubscriptionsC
  * LastReadAvatar
  * LastReadEditedUserID
  */
-$DB->query("
+$DB->prepared_query("
   (SELECT
     SQL_CALC_FOUND_ROWS
     s.`Page`,
@@ -89,7 +89,7 @@ $DB->query("
   LIMIT $Limit");
 
 $Results = $DB->to_array(false, MYSQLI_ASSOC, false);
-$DB->query('SELECT FOUND_ROWS()');
+$DB->prepared_query('SELECT FOUND_ROWS()');
 list($NumResults) = $DB->next_record();
 
 $Debug->log_var($Results, 'Results');

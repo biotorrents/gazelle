@@ -40,10 +40,8 @@ if (!isset($_REQUEST['authkey']) || !isset($_REQUEST['torrent_pass'])) {
     }
 }
 
-$TorrentID = $_REQUEST['id'];
-if (!is_number($TorrentID)) {
-    error(0);
-}
+$TorrentID = (int) $_REQUEST['id'];
+Security::checkInt($TorrentID);
 
 /*
   uTorrent Remote and various scripts redownload .torrent files periodically.
@@ -108,7 +106,7 @@ $Artists = $Info['Artists'];
 if ($_REQUEST['usetoken'] && $FreeTorrent === '0') {
     if (isset($LoggedUser)) {
         $FLTokens = $LoggedUser['FLTokens'];
-        if ($LoggedUser['CanLeech'] !== '1') {
+        if ($LoggedUser['CanLeech'] !== 1) {
             error('You cannot use tokens while leech disabled.');
         }
     } else {

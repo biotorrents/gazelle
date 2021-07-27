@@ -8,12 +8,12 @@ function compare($X, $Y)
 
 // Build the data for the collage and the torrent list
 // todo: Cache this
-$DB->query("
+$DB->prepared_query("
 SELECT
   ct.`GroupID`,
   ct.`UserID`
 FROM `collages_torrents` AS ct
-  JOIN `torrents_group` AS tg ON tg.`ID` = ct.`GroupID`
+  JOIN `torrents_group` AS tg ON tg.`id` = ct.`GroupID`
 WHERE ct.`CollageID` = '$CollageID'
 ORDER BY ct.`Sort`
 ");

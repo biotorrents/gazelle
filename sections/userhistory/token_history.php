@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 # Validate user ID
 if (isset($_GET['userid'])) {
-    $UserID = $_GET['userid'];
+    $UserID = (int) $_GET['userid'];
 } else {
-    $UserID = $LoggedUser['ID'];
+    $UserID = (int) $LoggedUser['ID'];
 }
 
 Security::checkInt($UserID);
@@ -36,8 +36,8 @@ if (isset($_GET['expire'])) {
         error(403);
     }
 
-    $UserID = $_GET['userid'];
-    $TorrentID = $_GET['torrentid'];
+    $UserID = (int) $_GET['userid'];
+    $TorrentID = (int) $_GET['torrentid'];
     Security::checkInt($UserID, $TorrentID);
 
     $DB->prepare_query("
@@ -101,7 +101,7 @@ LIMIT $Limit
 $DB->exec_prepared_query();
 
 $Tokens = $DB->to_array();
-$DB->query('SELECT FOUND_ROWS()');
+$DB->prepared_query('SELECT FOUND_ROWS()');
 list($NumResults) = $DB->next_record();
 $Pages = Format::get_pages($Page, $NumResults, 25);
 ?>
@@ -144,10 +144,12 @@ foreach ($Tokens as $Token) {
         $Name = "(<i>Deleted torrent <a href='log.php?search=Torrent+$TorrentID'>$TorrentID</a></i>)";
     }
 
+    /*
     $ArtistName = Artists::display_artists($Artists[$GroupID]);
     if ($ArtistName) {
         $Name = $ArtistName.$Name;
-    } ?>
+    }
+    */ ?>
 
   <tr class="row">
     <td>
