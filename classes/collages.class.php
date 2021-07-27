@@ -6,7 +6,7 @@ class Collages
     public static function increase_subscriptions($CollageID)
     {
         $QueryID = G::$DB->get_query_id();
-        G::$DB->query("
+        G::$DB->prepared_query("
         UPDATE
           `collages`
         SET
@@ -20,7 +20,7 @@ class Collages
     public static function decrease_subscriptions($CollageID)
     {
         $QueryID = G::$DB->get_query_id();
-        G::$DB->query("
+        G::$DB->prepared_query("
         UPDATE
           `collages`
         SET
@@ -37,7 +37,7 @@ class Collages
 
     public static function create_personal_collage()
     {
-        G::$DB->query("
+        G::$DB->prepared_query("
         SELECT
           COUNT(`ID`)
         FROM
@@ -57,7 +57,7 @@ class Collages
         $NameStr = db_string(G::$LoggedUser['Username']."'s personal collage".($CollageCount > 0 ? ' no. '.($CollageCount + 1) : ''));
         $Description = db_string('Personal collage for '.G::$LoggedUser['Username'].'. The first 5 albums will appear on his or her [url='.site_url().'user.php?id= '.G::$LoggedUser['ID'].']profile[/url].');
 
-        G::$DB->query("
+        G::$DB->prepared_query("
         INSERT INTO `collages`(
           `Name`,
           `Description`,

@@ -197,8 +197,13 @@ if (!empty($_REQUEST['action'])) {
             break;
             
         case 'fix_group':
-            if ((check_perms('users_mod') || check_perms('torrents_fix_ghosts')) && authorize() && !empty($_GET['groupid']) && is_number($_GET['groupid'])) {
-                $DB->prepare_query("
+            if ((check_perms('users_mod') || check_perms('torrents_fix_ghosts'))
+              && !empty($_GET['groupid'])
+              && is_number($_GET['groupid'])
+                ) {
+                authorize();
+
+                $DB->prepared_query("
                 SELECT
                   COUNT(`ID`)
                 FROM
@@ -206,7 +211,6 @@ if (!empty($_REQUEST['action'])) {
                 WHERE
                   `GroupID` = '$_GET[groupid]'
                 ");
-                $DB->exec_prepared_query();
                 list($Count) = $DB->next_record();
                 
                 if ($Count === 0) {

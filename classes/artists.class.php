@@ -47,7 +47,7 @@ class Artists
             }
 
             $QueryID = G::$DB->get_query_id();
-            G::$DB->query("
+            G::$DB->prepared_query("
             SELECT
               ta.`GroupID`,
               ta.`ArtistID`,
@@ -169,7 +169,7 @@ class Artists
     public static function delete_artist($ArtistID)
     {
         $QueryID = G::$DB->get_query_id();
-        G::$DB->query("
+        G::$DB->prepared_query("
         SELECT
           `NAME`
         FROM
@@ -180,7 +180,7 @@ class Artists
         list($Name) = G::$DB->next_record(MYSQLI_NUM, false);
 
         // Delete requests
-        G::$DB->query("
+        G::$DB->prepared_query("
         SELECT
           `RequestID`
         FROM
@@ -192,7 +192,7 @@ class Artists
         $Requests = G::$DB->to_array();
         foreach ($Requests as $Request) {
             list($RequestID) = $Request;
-            G::$DB->query("
+            G::$DB->prepared_query("
             DELETE
             FROM
               `requests`
@@ -200,7 +200,7 @@ class Artists
               `ID` = '$RequestID'
             ");
 
-            G::$DB->query("
+            G::$DB->prepared_query("
             DELETE
             FROM
               `requests_votes`
@@ -208,7 +208,7 @@ class Artists
               `RequestID` = '$RequestID'
             ");
 
-            G::$DB->query("
+            G::$DB->prepared_query("
             DELETE
             FROM
               `requests_tags`
@@ -216,7 +216,7 @@ class Artists
               `RequestID` = '$RequestID'
             ");
 
-            G::$DB->query("
+            G::$DB->prepared_query("
             DELETE
             FROM
               `requests_artists`
@@ -226,7 +226,7 @@ class Artists
         }
 
         // Delete artist
-        G::$DB->query("
+        G::$DB->prepared_query("
         DELETE
         FROM
           `artists_group`
@@ -236,7 +236,7 @@ class Artists
         G::$Cache->decrement('stats_artist_count');
 
         // Delete wiki revisions
-        G::$DB->query("
+        G::$DB->prepared_query("
         DELETE
         FROM
           `wiki_artists`
@@ -245,7 +245,7 @@ class Artists
         ");
 
         // Delete tags
-        G::$DB->query("
+        G::$DB->prepared_query("
         DELETE
         FROM
           `artists_tags`
