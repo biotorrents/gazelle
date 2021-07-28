@@ -3,7 +3,7 @@
 
 /**
  * Main friends page
- * 
+ *
  * This page lists a user's friends.
  * There's no real point in caching this page.
  * I doubt users load it that much.
@@ -21,7 +21,7 @@ $UserID = $LoggedUser['ID'];
 list($Page, $Limit) = Format::page_limit(FRIENDS_PER_PAGE);
 
 // Main query
-$DB->query("
+$DB->prepared_query("
   SELECT
     SQL_CALC_FOUND_ROWS
     f.`FriendID`,
@@ -42,10 +42,10 @@ $DB->query("
 $Friends = $DB->to_array(false, MYSQLI_BOTH, array(6, 'Paranoia'));
 
 // Number of results (for pagination)
-$DB->query('SELECT FOUND_ROWS()');
+$DB->prepared_query('SELECT FOUND_ROWS()');
 list($Results) = $DB->next_record();
 
-// Start printing stuff ?>
+// Start printing stuff?>
 
 <div>
   <div class="header">

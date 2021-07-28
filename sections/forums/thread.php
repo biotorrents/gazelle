@@ -22,7 +22,7 @@ if (!isset($_GET['threadid']) || !is_number($_GET['threadid'])) {
     if (isset($_GET['topicid']) && is_number($_GET['topicid'])) {
         $ThreadID = $_GET['topicid'];
     } elseif (isset($_GET['postid']) && is_number($_GET['postid'])) {
-        $DB->query("
+        $DB->prepared_query("
       SELECT TopicID
       FROM forums_posts
       WHERE ID = $_GET[postid]");
@@ -78,7 +78,7 @@ if ($ThreadInfo['Posts'] > $PerPage) {
         if ($ThreadInfo['StickyPostID'] < $_GET['postid']) {
             $SQL .= " AND ID != $ThreadInfo[StickyPostID]";
         }
-        $DB->query($SQL);
+        $DB->prepared_query($SQL);
         list($PostNum) = $DB->next_record();
     } else {
         $PostNum = 1;
@@ -94,7 +94,7 @@ list($CatalogueID, $CatalogueLimit) = Format::catalogue_limit($Page, $PerPage, T
 
 // Cache catalogue from which the page is selected, allows block caches and future ability to specify posts per page
 if (!$Catalogue = $Cache->get_value("thread_{$ThreadID}_catalogue_$CatalogueID")) {
-    $DB->query("
+    $DB->prepared_query("
     SELECT
       p.ID,
       p.AuthorID,
@@ -127,14 +127,14 @@ if ($ThreadInfo['Posts'] <= $PerPage*$Page && $ThreadInfo['StickyPostID'] > $Las
 //Why would we skip this on locked or stickied threads?
 //if (!$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky']) {
 
-  $DB->query("
+  $DB->prepared_query("
     SELECT PostID
     FROM forums_last_read_topics
     WHERE UserID = '$LoggedUser[ID]'
       AND TopicID = '$ThreadID'");
   list($LastRead) = $DB->next_record();
   if ($LastRead < $LastPost) {
-      $DB->query("
+      $DB->prepared_query("
       INSERT INTO forums_last_read_topics
         (UserID, TopicID, PostID)
       VALUES
@@ -158,7 +158,7 @@ if (in_array($ThreadID, $UserSubscriptions)) {
 
 $QuoteNotificationsCount = $Cache->get_value('notify_quoted_' . $LoggedUser['ID']);
 if ($QuoteNotificationsCount === false || $QuoteNotificationsCount > 0) {
-    $DB->query("
+    $DB->prepared_query("
     UPDATE users_notify_quoted
     SET UnRead = false
     WHERE UserID = '$LoggedUser[ID]'
@@ -243,13 +243,13 @@ echo $Pages;
 
 if ($ThreadInfo['NoPoll'] == 0) {
     if (!list($Question, $Answers, $Votes, $Featured, $Closed) = $Cache->get_value("polls_$ThreadID")) {
-        $DB->query("
+        $DB->prepared_query("
       SELECT Question, Answers, Featured, Closed
       FROM forums_polls
       WHERE TopicID = '$ThreadID'");
         list($Question, $Answers, $Featured, $Closed) = $DB->next_record(MYSQLI_NUM, array(1));
         $Answers = unserialize($Answers);
-        $DB->query("
+        $DB->prepared_query("
       SELECT Vote, COUNT(UserID)
       FROM forums_polls_votes
       WHERE TopicID = '$ThreadID'
@@ -281,7 +281,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
     #$RevealVoters = in_array($ForumID, FORUMS_TO_REVEAL_VOTERS);
 
     // Polls lose the you voted arrow thingy
-    $DB->query("
+    $DB->prepared_query("
     SELECT Vote
     FROM forums_polls_votes
     WHERE UserID = '".$LoggedUser['ID']."'
@@ -349,7 +349,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
             $StaffNames[] = $Staffer['Username'];
         }
 
-        $DB->query("
+        $DB->prepared_query("
         SELECT
           fpv.Vote AS Vote,
           GROUP_CONCAT(um.Username SEPARATOR ', ')
@@ -636,7 +636,7 @@ if (!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
   }
 
 if (check_perms('site_moderate_forums')) {
-    G::$DB->query("
+    G::$DB->prepared_query("
       SELECT ID, AuthorID, AddedTime, Body
       FROM forums_topic_notes
       WHERE TopicID = $ThreadID

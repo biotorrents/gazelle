@@ -22,7 +22,7 @@ class Wiki
         $Aliases = G::$Cache->get_value('wiki_aliases');
         if (!$Aliases) {
             $QueryID = G::$DB->get_query_id();
-            G::$DB->query("
+            G::$DB->prepared_query("
             SELECT Alias, ArticleID
             FROM wiki_aliases");
             $Aliases = G::$DB->to_pair('Alias', 'ArticleID');
@@ -67,7 +67,7 @@ class Wiki
         $Contents = G::$Cache->get_value('wiki_article_'.$ArticleID);
         if (!$Contents) {
             $QueryID = G::$DB->get_query_id();
-            G::$DB->query("
+            G::$DB->prepared_query("
             SELECT
               w.Revision,
               w.Title,

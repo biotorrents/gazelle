@@ -11,14 +11,14 @@ $UserID = (int) $_POST['userid'];
 $Key = (int) $_POST['key'];
 $UserInfo = Users::user_info($UserID);
 
-$DB->query("
+$DB->prepared_query("
   SELECT p.Body, t.ForumID
   FROM forums_posts AS p
     JOIN forums_topics AS t ON p.TopicID = t.ID
   WHERE p.ID = '$PostID'");
 list($PostBody, $ForumID) = $DB -> next_record();
 
-View::show_header('Warn User');
+View::show_header('Warn');
 ?>
 
 <div>
@@ -75,7 +75,7 @@ View::show_header('Warn User');
             <textarea id="body" style="width: 95%;" tabindex="1" onkeyup="resize('body');" name="body" cols="90"
               rows="8"><?=$PostBody?></textarea>
             <br />
-            <input type="submit" id="submit_button" value="Warn user" tabindex="1" />
+            <input type="submit" id="submit_button" class="button-primary" value="Warn user" tabindex="1" />
           </td>
         </tr>
       </table>

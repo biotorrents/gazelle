@@ -35,7 +35,7 @@ if ($WarningLength !== 'verbal') {
   Tools::update_user_notes($UserID, $AdminComment);
 }
 
-$DB->query("
+$DB->prepared_query("
   INSERT INTO users_warnings_forums
     (UserID, Comment)
   VALUES
@@ -45,7 +45,7 @@ $DB->query("
 Misc::send_pm($UserID, $LoggedUser['ID'], $Subject, $PrivateMessage);
 
 //edit the post
-$DB->query("
+$DB->prepared_query("
   SELECT
     p.Body,
     p.AuthorID,
@@ -66,7 +66,7 @@ $DB->query("
 list($OldBody, $AuthorID, $TopicID, $ForumID, $Page) = $DB->next_record();
 
 // Perform the update
-$DB->query("
+$DB->prepared_query("
   UPDATE forums_posts
   SET Body = '" . db_string($Body) . "',
     EditedUserID = '$UserID',
@@ -101,7 +101,7 @@ if ($ThreadInfo['StickyPostID'] == $PostID) {
   $Cache->cache_value("thread_$TopicID" . '_info', $ThreadInfo, 0);
 }
 
-$DB->query("
+$DB->prepared_query("
   INSERT INTO comments_edits
     (Page, PostID, EditUser, EditTime, Body)
   VALUES

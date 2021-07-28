@@ -24,7 +24,7 @@ if (isset($_POST['Username'])) {
     $torrent_pass = Users::make_secret();
 
     //Create the account
-    $DB->query("
+    $DB->prepared_query("
       INSERT INTO users_main
         (Username, Email, PassHash, torrent_pass, Enabled, PermissionID)
       VALUES
@@ -39,7 +39,7 @@ if (isset($_POST['Username'])) {
     Tracker::update_tracker('add_user', array('id' => $UserID, 'passkey' => $torrent_pass));
 
     //Default stylesheet
-    $DB->query("
+    $DB->prepared_query("
       SELECT ID
       FROM stylesheets");
     list($StyleID) = $DB->next_record();
@@ -48,14 +48,14 @@ if (isset($_POST['Username'])) {
     $AuthKey = Users::make_secret();
 
     //Give them a row in users_info
-    $DB->query("
+    $DB->prepared_query("
       INSERT INTO users_info
         (UserID, StyleID, AuthKey, JoinDate)
       VALUES
         ('".db_string($UserID)."', '".db_string($StyleID)."', '".db_string($AuthKey)."', NOW())");
 
     // Give the notification settings
-    $DB->query("INSERT INTO users_notifications_settings (UserID) VALUES ('$UserID')");
+    $DB->prepared_query("INSERT INTO users_notifications_settings (UserID) VALUES ('$UserID')");
 
     //Redirect to users profile
     header ("Location: user.php?id=$UserID");
