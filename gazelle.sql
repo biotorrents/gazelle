@@ -143,6 +143,20 @@ CREATE TABLE `badges` (
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
+-- 2021-07-28
+CREATE TABLE `bioinformatics` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `torrent_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `timestamp` datetime NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `seqhash` varchar(100) DEFAULT NULL,
+  `gc_content` tinyint DEFAULT NULL,
+  `monoisotopic_mass` double DEFAULT NULL,
+  PRIMARY KEY (`id`,`torrent_id`,`user_id`) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 -- 2020-03-09
 CREATE TABLE `blog` (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
@@ -1241,23 +1255,14 @@ CREATE TABLE `torrents_recommended` (
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
-CREATE TABLE `torrents_doi` (
-  `ID` int NOT NULL AUTO_INCREMENT,
-  `TorrentID` int NOT NULL,
-  `UserID` int NOT NULL,
-  `Time` datetime,
-  `URI` varchar(255) NOT NULL,
-  PRIMARY KEY (`ID`,`GroupID`,`URI`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
+-- 2021-07-28
 CREATE TABLE `torrents_mirrors` (
-  `ID` int NOT NULL AUTO_INCREMENT,
-  `GroupID` int NOT NULL,
-  `UserID` int NOT NULL,
-  `Time` datetime,
-  `URI` varchar(255) NOT NULL,
-  PRIMARY KEY (`ID`,`GroupID`,`URI`)
+  `id` int NOT NULL AUTO_INCREMENT,
+  `torrent_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `timestamp` datetime,
+  `uri` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`,`torrent_id`,`uri`)
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 

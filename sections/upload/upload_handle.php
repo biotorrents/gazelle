@@ -79,6 +79,7 @@ $Properties['GroupDescription'] = trim($_POST['album_desc']);
 $Properties['TorrentDescription'] = $_POST['release_desc'];
 $Properties['Screenshots'] = isset($_POST['screenshots']) ? $_POST['screenshots'] : '';
 $Properties['Mirrors'] = isset($_POST['mirrors']) ? $_POST['mirrors'] : '';
+$Properties['Seqhash'] = isset($_POST['seqhash']) ? $_POST['seqhash'] : '';
 
 if ($_POST['album_desc']) {
     $Properties['GroupDescription'] = trim($_POST['album_desc']);
@@ -209,7 +210,7 @@ if (!$_POST['groupid']) {
         '1',
         'inarray',
         'Please select a valid platform.',
-        array('inarray' => $ENV->flatten($ENV->META->Platforms))
+        array('inarray' => $ENV->META->Platforms)
     );
 
     /*
@@ -438,8 +439,8 @@ if ($T['GroupID']) {
     FROM
       `torrents_group`
     WHERE
-      `id` = $T[GroupID]
-    ");
+      `id` = ?
+    ", $T['GroupID']);
     $DB->exec_prepared_query();
 
     if ($DB->has_results()) {
@@ -516,7 +517,7 @@ if ((!isset($GroupID) || !$GroupID)) {
 
 if (!isset($GroupID) || !$GroupID) {
     // Create torrent group
-    $DB->prepare_query(
+    $DB->query(
         "
       INSERT INTO torrents_group
         (`category_id`, `title`, `subject`, `object`, `year`,
@@ -526,7 +527,7 @@ if (!isset($GroupID) || !$GroupID) {
         ( ?, ?, ?, ?, ?,
           ?, ?, ?, NOW(),
           ?, ? )",
-        $TypeID,
+        $T['CategoryID'],
         $T['Title'],
         $T['Title2'],
         $T['TitleJP'],
@@ -537,7 +538,6 @@ if (!isset($GroupID) || !$GroupID) {
         $Body,
         $T['Image']
     );
-    $DB->exec_prepared_query();
 
     $GroupID = $DB->inserted_id();
     foreach ($ArtistForm as $Num => $Artist) {
@@ -550,67 +550,33 @@ if (!isset($GroupID) || !$GroupID) {
     }
     $Cache->increment('stats_group_count');
 
-    // Add screenshots
-    // todo: Clear DB_MYSQL::exec_prepared_query() errors
-    $Screenshots = explode("\n", $T['Screenshots']);
-    $Screenshots = array_map('trim', $Screenshots);
 
-    $Screenshots = array_filter($Screenshots, function ($s) {
-        return preg_match('/^'.$ENV->DOI_REGEX.'$/i', $s);
-    });
-
-    $Screenshots = array_unique($Screenshots);
-    $Screenshots = array_slice($Screenshots, 0, 10);
-
-    # Add optional web seeds similar to screenshots
-    # Support an arbitrary and limited number of sources
-    $Mirrors = explode("\n", $T['Mirrors']);
-    $Mirrors = array_map('trim', $Mirrors);
-
-    $Mirrors = array_filter($Mirrors, function ($s) {
-        return preg_match('/^'.URL_REGEX.'$/i', $s);
-    });
-
-    $Mirrors = array_unique($Mirrors);
-    $Mirrors = array_slice($Mirrors, 0, 2);
-
-    # Downgrade TLS on resource URIs
-    # Required for BEP 19 compatibility
-    $Mirrors = str_ireplace('tps://', 'tp://', $Mirrors);
-
-    # Perform the DB inserts here
-    # Screenshots (Publications)
-    if (!empty($Screenshots)) {
-        $Screenshot = '';
-        $DB->prepare_query("
-          INSERT INTO torrents_doi
-            (TorrentID, UserID, Time, URI)
-          VALUES (?, ?, NOW(), ?)", $GroupID, $LoggedUser['ID'], $Screenshot);
+    /**
+     * DOI numbers
+     *
+     * Add optional citation info.
+     * todo: Query Semantic Scholar in the scheduler.
+     * THESE ARE ASSOCIATED WITH TORRENT GROUPS.s
+     */
+    if (!empty($T['Screenshots'])) {
+        $Screenshots = $Validate->textarea2array($T['Screenshots'], $ENV->DOI_REGEX);
+        $Screenshots = array_slice($Screenshots, 0, 10);
 
         foreach ($Screenshots as $Screenshot) {
-            $DB->exec_prepared_query();
+            $DB->query("
+            INSERT INTO `literature`
+            (`group_id`, `user_id`, `timestamp`, `doi`)
+          VALUES (?, ?, NOW(), ?)", $GroupID, $LoggedUser['ID'], $Screenshot);
         }
     }
+}
 
-    # Mirrors
-    if (!empty($Mirrors)) {
-        $Mirror = '';
-        $DB->prepare_query("
-          INSERT INTO torrents_mirrors
-            (GroupID, UserID, Time, URI)
-          VALUES (?, ?, NOW(), ?)", $GroupID, $LoggedUser['ID'], $Mirror);
-
-        foreach ($Mirrors as $Mirror) {
-            $DB->exec_prepared_query();
-        }
-    }
-
-    # Main if/else
-} else {
+# Main if/else
+else {
     $DB->query("
       UPDATE torrents_group
-      SET Time = NOW()
-        WHERE ID = ?", $GroupID);
+      SET `timestamp` = NOW()
+        WHERE `id` = ?", $GroupID);
 
     $Cache->delete_value("torrent_group_$GroupID");
     $Cache->delete_value("torrents_details_$GroupID");
@@ -728,6 +694,77 @@ $TorrentID = $DB->inserted_id();
 $Cache->increment('stats_torrent_count');
 $Tor->Dec['comment'] = 'https://'.SITE_DOMAIN.'/torrents.php?torrentid='.$TorrentID;
 
+
+/**
+ * Mirrors
+ *
+ * Add optional web seeds and IPFS/Dat mirrors.
+ * Support an arbitrary and limited number of sources.
+ * THESE ARE ASSOCIATED WITH INDIVIDUAL TORRENTS.
+ */
+
+if (!empty($T['Mirrors'])) {
+    $Mirrors = $Validate->textarea2array($T['Mirrors'], $ENV->URL_REGEX);
+    $Screenshots = array_slice($Screenshots, 0, 5);
+
+    foreach ($Mirrors as $Mirror) {
+        $DB->query(
+            "
+        INSERT INTO torrents_mirrors
+          (`torrent_id`, `user_id`, `timestamp`, `uri`)
+        VALUES (?, ?, NOW(), ?)",
+            $TorrentID,
+            $LoggedUser['ID'],
+            $Mirror
+        );
+    }
+}
+
+
+/**
+ * Seqhash
+ *
+ * Elementary Seqhash support
+ */
+if ($ENV->FEATURE_BIOPHP && !empty($T['Seqhash'])) {
+    $BioIO = new \BioPHP\IO();
+    $BioSeqhash = new \BioPHP\Seqhash();
+
+    $Parsed = $BioIO->readFasta($T['Seqhash']);
+    foreach ($Parsed as $Parsed) {
+        try {
+            # todo: Trim sequences in \BioPHP\Transform->normalize()
+            $Trimmed = preg_replace('/\s+/', '', $Parsed['sequence']);
+            $Seqhash = $BioSeqhash->hash(
+                $Trimmed,
+                $_POST['seqhash_meta1'],
+                $_POST['seqhash_meta2'],
+                $_POST['seqhash_meta3']
+            );
+
+            $DB->query(
+                "
+            INSERT INTO `bioinformatics`
+              (`torrent_id`, `user_id`, `timestamp`,
+               `name`, `seqhash`)
+            VALUES (?, ?, NOW(), ?, ?)",
+                $TorrentID,
+                $LoggedUser['ID'],
+                $Parsed['name'],
+                $Seqhash
+            );
+        } catch (Exception $Err) {
+            $UploadForm = $Type;
+            require_once SERVER_ROOT.'/sections/upload/upload.php' ;
+            error($Err->getMessage(), $NoHTML = true);
+        }
+    }
+}
+
+
+/**
+ * Update tracker
+ */
 Tracker::update_tracker('add_torrent', [
   'id'          => $TorrentID,
   'info_hash'   => rawurlencode($InfoHash),

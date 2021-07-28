@@ -43,14 +43,14 @@ list($title, $subject, $object, $Image, $Body, $picture, $description, $publishe
 
 $DB->prepare_query("
 SELECT
-  `ID`,
-  `UserID`,
-  `Time`,
-  `URI`
+  `id`,
+  `user_id`,
+  `timestamp`,
+  `doi`
 FROM
-  `torrents_doi`
+  `literature`
 WHERE
-  `TorrentID` = '$group_id'
+  `group_id` = '$group_id'
 ");
 $DB->exec_prepared_query();
 

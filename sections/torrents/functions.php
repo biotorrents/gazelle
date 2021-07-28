@@ -58,14 +58,14 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
         # Screenshots (Publications)
         $DB->query("
         SELECT
-          `ID`,
-          `UserID`,
-          `Time`,
-          `URI`
+          `id`,
+          `user_id`,
+          `timestamp`,
+          `doi`
         FROM
-          `torrents_doi`
+          `literature`
         WHERE
-          `TorrentID` = '$GroupID'
+          `group_id` = '$GroupID'
         ");
 
         if ($DB->has_results()) {
@@ -75,16 +75,17 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
         }
 
         # Mirrors
+        # todo: Fix $GroupID
         $DB->query("
         SELECT
-          `ID`,
-          `UserID`,
-          `Time`,
-          `URI`
+          `id`,
+          `user_id`,
+          `timestamp`,
+          `resource`
         FROM
           `torrents_mirrors`
         WHERE
-          `GroupID` = '$GroupID'
+          `torrent_id` = '$GroupID'
         ");
   
         if ($DB->has_results()) {

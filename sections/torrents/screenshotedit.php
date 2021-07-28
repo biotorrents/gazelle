@@ -36,12 +36,12 @@ if (count($Screenshots) > 10) {
 
 $DB->query("
 SELECT
-  `UserID`,
-  `URI`
+  `user_id`,
+  `doi`
 FROM
-  `torrents_doi`
+  `literature`
 WHERE
-  `TorrentID` = '$GroupID'
+  `group_id` = '$GroupID'
 ");
 
 // $Old is an array of the form URL => UserID where UserID is the ID of the User who originally uploaded that image.
@@ -81,9 +81,9 @@ if (!empty($Deleted)) {
         $DB->prepare_query("
         DELETE
         FROM
-          `torrents_doi`
+          `literature`
         WHERE
-          `URI` = '$ScreenDel'
+          `doi` = '$ScreenDel'
         ");
 
         foreach ($DeleteList as $ScreenDel) {
@@ -100,8 +100,8 @@ if (!empty($New)) {
     $Screenshot = '';
     $DB->prepare_query(
         "
-    INSERT INTO `torrents_doi`
-      (`TorrentID`, `UserID`, `Time`, `URI`)
+    INSERT INTO `literature`
+      (`group_id`, `user_id`, `timestamp`, `doi`)
     VALUES
       (?, ?, NOW(), ?)",
         $GroupID,

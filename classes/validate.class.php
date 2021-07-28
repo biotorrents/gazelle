@@ -47,6 +47,34 @@
 class Validate
 {
     /**
+     * mirrors
+     *
+     * @param string $String The raw textarea, e.g., from torrent_form.class.php
+     * @param string $Regex  The regex to test against, e.g., from $ENV
+     * @return array An array of unique values that match the regex
+     */
+    public function textarea2array(string $String, string $Regex)
+    {
+        $ENV = ENV::go();
+
+        $String = array_map(
+            'trim',
+            explode(
+                "\n",
+                $String
+            )
+        );
+        
+        return array_unique(
+            preg_grep(
+                "/^$Regex$/i",
+                $String
+            )
+        );
+    }
+
+    
+    /**
      * title
      *
      * Check if a torrent title is valid.
@@ -244,58 +272,6 @@ class Validate
         }
     }
 
-
-    /**
-     * Make input
-     * https://www.w3schools.com/html/html_form_input_types.asp
-     *
-     * Generate a secure HTML input element.
-     * Takes $Type, $Name (also used for id), and $Classes.
-     * Outputs a hardened input with the requested attributes.
-     *
-     * todo: See if this could work, one ugly switch for all forms in sections/
-     */
-
-    public function MakeInput($Type = 'text', $Name = '', $Classes = [])
-    {
-        if (!is_str($Type) || !is_str($Name)) {
-            error('$Type and $Name must be strings');
-        }
-
-        # Intentionally double quoted PHP constructing $HTML
-        # <input type='text' id='title_jp' name='title_jp' class='one two'
-        $HTML  = "";
-        $HTML .= "<input type='$Type' id='$Name' name='$Name'";
-        $HTML .= (!empty($Classes)) ? " class='" . implode(' ', $Classes) . "'" : "";
-
-        /*
-        'button'
-        'checkbox'
-        'color'
-        'date'
-        'datetime-local'
-        'email'
-        'file'
-        'hidden'
-        'image'
-        'month'
-        'number'
-        'password'
-        'radio'
-        'range'
-        'reset'
-        'search'
-        'submit'
-        'tel'
-        'text'
-        'time'
-        'url'
-        'week'
-        */
-                
-        return;
-    }
-    
 
     /**
      * Legacy class

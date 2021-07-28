@@ -1,4 +1,3 @@
-
 <?php
 declare(strict_types=1);
 
@@ -127,6 +126,7 @@ ENV::setPub('SRI', 'sha384');
  * Tech support
  */
 
+ /*
 $TechSupport = [
   'Email' => 'help@biotorrents.de',
   'Subject' => '[TxID '.strtoupper(bin2hex(random_bytes(2))).'] Specific subject line with TxID intact',
@@ -136,6 +136,7 @@ ENV::setPub(
     'HELP',
     $ENV->convert($TechSupport)
 );
+*/
 
 
 /**
@@ -380,7 +381,8 @@ ENV::setPub('FEATURE_SEND_EMAIL', true);
 # (should only be used for initial setup)
 ENV::setPub('FEATURE_SET_ENC_KEY_PUBLIC', false);
 
-# Attempt to support the Seqhash algorithm
+# Attempt to support the BioPHP library
+# https://packagist.org/packages/biotorrents/biophp
 # https://blog.libredna.org/post/seqhash/
 ENV::setPub('FEATURE_BIOPHP', true);
 
@@ -831,6 +833,9 @@ $DB = [
     'version' => ['name' => 'Version', 'desc' => 'Start with 0.1.0', 'note' => 'Please see <a href="https://semver.org" target="_blank">Semantic Versioning</a>'],
     'license' => ['name' => 'License', 'desc' => '', 'note' => 'Please see <a href="http://www.dcc.ac.uk/resources/how-guides/license-research-data" target="_blank">How to License Research Data</a>'],
     'mirrors' => ['name' => 'Mirrors', 'desc' => 'Up to two FTP/HTTP addresses that either point directly to a file, or for multi-file torrents, to the enclosing folder'],
+
+    # Original fields
+    'seqhash' => ['name' => 'Seqhash', 'desc' => 'Sample genome sequence in FASTA format (GenBank pending)', 'note' => 'Please see <a href="https://blog.libredna.org/post/seqhash/" target="_blank">The Seqhash Algorithm</a>'],
 ];
 ENV::setPub(
     'DB',
@@ -971,9 +976,22 @@ $META = [
         'Plain' => [
             'CSV'   => ['csv'], # 3
             'JSON'  => ['json'], # 3
-            'Text'  => ['txt'], # 3
+            'Text'  => ['txt', 'asc'], # 3
             'XML'   => ['xml'], # etc.
         ],
+
+        /**
+         * 2.
+         * Databases
+         */
+        'Databases' => [
+            'MS SQL'   => ['mdf', 'ndf', 'ldf'],
+            'MySQL'   => ['sql', 'mysql'],
+            'Oracle' => ['dbf', 'ora', 'oraenv'],
+            'IBM Db2' => ['ixf', 'del', 'cursor'],
+            'Postgres' => ['sql']
+        ],
+
 
         /**
          * 2.
@@ -1330,16 +1348,11 @@ $CATS = [
         'Icon' => "$CatIcons/sequences.png",
         'Description' => "For data that's ACGT, ACGU, amino acid letters on disk.",
         'Platforms' => $ENV->META->Platforms->Sequences,
-        'Formats' => array_merge([
-            /*
-            'Sequences' => $ENV->META->Formats->Sequences,
-            'Proteins' => $ENV->META->Formats->Proteins,
-            'Plain' => $ENV->META->Formats->Plain,
-            */
+        'Formats' => [
             $ENV->META->Formats->Sequences,
             $ENV->META->Formats->Proteins,
             $ENV->META->Formats->Plain,
-        ]),
+        ],
     ],
 
     2 => [
@@ -1349,9 +1362,9 @@ $CATS = [
         'Description' => 'For pathway and regulatory network data, structured taxonomies, etc.',
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
-            'GraphXml' => $ENV->META->Formats->GraphXml,
-            'GraphTxt' => $ENV->META->Formats->GraphTxt,
-            'Plain' => $ENV->META->Formats->Plain,
+            $ENV->META->Formats->GraphXml,
+            $ENV->META->Formats->GraphTxt,
+            $ENV->META->Formats->Plain,
         ],
     ],
 
@@ -1362,9 +1375,9 @@ $CATS = [
         'Description' => 'For data that examines one facet broadly, not one subject deeply.',
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
-            'GraphXml' => $ENV->META->Formats->GraphXml,
-            'GraphTxt' => $ENV->META->Formats->GraphTxt,
-            'Plain' => $ENV->META->Formats->Plain,
+            $ENV->META->Formats->GraphXml,
+            $ENV->META->Formats->GraphTxt,
+            $ENV->META->Formats->Plain,
         ],
     ],
 
@@ -1375,9 +1388,9 @@ $CATS = [
         'Description' => "For structured data (XML, etc.) that describes the subject's orientation in space.",
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
-            'GraphXml' => $ENV->META->Formats->GraphXml,
-            'GraphTxt' => $ENV->META->Formats->GraphTxt,
-            'Plain' => $ENV->META->Formats->Plain,
+            $ENV->META->Formats->GraphXml,
+            $ENV->META->Formats->GraphTxt,
+            $ENV->META->Formats->Plain,
         ],
     ],
 
@@ -1388,9 +1401,9 @@ $CATS = [
         'Description' => 'For data that describes observations over time and/or space.',
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
-            'GraphXml' => $ENV->META->Formats->GraphXml,
-            'GraphTxt' => $ENV->META->Formats->GraphTxt,
-            'Plain' => $ENV->META->Formats->Plain,
+            $ENV->META->Formats->GraphXml,
+            $ENV->META->Formats->GraphTxt,
+            $ENV->META->Formats->Plain,
         ],
     ],
 
@@ -1401,9 +1414,9 @@ $CATS = [
         'Description' => 'For data that describes recurring structures in nature such as common pathways or motifs in the proteome or metabolome.',
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
-            'GraphXml' => $ENV->META->Formats->GraphXml,
-            'GraphTxt' => $ENV->META->Formats->GraphTxt,
-            'Plain' => $ENV->META->Formats->Plain,
+            $ENV->META->Formats->GraphXml,
+            $ENV->META->Formats->GraphTxt,
+            $ENV->META->Formats->Plain,
         ],
     ],
 
@@ -1414,9 +1427,9 @@ $CATS = [
         'Description' => 'For data that records experimental control behavior, checks readings against known physical constants, tracks the thermodynamic limits of reactions, etc.',
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
-            'GraphXml' => $ENV->META->Formats->GraphXml,
-            'GraphTxt' => $ENV->META->Formats->GraphTxt,
-            'Plain' => $ENV->META->Formats->Plain,
+            $ENV->META->Formats->GraphXml,
+            $ENV->META->Formats->GraphTxt,
+            $ENV->META->Formats->Plain,
         ],
     ],
 
@@ -1427,9 +1440,8 @@ $CATS = [
         'Description' => 'For data you can look at!',
         'Platforms' => $ENV->META->Platforms->Images,
         'Formats' => [
-            'ImgRaster' => $ENV->META->Formats->ImgRaster,
-            'ImgVector' => $ENV->META->Formats->ImgVector,
-            'Plain' => $ENV->META->Formats->Plain,
+            $ENV->META->Formats->ImgRaster,
+            $ENV->META->Formats->ImgVector,
         ],
     ],
 
@@ -1440,11 +1452,10 @@ $CATS = [
         'Description' => "For data that's limited to specific locations or otherwise describes macroscopic space.",
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
-            'MapRaster' => $ENV->META->Formats->MapRaster,
-            'MapVector' => $ENV->META->Formats->MapVector,
-            'ImgRaster' => $ENV->META->Formats->ImgRaster,
-            'ImgVector' => $ENV->META->Formats->ImgVector,
-            'Plain' => $ENV->META->Formats->Plain,
+            $ENV->META->Formats->MapRaster,
+            $ENV->META->Formats->MapVector,
+            $ENV->META->Formats->ImgRaster,
+            $ENV->META->Formats->ImgVector,
         ],
     ],
 
@@ -1455,11 +1466,10 @@ $CATS = [
         'Description' => 'For projections, simulations, and other hypothetical or computer-generated data.',
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
-            'MapRaster' => $ENV->META->Formats->MapRaster,
-            'MapVector' => $ENV->META->Formats->MapVector,
-            'ImgRaster' => $ENV->META->Formats->ImgRaster,
-            'ImgVector' => $ENV->META->Formats->ImgVector,
-            'Plain' => $ENV->META->Formats->Plain,
+            $ENV->META->Formats->MapRaster,
+            $ENV->META->Formats->MapVector,
+            $ENV->META->Formats->ImgRaster,
+            $ENV->META->Formats->ImgVector,
         ],
     ],
 
@@ -1470,9 +1480,9 @@ $CATS = [
         'Description' => 'For documentation, software, disk images, and literature datasets.',
         'Platforms' => $ENV->META->Platforms->Documents,
         'Formats' => [
-            'BinDoc' => $ENV->META->Formats->BinDoc,
-            'CpuGen' => $ENV->META->Formats->CpuGen,
-            'Plain' => $ENV->META->Formats->Plain,
+            $ENV->META->Formats->BinDoc,
+            $ENV->META->Formats->CpuGen,
+            $ENV->META->Formats->Plain,
         ],
     ],
 
@@ -1483,7 +1493,7 @@ $CATS = [
         'Description' => 'For raw reads and machine data of any category.',
         'Platforms' => $ENV->META->Platforms->Raw,
         'Formats' => [
-            'Plain' => $ENV->META->Formats->Plain,
+            $ENV->META->Formats->Plain,
         ],
     ],
 ];
@@ -1501,10 +1511,10 @@ ENV::setPub(
  */
 
 // resource_type://username:password@domain:port/path?query_string#anchor
-define('RESOURCE_REGEX', '(https?|ftps?):\/\/');
+define('RESOURCE_REGEX', '(https?|ftps?|dat|ipfs):\/\/');
 ENV::setPub(
     'RESOURCE_REGEX',
-    '(https?|ftps?):\/\/'
+    '(https?|ftps?|dat|ipfs):\/\/'
 );
 
 define('IP_REGEX', '(\d{1,3}\.){3}\d{1,3}');
