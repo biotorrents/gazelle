@@ -17,7 +17,7 @@ if (!isset($_GET['id']) || !is_number($_GET['id'])) {
     }
 } else {
     $TorrentID = $_GET['id'];
-    $DB->query("
+    $DB->prepared_query("
     SELECT tg.`category_id`, t.`GroupID`, u.`Username`
     FROM `torrents_group` AS tg
       LEFT JOIN `torrents` AS t ON t.`GroupID` = tg.`id`

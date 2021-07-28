@@ -10,7 +10,7 @@ if (!check_perms('admin_reports')) {
 }
 
 
-$DB->query("
+$DB->prepared_query("
   SELECT
     r.ID,
     r.ReporterID,
@@ -79,7 +79,7 @@ $DB->query("
 
     if (!$GroupID) {
       //Torrent already deleted
-      $DB->query("
+      $DB->prepared_query("
         UPDATE reportsv2
         SET
           Status = 'Resolved',
@@ -94,7 +94,7 @@ $DB->query("
 <?
       error();
     }
-    $DB->query("
+    $DB->prepared_query("
       UPDATE reportsv2
       SET Status = 'InProgress',
         ResolverID = ".$LoggedUser['ID']."
@@ -155,7 +155,7 @@ $DB->query("
               uploaded by <a href="user.php?id=<?=$UploaderID?>"><?=$UploaderName?></a> <?=time_diff($Time)?>
               <br />
               <div style="text-align: right;">was reported by <a href="user.php?id=<?=$ReporterID?>"><?=$ReporterName?></a> <?=time_diff($ReportedTime)?> for the reason: <strong><?=$ReportType['title']?></strong></div>
-<?php $DB->query("
+<?php $DB->prepared_query("
             SELECT r.ID
             FROM reportsv2 AS r
               LEFT JOIN torrents AS t ON t.ID = r.TorrentID
@@ -167,7 +167,7 @@ $DB->query("
               <div style="text-align: right;">
                 <a href="reportsv2.php?view=group&amp;id=<?=$GroupID?>">There <?=(($GroupOthers > 1) ? "are $GroupOthers other reports" : "is 1 other report")?> for torrents in this group</a>
               </div>
-<?php $DB->query("
+<?php $DB->prepared_query("
             SELECT t.UserID
             FROM reportsv2 AS r
               JOIN torrents AS t ON t.ID = r.TorrentID
@@ -181,7 +181,7 @@ $DB->query("
               </div>
 <?php }
 
-        $DB->query("
+        $DB->prepared_query("
             SELECT DISTINCT req.ID,
               req.FillerID,
               um.Username,
@@ -242,7 +242,7 @@ $DB->query("
         $First = true;
         $Extras = explode(' ', $ExtraIDs);
         foreach ($Extras as $ExtraID) {
-            $DB->query("
+            $DB->prepared_query("
                 SELECT
                   tg.Name,
                   tg.ID,

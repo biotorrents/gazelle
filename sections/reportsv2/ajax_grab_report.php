@@ -13,7 +13,7 @@ if (!is_number($_GET['id'])) {
   error();
 }
 
-$DB->query("
+$DB->prepared_query("
   UPDATE reportsv2
   SET Status = 'InProgress',
     ResolverID = " . $LoggedUser['ID'] . "

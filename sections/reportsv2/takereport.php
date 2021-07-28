@@ -88,7 +88,7 @@ if (!empty($_POST['extra'])) {
     $Err = 'As useful as blank reports are, could you be a tiny bit more helpful? (Leave a comment)';
 }
 
-$DB->query("
+$DB->prepared_query("
   SELECT `GroupID`
   FROM `torrents`
   WHERE `ID` = '$TorrentID'
@@ -104,7 +104,7 @@ if (!empty($Err)) {
     error();
 }
 
-$DB->query("
+$DB->prepared_query("
   SELECT `ID`
   FROM `reportsv2`
   WHERE `TorrentID` = '$TorrentID'
@@ -115,7 +115,7 @@ if ($DB->has_results()) {
     error();
 }
 
-$DB->query("
+$DB->prepared_query("
   INSERT INTO `reportsv2`
     (`ReporterID`, `TorrentID`, `Type`, `UserComment`, `Status`, `ReportedTime`, `Track`, `Image`, `ExtraID`, `Link`)
   VALUES
@@ -123,12 +123,12 @@ $DB->query("
 
 $ReportID = $DB->inserted_id();
 
-$DB->query("
+$DB->prepared_query("
   SELECT `UserID`
   FROM `torrents`
   WHERE `ID` = $TorrentID");
 list($UploaderID) = $DB->next_record();
-$DB->query("
+$DB->prepared_query("
   SELECT `title`, `subject`, `object`
   FROM `torrents_group`
   WHERE `id` = '$GroupID'

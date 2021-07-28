@@ -13,7 +13,7 @@ View::show_header('Reports V2', 'reportsv2');
 
 
 //Grab owner's ID, just for examples
-$DB->query("
+$DB->prepared_query("
   SELECT ID, Username
   FROM users_main
   ORDER BY ID ASC
@@ -29,7 +29,7 @@ $Owner = display_str($Owner);
 <div class="float_clear">
   <div class="two_columns pad">
 <?
-$DB->query("
+$DB->prepared_query("
   SELECT
     um.ID,
     um.Username,
@@ -65,7 +65,7 @@ foreach ($Results as $Result) {
 ?>
     </table>
 <?
-$DB->query("
+$DB->prepared_query("
   SELECT
     um.ID,
     um.Username,
@@ -101,7 +101,7 @@ foreach ($Results as $Result) {
 ?>
     </table>
 <?
-$DB->query("
+$DB->prepared_query("
   SELECT
     um.ID,
     um.Username,
@@ -137,7 +137,7 @@ foreach ($Results as $Result) {
 ?>
     </table>
 <?
-$DB->query("
+$DB->prepared_query("
   SELECT
     um.ID,
     um.Username,
@@ -232,7 +232,7 @@ foreach ($Results as $Result) {
   </div>
   <div class="two_columns pad">
 <?
-  $DB->query("
+  $DB->prepared_query("
     SELECT
       r.ResolverID,
       um.Username,
@@ -268,7 +268,7 @@ foreach ($Results as $Result) {
     </table>
     <h3>Different view modes by report type</h3>
 <?
-  $DB->query("
+  $DB->prepared_query("
     SELECT
       Type,
       COUNT(ID) AS Count

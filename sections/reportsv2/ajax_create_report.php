@@ -23,7 +23,7 @@ if (!is_number($_POST['torrentid'])) {
   $TorrentID = $_POST['torrentid'];
 }
 
-$DB->query("
+$DB->prepared_query("
   SELECT tg.CategoryID
   FROM torrents_group AS tg
     JOIN torrents AS t ON t.GroupID = tg.ID
@@ -63,7 +63,7 @@ if (!empty($Err)) {
   error();
 }
 
-$DB->query("
+$DB->prepared_query("
   SELECT ID
   FROM reportsv2
   WHERE TorrentID = $TorrentID
@@ -73,7 +73,7 @@ if ($DB->has_results()) {
   error();
 }
 
-$DB->query("
+$DB->prepared_query("
   INSERT INTO reportsv2
     (ReporterID, TorrentID, Type, UserComment, Status, ReportedTime, ExtraID)
   VALUES

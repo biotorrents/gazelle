@@ -9,7 +9,7 @@ echo <<<HTML
 <footer>
   <a href="/legal.php?p=privacy">Privacy</a>
   <a href="/legal.php?p=dmca">DMCA</a>
-  <a class="external" href="https://github.com/biotorrents/gazelle" target="_blank">GitHub</a>
+  <a class="external" href="https://github.com/biotorrents" target="_blank">GitHub</a>
   <a class="external" href="https://patreon.com/biotorrents" target="_blank">Patreon</a>
 </footer>
 

@@ -62,7 +62,7 @@ if (!$ID) {
 } else {
     switch ($View) {
     case 'staff':
-      $DB->query("
+      $DB->prepared_query("
         SELECT `Username`
         FROM `users_main`
         WHERE `ID` = $ID");
@@ -78,7 +78,7 @@ if (!$ID) {
       break;
 
     case 'resolver':
-      $DB->query("
+      $DB->prepared_query("
         SELECT `Username`
         FROM `users_main`
         WHERE `ID` = $ID");
@@ -112,7 +112,7 @@ if (!$ID) {
       break;
 
     case 'reporter':
-      $DB->query("
+      $DB->prepared_query("
         SELECT `Username`
         FROM `users_main`
         WHERE `ID` = $ID");
@@ -127,7 +127,7 @@ if (!$ID) {
       break;
 
     case 'uploader':
-      $DB->query("
+      $DB->prepared_query("
         SELECT `Username`
         FROM `users_main`
         WHERE `ID` = $ID");
@@ -158,7 +158,7 @@ if (!$ID) {
 /**
  * The large query
  */
-$DB->query("
+$DB->prepared_query("
   SELECT
     SQL_CALC_FOUND_ROWS
     r.`ID`,
@@ -211,7 +211,7 @@ $DB->query("
 
 $Reports = $DB->to_array();
 
-$DB->query('SELECT FOUND_ROWS()');
+$DB->prepared_query('SELECT FOUND_ROWS()');
 list($Results) = $DB->next_record();
 $PageLinks = Format::get_pages($Page, $Results, REPORTS_PER_PAGE, 11);
 
@@ -253,7 +253,7 @@ if (count($Reports) === 0) {
 
           if (!$GroupID && $Status != 'Resolved') {
               //Torrent already deleted
-              $DB->query("
+              $DB->prepared_query("
         UPDATE `reportsv2`
         SET
           `Status` = 'Resolved',
@@ -338,7 +338,7 @@ if (count($Reports) === 0) {
 } ?>
             <div style="text-align: right;">was reported by <a href="user.php?id=<?=$ReporterID?>"><?=$ReporterName?></a> <?=time_diff($ReportedTime)?> for the reason: <strong><?=$ReportType['title']?></strong></div>
 <?php if ($Status != 'Resolved') {
-    $DB->query("
+    $DB->prepared_query("
             SELECT r.`ID`
             FROM `reportsv2` AS r
               LEFT JOIN `torrents` AS t ON t.`ID` = r.`TorrentID`
@@ -352,7 +352,7 @@ if (count($Reports) === 0) {
             </div>
 <?php }
 
-    $DB->query("
+    $DB->prepared_query("
             SELECT t.`UserID`
             FROM `reportsv2` AS r
               JOIN `torrents` AS t ON t.`ID` = r.`TorrentID`
@@ -366,7 +366,7 @@ if (count($Reports) === 0) {
             </div>
 <?php }
 
-    $DB->query("
+    $DB->prepared_query("
             SELECT DISTINCT req.`ID`,
               req.`FillerID`,
               um.`Username`,
@@ -428,7 +428,7 @@ if (count($Reports) === 0) {
         $First = true;
         $Extras = explode(' ', $ExtraIDs);
         foreach ($Extras as $ExtraID) {
-            $DB->query("
+            $DB->prepared_query("
             SELECT
               COALESCE(NULLIF(tg.`title`, ''), NULLIF(tg.`subject`, ''), tg.`object`) AS Name,
               tg.`id`,
