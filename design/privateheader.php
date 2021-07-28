@@ -252,8 +252,7 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
           <li id="nav_irc" <?=
             Format::add_class($PageID, ['chat'], 'active', true)?>>
             <a href="https://join.slack.com/t/biotorrents/shared_invite/<?=$ENV->SLACK_INVITE?>"
-              target="_blank">Slack
-              <img src="/static/common/symbols/external.png" style="height: 0.75em; vertical-align: center;" /></a>
+              target="_blank">Slack</a>
           </li>
 
           <li id="nav_top10" <?=
@@ -625,7 +624,7 @@ if (check_perms('users_mod') && FEATURE_EMAIL_REENABLE) {
 if (!empty($Alerts) || !empty($ModBar)) { ?>
     <div id="alerts">
       <?php foreach ($Alerts as $Alert) { ?>
-      <div class="alertbar">
+      <div class="alertbar warning">
         <?=$Alert?>
       </div>
       <?php

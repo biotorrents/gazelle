@@ -72,16 +72,18 @@ input[type="file"] {
 }
 
 .alertbar {
-    @include alertbar(silver);
-    /* @include alertbar($lb100); */
+    &.modbar {
+        @include alertbar(silver);
+        /* @include alertbar($lb100); */
+    }
 
-    .warning {
-        background: orange;
+    &.warning {
+        @include alertbar(orange);
         /* background: #ffe0b2; */
     }
 
-    .error {
-        background: red;
+    &.error {
+        @include alertbar(red);
         /* background: #ffcdd2; */
     }
 }

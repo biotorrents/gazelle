@@ -226,8 +226,8 @@ main {
 
 /* Legal */
 .tldr {
-    width: 200%;
+    max-width: 1000%;
     height: 500px;
-    margin-left: -50%;
+    margin: auto;
     overflow-y: scroll;
 }

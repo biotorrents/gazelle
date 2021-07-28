@@ -68,15 +68,9 @@ if ($ENV->OPEN_REGISTRATION) {
     echo '<a href="register.php">Register</a>';
 }
 
-/*
-$Email = $ENV->HELP->Email;
-$Subject = $ENV->HELP->Subject;
-$Body = $ENV->HELP->Body;
-echo "<a href='mailto:$Email?subject=$Subject&body=$Body'>Support</a>";
-*/
-
 echo <<<HTML
-    <a href="https://github.com/biotorrents/gazelle/issues" target="_blank">Support</a>
+    <a href="/legal.php?p=about">About</a>
+    <a class="external" href="https://docs.torrents.bio" target="_blank">Docs</a>
   </header>
 
 <main>

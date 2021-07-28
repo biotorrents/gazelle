@@ -152,7 +152,34 @@ class Text
         )) {
             $Parsedown = new ParsedownExtra();
             $Parsedown->setSafeMode(true);
+
+            # Prepare clean escapes
             $Str = html_entity_decode($Str, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+            # Parse early and post-process
+            $Parsed = $Parsedown->text($Str);
+            
+            # Replace links to $ENV->SITE_DOMAIN
+            $Parsed = preg_replace(
+                "/<a href=\"$ENV->RESOURCE_REGEX$ENV->SITE_DOMAIN\//",
+                '<a href="/',
+                $Parsed
+            );
+                
+            # Replace external links and add Wikipedia-style class
+            $Parsed = preg_replace(
+                '/<a href="https?:\/\//',
+                '<a class="external" rel="noopener" rel="noreferrer" href="https://',
+                $Parsed
+            );
+
+            $Parsed = preg_replace(
+                '/<a href="ftps?:\/\//',
+                '<a class="external" rel="noopener" rel="noreferrer" href="ftps://',
+                $Parsed
+            );
+
+            return $Parsed;
 
             # Markdown ToC not happening yet
             # Shouldn't parse_toc() output HTML
@@ -173,8 +200,6 @@ class Text
                 }
             }
             */
-
-            return $P = $Parsedown->text($Str);
 
         /*
         return $P =

@@ -5,6 +5,12 @@ $Twig = Twig::go();
 $p = $_GET['p'];
 
 switch ($p) {
+    case 'about':
+        View::show_header('About');
+        echo $Twig->render('legal/about.html');
+        View::show_footer();
+        break;
+
     case 'privacy':
         View::show_header('Privacy');
         echo $Twig->render('legal/privacy.html');
