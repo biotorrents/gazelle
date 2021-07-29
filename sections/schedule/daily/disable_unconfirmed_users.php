@@ -1,5 +1,5 @@
 <?php
-#declare(strict_types=1);
+declare(strict_types=1);
 
 // Get a list of user IDs for clearing cache keys
 $DB->query("

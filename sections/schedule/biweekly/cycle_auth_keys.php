@@ -1,5 +1,5 @@
 <?php
-#declare(strict_types=1);
+declare(strict_types=1);
 
 $DB->query("
 UPDATE
@@ -8,10 +8,10 @@ SET
   `AuthKey` =
     MD5(
       CONCAT(
-        `AuthKey`, RAND(), '".db_string(Users::make_secret())."',
+        `AuthKey`, RAND(), '".Users::make_secret()."',
         SHA1(
           CONCAT(
-            RAND(), RAND(), '".db_string(Users::make_secret())."'
+            RAND(), RAND(), '".Users::make_secret()."'
           )
         )
       )

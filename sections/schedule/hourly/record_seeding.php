@@ -1,5 +1,5 @@
 <?php
-#declare(strict_types=1);
+declare(strict_types=1);
 
 // Record who's seeding how much, used for ratio watch
 $DB->query("TRUNCATE TABLE users_torrent_history_temp");

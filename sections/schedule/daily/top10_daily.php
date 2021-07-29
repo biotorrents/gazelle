@@ -1,6 +1,7 @@
 <?php
-#declare(strict_types=1);
+declare(strict_types=1);
 
+/*
 $DB->query("
   INSERT INTO top10_history (Date, Type)
   VALUES ('$sqltime', 'Daily')");
@@ -53,13 +54,13 @@ foreach ($Top10 as $Torrent) {
     if (!empty($Artists)) {
         $DisplayName = Artists::display_artists($Artists, false, true);
     }
-    */
+    * /
 
     /*
     if ($GroupCategoryID === 1 && $GroupYear > 0) {
         $DisplayName .= " [$GroupYear]";
     }
-    */
+    * /
 
     // Append extra info to torrent title
     $ExtraInfo = '';
@@ -98,3 +99,4 @@ foreach ($Top10 as $Torrent) {
     ");
     $i++;
 }
+*/

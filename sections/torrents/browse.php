@@ -769,7 +769,7 @@ die();
       # torrents.class.php and sections/artist/artist.php
       if ($GroupResults && (count($Torrents) > 1 && isset($GroupedCategories[$CategoryID - 1]))) {
           // These torrents are in a group
-          $CoverArt = $GroupInfo['WikiImage'];
+          $CoverArt = $GroupInfo['picture'];
           $DisplayName .= "<a class='torrent_title' href='torrents.php?id=$GroupID' ";
 
           # No cover art
@@ -958,7 +958,7 @@ die();
           # Main search result title link
           # These are the main torrent search results
           $Data['CategoryID'] = $CategoryID;
-          $CoverArt = $GroupInfo['WikiImage'];
+          $CoverArt = $GroupInfo['picture'];
           $DisplayName .= "<a class='torrent_title' href='torrents.php?id=$GroupID&amp;torrentid=$TorrentID' ";
 
           if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
