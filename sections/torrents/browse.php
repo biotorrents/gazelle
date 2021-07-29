@@ -614,7 +614,7 @@ View::show_header('Browse Torrents', 'browse');
             Results
           </span>
 
-          <input type="submit" value="Search" class="button-primary"/>
+          <input type="submit" value="Search" class="button-primary" />
 
           <input type="hidden" name="action" id="ft_type"
             value="<?=($AdvancedSearch ? 'advanced' : 'basic')?>" />
@@ -726,14 +726,14 @@ die();
           continue;
       }
 
-      $CategoryID = $GroupInfo['CategoryID'];
-      $GroupYear = $GroupInfo['Year'];
+      $CategoryID = $GroupInfo['category_id'];
+      $GroupYear = $GroupInfo['year'];
       $Artists = $GroupInfo['Artists'];
-      $GroupCatalogueNumber = $GroupInfo['CatalogueNumber'];
-      $GroupStudio = $GroupInfo['Studio'];
-      $GroupName = empty($GroupInfo['Name']) ? (empty($GroupInfo['Title2']) ? $GroupInfo['NameJP'] : $GroupInfo['Title2']) : $GroupInfo['Name'];
-      $GroupTitle2 = $GroupInfo['Title2'];
-      $GroupNameJP = $GroupInfo['NameJP'];
+      $GroupCatalogueNumber = $GroupInfo['identifier'];
+      $GroupStudio = $GroupInfo['workgroup'];
+      $GroupName = empty($GroupInfo['title']) ? (empty($GroupInfo['subject']) ? $GroupInfo['object'] : $GroupInfo['subject']) : $GroupInfo['title'];
+      $GroupTitle2 = $GroupInfo['subject'];
+      $GroupNameJP = $GroupInfo['object'];
       
       if ($GroupResults) {
           $Torrents = $GroupInfo['Torrents'];
@@ -750,7 +750,7 @@ die();
           $Torrents = [$TorrentID => $GroupInfo['Torrents'][$TorrentID]];
       }
 
-      $TorrentTags = new Tags($GroupInfo['TagList']);
+      $TorrentTags = new Tags($GroupInfo['tag_list']);
 
       # Start making $DisplayName (first torrent result line)
       $DisplayName = '';

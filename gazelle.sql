@@ -585,6 +585,21 @@ CREATE TABLE `library_contest` (
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
+-- 2021-07-29
+CREATE TABLE `literature` (
+  `id` int NOT NULL,
+  `group_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `timestamp` datetime DEFAULT NULL,
+  `doi` varchar(255) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `abstract` text DEFAULT NULL,
+  `venue` varchar(255) DEFAULT NULL,
+  `year` smallint DEFAULT NULL,
+  PRIMARY KEY (`id`,`group_id`,`doi`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 -- 2020-03-09
 CREATE TABLE `locked_accounts` (
   `UserID` int unsigned NOT NULL,
@@ -1188,8 +1203,8 @@ CREATE TABLE `torrents_group` (
   `subject` varchar(255) DEFAULT NULL,
   `object` varchar(255) DEFAULT NULL,
   `year` smallint DEFAULT NULL,
-  `workgroup` varchar(255) DEFAULT NULL,
-  `location` varchar(255) DEFAULT NULL,
+  `workgroup` varchar(100) DEFAULT NULL,
+  `location` varchar(100) DEFAULT NULL,
   `identifier` varchar(50) DEFAULT NULL,
   `tag_list` varchar(500) DEFAULT NULL,
   `timestamp` datetime DEFAULT NULL,
