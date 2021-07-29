@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+#declare(strict_types=1);
 
 require_once SERVER_ROOT.'/sections/torrents/functions.php';
 
@@ -54,13 +54,13 @@ $JsonTorrentDetails = [
   'subject'     => $TorrentDetails['subject'],
   'object'       => $TorrentDetails['object'],
   'authors'      => $Artists,
-  'published'         => (int) $TorrentDetails['published'],
+  'year'         => (int) $TorrentDetails['published'],
   'identifier'    => $TorrentDetails['identifier'],
-  'category_id'   => (int) $TorrentDetails['category_id'],
-  'icategory_name' => $CategoryName,
+  'categoryId'   => (int) $TorrentDetails['category_id'],
+  'icategoryName' => $CategoryName,
   'timestamp'         => $TorrentDetails['timestamp'],
   'bookmarked' => Bookmarks::has_bookmarked('torrent', $GroupID),
-  'tag_list'         => $TagList
+  'tagList'         => $TagList
 ];
 
 $Torrent = $TorrentList[$TorrentID];

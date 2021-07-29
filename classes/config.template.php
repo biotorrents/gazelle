@@ -55,15 +55,15 @@ ENV::setPub('DEV', true);
 ENV::setPub(
     'SITE_NAME',
     (!$ENV->DEV
-        ? 'BioTorrents.de' # Production
-        : '[Dev] BioTorrents.de') # Development
+        ? 'torrents.bio' # Production
+        : 'dev.torrents.bio') # Development
 );
 
 # Meta description
 ENV::setPub('DESCRIPTION', 'A platform to share biological sequence and medical imaging data');
 
 # Navigation glyphs
-ENV::setPub('SEP', '⸬'); # e.g., News ⸬ BioTorrents.de
+ENV::setPub('SEP', '-'); # e.g., News ⸬ BioTorrents.de
 ENV::setPub('CRUMB', '›'); # e.g., Forums › Board › Thread
 
 # The FQDN of your site, e.g., dev.biotorrents.de
@@ -75,6 +75,15 @@ ENV::setPub('CRUMB', '›'); # e.g., Forums › Board › Thread
 
 ENV::setPub(
     'SITE_DOMAIN',
+    (!$ENV->DEV
+        ? 'biotorrents.de' # Production
+        : 'dev.biotorrents.de') # Development
+);
+
+# Old domain, to handle the biotorrents.de => torrents.bio migration
+# If not needed, simply set to the same values as $ENV->SITE_DOMAIN
+ENV::setPub(
+    'OLD_SITE_DOMAIN',
     (!$ENV->DEV
         ? 'biotorrents.de' # Production
         : 'dev.biotorrents.de') # Development

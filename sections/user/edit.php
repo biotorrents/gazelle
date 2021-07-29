@@ -156,7 +156,7 @@ $ProfileRewards = Donations::get_profile_rewards($UserID);
           </li>
 
           <li>
-            <input type="submit" id="submit" value="Save profile" />
+            <input type="submit" id="submit" class="button-primary" value="Save profile" />
           </li>
 
         </ul>
@@ -313,7 +313,7 @@ HTML;
           <td>
             <label>
               <input type="checkbox" name="autoload_comm_stats" <?Format::selected(
-              'AutoloadCommStats' ,
+              'AutoloadCommStats',
               1,
               'checked',
               $SiteOptions

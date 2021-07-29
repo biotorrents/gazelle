@@ -81,7 +81,7 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
           `id`,
           `user_id`,
           `timestamp`,
-          `resource`
+          `uri`
         FROM
           `torrents_mirrors`
         WHERE

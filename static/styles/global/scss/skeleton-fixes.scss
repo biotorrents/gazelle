@@ -91,6 +91,7 @@ legend {
 /* forum lists */ table.forum_index,
 /* notif filters */ form[name="notification"],
 /* service stats */ div.permission_container,
+/* user settings */ table.user_options,
 /* GENERIC */ table.skeleton-fix {
     td {
         border-bottom: 0 !important;
@@ -130,7 +131,7 @@ code {
 }
 
 /* Unordered lists */
-ul {
+ul:not(.nobullet) {
     list-style: circle outside !important;
 }
 

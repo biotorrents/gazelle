@@ -21,7 +21,8 @@ class Security
     {
         foreach ($IDs as $ID) {
             if (!ID || !is_int($ID) || $ID < 1) {
-                error("Expected an integer > 1, got $ID in Security::checkInt.");
+                return "Expected an integer > 1, got $ID in Security::checkInt.";
+                #error("Expected an integer > 1, got $ID in Security::checkInt.");
             }
         }
 

@@ -12,7 +12,6 @@
 #content {
     margin: auto;
     margin-top: 2rem;
-    /* min-width: 720px; */
     overflow: hidden;
     width: 90%;
 }
@@ -42,34 +41,6 @@
     a:hover {
         border: none;
     }
-}
-
-/* Main column and sidebar */
-@mixin column-flex($width) {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    max-width: $width;
-    min-height: 0;
-    padding: 0 0.25rem;
-}
-
-.main_column {
-    @include column-flex(64%);
-
-    table {
-        margin-bottom: 1rem;
-    }
-}
-
-.sidebar {
-    @include column-flex(34%);
-    float: right;
-}
-
-/* Box: soon to be <section> */
-.box {
-    margin-bottom: 1rem;
 }
 
 /* Links */

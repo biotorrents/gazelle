@@ -333,11 +333,13 @@ if (isset(G::$LoggedUser['SearchType']) && G::$LoggedUser['SearchType']) { // Ad
             size="17">
         </form>
 
+        <!--
         <form class="search_form" name="artists" action="artist.php" method="get">
-          <input id="artistsearch" <?=Users::has_autocomplete_enabled('search')?>
+          <input id="artistsearch" <?=null#Users::has_autocomplete_enabled('search')?>
           aria-label="Search authors" accesskey="a" spellcheck="false" autocomplete="off" placeholder="Authors"
           type="text" name="artistname" size="17">
         </form>
+          -->
 
         <form class="search_form" name="requests" action="requests.php" method="get">
           <input id="requestssearch" aria-label="Search requests" spellcheck="false" autocomplete="off"

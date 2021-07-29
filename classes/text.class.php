@@ -137,7 +137,7 @@ class Text
     public function fix_links($Parsed) {
             # Replace links to $ENV->SITE_DOMAIN
             $Parsed = preg_replace(
-                "/<a href=\"$ENV->RESOURCE_REGEX$ENV->SITE_DOMAIN\//",
+                "/<a href=\"$ENV->RESOURCE_REGEX($ENV->SITE_DOMAIN|$ENV->OLD_SITE_DOMAIN)\//",
                 '<a href="/',
                 $Parsed
             );

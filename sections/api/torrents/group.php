@@ -81,15 +81,15 @@ $JsonTorrentDetails = [
     'id'            => (int) $TorrentDetails['id'],
     'identifier'    => $TorrentDetails['identifier'],
 
-    'category_id'   => (int) $TorrentDetails['category_id'],
-    'category_name' => $CategoryName,
+    'categoryId'   => (int) $TorrentDetails['category_id'],
+    'categoryName' => $CategoryName,
 
     'title'         => $TorrentDetails['title'],
     'subject'       => $TorrentDetails['subject'],
     'object'        => $TorrentDetails['object'],
 
     'authors'       => $Artists,
-    'published'     => (int) $TorrentDetails['published'],
+    'year'          => (int) $TorrentDetails['year'],
     'workgroup'     => $TorrentDetails['workgroup'],
     'location'      => $TorrentDetails['location'],
 
@@ -99,7 +99,7 @@ $JsonTorrentDetails = [
     'description'   => $TorrentDetails['description'],
    #'description'   => Text::full_format($TorrentDetails['description']),
     'picture'       => $TorrentDetails['picture'],
-    'tag_list'      => $TagList,
+    'tagList'      => $TagList,
 
     'bookmarked'    => Bookmarks::has_bookmarked('torrent', $GroupID),
     'timestamp'     => $TorrentDetails['timestamp'],
@@ -128,7 +128,7 @@ foreach ($TorrentList as $Torrent) {
     # todo: Update DB schema
     $JsonTorrentList[] = [
         'id'           => (int) $Torrent['ID'],
-        'info_hash'    => $Torrent['InfoHash'],
+        'infoHash'    => $Torrent['InfoHash'],
         'description'  => $Torrent['Description'],
 
         'platform'     => $Torrent['Media'],
@@ -139,19 +139,19 @@ foreach ($TorrentList as $Torrent) {
 
         'size'         => (int) $Torrent['Size'],
         'archive'      => $Torrent['Archive'],
-        'file_count'   => (int) $Torrent['FileCount'],
-        'file_path'    => $Torrent['FilePath'],
-        'file_list'    => $FileList,
+        'fileCount'   => (int) $Torrent['FileCount'],
+        'filePath'    => $Torrent['FilePath'],
+        'fileList'    => $FileList,
 
         'seeders'      => (int) $Torrent['Seeders'],
         'leechers'     => (int) $Torrent['Leechers'],
         'snatched'     => (int) $Torrent['Snatched'],
-        'free_torrent' => ($Torrent['FreeTorrent'] === 1),
+        'freeTorrent' => ($Torrent['FreeTorrent'] === 1),
 
         'reported'     => (bool) $Torrent['Reported'],
         'time'         => $Torrent['Time'],
 
-        'user_id'      => (int) ($Torrent['Anonymous'] ? 0 : $Torrent['UserID']),
+        'userId'      => (int) ($Torrent['Anonymous'] ? 0 : $Torrent['UserID']),
         'username'     => ($Torrent['Anonymous'] ? 'Anonymous' : $Userinfo['Username']),
     ];
 }

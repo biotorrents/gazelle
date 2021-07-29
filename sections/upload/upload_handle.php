@@ -710,7 +710,7 @@ if (!empty($T['Mirrors'])) {
     foreach ($Mirrors as $Mirror) {
         $DB->query(
             "
-        INSERT INTO torrents_mirrors
+        INSERT INTO `torrents_mirrors`
           (`torrent_id`, `user_id`, `timestamp`, `uri`)
         VALUES (?, ?, NOW(), ?)",
             $TorrentID,

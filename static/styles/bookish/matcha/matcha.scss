@@ -45,7 +45,6 @@ body.style_matcha {
         width: 100%;
         z-index: 99999;
         margin-top: 2.4em;
-        /* margin-top: 32px; */
         left: 0;
     }
 
@@ -172,59 +171,26 @@ body.style_matcha {
         z-index: 100;
     }
 
-    /* Alerts, Toolbox, etc. */
-    .alertbar {
-        background-color: #fff9c7;
-        text-align: center;
-        color: black;
-        font-weight: bold;
-        width: 320px;
-        margin: 2em auto;
-        padding: 1em;
-
-        a {
-            color: black;
-            text-decoration: none;
-
-            &:hover {
-                color: black;
-                text-decoration: underline;
-            }
-        }
-
-        .warning {
-            background-color: #ffe68a;
-        }
-
-        .error {
-            background-color: #ff8a8a;
-        }
-    }
-
     /* Column heads */
-    .head {
+    .head,
+    .colhead,
+    .colhead_dark {
         background: #9fedd7;
+        border-bottom: 2px solid change-color(black, $alpha: 0.25);
         color: black;
         padding: 0.5em 1em;
     }
 
-    .colhead {
-        background: #9fedd7;
-        font-weight: bold;
-        color: black;
-    }
-
-    .colhead_dark {
-        background: #9fedd7;
-        color: black;
-    }
-
     /* Box */
     .box,
-    section {
+    .pad,
+    section,
+    /* Exceptions, fixes, etc. */
+    table.user_options {
         background-color: white;
         border: none;
         margin-bottom: 1em;
+        padding: 0.5rem;
     }
 
     /* Shadows */
@@ -236,7 +202,7 @@ body.style_matcha {
     .forum_index,
     #userinfo_minor > li > ul,
     .permissions table {
-        box-shadow: 2px 2px 10px -2px slategray;
+        box-shadow: 0 5px 4px -4px slategray;
     }
 
     /* Links */
@@ -282,21 +248,24 @@ body.style_matcha {
     button:not(.editor-toolbar button),
     input[type="button"],
     input[type="submit"] {
-        background: #fbe180;
-        border-radius: 0.25rem;
+        color: black;
+        border: 1px solid #bbb;
         box-shadow: 2px 2px 10px -5px slategray;
-    }
 
-    button:hover,
-    input[type="button"]:hover,
-    input[type="submit"]:hover {
-        background: #fff9c7;
-    }
+        &.button-primary {
+            background: #fbe180;
+        }
 
-    button:focus,
-    input[type="button"]:focus,
-    input[type="submit"]:focus {
-        background: #fff9c7;
+        &:hover {
+            background: #fff9c7;
+            /* Primary hover default blue */
+            border: 1px solid #bbb;
+            color: black;
+        }
+
+        &:focus {
+            background: #fff9c7;
+        }
     }
 
     /* Text input */
@@ -362,10 +331,5 @@ body.style_matcha {
 
     .forum_post.sticky_post {
         border: 2px solid #fbe180;
-    }
-
-    /* Inbox */
-    tr.unreadpm {
-        background-color: #fff9c7;
     }
 } /* end body.style_matcha */

@@ -508,7 +508,12 @@ function json_print($Status, $Message)
         $response = ['status' => $Status, 'response' => []];
     }
 
-    print(json_encode(add_json_info($response)));
+    print(
+        json_encode(
+            add_json_info($response),
+            JSON_UNESCAPED_SLASHES
+        )
+    );
 }
 
 /**

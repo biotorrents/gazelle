@@ -25,7 +25,7 @@ BioTorrents.de supports an array of
 with the appropriate bold/italic glyphs and monospace.
 These options are available to every theme.
 Font Awesome 5 is also universally available.
-[Download the fonts](https://docs.biotorrents.de/dl/fonts.tgz).
+[Download the fonts](https://torrents.bio/fonts.tgz).
 
 ## Markdown support
 
