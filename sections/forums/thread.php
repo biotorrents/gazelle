@@ -22,7 +22,7 @@ if (!isset($_GET['threadid']) || !is_number($_GET['threadid'])) {
     if (isset($_GET['topicid']) && is_number($_GET['topicid'])) {
         $ThreadID = $_GET['topicid'];
     } elseif (isset($_GET['postid']) && is_number($_GET['postid'])) {
-        $DB->query("
+        $DB->prepared_query("
       SELECT TopicID
       FROM forums_posts
       WHERE ID = $_GET[postid]");
@@ -78,7 +78,7 @@ if ($ThreadInfo['Posts'] > $PerPage) {
         if ($ThreadInfo['StickyPostID'] < $_GET['postid']) {
             $SQL .= " AND ID != $ThreadInfo[StickyPostID]";
         }
-        $DB->query($SQL);
+        $DB->prepared_query($SQL);
         list($PostNum) = $DB->next_record();
     } else {
         $PostNum = 1;
@@ -94,7 +94,7 @@ list($CatalogueID, $CatalogueLimit) = Format::catalogue_limit($Page, $PerPage, T
 
 // Cache catalogue from which the page is selected, allows block caches and future ability to specify posts per page
 if (!$Catalogue = $Cache->get_value("thread_{$ThreadID}_catalogue_$CatalogueID")) {
-    $DB->query("
+    $DB->prepared_query("
     SELECT
       p.ID,
       p.AuthorID,
@@ -127,14 +127,14 @@ if ($ThreadInfo['Posts'] <= $PerPage*$Page && $ThreadInfo['StickyPostID'] > $Las
 //Why would we skip this on locked or stickied threads?
 //if (!$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky']) {
 
-  $DB->query("
+  $DB->prepared_query("
     SELECT PostID
     FROM forums_last_read_topics
     WHERE UserID = '$LoggedUser[ID]'
       AND TopicID = '$ThreadID'");
   list($LastRead) = $DB->next_record();
   if ($LastRead < $LastPost) {
-      $DB->query("
+      $DB->prepared_query("
       INSERT INTO forums_last_read_topics
         (UserID, TopicID, PostID)
       VALUES
@@ -158,7 +158,7 @@ if (in_array($ThreadID, $UserSubscriptions)) {
 
 $QuoteNotificationsCount = $Cache->get_value('notify_quoted_' . $LoggedUser['ID']);
 if ($QuoteNotificationsCount === false || $QuoteNotificationsCount > 0) {
-    $DB->query("
+    $DB->prepared_query("
     UPDATE users_notify_quoted
     SET UnRead = false
     WHERE UserID = '$LoggedUser[ID]'
@@ -172,7 +172,7 @@ if ($QuoteNotificationsCount === false || $QuoteNotificationsCount > 0) {
 // Start printing
 View::show_header(
     $ThreadInfo['Title'].' &rsaquo; '.$Forums[$ForumID]['Name'].' &rsaquo; Forums',
-    'comments,subscriptions,bbcode,vendor/easymde.min',
+    'comments,subscriptions,vendor/easymde.min',
     ($IsDonorForum ?? 'donor,').'vendor/easymde.min'
 );
 ?>
@@ -243,13 +243,13 @@ echo $Pages;
 
 if ($ThreadInfo['NoPoll'] == 0) {
     if (!list($Question, $Answers, $Votes, $Featured, $Closed) = $Cache->get_value("polls_$ThreadID")) {
-        $DB->query("
+        $DB->prepared_query("
       SELECT Question, Answers, Featured, Closed
       FROM forums_polls
       WHERE TopicID = '$ThreadID'");
         list($Question, $Answers, $Featured, $Closed) = $DB->next_record(MYSQLI_NUM, array(1));
         $Answers = unserialize($Answers);
-        $DB->query("
+        $DB->prepared_query("
       SELECT Vote, COUNT(UserID)
       FROM forums_polls_votes
       WHERE TopicID = '$ThreadID'
@@ -281,7 +281,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
     #$RevealVoters = in_array($ForumID, FORUMS_TO_REVEAL_VOTERS);
 
     // Polls lose the you voted arrow thingy
-    $DB->query("
+    $DB->prepared_query("
     SELECT Vote
     FROM forums_polls_votes
     WHERE UserID = '".$LoggedUser['ID']."'
@@ -349,7 +349,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
             $StaffNames[] = $Staffer['Username'];
         }
 
-        $DB->query("
+        $DB->prepared_query("
         SELECT
           fpv.Vote AS Vote,
           GROUP_CONCAT(um.Username SEPARATOR ', ')
@@ -435,7 +435,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
         <br />
         <br />
         <?php } ?>
-        <input type="button"
+        <input type="button" class="button-primary"
           onclick="ajax.post('index.php','poll',function(response) { $('#poll_container').raw().innerHTML = response});"
           value="Vote" />
       </form>
@@ -470,9 +470,9 @@ if ($ThreadInfo['NoPoll'] == 0) {
   </div>
 </div>
 <?php
-} //End Polls
+} // End Polls
 
-//Sqeeze in stickypost
+// Sqeeze in stickypost
 if ($ThreadInfo['StickyPostID']) {
     if ($ThreadInfo['StickyPostID'] != $Thread[0]['ID']) {
         array_unshift($Thread, $ThreadInfo['StickyPost']);
@@ -516,7 +516,7 @@ foreach ($Thread as $Key => $Post) {
     <td colspan="<?=Users::has_avatars_enabled() ? 2 : 1?>">
       <div class="float_left"><a class="post_id"
           href="forums.php?action=viewthread&amp;threadid=<?=$ThreadID?>&amp;postid=<?=$PostID?>#post<?=$PostID?>">#<?=$PostID?></a>
-        <?=Users::format_username($AuthorID, true, true, true, true, true, $IsDonorForum);
+        <?=Users::format_username($AuthorID, true, true, true, true, true);
     echo "\n"; ?>
         <?=time_diff($AddedTime, 2);
     echo "\n"; ?>
@@ -598,7 +598,7 @@ foreach ($Thread as $Key => $Post) {
             onclick="LoadEdit('forums', <?=$PostID?>, 1); return false;">&laquo;</a>
           <?php } ?>
           Last edited by
-          <?=Users::format_username($EditedUserID, false, false, false, false, false, $IsDonorForum) ?>
+          <?=Users::format_username($EditedUserID, false, false, false, false, false) ?>
           <?=time_diff($EditedTime, 2, true, true)?>
         </div>
         <?php } ?>
@@ -634,8 +634,9 @@ if (!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
     ));
       }
   }
+
 if (check_perms('site_moderate_forums')) {
-    G::$DB->query("
+    G::$DB->prepared_query("
       SELECT ID, AuthorID, AddedTime, Body
       FROM forums_topic_notes
       WHERE TopicID = $ThreadID
@@ -670,7 +671,7 @@ if (check_perms('site_moderate_forums')) {
           $ID = 'topic_notes',
       ); ?>
         </div>
-        <input type="submit" value="Save" />
+        <input type="submit" class="button-primary" value="Save" />
       </td>
     </tr>
   </table>

@@ -26,7 +26,7 @@ if (isset($_POST['torrent'])) {
     $UserID = $LoggedUser['ID'];
 
     // Make sure torrent exists
-    $DB->query("
+    $DB->prepared_query("
       SELECT FreeTorrent, FreeLeechType
       FROM torrents
       WHERE ID = $TorrentID");
@@ -42,7 +42,7 @@ if (isset($_POST['torrent'])) {
         error('Torrent does not exist');
     }
 
-    $DB->query("
+    $DB->prepared_query("
       SELECT BonusPoints
       FROM users_main
       WHERE ID = $UserID");
@@ -51,30 +51,30 @@ if (isset($_POST['torrent'])) {
         list($Points) = $DB->next_record();
 
         if ($Points >= $Cost) {
-            $DB->query("
+            $DB->prepared_query("
               SELECT TorrentID
               FROM shop_freeleeches
               WHERE TorrentID = $TorrentID");
 
             if ($DB->has_results()) {
-                $DB->query("
+                $DB->prepared_query("
                   UPDATE shop_freeleeches
                   SET ExpiryTime = ExpiryTime + INTERVAL 1 DAY
                   WHERE TorrentID = $TorrentID");
             } else {
-                $DB->query("
+                $DB->prepared_query("
                   INSERT INTO shop_freeleeches
                     (TorrentID, ExpiryTime)
                   VALUES($TorrentID, NOW() + INTERVAL 1 DAY)");
                 Torrents::freeleech_torrents($TorrentID, 1, 3);
             }
 
-            $DB->query("
+            $DB->prepared_query("
               UPDATE users_main
               SET BonusPoints = BonusPoints - $Cost
               WHERE ID = $UserID");
 
-            $DB->query("
+            $DB->prepared_query("
               UPDATE users_info
               SET AdminComment = CONCAT('".sqltime()." - Made TorrentID $TorrentID freeleech for 24 more hours via the store\n\n', AdminComment)
               WHERE UserID = $UserID");

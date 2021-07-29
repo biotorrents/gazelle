@@ -18,7 +18,7 @@ function confirmDelete(id) {
     </div>
   </div>
 <?
-$DB->query("
+$DB->prepared_query("
   SELECT
     p.ID,
     p.Name,
@@ -33,7 +33,7 @@ $DB->query("
 if ($DB->has_results()) {
 ?>
   <div class="box">
-  <table width="100%">
+  <table class="skeleton-fix">
     <tr class="colhead">
       <td>Name</td>
       <td>Level</td>

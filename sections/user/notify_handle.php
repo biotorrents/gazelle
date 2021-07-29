@@ -33,13 +33,6 @@ if ($_POST['artists'.$FormID]) {
     }
 }
 
-if ($_POST['excludeva'.$FormID]) {
-    $ExcludeVA = '1';
-    $HasFilter = true;
-} else {
-    $ExcludeVA = '0';
-}
-
 if ($_POST['newgroupsonly'.$FormID]) {
     $NewGroupsOnly = '1';
     $HasFilter = true;
@@ -124,7 +117,6 @@ if ($_POST['id'.$FormID] && is_number($_POST['id'.$FormID])) {
     UPDATE users_notify_filters
     SET
       Artists='$ArtistList',
-      ExcludeVA='$ExcludeVA',
       NewGroupsOnly='$NewGroupsOnly',
       Tags='$TagList',
       NotTags='$NotTagList',
@@ -136,9 +128,9 @@ if ($_POST['id'.$FormID] && is_number($_POST['id'.$FormID])) {
 } else {
     $DB->query("
     INSERT INTO users_notify_filters
-      (UserID, Label, Artists, ExcludeVA, NewGroupsOnly, Tags, NotTags, Categories, Media, Users)
+      (UserID, Label, Artists, NewGroupsOnly, Tags, NotTags, Categories, Media, Users)
     VALUES
-      ('$LoggedUser[ID]','".db_string($_POST['label'.$FormID])."','$ArtistList','$ExcludeVA','$NewGroupsOnly','$TagList','$NotTagList','$CategoryList','$MediaList','$Users')");
+      ('$LoggedUser[ID]','".db_string($_POST['label'.$FormID])."','$ArtistList','$NewGroupsOnly','$TagList','$NotTagList','$CategoryList','$MediaList','$Users')");
 }
 
 $Cache->delete_value('notify_filters_'.$LoggedUser['ID']);

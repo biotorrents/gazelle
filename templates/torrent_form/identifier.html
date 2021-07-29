@@ -1,0 +1,23 @@
+<tr id="javdb_tr">
+  <td>
+    <label for="catalogue"> {{ db.name }} </label>
+  </td>
+
+  <td>
+    <input
+      type="text"
+      id="catalogue"
+      name="catalogue"
+      size="30"
+      placeholder="{{ db.desc }}"
+      value="{{ identifier }}"
+    />
+
+    <input
+      type="button"
+      autofill="jav"
+      value="Autofill"
+      style="pointer-events: none; opacity: 0.5"
+    />
+  </td>
+</tr>

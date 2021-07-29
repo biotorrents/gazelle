@@ -76,7 +76,7 @@ $DB->set_query_id($RS);
           <input type="email" name="search" size="60"
             value="<?=display_str($Search)?>" />
           &nbsp;
-          <input type="submit" value="Search log" />
+          <input type="submit" class="button-primary" value="Search log" />
         </td>
       </tr>
     </table>
@@ -116,7 +116,7 @@ $DB->set_query_id($RS);
     </td>
 
     <td>
-      <?=Tools::display_ip($IP)?>
+      <?=display_str($IP)?>
     </td>
 
     <td>

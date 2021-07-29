@@ -2,7 +2,7 @@
 
 function Quick_Preview() {
   $('#buttons').raw().innerHTML = "<input type=\"button\" value=\"Editor\" onclick=\"Quick_Edit();\" /><input type=\"submit\" value=\"Send Message\" />";
-  ajax.post("ajax.php?action=preview","messageform", function(response) {
+  ajax.post("api.php?action=preview", "messageform", function (response) {
     $('#quickpost').ghide();
     $('#preview').raw().innerHTML = response;
     $('#preview').gshow();

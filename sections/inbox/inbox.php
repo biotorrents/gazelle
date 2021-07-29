@@ -122,7 +122,7 @@ echo $Pages;
     <input type="hidden" name="action" value="masschange" />
     <input type="hidden" name="auth"
       value="<?=$LoggedUser['AuthKey']?>" />
-    <input type="submit" name="read" value="Mark as read" />
+    <input type="submit" name="read" class="button-primary" value="Mark as read" />
     <input type="submit" name="unread" value="Mark as unread" />
     <input type="submit" name="delete" value="Delete message(s)" />
 
@@ -181,12 +181,17 @@ echo $Pages;
       }
   } ?>
     </table>
-    <input type="submit" name="read" value="Mark as read" />
+    <?php
+    $MsgLimit = ($LoggedUser['PostsPerPage']) ? $LoggedUser['PostsPerPage'] : MESSAGES_PER_PAGE;
+    if ($Count > $MsgLimit) { ?>
+    <input type="submit" name="read" class="button-primary" value="Mark as read" />
     <input type="submit" name="unread" value="Mark as unread" />
     <input type="submit" name="delete" value="Delete message(s)" />
+    <?php } ?>
   </form>
   <?php } ?>
 </div>
+
 <div class="linkbox">
   <?= $Pages ?>
 </div>

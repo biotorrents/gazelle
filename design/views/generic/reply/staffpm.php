@@ -32,7 +32,7 @@ $TextPrev = new TEXTAREA_PREVIEW(
 
     <input type="button" value="Preview"
       class="hidden button_preview_<?=$TextPrev->getID()?>" />
-    <input type="submit" value="Send message" />
+    <input type="submit" class="button-primary" value="Send message" />
     <input type="button" value="Hide" data-toggle-target="#compose" />
   </form>
 </div>

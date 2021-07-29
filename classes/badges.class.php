@@ -28,7 +28,7 @@ class Badges
             return false;
         } else {
             $QueryID = G::$DB->get_query_id();
-            G::$DB->query("
+            G::$DB->prepared_query("
             INSERT INTO `users_badges`(`UserID`, `BadgeID`)
             VALUES($UserID, $BadgeID)
             ");
@@ -126,7 +126,7 @@ class Badges
     {
         $QueryID = G::$DB->get_query_id();
 
-        G::$DB->query("
+        G::$DB->prepared_query("
         SELECT
           `ID`,
           `Icon`,

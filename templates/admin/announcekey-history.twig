@@ -1,0 +1,19 @@
+<div class="header">
+    <h2><a href="/user.php?id={{ user.id }}">{{ user.username }}</a> &rsaquo; Announce Key History</h2>
+</div>
+<table width="100%">
+    <tr class="colhead">
+        <td>Old</td>
+        <td>New</td>
+        <td>Changed</td>
+        <td>IP</td>
+    </tr>
+{% for change in user.announceKeyHistory %}
+    <tr class="row{{ cycle(['a', 'b'], loop.index0) }}">
+        <td>{{ change.old }}</td>
+        <td>{{ change.new }}</td>
+        <td>{{ change.date|time_diff }}</td>
+        <td>{{ change.ipaddr }}</td>
+    </tr>
+{% endfor %}
+</table>

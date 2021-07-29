@@ -88,7 +88,7 @@ if (!empty($_GET['threadid']) && is_number($_GET['threadid'])) {
 }
 
 // Let's hope we got some results - start printing out the content
-View::show_header('Forums &gt; Search', 'bbcode,forum_search');
+View::show_header('Forums &gt; Search', 'forum_search');
 ?>
 
 <div class="header">
@@ -229,7 +229,7 @@ if (empty($ThreadID)) {
     </tr>
     <tr>
       <td colspan="2" class="center">
-        <input type="submit" value="Search" />
+        <input type="submit" class="button-primary" value="Search" />
       </td>
     </tr>
     </table>

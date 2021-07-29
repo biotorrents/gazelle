@@ -118,7 +118,7 @@ list($NumComments, $Page, $Thread, $LastRead) = Comments::load('torrents', $Grou
 // Start output
 View::show_header(
     $Title,
-    'browse,comments,torrent,bbcode,recommend,cover_art,subscriptions,vendor/easymde.min',
+    'browse,comments,torrent,recommend,cover_art,subscriptions,vendor/easymde.min',
     'vendor/easymde.min'
 );
 ?>
@@ -322,7 +322,7 @@ $Index++;
             value="<?=$GroupID?>" />
           <input type="text" id="artist" name="artistname[]" <?php Users::has_autocomplete_enabled('other'); ?>
           />
-          <input type="submit" value="Add" />
+          <input type="submit" class="button-primary" value="Add" />
         </form>
       </div>
     </div>
@@ -396,7 +396,7 @@ $Index++;
             value="<?=$GroupID?>" />
           <input type="text" name="tagname" id="tagname" <?php Users::has_autocomplete_enabled('other'); ?>
           />
-          <input type="submit" value="Add" />
+          <input type="submit" class="button-primary" value="Add" />
         </form>
         <br />
         <strong><a href="rules.php?p=tag" class="brackets">View tagging rules</a></strong>
@@ -413,16 +413,16 @@ $Index++;
         class="torrent_table details<?=$GroupFlags['IsSnatched'] ? ' snatched' : ''?>"
         id="torrent_details">
         <tr class="colhead_dark">
-          <td width="80%"><strong>Torrents</strong></td>
-          <td><strong>Size</strong></td>
-          <td class="sign snatches">
+          <th width="80%"><strong>Torrents</strong></th>
+          <th><strong>Size</strong></th>
+          <th class="sign snatches">
             ↻
-          <td class="sign seeders">
+          <th class="sign seeders">
             &uarr;
-          </td>
-          <td class="sign leechers">
+          </th>
+          <th class="sign leechers">
             &darr;
-          </td>
+          </th>
         </tr>
         <?php
 function filelist($Str)
@@ -851,7 +851,7 @@ if (count($Collages) > 0) {
     <div class="box">
       <table class="collage_table" id="collages">
         <tr class="colhead">
-          <td width="75%"><a href="#">&uarr;</a>&nbsp;This content is in <?=number_format(count($Collages))?> collection<?=((count($Collages) > 1) ? 's' : '')?><?=$SeeAll?>
+          <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=number_format(count($Collages))?> collection<?=((count($Collages) > 1) ? 's' : '')?><?=$SeeAll?>
           </td>
           <td># torrents</td>
         </tr>

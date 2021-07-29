@@ -64,7 +64,7 @@ $Classes = array(
 );
 
 $To = -1;
-$DB->query("
+$DB->prepared_query("
   SELECT PermissionID, BonusPoints, Warned, Uploaded, Downloaded, (Uploaded / Downloaded) AS Ratio, Enabled, COUNT(torrents.ID) AS Uploads, COUNT(DISTINCT torrents.GroupID) AS Groups
   FROM users_main
     JOIN users_info ON users_main.ID = users_info.UserID
@@ -100,7 +100,7 @@ if ($DB->has_results()) {
         $Err[] = "This account is disabled, how did you get here?";
     } else {
         if ($Classes[$To]['NonSmall'] > 0) {
-            $DB->query("
+            $DB->prepared_query("
               SELECT COUNT(torrents.ID)
               FROM torrents
               JOIN torrents_group ON torrents.GroupID = torrents_group.ID
@@ -159,14 +159,14 @@ if ($DB->has_results()) {
         }
 
         if (!isset($Err)) {
-            $DB->query("
+            $DB->prepared_query("
               UPDATE users_main
               SET
                 BonusPoints = BonusPoints - ".$Classes[$To]['Price'].",
                 PermissionID = $To
               WHERE ID = $UserID");
 
-            $DB->query("
+            $DB->prepared_query("
               UPDATE users_info
               SET AdminComment = CONCAT('".sqltime()." - Class changed to ".Users::make_class_string($To)." via store purchase\n\n', AdminComment)
               WHERE UserID = $UserID");

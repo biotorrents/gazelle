@@ -6,7 +6,7 @@ class DonationsView
     public static function render_mod_donations($UserID)
     {
         ?>
-<table class="layout box" id="donation_box">
+<table class="box skeleton-fix" id="donation_box">
   <tr class="colhead">
     <td colspan="2">
       Donor System (add points)
@@ -34,7 +34,7 @@ class DonationsView
   </tr>
 </table>
 
-<table class="layout box" id="donor_points_box">
+<table class="box skeleton-fix" id="donor_points_box">
   <tr class="colhead">
     <td colspan="3" class="tooltip"
       title='Use this tool only when manually correcting values. If crediting donations normally, use the "Donor System (add points)" tool'>

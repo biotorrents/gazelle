@@ -14,7 +14,7 @@ if ($_GET['username']) {
 
 $Title = "Donor Rewards";
 
-$DB->query("
+$DB->prepared_query("
   SELECT
     SQL_CALC_FOUND_ROWS
     u.Username,
@@ -35,7 +35,7 @@ $DB->query("
   LIMIT $Limit");
 
 $Users = $DB->to_array();
-$DB->query('SELECT FOUND_ROWS()');
+$DB->prepared_query('SELECT FOUND_ROWS()');
 list($Results) = $DB->next_record();
 $Pages = Format::get_pages($Page, $Results, USERS_PER_PAGE, 9);
 

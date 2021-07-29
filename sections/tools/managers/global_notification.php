@@ -18,7 +18,7 @@ $Expiration = $GlobalNotification['Expiration'] ? $GlobalNotification['Expiratio
   <form action="tools.php" method="post">
     <input type="hidden" name="action" value="take_global_notification" />
     <input type="hidden" name="type" value="set" />
-    <table align="center">
+    <table class="skeleton-fix">
       <tr>
         <td class="label">
           Message
@@ -69,7 +69,7 @@ $Expiration = $GlobalNotification['Expiration'] ? $GlobalNotification['Expiratio
 
       <tr>
         <td>
-          <input type="submit" name="set" value="Create Notification" />
+          <input type="submit" name="set" class="button-primary" value="Create Notification" />
         </td>
 
         <?php if ($GlobalNotification) { ?>

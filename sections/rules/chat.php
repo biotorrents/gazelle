@@ -13,30 +13,6 @@ View::show_header('Chat Rules');
 
 /*
 echo '<pre>';
-/*
-# https://github.com/J7mbo/twitter-api-php
-require_once('TwitterAPIExchange.php');
-
-$settings = array(
-  'oauth_access_token' => "YOUR_OAUTH_ACCESS_TOKEN",
-  'oauth_access_token_secret' => "YOUR_OAUTH_ACCESS_TOKEN_SECRET",
-  'consumer_key' => "YOUR_CONSUMER_KEY",
-  'consumer_secret' => "YOUR_CONSUMER_SECRET"
-);
-
-$url = 'https://api.twitter.com/1.1/blocks/create.json';
-$requestMethod = 'POST';
-
-$postfields = array(
-  'screen_name' => 'usernameToBlock',
-  'skip_status' => '1'
-);
-
-$twitter = new TwitterAPIExchange($settings);
-echo $twitter->buildOauth($url, $requestMethod)
-    ->setPostfields($postfields)
-    ->performRequest();
-* /
 
 #var_dump();
 #var_dump();

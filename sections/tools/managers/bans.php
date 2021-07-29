@@ -11,8 +11,8 @@ if (isset($_POST['submit'])) {
     authorize();
 
     $IPA = substr($_POST['start'], 0, strcspn($_POST['start'], '.'));
-    if ($_POST['submit'] == 'Delete') { //Delete
-        if (!is_number($_POST['id']) || $_POST['id'] == '') {
+    if ($_POST['submit'] === 'Delete') { //Delete
+        if (!is_number($_POST['id']) || $_POST['id'] === '') {
             error(0);
         }
         $DB->query('DELETE FROM ip_bans WHERE ID='.$_POST['id']);
@@ -30,7 +30,7 @@ if (isset($_POST['submit'])) {
         $Start = Tools::ip_to_unsigned($_POST['start']); //Sanitized by Validation regex
     $End = Tools::ip_to_unsigned($_POST['end']); //See above
 
-    if ($_POST['submit'] == 'Edit') { //Edit
+    if ($_POST['submit'] === 'Edit') { //Edit
         if (empty($_POST['id']) || !is_number($_POST['id'])) {
             error(404);
         }
@@ -109,7 +109,7 @@ $DB->set_query_id($Bans);
             value="<?=(!empty($_GET['notes']) ? display_str($_GET['notes']) : '')?>" />
         </td>
         <td>
-          <input type="submit" value="Search" />
+          <input type="submit" class="button-primary" value="Search" />
         </td>
       </tr>
     </table>
@@ -143,7 +143,7 @@ $DB->set_query_id($Bans);
         <input type="text" size="72" name="notes" />
       </td>
       <td>
-        <input type="submit" name="submit" value="Create" />
+        <input type="submit" name="submit" class="button-primary" value="Create" />
       </td>
     </form>
   </tr>

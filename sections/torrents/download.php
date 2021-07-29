@@ -40,10 +40,8 @@ if (!isset($_REQUEST['authkey']) || !isset($_REQUEST['torrent_pass'])) {
     }
 }
 
-$TorrentID = $_REQUEST['id'];
-if (!is_number($TorrentID)) {
-    error(0);
-}
+$TorrentID = (int) $_REQUEST['id'];
+Security::checkInt($TorrentID);
 
 /*
   uTorrent Remote and various scripts redownload .torrent files periodically.
@@ -67,22 +65,23 @@ if (Misc::in_array_partial($_SERVER['HTTP_USER_AGENT'], $ScriptUAs)) {
 
 $Info = $Cache->get_value('torrent_download_'.$TorrentID);
 if (!is_array($Info) || !array_key_exists('PlainArtists', $Info) || empty($Info[10])) {
-    $DB->query("
+    $DB->prepare_query("
       SELECT
-        t.Media,
-        t.Version,
-        t.Codec,
-        tg.Year,
-        tg.ID AS GroupID,
-        COALESCE(NULLIF(tg.Name,''), NULLIF(tg.Title2,''), tg.NameJP) AS Name,
-        tg.WikiImage,
-        tg.CategoryID,
-        t.Size,
-        t.FreeTorrent,
-        HEX(t.info_hash)
-      FROM torrents AS t
-        INNER JOIN torrents_group AS tg ON tg.ID = t.GroupID
-      WHERE t.ID = '".db_string($TorrentID)."'");
+        t.`Media`,
+        t.`Version`,
+        t.`Codec`,
+        tg.`year`,
+        tg.`id` AS GroupID,
+        COALESCE(NULLIF(tg.`title`,''), NULLIF(tg.`subject`,''), tg.`object`) AS Name,
+        tg.`picture`,
+        tg.`category_id`,
+        t.`Size`,
+        t.`FreeTorrent`,
+        HEX(t.`info_hash`)
+      FROM `torrents` AS t
+        INNER JOIN `torrents_group` AS tg ON tg.`id` = t.`GroupID`
+      WHERE t.`ID` = '".db_string($TorrentID)."'");
+      $DB->exec_prepared_query();
 
     if (!$DB->has_results()) {
         error(404);
@@ -107,7 +106,7 @@ $Artists = $Info['Artists'];
 if ($_REQUEST['usetoken'] && $FreeTorrent === '0') {
     if (isset($LoggedUser)) {
         $FLTokens = $LoggedUser['FLTokens'];
-        if ($LoggedUser['CanLeech'] !== '1') {
+        if ($LoggedUser['CanLeech'] !== 1) {
             error('You cannot use tokens while leech disabled.');
         }
     } else {
@@ -211,4 +210,3 @@ $UserAnnounceList = (sizeof(ANNOUNCE_URLS[0]) === 1 && sizeof(ANNOUNCE_URLS[0][0
 #$UserAnnounceList = (sizeof(ANNOUNCE_URLS) == 1 && sizeof(ANNOUNCE_URLS[0]) == 1) ? [] : array_map("add_passkey", ANNOUNCE_URLS);
 
 echo TorrentsDL::get_file($Contents, $UserAnnounceURL, $UserAnnounceList);
-define('SKIP_NO_CACHE_HEADERS', 1);

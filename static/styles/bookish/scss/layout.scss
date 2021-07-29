@@ -1,21 +1,4 @@
 /*
- * Body
- */
-
-* {
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    /* min-width: 800px; */
-}
-
-ol {
-    margin-left: 1rem;
-}
-
-/*
  * Basic structure
  */
 
@@ -26,14 +9,9 @@ ol {
     width: 100%;
 }
 
-.head {
-    margin-bottom: 0.5rem;
-}
-
 #content {
     margin: auto;
     margin-top: 2rem;
-    /* min-width: 720px; */
     overflow: hidden;
     width: 90%;
 }
@@ -47,11 +25,11 @@ ol {
 
 /* Logo */
 #logo {
-    background: url("/static/common/logos/bookish.png") no-repeat center;
+    background: url("/static/common/logos/torrents.bio.png") no-repeat center;
     background-size: contain;
-    width: 250px;
+    width: 220px;
     height: 50px;
-    margin: 0 0 0 10%;
+    margin: 0.5rem 0 0.25rem 10%;
 
     a {
         border: none;
@@ -65,50 +43,10 @@ ol {
     }
 }
 
-/* Content container */
-.box {
-    background-color: white;
-    /* border: 2px solid rgba(0, 0, 0, 0.01); */
-    margin-bottom: 1rem;
-}
-
-/* Main column and sidebar */
-@mixin column-flex($width) {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    max-width: $width;
-    min-height: 0;
-    padding: 0 0.25rem;
-}
-
-.main_column {
-    @include column-flex(65%);
-
-    table {
-        margin-bottom: 1rem;
-    }
-}
-
-.sidebar {
-    @include column-flex(35%);
-    float: right;
-}
-
 /* Links */
 div.linkbox {
     text-align: center;
     padding: 0.5rem;
-}
-
-.pad {
-    padding: 1rem;
-
-    h3,
-    h4 {
-        margin-top: 0;
-        padding-top: 0;
-    }
 }
 
 /* Misc */
@@ -125,7 +63,10 @@ div.linkbox {
     margin-top: 1rem;
 }
 
-/* Torrents page */
+/**
+ * Torrents page
+ */
+
 .show_torrents {
     width: 21px;
     height: 28px;
@@ -168,35 +109,20 @@ div.linkbox {
     border: none;
 }
 
-.torrent_table tr {
-    /* vertical-align: top; */
-    vertical-align: middle;
-}
-
 .torrent_table .number_column {
     text-align: center;
 }
 
-.torrent_table,
-.torrent_table td {
-    border: none;
-}
-
-/* Text elements */
-h1,
-h2,
-h3,
-h4 {
-    margin: 0.5em 0;
-    font-weight: bold;
-}
+/**
+ * Text elements
+ */
 
 p {
-    margin: 1em 0.5rem;
+    margin-bottom: 1rem;
 }
 
 li {
-    margin: 0.5em 2rem;
+    margin: 0 1rem;
 }
 
 .torrent_title {
@@ -211,7 +137,7 @@ li {
 
 .permission_head {
     width: 50%;
-    margin: 1em auto;
+    margin: auto;
 }
 
 .permission_container {
@@ -283,7 +209,9 @@ ul .invitetree {
 
 .center_poll {
     height: 0.75rem;
-    background: $lb50;
+    background: change-color(green, $alpha: 0.25);
+    /* background: $SkeletonDefault; */
+    /* background: $lb50; */
     border-radius: 0;
     float: left;
     margin: 0.25rem 0;
@@ -351,9 +279,4 @@ ul .invitetree {
     .hideContainer {
     }
     */
-}
-
-/* User and torrent stats */
-.chart {
-    max-height: 30rem;
 }

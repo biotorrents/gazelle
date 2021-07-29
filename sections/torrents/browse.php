@@ -1,7 +1,9 @@
 <?php
 #declare(strict_types = 1);
 
-include SERVER_ROOT.'/sections/torrents/functions.php';
+$ENV = ENV::go();
+
+require_once SERVER_ROOT.'/sections/torrents/functions.php';
 
 // The "order by x" links on columns headers
 function header_link($SortKey, $DefaultWay = 'desc')
@@ -193,7 +195,7 @@ View::show_header('Browse Torrents', 'browse');
         <?php
         } ?>
 
-        <table class="layout">
+        <table class="layout torrent_search">
           <tr id="numbers" class="ftr_advanced<?=$HideAdvanced?>">
             <td class="label">
               <!--
@@ -276,7 +278,7 @@ View::show_header('Browse Torrents', 'browse');
 
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Sequences</option>
-                <?php foreach ($SeqPlatforms as $Platform) { ?>
+                <?php foreach ($ENV->META->Platforms->Sequences as $Platform) { ?>
                 <option
                   value="<?=display_str($Platform); # pcs-comment-start; keep quote?>"
                   <?Format::selected('media', $Platform)?>><?=display_str($Platform); ?>
@@ -286,7 +288,7 @@ View::show_header('Browse Torrents', 'browse');
 
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Graphs</option>
-                <?php foreach ($GraphPlatforms as $Platform) { ?>
+                <?php foreach ($ENV->META->Platforms->Graphs as $Platform) { ?>
                 <option
                   value="<?=display_str($Platform); # pcs-comment-start; keep quote?>"
                   <?Format::selected('media', $Platform)?>><?=display_str($Platform); ?>
@@ -296,7 +298,7 @@ View::show_header('Browse Torrents', 'browse');
 
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Images</option>
-                <?php foreach ($ImgPlatforms as $Platform) { ?>
+                <?php foreach ($ENV->META->Platforms->Images as $Platform) { ?>
                 <option
                   value="<?=display_str($Platform); # pcs-comment-start; keep quote?>"
                   <?Format::selected('media', $Platform)?>><?=display_str($Platform); ?>
@@ -306,7 +308,7 @@ View::show_header('Browse Torrents', 'browse');
 
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Documents</option>
-                <?php foreach ($DocPlatforms as $Platform) { ?>
+                <?php foreach ($ENV->META->Platforms->Documents as $Platform) { ?>
                 <option
                   value="<?=display_str($Platform); # pcs-comment-start; keep quote?>"
                   <?Format::selected('media', $Platform)?>><?=display_str($Platform); ?>
@@ -417,9 +419,9 @@ View::show_header('Browse Torrents', 'browse');
               <!-- Codec/License -->
               <select name="codec" class="ft_codec fti_advanced">
                 <option value="">License</option>
-                <?php foreach ($Codecs as $Codec) { ?>
-                <option value="<?=display_str($Codec); ?>"
-                  <?Format::selected('codec', $Codec)?>><?=display_str($Codec); ?>
+                <?php foreach ($ENV->META->Licenses as $License) { ?>
+                <option value="<?=display_str($License); ?>"
+                  <?Format::selected('codec', $License)?>><?=display_str($License); ?>
                 </option>
                 <?php } ?>
               </select>
@@ -605,17 +607,25 @@ View::show_header('Browse Torrents', 'browse');
           </tr>
         </table>
 
-        <!-- Result count and submit button -->
+        <!-- Result count, submit, and reset -->
         <div class="submit ft_submit">
-          <span class="float_left"><?=number_format($NumResults)?>
-            Results</span>
-          <input type="submit" value="Search" />
+          <span class="float_left">
+            <?=number_format($NumResults)?>
+            Results
+          </span>
+
+          <input type="submit" value="Search" class="button-primary" />
+
           <input type="hidden" name="action" id="ft_type"
             value="<?=($AdvancedSearch ? 'advanced' : 'basic')?>" />
+
           <input type="hidden" name="searchsubmit" value="1" />
+
           <input type="button" value="Reset" <input type="button" value="Reset"
             onclick="window.location.href = 'torrents.php<?php if (isset($_GET['action']) && $_GET['action'] === 'advanced') { ?>?action=advanced<?php } ?>'" />
+
           &emsp;
+
           <?php if ($Search->has_filters()) { ?>
           <input type="submit" name="setdefault" value="Make Default" />
           <?php }
@@ -716,14 +726,14 @@ die();
           continue;
       }
 
-      $CategoryID = $GroupInfo['CategoryID'];
-      $GroupYear = $GroupInfo['Year'];
+      $CategoryID = $GroupInfo['category_id'];
+      $GroupYear = $GroupInfo['year'];
       $Artists = $GroupInfo['Artists'];
-      $GroupCatalogueNumber = $GroupInfo['CatalogueNumber'];
-      $GroupStudio = $GroupInfo['Studio'];
-      $GroupName = empty($GroupInfo['Name']) ? (empty($GroupInfo['Title2']) ? $GroupInfo['NameJP'] : $GroupInfo['Title2']) : $GroupInfo['Name'];
-      $GroupTitle2 = $GroupInfo['Title2'];
-      $GroupNameJP = $GroupInfo['NameJP'];
+      $GroupCatalogueNumber = $GroupInfo['identifier'];
+      $GroupStudio = $GroupInfo['workgroup'];
+      $GroupName = empty($GroupInfo['title']) ? (empty($GroupInfo['subject']) ? $GroupInfo['object'] : $GroupInfo['subject']) : $GroupInfo['title'];
+      $GroupTitle2 = $GroupInfo['subject'];
+      $GroupNameJP = $GroupInfo['object'];
       
       if ($GroupResults) {
           $Torrents = $GroupInfo['Torrents'];
@@ -740,7 +750,7 @@ die();
           $Torrents = [$TorrentID => $GroupInfo['Torrents'][$TorrentID]];
       }
 
-      $TorrentTags = new Tags($GroupInfo['TagList']);
+      $TorrentTags = new Tags($GroupInfo['tag_list']);
 
       # Start making $DisplayName (first torrent result line)
       $DisplayName = '';
@@ -805,8 +815,7 @@ die();
               # Emoji in classes/astists.class.php
               $Label = '&ensp;';
               $DisplayName .= $Label.'<div class="torrent_artists">'.Artists::display_artists($Artists).'</div>';
-          }
-         ?>
+          } ?>
   <tr class="group<?=$SnatchedGroupClass?>">
     <?php
       $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGrouping'] === 1); ?>

@@ -11,7 +11,7 @@ if (isset($_POST['title'])) {
     $Title = htmlspecialchars($_POST['title'], ENT_QUOTES);
     $UserID = $LoggedUser['ID'];
 
-    $DB->query("
+    $DB->prepared_query("
       SELECT BonusPoints
       FROM users_main
       WHERE ID = $UserID");
@@ -20,13 +20,13 @@ if (isset($_POST['title'])) {
         list($Points) = $DB->next_record();
 
         if ($Points >= $Cost) {
-            $DB->query("
+            $DB->prepared_query("
               UPDATE users_main
               SET BonusPoints = BonusPoints - $Cost,
                 Title = ?
               WHERE ID = ?", $Title, $UserID);
 
-            $DB->query("
+            $DB->prepared_query("
               UPDATE users_info
               SET AdminComment = CONCAT(NOW(), ' - Changed title to ', ?, ' via the store\n\n', AdminComment)
               WHERE UserID = ?", $Title, $UserID);

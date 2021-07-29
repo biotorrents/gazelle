@@ -1,12 +1,13 @@
 <?php
 declare(strict_types=1);
 
-/********************************************************************************
- ************ Permissions form ********************** user.php and tools.php ****
- ********************************************************************************
- ** This function is used to create both the class permissions form, and the   **
- ** user custom permissions form.                                              **
- ********************************************************************************/
+/**
+ * Permissions form
+ * user.php and tools.php
+ *
+ * This function is used to create both the class permissions form,
+ * and the user custom permissions form.
+ */
 
 $PermissionsArray = array(
   'site_leech' => 'Can leech (Does this work?).',
@@ -38,7 +39,6 @@ $PermissionsArray = array(
   'site_recommend_own' => 'Can recommend own torrents.',
   'site_manage_recommendations' => 'Recommendations management access.',
   'site_delete_tag' => 'Can delete tags.',
-  'site_disable_ip_history' => 'Disable IP history.',
   'zip_downloader' => 'Download multiple torrents at once.',
   'site_debug' => 'Developer access.',
   'site_proxy_images' => 'Image proxy & anti-canary.',
@@ -112,16 +112,17 @@ $PermissionsArray = array(
 
 function permissions_form()
 {
-    ?>
-<div class="permissions">
-  <div class="permission_container">
-    <table>
-      <tr class="colhead">
-        <td>Site</td>
-      </tr>
-      <tr>
-        <td>
-          <?php
+    echo <<<HTML
+    <div class="permission_container">
+      <table>
+        <tr class="colhead">
+          <th>Site</th>
+        </tr>
+        
+        <tr>
+          <td>
+HTML;
+
     display_perm('site_leech', 'Can leech.');
     display_perm('site_upload', 'Can upload.');
     display_perm('site_vote', 'Can vote on requests.');
@@ -152,7 +153,6 @@ function permissions_form()
     display_perm('site_recommend_own', 'Can add own torrents to recommendations list.');
     display_perm('site_manage_recommendations', 'Can edit recommendations list.');
     display_perm('site_delete_tag', 'Can delete tags.');
-    display_perm('site_disable_ip_history', 'Disable IP history.');
     display_perm('zip_downloader', 'Download multiple torrents at once.');
     display_perm('site_debug', 'View site debug tables.');
     display_perm('site_proxy_images', 'Proxy images through the server.');
@@ -161,20 +161,24 @@ function permissions_form()
     display_perm('site_forums_double_post', 'Can double post in the forums.');
     display_perm('project_team', 'Part of the project team.');
     display_perm('site_tag_aliases_read', 'Can view the list of tag aliases.');
-    display_perm('site_ratio_watch_immunity', 'Immune from being put on ratio watch.'); ?>
-        </td>
-      </tr>
-    </table>
-  </div>
+    display_perm('site_ratio_watch_immunity', 'Immune from being put on ratio watch.');
 
-  <div class="permission_container">
-    <table>
-      <tr class="colhead">
-        <td>Users</td>
-      </tr>
-      <tr>
-        <td>
-          <?php
+    echo <<<HTML
+          </td>
+        </tr>
+      </table>
+    </div>
+    
+    <div class="permission_container">
+      <table>
+        <tr class="colhead">
+          <th>Users</th>
+        </tr>
+        
+        <tr>
+          <td>
+HTML;
+
     display_perm('users_edit_usernames', 'Can edit usernames.');
     display_perm('users_edit_ratio', 'Can edit anyone\'s upload/download amounts.');
     display_perm('users_edit_own_ratio', 'Can edit own upload/download amounts.');
@@ -206,21 +210,27 @@ function permissions_form()
     display_perm('users_override_paranoia', 'Can override paranoia');
     display_perm('users_make_invisible', 'Can make users invisible');
     display_perm('users_logout', 'Can log users out');
-    display_perm('users_mod', 'Can access basic moderator tools (Admin comment)'); ?>
-          * Everything is only applicable to users with the same or lower class level
-        </td>
-      </tr>
-    </table>
-  </div>
+    display_perm('users_mod', 'Can access basic moderator tools (Admin comment)');
 
-  <div class="permission_container">
-    <table>
-      <tr class="colhead">
-        <td>Torrents</td>
-      </tr>
-      <tr>
-        <td>
-          <?php
+    echo <<<HTML
+            <strong class="important_text">
+              Everything is only applicable to users with the same or lower class level
+            </strong>
+          </td>
+        </tr>
+      </table>
+    </div>
+    
+    <div class="permission_container">
+      <table>
+        <tr class="colhead">
+          <th>Torrents</th>
+        </tr>
+        
+        <tr>
+          <td>
+HTML;
+
     display_perm('torrents_edit', 'Can edit any torrent');
     display_perm('torrents_delete', 'Can delete torrents');
     display_perm('torrents_delete_fast', 'Can delete more than 3 torrents at a time.');
@@ -232,20 +242,24 @@ function permissions_form()
     display_perm('artist_edit_vanityhouse', 'Can mark artists as part of Vanity House.');
     display_perm('torrents_fix_ghosts', 'Can fix ghost groups on artist pages.');
     display_perm('screenshots_add', 'Can add screenshots to any torrent and delete their own screenshots.');
-    display_perm('screenshots_delete', 'Can delete any screenshot from any torrent.'); ?>
-        </td>
-      </tr>
-    </table>
-  </div>
+    display_perm('screenshots_delete', 'Can delete any screenshot from any torrent.');
 
-  <div class="permission_container">
-    <table>
-      <tr class="colhead">
-        <td>Administrative</td>
-      </tr>
-      <tr>
-        <td>
-          <?php
+    echo <<<HTML
+          </td>
+        </tr>
+      </table>
+    </div>
+    
+    <div class="permission_container">
+      <table>
+        <tr class="colhead">
+          <th>Administrative</th>
+        </tr>
+        
+        <tr>
+          <td>
+HTML;
+
     display_perm('admin_manage_news', 'Can manage site news');
     display_perm('admin_manage_blog', 'Can manage the site blog');
     display_perm('admin_manage_polls', 'Can manage polls');
@@ -261,13 +275,16 @@ function permissions_form()
     display_perm('admin_manage_permissions', 'Can edit permission classes/user permissions.');
     display_perm('admin_schedule', 'Can run the site schedule.');
     display_perm('admin_login_watch', 'Can manage login watch.');
-    display_perm('admin_manage_wiki', 'Can manage wiki access.'); ?>
-        </td>
-      </tr>
-    </table>
-  </div>
+    display_perm('admin_manage_wiki', 'Can manage wiki access.');
 
-  <div class="submit_container"><input type="submit" name="submit" value="Save Permission Class" /></div>
-</div>
-<?php
+    echo <<<HTML
+          </td>
+        </tr>
+      </table>
+    </div>
+    
+    <div class="submit_container">
+      <input type="submit" name="submit" class ="button-primary" value="Save Permission Class" />
+    </div>
+HTML;
 }

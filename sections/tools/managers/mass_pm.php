@@ -12,7 +12,7 @@ $SkipClassIDs = array(USER, MEMBER, POWER, ELITE, TORRENT_MASTER, DONOR, POWER_T
 
 View::show_header(
     'Compose Mass PM',
-    'inbox,bbcode,vendor/jquery.validate.min,form_validate'
+    'inbox,vendor/jquery.validate.min,form_validate'
 ); ?>
 
 <main>
@@ -45,7 +45,7 @@ View::show_header(
       <div id="preview" class="hidden"></div>
       <div id="buttons" class="center">
         <input type="button" value="Preview" onclick="Quick_Preview();" />
-        <input type="submit" value="Send message" />
+        <input type="submit" class="button-primary" value="Send message" />
       </div>
     </div>
   </form>

@@ -45,7 +45,7 @@ $MultiKeyTooltip = 'Enter cache keys delimited by any amount of whitespace.';
 
         <textarea type="text" name="key" id="key"
           class="inputtext"><?=((isset($_GET['key']) && (isset($_GET['submit']))) ? display_str($_GET['key']) : '')?></textarea>
-        <input type="submit" name="submit" class="submit" />
+        <input type="submit" name="submit" class="submit button-primary" />
       </form>
     </td>
   </tr>

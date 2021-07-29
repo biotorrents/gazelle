@@ -34,7 +34,7 @@ if (!$WhitelistedClients = $Cache->get_value('whitelisted_clients')) {
   </p>
   <br />
 
-  <table>
+  <table class="clients_table">
     <tr class="colhead">
       <td>
         <strong>Allowed Clients</strong>

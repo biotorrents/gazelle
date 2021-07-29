@@ -92,7 +92,7 @@ if (check_perms('site_advanced_top10')) {
                 </tr>
                 <tr>
                     <td colspan="2" class="center">
-                        <input type="submit" value="Search" />
+                        <input type="submit" class="button-primary" value="Search" />
                     </td>
                 </tr>
             </table>
@@ -164,48 +164,32 @@ if (!empty($Where)) {
     $WhereSum = '';
 }
 
-$BaseQuery = '
-  SELECT
-    t.ID,
-    g.ID,
-    g.Name,
-    g.Title2,
-    g.NameJP,
-    g.CategoryID,
-    g.WikiImage,
-    g.TagList,
-    t.Media,
-    g.Year,
-    g.Studio,
-    t.Snatched,
-    t.Seeders,
-    t.Leechers,
-    ((t.Size * t.Snatched) + (t.Size * 0.5 * t.Leechers)) AS Data,
-    t.Size
-  FROM torrents AS t
-    LEFT JOIN torrents_group AS g ON g.ID = t.GroupID';
-
-/*
-$BaseQuery = '
-  SELECT
-    t.ID,
-    g.ID,
-    g.Name,
-    g.Title2,
-    g.NameJP,
-    g.CategoryID,
-    g.WikiImage,
-    g.TagList,
-    t.Media,
-    g.Year,
-    t.Snatched,
-    t.Seeders,
-    t.Leechers,
-    ((t.Size * t.Snatched) + (t.Size * 0.5 * t.Leechers)) AS Data,
-    t.Size
-  FROM torrents AS t
-    LEFT JOIN torrents_group AS g ON g.ID = t.GroupID';
-*/
+$BaseQuery = "
+SELECT
+  t.`ID`,
+  g.`id`,
+  g.`title`,
+  g.`subject`,
+  g.`object`,
+  g.`category_id`,
+  g.`picture`,
+  g.`tag_list`,
+  t.`Media`,
+  g.`year`,
+  g.`workgroup`,
+  t.`Snatched`,
+  t.`Seeders`,
+  t.`Leechers`,
+  (
+    (t.`Size` * t.`Snatched`) +(t.`Size` * 0.5 * t.`Leechers`)
+  ) AS `Data`,
+  t.`Size`
+FROM
+  `torrents` AS t
+LEFT JOIN `torrents_group` AS g
+ON
+  g.`id` = t.`GroupID`
+";
 
 if ($Details === 'all' || $Details === 'day') {
     $TopTorrentsActiveLastDay = $Cache->get_value('top10tor_day_'.$Limit.$WhereSum.$GroupBySum);
@@ -224,7 +208,7 @@ if ($Details === 'all' || $Details === 'day') {
               ORDER BY (t.Seeders + t.Leechers) DESC
               LIMIT $Limit;";
 
-            $DB->query($Query);
+            $DB->prepared_query($Query);
             $TopTorrentsActiveLastDay = $DB->to_array(false, MYSQLI_NUM);
             $Cache->cache_value('top10tor_day_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveLastDay, 3600 * 2);
             $Cache->clear_query_lock('top10');
@@ -251,7 +235,7 @@ if ($Details === 'all' || $Details === 'week') {
               ORDER BY (t.Seeders + t.Leechers) DESC
               LIMIT $Limit;";
 
-            $DB->query($Query);
+            $DB->prepared_query($Query);
             $TopTorrentsActiveLastWeek = $DB->to_array(false, MYSQLI_NUM);
             $Cache->cache_value('top10tor_week_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveLastWeek, 3600 * 6);
             $Cache->clear_query_lock('top10');
@@ -278,7 +262,7 @@ if ($Details === 'all' || $Details === 'month') {
               ORDER BY (t.Seeders + t.Leechers) DESC
               LIMIT $Limit;";
 
-            $DB->query($Query);
+            $DB->prepared_query($Query);
             $TopTorrentsActiveLastMonth = $DB->to_array(false, MYSQLI_NUM);
             $Cache->cache_value('top10tor_month_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveLastMonth, 3600 * 6);
             $Cache->clear_query_lock('top10');
@@ -310,7 +294,7 @@ if ($Details === 'all' || $Details === 'year') {
               ORDER BY (t.Seeders + t.Leechers) DESC
               LIMIT $Limit;";
 
-            $DB->query($Query);
+            $DB->prepared_query($Query);
             $TopTorrentsActiveLastYear = $DB->to_array(false, MYSQLI_NUM);
             $Cache->cache_value('top10tor_year_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveLastYear, 3600 * 6);
             $Cache->clear_query_lock('top10');
@@ -341,7 +325,7 @@ if ($Details === 'all' || $Details === 'overall') {
               ORDER BY (t.Seeders + t.Leechers) DESC
               LIMIT $Limit;";
 
-            $DB->query($Query);
+            $DB->prepared_query($Query);
             $TopTorrentsActiveAllTime = $DB->to_array(false, MYSQLI_NUM);
             $Cache->cache_value('top10tor_overall_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveAllTime, 3600 * 6);
             $Cache->clear_query_lock('top10');
@@ -367,7 +351,7 @@ if (($Details === 'all' || $Details === 'snatched') && !$Filtered) {
               ORDER BY t.Snatched DESC
               LIMIT $Limit;";
 
-            $DB->query($Query);
+            $DB->prepared_query($Query);
             $TopTorrentsSnatched = $DB->to_array(false, MYSQLI_NUM);
             $Cache->cache_value('top10tor_snatched_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsSnatched, 3600 * 6);
             $Cache->clear_query_lock('top10');
@@ -396,7 +380,7 @@ if (($Details === 'all' || $Details === 'data') && !$Filtered) {
               ORDER BY Data DESC
               LIMIT $Limit;";
 
-            $DB->query($Query);
+            $DB->prepared_query($Query);
             $TopTorrentsTransferred = $DB->to_array(false, MYSQLI_NUM);
             $Cache->cache_value('top10tor_data_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsTransferred, 3600 * 6);
             $Cache->clear_query_lock('top10');
@@ -421,7 +405,7 @@ if (($Details === 'all' || $Details === 'seeded') && !$Filtered) {
               ORDER BY t.Seeders DESC
               LIMIT $Limit;";
 
-            $DB->query($Query);
+            $DB->prepared_query($Query);
             $TopTorrentsSeeded = $DB->to_array(false, MYSQLI_NUM);
             $Cache->cache_value('top10tor_seeded_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsSeeded, 3600 * 6);
             $Cache->clear_query_lock('top10');
@@ -447,26 +431,32 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
         <?php
     switch ($Limit) {
       case 100: ?>
-        &ndash; <a href="top10.php?details=<?=$Tag?>" class="brackets">Top
+        &ndash; <a href="top10.php?details=<?=$Tag?>"
+            class="brackets">Top
             10</a>
         &ndash; <span class="brackets">Top 100</span>
-        &ndash; <a href="top10.php?type=torrents&amp;limit=250&amp;details=<?=$Tag?>"
+        &ndash; <a
+            href="top10.php?type=torrents&amp;limit=250&amp;details=<?=$Tag?>"
             class="brackets">Top 250</a>
         <?php break;
 
       case 250: ?>
-        &ndash; <a href="top10.php?details=<?=$Tag?>" class="brackets">Top
+        &ndash; <a href="top10.php?details=<?=$Tag?>"
+            class="brackets">Top
             10</a>
-        &ndash; <a href="top10.php?type=torrents&amp;limit=100&amp;details=<?=$Tag?>"
+        &ndash; <a
+            href="top10.php?type=torrents&amp;limit=100&amp;details=<?=$Tag?>"
             class="brackets">Top 100</a>
         &ndash; <span class="brackets">Top 250</span>
         <?php break;
 
       default: ?>
         &ndash; <span class="brackets">Top 10</span>
-        &ndash; <a href="top10.php?type=torrents&amp;limit=100&amp;details=<?=$Tag?>"
+        &ndash; <a
+            href="top10.php?type=torrents&amp;limit=100&amp;details=<?=$Tag?>"
             class="brackets">Top 100</a>
-        &ndash; <a href="top10.php?type=torrents&amp;limit=250&amp;details=<?=$Tag?>"
+        &ndash; <a
+            href="top10.php?type=torrents&amp;limit=250&amp;details=<?=$Tag?>"
             class="brackets">Top 250</a>
         <?php } ?>
     </small>
@@ -481,13 +471,13 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
         <td style="text-align: right;">Size</td>
         <td style="text-align: right;">Data</td>
         <td style="text-align: right;" class="sign snatches">
-        ↻
+            ↻
         </td>
         <td style="text-align: right;" class="sign seeders">
-        &uarr;
+            &uarr;
         </td>
         <td style="text-align: right;" class="sign leechers">
-        &darr;
+            &darr;
         </td>
         <td style="text-align: right;">Peers</td>
     </tr>

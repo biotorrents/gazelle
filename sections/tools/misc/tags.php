@@ -40,7 +40,7 @@ define('MODE_DELETE', 2);
       </tr>
       <tr>
         <td class="center" colspan="5">
-          <input type="submit" value="Process Tag" />
+          <input type="submit" class="button-primary" value="Process Tag" />
         </td>
       </tr>
     </table>

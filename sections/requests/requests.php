@@ -359,7 +359,7 @@ View::show_header($Title, 'requests');
             value="<?=$_GET['userid']?>" />
         <?php } ?>
         <div class="box pad">
-            <table cellpadding="6" cellspacing="1" border="0" class="layout" width="100%">
+            <table cellpadding="6" cellspacing="1" border="0" class="layout torrent_requests" width="100%">
 
                 <tr id="search_terms">
                     <td class="label">
@@ -443,7 +443,7 @@ View::show_header($Title, 'requests');
             <table class="layout">
                 <tr>
                     <td colspan="2" class="center">
-                        <input type="submit" value="Search" />
+                        <input type="submit" class="button-primary" value="Search" />
                     </td>
                 </tr>
             </table>
@@ -456,37 +456,37 @@ View::show_header($Title, 'requests');
     <?php } ?>
     <table id="request_table" class="request_table border" cellpadding="6" cellspacing="1" border="0" width="100%">
         <tr class="colhead_dark">
-            <td class="small cats_col"></td>
-            <td style="width: 38%;" class="nobr">
+            <th class="small cats_col"></th>
+            <th style="width: 38%;" class="nobr">
                 <strong>Request Name</strong>
-            </td>
-            <td class="nobr">
+            </th>
+            <th class="nobr">
                 <a
                     href="?order=votes&amp;sort=<?=($OrderBy === 'votes' ? $NewSort : 'desc')?>&amp;<?=$CurrentURL?>"><strong>Votes</strong></a>
-            </td>
-            <td class="nobr">
+            </th>
+            <th class="nobr">
                 <a
                     href="?order=bounty&amp;sort=<?=($OrderBy === 'bounty' ? $NewSort : 'desc')?>&amp;<?=$CurrentURL?>"><strong>Bounty</strong></a>
-            </td>
-            <td class="nobr">
+            </th>
+            <th class="nobr">
                 <a
                     href="?order=filled&amp;sort=<?=($OrderBy === 'filled' ? $NewSort : 'desc')?>&amp;<?=$CurrentURL?>"><strong>Filled</strong></a>
-            </td>
-            <td class="nobr">
+            </th>
+            <th class="nobr">
                 <strong>Filled by</strong>
-            </td>
-            <td class="nobr">
+            </th>
+            <th class="nobr">
                 <strong>Requested by</strong>
-            </td>
-            <td class="nobr">
+            </th>
+            <th class="nobr">
                 <a
                     href="?order=created&amp;sort=<?=($OrderBy === 'created' ? $NewSort : 'desc')?>&amp;<?=$CurrentURL?>"><strong>Created</strong></a>
-            </td>
-            <td class="nobr">
+            </th>
+            <th class="nobr">
                 <a
                     href="?order=lastvote&amp;sort=<?=($OrderBy === 'lastvote' ? $NewSort : 'desc')?>&amp;<?=$CurrentURL?>"><strong>Last
                         vote</strong></a>
-            </td>
+            </th>
         </tr>
         <?php
     if ($NumResults === 0) {

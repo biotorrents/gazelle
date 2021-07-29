@@ -39,7 +39,7 @@ if (!$ShowAll) {
     GROUP BY c.ID";
 }
 
-$DB->query($sql);
+$DB->prepared_query($sql);
 $NumResults = $DB->record_count();
 $CollageSubs = $DB->to_array();
 ?>
@@ -85,7 +85,7 @@ if (!$NumResults) {
             $TorrentTable = '';
 
             list($CollageID, $CollageName, $CollageSize, $LastVisit) = $Collage;
-            $RS = $DB->query("
+            $RS = $DB->prepared_query("
       SELECT GroupID
       FROM collages_torrents
       WHERE CollageID = $CollageID

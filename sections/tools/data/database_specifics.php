@@ -5,14 +5,14 @@ $ENV = ENV::go();
 
 // View schemas
 if (!empty($_GET['table'])) {
-    $DB->query('SHOW TABLES');
+    $DB->prepared_query('SHOW TABLES');
     $Tables =$DB->collect('Tables_in_'.$ENV->getPriv('SQLDB'));
 
     if (!in_array($_GET['table'], $Tables)) {
         error(0);
     }
 
-    $DB->query('SHOW CREATE TABLE '.db_string($_GET['table']));
+    $DB->prepared_query('SHOW CREATE TABLE '.db_string($_GET['table']));
     list(, $Schema) = $DB->next_record(MYSQLI_NUM, false);
     header('Content-type: text/plain');
     error($Schema);
@@ -20,13 +20,13 @@ if (!empty($_GET['table'])) {
 
 // Cache the tables for 4 hours, makes sorting faster
 if (!$Tables = $Cache->get_value('database_table_stats')) {
-    $DB->query('SHOW TABLE STATUS');
+    $DB->prepared_query('SHOW TABLE STATUS');
     $Tables =$DB->to_array();
     $Cache->cache_value('database_table_stats', $Tables, 3600 * 4);
 }
 
 # todo: Remove Google Charts dependency
-require SERVER_ROOT.'/classes/charts.class.php';
+require_once SERVER_ROOT.'/classes/charts.class.php';
 $Pie = new PIE_CHART(750, 400, array('Other'=>1,'Percentage'=>1,'Sort'=>1));
 
 // Begin sorting
@@ -146,9 +146,11 @@ if (check_perms('site_debug')) { ?>
           Size
       </td>
 
+      <!--
       <td>
         Tools
       </td>
+      -->
     </tr>
 
     <?php
@@ -191,10 +193,12 @@ foreach ($Tables as $Table) {
         <?=Format::get_size($DataSize + $IndexSize)?>
       </td>
 
+      <!--
       <td>
-        <a href="tools.php?action=database_specifics&table=<?=display_str($Name)?>"
-          class="brackets">Schema</a>
+        <a href="tools.php?action=database_specifics&table=<?=null#display_str($Name)?>"
+      class="brackets">Schema</a>
       </td>
+      -->
     </tr>
     <?php
 }

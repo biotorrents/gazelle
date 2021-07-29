@@ -84,5 +84,3 @@ while (list($Downloads, $GroupIDs) = $Collector->get_downloads('TorrentID')) {
     }
 }
 $Collector->finalize(false);
-
-define('SKIP_NO_CACHE_HEADERS', 1);

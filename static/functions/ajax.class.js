@@ -11,7 +11,7 @@
     $('#preview' + postid).raw().innerHTML = ajax.response;
     $('#editbox' + postid).ghide();
   }
-  ajax.post("ajax.php?action=preview","#form-id" + postid);
+  ajax.post("api.php?action=preview","#form-id" + postid);
 
   Example usage 2:
   ajax.handle = function() {

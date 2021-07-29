@@ -66,7 +66,7 @@ if (!empty($_GET['date'])) {
 
     $Details = $Cache->get_value("top10_history_$SQLTime");
     if ($Details === false) {
-        $DB->query("
+        $DB->prepared_query("
         SELECT
           tht.`Rank`,
           tht.`TitleString`,

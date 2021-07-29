@@ -14,7 +14,7 @@ $Val->SetFields('title', '1', 'string', 'The title must be between 3 and 100 cha
 $Err = $Val->ValidateForm($_POST);
 
 if (!$Err) {
-    $DB->query("
+    $DB->prepared_query("
       SELECT ID
       FROM wiki_articles
       WHERE Title = '$P[title]'");
@@ -53,7 +53,7 @@ if (check_perms('admin_manage_wiki')) {
     $Edit = 100;
 }
 
-$DB->query("
+$DB->prepared_query("
   INSERT INTO wiki_articles
     (Revision, Title, Body, MinClassRead, MinClassEdit, Date, Author)
   VALUES
@@ -64,7 +64,7 @@ $TitleAlias = Wiki::normalize_alias($_POST['title']);
 $Dupe = Wiki::alias_to_id($_POST['title']);
 
 if ($TitleAlias !== '' && $Dupe === false) {
-    $DB->query("
+    $DB->prepared_query("
       INSERT INTO wiki_aliases (Alias, ArticleID)
       VALUES ('".db_string($TitleAlias)."', '$ArticleID')");
     Wiki::flush_aliases();

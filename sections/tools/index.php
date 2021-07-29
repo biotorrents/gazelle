@@ -80,10 +80,6 @@ switch ($_REQUEST['action']) {
     include SERVER_ROOT.'/sections/tools/managers/enable_requests.php';
     break;
 
-  case 'expunge_requests':
-    include SERVER_ROOT.'/sections/tools/managers/expunge_requests.php';
-    break;
-
   case 'ajax_take_enable_request':
     if (FEATURE_EMAIL_REENABLE) {
         include SERVER_ROOT.'/sections/tools/managers/ajax_take_enable_request.php';
@@ -125,7 +121,7 @@ switch ($_REQUEST['action']) {
     }
 
     if (is_number($_POST['newsid'])) {
-        $DB->query("
+        $DB->prepared_query("
           UPDATE news
           SET Title = '".db_string($_POST['title'])."',
             Body = '".db_string($_POST['body'])."'
@@ -144,7 +140,7 @@ switch ($_REQUEST['action']) {
 
     if (is_number($_GET['id'])) {
         authorize();
-        $DB->query("
+        $DB->prepared_query("
           DELETE FROM news
           WHERE ID = '".db_string($_GET['id'])."'");
 
@@ -166,7 +162,7 @@ switch ($_REQUEST['action']) {
         error(403);
     }
 
-    $DB->query("
+    $DB->prepared_query("
       INSERT INTO news (UserID, Title, Body, Time)
       VALUES ('$LoggedUser[ID]', '".db_string($_POST['title'])."', '".db_string($_POST['body'])."', NOW())");
 
@@ -205,10 +201,6 @@ switch ($_REQUEST['action']) {
     include SERVER_ROOT.'/sections/tools/managers/tag_aliases.php';
     break;
 
-  case 'label_aliases':
-    include SERVER_ROOT.'/sections/tools/managers/label_aliases.php';
-    break;
-
   case 'global_notification':
     include SERVER_ROOT.'/sections/tools/managers/global_notification.php';
     break;
@@ -229,7 +221,7 @@ switch ($_REQUEST['action']) {
         //$Val->SetFields('test', true, 'number', 'You did not enter a valid level for this permission set.');
 
         if (is_numeric($_REQUEST['id'])) {
-            $DB->query("
+            $DB->prepared_query("
               SELECT p.ID, p.Name, p.Abbreviation, p.Level, p.Secondary, p.PermittedForums, p.Values, p.DisplayStaff, COUNT(u.ID)
               FROM permissions AS p
                 LEFT JOIN users_main AS u ON u.PermissionID = p.ID
@@ -248,7 +240,7 @@ switch ($_REQUEST['action']) {
             $Err = $Val->ValidateForm($_POST);
 
             if (!is_numeric($_REQUEST['id'])) {
-                $DB->query("
+                $DB->prepared_query("
                   SELECT ID
                   FROM permissions
                   WHERE Level = '".db_string($_REQUEST['level'])."'");
@@ -276,7 +268,7 @@ switch ($_REQUEST['action']) {
 
             if (!$Err) {
                 if (!is_numeric($_REQUEST['id'])) {
-                    $DB->query("
+                    $DB->prepared_query("
                       INSERT INTO permissions (Level, Name, Abbreviation, Secondary, PermittedForums, `Values`, DisplayStaff)
                       VALUES ('".db_string($Level)."',
                         '".db_string($Name)."',
@@ -286,7 +278,7 @@ switch ($_REQUEST['action']) {
                         '".db_string(serialize($Values))."',
                         '".db_string($DisplayStaff)."')");
                 } else {
-                    $DB->query("
+                    $DB->prepared_query("
                       UPDATE permissions
                       SET Level = '".db_string($Level)."',
                         Name = '".db_string($Name)."',
@@ -299,7 +291,7 @@ switch ($_REQUEST['action']) {
 
                     $Cache->delete_value('perm_'.$_REQUEST['id']);
                     if ($Secondary) {
-                        $DB->query("
+                        $DB->prepared_query("
                           SELECT DISTINCT UserID
                           FROM users_levels
                           WHERE PermissionID = ".db_string($_REQUEST['id']));
@@ -318,11 +310,11 @@ switch ($_REQUEST['action']) {
         include SERVER_ROOT.'/sections/tools/managers/permissions_alter.php';
     } else {
         if (!empty($_REQUEST['removeid'])) {
-            $DB->query("
+            $DB->prepared_query("
               DELETE FROM permissions
               WHERE ID = '".db_string($_REQUEST['removeid'])."'");
 
-            $DB->query("
+            $DB->prepared_query("
               SELECT UserID
               FROM users_levels
               WHERE PermissionID = '".db_string($_REQUEST['removeid'])."'");
@@ -331,11 +323,11 @@ switch ($_REQUEST['action']) {
                 $Cache->delete_value("user_info_$UserID");
                 $Cache->delete_value("user_info_heavy_$UserID");
             }
-            $DB->query("
+            $DB->prepared_query("
               DELETE FROM users_levels
               WHERE PermissionID = '".db_string($_REQUEST['removeid'])."'");
 
-            $DB->query("
+            $DB->prepared_query("
               SELECT ID
               FROM users_main
               WHERE PermissionID = '".db_string($_REQUEST['removeid'])."'");
@@ -345,7 +337,7 @@ switch ($_REQUEST['action']) {
                 $Cache->delete_value("user_info_heavy_$UserID");
             }
 
-            $DB->query("
+            $DB->prepared_query("
               UPDATE users_main
               SET PermissionID = '".USER."'
               WHERE PermissionID = '".db_string($_REQUEST['removeid'])."'");
@@ -413,10 +405,6 @@ switch ($_REQUEST['action']) {
   // END Data
 
   // Misc
-  case 'dupe_ips':
-    include SERVER_ROOT.'/sections/tools/misc/dupe_ip.php';
-    break;
-
   case 'clear_cache':
     include SERVER_ROOT.'/sections/tools/development/clear_cache.php';
     break;

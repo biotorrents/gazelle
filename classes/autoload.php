@@ -11,8 +11,10 @@ declare(strict_types=1);
  * @see https://www.php.net/manual/en/language.oop5.autoload.php
  */
 spl_autoload_register(function ($ClassName) {
-    $FilePath = SERVER_ROOT . '/classes/' . strtolower($ClassName) . '.class.php';
-    #$FilePath = $_SERVER['DOCUMENT_ROOT'] . '/classes/' . strtolower($ClassName) . '.class.php';
+  $ENV = ENV::go();
+
+  $classname = strtolower($ClassName);
+    $FilePath = "$ENV->SERVER_ROOT/classes/$classname.class.php";
 
     if (!file_exists($FilePath)) {
         // todo: Rename the following classes to conform with the code guidelines
@@ -43,24 +45,11 @@ spl_autoload_register(function ($ClassName) {
           $FileName = 'env.class';
           break;
 
-        case 'Parsedown':
-          $FileName = 'vendor/Parsedown';
-          break;
-
-        case 'ParsedownExtra':
-          $FileName = 'vendor/ParsedownExtra';
-          break;
-
-        case 'TwitterAPIExchange':
-          $FileName = 'vendor/TwitterAPIExchange';
-          break;
-
         default:
           error("Couldn't import class $ClassName");
     }
 
-        $FilePath = SERVER_ROOT . "/classes/$FileName.php";
-        #$FilePath = $_SERVER['DOCUMENT_ROOT'] . "/classes/$FileName.php";
+        $FilePath = "$ENV->SERVER_ROOT/classes/$FileName.php";
     }
 
     require_once $FilePath;

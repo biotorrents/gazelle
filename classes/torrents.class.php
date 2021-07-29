@@ -60,54 +60,98 @@ class Torrents
                 unset($GroupIDs[$i], $Found[$GroupID], $NotFound[$GroupID]);
                 continue;
             }
+
             $Data = G::$Cache->get_value($Key . $GroupID, true);
             if (!empty($Data) && is_array($Data) && $Data['ver'] === Cache::GROUP_VERSION) {
                 unset($NotFound[$GroupID]);
                 $Found[$GroupID] = $Data['d'];
             }
         }
+
         // Make sure there's something in $GroupIDs, otherwise the SQL will break
         if (count($GroupIDs) === 0) {
             return [];
         }
 
-        /*
-        Changing any of these attributes returned will cause very large, very dramatic site-wide chaos.
-        Do not change what is returned or the order thereof without updating:
-          torrents, artists, collages, bookmarks, better, the front page,
-        and anywhere else the get_groups function is used.
-        Update self::array_group(), too
-        */
+        /**
+         * Changing any of these attributes returned will cause very large, very dramatic site-wide chaos.
+         * Do not change what is returned or the order thereof without updating:
+         * torrents, artists, collages, bookmarks, better, the front page,
+         * and anywhere else the get_groups function is used.
+         * Update self::array_group(), too.
+         */
 
         if (count($NotFound) > 0) {
             $IDs = implode(',', array_keys($NotFound));
             $NotFound = [];
             $QueryID = G::$DB->get_query_id();
-            G::$DB->query("
+
+            G::$DB->prepare_query("
             SELECT
-              ID, Name, Title2, NameJP, Year, CatalogueNumber, Studio, Series, TagList, WikiImage, CategoryID
-            FROM torrents_group
-              WHERE ID IN ($IDs)");
+              `id`,
+              `title`,
+              `subject`,
+              `object`,
+              `year`,
+              `identifier`,
+              `workgroup`,
+              `location`,
+              `tag_list`,
+              `picture`,
+              `category_id`
+            FROM
+              `torrents_group`
+            WHERE
+              `id` IN($IDs)
+            ");
+            G::$DB->exec_prepared_query();
 
             while ($Group = G::$DB->next_record(MYSQLI_ASSOC, true)) {
-                $NotFound[$Group['ID']] = $Group;
-                $NotFound[$Group['ID']]['Torrents'] = [];
-                $NotFound[$Group['ID']]['Artists'] = [];
+                $NotFound[$Group['id']] = $Group;
+                $NotFound[$Group['id']]['Torrents'] = [];
+                $NotFound[$Group['id']]['Artists'] = [];
             }
             G::$DB->set_query_id($QueryID);
 
             if ($Torrents) {
                 $QueryID = G::$DB->get_query_id();
+
                 G::$DB->query("
-                  SELECT
-                  ID, GroupID, Media, Container, Codec, Resolution, Version,
-                    Censored, Archive, FileCount, FreeTorrent,
-                    Size, Leechers, Seeders, Snatched, Time, f.ExpiryTime, ID AS HasFile,
-                    FreeLeechType, hex(info_hash) as info_hash
-                  FROM torrents
-                    LEFT JOIN shop_freeleeches AS f ON f.TorrentID=ID
-                    WHERE GroupID IN ($IDs)
-                  ORDER BY GroupID, Media, Container, Codec, ID");
+                SELECT
+                  `ID`,
+                  `GroupID`,
+                  `Media`,
+                  `Container`,
+                  `Codec`,
+                  `Resolution`,
+                  `Version`,
+                  `Censored`,
+                  `Archive`,
+                  `FileCount`,
+                  `FreeTorrent`,
+                  `Size`,
+                  `Leechers`,
+                  `Seeders`,
+                  `Snatched`,
+                  `Time`,
+                  f.`ExpiryTime`,
+                  `ID` AS `HasFile`,
+                  `FreeLeechType`,
+                  HEX(`info_hash`) AS `info_hash`
+                FROM
+                  `torrents`
+                LEFT JOIN `shop_freeleeches` AS f
+                ON
+                  f.`TorrentID` = `ID`
+                WHERE
+                  `GroupID` IN($IDs)
+                ORDER BY
+                  `GroupID`,
+                  `Media`,
+                  `Container`,
+                  `Codec`,
+                  `ID`
+                ");
                   
                 while ($Torrent = G::$DB->next_record(MYSQLI_ASSOC, true)) {
                     $NotFound[$Torrent['GroupID']]['Torrents'][$Torrent['ID']] = $Torrent;
@@ -138,6 +182,7 @@ class Torrents
                 }
                 $Found[$GroupID]['Artists'] = $Data;
             }
+
             // Fetch all user specific torrent properties
             if ($Torrents) {
                 foreach ($Found as &$Group) {
@@ -166,18 +211,18 @@ class Torrents
     public static function array_group(array &$Group)
     {
         return array(
-          'GroupID' => $Group['ID'],
-          'GroupName' => $Group['Name'],
-          'GroupTitle2' => $Group['Title2'],
-          'GroupNameJP' => $Group['NameJP'],
-          'GroupYear' => $Group['Year'],
-          'GroupCategoryID' => $Group['CategoryID'],
-          'GroupCatalogueNumber' => $Group['CatalogueNumber'],
-          'GroupStudio' => $Group['Studio'],
-          'GroupSeries' => $Group['Series'],
+          'id' => $Group['id'],
+          'title' => $Group['title'],
+          'subject' => $Group['subject'],
+          'object' => $Group['object'],
+          'published' => $Group['published'],
+          'category_id' => $Group['category_id'],
+          'identifier' => $Group['identifier'],
+          'workgroup' => $Group['workgroup'],
+          'location' => $Group['location'],
           'GroupFlags' => ($Group['Flags'] ?? ''),
-          'TagList' => $Group['TagList'],
-          'WikiImage' => $Group['WikiImage'],
+          'tag_list' => $Group['tag_list'],
+          'picture' => $Group['picture'],
           'Torrents' => $Group['Torrents'],
           'Artists' => $Group['Artists']
         );
@@ -231,18 +276,24 @@ class Torrents
     {
         global $Time;
         $QueryID = G::$DB->get_query_id();
-        G::$DB->query(
-            "
-        INSERT INTO group_log
-          (GroupID, TorrentID, UserID, Info, Time, Hidden)
-        VALUES
-          (?, ?, ?, ?, NOW(), ?)",
-            $GroupID,
-            $TorrentID,
-            $UserID,
-            $Message,
-            $Hidden
-        );
+        G::$DB->query("
+        INSERT INTO `group_log`(
+          `GroupID`,
+          `TorrentID`,
+          `UserID`,
+          `Info`,
+          `Time`,
+          `Hidden`
+        )
+        VALUES(
+          '$GroupID',
+          '$TorrentID',
+          '$UserID',
+          '$Message',
+          NOW(),
+          '$Hidden'
+        )
+        ");
         G::$DB->set_query_id($QueryID);
     }
 
@@ -371,12 +422,19 @@ class Torrents
 
         Misc::write_log("Group $GroupID automatically deleted (No torrents have this group).");
 
-        G::$DB->query("
-        SELECT CategoryID
-        FROM torrents_group
-          WHERE ID = ?", $GroupID);
+        G::$DB->prepare_query("
+        SELECT
+          `category_id`
+        FROM
+          `torrents_group`
+        WHERE
+          `id` = '$GroupID'
+        ");
+        G::$DB->exec_prepared_query();
         list($Category) = G::$DB->next_record();
-        if ($Category == 1) {
+
+        # todo: Check strict equality here
+        if ($Category === 1) {
             G::$Cache->decrement('stats_album_count');
         }
         G::$Cache->decrement('stats_group_count');
@@ -459,18 +517,41 @@ class Torrents
         // Comments
         Comments::delete_page('torrents', $GroupID);
 
-        G::$DB->query("
-        DELETE FROM torrents_group
-          WHERE ID = ?", $GroupID);
-        G::$DB->query("
-        DELETE FROM torrents_tags
-          WHERE GroupID = ?", $GroupID);
-        G::$DB->query("
-        DELETE FROM bookmarks_torrents
-          WHERE GroupID = ?", $GroupID);
-        G::$DB->query("
-        DELETE FROM wiki_torrents
-          WHERE PageID = ?", $GroupID);
+        G::$DB->prepare_query("
+        DELETE
+        FROM
+          `torrents_group`
+        WHERE
+          `id` = '$GroupID'
+        ");
+        G::$DB->exec_prepared_query();
+
+        G::$DB->prepare_query("
+        DELETE
+        FROM
+          `torrents_tags`
+        WHERE
+          `GroupID` = '$GroupID'
+        ");
+        G::$DB->exec_prepared_query();
+
+        G::$DB->prepare_query("
+        DELETE
+        FROM
+          `bookmarks_torrents`
+        WHERE
+          `GroupID` = '$GroupID'
+        ");
+        G::$DB->exec_prepared_query();
+
+        G::$DB->prepare_query("
+        DELETE
+        FROM
+          `wiki_torrents`
+        WHERE
+          `PageID` = '$GroupID'
+        ");
+        G::$DB->exec_prepared_query();
 
         G::$Cache->delete_value("torrents_details_$GroupID");
         G::$Cache->delete_value("torrent_group_$GroupID");
@@ -483,55 +564,129 @@ class Torrents
      *
      * @param int $GroupID
      */
-    public static function update_hash($GroupID)
+    public static function update_hash(int $GroupID)
     {
         $QueryID = G::$DB->get_query_id();
 
-        G::$DB->query("
-        UPDATE torrents_group
-        SET TagList = (
-          SELECT REPLACE(GROUP_CONCAT(tags.Name SEPARATOR ' '), '.', '_')
-          FROM torrents_tags AS t
-            INNER JOIN tags ON tags.ID = t.TagID
-          WHERE t.GroupID = ?
-          GROUP BY t.GroupID
+        G::$DB->prepare_query("
+        UPDATE
+          `torrents_group`
+        SET
+          `tag_list` =(
+          SELECT
+          REPLACE
+            (
+              GROUP_CONCAT(tags.Name SEPARATOR ' '),
+              '.',
+              '_'
+            )
+          FROM
+            `torrents_tags` AS t
+          INNER JOIN `tags` ON tags.`ID` = t.`TagID`
+          WHERE
+            t.`GroupID` = '$GroupID'
+          GROUP BY
+            t.`GroupID`
         )
-          WHERE ID = ?", $GroupID, $GroupID);
+        WHERE
+          `ID` = '$GroupID'
+        ");
+        G::$DB->exec_prepared_query();
 
         // Fetch album artists
-        G::$DB->query("
-        SELECT GROUP_CONCAT(ag.Name separator ' ')
-        FROM torrents_artists AS ta
-          JOIN artists_group AS ag ON ag.ArtistID = ta.ArtistID
-          WHERE ta.GroupID = ?
-        GROUP BY ta.GroupID", $GroupID);
+        G::$DB->prepare_query("
+        SELECT GROUP_CONCAT(ag.`Name` separator ' ')
+        FROM `torrents_artists` AS `ta`
+          JOIN `artists_group` AS ag ON ag.`ArtistID` = ta.`ArtistID`
+          WHERE ta.`GroupID` = '$GroupID'
+        GROUP BY ta.`GroupID`
+        ");
+        G::$DB->exec_prepared_query();
+
         if (G::$DB->has_results()) {
             list($ArtistName) = G::$DB->next_record(MYSQLI_NUM, false);
         } else {
             $ArtistName = '';
         }
 
-        G::$DB->query("
-        REPLACE INTO sphinx_delta
-          (ID, GroupID, GroupName, GroupTitle2, GroupNameJP, TagList, Year, CatalogueNumber, CategoryID, Time,
-          Size, Snatched, Seeders, Leechers, Censored, Studio, Series,
-          FreeTorrent, Media, Container, Codec, Resolution, Version, Description,
-          FileList, ArtistName)
+        G::$DB->prepare_query("
+        REPLACE
+        INTO sphinx_delta(
+          `ID`,
+          `GroupID`,
+          `GroupName`,
+          `GroupTitle2`,
+          `GroupNameJP`,
+          `TagList`,
+          `Year`,
+          `CatalogueNumber`,
+          `CategoryID`,
+          `Time`,
+          `Size`,
+          `Snatched`,
+          `Seeders`,
+          `Leechers`,
+          `Censored`,
+          `Studio`,
+          `Series`,
+          `FreeTorrent`,
+          `Media`,
+          `Container`,
+          `Codec`,
+          `Resolution`,
+          `Version`,
+          `Description`,
+          `FileList`,
+          `ArtistName`
+        )
         SELECT
-          t.ID, g.ID, Name, Title2, NameJP, TagList, Year, CatalogueNumber, CategoryID, UNIX_TIMESTAMP(t.Time),
-          Size, Snatched, Seeders, Leechers, Censored, Studio, Series,
-          CAST(FreeTorrent AS CHAR), Media, Container, Codec, Resolution, Version, Description,
-          REPLACE(REPLACE(FileList, '_', ' '), '/', ' ') AS FileList, ?
-        FROM torrents AS t
-          JOIN torrents_group AS g ON g.ID = t.GroupID
-          WHERE g.ID = ?", $ArtistName, $GroupID);
+          t.`ID`,
+          g.`id`,
+          g.`title`,
+          g.`subject`,
+          g.`object`,
+          g.`tag_list`,
+          g.`year`,
+          g.`identifier`,
+          g.`category_id`,
+          UNIX_TIMESTAMP(t.`Time`),
+          t.`Size`,
+          t.`Snatched`,
+          t.`Seeders`,
+          t.`Leechers`,
+          t.`Censored`,
+          g.`workgroup`,
+          g.`location`,
+          CAST(`FreeTorrent` AS CHAR),
+          t.`Media`,
+          t.`Container`,
+          t.`Codec`,
+          t.`Resolution`,
+          t.`Version`,
+          t.`Description`,
+        REPLACE
+          (
+        REPLACE
+          (`FileList`, '_', ' '),
+          '/',
+          ' '
+        ) AS FileList,
+        '$ArtistName'
+        FROM
+          `torrents` AS t
+        JOIN `torrents_group` AS g
+        ON
+          g.`id` = t.`GroupID`
+        WHERE
+          g.`id` = '$GroupID'
+        ");
+        G::$DB->exec_prepared_query();
 
         G::$Cache->delete_value("torrents_details_$GroupID");
         G::$Cache->delete_value("torrent_group_$GroupID");
         G::$Cache->delete_value("torrent_group_light_$GroupID");
 
         $ArtistInfo = Artists::get_artist($GroupID);
-
         G::$Cache->delete_value("groups_artists_$GroupID");
         G::$DB->set_query_id($QueryID);
     }

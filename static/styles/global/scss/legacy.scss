@@ -4,29 +4,41 @@
  *
  * https://git.oppaiti.me/Oppaitime/Gazelle/src/branch/master/static/styles/global.css
  */
+/* 2021-07-26
 .box h3 {
     font-size: 140%;
 }
+*/
 
+/* 2021-07-26
 .box h4 {
     font-size: 130%;
 }
+*/
 
+/* 2021-07-26
 .box h5 {
     font-size: 120%;
 }
+*/
 
+/* 2021-07-26
 .box h6 {
     font-size: 110%;
 }
+*/
 
+/* 2021-07-26
 .thin {
     box-sizing: border-box;
 }
+*/
 
+/* 2021-07-26
 .flex_input_container {
     display: flex;
 }
+*/
 
 .flex_input_container > input[type="text"] {
     flex-grow: 1;
@@ -47,6 +59,7 @@ textarea {
     outline: none;
 }
 
+/* 2021-07-24
 select {
     padding: 5px 10px;
     background-color: white;
@@ -58,6 +71,7 @@ select {
     -moz-appearance: none;
     appearance: none;
 }
+*/
 
 h2 .group_cat {
     height: 16px;
@@ -129,6 +143,7 @@ div.collage_image {
     cursor: pointer;
 }
 
+/* 2021-07-24
 button,
 input[type="button"],
 input[type="submit"] {
@@ -139,6 +154,7 @@ input[type="submit"] {
     border: none;
     color: #000;
 }
+*/
 
 .spoilerButton {
     cursor: pointer;
@@ -164,17 +180,23 @@ abbr[title] {
     text-decoration: none;
 }
 
+/* 2021-07-26
 .line_new {
     color: green;
 }
+*/
 
+/* 2021-07-26
 .line_deleted {
     color: red;
 }
+*/
 
+/* 2021-07-26
 .line_moved {
     color: blue;
 }
+*/
 
 /* 2020-12-12
 .line_unchanged {
@@ -186,41 +208,57 @@ abbr[title] {
 }
 */
 
+/* 2021-07-26
 .log2 {
     color: yellow;
 }
+*/
 
+/* 2021-07-26
 .log3 {
     color: #0e88c6;
 }
+*/
 
+/* 2021-07-26
 .log4 {
     font-weight: bold;
 }
+*/
 
+/* 2021-07-26
 .log5 {
     text-decoration: underline;
 }
+*/
 
+/* 2021-07-26
 .good {
     font-weight: bold;
     color: green;
 }
+*/
 
+/* 2021-07-26
 .bad {
     font-weight: bold;
     color: red;
 }
+*/
 
+/* 2021-07-26
 .goodish {
     font-weight: bold;
     color: #35bf00;
 }
+*/
 
+/* 2021-07-26
 .badish {
     font-weight: bold;
     color: #e5b244;
 }
+*/
 
 pre {
     overflow: auto;
@@ -241,10 +279,12 @@ textarea {
     box-sizing: border-box;
 }
 
+/* 2021-07-26
 a.beta {
     font-weight: bold;
     color: #ff0000;
 }
+*/
 
 /* 2020-12-17
 strong.important_text {
@@ -582,6 +622,7 @@ tr.torrent .bookmark > a:after {
  * Fix long release descriptions overflowing containers (all browsers).
  * Fix flowing issues in the report resolving pages.
  */
+/* 2021-07-24
 .wrap_overflow,
 .filelist_table td,
 .reportinfo_table,
@@ -593,6 +634,7 @@ tr.torrent .bookmark > a:after {
     word-break: break-word;
     hyphens: auto;
 }
+*/
 
 .filelist_table td:first-child {
     word-break: break-all;
@@ -756,9 +798,11 @@ tr.torrent .bookmark > a:after {
     margin: 10px 0;
 }
 
+/* 2021-07-26
 .number_column {
     text-align: right;
 }
+*/
 
 .wide_input_text {
     width: 95%;
@@ -998,6 +1042,7 @@ div.torrent_artists {
 }
 */
 
+/* 2021-07-25
 #coverCont {
     position: fixed;
     max-width: 30%;
@@ -1005,16 +1050,21 @@ div.torrent_artists {
     background-repeat: no-repeat;
     z-index: 9999;
 }
+*/
 
+/* 2021-07-25
 #coverCont img {
     max-width: 100%;
 }
+*/
 
+/* 2021-07-25
 #covers img {
     display: block;
     margin-left: auto;
     margin-right: auto;
 }
+*/
 
 .search_warning {
     position: absolute;
@@ -1051,21 +1101,29 @@ div.torrent_artists {
 }
 */
 
+/* 2021-07-24
 .flex {
     display: flex;
 }
+*/
 
+/* 2021-07-24
 .flex > .grow {
     flex-grow: 1;
 }
+*/
 
+/* 2021-07-24
 .flex > .shrink {
     flex-shrink: 1;
 }
+*/
 
+/* 2021-07-24
 input[type="search"] {
     -webkit-appearance: textfield;
 }
+*/
 
 #lightbox > img {
     max-width: 100%;
@@ -1089,10 +1147,12 @@ input[type="search"] {
     display: flex;
 }
 
+/* 2021-07-24
 #publickey {
     width: initial;
     font-family: monospace;
 }
+*/
 
 .hidden {
     display: none;
@@ -1103,12 +1163,15 @@ form.edit_form[name="screenshots_form"] img {
     width: 400px;
 }
 
+/* 2021-07-24
 #dbcrypt {
     position: fixed;
     top: 10px;
     right: 10px;
 }
+*/
 
+/* 2021-07-24
 #dbcrypt:after {
     content: "!";
     display: block;
@@ -1122,3 +1185,4 @@ form.edit_form[name="screenshots_form"] img {
     background: red;
     border-radius: 100px;
 }
+*/

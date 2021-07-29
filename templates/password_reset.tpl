@@ -1,9 +1,10 @@
-Someone from {{IP}} requested a passphrase reset for {{Username}}.
-
-If you didn't request this, please ignore this email and don't reply.
-
-Otherwise, please click the link below to reset your passphrase (you have 1 hour).
+A passphrase reset process has been started for the username: {{Username}}.
+To finish this process please click the link below (you have 1 hour).
 
 https://{{SITE_DOMAIN}}/login.php?act=recover&key={{ResetKey}}
 
--- {{SITE_NAME}} Staff
+If you didn't initiate this passphrase reset, please disregard this email.
+The user who requested the passphrase reset had the IP address {{IP}}.
+
+Thank you,
+{{SITE_NAME}} Staff

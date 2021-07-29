@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+$ENV = ENV::go();
+$Twig = Twig::go();
+
 View::show_header('Login'); ?>
 
 <p class="center mouseless">
@@ -36,19 +39,27 @@ if (!$Banned) { ?>
   </aside>
   <?php } ?>
 
-  <table>
+  <br />
+  <table class="login_form">
     <tr>
       <td colspan="2">
         <input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="username"
           id="username" class="inputtext" required="required" maxlength="20" pattern="[A-Za-z0-9_?]{1,20}"
-          autofocus="autofocus" placeholder="Username" size="40" autocomplete="username" />
+          autofocus="autofocus" placeholder="Username" size="35" autocomplete="username" />
       </td>
     </tr>
 
     <tr>
       <td>
-        <input type="password" minlength="15" name="password" id="password" class="inputtext" required="required"
-          maxlength="307200" pattern=".{15,307200}" placeholder="Password" autocomplete="current-password" />
+        <?=
+        $Twig->render('input/passphrase.html', [
+          'name' => 'password',
+          'id' => 'password',
+          'placeholder' => 'Passphrase',
+          'pw_min' => $ENV->PW_MIN,
+          'pw_max' => $ENV->PW_MAX,
+          'advice' => false,
+        ]) ?>
       </td>
 
       <td>
@@ -59,9 +70,15 @@ if (!$Banned) { ?>
     </tr>
 
     <tr>
-      <td colspan="2">
-        <input type="submit" name="login" value="Log In" class="submit" />
+      <td colspan="4">
+        <input type="submit" name="login" value="Log In" class="submit button-primary" />
+
+        <?php if ($ENV->OPEN_REGISTRATION) { ?>
+          &ensp;
+          <a href="/register.php" class="button">Register</a>
+          <?php } ?>
       </td>
+
     </tr>
   </table>
 </form>
@@ -77,8 +94,8 @@ else { ?>
 
 if ($Attempts > 0) { ?>
 <p class="center">
-  Forgot your password?
-  <a href="login.php?act=recover" class="tooltip" title="Recover your password">Reset it here!</a>
+  Forgot your passphrase?
+  <a href="login.php?act=recover" class="tooltip" title="Recover your passphrase">Reset it here!</a>
 </p>
 
 <?php

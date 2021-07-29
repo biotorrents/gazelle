@@ -3,107 +3,6 @@
     padding: 0;
 }
 
-.cats_sequences,
-.cats_graphs,
-.cats_systems,
-.cats_geometric,
-.cats_scalars\/vectors,
-.cats_patterns,
-.cats_constraints,
-.cats_images,
-.cats_spatial,
-.cats_models,
-.cats_documents,
-.cats_machinedata {
-    width: 38px !important;
-    height: 38px !important;
-    line-height: 38px;
-}
-
-.cats_sequences:after {
-    content: "SEQ";
-    color: #3eaca7;
-    font-size: 18px;
-    letter-spacing: -2px;
-}
-
-.cats_graphs:after {
-    content: "GRF";
-    color: #1d818e;
-    font-size: 18px;
-    letter-spacing: -2px;
-}
-
-.cats_systems:after {
-    content: "SYS";
-    color: #88c796;
-    font-size: 18px;
-    letter-spacing: -2px;
-}
-
-.cats_geometric:after {
-    content: "GEO";
-    color: #4dc593;
-    font-size: 18px;
-    letter-spacing: -2px;
-}
-
-.cats_scalars\/vectors:after {
-    content: "MC2";
-    color: #77c5d4;
-    font-size: 18px;
-    letter-spacing: -2px;
-}
-
-.cats_patterns:after {
-    content: "PAT";
-    color: #0d5968;
-    font-size: 18px;
-    letter-spacing: -2px;
-}
-
-.cats_constraints:after {
-    content: "CNST";
-    color: #3eaca7;
-    font-size: 18px;
-    letter-spacing: -2px;
-}
-
-.cats_images:after {
-    content: "IMG";
-    color: #1d818e;
-    font-size: 18px;
-    letter-spacing: -2px;
-}
-
-.cats_spatial:after {
-    content: "SPTL";
-    color: #88c796;
-    font-size: 18px;
-    letter-spacing: -2px;
-}
-
-.cats_models:after {
-    content: "MOD";
-    color: #4dc593;
-    font-size: 18px;
-    letter-spacing: -2px;
-}
-
-.cats_documents:after {
-    content: "DOC";
-    color: #77c5d4;
-    font-size: 18px;
-    letter-spacing: -2px;
-}
-
-.cats_machinedata:after {
-    content: "RAW";
-    color: #0d5968;
-    font-size: 18px;
-    letter-spacing: -2px;
-}
-
 body {
     width: 100%;
     font-family: "Open Sans", Helvetica, Arial, Tahoma, sans-serif;
@@ -197,6 +96,33 @@ input {
     color: #fff;
 }
 
+/* Buttons */
+button:not(.editor-toolbar button),
+input[type="button"],
+input[type="submit"] {
+    background: change-color(whitesmoke, $alpha: 0.75);
+    color: black;
+    border: 1px solid #bbb;
+
+    &.button-primary {
+        background: #50aca7;
+        border: 1px solid #bbb;
+        color: black;
+    }
+
+    &:hover {
+        background: #317f8e;
+        /* Primary hover default blue */
+        border: 1px solid #bbb !important;
+        color: black !important;
+    }
+
+    &:focus {
+        background: #2f707c;
+    }
+}
+
+/*
 button,
 input[type="button"],
 input[type="submit"] {
@@ -216,6 +142,7 @@ input[type="button"]:focus,
 input[type="submit"]:focus {
     background-color: #2f707c;
 }
+*/
 
 .spoilerButton {
     max-width: 604px;
@@ -351,11 +278,13 @@ ul.thin li {
     padding-top: 0;
 }
 
+/*
 .sidebar {
     float: right;
     width: 244px;
     height: 100%;
 }
+*/
 
 .sidebar .box .pad form {
     padding-bottom: 20px;
@@ -366,10 +295,12 @@ ul.thin li {
     padding: 5px 10px 10px 10px;
 }
 
+/*
 .main_column {
     width: 646px;
     float: left;
 }
+*/
 
 #logo {
     width: 900px;
@@ -386,7 +317,7 @@ ul.thin li {
 }
 
 #logo a::before {
-    content: "BioTorrents.de";
+    content: "torrents.bio";
     font-size: 40px;
     line-height: 56px;
     font-weight: 100;
@@ -1433,11 +1364,6 @@ blockquote {
     padding: 10px;
 }
 
-blockquote,
-pre {
-    background-color: #23252a !important;
-}
-
 .signature {
     border-top: 1px dotted #666;
     margin: 2em 0 0;
@@ -1473,11 +1399,6 @@ tr.unreadpm {
 .permission_container input {
     vertical-align: top;
     margin: 0 3px 5px 0;
-}
-
-.submit_container {
-    clear: both;
-    text-align: right;
 }
 
 ul .invitetree {
@@ -1539,9 +1460,15 @@ ul .invitetree {
 
 pre {
     color: #fff;
-    border: 1px dashed #55585f;
+    background: black;
+    border: 1px dashed #55585f !important;
     margin: 10px;
     padding: 10px;
+}
+
+code {
+    background: black;
+    border: none;
 }
 
 #donation {
@@ -1906,6 +1833,7 @@ div#gift {
     z-index: 999;
 }
 
+/*
 .button {
     border: 0 solid #131313;
     color: #eee;
@@ -1916,6 +1844,7 @@ div#gift {
     text-transform: uppercase;
     padding: 5px 12px;
 }
+*/
 
 #store #content {
     position: relative;
@@ -2317,6 +2246,32 @@ body.style_pink ::-moz-selection {
     background: #8b518e;
 }
 
+/* Buttons */
+body.style_pink button:not(.editor-toolbar button),
+body.style_pink input[type="button"],
+body.style_pink input[type="submit"] {
+    color: black;
+    border: 1px solid #bbb;
+
+    &.button-primary {
+        background: #8b518e;
+        border: 1px solid #bbb;
+        color: black;
+    }
+
+    &:hover {
+        background: #643c72;
+        /* Primary hover default blue */
+        border: 1px solid #bbb !important;
+        color: black !important;
+    }
+
+    &:focus {
+        background: #78467f;
+    }
+}
+
+/*
 body.style_pink button,
 body.style_pink input[type="button"],
 body.style_pink input[type="submit"] {
@@ -2334,6 +2289,7 @@ body.style_pink input[type="button"]:focus,
 body.style_pink input[type="submit"]:focus {
     background-color: #78467f;
 }
+*/
 
 body.style_pink #userinfo_stats {
     color: #db7bc7;

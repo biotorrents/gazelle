@@ -1,71 +1,70 @@
 <?php
 #declare(strict_types=1);
 
-/************************************************************************
-//------------// Main friends page //----------------------------------//
-This page lists a user's friends.
+/**
+ * Main friends page
+ *
+ * This page lists a user's friends.
+ * There's no real point in caching this page.
+ * I doubt users load it that much.
+ */
 
-There's no real point in caching this page. I doubt users load it that
-much.
-************************************************************************/
+$ENV = ENV::go();
 
 // Number of users per page
 define('FRIENDS_PER_PAGE', '20');
-include_once(SERVER_ROOT.'/classes/paranoia.class.php');
-
-
+include_once "$ENV->SERVER_ROOT/classes/paranoia.class.php";
 
 View::show_header('Friends');
 
-
 $UserID = $LoggedUser['ID'];
-
-
 list($Page, $Limit) = Format::page_limit(FRIENDS_PER_PAGE);
 
 // Main query
-$DB->query("
+$DB->prepared_query("
   SELECT
     SQL_CALC_FOUND_ROWS
-    f.FriendID,
-    f.Comment,
-    m.Username,
-    m.Uploaded,
-    m.Downloaded,
-    m.PermissionID,
-    m.Paranoia,
-    m.LastAccess,
-    i.Avatar
-  FROM friends AS f
-    JOIN users_main AS m ON f.FriendID = m.ID
-    JOIN users_info AS i ON f.FriendID = i.UserID
-  WHERE f.UserID = '$UserID'
-  ORDER BY Username
+    f.`FriendID`,
+    f.`Comment`,
+    m.`Username`,
+    m.`Uploaded`,
+    m.`Downloaded`,
+    m.`PermissionID`,
+    m.`Paranoia`,
+    m.`LastAccess`,
+    i.`Avatar`
+  FROM `friends` AS f
+    JOIN `users_main` AS m ON f.`FriendID` = m.`ID`
+    JOIN `users_info` AS i ON f.`FriendID` = i.`UserID`
+  WHERE f.`UserID` = '$UserID'
+  ORDER BY `Username`
   LIMIT $Limit");
 $Friends = $DB->to_array(false, MYSQLI_BOTH, array(6, 'Paranoia'));
 
 // Number of results (for pagination)
-$DB->query('SELECT FOUND_ROWS()');
+$DB->prepared_query('SELECT FOUND_ROWS()');
 list($Results) = $DB->next_record();
 
-// Start printing stuff
-?>
+// Start printing stuff?>
+
 <div>
   <div class="header">
     <h2>Friends List</h2>
   </div>
+
   <div class="linkbox">
     <?php
 // Pagination
 $Pages = Format::get_pages($Page, $Results, FRIENDS_PER_PAGE, 9);
-echo $Pages;
-?>
+echo $Pages; ?>
   </div>
+
   <div class="box pad">
     <?php
-if ($Results == 0) {
+if ($Results === 0) {
     echo '<p>You have no friends! :(</p>';
 }
+
 // Start printing out friends
 foreach ($Friends as $Friend) {
     list($FriendID, $Comment, $Username, $Uploaded, $Downloaded, $Class, $Paranoia, $LastAccess, $Avatar) = $Friend; ?>
@@ -80,11 +79,13 @@ foreach ($Friends as $Friend) {
               &nbsp;Ratio: <strong><?=Format::get_ratio_html($Uploaded, $Downloaded)?></strong>
               <?php
   }
+
     if (check_paranoia('uploaded', $Paranoia, $Class, $FriendID)) {
         ?>
               &nbsp;Up: <strong><?=Format::get_size($Uploaded)?></strong>
               <?php
     }
+
     if (check_paranoia('downloaded', $Paranoia, $Class, $FriendID)) {
         ?>
               &nbsp;Down: <strong><?=Format::get_size($Downloaded)?></strong>
@@ -106,13 +107,23 @@ foreach ($Friends as $Friend) {
             <input type="hidden" name="friendid"
               value="<?=$FriendID?>" />
 
-            <textarea name="comment" rows="4"
-              cols="65"><?=$Comment?></textarea>
+            <textarea
+              name = "comment"
+              rows = "5"
+              cols = "50"
+              placeholder ="Your saved notes about this friend"
+              ><?=$Comment?></textarea>
           </td>
           <td class="left" valign="top">
-            <input type="submit" name="action" value="Update" /><br />
-            <input type="submit" name="action" value="Remove friend" /><br />
-            <input type="submit" name="action" value="Contact" /><br />
+          <p>
+            <input type="submit" name="action" value="Update" />
+            <input type="submit" name="action" value="Remove friend" />
+          </p>
+
+          <p>
+            <input type="submit" name="action" class="button-primary" value="Contact" />
+          </p>
+
           </td>
         </tr>
       </table>

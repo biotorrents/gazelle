@@ -40,7 +40,7 @@ View::show_header('Database Encryption Key'); ?>
 
     <div style="display: flex;">
       <input type="text" name="dbkey" style="flex-grow: 1;" />
-      <input type="submit" name="submit" value="Update key" />
+      <input type="submit" name="submit" class="button-primary" value="Update key" />
     </div>
 
   </form>

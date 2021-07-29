@@ -22,7 +22,7 @@ $DB = NEW DB_MYSQL;
 
 * Making a query
 
-$DB->query("
+$DB->prepared_query("
   SELECT *
   FROM table...");
 
@@ -92,14 +92,14 @@ set_query_id($ResultSet)
   This class can only hold one result set at a time. Using set_query_id allows
   you to set the result set that the class is using to the result set in
   $ResultSet. This result set should have been obtained earlier by using
-  $DB->query().
+  $DB->prepared_query().
 
   Example:
 
-  $FoodRS = $DB->query("
+  $FoodRS = $DB->prepared_query("
       SELECT *
       FROM food");
-  $DB->query("
+  $DB->prepared_query("
     SELECT *
     FROM drink");
   $Drinks = $DB->next_record();
@@ -111,14 +111,11 @@ set_query_id($ResultSet)
 -------------------------------------------------------------------------------------
 *///---------------------------------------------------------------------------------
 
-if (!extension_loaded('mysqli')) {
-    error('Mysqli Extension not loaded.');
-}
-
 
 /**
  * db_string
- * Handles escaping
+ *
+ * Handles escaping.
  */
 function db_string($String, $DisableWildcards = false)
 {
@@ -269,6 +266,7 @@ class DB_MYSQL
                 $this->Database,
                 $this->Port,
                 $this->Socket,
+                # Needed for self-signed certs
                 MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT
             );
 
@@ -283,13 +281,31 @@ class DB_MYSQL
 
 
     /**
-     * prepare_query
+     * Prepare and execute a prepared query returning the result set.
+     *
+     * Utility function that wraps DB_MYSQL::prepare and DB_MYSQL::execute
+     * as most times, the query is going to be one-off and this will save
+     * on keystrokes. If you do plan to be executing a prepared query
+     * multiple times with different bound parameters, you'll want to call
+     * the two functions separately instead of this function.
+     *
+     * @param $Query
+     * @param mixed ...$Parameters
+     * @return bool|mysqli_result
      */
-    public function prepare_query($Query, &...$BindVars)
+    public function prepared_query($Query, ...$Parameters) {
+        $this->prepare($Query);
+        return $this->execute(...$Parameters);
+    }
+
+    /**
+     * prepare
+     */
+    public function prepare($Query, &...$BindVars)
     {
         $this->connect();
-
         $this->StatementID = mysqli_prepare($this->LinkID, $Query);
+
         if (!empty($BindVars)) {
             $Types = '';
             $TypeMap = ['string'=>'s', 'double'=>'d', 'integer'=>'i', 'boolean'=>'i'];
@@ -304,11 +320,17 @@ class DB_MYSQL
         return $this->StatementID;
     }
 
+    # Compatibility function for the old name
+    public function prepare_query($Query, &...$BindVars)
+    {
+        return $this->prepare($Query, $BindVars);
+    }
+
 
     /**
-     * exec_prepared_query
+     * execute
      */
-    public function exec_prepared_query()
+    public function execute()
     {
         $QueryStartTime = microtime(true);
         mysqli_stmt_execute($this->StatementID);
@@ -316,6 +338,12 @@ class DB_MYSQL
         $QueryRunTime = (microtime(true) - $QueryStartTime) * 1000;
         $this->Queries[] = [$this->PreppedQuery, $QueryRunTime, null];
         $this->Time += $QueryRunTime;
+    }
+
+    # Compatibility function for the old name
+    public function exec_prepared_query()
+    {
+        return $this->execute();
     }
 
 

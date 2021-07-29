@@ -35,6 +35,33 @@ a:hover {
     color: #555;
 }
 
+/* Buttons */
+button:not(.editor-toolbar button),
+input[type="button"],
+input[type="submit"] {
+    color: black;
+    border: 1px solid #bbb;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+
+    &.button-primary {
+        background: #eaabed;
+        border: 1px solid #bbb;
+        color: black;
+    }
+
+    &:hover {
+        background: #e197e5 !important;
+        /* Primary hover default blue */
+        border: 1px solid #bbb !important;
+        color: black !important;
+    }
+
+    &:focus {
+        background: #d48dd8;
+    }
+}
+
+/*
 button,
 input[type="button"],
 input[type="submit"] {
@@ -53,6 +80,7 @@ input[type="button"]:focus,
 input[type="submit"]:focus {
     background: #d48dd8;
 }
+*/
 
 .spoilerButton {
     max-width: 540px;
@@ -195,8 +223,6 @@ ul.thin li {
 }
 
 #logo {
-    width: 250px;
-    height: 50px;
     width: 250px;
     height: 50px;
     background-image: url("/static/common/logos/oppai.png");
@@ -548,11 +574,6 @@ div.linkbox {
     padding-top: 0px;
 }
 
-.sidebar {
-    float: right;
-    width: 245px;
-}
-
 .head {
     padding: 4px;
     /* border-bottom: 1px solid #666; */
@@ -565,8 +586,8 @@ div.linkbox {
     padding: 3px 10px 10px 10px;
 }
 
-.main_column {
-    width: 592px;
+#content {
+    max-width: 67%;
 }
 
 .main_column table {
@@ -962,11 +983,6 @@ tr.unreadpm {
 .permission_container input {
     margin: 0px 3px 5px 0px;
     vertical-align: top;
-}
-
-.submit_container {
-    clear: both;
-    text-align: right;
 }
 
 /* Layout (invite tree) */

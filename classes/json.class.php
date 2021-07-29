@@ -4,8 +4,6 @@ declare(strict_types = 1);
 /**
  * Adapted from
  * https://github.com/OPSnet/Gazelle/blob/master/app/Json.php
- *
- * Unused as of 2020-12-12
  */
 
 abstract class Json
@@ -13,6 +11,7 @@ abstract class Json
     protected $version;
     protected $source;
     protected $mode;
+
 
     /**
      * __construct
@@ -25,12 +24,14 @@ abstract class Json
         $this->version = 1;
     }
 
+
     /**
      * The payload of a valid JSON response, implemented in the child class.
      * @return array Payload to be passed to json_encode()
      *         null if the payload cannot be produced (permissions, id not found, ...).
      */
     abstract public function payload(): ?array;
+
 
     /**
      * Configure JSON printing (any of the json_encode  JSON_* constants)
@@ -42,6 +43,7 @@ abstract class Json
         $this->mode = $mode;
         return $this;
     }
+
 
     /**
      * set the version of the Json payload. Increment the
@@ -55,6 +57,7 @@ abstract class Json
         $this->version = $version;
         return $this;
     }
+
 
     /**
      * General failure routine for when bad things happen.
@@ -76,6 +79,7 @@ abstract class Json
             $this->mode
         );
     }
+
 
     /**
      * emit
@@ -99,6 +103,7 @@ abstract class Json
         );
     }
 
+
     /**
      * debug
      */
@@ -116,6 +121,7 @@ abstract class Json
         ];
     }
 
+
     /**
      * info
      */
@@ -127,5 +133,49 @@ abstract class Json
                 'version' => $this->version,
             ]
         ];
+    }
+
+
+    /**
+     * fetch
+     *
+     * Get resources over the API to populate Gazelle display.
+     * Instead of copy-pasting the same SQL queries in many places.
+     *
+     * Takes a query string, e.g., "action=torrentgroup&id=1."
+     * Requires an API key for the user ID 0 (minor database surgery).
+     */
+    public function fetch($Action, $Params = [])
+    {
+        $ENV = ENV::go();
+
+        $Token = $ENV->getPriv('SELF_API');
+        $Params = implode('&', $Params);
+
+        $ch = curl_init();
+
+        # todo: Make this use localhost and not HTTPS
+        curl_setopt($ch, CURLOPT_URL, "https://$ENV->SITE_DOMAIN/api.php?action=$Action&$Params");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        # https://docs.biotorrents.de
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            [
+                'Accept: application/json',
+                "Authorization: Bearer $Token",
+            ]
+        );
+
+        $Data = curl_exec($ch);
+        curl_close($ch);
+
+        # Error out on bad query
+        if (!$Data) {
+            return error();
+        } else {
+            return json_decode($Data);
+        }
     }
 }

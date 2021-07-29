@@ -3,7 +3,7 @@
 
 
 if (!$ClassDistribution = $Cache->get_value('class_distribution')) {
-    $DB->query("
+    $DB->prepared_query("
       SELECT p.Name, COUNT(m.ID) AS Users
       FROM users_main AS m
         JOIN permissions AS p ON m.PermissionID = p.ID
@@ -16,7 +16,7 @@ if (!$ClassDistribution = $Cache->get_value('class_distribution')) {
 }
 
 if (!$PlatformDistribution = $Cache->get_value('platform_distribution')) {
-    $DB->query("
+    $DB->prepared_query("
       SELECT OperatingSystem, COUNT(DISTINCT UserID) AS Users
       FROM users_sessions
       GROUP BY OperatingSystem
@@ -27,7 +27,7 @@ if (!$PlatformDistribution = $Cache->get_value('platform_distribution')) {
 }
 
 if (!$BrowserDistribution = $Cache->get_value('browser_distribution')) {
-    $DB->query("
+    $DB->prepared_query("
       SELECT Browser, COUNT(DISTINCT UserID) AS Users
       FROM users_sessions
       GROUP BY Browser
@@ -39,7 +39,7 @@ if (!$BrowserDistribution = $Cache->get_value('browser_distribution')) {
 
 // Timeline generation
 if (!list($Labels, $InFlow, $OutFlow) = $Cache->get_value('users_timeline')) {
-    $DB->query("
+    $DB->prepared_query("
       SELECT DATE_FORMAT(JoinDate,\"%b %Y\") AS Month, COUNT(UserID)
       FROM users_info
       GROUP BY Month
@@ -47,7 +47,7 @@ if (!list($Labels, $InFlow, $OutFlow) = $Cache->get_value('users_timeline')) {
       LIMIT 1, 11");
     $TimelineIn = array_reverse($DB->to_array());
 
-    $DB->query("
+    $DB->prepared_query("
       SELECT DATE_FORMAT(BanDate,\"%b %Y\") AS Month, COUNT(UserID)
       FROM users_info
       WHERE BanDate > 0

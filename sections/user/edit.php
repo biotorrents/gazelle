@@ -2,11 +2,8 @@
 #declare(strict_types = 1);
 
 require_once SERVER_ROOT.'/classes/twofa.class.php';
-$UserID = $_REQUEST['userid'];
-
-if (!is_number($UserID)) {
-    error(404);
-}
+$UserID = (int) $_REQUEST['userid'];
+Security::checkInt($UserID);
 
 $DB->query("
   SELECT
@@ -72,7 +69,7 @@ if ($SiteOptions) {
  */
 View::show_header(
     "$Username $ENV->CRUMB Settings",
-    'user,password_validate,validate,cssgallery,preview_paranoia,bbcode,user_settings,donor_titles,vendor/easymde.min',
+    'user,password_validate,validate,cssgallery,preview_paranoia,user_settings,vendor/easymde.min',
     'vendor/easymde.min'
 );
 
@@ -86,7 +83,6 @@ if ($DonorIsVisible === null) {
 extract(Donations::get_enabled_rewards($UserID));
 $Rewards = Donations::get_rewards($UserID);
 $ProfileRewards = Donations::get_profile_rewards($UserID);
-$DonorTitles = Donations::get_titles($UserID);
 ?>
 
 <div>
@@ -160,7 +156,7 @@ $DonorTitles = Donations::get_titles($UserID);
           </li>
 
           <li>
-            <input type="submit" id="submit" value="Save profile" />
+            <input type="submit" id="submit" class="button-primary" value="Save profile" />
           </li>
 
         </ul>
@@ -224,6 +220,7 @@ $DonorTitles = Donations::get_titles($UserID);
         <!-- Stylesheet additions -->
         <tr id="style_additions_tr"
           class="<?=($Stylesheets[$LoggedUser['StyleID']]['Additions'][0] ?? false)?'':'hidden'?>">
+
           <td class="label">
             <strong>Stylesheet additions</strong>
           </td>
@@ -231,64 +228,66 @@ $DonorTitles = Donations::get_titles($UserID);
           <td>
             <?php
           foreach ($Stylesheets as $Style) {
-              $StyleAdditions = explode(';', $Style['Additions']);
 
-              # Main ul
-              echo '<ul class="nobullet style_addition'; # open quote
+              # Main section
+              echo '<section class="style_additions'; # open quote
               echo ($Style['ID'] === $Stylesheets[$LoggedUser['StyleID']]['ID'])
-                ? '"'
-                : ' hidden"';
-              echo ' id="style_addition_' . $Style['Name'] . '">';
+                ? '"' # close quote
+                : ' hidden"'; # hide
+              echo ' id="style_additions_' . $Style['Name'] . '">';
  
-              $Checked = (in_array('default_font', $SiteOptions['StyleAdditions'] ?? [])
-              ? 'checked'
-              : '');
-
-              echo <<<HTML
-              <li>
-                <input type="radio" name="style_additions[]" value="default_font"
-                  id="default_font" $Checked />
-                <label for="default_font">default_font</label>
-              </li>
-HTML;
-
               # For each style addition
+              $StyleAdditions = explode(';', $Style['Additions']);
+              $Select = ['default_font'];
+              $Checkbox = [];
+
               foreach ($StyleAdditions as $i => $Addition) {
-                  # Radio options, e.g., fonts
-                  if (preg_match('/radio/', $Addition)) {
-                      $Addition = explode('=', $Addition)[1];
-                      $Checked = (in_array($Addition, $SiteOptions['StyleAdditions'] ?? [])
-                          ? 'checked'
-                          : '');
+                  $Types = explode('=', $Addition);
+             
+                  switch ($Types[0]) {
+                  case 'select':
+                      array_push($Select, $Types[1]);
+                      break;
 
-                      echo <<<HTML
-                      <li>
-                        <input type="radio" name="style_additions[]" value="$Addition"
-                          id="addition_$Addition" $Checked />
-                        <label for="addition_$Addition">$Addition</label>
-                      </li>
-HTML;
+                  case 'checkbox':
+                      array_push($Checkbox, $Types[1]);
+                      break;
+
+                  default:
+                      break;
+
                   }
+              } # foreach $Addition
 
-                  # Checkbox options, e.g., pink and haze
-                  if (preg_match('/checkbox/', $Addition)) {
-                      $Addition = explode('=', $Addition)[1];
-                      $Checked = (in_array($Addition, $SiteOptions['StyleAdditions'] ?? [])
-                          ? 'checked'
-                          : '');
-
-                      echo <<<HTML
-                      <li>
-                        <input type="checkbox" name="style_additions[]" value="$Addition"
-                          id="addition_$Addition" $Checked />
-                        <label for="addition_$Addition">$Addition</label>
-                      </li>
-HTML;
+              # Fix to prevent multiple font entries
+              if ($Style['ID'] === $Stylesheets[$LoggedUser['StyleID']]['ID']) {
+                  # Select options, e.g., fonts
+                  echo "<select class='style_additions' name='style_additions[]'>";
+  
+                  foreach ($Select as $Option) {
+                      $Selected = (in_array($Option, $SiteOptions['StyleAdditions'])
+                        ? 'selected'
+                        : '');
+                      echo "<option value='$Option' id='addition_$Option' $Selected>$Option</option>";
                   }
+                  echo '</select>';
               }
 
-              echo '</ul>';
-          } ?>
+              # Checkbox options, e.g., pink and haze
+              foreach ($Checkbox as $Option) {
+                  $Checked = (in_array($Option, $SiteOptions['StyleAdditions'])
+                  ? 'checked'
+                  : '');
+
+                  echo <<<HTML
+                  <input type="checkbox" name="style_additions[]" value="$Option"
+                    id="addition_$Option" $Checked />
+                  <label for="addition_$Option">$Option</label>
+HTML;
+              }
+              echo '</section>';
+          } # foreach $Style
+          ?>
           </td>
         </tr>
 
@@ -314,7 +313,7 @@ HTML;
           <td>
             <label>
               <input type="checkbox" name="autoload_comm_stats" <?Format::selected(
-              'AutoloadCommStats' ,
+              'AutoloadCommStats',
               1,
               'checked',
               $SiteOptions
@@ -746,47 +745,6 @@ HTML;
           <td>
             <input type="text" size="50" name="donor_icon_custom_url" id="donor_icon_custom_url"
               value="<?=$Rewards['CustomIcon']?>" />
-          </td>
-        </tr>
-        <?php }
-
-# Donor forum honorific
-  if ($HasDonorForum) { ?>
-        <tr id="pers_donorforum_tr">
-          <td class="label">
-            <strong>Donor forum honorific</strong>
-          </td>
-
-          <td>
-            <div>
-              <label>
-                <strong>Prefix</strong>
-                <input type="text" size="30" maxlength="30" name="donor_title_prefix" id="donor_title_prefix"
-                  value="<?=$DonorTitles['Prefix']?>" />
-              </label>
-            </div>
-
-            <div>
-              <label>
-                <strong>Suffix</strong>
-                <input type="text" size="30" maxlength="30" name="donor_title_suffix" id="donor_title_suffix"
-                  value="<?=$DonorTitles['Suffix']?>" />
-              </label>
-            </div>
-
-            <div>
-              <label>
-                <strong>Hide comma</strong>
-                <input type="checkbox" id="donor_title_comma" name="donor_title_comma" <?=!$DonorTitles['UseComma'] ? ' checked="checked"' : '' ?>
-                />
-              </label>
-            </div>
-
-            <strong>Preview</strong>
-            <span id="donor_title_prefix_preview"></span>
-            <?=$Username?>
-            <span id="donor_title_comma_preview">,</span>
-            <span id="donor_title_suffix_preview"></span>
           </td>
         </tr>
         <?php } ?>
@@ -1440,7 +1398,7 @@ list($ArtistsAdded) = $DB->next_record();
             </div>
 
             <p class="setting_description">
-              <?= $ENV->PASSWORD_ADVICE ?>
+              <?= $ENV->PW_ADVICE ?>
             </p>
           </td>
         </tr>

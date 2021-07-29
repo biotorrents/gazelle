@@ -6,7 +6,7 @@ $Sep = '&emsp;';
 
 # End <div#content>, begin <footer>
 # This needs to be <main>, in each page
-echo $HTML = '</div></main><footer class="halfwide">';
+echo $HTML = '</div></main><footer>';
 
 # Disclaimer
 #if (!empty($Options['disclaimer'])) {

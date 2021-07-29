@@ -2,11 +2,11 @@
 declare(strict_types=1);
 
 if (check_perms('admin_reports') && !empty($_GET['remove']) && is_number($_GET['remove'])) {
-    $DB->query("
+    $DB->prepared_query("
     DELETE FROM torrents_bad_tags
     WHERE TorrentID = ".$_GET['remove']);
 
-    $DB->query("
+    $DB->prepared_query("
     SELECT GroupID
     FROM torrents
     WHERE ID = ".$_GET['remove']);
@@ -25,7 +25,7 @@ if (!empty($_GET['filter']) && $_GET['filter'] === 'all') {
 
 View::show_header('Torrents with bad tags');
 
-$DB->query("
+$DB->prepared_query("
   SELECT tbt.TorrentID, t.GroupID
   FROM torrents_bad_tags AS tbt
     JOIN torrents AS t ON t.ID = tbt.TorrentID

@@ -35,7 +35,7 @@ list($ComposeToUsername) = $DB->next_record();
 if (!$ComposeToUsername) {
   error(404);
 }
-View::show_header('Compose', 'inbox,bbcode');
+View::show_header('Compose', 'inbox');
 
 // $TypeLink is placed directly in the <textarea> when composing a PM
 switch ($Type) {

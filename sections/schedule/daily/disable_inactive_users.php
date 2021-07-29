@@ -1,27 +1,38 @@
 <?php
-#declare(strict_types=1);
+declare(strict_types=1);
 
+/*
 $ENV = ENV::go();
 
-// The SQL query's lines below controls the notification clock
-//   AND um.LastAccess < (NOW() - INTERVAL 110 DAY)
-//   AND um.LastAccess > (NOW() - INTERVAL 111 DAY)
+# The SQL query's lines below controls the notification clock
+#   AND um.LastAccess < (NOW() - INTERVAL 110 DAY)
+#   AND um.LastAccess > (NOW() - INTERVAL 111 DAY)
 
 if (apcu_exists('DBKEY')) {
-    // Send email
+    # Send email
     $DB->query("
-      SELECT um.Username, um.Email
-      FROM users_info AS ui
-        JOIN users_main AS um ON um.ID = ui.UserID
-        LEFT JOIN users_levels AS ul ON ul.UserID = um.ID AND ul.PermissionID = '".CELEB."'
-      WHERE um.PermissionID IN ('".USER."', '".MEMBER ."')
-        AND um.LastAccess < (NOW() - INTERVAL 355 DAY)
-        AND um.LastAccess > (NOW() - INTERVAL 356 DAY)
-        AND um.LastAccess IS NOT NULL
-        AND ui.Donor = '0'
-        AND um.Enabled != '2'
-        AND ul.UserID IS NULL
-      GROUP BY um.ID");
+    SELECT
+      um.`Username`,
+      um.`Email`
+    FROM
+      `users_info` AS ui
+    JOIN `users_main` AS um
+    ON
+      um.`ID` = ui.`UserID`
+    LEFT JOIN `users_levels` AS ul
+    ON
+      ul.`UserID` = um.`ID` AND ul.`PermissionID` = '".CELEB."'
+    WHERE
+      um.`PermissionID` IN('".USER."', '".MEMBER ."')
+      AND um.`LastAccess` <(NOW() - INTERVAL 355 DAY)
+      AND um.`LastAccess` >(NOW() - INTERVAL 356 DAY)
+      AND um.`LastAccess` IS NOT NULL
+      AND ui.`Donor` = '0'
+      AND um.`Enabled` != '2'
+      AND ul.`UserID` IS NULL
+    GROUP BY
+      um.`ID`
+    ");
 
     while (list($Username, $Email) = $DB->next_record()) {
         $Email = Crypto::decrypt($Email);
@@ -32,19 +43,29 @@ if (apcu_exists('DBKEY')) {
     # The actual deletion clock
     #   AND um.LastAccess < (NOW() - INTERVAL 120 DAY)
     $DB->query("
-      SELECT um.ID
-      FROM users_info AS ui
-        JOIN users_main AS um ON um.ID = ui.UserID
-        LEFT JOIN users_levels AS ul ON ul.UserID = um.ID AND ul.PermissionID = '".CELEB."'
-      WHERE um.PermissionID IN ('".USER."', '".MEMBER ."')
-        AND um.LastAccess < (NOW() - INTERVAL 365 DAY)
-        AND um.LastAccess IS NOT NULL
-        AND ui.Donor = '0'
-        AND um.Enabled != '2'
-        AND ul.UserID IS NULL
-      GROUP BY um.ID");
+    SELECT
+      um.`ID`
+    FROM
+      `users_info` AS ui
+    JOIN `users_main` AS um
+    ON
+      um.`ID` = ui.`UserID`
+    LEFT JOIN `users_levels` AS ul
+    ON
+      ul.`UserID` = um.`ID` AND ul.`PermissionID` = '".CELEB."'
+    WHERE
+      um.`PermissionID` IN('".USER."', '".MEMBER ."')
+      AND um.`LastAccess` <(NOW() - INTERVAL 365 DAY)
+      AND um.`LastAccess` IS NOT NULL
+      AND ui.`Donor` = '0'
+      AND um.`Enabled` != '2'
+      AND ul.`UserID` IS NULL
+    GROUP BY
+      um.`ID`
+    ");
 
     if ($DB->has_results()) {
         Tools::disable_users($DB->collect('ID'), 'Disabled for inactivity.', 3);
     }
 }
+*/

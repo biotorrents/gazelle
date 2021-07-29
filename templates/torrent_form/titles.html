@@ -1,0 +1,50 @@
+<tr id="title_tr">
+  <td>
+    <label for="title" class="required">{{ db.title.name }}</label>
+  </td>
+
+  <td>
+    <input
+      type="text"
+      id="title"
+      name="title"
+      size="60"
+      placeholder="{{ db.title.desc }}"
+      value="{{ title }}"
+    />
+  </td>
+</tr>
+
+<tr id="title_rj_tr">
+  <td>
+    <label for="title_rj">{{ db.subject.name }}</label>
+  </td>
+
+  <td>
+    <input
+      type="text"
+      id="title_rj"
+      name="title_rj"
+      size="60"
+      placeholder="{{ db.subject.desc }}"
+      value="{{ subject }}"
+    />
+  </td>
+</tr>
+
+<tr id="title_jp_tr">
+  <td>
+    <label for="title_jp">{{ db.object.name }}</label>
+  </td>
+
+  <td>
+    <input
+      type="text"
+      id="title_jp"
+      name="title_jp"
+      size="60"
+      placeholder="{{ db.object.desc }}"
+      value="{{ object }}"
+    />
+  </td>
+</tr>

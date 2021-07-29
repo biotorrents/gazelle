@@ -145,7 +145,7 @@ View::show_header("Forums $ENV->CRUMB ".$Forums[$ForumID]['Name']);
 
             <tr>
               <td colspan="2" style="text-align: center;">
-                <input type="submit" name="submit" value="Search" />
+                <input type="submit" name="submit" class="button-primary" value="Search" />
               </td>
             </tr>
           </table>
@@ -186,7 +186,7 @@ echo $Pages;
   </div>
 </div>
 
-<table class="forum_index alternate_rows" width="100%">
+<table class="forum_index skeleton-fix">
   <tr class="colhead">
     <td style="width: 2%;"></td>
     <td>Latest</td>

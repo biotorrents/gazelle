@@ -180,7 +180,7 @@ View::show_header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections
         <input type="hidden" name="action" value="search" />
       </div>
 
-      <table cellpadding="6" cellspacing="1" border="0" class="layout" width="100%">
+      <table cellpadding="6" cellspacing="1" border="0" class="skeleton-fix" width="100%">
         <tr id="search_terms">
           <td class="label"></td>
           <td>
@@ -262,7 +262,7 @@ View::show_header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections
         </tr>
         <tr>
           <td colspan="2" class="center">
-            <input type="submit" value="Search" />
+            <input type="submit" class="button-primary" value="Search" />
           </td>
         </tr>
       </table>

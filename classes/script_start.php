@@ -1,11 +1,10 @@
 <?php
 #declare(strict_types=1);
 
-# https://www.php.net/manual/en/language.oop5.autoload.php
+# Initialize
 require_once 'config.php';
 require_once 'security.class.php';
 
-# Initialize
 $ENV = ENV::go();
 $Security = new Security();
 $Security->SetupPitfalls();
@@ -57,12 +56,12 @@ if (!defined('PHP_WINDOWS_VERSION_MAJOR')) {
 }
 ob_start(); // Start a buffer, mainly in case there is a mysql error
 
-require SERVER_ROOT.'/classes/debug.class.php'; // Require the debug class
-require SERVER_ROOT.'/classes/mysql.class.php'; // Require the database wrapper
-require SERVER_ROOT.'/classes/cache.class.php'; // Require the caching class
-require SERVER_ROOT.'/classes/time.class.php'; // Require the time class
-require SERVER_ROOT.'/classes/paranoia.class.php'; // Require the paranoia check_paranoia function
-require SERVER_ROOT.'/classes/util.php';
+require_once SERVER_ROOT.'/classes/debug.class.php'; // Require the debug class
+require_once SERVER_ROOT.'/classes/mysql.class.php'; // Require the database wrapper
+require_once SERVER_ROOT.'/classes/cache.class.php'; // Require the caching class
+require_once SERVER_ROOT.'/classes/time.class.php'; // Require the time class
+require_once SERVER_ROOT.'/classes/paranoia.class.php'; // Require the paranoia check_paranoia function
+require_once SERVER_ROOT.'/classes/util.php';
 
 $Debug = new DEBUG;
 $Debug->handle_errors();
@@ -72,7 +71,8 @@ $DB = new DB_MYSQL;
 $Cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
 
 // Autoload classes.
-require SERVER_ROOT.'/classes/autoload.php';
+require_once SERVER_ROOT.'/vendor/autoload.php';
+#require_once SERVER_ROOT.'/classes/autoload.php';
 
 // Note: G::initialize is called twice.
 // This is necessary as the code inbetween (initialization of $LoggedUser) makes use of G::$DB and G::$Cache.
@@ -225,7 +225,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
 
     $UserSessions = $Cache->get_value("users_sessions_$UserID");
     if (!is_array($UserSessions)) {
-        $DB->query(
+        $DB->prepared_query(
             "
         SELECT
           SessionID,
@@ -250,7 +250,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     // Check if user is enabled
     $Enabled = $Cache->get_value('enabled_'.$LoggedUser['ID']);
     if ($Enabled === false) {
-        $DB->query("
+        $DB->prepared_query("
         SELECT Enabled
           FROM users_main
           WHERE ID = '$LoggedUser[ID]'");
@@ -267,7 +267,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     // Up/Down stats
     $UserStats = $Cache->get_value('user_stats_'.$LoggedUser['ID']);
     if (!is_array($UserStats)) {
-        $DB->query("
+        $DB->prepared_query("
         SELECT Uploaded AS BytesUploaded, Downloaded AS BytesDownloaded, RequiredRatio
         FROM users_main
           WHERE ID = '$LoggedUser[ID]'");
@@ -319,14 +319,9 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     // Change necessary triggers in external components
     $Cache->CanClear = check_perms('admin_clear_cache');
 
-    // Because we <3 our staff
-    if (check_perms('site_disable_ip_history')) {
-        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-    }
-
     // Update LastUpdate every 10 minutes
     if (strtotime($UserSessions[$SessionID]['LastUpdate']) + 600 < time()) {
-        $DB->query("
+        $DB->prepared_query("
         UPDATE users_main
         SET LastAccess = NOW()
         WHERE ID = '$LoggedUser[ID]'
@@ -348,7 +343,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
         WHERE UserID = '$LoggedUser[ID]'
         AND SessionID = '".db_string($SessionID)."'";
 
-        $DB->query($SessionQuery);
+        $DB->prepared_query($SessionQuery);
         $Cache->begin_transaction("users_sessions_$UserID");
         $Cache->delete_row($SessionID);
 
@@ -367,7 +362,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     if (isset($LoggedUser['Permissions']['site_torrents_notify'])) {
         $LoggedUser['Notify'] = $Cache->get_value('notify_filters_'.$LoggedUser['ID']);
         if (!is_array($LoggedUser['Notify'])) {
-            $DB->query("
+            $DB->prepared_query("
             SELECT ID, Label
             FROM users_notify_filters
               WHERE UserID = '$LoggedUser[ID]'");
@@ -383,39 +378,13 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     }
 
     // IP changed
-    if (apcu_exists('DBKEY') && Crypto::decrypt($LoggedUser['IP']) != $_SERVER['REMOTE_ADDR'] && !check_perms('site_disable_ip_history')) {
+    if (apcu_exists('DBKEY') && Crypto::decrypt($LoggedUser['IP']) != $_SERVER['REMOTE_ADDR']) {
         if (Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
             error('Your IP address has been banned.');
         }
 
         $CurIP = db_string($LoggedUser['IP']);
         $NewIP = db_string($_SERVER['REMOTE_ADDR']);
-        $DB->query("
-        SELECT IP
-        FROM users_history_ips
-          WHERE EndTime IS NULL
-          AND UserID = '$LoggedUser[ID]'");
-
-        while (list($EncIP) = $DB->next_record()) {
-            if (Crypto::decrypt($EncIP) == $CurIP) {
-                $CurIP = $EncIP;
-                // CurIP is now the encrypted IP that was already in the database (for matching)
-                break;
-            }
-        }
-
-        $DB->query("
-        UPDATE users_history_ips
-        SET EndTime = NOW()
-          WHERE EndTime IS NULL
-          AND UserID = '$LoggedUser[ID]'
-          AND IP = '$CurIP'");
-
-        $DB->query("
-        INSERT IGNORE INTO users_history_ips
-          (UserID, IP, StartTime)
-        VALUES
-          ('$LoggedUser[ID]', '".Crypto::encrypt($NewIP)."', NOW())");
 
         $Cache->begin_transaction('user_info_heavy_'.$LoggedUser['ID']);
         $Cache->update_row(false, array('IP' => Crypto::encrypt($_SERVER['REMOTE_ADDR'])));
@@ -425,7 +394,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     // Get stylesheets
     $Stylesheets = $Cache->get_value('stylesheets');
     if (!is_array($Stylesheets)) {
-        $DB->query('
+        $DB->prepared_query('
         SELECT
           ID,
           LOWER(REPLACE(Name, " ", "_")) AS Name,
@@ -460,7 +429,7 @@ function logout()
     setcookie('keeplogged', '', time() - 60 * 60 * 24 * 365, '/', '', false);
 
     if ($SessionID) {
-        G::$DB->query("
+        G::$DB->prepared_query("
         DELETE FROM users_sessions
           WHERE UserID = '" . G::$LoggedUser['ID'] . "'
           AND SessionID = '".db_string($SessionID)."'");
@@ -482,7 +451,7 @@ function logout_all_sessions()
 {
     $UserID = G::$LoggedUser['ID'];
 
-    G::$DB->query("
+    G::$DB->prepared_query("
     DELETE FROM users_sessions
       WHERE UserID = '$UserID'");
 
@@ -546,16 +515,6 @@ if (isset(G::$LoggedUser['LockedAccount']) && !in_array($Document, $AllowedPages
 }
 
 $Debug->set_flag('completed module execution');
-
-/* Required in the absence of session_start() for providing that pages will change
-upon hit rather than being browser cached for changing content.
-
-Old versions of Internet Explorer choke when downloading binary files over HTTPS with disabled cache.
-Define the following constant in files that handle file downloads */
-if (!defined('SKIP_NO_CACHE_HEADERS')) {
-    header('Cache-Control: no-cache, must-revalidate, post-check=0, pre-check=0');
-    header('Pragma: no-cache');
-}
 
 // Flush to user
 ob_end_flush();

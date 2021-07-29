@@ -1,12 +1,13 @@
 <?php
 #declare(strict_types=1);
 
-authorize();
-$UserID = $_REQUEST['userid'];
+/**
+ * START CHECKS
+ */
 
-if (!is_number($UserID)) {
-    error(404);
-}
+authorize();
+$UserID = (int) $_REQUEST['userid'];
+Security::checkInt($UserID);
 
 // For this entire page, we should generally be using $UserID not $LoggedUser['ID'] and $U[] not $LoggedUser[]
 $U = Users::user_info($UserID);
@@ -50,6 +51,10 @@ if ($ValErr) {
 if (!apcu_exists('DBKEY')) {
     error("Cannot edit profile until database fully decrypted");
 }
+
+/**
+ * END CHECKS
+ */
 
 // Begin building $Paranoia
 // Reduce the user's input paranoia until it becomes consistent
@@ -167,19 +172,6 @@ if ($CurEmail !== $_POST['email']) {
     if (!check_perms('users_edit_profiles')) {
         require_password("Change Email");
     }
-
-    // Update the time of their last email change to the current time *not* the current change.
-    $DB->query("
-      UPDATE users_history_emails
-      SET Time = NOW()
-      WHERE UserID = ?
-        AND Time IS NULL", $UserID);
-
-    $DB->query("
-      INSERT INTO users_history_emails
-        (UserID, Email, Time, IP)
-      VALUES
-        (?, ?, NULL, ?)", $UserID, Crypto::encrypt($_POST['email']), Crypto::encrypt($_SERVER['REMOTE_ADDR']));
 }
 
 if (!empty($_POST['new_pass_1']) && !empty($_POST['new_pass_2'])) {
@@ -319,12 +311,6 @@ if ($ResetPassword) {
     $ChangerIP = Crypto::encrypt($LoggedUser['IP']);
     $PassHash = Users::make_sec_hash($_POST['new_pass_1']);
     $SQL.= ",m.PassHash = '".db_string($PassHash)."'";
-
-    $DB->query("
-      INSERT INTO users_history_passwords
-        (UserID, ChangerIP, ChangeTime)
-      VALUES
-        (?, ?, NOW())", $UserID, $ChangerIP);
 }
 
 if (isset($_POST['resetpasskey'])) {
@@ -333,18 +319,6 @@ if (isset($_POST['resetpasskey'])) {
     $NewPassKey = Users::make_secret();
     $ChangerIP = Crypto::encrypt($LoggedUser['IP']);
     $SQL .= ",m.torrent_pass = '$NewPassKey'";
-
-    $DB->query(
-        "
-      INSERT INTO users_history_passkeys
-        (UserID, OldPassKey, NewPassKey, ChangerIP, ChangeTime)
-      VALUES
-        (?, ?, ?, ?, NOW())",
-        $USerID,
-        $OldPassKey,
-        $NewPassKey,
-        $ChangerIP
-    );
 
     $Cache->begin_transaction("user_info_heavy_$UserID");
     $Cache->update_row(false, ['torrent_pass' => $NewPassKey]);

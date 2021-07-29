@@ -237,64 +237,6 @@ if ($_POST['ResetRatioWatch'] && check_perms('users_edit_reset_keys')) {
     $EditSummary[] = 'RatioWatch history reset';
 }
 
-if ($_POST['ResetIPHistory'] && check_perms('users_edit_reset_keys')) {
-    $GenericIP = Crypto::encrypt('127.0.0.1');
-    $DB->query("
-      DELETE FROM users_history_ips
-      WHERE UserID = '$UserID'");
-
-    $DB->query("
-      UPDATE users_main
-      SET IP = '$GenericIP'
-      WHERE ID = '$UserID'");
-
-    $DB->query("
-      UPDATE xbt_snatched
-      SET IP = ''
-      WHERE uid = '$UserID'");
-
-    $DB->query("
-      UPDATE users_history_passwords
-      SET ChangerIP = ''
-      WHERE UserID = $UserID");
-
-    $DB->query("
-      UPDATE users_history_passkeys
-      SET ChangerIP = ''
-      WHERE UserID = $UserID");
-
-    $DB->query("
-      UPDATE users_sessions
-      SET IP = '$GenericIP'
-      WHERE UserID = $UserID");
-}
-
-if ($_POST['ResetEmailHistory'] && check_perms('users_edit_reset_keys')) {
-    $DB->query("
-      DELETE FROM users_history_emails
-      WHERE UserID = '$UserID'");
-
-    if ($_POST['ResetIPHistory']) {
-        $DB->query("
-          INSERT INTO users_history_emails
-            (UserID, Email, Time, IP)
-          VALUES
-        ('$UserID', '".Crypto::encrypt($Username.'@'.SITE_DOMAIN)."', NULL, '".Crypto::encrypt('127.0.0.1')."')");
-    } else {
-        $DB->query("
-          INSERT INTO users_history_emails
-            (UserID, Email, Time, IP)
-          VALUES
-            ('$UserID', '".Crypto::encrypt($Username.'@'.SITE_DOMAIN)."', NULL, '".$Cur['IP']."')");
-    }
-
-    $DB->query("
-      UPDATE users_main
-      SET Email = '".Crypto::encrypt($Username.'@'.SITE_DOMAIN)."'
-      WHERE ID = '$UserID'");
-    $EditSummary[] = 'Email history cleared';
-}
-
 if ($_POST['ResetSnatchList'] && check_perms('users_edit_reset_keys')) {
     $DB->query("
       DELETE FROM xbt_snatched
@@ -770,12 +712,6 @@ if ($ResetPasskey == 1 && check_perms('users_edit_reset_keys')) {
     $TrackerUserUpdates['passkey'] = $Passkey;
     $Cache->delete_value('user_'.$Cur['torrent_pass']);
     // MUST come after the case for updating can_leech
-
-    $DB->query("
-      INSERT INTO users_history_passkeys
-        (UserID, OldPassKey, NewPassKey, ChangerIP, ChangeTime)
-      VALUES
-        ('$UserID', '".$Cur['torrent_pass']."', '$Passkey', '".Crypto::encrypt('0.0.0.0')."', NOW())");
     Tracker::update_tracker('change_passkey', array('oldpasskey' => $Cur['torrent_pass'], 'newpasskey' => $Passkey));
 }
 

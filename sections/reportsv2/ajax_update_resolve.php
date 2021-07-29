@@ -30,7 +30,7 @@ if (!array_key_exists($NewType, $TypeList)) {
   error();
 }
 
-$DB->query("
+$DB->prepared_query("
   UPDATE reportsv2
   SET Type = '$NewType'
   WHERE ID = $ReportID");

@@ -2,7 +2,7 @@
 #declare(strict_types=1);
 
 $UserID = $LoggedUser['ID'];
-$DB->query("
+$DB->prepared_query("
   SELECT First, Second
   FROM misc
   WHERE Name='CoinBadge'");
@@ -10,7 +10,7 @@ $DB->query("
 if ($DB->has_results()) {
     list($Purchases, $Price) = $DB->next_record();
 } else {
-    $DB->query("
+    $DB->prepared_query("
     INSERT INTO misc
       (Name, First, Second)
     VALUES ('CoinBadge', 0, 1000)");
@@ -24,7 +24,7 @@ View::show_header('Store');
   if (isset($_GET['confirm'])
    && $_GET['confirm'] === 1
    && !Badges::has_badge($UserID, 255)) {
-      $DB->query("
+      $DB->prepared_query("
       SELECT BonusPoints
       FROM users_main
       WHERE ID = $UserID");
@@ -34,12 +34,12 @@ View::show_header('Store');
           if (!Badges::award_badge($UserID, 255)) {
               $Err = 'Could not award badge, unknown error occurred.';
           } else {
-              $DB->query("
+              $DB->prepared_query("
               UPDATE users_main
               SET BonusPoints = BonusPoints - $Price
               WHERE ID = $UserID");
 
-              $DB->query("
+              $DB->prepared_query("
               UPDATE users_info
               SET AdminComment = CONCAT('".sqltime()." - Purchased badge 255 from store\n\n', AdminComment)
               WHERE UserID = $UserID");
@@ -50,7 +50,7 @@ View::show_header('Store');
               $x = $Purchases;
               $Price = 1000+$x*(10000+1400*((sin($x/1.3)+cos($x/4.21))+(sin($x/2.6)+cos(2*$x/4.21))/2));
 
-              $DB->query("
+              $DB->prepared_query("
               UPDATE misc
               SET First  = $Purchases,
                 Second = $Price

@@ -1,0 +1,53 @@
+<section class="wiki_search">
+  <p>Search the wiki for user created tutorials and information.</p>
+
+  <form class="search_form" name="wiki" action="wiki.php" method="get">
+    <input type="hidden" name="action" value="search" />
+    <input type="hidden" name="nojump" value="1" />
+    <input type="search" name="search" size="80" />
+    <input value="Search" type="submit" class="hidden button-primary" />
+  </form>
+  <br />
+
+  <p>
+    Additionally, you can manually browse through the articles by their first letter.
+  </p>
+  
+  <span>
+    {% for letter in 'a'..'z' %}
+    <a href="wiki.php?action=browse&amp;letter={{ letter }}"
+      >{{ letter|upper }}</a
+    >&nbsp;&nbsp; {% endfor %}
+    <a href="wiki.php?action=browse&amp;letter=1">All</a>&nbsp;&nbsp;
+  </span>
+</section>
+
+<section class="wiki_results">
+  <div class="header">
+    <h2>{{ title }}</h2>
+  </div>
+  <div class="linkbox">
+    <a href="wiki.php?action=create" class="brackets">Create</a>
+  </div>
+
+
+  <table width="100%" style="margin-bottom: 10px">
+    <tr class="colhead">
+      <td>Article</td>
+      <td>Last updated on</td>
+      <td>Last edited by</td>
+    </tr>
+    {% for article in articles %}
+    <tr>
+      <td>
+        <a href="wiki.php?action=article&amp;id={{ article.ID }}"
+          >{{ article.Title }}</a
+        >
+      </td>
+      <td>{{ article.Date }}</td>
+      <td>{{ article.Author|user_url }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+</section>

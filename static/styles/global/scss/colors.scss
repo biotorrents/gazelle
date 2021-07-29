@@ -3,8 +3,8 @@
  * For semi-transparent elements,
  * e.g., unread forum post borders
  */
-@mixin transparent-border($R: 0, $G: 0, $B: 0, $A: 1) {
-    border: 2px solid rgba($R, $G, $B, $A);
+@mixin transparent-border($c, $a) {
+    border: 2px solid change-color($color: $c, $alpha: $a);
 }
 
 /* Torrent labels for the Format class */

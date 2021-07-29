@@ -7,7 +7,7 @@ $Purchase = "100 GiB upload";
 $GiB = 1024*1024*1024;
 $Cost = 15000;
 
-$DB->query("
+$DB->prepared_query("
   SELECT BonusPoints
   FROM users_main
   WHERE ID = $UserID");
@@ -16,13 +16,13 @@ if ($DB->has_results()) {
     list($Points) = $DB->next_record();
 
     if ($Points >= $Cost) {
-        $DB->query("
+        $DB->prepared_query("
           UPDATE users_main
           SET BonusPoints = BonusPoints - $Cost,
             Uploaded = Uploaded + ($GiB * 100)
           WHERE ID = $UserID");
 
-        $DB->query("
+        $DB->prepared_query("
           UPDATE users_info
           SET AdminComment = CONCAT('".sqltime()." - $Purchase from the store\n\n', AdminComment)
           WHERE UserID = $UserID");

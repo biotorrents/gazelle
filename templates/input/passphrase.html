@@ -1,0 +1,24 @@
+<input
+  type="password"
+  name="{{ name|default('password') }}"
+  id="{{ id|default('password') }}"
+  placeholder="{{ placeholder|default('passphrase') }}"
+  minlength="{{ pw_min|default('15') }}"
+  maxlength="{{ pw_max|default('10000') }}"
+  pattern=".{ {{ pw_min }},{{ pw_max }} }"
+  class="inputtext"
+  autocomplete="off"
+  required="required"
+/>
+
+<strong id="pass_match"></strong>
+
+{% if advice == true %}
+<p>
+  Any password {{ pw_min }} characters or longer is accepted, but a strong password
+  <ul>
+    <li>is a pass<em>phrase</em> of mixed case with many small words,</li>
+    <li>that contains complex characters including Unicode and emoji.</li>
+  </ul>
+</p>
+{% endif %}

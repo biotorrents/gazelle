@@ -457,10 +457,9 @@ class Users
      * @param boolean $IsEnabled
      * @param boolean $Class whether or not to show the class
      * @param boolean $Title whether or not to show the title
-     * @param boolean $IsDonorForum for displaying donor forum honorific prefixes and suffixes
      * @return HTML formatted username
      */
-    public static function format_username($UserID, $Badges = false, $IsWarned = true, $IsEnabled = true, $Class = false, $Title = false, $IsDonorForum = false)
+    public static function format_username($UserID, $Badges = false, $IsWarned = true, $IsEnabled = true, $Class = false, $Title = false)
     {
         global $Classes;
 
@@ -489,11 +488,6 @@ class Users
 
         # Show donor icon?
         $ShowDonorIcon = (!in_array('hide_donor_heart', $Paranoia) || $OverrideParanoia);
-
-        if ($IsDonorForum) {
-            list($Prefix, $Suffix, $HasComma) = Donations::get_titles($UserID);
-            $Username = "$Prefix $Username" . ($HasComma ? ', ' : ' ') . "$Suffix ";
-        }
 
         if ($Title) {
             $Str .= "<strong><a href='user.php?id=$UserID'>$Username</a></strong>";

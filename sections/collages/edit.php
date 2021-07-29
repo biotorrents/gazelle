@@ -21,7 +21,7 @@ if ($CategoryID == 0 && $UserID != $LoggedUser['ID'] && !check_perms('site_colla
 
 View::show_header(
     'Edit',
-    'bbcode,vendor/easymde.min',
+    'vendor/easymde.min',
     'vendor/easymde.min'
 );
 
@@ -44,7 +44,7 @@ if (!empty($Err)) {
         value="<?=$LoggedUser['AuthKey']?>" />
       <input type="hidden" name="collageid"
         value="<?=$CollageID?>" />
-      <table id="edit_collage" class="layout">
+      <table id="edit_collage" class="layout collage_edit">
         <?php if (check_perms('site_collages_delete') || ($CategoryID == 0 && $UserID == $LoggedUser['ID'] && check_perms('site_collages_renamepersonal'))) { ?>
         <tr>
           <td class="label">Name</td>
@@ -117,7 +117,7 @@ if (check_perms('site_collages_delete')) { ?>
 
         <?php } ?>
         <tr>
-          <td colspan="2" class="center"><input type="submit" value="Edit" /></td>
+          <td colspan="2" class="center"><input type="submit" class="button-primary" value="Edit" /></td>
         </tr>
       </table>
     </form>

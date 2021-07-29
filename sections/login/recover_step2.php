@@ -2,17 +2,15 @@
 declare(strict_types=1);
 
 $ENV = ENV::go();
-View::show_header('Recover Password', 'validate,password_validate');
+$Twig = Twig::go();
 
+View::show_header('Recover Password', 'validate,password_validate');
 echo '<h2>Reset your password</h2>';
 
 if (empty($PassWasReset)) {
     if (!empty($Err)) { ?>
 <strong class="important_text"><?=display_str($Err)?></strong><br /><br />
-<?php
-}
-    
-    echo $ENV->PASSWORD_ADVICE; ?>
+<?php } ?>
 
 <form class="auth_form" name="recovery" id="recoverform" method="post" action="" onsubmit="return formVal();">
   <input type="hidden" name="key"
@@ -25,8 +23,12 @@ if (empty($PassWasReset)) {
       </td>
 
       <td>
-        <input type="password" minlength="15" name="password" id="new_pass_1" class="inputtext" size="40"
-          placeholder="New Password" pattern=".{15,307200}" required style="width: 250px !important;">
+        <?=
+        $Twig->render('input/passphrase.html', [
+          'name' => 'password',
+          'id' => 'new_pass_1',
+          'placeholder' => 'New passphrase'
+        ]) ?>
       </td>
     </tr>
 
@@ -35,8 +37,12 @@ if (empty($PassWasReset)) {
         <strong id="pass_match"></strong>
       </td>
       <td>
-        <input type="password" minlength="15" name="verifypassword" id="new_pass_2" class="inputtext" size="40"
-          placeholder="Confirm Password" pattern=".{15,307200}" required style="width: 250px !important;">
+      <?=
+        $Twig->render('input/passphrase.html', [
+          'name' => 'verifypassword',
+          'id' => 'new_pass_2',
+          'placeholder' => 'Confirm passphrase'
+        ]) ?>
       </td>
     </tr>
 

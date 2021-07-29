@@ -48,7 +48,7 @@ $BaseQuery = "
 
   if ($Details == 'all' || $Details == 'ul') {
       if (!$TopUserUploads = $Cache->get_value('topuser_ul_'.$Limit)) {
-          $DB->query("$BaseQuery ORDER BY u.Uploaded DESC LIMIT $Limit;");
+          $DB->prepared_query("$BaseQuery ORDER BY u.Uploaded DESC LIMIT $Limit;");
           $TopUserUploads = $DB->to_array();
           $Cache->cache_value('topuser_ul_'.$Limit, $TopUserUploads, 3600 * 12);
       }
@@ -57,7 +57,7 @@ $BaseQuery = "
 
   if ($Details == 'all' || $Details == 'dl') {
       if (!$TopUserDownloads = $Cache->get_value('topuser_dl_'.$Limit)) {
-          $DB->query("$BaseQuery ORDER BY u.Downloaded DESC LIMIT $Limit;");
+          $DB->prepared_query("$BaseQuery ORDER BY u.Downloaded DESC LIMIT $Limit;");
           $TopUserDownloads = $DB->to_array();
           $Cache->cache_value('topuser_dl_'.$Limit, $TopUserDownloads, 3600 * 12);
       }
@@ -66,7 +66,7 @@ $BaseQuery = "
 
   if ($Details == 'all' || $Details == 'numul') {
       if (!$TopUserNumUploads = $Cache->get_value('topuser_numul_'.$Limit)) {
-          $DB->query("$BaseQuery ORDER BY NumUploads DESC LIMIT $Limit;");
+          $DB->prepared_query("$BaseQuery ORDER BY NumUploads DESC LIMIT $Limit;");
           $TopUserNumUploads = $DB->to_array();
           $Cache->cache_value('topuser_numul_'.$Limit, $TopUserNumUploads, 3600 * 12);
       }
@@ -75,7 +75,7 @@ $BaseQuery = "
 
   if ($Details == 'all' || $Details == 'uls') {
       if (!$TopUserUploadSpeed = $Cache->get_value('topuser_ulspeed_'.$Limit)) {
-          $DB->query("$BaseQuery ORDER BY UpSpeed DESC LIMIT $Limit;");
+          $DB->prepared_query("$BaseQuery ORDER BY UpSpeed DESC LIMIT $Limit;");
           $TopUserUploadSpeed = $DB->to_array();
           $Cache->cache_value('topuser_ulspeed_'.$Limit, $TopUserUploadSpeed, 3600 * 12);
       }
@@ -84,7 +84,7 @@ $BaseQuery = "
 
   if ($Details == 'all' || $Details == 'dls') {
       if (!$TopUserDownloadSpeed = $Cache->get_value('topuser_dlspeed_'.$Limit)) {
-          $DB->query("$BaseQuery ORDER BY DownSpeed DESC LIMIT $Limit;");
+          $DB->prepared_query("$BaseQuery ORDER BY DownSpeed DESC LIMIT $Limit;");
           $TopUserDownloadSpeed = $DB->to_array();
           $Cache->cache_value('topuser_dlspeed_'.$Limit, $TopUserDownloadSpeed, 3600 * 12);
       }
@@ -130,7 +130,7 @@ function generate_user_table($Caption, $Tag, $Details, $Limit)
       <?php } ?>
     </small>
   </h3>
-  <table class="border">
+  <table class="border top10_table">
     <tr class="colhead">
       <td class="center">Rank</td>
       <td>User</td>

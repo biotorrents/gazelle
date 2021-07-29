@@ -9,7 +9,7 @@ if (!is_number($_GET['collageid'])) {
 $CollageID = (int)$_GET['collageid'];
 
 if (!$UserSubscriptions = $Cache->get_value('collage_subs_user_'.$LoggedUser['ID'])) {
-  $DB->query('
+  $DB->prepared_query('
     SELECT CollageID
     FROM users_collage_subs
     WHERE UserID = '.db_string($LoggedUser['ID']));
@@ -18,14 +18,14 @@ if (!$UserSubscriptions = $Cache->get_value('collage_subs_user_'.$LoggedUser['ID
 }
 
 if (($Key = array_search($CollageID, $UserSubscriptions)) !== false) {
-  $DB->query('
+  $DB->prepared_query('
     DELETE FROM users_collage_subs
     WHERE UserID = '.db_string($LoggedUser['ID'])."
       AND CollageID = $CollageID");
   unset($UserSubscriptions[$Key]);
   Collages::decrease_subscriptions($CollageID);
 } else {
-  $DB->query("
+  $DB->prepared_query("
     INSERT IGNORE INTO users_collage_subs
       (UserID, CollageID, LastVisit)
     VALUES

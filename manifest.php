@@ -31,7 +31,7 @@ JSON;
 
     # Print header and $manifest for remote addresses
     # Return JSON for localhost (API manifest endpoint):
-    #   ajax.php?action=manifest
+    #   api.php?action=manifest
     if ($_SERVER['REMOTE_ADDR'] !== "127.0.0.1") {
         header('Content-type: application/json; charset=utf-8');
         echo $manifest;

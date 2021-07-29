@@ -1,0 +1,55 @@
+<div class="thin">
+    <div class="header">
+        <h2>{{ user.id|user_url|raw }} &rsaquo; <a href="user.php?action=invite&amp;userid={{ user.id }}">Invites</a> &rsaquo; Tree</h2>
+    </div>
+    <div class="box pad">
+        <div class="invitetree pad">
+
+{% if info.total == 0 %}
+<p>Nobody turned up to the gig.</p>
+{% else %}
+<p>
+    This tree has {{ info.total|number_format }} entries, {{ info.branch|number_format }} branches, and a depth of {{ depth }}.
+    It has
+{%- if classes|length > 1 -%}
+{%-  for c in classes -%}
+        {{ loop.last ? ' and' : (loop.first ? '' : ',') }}
+        {{ c|raw }}
+{%-   endfor -%}
+{%- else -%}
+    {{ classes.0 }}
+{%- endif -%}.
+{{ info.disabled }}{% if info.disabled == 1 %} user is {% else %} users are {% endif %}
+disabled ({{ (info.disabled / info.total * 100)|number_format }}%)
+and {{ info.donor }}{% if info.donor == 1 %} user has {% else %} users have {% endif %}
+donated ({{ (info.donor / info.total * 100)|number_format }}%).
+</p>
+
+<p>
+    The amount uploaded by direct invitees is {{ info.upload_top|octet_size }};
+    the amount downloaded by direct invitees is {{ info.download_top|octet_size }} and the
+    aggregate ratio is <span class="stat">{{ ratio(info.upload_top, info.download_top) }}</span>.
+</p>
+
+{% if depth > 1 %}
+<p>
+    The total amount uploaded by the entire tree is {{ info.upload_total|octet_size }};
+    the total amount downloaded is {{ info.download_total|octet_size }} and the
+    aggregate ratio is <span class="stat">{{ ratio(info.upload_total, info.download_total) }}</span>.
+</p>
+{% endif %}
+
+{% if info.paranoid %}
+<p style="font-weight: bold;">
+{{ info.paranoid }} user{{ info.paranoid == 1 ? '' : 's' }} ({{ (info.paranoid / info.total * 100)|number_format }}%)
+{{ info.paranoid == 1 ? 'is' : 'are' }} too paranoid to have their stats shown here,
+and {{ info.paranoid == 1 ? 'was' : 'were' }} not factored into the upload and download totals.
+</p>
+{% endif %}
+
+{% endif %}
+{{ markup|raw }}
+
+        </div>
+    </div>
+</div>

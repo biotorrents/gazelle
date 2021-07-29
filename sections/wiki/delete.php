@@ -14,7 +14,7 @@ if ($ID === INDEX_ARTICLE) {
     error('You cannot delete the main wiki article.');
 }
 
-$DB->query("
+$DB->prepared_query("
   SELECT Title
   FROM wiki_articles
   WHERE ID = $ID");
@@ -29,9 +29,9 @@ list($Title) = $DB->next_record(MYSQLI_NUM, false);
 Misc::write_log("Wiki article $ID ($Title) was deleted by ".$LoggedUser['Username']);
 
 // Delete
-$DB->query("DELETE FROM wiki_articles WHERE ID = $ID");
-$DB->query("DELETE FROM wiki_aliases WHERE ArticleID = $ID");
-$DB->query("DELETE FROM wiki_revisions WHERE ID = $ID");
+$DB->prepared_query("DELETE FROM wiki_articles WHERE ID = $ID");
+$DB->prepared_query("DELETE FROM wiki_aliases WHERE ArticleID = $ID");
+$DB->prepared_query("DELETE FROM wiki_revisions WHERE ID = $ID");
 
 Wiki::flush_aliases();
 Wiki::flush_article($ID);

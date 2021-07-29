@@ -14,8 +14,6 @@ class Text
       's' => 0,
       '*' => 0,
       '#' => 0,
-      #'ch' => 0,
-      #'uch' => 0,
       'artist' => 0,
       'user' => 0,
       'n' => 0,
@@ -128,7 +126,41 @@ class Text
      */
     public static $TOC = false;
 
+
+    /**
+     * Fix the links
+     * 
+     * Make it so that internal links are in the form "/section?p=foo"
+     * and that external links are secure and look like Wikipedia.
+     * Takes an already-parsed input, to hit Markdown and BBcode.
+     */
+    public function fix_links($Parsed) {
+            # Replace links to $ENV->SITE_DOMAIN
+            $Parsed = preg_replace(
+                "/<a href=\"$ENV->RESOURCE_REGEX($ENV->SITE_DOMAIN|$ENV->OLD_SITE_DOMAIN)\//",
+                '<a href="/',
+                $Parsed
+            );
+                
+            # Replace external links and add Wikipedia-style CSS class
+            $RelTags = 'external nofollow noopener noreferrer';
+
+            $Parsed = preg_replace(
+                '/<a href="https?:\/\//',
+                '<a class="external" rel="'.$RelTags.'" target="_blank" href="https://',
+                $Parsed
+            );
+
+            $Parsed = preg_replace(
+                '/<a href="ftps?:\/\//',
+                '<a class="external" rel="'.$RelTags.'" target="_blank" href="ftps://',
+                $Parsed
+            );
+
+            return $Parsed;       
+    }
     
+
     /**
      * Output BBCode as XHTML
      *
@@ -152,7 +184,17 @@ class Text
         )) {
             $Parsedown = new ParsedownExtra();
             $Parsedown->setSafeMode(true);
+
+            # Prepare clean escapes
             $Str = html_entity_decode($Str, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+            # Parse early and post-process
+            $Parsed = $Parsedown->text($Str);
+            
+            # Replace links to $ENV->SITE_DOMAIN
+            $Parsed = self::fix_links($Parsed);
+
+            return $Parsed;
 
             # Markdown ToC not happening yet
             # Shouldn't parse_toc() output HTML
@@ -174,8 +216,6 @@ class Text
             }
             */
 
-            return $P = $Parsedown->text($Str);
-
         /*
         return $P =
             ((self::$TOC && $OutputTOC)
@@ -183,36 +223,23 @@ class Text
                 : null)
             . $Parsedown->text($Str);
         */
-        } else {
+        }
+        
+        /**
+         * BBcode formatting
+         */
+        else {
             global $Debug;
             $Debug->set_flag('BBCode start');
 
             self::$Headlines = [];
             $Str = display_str($Str);
 
-            # Checkboxes: broken and stupid
-            /*
-            $Str = preg_replace('/\[\\[(ch|uch)]\]/i', '', $Str);
-            $Str = preg_replace('/\[ch\]/i', '[ch][/ch]', $Str);
-            $Str = preg_replace('/\[uch\]/i', '[uch][/uch]', $Str);
-            */
-
             // Inline links
             $URLPrefix = '(\[url\]|\[url\=|\[img\=|\[img\])';
             $Str = preg_replace('/'.$URLPrefix.'\s+/i', '$1', $Str);
             $Str = preg_replace('/(?<!'.$URLPrefix.')http(s)?:\/\//i', '$1[inlineurl]http$2://', $Str);
             $Str = preg_replace('/\[embed\]\[inlineurl\]/', '[embed]', $Str);
-
-            // For anonym.to and archive.org links, remove any [inlineurl] in the middle of the link
-            /*
-            $Str = preg_replace_callback(
-                '/(?<=\[inlineurl\]|'.$URLPrefix.')(\S*\[inlineurl\]\S*)/m',
-                function ($matches) {
-                    return str_replace("[inlineurl]", "", $matches[0]);
-                },
-                $Str
-            );
-            */
 
             if (self::$TOC) {
                 $Str = preg_replace('/(\={5})([^=].*)\1/i', '[headline=4]$2[/headline]', $Str);
@@ -232,6 +259,9 @@ class Text
             if (self::$TOC && $OutputTOC) {
                 $HTML = self::parse_toc($Min) . $HTML;
             }
+
+            # Rewrite the URLs
+            $HTML = self::fix_links($HTML);
 
             $Debug->set_flag('BBCode end');
             return $HTML;
@@ -871,20 +901,6 @@ class Text
                   break;
 
 
-                /*
-                case 'ch':
-                  $Str .= '<input type="checkbox" checked="checked" disabled="disabled">';
-                  break;
-                */
-
-
-                /*
-                case 'uch':
-                  $Str .= '<input type="checkbox" disabled="disabled">';
-                  break;
-                */
-
-
                 case 'list':
                   $Str .= "<$Block[ListType] class=\"postlist\">";
                   foreach ($Block['Val'] as $Line) {
@@ -1051,7 +1067,8 @@ class Text
                       if ($LocalURL) {
                           $Str .= '<a href="'.$LocalURL.'">'.substr($LocalURL, 1).'</a>';
                       } else {
-                          $Str .= '<a rel="noreferrer" target="_blank" href="'.$Block['Attr'].'">'.$Block['Attr'].'</a>';
+                          $Str .= '<a href="'.$Block['Attr'].'">'.$Block['Attr'].'</a>';
+                          #$Str .= '<a rel="noreferrer" target="_blank" href="'.$Block['Attr'].'">'.$Block['Attr'].'</a>';
                       }
                   }
                   break;

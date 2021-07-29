@@ -128,7 +128,7 @@ switch ($Short) {
 
 View::show_header(
     'Report a '.$Type['title'],
-    'bbcode,vendor/jquery.validate.min,form_validate'
+    'vendor/jquery.validate.min,form_validate'
 );
 ?>
 <div class="thin">

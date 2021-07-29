@@ -15,7 +15,7 @@ $Limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
 $Limit = in_array($Limit, array(10, 100, 250)) ? $Limit : 10;
 
 $IsMod = check_perms("users_mod");
-$DB->query("
+$DB->prepared_query("
 SELECT
   `UserID`,
   `TotalRank`,
@@ -65,7 +65,7 @@ function generate_user_table($Caption, $Results, $Limit)
     </small>
   </h3>
 
-  <table class="border">
+  <table class="border top10_table">
     <tr class="colhead">
       <td class="center">Position</td>
       <td>User</td>

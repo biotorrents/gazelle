@@ -120,7 +120,7 @@ for ($i = 0; $i < $TagCount / 3; $i++) {
         </tr>
         <tr style="border-top: thin solid;">
           <td colspan="11" style="text-align: center;">
-            <input type="submit" value="Submit changes" />
+            <input type="submit" class="button-primary" value="Submit changes" />
           </td>
         </tr>
 

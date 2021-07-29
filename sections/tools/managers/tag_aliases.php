@@ -64,7 +64,7 @@ if (check_perms('users_mod')) {
       </td>
 <?php if (check_perms('users_mod')) { ?>
       <td>
-        <input type="submit" value="Add alias" />
+        <input type="submit" class="button-primary" value="Add alias" />
       </td>
 <?php } ?>
     </form>
@@ -88,7 +88,7 @@ while (list($ID, $BadTag, $AliasTag) = $DB->next_record()) {
       </td>
 <?php if (check_perms('users_mod')) { ?>
       <td>
-        <input type="submit" name="save" value="Save alias" />
+        <input type="submit" name="save" class="button-primary" value="Save alias" />
         <input type="submit" name="delete" value="Delete alias" />
       </td>
 <?php } ?>

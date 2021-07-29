@@ -200,7 +200,7 @@ if (!isset($InputTitle)) {
           class="hidden button_preview_<?=$ReplyText->getID()?>"
           tabindex="1" />
 
-        <input type="submit" value="Post" id="submit_button" tabindex="1" />
+        <input type="submit" class="button-primary" value="Post" id="submit_button" tabindex="1" />
       </div>
     </form>
   </div>

@@ -13,7 +13,7 @@ if (!empty($_GET['userid'])) {
         error(404);
     }
 
-    $DB->query("
+    $DB->prepared_query("
       SELECT Username
       FROM users_main
       WHERE ID = '$UserID'");
@@ -25,7 +25,7 @@ if (!empty($_GET['userid'])) {
 $Sneaky = $UserID !== $LoggedUser['ID'];
 //$ArtistList = Bookmarks::all_bookmarks('artist', $UserID);
 
-$DB->query("
+$DB->prepared_query("
   SELECT ag.ArtistID, ag.Name
   FROM bookmarks_artists AS ba
     INNER JOIN artists_group AS ag ON ba.ArtistID = ag.ArtistID
@@ -81,7 +81,7 @@ foreach ($ArtistList as $Artist) {
         <?php
   if (check_perms('site_torrents_notify')) {
       if (($Notify = $Cache->get_value('notify_artists_'.$LoggedUser['ID'])) === false) {
-          $DB->query("
+          $DB->prepared_query("
             SELECT ID, Artists
             FROM users_notify_filters
             WHERE UserID = '$LoggedUser[ID]'

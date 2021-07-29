@@ -1,13 +1,9 @@
 <?php
 #declare(strict_types=1);
 
-ini_set('max_execution_time', 600);
+$CollageID = (int) $_GET['id'];
+Security::checkInt($CollageID);
 
-if (empty($_GET['id']) || !is_number($_GET['id'])) {
-    error(0);
-}
-
-$CollageID = $_GET['id'];
 $CollageData = $Cache->get_value("collage_$CollageID");
 
 if ($CollageData) {

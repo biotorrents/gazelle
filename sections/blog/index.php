@@ -11,7 +11,7 @@ if (check_perms('admin_manage_blog')) {
         switch ($_REQUEST['action']) {
       case 'deadthread':
         if (is_number($_GET['id'])) {
-            $DB->query("
+            $DB->prepared_query("
             UPDATE blog
             SET ThreadID = NULL
             WHERE ID = ".$_GET['id']);
@@ -24,7 +24,7 @@ if (check_perms('admin_manage_blog')) {
       case 'takeeditblog':
         authorize();
         if (is_number($_POST['blogid']) && is_number($_POST['thread'])) {
-            $DB->query("
+            $DB->prepared_query("
             UPDATE blog
             SET
               Title = '".db_string($_POST['title'])."',
@@ -40,7 +40,7 @@ if (check_perms('admin_manage_blog')) {
       case 'editblog':
         if (is_number($_GET['id'])) {
             $BlogID = $_GET['id'];
-            $DB->query("
+            $DB->prepared_query("
             SELECT Title, Body, ThreadID
             FROM blog
             WHERE ID = $BlogID");
@@ -51,7 +51,7 @@ if (check_perms('admin_manage_blog')) {
       case 'deleteblog':
         if (is_number($_GET['id'])) {
             authorize();
-            $DB->query("
+            $DB->prepared_query("
             DELETE FROM blog
             WHERE ID = '".db_string($_GET['id'])."'");
             $Cache->delete_value('blog');
@@ -66,7 +66,7 @@ if (check_perms('admin_manage_blog')) {
         $Body = db_string($_POST['body']);
         $ThreadID = $_POST['thread'];
         if ($ThreadID && is_number($ThreadID)) {
-            $DB->query("
+            $DB->prepared_query("
             SELECT ForumID
             FROM forums_topics
             WHERE ID = $ThreadID");
@@ -81,7 +81,7 @@ if (check_perms('admin_manage_blog')) {
             }
         }
 
-        $DB->query("
+        $DB->prepared_query("
           INSERT INTO blog
             (UserID, Title, Body, Time, ThreadID, Important)
           VALUES
@@ -96,7 +96,7 @@ if (check_perms('admin_manage_blog')) {
             $Cache->delete_value('blog_latest_id');
         }
         if (isset($_POST['subscribe'])) {
-            $DB->query("
+            $DB->prepared_query("
             INSERT IGNORE INTO users_subscriptions
             VALUES ('$LoggedUser[ID]', $ThreadID)");
             $Cache->delete_value('subscriptions_user_'.$LoggedUser['ID']);
@@ -140,7 +140,7 @@ if (check_perms('admin_manage_blog')) {
       <label for="subscribebox">Subscribe</label>
 
       <div class="center">
-        <input type="submit"
+        <input type="submit" class="button-primary"
           value="<?=!isset($_GET['action']) ? 'Create blog post' : 'Edit blog post'; ?>" />
       </div>
     </div>
@@ -153,7 +153,7 @@ if (check_perms('admin_manage_blog')) {
 <div>
   <?php
 if (!$Blog = $Cache->get_value('blog')) {
-    $DB->query("
+    $DB->prepared_query("
     SELECT
       b.ID,
       um.Username,
@@ -174,7 +174,7 @@ if ($LoggedUser['LastReadBlog'] < $Blog[0][0]) {
     $Cache->begin_transaction('user_info_heavy_'.$LoggedUser['ID']);
     $Cache->update_row(false, array('LastReadBlog' => $Blog[0][0]));
     $Cache->commit_transaction(0);
-    $DB->query("
+    $DB->prepared_query("
     UPDATE users_info
     SET LastReadBlog = '".$Blog[0][0]."'
     WHERE UserID = ".$LoggedUser['ID']);

@@ -8,24 +8,24 @@ if (!check_perms('site_view_flow')) {
 View::show_header('Torrents');
 
 if (!$TorrentStats = $Cache->get_value('new_torrent_stats')) {
-    $DB->query("
+    $DB->prepared_query("
     SELECT COUNT(ID), SUM(Size), SUM(FileCount)
     FROM torrents");
     list($TorrentCount, $TotalSize, $TotalFiles) = $DB->next_record();
 
-    $DB->query("
+    $DB->prepared_query("
     SELECT COUNT(ID)
     FROM users_main
     WHERE Enabled = '1'");
     list($NumUsers) = $DB->next_record();
 
-    $DB->query("SELECT COUNT(ID), SUM(Size), SUM(FileCount) FROM torrents WHERE Time > SUBDATE(NOW(), INTERVAL 1 DAY)");
+    $DB->prepared_query("SELECT COUNT(ID), SUM(Size), SUM(FileCount) FROM torrents WHERE Time > SUBDATE(NOW(), INTERVAL 1 DAY)");
     list($DayNum, $DaySize, $DayFiles) = $DB->next_record();
 
-    $DB->query("SELECT COUNT(ID), SUM(Size), SUM(FileCount) FROM torrents WHERE Time > SUBDATE(NOW(), INTERVAL 7 DAY)");
+    $DB->prepared_query("SELECT COUNT(ID), SUM(Size), SUM(FileCount) FROM torrents WHERE Time > SUBDATE(NOW(), INTERVAL 7 DAY)");
     list($WeekNum, $WeekSize, $WeekFiles) = $DB->next_record();
 
-    $DB->query("SELECT COUNT(ID), SUM(Size), SUM(FileCount) FROM torrents WHERE Time > SUBDATE(NOW(), INTERVAL 30 DAY)");
+    $DB->prepared_query("SELECT COUNT(ID), SUM(Size), SUM(FileCount) FROM torrents WHERE Time > SUBDATE(NOW(), INTERVAL 30 DAY)");
     list($MonthNum, $MonthSize, $MonthFiles) = $DB->next_record();
   
     $Cache->cache_value('new_torrent_stats', array($TorrentCount, $TotalSize, $TotalFiles,

@@ -55,7 +55,8 @@ View::show_header('Donate');
 
       <li>
         <strong>Domain.</strong>
-        The domain name is $15 per year.
+        The primary domain name (biotorrents.de) is $15 per year.
+        The secondary one (torrents.bio) is $80 per year.
         The TLS certificates are gratis.
       </li>
 
@@ -64,6 +65,19 @@ View::show_header('Donate');
         Omics Tools LLC is <?= $ENV->SITE_NAME ?>'s parent company.
         It's $50 per year for annual reports and $125 for resident agent services.
       </li>
+
+      <li>
+        <strong>Legal.</strong>
+        Registering a U.S. copyright agent is $6 per year.
+        The legal counsel is gratis.
+      </li>
+
+
+      <li>
+        <strong>Total.</strong>
+        Depending on the exchange rate, it costs about $350 per year to run <?= $ENV->SITE_NAME ?>.
+      </li>
+
     </ul>
   </div>
 

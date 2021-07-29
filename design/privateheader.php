@@ -49,6 +49,8 @@ $Styles = array_filter(
     array_merge(
         [
           'vendor/jquery-ui.min',
+          'vendor/normalize',
+          'vendor/skeleton',
           #'assets/fonts/fa/css/all.min',
           'global'
         ],
@@ -250,8 +252,7 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
           <li id="nav_irc" <?=
             Format::add_class($PageID, ['chat'], 'active', true)?>>
             <a href="https://join.slack.com/t/biotorrents/shared_invite/<?=$ENV->SLACK_INVITE?>"
-              target="_blank">Slack
-              <img src="/static/common/symbols/external.png" style="height: 0.75em; vertical-align: center;" /></a>
+              target="_blank">Slack</a>
           </li>
 
           <li id="nav_top10" <?=
@@ -332,11 +333,13 @@ if (isset(G::$LoggedUser['SearchType']) && G::$LoggedUser['SearchType']) { // Ad
             size="17">
         </form>
 
+        <!--
         <form class="search_form" name="artists" action="artist.php" method="get">
-          <input id="artistsearch" <?=Users::has_autocomplete_enabled('search')?>
+          <input id="artistsearch" <?=null#Users::has_autocomplete_enabled('search')?>
           aria-label="Search authors" accesskey="a" spellcheck="false" autocomplete="off" placeholder="Authors"
           type="text" name="artistname" size="17">
         </form>
+          -->
 
         <form class="search_form" name="requests" action="requests.php" method="get">
           <input id="requestssearch" aria-label="Search requests" spellcheck="false" autocomplete="off"
@@ -607,19 +610,6 @@ if (check_perms('admin_reports')) {
     }
 }
 
-if (check_perms('users_mod')) {
-    $NumDeleteRequests = G::$Cache->get_value('num_deletion_requests');
-    if ($NumDeleteRequests === false) {
-        G::$DB->query("SELECT COUNT(*) FROM deletion_requests");
-        list($NumDeleteRequests) = G::$DB->next_record();
-        G::$Cache->cache_value('num_deletion_requests', $NumDeleteRequests);
-    }
-
-    if ($NumDeleteRequests > 0) {
-        $ModBar[] = '<a href="tools.php?action=expunge_requests">' . $NumDeleteRequests . " Expunge request".($NumDeleteRequests > 1 ? 's' : '')."</a>";
-    }
-}
-
 if (check_perms('users_mod') && FEATURE_EMAIL_REENABLE) {
     $NumEnableRequests = G::$Cache->get_value(AutoEnable::CACHE_KEY_NAME);
     if ($NumEnableRequests === false) {
@@ -636,7 +626,7 @@ if (check_perms('users_mod') && FEATURE_EMAIL_REENABLE) {
 if (!empty($Alerts) || !empty($ModBar)) { ?>
     <div id="alerts">
       <?php foreach ($Alerts as $Alert) { ?>
-      <div class="alertbar">
+      <div class="alertbar warning">
         <?=$Alert?>
       </div>
       <?php

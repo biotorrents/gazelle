@@ -97,7 +97,7 @@ if (!$NewRequest) {
 
 View::show_header(
     ($NewRequest ? 'Create Request' : 'Edit Request'),
-    'bbcode,requests,upload,form_validate,vendor/easymde.min',
+    'requests,upload,form_validate,vendor/easymde.min',
     'vendor/easymde.min'
 );
 ?>
@@ -444,13 +444,13 @@ View::show_header(
         <!-- Submit -->
         <tr>
           <td colspan="2" class="center">
-            <input type="submit" id="button" value="Create" disabled="disabled" />
+            <input type="submit" id="button" class="button-primary" value="Create" disabled="disabled" />
           </td>
         </tr>
         <?php } else { ?>
         <tr>
           <td colspan="2" class="center">
-            <input type="submit" id="button" value="Edit" />
+            <input type="submit" id="button" class="button-primary" value="Edit" />
           </td>
         </tr>
         <?php } ?>

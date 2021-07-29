@@ -100,7 +100,7 @@ View::show_header("$Username &gt; Permissions");
 </div>
 <br />
 <form class="manage_form" name="permissions" id="permissionsform" method="post" action="">
-  <table class="layout permission_head">
+  <table class="permission_head skeleton-fix">
     <tr>
       <td class="label">Extra personal collages</td>
       <td><input type="text" name="maxcollages" size="5"

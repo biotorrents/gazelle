@@ -154,7 +154,7 @@ $DB->set_query_id($RS);
 
         <tr>
           <td colspan="4" class="center">
-            <input type="submit" value="Search" />
+            <input type="submit" class="button-primary" value="Search" />
           </td>
         </tr>
       </table>
@@ -170,11 +170,11 @@ $DB->set_query_id($RS);
   </div>
   <?php } ?>
 
-  <table width="100%">
-    <tr class="colhead">
-      <td>Article</td>
-      <td>Last updated on</td>
-      <td>Last edited by</td>
+  <table class="skeleton-fix">
+    <tr>
+      <th>Article</th>
+      <th>Last updated on</th>
+      <th>Last edited by</th>
     </tr>
 
     <?php

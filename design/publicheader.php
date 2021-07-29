@@ -41,7 +41,7 @@ foreach ($Scripts as $Script) {
 }
 
 # Load CSS
-$Styles = ['global', 'public'];
+$Styles = ['vendor/normalize', 'vendor/skeleton', 'global', 'public'];
 foreach ($Styles as $Style) {
     echo View::pushAsset(
         "$ENV->STATIC_SERVER/styles/$Style.css",
@@ -52,7 +52,7 @@ foreach ($Styles as $Style) {
 # Fonts
 echo View::pushAsset(
 # Only Noto Sans available on public pages
-"$ENV->STATIC_SERVER/styles/assets/fonts/noto/woff2/NotoSans-SemiCondensed.woff2",
+"$ENV->STATIC_SERVER/styles/assets/fonts/noto/NotoSans-SemiCondensed.woff2",
     'font'
 );
 
@@ -68,12 +68,9 @@ if ($ENV->OPEN_REGISTRATION) {
     echo '<a href="register.php">Register</a>';
 }
 
-$Email = $ENV->HELP->Email;
-$Subject = $ENV->HELP->Subject;
-$Body = $ENV->HELP->Body;
-echo "<a href='mailto:$Email?subject=$Subject&body=$Body'>Support</a>";
-
 echo <<<HTML
+    <a href="/legal.php?p=about">About</a>
+    <a class="external" href="https://docs.torrents.bio" target="_blank">Docs</a>
   </header>
 
 <main>

@@ -1,0 +1,54 @@
+{
+  "name": "biotorrents/gazelle",
+  "description": "Web framework for private BitTorrent trackers using Ocelot",
+  "type": "project",
+  "license": "Unlicense",
+  "authors": [
+    {
+      "name": "What.cd"
+    },
+    {
+      "name": "Oppaitime"
+    },
+    {
+      "name": "BioTorrents.de"
+    }
+  ],
+  "autoload": {
+    "classmap": [
+      "classes/"
+    ],
+    "files": [
+      "classes/autoload.php"
+    ]
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "require": {
+    "php": ">=7.4",
+    "ext-apcu": "*",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-memcache": "*",
+    "ext-mysqli": "*",
+    "biotorrents/biophp": "dev-master",
+    "erusev/parsedown": "^1.8.0-beta-7",
+    "erusev/parsedown-extra": "^0.8.1",
+    "j7mbo/twitter-api-php": "^1.0.6",
+    "orpheusnet/bencode-torrent": "^1.1.1",
+    "robmorgan/phinx": "^0.12.7",
+    "twig/twig": "^3.3.2"
+  },
+  "require-dev": {
+    "d11wtq/boris": "^1.0.10",
+    "phpstan/phpstan": "^0.12.92",
+    "phpunit/phpunit": "^9.5.6",
+    "squizlabs/php_codesniffer": "^3.6.0"
+  },
+  "scripts": {
+    "phpstan": "phpstan analyse",
+    "test": "phpunit"
+  }
+}

@@ -3,7 +3,8 @@
  */
 
 #menu {
-    background-color: $lb900;
+    background-color: $SkeletonHalfdark;
+    /* background-color: $lb900; */
     font-size: 1rem;
     text-align: center;
     width: 100%;
@@ -36,26 +37,28 @@
     max-width: 2.5rem;
 }
 
-#menu ul li a.active {
-    background-color: $lb700;
+#menu ul li a:active {
+    background-color: $SkeletonFocus;
+    /* background-color: $lb700; */
 }
 
 #menu ul li a:hover {
-    background-color: $lb700;
+    background-color: $SkeletonFocus;
+    /* background-color: $lb700; */
     color: white;
     text-decoration: none;
 }
 
 /* Dropdown */
 #menu .nav_dropdown {
-    background: #01579b;
+    background-color: $SkeletonHalfdark;
     margin-top: 0;
 }
 
 .nav_dropdown > div {
     box-shadow: $shadow;
     position: absolute;
-    background-color: #01579b;
+    background-color: $SkeletonHalfdark;
     width: 100%;
     z-index: 99999;
     margin-top: 2.5rem;
@@ -85,7 +88,6 @@
 
 #searchbars {
     text-align: center;
-    background-color: $lb200;
     box-sizing: content-box;
     padding: 0.5rem 10%;
     display: flex;
@@ -132,7 +134,7 @@
 }
 
 #searchbars ul li ul li {
-    margin: 0 0 0 0;
+    margin: 0;
     padding: 0;
     display: block;
     width: 100%;
@@ -150,10 +152,8 @@
  * Upload, Invite, etc.
  */
 #userinfo {
-    background: white;
-    /* box-shadow: 0 2px 10px -2px slategray; */
     color: black;
-    padding: 0.5em 0;
+    /* padding: 0.5em 0; */
     width: 100%;
     text-align: center;
 }

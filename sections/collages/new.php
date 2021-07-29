@@ -3,7 +3,7 @@
 
 View::show_header(
     'Create a collection',
-    'bbcode,vendor/easymde.min',
+    'vendor/easymde.min',
     'vendor/easymde.min'
 );
 
@@ -136,7 +136,7 @@ new TEXTAREA_PREVIEW(
 
         <tr>
           <td colspan="2" class="center">
-            <input type="submit" value="Create" />
+            <input type="submit" class="button-primary" value="Create" />
           </td>
         </tr>
       </table>

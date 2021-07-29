@@ -1,33 +1,35 @@
-<?
-$P = db_array($_POST);
+<?php
+declare(strict_types = 1);
+
 enforce_login();
-if (!empty($_REQUEST['friendid']) && !is_number($_REQUEST['friendid'])) {
-  error(404);
-}
+$P = db_array($_POST);
+
+$FriendID = (int) $_REQUEST['friendid'];
+Security::checkInt($FriendID);
 
 if (!empty($_REQUEST['action'])) {
-  switch ($_REQUEST['action']) {
+    switch ($_REQUEST['action']) {
     case 'add':
-      include(SERVER_ROOT.'/sections/friends/add.php');
+      require_once "$ENV->SERVER_ROOT/sections/friends/add.php";
       break;
+
     case 'Remove friend':
       authorize();
-      include(SERVER_ROOT.'/sections/friends/remove.php');
+      require_once "$ENV->SERVER_ROOT/sections/friends/remove.php";
       break;
+
     case 'Update':
       authorize();
-      include(SERVER_ROOT.'/sections/friends/comment.php');
+      require_once "$ENV->SERVER_ROOT/sections/friends/comment.php";
       break;
-    case 'whois':
-      include(SERVER_ROOT.'/sections/friends/whois.php');
-      break;
+
     case 'Contact':
-      header('Location: inbox.php?action=compose&to='.$_POST['friendid']);
+      header("Location: inbox.php?action=compose&to=$FriendID");
       break;
+      
     default:
       error(404);
   }
 } else {
-  include(SERVER_ROOT.'/sections/friends/friends.php');
+    require_once "$ENV->SERVER_ROOT/sections/friends/friends.php";
 }
-?>

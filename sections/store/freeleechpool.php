@@ -10,7 +10,7 @@ if (isset($_POST['donation'])) {
     }
 
     $UserID = $LoggedUser['ID'];
-    $DB->query("
+    $DB->prepared_query("
       SELECT BonusPoints
       FROM users_main
       WHERE ID = $UserID");
@@ -21,19 +21,19 @@ if (isset($_POST['donation'])) {
         if ($Points >= $Donation) {
             $PoolTipped = false;
 
-            $DB->query("
+            $DB->prepared_query("
               UPDATE users_main
               SET BonusPoints = BonusPoints - $Donation
               WHERE ID = $UserID");
 
-            $DB->query("
+            $DB->prepared_query("
               UPDATE misc
               SET First = First + $Donation
               WHERE Name = 'FreeleechPool'");
             $Cache->delete_value('user_info_heavy_'.$UserID);
 
             // Check to see if we're now over the target pool size
-            $DB->query("
+            $DB->prepared_query("
               SELECT First, Second
               FROM misc
               WHERE Name = 'FreeleechPool'");
@@ -48,7 +48,7 @@ if (isset($_POST['donation'])) {
 
                     for ($i = 0; $i < $NumTorrents; $i++) {
                         $TorrentSize = intval($Pool * (($i===$NumTorrents-1)?1:(rand(10, 80)/100)) * 100000); # todo
-                        $DB->query("
+                        $DB->prepared_query("
                           SELECT ID, Size
                           FROM torrents
                           WHERE Size < $TorrentSize
@@ -61,7 +61,7 @@ if (isset($_POST['donation'])) {
                         if ($DB->has_results()) {
                             list($TorrentID, $Size) = $DB->next_record();
 
-                            $DB->query("
+                            $DB->prepared_query("
                               INSERT INTO shop_freeleeches
                                 (TorrentID, ExpiryTime)
                               VALUES($TorrentID, NOW() + INTERVAL 2 DAY)");
@@ -77,7 +77,7 @@ if (isset($_POST['donation'])) {
                     }
 
                     $Target = rand(10000, 100000);
-                    $DB->query("
+                    $DB->prepared_query("
                       UPDATE misc
                       SET First = 0,
                         Second = $Target
@@ -116,7 +116,7 @@ if (isset($_POST['donation'])) {
 <?php
 View::show_footer();
 } else {
-    $DB->query("
+    $DB->prepared_query("
       SELECT First
       FROM misc
       WHERE Name = 'FreeleechPool'");

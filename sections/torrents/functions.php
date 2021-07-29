@@ -14,40 +14,40 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
 
         if (!$RevisionID) {
             $SQL .= '
-              g.WikiBody,
-              g.WikiImage, ';
+            g.`description`,
+            g.`picture`, ';
         } else {
             $SQL .= '
-              w.Body,
-              w.Image, ';
+            w.`Body`,
+            w.`Image`, ';
         }
 
         $SQL .= "
-          g.ID,
-          g.Name,
-          g.Title2,
-          g.NameJP,
-          g.Year,
-          g.Studio,
-          g.Series,
-          g.CatalogueNumber,
-          g.CategoryID,
-          g.Time,
-            GROUP_CONCAT(DISTINCT tags.Name SEPARATOR '|'),
-            GROUP_CONCAT(DISTINCT tags.ID SEPARATOR '|'),
-            GROUP_CONCAT(tt.UserID SEPARATOR '|')
-          FROM torrents_group AS g
-            LEFT JOIN torrents_tags AS tt ON tt.GroupID = g.ID
-            LEFT JOIN tags ON tags.ID = tt.TagID";
+          g.`id`,
+          g.`title`,
+          g.`subject`,
+          g.`object`,
+          g.`year`,
+          g.`workgroup`,
+          g.`location`,
+          g.`identifier`,
+          g.`category_id`,
+          g.`timestamp`,
+            GROUP_CONCAT(DISTINCT tags.`Name` SEPARATOR '|'),
+            GROUP_CONCAT(DISTINCT tags.`ID` SEPARATOR '|'),
+            GROUP_CONCAT(tt.`UserID` SEPARATOR '|')
+          FROM `torrents_group` AS g
+            LEFT JOIN `torrents_tags` AS tt ON tt.`GroupID` = g.`id`
+            LEFT JOIN `tags` ON tags.`ID` = tt.`TagID`";
 
         if ($RevisionID) {
             $SQL .= "
-              LEFT JOIN wiki_torrents AS w ON w.PageID = '".db_string($GroupID)."'
-                AND w.RevisionID = '".db_string($RevisionID)."' ";
+              LEFT JOIN `wiki_torrents` AS w ON w.`PageID` = '".db_string($GroupID)."'
+                AND w.`RevisionID` = '".db_string($RevisionID)."' ";
         }
 
         $SQL .= "
-          WHERE g.ID = '".db_string($GroupID)."'
+          WHERE g.`id` = '".db_string($GroupID)."'
             GROUP BY NULL";
 
         $DB->query($SQL);
@@ -58,14 +58,14 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
         # Screenshots (Publications)
         $DB->query("
         SELECT
-          `ID`,
-          `UserID`,
-          `Time`,
-          `URI`
+          `id`,
+          `user_id`,
+          `timestamp`,
+          `doi`
         FROM
-          `torrents_doi`
+          `literature`
         WHERE
-          `TorrentID` = '$GroupID'
+          `group_id` = '$GroupID'
         ");
 
         if ($DB->has_results()) {
@@ -75,16 +75,17 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
         }
 
         # Mirrors
+        # todo: Fix $GroupID
         $DB->query("
         SELECT
-          `ID`,
-          `UserID`,
-          `Time`,
-          `URI`
+          `id`,
+          `user_id`,
+          `timestamp`,
+          `uri`
         FROM
           `torrents_mirrors`
         WHERE
-          `GroupID` = '$GroupID'
+          `torrent_id` = '$GroupID'
         ");
   
         if ($DB->has_results()) {

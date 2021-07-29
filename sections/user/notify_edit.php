@@ -4,6 +4,7 @@
 if (!check_perms('site_torrents_notify')) {
     error(403);
 }
+
 View::show_header(
     'Manage notifications',
     'vendor/jquery.validate.min,form_validate'
@@ -21,23 +22,23 @@ View::show_header(
   <?php
 $DB->query("
   SELECT
-    ID,
-    Label,
-    Artists,
-    ExcludeVA,
-    NewGroupsOnly,
-    Tags,
-    NotTags,
-    ReleaseTypes,
-    Categories,
-    Formats,
-    Encodings,
-    Media,
-    FromYear,
-    ToYear,
-    Users
-  FROM users_notify_filters
-  WHERE UserID=$LoggedUser[ID]");
+    `ID`,
+    `Label`,
+    `Artists`,
+    `NewGroupsOnly`,
+    `Tags`,
+    `NotTags`,
+    `ReleaseTypes`,
+    `Categories`,
+    `Formats`,
+    `Encodings`,
+    `Media`,
+    `FromYear`,
+    `ToYear`,
+    `Users`
+  FROM `users_notify_filters`
+  WHERE `UserID` = $LoggedUser[ID]
+");
 
 $NumFilters = $DB->record_count();
 
@@ -46,7 +47,6 @@ $Notifications[] = array(
   'ID' => false,
   'Label' => '',
   'Artists' => '',
-  'ExcludeVA' => false,
   'NewGroupsOnly' => true,
   'Tags' => '',
   'NotTags' => '',
@@ -84,9 +84,11 @@ foreach ($Notifications as $N) { // $N stands for Notifications
     if ($N['FromYear'] === 0) {
         $N['FromYear'] = '';
     }
+
     if ($N['ToYear'] === 0) {
         $N['ToYear'] = '';
     }
+
     if ($NewFilter && $NumFilters > 0) {
         ?>
   <br><br>
@@ -148,15 +150,6 @@ foreach ($Notifications as $N) { // $N stands for Notifications
           <textarea name="artists<?=$i?>" style="width: 100%;"
             rows="5"><?=display_str($N['Artists'])?></textarea>
           Comma-separated list, e.g., Yumeno Aika, Pink Pineapple
-          <!--
-          <input type="checkbox" name="excludeva<?=$i?>"
-          id="excludeva_<?=$N['ID']?>" <?php if ($N['ExcludeVA'] === '1') {
-        echo ' checked="checked"';
-    } ?>>
-          <label
-            for="excludeva_<?=$N['ID']?>">Exclude
-            Various Artists releases</label>
-          -->
         </td>
       </tr>
 
@@ -218,7 +211,7 @@ foreach ($Notifications as $N) { // $N stands for Notifications
 
       <tr>
         <td colspan="2" class="center">
-          <input type="submit"
+          <input type="submit" class="button-primary"
             value="<?=($NewFilter ? 'Create' : 'Update')?>">
         </td>
       </tr>

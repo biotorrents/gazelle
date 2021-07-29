@@ -14,16 +14,6 @@ class TorrentForm
      * recursively copying parts to arrays in place as needed.
      */
     
-    # Platforms
-    # See classes/config.php
-    public $SeqPlatforms = [];
-    public $GraphPlatforms = [];
-    public $ImgPlatforms = [];
-    public $DocPlatforms = [];
-    public $RawPlatforms = [];
-    #public $Media = [];
-    #public $MediaManga = [];
-
     # Formats
     # See classes/config.php
     public $SeqFormats = [];
@@ -36,21 +26,7 @@ class TorrentForm
     public $BinDocFormats = [];
     public $CpuGenFormats = [];
     public $PlainFormats = [];
-    #public $Containers = [];
-    #public $ContainersGames = [];
-    #public $ContainersProt = [];
-    #public $ContainersExtra = [];
-
-    # Misc
-    public $Codecs = [];
-    public $Archives = [];
     public $Resolutions = [];
-
-    # Deprecated
-    #public $Formats = [];
-    #public $Versions = [];
-    #public $Bitrates = [];
-    #public $Platform = [];
 
     # Gazelle
     public $NewTorrent = false;
@@ -63,7 +39,8 @@ class TorrentForm
     public function __construct($Torrent = false, $Error = false, $NewTorrent = true)
     {
         # See classes/config.php
-        global $UploadForm, $Categories, $TorrentID, $SeqPlatforms, $GraphPlatforms, $ImgPlatforms, $DocPlatforms, $RawPlatforms, $SeqFormats, $ProtFormats, $GraphXmlFormats, $GraphTxtFormats, $ImgFormats, $MapVectorFormats, $MapRasterFormats, $BinDocFormats, $CpuGenFormats, $PlainFormats, $Codecs, $Archives, $Resolutions;
+        global $UploadForm, $Categories, $TorrentID, $SeqFormats, $ProtFormats, $GraphXmlFormats, $GraphTxtFormats, $ImgFormats, $MapVectorFormats, $MapRasterFormats, $BinDocFormats, $CpuGenFormats, $PlainFormats, $Resolutions;
+        #global $UploadForm, $Categories, $TorrentID, $SeqPlatforms, $GraphPlatforms, $ImgPlatforms, $DocPlatforms, $RawPlatforms, $SeqFormats, $ProtFormats, $GraphXmlFormats, $GraphTxtFormats, $ImgFormats, $MapVectorFormats, $MapRasterFormats, $BinDocFormats, $CpuGenFormats, $PlainFormats, $Codecs, $Archives, $Resolutions;
         #global $UploadForm, $Categories, $Formats, $Bitrates, $Media, $MediaManga, $TorrentID, $Containers, $ContainersGames, $Codecs, $Resolutions, $Platform, $Archives, $ArchivesManga;
 
         # Gazelle
@@ -75,14 +52,6 @@ class TorrentForm
         $this->Categories = $Categories;
         $this->TorrentID = $TorrentID;
 
-        # Platforms
-        # See classes/config.php
-        $this->SeqPlatforms = $SeqPlatforms;
-        $this->GraphPlatforms = $GraphPlatforms;
-        $this->ImgPlatforms = $ImgPlatforms;
-        $this->DocPlatforms = $DocPlatforms;
-        $this->RawPlatforms = $RawPlatforms;
-       
         # Formats
         # See classes/config.php
         $this->SeqFormats = $SeqFormats;
@@ -95,10 +64,6 @@ class TorrentForm
         $this->BinDocFormats = $BinDocFormats;
         $this->CpuGenFormats = $CpuGenFormats;
         $this->PlainFormats = $PlainFormats;
-        
-        # Misc
-        $this->Codecs = $Codecs;
-        $this->Archives = $Archives;
         $this->Resolutions = $Resolutions;
 
         # Quick constructor test
@@ -110,127 +75,91 @@ class TorrentForm
 
 
     /**
-     * ========================
-     * = New functional class =
-     * ========================
-     *
-     * Contains functions that output discreet torrent form fields.
-     * Useful for <?= echoing in skeleton tables in the sections.
-     */
+     * ====================
+     * = Twig-based class =
+     * ====================
+    */
 
 
     /**
-     * Upload notice
+     * render
      *
-     * Broken into multiple NewTorrent tests for sanity.
-     * Each if statement should contain one discreet content block.
+     * TorrentForm Twig wrapper.
+     * Hopefully more pleasant.
      */
-    public function uploadNotice()
+    public function render()
     {
+        $ENV = ENV::go();
+        $Twig  = Twig::go();
+
+        /**
+         * Upload notice
+         */
         if ($this->NewTorrent) {
-            $HTML = <<<HTML
-            <aside class="upload_notice">
-              <p>
-                Please consult the
-                <a href="/rules.php?p=upload">Upload Rules</a>
-                and the
-                <a href="/wiki.php?action=article&name=categories">Categories Wiki</a>
-                to help fill out the upload form correctly.
-              </p>
+            echo $Twig->render('torrent_form/notice.html');
+        }
 
-              <p>
-                The site adds the Announce and Source automatically.
-                Just download and seed the new torrent after uploading it.
-
-              <!--
-              <strong>
-                If you never have before, be sure to read this list of
-                <a href="wiki.php?action=article&name=uploadingpitfalls">uploading pitfalls</a>.
-              </strong>
-              -->
-              </p>
-            </aside>
-HTML;
-        } # fi NewTorrent
-        return $HTML;
-    }
-
-
-    /**
-     * Announce URLs
-     *
-     * Announce URLs displayed on the form.
-     * They're added to torrents in torrentsdl.class.php.
-     * Bio Gazelle supports tiered swarms, T1 private and T2 public.
-     */
-    public function announceSource()
-    {
+        /**
+         * Announce and source
+         */
         if ($this->NewTorrent) {
-            $HTML = '<aside class="announce_source">';
-
             $Announces = ANNOUNCE_URLS[0];
             #$Announces = call_user_func_array('array_merge', ANNOUNCE_URLS);
+
             $TorrentPass = G::$LoggedUser['torrent_pass'];
-
-            foreach ($Announces as $Announce) {
-                $HTML .= <<<HTML
-                <p>
-                  <strong>Announce</strong>
-                  <input type="text"
-                    value="$Announce/$TorrentPass/announce"
-                    size="60" readonly="readonly"
-                    onclick="this.select();" />
-                </p>
-HTML;
-            }
-
-            /**
-             * Source (randomize infohash)
-             */
             $TorrentSource = Users::get_upload_sources()[0];
-            $HTML .= <<<HTML
-            <p>
-              <strong>Source</strong>
-              <input type="text"
-                value="$TorrentSource"
-                size="30" readonly="readonly"
-                onclick="this.select();" />
-            </p>
+
+            echo $Twig->render(
+                'torrent_form/announce_source.html',
+                [
+                  'announces' => $Announces,
+                  'torrent_pass' => $TorrentPass,
+                  'torrent_source' => $TorrentSource,
+                ]
+            );
+        }
+
+        /**
+         * Errors
+         * (Twig unjustified)
+         */
+        if ($this->Error) {
+            echo <<<HTML
+              <aside class="upload_error">
+                <p>$this->Error</p>
+              </aside>
 HTML;
+        }
 
-            $HTML .= '</aside>';
-        } # fi NewTorrent
-        return $HTML;
-    }
+        /**
+         * head
+         * IMPORTANT!
+         */
+        echo $this->head();
 
+        /**
+         * upload_form
+         * Where the fields are.
+         */
+        echo $this->upload_form();
 
-    /**
-     * Display torrent upload errors
-     */
-    public function error()
-    {
-        if ($this->NewTorrent) {
-            if ($this->Error) {
-                echo <<<HTML
-                <aside class="upload_error">
-                  <p>$this->Error</p>
-                </aside>
-HTML;
-            }
-        } # fi NewTorrent
-    }
+        /**
+         * foot
+         */
+        echo $this->foot();
+    } # End render()
 
 
     /**
      * head
      *
-     * Everything until the catalogue number field.
-     * Server-side torrent scrubbing admonishment.
+     * Everything up to the main form tag open:
+     * <div id="dynamic_form">
+     * Kept as an HTML function because it's simpler.
      */
-    public function head()
+    private function head()
     {
         $ENV = ENV::go();
-
         G::$DB->query(
             "
         SELECT
@@ -288,19 +217,13 @@ HTML;
          * Start printing the torrent form
          */
         $HTML .= '<table class="torrent_form">';
-        return $HTML;
-    }
 
-
-    /**
-     * New torrent options: file
-     */
-    public function basicInfo()
-    {
-        $ENV = ENV::go();
-      
+        /**
+         * New torrent options:
+         * file and category
+         */
         if ($this->NewTorrent) {
-            $HTML =  '<h2 class="header">Basic Info</h2>';
+            $HTML .=  '<h2 class="header">Basic Info</h2>';
             $HTML .= <<<HTML
             <tr>
               <td>
@@ -319,14 +242,8 @@ HTML;
               </td>
             </tr>
 HTML;
-        } # fi NewTorrent
 
-        /**
-         * New torrent options: category
-         */
-        if ($this->NewTorrent) {
             $DisabledFlag = ($this->DisabledFlag) ? ' disabled="disabled"' : '';
-
             $HTML .= <<<HTML
               <tr>
                 <td>
@@ -375,7 +292,7 @@ HTML;
      *
      * Make the endmatter.
      */
-    public function foot()
+    private function foot()
     {
         $Torrent = $this->Torrent;
         echo '<table class="torrent_form>';
@@ -471,8 +388,8 @@ HTML;
 
         echo <<<HTML
               <tr>
-                <td>
-                  <input id="post" type="submit" value="$Value" />
+                <td class="center">
+                  <input id="post" type="submit" value="$Value" class="button-primary" />
                 </td>
               </tr>
             </table> <!-- torrent_form -->
@@ -486,206 +403,75 @@ HTML;
      * upload_form
      *
      * Finally the "real" upload form.
-     * Contains all the field you'd expect.
+     * Contains all the fields you'd expect.
      *
      * This is currently one enormous function.
      * It has sub-functions, variables, and everything.
      * It continues to the end of the class.
      */
-    public function upload_form()
+    private function upload_form()
     {
         $ENV = ENV::go();
+        $Twig = Twig::go();
 
         $QueryID = G::$DB->get_query_id();
         $Torrent = $this->Torrent;
 
-        # Moved to their own functions
-        #echo $this->head();
-        #echo $this->basicInfo();
-
         # Start printing the form
         echo '<h2 class="header">Torrent Form</h2>';
-        echo '<table class="torrent_form">';
+        echo '<table class="torrent_form skeleton-fix">';
 
         
         /**
          * Accession Number
-         *
-         * The headings below refer to a new generic input schema.
-         * The HTML labels and various user-visible text should come from $ENV.
-         *
-         * RecursiveArrayObject->toArray() returns arrays from, e.g., $ENV->A->B->C.
-         * This makes it easy to get and program with any subset of config objects.
          */
         $CatalogueNumber = display_str($Torrent['CatalogueNumber']);
         $Disabled = $this->Disabled;
-
-        # DOI
-        echo <<<HTML
-        <tr id="javdb_tr">
-          <td>
-            <label for="catalogue">
-              Accession Number
-            </label>
-          </td>
-
-          <td>
-            <input type="text"
-              id="catalogue" name="catalogue" size="30"
-              placeholder="RefSeq and UniProt preferred"
-              value="$CatalogueNumber" />
-
-            <input type="button" autofill="jav" value="Autofill"
-              style="pointer-events: none; opacity: 0.5;">
-            </input>
-          </td>
-        </tr>
-HTML;
-
-        # RefSeq
-        $DisabledFlagInput = (!$this->DisabledFlag)
-            ? '<input type="button" autofill="anime" value="Autofill" />'
-            : null;
-
-        echo <<<HTML
-        <tr id="anidb_tr" class="hidden">
-          <td>
-            <label for="anidb">
-              AniDB Autofill (optional)
-            </label>
-          </td>
-          
-          <td>
-            <input type="text" id="anidb" size="10" $Disabled />
-            $DisabledFlagInput
-          </td>
-        </tr>
-HTML;
         
-        # UniProt
-        $DisabledFlagInput = (!$this->DisabledFlag)
-            ? '<input type="button" autofill="anime" value="Autofill" />'
-            : null;
-
-        echo <<<HTML
-        <tr id="anidb_tr" class="hidden">
-          <td>
-            <label for="douj">
-              e-hentai URL (optional)
-            </label>
-          </td>
-          
-          <td>
-            <input type="text" id="douj" size="10" $Disabled />
-            $DisabledFlagInput
-          </td>
-        </tr>
-HTML;
+        echo $Twig->render(
+            'torrent_form/identifier.html',
+            [
+                'db' => $ENV->DB->identifier,
+                'identifier' => $CatalogueNumber,
+            ]
+        );
 
 
         /**
-         * Semantic Version
+         * Version
          */
         
         $Version = display_str($Torrent['Version']);
-        echo <<<HTML
-        <tr id="audio_tr">
-          <td>
-            <label for="version">
-              Version
-            </label>
-          </td>
 
-          <td>
-            <input type="text"
-              id="version" name="version"
-              size="12" pattern="\d+\.*\d*\.*\d*"
-              placeholder="Start with 0.1.0"
-              value="$Version" />
-            
-            <p>
-              Please see
-              <a href="https://semver.org target=" _blank">Semantic Versioning</a>
-            </p>
-          </td>
-        </tr>
-HTML;
+        echo $Twig->render(
+            'torrent_form/version.html',
+            [
+              'db' => $ENV->DB->version,
+              'version' => $Version,
+          ]
+        );
 
 
         /**
-         * Title fields
-         *
-         * Gazelle has three title fields available, regrettably hardcoded.
-         * Ideally we could rank them in importance in the site ontology,
-         * then update one config file to apply custom metadata across the board.
+         * Title Fields
          */
 
         # New torrent upload
         if ($this->NewTorrent) {
-            $Disabled = $this->Disabled;
-
-
-            /**
-             * Title 1
-             */
             $Title1 = display_str($Torrent['Title']);
-            echo <<<HTML
-              <tr id="title_tr">
-                <td>
-                  <label for="title" class="required">
-                    Torrent Title
-                  </label>
-                </td>
-              
-                <td>
-                  <input type="text" id="title" name="title" size="60"
-                    placeholder="Definition line, e.g., Alcohol dehydrogenase ADH1"
-                    value="$Title1" $Disabled />
-                </td>
-              </tr>
-HTML;
-
-
-            /**
-             * Title 2
-             */
             $Title2 = display_str($Torrent['Title2']);
-            echo <<<HTML
-              <tr id="title_rj_tr">
-                <td>
-                  <label for="title_rj">
-                  Organism
-                  </label>
-                </td>
-              
-              <td>
-                <input type="text" id="title_rj" name="title_rj" size="60"
-                  placeholder="Organism line binomial, e.g., Saccharomyces cerevisiae"
-                  value="$Title2" $Disabled />
-              </td>
-            </tr>
-HTML;
-
-
-            /**
-             * Title 3
-             */
             $Title3 = display_str($Torrent['TitleJP']);
-            echo <<<HTML
-            <tr id="title_jp_tr">
-              <td>
-                <label for="title_jp">
-                Strain/Variety
-                </label>
-              </td>
-              
-              <td>
-                <input type="text" id="title_jp" name="title_jp" size="60"
-                  placeholder="Organism line if any, e.g., S288C"
-                  value="$Title3" $Disabled />
-              </td>
-            </tr>
-HTML;
+            #$Disabled = $this->Disabled;
+
+            echo $Twig->render(
+                'torrent_form/titles.html',
+                [
+                  'db' => $ENV->DB,
+                  'title' => $Title1,
+                  'subject' => $Title2,
+                  'object' => $Title3,
+                ]
+            );
         } # fi NewTorrent
         
         
@@ -748,29 +534,18 @@ HTML;
 
 
         /**
-         * Affiliation
-         *
-         * The company, studio, lab, etc., that did the work.
-         * todo: Add creator affiliation and pick a predetermined one
-         * (in our case, last author's institution).
+         * Workgroup
          */
         if ($this->NewTorrent) {
             $Affiliation = display_str($Torrent['Studio']);
-            echo <<<HTML
-            <tr id="studio_tr">
-              <td>
-                <label for="studio" class="required">
-                  Department/Lab
-                </label>
-              </td>
-              
-              <td>
-                <input type="text" id="studio" name="studio" size="60"
-                  placeholder="Last author's institution, e.g., Lawrence Berkeley Laboratory"
-                  value="$Affiliation" $Disabled />
-              </td>
-            </tr>
-HTML;
+
+            echo $Twig->render(
+                'torrent_form/workgroup.html',
+                [
+                  'db' => $ENV->DB->workgroup,
+                  'workgroup' => $Affiliation,
+                ]
+            );
         }
 
 
@@ -782,22 +557,14 @@ HTML;
          */
         if ($this->NewTorrent) {
             $TorrentLocation = display_str($Torrent['Series']);
-            echo <<<HTML
-            <tr id="series_tr">
-              <td>
-                <label for="series">
-                  Location
-                </label>
-              </td>
-            
-              <td>
-                <input type="text" id="series" name="series" size="60"
-                  placeholder="Physical location, e.g., Berkeley, CA 94720"
-                  value="$TorrentLocation" $Disabled />
-              </td>
-            </tr>
-HTML;
-        } # fi NewTorrent
+            echo $Twig->render(
+                'torrent_form/location.html',
+                [
+                  'db' => $ENV->DB->location,
+                  'location' => $TorrentLocation,
+                ]
+            );
+        }
 
 
         /**
@@ -811,21 +578,14 @@ HTML;
          * Year
          */
         $TorrentYear = display_str($Torrent['Year']);
-        echo <<<HTML
-        <tr id="year_tr">
-          <td>
-            <label for="year" class="required">
-              Year
-            </label>
-          </td>
-          
-          <td>
-            <input type="text" id="year" name="year"
-              maxlength="4" size="15" placeholder="Publication year"
-              value="$TorrentYear" />
-          </td>
-        </tr>
-HTML;
+
+        echo $Twig->render(
+            'torrent_form/year.html',
+            [
+            'db' => $ENV->DB->year,
+            'year' => $TorrentYear,
+          ]
+        );
 
 
         /**
@@ -850,14 +610,14 @@ HTML;
               <option>---</option>
 HTML;
 
-        foreach ($this->Codecs as $Codec) {
-            echo "<option value='$Codec'";
+        foreach ($ENV->META->Licenses as $License) {
+            echo "<option value='$License'";
 
-            if ($Codec === ($Torrent['Codec'] ?? false)) {
+            if ($License === ($Torrent['Codec'] ?? false)) {
                 echo " selected";
             }
             
-            echo ">$Codec</option>\n";
+            echo ">$License</option>\n";
         }
 
         echo <<<HTML
@@ -939,7 +699,7 @@ HTML;
                 $trID = 'media_tr',
                 $Label = 'Platform',
                 $Torrent = $Torrent,
-                $Media = $this->SeqPlatforms
+                $Media = $ENV->CATS->{1}->Platforms
             );
             
 
@@ -950,7 +710,7 @@ HTML;
                 $trID = 'media_graphs_tr',
                 $Label = 'Platform',
                 $Torrent = $Torrent,
-                $Media = array_merge($this->GraphPlatforms, $this->SeqPlatforms)
+                $Media = $ENV->CATS->{2}->Platforms
             );
             
 
@@ -961,18 +721,18 @@ HTML;
                 $trID = 'media_scalars_vectors_tr',
                 $Label = 'Platform',
                 $Torrent = $Torrent,
-                $Media = array_merge($this->GraphPlatforms, $this->ImgPlatforms)
+                $Media = $ENV->CATS->{5}->Platforms
             );
 
 
             /**
-             * Platform: Scalars/Vectors
+             * Platform: Images
              */
             mediaSelect(
                 $trID = 'media_images_tr',
                 $Label = 'Platform',
                 $Torrent = $Torrent,
-                $Media = $this->ImgPlatforms
+                $Media = $ENV->CATS->{8}->Platforms
             );
 
 
@@ -983,7 +743,7 @@ HTML;
                 $trID = 'media_documents_tr',
                 $Label = 'Platform',
                 $Torrent = $Torrent,
-                $Media = $this->DocPlatforms
+                $Media = $ENV->CATS->{11}->Platforms
             );
 
 
@@ -994,7 +754,7 @@ HTML;
                 $trID = 'media_machine_data_tr',
                 $Label = 'Platform',
                 $Torrent = $Torrent,
-                $Media = $this->RawPlatforms
+                $Media = $ENV->CATS->{12}->Platforms
             );
         } # fi NewTorrent
         else {
@@ -1014,6 +774,7 @@ HTML;
          */
         function formatSelect($trID = '', $Label = '', $Torrent = [], $FileTypes = [])
         {
+            #var_dump($FileTypes);
             echo <<<HTML
             <tr id="$trID">
               <td>
@@ -1021,21 +782,24 @@ HTML;
                   $Label
                 <label>
               </td>
-              
+
               <td>
                 <select id="container" name="container">
                   <option value="Autofill">Autofill</option>
 HTML;
 
-            foreach ($FileTypes as $Type => $Extensions) {
-                echo "<option value='$Type'";
+            foreach ($FileTypes as $FileType) {
+                foreach ($FileType as $Type => $Extensions) {
+                    echo "<option value='$Type'";
 
-                if ($Type === ($Torrent['Container'] ?? false)) {
-                    echo ' selected';
+                    if ($Type === ($Torrent['Container'] ?? false)) {
+                        echo ' selected';
+                    }
+
+                    echo ">$Type</option>\n";
                 }
-
-                echo ">$Type</option>\n";
             }
+        
 
             echo <<<HTML
                 </select>
@@ -1060,7 +824,7 @@ HTML;
             $trID = 'container_tr',
             $Label = 'Format',
             $Torrent = $Torrent,
-            $FileTypes = array_merge($this->SeqFormats, $this->ProtFormats, $this->PlainFormats)
+            $FileTypes = $ENV->CATS->{1}->Formats
         );
         
 
@@ -1071,7 +835,8 @@ HTML;
             $trID = 'container_graphs_tr',
             $Label = 'Format',
             $Torrent = $Torrent,
-            $FileTypes = array_merge($this->GraphXmlFormats, $this->GraphTxtFormats, $this->SeqFormats, $this->ProtFormats, $this->PlainFormats)
+            #$FileTypes = array_column($ENV->META, $Formats)
+            $FileTypes = $ENV->CATS->{2}->Formats
         );
 
 
@@ -1082,7 +847,8 @@ HTML;
             $trID = 'container_scalars_vectors_tr',
             $Label = 'Format',
             $Torrent = $Torrent,
-            $FileTypes = array_merge($this->ImgFormats, $this->SeqFormats, $this->ProtFormats, $this->PlainFormats)
+            #$FileTypes = $ENV->flatten($ENV->CATS->{5}->Formats)
+            $FileTypes = $ENV->CATS->{5}->Formats
         );
 
 
@@ -1093,7 +859,8 @@ HTML;
             $trID = 'container_images_tr',
             $Label = 'Format',
             $Torrent = $Torrent,
-            $FileTypes = array_merge($this->ImgFormats, $this->PlainFormats)
+            #$FileTypes = array_merge($this->ImgFormats)
+            $FileTypes = $ENV->CATS->{8}->Formats
         );
 
 
@@ -1104,7 +871,8 @@ HTML;
             $trID = 'container_spatial_tr',
             $Label = 'Format',
             $Torrent = $Torrent,
-            $FileTypes = array_merge($this->MapVectorFormats, $this->MapRasterFormats, $this->ImgFormats, $this->PlainFormats)
+            #$FileTypes = array_merge($this->MapVectorFormats, $this->MapRasterFormats, $this->ImgFormats, $this->PlainFormats)
+            $FileTypes = $ENV->CATS->{9}->Formats
         );
 
 
@@ -1115,7 +883,8 @@ HTML;
             $trID = 'container_documents_tr',
             $Label = 'Format',
             $Torrent = $Torrent,
-            $FileTypes = array_merge($this->BinDocFormats, $this->CpuGenFormats, $this->PlainFormats)
+            #$FileTypes = array_merge($this->BinDocFormats, $this->CpuGenFormats, $this->PlainFormats)
+            $FileTypes = $ENV->CATS->{11}->Formats
         );
 
 
@@ -1126,7 +895,8 @@ HTML;
             $trID = 'archive_tr',
             $Label = 'Archive',
             $Torrent = $Torrent,
-            $FileTypes = $this->Archives
+            # $ENV->Archives nests -1 deep
+            $FileTypes = [$ENV->META->Formats->Archives]
         );
 
 
@@ -1264,47 +1034,31 @@ HTML;
             $TorrentImage = display_str($Torrent['Image']);
             $Disabled = $this->Disabled;
 
-            echo <<<HTML
-            <tr id="cover_tr">
-            <td>
-              <label for="image">
-                Picture
-              </label>
-            </td>
-            
-            <td>
-              <input type="text" id="image" name="image" size="60"
-                placeholder="A meaningful picture, e.g., the specimen or a thumbnail"
-                value="$TorrentImage" $Disabled? />
-            </td>
-          </tr>
-HTML;
+            echo $Twig->render(
+                'torrent_form/picture.html',
+                [
+                    'db' => $ENV->DB->picture,
+                    'picture' => $TorrentImage,
+                ]
+            );
         }
 
 
         /**
          * Mirrors
          *
-         * This should be in the `torrents` table not `torrents_group`.
+         * This should be in the `torrents` table not `torrents_group.`
          * The intended use is for web seeds, Dat mirrors, etc.
          */
         if (!$this->DisabledFlag && $this->NewTorrent) {
             $TorrentMirrors = display_str($Torrent['Mirrors']);
-            echo <<<HTML
-            <tr id="mirrors_tr">
-              <td>
-                <label for="mirrors">
-                  Mirrors
-                </label>
-              </td>
-              
-              <td>
-                <!-- Needs to be all on one line -->
-                <textarea rows="2" name="mirrors" id="mirrors"
-                  placeholder="Up to two FTP/HTTP addresses that either point directly to a file, or for multi-file torrents, to the enclosing folder">$TorrentMirrors</textarea>
-              </td>
-            </tr>
-HTML;
+            echo $Twig->render(
+                'torrent_form/mirrors.html',
+                [
+                  'db' => $ENV->DB->mirrors,
+                  'mirrors' => $TorrentMirrors,
+              ]
+            );
         }
 
 
@@ -1334,6 +1088,22 @@ HTML;
               </td>
             </tr>
 HTML;
+        }
+
+
+        /**
+         * Seqhash
+         */
+
+        if ($ENV->FEATURE_BIOPHP && !$this->DisabledFlag && $this->NewTorrent) {
+            $TorrentSeqhash = display_str($Torrent['Seqhash']);
+            echo $Twig->render(
+                'torrent_form/seqhash.html',
+                [
+                    'db' => $ENV->DB->seqhash,
+                    'seqhash' => $TorrentSeqhash,
+                ]
+            );
         }
 
 
@@ -1455,7 +1225,6 @@ HTML;
         echo '</table>';
 
         # Drink a stiff one
-        $this->foot();
         G::$DB->set_query_id($QueryID);
     } # End upload_form()
 } # End TorrentForm()

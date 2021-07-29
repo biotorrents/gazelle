@@ -8,12 +8,12 @@ function compare($X, $Y)
 
 // Build the data for the collage and the torrent list
 // todo: Cache this
-$DB->query("
+$DB->prepared_query("
 SELECT
   ct.`GroupID`,
   ct.`UserID`
 FROM `collages_torrents` AS ct
-  JOIN `torrents_group` AS tg ON tg.`ID` = ct.`GroupID`
+  JOIN `torrents_group` AS tg ON tg.`id` = ct.`GroupID`
 WHERE ct.`CollageID` = '$CollageID'
 ORDER BY ct.`Sort`
 ");
@@ -46,7 +46,7 @@ foreach ($GroupIDs as $GroupID) {
     $Group = $TorrentList[$GroupID];
     extract(Torrents::array_group($Group));
     $UserID = $Contributors[$GroupID];
-    $TorrentTags = new Tags($TagList);
+    $TorrentTags = new Tags($tag_list);
 
     // Handle stats and stuff
     $Number++;
@@ -74,28 +74,28 @@ foreach ($GroupIDs as $GroupID) {
     $DisplayName .= "<a class='torrent_title' href='torrents.php?id=$GroupID' ";
 
     if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-        $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
+        $DisplayName .= 'data-cover="'.ImageTools::process($picture, 'thumb').'" ';
     }
 
-    $GroupName = empty($GroupName) ? (empty($GroupTitle2) ? $GroupNameJP : $GroupTitle2) : $GroupName;
-    $DisplayName .= "dir='ltr'>$GroupName</a>";
+    $title = empty($title) ? (empty($subject) ? $object : $subject) : $title;
+    $DisplayName .= "dir='ltr'>$title</a>";
 
     # Year
-    if ($GroupYear) {
+    if ($published) {
         $Label = '<br />📅&nbsp;';
-        $DisplayName .= $Label."<a href='torrents.php?action=search&year=$GroupYear'>$GroupYear</a>";
+        $DisplayName .= $Label."<a href='torrents.php?action=search&year=$published'>$published</a>";
     }
           
     # Studio
-    if ($GroupStudio) {
+    if ($workgroup) {
         $Label = '&ensp;📍&nbsp;';
-        $DisplayName .= $Label."<a href='torrents.php?action=search&location=$GroupStudio'>$GroupStudio</a>";
+        $DisplayName .= $Label."<a href='torrents.php?action=search&location=$workgroup'>$workgroup</a>";
     }
 
     # Catalogue Number
-    if ($GroupCatalogueNumber) {
+    if ($identifier) {
         $Label = '&ensp;🔑&nbsp;';
-        $DisplayName .= $Label."<a href='torrents.php?action=search&numbers=$GroupCatalogueNumber'>$GroupCatalogueNumber</a>";
+        $DisplayName .= $Label."<a href='torrents.php?action=search&numbers=$identifier'>$identifier</a>";
     }
 
     # Authors
@@ -231,11 +231,7 @@ foreach ($GroupIDs as $GroupID) {
   id="group_<?=$GroupID?>">
   <td></td>
 
-  <td class="center">
-    <div title="<?=$TorrentTags->title()?>"
-      class="tooltip <?=Format::css_category($GroupCategoryID)?> <?=$TorrentTags->css_name()?>">
-    </div>
-  </td>
+  <td></td>
 
   <td>
     <span class="brackets">
@@ -284,7 +280,7 @@ foreach ($GroupIDs as $GroupID) {
     $DisplayName = '';
 
     #$DisplayName .= Artists::display_artists($Artists, false);
-    $DisplayName .= $GroupName;
+    $DisplayName .= $title;
 
     if ($GroupYear > 0) {
         $DisplayName = "$DisplayName [$GroupYear]";
@@ -295,11 +291,11 @@ foreach ($GroupIDs as $GroupID) {
 
 <div class="collage_image image_group_<?=$GroupID?>">
   <a href="torrents.php?id=<?=$GroupID?>">
-    <?php if (!$WikiImage) {
-        $WikiImage = STATIC_SERVER.'common/noartwork/music.png';
+    <?php if (!$picture) {
+        $picture = STATIC_SERVER.'common/noartwork/music.png';
     } ?>
     <img class="tooltip_interactive"
-      src="<?=ImageTools::process($WikiImage, 'thumb')?>"
+      src="<?=ImageTools::process($picture, 'thumb')?>"
       alt="<?=$DisplayName?>"
       title="<?=$DisplayName?>"
       data-title-plain="<?="$DisplayName ($PlainTags)"?>"
@@ -344,7 +340,7 @@ if ($CollageCovers) {
 
 View::show_header(
     $Name,
-    'browse,collage,bbcode,recommend,wall'
+    'browse,collage,recommend,wall'
 );
 ?>
 
@@ -584,13 +580,12 @@ foreach ($UserAdditions as $UserID => $Additions) {
             value="<?=$LoggedUser['AuthKey']?>" />
           <input type="hidden" name="collageid"
             value="<?=$CollageID?>" />
-          <div>
-            <input type="text" size="20" name="url" />
-          </div>
+
           <div class="submit_div">
-            <input type="submit" value="Add" />
+            <input type="text" size="20" name="url" />
+            <input type="submit" class="button-primary" value="Add" />
           </div>
-          <span style="font-style: italic;">Enter the URL of a torrent group on the site.</span>
+          <p>Enter the URL of a torrent group on the site.</p>
         </form>
       </div>
 
@@ -672,7 +667,7 @@ if (!$LoggedUser['DisablePosting']) {
             <textarea name="body" cols="24" rows="5"></textarea>
           </div>
           <div class="submit_div">
-            <input type="submit" id="submit_button" value="Post" />
+            <input type="submit" id="submit_button" class="button-primary" value="Post" />
           </div>
         </div>
       </form>

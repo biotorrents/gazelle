@@ -5,26 +5,30 @@
 //   (t.last_action < (NOW() - INTERVAL 28 DAY) AND t.last_action IS NOT NULL)
 
 $DB->query("
-  SELECT
-    t.ID,
-    t.GroupID,
-    tg.Name,
-    t.UserID,
-    t.Media,
-    HEX(t.info_hash) AS InfoHash
-  FROM torrents AS t
-    JOIN torrents_group AS tg ON tg.ID = t.GroupID
-  WHERE
-    (t.last_action < (NOW() - INTERVAL 365 DAY) AND t.last_action IS NOT NULL)
-    OR
-    (t.Time < (NOW() - INTERVAL 2 DAY) AND t.last_action IS NULL)");
+SELECT
+  t.`ID`,
+  t.`GroupID`,
+  tg.`title`,
+  t.`UserID`,
+  t.`Media`,
+  HEX(t.`info_hash`) AS InfoHash
+FROM
+  `torrents` AS t
+JOIN `torrents_group` AS tg
+ON
+  tg.`id` = t.`GroupID`
+WHERE
+  (t.`last_action` <(NOW() - INTERVAL 365 DAY) AND t.`last_action` IS NOT NULL)
+OR
+  (t.`Time` <(NOW() - INTERVAL 3 DAY) AND t.`last_action` IS NULL)
+");
 
 $Torrents = $DB->to_array(false, MYSQLI_NUM, false);
 echo 'Found '.count($Torrents)." inactive torrents to be deleted.\n";
 $LogEntries = $DeleteNotes = [];
 
 // Exceptions for inactivity deletion
-$InactivityExceptionsMade = []; // UserID => expiry time of exception
+$InactivityExceptionsMade = [2]; // UserID => expiry time of exception
 
 $i = 0;
 foreach ($Torrents as $Torrent) {

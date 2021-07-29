@@ -1,0 +1,19 @@
+<tr id="audio_tr">
+  <td>
+    <label for="version">{{ db.name }}</label>
+  </td>
+
+  <td>
+    <input
+      type="text"
+      id="version"
+      name="version"
+      size="12"
+      pattern="\d+\.*\d*\.*\d*"
+      placeholder="{{ db.desc }}"
+      value="{{ version }}"
+    />
+
+    <p>{{ db.note|raw }}</p>
+  </td>
+</tr>

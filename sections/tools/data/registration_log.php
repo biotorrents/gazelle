@@ -43,11 +43,6 @@ $RS = "
     i.Donor,
     i.Warned,
     i.JoinDate,
-    (
-      SELECT COUNT(h1.UserID)
-      FROM users_history_ips AS h1
-      WHERE h1.IP = m.IP
-    ) AS Uses,
     im.ID,
     im.IP,
     im.Email,
@@ -58,12 +53,7 @@ $RS = "
     im.Enabled,
     ii.Donor,
     ii.Warned,
-    ii.JoinDate,
-    (
-      SELECT COUNT(h2.UserID)
-      FROM users_history_ips AS h2
-      WHERE h2.IP = im.IP
-    ) AS InviterUses
+    ii.JoinDate
   FROM users_main AS m
     LEFT JOIN users_info AS i ON i.UserID = m.ID
     LEFT JOIN users_main AS im ON i.Inviter = im.ID
@@ -90,7 +80,7 @@ $DB->set_query_id($QueryID);
   <input type="hidden" name="action" value="registration_log" />
   Joined after: <input type="date" name="after_date" />
   Joined before: <input type="date" name="before_date" />
-  <input type="submit" />
+  <input type="submit" class="button-primary" />
 </form>
 
 <?php
@@ -114,7 +104,7 @@ if ($DB->has_results()) {
   </tr>
 
   <?php
-  while (list($UserID, $IP, $Email, $Username, $PermissionID, $Uploaded, $Downloaded, $Enabled, $Donor, $Warned, $Joined, $Uses, $InviterID, $InviterIP, $InviterEmail, $InviterUsername, $InviterPermissionID, $InviterUploaded, $InviterDownloaded, $InviterEnabled, $InviterDonor, $InviterWarned, $InviterJoined, $InviterUses) = $DB->next_record()) {
+  while (list($UserID, $IP, $Email, $Username, $PermissionID, $Uploaded, $Downloaded, $Enabled, $Donor, $Warned, $Joined, $InviterID, $InviterIP, $InviterEmail, $InviterUsername, $InviterPermissionID, $InviterUploaded, $InviterDownloaded, $InviterEnabled, $InviterDonor, $InviterWarned, $InviterJoined) = $DB->next_record()) {
       $RowClass = $IP === $InviterIP ? 'warning' : '';
       $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]';
       $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
@@ -136,23 +126,11 @@ if ($DB->has_results()) {
       <span class="float_left">
         <?=display_str($Email)?>
       </span>
-      <span class="float_right">
-        <a href="userhistory.php?action=email&amp;userid=<?=$UserID?>"
-          title="History" class="brackets tooltip">H</a>
-        <a href="/user.php?action=search&amp;email_history=on&amp;email=<?=display_str($Email)?>"
-          title="Search" class="brackets tooltip">S</a>
-      </span><br />
 
       <span class="float_left">
         <?=display_str($InviterEmail)?>
       </span>
 
-      <span class="float_right">
-        <a href="userhistory.php?action=email&amp;userid=<?=$InviterID?>"
-          title="History" class="brackets tooltip">H</a>
-        <a href="/user.php?action=search&amp;email_history=on&amp;email=<?=display_str($InviterEmail)?>"
-          title="Search" class="brackets tooltip">S</a>
-      </span><br />
     </td>
 
     <td>
@@ -160,29 +138,9 @@ if ($DB->has_results()) {
         <?=display_str($IP)?>
       </span>
 
-      <span class="float_right">
-        <?=display_str($Uses)?>
-        <a href="userhistory.php?action=ips&amp;userid=<?=$UserID?>"
-          title="History" class="brackets tooltip">H</a>
-        <a href="/user.php?action=search&amp;ip_history=on&amp;ip=<?=display_str($IP)?>"
-          title="Search" class="brackets tooltip">S</a>
-        <a href="http://whatismyipaddress.com/ip/<?=display_str($IP)?>"
-          title="WI" class="brackets tooltip">WI</a>
-      </span><br />
-
       <span class="float_left">
         <?=display_str($InviterIP)?>
       </span>
-
-      <span class="float_right">
-        <?=display_str($InviterUses)?>
-        <a href="userhistory.php?action=ips&amp;userid=<?=$InviterID?>"
-          title="History" class="brackets tooltip">H</a>
-        <a href="/user.php?action=search&amp;ip_history=on&amp;ip=<?=display_str($InviterIP)?>"
-          title="Search" class="brackets tooltip">S</a>
-        <a href="http://whatismyipaddress.com/ip/<?=display_str($InviterIP)?>"
-          title="WI" class="brackets tooltip">WI</a>
-      </span><br />
     </td>
 
     <td>

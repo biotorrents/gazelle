@@ -82,7 +82,7 @@ if (isset($_REQUEST['addtokens'])) {
     <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
     Tokens to add: <input type="text" name="numtokens" size="5" style="text-align: right;" value="0" /><br /><br />
     <label for="leechdisabled">Grant tokens to leech disabled users: </label><input type="checkbox" id="leechdisabled" name="leechdisabled" value="1" /><br /><br />
-    <input type="submit" name="addtokens" value="Add tokens" />
+    <input type="submit" name="addtokens" class="button-primary" value="Add tokens" />
   </form>
 </div>
 <br />

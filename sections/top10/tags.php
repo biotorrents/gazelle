@@ -28,7 +28,7 @@ $Limit = in_array($Limit, [10,100,250]) ? $Limit : 10;
 
 if ($Details == 'all' || $Details == 'ut') {
     if (!$TopUsedTags = $Cache->get_value('topusedtag_'.$Limit)) {
-        $DB->query("
+        $DB->prepared_query("
         SELECT
           t.ID,
           t.Name,
@@ -47,7 +47,7 @@ if ($Details == 'all' || $Details == 'ut') {
 
 if ($Details == 'all' || $Details == 'ur') {
     if (!$TopRequestTags = $Cache->get_value('toprequesttag_'.$Limit)) {
-        $DB->query("
+        $DB->prepared_query("
         SELECT
           t.ID,
           t.Name,
@@ -108,7 +108,7 @@ function generate_tag_table($Caption, $Tag, $Details, $Limit, $RequestsTable = f
     </small>
   </h3>
 
-  <table class="border">
+  <table class="border top10_table">
     <tr class="colhead">
       <td class="center">Rank</td>
       <td>Tag</td>

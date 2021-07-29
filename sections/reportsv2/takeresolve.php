@@ -74,7 +74,7 @@ if (($Escaped['resolve_type'] == 'manual' || $Escaped['resolve_type'] == 'dismis
     }
   }
 
-  $DB->query("
+  $DB->prepared_query("
     UPDATE reportsv2
     SET
       Status = 'Resolved',
@@ -116,13 +116,13 @@ if (!isset($Escaped['resolve_type'])) {
   error();
 }
 
-$DB->query("
+$DB->prepared_query("
   SELECT ID
   FROM torrents
   WHERE ID = $TorrentID");
 $TorrentExists = ($DB->has_results());
 if (!$TorrentExists) {
-  $DB->query("
+  $DB->prepared_query("
     UPDATE reportsv2
     SET Status = 'Resolved',
       LastChangeTime = NOW(),
@@ -135,7 +135,7 @@ if (!$TorrentExists) {
 
 if ($Report) {
   //Resolve with a parallel check
-  $DB->query("
+  $DB->prepared_query("
     UPDATE reportsv2
     SET Status = 'Resolved',
       LastChangeTime = NOW(),
@@ -159,12 +159,12 @@ if ($DB->affected_rows() > 0 || !$Report) {
   }
 
   if ($_POST['resolve_type'] == 'tags_lots') {
-    $DB->query("
+    $DB->prepared_query("
       INSERT IGNORE INTO torrents_bad_tags
         (TorrentID, UserID, TimeAdded)
       VALUES
         ($TorrentID, ".$LoggedUser['ID']." , NOW())");
-    $DB->query("
+    $DB->prepared_query("
       SELECT GroupID
       FROM torrents
       WHERE ID = $TorrentID");
@@ -174,12 +174,12 @@ if ($DB->affected_rows() > 0 || !$Report) {
   }
 
   if ($_POST['resolve_type'] == 'folders_bad') {
-    $DB->query("
+    $DB->prepared_query("
       INSERT IGNORE INTO torrents_bad_folders
         (TorrentID, UserID, TimeAdded)
       VALUES
         ($TorrentID, ".$LoggedUser['ID'].", NOW())");
-    $DB->query("
+    $DB->prepared_query("
       SELECT GroupID
       FROM torrents
       WHERE ID = $TorrentID");
@@ -188,12 +188,12 @@ if ($DB->affected_rows() > 0 || !$Report) {
     $SendPM = true;
   }
   if ($_POST['resolve_type'] == 'filename') {
-    $DB->query("
+    $DB->prepared_query("
       INSERT IGNORE INTO torrents_bad_files
         (TorrentID, UserID, TimeAdded)
       VALUES
         ($TorrentID, ".$LoggedUser['ID'].", NOW())");
-    $DB->query("
+    $DB->prepared_query("
       SELECT GroupID
       FROM torrents
       WHERE ID = $TorrentID");
@@ -202,7 +202,7 @@ if ($DB->affected_rows() > 0 || !$Report) {
     $SendPM = true;
   }
   if ($_POST['resolve_type'] == 'trump') {
-    $DB->query("
+    $DB->prepared_query("
       SELECT
         r.ExtraID,
         HEX(t.info_hash)
@@ -214,14 +214,14 @@ if ($DB->affected_rows() > 0 || !$Report) {
       $ExtraID = explode(' ', $ExtraID)[0];
 
       $AffectedUsers = [];
-      $DB->query("
+      $DB->prepared_query("
         SELECT UserID
         FROM torrents
         WHERE ID = $TorrentID");
       if ($DB->has_results()) {
         list($AffectedUsers[]) = $DB->next_record();
       }
-      $DB->query("
+      $DB->prepared_query("
         SELECT uid
         FROM xbt_snatched
         WHERE fid = $TorrentID");
@@ -233,7 +233,7 @@ if ($DB->affected_rows() > 0 || !$Report) {
       $AffectedUsers = array_unique($AffectedUsers);
       foreach ($AffectedUsers as $UserID) {
         Tracker::update_tracker('add_token', ['info_hash' => substr('%'.chunk_split($InfoHash,2,'%'),0,-1), 'userid' => $UserID]);
-        $DB->query("
+        $DB->prepared_query("
           INSERT INTO users_freeleeches (UserID, TorrentID, Time, Uses)
           VALUES ($UserID, $ExtraID, NOW(), 0)
           ON DUPLICATE KEY UPDATE
@@ -248,7 +248,7 @@ if ($DB->affected_rows() > 0 || !$Report) {
 
   //Log and delete
   if (isset($Escaped['delete']) && check_perms('torrents_delete')) {
-    $DB->query("
+    $DB->prepared_query("
       SELECT Username
       FROM users_main
       WHERE ID = $UploaderID");
@@ -258,7 +258,7 @@ if ($DB->affected_rows() > 0 || !$Report) {
     if (isset($Escaped['log_message']) && $Escaped['log_message'] != '') {
       $Log .= ' ( '.$Escaped['log_message'].' )';
     }
-    $DB->query("
+    $DB->prepared_query("
       SELECT GroupID, hex(info_hash)
       FROM torrents
       WHERE ID = $TorrentID");
@@ -280,7 +280,7 @@ if ($DB->affected_rows() > 0 || !$Report) {
     $Cache->update_row(false, array('DisableUpload' => '1'));
     $Cache->commit_transaction(0);
 
-    $DB->query("
+    $DB->prepared_query("
       UPDATE users_info
       SET DisableUpload = '1'
       WHERE UserID = $UploaderID");
@@ -312,7 +312,7 @@ if ($DB->affected_rows() > 0 || !$Report) {
     if ($AdminComment) {
       $AdminComment = date('Y-m-d') . " - $AdminComment\n\n";
 
-      $DB->query("
+      $DB->prepared_query("
         UPDATE users_info
         SET AdminComment = CONCAT('".db_string($AdminComment)."', AdminComment)
         WHERE UserID = '".db_string($UploaderID)."'");
@@ -360,7 +360,7 @@ if ($DB->affected_rows() > 0 || !$Report) {
 
   // Now we've done everything, update the DB with values
   if ($Report) {
-    $DB->query("
+    $DB->prepared_query("
       UPDATE reportsv2
       SET
         Type = '".$Escaped['resolve_type']."',
