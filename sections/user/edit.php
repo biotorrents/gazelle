@@ -95,7 +95,7 @@ $ProfileRewards = Donations::get_profile_rewards($UserID);
 
   <!-- Side menu / settings filter -->
   <form class="edit_form" name="user" id="userform" method="post" autocomplete="off">
-    <div class="sidebar">
+    <div class="sidebar one-third column">
       <div class="box" id="settings_sections">
 
         <div class="head">
@@ -163,7 +163,7 @@ $ProfileRewards = Donations::get_profile_rewards($UserID);
       </div>
     </div>
 
-    <div class="main_column">
+    <div class="main_column two-thirds column">
       <div>
         <input type="hidden" name="action" value="take_edit" />
         <input type="hidden" name="userid" value="<?=$UserID?>" />

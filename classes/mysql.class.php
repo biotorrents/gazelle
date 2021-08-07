@@ -249,6 +249,7 @@ class DB_MYSQL
         if (!$this->LinkID) {
             $this->LinkID = mysqli_init();
 
+            /*
             mysqli_ssl_set(
                 $this->LinkID,
                 $this->Key,
@@ -257,6 +258,7 @@ class DB_MYSQL
                 null,
                 null
             );
+            */
 
             mysqli_real_connect(
                 $this->LinkID,
@@ -293,7 +295,8 @@ class DB_MYSQL
      * @param mixed ...$Parameters
      * @return bool|mysqli_result
      */
-    public function prepared_query($Query, ...$Parameters) {
+    public function prepared_query($Query, ...$Parameters)
+    {
         $this->prepare($Query);
         return $this->execute(...$Parameters);
     }

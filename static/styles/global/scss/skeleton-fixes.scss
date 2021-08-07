@@ -3,66 +3,51 @@
  * to its best no-fuss advantage
  */
 
-/* Set heading fonts 50% of default and bump down a level */
-@mixin heading-attributes {
-    letter-spacing: -1px !important;
-    margin: 1rem 0 !important;
+/**
+ * Set heading font size
+ *
+ * h1 { font-size: 5.0rem; }
+ * h2 { font-size: 4.2rem; }
+ * h3 { font-size: 3.6rem; }
+ * h4 { font-size: 3.0rem; }
+ * h5 { font-size: 2.4rem; }
+ * h6 { font-size: 1.5rem; }
+ */
+
+@mixin heading-attributes($size) {
+    font-size: $size !important;
+    margin-top: 2rem !important;
 }
 
 h1:not(#logo) {
-    font-size: 1.8rem !important;
-    @include heading-attributes;
+    @include heading-attributes(2.5rem);
 }
 
 h2 {
-    font-size: 1.5rem !important;
-    @include heading-attributes;
+    @include heading-attributes(2.1rem);
 }
 
 h3 {
-    font-size: 1.2rem !important;
-    @include heading-attributes;
+    @include heading-attributes(1.8rem);
 }
 
 h4 {
-    font-size: 0.9rem !important;
-    @include heading-attributes;
+    @include heading-attributes(1.5rem);
 }
 
 h5 {
-    font-size: 0.75rem !important;
-    @include heading-attributes;
+    @include heading-attributes(1.2rem);
 }
 
 h6 {
-    font-size: 0.75rem !important;
-    @include heading-attributes;
+    @include heading-attributes(0.75rem);
 }
 
-/* Larger than phablet */
+/* Correct content/sidebar overflow */
 @media (min-width: 550px) {
-    h1 {
-        font-size: 1.8rem !important;
-    }
-
-    h2 {
-        font-size: 1.5rem !important;
-    }
-
-    h3 {
-        font-size: 1.2rem !important;
-    }
-
-    h4 {
-        font-size: 0.9rem !important;
-    }
-
-    h5 {
-        font-size: 0.75rem !important;
-    }
-
-    h6 {
-        font-size: 0.75rem !important;
+    .column,
+    .columns {
+        margin-left: 0 !important;
     }
 }
 
@@ -80,7 +65,8 @@ legend {
 }
 
 /* Tables usually containing forms */
-/* new request */ form#request_form,
+/* new request */
+form#request_form,
 /* BP */ table.store_table,
 /* rule sections */ div.rule_table,
 /* client rules */ table.clients_table,
@@ -95,7 +81,7 @@ legend {
 /* GENERIC */ table.skeleton-fix {
     td {
         border-bottom: 0 !important;
-        padding: 0.25rem !important;
+        /* padding: 0.25rem !important; */
     }
 }
 

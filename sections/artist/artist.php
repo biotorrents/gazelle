@@ -1,7 +1,12 @@
 <?php
 #declare(strict_types=1);
 
-//~~~~~~~~~~~ Main artist page ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+/**
+ * Main artist page
+ */
+
+$ENV = ENV::go();
+$Twig = Twig::go();
 
 // For sorting tags
 function compare($x, $y)
@@ -201,6 +206,23 @@ foreach ($TorrentList as $Group) {
 
     if (count($Torrents) > 1) {
         $TorrentTags = new Tags($TagList, false);
+
+        # Render Twig
+        $DisplayName = $Twig->render(
+            'torrents/display_name.html',
+            [
+              'g' => $Group,
+              'url' => Format::get_url($_GET),
+              'cover_art' => (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) ?? true,
+              'thumb' => ImageTools::process($CoverArt, 'thumb'),
+              'artists' => Artists::display_artists($Artists),
+              'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
+              'extra_info' => Torrents::torrent_info($Data, true, true),
+            ]
+        );
+      
+
+        /*
         $DisplayName = '';
         #$DisplayName = Artists::display_artists(Artists::get_artist($GroupID), true, true);
 
@@ -219,7 +241,7 @@ foreach ($TorrentList as $Group) {
             $Label = '<br />📅&nbsp;';
             $DisplayName .= $Label."<a href='torrents.php?action=search&year=$GroupYear'>$GroupYear</a>";
         }
-        
+
         # Studio
         if ($GroupStudio) {
             $DisplayName .= "&nbsp;&nbsp;📍&nbsp;<a href='torrents.php?action=search&location=$GroupStudio'>$GroupStudio</a>";
@@ -234,11 +256,13 @@ foreach ($TorrentList as $Group) {
         }
         */
 
+        /*
         # Catalogue Number
         if ($GroupCatalogueNumber) {
             $Label = '&ensp;🔑&nbsp;';
             $DisplayName .= $Label."<a href='torrents.php?action=search&numbers=$GroupCatalogueNumber'>$GroupCatalogueNumber</a>";
         }
+        */
 
         if (check_perms('users_mod') || check_perms('torrents_fix_ghosts')) {
             $DisplayName .= ' <a href="torrents.php?action=fix_group&amp;groupid='.$GroupID.'&amp;artistid='.$ArtistID.'&amp;auth='.$LoggedUser['AuthKey'].'" class="brackets tooltip" title="Fix ghost DB entry">Fix</a>';
@@ -258,7 +282,10 @@ foreach ($TorrentList as $Group) {
       </td>
       <td colspan="5" class="big_info">
         <div class="group_info clear">
-          <strong><?=$DisplayName?></strong>
+          <strong>
+            <?=$DisplayName?>
+          </strong>
+
           <?php if (Bookmarks::has_bookmarked('torrent', $GroupID)) { ?>
           <span class="remove_bookmark float_right">
             <a class="float_right" href="#"
@@ -332,6 +359,22 @@ foreach ($TorrentList as $Group) {
 
         $TorrentTags = new Tags($TagList, false);
 
+        # Render Twig
+        $DisplayName = $Twig->render(
+            'torrents/display_name.html',
+            [
+              'g' => $Group,
+              'url' => Format::get_url($_GET),
+              'cover_art' => (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) ?? true,
+              'thumb' => ImageTools::process($CoverArt, 'thumb'),
+              'artists' => Artists::display_artists($Artists),
+              'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
+              'extra_info' => Torrents::torrent_info($Torrent, true, true),
+            ]
+        );
+      
+
+        /*
         # Start making $DisplayName (first torrent result line)
         $DisplayName = '';
 
@@ -344,7 +387,7 @@ foreach ($TorrentList as $Group) {
         # Similar to torrents.class.php and
         # sections/torrents/browse.php
         $DisplayName .= "<a class='torrent_title' href='torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID' ";
-        
+
         if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
             $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
         }
@@ -360,7 +403,7 @@ foreach ($TorrentList as $Group) {
             $Label = '<br />📅&nbsp;';
             $DisplayName .= $Label."<a href='torrents.php?action=search&year=$GroupYear'>$GroupYear</a>";
         }
-          
+
         # Studio
         if ($GroupStudio) {
             $DisplayName .= "&nbsp;&nbsp;📍&nbsp;<a href='torrents.php?action=search&location=$GroupStudio'>$GroupStudio</a>";
@@ -375,17 +418,19 @@ foreach ($TorrentList as $Group) {
         }
         */
 
+        /*
         # Catalogue Number
         if ($GroupCatalogueNumber) {
             $Label = '&ensp;🔑&nbsp;';
             $DisplayName .= $Label."<a href='torrents.php?action=search&numbers=$GroupCatalogueNumber'>$GroupCatalogueNumber</a>";
         }
+        */
 
         if (check_perms('users_mod') || check_perms('torrents_fix_ghosts')) {
             $DisplayName .= ' <a href="torrents.php?action=fix_group&amp;groupid='.$GroupID.'&amp;artistid='.$ArtistID.'&amp;auth='.$LoggedUser['AuthKey'].'" class="brackets tooltip" title="Fix ghost DB entry">Fix</a>';
         }
 
-        $ExtraInfo = Torrents::torrent_info($Torrent, true, true);
+        #$ExtraInfo = Torrents::torrent_info($Torrent, true, true);
 
         $SnatchedGroupClass = ($GroupFlags['IsSnatched'] ? ' snatched_group' : '');
         $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : '';
@@ -542,7 +587,7 @@ if (check_perms('site_torrents_notify')) {
     </div>
   </div>
   <?php /* Misc::display_recommend($ArtistID, "artist"); */ ?>
-  <div class="sidebar">
+  <div class="sidebar one-third column">
     <?php if ($Image) { ?>
     <div class="box box_image">
       <div class="head"><strong><?=$Name?></strong></div>
@@ -681,7 +726,7 @@ END THE COLLECTOR
       </ul>
     </div>
   </div>
-  <div class="main_column">
+  <div class="main_column two-thirds column">
     <div id="artist_information" class="box">
       <div id="info" class="head">
         <a href="#">&uarr;</a>&nbsp;

@@ -2,6 +2,7 @@
 #declare(strict_types = 1);
 
 $ENV = ENV::go();
+$Twig = Twig::go();
 
 require_once SERVER_ROOT.'/sections/torrents/functions.php';
 
@@ -481,10 +482,10 @@ View::show_header('Browse Torrents', 'browse');
         )?>
               /><label for="tags_type0"> Any</label>&nbsp;&nbsp;
               <input type="radio" name="tags_type" id="tags_type1" value="1" <?Format::selected(
-                    'tags_type',
-                    1,
-                    'checked'
-                )?>
+            'tags_type',
+            1,
+            'checked'
+        )?>
               /><label for="tags_type1"> All</label><br /><br />
               Use !tag to exclude tags
             </td>
@@ -753,7 +754,7 @@ die();
       $TorrentTags = new Tags($GroupInfo['tag_list']);
 
       # Start making $DisplayName (first torrent result line)
-      $DisplayName = '';
+      #$DisplayName = '';
 
       /*
       if (isset($Artists)) {
@@ -770,52 +771,19 @@ die();
       if ($GroupResults && (count($Torrents) > 1 && isset($GroupedCategories[$CategoryID - 1]))) {
           // These torrents are in a group
           $CoverArt = $GroupInfo['picture'];
-          $DisplayName .= "<a class='torrent_title' href='torrents.php?id=$GroupID' ";
 
-          # No cover art
-          if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-              $DisplayName .= 'data-cover="'.ImageTools::process($CoverArt, 'thumb').'" ';
-          }
-
-          # Japanese
-          $DisplayName .= "dir='ltr'>$GroupName</a>";
-
-          # Year
-          if ($GroupYear) {
-              $Label = '<br />📅&nbsp;';
-              $DisplayName .= $Label."<a href='torrents.php?".Format::get_url($_GET)."&year=$GroupYear'>$GroupYear</a>";
-          }
-        
-          # Studio
-          if ($GroupStudio) {
-              $Label = '&ensp;📍&nbsp;';
-              $DisplayName .= $Label."<a href='torrents.php?".Format::get_url($_GET)."&location=$GroupStudio'>$GroupStudio</a>";
-          }
-
-          # Catalogue Number
-          if ($GroupCatalogueNumber) {
-              $Label = '&ensp;🔑&nbsp;';
-              $DisplayName .= $Label."<a href='torrents.php?".Format::get_url($_GET)."&numbers=$GroupCatalogueNumber'>$GroupCatalogueNumber</a>";
-          }
-
-          # Organism
-          if ($GroupTitle2) {
-              $Label = '&ensp;🦠&nbsp;';
-              $DisplayName .= $Label."<a href='torrents.php?".Format::get_url($_GET)."&advgroupname=$GroupTitle2'><em>$GroupTitle2</em></a>";
-          }
-                          
-          # Strain/Variety
-          if ($GroupNameJP) {
-              $Label = '&nbsp;';
-              $DisplayName .= $Label."<a href='torrents.php?".Format::get_url($_GET)."&advgroupname=$GroupNameJP'>$GroupNameJP</a>";
-          }
-        
-          # Authors
-          if (isset($Artists)) {
-              # Emoji in classes/astists.class.php
-              $Label = '&ensp;';
-              $DisplayName .= $Label.'<div class="torrent_artists">'.Artists::display_artists($Artists).'</div>';
-          } ?>
+          $DisplayName = $Twig->render(
+              'torrents/display_name.html',
+              [
+                'g' => $GroupInfo,
+                'url' => Format::get_url($_GET),
+                'cover_art' => (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) ?? true,
+                'thumb' => ImageTools::process($CoverArt, 'thumb'),
+                'artists' => Artists::display_artists($Artists),
+                'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
+                'extra_info' => false,
+              ]
+          ); ?>
   <tr class="group<?=$SnatchedGroupClass?>">
     <?php
       $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGrouping'] === 1); ?>
@@ -835,7 +803,7 @@ die();
       </div>
     </td>
 
-    <!-- [ DL | RP ] and [Bookmark] -->
+    <!-- [Bookmark] -->
     <td colspan="2" class="big_info">
       <div class="group_info clear">
         <?=$DisplayName?>
@@ -855,11 +823,6 @@ die();
             onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
         </span>
         <?php } ?>
-        <br />
-
-        <!-- Tags -->
-        <div class="tags"><?=$TorrentTags->format('torrents.php?'.$Action.'&amp;taglist=')?>
-        </div>
       </div>
     </td>
 
@@ -905,7 +868,7 @@ die();
   <tr
     class="group_torrent groupid_<?=$GroupID?> <?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGrouping'] === 1 ? ' hidden' : '')?>">
     <td colspan="3">
-      <span>
+      <span class="float_right">
         [ <a href="<?=$TorrentDL?>" class="tooltip"
           title="Download"><?=$Data['HasFile'] ? 'DL' : 'Missing'?></a>
         <?php
@@ -959,59 +922,30 @@ die();
           # These are the main torrent search results
           $Data['CategoryID'] = $CategoryID;
           $CoverArt = $GroupInfo['picture'];
-          $DisplayName .= "<a class='torrent_title' href='torrents.php?id=$GroupID&amp;torrentid=$TorrentID' ";
 
-          if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-              $DisplayName .= 'data-cover="'.ImageTools::process($CoverArt, 'thumb').'" ';
-          }
-
-          # Japanese
-          $DisplayName .= "dir='ltr'>$GroupName</a>";
-
+          # Extra info (non-group metadata)
           if (isset($GroupedCategories[$CategoryID - 1])) {
-              # Year
-              # Sh!t h4x; Year is mandatory
-              if ($GroupYear) {
-                  $Label = '<br />📅&nbsp;';
-                  $DisplayName .= $Label."<a href='torrents.php?".Format::get_url($_GET)."&year=$GroupYear'>$GroupYear</a>";
-              }
-            
-              # Studio
-              if ($GroupStudio) {
-                  $DisplayName .= "&nbsp;&nbsp;📍&nbsp;<a href='torrents.php?".Format::get_url($_GET)."&location=$GroupStudio'>$GroupStudio</a>";
-              }
-
-              # Catalogue Number
-              if ($GroupCatalogueNumber) {
-                  $Label = '&ensp;🔑&nbsp;';
-                  $DisplayName .= $Label."<a href='torrents.php?".Format::get_url($_GET)."&numbers=$GroupCatalogueNumber'>$GroupCatalogueNumber</a>";
-              }
-          
-              # Organism
-              if ($GroupTitle2) {
-                  $Label = '&ensp;🦠&nbsp;';
-                  $DisplayName .= $Label."<a href='torrents.php?".Format::get_url($_GET)."&advgroupname=$GroupTitle2'><em>$GroupTitle2</em></a>";
-              }
-                
-              # Strain/Variety
-              if ($GroupNameJP) {
-                  $Label = '&nbsp;';
-                  $DisplayName .= $Label."<a href='torrents.php?".Format::get_url($_GET)."&advgroupname=$GroupNameJP'>$GroupNameJP</a>";
-              }
-
-              # Authors
-              if (isset($Artists)) {
-                  # Emoji in classes/astists.class.php
-                  $Label = '&ensp;';
-                  $DisplayName .= $Label.'<div class="torrent_artists">'.Artists::display_artists($Artists).'</div>';
-              }
-            
               $ExtraInfo = Torrents::torrent_info($Data, true, true);
           } elseif ($Data['IsSnatched']) {
               $ExtraInfo = Format::torrent_label('Snatched!');
           } else {
               $ExtraInfo = '';
           }
+
+          # Render Twig
+          $DisplayName = $Twig->render(
+              'torrents/display_name.html',
+              [
+                'g' => $GroupInfo,
+                'url' => Format::get_url($_GET),
+                'cover_art' => (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) ?? true,
+                'thumb' => ImageTools::process($CoverArt, 'thumb'),
+                'artists' => Artists::display_artists($Artists),
+                'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
+                'extra_info' => Torrents::torrent_info($Data, true, true),
+              ]
+          );
+
           $SnatchedTorrentClass = $Data['IsSnatched'] ? ' snatched_torrent' : '';
           $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$LoggedUser['AuthKey']."&amp;torrent_pass=".$LoggedUser['torrent_pass'];
 
@@ -1032,8 +966,8 @@ die();
     </td>
     <td class="big_info">
       <div class="group_info clear">
-        <div class="float_right">
-          <span>
+        <div class="torrent_interactions">
+          <span class="float_right">
             [ <a href="<?=$TorrentDL?>" class="tooltip"
               title="Download">DL</a>
             <?php
@@ -1064,13 +998,18 @@ die();
           <?php } ?>
         </div>
         <?=$DisplayName?>
+        <!--
         <br />
-        <div style="display: inline;" class="torrent_info"><?=$ExtraInfo?><?php if ($Reported) { ?>
+        <div style="display: inline;" class="torrent_info"><?=$ExtraInfo?>
+          -->
+        <?php if ($Reported) { ?>
           / <strong class="torrent_label tl_reported tooltip important_text"
             title="Type: <?=ucfirst($Reports[0]['Type'])?><br>Comment: <?=htmlentities(htmlentities($Reports[0]['UserComment']))?>">Reported</strong><?php } ?>
         </div>
+        <!--
         <div class="tags"><?=$TorrentTags->format("torrents.php?$Action&amp;taglist=")?>
         </div>
+        -->
       </div>
     </td>
     <td class="number_column"><?=$Data['FileCount']?>

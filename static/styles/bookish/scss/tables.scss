@@ -14,11 +14,8 @@
 
 /* Every table */
 table {
+    border-collapse: collapse;
     width: 100%;
-
-    th {
-        font-size: 120%;
-    }
 
     td,
     td:first-child {
@@ -39,17 +36,15 @@ table {
     }
 }
 
+/*
 .torrent_table,
 .collage_table {
     div.tags {
         font-weight: normal;
         max-width: 500px;
     }
-
-    span {
-        float: right;
-    }
 }
+*/
 
 /**
  * Torrent form
@@ -57,8 +52,6 @@ table {
 
 .torrent_form,
 #dynamic_form {
-    /* margin-bottom: 2rem; */
-
     label {
         float: right;
     }
@@ -76,8 +69,6 @@ table {
 .colhead {
     padding: 0.5em 0;
     border-bottom: 1px solid #e1e1e1;
-    font-size: 120%;
-    font-weight: bold;
 }
 
 .colhead .sign,
@@ -85,12 +76,10 @@ table {
     padding: 0 1rem;
     vertical-align: middle;
     text-align: center;
-    font-weight: bold;
 }
 
 .colhead .sign {
     padding: 0 1rem;
-    font-weight: bold;
 }
 
 /* Torrent and collage tables */
@@ -106,22 +95,18 @@ table {
 @mixin forum-post($color) {
     background-color: $color;
     border-bottom: 1px solid #e1e1e1;
-    font-size: 120%;
 }
 
 .forum_post .colhead_dark {
     @include forum-post(white);
-    /* background: $lb100; */
 }
 
 .forum_post.staff_post .colhead_dark {
     @include forum-post(whitesmoke);
-    /* background: $lb200; */
 }
 
 .forum_post.sticky_post {
     border: 2px solid change-color(gold, $alpha: 0.5);
-    /* border: 2px solid $SkeletonDefault; */
 }
 
 td.label {

@@ -409,7 +409,7 @@ HTML;
      * It has sub-functions, variables, and everything.
      * It continues to the end of the class.
      */
-    private function upload_form()
+    public function upload_form()
     {
         $ENV = ENV::go();
         $Twig = Twig::go();

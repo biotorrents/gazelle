@@ -75,7 +75,7 @@ View::show_header($Title, 'wiki');
     </div>
   </div>
 
-  <div class="sidebar">
+  <div class="sidebar one-third column">
     <div class="box">
       <div class="head">Search</div>
       <div class="pad">
@@ -179,7 +179,7 @@ if ($Aliases !== $Title) {
     <?php } ?>
   </div>
 
-  <div class="main_column">
+  <div class="main_column two-thirds column">
     <div class="box wiki_article">
       <div class="pad"><?=$TextBody?>
       </div>

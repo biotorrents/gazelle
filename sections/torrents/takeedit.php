@@ -446,9 +446,9 @@ $DB->query("
 list($Enabled) = $DB->next_record();
 
 $DB->query("
-  SELECT Name
-  FROM torrents_group
-  WHERE ID = $GroupID");
+  SELECT `title`
+  FROM `torrents_group`
+  WHERE `id` = $GroupID");
 list($Name) = $DB->next_record(MYSQLI_NUM, false);
 
 Misc::write_log("Torrent $TorrentID ($Name) in group $GroupID was edited by ".$LoggedUser['Username']." ($LogDetails)"); // TODO: this is probably broken

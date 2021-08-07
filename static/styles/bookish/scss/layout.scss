@@ -2,26 +2,23 @@
  * Basic structure
  */
 
+/*
 #header {
     background: white;
     margin-bottom: 2rem;
     padding: 0;
     width: 100%;
 }
+*/
 
-#content {
-    margin: auto;
-    margin-top: 2rem;
-    overflow: hidden;
-    width: 90%;
-}
-
+/*
 #footer {
     margin-top: 2rem;
     padding: 1em 0;
     text-align: center;
     width: 100%;
 }
+*/
 
 /* Logo */
 #logo {
@@ -29,24 +26,27 @@
     background-size: contain;
     width: 220px;
     height: 50px;
-    margin: 0.5rem 0 0.25rem 10%;
+    margin: 1rem;
+    /* margin: 0.5rem 0 0.25rem 10%; */
 
     a {
-        border: none;
+        /* border: none; */
         display: block;
-        width: 100%;
+        /* width: 100%; */
         height: 50px;
     }
 
+    /*
     a:hover {
         border: none;
     }
+    */
 }
 
 /* Links */
-div.linkbox {
+.linkbox {
     text-align: center;
-    padding: 0.5rem;
+    padding: 1rem;
 }
 
 /* Misc */
@@ -97,14 +97,6 @@ div.linkbox {
     }
 }
 
-#content form.search_form + .torrent_table {
-    margin-top: 20px;
-}
-
-#content form.search_form .submit {
-    text-align: center;
-}
-
 .cat_list tr td {
     border: none;
 }
@@ -117,13 +109,17 @@ div.linkbox {
  * Text elements
  */
 
+/*
 p {
     margin-bottom: 1rem;
 }
+*/
 
+/*
 li {
     margin: 0 1rem;
 }
+*/
 
 .torrent_title {
     font-size: larger;
@@ -178,7 +174,6 @@ ul .invitetree {
 .store_table .badge_icon {
     display: inline-block;
     width: 4rem;
-    /* width: 16px; */
 }
 
 .store_table .badge_icon img {
@@ -210,8 +205,6 @@ ul .invitetree {
 .center_poll {
     height: 0.75rem;
     background: change-color(green, $alpha: 0.25);
-    /* background: $SkeletonDefault; */
-    /* background: $lb50; */
     border-radius: 0;
     float: left;
     margin: 0.25rem 0;
@@ -273,10 +266,4 @@ ul .invitetree {
     pre {
         max-width: 100%;
     }
-
-    /*
-    .spoilerContainer,
-    .hideContainer {
-    }
-    */
 }

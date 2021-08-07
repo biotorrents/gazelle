@@ -1,6 +1,9 @@
 <?php
 #declare(strict_types = 1);
 
+$ENV = ENV::go();
+$Twig = Twig::go();
+
 function compare($x, $y)
 {
     return($y['name'] < $x['name']);
@@ -16,7 +19,7 @@ if (!empty($_GET['revisionid']) && is_number($_GET['revisionid'])) {
     $RevisionID = 0;
 }
 
-include SERVER_ROOT.'/sections/torrents/functions.php';
+require_once SERVER_ROOT.'/sections/torrents/functions.php';
 
 $TorrentCache = get_group_info($GroupID, true, $RevisionID);
 $TorrentDetails = $TorrentCache[0];
@@ -28,55 +31,29 @@ list($WikiBody, $WikiImage, $GroupID, $GroupName, $GroupTitle2, $GroupNameJP, $G
   $GroupTime, $TorrentTags, $TorrentTagIDs, $TorrentTagUserIDs,
   $Screenshots, $Mirrors, $GroupFlags) = array_values($TorrentDetails);
 
-if (!$GroupName) {
-    if (!$GroupTitle2) {
-        $GroupName = $GroupNameJP;
-    } else {
-        $GroupName = $GroupTitle2;
-    }
-}
-
 # Make the main headings
-$DisplayName = $GroupName;
 $AltName = $GroupName; // Goes in the alt text of the image
 $Title = $GroupName; // Goes in <title>
 $WikiBody = Text::full_format($WikiBody);
 $Artists = Artists::get_artist($GroupID);
 
-if ($GroupCategoryID) {
-    $DisplayName = '<div class="'.Format::css_category($GroupCategoryID).' group_cat"></div>'.$DisplayName;
+
+$CoverArt = $Cache->get_value("torrents_cover_art_$GroupID");
+if (!$CoverArt) {
+    $DB->query("
+      SELECT ID, Image, Summary, UserID, Time
+      FROM cover_art
+      WHERE GroupID = '$GroupID'
+      ORDER BY Time ASC");
+
+    $CoverArt = [];
+    $CoverArt = $DB->to_array();
+    
+    if ($DB->has_results()) {
+        $Cache->cache_value("torrents_cover_art_$GroupID", $CoverArt, 0);
+    }
 }
 
-if ($GroupYear > 0) {
-    $Label = '<br />📅&nbsp;';
-    $DisplayName .= $Label.$GroupYear;
-    $AltName .= $Label.$GroupYear;
-}
-
-if ($GroupStudio) {
-    $Label = '&ensp;📍&nbsp;';
-    $DisplayName .= $Label.$GroupStudio;
-}
-
-if ($GroupCatalogueNumber) {
-    $Label = '&ensp;🔑&nbsp;';
-    $DisplayName .= $Label.$GroupCatalogueNumber;
-}
-
-if ($GroupTitle2 && $GroupTitle2 !== $GroupName) {
-    $Label = '<br />🦠&nbsp;';
-    $DisplayName .= "$Label<em>$GroupTitle2</em>";
-}
-
-if ($GroupNameJP && $GroupNameJP !== $GroupName) {
-    $DisplayName .= ' '.$GroupNameJP;
-}
-
-if ($Artists) {
-    # Emoji in classes/astists.class.php
-    $Label = '&ensp;';
-    $DisplayName .= $Label.Artists::display_artists($Artists, true);
-}
 
 $Tags = [];
 if ($TorrentTags !== '') {
@@ -96,21 +73,20 @@ if ($TorrentTags !== '') {
     uasort($Tags, 'compare');
 }
 
-$CoverArt = $Cache->get_value("torrents_cover_art_$GroupID");
-if (!$CoverArt) {
-    $DB->query("
-      SELECT ID, Image, Summary, UserID, Time
-      FROM cover_art
-      WHERE GroupID = '$GroupID'
-      ORDER BY Time ASC");
 
-    $CoverArt = [];
-    $CoverArt = $DB->to_array();
-    
-    if ($DB->has_results()) {
-        $Cache->cache_value("torrents_cover_art_$GroupID", $CoverArt, 0);
-    }
-}
+# Render Twig
+$DisplayName = $Twig->render(
+    'details/torrent_header.html',
+    [
+      'db' => $ENV->DB,
+      'g' => $TorrentDetails,
+      'cat_icon' => $ENV->CATS->{$TorrentDetails['category_id']}->Icon,
+      'url' => Format::get_url($_GET),
+      'cover_art' => (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) ?? true,
+      'thumb' => ImageTools::process($CoverArt, 'thumb'),
+      'artists' => Artists::display_artists($Artists),
+    ]
+);
 
 // Comments (must be loaded before View::show_header so that subscriptions and quote notifications are handled properly)
 list($NumComments, $Page, $Thread, $LastRead) = Comments::load('torrents', $GroupID);
@@ -123,57 +99,59 @@ View::show_header(
 );
 ?>
 
-<div>
-  <div class="header">
-    <h2>
-      <?=$DisplayName?>
-    </h2>
+<section class="header">
+  <h2 class="row">
+    <a href="/torrents.php">Torrents</a>
+    <?= $ENV->CRUMB ?>
+    <?= $Title ?>
+  </h2>
 
-    <div class="linkbox">
-      <?php if (check_perms('site_edit_wiki')) { ?>
-      <a href="torrents.php?action=editgroup&amp;groupid=<?=$GroupID?>"
-        class="brackets">Edit group</a>
-      <?php } ?>
-      <a href="torrents.php?action=history&amp;groupid=<?=$GroupID?>"
-        class="brackets">View history</a>
-      <?php if ($RevisionID && check_perms('site_edit_wiki')) { ?>
-      <a href="torrents.php?action=revert&amp;groupid=<?=$GroupID ?>&amp;revisionid=<?=$RevisionID ?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
-        class="brackets">Revert to this revision</a>
-      <?php
-      }
-      if (Bookmarks::has_bookmarked('torrent', $GroupID)) {
-          ?>
-      <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
-        class="remove_bookmark brackets"
-        onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove
-        bookmark</a>
-      <?php
-      } else { ?>
-      <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
-        class="add_bookmark brackets"
-        onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
-      <?php } ?>
-      <a href="#" id="subscribelink_torrents<?=$GroupID?>"
-        class="brackets"
-        onclick="SubscribeComments('torrents', <?=$GroupID?>); return false;"><?=Subscriptions::has_subscribed_comments('torrents', $GroupID) !== false ? 'Unsubscribe' : 'Subscribe'?></a>
-      <?php
-      # Remove category-specific options to add a new format
-      if ($Categories[$GroupCategoryID-1]) { ?>
-      <a href="upload.php?groupid=<?=$GroupID?>" class="brackets">Add
-        format</a>
-      <?php
-      }
-      if (check_perms('site_submit_requests')) { ?>
-      <a href="requests.php?action=new&amp;groupid=<?=$GroupID?>"
-        class="brackets">Request format</a>
-      <?php } ?>
-      <a href="torrents.php?action=grouplog&amp;groupid=<?=$GroupID?>"
-        class="brackets">View log</a>
-    </div>
+  <div class="linkbox">
+    <?php if (check_perms('site_edit_wiki')) { ?>
+    <a href="torrents.php?action=editgroup&amp;groupid=<?=$GroupID?>"
+      class="brackets">Edit group</a>
+    <?php } ?>
+    <a href="torrents.php?action=history&amp;groupid=<?=$GroupID?>"
+      class="brackets">View history</a>
+    <?php if ($RevisionID && check_perms('site_edit_wiki')) { ?>
+    <a href="torrents.php?action=revert&amp;groupid=<?=$GroupID ?>&amp;revisionid=<?=$RevisionID ?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+      class="brackets">Revert to this revision</a>
+    <?php
+    }
+    if (Bookmarks::has_bookmarked('torrent', $GroupID)) {
+        ?>
+    <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
+      class="remove_bookmark brackets"
+      onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove
+      bookmark</a>
+    <?php
+    } else { ?>
+    <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
+      class="add_bookmark brackets"
+      onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
+    <?php } ?>
+    <a href="#" id="subscribelink_torrents<?=$GroupID?>"
+     class="brackets"
+      onclick="SubscribeComments('torrents', <?=$GroupID?>); return false;"><?=Subscriptions::has_subscribed_comments('torrents', $GroupID) !== false ? 'Unsubscribe' : 'Subscribe'?></a>
+    <?php
+    # Remove category-specific options to add a new format
+    if ($Categories[$GroupCategoryID-1]) { ?>
+    <a href="upload.php?groupid=<?=$GroupID?>" class="brackets">Add
+      format</a>
+    <?php
+    }
+    if (check_perms('site_submit_requests')) { ?>
+    <a href="requests.php?action=new&amp;groupid=<?=$GroupID?>"
+      class="brackets">Request format</a>
+    <?php } ?>
+    <a href="torrents.php?action=grouplog&amp;groupid=<?=$GroupID?>"
+      class="brackets">View log</a>
   </div>
+</section>
+
 
   <?php Misc::display_recommend($GroupID, "torrent"); ?>
-  <div class="sidebar">
+  <div class="sidebar one-third column">
     <div class="box box_image box_image_albumart box_albumart">
       <!-- .box_albumart deprecated -->
       <div class="head">
@@ -407,7 +385,9 @@ $Index++;
   </div>
 
   <!-- Main torrent display -->
-  <div class="main_column">
+  <div class="main_column two-thirds column">
+  <?=$DisplayName?>
+
     <div class="box">
       <table
         class="torrent_table details<?=$GroupFlags['IsSnatched'] ? ' snatched' : ''?>"
@@ -767,14 +747,28 @@ foreach ($TorrentList as $Torrent) {
 TEX;
      ?>
 
+<details>
+    <summary>Show/Hide BibTeX</summary>
+    <?= <<<HTML
+    <pre>
+      $BibtexCitation
+    </pre>
+HTML;
+?>
+</details>
+
+
+
               <!-- todo pcs: Both tags must be on the same line -->
+              <!--
               <input type="button" class="spoilerButton" value="Show BibTeX" /><pre class="hidden">
-                <?= $BibtexCitation ?>
+                <?= null#$BibtexCitation?>
               </pre>
             </div>
+-->
             <?php
         #}
-        echo '</blockquote>';
+        #echo '</blockquote>';
 } ?>
           </td>
         </tr>

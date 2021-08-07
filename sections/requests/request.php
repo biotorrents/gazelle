@@ -124,7 +124,7 @@ $encoded_artist = urlencode($encoded_artist);
 ?>
     </div>
   </div>
-  <div class="sidebar">
+  <div class="sidebar one-third column">
     <?php if ($Request['CategoryID'] !== '0') { ?>
     <div class="box box_image box_image_albumart box_albumart">
       <!-- .box_albumart deprecated -->
@@ -240,7 +240,7 @@ $encoded_artist = urlencode($encoded_artist);
       </table>
     </div>
   </div>
-  <div class="main_column">
+  <div class="main_column two-thirds column">
     <div class="box">
       <div class="head"><strong>Info</strong></div>
       <div class="pad">

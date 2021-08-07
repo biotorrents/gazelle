@@ -45,9 +45,9 @@ View::show_header('Golden rules');
       </li>
 
       <li>
-        Accessing the site from any IP address is permitted,
-        but your account will be linked with other accounts that have accessed the site from the same IP as you.
-        As such, it is <em>recommended</em> that you don't use public networks, proxies, or VPNs to access the site.
+        Accessing the site from any IP address is permitted.
+        <!-- but your account will be linked with other accounts that have accessed the site from the same IP as you. -->
+        It is <em>recommended</em> that you don't use public networks, proxies, or VPNs to access the site.
       </li>
 
       <li>

@@ -104,35 +104,39 @@ class Artists
      *
      * @param array Artists an array of the form output by get_artists
      * @param boolean $MakeLink if true, the artists will be links, if false, they will be text.
-     * @param boolean $IncludeHyphen if true, appends " - " to the end.
+     * @param boolean $IncludeHyphen FEATURE REMOVED, ARGUMENT KEPT FOR COMPATIBILITY
      * @param $Escape if true, output will be escaped. Think carefully before setting it false.
      */
     public static function display_artists($Artists, $MakeLink = true, $IncludeHyphen = true, $Escape = true)
     {
         if (!empty($Artists)) {
             $ampersand = ($Escape) ? ' &amp; ' : ' & ';
-            $link = ($IncludeHyphen? '🧑&nbsp;' : '');
+            $link = '';
     
             switch (count($Artists)) {
-            case 0:
+              case 0:
                 break;
 
-            case 3:
+              case 4:
+                $link .= Artists::display_artist($Artists[2], $MakeLink, $Escape). ", ";
+                // no break
+  
+              case 3:
                 $link .= Artists::display_artist($Artists[2], $MakeLink, $Escape). ", ";
                 // no break
 
-            case 2:
+              case 2:
                 $link .= Artists::display_artist($Artists[1], $MakeLink, $Escape). ", ";
                 // no break
 
-            case 1:
+              case 1:
                 $link .= Artists::display_artist($Artists[0], $MakeLink, $Escape);
                 break;
 
-            default:
-                $link = ($IncludeHyphen?'🧑&nbsp;':'').Artists::display_artist($Artists[0], $MakeLink, $Escape).' et al.';
-                #$link = 'Various'.($IncludeHyphen?' &ndash; ':'');
-        }
+              default:
+                $link = Artists::display_artist($Artists[0], $MakeLink, $Escape).' et al.';
+            }
+            
             return $link;
         } else {
             return '';

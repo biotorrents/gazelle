@@ -94,13 +94,12 @@ $nrcc: no-repeat center center;
     display: inline;
 }
 
-/* Shown on torrent details page */
-h2.group_cat {
-    width: 1rem;
-    height: 1rem;
-    background-size: 1rem 1rem;
+/* Shown on torrent details header table */
+img.torrent_header {
+    width: 1.2rem;
+    height: 1.2rem;
+    background-size: 1.2rem 1.2rem;
     display: inline-block;
-    margin: 0 0.5rem;
 }
 
 /**

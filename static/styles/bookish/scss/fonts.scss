@@ -6,7 +6,7 @@ body {
     background: white;
     color: black;
     font-family: $NotoSans;
-    font-size: 0.75rem;
+    font-size: 1.2rem;
 
     b,
     strong {
@@ -28,11 +28,13 @@ header,
 }
 
 /* Section headers ("box" class heading) */
-.head {
+.head,
+.colhead,
+.colhead_dark {
     padding: 0.5em 0;
-    font-size: 120%;
     border-bottom: 1px solid #e1e1e1;
     margin-bottom: 1rem;
+    font-size: larger;
 }
 
 /* Links */
@@ -43,7 +45,6 @@ a {
 
 a:hover {
     color: $SkeletonFocus;
-    /* color: $lb900; */
     text-decoration: none;
 }
 

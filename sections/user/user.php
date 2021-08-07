@@ -317,7 +317,7 @@ if (check_perms('users_mod')) {
 ?>
   </div>
 
-  <div class="sidebar">
+  <div class="sidebar one-third column">
     <?php
 if ($Avatar && Users::has_avatars_enabled()) {
     ?>
@@ -701,7 +701,7 @@ include(SERVER_ROOT.'/sections/user/community_stats.php');
 DonationsView::render_donor_stats($UserID);
 ?>
   </div>
-  <div class="main_column">
+  <div class="main_column two-thirds column">
     <?php
 if ($RatioWatchEnds && (time() < strtotime($RatioWatchEnds)) && ($Downloaded * $RequiredRatio) > $Uploaded) {
     ?>

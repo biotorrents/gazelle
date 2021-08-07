@@ -37,7 +37,7 @@ if ($LoggedUser['LastReadNews'] !== $News[0][0] && count($News) > 0) {
 View::show_header('News', 'news_ajax');
 ?>
 
-<div class="sidebar">
+<div class="sidebar one-third column">
   <?php #include 'connect.php';?>
 
   <ul class="stats nobullet">
@@ -449,7 +449,7 @@ if ($TopicID) {
 // polls();
 ?>
 </div>
-<div class="main_column">
+<div class="main_column two-thirds column">
   <?php
 
 $Recommend = $Cache->get_value('recommend');

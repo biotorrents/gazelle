@@ -320,7 +320,7 @@ View::show_header($Title, 'browse,collage,wall');
   View::show_footer();
 } ?>
 
-<div class="sidebar">
+<div class="sidebar one-third column">
   <div class="box box_info box_statistics_bookmarked_torrents">
     <div class="head"><strong>Stats</strong></div>
     <ul class="stats nobullet">
@@ -365,7 +365,7 @@ View::show_header($Title, 'browse,collage,wall');
     </div>
   </div>
 </div>
-<div class="main_column">
+<div class="main_column two-thirds column">
   <?php
 if ($CollageCovers !== 0) { ?>
   <div id="coverart" class="box">

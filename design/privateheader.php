@@ -329,8 +329,7 @@ if (isset(G::$LoggedUser['SearchType']) && G::$LoggedUser['SearchType']) { // Ad
 
           <input id="torrentssearch" aria-label="Search torrents" accesskey="t" spellcheck="false" autocomplete="off"
             placeholder="Torrents" type="text"
-            name="<?=$UseAdvancedSearch ? 'advgroupname' : 'searchstr' ?>"
-            size="17">
+            name="<?=$UseAdvancedSearch ? 'advgroupname' : 'searchstr' ?>">
         </form>
 
         <!--
@@ -339,37 +338,37 @@ if (isset(G::$LoggedUser['SearchType']) && G::$LoggedUser['SearchType']) { // Ad
           aria-label="Search authors" accesskey="a" spellcheck="false" autocomplete="off" placeholder="Authors"
           type="text" name="artistname" size="17">
         </form>
-          -->
+        -->
 
         <form class="search_form" name="requests" action="requests.php" method="get">
           <input id="requestssearch" aria-label="Search requests" spellcheck="false" autocomplete="off"
-            placeholder="Requests" type="text" name="search" size="17">
+            placeholder="Requests" type="text" name="search">
         </form>
 
         <form class="search_form" name="forums" action="forums.php" method="get">
           <input value="search" type="hidden" name="action">
 
           <input id="forumssearch" aria-label="Search forums" spellcheck="false" autocomplete="off" placeholder="Forums"
-            type="text" name="search" size="17">
+            type="text" name="search">
         </form>
 
         <form class="search_form" name="wiki" action="wiki.php" method="get">
           <input type="hidden" name="action" value="search">
 
           <input id="wikisearch" aria-label="Search wiki" spellcheck="false" autocomplete="off" placeholder="Wiki"
-            type="text" name="search" size="17">
+            type="text" name="search">
         </form>
 
         <form class="search_form" name="log" action="log.php" method="get">
           <input id="logsearch" aria-label="Search log" spellcheck="false" autocomplete="off" placeholder="Log"
-            type="text" name="search" size="17">
+            type="text" name="search">
         </form>
 
         <form class="search_form" name="users" action="user.php" method="get">
           <input type="hidden" name="action" value="search">
 
           <input id="userssearch" aria-label="Search users" spellcheck="false" autocomplete="off" placeholder="Users"
-            type="text" name="search" size="20">
+            type="text" name="search">
         </form>
       </div>
 
@@ -646,5 +645,7 @@ if (check_perms('site_debug') && !apcu_exists('DBKEY')) { ?>
     </div>
     <?php
     // Done handling alertbars
-} ?>
-    <div id="content">
+}
+
+# #content is Gazelle, .container is Skeleton
+echo '<main id="content" class="container">';

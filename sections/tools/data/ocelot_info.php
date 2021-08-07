@@ -40,7 +40,7 @@ View::show_header('Tracker info');
       class="brackets" />Main stats</a>
   </div>
 
-  <div class="sidebar">
+  <div class="sidebar one-third column">
     <div class="box">
       <div class="head">
         <strong>User stats</strong>
@@ -57,7 +57,7 @@ View::show_header('Tracker info');
     </div>
   </div>
 
-  <div class="main_column">
+  <div class="main_column two-thirds column">
     <div class="box">
       <div class="head">
         <strong>Numbers and such</strong>

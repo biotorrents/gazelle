@@ -141,7 +141,7 @@ View::show_header($Name, 'browse,collage,recommend');
     </div>
   </div>
 
-  <div class="sidebar">
+  <div class="sidebar one-third column">
     <div class="box box_category">
       <div class="head"><strong>Category</strong></div>
       <div class="pad"><a
@@ -300,7 +300,7 @@ if (!$LoggedUser['DisablePosting']) {
 ?>
   </div>
 
-  <div class="main_column">
+  <div class="main_column two-thirds column">
     <?php
 if ($CollageCovers !== 0) {
     ?>

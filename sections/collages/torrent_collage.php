@@ -1,6 +1,9 @@
 <?php
 #declare(strict_types = 1);
 
+$ENV = ENV::go();
+$Twig = Twig::go();
+
 function compare($X, $Y)
 {
     return($Y['count'] - $X['count']);
@@ -70,40 +73,18 @@ foreach ($GroupIDs as $GroupID) {
     }
     $UserAdditions[$UserID]++;
 
-    $DisplayName = "$Number. ";
-    $DisplayName .= "<a class='torrent_title' href='torrents.php?id=$GroupID' ";
-
-    if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-        $DisplayName .= 'data-cover="'.ImageTools::process($picture, 'thumb').'" ';
-    }
-
-    $title = empty($title) ? (empty($subject) ? $object : $subject) : $title;
-    $DisplayName .= "dir='ltr'>$title</a>";
-
-    # Year
-    if ($published) {
-        $Label = '<br />📅&nbsp;';
-        $DisplayName .= $Label."<a href='torrents.php?action=search&year=$published'>$published</a>";
-    }
-          
-    # Studio
-    if ($workgroup) {
-        $Label = '&ensp;📍&nbsp;';
-        $DisplayName .= $Label."<a href='torrents.php?action=search&location=$workgroup'>$workgroup</a>";
-    }
-
-    # Catalogue Number
-    if ($identifier) {
-        $Label = '&ensp;🔑&nbsp;';
-        $DisplayName .= $Label."<a href='torrents.php?action=search&numbers=$identifier'>$identifier</a>";
-    }
-
-    # Authors
-    if ($Artists) {
-        # Emoji in classes/astists.class.php
-        $Label = '&ensp;';
-        $DisplayName .= $Label.'<div class="torrent_artists">'.Artists::display_artists($Artists).'</div>';
-    }
+    $DisplayName = $Twig->render(
+        'torrents/display_name.html',
+        [
+          'g' => $Group,
+          'url' => Format::get_url($_GET),
+          'cover_art' => (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) ?? true,
+          'thumb' => ImageTools::process($CoverArt, 'thumb'),
+          'artists' => Artists::display_artists($Artists),
+          'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
+          'extra_info' => false,
+        ]
+    );
 
     $SnatchedGroupClass = ($GroupFlags['IsSnatched'] ? ' snatched_group' : '');
     // Start an output buffer, so we can store this output in $TorrentTable
@@ -161,7 +142,7 @@ foreach ($GroupIDs as $GroupID) {
   class="group_torrent torrent_row groupid_<?=$GroupID?> <?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGrouping'] === 1 ? ' hidden' : '')?>">
 
   <td colspan="3">
-    <span class="brackets">
+    <span class="brackets float_right">
       <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>"
         class="tooltip" title="Download">DL</a>
       <?php if (Torrents::can_use_token($Torrent)) { ?>
@@ -200,9 +181,23 @@ foreach ($GroupIDs as $GroupID) {
     } else {
         // Viewing a type that does not require grouping
         $Data = current($Torrents);
-        $ExtraInfo = Torrents::torrent_info($Data, true, true);
-        $DisplayName .= "<span style='font-weight: normal;'>$ExtraInfo</span>";
+        #$ExtraInfo = Torrents::torrent_info($Data, true, true);
+        #$DisplayName .= "<br />$ExtraInfo";
     
+        $DisplayName = $Twig->render(
+            'torrents/display_name.html',
+            [
+              'g' => $Group,
+              'url' => Format::get_url($_GET),
+              'cover_art' => (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) ?? true,
+              'thumb' => ImageTools::process($CoverArt, 'thumb'),
+              'artists' => Artists::display_artists($Artists),
+              'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
+              'extra_info' => Torrents::torrent_info($Data, true, true),
+            ]
+        );
+  
+  
         /*
         $TorrentID = key($Torrents);
         $Torrent = current($Torrents);
@@ -234,7 +229,7 @@ foreach ($GroupIDs as $GroupID) {
   <td></td>
 
   <td>
-    <span class="brackets">
+    <span class="brackets float_right">
       <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>"
         class="tooltip" title="Download">DL</a>
       <?php if (Torrents::can_use_token($Torrent)) { ?>
@@ -246,9 +241,13 @@ foreach ($GroupIDs as $GroupID) {
       | <a href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>"
         class="tooltip" title="Report">RP</a>
     </span>
+
     <?=$DisplayName?>
-    <div class="tags"><?=$TorrentTags->format()?>
+    <!--
+    <div class="tags">
+      <?=$TorrentTags->format()?>
     </div>
+    -->
   </td>
 
   <td class="number_column nobr">
@@ -397,7 +396,7 @@ View::show_header(
     </div>
   </div>
   <?php /* Misc::display_recommend($CollageID, "collage"); */ ?>
-  <div class="sidebar">
+  <div class="sidebar one-third column">
     <div class="box box_category">
       <div class="head"><strong>Category</strong></div>
       <div class="pad"><a
@@ -677,7 +676,7 @@ if (!$LoggedUser['DisablePosting']) {
 ?>
   </div>
 
-  <div class="main_column">
+  <div class="main_column two-thirds column">
     <?php
 if ($CollageCovers != 0) { ?>
     <div id="coverart" class="box">

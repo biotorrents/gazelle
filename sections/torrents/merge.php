@@ -33,9 +33,9 @@ if ($Categories[$CategoryID - 1] != 'Music') {
 */
 
 $DB->query("
-  SELECT Name
-  FROM torrents_group
-  WHERE ID = $GroupID");
+  SELECT `title`
+  FROM `torrents_group`
+  WHERE `id` = $GroupID");
 list($Name) = $DB->next_record();
 
 // Everything is legit, let's just confim they're not retarded

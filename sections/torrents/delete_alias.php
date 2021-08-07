@@ -22,9 +22,9 @@ $DB->query("
 list($ArtistName) = $DB->next_record(MYSQLI_NUM, false);
 
 $DB->query("
-  SELECT Name
-  FROM torrents_group
-  WHERE ID = $GroupID");
+  SELECT `title`
+  FROM `torrents_group`
+  WHERE `id` = $GroupID");
 if (!$DB->has_results()) {
   error(404);
 }

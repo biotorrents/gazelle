@@ -7,9 +7,9 @@ if (!isset($_GET['groupid']) || !is_number($_GET['groupid'])) {
 $GroupID = (int)$_GET['groupid'];
 
 $DB->query("
-  SELECT Name
-  FROM torrents_group
-  WHERE ID = $GroupID");
+  SELECT `title`
+  FROM `torrents_group`
+  WHERE `id` = $GroupID");
 if (!$DB->has_results()) {
   error(404);
 }

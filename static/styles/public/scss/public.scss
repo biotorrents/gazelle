@@ -3,18 +3,6 @@ $SkeletonDefault: #33c3f0;
 $SkeletonFocus: #1eaedb;
 $SkeletonHalfdark: scale-color($SkeletonFocus, $lightness: -50%);
 
-* {
-    margin: 0;
-    padding: 0;
-}
-
-html,
-body {
-    height: 100%;
-    font-size: 16px;
-    line-height: 1.6;
-}
-
 /**
  * Typography
  */
@@ -23,7 +11,7 @@ body {
     background: white;
     color: black;
     font-family: "NotoSans-SemiCondensed", sans-serif;
-    font-size: 0.75rem;
+    font-size: 1.2rem;
 
     b,
     strong {

@@ -282,6 +282,13 @@ $OpenDyslexicItalic: "OpenDyslexic-Italic";
         font-weight: normal;
     }
 
+    .colhead,
+    .colhead_dark,
+    th {
+        font-family: $b;
+        font-weight: normal;
+    }
+
     /* Font Awesome exception to the Comic Sans rule */
     i:not(.fa):not(.fab):not(.fad):not(.fal):not(.far):not(.fas),
     em:not(.fa):not(.fab):not(.fad):not(.fal):not(.far):not(.fas) {

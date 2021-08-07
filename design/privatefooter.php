@@ -4,9 +4,9 @@ declare(strict_types=1);
 $ENV = ENV::go();
 $Sep = '&emsp;';
 
-# End <div#content>, begin <footer>
-# This needs to be <main>, in each page
-echo $HTML = '</div></main><footer>';
+# End <main#content.container>, begin <footer>
+# #content is Gazelle, .container is Skeleton
+echo $HTML = '</main><footer>';
 
 # Disclaimer
 #if (!empty($Options['disclaimer'])) {

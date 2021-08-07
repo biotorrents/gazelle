@@ -555,7 +555,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
           
             # Studio
             if ($Studio) {
-                $DisplayName .= "&nbsp;&nbsp;📍&nbsp;<a href='torrents.php?action=search&location=$Studio'>$Studio</a>";
+                $DisplayName .= "&ensp;🏦&nbsp;&nbsp;<a href='torrents.php?action=search&location=$Studio'>$Studio</a>";
             }
 
             # Authors
@@ -618,8 +618,10 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
     <td class="big_info">
         <div class="group_info clear">
 
-            <span><a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>"
-                    title="Download" class="brackets tooltip">DL</a></span>
+            <span class="float_right">
+                <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>"
+                    title="Download" class="brackets tooltip">DL</a>
+                </span>
 
             <?=$DisplayName?> <?=$ExtraInfo?><?php if ($Reported) { ?> - <strong
                 class="torrent_label tl_reported">Reported</strong><?php } ?>

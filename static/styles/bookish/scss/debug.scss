@@ -23,18 +23,3 @@
 .elem_error {
     border: 2px solid rgba(255, 0, 0, 0.5);
 }
-
-/*
- * IE doesn't appear to like a simple display:none in our header.
- * Random things start fucking up pretty badly.
- */
-
-.hidden {
-    position: absolute;
-    left: -10000px;
-}
-
-input.hidden {
-    position: absolute;
-    display: none;
-}

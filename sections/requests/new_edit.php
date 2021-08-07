@@ -74,20 +74,20 @@ if (!$NewRequest) {
       $ArtistForm = Artists::get_artist($_GET['groupid']);
       $DB->query("
         SELECT
-        tg.Name,
-        tg.Title2,
-        tg.NameJP,
-        tg.Year,
-        tg.Studio,
-        tg.Series,
-        tg.CatalogueNumber,
-        tg.WikiImage,
+        tg.`title`,
+        tg.`subject`,
+        tg.`object`,
+        tg.`year`,
+        tg.`workgroup`,
+        tg.`location`,
+        tg.`identifier`,
+        tg.`picture`,
         GROUP_CONCAT(t.Name SEPARATOR ', '),
-        tg.CategoryID
-        FROM torrents_group AS tg
-        JOIN torrents_tags AS tt ON tt.GroupID = tg.ID
-        JOIN tags AS t ON t.ID = tt.TagID
-        WHERE tg.ID = ".$_GET['groupid']);
+        tg.`category_id`
+        FROM `torrents_group` AS tg
+        JOIN `torrents_tags` AS tt ON tt.`GroupID` = tg.`id`
+        JOIN `tags` AS t ON t.`ID` = tt.`TagID`
+        WHERE tg.`id` = ".$_GET['groupid']);
       if (list($Title, $Title2, $TitleJP, $Year, $Studio, $Series, $CatalogueNumber, $Image, $Tags, $CategoryID) = $DB->next_record()) {
           $GroupID = trim($_REQUEST['groupid']);
           $CategoryName = $Categories[$CategoryID - 1];

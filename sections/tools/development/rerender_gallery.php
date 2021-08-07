@@ -20,7 +20,7 @@ $ImagePath = SERVER_ROOT . '/' . STATIC_SERVER . 'styles/preview';
 ?>
 <div>
   <h2>Rerender stylesheet gallery images</h2>
-  <div class="sidebar">
+  <div class="sidebar one-third column">
     <div class="box box_info">
       <div class="head colhead_dark">Rendering parameters</div>
       <ul class="stats nobullet">
@@ -37,7 +37,7 @@ $ImagePath = SERVER_ROOT . '/' . STATIC_SERVER . 'styles/preview';
       </ul>
     </div>
   </div>
-  <div class="main_column">
+  <div class="main_column two-thirds column">
     <div class="box">
       <div class="head">About rendering</div>
       <div class="pad">

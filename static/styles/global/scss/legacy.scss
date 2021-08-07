@@ -4,6 +4,7 @@
  *
  * https://git.oppaiti.me/Oppaitime/Gazelle/src/branch/master/static/styles/global.css
  */
+
 /* 2021-07-26
 .box h3 {
     font-size: 140%;
@@ -40,16 +41,21 @@
 }
 */
 
+/* 2021-08-07
 .flex_input_container > input[type="text"] {
     flex-grow: 1;
     box-sizing: border-box;
     width: 50%;
 }
+*/
 
+/* 2021-08-06
 #contest div#content > div.flex > div.grow {
     min-width: 50%;
 }
+*/
 
+/* 2021-08-06
 input,
 textarea {
     border: 1px solid #c7c7c7;
@@ -58,6 +64,7 @@ textarea {
     color: black;
     outline: none;
 }
+*/
 
 /* 2021-07-24
 select {
@@ -73,6 +80,7 @@ select {
 }
 */
 
+/* 2021-08-07
 h2 .group_cat {
     height: 16px;
     width: 16px;
@@ -80,50 +88,65 @@ h2 .group_cat {
     display: inline-block;
     background-size: 16px 16px;
 }
+*/
 
+/* 2021-08-07
 code {
     white-space: pre;
 }
+*/
 
+/* 2021-08-07
 pre > br,
 code > br {
     line-height: 0px;
     display: none;
 }
+*/
 
+/* 2021-08-06
 .center {
     text-align: center;
 }
+*/
 
+/* 2021-08-07
 .collage_images {
     padding: 0px;
     width: 100%;
     border-collapse: collapse;
     font-size: 0;
 }
+*/
 
+/* 2021-08-07
 .collage_images {
     display: block;
 }
+*/
 
+/* 2021-08-07
 ul.collage_images li {
     border: none;
     float: left;
     margin: 0;
     /*  width: 118px;
     height: 118px;
-    width: 146px; */
+    width: 146px; * /
     width: 146px;
     list-style: none;
     list-style-type: none;
 }
+*/
 
+/* 2021-08-07
 ul.collage_images li a {
     display: block;
-    /*  height: 118px; */
+    /*  height: 118px; * /
     width: 100%;
     overflow: hidden;
 }
+*/
 
 /* 2020-12-12
 ul.collage_images img {
@@ -132,16 +155,20 @@ ul.collage_images img {
 }
 */
 
+/* 2021-08-07
 div.collage_image {
     width: 20%;
     display: inline-block;
 }
+*/
 
+/* 2021-08-07
 [data-toggle-target],
 [data-quote-jump],
 .clickable {
     cursor: pointer;
 }
+*/
 
 /* 2021-07-24
 button,
@@ -156,29 +183,39 @@ input[type="submit"] {
 }
 */
 
+/* 2021-08-07
 .spoilerButton {
     cursor: pointer;
     overflow: hidden;
     text-overflow: ellipsis;
 }
+*/
 
+/* 2021-08-07
 .selected a {
     font-weight: bold;
     text-decoration: underline;
 }
+*/
 
+/* 2021-08-07
 .invisible {
     visibility: hidden;
 }
+*/
 
+/* 2021-08-07
 .collage td {
     padding: 0px;
     border: none;
 }
+*/
 
+/* 2021-08-07
 abbr[title] {
     text-decoration: none;
 }
+*/
 
 /* 2021-07-26
 .line_new {
@@ -539,80 +576,116 @@ tr.torrent .bookmark > a:after {
 }
 */
 
+/* 2021-08-06
 .voted_type {
     font-weight: bold;
 }
+*/
 
+/* 2021-08-06
 .torrent_table .group .votes_info_td strong {
     font-size: inherit;
 }
+*/
 
+/* 2021-08-06
 .invite_table td {
     min-width: 55px;
 }
+*/
 
+/* 2021-08-06
 .preview_wrap {
     text-align: left;
 }
+*/
 
+/* 2021-08-06
 .text_preview {
     min-height: 100px;
 }
+*/
 
+/* 2021-08-06
 .brackets {
     text-indent: 0px;
     white-space: nowrap;
     cursor: pointer;
 }
+*/
 
+/* 2021-08-06
 .votespan.brackets:before {
     content: "( ";
 }
+*/
 
+/* 2021-08-06
 .votespan.brackets:after {
     content: " )";
 }
+*/
 
+/* 2021-08-06
 .brackets:before {
     content: "[";
 }
+*/
 
+/* 2021-08-06
 .brackets:after {
     content: "]";
 }
+*/
 
+/* 2021-08-06
 #userinfo .brackets:before,
 #userinfo .brackets:after {
     content: "";
 }
+*/
 
+/* 2021-08-06
 .group_image {
     overflow: hidden;
 }
+*/
 
+/* 2021-08-06
 .float_left {
     float: left;
 }
+*/
 
+/* 2021-08-06
 .float_right {
     float: right;
 }
+*/
 
+/* 2021-08-06
 .float_clear {
     clear: both;
 }
+*/
 
+/* 2021-08-06
 .group_image + .group_info {
     margin-left: 100px;
 }
+*/
 
+/* 2021-08-06
 .group_image img {
     cursor: pointer;
 }
+*/
 
+/* 2021-08-06
 .user_title {
     font-weight: normal;
 }
+*/
 
 /*
  * Fix long filename tables overflowing (Chrome only).
@@ -804,25 +877,34 @@ tr.torrent .bookmark > a:after {
 }
 */
 
+/* 2021-08-06
 .wide_input_text {
     width: 95%;
 }
+*/
 
+/* 2021-08-06
 .top_artist_list li {
     margin-left: 25px;
     margin-bottom: 5px;
     list-style-type: decimal;
     font-size: 150%;
 }
+*/
 
+/* 2021-08-06
 .permission_subcontainer {
     margin-bottom: 10px;
 }
+*/
 
+/* 2021-08-06
 .noborder {
     border: none;
 }
+*/
 
+/* 2021-08-06
 .two_columns {
     float: left;
     width: 50%;
@@ -830,15 +912,21 @@ tr.torrent .bookmark > a:after {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
+*/
 
+/* 2021-08-06
 .field_div {
     margin-bottom: 10px;
 }
+*/
 
+/* 2021-08-06
 .field_div:last-of-type {
     margin-bottom: 0;
 }
+*/
 
+/* 2021-08-06
 .field_div .label,
 .submit_div .label {
     float: left;
@@ -846,37 +934,52 @@ tr.torrent .bookmark > a:after {
     text-align: right;
     width: 150px;
 }
+*/
 
+/* 2021-08-06
 .field_div .input,
 .submit_div .input {
     padding: 0 5px;
 }
+*/
 
+/* 2021-08-06
 .small_label {
     text-align: right;
     width: auto;
 }
+*/
 
+/* 2021-08-06
 .scale_image {
     max-width: 500px;
 }
+*/
 
+/* 2021-08-06
 .display_block {
     display: block;
 }
+*/
 
+/* 2021-08-06
 .sidebar img {
     max-width: 100%;
     width: initial;
 }
+*/
 
+/* 2021-08-06
 .forum_post td img {
     max-width: 100%;
 }
+*/
 
+/* 2021-08-06
 .avatar > a > img {
     display: block;
 }
+*/
 
 /* 2020-12-12
 #collage #reply_box img,
