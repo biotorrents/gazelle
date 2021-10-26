@@ -234,10 +234,8 @@ function notify($Channel, $Message)
  *
  * @param boolean $NoHTML If true, the header/footer won't be shown, just the error.
  * @param string $Log If true, the user is given a link to search $Log in the site log.
- * @param boolean $Debug If true, print bug reporting instructions and a stack trace.
- * @param boolean $JSON If true, print the error as a JSON response.
  */
-function error($Error = 1, $NoHTML = false, $Log = false, $Debug = true) # , $JSON = false)
+function error($Error = 1, $NoHTML = false, $Log = false)
 {
     $ENV = ENV::go();
 
@@ -365,21 +363,6 @@ function error($Error = 1, $NoHTML = false, $Log = false, $Debug = true) # , $JS
     $Message = preg_replace('/\s{2,}/', ' ', $Message);
 
     /**
-     * JSON error output
-     */
-    /*
-    if ($JSON) {
-        print
-        json_encode(
-            array(
-              'status' => 'error',
-              'response' => $Message
-            )
-        );
-    }
-    */
-
-    /**
      * Append $Log
      * Formerly in sections/error/index.php
      */
@@ -388,9 +371,9 @@ function error($Error = 1, $NoHTML = false, $Log = false, $Debug = true) # , $JS
     }
 
     /**
-     * Append $Debug
+     * Append $DevInfo
      */
-    if ($Debug) {
+    if ($ENV->DEV) {
         $DateTime = strftime('%c', $_SERVER['REQUEST_TIME']);
         $BackTrace = debug_string_backtrace();
 

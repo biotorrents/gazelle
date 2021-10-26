@@ -99,7 +99,7 @@ if (!$DB->has_results()) {
 list($GroupID) = $DB->next_record();
 
 if (!empty($Err)) {
-    error($Error = $Err, $Debug = false);
+    error($Err);
     include(SERVER_ROOT.'/sections/reportsv2/report.php');
     error();
 }

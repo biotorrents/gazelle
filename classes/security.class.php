@@ -79,8 +79,7 @@ class Security
         if (isset($_REQUEST['info_hash']) || isset($_REQUEST['peer_id'])) {
             error(
                 'd14:failure reason40:Invalid .torrent, try downloading again.e',
-                $NoHTML = true,
-                $Debug = false
+                $NoHTML = true
             );
         }
 

@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 $ENV = ENV::go();
+$Twig = Twig::go();
+
 global $LoggedUser;
 
 echo <<<HTML
@@ -12,7 +14,15 @@ echo <<<HTML
   <title>$PageTitle</title>
 HTML;
 
-echo View::commonMeta();
+echo $Twig->render(
+  'header/meta-tags.html',
+  [
+    'ENV' => $ENV,
+    'LoggedUser' => $LoggedUser,
+    'title' => display_str($PageTitle)
+  ]
+  );
+
 echo "<link href='$ENV->STATIC_SERVER/styles/public.css?v="
      . filemtime(SERVER_ROOT.'/static/styles/public.css')
      . "' rel='stylesheet' type='text/css'>";

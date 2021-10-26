@@ -5,13 +5,17 @@
 <link rel="shortcut icon" href="{{ ENV.STATIC_SERVER }}/common/icon.png" />
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="authkey" content="{{ LoggedUser.AuthKey }}" />
 <meta name="description" content="{{ ENV.DESCRIPTION }}" />
 <meta name="language" content="en-US" />
 {# Default "index, follow" #}
 <meta name="robots" content="none" />
-<meta name="userid" content="{{ LoggedUser.ID }}" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+{# Gazelle LoggedUser meta tags #}
+{% if LoggedUser %}
+<meta name="authkey" content="{{ LoggedUser.AuthKey }}" />
+<meta name="userid" content="{{ LoggedUser.ID }}" />
+{% endif %}
 
 {# https://developers.facebook.com/tools/debug/ #}
 <meta property="og:description" content="{{ ENV.DESCRIPTION }}" />

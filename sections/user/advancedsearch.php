@@ -428,7 +428,7 @@ if (count($_GET)) {
         list($Page, $Limit) = Format::page_limit(USERS_PER_PAGE);
         $SQL .= " LIMIT $Limit";
     } else {
-        error($Err);
+        error("Your search returned no results. For privacy and security reasons, user searches must result in an exact hit. Fuzzy matches aren't allowed.");
     }
 }
 View::show_header('User search');
