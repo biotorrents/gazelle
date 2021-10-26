@@ -45,17 +45,14 @@ a.external {
     width: initial;
 }
 
-/* <pre> spacing fix */
-/*
+/* <pre> spacing fixes */
 code,
 pre {
-    white-space: pre;
-}
-*/
+    white-space: pre-wrap;
 
-pre br,
-code br {
-    display: none;
+    br {
+        display: none;
+    }
 }
 
 /*
@@ -153,4 +150,13 @@ ol li ol li:before {
     max-width: 50%;
     margin: auto;
     text-align: center;
+}
+
+/* Details and summary (HTML5) */
+details {
+    font-weight: normal;
+}
+
+summary {
+    font-weight: bold;
 }

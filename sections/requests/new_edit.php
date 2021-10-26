@@ -128,7 +128,7 @@ View::show_header(
       </div>
 
       <!-- Main table -->
-      <table class="layout">
+      <table class="skeleton-fix">
         <tr>
           <td colspan="2" class="center">Please make sure your request follows the
             <a href="rules.php?p=requests">request rules</a>!

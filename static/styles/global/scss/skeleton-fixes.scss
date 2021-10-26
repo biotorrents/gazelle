@@ -15,62 +15,59 @@
  */
 
 @mixin heading-attributes($size) {
-    font-size: $size !important;
-    margin-top: 2rem !important;
+  font-size: $size !important;
+  margin-top: 2rem !important;
 }
 
 h1:not(#logo) {
-    @include heading-attributes(2.5rem);
+  @include heading-attributes(2.5rem);
 }
 
 h2 {
-    @include heading-attributes(2.1rem);
+  @include heading-attributes(2.1rem);
 }
 
 h3 {
-    @include heading-attributes(1.8rem);
+  @include heading-attributes(1.8rem);
 }
 
 h4 {
-    @include heading-attributes(1.5rem);
+  @include heading-attributes(1.5rem);
 }
 
 h5 {
-    @include heading-attributes(1.2rem);
+  @include heading-attributes(1.2rem);
 }
 
 h6 {
-    @include heading-attributes(0.75rem);
+  @include heading-attributes(0.75rem);
 }
 
 /* Correct content/sidebar overflow */
 @media (min-width: 550px) {
-    .column,
-    .columns {
-        margin-left: 0 !important;
-    }
+  .column,
+  .columns {
+    margin-left: 0 !important;
+  }
 }
 
 /* Forum list headings */
 table.forum_index {
-    h4 {
-        margin: 0.25rem !important;
-    }
+  h4 {
+    margin: 0.25rem !important;
+  }
 }
 
 /* Checkbox and radio labels */
 label,
 legend {
-    display: inline !important;
+  display: inline !important;
 }
 
 /* Tables usually containing forms */
-/* new request */
-form#request_form,
-/* BP */ table.store_table,
+/* BP */
+table.store_table,
 /* rule sections */ div.rule_table,
-/* client rules */ table.clients_table,
-/* login */ table.login_form,
 /* requests? */form.create_form,
 /* top10 and many */ form.search_form,
 /* edit collage */ table.collage_edit,
@@ -79,24 +76,24 @@ form#request_form,
 /* service stats */ div.permission_container,
 /* user settings */ table.user_options,
 /* GENERIC */ table.skeleton-fix {
-    td {
-        border-bottom: 0 !important;
-        /* padding: 0.25rem !important; */
-    }
+  td {
+    border-bottom: 0 !important;
+    padding: 0.5rem !important;
+  }
 }
 
 /* Duplicate input rules here */
 input,
 input[type="search"],
 input[type="text"] {
-    margin: 0 !important;
+  margin: 0 !important;
 }
 
 input,
 textarea,
 select,
 fieldset {
-    margin-bottom: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 /* Block elements */
@@ -108,24 +105,26 @@ table,
 ul,
 ol,
 form {
-    margin-bottom: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 /* Inline code */
 code {
-    padding: 0 !important;
+  padding: 0 !important;
 }
 
 /* Unordered lists */
+/*
 ul:not(.nobullet) {
     list-style: circle outside !important;
 }
+*/
 
 /* Poll options */
 ul#poll_options {
-    list-style: none !important;
-    margin-left: 0 !important;
-    margin-bottom: 0.5rem !important;
+  list-style: none !important;
+  margin-left: 0 !important;
+  margin-bottom: 0.5rem !important;
 }
 
 /* Nested lists */
@@ -133,6 +132,6 @@ ul ul,
 ul ol,
 ol ol,
 ol ul {
-    margin: 0 !important;
-    font-size: 100% !important;
+  margin: 0 !important;
+  font-size: 100% !important;
 }

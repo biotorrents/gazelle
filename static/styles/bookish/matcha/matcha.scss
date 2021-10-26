@@ -16,7 +16,7 @@ body.style_matcha {
         background-size: contain;
         width: 250px;
         height: 50px;
-        margin: 0 0 0 10%;
+        margin: 0 1rem;
     }
 
     /* Main menu */
@@ -35,7 +35,6 @@ body.style_matcha {
     /* Dropdown menu */
     #menu .nav_dropdown {
         background: #016670;
-        margin-top: 0;
     }
 
     .nav_dropdown > div {
@@ -43,16 +42,11 @@ body.style_matcha {
         position: absolute;
         background-color: #016670;
         width: 100%;
-        z-index: 99999;
-        margin-top: 2.4em;
-        left: 0;
     }
 
     .nav_dropdown > div > a {
         display: none;
         color: white;
-        height: 2.4em;
-        line-height: 2.4em;
         text-decoration: none;
     }
 
@@ -65,56 +59,17 @@ body.style_matcha {
         text-align: center;
         background-color: #9fedd7;
         box-sizing: content-box;
-        padding: 0.5em 10%;
+        padding: 1rem;
         display: flex;
 
         input {
             position: relative;
             border: 1px solid transparent;
             box-sizing: border-box;
-            padding: 0.25em 0.25em 0.25em 0.5em;
+            padding: 0.5rem;
             background-color: white;
             width: 100%;
             color: black;
-        }
-
-        ul {
-            margin: 0 auto;
-            display: block;
-            text-align: center;
-
-            li {
-                display: inline;
-                margin: 0px 1px;
-                list-style: none;
-                position: relative;
-
-                form {
-                    display: inline;
-                }
-
-                ul {
-                    display: block;
-                    position: absolute;
-                    top: 1em;
-                    left: 0;
-                    z-index: 1000;
-                    background-color: white;
-                    width: 12em;
-                    margin-top: 1em;
-
-                    li {
-                        margin: 0 0 0 0;
-                        padding: 0;
-                        display: block;
-                        width: 100%;
-
-                        .highlight {
-                            background: white;
-                        }
-                    }
-                }
-            }
         }
     }
 

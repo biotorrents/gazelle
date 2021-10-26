@@ -34,11 +34,9 @@ if (!$WhitelistedClients = $Cache->get_value('whitelisted_clients')) {
   </p>
   <br />
 
-  <table class="clients_table">
-    <tr class="colhead">
-      <td>
-        <strong>Allowed Clients</strong>
-      </td>
+  <table class="clients_table skeleton-fix">
+    <tr>
+      <th>Allowed Clients</th>
     </tr>
 
     <?php

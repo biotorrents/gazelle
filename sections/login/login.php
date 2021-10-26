@@ -7,7 +7,7 @@ $Twig = Twig::go();
 View::show_header('Login'); ?>
 
 <p class="center mouseless">
-  A platform to share <strong>biological sequence</strong><br />
+  A platform to share <strong>biological sequence</strong>
   and <strong>medical imaging</strong> data<?= ($Attempts > 0) ? '' : '<sup>1</sup>' ?>
 </p>
 
@@ -40,7 +40,7 @@ if (!$Banned) { ?>
   <?php } ?>
 
   <br />
-  <table class="login_form">
+  <table class="login_form skeleton-fix">
     <tr>
       <td colspan="2">
         <input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="username"
@@ -103,7 +103,6 @@ if ($Attempts > 0) { ?>
     echo $HTML = <<<HTML
     <p class="center mouseless">
       1. …and graphs, scalars, vectors, patterns,
-      <br />
       constraints, models, and more
     </p>
 HTML;

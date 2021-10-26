@@ -66,20 +66,11 @@ table {
  * The main table heading.
  */
 
-.colhead {
+.colhead,
+.colhead_dark,
+th {
     padding: 0.5em 0;
     border-bottom: 1px solid #e1e1e1;
-}
-
-.colhead .sign,
-.colhead_dark .sign {
-    padding: 0 1rem;
-    vertical-align: middle;
-    text-align: center;
-}
-
-.colhead .sign {
-    padding: 0 1rem;
 }
 
 /* Torrent and collage tables */

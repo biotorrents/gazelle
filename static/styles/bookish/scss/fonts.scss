@@ -3,78 +3,79 @@
  */
 
 body {
-    background: white;
-    color: black;
-    font-family: $NotoSans;
-    font-size: 1.2rem;
+  background: white;
+  color: black;
+  font-family: $NotoSans;
+  /* font-size: 1.2rem; */
 
-    b,
-    strong {
-        font-family: $NotoSansBold;
-        font-weight: normal;
-    }
+  b,
+  strong {
+    font-family: $NotoSansBold;
+    font-weight: normal;
+  }
 
-    i,
-    em {
-        font-family: $NotoSansItalic;
-        font-style: normal;
-    }
+  i,
+  em {
+    font-family: $NotoSansItalic;
+    font-style: normal;
+  }
 }
 
 header,
 .header {
-    margin: 2rem;
-    text-align: center;
+  margin: 2rem;
+  text-align: center;
 }
 
-/* Section headers ("box" class heading) */
+/* Section and table headers ("box" class headings) */
 .head,
 .colhead,
-.colhead_dark {
-    padding: 0.5em 0;
-    border-bottom: 1px solid #e1e1e1;
-    margin-bottom: 1rem;
-    font-size: larger;
+.colhead_dark,
+th {
+  padding: 0.5em 0;
+  border-bottom: 1px solid #e1e1e1;
+  margin-bottom: 1rem;
+  font-size: larger;
 }
 
 /* Links */
 a {
-    color: black;
-    text-decoration: underline;
+  color: black;
+  text-decoration: underline;
 }
 
 a:hover {
-    color: $SkeletonFocus;
-    text-decoration: none;
+  color: $SkeletonFocus;
+  text-decoration: none;
 }
 
 /* Tags */
 .tags {
-    font-style: italic;
+  font-style: italic;
 
-    a,
-    a.search_link {
-        color: black;
-        text-decoration: none;
-    }
+  a,
+  a.search_link {
+    color: black;
+    text-decoration: none;
+  }
 
-    a:hover,
-    a:hover.search_link {
-        color: black;
-        text-decoration: underline;
-    }
+  a:hover,
+  a:hover.search_link {
+    color: black;
+    text-decoration: underline;
+  }
 }
 
 /* Dupe for grouped "Details" on browse.php */
 a.search_link,
 a.brackets,
 table#taglist a {
-    color: black;
-    text-decoration: none;
+  color: black;
+  text-decoration: none;
 
-    &:hover {
-        text-decoration: underline;
-    }
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 /**
@@ -82,128 +83,118 @@ table#taglist a {
  */
 
 blockquote {
-    margin: 0.5em 2rem;
-    padding: 1rem;
-    @include transparent-border($c: purple, $a: 0.1);
+  margin: 2rem;
+  padding: 1rem;
+  @include transparent-border($c: purple, $a: 0.1);
 }
 
 caption {
-    font-style: italic;
+  font-style: italic;
 }
 
 /* code, pre */
 code,
 pre {
-    font-family: $NotoMono;
-    margin-bottom: 1rem;
-    word-wrap: break-word;
-    /* word-wrap: pre; */
+  font-family: $NotoMono;
+  margin-bottom: 1rem;
+  word-wrap: break-word;
+  /* word-wrap: pre; */
 
-    b,
-    strong {
-        font-family: $NotoMonoBold;
-    }
+  b,
+  strong {
+    font-family: $NotoMonoBold;
+  }
 }
 
 ul {
-    margin-left: 0.5rem;
+  margin-left: 0.5rem;
 }
 
 /* Markdown Extra new features */
 hr {
-    @include transparent-border($c: black, $a: 0.5);
-    margin: 2rem auto;
-    width: 66%;
+  @include transparent-border($c: black, $a: 0.5);
+  margin: 2rem auto;
+  width: 66%;
 }
 
 .footnotes {
-    /* display: flex; */
-
-    ol {
-        margin: -0.5rem 0 0 -1rem;
-        display: flex;
-        flex-direction: column;
-
-        li:before {
-            /* display: none; */
-        }
-    }
-
-    p {
-        /* align-self: flex-start; */
-    }
+  ol {
+    margin: -0.5rem 0 0 -1rem;
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 /* Font Awesome ugliness fix */
 .footnote-backref {
-    font-family: sans-serif;
+  font-family: sans-serif;
 }
 
 /* Definition lists */
 dl {
-    margin-top: 0.5rem;
+  margin-top: 0.5rem;
 
-    dt {
-        font-variant: small-caps;
-        font-size: larger;
-    }
+  dt {
+    font-variant: small-caps;
+    font-size: larger;
+  }
 
-    dd {
-        margin: 0 0 0.5rem 0.5rem;
-    }
+  dd {
+    margin: 0 0 0.5rem 0.5rem;
+  }
 }
 
 textarea {
-    font-family: $NotoMono;
+  font-family: $NotoMono;
 
-    b,
-    strong {
-        font-family: $NotoMonoBold;
-    }
+  b,
+  strong {
+    font-family: $NotoMonoBold;
+  }
 }
 
 /* nobullet */
 ul.nobullet,
 .tags .tags ul.nobullet {
-    /* display: inline-block; */
-    margin: 0;
+  /* display: inline-block; */
+  margin: 0;
 
-    li {
-        list-style-type: none;
-    }
+  li {
+    list-style-type: none;
+  }
 }
 
 /* Bullets (home page) */
 ul.stats li {
-    padding: 0 0 1px 0;
+  padding: 0 0 1px 0;
 }
 
 ul.poll li {
-    padding: 0 0 0 10px;
-    margin: 0;
-    clear: left;
+  padding: 0 0 0 10px;
+  margin: 0;
+  clear: left;
 
-    .graph {
-        margin-bottom: 3px;
-        padding-left: 20px;
-    }
+  .graph {
+    margin-bottom: 3px;
+    padding-left: 20px;
+  }
 }
 
 /* ToC */
 .navigation_list {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 /* Alerts, Toolbox, etc. */
 .alertbar {
-    a {
-        color: black;
-        text-decoration: none;
-    }
+  a {
+    color: black;
+    text-decoration: none;
+  }
 
-    a:hover {
-        text-decoration: underline;
-    }
+  a:hover {
+    text-decoration: underline;
+  }
 }
 
 /* Last edited */

@@ -4,11 +4,11 @@ declare(strict_types=1);
 ?>
 
 <h3 id="jump">Other sections</h3>
-<div class="box pad rule_table">
-  <table>
-    <tr class="colhead">
-      <td style="width: 10em;">Category</td>
-      <td>Additional Information</td>
+<div class="box rule_table">
+  <table class="skeleton-fix">
+    <tr>
+      <th>Category</th>
+      <th>Additional Information</th>
     </tr>
 
     <tr class="row">
