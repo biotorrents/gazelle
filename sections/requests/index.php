@@ -51,6 +51,11 @@ if (!isset($_REQUEST['action'])) {
     case 'viewrequest':
       include SERVER_ROOT.'/sections/requests/request.php';
       break;
+    
+    # Single search bar workaround
+    case 'search':
+      include SERVER_ROOT.'/sections/requests/requests.php';
+      break;
 
     default:
       error(0);

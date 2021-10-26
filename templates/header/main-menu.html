@@ -1,0 +1,224 @@
+{#
+How to Build a Responsive Navigation Bar With Flexbox
+https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-bar-with-flexbox--cms-33535
+
+1. Create the HTML
+
+<nav>
+  <ul class="menu">
+    <li class="logo"><a href="#">Creative Mind Agency</a></li>
+    <li class="item"><a href="#">Home</a></li>
+    <li class="item"><a href="#">About</a></li>
+    <li class="item has-submenu">
+      <a tabindex="0">Services</a>
+      <ul class="submenu">
+        <li class="subitem"><a href="#">Design</a></li>
+        <li class="subitem"><a href="#">Development</a></li>
+        <li class="subitem"><a href="#">SEO</a></li>
+        <li class="subitem"><a href="#">Copywriting</a></li>
+      </ul>
+    </li>
+    <li class="item has-submenu">
+      <a tabindex="0">Plans</a>
+      <ul class="submenu">
+        <li class="subitem"><a href="#">Freelancer</a></li>
+        <li class="subitem"><a href="#">Startup</a></li>
+        <li class="subitem"><a href="#">Enterprise</a></li>
+      </ul>
+    </li>
+    <li class="item"><a href="#">Blog</a></li>
+    <li class="item"><a href="#">Contact</a></li>
+    <li class="item button"><a href="#">Log In</a></li>
+    <li class="item button secondary"><a href="#">Sign Up</a></li>
+    <li class="toggle"><a href="#"><i class="fas fa-bars"></i></a></li>
+  </ul>
+</nav>
+#}
+
+<nav>
+  <ul class="menu">
+
+    {# Logo #}
+    <li class="logo">
+      <a href="/" aria-label="Home"></a>
+    </li>
+
+    {# Search #}
+    <li class="item">
+      <form id="select_search" name="select_search" method="get">
+
+        {#
+        Workaround for some endpoints that need &action=search
+        Needed for forums, wiki, and users
+        #}
+        <input type="hidden" name="action" value="search" />
+
+        {# Advanced vs. basic search from user settings #}
+        {% if LoggedUser.SearchType %}
+        <input type="hidden" name="advanced_search" value="true">
+        {% endif %}
+
+        {# Select which site area to search #}
+        <select id="search_what" name="search_what">
+          <option value="torrents">Torrents</option>
+          {# <option value="artist">Authors</option> #}
+          <option value="requests">Requests</option>
+          <option value="forums">Forums</option>
+          <option value="wiki">Wiki</option>
+          <option value="log">Log</option>
+          <option value="user">Users</option>
+        </select>
+
+        {#
+        The universal search bar itself
+        todo: Change "search" to "advgroupname" if LoggedUser.SearchType && search-what = torrents
+        #}
+        <input type="text" id="search" name="search" aria-label="Search the site" placeholder="Search the site"
+          maxlength="10000" size="30" autocomplete="off" spellcheck="false" />
+
+        {# Submit button, maybe unnecessary #}
+        {# <input type="submit" value="🔎"> #}
+      </form>
+    </li>
+
+    {# Spacer #}
+    <li class="spacer"></li>
+
+    {# Torrents #}
+    <li class="item has-submenu">
+      <a tabindex="0">🌊&nbsp;Torrents</a>
+      <ul class="submenu">
+
+        {# Search #}
+        <li class="subitem">
+          <a href="torrents.php">Search</a>
+        </li>
+
+        {# Collages #}
+        <li class="subitem">
+          <a href="collages.php">Collections</a>
+        </li>
+
+        {# Requests #}
+        <li class="subitem">
+          <a href="requests.php">Requests</a>
+        </li>
+
+        {# Top 10 #}
+        <li class="subitem">
+          <a href="top10.php">Top&nbsp;10</a>
+        </li>
+
+        {# Better #}
+        <li class="subitem">
+          <a href="better.php">Better</a>
+        </li>
+      </ul>
+    </li>
+
+    {# Community #}
+    <li class="item has-submenu">
+      <a tabindex="0">📣&nbsp;Community</a>
+      <ul class="submenu">
+
+        {# Forums #}
+        <li class="subitem">
+          <a href="forums.php">Forums</a>
+        </li>
+
+        {# Slack #}
+        {% if ENV.FEATURE_IRC %}
+        <li class="subitem">
+          <a href="https://join.slack.com/t/biotorrents/shared_invite/{{ ENV.SLACK_INVITE }}" target="_blank">Slack</a>
+        </li>
+        {% endif %}
+
+        {# Rules #}
+        <li class="subitem">
+          <a href="rules.php">Rules</a>
+        </li>
+
+        {# Wiki #}
+        <li class="subitem">
+          <a href="wiki.php">Wiki</a>
+        </li>
+      </ul>
+    </li>
+
+    {# User #}
+    <li class="item has-submenu">
+      <a tabindex="0">👤&nbsp;User</a>
+      <ul class="submenu">
+
+        {# Profile #}
+        <li class="subitem">
+          <a href="user.php?id={{ LoggedUser.ID }}">{{ LoggedUser.Username }}</a>
+        </li>
+
+        {# Settings #}
+        <li class="subitem">
+          <a href="user.php?action=edit&amp;userid={{ LoggedUser.ID }}">Settings</a>
+        </li>
+
+        {# Inbox #}
+        <li class="subitem">
+          <a href="{{ inbox }}">Inbox</a>
+        </li>
+
+        {# Staff Inbox #}
+        <li class="subitem">
+          <a href="staffpm.php">Staff&nbsp;Inbox</a>
+        </li>
+
+        {# Logout #}
+        <li class="subitem">
+          <a href="logout.php?auth={{ LoggedUser.AuthKey }}">Logout</a>
+        </li>
+      </ul>
+    </li>
+
+    {# Links #}
+    <li class="item has-submenu">
+      <a tabindex="0">🔔&nbsp;More</a>
+      <ul class="submenu">
+
+        {# Uploads #}
+        <li class="subitem">
+          <a href="torrents.php?type=uploaded&amp;userid={{ LoggedUser.ID }}">Uploads</a>
+        </li>
+
+        {# Bookmarks #}
+        <li class="subitem">
+          <a href="bookmarks.php?type=torrents">Bookmarks</a>
+        </li>
+
+        {# Notifications #}
+        {% if notify %}
+        <li class="subitem">
+          <a href="user.php?action=notify">Notifications</a>
+        </li>
+        {% endif %}
+
+        {# Subscriptions #}
+        <li class="subitem">
+          <a href="userhistory.php?action=subscriptions">Subscriptions</a>
+        </li>
+
+        {# Comments #}
+        <li class="subitem">
+          <a href="comments.php">Comments</a>
+        </li>
+
+        {# Friends #}
+        <li class="subitem">
+          <a href="friends.php">Friends</a>
+        </li>
+      </ul>
+    </li>
+
+    {# Hamburger Menu #}
+    <li class="toggle">
+      <a href="#"><i class="fas fa-bars"></i></a>
+    </li>
+  </ul>
+</nav>

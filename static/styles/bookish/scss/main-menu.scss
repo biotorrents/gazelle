@@ -1,0 +1,144 @@
+/**
+ * How to Build a Responsive Navigation Bar With Flexbox
+ * https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-bar-with-flexbox--cms-33535
+ */
+
+/**
+ * 2. Add Some Basic Styling
+ */
+
+nav {
+  /* border-bottom: 0.5rem solid $SkeletonFocus; */
+  /* font-size: 1.8rem; */
+
+  ul {
+    margin: 0 !important;
+
+    li {
+      margin: 1rem;
+    }
+  }
+}
+
+.menu,
+.submenu {
+  list-style-type: none;
+}
+
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  /* gap: 1rem; */
+
+  li a {
+    display: block;
+    letter-spacing: 0.1rem;
+    line-height: 50px;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+}
+
+#select_search {
+  padding: 0.5rem;
+}
+
+.spacer {
+  flex-grow: 999;
+}
+
+.subitem {
+  margin: 0 2rem;
+}
+
+/**
+ * 3. Start With the Mobile Navigation
+ */
+
+@media (max-aspect-ratio: 4/3) {
+  /* @media (max-width: 960px) { */
+  /* @media (orientation: portrait) { */
+
+  .item {
+    order: 3;
+    width: 100%;
+    text-align: center;
+    display: none;
+  }
+
+  .active .item {
+    display: block;
+  }
+
+  .toggle {
+    font-size: xx-large;
+  }
+}
+
+/**
+ * 4. Style the Submenu
+ */
+
+.submenu {
+  display: none;
+}
+
+.submenu-active .submenu {
+  display: block;
+}
+
+/**
+ * 8. Create the Desktop Menu
+ */
+
+@media (min-aspect-ratio: 4/3) {
+  /* @media (min-width: 960px) { */
+  /* @media (orientation: landscape) { */
+
+  .menu {
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    background: none;
+  }
+
+  .logo {
+    order: 0;
+  }
+
+  .item {
+    position: relative;
+    display: block;
+    line-height: 50px;
+    width: auto;
+
+    a:not(.subitem a) {
+      border-radius: 4px;
+      padding: 1rem 2rem;
+
+      &:hover {
+        background: change-color($color: $SkeletonFocus, $alpha: 0.1);
+        color: black;
+      }
+    }
+  }
+
+  .submenu-active .submenu {
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 7rem;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #bbb;
+    box-shadow: $shadow;
+    text-align: center;
+    z-index: 999;
+    min-width: 100%;
+  }
+
+  .toggle {
+    display: none;
+  }
+}

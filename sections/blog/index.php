@@ -4,7 +4,7 @@
 enforce_login();
 $ENV = ENV::go();
 
-View::show_header('Blog', 'bbcode');
+View::show_header('Blog');
 
 if (check_perms('admin_manage_blog')) {
     if (!empty($_REQUEST['action'])) {

@@ -4,6 +4,7 @@
 
 #menu {
     background-color: $SkeletonHalfdark;
+    border-bottom: 0.5rem solid $SkeletonFocus;
     font-size: 1.8rem;
     text-align: center;
 }
@@ -30,12 +31,6 @@
     text-decoration: none;
 }
 
-/*
-#nav_links {
-    min-width: 15rem;
-}
-*/
-
 #menu ul li a:active {
     background-color: $SkeletonFocus;
 }
@@ -56,21 +51,23 @@
     box-shadow: $shadow;
     position: absolute;
     background-color: $SkeletonHalfdark;
+    border-top: 0.5rem solid $SkeletonFocus;
     width: 100%;
-    z-index: 99999;
     margin-top: 3.6rem;
 
     &#links_menu {
         right: 0;
+        z-index: 100;
     }
 
     &#user_menu {
         left: 0;
+        z-index: 200;
     }
 }
 
 #nav_links > #links_menu {
-    min-width: 15rem;
+    min-width: 14rem;
 }
 
 .nav_dropdown > div > a {

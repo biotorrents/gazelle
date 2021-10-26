@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- https://github.com/dewitt/opensearch/blob/master/opensearch-1-1-draft-6.md -->
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
-  <ShortName>BioTorrents.de</ShortName>
-  <Description>Search torrents on BioTorrents.de</Description>
-  <InputEncoding>UTF-8</InputEncoding>
+  <ShortName>torrents.bio</ShortName>
+  <Description>A platform to share biological sequence and medical imaging data</Description>
+  <Tags>api biological-data biological-sequences biology bittorrent bittorrent-tracker website</Tags>
+  <Contact>hello@torrents.bio</Contact>
+  <Url type="text/html"
+       template="https://torrents.bio/torrents.php?search={searchTerms}" />
+  <LongName>Search torrents.bio for BitTorrent biology data</LongName>
+  <Image height="64" width="64" type="image/png">https://torrents.bio/static/common/icon.png</Image>
+  <Query role="example" searchTerms="saccharomyces cerevisiae" />
+  <Developer>Omics Tools LLC</Developer>
+  <Attribution>
+    Copyright (c) 2021 Omics Tools LLC
+  </Attribution>
+  <SyndicationRight>open</SyndicationRight>
+  <AdultContent>false</AdultContent>
+  <Language>en-us</Language>
   <OutputEncoding>UTF-8</OutputEncoding>
-  <AdultContent>true</AdultContent>
-  <Image height="16" width="16" type="image/png">https://biotorrents.de/static/common/icon.png</Image>
-  <Url type="text/html" template="https://biotorrents.de/torrents.php?searchstr={searchTerms}"/>
+  <InputEncoding>UTF-8</InputEncoding>
 </OpenSearchDescription>

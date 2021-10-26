@@ -22,9 +22,9 @@ function header_link($SortKey, $DefaultWay = 'desc')
     return "torrents.php?order_way=$NewWay&amp;order_by=$SortKey&amp;".Format::get_url(['order_way', 'order_by']);
 }
 
-if (!empty($_GET['searchstr']) || !empty($_GET['groupname'])) {
-    if (!empty($_GET['searchstr'])) {
-        $InfoHash = $_GET['searchstr'];
+if (!empty($_GET['search']) || !empty($_GET['groupname'])) {
+    if (!empty($_GET['search'])) {
+        $InfoHash = $_GET['search'];
     } else {
         $InfoHash = $_GET['groupname'];
     }
@@ -144,15 +144,15 @@ $NumResults = $Search->record_count();
 
 $HideFilter = isset($LoggedUser['ShowTorFilter']) && $LoggedUser['ShowTorFilter'] === 0;
 // This is kinda ugly, but the enormous if paragraph was really hard to read
-$AdvancedSearch = !empty($_GET['action']) && $_GET['action'] === 'advanced';
-$AdvancedSearch |= !empty($LoggedUser['SearchType']) && (empty($_GET['action']) || $_GET['action'] === 'advanced');
+$AdvancedSearch = !empty($_GET['advanced_search']) && $_GET['advanced_search'] === 'true';
+$AdvancedSearch |= !empty($LoggedUser['SearchType']) && (empty($_GET['advanced_search']) || $_GET['advanced_search'] === 'true');
 $AdvancedSearch &= check_perms('site_advanced_search');
 if ($AdvancedSearch) {
-    $Action = 'action=advanced';
+    $Action = 'advanced_search=true';
     $HideBasic = ' hidden';
     $HideAdvanced = '';
 } else {
-    $Action = 'action=basic';
+    $Action = 'advanced_search=false';
     $HideBasic = '';
     $HideAdvanced = ' hidden';
 }
@@ -196,7 +196,7 @@ View::show_header('Browse Torrents', 'browse');
         <?php
         } ?>
 
-        <table class="layout torrent_search">
+        <table class="torrent_search skeleton-fix">
           <tr id="numbers" class="ftr_advanced<?=$HideAdvanced?>">
             <td class="label">
               <!--
@@ -459,9 +459,9 @@ View::show_header('Browse Torrents', 'browse');
             <td class="label">
               <!-- Universal Search -->
             </td>
-            <td class="ftb_searchstr">
-              <input type="search" spellcheck="false" size="48" name="searchstr" class="inputtext fti_basic"
-                placeholder="Universal Search" value="<?Format::form('searchstr')?>" aria-label="Terms to search">
+            <td class="ftb_search">
+              <input type="search" spellcheck="false" size="48" name="search" class="inputtext fti_basic"
+                placeholder="Universal Search" value="<?Format::form('search')?>" aria-label="Terms to search">
             </td>
           </tr>
 
@@ -617,13 +617,13 @@ View::show_header('Browse Torrents', 'browse');
 
           <input type="submit" value="Search" class="button-primary" />
 
-          <input type="hidden" name="action" id="ft_type"
-            value="<?=($AdvancedSearch ? 'advanced' : 'basic')?>" />
+          <input type="hidden" name="advanced_search" id="ft_type"
+            value="<?=($AdvancedSearch ? 'true' : 'false')?>" />
 
           <input type="hidden" name="searchsubmit" value="1" />
 
           <input type="button" value="Reset" <input type="button" value="Reset"
-            onclick="window.location.href = 'torrents.php<?php if (isset($_GET['action']) && $_GET['action'] === 'advanced') { ?>?action=advanced<?php } ?>'" />
+            onclick="window.location.href = 'torrents.php<?php if (isset($_GET['advanced_search']) && $_GET['advanced_search'] === 'true') { ?>?advanced_search=true<?php } ?>'" />
 
           &emsp;
 

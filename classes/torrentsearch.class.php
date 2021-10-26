@@ -67,7 +67,7 @@ class TorrentSearch
         'advgroupname' => 1,
         'media' => 1, # Platform
         'resolution' => 1, # Scope
-        'searchstr' => 1,
+        'search' => 1,
         'series' => 1, # Location
         'studio' => 1, # Department/Lab
         'location' => 1, # Combined &uarr;
@@ -87,11 +87,11 @@ class TorrentSearch
     // Some form field names don't match the ones in the index
     private static $FormsToFields = [
         # todo: Keep testing the granularity of filter combos
-        'searchstr' => '*',
+        'search' => '*',
         'advgroupname' => '*', # todo: Fix this ;)
         'numbers' => '(cataloguenumber,version)',
         'location' => '(studio,series)',
-        #'searchstr' => '(groupname,GroupTitle2,groupnamejp,artistname,studio,series,cataloguenumber,yearfulltext)',
+        #'search' => '(groupname,GroupTitle2,groupnamejp,artistname,studio,series,cataloguenumber,yearfulltext)',
         #'advgroupname' => '(groupname,GroupTitle2,groupnamejp)',
   ];
 
@@ -433,7 +433,7 @@ class TorrentSearch
             return;
         }
 
-        if ($Field === 'searchstr') {
+        if ($Field === 'search') {
             $this->search_basic($Term);
         } elseif ($Field === 'filelist') {
             $this->search_filelist($Term);
@@ -495,7 +495,7 @@ class TorrentSearch
             if (in_array($Word, $SearchMedia)) {
                 $this->add_word('media', $Word);
             } else {
-                $this->add_word('searchstr', $Word);
+                $this->add_word('search', $Word);
             }
         }
     }

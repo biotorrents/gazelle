@@ -10,29 +10,6 @@ class View
 
 
     /**
-     * commonMeta
-     */
-    public function commonMeta()
-    {
-        $ENV = ENV::go();
-
-        return $HTML = <<<HTML
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name=viewport content="width=device-width, initial-scale=1">
-        <!-- Default "index, follow" -->
-        <meta name="robots" content="none" />
-        <meta name="language" content="en-US" />
-        <meta name="description" content="$ENV->DESCRIPTION" />
-        <link rel="manifest" href="/manifest.php" />
-        <link rel="shortcut icon" href="/static/common/icon.png" />
-        <link rel="search" type="application/opensearchdescription+xml"
-          title="$ENV->SITE_NAME"
-          href="$ENV->STATIC_SERVER/opensearch.xml" />
-HTML;
-    }
-
-
-    /**
      * HTTP/2 Server Push headers for Cloudflare
      * @see https://blog.cloudflare.com/using-http-2-server-push-with-php/
      */
@@ -46,8 +23,8 @@ HTML;
             return error(404);
         }
 
-        $filemtime = filemtime(SERVER_ROOT."/$uri");
-        $integrity = base64_encode(hash_file($ENV->SRI, SERVER_ROOT."/$uri", true));
+        $filemtime = filemtime("$ENV->SERVER_ROOT/$uri");
+        $integrity = base64_encode(hash_file($ENV->SRI, "$ENV->SERVER_ROOT/$uri", true));
 
         # Send raw HTTP headers - preloading this way is bloat
         # 26 requests, 1.58 MB, 584ms
@@ -61,11 +38,11 @@ HTML;
                 break;
 
             case 'style':
-                $HTML = "<link rel='stylesheet' href='$uri?v$filemtime' integrity='$integrity' crossorigin='anonymous' />";
+                $HTML = "<link rel='stylesheet' href='$uri?v$filemtime' integrity='$ENV->SRI-$integrity' crossorigin='anonymous' />";
                 break;
 
             case 'font':
-                $HTML = "<link rel='preload' as='font' href='$uri?v$filemtime' integrity='$integrity' crossorigin='anonymous' />";
+                $HTML = "<link rel='preload' as='font' href='$uri?v$filemtime' integrity='$ENV->SRI-$integrity' crossorigin='anonymous' />";
                 break;
 
             default:

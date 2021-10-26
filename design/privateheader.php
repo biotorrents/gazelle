@@ -2,6 +2,7 @@
 #declare(strict_types=1);
 
 $ENV = ENV::go();
+$Twig = Twig::go();
 $View = new View();
 ?>
 
@@ -13,12 +14,15 @@ $View = new View();
     <?= display_str($PageTitle) ?>
   </title>
 
-  <!-- Meta tags -->
-  <?= $View->commonMeta(); ?>
-  <meta name="userid"
-    content="<?=G::$LoggedUser['ID']?>">
-  <meta name="authkey"
-    content="<?=G::$LoggedUser['AuthKey']?>">
+  <?= $Twig->render(
+        'header/meta-tags.html',
+        [
+          'ENV' => $ENV,
+          'LoggedUser' => G::$LoggedUser,
+          'title' => display_str($PageTitle)
+        ]
+        );
+        ?>
 
   <?php
 # Load JS
@@ -52,7 +56,7 @@ $Styles = array_filter(
           'vendor/normalize',
           'vendor/skeleton',
           #'assets/fonts/fa/css/all.min',
-          'global'
+          'global',
         ],
         explode(',', $CSSIncludes)
     )
@@ -222,96 +226,16 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
       <?= $ENV->SITE_NAME ?>
     </h1>
 
-    <div id="header">
-      <h1 id="logo">
-        <a href="/" aria-label="Front page"></a>
-      </h1>
-
-      <div id="menu">
-        <ul>
-          <li id="nav_torrents" <?=
-            Format::add_class($PageID, ['torrents', false, false], 'active', true)?>>
-            <a href="torrents.php">Torrents</a>
-          </li>
-
-          <li id="nav_collages" <?=
-            Format::add_class($PageID, ['collages'], 'active', true)?>>
-            <a href="collages.php">Collections</a>
-          </li>
-
-          <li id="nav_requests" <?=
-            Format::add_class($PageID, ['requests'], 'active', true)?>>
-            <a href="requests.php">Requests</a>
-          </li>
-
-          <li id="nav_forums" <?=
-            Format::add_class($PageID, ['forums'], 'active', true)?>>
-            <a href="forums.php">Forums</a>
-          </li>
-
-          <li id="nav_irc" <?=
-            Format::add_class($PageID, ['chat'], 'active', true)?>>
-            <a href="https://join.slack.com/t/biotorrents/shared_invite/<?=$ENV->SLACK_INVITE?>"
-              target="_blank">Slack</a>
-          </li>
-
-          <li id="nav_top10" <?=
-            Format::add_class($PageID, ['top10'], 'active', true)?>>
-            <a href="top10.php">Top 10</a>
-          </li>
-
-          <li id="nav_rules" <?=
-            Format::add_class($PageID, ['rules'], 'active', true)?>>
-            <a href="rules.php">Rules</a>
-          </li>
-
-          <li id="nav_wiki" <?=
-            Format::add_class($PageID, ['wiki'], 'active', true)?>>
-            <a href="wiki.php">Wiki</a>
-          </li>
-
-          <li id="nav_user" class="nav_dropdown" <?=Format::add_class($PageID, ['user', false, false], 'active', true, 'id')?>>
-            <a href="user.php?id=<?=G::$LoggedUser['ID']?>"
-              class="username"><?=G::$LoggedUser['Username']?></a>
-
-            <div id="user_menu">
-              <a
-                href="user.php?action=edit&amp;userid=<?=G::$LoggedUser['ID']?>">Edit</a>
-              <a
-                href="logout.php?auth=<?=G::$LoggedUser['AuthKey']?>">Logout</a>
-            </div>
-          </li>
-
-          <li id="nav_links"
-            class="nav_dropdown<?=$NewSubscriptions ? ' highlite' : ''?>">
-            <a>▾</a>
-
-            <div id="links_menu">
-              <a href="<?=Inbox::get_inbox_link(); ?>">Inbox</a>
-
-              <a href="staffpm.php">Staff Inbox</a>
-
-              <a
-                href="torrents.php?type=uploaded&amp;userid=<?=G::$LoggedUser['ID']?>">Uploads</a>
-
-              <a href="bookmarks.php?type=torrents">Bookmarks</a>
-
-              <?php if (check_perms('site_torrents_notify')) { ?>
-              <a href="user.php?action=notify">Notifications</a>
-              <?php } ?>
-
-              <a href="userhistory.php?action=subscriptions">Subscriptions</a>
-
-              <a href="comments.php">Comments</a>
-
-              <a href="friends.php">Friends</a>
-
-              <a href="better.php">Better</a>
-            </div>
-
-          </li>
-        </ul>
-      </div>
+      <?= $Twig->render(
+        'header/main-menu.html',
+        [
+          'ENV' => $ENV,
+          'LoggedUser' => G::$LoggedUser,
+          'inbox' => Inbox::get_inbox_link(),
+          'notify' => check_perms('site_torrents_notify'),
+        ]
+        );
+        ?>
 
       <?php
 if (isset(G::$LoggedUser['SearchType']) && G::$LoggedUser['SearchType']) { // Advanced search
@@ -321,62 +245,10 @@ if (isset(G::$LoggedUser['SearchType']) && G::$LoggedUser['SearchType']) { // Ad
             }
 ?>
 
-      <div id="searchbars">
-        <form class="search_form" name="torrents" action="torrents.php" method="get">
-          <?php if ($UseAdvancedSearch) { ?>
-          <input type="hidden" name="action" value="advanced">
-          <?php } ?>
-
-          <input id="torrentssearch" aria-label="Search torrents" accesskey="t" spellcheck="false" autocomplete="off"
-            placeholder="Torrents" type="text"
-            name="<?=$UseAdvancedSearch ? 'advgroupname' : 'searchstr' ?>">
-        </form>
-
-        <!--
-        <form class="search_form" name="artists" action="artist.php" method="get">
-          <input id="artistsearch" <?=null#Users::has_autocomplete_enabled('search')?>
-          aria-label="Search authors" accesskey="a" spellcheck="false" autocomplete="off" placeholder="Authors"
-          type="text" name="artistname" size="17">
-        </form>
-        -->
-
-        <form class="search_form" name="requests" action="requests.php" method="get">
-          <input id="requestssearch" aria-label="Search requests" spellcheck="false" autocomplete="off"
-            placeholder="Requests" type="text" name="search">
-        </form>
-
-        <form class="search_form" name="forums" action="forums.php" method="get">
-          <input value="search" type="hidden" name="action">
-
-          <input id="forumssearch" aria-label="Search forums" spellcheck="false" autocomplete="off" placeholder="Forums"
-            type="text" name="search">
-        </form>
-
-        <form class="search_form" name="wiki" action="wiki.php" method="get">
-          <input type="hidden" name="action" value="search">
-
-          <input id="wikisearch" aria-label="Search wiki" spellcheck="false" autocomplete="off" placeholder="Wiki"
-            type="text" name="search">
-        </form>
-
-        <form class="search_form" name="log" action="log.php" method="get">
-          <input id="logsearch" aria-label="Search log" spellcheck="false" autocomplete="off" placeholder="Log"
-            type="text" name="search">
-        </form>
-
-        <form class="search_form" name="users" action="user.php" method="get">
-          <input type="hidden" name="action" value="search">
-
-          <input id="userssearch" aria-label="Search users" spellcheck="false" autocomplete="off" placeholder="Users"
-            type="text" name="search">
-        </form>
-      </div>
-
       <div id="userinfo">
         <ul id="userinfo_major">
 
-          <li id="nav_upload"
-            class="brackets<?=Format::add_class($PageID, array('upload'), 'active', false)?>">
+          <li id="nav_upload">
             <a href="upload.php">Upload</a>
           </li>
 
@@ -390,20 +262,17 @@ if (check_perms('site_send_unlimited_invites')) {
 }
 ?>
 
-          <li id="nav_invite"
-            class="brackets<?=Format::add_class($PageID, array('user','invite'), 'active', false)?>">
+          <li id="nav_invite">
             <a href="user.php?action=invite">Invite<?=$Invites?></a>
           </li>
 
           <?php if ($ENV->FEATURE_DONATE) { ?>
-          <li id="nav_donate"
-            class="brackets<?=Format::add_class($PageID, array('donate'), 'active', false)?>">
+          <li id="nav_donate">
             <a href="donate.php">Donate</a>
           </li>
           <?php } ?>
 
-          <li id="nav_staff"
-            class="brackets<?=Format::add_class($PageID, array('staff'), 'active', false)?>">
+          <li id="nav_staff">
             <a href="staff.php">Staff</a>
           </li>
         </ul>
@@ -432,9 +301,13 @@ if (check_perms('site_send_unlimited_invites')) {
             <span class="stat tooltip"
               title="<?=number_format(G::$LoggedUser['RequiredRatio'], 5)?>"><?=number_format(G::$LoggedUser['RequiredRatio'], 2)?></span>
           </li>
-          <?php }
+          <?php } ?>
+          </ul>
 
-  if (G::$LoggedUser['FLTokens'] > 0) { ?>
+
+          <ul id="userinfo_extra">
+
+ <?php if (G::$LoggedUser['FLTokens'] > 0) { ?>
           <li id="fl_tokens">
             <a href="wiki.php?action=article&amp;name=tokens">Tokens</a>:
             <span class="stat">

@@ -111,7 +111,7 @@ if (!empty($_POST['action'])) {
       if (isset($LoggedUser['SearchType']) && $LoggedUser['SearchType']) {
         header('Location: torrents.php?action=advanced&artistname=' . urlencode($_GET['artistname']));
       } else {
-        header('Location: torrents.php?searchstr=' . urlencode($_GET['artistname']));
+        header('Location: torrents.php?search=' . urlencode($_GET['artistname']));
       }
       error();
     }
