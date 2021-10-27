@@ -12,42 +12,6 @@
   float: right;
 }
 
-/*
-@mixin column-flex($width) {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    max-width: $width;
-    min-height: 0;
-    padding: 0 0.25rem;
-}
-
-.main_column {
-    @include column-flex(64%);
-
-    table {
-        margin-bottom: 1rem;
-    }
-}
-
-.sidebar {
-    @include column-flex(34%);
-    width: 34%;
-    float: right;
-
-    &.fixed {
-        width: 34%;
-    }
-}
-
-.sidebar {
-    float: right;
-    width: 30%;
-    min-width: 20%;
-    margin-right: 1rem;
-}
-*/
-
 /* Box: soon to be <section> */
 .box {
   margin-bottom: 2rem;

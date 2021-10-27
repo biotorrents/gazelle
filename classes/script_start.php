@@ -21,8 +21,6 @@ $Security->SetupPitfalls();
 /*------------------------------------------------------*/
 /********************************************************/
 
-require SERVER_ROOT.'/classes/proxies.class.php';
-
 // Get the user's actual IP address if they're proxied.
 // Or if cloudflare is used
 if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
@@ -30,7 +28,6 @@ if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
 }
 
 if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])
-    && proxyCheck($_SERVER['REMOTE_ADDR'])
     && filter_var(
         $_SERVER['HTTP_X_FORWARDED_FOR'],
         FILTER_VALIDATE_IP,
