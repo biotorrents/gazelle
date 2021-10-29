@@ -68,9 +68,7 @@ switch ($Document) {
 }
 
 if (!$Valid) {
-    $_SERVER['SCRIPT_NAME'] = 'error.php';
-    $_SERVER['SCRIPT_FILENAME'] = 'error.php';
-    $Error = 404;
+    http_response_code(404);
+} else {
+    require_once __DIR__.'/classes/script_start.php';
 }
-
-require_once __DIR__.'/classes/script_start.php';
