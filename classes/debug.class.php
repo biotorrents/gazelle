@@ -3,10 +3,6 @@
 
 // Debug info for developers
 ini_set('max_execution_time', 600);
-define('MAX_TIME', 20000); //Maximum execution time in ms
-define('MAX_ERRORS', 0); //Maxmimum errors, warnings, notices we will allow in a page
-define('MAX_MEMORY', 80 * 1024 * 1024); //Maximum memory used per pageload
-define('MAX_QUERIES', 30); //Maxmimum queries
 
 class DEBUG
 {
@@ -15,6 +11,9 @@ class DEBUG
     public $Perf = [];
     private $LoggedVars = [];
 
+    /**
+     * profile
+     */
     public function profile($Automatic = '')
     {
         global $ScriptStartTime;
@@ -24,41 +23,7 @@ class DEBUG
             $Reason[] = $Automatic;
         }
 
-        $Micro = (microtime(true) - $ScriptStartTime) * 1000;
-        if ($Micro > MAX_TIME && !defined('TIME_EXCEPTION')) {
-            $Reason[] = number_format($Micro, 3).' ms';
-        }
-
-        $Errors = count($this->get_errors());
-        if ($Errors > MAX_ERRORS && !defined('ERROR_EXCEPTION')) {
-            $Reason[] = $Errors.' PHP errors';
-        }
-
-        /*
-        $Queries = count($this->get_queries());
-        if ($Queries > MAX_QUERIES && !defined('QUERY_EXCEPTION')) {
-          $Reason[] = $Queries.' Queries';
-        }
-        */
-
-        $Ram = memory_get_usage(true);
-        if ($Ram > MAX_MEMORY && !defined('MEMORY_EXCEPTION')) {
-            $Reason[] = Format::get_size($Ram).' RAM used';
-        }
-
         G::$DB->warnings(); // See comment in MYSQL::query
-        /*
-        $Queries = $this->get_queries();
-        $DBWarningCount = 0;
-        foreach ($Queries as $Query) {
-          if (!empty($Query[2])) {
-            $DBWarningCount += count($Query[2]);
-          }
-        }
-        if ($DBWarningCount) {
-          $Reason[] = $DBWarningCount . ' DB warning(s)';
-        }
-        */
 
         $CacheStatus = G::$Cache->server_status();
         if (in_array(0, $CacheStatus) && !G::$Cache->get_value('cache_fail_reported')) {
@@ -83,6 +48,9 @@ class DEBUG
         return false;
     }
 
+    /**
+     * analysis
+     */
     public function analysis($Message, $Report = '', $Time = 43200)
     {
         global $Document;
@@ -111,6 +79,9 @@ class DEBUG
         send_irc(DEBUG_CHAN, "$Message $Document ".site_url()."tools.php?action=analysis&case=$Identifier ".site_url().$RequestURI);
     }
 
+    /**
+     * get_cpu_time
+     */
     public function get_cpu_time()
     {
         if (!defined('PHP_WINDOWS_VERSION_MAJOR')) {
@@ -122,6 +93,9 @@ class DEBUG
         return false;
     }
 
+    /**
+     * log_var
+     */
     public function log_var($Var, $VarName = false)
     {
         $BackTrace = debug_backtrace();
@@ -135,6 +109,9 @@ class DEBUG
         $this->LoggedVars[$ID] = array($VarName => array('bt' => $File, 'data' => $Var));
     }
 
+    /**
+     * set_flag
+     */
     public function set_flag($Event)
     {
         global $ScriptStartTime;
@@ -149,6 +126,9 @@ class DEBUG
         set_error_handler(array($this, 'php_error_handler'));
     }
 
+    /**
+     * format_args
+     */
     protected function format_args($Array)
     {
         $LastKey = -1;
@@ -178,6 +158,9 @@ class DEBUG
         return implode(', ', $Return);
     }
 
+    /**
+     * php_error_handler
+     */
     public function php_error_handler($Level, $Error, $File, $Line)
     {
         // Who added this, it's still something to pay attention to...
@@ -238,8 +221,15 @@ class DEBUG
         return true;
     }
 
-    /* Data wrappers */
 
+    /*****************
+     * Data wrappers *
+     *****************/
+
+
+     /**
+      * get_perf
+      */
     public function get_perf()
     {
         if (empty($this->Perf)) {
@@ -258,11 +248,17 @@ class DEBUG
         return $this->Perf;
     }
 
+    /**
+     * get_flags
+     */
     public function get_flags()
     {
         return $this->Flags;
     }
 
+    /**
+     * get_errors
+     */
     public function get_errors($Light = false)
     {
         // Because the cache can't take some of these variables
@@ -274,11 +270,17 @@ class DEBUG
         return $this->Errors;
     }
 
+    /**
+     * get_constants
+     */
     public function get_constants()
     {
         return get_defined_constants(true);
     }
 
+    /**
+     * get_classes
+     */
     public function get_classes()
     {
         foreach (get_declared_classes() as $Class) {
@@ -288,6 +290,9 @@ class DEBUG
         return $Classes;
     }
 
+    /**
+     * get_extensions
+     */
     public function get_extensions()
     {
         foreach (get_loaded_extensions() as $Extension) {
@@ -296,21 +301,33 @@ class DEBUG
         return $Extensions;
     }
 
+    /**
+     * get_includes
+     */
     public function get_includes()
     {
         return get_included_files();
     }
 
+    /**
+     * get_cache_time
+     */
     public function get_cache_time()
     {
         return G::$Cache->Time;
     }
 
+    /**
+     * get_cache_keys
+     */
     public function get_cache_keys()
     {
         return array_keys(G::$Cache->CacheHits);
     }
 
+    /**
+     * get_sphinxql_queries
+     */
     public function get_sphinxql_queries()
     {
         if (class_exists('Sphinxql')) {
@@ -318,6 +335,9 @@ class DEBUG
         }
     }
 
+    /**
+     * get_sphinxql_time
+     */
     public function get_sphinxql_time()
     {
         if (class_exists('Sphinxql')) {
@@ -325,21 +345,33 @@ class DEBUG
         }
     }
 
+    /**
+     * get_queries
+     */
     public function get_queries()
     {
         return G::$DB->Queries;
     }
 
+    /**
+     * get_query_time
+     */
     public function get_query_time()
     {
         return G::$DB->Time;
     }
 
+    /**
+     * get_logged_vars
+     */
     public function get_logged_vars()
     {
         return $this->LoggedVars;
     }
 
+    /**
+     * get_ocelot_requests
+     */
     public function get_ocelot_requests()
     {
         if (class_exists('Tracker')) {
@@ -347,8 +379,15 @@ class DEBUG
         }
     }
 
-    /* Output Formatting */
 
+    /*********************
+     * Output formatting *
+     *********************/
+
+    
+    /**
+     * perf_table
+     */
     public function perf_table($Perf = false)
     {
         if (!is_array($Perf)) {
@@ -380,6 +419,9 @@ class DEBUG
 <?php
     }
 
+    /**
+     * include_table
+     */
     public function include_table($Includes = false)
     {
         if (!is_array($Includes)) {
@@ -413,6 +455,9 @@ class DEBUG
 <?php
     }
 
+    /**
+     * class_table
+     */
     public function class_table($Classes = false)
     {
         if (!is_array($Classes)) {
@@ -444,6 +489,9 @@ print_r($Classes);
 <?php
     }
 
+    /**
+     * extension_table
+     */
     public function extension_table()
     {
         ?>
@@ -472,6 +520,9 @@ print_r($this->get_extensions());
 <?php
     }
 
+    /**
+     * flag_table
+     */
     public function flag_table($Flags = false)
     {
         if (!is_array($Flags)) {
@@ -523,6 +574,9 @@ print_r($this->get_extensions());
 <?php
     }
 
+    /**
+     * constant_table
+     */
     public function constant_table($Constants = false)
     {
         if (!is_array($Constants)) {
@@ -553,6 +607,9 @@ print_r($this->get_extensions());
 <?php
     }
 
+    /**
+     * ocelot_table
+     */
     public function ocelot_table($OcelotRequests = false)
     {
         if (!is_array($OcelotRequests)) {
@@ -596,6 +653,9 @@ print_r($this->get_extensions());
 <?php
     }
 
+    /**
+     * cache_table
+     */
     public function cache_table($CacheKeys = false)
     {
         $Header = 'Cache Keys';
@@ -641,6 +701,9 @@ print_r($this->get_extensions());
 <?php
     }
 
+    /**
+     * error_table
+     */
     public function error_table($Errors = false)
     {
         if (!is_array($Errors)) {
@@ -684,6 +747,9 @@ print_r($this->get_extensions());
 <?php
     }
 
+    /**
+     * query_table
+     */
     public function query_table($Queries=false)
     {
         $Header = 'Queries';
@@ -736,6 +802,9 @@ print_r($this->get_extensions());
 <?php
     }
 
+    /**
+     * sphinx_table
+     */
     public function sphinx_table($Queries = false)
     {
         $Header = 'Searches';
@@ -776,6 +845,9 @@ print_r($this->get_extensions());
 <?php
     }
 
+    /**
+     * vars_table
+     */
     public function vars_table($Vars = false)
     {
         $Header = 'Logged Variables';

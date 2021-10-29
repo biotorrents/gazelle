@@ -347,7 +347,7 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
 
         <!--
           Specifics
-          todo: Make like the Seq/Img Format fields in browse.php
+          todo: Make like the Seq/Img Format fields in torrents.php
         -->
         <tr>
           <td class="label"><strong>Specifics</strong></td>

@@ -1,25 +1,22 @@
 <?php
 #declare(strict_types=1);
 
+/**
+ * Script start "class"
+ * 
+ * This isn't really a class but an app initialization.
+ * The code that includes the main PHP files is at the bottom.
+ */
+
+# To track how long a page takes to create
+$ScriptStartTime = microtime(true);
+
 # Initialize
-require_once 'config.php';
-require_once 'security.class.php';
+require_once __DIR__.'/config.php';
+require_once __DIR__.'/security.class.php';
 
 $ENV = ENV::go();
-$Security = new Security();
-$Security->SetupPitfalls();
-
-
-/*-- Script Start Class --------------------------------*/
-/*------------------------------------------------------*/
-/* This isnt really a class but a way to tie other      */
-/* classes and functions used all over the site to the  */
-/* page currently being displayed.                      */
-/*------------------------------------------------------*/
-/* The code that includes the main php files and    */
-/* generates the page are at the bottom.        */
-/*------------------------------------------------------*/
-/********************************************************/
+Security::setupPitfalls();
 
 // Get the user's actual IP address if they're proxied.
 // Or if cloudflare is used
@@ -183,28 +180,6 @@ if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'ajax') {
         }
     }
 }
-
-/*
-# OPS pleasantly rewrote session handling
-$UserSessions = [];
-if (isset($_COOKIE['session'])) {
-    $LoginCookie = Crypto::decrypt($_COOKIE['session'], $ENV->getPriv('ENCKEY'));
-    if ($LoginCookie !== false) {
-        [$SessionID, $LoggedUser['ID']] = explode('|~|', Crypto::decrypt($LoginCookie, $ENV->getPriv('ENCKEY')));
-        $LoggedUser['ID'] = (int)$LoggedUser['ID'];
-
-        if (!$LoggedUser['ID'] || !$SessionID) {
-            logout($LoggedUser['ID'], $SessionID);
-        }
-
-        $Session = new Gazelle\Session($LoggedUser['ID']);
-        $UserSessions = $Session->sessions();
-        if (!array_key_exists($SessionID, $UserSessions)) {
-            logout($LoggedUser['ID'], $SessionID);
-        }
-    }
-}
-*/
 # End OPS API token additions
 
 
@@ -444,6 +419,9 @@ function logout()
     error();
 }
 
+/**
+ * logout_all_sessions
+ */
 function logout_all_sessions()
 {
     $UserID = G::$LoggedUser['ID'];
@@ -456,6 +434,9 @@ function logout_all_sessions()
     logout();
 }
 
+/**
+ * enforce_login
+ */
 function enforce_login()
 {
     global $SessionID;
@@ -487,7 +468,10 @@ function authorize($Ajax = false)
 }
 
 $Debug->set_flag('ending function definitions');
-$Document = basename(parse_url($_SERVER['SCRIPT_FILENAME'], PHP_URL_PATH), '.php');
+$Document = ($_SERVER['REQUEST_URI'] === '/'
+    ? 'index'
+    : basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '.php')
+);
 
 if (!preg_match('/^[a-z0-9]+$/i', $Document)) {
     error(404);
@@ -506,9 +490,9 @@ define('STAFF_LOCKED', 1);
 
 $AllowedPages = ['staffpm', 'ajax', 'locked', 'logout', 'login'];
 if (isset(G::$LoggedUser['LockedAccount']) && !in_array($Document, $AllowedPages)) {
-    require(SERVER_ROOT . '/sections/locked/index.php');
+    require_once "$ENV->SERVER_ROOT/sections/locked/index.php";
 } else {
-    require(SERVER_ROOT . '/sections/' . $Document . '/index.php');
+    require_once "$ENV->SERVER_ROOT/sections/$Document/index.php";
 }
 
 $Debug->set_flag('completed module execution');
