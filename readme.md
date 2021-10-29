@@ -79,6 +79,7 @@ Besides that, BioTorrents has several passive developments in progress:
 - Integrated diceware passphrase generator
 - TLS database connections
 - Semantic HTML5 themes (WIP)
+- Single entry point for app init
 
 # Changelog: WCD → OT
 

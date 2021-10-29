@@ -2,7 +2,7 @@
   "name": "biotorrents/gazelle",
   "description": "Web framework for private BitTorrent trackers using Ocelot",
   "type": "project",
-  "license": "Unlicense",
+  "license": "ISC",
   "authors": [
     {
       "name": "What.cd"
