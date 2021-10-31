@@ -22,8 +22,8 @@ function manifest()
   "background_color": "#ffffff",
   "theme_color": "#0288d1",
   "icons": [{
-    "src": "$ENV->STATIC_SERVER/common/icon.png",
-    "sizes": "120x120",
+    "src": "$ENV->STATIC_SERVER/common/favicon/favicon-1k.png",
+    "sizes": "1024x1024",
     "type": "image/png"
   }]
 }

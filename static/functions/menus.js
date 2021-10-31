@@ -19,12 +19,12 @@
       menu.classList.remove("active");
 
       // adds the menu (hamburger) icon
-      toggle.querySelector("a").innerHTML = "<i class='fas fa-bars'></i>";
+      toggle.querySelector("a").innerHTML = "<i class='fal fa-bars'></i>";
     } else {
       menu.classList.add("active");
 
       // adds the close (x) icon
-      toggle.querySelector("a").innerHTML = "<i class='fas fa-times'></i>";
+      toggle.querySelector("a").innerHTML = "<i class='fal fa-times'></i>";
     }
   }
 
