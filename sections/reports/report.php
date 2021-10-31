@@ -126,10 +126,7 @@ switch ($Short) {
     break;
 }
 
-View::show_header(
-    'Report a '.$Type['title'],
-    'vendor/jquery.validate.min,form_validate'
-);
+View::show_header('Report a '.$Type['title']);
 ?>
 <div class="thin">
   <div class="header">

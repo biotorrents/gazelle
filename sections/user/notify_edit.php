@@ -5,10 +5,7 @@ if (!check_perms('site_torrents_notify')) {
     error(403);
 }
 
-View::show_header(
-    'Manage notifications',
-    'vendor/jquery.validate.min,form_validate'
-); ?>
+View::show_header('Manage notifications'); ?>
 
 <div>
   <h2 class="header">

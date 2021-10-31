@@ -32,7 +32,6 @@ $Scripts = array_filter(
         [
           'vendor/jquery.min',
           'vendor/jquery-ui.min',
-          #'vendor/jquery.autocomplete.min',
           'global',
           'ajax.class',
           #'autocomplete'

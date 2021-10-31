@@ -97,7 +97,7 @@ if (!$NewRequest) {
 
 View::show_header(
     ($NewRequest ? 'Create Request' : 'Edit Request'),
-    'requests,upload,form_validate,vendor/easymde.min',
+    'requests,upload,vendor/easymde.min',
     'vendor/easymde.min'
 );
 ?>

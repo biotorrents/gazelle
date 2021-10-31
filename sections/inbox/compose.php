@@ -29,7 +29,7 @@ if (!$Username) {
 }
 View::show_header(
     'Compose',
-    'inbox,vendor/jquery.validate.min,form_validate,vendor/easymde.min',
+    'inbox,vendor/easymde.min',
     'vendor/easymde.min'
 );
 ?>

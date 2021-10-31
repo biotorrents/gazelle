@@ -63,7 +63,7 @@ if ($UnRead == '1') {
 
 View::show_header(
     "View conversation $Subject",
-    'comments,inbox,vendor/jquery.validate.min,form_validate,vendor/easymde.min',
+    'comments,inbox,vendor/easymde.min',
     'vendor/easymde.min'
 );
 

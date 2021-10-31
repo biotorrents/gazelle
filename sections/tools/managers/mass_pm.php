@@ -12,7 +12,7 @@ $SkipClassIDs = array(USER, MEMBER, POWER, ELITE, TORRENT_MASTER, DONOR, POWER_T
 
 View::show_header(
     'Compose Mass PM',
-    'inbox,vendor/jquery.validate.min,form_validate'
+    'inbox'
 ); ?>
 
 <main>
