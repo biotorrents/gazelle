@@ -1,35 +1,49 @@
 <?php
-#declare(strict_types = 1);
+declare(strict_types = 1);
 
-$CollageID = $_GET['collageid'];
-if (!is_number($CollageID)) {
-    error(0);
-}
+$CollageID = (int) $_GET['collageid'];
+Security::checkInt($CollageID);
 
-$DB->query("
-  SELECT Name, UserID, CategoryID
-  FROM collages
-  WHERE ID = '$CollageID'");
+$DB->prepared_query("
+SELECT
+  `Name`,
+  `UserID`,
+  `CategoryID`
+FROM
+  `collages`
+WHERE
+  `ID` = '$CollageID'
+");
 list($Name, $UserID, $CategoryID) = $DB->next_record();
-if ($CategoryID == 0 && $UserID != $LoggedUser['ID'] && !check_perms('site_collages_delete')) {
+
+if ($CategoryID === 0 && $UserID !== $LoggedUser['ID'] && !check_perms('site_collages_delete')) {
     error(403);
 }
-if ($CategoryID == array_search(ARTIST_COLLAGE, $CollageCats)) {
+
+if ($CategoryID === array_search(ARTIST_COLLAGE, $CollageCats)) {
     error(404);
 }
 
-$DB->query("
-  SELECT
-    ct.GroupID,
-    um.ID,
-    um.Username,
-    ct.Sort,
-    tg.CatalogueNumber
-  FROM collages_torrents AS ct
-    JOIN torrents_group AS tg ON tg.ID = ct.GroupID
-    LEFT JOIN users_main AS um ON um.ID = ct.UserID
-  WHERE ct.CollageID = '$CollageID'
-  ORDER BY ct.Sort");
+$DB->prepared_query("
+SELECT
+  ct.`GroupID`,
+  um.`ID`,
+  um.`Username`,
+  ct.`Sort`,
+  tg.`identifier`
+FROM
+  `collages_torrents` AS ct
+JOIN `torrents_group` AS tg
+ON
+  tg.`id` = ct.`GroupID`
+LEFT JOIN `users_main` AS um
+ON
+  um.`ID` = ct.`UserID`
+WHERE
+  ct.`CollageID` = '$CollageID'
+ORDER BY
+  ct.`Sort`
+");
 
 $GroupIDs = $DB->collect('GroupID');
 
@@ -41,7 +55,7 @@ if (count($GroupIDs) > 0) {
 }
 
 View::show_header(
-    "Manage collection: $Name",
+    "Manage collection $Name",
     'vendor/jquery.tablesorter.min,sort'
 );
 
@@ -107,7 +121,7 @@ View::show_header(
       } elseif (count($Artists) > 0) {
           $DisplayName .= Artists::display_artists($Artists, true, false);
       }
-      $GroupNameLang = $GroupName ? $GroupName : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP);
+      $GroupNameLang = $title ? $title : ($subject ? $subject : $object);
       $TorrentLink = "<a href=\"torrents.php?id=$GroupID\" class=\"tooltip\" title=\"View torrent group\">$GroupNameLang</a>";
       $GroupYear = $GroupYear > 0 ? $GroupYear : ''; ?>
       <tr class="drag row" id="li_<?=$GroupID?>">

@@ -1,10 +1,9 @@
 <?php
-#declare(strict_types=1);
+declare(strict_types=1);
 
-if (!extension_loaded('date')) {
-    error('Date extension not loaded.');
-}
-
+/**
+ * time_ago
+ */
 function time_ago($TimeStamp)
 {
     if (!$TimeStamp) {
@@ -16,9 +15,9 @@ function time_ago($TimeStamp)
     return time() - $TimeStamp;
 }
 
-/*
+/**
  * Returns a <span> by default but can optionally return the raw time
- * difference in text (e.g. "16 hours and 28 minutes", "1 day, 18 hours").
+ * difference in text (e.g., "16 hours and 28 minutes", "1 day, 18 hours").
  */
 function time_diff($TimeStamp, $Levels = 2, $Span = true, $Lowercase = false)
 {
@@ -109,13 +108,23 @@ function time_diff($TimeStamp, $Levels = 2, $Span = true, $Lowercase = false)
     }
 }
 
-/* SQL utility functions */
 
+/*************************
+ * SQL utility functions *
+ *************************/
+
+
+/**
+ * time_plus
+ */
 function time_plus($Offset)
 {
     return date('Y-m-d H:i:s', time() + $Offset);
 }
 
+/**
+ * time_minus
+ */
 function time_minus($Offset, $Fuzzy = false)
 {
     if ($Fuzzy) {
@@ -132,6 +141,9 @@ function sqltime($timestamp = null)
     return date('Y-m-d H:i:s', ($timestamp ?? time()));
 }
 
+/**
+ * validDate
+ */
 function validDate($DateString)
 {
     $DateTime = explode(' ', $DateString);
@@ -167,16 +179,25 @@ function validDate($DateString)
     return checkDate($M, $D, $Y);
 }
 
+/**
+ * is_valid_date
+ */
 function is_valid_date($Date)
 {
     return is_valid_datetime($Date, 'Y-m-d');
 }
 
+/**
+ * is_valid_time
+ */
 function is_valid_time($Time)
 {
     return is_valid_datetime($Time, 'H:i');
 }
 
+/**
+ * is_valid_datetime
+ */
 function is_valid_datetime($DateTime, $Format = 'Y-m-d H:i')
 {
     $FormattedDateTime = DateTime::createFromFormat($Format, $DateTime);

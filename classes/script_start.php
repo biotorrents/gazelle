@@ -1,5 +1,5 @@
 <?php
-#declare(strict_types=1);
+declare(strict_types=1);
 
 /**
  * Script start "class"
@@ -11,62 +11,40 @@
 # To track how long a page takes to create
 $ScriptStartTime = microtime(true);
 
-# Initialize
+# Initialize the app config
 require_once __DIR__.'/config.php';
 require_once __DIR__.'/security.class.php';
 
 $ENV = ENV::go();
 Security::setupPitfalls();
 
-// Get the user's actual IP address if they're proxied.
-// Or if cloudflare is used
-if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
-    $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
-}
+# Start a buffer, mainly for MySQL errors
+ob_start();
 
-if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])
-    && filter_var(
-        $_SERVER['HTTP_X_FORWARDED_FOR'],
-        FILTER_VALIDATE_IP,
-        FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
-    )) {
-    $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
-}
+/**
+ * Require various classes.
+ * All six files need to be exactly here.
+ * They also need to come before the autoloader.
+ * todo: Find out why they can't be autoloaded.
+ */
+require_once "$ENV->SERVER_ROOT/classes/cache.class.php";
+require_once "$ENV->SERVER_ROOT/classes/debug.class.php";
+require_once "$ENV->SERVER_ROOT/classes/mysql.class.php";
+require_once "$ENV->SERVER_ROOT/classes/paranoia.class.php"; # Require check_paranoia()
+require_once "$ENV->SERVER_ROOT/classes/time.class.php"; # todo: Move to util.php
+require_once "$ENV->SERVER_ROOT/classes/util.php";
 
-if (!isset($argv) && !empty($_SERVER['HTTP_HOST'])) {
-    // Skip this block if running from cli or if the browser is old and shitty
-    // This should really be done in nginx config
-    // todo: Remove
-    if ($_SERVER['HTTP_HOST'] == 'www.'.SITE_DOMAIN) {
-        header('Location: https://'.SITE_DOMAIN.$_SERVER['REQUEST_URI']);
-        error();
-    }
-}
+# Autoload classes via Composer
+require_once "$ENV->SERVER_ROOT/vendor/autoload.php";
 
-$ScriptStartTime = microtime(true); // To track how long a page takes to create
-if (!defined('PHP_WINDOWS_VERSION_MAJOR')) {
-    $RUsage = getrusage();
-    $CPUTimeStart = $RUsage['ru_utime.tv_sec'] * 1000000 + $RUsage['ru_utime.tv_usec'];
-}
-ob_start(); // Start a buffer, mainly in case there is a mysql error
-
-require_once SERVER_ROOT.'/classes/debug.class.php'; // Require the debug class
-require_once SERVER_ROOT.'/classes/mysql.class.php'; // Require the database wrapper
-require_once SERVER_ROOT.'/classes/cache.class.php'; // Require the caching class
-require_once SERVER_ROOT.'/classes/time.class.php'; // Require the time class
-require_once SERVER_ROOT.'/classes/paranoia.class.php'; // Require the paranoia check_paranoia function
-require_once SERVER_ROOT.'/classes/util.php';
-
+# Initialize the $Debug global
 $Debug = new DEBUG;
 $Debug->handle_errors();
 $Debug->set_flag('Debug constructed');
 
+# Initialize the $DB and $Cache globals
 $DB = new DB_MYSQL;
 $Cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
-
-// Autoload classes.
-require_once SERVER_ROOT.'/vendor/autoload.php';
-#require_once SERVER_ROOT.'/classes/autoload.php';
 
 // Note: G::initialize is called twice.
 // This is necessary as the code inbetween (initialization of $LoggedUser) makes use of G::$DB and G::$Cache.
@@ -83,17 +61,6 @@ $Debug->set_flag('start user handling');
 // todo: Remove these globals, replace by calls into Users
 list($Classes, $ClassLevels) = Users::get_classes();
 
-
-//-- Load user information
-// User info is broken up into many sections
-// Heavy - Things that the site never has to look at if the user isn't logged in (as opposed to things like the class, donor status, etc)
-// Light - Things that appear in format_user
-// Stats - Uploaded and downloaded - can be updated by a script if you want super speed
-// Session data - Information about the specific session
-// Enabled - if the user's enabled or not
-// Permissions
-
-
 /**
  * JSON API token support
  * @see https://github.com/OPSnet/Gazelle/commit/7c208fc4c396a16c77289ef886d0015db65f2af1#diff-2ea09cbf36b1d20fec7a6d7fc50780723b9f804c4e857003aa9a9c359dc9fd49
@@ -107,7 +74,7 @@ $SessionID = false;
 $FullToken = null;
 
 // Only allow using the Authorization header for ajax endpoint
-if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'ajax') {
+if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
     # Banned IP address
     if (IPv4::isBanned($_SERVER['REMOTE_ADDR'])) {
         header('Content-Type: application/json');
@@ -182,7 +149,6 @@ if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'ajax') {
 }
 # End OPS API token additions
 
-
 /**
  * Session handling and cookies
  */
@@ -231,8 +197,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
         $Cache->cache_value('enabled_'.$LoggedUser['ID'], $Enabled, 0);
     }
 
-    # todo: Check strict equality
-    if ($Enabled == 2) {
+    if ($Enabled === 2) {
         logout();
     }
 
@@ -251,7 +216,6 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     // Get info such as username
     $LightInfo = Users::user_info($LoggedUser['ID']);
     $HeavyInfo = Users::user_heavy_info($LoggedUser['ID']);
-
 
     /**
      * OPS API tokens
@@ -272,6 +236,17 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     }
     # End OPS API token additions
 
+    /**
+     * Load user information.
+     * User info is broken up into many sections:
+     * 
+     *  - Heavy: Things that the site never has to look at if the user isn't logged in
+     *  - Light: Things that appear in format_user
+     *  - Stats: Uploaded and downloaded; can be updated by a script if you want super speed
+     *  - Session Data: Information about the specific session
+     *  - Enabled: If the user's enabled or not
+     *  - Permissions
+     */
 
     // Create LoggedUser array
     $LoggedUser = array_merge($HeavyInfo, $LightInfo, $UserStats);
@@ -447,7 +422,7 @@ function enforce_login()
 }
 
 /**
- * Make sure $_GET['auth'] is the same as the user's authorization key
+ * Make sure $_GET['auth'] is the same as the user's authorization key.
  * Should be used for any user action that relies solely on GET.
  *
  * @param Are we using ajax?
@@ -456,7 +431,7 @@ function enforce_login()
 function authorize($Ajax = false)
 {
     # Ugly workaround for API tokens
-    if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'ajax') {
+    if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
         return true;
     } else {
         if (empty($_REQUEST['auth']) || $_REQUEST['auth'] !== G::$LoggedUser['AuthKey']) {

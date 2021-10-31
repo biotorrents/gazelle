@@ -610,39 +610,3 @@ function base64UrlDecode($data)
         STR_PAD_RIGHT
     ));
 }
-
-/**
- * log_token_attempt
- * @see https://github.com/OPSnet/Gazelle/blob/master/classes/util.php
- */
-// TODO: reconcile this with log_attempt in login/index.php
-function log_token_attempt(DB_MYSQL $db, int $userId = 0): void
-{
-    $watch = new LoginWatch;
-    $ipStr = $_SERVER['REMOTE_ADDR'];
-
-    [$attemptId, $attempts, $bans] = $db->row(
-        '
-        SELECT ID, Attempts, Bans
-        FROM login_attempts
-        WHERE IP = ?
-        ',
-        $_SERVER['REMOTE_ADDR']
-    );
-
-    if (!$attemptId) {
-        $watch->create($ipStr, null, $userId);
-        return;
-    }
-
-    $attempts++;
-    $watch->setWatch($attemptId);
-    if ($attempts < 6) {
-        $watch->increment($userId, $ipStr, null);
-        return;
-    }
-    $watch->ban($attempts, null, $userId);
-    if ($bans > 9) {
-        (new IPv4())->createBan(0, $ipStr, $ipStr, 'Automated ban per failed token usage');
-    }
-}
