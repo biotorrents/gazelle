@@ -8,9 +8,6 @@
  */
 
 nav {
-  /* border-bottom: 0.5rem solid $SkeletonFocus; */
-  /* font-size: 1.8rem; */
-
   ul {
     margin: 0 !important;
 
@@ -30,7 +27,6 @@ nav {
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  /* gap: 1rem; */
 
   li a {
     display: block;
@@ -58,9 +54,6 @@ nav {
  */
 
 @media (max-aspect-ratio: 4/3) {
-  /* @media (max-width: 960px) { */
-  /* @media (orientation: portrait) { */
-
   .item {
     order: 3;
     width: 100%;
@@ -94,9 +87,6 @@ nav {
  */
 
 @media (min-aspect-ratio: 4/3) {
-  /* @media (min-width: 960px) { */
-  /* @media (orientation: landscape) { */
-
   .menu {
     align-items: flex-start;
     flex-wrap: nowrap;
@@ -118,8 +108,9 @@ nav {
       padding: 1rem 2rem;
 
       &:hover {
-        background: change-color($color: $SkeletonFocus, $alpha: 0.1);
-        color: black;
+        background: change-color($color: #1eaedb, $alpha: 0.1);
+        /* background: change-color($color: $SkeletonFocus, $alpha: 0.1); */
+        color: #222;
       }
     }
   }

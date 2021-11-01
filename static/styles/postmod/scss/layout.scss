@@ -1,41 +1,41 @@
 /* Logo */
 #logo {
-    background: url("/static/common/logos/postmod.png") no-repeat center;
-    background-size: contain;
-    width: 250px;
+  background: url("/static/common/logos/postmod.png") no-repeat center;
+  background-size: contain;
+  width: 250px;
+  height: 50px;
+  margin: 0 0 0 10%;
+
+  a {
+    border: none;
+    display: block;
+    width: 100%;
     height: 50px;
-    margin: 0 0 0 10%;
+  }
 
-    a {
-        border: none;
-        display: block;
-        width: 100%;
-        height: 50px;
-    }
-
-    a:hover {
-        border: none;
-    }
+  a:hover {
+    border: none;
+  }
 }
 
 /* Category icons */
 .cats_col div {
-    width: 3rem;
-    height: 3rem;
+  width: 3rem;
+  height: 3rem;
 }
 
 /* Headers */
 .header {
-    margin-bottom: 2rem;
-    text-align: center;
+  margin-bottom: 2rem;
+  text-align: center;
 }
 
 /* Footer */
 footer {
-    margin-top: 2rem;
-    width: 100%;
+  margin-top: 2rem;
+  width: 100%;
 
-    p {
-        text-align: center;
-    }
+  p {
+    text-align: center;
+  }
 }

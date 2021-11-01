@@ -14,7 +14,7 @@ $Image = $TorrentDetails['WikiImage'];
 
 // Handle no artwork
 if (!$Image) {
-    $Image = STATIC_SERVER.'common/noartwork/music.png';
+    $Image = STATIC_SERVER.'common/noartwork.png';
 }
 
 json_die('success', array(

@@ -291,7 +291,7 @@ foreach ($GroupIDs as $GroupID) {
 <div class="collage_image image_group_<?=$GroupID?>">
   <a href="torrents.php?id=<?=$GroupID?>">
     <?php if (!$picture) {
-        $picture = STATIC_SERVER.'common/noartwork/music.png';
+        $picture = STATIC_SERVER.'common/noartwork.png';
     } ?>
     <img class="tooltip_interactive"
       src="<?=ImageTools::process($picture, 'thumb')?>"

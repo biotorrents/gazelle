@@ -3,54 +3,54 @@
  */
 
 .setting_description > * {
-    margin: 1em 0 0 0;
+  margin: 1em 0 0 0;
 }
 
 #settings_sections {
-    /* Section links */
-    h2 {
-        text-align: left;
-    }
+  /* Section links */
+  h2 {
+    text-align: left;
+  }
 
-    /* Controls */
-    #submit,
-    #settings_search {
-        box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        width: 100%;
-    }
+  /* Controls */
+  #submit,
+  #settings_search {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    width: 100%;
+  }
 }
 
 /* Fixed sidebar */
 #settings_sections.fixed {
-    position: fixed;
-    top: 1em;
+  position: fixed;
+  top: 1em;
 }
 
 /* Stylesheet gallery in user profile editing */
 #css_gallery {
-    overflow: hidden;
-    margin-top: 10px;
+  overflow: hidden;
+  margin-top: 10px;
 }
 
 .preview_wrapper {
-    position: relative;
-    display: inline-block;
-    width: 40%;
-    margin: 0 10px;
+  position: relative;
+  display: inline-block;
+  width: 40%;
+  margin: 0 10px;
 }
 
 .preview_image {
-    display: block;
-    cursor: pointer;
-    overflow: hidden;
+  display: block;
+  cursor: pointer;
+  overflow: hidden;
 
-    img {
-        width: 100%;
-    }
+  img {
+    width: 100%;
+  }
 }
 
 .preview_name {
-    text-align: center;
-    margin-top: 5px;
+  text-align: center;
+  margin-top: 5px;
 }

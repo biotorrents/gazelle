@@ -205,7 +205,7 @@ View::show_header(
               alt="<?=$AltName?>" /></div>
           <?php } else { ?>
           <div><img width="100%"
-              src="<?=STATIC_SERVER?>common/noartwork/music.png"
+              src="<?=STATIC_SERVER?>common/noartwork.png"
               alt="<?=$Categories[$GroupCategoryID - 1]?>"
               class="brackets tooltip"
               title="<?=$Categories[$GroupCategoryID - 1]?>" /></div>

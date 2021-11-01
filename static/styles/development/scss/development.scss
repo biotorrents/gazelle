@@ -1,16 +1,16 @@
 body {
-    font-family: $ComicNeue, sans-serif !important;
+  font-family: $ComicNeue, sans-serif !important;
 }
 
 b,
 strong {
-    font-family: $ComicNeueBold, sans-serif !important;
-    font-weight: normal !important;
+  font-family: $ComicNeueBold, sans-serif !important;
+  font-weight: normal !important;
 }
 
 /* Font Awesome exception to the Comic Sans rule */
 i:not(.fa):not(.fab):not(.fad):not(.fal):not(.far):not(.fas),
 em:not(.fa):not(.fab):not(.fad):not(.fal):not(.far):not(.fas) {
-    font-family: $ComicNeueItalic, sans-serif !important;
-    font-style: normal !important;
+  font-family: $ComicNeueItalic, sans-serif !important;
+  font-style: normal !important;
 }

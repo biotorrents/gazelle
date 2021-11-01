@@ -1,43 +1,43 @@
 /* todo: Map selectors to message types */
 .log1 {
-    color: purple;
+  color: purple;
 }
 
 .log2 {
-    color: yellow;
+  color: yellow;
 }
 
 /* Edited */
 .log3 {
-    color: blue;
+  color: blue;
 }
 
 .log4 {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .log5 {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 /* Added */
 .good {
-    color: green;
-    font-weight: bold;
+  color: green;
+  font-weight: bold;
 }
 
 /* Deleted */
 .bad {
-    color: red;
-    font-weight: bold;
+  color: red;
+  font-weight: bold;
 }
 
 .goodish {
-    font-weight: bold;
-    color: scale-color(green, $alpha: 50%);
+  font-weight: bold;
+  color: scale-color(green, $alpha: 50%);
 }
 
 .badish {
-    font-weight: bold;
-    color: orange;
+  font-weight: bold;
+  color: orange;
 }

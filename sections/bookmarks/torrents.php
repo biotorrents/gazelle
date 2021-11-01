@@ -255,7 +255,7 @@ foreach ($GroupIDs as $GroupID) {
     class="bookmark_<?=$GroupID?>">
 
     <?php if (!$picture) {
-        $picture = STATIC_SERVER.'common/noartwork/music.png';
+        $picture = STATIC_SERVER.'common/noartwork.png';
     } ?>
 
     <img class="tooltip"
