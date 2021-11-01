@@ -554,19 +554,6 @@ HTML;
           </td>
         </tr>
 
-        <!-- Emoticons -->
-        <tr id="comm_emot_tr">
-          <td class="label">
-            <strong>Emoticons</strong>
-          </td>
-
-          <td>
-            <input type="checkbox" name="disablesmileys" id="disablesmileys" <?=!empty($SiteOptions['DisableSmileys']) ? ' checked="checked"' : ''?>
-            />
-            <label for="disablesmileys">Disable emoticons</label>
-          </td>
-        </tr>
-
         <!-- Avatar display (posts) -->
         <tr id="comm_avatars_tr">
           <td class="label">

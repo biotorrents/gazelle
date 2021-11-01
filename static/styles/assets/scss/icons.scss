@@ -7,83 +7,73 @@
  *  - badge styles.
  */
 
-$cats: "assets/bioicons/";
 $posts: "assets/forums/";
 $nrcc: no-repeat center center;
 
-@mixin scale() {
-    background-size: contain;
+@mixin bioicons($emoji) {
+    content: $emoji;
+    font-size: xx-large;
 }
 
-/*
+/**
  * Category Icons
  */
 
-.cats_sequences {
-    background: url($cats + "sequences.png") $nrcc;
-    @include scale;
+.cats_sequences::before {
+    @include bioicons("🧬");
 }
 
-.cats_graphs {
-    background: url($cats + "graphs.png") $nrcc;
-    @include scale;
+.cats_graphs::before {
+    @include bioicons("📈");
 }
 
-.cats_systems {
-    background: url($cats + "systems.png") $nrcc;
-    @include scale;
+.cats_systems::before {
+    @include bioicons("🌐");
 }
 
-.cats_geometric {
-    background: url($cats + "geometric.png") $nrcc;
-    @include scale;
+.cats_geometric::before {
+    @include bioicons("💠");
 }
 
-.cats_scalars\/vectors {
-    background: url($cats + "scalars_vectors.png") $nrcc;
-    @include scale;
+.cats_scalars\/vectors::before {
+    @include bioicons("⏱️");
 }
 
-.cats_patterns {
-    background: url($cats + "patterns.png") $nrcc;
-    @include scale;
+.cats_patterns::before {
+    @include bioicons("❄️");
 }
 
-.cats_constraints {
-    background: url($cats + "constraints.png") $nrcc;
-    @include scale;
+.cats_constraints::before {
+    @include bioicons("⚙️");
 }
 
-.cats_images {
-    background: url($cats + "images.png") $nrcc;
-    @include scale;
+.cats_images::before {
+    @include bioicons("🔬");
 }
 
-.cats_spatial {
-    background: url($cats + "spatial.png") $nrcc;
-    @include scale;
+.cats_spatial::before {
+    @include bioicons("🗺️");
 }
 
-.cats_models {
-    background: url($cats + "models.png") $nrcc;
-    @include scale;
+.cats_models::before {
+    @include bioicons("🏗️");
 }
 
-.cats_documents {
-    background: url($cats + "documents.png") $nrcc;
-    @include scale;
+.cats_documents::before {
+    @include bioicons("📓");
 }
 
-.cats_machinedata {
-    background: url($cats + "machine_data.png") $nrcc;
-    @include scale;
+.cats_machinedata::before {
+    @include bioicons("📡");
 }
 
 /* Shown on browse page */
+/*
 .cats_col div {
     width: 3rem;
     height: 3rem;
 }
+*/
 
 /* Related? */
 #cat-selector ul {

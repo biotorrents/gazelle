@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__.'classes/config.php';
+require_once __DIR__.'/classes/config.php';
 
 # For non-AJAX calls
 if ($_SERVER['PHP_SELF'] === '/manifest.php') {
@@ -22,7 +22,7 @@ function manifest()
   "background_color": "#ffffff",
   "theme_color": "#0288d1",
   "icons": [{
-    "src": "$ENV->STATIC_SERVER/common/favicon/favicon-1k.png",
+    "src": "$ENV->STATIC_SERVER/common/favicon-1k.png",
     "sizes": "1024x1024",
     "type": "image/png"
   }]

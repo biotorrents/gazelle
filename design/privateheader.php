@@ -14,15 +14,16 @@ $View = new View();
     <?= display_str($PageTitle) ?>
   </title>
 
-  <?= $Twig->render(
-        'header/meta-tags.html',
-        [
-          'ENV' => $ENV,
-          'LoggedUser' => G::$LoggedUser,
-          'title' => display_str($PageTitle)
-        ]
-        );
-        ?>
+  <?=
+    $Twig->render(
+      'header/meta-tags.html',
+      [
+        'ENV' => $ENV,
+        'LoggedUser' => G::$LoggedUser,
+        'title' => display_str($PageTitle)
+      ]
+    );
+  ?>
 
   <?php
 # Load JS
@@ -54,7 +55,6 @@ $Styles = array_filter(
           'vendor/jquery-ui.min',
           'vendor/normalize',
           'vendor/skeleton',
-          #'assets/fonts/fa/css/all.min',
           'global',
         ],
         explode(',', $CSSIncludes)

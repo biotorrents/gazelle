@@ -8,7 +8,7 @@
   <Url type="text/html"
        template="https://torrents.bio/torrents.php?search={searchTerms}" />
   <LongName>Search torrents.bio for BitTorrent biology data</LongName>
-  <Image height="1024" width="1024" type="image/png">https://torrents.bio/static/favicon/favicon-1k.png</Image>
+  <Image height="1024" width="1024" type="image/png">https://torrents.bio/static/favicon-1k.png</Image>
   <Query role="example" searchTerms="saccharomyces cerevisiae" />
   <Developer>Omics Tools LLC</Developer>
   <Attribution>

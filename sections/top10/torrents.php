@@ -555,7 +555,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
           
             # Studio
             if ($Studio) {
-                $DisplayName .= "&ensp;🏦&nbsp;&nbsp;<a href='torrents.php?action=search&location=$Studio'>$Studio</a>";
+                $DisplayName .= "&ensp;🏫&nbsp;&nbsp;<a href='torrents.php?action=search&location=$Studio'>$Studio</a>";
             }
 
             # Authors

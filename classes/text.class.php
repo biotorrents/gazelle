@@ -1,5 +1,5 @@
 <?php
-#declare(strict_types=1);
+declare(strict_types=1);
 
 class Text
 {
@@ -38,20 +38,6 @@ class Text
       'rule' => 0,
       'embed' => 0,
     ];
-
-
-    /**
-     * Array of smilies; code => image file in STATIC_SERVER/common/smileys
-     * @var array $Smileys
-     */
-    private static $Smileys = [];
-
-
-    /**
-     * Processed version of the $Smileys array, see {@link smileys}
-     * @var array $ProcessedSmileys
-     */
-    private static $ProcessedSmileys = [];
 
 
     /**
@@ -270,7 +256,7 @@ class Text
 
 
     /**
-     * strip_bbcode()
+     * strip_bbcode
      */
     public static function strip_bbcode($Str)
     {
@@ -288,7 +274,7 @@ class Text
 
 
     /**
-     * valid_url()
+     * valid_url
      */
     private static function valid_url($Str, $Extension = '', $Inline = false)
     {
@@ -322,7 +308,7 @@ class Text
 
 
     /**
-     * local_url()
+     * local_url
      */
     public static function local_url($Str)
     {
@@ -1090,7 +1076,7 @@ class Text
 
 
     /**
-     * raw_text()
+     * raw_text
      */
     private static function raw_text($Array)
     {
@@ -1169,27 +1155,14 @@ class Text
 
 
     /**
-     * smileys()
+     * smileys
+     * 
+     * Empty function that remains necessary for BBcode parsing to work.
+     * I'm tempted to just get rid of BBcode entirely, to be honest.
      */
     private static function smileys($Str)
     {
         return $Str;
-
-        /*
-        if (!empty(G::$LoggedUser['DisableSmileys'])) {
-            return $Str;
-        }
-
-        if (count(self::$ProcessedSmileys) === 0 && count(self::$Smileys) > 0) {
-            foreach (self::$Smileys as $Key => $Val) {
-                self::$ProcessedSmileys[$Key] = '<img src="'.STATIC_SERVER.'common/smileys/'.$Val.'" alt="" />';
-            }
-            reset(self::$ProcessedSmileys);
-        }
-
-        $Str = strtr($Str, self::$ProcessedSmileys);
-        return $Str;
-        */
     }
 }
 

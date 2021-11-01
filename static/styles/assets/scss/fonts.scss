@@ -324,93 +324,49 @@ $OpenDyslexicItalic: "OpenDyslexic-Italic";
 /* Noto Sans */
 body.style_noto_sans {
   font-family: $NotoSans, sans-serif;
-  @include font-styles(
-    $NotoSansBold,
-    $NotoSansItalic,
-    $NotoMono,
-    $NotoMonoBold
-  );
+  @include font-styles($NotoSansBold, $NotoSansItalic, $NotoMono, $NotoMonoBold);
 }
 
 /* Noto Serif */
 body.style_noto_serif {
   font-family: $NotoSerif, serif;
-  @include font-styles(
-    $NotoSerifBold,
-    $NotoSerifItalic,
-    $NotoMono,
-    $NotoMonoBold
-  );
+  @include font-styles($NotoSerifBold, $NotoSerifItalic, $NotoMono, $NotoMonoBold);
 }
 
 /* Luxi Sans */
 body.style_luxi_sans {
   font-family: $LuxiSans, sans-serif;
-  @include font-styles(
-    $LuxiSansBold,
-    $LuxiSansItalic,
-    $LuxiMono,
-    $LuxiMonoBold,
-    $LuxiMonoItalic
-  );
+  @include font-styles($LuxiSansBold, $LuxiSansItalic, $LuxiMono, $LuxiMonoBold, $LuxiMonoItalic);
 }
 
 /* Luxi Serif */
 body.style_luxi_serif {
   font-family: $LuxiSerif, serif;
-  @include font-styles(
-    $LuxiSerifBold,
-    $LuxiSerifItalic,
-    $LuxiMono,
-    $LuxiMonoBold,
-    $LuxiMonoItalic
-  );
+  @include font-styles($LuxiSerifBold, $LuxiSerifItalic, $LuxiMono, $LuxiMonoBold, $LuxiMonoItalic);
 }
 
 /* Computer Modern Sans */
 body.style_cmodern_sans {
   font-family: $CModernSans, sans-serif;
-  @include font-styles(
-    $CModernSansBold,
-    $CModernSansItalic,
-    $CModernMono,
-    $CModernMonoBold,
-    $CModernMonoItalic
-  );
+  @include font-styles($CModernSansBold, $CModernSansItalic, $CModernMono, $CModernMonoBold, $CModernMonoItalic);
 }
 
 /* Computer Modern Serif */
 body.style_cmodern_serif {
   font-family: $CModernSerif, serif;
-  @include font-styles(
-    $CModernSerifBold,
-    $CModernSerifItalic,
-    $CModernMono,
-    $CModernMonoBold,
-    $CModernMonoItalic
-  );
+  @include font-styles($CModernSerifBold, $CModernSerifItalic, $CModernMono, $CModernMonoBold, $CModernMonoItalic);
 }
 
 /* OpenDyslexic */
 body.style_opendyslexic {
   font-family: $OpenDyslexic, sans-serif;
-  @include font-styles(
-    $OpenDyslexicBold,
-    $OpenDyslexicItalic,
-    $NotoMono,
-    $NotoMonoBold
-  );
+  @include font-styles($OpenDyslexicBold, $OpenDyslexicItalic, $NotoMono, $NotoMonoBold);
 }
 
 /* Comic Neue */
 body.style_comic_neue {
   font-family: $ComicNeue, sans-serif;
-  @include font-styles(
-    $ComicNeueBold,
-    $ComicNeueItalic,
-    $NotoMono,
-    $NotoMonoBold
-  );
+  @include font-styles($ComicNeueBold, $ComicNeueItalic, $NotoMono, $NotoMonoBold);
 }
 
 /**
