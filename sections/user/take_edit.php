@@ -24,9 +24,6 @@ if ((int) $UserID !== $LoggedUser['ID'] && !check_perms('users_edit_profiles', $
 
 $Val->SetFields('stylesheet', 1, "number", "You forgot to select a stylesheet.");
 $Val->SetFields('styleurl', 0, "regex", "You did not enter a valid stylesheet URL.", ['regex' => '/^'.CSS_REGEX.'$/i']);
-// The next two are commented out because the drop-down menus were replaced with a check box and radio buttons
-//$Val->SetFields('disablegrouping', 0, "number", "You forgot to select your torrent grouping option.");
-//$Val->SetFields('torrentgrouping', 0, "number", "You forgot to select your torrent grouping option.");
 $Val->SetFields('postsperpage', 1, "number", "You forgot to select your posts per page option.", ['inarray' => [25, 50, 100]]);
 //$Val->SetFields('hidecollage', 1, "number", "You forgot to select your collage option.", ['minlength' => 0, 'maxlength' => 1]);
 $Val->SetFields('collagecovers', 1, "number", "You forgot to select your collage option.");
@@ -34,7 +31,6 @@ $Val->SetFields('avatar', 0, "regex", "You did not enter a valid avatar URL.", [
 $Val->SetFields('email', 1, "email", "You did not enter a valid email address.");
 $Val->SetFields('irckey', 0, "string", "You did not enter a valid IRC key. An IRC key must be between 6 and 32 characters long.", ['minlength' => 6, 'maxlength' => 32]);
 $Val->SetFields('new_pass_1', 0, "regex", "You did not enter a valid password. A valid password is 15 characters or longer.", ['regex' => '/(?=^.{15,}$).*$/']);
-#$Val->SetFields('new_pass_1', 0, "regex", "You did not enter a valid password. A valid password is 6 characters or longer.", ['regex' => '/(?=^.{6,}$).*$/']);
 $Val->SetFields('new_pass_2', 1, "compare", "Your passwords do not match.", ['comparefield' => 'new_pass_1']);
 
 /*
@@ -212,9 +208,6 @@ $Options['ShowSnatched']       = (!empty($_POST['showsnatched']) ? 1 : 0);
 $Options['DisableAutoSave']    = (!empty($_POST['disableautosave']) ? 1 : 0);
 $Options['CoverArt']           = (int)!empty($_POST['coverart']);
 $Options['ShowExtraCovers']    = (int)!empty($_POST['show_extra_covers']);
-$Options['HideLolicon']        = (int)!empty($_POST['hide_lolicon']);
-$Options['HideScat']           = (int)!empty($_POST['hide_scat']);
-$Options['HideSnuff']          = (int)!empty($_POST['hide_snuff']);
 $Options['AutoComplete']       = (int)$_POST['autocomplete'];
 $Options['StyleAdditions']     = $_POST['style_additions'] ?? [];
 

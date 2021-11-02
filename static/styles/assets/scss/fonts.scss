@@ -157,75 +157,6 @@ $LuxiMonoItalic: "LuxiMono-Italic";
 }
 
 /**
- * Computer Modern Sans
- */
-
-$CModernSans: "CMUSansSerif";
-$CModernSansBold: "CMUSansSerif-Bold";
-$CModernSansItalic: "CMUSansSerif-Oblique";
-
-@font-face {
-  font-family: "CMUSansSerif";
-  src: url($font-path + "cmodern/CMUSansSerif.woff2");
-}
-
-@font-face {
-  font-family: "CMUSansSerif-Bold";
-  src: url($font-path + "cmodern/CMUSansSerif-Bold.woff2");
-}
-
-@font-face {
-  font-family: "CMUSansSerif-Oblique";
-  src: url($font-path + "cmodern/CMUSansSerif-Oblique.woff2");
-}
-
-/**
- * Computer Modern Serif
- */
-
-$CModernSerif: "CMUSerif-Roman";
-$CModernSerifBold: "CMUSerif-Bold";
-$CModernSerifItalic: "CMUSerif-Italic";
-
-@font-face {
-  font-family: "CMUSerif-Roman";
-  src: url($font-path + "cmodern/CMUSerif-Roman.woff2");
-}
-
-@font-face {
-  font-family: "CMUSerif-Bold";
-  src: url($font-path + "cmodern/CMUSerif-Bold.woff2");
-}
-
-@font-face {
-  font-family: "CMUSerif-Italic";
-  src: url($font-path + "cmodern/CMUSerif-Italic.woff2");
-}
-
-/**
- * Computer Modern Mono
- */
-
-$CModernMono: "CMUTypewriter-Regular";
-$CModernMonoBold: "CMUTypewriter-Bold";
-$CModernMonoItalic: "CMUTypewriter-Italic";
-
-@font-face {
-  font-family: "CMUTypewriter-Regular";
-  src: url($font-path + "cmodern/CMUTypewriter-Regular.woff2");
-}
-
-@font-face {
-  font-family: "CMUTypewriter-Bold";
-  src: url($font-path + "cmodern/CMUTypewriter-Bold.woff2");
-}
-
-@font-face {
-  font-family: "CMUTypewriter-Italic";
-  src: url($font-path + "cmodern/CMUTypewriter-Italic.woff2");
-}
-
-/**
  * Comic Neue
  */
 
@@ -364,30 +295,6 @@ body.style_luxi_serif {
     $LuxiMono,
     $LuxiMonoBold,
     $LuxiMonoItalic
-  );
-}
-
-/* Computer Modern Sans */
-body.style_cmodern_sans {
-  font-family: $CModernSans, sans-serif;
-  @include font-styles(
-    $CModernSansBold,
-    $CModernSansItalic,
-    $CModernMono,
-    $CModernMonoBold,
-    $CModernMonoItalic
-  );
-}
-
-/* Computer Modern Serif */
-body.style_cmodern_serif {
-  font-family: $CModernSerif, serif;
-  @include font-styles(
-    $CModernSerifBold,
-    $CModernSerifItalic,
-    $CModernMono,
-    $CModernMonoBold,
-    $CModernMonoItalic
   );
 }
 
