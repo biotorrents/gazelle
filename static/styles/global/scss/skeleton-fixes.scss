@@ -65,8 +65,7 @@ legend {
 }
 
 /* Tables usually containing forms */
-/* BP */
-table.store_table,
+/* BP */ table.store_table,
 /* rule sections */ div.rule_table,
 /* requests? */form.create_form,
 /* top10 and many */ form.search_form,
@@ -112,13 +111,6 @@ form {
 code {
   padding: 0 !important;
 }
-
-/* Unordered lists */
-/*
-ul:not(.nobullet) {
-    list-style: circle outside !important;
-}
-*/
 
 /* Poll options */
 ul#poll_options {

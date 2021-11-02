@@ -1,12 +1,11 @@
-/*
+/**
  * Base typography
  */
 
 body {
   background: white;
-  color: black;
+  color: #222;
   font-family: $NotoSans;
-  /* font-size: 1.2rem; */
 
   b,
   strong {
@@ -40,7 +39,7 @@ th {
 
 /* Links */
 a {
-  color: black;
+  color: #222;
   text-decoration: underline;
 }
 
@@ -55,13 +54,13 @@ a:hover {
 
   a,
   a.search_link {
-    color: black;
+    color: #222;
     text-decoration: none;
   }
 
   a:hover,
   a:hover.search_link {
-    color: black;
+    color: #222;
     text-decoration: underline;
   }
 }
@@ -70,7 +69,7 @@ a:hover {
 a.search_link,
 a.brackets,
 table#taglist a {
-  color: black;
+  color: #222;
   text-decoration: none;
 
   &:hover {
@@ -112,7 +111,7 @@ ul {
 
 /* Markdown Extra new features */
 hr {
-  @include transparent-border($c: black, $a: 0.5);
+  @include transparent-border($c: #222, $a: 0.5);
   margin: 2rem auto;
   width: 66%;
 }
@@ -188,7 +187,7 @@ ul.poll li {
 /* Alerts, Toolbox, etc. */
 .alertbar {
   a {
-    color: black;
+    color: #222;
     text-decoration: none;
   }
 
@@ -196,10 +195,3 @@ ul.poll li {
     text-decoration: underline;
   }
 }
-
-/* Last edited */
-/*
-.last_edited {
-  opacity: 0.75;
-}
-*/

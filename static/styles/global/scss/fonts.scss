@@ -6,7 +6,7 @@ a.external {
   padding-right: 13px;
 }
 
-/*
+/**
  * Spacing classes
  */
 
@@ -55,7 +55,7 @@ pre {
   }
 }
 
-/*
+/**
  * Torrent form
  */
 
@@ -91,33 +91,6 @@ pre {
 .new {
   color: red;
 }
-
-/* Autocomplete */
-/*
-.autocomplete-suggestions {
-    color: #000;
-    margin-top: 5px;
-    border: 1px solid #999;
-    background: #fff;
-    overflow: auto;
-
-    strong {
-        font-weight: normal;
-        color: #3399ff;
-    }
-}
-
-.autocomplete-suggestion {
-    padding: 2px 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    cursor: pointer;
-}
-
-.autocomplete-selected {
-    background: #f0f0f0;
-}
-*/
 
 /**
  * Ordered lists
