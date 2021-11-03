@@ -1,6 +1,6 @@
 /* Logo */
 .logo {
-  background: url("/static/common/logos/liquidrop-bookish-1k.png");
+  background: url("/public/common/logos/liquidrop-bookish-1k.png");
   background-size: contain;
   width: 50px;
   min-width: 50px;
@@ -41,13 +41,13 @@
 .show_torrents {
   width: 21px;
   height: 28px;
-  background: url("/static/common/symbols/show.png") no-repeat center center;
+  background: url("/public/common/symbols/show.png") no-repeat center center;
 }
 
 .hide_torrents {
   width: 21px;
   height: 28px;
-  background: url("/static/common/symbols/hide.png") no-repeat center center;
+  background: url("/public/common/symbols/hide.png") no-repeat center center;
 }
 
 .show_torrents_link {

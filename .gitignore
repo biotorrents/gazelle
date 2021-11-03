@@ -1,36 +1,55 @@
+##
 # https://github.com/OPSnet/Gazelle/blob/master/.gitignore
+#
 
-# backup files
-*.bak
-*.sw*
 *~
+*.bak
+*.swp
 
-# home folder
 .DS_Store
 .bash_history
 .cache/
 .config/
-.histfile
-.lesshst
+.docker/data/
+.idea/
+.vscode/
 .local/
 .npm-global/
 .npm/
 .npmrc
-.php_history
 .pki/
 .profile
-.wget-hsts
-.zsh*
+.wine/
 __MACOSX/
 
-# app files
 /cache
-/classes/config.php
 /node_modules
+/public/font/
+/public/local/
 /vendor
+/classes/config.php
+/mix-manifest.json
+/mix.js.map
 
+/public/styles/**/*.css
+/public/styles/**/*.css.map
+!/public/styles/opendyslexic/style.css
+!/public/styles/tooltipster/custom.css
+!/public/styles/tooltipster/reset.css
+
+/public/stylespreview/
+!/public/stylespreview/.gitkeep
+
+/public/userscripts/gazelle-json-export.js.txt
+
+.phpunit.result.cache
+
+
+##
 # heavy assets
-/static/common/badges/**
-/static/styles/**/*.css
-/static/styles/assets/fonts/**
-fonts.tgz
+#
+
+/public/fonts.tgz
+/public/common/badges/**
+/public/styles/**/*.css
+/public/styles/assets/fonts/**

@@ -12,10 +12,6 @@ if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 header('Expires: '.date('D, d-M-Y H:i:s \U\T\C', time() + 3600 * 24 * 120)); # 120 days
 header('Last-Modified: '.date('D, d-M-Y H:i:s \U\T\C', time()));
 
-if (!extension_loaded('gd')) {
-    error('Please install and enable the GD Graphics Library.');
-}
-
 
 /**
  * img_error

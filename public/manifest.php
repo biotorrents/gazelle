@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__.'/classes/config.php';
+require_once __DIR__.'/../classes/config.php';
 
 # For non-AJAX calls
 if ($_SERVER['PHP_SELF'] === '/manifest.php') {

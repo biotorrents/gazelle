@@ -62,15 +62,11 @@ class Security
         }
 
         # gd
-        # From image.class.php
-        # Deleted 2021-10-30
-        /*
+        # From /public/image.php
         if (!extension_loaded('gd')) {
             error('GD extension php-gd not loaded.');
         }
-        */
-        
-        
+
         # mbstring
         if (!extension_loaded('mbstring')) {
             error('Multibyte string extension php-mbstring not loaded.');

@@ -24,7 +24,7 @@ echo $Twig->render(
   );
 
 echo "<link href='$ENV->STATIC_SERVER/styles/public.css?v="
-     . filemtime(SERVER_ROOT.'/static/styles/public.css')
+     . filemtime(SERVER_ROOT.'/public/styles/public.css')
      . "' rel='stylesheet' type='text/css'>";
 
 # Load JS

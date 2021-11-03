@@ -13,7 +13,7 @@ if (isset($_GET['clearcache'])) {
     unset($_GET['clearcache']);
 }
 
-require_once 'classes/config.php';
+require_once __DIR__.'/../classes/config.php';
 $ENV = ENV::go();
 
 require_once "$ENV->SERVER_ROOT/classes/misc.class.php";

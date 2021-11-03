@@ -270,7 +270,7 @@ function error($Error = 1, $NoHTML = false, $Log = false)
                 This may be due to the user not having the necessary permissions for a resource or needing an account of some sort, or attempting a prohibited action
                 (e.g., creating a duplicate record where only one is allowed).
                 The request should not be repeated.';
-            if (substr($_SERVER['REQUEST_URI'], 0, 9) !== '/static/') {
+            if (substr($_SERVER['REQUEST_URI'], 0, 9) !== $ENV->STATIC_SERVER) {
                 notify($ENV->DEBUG_CHAN, $Title);
             }
             break;
@@ -283,7 +283,7 @@ function error($Error = 1, $NoHTML = false, $Log = false)
             if (!preg_match(
                 "/\.(ico|jpg|jpeg|gif|png)$/",
                 $_SERVER['REQUEST_URI']
-            ) && substr($_SERVER['REQUEST_URI'], 0, 9) !== '/static/') {
+            ) && substr($_SERVER['REQUEST_URI'], 0, 9) !== $ENV->STATIC_SERVER) {
                 notify($ENV->DEBUG_CHAN, $Title);
             }
             break;
