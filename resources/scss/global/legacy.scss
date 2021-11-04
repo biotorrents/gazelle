@@ -1,0 +1,450 @@
+/**
+ * Legacy global.css from OT Gazelle.
+ * Needed for existing theme compatibility.
+ *
+ * https://git.oppaiti.me/Oppaitime/Gazelle/src/branch/master/static/styles/global.css
+ */
+
+pre {
+  overflow: auto;
+}
+
+.disable_grouping {
+  display: none;
+}
+
+form textarea,
+form input {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.invalid,
+.warning,
+.error,
+.new {
+  color: #ff0000;
+}
+
+/* Make [+] on add multiple artists stay at the bottom (on torrent details page) */
+div#AddArtists {
+  position: relative;
+  display: inline-block;
+}
+
+div#AddArtists a {
+  position: absolute;
+  right: 0pt;
+  bottom: 0pt;
+}
+
+.clear:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+.new-subscriptions {
+  font-weight: bold;
+}
+
+#forums #quickpost {
+  width: 95%;
+}
+
+.bbcode_bar {
+  list-style: none;
+  margin: 0px 0px -4px;
+  box-sizing: border-box;
+  text-align: center;
+  display: inline-block;
+}
+
+.bbcode_bar > li {
+  display: inline-block;
+  margin: 0px;
+}
+
+.bbcode_bar > li > a {
+  display: inline-block;
+  height: 26px;
+  line-height: 26px;
+  cursor: pointer;
+  min-width: 20px;
+  margin: 0px 4px;
+}
+
+.bbcode_bar .emoji_box {
+  position: absolute;
+  width: 200px;
+  height: 100px;
+  overflow-y: scroll;
+  padding: 8px;
+  font-size: 20px;
+}
+
+.bbcode_bar .emoji_box > a {
+  cursor: pointer;
+}
+
+.bbcode_bar .emoji_box > br {
+  content: "";
+  display: block;
+  margin-bottom: 15px;
+}
+
+td.label,
+.valign_top {
+  vertical-align: top;
+}
+
+span.rbt {
+  display: block;
+  padding: 8px 0 0;
+  background: url("../rippy/rippy_top.gif") no-repeat top;
+}
+
+span.rbm {
+  display: block;
+  background: url("../rippy/rippy_middle.gif") repeat bottom;
+  padding: 0 5px;
+}
+
+span.rbb {
+  display: block;
+  padding: 4px 0px 18px;
+  margin-bottom: 5px;
+  background: url("../rippy/rippy_bottom.gif") no-repeat bottom;
+}
+
+span.secondary_class {
+  font-size: 85%;
+  font-weight: bold;
+}
+
+.breadcrumbs {
+  font-weight: bold;
+  text-align: right;
+}
+
+.paranoia_override {
+  font-style: italic;
+}
+
+#manage_collage_table.ui-sortable .drag {
+  cursor: n-resize;
+}
+
+#manage_collage_table.ui-sortable .ui-sortable-helper.drag {
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+}
+
+#manage_collage_table .ui-sortable-helper td,
+#manage_collage_table .ui-sortable-placeholder {
+  border: 0;
+}
+
+.drag_drop_save {
+  padding: 6px 0;
+  overflow: hidden;
+}
+
+.headerSort {
+  cursor: pointer;
+}
+
+.headerSort span {
+  background: url("/public/images/table-order.png") no-repeat scroll right -38px
+    transparent;
+  padding: 0px 20px 0 0;
+}
+
+.headerSortDown span {
+  background: url("/public/images/table-order.png") no-repeat scroll right 4px
+    transparent;
+}
+
+.headerSortUp span {
+  background: url("/public/images/table-order.png") no-repeat scroll right -79px
+    transparent;
+}
+
+.headerSort.sorter-false,
+.headerSort.sorter-false span {
+  background-image: none;
+  cursor: default;
+}
+
+.album_votes {
+  text-align: center;
+}
+
+.favoritecount {
+  font-size: 150%;
+  font-weight: bold;
+}
+
+.favoritecount_small {
+  font-size: 110%;
+  font-weight: bold;
+}
+
+ul.votedalbums li {
+  list-style: none;
+  list-style-type: none;
+  margin: 0;
+}
+
+tr.torrent .bookmark > a:before {
+  text-decoration: none;
+  font-weight: normal;
+}
+
+tr.torrent .bookmark > a:after {
+  text-decoration: none;
+  font-weight: normal;
+}
+
+#sortable {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 50%;
+}
+
+#sortable li {
+  padding: 0px;
+  font-size: 1.2em;
+  height: 1.5em;
+}
+
+.ui-state-highlight {
+  background: #007dc6 /*{bgColorHighlight}*/;
+  opacity: 0.15;
+  width: 50%;
+}
+
+.filelist_table td:first-child {
+  word-break: break-all;
+}
+
+/* Fix long overflow for Opera (doesn't support word-break). */
+.reportinfo_table {
+  table-layout: fixed;
+}
+
+/* Wrap release info for consistent DOM and to limit table expansion. */
+.no_overflow {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Stylesheet gallery in user profile editing */
+#css_gallery {
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.preview_wrapper {
+  position: relative;
+  display: inline-block;
+  width: 40%;
+  margin: 0 10px;
+}
+
+.preview_image {
+  display: block;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.preview_image img {
+  width: 100%;
+}
+
+.preview_name {
+  text-align: center;
+  margin-top: 5px;
+}
+
+.option_group {
+  margin-bottom: 10px;
+}
+
+.option_group:last-child {
+  margin-bottom: 0px;
+}
+
+.autocomplete-suggestions {
+  color: #000;
+  margin-top: 5px;
+  border: 1px solid #999;
+  background: #fff;
+  overflow: auto;
+}
+
+.autocomplete-suggestion {
+  padding: 2px 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.autocomplete-selected {
+  background: #f0f0f0;
+}
+
+.autocomplete-suggestions strong {
+  font-weight: normal;
+  color: #3399ff;
+}
+
+.process_info {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.process_info_pid {
+  width: 70px;
+}
+
+.process_info_data {
+  overflow: auto;
+}
+
+.setting_description > * {
+  margin: 1em 0 0 0;
+}
+
+.settings_sidebar {
+  min-height: 385px;
+}
+
+#settings_sections.fixed {
+  position: fixed;
+  top: 0px;
+}
+
+#settings_sections #submit,
+#settings_sections #settings_search {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  width: 100%;
+}
+
+#settings_sections h2 {
+  text-align: left;
+}
+
+.forum_post .colhead_dark div {
+  display: flex;
+}
+
+.forum_post .colhead_dark div > * {
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.forum_post blockquote {
+  overflow-x: auto;
+}
+
+.donor_icon {
+  margin-left: 2px;
+  margin-right: 2px;
+  max-width: 16px;
+  max-height: 16px;
+  position: relative;
+}
+
+.badge_icon {
+  margin: 0px 2px;
+  position: relative;
+}
+
+.donation_info {
+  padding: 10px 10px 10px 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 20px;
+}
+
+.donation_info_title {
+  display: block;
+  font-size: 1.75em;
+  -webkit-margin-before: 1em;
+  -webkit-margin-after: 1em;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+#inbox .search_form input[type="search"] {
+  width: 100%;
+  margin: 10px 0px 0px;
+}
+
+#inbox .manage_form input[type="submit"] {
+  margin: 10px 7px 10px 0px;
+}
+
+.search_warning {
+  position: absolute;
+}
+
+#admincommentlinks {
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+.poll_your_answer {
+  font-weight: bold;
+}
+
+.net_box {
+  display: inline-block;
+  width: calc(20% - 4px);
+  margin: 2px;
+  vertical-align: top;
+  font-size: 10pt;
+}
+.net_box > .box {
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+}
+.net_box > .box > span {
+  width: 100%;
+}
+
+.sidebar .box_tags > ul.stats > li {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sidebar .box_tags > ul.stats > li > a {
+  word-break: break-all;
+}
+
+.edit_tags_votes {
+  display: flex;
+}
+
+.hidden {
+  display: none;
+}
+
+form.edit_form[name="screenshots_form"] input[type="text"],
+form.edit_form[name="screenshots_form"] img {
+  width: 400px;
+}

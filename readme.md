@@ -71,6 +71,13 @@ Besides that, BioTorrents has several passive developments in progress:
 - run all files through generic formatters such as PHP-CS-Fixer; and
 - move all external libraries to uncomplicated package management.
 
+## Proper application layout
+
+Bio Gazelle takes cues from the best-of-breed PHP framework Laravel.
+The source code is reorganized along Laravel's lines while maintaining the comfy familiarity of OT/WCD Gazelle.
+The app logic, config, and Git repo lies outside the web root for enhanced security.
+An ongoing project involves modernizing the app based on Laravel's excellent tools.
+
 ## Minor changes
 
 - Database crypto bumped up to AES-256
@@ -126,7 +133,7 @@ We use modern PHP password hashing features that automatically rehash your passw
 
 # Mascot
 
-![Gracie Gazelle](static/common/mascot.png)
+![Gracie Gazelle](public/images/mascot.png)
 
 **Gracie Gazelle**
 

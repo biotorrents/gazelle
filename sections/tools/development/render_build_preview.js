@@ -8,7 +8,7 @@ var toolsMiscPath = system.args[4];
 
 // Check if all paths are accessible
 // We assume at least read rights on all paths and files
-if (!fs.isDirectory(rootPath) || !fs.isDirectory(rootPath + '/' + staticPath) || !fs.isDirectory(rootPath + '/' + staticPath + 'styles/' + system.args[3] + '/') || !fs.isDirectory(toolsMiscPath)) {
+if (!fs.isDirectory(rootPath) || !fs.isDirectory(rootPath + '/' + staticPath) || !fs.isDirectory(rootPath + '/' + staticPath + 'css/' + system.args[3] + '/') || !fs.isDirectory(toolsMiscPath)) {
   // Incorrect paths, are they passed correctly?
   returnStatus.status = -1;
   console.log(JSON.stringify(returnStatus));
@@ -31,7 +31,7 @@ page.open('render_base.html', function () {
   };
 
   // Switch to specific stylesheet subdirectory
-  fs.changeWorkingDirectory(rootPath + '/' + staticPath + 'styles/' + system.args[3] + '/');
+  fs.changeWorkingDirectory(rootPath + '/' + staticPath + 'css/' + system.args[3] + '/');
   if (!fs.isWritable(fs.workingDirectory)) {
     // Don't have write access.
     returnStatus.status = -3;

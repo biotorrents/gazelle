@@ -668,7 +668,7 @@ class Users
           if (!empty($Avatar)) {
               $ToReturn = ($ReturnHTML ? "<a href=\"user.php?id=$UserID\"><img src=\"$Avatar\" ".($Size?"width=\"$Size\" ":"")."$Style $AvatarMouseOverText$SecondAvatar $Class /></a>" : $Avatar);
           } else {
-              $URL = STATIC_SERVER.'common/avatars/default.png';
+              $URL = STATIC_SERVER.'images/avatars/default.png';
               $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar />" : $URL);
           }
           break;
@@ -722,7 +722,7 @@ class Users
           break;
 
         default:
-          $URL = STATIC_SERVER.'common/avatars/default.png';
+          $URL = STATIC_SERVER.'images/avatars/default.png';
           $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar $Class/>" : $URL);
         }
         return $ToReturn;

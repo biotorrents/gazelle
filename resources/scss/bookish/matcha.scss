@@ -1,0 +1,240 @@
+/**
+ * Matcha Additions
+ */
+
+body.style_matcha {
+  background: #edeae5;
+
+  nav {
+    background: url("/public/css/bookish/matcha/sam-komon.png");
+  }
+
+  /* Main menu */
+  @media (min-aspect-ratio: 4/3) {
+    .item {
+      a {
+        color: #222;
+
+        &:hover {
+          color: #0298a6;
+          text-decoration: none;
+        }
+      }
+
+      a:not(.subitem a) {
+        &:hover {
+          background: change-color($color: #016670, $alpha: 0.1);
+        }
+      }
+    }
+  }
+
+  /* Upload, Invite, etc. */
+  #userinfo {
+    background: #fff9c7;
+    box-shadow: 0 2px 10px -2px slategray;
+    color: #222;
+    padding: 0.5em 0;
+    width: 100%;
+    text-align: center;
+
+    a {
+      color: #222;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    b a {
+      font-weight: normal;
+      font-size: 0.9em;
+      font-weight: bold;
+    }
+
+    ul {
+      display: inline;
+      margin: 0 1%;
+
+      li {
+        display: inline;
+        margin: 0 0.1em;
+        line-height: 2em;
+        vertical-align: middle;
+        padding: 0;
+      }
+    }
+  }
+
+  #userinfo_minor > li > ul {
+    display: none;
+    position: absolute;
+    padding: 5px;
+    left: -5px;
+    background-color: #fff9c7;
+    z-index: 100;
+  }
+
+  /* Column heads */
+  .head,
+  .colhead,
+  .colhead_dark {
+    background: #9fedd7;
+    border-bottom: 2px solid change-color(#222, $alpha: 0.25);
+    color: #222;
+    padding: 0.5em 1em;
+  }
+
+  /* Box */
+  .box,
+    .pad,
+    section,
+    /* Exceptions, fixes, etc. */
+    table.user_options {
+    background-color: white;
+    border: none;
+    margin-bottom: 1em;
+    padding: 0.5rem;
+  }
+
+  /* Shadows */
+  .box,
+  .border,
+  .alertbar,
+  .artist_table,
+  .request_table,
+  .forum_index,
+  #userinfo_minor > li > ul,
+  .permissions table {
+    box-shadow: 0 5px 4px -4px slategray;
+  }
+
+  /* Links */
+  a {
+    color: #016670;
+    text-decoration: none;
+
+    &:hover {
+      color: #222;
+      text-decoration: underline;
+    }
+  }
+
+  /* Special links */
+  .forum_post .body a:not([href="#"]),
+  .rule_summary a,
+  .wiki_article a,
+  #actual_rules a,
+  .news_post .pad a,
+  .store_table a {
+    color: #016670;
+    text-decoration: none;
+  }
+
+  .forum_post .body a:hover:not([href="#"]),
+  .rule_summary a:hover,
+  .wiki_article a:hover,
+  #actual_rules a:hover,
+  .news_post .pad a:hover,
+  .store_table a:hover {
+    color: #222;
+    text-decoration: underline;
+  }
+
+  /* Blockquote */
+  blockquote {
+    margin: 0.5em 2em;
+    padding: 1em;
+    border: 1px solid #bbb;
+  }
+
+  /* Buttons */
+  button:not(.editor-toolbar button),
+  input[type="button"],
+  input[type="submit"] {
+    color: #222;
+    border: 1px solid #bbb;
+    box-shadow: 2px 2px 10px -5px slategray;
+
+    &.button-primary {
+      background: #fbe180;
+    }
+
+    &:hover {
+      background: #fff9c7;
+      /* Primary hover default blue */
+      border: 1px solid #bbb;
+      color: #222;
+    }
+
+    &:focus {
+      background: #fff9c7;
+    }
+  }
+
+  /* Text input */
+  input.inputtext {
+    border: none;
+    border-bottom: 1px solid #edeae5;
+    background-color: white;
+    font-size: 13px;
+    outline: none;
+    transition: ease-in-out 0.12s;
+
+    &:focus {
+      border-bottom: 1px solid #fbe180;
+    }
+  }
+
+  /* Cover images */
+  #coverCont {
+    background-color: #fff9c7;
+    padding: 5px;
+    box-shadow: 2px 2px 10px -2px slategray;
+  }
+
+  #coverCont img {
+    background-color: #fff9c7;
+  }
+
+  /* Captions */
+  caption {
+    border-bottom: 1px solid #edeae5;
+    font-weight: bold;
+  }
+
+  /* Messages */
+  .error_message {
+    padding: 1em;
+    background-color: #ff8a8a;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    box-shadow: 2px 2px 10px -5px slategray;
+  }
+
+  .save_message {
+    padding: 1em;
+    width: 50%;
+    margin: 2em auto;
+    background: #fbe180;
+    text-align: center;
+    color: #222;
+    font-weight: bold;
+    box-shadow: 2px 2px 10px -5px slategray;
+  }
+
+  /* Forums */
+  .forum_post .colhead_dark {
+    background: #9fedd7;
+  }
+
+  .forum_post.staff_post .colhead_dark {
+    background: #fbe180;
+  }
+
+  .forum_post.sticky_post {
+    border: 2px solid #fbe180;
+  }
+} /* end body.style_matcha */

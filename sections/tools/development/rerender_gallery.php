@@ -3,7 +3,7 @@
 
 /**
  * This page creates previews of all supported stylesheets
- * SERVER_ROOT . '/' . STATIC_SERVER . 'styles/preview' must exist and be writable
+ * SERVER_ROOT . '/' . STATIC_SERVER . 'css/preview' must exist and be writable
  * Dependencies are PhantomJS (http://phantomjs.org/) and
  * ImageMagick (http://www.imagemagick.org/script/index.php)
  */
@@ -16,7 +16,7 @@ $DB->prepared_query('
     Name AS ProperName
   FROM stylesheets');
 $Styles = $DB->to_array('ID', MYSQLI_BOTH);
-$ImagePath = SERVER_ROOT . '/' . STATIC_SERVER . 'styles/preview';
+$ImagePath = SERVER_ROOT . '/' . STATIC_SERVER . 'css/preview';
 ?>
 <div>
   <h2>Rerender stylesheet gallery images</h2>

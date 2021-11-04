@@ -4,7 +4,7 @@ declare(strict_types=1);
 /**
  * Gazelle single app entry point, to clean up PHP files in root
  * Adapted from https://github.com/OPSnet/Gazelle/blob/master/gazelle.php
- * 
+ *
  * commit c10adab0e22c96d13c2ddbf3610792127245d97f
  * Author: itismadness <itismadness@apollo.rip>
  * Date:   Sat Jan 27 20:42:55 2018 -0100

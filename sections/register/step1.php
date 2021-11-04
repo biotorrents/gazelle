@@ -7,10 +7,10 @@ View::show_header('Register');
 
 <h2>Register new account</h2>
 
-<script src="<?=STATIC_SERVER?>functions/validate.js" type="text/javascript">
+<script src="<?=STATIC_SERVER?>js/validate.js" type="text/javascript">
 </script>
 
-<script src="<?=STATIC_SERVER?>functions/password_validate.js"
+<script src="<?=STATIC_SERVER?>js/password_validate.js"
   type="text/javascript"></script>
 
 <?php if (!empty($Err)) { ?>

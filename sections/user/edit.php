@@ -203,7 +203,7 @@ $ProfileRewards = Donations::get_profile_rewards($UserID);
                 <div class="preview_image"
                   name="<?=($Style['Name'])?>">
                   <img
-                    src="<?=STATIC_SERVER.'styles/preview/thumb_'.$Style['Name'].'.png'?>"
+                    src="<?=STATIC_SERVER.'css/preview/thumb_'.$Style['Name'].'.png'?>"
                     alt="<?=$Style['Name']?>" />
                   <p class="preview_name">
                     <label><input type="radio" name="stylesheet_gallery"

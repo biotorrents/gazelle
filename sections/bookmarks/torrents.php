@@ -292,7 +292,7 @@ View::show_header($Title, 'browse,collage,wall');
   <div class="header">
     <h2><?php if (!$Sneaky) { ?><a
         href="feeds.php?feed=torrents_bookmarks_t_<?=$LoggedUser['torrent_pass']?>&amp;user=<?=$LoggedUser['ID']?>&amp;auth=<?=$LoggedUser['RSS_Auth']?>&amp;passkey=<?=$LoggedUser['torrent_pass']?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;name=<?=urlencode($ENV->SITE_NAME.': Bookmarked Torrents')?>"><img
-          src="<?=STATIC_SERVER?>/common/symbols/rss.png"
+          src="<?=STATIC_SERVER?>/images/symbols/rss.png"
           alt="RSS feed" /></a>&nbsp;<?php } ?><?=$Title?>
     </h2>
     <div class="linkbox">

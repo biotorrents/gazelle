@@ -1,0 +1,130 @@
+/**
+ * Fixes needed to use skeleton.css
+ * to its best no-fuss advantage
+ */
+
+/**
+ * Set heading font size
+ *
+ * h1 { font-size: 5.0rem; }
+ * h2 { font-size: 4.2rem; }
+ * h3 { font-size: 3.6rem; }
+ * h4 { font-size: 3.0rem; }
+ * h5 { font-size: 2.4rem; }
+ * h6 { font-size: 1.5rem; }
+ */
+
+@mixin heading-attributes($size) {
+  font-size: $size !important;
+  margin-top: 2rem !important;
+}
+
+h1:not(#logo) {
+  @include heading-attributes(2.5rem);
+}
+
+h2 {
+  @include heading-attributes(2.1rem);
+}
+
+h3 {
+  @include heading-attributes(1.8rem);
+}
+
+h4 {
+  @include heading-attributes(1.5rem);
+}
+
+h5 {
+  @include heading-attributes(1.2rem);
+}
+
+h6 {
+  @include heading-attributes(0.75rem);
+}
+
+/* Correct content/sidebar overflow */
+@media (min-width: 550px) {
+  .column,
+  .columns {
+    margin-left: 0 !important;
+  }
+}
+
+/* Forum list headings */
+table.forum_index {
+  h4 {
+    margin: 0.25rem !important;
+  }
+}
+
+/* Checkbox and radio labels */
+label,
+legend {
+  display: inline !important;
+}
+
+/* Tables usually containing forms */
+/* BP */
+table.store_table,
+/* rule sections */ div.rule_table,
+/* requests? */form.create_form,
+/* top10 and many */ form.search_form,
+/* edit collage */ table.collage_edit,
+/* forum lists */ table.forum_index,
+/* notif filters */ form[name="notification"],
+/* service stats */ div.permission_container,
+/* user settings */ table.user_options,
+/* GENERIC */ table.skeleton-fix {
+  td {
+    border-bottom: 0 !important;
+    padding: 0.5rem !important;
+  }
+}
+
+/* Duplicate input rules here */
+input,
+input[type="search"],
+input[type="text"] {
+  margin: 0 !important;
+}
+
+input,
+textarea,
+select,
+fieldset {
+  margin-bottom: 0 !important;
+}
+
+/* Block elements */
+pre,
+blockquote,
+dl,
+figure,
+table,
+ul,
+ol,
+form {
+  margin-bottom: 0 !important;
+}
+
+/* Inline code */
+code {
+  padding: 0 !important;
+}
+
+/* Poll options */
+ul#poll_options {
+  list-style: none !important;
+  margin-left: 0 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* Nested lists */
+ul ul,
+ul ol,
+ol ol,
+ol ul {
+  margin: 0 !important;
+  font-size: 100% !important;
+}

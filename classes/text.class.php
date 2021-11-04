@@ -115,35 +115,36 @@ class Text
 
     /**
      * Fix the links
-     * 
+     *
      * Make it so that internal links are in the form "/section?p=foo"
      * and that external links are secure and look like Wikipedia.
      * Takes an already-parsed input, to hit Markdown and BBcode.
      */
-    public function fix_links($Parsed) {
-            # Replace links to $ENV->SITE_DOMAIN
-            $Parsed = preg_replace(
-                "/<a href=\"$ENV->RESOURCE_REGEX($ENV->SITE_DOMAIN|$ENV->OLD_SITE_DOMAIN)\//",
-                '<a href="/',
-                $Parsed
-            );
+    public function fix_links($Parsed)
+    {
+        # Replace links to $ENV->SITE_DOMAIN
+        $Parsed = preg_replace(
+            "/<a href=\"$ENV->RESOURCE_REGEX($ENV->SITE_DOMAIN|$ENV->OLD_SITE_DOMAIN)\//",
+            '<a href="/',
+            $Parsed
+        );
                 
-            # Replace external links and add Wikipedia-style CSS class
-            $RelTags = 'external nofollow noopener noreferrer';
+        # Replace external links and add Wikipedia-style CSS class
+        $RelTags = 'external nofollow noopener noreferrer';
 
-            $Parsed = preg_replace(
-                '/<a href="https?:\/\//',
-                '<a class="external" rel="'.$RelTags.'" target="_blank" href="https://',
-                $Parsed
-            );
+        $Parsed = preg_replace(
+            '/<a href="https?:\/\//',
+            '<a class="external" rel="'.$RelTags.'" target="_blank" href="https://',
+            $Parsed
+        );
 
-            $Parsed = preg_replace(
-                '/<a href="ftps?:\/\//',
-                '<a class="external" rel="'.$RelTags.'" target="_blank" href="ftps://',
-                $Parsed
-            );
+        $Parsed = preg_replace(
+            '/<a href="ftps?:\/\//',
+            '<a class="external" rel="'.$RelTags.'" target="_blank" href="ftps://',
+            $Parsed
+        );
 
-            return $Parsed;       
+        return $Parsed;
     }
     
 
@@ -182,7 +183,7 @@ class Text
 
             return $Parsed;
 
-            # Markdown ToC not happening yet
+        # Markdown ToC not happening yet
             # Shouldn't parse_toc() output HTML
             /*
             self::$Headlines = [];
@@ -867,9 +868,11 @@ class Text
                   break;
 
 
+                /*
                 case 'tex':
                   $Str .= '<img class="tex_img" style="vertical-align: middle;" src="'.STATIC_SERVER.'blank.gif" onload="if (this.src.substr(this.src.length - 9, this.src.length) == \'blank.gif\') { this.src = \''.ImageTools::process('https://chart.googleapis.com/chart?cht=tx&chf=bg,s,FFFFFF00&chl='.urlencode(mb_convert_encoding($Block['Val'], 'UTF-8', 'HTML-ENTITIES'))).'\'; }" alt="'.$Block['Val'].'" />';
                   break;
+                */
 
 
                 case 'plain':
@@ -1156,7 +1159,7 @@ class Text
 
     /**
      * smileys
-     * 
+     *
      * Empty function that remains necessary for BBcode parsing to work.
      * I'm tempted to just get rid of BBcode entirely, to be honest.
      */

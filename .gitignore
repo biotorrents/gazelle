@@ -2,54 +2,39 @@
 # https://github.com/OPSnet/Gazelle/blob/master/.gitignore
 #
 
+# backups
 *~
 *.bak
-*.swp
+*.sw*
 
+
+# dotfiles
 .DS_Store
 .bash_history
 .cache/
 .config/
 .docker/data/
 .idea/
-.vscode/
 .local/
 .npm-global/
 .npm/
 .npmrc
 .pki/
 .profile
+.vscode/
 .wine/
 __MACOSX/
 
-/cache
-/node_modules
-/public/font/
-/public/local/
-/vendor
-/classes/config.php
-/mix-manifest.json
-/mix.js.map
-
-/public/styles/**/*.css
-/public/styles/**/*.css.map
-!/public/styles/opendyslexic/style.css
-!/public/styles/tooltipster/custom.css
-!/public/styles/tooltipster/reset.css
-
-/public/stylespreview/
-!/public/stylespreview/.gitkeep
-
-/public/userscripts/gazelle-json-export.js.txt
-
-.phpunit.result.cache
-
-
-##
-# heavy assets
-#
-
+# assets
+/public/css/**
+!/public/css/vendor/**
 /public/fonts.tgz
-/public/common/badges/**
-/public/styles/**/*.css
-/public/styles/assets/fonts/**
+/public/fonts/**
+/public/images/badges/**
+/public/js/**
+!/public/js/vendor/**
+/resources/closure-compiler.jar
+/vendor/**
+
+# config
+/classes/config.php

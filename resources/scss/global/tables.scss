@@ -1,0 +1,86 @@
+/**
+ * Sortable tables
+ */
+
+$bmp: "/public/images/symbols/table-order.png";
+$nrsr: no-repeat scroll right;
+
+@mixin bitmap($px) {
+  background: url($bmp) $nrsr $px transparent;
+}
+
+.headerSort {
+  cursor: pointer;
+}
+
+.headerSort span {
+  @include bitmap(-38px);
+  padding: 0px 20px 0 0;
+}
+
+.headerSortDown span {
+  @include bitmap(4px);
+}
+
+.headerSortUp span {
+  @include bitmap(-79px);
+}
+
+.headerSort.sorter-false,
+.headerSort.sorter-false span {
+  background-image: none;
+  cursor: default;
+}
+
+/* Generic */
+#sortable {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 50%;
+
+  li {
+    padding: 0px;
+    font-size: 1.2em;
+    height: 1.5em;
+  }
+}
+
+/* Drag and drop controls */
+.drag_drop_save {
+  padding: 6px 0;
+  overflow: hidden;
+}
+
+#manage_collage_table.ui-sortable .drag {
+  cursor: n-resize;
+}
+
+#manage_collage_table.ui-sortable .ui-sortable-helper.drag {
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+}
+
+#manage_collage_table .ui-sortable-helper td,
+#manage_collage_table .ui-sortable-placeholder {
+  border: 0;
+}
+
+/* API keys */
+#acc_api_keys_tr {
+  table {
+    display: inline-block !important;
+  }
+}
+
+/* The main torrent page header */
+table.torrent-header {
+  margin: 2rem 0;
+  margin-left: auto !important;
+  margin-right: auto !important;
+
+  td.controls {
+    text-align: right;
+  }
+}

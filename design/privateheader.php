@@ -28,22 +28,26 @@ $View = new View();
   <?php
 # Load JS
 # todo: Decide on autocomplete
+/*
 $Scripts = array_filter(
     array_merge(
         [
           'vendor/jquery.min',
           'vendor/jquery-ui.min',
-          'global',
-          'ajax.class',
+          'bundle'
+          #'global',
+          #'ajax.class',
           #'autocomplete'
       ],
-        explode(',', $JSIncludes)
+        #explode(',', $JSIncludes)
     )
 );
+*/
+$Scripts = ['vendor/jquery.min','vendor/jquery-ui.min'];
 
 foreach ($Scripts as $Script) {
     echo $View->pushAsset(
-        "$ENV->STATIC_SERVER/functions/$Script.js",
+        "$ENV->STATIC_SERVER/js/$Script.js",
         'script'
     );
 }
@@ -53,8 +57,8 @@ $Styles = array_filter(
     array_merge(
         [
           'vendor/jquery-ui.min',
-          'vendor/normalize',
-          'vendor/skeleton',
+          'vendor/normalize.min',
+          'vendor/skeleton.min',
           'global',
         ],
         explode(',', $CSSIncludes)
@@ -67,7 +71,7 @@ if ($ENV->DEV) {
 
 foreach ($Styles as $Style) {
     echo $View->pushAsset(
-        "$ENV->STATIC_SERVER/styles/$Style.css",
+        "$ENV->STATIC_SERVER/css/$Style.css",
         'style'
     );
 }
@@ -77,7 +81,7 @@ foreach ($Styles as $Style) {
 $Fonts = ['fa-brands-400', 'fa-regular-400', 'fa-solid-900'];
 foreach ($Fonts as $Font) {
     echo $View->pushAsset(
-        "$ENV->STATIC_SERVER/styles/vendor/fa/webfonts/$Font.woff2",
+        "$ENV->STATIC_SERVER/css/vendor/fa/webfonts/$Font.woff2",
         'font'
     );
 }
@@ -152,7 +156,7 @@ if (empty(G::$LoggedUser['StyleURL'])) {
   <link rel="stylesheet" type="text/css"
     title="<?=G::$LoggedUser['StyleName']?>"
     media="screen"
-    href="<?=STATIC_SERVER?>styles/<?=G::$LoggedUser['StyleName']?>.css?v=<?=filemtime(SERVER_ROOT.STATIC_SERVER.'styles/'.G::$LoggedUser['StyleName'].'.css')?>">
+    href="<?=STATIC_SERVER?>css/<?=G::$LoggedUser['StyleName']?>.css?v=<?=filemtime(SERVER_ROOT.STATIC_SERVER.'css/'.G::$LoggedUser['StyleName'].'.css')?>">
 
   <?php
 } else {
@@ -177,7 +181,7 @@ foreach ($ExtraCSS as $CSS) {
     } ?>
 
   <link rel="stylesheet" type="text/css" media="screen"
-    href="<?=STATIC_SERVER."styles/$CSS/style.css?v=".filemtime(SERVER_ROOT.STATIC_SERVER."styles/$CSS.css")?>">
+    href="<?=STATIC_SERVER."css/$CSS/style.css?v=".filemtime(SERVER_ROOT.STATIC_SERVER."css/$CSS.css")?>">
   <?php
 }
 

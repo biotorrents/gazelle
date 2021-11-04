@@ -39,7 +39,7 @@ declare(strict_types=1);
  */
 
 # Initialize
-require_once 'env.class.php';
+require_once __DIR__.'/env.class.php';
 $ENV = ENV::go();
 
 # Basic info
@@ -69,15 +69,15 @@ ENV::setPub('CRUMB', '›'); # e.g., Forums › Board › Thread
 # The FQDN of your site, e.g., dev.biotorrents.de
 ( # Old format
     !$ENV->DEV
-        ? define('SITE_DOMAIN', 'biotorrents.de') # Production
-        : define('SITE_DOMAIN', 'dev.biotorrents.de') # Development
+        ? define('SITE_DOMAIN', 'torrents.bio') # Production
+        : define('SITE_DOMAIN', 'dev.torrents.bio') # Development
 );
 
 ENV::setPub(
     'SITE_DOMAIN',
     (!$ENV->DEV
-        ? 'biotorrents.de' # Production
-        : 'dev.biotorrents.de') # Development
+        ? 'torrents.bio' # Production
+        : 'dev.torrents.bio') # Development
 );
 
 # Old domain, to handle the biotorrents.de => torrents.bio migration
@@ -99,14 +99,14 @@ ENV::setPub('WEB_ROOT', '/var/www/');
 ( # Old format
     !$ENV->DEV
         ? define('SERVER_ROOT', '/var/www/html/biotorrents.de/') # Production
-        : define('SERVER_ROOT', '/var/www/html/dev.biotorrents.de/') # Development
+        : define('SERVER_ROOT', '/var/www/html/dev.torrents.bio/') # Development
 );
 
 ENV::setPub(
     'SERVER_ROOT',
     (!$ENV->DEV
         ? '/var/www/html/biotorrents.de/' # Production
-        : '/var/www/html/dev.biotorrents.de/') # Development
+        : '/var/www/html/dev.torrents.bio/') # Development
 );
 
 # Where torrent files are stored, e.g., /var/www/torrents-dev/
@@ -128,24 +128,7 @@ define('STATIC_SERVER', '/public/');
 ENV::setPub('STATIC_SERVER', '/public/');
 
 # The hashing algorithm used for SRI
-ENV::setPub('SRI', 'sha384');
-
-
-/**
- * Tech support
- */
-
- /*
-$TechSupport = [
-  'Email' => 'help@biotorrents.de',
-  'Subject' => '[TxID '.strtoupper(bin2hex(random_bytes(2))).'] Specific subject line with TxID intact',
-  'Body' => 'A detailed description of how you reach the error and the full text of any site messages you may receive.'
-];
-ENV::setPub(
-    'HELP',
-    $ENV->convert($TechSupport)
-);
-*/
+ENV::setPub('SRI', 'sha512');
 
 
 /**
@@ -192,9 +175,15 @@ ENV::setPriv('SQLPORT', 3306);
 #ENV::setPriv('SQLSOCK', '/var/run/mysqld/mysqld.sock');
 
 # TLS client certs
-ENV::setPriv('SQL_CERT', "$ENV->WEB_ROOT/sql-keys/client-cert.pem");
-ENV::setPriv('SQL_KEY', "$ENV->WEB_ROOT/sql-keys/client-key.pem");
-ENV::setPriv('SQL_CA', "$ENV->WEB_ROOT/sql-keys/ca.pem");
+ENV::setPriv('SQL_CERT', "/var/www/tls-keys/client-cert-ohm.pem");
+ENV::setPriv('SQL_KEY', "/var/www/tls-keys/client-key-ohm.pem");
+ENV::setPriv('SQL_CA', "/var/www/tls-keys/ca.pem");
+
+/*
+ENV::setPriv('SQL_CERT', "$ENV->WEB_ROOT/tls-keys/client-cert-ohm.pem");
+ENV::setPriv('SQL_KEY', "$ENV->WEB_ROOT/tls-keys/client-key-ohm.pem");
+ENV::setPriv('SQL_CA', "$ENV->WEB_ROOT/tls-keys/ca.pem");
+*/
 
  # Production
  if (!$ENV->DEV) {
@@ -502,22 +491,22 @@ ENV::setPub('IP_GEO', 'https://tools.keycdn.com/geo.json?host=');
  * Found in the `permissions` table.
  */
 
-#       Name of class     Class ID (not level)
-define('ADMIN', '1');
-define('USER', '2');
-define('MEMBER', '3');
-define('POWER', '4');
-define('ELITE', '5');
-define('LEGEND', '8');
-define('MOD', '11');
-define('SYSOP', '15');
-define('ARTIST', '19');
-define('DONOR', '20');
-define('VIP', '21');
+#       Name of class    Class ID (not level)
+define('ADMIN',          '1');
+define('USER',           '2');
+define('MEMBER',         '3');
+define('POWER',          '4');
+define('ELITE',          '5');
+define('LEGEND',         '8');
+define('MOD',            '11');
+define('SYSOP',          '15');
+define('ARTIST',         '19');
+define('DONOR',          '20');
+define('VIP',            '21');
 define('TORRENT_MASTER', '23');
-define('POWER_TM', '24');
-define('FLS_TEAM', '33');
-define('FORUM_MOD', '9001');
+define('POWER_TM',       '24');
+define('FLS_TEAM',       '33');
+define('FORUM_MOD',      '9001');
 
 
 /**
@@ -826,12 +815,12 @@ $DB = [
     # torrents_group
     'category_id' => ['name' => 'Category', 'desc' => ''],
     'title' => ['name' => 'Torrent Title', 'desc' => 'Definition line, e.g., Alcohol dehydrogenase ADH1'],
-    'subject' => ['name' => 'Organism', 'desc' => 'Organism line binomial, e.g., Saccharomyces cerevisiae'],
+    'subject' => ['name' => 'Organism', 'desc' => 'Organism line binomial, e.g., Saccharomyces cerevisiae', 'icon' => '🦠'],
     'object' => ['name' => 'Strain/Variety', 'desc' => 'Organism line if any, e.g., S288C'],
-    'year' => ['name' => 'Year', 'desc' => 'Publication year'],
-    'workgroup' => ['name' => 'Department/Lab', 'desc' => "Last author's institution, e.g., Lawrence Berkeley Laboratory"],
-    'location' => ['name' => 'Location', 'desc' => 'Physical location, e.g., Berkeley, CA 94720'],
-    'identifier' => ['name' => 'Accession Number', 'desc' => 'RefSeq and UniProt preferred'],
+    'year' => ['name' => 'Year', 'desc' => 'Publication year', 'icon' => '📅'],
+    'workgroup' => ['name' => 'Department/Lab', 'desc' => "Last author's institution, e.g., Lawrence Berkeley Laboratory", 'icon' => '🏫'],
+    'location' => ['name' => 'Location', 'desc' => 'Physical location, e.g., Berkeley, CA 94720', 'icon' => '📍'],
+    'identifier' => ['name' => 'Accession Number', 'desc' => 'RefSeq and UniProt preferred', 'icon' => '🔑'],
     'tag_list' => ['name' => 'Tag List', 'desc' => 'Comma-seperated list of at least 5 tags'],
     'timestamp' => ['name' => 'Uploaded On', 'desc' => ''],
     'revision_id' => ['name' => 'Revision ID', 'desc' => ''],
@@ -1342,7 +1331,6 @@ ENV::setPub(
  * https://www.ncbi.nlm.nih.gov/books/NBK25464/
  */
 
-$CatIcons = "$ENV->STATIC_SERVER/common/bioicons";
 $CollageCats = [
   0 => 'Personal',
   1 => 'Theme',
@@ -1354,7 +1342,7 @@ $CATS = [
     1 => [
         'ID' => 1,
         'Name' => 'Sequences',
-        'Icon' => "$CatIcons/sequences.png",
+        'Icon' => '🧬',
         'Description' => "For data that's ACGT, ACGU, amino acid letters on disk.",
         'Platforms' => $ENV->META->Platforms->Sequences,
         'Formats' => [
@@ -1367,7 +1355,7 @@ $CATS = [
     2 => [
         'ID' => 2,
         'Name' => 'Graphs',
-        'Icon' => "$CatIcons/graphs.png",
+        'Icon' => '📈',
         'Description' => 'For pathway and regulatory network data, structured taxonomies, etc.',
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
@@ -1380,7 +1368,7 @@ $CATS = [
     3 => [
         'ID' => 3,
         'Name' => 'Systems',
-        'Icon' => "$CatIcons/systems.png",
+        'Icon' => '🌐',
         'Description' => 'For data that examines one facet broadly, not one subject deeply.',
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
@@ -1393,7 +1381,7 @@ $CATS = [
     4 => [
         'ID' => 4,
         'Name' => 'Geometric',
-        'Icon' => "$CatIcons/geometric.png",
+        'Icon' => '💠',
         'Description' => "For structured data (XML, etc.) that describes the subject's orientation in space.",
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
@@ -1406,7 +1394,7 @@ $CATS = [
     5 => [
         'ID' => 5,
         'Name' => 'Scalars/Vectors',
-        'Icon' => "$CatIcons/scalars_vectors.png",
+        'Icon' => '⏱️',
         'Description' => 'For data that describes observations over time and/or space.',
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
@@ -1419,7 +1407,7 @@ $CATS = [
     6 => [
         'ID' => 6,
         'Name' => 'Patterns',
-        'Icon' => "$CatIcons/patterns.png",
+        'Icon' => '❄️',
         'Description' => 'For data that describes recurring structures in nature such as common pathways or motifs in the proteome or metabolome.',
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
@@ -1432,7 +1420,7 @@ $CATS = [
     7 => [
         'ID' => 7,
         'Name' => 'Constraints',
-        'Icon' => "$CatIcons/constraints.png",
+        'Icon' => '⚙️',
         'Description' => 'For data that records experimental control behavior, checks readings against known physical constants, tracks the thermodynamic limits of reactions, etc.',
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
@@ -1445,7 +1433,7 @@ $CATS = [
     8 => [
         'ID' => 8,
         'Name' => 'Images',
-        'Icon' => "$CatIcons/images.png",
+        'Icon' => '🔬',
         'Description' => 'For data you can look at!',
         'Platforms' => $ENV->META->Platforms->Images,
         'Formats' => [
@@ -1457,7 +1445,7 @@ $CATS = [
     9 => [
         'ID' => 9,
         'Name' => 'Spatial',
-        'Icon' => "$CatIcons/spatial.png",
+        'Icon' => '🗺️',
         'Description' => "For data that's limited to specific locations or otherwise describes macroscopic space.",
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
@@ -1471,7 +1459,7 @@ $CATS = [
     10 => [
         'ID' => 10,
         'Name' => 'Models',
-        'Icon' => "$CatIcons/models.png",
+        'Icon' => '🏗️',
         'Description' => 'For projections, simulations, and other hypothetical or computer-generated data.',
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
@@ -1485,7 +1473,7 @@ $CATS = [
     11 => [
         'ID' => 11,
         'Name' => 'Documents',
-        'Icon' => "$CatIcons/documents.png",
+        'Icon' => '📓',
         'Description' => 'For documentation, software, disk images, and literature datasets.',
         'Platforms' => $ENV->META->Platforms->Documents,
         'Formats' => [
@@ -1498,7 +1486,7 @@ $CATS = [
     12 => [
         'ID' => 12,
         'Name' => 'Machine Data',
-        'Icon' => "$CatIcons/machine_data.png",
+        'Icon' => '📡',
         'Description' => 'For raw reads and machine data of any category.',
         'Platforms' => $ENV->META->Platforms->Raw,
         'Formats' => [

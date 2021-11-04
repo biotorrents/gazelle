@@ -7,14 +7,14 @@ var staticPath = system.args[2];
 
 // Check if all paths are accessible
 // We assume at least read rights on all paths and files
-if (!fs.isDirectory(rootPath) || !fs.isDirectory(rootPath + '/' + staticPath) || !fs.isDirectory(rootPath + '/' + staticPath + 'styles/' + system.args[3] + '/') || !fs.isDirectory(rootPath + '/' + staticPath + '/styles/preview')) {
+if (!fs.isDirectory(rootPath) || !fs.isDirectory(rootPath + '/' + staticPath) || !fs.isDirectory(rootPath + '/' + staticPath + 'css/' + system.args[3] + '/') || !fs.isDirectory(rootPath + '/' + staticPath + '/css/preview')) {
   //Incorrect paths, are they passed correctly?
   returnStatus.status = -1;
   console.log(JSON.stringify(returnStatus));
   phantom.exit();
 }
 // Switch to given stylesheet directory
-fs.changeWorkingDirectory(rootPath + '/' + staticPath + 'styles/' + system.args[3] + '/');
+fs.changeWorkingDirectory(rootPath + '/' + staticPath + 'css/' + system.args[3] + '/');
 if (!fs.exists('preview.html')) {
   // Preview file doesn't exist. Running things in the wrong order perhaps?
   returnStatus.status = -2;
@@ -34,7 +34,7 @@ page.open('preview.html', function () {
     height: 800
   };
   // Save files to static
-  fs.changeWorkingDirectory(rootPath + '/' + staticPath + '/styles/preview');
+  fs.changeWorkingDirectory(rootPath + '/' + staticPath + '/css/preview');
   if (!fs.isWritable(fs.workingDirectory)) {
     // Don't have write access.
     returnStatus.status = -4;
@@ -49,7 +49,7 @@ page.open('preview.html', function () {
     phantom.exit();
   }
   // Remove temp files
-  fs.changeWorkingDirectory(rootPath + '/' + staticPath + 'styles/' + system.args[3] + '/');
+  fs.changeWorkingDirectory(rootPath + '/' + staticPath + 'css/' + system.args[3] + '/');
   if (!fs.isFile('preview.html') || !fs.isWritable('preview.html')) {
     // Can't find temp file to remove. Are the paths correct?
     returnStatus.status = -6;

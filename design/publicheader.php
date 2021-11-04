@@ -23,8 +23,8 @@ echo $Twig->render(
   ]
   );
 
-echo "<link href='$ENV->STATIC_SERVER/styles/public.css?v="
-     . filemtime(SERVER_ROOT.'/public/styles/public.css')
+echo "<link href='$ENV->STATIC_SERVER/css/public.css?v="
+     . filemtime(SERVER_ROOT.'/public/css/public.css')
      . "' rel='stylesheet' type='text/css'>";
 
 # Load JS
@@ -45,26 +45,28 @@ $Scripts = array_filter(
 
 foreach ($Scripts as $Script) {
     View::pushAsset(
-        "$ENV->STATIC_SERVER/functions/$Script.js",
+        "$ENV->STATIC_SERVER/js/$Script.js",
         'script'
     );
 }
 
 # Load CSS
-$Styles = ['vendor/normalize', 'vendor/skeleton', 'global', 'public'];
+$Styles = ['vendor/normalize.min', 'vendor/skeleton.min', 'global', 'public'];
 foreach ($Styles as $Style) {
     echo View::pushAsset(
-        "$ENV->STATIC_SERVER/styles/$Style.css",
+        "$ENV->STATIC_SERVER/css/$Style.css",
         'style'
     );
 }
 
 # Fonts
+/*
 echo View::pushAsset(
 # Only Noto Sans available on public pages
-"$ENV->STATIC_SERVER/styles/assets/fonts/noto/NotoSans-SemiCondensed.woff2",
+"$ENV->STATIC_SERVER/css/assets/fonts/noto/NotoSans-SemiCondensed.woff2",
     'font'
 );
+*/
 
 echo <<<HTML
 </head>

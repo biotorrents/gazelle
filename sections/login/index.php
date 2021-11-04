@@ -405,5 +405,6 @@ else {
             setcookie('keeplogged', '', time() + 60 * 60 * 24 * 365, '/', '', false);
         }
     }
-    require('sections/login/login.php');
+    require('login.php');
+    #require('sections/login/login.php');
 }
