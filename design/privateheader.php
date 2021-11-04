@@ -28,22 +28,18 @@ $View = new View();
   <?php
 # Load JS
 # todo: Decide on autocomplete
-/*
 $Scripts = array_filter(
     array_merge(
         [
           'vendor/jquery.min',
           'vendor/jquery-ui.min',
-          'bundle'
-          #'global',
-          #'ajax.class',
+          'global',
+          'ajax.class',
           #'autocomplete'
       ],
-        #explode(',', $JSIncludes)
+        explode(',', $JSIncludes)
     )
 );
-*/
-$Scripts = ['vendor/jquery.min','vendor/jquery-ui.min'];
 
 foreach ($Scripts as $Script) {
     echo $View->pushAsset(

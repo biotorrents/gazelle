@@ -34,8 +34,7 @@ if ($LoggedUser['LastReadNews'] !== $News[0][0] && count($News) > 0) {
     $LoggedUser['LastReadNews'] = $News[0][0];
 }
 
-View::show_header('News');
-#View::show_header('News', 'news_ajax');
+View::show_header('News', 'news_ajax');
 ?>
 
 <div class="sidebar one-third column">

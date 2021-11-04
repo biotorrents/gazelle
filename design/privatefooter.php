@@ -128,7 +128,7 @@ if (!empty($NotificationSpans)) {
 # todo: Move all the JS down here
 echo $HTML = <<<HTML
     </footer>
-    <script src="$ENV->STATIC_SERVER/js/bundle.js" type="module"></script>
+    <script src="$ENV->STATIC_SERVER/js/menus.js" type="module"></script>
     <script src="$ENV->STATIC_SERVER/js/vendor/instantpage.min.js" type="module"></script>
   </body>
 </html>
