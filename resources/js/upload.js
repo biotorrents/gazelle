@@ -182,7 +182,6 @@ function AddLogField() {
 /**
  * RemoveLogField
  */
-/*
 function RemoveLogField() {
   if (LogCount == 1) {
     return;
@@ -194,7 +193,6 @@ function RemoveLogField() {
   }
   LogCount--;
 }
-*/
 
 /**
  * AddExtraLogField
@@ -220,7 +218,6 @@ function AddExtraLogField(id) {
 /**
  * RemoveLogField
  */
-/*
 function RemoveLogField() {
   if (LogCount == 1) {
     return;
@@ -232,7 +229,6 @@ function RemoveLogField() {
   }
   LogCount--;
 }
-*/
 
 /**
  * AddFormat

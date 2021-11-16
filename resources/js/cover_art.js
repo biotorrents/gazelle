@@ -1,9 +1,9 @@
 (function () {
   var show_all = false;
   var current;
-  $(document).ready(function() {
+  $(document).ready(function () {
     show_all = $(".show_all_covers").text() == "Hide";
-    $(".next_cover").click(function(e) {
+    $(".next_cover").click(function (e) {
       e.preventDefault();
       var next = $(this).data("gazelle-next-cover");
       $("#cover_controls_" + (next - 1)).hide();
@@ -15,7 +15,7 @@
       }
 
     });
-    $(".prev_cover").click(function(e) {
+    $(".prev_cover").click(function (e) {
       e.preventDefault();
       var prev = $(this).data("gazelle-prev-cover");
       $("#cover_controls_" + (prev + 1)).hide();
@@ -24,16 +24,16 @@
       $("#cover_div_" + prev).show();
     });
 
-    $(".show_all_covers").click(function(e) {
+    $(".show_all_covers").click(function (e) {
       e.preventDefault();
       if (!show_all) {
         current = $("#covers div:visible").attr("id");
         show_all = true;
         $(this).text("Hide");
-        $("#covers img").each(function() {
+        $("#covers img").each(function () {
           $(this).attr("src", $(this).data("gazelle-temp-src"));
         });
-        $("#covers > div").each(function() {
+        $("#covers > div").each(function () {
           $(this).show();
           $(this).after("<span class=\"cover_seperator\"><br /><hr /><br /></span>");
           $(".next_cover").hide();
@@ -43,7 +43,7 @@
       } else {
         show_all = false;
         $(this).text("Show all");
-        $("#covers > div").each(function() {
+        $("#covers > div").each(function () {
           if ($(this).attr("class") != "head") {
             if ($(this).attr("id") != current) {
               $(this).hide();

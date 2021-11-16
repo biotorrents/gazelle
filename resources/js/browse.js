@@ -103,9 +103,9 @@ function show_downloads(TorrentID, Page) {
   if (Page > 0) {
     ajax.get(
       "torrents.php?action=downloadlist&page=" +
-        Page +
-        "&torrentid=" +
-        TorrentID,
+      Page +
+      "&torrentid=" +
+      TorrentID,
       function (response) {
         $("#downloads_" + TorrentID)
           .gshow()
@@ -159,7 +159,6 @@ function show_reported(TorrentID) {
 /**
  * add_tag
  */
-/*
 function add_tag(tag) {
   if ($("#tags").raw().value == "") {
     $("#tags").raw().value = tag;
@@ -167,7 +166,6 @@ function add_tag(tag) {
     $("#tags").raw().value = $("#tags").raw().value + ", " + tag;
   }
 }
-*/
 
 /**
  * toggle_group

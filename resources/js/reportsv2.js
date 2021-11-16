@@ -1,5 +1,5 @@
 function ChangeReportType() {
-  $.post("reportsv2.php?action=ajax_report", $('#reportform').serialize(), function(response) {
+  $.post("reportsv2.php?action=ajax_report", $('#reportform').serialize(), function (response) {
     $('#dynamic_form').html(response);
   });
 }
@@ -8,7 +8,7 @@ function ChangeResolve(reportid) {
   var url = 'reportsv2.php?action=ajax_change_resolve&id=' + reportid
     + '&type=' + $('#resolve_type' + reportid).val()
     + '&categoryid=' + $('#categoryid' + reportid).val();
-  $.getJSON(url, function(x) {
+  $.getJSON(url, function (x) {
     $('#delete' + reportid).prop('checked', x[0] == '1');
     if ($('#uploaderid' + reportid).val() == $('#reporterid' + reportid).val()) {
       $('#upload' + reportid).prop('checked', false);
@@ -23,12 +23,12 @@ function ChangeResolve(reportid) {
 
 function Load(reportid) {
   var type = $('#type' + reportid).val();
-  $('#resolve_type' + reportid + ' option[value="'+type+'"]').prop('selected', true);
+  $('#resolve_type' + reportid + ' option[value="' + type + '"]').prop('selected', true);
   // Can't use ChangeResolve() because we need it to block to do the uploader==reporter part
   var url = 'reportsv2.php?action=ajax_change_resolve&id=' + reportid
     + '&type=' + $('#resolve_type' + reportid).val()
     + '&categoryid=' + $('#categoryid' + reportid).val();
-  $.getJSON(url, function(x) {
+  $.getJSON(url, function (x) {
     $('#delete' + reportid).prop('checked', x[0] == '1');
     if ($('#uploaderid' + reportid).val() == $('#reporterid' + reportid).val()) {
       $('#upload' + reportid).prop('checked', false);
@@ -53,7 +53,7 @@ function HideErrors() {
 
 function TakeResolve(reportid) {
   $('#submit_' + reportid).disable();
-  $.post("reportsv2.php?action=takeresolve", $('#reportform_' + reportid).serialize(), function(response) {
+  $.post("reportsv2.php?action=takeresolve", $('#reportform_' + reportid).serialize(), function (response) {
     if (response) {
       ErrorBox(reportid, response);
     } else {
@@ -81,7 +81,7 @@ function NewReport(q, view, id) {
     if (response) {
       var div = $(response);
       var id = div.data("reportid");
-      if (!$('#report'+id).length) {
+      if (!$('#report' + id).length) {
         $('#all_reports').append(div);
         $('#no_reports').remove();
         if ($('#type', div).length) {
@@ -111,13 +111,13 @@ function AddMore(view, id) {
 }
 
 function SendPM(reportid) {
-  $.post('reportsv2.php?action=ajax_take_pm', $('#reportform_' + reportid).serialize(), function(response) {
+  $.post('reportsv2.php?action=ajax_take_pm', $('#reportform_' + reportid).serialize(), function (response) {
     $('#uploader_pm' + reportid).val(response);
   });
 }
 
 function UpdateComment(reportid) {
-  $.post('reportsv2.php?action=ajax_update_comment', $('#reportform_' + reportid).serialize(), function(response) {
+  $.post('reportsv2.php?action=ajax_update_comment', $('#reportform_' + reportid).serialize(), function (response) {
     if (response) {
       alert(response);
     }
@@ -126,15 +126,15 @@ function UpdateComment(reportid) {
 
 function GiveBack(reportid) {
   if (reportid) {
-    $.get("reportsv2.php?action=ajax_giveback_report&id=" + reportid, function(response) {
+    $.get("reportsv2.php?action=ajax_giveback_report&id=" + reportid, function (response) {
       if (response) {
         alert(response);
       }
     });
     $('#report' + reportid).remove();
   } else {
-    $('#all_reports input[name="reportid"]').each(function() {
-      $.get("reportsv2.php?action=ajax_giveback_report&id=" + this.value, function(response) {
+    $('#all_reports input[name="reportid"]').each(function () {
+      $.get("reportsv2.php?action=ajax_giveback_report&id=" + this.value, function (response) {
         if (response) {
           alert(response);
         }
@@ -160,7 +160,7 @@ function ClearReport(reportid) {
 
 function Grab(reportid) {
   if (reportid) {
-    $.get("reportsv2.php?action=ajax_grab_report&id=" + reportid, function(response) {
+    $.get("reportsv2.php?action=ajax_grab_report&id=" + reportid, function (response) {
       if (response == '1') {
         $('#grab' + reportid).disable();
       } else {
@@ -168,9 +168,9 @@ function Grab(reportid) {
       }
     });
   } else {
-    $('#all_reports input[name="reportid"]').each(function() {
+    $('#all_reports input[name="reportid"]').each(function () {
       var reportid = this.value
-      $.get("reportsv2.php?action=ajax_grab_report&id=" + reportid, function(response) {
+      $.get("reportsv2.php?action=ajax_grab_report&id=" + reportid, function (response) {
         if (response == '1') {
           $('#grab' + reportid).disable();
         } else {
@@ -182,7 +182,7 @@ function Grab(reportid) {
 }
 
 function MultiResolve() {
-  $('input[name="multi"]:checked').each(function() {
+  $('input[name="multi"]:checked').each(function () {
     TakeResolve(this.id.substr(5))
   });
 }
@@ -192,7 +192,7 @@ function UpdateResolve(reportid) {
   var url = 'reportsv2.php?action=ajax_update_resolve&reportid=' + reportid
     + "&newresolve=" + newresolve
     + "&categoryid=" + $('#categoryid' + reportid).val();
-  $.get(url, function(response) {
+  $.get(url, function (response) {
     $('#update_resolve' + reportid).disable();
   });
 }
@@ -210,18 +210,18 @@ function Switch(reportid, torrentid, otherid) {
     otherid: torrentid
   }
 
-  $.post('reportsv2.php?action=ajax_create_report', report, function(response) {
-      //Returns new report ID.
-      if (isNaN(response)) {
-        alert(response);
-      } else {
-        window.location = 'reportsv2.php?view=report&id=' + response;
-      }
+  $.post('reportsv2.php?action=ajax_create_report', report, function (response) {
+    //Returns new report ID.
+    if (isNaN(response)) {
+      alert(response);
+    } else {
+      window.location = 'reportsv2.php?view=report&id=' + response;
     }
+  }
   );
 }
 
-document.querySelectorAll('[data-load-report]').forEach(function(el) {
+document.querySelectorAll('[data-load-report]').forEach(function (el) {
   Load(+el.attributes['data-load-report'].value);
 })
 

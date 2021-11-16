@@ -1,4 +1,4 @@
-(function news_ajax(event, count, offset, privileged) {
+function news_ajax(event, count, offset, privileged) {
   /*
    * event - The click event, passed to hide the element when necessary.
    * count - Number of news items to fetch.
@@ -24,19 +24,19 @@
       ) {
         console.log(
           "ERR ajax_news(" +
-            new Error().lineNumber +
-            "): Unknown data or failure returned."
+          new Error().lineNumber +
+          "): Unknown data or failure returned."
         );
         // Return to original paremeters, no news were added.
         $(event.target).attr(
           "onclick",
           "news_ajax(event, " +
-            count +
-            ", " +
-            offset +
-            ", " +
-            privileged +
-            "); return false;"
+          count +
+          ", " +
+          offset +
+          ", " +
+          privileged +
+          "); return false;"
         );
       } else {
         if (response.length == 0) {
@@ -55,44 +55,44 @@
             if (privileged) {
               $("#news" + this[0]).append(
                 '<div class="head"><strong>' +
-                  this[1] +
-                  "</strong> " +
-                  this[2] +
-                  ' - <a href="tools.php?action=editnews&amp;id=' +
-                  this[0] +
-                  '" class="brackets">Edit</a><span class="float_right"><a class="brackets" data-toggle-target="#newsbody' +
-                  this[0] +
-                  '" data-toggle-replace="Show">Hide</a></span></div>'
+                this[1] +
+                "</strong> " +
+                this[2] +
+                ' - <a href="tools.php?action=editnews&amp;id=' +
+                this[0] +
+                '" class="brackets">Edit</a><span class="float_right"><a class="brackets" data-toggle-target="#newsbody' +
+                this[0] +
+                '" data-toggle-replace="Show">Hide</a></span></div>'
               );
             } else {
               $("#news" + this[0]).append(
                 '<div class="head"><strong>' +
-                  this[1] +
-                  "</strong> " +
-                  this[2] +
-                  '<span class="float_right"><a class="brackets" data-toggle-target="#newsbody' +
-                  this[0] +
-                  '" data-toggle-replace="Show">Hide</a></span></div>'
+                this[1] +
+                "</strong> " +
+                this[2] +
+                '<span class="float_right"><a class="brackets" data-toggle-target="#newsbody' +
+                this[0] +
+                '" data-toggle-replace="Show">Hide</a></span></div>'
               );
             }
             $("#news" + this[0]).append(
               '<div class="pad" id="newsbody' +
-                this[0] +
-                '">' +
-                this[3] +
-                "</div>"
+              this[0] +
+              '">' +
+              this[3] +
+              "</div>"
             );
           });
           // Update the onclick parameters to appropriate offset.
           $(event.target).attr(
             "onclick",
             "news_ajax(event, " +
-              count +
-              ", " +
-              (count + offset) +
-              ", " +
-              privileged +
-              "); return false;"
+            count +
+            ", " +
+            (count + offset) +
+            ", " +
+            privileged +
+            "); return false;"
           );
         }
       }
@@ -105,12 +105,12 @@
       $(event.target).attr(
         "onclick",
         "news_ajax(event, " +
-          count +
-          ", " +
-          offset +
-          ", " +
-          privileged +
-          "); return false;"
+        count +
+        ", " +
+        offset +
+        ", " +
+        privileged +
+        "); return false;"
       );
     });
-})();
+}

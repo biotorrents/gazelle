@@ -1,34 +1,34 @@
-(function() {
+(function () {
     var ids = Array();
-    $(document).ready(function() {
-        $("input[id^=check_all]").click(function() {
+    $(document).ready(function () {
+        $("input[id^=check_all]").click(function () {
             // Check or uncheck all requests
             var checked = ($(this).attr('checked') == 'checked');
-            $("input[id^=multi]").each(function() {
+            $("input[id^=multi]").each(function () {
                 $(this).attr('checked', checked);
                 var id = $(this).data('id');
                 if (checked && $.inArray(id, ids) == -1) {
                     ids.push(id);
                 } else if (!checked && $.inArray(id, ids) != -1) {
-                    ids = $.grep(ids, function(value) {
+                    ids = $.grep(ids, function (value) {
                         return value != id;
                     });
                 }
             });
         });
-        $("input[id^=multi]").click(function() {
+        $("input[id^=multi]").click(function () {
             // Put the ID in the array if checked, or removed if unchecked
             var checked = ($(this).attr('checked') == 'checked');
             var id = $(this).data('id');
             if (checked && $.inArray(id, ids) == -1) {
                 ids.push(id);
             } else if (!checked && $.inArray(id, ids) != -1) {
-                ids = $.grep(ids, function(value) {
+                ids = $.grep(ids, function (value) {
                     return value != id;
                 });
             }
         });
-        $("input[id^=outcome]").click(function() {
+        $("input[id^=outcome]").click(function () {
             if ($(this).val() != 'Discard' && !confirm('Are you sure you wish to do this? This cannot be undone!')) {
                 return false;
             }
@@ -43,16 +43,16 @@
             }
 
             $.ajax({
-                type : "GET",
-                dataType : "json",
-                url : "tools.php?action=ajax_take_enable_request",
-                data : {
-                    "ids" : resolveIDs,
-                    "comment" : comment,
-                    "status" : $(this).val(),
-                    "type" : "resolve"
+                type: "GET",
+                dataType: "json",
+                url: "tools.php?action=ajax_take_enable_request",
+                data: {
+                    "ids": resolveIDs,
+                    "comment": comment,
+                    "status": $(this).val(),
+                    "type": "resolve"
                 }
-            }).done(function(response) {
+            }).done(function (response) {
                 if (response['status'] == 'success') {
                     for (var i = 0; i < resolveIDs.length; i++) {
                         $("#row_" + resolveIDs[i]).remove();
@@ -62,18 +62,18 @@
                 }
             });
         });
-        $("a[id^=unresolve]").click(function() {
+        $("a[id^=unresolve]").click(function () {
             var id = $(this).data('id');
             if (id !== undefined) {
                 $.ajax({
                     type: "GET",
                     dataType: "json",
                     url: "tools.php?action=ajax_take_enable_request",
-                    data : {
-                        "id" : id,
-                        "type" : "unresolve"
+                    data: {
+                        "id": id,
+                        "type": "unresolve"
                     }
-                }).done(function(response) {
+                }).done(function (response) {
                     if (response['status'] == 'success') {
                         $("#row_" + id).remove();
                         alert("The request has been un-resolved. Please refresh your browser to see it.");

@@ -35,17 +35,17 @@ function Vote(amount, requestid) {
 
   ajax.get(
     "requests.php?action=takevote&id=" +
-      requestid +
-      "&auth=" +
-      authkey +
-      "&amount=" +
-      amount,
+    requestid +
+    "&auth=" +
+    authkey +
+    "&amount=" +
+    amount,
     function (response) {
       if (response == "bankrupt") {
         save_message(
           "You do not have sufficient upload credit to add " +
-            get_size(amount) +
-            " to this request",
+          get_size(amount) +
+          " to this request",
           true
         );
         return;
@@ -63,10 +63,10 @@ function Vote(amount, requestid) {
 
         save_message(
           "Your vote of " +
-            get_size(amount) +
-            ", adding a " +
-            get_size(amount * (1 - $("#request_tax").raw().value)) +
-            " bounty, has been added"
+          get_size(amount) +
+          ", adding a " +
+          get_size(amount * (1 - $("#request_tax").raw().value)) +
+          " bounty, has been added"
         );
         $("#button").raw().disabled = true;
       } else {
@@ -122,7 +122,6 @@ function Calculate() {
   }
 }
 
-/*
 var ArtistCount = 1;
 function AddArtistField() {
   window.getSelection().removeAllRanges()
@@ -152,9 +151,7 @@ function AddArtistField() {
   }
   ArtistCount++;
 }
-*/
 
-/*
 function RemoveArtistField() {
   window.getSelection().removeAllRanges()
   ArtistCount = $('input[name="artists[]"]').length;
@@ -169,9 +166,7 @@ function RemoveArtistField() {
   }
   ArtistCount--;
 }
-*/
 
-/*
 function add_tag() {
   if ($('#tags').raw().value == "") {
     $('#tags').raw().value = $('#genre_tags').raw().options[$('#genre_tags').raw().selectedIndex].value;
@@ -195,7 +190,6 @@ function Toggle(id, disable) {
     ToggleLogCue();
   }
 }
-*/
 
 function ToggleLogCue() {
   var formats = document.getElementsByName("formats[]");
@@ -221,7 +215,6 @@ function ToggleLogScore() {
   }
 }
 
-/*
 function JavAutofill() {
   var map = {
     cn: 'javdb',
@@ -260,9 +253,7 @@ function JavAutofill() {
     }
   })
 }
-*/
 
-/*
 $(function () {
   Categories()
   Calculate()
@@ -274,4 +265,3 @@ $(function () {
   $(document).on('click', '.add_artist_button', AddArtistField);
   $(document).on('click', '.remove_artist_button', RemoveArtistField);
 })
-*/

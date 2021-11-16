@@ -145,8 +145,8 @@ function ArtistManagerSubmit() {
     ($("#manager_action").raw().value == "delete" &&
       !confirm(
         "Are you sure you want to delete " +
-          Selection.length +
-          " artists from this group?"
+        Selection.length +
+        " artists from this group?"
       ))
   ) {
     return;
@@ -177,7 +177,6 @@ function ArtistManagerDelete() {
   $("#manager_action").raw().value = "manage";
 }
 
-/*
 function Vote(amount, requestid) {
   if (typeof amount == 'undefined') {
     amount = parseInt($('#amount').raw().value);
@@ -222,4 +221,3 @@ function Vote(amount, requestid) {
   }
   );
 }
-*/

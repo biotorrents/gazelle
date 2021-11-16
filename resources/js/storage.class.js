@@ -27,7 +27,6 @@ var cookie = {
   }
 };
 
-/*
 var database = {
   link: false,
   database: 'what',
@@ -38,7 +37,6 @@ var database = {
     window.openDatabase(db_name);
   }
 };
-*/
 
 var local = {
   get: function (key_name) {

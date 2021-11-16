@@ -1,5 +1,5 @@
 function Subscribe(topicid) {
-  ajax.get("userhistory.php?action=thread_subscribe&topicid=" + topicid + "&auth=" + authkey, function() {
+  ajax.get("userhistory.php?action=thread_subscribe&topicid=" + topicid + "&auth=" + authkey, function () {
     var subscribeLink = $("#subscribelink" + topicid).raw();
     if (subscribeLink) {
       if (subscribeLink.firstChild.nodeValue.charAt(0) == '[') {
@@ -17,7 +17,7 @@ function Subscribe(topicid) {
 }
 
 function SubscribeComments(page, pageid) {
-  ajax.get('userhistory.php?action=comments_subscribe&page=' + page + '&pageid=' + pageid + '&auth=' + authkey, function() {
+  ajax.get('userhistory.php?action=comments_subscribe&page=' + page + '&pageid=' + pageid + '&auth=' + authkey, function () {
     var subscribeLink = $("#subscribelink_" + page + pageid).raw();
     if (subscribeLink) {
       subscribeLink.firstChild.nodeValue = subscribeLink.firstChild.nodeValue.charAt(0) == 'U'
@@ -29,7 +29,7 @@ function SubscribeComments(page, pageid) {
 
 function Collapse() {
   var collapseLink = $('#collapselink').raw();
-  var hide = (collapseLink.innerHTML.substr(0,1) == 'H' ? 1 : 0);
+  var hide = (collapseLink.innerHTML.substr(0, 1) == 'H' ? 1 : 0);
   if ($('.row').length > 0) {
     $('.row').gtoggle();
   }

@@ -25,16 +25,16 @@ function SaveMessage(id) {
   ToPost['message'] = document.getElementById('response_message_' + id).value;
 
   ajax.post("?action=edit_response", ToPost, function (data) {
-      if (data == '1') {
-        document.getElementById(ajax_message).textContent = 'Response successfully created.';
-      } else if (data == '2') {
-        document.getElementById(ajax_message).textContent = 'Response successfully edited.';
-      } else {
-        document.getElementById(ajax_message).textContent = 'Something went wrong.';
-      }
-      $('#' + ajax_message).gshow();
-      var t = setTimeout("$('#" + ajax_message + "').ghide()", 2000);
+    if (data == '1') {
+      document.getElementById(ajax_message).textContent = 'Response successfully created.';
+    } else if (data == '2') {
+      document.getElementById(ajax_message).textContent = 'Response successfully edited.';
+    } else {
+      document.getElementById(ajax_message).textContent = 'Something went wrong.';
     }
+    $('#' + ajax_message).gshow();
+    var t = setTimeout("$('#" + ajax_message + "').ghide()", 2000);
+  }
   );
 }
 
@@ -52,7 +52,7 @@ function DeleteMessage(id) {
     } else {
       document.getElementById(ajax_message).textContent = 'Something went wrong.';
     }
-    $('#'+ajax_message).gshow();
+    $('#' + ajax_message).gshow();
     var t = setTimeout("$('#" + ajax_message + "').ghide()", 2000);
   });
 }
@@ -74,18 +74,18 @@ function Assign() {
 }
 
 function PreviewResponse(id) {
-  var div = '#response_div_'+id;
+  var div = '#response_div_' + id;
   if ($(div).has_class('hidden')) {
     var ToPost = [];
-    ToPost['message'] = document.getElementById('response_message_'+id).value;
+    ToPost['message'] = document.getElementById('response_message_' + id).value;
     ajax.post('?action=preview', ToPost, function (data) {
-      document.getElementById('response_div_'+id).innerHTML = data;
+      document.getElementById('response_div_' + id).innerHTML = data;
       $(div).gtoggle();
-      $('#response_message_'+id).gtoggle();
+      $('#response_message_' + id).gtoggle();
     });
   } else {
     $(div).gtoggle();
-    $('#response_message_'+id).gtoggle();
+    $('#response_message_' + id).gtoggle();
   }
 }
 
@@ -106,19 +106,17 @@ function PreviewMessage() {
   }
 }
 
-/*
 function Quote(post, user) {
   username = user;
   postid = post;
-  ajax.get("?action=get_post&post=" + postid, function(response) {
+  ajax.get("?action=get_post&post=" + postid, function (response) {
     if ($('#quickpost').raw().value !== '') {
       $('#quickpost').raw().value = $('#quickpost').raw().value + "\n\n";
     }
     $('#quickpost').raw().value = $('#quickpost').raw().value + "[quote=" + username + "]" +
       //response.replace(/(img|aud)(\]|=)/ig,'url$2').replace(/\[url\=(https?:\/\/[^\s\[\]<>"\'()]+?)\]\[url\](.+?)\[\/url\]\[\/url\]/gi, "[url]$1[/url]")
       html_entity_decode(response)
-    + "[/quote]";
+      + "[/quote]";
     resize('quickpost');
   });
 }
-*/

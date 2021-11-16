@@ -1,6 +1,5 @@
 //Using this instead of comments as comments has pertty damn strict requirements on the variable names required
 
-/*
 function Quick_Preview() {
   $('#buttons').raw().innerHTML = "<input type=\"button\" value=\"Editor\" onclick=\"Quick_Edit();\" /><input type=\"submit\" value=\"Send Message\" />";
   ajax.post("api.php?action=preview", "messageform", function (response) {
@@ -15,4 +14,3 @@ function Quick_Edit() {
   $('#preview').ghide();
   $('#quickpost').gshow();
 }
-*/

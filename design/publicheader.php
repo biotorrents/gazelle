@@ -37,7 +37,7 @@ $Scripts = array_filter(
           'cookie.class',
           'storage.class',
           'public',
-          'u2f'
+          'vendor/u2f-api'
       ],
         explode(',', $JSIncludes)
     )
