@@ -26,13 +26,13 @@
 __MACOSX/
 
 # assets
-/public/css/**
-!/public/css/vendor/**
+/public/css/*
+!/public/css/vendor/
 /public/fonts.tgz
-/public/fonts/**
-/public/images/badges/**
-/public/js/**
-!/public/js/vendor/**
+/public/fonts/*
+/public/images/badges/*
+/public/js/*
+!/public/js/vendor/
 /resources/closure-compiler.jar
 /vendor/**
 

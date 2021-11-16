@@ -19,12 +19,11 @@ class View
 
         # Bad URI or type
         if ((!$uri || !is_string($uri))
-          || (!$type || !is_string($type))) {
+         || (!$type || !is_string($type))) {
             return error(404);
         }
 
-        #$filemtime = filemtime("$ENV->SERVER_ROOT/$uri");
-        #$integrity = base64_encode(hash_file($ENV->SRI, "$ENV->SERVER_ROOT/$uri", true));
+        $integrity = base64_encode(hash_file($ENV->SRI, "$ENV->SERVER_ROOT/$uri", true));
 
         # Send raw HTTP headers - preloading this way is bloat
         # 26 requests, 1.58 MB, 584ms
@@ -34,18 +33,15 @@ class View
 
         switch ($type) {
             case 'script':
-                $HTML = "<script src='$uri' crossorigin='anonymous'></script>";
-                #$HTML = "<script src='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous'></script>";
+                $HTML = "<script src='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous'></script>";
                 break;
 
             case 'style':
-                $HTML = "<link rel='stylesheet' href='$uri' crossorigin='anonymous' />";
-                #$HTML = "<link rel='stylesheet' href='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous' />";
+                $HTML = "<link rel='stylesheet' href='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous' />";
                 break;
 
             case 'font':
-                $HTML = "<link rel='preload' as='font' href='$uri' crossorigin='anonymous' />";
-                #$HTML = "<link rel='preload' as='font' href='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous' />";
+                $HTML = "<link rel='preload' as='font' href='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous' />";
                 break;
 
             default:
@@ -84,9 +80,9 @@ class View
         if (!is_array(G::$LoggedUser)
           || empty(G::$LoggedUser['ID'])
           || (isset($Options['recover']) && $Options['recover'] === true)) {
-            require_once SERVER_ROOT.'/design/publicheader.php';
+            require_once "$ENV->SERVER_ROOT/design/publicheader.php";
         } else {
-            require_once SERVER_ROOT.'/design/privateheader.php';
+            require_once "$ENV->SERVER_ROOT/design/privateheader.php";
         }
     }
     
@@ -101,13 +97,15 @@ class View
      */
     public static function show_footer($Options = [])
     {
+        $ENV = ENV::go();
         global $ScriptStartTime, $SessionID, $UserSessions, $Debug, $Time, $Mobile;
+
         if (!is_array(G::$LoggedUser)
           || empty(G::$LoggedUser['ID'])
           || (isset($Options['recover']) && $Options['recover'] === true)) {
-            require_once SERVER_ROOT.'/design/publicfooter.php';
+            require_once "$ENV->SERVER_ROOT/design/publicfooter.php";
         } else {
-            require_once SERVER_ROOT.'/design/privatefooter.php';
+            require_once "$ENV->SERVER_ROOT/design/privatefooter.php";
         }
     }
 
@@ -129,12 +127,14 @@ class View
      */
     public static function render_template($TemplateName, $Args)
     {
+        $ENV = ENV::go();
         static $LoadedTemplates; // Keep track of templates we've already loaded.
         $ClassName = '';
+
         if (isset($LoadedTemplates[$TemplateName])) {
             $ClassName = $LoadedTemplates[$TemplateName];
         } else {
-            include SERVER_ROOT.'/design/'.$TemplateName.'.php';
+            include "$ENV->SERVER_ROOT/design/$TemplateName.php";
 
             // Turn template_name into TemplateName
             $ClassNameParts = explode('_', $TemplateName);
@@ -142,7 +142,7 @@ class View
                 $ClassNameParts[$Index] = ucfirst($Part);
             }
             
-            $ClassName = implode($ClassNameParts). 'Template';
+            $ClassName = implode($ClassNameParts) . 'Template';
             $LoadedTemplates[$TemplateName] = $ClassName;
         }
         $ClassName::render($Args);

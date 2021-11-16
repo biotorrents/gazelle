@@ -2,7 +2,7 @@
 <!-- https://github.com/dewitt/opensearch/blob/master/opensearch-1-1-draft-6.md -->
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
   <ShortName>torrents.bio</ShortName>
-  <Description>A platform to share biological sequence and medical imaging data</Description>
+  <Description>An open platform for libre biology data</Description>
   <Tags>api biological-data biological-sequences biology bittorrent bittorrent-tracker website</Tags>
   <Contact>hello@torrents.bio</Contact>
   <Url type="text/html"

@@ -60,7 +60,7 @@ ENV::setPub(
 );
 
 # Meta description
-ENV::setPub('DESCRIPTION', 'A platform to share biological sequence and medical imaging data');
+ENV::setPub('DESCRIPTION', 'An open platform for libre biology data');
 
 # Navigation glyphs
 ENV::setPub('SEP', '-'); # e.g., News ⸬ BioTorrents.de

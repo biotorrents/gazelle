@@ -33,9 +33,8 @@ $Scripts = array_filter(
         [
           'vendor/jquery.min',
           'vendor/jquery-ui.min',
-          'global',
           'ajax.class',
-          #'autocomplete'
+          'global',
       ],
         explode(',', $JSIncludes)
     )
@@ -176,9 +175,7 @@ foreach ($ExtraCSS as $CSS) {
         continue;
     } ?>
 
-  <link rel="stylesheet" type="text/css" media="screen"
-    href="<?=STATIC_SERVER."css/$CSS/style.css?v=".filemtime(SERVER_ROOT.STATIC_SERVER."css/$CSS.css")?>">
-  <?php
+ <?php
 }
 
 global $ClassLevels;
