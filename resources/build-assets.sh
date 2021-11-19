@@ -17,7 +17,10 @@ for f in $JS
 do
   echo ">>> Compiling $f..."
   basename=$(basename -s .js $f)
-  java -jar closure-compiler.jar --js "./js/$basename.js" --js_output_file "../public/js/$basename.js"
+  java -jar closure-compiler.jar \
+    --compilation_level SIMPLE_OPTIMIZATIONS \
+    --js "./js/$basename.js" \
+    --js_output_file "../public/js/$basename.js"
 done
 
 # Cascading Style Sheets

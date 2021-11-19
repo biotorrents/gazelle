@@ -22,7 +22,7 @@ switch ($p) {
         echo $Twig->render('legal/dmca.html');
         View::show_footer();
         break;
-    
+   
     default:
         View::show_header('404 Not Found');
         error(404);

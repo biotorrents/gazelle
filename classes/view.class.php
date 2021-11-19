@@ -19,25 +19,20 @@ class View
 
         # Bad URI or type
         if ((!$uri || !is_string($uri))
-         || (!$type || !is_string($type))) {
+        || (!$type || !is_string($type))) {
             return error(404);
         }
 
         $integrity = base64_encode(hash_file($ENV->SRI, "$ENV->SERVER_ROOT/$uri", true));
 
-        # Send raw HTTP headers - preloading this way is bloat
-        # 26 requests, 1.58 MB, 584ms
-        #    vs.
-        # 10 requests, 730.8 KB, 460ms
-        #header("Link: <$uri?v=$filemtime>; rel=preload; as=$type", false);
-
         switch ($type) {
             case 'script':
-                $HTML = "<script src='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous'></script>";
+                $HTML = "<script defer src='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous'></script>";
                 break;
 
             case 'style':
-                $HTML = "<link rel='stylesheet' href='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous' />";
+            $HTML = "<link rel='stylesheet' href='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous' />";
+            #$HTML = "<link rel='preload' as='style' href='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous' />";
                 break;
 
             case 'font':

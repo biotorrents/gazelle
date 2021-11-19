@@ -27,13 +27,14 @@ $View = new View();
 
   <?php
 # Load JS
-# todo: Decide on autocomplete
 $Scripts = array_filter(
     array_merge(
         [
           'vendor/jquery.min',
           'vendor/jquery-ui.min',
+          'vendor/instantpage.min',
           'ajax.class',
+          'menus',
           'global',
       ],
         explode(',', $JSIncludes)

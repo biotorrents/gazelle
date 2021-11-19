@@ -23,10 +23,6 @@ echo $Twig->render(
   ]
   );
 
-echo "<link href='$ENV->STATIC_SERVER/css/public.css?v="
-     . filemtime(SERVER_ROOT.'/public/css/public.css')
-     . "' rel='stylesheet' type='text/css'>";
-
 # Load JS
 $Scripts = array_filter(
     array_merge(

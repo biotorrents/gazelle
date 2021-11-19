@@ -16,7 +16,7 @@ require_once __DIR__.'/config.php';
 require_once __DIR__.'/security.class.php';
 
 $ENV = ENV::go();
-Security::setupPitfalls();
+Security::SetupPitfalls();
 
 # Start a buffer, mainly for MySQL errors
 ob_start();

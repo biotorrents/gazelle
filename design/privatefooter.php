@@ -9,15 +9,13 @@ $Sep = '&emsp;';
 echo $HTML = '</main><footer>';
 
 # Disclaimer
-#if (!empty($Options['disclaimer'])) {
-    echo $HTML = <<<HTML
-    <p>
-      No data are hosted on $ENV->SITE_NAME's servers.
-      All torrents are user-generated content.
-      Torrents without a specified license may be protected by copyright.
+echo $HTML = <<<HTML
+<p>
+  No data are hosted on $ENV->SITE_NAME's servers.
+  All torrents are user-generated content.
+  Torrents without a specified license may be protected by copyright.
 </p>
 HTML;
-#}
 
 # Sessions
 if (count($UserSessions) > 1) {
@@ -64,7 +62,7 @@ echo $HTML = <<<HTML
   $Year
   $ENV->SITE_NAME
   $Sep
-  <a href='/sections/legal/canary.txt'>Warrant Canary</a>
+  <a href="/docs/canary.txt">Warrant Canary</a>
 </p>
 HTML;
 
@@ -125,11 +123,8 @@ if (!empty($NotificationSpans)) {
     }
 }
 
-# todo: Move all the JS down here
 echo $HTML = <<<HTML
     </footer>
-    <script src="$ENV->STATIC_SERVER/js/menus.js" type="module"></script>
-    <script src="$ENV->STATIC_SERVER/js/vendor/instantpage.min.js" type="module"></script>
   </body>
 </html>
 HTML;

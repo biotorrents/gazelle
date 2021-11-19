@@ -340,12 +340,6 @@ define('HELP_CHAN', '#support');
 define('DISABLED_CHAN', '#support');
 #define('BOT_CHAN', '#userbots');
 
-# Slack invite link
-ENV::setPub(
-    'SLACK_INVITE',
-    ''
-);
-
 
 /**
  * ================

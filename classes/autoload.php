@@ -11,9 +11,9 @@ declare(strict_types=1);
  * @see https://www.php.net/manual/en/language.oop5.autoload.php
  */
 spl_autoload_register(function ($ClassName) {
-  $ENV = ENV::go();
+    $ENV = ENV::go();
 
-  $classname = strtolower($ClassName);
+    $classname = strtolower($ClassName);
     $FilePath = "$ENV->SERVER_ROOT/classes/$classname.class.php";
 
     if (!file_exists($FilePath)) {

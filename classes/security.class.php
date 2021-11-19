@@ -36,7 +36,7 @@ class Security
      * A series of quick sanity checks during app init.
      * Previously in classes/script_start.php.
      */
-    public function setupPitfalls()
+    public static function SetupPitfalls()
     {
         $ENV = ENV::go();
 
