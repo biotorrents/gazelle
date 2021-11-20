@@ -15,12 +15,12 @@ if (!check_perms('site_edit_wiki')) {
 # Variables for database input
 $user_id = (int) $LoggedUser['ID'];
 $group_id = (int) $_REQUEST['groupid'];
-Security::checkInt($user_id, $group_id);
+Security::CheckInt($user_id, $group_id);
 
 # If we're reverting to a previous revision
 if (!empty($_GET['action']) && $_GET['action'] === 'revert') {
     $revision_id = (int) $_GET['revisionid'];
-    Security::checkInt($revision_id);
+    Security::CheckInt($revision_id);
 
     # To cite from merge: "Everything is legit, let's just confim they're not retarded"
     if (empty($_GET['confirm'])) {

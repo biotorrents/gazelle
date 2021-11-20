@@ -9,7 +9,7 @@ declare(strict_types = 1);
  */
 
 $group_id = (int) $_GET['groupid'];
-Security::checkInt($group_id);
+Security::CheckInt($group_id);
 
 // Get the torrent group name and the body of the last revision
 $DB->prepare_query("

@@ -17,7 +17,7 @@ if (isset($_GET['userid'])) {
     $UserID = (int) $LoggedUser['ID'];
 }
 
-Security::checkInt($UserID);
+Security::CheckInt($UserID);
 
 # Get user info
 $UserInfo = Users::user_info($UserID);
@@ -38,7 +38,7 @@ if (isset($_GET['expire'])) {
 
     $UserID = (int) $_GET['userid'];
     $TorrentID = (int) $_GET['torrentid'];
-    Security::checkInt($UserID, $TorrentID);
+    Security::CheckInt($UserID, $TorrentID);
 
     $DB->prepare_query("
     SELECT

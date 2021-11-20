@@ -3,7 +3,7 @@
 
 require_once SERVER_ROOT.'/classes/twofa.class.php';
 $UserID = (int) $_REQUEST['userid'];
-Security::checkInt($UserID);
+Security::CheckInt($UserID);
 
 $DB->query("
   SELECT

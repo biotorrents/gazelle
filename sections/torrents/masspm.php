@@ -3,7 +3,7 @@
 
 $GroupID = (int) $_GET['id'];
 $TorrentID = (int) $_GET['torrentid'];
-Security::checkInt($GroupID, $TorrentID);
+Security::CheckInt($GroupID, $TorrentID);
 
 $DB->prepare_query("
 SELECT

@@ -16,7 +16,7 @@ authorize();
 
 $TorrentID = (int) $_POST['torrentid'];
 $CategoryID = (int) $_POST['categoryid'];
-Security::checkInt($TorrentID, $CategoryID);
+Security::CheckInt($TorrentID, $CategoryID);
 
 if (!isset($_POST['type'])) {
     error(404);

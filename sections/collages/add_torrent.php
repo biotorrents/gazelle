@@ -100,7 +100,7 @@ if ($_REQUEST['action'] == 'add_torrent') {
     // Get torrent ID
     preg_match('/^'.TORRENT_GROUP_REGEX.'/i', $URL, $Matches);
     $TorrentID = (int) $Matches[4];
-    Security::checkInt($TorrentID);
+    Security::CheckInt($TorrentID);
 
     $DB->query("
     SELECT ID

@@ -4,7 +4,7 @@ declare(strict_types = 1);
 authorize();
 
 $FriendID = (int) $_GET['friendid'];
-Security::checkInt($FriendID);
+Security::CheckInt($FriendID);
 
 // Check if the user $FriendID exists
 $DB->prepared_query("
