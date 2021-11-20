@@ -1,17 +1,22 @@
 <?php
 #declare(strict_types=1);
 
-Text::$TOC = true;
+$ENV = ENV::go();
+$Twig = Twig::go();
 
+Text::$TOC = true;
 $ArticleID = false;
-if (!empty($_GET['id']) && is_number($_GET['id'])) { // Visiting article via ID
+
+# Resolve article by ID or alias
+if (!empty($_GET['id'])) {
     $ArticleID = (int) $_GET['id'];
-} elseif ($_GET['name'] !== '') { // Retrieve article ID via alias
+} elseif ($_GET['name'] !== '') {
     $ArticleID = Wiki::alias_to_id($_GET['name']);
-} else { // No ID, No Name
-    //error(404);
-    error('Unknown article ['.display_str($_GET['id']).']');
+} else {
+    error('Unknown article: '.display_str($_GET['id']));
 }
+
+Security::CheckInt($ArticleID);
 
 if (!$ArticleID) { // No article found
     View::show_header('No article found'); ?>

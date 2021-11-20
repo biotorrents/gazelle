@@ -182,34 +182,6 @@ class Text
             $Parsed = self::fix_links($Parsed);
 
             return $Parsed;
-
-        # Markdown ToC not happening yet
-            # Shouldn't parse_toc() output HTML
-            /*
-            self::$Headlines = [];
-            if (self::$TOC) {
-                $List = [];
-
-                foreach (count(1, 6) as $x) {
-                    array_push(
-                        $List,
-                        preg_replace(
-                            "/(\#{$x})([^#].*)\1/i",
-                            "<h$x>$2</h$x>",
-                            $Str
-                        )
-                    );
-                }
-            }
-            */
-
-        /*
-        return $P =
-            ((self::$TOC && $OutputTOC)
-                ? self::parse_toc($Min)
-                : null)
-            . $Parsedown->text($Str);
-        */
         }
         
         /**
@@ -1107,8 +1079,10 @@ class Text
               break;
 
 
+            /*
             case 'tex': // Since this will never strip cleanly, just remove it
               break;
+            */
 
 
             case 'artist':
