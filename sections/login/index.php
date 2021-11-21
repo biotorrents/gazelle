@@ -13,10 +13,6 @@ if (!empty($LoggedUser['ID']) && $_REQUEST['act'] !== 'recover') {
     error();
 }
 
-if ($ENV->BLOCK_OPERA_MINI && isset($_SERVER['HTTP_X_OPERAMINI_PHONE'])) {
-    error('Opera Mini is banned. Please use another browser.');
-}
-
 // Check if IP is banned
 if (Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
     error('Your IP address has been banned.');

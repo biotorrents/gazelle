@@ -63,10 +63,10 @@ ENV::setPub(
 ENV::setPub('DESCRIPTION', 'An open platform for libre biology data');
 
 # Navigation glyphs
-ENV::setPub('SEP', '-'); # e.g., News ⸬ BioTorrents.de
+ENV::setPub('SEP', '-'); # e.g., News - dev.torrents.bio
 ENV::setPub('CRUMB', '›'); # e.g., Forums › Board › Thread
 
-# The FQDN of your site, e.g., dev.biotorrents.de
+# The FQDN of your site, e.g., dev.torrents.bio
 ( # Old format
     !$ENV->DEV
         ? define('SITE_DOMAIN', 'torrents.bio') # Production
@@ -86,7 +86,7 @@ ENV::setPub(
     'OLD_SITE_DOMAIN',
     (!$ENV->DEV
         ? 'biotorrents.de' # Production
-        : 'dev.biotorrents.de') # Development
+        : 'dev.torrents.bio') # Development
 );
 
 # The FQDN of your image host, e.g., pics.biotorrents.de
@@ -432,9 +432,6 @@ ENV::setPub(
     ['"', '*', '/', ':', '<', '>', '?', '\\', '|']
 );
 
-# Set to true to block Opera Mini proxy
-ENV::setPub('BLOCK_OPERA_MINI', true);
-
 # Password length limits
 ENV::setPub('PW_MIN', 15); # Brute force
 ENV::setPub('PW_MAX', 10000); # DDoS; default 307200
@@ -485,7 +482,7 @@ ENV::setPub('IP_GEO', 'https://tools.keycdn.com/geo.json?host=');
  * Found in the `permissions` table.
  */
 
-#       Name of class    Class ID (not level)
+#      Name of class     Class ID (not level)
 define('ADMIN',          '1');
 define('USER',           '2');
 define('MEMBER',         '3');
@@ -1336,7 +1333,6 @@ $CATS = [
     1 => [
         'ID' => 1,
         'Name' => 'Sequences',
-        'Icon' => '🧬',
         'Description' => "For data that's ACGT, ACGU, amino acid letters on disk.",
         'Platforms' => $ENV->META->Platforms->Sequences,
         'Formats' => [
@@ -1349,7 +1345,6 @@ $CATS = [
     2 => [
         'ID' => 2,
         'Name' => 'Graphs',
-        'Icon' => '📈',
         'Description' => 'For pathway and regulatory network data, structured taxonomies, etc.',
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
@@ -1362,7 +1357,6 @@ $CATS = [
     3 => [
         'ID' => 3,
         'Name' => 'Systems',
-        'Icon' => '🌐',
         'Description' => 'For data that examines one facet broadly, not one subject deeply.',
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
@@ -1375,7 +1369,6 @@ $CATS = [
     4 => [
         'ID' => 4,
         'Name' => 'Geometric',
-        'Icon' => '💠',
         'Description' => "For structured data (XML, etc.) that describes the subject's orientation in space.",
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
@@ -1388,7 +1381,6 @@ $CATS = [
     5 => [
         'ID' => 5,
         'Name' => 'Scalars/Vectors',
-        'Icon' => '⏱️',
         'Description' => 'For data that describes observations over time and/or space.',
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
@@ -1401,7 +1393,6 @@ $CATS = [
     6 => [
         'ID' => 6,
         'Name' => 'Patterns',
-        'Icon' => '❄️',
         'Description' => 'For data that describes recurring structures in nature such as common pathways or motifs in the proteome or metabolome.',
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
@@ -1414,7 +1405,6 @@ $CATS = [
     7 => [
         'ID' => 7,
         'Name' => 'Constraints',
-        'Icon' => '⚙️',
         'Description' => 'For data that records experimental control behavior, checks readings against known physical constants, tracks the thermodynamic limits of reactions, etc.',
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
@@ -1427,7 +1417,6 @@ $CATS = [
     8 => [
         'ID' => 8,
         'Name' => 'Images',
-        'Icon' => '🔬',
         'Description' => 'For data you can look at!',
         'Platforms' => $ENV->META->Platforms->Images,
         'Formats' => [
@@ -1439,7 +1428,6 @@ $CATS = [
     9 => [
         'ID' => 9,
         'Name' => 'Spatial',
-        'Icon' => '🗺️',
         'Description' => "For data that's limited to specific locations or otherwise describes macroscopic space.",
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
@@ -1453,7 +1441,6 @@ $CATS = [
     10 => [
         'ID' => 10,
         'Name' => 'Models',
-        'Icon' => '🏗️',
         'Description' => 'For projections, simulations, and other hypothetical or computer-generated data.',
         'Platforms' => $ENV->META->Platforms->Graphs,
         'Formats' => [
@@ -1467,7 +1454,6 @@ $CATS = [
     11 => [
         'ID' => 11,
         'Name' => 'Documents',
-        'Icon' => '📓',
         'Description' => 'For documentation, software, disk images, and literature datasets.',
         'Platforms' => $ENV->META->Platforms->Documents,
         'Formats' => [
@@ -1480,7 +1466,6 @@ $CATS = [
     12 => [
         'ID' => 12,
         'Name' => 'Machine Data',
-        'Icon' => '📡',
         'Description' => 'For raw reads and machine data of any category.',
         'Platforms' => $ENV->META->Platforms->Raw,
         'Formats' => [
