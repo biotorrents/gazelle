@@ -40,48 +40,11 @@ class Security
     {
         $ENV = ENV::go();
 
-        # Bad PHP version
-        if (version_compare(PHP_VERSION, $ENV->PHP_MIN, '<')) {
-            error("Gazelle requires PHP > $ENV->PHP_MIN.");
-        }
-
         # short_open_tag
         if (!ini_get('short_open_tag')) {
             error('short_open_tag != On in php.ini.');
         }
 
-        # apcu
-        if (!extension_loaded('apcu')) {
-            error('APCu extension php-apcu not loaded.');
-        }
-
-        # date
-        # From time.class.php
-        if (!extension_loaded('date')) {
-            error('Date extension php-date not loaded.');
-        }
-
-        # gd
-        # From /public/image.php
-        if (!extension_loaded('gd')) {
-            error('GD extension php-gd not loaded.');
-        }
-
-        # mbstring
-        if (!extension_loaded('mbstring')) {
-            error('Multibyte string extension php-mbstring not loaded.');
-        }
-
-        # memcache
-        if (!extension_loaded('memcache')) {
-            error('memcached extension php-memcache not loaded.');
-        }
-
-        # mysqli
-        if (!extension_loaded('mysqli')) {
-            error('mysqli extension php-mysql not loaded.');
-        }
-        
         # blake3
         if ($ENV->FEATURE_BIOPHP && !extension_loaded('blake3')) {
             error('Please install and enable the php-blake3 extension.');

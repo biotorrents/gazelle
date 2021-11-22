@@ -1,29 +1,32 @@
 ##
+# https://tighten.co/blog/converting-a-legacy-app-to-laravel/
+#
+
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.phpunit.result.cache
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+/.idea
+/.vscode
+
+
+##
 # https://github.com/OPSnet/Gazelle/blob/master/.gitignore
 #
 
 # backups
-*~
+*.*~
 *.bak
 *.sw*
-
-
-# dotfiles
-.DS_Store
-.bash_history
-.cache/
-.config/
-.docker/data/
-.idea/
-.local/
-.npm-global/
-.npm/
-.npmrc
-.pki/
-.profile
-.vscode/
-.wine/
-__MACOSX/
 
 # assets
 /public/css/*

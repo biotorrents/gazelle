@@ -1,28 +1,45 @@
 {
   "name": "biotorrents/gazelle",
-  "description": "Web framework for private BitTorrent trackers using Ocelot",
+  "description": "An open platform for libre biology data",
   "type": "project",
+  "keywords": [
+    "biological-data",
+    "bittorrent-tracker"
+  ],
+  "homepage": "https://torrents.bio",
+  "readme": "README.md",
   "license": "ISC",
   "authors": [
     {
-      "name": "Omics Tools LLC"
+      "name": "Omics Tools LLC",
+      "email": "hello@torrents.bio"
     }
   ],
-  "autoload": {
-    "classmap": [
-      "classes/"
-    ],
-    "files": [
-      "classes/autoload.php"
-    ]
+  "support": {
+    "email": "hello@torrents.bio",
+    "issues": "https://github.com/biotorrents/gazelle/issues",
+    "forum": "https://torrents.bio/forums.php",
+    "wiki": "https://torrents.bio/wiki.php",
+    "source": "https://github.com/biotorrents/gazelle",
+    "docs": "https://docs.torrents.bio",
+    "chat": "https://slack.torrents.bio"
   },
-  "config": {
-    "sort-packages": true
-  },
+  "funding": [
+    {
+      "type": "patreon",
+      "url": "https://www.patreon.com/biotorrents"
+    },
+    {
+      "type": "other",
+      "url": "https://torrents.bio/donate.php"
+    }
+  ],
   "require": {
     "php": ">=7.4",
     "ext-apcu": "*",
     "ext-curl": "*",
+    "ext-date": "*",
+    "ext-gd": "*",
     "ext-json": "*",
     "ext-mbstring": "*",
     "ext-memcache": "*",
@@ -30,19 +47,45 @@
     "biotorrents/biophp": "dev-master",
     "erusev/parsedown": "^1.8.0-beta-7",
     "erusev/parsedown-extra": "^0.8.1",
-    "j7mbo/twitter-api-php": "^1.0.6",
+    "fruitcake/laravel-cors": "^2.0",
+    "guzzlehttp/guzzle": "^7.0.1",
+    "laravel/framework": "^8.65",
+    "laravel/sanctum": "^2.11",
+    "laravel/tinker": "^2.5",
     "orpheusnet/bencode-torrent": "^1.1.1",
-    "robmorgan/phinx": "^0.12.7",
     "twig/twig": "^3.3.2"
   },
   "require-dev": {
-    "d11wtq/boris": "^1.0.10",
-    "phpstan/phpstan": "^0.12.92",
-    "phpunit/phpunit": "^9.5.6",
-    "squizlabs/php_codesniffer": "^3.6.0"
+    "facade/ignition": "^2.5",
+    "fakerphp/faker": "^1.9.1",
+    "laravel/sail": "^1.0.1",
+    "mockery/mockery": "^1.4.4",
+    "nunomaduro/collision": "^5.10",
+    "phpunit/phpunit": "^9.5.10"
   },
-  "scripts": {
-    "phpstan": "phpstan analyse",
-    "test": "phpunit"
-  }
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/",
+      "Database\\Factories\\": "database/factories/",
+      "Database\\Seeders\\": "database/seeders/"
+    },
+    "classmap": [
+      "classes/"
+    ],
+    "files": [
+      "classes/autoload.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }

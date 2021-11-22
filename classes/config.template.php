@@ -43,7 +43,6 @@ require_once __DIR__.'/env.class.php';
 $ENV = ENV::go();
 
 # Basic info
-ENV::setPub('PHP_MIN', '7.4.0');
 ENV::setPub('DEV', true);
 
 
