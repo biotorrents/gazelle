@@ -97,24 +97,6 @@ View::show_header('Staff Tools');
       </table>
     </div>
     <?php
-  }
-
-  // begin Finances category
-  $ToolsHTML = "";
-  create_row("Donation log", "tools.php?action=donation_log", check_perms("admin_donor_log"));
-  create_row("Donor rewards", "tools.php?action=donor_rewards", check_perms("users_mod"));
-
-  if ($ToolsHTML) {
-      ?>
-    <div class="permission_subcontainer">
-      <table class="admin-tools skeleton-fix">
-        <tr class="colhead">
-          <td>Finances</td>
-        </tr>
-        <?=       $ToolsHTML ?>
-      </table>
-    </div>
-    <?php
   } ?>
     <!-- end left column -->
   </div>

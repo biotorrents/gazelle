@@ -363,14 +363,6 @@ switch ($_REQUEST['action']) {
     include SERVER_ROOT.'/sections/tools/data/registration_log.php';
     break;
 
-  case 'donation_log':
-    include SERVER_ROOT.'/sections/tools/finances/donation_log.php';
-    break;
-
-  case 'donor_rewards':
-    include SERVER_ROOT.'/sections/tools/finances/donor_rewards.php';
-    break;
-
   case 'upscale_pool':
     include SERVER_ROOT.'/sections/tools/data/upscale_pool.php';
     break;
