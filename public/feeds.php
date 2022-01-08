@@ -4,7 +4,7 @@ declare(strict_types = 1);
 /**
  * Feed start class
  *
- * Simplified version of script_start,
+ * Simplified version of bootstrap/app.php,
  * used for the sitewide RSS system.
  */
 

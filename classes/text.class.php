@@ -120,7 +120,7 @@ class Text
      * and that external links are secure and look like Wikipedia.
      * Takes an already-parsed input, to hit Markdown and BBcode.
      */
-    public function fix_links($Parsed)
+    public static function fix_links($Parsed)
     {
         # Replace links to $ENV->SITE_DOMAIN
         $Parsed = preg_replace(

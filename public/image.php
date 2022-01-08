@@ -146,5 +146,5 @@ function image_height($Type, $Data)
 }
 
 
-# script_start.php contains all we need and includes sections/image/index.php
-require_once 'classes/script_start.php';
+# bootstrap/app.php contains all we need and includes sections/image/index.php
+require_once __DIR__.'/../bootstrap/app.php';

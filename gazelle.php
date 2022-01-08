@@ -70,5 +70,5 @@ switch ($Document) {
 if (!$Valid) {
     http_response_code(404);
 } else {
-    require_once __DIR__.'/classes/script_start.php';
+    require_once __DIR__.'/bootstrap/app.php';
 }

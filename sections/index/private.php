@@ -40,16 +40,6 @@ View::show_header('News', 'news_ajax');
 <div class="sidebar one-third column">
   <?php #include 'connect.php';?>
 
-  <ul class="stats nobullet">
-    <?php
-$End = min(count($Blog), 5);
-    for ($i = 0; $i < $End; $i++) {
-        list($BlogID, $Author, $Title, $Body, $BlogTime) = $Blog[$i];
-        $BlogTime = strtotime($BlogTime); ?>
-    <?php
-    } ?>
-  </ul>
-
   <div class="box">
     <div class="head colhead_dark"><strong><a href="blog.php">Latest blog posts</a></strong></div>
     <?php

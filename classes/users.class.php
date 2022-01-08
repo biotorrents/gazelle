@@ -961,7 +961,7 @@ class Users
     /**
      * enabledState
      *
-     * Used in classes/script_start.php
+     * Used in bootstrap/app.php
      * @see https://github.com/OPSnet/Gazelle/blob/master/app/User.php
      */
     protected function enabledState(int $id): int

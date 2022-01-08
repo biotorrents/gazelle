@@ -2,7 +2,7 @@
 #declare(strict_types=1);
 
 // Note: at the time this file is loaded, check_perms is not defined.
-// Don't call check_paranoia in /classes/script_start.php without ensuring check_perms has been defined
+// Don't call check_paranoia in /bootstrap/app.php without ensuring check_perms has been defined
 
 // The following are used throughout the site:
 // uploaded, ratio, downloaded: stats

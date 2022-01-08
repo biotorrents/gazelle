@@ -5,7 +5,7 @@ declare(strict_types = 1);
  * Security
  *
  * Designed to hold common authentication functions from various sources:
- *  - classes/script_start.php
+ *  - bootstrap/app.php
  *  - "Quick SQL injection check"
  */
 
@@ -17,10 +17,10 @@ class Security
      * Makes sure a number ID is valid,
      * e.g., a page ID requested by GET.
      */
-    public function CheckInt(...$IDs)
+    public static function CheckInt(...$IDs)
     {
         foreach ($IDs as $ID) {
-            if (!ID || !is_int($ID) || $ID < 1) {
+            if (!$ID || !is_int($ID) || $ID < 1) {
                 return "Expected an integer > 1, got $ID in Security::CheckInt.";
                 #error("Expected an integer > 1, got $ID in Security::CheckInt.");
             }
@@ -34,7 +34,7 @@ class Security
      * Setup pitfalls
      *
      * A series of quick sanity checks during app init.
-     * Previously in classes/script_start.php.
+     * Previously in bootstrap/app.php.
      */
     public static function SetupPitfalls()
     {

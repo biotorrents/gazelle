@@ -80,7 +80,7 @@ $DisplayName = $Twig->render(
     [
       'db' => $ENV->DB,
       'g' => $TorrentDetails,
-      'cat_icon' => $ENV->CATS->{$TorrentDetails['category_id']}->Icon,
+      #'cat_icon' => $ENV->CATS->{$TorrentDetails['category_id']}->Icon,
       'url' => Format::get_url($_GET),
       'cover_art' => (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) ?? true,
       'thumb' => ImageTools::process($CoverArt, 'thumb'),
