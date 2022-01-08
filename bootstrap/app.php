@@ -29,7 +29,7 @@ ob_start();
  */
 require_once "$ENV->SERVER_ROOT/classes/cache.class.php";
 require_once "$ENV->SERVER_ROOT/classes/debug.class.php";
-require_once "$ENV->SERVER_ROOT/classes/mysql.class.php";
+require_once "$ENV->SERVER_ROOT/classes/db.class.php";
 require_once "$ENV->SERVER_ROOT/classes/paranoia.class.php"; # Require check_paranoia()
 require_once "$ENV->SERVER_ROOT/classes/time.class.php"; # todo: Move to util.php
 require_once "$ENV->SERVER_ROOT/classes/util.php";
@@ -43,7 +43,7 @@ $Debug->handle_errors();
 $Debug->set_flag('Debug constructed');
 
 # Initialize the $DB and $Cache globals
-$DB = new \DB_MYSQL;
+$DB = new \DB;
 $Cache = new \Cache($ENV->getPriv('MEMCACHED_SERVERS'));
 
 // Note: G::initialize is called twice.

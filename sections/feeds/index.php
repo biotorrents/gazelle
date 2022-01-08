@@ -29,8 +29,8 @@ $ENV = ENV::go();
 
 $User = (int) $_GET['user'];
 if (!$Enabled = $Cache->get_value("enabled_$User")) {
-    require_once SERVER_ROOT.'/classes/mysql.class.php';
-    $DB = new DB_MYSQL; // Load the database wrapper
+    require_once SERVER_ROOT.'/classes/db.class.php';
+    $DB = new DB; // Load the database wrapper
 
     $DB->query("
     SELECT
@@ -86,8 +86,8 @@ switch ($_GET['feed']) {
     case 'feed_news':
         $Feed->channel('News', 'RSS feed for site news.');
         if (!$News = $Cache->get_value('news')) {
-            require_once SERVER_ROOT.'/classes/mysql.class.php'; // Require the database wrapper
-            $DB = new DB_MYSQL; // Load the database wrapper
+            require_once SERVER_ROOT.'/classes/db.class.php'; // Require the database wrapper
+            $DB = new DB; // Load the database wrapper
 
             $DB->query("
             SELECT
@@ -136,8 +136,8 @@ switch ($_GET['feed']) {
     case 'feed_blog':
         $Feed->channel('Blog', 'RSS feed for site blog.');
         if (!$Blog = $Cache->get_value('blog')) {
-            require_once SERVER_ROOT.'/classes/mysql.class.php'; // Require the database wrapper
-            $DB = new DB_MYSQL; // Load the database wrapper
+            require_once SERVER_ROOT.'/classes/db.class.php'; // Require the database wrapper
+            $DB = new DB; // Load the database wrapper
 
             $DB->query("
             SELECT

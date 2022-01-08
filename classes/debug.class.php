@@ -23,7 +23,7 @@ class DEBUG
             $Reason[] = $Automatic;
         }
 
-        G::$DB->warnings(); // See comment in MYSQL::query
+        #G::$DB->warnings(); // See comment in MYSQL::query
 
         $CacheStatus = G::$Cache->server_status();
         if (in_array(0, $CacheStatus) && !G::$Cache->get_value('cache_fail_reported')) {

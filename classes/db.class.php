@@ -16,7 +16,7 @@ turned off by setting $Escape to false in next_record or to_array.
 
 * Creating the object.
 
-require(SERVER_ROOT.'/classes/mysql.class.php');
+require(SERVER_ROOT.'/classes/db.class.php');
 $DB = NEW DB_MYSQL;
 -----
 
@@ -161,7 +161,7 @@ function db_array($Array, $DontEscape = [], $Quote = false)
 }
 
 
-class DB_MYSQL
+class DB
 {
     public $LinkID = false;
     protected $QueryID = false;
@@ -634,15 +634,6 @@ class DB_MYSQL
     }
 
 
-    /**
-     * beginning
-     */
-    public function beginning()
-    {
-        mysqli_data_seek($this->QueryID, 0);
-        $this->Row = 0;
-    }
-
 
     /**
      * This function determines whether the last query caused warning messages
@@ -650,6 +641,7 @@ class DB_MYSQL
      */
     public function warnings()
     {
+        /*
         $Warnings = [];
         if (!is_bool($this->LinkID) && mysqli_warning_count($this->LinkID)) {
             $e = mysqli_get_warnings($this->LinkID);
@@ -662,5 +654,6 @@ class DB_MYSQL
             } while ($e->next());
         }
         $this->Queries[count($this->Queries) - 1][2] = $Warnings;
+        */
     }
 }
