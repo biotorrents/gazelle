@@ -6,6 +6,7 @@ declare(strict_types=1);
  *
  * Load classes automatically when they're needed.
  * The Gazelle convention is classes/lowercase_name.class.php.
+ * This will certainly change in the near future!
  *
  * @param string $ClassName class name
  * @see https://www.php.net/manual/en/language.oop5.autoload.php

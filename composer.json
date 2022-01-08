@@ -44,24 +44,19 @@
     "ext-mbstring": "*",
     "ext-memcache": "*",
     "ext-mysqli": "*",
-    "biotorrents/biophp": "dev-master",
     "erusev/parsedown": "^1.8.0-beta-7",
     "erusev/parsedown-extra": "^0.8.1",
-    "fruitcake/laravel-cors": "^2.0",
-    "guzzlehttp/guzzle": "^7.0.1",
-    "laravel/framework": "^8.65",
-    "laravel/sanctum": "^2.11",
-    "laravel/tinker": "^2.5",
-    "orpheusnet/bencode-torrent": "^1.1.1",
-    "twig/twig": "^3.3.2"
+    "fruitcake/laravel-cors": "^2.0.5",
+    "guzzlehttp/guzzle": "^7.4.1",
+    "illuminate/database": "^8.78.1",
+    "laravel/sanctum": "^2.13.0",
+    "orpheusnet/bencode-torrent": "dev-master",
+    "twig/twig": "^3.3.7"
   },
   "require-dev": {
-    "facade/ignition": "^2.5",
-    "fakerphp/faker": "^1.9.1",
-    "laravel/sail": "^1.0.1",
-    "mockery/mockery": "^1.4.4",
-    "nunomaduro/collision": "^5.10",
-    "phpunit/phpunit": "^9.5.10"
+    "facade/ignition": "^2.17.4",
+    "kint-php/kint": "^4.1.1",
+    "phpunit/phpunit": "^9.5.11"
   },
   "autoload": {
     "psr-4": {
@@ -73,7 +68,7 @@
       "classes/"
     ],
     "files": [
-      "classes/autoload.php"
+      "bootstrap/autoload.php"
     ]
   },
   "autoload-dev": {
