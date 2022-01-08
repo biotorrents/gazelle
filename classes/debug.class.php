@@ -23,8 +23,6 @@ class DEBUG
             $Reason[] = $Automatic;
         }
 
-        #G::$DB->warnings(); // See comment in MYSQL::query
-
         $CacheStatus = G::$Cache->server_status();
         if (in_array(0, $CacheStatus) && !G::$Cache->get_value('cache_fail_reported')) {
             // Limit to max one report every 15 minutes to avoid massive debug spam

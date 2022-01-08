@@ -1,115 +1,86 @@
 <?php
-#declare(strict_types = 1);
+declare(strict_types = 1);
 
-//-----------------------------------------------------------------------------------
-/////////////////////////////////////////////////////////////////////////////////////
-/*//-- MySQL wrapper class ----------------------------------------------------------
-
-This class provides an interface to mysqli. You should always use this class instead
-of the mysql/mysqli functions, because this class provides debugging features and a
-bunch of other cool stuff.
-
-Everything returned by this class is automatically escaped for output. This can be
-turned off by setting $Escape to false in next_record or to_array.
-
-//--------- Basic usage -------------------------------------------------------------
-
-* Creating the object.
-
-require(SERVER_ROOT.'/classes/db.class.php');
-$DB = NEW DB_MYSQL;
------
-
-* Making a query
-
-$DB->prepared_query("
-  SELECT *
-  FROM table...");
-
-  Is functionally equivalent to using mysqli_query("SELECT * FROM table...")
-  Stores the result set in $this->QueryID
-  Returns the result set, so you can save it for later (see set_query_id())
------
-
-* Getting data from a query
-
-$array = $DB->next_record();
-  Is functionally equivalent to using mysqli_fetch_array($ResultSet)
-  You do not need to specify a result set - it uses $this-QueryID
------
-
-* Escaping a string
-
-db_string($str);
-  Is a wrapper for mysqli_real_escape_string().
-  USE THIS FUNCTION EVERY TIME YOU QUERY USER-SUPPLIED INPUT!
-
-//--------- Advanced usage ---------------------------------------------------------
-
-* The conventional way of retrieving a row from a result set is as follows:
-
-list($All, $Columns, $That, $You, $Select) = $DB->next_record();
------
-
-* This is how you loop over the result set:
-
-while (list($All, $Columns, $That, $You, $Select) = $DB->next_record()) {
-  echo "Do stuff with $All of the ".$Columns.$That.$You.$Select;
-}
------
-
-* There are also a couple more mysqli functions that have been wrapped. They are:
-
-record_count()
-  Wrapper to mysqli_num_rows()
-
-affected_rows()
-  Wrapper to mysqli_affected_rows()
-
-inserted_id()
-  Wrapper to mysqli_insert_id()
-
-close
-  Wrapper to mysqli_close()
------
-
-* And, of course, a few handy custom functions.
-
-to_array($Key = false)
-  Transforms an entire result set into an array (useful in situations where you
-  can't order the rows properly in the query).
-
-  If $Key is set, the function uses $Key as the index (good for looking up a
-  field). Otherwise, it uses an iterator.
-
-  For an example of this function in action, check out forum.php.
-
-collect($Key)
-  Loops over the result set, creating an array from one of the fields ($Key).
-  For an example, see forum.php.
-
-set_query_id($ResultSet)
-  This class can only hold one result set at a time. Using set_query_id allows
-  you to set the result set that the class is using to the result set in
-  $ResultSet. This result set should have been obtained earlier by using
-  $DB->prepared_query().
-
-  Example:
-
-  $FoodRS = $DB->prepared_query("
-      SELECT *
-      FROM food");
-  $DB->prepared_query("
-    SELECT *
-    FROM drink");
-  $Drinks = $DB->next_record();
-  $DB->set_query_id($FoodRS);
-  $Food = $DB->next_record();
-
-  Of course, this example is contrived, but you get the point.
-
--------------------------------------------------------------------------------------
-*///---------------------------------------------------------------------------------
+/**
+ * MySQL wrapper class
+ * 
+ * This class provides an interface to mysqli.
+ * It provides debugging features and some other cool stuff.
+ * 
+ * Everything returned by this class is automatically escaped for output.
+ * This can be turned off by setting $Escape to false in next_record or to_array.
+ * 
+ * 
+ * Basic usage
+ * ===========
+ * 
+ * Making a query:
+ * 
+ * $DB->prepared_query("
+ *   SELECT *
+ *   FROM table...
+ * ");
+ * 
+ * Getting data from a query:
+ * 
+ * $array = $DB->next_record();
+ * 
+ * Escaping a string:
+ * 
+ * db_string($str);
+ * 
+ * 
+ * Advanced usage
+ * ==============
+ * 
+ * The conventional way of retrieving a row from a result set:
+ * 
+ * list($All, $Columns, $That, $You, $Select) = $DB->next_record();
+ * 
+ * This is how you loop over the result set:
+ * 
+ * while (list($All, $Columns, $That, $You, $Select) = $DB->next_record()) {
+ *   echo "Do stuff with $All of the $Columns $That $You $Select";
+ * }
+ * 
+ * There are also a couple more mysqli functions that have been wrapped:
+ * 
+ *   - affected_rows
+ *   - close
+ *   - inserted_id
+ *   - record_count
+ * 
+ * A few handy custom functions:
+ * 
+ * collect($Key)
+ *   Loops over the result set, creating an array from one of the fields ($Key).
+ *   For an example, see forum.php.
+ * 
+ * set_query_id($ResultSet)
+ *   This class can only hold one result set at a time.
+ *   Using set_query_id allows you to set the result set it's using to $ResultSet.
+ *   This result set should have been obtained earlier by using $DB->prepared_query, e.g.,
+ * 
+ *   $FoodRS = $DB->prepared_query("
+ *     SELECT *
+ *     FROM food
+ *   ");
+ * 
+ *   $DB->prepared_query("
+ *     SELECT *
+ *     FROM drink
+ *   ");
+ * 
+ *   $Drinks = $DB->next_record();
+ *   $DB->set_query_id($FoodRS);
+ *   $Food = $DB->next_record();
+ * 
+ * to_array($Key = false)
+ *   Transforms an entire result set into an array.
+ *   If $Key is set, the function uses $Key as the index.
+ *   Otherwise, it uses an iterator.
+ *   For an example, check out forum.php.
+ */
 
 
 /**
@@ -126,8 +97,8 @@ function db_string($String, $DisableWildcards = false)
     # Previously called $DB->escape_str, now below
     # todo: Fix the bad escapes everywhere; see below
 
-    #if (!is_string($String)) { # This is the correct way,
-    if (is_array($String)) { # but this prevents errors
+    if (!is_string($String)) { # This is the correct way,
+    #if (is_array($String)) { # but this prevents errors
         error('Attempted to escape non-string.', $NoHTML = true);
         $String = '';
     } else {
@@ -161,6 +132,9 @@ function db_array($Array, $DontEscape = [], $Quote = false)
 }
 
 
+/**
+ * \DB::class
+ */
 class DB
 {
     public $LinkID = false;
@@ -359,21 +333,6 @@ class DB
      */
     public function query($Query, &...$BindVars)
     {
-        /**
-         * If there was a previous query, we store the warnings. We cannot do
-         * this immediately after mysqli_query because mysqli_insert_id will
-         * break otherwise due to mysqli_get_warnings sending a SHOW WARNINGS;
-         * query. When sending a query, however, we're sure that we won't call
-         * mysqli_insert_id (or any similar function, for that matter) later on,
-         * so we can safely get the warnings without breaking things.
-         * Note that this means that we have to call $this->warnings manually
-         * for the last query!
-         */
-        global $Debug;
-        if ($this->QueryID) {
-            $this->warnings();
-        }
-
         $QueryStartTime = microtime(true);
         $this->connect();
 
@@ -571,6 +530,25 @@ class DB
 
 
     /**
+     * set_query_id
+     */
+    public function set_query_id(&$ResultSet)
+    {
+        $this->QueryID = $ResultSet;
+        $this->Row = 0;
+    }
+
+
+    /**
+     * get_query_id
+     */
+    public function get_query_id()
+    {
+        return $this->QueryID;
+    }
+
+
+    /**
      * Useful extras from OPS
      */
 
@@ -613,47 +591,4 @@ class DB
         return $result[0];
     }
     # End OPS additions
-
-
-    /**
-     * set_query_id
-     */
-    public function set_query_id(&$ResultSet)
-    {
-        $this->QueryID = $ResultSet;
-        $this->Row = 0;
-    }
-
-
-    /**
-     * get_query_id
-     */
-    public function get_query_id()
-    {
-        return $this->QueryID;
-    }
-
-
-
-    /**
-     * This function determines whether the last query caused warning messages
-     * and stores them in $this->Queries
-     */
-    public function warnings()
-    {
-        /*
-        $Warnings = [];
-        if (!is_bool($this->LinkID) && mysqli_warning_count($this->LinkID)) {
-            $e = mysqli_get_warnings($this->LinkID);
-            do {
-                if ($e->errno === 1592) {
-                    // 1592: Unsafe statement written to the binary log using statement format since BINLOG_FORMAT = STATEMENT
-                    continue;
-                }
-                $Warnings[] = 'Code ' . $e->errno . ': ' . display_str($e->message);
-            } while ($e->next());
-        }
-        $this->Queries[count($this->Queries) - 1][2] = $Warnings;
-        */
-    }
 }

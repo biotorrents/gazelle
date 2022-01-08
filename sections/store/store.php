@@ -18,12 +18,12 @@ if (!$LoggedUser['DisablePoints']) {
       LEFT JOIN torrents AS t ON t.ID=x.fid
       LEFT JOIN xbt_snatched AS xs ON x.uid=xs.uid AND x.fid=xs.fid
       WHERE
-        um.ID = ?
+        um.ID = '$UserID'
         AND um.Enabled = '1'
         AND x.active = 1
         AND x.completed = 0
         AND x.Remaining = 0
-      GROUP BY um.ID", $UserID);
+      GROUP BY um.ID");
 
     # BASE BONUS POINTS RATE
     # See /wiki.php?action=article&name=bonuspoints
