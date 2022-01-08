@@ -49,6 +49,7 @@
     "fruitcake/laravel-cors": "^2.0.5",
     "guzzlehttp/guzzle": "^7.4.1",
     "illuminate/database": "^8.78.1",
+    "illuminate/support": "^8.78",
     "laravel/sanctum": "^2.13.0",
     "orpheusnet/bencode-torrent": "dev-master",
     "twig/twig": "^3.3.7",

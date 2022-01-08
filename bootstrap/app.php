@@ -15,7 +15,7 @@ $ScriptStartTime = microtime(true);
 require_once __DIR__.'/../classes/config.php';
 require_once __DIR__.'/../classes/security.class.php';
 
-$ENV = ENV::go();
+$ENV = \ENV::go();
 \Security::SetupPitfalls();
 
 # Start a buffer, mainly for MySQL errors

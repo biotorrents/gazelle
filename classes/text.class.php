@@ -8,10 +8,12 @@ class Text
      *
      * Make it so that internal links are in the form "/section?p=foo"
      * and that external links are secure and look like Wikipedia.
-     * Takes an already-parsed input, to hit Markdown and BBcode.
+     * Takes an already-parsed input, to hit both Markdown and BBcode.
      */
     private static function fix_links($Parsed)
     {
+        $ENV = ENV::go();
+
         # Replace links to $ENV->SITE_DOMAIN
         $Parsed = preg_replace(
             "/<a href=\"$ENV->RESOURCE_REGEX($ENV->SITE_DOMAIN|$ENV->OLD_SITE_DOMAIN)\//",

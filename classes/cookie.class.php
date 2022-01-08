@@ -1,65 +1,98 @@
 <?php
 declare(strict_types=1);
 
-class COOKIE
+class Cookie
 {
-    # If true, blocks JS cookie API access by default (can be overridden case by case)
-    const LIMIT_ACCESS = true;
-
-    # In some cases you may desire to prefix your cookies
-    const PREFIX = '';
+    # Optional cookie prefix
+    private const prefix = '';
 
 
     /**
-     * get()
-     * Untrustworthy user input
+     * get
+     * 
+     * Untrustworthy user input.
+     * Reads from $_COOKIE superglobal.
+     * 
+     * @param string $key The cookie key
+     * @return The prefixed cookie or false
      */
-    public function get($Key)
+    public static function get(string $key)
     {
-        if (!isset($_COOKIE[SELF::PREFIX.$Key])) {
-            return false;
-        }
-        return $_COOKIE[SELF::PREFIX.$Key];
+        return (isset($_COOKIE[self::prefix.$key]))
+            ? $_COOKIE[self::prefix.$key]
+            : false;
     }
 
 
     /**
-     * set()
-     * LimitAccess = false allows JS cookie access
+     * set
+     * 
+     * Sets a secure cookie.
+     * Note $secure and $httponly are hardcoded.
+     * This is intentional behavior.
+     * @see https://www.php.net/manual/en/function.setcookie.php
+     * 
+     * @param string $key The cookie key
+     * @param string $value The cookie value
+     * @param int $time The time in seconds
+     * @param string $path Future scope support
+     * @return bool setcookie
      */
-    public function set($Key, $Value, $Seconds = 86400, $LimitAccess = SELF::LIMIT_ACCESS)
-    {
+    public static function set(
+        string $key = null,
+        string $value = null,
+        int $time = 86400,
+        string $path = '/'
+        ) {
+        $ENV = \ENV::go();
+
+        # Should be an error probably
+        return (empty($key) || empty($value)) ?? false;
+
         setcookie(
-            SELF::PREFIX.$Key,
-            $Value,
-            time() + $Seconds,
-            '/',
-            SITE_DOMAIN,
-            $_SERVER['SERVER_PORT'] === '443',
-            $LimitAccess,
-            false
+            $name = self::prefix.$key,
+            $value = $value,
+            $expires_or_options = time() + $time,
+            $path = $path,
+            $domain = $ENV->SITE_DOMAIN,
+            $secure = true,
+            $httponly = true
         );
     }
 
 
     /**
-     * del()
+     * del
+     * 
+     * Deletes a cookie by key.
+     * 
+     * @param string $key The cookie key
+     * @return bool self::set (setcookie)
      */
-    public function del($Key)
+    public static function del(string $key)
     {
         # 3600s vs. 1s for potential clock desyncs
-        setcookie(SELF::PREFIX.$Key, '', time() - 24 * 3600);
+        self::set(
+            $key = self::prefix.$key,
+            $value = '',
+            $time = time() - 24 * 3600
+        );
     }
 
 
     /**
-     * flush()
+     * flush
+     * 
+     * Delete all user cookies.
+     * Uses the $_COOKIE superglobal.
+     * 
+     * @return bool self::del (setcookie)
      */
-    public function flush()
+    public static function flush()
     {
-        $Cookies = array_keys($_COOKIE);
-        foreach ($Cookies as $Cookie) {
-            $this->del($Cookie);
+        $cookies = array_keys($_COOKIE);
+        foreach ($cookies as $cookie) {
+            self::del($cookie);
         }
     }
 }
