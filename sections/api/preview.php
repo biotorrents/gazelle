@@ -2,11 +2,9 @@
 #declare(strict_types=1);
 
 /* AJAX previews, simple stuff */
-Text::$TOC = true;
-
 if (!empty($_POST['AdminComment'])) {
-    echo Text::full_format($_POST['AdminComment']);
+    echo Text::parse($_POST['AdminComment']);
 } else {
     $Content = $_REQUEST['body']; // Don't use URL decode
-    echo Text::full_format($Content);
+    echo Text::parse($Content);
 }

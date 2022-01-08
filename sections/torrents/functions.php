@@ -339,7 +339,7 @@ function build_torrents_table($Cache, $DB, $LoggedUser, $GroupID, $GroupName, $G
                 $ReportInfo .= "
                 <tr>
                   <td>$ReportLinks ".time_diff($Report['ReportedTime'], 2, true, true).' for the reason "'.$ReportType['title'].'":
-                    <blockquote>'.Text::full_format($Report['UserComment']).'</blockquote>
+                    <blockquote>'.Text::parse($Report['UserComment']).'</blockquote>
                   </td>
                 </tr>';
             }
@@ -532,7 +532,7 @@ function build_torrents_table($Cache, $DB, $LoggedUser, $GroupID, $GroupName, $G
         </div>
         <?php }
         if (!empty($Description)) {
-            echo "<blockquote>" . Text::full_format($Description) . '</blockquote>';
+            echo "<blockquote>" . Text::parse($Description) . '</blockquote>';
         } ?>
     </td>
 </tr>

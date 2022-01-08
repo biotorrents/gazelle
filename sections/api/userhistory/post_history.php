@@ -166,7 +166,7 @@ while (list($PostID, $AddedTime, $Body, $EditedUserID, $EditedTime, $EditedUsern
     'locked' => $Locked === '1',
     'sticky' => $Sticky === '1',
     'addedTime' => $AddedTime,
-    'body' => Text::full_format($Body),
+    'body' => Text::parse($Body),
     'bbbody' => $Body,
     'editedUserId' => (int)$EditedUserID,
     'editedTime' => $EditedTime,

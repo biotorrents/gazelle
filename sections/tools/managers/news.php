@@ -104,7 +104,7 @@ while (list($NewsID, $Title, $Body, $NewsTime) = $DB->next_record()) {
       <a href="tools.php?action=deletenews&amp;id=<?=$NewsID?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
         class="brackets">Delete</a>
     </div>
-    <div class="pad"><?=Text::full_format($Body) ?>
+    <div class="pad"><?=Text::parse($Body) ?>
     </div>
   </div>
   <?php

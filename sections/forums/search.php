@@ -381,7 +381,7 @@ while (list($ID, $Title, $ForumID, $ForumName, $LastTime, $PostID, $Body, $Threa
     </tr>
     <?php if ($Type == 'body') { ?>
     <tr class="row hidden" id="post_<?=$PostID?>_text">
-      <td colspan="4"><?=Text::full_format($Body)?>
+      <td colspan="4"><?=Text::parse($Body)?>
       </td>
     </tr>
     <?php }

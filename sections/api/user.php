@@ -430,7 +430,7 @@ json_print('success', [
   'username'    => $Username,
   'avatar'      => $Avatar,
   'isFriend'    => (bool) $Friend,
-  'profileText' => Text::full_format($Info),
+  'profileText' => Text::parse($Info),
 
   'stats' => [
     'joinedDate'    => $JoinDate,

@@ -50,7 +50,7 @@ if ($Read > $LoggedUser['EffectiveClass']) {
     error('You must be a higher user class to view this wiki article');
 }
 
-$TextBody = Text::full_format($Body, false);
+$TextBody = Text::parse($Body, false);
 
 View::show_header($Title, 'wiki');
 ?>

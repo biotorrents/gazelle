@@ -58,7 +58,7 @@ if ($Depth != 0) {
   }
 }
 ?>
-        <?=Text::full_format($Body)?>
+        <?=Text::parse($Body)?>
         <br />
         <br />
 

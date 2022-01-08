@@ -34,7 +34,7 @@ list($WikiBody, $WikiImage, $GroupID, $GroupName, $GroupTitle2, $GroupNameJP, $G
 # Make the main headings
 $AltName = $GroupName; // Goes in the alt text of the image
 $Title = $GroupName; // Goes in <title>
-$WikiBody = Text::full_format($WikiBody);
+$WikiBody = Text::parse($WikiBody);
 $Artists = Artists::get_artist($GroupID);
 
 
@@ -453,7 +453,7 @@ foreach ($TorrentList as $Torrent) {
             $ReportInfo .= "
       <tr>
         <td>$ReportLinks ".time_diff($Report['ReportedTime'], 2, true, true).' for the reason "'.$ReportType['title'].'":
-          <blockquote>'.Text::full_format($Report['UserComment']).'</blockquote>
+          <blockquote>'.Text::parse($Report['UserComment']).'</blockquote>
         </td>
       </tr>';
         }
@@ -706,7 +706,7 @@ foreach ($TorrentList as $Torrent) {
             <?php
   }
     if (!empty($Description)) {
-        echo '<blockquote class="torrent_description">'.Text::full_format($Description).'</blockquote>';
+        echo '<blockquote class="torrent_description">'.Text::parse($Description).'</blockquote>';
     }
     
     echo "\n<blockquote>"; ?>

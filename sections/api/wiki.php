@@ -26,8 +26,7 @@ if ($Read > $LoggedUser['EffectiveClass']) {
     json_die('failure', 'higher user class required to view article');
 }
 
-Text::$TOC = true;
-$TextBody = Text::full_format($Body, false);
+$TextBody = Text::parse($Body, false);
 
 json_die('success', array(
   'title'      => $Title,

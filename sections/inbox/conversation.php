@@ -96,7 +96,7 @@ while (list($SentDate, $SenderID, $Body, $MessageID) = $DB->next_record()) {
       <div class="float_right"><a href="#">&uarr;</a> <a href="#messageform">&darr;</a></div>
     </div>
     <div class="body" id="message<?=$MessageID?>">
-      <?=Text::full_format($Body)?>
+      <?=Text::parse($Body)?>
     </div>
   </div>
   <?php

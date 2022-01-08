@@ -106,7 +106,7 @@ if ($ConvID = (int)$_GET['id']) {
           class="brackets">Quote</a>
         <?php } ?>
       </div>
-      <div class="body"><?=Text::full_format($Message)?>
+      <div class="body"><?=Text::parse($Message)?>
       </div>
     </div>
     <div align="center" style="display: none;"></div>

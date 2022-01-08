@@ -27,7 +27,7 @@ if ($ID = (int)$_GET['id']) {
   if ($_GET['plain'] == 1) {
     echo $Message;
   } else {
-    echo Text::full_format($Message);
+    echo Text::parse($Message);
   }
 
 } else {

@@ -492,7 +492,7 @@ if (count($Reports) === 0) {
               } ?>
         <tr>
           <td class="label">User comment:</td>
-          <td colspan="3" class="wrap_overflow"><?=Text::full_format($UserComment)?></td>
+          <td colspan="3" class="wrap_overflow"><?=Text::parse($UserComment)?></td>
         </tr>
 <?php // END REPORTED STUFF :|: BEGIN MOD STUFF
       if ($Status == 'InProgress') { ?>

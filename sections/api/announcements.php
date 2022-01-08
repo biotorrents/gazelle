@@ -50,7 +50,7 @@ for ($i = 0; $i < 5; $i++) {
     'author' => $Author,
     'title' => $Title,
     'bbBody' => $Body,
-    'body' => Text::full_format($Body),
+    'body' => Text::parse($Body),
     'blogTime' => $BlogTime,
     'threadId' => (int)$ThreadID
   );
@@ -68,7 +68,7 @@ foreach ($News as $NewsItem) {
     'newsId' => (int)$NewsID,
     'title' => $Title,
     'bbBody' => $Body,
-    'body' => Text::full_format($Body),
+    'body' => Text::parse($Body),
     'newsTime' => $NewsTime
   );
 

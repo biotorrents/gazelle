@@ -319,7 +319,7 @@ $DB->prepared_query("
       } ?>
           <tr>
             <td class="label">User comment:</td>
-            <td colspan="3"><?=Text::full_format($UserComment)?></td>
+            <td colspan="3"><?=Text::parse($UserComment)?></td>
           </tr>
 <?php // END REPORTED STUFF :|: BEGIN MOD STUFF ?>
           <tr>

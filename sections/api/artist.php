@@ -347,7 +347,7 @@ json_die('success', array(
   'notificationsEnabled' => $notificationsEnabled,
   'hasBookmarked' => Bookmarks::has_bookmarked('artist', $ArtistID),
   'image' => $Image,
-  'body' => Text::full_format($Body),
+  'body' => Text::parse($Body),
   'vanityHouse' => $VanityHouseArtist == 1,
   'tags' => array_values($Tags),
   'statistics' => array(

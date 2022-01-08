@@ -150,7 +150,7 @@ View::show_header($Name, 'browse,collage,recommend');
 
     <div class="box box_description">
       <div class="head"><strong>Description</strong></div>
-      <div class="pad"><?=Text::full_format($Description)?>
+      <div class="pad"><?=Text::parse($Description)?>
       </div>
     </div>
 
@@ -261,7 +261,7 @@ foreach ($CommentList as $Comment) {
         <a href="reports.php?action=report&amp;type=comment&amp;id=<?=$CommentID?>"
           class="brackets">Report</a>
       </div>
-      <div class="pad"><?=Text::full_format($Body)?>
+      <div class="pad"><?=Text::parse($Body)?>
       </div>
     </div>
     <?php

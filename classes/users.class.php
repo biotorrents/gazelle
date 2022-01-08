@@ -374,7 +374,7 @@ class Users
      * @param Length
      * @return random alphanumeric string
      */
-    public function make_secret($Length = 32)
+    public static function make_secret($Length = 32)
     {
         # strrev() to obscure bcrypt format
         $Secret = strrev(

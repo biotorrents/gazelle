@@ -123,6 +123,6 @@ $DB->query("
     ('forums', $PostID, $UserID, '$SQLTime', '".db_string($OldBody)."')");
 $Cache->delete_value("forums_edits_$PostID");
 // This gets sent to the browser, which echoes it in place of the old body
-echo Text::full_format($Body);
+echo Text::parse($Body);
 ?>
 <br /><br /><div class="last_edited">Last edited by <a href="user.php?id=<?=$LoggedUser['ID']?>"><?=$LoggedUser['Username']?></a> Just now</div>

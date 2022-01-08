@@ -425,7 +425,7 @@ $encoded_artist = urlencode($encoded_artist);
     <div class="box box_request_desc">
       <div class="head"><strong>Description</strong></div>
       <div class="pad">
-        <?=       Text::full_format($Request['Description']);?>
+        <?=       Text::parse($Request['Description']);?>
       </div>
     </div>
     <div id="request_comments">

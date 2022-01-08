@@ -48,7 +48,7 @@ class Text
      * @param string $Str Markdown preferred
      * @return string Parsed XHTML text
      */
-    public static function full_format($Str)
+    public static function parse($Str)
     {
         $ENV = ENV::go();
 

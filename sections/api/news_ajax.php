@@ -11,8 +11,6 @@ if (!isset($_GET['count']) || !isset($_GET['offset']) || $Count <= 0 || $Offset 
     json_die('failure');
 }
 
-Text::$TOC = true;
-
 global $DB;
 $DB->query("
     SELECT
@@ -32,9 +30,9 @@ foreach ($News as $NewsItem) {
         $NewsResponse,
         array(
       $NewsID,
-      Text::full_format($Title),
+      Text::parse($Title),
       time_diff($NewsTime),
-      Text::full_format($Body)
+      Text::parse($Body)
     )
     );
 }

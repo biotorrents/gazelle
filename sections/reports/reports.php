@@ -198,7 +198,7 @@ $DB->set_query_id($Reports);
           </td>
         </tr>
         <tr>
-          <td colspan="2"><?=Text::full_format($Reason)?></td>
+          <td colspan="2"><?=Text::parse($Reason)?></td>
         </tr>
         <tr>
           <td colspan="2">

@@ -733,7 +733,7 @@ END THE COLLECTOR
         <strong>Information</strong>
         <a class="brackets" data-toggle-target="#body">Toggle</a>
       </div>
-      <div id="body" class="body"><?=Text::full_format($Body)?>
+      <div id="body" class="body"><?=Text::parse($Body)?>
       </div>
     </div>
     <?php

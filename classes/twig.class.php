@@ -90,7 +90,7 @@ class Twig
         $Twig->addFilter(new \Twig\TwigFilter(
             'bb_format',
             function ($text) {
-                return new \Twig\Markup(\Text::full_format($text), 'UTF-8');
+                return new \Twig\Markup(\Text::parse($text), 'UTF-8');
             }
         ));
 

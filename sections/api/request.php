@@ -74,7 +74,7 @@ foreach ($Thread as $Key => $Post) {
     'class'           => Users::make_class_string($PermissionID),
     'addedTime'       => $AddedTime,
     'avatar'          => $Avatar,
-    'comment'         => Text::full_format($Body),
+    'comment'         => Text::parse($Body),
     'editedUserId'    => (int)$EditedUserID,
     'editedUsername'  => $EditedUsername,
     'editedTime'      => $EditedTime
@@ -105,7 +105,7 @@ json_die('success', array(
   'year'            => (int)$Request['Year'],
   'image'           => $Request['Image'],
   'bbDescription'   => $Request['Description'],
-  'description'     => Text::full_format($Request['Description']),
+  'description'     => Text::parse($Request['Description']),
   'artists'         => $JsonArtists,
   'isFilled'        => (bool)$IsFilled,
   'fillerId'        => (int)$Request['FillerID'],

@@ -86,7 +86,7 @@ while (list($SentDate, $SenderID, $Body, $MessageID) = $DB->next_record()) {
     'sentDate' => $SentDate,
     'avatar' => $Users[(int)$SenderID]['Avatar'],
     'bbBody' => $Body,
-    'body' => Text::full_format($Body)
+    'body' => Text::parse($Body)
   );
   $JsonMessages[] = $JsonMessage;
 }

@@ -97,7 +97,7 @@ $JsonTorrentDetails = [
     'mirrors'       => ($TorrentDetails['Mirrors']) ?: false,
   
     'description'   => $TorrentDetails['description'],
-   #'description'   => Text::full_format($TorrentDetails['description']),
+   #'description'   => Text::parse($TorrentDetails['description']),
     'picture'       => $TorrentDetails['picture'],
     'tagList'      => $TagList,
 

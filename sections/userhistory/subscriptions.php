@@ -266,7 +266,7 @@ if (!$NumResults) {
       <?php } ?>
       <td class="body" valign="top">
         <div class="content3">
-          <?=Text::full_format($Result['LastReadBody']) ?>
+          <?=Text::parse($Result['LastReadBody']) ?>
           <?php if ($Result['LastReadEditedUserID']) { ?>
           <br /><br />
           Last edited by <?=Users::format_username($Result['LastReadEditedUserID'], false, false, false) ?>

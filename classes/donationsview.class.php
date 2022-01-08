@@ -120,7 +120,7 @@ class DonationsView
         data-toggle-replace="Show" class="brackets">Hide</a></span>
   </div>
   <div class="pad profileinfo" id="profilediv_<?=$i?>">
-    <?= Text::full_format($ProfileRewards['ProfileInfo' . $i]); ?>
+    <?= Text::parse($ProfileRewards['ProfileInfo' . $i]); ?>
   </div>
 </div>
 <?php

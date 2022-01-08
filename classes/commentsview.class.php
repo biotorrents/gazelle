@@ -94,7 +94,7 @@ class CommentsView
     <?php } ?>
     <td class="body" valign="top">
       <div id="content<?=$PostID?>">
-        <?=Text::full_format($Body)?>
+        <?=Text::parse($Body)?>
         <?php if ($EditedUserID) { ?>
         <br />
         <br />

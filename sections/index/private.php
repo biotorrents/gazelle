@@ -2,7 +2,6 @@
 #declare(strict_types=1);
 
 $ENV = ENV::go();
-Text::$TOC = true;
 $NewsCount = 2;
 
 if (!$News = $Cache->get_value('news')) {
@@ -541,7 +540,7 @@ foreach ($News as $NewsItem) {
     </div>
 
     <div id="newsbody<?=$NewsID?>" class="pad">
-      <?=Text::full_format($Body)?>
+      <?=Text::parse($Body)?>
     </div>
   </div>
 

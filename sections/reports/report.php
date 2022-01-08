@@ -164,7 +164,7 @@ switch ($Short) {
     <tr>
       <td><?=display_str($Name)?>
       </td>
-      <td><?=Text::full_format($Desc)?>
+      <td><?=Text::parse($Desc)?>
       </td>
       <td><strong><?=($Filled == 0 ? 'No' : 'Yes')?></strong>
       </td>
@@ -226,7 +226,7 @@ switch ($Short) {
     <tr>
       <td><?=display_str($Name)?>
       </td>
-      <td><?=Text::full_format($Desc)?>
+      <td><?=Text::parse($Desc)?>
       </td>
       <td><strong><?=($Filled == 0 ? 'No' : 'Yes')?></strong>
       </td>
@@ -245,7 +245,7 @@ switch ($Short) {
     <tr>
       <td><?=display_str($Name)?>
       </td>
-      <td><?=Text::full_format($Desc)?>
+      <td><?=Text::parse($Desc)?>
       </td>
     </tr>
   </table>
@@ -279,7 +279,7 @@ switch ($Short) {
     <tr>
       <td><?=display_str($Username)?>
       </td>
-      <td><?=Text::full_format($Body)?>
+      <td><?=Text::parse($Body)?>
       </td>
     </tr>
   </table>
@@ -296,7 +296,7 @@ switch ($Short) {
     <tr>
       <td><?=display_str($Username)?>
       </td>
-      <td><?=Text::full_format($Body)?>
+      <td><?=Text::parse($Body)?>
       </td>
     </tr>
   </table>

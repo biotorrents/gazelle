@@ -253,7 +253,7 @@ function user_dupes_table($UserID)
         <td colspan="5" align="left">
           <div id="dupecomments"
             class="<?=($DupeCount ? '' : 'hidden')?>">
-            <?=Text::full_format($Comments); ?>
+            <?=Text::parse($Comments); ?>
           </div>
           <div id="editdupecomments"
             class="<?=($DupeCount ? 'hidden' : '')?>">

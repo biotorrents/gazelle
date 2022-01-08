@@ -195,7 +195,7 @@ foreach ($Blog as $BlogItem) {
       <?php } ?>
     </div>
     <div class="pad">
-      <?=Text::full_format($Body)?>
+      <?=Text::parse($Body)?>
       <?php if ($ThreadID) { ?>
       <br /><br />
       <em><a
