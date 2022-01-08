@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-$ENV = ENV::go();
+$ENV = \ENV::go();
 
 /*-- todo ---------------------------//
 Add the JavaScript validation into the display page using the class
@@ -14,7 +14,7 @@ if (!empty($LoggedUser['ID']) && $_REQUEST['act'] !== 'recover') {
 }
 
 // Check if IP is banned
-if (Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
+if (\Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
     error('Your IP address has been banned.');
 }
 
@@ -23,9 +23,9 @@ require_once SERVER_ROOT.'/classes/twofa.class.php';
 require_once SERVER_ROOT.'/classes/u2f.class.php';
 require_once SERVER_ROOT.'/classes/validate.class.php';
 
-$Validate = new Validate;
-$TwoFA = new TwoFactorAuth($ENV->SITE_NAME);
-$U2F = new u2f\U2F('https://'.SITE_DOMAIN);
+$Validate = new \Validate;
+$TwoFA = new \TwoFactorAuth($ENV->SITE_NAME);
+$U2F = new \u2f\U2F('https://'.SITE_DOMAIN);
 
 if (array_key_exists('action', $_GET) && $_GET['action'] === 'disabled') {
     require('disabled.php');
@@ -51,7 +51,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] === 'recover') {
             error('Database not fully decrypted. Please wait for staff to fix this and try again later.');
         }
 
-        $Email = Crypto::decrypt($Email);
+        $Email = \Crypto::decrypt($Email);
 
         if ($UserID && strtotime($Expires) > time()) {
             // If the user has requested a password change, and his key has not expired
@@ -76,7 +76,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] === 'recover') {
                       i.`ResetExpires` = NULL
                       WHERE m.`ID` = ?
                       AND i.`UserID` = m.`ID`",
-                        Users::make_sec_hash($_REQUEST['password']),
+                        \Users::make_sec_hash($_REQUEST['password']),
                         $UserID
                     );
 
@@ -133,7 +133,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] === 'recover') {
                 while (list($EncEmail) = $DB->next_record()) {
                     if (trim(
                         strtolower($_REQUEST['email'])
-                    ) === strtolower(Crypto::decrypt($EncEmail))) {
+                    ) === strtolower(\Crypto::decrypt($EncEmail))) {
                         break; // $EncEmail is now the encrypted form of the given email from the database
                     }
                 }
@@ -150,12 +150,12 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] === 'recover') {
                 ");
 
                 list($UserID, $Username, $Email) = $DB->next_record();
-                $Email = Crypto::decrypt($Email);
+                $Email = \Crypto::decrypt($Email);
 
                 if ($UserID) {
                     // Email exists in the database
                     // Set ResetKey, send out email, and set $Sent to 1 to show success page
-                    Users::reset_password($UserID, $Username, $Email);
+                    \Users::reset_password($UserID, $Username, $Email);
                     $Sent = 1; // If $Sent is 1, recover_step1.php displays a success message
 
                     //Log out all of the users current sessions
@@ -263,7 +263,7 @@ else {
               AND Username != ''", $_POST['username']);
             list($UserID, $PermissionID, $CustomPermissions, $PassHash, $TwoFactor, $Enabled) = $DB->next_record(MYSQLI_NUM, array(2));
             if (!$Banned) {
-                if ($UserID && Users::check_password($_POST['password'], $PassHash)) {
+                if ($UserID && \Users::check_password($_POST['password'], $PassHash)) {
                     // Update hash if better algorithm available
                     if (password_needs_rehash($PassHash, PASSWORD_DEFAULT)) {
                         $DB->query("
@@ -304,7 +304,7 @@ else {
                                             $U2FReg->keyHandle,
                                             $UserID
                                         );
-                                    } catch (Exception $e) {
+                                    } catch (\Exception $e) {
                                         $U2FErr = 'U2F key invalid. Error: '.($e->getMessage());
                                         if ($e->getMessage() == 'Token disabled.') {
                                             $U2FErr = 'This token was disabled due to suspected cloning. Contact staff for assistance';
@@ -326,9 +326,9 @@ else {
                             }
 
                             if (sizeof($U2FRegs) == 0 || !isset($U2FErr)) {
-                                $SessionID = Users::make_secret(64);
-                                setcookie('session', $SessionID, (time()+60*60*24*365), '/', '', true, true);
-                                setcookie('userid', $UserID, (time()+60*60*24*365), '/', '', true, true);
+                                $SessionID = \Users::make_secret(64);
+                                \Cookie::set('session', $SessionID);
+                                \Cookie::set('userid', $UserID);
 
                                 $DB->query("
                                 INSERT INTO users_sessions
@@ -357,7 +357,7 @@ else {
 
                                 if (!empty($_COOKIE['redirect'])) {
                                     $URL = $_COOKIE['redirect'];
-                                    setcookie('redirect', '', time() - 60 * 60 * 24, '/', '', false);
+                                    \Cookie::del('redirect');
                                     header("Location: $URL");
                                     error();
                                 } else {
@@ -367,40 +367,39 @@ else {
                             } else {
                                 log_attempt();
                                 $Err = $U2FErr;
-                                setcookie('keeplogged', '', time() + 60 * 60 * 24 * 365, '/', '', false);
+                                \Cookie::del('keeplogged');
                             }
                         } else {
                             log_attempt();
                             if ($Enabled == 2) {
 
                                 // Save the username in a cookie for the disabled page
-                                setcookie('username', db_string($_POST['username']), time() + 60 * 60, '/', '', false);
+                                \Cookie::set('username', db_string($_POST['username']));
                                 header('Location: login.php?action=disabled');
                             # todo: Make sure the type is (int)
                             } elseif ($Enabled === '0') {
                                 $Err = 'Your account has not been confirmed. Please check your email, including the spam folder';
                             }
-                            setcookie('keeplogged', '', time() + 60 * 60 * 24 * 365, '/', '', false);
+                            \Cookie::del('keeplogged');
                         }
                     } else {
                         log_attempt();
                         $Err = 'Two-factor authentication failed';
-                        setcookie('keeplogged', '', time() + 60 * 60 * 24 * 365, '/', '', false);
+                        \Cookie::del('keeplogged');
                     }
                 } else {
                     log_attempt();
                     $Err = 'Your username or password was incorrect';
-                    setcookie('keeplogged', '', time() + 60 * 60 * 24 * 365, '/', '', false);
+                    \Cookie::del('keeplogged');
                 }
             } else {
                 log_attempt();
-                setcookie('keeplogged', '', time() + 60 * 60 * 24 * 365, '/', '', false);
+                \Cookie::del('keeplogged');
             }
         } else {
             log_attempt();
-            setcookie('keeplogged', '', time() + 60 * 60 * 24 * 365, '/', '', false);
+            \Cookie::del('keeplogged');
         }
     }
-    require('login.php');
-    #require('sections/login/login.php');
+    require_once __DIR__.'/login.php';
 }

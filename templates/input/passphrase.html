@@ -5,7 +5,6 @@
   placeholder="{{ placeholder|default('passphrase') }}"
   minlength="{{ pw_min|default('15') }}"
   maxlength="{{ pw_max|default('10000') }}"
-  pattern=".{ {{ pw_min }},{{ pw_max }} }"
   class="inputtext"
   autocomplete="off"
   required="required"

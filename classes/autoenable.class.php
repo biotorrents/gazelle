@@ -50,7 +50,7 @@ EOT;
         }
 
         // Get the user's ID
-        G::$DB->query("
+        \G::$DB->query("
         SELECT
           um.`ID`,
           ui.`BanReason`
@@ -63,10 +63,10 @@ EOT;
           AND um.`Enabled` = '2'
         ");
 
-        if (G::$DB->has_results()) {
+        if (\G::$DB->has_results()) {
             // Make sure the user can make another request
-            list($UserID, $BanReason) = G::$DB->next_record();
-            G::$DB->query("
+            list($UserID, $BanReason) = \G::$DB->next_record();
+            \G::$DB->query("
             SELECT
               1
             FROM
@@ -84,11 +84,11 @@ EOT;
         }
 
         $IP = $_SERVER['REMOTE_ADDR'];
-        if (G::$DB->has_results() || !isset($UserID)) {
+        if (\G::$DB->has_results() || !isset($UserID)) {
             // User already has/had a pending activation request or username is invalid
             $Output = sprintf(self::REJECTED_MESSAGE, DISABLED_CHAN, BOT_SERVER);
             if (isset($UserID)) {
-                Tools::update_user_notes(
+                \Tools::update_user_notes(
                     $UserID,
                     sqltime() . " - Enable request rejected from $IP\n\n"
                 );
@@ -96,7 +96,7 @@ EOT;
         } else {
             // New disable activation request
             $UserAgent = db_string($_SERVER['HTTP_USER_AGENT']);
-            G::$DB->query(
+            \G::$DB->query(
                 "
                 INSERT INTO `users_enable_requests`(
                   `UserID`,
@@ -107,20 +107,20 @@ EOT;
                 )
                 VALUES(?, ?, ?, ?, NOW())",
                 $UserID,
-                Crypto::encrypt($Email),
-                Crypto::encrypt($IP),
+                \Crypto::encrypt($Email),
+                \Crypto::encrypt($IP),
                 $UserAgent
             );
-            $RequestID = G::$DB->inserted_id();
+            $RequestID = \G::$DB->inserted_id();
 
             // Cache the number of requests for the modbar
-            G::$Cache->increment_value(self::CACHE_KEY_NAME);
-            setcookie('username', '', time() - 60 * 60, '/', '', false);
+            \G::$Cache->increment_value(self::CACHE_KEY_NAME);
+            \Cookie::del('username');
             $Output = self::RECEIVED_MESSAGE;
 
-            Tools::update_user_notes(
+            \Tools::update_user_notes(
                 $UserID,
-                sqltime() . " - Enable request " . G::$DB->inserted_id() . " received from $IP\n\n"
+                sqltime() . " - Enable request " . \G::$DB->inserted_id() . " received from $IP\n\n"
             );
 
             if ($BanReason === 3) {
@@ -148,7 +148,7 @@ EOT;
             error(404);
         }
 
-        $ENV = ENV::go();
+        $ENV = \ENV::go();
         $UserInfo = [];
         $IDs = (!is_array($IDs)) ? [$IDs] : $IDs;
 
@@ -162,7 +162,7 @@ EOT;
             }
         }
 
-        G::$DB->query("
+        \G::$DB->query("
         SELECT
           `Email`,
           `ID`,
@@ -173,12 +173,12 @@ EOT;
           `ID` IN(".implode(',', $IDs).")
           AND `Outcome` IS NULL
         ");
-        $Results = G::$DB->to_array(false, MYSQLI_NUM);
+        $Results = \G::$DB->to_array(false, MYSQLI_NUM);
 
         if ($Status !== self::DISCARDED) {
             // Prepare email
             require_once SERVER_ROOT.'/classes/templates.class.php';
-            $TPL = new TEMPLATE;
+            $TPL = new \TEMPLATE;
 
             if ($Status === self::APPROVED) {
                 $TPL->open(SERVER_ROOT.'/templates/enable_request_accepted.tpl');
@@ -190,13 +190,13 @@ EOT;
 
             foreach ($Results as $Result) {
                 list($Email, $ID, $UserID) = $Result;
-                $Email = Crypto::decrypt($Email);
+                $Email = \Crypto::decrypt($Email);
                 $UserInfo[] = array($ID, $UserID);
 
                 if ($Status === self::APPROVED) {
                     // Generate token
-                    $Token = db_string(Users::make_secret());
-                    G::$DB->query("
+                    $Token = db_string(\Users::make_secret());
+                    \G::$DB->query("
                     UPDATE
                       `users_enable_requests`
                     SET
@@ -212,7 +212,7 @@ EOT;
                 // Send email
                 $Subject = "Your enable request for $ENV->SITE_NAME has been ";
                 $Subject .= ($Status === self::APPROVED) ? 'approved' : 'denied';
-                Misc::send_email($Email, $Subject, $TPL->get(), 'noreply');
+                \Misc::send_email($Email, $Subject, $TPL->get(), 'noreply');
             }
         } else {
             foreach ($Results as $Result) {
@@ -222,8 +222,8 @@ EOT;
         }
 
         // User notes stuff
-        $StaffID = G::$LoggedUser['ID'] ?? 0;
-        G::$DB->query("
+        $StaffID = \G::$LoggedUser['ID'] ?? 0;
+        \G::$DB->query("
         SELECT
           `Username`
         FROM
@@ -233,8 +233,8 @@ EOT;
           $StaffID
         ");
 
-        if (G::$DB->has_results()) {
-            list($StaffUser) = G::$DB->next_record();
+        if (\G::$DB->has_results()) {
+            list($StaffUser) = \G::$DB->next_record();
         } else {
             $StaffUser = "System";
             $StaffID = 0;
@@ -244,11 +244,11 @@ EOT;
             list($ID, $UserID) = $User;
             $BaseComment = sqltime()." - Enable request $ID ".strtolower(self::get_outcome_string($Status)).' by [user]'.$StaffUser.'[/user]';
             $BaseComment .= (!empty($Comment)) ? "\nReason: $Comment\n\n" : "\n\n";
-            Tools::update_user_notes($UserID, $BaseComment);
+            \Tools::update_user_notes($UserID, $BaseComment);
         }
 
         // Update database values and decrement cache
-        G::$DB->query("
+        \G::$DB->query("
         UPDATE
           `users_enable_requests`
         SET
@@ -258,7 +258,7 @@ EOT;
           $StaffID,
           $Status
         ");
-        G::$Cache->decrement_value(self::CACHE_KEY_NAME, count($IDs));
+        \G::$Cache->decrement_value(self::CACHE_KEY_NAME, count($IDs));
     }
 
     /**
@@ -273,7 +273,7 @@ EOT;
             error(404);
         }
 
-        G::$DB->query("
+        \G::$DB->query("
         SELECT
           `UserID`
         FROM
@@ -282,24 +282,24 @@ EOT;
           `Outcome` = '" . self::DISCARDED . "' AND `ID` = '$ID'
         ");
 
-        if (!G::$DB->has_results()) {
+        if (!\G::$DB->has_results()) {
             error(404);
         } else {
-            list($UserID) = G::$DB->next_record();
+            list($UserID) = \G::$DB->next_record();
         }
 
-        G::$DB->query("
+        \G::$DB->query("
         SELECT
           `Username`
         FROM
           `users_main`
         WHERE
-          `ID` = '".G::$LoggedUser['ID']."'
+          `ID` = '".\G::$LoggedUser['ID']."'
         ");
-        list($StaffUser) = G::$DB->next_record();
+        list($StaffUser) = \G::$DB->next_record();
 
-        Tools::update_user_notes($UserID, sqltime()." - Enable request $ID unresolved by [user]".$StaffUser.'[/user]'."\n\n");
-        G::$DB->query("
+        \Tools::update_user_notes($UserID, sqltime()." - Enable request $ID unresolved by [user]".$StaffUser.'[/user]'."\n\n");
+        \G::$DB->query("
         UPDATE
           `users_enable_requests`
         SET
@@ -309,7 +309,7 @@ EOT;
         WHERE
           `ID` = '$ID'
         ");
-        G::$Cache->increment_value(self::CACHE_KEY_NAME);
+        \G::$Cache->increment_value(self::CACHE_KEY_NAME);
     }
 
     /**
@@ -341,7 +341,7 @@ EOT;
     public static function handle_token($Token)
     {
         $Token = db_string($Token);
-        G::$DB->query("
+        \G::$DB->query("
         SELECT
           uer.`UserID`,
           uer.`HandledTimestamp`,
@@ -357,9 +357,9 @@ EOT;
           `Token` = '$Token'
         ");
 
-        if (G::$DB->has_results()) {
-            list($UserID, $Timestamp, $TorrentPass, $Visible, $IP) = G::$DB->next_record();
-            G::$DB->query("
+        if (\G::$DB->has_results()) {
+            list($UserID, $Timestamp, $TorrentPass, $Visible, $IP) = \G::$DB->next_record();
+            \G::$DB->query("
             UPDATE
               `users_enable_requests`
             SET
@@ -370,15 +370,15 @@ EOT;
 
             if ($Timestamp < time_minus(3600 * 48)) {
                 // Old request
-                Tools::update_user_notes($UserID, sqltime()." - Tried to use an expired enable token from ".$_SERVER['REMOTE_ADDR']."\n\n");
+                \Tools::update_user_notes($UserID, sqltime()." - Tried to use an expired enable token from ".$_SERVER['REMOTE_ADDR']."\n\n");
                 $Err = "Token has expired. Please visit ".DISABLED_CHAN." on ".BOT_SERVER." to discuss this with staff.";
             } else {
                 // Good request, decrement cache value and enable account
-                G::$Cache->decrement_value(AutoEnable::CACHE_KEY_NAME);
-                $VisibleTrIP = ($Visible && Crypto::decrypt($IP) !== '127.0.0.1') ? '1' : '0';
-                Tracker::update_tracker('add_user', array('id' => $UserID, 'passkey' => $TorrentPass, 'visible' => $VisibleTrIP));
+                \G::$Cache->decrement_value(\AutoEnable::CACHE_KEY_NAME);
+                $VisibleTrIP = ($Visible && \Crypto::decrypt($IP) !== '127.0.0.1') ? '1' : '0';
+                \Tracker::update_tracker('add_user', array('id' => $UserID, 'passkey' => $TorrentPass, 'visible' => $VisibleTrIP));
 
-                G::$DB->query("
+                \G::$DB->query("
                 UPDATE
                   `users_main`
                 SET
@@ -388,7 +388,7 @@ EOT;
                   `ID` = '$UserID'
                 ");
                 
-                G::$DB->query("
+                \G::$DB->query("
                 UPDATE
                   `users_info`
                 SET
@@ -397,7 +397,7 @@ EOT;
                   `UserID` = '$UserID'
                 ");
 
-                G::$Cache->delete_value("user_info_$UserID");
+                \G::$Cache->delete_value("user_info_$UserID");
                 $Err = "Your account has been enabled. You may now log in.";
             }
         } else {

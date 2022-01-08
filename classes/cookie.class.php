@@ -47,7 +47,7 @@ class Cookie
         $ENV = \ENV::go();
 
         # Should be an error probably
-        return (empty($key) || empty($value)) ?? false;
+        #return (!$key || !$value) ?? false;
 
         setcookie(
             $name = self::prefix.$key,
