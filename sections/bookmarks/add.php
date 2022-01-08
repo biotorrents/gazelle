@@ -84,7 +84,7 @@ if (!$DB->has_results()) {
         list($GroupTitle, $Year, $Body, $TagList) = $DB->next_record();
         $TagList = str_replace('_', '.', $TagList);
 
-        $DB->prepare_query("
+        $DB->prepared_query("
         SELECT
           `ID`,
           `Media`,
@@ -96,7 +96,7 @@ if (!$DB->has_results()) {
         WHERE
           `GroupID` = '$PageID'
         ");
-        $DB->exec_prepared_query();
+
 
         // RSS feed stuff
         while ($Torrent = $DB->next_record()) {

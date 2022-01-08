@@ -14,7 +14,7 @@ $NewTitle = $_POST['name'];
 $NewSubject = $_POST['Title2'];
 $NewObject = $_POST['namejp'];
 
-$DB->prepare_query("
+$DB->prepared_query("
 SELECT
   `ID`
 FROM
@@ -22,7 +22,7 @@ FROM
 WHERE
   `GroupID` = '$group_id' AND `UserID` = '$LoggedUser[ID]'
 ");
-$DB->exec_prepared_query();
+
 
 $Contributed = $DB->has_results();
 if (!($Contributed || check_perms('torrents_edit'))) {
@@ -34,7 +34,7 @@ if (empty($NewTitle)) {
     error('Torrent groups must have a name');
 }
 
-$DB->prepare_query("
+$DB->prepared_query("
 UPDATE
   `torrents_group`
 SET
@@ -44,7 +44,7 @@ SET
 WHERE
   `id` = '$group_id'
 ");
-$DB->exec_prepared_query();
+
 
 $Cache->delete_value("torrents_details_$group_id");
 Torrents::update_hash($group_id);

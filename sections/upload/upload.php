@@ -20,7 +20,7 @@ View::show_header(
 
 if (empty($Properties) && !empty($_GET['groupid']) && is_number($_GET['groupid'])) {
     $GroupID = $_GET['groupid'];
-    $DB->prepare_query("
+    $DB->prepared_query("
       SELECT
         tg.`id` as GroupID,
         tg.`category_id`,
@@ -38,7 +38,7 @@ if (empty($Properties) && !empty($_GET['groupid']) && is_number($_GET['groupid']
       WHERE tg.`id` = '$GroupID'
       GROUP BY tg.`id`
       ");
-    $DB->exec_prepared_query();
+
 
     if ($DB->has_results()) {
         list($Properties) = $DB->to_array(false, MYSQLI_BOTH);

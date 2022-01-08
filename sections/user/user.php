@@ -739,7 +739,7 @@ DonationsView::render_profile_rewards($EnabledRewards, $ProfileRewards);
 if (check_paranoia_here('snatched')) {
     $RecentSnatches = $Cache->get_value("recent_snatches_$UserID");
     if ($RecentSnatches === false) {
-        $DB->prepare_query("
+        $DB->prepared_query("
         SELECT
           g.`id`,
           g.`title`,
@@ -764,7 +764,7 @@ if (check_paranoia_here('snatched')) {
         DESC
         LIMIT 5
         ");
-        $DB->exec_prepared_query();
+
         $RecentSnatches = $DB->to_array();
 
         $Artists = Artists::get_artists($DB->collect('ID'));
@@ -808,7 +808,7 @@ if (check_paranoia_here('snatched')) {
 if (check_paranoia_here('uploads')) {
     $RecentUploads = $Cache->get_value("recent_uploads_$UserID");
     if ($RecentUploads === false) {
-        $DB->prepare_query("
+        $DB->prepared_query("
         SELECT
           g.`id`,
           g.`title`,
@@ -830,7 +830,7 @@ if (check_paranoia_here('uploads')) {
         DESC
         LIMIT 5
         ");
-        $DB->exec_prepared_query();
+
         $RecentUploads = $DB->to_array();
 
         $Artists = Artists::get_artists($DB->collect('ID'));
@@ -883,7 +883,7 @@ $Collages = $DB->to_array(false, MYSQLI_NUM, false);
 foreach ($Collages as $CollageInfo) {
     list($CollageID, $CName) = $CollageInfo;
 
-    $DB->prepare_query("
+    $DB->prepared_query("
     SELECT
       ct.GroupID,
       tg.`picture`,
@@ -899,7 +899,7 @@ foreach ($Collages as $CollageInfo) {
       ct.Sort
     LIMIT 5
     ");
-    $DB->exec_prepared_query();
+
 
     $Collage = $DB->to_array(false, MYSQLI_ASSOC, false); ?>
     <div class="box" id="collage<?=$CollageID?>_box">

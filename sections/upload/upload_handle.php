@@ -427,7 +427,7 @@ if (!preg_match('/^'.IMAGE_REGEX.'$/i', $T['Image'])) {
 
 // Does it belong in a group?
 if ($T['GroupID']) {
-    $DB->prepare_query("
+    $DB->prepared_query("
     SELECT
       `id`,
       `picture`,
@@ -441,7 +441,7 @@ if ($T['GroupID']) {
     WHERE
       `id` = ?
     ", $T['GroupID']);
-    $DB->exec_prepared_query();
+
 
     if ($DB->has_results()) {
         // Don't escape tg.title. It's written directly to the log table
@@ -593,7 +593,7 @@ if (!isset($NoRevision) || !$NoRevision) {
     $RevisionID = $DB->inserted_id();
 
     // Revision ID
-    $DB->prepare_query("
+    $DB->prepared_query("
     UPDATE
       `torrents_group`
     SET
@@ -601,7 +601,7 @@ if (!isset($NoRevision) || !$NoRevision) {
     WHERE
       `id` = '$GroupID'
     ");
-    $DB->exec_prepared_query();
+
 }
 
 // Tags

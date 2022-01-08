@@ -879,14 +879,14 @@ class Users
             }
         }
 
-        G::$DB->prepare_query("
+        G::$DB->prepared_query("
         INSERT INTO `api_user_tokens`
           (`UserID`, `Name`, `Token`)
         VALUES
           ('$id', '$name', '$hash')
         ");
 
-        G::$DB->exec_prepared_query();
+
         return $token;
     }
 
@@ -917,7 +917,7 @@ class Users
         ") === 1;
         */
 
-        G::$DB->prepare_query("
+        G::$DB->prepared_query("
         SELECT
           `ID`,
           `Token`
@@ -929,7 +929,7 @@ class Users
         ");
         # AND `Token` = '$hash'
 
-        G::$DB->exec_prepared_query();
+
         [$ID, $Hash] = G::$DB->next_record();
 
         if (password_verify($token, $Hash)) {
@@ -944,7 +944,7 @@ class Users
      */
     public function revokeApiTokenById(int $id, int $tokenId): int
     {
-        G::$DB->prepare_query("
+        G::$DB->prepared_query("
         UPDATE
           `api_user_tokens`
         SET
@@ -954,7 +954,7 @@ class Users
           AND `ID` = '$tokenId'
         ");
 
-        G::$DB->exec_prepared_query();
+
         return G::$DB->affected_rows();
     }
 
@@ -968,7 +968,7 @@ class Users
     {
         #if ($this->forceCacheFlush || ($enabled = G::$Cache->get_value("enabled_$id")) === false) {
         if ($enabled = G::$Cache->get_value("enabled_$id") === false) {
-            G::$DB->prepare_query("
+            G::$DB->prepared_query("
             SELECT
               `Enabled`
             FROM
@@ -976,7 +976,7 @@ class Users
             WHERE `ID` = '$id' 
             ");
             
-            G::$DB->exec_prepared_query();
+
             [$enabled] = G::$DB->next_record(MYSQLI_NUM);
             G::$Cache->cache_value('enabled_' . $id, (int) $enabled, 86400 * 3);
         }

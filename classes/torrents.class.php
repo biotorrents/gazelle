@@ -421,7 +421,7 @@ class Torrents
 
         \Misc::write_log("Group $GroupID automatically deleted (No torrents have this group).");
 
-        \G::$DB->prepare_query("
+        \G::$DB->prepared_query("
         SELECT
           `category_id`
         FROM
@@ -429,7 +429,7 @@ class Torrents
         WHERE
           `id` = '$GroupID'
         ");
-        \G::$DB->exec_prepared_query();
+
         list($Category) = G::$DB->next_record();
 
         # todo: Check strict equality here
@@ -516,41 +516,41 @@ class Torrents
         // Comments
         \Comments::delete_page('torrents', $GroupID);
 
-        \G::$DB->prepare_query("
+        \G::$DB->prepared_query("
         DELETE
         FROM
           `torrents_group`
         WHERE
           `id` = '$GroupID'
         ");
-        \G::$DB->exec_prepared_query();
 
-        \G::$DB->prepare_query("
+
+        \G::$DB->prepared_query("
         DELETE
         FROM
           `torrents_tags`
         WHERE
           `GroupID` = '$GroupID'
         ");
-        \G::$DB->exec_prepared_query();
 
-        \G::$DB->prepare_query("
+
+        \G::$DB->prepared_query("
         DELETE
         FROM
           `bookmarks_torrents`
         WHERE
           `GroupID` = '$GroupID'
         ");
-        \G::$DB->exec_prepared_query();
 
-        \G::$DB->prepare_query("
+
+        \G::$DB->prepared_query("
         DELETE
         FROM
           `wiki_torrents`
         WHERE
           `PageID` = '$GroupID'
         ");
-        \G::$DB->exec_prepared_query();
+
 
         \G::$Cache->delete_value("torrents_details_$GroupID");
         \G::$Cache->delete_value("torrent_group_$GroupID");
@@ -567,7 +567,7 @@ class Torrents
     {
         $QueryID = \G::$DB->get_query_id();
 
-        \G::$DB->prepare_query("
+        \G::$DB->prepared_query("
         UPDATE
           `torrents_group`
         SET
@@ -590,17 +590,17 @@ class Torrents
         WHERE
           `ID` = '$GroupID'
         ");
-        \G::$DB->exec_prepared_query();
+
 
         // Fetch album artists
-        \G::$DB->prepare_query("
+        \G::$DB->prepared_query("
         SELECT GROUP_CONCAT(ag.`Name` separator ' ')
         FROM `torrents_artists` AS `ta`
           JOIN `artists_group` AS ag ON ag.`ArtistID` = ta.`ArtistID`
           WHERE ta.`GroupID` = '$GroupID'
         GROUP BY ta.`GroupID`
         ");
-        \G::$DB->exec_prepared_query();
+
 
         if (\G::$DB->has_results()) {
             list($ArtistName) = \G::$DB->next_record(MYSQLI_NUM, false);
@@ -608,7 +608,7 @@ class Torrents
             $ArtistName = '';
         }
 
-        \G::$DB->prepare_query("
+        \G::$DB->prepared_query("
         REPLACE
         INTO sphinx_delta(
           `ID`,
@@ -679,7 +679,7 @@ class Torrents
         WHERE
           g.`id` = '$GroupID'
         ");
-        \G::$DB->exec_prepared_query();
+
 
         \G::$Cache->delete_value("torrents_details_$GroupID");
         \G::$Cache->delete_value("torrent_group_$GroupID");

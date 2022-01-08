@@ -16,7 +16,7 @@ if (!empty($_GET['filter']) && $_GET['filter'] === 'all') {
     $All = false;
 }
 
-$DB->prepare_query("
+$DB->prepared_query("
 SELECT SQL_CALC_FOUND_ROWS
   tg.`id`
 FROM
@@ -28,7 +28,7 @@ ORDER BY
   RAND()
 LIMIT 20
 ");
-$DB->exec_prepared_query();
+
 
 $Groups = $DB->to_array('id', MYSQLI_ASSOC);
 $DB->prepared_query('SELECT FOUND_ROWS()');

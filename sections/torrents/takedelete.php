@@ -18,7 +18,7 @@ $DB->query("
     t.GroupID,
     t.Size,
     t.info_hash,
-    tg.Name,
+    tg.title,
     ag.Name,
     t.Time,
     COUNT(x.uid)

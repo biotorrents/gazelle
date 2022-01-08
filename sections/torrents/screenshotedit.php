@@ -78,7 +78,7 @@ if (!empty($Deleted)) {
 
     if (!empty($DeleteList)) {
         $ScreenDel = '';
-        $DB->prepare_query("
+        $DB->prepared_query("
         DELETE
         FROM
           `literature`
@@ -87,7 +87,7 @@ if (!empty($Deleted)) {
         ");
 
         foreach ($DeleteList as $ScreenDel) {
-            $DB->exec_prepared_query();
+
         }
 
         Torrents::write_group_log($GroupID, 0, $LoggedUser['ID'], "Deleted screenshot(s) ".implode(' , ', $DeleteList), 0);
@@ -98,7 +98,7 @@ if (!empty($Deleted)) {
 // New screenshots
 if (!empty($New)) {
     $Screenshot = '';
-    $DB->prepare_query(
+    $DB->prepared_query(
         "
     INSERT INTO `literature`
       (`group_id`, `user_id`, `timestamp`, `doi`)
@@ -110,7 +110,7 @@ if (!empty($New)) {
     );
 
     foreach ($New as $Screenshot) {
-        $DB->exec_prepared_query();
+
     }
 
     Torrents::write_group_log($GroupID, 0, $LoggedUser['ID'], "Added screenshot(s) ".implode(' , ', $New), 0);

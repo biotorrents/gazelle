@@ -39,7 +39,7 @@ class IPv4
         $IPBans = G::$Cache->get_value($key);
 
         if (!is_array($IPBans)) {
-            G::$DB->prepare_query("
+            G::$DB->prepared_query("
             SELECT 
               `FromIP`,
               `ToIP`,
@@ -50,7 +50,7 @@ class IPv4
               `FromIP` BETWEEN $A << 24 AND (($A+1) << 24) - 1
             ");
 
-            G::$DB->exec_prepared_query();
+
             $IPBans = G::$DB->to_array(0, MYSQLI_NUM);
             G::$Cache->cache_value($key, $IPBans, 0);
         }
@@ -92,7 +92,7 @@ class IPv4
 
         if ($current) {
             if ($current !== $reason) {
-                G::$DB->prepare_query("
+                G::$DB->prepared_query("
                 UPDATE
                   `ip_bans`
                 SET
@@ -102,15 +102,15 @@ class IPv4
                 WHERE
                   `FromIP` = '$from' AND `ToIP` = '$to'
                 ");
-                G::$DB->exec_prepared_query();
+
             }
         } else { // Not yet banned
-            G::$DB->prepare_query("
+            G::$DB->prepared_query("
             INSERT INTO `ip_bans`(`Reason`, `FromIP`, `ToIP`, `UserID`)
             VALUES('$reason', '$from', '$to', '$userId')
             ");
 
-            G::$DB->exec_prepared_query();
+
             G::$Cache->delete_value(
                 self::CACHE_KEY . substr($ipv4From, 0, strcspn($ipv4From, '.'))
             );
@@ -137,7 +137,7 @@ class IPv4
             return;
         }
 
-        G::$DB->prepare_query("
+        G::$DB->prepared_query("
         DELETE
         FROM
           `ip_bans`
@@ -146,7 +146,7 @@ class IPv4
         ");
 
         if (G::$DB->affected_rows()) {
-            G::$DB->exec_prepared_query();
+
             G::$Cache->delete_value(self::CACHE_KEY . $fromClassA);
         }
     }

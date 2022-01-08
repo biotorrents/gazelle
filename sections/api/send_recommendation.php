@@ -12,7 +12,7 @@ if (empty($FriendID) || empty($Type) || empty($ID)) {
 }
 
 // Make sure the recipient is on your friends list and not some random dude.
-$DB->prepare_query("
+$DB->prepared_query("
 SELECT
   f.`FriendID`,
   u.`Username`
@@ -27,7 +27,7 @@ ON
 WHERE
   f.`UserID` = '$LoggedUser[ID]' AND f.`FriendID` = '$FriendID'
 ");
-$DB->exec_prepared_query();
+
 
 if (!$DB->has_results()) {
     echo json_encode(array('status' => 'error', 'response' => 'Not on friend list.'));

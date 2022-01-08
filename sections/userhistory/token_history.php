@@ -40,7 +40,7 @@ if (isset($_GET['expire'])) {
     $TorrentID = (int) $_GET['torrentid'];
     Security::CheckInt($UserID, $TorrentID);
 
-    $DB->prepare_query("
+    $DB->prepared_query("
     SELECT
       HEX(`info_hash`)
     FROM
@@ -48,10 +48,10 @@ if (isset($_GET['expire'])) {
     WHERE
       `ID` = '$TorrentID'
     ");
-    $DB->exec_prepared_query();
+
 
     if (list($InfoHash) = $DB->next_record(MYSQLI_NUM, false)) {
-        $DB->prepare_query("
+        $DB->prepared_query("
         UPDATE
           `users_freeleeches`
         SET
@@ -59,7 +59,7 @@ if (isset($_GET['expire'])) {
         WHERE
           `UserID` = '$UserID' AND `TorrentID` = '$TorrentID'
         ");
-        $DB->exec_prepared_query();
+
 
         $Cache->delete_value("users_tokens_$UserID");
         Tracker::update_tracker(
@@ -74,7 +74,7 @@ if (isset($_GET['expire'])) {
 View::show_header('Freeleech token history');
 list($Page, $Limit) = Format::page_limit(25);
 
-$DB->prepare_query("
+$DB->prepared_query("
 SELECT SQL_CALC_FOUND_ROWS
   f.`TorrentID`,
   t.`GroupID`,
@@ -98,7 +98,7 @@ ORDER BY
 DESC
 LIMIT $Limit
 ");
-$DB->exec_prepared_query();
+
 
 $Tokens = $DB->to_array();
 $DB->prepared_query('SELECT FOUND_ROWS()');

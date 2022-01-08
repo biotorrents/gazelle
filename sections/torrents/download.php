@@ -65,7 +65,7 @@ if (Misc::in_array_partial($_SERVER['HTTP_USER_AGENT'], $ScriptUAs)) {
 
 $Info = $Cache->get_value('torrent_download_'.$TorrentID);
 if (!is_array($Info) || !array_key_exists('PlainArtists', $Info) || empty($Info[10])) {
-    $DB->prepare_query("
+    $DB->prepared_query("
       SELECT
         t.`Media`,
         t.`Version`,
@@ -81,7 +81,7 @@ if (!is_array($Info) || !array_key_exists('PlainArtists', $Info) || empty($Info[
       FROM `torrents` AS t
         INNER JOIN `torrents_group` AS tg ON tg.`id` = t.`GroupID`
       WHERE t.`ID` = '".db_string($TorrentID)."'");
-      $DB->exec_prepared_query();
+
 
     if (!$DB->has_results()) {
         error(404);

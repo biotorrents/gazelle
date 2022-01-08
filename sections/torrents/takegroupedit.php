@@ -90,7 +90,7 @@ else {
 
 // Insert revision
 if (empty($revision_id)) { // edit
-  $DB->prepare_query("
+  $DB->prepared_query("
   INSERT INTO `wiki_torrents`(
     `PageID`,
     `Body`,
@@ -108,7 +108,7 @@ if (empty($revision_id)) { // edit
     NOW()
   )
   ");
-    $DB->exec_prepared_query();
+
 } else { // revert
     $DB->query("
     SELECT

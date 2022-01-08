@@ -290,7 +290,7 @@ else {
     } elseif (!empty($_GET['type'])) {
         require_once "$ENV->SERVER_ROOT/sections/torrents/user.php";
     } elseif (!empty($_GET['groupname']) && !empty($_GET['forward'])) {
-        $DB->prepare_query("
+        $DB->prepared_query("
         SELECT
           `id`
         FROM

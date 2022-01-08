@@ -323,12 +323,6 @@ class DB_MYSQL
         return $this->StatementID;
     }
 
-    # Compatibility function for the old name
-    public function prepare_query($Query, &...$BindVars)
-    {
-        return $this->prepare($Query, $BindVars);
-    }
-
 
     /**
      * execute
@@ -341,12 +335,6 @@ class DB_MYSQL
         $QueryRunTime = (microtime(true) - $QueryStartTime) * 1000;
         $this->Queries[] = [$this->PreppedQuery, $QueryRunTime, null];
         $this->Time += $QueryRunTime;
-    }
-
-    # Compatibility function for the old name
-    public function exec_prepared_query()
-    {
-        return $this->execute();
     }
 
 

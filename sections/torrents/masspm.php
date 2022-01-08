@@ -5,7 +5,7 @@ $GroupID = (int) $_GET['id'];
 $TorrentID = (int) $_GET['torrentid'];
 Security::CheckInt($GroupID, $TorrentID);
 
-$DB->prepare_query("
+$DB->prepared_query("
 SELECT
   t.`Media`,
   t.`FreeTorrent`,
@@ -28,7 +28,7 @@ ON
 WHERE
   t.`ID` = '$TorrentID'
 ");
-$DB->exec_prepared_query();
+
 
 list($Properties) = $DB->to_array(false, MYSQLI_BOTH);
 if (!$Properties) {

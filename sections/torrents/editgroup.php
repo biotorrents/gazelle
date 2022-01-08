@@ -12,7 +12,7 @@ $group_id = (int) $_GET['groupid'];
 Security::CheckInt($group_id);
 
 // Get the torrent group name and the body of the last revision
-$DB->prepare_query("
+$DB->prepared_query("
 SELECT
   tg.`title`,
   tg.`subject`,
@@ -34,14 +34,14 @@ ON
 WHERE
   tg.`id` = '$group_id'
 ");
-$DB->exec_prepared_query();
+
 
 if (!$DB->has_results()) {
     error(404);
 }
 list($title, $subject, $object, $Image, $Body, $picture, $description, $published, $workgroup, $location, $identifier, $category_id) = $DB->next_record();
 
-$DB->prepare_query("
+$DB->prepared_query("
 SELECT
   `id`,
   `user_id`,
@@ -52,7 +52,7 @@ FROM
 WHERE
   `group_id` = '$group_id'
 ");
-$DB->exec_prepared_query();
+
 
 if ($DB->has_results()) {
     $Screenshots = [];
