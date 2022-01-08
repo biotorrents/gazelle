@@ -47,11 +47,14 @@ spl_autoload_register(function ($ClassName) {
           break;
 
         default:
-          error("Couldn't import class $ClassName");
+          break;
+          #error("Couldn't import class $ClassName");
     }
 
         $FilePath = "$ENV->SERVER_ROOT/classes/$FileName.php";
     }
 
-    require_once $FilePath;
+    if ($FileName){
+        require_once $FilePath;
+    }
 });

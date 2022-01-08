@@ -1,8 +1,15 @@
-<?
+<?php
+declare(strict_types = 1);
+
+/**
+ * New Staff PM conversation backend
+ */
+
 if ($Message = db_string($_POST['message'])) {
   if (isset($_POST['subject']) && $Subject = db_string($_POST['subject'])) {
     // New staff PM conversation
-    assert_numbers($_POST, array('level'), 'Invalid recipient');
+    # This needs to be a \Security::checkInt call
+    #assert_numbers($_POST, array('level'), 'Invalid recipient');
     $DB->query("
       INSERT INTO staff_pm_conversations
         (Subject, Status, Level, UserID, Date)

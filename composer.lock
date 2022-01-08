@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7e12ac3d33269d664496d86f866a2aa2",
+    "content-hash": "3f43246e28b495da3f54b9e66fc8e4ba",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -3674,6 +3674,53 @@
                 "source": "https://github.com/kint-php/kint/tree/4.1.1"
             },
             "time": "2022-01-02T10:30:48+00:00"
+        },
+        {
+            "name": "kint-php/kint-twig",
+            "version": "3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kint-php/kint-twig.git",
+                "reference": "876b38c496d6bdfe6482647e8512e32e4528d811"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kint-php/kint-twig/zipball/876b38c496d6bdfe6482647e8512e32e4528d811",
+                "reference": "876b38c496d6bdfe6482647e8512e32e4528d811",
+                "shasum": ""
+            },
+            "require": {
+                "kint-php/kint": "^3 || ^4",
+                "php": ">= 7.0",
+                "twig/twig": "^2.4 || ^3.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.0",
+                "phpunit/phpunit": "^7.0",
+                "vimeo/psalm": "^3.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kint\\Twig\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Vollebregt",
+                    "email": "jnvsor@gmail.com"
+                }
+            ],
+            "description": "Twig extension for Kint integration",
+            "support": {
+                "issues": "https://github.com/kint-php/kint-twig/issues",
+                "source": "https://github.com/kint-php/kint-twig/tree/3.0"
+            },
+            "time": "2020-07-03T14:19:54+00:00"
         },
         {
             "name": "monolog/monolog",

@@ -433,9 +433,7 @@ class TorrentSearch
             return;
         }
 
-        if ($Field === 'search') {
-            $this->search_basic($Term);
-        } elseif ($Field === 'filelist') {
+        if ($Field === 'filelist') {
             $this->search_filelist($Term);
         } elseif ($Field === 'taglist') {
             $this->search_taglist($Term);
@@ -470,35 +468,6 @@ class TorrentSearch
         }
     }
 
-    /**
-     * Handle magic keywords in the basic torrent search
-     *
-     * @param string $Term Given search expression
-     */
-    private function search_basic($Term)
-    {
-        global $Bitrates, $Formats, $Media;
-        #$SearchBitrates = array_map('strtolower', $Bitrates);
-        #array_push($SearchBitrates, 'v0', 'v1', 'v2', '24bit');
-        #$SearchFormats = array_map('strtolower', $Formats);
-        $SearchMedia = array_map('strtolower', $Media);
-
-        foreach (explode(' ', $Term) as $Word) {
-            /*
-            if (in_array($Word, $SearchBitrates)) {
-              $this->add_word('encoding', $Word);
-            } elseif (in_array($Word, $SearchFormats)) {
-              $this->add_word('format', $Word);
-            }
-            */
-
-            if (in_array($Word, $SearchMedia)) {
-                $this->add_word('media', $Word);
-            } else {
-                $this->add_word('search', $Word);
-            }
-        }
-    }
 
     /**
      * Use phrase boundary for file searches to make sure we don't count

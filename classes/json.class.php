@@ -18,7 +18,7 @@ abstract class Json
      */
     public function __construct()
     {
-        parent::__construct();
+        #parent::__construct();
         $this->source = SITE_NAME;
         $this->mode = 0;
         $this->version = 1;

@@ -6,6 +6,7 @@
 
 /**
  * Return true if the given string is numeric.
+ * Should be \Security::checkInt but it's used a lot.
  *
  * @param mixed $Str
  * @return bool
@@ -18,86 +19,9 @@ function is_number($Str)
 
 
 /**
- * is_date()
- */
-function is_date($Date)
-{
-    list($Y, $M, $D) = explode('-', $Date);
-
-    if (checkdate($M, $D, $Y)) {
-        return true;
-    }
-
-    return false;
-}
-
-
-/**
- * Check that some given variables (usually in _GET or _POST) are numbers
- *
- * @param array $Base array that's supposed to contain all keys to check
- * @param array $Keys list of keys to check
- * @param mixed $Error error code or string to pass to the error() function if a key isn't numeric
- */
-function assert_numbers(&$Base, $Keys, $Error = 0)
-{
-    // Make sure both arguments are arrays
-    if (!is_array($Base) || !is_array($Keys)) {
-        return;
-    }
-
-    foreach ($Keys as $Key) {
-        if (!isset($Base[$Key]) || !is_number($Base[$Key])) {
-            error($Error);
-        }
-    }
-}
-
-
-/**
- * Return true, false or null, depending on the input value's "truthiness" or "non-truthiness"
- *
- * @param $Value the input value to check for truthiness
- * @return true if $Value is "truthy", false if it is "non-truthy" or null if $Value was not
- *         a bool-like value
- */
-function is_bool_value($Value)
-{
-    if (is_bool($Value)) {
-        return $Value;
-    }
-
-    if (is_string($Value)) {
-        switch (strtolower($Value)) {
-            case 'true':
-            case 'yes':
-            case 'on':
-            case '1':
-                return true;
-
-            case 'false':
-            case 'no':
-            case 'off':
-            case '0':
-                return false;
-        }
-    }
-
-    if (is_numeric($Value)) {
-        if ($Value === 1) {
-            return true;
-        } elseif ($Value === 0) {
-            return false;
-        }
-    }
-
-    return;
-}
-
-
-/**
  * HTML-escape a string for output.
  * This is preferable to htmlspecialchars because it doesn't screw up upon a double escape.
+ * There needs to be exactly one database-safe string escape funtion.
  *
  * @param string $Str
  * @return string escaped string.
@@ -184,43 +108,6 @@ function send_irc($Channels = null, $Message = '')
 
 
 /**
- * notify()
- * Formerly in sections/error/index.php
- */
-function notify($Channel, $Message)
-{
-    $ENV = ENV::go();
-    global $LoggedUser;
-
-    # Redirect dev messages to debug channel
-    if ($ENV->DEV) {
-        $Channel = $ENV->DEBUG_CHAN;
-    }
-
-    #
-    send_irc(
-        $Channel,
-        $Message
-        . " error by "
-        . (!empty($LoggedUser['ID']) ? site_url()
-            . "user.php?id=".$LoggedUser['ID']
-            . " ("
-            . $LoggedUser['Username']
-            . ")" : $_SERVER['REMOTE_ADDR']
-            . " ("
-        . ")")
-        
-        . " accessing https://"
-        . SITE_DOMAIN
-        . ""
-        . $_SERVER['REQUEST_URI']
-        . (!empty($_SERVER['HTTP_REFERER']) ? " from "
-            . $_SERVER['HTTP_REFERER'] : '')
-    );
-}
-
-
-/**
  * Advanced error handling
  *
  * Displays an HTTP status code with description and triggers an error.
@@ -270,22 +157,12 @@ function error($Error = 1, $NoHTML = false, $Log = false)
                 This may be due to the user not having the necessary permissions for a resource or needing an account of some sort, or attempting a prohibited action
                 (e.g., creating a duplicate record where only one is allowed).
                 The request should not be repeated.';
-            if (substr($_SERVER['REQUEST_URI'], 0, 9) !== $ENV->STATIC_SERVER) {
-                notify($ENV->DEBUG_CHAN, $Title);
-            }
             break;
 
         case 404:
             $Title = '404 Not Found';
             $Message = 'The requested resource could not be found but may be available in the future.
                 Subsequent requests by the client are permissible.';
-            // Hide alerts for missing images and static requests
-            if (!preg_match(
-                "/\.(ico|jpg|jpeg|gif|png)$/",
-                $_SERVER['REQUEST_URI']
-            ) && substr($_SERVER['REQUEST_URI'], 0, 9) !== $ENV->STATIC_SERVER) {
-                notify($ENV->DEBUG_CHAN, $Title);
-            }
             break;
 
         case 405:
@@ -293,7 +170,6 @@ function error($Error = 1, $NoHTML = false, $Log = false)
             $Message = 'A request method is not supported for the requested resource;
                 for example, a GET request on a form that requires data to be presented via POST,
                 or a PUT request on a read-only resource.';
-            notify($ENV->DEBUG_CHAN, $Title);
             break;
   
         case 408:
@@ -307,13 +183,11 @@ function error($Error = 1, $NoHTML = false, $Log = false)
         case 413:
             $Title = '413 Payload Too Large';
             $Message = 'The request is larger than the server is willing or able to process.';
-            notify($ENV->DEBUG_CHAN, $Title);
             break;
 
         case 429:
             $Title = '429 Too Many Requests';
             $Message = 'The user has sent too many requests in a given amount of time.';
-            notify($ENV->DEBUG_CHAN, $Title);
             break;
 
         /**
@@ -328,13 +202,11 @@ function error($Error = 1, $NoHTML = false, $Log = false)
         case 502:
             $Title = '502 Bad Gateway';
             $Message = 'The server was acting as a gateway or proxy and received an invalid response from the upstream server.';
-            notify($ENV->DEBUG_CHAN, $Title);
         break;
 
         case 504:
             $Title = '504 Gateway Timeout';
             $Message = 'The server was acting as a gateway or proxy and did not receive a timely response from the upstream server.';
-            notify($ENV->DEBUG_CHAN, $Title);
         break;
 
         /**
@@ -344,19 +216,16 @@ function error($Error = 1, $NoHTML = false, $Log = false)
         #case 0: # Matches custom error strings
             $Title = 'Invalid Input';
             $Message = 'Something was wrong with the input provided with your request, and the server is refusing to fulfill it.';
-            notify($ENV->DEBUG_CHAN, 'PHP-0');
         break;
 
         case '!!':
             $Title = 'Unexpected Error';
             $Message = 'You have encountered an unexpected error.';
-            notify($ENV->DEBUG_CHAN, 'unexpected');
         break;
 
         default:
             $Title = 'Other Error';
             $Message = "A function supplied its own error message: $Error";
-            notify($ENV->DEBUG_CHAN, $Message);
     }
 
     # Normalize whitespace before adding features
@@ -375,7 +244,8 @@ function error($Error = 1, $NoHTML = false, $Log = false)
      */
     if ($ENV->DEV) {
         $DateTime = strftime('%c', $_SERVER['REQUEST_TIME']);
-        $BackTrace = debug_string_backtrace();
+        $BackTrace = !d();
+        #$BackTrace = debug_string_backtrace();
 
         $Message .= ($NoHTML)
             ? $BackTrace
@@ -426,7 +296,7 @@ HTML;
 
 
 /**
- * debug_string_backtrace()
+ * debug_string_backtrace
  * https://stackoverflow.com/a/7039409
  */
 function debug_string_backtrace()
@@ -442,15 +312,6 @@ function debug_string_backtrace()
 function check_perms($PermissionName, $MinClass = 0)
 {
     return Permissions::check_perms($PermissionName, $MinClass);
-}
-
-
-/**
- * get_permissions_for_user()
- */
-function get_permissions_for_user($UserID, $CustomPermissions = false)
-{
-    return Permissions::get_permissions_for_user($UserID, $CustomPermissions = false);
 }
 
 

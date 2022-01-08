@@ -14,12 +14,12 @@ declare(strict_types=1);
 
 class Twig
 {
+    # Singleton
+    private static $Twig = null;
+
     /**
      * __functions
      */
-
-    private static $Twig = null;
-
     private function __construct()
     {
         return;
@@ -48,7 +48,7 @@ class Twig
     public static function go()
     {
         return (self::$Twig === null)
-            ? self::$Twig = Twig::factory()
+            ? self::$Twig = \Twig::factory()
             : self::$Twig;
     }
 
@@ -56,10 +56,9 @@ class Twig
     /**
      * factory
      */
-
     private static function factory(): \Twig\Environment
     {
-        $ENV = ENV::go();
+        $ENV = \ENV::go();
 
         # https://twig.symfony.com/doc/3.x/api.html
         $Twig = new \Twig\Environment(
@@ -70,9 +69,15 @@ class Twig
                 'cache' => "$ENV->WEB_ROOT/cache/twig",
                 'debug' => $ENV->DEV,
                 'strict_variables' => true,
-        ]
+            ]
         );
 
+        # kint
+        $Twig->addExtension(new \Kint\Twig\TwigExtension());
+
+        /**
+         * OPS
+         */
         $Twig->addFilter(new \Twig\TwigFilter(
             'article',
             function ($word) {
@@ -108,12 +113,14 @@ class Twig
             }
         ));
 
+        /*
         $Twig->addFilter(new \Twig\TwigFilter(
             'ipaddr',
             function ($ipaddr) {
                 return new \Twig\Markup(\Tools::display_ip($ipaddr), 'UTF-8');
             }
         ));
+        */
 
         $Twig->addFilter(new \Twig\TwigFilter(
             'octet_size',
@@ -137,12 +144,14 @@ class Twig
             }
         ));
 
+        /*
         $Twig->addFilter(new \Twig\TwigFilter(
             'shorten',
             function (string $text, int $length) {
                 return shortenString($text, $length);
             }
         ));
+        */
 
         $Twig->addFilter(new \Twig\TwigFilter(
             'time_diff',
@@ -219,6 +228,7 @@ class Twig
             );
         }));
 
+        /*
         $Twig->addFunction(new \Twig\TwigFunction('resolveCountryIpv4', function ($addr) {
             return new \Twig\Markup(
                 (function ($ip) {
@@ -239,7 +249,9 @@ class Twig
                 'UTF-8'
             );
         }));
+        */
 
+        /*
         $Twig->addFunction(new \Twig\TwigFunction('resolveIpv4', function ($addr) {
             return new \Twig\Markup(
                 (function ($ip) {
@@ -258,13 +270,16 @@ class Twig
                 'UTF-8'
             );
         }));
+        */
 
+        /*
         $Twig->addFunction(new \Twig\TwigFunction('shorten', function ($text, $length) {
             return new \Twig\Markup(
                 shortenString($text, $length),
                 'UTF-8'
             );
         }));
+        */
 
         $Twig->addTest(
             new \Twig\TwigTest('numeric', function ($value) {
