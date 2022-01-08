@@ -972,7 +972,7 @@ $Debug->set_flag('upload: announced on irc');
 // For RSS
 $Item = $Feed->item(
     $Announce,
-    Text::strip_bbcode($Body),
+    $Body,
     'torrents.php?action=download&amp;authkey=[[AUTHKEY]]&amp;torrent_pass=[[PASSKEY]]&amp;id='.$TorrentID,
     $Properties['Anonymous'] ? 'Anonymous' : $LoggedUser['Username'],
     'torrents.php?id='.$GroupID,

@@ -4,7 +4,6 @@
 $ENV = ENV::go();
 $Twig = Twig::go();
 
-Text::$TOC = true;
 $ArticleID = false;
 
 # Resolve article by ID or alias
@@ -52,7 +51,6 @@ if ($Read > $LoggedUser['EffectiveClass']) {
 }
 
 $TextBody = Text::full_format($Body, false);
-$TOC = Text::parse_toc(0);
 
 View::show_header($Title, 'wiki');
 ?>
@@ -95,15 +93,6 @@ View::show_header($Title, 'wiki');
         <a href="wiki.php?action=browse" class="brackets">Browse articles</a>
       </div>
     </div>
-
-    <?php if ($TOC) { ?>
-    <div class="box">
-      <div class="head">Table of Contents</div>
-      <div class="body">
-        <?=$TOC?>
-      </div>
-    </div>
-    <?php } ?>
 
     <div class="box box_info pad">
       <ul>

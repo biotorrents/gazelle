@@ -106,7 +106,7 @@ if (!$DB->has_results()) {
 
             $Item = $Feed->item(
                 $Title,
-                Text::strip_bbcode($Body),
+                $Body,
                 'torrents.php?action=download&amp;authkey=[[AUTHKEY]]&amp;torrent_pass=[[PASSKEY]]&amp;id='.$TorrentID,
                 ($Anonymous === 0 ? $UploaderInfo['Username'] : 'Anonymous'),
                 "torrents.php?id=$PageID",

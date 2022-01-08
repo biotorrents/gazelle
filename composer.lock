@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d387ea29218255323c178043f70b5cc3",
+    "content-hash": "ba98d735becf864b8cdfe6c31dff07ab",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -3179,6 +3179,48 @@
                 }
             ],
             "time": "2022-01-03T21:15:37+00:00"
+        },
+        {
+            "name": "vanilla/nbbc",
+            "version": "v2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vanilla/nbbc.git",
+                "reference": "06c5aa3995d217d45d948b5947b04d9384013779"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vanilla/nbbc/zipball/06c5aa3995d217d45d948b5947b04d9384013779",
+                "reference": "06c5aa3995d217d45d948b5947b04d9384013779",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Nbbc\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Todd Burry",
+                    "email": "todd@vanillaforums.com"
+                }
+            ],
+            "description": "A composer-compatible fork of the NBBC BBCode parsing library.",
+            "support": {
+                "source": "https://github.com/vanilla/nbbc/tree/v2.3"
+            },
+            "time": "2022-01-06T14:10:19+00:00"
         },
         {
             "name": "voku/portable-ascii",

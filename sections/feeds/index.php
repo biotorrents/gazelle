@@ -116,7 +116,7 @@ switch ($_GET['feed']) {
 
             echo $Feed->item(
                 $Title,
-                Text::strip_bbcode($Body),
+                $Body,
                 "index.php#news$NewsID",
                 "$ENV->SITE_NAME Staff",
                 '',
@@ -168,7 +168,7 @@ switch ($_GET['feed']) {
             if ($ThreadID) {
                 echo $Feed->item(
                     $Title,
-                    Text::strip_bbcode($Body),
+                    $Body,
                     "forums.php?action=viewthread&amp;threadid=$ThreadID",
                     "$ENV->SITE_NAME Staff",
                     '',
@@ -178,7 +178,7 @@ switch ($_GET['feed']) {
             } else {
                 echo $Feed->item(
                     $Title,
-                    Text::strip_bbcode($Body),
+                    $Body,
                     "blog.php#blog$BlogID",
                     "$ENV->SITE_NAME Staff",
                     '',

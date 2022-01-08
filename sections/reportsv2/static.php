@@ -409,9 +409,7 @@ if (count($Reports) === 0) {
 <?php
         $Links = explode(' ', $Links);
         foreach ($Links as $Link) {
-            if ($local_url = Text::local_url($Link)) {
-                $Link = $local_url;
-            } ?>
+ ?>
             <a href="<?=$Link?>"><?=$Link?></a>
 <?php
         } ?>

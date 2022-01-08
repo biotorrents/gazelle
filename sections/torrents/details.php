@@ -794,8 +794,8 @@ if (empty($LoggedUser['DisableRequests']) && count($Requests) > 0) {
         <?php foreach ($Requests as $Request) {
         $RequestVotes = Requests::get_votes_array($Request['ID']);
 
-        $RequestDesc = substr(explode('\n', Text::strip_bbcode($Request['Description']), 2)[0], 0, 70);
-        if (strlen(explode('\n', Text::strip_bbcode($Request['Description']), 2)[0]) > 70) {
+        $RequestDesc = substr(explode('\n', $Request['Description'], 2)[0], 0, 70);
+        if (strlen(explode('\n', $Request['Description'], 2)[0]) > 70) {
             $RequestDesc = substr($RequestDesc, 0, 67) . '...';
         } ?>
         <tr class="requestrows row">
