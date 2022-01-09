@@ -1,10 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-// Debug info for developers
-ini_set('max_execution_time', 600);
-
-class DEBUG
+class Debug
 {
     public $Errors = [];
     public $Flags = [];

@@ -38,7 +38,7 @@ require_once "$ENV->SERVER_ROOT/classes/util.php";
 require_once "$ENV->SERVER_ROOT/vendor/autoload.php";
 
 # Initialize the $Debug global
-$Debug = new \DEBUG;
+$Debug = new \Debug;
 $Debug->handle_errors();
 $Debug->set_flag('Debug constructed');
 

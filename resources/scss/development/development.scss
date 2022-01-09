@@ -9,8 +9,8 @@ strong {
 }
 
 /* Font Awesome exception to the Comic Sans rule */
-i:not(.fa):not(.fab):not(.fad):not(.fal):not(.far):not(.fas),
-em:not(.fa):not(.fab):not(.fad):not(.fal):not(.far):not(.fas) {
+i:not(.fa):not(.fab):not(.fad):not(.fal):not(.far):not(.fas):not(.phpdebugbar-fa),
+em:not(.fa):not(.fab):not(.fad):not(.fal):not(.far):not(.fas):not(.phpdebugbar-fa) {
   font-family: $ComicNeueItalic, sans-serif !important;
   font-style: normal !important;
 }
