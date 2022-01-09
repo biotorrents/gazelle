@@ -97,8 +97,8 @@ function db_string($String, $DisableWildcards = false)
     # Previously called $DB->escape_str, now below
     # todo: Fix the bad escapes everywhere; see below
 
-    if (!is_string($String)) { # This is the correct way,
-    #if (is_array($String)) { # but this prevents errors
+    #if (!is_string($String)) { # This is the correct way,
+    if (is_array($String)) { # but this prevents errors
         error('Attempted to escape non-string.', $NoHTML = true);
         $String = '';
     } else {
@@ -195,6 +195,8 @@ class DB
      */
     public function halt($Msg)
     {
+        $ENV = \ENV::go();
+
         global $Debug, $argv;
         $DBError = 'MySQL: '.strval($Msg).' SQL error: '.strval($this->Errno).' ('.strval($this->Error).')';
 
@@ -203,9 +205,9 @@ class DB
         }
 
         $Debug->analysis('!dev DB Error', $DBError, 3600 * 24);
-        if (DEBUG_MODE || check_perms('site_debug') || isset($argv[1])) {
+        if ($ENV->DEV || check_perms('site_debug') || isset($argv[1])) {
             echo '<pre>'.display_str($DBError).'</pre>';
-            if (DEBUG_MODE || check_perms('site_debug')) {
+            if ($ENV->DEV || check_perms('site_debug')) {
                 print_r($this->Queries);
             }
             error(400, $NoHTML = true);
@@ -333,6 +335,8 @@ class DB
      */
     public function query($Query, &...$BindVars)
     {
+        $ENV = \ENV::go();
+
         $QueryStartTime = microtime(true);
         $this->connect();
 
@@ -352,8 +356,8 @@ class DB
             mysqli_stmt_execute($this->StatementID);
             $this->QueryID = mysqli_stmt_get_result($this->StatementID);
 
-            if (DEBUG_MODE) {
-                // In DEBUG_MODE, return the full trace on a SQL error (super useful
+            if ($ENV->DEV) {
+                // In dev, return the full trace on a SQL error (super useful
                 // For debugging). do not attempt to retry to query
                 if (!$this->QueryID) {
                     echo '<pre>' . mysqli_error($this->LinkID) . '<br><br>';

@@ -30,7 +30,7 @@ class Tracker
 
         $MaxAttempts = 3;
         // don't wait around if we're debugging
-        if (DEBUG_MODE) {
+        if ($ENV->DEV) {
             $MaxAttempts = 1;
         }
 
@@ -156,8 +156,8 @@ class Tracker
                 sleep($Sleep);
             }
 
-            // spend some time retrying if we're not in DEBUG_MODE
-            if (!DEBUG_MODE) {
+            // spend some time retrying if we're not in dev
+            if (!$ENV->DEV) {
                 $Sleep = 6;
             }
 

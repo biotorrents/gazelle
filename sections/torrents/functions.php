@@ -42,15 +42,15 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
 
         if ($RevisionID) {
             $SQL .= "
-              LEFT JOIN `wiki_torrents` AS w ON w.`PageID` = '".db_string($GroupID)."'
-                AND w.`RevisionID` = '".db_string($RevisionID)."' ";
+              LEFT JOIN `wiki_torrents` AS w ON w.`PageID` = '$GroupID'
+                AND w.`RevisionID` = '$RevisionID' ";
         }
 
         $SQL .= "
-          WHERE g.`id` = '".db_string($GroupID)."'
+          WHERE g.`id` = '$GroupID'
             GROUP BY NULL";
 
-        $DB->query($SQL);
+        $DB->prepared_query($SQL);
         $TorrentDetails = $DB->next_record(MYSQLI_ASSOC);
         $TorrentDetails['Screenshots'] = [];
         $TorrentDetails['Mirrors'] = [];

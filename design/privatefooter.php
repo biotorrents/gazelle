@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-$ENV = ENV::go();
+$ENV = \ENV::go();
 $Sep = '&emsp;';
 
 # End <main#content.container>, begin <footer>
@@ -96,7 +96,22 @@ echo $HTML = <<<HTML
 HTML;
 
 # Start debug
-if (DEBUG_MODE || check_perms('site_debug')) {
+if ($ENV->DEV) {
+    /**
+     * DebugBar trial, missing important collectors:
+     * 
+     *   - Sphinx
+     *   - Ocelot
+     *   - Cache
+     * 
+     * Otherwise, nothing of value was lost.
+     * @see http://phpdebugbar.com/docs/
+     */
+    $debugbar = new \DebugBar\StandardDebugBar();
+    $debugbarRenderer = $debugbar->getJavascriptRenderer();
+    echo $debugbarRenderer->render();
+
+    /*
     echo $HTML = <<<HTML
 <div id="site_debug">
 HTML;
@@ -113,6 +128,7 @@ HTML;
     echo $HTML = <<<HTML
 </div>
 HTML;
+*/
 }
 # End debug
 
@@ -128,3 +144,4 @@ echo $HTML = <<<HTML
   </body>
 </html>
 HTML;
+

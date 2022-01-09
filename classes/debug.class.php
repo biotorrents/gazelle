@@ -161,6 +161,8 @@ class DEBUG
      */
     public function php_error_handler($Level, $Error, $File, $Line)
     {
+      $ENV = \ENV::go();
+
         // Who added this, it's still something to pay attention to...
         if (stripos('Undefined index', $Error) !== false) {
             //return true;
@@ -213,7 +215,7 @@ class DEBUG
         $File = str_replace(SERVER_ROOT, '', $File);
         $Error = str_replace(SERVER_ROOT, '', $Error);
 
-        if (DEBUG_MODE) {
+        if ($ENV->DEV) {
             $this->Errors[] = array($Error, $File.':'.$Line, $Call, $Args);
         }
         return true;

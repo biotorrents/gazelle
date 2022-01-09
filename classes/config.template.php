@@ -382,22 +382,6 @@ ENV::setPub('FEATURE_BIOPHP', true);
  * Settings
  */
 
-# Production
-if (!$ENV->DEV) {
-    # Set to false if you don't want everyone to see debug information; can be overriden with 'site_debug'
-    define('DEBUG_MODE', false);
-    ENV::setPub('DEBUG_MODE', false);
-}
-
-# Development
-else {
-    define('DEBUG_MODE', false);
-    ENV::setPub('DEBUG_MODE', false);
-
-    # Gazelle's debug mode is broken, so let's use PHP errors instead
-    error_reporting(E_ALL);
-}
-
 # Set to false to disable open registration, true to allow anyone to register
 ENV::setPub(
     'OPEN_REGISTRATION',

@@ -37,7 +37,9 @@ yarn-error.log
 /public/js/*
 !/public/js/vendor/
 /resources/closure-compiler.jar
+
 /vendor/**
+/public/vendor/**
 
 # config
 /classes/config.php

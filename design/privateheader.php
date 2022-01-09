@@ -1,15 +1,22 @@
 <?php
 #declare(strict_types=1);
 
-$ENV = ENV::go();
-$Twig = Twig::go();
-$View = new View();
+$ENV = \ENV::go();
+$Twig = \Twig::go();
+$View = new \View();
+
+if ($ENV->DEV) {
+    $debugbar = new \DebugBar\StandardDebugBar();
+    $debugbarRenderer = $debugbar->getJavascriptRenderer();
+}
 ?>
 
 <!doctype html>
 <html>
 
 <head>
+<?php if ($ENV->DEV) { echo $debugbarRenderer->renderHead(); } ?>
+
   <title>
     <?= display_str($PageTitle) ?>
   </title>
