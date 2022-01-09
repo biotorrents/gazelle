@@ -162,9 +162,7 @@ class TorrentsDL
     public function summary($FilterStats)
     {
         $ENV = ENV::go;
-        global $ScriptStartTime;
         
-        $Time = number_format(1000 * (microtime(true) - $ScriptStartTime), 2)." ms";
         $Used = Format::get_size(memory_get_usage(true));
         $Date = date("M d Y, H:i");
         $NumSkipped = count($this->SkippedFiles);
@@ -175,7 +173,6 @@ class TorrentsDL
       . "User:    {$this->User[Username]}\r\n"
       . "Passkey: {$this->User[torrent_pass]}\r\n"
       . "\r\n"
-      . "Time:    $Time\r\n"
       . "Used:    $Used\r\n"
       . "Date:    $Date\r\n"
       . "\r\n"

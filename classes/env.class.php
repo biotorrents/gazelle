@@ -27,7 +27,6 @@ class ENV
     private static $Priv = []; # Passwords, app keys, database, etc.
     private static $Pub = []; # Site meta, options, resources, etc.
 
-
     /**
      * __functions
      */
@@ -41,31 +40,37 @@ class ENV
     }
 
     # Prevents multiple instances
-    public function __clone()
+    private function __clone()
     {
-        return error('clone() not allowed.');
+        return trigger_error(
+            'clone not allowed',
+            E_USER_ERROR
+        );
     }
 
     # Prevents unserializing
     public function __wakeup()
     {
-        return error('wakeup() not allowed.');
+        return trigger_error(
+            'wakeup not allowed',
+            E_USER_ERROR
+        );
     }
-
+    
     # $this->key returns public->key
-    public function __get($key)
+    private function __get($key)
     {
         return isset(self::$Pub[$key])
             ? self::$Pub[$key]
             : false;
     }
     
-    # isset()
-    public function __isset($key)
+    # isset
+    private function __isset($key)
     {
         return isset(self::$Pub[$key]);
     }
-
+    
 
     /**
      * Gets n' Sets
@@ -75,19 +80,19 @@ class ENV
     public static function go()
     {
         return (self::$ENV === null)
-            ? self::$ENV = new ENV()
+            ? self::$ENV = new \ENV()
             : self::$ENV;
     }
 
     # get
-    public static function getPriv($key)
+    public function getPriv($key)
     {
         return isset(self::$Priv[$key])
             ? self::$Priv[$key]
             : false;
     }
 
-    public static function getPub($key)
+    public function getPub($key)
     {
         return isset(self::$Pub[$key])
             ? self::$Pub[$key]
@@ -118,13 +123,13 @@ class ENV
             case 'string':
                 $out = json_decode($obj, true);
                 return (json_last_error() === JSON_ERROR_NONE)
-                    ? new RecursiveArrayObject($out)
+                    ? new \RecursiveArrayObject($out)
                     : error('json_last_error_msg(): ' . json_last_error_msg());
                 break;
             
             case 'array':
             case 'object':
-                return new RecursiveArrayObject($obj);
+                return new \RecursiveArrayObject($obj);
             
             default:
                 return error('$ENV->convert() expects a JSON string, array, or object.');
@@ -173,7 +178,7 @@ class ENV
             $obj = (array) $obj;
         }
 
-        return new RecursiveArrayObject(
+        return new \RecursiveArrayObject(
             array_unique($this->toArray($obj))
         );
     }
@@ -274,7 +279,7 @@ class ENV
 
         # Map the sanitized function name
         # to a mapped array conversion
-        return new RecursiveArrayObject(
+        return new \RecursiveArrayObject(
             array_map(
                 $fn,
                 array_map(

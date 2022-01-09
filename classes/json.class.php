@@ -109,10 +109,12 @@ abstract class Json
      */
     protected function debug()
     {
+        $Debug = \Debug::go();
+
         if (!check_perms('site_debug')) {
             return [];
         }
-        global $Debug;
+
         return [
             'debug' => [
                 'queries'  => $Debug->get_queries(),

@@ -39,17 +39,6 @@ $Feed = new FEED;
 
 # Finally
 switch ($_REQUEST['action']) {
-  /*
-  case 'phpinfo':
-    if (!check_perms('site_debug')) {
-        error(403);
-    }
-
-    phpinfo();
-    break;
-  */
-
-
   // Services
   case 'get_host':
     include SERVER_ROOT.'/sections/tools/services/get_host.php';
@@ -415,10 +404,6 @@ switch ($_REQUEST['action']) {
 
   case 'recommendations':
     include SERVER_ROOT.'/sections/tools/misc/recommendations.php';
-    break;
-
-  case 'analysis':
-    include SERVER_ROOT.'/sections/tools/misc/analysis.php';
     break;
 
   case 'database_key':

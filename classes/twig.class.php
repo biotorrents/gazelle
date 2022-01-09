@@ -4,9 +4,9 @@ declare(strict_types=1);
 /**
  * Twig class
  *
- * Converted to a singleton class like $ENV.
+ * Converted to a singleton class.
  * One instance should only ever exist,
- * because of its separate disk cache system.
+ * because of its separate disk cache.
  *
  * Based on OPS's useful rule set:
  * https://github.com/OPSnet/Gazelle/blob/master/app/Util/Twig.php
@@ -25,10 +25,10 @@ class Twig
         return;
     }
 
-    public function __clone()
+    private function __clone()
     {
         return trigger_error(
-            'clone() not allowed',
+            'clone not allowed',
             E_USER_ERROR
         );
     }
@@ -36,7 +36,7 @@ class Twig
     public function __wakeup()
     {
         return trigger_error(
-            'wakeup() not allowed',
+            'wakeup not allowed',
             E_USER_ERROR
         );
     }
@@ -72,8 +72,17 @@ class Twig
             ]
         );
 
-        # kint
-        $Twig->addExtension(new \Kint\Twig\TwigExtension());
+        # DebugBar
+        /*
+        $Profile = new \Twig\Profiler\Profile();
+        $Debug = \Debug::go();
+        $Twig->addExtension(
+            new \DebugBar\Bridge\Twig\TimeableTwigExtensionProfiler(
+                $Profile,
+                $Debug['time']
+            )
+        );
+        */
 
         /**
          * OPS

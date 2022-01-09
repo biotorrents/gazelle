@@ -10,6 +10,8 @@
  */
 
 $ENV = ENV::go();
+$Debug = \Debug::go();
+
 $Feed = new Feed;
 $Validate = new Validate;
 
@@ -376,7 +378,7 @@ if (count($TooLongPaths) > 0) {
 }
 $FilePath = $DirName;
 $FileString = implode("\n", $TmpFileList);
-$Debug->set_flag('upload: torrent decoded');
+$Debug['upload']->info('torrent decoded');
 
 if (!empty($Err)) { // Show the upload form, with the data the user entered
     $UploadForm = $Type;
@@ -601,7 +603,6 @@ if (!isset($NoRevision) || !$NoRevision) {
     WHERE
       `id` = '$GroupID'
     ");
-
 }
 
 // Tags
@@ -770,7 +771,7 @@ Tracker::update_tracker('add_torrent', [
   'info_hash'   => rawurlencode($InfoHash),
   'freetorrent' => $T['FreeTorrent']
 ]);
-$Debug->set_flag('upload: ocelot updated');
+$Debug['upload']->info('ocelot updated');
 
 // Prevent deletion of this torrent until the rest of the upload process is done
 // (expire the key after 10 minutes to prevent locking it for too long in case there's a fatal error below)
@@ -832,7 +833,7 @@ Misc::write_log("Torrent $TorrentID ($LogName) (".number_format($TotalSize / (10
 Torrents::write_group_log($GroupID, $TorrentID, $LoggedUser['ID'], 'uploaded ('.number_format($TotalSize / (1024 * 1024), 2).' MB)', 0);
 
 Torrents::update_hash($GroupID);
-$Debug->set_flag('upload: sphinx updated');
+$Debug['upload']->info('sphinx updated');
 
 //******************************************************************************//
 //---------------------- Recent Uploads ----------------------------------------//
@@ -964,7 +965,7 @@ $Announce .= ' - '.site_url()."torrents.php?action=download&id=$TorrentID";
 
 // ENT_QUOTES is needed to decode single quotes/apostrophes
 send_irc(ANNOUNCE_CHAN, html_entity_decode($Announce, ENT_QUOTES));
-$Debug->set_flag('upload: announced on irc');
+$Debug['upload']->info('announced on irc');
 
 /**
  * Manage motifications
@@ -1089,7 +1090,7 @@ if (!in_array('notifications', $Paranoia)) {
 
 $SQL .= " AND UserID != '".$LoggedUser['ID']."' ";
 $DB->query($SQL);
-$Debug->set_flag('upload: notification query finished');
+$Debug['upload']->info('notification query finished');
 
 if ($DB->has_results()) {
     $UserArray = $DB->to_array('UserID');
@@ -1109,7 +1110,7 @@ if ($DB->has_results()) {
 
     $InsertSQL .= implode(',', $Rows);
     $DB->query($InsertSQL);
-    $Debug->set_flag('upload: notification inserts finished');
+    $Debug['upload']->info('notification inserts finished');
 
     foreach ($FilterArray as $Filter) {
         list($FilterID, $UserID, $Passkey) = $Filter;
@@ -1137,7 +1138,7 @@ while (list($UserID, $Passkey) = $DB->next_record()) {
 
 $Feed->populate('torrents_all', $Item);
 $Feed->populate('torrents_'.strtolower($Type), $Item);
-$Debug->set_flag('upload: notifications handled');
+$Debug['upload']->info('notifications handled');
 
 # Clear cache
 $Cache->delete_value("torrents_details_$GroupID");

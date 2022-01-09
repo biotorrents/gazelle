@@ -96,7 +96,8 @@ class View
     public static function show_footer($Options = [])
     {
         $ENV = \ENV::go();
-        global $ScriptStartTime, $SessionID, $UserSessions, $Debug, $Time, $Mobile;
+        global $SessionID, $UserSessions, $Time, $Mobile;
+        #global $ScriptStartTime, $SessionID, $UserSessions, $Debug, $Time, $Mobile;
 
         if (!is_array(G::$LoggedUser)
           || empty(G::$LoggedUser['ID'])

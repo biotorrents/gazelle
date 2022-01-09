@@ -66,72 +66,25 @@ echo $HTML = <<<HTML
 </p>
 HTML;
 
-# Script meta
-$MicroTime = number_format(((microtime(true) - $ScriptStartTime) * 1000), 5);
-$Used = Format::get_size(memory_get_usage(true));
-$Load = number_format($Load[0], 2).' '.number_format($Load[1], 2).' '.number_format($Load[2], 2);
-$Date = date('M d Y');
-$Time = date('H:i');
-
-echo $HTML = <<<HTML
-<p>
-  <strong>Time:</strong>
-  $MicroTime ms
-  $Sep
-
-  <!--
-  <strong>Used:</strong>
-  $Used
-  $Sep
-  -->
-
-  <strong>Load:</strong>
-  $Load
-  $Sep
-
-  <strong>Date:</strong>
-  $Date,
-  $Time
-</p>
-HTML;
-
-# Start debug
+# Debug
 if ($ENV->DEV) {
     /**
      * DebugBar trial, missing important collectors:
-     * 
+     *
      *   - Sphinx
      *   - Ocelot
+     *   - MySQL
      *   - Cache
-     * 
+     *
      * Otherwise, nothing of value was lost.
      * @see http://phpdebugbar.com/docs/
      */
-    $debugbar = new \DebugBar\StandardDebugBar();
-    $debugbarRenderer = $debugbar->getJavascriptRenderer();
-    echo $debugbarRenderer->render();
-
-    /*
-    echo $HTML = <<<HTML
-<div id="site_debug">
-HTML;
-
-    $Debug->perf_table();
-    $Debug->flag_table();
-    $Debug->error_table();
-    $Debug->sphinx_table();
-    $Debug->query_table();
-    $Debug->cache_table();
-    $Debug->vars_table();
-    $Debug->ocelot_table();
-
-    echo $HTML = <<<HTML
-</div>
-HTML;
-*/
+    $Debug = \Debug::go();
+    $Render = $Debug->getJavascriptRenderer();
+    echo $Render->render();
 }
-# End debug
 
+# Notifications
 global $NotificationSpans;
 if (!empty($NotificationSpans)) {
     foreach ($NotificationSpans as $Notification) {
@@ -139,9 +92,9 @@ if (!empty($NotificationSpans)) {
     }
 }
 
+# Done
 echo $HTML = <<<HTML
     </footer>
   </body>
 </html>
 HTML;
-

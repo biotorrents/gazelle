@@ -288,8 +288,8 @@ HTML;
     }
 
     # Trigger the error
-    global $Debug;
-    $Debug->profile();
+    $Debug = \Debug::go();
+    #$Debug->profile();
     trigger_error("$Title - $Message", E_USER_ERROR);
     throw new Exception("$Title - $Message");
 }
@@ -406,7 +406,8 @@ function add_json_info($Json)
     }
     if (!isset($Json['debug']) && check_perms('site_debug')) {
         /** @var DEBUG $Debug */
-        global $Debug;
+        #global $Debug;
+        $Debug = \Debug::go();
         $Json = array_merge($Json, [
             'debug' => [
                 'queries' => $Debug->get_queries(),

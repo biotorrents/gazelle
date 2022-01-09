@@ -3,13 +3,10 @@ declare(strict_types=1);
 
 /**
  * Main app bootstrapping
- * 
+ *
  * It really handles too much, including sessions, global objects, etc.
  * All it needs to do is instantiate a singleton and include the requested page.
  */
-
-# To track how long a page takes to create
-$ScriptStartTime = microtime(true);
 
 # Initialize the app config
 require_once __DIR__.'/../classes/config.php';
@@ -38,9 +35,8 @@ require_once "$ENV->SERVER_ROOT/classes/util.php";
 require_once "$ENV->SERVER_ROOT/vendor/autoload.php";
 
 # Initialize the $Debug global
-$Debug = new \Debug;
-$Debug->handle_errors();
-$Debug->set_flag('Debug constructed');
+$Debug = \Debug::go();
+$Debug['messages']->info('debug constructed');
 
 # Initialize the $DB and $Cache globals
 $DB = new \DB;
@@ -55,11 +51,11 @@ $Cache = new \Cache($ENV->getPriv('MEMCACHED_SERVERS'));
 $Browser = \UserAgent::browser($_SERVER['HTTP_USER_AGENT']);
 $OperatingSystem = \UserAgent::operating_system($_SERVER['HTTP_USER_AGENT']);
 
-$Debug->set_flag('start user handling');
+$Debug['messages']->info('start user handling');
 
 // Get classes
 // todo: Remove these globals, replace by calls into Users
-list($Classes, $ClassLevels) = Users::get_classes();
+list($Classes, $ClassLevels) = \Users::get_classes();
 
 /**
  * JSON API token support
@@ -239,7 +235,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     /**
      * Load user information.
      * User info is broken up into many sections:
-     * 
+     *
      *  - Heavy: Things that the site never has to look at if the user isn't logged in
      *  - Light: Things that appear in format_user
      *  - Stats: Uploaded and downloaded; can be updated by a script if you want super speed
@@ -362,8 +358,8 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
 }
 
 \G::initialize(); # 2nd call
-$Debug->set_flag('end user handling');
-$Debug->set_flag('start function definitions');
+$Debug['messages']->info('end user handling');
+$Debug['messages']->info('start function definitions');
 
 /**
  * Log out the current session
@@ -445,8 +441,9 @@ function authorize($Ajax = false)
     }
 }
 
-$Debug->set_flag('ending function definitions');
-$Document = ($_SERVER['REQUEST_URI'] === '/'
+$Debug['messages']->info('end function definitions');
+$Document = (
+    $_SERVER['REQUEST_URI'] === '/'
     ? 'index'
     : basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '.php')
 );
@@ -473,12 +470,12 @@ if (isset(\G::$LoggedUser['LockedAccount']) && !in_array($Document, $AllowedPage
     require_once "$ENV->SERVER_ROOT/sections/$Document/index.php";
 }
 
-$Debug->set_flag('completed module execution');
+$Debug['messages']->info('completed module execution');
 
 // Flush to user
 ob_end_flush();
 
-$Debug->set_flag('set headers and send to user');
+$Debug['messages']->info('set headers and send to user');
 
 // Attribute profiling
-$Debug->profile();
+#$Debug->profile();

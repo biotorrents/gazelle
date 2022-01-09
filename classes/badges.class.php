@@ -83,6 +83,8 @@ class Badges
      */
     public static function display_badge($BadgeID, $Tooltip = false)
     {
+        $Debug = \Debug::go();
+
         $html = '';
         if (($Badges = G::$Cache->get_value('badges')) && array_key_exists($BadgeID, $Badges)) {
             extract($Badges[$BadgeID]);
@@ -91,8 +93,7 @@ class Badges
             if (($Badges = G::$Cache->get_value('badges')) && array_key_exists($BadgeID, $Badges)) {
                 extract($Badges[$BadgeID]);
             } else {
-                global $Debug;
-                $Debug->analysis("Invalid BadgeID $BadgeID requested.");
+                #$Debug->analysis("Invalid BadgeID $BadgeID requested.");
             }
         }
 

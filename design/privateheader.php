@@ -6,8 +6,8 @@ $Twig = \Twig::go();
 $View = new \View();
 
 if ($ENV->DEV) {
-    $debugbar = new \DebugBar\StandardDebugBar();
-    $debugbarRenderer = $debugbar->getJavascriptRenderer();
+    $Debug = \Debug::go();
+    $Render = $Debug->getJavascriptRenderer();
 }
 ?>
 
@@ -15,7 +15,9 @@ if ($ENV->DEV) {
 <html>
 
 <head>
-<?php if ($ENV->DEV) { echo $debugbarRenderer->renderHead(); } ?>
+  <?php if ($ENV->DEV) {
+    echo $Render->renderHead();
+} ?>
 
   <title>
     <?= display_str($PageTitle) ?>
@@ -23,8 +25,8 @@ if ($ENV->DEV) {
 
   <?=
     $Twig->render(
-      'header/meta-tags.html',
-      [
+        'header/meta-tags.html',
+        [
         'ENV' => $ENV,
         'LoggedUser' => G::$LoggedUser,
         'title' => display_str($PageTitle)
@@ -183,7 +185,7 @@ foreach ($ExtraCSS as $CSS) {
         continue;
     } ?>
 
- <?php
+  <?php
 }
 
 global $ClassLevels;
@@ -230,33 +232,33 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
       <?= $ENV->SITE_NAME ?>
     </h1>
 
-      <?= $Twig->render(
-        'header/main-menu.html',
-        [
+    <?= $Twig->render(
+    'header/main-menu.html',
+    [
           'ENV' => $ENV,
           'LoggedUser' => G::$LoggedUser,
           'inbox' => Inbox::get_inbox_link(),
           'notify' => check_perms('site_torrents_notify'),
         ]
-        );
+);
         ?>
 
-      <?php
+    <?php
 if (isset(G::$LoggedUser['SearchType']) && G::$LoggedUser['SearchType']) { // Advanced search
-                $UseAdvancedSearch = true;
-            } else {
-                $UseAdvancedSearch = false;
-            }
+            $UseAdvancedSearch = true;
+        } else {
+            $UseAdvancedSearch = false;
+        }
 ?>
 
-      <div id="userinfo">
-        <ul id="userinfo_major">
+    <div id="userinfo">
+      <ul id="userinfo_major">
 
-          <li id="nav_upload">
-            <a href="upload.php">Upload</a>
-          </li>
+        <li id="nav_upload">
+          <a href="upload.php">Upload</a>
+        </li>
 
-          <?php
+        <?php
 if (check_perms('site_send_unlimited_invites')) {
     $Invites = ' (∞)';
 } elseif (G::$LoggedUser['Invites'] > 0) {
@@ -266,86 +268,86 @@ if (check_perms('site_send_unlimited_invites')) {
 }
 ?>
 
-          <li id="nav_invite">
-            <a href="user.php?action=invite">Invite<?=$Invites?></a>
-          </li>
+        <li id="nav_invite">
+          <a href="user.php?action=invite">Invite<?=$Invites?></a>
+        </li>
 
-          <?php if ($ENV->FEATURE_DONATE) { ?>
-          <li id="nav_donate">
-            <a href="donate.php">Donate</a>
-          </li>
-          <?php } ?>
+        <?php if ($ENV->FEATURE_DONATE) { ?>
+        <li id="nav_donate">
+          <a href="donate.php">Donate</a>
+        </li>
+        <?php } ?>
 
-          <li id="nav_staff">
-            <a href="staff.php">Staff</a>
-          </li>
-        </ul>
+        <li id="nav_staff">
+          <a href="staff.php">Staff</a>
+        </li>
+      </ul>
 
-        <ul id="userinfo_stats">
-          <li id="stats_seeding">
+      <ul id="userinfo_stats">
+        <li id="stats_seeding">
+          <a
+            href="torrents.php?type=seeding&amp;userid=<?=G::$LoggedUser['ID']?>">Up</a>:
+          <span class="stat tooltip"
+            title="<?=Format::get_size(G::$LoggedUser['BytesUploaded'], 5)?>"><?=Format::get_size(G::$LoggedUser['BytesUploaded'])?></span>
+        </li>
+
+        <li id="stats_leeching">
+          <a
+            href="torrents.php?type=leeching&amp;userid=<?=G::$LoggedUser['ID']?>">Down</a>:
+          <span class="stat tooltip"
+            title="<?=Format::get_size(G::$LoggedUser['BytesDownloaded'], 5)?>"><?=Format::get_size(G::$LoggedUser['BytesDownloaded'])?></span>
+        </li>
+
+        <li id="stats_ratio">
+          Ratio: <span class="stat"><?=Format::get_ratio_html(G::$LoggedUser['BytesUploaded'], G::$LoggedUser['BytesDownloaded'])?></span>
+        </li>
+        <?php if (!empty(G::$LoggedUser['RequiredRatio']) && G::$LoggedUser['RequiredRatio'] > 0) { ?>
+        <li id="stats_required">
+          <a href="rules.php?p=ratio">Required</a>:
+          <span class="stat tooltip"
+            title="<?=number_format(G::$LoggedUser['RequiredRatio'], 5)?>"><?=number_format(G::$LoggedUser['RequiredRatio'], 2)?></span>
+        </li>
+        <?php } ?>
+      </ul>
+
+
+      <ul id="userinfo_extra">
+
+        <?php if (G::$LoggedUser['FLTokens'] > 0) { ?>
+        <li id="fl_tokens">
+          <a href="wiki.php?action=article&amp;name=tokens">Tokens</a>:
+          <span class="stat">
             <a
-              href="torrents.php?type=seeding&amp;userid=<?=G::$LoggedUser['ID']?>">Up</a>:
-            <span class="stat tooltip"
-              title="<?=Format::get_size(G::$LoggedUser['BytesUploaded'], 5)?>"><?=Format::get_size(G::$LoggedUser['BytesUploaded'])?></span>
-          </li>
+              href="userhistory.php?action=token_history&amp;userid=<?=G::$LoggedUser['ID']?>"><?=G::$LoggedUser['FLTokens']?></a>
+          </span>
+        </li>
+        <?php } ?>
 
-          <li id="stats_leeching">
-            <a
-              href="torrents.php?type=leeching&amp;userid=<?=G::$LoggedUser['ID']?>">Down</a>:
-            <span class="stat tooltip"
-              title="<?=Format::get_size(G::$LoggedUser['BytesDownloaded'], 5)?>"><?=Format::get_size(G::$LoggedUser['BytesDownloaded'])?></span>
-          </li>
+        <li id="bonus_points">
+          <a href="wiki.php?action=article&amp;name=bonuspoints"><?=BONUS_POINTS?></a>:
+          <span class="stat">
+            <a href="store.php"><?=number_format(G::$LoggedUser['BonusPoints'])?></a>
+          </span>
+        </li>
 
-          <li id="stats_ratio">
-            Ratio: <span class="stat"><?=Format::get_ratio_html(G::$LoggedUser['BytesUploaded'], G::$LoggedUser['BytesDownloaded'])?></span>
-          </li>
-          <?php if (!empty(G::$LoggedUser['RequiredRatio']) && G::$LoggedUser['RequiredRatio'] > 0) { ?>
-          <li id="stats_required">
-            <a href="rules.php?p=ratio">Required</a>:
-            <span class="stat tooltip"
-              title="<?=number_format(G::$LoggedUser['RequiredRatio'], 5)?>"><?=number_format(G::$LoggedUser['RequiredRatio'], 2)?></span>
-          </li>
-          <?php } ?>
-          </ul>
-
-
-          <ul id="userinfo_extra">
-
- <?php if (G::$LoggedUser['FLTokens'] > 0) { ?>
-          <li id="fl_tokens">
-            <a href="wiki.php?action=article&amp;name=tokens">Tokens</a>:
-            <span class="stat">
-              <a
-                href="userhistory.php?action=token_history&amp;userid=<?=G::$LoggedUser['ID']?>"><?=G::$LoggedUser['FLTokens']?></a>
-            </span>
-          </li>
-          <?php } ?>
-
-          <li id="bonus_points">
-            <a href="wiki.php?action=article&amp;name=bonuspoints"><?=BONUS_POINTS?></a>:
-            <span class="stat">
-              <a href="store.php"><?=number_format(G::$LoggedUser['BonusPoints'])?></a>
-            </span>
-          </li>
-
-          <?php if (G::$LoggedUser['HnR'] > 0) { ?>
-          <li id="hnr">
-            <a href="snatchlist.php">HnRs</a>:
-            <span class="stat">
-              <a><?=G::$LoggedUser['HnR']?></a>
-            </span>
-          </li>
-          <?php } ?>
-        </ul>
-      </div>
-
-      <?php if (!apcu_exists('DBKEY')) { ?>
-      <a id="dbcrypt" class="tooltip" href="wiki.php?action=article&amp;name=databaseencryption"
-        title="Database is not fully decrypted. Site functionality will be reduced until staff can provide the decryption key. Click to learn more."></a>
-      <?php } ?>
+        <?php if (G::$LoggedUser['HnR'] > 0) { ?>
+        <li id="hnr">
+          <a href="snatchlist.php">HnRs</a>:
+          <span class="stat">
+            <a><?=G::$LoggedUser['HnR']?></a>
+          </span>
+        </li>
+        <?php } ?>
+      </ul>
     </div>
 
-    <?php
+    <?php if (!apcu_exists('DBKEY')) { ?>
+    <a id="dbcrypt" class="tooltip" href="wiki.php?action=article&amp;name=databaseencryption"
+      title="Database is not fully decrypted. Site functionality will be reduced until staff can provide the decryption key. Click to learn more."></a>
+    <?php } ?>
+  </div>
+
+  <?php
 // Start handling alert bars
 $Alerts = [];
 $ModBar = [];
@@ -500,27 +502,27 @@ if (check_perms('users_mod') && FEATURE_EMAIL_REENABLE) {
 }
 
 if (!empty($Alerts) || !empty($ModBar)) { ?>
-    <div id="alerts">
-      <?php foreach ($Alerts as $Alert) { ?>
-      <div class="alertbar warning">
-        <?=$Alert?>
-      </div>
-      <?php
+  <div id="alerts">
+    <?php foreach ($Alerts as $Alert) { ?>
+    <div class="alertbar warning">
+      <?=$Alert?>
+    </div>
+    <?php
   }
 
   if (!empty($ModBar)) { ?>
-      <div class="alertbar modbar">
-        <?=implode(' ', $ModBar); echo "\n"?>
-      </div>
-      <?php }
+    <div class="alertbar modbar">
+      <?=implode(' ', $ModBar); echo "\n"?>
+    </div>
+    <?php }
 
 if (check_perms('site_debug') && !apcu_exists('DBKEY')) { ?>
-      <div class="alertbar error">
-        Warning: <a href="tools.php?action=database_key">no DB key</a>
-      </div>
-      <?php } ?>
+    <div class="alertbar error">
+      Warning: <a href="tools.php?action=database_key">no DB key</a>
     </div>
-    <?php
+    <?php } ?>
+  </div>
+  <?php
     // Done handling alertbars
 }
 

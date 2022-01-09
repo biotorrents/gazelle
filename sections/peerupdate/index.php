@@ -99,7 +99,8 @@ while ($TorrentID) {
         $Changed = false;
     }
 }
-printf("Updated %d keys, skipped %d keys in %.6fs (%d kB memory)\n", $UpdatedKeys, $UncachedGroups, microtime(true) - $ScriptStartTime, memory_get_usage(true) >> 10);
+printf("Updated %d keys, skipped %d keys in %.6fs (%d kB memory)\n", $UpdatedKeys, $UncachedGroups, memory_get_usage(true) >> 10);
+#printf("Updated %d keys, skipped %d keys in %.6fs (%d kB memory)\n", $UpdatedKeys, $UncachedGroups, microtime(true) - $ScriptStartTime, memory_get_usage(true) >> 10);
 
 $DB->query("TRUNCATE TABLE torrents_peerlists");
 $DB->query("
