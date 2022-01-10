@@ -92,9 +92,9 @@ class Sphinxql extends mysqli
             $Errno = $this->connect_errno;
             $Error = $this->connect_error;
             $this->error("Connection failed. (".strval($Errno).": ".strval($Error).")");
-            $Debug->set_flag("Could not connect to Sphinx server $this->Ident. (".strval($Errno).": ".strval($Error).")");
+            $Debug['messages']->info("couldn't connect to sphinx server $this->Ident ($Errno $Error)");
         } else {
-            $Debug->set_flag("Connected to Sphinx server $this->Ident");
+            $Debug['messages']->info("connected to sphinx server $this->Ident");
         }
     }
 

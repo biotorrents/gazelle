@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 # Initialize the app config
 require_once __DIR__.'/../classes/config.php';
-require_once __DIR__.'/../classes/security.class.php';
+require_once __DIR__.'/../app/Security.php';
 
 $ENV = \ENV::go();
 \Security::SetupPitfalls();
@@ -24,9 +24,9 @@ ob_start();
  * They also need to come before the autoloader.
  * todo: Find out why they can't be autoloaded.
  */
-require_once "$ENV->SERVER_ROOT/classes/cache.class.php";
-require_once "$ENV->SERVER_ROOT/classes/debug.class.php";
-require_once "$ENV->SERVER_ROOT/classes/db.class.php";
+require_once "$ENV->SERVER_ROOT/app/Cache.php";
+require_once "$ENV->SERVER_ROOT/app/Debug.php";
+require_once "$ENV->SERVER_ROOT/app/DB.php";
 require_once "$ENV->SERVER_ROOT/classes/paranoia.class.php"; # Require check_paranoia()
 require_once "$ENV->SERVER_ROOT/classes/time.class.php"; # todo: Move to util.php
 require_once "$ENV->SERVER_ROOT/classes/util.php";

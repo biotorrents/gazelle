@@ -64,12 +64,12 @@
   },
   "autoload": {
     "psr-4": {
-      "App\\": "app/",
+      "App\\": "app-null/",
       "Database\\Factories\\": "database/factories/",
       "Database\\Seeders\\": "database/seeders/"
     },
     "classmap": [
-      "classes/"
+      "app/"
     ],
     "files": [
       "bootstrap/autoload.php"
