@@ -42,4 +42,4 @@ yarn-error.log
 /public/vendor/**
 
 # config
-/classes/config.php
+/config/private.php

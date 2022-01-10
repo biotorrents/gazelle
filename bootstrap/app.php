@@ -9,7 +9,7 @@ declare(strict_types=1);
  */
 
 # Initialize the app config
-require_once __DIR__.'/../classes/config.php';
+require_once __DIR__.'/../config/app.php';
 require_once __DIR__.'/../app/Security.php';
 
 $ENV = \ENV::go();
