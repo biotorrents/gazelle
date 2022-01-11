@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This page acts as a switch for the tools pages.
  */
 
- $ENV = ENV::go();
+ $ENV = \ENV::go();
 
 if (isset($argv[1])) {
     $_REQUEST['action'] = $argv[1];
@@ -31,11 +31,8 @@ if (substr($_REQUEST['action'], 0, 16) === 'rerender_gallery' && !isset($argv[1]
     }
 }
 
-include SERVER_ROOT.'/classes/validate.class.php';
-$Val = new VALIDATE;
-
-include SERVER_ROOT.'/classes/feed.class.php';
-$Feed = new FEED;
+$Val = new \Validate;
+$Feed = new \Feed;
 
 # Finally
 switch ($_REQUEST['action']) {

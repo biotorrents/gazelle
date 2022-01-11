@@ -231,7 +231,7 @@ ENV::setPub('FEATURE_SEND_EMAIL', true);
 
 # Allow the site encryption key to be set without an account
 # (should only be used for initial setup)
-ENV::setPub('FEATURE_SET_ENC_KEY_PUBLIC', false);
+ENV::setPub('FEATURE_SET_ENC_KEY_PUBLIC', true);
 
 # Attempt to support the BioPHP library
 # https://packagist.org/packages/biotorrents/biophp

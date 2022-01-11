@@ -96,7 +96,7 @@ else { ?>
 if ($Attempts > 0) { ?>
 <p class="center">
   Forgot your passphrase?
-  <a href="login.php?act=recover" class="tooltip" title="Recover your passphrase">Reset it here!</a>
+  <a href="login.php?action=recover" class="tooltip" title="Recover your passphrase">Reset it here!</a>
 </p>
 
 <?php

@@ -102,7 +102,7 @@ function db_string($String, $DisableWildcards = false)
         error('Attempted to escape non-string.', $NoHTML = true);
         $String = '';
     } else {
-        $String = mysqli_real_escape_string($DB->LinkID, $String);
+        $String = mysqli_real_escape_string($DB->LinkID, strval($String));
     }
 
     // Remove user input wildcards
@@ -361,15 +361,9 @@ class DB
             mysqli_stmt_execute($this->StatementID);
             $this->QueryID = mysqli_stmt_get_result($this->StatementID);
 
+            # Return a query backtrace in dev
             if ($ENV->DEV) {
-                // In dev, return the full trace on a SQL error (super useful
-                // For debugging). do not attempt to retry to query
-                if (!$this->QueryID) {
-                    echo '<pre>' . mysqli_error($this->LinkID) . '<br><br>';
-                    debug_print_backtrace();
-                    echo '</pre>';
-                    error();
-                }
+                d(mysqli_error($this->LinkID));
             }
 
             if (!in_array(mysqli_errno($this->LinkID), array(1213, 1205))) {

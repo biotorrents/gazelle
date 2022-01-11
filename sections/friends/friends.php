@@ -13,7 +13,7 @@ $ENV = ENV::go();
 
 // Number of users per page
 define('FRIENDS_PER_PAGE', '20');
-include_once "$ENV->SERVER_ROOT/classes/paranoia.class.php";
+#include_once "$ENV->SERVER_ROOT/classes/paranoia.class.php";
 
 View::show_header('Friends');
 

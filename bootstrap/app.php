@@ -8,39 +8,33 @@ declare(strict_types=1);
  * All it needs to do is instantiate a singleton and include the requested page.
  */
 
-# Initialize the app config
-require_once __DIR__.'/../config/app.php';
-require_once __DIR__.'/../app/Security.php';
+# Autoload classes via Composer
+require_once __DIR__.'/../vendor/autoload.php';
 
+# Initialize the app config and core utils
+require_once __DIR__.'/../config/app.php';
+require_once "$ENV->SERVER_ROOT/bootstrap/utilities.php";
+
+
+/**
+ * Initialize some big variables
+ */
+
+# Basic stuff
 $ENV = \ENV::go();
 \Security::SetupPitfalls();
+
+# Debugging
+$Debug = \Debug::go();
+$Debug['messages']->info('debug constructed');
+
+# Database and cache
+$DB = new \DB;
+$Cache = new \Cache($ENV->getPriv('MEMCACHED_SERVERS'));
 
 # Start a buffer, mainly for MySQL errors
 ob_start();
 
-/**
- * Require various classes.
- * All six files need to be exactly here.
- * They also need to come before the autoloader.
- * todo: Find out why they can't be autoloaded.
- */
-require_once "$ENV->SERVER_ROOT/app/Cache.php";
-require_once "$ENV->SERVER_ROOT/app/Debug.php";
-require_once "$ENV->SERVER_ROOT/app/DB.php";
-require_once "$ENV->SERVER_ROOT/classes/paranoia.class.php"; # Require check_paranoia()
-require_once "$ENV->SERVER_ROOT/classes/time.class.php"; # todo: Move to util.php
-require_once "$ENV->SERVER_ROOT/classes/util.php";
-
-# Autoload classes via Composer
-require_once "$ENV->SERVER_ROOT/vendor/autoload.php";
-
-# Initialize the $Debug global
-$Debug = \Debug::go();
-$Debug['messages']->info('debug constructed');
-
-# Initialize the $DB and $Cache globals
-$DB = new \DB;
-$Cache = new \Cache($ENV->getPriv('MEMCACHED_SERVERS'));
 
 // Note: G::initialize is called twice.
 // This is necessary as the code inbetween (initialization of $LoggedUser) makes use of G::$DB and G::$Cache.
@@ -321,6 +315,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     }
 
     // IP changed
+    /*
     if (apcu_exists('DBKEY') && \Crypto::decrypt($LoggedUser['IP']) != $_SERVER['REMOTE_ADDR']) {
         if (\Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
             error('Your IP address has been banned.');
@@ -333,6 +328,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
         $Cache->update_row(false, array('IP' => \Crypto::encrypt($_SERVER['REMOTE_ADDR'])));
         $Cache->commit_transaction(0);
     }
+    */
 
     // Get stylesheets
     $Stylesheets = $Cache->get_value('stylesheets');
@@ -357,91 +353,8 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     }
 }
 
-\G::initialize(); # 2nd call
+#\G::initialize(); # 2nd call
 $Debug['messages']->info('end user handling');
-$Debug['messages']->info('start function definitions');
-
-/**
- * Log out the current session
- */
-function logout()
-{
-    global $SessionID;
-    
-    \Cookie::del('session');
-    \Cookie::del('userid');
-    \Cookie::del('keeplogged');
-    
-    #\Cookie::flush();
-
-    if ($SessionID) {
-        \G::$DB->prepared_query("
-        DELETE FROM users_sessions
-          WHERE UserID = '" . \G::$LoggedUser['ID'] . "'
-          AND SessionID = '".db_string($SessionID)."'");
-
-        \G::$Cache->begin_transaction('users_sessions_' . \G::$LoggedUser['ID']);
-        \G::$Cache->delete_row($SessionID);
-        \G::$Cache->commit_transaction(0);
-    }
-
-    \G::$Cache->delete_value('user_info_' . \G::$LoggedUser['ID']);
-    \G::$Cache->delete_value('user_stats_' . \G::$LoggedUser['ID']);
-    \G::$Cache->delete_value('user_info_heavy_' . \G::$LoggedUser['ID']);
-
-    header('Location: login.php');
-    #error();
-}
-
-/**
- * logout_all_sessions
- */
-function logout_all_sessions()
-{
-    $UserID = \G::$LoggedUser['ID'];
-
-    \G::$DB->prepared_query("
-    DELETE FROM users_sessions
-      WHERE UserID = '$UserID'");
-
-    \G::$Cache->delete_value('users_sessions_' . $UserID);
-    logout();
-}
-
-/**
- * enforce_login
- */
-function enforce_login()
-{
-    global $SessionID;
-    if (!$SessionID || !\G::$LoggedUser) {
-        \Cookie::set('redirect', $_SERVER['REQUEST_URI']);
-        logout();
-    }
-}
-
-/**
- * Make sure $_GET['auth'] is the same as the user's authorization key.
- * Should be used for any user action that relies solely on GET.
- *
- * @param Are we using ajax?
- * @return authorisation status. Prints an error message to DEBUG_CHAN on IRC on failure.
- */
-function authorize($Ajax = false)
-{
-    # Ugly workaround for API tokens
-    if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
-        return true;
-    } else {
-        if (empty($_REQUEST['auth']) || $_REQUEST['auth'] !== \G::$LoggedUser['AuthKey']) {
-            send_irc(DEBUG_CHAN, \G::$LoggedUser['Username']." just failed authorize on ".$_SERVER['REQUEST_URI'].(!empty($_SERVER['HTTP_REFERER']) ? " coming from ".$_SERVER['HTTP_REFERER'] : ""));
-            error('Invalid authorization key. Go back, refresh, and try again.', $NoHTML = true);
-            return false;
-        }
-    }
-}
-
-$Debug['messages']->info('end function definitions');
 $Document = (
     $_SERVER['REQUEST_URI'] === '/'
     ? 'index'

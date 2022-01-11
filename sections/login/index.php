@@ -15,23 +15,19 @@ $Validate = new \Validate;
 $TwoFA = new \RobThree\Auth\TwoFactorAuth($ENV->SITE_NAME);
 $U2F = new \u2f\U2F("https://$ENV->SITE_DOMAIN");
 
-// Allow users to reset their password while logged in
-if (!empty($LoggedUser['ID']) && $_REQUEST['act'] !== 'recover') {
-    header('Location: index.php');
-    error();
+# They want the disabled page
+if ($_REQUEST['action'] === 'disabled') {
+    header('Location: /disabled.php');
+    exit;
 }
 
-// Check if IP is banned
+# IP ban after failed logins
 if (\Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
     error('Your IP address has been banned.');
 }
 
-if (array_key_exists('action', $_GET) && $_GET['action'] === 'disabled') {
-    require('disabled.php');
-    error();
-}
-
-if (isset($_REQUEST['act']) && $_REQUEST['act'] === 'recover') {
+# Account recovery workflow
+if ($_REQUEST['action'] === 'recover') {
     // Recover password
     if (!empty($_REQUEST['key'])) {
         // User has entered a new password, use step 2
@@ -100,7 +96,7 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] === 'recover') {
                 $_SESSION['reseterr'] = 'The link you were given has expired.'; // Error message to display on form
             }
             // Show him the first form (enter email address)
-            header('Location: login.php?act=recover');
+            header('Location: login.php?action=recover');
         }
     } // End step 2
 
