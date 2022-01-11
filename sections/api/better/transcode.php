@@ -12,7 +12,7 @@ if ($_GET['type'] === '3') {
 } else {
   $List = '!'.$Options[$_GET['type']];
   if ($_GET['type'] !== '0') {
-    $_GET['type'] = display_str($_GET['type']);
+    $_GET['type'] = esc($_GET['type']);
   }
 }
 $SphQL = new SphinxqlQuery();

@@ -67,7 +67,7 @@ if (check_perms('site_advanced_top10')) {
                     <td class="label">Tags (comma-separated)</td>
                     <td class="ft_taglist">
                         <input type="text" name="tags" id="tags" size="65" value="<?php if (!empty($_GET['tags'])) {
-        echo display_str($_GET['tags']);
+        echo esc($_GET['tags']);
     } ?>" <?php Users::has_autocomplete_enabled('other'); ?>
                         />&nbsp;
                         <input type="radio" id="rdoAll" name="anyall" value="all" <?=((!isset($_GET['anyall'])||$_GET['anyall']!=='any')?' checked="checked"':'')?>
@@ -83,8 +83,8 @@ if (check_perms('site_advanced_top10')) {
                             <option value="">Any</option>
                             <?php foreach ($Categories as $CategoryName) { ?>
                             <option
-                                value="<?=display_str($CategoryName)?>"
-                                <?=(($CategoryName===($_GET['category']??false))?'selected="selected"':'')?>><?=display_str($CategoryName)?>
+                                value="<?=esc($CategoryName)?>"
+                                <?=(($CategoryName===($_GET['category']??false))?'selected="selected"':'')?>><?=esc($CategoryName)?>
                             </option>
                             <?php } ?>
                         </select>

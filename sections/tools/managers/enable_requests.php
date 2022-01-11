@@ -442,15 +442,15 @@ if ($NumResults > 0) { ?>
         </td>
 
         <td>
-            <?=display_str(Crypto::decrypt($Email))?>
+            <?=esc(Crypto::decrypt($Email))?>
         </td>
 
         <td>
-            <?=display_str(Crypto::decrypt($IP))?>
+            <?=esc(Crypto::decrypt($IP))?>
         </td>
 
         <td>
-            <?=display_str($UserAgent)?>
+            <?=esc($UserAgent)?>
         </td>
 
         <td>

@@ -19,7 +19,7 @@ echo $Twig->render(
   [
     'ENV' => $ENV,
     'LoggedUser' => $LoggedUser,
-    'title' => display_str($PageTitle)
+    'title' => esc($PageTitle)
   ]
   );
 

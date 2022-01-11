@@ -317,7 +317,7 @@ if (empty($Properties['GroupID']) && empty($ArtistForm)) {
 
     $ArtistForm = [];
     while (list($ArtistID, $ArtistName) = $DB->next_record(MYSQLI_BOTH, false)) {
-        array_push($ArtistForm, array('id' => $ArtistID, 'name' => display_str($ArtistName)));
+        array_push($ArtistForm, array('id' => $ArtistID, 'name' => esc($ArtistName)));
         array_push($ArtistsUnescaped, array('name' => $ArtistName));
     }
     $LogName .= Artists::display_artists($ArtistsUnescaped, false, true, false);

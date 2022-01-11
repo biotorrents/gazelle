@@ -247,7 +247,7 @@ foreach ($GroupIDs as $GroupID) {
         $DisplayName = "$DisplayName [$year]";
     }
 
-    $Tags = display_str($TorrentTags->format());
+    $Tags = esc($TorrentTags->format());
     $PlainTags = implode(', ', $TorrentTags->get_tags()); ?>
 
 <div class='collage_image image_group_<?=$GroupID?>'>
@@ -352,7 +352,7 @@ View::show_header($Title, 'browse,collage,wall');
           if ($i > 10) {
               break;
           } ?>
-      <li><a href="artist.php?id=<?=$ID?>"><?=display_str($Artist['name'])?></a> (<?=$Artist['count']?>)</li>
+      <li><a href="artist.php?id=<?=$ID?>"><?=esc($Artist['name'])?></a> (<?=$Artist['count']?>)</li>
       <?php
       }
       echo "$Indent</ol>\n";

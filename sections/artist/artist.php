@@ -516,7 +516,7 @@ View::show_header($Name, 'browse,requests,comments,recommend,subscriptions');
 ?>
 <div>
   <div class="header">
-    <h2><?=display_str($Name)?><?php if ($RevisionID) { ?> (Revision #<?=$RevisionID?>)<?php } ?>
+    <h2><?=esc($Name)?><?php if ($RevisionID) { ?> (Revision #<?=$RevisionID?>)<?php } ?>
     </h2>
     <div class="linkbox">
       <?php if (check_perms('site_submit_requests')) { ?>
@@ -815,7 +815,7 @@ if ($NumRequests > 0) {
   $Tags = Requests::get_tags(array_keys($Requests));
     foreach ($Requests as $RequestID => $Request) {
         $CategoryName = $Categories[$Request['CategoryID'] - 1];
-        $Title = empty($Request['Title']) ? (empty($Request['Title2']) ? display_str($Request['TitleJP']) : display_str($Request['Title2'])) : display_str($Request['Title']);
+        $Title = empty($Request['Title']) ? (empty($Request['Title2']) ? esc($Request['TitleJP']) : esc($Request['Title2'])) : esc($Request['Title']);
         $ArtistForm = Requests::get_artists($RequestID);
         $ArtistLink = Artists::display_artists($ArtistForm, true, true);
         $FullName = $ArtistLink."<a href='requests.php?action=view&amp;id=$RequestID'><span dir='ltr'>$Title</span></a>";
@@ -827,7 +827,7 @@ if ($NumRequests > 0) {
         if (!empty($Tags[$RequestID])) {
             $ReqTagList = [];
             foreach ($Tags[$RequestID] as $TagID => $TagName) {
-                $ReqTagList[] = "<a href='requests.php?tags=$TagName'>".display_str($TagName).'</a>';
+                $ReqTagList[] = "<a href='requests.php?tags=$TagName'>".esc($TagName).'</a>';
             }
             $ReqTagList = implode(', ', $ReqTagList);
         } else {

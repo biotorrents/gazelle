@@ -19,7 +19,7 @@ foreach ($Forums as $Forum) {
         continue;
     }
 
-    $ForumDescription = display_str($ForumDescription);
+    $ForumDescription = esc($ForumDescription);
 
     if ($CategoryID != $LastCategoryID) {
         $LastCategoryID = $CategoryID;
@@ -54,7 +54,7 @@ foreach ($Forums as $Forum) {
         <h4>
           <a class="tooltip"
             href="forums.php?action=viewforum&amp;forumid=<?=$ForumID?>"
-            title="<?=display_str($ForumDescription)?>"><?=display_str($ForumName)?></a>
+            title="<?=esc($ForumDescription)?>"><?=esc($ForumName)?></a>
         </h4>
       </td>
 
@@ -73,7 +73,7 @@ foreach ($Forums as $Forum) {
         <span class="float_left last_topic">
           <a href="forums.php?action=viewthread&amp;threadid=<?=$LastTopicID?>"
             class="tooltip"
-            data-title-plain="<?=display_str($LastTopic)?>"><?=display_str(Format::cut_string($LastTopic, 50, 1))?></a>
+            data-title-plain="<?=esc($LastTopic)?>"><?=esc(Format::cut_string($LastTopic, 50, 1))?></a>
         </span>
 
         <?php if (!empty($LastRead[$LastTopicID])) { ?>

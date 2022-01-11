@@ -71,7 +71,7 @@ array_map(
     )
 );
 
-$Request = display_str($_GET['feed']);
+$Request = esc($_GET['feed']);
 $Channel = array_search($Request, $TorrentFeeds);
 
 if ($Channel) {
@@ -267,7 +267,7 @@ switch ($_GET['feed']) {
                 $Feed->retrieve($_GET['feed'], $_GET['authkey'], $_GET['passkey']);
             } elseif (!empty($_GET['name']) && substr($_GET['feed'], 0, 16) === 'torrents_notify_') {
                 // Specific personalized torrent notification channel
-                $Feed->channel(display_str($_GET['name']), 'Personal RSS feed: '.display_str($_GET['name']));
+                $Feed->channel(esc($_GET['name']), 'Personal RSS feed: '.esc($_GET['name']));
                 $Feed->retrieve($_GET['feed'], $_GET['authkey'], $_GET['passkey']);
             } elseif (!empty($_GET['name']) && substr($_GET['feed'], 0, 21) === 'torrents_bookmarks_t_') {
                 // Bookmarks

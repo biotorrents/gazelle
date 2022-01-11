@@ -96,7 +96,7 @@ if (empty($_POST['image'])) {
     if (preg_match('/'.IMAGE_REGEX.'/', trim($_POST['image'])) > 0) {
         $Image = trim($_POST['image']);
     } else {
-        $Err = display_str($_POST['image']).' does not appear to be a valid link to an image.';
+        $Err = esc($_POST['image']).' does not appear to be a valid link to an image.';
     }
 }
 

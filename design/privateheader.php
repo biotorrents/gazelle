@@ -20,7 +20,7 @@ if ($ENV->DEV) {
 } ?>
 
   <title>
-    <?= display_str($PageTitle) ?>
+    <?= esc($PageTitle) ?>
   </title>
 
   <?=
@@ -29,7 +29,7 @@ if ($ENV->DEV) {
         [
         'ENV' => $ENV,
         'LoggedUser' => G::$LoggedUser,
-        'title' => display_str($PageTitle)
+        'title' => esc($PageTitle)
       ]
     );
   ?>
@@ -104,7 +104,7 @@ $AuthKey = G::$LoggedUser['AuthKey'];
 if (isset(G::$LoggedUser['Notify'])) {
     foreach (G::$LoggedUser['Notify'] as $Filter) {
         list($FilterID, $FilterName) = $Filter;
-        $NameEsc = display_str($FilterName);
+        $NameEsc = esc($FilterName);
 
         echo $HTML = <<<HTML
         <link rel="alternate" type="application/rss+xml"

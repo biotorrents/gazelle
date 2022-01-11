@@ -300,7 +300,7 @@ HTML;
 
           <td>
             <input type="text" size="40" name="styleurl" id="styleurl"
-              value="<?=display_str($StyleURL)?>" />
+              value="<?=esc($StyleURL)?>" />
           </td>
         </tr>
 
@@ -663,7 +663,7 @@ HTML;
 
           <td>
             <input type="text" size="50" name="avatar" id="avatar"
-              value="<?=display_str($Avatar)?>" />
+              value="<?=esc($Avatar)?>" />
           </td>
         </tr>
 
@@ -745,7 +745,7 @@ HTML;
 
           <td>
             <input type="text" size="50" name="profile_title" id="profile_title"
-              value="<?=display_str($InfoTitle)?>" />
+              value="<?=esc($InfoTitle)?>" />
           </td>
         </tr>
 
@@ -760,7 +760,7 @@ HTML;
   $textarea = new TEXTAREA_PREVIEW(
       $Name = 'info',
       $ID = 'info',
-      $Value = display_str($Info) ?? '',
+      $Value = esc($Info) ?? '',
   ); ?>
           </td>
         </tr>
@@ -774,7 +774,7 @@ HTML;
 
           <td>
             <input type="text" size="50" name="profile_title_1" id="profile_title_1"
-              value="<?=display_str($ProfileRewards['ProfileInfoTitle1'])?>" />
+              value="<?=esc($ProfileRewards['ProfileInfoTitle1'])?>" />
           </td>
         </tr>
 
@@ -789,7 +789,7 @@ HTML;
   $textarea = new TEXTAREA_PREVIEW(
       $Name = 'profile_info_1',
       $ID = 'profile_info_1',
-      $Value = display_str($ProfileRewards['ProfileInfo1']) ?? '',
+      $Value = esc($ProfileRewards['ProfileInfo1']) ?? '',
   ); ?>
           </td>
         </tr>
@@ -804,7 +804,7 @@ HTML;
 
           <td>
             <input type="text" size="50" name="profile_title_2" id="profile_title_2"
-              value="<?=display_str($ProfileRewards['ProfileInfoTitle2'])?>" />
+              value="<?=esc($ProfileRewards['ProfileInfoTitle2'])?>" />
           </td>
         </tr>
 
@@ -819,7 +819,7 @@ HTML;
   $textarea = new TEXTAREA_PREVIEW(
       $Name = 'profile_info_2',
       $ID = 'profile_info_2',
-      $Value = display_str($ProfileRewards['ProfileInfo2']) ?? '',
+      $Value = esc($ProfileRewards['ProfileInfo2']) ?? '',
   ); ?>
           </td>
         </tr>
@@ -834,7 +834,7 @@ HTML;
 
           <td>
             <input type="text" size="50" name="profile_title_3" id="profile_title_3"
-              value="<?=display_str($ProfileRewards['ProfileInfoTitle3'])?>" />
+              value="<?=esc($ProfileRewards['ProfileInfoTitle3'])?>" />
           </td>
         </tr>
 
@@ -849,7 +849,7 @@ HTML;
   $textarea = new TEXTAREA_PREVIEW(
       $Name = 'profile_info_3',
       $ID = 'profile_info_3',
-      $Value = display_str($ProfileRewards['ProfileInfo3']) ?? '',
+      $Value = esc($ProfileRewards['ProfileInfo3']) ?? '',
   ); ?>
           </td>
         </tr>
@@ -864,7 +864,7 @@ HTML;
 
           <td>
             <input type="text" size="50" name="profile_title_4" id="profile_title_4"
-              value="<?=display_str($ProfileRewards['ProfileInfoTitle4'])?>" />
+              value="<?=esc($ProfileRewards['ProfileInfoTitle4'])?>" />
           </td>
         </tr>
 
@@ -879,7 +879,7 @@ HTML;
   $textarea = new TEXTAREA_PREVIEW(
       $Name = 'profile_info_4',
       $ID = 'profile_info_4',
-      $Value = display_str($ProfileRewards['ProfileInfo4']) ?? '',
+      $Value = esc($ProfileRewards['ProfileInfo4']) ?? '',
   ); ?>
           </td>
         </tr>
@@ -1257,7 +1257,7 @@ list($ArtistsAdded) = $DB->next_record();
           <td>
             <div>
               <input type="text" size="50" name="irckey" id="irckey"
-                value="<?=display_str($IRCKey)?>" />
+                value="<?=esc($IRCKey)?>" />
             </div>
 
             <p class="setting_description">
@@ -1351,7 +1351,7 @@ list($ArtistsAdded) = $DB->next_record();
           <td>
             <div>
               <input type="email" size="50" name="email" id="email"
-                value="<?=display_str($Email)?>" />
+                value="<?=esc($Email)?>" />
             </div>
           </td>
         </tr>

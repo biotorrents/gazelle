@@ -90,7 +90,7 @@ if (!empty($UserPeerStats)) {
         <?php
     } elseif (isset($_GET['userid'])) {
         ?>
-        User <?=display_str($_GET['userid'])?>
+        User <?=esc($_GET['userid'])?>
         doesn't exist
         <?php
     } else {

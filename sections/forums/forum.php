@@ -76,7 +76,7 @@ if (!check_perms('site_moderate_forums')) {
     }
 }
 
-$ForumName = display_str($Forums[$ForumID]['Name']);
+$ForumName = esc($Forums[$ForumID]['Name']);
 if (!Forums::check_forumperm($ForumID)) {
     error(403);
 }
@@ -172,7 +172,7 @@ View::show_header("Forums $ENV->CRUMB ".$Forums[$ForumID]['Name']);
     <br />
 
     <a href="forums.php?action=viewthread&amp;threadid=<?=$ThreadIDs?>"
-      class="brackets"><?=display_str($Thread['Title'])?></a>
+      class="brackets"><?=esc($Thread['Title'])?></a>
     <?php
 } ?>
   </div>
@@ -275,7 +275,7 @@ if (count($Forum) === 0) {
         <?php
     $TopicLength = 75 - (2 * count($PageLinks));
             unset($PageLinks);
-            $Title = display_str($Title);
+            $Title = esc($Title);
             $DisplayTitle = $Title; ?>
         <strong>
           <a href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>"

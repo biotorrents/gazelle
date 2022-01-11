@@ -320,7 +320,7 @@ if (empty($Results)) {
 
                 // echo row?>
       <tr
-        class="torrent torrent_row<?=($TorrentInfo['IsSnatched'] ? ' snatched_torrent' : '') . ($GroupInfo['Flags']['IsSnatched'] ? ' snatched_group' : '') . ($MatchingArtistsText ? ' tooltip" title="'.display_str($MatchingArtistsText) : '')?>"
+        class="torrent torrent_row<?=($TorrentInfo['IsSnatched'] ? ' snatched_torrent' : '') . ($GroupInfo['Flags']['IsSnatched'] ? ' snatched_group' : '') . ($MatchingArtistsText ? ' tooltip" title="'.esc($MatchingArtistsText) : '')?>"
         id="torrent<?=$TorrentID?>">
         <td style="text-align: center;">
           <input type="checkbox"

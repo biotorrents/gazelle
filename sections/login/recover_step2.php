@@ -9,12 +9,12 @@ echo '<h2>Reset your password</h2>';
 
 if (empty($PassWasReset)) {
     if (!empty($Err)) { ?>
-<strong class="important_text"><?=display_str($Err)?></strong><br /><br />
+<strong class="important_text"><?=esc($Err)?></strong><br /><br />
 <?php } ?>
 
 <form class="auth_form" name="recovery" id="recoverform" method="post" action="" onsubmit="return formVal();">
   <input type="hidden" name="key"
-    value="<?=display_str($_REQUEST['key'])?>" />
+    value="<?=esc($_REQUEST['key'])?>" />
 
   <table>
     <tr>

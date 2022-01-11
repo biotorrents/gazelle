@@ -18,7 +18,7 @@ class Text
         $ENV = \ENV::go();
 
         # Prepare clean escapes
-        $string = e($string);
+        $string = esc($string);
 
         # Here's the magic pattern:
         if (!preg_match(

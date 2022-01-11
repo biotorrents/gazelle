@@ -314,13 +314,13 @@ class Debug
   <?php foreach ($OcelotRequests as $i => $Request) { ?>
   <tr>
     <td class="debug_data debug_ocelot_data">
-        <a data-toggle-target="#debug_ocelot_<?=$i?>"><?=display_str($Request['path'])?></a>
+        <a data-toggle-target="#debug_ocelot_<?=$i?>"><?=esc($Request['path'])?></a>
         <pre id="debug_ocelot_<?=$i?>"
-          class="hidden"><?=display_str($Request['response'])?></pre>
+          class="hidden"><?=esc($Request['response'])?></pre>
     </td>
 
     <td class="debug_info" style="width: 100px;">
-        <?=display_str($Request['status'])?>
+        <?=esc($Request['status'])?>
     </td>
     <td class="debug_info debug_timing" style="width: 100px;">
         <?=number_format($Request['time'], 5)?> ms
@@ -366,13 +366,13 @@ class Debug
   <tr>
     <td class="label nobr debug_info debug_cache_key">
         <a href="#"
-          onclick="$('#debug_cache_<?=$Key?>').gtoggle(); return false;"><?=display_str($Key)?></a>
+          onclick="$('#debug_cache_<?=$Key?>').gtoggle(); return false;"><?=esc($Key)?></a>
         <a href="tools.php?action=clear_cache&amp;key=<?=$Key?>&amp;type=clear"
           target="_blank" class="brackets tooltip" title="Clear this cache key">Clear</a>
     </td>
     <td class="debug_data debug_cache_data">
         <pre id="debug_cache_<?=$Key?>" class="hidden">
-<?=display_str(print_r(G::$Cache->get_value($Key, true), true))?>
+<?=esc(print_r(G::$Cache->get_value($Key, true), true))?>
           </pre>
     </td>
   </tr>
@@ -414,13 +414,13 @@ class Debug
           list($Error, $Location, $Call, $Args) = $Error; ?>
   <tr class="valign_top">
     <td class="debug_info debug_error_call">
-        <?=display_str($Call)?>(<?=display_str($Args)?>)
+        <?=esc($Call)?>(<?=esc($Args)?>)
     </td>
     <td class="debug_data debug_error_data">
-        <?=display_str($Error)?>
+        <?=esc($Error)?>
     </td>
     <td>
-        <?=display_str($Location)?>
+        <?=esc($Location)?>
     </td>
   </tr>
   <?php
@@ -472,7 +472,7 @@ class Debug
 
   <tr class="valign_top">
     <td class="debug_data debug_query_data">
-        <div><?=str_replace("\t", '&nbsp;&nbsp;', nl2br(display_str(trim($SQL))))?>
+        <div><?=str_replace("\t", '&nbsp;&nbsp;', nl2br(esc(trim($SQL))))?>
         </div>
     </td>
 
@@ -568,7 +568,7 @@ class Debug
   <tr>
     <td class="debug_info debug_loggedvars_name">
         <a href="#"
-          onclick="$('#debug_loggedvars_<?=$ID?>').gtoggle(); return false;"><?=display_str($Key)?></a>
+          onclick="$('#debug_loggedvars_<?=$ID?>').gtoggle(); return false;"><?=esc($Key)?></a>
         (<?=$Size . ($Size == 1 ? ' element' : ' elements')?>)
         <div>
           <?=$Data['bt']['path'].':'.$Data['bt']['line']; ?>
@@ -576,7 +576,7 @@ class Debug
     </td>
     <td class="debug_data debug_loggedvars_data">
         <pre id="debug_loggedvars_<?=$ID?>" class="hidden">
-<?=display_str(print_r($Data['data'], true))?>
+<?=esc(print_r($Data['data'], true))?>
           </pre>
     </td>
   </tr>

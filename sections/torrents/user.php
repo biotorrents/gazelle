@@ -313,7 +313,7 @@ $DB->query('SELECT FOUND_ROWS()');
 list($TorrentCount) = $DB->next_record();
 
 $Results = Torrents::get_groups($GroupIDs);
-$Action = display_str($_GET['type']);
+$Action = esc($_GET['type']);
 $User = Users::user_info($UserID);
 
 View::show_header($User['Username']."'s $Action torrents", 'browse');
@@ -355,7 +355,7 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <select id="container" name="container" class="ft_container">
               <option value="">Format</option>
               <?php foreach ($Containers as $Key => $ContainerName) { ?>
-              <option value="<?= display_str($Key); ?>" <?php Format::selected('container', $Key) ?>><?= display_str($Key); ?>
+              <option value="<?= esc($Key); ?>" <?php Format::selected('container', $Key) ?>><?= esc($Key); ?>
               </option>
               <?php } ?>
             </select>
@@ -363,7 +363,7 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <select id="codec" name="codec" class="ft_codec">
               <option value="">License</option>
               <?php foreach ($ENV->META->Licenses as $License) { ?>
-              <option value="<?= display_str($License); ?>" <?php Format::selected('codec', $License) ?>><?= display_str($License); ?>
+              <option value="<?= esc($License); ?>" <?php Format::selected('codec', $License) ?>><?= esc($License); ?>
               </option>
               <?php } ?>
             </select>
@@ -371,8 +371,8 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <select id="resolution" name="resolution" class="ft_resolution">
               <option value="">Scope</option>
               <?php foreach ($Resolutions as $ResolutionName) { ?>
-              <option value="<?= display_str($ResolutionName); ?>"
-                <?php Format::selected('resolution', $ResolutionName) ?>><?= display_str($ResolutionName); ?>
+              <option value="<?= esc($ResolutionName); ?>"
+                <?php Format::selected('resolution', $ResolutionName) ?>><?= esc($ResolutionName); ?>
               </option>
               <?php } ?>
             </select>
@@ -380,7 +380,7 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <select name="media" class="ft_media">
               <option value="">Platform</option>
               <?php foreach ($Media as $MediaName) { ?>
-              <option value="<?= display_str($MediaName); ?>" <?php Format::selected('media', $MediaName) ?>><?= display_str($MediaName); ?>
+              <option value="<?= esc($MediaName); ?>" <?php Format::selected('media', $MediaName) ?>><?= esc($MediaName); ?>
               </option>
               <?php } ?>
             </select>

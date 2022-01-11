@@ -103,7 +103,7 @@ View::show_header(
 new TEXTAREA_PREVIEW(
     'body', # $title breaks "Rename (will not merge)"
     $ID = 'body',
-    $Value = display_str($Body) ?? '',
+    $Value = esc($Body) ?? '',
 );
 
   $DB->query("

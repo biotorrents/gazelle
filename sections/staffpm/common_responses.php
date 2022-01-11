@@ -73,13 +73,13 @@ while (list($ID, $Message, $Name) = $DB->next_record()) {
         <div class="head">
           <strong>Name:</strong>
           <input type="hidden" name="id" value="<?=$ID?>" />
-          <input type="text" name="name" id="response_name_<?=$ID?>" size="87" value="<?=display_str($Name)?>" />
+          <input type="text" name="name" id="response_name_<?=$ID?>" size="87" value="<?=esc($Name)?>" />
         </div>
         <div class="pad">
           <div class="box pad hidden" id="response_div_<?=$ID?>">
             <?=Text::parse($Message)?>
           </div>
-          <textarea rows="10" cols="87" id="response_message_<?=$ID?>" name="message"><?=display_str($Message)?></textarea>
+          <textarea rows="10" cols="87" id="response_message_<?=$ID?>" name="message"><?=esc($Message)?></textarea>
           <br />
           <input type="button" value="Toggle preview" onclick="PreviewResponse(<?=$ID?>);" />
           <input type="button" value="Delete" onclick="DeleteMessage(<?=$ID?>);" />

@@ -511,11 +511,11 @@ class Users
                 $DonorRewards = Donations::get_rewards($UserID);
 
                 if ($EnabledRewards['HasDonorIconMouseOverText'] && !empty($DonorRewards['IconMouseOverText'])) {
-                    $IconText = display_str($DonorRewards['IconMouseOverText']);
+                    $IconText = esc($DonorRewards['IconMouseOverText']);
                 }
 
                 if ($EnabledRewards['HasDonorIconLink'] && !empty($DonorRewards['CustomIconLink'])) {
-                    $IconLink = display_str($DonorRewards['CustomIconLink']);
+                    $IconLink = esc($DonorRewards['CustomIconLink']);
                 }
 
                 if ($EnabledRewards['HasCustomDonorIcon'] && !empty($DonorRewards['CustomIcon'])) {

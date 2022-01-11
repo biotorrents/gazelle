@@ -44,7 +44,7 @@ class Top10View
     private static function render_tile($Url, $Name, $Image)
     {
         if (!empty($Image)) {
-            $Name = display_str($Name); ?>
+            $Name = esc($Name); ?>
 <li>
   <a
     href="<?=$Url?><?=$Name?>">
@@ -76,7 +76,7 @@ class Top10View
         if (!empty($Image)) {
             $Image = ImageTools::process($Image);
             $Title = "title=\"&lt;img class=&quot;large_tile&quot; src=&quot;$Image&quot; alt=&quot;&quot; /&gt;\"";
-            $Name = display_str($Name); ?>
+            $Name = esc($Name); ?>
 
 <li>
   <a class="tooltip_image" data-title-plain="<?=$Name?>" <?=$Title?> href="<?=$Url?><?=$Name?>"><?=$Name?></a>

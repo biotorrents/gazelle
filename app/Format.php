@@ -215,7 +215,7 @@ class Format
 
             return http_build_query($QueryItems, '', $Separator);
         } else {
-            return $Escape ? display_str($_SERVER['QUERY_STRING']) : $_SERVER['QUERY_STRING'];
+            return $Escape ? esc($_SERVER['QUERY_STRING']) : $_SERVER['QUERY_STRING'];
         }
     }
 
@@ -460,7 +460,7 @@ class Format
      * @param string $Str the string to unsanitize
      * @return unsanitized string
      */
-    public static function undisplay_str($Str)
+    public static function unesc($Str)
     {
         return mb_convert_encoding($Str, 'UTF-8', 'HTML-ENTITIES');
     }
@@ -477,9 +477,9 @@ class Format
     {
         if (!empty($_GET[$Index])) {
             if ($Return) {
-                return display_str($_GET[$Index]);
+                return esc($_GET[$Index]);
             } else {
-                echo display_str($_GET[$Index]);
+                echo esc($_GET[$Index]);
             }
         }
     }
@@ -599,8 +599,8 @@ class Format
         
         return sprintf(
             '<strong class="torrent_label tooltip %1$s" title="%2$s" style="white-space: nowrap;">%2$s</strong>',
-            display_str($Class),
-            display_str($Text)
+            esc($Class),
+            esc($Text)
         );
     }
 

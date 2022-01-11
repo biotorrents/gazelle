@@ -387,7 +387,7 @@ if ($TopicID) {
       </strong>
     </div>
     <div class="pad">
-      <p><strong><?=display_str($Question)?></strong></p>
+      <p><strong><?=esc($Question)?></strong></p>
       <?php if ($UserResponse !== null || $Closed) { ?>
       <ul class="poll nobullet">
         <?php foreach ($Answers as $i => $Answer) {
@@ -398,7 +398,7 @@ if ($TopicID) {
             $Ratio = 0;
             $Percent = 0;
         } ?>
-        <li<?=((!empty($UserResponse) && ($UserResponse == $i))?' class="poll_your_answer"':'')?>><?=display_str($Answers[$i])?> (<?=number_format($Percent * 100, 2)?>%)</li>
+        <li<?=((!empty($UserResponse) && ($UserResponse == $i))?' class="poll_your_answer"':'')?>><?=esc($Answers[$i])?> (<?=number_format($Percent * 100, 2)?>%)</li>
           <li class="graph">
             <span class="center_poll"
               style="width: <?=round($Ratio * 140)?>px;"></span>
@@ -419,7 +419,7 @@ if ($TopicID) {
           <?php foreach ($Answers as $i => $Answer) { ?>
           <input type="radio" name="vote" id="answer_<?=$i?>"
             value="<?=$i?>" />
-          <label for="answer_<?=$i?>"><?=display_str($Answers[$i])?></label><br />
+          <label for="answer_<?=$i?>"><?=esc($Answers[$i])?></label><br />
           <?php } ?>
           <br /><input type="radio" name="vote" id="answer_0" value="0" /> <label
             for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br /><br />

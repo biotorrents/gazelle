@@ -29,7 +29,7 @@ if (!empty($Err)) {
     if (isset($ErrNoEscape)) {
         echo '<div class="box save_message error">'.$Err.'</div>';
     } else {
-        echo '<div class="box save_message error">'.display_str($Err).'</div>';
+        echo '<div class="box save_message error">'.esc($Err).'</div>';
     }
 }
 ?>
@@ -79,7 +79,7 @@ if ($CategoryID > 0 || check_perms('site_collages_delete')) { ?>
       new TEXTAREA_PREVIEW(
           $Name = 'description',
           $ID = 'description',
-          $Value = display_str($Description) ?? '',
+          $Value = esc($Description) ?? '',
       ); ?>
           </td>
         </tr>

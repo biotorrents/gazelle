@@ -53,7 +53,7 @@ function is_number($Str)
 /**
  * display_str
  */
-function display_str($Str)
+function esc($Str)
 {
     if ($Str !== '') {
         $Str = make_utf8($Str);
@@ -138,7 +138,7 @@ function display_array($Array, $Escape = [])
 {
     foreach ($Array as $Key => $Val) {
         if ((!is_array($Escape) && $Escape === true) || !in_array($Key, $Escape)) {
-            $Array[$Key] = display_str($Val);
+            $Array[$Key] = esc($Val);
         }
     }
 

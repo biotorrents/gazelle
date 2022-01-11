@@ -12,7 +12,7 @@ if (!empty($_GET['id'])) {
 } elseif ($_GET['name'] !== '') {
     $ArticleID = Wiki::alias_to_id($_GET['name']);
 } else {
-    error('Unknown article: '.display_str($_GET['id']));
+    error('Unknown article: '.esc($_GET['id']));
 }
 
 Security::CheckInt($ArticleID);
@@ -29,11 +29,11 @@ if (!$ArticleID) { // No article found
 
     <ul>
       <li><a
-          href="wiki.php?action=search&amp;search=<?=display_str($_GET['name'])?>">Search</a>
+          href="wiki.php?action=search&amp;search=<?=esc($_GET['name'])?>">Search</a>
         for an article similar to this.</li>
 
       <li><a
-          href="wiki.php?action=create&amp;alias=<?=display_str(Wiki::normalize_alias($_GET['name']))?>">Create</a>
+          href="wiki.php?action=create&amp;alias=<?=esc(Wiki::normalize_alias($_GET['name']))?>">Create</a>
         an article in its place.</li>
     </ul>
   </div>

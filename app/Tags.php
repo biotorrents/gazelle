@@ -183,7 +183,7 @@ class Tags
             $Class = $Split['class']; ?>
 
 <li><a class="<?=$Class?>"
-    href="<?=$Link . display_str($Name) . $ArtistName?>"><?=display_str($Name)?></a> (<?=$Total?>)</li>
+    href="<?=$Link . esc($Name) . $ArtistName?>"><?=esc($Name)?></a> (<?=$Total?>)</li>
 <?php
         }
     }
@@ -319,6 +319,6 @@ class Tags
             $Name = $Split[0];
             $Class = "tag_" . $Split[1];
         }
-        return array("name" => display_str($Name), "class" => display_str($Class));
+        return array("name" => esc($Name), "class" => esc($Class));
     }
 }

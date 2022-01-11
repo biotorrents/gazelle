@@ -92,7 +92,7 @@ if (!$DB->has_results()) {
 ?>
         <tr class="<?=$RowClass?>">
           <td class="center"><input type="checkbox" name="id[]" value="<?=$ID?>" /></td>
-          <td><a href="staffpm.php?action=viewconv&amp;id=<?=$ID?>"><?=display_str($Subject)?></a></td>
+          <td><a href="staffpm.php?action=viewconv&amp;id=<?=$ID?>"><?=esc($Subject)?></a></td>
           <td><?=time_diff($Date, 2, true)?></td>
           <td><?=$Assigned?></td>
         </tr>

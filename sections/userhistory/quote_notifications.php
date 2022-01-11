@@ -98,14 +98,14 @@ View::show_header('Quote Notifications');
 <?
 foreach ($Results as $Result) {
   if ($Result['Page'] == 'forums') {
-    $Links = 'Forums: <a href="forums.php?action=viewforum&amp;forumid=' . $Result['ForumID'] . '">' . display_str($Result['ForumName']) . '</a> &gt; ';
-    $Links .= '<a href="forums.php?action=viewthread&amp;threadid=' . $Result['PageID'] . '" class="tooltip" title="' . display_str($Result['ForumTitle']) . '">' . Format::cut_string($Result['ForumTitle'], 75) . '</a> &gt; ';
+    $Links = 'Forums: <a href="forums.php?action=viewforum&amp;forumid=' . $Result['ForumID'] . '">' . esc($Result['ForumName']) . '</a> &gt; ';
+    $Links .= '<a href="forums.php?action=viewthread&amp;threadid=' . $Result['PageID'] . '" class="tooltip" title="' . esc($Result['ForumTitle']) . '">' . Format::cut_string($Result['ForumTitle'], 75) . '</a> &gt; ';
     $Links .= '<a href="forums.php?action=viewthread&amp;threadid=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'] . '">' . 'Post #' . $Result['PostID'] . '</a>';
   } elseif ($Result['Page'] == 'artist') {
-    $Links = 'Artist: <a href="artist.php?id=' . $Result['PageID'] . '">' . display_str($Result['ArtistName']) . '</a> &gt; ';
+    $Links = 'Artist: <a href="artist.php?id=' . $Result['PageID'] . '">' . esc($Result['ArtistName']) . '</a> &gt; ';
     $Links .= '<a href="artist.php?id=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'] . '">Post #' . $Result['PostID'] . '</a>';
   } elseif ($Result['Page'] == 'collages') {
-    $Links = 'Collage: <a href="collages.php?id=' . $Result['PageID'] . '">' . display_str($Result['CollageName']) . '</a> &gt; ';
+    $Links = 'Collage: <a href="collages.php?id=' . $Result['PageID'] . '">' . esc($Result['CollageName']) . '</a> &gt; ';
     $Links .= '<a href="collages.php?action=comments&amp;collageid=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'] . '">Post #' . $Result['PostID'] . '</a>';
   } elseif ($Result['Page'] == 'requests') {
     if (!isset($Requests[$Result['PageID']])) {

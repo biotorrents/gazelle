@@ -281,8 +281,8 @@ View::show_header('Browse Torrents', 'browse');
                 <option value="">Sequences</option>
                 <?php foreach ($ENV->META->Platforms->Sequences as $Platform) { ?>
                 <option
-                  value="<?=display_str($Platform); # pcs-comment-start; keep quote?>"
-                  <?Format::selected('media', $Platform)?>><?=display_str($Platform); ?>
+                  value="<?=esc($Platform); # pcs-comment-start; keep quote?>"
+                  <?Format::selected('media', $Platform)?>><?=esc($Platform); ?>
                 </option>
                 <?php } ?>
               </select>
@@ -291,8 +291,8 @@ View::show_header('Browse Torrents', 'browse');
                 <option value="">Graphs</option>
                 <?php foreach ($ENV->META->Platforms->Graphs as $Platform) { ?>
                 <option
-                  value="<?=display_str($Platform); # pcs-comment-start; keep quote?>"
-                  <?Format::selected('media', $Platform)?>><?=display_str($Platform); ?>
+                  value="<?=esc($Platform); # pcs-comment-start; keep quote?>"
+                  <?Format::selected('media', $Platform)?>><?=esc($Platform); ?>
                 </option>
                 <?php } ?>
               </select>
@@ -301,8 +301,8 @@ View::show_header('Browse Torrents', 'browse');
                 <option value="">Images</option>
                 <?php foreach ($ENV->META->Platforms->Images as $Platform) { ?>
                 <option
-                  value="<?=display_str($Platform); # pcs-comment-start; keep quote?>"
-                  <?Format::selected('media', $Platform)?>><?=display_str($Platform); ?>
+                  value="<?=esc($Platform); # pcs-comment-start; keep quote?>"
+                  <?Format::selected('media', $Platform)?>><?=esc($Platform); ?>
                 </option>
                 <?php } ?>
               </select>
@@ -311,8 +311,8 @@ View::show_header('Browse Torrents', 'browse');
                 <option value="">Documents</option>
                 <?php foreach ($ENV->META->Platforms->Documents as $Platform) { ?>
                 <option
-                  value="<?=display_str($Platform); # pcs-comment-start; keep quote?>"
-                  <?Format::selected('media', $Platform)?>><?=display_str($Platform); ?>
+                  value="<?=esc($Platform); # pcs-comment-start; keep quote?>"
+                  <?Format::selected('media', $Platform)?>><?=esc($Platform); ?>
                 </option>
                 <?php } ?>
               </select>
@@ -329,8 +329,8 @@ View::show_header('Browse Torrents', 'browse');
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">NucleoSeq</option>
                 <?php foreach (array_merge($SeqFormats, $PlainFormats) as $Key => $Container) { ?>
-                <option value="<?=display_str($Key);?>"
-                  <?Format::selected('container', $Key)?>><?=display_str($Key);?>
+                <option value="<?=esc($Key);?>"
+                  <?Format::selected('container', $Key)?>><?=esc($Key);?>
                 </option>
                 <?php } ?>
               </select>
@@ -338,8 +338,8 @@ View::show_header('Browse Torrents', 'browse');
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">ProtSeq</option>
                 <?php foreach (array_merge($ProtFormats, $PlainFormats) as $Key => $Container) { ?>
-                <option value="<?=display_str($Key);?>"
-                  <?Format::selected('container', $Key)?>><?=display_str($Key);?>
+                <option value="<?=esc($Key);?>"
+                  <?Format::selected('container', $Key)?>><?=esc($Key);?>
                 </option>
                 <?php } ?>
               </select>
@@ -348,8 +348,8 @@ View::show_header('Browse Torrents', 'browse');
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">XMLs</option>
                 <?php foreach (array_merge($GraphXmlFormats, $GraphTxtFormats, $PlainFormats) as $Key => $Container) { ?>
-                <option value="<?=display_str($Key);?>"
-                  <?Format::selected('container', $Key)?>><?=display_str($Key);?>
+                <option value="<?=esc($Key);?>"
+                  <?Format::selected('container', $Key)?>><?=esc($Key);?>
                 </option>
                 <?php } ?>
               </select>
@@ -357,8 +357,8 @@ View::show_header('Browse Torrents', 'browse');
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">Raster</option>
                 <?php foreach (array_merge($ImgFormats, $MapRasterFormats, $PlainFormats) as $Key => $Container) { ?>
-                <option value="<?=display_str($Key);?>"
-                  <?Format::selected('container', $Key)?>><?=display_str($Key);?>
+                <option value="<?=esc($Key);?>"
+                  <?Format::selected('container', $Key)?>><?=esc($Key);?>
                 </option>
                 <?php } ?>
               </select>
@@ -366,8 +366,8 @@ View::show_header('Browse Torrents', 'browse');
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">Vector</option>
                 <?php foreach (array_merge($MapVectorFormats, $PlainFormats) as $Key => $Container) { ?>
-                <option value="<?=display_str($Key);?>"
-                  <?Format::selected('container', $Key)?>><?=display_str($Key);?>
+                <option value="<?=esc($Key);?>"
+                  <?Format::selected('container', $Key)?>><?=esc($Key);?>
                 </option>
                 <?php } ?>
               </select>
@@ -375,8 +375,8 @@ View::show_header('Browse Torrents', 'browse');
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">Extras</option>
                 <?php foreach (array_merge($BinDocFormats, $CpuGenFormats, $PlainFormats) as $Key => $Container) { ?>
-                <option value="<?=display_str($Key);?>"
-                  <?Format::selected('container', $Key)?>><?=display_str($Key);?>
+                <option value="<?=esc($Key);?>"
+                  <?Format::selected('container', $Key)?>><?=esc($Key);?>
                 </option>
                 <?php } ?>
               </select>
@@ -393,8 +393,8 @@ View::show_header('Browse Torrents', 'browse');
                 <option value="">Scope</option>
                 <?php foreach ($Resolutions as $Resolution) { ?>
                 <option
-                  value="<?=display_str($Resolution); # pcs-comment-start; keep quote?>"
-                  <?Format::selected('resolution', $Resolution)?>><?=display_str($Resolution); ?>
+                  value="<?=esc($Resolution); # pcs-comment-start; keep quote?>"
+                  <?Format::selected('resolution', $Resolution)?>><?=esc($Resolution); ?>
                 </option>
                 <?php } ?>
               </select>
@@ -421,8 +421,8 @@ View::show_header('Browse Torrents', 'browse');
               <select name="codec" class="ft_codec fti_advanced">
                 <option value="">License</option>
                 <?php foreach ($ENV->META->Licenses as $License) { ?>
-                <option value="<?=display_str($License); ?>"
-                  <?Format::selected('codec', $License)?>><?=display_str($License); ?>
+                <option value="<?=esc($License); ?>"
+                  <?Format::selected('codec', $License)?>><?=esc($License); ?>
                 </option>
                 <?php } ?>
               </select>
@@ -472,7 +472,7 @@ View::show_header('Browse Torrents', 'browse');
             <td class="ft_taglist">
               <input type="search" size="37" id="tags" name="taglist" class="inputtext smaller"
                 placeholder="Tags (comma-separated)"
-                value="<?=display_str($Search->get_terms('taglist'))?>"
+                value="<?=esc($Search->get_terms('taglist'))?>"
                 <?php Users::has_autocomplete_enabled('other'); ?>
               aria-label="Tags to search">&nbsp;
               <input type="radio" name="tags_type" id="tags_type0" value="0" <?Format::selected(

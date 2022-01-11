@@ -122,16 +122,16 @@ if (check_perms('admin_manage_blog')) {
       <input type="hidden" name="blogid" value="<?=$BlogID; ?>" />
       <?php } ?>
       <h3>Title</h3>
-      <input type="text" name="title" size="95" <?=!empty($Title) ? ' value="'.display_str($Title).'"' : ''; ?>
+      <input type="text" name="title" size="95" <?=!empty($Title) ? ' value="'.esc($Title).'"' : ''; ?>
       /><br />
       <h3>Body</h3>
       <textarea name="body" cols="95"
-        rows="15"><?=!empty($Body) ? display_str($Body) : ''; ?></textarea>
+        rows="15"><?=!empty($Body) ? esc($Body) : ''; ?></textarea>
       <br />
       <input type="checkbox" value="1" name="important" id="important" checked="checked" /><label
         for="important">Important</label><br />
       <h3>Thread ID</h3>
-      <input type="text" name="thread" size="8" <?=!empty($ThreadID) ? ' value="'.display_str($ThreadID).'"' : ''; ?>
+      <input type="text" name="thread" size="8" <?=!empty($ThreadID) ? ' value="'.esc($ThreadID).'"' : ''; ?>
       />
       (Leave blank to create thread automatically)
       <br /><br />

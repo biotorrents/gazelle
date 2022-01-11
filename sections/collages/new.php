@@ -36,7 +36,7 @@ if (isset($Err)) { ?>
             <input type="text" <?=$NoName ? ' class="hidden"' : ''; ?>
             name="name" size="60" id="namebox"
             placeholder="Collection title"
-            value="<?=display_str($Name)?>" />
+            value="<?=esc($Name)?>" />
             <span id="personal" <?=$NoName ? '' : ' class="hidden"'; ?>
               style="font-style: oblique;">
               <strong>
@@ -110,7 +110,7 @@ if (($CollageCount < $LoggedUser['Permissions']['MaxCollages']) && check_perms('
 new TEXTAREA_PREVIEW(
     $Name = 'description',
     $ID = 'description',
-    $Value = display_str($Description) ?? '',
+    $Value = esc($Description) ?? '',
     $Placeholder = "Detailed description of the collection's purpose"
 ); ?>
           </td>
@@ -121,7 +121,7 @@ new TEXTAREA_PREVIEW(
 
           <td>
             <input type="text" id="tags" name="tags" size="60" placeholder="Tags (comma-separated)"
-              value="<?=display_str($Tags)?>" />
+              value="<?=esc($Tags)?>" />
           </td>
         </tr>
 

@@ -210,7 +210,7 @@ class DB
         #$Debug->analysis('!dev DB Error', $DBError, 3600 * 24);
 
         if ($ENV->DEV || check_perms('site_debug') || isset($argv[1])) {
-            echo '<pre>'.display_str($DBError).'</pre>';
+            echo '<pre>'.esc($DBError).'</pre>';
             if ($ENV->DEV || check_perms('site_debug')) {
                 print_r($this->Queries);
             }
@@ -505,8 +505,8 @@ class DB
         $Return = [];
         while ($Row = mysqli_fetch_array($this->QueryID)) {
             if ($Escape) {
-                $Key = display_str($Row[$KeyField]);
-                $Val = display_str($Row[$ValField]);
+                $Key = esc($Row[$KeyField]);
+                $Val = esc($Row[$ValField]);
             } else {
                 $Key = $Row[$KeyField];
                 $Val = $Row[$ValField];
@@ -524,7 +524,7 @@ class DB
     {
         $Return = [];
         while ($Row = mysqli_fetch_array($this->QueryID)) {
-            $Return[] = $Escape ? display_str($Row[$Key]) : $Row[$Key];
+            $Return[] = $Escape ? esc($Row[$Key]) : $Row[$Key];
         }
         
         mysqli_data_seek($this->QueryID, 0);

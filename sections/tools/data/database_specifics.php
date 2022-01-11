@@ -166,11 +166,11 @@ foreach ($Tables as $Table) {
 
     <tr class="row">
       <td>
-        <?=display_str($Name)?>
+        <?=esc($Name)?>
       </td>
 
       <td>
-        <?=display_str($Engine)?>
+        <?=esc($Engine)?>
       </td>
 
       <td>
@@ -195,7 +195,7 @@ foreach ($Tables as $Table) {
 
       <!--
       <td>
-        <a href="tools.php?action=database_specifics&table=<?=null#display_str($Name)?>"
+        <a href="tools.php?action=database_specifics&table=<?=null#esc($Name)?>"
       class="brackets">Schema</a>
       </td>
       -->

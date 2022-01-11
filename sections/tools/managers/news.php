@@ -66,7 +66,7 @@ switch ($_GET['action']) {
 
       <h3>Title</h3>
       <input type="text" name="title" size="95" <?php if (!empty($Title)) {
-    echo ' value="' .display_str($Title).'"';
+    echo ' value="' .esc($Title).'"';
 } ?>>
 
       <h3>Body</h3>
@@ -74,7 +74,7 @@ switch ($_GET['action']) {
 $Textarea = new TEXTAREA_PREVIEW(
     $Name = 'body',
     $ID = '',
-    $Value = display_str($Body) ?? '',
+    $Value = esc($Body) ?? '',
 ); ?>
 
       <div class="center">
@@ -98,7 +98,7 @@ while (list($NewsID, $Title, $Body, $NewsTime) = $DB->next_record()) {
     ?>
   <div class="box vertical_space news_post">
     <div class="head">
-      <strong><?=display_str($Title) ?></strong> - posted <?=time_diff($NewsTime) ?>
+      <strong><?=esc($Title) ?></strong> - posted <?=time_diff($NewsTime) ?>
       - <a href="tools.php?action=editnews&amp;id=<?=$NewsID?>"
         class="brackets">Edit</a>
       <a href="tools.php?action=deletenews&amp;id=<?=$NewsID?>&amp;auth=<?=$LoggedUser['AuthKey']?>"

@@ -115,7 +115,7 @@ $DB->set_query_id($Reports);
                     echo 'No user with the reported ID found';
                   } else {
                     list($Username) = $DB->next_record();
-                    echo "<a href=\"user.php?id=$ThingID\">" . display_str($Username) . '</a>';
+                    echo "<a href=\"user.php?id=$ThingID\">" . esc($Username) . '</a>';
                   }
                   break;
                 case 'request':
@@ -128,7 +128,7 @@ $DB->set_query_id($Reports);
                     echo 'No request with the reported ID found';
                   } else {
                     list($Name) = $DB->next_record();
-                    echo "<a href=\"requests.php?action=view&amp;id=$ThingID\">" . display_str($Name) . '</a>';
+                    echo "<a href=\"requests.php?action=view&amp;id=$ThingID\">" . esc($Name) . '</a>';
                   }
                   break;
                 case 'collage':
@@ -140,7 +140,7 @@ $DB->set_query_id($Reports);
                     echo 'No collage with the reported ID found';
                   } else {
                     list($Name) = $DB->next_record();
-                    echo "<a href=\"collages.php?id=$ThingID\">" . display_str($Name) . '</a>';
+                    echo "<a href=\"collages.php?id=$ThingID\">" . esc($Name) . '</a>';
                   }
                   break;
                 case 'thread':
@@ -152,7 +152,7 @@ $DB->set_query_id($Reports);
                     echo 'No forum thread with the reported ID found';
                   } else {
                     list($Title) = $DB->next_record();
-                    echo "<a href=\"forums.php?action=viewthread&amp;threadid=$ThingID\">" . display_str($Title) . '</a>';
+                    echo "<a href=\"forums.php?action=viewthread&amp;threadid=$ThingID\">" . esc($Title) . '</a>';
                   }
                   break;
                 case 'post':

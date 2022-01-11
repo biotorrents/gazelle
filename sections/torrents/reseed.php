@@ -140,7 +140,7 @@ View::show_header();
     <p>
       Successfully sent re-seed request for torrent
       <a
-        href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"><?=display_str($Name)?></a>
+        href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"><?=esc($Name)?></a>
       to <?=$NumUsers?> user<?=$NumUsers === 1 ? '' : 's';?>.
     </p>
   </div>

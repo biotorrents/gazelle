@@ -100,13 +100,13 @@ $DB->set_query_id($Bans);
         <td>
           <input type="hidden" name="action" value="ip_ban" />
           <input type="search" id="ip" name="ip" size="20"
-            value="<?=(!empty($_GET['ip']) ? display_str($_GET['ip']) : '')?>" />
+            value="<?=(!empty($_GET['ip']) ? esc($_GET['ip']) : '')?>" />
         </td>
         <td class="label"><label for="notes">Notes:</label></td>
         <td>
           <input type="hidden" name="action" value="ip_ban" />
           <input type="search" id="notes" name="notes" size="60"
-            value="<?=(!empty($_GET['notes']) ? display_str($_GET['notes']) : '')?>" />
+            value="<?=(!empty($_GET['notes']) ? esc($_GET['notes']) : '')?>" />
         </td>
         <td>
           <input type="submit" class="button-primary" value="Search" />

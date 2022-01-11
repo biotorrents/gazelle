@@ -113,7 +113,7 @@ class Sphinxql extends mysqli
         #$Debug->analysis('SphinxQL Error', $ErrorMsg, 3600*24);
 
         if ($Halt === true && ($ENV->DEV || check_perms('site_debug'))) {
-            echo '<pre>'.display_str($ErrorMsg).'</pre>';
+            echo '<pre>'.esc($ErrorMsg).'</pre>';
             error();
         } elseif ($Halt === true) {
             error(-1);

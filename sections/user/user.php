@@ -627,13 +627,13 @@ if ($ParanoiaLevel == 0) {
         <li>Paranoia level: <span class="tooltip"
             title="<?=$ParanoiaLevel?>"><?=$ParanoiaLevelText?></span></li>
         <?php if (check_perms('users_view_email', $Class) || $OwnProfile) { ?>
-        <li>Email: <a href="mailto:<?=display_str($Email)?>"><?=display_str($Email)?></a>
+        <li>Email: <a href="mailto:<?=esc($Email)?>"><?=esc($Email)?></a>
         </li>
         <?php }
 
 if (check_perms('users_view_ips', $Class)) {
     $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]'; ?>
-        <li>IP: <?=display_str($IP)?>
+        <li>IP: <?=esc($IP)?>
         </li>
         <li>Host: <?=Tools::get_host_by_ajax($IP)?>
         </li>
@@ -643,7 +643,7 @@ if (check_perms('users_view_ips', $Class)) {
 if (check_perms('users_view_keys', $Class) || $OwnProfile) {
     ?>
         <li>Passkey: <a href="#" id="passkey"
-            onclick="togglePassKey('<?=display_str($torrent_pass)?>'); return false;"
+            onclick="togglePassKey('<?=esc($torrent_pass)?>'); return false;"
             class="brackets">View</a></li>
         <?php
 }
@@ -791,9 +791,9 @@ if (check_paranoia_here('snatched')) {
           <a
             href="torrents.php?id=<?=$RS['ID']?>">
             <img class="tooltip"
-              title="<?=display_str($RS['Artist'])?><?=display_str($RSName)?>"
+              title="<?=esc($RS['Artist'])?><?=esc($RSName)?>"
               src="<?=ImageTools::process($RS['WikiImage'], 'thumb')?>"
-              alt="<?=display_str($RS['Artist'])?><?=display_str($RSName)?>"
+              alt="<?=esc($RS['Artist'])?><?=esc($RSName)?>"
               width="100%" />
           </a>
         </div>
@@ -904,7 +904,7 @@ foreach ($Collages as $CollageInfo) {
     $Collage = $DB->to_array(false, MYSQLI_ASSOC, false); ?>
     <div class="box" id="collage<?=$CollageID?>_box">
       <div class="head">
-        <?=display_str($CName)?> - <a
+        <?=esc($CName)?> - <a
           href="collages.php?id=<?=$CollageID?>" class="brackets">See
           full</a>
         <span class="float_right">
@@ -1031,7 +1031,7 @@ if (empty($LoggedUser['DisableRequests']) && check_paranoia_here('requestsvoted_
       $Tags = $Request['Tags'];
             $TagList = [];
             foreach ($Tags as $TagID => $TagName) {
-                $TagList[] = "<a href=\"requests.php?tags=$TagName\">".display_str($TagName).'</a>';
+                $TagList[] = "<a href=\"requests.php?tags=$TagName\">".esc($TagName).'</a>';
             }
             $TagList = implode(', ', $TagList); ?>
               <?=$TagList?>
@@ -1114,7 +1114,7 @@ if (check_perms('users_mod', $Class) || $IsFLS) {
         } ?>
       <tr>
         <td><a
-            href="staffpm.php?action=viewconv&amp;id=<?=$ID?>"><?=display_str($Subject)?></a></td>
+            href="staffpm.php?action=viewconv&amp;id=<?=$ID?>"><?=esc($Subject)?></a></td>
         <td><?=time_diff($Date, 2, true)?>
         </td>
         <td><?=$Assigned?>
@@ -1171,7 +1171,7 @@ if (check_perms('users_mod', $Class)) { ?>
         </div>
         <textarea id="admincomment" onkeyup="resize('admincomment');" class="AdminComment hidden" name="AdminComment"
           cols="65" rows="26"
-          style="width: 98%;"><?=display_str($AdminComment)?></textarea>
+          style="width: 98%;"><?=esc($AdminComment)?></textarea>
         <a href="#" name="admincommentbutton" onclick="ChangeTo('text'); return false;" class="brackets">Toggle
           edit</a>
         <script type="text/javascript">
@@ -1190,7 +1190,7 @@ if (check_perms('users_mod', $Class)) { ?>
       <tr>
         <td class="label">Username:</td>
         <td><input type="text" size="20" name="Username"
-            value="<?=display_str($Username)?>" /></td>
+            value="<?=esc($Username)?>" /></td>
       </tr>
       <?php
   }
@@ -1199,7 +1199,7 @@ if (check_perms('users_mod', $Class)) { ?>
       <tr>
         <td class="label">Custom title:</td>
         <td><input type="text" class="wide_input_text" name="Title"
-            value="<?=display_str($CustomTitle)?>" /></td>
+            value="<?=esc($CustomTitle)?>" /></td>
       </tr>
       <?php
   }
@@ -1388,7 +1388,7 @@ if (!$DisablePoints) {
         <td class="label tooltip" title="This is the message shown in the right-hand column on /staff.php">FLS/Staff
           remark:</td>
         <td><input type="text" class="wide_input_text" name="SupportFor"
-            value="<?=display_str($SupportFor)?>" /></td>
+            value="<?=esc($SupportFor)?>" /></td>
       </tr>
       <?php
   }
@@ -1646,14 +1646,14 @@ if (!$DisablePoints) {
         <td class="label tooltip" title="Enter a comma-delimited list of forum IDs.">Restricted forums:</td>
         <td>
           <input type="text" class="wide_input_text" name="RestrictedForums"
-            value="<?=display_str($RestrictedForums)?>" />
+            value="<?=esc($RestrictedForums)?>" />
         </td>
       </tr>
       <tr>
         <td class="label tooltip" title="Enter a comma-delimited list of forum IDs.">Extra forums:</td>
         <td>
           <input type="text" class="wide_input_text" name="PermittedForums"
-            value="<?=display_str($PermittedForums)?>" />
+            value="<?=esc($PermittedForums)?>" />
         </td>
       </tr>
 

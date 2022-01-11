@@ -258,7 +258,7 @@ function user_dupes_table($UserID)
           <div id="editdupecomments"
             class="<?=($DupeCount ? 'hidden' : '')?>">
             <textarea name="dupecomments" onkeyup="resize('dupecommentsbox');" id="dupecommentsbox" cols="65" rows="5"
-              style="width: 98%;"><?=display_str($Comments)?></textarea>
+              style="width: 98%;"><?=esc($Comments)?></textarea>
           </div>
           <span class="float_right"><a href="#"
               onclick="$('#dupecomments').gtoggle(); $('#editdupecomments').gtoggle(); resize('dupecommentsbox'); return false;"

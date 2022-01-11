@@ -149,7 +149,7 @@ View::show_header('Report a '.$Type['title']);
 switch ($Short) {
   case 'user':
 ?>
-  <p>You are reporting the user <strong><?=display_str($Username)?></strong></p>
+  <p>You are reporting the user <strong><?=esc($Username)?></strong></p>
   <?php
     break;
   case 'request_update':
@@ -162,7 +162,7 @@ switch ($Short) {
       <td>Filled?</td>
     </tr>
     <tr>
-      <td><?=display_str($Name)?>
+      <td><?=esc($Name)?>
       </td>
       <td><?=Text::parse($Desc)?>
       </td>
@@ -224,7 +224,7 @@ switch ($Short) {
       <td>Filled?</td>
     </tr>
     <tr>
-      <td><?=display_str($Name)?>
+      <td><?=esc($Name)?>
       </td>
       <td><?=Text::parse($Desc)?>
       </td>
@@ -243,7 +243,7 @@ switch ($Short) {
       <td>Description</td>
     </tr>
     <tr>
-      <td><?=display_str($Name)?>
+      <td><?=esc($Name)?>
       </td>
       <td><?=Text::parse($Desc)?>
       </td>
@@ -260,9 +260,9 @@ switch ($Short) {
       <td>Title</td>
     </tr>
     <tr>
-      <td><?=display_str($Username)?>
+      <td><?=esc($Username)?>
       </td>
-      <td><?=display_str($Title)?>
+      <td><?=esc($Title)?>
       </td>
     </tr>
   </table>
@@ -277,7 +277,7 @@ switch ($Short) {
       <td>Body</td>
     </tr>
     <tr>
-      <td><?=display_str($Username)?>
+      <td><?=esc($Username)?>
       </td>
       <td><?=Text::parse($Body)?>
       </td>
@@ -294,7 +294,7 @@ switch ($Short) {
       <td>Body</td>
     </tr>
     <tr>
-      <td><?=display_str($Username)?>
+      <td><?=esc($Username)?>
       </td>
       <td><?=Text::parse($Body)?>
       </td>

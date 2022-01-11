@@ -503,7 +503,7 @@ class Misc
     {
         foreach ($Array as $Key => $Val) {
             if ((!is_array($Escape) && $Escape === true) || !in_array($Key, $Escape)) {
-                $Array[$Key] = display_str($Val);
+                $Array[$Key] = esc($Val);
             }
         }
         return $Array;
