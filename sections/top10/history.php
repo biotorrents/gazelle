@@ -48,10 +48,6 @@ View::show_header('Top 10 Torrents history!');
 if (!empty($_GET['date'])) {
     $Date = $_GET['date'];
     $SQLTime = $Date.' 00:00:00';
-    if (!validDate($SQLTime)) {
-        error('Something is wrong with the date you provided');
-    }
-
     if (empty($_GET['datetype']) || $_GET['datetype'] == 'day') {
         $Type = 'day';
         $Where = "

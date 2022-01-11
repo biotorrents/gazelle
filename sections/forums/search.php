@@ -25,14 +25,14 @@ if (isset($_GET['search'])) {
 $ThreadAfterDate = db_string($_GET['thread_created_after']);
 $ThreadBeforeDate = db_string($_GET['thread_created_before']);
 
-if ((!empty($ThreadAfterDate) && !is_valid_date($ThreadAfterDate)) || (!empty($ThreadBeforeDate) && !is_valid_date($ThreadBeforeDate))) {
+if ((!empty($ThreadAfterDate)) || (!empty($ThreadBeforeDate))) {
     error("Incorrect topic created date");
 }
 
 $PostAfterDate = db_string($_GET['post_created_after']);
 $PostBeforeDate = db_string($_GET['post_created_before']);
 
-if ((!empty($PostAfterDate) && !is_valid_date($PostAfterDate)) || (!empty($PostBeforeDate) && !is_valid_date($PostBeforeDate))) {
+if ((!empty($PostAfterDate)) || (!empty($PostBeforeDate))) {
     error("Incorrect post created date");
 }
 

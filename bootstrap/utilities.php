@@ -8,6 +8,17 @@
  * All the non-classes are now in this file.
  */
 
+/**
+ * e
+ *
+ * Simple string escape.
+ * Replaces display_str.
+ */
+function e(string $string)
+{
+    return html_entity_decode($string, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+}
+
 
     /**
      *
@@ -337,36 +348,11 @@ function error($Error = 1, $NoHTML = false, $Log = false)
     }
 
     /**
-     * Append $DevInfo
+     * Append dev info
      */
-    /*
     if ($ENV->DEV) {
-        $DateTime = strftime('%c', $_SERVER['REQUEST_TIME']);
-        #$BackTrace = !d();
-        #$BackTrace = debug_string_backtrace();
-
-        $Message .= ($NoHTML)
-            ? $BackTrace
-            : <<<HTML
-        <br /><br />
-        Please include the server response below,
-        as in a <a href="/staff.php">Staff PM</a>,
-        to help with debugging.
-
-<pre>
-```
-$DateTime
-{$_SERVER['SERVER_PROTOCOL']} {$_SERVER['REQUEST_METHOD']} $Title
-
-{$_SERVER['SCRIPT_FILENAME']}
-{$_SERVER['REQUEST_URI']}
-
-$BackTrace
-```
-</pre>
-HTML;
+        $Message .= d();
     }
-    */
 
     /**
      * Display HTML
@@ -391,16 +377,6 @@ HTML;
     #$Debug->profile();
     trigger_error("$Title - $Message", E_USER_ERROR);
     throw new Exception("$Title - $Message");
-}
-
-/**
- * debug_string_backtrace
- * https://stackoverflow.com/a/7039409
- */
-function debug_string_backtrace()
-{
-    $e = new Exception;
-    return $e->getTraceAsString();
 }
 
 /**
@@ -835,69 +811,6 @@ function time_minus($Offset, $Fuzzy = false)
 function sqltime($timestamp = null)
 {
     return date('Y-m-d H:i:s', ($timestamp ?? time()));
-}
-
-/**
- * validDate
- */
-function validDate($DateString)
-{
-    $DateTime = explode(' ', $DateString);
-    if (count($DateTime) != 2) {
-        return false;
-    }
-
-    list($Date, $Time) = $DateTime;
-    $SplitTime = explode(':', $Time);
-    if (count($SplitTime) != 3) {
-        return false;
-    }
-
-    list($H, $M, $S) = $SplitTime;
-    if ($H != 0 && !(is_number($H) && $H < 24 && $H >= 0)) {
-        return false;
-    }
-
-    if ($M != 0 && !(is_number($M) && $M < 60 && $M >= 0)) {
-        return false;
-    }
-
-    if ($S != 0 && !(is_number($S) && $S < 60 && $S >= 0)) {
-        return false;
-    }
-
-    $SplitDate = explode('-', $Date);
-    if (count($SplitDate) != 3) {
-        return false;
-    }
-
-    list($Y, $M, $D) = $SplitDate;
-    return checkDate($M, $D, $Y);
-}
-
-/**
- * is_valid_date
- */
-function is_valid_date($Date)
-{
-    return is_valid_datetime($Date, 'Y-m-d');
-}
-
-/**
- * is_valid_time
- */
-function is_valid_time($Time)
-{
-    return is_valid_datetime($Time, 'H:i');
-}
-
-/**
- * is_valid_datetime
- */
-function is_valid_datetime($DateTime, $Format = 'Y-m-d H:i')
-{
-    $FormattedDateTime = DateTime::createFromFormat($Format, $DateTime);
-    return $FormattedDateTime && $FormattedDateTime->format($Format) == $DateTime;
 }
 
 
