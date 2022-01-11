@@ -1,12 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-$ENV = ENV::go();
-require_once SERVER_ROOT.'/classes/twofa.class.php';
-require_once SERVER_ROOT.'/classes/u2f.class.php';
+$ENV = \ENV::go();
 
 $TwoFA = new RobThree\Auth\TwoFactorAuth($ENV->SITE_NAME);
-$U2F = new u2f\U2F('https://'.SITE_DOMAIN);
+$U2F = new \u2flib_server\U2F("https://$ENV->SITE_DOMAIN");
 
 if ($Type = $_POST['type'] ?? false) {
     if ($Type === 'PGP') {

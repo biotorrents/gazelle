@@ -13,7 +13,7 @@ declare(strict_types=1);
 $ENV = \ENV::go();
 $Validate = new \Validate;
 $TwoFA = new \RobThree\Auth\TwoFactorAuth($ENV->SITE_NAME);
-$U2F = new \u2f\U2F("https://$ENV->SITE_DOMAIN");
+$U2F = new \u2flib_server\U2F("https://$ENV->SITE_DOMAIN");
 
 # They want the disabled page
 if ($_REQUEST['action'] === 'disabled') {

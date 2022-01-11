@@ -804,31 +804,6 @@ class Users
     }
 
     /*
-     * Authorize a new location
-     *
-     * @param int $UserID The user ID
-     * @param string $Username The username
-     * @param int $ASN The ASN
-     * @param string $Email The email address
-     */
-    public static function auth_location($UserID, $Username, $ASN, $Email)
-    {
-        $ENV = ENV::go();
-        $AuthKey = Users::make_secret();
-        G::$Cache->cache_value('new_location_'.$AuthKey, ['UserID'=>$UserID, 'ASN'=>$ASN], 3600*2);
-
-        require_once SERVER_ROOT . '/classes/templates.class.php';
-        $TPL = new TEMPLATE;
-        $TPL->open(SERVER_ROOT . '/templates/new_location.tpl');
-        $TPL->set('Username', $Username);
-        $TPL->set('AuthKey', $AuthKey);
-        $TPL->set('IP', $_SERVER['REMOTE_ADDR']);
-        $TPL->set('SITE_NAME', $ENV->SITE_NAME);
-        $TPL->set('SITE_DOMAIN', SITE_DOMAIN);
-
-        Misc::send_email($Email, 'Login from new location for '.$ENV->SITE_NAME, $TPL->get(), 'noreply');
-    }
-    /*
      * @return array of strings that can be added to next source flag ( [current, old] )
      */
     public static function get_upload_sources()

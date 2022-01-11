@@ -74,7 +74,6 @@ View::show_header('Manage Permissions', 'validate');
     <?php } ?>
   </table>
   <?php
-#include(SERVER_ROOT."/classes/permissions_form.php");
 permissions_form();
 ?>
 </form>

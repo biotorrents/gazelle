@@ -9,8 +9,6 @@ if (!isset($_REQUEST['userid']) || !is_number($_REQUEST['userid'])) {
     error(404);
 }
 
-#include(SERVER_ROOT."/classes/permissions_form.php");
-
 list($UserID, $Username, $PermissionID) = array_values(Users::user_info($_REQUEST['userid']));
 
 $DB->query("
