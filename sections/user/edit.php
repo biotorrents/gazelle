@@ -1,7 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
-require_once SERVER_ROOT.'/classes/twofa.class.php';
+$ENV = \ENV::go();
+
 $UserID = (int) $_REQUEST['userid'];
 Security::CheckInt($UserID);
 
@@ -27,7 +28,7 @@ $DB->query("
   WHERE m.ID = ?", $UserID);
 list($Username, $TwoFactor, $PublicKey, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $Class, $InfoTitle) = $DB->next_record(MYSQLI_NUM, [5, 10]);
 
-$TwoFA = new TwoFactorAuth();
+$TwoFA = new RobThree\Auth\TwoFactorAuth($ENV->SITE_NAME);
 $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]';
 
 if ((int) $UserID !== $LoggedUser['ID'] && !check_perms('users_edit_profiles', $Class)) {

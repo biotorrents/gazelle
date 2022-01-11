@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8890f6eab8c29d4476d2835cf5a1880f",
+    "content-hash": "403db609a21a31a588ff80047a9d45cb",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1601,6 +1601,76 @@
                 "source": "https://github.com/ralouphie/getallheaders/tree/develop"
             },
             "time": "2019-03-08T08:55:37+00:00"
+        },
+        {
+            "name": "robthree/twofactorauth",
+            "version": "1.8.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/RobThree/TwoFactorAuth.git",
+                "reference": "5afcb45282f1c75562a48d479ecd1732c9bdb11b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/RobThree/TwoFactorAuth/zipball/5afcb45282f1c75562a48d479ecd1732c9bdb11b",
+                "reference": "5afcb45282f1c75562a48d479ecd1732c9bdb11b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "php-parallel-lint/php-parallel-lint": "^1.2",
+                "phpunit/phpunit": "@stable"
+            },
+            "suggest": {
+                "bacon/bacon-qr-code": "Needed for BaconQrCodeProvider provider",
+                "endroid/qr-code": "Needed for EndroidQrCodeProvider"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "RobThree\\Auth\\": "lib"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rob Janssen",
+                    "homepage": "http://robiii.me",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Two Factor Authentication",
+            "homepage": "https://github.com/RobThree/TwoFactorAuth",
+            "keywords": [
+                "Authentication",
+                "MFA",
+                "Multi Factor Authentication",
+                "Two Factor Authentication",
+                "authenticator",
+                "authy",
+                "php",
+                "tfa"
+            ],
+            "support": {
+                "issues": "https://github.com/RobThree/TwoFactorAuth/issues",
+                "source": "https://github.com/RobThree/TwoFactorAuth"
+            },
+            "funding": [
+                {
+                    "url": "https://paypal.me/robiii",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/RobThree",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-10-20T12:19:55+00:00"
         },
         {
             "name": "symfony/console",
@@ -4133,53 +4203,6 @@
                 "source": "https://github.com/kint-php/kint/tree/4.1.1"
             },
             "time": "2022-01-02T10:30:48+00:00"
-        },
-        {
-            "name": "kint-php/kint-twig",
-            "version": "3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/kint-php/kint-twig.git",
-                "reference": "876b38c496d6bdfe6482647e8512e32e4528d811"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/kint-php/kint-twig/zipball/876b38c496d6bdfe6482647e8512e32e4528d811",
-                "reference": "876b38c496d6bdfe6482647e8512e32e4528d811",
-                "shasum": ""
-            },
-            "require": {
-                "kint-php/kint": "^3 || ^4",
-                "php": ">= 7.0",
-                "twig/twig": "^2.4 || ^3.0"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.0",
-                "phpunit/phpunit": "^7.0",
-                "vimeo/psalm": "^3.7"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Kint\\Twig\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0"
-            ],
-            "authors": [
-                {
-                    "name": "Jonathan Vollebregt",
-                    "email": "jnvsor@gmail.com"
-                }
-            ],
-            "description": "Twig extension for Kint integration",
-            "support": {
-                "issues": "https://github.com/kint-php/kint-twig/issues",
-                "source": "https://github.com/kint-php/kint-twig/tree/3.0"
-            },
-            "time": "2020-07-03T14:19:54+00:00"
         },
         {
             "name": "maximebf/debugbar",

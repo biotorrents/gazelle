@@ -4,15 +4,15 @@ declare(strict_types=1);
 class Cookie
 {
     # Optional cookie prefix
-    private const prefix = '';
+    private static $prefix = '';
 
 
     /**
      * get
-     * 
+     *
      * Untrustworthy user input.
      * Reads from $_COOKIE superglobal.
-     * 
+     *
      * @param string $key The cookie key
      * @return The prefixed cookie or false
      */
@@ -26,12 +26,12 @@ class Cookie
 
     /**
      * set
-     * 
+     *
      * Sets a secure cookie.
      * Note $secure and $httponly are hardcoded.
      * This is intentional behavior.
      * @see https://www.php.net/manual/en/function.setcookie.php
-     * 
+     *
      * @param string $key The cookie key
      * @param string $value The cookie value
      * @param int $time The time in seconds
@@ -40,18 +40,18 @@ class Cookie
      */
     public static function set(
         string $key = null,
-        string $value = null,
+        mixed $value = null,
         int $time = 86400,
         string $path = '/'
-        ) {
+    ) {
         $ENV = \ENV::go();
 
         # Should be an error probably
         #return (!$key || !$value) ?? false;
 
         setcookie(
-            $name = self::prefix.$key,
-            $value = $value,
+            $name = self::$prefix.$key,
+            $value = strval($value),
             $expires_or_options = time() + $time,
             $path = $path,
             $domain = $ENV->SITE_DOMAIN,
@@ -63,9 +63,9 @@ class Cookie
 
     /**
      * del
-     * 
+     *
      * Deletes a cookie by key.
-     * 
+     *
      * @param string $key The cookie key
      * @return bool self::set (setcookie)
      */
@@ -82,10 +82,10 @@ class Cookie
 
     /**
      * flush
-     * 
+     *
      * Delete all user cookies.
      * Uses the $_COOKIE superglobal.
-     * 
+     *
      * @return bool self::del (setcookie)
      */
     public static function flush()

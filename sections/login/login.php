@@ -4,7 +4,8 @@ declare(strict_types=1);
 $ENV = ENV::go();
 $Twig = Twig::go();
 
-View::show_header('Login'); ?>
+View::show_header('Login');
+?>
 
 <p class="center mouseless">
   A platform to share <strong>biological sequence</strong>

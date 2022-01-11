@@ -5,7 +5,7 @@ $ENV = ENV::go();
 require_once SERVER_ROOT.'/classes/twofa.class.php';
 require_once SERVER_ROOT.'/classes/u2f.class.php';
 
-$TwoFA = new TwoFactorAuth($ENV->SITE_NAME);
+$TwoFA = new RobThree\Auth\TwoFactorAuth($ENV->SITE_NAME);
 $U2F = new u2f\U2F('https://'.SITE_DOMAIN);
 
 if ($Type = $_POST['type'] ?? false) {

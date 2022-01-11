@@ -52,6 +52,7 @@
     "illuminate/support": "^8.78",
     "laravel/sanctum": "^2.13.0",
     "orpheusnet/bencode-torrent": "dev-master",
+    "robthree/twofactorauth": "^1.8",
     "twig/twig": "^3.3.7",
     "vanilla/nbbc": "^2.3"
   },

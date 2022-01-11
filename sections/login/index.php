@@ -1,11 +1,19 @@
 <?php
-#declare(strict_types=1);
+declare(strict_types=1);
 
+/**
+ * Login handler
+ * 
+ * I don't know where to start here.
+ * Maybe the nested conditionals from Line 34.
+ * That's the whole file, after all.
+ */
+
+# Initialize
 $ENV = \ENV::go();
-
-/*-- todo ---------------------------//
-Add the JavaScript validation into the display page using the class
-//-----------------------------------*/
+$Validate = new \Validate;
+$TwoFA = new \RobThree\Auth\TwoFactorAuth($ENV->SITE_NAME);
+$U2F = new \u2f\U2F("https://$ENV->SITE_DOMAIN");
 
 // Allow users to reset their password while logged in
 if (!empty($LoggedUser['ID']) && $_REQUEST['act'] !== 'recover') {
@@ -17,15 +25,6 @@ if (!empty($LoggedUser['ID']) && $_REQUEST['act'] !== 'recover') {
 if (\Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
     error('Your IP address has been banned.');
 }
-
-# Initialize
-require_once SERVER_ROOT.'/classes/twofa.class.php';
-require_once SERVER_ROOT.'/classes/u2f.class.php';
-require_once SERVER_ROOT.'/classes/validate.class.php';
-
-$Validate = new \Validate;
-$TwoFA = new \TwoFactorAuth($ENV->SITE_NAME);
-$U2F = new \u2f\U2F('https://'.SITE_DOMAIN);
 
 if (array_key_exists('action', $_GET) && $_GET['action'] === 'disabled') {
     require('disabled.php');
@@ -203,20 +202,6 @@ if (isset($_REQUEST['act']) && $_REQUEST['act'] === 'recover') {
     }
 } // End password recovery
 
-elseif (isset($_REQUEST['act']) && $_REQUEST['act'] === 'newlocation') {
-    if (isset($_REQUEST['key'])) {
-        if ($ASNCache = $Cache->get_value('new_location_'.$_REQUEST['key'])) {
-            $Cache->cache_value('new_location_'.$ASNCache['UserID'].'_'.$ASNCache['ASN'], true);
-            require('newlocation.php');
-            error();
-        } else {
-            error(403);
-        }
-    } else {
-        error(403);
-    }
-} // End new location
-
 // Normal login
 else {
     $Validate->SetFields('username', true, 'regex', 'You did not enter a valid username', array('regex' => USERNAME_REGEX));
@@ -243,8 +228,10 @@ else {
     // If user has submitted form
     if (isset($_POST['username']) && !empty($_POST['username']) && isset($_POST['password']) && !empty($_POST['password'])) {
         if ($Banned) {
+            /*
             header("Location: login.php");
             error();
+            */
         }
         $Err = $Validate->ValidateForm($_POST);
 
@@ -321,7 +308,7 @@ else {
                                 } else {
                                     // Data from the U2F login page is not present. Go there
                                     require('u2f.php');
-                                    error();
+                                    #error();
                                 }
                             }
 
@@ -330,11 +317,18 @@ else {
                                 \Cookie::set('session', $SessionID);
                                 \Cookie::set('userid', $UserID);
 
-                                $DB->query("
+                                    $DB->query("
                                 INSERT INTO users_sessions
                                   (UserID, SessionID, KeepLogged, Browser, OperatingSystem, IP, LastUpdate, FullUA)
                                 VALUES
-                                  ('$UserID', '".db_string($SessionID)."', '1', '$Browser', '$OperatingSystem', '".db_string(apcu_exists('DBKEY')?Crypto::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0')."', NOW(), '".db_string($_SERVER['HTTP_USER_AGENT'])."')");
+                                  ('$UserID',
+                                  '".db_string($SessionID)."',
+                                  '1',
+                                  '$Browser',
+                                  '$OperatingSystem',
+                                  '".db_string(apcu_exists('DBKEY')?Crypto::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0')."',
+                                  NOW(),
+                                  '".db_string($_SERVER['HTTP_USER_AGENT'])."')");
 
                                 $Cache->begin_transaction("users_sessions_$UserID");
                                 $Cache->insert_front($SessionID, [
@@ -359,10 +353,10 @@ else {
                                     $URL = $_COOKIE['redirect'];
                                     \Cookie::del('redirect');
                                     header("Location: $URL");
-                                    error();
+                                    #error();
                                 } else {
                                     header('Location: index.php');
-                                    error();
+                                    #error();
                                 }
                             } else {
                                 log_attempt();

@@ -78,6 +78,13 @@ The source code is reorganized along Laravel's lines while maintaining the comfy
 The app logic, config, and Git repo lies outside the web root for enhanced security.
 An ongoing project involves modernizing the app based on Laravel's excellent tools.
 
+## Decent debugging
+
+Bio Gazelle seeks to be easy and fun to develop.
+We're collecting the old debug class monstrosity into a nice little bar.
+There's also no more `DEBUG_MODE` or random permissions.
+There's just a dev mode that spits everything out, and a prod mode that doesn't.
+
 ## Minor changes
 
 - Database crypto bumped up to AES-256

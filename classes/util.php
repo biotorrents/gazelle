@@ -242,9 +242,10 @@ function error($Error = 1, $NoHTML = false, $Log = false)
     /**
      * Append $DevInfo
      */
+    /*
     if ($ENV->DEV) {
         $DateTime = strftime('%c', $_SERVER['REQUEST_TIME']);
-        $BackTrace = !d();
+        #$BackTrace = !d();
         #$BackTrace = debug_string_backtrace();
 
         $Message .= ($NoHTML)
@@ -268,6 +269,7 @@ $BackTrace
 </pre>
 HTML;
     }
+    */
 
     /**
      * Display HTML
