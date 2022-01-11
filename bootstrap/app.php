@@ -42,6 +42,7 @@ ob_start();
 \G::initialize();
 
 // Begin browser identification
+#d($_SERVER['HTTP_USER_AGENT']);
 $Browser = \UserAgent::browser($_SERVER['HTTP_USER_AGENT']);
 $OperatingSystem = \UserAgent::operating_system($_SERVER['HTTP_USER_AGENT']);
 

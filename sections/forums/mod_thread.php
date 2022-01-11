@@ -15,9 +15,6 @@ the front page.
 
 $ENV = ENV::go();
 
-# omfg
-#define('TRASH_FORUM_ID', 4);
-
 // Quick SQL injection check
 if (!is_number($_POST['threadid'])) {
     error(404);
@@ -386,9 +383,6 @@ if (isset($_POST['delete'])) {
     default:
       break;
   }
-    if (isset($Notification)) {
-        NotificationsManager::notify_user($ThreadAuthorID, NotificationsManager::FORUMALERTS, $Notification, "forums.php?action=viewthread&threadid=$TopicID");
-    }
     if (count($TopicNotes) > 0) {
         Forums::add_topic_note($TopicID, implode("\n", $TopicNotes));
     }

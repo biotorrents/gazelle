@@ -1,6 +1,9 @@
 <?php
 #declare(strict_types=1);
 
+/**
+ * wtf
+ */
 class UserAgent
 {
     private static $Browsers = array(

@@ -93,12 +93,7 @@ class Donations
                 ");
             } else {
                 // Donations from the store get donor points directly, no need to calculate them
-                if ($Source === 'Store Parser') {
-                    $ConvertedPrice = self::currency_exchange($Amount * $Price, $Currency);
-                } else {
-                    $ConvertedPrice = self::currency_exchange($Price, $Currency);
-                    $DonorPoints = self::calculate_rank($ConvertedPrice);
-                }
+                $DonorPoints = self::calculate_rank($ConvertedPrice);
 
                 // Rank is the same thing as DonorPoints
                 $IncreaseRank = $DonorPoints;
@@ -863,65 +858,5 @@ class Donations
     public static function is_donor($UserID)
     {
         return self::get_rank($UserID) > 0;
-    }
-
-
-    /**
-     * currency_exchange
-     */
-    public static function currency_exchange($Amount, $Currency)
-    {
-        if (!self::is_valid_currency($Currency)) {
-            error("$Currency is not valid currency");
-        }
-        
-        switch ($Currency) {
-        case 'USD':
-          $Amount = self::usd_to_euro($Amount);
-          break;
-
-        case 'BTC':
-          $Amount = self::btc_to_euro($Amount);
-          break;
-
-        default:
-          break;
-        }
-        return round($Amount, 2);
-    }
-
-
-    /**
-     * is_valid_currency
-     */
-    public static function is_valid_currency($Currency)
-    {
-        return $Currency === 'EUR' || $Currency === 'BTC' || $Currency === 'USD';
-    }
-
-
-    /**
-     * btc_to_euro
-     */
-    public static function btc_to_euro($Amount)
-    {
-        $Rate = G::$Cache->get_value('btc_rate');
-        if (empty($Rate)) {
-            G::$Cache->cache_value('btc_rate', $Rate, 86400);
-        }
-        return $Rate * $Amount;
-    }
-
-
-    /**
-     * usd_to_euro
-     */
-    public static function usd_to_euro($Amount)
-    {
-        $Rate = G::$Cache->get_value('usd_rate');
-        if (empty($Rate)) {
-            G::$Cache->cache_value('usd_rate', $Rate, 86400);
-        }
-        return $Rate * $Amount;
     }
 }

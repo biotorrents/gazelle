@@ -133,44 +133,6 @@ class NotificationsManager
         );
     }
 
-    public static function notify_user($UserID, $Type, $Message, $URL, $Importance)
-    {
-        self::notify_users(array($UserID), $Type, $Message, $URL, $Importance);
-    }
-
-    public static function notify_users($UserIDs, $Type, $Message, $URL, $Importance)
-    {
-        /*
-        if (!isset($Importance)) {
-          $Importance = self::INFO;
-        }
-        $Type = db_string($Type);
-        if (!empty($UserIDs)) {
-          $UserIDs = implode(',', $UserIDs);
-          $QueryID = G::$DB->get_query_id();
-          G::$DB->query("
-            SELECT UserID
-            FROM users_notifications_settings
-            WHERE $Type != 0
-              AND UserID IN ($UserIDs)");
-          $UserIDs = [];
-          while (list($ID) = G::$DB->next_record()) {
-            $UserIDs[] = $ID;
-          }
-          G::$DB->set_query_id($QueryID);
-          foreach ($UserIDs as $UserID) {
-            $OneReads = G::$Cache->get_value("notifications_one_reads_$UserID");
-            if (!$OneReads) {
-              $OneReads = [];
-            }
-            array_unshift($OneReads, $this->create_notification($OneReads, "oneread_" . uniqid(), null, $Message, $URL, $Importance));
-            $OneReads = array_filter($OneReads);
-            G::$Cache->cache_value("notifications_one_reads_$UserID", $OneReads, 0);
-          }
-        }
-        */
-    }
-
     public static function get_notification_enabled_users($Type, $UserID)
     {
         $Type = db_string($Type);
@@ -601,28 +563,6 @@ class NotificationsManager
         G::$Cache->delete_value('subscriptions_user_new_' . G::$LoggedUser['ID']);
         G::$DB->set_query_id($QueryID);
     }
-
-    /*
-      // todo: Figure out what these functions are supposed to do and fix them
-
-      public static function send_notification($UserID, $ID, $Type, $Message, $URL, $Importance = 'alert', $AutoExpire = false) {
-        $Notifications = G::$Cache->get_value("user_cache_notifications_$UserID");
-        if (empty($Notifications)) {
-          $Notifications = [];
-        }
-        array_unshift($Notifications, $this->create_notification($Type, $ID, $Message, $URL, $Importance, $AutoExpire));
-        G::$Cache->cache_value("user_cache_notifications_$UserID", $Notifications, 0);
-      }
-
-      public static function clear_notification($UserID, $Index) {
-        $Notifications = G::$Cache->get_value("user_cache_notifications_$UserID");
-        if (count($Notifications)) {
-          unset($Notifications[$Index]);
-          $Notifications = array_values($Notifications);
-          G::$Cache->cache_value("user_cache_notifications_$UserID", $Notifications, 0);
-        }
-      }
-    */
 
     public static function get_settings($UserID)
     {

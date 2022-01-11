@@ -319,29 +319,6 @@ class Misc
         return $TopicID;
     }
 
-    /**
-     * If the suffix of $Haystack is $Needle
-     *
-     * @param string $Haystack String to search in
-     * @param string $Needle String to search for
-     * @return boolean True if $Needle is a suffix of $Haystack
-     */
-    public static function ends_with($Haystack, $Needle)
-    {
-        return substr($Haystack, strlen($Needle) * -1) === $Needle;
-    }
-
-    /**
-     * If the prefix of $Haystack is $Needle
-     *
-     * @param string $Haystack String to search in
-     * @param string $Needle String to search for
-     * @return boolean True if $Needle is a prefix of $Haystack
-     */
-    public static function starts_with($Haystack, $Needle)
-    {
-        return strpos($Haystack, $Needle) === 0;
-    }
 
     /**
      * Variant of in_array() with trailing wildcard support
@@ -530,19 +507,6 @@ class Misc
     }
 
     /**
-     * Search for $Needle in the string $Haystack which is a list of values separated by $Separator.
-     * @param string $Haystack
-     * @param string $Needle
-     * @param string $Separator
-     * @param boolean $Strict
-     * @return boolean
-     */
-    public static function search_joined_string($Haystack, $Needle, $Separator = '|', $Strict = true)
-    {
-        return (array_search($Needle, explode($Separator, $Haystack), $Strict) !== false);
-    }
-
-    /**
      * Check for a ":" in the beginning of a torrent meta data string
      * to see if it's stored in the old base64-encoded format
      *
@@ -554,6 +518,9 @@ class Misc
         return strpos(substr($Data, 0, 10), ':') !== false;
     }
 
+    /**
+     * display_recommend
+     */
     public static function display_recommend($ID, $Type, $Hide = true)
     {
         if ($Hide) {
@@ -574,6 +541,9 @@ class Misc
 <?php
     }
 
+    /**
+     * is_valid_url
+     */
     public static function is_valid_url($URL)
     {
         return preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $URL);

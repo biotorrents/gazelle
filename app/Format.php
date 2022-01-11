@@ -82,7 +82,7 @@ class Format
      * @param $Ratio ratio to get the css class for
      * @return string the CSS class corresponding to the ratio range
      */
-    public static function get_ratio_color($Ratio)
+    private static function get_ratio_color($Ratio)
     {
         if ($Ratio < 0.1) {
             return 'r00';
@@ -403,32 +403,6 @@ class Format
 
 
     /**
-     * Format a number as a multiple of its highest power of 1000 (e.g. 10035 -> '10.04k')
-     *
-     * @param int $Number
-     * @return string formatted number.
-     */
-    public static function human_format($Number)
-    {
-        $Steps = 0;
-        while ($Number >= 1000) {
-            $Steps++;
-            $Number = $Number / 1000;
-        }
-
-        switch ($Steps) {
-          case 0: return round($Number); break;
-          case 1: return round($Number, 2).'k'; break;
-          case 2: return round($Number, 2).'M'; break;
-          case 3: return round($Number, 2).'G'; break;
-          case 4: return round($Number, 2).'T'; break;
-          case 5: return round($Number, 2).'P'; break;
-          default: return round($Number, 2).'E + '.$Steps * 3;
-        }
-    }
-
-
-    /**
      * Given a formatted string of a size, get the number of bytes it represents.
      *
      * @param string $Size formatted size string, e.g. 123.45k
@@ -450,19 +424,6 @@ class Format
           case 't': return round($Value * 1099511627776);
           default: return 0;
         }
-    }
-
-
-    /**
-     * Reverse the effects of display_str - un-sanitize HTML.
-     * Use sparingly.
-     *
-     * @param string $Str the string to unsanitize
-     * @return unsanitized string
-     */
-    public static function unesc($Str)
-    {
-        return mb_convert_encoding($Str, 'UTF-8', 'HTML-ENTITIES');
     }
 
 
@@ -544,7 +505,7 @@ class Format
      * @param string $Str function to detect encoding on.
      * @return true if the string is in UTF-8.
      */
-    public static function is_utf8($Str)
+    private static function is_utf8($Str)
     {
         return preg_match(
             '%^(?:
@@ -570,7 +531,7 @@ class Format
      * @param string $Text Search string
      * @return string CSS class(es)
      */
-    public static function find_torrent_label_class($Text)
+    private static function find_torrent_label_class($Text)
     {
         $Index = mb_eregi_replace('(?:[^\w\d\s]+)', '', strtolower($Text));
         if (isset(self::$TorrentLabels[$Index])) {
