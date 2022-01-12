@@ -8,9 +8,6 @@ declare(strict_types=1);
  * All it needs to do is instantiate a singleton and include the requested page.
  */
 
-# Autoload classes via Composer
-require_once __DIR__.'/../vendor/autoload.php';
-
 # Initialize the app config and core utils
 require_once __DIR__.'/../config/app.php';
 require_once "$ENV->SERVER_ROOT/bootstrap/utilities.php";
