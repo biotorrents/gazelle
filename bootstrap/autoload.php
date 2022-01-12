@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @see https://www.php.net/manual/en/language.oop5.autoload.php
  */
 spl_autoload_register(function ($class) {
-    $ENV = \ENV::go();
+    $ENV = ENV::go();
 
     $path = "$ENV->SERVER_ROOT/app/$class.php";
 

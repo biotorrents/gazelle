@@ -40,7 +40,7 @@ declare(strict_types=1);
 
 # Initialize
 require_once __DIR__.'/../app/ENV.php';
-$ENV = \ENV::go();
+$ENV = ENV::go();
 
 # Include the configs
 require_once __DIR__.'/public.php'; # Basic info, options, fratures, etc.

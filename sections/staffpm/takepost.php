@@ -8,7 +8,7 @@ declare(strict_types = 1);
 if ($Message = db_string($_POST['message'])) {
   if (isset($_POST['subject']) && $Subject = db_string($_POST['subject'])) {
     // New staff PM conversation
-    # This needs to be a \Security::checkInt call
+    # This needs to be a Security::checkInt call
     #assert_numbers($_POST, array('level'), 'Invalid recipient');
     $DB->query("
       INSERT INTO staff_pm_conversations

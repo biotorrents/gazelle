@@ -39,26 +39,26 @@ function logout()
 {
     global $SessionID;
     
-    \Cookie::del('session');
-    \Cookie::del('userid');
-    \Cookie::del('keeplogged');
+    Cookie::del('session');
+    Cookie::del('userid');
+    Cookie::del('keeplogged');
     
-    #\Cookie::flush();
+    #Cookie::flush();
 
     if ($SessionID) {
-        \G::$DB->prepared_query("
+        G::$DB->prepared_query("
         DELETE FROM users_sessions
-          WHERE UserID = '" . \G::$LoggedUser['ID'] . "'
+          WHERE UserID = '" . G::$LoggedUser['ID'] . "'
           AND SessionID = '".db_string($SessionID)."'");
 
-        \G::$Cache->begin_transaction('users_sessions_' . \G::$LoggedUser['ID']);
-        \G::$Cache->delete_row($SessionID);
-        \G::$Cache->commit_transaction(0);
+        G::$Cache->begin_transaction('users_sessions_' . G::$LoggedUser['ID']);
+        G::$Cache->delete_row($SessionID);
+        G::$Cache->commit_transaction(0);
     }
 
-    \G::$Cache->delete_value('user_info_' . \G::$LoggedUser['ID']);
-    \G::$Cache->delete_value('user_stats_' . \G::$LoggedUser['ID']);
-    \G::$Cache->delete_value('user_info_heavy_' . \G::$LoggedUser['ID']);
+    G::$Cache->delete_value('user_info_' . G::$LoggedUser['ID']);
+    G::$Cache->delete_value('user_stats_' . G::$LoggedUser['ID']);
+    G::$Cache->delete_value('user_info_heavy_' . G::$LoggedUser['ID']);
 
     header('Location: login.php');
     exit;
@@ -69,13 +69,13 @@ function logout()
  */
 function logout_all_sessions()
 {
-    $UserID = \G::$LoggedUser['ID'];
+    $UserID = G::$LoggedUser['ID'];
 
-    \G::$DB->prepared_query("
+    G::$DB->prepared_query("
     DELETE FROM users_sessions
       WHERE UserID = '$UserID'");
 
-    \G::$Cache->delete_value('users_sessions_' . $UserID);
+    G::$Cache->delete_value('users_sessions_' . $UserID);
     logout();
 }
 
@@ -85,8 +85,8 @@ function logout_all_sessions()
 function enforce_login()
 {
     global $SessionID;
-    if (!$SessionID || !\G::$LoggedUser) {
-        \Cookie::set('redirect', $_SERVER['REQUEST_URI']);
+    if (!$SessionID || !G::$LoggedUser) {
+        Cookie::set('redirect', $_SERVER['REQUEST_URI']);
         logout();
     }
 }
@@ -104,8 +104,8 @@ function authorize($Ajax = false)
     if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
         return true;
     } else {
-        if (empty($_REQUEST['auth']) || $_REQUEST['auth'] !== \G::$LoggedUser['AuthKey']) {
-            send_irc(DEBUG_CHAN, \G::$LoggedUser['Username']." just failed authorize on ".$_SERVER['REQUEST_URI'].(!empty($_SERVER['HTTP_REFERER']) ? " coming from ".$_SERVER['HTTP_REFERER'] : ""));
+        if (empty($_REQUEST['auth']) || $_REQUEST['auth'] !== G::$LoggedUser['AuthKey']) {
+            send_irc(DEBUG_CHAN, G::$LoggedUser['Username']." just failed authorize on ".$_SERVER['REQUEST_URI'].(!empty($_SERVER['HTTP_REFERER']) ? " coming from ".$_SERVER['HTTP_REFERER'] : ""));
             error('Invalid authorization key. Go back, refresh, and try again.', $NoHTML = true);
             return false;
         }
@@ -122,7 +122,7 @@ function authorize($Ajax = false)
 
 /**
  * Return true if the given string is numeric.
- * Should be \Security::checkInt but it's used a lot.
+ * Should be Security::checkInt but it's used a lot.
  *
  * @param mixed $Str
  * @return bool
@@ -337,7 +337,7 @@ HTML;
     }
 
     # Trigger the error
-    $Debug = \Debug::go();
+    $Debug = Debug::go();
     #$Debug->profile();
     trigger_error("$Title - $Message", E_USER_ERROR);
     throw new Exception("$Title - $Message");
@@ -442,7 +442,7 @@ function add_json_info($Json)
     if (!isset($Json['debug']) && check_perms('site_debug')) {
         /** @var DEBUG $Debug */
         #global $Debug;
-        $Debug = \Debug::go();
+        $Debug = Debug::go();
         $Json = array_merge($Json, [
             'debug' => [
                 'queries' => $Debug->get_queries(),

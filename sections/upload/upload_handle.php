@@ -10,7 +10,7 @@
  */
 
 $ENV = ENV::go();
-$Debug = \Debug::go();
+$Debug = Debug::go();
 
 $Feed = new Feed;
 $Validate = new Validate;

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-$ENV = \ENV::go();
+$ENV = ENV::go();
 $Sep = '&emsp;';
 
 # End <main#content.container>, begin <footer>
@@ -79,7 +79,7 @@ if ($ENV->DEV) {
      * Otherwise, nothing of value was lost.
      * @see http://phpdebugbar.com/docs/
      */
-    $Debug = \Debug::go();
+    $Debug = Debug::go();
     $Render = $Debug->getJavascriptRenderer();
     echo $Render->render();
 }

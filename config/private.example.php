@@ -43,7 +43,7 @@ else {
 ENV::setPriv('SQLHOST', '10.0.0.3');
 ENV::setPriv('SQLPORT', 3306);
 
-# Leave set even if using TCP due to \DB strict mode
+# Leave set even if using TCP due to DB strict mode
 ENV::setPriv('SQLSOCK', '/var/run/mysqld/mysqld.sock');
 
 # TLS client certs

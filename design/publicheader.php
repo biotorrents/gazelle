@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-$ENV = \ENV::go();
-$Twig = \Twig::go();
+$ENV = ENV::go();
+$Twig = Twig::go();
 
 global $LoggedUser;
 

@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This page acts as a switch for the tools pages.
  */
 
- $ENV = \ENV::go();
+ $ENV = ENV::go();
 
 if (isset($argv[1])) {
     $_REQUEST['action'] = $argv[1];
@@ -31,8 +31,8 @@ if (substr($_REQUEST['action'], 0, 16) === 'rerender_gallery' && !isset($argv[1]
     }
 }
 
-$Val = new \Validate;
-$Feed = new \Feed;
+$Val = new Validate;
+$Feed = new Feed;
 
 # Finally
 switch ($_REQUEST['action']) {

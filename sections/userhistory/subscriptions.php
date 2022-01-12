@@ -5,7 +5,7 @@
  * User subscription page
  */
 
-$Debug = \Debug::go();
+$Debug = Debug::go();
 
 if (isset($LoggedUser['PostsPerPage'])) {
     $PerPage = $LoggedUser['PostsPerPage'];

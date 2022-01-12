@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types = 1);
 
-$ENV = \ENV::go();
+$ENV = ENV::go();
 
 $UserID = (int) $_REQUEST['userid'];
 Security::CheckInt($UserID);

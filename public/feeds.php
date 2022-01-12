@@ -15,7 +15,7 @@ if (isset($_GET['clearcache'])) {
 
 # Initialize
 require_once __DIR__.'/../config/app.php';
-$ENV = \ENV::go();
+$ENV = ENV::go();
 
 /*
 require_once "$ENV->SERVER_ROOT/classes/misc.class.php";
@@ -24,8 +24,8 @@ require_once "$ENV->SERVER_ROOT/classes/feed.class.php";
 */
 
 # Load the classes
-$Cache = new \Cache($ENV->getPriv('MEMCACHED_SERVERS'));
-$Feed = new \Feed;
+$Cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
+$Feed = new Feed;
 
 
 /**

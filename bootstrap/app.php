@@ -21,16 +21,16 @@ require_once "$ENV->SERVER_ROOT/bootstrap/utilities.php";
  */
 
 # Basic stuff
-$ENV = \ENV::go();
-\Security::SetupPitfalls();
+$ENV = ENV::go();
+Security::SetupPitfalls();
 
 # Debugging
-$Debug = \Debug::go();
+$Debug = Debug::go();
 $Debug['messages']->info('debug constructed');
 
 # Database and cache
-$DB = new \DB;
-$Cache = new \Cache($ENV->getPriv('MEMCACHED_SERVERS'));
+$DB = new DB;
+$Cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
 
 # Start a buffer, mainly for MySQL errors
 ob_start();
@@ -39,7 +39,7 @@ ob_start();
 // Note: G::initialize is called twice.
 // This is necessary as the code inbetween (initialization of $LoggedUser) makes use of G::$DB and G::$Cache.
 // todo: Remove one of the calls once we're moving everything into that class
-\G::initialize();
+G::initialize();
 
 // Begin browser identification
 #d($_SERVER['HTTP_USER_AGENT']);
@@ -50,7 +50,7 @@ $Debug['messages']->info('start user handling');
 
 // Get classes
 // todo: Remove these globals, replace by calls into Users
-list($Classes, $ClassLevels) = \Users::get_classes();
+list($Classes, $ClassLevels) = Users::get_classes();
 
 /**
  * JSON API token support
@@ -67,7 +67,7 @@ $FullToken = null;
 // Only allow using the Authorization header for ajax endpoint
 if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
     # Banned IP address
-    if (\IPv4::isBanned($_SERVER['REMOTE_ADDR'])) {
+    if (IPv4::isBanned($_SERVER['REMOTE_ADDR'])) {
         header('Content-Type: application/json');
         json_die('failure', 'your ip address has been banned');
     }
@@ -88,11 +88,11 @@ if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
     }
 
     $Revoked = 1;
-    $UserID = (int) substr(\Crypto::decrypt(base64UrlDecode($FullToken), $ENV->getPriv('ENCKEY')), 32);
+    $UserID = (int) substr(Crypto::decrypt(base64UrlDecode($FullToken), $ENV->getPriv('ENCKEY')), 32);
 
     if (!empty($UserID)) {
         [$LoggedUser['ID'], $Revoked] =
-        \G::$DB->row("
+        G::$DB->row("
         SELECT
           `UserID`,
           `Revoked`
@@ -109,7 +109,7 @@ if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
 
     # No user or revoked API token
     if (empty($LoggedUser['ID']) || $Revoked === 1) {
-        log_token_attempt(\G::$DB);
+        log_token_attempt(G::$DB);
         header('Content-Type: application/json');
         json_die('failure', 'token user mismatch');
     }
@@ -120,18 +120,18 @@ if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
         #$Session = new Gazelle\Session($LoggedUser['ID']);
     
         # User doesn't own that token
-        if (!is_null($FullToken) && !\Users::hasApiToken($UserID, $FullToken)) {
-            log_token_attempt(\G::$DB, $LoggedUser['ID']);
+        if (!is_null($FullToken) && !Users::hasApiToken($UserID, $FullToken)) {
+            log_token_attempt(G::$DB, $LoggedUser['ID']);
             header('Content-type: application/json');
             json_die('failure', 'token revoked');
         }
     
         # User is disabled
-        if (\Users::isDisabled($UserID)) {
+        if (Users::isDisabled($UserID)) {
             if (is_null($FullToken)) {
                 logout($LoggedUser['ID'], $SessionID);
             } else {
-                log_token_attempt(\G::$DB, $LoggedUser['ID']);
+                log_token_attempt(G::$DB, $LoggedUser['ID']);
                 header('Content-type: application/json');
                 json_die('failure', 'user disabled');
             }
@@ -205,8 +205,8 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     }
 
     // Get info such as username
-    $LightInfo = \Users::user_info($LoggedUser['ID']);
-    $HeavyInfo = \Users::user_heavy_info($LoggedUser['ID']);
+    $LightInfo = Users::user_info($LoggedUser['ID']);
+    $HeavyInfo = Users::user_heavy_info($LoggedUser['ID']);
 
     /**
      * OPS API tokens
@@ -271,7 +271,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
 
         // Only update IP if we have an encryption key in memory
         if (apcu_exists('DBKEY')) {
-            $SessionQuery .= "IP = '".\Crypto::encrypt($_SERVER['REMOTE_ADDR'])."', ";
+            $SessionQuery .= "IP = '".Crypto::encrypt($_SERVER['REMOTE_ADDR'])."', ";
         }
 
         $SessionQuery .=
@@ -289,7 +289,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
         'SessionID' => $SessionID,
         'Browser' => $Browser,
         'OperatingSystem' => $OperatingSystem,
-        'IP' => (apcu_exists('DBKEY') ? \Crypto::encrypt($_SERVER['REMOTE_ADDR']) : $UserSessions[$SessionID]['IP']),
+        'IP' => (apcu_exists('DBKEY') ? Crypto::encrypt($_SERVER['REMOTE_ADDR']) : $UserSessions[$SessionID]['IP']),
         'LastUpdate' => sqltime() );
 
         $Cache->insert_front($SessionID, $UsersSessionCache);
@@ -317,7 +317,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
 
     // IP changed
     /*
-    if (apcu_exists('DBKEY') && \Crypto::decrypt($LoggedUser['IP']) != $_SERVER['REMOTE_ADDR']) {
+    if (apcu_exists('DBKEY') && Crypto::decrypt($LoggedUser['IP']) != $_SERVER['REMOTE_ADDR']) {
         if (\Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
             error('Your IP address has been banned.');
         }
@@ -326,7 +326,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
         $NewIP = db_string($_SERVER['REMOTE_ADDR']);
 
         $Cache->begin_transaction('user_info_heavy_'.$LoggedUser['ID']);
-        $Cache->update_row(false, array('IP' => \Crypto::encrypt($_SERVER['REMOTE_ADDR'])));
+        $Cache->update_row(false, array('IP' => Crypto::encrypt($_SERVER['REMOTE_ADDR'])));
         $Cache->commit_transaction(0);
     }
     */
@@ -354,7 +354,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     }
 }
 
-#\G::initialize(); # 2nd call
+#G::initialize(); # 2nd call
 $Debug['messages']->info('end user handling');
 $Document = (
     $_SERVER['REQUEST_URI'] === '/'
@@ -378,7 +378,7 @@ $Cache->cache_value('php_' . getmypid(), array(
 define('STAFF_LOCKED', 1);
 
 $AllowedPages = ['staffpm', 'api', 'locked', 'logout', 'login'];
-if (isset(\G::$LoggedUser['LockedAccount']) && !in_array($Document, $AllowedPages)) {
+if (isset(G::$LoggedUser['LockedAccount']) && !in_array($Document, $AllowedPages)) {
     require_once "$ENV->SERVER_ROOT/sections/locked/index.php";
 } else {
     require_once "$ENV->SERVER_ROOT/sections/$Document/index.php";

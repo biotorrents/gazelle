@@ -1,12 +1,12 @@
 <?php
 #declare(strict_types=1);
 
-$ENV = \ENV::go();
-$Twig = \Twig::go();
-$View = new \View();
+$ENV = ENV::go();
+$Twig = Twig::go();
+$View = new View();
 
 if ($ENV->DEV) {
-    $Debug = \Debug::go();
+    $Debug = Debug::go();
     $Render = $Debug->getJavascriptRenderer();
 }
 ?>

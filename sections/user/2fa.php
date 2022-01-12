@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-$ENV = \ENV::go();
+$ENV = ENV::go();
 
 $TwoFA = new RobThree\Auth\TwoFactorAuth($ENV->SITE_NAME);
 $U2F = new \u2flib_server\U2F("https://$ENV->SITE_DOMAIN");
