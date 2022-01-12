@@ -183,7 +183,7 @@ class Tags
             $Class = $Split['class']; ?>
 
 <li><a class="<?=$Class?>"
-    href="<?=$Link . esc($Name) . $ArtistName?>"><?=esc($Name)?></a> (<?=$Total?>)</li>
+        href="<?=$Link . esc($Name) . $ArtistName?>"><?=esc($Name)?></a> (<?=$Total?>)</li>
 <?php
         }
     }

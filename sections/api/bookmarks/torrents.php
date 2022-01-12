@@ -1,13 +1,6 @@
 <?php
 #declare(strict_types=1);
 
-ini_set('memory_limit', -1);
-
-function compare($X, $Y)
-{
-    return($Y['count'] - $X['count']);
-}
-
 if (!empty($_GET['userid'])) {
     if (!check_perms('users_override_paranoia')) {
         error(403);

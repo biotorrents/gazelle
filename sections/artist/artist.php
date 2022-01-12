@@ -8,12 +8,6 @@
 $ENV = ENV::go();
 $Twig = Twig::go();
 
-// For sorting tags
-function compare($x, $y)
-{
-    return($y['count'] - $x['count']);
-}
-
 $ArtistID = $_GET['id'];
 if (!is_number($ArtistID)) {
     error(0);

@@ -3,12 +3,6 @@
 
 # todo: Go through line by line
 
-// For sorting tags
-function compare($X, $Y)
-{
-    return($Y['count'] - $X['count']);
-}
-
 if (!empty($_GET['artistreleases'])) {
     $OnlyArtistReleases = true;
 }

@@ -4,15 +4,7 @@
 # todo: Go through line by line
 $ENV = ENV::go();
 
-ini_set('max_execution_time', 600);
-set_time_limit(0);
-
 //~~~~~~~~~~~ Main bookmarks page ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-
-function compare($X, $Y)
-{
-    return($Y['count'] - $X['count']);
-}
 
 if (!empty($_GET['userid'])) {
     if (!check_perms('users_override_paranoia')) {

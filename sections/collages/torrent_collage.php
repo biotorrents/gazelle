@@ -4,11 +4,6 @@
 $ENV = ENV::go();
 $Twig = Twig::go();
 
-function compare($X, $Y)
-{
-    return($Y['count'] - $X['count']);
-}
-
 // Build the data for the collage and the torrent list
 // todo: Cache this
 $DB->prepared_query("

@@ -4,11 +4,6 @@
 $ENV = ENV::go();
 $Twig = Twig::go();
 
-function compare($x, $y)
-{
-    return($y['name'] < $x['name']);
-}
-
 define('MAX_PERS_COLLAGES', 3); // How many personal collages should be shown by default
 define('MAX_COLLAGES', 5); // How many normal collages should be shown by default
 
