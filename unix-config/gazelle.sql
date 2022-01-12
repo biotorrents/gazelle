@@ -18,9 +18,9 @@ USE gazelle_development;
 
 -- 2020-10-11
 CREATE TABLE `api_user_tokens`(
-    `ID` INT NOT NULL AUTO_INCREMENT,
-    `UserID` INT NOT NULL,
-    `AppID` INT DEFAULT NULL,
+    `ID` int NOT NULL AUTO_INCREMENT,
+    `UserID` int NOT NULL,
+    `AppID` int DEFAULT NULL,
     `Name` VARCHAR(50) NOT NULL,
     `Token` CHAR(255) NOT NULL,
     `Scope` TEXT,
@@ -34,12 +34,12 @@ CREATE TABLE `api_user_tokens`(
 
 -- 2020-10-11
 CREATE TABLE `api_applications`(
-    `ID` INT unsigned NOT NULL AUTO_INCREMENT,
-    `UserID` INT unsigned NOT NULL,
+    `ID` int unsigned NOT NULL AUTO_INCREMENT,
+    `UserID` int unsigned NOT NULL,
     `Name` VARCHAR(50) NOT NULL,
     `Token` CHAR(255) NOT NULL,
     `Description` TEXT,
-    `CategoryID` INT unsigned NOT NULL DEFAULT '0',
+    `CategoryID` int unsigned NOT NULL DEFAULT '0',
     `TagList` VARCHAR(500) NOT NULL DEFAULT '',
     `Created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(`ID`),
@@ -1624,8 +1624,6 @@ CREATE TABLE `users_sessions` (
   `UserID` int NOT NULL,
   `SessionID` char(64) NOT NULL,
   `KeepLogged` enum('0','1') NOT NULL DEFAULT '0',
-  `Browser` varchar(40) DEFAULT NULL,
-  `OperatingSystem` varchar(13) DEFAULT NULL,
   `IP` varchar(90) NOT NULL,
   `LastUpdate` datetime,
   `Active` tinyint NOT NULL DEFAULT '1',

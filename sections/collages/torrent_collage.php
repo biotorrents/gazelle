@@ -522,7 +522,6 @@ foreach ($ZIPOptions as $Option) {
       <div class="pad">
         <ol style="padding-left: 5px;">
           <?php
-    uasort($TopArtists, 'compare');
     $i = 0;
     foreach ($TopArtists as $ID => $Artist) {
         $i++;

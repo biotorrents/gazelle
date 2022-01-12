@@ -15,7 +15,7 @@ class Text
      */
     public static function parse(string $string)
     {
-        $ENV = \ENV::go();
+        $ENV = ENV::go();
 
         # Prepare clean escapes
         $string = esc($string);
@@ -56,7 +56,7 @@ class Text
      */
     private static function fix_links(string $parsed)
     {
-        $ENV = \ENV::go();
+        $ENV = ENV::go();
 
         # Replace links to $ENV->SITE_DOMAIN
         $parsed = preg_replace(
