@@ -26,21 +26,7 @@ memcached -d -m 8192 -l 10.10.0.1 -t8 -C
 
 |*************************************************************************/
 
-if (!extension_loaded('memcache') && !extension_loaded('memcached')) {
-    error('Memcache extension not loaded');
-}
-
-if (class_exists('Memcached')) {
-    class MemcacheCompat extends Memcached
-    {
-    }
-} else {
-    class MemcacheCompat extends Memcache
-    {
-    }
-}
-
-class Cache extends MemcacheCompat
+class Cache extends Memcache
 {
     // Torrent Group cache version
     const GROUP_VERSION = 5;

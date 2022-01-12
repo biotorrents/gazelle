@@ -2,7 +2,7 @@
 #declare(strict_types=1);
 
 $CollageID = (int) $_GET['id'];
-Security::CheckInt($CollageID);
+Security::int($CollageID);
 
 $CollageData = $Cache->get_value("collage_$CollageID");
 

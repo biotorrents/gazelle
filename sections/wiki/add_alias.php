@@ -5,7 +5,7 @@ enforce_login();
 authorize();
 
 $ArticleID = (int) $_POST['article'];
-Security::CheckInt($ArticleID);
+Security::int($ArticleID);
 
 $DB->prepared_query("
 SELECT

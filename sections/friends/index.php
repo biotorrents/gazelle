@@ -5,7 +5,7 @@ enforce_login();
 $P = db_array($_POST);
 
 $FriendID = (int) $_REQUEST['friendid'];
-Security::CheckInt($FriendID);
+Security::int($FriendID);
 
 if (!empty($_REQUEST['action'])) {
     switch ($_REQUEST['action']) {

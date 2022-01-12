@@ -8,7 +8,7 @@
 authorize();
 
 $group_id = (int) $_POST['groupid'];
-Security::CheckInt($group_id);
+Security::int($group_id);
 
 $NewTitle = $_POST['name'];
 $NewSubject = $_POST['Title2'];

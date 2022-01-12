@@ -41,7 +41,7 @@ if (!isset($_REQUEST['authkey']) || !isset($_REQUEST['torrent_pass'])) {
 }
 
 $TorrentID = (int) $_REQUEST['id'];
-Security::CheckInt($TorrentID);
+Security::int($TorrentID);
 
 /*
   uTorrent Remote and various scripts redownload .torrent files periodically.

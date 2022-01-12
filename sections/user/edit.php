@@ -4,7 +4,7 @@
 $ENV = ENV::go();
 
 $UserID = (int) $_REQUEST['userid'];
-Security::CheckInt($UserID);
+Security::int($UserID);
 
 $DB->query("
   SELECT

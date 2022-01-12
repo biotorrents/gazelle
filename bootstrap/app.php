@@ -41,8 +41,17 @@ ob_start();
 // todo: Remove one of the calls once we're moving everything into that class
 G::initialize();
 
-// Begin browser identification
-#d($_SERVER['HTTP_USER_AGENT']);
+# Begin browser identification
+# https://github.com/browscap/browscap-php
+/*
+$cache = new \MatthiasMullie\Scrapbook\Adapters\Memcached($Cache); // or maybe any other PSR-16 compatible caches
+$logger = new \Monolog\Logger('name'); // or maybe any other PSR-3 compatible logger
+
+$browscap = new \BrowscapPHP\Browscap($cache, $logger);
+$info = $browscap->getBrowser();
+!d($info);
+*/
+# Old
 $Browser = \UserAgent::browser($_SERVER['HTTP_USER_AGENT']);
 $OperatingSystem = \UserAgent::operating_system($_SERVER['HTTP_USER_AGENT']);
 

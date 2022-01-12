@@ -2,7 +2,7 @@
 declare(strict_types = 1);
 
 $CollageID = (int) $_GET['collageid'];
-Security::CheckInt($CollageID);
+Security::int($CollageID);
 
 $DB->prepared_query("
 SELECT

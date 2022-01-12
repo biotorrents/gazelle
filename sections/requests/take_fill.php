@@ -6,7 +6,7 @@ declare(strict_types=1);
  */
 
 $RequestID = (int) $_REQUEST['requestid'];
-Security::CheckInt($RequestID);
+Security::int($RequestID);
 authorize();
 
 # Validation

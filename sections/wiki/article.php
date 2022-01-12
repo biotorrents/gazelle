@@ -15,7 +15,7 @@ if (!empty($_GET['id'])) {
     error('Unknown article: '.esc($_GET['id']));
 }
 
-Security::CheckInt($ArticleID);
+Security::int($ArticleID);
 
 if (!$ArticleID) { // No article found
     View::show_header('No article found'); ?>

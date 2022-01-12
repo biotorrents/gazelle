@@ -21,7 +21,7 @@ $Title = db_string(trim($_POST['title']));
 $Year = db_string(trim($_POST['year']));
 
 # Digits, check 'em
-Security::CheckInt($OldGroupID, $TorrentID, $Year);
+Security::int($OldGroupID, $TorrentID, $Year);
 if (empty($Title) || empty($ArtistName)) {
     error(400);
 }

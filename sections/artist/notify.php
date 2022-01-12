@@ -7,7 +7,7 @@ if (!check_perms('site_torrents_notify')) {
 }
 
 $ArtistID = (int) $_GET['artistid'];
-Security::CheckInt($ArtistID);
+Security::int($ArtistID);
 
 /*
 $DB->prepared_query("

@@ -17,16 +17,13 @@ class Security
      * Makes sure a number ID is valid,
      * e.g., a page ID requested by GET.
      */
-    public static function CheckInt(...$IDs)
+    public static function int(...$ids)
     {
-        foreach ($IDs as $ID) {
-            if (!$ID || !is_int($ID) || $ID < 1) {
-                return "Expected an integer > 1, got $ID in Security::CheckInt.";
-                #error("Expected an integer > 1, got $ID in Security::CheckInt.");
-            }
+        foreach ($ids as $id) {
+            return (intval($id) < 1) ?? Http::response(400);
         }
 
-        return;
+        return true;
     }
 
 

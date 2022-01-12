@@ -4,7 +4,7 @@ declare(strict_types=1);
 authorize();
 
 $group_id = (int) $_REQUEST['groupid'];
-Security::CheckInt($group_id);
+Security::int($group_id);
 
 // Usual perm checks
 if (!check_perms('torrents_edit')) {

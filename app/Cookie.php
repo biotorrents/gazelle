@@ -73,7 +73,7 @@ class Cookie
     {
         # 3600s vs. 1s for potential clock desyncs
         self::set(
-            $key = self::prefix.$key,
+            $key = self::$prefix.$key,
             $value = '',
             $time = time() - 24 * 3600
         );

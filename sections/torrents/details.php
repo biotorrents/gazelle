@@ -65,7 +65,6 @@ if ($TorrentTags !== '') {
         $Tags[$TagKey]['display'] = $Split['name'];
         $Tags[$TagKey]['class'] = $Split['class'];
     }
-    uasort($Tags, 'compare');
 }
 
 
@@ -400,10 +399,6 @@ $Index++;
           </th>
         </tr>
         <?php
-function filelist($Str)
-    {
-        return "</td><td>".Format::get_size($Str[1])."</td></tr>";
-    }
 
 # FreeTorrent is a string
 foreach ($TorrentList as $Torrent) {

@@ -7,7 +7,7 @@
 
 authorize();
 $UserID = (int) $_REQUEST['userid'];
-Security::CheckInt($UserID);
+Security::int($UserID);
 
 // For this entire page, we should generally be using $UserID not $LoggedUser['ID'] and $U[] not $LoggedUser[]
 $U = Users::user_info($UserID);
