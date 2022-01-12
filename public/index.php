@@ -18,7 +18,7 @@ $file = $path['filename'];
 
 if ($path['dirname'] !== '/') {
     Http::response(403);
-} elseif (in_array($file, ['announce', 'scrape'])) {
+} elseif (in_array($file, ['announce', 'info_hash', 'peer_id', 'scrape'])) {
     die("d14:failure reason40:Invalid .torrent, try downloading again.e");
 }
 
@@ -41,7 +41,6 @@ switch ($file) {
     case 'inbox':
     case 'index':
     case 'legal':
-    case 'locked':
     case 'log':
     case 'login':
     case 'logout':
@@ -69,8 +68,10 @@ switch ($file) {
         break;
 }
 
-if (!$valid) {
-    Http::response(404);
-} else {
+if ($valid) {
+    require_once __DIR__.'/../config/app.php';
+    require_once __DIR__.'/../bootstrap/utilities.php';
     require_once __DIR__.'/../bootstrap/app.php';
+} else {
+    Http::response(404);
 }

@@ -8,18 +8,9 @@ declare(strict_types=1);
  * All it needs to do is instantiate a singleton and include the requested page.
  */
 
-# Initialize the app config and core utils
-require_once __DIR__.'/../config/app.php';
-require_once "$ENV->SERVER_ROOT/bootstrap/utilities.php";
-
-
-/**
- * Initialize some big variables
- */
-
 # Basic stuff
+Security::oops();
 $ENV = ENV::go();
-Security::SetupPitfalls();
 
 # Debugging
 $Debug = Debug::go();
@@ -37,20 +28,6 @@ ob_start();
 // This is necessary as the code inbetween (initialization of $LoggedUser) makes use of G::$DB and G::$Cache.
 // todo: Remove one of the calls once we're moving everything into that class
 G::initialize();
-
-# Begin browser identification
-# https://github.com/browscap/browscap-php
-/*
-$cache = new \MatthiasMullie\Scrapbook\Adapters\Memcached($Cache); // or maybe any other PSR-16 compatible caches
-$logger = new \Monolog\Logger('name'); // or maybe any other PSR-3 compatible logger
-
-$browscap = new \BrowscapPHP\Browscap($cache, $logger);
-$info = $browscap->getBrowser();
-!d($info);
-*/
-# Old
-$Browser = \UserAgent::browser($_SERVER['HTTP_USER_AGENT']);
-$OperatingSystem = \UserAgent::operating_system($_SERVER['HTTP_USER_AGENT']);
 
 $Debug['messages']->info('start user handling');
 
@@ -164,8 +141,6 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
             "
         SELECT
           SessionID,
-          Browser,
-          OperatingSystem,
           IP,
           LastUpdate
         FROM users_sessions
@@ -280,9 +255,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
             $SessionQuery .= "IP = '".Crypto::encrypt($_SERVER['REMOTE_ADDR'])."', ";
         }
 
-        $SessionQuery .=
-       "Browser = '$Browser',
-        OperatingSystem = '$OperatingSystem',
+        $SessionQuery .= "
         LastUpdate = NOW()
         WHERE UserID = '$LoggedUser[ID]'
         AND SessionID = '".db_string($SessionID)."'";
@@ -293,8 +266,6 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
 
         $UsersSessionCache = array(
         'SessionID' => $SessionID,
-        'Browser' => $Browser,
-        'OperatingSystem' => $OperatingSystem,
         'IP' => (apcu_exists('DBKEY') ? Crypto::encrypt($_SERVER['REMOTE_ADDR']) : $UserSessions[$SessionID]['IP']),
         'LastUpdate' => sqltime() );
 

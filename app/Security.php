@@ -12,6 +12,19 @@ declare(strict_types = 1);
 class Security
 {
     /**
+     * oops
+     *
+     * Basic sanity checks now handled by Composer.
+     * Please add checks here if you shit up the codebase.
+     */
+    public static function oops()
+    {
+        # short_open_tag
+        return (!ini_get('short_open_tag'))
+            ?? Http::response(502);
+    }
+
+    /**
      * Check integer
      *
      * Makes sure a number ID is valid,
@@ -25,39 +38,6 @@ class Security
 
         return true;
     }
-
-
-    /**
-     * Setup pitfalls
-     *
-     * A series of quick sanity checks during app init.
-     * Previously in bootstrap/app.php.
-     */
-    public static function SetupPitfalls()
-    {
-        $ENV = ENV::go();
-
-        # short_open_tag
-        if (!ini_get('short_open_tag')) {
-            error('short_open_tag != On in php.ini.');
-        }
-
-        # blake3
-        if ($ENV->FEATURE_BIOPHP && !extension_loaded('blake3')) {
-            error('Please install and enable the php-blake3 extension.');
-        }
-
-        # Deal with dumbasses
-        if (isset($_REQUEST['info_hash']) || isset($_REQUEST['peer_id'])) {
-            error(
-                'd14:failure reason40:Invalid .torrent, try downloading again.e',
-                $NoHTML = true
-            );
-        }
-
-        return;
-    }
-
 
     /**
      * UserID checks
