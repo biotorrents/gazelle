@@ -470,60 +470,6 @@ class Format
 
 
     /**
-     * Detect the encoding of a string and transform it to UTF-8.
-     *
-     * @param string $Str
-     * @return UTF-8 encoded version of $Str
-     */
-    public static function make_utf8($Str)
-    {
-        if ($Str !== '') {
-            if (self::is_utf8($Str)) {
-                $Encoding = 'UTF-8';
-            }
-
-            if (empty($Encoding)) {
-                $Encoding = mb_detect_encoding($Str, 'UTF-8, ISO-8859-1');
-            }
-
-            if (empty($Encoding)) {
-                $Encoding = 'ISO-8859-1';
-            }
-
-            if ($Encoding === 'UTF-8') {
-                return $Str;
-            } else {
-                return @mb_convert_encoding($Str, 'UTF-8', $Encoding);
-            }
-        }
-    }
-
-
-    /**
-     * Magical function.
-     *
-     * @param string $Str function to detect encoding on.
-     * @return true if the string is in UTF-8.
-     */
-    private static function is_utf8($Str)
-    {
-        return preg_match(
-            '%^(?:
-            [\x09\x0A\x0D\x20-\x7E]            // ASCII
-          | [\xC2-\xDF][\x80-\xBF]             // Non-overlong 2-byte
-          | \xE0[\xA0-\xBF][\x80-\xBF]         // Excluding overlongs
-          | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  // Straight 3-byte
-          | \xED[\x80-\x9F][\x80-\xBF]         // Excluding surrogates
-          | \xF0[\x90-\xBF][\x80-\xBF]{2}      // Planes 1-3
-          | [\xF1-\xF3][\x80-\xBF]{3}          // Planes 4-15
-          | \xF4[\x80-\x8F][\x80-\xBF]{2}      // Plane 16
-            )*$%xs',
-            $Str
-        );
-    }
-
-
-    /**
      * Modified accessor for the $TorrentLabels array
      *
      * Converts $Text to lowercase and strips non-word characters

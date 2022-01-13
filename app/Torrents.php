@@ -709,10 +709,10 @@ class Torrents
             $Contents = file_get_contents(TORRENT_STORE.$TorrentID.'.torrent');
             if (\Misc::is_new_torrent($Contents)) {
                 $Tor = new \BencodeTorrent($Contents);
-                $FilePath = (isset($Tor->Dec['info']['files']) ? Format::make_utf8($Tor->get_name()) : '');
+                $FilePath = (isset($Tor->Dec['info']['files']) ? Text::utf8($Tor->get_name()) : '');
             } else {
                 $Tor = new \TORRENT(unserialize(base64_decode($Contents)), true);
-                $FilePath = (isset($Tor->Val['info']->Val['files']) ? Format::make_utf8($Tor->get_name()) : '');
+                $FilePath = (isset($Tor->Val['info']->Val['files']) ? Text::utf8($Tor->get_name()) : '');
             }
             list($TotalSize, $FileList) = $Tor->file_list();
             foreach ($FileList as $File) {
@@ -755,7 +755,7 @@ class Torrents
     public static function filelist_format_file($File)
     {
         list($Size, $Name) = $File;
-        $Name = Format::make_utf8(strtr($Name, "\n\r\t", '   '));
+        $Name = Text::utf8(strtr($Name, "\n\r\t", '   '));
         $ExtPos = strrpos($Name, '.');
         // Should not be $ExtPos !== false. Extensionless files that start with a . should not get extensions
         $Ext = ($ExtPos ? trim(substr($Name, $ExtPos + 1)) : '');

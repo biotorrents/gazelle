@@ -359,7 +359,7 @@ list($TotalSize, $FileList) = $Tor->file_list();
 $NumFiles = count($FileList);
 $TmpFileList = [];
 $TooLongPaths = [];
-$DirName = (isset($Tor->Dec['info']['files']) ? Format::make_utf8($Tor->get_name()) : '');
+$DirName = (isset($Tor->Dec['info']['files']) ? Text::utf8($Tor->get_name()) : '');
 check_name($DirName); // Check the folder name against the blacklist
 foreach ($FileList as $File) {
     list($Size, $Name) = $File;
