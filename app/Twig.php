@@ -134,7 +134,7 @@ class Twig
         $Twig->addFilter(new \Twig\TwigFilter(
             'octet_size',
             function ($size, array $option = []) {
-                return \Format::get_size($size, empty($option) ? 2 : $option[0]);
+                return Format::get_size($size, empty($option) ? 2 : $option[0]);
             },
             ['is_variadic' => true]
         ));
@@ -232,7 +232,7 @@ class Twig
 
         $Twig->addFunction(new \Twig\TwigFunction('ratio', function ($up, $down) {
             return new \Twig\Markup(
-                \Format::get_ratio_html($up, $down),
+                Format::get_ratio_html($up, $down),
                 'UTF-8'
             );
         }));
