@@ -18,6 +18,7 @@ class Text
         $ENV = ENV::go();
 
         # Prepare clean escapes
+        $string = self::utf8($string);
         $string = esc($string);
 
         # Here's the magic pattern:
@@ -38,9 +39,9 @@ class Text
             return $parsed;
         } else {
             # BBcode
-            $NBBC = new \Nbbc\BBCode();
+            $Nbbc = new \Nbbc\BBCode();
 
-            $parsed = $NBBC->parse($string);
+            $parsed = $Nbbc->parse($string);
             $parsed = self::fix_links($parsed);
 
             return $parsed;
@@ -48,11 +49,11 @@ class Text
     }
 
     /**
-     * Fix the links
+     * Fix links
      *
      * Make it so that internal links are in the form "/section?p=foo"
      * and that external links are secure and look like Wikipedia.
-     * Takes an already-parsed input, to hit both Markdown and BBcode.
+     * Takes an already-parsed input, from Markdown or BBcode.
      */
     private static function fix_links(string $parsed)
     {
@@ -81,5 +82,60 @@ class Text
         );
 
         return $parsed;
+    }
+
+    /**
+     * Figlet
+     *
+     * Make a silly willy, goofery ballery.
+     * @see https://docs.laminas.dev/laminas-text/figlet/
+     */
+    public static function figlet(string $string)
+    {
+        $string = self::utf8($string);
+        $figlet = new \Laminas\Text\Figlet();
+        return $figlet->render($string);
+    }
+
+    /**
+     * utf8
+     *
+     * Magical function (the preg_match).
+     * Format::is_utf8 + Format::make_utf8.
+     *
+     * @param string $string The string to convert
+     * @return string The converted utf8 string
+     */
+    public static function utf8(string $string)
+    {
+        # Empty string (may cause errors)
+        #return (empty($string)) ?? false;
+
+        # String is already utf8
+        return preg_match(
+            '%^(?:
+            [\x09\x0A\x0D\x20-\x7E]            // ASCII
+          | [\xC2-\xDF][\x80-\xBF]             // Non-overlong 2-byte
+          | \xE0[\xA0-\xBF][\x80-\xBF]         // Excluding overlongs
+          | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  // Straight 3-byte
+          | \xED[\x80-\x9F][\x80-\xBF]         // Excluding surrogates
+          | \xF0[\x90-\xBF][\x80-\xBF]{2}      // Planes 1-3
+          | [\xF1-\xF3][\x80-\xBF]{3}          // Planes 4-15
+          | \xF4[\x80-\x8F][\x80-\xBF]{2}      // Plane 16
+            )*$%xs',
+            $string
+        ) ?? $string;
+
+        # Best effort guess (meh)
+        # https://stackoverflow.com/a/7980354
+        return iconv(
+            mb_detect_encoding(
+                $string,
+                mb_detect_order(),
+                true
+            ),
+            'UTF-8',
+            $string
+        );
     }
 }
