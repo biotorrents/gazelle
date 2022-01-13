@@ -58,7 +58,7 @@ class Twig
      */
     private static function factory(): \Twig\Environment
     {
-        $ENV = \ENV::go();
+        $ENV = ENV::go();
 
         # https://twig.symfony.com/doc/3.x/api.html
         $Twig = new \Twig\Environment(
@@ -75,7 +75,7 @@ class Twig
         # DebugBar
         /*
         $Profile = new \Twig\Profiler\Profile();
-        $Debug = \Debug::go();
+        $Debug = Debug::go();
         $Twig->addExtension(
             new \DebugBar\Bridge\Twig\TimeableTwigExtensionProfiler(
                 $Profile,

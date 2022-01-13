@@ -109,7 +109,7 @@ abstract class Json
      */
     protected function debug()
     {
-        $Debug = \Debug::go();
+        $Debug = Debug::go();
 
         if (!check_perms('site_debug')) {
             return [];

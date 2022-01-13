@@ -80,7 +80,7 @@ class ENV
     public static function go()
     {
         return (self::$ENV === null)
-            ? self::$ENV = new \ENV()
+            ? self::$ENV = new ENV()
             : self::$ENV;
     }
 

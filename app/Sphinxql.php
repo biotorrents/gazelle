@@ -71,7 +71,7 @@ class Sphinxql extends mysqli
      */
     public function sph_connect()
     {
-        $Debug = \Debug::go();
+        $Debug = Debug::go();
 
         if ($this->Connected || $this->connect_errno) {
             return;
@@ -107,8 +107,8 @@ class Sphinxql extends mysqli
      */
     public function error($Msg, $Halt = false)
     {
-        $ENV = \ENV::go();
-        $Debug = \Debug::go();
+        $ENV = ENV::go();
+        $Debug = Debug::go();
         $ErrorMsg = 'SphinxQL ('.$this->Ident.'): '.strval($Msg);
         #$Debug->analysis('SphinxQL Error', $ErrorMsg, 3600*24);
 

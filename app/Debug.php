@@ -46,7 +46,7 @@ class Debug
     public static function go()
     {
         return (self::$Debug === null)
-            ? self::$Debug = \Debug::factory()
+            ? self::$Debug = Debug::factory()
             : self::$Debug;
     }
 
@@ -56,7 +56,7 @@ class Debug
      */
     private static function factory()
     {
-        $ENV = \ENV::go();
+        $ENV = ENV::go();
 
         # https://stackify.com/display-php-errors/
         if ($ENV->DEV) {

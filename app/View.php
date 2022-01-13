@@ -15,7 +15,7 @@ class View
      */
     public static function pushAsset($uri, $type)
     {
-        $ENV = \ENV::go();
+        $ENV = ENV::go();
 
         # Bad URI or type
         if ((!$uri || !is_string($uri))
@@ -61,7 +61,7 @@ class View
      */
     public static function show_header($PageTitle = '', $JSIncludes = '', $CSSIncludes = '')
     {
-        $ENV = \ENV::go();
+        $ENV = ENV::go();
         global $Document, $Mobile, $Classes;
 
         if ($PageTitle !== '') {
@@ -95,7 +95,7 @@ class View
      */
     public static function show_footer($Options = [])
     {
-        $ENV = \ENV::go();
+        $ENV = ENV::go();
         global $SessionID, $UserSessions, $Time, $Mobile;
         #global $ScriptStartTime, $SessionID, $UserSessions, $Debug, $Time, $Mobile;
 
@@ -126,7 +126,7 @@ class View
      */
     public static function render_template($TemplateName, $Args)
     {
-        $ENV = \ENV::go();
+        $ENV = ENV::go();
         static $LoadedTemplates; // Keep track of templates we've already loaded.
         $ClassName = '';
 

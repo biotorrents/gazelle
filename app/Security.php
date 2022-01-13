@@ -30,13 +30,12 @@ class Security
      * Makes sure a number ID is valid,
      * e.g., a page ID requested by GET.
      */
-    public static function int(...$ids)
+    public static function int(mixed ...$ids)
     {
         foreach ($ids as $id) {
-            return (intval($id) < 1) ?? Http::response(400);
+            return ($id !== abs(intval($id)))
+                ?? Http::response(400);
         }
-
-        return true;
     }
 
     /**

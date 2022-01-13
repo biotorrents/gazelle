@@ -195,8 +195,8 @@ class DB
      */
     public function halt($Msg)
     {
-        $ENV = \ENV::go();
-        $Debug = \Debug::go();
+        $ENV = ENV::go();
+        $Debug = Debug::go();
 
         global $argv;
         #global $Debug, $argv;
@@ -339,8 +339,8 @@ class DB
      */
     public function query($Query, &...$BindVars)
     {
-        $ENV = \ENV::go();
-        $Debug = \Debug::go();
+        $ENV = ENV::go();
+        $Debug = Debug::go();
 
         $QueryStartTime = microtime(true);
         $this->connect();

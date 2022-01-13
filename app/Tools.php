@@ -10,7 +10,7 @@ class Tools
      */
     public static function site_ban_ip($IP)
     {
-        $Debug = \Debug::go();
+        $Debug = Debug::go();
 
         $A = substr($IP, 0, strcspn($IP, '.:'));
         $IPNum = Tools::ip_to_unsigned($IP);

@@ -44,7 +44,7 @@ class Cookie
         int $time = 86400,
         string $path = '/'
     ) {
-        $ENV = \ENV::go();
+        $ENV = ENV::go();
 
         # Should be an error probably
         #return (!$key || !$value) ?? false;
