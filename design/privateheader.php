@@ -156,28 +156,27 @@ if (empty(G::$LoggedUser['StyleURL'])) {
     if (isset($StyleColors[G::$LoggedUser['StyleName']])) { ?>
   <meta name="theme-color"
     content="<?=$StyleColors[G::$LoggedUser['StyleName']]?>">
-  <?php } ?>
+  <?php }
 
-  <link rel="stylesheet" type="text/css"
-    title="<?=G::$LoggedUser['StyleName']?>"
-    media="screen"
-    href="<?=STATIC_SERVER?>css/<?=G::$LoggedUser['StyleName']?>.css?v=<?=filemtime(SERVER_ROOT.STATIC_SERVER.'css/'.G::$LoggedUser['StyleName'].'.css')?>">
-
-  <?php
+    $userStyle = "$ENV->STATIC_SERVER/css/" . G::$LoggedUser['StyleName'] . ".css";
+    echo $View->pushAsset(
+        $userStyle,
+        'style'
+    );
 } else {
-        $StyleURLInfo = parse_url(G::$LoggedUser['StyleURL']);
-        if (substr(G::$LoggedUser['StyleURL'], -4) === '.css'
+    $StyleURLInfo = parse_url(G::$LoggedUser['StyleURL']);
+    if (substr(G::$LoggedUser['StyleURL'], -4) === '.css'
         && empty($StyleURLInfo['query']) && empty($StyleURLInfo['fragment'])
         && ($StyleURLInfo['host'] === SITE_DOMAIN)
         && file_exists(SERVER_ROOT.$StyleURLInfo['path'])) {
-            $StyleURL = G::$LoggedUser['StyleURL'].'?v='.filemtime(SERVER_ROOT.$StyleURLInfo['path']);
-        } else {
-            $StyleURL = G::$LoggedUser['StyleURL'];
-        } ?>
+        $StyleURL = G::$LoggedUser['StyleURL'].'?v='.filemtime(SERVER_ROOT.$StyleURLInfo['path']);
+    } else {
+        $StyleURL = G::$LoggedUser['StyleURL'];
+    } ?>
   <link rel="stylesheet" type="text/css" media="screen"
     href="<?=$StyleURL?>" title="External CSS">
   <?php
-    }
+}
 
 $ExtraCSS = explode(',', $CSSIncludes);
 foreach ($ExtraCSS as $CSS) {
@@ -392,6 +391,7 @@ if (check_perms('users_mod')) {
     $ModBar[] = '<a href="tools.php">Toolbox</a>';
 }
 
+/** Buggy af rn 2022-01-12
 if (check_perms('users_mod')) {
     $NumStaffPMs = G::$Cache->get_value('num_staff_pms_'.G::$LoggedUser['ID']);
     if ($NumStaffPMs === false) {
@@ -423,6 +423,7 @@ if (check_perms('users_mod')) {
         $ModBar[] = '<a href="staffpm.php">'.$NumStaffPMs.' Staff PMs</a>';
     }
 }
+*/
 
 if (check_perms('admin_reports')) {
     // Torrent reports code

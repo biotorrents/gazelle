@@ -108,11 +108,8 @@ class Text
      */
     public static function utf8(string $string)
     {
-        # Empty string (may cause errors)
-        #return (empty($string)) ?? false;
-
         # String is already utf8
-        return preg_match(
+        $utf8 = preg_match(
             '%^(?:
             [\x09\x0A\x0D\x20-\x7E]            // ASCII
           | [\xC2-\xDF][\x80-\xBF]             // Non-overlong 2-byte
@@ -124,18 +121,20 @@ class Text
           | \xF4[\x80-\x8F][\x80-\xBF]{2}      // Plane 16
             )*$%xs',
             $string
-        ) ?? $string;
+        );
 
         # Best effort guess (meh)
         # https://stackoverflow.com/a/7980354
-        return iconv(
-            mb_detect_encoding(
-                $string,
-                mb_detect_order(),
-                true
-            ),
-            'UTF-8',
-            $string
-        );
+        return ($utf8)
+            ? $string
+            : iconv(
+                mb_detect_encoding(
+                    $string,
+                    mb_detect_order(),
+                    true
+                ),
+                'UTF-8',
+                $string
+            );
     }
 }

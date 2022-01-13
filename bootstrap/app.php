@@ -32,6 +32,8 @@ $Cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
 $Debug['messages']->info('cache okay');
 
 # Globals
+# Note: G::go is called twice
+# This is necessary for $LoggedUser
 G::go();
 $Debug['messages']->info('globals okay');
 $Debug['time']->stopMeasure('globals');
@@ -348,6 +350,9 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
         logout(); // Ghost
     }
 }
+
+# 2nd G
+G::go();
 
 # Measure all that
 $Debug['time']->stopMeasure('users', 'user handling');

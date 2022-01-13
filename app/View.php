@@ -23,6 +23,7 @@ class View
             return error(404);
         }
 
+        $uri = preg_replace(".$ENV->STATIC_SERVER.", '', $uri);
         #$integrity = base64_encode(hash_file($ENV->SRI, "$ENV->SERVER_ROOT/$uri", true));
 
         switch ($type) {

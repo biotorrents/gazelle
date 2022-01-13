@@ -137,44 +137,24 @@ function db_array($Array, $DontEscape = [], $Quote = false)
  */
 class DB
 {
-    public $LinkID = false;
-    protected $QueryID = false;
-    protected $StatementID = false;
-    protected $PreparedQuery = false;
-    protected $Record = [];
-    protected $Row;
     protected $Errno = 0;
     protected $Error = '';
+    protected $PreparedQuery = false;
+    protected $QueryID = false;
+    protected $Record = [];
+    protected $Row;
+    protected $StatementID = false;
 
+    public $LinkID = false;
     public $Queries = [];
     public $Time = 0.0;
-
-    protected $Database = '';
-    protected $Server = '';
-    protected $User = '';
-    protected $Pass = '';
-    protected $Port = 0;
-    protected $Socket = '';
-
-    protected $Key = '';
-    protected $Cert = '';
-    protected $CA = '';
 
 
     /**
      * __construct
      */
-    public function __construct(
-        $Database = null,
-        $User = null,
-        $Pass = null,
-        $Server = null,
-        $Port = null,
-        $Socket = null,
-        $Key = null,
-        $Cert = null,
-        $CA = null
-    ) {
+    public function __construct()
+    {
         $ENV = ENV::go();
 
         $this->Database = $ENV->getPriv('SQLDB');
