@@ -133,7 +133,7 @@ function db_array($Array, $DontEscape = [], $Quote = false)
 
 
 /**
- * \DB::class
+ * DB::class
  */
 class DB
 {

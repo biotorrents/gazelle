@@ -82,4 +82,4 @@ $SQL .= "
 
 $DB->prepared_query($SQL);
 Wiki::flush_article($ArticleID);
-header("Location: wiki.php?action=article&id=$ArticleID");
+Http::redirect("wiki.php?action=article&id=$ArticleID");

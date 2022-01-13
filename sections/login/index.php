@@ -17,12 +17,12 @@ $U2F = new \u2flib_server\U2F("https://$ENV->SITE_DOMAIN");
 
 # They want the disabled page
 if ($_REQUEST['action'] === 'disabled') {
-    header('Location: /disabled.php');
+    header('Location: disabled.php');
     exit;
 }
 
 # IP ban after failed logins
-if (\Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
+if (Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
     error('Your IP address has been banned.');
 }
 
@@ -209,6 +209,7 @@ else {
     function log_attempt()
     {
         global $Cache, $Attempts;
+
         $Attempts = ($Attempts ?? 0) + 1;
         $Cache->cache_value('login_attempts_'.db_string($_SERVER['REMOTE_ADDR']), array($Attempts, ($Attempts > 5)), 60*60*$Attempts);
         $AllAttempts = $Cache->get_value('login_attempts');
@@ -315,13 +316,11 @@ else {
 
                                     $DB->query("
                                 INSERT INTO users_sessions
-                                  (UserID, SessionID, KeepLogged, Browser, OperatingSystem, IP, LastUpdate, FullUA)
+                                  (UserID, SessionID, KeepLogged, IP, LastUpdate, FullUA)
                                 VALUES
                                   ('$UserID',
                                   '".db_string($SessionID)."',
                                   '1',
-                                  '$Browser',
-                                  '$OperatingSystem',
                                   '".db_string(apcu_exists('DBKEY')?Crypto::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0')."',
                                   NOW(),
                                   '".db_string($_SERVER['HTTP_USER_AGENT'])."')");
@@ -329,8 +328,6 @@ else {
                                 $Cache->begin_transaction("users_sessions_$UserID");
                                 $Cache->insert_front($SessionID, [
                                   'SessionID' => $SessionID,
-                                  'Browser' => $Browser,
-                                  'OperatingSystem' => $OperatingSystem,
                                   'IP' => (apcu_exists('DBKEY')?Crypto::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0'),
                                   'LastUpdate' => sqltime()
                                 ]);
