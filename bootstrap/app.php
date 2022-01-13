@@ -6,39 +6,54 @@ declare(strict_types=1);
  *
  * It really handles too much, including sessions, global objects, etc.
  * All it needs to do is instantiate a singleton and include the requested page.
+ *
+ * Basic app variable instantiation.
+ * The debugging should catch exceptions.
  */
 
-# Basic stuff
+# Quick sanity check
 Security::oops();
-$ENV = ENV::go();
 
 # Debugging
 $Debug = Debug::go();
-$Debug['messages']->info('debug constructed');
+$Debug['messages']->info('debug okay');
+$Debug['time']->startMeasure('globals', 'instantiate globals');
 
-# Database and cache
+# Load the config
+$ENV = ENV::go();
+$Debug['messages']->info('config okay');
+
+# Database
 $DB = new DB;
-$Cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
+$Debug['messages']->info('database okay');
 
-# Start a buffer, mainly for MySQL errors
+# Cache
+$Cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
+$Debug['messages']->info('cache okay');
+
+# Globals
+G::go();
+$Debug['messages']->info('globals okay');
+$Debug['time']->stopMeasure('globals');
+
+# Start a buffer
 ob_start();
 
 
-// Note: G::initialize is called twice.
-// This is necessary as the code inbetween (initialization of $LoggedUser) makes use of G::$DB and G::$Cache.
-// todo: Remove one of the calls once we're moving everything into that class
-G::initialize();
-
-$Debug['messages']->info('start user handling');
-
-// Get classes
-// todo: Remove these globals, replace by calls into Users
-list($Classes, $ClassLevels) = Users::get_classes();
-
 /**
- * JSON API token support
- * @see https://github.com/OPSnet/Gazelle/commit/7c208fc4c396a16c77289ef886d0015db65f2af1#diff-2ea09cbf36b1d20fec7a6d7fc50780723b9f804c4e857003aa9a9c359dc9fd49
+ * User handling stuff.
+ * Needs to be a session class.
  */
+
+$Debug['time']->startMeasure('users', 'user handling');
+
+ /**
+  * Implement api tokens to use with ajax endpoint
+  *
+  * commit 7c208fc4c396a16c77289ef886d0015db65f2af1
+  * Author: itismadness <itismadness@orpheus.network>
+  * Date:   Thu Oct 15 00:09:15 2020 +0000
+  */
 
 // Set the document we are loading
 $Document = basename(parse_url($_SERVER['SCRIPT_NAME'], PHP_URL_PATH), '.php');
@@ -126,6 +141,7 @@ if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
 /**
  * Session handling and cookies
  */
+
 if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     $SessionID = $_COOKIE['session'];
     $LoggedUser['ID'] = (int) $_COOKIE['userid'];
@@ -190,9 +206,13 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     $HeavyInfo = Users::user_heavy_info($LoggedUser['ID']);
 
     /**
-     * OPS API tokens
-     * @see https://github.com/OPSnet/Gazelle/commit/7c208fc4c396a16c77289ef886d0015db65f2af1#diff-2ea09cbf36b1d20fec7a6d7fc50780723b9f804c4e857003aa9a9c359dc9fd49
-     */
+      * Implement api tokens to use with ajax endpoint
+      *
+      * commit 7c208fc4c396a16c77289ef886d0015db65f2af1
+      * Author: itismadness <itismadness@orpheus.network>
+      * Date:   Thu Oct 15 00:09:15 2020 +0000
+      */
+
     // TODO: These globals need to die, and just use $LoggedUser
     // TODO: And then instantiate $LoggedUser from Gazelle\Session when needed
     if (empty($LightInfo['Username'])) { // Ghost
@@ -293,9 +313,8 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     }
 
     // IP changed
-    /*
     if (apcu_exists('DBKEY') && Crypto::decrypt($LoggedUser['IP']) != $_SERVER['REMOTE_ADDR']) {
-        if (\Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
+        if (Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
             error('Your IP address has been banned.');
         }
 
@@ -306,7 +325,6 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
         $Cache->update_row(false, array('IP' => Crypto::encrypt($_SERVER['REMOTE_ADDR'])));
         $Cache->commit_transaction(0);
     }
-    */
 
     // Get stylesheets
     $Stylesheets = $Cache->get_value('stylesheets');
@@ -331,17 +349,20 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     }
 }
 
-#G::initialize(); # 2nd call
-$Debug['messages']->info('end user handling');
+# Measure all that
+$Debug['time']->stopMeasure('users', 'user handling');
+
+
+/**
+ * Determine the section to load.
+ */
+
+
 $Document = (
     $_SERVER['REQUEST_URI'] === '/'
     ? 'index'
     : basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '.php')
 );
-
-if (!preg_match('/^[a-z0-9]+$/i', $Document)) {
-    error(404);
-}
 
 $StripPostKeys = array_fill_keys(array('password', 'cur_pass', 'new_pass_1', 'new_pass_2', 'verifypassword', 'confirm_password', 'ChangePassword', 'Password'), true);
 $Cache->cache_value('php_' . getmypid(), array(

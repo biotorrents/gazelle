@@ -337,7 +337,6 @@ View::show_header($Title, 'browse,collage,wall');
   $Indent = "\t\t\t\t";
   if (count($ArtistCount) > 0) {
       echo "$Indent<ol style=\"padding-left: 5px;\">\n";
-      uasort($ArtistCount, 'compare');
       $i = 0;
       foreach ($ArtistCount as $ID => $Artist) {
           $i++;

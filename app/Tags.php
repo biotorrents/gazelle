@@ -96,7 +96,7 @@ class Tags
      */
     public function title()
     {
-        return ucwords(str_replace('.', ' ', $this->Primary));
+        #return ucwords(str_replace('.', ' ', $this->Primary));
     }
 
     /**
@@ -105,7 +105,7 @@ class Tags
      */
     public function css_name()
     {
-        return 'tags_' . str_replace('.', '_', $this->Primary);
+        #return 'tags_' . str_replace('.', '_', $this->Primary);
     }
 
     /**

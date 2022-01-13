@@ -187,9 +187,11 @@ if (!empty($_GET['date'])) {
       <tr class="group_torrent row">
         <td style="padding: 8px; text-align: center;"><strong><?=$Rank?></strong></td>
         <td class="center cats_col">
-          <div title="<?=$TorrentTags->title()?>"
-            class="tooltip <?=Format::css_category($GroupCategoryID)?> <?=$TorrentTags->css_name()?>">
+          <!--
+          <div title="<?=null#$TorrentTags->title()?>"
+            class="tooltip <?=null#Format::css_category($GroupCategoryID)?> <?=null#$TorrentTags->css_name()?>">
           </div>
+    -->
         </td>
         <td>
           <span><?=($GroupID ? '<a href="torrents.php?action=download&amp;id='.$TorrentID.'&amp;authkey='.$LoggedUser['AuthKey'].'&amp;torrent_pass='.$LoggedUser['torrent_pass'].' title="Download" class="brackets tooltip">DL</a>' : '(Deleted)')?></span>

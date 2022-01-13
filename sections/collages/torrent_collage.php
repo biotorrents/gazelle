@@ -101,9 +101,11 @@ foreach ($GroupIDs as $GroupID) {
   </td>
 
   <td class="center">
-    <div title="<?=$TorrentTags->title()?>"
-      class="tooltip <?=Format::css_category($GroupCategoryID)?> <?=$TorrentTags->css_name()?>">
+    <!--
+    <div title="<?=null#$TorrentTags->title()?>"
+      class="tooltip <?=null#Format::css_category($GroupCategoryID)?> <?=null#$TorrentTags->css_name()?>">
     </div>
+    -->
   </td>
 
   <td colspan="5">
@@ -125,8 +127,10 @@ foreach ($GroupIDs as $GroupID) {
     </span>
     <?php
     } ?>
-    <div class="tags"><?=$TorrentTags->format()?>
+    <!--
+    <div class="tags"><?=null#$TorrentTags->format()?>
     </div>
+  -->
   </td>
 </tr>
 
@@ -240,7 +244,7 @@ foreach ($GroupIDs as $GroupID) {
     <?=$DisplayName?>
     <!--
     <div class="tags">
-      <?=$TorrentTags->format()?>
+      <?= null#$TorrentTags->format()?>
     </div>
     -->
   </td>
