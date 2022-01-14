@@ -116,7 +116,7 @@ class Sphinxql extends mysqli
             echo '<pre>'.esc($ErrorMsg).'</pre>';
             error();
         } elseif ($Halt === true) {
-            error(-1);
+            error(400);
         }
     }
 

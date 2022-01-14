@@ -25,13 +25,13 @@ function esc(mixed $string)
 }
 
 /**
- * dump
+ * ugh
  *
  * Simple Kint wrapper.
  * Development output only.
  * Many vars, such wow.
  */
-function dump(mixed ...$vars)
+function ugh(mixed ...$vars)
 {
     $ENV = ENV::go();
 
@@ -197,167 +197,60 @@ function send_irc($Channels = null, $Message = '')
 }
 
 /**
- * Advanced error handling
+ * Error handling
  *
  * Displays an HTTP status code with description and triggers an error.
- * If you use your own string for $Error, it becomes the error description.
+ * If you use your own string for $error, it becomes the error description.
  *
- * @param int|string $Error Error type
- * The available HTTP status codes are
- *  - Client:  [ 400, 403, 404, 405, 408, 413, 429 ]
- *  - Server:  [ 500, 502, 504 ]
- *  - Gazelle: [ -1, 0, !! ]
- *
- * @param boolean $NoHTML If true, the header/footer won't be shown, just the error.
- * @param string $Log If true, the user is given a link to search $Log in the site log.
+ * @param int|string $error Error type or message
  */
-function error($Error = 1, $NoHTML = false, $Log = false)
+function error(int|string $error = 400, $NoHTML = false, $Log = false)
 {
     $ENV = ENV::go();
-
-    # Error out on erroneous $Error
-    (!$Error || $Error === null)
-        ?? trigger_error('No $Error.', E_USER_ERROR);
-
-    (!is_int($Error) || !is_string($Error))
-        ?? trigger_error('$Error must be int or string.', E_USER_ERROR);
-
-    # Formerly in sections/error/index.php
-    if (!empty($_GET['e']) && is_int($_GET['e'])) {
-        # Request error, i.e., /nonexistent_page.php
-        $Error = $_GET['e'];
-    }
+    $Twig = Twig::go();
 
     # https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
-    switch ($Error) {
-        /**
-         * Client errors
-         */
-        case 400:
-        case 1: # Probably the user's fault
-            $Title = '400 Bad Request';
-            $Message = 'The server cannot or will not process the request due to an apparent client error
-                (e.g., malformed request syntax, size too large, invalid request message framing, or deceptive request routing).';
-            break;
+    $map = [
+        400 => [
+            '400 Bad Request',
+            'The server cannot or will not process the request due to an apparent client error (e.g., malformed request syntax, size too large, invalid request message framing, or deceptive request routing).',
+        ],
 
-        case 403:
-            $Title = '403 Forbidden';
-            $Message = 'The request contained valid data and was understood by the server, but the server is refusing action.
-                This may be due to the user not having the necessary permissions for a resource or needing an account of some sort, or attempting a prohibited action
-                (e.g., creating a duplicate record where only one is allowed).
-                The request should not be repeated.';
-            break;
+        403 => [
+            '403 Forbidden',
+            'The request contained valid data and was understood by the server, but the server is refusing action. This may be due to the user not having the necessary permissions for a resource or needing an account of some sort, or attempting a prohibited action (e.g. creating a duplicate record where only one is allowed). This code is also typically used if the request provided authentication by answering the WWW-Authenticate header field challenge, but the server did not accept that authentication. The request should not be repeated.',
+        ],
 
-        case 404:
-            $Title = '404 Not Found';
-            $Message = 'The requested resource could not be found but may be available in the future.
-                Subsequent requests by the client are permissible.';
-            break;
+        404 => [
+            '404 Not Found',
+            'The requested resource could not be found but may be available in the future. Subsequent requests by the client are permissible.',
+        ],
+    ];
 
-        case 405:
-            $Title = '405 Method Not Allowed';
-            $Message = 'A request method is not supported for the requested resource;
-                for example, a GET request on a form that requires data to be presented via POST,
-                or a PUT request on a read-only resource.';
-            break;
-  
-        case 408:
-            $Title = '408 Request Timeout';
-            $Message = 'The server timed out waiting for the request.
-                According to HTTP specifications:
-                "The client did not produce a request within the time that the server was prepared to wait.
-                The client MAY repeat the request without modifications at any later time."';
-            break;
-
-        case 413:
-            $Title = '413 Payload Too Large';
-            $Message = 'The request is larger than the server is willing or able to process.';
-            break;
-
-        case 429:
-            $Title = '429 Too Many Requests';
-            $Message = 'The user has sent too many requests in a given amount of time.';
-            break;
-
-        /**
-         * Server errors
-         */
-        case 500:
-            $Title = '500 Internal Server Error';
-            $Message = 'A generic error message,
-                given when an unexpected condition was encountered and no more specific message is suitable.';
-        break;
-
-        case 502:
-            $Title = '502 Bad Gateway';
-            $Message = 'The server was acting as a gateway or proxy and received an invalid response from the upstream server.';
-        break;
-
-        case 504:
-            $Title = '504 Gateway Timeout';
-            $Message = 'The server was acting as a gateway or proxy and did not receive a timely response from the upstream server.';
-        break;
-
-        /**
-         * Gazelle errors
-         */
-        case -1:
-        #case 0: # Matches custom error strings
-            $Title = 'Invalid Input';
-            $Message = 'Something was wrong with the input provided with your request, and the server is refusing to fulfill it.';
-        break;
-
-        case '!!':
-            $Title = 'Unexpected Error';
-            $Message = 'You have encountered an unexpected error.';
-        break;
-
-        default:
-            $Title = 'Other Error';
-            $Message = "A function supplied its own error message: $Error";
+    if (in_array($error, $map)) {
+        $title = $map[$error][0];
+        $body = $map[$error][1];
+    } else {
+        $title = 'Other Error';
+        $body = "A function supplied this error message: $error";
     }
 
-    # Normalize whitespace before adding features
-    $Message = preg_replace('/\s{2,}/', ' ', $Message);
+    # Output HTML error page
+    View::show_header($Title);
+    echo $Twig->render(
+        'error.twig',
+        ['title' => $title, 'body' => $body]
+    );
+    View::show_footer();
 
-    /**
-     * Append $Log
-     * Formerly in sections/error/index.php
-     */
-    if ($Log) {
-        $Message .= " <a href='log.php?search=$Title'>Search Log</a>";
-    }
-
-    /**
-     * Append dev info
-     */
-    if ($ENV->DEV) {
-        $Message .= d();
-    }
-
-    /**
-     * Display HTML
-     * Formerly in sections/error/index.php
-     */
-    if (empty($NoHTML)) {
-        View::show_header($Title);
-        echo $HTML = <<<HTML
-        <div>
-          <h2 class="header">$Title</h2>
-
-          <div class="box pad">
-            <p>$Message</p>
-          </div>
-        </div>
-HTML;
-        View::show_footer();
-    }
-
-    # Trigger the error
+    # This needs to be caught or more likely ignored
+    # It's just errors displayed to endusers now
+    /*
     $Debug = Debug::go();
     #$Debug->profile();
     trigger_error("$Title - $Message", E_USER_ERROR);
     throw new Exception("$Title - $Message");
+    */
 }
 
 /**

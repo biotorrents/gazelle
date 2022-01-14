@@ -11,7 +11,7 @@ if (isset($LoggedUser['ID'])) {
                 break;
 
             default:
-                error(-1);
+                error(400);
         }
     }
 } else {

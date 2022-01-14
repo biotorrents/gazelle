@@ -167,7 +167,7 @@ class TorrentSearch
             $Debug = Debug::go();
             $ErrMsg = "TorrentSearch constructor arguments:\n" . print_r(func_get_args(), true);
             $Debug->analysis('Bad arguments in TorrentSearch constructor', $ErrMsg, 3600*24);
-            error(-1);
+            error(400);
         }
 
         if (!is_number($Page) || $Page < 1) {
