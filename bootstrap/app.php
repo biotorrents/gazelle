@@ -39,8 +39,6 @@ $Debug['messages']->info('globals okay');
 # Start a buffer
 ob_start();
 
-!d(Sphinxql::$Queries);
-
 /**
  * User handling stuff.
  * Needs to be a session class.

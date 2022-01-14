@@ -343,7 +343,7 @@ class DB
 
             # Return query info in dev
             if ($ENV->DEV) {
-                $Debug['database']->info($Query);
+                $Debug['database']->log($Query);
                 if (!empty(mysqli_error($this->LinkID))) {
                     d(mysqli_error($this->LinkID));
                 }

@@ -71,9 +71,7 @@ class Debug
         $DebugBar = new \DebugBar\StandardDebugBar();
 
         # Custom collectors
-        #$DebugBar->addCollector(new \DebugBar\DataCollector\MessagesCollector('upload'));
-        $DebugBar->addCollector(new \DebugBar\DataCollector\MessagesCollector('database'));
-        $DebugBar->addCollector(new \DebugBar\DataCollector\MessagesCollector('sphinx'));
+        $DebugBar->addCollector(new DatabaseCollector());
         $DebugBar->addCollector(new FilesCollector());
 
         # http://phpdebugbar.com/docs/bridge-collectors.html#twig
@@ -249,22 +247,6 @@ class Debug
     }
 
     /**
-     * get_queries
-     */
-    public function get_queries()
-    {
-        #return G::$DB->Queries;
-    }
-
-    /**
-     * get_query_time
-     */
-    public function get_query_time()
-    {
-        #return G::$DB->Time;
-    }
-
-    /**
      * get_logged_vars
      */
     public function get_logged_vars()
@@ -437,63 +419,6 @@ class Debug
     }
 
     /**
-     * query_table
-     */
-    public function query_table($Queries=false)
-    {
-        /*
-          $Header = 'Queries';
-          if (!is_array($Queries)) {
-              $Queries = $this->get_queries();
-              $Header .= ' ('.number_format($this->get_query_time(), 5).' ms)';
-          }
-
-          if (empty($Queries)) {
-              return;
-          }
-          $Header = ' '.number_format(count($Queries))." $Header:"; ?>
-
-<table class="layout">
-  <tr>
-    <td>
-        <strong>
-          <a href="#" onclick="$(this).parents('.layout').next('#debug_database').gtoggle(); return false;"
-            class="brackets">View</a>
-          <?=$Header?>
-        </strong>
-    </td>
-  </tr>
-</table>
-
-<table id="debug_database" class="debug_table hidden">
-  <?php
-    foreach ($Queries as $Query) {
-          $SQL = $Query[0] ?? null;
-          $Time = $Query[1] ?? null;
-          $Warnings = $Query[2] ?? null;
-
-          if ($Warnings !== null) {
-              $Warnings = implode('<br />', $Warnings);
-          } ?>
-
-  <tr class="valign_top">
-    <td class="debug_data debug_query_data">
-        <div><?=str_replace("\t", '&nbsp;&nbsp;', nl2br(esc(trim($SQL))))?>
-        </div>
-    </td>
-
-    <td class="debug_info debug_query_time" style="width: 130px;"><?=number_format($Time, 5)?> ms</td>
-    <td class="debug_info debug_query_warnings"><?=$Warnings?>
-    </td>
-  </tr>
-  <?php
-    } ?>
-</table>
-<?php
-*/
-    }
-
-    /**
      * sphinx_table
      */
     public function sphinx_table($Queries = false)
@@ -595,48 +520,6 @@ class Debug
 }
 
 
-class SphinxCollector extends \DebugBar\DataCollector\DataCollector implements \DebugBar\DataCollector\Renderable
-{
-    public function collect()
-    {
-        return array("uniqid" => uniqid());
-        #return ['sphinx' => Sphinxql::$Queries];
-    }
-
-    public function getName()
-    {
-        return 'mycollector';
-        #return 'sphinx';
-    }
-
-    public function getWidgets()
-    {
-        return array(
-              "mycollector" => array(
-                  "icon" => "cat",
-                  "tooltip" => "uniqid()",
-                  "map" => "uniqid",
-                  "default" => "''"
-              )
-          );
-      
-        /*
-                return array(
-                    "sphinx" => array(
-                        "icon" => "cat",
-                        "tooltip" => "sphinx queries",
-                        "map" => "queries",
-                        "default" => "''"
-                    )
-                );
-            }
-            */
-    }
-}
-
-
-
-
 /**
  * Simple included files collector
  *
@@ -660,15 +543,15 @@ class FilesCollector extends DataCollector implements Renderable
                 continue;
             } else {
                 $includes[] = [
-                  'message' => $file,
-                  'is_string' => true,
+                    'message' => $file,
+                    'is_string' => true,
                 ];
             }
         }
 
         return [
-          'messages' => array_reverse($includes),
           'count' => count($includes),
+          'messages' => array_reverse($includes),
         ];
     }
 
@@ -680,16 +563,16 @@ class FilesCollector extends DataCollector implements Renderable
         $name = $this->getName();
 
         return [
-          "$name" => [
-            "icon" => "folder-open",
-            "widget" => "PhpDebugBar.Widgets.MessagesWidget",
-            "map" => "$name.messages",
-            "default" => "{}"
-          ],
-          "$name:badge" => [
-            "map" => "$name.count",
-            "default" => "null"
-          ]
+            $name => [
+                'icon' => 'folder-open',
+                'widget' => 'PhpDebugBar.Widgets.MessagesWidget',
+                'map' => "$name.messages",
+                'default' => '{}'
+            ],
+            "$name:badge" => [
+                'map' => "$name.count",
+                'default' => 'null'
+            ]
         ];
     }
 
@@ -699,5 +582,106 @@ class FilesCollector extends DataCollector implements Renderable
     public function getName()
     {
         return 'files';
+    }
+}
+
+
+/**
+ * Database query collector
+ *
+ * Basically a simplified version of MessagesCollector.
+ * @see https://github.com/maximebf/php-debugbar/blob/master/src/DebugBar/DataCollector/MessagesCollector.php
+ */
+
+class DatabaseCollector extends DataCollector implements Renderable
+{
+    /**
+     * collect
+     */
+    public function collect()
+    {
+        $messages = $this->getMessages();
+
+        return [
+          'count' => count($messages),
+          'messages' => $messages
+        ];
+    }
+    
+    /**
+     * getMessages
+     */
+    public function getMessages()
+    {
+        $messages = $this->messages;
+
+        // sort messages by their timestamp
+        usort($messages, function ($a, $b) {
+            if ($a['time'] === $b['time']) {
+                return 0;
+            }
+            return $a['time'] < $b['time'] ? -1 : 1;
+        });
+
+        return $messages;
+    }
+
+    /**
+     * log
+     */
+    public function log($message)
+    {
+        return $this->addMessage($message);
+    }
+
+    public function addMessage($message, $isString = true)
+    {
+        $messageText = $message;
+        $messageHtml = null;
+
+        if (!is_string($message)) {
+            // Send both text and HTML representations; the text version is used for searches
+            $messageText = $this->getDataFormatter()->formatVar($message);
+            if ($this->isHtmlVarDumperUsed()) {
+                $messageHtml = $this->getVarDumper()->renderVar($message);
+            }
+            $isString = false;
+        }
+
+        $this->messages[] = [
+          'message' => $messageText,
+          'message_html' => $messageHtml,
+          'is_string' => $isString,
+          'time' => microtime(true)
+        ];
+    }
+
+    /**
+     * getWidgets
+     */
+    public function getWidgets()
+    {
+        $name = $this->getName();
+
+        return [
+            $name => [
+                'icon' => 'database',
+                'widget' => 'PhpDebugBar.Widgets.MessagesWidget',
+                'map' => "$name.messages",
+                'default' => '[]'
+            ],
+            "$name:badge" => [
+                'map' => "$name.count",
+                'default' => 'null'
+            ]
+        ];
+    }
+
+    /**
+     * getName
+     */
+    public function getName()
+    {
+        return 'database';
     }
 }
