@@ -1,5 +1,8 @@
 <?php
-#declare(strict_types=1);
+declare(strict_types=1);
+
+use DebugBar\DataCollector\DataCollector;
+use DebugBar\DataCollector\Renderable;
 
 /**
  * Debug class
@@ -68,7 +71,10 @@ class Debug
         $DebugBar = new \DebugBar\StandardDebugBar();
 
         # Custom collectors
-        $DebugBar->addCollector(new \DebugBar\DataCollector\MessagesCollector('upload'));
+        #$DebugBar->addCollector(new \DebugBar\DataCollector\MessagesCollector('upload'));
+        $DebugBar->addCollector(new \DebugBar\DataCollector\MessagesCollector('database'));
+        $DebugBar->addCollector(new \DebugBar\DataCollector\MessagesCollector('sphinx'));
+        $DebugBar->addCollector(new FilesCollector());
 
         # http://phpdebugbar.com/docs/bridge-collectors.html#twig
         /*
@@ -585,5 +591,113 @@ class Debug
 </table>
 <?php
 */
+    }
+}
+
+
+class SphinxCollector extends \DebugBar\DataCollector\DataCollector implements \DebugBar\DataCollector\Renderable
+{
+    public function collect()
+    {
+        return array("uniqid" => uniqid());
+        #return ['sphinx' => Sphinxql::$Queries];
+    }
+
+    public function getName()
+    {
+        return 'mycollector';
+        #return 'sphinx';
+    }
+
+    public function getWidgets()
+    {
+        return array(
+              "mycollector" => array(
+                  "icon" => "cat",
+                  "tooltip" => "uniqid()",
+                  "map" => "uniqid",
+                  "default" => "''"
+              )
+          );
+      
+        /*
+                return array(
+                    "sphinx" => array(
+                        "icon" => "cat",
+                        "tooltip" => "sphinx queries",
+                        "map" => "queries",
+                        "default" => "''"
+                    )
+                );
+            }
+            */
+    }
+}
+
+
+
+
+/**
+ * Simple included files collector
+ *
+ * Returns includes in reverse order and a file count.
+ * @see https://github.com/barryvdh/laravel-debugbar/blob/master/src/DataCollector/FilesCollector.php
+ */
+
+class FilesCollector extends DataCollector implements Renderable
+{
+    /**
+     * collect
+     */
+    public function collect()
+    {
+        $includes = [];
+        $files = get_included_files();
+
+        foreach ($files as $file) {
+            # Skip the files from Composer
+            if (strpos($file, '/vendor/') !== false) {
+                continue;
+            } else {
+                $includes[] = [
+                  'message' => $file,
+                  'is_string' => true,
+                ];
+            }
+        }
+
+        return [
+          'messages' => array_reverse($includes),
+          'count' => count($includes),
+        ];
+    }
+
+    /**
+     * getWidgets
+     */
+    public function getWidgets()
+    {
+        $name = $this->getName();
+
+        return [
+          "$name" => [
+            "icon" => "folder-open",
+            "widget" => "PhpDebugBar.Widgets.MessagesWidget",
+            "map" => "$name.messages",
+            "default" => "{}"
+          ],
+          "$name:badge" => [
+            "map" => "$name.count",
+            "default" => "null"
+          ]
+        ];
+    }
+
+    /**
+     * getName
+     */
+    public function getName()
+    {
+        return 'files';
     }
 }

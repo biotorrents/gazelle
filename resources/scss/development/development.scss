@@ -14,3 +14,13 @@ em:not(.fa):not(.fab):not(.fad):not(.fal):not(.far):not(.fas):not(.phpdebugbar-f
   font-family: $ComicNeueItalic, sans-serif !important;
   font-style: normal !important;
 }
+
+/* DebugBar icon fix */
+a.phpdebugbar-tab i {
+  display: inline;
+
+  /* &nbsp; */
+  &:after {
+    content: "\00A0";
+  }
+}

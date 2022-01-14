@@ -159,6 +159,9 @@ class Sphinxql extends mysqli
      */
     public static function register_query($QueryString, $QueryProcessTime)
     {
+
+        #$Debug = Debug::go();
+        #$Debug['sphinx']->info(self::$Queries);
         self::$Queries[] = array($QueryString, $QueryProcessTime);
         self::$Time += $QueryProcessTime;
     }

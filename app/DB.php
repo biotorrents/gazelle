@@ -322,11 +322,11 @@ class DB
         $ENV = ENV::go();
         $Debug = Debug::go();
 
-        $QueryStartTime = microtime(true);
         $this->connect();
+        $Debug['time']->startMeasure('database', 'database queries');
 
         // In the event of a MySQL deadlock, we sleep allowing MySQL time to unlock, then attempt again for a maximum of 5 tries
-        for ($i = 1; $i < 6; $i++) {
+        foreach (range(1, 5) as $i) {
             $this->StatementID = mysqli_prepare($this->LinkID, $Query);
             if (!empty($BindVars)) {
                 $Types = '';
@@ -341,9 +341,12 @@ class DB
             mysqli_stmt_execute($this->StatementID);
             $this->QueryID = mysqli_stmt_get_result($this->StatementID);
 
-            # Return a query backtrace in dev
+            # Return query info in dev
             if ($ENV->DEV) {
-                d(mysqli_error($this->LinkID));
+                $Debug['database']->info($Query);
+                if (!empty(mysqli_error($this->LinkID))) {
+                    d(mysqli_error($this->LinkID));
+                }
             }
 
             if (!in_array(mysqli_errno($this->LinkID), array(1213, 1205))) {
@@ -354,10 +357,6 @@ class DB
             trigger_error("Database deadlock, attempt $i");
             sleep($i * rand(2, 5)); // Wait longer as attempts increase
         }
-
-        $QueryEndTime = microtime(true);
-        $this->Queries[] = array($Query, ($QueryEndTime - $QueryStartTime) * 1000, null);
-        $this->Time += ($QueryEndTime - $QueryStartTime) * 1000;
 
         if (!$this->QueryID && !$this->StatementID) {
             $this->Errno = mysqli_errno($this->LinkID);

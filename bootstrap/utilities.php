@@ -17,7 +17,7 @@
 function esc(mixed $string)
 {
     return htmlspecialchars(
-        $string = strval($string),
+        $string = Text::utf8(strval($string)),
         $flags = ENT_QUOTES | ENT_SUBSTITUTE,
         $encoding = 'UTF-8',
         $double_encode = false

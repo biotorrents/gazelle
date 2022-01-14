@@ -17,7 +17,6 @@ Security::oops();
 # Debugging
 $Debug = Debug::go();
 $Debug['messages']->info('debug okay');
-$Debug['time']->startMeasure('globals', 'instantiate globals');
 
 # Load the config
 $ENV = ENV::go();
@@ -36,11 +35,11 @@ $Debug['messages']->info('cache okay');
 # This is necessary for $LoggedUser
 G::go();
 $Debug['messages']->info('globals okay');
-$Debug['time']->stopMeasure('globals');
 
 # Start a buffer
 ob_start();
 
+!d(Sphinxql::$Queries);
 
 /**
  * User handling stuff.

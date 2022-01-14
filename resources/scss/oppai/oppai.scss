@@ -141,7 +141,7 @@ img {
   min-width: 50px;
   height: 100%;
   min-height: 100%;
-  background-image: url("/public/images/logos/liquidrop-oppai.png");
+  background-image: url("/images/logos/liquidrop-oppai.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
@@ -635,13 +635,13 @@ ul.poll li.graph {
 .show_torrents {
   width: 21px;
   height: 28px;
-  background: url("/public/images/symbols/show.png") no-repeat center center;
+  background: url("/images/symbols/show.png") no-repeat center center;
 }
 
 .hide_torrents {
   width: 21px;
   height: 28px;
-  background: url("/public/images/symbols/hide.png") no-repeat center center;
+  background: url("/images/symbols/hide.png") no-repeat center center;
 }
 
 .show_torrents_link {
@@ -762,41 +762,41 @@ ul.poll li.graph {
 }
 
 .unread_locked_sticky {
-  background: url("/public/images/forums/locked_sticky_unread.png") no-repeat
+  background: url("/images/forums/locked_sticky_unread.png") no-repeat
     center center;
 }
 
 .read_locked_sticky {
-  background: url("/public/images/forums/locked_sticky_read.png") no-repeat
+  background: url("/images/forums/locked_sticky_read.png") no-repeat
     center center;
 }
 
 .read_sticky {
-  background: url("/public/images/forums/sticky_read.png") no-repeat center
+  background: url("/images/forums/sticky_read.png") no-repeat center
     center;
 }
 
 .unread_sticky {
-  background: url("/public/images/forums/sticky_unread.png") no-repeat center
+  background: url("/images/forums/sticky_unread.png") no-repeat center
     center;
 }
 
 .unread_locked {
-  background: url("/public/images/forums/locked_unread.png") no-repeat center
+  background: url("/images/forums/locked_unread.png") no-repeat center
     center;
 }
 
 .read_locked {
-  background: url("/public/images/forums/locked_read.png") no-repeat center
+  background: url("/images/forums/locked_read.png") no-repeat center
     center;
 }
 
 .unread {
-  background: url("/public/images/forums/unread.png") no-repeat center center;
+  background: url("/images/forums/unread.png") no-repeat center center;
 }
 
 .read {
-  background: url("/public/images/forums/read.png") no-repeat center center;
+  background: url("/images/forums/read.png") no-repeat center center;
 }
 
 strong.quoteheader {

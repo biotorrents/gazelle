@@ -17,6 +17,9 @@ class Text
     {
         $ENV = ENV::go();
 
+        $Debug = Debug::go();
+        $Debug['time']->startMeasure('parse', 'parse markdown text');
+
         # Prepare clean escapes
         $string = self::utf8($string);
         $string = esc($string);
@@ -59,6 +62,9 @@ class Text
     {
         $ENV = ENV::go();
 
+        $Debug = Debug::go();
+        $Debug['time']->startMeasure('process', 'post-process text');
+
         # Replace links to $ENV->SITE_DOMAIN
         $parsed = preg_replace(
             "/<a href=\"$ENV->RESOURCE_REGEX($ENV->SITE_DOMAIN|$ENV->OLD_SITE_DOMAIN)\//",
@@ -81,7 +87,10 @@ class Text
             $parsed
         );
 
-        return $parsed;
+        return htmlspecialchars_decode(
+            $string = $parsed,
+            $flags = ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5
+        );
     }
 
     /**
