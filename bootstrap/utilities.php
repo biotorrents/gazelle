@@ -24,6 +24,23 @@ function esc(mixed $string)
     );
 }
 
+/**
+ * dump
+ *
+ * Simple Kint wrapper.
+ * Development output only.
+ * Many vars, such wow.
+ */
+function dump(mixed ...$vars)
+{
+    $ENV = ENV::go();
+
+    if ($ENV->DEV) {
+        foreach ($vars as $var) {
+            d($var);
+        }
+    }
+}
 
     /**
      *
