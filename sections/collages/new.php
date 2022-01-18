@@ -107,11 +107,10 @@ if (($CollageCount < $LoggedUser['Permissions']['MaxCollages']) && check_perms('
 
           <td>
             <?php
-new TEXTAREA_PREVIEW(
-    $Name = 'description',
-    $ID = 'description',
-    $Value = esc($Description) ?? '',
-    $Placeholder = "Detailed description of the collection's purpose"
+View::textarea(
+    id: 'description',
+    placeholder: "Detailed description of the collection's purpose",
+    value: esc($Description) ?? '',
 ); ?>
           </td>
         </tr>

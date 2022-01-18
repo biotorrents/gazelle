@@ -112,9 +112,9 @@ View::show_header(
           <td class="label">Body</td>
           <td>
             <?php
-new TEXTAREA_PREVIEW(
-    $Name = 'body',
-    $ID = 'posttext',
+View::textarea(
+    id: 'posttext',
+    name: 'body',
 ); ?>
           </td>
         </tr>

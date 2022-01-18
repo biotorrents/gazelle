@@ -36,10 +36,9 @@ View::show_header(
 
         <h3>Body</h3>
         <?php
-$ReplyText = new TEXTAREA_PREVIEW(
-    $Name = 'body',
-    $ID = 'body',
-    $Value = $Body,
+$ReplyText = View::textarea(
+    id: 'body',
+    value: esc($Body) ?? '',
 );
 
   if (check_perms('admin_manage_wiki')) { ?>

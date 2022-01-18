@@ -227,7 +227,7 @@ function error(int|string $error = 400, $NoHTML = false, $Log = false)
         ],
     ];
 
-    if (in_array($error, $map)) {
+    if (array_key_exists($error, $map)) {
         $title = $map[$error][0];
         $body = $map[$error][1];
     } else {

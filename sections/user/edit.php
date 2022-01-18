@@ -314,7 +314,7 @@ HTML;
           <td>
             <label>
               <input type="checkbox" name="autoload_comm_stats" <?Format::selected(
-              'AutoloadCommStats',
+              'AutoloadCommStats' ,
               1,
               'checked',
               $SiteOptions
@@ -757,10 +757,9 @@ HTML;
 
           <td>
             <?php
-  $textarea = new TEXTAREA_PREVIEW(
-      $Name = 'info',
-      $ID = 'info',
-      $Value = esc($Info) ?? '',
+  $textarea = View::textarea(
+      id: 'info',
+      value: esc($Info) ?? '',
   ); ?>
           </td>
         </tr>
@@ -786,104 +785,14 @@ HTML;
 
           <td>
             <?php
-  $textarea = new TEXTAREA_PREVIEW(
-      $Name = 'profile_info_1',
-      $ID = 'profile_info_1',
-      $Value = esc($ProfileRewards['ProfileInfo1']) ?? '',
-  ); ?>
-          </td>
-        </tr>
-        <?php }
-
-# 3
-  if ($HasProfileInfo2) { ?>
-        <tr id="pers_proftitle3_tr">
-          <td class="label">
-            <strong>Profile title 3</strong>
-          </td>
-
-          <td>
-            <input type="text" size="50" name="profile_title_2" id="profile_title_2"
-              value="<?=esc($ProfileRewards['ProfileInfoTitle2'])?>" />
-          </td>
-        </tr>
-
-        <!-- 3 -->
-        <tr id="pers_profinfo3_tr">
-          <td class="label">
-            <strong>Profile info 3</strong>
-          </td>
-
-          <td>
-            <?php
-  $textarea = new TEXTAREA_PREVIEW(
-      $Name = 'profile_info_2',
-      $ID = 'profile_info_2',
-      $Value = esc($ProfileRewards['ProfileInfo2']) ?? '',
-  ); ?>
-          </td>
-        </tr>
-        <?php }
-
-# 4
-  if ($HasProfileInfo3) { ?>
-        <tr id="pers_proftitle4_tr">
-          <td class="label">
-            <strong>Profile title 4</strong>
-          </td>
-
-          <td>
-            <input type="text" size="50" name="profile_title_3" id="profile_title_3"
-              value="<?=esc($ProfileRewards['ProfileInfoTitle3'])?>" />
-          </td>
-        </tr>
-
-        <!-- 4 -->
-        <tr id="pers_profinfo4_tr">
-          <td class="label">
-            <strong>Profile info 4</strong>
-          </td>
-
-          <td>
-            <?php
-  $textarea = new TEXTAREA_PREVIEW(
-      $Name = 'profile_info_3',
-      $ID = 'profile_info_3',
-      $Value = esc($ProfileRewards['ProfileInfo3']) ?? '',
-  ); ?>
-          </td>
-        </tr>
-        <?php }
-
-# 5
-  if ($HasProfileInfo4) { ?>
-        <tr id="pers_proftitle5_tr">
-          <td class="label">
-            <strong>Profile title 5</strong>
-          </td>
-
-          <td>
-            <input type="text" size="50" name="profile_title_4" id="profile_title_4"
-              value="<?=esc($ProfileRewards['ProfileInfoTitle4'])?>" />
-          </td>
-        </tr>
-
-        <!-- 5 -->
-        <tr id="pers_profinfo5_tr">
-          <td class="label">
-            <strong>Profile info 5</strong>
-          </td>
-
-          <td>
-            <?php
-  $textarea = new TEXTAREA_PREVIEW(
-      $Name = 'profile_info_4',
-      $ID = 'profile_info_4',
-      $Value = esc($ProfileRewards['ProfileInfo4']) ?? '',
+  $textarea = View::textarea(
+      id: 'profile_info_1',
+      value: esc($ProfileRewards['ProfileInfo1']) ?? '',
   ); ?>
           </td>
         </tr>
         <?php } ?>
+
       </table>
 
       <!-- Paranoia -->

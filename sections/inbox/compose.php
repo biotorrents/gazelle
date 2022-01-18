@@ -50,10 +50,9 @@ View::show_header(
           value="<?=(!empty($Subject) ? $Subject : '')?>" /><br />
         <h3>Body</h3>
         <?php
-new TEXTAREA_PREVIEW(
-    $Name = 'body',
-    $ID = 'body',
-    $Value = (!empty($Body) ? $Body : '')
+View::textarea(
+    id: 'body',
+    value: esc($Body) ?? '',
 ); ?>
       </div>
 

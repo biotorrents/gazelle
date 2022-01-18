@@ -13,15 +13,9 @@ class View
      * HTTP/2 Server Push headers for Cloudflare
      * @see https://blog.cloudflare.com/using-http-2-server-push-with-php/
      */
-    public static function pushAsset($uri, $type)
+    public static function pushAsset(string $uri, string $type)
     {
         $ENV = ENV::go();
-
-        # Bad URI or type
-        if ((!$uri || !is_string($uri))
-        || (!$type || !is_string($type))) {
-            return error(404);
-        }
 
         $uri = preg_replace(".$ENV->STATIC_SERVER.", '', $uri);
         #$integrity = base64_encode(hash_file($ENV->SRI, "$ENV->SERVER_ROOT/$uri", true));
@@ -107,6 +101,41 @@ class View
         } else {
             require_once "$ENV->SERVER_ROOT/design/privatefooter.php";
         }
+    }
+
+
+    /**
+     * textarea
+     *
+     * Formerly in the TEXTAREA_PREVIEW class.
+     * Now it's just a call to Twig and EasyMDE.
+     *
+     * @param $id Required ID for attaching EasyMDE
+     * @param $name If not defined, it's the same as $id
+     * @param $placeholder Some helpful text, maybe
+     * @param $value The pre-populated textarea
+     */
+    public static function textarea(
+        string $id,
+        string $name = '',
+        string $placeholder = '',
+        string $value = '',
+    ) {
+        $Twig = Twig::go();
+
+        if (empty($name)) {
+            $name = $id;
+        }
+
+        echo $Twig->render(
+            'input/textarea.twig',
+            [
+              'id' => $id,
+              'name' => $name,
+              'placeholder' => $placeholder,
+              'value' => $value,
+            ]
+        );
     }
 
 

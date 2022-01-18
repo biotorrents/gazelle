@@ -100,10 +100,9 @@ View::show_header(
     </h3>
 
     <?php
-new TEXTAREA_PREVIEW(
-    'body', # $title breaks "Rename (will not merge)"
-    $ID = 'body',
-    $Value = esc($Body) ?? '',
+View::textarea(
+    id: 'body',
+    value: esc($Body) ?? '',
 );
 
   $DB->query("

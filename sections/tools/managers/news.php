@@ -70,11 +70,11 @@ switch ($_GET['action']) {
 } ?>>
 
       <h3>Body</h3>
+      <?= ugh($Body); ?>
       <?php
-$Textarea = new TEXTAREA_PREVIEW(
-    $Name = 'body',
-    $ID = '',
-    $Value = esc($Body) ?? '',
+$Textarea = View::textarea(
+    id: 'body',
+    value: esc($Body) ?? '',
 ); ?>
 
       <div class="center">

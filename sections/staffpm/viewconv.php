@@ -165,10 +165,9 @@ if ($ConvID = (int)$_GET['id']) {
             id="convid" />
           <?php
           if ($Status != 'Resolved') {
-              $TextPrev = new TEXTAREA_PREVIEW(
-                  $Name = 'message',
-                  $ID = 'quickpost',
-                  $Value = '',
+              $TextPrev = View::textarea(
+                  id: 'quickpost',
+                  name: 'message',
               );
           } ?>
           <br />

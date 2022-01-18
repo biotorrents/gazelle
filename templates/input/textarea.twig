@@ -1,0 +1,36 @@
+<textarea id="{{ id }}" name="{{ name }}" placeholder="{{ placeholder }}">{{ value }}</textarea>
+
+<script>
+    $(document).ready(function () {
+        'use strict';
+
+        const easyMDE = new EasyMDE({
+            element: document.getElementById('{{ id }}'),
+            autoDownloadFontAwesome: false,
+
+            toolbar: [
+                // https://github.com/Ionaru/easy-markdown-editor#toolbar-icons
+                'bold', 'italic', 'strikethrough', 'heading',
+                '|', 'code', 'quote', 'unordered-list', 'ordered-list', 'clean-block',
+                '|', 'link', 'image', 'table',
+                '|', 'preview', 'side-by-side', 'fullscreen',
+                '|', 'guide',
+
+                {
+                    name: 'plain',
+                    action: function customFunction(editor) {
+                        easyMDE.toTextArea();
+                    },
+
+                    className: 'fa fa-toggle-on',
+                    title: 'Plain Text Editor',
+                },
+            ],
+
+            shortcuts: {
+                'toggleStrikethrough': 'Cmd-Alt-S',
+                'drawTable': 'Cmd-Alt-T',
+            },
+        });
+    });
+</script>

@@ -22,10 +22,8 @@ View::show_header(
 
         <h3>Body</h3>
         <?php
-$ReplyText = new TEXTAREA_PREVIEW(
-    $Name = 'body',
-    $ID = 'body',
-    $Value = '',
+$ReplyText = View::textarea(
+    id: 'body',
 );
 
   if (check_perms('admin_manage_wiki')) { ?>

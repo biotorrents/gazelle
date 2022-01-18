@@ -1125,11 +1125,10 @@ HTML;
               <td>
 HTML;
 
-            new TEXTAREA_PREVIEW(
-                $Name = 'album_desc',
-                $ID = 'album_desc',
-                $Value = esc($Torrent['GroupDescription']) ?? '',
-                $Placeholder = "General info about the torrent subject's function or significance",
+            View::textarea(
+                id: 'album_desc',
+                placeholder: "General info about the torrent subject's function or significance",
+                value: esc($Torrent['GroupDescription']) ?? ''
             );
 
             echo '</td></tr>';
@@ -1159,11 +1158,10 @@ HTML;
           <td>
 HTML;
 
-        new TEXTAREA_PREVIEW(
-            $Name = 'release_desc',
-            $ID = 'release_desc',
-            $Value = esc($Torrent['TorrentDescription'] ?? ''),
-            $Placeholder = 'Specific info about the protocols and equipment used to produce the data',
+        View::textarea(
+            id: 'release_desc',
+            placeholder: 'Specific info about the protocols and equipment used to produce the data',
+            value: esc($Torrent['TorrentDescription'] ?? ''),
         );
 
         echo '</td></tr>';

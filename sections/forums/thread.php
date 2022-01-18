@@ -663,9 +663,9 @@ if (check_perms('site_moderate_forums')) {
       <td>
         <div class="textarea_wrap">
           <?php
-      new TEXTAREA_PREVIEW(
-          $Name = 'body',
-          $ID = 'topic_notes',
+      View::textarea(
+          id: 'topic_notes',
+          name: 'body',
       ); ?>
         </div>
         <input type="submit" class="button-primary" value="Save" />

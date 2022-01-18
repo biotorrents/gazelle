@@ -76,10 +76,9 @@ if ($CategoryID > 0 || check_perms('site_collages_delete')) { ?>
           <td class="label">Description</td>
           <td>
             <?php
-      new TEXTAREA_PREVIEW(
-          $Name = 'description',
-          $ID = 'description',
-          $Value = esc($Description) ?? '',
+      View::textarea(
+          id: 'description',
+          value: esc($Description) ?? '',
       ); ?>
           </td>
         </tr>

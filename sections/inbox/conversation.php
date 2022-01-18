@@ -122,10 +122,9 @@ if (!empty($ReceiverIDs) && (empty($LoggedUser['DisablePM']) || array_intersect(
         value="<?=implode(',', $ReceiverIDs)?>" />
       <input type="hidden" name="convid" value="<?=$ConvID?>" />
       <?php
-    $Reply = new TEXTAREA_PREVIEW(
-        $Name = 'body',
-        $ID = 'quickpost',
-        $Value = '',
+    $Reply = View::textarea(
+        id: 'quickpost',
+        name: 'body',
     ); ?>
       <div id="buttons" class="center">
         <input type="button" value="Preview"

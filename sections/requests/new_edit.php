@@ -321,10 +321,10 @@ View::show_header(
 
           <td>
             <?php
-                new TEXTAREA_PREVIEW(
-                    $Name = 'description',
-                    $ID = 'req_desc',
-                    $Value = $Request['Description'] ?? '',
+                View::textarea(
+                    id: 'req_desc',
+                    name: 'description',
+                    value: $Request['Description'] ?? '',
                 ); ?>
           </td>
         </tr>
