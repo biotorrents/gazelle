@@ -123,9 +123,8 @@ class View
     ) {
         $Twig = Twig::go();
 
-        if (empty($name)) {
-            $name = $id;
-        }
+        $name = (empty($name)) ?? $id;
+        $uuid = uniqid(); # autosave
 
         echo $Twig->render(
             'input/textarea.twig',
@@ -134,6 +133,7 @@ class View
               'name' => $name,
               'placeholder' => $placeholder,
               'value' => $value,
+              'uuid' => $uuid,
             ]
         );
     }

@@ -40,7 +40,8 @@ $Scripts = array_filter(
     array_merge(
         [
           'vendor/jquery.min',
-          'vendor/jquery-ui.min',
+          #'vendor/jquery-ui.min',
+          'vendor/highlight.min',
           'vendor/instantpage.min',
           'ajax.class',
           'menus',
@@ -61,9 +62,10 @@ foreach ($Scripts as $Script) {
 $Styles = array_filter(
     array_merge(
         [
-          'vendor/jquery-ui.min',
+          #'vendor/jquery-ui.min',
           'vendor/normalize.min',
           'vendor/skeleton.min',
+          'vendor/highlight.min',
           'global',
         ],
         explode(',', $CSSIncludes)
