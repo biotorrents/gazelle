@@ -6,6 +6,15 @@ a.external {
   padding-right: 13px;
 }
 
+/* ul fix */
+ul {
+  list-style: square;
+
+  li {
+    margin-left: 2rem;
+  }
+}
+
 /**
  * Spacing classes
  */
@@ -26,17 +35,17 @@ a.external {
 
 /* Brackets [Bookmark] */
 .brackets {
+  cursor: pointer;
   text-indent: 0px;
   white-space: nowrap;
-  cursor: pointer;
-}
 
-.brackets:before {
-  content: "[";
-}
+  &:before {
+    content: "[";
+  }
 
-.brackets:after {
-  content: "]";
+  &:after {
+    content: "]";
+  }
 }
 
 /* GPG keys */

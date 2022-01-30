@@ -70,7 +70,7 @@ switch ($_GET['action']) {
 } ?>>
 
       <h3>Body</h3>
-      <?= ugh($Body); ?>
+      <?= !d($Body); ?>
       <?php
 $Textarea = View::textarea(
     id: 'body',

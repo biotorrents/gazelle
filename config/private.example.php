@@ -40,11 +40,11 @@ else {
  */
 
 # Common info
-ENV::setPriv('SQLHOST', '10.0.0.3');
-ENV::setPriv('SQLPORT', 3306);
+ENV::setPriv('SQL_HOST', '10.0.0.3');
+ENV::setPriv('SQL_PORT', 3306);
 
-# Leave set even if using TCP due to DB strict mode
-ENV::setPriv('SQLSOCK', '/var/run/mysqld/mysqld.sock');
+# Leave set even if using TCP due to DB::class strict mode
+ENV::setPriv('SQL_SOCK', '/var/run/mysqld/mysqld.sock');
 
 # TLS client certs
 ENV::setPriv('SQL_CERT', "/var/www/tls-keys/client-cert-ohm.pem");
@@ -59,16 +59,16 @@ ENV::setPriv('SQL_CA', "$ENV->WEB_ROOT/tls-keys/ca.pem");
 
  # Production
  if (!$ENV->DEV) {
-     ENV::setPriv('SQLDB', 'gazelle_production');
-     ENV::setPriv('SQLLOGIN', 'gazelle_production');
-     ENV::setPriv('SQLPASS', '');
+     ENV::setPriv('SQL_DB', 'gazelle_production');
+     ENV::setPriv('SQL_USER', 'gazelle_production');
+     ENV::setPriv('SQL_PASS', '');
  }
 
 # Development
 else {
-    ENV::setPriv('SQLDB', 'gazelle_development');
-    ENV::setPriv('SQLLOGIN', 'gazelle_development');
-    ENV::setPriv('SQLPASS', '');
+    ENV::setPriv('SQL_DB', 'gazelle_development');
+    ENV::setPriv('SQL_USER', 'gazelle_development');
+    ENV::setPriv('SQL_PASS', '');
 }
 
 

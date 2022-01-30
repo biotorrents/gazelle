@@ -95,6 +95,7 @@ if (!empty($NotificationSpans)) {
 # Done
 echo $HTML = <<<HTML
     </footer>
+    <script>hljs.highlightAll();</script>
   </body>
 </html>
 HTML;

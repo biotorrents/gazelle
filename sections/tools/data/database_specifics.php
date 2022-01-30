@@ -6,7 +6,7 @@ $ENV = ENV::go();
 // View schemas
 if (!empty($_GET['table'])) {
     $DB->prepared_query('SHOW TABLES');
-    $Tables =$DB->collect('Tables_in_'.$ENV->getPriv('SQLDB'));
+    $Tables =$DB->collect('Tables_in_'.$ENV->getPriv('SQL_DB'));
 
     if (!in_array($_GET['table'], $Tables)) {
         error(0);
@@ -26,7 +26,6 @@ if (!$Tables = $Cache->get_value('database_table_stats')) {
 }
 
 # todo: Remove Google Charts dependency
-require_once SERVER_ROOT.'/classes/charts.class.php';
 $Pie = new PIE_CHART(750, 400, array('Other'=>1,'Percentage'=>1,'Sort'=>1));
 
 // Begin sorting

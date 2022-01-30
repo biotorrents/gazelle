@@ -9,6 +9,9 @@ declare(strict_types=1);
 # Development or production?
 ENV::setPub('DEV', true);
 
+# Disable Kint on prod
+Kint::$enabled_mode	= (!$ENV->DEV) ?? false;
+
 
 /**
  * Site identity
