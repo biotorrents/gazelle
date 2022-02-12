@@ -10,7 +10,7 @@ if (!empty($_GET['letter'])) {
     }
 }
 
-View::show_header($Title);
+View::header($Title);
 
 $sql = "
   SELECT
@@ -106,4 +106,4 @@ while (list($ID, $Title, $Date, $UserID) = $DB->next_record()) { ?>
   </div>
 </div>
 <?php
-View::show_footer();
+View::footer();

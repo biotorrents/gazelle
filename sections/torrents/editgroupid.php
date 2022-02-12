@@ -44,7 +44,7 @@ if (empty($_POST['confirm'])) {
 
   $Artists = Artists::get_artists(array($OldGroupID, $GroupID));
 
-  View::show_header();
+  View::header();
 ?>
   <div>
     <div class="header">
@@ -71,7 +71,7 @@ if (empty($_POST['confirm'])) {
     </div>
   </div>
 <?
-  View::show_footer();
+  View::footer();
 } else {
   authorize();
 

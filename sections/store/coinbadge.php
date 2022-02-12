@@ -17,7 +17,7 @@ if ($DB->has_results()) {
     list($Purchases, $Price) = [0, 1000];
 }
 
-View::show_header('Store');
+View::header('Store');
 ?>
 <div>
   <?php
@@ -117,4 +117,4 @@ View::show_header('Store');
   } ?>
 </div>
 <?php
-View::show_footer();
+View::footer();

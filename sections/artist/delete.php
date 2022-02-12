@@ -20,7 +20,7 @@ if (!check_perms('site_delete_artist') || !check_perms('torrents_delete')) {
   error(403);
 }
 
-View::show_header('Artist deleted');
+View::header('Artist deleted');
 
 $DB->query("
   SELECT Name
@@ -98,5 +98,5 @@ if ($Count == 0) {
 </div>
 <?
 }
-View::show_footer();?>
+View::footer();?>
 */

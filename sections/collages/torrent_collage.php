@@ -336,7 +336,7 @@ if ($CollageCovers) {
     }
 }
 
-View::show_header(
+View::header(
     $Name,
     'browse,collage,recommend,wall'
 );
@@ -778,4 +778,4 @@ if ($CollageCovers != 0) { ?>
     </div>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

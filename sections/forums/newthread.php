@@ -26,7 +26,7 @@ if (!Forums::check_forumperm($ForumID, 'Write') || !Forums::check_forumperm($For
 }
 
 $ENV = ENV::go();
-View::show_header(
+View::header(
     "Forums $ENV->CRUMB ".$Forum['Name']." $ENV->CRUMB New Topic",
     'comments,vendor/easymde.min',
     'vendor/easymde.min'
@@ -201,4 +201,4 @@ if (check_perms('forums_polls_create')) {
     </form>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

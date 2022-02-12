@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 # Formerly Rules::display_golden_rules()
 $ENV = ENV::go();
-View::show_header('Golden rules');
+View::header('Golden rules');
 ?>
 
 <div>
@@ -65,4 +65,4 @@ View::show_header('Golden rules');
 
   <?php include('jump.php'); ?>
 </div>
-<?php View::show_footer();
+<?php View::footer();

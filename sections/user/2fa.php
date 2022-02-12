@@ -78,7 +78,7 @@ $DB->query("
 
 list($PublicKey, $TwoFactor) = $DB->next_record();
 list($U2FRequest, $U2FSigs) = $U2F->getRegisterData($U2FRegs);
-View::show_header("2FA Settings", 'u2f');
+View::header("2FA Settings", 'u2f');
 ?>
 
 <h2>Additional Account Security Options</h2>
@@ -272,4 +272,4 @@ View::show_header("2FA Settings", 'u2f');
   </div>
 </div>
 <?php
-View::show_footer();
+View::footer();

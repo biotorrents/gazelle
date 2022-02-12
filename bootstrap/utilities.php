@@ -219,12 +219,12 @@ function error(int|string $error = 400, $NoHTML = false, $Log = false)
     }
 
     # Output HTML error page
-    View::show_header($Title);
+    View::header($Title);
     echo $Twig->render(
         'error.twig',
         ['title' => $title, 'body' => $body]
     );
-    View::show_footer();
+    View::footer();
 
     # This needs to be caught or more likely ignored
     # It's just errors displayed to endusers now

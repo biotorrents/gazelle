@@ -66,10 +66,10 @@ $ProjectCanEdit = (check_perms('project_team') && !$IsFilled && ($Request['Categ
 $UserCanEdit = (!$IsFilled && $LoggedUser['ID'] === $Request['UserID'] && $VoteCount < 2);
 $CanEdit = ($UserCanEdit || $ProjectCanEdit || check_perms('site_moderate_requests'));
 
-// Comments (must be loaded before View::show_header so that subscriptions and quote notifications are handled properly)
+// Comments (must be loaded before View::header so that subscriptions and quote notifications are handled properly)
 list($NumComments, $Page, $Thread, $LastRead) = Comments::load('requests', $RequestID);
 
-View::show_header(
+View::header(
     "View request: $Title",
     'comments,requests,subscriptions,vendor/easymde.min',
     'vendor/easymde.min'
@@ -458,4 +458,4 @@ View::parse('generic/reply/quickreply.php', array(
     </div>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

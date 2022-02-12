@@ -45,7 +45,7 @@ if (!($Scores = $Cache->get_value("contest_scores"))) {
   $Cache->cache_value('contest_scores', $Scores);
 }
 
-View::show_header('Contest');
+View::header('Contest');
 
 if (!$ContestSettings['start'] || !$ContestSettings['end']) {
   echo '<h2>No Contests</h2>';
@@ -100,4 +100,4 @@ if (!$ContestSettings['start'] || !$ContestSettings['end']) {
   </div>
 
 <? }
- View::show_footer(); ?>
+ View::footer(); ?>

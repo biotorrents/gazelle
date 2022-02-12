@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-View::show_header('Collection rules');
+View::header('Collection rules');
 ?>
 
 <div>
@@ -61,4 +61,4 @@ View::show_header('Collection rules');
 
   <?php include('jump.php'); ?>
 </div>
-<?php View::show_footer();
+<?php View::footer();

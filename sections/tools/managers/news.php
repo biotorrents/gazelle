@@ -6,7 +6,7 @@ if (!check_perms('admin_manage_news')) {
     error(403);
 }
 
-View::show_header(
+View::header(
     'Manage news',
     'vendor/easymde.min',
     'vendor/easymde.min'
@@ -110,4 +110,4 @@ while (list($NewsID, $Title, $Body, $NewsTime) = $DB->next_record()) {
   <?php
 } ?>
 </div>
-<?php View::show_footer();
+<?php View::footer();

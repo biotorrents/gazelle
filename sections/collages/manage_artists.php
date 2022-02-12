@@ -34,7 +34,7 @@ $DB->query("
 $Artists = $DB->to_array('ArtistID', MYSQLI_ASSOC);
 
 
-View::show_header(
+View::header(
     "Manage collage $Name",
     'vendor/jquery.tablesorter.min,sort'
 ); ?>
@@ -153,4 +153,4 @@ View::show_header(
     </div>
   </form>
 </div>
-<?php View::show_footer();
+<?php View::footer();

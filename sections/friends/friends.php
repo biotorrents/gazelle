@@ -15,7 +15,7 @@ $ENV = ENV::go();
 define('FRIENDS_PER_PAGE', '20');
 #include_once "$ENV->SERVER_ROOT/classes/paranoia.class.php";
 
-View::show_header('Friends');
+View::header('Friends');
 
 $UserID = $LoggedUser['ID'];
 list($Page, $Limit) = Format::page_limit(FRIENDS_PER_PAGE);
@@ -140,4 +140,4 @@ foreach ($Friends as $Friend) {
   <?php // close <div>?>
 </div>
 <?php
-View::show_footer();
+View::footer();

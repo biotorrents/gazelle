@@ -126,7 +126,7 @@ switch ($Short) {
     break;
 }
 
-View::show_header('Report a '.$Type['title']);
+View::header('Report a '.$Type['title']);
 ?>
 <div class="thin">
   <div class="header">
@@ -322,4 +322,4 @@ if (empty($NoReason)) {
 // close <div class="thin">?>
 </div>
 <?php
-View::show_footer();
+View::footer();

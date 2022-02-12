@@ -35,7 +35,7 @@ if (!$Properties) {
     error(404);
 }
 
-View::show_header('Edit torrent', 'upload');
+View::header('Edit torrent', 'upload');
 
 if (!check_perms('site_moderate_requests')) {
     error(403);
@@ -87,4 +87,4 @@ if (!check_perms('site_moderate_requests')) {
   </form>
 </div>
 
-<?php View::show_footer();
+<?php View::footer();

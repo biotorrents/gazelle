@@ -177,7 +177,7 @@ if ($DB->has_results()) {
     }
 }
 
-View::show_header('Store'); ?>
+View::header('Store'); ?>
 <div>
   <h2>Purchase <?=isset($Err)?"Failed":"Successful"?>
   </h2>
@@ -191,4 +191,4 @@ View::show_header('Store'); ?>
   </div>
 </div>
 <?php
-View::show_footer();
+View::footer();

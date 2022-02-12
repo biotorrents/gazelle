@@ -65,7 +65,7 @@ class Security
             error('$UserID must be an integer.');
         }
 
-        # $Permissions: string fallback as in View::show_header()
+        # $Permissions: string fallback as in View::header()
         if (is_string($Permissions) && !empty($Permissions)) {
             $Permissions = explode(',', $Permissions);
         }

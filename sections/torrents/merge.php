@@ -42,7 +42,7 @@ list($Name) = $DB->next_record();
 if (empty($_POST['confirm'])) {
   $Artists = Artists::get_artists(array($GroupID, $NewGroupID));
 
-  View::show_header();
+  View::header();
 ?>
   <div class="center">
   <div class="header">
@@ -68,7 +68,7 @@ if (empty($_POST['confirm'])) {
   </div>
   </div>
 <?
-  View::show_footer();
+  View::footer();
 } else {
   authorize();
 

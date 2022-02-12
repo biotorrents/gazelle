@@ -33,7 +33,7 @@ if ($LoggedUser['LastReadNews'] !== $News[0][0] && count($News) > 0) {
     $LoggedUser['LastReadNews'] = $News[0][0];
 }
 
-View::show_header('News', 'news_ajax');
+View::header('News', 'news_ajax');
 ?>
 
 <div class="sidebar one-third column">
@@ -562,7 +562,7 @@ foreach ($News as $NewsItem) {
 </div>
 </div>
 <?php
-View::show_footer(array('disclaimer'=>true));
+View::footer(array('disclaimer'=>true));
 
 function contest()
 {

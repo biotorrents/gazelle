@@ -160,7 +160,7 @@ if ($AdvancedSearch) {
 # Start the search form
 # Fortunately it's very easy to search via
 # torrentsearch.class.php
-View::show_header('Browse Torrents', 'browse');
+View::header('Browse Torrents', 'browse');
 ?>
 
 <div>
@@ -647,7 +647,7 @@ View::show_header('Browse Torrents', 'browse');
   </div>
 </div>
 <?php
-View::show_footer();
+View::footer();
 die();
   }
 
@@ -667,7 +667,7 @@ die();
 </div>
 
 <?php
-    View::show_footer();
+    View::footer();
       error();
   }
 
@@ -1036,4 +1036,4 @@ die();
 </div>
 </div>
 <?php
-View::show_footer();
+View::footer();

@@ -86,7 +86,7 @@ for ($i = 0; $i < $NumGroups / $CollageCovers; $i++) {
     $CollagePages[] = $CollagePage;
 }
 
-View::show_header($Name, 'browse,collage,recommend');
+View::header($Name, 'browse,collage,recommend');
 ?>
 
 <div>
@@ -382,4 +382,4 @@ if ($CollageCovers !== 0) {
 </div>
 
 <?php
-View::show_footer();
+View::footer();

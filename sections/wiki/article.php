@@ -18,7 +18,7 @@ if (!empty($_GET['id'])) {
 Security::int($ArticleID);
 
 if (!$ArticleID) { // No article found
-    View::show_header('No article found'); ?>
+    View::header('No article found'); ?>
 <div>
   <div class="header">
     <h2>No article found</h2>
@@ -39,7 +39,7 @@ if (!$ArticleID) { // No article found
   </div>
 </div>
 <?php
-  View::show_footer();
+  View::footer();
     error();
 }
 
@@ -52,7 +52,7 @@ if ($Read > $LoggedUser['EffectiveClass']) {
 
 $TextBody = Text::parse($Body, false);
 
-View::show_header($Title, 'wiki');
+View::header($Title, 'wiki');
 ?>
 
 <div>
@@ -180,4 +180,4 @@ if ($Aliases !== $Title) {
     </div>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

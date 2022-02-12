@@ -100,7 +100,7 @@ if ($Edit > $LoggedUser['EffectiveClass']) {
     error(404);
 }
 
-View::show_header('Compare Article Revisions');
+View::header('Compare Article Revisions');
 $Diff2 = get_body($ArticleID, $_GET['new']);
 $Diff1 = get_body($ArticleID, $_GET['old']);
 ?>
@@ -121,4 +121,4 @@ $Diff1 = get_body($ArticleID, $_GET['old']);
     </div>
 </div>
 <?php
-View::show_footer();
+View::footer();

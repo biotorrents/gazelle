@@ -5,7 +5,7 @@ if (!check_perms('admin_whitelist')) {
   error(403);
 }
 
-View::show_header('Client Whitelist Manager');
+View::header('Client Whitelist Manager');
 $DB->query('
   SELECT id, vstring, peer_id
   FROM xbt_client_whitelist
@@ -66,4 +66,4 @@ while (list($ID, $Client, $Peer_ID) = $DB->next_record()) {
 </form>
 <? } ?>
 </div>
-<? View::show_footer(); ?>
+<? View::footer(); ?>

@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types = 1);
 
-View::show_header(
+View::header(
     'Create a collection',
     'vendor/easymde.min',
     'vendor/easymde.min'
@@ -142,4 +142,4 @@ View::textarea(
     </form>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

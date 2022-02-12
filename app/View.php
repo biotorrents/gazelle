@@ -22,7 +22,7 @@ class View
 
         switch ($type) {
             case 'script':
-                $HTML = "<script defer src='$uri' crossorigin='anonymous'></script>";
+                $HTML = "<script src='$uri' crossorigin='anonymous'></script>";
                 #$HTML = "<script defer src='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous'></script>";
                 break;
 
@@ -54,7 +54,7 @@ class View
      *                    the page. ONLY PUT THE RELATIVE LOCATION WITHOUT '.js'
      *                    example: 'somefile,somedir/somefile'
      */
-    public static function show_header($PageTitle = '', $JSIncludes = '', $CSSIncludes = '')
+    public static function header($PageTitle = '', $JSIncludes = '', $CSSIncludes = '')
     {
         $ENV = ENV::go();
         global $Document, $Mobile, $Classes;
@@ -88,7 +88,7 @@ class View
      *                 Here is a list of parameters that work in the $Options array:
      *                 ['disclaimer'] = [boolean] (False) Displays the disclaimer in the footer
      */
-    public static function show_footer($Options = [])
+    public static function footer($Options = [])
     {
         $ENV = ENV::go();
         global $SessionID, $UserSessions, $Time, $Mobile;

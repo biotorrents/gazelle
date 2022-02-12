@@ -163,9 +163,9 @@ if (!empty($GroupIDs)) {
 }
 if ($Sneaky) {
     $UserInfo = Users::user_info($UserID);
-    View::show_header($UserInfo['Username'].'\'s notifications', 'notifications');
+    View::header($UserInfo['Username'].'\'s notifications', 'notifications');
 } else {
-    View::show_header('My notifications', 'notifications');
+    View::header('My notifications', 'notifications');
 }
 ?>
 <div>
@@ -405,4 +405,4 @@ if (empty($Results)) {
   </div>
   <?php } ?>
 </div>
-<?php View::show_footer();
+<?php View::footer();

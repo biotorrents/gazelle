@@ -215,7 +215,7 @@ $DB->prepared_query('SELECT FOUND_ROWS()');
 list($Results) = $DB->next_record();
 $PageLinks = Format::get_pages($Page, $Results, REPORTS_PER_PAGE, 11);
 
-View::show_header('Reports V2!', 'reportsv2');
+View::header('Reports V2!', 'reportsv2');
 ?>
 <div class="header">
   <h2><?=$Title?>
@@ -702,4 +702,4 @@ if (count($Reports) === 0) {
 <div class="linkbox pager"><?=$PageLinks?>
 </div>
 <?php } ?>
-<?php View::show_footer();
+<?php View::footer();

@@ -1,0 +1,399 @@
+<h2 class="header">Torrent stats</h2>
+
+<section>
+  {# overview #}
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Totals</th>
+        <th>Averages</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <th>Torrents</th>
+        <td>{{ torrentsEconomy.torrents.idCount|number_format }}</td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <th>Data size</th>
+        <td>{{ torrentsEconomy.torrents.totalSize|get_size }}</td>
+        <td>{{ (torrentsEconomy.torrents.totalSize / torrentsEconomy.torrents.idCount)|get_size }}</td>
+      </tr>
+
+      <tr>
+        <th>Tracked files</th>
+        <td>{{ torrentsEconomy.torrents.fileCount|number_format }}</td>
+        <td>{{ (torrentsEconomy.torrents.fileCount / torrentsEconomy.torrents.idCount)|number_format }}</td>
+      </tr>
+
+      <tr>
+        <th>File size</th>
+        <td></td>
+        <td>{{ (torrentsEconomy.torrents.totalSize / torrentsEconomy.torrents.fileCount)|get_size }}</td>
+      </tr>
+
+      <tr>
+        <th>Torrents per user</th>
+        <td></td>
+        <td>{{ (torrentsEconomy.torrents.idCount / torrentsEconomy.users.idCount)|number_format }}</td>
+      </tr>
+
+    </tbody>
+  </table>
+</section>
+<br /><br />
+
+
+<section>
+  {# torrentsTimeline #}
+  <canvas class="chart" id="torrentsTimeline"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let torrentsTimelineData = JSON.parse('{{ torrentsTimeline|json_encode|raw }}');
+      let torrentsTimelineCanvas = document.getElementById('torrentsTimeline').getContext('2d');
+
+      let torrentsTimelineChart = new Chart(torrentsTimelineCanvas, {
+        type: 'line',
+        data: {
+          labels: Object.keys(torrentsTimelineData.uploads),
+          datasets: [{
+            label: 'Uploaded torrents',
+            data: Object.values(torrentsTimelineData.uploads),
+            backgroundColor: 'rgba(179, 229, 252, 0.8)', // #B3E5FC
+            borderColor: 'rgba(1, 87, 155, 0.8)', // #01579B
+          },
+
+          {
+            label: 'Deleted torrents',
+            data: Object.values(torrentsTimelineData.deletes),
+            backgroundColor: 'rgba(255, 224, 178, 0.8)', // #FFE0B2
+            borderColor: 'rgba(230, 81, 0, 0.8)', // #E65100
+          }]
+        },
+
+        options: {
+          plugins: {
+            title: {
+              display: true,
+              text: 'Uploads and deletions',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+</section>
+<br /><br />
+
+
+<section>
+  <canvas class="chart" id="categoryDistribution"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let categoryDistributionData = JSON.parse('{{ categoryDistribution|json_encode|raw }}');
+      let categoryDistributionCanvas = document.getElementById('categoryDistribution').getContext('2d');
+
+      let categoryDistributionChart = new Chart(categoryDistributionCanvas, {
+        type: 'pie',
+        data: {
+          labels: Object.keys(categoryDistributionData),
+          datasets: [{
+            data: Object.values(categoryDistributionData),
+            backgroundColor: [
+              'rgba(255, 205, 210, 0.8)', // #FFCDD2
+              'rgba(225, 190, 231, 0.8)', // #E1BEE7
+              'rgba(197, 202, 233, 0.8)', // #C5CAE9
+              'rgba(179, 229, 252, 0.8)', // #B3E5FC
+              'rgba(178, 223, 219, 0.8)', // #B2DFDB
+              'rgba(220, 237, 200, 0.8)', // #DCEDC8
+              'rgba(255, 249, 196, 0.8)', // #FFF9C4
+              'rgba(255, 224, 178, 0.8)', // #FFE0B2
+              'rgba(215, 204, 200, 0.8)', // #D7CCC8
+              'rgba(207, 216, 220, 0.8)', // #CFD8DC
+              'rgba(158, 158, 158, 0.8)', // #9E9E9E
+            ],
+
+          }]
+        },
+
+        options: {
+          plugins: {
+            title: {
+              display: true,
+              text: 'Category distribution',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+</section>
+<br /><br />
+
+
+<section>
+  {# buttons: daily, weekly, monthly torrents #}
+  <a class="button button-primary" id="dailyTorrentsButton" onclick="visible('dailyTorrents', this.id)">Daily</a>
+  <a class="button" id="weeklyTorrentsButton" onclick="visible('weeklyTorrents', this.id)">Weekly</a>
+  <a class="button" id="monthlyTorrentsButton" onclick="visible('monthlyTorrents', this.id)">Monthly</a>
+</section>
+
+<section>
+  {# dailyTorrents #}
+  <canvas class="chart" id="dailyTorernts"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let dailyTorrentsData = JSON.parse('{{ torrentsEconomy|json_encode|raw }}');
+      let dailyTorrentsCanvas = document.getElementById('dailyTorrents').getContext('2d');
+
+      let dailyTorrentsChart = new Chart(dailyTorrentsCanvas, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(dailyTorrentsData.daily),
+          datasets: [{
+            label: 'Day',
+            data: Object.values(dailyTorrentsData.daily),
+            backgroundColor: 'rgba(178, 223, 219, 0.8)', // #B2DFDB
+          }],
+        },
+
+        options: {
+          plugins: {
+            title: {
+              display: true,
+              text: 'Daily torrent uploads',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+
+  {# weeklyTorrents #}
+  <canvas class="chart" id="weeklyTorernts"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let weeklyTorrentsData = JSON.parse('{{ torrentsEconomy|json_encode|raw }}');
+      let weeklyTorrentsCanvas = document.getElementById('weeklyTorrents').getContext('2d');
+
+      let weeklyTorrentsChart = new Chart(weeklyTorrentsCanvas, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(weeklyTorrentsData.weekly),
+          datasets: [{
+            label: 'Week',
+            data: Object.values(weeklyTorrentsData.weekly),
+            backgroundColor: 'rgba(178, 223, 219, 0.8)', // #B2DFDB
+          }],
+        },
+
+        options: {
+          plugins: {
+            title: {
+              display: true,
+              text: 'Weekly torrent uploads',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+
+  {# monthlyTorrents #}
+  <canvas class="chart" id="monthlyTorernts"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let monthlyTorrentsData = JSON.parse('{{ torrentsEconomy|json_encode|raw }}');
+      let monthlyTorrentsCanvas = document.getElementById('monthlyTorrents').getContext('2d');
+
+      let monthlyTorrentsChart = new Chart(monthlyTorrentsCanvas, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(monthlyTorrentsData.monthly),
+          datasets: [{
+            label: 'Month',
+            data: Object.values(monthlyTorrentsData.monthly),
+            backgroundColor: 'rgba(178, 223, 219, 0.8)', // #B2DFDB
+          }],
+        },
+
+        options: {
+          plugins: {
+            title: {
+              display: true,
+              text: 'Monthly torrent uploads',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+</section>
+<br /><br />
+
+
+{#
+<ul class="stats nobullet">
+  <li>
+    <strong>Torrents per day this week:</strong>
+    <?=number_format($WeekNum / 7)?>
+  </li>
+
+  <li>
+    <strong>Size per day this week:</strong>
+    <?=Format::get_size($WeekSize / 7)?>
+  </li>
+
+  <li>
+    <strong>Files per day this week:</strong>
+    <?=number_format($WeekFiles / 7)?>
+  </li>
+
+  <li>
+    <strong>Torrents per day this month:</strong>
+    <?=number_format($MonthNum / 30)?>
+  </li>
+
+  <li>
+    <strong>Size per day this month:</strong>
+    <?=Format::get_size($MonthSize / 30)?>
+  </li>
+
+  <li>
+    <strong>Files per day this month:</strong>
+    <?=number_format($MonthFiles / 30)?>
+  </li>
+</ul>
+#}
+
+
+<section>
+  <canvas class="chart" id="databaseSpecifics"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let databaseSpecificsData = JSON.parse('{{ databaseSpecifics|json_encode|raw }}');
+      let databaseSpecificsCanvas = document.getElementById('databaseSpecifics').getContext('2d');
+
+      let databaseSpecificsChart = new Chart(databaseSpecificsCanvas, {
+        type: 'bar',
+        data: {
+          labels: Object.values(databaseSpecificsData.name),
+
+          datasets: [{
+            label: 'Records',
+            yAxisID: 'yRecords',
+            data: Object.values(databaseSpecificsData.rowCount),
+            backgroundColor: [
+              'rgba(255, 205, 210, 0.8)', // #FFCDD2
+              'rgba(225, 190, 231, 0.8)', // #E1BEE7
+              'rgba(197, 202, 233, 0.8)', // #C5CAE9
+              'rgba(179, 229, 252, 0.8)', // #B3E5FC
+              'rgba(178, 223, 219, 0.8)', // #B2DFDB
+              'rgba(220, 237, 200, 0.8)', // #DCEDC8
+              'rgba(255, 249, 196, 0.8)', // #FFF9C4
+              'rgba(255, 224, 178, 0.8)', // #FFE0B2
+              'rgba(215, 204, 200, 0.8)', // #D7CCC8
+              'rgba(207, 216, 220, 0.8)', // #CFD8DC
+              'rgba(158, 158, 158, 0.8)', // #9E9E9E
+            ],
+          },
+
+          {
+            type: 'line',
+            label: 'Size',
+            yAxisID: 'ySize',
+            data: Object.values(databaseSpecificsData.dataSize),
+            backgroundColor: 'rgba(179, 229, 252, 0.8)', // #B3E5FC
+            borderColor: 'rgba(1, 87, 155, 0.8)', // #01579B
+
+          }]
+        },
+
+        options: {
+          plugins: {
+            title: {
+              display: true,
+              text: 'Database specifics',
+            },
+          },
+
+          scales: {
+            x: {
+              grid: {
+                drawOnChartArea: false,
+              },
+              /*
+              ticks: {
+                autoSkip: false,
+              },
+              */
+            },
+
+            yRecords: {
+              type: 'logarithmic',
+              display: true,
+              position: 'left',
+              grid: {
+                drawOnChartArea: false,
+              },
+              title: {
+                display: true,
+                text: 'Absolute number of records',
+              },
+            },
+
+            ySize: {
+              type: 'logarithmic',
+              display: true,
+              position: 'right',
+              grid: {
+                drawOnChartArea: false,
+              },
+              title: {
+                display: true,
+                text: 'Data and index size in MiB',
+              },
+            },
+          },
+        },
+      });
+    })();
+  </script>
+</section>
+<br /><br />
+
+
+<script>
+  // toggle visibility
+  function visible(canvas, button) {
+    // canvas
+    $('#' + canvas).parent().children(':not(#' + canvas + ')').hide();
+    $('#' + canvas).show();
+
+    // button
+    $('#' + button).parent().children(':not(#' + button + ')').removeClass('button-primary');
+    $('#' + button).addClass('button-primary');
+  }
+
+  // hidden by default
+  (() => {
+    $('#weeklyTorrents').hide();
+    $('#monthlyTorrents').hide();
+  })();
+</script>

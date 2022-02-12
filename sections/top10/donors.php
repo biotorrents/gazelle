@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-View::show_header('Top 10 Donors');
+View::header('Top 10 Donors');
 ?>
 
 <div>
@@ -37,7 +37,7 @@ LIMIT
 $Results = $DB->to_array();
 generate_user_table('Top Donors', $Results, $Limit);
 echo '</div>';
-View::show_footer();
+View::footer();
 
 // Generate a table based on data from most recent query to $DB
 function generate_user_table($Caption, $Results, $Limit)

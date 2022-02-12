@@ -3,7 +3,7 @@
 
 enforce_login();
 if ($LoggedUser['DisablePoints']) {
-    View::show_header('Store'); ?>
+    View::header('Store'); ?>
 <div>
   <h2>Denied</h2>
   <div class="box">
@@ -11,7 +11,7 @@ if ($LoggedUser['DisablePoints']) {
   </div>
 </div>
 <?php
-View::show_footer();
+View::footer();
 } else {
     if (isset($_REQUEST['item'])) {
         switch ($_REQUEST['item']) {

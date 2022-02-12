@@ -4,7 +4,7 @@ declare(strict_types=1);
 $ENV = ENV::go();
 $Twig = Twig::go();
 
-View::show_header('Login');
+View::header('Login');
 ?>
 
 <p class="center mouseless">
@@ -109,4 +109,4 @@ if ($Attempts > 0) { ?>
 HTML;
 }
 
-View::show_footer();
+View::footer();

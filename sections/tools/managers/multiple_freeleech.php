@@ -3,7 +3,7 @@ if (!check_perms('users_mod')) {
     error(403);
 }
 
-View::show_header('Multiple freeleech');
+View::header('Multiple freeleech');
 
 if (isset($_POST['torrents'])) {
     $GroupIDs = [];
@@ -117,4 +117,4 @@ if (isset($_POST['torrents'])) {
     </div>
 </div>
 <?
-View::show_footer();
+View::footer();

@@ -26,7 +26,7 @@ list($UserID, $Username, $PermissionID) = array_values(Users::user_info($UserID)
 $ENV = ENV::go();
 require_once SERVER_ROOT.'/classes/invite_tree.class.php';
 $Tree = new INVITE_TREE($UserID);
-View::show_header("$Username $ENV->CRUMB Invites $ENV->CRUMB Tree");
+View::header("$Username $ENV->CRUMB Invites $ENV->CRUMB Tree");
 ?>
 <div>
   <div class="header">
@@ -41,4 +41,4 @@ View::show_header("$Username $ENV->CRUMB Invites $ENV->CRUMB Tree");
     <?php $Tree->make_tree(); ?>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

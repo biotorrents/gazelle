@@ -43,7 +43,7 @@ if (!$DB->has_results()) {
 list($Name, $Image, $Body) = $DB->next_record(MYSQLI_NUM, true);
 
 // Start printing form
-View::show_header('Edit artist');
+View::header('Edit artist');
 ?>
 <div>
   <div class="header">
@@ -158,4 +158,4 @@ View::show_header('Edit artist');
   </div> */ ?>
 <? } ?>
 </div>
-<? View::show_footer() ?>
+<? View::footer() ?>

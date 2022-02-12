@@ -33,7 +33,7 @@ if (!empty($_POST)) {
   error();
 }
 
-View::show_header();
+View::header();
 ?>
 <h2>Change the featured merchandise</h2>
 <div class="box pad">
@@ -74,5 +74,5 @@ View::show_header();
   </form>
 </div>
 <?
-View::show_footer();
+View::footer();
 ?>

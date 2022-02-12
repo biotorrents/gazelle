@@ -126,7 +126,7 @@ if ($DB->has_results()) {
     $NumUsers = 1;
 }
 
-View::show_header();
+View::header();
 ?>
 
 <div>
@@ -145,4 +145,4 @@ View::show_header();
     </p>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

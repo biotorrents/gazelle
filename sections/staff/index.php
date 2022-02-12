@@ -5,7 +5,7 @@ enforce_login();
 $ENV = ENV::go();
 
 include SERVER_ROOT.'/sections/staff/functions.php';
-View::show_header(
+View::header(
     'Staff',
     'vendor/easymde.min',
     'vendor/easymde.min'
@@ -170,4 +170,4 @@ if ($ForumStaff) { ?>
 
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

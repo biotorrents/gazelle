@@ -37,7 +37,7 @@ if (!check_perms('users_view_ips', $Class)) {
 
 $UsersOnly = $_GET['usersonly'];
 
-View::show_header("Tracker IP address history for $Username");
+View::header("Tracker IP address history for $Username");
 ?>
 <script type="text/javascript">
   function ShowIPs(rowname) {
@@ -103,4 +103,4 @@ foreach ($Results as $Index => $Result) {
   </div>
 </div>
 
-<?php View::show_footer();
+<?php View::footer();

@@ -35,7 +35,7 @@ list($ComposeToUsername) = $DB->next_record();
 if (!$ComposeToUsername) {
   error(404);
 }
-View::show_header('Compose', 'inbox');
+View::header('Compose', 'inbox');
 
 // $TypeLink is placed directly in the <textarea> when composing a PM
 switch ($Type) {
@@ -175,5 +175,5 @@ $Body = "You reported $TypeLink for the reason:\n[quote]{$Reason}[/quote]";
   </form>
 </div>
 <?
-View::show_footer();
+View::footer();
 ?>

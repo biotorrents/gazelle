@@ -28,7 +28,7 @@ if (isset($_GET['userid']) && is_number($_GET['userid'])) {
     $MainStats = Tracker::info();
 }
 
-View::show_header('Tracker info');
+View::header('Tracker info');
 ?>
 <div>
   <div class="header">
@@ -104,4 +104,4 @@ if (!empty($UserPeerStats)) {
   </div>
 </div>
 <?php
-View::show_footer();
+View::footer();

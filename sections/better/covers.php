@@ -35,7 +35,7 @@ $DB->prepared_query('SELECT FOUND_ROWS()');
 list($NumResults) = $DB->next_record();
 $Results = Torrents::get_groups(array_keys($Groups));
 
-View::show_header('Torrent groups with no picture');
+View::header('Torrent groups with no picture');
 ?>
 
 <div class="header">
@@ -97,4 +97,4 @@ foreach ($Results as $Result) {
   </table>
 </div>
 
-<?php View::show_footer();
+<?php View::footer();

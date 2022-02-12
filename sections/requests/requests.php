@@ -314,7 +314,7 @@ if ($NumResults > 0) {
 }
 
 $CurrentURL = Format::get_url(array('order', 'sort', 'page'));
-View::show_header($Title, 'requests');
+View::header($Title, 'requests');
 ?>
 
 <div>
@@ -627,4 +627,4 @@ View::show_header($Title, 'requests');
     </div>
     <?php } ?>
 </div>
-<?php View::show_footer();
+<?php View::footer();

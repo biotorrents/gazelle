@@ -95,7 +95,7 @@ if (!$NewRequest) {
       }
   }
 
-View::show_header(
+View::header(
     ($NewRequest ? 'Create Request' : 'Edit Request'),
     'requests,upload,vendor/easymde.min',
     'vendor/easymde.min'
@@ -458,4 +458,4 @@ View::show_header(
     </form>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

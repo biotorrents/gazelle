@@ -4,7 +4,7 @@ if (!($IsFLS)) {
   error(403);
 }
 
-View::show_header('Staff PMs', 'staffpm');
+View::header('Staff PMs', 'staffpm');
 
 ?>
 <div>
@@ -92,4 +92,4 @@ while (list($ID, $Message, $Name) = $DB->next_record()) {
 ?>
   </div>
 </div>
-<? View::show_footer(); ?>
+<? View::footer(); ?>

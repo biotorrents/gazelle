@@ -34,7 +34,7 @@ $DB->prepared_query("
 $ArtistList = $DB->to_array();
 
 $Title = $Sneaky ? "$Username's bookmarked artists" : 'Your bookmarked artists';
-View::show_header($Title, 'browse');
+View::header($Title, 'browse');
 ?>
 
 <div>
@@ -61,7 +61,7 @@ View::show_header($Title, 'browse');
 
 <!--content-->
 <?php
-  View::show_footer();
+  View::footer();
   error();
 } ?>
 
@@ -116,5 +116,5 @@ foreach ($ArtistList as $Artist) {
 </div>
 
 <?php
-View::show_footer();
+View::footer();
 $Cache->cache_value('bookmarks_'.$UserID, serialize(array(array($Username, $TorrentList, $CollageDataList))), 3600);

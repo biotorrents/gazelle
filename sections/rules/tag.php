@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 # Formerly Rules::display_site_tag_rules()
-View::show_header('Tagging rules');
+View::header('Tagging rules');
 ?>
 
 <div>
@@ -139,4 +139,4 @@ View::show_header('Tagging rules');
 
   <?php include('jump.php'); ?>
 </div>
-<?php View::show_footer();
+<?php View::footer();

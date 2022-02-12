@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-View::show_header('Disabled');
+View::header('Disabled');
 
 if (isset($_POST['email']) && FEATURE_EMAIL_REENABLE) {
     // Handle auto-enable request
@@ -50,4 +50,4 @@ if ((empty($_POST['submit']) || empty($_POST['username'])) && !isset($Output)) {
         echo $Output;
     }
 
-View::show_footer();
+View::footer();

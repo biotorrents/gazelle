@@ -71,7 +71,7 @@ if (isset($_GET['expire'])) {
 }
 
 # Render HTML
-View::show_header('Freeleech token history');
+View::header('Freeleech token history');
 list($Page, $Limit) = Format::page_limit(25);
 
 $DB->prepared_query("
@@ -185,4 +185,4 @@ foreach ($Tokens as $Token) {
   <?= $Pages ?>
 </div>
 
-<?php View::show_footer();
+<?php View::footer();

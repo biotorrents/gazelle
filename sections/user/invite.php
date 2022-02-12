@@ -97,7 +97,7 @@ $DB->query("
 
 $Invited = $DB->to_array();
 
-View::show_header('Invites');
+View::header('Invites');
 ?>
 <div>
   <div class="header">
@@ -276,4 +276,4 @@ if (!empty($Pending)) {
     </table>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

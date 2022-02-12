@@ -60,7 +60,7 @@ if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
         }
     }
 
-    View::show_header('Store'); ?>
+    View::header('Store'); ?>
 <div>
     <h2 id='general'>
         Purchase <?=isset($Err)?'Failed':'Successful'?>
@@ -77,7 +77,7 @@ if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
 </div>
 <?php
 } else {
-        View::show_header('Store'); ?>
+        View::header('Store'); ?>
 <div>
     <h2 id='general'>Purchase Badge?</h2>
     <div class='box pad'>
@@ -106,4 +106,4 @@ if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
 </div>
 <?php
     }
-View::show_footer();
+View::footer();

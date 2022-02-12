@@ -4,22 +4,7 @@ declare(strict_types=1);
 # Formerly Rules::display_forum_rules()
 # and Rules::display_irc_chat_rules()
 $ENV = ENV::go();
-View::show_header('Chat Rules');
-
-
-/**
- * Designated debug area
- */
-
-/*
-echo '<pre>';
-
-#var_dump();
-#var_dump();
-#var_dump();
-
-echo '</pre>';
-*/
+View::header('Chat Rules');
 ?>
 
 
@@ -155,4 +140,4 @@ echo '</pre>';
 
 <?php include('jump.php'); ?>
 </div>
-<?php View::show_footer();
+<?php View::footer();

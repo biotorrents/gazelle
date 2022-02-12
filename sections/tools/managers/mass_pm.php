@@ -10,7 +10,7 @@ $Classes = Users::get_classes()[0];
 // add the class ID into this array to skip it when presenting the list of classes
 $SkipClassIDs = array(USER, MEMBER, POWER, ELITE, TORRENT_MASTER, DONOR, POWER_TM, ELITE_TM);
 
-View::show_header(
+View::header(
     'Compose Mass PM',
     'inbox'
 ); ?>
@@ -50,4 +50,4 @@ View::show_header(
     </div>
   </form>
 </main>
-<?php View::show_footer();
+<?php View::footer();

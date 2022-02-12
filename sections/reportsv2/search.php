@@ -9,7 +9,7 @@ if (!check_perms('admin_reports')) {
     error(403);
 }
 
-View::show_header('Reports V2!', 'reportsv2');
+View::header('Reports V2!', 'reportsv2');
 ?>
 
 <div class="header">
@@ -20,4 +20,4 @@ View::show_header('Reports V2!', 'reportsv2');
   On hold until someone fixes the main torrents search.
 </div>
 <?php
-View::show_footer();
+View::footer();

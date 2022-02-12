@@ -86,7 +86,7 @@ if (isset($_POST['torrent'])) {
         }
     }
 
-    View::show_header('Store'); ?>
+    View::header('Store'); ?>
 <div>
   <h2>Purchase Successful</h2>
   <div class="box">
@@ -101,9 +101,9 @@ if (isset($_POST['torrent'])) {
   </div>
 </div>
 <?php
-View::show_footer();
+View::footer();
 } else {
-    View::show_header('Store'); ?>
+    View::header('Store'); ?>
 <div>
   <div class="box text-align: center;">
 
@@ -123,5 +123,5 @@ View::show_footer();
   </div>
 </div>
 <?php
-View::show_footer();
+View::footer();
 }

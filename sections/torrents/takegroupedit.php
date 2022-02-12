@@ -24,7 +24,7 @@ if (!empty($_GET['action']) && $_GET['action'] === 'revert') {
 
     # To cite from merge: "Everything is legit, let's just confim they're not retarded"
     if (empty($_GET['confirm'])) {
-        View::show_header();
+        View::header();
     } ?>
 
 <div class="center">
@@ -55,7 +55,7 @@ if (!empty($_GET['action']) && $_GET['action'] === 'revert') {
 </div>
 
 <?php
-    View::show_footer();
+    View::footer();
     error();
 }
 

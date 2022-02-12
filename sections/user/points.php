@@ -90,7 +90,7 @@ if ($LoggedUser['DisablePoints']) {
     }
 }
 
-View::show_header('Send '.BONUS_POINTS); ?>
+View::header('Send '.BONUS_POINTS); ?>
 <div>
   <h2 id='general'>Send <?=BONUS_POINTS?>
   </h2>
@@ -100,4 +100,4 @@ View::show_header('Send '.BONUS_POINTS); ?>
     <p><a href='/user.php?id=<?=$To?>'>Return</a></p>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

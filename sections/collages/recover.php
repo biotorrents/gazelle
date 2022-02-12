@@ -23,7 +23,7 @@ if ($_POST['collage_id'] && is_number($_POST['collage_id'])) {
     header("Location: collages.php?id=$CollageID");
   }
 }
-View::show_header('Collage recovery!');
+View::header('Collage recovery!');
 ?>
 <div class="center">
   <div class="box" style="width: 600px; margin: 0px auto;">
@@ -46,4 +46,4 @@ View::show_header('Collage recovery!');
   </div>
 </div>
 <?
-View::show_footer();
+View::footer();

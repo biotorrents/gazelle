@@ -1,0 +1,533 @@
+<h2 class="header">User stats</h2>
+
+<section>
+  {# overview #}
+  <table>
+    <thead>
+      <tr>
+        <th>Unique visitors</th>
+        <th>Total pageviews</th>
+        <th>Bounce rate</th>
+        <th>Visit duration</th>
+        <th>Current visitors</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>{{ overview.visitors.value }}</td>
+        <td>{{ overview.pageviews.value }}</td>
+        <td>{{ overview.bounce_rate.value }}%</td>
+        <td>{{ overview.visit_duration.value|hhmmss }}</td>
+        <td>{{ realtime }}</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+<br /><br />
+
+
+<section>
+  {# overTime #}
+  <canvas class="chart" id="overTime"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let overTimeData = JSON.parse('{{ overTime|json_encode|raw }}');
+      let overTimeCanvas = document.getElementById('overTime').getContext('2d');
+
+      let overTimeChart = new Chart(overTimeCanvas, {
+        type: 'line',
+        data: {
+          labels: Object.keys(overTimeData.visitors),
+          datasets: [{
+            label: 'Visitors',
+            data: Object.values(overTimeData.visitors),
+            borderColor: 'rgba(255, 205, 210, 1.0)', // #FFCDD2
+            backgroundColor: 'rgba(255, 205, 210, 0.5)', // #FFCDD2
+          },
+
+          {
+            label: 'Pageviews',
+            data: Object.values(overTimeData.pageviews),
+            borderColor: 'rgba(225, 190, 231, 1.0)', // #E1BEE7
+            backgroundColor: 'rgba(225, 190, 231, 0.5)', // #E1BEE7
+          },
+
+          {
+            label: 'Bounce rate',
+            data: Object.values(overTimeData.bounce_rate),
+            borderColor: 'rgba(197, 202, 233, 1.0)', // #C5CAE9
+            backgroundColor: 'rgba(197, 202, 233, 0.5)', // #C5CAE9
+          },
+
+          {
+            label: 'Visit duration',
+            data: Object.values(overTimeData.visit_duration),
+            borderColor: 'rgba(179, 229, 252, 1.0)', // #B3E5FC
+            backgroundColor: 'rgba(179, 229, 252, 0.5)', // #B3E5FC
+          }],
+        },
+
+        options: {
+          plugins: {
+            title: {
+              display: true,
+              text: 'Aggregate stats over time',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+</section>
+<br /><br />
+
+
+<section>
+  {# usersTimeline #}
+  <canvas class="chart" id="usersTimeline"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let usersTimelineData = JSON.parse('{{ usersTimeline|json_encode|raw }}');
+      let usersTimelineCanvas = document.getElementById('usersTimeline').getContext('2d');
+
+      let usersTimelineChart = new Chart(usersTimelineCanvas, {
+        type: 'line',
+        data: {
+          labels: Object.keys(usersTimelineData.registrations),
+          datasets: [{
+            label: 'New registrations',
+            data: Object.values(usersTimelineData.registrations),
+            backgroundColor: 'rgba(179, 229, 252, 0.8)', // #B3E5FC
+            borderColor: 'rgba(1, 87, 155, 0.8)', // #01579B
+          },
+
+          {
+            label: 'Disabled users',
+            data: Object.values(usersTimelineData.disables),
+            backgroundColor: 'rgba(255, 224, 178, 0.8)', // #FFE0B2
+            borderColor: 'rgba(230, 81, 0, 0.8)', // #E65100
+          }]
+        },
+
+        options: {
+          plugins: {
+            title: {
+              display: true,
+              text: 'Registrations and disables',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+</section>
+<br /><br />
+
+
+<section>
+  {# classDistribution #}
+  <canvas class="chart" id="classDistribution"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let classDistributionData = JSON.parse('{{ classDistribution|json_encode|raw }}');
+      let classDistributionCanvas = document.getElementById('classDistribution').getContext('2d');
+
+      let classDistributionChart = new Chart(classDistributionCanvas, {
+        type: 'pie',
+        data: {
+          labels: Object.keys(classDistributionData),
+          datasets: [{
+            data: Object.values(classDistributionData),
+            backgroundColor: [
+              'rgba(241, 248, 233, 0.8)', // #F1F8E9
+              'rgba(220, 237, 200, 0.8)', // #DCEDC8
+              'rgba(197, 225, 165, 0.8)', // #C5E1A5
+              'rgba(174, 213, 129, 0.8)', // #AED581
+              'rgba(156, 204, 101, 0.8)', // #9CCC65
+              'rgba(139, 195, 74,  0.8)', // #8BC34A
+              'rgba(124, 179, 66,  0.8)', // #7CB342
+              'rgba(104, 159, 56,  0.8)', // #689F38
+              'rgba(85,  139, 47,  0.8)', // #558B2F
+              'rgba(51,  105, 30,  0.8)', // #33691E
+            ],
+          }]
+        },
+
+        options: {
+          plugins: {
+            title: {
+              display: true,
+              text: 'Class distribution',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+</section>
+<br /><br />
+
+
+<section>
+  {# buttons: top, entry, exit pages #}
+  <a class="button button-primary" id="topPagesButton" onclick="visible('topPages', this.id)">Top 10 pages</a>
+  <a class="button" id="entryPagesButton" onclick="visible('entryPages', this.id)">Entry pages</a>
+  <a class="button" id="exitPagesButton" onclick="visible('exitPages', this.id)">Exit pages</a>
+</section>
+
+<section>
+  {# topPages #}
+  <canvas class="chart" id="topPages"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let topPagesData = JSON.parse('{{ topPages|json_encode|raw }}');
+      let topPagesCanvas = document.getElementById('topPages').getContext('2d');
+
+      let topPagesChart = new Chart(topPagesCanvas, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(topPagesData.page),
+          datasets: [{
+            label: 'Visitors',
+            data: Object.values(topPagesData.page),
+            backgroundColor: 'rgba(178, 223, 219, 0.8)', // #B2DFDB
+          }],
+        },
+
+        options: {
+          indexAxis: 'y',
+
+          plugins: {
+            title: {
+              display: true,
+              text: 'Top 10 pages',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+
+  {# entryPages #}
+  <canvas class="chart" id="entryPages"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let topPagesData = JSON.parse('{{ topPages|json_encode|raw }}');
+      let topPagesCanvas = document.getElementById('entryPages').getContext('2d');
+
+      let topPagesChart = new Chart(topPagesCanvas, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(topPagesData.entry_page),
+          datasets: [{
+            label: 'Visitors',
+            data: Object.values(topPagesData.entry_page),
+            backgroundColor: 'rgba(178, 223, 219, 0.8)', // #B2DFDB
+          }],
+        },
+
+        options: {
+          indexAxis: 'y',
+
+          plugins: {
+            title: {
+              display: true,
+              text: 'Top 10 entry pages',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+
+  {# exitPages #}
+  <canvas class="chart" id="exitPages"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let topPagesData = JSON.parse('{{ topPages|json_encode|raw }}');
+      let topPagesCanvas = document.getElementById('exitPages').getContext('2d');
+
+      let topPagesChart = new Chart(topPagesCanvas, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(topPagesData.exit_page),
+          datasets: [{
+            label: 'Visitors',
+            data: Object.values(topPagesData.exit_page),
+            backgroundColor: 'rgba(178, 223, 219, 0.8)', // #B2DFDB
+          }],
+        },
+
+        options: {
+          indexAxis: 'y',
+
+          plugins: {
+            title: {
+              display: true,
+              text: 'Top 10 exit pages',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+</section>
+<br /><br />
+
+
+<section>
+  {# buttons: devices, browsers, operating systems #}
+  <a class="button button-primary" id="devicesButton" onclick="visible('devices', this.id)">Devices</a>
+  <a class="button" id="browsersButton" onclick="visible('browsers', this.id)">Browsers</a>
+  <a class="button" id="operatingSystemsButton" onclick="visible('operatingSystems', this.id)">Operating systems</a>
+</section>
+
+<section>
+  {# devices #}
+  <canvas class="chart" id="devices"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let devicesData = JSON.parse('{{ devices|json_encode|raw }}');
+      let devicesCanvas = document.getElementById('devices').getContext('2d');
+
+      let devicesChart = new Chart(devicesCanvas, {
+        type: 'pie',
+        data: {
+          labels: Object.keys(devicesData.device),
+          datasets: [{
+            data: Object.values(devicesData.device),
+            backgroundColor: [
+              'rgba(255, 205, 210, 0.8)', // #FFCDD2
+              'rgba(225, 190, 231, 0.8)', // #E1BEE7
+              'rgba(197, 202, 233, 0.8)', // #C5CAE9
+              'rgba(179, 229, 252, 0.8)', // #B3E5FC
+              'rgba(178, 223, 219, 0.8)', // #B2DFDB
+              'rgba(220, 237, 200, 0.8)', // #DCEDC8
+              'rgba(255, 249, 196, 0.8)', // #FFF9C4
+              'rgba(255, 224, 178, 0.8)', // #FFE0B2
+              'rgba(215, 204, 200, 0.8)', // #D7CCC8
+              'rgba(207, 216, 220, 0.8)', // #CFD8DC
+              'rgba(158, 158, 158, 0.8)', // #9E9E9E
+            ],
+          }]
+        },
+
+        options: {
+          plugins: {
+            title: {
+              display: true,
+              text: 'Devices',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+
+  {# browsers #}
+  <canvas class="chart" id="browsers"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let browsersData = JSON.parse('{{ devices|json_encode|raw }}');
+      let browsersCanvas = document.getElementById('browsers').getContext('2d');
+
+      let browsersChart = new Chart(browsersCanvas, {
+        type: 'pie',
+        data: {
+          labels: Object.keys(browsersData.browser),
+          datasets: [{
+            data: Object.values(browsersData.browser),
+            backgroundColor: [
+              'rgba(158, 158, 158, 0.8)', // #9E9E9E
+              'rgba(207, 216, 220, 0.8)', // #CFD8DC
+              'rgba(215, 204, 200, 0.8)', // #D7CCC8
+              'rgba(255, 224, 178, 0.8)', // #FFE0B2
+              'rgba(255, 249, 196, 0.8)', // #FFF9C4
+              'rgba(220, 237, 200, 0.8)', // #DCEDC8
+              'rgba(178, 223, 219, 0.8)', // #B2DFDB
+              'rgba(179, 229, 252, 0.8)', // #B3E5FC
+              'rgba(197, 202, 233, 0.8)', // #C5CAE9
+              'rgba(225, 190, 231, 0.8)', // #E1BEE7
+              'rgba(255, 205, 210, 0.8)', // #FFCDD2
+            ],
+          }]
+        },
+
+        options: {
+          plugins: {
+            title: {
+              display: true,
+              text: 'Browsers',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+
+  {# operatingSystems #}
+  <canvas class="chart" id="operatingSystems"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let operatingSystemsData = JSON.parse('{{ devices|json_encode|raw }}');
+      let operatingSystemsCanvas = document.getElementById('operatingSystems').getContext('2d');
+
+      let operatingSystemsChart = new Chart(operatingSystemsCanvas, {
+        type: 'pie',
+        data: {
+          labels: Object.keys(operatingSystemsData.os),
+          datasets: [{
+            data: Object.values(operatingSystemsData.os),
+            backgroundColor: [
+              'rgba(255, 205, 210, 0.8)', // #FFCDD2
+              'rgba(225, 190, 231, 0.8)', // #E1BEE7
+              'rgba(197, 202, 233, 0.8)', // #C5CAE9
+              'rgba(179, 229, 252, 0.8)', // #B3E5FC
+              'rgba(178, 223, 219, 0.8)', // #B2DFDB
+              'rgba(220, 237, 200, 0.8)', // #DCEDC8
+              'rgba(255, 249, 196, 0.8)', // #FFF9C4
+              'rgba(255, 224, 178, 0.8)', // #FFE0B2
+              'rgba(215, 204, 200, 0.8)', // #D7CCC8
+              'rgba(207, 216, 220, 0.8)', // #CFD8DC
+              'rgba(158, 158, 158, 0.8)', // #9E9E9E
+            ],
+          }]
+        },
+
+        options: {
+          plugins: {
+            title: {
+              display: true,
+              text: 'Operating systems',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+</section>
+<br /><br />
+
+
+<section>
+  {# locations #}
+  <canvas class="chart" id="locations"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let locationsData = JSON.parse('{{ locations|json_encode|raw }}');
+      let locationsCanvas = document.getElementById('locations').getContext('2d');
+
+      let locationsChart = new Chart(locationsCanvas, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(locationsData),
+          datasets: [{
+            label: 'Visitors',
+            data: Object.values(locationsData),
+            backgroundColor: 'rgba(220, 237, 200, 0.8)', // #DCEDC8
+          }],
+        },
+
+        options: {
+          indexAxis: 'y',
+
+          plugins: {
+            title: {
+              display: true,
+              text: 'Locations',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+</section>
+<br /><br />
+
+
+<script>
+  // toggle visibility
+  function visible(canvas, button) {
+    // canvas
+    $('#' + canvas).parent().children(':not(#' + canvas + ')').hide();
+    $('#' + canvas).show();
+
+    // button
+    $('#' + button).parent().children(':not(#' + button + ')').removeClass('button-primary');
+    $('#' + button).addClass('button-primary');
+  }
+
+  // hidden by default
+  (() => {
+    $('#entryPages').hide();
+    $('#exitPages').hide();
+
+    $('#browsers').hide();
+    $('#operatingSystems').hide();
+  })();
+</script>
+
+
+{#
+<section>
+  <canvas class="chart" id="canvas"></canvas>
+  <script>
+    fetch('https://unpkg.com/world-atlas/countries-50m.json')
+      .then((r) => r.json())
+      .then((data) => {
+        const countries = ChartGeo.topojson.feature(data, data.objects.countries).features;
+
+        const chart = new Chart(document.getElementById('canvas').getContext('2d'), {
+          type: 'choropleth',
+          data: {
+            labels: countries.map((d) => d.properties.name),
+            datasets: [
+              {
+                label: 'Countries',
+                data: countries.map((d) => ({
+                  feature: d,
+                  value: Math.random(),
+                })),
+              },
+            ],
+          },
+          options: {
+            showOutline: true,
+            showGraticule: true,
+            plugins: {
+              legend: {
+                display: false,
+              },
+            },
+            scales: {
+              xy: {
+                projection: 'equalEarth',
+              },
+            },
+          },
+        });
+      });
+  </script>
+</section>
+#}

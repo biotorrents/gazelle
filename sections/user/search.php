@@ -47,7 +47,7 @@ if (isset($_GET['username'])) {
   }
 }
 
-View::show_header('User search');
+View::header('User search');
 ?>
 <div>
   <div class="header">
@@ -92,4 +92,4 @@ View::show_header('User search');
   <?=$Pages?>
   </div>
 </div>
-<? View::show_footer(); ?>
+<? View::footer(); ?>

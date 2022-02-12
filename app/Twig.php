@@ -72,8 +72,8 @@ class Twig
             ]
         );
 
-        # DebugBar
         /*
+        # DebugBar
         $Profile = new \Twig\Profiler\Profile();
         $Debug = Debug::go();
         $Twig->addExtension(
@@ -83,6 +83,29 @@ class Twig
             )
         );
         */
+
+        # https://philfrilling.com/blog/2017-01/php-convert-seconds-hhmmss-format
+        $Twig->addFilter(new \Twig\TwigFilter(
+            'hhmmss',
+            function ($seconds) {
+                return sprintf(
+                    '%02dm %02ds',
+                    #'%02d:%02d:%02d', # hh:mm:ss
+                    #($seconds / 3600), # hh
+                    ($seconds / 60 % 60), # mm
+                    ($seconds % 60) # ss
+                );
+            }
+        ));
+
+        # Format::get_size
+        $Twig->addFilter(new \Twig\TwigFilter(
+            'get_size',
+            function ($size, $levels = 2) {
+                return Format::get_size($size, $levels);
+            }
+        ));
+
 
         /**
          * OPS
@@ -206,80 +229,12 @@ class Twig
             );
         }));
 
-        $Twig->addFunction(new \Twig\TwigFunction('privilege', function ($default, $config, $key) {
-            return new \Twig\Markup(
-                (
-                    $default
-                    ? sprintf(
-                        '<input id="%s" type="checkbox" disabled="disabled"%s />&nbsp;',
-                        "default_$key",
-                        (isset($default[$key]) && $default[$key] ? ' checked="checked"' : '')
-                    )
-                    : ''
-                )
-                . sprintf(
-                    '<input type="checkbox" name="%s" id="%s" value="1"%s />&nbsp;<label title="%s" for="%s">%s</label><br />',
-                    "perm_$key",
-                    $key,
-                    (empty($config[$key]) ? '' : ' checked="checked"'),
-                    $key,
-                    $key,
-                    \Permissions::list()[$key] ?? "!unknown($key)!"
-                ),
-                'UTF-8'
-            );
-        }));
-
         $Twig->addFunction(new \Twig\TwigFunction('ratio', function ($up, $down) {
             return new \Twig\Markup(
                 Format::get_ratio_html($up, $down),
                 'UTF-8'
             );
         }));
-
-        /*
-        $Twig->addFunction(new \Twig\TwigFunction('resolveCountryIpv4', function ($addr) {
-            return new \Twig\Markup(
-                (function ($ip) {
-                    static $cache = [];
-                    if (!isset($cache[$ip])) {
-                        $Class = strtr($ip, '.', '-');
-                        $cache[$ip] = '<span class="cc_'.$Class.'">Resolving CC...'
-                            . '<script type="text/javascript">'
-                                . '$(document).ready(function() {'
-                                    . '$.get(\'tools.php?action=get_cc&ip='.$ip.'\', function(cc) {'
-                                        . '$(\'.cc_'.$Class.'\').html(cc);'
-                                    . '});'
-                                . '});'
-                            . '</script></span>';
-                    }
-                    return $cache[$ip];
-                })($addr),
-                'UTF-8'
-            );
-        }));
-        */
-
-        /*
-        $Twig->addFunction(new \Twig\TwigFunction('resolveIpv4', function ($addr) {
-            return new \Twig\Markup(
-                (function ($ip) {
-                    if (!$ip) {
-                        $ip = '127.0.0.1';
-                    }
-                    static $cache = [];
-                    if (!isset($cache[$ip])) {
-                        $class = strtr($ip, '.', '-');
-                        $cache[$ip] = '<span class="host_' . $class
-                            . '">Resolving host' . "\xE2\x80\xA6" . '<script type="text/javascript">$(document).ready(function() {'
-                            .  "\$.get('tools.php?action=get_host&ip=$ip', function(host) {\$('.host_$class').html(host)})})</script></span>";
-                    }
-                    return $cache[$ip];
-                })($addr),
-                'UTF-8'
-            );
-        }));
-        */
 
         /*
         $Twig->addFunction(new \Twig\TwigFunction('shorten', function ($text, $length) {

@@ -38,7 +38,7 @@ FROM forums_specific_rules
 $ThreadIDs = $DB->collect('ThreadID');
 
 $ENV = ENV::go();
-View::show_header();
+View::header();
 ?>
 
 <div class="box pad">
@@ -90,4 +90,4 @@ View::show_header();
     <?php } ?>
   </table>
 </div>
-<?php View::show_footer();
+<?php View::footer();

@@ -161,7 +161,7 @@ $Collages = $DB->to_array();
 $DB->query('SELECT FOUND_ROWS()');
 list($NumResults) = $DB->next_record();
 
-View::show_header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
+View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
 ?>
 
 <div>
@@ -341,7 +341,7 @@ View::show_header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections
   <!--box-->
 </div>
 <!--content-->
-<?php View::show_footer();
+<?php View::footer();
     error();
   }
 ?>
@@ -395,4 +395,4 @@ foreach ($Collages as $Collage) {
 <div class="linkbox"><?=$Pages?>
 </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

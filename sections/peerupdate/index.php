@@ -10,7 +10,7 @@ if ((!isset($argv[1]) || $argv[1]!== $ENV->getPriv('SCHEDULE_KEY'))
 }
 
 if (check_perms('admin_schedule')) {
-    View::show_header();
+    View::header();
     echo '<pre>';
 }
 
@@ -110,5 +110,5 @@ $DB->query("
 
 if (check_perms('admin_schedule')) {
     echo '<pre>';
-    View::show_footer();
+    View::footer();
 }

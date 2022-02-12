@@ -14,7 +14,7 @@ WHERE
 ");
 list($Username) = $DB->next_record();
 
-View::show_header(
+View::header(
     'Organize Bookmarks',
     'browse,vendor/jquery.tablesorter.min,sort'
 );
@@ -24,4 +24,4 @@ list(, $CollageDataList, $TorrentList) = Users::get_bookmarks($UserID); // todo:
 
 $TT = new MASS_USER_TORRENTS_TABLE_VIEW($TorrentList, $CollageDataList, $EditType, 'Organize Torrent Bookmarks');
 $TT->render_all();
-View::show_footer();
+View::footer();

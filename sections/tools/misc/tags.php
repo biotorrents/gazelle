@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-View::show_header('Batch Tag Editor', 'validate');
+View::header('Batch Tag Editor', 'validate');
 if (!check_perms('users_mod')) {
     error(403);
 }
@@ -67,7 +67,7 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
           <strong>Error:</strong> Cannot merge tag $Tag with itself!
         </div>
       </div>";
-            View::show_footer();
+            View::footer();
             exit;
         }
 
@@ -83,7 +83,7 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
           <strong>Error:</strong> No such tag found: $Tag
         </div>
       </div>";
-            View::show_footer();
+            View::footer();
             exit;
         }
         list($TagID) = $DB->next_record();
@@ -331,4 +331,4 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
 
 echo '</div>';
 
-View::show_footer();
+View::footer();

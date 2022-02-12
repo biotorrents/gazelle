@@ -27,7 +27,7 @@ $DB->query("
 list($Name) = $DB->next_record();
 
 // Start printing
-View::show_header(
+View::header(
     "Comments for collage $Name",
     'comments,subscriptions,vendor/easymde.min',
     'vendor/easymde.min'
@@ -76,4 +76,4 @@ if (!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
   </div>
 </div>
 
-<?php View::show_footer();
+<?php View::footer();

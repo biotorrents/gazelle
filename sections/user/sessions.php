@@ -48,7 +48,7 @@ if (!is_array($UserSessions)) {
 }
 
 list($UserID, $Username) = array_values(Users::user_info($UserID));
-View::show_header($Username.' &gt; Sessions');
+View::header($Username.' &gt; Sessions');
 ?>
 <div>
 <h2><?=Users::format_username($UserID, $Username)?> &gt; Sessions</h2>
@@ -96,5 +96,5 @@ View::show_header($Username.' &gt; Sessions');
 </div>
 <?
 
-View::show_footer();
+View::footer();
 ?>

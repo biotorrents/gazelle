@@ -60,10 +60,10 @@ Torrents::delete_torrent($TorrentID, $GroupID);
 Misc::write_log("Torrent $TorrentID ($Name) (".number_format($Size / (1024 * 1024), 2).' MB) ('.strtoupper($InfoHash[1]).') was deleted by '.$LoggedUser['Username'].': ' .$_POST['reason'].' '.$_POST['extra']);
 Torrents::write_group_log($GroupID, $TorrentID, $LoggedUser['ID'], 'deleted torrent ('.number_format($Size / (1024 * 1024), 2).' MB, '.strtoupper($InfoHash[1]).') for reason: '.$_POST['reason'].' '.$_POST['extra'], 0);
 
-View::show_header('Torrent deleted');
+View::header('Torrent deleted');
 ?>
 <div>
   <h3>Torrent was successfully deleted.</h3>
 </div>
 
-<?php View::show_footer();
+<?php View::footer();

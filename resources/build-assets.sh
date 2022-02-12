@@ -11,6 +11,15 @@
 # todo: Rewrite the site JS to support --compilation_level ADVANCED_OPTIMIZATIONS
 #[ ! -f './closure-compiler.jar' ] && echo "Please download Google Closure Compiler as $FILE from https://mvnrepository.com/artifact/com.google.javascript/closure-compiler"
 
+# Cascading Style Sheets
+SCSS="./scss/*.scss"
+for f in $SCSS
+do
+  echo ">>> Compiling $f..."
+  basename=$(basename -s .scss $f)
+  sassc "./scss/$basename.scss" > "../public/css/$basename.css"
+done
+
 # JavaScript
 JS="./js/*.js"
 for f in $JS
@@ -21,13 +30,4 @@ do
     --compilation_level SIMPLE_OPTIMIZATIONS \
     --js "./js/$basename.js" \
     --js_output_file "../public/js/$basename.js"
-done
-
-# Cascading Style Sheets
-SCSS="./scss/*.scss"
-for f in $SCSS
-do
-  echo ">>> Compiling $f..."
-  basename=$(basename -s .scss $f)
-  sassc "./scss/$basename.scss" > "../public/css/$basename.css"
 done

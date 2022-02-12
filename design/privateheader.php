@@ -22,6 +22,7 @@ if ($ENV->DEV) {
   <title>
     <?= esc($PageTitle) ?>
   </title>
+  <script defer data-domain="<?= $ENV->SITE_DOMAIN ?>" src="https://stats.torrents.bio/js/plausible.js"></script>
 
   <?=
     $Twig->render(

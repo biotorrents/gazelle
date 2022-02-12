@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-View::show_header(
+View::header(
     'Create an article',
     'vendor/easymde.min',
     'vendor/easymde.min'
@@ -45,4 +45,4 @@ $ReplyText = View::textarea(
   </div>
 </div>
 <?php
-View::show_footer();
+View::footer();

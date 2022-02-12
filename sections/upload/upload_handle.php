@@ -871,7 +871,7 @@ if (trim($T['Image']) !== '') {
  */
 
 if ($PublicTorrent) {
-    View::show_header('Warning'); ?>
+    View::header('Warning'); ?>
 <h1>Warning</h1>
 <p>
     <strong>Your torrent has been uploaded but you must re-download your torrent file from
@@ -880,9 +880,9 @@ if ($PublicTorrent) {
         because the site modified it to make it private.</strong>
 </p>
 <?php
-  View::show_footer();
+  View::footer();
 } elseif ($UnsourcedTorrent) {
-    View::show_header('Warning'); ?>
+    View::header('Warning'); ?>
 <h1>Warning</h1>
 <p>
     <strong>Your torrent has been uploaded but you must re-download your torrent file from
@@ -891,7 +891,7 @@ if ($PublicTorrent) {
         because the site modified it to add a source flag.</strong>
 </p>
 <?php
-  View::show_footer();
+  View::footer();
 } elseif ($RequestID) {
     header("Location: requests.php?action=takefill&requestid=$RequestID&torrentid=$TorrentID&auth=".$LoggedUser['AuthKey']);
 } else {

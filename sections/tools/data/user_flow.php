@@ -103,7 +103,7 @@ $RS = $DB->query("
 
 $DB->query('SELECT FOUND_ROWS()');
 list($Results) = $DB->next_record();
-View::show_header('User Flow', 'chart');
+View::header('User Flow', 'chart');
 $DB->set_query_id($RS);
 ?>
 
@@ -169,4 +169,4 @@ echo $Pages;
 </div>
 </div>
 <?php
-View::show_footer();
+View::footer();

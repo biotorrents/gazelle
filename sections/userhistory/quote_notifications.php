@@ -67,7 +67,7 @@ $TorrentGroups = Torrents::get_groups($TorrentGroups, true, true, false);
 $Requests = Requests::get_requests($Requests);
 
 //Start printing page
-View::show_header('Quote Notifications');
+View::header('Quote Notifications');
 ?>
 <div>
   <div class="header">
@@ -143,4 +143,4 @@ foreach ($Results as $Result) {
   </table>
 <? } ?>
 </div>
-<? View::show_footer(); ?>
+<? View::footer(); ?>

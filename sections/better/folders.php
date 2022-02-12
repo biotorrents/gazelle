@@ -23,7 +23,7 @@ if (!empty($_GET['filter']) && $_GET['filter'] == 'all') {
     $All = false;
 }
 
-View::show_header('Torrents with bad folder names');
+View::header('Torrents with bad folder names');
 $DB->prepared_query("
   SELECT tbf.TorrentID, t.GroupID
   FROM torrents_bad_folders AS tbf
@@ -113,4 +113,4 @@ foreach ($TorrentsInfo as $TorrentID => $Info) {
 } ?>
   </table>
 </div>
-<?php View::show_footer();
+<?php View::footer();

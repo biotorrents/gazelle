@@ -40,7 +40,7 @@ if (!check_perms('site_view_flow')) {
     error(403);
 }
 
-View::show_header('Economy');
+View::header('Economy');
 
 if (!$EconomicStats = $Cache->get_value('new_economic_stats')) {
     $DB->prepared_query("
@@ -265,4 +265,4 @@ $TotalLeechers = $TotalPeers - $TotalSeeders;
   </div>
 </div>
 <?php
-View::show_footer();
+View::footer();

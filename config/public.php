@@ -9,8 +9,10 @@ declare(strict_types=1);
 # Development or production?
 ENV::setPub('DEV', true);
 
-# Disable Kint on prod
-Kint::$enabled_mode	= (!$ENV->DEV) ?? false;
+# Disable Kint on production
+if (!$ENV->DEV) {
+    \Kint\Kint::$enabled_mode	= false;
+}
 
 
 /**
@@ -55,8 +57,8 @@ ENV::setPub(
         : 'dev.torrents.bio') # Development
 );
 
-# The FQDN of your image host, e.g., pics.biotorrents.de
-ENV::setPub('IMAGE_DOMAIN', 'pics.biotorrents.de');
+# The FQDN of your image host, e.g., pics.torrents.bio
+ENV::setPub('IMAGE_DOMAIN', 'pics.torrents.bio');
 
 # Web root. Currently used for Twig but may also include config files
 ENV::setPub('WEB_ROOT', '/var/www/');

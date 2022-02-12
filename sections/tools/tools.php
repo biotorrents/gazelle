@@ -36,7 +36,7 @@ function create_row($Title, $URL, $HasPermission = false, $Tooltip = false)
     }
 }
 
-View::show_header('Staff Tools');
+View::header('Staff Tools');
 ?>
 <div class="permissions">
   <div class="permission_container">
@@ -174,7 +174,6 @@ View::show_header('Staff Tools');
 
   create_row("Invite pool", "tools.php?action=invite_pool", check_perms("users_view_invites"));
   create_row("Registration log", "tools.php?action=registration_log", check_perms("users_view_ips") && check_perms("users_view_email"));
-  create_row("Torrent stats", "tools.php?action=torrent_stats", check_perms("site_view_flow"));
   create_row("Upscale pool", "tools.php?action=upscale_pool", check_perms("site_view_flow"));
   create_row("User flow", "tools.php?action=user_flow", check_perms("site_view_flow"));
 
@@ -216,4 +215,4 @@ View::show_header('Staff Tools');
     <!-- end right column -->
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

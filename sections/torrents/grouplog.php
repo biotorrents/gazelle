@@ -6,7 +6,7 @@ if (!is_number($GroupID)) {
   error(404);
 }
 
-View::show_header("History for Group $GroupID");
+View::header("History for Group $GroupID");
 
 $Groups = Torrents::get_groups([$GroupID], true, true, false);
 if (!empty($Groups[$GroupID])) {
@@ -70,5 +70,5 @@ if (!empty($Groups[$GroupID])) {
   </div>
 </div>
 <?
-View::show_footer();
+View::footer();
 ?>

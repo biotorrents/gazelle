@@ -15,7 +15,7 @@ if (!$UserCount = $Cache->get_value('stats_user_count')) {
 }
 
 $DonorPerms = Permissions::get_permissions(DONOR);
-View::show_header('Donate');
+View::header('Donate');
 ?>
 
 <div>
@@ -238,4 +238,4 @@ View::show_header('Donate');
 
 </div>
 <!-- END Donate -->
-<?php View::show_footer();
+<?php View::footer();

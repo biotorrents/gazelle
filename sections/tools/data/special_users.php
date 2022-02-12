@@ -5,7 +5,7 @@ if (!check_perms('admin_manage_permissions')) {
     error(403);
 }
 
-View::show_header('Special Users List');
+View::header('Special Users List');
 ?>
 <div>
   <?php
@@ -46,4 +46,4 @@ if ($DB->has_results()) {
 } ?>
 </div>
 <?php
-View::show_footer();
+View::footer();

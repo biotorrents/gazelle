@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 $ENV = ENV::go();
-View::show_header('Register');
+View::header('Register');
 ?>
 
 <h2>Register new account</h2>
@@ -116,4 +116,4 @@ if ($NewInstall) {
 }
 }
 
-View::show_footer();
+View::footer();

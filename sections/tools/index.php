@@ -357,10 +357,6 @@ switch ($_REQUEST['action']) {
     include SERVER_ROOT.'/sections/tools/data/invite_pool.php';
     break;
 
-  case 'torrent_stats':
-    include SERVER_ROOT.'/sections/tools/data/torrent_stats.php';
-    break;
-
   case 'user_flow':
     include SERVER_ROOT.'/sections/tools/data/user_flow.php';
     break;

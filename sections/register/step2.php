@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-View::show_header('Registration Complete');
+View::header('Registration Complete');
 ?>
 
 <h2>Register new account</h2>
@@ -16,4 +16,4 @@ View::show_header('Registration Complete');
   <a href="login.php">login page</a>.
 </p>
 
-<?php View::show_footer();
+<?php View::footer();

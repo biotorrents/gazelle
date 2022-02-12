@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 $ENV = ENV::go();
-View::show_header('Better');
+View::header('Better');
 ?>
 
 <h2 class="header">
@@ -80,4 +80,4 @@ View::show_header('Better');
     </tr>
   </table>
 </div>
-<?php View::show_footer();
+<?php View::footer();

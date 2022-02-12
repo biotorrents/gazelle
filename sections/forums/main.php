@@ -1,6 +1,6 @@
 <?php
 $LastRead = Forums::get_last_read($Forums);
-View::show_header('Forums');
+View::header('Forums');
 ?>
 
 <div class="header">
@@ -107,4 +107,4 @@ foreach ($Forums as $Forum) {
   <a href="forums.php?action=catchup&amp;forumid=all&amp;auth=<?=$LoggedUser['AuthKey']?>"
     class="brackets">Catch up</a>
 </div>
-<?php View::show_footer();
+<?php View::footer();

@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 $ENV = ENV::go();
-View::show_header('Upload rules', 'rules');
+View::header('Upload rules', 'rules');
 ?>
 
 <!-- Upload -->
@@ -515,4 +515,4 @@ View::show_header('Upload rules', 'rules');
     <?php include('jump.php'); ?>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

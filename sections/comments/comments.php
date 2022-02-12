@@ -275,7 +275,7 @@ switch ($Action) {
 }
 $Links = implode(' ', $ActionLinks) . (count($TypeLinks) ? '<br />' . implode(' ', $TypeLinks) : '');
 
-View::show_header($Title, 'comments');
+View::header($Title, 'comments');
 ?><div>
   <div class="header">
     <h2><?=$Header?></h2>
@@ -319,4 +319,4 @@ if ($Count > 0) {
     <?=$Pages?>
   </div>
 </div>
-<? View::show_footer();
+<? View::footer();

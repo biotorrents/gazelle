@@ -57,12 +57,12 @@ ENV::setPriv('SQL_KEY', "$ENV->WEB_ROOT/tls-keys/client-key-ohm.pem");
 ENV::setPriv('SQL_CA', "$ENV->WEB_ROOT/tls-keys/ca.pem");
 */
 
- # Production
- if (!$ENV->DEV) {
-     ENV::setPriv('SQL_DB', 'gazelle_production');
-     ENV::setPriv('SQL_USER', 'gazelle_production');
-     ENV::setPriv('SQL_PASS', '');
- }
+# Production
+if (!$ENV->DEV) {
+    ENV::setPriv('SQL_DB', 'gazelle_production');
+    ENV::setPriv('SQL_USER', 'gazelle_production');
+    ENV::setPriv('SQL_PASS', '');
+}
 
 # Development
 else {
@@ -95,4 +95,23 @@ else {
     ENV::setPriv('TRACKER_PORT', 34001);
     ENV::setPriv('TRACKER_SECRET', '');
     ENV::setPriv('TRACKER_REPORTKEY', '');
+}
+
+
+/**
+ * Plausible Stats API
+ * @see https://plausible.io/docs/stats-api
+ */
+
+# Base URI for API calls
+ENV::setPub('PLAUSIBLE_URI', 'https://stats.torrents.bio/api/v1');
+
+# Production
+if (!$ENV->DEV) {
+    ENV::setPriv('PLAUSIBLE_KEY', '');
+}
+
+# Development
+else {
+    ENV::setPriv('PLAUSIBLE_KEY', '');
 }

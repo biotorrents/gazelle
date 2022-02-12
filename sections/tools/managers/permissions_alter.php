@@ -12,7 +12,7 @@ function display_perm($Key, $Title)
     echo "$Perm\n";
 }
 
-View::show_header('Manage Permissions', 'validate');
+View::header('Manage Permissions', 'validate');
 ?>
 
 <form class="manage_form" name="permissions" id="permissionsform" method="post" action="" onsubmit="return formVal();">
@@ -78,4 +78,4 @@ permissions_form();
 ?>
 </form>
 <?php
-View::show_footer();
+View::footer();

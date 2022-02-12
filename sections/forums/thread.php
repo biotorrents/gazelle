@@ -167,7 +167,7 @@ if ($QuoteNotificationsCount === false || $QuoteNotificationsCount > 0) {
 }
 
 // Start printing
-View::show_header(
+View::header(
     $ThreadInfo['Title'].' &rsaquo; '.$Forums[$ForumID]['Name'].' &rsaquo; Forums',
     'comments,subscriptions,vendor/easymde.min',
     ($IsDonorForum ?? 'donor,').'vendor/easymde.min'
@@ -775,4 +775,4 @@ if (check_perms('site_moderate_forums')) {
 } // If user is moderator
 ?>
 </div>
-<?php View::show_footer();
+<?php View::footer();

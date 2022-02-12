@@ -14,7 +14,7 @@ $DB->prepared_query('SHOW GLOBAL STATUS');
 $DBStats = $DB->to_array('Variable_name');
 $MemStats = $Cache->getStats();
 
-View::show_header("Service Stats"); ?>
+View::header("Service Stats"); ?>
 
 <div class="permissions">
   <div class="permission_container">
@@ -596,4 +596,4 @@ View::show_header("Service Stats"); ?>
     </table>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

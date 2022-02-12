@@ -10,6 +10,6 @@ if (isset($_GET['token'])) {
     $Err = AutoEnable::handle_token($_GET['token']);
 }
 
-View::show_header('Enable Request');
+View::header('Enable Request');
 echo $Err; // This will always be set
-View::show_footer();
+View::footer();

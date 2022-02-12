@@ -48,7 +48,7 @@ if (isset($_POST['doit'])) {
   $Cache->delete_value('genre_tags');
 }
 
-View::show_header('Official Tags Manager');
+View::header('Official Tags Manager');
 ?>
 <div class="header">
   <h2>Official Tags Manager</h2>
@@ -128,4 +128,4 @@ for ($i = 0; $i < $TagCount / 3; $i++) {
     </form>
   </div>
 </div>
-<? View::show_footer(); ?>
+<? View::footer(); ?>

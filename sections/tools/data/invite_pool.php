@@ -6,7 +6,7 @@ if (!check_perms('users_view_invites')) {
 }
 
 $Title = 'Invite Pool';
-View::show_header($Title);
+View::header($Title);
 define('INVITES_PER_PAGE', 50);
 list($Page, $Limit) = Format::page_limit(INVITES_PER_PAGE);
 
@@ -148,4 +148,4 @@ $DB->set_query_id($RS);
 <div class="linkbox pager"><?=($Pages)?>
 </div>
 <?php }
-View::show_footer();
+View::footer();

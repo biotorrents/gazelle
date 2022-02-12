@@ -66,7 +66,7 @@ function display_perm($Key, $Title)
     echo "$Perm\n";
 }
 
-View::show_header("$Username &gt; Permissions");
+View::header("$Username &gt; Permissions");
 ?>
 <script type="text/javascript">
   //<![CDATA[
@@ -115,4 +115,4 @@ View::show_header("$Username &gt; Permissions");
 permissions_form();
 ?>
 </form>
-<?php View::show_footer();
+<?php View::footer();

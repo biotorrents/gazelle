@@ -5,7 +5,7 @@ if (!check_perms('users_view_email')) {
 }
 list ($Page, $Limit) = Format::page_limit(EMAILS_PER_PAGE);
 
-View::show_header('Manage email blacklist');
+View::header('Manage email blacklist');
 $Where = "";
 if (!empty($_POST['email'])) {
   $Email = db_string($_POST['email']);
@@ -97,4 +97,4 @@ list ($NumResults) = $DB->next_record();
   <br />
   <?=$Pages?>
 </div>
-<? View::show_footer(); ?>
+<? View::footer(); ?>

@@ -431,7 +431,7 @@ if (count($_GET)) {
         error("Your search returned no results. For privacy and security reasons, user searches must result in an exact hit. Fuzzy matches aren't allowed.");
     }
 }
-View::show_header('User search');
+View::header('User search');
 ?>
 <div>
   <form class="search_form" name="users" action="user.php" method="get">
@@ -1100,4 +1100,4 @@ while (list($UserID, $Username, $Uploaded, $Downloaded, $Snatched, $Invitees, $C
   <?=$Pages?>
 </div>
 
-<?php View::show_footer();
+<?php View::footer();

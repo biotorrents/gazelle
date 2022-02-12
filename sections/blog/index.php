@@ -4,7 +4,7 @@
 enforce_login();
 $ENV = ENV::go();
 
-View::show_header('Blog');
+View::header('Blog');
 
 if (check_perms('admin_manage_blog')) {
     if (!empty($_REQUEST['action'])) {
@@ -215,4 +215,4 @@ foreach ($Blog as $BlogItem) {
 ?>
 </div>
 <?php
-View::show_footer();
+View::footer();

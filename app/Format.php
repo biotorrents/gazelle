@@ -82,53 +82,53 @@ class Format
      * @param $Ratio ratio to get the css class for
      * @return string the CSS class corresponding to the ratio range
      */
-    private static function get_ratio_color($Ratio)
+    private static function get_ratio_color($ratio)
     {
-        if ($Ratio < 0.1) {
+        if ($ratio < 0.1) {
             return 'r00';
         }
 
-        if ($Ratio < 0.2) {
+        if ($ratio < 0.2) {
             return 'r01';
         }
 
-        if ($Ratio < 0.3) {
+        if ($ratio < 0.3) {
             return 'r02';
         }
 
-        if ($Ratio < 0.4) {
+        if ($ratio < 0.4) {
             return 'r03';
         }
 
-        if ($Ratio < 0.5) {
+        if ($ratio < 0.5) {
             return 'r04';
         }
 
-        if ($Ratio < 0.6) {
+        if ($ratio < 0.6) {
             return 'r05';
         }
 
-        if ($Ratio < 0.7) {
+        if ($ratio < 0.7) {
             return 'r06';
         }
 
-        if ($Ratio < 0.8) {
+        if ($ratio < 0.8) {
             return 'r07';
         }
 
-        if ($Ratio < 0.9) {
+        if ($ratio < 0.9) {
             return 'r08';
         }
 
-        if ($Ratio < 1) {
+        if ($ratio < 1.0) {
             return 'r09';
         }
 
-        if ($Ratio < 2) {
+        if ($ratio < 2.0) {
             return 'r10';
         }
 
-        if ($Ratio < 5) {
+        if ($ratio < 5.0) {
             return 'r20';
         }
 
@@ -383,22 +383,27 @@ class Format
      * Note: KiB, MiB, etc. are the IEC units, which are in base 2.
      * KB, MB are the SI units, which are in base 10.
      *
-     * @param int $Size
-     * @param int $Levels Number of decimal places. Defaults to 2, unless the size >= 1TB, in which case it defaults to 4.
+     * @param int $size
+     * @param int $levels Number of decimal places. Defaults to 2, unless the size >= 1TB, in which case it defaults to 4.
      * @return string formatted number.
      */
-    public static function get_size($Size, $Levels = 2)
+    public static function get_size($size, $levels = 2)
     {
-        $Units = array('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB');
-        $Size = (double) $Size;
+        $units = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+        $size = floatval($size);
 
-        for ($Steps = 0; abs($Size) >= 1024 && $Steps < count($Units); $Size /= 1024, $Steps++) {
+        for (
+            $steps = 0;
+            abs($size) >= 1024 && $steps < count($units);
+            $size /= 1024, $steps++
+            ) {
+            # apparently useless, but defines $steps
         }
 
-        if (func_num_args() === 1 && $Steps >= 4) {
-            $Levels++;
+        if (func_num_args() === 1 && $steps >= 4) {
+            $levels++;
         }
-        return number_format($Size, $Levels) . ' ' . $Units[$Steps];
+        return number_format($size, $levels) . ' ' . $units[$steps];
     }
 
 

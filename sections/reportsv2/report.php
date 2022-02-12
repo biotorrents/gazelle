@@ -67,7 +67,7 @@ if (!isset($_GET['id']) || !is_number($_GET['id'])) {
     */
 }
 
-View::show_header('Report', 'reportsv2,browse,torrent,recommend');
+View::header('Report', 'reportsv2,browse,torrent,recommend');
 ?>
 
 <div>
@@ -154,4 +154,4 @@ View::show_header('Report', 'reportsv2,browse,torrent,recommend');
   <input type="submit" class="button-primary" value="Report" />
   </form>
 </div>
-<?php View::show_footer();
+<?php View::footer();

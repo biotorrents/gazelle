@@ -8,7 +8,7 @@ if (!check_perms('site_collages_subscribe')) {
     error(403);
 }
 
-View::show_header('Subscribed collections', 'browse,collage');
+View::header('Subscribed collections', 'browse,collage');
 
 $ShowAll = !empty($_GET['showall']);
 
@@ -296,4 +296,4 @@ if (!$NumResults) {
 </div>
 
 <?php
-View::show_footer();
+View::footer();

@@ -83,7 +83,7 @@ if (!Forums::check_forumperm($ForumID)) {
 
 // Start printing
 $ENV = ENV::go();
-View::show_header("Forums $ENV->CRUMB ".$Forums[$ForumID]['Name']);
+View::header("Forums $ENV->CRUMB ".$Forums[$ForumID]['Name']);
 ?>
 
 <div class="header">
@@ -323,4 +323,4 @@ if (count($Forum) === 0) {
     class="brackets">Catch up</a></div>
 </div>
 
-<?php View::show_footer();
+<?php View::footer();

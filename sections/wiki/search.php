@@ -68,7 +68,7 @@ $DB->query("
   SELECT FOUND_ROWS()");
 list($NumResults) = $DB->next_record();
 
-View::show_header('Search Articles');
+View::header('Search Articles');
 $DB->set_query_id($RS);
 ?>
 
@@ -192,4 +192,4 @@ $DB->set_query_id($RS);
   <div class="linkbox"><?=$Pages?>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

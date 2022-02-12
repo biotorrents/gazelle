@@ -6,7 +6,7 @@ if (!defined('LOG_ENTRIES_PER_PAGE')) {
     define('LOG_ENTRIES_PER_PAGE', 100);
 }
 
-View::show_header("Site log");
+View::header("Site log");
 include SERVER_ROOT.'/sections/log/sphinx.php';
 ?>
 
@@ -287,4 +287,4 @@ while (list($ID, $Message, $LogTime) = $DB->next_record()) {
   <?php } ?>
 </div>
 <?php
-View::show_footer();
+View::footer();

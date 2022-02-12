@@ -5,7 +5,7 @@ if (!check_perms('users_view_ips') || !check_perms('users_view_email')) {
     error(403);
 }
 
-View::show_header('Registration log');
+View::header('Registration log');
 define('USERS_PER_PAGE', 50);
 list($Page, $Limit) = Format::page_limit(USERS_PER_PAGE);
 
@@ -165,4 +165,4 @@ if ($DB->has_results()) {
 <h2>There have been no new registrations in the past 72 hours.</h2>
 <?php
 }
-View::show_footer();
+View::footer();

@@ -5,7 +5,7 @@ if (!check_perms('admin_create_users')) {
 }
 
 //Show our beautiful header
-View::show_header('Create a User');
+View::header('Create a User');
 
 //Make sure the form was sent
 if (isset($_POST['Username'])) {
@@ -119,4 +119,4 @@ if (isset($_POST['Username'])) {
 <?
 }
 
-View::show_footer(); ?>
+View::footer(); ?>

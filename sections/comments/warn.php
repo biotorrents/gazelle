@@ -15,7 +15,7 @@ if (!$DB->has_results()) {
 list($PostBody, $AuthorID) = $DB->next_record();
 $UserInfo = Users::user_info($AuthorID);
 
-View::show_header('Warn User');
+View::header('Warn User');
 ?>
 
 <div>
@@ -64,4 +64,4 @@ View::show_header('Warn User');
     </form>
   </div>
 </div>
-<? View::show_footer();
+<? View::footer();

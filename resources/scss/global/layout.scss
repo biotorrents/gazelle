@@ -219,6 +219,51 @@ img {
 }
 
 /* User and torrent stats */
-.chart {
-  max-height: 30rem;
+.pulsating-circle {
+  height: 10px;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  width: 10px;
+
+  &:before {
+    --tw-bg-opacity: 1;
+    -webkit-animation: pulse-ring 3s cubic-bezier(0.215, 0.61, 0.355, 1)
+      infinite;
+    animation: pulse-ring 3s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    background-color: #9ae6b4;
+    background-color: rgba(16, 185, 129, var(--tw-bg-opacity));
+    border-radius: 45px;
+    box-sizing: border-box;
+    content: "";
+    display: block;
+    height: 300%;
+    margin-left: -100%;
+    margin-top: -100%;
+    position: relative;
+    width: 300%;
+  }
+
+  &:after {
+    --tw-bg-opacity: 1;
+    -webkit-animation: pulse-dot 3s cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s
+      infinite;
+    animation: pulse-dot 3s cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s infinite;
+    background-color: #fff;
+    background-color: rgba(16, 185, 129, var(--tw-bg-opacity));
+    border-radius: 15px;
+    content: "";
+    display: block;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
 }
+
+/*
+.chart {
+  max-height: 50rem;
+}
+*/

@@ -16,7 +16,7 @@ if (!check_perms('site_collages_delete') && $UserID != $LoggedUser['ID']) {
   error(403);
 }
 
-View::show_header('Delete collage');
+View::header('Delete collage');
 ?>
 <div class="center">
   <div class="box" style="width: 600px; margin: 0px auto;">
@@ -49,5 +49,5 @@ if ($CategoryID == 0) {
   </div>
 </div>
 <?
-View::show_footer();
+View::footer();
 ?>

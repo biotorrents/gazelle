@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 enforce_login();
-View::show_header('Donation Complete'); ?>
+View::header('Donation Complete'); ?>
 
 <div>
   <div class="header">
@@ -18,4 +18,4 @@ View::show_header('Donation Complete'); ?>
     </p>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

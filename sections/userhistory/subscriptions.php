@@ -14,7 +14,7 @@ if (isset($LoggedUser['PostsPerPage'])) {
 }
 list($Page, $Limit) = Format::page_limit($PerPage);
 
-View::show_header('Subscriptions', 'subscriptions');
+View::header('Subscriptions', 'subscriptions');
 
 $ShowUnread = (!isset($_GET['showunread']) && !isset($HeavyInfo['SubscriptionsUnread']) || isset($HeavyInfo['SubscriptionsUnread']) && !!$HeavyInfo['SubscriptionsUnread'] || isset($_GET['showunread']) && !!$_GET['showunread']);
 $ShowCollapsed = (!isset($_GET['collapse']) && !isset($HeavyInfo['SubscriptionsCollapse']) || isset($HeavyInfo['SubscriptionsCollapse']) && !!$HeavyInfo['SubscriptionsCollapse'] || isset($_GET['collapse']) && !!$_GET['collapse']);
@@ -289,4 +289,4 @@ if (!$NumResults) {
     }?>
 </div>
 
-<?php View::show_footer();
+<?php View::footer();

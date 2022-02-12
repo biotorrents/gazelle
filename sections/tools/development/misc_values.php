@@ -6,7 +6,7 @@ if (!check_perms('admin_manage_permissions') && !check_perms('users_mod')) {
 }
 
 if (!check_perms('admin_manage_permissions')) {
-    View::show_header('Site Options');
+    View::header('Site Options');
     $DB->prepared_query("SELECT Name, First, Second FROM misc"); ?>
 
 <div class="header">
@@ -41,7 +41,7 @@ if (!check_perms('admin_manage_permissions')) {
 </table>
 
 <?php
-  View::show_footer();
+  View::footer();
     error();
 }
 
@@ -96,7 +96,7 @@ $DB->prepared_query("
   ORDER BY LOWER(Name) DESC
 ");
 
-View::show_header('Miscellaneous Values');
+View::header('Miscellaneous Values');
 ?>
 
 <div class="header">
@@ -175,4 +175,4 @@ while (list($ID, $Name, $First, $Second) = $DB->next_record()) {
   </table>
 </div>
 <?php
-View::show_footer();
+View::footer();

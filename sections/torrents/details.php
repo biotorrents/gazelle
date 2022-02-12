@@ -82,11 +82,11 @@ $DisplayName = $Twig->render(
     ]
 );
 
-// Comments (must be loaded before View::show_header so that subscriptions and quote notifications are handled properly)
+// Comments (must be loaded before View::header so that subscriptions and quote notifications are handled properly)
 list($NumComments, $Page, $Thread, $LastRead) = Comments::load('torrents', $GroupID);
 
 // Start output
-View::show_header(
+View::header(
     $Title,
     'browse,comments,torrent,recommend,cover_art,subscriptions,vendor/easymde.min',
     'vendor/easymde.min'
@@ -1057,4 +1057,4 @@ CommentsView::render_comments($Thread, $LastRead, "torrents.php?id=$GroupID");
     </div>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

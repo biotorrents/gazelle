@@ -19,7 +19,7 @@ if ($CategoryID == 0 && $UserID != $LoggedUser['ID'] && !check_perms('site_colla
     error(403);
 }
 
-View::show_header(
+View::header(
     'Edit',
     'vendor/easymde.min',
     'vendor/easymde.min'
@@ -122,4 +122,4 @@ if (check_perms('site_collages_delete')) { ?>
     </form>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

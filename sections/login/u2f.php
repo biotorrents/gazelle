@@ -11,7 +11,7 @@ if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($U2FRegs)
 
 $U2FReq = json_encode($U2F->getAuthenticateData($U2FRegs));
 
-View::show_header('U2F Authentication'); ?>
+View::header('U2F Authentication'); ?>
 
 <form id="u2f_sign_form" action="login.php" method="post">
   <input type="hidden" name="username"
@@ -25,4 +25,4 @@ View::show_header('U2F Authentication'); ?>
 This account is protected by a Universal Two Factor token. To continue logging in, please insert your U2F token and
 press it if necessary.
 
-<?php View::show_footer(); ?>
+<?php View::footer(); ?>

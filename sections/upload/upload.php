@@ -12,7 +12,7 @@ declare(strict_types=1);
  * and this page must be called again.
  */
 
-View::show_header(
+View::header(
     'Upload',
     'upload,vendor/easymde.min',
     'vendor/easymde.min'
@@ -119,4 +119,4 @@ if (!$GenreTags) {
 
 # Twig based class
 $TorrentForm->render();
-View::show_footer();
+View::footer();

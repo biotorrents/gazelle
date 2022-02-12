@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-View::show_header('Request rules');
+View::header('Request rules');
 ?>
 <div>
 
@@ -78,4 +78,4 @@ View::show_header('Request rules');
 
   <?php include('jump.php'); ?>
 </div>
-<?php View::show_footer();
+<?php View::footer();

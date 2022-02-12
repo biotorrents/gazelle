@@ -17,7 +17,7 @@ if (($Results = $Cache->get_value('better_single_groupids')) === false) {
 }
 
 $Groups = Torrents::get_groups(array_keys($Results));
-View::show_header('Single seeder torrents'); ?>
+View::header('Single seeder torrents'); ?>
 
 <div class="header">
   <h2>
@@ -84,4 +84,4 @@ foreach ($Results as $GroupID => $TorrentID) {
 } ?>
 </table>
 </div>
-<?php View::show_footer();
+<?php View::footer();

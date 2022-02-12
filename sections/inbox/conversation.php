@@ -61,7 +61,7 @@ if ($UnRead == '1') {
     $Cache->decrement("inbox_new_$UserID");
 }
 
-View::show_header(
+View::header(
     "View conversation $Subject",
     'comments,inbox,vendor/easymde.min',
     'vendor/easymde.min'
@@ -204,4 +204,4 @@ if ((check_perms('users_mod') || $FLS != '') && (!$ForwardedID || $ForwardedID =
 //And we're done!
 ?>
 </div>
-<?php View::show_footer();
+<?php View::footer();

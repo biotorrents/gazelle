@@ -12,6 +12,7 @@ echo <<<HTML
 
 <head>
   <title>$PageTitle</title>
+  <script defer data-domain="<?= $ENV->SITE_DOMAIN ?>" src="https://stats.torrents.bio/js/plausible.js"></script>
 HTML;
 
 echo $Twig->render(

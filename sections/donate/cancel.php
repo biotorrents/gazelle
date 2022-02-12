@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 enforce_login();
-View::show_header('Donation Canceled'); ?>
+View::header('Donation Canceled'); ?>
 
 <div>
   <div class="header">
@@ -16,4 +16,4 @@ View::show_header('Donation Canceled'); ?>
     </p>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

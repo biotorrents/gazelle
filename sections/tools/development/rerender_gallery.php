@@ -8,7 +8,7 @@
  * ImageMagick (http://www.imagemagick.org/script/index.php)
  */
 
-View::show_header('Rerender stylesheet gallery images');
+View::header('Rerender stylesheet gallery images');
 $DB->prepared_query('
   SELECT
     ID,
@@ -128,4 +128,4 @@ foreach ($Styles as $Style) {
   </div>
 </div>
 <?php
-View::show_footer();
+View::footer();

@@ -68,7 +68,7 @@ if ($SiteOptions) {
 /**
  * Show header
  */
-View::show_header(
+View::header(
     "$Username $ENV->CRUMB Settings",
     'user,password_validate,cssgallery,preview_paranoia,user_settings,vendor/easymde.min',
     'vendor/easymde.min'
@@ -1303,4 +1303,4 @@ list($ArtistsAdded) = $DB->next_record();
     </div>
   </form>
 </div>
-<?php View::show_footer();
+<?php View::footer();

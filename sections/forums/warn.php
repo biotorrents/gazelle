@@ -18,7 +18,7 @@ $DB->prepared_query("
   WHERE p.ID = '$PostID'");
 list($PostBody, $ForumID) = $DB -> next_record();
 
-View::show_header('Warn');
+View::header('Warn');
 ?>
 
 <div>
@@ -82,4 +82,4 @@ View::show_header('Warn');
     </form>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

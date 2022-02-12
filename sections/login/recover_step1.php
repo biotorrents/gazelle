@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-View::show_header('Recover Password', 'validate');
+View::header('Recover Password', 'validate');
 ?>
 
 <h2>Reset your password</h2>
@@ -46,4 +46,4 @@ if (empty($Sent) || (!empty($Sent) && $Sent !== 1)) {
 <?php
 }
 
-View::show_footer(['recover' => true]);
+View::footer(['recover' => true]);

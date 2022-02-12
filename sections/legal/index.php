@@ -6,26 +6,26 @@ $p = $_GET['p'];
 
 switch ($p) {
     case 'about':
-        View::show_header('About');
+        View::header('About');
         echo $Twig->render('legal/about.html');
-        View::show_footer();
+        View::footer();
         break;
 
     case 'privacy':
-        View::show_header('Privacy');
+        View::header('Privacy');
         echo $Twig->render('legal/privacy.html');
-        View::show_footer();
+        View::footer();
         break;
     
     case 'dmca':
-        View::show_header('DMCA');
+        View::header('DMCA');
         echo $Twig->render('legal/dmca.html');
-        View::show_footer();
+        View::footer();
         break;
    
     default:
-        View::show_header('404 Not Found');
+        View::header('404 Not Found');
         error(404);
-        View::show_footer();
+        View::footer();
         break;
 }

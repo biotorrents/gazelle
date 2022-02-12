@@ -277,7 +277,7 @@ if ($CollageCovers > 0) {
     }
 }
 
-View::show_header($Title, 'browse,collage,wall');
+View::header($Title, 'browse,collage,wall');
 ?>
 
 <div>
@@ -309,7 +309,7 @@ View::show_header($Title, 'browse,collage,wall');
 </div>
 <!--content-->
 <?php
-  View::show_footer();
+  View::footer();
 } ?>
 
 <div class="sidebar one-third column">
@@ -435,4 +435,4 @@ if ($CollageCovers !== 0) { ?>
 </div>
 </div>
 
-<?php View::show_footer();
+<?php View::footer();

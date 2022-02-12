@@ -14,7 +14,7 @@ if (!in_array($Section, array('inbox', 'sentbox'))) {
 }
 
 list($Page, $Limit) = Format::page_limit(MESSAGES_PER_PAGE);
-View::show_header('Inbox');
+View::header('Inbox');
 ?>
 
 <h2 class="header">
@@ -195,4 +195,4 @@ echo $Pages;
 <div class="linkbox">
   <?= $Pages ?>
 </div>
-<?php View::show_footer();
+<?php View::footer();

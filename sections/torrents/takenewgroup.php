@@ -28,7 +28,7 @@ if (empty($Title) || empty($ArtistName)) {
 
 // Everything is legit, let's just confim they're not retarded
 if (empty($_POST['confirm'])) {
-    View::show_header(); ?>
+    View::header(); ?>
 
 <div class="center">
   <div class="header">
@@ -63,7 +63,7 @@ if (empty($_POST['confirm'])) {
   </div>
 </div>
 <?php
-  View::show_footer();
+  View::footer();
 } else {
     $DB->query("
     SELECT ArtistID,  Name

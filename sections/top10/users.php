@@ -12,7 +12,7 @@ if (isset($_GET['details'])) {
     $Details = 'all';
 }
 
-View::show_header('Top 10 Users');
+View::header('Top 10 Users');
 ?>
 
 <div>
@@ -92,7 +92,7 @@ $BaseQuery = "
   }
 
 echo '</div>';
-View::show_footer();
+View::footer();
 exit;
 
 // Generate a table based on data from most recent query to $DB

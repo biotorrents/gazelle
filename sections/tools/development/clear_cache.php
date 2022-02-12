@@ -5,7 +5,7 @@ if (!check_perms('users_mod') || !check_perms('admin_clear_cache')) {
     error(403);
 }
 
-View::show_header('Clear a cache key');
+View::header('Clear a cache key');
 
 // Make sure the form was sent
 if (!empty($_GET['key'])) {
@@ -74,4 +74,4 @@ if (isset($Keys) && $_GET['type'] === 'view') {
 </table>
 <?php
 }
-View::show_footer();
+View::footer();

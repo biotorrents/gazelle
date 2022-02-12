@@ -27,7 +27,7 @@ list($Username) = $DB->next_record();
 if (!$Username) {
     error(404);
 }
-View::show_header(
+View::header(
     'Compose',
     'inbox,vendor/easymde.min',
     'vendor/easymde.min'
@@ -64,4 +64,4 @@ View::textarea(
     </div>
   </form>
 </div>
-<?php View::show_footer();
+<?php View::footer();

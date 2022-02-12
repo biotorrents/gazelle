@@ -9,7 +9,7 @@ if (!check_perms('users_mod')) {
 //   error(403);
 // }
 
-View::show_header('Top 10 Torrents history!');
+View::header('Top 10 Torrents history!');
 ?>
 
 <div>
@@ -208,4 +208,4 @@ if (!empty($_GET['date'])) {
 </div>
 <?php
 }
-View::show_footer();
+View::footer();

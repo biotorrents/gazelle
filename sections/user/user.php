@@ -231,7 +231,7 @@ function check_paranoia_here($Setting)
     }
 }
 
-View::show_header(
+View::header(
     $Username,
     'user,requests,comments,info_paster,wall'
 );
@@ -1713,4 +1713,4 @@ if (!$DisablePoints) {
 ?>
 </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

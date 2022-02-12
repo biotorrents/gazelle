@@ -99,7 +99,7 @@ if (isset($_POST['type'])) {
         }
     }
 } else {
-    View::show_header('Site-Wide Freeleech'); ?>
+    View::header('Site-Wide Freeleech'); ?>
 <div>
   <div class="box text-align: center;">
     <strong>Make sure you run the indexer after using either of these tools, or torrents may disappear from search until
@@ -133,5 +133,5 @@ if (isset($_POST['type'])) {
       <input type="submit" class="button-primary" value="RELEASE THE LEECH" />
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();
 }

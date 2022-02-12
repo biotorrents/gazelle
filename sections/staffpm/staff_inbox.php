@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-View::show_header('Staff Inbox');
+View::header('Staff Inbox');
 
 $View = (isset($_GET['view'])) ? esc($_GET['view']) : '';
 $UserLevel = $LoggedUser['EffectiveClass'];
@@ -214,4 +214,4 @@ if (!$DB->has_results()) {
     <?=$Pages?>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

@@ -15,7 +15,7 @@ if (!$DB->has_results()) {
 }
 list($Name) = $DB->next_record();
 
-View::show_header("Revision history for $Name");
+View::header("Revision history for $Name");
 ?>
 <div>
   <div class="header">
@@ -26,4 +26,4 @@ RevisionHistoryView::render_revision_history(RevisionHistory::get_revision_histo
 ?>
 </div>
 <?
-View::show_footer();
+View::footer();

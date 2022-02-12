@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-View::show_header('Ratio requirements');
+View::header('Ratio requirements');
 ?>
 
 <div>
@@ -342,4 +342,4 @@ $GB = 1024*1024*1024;
 
   <?php include('jump.php'); ?>
 </div>
-<?php View::show_footer();
+<?php View::footer();

@@ -92,7 +92,7 @@ if (($LoggedUser['ID'] !== $Properties['UserID']
  * Commenting only to see it better.
  */
 
-View::show_header('Edit torrent', 'upload,torrent');
+View::header('Edit torrent', 'upload,torrent');
 $TorrentForm = new TorrentForm(
     $Torrent = $Properties,
     $Error = $Err,
@@ -327,4 +327,4 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
   } ?>
 <?php
 } // if check_perms('torrents_edit')
-View::show_footer();
+View::footer();

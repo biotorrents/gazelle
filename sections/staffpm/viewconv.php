@@ -31,7 +31,7 @@ if ($ConvID = (int)$_GET['id']) {
         $Cache->delete_value("staff_pm_new_$LoggedUser[ID]");
     }
 
-    View::show_header(
+    View::header(
         'Staff PM',
         'staffpm,vendor/easymde.min',
         'vendor/easymde.min'
@@ -296,7 +296,7 @@ if ($ConvID = (int)$_GET['id']) {
 </div>
 <?php
 
-  View::show_footer();
+  View::footer();
 } else {
     // No ID
     header('Location: staffpm.php');

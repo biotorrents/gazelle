@@ -5,7 +5,7 @@ if (!check_perms('site_view_flow')) {
     error(403);
 }
 
-View::show_header('Upscale Pool');
+View::header('Upscale Pool');
 define('USERS_PER_PAGE', 50);
 list($Page, $Limit) = Format::page_limit(USERS_PER_PAGE);
 
@@ -135,4 +135,4 @@ if ($DB->has_results()) {
 <h2>There are currently no users on ratio watch.</h2>
 <?php
 }
-View::show_footer();
+View::footer();

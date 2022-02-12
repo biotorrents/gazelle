@@ -46,7 +46,7 @@ if ($Snatches > 4 && !check_perms('torrents_delete')) { // Should this be torren
 }
 
 
-View::show_header('Delete torrent', 'reportsv2');
+View::header('Delete torrent', 'reportsv2');
 ?>
 <div>
   <div class="box" style="width: 600px; margin-left: auto; margin-right: auto;">
@@ -335,4 +335,4 @@ foreach ($TypeList as $IType => $Data) {
 </div>
 <?
 }
-View::show_footer(); ?>
+View::footer(); ?>

@@ -34,7 +34,7 @@ if ($DB->has_results()) {
     }
 }
 
-View::show_header('Store'); ?>
+View::header('Store'); ?>
 <div>
   <h2>Purchase
     <?= $Worked?"Successful":"Failed"?>
@@ -49,4 +49,4 @@ View::show_header('Store'); ?>
   </div>
 </div>
 <?php
-View::show_footer();
+View::footer();

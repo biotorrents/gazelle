@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-View::show_header('Client rules');
+View::header('Client rules');
 
 if (!$WhitelistedClients = $Cache->get_value('whitelisted_clients')) {
     $DB->query("
@@ -77,4 +77,4 @@ if (!$WhitelistedClients = $Cache->get_value('whitelisted_clients')) {
 
 <?php include('jump.php'); ?>
 </div>
-<?php View::show_footer();
+<?php View::footer();

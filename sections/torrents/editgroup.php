@@ -68,7 +68,7 @@ if (!$Body) {
     $Image = $picture;
 }
 
-View::show_header(
+View::header(
     'Edit torrent group',
     'upload,vendor/easymde.min',
     'vendor/easymde.min'
@@ -369,4 +369,4 @@ View::textarea(
 <?php
 }
 
-View::show_footer();
+View::footer();

@@ -42,7 +42,7 @@ if ((!isset($_REQUEST['key']) || $_REQUEST['key'] !== $ENV->getPriv('SCHEDULE_KE
 
 if ($AS) {
     authorize();
-    View::show_header();
+    View::header();
     echo '<div class="box">';
 }
 $ASBreak = $AS ? '<br />' : "\n";
@@ -117,7 +117,7 @@ if (isset($_GET['runmanual']) && $_GET['runmanual']) {
 
 if ($AS) {
     echo '</div>';
-    View::show_footer();
+    View::footer();
 } else {
     echo "-------------------------\n\n";
 }

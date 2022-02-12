@@ -23,7 +23,7 @@ if (!empty($_GET['filter']) && $_GET['filter'] === 'all') {
     $All = false;
 }
 
-View::show_header('Torrents with bad tags');
+View::header('Torrents with bad tags');
 
 $DB->prepared_query("
   SELECT tbt.TorrentID, t.GroupID
@@ -116,4 +116,4 @@ foreach ($TorrentsInfo as $TorrentID => $Info) {
 } ?>
   </table>
 </div>
-<?php View::show_footer();
+<?php View::footer();

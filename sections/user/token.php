@@ -38,7 +38,7 @@ if ($_GET['do'] === 'revoke') {
     }
 }
 
-View::show_header('Generate API Token');
+View::header('Generate API Token');
 
 if (is_null($token)) {
     if ($error) {
@@ -103,4 +103,4 @@ HTML;
 HTML;
 }
 
-View::show_footer();
+View::footer();

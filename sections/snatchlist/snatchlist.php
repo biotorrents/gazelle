@@ -23,7 +23,7 @@ if ($DB->has_results()) {
 }
 
 //Include the header
-View::show_header('Snatch List');
+View::header('Snatch List');
 ?>
 <div>
   <h2>Snatch History</h2>
@@ -65,4 +65,4 @@ foreach ($Torrents as $Torrent) {
     </table>
   </div>
 </div>
-<? View::show_footer(); ?>
+<? View::footer(); ?>

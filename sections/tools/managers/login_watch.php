@@ -8,7 +8,7 @@ if (isset($_POST['submit']) && isset($_POST['ip']) && $_POST['submit'] == 'Unban
   $Cache->delete_value('login_attempts_'.$_POST['ip']);
 }
 
-View::show_header('Login Watch');
+View::header('Login Watch');
 
 $AttemptIPs = $Cache->get_value('login_attempts');
 $AllAttempts = [];
@@ -77,4 +77,4 @@ while (list($IP, $Attempts, $Banned, $BannedUntil) = array_shift($AllAttempts)) 
 ?>
   </table>
 </div>
-<? View::show_footer(); ?>
+<? View::footer(); ?>

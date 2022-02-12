@@ -1,5 +1,5 @@
 <?
-View::show_header('Manage Permissions');
+View::header('Manage Permissions');
 ?>
 <script type="text/javascript">//<![CDATA[
 function confirmDelete(id) {
@@ -60,5 +60,5 @@ if ($DB->has_results()) {
 } ?>
 </div>
 <?
-View::show_footer();
+View::footer();
 ?>

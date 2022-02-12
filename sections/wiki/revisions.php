@@ -17,7 +17,7 @@ if ($Edit > $LoggedUser['EffectiveClass']) {
     error(403);
 }
 
-View::show_header("Revisions of ".$Title);
+View::header("Revisions of ".$Title);
 ?>
 
 <div>
@@ -105,4 +105,4 @@ while (list($Revision, $Title, $AuthorID, $Date) = $DB->next_record()) { ?>
   </form>
 </div>
 <?php
-View::show_footer();
+View::footer();

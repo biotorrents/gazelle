@@ -47,7 +47,7 @@ if (!empty($_GET['advanced']) && check_perms('site_advanced_top10')) {
     $Limit = (in_array($Limit, array(10, 100, 250)) ? $Limit : 10);
 }
 $Filtered = !empty($Where);
-View::show_header("Top $Limit Torrents", 'browse');
+View::header("Top $Limit Torrents", 'browse');
 ?>
 
 <div>
@@ -419,7 +419,7 @@ if (($Details === 'all' || $Details === 'seeded') && !$Filtered) {
 </div>
 
 <?php
-View::show_footer();
+View::footer();
 
 // Generate a table based on data from most recent query to $DB
 function generate_torrent_table($Caption, $Tag, $Details, $Limit)

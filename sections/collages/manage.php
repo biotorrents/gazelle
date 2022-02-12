@@ -54,7 +54,7 @@ if (count($GroupIDs) > 0) {
     $TorrentList = [];
 }
 
-View::show_header(
+View::header(
     "Manage collection $Name",
     'vendor/jquery.tablesorter.min,sort'
 );
@@ -176,4 +176,4 @@ View::show_header(
     </div>
   </form>
 </div>
-<?php View::show_footer(); ?>
+<?php View::footer(); ?>

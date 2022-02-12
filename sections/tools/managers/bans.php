@@ -85,7 +85,7 @@ list($Results) = $DB->next_record();
 
 $PageLinks = Format::get_pages($Page, $Results, BANS_PER_PAGE, 11);
 
-View::show_header('IP Address Bans');
+View::header('IP Address Bans');
 $DB->set_query_id($Bans);
 ?>
 
@@ -179,4 +179,4 @@ while (list($ID, $Start, $End, $Reason) = $DB->next_record()) {
 <div class="linkbox">
   <?=$PageLinks?>
 </div>
-<?php View::show_footer();
+<?php View::footer();

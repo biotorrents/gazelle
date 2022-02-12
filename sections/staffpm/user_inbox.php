@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-View::show_header('Staff PMs', 'staffpm');
+View::header('Staff PMs', 'staffpm');
 
 // Get messages
 $StaffPMs = $DB->query("
@@ -112,4 +112,4 @@ if (!$DB->has_results()) {
 ?>
   </div>
 </div>
-<? View::show_footer(); ?>
+<? View::footer(); ?>

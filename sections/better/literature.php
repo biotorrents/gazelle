@@ -10,7 +10,7 @@ $Join = $All
         AND x.`uid` = '$LoggedUser[ID]'
     ");
 
-View::show_header('Torrent groups with no publications');
+View::header('Torrent groups with no publications');
 
 $DB->prepared_query("
 SELECT SQL_CALC_FOUND_ROWS
@@ -94,4 +94,4 @@ foreach ($Results as $Result) {
 } ?>
   </table>
 </div>
-<?php View::show_footer();
+<?php View::footer();

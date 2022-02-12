@@ -4,7 +4,7 @@ declare(strict_types=1);
 $ENV = ENV::go();
 $Twig = Twig::go();
 
-View::show_header('Recover Password', 'validate,password_validate');
+View::header('Recover Password', 'validate,password_validate');
 echo '<h2>Reset your password</h2>';
 
 if (empty($PassWasReset)) {
@@ -62,4 +62,4 @@ if (empty($PassWasReset)) {
 <?php
 }
   
-View::show_footer(['recover' => true]);
+View::footer(['recover' => true]);

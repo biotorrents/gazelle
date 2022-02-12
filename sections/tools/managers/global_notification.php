@@ -5,7 +5,7 @@ if (!check_perms("users_mod")) {
     error(404);
 }
 
-View::show_header("Global Notification");
+View::header("Global Notification");
 $GlobalNotification = NotificationsManager::get_global_notification();
 $Expiration = $GlobalNotification['Expiration'] ? $GlobalNotification['Expiration'] / 60 : "";
 ?>
@@ -81,4 +81,4 @@ $Expiration = $GlobalNotification['Expiration'] ? $GlobalNotification['Expiratio
     </table>
   </form>
 </div>
-<?php View::show_footer();
+<?php View::footer();

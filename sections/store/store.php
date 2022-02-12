@@ -43,7 +43,7 @@ if (!$LoggedUser['DisablePoints']) {
 }
 
 // Include the header
-View::show_header('Store');
+View::header('Store');
 ?>
 <div>
   <div class="header">
@@ -304,4 +304,4 @@ if ($DB->has_results()) {
     </table>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

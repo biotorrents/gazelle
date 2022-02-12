@@ -174,7 +174,7 @@ if (isset($_POST['confirm'])) {
 
     header("Location: artist.php?action=edit&artistid=$NewArtistID");
 } else {
-    View::show_header('Merging Artists'); ?>
+    View::header('Merging Artists'); ?>
 <div class="header">
   <h2>Confirm merge</h2>
 </div>
@@ -195,5 +195,5 @@ if (isset($_POST['confirm'])) {
   </div>
 </form>
 <?php
-  View::show_footer();
+  View::footer();
 }

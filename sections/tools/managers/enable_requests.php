@@ -18,7 +18,7 @@ foreach (array('username', 'ip', 'submitted_between', 'submitted_between', 'subm
     }
 }
 
-View::show_header('Enable Requests', 'enable_requests');
+View::header('Enable Requests', 'enable_requests');
 
 // Pagination
 $RequestsPerPage = 25;
@@ -517,4 +517,4 @@ if ($NumResults > 0) { ?>
     No new pending auto enable requests <?=($_GET['view'] === 'main') ? '' : ' in this view' ?>
 </h2>
 <?php }
-View::show_footer();
+View::footer();

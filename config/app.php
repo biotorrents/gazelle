@@ -46,4 +46,4 @@ $ENV = ENV::go();
 require_once __DIR__.'/public.php'; # Basic info, options, fratures, etc.
 require_once __DIR__.'/private.php'; # ALL THE SITE'S PRIVATE KEYS ARE HERE!
 require_once __DIR__.'/metadata.php'; # Master metadata map for Twig templates
-require_once __DIR__.'/regex.php'; # Regular expressions used throughout
+require_once __DIR__.'/regex.php'; # Regular expressions used throughout the site

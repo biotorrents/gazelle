@@ -24,7 +24,7 @@ if ($Action === 'unfill') {
   }
 }
 
-View::show_header(ucwords($Action) . ' Request');
+View::header(ucwords($Action) . ' Request');
 ?>
 <div class="center">
   <div class="box" style="width: 600px; margin: 0px auto;">
@@ -47,5 +47,5 @@ View::show_header(ucwords($Action) . ' Request');
   </div>
 </div>
 <?
-View::show_footer();
+View::footer();
 ?>

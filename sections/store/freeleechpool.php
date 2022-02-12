@@ -90,7 +90,7 @@ if (isset($_POST['donation'])) {
         }
     }
 
-    View::show_header('Store'); ?>
+    View::header('Store'); ?>
 <div>
     <h2>Donation Successful</h2>
     <div class="box">
@@ -114,7 +114,7 @@ if (isset($_POST['donation'])) {
     </div>
 </div>
 <?php
-View::show_footer();
+View::footer();
 } else {
     $DB->prepared_query("
       SELECT First
@@ -127,7 +127,7 @@ View::show_footer();
         $Pool = 0;
     }
 
-    View::show_header('Store'); ?>
+    View::header('Store'); ?>
 <div>
     <div class="box text-align: center;">
         <form action="store.php" method="POST">
@@ -145,5 +145,5 @@ View::show_footer();
         <p><a href="/store.php">Back to Store</a></p>
     </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();
 }

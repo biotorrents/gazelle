@@ -316,7 +316,7 @@ $Results = Torrents::get_groups($GroupIDs);
 $Action = esc($_GET['type']);
 $User = Users::user_info($UserID);
 
-View::show_header($User['Username']."'s $Action torrents", 'browse');
+View::header($User['Username']."'s $Action torrents", 'browse');
 $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
 ?>
 
@@ -632,4 +632,4 @@ foreach ($Categories as $CatKey => $CatName) {
   <div class="linkbox"><?= $Pages ?>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

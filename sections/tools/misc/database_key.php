@@ -18,7 +18,7 @@ if (isset($_POST['dbkey'])) {
     apcu_store('DBKEY', hash('sha512', $_POST['dbkey']));
 }
 
-View::show_header('Database Encryption Key'); ?>
+View::header('Database Encryption Key'); ?>
 
 <!-- Start HTML -->
 <h2 class="header">
@@ -45,4 +45,4 @@ View::show_header('Database Encryption Key'); ?>
 
   </form>
 </div>
-<?php View::show_footer();
+<?php View::footer();

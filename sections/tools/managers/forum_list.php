@@ -23,7 +23,7 @@ if (!check_perms('admin_manage_forums')) {
   error(403);
 }
 
-View::show_header('Forum Management');
+View::header('Forum Management');
 $DB->query('
   SELECT ID, Name
   FROM forums
@@ -169,4 +169,4 @@ while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinCla
     </form>
   </tr>
 </table>
-<? View::show_footer(); ?>
+<? View::footer(); ?>
