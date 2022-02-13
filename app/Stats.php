@@ -334,7 +334,7 @@ class Stats
     public function torrentsEconomy()
     {
         # torrents
-        G::$DB->query("
+        G::$DB->prepared_query("
             select count(ID), sum(Size), sum(FileCount) from torrents;
         ");
 
@@ -346,7 +346,7 @@ class Stats
         ];
 
         # users
-        G::$DB->query("
+        G::$DB->prepared_query("
             select count(ID) from users_main where enabled = '1';
         ");
 
@@ -405,7 +405,7 @@ class Stats
     public function trackerEconomy() : array
     {
         # total upload and download
-        G::$DB->query("
+        G::$DB->prepared_query("
             select sum(Uploaded), sum(Downloaded), count(ID) from users_main where Enabled = '1'
         ");
 
@@ -423,14 +423,14 @@ class Stats
         ];
         
         # request bounty
-        G::$DB->query("
+        G::$DB->prepared_query("
             select sum(Bounty) from requests_votes
         ");
 
         $totalBounty = G::$DB->to_array();
 
         # vote bounty
-        G::$DB->query("
+        G::$DB->prepared_query("
             select sum(requests_votes.Bounty) from requests_votes
             join requests on requests.ID = requests_votes.RequestID where TorrentID > 0
         ");
@@ -442,14 +442,14 @@ class Stats
         ];
 
         # total snatches for torrents that still exist
-        G::$DB->query("
+        G::$DB->prepared_query("
             select sum(Snatched), count(ID) from torrents
         ");
 
         $activeSnatches = G::$DB->to_array();
 
         # total snatches for all torrents
-        G::$DB->query("
+        G::$DB->prepared_query("
             select count(uid) from xbt_snatched
         ");
 
@@ -461,14 +461,14 @@ class Stats
         ];
 
         # seeders
-        G::$DB->query("
+        G::$DB->prepared_query("
             select count(fid) from xbt_files_users where remaining = 0
         ");
 
         $seeders = G::$DB->to_array();
 
         # leechers
-        G::$DB->query("
+        G::$DB->prepared_query("
             select count(fid) from xbt_files_users where remaining > 0
         ");
 
@@ -509,7 +509,7 @@ class Stats
     public function torrentsTimeline() : array
     {
         # uploads: real data :)
-        G::$DB->query("
+        G::$DB->prepared_query("
             select date_format(Time, '%b %Y') as months, count(ID) from torrents
             group by months order by Time asc;
         ");
@@ -518,7 +518,7 @@ class Stats
         $uploads = array_column($uploads, 1, 0);
 
         # deletes: log data :/
-        G::$DB->query("
+        G::$DB->prepared_query("
             select date_format(Time, '%b %Y') as months, count(ID) from log
             where Message like 'Torrent % deleted %' group by months order by Time asc;
         ");
@@ -545,7 +545,7 @@ class Stats
     public function usersTimeline() : array
     {
         # registrations
-        G::$DB->query("
+        G::$DB->prepared_query("
             select date_format(JoinDate,'%b %Y') as months, count(UserID) from users_info
             group by months order by JoinDate asc limit 1, 11;
         ");
@@ -583,7 +583,7 @@ class Stats
         $ENV = ENV::go();
 
         # get torrents by category
-        G::$DB->query("
+        G::$DB->prepared_query("
             select torrents_group.category_id, count(torrents.id) as torrents from torrents
             join torrents_group on torrents_group.id = torrents.GroupID
             group by torrents_group.category_id order by torrents desc;
@@ -607,7 +607,7 @@ class Stats
      */
     public function classDistribution() : array
     {
-        G::$DB->query("
+        G::$DB->prepared_query("
             select permissions.Name, count(users_main.ID) as users from users_main
             join permissions on users_main.PermissionID = permissions.ID where users_main.Enabled = '1'
             group by permissions.Name order by users desc;
@@ -630,7 +630,7 @@ class Stats
      */
     public function databaseSpecifics() : array
     {
-        G::$DB->query("
+        G::$DB->prepared_query("
             show table status;
         ");
 

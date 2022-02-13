@@ -92,7 +92,7 @@ class Twig
                     '%02dm %02ds',
                     #'%02d:%02d:%02d', # hh:mm:ss
                     #($seconds / 3600), # hh
-                    ($seconds / 60 % 60), # mm
+                    (intval($seconds / 60) % 60), # mm
                     ($seconds % 60) # ss
                 );
             }

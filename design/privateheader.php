@@ -109,11 +109,13 @@ if (isset(G::$LoggedUser['Notify'])) {
         list($FilterID, $FilterName) = $Filter;
         $NameEsc = esc($FilterName);
 
+        /* @todo temporary, fix
         echo $HTML = <<<HTML
         <link rel="alternate" type="application/rss+xml"
           href="feeds.php?feed=torrents_notify_$FilterID_$PassKey&amp;user=$ID&amp;auth=$RssAuth&amp;passkey=$PassKey&amp;authkey=$AuthKey"
           title="$NameEsc $ENV->SEP $ENV->SITE_NAME" />
 HTML;
+        */
     }
 }
 

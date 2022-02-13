@@ -293,7 +293,7 @@ class DB
         mysqli_stmt_execute($this->StatementID);
         $this->QueryID = mysqli_stmt_get_result($this->StatementID);
         $QueryRunTime = (microtime(true) - $QueryStartTime) * 1000;
-        $this->Queries[] = [$this->PreppedQuery, $QueryRunTime, null];
+        $this->Queries[] = [$this->PreparedQuery, $QueryRunTime, null];
         $this->Time += $QueryRunTime;
     }
 

@@ -157,7 +157,7 @@ $UserCount = (int)$UserCount;
 ?>
       <li>
         Enabled users: <?=number_format($UserCount)?>
-        <a href="stats.php?action=users" class="brackets">Details</a>
+        <a href="/stats/users" class="brackets">Details</a>
       </li>
       <?php
 
@@ -238,7 +238,7 @@ if (($ArtistCount = $Cache->get_value('stats_artist_count')) === false) {
       <li>
         Torrents:
         <?=number_format($TorrentCount)?>
-        <a href="stats.php?action=torrents" class="brackets">Details</a>
+        <a href="/stats/torrents" class="brackets">Details</a>
       </li>
 
       <li>Torrent Groups: <?=number_format($GroupCount)?>

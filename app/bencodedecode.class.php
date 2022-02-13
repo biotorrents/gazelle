@@ -1,6 +1,9 @@
 <?php
 #declare(strict_types=1);
 
+# Fix random memory exhaustion errors
+ini_set('memory_limit', '256MB');
+
 /**
  * The decode class is simple and straightforward. The only thing to
  * note is that empty dictionaries are represented by boolean trues

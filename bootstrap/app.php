@@ -381,7 +381,14 @@ $AllowedPages = ['staffpm', 'api', 'locked', 'logout', 'login'];
 if (isset(G::$LoggedUser['LockedAccount']) && !in_array($Document, $AllowedPages)) {
     require_once "$ENV->SERVER_ROOT/sections/locked/index.php";
 } else {
-    require_once "$ENV->SERVER_ROOT/sections/$Document/index.php";
+    require_once __DIR__.'/router.php';
+
+    # Routing: transition from homebrew to Flight
+    # This check is necessary because the codebase is shit
+    # Flight enforces strict standards that break most things
+    if (file_exists("$ENV->SERVER_ROOT/sections/$Document/index.php")) {
+        require_once "$ENV->SERVER_ROOT/sections/$Document/index.php";
+    }
 }
 
 $Debug['messages']->info('completed module execution');

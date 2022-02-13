@@ -84,7 +84,7 @@
 {% if constant('USER_LIMIT') > 0 %}
         <li>Maximum users: {{ constant('USER_LIMIT')|number_format }}</li>
 {% endif %}
-        <li>Enabled users: {{ user_count|number_format }} <a href="stats.php?action=users" class="brackets">Details</a></li>
+        <li>Enabled users: {{ user_count|number_format }} <a href="/stats/users" class="brackets">Details</a></li>
         <li>Users active today: {{ user_stats.Day }} ({{ (user_stats.Day / user_count * 100)|number_format(2) }}%)</li>
         <li>Users active this week: {{ user_stats.Week }} ({{ (user_stats.Week / user_count * 100)|number_format(2) }}%)</li>
         <li>Users active this month: {{ user_stats.Month }} ({{ (user_stats.Month / user_count * 100)|number_format(2) }}%)</li>
