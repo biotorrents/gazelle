@@ -1,7 +1,7 @@
 <h2 class="header">Torrent stats</h2>
 
 <section>
-  {# overview #}
+  {# overview: torrents #}
   <table>
     <thead>
       <tr>
@@ -16,6 +16,12 @@
         <th>Torrents</th>
         <td>{{ torrentsEconomy.torrents.idCount|number_format }}</td>
         <td></td>
+      </tr>
+
+      <tr>
+        <th>Ratio</th>
+        <td></td>
+        <td>{{ get_ratio_html(trackerEconomy.torrents.totalUpload, trackerEconomy.torrents.totalDownload)|raw }}</td>
       </tr>
 
       <tr>
@@ -42,6 +48,35 @@
         <td>{{ (torrentsEconomy.torrents.idCount / torrentsEconomy.users.idCount)|number_format }}</td>
       </tr>
 
+      <tr>
+        <th>Upload</th>
+        <td>{{ trackerEconomy.torrents.totalUpload|get_size }}</td>
+        <td>{{ (trackerEconomy.torrents.totalUpload / trackerEconomy.users.idCount)|get_size }}</td>
+      </tr>
+
+      <tr>
+        <th>Download</th>
+        <td>{{ trackerEconomy.torrents.totalDownload|get_size }}</td>
+        <td>{{ (trackerEconomy.torrents.totalDownload / trackerEconomy.users.idCount)|get_size }}</td>
+      </tr>
+
+      <tr>
+        <th>Buffer</th>
+        <td>{{ (trackerEconomy.torrents.totalUpload - trackerEconomy.torrents.totalDownload)|get_size }}</td>
+        <td>{{ ((trackerEconomy.torrents.totalUpload - trackerEconomy.torrents.totalDownload) / trackerEconomy.users.idCount)|get_size }}</td>
+      </tr>
+
+      <tr>
+        <th>Request bounty</th>
+        <td>{{ trackerEconomy.requests.totalBounty|get_size }}</td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <th>Available bounty</th>
+        <td>{{ trackerEconomy.requests.availableBounty|get_size }}</td>
+        <td></td>
+      </tr>
     </tbody>
   </table>
 </section>
@@ -55,8 +90,8 @@
     (() => {
       'use strict';
 
-      let torrentsTimelineData = JSON.parse('{{ torrentsTimeline|json_encode|raw }}');
       let torrentsTimelineCanvas = document.getElementById('torrentsTimeline').getContext('2d');
+      let torrentsTimelineData = JSON.parse('{{ torrentsTimeline|json_encode|raw }}');
 
       let torrentsTimelineChart = new Chart(torrentsTimelineCanvas, {
         type: 'line',
@@ -65,15 +100,17 @@
           datasets: [{
             label: 'Uploaded torrents',
             data: Object.values(torrentsTimelineData.uploads),
-            backgroundColor: 'rgba(179, 229, 252, 0.8)', // #B3E5FC
-            borderColor: 'rgba(1, 87, 155, 0.8)', // #01579B
+            // $Blue500: #2196f3;
+            borderColor: '#2196f3',
+            backgroundColor: '#2196f3' + 50,
           },
 
           {
             label: 'Deleted torrents',
             data: Object.values(torrentsTimelineData.deletes),
-            backgroundColor: 'rgba(255, 224, 178, 0.8)', // #FFE0B2
-            borderColor: 'rgba(230, 81, 0, 0.8)', // #E65100
+            // $Orange500: #ff9800;
+            borderColor: '#ff9800',
+            backgroundColor: '#ff9800' + 50,
           }]
         },
 
@@ -98,8 +135,8 @@
     (() => {
       'use strict';
 
-      let categoryDistributionData = JSON.parse('{{ categoryDistribution|json_encode|raw }}');
       let categoryDistributionCanvas = document.getElementById('categoryDistribution').getContext('2d');
+      let categoryDistributionData = JSON.parse('{{ categoryDistribution|json_encode|raw }}');
 
       let categoryDistributionChart = new Chart(categoryDistributionCanvas, {
         type: 'pie',
@@ -107,20 +144,19 @@
           labels: Object.keys(categoryDistributionData),
           datasets: [{
             data: Object.values(categoryDistributionData),
+            // all shades 500: every other forward
             backgroundColor: [
-              'rgba(255, 205, 210, 0.8)', // #FFCDD2
-              'rgba(225, 190, 231, 0.8)', // #E1BEE7
-              'rgba(197, 202, 233, 0.8)', // #C5CAE9
-              'rgba(179, 229, 252, 0.8)', // #B3E5FC
-              'rgba(178, 223, 219, 0.8)', // #B2DFDB
-              'rgba(220, 237, 200, 0.8)', // #DCEDC8
-              'rgba(255, 249, 196, 0.8)', // #FFF9C4
-              'rgba(255, 224, 178, 0.8)', // #FFE0B2
-              'rgba(215, 204, 200, 0.8)', // #D7CCC8
-              'rgba(207, 216, 220, 0.8)', // #CFD8DC
-              'rgba(158, 158, 158, 0.8)', // #9E9E9E
+              '#f44336' + 50,
+              '#9c27b0' + 50,
+              '#3f51b5' + 50,
+              '#03a9f4' + 50,
+              '#009688' + 50,
+              '#8bc34a' + 50,
+              '#ffeb3b' + 50,
+              '#ff9800' + 50,
+              '#795548' + 50,
+              '#607d8b' + 50,
             ],
-
           }]
         },
 
@@ -140,6 +176,104 @@
 
 
 <section>
+  {# buttons: total and average seeders : leechers #}
+  <a class="button button-primary" id="seedersLeechersTotalButton" onclick="visible('seedersLeechersTotal', this.id)">Total</a>
+  <a class="button" id="seedersLeechersAverageButton" onclick="visible('seedersLeechersAverage', this.id)">Average</a>
+</section>
+
+<section>
+  {# seedersLeechersTotal #}
+  <canvas class="chart" id="seedersLeechersTotal"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let seedersLeechersTotalCanvas = document.getElementById('seedersLeechersTotal').getContext('2d');
+      let seedersLeechersTotalData = [
+        '{{ trackerEconomy.peers.seeders }}',
+        '{{ trackerEconomy.peers.leechers }}',
+        '{{ trackerEconomy.snatches.active }}',
+      ];
+
+      let seedersLeechersTotalChart = new Chart(seedersLeechersTotalCanvas, {
+        type: 'pie',
+        data: {
+          labels: ['Seeders', 'Leechers', 'Snatches'],
+          datasets: [{
+            data: seedersLeechersTotalData,
+            /*
+            $Blue500: #2196f3;
+            $Orange500: #ff9800;
+            $Green500: #4caf50;
+            */
+            backgroundColor: [
+              '#2196f3' + 50,
+              '#ff9800' + 50,
+              '#4caf50' + 50,
+            ],
+          }]
+        },
+
+        options: {
+          plugins: {
+            title: {
+              display: true,
+              text: 'Total seeders, leechers, and snatches',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+
+  {# seedersLeechersAverage #}
+  <canvas class="chart" id="seedersLeechersAverage"></canvas>
+  <script>
+    (() => {
+      'use strict';
+  
+      let seedersLeechersAverageCanvas = document.getElementById('seedersLeechersAverage').getContext('2d');
+      let seedersLeechersAverageData = [
+        '{{ trackerEconomy.peers.seeders / torrentsEconomy.torrents.idCount }}',
+        '{{ trackerEconomy.peers.leechers / torrentsEconomy.torrents.idCount }}',
+        '{{ trackerEconomy.snatches.active / torrentsEconomy.torrents.idCount }}',
+      ];
+  
+      let seedersLeechersAverageChart = new Chart(seedersLeechersAverageCanvas, {
+        type: 'pie',
+        data: {
+          labels: ['Seeders', 'Leechers', 'Snatches'],
+          datasets: [{
+            data: seedersLeechersAverageData,
+            /*
+            $Blue500: #2196f3;
+            $Orange500: #ff9800;
+            $Green500: #4caf50;
+            */
+            backgroundColor: [
+              '#2196f3' + 50,
+              '#ff9800' + 50,
+              '#4caf50' + 50,
+            ],
+          }]
+        },
+  
+        options: {
+          plugins: {
+            title: {
+              display: true,
+              text: 'Average seeders, leechers, and snatches per torrent',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+</section>
+<br /><br />
+
+
+<section>
   {# buttons: daily, weekly, monthly torrents #}
   <a class="button button-primary" id="dailyTorrentsButton" onclick="visible('dailyTorrents', this.id)">Daily</a>
   <a class="button" id="weeklyTorrentsButton" onclick="visible('weeklyTorrents', this.id)">Weekly</a>
@@ -148,13 +282,13 @@
 
 <section>
   {# dailyTorrents #}
-  <canvas class="chart" id="dailyTorernts"></canvas>
+  <canvas class="chart" id="dailyTorrents"></canvas>
   <script>
     (() => {
       'use strict';
 
-      let dailyTorrentsData = JSON.parse('{{ torrentsEconomy|json_encode|raw }}');
       let dailyTorrentsCanvas = document.getElementById('dailyTorrents').getContext('2d');
+      let dailyTorrentsData = JSON.parse('{{ torrentsEconomy|json_encode|raw }}');
 
       let dailyTorrentsChart = new Chart(dailyTorrentsCanvas, {
         type: 'bar',
@@ -163,7 +297,8 @@
           datasets: [{
             label: 'Day',
             data: Object.values(dailyTorrentsData.daily),
-            backgroundColor: 'rgba(178, 223, 219, 0.8)', // #B2DFDB
+            // $Purple500: #9c27b0;
+            backgroundColor: '#9c27b0' + 50,
           }],
         },
 
@@ -180,13 +315,13 @@
   </script>
 
   {# weeklyTorrents #}
-  <canvas class="chart" id="weeklyTorernts"></canvas>
+  <canvas class="chart" id="weeklyTorrents"></canvas>
   <script>
     (() => {
       'use strict';
 
-      let weeklyTorrentsData = JSON.parse('{{ torrentsEconomy|json_encode|raw }}');
       let weeklyTorrentsCanvas = document.getElementById('weeklyTorrents').getContext('2d');
+      let weeklyTorrentsData = JSON.parse('{{ torrentsEconomy|json_encode|raw }}');
 
       let weeklyTorrentsChart = new Chart(weeklyTorrentsCanvas, {
         type: 'bar',
@@ -195,7 +330,8 @@
           datasets: [{
             label: 'Week',
             data: Object.values(weeklyTorrentsData.weekly),
-            backgroundColor: 'rgba(178, 223, 219, 0.8)', // #B2DFDB
+            // $Purple500: #9c27b0;
+            backgroundColor: '#9c27b0' + 50,
           }],
         },
 
@@ -212,13 +348,13 @@
   </script>
 
   {# monthlyTorrents #}
-  <canvas class="chart" id="monthlyTorernts"></canvas>
+  <canvas class="chart" id="monthlyTorrents"></canvas>
   <script>
     (() => {
       'use strict';
 
-      let monthlyTorrentsData = JSON.parse('{{ torrentsEconomy|json_encode|raw }}');
       let monthlyTorrentsCanvas = document.getElementById('monthlyTorrents').getContext('2d');
+      let monthlyTorrentsData = JSON.parse('{{ torrentsEconomy|json_encode|raw }}');
 
       let monthlyTorrentsChart = new Chart(monthlyTorrentsCanvas, {
         type: 'bar',
@@ -227,7 +363,8 @@
           datasets: [{
             label: 'Month',
             data: Object.values(monthlyTorrentsData.monthly),
-            backgroundColor: 'rgba(178, 223, 219, 0.8)', // #B2DFDB
+            // $Purple500: #9c27b0;
+            backgroundColor: '#9c27b0' + 50,
           }],
         },
 
@@ -246,49 +383,14 @@
 <br /><br />
 
 
-{#
-<ul class="stats nobullet">
-  <li>
-    <strong>Torrents per day this week:</strong>
-    <?=number_format($WeekNum / 7)?>
-  </li>
-
-  <li>
-    <strong>Size per day this week:</strong>
-    <?=Format::get_size($WeekSize / 7)?>
-  </li>
-
-  <li>
-    <strong>Files per day this week:</strong>
-    <?=number_format($WeekFiles / 7)?>
-  </li>
-
-  <li>
-    <strong>Torrents per day this month:</strong>
-    <?=number_format($MonthNum / 30)?>
-  </li>
-
-  <li>
-    <strong>Size per day this month:</strong>
-    <?=Format::get_size($MonthSize / 30)?>
-  </li>
-
-  <li>
-    <strong>Files per day this month:</strong>
-    <?=number_format($MonthFiles / 30)?>
-  </li>
-</ul>
-#}
-
-
 <section>
   <canvas class="chart" id="databaseSpecifics"></canvas>
   <script>
     (() => {
       'use strict';
 
-      let databaseSpecificsData = JSON.parse('{{ databaseSpecifics|json_encode|raw }}');
       let databaseSpecificsCanvas = document.getElementById('databaseSpecifics').getContext('2d');
+      let databaseSpecificsData = JSON.parse('{{ databaseSpecifics|json_encode|raw }}');
 
       let databaseSpecificsChart = new Chart(databaseSpecificsCanvas, {
         type: 'bar',
@@ -299,18 +401,18 @@
             label: 'Records',
             yAxisID: 'yRecords',
             data: Object.values(databaseSpecificsData.rowCount),
+            // all shades 500: every other forward
             backgroundColor: [
-              'rgba(255, 205, 210, 0.8)', // #FFCDD2
-              'rgba(225, 190, 231, 0.8)', // #E1BEE7
-              'rgba(197, 202, 233, 0.8)', // #C5CAE9
-              'rgba(179, 229, 252, 0.8)', // #B3E5FC
-              'rgba(178, 223, 219, 0.8)', // #B2DFDB
-              'rgba(220, 237, 200, 0.8)', // #DCEDC8
-              'rgba(255, 249, 196, 0.8)', // #FFF9C4
-              'rgba(255, 224, 178, 0.8)', // #FFE0B2
-              'rgba(215, 204, 200, 0.8)', // #D7CCC8
-              'rgba(207, 216, 220, 0.8)', // #CFD8DC
-              'rgba(158, 158, 158, 0.8)', // #9E9E9E
+              '#f44336' + 50,
+              '#9c27b0' + 50,
+              '#3f51b5' + 50,
+              '#03a9f4' + 50,
+              '#009688' + 50,
+              '#8bc34a' + 50,
+              '#ffeb3b' + 50,
+              '#ff9800' + 50,
+              '#795548' + 50,
+              '#607d8b' + 50,
             ],
           },
 
@@ -319,9 +421,9 @@
             label: 'Size',
             yAxisID: 'ySize',
             data: Object.values(databaseSpecificsData.dataSize),
-            backgroundColor: 'rgba(179, 229, 252, 0.8)', // #B3E5FC
-            borderColor: 'rgba(1, 87, 155, 0.8)', // #01579B
-
+            // $Gray500: #9e9e9e;
+            borderColor: '#9e9e9e',
+            backgroundColor: '#9e9e9e' + 50,
           }]
         },
 
@@ -393,7 +495,59 @@
 
   // hidden by default
   (() => {
+    $('#seedersLeechersAverage').hide();
+
     $('#weeklyTorrents').hide();
     $('#monthlyTorrents').hide();
   })();
 </script>
+
+
+{#
+<ul class="stats nobullet">
+  <li>
+    <strong>Seeder/leecher ratio:</strong>
+    <?=Format::get_ratio_html($TotalSeeders, $TotalLeechers)?>
+  </li>
+
+  <li>
+    <strong>Seeder/snatch ratio:</strong>
+    <?=Format::get_ratio_html($TotalSeeders, $TotalOverallSnatches)?>
+  </li>
+
+  <li>
+    <strong>Mean seeding per user:</strong>
+    <?=number_format($TotalSeeders / $NumUsers, 2)?>
+  </li>
+
+  <li>
+    <strong>Mean leeching per user:</strong>
+    <?=number_format($TotalLeechers / $NumUsers, 2)?>
+  </li>
+
+  <li>
+    <strong>Mean snatches per user:</strong>
+    <?=number_format($TotalOverallSnatches / $NumUsers, 2)?>
+  </li>
+
+  <li>
+    <strong>Total users in at least 1 swarm:</strong>
+    <?=number_format($TotalPeerUsers)?>
+  </li>
+
+  <li>
+    <strong>Mean seeding per user in at least 1 swarm:</strong>
+    <?=number_format($TotalSeeders / $TotalPeerUsers, 2)?>
+  </li>
+
+  <li>
+    <strong>Mean leeching per user in at least 1 swarm:</strong>
+    <?=number_format($TotalLeechers / $TotalPeerUsers, 2)?>
+  </li>
+
+  <li>
+    <strong>Mean snatches per user in at least 1 swarm:</strong>
+    <?=number_format($TotalSnatches / $TotalPeerUsers, 2)?>
+  </li>
+</ul>
+#}

@@ -340,9 +340,9 @@ class Stats
 
         $torrents = G::$DB->to_array();
         $torrents = [
-            'idCount' => array_column($torrents, 'count(ID)')[0],
-            'totalSize' => array_column($torrents, 'sum(Size)')[0],
-            'fileCount' => array_column($torrents, 'sum(FileCount)')[0],
+            'idCount' => intval($torrents[0]['count(ID)']),
+            'totalSize' => intval($torrents[0]['sum(Size)']),
+            'fileCount' => intval($torrents[0]['sum(FileCount)']),
         ];
 
         # users
@@ -352,7 +352,7 @@ class Stats
 
         $users = G::$DB->to_array();
         $users = [
-            'idCount' => array_column($users, 'count(ID)')[0]
+            'idCount' => intval($users[0]['count(ID)']),
         ];
 
         # daily
@@ -362,9 +362,9 @@ class Stats
 
         $daily = G::$DB->to_array();
         $daily = [
-            'idCount' => array_column($daily, 'count(ID)')[0],
-            'totalSize' => array_column($daily, 'sum(Size)')[0],
-            'fileCount' => array_column($daily, 'sum(FileCount)')[0],
+            'idCount' => intval($daily[0]['count(ID)']),
+            'totalSize' => intval($daily[0]['sum(Size)']),
+            'fileCount' => intval($daily[0]['sum(FileCount)']),
         ];
 
         # weekly
@@ -373,9 +373,9 @@ class Stats
         ");
         $weekly = G::$DB->to_array();
         $weekly = [
-            'idCount' => array_column($weekly, 'count(ID)')[0],
-            'totalSize' => array_column($weekly, 'sum(Size)')[0],
-            'fileCount' => array_column($weekly, 'sum(FileCount)')[0],
+            'idCount' => intval($weekly[0]['count(ID)']),
+            'totalSize' => intval($weekly[0]['sum(Size)']),
+            'fileCount' => intval($weekly[0]['sum(FileCount)']),
         ];
 
         # monthly
@@ -384,12 +384,11 @@ class Stats
         ");
         $monthly = G::$DB->to_array();
         $monthly = [
-            'idCount' => array_column($monthly, 'count(ID)')[0],
-            'totalSize' => array_column($monthly, 'sum(Size)')[0],
-            'fileCount' => array_column($monthly, 'sum(FileCount)')[0],
+            'idCount' => intval($monthly[0]['count(ID)']),
+            'totalSize' => intval($monthly[0]['sum(Size)']),
+            'fileCount' => intval($monthly[0]['sum(FileCount)']),
         ];
 
-        # okay done
         return [
             'torrents' => $torrents,
             'users' => $users,
@@ -397,6 +396,110 @@ class Stats
             'weekly' => $weekly,
             'monthly' => $monthly,
         ];
+    }
+
+
+    /**
+     * trackerEconomy
+     */
+    public function trackerEconomy() : array
+    {
+        # total upload and download
+        G::$DB->query("
+            select sum(Uploaded), sum(Downloaded), count(ID) from users_main where Enabled = '1'
+        ");
+
+        $torrents = G::$DB->to_array();
+
+        # user count - before $torrents work
+        $users = [
+            'idCount' => intval($torrents[0]['count(ID)']),
+        ];
+        
+        $torrents = [
+            'totalUpload' => intval($torrents[0]['sum(Uploaded)']),
+            'totalDownload' => intval($torrents[0]['sum(Downloaded)']),
+
+        ];
+        
+        # request bounty
+        G::$DB->query("
+            select sum(Bounty) from requests_votes
+        ");
+
+        $totalBounty = G::$DB->to_array();
+
+        # vote bounty
+        G::$DB->query("
+            select sum(requests_votes.Bounty) from requests_votes
+            join requests on requests.ID = requests_votes.RequestID where TorrentID > 0
+        ");
+
+        $availableBounty = G::$DB->to_array();
+        $requests = [
+            'totalBounty' => intval($totalBounty[0]['sum(Bounty)']),
+            'availableBounty' => intval($availableBounty[0]['sum(requests_votes.Bounty)']),
+        ];
+
+        # total snatches for torrents that still exist
+        G::$DB->query("
+            select sum(Snatched), count(ID) from torrents
+        ");
+
+        $activeSnatches = G::$DB->to_array();
+
+        # total snatches for all torrents
+        G::$DB->query("
+            select count(uid) from xbt_snatched
+        ");
+
+        $totalSnatches = G::$DB->to_array();
+        $snatches = [
+            'active' => intval($activeSnatches[0]['sum(Snatched)']),
+            'torrents' => intval($activeSnatches[0]['count(ID)']),
+            'total' => intval($totalSnatches[0]['count(uid)']),
+        ];
+
+        # seeders
+        G::$DB->query("
+            select count(fid) from xbt_files_users where remaining = 0
+        ");
+
+        $seeders = G::$DB->to_array();
+
+        # leechers
+        G::$DB->query("
+            select count(fid) from xbt_files_users where remaining > 0
+        ");
+
+        $leechers = G::$DB->to_array();
+
+        $peers = [
+            'seeders' => intval($seeders[0]['count(fid)']),
+            'leechers' => intval($leechers[0]['count(fid)']),
+            'total' => null,
+        ];
+        $peers['total'] = $peers['seeders'] + $peers['leechers'];
+
+        return [
+            'torrents' => $torrents,
+            'users' => $users,
+            'requests' => $requests,
+            'snatches' => $snatches,
+            'peers' => $peers,
+        ];
+
+        /*
+        $DB->prepared_query("
+        SELECT COUNT(ID)
+        FROM users_main
+        WHERE (
+          SELECT COUNT(uid)
+          FROM xbt_files_users
+          WHERE uid = users_main.ID
+          ) > 0
+        ");
+        */
     }
 
 
@@ -422,6 +525,15 @@ class Stats
 
         $deletes = G::$DB->to_array();
         $deletes = array_column($deletes, 1, 0);
+
+        # cast to int
+        foreach ($uploads as $k => $v) {
+            $uploads[$k] = intval($v);
+        }
+
+        foreach ($deletes as $k => $v) {
+            $deletes[$k] = intval($v);
+        }
 
         return ['uploads' => $uploads, 'deletes' => $deletes];
     }
@@ -449,6 +561,15 @@ class Stats
 
         $disables = G::$DB->to_array();
         $disables = array_column($disables, 1, 0);
+
+        # cast to int
+        foreach ($registrations as $k => $v) {
+            $registrations[$k] = intval($v);
+        }
+        
+        foreach ($disables as $k => $v) {
+            $disables[$k] = intval($v);
+        }
 
         return ['registrations' => $registrations, 'disables' => $disables];
     }
@@ -495,6 +616,11 @@ class Stats
         $classDistribution = G::$DB->to_array();
         $classDistribution = array_column($classDistribution, 1, 0);
 
+        # cast to int
+        foreach ($classDistribution as $k => $v) {
+            $classDistribution[$k] = intval($v);
+        }
+                
         return $classDistribution;
     }
 
@@ -532,7 +658,11 @@ class Stats
             unset($databaseSpecifics['indexSize'][$k]);
         }
 
-        # clean up and return
+        # cast to int
+        foreach ($databaseSpecifics['rowCount'] as $k => $v) {
+            $databaseSpecifics['rowCount'][$k] = intval($v);
+        }
+        
         unset($databaseSpecifics['indexSize']);
         return $databaseSpecifics;
     }

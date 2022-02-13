@@ -361,10 +361,6 @@ switch ($_REQUEST['action']) {
     include SERVER_ROOT.'/sections/tools/data/user_flow.php';
     break;
 
-  case 'economic_stats':
-    include SERVER_ROOT.'/sections/tools/data/economic_stats.php';
-    break;
-
   case 'service_stats':
     include SERVER_ROOT.'/sections/tools/development/service_stats.php';
     break;

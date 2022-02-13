@@ -139,33 +139,33 @@ class Format
     /**
      * Calculates and formats a ratio.
      *
-     * @param int $Dividend AKA numerator
-     * @param int $Divisor
-     * @param boolean $Color if true, ratio will be coloured.
+     * @param int $dividend numerator
+     * @param int $divisor demoninator
+     * @param boolean $color if true, ratio will be colored
      * @return string formatted ratio HTML
      */
-    public static function get_ratio_html($Dividend, $Divisor, $Color = true)
+    public static function get_ratio_html($dividend, $divisor, $color = true)
     {
-        $Ratio = self::get_ratio($Dividend, $Divisor);
+        $ratio = self::get_ratio($dividend, $divisor);
 
-        if ($Ratio === false) {
+        if ($ratio === false) {
             return '&ndash;';
         }
 
-        if ($Ratio === '∞') {
+        if ($ratio === '∞') {
             return '<span class="tooltip r99" title="Infinite">∞</span>';
         }
 
-        if ($Color) {
-            $Ratio = sprintf(
+        if ($color) {
+            $ratio = sprintf(
                 '<span class="tooltip %s" title="%s">%s</span>',
-                self::get_ratio_color($Ratio),
-                self::get_ratio($Dividend, $Divisor, 5),
-                $Ratio
+                self::get_ratio_color($ratio),
+                self::get_ratio($dividend, $divisor, 5),
+                $ratio
             );
         }
 
-        return $Ratio;
+        return $ratio;
     }
 
 

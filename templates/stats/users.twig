@@ -34,8 +34,8 @@
     (() => {
       'use strict';
 
-      let overTimeData = JSON.parse('{{ overTime|json_encode|raw }}');
       let overTimeCanvas = document.getElementById('overTime').getContext('2d');
+      let overTimeData = JSON.parse('{{ overTime|json_encode|raw }}');
 
       let overTimeChart = new Chart(overTimeCanvas, {
         type: 'line',
@@ -44,29 +44,33 @@
           datasets: [{
             label: 'Visitors',
             data: Object.values(overTimeData.visitors),
-            borderColor: 'rgba(255, 205, 210, 1.0)', // #FFCDD2
-            backgroundColor: 'rgba(255, 205, 210, 0.5)', // #FFCDD2
+            // $Red500: #f44336;
+            borderColor: '#f44336',
+            backgroundColor: '#f44336' + 50,
           },
 
           {
             label: 'Pageviews',
             data: Object.values(overTimeData.pageviews),
-            borderColor: 'rgba(225, 190, 231, 1.0)', // #E1BEE7
-            backgroundColor: 'rgba(225, 190, 231, 0.5)', // #E1BEE7
+            // $Blue500: #2196f3;
+            borderColor: '#2196f3',
+            backgroundColor: '#2196f3' + 50,
           },
 
           {
             label: 'Bounce rate',
             data: Object.values(overTimeData.bounce_rate),
-            borderColor: 'rgba(197, 202, 233, 1.0)', // #C5CAE9
-            backgroundColor: 'rgba(197, 202, 233, 0.5)', // #C5CAE9
+            // $Green500: #4caf50;
+            borderColor: '#4caf50',
+            backgroundColor: '#4caf50' + 50,
           },
 
           {
             label: 'Visit duration',
             data: Object.values(overTimeData.visit_duration),
-            borderColor: 'rgba(179, 229, 252, 1.0)', // #B3E5FC
-            backgroundColor: 'rgba(179, 229, 252, 0.5)', // #B3E5FC
+            // $Orange500: #ff9800;
+            borderColor: '#ff9800',
+            backgroundColor: '#ff9800' + 50,
           }],
         },
 
@@ -92,8 +96,8 @@
     (() => {
       'use strict';
 
-      let usersTimelineData = JSON.parse('{{ usersTimeline|json_encode|raw }}');
       let usersTimelineCanvas = document.getElementById('usersTimeline').getContext('2d');
+      let usersTimelineData = JSON.parse('{{ usersTimeline|json_encode|raw }}');
 
       let usersTimelineChart = new Chart(usersTimelineCanvas, {
         type: 'line',
@@ -102,15 +106,17 @@
           datasets: [{
             label: 'New registrations',
             data: Object.values(usersTimelineData.registrations),
-            backgroundColor: 'rgba(179, 229, 252, 0.8)', // #B3E5FC
-            borderColor: 'rgba(1, 87, 155, 0.8)', // #01579B
+            // $Blue500: #2196f3;
+            borderColor: '#2196f3',
+            backgroundColor: '#2196f3' + 50,
           },
 
           {
             label: 'Disabled users',
             data: Object.values(usersTimelineData.disables),
-            backgroundColor: 'rgba(255, 224, 178, 0.8)', // #FFE0B2
-            borderColor: 'rgba(230, 81, 0, 0.8)', // #E65100
+            // $Orange500: #ff9800;
+            borderColor: '#ff9800',
+            backgroundColor: '#ff9800' + 50,
           }]
         },
 
@@ -136,8 +142,8 @@
     (() => {
       'use strict';
 
-      let classDistributionData = JSON.parse('{{ classDistribution|json_encode|raw }}');
       let classDistributionCanvas = document.getElementById('classDistribution').getContext('2d');
+      let classDistributionData = JSON.parse('{{ classDistribution|json_encode|raw }}');
 
       let classDistributionChart = new Chart(classDistributionCanvas, {
         type: 'pie',
@@ -145,17 +151,18 @@
           labels: Object.keys(classDistributionData),
           datasets: [{
             data: Object.values(classDistributionData),
+            // green shades
             backgroundColor: [
-              'rgba(241, 248, 233, 0.8)', // #F1F8E9
-              'rgba(220, 237, 200, 0.8)', // #DCEDC8
-              'rgba(197, 225, 165, 0.8)', // #C5E1A5
-              'rgba(174, 213, 129, 0.8)', // #AED581
-              'rgba(156, 204, 101, 0.8)', // #9CCC65
-              'rgba(139, 195, 74,  0.8)', // #8BC34A
-              'rgba(124, 179, 66,  0.8)', // #7CB342
-              'rgba(104, 159, 56,  0.8)', // #689F38
-              'rgba(85,  139, 47,  0.8)', // #558B2F
-              'rgba(51,  105, 30,  0.8)', // #33691E
+              '#e8f5e9',
+              '#c8e6c9',
+              '#a5d6a7',
+              '#81c784',
+              '#66bb6a',
+              '#4caf50',
+              '#43a047',
+              '#388e3c',
+              '#2e7d32',
+              '#1b5e20',
             ],
           }]
         },
@@ -189,8 +196,8 @@
     (() => {
       'use strict';
 
-      let topPagesData = JSON.parse('{{ topPages|json_encode|raw }}');
       let topPagesCanvas = document.getElementById('topPages').getContext('2d');
+      let topPagesData = JSON.parse('{{ topPages|json_encode|raw }}');
 
       let topPagesChart = new Chart(topPagesCanvas, {
         type: 'bar',
@@ -199,7 +206,8 @@
           datasets: [{
             label: 'Visitors',
             data: Object.values(topPagesData.page),
-            backgroundColor: 'rgba(178, 223, 219, 0.8)', // #B2DFDB
+            // $Purple500: #9c27b0;
+            backgroundColor: '#9c27b0' + 50,
           }],
         },
 
@@ -223,8 +231,8 @@
     (() => {
       'use strict';
 
-      let topPagesData = JSON.parse('{{ topPages|json_encode|raw }}');
       let topPagesCanvas = document.getElementById('entryPages').getContext('2d');
+      let topPagesData = JSON.parse('{{ topPages|json_encode|raw }}');
 
       let topPagesChart = new Chart(topPagesCanvas, {
         type: 'bar',
@@ -233,7 +241,8 @@
           datasets: [{
             label: 'Visitors',
             data: Object.values(topPagesData.entry_page),
-            backgroundColor: 'rgba(178, 223, 219, 0.8)', // #B2DFDB
+            // $Purple500: #9c27b0;
+            backgroundColor: '#9c27b0' + 50,
           }],
         },
 
@@ -257,8 +266,8 @@
     (() => {
       'use strict';
 
-      let topPagesData = JSON.parse('{{ topPages|json_encode|raw }}');
       let topPagesCanvas = document.getElementById('exitPages').getContext('2d');
+      let topPagesData = JSON.parse('{{ topPages|json_encode|raw }}');
 
       let topPagesChart = new Chart(topPagesCanvas, {
         type: 'bar',
@@ -267,7 +276,8 @@
           datasets: [{
             label: 'Visitors',
             data: Object.values(topPagesData.exit_page),
-            backgroundColor: 'rgba(178, 223, 219, 0.8)', // #B2DFDB
+            // $Purple500: #9c27b0;
+            backgroundColor: '#9c27b0' + 50,
           }],
         },
 
@@ -302,8 +312,8 @@
     (() => {
       'use strict';
 
-      let devicesData = JSON.parse('{{ devices|json_encode|raw }}');
       let devicesCanvas = document.getElementById('devices').getContext('2d');
+      let devicesData = JSON.parse('{{ devices|json_encode|raw }}');
 
       let devicesChart = new Chart(devicesCanvas, {
         type: 'pie',
@@ -311,18 +321,12 @@
           labels: Object.keys(devicesData.device),
           datasets: [{
             data: Object.values(devicesData.device),
+            // all shades 500: divided by 4
             backgroundColor: [
-              'rgba(255, 205, 210, 0.8)', // #FFCDD2
-              'rgba(225, 190, 231, 0.8)', // #E1BEE7
-              'rgba(197, 202, 233, 0.8)', // #C5CAE9
-              'rgba(179, 229, 252, 0.8)', // #B3E5FC
-              'rgba(178, 223, 219, 0.8)', // #B2DFDB
-              'rgba(220, 237, 200, 0.8)', // #DCEDC8
-              'rgba(255, 249, 196, 0.8)', // #FFF9C4
-              'rgba(255, 224, 178, 0.8)', // #FFE0B2
-              'rgba(215, 204, 200, 0.8)', // #D7CCC8
-              'rgba(207, 216, 220, 0.8)', // #CFD8DC
-              'rgba(158, 158, 158, 0.8)', // #9E9E9E
+              '#f44336' + 50,
+              '#03a9f4' + 50,
+              '#ffeb3b' + 50,
+              '#607d8b' + 50,
             ],
           }]
         },
@@ -345,8 +349,8 @@
     (() => {
       'use strict';
 
-      let browsersData = JSON.parse('{{ devices|json_encode|raw }}');
       let browsersCanvas = document.getElementById('browsers').getContext('2d');
+      let browsersData = JSON.parse('{{ devices|json_encode|raw }}');
 
       let browsersChart = new Chart(browsersCanvas, {
         type: 'pie',
@@ -354,20 +358,20 @@
           labels: Object.keys(browsersData.browser),
           datasets: [{
             data: Object.values(browsersData.browser),
+            // all shades 500: every other reverse
             backgroundColor: [
-              'rgba(158, 158, 158, 0.8)', // #9E9E9E
-              'rgba(207, 216, 220, 0.8)', // #CFD8DC
-              'rgba(215, 204, 200, 0.8)', // #D7CCC8
-              'rgba(255, 224, 178, 0.8)', // #FFE0B2
-              'rgba(255, 249, 196, 0.8)', // #FFF9C4
-              'rgba(220, 237, 200, 0.8)', // #DCEDC8
-              'rgba(178, 223, 219, 0.8)', // #B2DFDB
-              'rgba(179, 229, 252, 0.8)', // #B3E5FC
-              'rgba(197, 202, 233, 0.8)', // #C5CAE9
-              'rgba(225, 190, 231, 0.8)', // #E1BEE7
-              'rgba(255, 205, 210, 0.8)', // #FFCDD2
+              '#607d8b' + 50,
+              '#795548' + 50,
+              '#ff9800' + 50,
+              '#ffeb3b' + 50,
+              '#8bc34a' + 50,
+              '#009688' + 50,
+              '#03a9f4' + 50,
+              '#3f51b5' + 50,
+              '#9c27b0' + 50,
+              '#f44336' + 50,
             ],
-          }]
+         }]
         },
 
         options: {
@@ -388,8 +392,8 @@
     (() => {
       'use strict';
 
-      let operatingSystemsData = JSON.parse('{{ devices|json_encode|raw }}');
       let operatingSystemsCanvas = document.getElementById('operatingSystems').getContext('2d');
+      let operatingSystemsData = JSON.parse('{{ devices|json_encode|raw }}');
 
       let operatingSystemsChart = new Chart(operatingSystemsCanvas, {
         type: 'pie',
@@ -397,18 +401,18 @@
           labels: Object.keys(operatingSystemsData.os),
           datasets: [{
             data: Object.values(operatingSystemsData.os),
+            // all shades 500: every other forward
             backgroundColor: [
-              'rgba(255, 205, 210, 0.8)', // #FFCDD2
-              'rgba(225, 190, 231, 0.8)', // #E1BEE7
-              'rgba(197, 202, 233, 0.8)', // #C5CAE9
-              'rgba(179, 229, 252, 0.8)', // #B3E5FC
-              'rgba(178, 223, 219, 0.8)', // #B2DFDB
-              'rgba(220, 237, 200, 0.8)', // #DCEDC8
-              'rgba(255, 249, 196, 0.8)', // #FFF9C4
-              'rgba(255, 224, 178, 0.8)', // #FFE0B2
-              'rgba(215, 204, 200, 0.8)', // #D7CCC8
-              'rgba(207, 216, 220, 0.8)', // #CFD8DC
-              'rgba(158, 158, 158, 0.8)', // #9E9E9E
+              '#f44336' + 50,
+              '#9c27b0' + 50,
+              '#3f51b5' + 50,
+              '#03a9f4' + 50,
+              '#009688' + 50,
+              '#8bc34a' + 50,
+              '#ffeb3b' + 50,
+              '#ff9800' + 50,
+              '#795548' + 50,
+              '#607d8b' + 50,
             ],
           }]
         },
@@ -435,8 +439,8 @@
     (() => {
       'use strict';
 
-      let locationsData = JSON.parse('{{ locations|json_encode|raw }}');
       let locationsCanvas = document.getElementById('locations').getContext('2d');
+      let locationsData = JSON.parse('{{ locations|json_encode|raw }}');
 
       let locationsChart = new Chart(locationsCanvas, {
         type: 'bar',
@@ -445,7 +449,8 @@
           datasets: [{
             label: 'Visitors',
             data: Object.values(locationsData),
-            backgroundColor: 'rgba(220, 237, 200, 0.8)', // #DCEDC8
+            // $Orange500: #ff9800;
+            backgroundColor: '#ff9800' + 50,
           }],
         },
 

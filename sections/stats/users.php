@@ -1,45 +1,44 @@
 <?php
 declare(strict_types=1);
 
-$Stats = new Stats();
-$Twig = Twig::go();
+$stats = new Stats();
+$twig = Twig::go();
 
 
 /**
  * Plausible
  */
-
-$realtime = $Stats->realtime();
+$realtime = $stats->realtime();
 #!d($realtime);
 
-$overview = $Stats->overview();
+$overview = $stats->overview();
 #!d($overview);
 
-$overTime = $Stats->overTime();
+$overTime = $stats->overTime();
 #!d($overTime);
 
-$topPages = $Stats->topPages();
+$topPages = $stats->topPages();
 #!d($topPages);
 
-$devices = $Stats->devices();
+$devices = $stats->devices();
 #!d($devices);
 
-$locations = $Stats->locations();
+$locations = $stats->locations();
 #!d($locations);
 
 /**
  * Database
  */
-$usersTimeline = $Stats->usersTimeline();
+$usersTimeline = $stats->usersTimeline();
 #!d($usersTimeline);
 
-$classDistribution = $Stats->classDistribution();
+$classDistribution = $stats->classDistribution();
 #!d($classDistribution);
 
 
 View::header('Detailed user statistics', 'vendor/chart.min,vendor/chartjs-chart-graph.min');
 
-echo $Twig->render(
+echo $twig->render(
     'stats/users.twig',
     [
         # Plausible

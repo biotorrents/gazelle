@@ -106,6 +106,14 @@ class Twig
             }
         ));
 
+        # Format::get_ratio_html
+        $Twig->addFunction(new \Twig\TwigFunction(
+            'get_ratio_html',
+            function ($dividend, $divisor, $color = true) {
+                return Format::get_ratio_html($dividend, $divisor, $color);
+            }
+        ));
+
 
         /**
          * OPS

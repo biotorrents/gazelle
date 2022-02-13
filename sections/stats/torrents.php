@@ -1,32 +1,35 @@
 <?php
 declare(strict_types=1);
 
-$Stats = new Stats();
-$Twig = Twig::go();
+$stats = new Stats();
+$twig = Twig::go();
 
 
-$torrentsTimeline = $Stats->torrentsTimeline();
-#!d($torrentsTimeline);
-
-$categoryDistribution = $Stats->categoryDistribution();
-#!d($categoryDistribution);
-
-$torrentsEconomy = $Stats->torrentsEconomy();
+$torrentsEconomy = $stats->torrentsEconomy();
 #!d($torrentsEconomy);
 
-$databaseSpecifics = $Stats->databaseSpecifics();
+$trackerEconomy = $stats->trackerEconomy();
+#!d($trackerEconomy);
+
+$torrentsTimeline = $stats->torrentsTimeline();
+#!d($torrentsTimeline);
+
+$categoryDistribution = $stats->categoryDistribution();
+#!d($categoryDistribution);
+
+$databaseSpecifics = $stats->databaseSpecifics();
 #!d($databaseSpecifics);
 
 
 View::header('Detailed torrent statistics', 'vendor/chart.min');
 
-echo $Twig->render(
+echo $twig->render(
     'stats/torrents.twig',
     [
-        
+        'torrentsEconomy' => $torrentsEconomy,
+        'trackerEconomy' => $trackerEconomy,
         'torrentsTimeline' => $torrentsTimeline,
         'categoryDistribution' => $categoryDistribution,
-        'torrentsEconomy' => $torrentsEconomy,
         'databaseSpecifics' => $databaseSpecifics,
     ]
 );
