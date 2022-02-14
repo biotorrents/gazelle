@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 $ENV = ENV::go();
-$Twig = Twig::go();
+$twig = Twig::go();
 
 $Attempts = $Attempts ?? 0;
 $Banned = $Banned ?? false;
@@ -56,7 +56,7 @@ if (!$Banned) { ?>
     <tr>
       <td>
         <?=
-        $Twig->render('input/passphrase.html', [
+        $twig->render('input/passphrase.html', [
           'name' => 'password',
           'id' => 'password',
           'placeholder' => 'Passphrase',

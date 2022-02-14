@@ -2,7 +2,7 @@
 #declare(strict_types = 1);
 
 $ENV = ENV::go();
-$Twig = Twig::go();
+$twig = Twig::go();
 
 define('MAX_PERS_COLLAGES', 3); // How many personal collages should be shown by default
 define('MAX_COLLAGES', 5); // How many normal collages should be shown by default
@@ -69,7 +69,7 @@ if ($TorrentTags !== '') {
 
 
 # Render Twig
-$DisplayName = $Twig->render(
+$DisplayName = $twig->render(
     'details/torrent_header.html',
     [
       'db' => $ENV->DB,

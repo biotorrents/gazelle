@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 $ENV = ENV::go();
-$Twig = Twig::go();
+$twig = Twig::go();
 
 global $LoggedUser;
 
@@ -15,7 +15,7 @@ echo <<<HTML
   <script defer data-domain="<?= $ENV->SITE_DOMAIN ?>" src="https://stats.torrents.bio/js/plausible.js"></script>
 HTML;
 
-echo $Twig->render(
+echo $twig->render(
     'header/meta-tags.html',
     [
     'ENV' => $ENV,

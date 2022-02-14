@@ -2,7 +2,7 @@
 #declare(strict_types = 1);
 
 $ENV = ENV::go();
-$Twig = Twig::go();
+$twig = Twig::go();
 
 // Build the data for the collage and the torrent list
 // todo: Cache this
@@ -68,7 +68,7 @@ foreach ($GroupIDs as $GroupID) {
     }
     $UserAdditions[$UserID]++;
 
-    $DisplayName = $Twig->render(
+    $DisplayName = $twig->render(
         'torrents/display_name.html',
         [
           'g' => $Group,
@@ -183,7 +183,7 @@ foreach ($GroupIDs as $GroupID) {
         #$ExtraInfo = Torrents::torrent_info($Data, true, true);
         #$DisplayName .= "<br />$ExtraInfo";
     
-        $DisplayName = $Twig->render(
+        $DisplayName = $twig->render(
             'torrents/display_name.html',
             [
               'g' => $Group,

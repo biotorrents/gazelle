@@ -121,12 +121,12 @@ class View
         string $placeholder = '',
         string $value = '',
     ) {
-        $Twig = Twig::go();
+        $twig = Twig::go();
 
         $name = (empty($name)) ?? $id;
         $uuid = uniqid(); # autosave
 
-        echo $Twig->render(
+        echo $twig->render(
             'input/textarea.twig',
             [
               'id' => $id,

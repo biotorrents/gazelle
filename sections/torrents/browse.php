@@ -2,7 +2,7 @@
 #declare(strict_types = 1);
 
 $ENV = ENV::go();
-$Twig = Twig::go();
+$twig = Twig::go();
 
 require_once SERVER_ROOT.'/sections/torrents/functions.php';
 
@@ -772,7 +772,7 @@ die();
           // These torrents are in a group
           $CoverArt = $GroupInfo['picture'];
 
-          $DisplayName = $Twig->render(
+          $DisplayName = $twig->render(
               'torrents/display_name.html',
               [
                 'g' => $GroupInfo,
@@ -933,7 +933,7 @@ die();
           }
 
           # Render Twig
-          $DisplayName = $Twig->render(
+          $DisplayName = $twig->render(
               'torrents/display_name.html',
               [
                 'g' => $GroupInfo,

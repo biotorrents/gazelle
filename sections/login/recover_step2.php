@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 $ENV = ENV::go();
-$Twig = Twig::go();
+$twig = Twig::go();
 
 View::header('Recover Password', 'validate,password_validate');
 echo '<h2>Reset your password</h2>';
@@ -24,7 +24,7 @@ if (empty($PassWasReset)) {
 
       <td>
         <?=
-        $Twig->render('input/passphrase.html', [
+        $twig->render('input/passphrase.html', [
           'name' => 'password',
           'id' => 'new_pass_1',
           'placeholder' => 'New passphrase'
@@ -38,7 +38,7 @@ if (empty($PassWasReset)) {
       </td>
       <td>
       <?=
-        $Twig->render('input/passphrase.html', [
+        $twig->render('input/passphrase.html', [
           'name' => 'verifypassword',
           'id' => 'new_pass_2',
           'placeholder' => 'Confirm passphrase'

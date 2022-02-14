@@ -2,7 +2,7 @@
 #declare(strict_types=1);
 
 $ENV = ENV::go();
-$Twig = Twig::go();
+$twig = Twig::go();
 $View = new View();
 
 if ($ENV->DEV) {
@@ -25,7 +25,7 @@ if ($ENV->DEV) {
   <script defer data-domain="<?= $ENV->SITE_DOMAIN ?>" src="https://stats.torrents.bio/js/plausible.js"></script>
 
   <?=
-    $Twig->render(
+    $twig->render(
         'header/meta-tags.html',
         [
         'ENV' => $ENV,
@@ -236,7 +236,7 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
       <?= $ENV->SITE_NAME ?>
     </h1>
 
-    <?= $Twig->render(
+    <?= $twig->render(
     'header/main-menu.html',
     [
           'ENV' => $ENV,

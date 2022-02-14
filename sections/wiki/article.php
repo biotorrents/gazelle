@@ -2,7 +2,7 @@
 #declare(strict_types=1);
 
 $ENV = ENV::go();
-$Twig = Twig::go();
+$twig = Twig::go();
 
 $ArticleID = false;
 

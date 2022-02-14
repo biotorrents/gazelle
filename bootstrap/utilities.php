@@ -189,7 +189,7 @@ function send_irc($Channels = null, $Message = '')
 function error(int|string $error = 400, $NoHTML = false, $Log = false)
 {
     $ENV = ENV::go();
-    $Twig = Twig::go();
+    $twig = Twig::go();
 
     # https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
     $map = [
@@ -219,7 +219,7 @@ function error(int|string $error = 400, $NoHTML = false, $Log = false)
 
     # Output HTML error page
     View::header($Title);
-    echo $Twig->render(
+    echo $twig->render(
         'error.twig',
         ['title' => $title, 'body' => $body]
     );

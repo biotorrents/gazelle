@@ -6,7 +6,7 @@
  */
 
 $ENV = ENV::go();
-$Twig = Twig::go();
+$twig = Twig::go();
 
 $ArtistID = $_GET['id'];
 if (!is_number($ArtistID)) {
@@ -202,7 +202,7 @@ foreach ($TorrentList as $Group) {
         $TorrentTags = new Tags($TagList, false);
 
         # Render Twig
-        $DisplayName = $Twig->render(
+        $DisplayName = $twig->render(
             'torrents/display_name.html',
             [
               'g' => $Group,
@@ -354,7 +354,7 @@ foreach ($TorrentList as $Group) {
         $TorrentTags = new Tags($TagList, false);
 
         # Render Twig
-        $DisplayName = $Twig->render(
+        $DisplayName = $twig->render(
             'torrents/display_name.html',
             [
               'g' => $Group,

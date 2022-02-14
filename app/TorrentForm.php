@@ -90,13 +90,13 @@ class TorrentForm
     public function render()
     {
         $ENV = ENV::go();
-        $Twig  = Twig::go();
+        $twig  = Twig::go();
 
         /**
          * Upload notice
          */
         if ($this->NewTorrent) {
-            echo $Twig->render('torrent_form/notice.html');
+            echo $twig->render('torrent_form/notice.html');
         }
 
         /**
@@ -109,7 +109,7 @@ class TorrentForm
             $TorrentPass = G::$LoggedUser['torrent_pass'];
             $TorrentSource = Users::get_upload_sources()[0];
 
-            echo $Twig->render(
+            echo $twig->render(
                 'torrent_form/announce_source.html',
                 [
                   'announces' => $Announces,
@@ -412,7 +412,7 @@ HTML;
     public function upload_form()
     {
         $ENV = ENV::go();
-        $Twig = Twig::go();
+        $twig = Twig::go();
 
         $QueryID = G::$DB->get_query_id();
         $Torrent = $this->Torrent;
@@ -428,7 +428,7 @@ HTML;
         $CatalogueNumber = esc($Torrent['CatalogueNumber']);
         $Disabled = $this->Disabled;
         
-        echo $Twig->render(
+        echo $twig->render(
             'torrent_form/identifier.html',
             [
                 'db' => $ENV->DB->identifier,
@@ -443,7 +443,7 @@ HTML;
         
         $Version = esc($Torrent['Version']);
 
-        echo $Twig->render(
+        echo $twig->render(
             'torrent_form/version.html',
             [
               'db' => $ENV->DB->version,
@@ -463,7 +463,7 @@ HTML;
             $Title3 = esc($Torrent['TitleJP']);
             #$Disabled = $this->Disabled;
 
-            echo $Twig->render(
+            echo $twig->render(
                 'torrent_form/titles.html',
                 [
                   'db' => $ENV->DB,
@@ -539,7 +539,7 @@ HTML;
         if ($this->NewTorrent) {
             $Affiliation = esc($Torrent['Studio']);
 
-            echo $Twig->render(
+            echo $twig->render(
                 'torrent_form/workgroup.html',
                 [
                   'db' => $ENV->DB->workgroup,
@@ -557,7 +557,7 @@ HTML;
          */
         if ($this->NewTorrent) {
             $TorrentLocation = esc($Torrent['Series']);
-            echo $Twig->render(
+            echo $twig->render(
                 'torrent_form/location.html',
                 [
                   'db' => $ENV->DB->location,
@@ -579,7 +579,7 @@ HTML;
          */
         $TorrentYear = esc($Torrent['Year']);
 
-        echo $Twig->render(
+        echo $twig->render(
             'torrent_form/year.html',
             [
             'db' => $ENV->DB->year,
@@ -1034,7 +1034,7 @@ HTML;
             $TorrentImage = esc($Torrent['Image']);
             $Disabled = $this->Disabled;
 
-            echo $Twig->render(
+            echo $twig->render(
                 'torrent_form/picture.html',
                 [
                     'db' => $ENV->DB->picture,
@@ -1052,7 +1052,7 @@ HTML;
          */
         if (!$this->DisabledFlag && $this->NewTorrent) {
             $TorrentMirrors = esc($Torrent['Mirrors']);
-            echo $Twig->render(
+            echo $twig->render(
                 'torrent_form/mirrors.html',
                 [
                   'db' => $ENV->DB->mirrors,
@@ -1097,7 +1097,7 @@ HTML;
 
         if ($ENV->FEATURE_BIOPHP && !$this->DisabledFlag && $this->NewTorrent) {
             $TorrentSeqhash = esc($Torrent['Seqhash']);
-            echo $Twig->render(
+            echo $twig->render(
                 'torrent_form/seqhash.html',
                 [
                     'db' => $ENV->DB->seqhash,
