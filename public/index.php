@@ -31,7 +31,6 @@ switch ($file) {
     case 'bookmarks':
     case 'collages':
     case 'comments':
-    case 'contest':
     case 'donate':
     case 'enable':
     case 'feeds':

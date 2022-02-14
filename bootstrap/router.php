@@ -20,8 +20,6 @@ declare(strict_types=1);
 
 /** comments */
 
-/** contest */
-
 /** donate */
 
 /** enable */

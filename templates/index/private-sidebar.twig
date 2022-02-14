@@ -61,23 +61,6 @@
     </ul>
 </div>
 
-{% if leaderboard %}
-<div class="box">
-    <div class="head colhead_dark"><strong>Contest Leaderboard</strong></div>
-    <table>
-    {% for entry in leaderboard %}
-        <tr>
-            <td><a href="user.php?id={{ entry.user_id }}">{{ entry.username }}</a></td>
-            <td>{{ entry.entry_count }}</td>
-        </tr>
-    {% endfor %}
-    </table>
-    <div class="center pad">
-        <a href="contest.php?action=leaderboard"><em>View More</em></a>
-    </div>
-</div>
-{% endif %}
-
 <div class="box">
     <div class="head colhead_dark"><strong>Stats</strong></div>
     <ul class="stats nobullet">

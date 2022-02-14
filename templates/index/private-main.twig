@@ -1,14 +1,4 @@
     <div class="main_column two-thirds column">
-{% if contest %}
-        <div id="contest-info" class="box news_post" style="text-align:center">
-    {% if contest.banner %}
-            <br /><a href="/contest.php?action=leaderboard">
-                <img src="{{ contest.banner }}" alt="{{ contest.name }}" title="{{ contest.name }}" />
-            </a>
-    {% endif %}
-            <h5>The <a href="/contest.php?action=leaderboard">{{ contest.name }}</a> {{ contest.is_over ? 'ended' : 'ends in' }} {{ contest.dateEnd|time_diff }}</h5>
-        </div>
-{% endif %}
 
         <div id="last_uploads" class="box news_post">
             <div class="head">
