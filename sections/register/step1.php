@@ -90,7 +90,7 @@ if (empty($Sent)) { ?>
       <td align="left">
         <input type="checkbox" name="readwiki" id="readwiki" value="1" <?php if (!empty($_REQUEST['readwiki'])) { ?>
         checked="checked"<?php } ?> />
-        <label for="readwiki">I consent to the <a href="/legal.php?p=privacy">privacy policy</a></label>
+        <label for="readwiki">I consent to the <a href="/privacy">privacy policy</a></label>
         <br /><br />
 
       </td>

@@ -54,9 +54,7 @@
         enableSubmit();
       }
     });
-
   });
-
 
   /**
    * calculateComplexity
@@ -68,7 +66,7 @@
     if (isUserPage()) {
       username = $(".username").text();
     } else {
-      username = $("#username").val() || '';
+      username = $("#username").val() || "";
     }
 
     var irckey;
@@ -107,16 +105,14 @@
     }
   }
 
-
   /**
    * isStrongPassword
-   * 
+   *
    * $ENV-PW_MIN is still harcoded here.
    */
   function isStrongPassword(password) {
     return /(?=^.{15,}$).*$/.test(password);
   }
-
 
   /**
    * checkMatching
@@ -138,14 +134,12 @@
     }
   }
 
-
   /**
    * getStrong
    */
   function getStrong() {
     return $("#pass_strength").text() == "Strong";
   }
-
 
   /**
    * setStatus
@@ -168,12 +162,16 @@
 
     if (strength == MATCH_IRCKEY) {
       disableSubmit();
-      $("#pass_strength").text("Password cannot match IRC Key").css("color", "red");
+      $("#pass_strength")
+        .text("Password cannot match IRC Key")
+        .css("color", "red");
     }
 
     if (strength == MATCH_USERNAME) {
       disableSubmit();
-      $("#pass_strength").text("Password cannot match Username").css("color", "red");
+      $("#pass_strength")
+        .text("Password cannot match Username")
+        .css("color", "red");
     }
 
     if (strength == COMMON) {
@@ -186,22 +184,19 @@
     }
   }
 
-
   /**
    * disableSubmit
    */
   function disableSubmit() {
-    $('input[type="submit"]').attr('disabled', 'disabled');
+    $('input[type="submit"]').attr("disabled", "disabled");
   }
-
 
   /**
    * enableSubmit
    */
   function enableSubmit() {
-    $('input[type="submit"]').removeAttr('disabled');
+    $('input[type="submit"]').removeAttr("disabled");
   }
-
 
   /**
    * isUserPage
@@ -209,6 +204,4 @@
   function isUserPage() {
     return window.location.pathname.indexOf(USER_PATH) != -1;
   }
-
 })();
-

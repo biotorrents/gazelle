@@ -1,12 +1,10 @@
 <?php
 
 if (!empty($LoggedUser['ID'])) {
-    header('Location: login.php');
-    error();
+    Http::redirect('login');
 }
 if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($U2FRegs)) {
-    header('Location: login.php');
-    error();
+    Http::redirect('login');
 }
 
 $U2FReq = json_encode($U2F->getAuthenticateData($U2FRegs));

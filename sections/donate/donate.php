@@ -136,7 +136,7 @@ View::header('Donate');
 
     <p>
       Please use
-      <a href="/sections/legal/pubkey.txt">GPG A1D095A5DEC74A8B</a>
+      <a href="/docs/pubkey.txt">GPG A1D095A5DEC74A8B</a>
       if you wish.
     </p>
   </div>

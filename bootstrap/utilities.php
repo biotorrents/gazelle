@@ -60,8 +60,7 @@ function logout()
     G::$Cache->delete_value('user_stats_' . G::$LoggedUser['ID']);
     G::$Cache->delete_value('user_info_heavy_' . G::$LoggedUser['ID']);
 
-    header('Location: login.php');
-    exit;
+    Http::redirect('login');
 }
 
 /**

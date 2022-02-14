@@ -48,96 +48,137 @@ var ajax = {
         callback(req.responseText);
       };
     }
-    req.open('POST', url, true);
+    req.open("POST", url, true);
     req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     req.send(params);
   },
 
   serialize: function (data) {
-    var query = '',
+    var query = "",
       elements;
     if (Array.isArray(data)) {
       for (var key in data) {
-        query += key + '=' + encodeURIComponent(data[key]) + '&';
+        query += key + "=" + encodeURIComponent(data[key]) + "&";
       }
     } else {
       elements = document.getElementById(data).elements;
       for (var i = 0, il = elements.length; i < il; i++) {
         var element = elements[i];
 
-        if (!element || element.disabled || element.name === '') {
+        if (!element || element.disabled || element.name === "") {
           continue;
         }
 
         switch (element.type) {
-          case 'text':
-          case 'hidden':
-          case 'password':
-          case 'textarea':
-          case 'select-one':
-            query += element.name + '=' + encodeURIComponent(element.value) + '&';
+          case "text":
+          case "hidden":
+          case "password":
+          case "textarea":
+          case "select-one":
+            query +=
+              element.name + "=" + encodeURIComponent(element.value) + "&";
             break;
 
-          case 'select-multiple':
+          case "select-multiple":
             for (var j = 0, jl = element.options.length; j < jl; j++) {
               var current = element.options[j];
               if (current.selected) {
-                query += element.name + '=' + encodeURIComponent(current.value) + '&';
+                query +=
+                  element.name + "=" + encodeURIComponent(current.value) + "&";
               }
             }
             break;
 
-          case 'radio':
+          case "radio":
             if (element.checked) {
-              query += element.name + '=' + encodeURIComponent(element.value) + '&';
+              query +=
+                element.name + "=" + encodeURIComponent(element.value) + "&";
             }
             break;
 
-          case 'checkbox':
+          case "checkbox":
             if (element.checked) {
-              query += element.name + '=' + encodeURIComponent(element.value) + '&';
+              query +=
+                element.name + "=" + encodeURIComponent(element.value) + "&";
             }
             break;
         }
       }
     }
     return query.substr(0, query.length - 1);
-  }
+  },
 };
 
 // Bookmarks
 function Bookmark(type, id, newName) {
-  var bmLinks = $('#bookmarklink_' + type + '_' + id + ', .bookmarklink_' + type + '_' + id);
+  var bmLinks = $(
+    "#bookmarklink_" + type + "_" + id + ", .bookmarklink_" + type + "_" + id
+  );
   var oldName = bmLinks.html();
 
-  ajax.get("bookmarks.php?action=add&type=" + type + "&auth=" + authkey + "&id=" + id, function () {
-    bmLinks.parent('.remove_bookmark, .add_bookmark').toggleClass('add_bookmark remove_bookmark');
-    bmLinks.html(newName).attr('title', 'Remove bookmark').removeAttr('onclick').off('click').click(function () {
-      Unbookmark(type, id, oldName);
-      return false;
-    });
-  });
+  ajax.get(
+    "bookmarks.php?action=add&type=" + type + "&auth=" + authkey + "&id=" + id,
+    function () {
+      bmLinks
+        .parent(".remove_bookmark, .add_bookmark")
+        .toggleClass("add_bookmark remove_bookmark");
+      bmLinks
+        .html(newName)
+        .attr("title", "Remove bookmark")
+        .removeAttr("onclick")
+        .off("click")
+        .click(function () {
+          Unbookmark(type, id, oldName);
+          return false;
+        });
+    }
+  );
 }
 
 function Unbookmark(type, id, newName) {
-  if (window.location.pathname.indexOf('bookmarks.php') != -1) {
-    ajax.get("bookmarks.php?action=remove&type=" + type + "&auth=" + authkey + "&id=" + id, function () {
-      $('#group_' + id).remove();
-      $('.image_group_' + id).remove();
-      $('.groupid_' + id).remove();
-      $('.bookmark_' + id).remove();
-      if (wall) wall('.collage_images', '.collage_image', 4);
-    });
+  if (window.location.pathname.indexOf("bookmarks.php") != -1) {
+    ajax.get(
+      "bookmarks.php?action=remove&type=" +
+        type +
+        "&auth=" +
+        authkey +
+        "&id=" +
+        id,
+      function () {
+        $("#group_" + id).remove();
+        $(".image_group_" + id).remove();
+        $(".groupid_" + id).remove();
+        $(".bookmark_" + id).remove();
+        if (wall) wall(".collage_images", ".collage_image", 4);
+      }
+    );
   } else {
-    var bmLinks = $('#bookmarklink_' + type + '_' + id + ', .bookmarklink_' + type + '_' + id);
+    var bmLinks = $(
+      "#bookmarklink_" + type + "_" + id + ", .bookmarklink_" + type + "_" + id
+    );
     var oldName = bmLinks.html();
 
-    ajax.get("bookmarks.php?action=remove&type=" + type + "&auth=" + authkey + "&id=" + id, function () {
-      bmLinks.parent('.remove_bookmark, .add_bookmark').toggleClass('add_bookmark remove_bookmark');
-      bmLinks.html(newName).attr('title', 'Add bookmark').removeAttr('onclick').off('click').click(function () {
-        Bookmark(type, id, oldName);
-        return false;
-      });
-    });
+    ajax.get(
+      "bookmarks.php?action=remove&type=" +
+        type +
+        "&auth=" +
+        authkey +
+        "&id=" +
+        id,
+      function () {
+        bmLinks
+          .parent(".remove_bookmark, .add_bookmark")
+          .toggleClass("add_bookmark remove_bookmark");
+        bmLinks
+          .html(newName)
+          .attr("title", "Add bookmark")
+          .removeAttr("onclick")
+          .off("click")
+          .click(function () {
+            Bookmark(type, id, oldName);
+            return false;
+          });
+      }
+    );
   }
 }

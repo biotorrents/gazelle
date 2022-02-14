@@ -15,5 +15,5 @@ if (isset($LoggedUser['ID'])) {
         }
     }
 } else {
-    header('Location: login.php');
+    Http::redirect('login');
 }

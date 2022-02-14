@@ -45,8 +45,7 @@ EOT;
     public static function new_request($Username, $Email)
     {
         if (empty($Username)) {
-            header('Location: login.php');
-            error();
+            Http::redirect('login');
         }
 
         // Get the user's ID

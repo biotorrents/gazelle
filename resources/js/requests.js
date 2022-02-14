@@ -35,17 +35,17 @@ function Vote(amount, requestid) {
 
   ajax.get(
     "requests.php?action=takevote&id=" +
-    requestid +
-    "&auth=" +
-    authkey +
-    "&amount=" +
-    amount,
+      requestid +
+      "&auth=" +
+      authkey +
+      "&amount=" +
+      amount,
     function (response) {
       if (response == "bankrupt") {
         save_message(
           "You do not have sufficient upload credit to add " +
-          get_size(amount) +
-          " to this request",
+            get_size(amount) +
+            " to this request",
           true
         );
         return;
@@ -63,10 +63,10 @@ function Vote(amount, requestid) {
 
         save_message(
           "Your vote of " +
-          get_size(amount) +
-          ", adding a " +
-          get_size(amount * (1 - $("#request_tax").raw().value)) +
-          " bounty, has been added"
+            get_size(amount) +
+            ", adding a " +
+            get_size(amount * (1 - $("#request_tax").raw().value)) +
+            " bounty, has been added"
         );
         $("#button").raw().disabled = true;
       } else {
@@ -124,7 +124,7 @@ function Calculate() {
 
 var ArtistCount = 1;
 function AddArtistField() {
-  window.getSelection().removeAllRanges()
+  window.getSelection().removeAllRanges();
   ArtistCount = $('input[name="artists[]"]').length;
 
   if (ArtistCount >= 200) {
@@ -137,15 +137,15 @@ function AddArtistField() {
   ArtistField.name = "artists[]";
   ArtistField.size = 45;
 
-  var x = $('#artistfields').raw();
+  var x = $("#artistfields").raw();
   x.appendChild(document.createElement("br"));
   x.appendChild(ArtistField);
-  x.appendChild(document.createTextNode('\n'));
+  x.appendChild(document.createTextNode("\n"));
 
   if ($("#artists_0").data("gazelle-autocomplete")) {
-    $(ArtistField).on('focus', function () {
+    $(ArtistField).on("focus", function () {
       $(ArtistField).autocomplete({
-        serviceUrl: ARTIST_AUTOCOMPLETE_URL
+        serviceUrl: ARTIST_AUTOCOMPLETE_URL,
       });
     });
   }
@@ -153,14 +153,14 @@ function AddArtistField() {
 }
 
 function RemoveArtistField() {
-  window.getSelection().removeAllRanges()
+  window.getSelection().removeAllRanges();
   ArtistCount = $('input[name="artists[]"]').length;
 
   if (ArtistCount == 1) {
     return;
   }
 
-  var x = $('#artistfields').raw();
+  var x = $("#artistfields").raw();
   for (i = 0; i < 3; i++) {
     x.removeChild(x.lastChild);
   }
@@ -168,17 +168,27 @@ function RemoveArtistField() {
 }
 
 function add_tag() {
-  if ($('#tags').raw().value == "") {
-    $('#tags').raw().value = $('#genre_tags').raw().options[$('#genre_tags').raw().selectedIndex].value;
-  } else if ($('#genre_tags').raw().options[$('#genre_tags').raw().selectedIndex].value == "---") {
+  if ($("#tags").raw().value == "") {
+    $("#tags").raw().value =
+      $("#genre_tags").raw().options[
+        $("#genre_tags").raw().selectedIndex
+      ].value;
+  } else if (
+    $("#genre_tags").raw().options[$("#genre_tags").raw().selectedIndex]
+      .value == "---"
+  ) {
   } else {
-    $('#tags').raw().value = $('#tags').raw().value + ", " + $('#genre_tags').raw().options[$('#genre_tags').raw().selectedIndex].value;
+    $("#tags").raw().value =
+      $("#tags").raw().value +
+      ", " +
+      $("#genre_tags").raw().options[$("#genre_tags").raw().selectedIndex]
+        .value;
   }
 }
 
 function Toggle(id, disable) {
-  var arr = document.getElementsByName(id + '[]');
-  var master = $('#toggle_' + id).raw().checked;
+  var arr = document.getElementsByName(id + "[]");
+  var master = $("#toggle_" + id).raw().checked;
   for (var x in arr) {
     arr[x].checked = master;
     if (disable == 1) {
@@ -217,51 +227,51 @@ function ToggleLogScore() {
 
 function JavAutofill() {
   var map = {
-    cn: 'javdb',
-    idols: 'artist',
-    title: 'title',
-    title_jp: 'title_jp',
-    image: 'image',
-    tags: 'tags',
-    description: 'req_desc'
-  }
-  var cn = $('#catalogue').raw().value.toUpperCase()
-  $.getJSON('/api.php?action=javfill&cn=' + cn, function (data) {
+    cn: "javdb",
+    idols: "artist",
+    title: "title",
+    title_jp: "title_jp",
+    image: "image",
+    tags: "tags",
+    description: "req_desc",
+  };
+  var cn = $("#catalogue").raw().value.toUpperCase();
+  $.getJSON("/api.php?action=javfill&cn=" + cn, function (data) {
     if (data.status != "success") {
-      $('#catalogue').raw().value = 'Failed'
-      return
+      $("#catalogue").raw().value = "Failed";
+      return;
     } else {
-      $('#catalogue').raw().value = data.response.cn
+      $("#catalogue").raw().value = data.response.cn;
     }
     for (i in data.response) {
       if (Array.isArray(data.response[i])) {
         for (j in data.response[i]) {
-          if (i == 'idols') {
-            if (!($('#' + map[i] + '_' + j).raw())) {
-              AddArtistField()
+          if (i == "idols") {
+            if (!$("#" + map[i] + "_" + j).raw()) {
+              AddArtistField();
             }
-            $('#' + map[i] + '_' + j).raw().value = data.response[i][j]
+            $("#" + map[i] + "_" + j).raw().value = data.response[i][j];
           }
-          if (map[i] == 'tags' && !($('#' + map[i]).raw().value)) {
-            $('#' + map[i]).raw().value = data.response[i].join(', ')
+          if (map[i] == "tags" && !$("#" + map[i]).raw().value) {
+            $("#" + map[i]).raw().value = data.response[i].join(", ");
           }
         }
       }
-      if (map[i] && $('#' + map[i]).raw() && !($('#' + map[i]).raw().value)) {
-        $('#' + map[i]).raw().value = data.response[i]
+      if (map[i] && $("#" + map[i]).raw() && !$("#" + map[i]).raw().value) {
+        $("#" + map[i]).raw().value = data.response[i];
       }
     }
-  })
+  });
 }
 
 $(function () {
-  Categories()
-  Calculate()
-  document.querySelectorAll('[autofill]').forEach(function (el) {
-    el.addEventListener('click', function (event) {
-      ({ 'jav': JavAutofill })[el.attributes['autofill'].value]()
-    })
-  })
-  $(document).on('click', '.add_artist_button', AddArtistField);
-  $(document).on('click', '.remove_artist_button', RemoveArtistField);
-})
+  Categories();
+  Calculate();
+  document.querySelectorAll("[autofill]").forEach(function (el) {
+    el.addEventListener("click", function (event) {
+      ({ jav: JavAutofill }[el.attributes["autofill"].value]());
+    });
+  });
+  $(document).on("click", ".add_artist_button", AddArtistField);
+  $(document).on("click", ".remove_artist_button", RemoveArtistField);
+});

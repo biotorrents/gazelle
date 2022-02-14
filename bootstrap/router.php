@@ -37,12 +37,55 @@ declare(strict_types=1);
 /** inbox */
 
 /** index */
+Flight::route('/', function () {
+    if (isset($LoggedUser['ID'])) {
+        #if (!isset($_REQUEST['action'])) {
+        require_once __DIR__.'/../sections/index/private.php';
+    #} else {
+            /*
+        switch ($_REQUEST['action']) {
+            case 'poll':
+                include(SERVER_ROOT.'/sections/forums/poll_vote.php');
+                break;
+
+            default:
+                error(400);
+            }
+            */
+        #}
+    } else {
+        Http::redirect('login');
+    }
+});
 
 /** legal */
+Flight::route('/about', function () {
+    $twig = Twig::go();
+    View::header('About');
+    echo $twig->render('legal/about.html');
+    View::footer();
+});
+
+Flight::route('/dmca', function () {
+    $twig = Twig::go();
+    View::header('DMCA');
+    echo $twig->render('legal/dmca.html');
+    View::footer();
+});
+
+Flight::route('/privacy', function () {
+    $twig = Twig::go();
+    View::header('Privacy');
+    echo $twig->render('legal/privacy.html');
+    View::footer();
+});
 
 /** log */
 
 /** login */
+Flight::route('/login', function () {
+    require_once __DIR__.'/../sections/login/login.php';
+});
 
 /** logout */
 

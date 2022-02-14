@@ -103,9 +103,9 @@ function show_downloads(TorrentID, Page) {
   if (Page > 0) {
     ajax.get(
       "torrents.php?action=downloadlist&page=" +
-      Page +
-      "&torrentid=" +
-      TorrentID,
+        Page +
+        "&torrentid=" +
+        TorrentID,
       function (response) {
         $("#downloads_" + TorrentID)
           .gshow()

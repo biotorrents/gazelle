@@ -21,14 +21,21 @@ function Cancel() {
 }
 
 function CollageSubscribe(collageid) {
-  ajax.get("userhistory.php?action=collage_subscribe&collageid=" + collageid + "&auth=" + authkey, function () {
-    var subscribeLink = $("#subscribelink" + collageid).raw();
-    if (subscribeLink) {
-      subscribeLink.firstChild.nodeValue = subscribeLink.firstChild.nodeValue.charAt(0) == 'U'
-        ? "Subscribe"
-        : "Unsubscribe";
+  ajax.get(
+    "userhistory.php?action=collage_subscribe&collageid=" +
+      collageid +
+      "&auth=" +
+      authkey,
+    function () {
+      var subscribeLink = $("#subscribelink" + collageid).raw();
+      if (subscribeLink) {
+        subscribeLink.firstChild.nodeValue =
+          subscribeLink.firstChild.nodeValue.charAt(0) == "U"
+            ? "Subscribe"
+            : "Unsubscribe";
+      }
     }
-  });
+  );
 }
 
 var collageShow = {
@@ -36,31 +43,37 @@ var collageShow = {
   pages: false,
   wrap: false,
   init: function (collagePages) {
-    this.wrap = document.getElementById('coverart');
+    this.wrap = document.getElementById("coverart");
     this.pages = collagePages;
     this.max = this.pages.length - 1;
   },
 
   selected: function () {
-    return $('.linkbox .selected').raw();
+    return $(".linkbox .selected").raw();
   },
 
   createUL: function (data) {
-    var ul = document.createElement('div');
-    $(ul).add_class('collage_images');
-    ul.id = 'collage_page' + this.pg;
+    var ul = document.createElement("div");
+    $(ul).add_class("collage_images");
+    ul.id = "collage_page" + this.pg;
     $(ul).html(data);
 
-    $('.tooltip_interactive', ul).each(function () {
-      if ($(this).data('title-plain')) {
-        $(this).attr('title', $(this).data('title-plain')).removeData('title-plain');
+    $(".tooltip_interactive", ul).each(function () {
+      if ($(this).data("title-plain")) {
+        $(this)
+          .attr("title", $(this).data("title-plain"))
+          .removeData("title-plain");
       }
     });
     this.wrap.appendChild(ul);
     return ul;
   },
   page: function (num, el) {
-    var ul = $('#collage_page' + num).raw(), s = this.selected(), covers, lists, i;
+    var ul = $("#collage_page" + num).raw(),
+      s = this.selected(),
+      covers,
+      lists,
+      i;
     this.pg = num;
 
     if (!ul) {
@@ -70,25 +83,27 @@ var collageShow = {
       }
     }
 
-    $('.collage_images').ghide();
+    $(".collage_images").ghide();
 
     $(ul).gshow();
     if (s) {
-      $(s).remove_class('selected');
+      $(s).remove_class("selected");
     }
 
     if (el) {
-      $(el.parentNode).add_class('selected');
+      $(el.parentNode).add_class("selected");
     }
 
-    $('.collage_image img').on('load', function () {
+    $(".collage_image img").on("load", function () {
       var test = true;
-      $('.collage_image img').toArray().forEach(function (el) {
-        if (!el.complete) test = false
-      })
-      if (test) wall('.collage_images', '.collage_image', 4)
-    })
-    wall('.collage_images', '.collage_image', 4)
+      $(".collage_image img")
+        .toArray()
+        .forEach(function (el) {
+          if (!el.complete) test = false;
+        });
+      if (test) wall(".collage_images", ".collage_image", 4);
+    });
+    wall(".collage_images", ".collage_image", 4);
 
     // Toggle the page number links
     first = Math.max(0, this.pg - 2);
@@ -98,47 +113,47 @@ var collageShow = {
 
     last = Math.min(first + 4, this.max);
     for (i = 0; i < first; i++) {
-      $('#pagelink' + i).ghide();
+      $("#pagelink" + i).ghide();
     }
 
     for (i = first; i <= last; i++) {
-      $('#pagelink' + i).gshow();
+      $("#pagelink" + i).gshow();
     }
 
     for (i = last + 1; i <= this.max; i++) {
-      $('#pagelink' + i).ghide();
+      $("#pagelink" + i).ghide();
     }
 
     // Toggle the first, prev, next, and last links
     if (this.pg > 0) {
-      $('#prevpage').remove_class('invisible');
+      $("#prevpage").remove_class("invisible");
     } else {
-      $('#prevpage').add_class('invisible');
+      $("#prevpage").add_class("invisible");
     }
 
     if (this.pg > 1) {
-      $('#firstpage').remove_class('invisible');
+      $("#firstpage").remove_class("invisible");
     } else {
-      $('#firstpage').add_class('invisible');
+      $("#firstpage").add_class("invisible");
     }
 
     if (this.pg < this.max) {
-      $('#nextpage').remove_class('invisible');
+      $("#nextpage").remove_class("invisible");
     } else {
-      $('#nextpage').add_class('invisible');
+      $("#nextpage").add_class("invisible");
     }
 
     if (this.pg < this.max - 1) {
-      $('#lastpage').remove_class('invisible');
+      $("#lastpage").remove_class("invisible");
     } else {
-      $('#lastpage').add_class('invisible');
+      $("#lastpage").add_class("invisible");
     }
 
     // Toggle the bar
-    if ((last == this.max) && (this.pg != this.max)) {
-      $('#nextbar').gshow();
+    if (last == this.max && this.pg != this.max) {
+      $("#nextbar").gshow();
     } else {
-      $('#nextbar').ghide();
+      $("#nextbar").ghide();
     }
   },
 
@@ -153,6 +168,6 @@ var collageShow = {
   },
 
   pager: function () {
-    this.page(this.pg, $('#pagelink' + this.pg).raw().firstChild);
-  }
+    this.page(this.pg, $("#pagelink" + this.pg).raw().firstChild);
+  },
 };

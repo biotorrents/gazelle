@@ -4,6 +4,9 @@ declare(strict_types=1);
 $ENV = ENV::go();
 $Twig = Twig::go();
 
+$Attempts = $Attempts ?? 0;
+$Banned = $Banned ?? false;
+
 View::header('Login');
 ?>
 

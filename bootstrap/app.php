@@ -386,7 +386,7 @@ if (isset(G::$LoggedUser['LockedAccount']) && !in_array($Document, $AllowedPages
     # Routing: transition from homebrew to Flight
     # This check is necessary because the codebase is shit
     # Flight enforces strict standards that break most things
-    if (file_exists("$ENV->SERVER_ROOT/sections/$Document/index.php")) {
+    if (file_exists("$ENV->SERVER_ROOT/sections/$Document/index.php") && str_contains($_SERVER['REQUEST_URI'], '.php')) {
         require_once "$ENV->SERVER_ROOT/sections/$Document/index.php";
     }
 }
@@ -397,6 +397,3 @@ $Debug['messages']->info('completed module execution');
 ob_end_flush();
 
 $Debug['messages']->info('set headers and send to user');
-
-// Attribute profiling
-#$Debug->profile();

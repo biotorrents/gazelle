@@ -165,8 +165,8 @@ function Edit_Form(post, key) {
     pmbox =
       postuserid != userid
         ? '<span id="pmbox' +
-        postid +
-        '"><label>PM user on edit? <input type="checkbox" name="pm" value="1" /></label></span>'
+          postid +
+          '"><label>PM user on edit? <input type="checkbox" name="pm" value="1" /></label></span>'
         : "";
     inputname = location.href.match(/forums\.php/) ? "post" : "postid";
     $("#bar" + postid).raw().cancel = $("#content" + postid).raw().innerHTML;
@@ -428,11 +428,11 @@ function Newthread_Preview(mode) {
 function LoadEdit(type, post, depth) {
   ajax.get(
     "forums.php?action=ajax_get_edit&postid=" +
-    post +
-    "&depth=" +
-    depth +
-    "&type=" +
-    type,
+      post +
+      "&depth=" +
+      depth +
+      "&type=" +
+      type,
     function (response) {
       $("#content" + post).raw().innerHTML = response;
     }
@@ -595,7 +595,11 @@ document.querySelectorAll("[data-quote-jump]").forEach(function (el) {
   });
 });
 
-if ($('[data-autosave-text]').raw()) {
-  var el = $('[data-autosave-text]').raw()
-  var storedTempTextarea = new StoreText(el.attributes['data-autosave-text'].value, el.id, $('[data-autosave-id]').raw().attributes['value'].value);
+if ($("[data-autosave-text]").raw()) {
+  var el = $("[data-autosave-text]").raw();
+  var storedTempTextarea = new StoreText(
+    el.attributes["data-autosave-text"].value,
+    el.id,
+    $("[data-autosave-id]").raw().attributes["value"].value
+  );
 }

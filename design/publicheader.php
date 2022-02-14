@@ -16,13 +16,13 @@ echo <<<HTML
 HTML;
 
 echo $Twig->render(
-  'header/meta-tags.html',
-  [
+    'header/meta-tags.html',
+    [
     'ENV' => $ENV,
     'LoggedUser' => $LoggedUser,
     'title' => esc($PageTitle)
   ]
-  );
+);
 
 # Load JS
 $Scripts = array_filter(
@@ -31,7 +31,6 @@ $Scripts = array_filter(
           'vendor/jquery.min',
           'global',
           'ajax.class',
-          'cookie.class',
           'storage.class',
           'public',
           'vendor/u2f-api'
@@ -78,7 +77,7 @@ if ($ENV->OPEN_REGISTRATION) {
 }
 
 echo <<<HTML
-    <a href="/legal.php?p=about">About</a>
+    <a href="/about">About</a>
     <a class="external" href="https://docs.torrents.bio" target="_blank">Docs</a>
   </header>
 

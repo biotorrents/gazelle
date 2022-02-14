@@ -11,20 +11,54 @@ declare(strict_types=1);
 class Http
 {
     /**
-     * Redirect
+     * redirect
      *
      * Simple header('Location: foo') wrapper.
      * Handles checks, format, and exiting.
      */
     public static function redirect(string $uri)
     {
-        return (headers_sent()) ?? false;
+        if (headers_sent()) {
+            return false;
+        }
 
         $uri = htmlentities($uri);
-        header("Location: $uri");
+        header("Location: /{$uri}");
         exit;
     }
 
+    /**
+     * query
+     *
+     * Validates and escapes request parameters.
+     */
+    public static function query() : array
+    {
+        # hold escapes
+        $safe = [
+            'get' => null,
+            'post' => null,
+            'cookie' => null,
+            'files' => null
+        ];
+
+        # get
+        $safe['get'] = filter_input_array(INPUT_GET, $_GET);
+
+        # post
+        $safe['post'] = filter_input_array(INPUT_POST, $_POST);
+
+        # cookie
+        $safe['cookie'] = filter_input_array(INPUT_COOKIE, $_COOKIE);
+
+        # files
+        $safe['files'] = filter_input_array(INPUT_POST, $_FILES);
+
+        # should be okay
+        return $safe;
+    }
+
+    
     /**
      * response
      *
@@ -36,7 +70,9 @@ class Http
      */
     public static function response(int $code = 200)
     {
-        return (headers_sent()) ?? false;
+        if (headers_sent()) {
+            return false;
+        }
 
         switch ($code) {
             # 1xx informational response
@@ -96,7 +132,7 @@ class Http
             : 'HTTP/2';
 
         $GLOBALS['http_response_code'] = $code;
-        header("$protocol $code $text");
+        header("{$protocol} {$code} {$text}");
         exit;
     }
 }
