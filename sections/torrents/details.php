@@ -371,7 +371,7 @@ $Index++;
           <input type="submit" class="button-primary" value="Add" />
         </form>
         <br />
-        <strong><a href="rules.php?p=tag" class="brackets">View tagging rules</a></strong>
+        <strong><a href="/rules/tags" class="brackets">View tagging rules</a></strong>
       </div>
     </div>
     <?php

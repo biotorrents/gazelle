@@ -60,7 +60,7 @@ $Types = array(
         'warn' => '4',
         'delete' => '1',
         'pm' => '[rule]h1.3[/rule]. You have uploaded material that is currently forbidden.
-        Items on the [url='.site_url().'rules.php?p=upload#h1.3]Specifically Banned[/url] portion of the uploading rules cannot be uploaded to the site.
+        Items on the [url='.site_url().'/rules/upload#h1.3]Specifically Banned[/url] portion of the uploading rules cannot be uploaded to the site.
         Your torrent was reported because it contained material from the Specifically Banned section of the rules.'
       ),
     ),

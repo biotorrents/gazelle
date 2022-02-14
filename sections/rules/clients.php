@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 View::header('Client rules');
 
-if (!$WhitelistedClients = $Cache->get_value('whitelisted_clients')) {
-    $DB->query("
+if (!$WhitelistedClients = G::$Cache->get_value('whitelisted_clients')) {
+    G::$DB->query("
     SELECT
       `vstring`
     FROM
@@ -15,8 +15,8 @@ if (!$WhitelistedClients = $Cache->get_value('whitelisted_clients')) {
       `vstring` ASC
     ");
 
-    $WhitelistedClients = $DB->to_array(false, MYSQLI_NUM, false);
-    $Cache->cache_value('whitelisted_clients', $WhitelistedClients, 604800);
+    $WhitelistedClients = G::$DB->to_array(false, MYSQLI_NUM, false);
+    G::$Cache->cache_value('whitelisted_clients', $WhitelistedClients, 604800);
 }
 ?>
 

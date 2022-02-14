@@ -72,6 +72,10 @@ if ($valid) {
     require_once __DIR__.'/../config/app.php';
     require_once __DIR__.'/../bootstrap/utilities.php';
     require_once __DIR__.'/../bootstrap/app.php';
-} else {
+}
+
+/*
+else {
     Http::response(404);
 }
+*/

@@ -307,7 +307,7 @@ if (check_perms('site_send_unlimited_invites')) {
         </li>
         <?php if (!empty(G::$LoggedUser['RequiredRatio']) && G::$LoggedUser['RequiredRatio'] > 0) { ?>
         <li id="stats_required">
-          <a href="rules.php?p=ratio">Required</a>:
+          <a href="/rules/ratio">Required</a>:
           <span class="stat tooltip"
             title="<?=number_format(G::$LoggedUser['RequiredRatio'], 5)?>"><?=number_format(G::$LoggedUser['RequiredRatio'], 2)?></span>
         </li>
@@ -369,9 +369,9 @@ if ($NotificationsManager->is_traditional(NotificationsManager::INBOX)) {
 }
 
 if (G::$LoggedUser['RatioWatch']) {
-    $Alerts[] = '<a href="rules.php?p=ratio">Ratio Watch</a>: You have '.time_diff(G::$LoggedUser['RatioWatchEnds'], 3).' to get your ratio over your required ratio or your leeching abilities will be disabled.';
+    $Alerts[] = '<a href="/rules/ratio">Ratio Watch</a>: You have '.time_diff(G::$LoggedUser['RatioWatchEnds'], 3).' to get your ratio over your required ratio or your leeching abilities will be disabled.';
 } elseif ((int) G::$LoggedUser['CanLeech'] !== 1) {
-    $Alerts[] = '<a href="rules.php?p=ratio">Ratio Watch</a>: Your downloading privileges are disabled until you meet your required ratio.';
+    $Alerts[] = '<a href="/rules/ratio">Ratio Watch</a>: Your downloading privileges are disabled until you meet your required ratio.';
 }
 
 // Torrents

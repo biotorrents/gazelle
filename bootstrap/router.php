@@ -38,7 +38,7 @@ declare(strict_types=1);
 
 /** index */
 Flight::route('/', function () {
-    if (isset($LoggedUser['ID'])) {
+    if (isset(G::$LoggedUser['ID'])) {
         #if (!isset($_REQUEST['action'])) {
         require_once __DIR__.'/../sections/index/private.php';
     #} else {
@@ -84,7 +84,9 @@ Flight::route('/privacy', function () {
 
 /** login */
 Flight::route('/login', function () {
-    require_once __DIR__.'/../sections/login/login.php';
+    # 2022-02-13: currently lots of crazy logic here
+    require_once __DIR__.'/../sections/login/index.php';
+    #require_once __DIR__.'/../sections/login/login.php';
 });
 
 /** logout */
@@ -102,6 +104,37 @@ Flight::route('/login', function () {
 /** requests */
 
 /** rules */
+Flight::route('/rules', function () {
+    require_once __DIR__.'/../sections/rules/rules.php';
+});
+
+Flight::route('/rules/chat', function () {
+    require_once __DIR__.'/../sections/rules/chat.php';
+});
+
+Flight::route('/rules/clients', function () {
+    require_once __DIR__.'/../sections/rules/clients.php';
+});
+
+Flight::route('/rules/collages', function () {
+    require_once __DIR__.'/../sections/rules/collages.php';
+});
+
+Flight::route('/rules/ratio', function () {
+    require_once __DIR__.'/../sections/rules/ratio.php';
+});
+
+Flight::route('/rules/requests', function () {
+    require_once __DIR__.'/../sections/rules/requests.php';
+});
+
+Flight::route('/rules/tags', function () {
+    require_once __DIR__.'/../sections/rules/tags.php';
+});
+
+Flight::route('/rules/upload', function () {
+    require_once __DIR__.'/../sections/rules/upload.php';
+});
 
 /** schedule */
 

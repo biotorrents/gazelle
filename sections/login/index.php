@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * Login handler
- * 
+ *
  * I don't know where to start here.
  * Maybe the nested conditionals from Line 34.
  * That's the whole file, after all.
@@ -15,8 +15,12 @@ $Validate = new Validate;
 $TwoFA = new \RobThree\Auth\TwoFactorAuth($ENV->SITE_NAME);
 $U2F = new \u2flib_server\U2F("https://$ENV->SITE_DOMAIN");
 
+# Fix Flight, ugh
+$action = $_REQUEST['action'] ?? null;
+$Cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
+
 # They want the disabled page
-if ($_REQUEST['action'] === 'disabled') {
+if ($action === 'disabled') {
     header('Location: disabled.php');
     exit;
 }
@@ -27,7 +31,7 @@ if (Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
 }
 
 # Account recovery workflow
-if ($_REQUEST['action'] === 'recover') {
+if ($action === 'recover') {
     // Recover password
     if (!empty($_REQUEST['key'])) {
         // User has entered a new password, use step 2
@@ -203,8 +207,11 @@ else {
     $Validate->SetFields('username', true, 'regex', 'You did not enter a valid username', array('regex' => USERNAME_REGEX));
     $Validate->SetFields('password', '1', 'string', 'You entered an invalid password', array('minlength' => '15', 'maxlength' => '307200'));
 
-    list($Attempts, $Banned) = $Cache->get_value('login_attempts_'.db_string($_SERVER['REMOTE_ADDR']));
-
+    try {
+        list($Attempts, $Banned) = $Cache->get_value('login_attempts_'.db_string($_SERVER['REMOTE_ADDR']));
+    } catch (Exception $e) {
+        $Cache->add_value('login_attempts_'.db_string($_SERVER['REMOTE_ADDR']), 0);
+    }
     // Function to log a user's login attempt
     function log_attempt()
     {
@@ -212,7 +219,7 @@ else {
 
         $Attempts = ($Attempts ?? 0) + 1;
         $Cache->cache_value('login_attempts_'.db_string($_SERVER['REMOTE_ADDR']), array($Attempts, ($Attempts > 5)), 60*60*$Attempts);
-        $AllAttempts = $Cache->get_value('login_attempts');
+        $AllAttempts = ($Cache->get_value('login_attempts')) ? false : [];
         $AllAttempts[$_SERVER['REMOTE_ADDR']] = time()+(60*60*$Attempts);
         foreach ($AllAttempts as $IP => $Time) {
             if ($Time < time()) {
@@ -259,7 +266,6 @@ else {
                     if (empty($TwoFactor) || $TwoFA->verifyCode($TwoFactor, $_POST['twofa'])) {
                         # todo: Make sure the type is (int)
                         if ($Enabled === '1') {
-
                             $U2FRegs = [];
                             $DB->query("
                             SELECT KeyHandle, PublicKey, Certificate, Counter, Valid
@@ -314,7 +320,7 @@ else {
                                 Cookie::set('session', $SessionID);
                                 Cookie::set('userid', $UserID);
 
-                                    $DB->query("
+                                $DB->query("
                                 INSERT INTO users_sessions
                                   (UserID, SessionID, KeepLogged, IP, LastUpdate, FullUA)
                                 VALUES
@@ -346,7 +352,7 @@ else {
                                     $URL = $_COOKIE['redirect'];
                                     Cookie::del('redirect');
                                     header("Location: $URL");
-                                    #error();
+                                #error();
                                 } else {
                                     header('Location: index.php');
                                     #error();

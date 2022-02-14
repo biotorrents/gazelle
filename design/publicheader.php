@@ -69,7 +69,7 @@ echo <<<HTML
 
 <body>
   <header>
-    <a href="login.php">Log In</a>
+    <a href="/login">Log In</a>
 HTML;
 
 if ($ENV->OPEN_REGISTRATION) {

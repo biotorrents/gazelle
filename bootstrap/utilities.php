@@ -38,6 +38,7 @@ function esc(mixed $string)
 function logout()
 {
     global $SessionID;
+    G::$LoggedUser['ID'] = G::$LoggedUser['ID'] ?? null;
     
     Cookie::del('session');
     Cookie::del('userid');

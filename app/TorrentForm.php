@@ -361,7 +361,7 @@ HTML;
             <aside class="torrent_upload">
               <p>
                 Be sure that your torrent is approved by the
-                <a href="rules.php?p=upload" target="_blank">rules</a>.
+                <a href="/rules/upload" target="_blank">rules</a>.
                 Not doing this will result in a
                 <strong class="important_text">warning</strong> or
                 <strong class="important_text">worse</strong>.

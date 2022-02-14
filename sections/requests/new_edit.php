@@ -131,7 +131,7 @@ View::header(
       <table class="skeleton-fix">
         <tr>
           <td colspan="2" class="center">Please make sure your request follows the
-            <a href="rules.php?p=requests">request rules</a>!
+            <a href="/rules/requests">request rules</a>!
           </td>
         </tr>
         <?php if ($NewRequest || $CanEdit) { ?>

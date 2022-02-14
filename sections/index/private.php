@@ -4,6 +4,11 @@
 $ENV = ENV::go();
 $NewsCount = 2;
 
+# fix for flight
+$Cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
+$LoggedUser = G::$LoggedUser;
+$DB = new DB;
+
 if (!$News = $Cache->get_value('news')) {
     $DB->query("
     SELECT
@@ -43,7 +48,7 @@ View::header('News', 'news_ajax');
     <div class="head colhead_dark"><strong><a href="blog.php">Latest blog posts</a></strong></div>
     <?php
 if (($Blog = $Cache->get_value('blog')) === false) {
-        $DB->query("
+    $DB->query("
     SELECT
       b.ID,
       um.Username,
@@ -56,9 +61,9 @@ if (($Blog = $Cache->get_value('blog')) === false) {
       LEFT JOIN users_main AS um ON b.UserID = um.ID
     ORDER BY Time DESC
     LIMIT 20");
-        $Blog = $DB->to_array();
-        $Cache->cache_value('blog', $Blog, 1209600);
-    }
+    $Blog = $DB->to_array();
+    $Cache->cache_value('blog', $Blog, 1209600);
+}
 ?>
     <ul class="stats nobullet">
       <?php

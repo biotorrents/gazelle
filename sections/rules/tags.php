@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 # Formerly Rules::display_site_tag_rules()
 View::header('Tagging rules');
+
+$OnUpload = $OnUpload ?? null;
 ?>
 
 <div>

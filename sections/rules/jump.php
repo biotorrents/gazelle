@@ -13,7 +13,7 @@ declare(strict_types=1);
 
     <tr class="row">
       <td>
-        <strong><a href="rules.php?p=upload">Upload</a></strong>
+        <strong><a href="/rules/upload">Upload</a></strong>
       </td>
       <td>
         <strong>If you only read one rules page, this is the one to read</strong>
@@ -22,7 +22,7 @@ declare(strict_types=1);
 
     <tr class="row">
       <td>
-        <strong><a href="rules.php?p=ratio">Ratio</a></strong>
+        <strong><a href="/rules/ratio">Ratio</a></strong>
       </td>
       <td>
         <strong>There's really two pages: required ratio table and calculation</strong>
@@ -31,7 +31,7 @@ declare(strict_types=1);
 
     <tr class="row">
       <td>
-        <a href="rules.php?p=requests">Requests</a>
+        <a href="/rules/requests">Requests</a>
       </td>
       <td>
         These are the rules that govern requests
@@ -40,7 +40,7 @@ declare(strict_types=1);
 
     <tr class="row">
       <td>
-        <a href="rules.php?p=collages">Collections</a>
+        <a href="/rules/collages">Collections</a>
       </td>
       <td>
         These are the rules that govern collections
@@ -49,7 +49,7 @@ declare(strict_types=1);
 
     <tr class="row">
       <td>
-        <a href="rules.php?p=clients">Clients</a>
+        <a href="/rules/clients">Clients</a>
       </td>
       <td>
         These are the clients we allow to connect to our tracker and rules specific to them
@@ -58,7 +58,7 @@ declare(strict_types=1);
 
     <tr class="row">
       <td>
-        <a href="rules.php?p=chat">Chat</a>
+        <a href="/rules/chat">Chat</a>
       </td>
       <td>
         Read this before posting in our forums or talking on our IRC network
@@ -67,7 +67,7 @@ declare(strict_types=1);
 
     <tr class="row">
       <td>
-        <a href="rules.php?p=tag">Tagging</a>
+        <a href="/rules/tags">Tagging</a>
       </td>
       <td>
         These rules govern what tags can and cannot be added

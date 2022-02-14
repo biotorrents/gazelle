@@ -128,7 +128,7 @@ View::textarea(
           <td colspan="2" class="center">
             <strong>
               Please ensure your collection will be allowed under the
-              <a href="rules.php?p=collages">Collection Rules</a>.
+              <a href="/rules/collages">Collection Rules</a>.
             </strong>
           </td>
         </tr>
