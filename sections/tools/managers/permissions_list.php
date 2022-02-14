@@ -1,4 +1,4 @@
-<?
+<?php
 View::header('Manage Permissions');
 ?>
 <script type="text/javascript">//<![CDATA[
@@ -17,7 +17,7 @@ function confirmDelete(id) {
       <a href="tools.php" class="brackets">Back to tools</a>
     </div>
   </div>
-<?
+<?php
 $DB->prepared_query("
   SELECT
     p.ID,
@@ -53,12 +53,12 @@ if ($DB->has_results()) {
 <?php } ?>
   </table>
   </div>
-<?
+<?php
 } else { ?>
   <h2>There are no permission classes.</h2>
-<?
+<?php
 } ?>
 </div>
-<?
+<?php
 View::footer();
 ?>

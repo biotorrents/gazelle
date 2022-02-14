@@ -77,7 +77,7 @@ View::header('User search');
         <td width="50%">Username</td>
         <td>Primary class</td>
       </tr>
-<?
+<?php
   foreach ($Results as $Result) {
     list($UserID, $Username, $Enabled, $PermissionID, $Donor, $Warned) = $Result;
 ?>
@@ -92,4 +92,4 @@ View::header('User search');
   <?=$Pages?>
   </div>
 </div>
-<? View::footer(); ?>
+<?php View::footer(); ?>

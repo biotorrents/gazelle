@@ -1013,9 +1013,9 @@ if (count($PersonalCollages) > 0) {
 
       /* todo: Bring this back
       if (check_perms('users_mod')) {
-        ?><img class='tooltip lightbox-init' title='<?=Users::format_username($Screenshot['UserID'], false, false, false)?> - <?=time_diff($Screenshot['Time'])?>' lightbox-img="<?=$SSURL?>" src="<?=$ThumbURL?>" /><?
+        ?><img class='tooltip lightbox-init' title='<?=Users::format_username($Screenshot['UserID'], false, false, false)?> - <?=time_diff($Screenshot['Time'])?>' lightbox-img="<?=$SSURL?>" src="<?=$ThumbURL?>" /><?php
       } else {
-        ?><img class='tooltip lightbox-init' title='Added <?=time_diff($Screenshot['Time'])?>' lightbox-img="<?=$SSURL?>" src="<?=$ThumbURL?>" /><?
+        ?><img class='tooltip lightbox-init' title='Added <?=time_diff($Screenshot['Time'])?>' lightbox-img="<?=$SSURL?>" src="<?=$ThumbURL?>" /><?php
       }
       */
     }

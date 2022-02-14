@@ -1,4 +1,4 @@
-<?
+<?php
 $FeaturedAlbum = $Cache->get_value('featured_album');
 if ($FeaturedAlbum === false) {
   $DB->query('
@@ -31,6 +31,6 @@ if (is_number($FeaturedAlbum['GroupID'])) {
         <a href="forums.php?action=viewthread&amp;threadid=<?=$FeaturedAlbum['ThreadID']?>"><em>Read the interview with the artist, discuss here</em></a>
       </div>
     </div>
-<?
+<?php
 }
 ?>

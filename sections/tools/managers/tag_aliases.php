@@ -69,7 +69,7 @@ if (check_perms('users_mod')) {
 <?php } ?>
     </form>
   </tr>
-<?
+<?php
 $DB->query("
   SELECT ID, BadTag, AliasTag
   FROM tag_aliases
@@ -94,7 +94,7 @@ while (list($ID, $BadTag, $AliasTag) = $DB->next_record()) {
 <?php } ?>
     </form>
   </tr>
-<?
+<?php
 } ?>
 </table>
-<? View::footer(); ?>
+<?php View::footer(); ?>

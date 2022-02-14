@@ -35,9 +35,9 @@ $DB->set_query_id($Result);
 
 ?>
 <h4>Peer List</h4>
-<? if ($NumResults > 100) { ?>
+<?php if ($NumResults > 100) { ?>
 <div class="linkbox"><?=js_pages('show_peers', $_GET['torrentid'], $NumResults, $Page)?></div>
-<? } ?>
+<?php } ?>
 
 <table>
   <tr class="colhead_dark" style="font-weight: bold;">
@@ -48,11 +48,11 @@ $DB->set_query_id($Result);
     <td class="number_column">%</td>
     <td>Client</td>
   </tr>
-<?
+<?php
 while (list($PeerUserID, $Size, $Active, $Connectable, $Uploaded, $Remaining, $UserAgent) = $DB->next_record()) {
 ?>
   <tr class="row">
-<?
+<?php
   if (check_perms('users_mod')) {
 ?>
     <td><?=Users::format_username($PeerUserID, false, false, false)?></td>
@@ -67,10 +67,10 @@ while (list($PeerUserID, $Size, $Active, $Connectable, $Uploaded, $Remaining, $U
     <td class="number_column"><?=number_format(($Size - $Remaining) / $Size * 100, 2)?></td>
     <td><?=esc($UserAgent)?></td>
   </tr>
-<?
+<?php
 }
 ?>
 </table>
-<? if ($NumResults > 100) { ?>
+<?php if ($NumResults > 100) { ?>
 <div class="linkbox"><?=js_pages('show_peers', $_GET['torrentid'], $NumResults, $Page)?></div>
-<? } ?>
+<?php } ?>

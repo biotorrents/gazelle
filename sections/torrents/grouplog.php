@@ -1,4 +1,4 @@
-<?
+<?php
 #declare(strict_types = 1);
 
 $GroupID = $_GET['groupid'];
@@ -29,7 +29,7 @@ if (!empty($Groups[$GroupID])) {
       <td>User</td>
       <td>Info</td>
     </tr>
-<?
+<?php
   $DB->query("SELECT UserID FROM torrents WHERE GroupID = ? AND Anonymous='1'", $GroupID);
   $AnonUsers = $DB->collect("UserID");
   $Log = $DB->query("
@@ -43,7 +43,7 @@ if (!empty($Groups[$GroupID])) {
 ?>
     <tr class="row">
       <td><?=$Time?></td>
-<?
+<?php
       if ($TorrentID != 0) {
         $DB->query("
           SELECT Container, Version, Media
@@ -51,9 +51,9 @@ if (!empty($Groups[$GroupID])) {
           WHERE ID = $TorrentID");
         list($Container, $Version, $Media) = $DB->next_record();
         if (!$DB->has_results()) { ?>
-          <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a> (Deleted)</td><?
+          <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a> (Deleted)</td><?php
         } elseif ($Media == '') { ?>
-          <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a></td><?
+          <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a></td><?php
         } else { ?>
           <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a> (<?=$Container?>/<?=$Version?>/<?=$Media?>)</td>
 <?php }
@@ -63,12 +63,12 @@ if (!empty($Groups[$GroupID])) {
       <td><?=in_array($UserID, $AnonUsers)?'Anonymous':Users::format_username($UserID, false, false, false)?></td>
       <td><?=$Info?></td>
     </tr>
-<?
+<?php
   }
 ?>
   </table>
   </div>
 </div>
-<?
+<?php
 View::footer();
 ?>

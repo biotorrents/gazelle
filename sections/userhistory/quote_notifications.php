@@ -77,25 +77,25 @@ View::header('Quote Notifications');
     </h2>
     <div class="linkbox pager">
       <br />
-<? if ($UnreadSQL) { ?>
+<?php if ($UnreadSQL) { ?>
       <a href="userhistory.php?action=quote_notifications&amp;showall=1" class="brackets">Show all quotes</a>&nbsp;&nbsp;&nbsp;
-<? } else { ?>
+<?php } else { ?>
       <a href="userhistory.php?action=quote_notifications" class="brackets">Show unread quotes</a>&nbsp;&nbsp;&nbsp;
-<? } ?>
+<?php } ?>
       <a href="userhistory.php?action=subscriptions" class="brackets">Show subscriptions</a>&nbsp;&nbsp;&nbsp;
       <a href="userhistory.php?action=quote_notifications&amp;catchup=1" class="brackets">Catch up</a>&nbsp;&nbsp;&nbsp;
       <br /><br />
-<?
+<?php
       $Pages = Format::get_pages($Page, $NumResults, TOPICS_PER_PAGE, 9);
       echo $Pages;
       ?>
     </div>
   </div>
-<? if (!$NumResults) { ?>
+<?php if (!$NumResults) { ?>
   <div class="center">No<?=($UnreadSQL ? ' new' : '')?> quotes.</div>
-<? } ?>
+<?php } ?>
   <br />
-<?
+<?php
 foreach ($Results as $Result) {
   if ($Result['Page'] == 'forums') {
     $Links = 'Forums: <a href="forums.php?action=viewforum&amp;forumid=' . $Result['ForumID'] . '">' . esc($Result['ForumName']) . '</a> &gt; ';
@@ -141,6 +141,6 @@ foreach ($Results as $Result) {
       </td>
     </tr>
   </table>
-<? } ?>
+<?php } ?>
 </div>
-<? View::footer(); ?>
+<?php View::footer(); ?>

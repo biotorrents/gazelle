@@ -1,4 +1,4 @@
-<?
+<?php
 if (!check_perms('users_mod')) {
     error(403);
 }
@@ -116,5 +116,5 @@ if (isset($_POST['torrents'])) {
         </form>
     </div>
 </div>
-<?
+<?php
 View::footer();

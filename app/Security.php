@@ -14,14 +14,12 @@ class Security
     /**
      * oops
      *
-     * Basic sanity checks now handled by Composer.
-     * Please add checks here if you shit up the codebase.
+     * Basic sanity checks are now enforced by the Composer config.
+     * Please add checks here if you shit up the codebase or discover something.
      */
     public static function oops()
     {
-        # short_open_tag
-        return (!ini_get('short_open_tag'))
-            ?? Http::response(502);
+        return;
     }
 
     /**

@@ -1,4 +1,4 @@
-<?
+<?php
 authorize();
 
 if (!check_perms('admin_reports') && !check_perms('project_team') && !check_perms('site_moderate_forums')) {

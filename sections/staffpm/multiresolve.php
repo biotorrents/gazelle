@@ -1,4 +1,4 @@
-<?
+<?php
 if ($IDs = $_POST['id']) {
   $Queries = [];
   foreach ($IDs as &$ID) {

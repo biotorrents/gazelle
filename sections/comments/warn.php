@@ -64,4 +64,4 @@ View::header('Warn User');
     </form>
   </div>
 </div>
-<? View::footer();
+<?php View::footer();

@@ -1,4 +1,4 @@
-<?
+<?php
 declare(strict_types=1);
 
 /**
@@ -279,16 +279,16 @@ View::header($Title, 'comments');
 ?><div>
   <div class="header">
     <h2><?=$Header?></h2>
-<? if ($Links !== '') { ?>
+<?php if ($Links !== '') { ?>
     <div class="linkbox">
       <?=$Links?>
     </div>
-<? } ?>
+<?php } ?>
   </div>
   <div class="linkbox">
     <?=$Pages?>
   </div>
-<?
+<?php
 if ($Count > 0) {
   $DB->set_query_id($Comments);
   while (list($AuthorID, $Page, $PageID, $Name, $PostID, $Body, $AddedTime, $EditedTime, $EditedUserID) = $DB->next_record()) {
@@ -314,9 +314,9 @@ if ($Count > 0) {
   }
 } else { ?>
   <h2 class="center">No results.</h2>
-<? } ?>
+<?php } ?>
   <div class="linkbox">
     <?=$Pages?>
   </div>
 </div>
-<? View::footer();
+<?php View::footer();

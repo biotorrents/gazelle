@@ -1,4 +1,4 @@
-<?
+<?php
 $ArtistID = db_string($_GET['artistid']);
 $GroupID = db_string($_GET['groupid']);
 

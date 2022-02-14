@@ -426,17 +426,17 @@ if (check_perms('zip_downloader')) {
         <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
         <input type="hidden" name="collageid" value="<?=$CollageID?>" />
         <ul id="list" class="nobullet">
-<? foreach ($ZIPList as $ListItem) { ?>
+<?php foreach ($ZIPList as $ListItem) { ?>
           <li id="list<?=$ListItem?>">
             <input type="hidden" name="list[]" value="<?=$ListItem?>" />
             <span class="float_left"><?=$ZIPOptions[$ListItem]['2']?></span>
             <span class="remove remove_collector"><a href="#" onclick="remove_selection('<?=$ListItem?>'); return false;" class="float_right brackets">X</a></span>
             <br style="clear: all;" />
           </li>
-<? } ?>
+<?php } ?>
         </ul>
         <select id="formats" style="width: 180px;">
-<?
+<?php
 $OpenGroup = false;
 $LastGroupID = -1;
 
@@ -450,27 +450,27 @@ foreach ($ZIPOptions as $Option) {
           </optgroup>
 <?php } ?>
           <optgroup label="<?=$ZIPGroups[$GroupID]?>">
-<?
+<?php
     $OpenGroup = true;
   }
 ?>
-            <option id="opt<?=$GroupID.$OptionID?>" value="<?=$GroupID.$OptionID?>"<? if (in_array($GroupID.$OptionID, $ZIPList)) { echo ' disabled="disabled"'; }?>><?=$OptName?></option>
-<?
+            <option id="opt<?=$GroupID.$OptionID?>" value="<?=$GroupID.$OptionID?>"<?php if (in_array($GroupID.$OptionID, $ZIPList)) { echo ' disabled="disabled"'; }?>><?=$OptName?></option>
+<?php
 }
 ?>
           </optgroup>
         </select>
         <button type="button" onclick="add_selection();">+</button>
         <select name="preference" style="width: 210px;">
-          <option value="0"<? if ($ZIPPrefs == 0) { echo ' selected="selected"'; } ?>>Prefer Original</option>
-          <option value="1"<? if ($ZIPPrefs == 1) { echo ' selected="selected"'; } ?>>Prefer Best Seeded</option>
-          <option value="2"<? if ($ZIPPrefs == 2) { echo ' selected="selected"'; } ?>>Prefer Bonus Tracks</option>
+          <option value="0"<?php if ($ZIPPrefs == 0) { echo ' selected="selected"'; } ?>>Prefer Original</option>
+          <option value="1"<?php if ($ZIPPrefs == 1) { echo ' selected="selected"'; } ?>>Prefer Best Seeded</option>
+          <option value="2"<?php if ($ZIPPrefs == 2) { echo ' selected="selected"'; } ?>>Prefer Bonus Tracks</option>
         </select>
         <input type="submit" style="width: 210px;" value="Download" />
         </form>
       </div>
     </div>
-<? }
+<?php }
 */
 ?>
 

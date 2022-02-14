@@ -1,4 +1,4 @@
-<?
+<?php
 if (!check_perms('admin_login_watch')) {
   error(403);
 }
@@ -35,7 +35,7 @@ foreach($AttemptIPs as $IP => $Time) {
       <td>Submit</td>
 <?php } ?>
     </tr>
-<?
+<?php
 while (list($IP, $Attempts, $Banned, $BannedUntil) = array_shift($AllAttempts)) {
 ?>
     <tr class="row">
@@ -59,7 +59,7 @@ while (list($IP, $Attempts, $Banned, $BannedUntil) = array_shift($AllAttempts)) 
           <input type="submit" name="submit" value="Unban" />
         </form>
       </td>
-<? if (check_perms('admin_manage_ipbans')) { ?>
+<?php if (check_perms('admin_manage_ipbans')) { ?>
       <td>
         <form class="manage_form" name="bans" action="" method="post">
           <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
@@ -70,11 +70,11 @@ while (list($IP, $Attempts, $Banned, $BannedUntil) = array_shift($AllAttempts)) 
           <input type="submit" name="submit" value="IP Ban" />
         </form>
       </td>
-<? } ?>
+<?php } ?>
     </tr>
-<?
+<?php
 }
 ?>
   </table>
 </div>
-<? View::footer(); ?>
+<?php View::footer(); ?>

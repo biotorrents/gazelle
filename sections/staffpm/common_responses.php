@@ -1,4 +1,4 @@
-<?
+<?php
 if (!($IsFLS)) {
   // Logged in user is not FLS or Staff
   error(403);
@@ -55,7 +55,7 @@ View::header('Staff PMs', 'staffpm');
     <div class="center">
       <h3>Edit old responses:</h3>
     </div>
-<?
+<?php
 
 // List common responses
 $DB->query("
@@ -87,9 +87,9 @@ while (list($ID, $Message, $Name) = $DB->next_record()) {
         </div>
       </form>
     </div>
-<?
+<?php
 }
 ?>
   </div>
 </div>
-<? View::footer(); ?>
+<?php View::footer(); ?>

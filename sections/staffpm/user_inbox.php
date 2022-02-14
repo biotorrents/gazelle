@@ -30,15 +30,15 @@ $StaffPMs = $DB->query("
   </div>
   <br />
   <br />
-  <? View::parse('generic/reply/staffpm.php', array('Hidden' => true)); ?>
+  <?php View::parse('generic/reply/staffpm.php', array('Hidden' => true)); ?>
   <div class="box pad" id="inbox">
-<?
+<?php
 
 if (!$DB->has_results()) {
   // No messages
 ?>
     <h2>No messages</h2>
-<?
+<?php
 } else {
   // Messages, draw table
 ?>
@@ -52,7 +52,7 @@ if (!$DB->has_results()) {
           <td>Date</td>
           <td>Assigned to</td>
         </tr>
-<?
+<?php
   // List messages
   $ShowBox = 1;
   while (list($ID, $Subject, $UserID, $Status, $Level, $AssignedToUser, $Date, $Unread) = $DB->next_record()) {
@@ -78,7 +78,7 @@ if (!$DB->has_results()) {
           <td>Date</td>
           <td>Assigned to</td>
         </tr>
-<?
+<?php
     }
 
     // Get assigned
@@ -96,7 +96,7 @@ if (!$DB->has_results()) {
           <td><?=time_diff($Date, 2, true)?></td>
           <td><?=$Assigned?></td>
         </tr>
-<?
+<?php
     $DB->set_query_id($StaffPMs);
   }
 
@@ -107,9 +107,9 @@ if (!$DB->has_results()) {
         <input type="submit" value="Resolve selected" />
       </div>
     </form>
-<?
+<?php
 }
 ?>
   </div>
 </div>
-<? View::footer(); ?>
+<?php View::footer(); ?>

@@ -1,4 +1,4 @@
-<?
+<?php
 function class_list($Selected = 0) {
   global $Classes;
   $Return = '';
@@ -72,7 +72,7 @@ $DB->query('
     <td>Min class create</td>
     <td>Submit</td>
   </tr>
-<?
+<?php
 while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinClassWrite, $MinClassCreate) = $DB->next_record()) {
 ?>
   <tr class="row">
@@ -85,7 +85,7 @@ while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinCla
 <?php reset($ForumCats);
   foreach ($ForumCats as $CurCat => $CatName) {
 ?>
-          <option value="<?=$CurCat?>"<? if ($CurCat == $CategoryID) { echo ' selected="selected"'; } ?>><?=$CatName?></option>
+          <option value="<?=$CurCat?>"<?php if ($CurCat == $CategoryID) { echo ' selected="selected"'; } ?>><?=$CatName?></option>
 <?php } ?>
         </select>
       </td>
@@ -120,7 +120,7 @@ while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinCla
 
     </form>
   </tr>
-<?
+<?php
 }
 ?>
   <tr class="colhead">
@@ -134,7 +134,7 @@ while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinCla
         <select name="categoryid">
 <?php reset($ForumCats);
   foreach($ForumCats as $CurCat => $CatName) { ?>
-          <option value="<?=$CurCat?>"<? if ($CurCat == $CategoryID) { echo ' selected="selected"'; } ?>><?=$CatName?></option>
+          <option value="<?=$CurCat?>"<?php if ($CurCat == $CategoryID) { echo ' selected="selected"'; } ?>><?=$CatName?></option>
 <?php } ?>
         </select>
       </td>
@@ -169,4 +169,4 @@ while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinCla
     </form>
   </tr>
 </table>
-<? View::footer(); ?>
+<?php View::footer(); ?>

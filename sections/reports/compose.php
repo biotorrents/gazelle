@@ -1,4 +1,4 @@
-<?
+<?php
 if (!check_perms('admin_reports')) {
   error(403);
 }
@@ -174,6 +174,6 @@ $Body = "You reported $TypeLink for the reason:\n[quote]{$Reason}[/quote]";
     </div>
   </form>
 </div>
-<?
+<?php
 View::footer();
 ?>

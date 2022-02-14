@@ -1,4 +1,4 @@
-<?
+<?php
 /************************************************************************
 ||------------|| Edit artist wiki page ||------------------------------||
 
@@ -67,7 +67,7 @@ View::header('Edit artist');
       </div>
     </form>
   </div>
-<? if (check_perms('torrents_edit')) { ?>
+<?php if (check_perms('torrents_edit')) { ?>
   <h2>Rename</h2>
   <div class="box pad">
     <form class="rename_form" name="artist" action="artist.php" method="post">
@@ -83,7 +83,7 @@ View::header('Edit artist');
     </form>
   </div>
 
-<? /* <h2>Make into non-redirecting alias</h2>
+<?php /* <h2>Make into non-redirecting alias</h2>
   <div class="box pad">
     <form class="merge_form" name="artist" action="artist.php" method="post">
       <input type="hidden" name="action" value="change_artistid" />
@@ -108,7 +108,7 @@ View::header('Edit artist');
     <div class="pad">
       <ul>
 
-<?
+<?php
   $DB->query("
     SELECT AliasID, Name, UserID, Redirect
     FROM artists_alias
@@ -156,6 +156,6 @@ View::header('Edit artist');
       </form>
     </div>
   </div> */ ?>
-<? } ?>
+<?php } ?>
 </div>
-<? View::footer() ?>
+<?php View::footer() ?>

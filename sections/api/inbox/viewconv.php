@@ -1,4 +1,4 @@
-<?
+<?php
 $ConvID = $_GET['id'];
 if (!$ConvID || !is_number($ConvID)) {
   echo json_encode(array('status' => 'failure'));

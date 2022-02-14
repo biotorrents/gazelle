@@ -98,7 +98,7 @@ if (!isset($_POST['vote']) || !is_number($_POST['vote'])) {
   <br /><input type="radio" name="vote" id="answer_0" value="0" /> <label for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br /><br />
   <input type="button" onclick="ajax.post('index.php', 'poll', function(response) { $('#poll_container').raw().innerHTML = response });" value="Vote" />
 </form>
-<?
+<?php
 } else {
   authorize();
   $Vote = $_POST['vote'];
@@ -127,7 +127,7 @@ if (!isset($_POST['vote']) || !is_number($_POST['vote'])) {
 
 ?>
     <ul class="poll nobullet">
-<?
+<?php
     if ($ForumID != STAFF_FORUM) {
       for ($i = 1, $il = count($Answers); $i <= $il; $i++) {
         if (!empty($Votes[$i]) && $TotalVotes > 0) {
@@ -142,7 +142,7 @@ if (!isset($_POST['vote']) || !is_number($_POST['vote'])) {
           <li class="graph">
             <span class="center_poll" style="width: <?=round($Ratio * $Size)?>px;"></span>
           </li>
-<?
+<?php
       }
     } else {
       //Staff forum, output voters, not percentages
@@ -159,11 +159,11 @@ if (!isset($_POST['vote']) || !is_number($_POST['vote'])) {
         list($StaffString, $StaffVoted) = $StaffVote;
 ?>
         <li><a href="forums.php?action=change_vote&amp;threadid=<?=$TopicID?>&amp;auth=<?=$LoggedUser['AuthKey']?>&amp;vote=<?=(int)$StaffVoted?>"><?=esc(empty($Answers[$StaffVoted]) ? 'Blank' : $Answers[$StaffVoted])?></a> - <?=$StaffString?></li>
-<?
+<?php
       }
     }
 ?>
     </ul>
     <br /><strong>Votes:</strong> <?=number_format($TotalVotes)?>
-<?
+<?php
 }

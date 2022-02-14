@@ -46,6 +46,6 @@ View::header(ucwords($Action) . ' Request');
     </div>
   </div>
 </div>
-<?
+<?php
 View::footer();
 ?>

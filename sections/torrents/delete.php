@@ -1,4 +1,4 @@
-<?
+<?php
 #declare(strict_types = 1);
 
 $TorrentID = $_GET['torrentid'];
@@ -77,11 +77,11 @@ View::header('Delete torrent', 'reportsv2');
     </div>
   </div>
 </div>
-<?
+<?php
 if (check_perms('admin_reports')) {
 ?>
 <div id="all_reports" style="width: 80%; margin-left: auto; margin-right: auto;">
-<?
+<?php
   include(SERVER_ROOT.'/classes/reports.class.php');
 
   require(SERVER_ROOT.'/sections/reportsv2/array.php');
@@ -184,7 +184,7 @@ if (check_perms('admin_reports')) {
 ?>
   <div id="report<?=$ReportID?>" class="report">
     <form class="create_form" name="report" id="reportform_<?=$ReportID?>" action="reports.php" method="post">
-<?
+<?php
         /*
         * Some of these are for takeresolve, some for the JavaScript.
         */
@@ -269,7 +269,7 @@ if (check_perms('admin_reports')) {
           </td>
           <td colspan="3">
             <select name="resolve_type" id="resolve_type<?=$ReportID?>" onchange="ChangeResolve(<?=$ReportID?>);">
-<?
+<?php
 $TypeList = $Types['master'] + $Types[$CategoryID];
 $Priorities = [];
 foreach ($TypeList as $Key => $Value) {
@@ -280,7 +280,7 @@ array_multisort($Priorities, SORT_ASC, $TypeList);
 foreach ($TypeList as $IType => $Data) {
 ?>
               <option value="<?=$IType?>"<?=(($Type == $IType) ? ' selected="selected"' : '')?>><?=$Data['title']?></option>
-<?
+<?php
 }
 ?>
             </select>
@@ -333,6 +333,6 @@ foreach ($TypeList as $IType => $Data) {
     <br />
   </div>
 </div>
-<?
+<?php
 }
 View::footer(); ?>

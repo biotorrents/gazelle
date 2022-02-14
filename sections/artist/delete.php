@@ -43,20 +43,20 @@ if ($DB->has_results()) {
   Please remove the artist from these torrents manually before attempting to delete.<br />
   <div class="box pad">
     <ul>
-      <?
+      <?php
   while (list($GroupName, $GroupID) = $DB->next_record(MYSQLI_NUM, true)) {
 ?>
       <li>
         <a href="torrents.php?id=<?=$GroupID?>" class="tooltip"
           title="View torrent group" dir="ltr"><?=$GroupName?></a>
       </li>
-      <?
+      <?php
   }
 ?>
     </ul>
   </div>
 </div>
-<?
+<?php
 }
 
 $DB->query("
@@ -74,20 +74,20 @@ if ($DB->has_results()) {
   Please remove the artist from these requests manually before attempting to delete.<br />
   <div class="box pad">
     <ul>
-      <?
+      <?php
   while (list($RequestName, $RequestID) = $DB->next_record(MYSQLI_NUM, true)) {
 ?>
       <li>
         <a href="requests.php?action=view&amp;id=<?=$RequestID?>"
           class="tooltip" title="View request" dir="ltr"><?=$RequestName?></a>
       </li>
-      <?
+      <?php
   }
 ?>
     </ul>
   </div>
 </div>
-<?
+<?php
 }
 
 if ($Count == 0) {
@@ -96,7 +96,7 @@ if ($Count == 0) {
 <div class="box pad">
   Artist "<?=$Name?>" deleted!
 </div>
-<?
+<?php
 }
 View::footer();?>
 */

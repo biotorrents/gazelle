@@ -1,4 +1,4 @@
-<?
+<?php
 if (!check_perms('users_mod')) {
   error(403);
 }
@@ -73,7 +73,7 @@ View::header('Official Tags Manager');
           <td style="font-weight: bold;">Tag</td>
           <td style="font-weight: bold;">Uses</td>
         </tr>
-<?
+<?php
 $i = 0;
 $DB->query("
   SELECT ID, Name, Uses
@@ -110,7 +110,7 @@ for ($i = 0; $i < $TagCount / 3; $i++) {
           <td><?=$TagName3?></td>
           <td style="text-align: center;"><?=number_format($TagUses3)?></td>
         </tr>
-<?
+<?php
 }
 ?>
         <tr class="row">
@@ -128,4 +128,4 @@ for ($i = 0; $i < $TagCount / 3; $i++) {
     </form>
   </div>
 </div>
-<? View::footer(); ?>
+<?php View::footer(); ?>

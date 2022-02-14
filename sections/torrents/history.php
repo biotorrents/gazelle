@@ -1,4 +1,4 @@
-<?
+<?php
 #declare(strict_types = 1);
 
 if (!isset($_GET['groupid']) || !is_number($_GET['groupid'])) {
@@ -21,9 +21,9 @@ View::header("Revision history for $Name");
   <div class="header">
     <h2>Revision history for <a href="torrents.php?id=<?=$GroupID?>"><?=$Name?></a></h2>
   </div>
-<?
+<?php
 RevisionHistoryView::render_revision_history(RevisionHistory::get_revision_history('torrents', $GroupID), "torrents.php?id=$GroupID");
 ?>
 </div>
-<?
+<?php
 View::footer();

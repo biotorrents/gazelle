@@ -71,7 +71,7 @@ View::header($Username.' &gt; Sessions');
           </form>
         </td>
       </tr>
-<?
+<?php
   foreach ($UserSessions as $Session) {
     list($ThisSessionID, $Browser, $OperatingSystem, $IP, $LastUpdate) = array_values($Session);
     $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
@@ -94,7 +94,7 @@ View::header($Username.' &gt; Sessions');
     </table>
   </div>
 </div>
-<?
+<?php
 
 View::footer();
 ?>

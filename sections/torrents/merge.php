@@ -1,4 +1,4 @@
-<?
+<?php
 #declare(strict_types = 1);
 
 if (!check_perms('torrents_edit')) {
@@ -67,7 +67,7 @@ if (empty($_POST['confirm'])) {
     </form>
   </div>
   </div>
-<?
+<?php
   View::footer();
 } else {
   authorize();

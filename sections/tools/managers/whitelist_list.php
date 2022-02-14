@@ -1,4 +1,4 @@
-<?
+<?php
 #declare(strict_types = 1);
 
 if (!check_perms('admin_whitelist')) {
@@ -42,7 +42,7 @@ $DB->query('
     <td>Submit</td>
   </tr>
 </table>
-<?
+<?php
 while (list($ID, $Client, $Peer_ID) = $DB->next_record()) {
 ?>
 <form class="manage_form" name="clients" action="" method="post">
@@ -64,6 +64,6 @@ while (list($ID, $Client, $Peer_ID) = $DB->next_record()) {
     </tr>
   </table>
 </form>
-<? } ?>
+<?php } ?>
 </div>
-<? View::footer(); ?>
+<?php View::footer(); ?>

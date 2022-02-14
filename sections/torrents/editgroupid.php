@@ -1,4 +1,4 @@
-<?
+<?php
 #declare(strict_types = 1);
 
 /***************************************************************
@@ -70,7 +70,7 @@ if (empty($_POST['confirm'])) {
       </form>
     </div>
   </div>
-<?
+<?php
   View::footer();
 } else {
   authorize();

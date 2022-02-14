@@ -1,4 +1,4 @@
-<?
+<?php
 $UserID = $LoggedUser['ID'];
 
 $DB->query("
@@ -37,7 +37,7 @@ View::header('Snatch List');
       <td class="number_column">Last Active</td>
       <td class="number_column">HnR</td>
     </tr>
-<?
+<?php
 foreach ($Torrents as $Torrent) {
   $DisplayName = "<a href=\"torrents.php?id=$Torrent[ID]&torrentid=$Torrent[TorrentID]\" ";
   if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
@@ -58,11 +58,11 @@ foreach ($Torrents as $Torrent) {
     <td class="number_column"><?=$Torrent['LastUpdate'] ?></td>
     <td class="number_column"><?=($HnR?'<a class="hnr-yes">Yes</a>':'<a class="hnr-no">No</a>') ?></td>
   </tr>
-<?
+<?php
 }
 ?>
     </tbody>
     </table>
   </div>
 </div>
-<? View::footer(); ?>
+<?php View::footer(); ?>

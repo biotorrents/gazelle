@@ -151,7 +151,7 @@ if ($ShowGrouped) {
 <div>
   <div class="header">
     <h2>
-<?
+<?php
   if ($ShowGrouped) {
     echo 'Grouped '.($ShowUnread ? 'unread ' : '')."post history for <a href=\"user.php?id=$UserID\">$Username</a>";
   }
@@ -165,7 +165,7 @@ if ($ShowGrouped) {
     </h2>
     <div class="linkbox">
       <br /><br />
-<?
+<?php
 if ($ViewingOwn) {
   $UserSubscriptions = Subscriptions::get_subscriptions();
 
@@ -186,31 +186,31 @@ if ($ViewingOwn) {
   }
 ?>
       <a href="userhistory.php?action=subscriptions" class="brackets">Go to subscriptions</a>
-<?
+<?php
 } else {
 ?>
       <a href="forums.php?action=search&amp;type=body&amp;user=<?=$Username?>" class="brackets">Search</a>
-<?
+<?php
 }
 ?>
     </div>
   </div>
-<?
+<?php
 if (empty($Results)) {
 ?>
   <div class="center">
     No topics<?=$ShowUnread ? ' with unread posts' : '' ?>
   </div>
-<?
+<?php
 } else {
 ?>
   <div class="linkbox">
-<?
+<?php
   $Pages = Format::get_pages($Page, $Results, $PerPage, 11);
   echo $Pages;
 ?>
   </div>
-<?
+<?php
   $QueryID = $DB->get_query_id();
   while (list($PostID, $AddedTime, $Body, $EditedUserID, $EditedTime, $EditedUsername, $TopicID, $ThreadTitle, $LastPostID, $LastRead, $Locked, $Sticky) = $DB->next_record()) {
 ?>
@@ -226,11 +226,11 @@ if (empty($Results)) {
         <span class="float_left">
           <?=time_diff($AddedTime) ?>
           in <a href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>&amp;postid=<?=$PostID?>#post<?=$PostID?>" class="tooltip" title="<?=esc($ThreadTitle)?>"><?=Format::cut_string($ThreadTitle, 75)?></a>
-<?
+<?php
     if ($ViewingOwn) {
       if ((!$Locked || $Sticky) && (!$LastRead || $LastRead < $LastPostID)) { ?>
           <span class="new">(New!)</span>
-<?
+<?php
       }
 ?>
         </span>
@@ -253,7 +253,7 @@ if (empty($Results)) {
         </span>
       </td>
     </tr>
-<?
+<?php
     if (!$ShowGrouped) {
 ?>
     <tr>
@@ -285,6 +285,6 @@ if (empty($Results)) {
   <div class="linkbox">
 <?=$Pages?>
   </div>
-<? } ?>
+<?php } ?>
 </div>
-<? View::footer(); ?>
+<?php View::footer(); ?>

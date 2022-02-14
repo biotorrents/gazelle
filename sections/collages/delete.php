@@ -28,13 +28,13 @@ View::header('Delete collage');
         <input type="hidden" name="action" value="take_delete" />
         <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
         <input type="hidden" name="collageid" value="<?=$CollageID?>" />
-<?
+<?php
 if ($CategoryID == 0) {
 ?>
         <div class="alertbar" style="margin-bottom: 1em;">
           <strong>Warning: This is a personal collage. If you delete this collage, it <em>cannot</em> be recovered!</strong>
         </div>
-<?
+<?php
 }
 ?>
         <div>
@@ -48,6 +48,6 @@ if ($CategoryID == 0) {
     </div>
   </div>
 </div>
-<?
+<?php
 View::footer();
 ?>

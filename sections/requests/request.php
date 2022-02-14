@@ -283,7 +283,7 @@ $encoded_artist = urlencode($encoded_artist);
             <td><?=$Worldcat?>
             </td>
           </tr>
-          <?
+          <?php
   }
 */
   if ($Request['GroupID']) {

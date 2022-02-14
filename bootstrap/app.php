@@ -11,7 +11,7 @@ declare(strict_types=1);
  * The debugging should catch exceptions.
  */
 
-# Quick sanity check
+# Quick sanity checks
 Security::oops();
 
 # Debugging

@@ -1,4 +1,4 @@
-<?
+<?php
 /************************************************************************
  ************************************************************************/
 if (!check_perms('admin_reports') && !check_perms('project_team') && !check_perms('site_moderate_forums')) {
@@ -82,13 +82,13 @@ $DB->set_query_id($Reports);
     </div>
   </div>
   <div class="linkbox">
-<?
+<?php
 // pagination
     $Pages = Format::get_pages($Page, $Results, REPORTS_PER_PAGE, 11);
     echo $Pages;
     ?>
   </div>
-<?
+<?php
   while (list($ReportID, $SnitchID, $SnitchName, $ThingID, $Short, $ReportedTime, $Reason, $Status, $ClaimerID, $Notes, $ResolverID) = $DB->next_record()) {
     $Type = $Types[$Short];
     $Reference = "reports.php?id=$ReportID#report$ReportID";
@@ -105,7 +105,7 @@ $DB->set_query_id($Reports);
         <tr>
           <td class="center" colspan="2">
             <strong>
-<?              switch ($Short) {
+<?php              switch ($Short) {
                 case 'user':
                   $DB->query("
                     SELECT Username
@@ -202,13 +202,13 @@ $DB->set_query_id($Reports);
         </tr>
         <tr>
           <td colspan="2">
-<?          if ($ClaimerID == $LoggedUser['ID']) { ?>
+<?php          if ($ClaimerID == $LoggedUser['ID']) { ?>
             <span id="claimed_<?=$ReportID?>">Claimed by <?=Users::format_username($ClaimerID, false, false, false, false)?> <a href="#" onclick="unClaim(<?=$ReportID?>); return false;" class="brackets">Unclaim</a></span>
-<?          } elseif ($ClaimerID) { ?>
+<?php          } elseif ($ClaimerID) { ?>
             <span id="claimed_<?=$ReportID?>">Claimed by <?=Users::format_username($ClaimerID, false, false, false, false)?></span>
-<?          } else { ?>
+<?php          } else { ?>
             <a href="#" id="claim_<?=$ReportID?>" onclick="claim(<?=$ReportID?>); return false;" class="brackets">Claim</a>
-<?          } ?>
+<?php          } ?>
             &nbsp;&nbsp;
             <a href="#" onclick="toggleNotes(<?=$ReportID?>); return false;" class="brackets">Toggle notes</a>
 
@@ -219,7 +219,7 @@ $DB->set_query_id($Reports);
             </div>
           </td>
         </tr>
-<?      if ($Status != 'Resolved') { ?>
+<?php      if ($Status != 'Resolved') { ?>
         <tr>
           <td class="center" colspan="2">
             <form id="report_form_<?=$ReportID?>" action="">
@@ -229,7 +229,7 @@ $DB->set_query_id($Reports);
             </form>
           </td>
         </tr>
-<?
+<?php
       } else {
         $ResolverInfo = Users::user_info($ResolverID);
 ?>
@@ -238,19 +238,19 @@ $DB->set_query_id($Reports);
             Resolved by <a href="users.php?id=<?=$ResolverID?>"><?=$ResolverInfo['Username']?></a>
           </td>
         </tr>
-<?      } ?>
+<?php      } ?>
       </table>
     </div>
-<?
+<?php
     $DB->set_query_id($Reports);
   }
   ?>
   <div class="linkbox">
-<?
+<?php
     echo $Pages;
     ?>
   </div>
 </div>
-<?
+<?php
 View::footer();
 ?>

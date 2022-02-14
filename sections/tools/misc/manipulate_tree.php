@@ -1,4 +1,4 @@
-<?
+<?php
 // Props to Leto of StC.
 if (!check_perms('users_view_invites') && !check_perms('users_disable_users') && !check_perms('users_edit_invites') && !check_perms('users_disable_any')) {
   error(404);
@@ -101,11 +101,11 @@ if ($_POST['id']) {
         <td class="label"><strong>Action: </strong></td>
         <td colspan="2">
           <select name="perform">
-            <option value="nothing"<?
+            <option value="nothing"<?php
           if ($_POST['perform'] === 'nothing') { echo ' selected="selected"'; } ?>>Do nothing</option>
-            <option value="disable"<?
+            <option value="disable"<?php
           if ($_POST['perform'] === 'disable') { echo ' selected="selected"'; } ?>>Disable entire tree</option>
-            <option value="inviteprivs"<?
+            <option value="inviteprivs"<?php
           if ($_POST['perform'] === 'inviteprivs') { echo ' selected="selected"'; } ?>>Disable invites privileges</option>
           </select>
         </td>
@@ -115,4 +115,4 @@ if ($_POST['id']) {
   </form>
 </div>
 
-<? View::footer(); ?>
+<?php View::footer(); ?>

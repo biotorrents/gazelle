@@ -39,6 +39,6 @@
     You may want to put an image here.
   </div>
 </div>
-<?
+<?php
   }
 ?>
