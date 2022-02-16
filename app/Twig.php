@@ -48,7 +48,7 @@ class Twig
     public static function go()
     {
         return (self::$twig === null)
-            ? self::$twig = \Twig::factory()
+            ? self::$twig = Twig::factory()
             : self::$twig;
     }
 
@@ -62,11 +62,11 @@ class Twig
 
         # https://twig.symfony.com/doc/3.x/api.html
         $twig = new \Twig\Environment(
-            new \Twig\Loader\FilesystemLoader("$ENV->SERVER_ROOT/templates"),
+            new \Twig\Loader\FilesystemLoader("{$ENV->SERVER_ROOT}/templates"),
             [
                 'auto_reload' => true,
                 'autoescape' => 'name',
-                'cache' => "$ENV->WEB_ROOT/cache/twig",
+                'cache' => "{$ENV->WEB_ROOT}/cache/twig",
                 'debug' => $ENV->DEV,
                 'strict_variables' => true,
             ]
@@ -89,7 +89,7 @@ class Twig
             'hhmmss',
             function ($seconds) {
                 return sprintf(
-                    '%02dm %02ds',
+                    '%02dm %02ds', # mm:ss
                     #'%02d:%02d:%02d', # hh:mm:ss
                     #($seconds / 3600), # hh
                     (intval($seconds / 60) % 60), # mm
@@ -149,7 +149,7 @@ class Twig
         $twig->addFilter(new \Twig\TwigFilter(
             'image',
             function ($i) {
-                return new \Twig\Markup(\ImageTools::process($i, true), 'UTF-8');
+                return new \Twig\Markup(ImageTools::process($i, true), 'UTF-8');
             }
         ));
 
@@ -165,7 +165,9 @@ class Twig
         $twig->addFilter(new \Twig\TwigFilter(
             'octet_size',
             function ($size, array $option = []) {
-                return Format::get_size($size, empty($option) ? 2 : $option[0]);
+                return Format::get_size($size, empty($option)
+                    ? 2
+                    : $option[0]);
             },
             ['is_variadic' => true]
         ));
@@ -180,7 +182,9 @@ class Twig
         $twig->addFilter(new \Twig\TwigFilter(
             'selected',
             function ($isSelected) {
-                return $isSelected ? ' selected="selected"' : '';
+                return $isSelected
+                    ? ' selected="selected"'
+                    : '';
             }
         ));
 
@@ -219,20 +223,20 @@ class Twig
         $twig->addFilter(new \Twig\TwigFilter(
             'user_url',
             function ($userId) {
-                return new \Twig\Markup(\Users::format_username($userId, false, false, false), 'UTF-8');
+                return new \Twig\Markup(Users::format_username($userId, false, false, false), 'UTF-8');
             }
         ));
 
         $twig->addFilter(new \Twig\TwigFilter(
             'user_full',
             function ($userId) {
-                return new \Twig\Markup(\Users::format_username($userId, true, true, true, true), 'UTF-8');
+                return new \Twig\Markup(Users::format_username($userId, true, true, true, true), 'UTF-8');
             }
         ));
 
         $twig->addFunction(new \Twig\TwigFunction('donor_icon', function ($icon, $userId) {
             return new \Twig\Markup(
-                \ImageTools::process($icon, false, 'donoricon', $userId),
+                ImageTools::process($icon, false, 'donoricon', $userId),
                 'UTF-8'
             );
         }));

@@ -7,7 +7,7 @@ class Users
     # Re: JSON API keys implementation
     public function __construct()
     {
-        return Users::user_info($UserID);
+        return self::user_info($UserID);
     }
 
     /**
@@ -371,13 +371,13 @@ class Users
     /**
      * Generate a random string
      *
-     * @param Length
-     * @return random alphanumeric string
+     * @param int $ength
+     * @return string Random alphanumeric string
      */
-    public static function make_secret($Length = 32)
+    public static function make_secret(int $length = 32): string
     {
         # strrev() to obscure bcrypt format
-        $Secret = strrev(
+        $secret = strrev(
             password_hash(
                 random_bytes(256),
                 PASSWORD_DEFAULT
@@ -388,10 +388,10 @@ class Users
             preg_filter(
                 '/[^a-z0-9]/i',
                 '',
-                $Secret
+                $secret
             ),
             1,
-            $Length
+            $length
         );
         
         /*
@@ -800,7 +800,7 @@ class Users
         $TPL->set('SITE_NAME', $ENV->SITE_NAME);
         $TPL->set('SITE_DOMAIN', SITE_DOMAIN);
 
-        Misc::send_email($Email, 'Password reset information for ' . $ENV->SITE_NAME, $TPL->get(), 'noreply');
+        Misc::email($Email, 'Password reset information for ' . $ENV->SITE_NAME, $TPL->get());
     }
 
     /*

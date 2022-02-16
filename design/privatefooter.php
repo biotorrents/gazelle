@@ -4,6 +4,8 @@ declare(strict_types=1);
 $ENV = ENV::go();
 $Sep = '&emsp;';
 
+$LastActive = $LastActive ?? ['LastUpdate' => null, 'IP' => null];
+
 # End <main#content.container>, begin <footer>
 # #content is Gazelle, .container is Skeleton
 echo $HTML = '</main><footer>';

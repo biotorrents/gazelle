@@ -4,32 +4,36 @@
 class Misc
 {
     /**
-     * Send an email.
+     * email
      *
-     * @param string $To the email address to send it to.
-     * @param string $Subject
-     * @param string $Body
-     * @param string $From The user part of the user@$ENV->SITE_DOMAIN email address.
-     * @param string $ContentType text/plain or text/html
+     * @param string $to
+     * @param string $subject
+     * @param string $body
      */
-    public static function send_email($To, $Subject, $Body, $From = 'noreply', $ContentType = 'text/plain')
+    public static function email(string $to, string $subject, string $body)
     {
         $ENV = ENV::go();
 
-        # todo: <<<EOT
-        $Headers  = "MIME-Version: 1.0\r\n";
-        $Headers .= "Content-type: $ContentType; charset=utf-8\r\n";
-        $Headers .= "From: $ENV->SITE_NAME <$From@$ENV->SITE_DOMAIN>\r\n";
-        $Headers .= "Reply-To: $From@$ENV->SITE_DOMAIN\r\n";
-        $Headers .= "X-Mailer: Project Gazelle\r\n";
-        $Headers .= "Message-Id: <".Users::make_secret()."@$ENV->SITE_DOMAIN>\r\n";
-        $Headers .= "X-Priority: 3\r\n";
+        # Wrap to 70 characters for RFC compliance
+        # https://www.php.net/manual/en/function.mail.php
+        $body = wordwrap($body, 70, "\r\n");
+
+        $secret = Users::make_secret();
+        $headers = [
+            'Content-Language' => 'en-US',
+            'Content-Transfer-Encoding' => '7bit',
+            'Content-Type' => 'text/plain; charset=UTF-8; format=flowed',
+            'From' => "{$ENV->SITE_NAME} <gazelle@{$ENV->SITE_DOMAIN}>",
+            'MIME-Version' => '1.0',
+            'Message-ID' => "<{$secret}@{$ENV->SITE_DOMAIN}>",
+        ];
 
         // Check if email is enabled
         if ($ENV->FEATURE_SEND_EMAIL) {
-            mail($To, $Subject, $Body, $Headers, "-f $From@$ENV->SITE_DOMAIN");
+            mail($to, $subject, $body, $headers);
         }
     }
+
 
     /**
      * Sanitize a string to be allowed as a filename.
@@ -42,6 +46,7 @@ class Misc
         $ENV = ENV::go();
         return str_replace($ENV->BAD_CHARS, '', $EscapeStr);
     }
+
 
     /**
      * Sends a PM from $FromId to $ToId.
@@ -349,33 +354,6 @@ class Misc
         return false;
     }
 
-    /**
-     * Used to check if keys in $_POST and $_GET are all set, and throws an error if not.
-     * This reduces 'if' statement redundancy for a lot of variables
-     *
-     * @param array $Request Either $_POST or $_GET, or whatever other array you want to check.
-     * @param array $Keys The keys to ensure are set.
-     * @param boolean $AllowEmpty If set to true, a key that is in the request but blank will not throw an error.
-     * @param int $Error The error code to throw if one of the keys isn't in the array.
-     */
-    public static function assert_isset_request($Request, $Keys = null, $AllowEmpty = false, $Error = 0)
-    {
-        if (isset($Keys)) {
-            foreach ($Keys as $K) {
-                if (!isset($Request[$K]) || ($AllowEmpty === false && $Request[$K] === '')) {
-                    error($Error);
-                    break;
-                }
-            }
-        } else {
-            foreach ($Request as $R) {
-                if (!isset($R) || ($AllowEmpty === false && $R === '')) {
-                    error($Error);
-                    break;
-                }
-            }
-        }
-    }
 
     /**
      * Given an array of tags, return an array of their IDs.
@@ -539,13 +517,5 @@ class Misc
     <div class="new" id="recommendation_status"><br /></div>
 </div>
 <?php
-    }
-
-    /**
-     * is_valid_url
-     */
-    public static function is_valid_url($URL)
-    {
-        return preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $URL);
     }
 }

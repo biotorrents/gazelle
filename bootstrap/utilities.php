@@ -85,6 +85,7 @@ function logout_all_sessions()
 function enforce_login()
 {
     global $SessionID;
+    
     if (!$SessionID || !G::$LoggedUser) {
         Cookie::set('redirect', $_SERVER['REQUEST_URI']);
         logout();

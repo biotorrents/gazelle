@@ -34,7 +34,7 @@ class Stats
      *
      * @see https://plausible.io/docs/stats-api#get-apiv1statsrealtimevisitors
      */
-    public function realtime() : int
+    public function realtime(): int
     {
         $path = 'stats/realtime/visitors';
         return $this->curl($path);
@@ -46,7 +46,7 @@ class Stats
      *
      * @see https://plausible.io/docs/stats-api#get-apiv1statsaggregate
      */
-    public function aggregate(array $options = []) : array
+    private function aggregate(array $options = []): array
     {
         $path = 'stats/aggregate';
         return $this->curl($path, $options);
@@ -58,7 +58,7 @@ class Stats
      *
      * @see https://plausible.io/docs/stats-api#get-apiv1statstimeseries
      */
-    public function timeseries(array $options = []) : array
+    private function timeseries(array $options = []): array
     {
         $path = 'stats/timeseries';
         return $this->curl($path, $options);
@@ -70,7 +70,7 @@ class Stats
      *
      * @see https://plausible.io/docs/stats-api#get-apiv1statsbreakdown
      */
-    public function breakdown(array $options = []) : array
+    private function breakdown(array $options = []): array
     {
         $path = 'stats/breakdown';
         return $this->curl($path, $options);
@@ -102,7 +102,7 @@ class Stats
      * Similar to Top Pages on the dash.
      * @see https://plausible.io/docs/stats-api#top-pages
      */
-    public function topPages(array $options = []) : array
+    public function topPages(array $options = []): array
     {
         # page
         $options['property'] = 'event:page';
@@ -138,7 +138,7 @@ class Stats
      * Similar to Top Sources on the dash.
      * @see https://plausible.io/docs/stats-api#properties
      */
-    public function sources(array $options = []) : array
+    public function sources(array $options = []): array
     {
         # source
         $options['property'] = 'visit:source';
@@ -166,7 +166,7 @@ class Stats
      * Similar to the main graph on the dash.
      * @see https://plausible.io/docs/stats-api#get-apiv1statstimeseries
      */
-    public function overTime(array $options = []) : array
+    public function overTime(array $options = []): array
     {
         # all metrics raw response
         $overTime = $this->timeseries($options);
@@ -209,7 +209,7 @@ class Stats
      * Similar to Locations on the dash.
      * @see https://github.com/sgratzl/chartjs-chart-geo
      */
-    public function locations(array $options = []) : array
+    public function locations(array $options = []): array
     {
         # only tracks country by default :/
         $options['property'] = 'visit:country';
@@ -227,7 +227,7 @@ class Stats
      *
      * Similar to Devices on the dash.
      */
-    public function devices(array $options = []) : array
+    public function devices(array $options = []): array
     {
         # device
         $options['property'] = 'visit:device';
@@ -288,13 +288,13 @@ class Stats
         $query = '?site_id=' . $options['site_id'];
         foreach ($map as $k => $v) {
             if (!is_null($v)) {
-                $query .= "&$k=$v";
+                $query .= "&{$k}={$v}";
             }
         }
 
         # https://www.php.net/manual/en/curl.examples-basic.php
-        $ch = curl_init("$this->baseUri/$path/$query");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization: Bearer $this->token"]);
+        $ch = curl_init("{$this->baseUri}/{$path}/{$query}");
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization: Bearer {$this->token}"]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $response = json_decode(curl_exec($ch), true);
         $info = curl_getinfo($ch);
@@ -309,7 +309,7 @@ class Stats
      *
      * Prepares an array in [$label => $data] format for Chart.js.
      */
-    private function export(array $input, string $label, string $data) : array
+    private function export(array $input, string $label, string $data): array
     {
         if (array_key_exists('results', $input)) {
             $input = array_shift($input);
@@ -340,19 +340,19 @@ class Stats
 
         $torrents = G::$DB->to_array();
         $torrents = [
-            'idCount' => intval($torrents[0]['count(ID)']),
+            'count' => intval($torrents[0]['count(ID)']),
             'totalSize' => intval($torrents[0]['sum(Size)']),
             'fileCount' => intval($torrents[0]['sum(FileCount)']),
         ];
 
         # users
         G::$DB->prepared_query("
-            select count(ID) from users_main where enabled = '1';
+            select count(ID) from users_main where Enabled = '1';
         ");
 
         $users = G::$DB->to_array();
         $users = [
-            'idCount' => intval($users[0]['count(ID)']),
+            'count' => intval($users[0]['count(ID)']),
         ];
 
         # daily
@@ -362,7 +362,7 @@ class Stats
 
         $daily = G::$DB->to_array();
         $daily = [
-            'idCount' => intval($daily[0]['count(ID)']),
+            'count' => intval($daily[0]['count(ID)']),
             'totalSize' => intval($daily[0]['sum(Size)']),
             'fileCount' => intval($daily[0]['sum(FileCount)']),
         ];
@@ -371,9 +371,10 @@ class Stats
         G::$DB->prepared_query("
             select count(ID), sum(Size), sum(FileCount) from torrents where Time > subdate(now(), interval 7 day);
         ");
+
         $weekly = G::$DB->to_array();
         $weekly = [
-            'idCount' => intval($weekly[0]['count(ID)']),
+            'count' => intval($weekly[0]['count(ID)']),
             'totalSize' => intval($weekly[0]['sum(Size)']),
             'fileCount' => intval($weekly[0]['sum(FileCount)']),
         ];
@@ -382,9 +383,10 @@ class Stats
         G::$DB->prepared_query("
             select count(ID), sum(Size), sum(FileCount) from torrents where Time > subdate(now(), interval 30 day);
         ");
+        
         $monthly = G::$DB->to_array();
         $monthly = [
-            'idCount' => intval($monthly[0]['count(ID)']),
+            'count' => intval($monthly[0]['count(ID)']),
             'totalSize' => intval($monthly[0]['sum(Size)']),
             'fileCount' => intval($monthly[0]['sum(FileCount)']),
         ];
@@ -402,7 +404,7 @@ class Stats
     /**
      * trackerEconomy
      */
-    public function trackerEconomy() : array
+    public function trackerEconomy(): array
     {
         # total upload and download
         G::$DB->prepared_query("
@@ -413,7 +415,7 @@ class Stats
 
         # user count - before $torrents work
         $users = [
-            'idCount' => intval($torrents[0]['count(ID)']),
+            'count' => intval($torrents[0]['count(ID)']),
         ];
         
         $torrents = [
@@ -506,11 +508,11 @@ class Stats
     /**
      * torrentsTimeline
      */
-    public function torrentsTimeline() : array
+    public function torrentsTimeline(): array
     {
         # uploads: real data :)
         G::$DB->prepared_query("
-            select date_format(Time, '%b %Y') as months, count(ID) from torrents
+            select date_format(Time, '%Y-%m') as months, count(ID) from torrents
             group by months order by Time asc;
         ");
 
@@ -519,7 +521,7 @@ class Stats
 
         # deletes: log data :/
         G::$DB->prepared_query("
-            select date_format(Time, '%b %Y') as months, count(ID) from log
+            select date_format(Time, '%Y-%m') as months, count(ID) from log
             where Message like 'Torrent % deleted %' group by months order by Time asc;
         ");
 
@@ -542,11 +544,11 @@ class Stats
     /**
      * usersTimeline
      */
-    public function usersTimeline() : array
+    public function usersTimeline(): array
     {
         # registrations
         G::$DB->prepared_query("
-            select date_format(JoinDate,'%b %Y') as months, count(UserID) from users_info
+            select date_format(JoinDate,'%Y-%m') as months, count(UserID) from users_info
             group by months order by JoinDate asc limit 1, 11;
         ");
 
@@ -555,7 +557,7 @@ class Stats
 
         # disables
         G::$DB->prepared_query("
-            select date_format(BanDate, '%b %Y') as months, count(UserID) from users_info
+            select date_format(BanDate, '%Y-%m') as months, count(UserID) from users_info
             where BanDate > 0 group by months order by BanDate asc limit 1, 11;
         ");
 
@@ -578,7 +580,7 @@ class Stats
     /**
      * categoryDistribution
      */
-    public function categoryDistribution() : array
+    public function categoryDistribution(): array
     {
         $ENV = ENV::go();
 
@@ -605,7 +607,7 @@ class Stats
     /**
      * classDistribution
      */
-    public function classDistribution() : array
+    public function classDistribution(): array
     {
         G::$DB->prepared_query("
             select permissions.Name, count(users_main.ID) as users from users_main
@@ -628,7 +630,7 @@ class Stats
     /**
      * databaseSpecifics
      */
-    public function databaseSpecifics() : array
+    public function databaseSpecifics(): array
     {
         G::$DB->prepared_query("
             show table status;
@@ -637,16 +639,16 @@ class Stats
         $databaseSpecifics = G::$DB->to_array();
         $databaseSpecifics = [
             'name' => array_column($databaseSpecifics, 'Name'),
-            'rowCount' => array_column($databaseSpecifics, 'Rows'),
+            'rows' => array_column($databaseSpecifics, 'Rows'),
             'dataSize' => array_column($databaseSpecifics, 'Data_length'),
             'indexSize' => array_column($databaseSpecifics, 'Index_length'),
         ];
 
         # unset empty rows
-        foreach ($databaseSpecifics['rowCount'] as $k => $v) {
+        foreach ($databaseSpecifics['rows'] as $k => $v) {
             if (empty($v)) {
                 unset($databaseSpecifics['name'][$k]);
-                unset($databaseSpecifics['rowCount'][$k]);
+                unset($databaseSpecifics['rows'][$k]);
                 unset($databaseSpecifics['dataSize'][$k]);
                 unset($databaseSpecifics['indexSize'][$k]);
             }
@@ -659,8 +661,8 @@ class Stats
         }
 
         # cast to int
-        foreach ($databaseSpecifics['rowCount'] as $k => $v) {
-            $databaseSpecifics['rowCount'][$k] = intval($v);
+        foreach ($databaseSpecifics['rows'] as $k => $v) {
+            $databaseSpecifics['rows'][$k] = intval($v);
         }
         
         unset($databaseSpecifics['indexSize']);

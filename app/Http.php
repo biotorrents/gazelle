@@ -32,7 +32,7 @@ class Http
      *
      * Validates and escapes request parameters.
      */
-    public static function query() : array
+    public static function query(): array
     {
         # hold escapes
         $safe = [
@@ -56,6 +56,44 @@ class Http
 
         # should be okay
         return $safe;
+    }
+
+
+    /**
+     * assertRequest
+     *
+     * Used to check if keys in $_POST and $_GET are all set, and throws an error if not.
+     * This reduces 'if' statement redundancy for a lot of variables.
+     *
+     * @param array $request Either $_POST or $_GET, or whatever other array you want to check.
+     * @param array $keys The keys to ensure are set.
+     * @param boolean $allowEmpty If set to true, a key that is in the request but blank will not throw an error.
+     * @param int $error The error code to throw if one of the keys isn't in the array.
+     */
+    public static function assertRequest(array $request, array $keys = null, bool $allowEmpty = false, int $error = 400): bool
+    {
+        # keys exists
+        if (isset($keys)) {
+            foreach ($keys as $k) {
+                if (!isset($request[$k]) || ($allowEmpty === false && $request[$k] === '')) {
+                    self::response($error);
+                    return false;
+                }
+            }
+        }
+        
+        # generic empty
+        else {
+            foreach ($request as $r) {
+                if (!isset($r) || ($allowEmpty === false && $r === '')) {
+                    self::response($error);
+                    return false;
+                }
+            }
+        }
+
+        # conditions met
+        return true;
     }
 
     

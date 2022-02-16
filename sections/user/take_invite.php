@@ -118,7 +118,7 @@ EOT;
         $Cache->commit_transaction(0);
     }
 
-    Misc::send_email($CurEmail, "You have been invited to $ENV->SITE_NAME", $Message, 'noreply');
+    Misc::email($CurEmail, "You have been invited to $ENV->SITE_NAME", $Message);
 }
 
 header('Location: user.php?action=invite');

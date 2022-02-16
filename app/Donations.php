@@ -690,7 +690,7 @@ class Donations
         if ($Rank >= 4 || $HasAll) {
             if (isset($_POST['donor_icon_link'])) {
                 $CustomIconLink = db_string($_POST['donor_icon_link']);
-                if (!Misc::is_valid_url($CustomIconLink)) {
+                if (!filter_var($CustomIconLink, FILTER_VALIDATE_URL)) {
                     $CustomIconLink = '';
                 }
 
@@ -704,7 +704,7 @@ class Donations
         if ($Rank >= MAX_RANK || $HasAll) {
             if (isset($_POST['donor_icon_custom_url'])) {
                 $CustomIcon = db_string($_POST['donor_icon_custom_url']);
-                if (!Misc::is_valid_url($CustomIcon)) {
+                if (!filter_var($CustomIcon, FILTER_VALIDATE_URL)) {
                     $CustomIcon = '';
                 }
 
@@ -722,7 +722,7 @@ class Donations
         if ($SpecialRank >= 2) {
             if (isset($_POST['second_avatar'])) {
                 $SecondAvatar = db_string($_POST['second_avatar']);
-                if (!Misc::is_valid_url($SecondAvatar)) {
+                if (!filter_var($SecondAvatar, FILTER_VALIDATE_URL)) {
                     $SecondAvatar = '';
                 }
 

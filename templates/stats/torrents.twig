@@ -14,7 +14,7 @@
     <tbody>
       <tr>
         <th>Torrents</th>
-        <td>{{ torrentsEconomy.torrents.idCount|number_format }}</td>
+        <td>{{ torrentsEconomy.torrents.count|number_format }}</td>
         <td></td>
       </tr>
 
@@ -27,13 +27,13 @@
       <tr>
         <th>Data size</th>
         <td>{{ torrentsEconomy.torrents.totalSize|get_size }}</td>
-        <td>{{ (torrentsEconomy.torrents.totalSize / torrentsEconomy.torrents.idCount)|get_size }}</td>
+        <td>{{ (torrentsEconomy.torrents.totalSize / torrentsEconomy.torrents.count)|get_size }}</td>
       </tr>
 
       <tr>
         <th>Tracked files</th>
         <td>{{ torrentsEconomy.torrents.fileCount|number_format }}</td>
-        <td>{{ (torrentsEconomy.torrents.fileCount / torrentsEconomy.torrents.idCount)|number_format }}</td>
+        <td>{{ (torrentsEconomy.torrents.fileCount / torrentsEconomy.torrents.count)|number_format }}</td>
       </tr>
 
       <tr>
@@ -45,25 +45,26 @@
       <tr>
         <th>Torrents per user</th>
         <td></td>
-        <td>{{ (torrentsEconomy.torrents.idCount / torrentsEconomy.users.idCount)|number_format }}</td>
+        <td>{{ (torrentsEconomy.torrents.count / torrentsEconomy.users.count)|number_format }}</td>
       </tr>
 
       <tr>
         <th>Upload</th>
         <td>{{ trackerEconomy.torrents.totalUpload|get_size }}</td>
-        <td>{{ (trackerEconomy.torrents.totalUpload / trackerEconomy.users.idCount)|get_size }}</td>
+        <td>{{ (trackerEconomy.torrents.totalUpload / trackerEconomy.users.count)|get_size }}</td>
       </tr>
 
       <tr>
         <th>Download</th>
         <td>{{ trackerEconomy.torrents.totalDownload|get_size }}</td>
-        <td>{{ (trackerEconomy.torrents.totalDownload / trackerEconomy.users.idCount)|get_size }}</td>
+        <td>{{ (trackerEconomy.torrents.totalDownload / trackerEconomy.users.count)|get_size }}</td>
       </tr>
 
       <tr>
         <th>Buffer</th>
         <td>{{ (trackerEconomy.torrents.totalUpload - trackerEconomy.torrents.totalDownload)|get_size }}</td>
-        <td>{{ ((trackerEconomy.torrents.totalUpload - trackerEconomy.torrents.totalDownload) / trackerEconomy.users.idCount)|get_size }}</td>
+        <td>{{ ((trackerEconomy.torrents.totalUpload - trackerEconomy.torrents.totalDownload) /
+          trackerEconomy.users.count)|get_size }}</td>
       </tr>
 
       <tr>
@@ -177,7 +178,8 @@
 
 <section>
   {# buttons: total and average seeders : leechers #}
-  <a class="button button-primary" id="seedersLeechersTotalButton" onclick="visible('seedersLeechersTotal', this.id)">Total</a>
+  <a class="button button-primary" id="seedersLeechersTotalButton"
+    onclick="visible('seedersLeechersTotal', this.id)">Total</a>
   <a class="button" id="seedersLeechersAverageButton" onclick="visible('seedersLeechersAverage', this.id)">Average</a>
 </section>
 
@@ -231,14 +233,14 @@
   <script>
     (() => {
       'use strict';
-  
+
       let seedersLeechersAverageCanvas = document.getElementById('seedersLeechersAverage').getContext('2d');
       let seedersLeechersAverageData = [
-        '{{ trackerEconomy.peers.seeders / torrentsEconomy.torrents.idCount }}',
-        '{{ trackerEconomy.peers.leechers / torrentsEconomy.torrents.idCount }}',
-        '{{ trackerEconomy.snatches.active / torrentsEconomy.torrents.idCount }}',
+        '{{ trackerEconomy.peers.seeders / torrentsEconomy.torrents.count }}',
+        '{{ trackerEconomy.peers.leechers / torrentsEconomy.torrents.count }}',
+        '{{ trackerEconomy.snatches.active / torrentsEconomy.torrents.count }}',
       ];
-  
+
       let seedersLeechersAverageChart = new Chart(seedersLeechersAverageCanvas, {
         type: 'pie',
         data: {
@@ -257,7 +259,7 @@
             ],
           }]
         },
-  
+
         options: {
           plugins: {
             title: {
@@ -400,7 +402,7 @@
           datasets: [{
             label: 'Records',
             yAxisID: 'yRecords',
-            data: Object.values(databaseSpecificsData.rowCount),
+            data: Object.values(databaseSpecificsData.rows),
             // all shades 500: every other forward
             backgroundColor: [
               '#f44336' + 50,

@@ -1,10 +1,6 @@
 <?php
 #declare(strict_types=1);
 
-if (!extension_loaded('mysqli')) {
-    error('Mysqli Extension not loaded.');
-}
-
 class Sphinxql extends mysqli
 {
     private static $Connections = [];

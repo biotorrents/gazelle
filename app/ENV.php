@@ -24,8 +24,8 @@ class ENV
     private static $ENV = null;
 
     # Config options receptacles
-    private static $Priv = []; # Passwords, app keys, database, etc.
-    private static $Pub = []; # Site meta, options, resources, etc.
+    private static $priv = []; # Passwords, app keys, database, etc.
+    private static $pub = []; # Site meta, options, resources, etc.
 
     /**
      * __functions
@@ -60,15 +60,15 @@ class ENV
     # $this->key returns public->key
     private function __get($key)
     {
-        return isset(self::$Pub[$key])
-            ? self::$Pub[$key]
+        return isset(self::$pub[$key])
+            ? self::$pub[$key]
             : false;
     }
     
     # isset
     private function __isset($key)
     {
-        return isset(self::$Pub[$key]);
+        return isset(self::$pub[$key]);
     }
     
 
@@ -77,7 +77,7 @@ class ENV
      */
 
     # Calls its self's creation or returns itself
-    public static function go()
+    public static function go(): ENV
     {
         return (self::$ENV === null)
             ? self::$ENV = new ENV()
@@ -87,27 +87,27 @@ class ENV
     # get
     public function getPriv($key)
     {
-        return isset(self::$Priv[$key])
-            ? self::$Priv[$key]
+        return isset(self::$priv[$key])
+            ? self::$priv[$key]
             : false;
     }
 
     public function getPub($key)
     {
-        return isset(self::$Pub[$key])
-            ? self::$Pub[$key]
+        return isset(self::$pub[$key])
+            ? self::$pub[$key]
             : false;
     }
 
     # set
     public static function setPriv($key, $value)
     {
-        return self::$Priv[$key] = $value;
+        return self::$priv[$key] = $value;
     }
 
     public static function setPub($key, $value)
     {
-        return self::$Pub[$key] = $value;
+        return self::$pub[$key] = $value;
     }
 
 
@@ -117,22 +117,22 @@ class ENV
      * Take a mixed input and returns a RecursiveArrayObject.
      * This function is the sausage grinder, so to speak.
      */
-    public function convert($obj)
+    public function convert(array|object|string $obj): RecursiveArrayObject
     {
         switch (gettype($obj)) {
             case 'string':
                 $out = json_decode($obj, true);
                 return (json_last_error() === JSON_ERROR_NONE)
-                    ? new \RecursiveArrayObject($out)
-                    : error('json_last_error_msg(): ' . json_last_error_msg());
+                    ? new RecursiveArrayObject($out)
+                    : error('json_last_error_msg: ' . json_last_error_msg());
                 break;
             
             case 'array':
             case 'object':
-                return new \RecursiveArrayObject($obj);
+                return new RecursiveArrayObject($obj);
             
             default:
-                return error('$ENV->convert() expects a JSON string, array, or object.');
+                return error('ENV->convert expects a JSON string, array, or object.');
                 break;
         }
     }
@@ -146,7 +146,7 @@ class ENV
      * @return $new New recursive array with $obj contents
      * @see https://ben.lobaugh.net/blog/567/php-recursively-convert-an-object-to-an-array
      */
-    public function toArray($obj)
+    public function toArray(object $obj): array
     {
         if (is_object($obj)) {
             $obj = (array) $obj;
@@ -172,13 +172,13 @@ class ENV
      * Returns a once-deduplicated RecursiveArrayObject with original nesting intact.
      * Simple and handy if you need to populate a form with arbitrary collections of metadata.
      */
-    public function dedupe($obj)
+    public function dedupe(array|object $obj): RecursiveArrayObject
     {
         if (is_object($obj)) {
             $obj = (array) $obj;
         }
 
-        return new \RecursiveArrayObject(
+        return new RecursiveArrayObject(
             array_unique($this->toArray($obj))
         );
     }
@@ -191,15 +191,15 @@ class ENV
      * and flattens out the multi-dimensionality.
      * It returns a flat array with keys intact.
      */
-    public function flatten($arr, int $lvl = null)
+    public function flatten(array|object $array, int $level = null): array
     {
-        if (!is_array($arr) && !is_object($arr)) {
-            return error('$ENV->flatten() expects an array or object, got ' . gettype($arr));
+        if (!is_array($array) && !is_object($array)) {
+            return error('ENV->flatten expects an array or object, got ' . gettype($array));
         }
 
         $new = array();
 
-        foreach ($arr as $k => $v) {
+        foreach ($array as $k => $v) {
             /*
              if (is_object($v)) {
                 $v = $this->toArray($v);
@@ -252,7 +252,7 @@ class ENV
      * @param object|string $obj Object or property to operate on
      * @return object $RAO Mapped RecursiveArrayObject
      */
-    public function map(string $fn = '', $obj = null)
+    public function map(string $fn = '', object|string $obj = null): RecursiveArrayObject
     {
         # Set a default function if desired
         if (empty($fn) && !is_object($fn)) {
@@ -261,7 +261,7 @@ class ENV
 
         # Quick sanity check
         if ($fn === 'array_map') {
-            error("map() can't invoke the function it wraps.");
+            error("ENV->map can't invoke the function it wraps.");
         }
         
         /**
@@ -279,7 +279,7 @@ class ENV
 
         # Map the sanitized function name
         # to a mapped array conversion
-        return new \RecursiveArrayObject(
+        return new RecursiveArrayObject(
             array_map(
                 $fn,
                 array_map(
@@ -298,7 +298,7 @@ class ENV
  * @see https://github.com/etconsilium/php-recursive-array-object
  */
 
-class RecursiveArrayObject extends \ArrayObject
+class RecursiveArrayObject extends ArrayObject
 {
     /**
      * __construct
@@ -308,6 +308,7 @@ class RecursiveArrayObject extends \ArrayObject
         foreach ($input as $key => $value) {
             $this->__set($key, $value);
         }
+
         return $this;
     }
 
@@ -335,7 +336,7 @@ class RecursiveArrayObject extends \ArrayObject
         } elseif (array_key_exists($name, $this)) {
             return $this[$name];
         } else {
-            throw new \InvalidArgumentException(sprintf('$this have not prop `%s`', $name));
+            throw new InvalidArgumentException("The instance doesn't have the property {$name}");
         }
     }
 

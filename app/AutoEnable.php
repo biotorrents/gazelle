@@ -211,7 +211,7 @@ EOT;
                 // Send email
                 $Subject = "Your enable request for $ENV->SITE_NAME has been ";
                 $Subject .= ($Status === self::APPROVED) ? 'approved' : 'denied';
-                Misc::send_email($Email, $Subject, $TPL->get(), 'noreply');
+                Misc::email($Email, $Subject, $TPL->get());
             }
         } else {
             foreach ($Results as $Result) {

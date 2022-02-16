@@ -8,31 +8,45 @@ declare(strict_types=1);
 
 /** api */
 
+
 /** artist */
+
 
 /** better */
 
+
 /** blog */
+
 
 /** bookmarks */
 
+
 /** collages */
+
 
 /** comments */
 
+
 /** donate */
+
 
 /** enable */
 
+
 /** feeds */
+
 
 /** forums */
 
+
 /** friends */
+
 
 /** image */
 
+
 /** inbox */
+
 
 /** index */
 Flight::route('/', function () {
@@ -56,6 +70,7 @@ Flight::route('/', function () {
     }
 });
 
+
 /** legal */
 Flight::route('/about', function () {
     $twig = Twig::go();
@@ -78,7 +93,9 @@ Flight::route('/privacy', function () {
     View::footer();
 });
 
+
 /** log */
+
 
 /** login */
 Flight::route('/login', function () {
@@ -87,19 +104,31 @@ Flight::route('/login', function () {
     #require_once __DIR__.'/../sections/login/login.php';
 });
 
+
 /** logout */
+Flight::route('/logout', function () {
+    # no more bullshit
+    logout_all_sessions();
+});
+
 
 /** peerupdate */
 
+
 /** pwgen */
+
 
 /** register */
 
+
 /** reports */
+
 
 /** reportsv2 */
 
+
 /** requests */
+
 
 /** rules */
 Flight::route('/rules', function () {
@@ -134,13 +163,18 @@ Flight::route('/rules/upload', function () {
     require_once __DIR__.'/../sections/rules/upload.php';
 });
 
+
 /** schedule */
+
 
 /** snatchlist */
 
+
 /** staff */
 
+
 /** staffpm */
+
 
 /** stats */
 Flight::route('/stats/torrents', function () {
@@ -153,21 +187,30 @@ Flight::route('/stats/users', function () {
     require_once __DIR__.'/../sections/stats/users.php';
 });
 
+
 /** store */
+
 
 /** tools */
 
+
 /** top10 */
+
 
 /** torrents */
 
+
 /** upload */
+
 
 /** user */
 
+
 /** userhistory */
 
+
 /** wiki */
+
 
 # start the router
 Flight::start();

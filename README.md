@@ -18,6 +18,11 @@ API tokens can be generated in the
 [user security settings](sections/user/token.php)
 and used with the JSON API.
 
+## Routing system
+
+Bio Gazelle uses the Flight router to define app routes.
+Features include clean URIs and centralized middleware.
+
 ## Good typography
 
 BioTorrents.de supports an array of

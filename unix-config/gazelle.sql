@@ -382,17 +382,6 @@ CREATE TABLE `featured_albums` (
 
 
 -- 2020-03-09
-CREATE TABLE `featured_merch` (
-  `ProductID` int NOT NULL DEFAULT '0',
-  `Title` varchar(35) NOT NULL DEFAULT '', -- todo: 35 vs. 50 vs. 255?
-  `Image` varchar(255) NOT NULL DEFAULT '',
-  `Started` datetime,
-  `Ended` datetime,
-  `ArtistID` int unsigned DEFAULT '0'
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
--- 2020-03-09
 CREATE TABLE `forums` (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `CategoryID` tinyint NOT NULL DEFAULT '0',
