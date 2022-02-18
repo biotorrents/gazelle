@@ -16,7 +16,7 @@ use DebugBar\DataCollector\Renderable;
 class Debug
 {
     # Singleton
-    private static $Debug = null;
+    private static $debug = null;
 
     /**
      * __functions
@@ -48,9 +48,9 @@ class Debug
      */
     public static function go()
     {
-        return (self::$Debug === null)
-            ? self::$Debug = Debug::factory()
-            : self::$Debug;
+        return (self::$debug === null)
+            ? self::$debug = Debug::factory()
+            : self::$debug;
     }
 
 
@@ -68,15 +68,15 @@ class Debug
             error_reporting(E_ALL);
         }
 
-        $DebugBar = new \DebugBar\StandardDebugBar();
+        $debugBar = new \DebugBar\StandardDebugBar();
 
         # Custom collectors
-        $DebugBar->addCollector(new DatabaseCollector());
-        $DebugBar->addCollector(new FilesCollector());
+        $debugBar->addCollector(new DatabaseCollector());
+        $debugBar->addCollector(new FilesCollector());
 
         # http://phpdebugbar.com/docs/bridge-collectors.html#twig
         /*
-        $DebugBar->addCollector(
+        $debugBar->addCollector(
             new \DebugBar\Bridge\TwigProfileCollector(
                 \Twig::go(),
                 \DebugBar\DataCollector\TimeDataCollector
@@ -84,7 +84,7 @@ class Debug
         );
         */
 
-        return $DebugBar;
+        return $debugBar;
     }
 
 
@@ -93,77 +93,6 @@ class Debug
      * OLD CLASS STARTS HERE
      *
      */
-
-
-    public $Errors = [];
-    public $Flags = [];
-    public $Perf = [];
-    private $LoggedVars = [];
-
-    /**
-     * profile
-     */
-    public function profile($Automatic = '')
-    {
-        /*
-          $Reason = [];
-
-          if (!empty($Automatic)) {
-              $Reason[] = $Automatic;
-          }
-
-          $CacheStatus = G::$Cache->server_status();
-          if (in_array(0, $CacheStatus) && !G::$Cache->get_value('cache_fail_reported')) {
-              // Limit to max one report every 15 minutes to avoid massive debug spam
-              G::$Cache->cache_value('cache_fail_reported', true, 900);
-              $Reason[] = "Cache server error";
-          }
-
-          if (isset($_REQUEST['profile'])) {
-              $Reason[] = 'Requested by ' . G::$LoggedUser['Username'];
-          }
-
-          $this->Perf['Memory usage'] = (($Ram>>10) / 1024).' MB';
-          $this->Perf['Page process time'] = number_format($Micro / 1000, 3).' s';
-
-          if (isset($Reason[0])) {
-              $this->log_var($CacheStatus, 'Cache server status');
-              $this->analysis(implode(', ', $Reason));
-              return true;
-          }
-          return false;
-          */
-    }
-
-    /**
-     * analysis
-     */
-    public function analysis($Message, $Report = '', $Time = 43200)
-    {
-        /*
-          global $Document;
-          if (empty($Report)) {
-              $Report = $Message;
-          }
-          $Identifier = Users::make_secret(5);
-          G::$Cache->cache_value(
-              'analysis_'.$Identifier,
-              array(
-                  'url' => $_SERVER['REQUEST_URI'],
-                  'message' => $Report,
-                  'errors' => $this->get_errors(true),
-                  'queries' => $this->get_queries(),
-                  'cache' => $this->get_cache_keys(),
-                  'vars' => $this->get_logged_vars(),
-                  'ocelot' => $this->get_ocelot_requests()
-              ),
-              $Time
-          );
-
-          $RequestURI = !empty($_SERVER['REQUEST_URI']) ? substr($_SERVER['REQUEST_URI'], 1) : '';
-          send_irc(DEBUG_CHAN, "$Message $Document ".site_url()."tools.php?action=analysis&case=$Identifier ".site_url().$RequestURI);
-          */
-    }
 
 
     /**
@@ -191,38 +120,6 @@ class Debug
 
 
     /**
-     * get_errors
-     */
-    public function get_errors($Light = false)
-    {
-        /*
-          // Because the cache can't take some of these variables
-          if ($Light) {
-              foreach ($this->Errors as $Key => $Value) {
-                  $this->Errors[$Key][3] = '';
-              }
-          }
-          return $this->Errors;
-          */
-    }
-
-    /**
-     * get_cache_time
-     */
-    public function get_cache_time()
-    {
-        #return G::$Cache->Time;
-    }
-
-    /**
-     * get_cache_keys
-     */
-    public function get_cache_keys()
-    {
-        #return array_keys(G::$Cache->CacheHits);
-    }
-
-    /**
      * get_sphinxql_queries
      */
     public function get_sphinxql_queries()
@@ -244,14 +141,6 @@ class Debug
               return Sphinxql::$Time;
           }
           */
-    }
-
-    /**
-     * get_logged_vars
-     */
-    public function get_logged_vars()
-    {
-        #return $this->LoggedVars;
     }
 
     /**
@@ -312,56 +201,6 @@ class Debug
     </td>
     <td class="debug_info debug_timing" style="width: 100px;">
         <?=number_format($Request['time'], 5)?> ms
-    </td>
-  </tr>
-  <?php } ?>
-</table>
-<?php
-*/
-    }
-
-    /**
-     * cache_table
-     */
-    public function cache_table($CacheKeys = false)
-    {
-        /*
-          $Header = 'Cache Keys';
-          if (!is_array($CacheKeys)) {
-              $CacheKeys = $this->get_cache_keys();
-              $Header .= ' ('.number_format($this->get_cache_time(), 5).' ms)';
-          }
-
-          if (empty($CacheKeys)) {
-              return;
-          }
-          $Header = ' '.number_format(count($CacheKeys))." $Header:"; ?>
-
-<table class="layout">
-  <tr>
-    <td>
-        <strong>
-          <a href="#" onclick="$(this).parents('.layout').next('#debug_cache').gtoggle(); return false;"
-            class="brackets">View</a>
-          <?=$Header?>
-        </strong>
-    </td>
-  </tr>
-</table>
-
-<table id="debug_cache" class="debug_table hidden">
-  <?php foreach ($CacheKeys as $Key) { ?>
-  <tr>
-    <td class="label nobr debug_info debug_cache_key">
-        <a href="#"
-          onclick="$('#debug_cache_<?=$Key?>').gtoggle(); return false;"><?=esc($Key)?></a>
-        <a href="tools.php?action=clear_cache&amp;key=<?=$Key?>&amp;type=clear"
-          target="_blank" class="brackets tooltip" title="Clear this cache key">Clear</a>
-    </td>
-    <td class="debug_data debug_cache_data">
-        <pre id="debug_cache_<?=$Key?>" class="hidden">
-<?=esc(print_r(G::$Cache->get_value($Key, true), true))?>
-          </pre>
     </td>
   </tr>
   <?php } ?>
@@ -462,61 +301,6 @@ class Debug
 <?php
 */
     }
-
-    /**
-     * vars_table
-     */
-    public function vars_table($Vars = false)
-    {
-        /*
-          $Header = 'Logged Variables';
-          if (empty($Vars)) {
-              if (empty($this->LoggedVars)) {
-                  return;
-              }
-              $Vars = $this->LoggedVars;
-          }
-          $Header = ' '.number_format(count($Vars))." $Header:"; ?>
-
-<table class="layout">
-  <tr>
-    <td>
-        <strong>
-          <a href="#" onclick="$(this).parents('.layout').next('#debug_loggedvars').gtoggle(); return false;"
-            class="brackets">View</a>
-          <?=$Header?>
-        </strong>
-    </td>
-  </tr>
-</table>
-
-<table id="debug_loggedvars" class="debug_table hidden">
-  <?php
-    foreach ($Vars as $ID => $Var) {
-          $Key = key($Var);
-          $Data = current($Var);
-          $Size = count($Data['data']); ?>
-  <tr>
-    <td class="debug_info debug_loggedvars_name">
-        <a href="#"
-          onclick="$('#debug_loggedvars_<?=$ID?>').gtoggle(); return false;"><?=esc($Key)?></a>
-        (<?=$Size . ($Size == 1 ? ' element' : ' elements')?>)
-        <div>
-          <?=$Data['bt']['path'].':'.$Data['bt']['line']; ?>
-        </div>
-    </td>
-    <td class="debug_data debug_loggedvars_data">
-        <pre id="debug_loggedvars_<?=$ID?>" class="hidden">
-<?=esc(print_r($Data['data'], true))?>
-          </pre>
-    </td>
-  </tr>
-  <?php
-    } ?>
-</table>
-<?php
-*/
-    }
 }
 
 
@@ -566,11 +350,12 @@ class FilesCollector extends DataCollector implements Renderable
             $name => [
                 'icon' => 'folder-open',
                 'widget' => 'PhpDebugBar.Widgets.MessagesWidget',
-                'map' => "$name.messages",
+                'map' => "{$name}.messages",
                 'default' => '{}'
             ],
-            "$name:badge" => [
-                'map' => "$name.count",
+            
+            "{$name}:badge" => [
+                'map' => "{$name}.count",
                 'default' => 'null'
             ]
         ];
@@ -620,6 +405,7 @@ class DatabaseCollector extends DataCollector implements Renderable
             if ($a['time'] === $b['time']) {
                 return 0;
             }
+
             return $a['time'] < $b['time'] ? -1 : 1;
         });
 
@@ -642,9 +428,11 @@ class DatabaseCollector extends DataCollector implements Renderable
         if (!is_string($message)) {
             // Send both text and HTML representations; the text version is used for searches
             $messageText = $this->getDataFormatter()->formatVar($message);
+
             if ($this->isHtmlVarDumperUsed()) {
                 $messageHtml = $this->getVarDumper()->renderVar($message);
             }
+
             $isString = false;
         }
 
@@ -667,11 +455,12 @@ class DatabaseCollector extends DataCollector implements Renderable
             $name => [
                 'icon' => 'database',
                 'widget' => 'PhpDebugBar.Widgets.MessagesWidget',
-                'map' => "$name.messages",
+                'map' => "{$name}.messages",
                 'default' => '[]'
             ],
-            "$name:badge" => [
-                'map' => "$name.count",
+
+            "{$name}:badge" => [
+                'map' => "{$name}.count",
                 'default' => 'null'
             ]
         ];

@@ -7,6 +7,12 @@ declare(strict_types=1);
  */
 
 /** api */
+/*
+Flight::route('/api/*', function () {
+    # needs its own router
+    require_once __DIR__.'/../sections/api/router.php';
+});
+*/
 
 
 /** artist */

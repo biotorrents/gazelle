@@ -92,8 +92,6 @@ class Badges
             self::update_badge_cache();
             if (($Badges = G::$Cache->get_value('badges')) && array_key_exists($BadgeID, $Badges)) {
                 extract($Badges[$BadgeID]);
-            } else {
-                #$Debug->analysis("Invalid BadgeID $BadgeID requested.");
             }
         }
 

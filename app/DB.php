@@ -187,8 +187,6 @@ class DB
             send_irc(ADMIN_CHAN, $this->Error);
         }
 
-        #$Debug->analysis('!dev DB Error', $DBError, 3600 * 24);
-
         if ($ENV->DEV || check_perms('site_debug') || isset($argv[1])) {
             echo '<pre>'.esc($DBError).'</pre>';
             if ($ENV->DEV || check_perms('site_debug')) {
@@ -353,8 +351,7 @@ class DB
                 break;
             }
 
-            #$Debug->analysis('Non-Fatal Deadlock:', $Query, 3600 * 24);
-            trigger_error("Database deadlock, attempt $i");
+            trigger_error("Database deadlock, attempt {$i}");
             sleep($i * rand(2, 5)); // Wait longer as attempts increase
         }
 

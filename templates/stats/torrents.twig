@@ -14,57 +14,56 @@
     <tbody>
       <tr>
         <th>Torrents</th>
-        <td>{{ torrentsEconomy.torrents.count|number_format }}</td>
+        <td>{{ economyOverTime.torrents.count|number_format }}</td>
         <td></td>
       </tr>
 
       <tr>
         <th>Ratio</th>
         <td></td>
-        <td>{{ get_ratio_html(trackerEconomy.torrents.totalUpload, trackerEconomy.torrents.totalDownload)|raw }}</td>
+        <td>{{ trackerEconomy.users.averageRatio }}</td>
       </tr>
 
       <tr>
         <th>Data size</th>
-        <td>{{ torrentsEconomy.torrents.totalSize|get_size }}</td>
-        <td>{{ (torrentsEconomy.torrents.totalSize / torrentsEconomy.torrents.count)|get_size }}</td>
+        <td>{{ economyOverTime.torrents.totalDataSize|get_size }}</td>
+        <td>{{ economyOverTime.torrents.averageDataSize|get_size }}</td>
       </tr>
 
       <tr>
         <th>Tracked files</th>
-        <td>{{ torrentsEconomy.torrents.fileCount|number_format }}</td>
-        <td>{{ (torrentsEconomy.torrents.fileCount / torrentsEconomy.torrents.count)|number_format }}</td>
+        <td>{{ economyOverTime.torrents.totalFileCount|number_format }}</td>
+        <td>{{ economyOverTime.torrents.averageFileCount|number_format }}</td>
       </tr>
 
       <tr>
         <th>File size</th>
         <td></td>
-        <td>{{ (torrentsEconomy.torrents.totalSize / torrentsEconomy.torrents.fileCount)|get_size }}</td>
+        <td>{{ economyOverTime.torrents.averageFileSize|get_size }}</td>
       </tr>
 
       <tr>
         <th>Torrents per user</th>
         <td></td>
-        <td>{{ (torrentsEconomy.torrents.count / torrentsEconomy.users.count)|number_format }}</td>
+        <td>{{ economyOverTime.users.torrentsPerUser|number_format }}</td>
       </tr>
 
       <tr>
         <th>Upload</th>
         <td>{{ trackerEconomy.torrents.totalUpload|get_size }}</td>
-        <td>{{ (trackerEconomy.torrents.totalUpload / trackerEconomy.users.count)|get_size }}</td>
+        <td>{{ trackerEconomy.torrents.averageUpload|get_size }}</td>
       </tr>
 
       <tr>
         <th>Download</th>
         <td>{{ trackerEconomy.torrents.totalDownload|get_size }}</td>
-        <td>{{ (trackerEconomy.torrents.totalDownload / trackerEconomy.users.count)|get_size }}</td>
+        <td>{{ trackerEconomy.torrents.averageDownload|get_size }}</td>
       </tr>
 
       <tr>
         <th>Buffer</th>
-        <td>{{ (trackerEconomy.torrents.totalUpload - trackerEconomy.torrents.totalDownload)|get_size }}</td>
-        <td>{{ ((trackerEconomy.torrents.totalUpload - trackerEconomy.torrents.totalDownload) /
-          trackerEconomy.users.count)|get_size }}</td>
+        <td>{{ trackerEconomy.users.totalBuffer|get_size }}</td>
+        <td>{{ trackerEconomy.users.averageBuffer|get_size }}</td>
       </tr>
 
       <tr>
@@ -236,9 +235,9 @@
 
       let seedersLeechersAverageCanvas = document.getElementById('seedersLeechersAverage').getContext('2d');
       let seedersLeechersAverageData = [
-        '{{ trackerEconomy.peers.seeders / torrentsEconomy.torrents.count }}',
-        '{{ trackerEconomy.peers.leechers / torrentsEconomy.torrents.count }}',
-        '{{ trackerEconomy.snatches.active / torrentsEconomy.torrents.count }}',
+        '{{ trackerEconomy.peers.seeders / economyOverTime.torrents.count }}',
+        '{{ trackerEconomy.peers.leechers / economyOverTime.torrents.count }}',
+        '{{ trackerEconomy.snatches.active / economyOverTime.torrents.count }}',
       ];
 
       let seedersLeechersAverageChart = new Chart(seedersLeechersAverageCanvas, {
@@ -290,7 +289,7 @@
       'use strict';
 
       let dailyTorrentsCanvas = document.getElementById('dailyTorrents').getContext('2d');
-      let dailyTorrentsData = JSON.parse('{{ torrentsEconomy|json_encode|raw }}');
+      let dailyTorrentsData = JSON.parse('{{ economyOverTime|json_encode|raw }}');
 
       let dailyTorrentsChart = new Chart(dailyTorrentsCanvas, {
         type: 'bar',
@@ -323,7 +322,7 @@
       'use strict';
 
       let weeklyTorrentsCanvas = document.getElementById('weeklyTorrents').getContext('2d');
-      let weeklyTorrentsData = JSON.parse('{{ torrentsEconomy|json_encode|raw }}');
+      let weeklyTorrentsData = JSON.parse('{{ economyOverTime|json_encode|raw }}');
 
       let weeklyTorrentsChart = new Chart(weeklyTorrentsCanvas, {
         type: 'bar',
@@ -356,7 +355,7 @@
       'use strict';
 
       let monthlyTorrentsCanvas = document.getElementById('monthlyTorrents').getContext('2d');
-      let monthlyTorrentsData = JSON.parse('{{ torrentsEconomy|json_encode|raw }}');
+      let monthlyTorrentsData = JSON.parse('{{ economyOverTime|json_encode|raw }}');
 
       let monthlyTorrentsChart = new Chart(monthlyTorrentsCanvas, {
         type: 'bar',

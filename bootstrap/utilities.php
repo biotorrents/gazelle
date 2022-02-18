@@ -220,21 +220,14 @@ function error(int|string $error = 400, $NoHTML = false, $Log = false)
     }
 
     # Output HTML error page
-    View::header($Title);
+    View::header($title);
+
     echo $twig->render(
         'error.twig',
         ['title' => $title, 'body' => $body]
     );
-    View::footer();
 
-    # This needs to be caught or more likely ignored
-    # It's just errors displayed to endusers now
-    /*
-    $Debug = Debug::go();
-    #$Debug->profile();
-    trigger_error("$Title - $Message", E_USER_ERROR);
-    throw new Exception("$Title - $Message");
-    */
+    View::footer();
 }
 
 /**

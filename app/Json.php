@@ -6,11 +6,11 @@ declare(strict_types = 1);
  * https://github.com/OPSnet/Gazelle/blob/master/app/Json.php
  */
 
-abstract class Json
+class Json
 {
-    protected $version;
-    protected $source;
-    protected $mode;
+    private $mode;
+    private $source;
+    private $version;
 
 
     /**
@@ -18,78 +18,28 @@ abstract class Json
      */
     public function __construct()
     {
-        #parent::__construct();
-        $this->source = SITE_NAME;
+        $ENV = ENV::go();
+
         $this->mode = 0;
+        $this->source = $ENV->SITE_NAME;
         $this->version = 1;
     }
 
 
     /**
-     * The payload of a valid JSON response, implemented in the child class.
-     * @return array Payload to be passed to json_encode()
-     *         null if the payload cannot be produced (permissions, id not found, ...).
+     * success
      */
-    abstract public function payload(): ?array;
-
-
-    /**
-     * Configure JSON printing (any of the json_encode  JSON_* constants)
-     *
-     * @param int $mode the bit-or'ed values to confgure encoding results
-     */
-    public function setMode(string $mode)
+    public function success(array $payload)
     {
-        $this->mode = $mode;
-        return $this;
-    }
-
-
-    /**
-     * set the version of the Json payload. Increment the
-     * value when there is significant change in the payload.
-     * If not called, the version defaults to 1.
-     *
-     * @param int version
-     */
-    public function setVersion(int $version)
-    {
-        $this->version = $version;
-        return $this;
-    }
-
-
-    /**
-     * General failure routine for when bad things happen.
-     *
-     * @param string $message The error set in the JSON response
-     */
-    public function failure(string $message)
-    {
-        print json_encode(
-            array_merge(
-                [
-                    'status' => 'failure',
-                    'response' => [],
-                    'error' => $message,
-                ],
-                $this->info(),
-                $this->debug(),
-            ),
-            $this->mode
-        );
-    }
-
-
-    /**
-     * emit
-     */
-    public function emit()
-    {
-        $payload = $this->payload();
-        if (!$payload) {
-            return;
+        if (headers_sent()) {
+            return false;
         }
+
+        if (empty($payload)) {
+            return $this->failure(message: 'the server provided no payload', response: 500);
+        }
+
+        header('Content-Type: application/json; charset=utf-8');
         print json_encode(
             array_merge(
                 [
@@ -105,29 +55,60 @@ abstract class Json
 
 
     /**
-     * debug
+     * failure
+     *
+     * General failure routine for when bad things happen.
+     *
+     * @param string $message The error set in the JSON response
+     * @param $response HTTP error code (usually 4xx client errors)
      */
-    protected function debug()
+    public function failure(string $message = 'bad request', int $response = 400)
     {
-        $Debug = Debug::go();
-
-        if (!check_perms('site_debug')) {
-            return [];
+        if (headers_sent()) {
+            return false;
         }
 
-        return [
-            'debug' => [
-                'queries'  => $Debug->get_queries(),
-                'searches' => $Debug->get_sphinxql_queries(),
-            ],
-        ];
+        header('Content-Type: application/json; charset=utf-8');
+        print json_encode(
+            array_merge(
+                [
+                    'status' => 'failure',
+                    'response' => $response,
+                    'error' => $message,
+                ],
+                $this->info(),
+                $this->debug(),
+            ),
+            $this->mode
+        );
+    }
+
+
+    /**
+     * debug
+     */
+    private function debug()
+    {
+        $ENV = ENV::go();
+        $debug = Debug::go();
+
+        if ($ENV->DEV) {
+            return [
+                'debug' => [
+                    'queries'  => $debug->get_queries(),
+                    'searches' => $debug->get_sphinxql_queries(),
+                ],
+            ];
+        } else {
+            return [];
+        }
     }
 
 
     /**
      * info
      */
-    protected function info()
+    private function info()
     {
         return [
             'info' => [
@@ -147,17 +128,17 @@ abstract class Json
      * Takes a query string, e.g., "action=torrentgroup&id=1."
      * Requires an API key for the user ID 0 (minor database surgery).
      */
-    public function fetch($Action, $Params = [])
+    public function fetch(string $action, array $params = [])
     {
         $ENV = ENV::go();
 
-        $Token = $ENV->getPriv('SELF_API');
-        $Params = implode('&', $Params);
+        $token = $ENV->getPriv('SELF_API');
+        $params = implode('&', $params);
 
         $ch = curl_init();
 
         # todo: Make this use localhost and not HTTPS
-        curl_setopt($ch, CURLOPT_URL, "https://$ENV->SITE_DOMAIN/api.php?action=$Action&$Params");
+        curl_setopt($ch, CURLOPT_URL, "https://{$ENV->SITE_DOMAIN}/api.php?action={$action}&{$params}");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         # https://docs.biotorrents.de
@@ -166,18 +147,18 @@ abstract class Json
             CURLOPT_HTTPHEADER,
             [
                 'Accept: application/json',
-                "Authorization: Bearer $Token",
+                "Authorization: Bearer {$token}",
             ]
         );
 
-        $Data = curl_exec($ch);
+        $data = curl_exec($ch);
         curl_close($ch);
 
         # Error out on bad query
-        if (!$Data) {
-            return error();
+        if ($data) {
+            return $this->success($data);
         } else {
-            return json_decode($Data);
+            return $this->failure();
         }
     }
 }

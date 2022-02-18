@@ -33,7 +33,7 @@ JSON;
     # Return JSON for localhost (API manifest endpoint):
     #   api.php?action=manifest
     if ($_SERVER['REMOTE_ADDR'] !== "127.0.0.1") {
-        header('Content-type: application/json; charset=utf-8');
+        header('Content-Type: application/json; charset=utf-8');
         echo $manifest;
         return;
     } else {

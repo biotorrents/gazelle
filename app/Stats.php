@@ -329,9 +329,9 @@ class Stats
 
 
     /**
-     * torrentsEconomy
+     * economyOverTime
      */
-    public function torrentsEconomy()
+    public function economyOverTime()
     {
         # torrents
         G::$DB->prepared_query("
@@ -341,9 +341,14 @@ class Stats
         $torrents = G::$DB->to_array();
         $torrents = [
             'count' => intval($torrents[0]['count(ID)']),
-            'totalSize' => intval($torrents[0]['sum(Size)']),
-            'fileCount' => intval($torrents[0]['sum(FileCount)']),
+            'totalDataSize' => intval($torrents[0]['sum(Size)']),
+            'totalFileCount' => intval($torrents[0]['sum(FileCount)']),
         ];
+
+        # secondary stats: averages
+        $torrents['averageDataSize'] =  $torrents['totalDataSize'] / $torrents['count'];
+        $torrents['averageFileCount'] = $torrents['totalFileCount'] / $torrents['count'];
+        $torrents['averageFileSize'] = $torrents['totalDataSize'] / $torrents['totalFileCount'];
 
         # users
         G::$DB->prepared_query("
@@ -354,6 +359,9 @@ class Stats
         $users = [
             'count' => intval($users[0]['count(ID)']),
         ];
+
+        # secondary stats: averages
+        $users['torrentsPerUser'] = $torrents['count'] / $users['count'];
 
         # daily
         G::$DB->prepared_query("
@@ -413,7 +421,7 @@ class Stats
 
         $torrents = G::$DB->to_array();
 
-        # user count - before $torrents work
+        # user count: before $torrents work
         $users = [
             'count' => intval($torrents[0]['count(ID)']),
         ];
@@ -423,7 +431,15 @@ class Stats
             'totalDownload' => intval($torrents[0]['sum(Downloaded)']),
 
         ];
-        
+
+        # secondary stats: averages
+        $users['averageRatio'] = Format::get_ratio($torrents['totalUpload'], $torrents['totalDownload']);
+        $users['totalBuffer'] = $torrents['totalUpload'] - $torrents['totalDownload'];
+        $users['averageBuffer'] = ($torrents['totalUpload'] - $torrents['totalDownload']) / $users['count'];
+
+        $torrents['averageUpload'] = $torrents['totalUpload'] / $users['count'];
+        $torrents['averageDownload'] = $torrents['totalDownload'] / $users['count'];
+
         # request bounty
         G::$DB->prepared_query("
             select sum(Bounty) from requests_votes

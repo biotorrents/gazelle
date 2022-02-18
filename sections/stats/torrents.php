@@ -5,8 +5,8 @@ $stats = new Stats();
 $twig = Twig::go();
 
 
-$torrentsEconomy = $stats->torrentsEconomy();
-#!d($torrentsEconomy);
+$economyOverTime = $stats->economyOverTime();
+#!d($economyOverTime);
 
 $trackerEconomy = $stats->trackerEconomy();
 #!d($trackerEconomy);
@@ -26,7 +26,7 @@ View::header('Detailed torrent statistics', 'vendor/chart.min');
 echo $twig->render(
     'stats/torrents.twig',
     [
-        'torrentsEconomy' => $torrentsEconomy,
+        'economyOverTime' => $economyOverTime,
         'trackerEconomy' => $trackerEconomy,
         'torrentsTimeline' => $torrentsTimeline,
         'categoryDistribution' => $categoryDistribution,
