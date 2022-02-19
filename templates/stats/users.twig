@@ -15,10 +15,10 @@
 
     <tbody>
       <tr>
-        <td>{{ overview.visitors.value }}</td>
-        <td>{{ overview.pageviews.value }}</td>
-        <td>{{ overview.bounce_rate.value }}%</td>
-        <td>{{ overview.visit_duration.value|hhmmss }}</td>
+        <td>{{ overview.visitors}}</td>
+        <td>{{ overview.pageviews}}</td>
+        <td>{{ overview.bounce_rate}}%</td>
+        <td>{{ overview.visit_duration|hhmmss }}</td>
         <td>{{ realtime }}</td>
       </tr>
     </tbody>
@@ -44,7 +44,7 @@
           datasets: [{
             label: 'Visitors',
             data: Object.values(overTimeData.visitors),
-            // $Red500: #f44336;
+            // $red500: #f44336;
             borderColor: '#f44336',
             backgroundColor: '#f44336' + 50,
           },
@@ -52,7 +52,7 @@
           {
             label: 'Pageviews',
             data: Object.values(overTimeData.pageviews),
-            // $Blue500: #2196f3;
+            // $blue500: #2196f3;
             borderColor: '#2196f3',
             backgroundColor: '#2196f3' + 50,
           },
@@ -60,7 +60,7 @@
           {
             label: 'Bounce rate',
             data: Object.values(overTimeData.bounce_rate),
-            // $Green500: #4caf50;
+            // $green500: #4caf50;
             borderColor: '#4caf50',
             backgroundColor: '#4caf50' + 50,
           },
@@ -68,7 +68,7 @@
           {
             label: 'Visit duration',
             data: Object.values(overTimeData.visit_duration),
-            // $Orange500: #ff9800;
+            // $orange500: #ff9800;
             borderColor: '#ff9800',
             backgroundColor: '#ff9800' + 50,
           }],
@@ -106,7 +106,7 @@
           datasets: [{
             label: 'New registrations',
             data: Object.values(usersTimelineData.registrations),
-            // $Blue500: #2196f3;
+            // $blue500: #2196f3;
             borderColor: '#2196f3',
             backgroundColor: '#2196f3' + 50,
           },
@@ -114,7 +114,7 @@
           {
             label: 'Disabled users',
             data: Object.values(usersTimelineData.disables),
-            // $Orange500: #ff9800;
+            // $orange500: #ff9800;
             borderColor: '#ff9800',
             backgroundColor: '#ff9800' + 50,
           }]
@@ -206,7 +206,7 @@
           datasets: [{
             label: 'Visitors',
             data: Object.values(topPagesData.page),
-            // $Purple500: #9c27b0;
+            // $purple500: #9c27b0;
             backgroundColor: '#9c27b0' + 50,
           }],
         },
@@ -241,7 +241,7 @@
           datasets: [{
             label: 'Visitors',
             data: Object.values(topPagesData.entry_page),
-            // $Purple500: #9c27b0;
+            // $purple500: #9c27b0;
             backgroundColor: '#9c27b0' + 50,
           }],
         },
@@ -276,7 +276,7 @@
           datasets: [{
             label: 'Visitors',
             data: Object.values(topPagesData.exit_page),
-            // $Purple500: #9c27b0;
+            // $purple500: #9c27b0;
             backgroundColor: '#9c27b0' + 50,
           }],
         },
@@ -288,6 +288,86 @@
             title: {
               display: true,
               text: 'Top 10 exit pages',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+</section>
+<br /><br />
+
+
+<section>
+  {# buttons: sources and referrers #}
+  <a class="button button-primary" id="sourcesButton" onclick="visible('sources', this.id)">Sources</a>
+  <a class="button" id="referrersButton" onclick="visible('referrers', this.id)">Referrers</a>
+</section>
+
+<section>
+  {# sources #}
+  <canvas class="chart" id="sources"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let sourcesCanvas = document.getElementById('sources').getContext('2d');
+      let sourcesData = JSON.parse('{{ sources|json_encode|raw }}');
+
+      let sourcesChart = new Chart(sourcesCanvas, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(sourcesData.source),
+          datasets: [{
+            label: 'Visitors',
+            data: Object.values(sourcesData.source),
+            // $orange500: #ff9800;
+            backgroundColor: '#ff9800' + 50,
+          }],
+        },
+
+        options: {
+          indexAxis: 'y',
+
+          plugins: {
+            title: {
+              display: true,
+              text: 'Top 10 referrer sources',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+
+  {# referrers #}
+  <canvas class="chart" id="referrers"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let referrersCanvas = document.getElementById('referrers').getContext('2d');
+      let referrersData = JSON.parse('{{ sources|json_encode|raw }}');
+
+      let referrersChart = new Chart(referrersCanvas, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(referrersData.referrer),
+          datasets: [{
+            label: 'Visitors',
+            data: Object.values(referrersData.referrer),
+            // $orange500: #ff9800;
+            backgroundColor: '#ff9800' + 50,
+          }],
+        },
+
+        options: {
+          indexAxis: 'y',
+
+          plugins: {
+            title: {
+              display: true,
+              text: 'Top 10 HTTP referrers',
             },
           },
         },
@@ -449,8 +529,8 @@
           datasets: [{
             label: 'Visitors',
             data: Object.values(locationsData),
-            // $Orange500: #ff9800;
-            backgroundColor: '#ff9800' + 50,
+            // $green500: #4caf50;
+            backgroundColor: '#4caf50' + 50,
           }],
         },
 
@@ -487,6 +567,8 @@
   (() => {
     $('#entryPages').hide();
     $('#exitPages').hide();
+
+    $('#referrers').hide();
 
     $('#browsers').hide();
     $('#operatingSystems').hide();

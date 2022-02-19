@@ -20,6 +20,9 @@ $overTime = $stats->overTime();
 $topPages = $stats->topPages();
 #!d($topPages);
 
+$sources = $stats->sources();
+#!d($sources);
+
 $devices = $stats->devices();
 #!d($devices);
 
@@ -46,6 +49,7 @@ echo $twig->render(
         'overview' => $overview,
         'overTime' => $overTime,
         'topPages' => $topPages,
+        'sources' => $sources,
         'devices' => $devices,
         'locations' => $locations,
 

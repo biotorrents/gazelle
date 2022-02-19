@@ -5,17 +5,17 @@
 body {
   background: white;
   color: #222;
-  font-family: $NotoSans;
+  font-family: $notoSans;
 
   b,
   strong {
-    font-family: $NotoSansBold;
+    font-family: $notoSansBold;
     font-weight: normal;
   }
 
   i,
   em {
-    font-family: $NotoSansItalic;
+    font-family: $notoSansItalic;
     font-style: normal;
   }
 }
@@ -44,7 +44,7 @@ a {
 }
 
 a:hover {
-  color: $SkeletonFocus;
+  color: $skeletonFocus;
   text-decoration: none;
 }
 
@@ -94,14 +94,14 @@ caption {
 /* code, pre */
 code,
 pre {
-  font-family: $NotoMono;
+  font-family: $notoMono;
   margin-bottom: 1rem;
   word-wrap: break-word;
   /* word-wrap: pre; */
 
   b,
   strong {
-    font-family: $NotoMonoBold;
+    font-family: $notoMonoBold;
   }
 }
 
@@ -144,11 +144,11 @@ dl {
 }
 
 textarea {
-  font-family: $NotoMono;
+  font-family: $notoMono;
 
   b,
   strong {
-    font-family: $NotoMonoBold;
+    font-family: $notoMonoBold;
   }
 }
 

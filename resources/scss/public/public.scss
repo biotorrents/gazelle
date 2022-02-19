@@ -1,7 +1,7 @@
 /* Skeleton CSS */
-$SkeletonDefault: #33c3f0;
-$SkeletonFocus: #1eaedb;
-$SkeletonHalfdark: scale-color($SkeletonFocus, $lightness: -50%);
+$skeletonDefault: #33c3f0;
+$skeletonFocus: #1eaedb;
+$skeletonHalfdark: scale-color($skeletonFocus, $lightness: -50%);
 
 /**
  * Typography
@@ -32,7 +32,7 @@ a {
   text-decoration: underline;
 
   &:hover {
-    color: $SkeletonDefault;
+    color: $skeletonDefault;
     text-decoration: none;
   }
 }
@@ -50,7 +50,7 @@ footer {
   height: 4.2rem;
   line-height: 4.2rem;
   width: 100%;
-  background: $SkeletonHalfdark;
+  background: $skeletonHalfdark;
   position: fixed;
   left: 0;
 

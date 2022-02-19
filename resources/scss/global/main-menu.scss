@@ -109,7 +109,7 @@ nav {
 
       &:hover {
         background: change-color($color: #1eaedb, $alpha: 0.1);
-        /* background: change-color($color: $SkeletonFocus, $alpha: 0.1); */
+        /* background: change-color($color: $skeletonFocus, $alpha: 0.1); */
         color: #222;
       }
     }
