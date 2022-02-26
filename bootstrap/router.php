@@ -196,6 +196,7 @@ Flight::route('/rules/chat', function () {
     View::footer();
 });
 
+# clients
 Flight::route('/rules/clients', function () {
     require_once __DIR__.'/../sections/rules/clients.php';
 });
@@ -233,8 +234,18 @@ Flight::route('/rules/requests', function () {
     View::footer();
 });
 
+# tags
 Flight::route('/rules/tags', function () {
-    require_once __DIR__.'/../sections/rules/tags.php';
+    $ENV = ENV::go();
+    $twig = Twig::go();
+    
+    $text = Text::parse(
+        file_get_contents("{$ENV->SERVER_ROOT}/templates/rules/tags.md")
+    );
+    
+    View::header('Tagging rules');
+    echo $twig->render('rules/rules.twig', ['text' => $text]);
+    View::footer();
 });
 
 Flight::route('/rules/upload', function () {

@@ -1,80 +1,37 @@
 <?php
 declare(strict_types=1);
 
-View::header('Client rules');
+$twig = Twig::go();
+$allowedClients = G::$Cache->get_value('allowed_clients') ?? [];
 
-if (!$WhitelistedClients = G::$Cache->get_value('whitelisted_clients')) {
+# get and cache clients list
+if (empty($allowedClients)) {
     G::$DB->query("
-    SELECT
-      `vstring`
-    FROM
-      `xbt_client_whitelist`
-    WHERE
-      `vstring` NOT LIKE '//%'
-    ORDER BY
-      `vstring` ASC
+        select peer_id, vstring from xbt_client_whitelist
+        where vstring not like '//%' order by vstring asc
     ");
 
-    $WhitelistedClients = G::$DB->to_array(false, MYSQLI_NUM, false);
-    G::$Cache->cache_value('whitelisted_clients', $WhitelistedClients, 604800);
+    $allowedClients = G::$DB->to_array();
+    $allowedClients = array_combine(
+        array_column($allowedClients, 'peer_id'),
+        array_column($allowedClients, 'vstring'),
+    );
+
+    G::$Cache->cache_value('allowed_clients', $allowedClients, 0);
 }
-?>
 
-<div class="header">
-  <h2>
-    Client rules
-  </h2>
-</div>
 
-<div class="box pad">
-  <p>
-    Client rules are how we maintain the integrity of our swarms.
-    This allows us to filter out disruptive and dishonest clients that may hurt the performance of either the tracker
-    or individual peers.
-  </p>
-  <br />
+View::header('Client rules');
 
-  <table class="clients_table skeleton-fix">
-    <tr>
-      <th>Allowed Clients</th>
-    </tr>
+# get text for template
+$text = $twig->render(
+    'rules/clients.twig',
+    [
+        'allowedClients' => $allowedClients,
+    ]
+);
 
-    <?php
-  foreach ($WhitelistedClients as $Client) {
-      list($ClientName) = $Client; ?>
+# the rules template itself
+echo $twig->render('rules/rules.twig', ['text' => $text]);
 
-    <tr class="row">
-      <td>
-        <?=$ClientName?>
-      </td>
-    </tr>
-    <?php
-  } ?>
-  </table>
-</div>
-
-<h3>
-  Further rules
-</h3>
-
-<div class="box pad rule_summary">
-  <p>
-    The modification of clients to bypass our client requirements (spoofing) is explicitly forbidden.
-    People caught doing this will be instantly and permanently banned.
-    When you leak peers, everyone loses.
-    This is your only warning.
-  </p>
-
-  <p>
-    The use of clients or proxies which have been modified to report incorrect stats to our tracker (cheating) is not
-    allowed, and will result in a permanent ban.
-  </p>
-
-  <p>
-    The testing of unstable clients by developers must first be approved by staff.
-  </p>
-</div>
-
-<?php include('jump.php'); ?>
-</div>
-<?php View::footer();
+View::footer();
