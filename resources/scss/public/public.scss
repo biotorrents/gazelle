@@ -45,14 +45,33 @@ h2 {
  * Layout
  */
 
+main {
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  gap: 1rem;
+  margin: 5% auto;
+  width: 90%;
+
+  &:after {
+    content: "";
+    min-height: 100%;
+  }
+}
+
 header,
 footer {
   height: 4.2rem;
   line-height: 4.2rem;
-  width: 100%;
+  max-width: 100%;
+}
+
+header {
   background: $skeletonHalfdark;
-  position: fixed;
-  left: 0;
+  padding: 0 1%;
+  position: sticky;
+  text-align: right;
+  top: 0;
 
   a {
     color: white;
@@ -66,21 +85,8 @@ footer {
   }
 }
 
-header {
-  top: 0;
-  text-align: right;
-}
-
 footer {
-  bottom: 0;
   text-align: center;
-}
-
-main {
-  width: 25%;
-  height: calc(80% - 60px);
-  margin: 0 auto;
-  padding: 10% 0;
 }
 
 #logo {
@@ -104,28 +110,9 @@ main {
  * Classes
  */
 
-.center {
-  margin: auto;
-  text-align: center;
-  vertical-align: middle;
-}
-
-.hidden {
-  display: none;
-}
-
 .mouseless {
   cursor: default;
 }
-
-/*
-.login_form,
-.create_form,
-.notice {
-    margin: auto;
-    max-width: 220px;
-}
-*/
 
 .info {
   color: green;
@@ -139,8 +126,7 @@ main {
 
 /* Legal */
 .tldr {
-  width: 200%;
+  width: 50%;
   height: 500px;
-  margin-left: -50%;
   overflow-y: scroll;
 }

@@ -69,7 +69,8 @@ echo <<<HTML
 
 <body>
   <header>
-    <a href="/login">Log In</a>
+    <span class="left">
+      <a href="/login">Log In</a>
 HTML;
 
 if ($ENV->OPEN_REGISTRATION) {
@@ -77,12 +78,18 @@ if ($ENV->OPEN_REGISTRATION) {
 }
 
 echo <<<HTML
-    <a href="/about">About</a>
-    <a class="external" href="https://docs.torrents.bio" target="_blank">Docs</a>
+      <a href="/about">About</a>
+      <a class="external" href="https://docs.torrents.bio" target="_blank">Docs</a>
+    </span>
+
+    <span class="right">
+      <a href="/privacy">Privacy</a>
+      <a href="/dmca">DMCA</a>
+      <a class="external" href="https://github.com/biotorrents" target="_blank">GitHub</a>
+      <a class="external" href="https://patreon.com/biotorrents" target="_blank">Patreon</a>
+    </span>
   </header>
 
 <main>
-  <h1 id="logo">
-    <a href="/" aria-label="Front page"></a>
-  </h1>
+  <h1 id="logo"></h1>
 HTML;

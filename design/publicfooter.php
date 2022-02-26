@@ -2,14 +2,12 @@
 declare(strict_types=1);
 
 $ENV = ENV::go();
+$year = date('Y');
 
 echo <<<HTML
     </main>
     <footer>
-      <a href="/privacy">Privacy</a>
-      <a href="/dmca">DMCA</a>
-      <a class="external" href="https://github.com/biotorrents" target="_blank">GitHub</a>
-      <a class="external" href="https://patreon.com/biotorrents" target="_blank">Patreon</a>
+      © {$year} {$ENV->SITE_NAME}
     </footer>
   </body>
 </html>
