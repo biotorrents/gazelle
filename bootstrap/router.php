@@ -79,34 +79,56 @@ Flight::route('/', function () {
 
 /** legal */
 Flight::route('/about', function () {
+    $ENV = ENV::go();
     $twig = Twig::go();
+
+    $text = Text::parse(
+        file_get_contents("{$ENV->SERVER_ROOT}/templates/legal/about.md")
+    );
+
     View::header('About');
-    echo $twig->render('legal/about.html');
+    echo $twig->render('legal/tldr.twig', ['text' => $text]);
     View::footer();
 });
 
+# canary
 Flight::route('/canary', function () {
     header('Content-Type: text/plain; charset=utf-8');
-    require_once __DIR__.'/../public/docs/canary.txt';
+    require_once __DIR__.'/../templates/legal/canary.txt';
 });
 
+# dmca
 Flight::route('/dmca', function () {
+    $ENV = ENV::go();
     $twig = Twig::go();
+
+    $text = Text::parse(
+        file_get_contents("{$ENV->SERVER_ROOT}/templates/legal/dmca.md")
+    );
+
     View::header('DMCA');
-    echo $twig->render('legal/dmca.html');
+    echo $twig->render('legal/tldr.twig', ['text' => $text]);
     View::footer();
 });
 
+# privacy
 Flight::route('/privacy', function () {
+    $ENV = ENV::go();
     $twig = Twig::go();
+
+    $text = Text::parse(
+        file_get_contents("{$ENV->SERVER_ROOT}/templates/legal/privacy.md")
+    );
+
     View::header('Privacy');
-    echo $twig->render('legal/privacy.html');
+    echo $twig->render('legal/tldr.twig', ['text' => $text]);
     View::footer();
 });
 
+# pubkey
 Flight::route('/pubkey', function () {
     header('Content-Type: text/plain; charset=utf-8');
-    require_once __DIR__.'/../public/docs/pubkey.txt';
+    require_once __DIR__.'/../templates/legal/pubkey.txt';
 });
 
 
@@ -148,7 +170,16 @@ Flight::route('/logout', function () {
 
 /** rules */
 Flight::route('/rules', function () {
-    require_once __DIR__.'/../sections/rules/rules.php';
+    $ENV = ENV::go();
+    $twig = Twig::go();
+
+    $text = Text::parse(
+        file_get_contents("{$ENV->SERVER_ROOT}/templates/rules/golden.md")
+    );
+
+    View::header('Golden rules');
+    echo $twig->render('rules/rules.twig', ['text' => $text]);
+    View::footer();
 });
 
 # chat
@@ -188,8 +219,18 @@ Flight::route('/rules/ratio', function () {
     require_once __DIR__.'/../sections/rules/ratio.php';
 });
 
+# requests
 Flight::route('/rules/requests', function () {
-    require_once __DIR__.'/../sections/rules/requests.php';
+    $ENV = ENV::go();
+    $twig = Twig::go();
+    
+    $text = Text::parse(
+        file_get_contents("{$ENV->SERVER_ROOT}/templates/rules/requests.md")
+    );
+    
+    View::header('Request rules');
+    echo $twig->render('rules/rules.twig', ['text' => $text]);
+    View::footer();
 });
 
 Flight::route('/rules/tags', function () {
