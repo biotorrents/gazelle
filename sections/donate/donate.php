@@ -105,7 +105,8 @@ View::header('Donate');
 
     <figure class="donate_button">
       <a href="https://www.patreon.com/bePatron?u=27142321" target="_blank">
-        <img src="<?= $ENV->STATIC_SERVER ?>/images/logos/patreon.png" />
+        <img
+          src="<?= $ENV->STATIC_SERVER ?>/images/logos/patreon.png" />
       </a>
     </figure>
 
@@ -136,7 +137,7 @@ View::header('Donate');
 
     <p>
       Please use
-      <a href="/docs/pubkey.txt">GPG A1D095A5DEC74A8B</a>
+      <a href="/pubkey">GPG A1D095A5DEC74A8B</a>
       if you wish.
     </p>
   </div>

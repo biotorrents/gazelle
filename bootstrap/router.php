@@ -104,6 +104,11 @@ Flight::route('/privacy', function () {
     View::footer();
 });
 
+Flight::route('/pubkey', function () {
+    header('Content-Type: text/plain; charset=utf-8');
+    require_once __DIR__.'/../public/docs/pubkey.txt';
+});
+
 
 /** log */
 
@@ -146,16 +151,37 @@ Flight::route('/rules', function () {
     require_once __DIR__.'/../sections/rules/rules.php';
 });
 
+# chat
 Flight::route('/rules/chat', function () {
-    require_once __DIR__.'/../sections/rules/chat.php';
+    $ENV = ENV::go();
+    $twig = Twig::go();
+
+    $text = Text::parse(
+        file_get_contents("{$ENV->SERVER_ROOT}/templates/rules/chat.md")
+    );
+
+    View::header('Chat rules');
+    echo $twig->render('rules/rules.twig', ['text' => $text]);
+    View::footer();
 });
 
 Flight::route('/rules/clients', function () {
     require_once __DIR__.'/../sections/rules/clients.php';
 });
 
+# collages
 Flight::route('/rules/collages', function () {
-    require_once __DIR__.'/../sections/rules/collages.php';
+    $ENV = ENV::go();
+    $twig = Twig::go();
+
+    $text = Text::parse(
+        file_get_contents("{$ENV->SERVER_ROOT}/templates/rules/collages.md"),
+        false
+    );
+
+    View::header('Collection rules');
+    echo $twig->render('rules/rules.twig', ['text' => $text]);
+    View::footer();
 });
 
 Flight::route('/rules/ratio', function () {

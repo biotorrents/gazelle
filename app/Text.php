@@ -3,22 +3,34 @@ declare(strict_types=1);
 
 class Text
 {
+    # cache settings
+    private static $cachePrefix = 'text_';
+    private static $cacheDuration = 0;
+
+        
     /**
-     * Parse
+     * parse
      *
      * Nothing to lose but our chains!
      * This class used to be a nightmare.
      * Now it calls one of two good parsers.
      *
      * @param string $string Markdown preferred
+     * @param bool $safe Whether or not to use safe mode
      * @return string Parsed XHTML text
      */
-    public static function parse(string $string)
+    public static function parse(string $string, bool $safe = true): string
     {
         $ENV = ENV::go();
 
-        $Debug = Debug::go();
-        $Debug['time']->startMeasure('parse', 'parse markdown text');
+        $debug = Debug::go();
+        $debug['time']->startMeasure('parse', 'parse markdown text');
+
+        # Return cached if available
+        $cacheKey = self::$cachePrefix . hash('sha3-512', $string);
+        if (G::$Cache->get_value($cacheKey)) {
+            return G::$Cache->get_value($cacheKey);
+        }
 
         # Prepare clean escapes
         $string = self::utf8($string);
@@ -30,26 +42,29 @@ class Text
             $string
         )) {
             # Markdown
-            $Parsedown = new \ParsedownExtra();
-            $Parsedown->setSafeMode(true);
+            $parsedown = new \ParsedownExtra();
+            $safe ?? $parsedown->setSafeMode(true);
 
             # Parse early and post-process
-            $parsed = $Parsedown->text($string);
+            $parsed = $parsedown->text($string);
             
             # Replace links to $ENV->SITE_DOMAIN
             $parsed = self::fix_links($parsed);
 
+            G::$Cache->cache_value($cacheKey, $parsed, self::$cacheDuration);
             return $parsed;
         } else {
             # BBcode
-            $Nbbc = new \Nbbc\BBCode();
+            $nbbc = new \Nbbc\BBCode();
 
-            $parsed = $Nbbc->parse($string);
+            $parsed = $nbbc->parse($string);
             $parsed = self::fix_links($parsed);
 
+            G::$Cache->cache_value($cacheKey, $parsed, self::$cacheDuration);
             return $parsed;
         }
     }
+
 
     /**
      * Fix links
@@ -58,12 +73,12 @@ class Text
      * and that external links are secure and look like Wikipedia.
      * Takes an already-parsed input, from Markdown or BBcode.
      */
-    private static function fix_links(string $parsed)
+    private static function fix_links(string $parsed): string
     {
         $ENV = ENV::go();
 
-        $Debug = Debug::go();
-        $Debug['time']->startMeasure('process', 'post-process text');
+        $debug = Debug::go();
+        $debug['time']->startMeasure('process', 'post-process text');
 
         # Replace links to $ENV->SITE_DOMAIN
         $parsed = preg_replace(
@@ -93,18 +108,20 @@ class Text
         );
     }
 
+
     /**
      * Figlet
      *
      * Make a silly willy, goofery ballery.
      * @see https://docs.laminas.dev/laminas-text/figlet/
      */
-    public static function figlet(string $string)
+    public static function figlet(string $string): string
     {
         $string = self::utf8($string);
         $figlet = new \Laminas\Text\Figlet();
         return $figlet->render($string);
     }
+
 
     /**
      * utf8
@@ -115,7 +132,7 @@ class Text
      * @param string $string The string to convert
      * @return string The converted utf8 string
      */
-    public static function utf8(string $string)
+    public static function utf8(string $string): string
     {
         # String is already utf8
         $utf8 = preg_match(
