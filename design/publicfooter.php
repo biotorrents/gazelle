@@ -2,13 +2,9 @@
 declare(strict_types=1);
 
 $ENV = ENV::go();
-$year = date('Y');
+$twig = Twig::go();
 
-echo <<<HTML
-    </main>
-    <footer>
-      © {$year} {$ENV->SITE_NAME}
-    </footer>
-  </body>
-</html>
-HTML;
+echo $twig->render(
+    'footer/public.twig',
+    ['ENV' => $ENV]
+);

@@ -85,6 +85,11 @@ Flight::route('/about', function () {
     View::footer();
 });
 
+Flight::route('/canary', function () {
+    header('Content-Type: text/plain; charset=utf-8');
+    require_once __DIR__.'/../public/docs/canary.txt';
+});
+
 Flight::route('/dmca', function () {
     $twig = Twig::go();
     View::header('DMCA');

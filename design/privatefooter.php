@@ -64,7 +64,7 @@ echo $HTML = <<<HTML
   $Year
   $ENV->SITE_NAME
   $Sep
-  <a href="/docs/canary.txt">Warrant Canary</a>
+  <a href="/canary">Warrant Canary</a>
 </p>
 HTML;
 
