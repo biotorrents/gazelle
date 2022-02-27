@@ -26,32 +26,34 @@ Features include clean URIs and centralized middleware.
 ## Good typography
 
 BioTorrents.de supports an array of
-[unobtrusive fonts](static/styles/assets/scss/fonts.scss)
+[unobtrusive fonts](resources/scss/assets/scss/fonts.scss)
 with the appropriate bold/italic glyphs and monospace.
 These options are available to every theme.
 Font Awesome 5 is also universally available.
 [Download the fonts](https://torrents.bio/fonts.tgz).
 
-## Markdown support
+## Markdown and BBcode support
 
 [SimpleMDE markdown editor](https://simplemde.com)
 with extended custom editor interface.
 All the Markdown Extra features supported by
 [Parsedown Extra](https://github.com/erusev/parsedown-extra)
 are documented and the useful ones exposed in the editor interface.
-Support for the default Gazelle recursive regex BBcode parser.
+The default recursive regex BBcode parser is replaced by
+[Vanilla NBBC](https://github.com/vanilla/nbbc).
+Parsed texts are cached for speed.
 
 ## $ENV recursive singleton
 
-[The site configuration](classes/config.template.php)
+[The site configuration](config/public.php)
 is being migrated to a format govered by the
-[ENV special class](classes/env.class.php)
+[ENV special class](app/ENV.php)
 for modified recursive ArrayObjects.
 
 ## Twig template system
 
 Similar to ENV, the
-[Twig interface](classes/twig.class.php)
+[Twig interface](app/Twig.php)
 operates as a singleton because it's an external module with its own cache.
 Twig provides a security benefit by escaping rendered output,
 and a secondary benefit of clarifying the PHP running the site sections.

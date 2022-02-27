@@ -9,6 +9,7 @@ class Tracker
 
     public static $Requests = [];
 
+
     /**
      * Send a GET request over a socket directly to the tracker
      * For example, Tracker::update_tracker('change_passkey', array('oldpasskey' => OLD_PASSKEY, 'newpasskey' => NEW_PASSKEY)) will send the request:
@@ -46,11 +47,13 @@ class Tracker
         return true;
     }
 
+
     /**
      * Get global peer stats from the tracker
      *
      * @return array(0 => $Leeching, 1 => $Seeding) or false if request failed
      */
+    /*
     public static function global_peer_count()
     {
         $Stats = self::get_stats(self::STATS_MAIN);
@@ -62,6 +65,8 @@ class Tracker
         }
         return array($Leechers, $Seeders);
     }
+    */
+
 
     /**
      * Get peer stats for a user from the tracker
@@ -85,6 +90,7 @@ class Tracker
         return array($Leeching, $Seeding);
     }
 
+
     /**
      * Get whatever info the tracker has to report
      *
@@ -94,6 +100,7 @@ class Tracker
     {
         return self::get_stats(self::STATS_MAIN);
     }
+
 
     /**
      * Send a stats request to the tracker and process the results
