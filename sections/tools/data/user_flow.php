@@ -7,23 +7,23 @@ if (!check_perms('site_view_flow')) {
 
 // Timeline generation
 if (!isset($_GET['page'])) {
-    if (!list($Labels, $InFlow, $OutFlow) = $Cache->get_value('users_timeline')) {
-        $DB->query("
+    if (!list($Labels, $InFlow, $OutFlow) = $cache->get_value('users_timeline')) {
+        $db->query("
           SELECT DATE_FORMAT(JoinDate, \"%b %y\") AS Month, COUNT(UserID)
           FROM users_info
           GROUP BY Month
           ORDER BY JoinDate DESC
           LIMIT 1, 11");
-        $TimelineIn = array_reverse($DB->to_array());
+        $TimelineIn = array_reverse($db->to_array());
 
-        $DB->query("
+        $db->query("
           SELECT DATE_FORMAT(BanDate, \"%b %y\") AS Month, COUNT(UserID)
           FROM users_info
           WHERE BanDate > 0
           GROUP BY Month
           ORDER BY BanDate DESC
           LIMIT 1, 11");
-        $TimelineOut = array_reverse($DB->to_array());
+        $TimelineOut = array_reverse($db->to_array());
 
         $Labels = [];
         foreach ($TimelineIn as $Month) {
@@ -33,7 +33,7 @@ if (!isset($_GET['page'])) {
         foreach ($TimelineOut as $Month) {
             list(, $OutFlow[]) = $Month;
         }
-        $Cache->cache_value('users_timeline', array($Labels, $InFlow, $OutFlow), mktime(0, 0, 0, date('n') + 1, 2));
+        $cache->cache_value('users_timeline', array($Labels, $InFlow, $OutFlow), mktime(0, 0, 0, date('n') + 1, 2));
     }
 }
 // End timeline generation
@@ -42,7 +42,7 @@ define('DAYS_PER_PAGE', 100);
 list($Page, $Limit) = Format::page_limit(DAYS_PER_PAGE);
 
 # wtf
-$RS = $DB->query("
+$RS = $db->query("
   SELECT
     SQL_CALC_FOUND_ROWS
     j.Date,
@@ -101,10 +101,10 @@ $RS = $DB->query("
   ORDER BY j.Date DESC
   LIMIT $Limit");
 
-$DB->query('SELECT FOUND_ROWS()');
-list($Results) = $DB->next_record();
+$db->query('SELECT FOUND_ROWS()');
+list($Results) = $db->next_record();
 View::header('User Flow', 'chart');
-$DB->set_query_id($RS);
+$db->set_query_id($RS);
 ?>
 
 <div class="linkbox">
@@ -127,7 +127,7 @@ echo $Pages;
     </tr>
 
     <?php
-  while (list($Date, $Month, $Joined, $Manual, $Ratio, $Inactivity) = $DB->next_record()) {
+  while (list($Date, $Month, $Joined, $Manual, $Ratio, $Inactivity) = $db->next_record()) {
       $TotalOut = $Ratio + $Inactivity + $Manual;
       $TotalGrowth = $Joined - $TotalOut; ?>
     <tr class="row">

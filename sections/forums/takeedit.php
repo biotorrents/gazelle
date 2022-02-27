@@ -21,12 +21,12 @@ if (!$_POST['post'] || !is_number($_POST['post']) || !is_number($_POST['key'])) 
 }
 // End injection check
 
-if ($LoggedUser['DisablePosting']) {
+if ($user['DisablePosting']) {
   error('Your posting privileges have been removed.');
 }
 
 // Variables for database input
-$UserID = $LoggedUser['ID'];
+$UserID = $user['ID'];
 $Body = $_POST['body']; //Don't URL Decode
 $PostID = $_POST['post'];
 $Key = $_POST['key'];
@@ -34,7 +34,7 @@ $SQLTime = sqltime();
 $DoPM = isset($_POST['pm']) ? $_POST['pm'] : 0;
 
 // Mainly
-$DB->query("
+$db->query("
   SELECT
     p.Body,
     p.AuthorID,
@@ -53,7 +53,7 @@ $DB->query("
     JOIN forums_topics AS t ON p.TopicID = t.ID
     JOIN forums AS f ON t.ForumID = f.ID
   WHERE p.ID = '$PostID'");
-list($OldBody, $AuthorID, $TopicID, $IsLocked, $ForumID, $MinClassWrite, $Page) = $DB->next_record();
+list($OldBody, $AuthorID, $TopicID, $IsLocked, $ForumID, $MinClassWrite, $Page) = $db->next_record();
 
 
 // Make sure they aren't trying to edit posts they shouldn't
@@ -63,10 +63,10 @@ if (!Forums::check_forumperm($ForumID, 'Write') || ($IsLocked && !check_perms('s
 if ($UserID != $AuthorID && !check_perms('site_moderate_forums')) {
   error(403,true);
 }
-if ($LoggedUser['DisablePosting']) {
+if ($user['DisablePosting']) {
   error('Your posting privileges have been removed.', true);
 }
-if (!$DB->has_results()) {
+if (!$db->has_results()) {
   error(404, true);
 }
 
@@ -74,13 +74,13 @@ if (!$DB->has_results()) {
 if ($UserID != $AuthorID && $DoPM) {
   $PMSubject = "Your post #$PostID has been edited";
   $PMurl = site_url()."forums.php?action=viewthread&postid=$PostID#post$PostID";
-  $ProfLink = '[url='.site_url()."user.php?id=$UserID]".$LoggedUser['Username'].'[/url]';
+  $ProfLink = '[url='.site_url()."user.php?id=$UserID]".$user['Username'].'[/url]';
   $PMBody = "One of your posts has been edited by $ProfLink: [url]{$PMurl}[/url]";
   Misc::send_pm($AuthorID, 0, $PMSubject, $PMBody);
 }
 
 // Perform the update
-$DB->query("
+$db->query("
   UPDATE forums_posts
   SET
     Body = '" . db_string($Body) . "',
@@ -89,21 +89,21 @@ $DB->query("
   WHERE ID = '$PostID'");
 
 $CatalogueID = floor((POSTS_PER_PAGE * $Page - POSTS_PER_PAGE) / THREAD_CATALOGUE);
-$Cache->begin_transaction("thread_$TopicID"."_catalogue_$CatalogueID");
-if ($Cache->MemcacheDBArray[$Key]['ID'] != $PostID) {
-  $Cache->cancel_transaction();
-  $Cache->delete_value("thread_$TopicID"."_catalogue_$CatalogueID"); //just clear the cache for would be cache-screwer-uppers
+$cache->begin_transaction("thread_$TopicID"."_catalogue_$CatalogueID");
+if ($cache->MemcacheDBArray[$Key]['ID'] != $PostID) {
+  $cache->cancel_transaction();
+  $cache->delete_value("thread_$TopicID"."_catalogue_$CatalogueID"); //just clear the cache for would be cache-screwer-uppers
 } else {
-  $Cache->update_row($Key, array(
-      'ID'=>$Cache->MemcacheDBArray[$Key]['ID'],
-      'AuthorID'=>$Cache->MemcacheDBArray[$Key]['AuthorID'],
-      'AddedTime'=>$Cache->MemcacheDBArray[$Key]['AddedTime'],
+  $cache->update_row($Key, array(
+      'ID'=>$cache->MemcacheDBArray[$Key]['ID'],
+      'AuthorID'=>$cache->MemcacheDBArray[$Key]['AuthorID'],
+      'AddedTime'=>$cache->MemcacheDBArray[$Key]['AddedTime'],
       'Body'=>$Body, //Don't url decode.
-      'EditedUserID'=>$LoggedUser['ID'],
+      'EditedUserID'=>$user['ID'],
       'EditedTime'=>$SQLTime,
-      'Username'=>$LoggedUser['Username']
+      'Username'=>$user['Username']
       ));
-  $Cache->commit_transaction(3600 * 24 * 5);
+  $cache->commit_transaction(3600 * 24 * 5);
 }
 $ThreadInfo = Forums::get_thread_info($TopicID);
 if ($ThreadInfo === null) {
@@ -111,18 +111,18 @@ if ($ThreadInfo === null) {
 }
 if ($ThreadInfo['StickyPostID'] == $PostID) {
   $ThreadInfo['StickyPost']['Body'] = $Body;
-  $ThreadInfo['StickyPost']['EditedUserID'] = $LoggedUser['ID'];
+  $ThreadInfo['StickyPost']['EditedUserID'] = $user['ID'];
   $ThreadInfo['StickyPost']['EditedTime'] = $SQLTime;
-  $Cache->cache_value("thread_$TopicID".'_info', $ThreadInfo, 0);
+  $cache->cache_value("thread_$TopicID".'_info', $ThreadInfo, 0);
 }
 
-$DB->query("
+$db->query("
   INSERT INTO comments_edits
     (Page, PostID, EditUser, EditTime, Body)
   VALUES
     ('forums', $PostID, $UserID, '$SQLTime', '".db_string($OldBody)."')");
-$Cache->delete_value("forums_edits_$PostID");
+$cache->delete_value("forums_edits_$PostID");
 // This gets sent to the browser, which echoes it in place of the old body
 echo Text::parse($Body);
 ?>
-<br /><br /><div class="last_edited">Last edited by <a href="user.php?id=<?=$LoggedUser['ID']?>"><?=$LoggedUser['Username']?></a> Just now</div>
+<br /><br /><div class="last_edited">Last edited by <a href="user.php?id=<?=$user['ID']?>"><?=$user['Username']?></a> Just now</div>

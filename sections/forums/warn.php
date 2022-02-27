@@ -11,12 +11,12 @@ $UserID = (int) $_POST['userid'];
 $Key = (int) $_POST['key'];
 $UserInfo = Users::user_info($UserID);
 
-$DB->prepared_query("
+$db->prepared_query("
   SELECT p.Body, t.ForumID
   FROM forums_posts AS p
     JOIN forums_topics AS t ON p.TopicID = t.ID
   WHERE p.ID = '$PostID'");
-list($PostBody, $ForumID) = $DB -> next_record();
+list($PostBody, $ForumID) = $db -> next_record();
 
 View::header('Warn');
 ?>

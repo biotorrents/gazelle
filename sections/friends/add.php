@@ -7,21 +7,21 @@ $FriendID = (int) $_GET['friendid'];
 Security::int($FriendID);
 
 // Check if the user $FriendID exists
-$DB->prepared_query("
+$db->prepared_query("
 SELECT 1
 FROM `users_main`
 WHERE `ID` = '$FriendID'
 ");
 
-if (!$DB->has_results()) {
+if (!$db->has_results()) {
     error(404);
 }
 
-$DB->prepared_query("
+$db->prepared_query("
   INSERT IGNORE INTO `friends`
     (`UserID`, `FriendID`)
   VALUES
-    ('$LoggedUser[ID]', '$FriendID')
+    ('$user[ID]', '$FriendID')
 ");
 
 header('Location: friends.php');

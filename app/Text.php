@@ -28,8 +28,8 @@ class Text
 
         # Return cached if available
         $cacheKey = self::$cachePrefix . hash('sha3-512', $string);
-        if (G::$Cache->get_value($cacheKey)) {
-            return G::$Cache->get_value($cacheKey);
+        if (G::$cache->get_value($cacheKey)) {
+            return G::$cache->get_value($cacheKey);
         }
 
         # Prepare clean escapes
@@ -51,7 +51,7 @@ class Text
             # Replace links to $ENV->SITE_DOMAIN
             $parsed = self::fix_links($parsed);
 
-            G::$Cache->cache_value($cacheKey, $parsed, self::$cacheDuration);
+            G::$cache->cache_value($cacheKey, $parsed, self::$cacheDuration);
             return $parsed;
         } else {
             # BBcode
@@ -60,7 +60,7 @@ class Text
             $parsed = $nbbc->parse($string);
             $parsed = self::fix_links($parsed);
 
-            G::$Cache->cache_value($cacheKey, $parsed, self::$cacheDuration);
+            G::$cache->cache_value($cacheKey, $parsed, self::$cacheDuration);
             return $parsed;
         }
     }

@@ -8,11 +8,11 @@ define('INDEX_ARTICLE', '1');
 
 function class_list($Selected = 0)
 {
-    global $Classes, $LoggedUser;
+    global $Classes, $user;
     $Return = '';
 
     foreach ($Classes as $ID => $Class) {
-        if ($Class['Level'] <= $LoggedUser['EffectiveClass']) {
+        if ($Class['Level'] <= $user['EffectiveClass']) {
             $Return.='<option value="'.$Class['Level'].'"';
 
             if ($Selected === $Class['Level']) {

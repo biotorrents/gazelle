@@ -18,7 +18,7 @@ function confirmDelete(id) {
     </div>
   </div>
 <?php
-$DB->prepared_query("
+$db->prepared_query("
   SELECT
     p.ID,
     p.Name,
@@ -30,7 +30,7 @@ $DB->prepared_query("
     LEFT JOIN users_levels AS l ON l.PermissionID = p.ID
   GROUP BY p.ID
   ORDER BY p.Secondary ASC, p.Level ASC");
-if ($DB->has_results()) {
+if ($db->has_results()) {
 ?>
   <div class="box">
   <table class="skeleton-fix">
@@ -40,7 +40,7 @@ if ($DB->has_results()) {
       <td>User count</td>
       <td class="center">Actions</td>
     </tr>
-<?php while (list($ID, $Name, $Level, $Secondary, $UserCount) = $DB->next_record()) { ?>
+<?php while (list($ID, $Name, $Level, $Secondary, $UserCount) = $db->next_record()) { ?>
     <tr>
       <td><?=esc($Name); ?></td>
       <td><?=($Secondary ? 'Secondary' : $Level) ?></td>

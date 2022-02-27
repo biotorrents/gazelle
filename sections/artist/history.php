@@ -4,14 +4,14 @@ if (!is_number($_GET['artistid'])) {
 }
 $ArtistID = (int)$_GET['artistid'];
 
-$DB->query("
+$db->query("
   SELECT Name
   FROM artists_group
   WHERE ArtistID = $ArtistID");
-if (!$DB->has_results()) {
+if (!$db->has_results()) {
   error(404);
 }
-list($Name) = $DB->next_record();
+list($Name) = $db->next_record();
 
 View::header("Revision history for $Name");
 ?>

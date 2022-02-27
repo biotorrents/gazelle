@@ -30,16 +30,16 @@ class TorrentsDL
      */
     public function __construct(&$QueryResult, $Title)
     {
-        G::$Cache->InternalCache = false; // The internal cache is almost completely useless for this
+        G::$cache->InternalCache = false; // The internal cache is almost completely useless for this
         Zip::unlimit(); // Need more memory and longer timeout
         $this->QueryResult = $QueryResult;
         $this->Title = $Title;
-        $this->User = G::$LoggedUser;
-        $this->AnnounceURL = ANNOUNCE_URLS[0][0]."/".G::$LoggedUser['torrent_pass']."/announce";
+        $this->User = G::$user;
+        $this->AnnounceURL = ANNOUNCE_URLS[0][0]."/".G::$user['torrent_pass']."/announce";
 
         function add_passkey($Ann)
         {
-            return (is_array($Ann)) ? array_map('add_passkey', $Ann) : $Ann."/".G::$LoggedUser['torrent_pass']."/announce";
+            return (is_array($Ann)) ? array_map('add_passkey', $Ann) : $Ann."/".G::$user['torrent_pass']."/announce";
         }
 
         # todo: Probably not working, but no need yet
@@ -63,19 +63,19 @@ class TorrentsDL
     public function get_downloads($Key)
     {
         $GroupIDs = $Downloads = [];
-        $OldQuery = G::$DB->get_query_id();
-        G::$DB->set_query_id($this->QueryResult);
+        $OldQuery = G::$db->get_query_id();
+        G::$db->set_query_id($this->QueryResult);
 
         if (!isset($this->IDBoundaries)) {
             if ($Key === 'TorrentID') {
                 $this->IDBoundaries = false;
             } else {
-                $this->IDBoundaries = G::$DB->to_pair($Key, 'TorrentID', false);
+                $this->IDBoundaries = G::$db->to_pair($Key, 'TorrentID', false);
             }
         }
 
         $Found = 0;
-        while ($Download = G::$DB->next_record(MYSQLI_ASSOC, false)) {
+        while ($Download = G::$db->next_record(MYSQLI_ASSOC, false)) {
             if (!$this->IDBoundaries || $Download['TorrentID'] === $this->IDBoundaries[$Download[$Key]]) {
                 $Found++;
                 $Downloads[$Download[$Key]] = $Download;
@@ -88,7 +88,7 @@ class TorrentsDL
         }
 
         $this->NumFound += $Found;
-        G::$DB->set_query_id($OldQuery);
+        G::$db->set_query_id($OldQuery);
 
         if (empty($Downloads)) {
             return false;

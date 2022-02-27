@@ -12,7 +12,7 @@ if (!empty($_GET['page']) && is_number($_GET['page'])) {
 }
 
 if (empty($_GET['search']) || trim($_GET['search']) === '') {
-    $Log = $DB->query(
+    $Log = $db->query(
         "
     SELECT
       `ID`,
@@ -26,7 +26,7 @@ if (empty($_GET['search']) || trim($_GET['search']) === '') {
     LIMIT $Offset, ".LOG_ENTRIES_PER_PAGE
     );
 
-    $NumResults = $DB->record_count();
+    $NumResults = $db->record_count();
     if (!$NumResults) {
         $TotalMatches = 0;
     } elseif ($NumResults === LOG_ENTRIES_PER_PAGE) {
@@ -61,7 +61,7 @@ if (empty($_GET['search']) || trim($_GET['search']) === '') {
 
     if ($NumResults > 0) {
         $LogIDs = $Result->collect('id');
-        $Log = $DB->query("
+        $Log = $db->query("
         SELECT
           `ID`,
           `Message`,
@@ -75,6 +75,6 @@ if (empty($_GET['search']) || trim($_GET['search']) === '') {
         DESC
         ");
     } else {
-        $Log = $DB->query("SET @nothing = 0");
+        $Log = $db->query("SET @nothing = 0");
     }
 }

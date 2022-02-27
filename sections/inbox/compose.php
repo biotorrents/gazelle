@@ -4,7 +4,7 @@ declare(strict_types = 1);
 if (empty($Return)) {
     $ToID = $_GET['to'];
     /*
-      if ($ToID == $LoggedUser['ID']) {
+      if ($ToID == $user['ID']) {
         error('You cannot start a conversation with yourself!');
         header('Location: ' . Inbox::get_inbox_link());
       }
@@ -15,15 +15,15 @@ if (!$ToID || !is_number($ToID)) {
     error(404);
 }
 
-if (!empty($LoggedUser['DisablePM']) && !isset($StaffIDs[$ToID])) {
+if (!empty($user['DisablePM']) && !isset($StaffIDs[$ToID])) {
     error(403);
 }
 
-$DB->prepared_query("
+$db->prepared_query("
   SELECT Username
   FROM users_main
   WHERE ID='$ToID'");
-list($Username) = $DB->next_record();
+list($Username) = $db->next_record();
 if (!$Username) {
     error(404);
 }
@@ -42,7 +42,7 @@ View::header(
       <input type="hidden" name="action" value="takecompose" />
       <input type="hidden" name="toid" value="<?=$ToID?>" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
 
       <div id="quickpost">
         <h3>Subject</h3>

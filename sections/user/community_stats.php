@@ -1,37 +1,37 @@
 <?php
 declare(strict_types=1);
 
-$DB->query("
+$db->query("
   SELECT Page, COUNT(1)
   FROM comments
   WHERE AuthorID = $UserID
   GROUP BY Page");
-$Comments = $DB->to_array('Page');
+$Comments = $db->to_array('Page');
 $NumComments = isset($Comments['torrents']) ? $Comments['torrents'][1]:0;
 $NumArtistComments = isset($Comments['artist']) ? $Comments['artist'][1]:0;
 $NumCollageComments = isset($Comments['collages']) ? $Comments['collages'][1]:0;
 $NumRequestComments = isset($Comments['requests']) ? $Comments['requests'][1]:0;
 
-$DB->query("
+$db->query("
   SELECT COUNT(ID)
   FROM collages
   WHERE Deleted = '0'
     AND UserID = '$UserID'");
-list($NumCollages) = $DB->next_record();
+list($NumCollages) = $db->next_record();
 
-$DB->query("
+$db->query("
   SELECT COUNT(DISTINCT CollageID)
   FROM collages_torrents AS ct
     JOIN collages ON CollageID = ID
   WHERE Deleted = '0'
     AND ct.UserID = '$UserID'");
-list($NumCollageContribs) = $DB->next_record();
+list($NumCollageContribs) = $db->next_record();
 
-$DB->query("
+$db->query("
   SELECT COUNT(DISTINCT GroupID)
   FROM torrents
   WHERE UserID = '$UserID'");
-list($UniqueGroups) = $DB->next_record();
+list($UniqueGroups) = $db->next_record();
 
 ?>
 <div class="box box_info box_userinfo_community">
@@ -160,11 +160,11 @@ list($UniqueGroups) = $DB->next_record();
   }
 
   if ($Override = check_paranoia_here('screenshotcount')) {
-      $DB->query("
+      $db->query("
     SELECT COUNT(*)
     FROM `literature`
     WHERE user_id = '$UserID'");
-      list($Screenshots) = $DB->next_record(); ?>
+      list($Screenshots) = $db->next_record(); ?>
                 <li id="comm_screenshots">Screenshots added: <?=number_format($Screenshots)?>
                 </li>
                 <?php
@@ -275,18 +275,18 @@ list($UniqueGroups) = $DB->next_record();
                 <?php
   }
   if ($Override = check_paranoia_here('invitedcount')) {
-      $DB->query("
+      $db->query("
     SELECT COUNT(UserID)
     FROM users_info
     WHERE Inviter = '$UserID'");
-      list($Invited) = $DB->next_record(); ?>
+      list($Invited) = $db->next_record(); ?>
                 <li id="comm_invited">Invited: <?=number_format($Invited)?>
                 </li>
                 <?php
   }
 ?>
         </ul>
-        <?php if ($LoggedUser['AutoloadCommStats']) { ?>
+        <?php if ($user['AutoloadCommStats']) { ?>
         <script type="text/javascript">
                 commStats( <?=$UserID?> );
         </script>

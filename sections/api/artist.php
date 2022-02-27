@@ -19,11 +19,11 @@ if ($ArtistID && !is_number($ArtistID)) {
 if (empty($ArtistID)) {
     if (!empty($_GET['artistname'])) {
         $Name = db_string(trim($_GET['artistname']));
-        $DB->query("
+        $db->query("
       SELECT ArtistID
       FROM artists_alias
       WHERE Name LIKE '$Name'");
-        if (!(list($ArtistID) = $DB->next_record(MYSQLI_NUM, false))) {
+        if (!(list($ArtistID) = $db->next_record(MYSQLI_NUM, false))) {
             json_die('failure');
         }
         // If we get here, we got the ID!
@@ -35,9 +35,9 @@ if (!empty($_GET['revisionid'])) { // if they're viewing an old revision
     if (!is_number($RevisionID)) {
         error(0);
     }
-    $Data = $Cache->get_value("artist_$ArtistID"."_revision_$RevisionID");
+    $Data = $cache->get_value("artist_$ArtistID"."_revision_$RevisionID");
 } else { // viewing the live version
-    $Data = $Cache->get_value("artist_$ArtistID");
+    $Data = $cache->get_value("artist_$ArtistID");
     $RevisionID = false;
 }
 if ($Data) {
@@ -85,22 +85,22 @@ if ($Data) {
       WHERE a.ArtistID = '$ArtistID' ";
     }
     $sql .= " GROUP BY a.ArtistID";
-    $DB->query($sql);
+    $db->query($sql);
 
-    if (!$DB->has_results()) {
+    if (!$db->has_results()) {
         json_die('failure');
     }
 
-    //  list($Name, $Image, $Body, $VanityHouseArtist) = $DB->next_record(MYSQLI_NUM, array(0));
-    list($Name, $Image, $Body) = $DB->next_record(MYSQLI_NUM, array(0));
+    //  list($Name, $Image, $Body, $VanityHouseArtist) = $db->next_record(MYSQLI_NUM, array(0));
+    list($Name, $Image, $Body) = $db->next_record(MYSQLI_NUM, array(0));
 }
 
 // Requests
 $Requests = [];
-if (empty($LoggedUser['DisableRequests'])) {
-    $Requests = $Cache->get_value("artists_requests_$ArtistID");
+if (empty($user['DisableRequests'])) {
+    $Requests = $cache->get_value("artists_requests_$ArtistID");
     if (!is_array($Requests)) {
-        $DB->query("
+        $db->query("
       SELECT
         r.ID,
         r.CategoryID,
@@ -117,18 +117,18 @@ if (empty($LoggedUser['DisableRequests'])) {
       GROUP BY r.ID
       ORDER BY Votes DESC");
 
-        if ($DB->has_results()) {
-            $Requests = $DB->to_array('ID', MYSQLI_ASSOC, false);
+        if ($db->has_results()) {
+            $Requests = $db->to_array('ID', MYSQLI_ASSOC, false);
         } else {
             $Requests = [];
         }
-        $Cache->cache_value("artists_requests_$ArtistID", $Requests);
+        $cache->cache_value("artists_requests_$ArtistID", $Requests);
     }
 }
 $NumRequests = count($Requests);
 
-if (($Importances = $Cache->get_value("artist_groups_$ArtistID")) === false) {
-    $DB->query("
+if (($Importances = $cache->get_value("artist_groups_$ArtistID")) === false) {
+    $db->query("
     SELECT DISTINCTROW
       ta.`GroupID`,
       ta.`Importance`,
@@ -146,9 +146,9 @@ if (($Importances = $Cache->get_value("artist_groups_$ArtistID")) === false) {
     DESC
     ");
     
-    $GroupIDs = $DB->collect('GroupID');
-    $Importances = $DB->to_array(false, MYSQLI_BOTH, false);
-    $Cache->cache_value("artist_groups_$ArtistID", $Importances, 0);
+    $GroupIDs = $db->collect('GroupID');
+    $Importances = $db->to_array(false, MYSQLI_BOTH, false);
+    $cache->cache_value("artist_groups_$ArtistID", $Importances, 0);
 } else {
     $GroupIDs = [];
     foreach ($Importances as $Group) {
@@ -306,15 +306,15 @@ foreach ($Requests as $RequestID => $Request) {
 //notifications disabled by default
 $notificationsEnabled = false;
 if (check_perms('site_torrents_notify')) {
-    if (($Notify = $Cache->get_value('notify_artists_'.$LoggedUser['ID'])) === false) {
-        $DB->query("
+    if (($Notify = $cache->get_value('notify_artists_'.$user['ID'])) === false) {
+        $db->query("
       SELECT ID, Artists
       FROM users_notify_filters
-      WHERE UserID = '$LoggedUser[ID]'
+      WHERE UserID = '$user[ID]'
         AND Label = 'Artist notifications'
       LIMIT 1");
-        $Notify = $DB->next_record(MYSQLI_ASSOC, false);
-        $Cache->cache_value('notify_artists_'.$LoggedUser['ID'], $Notify, 0);
+        $Notify = $db->next_record(MYSQLI_ASSOC, false);
+        $cache->cache_value('notify_artists_'.$user['ID'], $Notify, 0);
     }
     if (stripos($Notify['Artists'], "|$Name|") === false) {
         $notificationsEnabled = false;
@@ -333,7 +333,7 @@ if ($RevisionID) {
 
 $Data = array(array($Name, $Image, $Body));
 
-$Cache->cache_value($Key, $Data, 3600);
+$cache->cache_value($Key, $Data, 3600);
 
 json_die('success', array(
   'id' => (int)$ArtistID,

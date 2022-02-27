@@ -27,8 +27,8 @@ $Limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
 $Limit = in_array($Limit, [10,100,250]) ? $Limit : 10;
 
 if ($Details == 'all' || $Details == 'ut') {
-    if (!$TopUsedTags = $Cache->get_value('topusedtag_'.$Limit)) {
-        $DB->prepared_query("
+    if (!$TopUsedTags = $cache->get_value('topusedtag_'.$Limit)) {
+        $db->prepared_query("
         SELECT
           t.ID,
           t.Name,
@@ -38,16 +38,16 @@ if ($Details == 'all' || $Details == 'ut') {
         GROUP BY tt.TagID
           ORDER BY Uses DESC
           LIMIT $Limit");
-        $TopUsedTags = $DB->to_array();
-        $Cache->cache_value('topusedtag_'.$Limit, $TopUsedTags, 3600 * 12);
+        $TopUsedTags = $db->to_array();
+        $cache->cache_value('topusedtag_'.$Limit, $TopUsedTags, 3600 * 12);
     }
 
     generate_tag_table('Most Used Torrent Tags', 'ut', $TopUsedTags, $Limit);
 }
 
 if ($Details == 'all' || $Details == 'ur') {
-    if (!$TopRequestTags = $Cache->get_value('toprequesttag_'.$Limit)) {
-        $DB->prepared_query("
+    if (!$TopRequestTags = $cache->get_value('toprequesttag_'.$Limit)) {
+        $db->prepared_query("
         SELECT
           t.ID,
           t.Name,
@@ -57,8 +57,8 @@ if ($Details == 'all' || $Details == 'ur') {
         GROUP BY r.TagID
           ORDER BY Uses DESC
           LIMIT $Limit");
-        $TopRequestTags = $DB->to_array();
-        $Cache->cache_value('toprequesttag_'.$Limit, $TopRequestTags, 3600 * 12);
+        $TopRequestTags = $db->to_array();
+        $cache->cache_value('toprequesttag_'.$Limit, $TopRequestTags, 3600 * 12);
     }
 
     generate_tag_table('Most Used Request Tags', 'ur', $TopRequestTags, $Limit, true);
@@ -68,7 +68,7 @@ echo '</div>';
 View::footer();
 exit;
 
-// Generate a table based on data from most recent query to $DB
+// Generate a table based on data from most recent query to $db
 function generate_tag_table($Caption, $Tag, $Details, $Limit, $RequestsTable = false)
 {
     if ($RequestsTable) {

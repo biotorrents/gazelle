@@ -9,7 +9,7 @@ View::header('Upscale Pool');
 define('USERS_PER_PAGE', 50);
 list($Page, $Limit) = Format::page_limit(USERS_PER_PAGE);
 
-$RS = $DB->query("
+$RS = $db->query("
   SELECT
     SQL_CALC_FOUND_ROWS
     m.ID,
@@ -31,17 +31,17 @@ $RS = $DB->query("
   ORDER BY i.RatioWatchEnds ASC
   LIMIT $Limit");
 
-$DB->query('SELECT FOUND_ROWS()');
-list($Results) = $DB->next_record();
+$db->query('SELECT FOUND_ROWS()');
+list($Results) = $db->next_record();
 
-$DB->query("
+$db->query("
   SELECT COUNT(UserID)
   FROM users_info
   WHERE BanDate IS NOT NULL
     AND BanReason = '2'");
 
-list($TotalDisabled) = $DB->next_record();
-$DB->set_query_id($RS);
+list($TotalDisabled) = $db->next_record();
+$db->set_query_id($RS);
 ?>
 
 <div class="header">
@@ -49,7 +49,7 @@ $DB->set_query_id($RS);
 </div>
 
 <?php
-if ($DB->has_results()) {
+if ($db->has_results()) {
     ?>
 <div class="box pad">
   <p>There are currently <?=number_format($Results)?> enabled users
@@ -78,7 +78,7 @@ if ($DB->has_results()) {
   </tr>
 
   <?php
-  while (list($UserID, $Username, $Uploaded, $Downloaded, $PermissionID, $Enabled, $Donor, $Warned, $Joined, $RatioWatchEnds, $RatioWatchDownload, $RequiredRatio) = $DB->next_record()) {
+  while (list($UserID, $Username, $Uploaded, $Downloaded, $PermissionID, $Enabled, $Donor, $Warned, $Joined, $RatioWatchEnds, $RatioWatchDownload, $RequiredRatio) = $db->next_record()) {
       ?>
   <tr class="row">
     <td>

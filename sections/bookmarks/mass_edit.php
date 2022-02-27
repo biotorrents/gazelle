@@ -2,7 +2,7 @@
 #declare(strict_types=1);
 
 authorize();
-if ($UserID !== $LoggedUser['ID']
+if ($UserID !== $user['ID']
  || !Bookmarks::can_bookmark('torrent')) {
     error(403);
 }

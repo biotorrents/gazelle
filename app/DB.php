@@ -16,14 +16,14 @@ declare(strict_types = 1);
  *
  * Making a query:
  *
- * $DB->prepared_query("
+ * $db->prepared_query("
  *   SELECT *
  *   FROM table...
  * ");
  *
  * Getting data from a query:
  *
- * $array = $DB->next_record();
+ * $array = $db->next_record();
  *
  * Escaping a string:
  *
@@ -35,11 +35,11 @@ declare(strict_types = 1);
  *
  * The conventional way of retrieving a row from a result set:
  *
- * list($All, $Columns, $That, $You, $Select) = $DB->next_record();
+ * list($All, $Columns, $That, $You, $Select) = $db->next_record();
  *
  * This is how you loop over the result set:
  *
- * while (list($All, $Columns, $That, $You, $Select) = $DB->next_record()) {
+ * while (list($All, $Columns, $That, $You, $Select) = $db->next_record()) {
  *   echo "Do stuff with $All of the $Columns $That $You $Select";
  * }
  *
@@ -59,21 +59,21 @@ declare(strict_types = 1);
  * set_query_id($ResultSet)
  *   This class can only hold one result set at a time.
  *   Using set_query_id allows you to set the result set it's using to $ResultSet.
- *   This result set should have been obtained earlier by using $DB->prepared_query, e.g.,
+ *   This result set should have been obtained earlier by using $db->prepared_query, e.g.,
  *
- *   $FoodRS = $DB->prepared_query("
+ *   $FoodRS = $db->prepared_query("
  *     SELECT *
  *     FROM food
  *   ");
  *
- *   $DB->prepared_query("
+ *   $db->prepared_query("
  *     SELECT *
  *     FROM drink
  *   ");
  *
- *   $Drinks = $DB->next_record();
- *   $DB->set_query_id($FoodRS);
- *   $Food = $DB->next_record();
+ *   $Drinks = $db->next_record();
+ *   $db->set_query_id($FoodRS);
+ *   $Food = $db->next_record();
  *
  * to_array($Key = false)
  *   Transforms an entire result set into an array.
@@ -90,11 +90,11 @@ declare(strict_types = 1);
  */
 function db_string($String, $DisableWildcards = false)
 {
-    global $DB;
-    $DB->connect(0);
+    global $db;
+    $db->connect(0);
 
     # Connect and mysqli_real_escape_string()
-    # Previously called $DB->escape_str, now below
+    # Previously called $db->escape_str, now below
     # todo: Fix the bad escapes everywhere; see below
 
     #if (!is_string($String)) { # This is the correct way,
@@ -102,7 +102,7 @@ function db_string($String, $DisableWildcards = false)
         error('Attempted to escape non-string.', $NoHTML = true);
         $String = '';
     } else {
-        $String = mysqli_real_escape_string($DB->LinkID, strval($String));
+        $String = mysqli_real_escape_string($db->LinkID, strval($String));
     }
 
     // Remove user input wildcards
@@ -181,14 +181,14 @@ class DB
         global $argv;
         #global $Debug, $argv;
 
-        $DBError = 'MySQL: '.strval($Msg).' SQL error: '.strval($this->Errno).' ('.strval($this->Error).')';
+        $dbError = 'MySQL: '.strval($Msg).' SQL error: '.strval($this->Errno).' ('.strval($this->Error).')';
 
         if ($this->Errno === 1194) {
             send_irc(ADMIN_CHAN, $this->Error);
         }
 
         if ($ENV->DEV || check_perms('site_debug') || isset($argv[1])) {
-            echo '<pre>'.esc($DBError).'</pre>';
+            echo '<pre>'.esc($dbError).'</pre>';
             if ($ENV->DEV || check_perms('site_debug')) {
                 print_r($this->Queries);
             }

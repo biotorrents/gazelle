@@ -7,7 +7,7 @@ if (!check_perms('admin_manage_permissions') && !check_perms('users_mod')) {
 
 if (!check_perms('admin_manage_permissions')) {
     View::header('Site Options');
-    $DB->prepared_query("SELECT Name, First, Second FROM misc"); ?>
+    $db->prepared_query("SELECT Name, First, Second FROM misc"); ?>
 
 <div class="header">
   <h1>Miscellaneous Values</h1>
@@ -21,7 +21,7 @@ if (!check_perms('admin_manage_permissions')) {
   </tr>
 
   <?php
-  while (list($Name, $First, $Second) = $DB->next_record()) {
+  while (list($Name, $First, $Second) = $db->next_record()) {
       ?>
   <tr class="row">
     <td>
@@ -50,7 +50,7 @@ if (isset($_POST['submit'])) {
 
     if ($_POST['submit'] === 'Delete') {
         $Name = db_string($_POST['name']);
-        $DB->prepared_query("DELETE FROM misc WHERE Name = '" . $Name . "'");
+        $db->prepared_query("DELETE FROM misc WHERE Name = '" . $Name . "'");
     } else {
         $Val->SetFields('name', '1', 'regex', 'The name must be separated by underscores. No spaces are allowed.', array('regex' => '/^[a-z][:_a-z0-9]{0,63}$/i'));
         $Val->SetFields('first', '1', 'string', 'You must specify the first value.');
@@ -66,10 +66,10 @@ if (isset($_POST['submit'])) {
         $Second = db_string($_POST['second']);
 
         if ($_POST['submit'] === 'Edit') {
-            $DB->prepared_query("SELECT Name FROM misc WHERE ID = '" . db_string($_POST['id']) . "'");
-            list($OldName) = $DB->next_record();
+            $db->prepared_query("SELECT Name FROM misc WHERE ID = '" . db_string($_POST['id']) . "'");
+            list($OldName) = $db->next_record();
 
-            $DB->prepared_query("
+            $db->prepared_query("
               UPDATE misc
               SET
                 Name = '$Name',
@@ -78,7 +78,7 @@ if (isset($_POST['submit'])) {
               WHERE ID = '" . db_string($_POST['id']) . "'
             ");
         } else {
-            $DB->prepared_query("
+            $db->prepared_query("
               INSERT INTO misc (Name, First, Second)
               VALUES ('$Name', '$First', '$Second')
             ");
@@ -86,7 +86,7 @@ if (isset($_POST['submit'])) {
     }
 }
 
-$DB->prepared_query("
+$db->prepared_query("
   SELECT
     ID,
     Name,
@@ -118,7 +118,7 @@ View::header('Miscellaneous Values');
       <form class="create_form" name="misc_values" action="" method="post">
         <input type="hidden" name="action" value="misc_values" />
         <input type="hidden" name="auth"
-          value="<?=$LoggedUser['AuthKey']?>" />
+          value="<?=$user['AuthKey']?>" />
 
         <td>
           <input type="text" size="20" name="name" />
@@ -139,14 +139,14 @@ View::header('Miscellaneous Values');
     </tr>
 
     <?php
-while (list($ID, $Name, $First, $Second) = $DB->next_record()) {
+while (list($ID, $Name, $First, $Second) = $db->next_record()) {
     ?>
     <tr>
       <form class="manage_form" name="misc_values" action="" method="post">
         <input type="hidden" name="id" value="<?=$ID?>" />
         <input type="hidden" name="action" value="misc_values" />
         <input type="hidden" name="auth"
-          value="<?=$LoggedUser['AuthKey']?>" />
+          value="<?=$user['AuthKey']?>" />
 
         <td>
           <input type="text" size="20" name="name"

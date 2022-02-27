@@ -203,7 +203,7 @@ if (!empty($_REQUEST['action'])) {
                 ) {
                 authorize();
 
-                $DB->prepared_query("
+                $db->prepared_query("
                 SELECT
                   COUNT(`ID`)
                 FROM
@@ -211,7 +211,7 @@ if (!empty($_REQUEST['action'])) {
                 WHERE
                   `GroupID` = '$_GET[groupid]'
                 ");
-                list($Count) = $DB->next_record();
+                list($Count) = $db->next_record();
                 
                 if ($Count === 0) {
                     Torrents::delete_group($_GET['groupid']);
@@ -245,7 +245,7 @@ if (!empty($_REQUEST['action'])) {
             if (!empty($_GET['id'])) {
                 require_once "$ENV->SERVER_ROOT/sections/torrents/details.php";
             } elseif (isset($_GET['torrentid']) && is_number($_GET['torrentid'])) {
-                $DB->query("
+                $db->query("
                 SELECT
                   `GroupID`
                 FROM
@@ -253,7 +253,7 @@ if (!empty($_REQUEST['action'])) {
                 WHERE
                   `ID` = '$_GET[torrentid]'
                 ");
-                list($GroupID) = $DB->next_record();
+                list($GroupID) = $db->next_record();
                 
                 if ($GroupID) {
                     header("Location: torrents.php?id=$GroupID&torrentid=".$_GET['torrentid']);
@@ -272,7 +272,7 @@ else {
     if (!empty($_GET['id'])) {
         require_once "$ENV->SERVER_ROOT/sections/torrents/details.php";
     } elseif (isset($_GET['torrentid']) && is_number($_GET['torrentid'])) {
-        $DB->query("
+        $db->query("
         SELECT
           `GroupID`
         FROM
@@ -280,7 +280,7 @@ else {
         WHERE
           `ID` = '$_GET[torrentid]'
         ");
-        list($GroupID) = $DB->next_record();
+        list($GroupID) = $db->next_record();
 
         if ($GroupID) {
             header("Location: torrents.php?id=$GroupID&torrentid=".$_GET['torrentid'].'#torrent'.$_GET['torrentid']);
@@ -290,7 +290,7 @@ else {
     } elseif (!empty($_GET['type'])) {
         require_once "$ENV->SERVER_ROOT/sections/torrents/user.php";
     } elseif (!empty($_GET['groupname']) && !empty($_GET['forward'])) {
-        $DB->prepared_query("
+        $db->prepared_query("
         SELECT
           `id`
         FROM
@@ -298,7 +298,7 @@ else {
         WHERE
           `title` LIKE '$_GET[groupname]'
         ");
-        list($GroupID) = $DB->next_record();
+        list($GroupID) = $db->next_record();
 
         if ($GroupID) {
             header("Location: torrents.php?id=$GroupID");

@@ -20,7 +20,7 @@ View::header(
 
 if (empty($Properties) && !empty($_GET['groupid']) && is_number($_GET['groupid'])) {
     $GroupID = $_GET['groupid'];
-    $DB->prepared_query("
+    $db->prepared_query("
       SELECT
         tg.`id` as GroupID,
         tg.`category_id`,
@@ -40,13 +40,13 @@ if (empty($Properties) && !empty($_GET['groupid']) && is_number($_GET['groupid']
       ");
 
 
-    if ($DB->has_results()) {
-        list($Properties) = $DB->to_array(false, MYSQLI_BOTH);
+    if ($db->has_results()) {
+        list($Properties) = $db->to_array(false, MYSQLI_BOTH);
         $UploadForm = $Categories[$Properties['CategoryID'] - 1];
         $Properties['CategoryName'] = $Categories[$Properties['CategoryID'] - 1];
         $Properties['Artists'] = Artists::get_artist($_GET['groupid']);
 
-        $DB->query("
+        $db->query("
         SELECT
           GROUP_CONCAT(tags.`Name` SEPARATOR ', ') AS TagList
         FROM
@@ -55,7 +55,7 @@ if (empty($Properties) && !empty($_GET['groupid']) && is_number($_GET['groupid']
         WHERE
           tt.`GroupID` = '$_GET[groupid]'
         ");
-        list($Properties['TagList']) = $DB->next_record();
+        list($Properties['TagList']) = $db->next_record();
     } else {
         unset($_GET['groupid']);
     }
@@ -65,7 +65,7 @@ if (empty($Properties) && !empty($_GET['groupid']) && is_number($_GET['groupid']
     }
 } elseif (empty($Properties) && isset($_GET['requestid']) && is_number($_GET['requestid'])) {
     $RequestID = $_GET['requestid'];
-    $DB->query("
+    $db->query("
     SELECT
       `ID` AS RequestID,
       `CategoryID`,
@@ -79,7 +79,7 @@ if (empty($Properties) && !empty($_GET['groupid']) && is_number($_GET['groupid']
     WHERE
       `ID` = '$RequestID'
     ");
-    list($Properties) = $DB->to_array(false, MYSQLI_BOTH);
+    list($Properties) = $db->to_array(false, MYSQLI_BOTH);
 
     $UploadForm = $Categories[$Properties['CategoryID'] - 1];
     $Properties['CategoryName'] = $Categories[$Properties['CategoryID'] - 1];
@@ -100,9 +100,9 @@ $TorrentForm = new TorrentForm($Properties ?? false, $Err ?? false);
 /**
  * Genre tags
  */
-$GenreTags = $Cache->get_value('genre_tags');
+$GenreTags = $cache->get_value('genre_tags');
 if (!$GenreTags) {
-    $DB->query("
+    $db->query("
     SELECT
       `Name`
     FROM
@@ -113,8 +113,8 @@ if (!$GenreTags) {
       `Name`
     ");
     
-    $GenreTags = $DB->collect('Name');
-    $Cache->cache_value('genre_tags', $GenreTags, 3600 * 6);
+    $GenreTags = $db->collect('Name');
+    $cache->cache_value('genre_tags', $GenreTags, 3600 * 6);
 }
 
 # Twig based class

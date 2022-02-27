@@ -43,7 +43,7 @@ if (!check_perms('admin_reports')) {
 
 }
 
-$Reports = $DB->query("
+$Reports = $db->query("
   SELECT
     SQL_CALC_FOUND_ROWS
     r.ID,
@@ -64,11 +64,11 @@ $Reports = $DB->query("
   LIMIT $Limit");
 
 // Number of results (for pagination)
-$DB->query('SELECT FOUND_ROWS()');
-list($Results) = $DB->next_record();
+$db->query('SELECT FOUND_ROWS()');
+list($Results) = $db->next_record();
 
-// Done with the number of results. Move $DB back to the result set for the reports
-$DB->set_query_id($Reports);
+// Done with the number of results. Move $db back to the result set for the reports
+$db->set_query_id($Reports);
 
 // Start printing stuff
 ?>
@@ -89,7 +89,7 @@ $DB->set_query_id($Reports);
     ?>
   </div>
 <?php
-  while (list($ReportID, $SnitchID, $SnitchName, $ThingID, $Short, $ReportedTime, $Reason, $Status, $ClaimerID, $Notes, $ResolverID) = $DB->next_record()) {
+  while (list($ReportID, $SnitchID, $SnitchName, $ThingID, $Short, $ReportedTime, $Reason, $Status, $ClaimerID, $Notes, $ResolverID) = $db->next_record()) {
     $Type = $Types[$Short];
     $Reference = "reports.php?id=$ReportID#report$ReportID";
 ?>
@@ -107,61 +107,61 @@ $DB->set_query_id($Reports);
             <strong>
 <?php              switch ($Short) {
                 case 'user':
-                  $DB->query("
+                  $db->query("
                     SELECT Username
                     FROM users_main
                     WHERE ID = $ThingID");
-                  if (!$DB->has_results()) {
+                  if (!$db->has_results()) {
                     echo 'No user with the reported ID found';
                   } else {
-                    list($Username) = $DB->next_record();
+                    list($Username) = $db->next_record();
                     echo "<a href=\"user.php?id=$ThingID\">" . esc($Username) . '</a>';
                   }
                   break;
                 case 'request':
                 case 'request_update':
-                  $DB->query("
+                  $db->query("
                     SELECT Title
                     FROM requests
                     WHERE ID = $ThingID");
-                  if (!$DB->has_results()) {
+                  if (!$db->has_results()) {
                     echo 'No request with the reported ID found';
                   } else {
-                    list($Name) = $DB->next_record();
+                    list($Name) = $db->next_record();
                     echo "<a href=\"requests.php?action=view&amp;id=$ThingID\">" . esc($Name) . '</a>';
                   }
                   break;
                 case 'collage':
-                  $DB->query("
+                  $db->query("
                     SELECT Name
                     FROM collages
                     WHERE ID = $ThingID");
-                  if (!$DB->has_results()) {
+                  if (!$db->has_results()) {
                     echo 'No collage with the reported ID found';
                   } else {
-                    list($Name) = $DB->next_record();
+                    list($Name) = $db->next_record();
                     echo "<a href=\"collages.php?id=$ThingID\">" . esc($Name) . '</a>';
                   }
                   break;
                 case 'thread':
-                  $DB->query("
+                  $db->query("
                     SELECT Title
                     FROM forums_topics
                     WHERE ID = $ThingID");
-                  if (!$DB->has_results()) {
+                  if (!$db->has_results()) {
                     echo 'No forum thread with the reported ID found';
                   } else {
-                    list($Title) = $DB->next_record();
+                    list($Title) = $db->next_record();
                     echo "<a href=\"forums.php?action=viewthread&amp;threadid=$ThingID\">" . esc($Title) . '</a>';
                   }
                   break;
                 case 'post':
-                  if (isset($LoggedUser['PostsPerPage'])) {
-                    $PerPage = $LoggedUser['PostsPerPage'];
+                  if (isset($user['PostsPerPage'])) {
+                    $PerPage = $user['PostsPerPage'];
                   } else {
                     $PerPage = POSTS_PER_PAGE;
                   }
-                  $DB->query("
+                  $db->query("
                     SELECT
                       p.ID,
                       p.Body,
@@ -174,19 +174,19 @@ $DB->set_query_id($Reports);
                       ) AS PostNum
                     FROM forums_posts AS p
                     WHERE p.ID = $ThingID");
-                  if (!$DB->has_results()) {
+                  if (!$db->has_results()) {
                     echo 'No forum post with the reported ID found';
                   } else {
-                    list($PostID, $Body, $TopicID, $PostNum) = $DB->next_record();
+                    list($PostID, $Body, $TopicID, $PostNum) = $db->next_record();
                     echo "<a href=\"forums.php?action=viewthread&amp;threadid=$TopicID&amp;post=$PostNum#post$PostID\">FORUM POST ID #$PostID</a>";
                   }
                   break;
                 case 'comment':
-                  $DB->query("
+                  $db->query("
                     SELECT 1
                     FROM comments
                     WHERE ID = $ThingID");
-                  if (!$DB->has_results()) {
+                  if (!$db->has_results()) {
                     echo 'No comment with the reported ID found';
                   } else {
                     echo "<a href=\"comments.php?action=jump&amp;postid=$ThingID\">COMMENT</a>";
@@ -202,7 +202,7 @@ $DB->set_query_id($Reports);
         </tr>
         <tr>
           <td colspan="2">
-<?php          if ($ClaimerID == $LoggedUser['ID']) { ?>
+<?php          if ($ClaimerID == $user['ID']) { ?>
             <span id="claimed_<?=$ReportID?>">Claimed by <?=Users::format_username($ClaimerID, false, false, false, false)?> <a href="#" onclick="unClaim(<?=$ReportID?>); return false;" class="brackets">Unclaim</a></span>
 <?php          } elseif ($ClaimerID) { ?>
             <span id="claimed_<?=$ReportID?>">Claimed by <?=Users::format_username($ClaimerID, false, false, false, false)?></span>
@@ -224,8 +224,8 @@ $DB->set_query_id($Reports);
           <td class="center" colspan="2">
             <form id="report_form_<?=$ReportID?>" action="">
               <input type="hidden" name="reportid" value="<?=$ReportID?>" />
-              <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
-              <input type="submit" onclick="return resolve(<?=$ReportID?>, <?=(($ClaimerID == $LoggedUser['ID'] || !$ClaimerID) ? 'true' : 'false')?>)" name="submit" value="Resolve" />
+              <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
+              <input type="submit" onclick="return resolve(<?=$ReportID?>, <?=(($ClaimerID == $user['ID'] || !$ClaimerID) ? 'true' : 'false')?>)" name="submit" value="Resolve" />
             </form>
           </td>
         </tr>
@@ -242,7 +242,7 @@ $DB->set_query_id($Reports);
       </table>
     </div>
 <?php
-    $DB->set_query_id($Reports);
+    $db->set_query_id($Reports);
   }
   ?>
   <div class="linkbox">

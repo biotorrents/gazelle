@@ -7,13 +7,13 @@ if (!empty($_GET['userid'])) {
     }
    
     $UserID = $_GET['userid'];
-    $Sneaky = ($UserID !== $LoggedUser['ID']);
+    $Sneaky = ($UserID !== $user['ID']);
 
     if (!is_number($UserID)) {
         json_die('failure');
     }
 
-    $DB->query("
+    $db->query("
     SELECT
       `Username`
     FROM
@@ -21,14 +21,14 @@ if (!empty($_GET['userid'])) {
     WHERE
       `ID` = '$UserID'
     ");
-    list($Username) = $DB->next_record();
+    list($Username) = $db->next_record();
 } else {
-    $UserID = $LoggedUser['ID'];
+    $UserID = $user['ID'];
 }
 
 //$ArtistList = Bookmarks::all_bookmarks('artist', $UserID);
 
-$DB->query("
+$db->query("
 SELECT
   ag.`ArtistID`,
   ag.`Name`
@@ -41,7 +41,7 @@ WHERE
   ba.`UserID` = $UserID
 ");
 
-$ArtistList = $DB->to_array();
+$ArtistList = $db->to_array();
 $JsonArtists = [];
 
 foreach ($ArtistList as $Artist) {

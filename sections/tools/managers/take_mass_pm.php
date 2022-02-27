@@ -14,12 +14,12 @@ if (!is_number($_POST['class_id']) || empty($_POST['subject']) || empty($_POST['
 $PermissionID = $_POST['class_id'];
 $Subject = $_POST['subject'];
 $Body = $_POST['body'];
-$FromID = empty($_POST['from_system']) ? G::$LoggedUser['ID'] : 0;
+$FromID = empty($_POST['from_system']) ? G::$user['ID'] : 0;
 
-G::$DB->query("
+G::$db->query("
         (SELECT ID AS UserID FROM users_main WHERE PermissionID = '$PermissionID' AND ID != '$FromID') UNION (SELECT UserID FROM users_levels WHERE PermissionID = '$PermissionID' AND UserID != '$FromID')");
 
-while(list($UserID) = G::$DB->next_record()) {
+while(list($UserID) = G::$db->next_record()) {
   Misc::send_pm($UserID, $FromID, $Subject, $Body);
 }
 

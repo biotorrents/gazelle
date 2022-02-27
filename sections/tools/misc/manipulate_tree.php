@@ -17,10 +17,10 @@ if ($_POST['id']) {
   else {
     $Comment = date('Y-m-d H:i:s') . " - ";
     $Comment .= db_string($_POST['comment']);
-    $Comment .= "\n" . "Manipulate Tree used by " . $LoggedUser['Username'];
+    $Comment .= "\n" . "Manipulate Tree used by " . $user['Username'];
   }
   $UserID = $_POST['id'];
-  $DB->query("
+  $db->query("
       SELECT
         t1.TreePosition,
         t1.TreeID,
@@ -37,14 +37,14 @@ if ($_POST['id']) {
         ) AS MaxPosition
       FROM invite_tree AS t1
       WHERE t1.UserID = $UserID");
-  list ($TreePosition, $TreeID, $TreeLevel, $MaxPosition) = $DB->next_record();
+  list ($TreePosition, $TreeID, $TreeLevel, $MaxPosition) = $db->next_record();
   if (!$MaxPosition) {
     $MaxPosition = 1000000;
   } // $MaxPermission is null if the user is the last one in that tree on that level
   if (!$TreeID) {
     return;
   }
-  $DB->query("
+  $db->query("
       SELECT
         UserID
       FROM invite_tree
@@ -55,7 +55,7 @@ if ($_POST['id']) {
       ORDER BY TreePosition");
   $BanList = [];
 
-  while (list ($Invitee) = $DB->next_record()) {
+  while (list ($Invitee) = $db->next_record()) {
     $BanList[] = $Invitee;
   }
 
@@ -68,7 +68,7 @@ if ($_POST['id']) {
       $Msg = "Successfully banned entire invite tree!";
     } elseif ($_POST['perform'] === 'inviteprivs') { // DisableInvites =1
       Tools::update_user_notes($InviteeID, $Comment . "\n\n");
-      $DB->query("
+      $db->query("
         UPDATE users_info
         SET DisableInvites = '1'
         WHERE UserID = '$InviteeID'");
@@ -89,7 +89,7 @@ if ($_POST['id']) {
 <?php } ?>
   <form class="manage_form" name="user" action="" method="post">
     <input type="hidden" id="action" name="action" value="manipulate_tree" />
-    <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+    <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
     <table class="layout">
       <tr>
         <td class="label"><strong>UserID</strong></td>

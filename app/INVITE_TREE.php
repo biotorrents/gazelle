@@ -17,12 +17,12 @@ class INVITE_TREE
 
     public function make_tree()
     {
-        $QueryID = G::$DB->get_query_id();
+        $QueryID = G::$db->get_query_id();
         $UserID = $this->UserID; ?>
 
 <div class="invitetree pad">
     <?php
-    G::$DB->query("
+    G::$db->query("
     SELECT
       `TreePosition`,
       `TreeID`,
@@ -33,12 +33,12 @@ class INVITE_TREE
       `UserID` = $UserID
     ");
 
-        list($TreePosition, $TreeID, $TreeLevel) = G::$DB->next_record(MYSQLI_NUM, false);
+        list($TreePosition, $TreeID, $TreeLevel) = G::$db->next_record(MYSQLI_NUM, false);
         if (!$TreeID) {
             return;
         }
 
-        G::$DB->query("
+        G::$db->query("
         SELECT
           `TreePosition`
         FROM
@@ -50,13 +50,13 @@ class INVITE_TREE
         LIMIT 1
         ");
 
-        if (G::$DB->has_results()) {
-            list($MaxPosition) = G::$DB->next_record(MYSQLI_NUM, false);
+        if (G::$db->has_results()) {
+            list($MaxPosition) = G::$db->next_record(MYSQLI_NUM, false);
         } else {
             $MaxPosition = false;
         }
 
-        $TreeQuery = G::$DB->query("
+        $TreeQuery = G::$db->query("
         SELECT
           it.`UserID`,
           `Enabled`,
@@ -106,7 +106,7 @@ class INVITE_TREE
 
         // We store this in an output buffer, so we can show the summary at the top without having to loop through twice
         ob_start();
-        while (list($ID, $Enabled, $Class, $Donor, $Uploaded, $Downloaded, $Paranoia, $TreePosition, $TreeLevel) = G::$DB->next_record(MYSQLI_NUM, false)) {
+        while (list($ID, $Enabled, $Class, $Donor, $Uploaded, $Downloaded, $Paranoia, $TreePosition, $TreeLevel) = G::$db->next_record(MYSQLI_NUM, false)) {
 
             // Do stats
             $Count++;
@@ -166,7 +166,7 @@ class INVITE_TREE
 
     <?php
       $PreviousTreeLevel = $TreeLevel;
-            G::$DB->set_query_id($TreeQuery);
+            G::$db->set_query_id($TreeQuery);
         }
 
         $Tree = ob_get_clean();
@@ -266,6 +266,6 @@ class INVITE_TREE
 </div>
 
 <?php
-    G::$DB->set_query_id($QueryID);
+    G::$db->set_query_id($QueryID);
     }
 }

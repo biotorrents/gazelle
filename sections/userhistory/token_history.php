@@ -7,14 +7,14 @@ declare(strict_types=1);
  * It gets called if $_GET['action'] === 'token_history.'
  *
  * Using $_GET['userid'] allows a mod to see any user's token history.
- * Non-mods and empty userid show $LoggedUser['ID']'s history.
+ * Non-mods and empty userid show $user['ID']'s history.
  */
 
 # Validate user ID
 if (isset($_GET['userid'])) {
     $UserID = (int) $_GET['userid'];
 } else {
-    $UserID = (int) $LoggedUser['ID'];
+    $UserID = (int) $user['ID'];
 }
 
 Security::int($UserID);
@@ -26,7 +26,7 @@ $UserClass = $Perms['Class'];
 
 # Validate mod permissions
 if (!check_perms('users_mod')) {
-    if ($LoggedUser['ID'] !== $UserID && !check_paranoia(false, $User['Paranoia'], $UserClass, $UserID)) {
+    if ($user['ID'] !== $UserID && !check_paranoia(false, $User['Paranoia'], $UserClass, $UserID)) {
         error(403);
     }
 }
@@ -40,7 +40,7 @@ if (isset($_GET['expire'])) {
     $TorrentID = (int) $_GET['torrentid'];
     Security::int($UserID, $TorrentID);
 
-    $DB->prepared_query("
+    $db->prepared_query("
     SELECT
       HEX(`info_hash`)
     FROM
@@ -50,8 +50,8 @@ if (isset($_GET['expire'])) {
     ");
 
 
-    if (list($InfoHash) = $DB->next_record(MYSQLI_NUM, false)) {
-        $DB->prepared_query("
+    if (list($InfoHash) = $db->next_record(MYSQLI_NUM, false)) {
+        $db->prepared_query("
         UPDATE
           `users_freeleeches`
         SET
@@ -61,7 +61,7 @@ if (isset($_GET['expire'])) {
         ");
 
 
-        $Cache->delete_value("users_tokens_$UserID");
+        $cache->delete_value("users_tokens_$UserID");
         Tracker::update_tracker(
             'remove_token',
             ['info_hash' => substr('%'.chunk_split($InfoHash, 2, '%'), 0, -1), 'userid' => $UserID]
@@ -74,7 +74,7 @@ if (isset($_GET['expire'])) {
 View::header('Freeleech token history');
 list($Page, $Limit) = Format::page_limit(25);
 
-$DB->prepared_query("
+$db->prepared_query("
 SELECT SQL_CALC_FOUND_ROWS
   f.`TorrentID`,
   t.`GroupID`,
@@ -100,9 +100,9 @@ LIMIT $Limit
 ");
 
 
-$Tokens = $DB->to_array();
-$DB->prepared_query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
+$Tokens = $db->to_array();
+$db->prepared_query('SELECT FOUND_ROWS()');
+list($NumResults) = $db->next_record();
 $Pages = Format::get_pages($Page, $NumResults, 25);
 ?>
 

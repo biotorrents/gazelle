@@ -21,16 +21,16 @@ class LockedAccounts
         if ($LockedByUserID === 0) {
             $Username = "System";
         } else {
-            G::$DB->query("SELECT Username FROM users_main WHERE ID = '" . $LockedByUserID . "'");
-            list($Username) = G::$DB->next_record();
+            G::$db->query("SELECT Username FROM users_main WHERE ID = '" . $LockedByUserID . "'");
+            list($Username) = G::$db->next_record();
         }
 
-        G::$DB->query("
+        G::$db->query("
         INSERT INTO locked_accounts (UserID, Type)
           VALUES ('" . $UserID . "', " . $Type . ")");
           
         Tools::update_user_notes($UserID, sqltime() . " - " . db_string($Message) . " by $Username\nReason: " . db_string($Reason) . "\n\n");
-        G::$Cache->delete_value("user_info_$UserID");
+        G::$cache->delete_value("user_info_$UserID");
     }
 
     /**
@@ -47,14 +47,14 @@ class LockedAccounts
         if ($UnlockedByUserID === 0) {
             $Username = "System";
         } else {
-            G::$DB->query("SELECT Username FROM users_main WHERE ID = '" . $UnlockedByUserID . "'");
-            list($Username) = G::$DB->next_record();
+            G::$db->query("SELECT Username FROM users_main WHERE ID = '" . $UnlockedByUserID . "'");
+            list($Username) = G::$db->next_record();
         }
 
-        G::$DB->query("DELETE FROM locked_accounts WHERE UserID = '$UserID' AND Type = '". $Type ."'");
+        G::$db->query("DELETE FROM locked_accounts WHERE UserID = '$UserID' AND Type = '". $Type ."'");
 
-        if (G::$DB->affected_rows() === 1) {
-            G::$Cache->delete_value("user_info_$UserID");
+        if (G::$db->affected_rows() === 1) {
+            G::$cache->delete_value("user_info_$UserID");
             Tools::update_user_notes($UserID, sqltime() . " - " . db_string($Message) . " by $Username\nReason: " . db_string($Reason) . "\n\n");
         }
     }

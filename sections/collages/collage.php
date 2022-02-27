@@ -4,12 +4,12 @@
 $CollageID = (int) $_GET['id'];
 Security::int($CollageID);
 
-$CollageData = $Cache->get_value("collage_$CollageID");
+$CollageData = $cache->get_value("collage_$CollageID");
 
 if ($CollageData) {
     list($Name, $Description, $CommentList, $Deleted, $CollageCategoryID, $CreatorID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Updated, $Subscribers) = $CollageData;
 } else {
-    $DB->query("
+    $db->query("
     SELECT
       `Name`,
       `Description`,
@@ -27,8 +27,8 @@ if ($CollageData) {
       `ID` = '$CollageID'
     ");
 
-    if ($DB->has_results()) {
-        list($Name, $Description, $CreatorID, $Deleted, $CollageCategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Updated, $Subscribers) = $DB->next_record(MYSQLI_NUM);
+    if ($db->has_results()) {
+        list($Name, $Description, $CreatorID, $Deleted, $CollageCategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Updated, $Subscribers) = $db->next_record(MYSQLI_NUM);
         $CommentList = null;
     } else {
         $Deleted = '1';
@@ -42,31 +42,31 @@ if ($Deleted === '1') {
 }
 
 // Handle subscriptions
-if (($CollageSubscriptions = $Cache->get_value('collage_subs_user_'.$LoggedUser['ID'])) === false) {
-    $DB->query("
+if (($CollageSubscriptions = $cache->get_value('collage_subs_user_'.$user['ID'])) === false) {
+    $db->query("
     SELECT
       `CollageID`
     FROM
       `users_collage_subs`
     WHERE
-      `UserID` = '$LoggedUser[ID]'
+      `UserID` = '$user[ID]'
     ");
 
-    $CollageSubscriptions = $DB->collect(0);
-    $Cache->cache_value('collage_subs_user_'.$LoggedUser['ID'], $CollageSubscriptions, 0);
+    $CollageSubscriptions = $db->collect(0);
+    $cache->cache_value('collage_subs_user_'.$user['ID'], $CollageSubscriptions, 0);
 }
 
 if (!empty($CollageSubscriptions) && in_array($CollageID, $CollageSubscriptions)) {
-    $DB->query("
+    $db->query("
     UPDATE
       `users_collage_subs`
     SET
       `LastVisit` = NOW()
     WHERE
-      `UserID` = ".$LoggedUser['ID']."
+      `UserID` = ".$user['ID']."
       AND `CollageID` = $CollageID
     ");
-    $Cache->delete_value('collage_subs_user_new_'.$LoggedUser['ID']);
+    $cache->delete_value('collage_subs_user_new_'.$user['ID']);
 }
 
 if ($CollageCategoryID === array_search(ARTIST_COLLAGE, $CollageCats)) {
@@ -88,5 +88,5 @@ if (isset($SetCache)) {
     (int) $MaxGroupsPerUser,
     $Updated,
     (int) $Subscribers);
-    $Cache->cache_value("collage_$CollageID", $CollageData, 3600);
+    $cache->cache_value("collage_$CollageID", $CollageData, 3600);
 }

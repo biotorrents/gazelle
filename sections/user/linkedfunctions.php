@@ -3,7 +3,7 @@
 
 function link_users($UserID, $TargetID)
 {
-    global $DB, $LoggedUser;
+    global $db, $user;
 
     authorize();
     if (!check_perms('users_mod')) {
@@ -18,26 +18,26 @@ function link_users($UserID, $TargetID)
         return;
     }
 
-    $DB->query("
+    $db->query("
     SELECT 1
     FROM users_main
     WHERE ID IN ($UserID, $TargetID)");
-    if ($DB->record_count() !== 2) {
+    if ($db->record_count() !== 2) {
         error(403);
     }
 
-    $DB->query("
+    $db->query("
     SELECT GroupID
     FROM users_dupes
     WHERE UserID = $TargetID");
-    list($TargetGroupID) = $DB->next_record();
+    list($TargetGroupID) = $db->next_record();
 
-    $DB->query("
+    $db->query("
     SELECT u.GroupID, d.Comments
     FROM users_dupes AS u
       JOIN dupe_groups AS d ON d.ID = u.GroupID
     WHERE UserID = $UserID");
-    list($UserGroupID, $Comments) = $DB->next_record();
+    list($UserGroupID, $Comments) = $db->next_record();
 
     $UserInfo = Users::user_info($UserID);
     $TargetInfo = Users::user_info($TargetID);
@@ -51,34 +51,34 @@ function link_users($UserID, $TargetID)
             return;
         }
         if ($UserGroupID) {
-            $DB->query("
+            $db->query("
         UPDATE users_dupes
         SET GroupID = $TargetGroupID
         WHERE GroupID = $UserGroupID");
 
-            $DB->query("
+            $db->query("
         UPDATE dupe_groups
         SET Comments = CONCAT('".db_string($Comments)."\n\n',Comments)
         WHERE ID = $TargetGroupID");
         
-            $DB->query("DELETE FROM dupe_groups WHERE ID = $UserGroupID");
+            $db->query("DELETE FROM dupe_groups WHERE ID = $UserGroupID");
             $GroupID = $UserGroupID;
         } else {
-            $DB->query("INSERT INTO users_dupes (UserID, GroupID) VALUES ($UserID, $TargetGroupID)");
+            $db->query("INSERT INTO users_dupes (UserID, GroupID) VALUES ($UserID, $TargetGroupID)");
             $GroupID = $TargetGroupID;
         }
     } elseif ($UserGroupID) {
-        $DB->query("INSERT INTO users_dupes (UserID, GroupID) VALUES ($TargetID, $UserGroupID)");
+        $db->query("INSERT INTO users_dupes (UserID, GroupID) VALUES ($TargetID, $UserGroupID)");
         $GroupID = $UserGroupID;
     } else {
-        $DB->query("INSERT INTO dupe_groups () VALUES ()");
-        $GroupID = $DB->inserted_id();
-        $DB->query("INSERT INTO users_dupes (UserID, GroupID) VALUES ($TargetID, $GroupID)");
-        $DB->query("INSERT INTO users_dupes (UserID, GroupID) VALUES ($UserID, $GroupID)");
+        $db->query("INSERT INTO dupe_groups () VALUES ()");
+        $GroupID = $db->inserted_id();
+        $db->query("INSERT INTO users_dupes (UserID, GroupID) VALUES ($TargetID, $GroupID)");
+        $db->query("INSERT INTO users_dupes (UserID, GroupID) VALUES ($UserID, $GroupID)");
     }
 
-    $AdminComment = sqltime()." - Linked accounts updated: [user]".$UserInfo['Username']."[/user] and [user]".$TargetInfo['Username']."[/user] linked by ".$LoggedUser['Username'];
-    $DB->query("
+    $AdminComment = sqltime()." - Linked accounts updated: [user]".$UserInfo['Username']."[/user] and [user]".$TargetInfo['Username']."[/user] linked by ".$user['Username'];
+    $db->query("
     UPDATE users_info AS i
       JOIN users_dupes AS d ON d.UserID = i.UserID
     SET i.AdminComment = CONCAT('".db_string($AdminComment)."\n\n', i.AdminComment)
@@ -87,7 +87,7 @@ function link_users($UserID, $TargetID)
 
 function unlink_user($UserID)
 {
-    global $DB, $LoggedUser;
+    global $db, $user;
 
     authorize();
     if (!check_perms('users_mod')) {
@@ -103,15 +103,15 @@ function unlink_user($UserID)
         return;
     }
     
-    $AdminComment = sqltime()." - Linked accounts updated: [user]".$UserInfo['Username']."[/user] unlinked by ".$LoggedUser['Username'];
-    $DB->query("
+    $AdminComment = sqltime()." - Linked accounts updated: [user]".$UserInfo['Username']."[/user] unlinked by ".$user['Username'];
+    $db->query("
     UPDATE users_info AS i
       JOIN users_dupes AS d1 ON d1.UserID = i.UserID
       JOIN users_dupes AS d2 ON d2.GroupID = d1.GroupID
     SET i.AdminComment = CONCAT('".db_string($AdminComment)."\n\n', i.AdminComment)
     WHERE d2.UserID = $UserID");
-    $DB->query("DELETE FROM users_dupes WHERE UserID = '$UserID'");
-    $DB->query("
+    $db->query("DELETE FROM users_dupes WHERE UserID = '$UserID'");
+    $db->query("
     DELETE g.*
     FROM dupe_groups AS g
       LEFT JOIN users_dupes AS u ON u.GroupID = g.ID
@@ -120,7 +120,7 @@ function unlink_user($UserID)
 
 function delete_dupegroup($GroupID)
 {
-    global $DB;
+    global $db;
 
     authorize();
     if (!check_perms('users_mod')) {
@@ -131,12 +131,12 @@ function delete_dupegroup($GroupID)
         error(403);
     }
 
-    $DB->query("DELETE FROM dupe_groups WHERE ID = '$GroupID'");
+    $db->query("DELETE FROM dupe_groups WHERE ID = '$GroupID'");
 }
 
 function dupe_comments($GroupID, $Comments)
 {
-    global $DB, $LoggedUser;
+    global $db, $user;
 
     authorize();
     if (!check_perms('users_mod')) {
@@ -147,26 +147,26 @@ function dupe_comments($GroupID, $Comments)
         error(403);
     }
 
-    $DB->query("
+    $db->query("
     SELECT SHA1(Comments) AS CommentHash
     FROM dupe_groups
     WHERE ID = $GroupID");
-    list($OldCommentHash) = $DB->next_record();
+    list($OldCommentHash) = $db->next_record();
     if ($OldCommentHash != sha1($Comments)) {
-        $AdminComment = sqltime()." - Linked accounts updated: Comments updated by ".$LoggedUser['Username'];
+        $AdminComment = sqltime()." - Linked accounts updated: Comments updated by ".$user['Username'];
         if ($_POST['form_comment_hash'] == $OldCommentHash) {
-            $DB->query("
+            $db->query("
         UPDATE dupe_groups
         SET Comments = '".db_string($Comments)."'
         WHERE ID = '$GroupID'");
         } else {
-            $DB->query("
+            $db->query("
         UPDATE dupe_groups
         SET Comments = CONCAT('".db_string($Comments)."\n\n',Comments)
         WHERE ID = '$GroupID'");
         }
 
-        $DB->query("
+        $db->query("
       UPDATE users_info AS i
         JOIN users_dupes AS d ON d.UserID = i.UserID
       SET i.AdminComment = CONCAT('".db_string($AdminComment)."\n\n', i.AdminComment)
@@ -176,7 +176,7 @@ function dupe_comments($GroupID, $Comments)
 
 function user_dupes_table($UserID)
 {
-    global $DB, $LoggedUser;
+    global $db, $user;
 
     if (!check_perms('users_mod')) {
         error(403);
@@ -187,20 +187,20 @@ function user_dupes_table($UserID)
         error(403);
     }
 
-    $DB->query("
+    $db->query("
     SELECT d.ID, d.Comments, SHA1(d.Comments) AS CommentHash
     FROM dupe_groups AS d
       JOIN users_dupes AS u ON u.GroupID = d.ID
     WHERE u.UserID = $UserID");
-    if (list($GroupID, $Comments, $CommentHash) = $DB->next_record()) {
-        $DB->query("
+    if (list($GroupID, $Comments, $CommentHash) = $db->next_record()) {
+        $db->query("
       SELECT m.ID
       FROM users_main AS m
         JOIN users_dupes AS d ON m.ID = d.UserID
       WHERE d.GroupID = $GroupID
       ORDER BY m.ID ASC");
-        $DupeCount = $DB->record_count();
-        $Dupes = $DB->to_array();
+        $DupeCount = $db->record_count();
+        $Dupes = $db->to_array();
     } else {
         $DupeCount = 0;
         $Dupes = [];
@@ -210,7 +210,7 @@ function user_dupes_table($UserID)
   <input type="hidden" name="dupeaction" value="update" />
   <input type="hidden" name="userid" value="<?=$UserID?>" />
   <input type="hidden" id="auth" name="auth"
-    value="<?=$LoggedUser['AuthKey']?>" />
+    value="<?=$user['AuthKey']?>" />
   <input type="hidden" id="form_comment_hash" name="form_comment_hash"
     value="<?=$CommentHash?>" />
   <div class="box" id="l_a_box">
@@ -227,7 +227,7 @@ function user_dupes_table($UserID)
         list($DupeID) = $Dupe;
         $DupeInfo = Users::user_info($DupeID); ?>
       <td align="left"><?=Users::format_username($DupeID, true, true, true, true)?>
-        <a href="user.php?action=dupes&amp;dupeaction=remove&amp;auth=<?=$LoggedUser['AuthKey']?>&amp;userid=<?=$UserID?>&amp;removeid=<?=$DupeID?>"
+        <a href="user.php?action=dupes&amp;dupeaction=remove&amp;auth=<?=$user['AuthKey']?>&amp;userid=<?=$UserID?>&amp;removeid=<?=$DupeID?>"
           onclick="return confirm('Are you sure you wish to remove <?=$DupeInfo['Username']?> from this group?');"
           class="brackets tooltip" title="Remove linked account">X</a>
       </td>

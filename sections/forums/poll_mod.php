@@ -10,20 +10,20 @@ if  (!isset($_POST['topicid']) || !is_number($_POST['topicid'])) {
 $TopicID = $_POST['topicid'];
 
 //Currently serves as a Featured Toggle
-if (!list($Question,$Answers,$Votes,$Featured,$Closed) = $Cache->get_value('polls_'.$TopicID)) {
-  $DB->query("
+if (!list($Question,$Answers,$Votes,$Featured,$Closed) = $cache->get_value('polls_'.$TopicID)) {
+  $db->query("
     SELECT Question, Answers, Featured, Closed
     FROM forums_polls
     WHERE TopicID='".$TopicID."'");
-  list($Question, $Answers, $Featured, $Closed) = $DB->next_record(MYSQLI_NUM, array(1));
+  list($Question, $Answers, $Featured, $Closed) = $db->next_record(MYSQLI_NUM, array(1));
   $Answers = unserialize($Answers);
-  $DB->query("
+  $db->query("
     SELECT Vote, COUNT(UserID)
     FROM forums_polls_votes
     WHERE TopicID = '$TopicID'
       AND Vote != '0'
     GROUP BY Vote");
-  $VoteArray = $DB->to_array(false, MYSQLI_NUM);
+  $VoteArray = $db->to_array(false, MYSQLI_NUM);
 
   $Votes = [];
   foreach ($VoteArray as $VoteSet) {
@@ -41,8 +41,8 @@ if (!list($Question,$Answers,$Votes,$Featured,$Closed) = $Cache->get_value('poll
 if (isset($_POST['feature'])) {
   if (!$Featured) {
     $Featured = sqltime();
-    $Cache->cache_value('polls_featured',$TopicID,0);
-    $DB->query('
+    $cache->cache_value('polls_featured',$TopicID,0);
+    $db->query('
       UPDATE forums_polls
       SET Featured=\''.sqltime().'\'
       WHERE TopicID=\''.$TopicID.'\'');
@@ -51,13 +51,13 @@ if (isset($_POST['feature'])) {
 
 if (isset($_POST['close'])) {
   $Closed = !$Closed;
-  $DB->query('
+  $db->query('
     UPDATE forums_polls
     SET Closed=\''.$Closed.'\'
     WHERE TopicID=\''.$TopicID.'\'');
 }
 
-$Cache->cache_value('polls_'.$TopicID, array($Question,$Answers,$Votes,$Featured,$Closed), 0);
+$cache->cache_value('polls_'.$TopicID, array($Question,$Answers,$Votes,$Featured,$Closed), 0);
 
 header('Location: '.$_SERVER['HTTP_REFERER']);
 die();

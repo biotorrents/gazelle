@@ -5,7 +5,7 @@ declare(strict_types=1);
 //   (t.last_action < (NOW() - INTERVAL 28 DAY) AND t.last_action IS NOT NULL)
 
 /*
-$DB->query("
+$db->query("
 SELECT
   t.`ID`,
   t.`GroupID`,
@@ -24,7 +24,7 @@ OR
   (t.`Time` <(NOW() - INTERVAL 3 DAY) AND t.`last_action` IS NULL)
 ");
 
-$Torrents = $DB->to_array(false, MYSQLI_NUM, false);
+$Torrents = $db->to_array(false, MYSQLI_NUM, false);
 echo 'Found '.count($Torrents)." inactive torrents to be deleted.\n";
 $LogEntries = $DeleteNotes = [];
 
@@ -69,7 +69,7 @@ unset($DeleteNotes);
 
 if (count($LogEntries) > 0) {
     $Values = "('".implode("', '$sqltime'), ('", $LogEntries) . "', '$sqltime')";
-    $DB->query("
+    $db->query("
       INSERT INTO log (Message, Time)
       VALUES $Values");
     echo "\nDeleted $i torrents for inactivity\n";

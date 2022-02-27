@@ -31,7 +31,7 @@ class Cache extends Memcache
     // Torrent Group cache version
     const GROUP_VERSION = 5;
 
-    public $CacheHits = [];
+    public $cacheHits = [];
     public $MemcacheDBArray = [];
     public $MemcacheDBKey = '';
     protected $InTransaction = false;

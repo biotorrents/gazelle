@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-$ID = G::$LoggedUser['ID'];
-$RssAuth = G::$LoggedUser['RSS_Auth'];
-$PassKey = G::$LoggedUser['torrent_pass'];
-$AuthKey = G::$LoggedUser['AuthKey'];
+$ID = G::$user['ID'];
+$RssAuth = G::$user['RSS_Auth'];
+$PassKey = G::$user['torrent_pass'];
+$AuthKey = G::$user['AuthKey'];
 
 echo $HTML = <<<HTML
 <div class="box">

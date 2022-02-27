@@ -7,31 +7,31 @@ if (!empty($_GET['userid'])) {
     }
 
     $UserID = $_GET['userid'];
-    $Sneaky = $UserID !== $LoggedUser['ID'];
+    $Sneaky = $UserID !== $user['ID'];
 
     if (!is_number($UserID)) {
         error(404);
     }
 
-    $DB->prepared_query("
+    $db->prepared_query("
       SELECT Username
       FROM users_main
       WHERE ID = '$UserID'");
-    list($Username) = $DB->next_record();
+    list($Username) = $db->next_record();
 } else {
-    $UserID = $LoggedUser['ID'];
+    $UserID = $user['ID'];
 }
 
-$Sneaky = $UserID !== $LoggedUser['ID'];
+$Sneaky = $UserID !== $user['ID'];
 //$ArtistList = Bookmarks::all_bookmarks('artist', $UserID);
 
-$DB->prepared_query("
+$db->prepared_query("
   SELECT ag.ArtistID, ag.Name
   FROM bookmarks_artists AS ba
     INNER JOIN artists_group AS ag ON ba.ArtistID = ag.ArtistID
   WHERE ba.UserID = $UserID
   ORDER BY ag.Name");
-$ArtistList = $DB->to_array();
+$ArtistList = $db->to_array();
 
 $Title = $Sneaky ? "$Username's bookmarked artists" : 'Your bookmarked artists';
 View::header($Title, 'browse');
@@ -80,24 +80,24 @@ foreach ($ArtistList as $Artist) {
       <span class="float_right">
         <?php
   if (check_perms('site_torrents_notify')) {
-      if (($Notify = $Cache->get_value('notify_artists_'.$LoggedUser['ID'])) === false) {
-          $DB->prepared_query("
+      if (($Notify = $cache->get_value('notify_artists_'.$user['ID'])) === false) {
+          $db->prepared_query("
             SELECT ID, Artists
             FROM users_notify_filters
-            WHERE UserID = '$LoggedUser[ID]'
+            WHERE UserID = '$user[ID]'
               AND Label = 'Artist notifications'
             LIMIT 1");
 
-          $Notify = $DB->next_record(MYSQLI_ASSOC);
-          $Cache->cache_value('notify_artists_'.$LoggedUser['ID'], $Notify, 0);
+          $Notify = $db->next_record(MYSQLI_ASSOC);
+          $cache->cache_value('notify_artists_'.$user['ID'], $Notify, 0);
       }
 
       if (stripos($Notify['Artists'], "|$Name|") === false) { ?>
-        <a href="artist.php?action=notify&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+        <a href="artist.php?action=notify&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$user['AuthKey']?>"
           class="brackets">Notify of new uploads</a>
         <?php
       } else { ?>
-        <a href="artist.php?action=notifyremove&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+        <a href="artist.php?action=notifyremove&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$user['AuthKey']?>"
           class="brackets">Do not notify of new uploads</a>
         <?php
       }
@@ -117,4 +117,4 @@ foreach ($ArtistList as $Artist) {
 
 <?php
 View::footer();
-$Cache->cache_value('bookmarks_'.$UserID, serialize(array(array($Username, $TorrentList, $CollageDataList))), 3600);
+$cache->cache_value('bookmarks_'.$UserID, serialize(array(array($Username, $TorrentList, $CollageDataList))), 3600);

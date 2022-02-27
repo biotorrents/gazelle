@@ -24,7 +24,7 @@ if (empty($Sent)) { ?>
 
 <form class="create_form" name="user" id="registerform" method="post" action="" onsubmit="return formVal();">
   <input type="hidden" name="auth"
-    value="<?=$LoggedUser['AuthKey']?>" />
+    value="<?=$user['AuthKey']?>" />
 
   <?php
     if (!empty($_REQUEST['invite'])) {

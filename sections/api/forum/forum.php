@@ -23,8 +23,8 @@ if (!is_number($ForumID)) {
 
 if (isset($_GET['pp'])) {
     $PerPage = intval($_GET['pp']);
-} elseif (isset($LoggedUser['PostsPerPage'])) {
-    $PerPage = $LoggedUser['PostsPerPage'];
+} elseif (isset($user['PostsPerPage'])) {
+    $PerPage = $user['PostsPerPage'];
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
@@ -36,10 +36,10 @@ list($Page, $Limit) = Format::page_limit(TOPICS_PER_PAGE);
 // Caching anything beyond the first page of any given forum is just wasting ram
 // users are more likely to search then to browse to page 2
 if ($Page === 1) {
-    list($Forum, , , $Stickies) = $Cache->get_value("forums_$ForumID");
+    list($Forum, , , $Stickies) = $cache->get_value("forums_$ForumID");
 }
 if (!isset($Forum) || !is_array($Forum)) {
-    $DB->query("
+    $db->query("
     SELECT
       ID,
       Title,
@@ -54,15 +54,15 @@ if (!isset($Forum) || !is_array($Forum)) {
     WHERE ForumID = '$ForumID'
     ORDER BY IsSticky DESC, LastPostTime DESC
     LIMIT $Limit"); // Can be cached until someone makes a new post
-    $Forum = $DB->to_array('ID', MYSQLI_ASSOC, false);
+    $Forum = $db->to_array('ID', MYSQLI_ASSOC, false);
     if ($Page === 1) {
-        $DB->query("
+        $db->query("
       SELECT COUNT(ID)
       FROM forums_topics
       WHERE ForumID = '$ForumID'
         AND IsSticky = '1'");
-        list($Stickies) = $DB->next_record();
-        $Cache->cache_value("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
+        list($Stickies) = $db->next_record();
+        $cache->cache_value("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
     }
 }
 
@@ -71,11 +71,11 @@ if (!isset($Forums[$ForumID])) {
 }
 // Make sure they're allowed to look at the page
 if (!check_perms('site_moderate_forums')) {
-    if (isset($LoggedUser['CustomForums'][$ForumID]) && $LoggedUser['CustomForums'][$ForumID] === 0) {
+    if (isset($user['CustomForums'][$ForumID]) && $user['CustomForums'][$ForumID] === 0) {
         json_die("failure", "insufficient permissions to view page");
     }
 }
-if ($LoggedUser['CustomForums'][$ForumID] != 1 && $Forums[$ForumID]['MinClassRead'] > $LoggedUser['Class']) {
+if ($user['CustomForums'][$ForumID] != 1 && $Forums[$ForumID]['MinClassRead'] > $user['Class']) {
     json_die("failure", "insufficient permissions to view page");
 }
 
@@ -102,7 +102,7 @@ if (count($Forum) === 0) {
     );
 } else {
     // forums_last_read_topics is a record of the last post a user read in a topic, and what page that was on
-    $DB->query("
+    $db->query("
     SELECT
       l.TopicID,
       l.PostID,
@@ -116,13 +116,13 @@ if (count($Forum) === 0) {
       ) AS Page
     FROM forums_last_read_topics AS l
     WHERE l.TopicID IN(".implode(', ', array_keys($Forum)).')
-      AND l.UserID = \''.$LoggedUser['ID'].'\'');
+      AND l.UserID = \''.$user['ID'].'\'');
 
     // Turns the result set into a multi-dimensional array, with
     // forums_last_read_topics.TopicID as the key.
     // This is done here so we get the benefit of the caching, and we
     // don't have to make a database query for each topic on the page
-    $LastRead = $DB->to_array('TopicID');
+    $LastRead = $db->to_array('TopicID');
 
     $JsonTopics = [];
     foreach ($Forum as $Topic) {
@@ -131,7 +131,7 @@ if (count($Forum) === 0) {
         // Handle read/unread posts - the reason we can't cache the whole page
         if ((!$Locked || $Sticky)
         && ((empty($LastRead[$TopicID]) || $LastRead[$TopicID]['PostID'] < $LastID)
-          && strtotime($LastTime) > $LoggedUser['CatchupTime'])
+          && strtotime($LastTime) > $user['CatchupTime'])
     ) {
             $Read = 'unread';
         } else {

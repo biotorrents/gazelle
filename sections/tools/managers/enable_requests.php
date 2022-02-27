@@ -124,7 +124,7 @@ if (!$ShowChecked || count($Where) === 0) {
     $Where[] = '`Outcome` IS NULL';
 }
 
-$QueryID = $DB->query("
+$QueryID = $db->query("
 SELECT SQL_CALC_FOUND_ROWS
   uer.`ID`,
   uer.`UserID`,
@@ -148,9 +148,9 @@ LIMIT
   $Limit
 ");
 
-$DB->query("SELECT FOUND_ROWS()");
-list($NumResults) = $DB->next_record();
-$DB->set_query_id($QueryID);
+$db->query("SELECT FOUND_ROWS()");
+list($NumResults) = $db->next_record();
+$db->set_query_id($QueryID);
 ?>
 
 <div class="header">
@@ -193,7 +193,7 @@ $DB->set_query_id($QueryID);
         </tr>
 
         <?php
-        $DB->query("
+        $db->query("
         SELECT
           COUNT(`CheckedBy`),
           `CheckedBy`
@@ -209,7 +209,7 @@ $DB->set_query_id($QueryID);
         LIMIT 50
         ");
 
-        while (list($Checked, $UserID) = $DB->next_record()) { ?>
+        while (list($Checked, $UserID) = $db->next_record()) { ?>
         <tr>
             <td>
                 <?=Users::format_username($UserID)?>
@@ -221,7 +221,7 @@ $DB->set_query_id($QueryID);
         </tr>
         <?php
         }
-    $DB->set_query_id($QueryID); ?>
+    $db->set_query_id($QueryID); ?>
     </table>
 
     <form action="" method="GET" id="search_form" <?=!isset($_GET['search']) ? 'class="hidden"' : ''?>>
@@ -428,7 +428,7 @@ if ($NumResults > 0) { ?>
     </tr>
 
     <?php
-    while (list($ID, $UserID, $Email, $IP, $UserAgent, $Timestamp, $BanReason, $CheckedBy, $HandledTimestamp, $Outcome) = $DB->next_record()) {
+    while (list($ID, $UserID, $Email, $IP, $UserAgent, $Timestamp, $BanReason, $CheckedBy, $HandledTimestamp, $Outcome) = $db->next_record()) {
         ?>
     <tr class="row" id="row_<?=$ID?>">
         <td class="center">

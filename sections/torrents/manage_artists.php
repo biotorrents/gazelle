@@ -26,28 +26,28 @@ foreach ($Artists as $i => $Artist) {
 if (count($CleanArtists) > 0) {
     $ArtistsString = implode(',', $ArtistIDs);
     if ($_POST['manager_action'] == 'delete') {
-        $DB->query("
+        $db->query("
       SELECT Name
       FROM torrents_group
       WHERE ID = '".$_POST['groupid']."'");
-        list($GroupName) = $DB->next_record();
-        $DB->query("
+        list($GroupName) = $db->next_record();
+        $db->query("
       SELECT ArtistID, Name
       FROM artists_group
       WHERE ArtistID IN ($ArtistsString)");
-        $ArtistNames = $DB->to_array('ArtistID', MYSQLI_ASSOC, false);
+        $ArtistNames = $db->to_array('ArtistID', MYSQLI_ASSOC, false);
         foreach ($CleanArtists as $Artist) {
             list($Importance, $ArtistID) = $Artist;
-            Misc::write_log("Artist $ArtistID (".$ArtistNames[$ArtistID]['Name'].") was removed from the group ".$_POST['groupid']." ($GroupName) by user ".$LoggedUser['ID'].' ('.$LoggedUser['Username'].')');
-            Torrents::write_group_log($GroupID, 0, $LoggedUser['ID'], "Removed artist ".$ArtistNames[$ArtistID]['Name'], 0);
-            $DB->query("
+            Misc::write_log("Artist $ArtistID (".$ArtistNames[$ArtistID]['Name'].") was removed from the group ".$_POST['groupid']." ($GroupName) by user ".$user['ID'].' ('.$user['Username'].')');
+            Torrents::write_group_log($GroupID, 0, $user['ID'], "Removed artist ".$ArtistNames[$ArtistID]['Name'], 0);
+            $db->query("
         DELETE FROM torrents_artists
         WHERE GroupID = '$GroupID'
           AND ArtistID = '$ArtistID'
           AND Importance = '$Importance'");
-            $Cache->delete_value("artist_groups_$ArtistID");
+            $cache->delete_value("artist_groups_$ArtistID");
         }
-        $DB->query("
+        $db->query("
       SELECT ArtistID
         FROM requests_artists
         WHERE ArtistID IN ($ArtistsString)
@@ -55,19 +55,19 @@ if (count($CleanArtists) > 0) {
       SELECT ArtistID
         FROM torrents_artists
         WHERE ArtistID IN ($ArtistsString)");
-        $Items = $DB->collect('ArtistID');
+        $Items = $db->collect('ArtistID');
         $EmptyArtists = array_diff($ArtistIDs, $Items);
         foreach ($EmptyArtists as $ArtistID) {
             Artists::delete_artist($ArtistID);
         }
     } else {
-        $DB->query("
+        $db->query("
       UPDATE IGNORE torrents_artists
       SET Importance = '".$_POST['importance']."'
       WHERE GroupID = '$GroupID'
         AND ArtistID IN ($ArtistsString)");
     }
-    $Cache->delete_value("groups_artists_$GroupID");
+    $cache->delete_value("groups_artists_$GroupID");
     Torrents::update_hash($GroupID);
     header("Location: torrents.php?id=$GroupID");
 }

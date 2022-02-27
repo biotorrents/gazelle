@@ -209,7 +209,7 @@ class TorrentSearch
         }
 
         $Offset = ($this->Page - 1) * $ResultLimit;
-        $MinMax = G::$Cache->get_value('sphinx_min_max_matches');
+        $MinMax = G::$cache->get_value('sphinx_min_max_matches');
         $MaxMatches = max($Offset + $ResultLimit, $MinMax ? $MinMax : 1000); # todo: Keep an eye on this
         $this->SphQL->from('torrents, delta')
       ->limit($Offset, $ResultLimit, $MaxMatches);

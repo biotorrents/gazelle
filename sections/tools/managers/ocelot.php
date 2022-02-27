@@ -32,9 +32,9 @@ switch ($Type) {
           UPDATE users_freeleeches
           SET Expired = TRUE
           WHERE ".implode(" OR ", $Cond);
-            $DB->query($Query);
+            $db->query($Query);
             foreach ($UserIDs as $UserID) {
-                $Cache->delete_value("users_tokens_$UserID");
+                $cache->delete_value("users_tokens_$UserID");
             }
         }
     } else {
@@ -43,12 +43,12 @@ switch ($Type) {
         if (!is_number($TorrentID) || !is_number($UserID)) {
             error(403);
         }
-        $DB->query("
+        $db->query("
         UPDATE users_freeleeches
         SET Expired = TRUE
         WHERE UserID = $UserID
           AND TorrentID = $TorrentID");
-        $Cache->delete_value("users_tokens_$UserID");
+        $cache->delete_value("users_tokens_$UserID");
     }
     break;
 }

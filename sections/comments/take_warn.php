@@ -10,17 +10,17 @@ $Body = $_POST['body'];
 $Length = $_POST['length'];
 $PostID = (int)$_POST['postid'];
 
-$DB->query("
+$db->query("
   SELECT AuthorID
   FROM comments
   WHERE ID = $PostID");
-if (!$DB->has_results()) {
+if (!$db->has_results()) {
   error(404);
 }
-list($AuthorID) = $DB->next_record();
+list($AuthorID) = $db->next_record();
 
 $UserInfo = Users::user_info($AuthorID);
-if ($UserInfo['Class'] > $LoggedUser['Class']) {
+if ($UserInfo['Class'] > $user['Class']) {
   error(403);
 }
 
@@ -31,21 +31,21 @@ if ($Length !== 'verbal') {
   $Subject = 'You have received a warning';
   $PrivateMessage = "You have received a $Length week warning for [url=$URL]this comment[/url].\n\n[quote]{$PrivateMessage}[/quote]";
   $WarnTime = time_plus($Time);
-  $AdminComment = date('Y-m-d') . " - Warned until $WarnTime by " . $LoggedUser['Username'] . "\nReason: $URL - $Reason\n\n";
+  $AdminComment = date('Y-m-d') . " - Warned until $WarnTime by " . $user['Username'] . "\nReason: $URL - $Reason\n\n";
 } else {
   $Subject = 'You have received a verbal warning';
   $PrivateMessage = "You have received a verbal warning for [url=$URL]this comment[/url].\n\n[quote]{$PrivateMessage}[/quote]";
-  $AdminComment = date('Y-m-d') . ' - Verbally warned by ' . $LoggedUser['Username'] . " for $URL\nReason: $Reason\n\n";
+  $AdminComment = date('Y-m-d') . ' - Verbally warned by ' . $user['Username'] . " for $URL\nReason: $Reason\n\n";
   Tools::update_user_notes($AuthorID, $AdminComment);
 }
-$DB->query("
+$db->query("
   INSERT INTO users_warnings_forums
     (UserID, Comment)
   VALUES
     ('$AuthorID', '" . db_string($AdminComment) . "')
   ON DUPLICATE KEY UPDATE
     Comment = CONCAT('" . db_string($AdminComment) . "', Comment)");
-Misc::send_pm($AuthorID, $LoggedUser['ID'], $Subject, $PrivateMessage);
+Misc::send_pm($AuthorID, $user['ID'], $Subject, $PrivateMessage);
 
 Comments::edit($PostID, $Body);
 

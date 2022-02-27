@@ -11,7 +11,7 @@ if (!empty($_GET['userid'])) {
         error(404);
     }
 
-    $DB->query("
+    $db->query("
     SELECT
       `Username`
     FROM
@@ -19,12 +19,12 @@ if (!empty($_GET['userid'])) {
     WHERE
       `ID` = '$UserID'
     ");
-    list($Username) = $DB->next_record();
+    list($Username) = $db->next_record();
 } else {
-    $UserID = $LoggedUser['ID'];
+    $UserID = $user['ID'];
 }
 
-$Sneaky = ($UserID !== $LoggedUser['ID']);
+$Sneaky = ($UserID !== $user['ID']);
 $JsonBookmarks = [];
 
 list($GroupIDs, $CollageDataList, $GroupList) = Users::get_bookmarks($UserID);

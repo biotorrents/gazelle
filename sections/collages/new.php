@@ -27,7 +27,7 @@ if (isset($Err)) { ?>
     <form class="create_form" name="collage" action="collages.php" method="post">
       <input type="hidden" name="action" value="new_handle" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
       <table class="layout">
         <tr id="collagename">
           <td class="label"></td>
@@ -40,7 +40,7 @@ if (isset($Err)) { ?>
             <span id="personal" <?=$NoName ? '' : ' class="hidden"'; ?>
               style="font-style: oblique;">
               <strong>
-                <?=$LoggedUser['Username']?>'s
+                <?=$user['Username']?>'s
                 personal collection
               </strong>
             </span>
@@ -62,14 +62,14 @@ foreach ($CollageCats as $CatID => $CatName) { ?>
               <?php
 }
 
-$DB->query("
+$db->query("
   SELECT COUNT(ID)
   FROM collages
-  WHERE UserID = '$LoggedUser[ID]'
+  WHERE UserID = '$user[ID]'
     AND CategoryID = '0'
     AND Deleted = '0'");
-list($CollageCount) = $DB->next_record();
-if (($CollageCount < $LoggedUser['Permissions']['MaxCollages']) && check_perms('site_collages_personal')) { ?>
+list($CollageCount) = $db->next_record();
+if (($CollageCount < $user['Permissions']['MaxCollages']) && check_perms('site_collages_personal')) { ?>
               <option value="0" <?=(($Category === '0') ? ' selected="selected"' : '')?>>Personal
               </option>
               <?php
@@ -90,7 +90,7 @@ if (($CollageCount < $LoggedUser['Permissions']['MaxCollages']) && check_perms('
               </li>
 
               <?php
-  if (($CollageCount < $LoggedUser['Permissions']['MaxCollages']) && check_perms('site_collages_personal')) { ?>
+  if (($CollageCount < $user['Permissions']['MaxCollages']) && check_perms('site_collages_personal')) { ?>
               <li>
                 <strong>Personal</strong>
                 &ndash;

@@ -20,14 +20,14 @@ if (!$_GET['post'] || !is_number($_GET['post'])) {
 $PostID = $_GET['post'];
 
 // Mainly
-$DB->query("
+$db->query("
   SELECT
     p.Body,
     t.ForumID
   FROM forums_posts AS p
     JOIN forums_topics AS t ON p.TopicID = t.ID
   WHERE p.ID = '$PostID'");
-list($Body, $ForumID) = $DB->next_record(MYSQLI_NUM);
+list($Body, $ForumID) = $db->next_record(MYSQLI_NUM);
 
 // Is the user allowed to view the post?
 if (!Forums::check_forumperm($ForumID)) {

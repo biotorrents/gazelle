@@ -10,15 +10,15 @@ if (isset($_POST['type'])) {
         }
 
         $Tag = db_string($_POST['tag']);
-        $DB->query("
+        $db->query("
         SELECT `ID`
         FROM `tags`
         WHERE `Name` = '$Tag'
         ");
 
-        if ($DB->has_results()) {
+        if ($db->has_results()) {
             $Tag = str_replace('.', '_', $Tag);
-            $DB->query("
+            $db->query("
             SELECT t.`ID`
             FROM `torrents` AS t
             JOIN `torrents_group` AS tg ON t.`GroupID` = tg.`id`
@@ -27,8 +27,8 @@ if (isset($_POST['type'])) {
             AND tg.`tag_list` LIKE '%$Tag%'
             ");
 
-            if ($DB->has_results()) {
-                $IDs = $DB->collect('ID');
+            if ($db->has_results()) {
+                $IDs = $db->collect('ID');
                 $Duration = db_string($_POST['duration']);
                 $Query = "INSERT IGNORE INTO `shop_freeleeches` (TorrentID, ExpiryTime) VALUES ";
 
@@ -38,9 +38,9 @@ if (isset($_POST['type'])) {
 
                 $Query = substr($Query, 0, strlen($Query) - 2);
                 $Query .= " ON DUPLICATE KEY UPDATE ExpiryTime = ExpiryTime + INTERVAL " . $Duration . " HOUR";
-                $DB->query($Query);
+                $db->query($Query);
 
-                $DB->query(
+                $db->query(
                     "
                 INSERT INTO `misc`
                   (Name, First, Second)
@@ -61,7 +61,7 @@ if (isset($_POST['type'])) {
     } elseif ($_POST['type'] === 'global') {
         authorize();
 
-        $DB->query("
+        $db->query("
         SELECT t.`ID`
         FROM `torrents` AS t
         JOIN `torrents_group` AS tg ON t.`GroupID` = tg.`id`
@@ -69,8 +69,8 @@ if (isset($_POST['type'])) {
         AND (t.`FreeLeechType` = '0' OR t.`FreeLeechType` = '3')
         ");
 
-        if ($DB->has_results()) {
-            $IDs = $DB->collect('ID');
+        if ($db->has_results()) {
+            $IDs = $db->collect('ID');
             $Duration = db_string($_POST['duration']);
             $Query = "INSERT IGNORE INTO shop_freeleeches (TorrentID, ExpiryTime) VALUES ";
 
@@ -80,9 +80,9 @@ if (isset($_POST['type'])) {
 
             $Query = substr($Query, 0, strlen($Query) - 2);
             $Query .= " ON DUPLICATE KEY UPDATE ExpiryTime = ExpiryTime + INTERVAL " . $Duration . " HOUR";
-            $DB->query($Query);
+            $db->query($Query);
 
-            $DB->query(
+            $db->query(
                 "
         INSERT INTO `misc`
           (`Name`, `First`, `Second`)
@@ -110,7 +110,7 @@ if (isset($_POST['type'])) {
       <input type="hidden" name="action" value="freeleech" />
       <input type="hidden" name="type" value="tag">
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
       <strong>Single Tag Freeleech</strong>
       <br />
       <input id="tag_name" type="text" name="tag" placeholder="Tag" value="" />
@@ -125,7 +125,7 @@ if (isset($_POST['type'])) {
       <input type="hidden" name="action" value="freeleech" />
       <input type="hidden" name="type" value="global" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
       <strong>Global Freeleech</strong>
       <br />
       <input id="global_duration" type="number" name="duration" placeholder="Duration (hours)" value="" />

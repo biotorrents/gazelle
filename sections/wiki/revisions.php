@@ -9,11 +9,11 @@ $ArticleID = (int) $_GET['id'];
 $Latest = Wiki::get_article($ArticleID);
 list($Revision, $Title, $Body, $Read, $Edit, $Date, $AuthorID, $AuthorName) = array_shift($Latest);
 
-if ($Read > $LoggedUser['EffectiveClass']) {
+if ($Read > $user['EffectiveClass']) {
     error(404);
 }
 
-if ($Edit > $LoggedUser['EffectiveClass']) {
+if ($Edit > $user['EffectiveClass']) {
     error(403);
 }
 
@@ -58,7 +58,7 @@ View::header("Revisions of ".$Title);
       </tr>
 
       <?php
-$DB->prepared_query("
+$db->prepared_query("
   SELECT
     Revision,
     Title,
@@ -68,7 +68,7 @@ $DB->prepared_query("
   WHERE ID = '$ArticleID'
   ORDER BY Revision DESC");
 
-while (list($Revision, $Title, $AuthorID, $Date) = $DB->next_record()) { ?>
+while (list($Revision, $Title, $AuthorID, $Date) = $db->next_record()) { ?>
       <tr>
         <td>
           <?=$Revision?>

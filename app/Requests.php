@@ -10,17 +10,17 @@ class Requests
      */
     public static function update_sphinx_requests($RequestID)
     {
-        $QueryID = G::$DB->get_query_id();
-        G::$DB->query("
+        $QueryID = G::$db->get_query_id();
+        G::$db->query("
         SELECT REPLACE(t.Name, '.', '_')
         FROM tags AS t
           JOIN requests_tags AS rt ON t.ID = rt.TagID
           WHERE rt.RequestID = $RequestID");
 
-        $TagList = G::$DB->collect(0, false);
+        $TagList = G::$db->collect(0, false);
         $TagList = db_string(implode(' ', $TagList));
 
-        G::$DB->query("
+        G::$db->query("
         REPLACE INTO sphinx_requests_delta (
           ID, UserID, TimeAdded, LastVote, CategoryID, Title, TagList,
           CatalogueNumber, FillerID, TorrentID,
@@ -36,7 +36,7 @@ class Requests
         WHERE ID = $RequestID
           GROUP BY r.ID");
 
-        G::$DB->query("
+        G::$db->query("
         UPDATE sphinx_requests_delta
         SET ArtistList = (
           SELECT GROUP_CONCAT(ag.Name SEPARATOR ' ')
@@ -47,8 +47,8 @@ class Requests
         )
           WHERE ID = $RequestID");
 
-        G::$DB->set_query_id($QueryID);
-        G::$Cache->delete_value("request_$RequestID");
+        G::$db->set_query_id($QueryID);
+        G::$cache->delete_value("request_$RequestID");
     }
 
     /**
@@ -71,7 +71,7 @@ class Requests
                 continue;
             }
 
-            $Data = G::$Cache->get_value("request_$RequestID");
+            $Data = G::$cache->get_value("request_$RequestID");
             if (!empty($Data)) {
                 unset($NotFound[$RequestID]);
                 $Found[$RequestID] = $Data;
@@ -89,8 +89,8 @@ class Requests
          */
 
         if (count($NotFound) > 0) {
-            $QueryID = G::$DB->get_query_id();
-            G::$DB->query("
+            $QueryID = G::$db->get_query_id();
+            G::$db->query("
             SELECT
               ID,
               UserID,
@@ -111,18 +111,18 @@ class Requests
               WHERE ID IN ($IDs)
               ORDER BY ID");
 
-            $Requests = G::$DB->to_array(false, MYSQLI_ASSOC, true);
-            $Tags = self::get_tags(G::$DB->collect('ID', false));
+            $Requests = G::$db->to_array(false, MYSQLI_ASSOC, true);
+            $Tags = self::get_tags(G::$db->collect('ID', false));
 
             foreach ($Requests as $Request) {
                 $Request['AnonymousFill'] = false;
                 if ($Request['FillerID']) {
-                    G::$DB->query("
+                    G::$db->query("
                     SELECT Anonymous
                     FROM torrents
                       WHERE ID = ".$Request['TorrentID']);
 
-                    list($Anonymous) = G::$DB->next_record();
+                    list($Anonymous) = G::$db->next_record();
                     if ($Anonymous) {
                         $Request['AnonymousFill'] = true;
                     }
@@ -131,9 +131,9 @@ class Requests
                 unset($NotFound[$Request['ID']]);
                 $Request['Tags'] = isset($Tags[$Request['ID']]) ? $Tags[$Request['ID']] : [];
                 $Found[$Request['ID']] = $Request;
-                G::$Cache->cache_value('request_'.$Request['ID'], $Request, 0);
+                G::$cache->cache_value('request_'.$Request['ID'], $Request, 0);
             }
-            G::$DB->set_query_id($QueryID);
+            G::$db->set_query_id($QueryID);
 
             // Orphan requests. There shouldn't ever be any
             if (count($NotFound) > 0) {
@@ -165,13 +165,13 @@ class Requests
 
     public static function get_artists($RequestID)
     {
-        $Artists = G::$Cache->get_value("request_artists_$RequestID");
+        $Artists = G::$cache->get_value("request_artists_$RequestID");
         if (is_array($Artists)) {
             $Results = $Artists;
         } else {
             $Results = [];
-            $QueryID = G::$DB->get_query_id();
-            G::$DB->query("
+            $QueryID = G::$db->get_query_id();
+            G::$db->query("
             SELECT
               ra.ArtistID,
               ag.Name
@@ -180,14 +180,14 @@ class Requests
             WHERE ra.RequestID = $RequestID
               ORDER BY ag.Name ASC;");
 
-            $ArtistRaw = G::$DB->to_array();
-            G::$DB->set_query_id($QueryID);
+            $ArtistRaw = G::$db->to_array();
+            G::$db->set_query_id($QueryID);
 
             foreach ($ArtistRaw as $ArtistRow) {
                 list($ArtistID, $ArtistName) = $ArtistRow;
                 $Results[] = array('id' => $ArtistID, 'name' => $ArtistName);
             }
-            G::$Cache->cache_value("request_artists_$RequestID", $Results);
+            G::$cache->cache_value("request_artists_$RequestID", $Results);
         }
         return $Results;
     }
@@ -202,8 +202,8 @@ class Requests
             $RequestIDs = implode(',', $RequestIDs);
         }
 
-        $QueryID = G::$DB->get_query_id();
-        G::$DB->query("
+        $QueryID = G::$db->get_query_id();
+        G::$db->query("
         SELECT
           rt.RequestID,
           rt.TagID,
@@ -213,8 +213,8 @@ class Requests
         WHERE rt.RequestID IN ($RequestIDs)
           ORDER BY rt.TagID ASC");
 
-        $Tags = G::$DB->to_array(false, MYSQLI_NUM, false);
-        G::$DB->set_query_id($QueryID);
+        $Tags = G::$db->to_array(false, MYSQLI_NUM, false);
+        G::$db->set_query_id($QueryID);
 
         $Results = [];
         foreach ($Tags as $TagsRow) {
@@ -226,10 +226,10 @@ class Requests
 
     public static function get_votes_array($RequestID)
     {
-        $RequestVotes = G::$Cache->get_value("request_votes_$RequestID");
+        $RequestVotes = G::$cache->get_value("request_votes_$RequestID");
         if (!is_array($RequestVotes)) {
-            $QueryID = G::$DB->get_query_id();
-            G::$DB->query("
+            $QueryID = G::$db->get_query_id();
+            G::$db->query("
             SELECT
               rv.UserID,
               rv.Bounty,
@@ -239,15 +239,15 @@ class Requests
             WHERE rv.RequestID = $RequestID
               ORDER BY rv.Bounty DESC");
 
-            if (!G::$DB->has_results()) {
+            if (!G::$db->has_results()) {
                 return array(
                     'TotalBounty' => 0,
                     'Voters' => []);
             }
-            $Votes = G::$DB->to_array();
+            $Votes = G::$db->to_array();
 
             $RequestVotes = [];
-            $RequestVotes['TotalBounty'] = array_sum(G::$DB->collect('Bounty'));
+            $RequestVotes['TotalBounty'] = array_sum(G::$db->collect('Bounty'));
 
             foreach ($Votes as $Vote) {
                 list($UserID, $Bounty, $Username) = $Vote;
@@ -256,8 +256,8 @@ class Requests
             }
 
             $RequestVotes['Voters'] = $VotesArray;
-            G::$Cache->cache_value("request_votes_$RequestID", $RequestVotes);
-            G::$DB->set_query_id($QueryID);
+            G::$cache->cache_value("request_votes_$RequestID", $RequestVotes);
+            G::$db->set_query_id($QueryID);
         }
         return $RequestVotes;
     }

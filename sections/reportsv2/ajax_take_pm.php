@@ -62,12 +62,12 @@ if (!is_number($ToID)) {
   $Err = "Haxx occurring, non-number present";
 }
 
-if ($ToID == $LoggedUser['ID']) {
+if ($ToID == $user['ID']) {
   $Err = "That's you!";
 }
 
 if (isset($Err)) {
   echo $Err;
 } else {
-  Misc::send_pm($ToID, $LoggedUser['ID'], $Subject, $Message);
+  Misc::send_pm($ToID, $user['ID'], $Subject, $Message);
 }

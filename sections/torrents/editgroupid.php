@@ -25,22 +25,22 @@ if ($OldGroupID == $GroupID) {
 
 //Everything is legit, let's just confim they're not retarded
 if (empty($_POST['confirm'])) {
-  $DB->query("
+  $db->query("
     SELECT Name
     FROM torrents_group
     WHERE ID = $OldGroupID");
-  if (!$DB->has_results()) {
+  if (!$db->has_results()) {
     //Trying to move to an empty group? I think not!
     set_message('The destination torrent group does not exist!');
     header('Location: '.$_SERVER['HTTP_REFERER']);
     error();
   }
-  list($Name) = $DB->next_record();
-  $DB->query("
+  list($Name) = $db->next_record();
+  $db->query("
     SELECT CategoryID, Name
     FROM torrents_group
     WHERE ID = $GroupID");
-  list($CategoryID, $NewName) = $DB->next_record();
+  list($CategoryID, $NewName) = $db->next_record();
 
   $Artists = Artists::get_artists(array($OldGroupID, $GroupID));
 
@@ -53,7 +53,7 @@ if (empty($_POST['confirm'])) {
     <div class="box pad">
       <form class="confirm_form" name="torrent_group" action="torrents.php" method="post">
         <input type="hidden" name="action" value="editgroupid" />
-        <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+        <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
         <input type="hidden" name="confirm" value="true" />
         <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
         <input type="hidden" name="oldgroupid" value="<?=$OldGroupID?>" />
@@ -75,40 +75,40 @@ if (empty($_POST['confirm'])) {
 } else {
   authorize();
 
-  $DB->query("
+  $db->query("
     UPDATE torrents
     SET GroupID = '$GroupID'
     WHERE ID = $TorrentID");
 
   // Delete old torrent group if it's empty now
-  $DB->query("
+  $db->query("
     SELECT COUNT(ID)
     FROM torrents
     WHERE GroupID = '$OldGroupID'");
-  list($TorrentsInGroup) = $DB->next_record();
+  list($TorrentsInGroup) = $db->next_record();
   if ($TorrentsInGroup == 0) {
-    $DB->query("
+    $db->query("
       UPDATE comments
       SET PageID = '$GroupID'
       WHERE Page = 'torrents'
         AND PageID = '$OldGroupID'");
-    $Cache->delete_value("torrent_comments_{$GroupID}_catalogue_0");
-    $Cache->delete_value("torrent_comments_$GroupID");
+    $cache->delete_value("torrent_comments_{$GroupID}_catalogue_0");
+    $cache->delete_value("torrent_comments_$GroupID");
     Torrents::delete_group($OldGroupID);
   } else {
     Torrents::update_hash($OldGroupID);
   }
   Torrents::update_hash($GroupID);
 
-  Misc::write_log("Torrent $TorrentID was edited by " . $LoggedUser['Username']); // TODO: this is probably broken
-  Torrents::write_group_log($GroupID, 0, $LoggedUser['ID'], "merged group $OldGroupID", 0);
-  $DB->query("
+  Misc::write_log("Torrent $TorrentID was edited by " . $user['Username']); // TODO: this is probably broken
+  Torrents::write_group_log($GroupID, 0, $user['ID'], "merged group $OldGroupID", 0);
+  $db->query("
     UPDATE group_log
     SET GroupID = $GroupID
     WHERE GroupID = $OldGroupID");
 
-  $Cache->delete_value("torrents_details_$GroupID");
-  $Cache->delete_value("torrent_download_$TorrentID");
+  $cache->delete_value("torrents_details_$GroupID");
+  $cache->delete_value("torrent_download_$TorrentID");
 
   header("Location: torrents.php?id=$GroupID");
   }

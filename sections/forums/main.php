@@ -61,7 +61,7 @@ foreach ($Forums as $Forum) {
       <?php if ($NumPosts === 0) { ?>
       <td>
         There are no topics here.
-        <?= (($MinCreate <= $LoggedUser['Class'])
+        <?= (($MinCreate <= $user['Class'])
             ? ' <a href="forums.php?action=new&amp;forumid='.$ForumID.'">Create one!</a>'
             : '') ?>
       </td>
@@ -104,7 +104,7 @@ foreach ($Forums as $Forum) {
 </div>
 
 <div class="linkbox">
-  <a href="forums.php?action=catchup&amp;forumid=all&amp;auth=<?=$LoggedUser['AuthKey']?>"
+  <a href="forums.php?action=catchup&amp;forumid=all&amp;auth=<?=$user['AuthKey']?>"
     class="brackets">Catch up</a>
 </div>
 <?php View::footer();

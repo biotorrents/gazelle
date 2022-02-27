@@ -52,18 +52,18 @@ function header_link($SortKey, $DefaultWay = 'desc')
     return "?action=notify&amp;order_way=$NewWay&amp;order_by=$SortKey&amp;".Format::get_url(array('page', 'order_way', 'order_by'));
 }
 //Perhaps this should be a feature at some point
-if (check_perms('users_mod') && !empty($_GET['userid']) && is_number($_GET['userid']) && $_GET['userid'] != $LoggedUser['ID']) {
+if (check_perms('users_mod') && !empty($_GET['userid']) && is_number($_GET['userid']) && $_GET['userid'] != $user['ID']) {
     $UserID = $_GET['userid'];
     $Sneaky = true;
 } else {
     $Sneaky = false;
-    $UserID = $LoggedUser['ID'];
+    $UserID = $user['ID'];
 }
 
 // Sorting by release year requires joining torrents_group, which is slow. Using a temporary table
 // makes it speedy enough as long as there aren't too many records to create
 if ($OrderTbl === 'tg') {
-    $DB->query("
+    $db->query("
     SELECT COUNT(*)
     FROM users_notify_torrents AS unt
       JOIN torrents AS t ON t.ID=unt.TorrentID
@@ -71,16 +71,16 @@ if ($OrderTbl === 'tg') {
     ($FilterID
       ? " AND FilterID=$FilterID"
       : ''));
-    list($TorrentCount) = $DB->next_record();
+    list($TorrentCount) = $db->next_record();
     if ($TorrentCount > NOTIFICATIONS_MAX_SLOWSORT) {
         error('Due to performance issues, torrent lists with more than '.number_format(NOTIFICATIONS_MAX_SLOWSORT).' items cannot be ordered by release year.');
     }
 
-    $DB->query("
+    $db->query("
     CREATE TEMPORARY TABLE temp_notify_torrents
       (TorrentID int, GroupID int, UnRead tinyint, FilterID int, Year smallint, PRIMARY KEY(GroupID, TorrentID), KEY(Year))
     ENGINE=MyISAM");
-    $DB->query("
+    $db->query("
     INSERT IGNORE INTO temp_notify_torrents (TorrentID, GroupID, UnRead, FilterID)
     SELECT t.ID, t.GroupID, unt.UnRead, unt.FilterID
     FROM users_notify_torrents AS unt
@@ -89,19 +89,19 @@ if ($OrderTbl === 'tg') {
     ($FilterID
       ? " AND unt.FilterID=$FilterID"
       : ''));
-    $DB->query("
+    $db->query("
     UPDATE temp_notify_torrents AS tnt
       JOIN torrents_group AS tg ON tnt.GroupID = tg.ID
     SET tnt.Year = tg.Year");
 
-    $DB->query("
+    $db->query("
     SELECT TorrentID, GroupID, UnRead, FilterID
     FROM temp_notify_torrents AS tnt
     ORDER BY $OrderCol $OrderWay, GroupID $OrderWay
     LIMIT $Limit");
-    $Results = $DB->to_array(false, MYSQLI_ASSOC, false);
+    $Results = $db->to_array(false, MYSQLI_ASSOC, false);
 } else {
-    $DB->query("
+    $db->query("
     SELECT
       SQL_CALC_FOUND_ROWS
       unt.TorrentID,
@@ -116,9 +116,9 @@ if ($OrderTbl === 'tg') {
       : '')."
     ORDER BY $OrderCol $OrderWay
     LIMIT $Limit");
-    $Results = $DB->to_array(false, MYSQLI_ASSOC, false);
-    $DB->query('SELECT FOUND_ROWS()');
-    list($TorrentCount) = $DB->next_record();
+    $Results = $db->to_array(false, MYSQLI_ASSOC, false);
+    $db->query('SELECT FOUND_ROWS()');
+    list($TorrentCount) = $db->next_record();
 }
 
 $GroupIDs = $FilterIDs = $UnReadIDs = [];
@@ -137,11 +137,11 @@ if (!empty($GroupIDs)) {
     $TorrentGroups = Torrents::get_groups($GroupIDs);
 
     // Get the relevant filter labels
-    $DB->query('
+    $db->query('
     SELECT ID, Label, Artists
     FROM users_notify_filters
     WHERE ID IN ('.implode(',', $FilterIDs).')');
-    $Filters = $DB->to_array('ID', MYSQLI_ASSOC, array('Artists'));
+    $Filters = $db->to_array('ID', MYSQLI_ASSOC, array('Artists'));
     foreach ($Filters as &$Filter) {
         $Filter['Artists'] = explode('|', trim($Filter['Artists'], '|'));
         foreach ($Filter['Artists'] as &$FilterArtist) {
@@ -153,12 +153,12 @@ if (!empty($GroupIDs)) {
 
     if (!empty($UnReadIDs)) {
         //Clear before header but after query so as to not have the alert bar on this page load
-        $DB->query("
+        $db->query("
       UPDATE users_notify_torrents
       SET UnRead = '0'
-      WHERE UserID = ".$LoggedUser['ID'].'
+      WHERE UserID = ".$user['ID'].'
         AND TorrentID IN ('.implode(',', $UnReadIDs).')');
-        $Cache->delete_value('notifications_new_'.$LoggedUser['ID']);
+        $cache->delete_value('notifications_new_'.$user['ID']);
     }
 }
 if ($Sneaky) {
@@ -177,10 +177,10 @@ if ($Sneaky) {
     <a href="torrents.php?action=notify<?=($Sneaky ? "&amp;userid=$UserID" : '')?>"
       class="brackets">View all</a>&nbsp;&nbsp;&nbsp;
     <?php } elseif (!$Sneaky) { ?>
-    <a href="torrents.php?action=notify_clear&amp;auth=<?=$LoggedUser['AuthKey']?>"
+    <a href="torrents.php?action=notify_clear&amp;auth=<?=$user['AuthKey']?>"
       class="brackets">Clear all old</a>&nbsp;&nbsp;&nbsp;
     <a href="#" onclick="clearSelected(); return false;" class="brackets">Clear selected</a>&nbsp;&nbsp;&nbsp;
-    <a href="torrents.php?action=notify_catchup&amp;auth=<?=$LoggedUser['AuthKey']?>"
+    <a href="torrents.php?action=notify_catchup&amp;auth=<?=$user['AuthKey']?>"
       class="brackets">Catch up</a>&nbsp;&nbsp;&nbsp;
     <?php } ?>
     <a href="user.php?action=notify" class="brackets">Edit filters</a>&nbsp;&nbsp;&nbsp;
@@ -230,9 +230,9 @@ if (empty($Results)) {
     <a href="#"
       onclick="clearSelected(<?=$FilterID?>); return false;"
       class="brackets">Clear selected in filter</a>
-    <a href="torrents.php?action=notify_clear_filter&amp;filterid=<?=$FilterID?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+    <a href="torrents.php?action=notify_clear_filter&amp;filterid=<?=$FilterID?>&amp;auth=<?=$user['AuthKey']?>"
       class="brackets">Clear all old in filter</a>
-    <a href="torrents.php?action=notify_catchup_filter&amp;filterid=<?=$FilterID?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+    <a href="torrents.php?action=notify_catchup_filter&amp;filterid=<?=$FilterID?>&amp;auth=<?=$user['AuthKey']?>"
       class="brackets">Mark all in filter as read</a>
     <?php } ?>
   </div>
@@ -290,7 +290,7 @@ if (empty($Results)) {
                     $DisplayName = Artists::display_artists($GroupInfo['Artists'], true, true);
                 }
                 $DisplayName .= "<a href=\"torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID\" ";
-                if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
+                if (!isset($user['CoverArt']) || $user['CoverArt']) {
                     $DisplayName .= 'data-cover="'.ImageTools::process($GroupInfo['WikiImage'], 'thumb').'" ';
                 }
                 $DisplayName .= "class=\"tooltip\" title=\"View torrent\" dir=\"ltr\">" . $GroupName . '</a>';
@@ -339,11 +339,11 @@ if (empty($Results)) {
           <div class="group_info clear">
             <span>
               [ <a
-                href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>"
+                href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>"
                 class="tooltip" title="Download">DL</a>
               <?php if (Torrents::can_use_token($TorrentInfo)) { ?>
               | <a
-                href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>&amp;usetoken=1"
+                href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>&amp;usetoken=1"
                 class="tooltip" title="Use a FL Token"
                 onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
               <?php

@@ -6,8 +6,8 @@ if ($_REQUEST['collageid'] && is_number($_REQUEST['collageid'])) {
   $Where = '';
 }
 
-$DB->query("UPDATE users_collage_subs SET LastVisit = NOW() WHERE UserID = ".$LoggedUser['ID'].$Where);
-$Cache->delete_value('collage_subs_user_new_'.$LoggedUser['ID']);
+$db->query("UPDATE users_collage_subs SET LastVisit = NOW() WHERE UserID = ".$user['ID'].$Where);
+$cache->delete_value('collage_subs_user_new_'.$user['ID']);
 
 header('Location: userhistory.php?action=subscribed_collages');
 ?>

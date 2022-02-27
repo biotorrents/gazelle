@@ -49,7 +49,7 @@ EOT;
         }
 
         // Get the user's ID
-        G::$DB->query("
+        G::$db->query("
         SELECT
           um.`ID`,
           ui.`BanReason`
@@ -62,10 +62,10 @@ EOT;
           AND um.`Enabled` = '2'
         ");
 
-        if (G::$DB->has_results()) {
+        if (G::$db->has_results()) {
             // Make sure the user can make another request
-            list($UserID, $BanReason) = G::$DB->next_record();
-            G::$DB->query("
+            list($UserID, $BanReason) = G::$db->next_record();
+            G::$db->query("
             SELECT
               1
             FROM
@@ -83,7 +83,7 @@ EOT;
         }
 
         $IP = $_SERVER['REMOTE_ADDR'];
-        if (G::$DB->has_results() || !isset($UserID)) {
+        if (G::$db->has_results() || !isset($UserID)) {
             // User already has/had a pending activation request or username is invalid
             $Output = sprintf(self::REJECTED_MESSAGE, DISABLED_CHAN, BOT_SERVER);
             if (isset($UserID)) {
@@ -95,7 +95,7 @@ EOT;
         } else {
             // New disable activation request
             $UserAgent = db_string($_SERVER['HTTP_USER_AGENT']);
-            G::$DB->query(
+            G::$db->query(
                 "
                 INSERT INTO `users_enable_requests`(
                   `UserID`,
@@ -110,16 +110,16 @@ EOT;
                 Crypto::encrypt($IP),
                 $UserAgent
             );
-            $RequestID = G::$DB->inserted_id();
+            $RequestID = G::$db->inserted_id();
 
             // Cache the number of requests for the modbar
-            G::$Cache->increment_value(self::CACHE_KEY_NAME);
+            G::$cache->increment_value(self::CACHE_KEY_NAME);
             Cookie::del('username');
             $Output = self::RECEIVED_MESSAGE;
 
             Tools::update_user_notes(
                 $UserID,
-                sqltime() . " - Enable request " . G::$DB->inserted_id() . " received from $IP\n\n"
+                sqltime() . " - Enable request " . G::$db->inserted_id() . " received from $IP\n\n"
             );
 
             if ($BanReason === 3) {
@@ -161,7 +161,7 @@ EOT;
             }
         }
 
-        G::$DB->query("
+        G::$db->query("
         SELECT
           `Email`,
           `ID`,
@@ -172,7 +172,7 @@ EOT;
           `ID` IN(".implode(',', $IDs).")
           AND `Outcome` IS NULL
         ");
-        $Results = G::$DB->to_array(false, MYSQLI_NUM);
+        $Results = G::$db->to_array(false, MYSQLI_NUM);
 
         if ($Status !== self::DISCARDED) {
             // Prepare email
@@ -195,7 +195,7 @@ EOT;
                 if ($Status === self::APPROVED) {
                     // Generate token
                     $Token = db_string(Users::make_secret());
-                    G::$DB->query("
+                    G::$db->query("
                     UPDATE
                       `users_enable_requests`
                     SET
@@ -221,8 +221,8 @@ EOT;
         }
 
         // User notes stuff
-        $StaffID = G::$LoggedUser['ID'] ?? 0;
-        G::$DB->query("
+        $StaffID = G::$user['ID'] ?? 0;
+        G::$db->query("
         SELECT
           `Username`
         FROM
@@ -232,8 +232,8 @@ EOT;
           $StaffID
         ");
 
-        if (G::$DB->has_results()) {
-            list($StaffUser) = G::$DB->next_record();
+        if (G::$db->has_results()) {
+            list($StaffUser) = G::$db->next_record();
         } else {
             $StaffUser = "System";
             $StaffID = 0;
@@ -247,7 +247,7 @@ EOT;
         }
 
         // Update database values and decrement cache
-        G::$DB->query("
+        G::$db->query("
         UPDATE
           `users_enable_requests`
         SET
@@ -257,7 +257,7 @@ EOT;
           $StaffID,
           $Status
         ");
-        G::$Cache->decrement_value(self::CACHE_KEY_NAME, count($IDs));
+        G::$cache->decrement_value(self::CACHE_KEY_NAME, count($IDs));
     }
 
     /**
@@ -272,7 +272,7 @@ EOT;
             error(404);
         }
 
-        G::$DB->query("
+        G::$db->query("
         SELECT
           `UserID`
         FROM
@@ -281,24 +281,24 @@ EOT;
           `Outcome` = '" . self::DISCARDED . "' AND `ID` = '$ID'
         ");
 
-        if (!G::$DB->has_results()) {
+        if (!G::$db->has_results()) {
             error(404);
         } else {
-            list($UserID) = G::$DB->next_record();
+            list($UserID) = G::$db->next_record();
         }
 
-        G::$DB->query("
+        G::$db->query("
         SELECT
           `Username`
         FROM
           `users_main`
         WHERE
-          `ID` = '".G::$LoggedUser['ID']."'
+          `ID` = '".G::$user['ID']."'
         ");
-        list($StaffUser) = G::$DB->next_record();
+        list($StaffUser) = G::$db->next_record();
 
         Tools::update_user_notes($UserID, sqltime()." - Enable request $ID unresolved by [user]".$StaffUser.'[/user]'."\n\n");
-        G::$DB->query("
+        G::$db->query("
         UPDATE
           `users_enable_requests`
         SET
@@ -308,7 +308,7 @@ EOT;
         WHERE
           `ID` = '$ID'
         ");
-        G::$Cache->increment_value(self::CACHE_KEY_NAME);
+        G::$cache->increment_value(self::CACHE_KEY_NAME);
     }
 
     /**
@@ -340,7 +340,7 @@ EOT;
     public static function handle_token($Token)
     {
         $Token = db_string($Token);
-        G::$DB->query("
+        G::$db->query("
         SELECT
           uer.`UserID`,
           uer.`HandledTimestamp`,
@@ -356,9 +356,9 @@ EOT;
           `Token` = '$Token'
         ");
 
-        if (G::$DB->has_results()) {
-            list($UserID, $Timestamp, $TorrentPass, $Visible, $IP) = G::$DB->next_record();
-            G::$DB->query("
+        if (G::$db->has_results()) {
+            list($UserID, $Timestamp, $TorrentPass, $Visible, $IP) = G::$db->next_record();
+            G::$db->query("
             UPDATE
               `users_enable_requests`
             SET
@@ -373,11 +373,11 @@ EOT;
                 $Err = "Token has expired. Please visit ".DISABLED_CHAN." on ".BOT_SERVER." to discuss this with staff.";
             } else {
                 // Good request, decrement cache value and enable account
-                G::$Cache->decrement_value(AutoEnable::CACHE_KEY_NAME);
+                G::$cache->decrement_value(AutoEnable::CACHE_KEY_NAME);
                 $VisibleTrIP = ($Visible && Crypto::decrypt($IP) !== '127.0.0.1') ? '1' : '0';
                 Tracker::update_tracker('add_user', array('id' => $UserID, 'passkey' => $TorrentPass, 'visible' => $VisibleTrIP));
 
-                G::$DB->query("
+                G::$db->query("
                 UPDATE
                   `users_main`
                 SET
@@ -387,7 +387,7 @@ EOT;
                   `ID` = '$UserID'
                 ");
                 
-                G::$DB->query("
+                G::$db->query("
                 UPDATE
                   `users_info`
                 SET
@@ -396,7 +396,7 @@ EOT;
                   `UserID` = '$UserID'
                 ");
 
-                G::$Cache->delete_value("user_info_$UserID");
+                G::$cache->delete_value("user_info_$UserID");
                 $Err = "Your account has been enabled. You may now log in.";
             }
         } else {

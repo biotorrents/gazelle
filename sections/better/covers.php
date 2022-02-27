@@ -11,12 +11,12 @@ if (!empty($_GET['filter']) && $_GET['filter'] === 'all') {
       t.`GroupID` = tg.`id`
     JOIN `xbt_snatched` AS x
     ON
-      x.`fid` = t.`ID` AND x.`uid` = '$LoggedUser[ID]'
+      x.`fid` = t.`ID` AND x.`uid` = '$user[ID]'
     ";
     $All = false;
 }
 
-$DB->prepared_query("
+$db->prepared_query("
 SELECT SQL_CALC_FOUND_ROWS
   tg.`id`
 FROM
@@ -30,9 +30,9 @@ LIMIT 20
 ");
 
 
-$Groups = $DB->to_array('id', MYSQLI_ASSOC);
-$DB->prepared_query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
+$Groups = $db->to_array('id', MYSQLI_ASSOC);
+$db->prepared_query('SELECT FOUND_ROWS()');
+list($NumResults) = $db->next_record();
 $Results = Torrents::get_groups(array_keys($Groups));
 
 View::header('Torrent groups with no picture');
@@ -71,7 +71,7 @@ foreach ($Results as $Result) {
     $TorrentTags = new Tags($tag_list);
 
     $DisplayName = "<a href='torrents.php?id=$id' ";
-    if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
+    if (!isset($user['CoverArt']) || $user['CoverArt']) {
         $DisplayName .= 'data-cover="'.ImageTools::process($picture, 'thumb').'" ';
     }
 

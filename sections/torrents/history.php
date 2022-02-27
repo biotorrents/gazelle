@@ -6,14 +6,14 @@ if (!isset($_GET['groupid']) || !is_number($_GET['groupid'])) {
 }
 $GroupID = (int)$_GET['groupid'];
 
-$DB->query("
+$db->query("
   SELECT `title`
   FROM `torrents_group`
   WHERE `id` = $GroupID");
-if (!$DB->has_results()) {
+if (!$db->has_results()) {
   error(404);
 }
-list($Name) = $DB->next_record();
+list($Name) = $db->next_record();
 
 View::header("Revision history for $Name");
 ?>

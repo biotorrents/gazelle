@@ -15,7 +15,7 @@ if (empty($Limit)) {
 
 $Results = [];
 if (check_paranoia_here('snatched')) {
-    $DB->query("
+    $db->query("
     SELECT
       g.`id`,
       g.`title`,
@@ -38,8 +38,8 @@ if (check_paranoia_here('snatched')) {
     LIMIT $Limit
     ");
 
-    $RecentSnatches = $DB->to_array(false, MYSQLI_ASSOC);
-    $Artists = Artists::get_artists($DB->collect('ID'));
+    $RecentSnatches = $db->to_array(false, MYSQLI_ASSOC);
+    $Artists = Artists::get_artists($db->collect('ID'));
 
     foreach ($RecentSnatches as $Key => $SnatchInfo) {
         $RecentSnatches[$Key]['artists'][] = $Artists[$SnatchInfo['ID']];
@@ -51,7 +51,7 @@ if (check_paranoia_here('snatched')) {
 }
 
 if (check_paranoia_here('uploads')) {
-    $DB->query("
+    $db->query("
     SELECT
       g.`id`,
       g.`title`,
@@ -71,8 +71,8 @@ if (check_paranoia_here('uploads')) {
     LIMIT $Limit
     ");
 
-    $RecentUploads = $DB->to_array(false, MYSQLI_ASSOC);
-    $Artists = Artists::get_artists($DB->collect('ID'));
+    $RecentUploads = $db->to_array(false, MYSQLI_ASSOC);
+    $Artists = Artists::get_artists($db->collect('ID'));
 
     foreach ($RecentUploads as $Key => $UploadInfo) {
         $RecentUploads[$Key]['artists'][] = $Artists[$UploadInfo['ID']];

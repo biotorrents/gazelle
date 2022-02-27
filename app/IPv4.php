@@ -36,10 +36,10 @@ class IPv4
     {
         $A = substr($IP, 0, strcspn($IP, '.'));
         $key = self::CACHE_KEY . $A;
-        $IPBans = G::$Cache->get_value($key);
+        $IPBans = G::$cache->get_value($key);
 
         if (!is_array($IPBans)) {
-            G::$DB->prepared_query("
+            G::$db->prepared_query("
             SELECT 
               `FromIP`,
               `ToIP`,
@@ -51,8 +51,8 @@ class IPv4
             ");
 
 
-            $IPBans = G::$DB->to_array(0, MYSQLI_NUM);
-            G::$Cache->cache_value($key, $IPBans, 0);
+            $IPBans = G::$db->to_array(0, MYSQLI_NUM);
+            G::$cache->cache_value($key, $IPBans, 0);
         }
 
         $IPNum = IPv4::ip2ulong($IP);
@@ -81,7 +81,7 @@ class IPv4
         $from = $this->ip2ulong($ipv4From);
         $to   = $this->ip2ulong($ipv4To);
 
-        $current = G::$DB->scalar("
+        $current = G::$db->scalar("
         SELECT
           `Reason`
         FROM
@@ -92,7 +92,7 @@ class IPv4
 
         if ($current) {
             if ($current !== $reason) {
-                G::$DB->prepared_query("
+                G::$db->prepared_query("
                 UPDATE
                   `ip_bans`
                 SET
@@ -105,13 +105,13 @@ class IPv4
 
             }
         } else { // Not yet banned
-            G::$DB->prepared_query("
+            G::$db->prepared_query("
             INSERT INTO `ip_bans`(`Reason`, `FromIP`, `ToIP`, `UserID`)
             VALUES('$reason', '$from', '$to', '$userId')
             ");
 
 
-            G::$Cache->delete_value(
+            G::$cache->delete_value(
                 self::CACHE_KEY . substr($ipv4From, 0, strcspn($ipv4From, '.'))
             );
         }
@@ -124,7 +124,7 @@ class IPv4
      */
     public function removeBan(int $id)
     {
-        $fromClassA = G::$DB->scalar("
+        $fromClassA = G::$db->scalar("
         SELECT
           `FromIP` >> 24
         FROM
@@ -137,7 +137,7 @@ class IPv4
             return;
         }
 
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
         DELETE
         FROM
           `ip_bans`
@@ -145,9 +145,9 @@ class IPv4
           `ID` = '$id'
         ");
 
-        if (G::$DB->affected_rows()) {
+        if (G::$db->affected_rows()) {
 
-            G::$Cache->delete_value(self::CACHE_KEY . $fromClassA);
+            G::$cache->delete_value(self::CACHE_KEY . $fromClassA);
         }
     }
 }

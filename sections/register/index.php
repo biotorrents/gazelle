@@ -6,7 +6,7 @@ require_once 'classes/env.class.php';
 $ENV = ENV::go();
 
 /*
-if (isset($LoggedUser)) {
+if (isset($user)) {
     // Silly user, what are you doing here!
     header('Location: index.php');
     error();
@@ -18,19 +18,19 @@ $Val = new Validate;
 
 if (!empty($_REQUEST['confirm'])) {
     // Confirm registration
-    $DB->query("
+    $db->query("
     SELECT ID
     FROM users_main
     WHERE torrent_pass = '".db_string($_REQUEST['confirm'])."'
       AND Enabled = '0'");
-    list($UserID) = $DB->next_record();
+    list($UserID) = $db->next_record();
 
     if ($UserID) {
-        $DB->query("
+        $db->query("
       UPDATE users_main
       SET Enabled = '1'
       WHERE ID = '$UserID'");
-        $Cache->increment('stats_user_count');
+        $cache->increment('stats_user_count');
         include('step2.php');
     }
 } elseif ($ENV->OPEN_REGISTRATION || !empty($_REQUEST['invite'])) {
@@ -56,11 +56,11 @@ if (!empty($_REQUEST['confirm'])) {
                 $Err = "You can't have a username of 0 or 1.";
             }
 
-            $DB->query("
+            $db->query("
         SELECT COUNT(ID)
         FROM users_main
         WHERE Username LIKE '".db_string(trim($_POST['username']))."'");
-            list($UserCount) = $DB->next_record();
+            list($UserCount) = $db->next_record();
 
             if ($UserCount) {
                 $Err = "There's already someone registered with that username.";
@@ -68,15 +68,15 @@ if (!empty($_REQUEST['confirm'])) {
             }
 
             if ($_REQUEST['invite']) {
-                $DB->query("
+                $db->query("
           SELECT InviterID, Email, Reason
           FROM invites
           WHERE InviteKey = '".db_string($_REQUEST['invite'])."'");
-                if (!$DB->has_results()) {
+                if (!$db->has_results()) {
                     $Err = "The invite code is invalid.";
                     $InviterID = 0;
                 } else {
-                    list($InviterID, $InviteEmail, $InviteReason) = $DB->next_record(MYSQLI_NUM, false);
+                    list($InviterID, $InviteEmail, $InviteReason) = $db->next_record(MYSQLI_NUM, false);
                     $InviteEmail = Crypto::decrypt($InviteEmail);
                 }
             } else {
@@ -90,11 +90,11 @@ if (!empty($_REQUEST['confirm'])) {
             $torrent_pass = Users::make_secret();
 
             // Previously SELECT COUNT(ID) FROM users_main, which is a lot slower
-            $DB->query("
+            $db->query("
         SELECT ID
         FROM users_main
         LIMIT 1");
-            $UserCount = $DB->record_count();
+            $UserCount = $db->record_count();
             if ($UserCount === 0) {
                 $NewInstall = true;
                 $Class = SYSOP;
@@ -106,7 +106,7 @@ if (!empty($_REQUEST['confirm'])) {
             }
 
 
-            $DB->query("
+            $db->query("
         INSERT INTO users_main
           (Username, Email, PassHash, torrent_pass, IP, PermissionID, Enabled, Invites, FLTokens, Uploaded)
         VALUES
@@ -122,10 +122,10 @@ if (!empty($_REQUEST['confirm'])) {
           '".$ENV->STARTING_UPLOAD."')
           ");
 
-            $UserID = $DB->inserted_id();
+            $UserID = $db->inserted_id();
 
             // User created, delete invite. If things break after this point, then it's better to have a broken account to fix than a 'free' invite floating around that can be reused
-            $DB->query("
+            $db->query("
         DELETE FROM invites
         WHERE InviteKey = '".db_string($_REQUEST['invite'])."'");
 
@@ -133,27 +133,27 @@ if (!empty($_REQUEST['confirm'])) {
             /*
                 if (Badges::award_badge($InviterID, 136)) {
                     Misc::send_pm($InviterID, 0, 'You have received a badge!', "You have received a badge for inviting a user to the site.\n\nIt can be enabled from your user settings.");
-                    $Cache->delete_value('user_badges_'.$InviterID);
+                    $cache->delete_value('user_badges_'.$InviterID);
             }
              */
 
-            $DB->query("
+            $db->query("
         SELECT ID
         FROM stylesheets
         WHERE `Default` = '1'");
-            list($StyleID) = $DB->next_record();
+            list($StyleID) = $db->next_record();
             $AuthKey = Users::make_secret();
 
             if ($InviteReason !== '') {
                 $InviteReason = db_string(sqltime()." - $InviteReason");
             }
-            $DB->query("
+            $db->query("
         INSERT INTO users_info
           (UserID, StyleID, AuthKey, Inviter, JoinDate, AdminComment)
         VALUES
           ('$UserID', '$StyleID', '".db_string($AuthKey)."', '$InviterID', NOW(), '$InviteReason')");
 
-            $DB->query("
+            $db->query("
         INSERT INTO users_notifications_settings
           (UserID)
         VALUES
@@ -161,21 +161,21 @@ if (!empty($_REQUEST['confirm'])) {
 
             // Manage invite trees, delete invite
             if ($InviterID !== null && $InviterID !== 0) {
-                $DB->query("
+                $db->query("
           SELECT TreePosition, TreeID, TreeLevel
           FROM invite_tree
           WHERE UserID = '$InviterID'");
-                list($InviterTreePosition, $TreeID, $TreeLevel) = $DB->next_record();
+                list($InviterTreePosition, $TreeID, $TreeLevel) = $db->next_record();
 
                 // If the inviter doesn't have an invite tree
                 // Note: This should never happen unless you've transferred from another database, like What.CD did
-                if (!$DB->has_results()) {
-                    $DB->query("
+                if (!$db->has_results()) {
+                    $db->query("
             SELECT MAX(TreeID) + 1
             FROM invite_tree");
-                    list($TreeID) = $DB->next_record();
+                    list($TreeID) = $db->next_record();
 
-                    $DB->query("
+                    $db->query("
             INSERT INTO invite_tree
               (UserID, InviterID, TreePosition, TreeID, TreeLevel)
             VALUES ('$InviterID', '0', '1', '$TreeID', '1')");
@@ -183,7 +183,7 @@ if (!empty($_REQUEST['confirm'])) {
                     $TreePosition = 2;
                     $TreeLevel = 2;
                 } else {
-                    $DB->query("
+                    $db->query("
             SELECT TreePosition
             FROM invite_tree
             WHERE TreePosition > '$InviterTreePosition'
@@ -191,37 +191,37 @@ if (!empty($_REQUEST['confirm'])) {
               AND TreeID = '$TreeID'
             ORDER BY TreePosition
             LIMIT 1");
-                    list($TreePosition) = $DB->next_record();
+                    list($TreePosition) = $db->next_record();
 
                     if ($TreePosition) {
-                        $DB->query("
+                        $db->query("
               UPDATE invite_tree
               SET TreePosition = TreePosition + 1
               WHERE TreeID = '$TreeID'
                 AND TreePosition >= '$TreePosition'");
                     } else {
-                        $DB->query("
+                        $db->query("
               SELECT TreePosition + 1
               FROM invite_tree
               WHERE TreeID = '$TreeID'
               ORDER BY TreePosition DESC
               LIMIT 1");
-                        list($TreePosition) = $DB->next_record();
+                        list($TreePosition) = $db->next_record();
                     }
                     $TreeLevel++;
 
                     // Create invite tree record
-                    $DB->query("
+                    $db->query("
             INSERT INTO invite_tree
               (UserID, InviterID, TreePosition, TreeID, TreeLevel)
             VALUES
               ('$UserID', '$InviterID', '$TreePosition', '$TreeID', '$TreeLevel')");
                 }
             } else { // No inviter (open registration)
-                $DB->query("
+                $db->query("
           SELECT MAX(TreeID)
           FROM invite_tree");
-                list($TreeID) = $DB->next_record();
+                list($TreeID) = $db->next_record();
                 $TreeID++;
                 $InviterID = 0;
                 $TreePosition = 1;
@@ -243,11 +243,11 @@ if (!empty($_REQUEST['confirm'])) {
         }
     } elseif ($_GET['invite']) {
         // If they haven't submitted the form, check to see if their invite is good
-        $DB->query("
+        $db->query("
       SELECT InviteKey
       FROM invites
       WHERE InviteKey = '".db_string($_GET['invite'])."'");
-        if (!$DB->has_results()) {
+        if (!$db->has_results()) {
             error('Invite not found!');
         }
     }

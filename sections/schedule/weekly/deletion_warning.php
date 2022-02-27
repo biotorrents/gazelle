@@ -2,7 +2,7 @@
 #declare(strict_types=1);
 
 // Send warnings to uploaders of torrents that will be deleted this week
-$DB->query("
+$db->query("
 SELECT
   t.`ID`,
   t.`GroupID`,
@@ -17,7 +17,7 @@ WHERE t.`last_action` < NOW() - INTERVAL 20 DAY
 ORDER BY t.`last_action` ASC
 ");
   
-$TorrentIDs = $DB->to_array();
+$TorrentIDs = $db->to_array();
 $TorrentAlerts = [];
 
 foreach ($TorrentIDs as $TorrentID) {

@@ -11,14 +11,14 @@ class Permissions
      */
     public static function check_perms($PermissionName, $MinClass = 0)
     {
-        if (G::$LoggedUser['EffectiveClass'] >= 1000) {
+        if (G::$user['EffectiveClass'] >= 1000) {
             return true;
         } // Sysops can do anything
 
-        if (G::$LoggedUser['EffectiveClass'] < $MinClass) {
+        if (G::$user['EffectiveClass'] < $MinClass) {
             return false;
         } // MinClass failure
-    return G::$LoggedUser['Permissions'][$PermissionName] ?? false; // Return actual permission
+    return G::$user['Permissions'][$PermissionName] ?? false; // Return actual permission
     }
 
     /**
@@ -29,18 +29,18 @@ class Permissions
      */
     public static function get_permissions($PermissionID)
     {
-        $Permission = G::$Cache->get_value("perm_$PermissionID");
+        $Permission = G::$cache->get_value("perm_$PermissionID");
         if (empty($Permission)) {
-            $QueryID = G::$DB->get_query_id();
-            G::$DB->query("
+            $QueryID = G::$db->get_query_id();
+            G::$db->query("
             SELECT Level AS Class, `Values` AS Permissions, Secondary, PermittedForums
             FROM permissions
               WHERE ID = '$PermissionID'");
 
-            $Permission = G::$DB->next_record(MYSQLI_ASSOC, ['Permissions']);
-            G::$DB->set_query_id($QueryID);
+            $Permission = G::$db->next_record(MYSQLI_ASSOC, ['Permissions']);
+            G::$db->set_query_id($QueryID);
             $Permission['Permissions'] = unserialize($Permission['Permissions']);
-            G::$Cache->cache_value("perm_$PermissionID", $Permission, 2592000);
+            G::$cache->cache_value("perm_$PermissionID", $Permission, 2592000);
         }
         return $Permission;
     }
@@ -60,14 +60,14 @@ class Permissions
 
         // Fetch custom permissions if they weren't passed in.
         if ($CustomPermissions === false) {
-            $QueryID = G::$DB->get_query_id();
-            G::$DB->query('
+            $QueryID = G::$db->get_query_id();
+            G::$db->query('
             SELECT CustomPermissions
             FROM users_main
               WHERE ID = ' . (int)$UserID);
 
-            list($CustomPermissions) = G::$DB->next_record(MYSQLI_NUM, false);
-            G::$DB->set_query_id($QueryID);
+            list($CustomPermissions) = G::$db->next_record(MYSQLI_NUM, false);
+            G::$db->set_query_id($QueryID);
         }
 
         if (!empty($CustomPermissions) && !is_array($CustomPermissions)) {

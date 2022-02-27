@@ -8,32 +8,32 @@ if (isset($_GET['userid']) && check_perms('users_view_ips') && check_perms('user
   }
   $UserID = $_GET['userid'];
 } else {
-  $UserID = $LoggedUser['ID'];
+  $UserID = $user['ID'];
 }
 
 if (isset($_POST['all'])) {
   authorize();
 
-  $DB->query("
+  $db->query("
     DELETE FROM users_sessions
     WHERE UserID = '$UserID'
       AND SessionID != '$SessionID'");
-  $Cache->delete_value("users_sessions_$UserID");
+  $cache->delete_value("users_sessions_$UserID");
 }
 
 if (isset($_POST['session'])) {
   authorize();
 
-  $DB->query("
+  $db->query("
     DELETE FROM users_sessions
     WHERE UserID = '$UserID'
       AND SessionID = '".db_string($_POST['session'])."'");
-  $Cache->delete_value("users_sessions_$UserID");
+  $cache->delete_value("users_sessions_$UserID");
 }
 
-$UserSessions = $Cache->get_value('users_sessions_'.$UserID);
+$UserSessions = $cache->get_value('users_sessions_'.$UserID);
 if (!is_array($UserSessions)) {
-  $DB->query("
+  $db->query("
     SELECT
       SessionID,
       Browser,
@@ -43,8 +43,8 @@ if (!is_array($UserSessions)) {
     FROM users_sessions
     WHERE UserID = '$UserID'
     ORDER BY LastUpdate DESC");
-  $UserSessions = $DB->to_array('SessionID', MYSQLI_ASSOC);
-  $Cache->cache_value("users_sessions_$UserID", $UserSessions, 0);
+  $UserSessions = $db->to_array('SessionID', MYSQLI_ASSOC);
+  $cache->cache_value("users_sessions_$UserID", $UserSessions, 0);
 }
 
 list($UserID, $Username) = array_values(Users::user_info($UserID));
@@ -65,7 +65,7 @@ View::header($Username.' &gt; Sessions');
         <td>
           <form class="manage_form" name="sessions" action="" method="post">
             <input type="hidden" name="action" value="sessions" />
-            <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+            <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
             <input type="hidden" name="all" value="1" />
             <input type="submit" value="Log out all" />
           </form>
@@ -84,7 +84,7 @@ View::header($Username.' &gt; Sessions');
         <td>
           <form class="delete_form" name="session" action="" method="post">
             <input type="hidden" name="action" value="sessions" />
-            <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+            <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
             <input type="hidden" name="session" value="<?=$ThisSessionID?>" />
             <input type="submit" value="<?=(($ThisSessionID == $SessionID) ? 'Current" disabled="disabled' : 'Log out') ?>" />
           </form>

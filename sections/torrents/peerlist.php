@@ -12,7 +12,7 @@ if (!empty($_GET['page']) && is_number($_GET['page'])) {
   $Limit = 100;
 }
 
-$Result = $DB->query("
+$Result = $db->query("
   SELECT
     SQL_CALC_FOUND_ROWS
     xu.uid,
@@ -27,11 +27,11 @@ $Result = $DB->query("
     JOIN torrents AS t ON t.ID = xu.fid
   WHERE xu.fid = '$TorrentID'
     AND um.Visible = '1'
-  ORDER BY xu.uid = '$LoggedUser[ID]' DESC, xu.uploaded DESC
+  ORDER BY xu.uid = '$user[ID]' DESC, xu.uploaded DESC
   LIMIT $Limit");
-$DB->query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
-$DB->set_query_id($Result);
+$db->query('SELECT FOUND_ROWS()');
+list($NumResults) = $db->next_record();
+$db->set_query_id($Result);
 
 ?>
 <h4>Peer List</h4>
@@ -49,7 +49,7 @@ $DB->set_query_id($Result);
     <td>Client</td>
   </tr>
 <?php
-while (list($PeerUserID, $Size, $Active, $Connectable, $Uploaded, $Remaining, $UserAgent) = $DB->next_record()) {
+while (list($PeerUserID, $Size, $Active, $Connectable, $Uploaded, $Remaining, $UserAgent) = $db->next_record()) {
 ?>
   <tr class="row">
 <?php

@@ -14,7 +14,7 @@ if (!is_number($ForumID)) {
 if (!empty($_POST['add']) || (!empty($_POST['del']))) {
     if (!empty($_POST['add'])) {
         if (is_number($_POST['new_thread'])) {
-            $DB->query("
+            $db->query("
             INSERT INTO forums_specific_rules (ForumID, ThreadID)
             VALUES ($ForumID, ".$_POST['new_thread'].')');
         }
@@ -22,20 +22,20 @@ if (!empty($_POST['add']) || (!empty($_POST['del']))) {
 
     if (!empty($_POST['del'])) {
         if (is_number($_POST['threadid'])) {
-            $DB->query("
+            $db->query("
             DELETE FROM forums_specific_rules
             WHERE ForumID = $ForumID
               AND ThreadID = ".$_POST['threadid']);
         }
     }
-    $Cache->delete_value('forums_list');
+    $cache->delete_value('forums_list');
 }
 
-$DB->query("
+$db->query("
 SELECT ThreadID
 FROM forums_specific_rules
   WHERE ForumID = $ForumID");
-$ThreadIDs = $DB->collect('ThreadID');
+$ThreadIDs = $db->collect('ThreadID');
 
 $ENV = ENV::go();
 View::header();

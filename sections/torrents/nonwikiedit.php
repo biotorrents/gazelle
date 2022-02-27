@@ -8,7 +8,7 @@ Security::int($group_id);
 
 // Usual perm checks
 if (!check_perms('torrents_edit')) {
-    $DB->prepared_query("
+    $db->prepared_query("
     SELECT
       `UserID`
     FROM
@@ -18,7 +18,7 @@ if (!check_perms('torrents_edit')) {
     ");
 
 
-    if (!in_array($LoggedUser['ID'], $DB->collect('UserID'))) {
+    if (!in_array($user['ID'], $db->collect('UserID'))) {
         error(403);
     }
 }
@@ -54,7 +54,7 @@ $year = db_string((int)$_POST['year']);
 $identifier = db_string($_POST['catalogue']);
 
 // Get some info for the group log
-$DB->prepared_query("
+$db->prepared_query("
 SELECT
   `year`
 FROM
@@ -63,9 +63,9 @@ WHERE
   `id` = '$group_id'
 ");
 
-list($OldYear) = $DB->next_record();
+list($OldYear) = $db->next_record();
 
-$DB->prepared_query("
+$db->prepared_query("
 UPDATE
   `torrents_group`
 SET
@@ -81,18 +81,18 @@ WHERE
 if ($OldYear !== $year) {
     $Message = db_string("Year changed from $OldYear to $year");
 
-    $DB->prepared_query("
+    $db->prepared_query("
     INSERT INTO `group_log`(`GroupID`, `UserID`, `Time`, `Info`)
     VALUES(
       '$group_id',
-      '$LoggedUser[ID]',
+      '$user[ID]',
       NOW(),
       '$Message')
     ");
 
 }
 
-$DB->prepared_query("
+$db->prepared_query("
 SELECT
   ag.`Name`
 FROM
@@ -105,14 +105,14 @@ WHERE
 ");
 
 
-while ($r = $DB->next_record(MYSQLI_ASSOC, true)) {
+while ($r = $db->next_record(MYSQLI_ASSOC, true)) {
     $CurrArtists[] = $r['Name'];
 }
 
 foreach ($Artists as $Artist) {
     if (!in_array($Artist, $CurrArtists)) {
         $Artist = db_string($Artist);
-        $DB->prepared_query("
+        $db->prepared_query("
         SELECT
           `ArtistID`
         FROM
@@ -122,30 +122,30 @@ foreach ($Artists as $Artist) {
         ");
 
 
-        if ($DB->has_results()) {
-            list($ArtistID) = $DB->next_record();
+        if ($db->has_results()) {
+            list($ArtistID) = $db->next_record();
         } else {
-            $DB->prepared_query("
+            $db->prepared_query("
             INSERT INTO `artists_group`(`Name`)
             VALUES('$Artist')
             ");
 
-            $ArtistID = $DB->inserted_id();
+            $ArtistID = $db->inserted_id();
         }
 
-        $DB->prepared_query("
+        $db->prepared_query("
         INSERT INTO `torrents_artists`(`GroupID`, `ArtistID`, `UserID`)
         VALUES(
           '$group_id',
           '$ArtistID',
-          '$LoggedUser[ID]'
+          '$user[ID]'
         )
         ON DUPLICATE KEY
         UPDATE
-          `UserID` = '$LoggedUser[ID]'
+          `UserID` = '$user[ID]'
         "); // Why does this even happen
 
-        $Cache->delete_value('artist_groups_'.$ArtistID);
+        $cache->delete_value('artist_groups_'.$ArtistID);
     }
 }
 
@@ -153,7 +153,7 @@ foreach ($CurrArtists as $CurrArtist) {
     if (!in_array($CurrArtist, $Artists)) {
         $CurrArtist = db_string($CurrArtist);
 
-        $DB->prepared_query("
+        $db->prepared_query("
         SELECT
           `ArtistID`
         FROM
@@ -163,10 +163,10 @@ foreach ($CurrArtists as $CurrArtist) {
         ");
 
 
-        if ($DB->has_results()) {
-            list($ArtistID) = $DB->next_record();
+        if ($db->has_results()) {
+            list($ArtistID) = $db->next_record();
 
-            $DB->prepared_query("
+            $db->prepared_query("
             DELETE
             FROM
               `torrents_artists`
@@ -176,7 +176,7 @@ foreach ($CurrArtists as $CurrArtist) {
             ");
 
 
-            $DB->prepared_query("
+            $db->prepared_query("
             SELECT
               `GroupID`
             FROM
@@ -186,10 +186,10 @@ foreach ($CurrArtists as $CurrArtist) {
             ");
 
 
-            $Cache->delete_value('artist_groups_'.$ArtistID);
+            $cache->delete_value('artist_groups_'.$ArtistID);
 
-            if (!$DB->has_results()) {
-                $DB->prepared_query("
+            if (!$db->has_results()) {
+                $db->prepared_query("
                 SELECT
                   `RequestID`
                 FROM
@@ -200,7 +200,7 @@ foreach ($CurrArtists as $CurrArtist) {
                 ");
 
 
-                if (!$DB->has_results()) {
+                if (!$db->has_results()) {
                     Artists::delete_artist($ArtistID);
                 }
             }
@@ -208,7 +208,7 @@ foreach ($CurrArtists as $CurrArtist) {
     }
 }
 
-$DB->prepared_query("
+$db->prepared_query("
 SELECT
   `ID`
 FROM
@@ -218,10 +218,10 @@ WHERE
 ");
 
 
-while (list($TorrentID) = $DB->next_record()) {
-    $Cache->delete_value("torrent_download_$TorrentID");
+while (list($TorrentID) = $db->next_record()) {
+    $cache->delete_value("torrent_download_$TorrentID");
 }
 
 Torrents::update_hash($group_id);
-$Cache->delete_value("torrents_details_$group_id");
+$cache->delete_value("torrents_details_$group_id");
 header("Location: torrents.php?id=$group_id");

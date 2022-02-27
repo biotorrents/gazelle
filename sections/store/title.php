@@ -9,30 +9,30 @@ if (isset($_POST['title'])) {
     }
 
     $Title = htmlspecialchars($_POST['title'], ENT_QUOTES);
-    $UserID = $LoggedUser['ID'];
+    $UserID = $user['ID'];
 
-    $DB->prepared_query("
+    $db->prepared_query("
       SELECT BonusPoints
       FROM users_main
       WHERE ID = $UserID");
 
-    if ($DB->has_results()) {
-        list($Points) = $DB->next_record();
+    if ($db->has_results()) {
+        list($Points) = $db->next_record();
 
         if ($Points >= $Cost) {
-            $DB->prepared_query("
+            $db->prepared_query("
               UPDATE users_main
               SET BonusPoints = BonusPoints - $Cost,
                 Title = ?
               WHERE ID = ?", $Title, $UserID);
 
-            $DB->prepared_query("
+            $db->prepared_query("
               UPDATE users_info
               SET AdminComment = CONCAT(NOW(), ' - Changed title to ', ?, ' via the store\n\n', AdminComment)
               WHERE UserID = ?", $Title, $UserID);
               
-            $Cache->delete_value('user_info_'.$UserID);
-            $Cache->delete_value('user_info_heavy_'.$UserID);
+            $cache->delete_value('user_info_'.$UserID);
+            $cache->delete_value('user_info_heavy_'.$UserID);
         } else {
             error("Not enough points");
         }

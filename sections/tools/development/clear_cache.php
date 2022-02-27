@@ -16,10 +16,10 @@ if (isset($Keys) && $_GET['type'] === 'clear') {
     foreach ($Keys as $Key) {
         if (preg_match('/(.*?)(\d+)\.\.(\d+)$/', $Key, $Matches) && is_number($Matches[2]) && is_number($Matches[3])) {
             for ($i = $Matches[2]; $i <= $Matches[3]; $i++) {
-                $Cache->delete_value($Matches[1].$i);
+                $cache->delete_value($Matches[1].$i);
             }
         } else {
-            $Cache->delete_value($Key);
+            $cache->delete_value($Key);
         }
     }
     echo '<div class="save_message">Key(s) ' . implode(', ', array_map('display_str', $Keys)) . ' cleared!</div>';
@@ -65,7 +65,7 @@ if (isset($Keys) && $_GET['type'] === 'view') {
 
     <td>
       <pre>
-      <?php var_dump($Cache->get_value($Key)); ?>
+      <?php var_dump($cache->get_value($Key)); ?>
       </pre>
     </td>
   </tr>

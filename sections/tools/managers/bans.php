@@ -15,8 +15,8 @@ if (isset($_POST['submit'])) {
         if (!is_number($_POST['id']) || $_POST['id'] === '') {
             error(0);
         }
-        $DB->query('DELETE FROM ip_bans WHERE ID='.$_POST['id']);
-        $Cache->delete_value('ip_bans_'.$IPA);
+        $db->query('DELETE FROM ip_bans WHERE ID='.$_POST['id']);
+        $cache->delete_value('ip_bans_'.$IPA);
     } else { //Edit & Create, Shared Validation
         $Val->SetFields('start', '1', 'regex', 'You must include the starting IP address.', array('regex'=>'/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/i'));
         $Val->SetFields('end', '1', 'regex', 'You must include the ending IP address.', array('regex'=>'/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/i'));
@@ -34,7 +34,7 @@ if (isset($_POST['submit'])) {
         if (empty($_POST['id']) || !is_number($_POST['id'])) {
             error(404);
         }
-        $DB->query("
+        $db->query("
         UPDATE ip_bans
         SET
           FromIP=$Start,
@@ -42,13 +42,13 @@ if (isset($_POST['submit'])) {
           Reason='$Notes'
         WHERE ID='".$_POST['id']."'");
     } else { //Create
-        $DB->query("
+        $db->query("
         INSERT INTO ip_bans
           (FromIP, ToIP, Reason)
         VALUES
           ('$Start','$End', '$Notes')");
     }
-        $Cache->delete_value('ip_bans_'.$IPA);
+        $cache->delete_value('ip_bans_'.$IPA);
     }
 }
 
@@ -78,15 +78,15 @@ if (!empty($_REQUEST['ip']) && preg_match('/'.$ENV->IP_REGEX.'/', $_REQUEST['ip'
 
 $sql .= "ORDER BY FromIP ASC";
 $sql .= " LIMIT ".$Limit;
-$Bans = $DB->query($sql);
+$Bans = $db->query($sql);
 
-$DB->query('SELECT FOUND_ROWS()');
-list($Results) = $DB->next_record();
+$db->query('SELECT FOUND_ROWS()');
+list($Results) = $db->next_record();
 
 $PageLinks = Format::get_pages($Page, $Results, BANS_PER_PAGE, 11);
 
 View::header('IP Address Bans');
-$DB->set_query_id($Bans);
+$db->set_query_id($Bans);
 ?>
 
 <div class="header">
@@ -134,7 +134,7 @@ $DB->set_query_id($Bans);
     <form class="create_form" name="ban" action="" method="post">
       <input type="hidden" name="action" value="ip_ban" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
       <td colspan="2">
         <input type="text" size="12" name="start" />
         <input type="text" size="12" name="end" />
@@ -148,7 +148,7 @@ $DB->set_query_id($Bans);
     </form>
   </tr>
   <?php
-while (list($ID, $Start, $End, $Reason) = $DB->next_record()) {
+while (list($ID, $Start, $End, $Reason) = $db->next_record()) {
     $Start = long2ip($Start);
     $End = long2ip($End); ?>
   <tr class="row">
@@ -156,7 +156,7 @@ while (list($ID, $Start, $End, $Reason) = $DB->next_record()) {
       <input type="hidden" name="id" value="<?=$ID?>" />
       <input type="hidden" name="action" value="ip_ban" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
       <td colspan="2">
         <input type="text" size="12" name="start"
           value="<?=$Start?>" />

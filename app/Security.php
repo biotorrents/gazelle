@@ -55,7 +55,7 @@ class Security
         if ($_GET['userid'] && empty($UserID)) {
             $UserID = $_GET['userid'];
         } else {
-            $UserID = G::$LoggedUser['ID'];
+            $UserID = G::$user['ID'];
         }
 
         # NaN

@@ -13,7 +13,7 @@ list($Page, $Limit) = Format::page_limit(INVITES_PER_PAGE);
 if (!empty($_POST['invitekey']) && check_perms('users_edit_invites')) {
     authorize();
 
-    $DB->query("
+    $db->query("
       DELETE FROM invites
       WHERE InviteKey = '".db_string($_POST['invitekey'])."'");
 }
@@ -43,11 +43,11 @@ if ($Search) {
 $sql .= "
   ORDER BY i.Expires DESC
   LIMIT $Limit";
-$RS = $DB->query($sql);
+$RS = $db->query($sql);
 
-$DB->query('SELECT FOUND_ROWS()');
-list($Results) = $DB->next_record();
-$DB->set_query_id($RS);
+$db->query('SELECT FOUND_ROWS()');
+list($Results) = $db->next_record();
+$db->set_query_id($RS);
 ?>
 
 <div class="header">
@@ -103,7 +103,7 @@ $DB->set_query_id($RS);
   </tr>
 
   <?php
-  while (list($UserID, $IP, $InviteKey, $Expires, $Email) = $DB->next_record()) {
+  while (list($UserID, $IP, $InviteKey, $Expires, $Email) = $db->next_record()) {
       $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
       $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'; ?>
   <tr class="row">
@@ -132,7 +132,7 @@ $DB->set_query_id($RS);
       <form class="delete_form" name="invite" action="" method="post">
         <input type="hidden" name="action" value="invite_pool" />
         <input type="hidden" name="auth"
-          value="<?=$LoggedUser['AuthKey']?>" />
+          value="<?=$user['AuthKey']?>" />
         <input type="hidden" name="invitekey"
           value="<?=esc($InviteKey)?>" />
         <input type="submit" value="Delete" />

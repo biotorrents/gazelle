@@ -18,7 +18,7 @@ if (!is_number($_GET['id']) || !$_GET['id']) {
 # DB query for the main torrent parameters
 # todo: Simplify based on unused tables
 $TorrentID = $_GET['id'];
-$DB->query("
+$db->query("
 SELECT
   t.`Media`,
   t.`Container`,
@@ -71,16 +71,16 @@ WHERE
 ");
 
 # Error on no results
-list($Properties) = $DB->to_array(false, MYSQLI_BOTH);
+list($Properties) = $db->to_array(false, MYSQLI_BOTH);
 if (!$Properties) {
     error(404);
 }
 
 # Error on bad permissions
 $UploadForm = $Categories[$Properties['CategoryID'] - 1];
-if (($LoggedUser['ID'] !== $Properties['UserID']
+if (($user['ID'] !== $Properties['UserID']
   && !check_perms('torrents_edit'))
-  || $LoggedUser['DisableWiki']) {
+  || $user['DisableWiki']) {
     error(403);
 }
 
@@ -124,7 +124,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
     <input type="hidden" name="action" value="editgroupid" />
 
     <input type="hidden" name="auth"
-      value="<?=$LoggedUser['AuthKey']?>" />
+      value="<?=$user['AuthKey']?>" />
 
     <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
 
@@ -170,7 +170,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
     <input type="hidden" name="action" value="newgroup" />
 
     <input type="hidden" name="auth"
-      value="<?=$LoggedUser['AuthKey']?>" />
+      value="<?=$user['AuthKey']?>" />
 
     <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
 
@@ -262,7 +262,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
   <form action="torrents.php" method="post">
     <input type="hidden" name="action" value="changecategory" />
     <input type="hidden" name="auth"
-      value="<?=$LoggedUser['AuthKey']?>" />
+      value="<?=$user['AuthKey']?>" />
     <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
     <input type="hidden" name="oldgroupid"
       value="<?=$Properties['GroupID']?>" />

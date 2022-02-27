@@ -6,13 +6,13 @@ if (!is_number($CollageID) || !$CollageID) {
   error(404);
 }
 
-$DB->query("
+$db->query("
   SELECT Name, CategoryID, UserID
   FROM collages
   WHERE ID = '$CollageID'");
-list($Name, $CategoryID, $UserID) = $DB->next_record();
+list($Name, $CategoryID, $UserID) = $db->next_record();
 
-if (!check_perms('site_collages_delete') && $UserID != $LoggedUser['ID']) {
+if (!check_perms('site_collages_delete') && $UserID != $user['ID']) {
   error(403);
 }
 
@@ -26,7 +26,7 @@ View::header('Delete collage');
     <div class="pad">
       <form class="delete_form" name="collage" action="collages.php" method="post">
         <input type="hidden" name="action" value="take_delete" />
-        <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+        <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
         <input type="hidden" name="collageid" value="<?=$CollageID?>" />
 <?php
 if ($CategoryID == 0) {

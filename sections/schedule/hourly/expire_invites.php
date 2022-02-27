@@ -1,33 +1,33 @@
 <?php
 declare(strict_types=1);
 
-$DB->query("
+$db->query("
   SELECT InviterID
   FROM invites
   WHERE Expires < '$sqltime'");
 
-$Users = $DB->to_array();
+$Users = $db->to_array();
 foreach ($Users as $UserID) {
     list($UserID) = $UserID;
 
-    $DB->query("
+    $db->query("
       SELECT Invites, PermissionID
       FROM users_main
       WHERE ID = $UserID");
 
-    list($Invites, $PermID) = $DB->next_record();
+    list($Invites, $PermID) = $db->next_record();
     if (($Invites < 2 && $Classes[$PermID]['Level'] <= $Classes[POWER]['Level']) || ($Invites < 4 && $PermID === ELITE)) {
-        $DB->query("
+        $db->query("
           UPDATE users_main
           SET Invites = Invites + 1
           WHERE ID = $UserID");
 
-        $Cache->begin_transaction("user_info_heavy_$UserID");
-        $Cache->update_row(false, array('Invites' => '+1'));
-        $Cache->commit_transaction(0);
+        $cache->begin_transaction("user_info_heavy_$UserID");
+        $cache->update_row(false, array('Invites' => '+1'));
+        $cache->commit_transaction(0);
     }
 }
 
-$DB->query("
+$db->query("
   DELETE FROM invites
   WHERE Expires < '$sqltime'");

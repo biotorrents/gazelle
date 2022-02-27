@@ -23,16 +23,16 @@ $ENV = ENV::go();
 $Debug['messages']->info('config okay');
 
 # Database
-$DB = new DB;
+$db = new DB;
 $Debug['messages']->info('database okay');
 
 # Cache
-$Cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
+$cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
 $Debug['messages']->info('cache okay');
 
 # Globals
 # Note: G::go is called twice
-# This is necessary for $LoggedUser
+# This is necessary for $user
 G::go();
 $Debug['messages']->info('globals okay');
 
@@ -57,7 +57,7 @@ $Debug['time']->startMeasure('users', 'user handling');
 // Set the document we are loading
 $Document = basename(parse_url($_SERVER['SCRIPT_NAME'], PHP_URL_PATH), '.php');
 
-$LoggedUser = [];
+$user = [];
 $SessionID = false;
 $FullToken = null;
 
@@ -88,8 +88,8 @@ if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
     $UserID = (int) substr(Crypto::decrypt(base64UrlDecode($FullToken), $ENV->getPriv('ENCKEY')), 32);
 
     if (!empty($UserID)) {
-        [$LoggedUser['ID'], $Revoked] =
-        G::$DB->row("
+        [$user['ID'], $Revoked] =
+        G::$db->row("
         SELECT
           `UserID`,
           `Revoked`
@@ -105,20 +105,20 @@ if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
     }
 
     # No user or revoked API token
-    if (empty($LoggedUser['ID']) || $Revoked === 1) {
-        log_token_attempt(G::$DB);
+    if (empty($user['ID']) || $Revoked === 1) {
+        log_token_attempt(G::$db);
         header('Content-Type: application/json');
         json_die('failure', 'token user mismatch');
     }
 
     # Checks if a user exists
-    if (isset($LoggedUser['ID'])) {
-        #$UserID = (int) $LoggedUser['ID'];
-        #$Session = new Gazelle\Session($LoggedUser['ID']);
+    if (isset($user['ID'])) {
+        #$UserID = (int) $user['ID'];
+        #$Session = new Gazelle\Session($user['ID']);
     
         # User doesn't own that token
         if (!is_null($FullToken) && !Users::hasApiToken($UserID, $FullToken)) {
-            log_token_attempt(G::$DB, $LoggedUser['ID']);
+            log_token_attempt(G::$db, $user['ID']);
             header('Content-type: application/json');
             json_die('failure', 'token revoked');
         }
@@ -126,9 +126,9 @@ if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
         # User is disabled
         if (Users::isDisabled($UserID)) {
             if (is_null($FullToken)) {
-                logout($LoggedUser['ID'], $SessionID);
+                logout($user['ID'], $SessionID);
             } else {
-                log_token_attempt(G::$DB, $LoggedUser['ID']);
+                log_token_attempt(G::$db, $user['ID']);
                 header('Content-type: application/json');
                 json_die('failure', 'user disabled');
             }
@@ -143,16 +143,16 @@ if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
 
 if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     $SessionID = $_COOKIE['session'];
-    $LoggedUser['ID'] = (int) $_COOKIE['userid'];
+    $user['ID'] = (int) $_COOKIE['userid'];
 
-    $UserID = $LoggedUser['ID']; // todo: UserID should not be LoggedUser
-    if (!$LoggedUser['ID'] || !$SessionID) {
+    $UserID = $user['ID']; // todo: UserID should not be LoggedUser
+    if (!$user['ID'] || !$SessionID) {
         logout();
     }
 
-    $UserSessions = $Cache->get_value("users_sessions_$UserID");
+    $UserSessions = $cache->get_value("users_sessions_$UserID");
     if (!is_array($UserSessions)) {
-        $DB->prepared_query(
+        $db->prepared_query(
             "
         SELECT
           SessionID,
@@ -164,8 +164,8 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
         ORDER BY LastUpdate DESC"
         );
 
-        $UserSessions = $DB->to_array('SessionID', MYSQLI_ASSOC);
-        $Cache->cache_value("users_sessions_$UserID", $UserSessions, 0);
+        $UserSessions = $db->to_array('SessionID', MYSQLI_ASSOC);
+        $cache->cache_value("users_sessions_$UserID", $UserSessions, 0);
     }
 
     if (!array_key_exists($SessionID, $UserSessions)) {
@@ -173,15 +173,15 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     }
 
     // Check if user is enabled
-    $Enabled = $Cache->get_value('enabled_'.$LoggedUser['ID']);
+    $Enabled = $cache->get_value('enabled_'.$user['ID']);
     if ($Enabled === false) {
-        $DB->prepared_query("
+        $db->prepared_query("
         SELECT Enabled
           FROM users_main
-          WHERE ID = '$LoggedUser[ID]'");
+          WHERE ID = '$user[ID]'");
 
-        list($Enabled) = $DB->next_record();
-        $Cache->cache_value('enabled_'.$LoggedUser['ID'], $Enabled, 0);
+        list($Enabled) = $db->next_record();
+        $cache->cache_value('enabled_'.$user['ID'], $Enabled, 0);
     }
 
     if ($Enabled === 2) {
@@ -189,20 +189,20 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
     }
 
     // Up/Down stats
-    $UserStats = $Cache->get_value('user_stats_'.$LoggedUser['ID']);
+    $UserStats = $cache->get_value('user_stats_'.$user['ID']);
     if (!is_array($UserStats)) {
-        $DB->prepared_query("
+        $db->prepared_query("
         SELECT Uploaded AS BytesUploaded, Downloaded AS BytesDownloaded, RequiredRatio
         FROM users_main
-          WHERE ID = '$LoggedUser[ID]'");
+          WHERE ID = '$user[ID]'");
 
-        $UserStats = $DB->next_record(MYSQLI_ASSOC);
-        $Cache->cache_value('user_stats_'.$LoggedUser['ID'], $UserStats, 3600);
+        $UserStats = $db->next_record(MYSQLI_ASSOC);
+        $cache->cache_value('user_stats_'.$user['ID'], $UserStats, 3600);
     }
 
     // Get info such as username
-    $LightInfo = Users::user_info($LoggedUser['ID']);
-    $HeavyInfo = Users::user_heavy_info($LoggedUser['ID']);
+    $LightInfo = Users::user_info($user['ID']);
+    $HeavyInfo = Users::user_heavy_info($user['ID']);
 
     /**
       * Implement api tokens to use with ajax endpoint
@@ -212,17 +212,17 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
       * Date:   Thu Oct 15 00:09:15 2020 +0000
       */
 
-    // TODO: These globals need to die, and just use $LoggedUser
-    // TODO: And then instantiate $LoggedUser from Gazelle\Session when needed
+    // TODO: These globals need to die, and just use $user
+    // TODO: And then instantiate $user from Gazelle\Session when needed
     if (empty($LightInfo['Username'])) { // Ghost
-        logout($LoggedUser['ID'], $SessionID);
+        logout($user['ID'], $SessionID);
         if (!is_null($FullToken)) {
             #$UserID->flushCache();
-            log_token_attempt(G::$DB, $LoggedUser['ID']);
+            log_token_attempt(G::$db, $user['ID']);
             header('Content-type: application/json');
             json_die('error', 'invalid token');
         } else {
-            logout($LoggedUser['ID'], $SessionID);
+            logout($user['ID'], $SessionID);
         }
     }
     # End OPS API token additions
@@ -240,29 +240,29 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
      */
 
     // Create LoggedUser array
-    $LoggedUser = array_merge($HeavyInfo, $LightInfo, $UserStats);
-    $LoggedUser['RSS_Auth'] = md5($LoggedUser['ID'] . $ENV->getPriv('RSS_HASH') . $LoggedUser['torrent_pass']);
+    $user = array_merge($HeavyInfo, $LightInfo, $UserStats);
+    $user['RSS_Auth'] = md5($user['ID'] . $ENV->getPriv('RSS_HASH') . $user['torrent_pass']);
 
-    // $LoggedUser['RatioWatch'] as a bool to disable things for users on Ratio Watch
-    $LoggedUser['RatioWatch'] = (
-        $LoggedUser['RatioWatchEnds']
-     && time() < strtotime($LoggedUser['RatioWatchEnds'])
-     && ($LoggedUser['BytesDownloaded'] * $LoggedUser['RequiredRatio']) > $LoggedUser['BytesUploaded']
+    // $user['RatioWatch'] as a bool to disable things for users on Ratio Watch
+    $user['RatioWatch'] = (
+        $user['RatioWatchEnds']
+     && time() < strtotime($user['RatioWatchEnds'])
+     && ($user['BytesDownloaded'] * $user['RequiredRatio']) > $user['BytesUploaded']
     );
 
     // Load in the permissions
-    $LoggedUser['Permissions'] = \Permissions::get_permissions_for_user($LoggedUser['ID'], $LoggedUser['CustomPermissions']);
-    $LoggedUser['Permissions']['MaxCollages'] += \Donations::get_personal_collages($LoggedUser['ID']);
+    $user['Permissions'] = \Permissions::get_permissions_for_user($user['ID'], $user['CustomPermissions']);
+    $user['Permissions']['MaxCollages'] += \Donations::get_personal_collages($user['ID']);
 
     // Change necessary triggers in external components
-    $Cache->CanClear = check_perms('admin_clear_cache');
+    $cache->CanClear = check_perms('admin_clear_cache');
 
     // Update LastUpdate every 10 minutes
     if (strtotime($UserSessions[$SessionID]['LastUpdate']) + 600 < time()) {
-        $DB->prepared_query("
+        $db->prepared_query("
         UPDATE users_main
         SET LastAccess = NOW()
-        WHERE ID = '$LoggedUser[ID]'
+        WHERE ID = '$user[ID]'
         ");
 
         $SessionQuery =
@@ -276,59 +276,59 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
 
         $SessionQuery .= "
         LastUpdate = NOW()
-        WHERE UserID = '$LoggedUser[ID]'
+        WHERE UserID = '$user[ID]'
         AND SessionID = '".db_string($SessionID)."'";
 
-        $DB->prepared_query($SessionQuery);
-        $Cache->begin_transaction("users_sessions_$UserID");
-        $Cache->delete_row($SessionID);
+        $db->prepared_query($SessionQuery);
+        $cache->begin_transaction("users_sessions_$UserID");
+        $cache->delete_row($SessionID);
 
         $UsersSessionCache = array(
         'SessionID' => $SessionID,
         'IP' => (apcu_exists('DBKEY') ? Crypto::encrypt($_SERVER['REMOTE_ADDR']) : $UserSessions[$SessionID]['IP']),
         'LastUpdate' => sqltime() );
 
-        $Cache->insert_front($SessionID, $UsersSessionCache);
-        $Cache->commit_transaction(0);
+        $cache->insert_front($SessionID, $UsersSessionCache);
+        $cache->commit_transaction(0);
     }
 
     // Notifications
-    if (isset($LoggedUser['Permissions']['site_torrents_notify'])) {
-        $LoggedUser['Notify'] = $Cache->get_value('notify_filters_'.$LoggedUser['ID']);
-        if (!is_array($LoggedUser['Notify'])) {
-            $DB->prepared_query("
+    if (isset($user['Permissions']['site_torrents_notify'])) {
+        $user['Notify'] = $cache->get_value('notify_filters_'.$user['ID']);
+        if (!is_array($user['Notify'])) {
+            $db->prepared_query("
             SELECT ID, Label
             FROM users_notify_filters
-              WHERE UserID = '$LoggedUser[ID]'");
+              WHERE UserID = '$user[ID]'");
 
-            $LoggedUser['Notify'] = $DB->to_array('ID');
-            $Cache->cache_value('notify_filters_'.$LoggedUser['ID'], $LoggedUser['Notify'], 2592000);
+            $user['Notify'] = $db->to_array('ID');
+            $cache->cache_value('notify_filters_'.$user['ID'], $user['Notify'], 2592000);
         }
     }
 
     // We've never had to disable the wiki privs of anyone.
-    if ($LoggedUser['DisableWiki']) {
-        unset($LoggedUser['Permissions']['site_edit_wiki']);
+    if ($user['DisableWiki']) {
+        unset($user['Permissions']['site_edit_wiki']);
     }
 
     // IP changed
-    if (apcu_exists('DBKEY') && Crypto::decrypt($LoggedUser['IP']) != $_SERVER['REMOTE_ADDR']) {
+    if (apcu_exists('DBKEY') && Crypto::decrypt($user['IP']) != $_SERVER['REMOTE_ADDR']) {
         if (Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
             error('Your IP address has been banned.');
         }
 
-        $CurIP = db_string($LoggedUser['IP']);
+        $CurIP = db_string($user['IP']);
         $NewIP = db_string($_SERVER['REMOTE_ADDR']);
 
-        $Cache->begin_transaction('user_info_heavy_'.$LoggedUser['ID']);
-        $Cache->update_row(false, array('IP' => Crypto::encrypt($_SERVER['REMOTE_ADDR'])));
-        $Cache->commit_transaction(0);
+        $cache->begin_transaction('user_info_heavy_'.$user['ID']);
+        $cache->update_row(false, array('IP' => Crypto::encrypt($_SERVER['REMOTE_ADDR'])));
+        $cache->commit_transaction(0);
     }
 
     // Get stylesheets
-    $Stylesheets = $Cache->get_value('stylesheets');
+    $Stylesheets = $cache->get_value('stylesheets');
     if (!is_array($Stylesheets)) {
-        $DB->prepared_query('
+        $db->prepared_query('
         SELECT
           ID,
           LOWER(REPLACE(Name, " ", "_")) AS Name,
@@ -337,13 +337,13 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
           Additions AS ProperAdditions
         FROM stylesheets');
 
-        $Stylesheets = $DB->to_array('ID', MYSQLI_BOTH);
-        $Cache->cache_value('stylesheets', $Stylesheets, 0);
+        $Stylesheets = $db->to_array('ID', MYSQLI_BOTH);
+        $cache->cache_value('stylesheets', $Stylesheets, 0);
     }
 
     // todo: Clean up this messy solution
-    $LoggedUser['StyleName'] = $Stylesheets[$LoggedUser['StyleID']]['Name'];
-    if (empty($LoggedUser['Username'])) {
+    $user['StyleName'] = $Stylesheets[$user['StyleID']]['Name'];
+    if (empty($user['Username'])) {
         logout(); // Ghost
     }
 }
@@ -367,7 +367,7 @@ $Document = (
 );
 
 $StripPostKeys = array_fill_keys(array('password', 'cur_pass', 'new_pass_1', 'new_pass_2', 'verifypassword', 'confirm_password', 'ChangePassword', 'Password'), true);
-$Cache->cache_value('php_' . getmypid(), array(
+$cache->cache_value('php_' . getmypid(), array(
   'start' => sqltime(),
   'document' => $Document,
   'query' => $_SERVER['QUERY_STRING'],
@@ -378,7 +378,7 @@ $Cache->cache_value('php_' . getmypid(), array(
 define('STAFF_LOCKED', 1);
 
 $AllowedPages = ['staffpm', 'api', 'locked', 'logout', 'login'];
-if (isset(G::$LoggedUser['LockedAccount']) && !in_array($Document, $AllowedPages)) {
+if (isset(G::$user['LockedAccount']) && !in_array($Document, $AllowedPages)) {
     require_once "$ENV->SERVER_ROOT/sections/locked/index.php";
 } else {
     # Routing: transition from homebrew to Flight

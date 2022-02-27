@@ -1,7 +1,7 @@
 <?php
-$UserID = $LoggedUser['ID'];
+$UserID = $user['ID'];
 
-$DB->query("
+$db->query("
   SELECT
     g.ID,
     g.Name,
@@ -18,8 +18,8 @@ $DB->query("
   JOIN torrents_group AS g ON g.ID = t.GroupID
   LEFT JOIN xbt_files_users AS f ON s.TorrentID = f.fid AND s.UserID = f.uid
   WHERE s.UserID = $UserID");
-if ($DB->has_results()) {
-  $Torrents = $DB->to_array(false, MYSQLI_ASSOC, false);
+if ($db->has_results()) {
+  $Torrents = $db->to_array(false, MYSQLI_ASSOC, false);
 }
 
 //Include the header
@@ -40,7 +40,7 @@ View::header('Snatch List');
 <?php
 foreach ($Torrents as $Torrent) {
   $DisplayName = "<a href=\"torrents.php?id=$Torrent[ID]&torrentid=$Torrent[TorrentID]\" ";
-  if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
+  if (!isset($user['CoverArt']) || $user['CoverArt']) {
     $DisplayName .= 'data-cover="'.ImageTools::process($Torrent['WikiImage'], 'thumb').'" ';
   }
   $DisplayName .= "dir=\"ltr\">$Torrent[Name]</a>";

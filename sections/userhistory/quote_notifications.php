@@ -1,5 +1,5 @@
 <?php
-if (!empty($LoggedUser['DisableForums'])) {
+if (!empty($user['DisableForums'])) {
   error(403);
 }
 
@@ -9,14 +9,14 @@ if ($_GET['showall'] ?? false) {
 }
 
 if ($_GET['catchup'] ?? false) {
-  $DB->query("UPDATE users_notify_quoted SET UnRead = '0' WHERE UserID = '$LoggedUser[ID]'");
-  $Cache->delete_value('notify_quoted_' . $LoggedUser['ID']);
+  $db->query("UPDATE users_notify_quoted SET UnRead = '0' WHERE UserID = '$user[ID]'");
+  $cache->delete_value('notify_quoted_' . $user['ID']);
   header('Location: userhistory.php?action=quote_notifications');
   error();
 }
 
-if (isset($LoggedUser['PostsPerPage'])) {
-  $PerPage = $LoggedUser['PostsPerPage'];
+if (isset($user['PostsPerPage'])) {
+  $PerPage = $user['PostsPerPage'];
 } else {
   $PerPage = POSTS_PER_PAGE;
 }
@@ -43,16 +43,16 @@ $sql = "
     LEFT JOIN forums AS f ON f.ID = t.ForumID
     LEFT JOIN artists_group AS a ON a.ArtistID = q.PageID
     LEFT JOIN collages AS c ON c.ID = q.PageID
-  WHERE q.UserID = $LoggedUser[ID]
+  WHERE q.UserID = $user[ID]
     AND (q.Page != 'forums' OR " . Forums::user_forums_sql() . ")
     AND (q.Page != 'collages' OR c.Deleted = '0')
     $UnreadSQL
   ORDER BY q.Date DESC
   LIMIT $Limit";
-$DB->query($sql);
-$Results = $DB->to_array(false, MYSQLI_ASSOC, false);
-$DB->query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
+$db->query($sql);
+$Results = $db->to_array(false, MYSQLI_ASSOC, false);
+$db->query('SELECT FOUND_ROWS()');
+list($NumResults) = $db->next_record();
 
 $TorrentGroups = $Requests = [];
 foreach ($Results as $Result) {

@@ -42,18 +42,18 @@ if ($Err) {
 //******************************************************************************//
 //--------------- Send PMs to users --------------------------------------------//
 
-$DB->query("
+$db->query("
   SELECT uid
   FROM xbt_snatched
   WHERE fid = $TorrentID");
 
-if ($DB->has_results()) {
-    // Save this because send_pm uses $DB to run its own query... Oops...
-    $Snatchers = $DB->to_array();
+if ($db->has_results()) {
+    // Save this because send_pm uses $db to run its own query... Oops...
+    $Snatchers = $db->to_array();
     foreach ($Snatchers as $UserID) {
         Misc::send_pm($UserID[0], 0, $Subject, $Message);
     }
 }
 
-Misc::write_log($LoggedUser['Username']." sent mass notice to snatchers of torrent $TorrentID in group $GroupID");
+Misc::write_log($user['Username']." sent mass notice to snatchers of torrent $TorrentID in group $GroupID");
 header("Location: torrents.php?id=$GroupID");

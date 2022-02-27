@@ -4,7 +4,7 @@
 View::header('Staff PMs', 'staffpm');
 
 // Get messages
-$StaffPMs = $DB->query("
+$StaffPMs = $db->query("
   SELECT
     ID,
     Subject,
@@ -15,7 +15,7 @@ $StaffPMs = $DB->query("
     Date,
     Unread
   FROM staff_pm_conversations
-  WHERE UserID = ".$LoggedUser['ID']."
+  WHERE UserID = ".$user['ID']."
   ORDER BY Status, Date DESC"
 );
 
@@ -34,7 +34,7 @@ $StaffPMs = $DB->query("
   <div class="box pad" id="inbox">
 <?php
 
-if (!$DB->has_results()) {
+if (!$db->has_results()) {
   // No messages
 ?>
     <h2>No messages</h2>
@@ -55,7 +55,7 @@ if (!$DB->has_results()) {
 <?php
   // List messages
   $ShowBox = 1;
-  while (list($ID, $Subject, $UserID, $Status, $Level, $AssignedToUser, $Date, $Unread) = $DB->next_record()) {
+  while (list($ID, $Subject, $UserID, $Status, $Level, $AssignedToUser, $Date, $Unread) = $db->next_record()) {
     if ($Unread === '1') {
       $RowClass = 'unreadpm';
     } else {
@@ -97,7 +97,7 @@ if (!$DB->has_results()) {
           <td><?=$Assigned?></td>
         </tr>
 <?php
-    $DB->set_query_id($StaffPMs);
+    $db->set_query_id($StaffPMs);
   }
 
   // Close table and multiresolve form

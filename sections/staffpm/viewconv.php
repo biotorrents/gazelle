@@ -3,32 +3,32 @@
 
 if ($ConvID = (int)$_GET['id']) {
     // Get conversation info
-    $DB->query("
+    $db->query("
     SELECT Subject, UserID, Level, AssignedToUser, Unread, Status
     FROM staff_pm_conversations
     WHERE ID = $ConvID");
-    list($Subject, $UserID, $Level, $AssignedToUser, $Unread, $Status) = $DB->next_record();
+    list($Subject, $UserID, $Level, $AssignedToUser, $Unread, $Status) = $db->next_record();
 
     $LevelCap = 1000;
     $PMLevel = $Level;
     $Level = min($Level, $LevelCap);
 
     if (!(
-        ($UserID == $LoggedUser['ID'])
-      || ($AssignedToUser == $LoggedUser['ID'])
-      || (($Level > 0 && $Level <= $LoggedUser['EffectiveClass']) || ($Level == 0 && $IsFLS))
+        ($UserID == $user['ID'])
+      || ($AssignedToUser == $user['ID'])
+      || (($Level > 0 && $Level <= $user['EffectiveClass']) || ($Level == 0 && $IsFLS))
     )) {
         // User is trying to view someone else's conversation
         error(403);
     }
     // User is trying to view their own unread conversation, set it to read
-    if ($UserID == $LoggedUser['ID'] && $Unread) {
-        $DB->query("
+    if ($UserID == $user['ID'] && $Unread) {
+        $db->query("
       UPDATE staff_pm_conversations
       SET Unread = false
       WHERE ID = $ConvID");
         // Clear cache for user
-        $Cache->delete_value("staff_pm_new_$LoggedUser[ID]");
+        $cache->delete_value("staff_pm_new_$user[ID]");
     }
 
     View::header(
@@ -75,12 +75,12 @@ if ($ConvID = (int)$_GET['id']) {
   <div id="inbox">
     <?php
   // Get messages
-  $StaffPMs = $DB->query("
+  $StaffPMs = $db->query("
     SELECT UserID, SentDate, Message, ID
     FROM staff_pm_messages
     WHERE ConvID = $ConvID");
 
-    while (list($UserID, $SentDate, $Message, $MessageID) = $DB->next_record()) {
+    while (list($UserID, $SentDate, $Message, $MessageID) = $db->next_record()) {
         // Set user string
         if ($UserID == $OwnerID) {
             // User, use prepared string
@@ -111,7 +111,7 @@ if ($ConvID = (int)$_GET['id']) {
     </div>
     <div align="center" style="display: none;"></div>
     <?php
-    $DB->set_query_id($StaffPMs);
+    $db->set_query_id($StaffPMs);
     }
 
     // Common responses
@@ -130,10 +130,10 @@ if ($ConvID = (int)$_GET['id']) {
           <option id="first_common_response">Select a message</option>
           <?php
     // List common responses
-    $DB->query("
+    $db->query("
       SELECT ID, Name
       FROM staff_pm_responses");
-        while (list($ID, $Name) = $DB->next_record()) {
+        while (list($ID, $Name) = $db->next_record()) {
             ?>
           <option value="<?=$ID?>"><?=$Name?>
           </option>
@@ -197,7 +197,7 @@ if ($ConvID = (int)$_GET['id']) {
             </optgroup>
             <optgroup label="Staff">
               <?php // Staff members
-    $DB->query(
+    $db->query(
         "
       SELECT
         m.ID,
@@ -207,7 +207,7 @@ if ($ConvID = (int)$_GET['id']) {
       WHERE p.DisplayStaff = '1'
       ORDER BY p.Level DESC, m.Username ASC"
     );
-      while (list($ID, $Name) = $DB->next_record()) {
+      while (list($ID, $Name) = $db->next_record()) {
           // Create one <option> for each staff member
       $Selected = (($AssignedToUser == $ID) ? ' selected="selected"' : ''); ?>
               <option value="user_<?=$ID?>" <?=$Selected?>><?=$Name?>
@@ -218,7 +218,7 @@ if ($ConvID = (int)$_GET['id']) {
             <optgroup label="First Line Support">
               <?php
     // FLS users
-    $DB->query("
+    $db->query("
       SELECT
         m.ID,
         m.Username
@@ -229,7 +229,7 @@ if ($ConvID = (int)$_GET['id']) {
         AND i.SupportFor != ''
       ORDER BY m.Username ASC
     ");
-      while (list($ID, $Name) = $DB->next_record()) {
+      while (list($ID, $Name) = $db->next_record()) {
           // Create one <option> for each FLS user
       $Selected = (($AssignedToUser == $ID) ? ' selected="selected"' : ''); ?>
               <option value="user_<?=$ID?>" <?=$Selected?>><?=$Name?>
@@ -272,7 +272,7 @@ if ($ConvID = (int)$_GET['id']) {
           <form action="staffpm.php" method="post">
             <input type="hidden" name="action" value="make_donor" />
             <input type="hidden" name="auth"
-              value="<?=$LoggedUser['AuthKey']?>" />
+              value="<?=$user['AuthKey']?>" />
             <input type="hidden" name="id" value="<?=$ConvID?>" />
             <strong>Amount: </strong>
             <input type="text" name="donation_amount" onkeypress="return isNumberKey(event);" />

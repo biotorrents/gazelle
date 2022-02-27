@@ -11,27 +11,27 @@ if (isset($_GET['userid']) && check_perms('users_view_invites')) {
     $UserID=$_GET['userid'];
     $Sneaky = true;
 } else {
-    if (!$UserCount = $Cache->get_value('stats_user_count')) {
-        $DB->query("
+    if (!$UserCount = $cache->get_value('stats_user_count')) {
+        $db->query("
       SELECT COUNT(ID)
       FROM users_main
       WHERE Enabled = '1'");
-        list($UserCount) = $DB->next_record();
-        $Cache->cache_value('stats_user_count', $UserCount, 0);
+        list($UserCount) = $db->next_record();
+        $cache->cache_value('stats_user_count', $UserCount, 0);
     }
 
-    $UserID = $LoggedUser['ID'];
+    $UserID = $user['ID'];
     $Sneaky = false;
 }
 
 list($UserID, $Username, $PermissionID) = array_values(Users::user_info($UserID));
 
-$DB->query("
+$db->query("
   SELECT InviteKey, Email, Expires
   FROM invites
   WHERE InviterID = '$UserID'
   ORDER BY Expires");
-$Pending = $DB->to_array();
+$Pending = $db->to_array();
 
 $OrderWays = array('username', 'email', 'joined', 'lastseen', 'uploaded', 'downloaded', 'ratio');
 
@@ -82,7 +82,7 @@ switch ($CurrentOrder) {
 
 $CurrentURL = Format::get_url(array('action', 'order', 'sort'));
 
-$DB->query("
+$db->query("
   SELECT
     ID,
     Email,
@@ -95,7 +95,7 @@ $DB->query("
   WHERE ui.Inviter = '$UserID'
   ORDER BY $OrderBy $CurrentSort");
 
-$Invited = $DB->to_array();
+$Invited = $db->to_array();
 
 View::header('Invites');
 ?>
@@ -124,17 +124,17 @@ View::header('Invites');
     - Cannot 'invite always' and the user limit is reached
 */
 
-$DB->query("
+$db->query("
   SELECT can_leech
   FROM users_main
   WHERE ID = $UserID");
-list($CanLeech) = $DB->next_record();
+list($CanLeech) = $db->next_record();
 
 if (!$Sneaky
-  && !$LoggedUser['RatioWatch']
+  && !$user['RatioWatch']
   && $CanLeech
-  && empty($LoggedUser['DisableInvites'])
-  && ($LoggedUser['Invites'] > 0 || check_perms('site_send_unlimited_invites'))
+  && empty($user['DisableInvites'])
+  && ($user['Invites'] > 0 || check_perms('site_send_unlimited_invites'))
   && ($UserCount <= USER_LIMIT || USER_LIMIT === 0 || check_perms('site_can_invite_always'))
   ) { ?>
   <div class="box pad">
@@ -158,7 +158,7 @@ if (!$Sneaky
     <form class="send_form pad" name="invite" action="user.php" method="post">
       <input type="hidden" name="action" value="take_invite" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
       <div>
         <div class="label"><strong>Email Address</strong></div>
         <div class="input">
@@ -178,13 +178,13 @@ if (!$Sneaky
   </div>
 
   <?php
-} elseif (!empty($LoggedUser['DisableInvites'])) { ?>
+} elseif (!empty($user['DisableInvites'])) { ?>
   <div class="box pad" style="text-align: center;">
     <strong class="important_text">Your invites have been disabled. Please read <a
         href="wiki.php?action=article&amp;name=cantinvite">this article</a> for more information.</strong>
   </div>
   <?php
-} elseif ($LoggedUser['RatioWatch'] || !$CanLeech) { ?>
+} elseif ($user['RatioWatch'] || !$CanLeech) { ?>
   <div class="box pad" style="text-align: center;">
     <strong class="important_text">You may not send invites while on Ratio Watch or while your leeching privileges are
       disabled. Please read <a href="wiki.php?action=article&amp;name=cantinvite">this article</a> for more
@@ -213,7 +213,7 @@ if (!empty($Pending)) {
         <td><?=time_diff($Expires)?>
         </td>
         <td><a
-            href="user.php?action=delete_invite&amp;invite=<?=$InviteKey?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+            href="user.php?action=delete_invite&amp;invite=<?=$InviteKey?>&amp;auth=<?=$user['AuthKey']?>"
             onclick="return confirm('Are you sure you want to delete this invite?');">Delete invite</a></td>
       </tr>
       <?php

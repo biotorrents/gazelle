@@ -15,7 +15,7 @@ $ID = (int)$_POST['id'];
 
 $Notes = $_POST['notes'];
 
-$DB->query("
+$db->query("
   UPDATE reports
   SET Notes = ?
   WHERE ID = ?", $Notes, $ID);

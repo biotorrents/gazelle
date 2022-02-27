@@ -59,21 +59,21 @@ function diff($OldText, $NewText)
 function get_body($ID, $Rev)
 {
     # $Rev is a str, $Revision an int
-    global $DB, $Revision, $Body;
+    global $db, $Revision, $Body;
     
     if ((int) $Rev === $Revision) {
         $Str = $Body;
     } else {
-        $DB->prepared_query("
+        $db->prepared_query("
           SELECT Body
           FROM wiki_revisions
           WHERE ID = '$ID'
             AND Revision = '$Rev'");
 
-        if (!$DB->has_results()) {
+        if (!$db->has_results()) {
             error(404);
         }
-        list($Str) = $DB->next_record();
+        list($Str) = $db->next_record();
     }
     return $Str;
 }
@@ -96,7 +96,7 @@ $ArticleID = (int) $_GET['id'];
 $Article = Wiki::get_article($ArticleID);
 list($Revision, $Title, $Body, $Read, $Edit, $Date, $AuthorID, $AuthorName) = array_shift($Article);
 
-if ($Edit > $LoggedUser['EffectiveClass']) {
+if ($Edit > $user['EffectiveClass']) {
     error(404);
 }
 

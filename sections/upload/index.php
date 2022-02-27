@@ -6,7 +6,7 @@ if (!check_perms('site_upload')) {
     error('Please read the site wiki for information on how to become a Member and gain upload privileges.');
 }
 
-if ($LoggedUser['DisableUpload']) {
+if ($user['DisableUpload']) {
     error('Your upload privileges have been revoked.');
 }
 

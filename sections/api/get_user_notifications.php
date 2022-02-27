@@ -4,5 +4,5 @@
 $Skip = [];
 $Skip[] = db_string($_GET['skip']);
 
-$NotificationsManager = new NotificationsManager($LoggedUser['ID'], $Skip);
+$NotificationsManager = new NotificationsManager($user['ID'], $Skip);
 json_die('success', $NotificationsManager->get_notifications());

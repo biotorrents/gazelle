@@ -60,7 +60,7 @@ include SERVER_ROOT.'/sections/log/sphinx.php';
         <td colspan="2">Search request failed (<?=$QueryError?>).
         </td>
       </tr>
-      <?php } elseif (!$DB->has_results()) { ?>
+      <?php } elseif (!$db->has_results()) { ?>
       <tr class="nobr">
         <td colspan="2">Nothing found!</td>
       </tr>
@@ -68,7 +68,7 @@ include SERVER_ROOT.'/sections/log/sphinx.php';
   }
   
 $Usernames = [];
-while (list($ID, $Message, $LogTime) = $DB->next_record()) {
+while (list($ID, $Message, $LogTime) = $db->next_record()) {
     $MessageParts = explode(' ', $Message);
     $Message = '';
     $Color = $Colon = false;
@@ -143,7 +143,7 @@ while (list($ID, $Message, $LogTime) = $DB->next_record()) {
               }
 
               if (!isset($Usernames[$User])) {
-                  $DB->query(
+                  $db->query(
                       "
                   SELECT
                     `ID`
@@ -155,7 +155,7 @@ while (list($ID, $Message, $LogTime) = $DB->next_record()) {
                       $User
                   );
 
-                  list($UserID) = $DB->next_record();
+                  list($UserID) = $db->next_record();
                   $Usernames[$User] = $UserID ? $UserID : '';
               } else {
                   $UserID = $Usernames[$User];
@@ -163,7 +163,7 @@ while (list($ID, $Message, $LogTime) = $DB->next_record()) {
 
               $URL = $Usernames[$User] ? "<a href='user.php?id=$UserID'>$User</a>".($Colon ? ':' : '') : $User;
               if (in_array($MessageParts[$i - 2], ['uploaded', 'edited'])) {
-                  $DB->query(
+                  $db->query(
                       "
                   SELECT
                     `UserID`,
@@ -176,14 +176,14 @@ while (list($ID, $Message, $LogTime) = $DB->next_record()) {
                       $MessageParts[1]
                   );
 
-                  if ($DB->has_results()) {
-                      list($UploaderID, $AnonTorrent) = $DB->next_record();
+                  if ($db->has_results()) {
+                      list($UploaderID, $AnonTorrent) = $db->next_record();
                       if ($AnonTorrent && $UploaderID === $UserID) {
                           $URL = '<em>Anonymous</em>';
                       }
                   }
               }
-              $DB->set_query_id($Log);
+              $db->set_query_id($Log);
           }
           $Message = "$Message by $URL";
           break;
@@ -225,7 +225,7 @@ while (list($ID, $Message, $LogTime) = $DB->next_record()) {
           if ($i === 1) {
               $User = $MessageParts[$i - 1];
               if (!isset($Usernames[$User])) {
-                  $DB->query("
+                  $db->query("
                   SELECT
                     `ID`
                   FROM
@@ -234,9 +234,9 @@ while (list($ID, $Message, $LogTime) = $DB->next_record()) {
                     `Username` = _utf8 '".db_string($User)."' COLLATE utf8_bin
                   ");
 
-                  list($UserID) = $DB->next_record();
+                  list($UserID) = $db->next_record();
                   $Usernames[$User] = $UserID ? $UserID : '';
-                  $DB->set_query_id($Log);
+                  $db->set_query_id($Log);
               } else {
                   $UserID = $Usernames[$User];
               }

@@ -8,7 +8,7 @@ if (!isset($_REQUEST['action'])) {
 }
 
 // Get user level
-$DB->query(
+$db->query(
     "
   SELECT
     i.SupportFor,
@@ -16,13 +16,13 @@ $DB->query(
   FROM users_info AS i
     JOIN users_main AS m ON m.ID = i.UserID
     JOIN permissions AS p ON p.ID = m.PermissionID
-  WHERE i.UserID = ".$LoggedUser['ID']
+  WHERE i.UserID = ".$user['ID']
 );
-list($SupportFor, $DisplayStaff) = $DB->next_record();
+list($SupportFor, $DisplayStaff) = $db->next_record();
 // Logged in user is staff
 $IsStaff = ($DisplayStaff == 1);
 // Logged in user is Staff or FLS
-$IsFLS = ($IsStaff || ($LoggedUser['ExtraClasses'] && $LoggedUser['ExtraClasses'][FLS_TEAM]));
+$IsFLS = ($IsStaff || ($user['ExtraClasses'] && $user['ExtraClasses'][FLS_TEAM]));
 
 switch ($_REQUEST['action']) {
   case 'viewconv':

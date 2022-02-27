@@ -24,38 +24,38 @@ if (isset($_POST['Username'])) {
     $torrent_pass = Users::make_secret();
 
     //Create the account
-    $DB->prepared_query("
+    $db->prepared_query("
       INSERT INTO users_main
         (Username, Email, PassHash, torrent_pass, Enabled, PermissionID)
       VALUES
         ('".db_string($Username)."', '".Crypto::encrypt($Email)."', '".db_string(Users::make_sec_hash($Password))."', '".db_string($torrent_pass)."', '1', '".USER."')");
 
     //Increment site user count
-    $Cache->increment('stats_user_count');
+    $cache->increment('stats_user_count');
 
     //Grab the userID
-    $UserID = $DB->inserted_id();
+    $UserID = $db->inserted_id();
 
     Tracker::update_tracker('add_user', array('id' => $UserID, 'passkey' => $torrent_pass));
 
     //Default stylesheet
-    $DB->prepared_query("
+    $db->prepared_query("
       SELECT ID
       FROM stylesheets");
-    list($StyleID) = $DB->next_record();
+    list($StyleID) = $db->next_record();
 
     //Auth key
     $AuthKey = Users::make_secret();
 
     //Give them a row in users_info
-    $DB->prepared_query("
+    $db->prepared_query("
       INSERT INTO users_info
         (UserID, StyleID, AuthKey, JoinDate)
       VALUES
         ('".db_string($UserID)."', '".db_string($StyleID)."', '".db_string($AuthKey)."', NOW())");
 
     // Give the notification settings
-    $DB->prepared_query("INSERT INTO users_notifications_settings (UserID) VALUES ('$UserID')");
+    $db->prepared_query("INSERT INTO users_notifications_settings (UserID) VALUES ('$UserID')");
 
     //Redirect to users profile
     header ("Location: user.php?id=$UserID");
@@ -94,7 +94,7 @@ if (isset($_POST['Username'])) {
   <div class="box pad">
   <form class="create_form" name="user" method="post" action="">
     <input type="hidden" name="action" value="create_user" />
-    <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+    <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
     <table class="layout" cellpadding="2" cellspacing="1" border="0" align="center">
       <tr valign="top">
         <td align="right" class="label">Username:</td>

@@ -62,11 +62,11 @@ if (!$ID) {
 } else {
     switch ($View) {
     case 'staff':
-      $DB->prepared_query("
+      $db->prepared_query("
         SELECT `Username`
         FROM `users_main`
         WHERE `ID` = $ID");
-      list($Username) = $DB->next_record();
+      list($Username) = $db->next_record();
       if ($Username) {
           $Title = "$Username's in-progress reports";
       } else {
@@ -78,11 +78,11 @@ if (!$ID) {
       break;
 
     case 'resolver':
-      $DB->prepared_query("
+      $db->prepared_query("
         SELECT `Username`
         FROM `users_main`
         WHERE `ID` = $ID");
-      list($Username) = $DB->next_record();
+      list($Username) = $db->next_record();
       if ($Username) {
           $Title = "$Username's resolved reports";
       } else {
@@ -112,11 +112,11 @@ if (!$ID) {
       break;
 
     case 'reporter':
-      $DB->prepared_query("
+      $db->prepared_query("
         SELECT `Username`
         FROM `users_main`
         WHERE `ID` = $ID");
-      list($Username) = $DB->next_record();
+      list($Username) = $db->next_record();
       if ($Username) {
           $Title = "All torrents reported by $Username";
       } else {
@@ -127,11 +127,11 @@ if (!$ID) {
       break;
 
     case 'uploader':
-      $DB->prepared_query("
+      $db->prepared_query("
         SELECT `Username`
         FROM `users_main`
         WHERE `ID` = $ID");
-      list($Username) = $DB->next_record();
+      list($Username) = $db->next_record();
       if ($Username) {
           $Title = "All reports for torrents uploaded by $Username";
       } else {
@@ -158,7 +158,7 @@ if (!$ID) {
 /**
  * The large query
  */
-$DB->prepared_query("
+$db->prepared_query("
   SELECT
     SQL_CALC_FOUND_ROWS
     r.`ID`,
@@ -209,10 +209,10 @@ $DB->prepared_query("
   $Order
   LIMIT $Limit");
 
-$Reports = $DB->to_array();
+$Reports = $db->to_array();
 
-$DB->prepared_query('SELECT FOUND_ROWS()');
-list($Results) = $DB->next_record();
+$db->prepared_query('SELECT FOUND_ROWS()');
+list($Results) = $db->next_record();
 $PageLinks = Format::get_pages($Page, $Results, REPORTS_PER_PAGE, 11);
 
 View::header('Reports V2!', 'reportsv2');
@@ -229,7 +229,7 @@ View::header('Reports V2!', 'reportsv2');
   <span class="tooltip" title="Assigns all of the reports on the page to you!"><input type="button" onclick="Grab();"
       value="Claim all" /></span>
   <?php }
-  if ($View === 'staff' && $LoggedUser['ID'] == $ID) { ?>
+  if ($View === 'staff' && $user['ID'] == $ID) { ?>
   | <span class="tooltip" title="Unclaim all of the reports currently displayed"><input type="button"
       onclick="GiveBack();" value="Unclaim all" /></span>
   <?php } ?>
@@ -257,14 +257,14 @@ if (count($Reports) === 0) {
 
           if (!$GroupID && $Status != 'Resolved') {
               //Torrent already deleted
-              $DB->prepared_query("
+              $db->prepared_query("
         UPDATE `reportsv2`
         SET
           `Status` = 'Resolved',
           `LastChangeTime` = NOW(),
           `ModComment` = 'Report already dealt with (torrent deleted)'
         WHERE `ID` = $ReportID");
-              $Cache->decrement('num_torrent_reportsv2'); ?>
+              $cache->decrement('num_torrent_reportsv2'); ?>
   <div id="report<?=$ReportID?>" class="report box pad center"
     data-load-report="<?=$ReportID?>">
     <a href="reportsv2.php?view=report&amp;id=<?=$ReportID?>">Report
@@ -303,7 +303,7 @@ if (count($Reports) === 0) {
 ?>
       <div>
         <input type="hidden" name="auth"
-          value="<?=$LoggedUser['AuthKey']?>" />
+          value="<?=$user['AuthKey']?>" />
         <input type="hidden" id="reportid<?=$ReportID?>"
           name="reportid" value="<?=$ReportID?>" />
         <input type="hidden" id="torrentid<?=$ReportID?>"
@@ -334,7 +334,7 @@ if (count($Reports) === 0) {
               <a href="log.php?search=Torrent+<?=$TorrentID?>"><?=$TorrentID?></a> (Deleted)
               <?php } else { ?>
               <?=$LinkName?>
-              <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>"
+              <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>"
                 title="Download" class="brackets tooltip">DL</a>
               uploaded by <a
                 href="user.php?id=<?=$UploaderID?>"><?=$UploaderName?></a> <?=time_diff($Time)?>
@@ -347,13 +347,13 @@ if (count($Reports) === 0) {
                 <strong><?=$ReportType['title']?></strong>
               </div>
               <?php if ($Status != 'Resolved') {
-    $DB->prepared_query("
+    $db->prepared_query("
             SELECT r.`ID`
             FROM `reportsv2` AS r
               LEFT JOIN `torrents` AS t ON t.`ID` = r.`TorrentID`
             WHERE r.`Status` != 'Resolved'
               AND t.`GroupID` = $GroupID");
-    $GroupOthers = ($DB->record_count() - 1);
+    $GroupOthers = ($db->record_count() - 1);
 
     if ($GroupOthers > 0) { ?>
               <div style="text-align: right;">
@@ -364,13 +364,13 @@ if (count($Reports) === 0) {
               </div>
               <?php }
 
-    $DB->prepared_query("
+    $db->prepared_query("
             SELECT t.`UserID`
             FROM `reportsv2` AS r
               JOIN `torrents` AS t ON t.`ID` = r.`TorrentID`
             WHERE r.`Status` != 'Resolved'
               AND t.`UserID` = $UploaderID");
-    $UploaderOthers = ($DB->record_count() - 1);
+    $UploaderOthers = ($db->record_count() - 1);
 
     if ($UploaderOthers > 0) { ?>
               <div style="text-align: right;">
@@ -381,7 +381,7 @@ if (count($Reports) === 0) {
               </div>
               <?php }
 
-    $DB->prepared_query("
+    $db->prepared_query("
             SELECT DISTINCT req.`ID`,
               req.`FillerID`,
               um.`Username`,
@@ -393,9 +393,9 @@ if (count($Reports) === 0) {
             WHERE rep.`Status` != 'Resolved'
               AND req.`TimeFilled` > '2010-03-04 02:31:49'
               AND req.`TorrentID` = $TorrentID");
-    $Requests = ($DB->has_results());
+    $Requests = ($db->has_results());
     if ($Requests > 0) {
-        while (list($RequestID, $FillerID, $FillerName, $FilledTime) = $DB->next_record()) {
+        while (list($RequestID, $FillerID, $FillerName, $FilledTime) = $db->next_record()) {
             ?>
               <div style="text-align: right;">
                 <strong class="important_text"><a
@@ -444,7 +444,7 @@ if (count($Reports) === 0) {
         $First = true;
         $Extras = explode(' ', $ExtraIDs);
         foreach ($Extras as $ExtraID) {
-            $DB->prepared_query("
+            $db->prepared_query("
             SELECT
               COALESCE(NULLIF(tg.`title`, ''), NULLIF(tg.`subject`, ''), tg.`object`) AS Name,
               tg.`id`,
@@ -469,7 +469,7 @@ if (count($Reports) === 0) {
             GROUP BY tg.`id`", $ExtraID);
 
             list($ExtraGroupName, $ExtraGroupID, $ExtraArtistID, $ExtraArtistName, $ExtraYear, $ExtraTime,
-            $ExtraMedia, $ExtraSize, $ExtraUploaderID, $ExtraUploaderName) = Misc::display_array($DB->next_record());
+            $ExtraMedia, $ExtraSize, $ExtraUploaderID, $ExtraUploaderName) = Misc::display_array($db->next_record());
             if ($ExtraGroupName) {
                 if ($ArtistID == 0 && empty($ArtistName)) {
                     $ExtraLinkName = "<a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName".($ExtraYear ? " ($ExtraYear)" : '')."</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [$ExtraFormat/$ExtraEncoding/$ExtraMedia]</a> ".' ('.number_format($ExtraSize / (1024 * 1024), 2).' MB)';
@@ -480,7 +480,7 @@ if (count($Reports) === 0) {
                 } ?>
               <?=($First ? '' : '<br />')?>
               <?=$ExtraLinkName?>
-              <a href="torrents.php?action=download&amp;id=<?=$ExtraID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>"
+              <a href="torrents.php?action=download&amp;id=<?=$ExtraID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>"
                 title="Download" class="brackets tooltip">DL</a>
               uploaded by <a
                 href="user.php?id=<?=$ExtraUploaderID?>"><?=$ExtraUploaderName?></a> <?=time_diff($ExtraTime)?> <a href="#"
@@ -640,7 +640,7 @@ if (count($Reports) === 0) {
                 onclick="Dismiss(<?=$ReportID?>);" />
               <input type="button" value="Resolve report manually"
                 onclick="ManualResolve(<?=$ReportID?>);" />
-              <?php if ($Status == 'InProgress' && $LoggedUser['ID'] == $ResolverID) { ?>
+              <?php if ($Status == 'InProgress' && $user['ID'] == $ResolverID) { ?>
               | <input type="button" value="Unclaim"
                 onclick="GiveBack(<?=$ReportID?>);" />
               <?php } else { ?>

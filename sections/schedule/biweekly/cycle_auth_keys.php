@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-$DB->query("
+$db->query("
 UPDATE
   `users_info`
 SET

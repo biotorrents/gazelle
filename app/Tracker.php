@@ -62,9 +62,9 @@ class Tracker
         if (self::send_request($get, $maxAttempts, $err) === false) {
             send_irc(DEBUG_CHAN, "{$maxAttempts} {$err} {$get}");
 
-            if (G::$Cache->get_value('ocelot_error_reported') === false) {
+            if (G::$cache->get_value('ocelot_error_reported') === false) {
                 send_irc(ADMIN_CHAN, "Failed to update Ocelot: {$err} {$get}");
-                G::$Cache->cache_value('ocelot_error_reported', true, 3600);
+                G::$cache->cache_value('ocelot_error_reported', true, 3600);
             }
 
             return false;
@@ -275,24 +275,24 @@ class Tracker
      */
     public static function allowedClients(): array
     {
-        $allowedClients = G::$Cache->get_value(self::$cachePrefix. __FUNCTION__) ?? [];
+        $allowedClients = G::$cache->get_value(self::$cachePrefix. __FUNCTION__) ?? [];
 
         if (!empty($allowedClients)) {
             return $allowedClients;
         }
 
-        G::$DB->query("
+        G::$db->query("
             select peer_id, vstring from xbt_client_whitelist
             where vstring not like '//%' order by vstring asc
         ");
 
-        $allowedClients = G::$DB->to_array();
+        $allowedClients = G::$db->to_array();
         $allowedClients = array_combine(
             array_column($allowedClients, 'peer_id'),
             array_column($allowedClients, 'vstring'),
         );
 
-        G::$Cache->cache_value(self::$cachePrefix. __FUNCTION__, $allowedClients, self::$cacheDuration);
+        G::$cache->cache_value(self::$cachePrefix. __FUNCTION__, $allowedClients, self::$cacheDuration);
         return $allowedClients;
     }
 }

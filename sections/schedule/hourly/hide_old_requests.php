@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /*
-$DB->query("
+$db->query("
 UPDATE requests
 SET Visible = 0
 WHERE TimeFilled < (NOW() - INTERVAL 7 DAY)

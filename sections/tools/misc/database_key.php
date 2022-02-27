@@ -36,7 +36,7 @@ View::header('Database Encryption Key'); ?>
     <input type="hidden" name="action" value="database_key" />
 
     <input type="hidden" name="auth"
-      value="<?=$LoggedUser['AuthKey']?>" />
+      value="<?=$user['AuthKey']?>" />
 
     <div style="display: flex;">
       <input type="text" name="dbkey" style="flex-grow: 1;" />

@@ -4,12 +4,12 @@
 View::header('Staff Inbox');
 
 $View = (isset($_GET['view'])) ? esc($_GET['view']) : '';
-$UserLevel = $LoggedUser['EffectiveClass'];
+$UserLevel = $user['EffectiveClass'];
 
 $LevelCap = 1000;
 
 // Setup for current view mode
-$SortStr = 'IF(AssignedToUser = '.$LoggedUser['ID'].', 0, 1) ASC, ';
+$SortStr = 'IF(AssignedToUser = '.$user['ID'].', 0, 1) ASC, ';
 switch ($View) {
   case 'unanswered':
     $ViewString = 'Unanswered';
@@ -43,7 +43,7 @@ switch ($View) {
 $WhereCondition = "
   WHERE (
     LEAST($LevelCap, spc.Level) <= $UserLevel
-    OR spc.AssignedToUser = '".$LoggedUser['ID']."')
+    OR spc.AssignedToUser = '".$user['ID']."')
   AND spc.Status IN ('$Status')";
 
 if ($ViewString == 'Your Unanswered') {
@@ -56,7 +56,7 @@ if ($ViewString == 'Your Unanswered') {
 
 list($Page, $Limit) = Format::page_limit(MESSAGES_PER_PAGE);
 // Get messages
-$StaffPMs = $DB->query("
+$StaffPMs = $db->query("
   SELECT
     SQL_CALC_FOUND_ROWS
     spc.ID,
@@ -77,9 +77,9 @@ $StaffPMs = $DB->query("
   LIMIT $Limit
 ");
 
-$DB->query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
-$DB->set_query_id($StaffPMs);
+$db->query('SELECT FOUND_ROWS()');
+list($NumResults) = $db->next_record();
+$db->set_query_id($StaffPMs);
 
 $CurURL = Format::get_url();
 if (empty($CurURL)) {
@@ -111,7 +111,7 @@ $Pages = Format::get_pages($Page, $NumResults, MESSAGES_PER_PAGE, 9);
   <div class="box pad" id="inbox">
     <?php
 
-if (!$DB->has_results()) {
+if (!$db->has_results()) {
     // No messages
 ?>
     <h2>No messages</h2>
@@ -147,7 +147,7 @@ if (!$DB->has_results()) {
         <?php
 
   // List messages
-  while (list($ID, $Subject, $UserID, $Status, $Level, $AssignedToUser, $Date, $Unread, $NumReplies, $ResolverID) = $DB->next_record()) {
+  while (list($ID, $Subject, $UserID, $Status, $Level, $AssignedToUser, $Date, $Unread, $NumReplies, $ResolverID) = $db->next_record()) {
 
     //$UserInfo = Users::user_info($UserID);
       $UserStr = Users::format_username($UserID, true, true, true, true);
@@ -195,7 +195,7 @@ if (!$DB->has_results()) {
         </tr>
         <?php
 
-    $DB->set_query_id($StaffPMs);
+    $db->set_query_id($StaffPMs);
   } //while
 
     // Close table and multiresolve form?>
@@ -207,7 +207,7 @@ if (!$DB->has_results()) {
     </form>
     <?php
   }
-} //if (!$DB->has_results())
+} //if (!$db->has_results())
 ?>
   </div>
   <div class="linkbox">

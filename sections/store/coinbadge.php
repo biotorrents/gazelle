@@ -1,16 +1,16 @@
 <?php
 #declare(strict_types=1);
 
-$UserID = $LoggedUser['ID'];
-$DB->prepared_query("
+$UserID = $user['ID'];
+$db->prepared_query("
   SELECT First, Second
   FROM misc
   WHERE Name='CoinBadge'");
 
-if ($DB->has_results()) {
-    list($Purchases, $Price) = $DB->next_record();
+if ($db->has_results()) {
+    list($Purchases, $Price) = $db->next_record();
 } else {
-    $DB->prepared_query("
+    $db->prepared_query("
     INSERT INTO misc
       (Name, First, Second)
     VALUES ('CoinBadge', 0, 1000)");
@@ -24,33 +24,33 @@ View::header('Store');
   if (isset($_GET['confirm'])
    && $_GET['confirm'] === 1
    && !Badges::has_badge($UserID, 255)) {
-      $DB->prepared_query("
+      $db->prepared_query("
       SELECT BonusPoints
       FROM users_main
       WHERE ID = $UserID");
 
-      list($Points) = $DB->has_results() ? $DB->next_record() : [0];
+      list($Points) = $db->has_results() ? $db->next_record() : [0];
       if ($Points > $Price) {
           if (!Badges::award_badge($UserID, 255)) {
               $Err = 'Could not award badge, unknown error occurred.';
           } else {
-              $DB->prepared_query("
+              $db->prepared_query("
               UPDATE users_main
               SET BonusPoints = BonusPoints - $Price
               WHERE ID = $UserID");
 
-              $DB->prepared_query("
+              $db->prepared_query("
               UPDATE users_info
               SET AdminComment = CONCAT('".sqltime()." - Purchased badge 255 from store\n\n', AdminComment)
               WHERE UserID = $UserID");
 
-              $Cache->delete_value("user_info_heavy_$UserID");
+              $cache->delete_value("user_info_heavy_$UserID");
               // Calculate new badge values
               $Purchases += 1;
               $x = $Purchases;
               $Price = 1000+$x*(10000+1400*((sin($x/1.3)+cos($x/4.21))+(sin($x/2.6)+cos(2*$x/4.21))/2));
 
-              $DB->prepared_query("
+              $db->prepared_query("
               UPDATE misc
               SET First  = $Purchases,
                 Second = $Price

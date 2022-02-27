@@ -23,13 +23,13 @@ if (!$_GET['post'] || !is_number($_GET['post'])) {
 $PostID = $_GET['post'];
 
 // Message is selected providing the user quoting is one of the two people in the thread
-$DB->query("
+$db->query("
   SELECT m.Body
   FROM pm_messages AS m
     JOIN pm_conversations_users AS u ON m.ConvID = u.ConvID
   WHERE m.ID = '$PostID'
-    AND u.UserID = ".$LoggedUser['ID']);
-list($Body) = $DB->next_record(MYSQLI_NUM);
+    AND u.UserID = ".$user['ID']);
+list($Body) = $db->next_record(MYSQLI_NUM);
 $Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[Encrypted]';
 
 // This gets sent to the browser, which echoes it wherever

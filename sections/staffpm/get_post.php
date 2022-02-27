@@ -21,14 +21,14 @@ if (!$_GET['post'] || !is_number($_GET['post'])) {
 $PostID = $_GET['post'];
 
 // Message is selected providing the user quoting is the guy who opened the PM or has the right level
-$DB->query("
+$db->query("
   SELECT m.Message, c.Level, c.UserID
   FROM staff_pm_messages AS m
     JOIN staff_pm_conversations AS c ON m.ConvID = c.ID
   WHERE m.ID = '$PostID'");
-list($Message, $Level, $UserID) = $DB->next_record(MYSQLI_NUM);
+list($Message, $Level, $UserID) = $db->next_record(MYSQLI_NUM);
 
-if (($LoggedUser['ID'] === $UserID) || ($IsFLS && $LoggedUser['Class'] >= $Level)) {
+if (($user['ID'] === $UserID) || ($IsFLS && $user['Class'] >= $Level)) {
     // This gets sent to the browser, which echoes it wherever
     echo trim($Message);
 } else {

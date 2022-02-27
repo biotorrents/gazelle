@@ -13,13 +13,13 @@ if (!is_number($_GET['id'])) {
   error();
 }
 
-$DB->prepared_query("
+$db->prepared_query("
   UPDATE reportsv2
   SET Status = 'InProgress',
-    ResolverID = " . $LoggedUser['ID'] . "
+    ResolverID = " . $user['ID'] . "
   WHERE ID = " . $_GET['id']);
 
-if ($DB->affected_rows() == 0) {
+if ($db->affected_rows() == 0) {
   echo '0';
 } else {
   echo '1';

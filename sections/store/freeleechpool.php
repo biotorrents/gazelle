@@ -9,37 +9,37 @@ if (isset($_POST['donation'])) {
         error('Invalid donation');
     }
 
-    $UserID = $LoggedUser['ID'];
-    $DB->prepared_query("
+    $UserID = $user['ID'];
+    $db->prepared_query("
       SELECT BonusPoints
       FROM users_main
       WHERE ID = $UserID");
 
-    if ($DB->has_results()) {
-        list($Points) = $DB->next_record();
+    if ($db->has_results()) {
+        list($Points) = $db->next_record();
 
         if ($Points >= $Donation) {
             $PoolTipped = false;
 
-            $DB->prepared_query("
+            $db->prepared_query("
               UPDATE users_main
               SET BonusPoints = BonusPoints - $Donation
               WHERE ID = $UserID");
 
-            $DB->prepared_query("
+            $db->prepared_query("
               UPDATE misc
               SET First = First + $Donation
               WHERE Name = 'FreeleechPool'");
-            $Cache->delete_value('user_info_heavy_'.$UserID);
+            $cache->delete_value('user_info_heavy_'.$UserID);
 
             // Check to see if we're now over the target pool size
-            $DB->prepared_query("
+            $db->prepared_query("
               SELECT First, Second
               FROM misc
               WHERE Name = 'FreeleechPool'");
 
-            if ($DB->has_results()) {
-                list($Pool, $Target) = $DB->next_record();
+            if ($db->has_results()) {
+                list($Pool, $Target) = $db->next_record();
 
                 if ($Pool > $Target) {
                     $PoolTipped = true;
@@ -48,7 +48,7 @@ if (isset($_POST['donation'])) {
 
                     for ($i = 0; $i < $NumTorrents; $i++) {
                         $TorrentSize = intval($Pool * (($i===$NumTorrents-1)?1:(rand(10, 80)/100)) * 100000); # todo
-                        $DB->prepared_query("
+                        $db->prepared_query("
                           SELECT ID, Size
                           FROM torrents
                           WHERE Size < $TorrentSize
@@ -58,10 +58,10 @@ if (isset($_POST['donation'])) {
                           ORDER BY Seeders ASC, Size DESC
                           LIMIT 1");
 
-                        if ($DB->has_results()) {
-                            list($TorrentID, $Size) = $DB->next_record();
+                        if ($db->has_results()) {
+                            list($TorrentID, $Size) = $db->next_record();
 
-                            $DB->prepared_query("
+                            $db->prepared_query("
                               INSERT INTO shop_freeleeches
                                 (TorrentID, ExpiryTime)
                               VALUES($TorrentID, NOW() + INTERVAL 2 DAY)");
@@ -77,14 +77,14 @@ if (isset($_POST['donation'])) {
                     }
 
                     $Target = rand(10000, 100000);
-                    $DB->prepared_query("
+                    $db->prepared_query("
                       UPDATE misc
                       SET First = 0,
                         Second = $Target
                       WHERE Name = 'FreeleechPool'");
                 }
             }
-            $Cache->delete_value('shop_freeleech_list');
+            $cache->delete_value('shop_freeleech_list');
         } else {
             error("Not enough points to donate");
         }
@@ -116,13 +116,13 @@ if (isset($_POST['donation'])) {
 <?php
 View::footer();
 } else {
-    $DB->prepared_query("
+    $db->prepared_query("
       SELECT First
       FROM misc
       WHERE Name = 'FreeleechPool'");
 
-    if ($DB->has_results()) {
-        list($Pool) = $DB->next_record();
+    if ($db->has_results()) {
+        list($Pool) = $db->next_record();
     } else {
         $Pool = 0;
     }

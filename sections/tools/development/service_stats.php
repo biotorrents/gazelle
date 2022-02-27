@@ -7,12 +7,12 @@ if (!check_perms('site_debug') || !check_perms('admin_clear_cache')) {
 
 if (isset($_POST['global_flush'])) {
     authorize();
-    $Cache->flush();
+    $cache->flush();
 }
 
-$DB->prepared_query('SHOW GLOBAL STATUS');
-$DBStats = $DB->to_array('Variable_name');
-$MemStats = $Cache->getStats();
+$db->prepared_query('SHOW GLOBAL STATUS');
+$dbStats = $db->to_array('Variable_name');
+$MemStats = $cache->getStats();
 
 View::header("Service Stats"); ?>
 
@@ -36,14 +36,14 @@ View::header("Service Stats"); ?>
       </tr>
 
       <tr>
-        <td<?php if ($DBStats['Threads_connected']['Value'] / $DBStats['Threads_created']['Value']> 0.7) {
+        <td<?php if ($dbStats['Threads_connected']['Value'] / $dbStats['Threads_created']['Value']> 0.7) {
     echo '
           class="invalid" ';
 } ?>>Database:</td>
 
           <td>
-            <?=number_format($DBStats['Threads_created']['Value'])?>
-            <span class="float_right">(<?=number_format(($DBStats['Threads_connected']['Value'] / $DBStats['Threads_created']['Value']) * 100, 3)?>%)</span>
+            <?=number_format($dbStats['Threads_created']['Value'])?>
+            <span class="float_right">(<?=number_format(($dbStats['Threads_connected']['Value'] / $dbStats['Threads_created']['Value']) * 100, 3)?>%)</span>
           </td>
       </tr>
 
@@ -65,7 +65,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Connections']['Value'])?>
+          <?=number_format($dbStats['Connections']['Value'])?>
         </td>
       </tr>
 
@@ -117,7 +117,7 @@ View::header("Service Stats"); ?>
           <form class="delete_form" name="cache" action="" method="post">
             <input type="hidden" name="action" value="service_stats" />
             <input type="hidden" name="auth"
-              value="<?=$LoggedUser['AuthKey']?>" />
+              value="<?=$user['AuthKey']?>" />
             <input type="hidden" name="global_flush" value="1" />
             <input type="submit" class="button-primary" value="Flush" />
           </form>
@@ -146,7 +146,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_select']['Value'])?>
+          <?=number_format($dbStats['Com_select']['Value'])?>
         </td>
       </tr>
 
@@ -163,7 +163,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_insert']['Value'] + $DBStats['Com_update']['Value'])?>
+          <?=number_format($dbStats['Com_insert']['Value'] + $dbStats['Com_update']['Value'])?>
         </td>
       </tr>
 
@@ -189,7 +189,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_select']['Value'])?>
+          <?=number_format($dbStats['Com_select']['Value'])?>
           <span class="float_right">(100.000%)</span>
         </td>
       </tr>
@@ -209,7 +209,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_insert']['Value'])?>
+          <?=number_format($dbStats['Com_insert']['Value'])?>
           <span class="float_right">(100.000%)</span>
         </td>
       </tr>
@@ -269,7 +269,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_update']['Value'])?>
+          <?=number_format($dbStats['Com_update']['Value'])?>
           <span class="float_right">(100.000%)</span>
         </td>
       </tr>
@@ -293,7 +293,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_delete']['Value'])?>
+          <?=number_format($dbStats['Com_delete']['Value'])?>
           <span class="float_right">(100.000%)</span>
         </td>
       </tr>
@@ -329,14 +329,14 @@ View::header("Service Stats"); ?>
       </tr>
 
       <tr>
-        <td<?php if ($DBStats['Slow_queries']['Value']> $DBStats['Questions']['Value'] / 7500) {
+        <td<?php if ($dbStats['Slow_queries']['Value']> $dbStats['Questions']['Value'] / 7500) {
     echo ' class="tooltip
           invalid" title="1/7500 queries is allowed to be slow to minimize performance impact." ';
 } ?>>Database Slow:
           </td>
 
           <td>
-            <?=number_format($DBStats['Slow_queries']['Value'])?>
+            <?=number_format($dbStats['Slow_queries']['Value'])?>
           </td>
       </tr>
 
@@ -358,7 +358,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=Format::get_size($DBStats['Bytes_received']['Value'])?>
+          <?=Format::get_size($dbStats['Bytes_received']['Value'])?>
         </td>
       </tr>
 
@@ -376,7 +376,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=Format::get_size($DBStats['Bytes_sent']['Value'])?>
+          <?=Format::get_size($dbStats['Bytes_sent']['Value'])?>
         </td>
       </tr>
     </table>
@@ -393,8 +393,8 @@ View::header("Service Stats"); ?>
       </tr>
 
       <tr>
-        <td<?php if (($MemStats['cmd_get'] / $MemStats['uptime']) * 5 < $DBStats['Com_select']['Value'] /
-          $DBStats['Uptime']['Value']) {
+        <td<?php if (($MemStats['cmd_get'] / $MemStats['uptime']) * 5 < $dbStats['Com_select']['Value'] /
+          $dbStats['Uptime']['Value']) {
     echo ' class="invalid" ' ;
 } ?>>Cache:</td>
 
@@ -406,7 +406,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_select']['Value'] / $DBStats['Uptime']['Value'], 5)?>/s
+          <?=number_format($dbStats['Com_select']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -415,8 +415,8 @@ View::header("Service Stats"); ?>
       </tr>
 
       <tr>
-        <td<?php if (($MemStats['cmd_set'] / $MemStats['uptime']) * 5 < ($DBStats['Com_insert']['Value'] +
-          $DBStats['Com_update']['Value']) / $DBStats['Uptime']['Value']) {
+        <td<?php if (($MemStats['cmd_set'] / $MemStats['uptime']) * 5 < ($dbStats['Com_insert']['Value'] +
+          $dbStats['Com_update']['Value']) / $dbStats['Uptime']['Value']) {
     echo ' class="invalid" ' ;
 } ?>>Cache:</td>
 
@@ -428,7 +428,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format(($DBStats['Com_insert']['Value'] + $DBStats['Com_update']['Value']) / $DBStats['Uptime']['Value'], 5)?>/s
+          <?=number_format(($dbStats['Com_insert']['Value'] + $dbStats['Com_update']['Value']) / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -450,7 +450,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_select']['Value'] / $DBStats['Uptime']['Value'], 5)?>/s
+          <?=number_format($dbStats['Com_select']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -468,7 +468,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_insert']['Value'] / $DBStats['Uptime']['Value'], 5)?>/s
+          <?=number_format($dbStats['Com_insert']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -504,7 +504,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_update']['Value'] / $DBStats['Uptime']['Value'], 5)?>/s
+          <?=number_format($dbStats['Com_update']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -522,7 +522,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_delete']['Value'] / $DBStats['Uptime']['Value'], 5)?>/s
+          <?=number_format($dbStats['Com_delete']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -551,7 +551,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Database Slow:</td>
         <td>
-          <?=number_format($DBStats['Slow_queries']['Value'] / $DBStats['Uptime']['Value'], 5)?>/s
+          <?=number_format($dbStats['Slow_queries']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -573,7 +573,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=Format::get_size($DBStats['Bytes_received']['Value'] / $DBStats['Uptime']['Value'])?>/s
+          <?=Format::get_size($dbStats['Bytes_received']['Value'] / $dbStats['Uptime']['Value'])?>/s
         </td>
       </tr>
 
@@ -590,7 +590,7 @@ View::header("Service Stats"); ?>
 
       <tr>
         <td>Database:</td>
-        <td><?=Format::get_size($DBStats['Bytes_sent']['Value'] / $DBStats['Uptime']['Value'])?>/s
+        <td><?=Format::get_size($dbStats['Bytes_sent']['Value'] / $dbStats['Uptime']['Value'])?>/s
         </td>
       </tr>
     </table>

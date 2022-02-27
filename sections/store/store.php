@@ -1,12 +1,12 @@
 <?php
 #declare(strict_types=1);
 
-$UserID = $LoggedUser['ID'];
-$PermID = $LoggedUser['PermissionID'];
+$UserID = $user['ID'];
+$PermID = $user['PermissionID'];
 
-if (!$LoggedUser['DisablePoints']) {
+if (!$user['DisablePoints']) {
     $PointsRate = 0;
-    $getTorrents = $DB->prepared_query("
+    $getTorrents = $db->prepared_query("
       SELECT um.BonusPoints,
         COUNT(DISTINCT x.fid) AS Torrents,
         SUM(t.Size) AS Size,
@@ -27,8 +27,8 @@ if (!$LoggedUser['DisablePoints']) {
 
     # BASE BONUS POINTS RATE
     # See /wiki.php?action=article&name=bonuspoints
-    if ($DB->has_results()) {
-        list($BonusPoints, $NumTorr, $TSize, $TTime, $TSeeds) = $DB->next_record();
+    if ($db->has_results()) {
+        list($BonusPoints, $NumTorr, $TSize, $TTime, $TSeeds) = $db->next_record();
 
         $ENV = ENV::go();
         $PointsRate = ($ENV->BP_COEFF + (0.55*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5, ($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3)))**0.95;
@@ -53,7 +53,7 @@ View::header('Store');
   <div class="box">
     <h3 id="lists" class="float_left">
       You have
-      <?=number_format($LoggedUser['BonusPoints'])?>
+      <?=number_format($user['BonusPoints'])?>
       <?=BONUS_POINTS?>
       to spend
     </h3>
@@ -271,19 +271,19 @@ View::header('Store');
       </tr>
 
       <?php
-$DB->prepared_query("
+$db->prepared_query("
   SELECT ID AS BadgeID, Name, Description
   FROM badges
   WHERE ID IN (40, 41, 42, 43, 44, 45, 46, 47, 48)
 ");
 
-if ($DB->has_results()) {
-    $Badges = $DB->to_array();
+if ($db->has_results()) {
+    $Badges = $db->to_array();
     foreach ($Badges as $ID => $Badge) { ?>
       <tr class="row">
         <?php
-        if (($ID === 0 || Badges::has_badge($LoggedUser['ID'], $Badges[$ID-1]['BadgeID']))
-        && !Badges::has_badge($LoggedUser['ID'], $Badge['BadgeID'])) {
+        if (($ID === 0 || Badges::has_badge($user['ID'], $Badges[$ID-1]['BadgeID']))
+        && !Badges::has_badge($user['ID'], $Badge['BadgeID'])) {
             $BadgeText = '<a href="store.php?item=badge&badge='.$Badge['BadgeID'].'">'.$Badge['Name'].'</a>';
         } else {
             $BadgeText = $Badge['Name'];

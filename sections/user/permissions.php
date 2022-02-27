@@ -11,12 +11,12 @@ if (!isset($_REQUEST['userid']) || !is_number($_REQUEST['userid'])) {
 
 list($UserID, $Username, $PermissionID) = array_values(Users::user_info($_REQUEST['userid']));
 
-$DB->query("
+$db->query("
   SELECT CustomPermissions
   FROM users_main
   WHERE ID = '$UserID'");
 
-list($Customs) = $DB->next_record(MYSQLI_NUM, false);
+list($Customs) = $db->next_record(MYSQLI_NUM, false);
 
 
 $Defaults = Permissions::get_permissions_for_user($UserID, []);
@@ -37,10 +37,10 @@ if (isset($_POST['action'])) {
     }
     $Delta['MaxCollages'] = $_POST['maxcollages'];
 
-    $Cache->begin_transaction("user_info_heavy_$UserID");
-    $Cache->update_row(false, array('CustomPermissions' => $Delta));
-    $Cache->commit_transaction(0);
-    $DB->query("
+    $cache->begin_transaction("user_info_heavy_$UserID");
+    $cache->update_row(false, array('CustomPermissions' => $Delta));
+    $cache->commit_transaction(0);
+    $db->query("
     UPDATE users_main
     SET CustomPermissions = '".db_string(serialize($Delta))."'
     WHERE ID = '$UserID'");
@@ -108,7 +108,7 @@ View::header("$Username &gt; Permissions");
   </table>
   <input type="hidden" name="action" value="permissions" />
   <input type="hidden" name="auth"
-    value="<?=$LoggedUser['AuthKey']?>" />
+    value="<?=$user['AuthKey']?>" />
   <input type="hidden" name="id"
     value="<?=$_REQUEST['userid']?>" />
   <?php

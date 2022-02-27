@@ -248,7 +248,7 @@ if ((empty($_GET['search'])
       ORDER BY $Order $Way
       LIMIT $Limit";
 } else {
-    $DB->query("
+    $db->query("
       CREATE TEMPORARY TABLE `temp_sections_torrents_user` (
         `GroupID` int(10) unsigned not null,
         `TorrentID` int(10) unsigned not null,
@@ -261,7 +261,7 @@ if ((empty($_GET['search'])
         `Size` bigint(12) unsigned,
       PRIMARY KEY (`TorrentID`)) CHARSET=utf8");
 
-    $DB->query("
+    $db->query("
       INSERT IGNORE INTO `temp_sections_torrents_user`
       SELECT
         t.`GroupID`,
@@ -305,12 +305,12 @@ if ((empty($_GET['search'])
       LIMIT $Limit";
 }
 
-$DB->query($SQL);
-$GroupIDs = $DB->collect('GroupID');
-$TorrentsInfo = $DB->to_array('TorrentID', MYSQLI_ASSOC);
+$db->query($SQL);
+$GroupIDs = $db->collect('GroupID');
+$TorrentsInfo = $db->to_array('TorrentID', MYSQLI_ASSOC);
 
-$DB->query('SELECT FOUND_ROWS()');
-list($TorrentCount) = $DB->next_record();
+$db->query('SELECT FOUND_ROWS()');
+list($TorrentCount) = $db->next_record();
 
 $Results = Torrents::get_groups($GroupIDs);
 $Action = esc($_GET['type']);
@@ -535,7 +535,7 @@ foreach ($Categories as $CatKey => $CatName) {
       $DisplayName .= '<a class="torrent_title" href="torrents.php?id='.$GroupID.'&amp;torrentid='.$TorrentID.'" ';
 
       # No cover art
-      if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
+      if (!isset($user['CoverArt']) || $user['CoverArt']) {
           $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
       }
 
@@ -594,7 +594,7 @@ foreach ($Categories as $CatKey => $CatName) {
           <div class="group_info clear">
             <span class="torrent_links_block">
               [ <a
-                href="torrents.php?action=download&amp;id=<?= $TorrentID ?>&amp;authkey=<?= $LoggedUser['AuthKey'] ?>&amp;torrent_pass=<?= $LoggedUser['torrent_pass'] ?>"
+                href="torrents.php?action=download&amp;id=<?= $TorrentID ?>&amp;authkey=<?= $user['AuthKey'] ?>&amp;torrent_pass=<?= $user['torrent_pass'] ?>"
                 class="tooltip" title="Download">DL</a>
               | <a
                 href="reportsv2.php?action=report&amp;id=<?= $TorrentID ?>"

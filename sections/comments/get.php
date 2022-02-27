@@ -6,10 +6,10 @@ if (!$_GET['postid'] || !is_number($_GET['postid'])) {
 }
 
 $PostID = (int)$_GET['postid'];
-$DB->query("
+$db->query("
   SELECT Body
   FROM comments
   WHERE ID = $PostID");
-list($Body) = $DB->next_record(MYSQLI_NUM);
+list($Body) = $db->next_record(MYSQLI_NUM);
 
 echo trim($Body);

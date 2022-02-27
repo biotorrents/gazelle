@@ -17,13 +17,13 @@ if (!isset($_GET['id']) || !is_number($_GET['id'])) {
     }
 } else {
     $TorrentID = $_GET['id'];
-    $DB->prepared_query("
+    $db->prepared_query("
     SELECT tg.`category_id`, t.`GroupID`, u.`Username`
     FROM `torrents_group` AS tg
       LEFT JOIN `torrents` AS t ON t.`GroupID` = tg.`id`
       LEFT JOIN `users_main` AS u ON t.`UserID` = u.`ID`
     WHERE t.`ID` = " . $_GET['id']);
-    list($CategoryID, $GroupID, $Username) = $DB->next_record();
+    list($CategoryID, $GroupID, $Username) = $db->next_record();
     $Artists = Artists::get_artist($GroupID);
     $TorrentCache = get_group_info($GroupID, true);
     $GroupDetails = $TorrentCache[0];
@@ -94,7 +94,7 @@ View::header('Report', 'reportsv2,browse,torrent,recommend');
       </tr>
       <?php
       $LangName = $GroupName ? $GroupName : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP);
-      build_torrents_table($Cache, $DB, $LoggedUser, $GroupID, $LangName, $GroupCategoryID, $TorrentList, $Types, $Username);
+      build_torrents_table($cache, $db, $user, $GroupID, $LangName, $GroupCategoryID, $TorrentList, $Types, $Username);
       ?>
     </table>
   </div>
@@ -102,7 +102,7 @@ View::header('Report', 'reportsv2,browse,torrent,recommend');
   <form class="create_form" name="report" action="reportsv2.php?action=takereport" enctype="multipart/form-data" method="post" id="reportform">
     <div>
       <input type="hidden" name="submit" value="true" />
-      <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
       <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
       <input type="hidden" name="categoryid" value="<?=$CategoryID?>" />
     </div>

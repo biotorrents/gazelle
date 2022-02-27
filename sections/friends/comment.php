@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-$DB->prepared_query("
+$db->prepared_query("
   UPDATE `friends`
   SET `Comment`='$P[comment]'
-  WHERE `UserID`='$LoggedUser[ID]'
+  WHERE `UserID`='$user[ID]'
     AND `FriendID`='$P[friendid]'
 ");
 

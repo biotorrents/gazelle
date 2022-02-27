@@ -23,64 +23,64 @@ if (empty($_GET['amount']) || !is_number($_GET['amount']) || $_GET['amount'] < $
 
 $Bounty = ($Amount * (1 - $RequestTax));
 
-$DB->query("
+$db->query("
   SELECT TorrentID
   FROM requests
   WHERE ID = $RequestID");
-list($Filled) = $DB->next_record();
+list($Filled) = $db->next_record();
 
-if ($LoggedUser['BytesUploaded'] >= $Amount && empty($Filled)) {
+if ($user['BytesUploaded'] >= $Amount && empty($Filled)) {
 
   // Create vote!
-    $DB->query("
+    $db->query("
     INSERT IGNORE INTO requests_votes
       (RequestID, UserID, Bounty)
     VALUES
-      ($RequestID, ".$LoggedUser['ID'].", $Bounty)");
+      ($RequestID, ".$user['ID'].", $Bounty)");
 
-    if ($DB->affected_rows() < 1) {
+    if ($db->affected_rows() < 1) {
         //Insert failed, probably a dupe vote, just increase their bounty.
-        $DB->query("
+        $db->query("
         UPDATE requests_votes
         SET Bounty = (Bounty + $Bounty)
-        WHERE UserID = ".$LoggedUser['ID']."
+        WHERE UserID = ".$user['ID']."
           AND RequestID = $RequestID");
         echo 'dupe';
     }
 
 
 
-    $DB->query("
+    $db->query("
     UPDATE requests
     SET LastVote = NOW()
     WHERE ID = $RequestID");
 
-    $Cache->delete_value("request_$RequestID");
-    $Cache->delete_value("request_votes_$RequestID");
+    $cache->delete_value("request_$RequestID");
+    $cache->delete_value("request_votes_$RequestID");
 
     $ArtistForm = Requests::get_artists($RequestID);
     foreach ($ArtistForm as $Artist) {
-        $Cache->delete_value('artists_requests_'.$Artist['id']);
+        $cache->delete_value('artists_requests_'.$Artist['id']);
     }
 
     // Subtract amount from user
-    $DB->query("
+    $db->query("
     UPDATE users_main
     SET Uploaded = (Uploaded - $Amount)
-    WHERE ID = ".$LoggedUser['ID']);
-    $Cache->delete_value('user_stats_'.$LoggedUser['ID']);
+    WHERE ID = ".$user['ID']);
+    $cache->delete_value('user_stats_'.$user['ID']);
 
     Requests::update_sphinx_requests($RequestID);
     echo 'success';
-    $DB->query("
+    $db->query("
     SELECT UserID
     FROM requests_votes
     WHERE RequestID = '$RequestID'
-      AND UserID != '$LoggedUser[ID]'");
+      AND UserID != '$user[ID]'");
     $UserIDs = [];
-    while (list($UserID) = $DB->next_record()) {
+    while (list($UserID) = $db->next_record()) {
         $UserIDs[] = $UserID;
     }
-} elseif ($LoggedUser['BytesUploaded'] < $Amount) {
+} elseif ($user['BytesUploaded'] < $Amount) {
     echo 'bankrupt';
 }

@@ -8,14 +8,14 @@ if (!is_number($CollageID)) {
     error(0);
 }
 
-$DB->query("
+$db->query("
   SELECT Name, Description, TagList, UserID, CategoryID, Locked, MaxGroups, MaxGroupsPerUser, Featured
   FROM collages
   WHERE ID = '$CollageID'");
-list($Name, $Description, $TagList, $UserID, $CategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Featured) = $DB->next_record();
+list($Name, $Description, $TagList, $UserID, $CategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Featured) = $db->next_record();
 $TagList = implode(', ', explode(' ', $TagList));
 
-if ($CategoryID == 0 && $UserID != $LoggedUser['ID'] && !check_perms('site_collages_delete')) {
+if ($CategoryID == 0 && $UserID != $user['ID'] && !check_perms('site_collages_delete')) {
     error(403);
 }
 
@@ -41,11 +41,11 @@ if (!empty($Err)) {
     <form class="edit_form" name="collage" action="collages.php" method="post">
       <input type="hidden" name="action" value="edit_handle" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
       <input type="hidden" name="collageid"
         value="<?=$CollageID?>" />
       <table id="edit_collage" class="layout collage_edit">
-        <?php if (check_perms('site_collages_delete') || ($CategoryID == 0 && $UserID == $LoggedUser['ID'] && check_perms('site_collages_renamepersonal'))) { ?>
+        <?php if (check_perms('site_collages_delete') || ($CategoryID == 0 && $UserID == $user['ID'] && check_perms('site_collages_renamepersonal'))) { ?>
         <tr>
           <td class="label">Name</td>
           <td><input type="text" name="name" size="60"

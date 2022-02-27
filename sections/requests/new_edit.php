@@ -21,7 +21,7 @@ if (!$NewRequest) {
 $Disabled = '';
 
 /* todo: Fix this or configure the limit with good error message
-if ($NewRequest && ($LoggedUser['BytesUploaded'] < 250 * 1024 * 1024 || !check_perms('site_submit_requests'))) {
+if ($NewRequest && ($user['BytesUploaded'] < 250 * 1024 * 1024 || !check_perms('site_submit_requests'))) {
     error('You do not have enough uploaded to make a request');
 }
 */
@@ -49,7 +49,7 @@ if (!$NewRequest) {
         $CategoryName = $Categories[$CategoryID - 1];
 
         $ProjectCanEdit = (check_perms('project_team') && !$IsFilled && $CategoryID === '0');
-        $CanEdit = ((!$IsFilled && $LoggedUser['ID'] === $Request['UserID'] && $VoteCount < 2) || $ProjectCanEdit || check_perms('site_moderate_requests'));
+        $CanEdit = ((!$IsFilled && $user['ID'] === $Request['UserID'] && $VoteCount < 2) || $ProjectCanEdit || check_perms('site_moderate_requests'));
 
         if (!$CanEdit) {
             error(403);
@@ -61,18 +61,18 @@ if (!$NewRequest) {
 }
 
   if ($NewRequest && !empty($_GET['artistid']) && is_number($_GET['artistid'])) {
-      $DB->query("
+      $db->query("
         SELECT Name
         FROM artists_group
         WHERE artistid = ".$_GET['artistid']."
         LIMIT 1");
-      list($ArtistName) = $DB->next_record();
+      list($ArtistName) = $db->next_record();
       $ArtistForm = array(
       1 => array(array('name' => trim($ArtistName))),
     );
   } elseif ($NewRequest && !empty($_GET['groupid']) && is_number($_GET['groupid'])) {
       $ArtistForm = Artists::get_artist($_GET['groupid']);
-      $DB->query("
+      $db->query("
         SELECT
         tg.`title`,
         tg.`subject`,
@@ -88,7 +88,7 @@ if (!$NewRequest) {
         JOIN `torrents_tags` AS tt ON tt.`GroupID` = tg.`id`
         JOIN `tags` AS t ON t.`ID` = tt.`TagID`
         WHERE tg.`id` = ".$_GET['groupid']);
-      if (list($Title, $Title2, $TitleJP, $Year, $Studio, $Series, $CatalogueNumber, $Image, $Tags, $CategoryID) = $DB->next_record()) {
+      if (list($Title, $Title2, $TitleJP, $Year, $Studio, $Series, $CatalogueNumber, $Image, $Tags, $CategoryID) = $db->next_record()) {
           $GroupID = trim($_REQUEST['groupid']);
           $CategoryName = $Categories[$CategoryID - 1];
           $Disabled = 'readonly="readonly"';
@@ -121,7 +121,7 @@ View::header(
         <?php } ?>
 
         <input type="hidden" name="auth"
-          value="<?= $LoggedUser['AuthKey'] ?>" />
+          value="<?= $user['AuthKey'] ?>" />
 
         <input type="hidden" name="action"
           value="<?= ($NewRequest ? 'takenew' : 'takeedit') ?>" />
@@ -282,15 +282,15 @@ View::header(
 
           <td>
             <?php
-              $GenreTags = $Cache->get_value('genre_tags');
+              $GenreTags = $cache->get_value('genre_tags');
                 if (!$GenreTags) {
-                    $DB->query('
+                    $db->query('
                     SELECT Name
                     FROM tags
                     WHERE TagType = \'genre\'
                     ORDER BY Name');
-                    $GenreTags = $DB->collect('Name');
-                    $Cache->cache_value('genre_tags', $GenreTags, 3600 * 6);
+                    $GenreTags = $db->collect('Name');
+                    $cache->cache_value('genre_tags', $GenreTags, 3600 * 6);
                 }
 
                 if (!empty($Disabled)) { ?>
@@ -416,10 +416,10 @@ View::header(
               value="<?= (!empty($Bounty) ? $Bounty : '100') ?>" />
 
             <input type="hidden" id="current_uploaded"
-              value="<?= $LoggedUser['BytesUploaded'] ?>" />
+              value="<?= $user['BytesUploaded'] ?>" />
 
             <input type="hidden" id="current_downloaded"
-              value="<?= $LoggedUser['BytesDownloaded'] ?>" />
+              value="<?= $user['BytesDownloaded'] ?>" />
 
             <ul>
               <!-- todo: Return this feature
@@ -430,12 +430,12 @@ View::header(
 
               <li>
                 <strong>Uploaded:</strong>
-                <span id="new_uploaded"><?= Format::get_size($LoggedUser['BytesUploaded']) ?></span>
+                <span id="new_uploaded"><?= Format::get_size($user['BytesUploaded']) ?></span>
               </li>
 
               <li>
                 <strong>Ratio:</strong>
-                <span id="new_ratio"><?= Format::get_ratio_html($LoggedUser['BytesUploaded'], $LoggedUser['BytesDownloaded']) ?></span>
+                <span id="new_ratio"><?= Format::get_ratio_html($user['BytesUploaded'], $user['BytesDownloaded']) ?></span>
               </li>
             </ul>
           </td>

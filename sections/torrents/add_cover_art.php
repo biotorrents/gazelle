@@ -5,7 +5,7 @@ if (!check_perms('site_edit_wiki')) {
   error(403);
 }
 
-$UserID = $LoggedUser['ID'];
+$UserID = $user['ID'];
 $GroupID = db_string($_POST['groupid']);
 $Summaries = $_POST['summary'];
 $Images = $_POST['image'];
@@ -31,19 +31,19 @@ for ($i = 0; $i < count($Images); $i++) {
   // sanitize inputs
   $Image = db_string($Image);
   $Summary = db_string($Summary);
-  $DB->query("
+  $db->query("
     INSERT IGNORE INTO cover_art
       (GroupID, Image, Summary, UserID, Time)
     VALUES
       ('$GroupID', '$Image', '$Summary', '$UserID', '$Time')");
 
-  if ($DB->affected_rows()) {
+  if ($db->affected_rows()) {
     $Changed = true;
   }
 }
 
 if ($Changed) {
-  $Cache->delete_value("torrents_cover_art_$GroupID");
+  $cache->delete_value("torrents_cover_art_$GroupID");
 }
 
 header('Location: '.$_SERVER['HTTP_REFERER']);

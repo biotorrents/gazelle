@@ -1,9 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-$DB->prepared_query("
+$db->prepared_query("
   DELETE FROM `friends`
-  WHERE `UserID`='$LoggedUser[ID]'
+  WHERE `UserID`='$user[ID]'
     AND `FriendID`='$P[friendid]'
 ");
 
