@@ -1,6 +1,12 @@
 <?php
 declare(strict_types = 1);
 
+/**
+ * G class
+ *
+ * A stopgap until the main app is a singleton.
+ * Holds the database, cache, and user globals.
+ */
 class G
 {
     # Singleton
