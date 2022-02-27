@@ -81,8 +81,8 @@ if ($ENV->DEV) {
      * Otherwise, nothing of value was lost.
      * @see http://phpdebugbar.com/docs/
      */
-    $Debug = Debug::go();
-    $Render = $Debug->getJavascriptRenderer();
+    $debug = Debug::go();
+    $Render = $debug->getJavascriptRenderer();
     echo $Render->render();
 }
 

@@ -10,7 +10,7 @@ class Tools
      */
     public static function site_ban_ip($IP)
     {
-        $Debug = Debug::go();
+        $debug = Debug::go();
 
         $A = substr($IP, 0, strcspn($IP, '.:'));
         $IPNum = Tools::ip_to_unsigned($IP);
@@ -29,7 +29,7 @@ class Tools
             G::$cache->cache_value('ip_bans_'.$A, $IPBans, 0);
         }
 
-        #$Debug->log_var($IPBans, 'IP bans for class '.$A);
+        #$debug->log_var($IPBans, 'IP bans for class '.$A);
         foreach ($IPBans as $Index => $IPBan) {
             list($ID, $FromIP, $ToIP) = $IPBan;
             if ($IPNum >= $FromIP && $IPNum <= $ToIP) {

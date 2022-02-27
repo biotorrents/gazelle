@@ -5,7 +5,7 @@
  * User subscription page
  */
 
-$Debug = Debug::go();
+$debug = Debug::go();
 
 if (isset($user['PostsPerPage'])) {
     $PerPage = $user['PostsPerPage'];
@@ -94,7 +94,7 @@ $Results = $db->to_array(false, MYSQLI_ASSOC, false);
 $db->prepared_query('SELECT FOUND_ROWS()');
 list($NumResults) = $db->next_record();
 
-#$Debug->log_var($Results, 'Results');
+#$debug->log_var($Results, 'Results');
 
 $TorrentGroups = $Requests = [];
 foreach ($Results as $Result) {

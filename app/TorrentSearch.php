@@ -164,7 +164,7 @@ class TorrentSearch
         || !$GroupResults && !isset(self::$SortOrders[$OrderBy])
         || !in_array($OrderWay, ['asc', 'desc'])
     ) {
-            $Debug = Debug::go();
+            $debug = Debug::go();
             $ErrMsg = "TorrentSearch constructor arguments:\n" . print_r(func_get_args(), true);
             error(400);
         }

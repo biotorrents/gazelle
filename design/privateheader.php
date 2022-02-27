@@ -6,8 +6,8 @@ $twig = Twig::go();
 $View = new View();
 
 if ($ENV->DEV) {
-    $Debug = Debug::go();
-    $Render = $Debug->getJavascriptRenderer();
+    $debug = Debug::go();
+    $Render = $debug->getJavascriptRenderer();
 }
 ?>
 

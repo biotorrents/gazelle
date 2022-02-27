@@ -17,7 +17,7 @@ class Users
      */
     public static function get_classes()
     {
-        $Debug = Debug::go();
+        $debug = Debug::go();
 
         // Get permissions
         list($Classes, $ClassLevels) = G::$cache->get_value('classes');
@@ -37,7 +37,7 @@ class Users
             G::$cache->cache_value('classes', [$Classes, $ClassLevels], 0);
         }
 
-        $Debug['messages']->info('loaded permissions');
+        $debug['messages']->info('loaded permissions');
         return [$Classes, $ClassLevels];
     }
 

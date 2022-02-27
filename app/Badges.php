@@ -83,7 +83,7 @@ class Badges
      */
     public static function display_badge($BadgeID, $Tooltip = false)
     {
-        $Debug = Debug::go();
+        $debug = Debug::go();
 
         $html = '';
         if (($Badges = G::$cache->get_value('badges')) && array_key_exists($BadgeID, $Badges)) {

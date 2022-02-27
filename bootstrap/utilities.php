@@ -327,13 +327,13 @@ function add_json_info($Json)
         ]);
     }
     if (!isset($Json['debug']) && check_perms('site_debug')) {
-        /** @var DEBUG $Debug */
-        #global $Debug;
-        $Debug = Debug::go();
+        /** @var DEBUG $debug */
+        #global $debug;
+        $debug = Debug::go();
         $Json = array_merge($Json, [
             'debug' => [
-                'queries' => $Debug->get_queries(),
-                'searches' => $Debug->get_sphinxql_queries()
+                'queries' => $debug->get_queries(),
+                'searches' => $debug->get_sphinxql_queries()
             ],
         ]);
     }

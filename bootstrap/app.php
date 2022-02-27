@@ -15,26 +15,26 @@ declare(strict_types=1);
 Security::oops();
 
 # Debugging
-$Debug = Debug::go();
-$Debug['messages']->info('debug okay');
+$debug = Debug::go();
+$debug['messages']->info('debug okay');
 
 # Load the config
 $ENV = ENV::go();
-$Debug['messages']->info('config okay');
+$debug['messages']->info('config okay');
 
 # Database
 $db = new DB;
-$Debug['messages']->info('database okay');
+$debug['messages']->info('database okay');
 
 # Cache
 $cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
-$Debug['messages']->info('cache okay');
+$debug['messages']->info('cache okay');
 
 # Globals
 # Note: G::go is called twice
 # This is necessary for $user
 G::go();
-$Debug['messages']->info('globals okay');
+$debug['messages']->info('globals okay');
 
 # Start a buffer
 ob_start();
@@ -44,7 +44,7 @@ ob_start();
  * Needs to be a session class.
  */
 
-$Debug['time']->startMeasure('users', 'user handling');
+$debug['time']->startMeasure('users', 'user handling');
 
  /**
   * Implement api tokens to use with ajax endpoint
@@ -352,7 +352,7 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
 G::go();
 
 # Measure all that
-$Debug['time']->stopMeasure('users', 'user handling');
+$debug['time']->stopMeasure('users', 'user handling');
 
 
 /**
@@ -391,9 +391,9 @@ if (isset(G::$user['LockedAccount']) && !in_array($Document, $AllowedPages)) {
     }
 }
 
-$Debug['messages']->info('completed module execution');
+$debug['messages']->info('completed module execution');
 
 // Flush to user
 ob_end_flush();
 
-$Debug['messages']->info('set headers and send to user');
+$debug['messages']->info('set headers and send to user');

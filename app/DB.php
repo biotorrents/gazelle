@@ -176,10 +176,10 @@ class DB
     public function halt($Msg)
     {
         $ENV = ENV::go();
-        $Debug = Debug::go();
+        $debug = Debug::go();
 
         global $argv;
-        #global $Debug, $argv;
+        #global $debug, $argv;
 
         $dbError = 'MySQL: '.strval($Msg).' SQL error: '.strval($this->Errno).' ('.strval($this->Error).')';
 
@@ -318,10 +318,10 @@ class DB
     public function query($Query, &...$BindVars)
     {
         $ENV = ENV::go();
-        $Debug = Debug::go();
+        $debug = Debug::go();
 
         $this->connect();
-        $Debug['time']->startMeasure('database', 'database queries');
+        $debug['time']->startMeasure('database', 'database queries');
 
         // In the event of a MySQL deadlock, we sleep allowing MySQL time to unlock, then attempt again for a maximum of 5 tries
         foreach (range(1, 5) as $i) {
@@ -341,7 +341,7 @@ class DB
 
             # Return query info in dev
             if ($ENV->DEV) {
-                $Debug['database']->log($Query);
+                $debug['database']->log($Query);
                 if (!empty(mysqli_error($this->LinkID))) {
                     d(mysqli_error($this->LinkID));
                 }

@@ -92,7 +92,7 @@ class View
     {
         $ENV = ENV::go();
         global $SessionID, $UserSessions, $Time, $Mobile;
-        #global $ScriptStartTime, $SessionID, $UserSessions, $Debug, $Time, $Mobile;
+        #global $ScriptStartTime, $SessionID, $UserSessions, $debug, $Time, $Mobile;
 
         if (!is_array(G::$user)
           || empty(G::$user['ID'])
