@@ -13,7 +13,7 @@ and render insightful views using data from robust external sources.
 
 ## Bearer token authorization
 
-[API Docs](https://docs.biotorrents.de).
+[API Docs](https://docs.torrents.bio).
 API tokens can be generated in the
 [user security settings](sections/user/token.php)
 and used with the JSON API.
@@ -26,7 +26,7 @@ Features include clean URIs and centralized middleware.
 ## Good typography
 
 BioTorrents.de supports an array of
-[unobtrusive fonts](resources/scss/assets/scss/fonts.scss)
+[unobtrusive fonts](resources/scss/assets/fonts.scss)
 with the appropriate bold/italic glyphs and monospace.
 These options are available to every theme.
 Font Awesome 5 is also universally available.
@@ -43,7 +43,7 @@ The default recursive regex BBcode parser is replaced by
 [Vanilla NBBC](https://github.com/vanilla/nbbc).
 Parsed texts are cached for speed.
 
-## $ENV recursive singleton
+## ENV recursive singleton
 
 [The site configuration](config/public.php)
 is being migrated to a format govered by the
