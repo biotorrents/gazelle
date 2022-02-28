@@ -547,7 +547,7 @@ class Users
           : '';
 
         $Str .= ($IsEnabled && $UserInfo['Enabled'] === 2)
-          ? '<a href="rules.php"><img src="'.STATIC_SERVER.'common/symbols/disabled.png" alt="Banned" title="Disabled" class="tooltip" /></a>'
+          ? '<a href="/rules"><img src="'.STATIC_SERVER.'common/symbols/disabled.png" alt="Banned" title="Disabled" class="tooltip" /></a>'
           : '';
 
         if ($Class) {
