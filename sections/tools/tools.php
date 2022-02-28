@@ -172,7 +172,6 @@ View::header('Staff Tools');
   create_row("Invite pool", "tools.php?action=invite_pool", check_perms("users_view_invites"));
   create_row("Registration log", "tools.php?action=registration_log", check_perms("users_view_ips") && check_perms("users_view_email"));
   create_row("Upscale pool", "tools.php?action=upscale_pool", check_perms("site_view_flow"));
-  create_row("User flow", "tools.php?action=user_flow", check_perms("site_view_flow"));
 
   if ($ToolsHTML) {
       ?>
