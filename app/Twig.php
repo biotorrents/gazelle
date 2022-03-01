@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 class Twig
 {
-    # Singleton
+    # singleton
     private static $twig = null;
 
     /**
@@ -74,11 +74,11 @@ class Twig
 
         /*
         # DebugBar
-        $Profile = new \Twig\Profiler\Profile();
+        $profile = new \Twig\Profiler\Profile();
         $debug = Debug::go();
         $twig->addExtension(
             new \DebugBar\Bridge\Twig\TimeableTwigExtensionProfiler(
-                $Profile,
+                $profile,
                 $debug['time']
             )
         );

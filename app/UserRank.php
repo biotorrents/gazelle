@@ -4,7 +4,7 @@ declare(strict_types=1);
 class UserRank
 {
     # Prefix for memcache keys, to make life easier
-    const PREFIX = 'percentiles_';
+    private static $cachePrefix = 'percentiles_';
 
 
     /**
@@ -13,9 +13,9 @@ class UserRank
      *
      * BTW - ingenious
      */
-    private static function build_table($MemKey, $Query)
+    private static function build_table($cacheKey, $query)
     {
-        $QueryID = G::$db->get_query_id();
+        $queryId = G::$db->get_query_id();
 
         G::$db->prepared_query("
         DROP TEMPORARY TABLE IF EXISTS
@@ -31,9 +31,10 @@ class UserRank
         ");
 
 
-        G::$db->prepared_query("
+        G::$db->prepared_query(
+            "
         INSERT INTO `temp_stats`(`value`) "
-        . $Query
+        . $query
         );
 
 
@@ -57,24 +58,24 @@ class UserRank
         ");
 
 
-        $Table = G::$db->to_array();
-        G::$db->set_query_id($QueryID);
+        $table = G::$db->to_array();
+        G::$db->set_query_id($queryId);
 
-        # Give a little variation to the cache length, so all the tables don't expire at the same time
-        G::$cache->cache_value($MemKey, $Table, 3600 * 24 * rand(800, 1000) * 0.001);
+        # Randomize the cache length so all the tables don't expire at the same time
+        G::$cache->cache_value($cacheKey, $table, random_int(43200, 86400)); # 12h => 1d
 
-        return $Table;
+        return $table;
     }
 
 
     /**
      * table_query
      */
-    private static function table_query($TableName)
+    private static function table_query($tableName)
     {
-        switch ($TableName) {
+        switch ($tableName) {
             case 'uploaded':
-            $Query =  "
+            $query =  "
             SELECT
               `Uploaded`
             FROM
@@ -87,7 +88,7 @@ class UserRank
             break;
 
             case 'downloaded':
-            $Query =  "
+            $query =  "
             SELECT
               `Downloaded`
             FROM
@@ -100,7 +101,7 @@ class UserRank
             break;
 
             case 'uploads':
-            $Query = "
+            $query = "
             SELECT
               COUNT(t.`ID`) AS `Uploads`
             FROM
@@ -118,7 +119,7 @@ class UserRank
             break;
 
             case 'requests':
-            $Query = "
+            $query = "
             SELECT
               COUNT(r.`ID`) AS `Requests`
             FROM
@@ -136,7 +137,7 @@ class UserRank
             break;
 
             case 'posts':
-            $Query = "
+            $query = "
             SELECT
               COUNT(p.`ID`) AS `Posts`
             FROM
@@ -154,7 +155,7 @@ class UserRank
             break;
 
             case 'bounty':
-            $Query = "
+            $query = "
             SELECT
               SUM(rv.`Bounty`) AS `Bounty`
             FROM
@@ -172,7 +173,7 @@ class UserRank
             break;
 
             case 'artists':
-            $Query = "
+            $query = "
             SELECT
               COUNT(ta.`ArtistID`) AS `Artists`
             FROM
@@ -193,42 +194,42 @@ class UserRank
             break;
         }
 
-        return $Query;
+        return $query;
     }
 
 
     /**
      * get_rank
      */
-    public static function get_rank($TableName, $Value)
+    public static function get_rank($tableName, $value)
     {
-        if ($Value === 0) {
+        if ($value === 0) {
             return 0;
         }
 
-        $Table = G::$cache->get_value(self::PREFIX.$TableName);
-        if (!$Table) {
-            # Cache lock!
-            $Lock = G::$cache->get_value(self::PREFIX.$TableName.'_lock');
+        $table = G::$cache->get_value(self::$cachePrefix . $tableName);
+        if (!$table) {
+            # cache lock!
+            $lock = G::$cache->get_value(self::$cachePrefix . "{$tableName}_lock");
 
-            if ($Lock) {
+            if ($lock) {
                 return false;
             } else {
-                G::$cache->cache_value(self::PREFIX.$TableName.'_lock', '1', 300);
-                $Table = self::build_table(self::PREFIX.$TableName, self::table_query($TableName));
-                G::$cache->delete_value(self::PREFIX.$TableName.'_lock');
+                G::$cache->cache_value(self::$cachePrefix . "{$tableName}_lock", 1, 300);
+                $table = self::build_table(self::$cachePrefix . $tableName, self::table_query($tableName));
+                G::$cache->delete_value(self::$cachePrefix . "{$tableName}_lock");
             }
         }
 
-        $LastPercentile = 0;
-        foreach ($Table as $Row) {
-            list($CurValue) = $Row;
+        $lastPercentile = 0;
+        foreach ($table as $Row) {
+            list($currentValue) = $Row;
 
-            if ($CurValue >= $Value) {
-                return $LastPercentile;
+            if ($currentValue >= $value) {
+                return $lastPercentile;
             }
 
-            $LastPercentile++;
+            $lastPercentile++;
         }
 
         # 100th percentile
@@ -239,28 +240,28 @@ class UserRank
     /**
      * overall_score
      */
-    public static function overall_score($Uploaded, $Downloaded, $Uploads, $Requests, $Posts, $Bounty, $Artists, $Ratio)
+    public static function overall_score($uploaded, $downloaded, $uploads, $requests, $posts, $bounty, $artists, $ratio)
     {
         # We can do this all in 1 line, but it's easier to read this way
-        if ($Ratio > 1) {
-            $Ratio = 1;
+        if ($ratio > 1) {
+            $ratio = 1;
         }
 
-        $TotalScore = 0;
+        $totalScore = 0;
         if (in_array(false, func_get_args(), true)) {
             return false;
         }
         
-        $TotalScore += $Uploaded * 15;
-        $TotalScore += $Downloaded * 8;
-        $TotalScore += $Uploads * 25;
-        $TotalScore += $Requests * 2;
-        $TotalScore += $Posts;
-        $TotalScore += $Bounty;
-        $TotalScore += $Artists;
-        $TotalScore /= (15 + 8 + 25 + 2 + 1 + 1 + 1);
-        $TotalScore *= $Ratio;
+        $totalScore += $uploaded * 15;
+        $totalScore += $downloaded * 8;
+        $totalScore += $uploads * 25;
+        $totalScore += $requests * 2;
+        $totalScore += $posts;
+        $totalScore += $bounty;
+        $totalScore += $artists;
+        $totalScore /= (15 + 8 + 25 + 2 + 1 + 1 + 1);
+        $totalScore *= $ratio;
         
-        return $TotalScore;
+        return $totalScore;
     }
 }

@@ -54,7 +54,7 @@ https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-ba
         <input type="hidden" name="action" value="search" />
 
         {# Advanced vs. basic search from user settings #}
-        {% if LoggedUser.SearchType %}
+        {% if user.SearchType %}
         <input type="hidden" name="advanced_search" value="true">
         {% endif %}
 
@@ -71,7 +71,7 @@ https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-ba
 
         {#
         The universal search bar itself
-        todo: Change "search" to "advgroupname" if LoggedUser.SearchType && search-what = torrents
+        todo: Change "search" to "advgroupname" if user.SearchType && search-what = torrents
         #}
         <input type="text" id="search" name="search" aria-label="Search the site" placeholder="Search the site"
           maxlength="10000" size="30" autocomplete="off" spellcheck="false" />
@@ -91,27 +91,27 @@ https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-ba
 
         {# Search #}
         <li class="subitem">
-          <a href="torrents.php">Search</a>
+          <a href="/torrents.php">Search</a>
         </li>
 
         {# Collages #}
         <li class="subitem">
-          <a href="collages.php">Collections</a>
+          <a href="/collages.php">Collections</a>
         </li>
 
         {# Requests #}
         <li class="subitem">
-          <a href="requests.php">Requests</a>
+          <a href="/requests.php">Requests</a>
         </li>
 
         {# Top 10 #}
         <li class="subitem">
-          <a href="top10.php">Top&nbsp;10</a>
+          <a href="/top10.php">Top&nbsp;10</a>
         </li>
 
         {# Better #}
         <li class="subitem">
-          <a href="better.php">Better</a>
+          <a href="/better.php">Better</a>
         </li>
       </ul>
     </li>
@@ -123,7 +123,7 @@ https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-ba
 
         {# Forums #}
         <li class="subitem">
-          <a href="forums.php">Forums</a>
+          <a href="/forums.php">Forums</a>
         </li>
 
         {# Slack #}
@@ -140,7 +140,7 @@ https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-ba
 
         {# Wiki #}
         <li class="subitem">
-          <a href="wiki.php">Wiki</a>
+          <a href="/wiki.php">Wiki</a>
         </li>
       </ul>
     </li>
@@ -152,22 +152,22 @@ https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-ba
 
         {# Profile #}
         <li class="subitem">
-          <a href="user.php?id={{ LoggedUser.ID }}">{{ LoggedUser.Username }}</a>
+          <a href="/user.php?id={{ user.ID }}">{{ user.Username }}</a>
         </li>
 
         {# Settings #}
         <li class="subitem">
-          <a href="user.php?action=edit&amp;userid={{ LoggedUser.ID }}">Settings</a>
+          <a href="/user.php?action=edit&amp;userid={{ user.ID }}">Settings</a>
         </li>
 
         {# Inbox #}
         <li class="subitem">
-          <a href="{{ inbox }}">Inbox</a>
+          <a href="/{{ inbox }}">Inbox</a>
         </li>
 
         {# Staff Inbox #}
         <li class="subitem">
-          <a href="staffpm.php">Staff&nbsp;Inbox</a>
+          <a href="/staffpm.php">Staff&nbsp;Inbox</a>
         </li>
 
         {# Logout #}
@@ -184,34 +184,34 @@ https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-ba
 
         {# Uploads #}
         <li class="subitem">
-          <a href="torrents.php?type=uploaded&amp;userid={{ LoggedUser.ID }}">Uploads</a>
+          <a href="/torrents.php?type=uploaded&amp;userid={{ user.ID }}">Uploads</a>
         </li>
 
         {# Bookmarks #}
         <li class="subitem">
-          <a href="bookmarks.php?type=torrents">Bookmarks</a>
+          <a href="/bookmarks.php?type=torrents">Bookmarks</a>
         </li>
 
         {# Notifications #}
         {% if notify %}
         <li class="subitem">
-          <a href="user.php?action=notify">Notifications</a>
+          <a href="/user.php?action=notify">Notifications</a>
         </li>
         {% endif %}
 
         {# Subscriptions #}
         <li class="subitem">
-          <a href="userhistory.php?action=subscriptions">Subscriptions</a>
+          <a href="/userhistory.php?action=subscriptions">Subscriptions</a>
         </li>
 
         {# Comments #}
         <li class="subitem">
-          <a href="comments.php">Comments</a>
+          <a href="/comments.php">Comments</a>
         </li>
 
         {# Friends #}
         <li class="subitem">
-          <a href="friends.php">Friends</a>
+          <a href="/friends.php">Friends</a>
         </li>
       </ul>
     </li>

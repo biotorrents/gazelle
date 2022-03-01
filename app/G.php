@@ -9,13 +9,15 @@ declare(strict_types = 1);
  */
 class G
 {
-    # Singleton
+    # singleton
     private static $G = null;
 
-    # Globals
-    public static $db;
-    public static $cache;
-    public static $user;
+    # globals
+    public static $db = null;
+    public static $cache = null;
+    public static $debug = null;
+    public static $ENV = null;
+    public static $user = null;
 
 
     /**
@@ -59,10 +61,12 @@ class G
      */
     private static function factory()
     {
-        global $db, $cache, $user;
+        global $db, $cache, $debug, $ENV, $user;
 
-        self::$db = $db;
-        self::$cache = $cache;
+        self::$db = new DB;
+        self::$cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
+        self::$debug = Debug::go();
+        self::$ENV = ENV::go();
         self::$user =& $user;
     }
 }

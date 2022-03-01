@@ -512,7 +512,6 @@ View::header('Upload rules', 'rules');
     </div>
     <!-- End rules -->
 
-    <?php include('jump.php'); ?>
   </div>
 </div>
 <?php View::footer();

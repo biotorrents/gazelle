@@ -340,6 +340,5 @@ $GB = 1024*1024*1024;
     </ul>
   </div>
 
-  <?php include('jump.php'); ?>
 </div>
 <?php View::footer();

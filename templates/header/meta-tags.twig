@@ -1,8 +1,8 @@
 <link rel="canonical" href="https://{{ ENV.SITE_DOMAIN }}" />
-<link rel="manifest" href="/manifest.php" />
+<link rel="manifest" href="/manifest" />
 <link rel="search" type="application/opensearchdescription+xml" title="{{ ENV.SITE_NAME }}"
     href="{{ ENV.STATIC_SERVER }}/opensearch.xml" />
-<link rel="shortcut icon" href="{{ ENV.STATIC_SERVER }}/images/favicon.png" />
+<link rel="shortcut icon" href="/images/favicon.png" />
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="description" content="{{ ENV.DESCRIPTION }}" />
@@ -11,10 +11,10 @@
 <meta name="robots" content="none" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-{# Gazelle LoggedUser meta tags #}
-{% if LoggedUser %}
-<meta name="authkey" content="{{ LoggedUser.AuthKey }}" />
-<meta name="userid" content="{{ LoggedUser.ID }}" />
+{# Gazelle user meta tags #}
+{% if user %}
+<meta name="authkey" content="{{ user.AuthKey }}" />
+<meta name="userid" content="{{ user.ID }}" />
 {% endif %}
 
 {# https://developers.facebook.com/tools/debug/ #}

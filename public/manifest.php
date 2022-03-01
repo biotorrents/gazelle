@@ -1,33 +1,54 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__.'/../classes/config.php';
+require_once __DIR__.'/../config/app.php';
 
 # For non-AJAX calls
-if ($_SERVER['PHP_SELF'] === '/manifest.php') {
+if ($_SERVER['PHP_SELF'] === '/manifest') {
     manifest();
 }
 
+/**
+ * manifest
+ */
 function manifest()
 {
     $ENV = ENV::go();
 
-    $manifest = <<<JSON
-{
-  "name": "$ENV->SITE_NAME",
-  "short_name": "$ENV->SITE_NAME",
-  "description": "$ENV->DESCRIPTION",
-  "start_url": "index.php",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0288d1",
-  "icons": [{
-    "src": "$ENV->STATIC_SERVER/images/favicon.png",
-    "sizes": "1024x1024",
-    "type": "image/png"
-  }]
-}
-JSON;
+    # https://developer.mozilla.org/en-US/docs/Web/Manifest
+    $manifest = json_encode(
+        [
+            '$schema' => 'https://json.schemastore.org/web-manifest-combined.json',
+            'name' => $ENV->SITE_NAME,
+            'short_name' => $ENV->SITE_NAME,
+            'start_url' => '/',
+            'display' => 'standalone',
+            'background_color' => '#ffffff',
+            'theme_color' => '#0288d1',
+            'description' => $ENV->DESCRIPTION,
+            'icons' => [
+                [
+                    'src' => '/images/liquidrop-bookish-1k.png',
+                    'sizes' => '1024x1024',
+                    'type' => 'image/png',
+                ],
+                [
+                    'src' => '/images/liquidrop-postmod-1k.png',
+                    'sizes' => '1024x1024',
+                    'type' => 'image/png',
+                ],
+            ],
+            /*
+            'related_applications' => [
+                [
+                    'platform' => 'play',
+                    'url' => 'https://play.google.com/store/apps/details?id=cheeaun.hackerweb',
+                ],
+            ],
+            */
+        ],
+        JSON_UNESCAPED_SLASHES
+    );
 
     # Print header and $manifest for remote addresses
     # Return JSON for localhost (API manifest endpoint):

@@ -133,7 +133,8 @@ class Users
                 if (!$UserInfo['Paranoia']) {
                     $UserInfo['Paranoia'] = [];
                 }
-                $UserInfo['Class'] = $Classes[$UserInfo['PermissionID']]['Level'];
+
+                $UserInfo['Class'] = $Classes[$UserInfo['PermissionID']]['Level'] ?? null;
 
                 # Badges
                 G::$db->query("

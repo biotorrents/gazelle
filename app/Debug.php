@@ -15,7 +15,7 @@ use DebugBar\DataCollector\Renderable;
 
 class Debug
 {
-    # Singleton
+    # singleton
     private static $debug = null;
 
     /**

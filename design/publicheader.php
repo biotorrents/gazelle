@@ -16,10 +16,10 @@ echo <<<HTML
 HTML;
 
 echo $twig->render(
-    'header/meta-tags.html',
+    'header/meta-tags.twig',
     [
     'ENV' => $ENV,
-    'LoggedUser' => $user,
+    'user' => $user,
     'title' => esc($PageTitle)
   ]
 );

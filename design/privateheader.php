@@ -26,10 +26,10 @@ if ($ENV->DEV) {
 
   <?=
     $twig->render(
-        'header/meta-tags.html',
+        'header/meta-tags.twig',
         [
         'ENV' => $ENV,
-        'LoggedUser' => G::$user,
+        'user' => G::$user,
         'title' => esc($PageTitle)
       ]
     );
@@ -43,9 +43,9 @@ $Scripts = array_filter(
           'vendor/jquery.min',
           #'vendor/jquery-ui.min',
           'vendor/highlight.min',
-          'vendor/instantpage.min',
+          #'vendor/instantpage.min',
           'ajax.class',
-          'menus',
+          #'menus',
           'global',
       ],
         explode(',', $JSIncludes)
@@ -237,10 +237,10 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
     </h1>
 
     <?= $twig->render(
-    'header/main-menu.html',
+    'header/main-menu.twig',
     [
           'ENV' => $ENV,
-          'LoggedUser' => G::$user,
+          'user' => G::$user,
           'inbox' => Inbox::get_inbox_link(),
           'notify' => check_perms('site_torrents_notify'),
         ]
