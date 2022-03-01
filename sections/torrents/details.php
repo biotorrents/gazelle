@@ -619,11 +619,11 @@ foreach ($TorrentList as $Torrent) {
           </td>
           <td class="number_column nobr"><?=Format::get_size($Size)?>
           </td>
-          <td class="number_column"><?=number_format($Snatched)?>
+          <td class="number_column"><?=Text::number_format($Snatched)?>
           </td>
-          <td class="number_column"><?=number_format($Seeders)?>
+          <td class="number_column"><?=Text::number_format($Seeders)?>
           </td>
-          <td class="number_column"><?=number_format($Leechers)?>
+          <td class="number_column"><?=Text::number_format($Leechers)?>
           </td>
         </tr>
         <tr
@@ -772,7 +772,7 @@ if (empty($user['DisableRequests']) && count($Requests) > 0) {
     ?>
     <div class="box">
       <div class="head">
-        <span style="font-weight: bold;">Requests (<?=number_format(count($Requests))?>)</span>
+        <span style="font-weight: bold;">Requests (<?=Text::number_format(count($Requests))?>)</span>
         <a data-toggle-target="#requests" data-toggle-replace="Hide" class="float_right brackets">Show</a>
       </div>
       <table id="requests" class="request_table hidden">
@@ -835,7 +835,7 @@ if (count($Collages) > 0) {
     <div class="box">
       <table class="collage_table" id="collages">
         <tr class="colhead">
-          <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=number_format(count($Collages))?> collection<?=((count($Collages) > 1) ? 's' : '')?><?=$SeeAll?>
+          <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=Text::number_format(count($Collages))?> collection<?=((count($Collages) > 1) ? 's' : '')?><?=$SeeAll?>
           </td>
           <td># torrents</td>
         </tr>
@@ -844,7 +844,7 @@ if (count($Collages) > 0) {
         unset($Collages[$i]); ?>
         <tr>
           <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-          <td class="number_column"><?=number_format($CollageTorrents)?>
+          <td class="number_column"><?=Text::number_format($CollageTorrents)?>
           </td>
         </tr>
         <?php
@@ -853,7 +853,7 @@ if (count($Collages) > 0) {
         list($CollageName, $CollageTorrents, $CollageID) = $Collage; ?>
         <tr class="collage_rows hidden">
           <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-          <td class="number_column"><?=number_format($CollageTorrents)?>
+          <td class="number_column"><?=Text::number_format($CollageTorrents)?>
           </td>
         </tr>
         <?php
@@ -890,7 +890,7 @@ if (count($PersonalCollages) > 0) {
     } ?>
     <table class="box collage_table" id="personal_collages">
       <tr class="colhead">
-        <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=number_format(count($PersonalCollages))?> personal
+        <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=Text::number_format(count($PersonalCollages))?> personal
           collection<?=((count($PersonalCollages) > 1) ? 's' : '')?><?=$SeeAll?>
         </td>
         <td># torrents</td>
@@ -900,7 +900,7 @@ if (count($PersonalCollages) > 0) {
         unset($PersonalCollages[$i]); ?>
       <tr>
         <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-        <td class="number_column"><?=number_format($CollageTorrents)?>
+        <td class="number_column"><?=Text::number_format($CollageTorrents)?>
         </td>
       </tr>
       <?php
@@ -909,7 +909,7 @@ if (count($PersonalCollages) > 0) {
         list($CollageName, $CollageTorrents, $CollageID) = $Collage; ?>
       <tr class="personal_rows hidden">
         <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-        <td class="number_column"><?=number_format($CollageTorrents)?>
+        <td class="number_column"><?=Text::number_format($CollageTorrents)?>
         </td>
       </tr>
       <?php

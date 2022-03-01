@@ -68,7 +68,7 @@ View::header('Manage Permissions', 'validate');
     <?php if (is_numeric($_REQUEST['id'])) { ?>
     <tr>
       <td class="label">Current users in this class</td>
-      <td><?=number_format($UserCount)?>
+      <td><?=Text::number_format($UserCount)?>
       </td>
     </tr>
     <?php } ?>

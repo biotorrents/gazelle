@@ -163,15 +163,15 @@ foreach ($GroupIDs as $GroupID) {
   </td>
 
   <td class="number_column">
-    <?=number_format($Torrent['Snatched'])?>
+    <?=Text::number_format($Torrent['Snatched'])?>
   </td>
 
   <td
     class="number_column<?=(($Torrent['Seeders'] === 0) ? ' r00' : '')?>">
-    <?=number_format($Torrent['Seeders'])?>
+    <?=Text::number_format($Torrent['Seeders'])?>
   </td>
 
-  <td class="number_column"><?=number_format($Torrent['Leechers'])?>
+  <td class="number_column"><?=Text::number_format($Torrent['Leechers'])?>
   </td>
 </tr>
 
@@ -254,16 +254,16 @@ foreach ($GroupIDs as $GroupID) {
   </td>
 
   <td class="number_column">
-    <?=number_format($Torrent['Snatched'])?>
+    <?=Text::number_format($Torrent['Snatched'])?>
   </td>
 
   <td
     class="number_column<?=(($Torrent['Seeders'] === 0) ? ' r00' : '')?>">
-    <?=number_format($Torrent['Seeders'])?>
+    <?=Text::number_format($Torrent['Seeders'])?>
   </td>
 
   <td class="number_column">
-    <?=number_format($Torrent['Leechers'])?>
+    <?=Text::number_format($Torrent['Leechers'])?>
   </td>
 </tr>
 
@@ -481,21 +481,21 @@ foreach ($ZIPOptions as $Option) {
 
       <ul class="stats nobullet">
         <li>
-          Torrents: <?=number_format($NumGroups)?>
+          Torrents: <?=Text::number_format($NumGroups)?>
         </li>
 
         <?php if (!empty($TopArtists)) { ?>
         <li>
-          Artists: <?=number_format(count($TopArtists))?>
+          Artists: <?=Text::number_format(count($TopArtists))?>
         </li>
         <?php } ?>
 
         <li>
-          Subscribers: <?=number_format((int)$Subscribers)?>
+          Subscribers: <?=Text::number_format((int)$Subscribers)?>
         </li>
 
         <li>
-          Built by <?=number_format(count($UserAdditions))?>
+          Built by <?=Text::number_format(count($UserAdditions))?>
           user<?=(count($UserAdditions) > 1 ? 's' : '')?>
         </li>
 
@@ -534,7 +534,7 @@ foreach ($ZIPOptions as $Option) {
         } ?>
 
           <li>
-            <a href="artist.php?id=<?=$ID?>"><?=$Artist['name']?></a> (<?=number_format($Artist['count'])?>)
+            <a href="artist.php?id=<?=$ID?>"><?=$Artist['name']?></a> (<?=Text::number_format($Artist['count'])?>)
           </li>
           <?php
     } ?>
@@ -557,7 +557,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
     } ?>
           <li>
             <?=Users::format_username($UserID, false, false, false)?>
-            (<?=number_format($Additions)?>)
+            (<?=Text::number_format($Additions)?>)
           </li>
           <?php
 } ?>

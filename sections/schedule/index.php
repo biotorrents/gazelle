@@ -29,7 +29,7 @@ function run_all_in($Dir)
         include($Dir.'/'.$Task);
 
         if ($ScheduleDebug) {
-            echo $Dir.'/'.$Task.': '.number_format(microtime(true)-$TimeStart, 3).($AS?"<br>":"\n");
+            echo $Dir.'/'.$Task.': '.Text::number_format(microtime(true)-$TimeStart, 3).($AS?"<br>":"\n");
         }
     }
 }

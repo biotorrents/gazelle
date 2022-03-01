@@ -44,7 +44,7 @@ if ($db->has_results()) {
     <tr>
       <td><?=esc($Name); ?></td>
       <td><?=($Secondary ? 'Secondary' : $Level) ?></td>
-      <td><?=number_format($UserCount); ?></td>
+      <td><?=Text::number_format($UserCount); ?></td>
       <td class="center">
         <a href="tools.php?action=permissions&amp;id=<?=$ID ?>" class="brackets">Edit</a>
         <a href="#" onclick="return confirmDelete(<?=$ID?>);" class="brackets">Remove</a>

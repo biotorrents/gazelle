@@ -135,13 +135,13 @@ foreach ($GroupIDs as $GroupID) {
   </td>
   <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
   </td>
-  <td class="number_column"><?=number_format($Torrent['Snatched'])?>
+  <td class="number_column"><?=Text::number_format($Torrent['Snatched'])?>
   </td>
   <td
     class="number_column<?=(($Torrent['Seeders'] == 0) ? ' r00' : '')?>">
-    <?=number_format($Torrent['Seeders'])?>
+    <?=Text::number_format($Torrent['Seeders'])?>
   </td>
-  <td class="number_column"><?=number_format($Torrent['Leechers'])?>
+  <td class="number_column"><?=Text::number_format($Torrent['Leechers'])?>
   </td>
 </tr>
 <?php
@@ -214,13 +214,13 @@ foreach ($GroupIDs as $GroupID) {
   </td>
   <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
   </td>
-  <td class="number_column"><?=number_format($Torrent['Snatched'])?>
+  <td class="number_column"><?=Text::number_format($Torrent['Snatched'])?>
   </td>
   <td
     class="number_column<?=(($Torrent['Seeders'] == 0) ? ' r00' : '')?>">
-    <?=number_format($Torrent['Seeders'])?>
+    <?=Text::number_format($Torrent['Seeders'])?>
   </td>
-  <td class="number_column"><?=number_format($Torrent['Leechers'])?>
+  <td class="number_column"><?=Text::number_format($Torrent['Leechers'])?>
   </td>
 </tr>
 <?php

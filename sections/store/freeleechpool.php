@@ -96,7 +96,7 @@ if (isset($_POST['donation'])) {
     <div class="box">
         <p>
             You donated
-            <?=number_format($Donation)?>
+            <?=Text::number_format($Donation)?>
             <?=BONUS_POINTS?>
             to the Freeleech Pool
         </p>
@@ -134,7 +134,7 @@ View::footer();
             <input type="hidden" name="item" value="freeleechpool">
             <strong>
                 There are currently
-                <?=number_format($Pool)?>
+                <?=Text::number_format($Pool)?>
                 <?=BONUS_POINTS?>
                 in the Freeleech Pool
             </strong>

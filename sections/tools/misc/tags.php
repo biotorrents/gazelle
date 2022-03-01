@@ -295,7 +295,7 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
             }
         }
 
-        echo "\n".'<div class="box pad center"><strong>Success!</strong> Affected entries: '.number_format($TotalAffected).'</div>';
+        echo "\n".'<div class="box pad center"><strong>Success!</strong> Affected entries: '.Text::number_format($TotalAffected).'</div>';
 
         if ($_GET['list']) {
             ?>

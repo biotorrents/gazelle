@@ -141,7 +141,7 @@ function generate_tag_table($Caption, $Tag, $Details, $Limit, $RequestsTable = f
       </td>
       <td><a class="<?=$Class?>"
           href="<?=$URLString?><?=$Detail['Name']?>"><?=$DisplayName?></a></td>
-      <td class="number_column"><?=number_format($Detail['Uses'])?>
+      <td class="number_column"><?=Text::number_format($Detail['Uses'])?>
       </td>
     </tr>
     <?php

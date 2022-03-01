@@ -177,9 +177,9 @@ class INVITE_TREE
         if ($Count) {
             ?>
     <p style="font-weight: bold;">
-        This tree has <?=number_format($Count)?> entries,
-        <?=number_format($Branches)?> branches,
-        and a depth of <?=number_format($MaxTreeLevel - $OriginalTreeLevel)?>.
+        This tree has <?=Text::number_format($Count)?> entries,
+        <?=Text::number_format($Branches)?> branches,
+        and a depth of <?=Text::number_format($MaxTreeLevel - $OriginalTreeLevel)?>.
         It has
         <?php
       $ClassStrings = [];
@@ -200,7 +200,7 @@ class INVITE_TREE
                     }
                 }
 
-                $LastClass = "$ClassCount $LastClass (" . number_format(($ClassCount / $Count) * 100) . '%)';
+                $LastClass = "$ClassCount $LastClass (" . Text::number_format(($ClassCount / $Count) * 100) . '%)';
                 $ClassStrings[] = $LastClass;
             }
 
@@ -220,7 +220,7 @@ class INVITE_TREE
             if ($DisabledCount === 0) {
                 echo '0%)';
             } else {
-                echo number_format(($DisabledCount / $Count) * 100) . '%)';
+                echo Text::number_format(($DisabledCount / $Count) * 100) . '%)';
             }
 
             echo ', and ';
@@ -231,7 +231,7 @@ class INVITE_TREE
             if ($DonorCount === 0) {
                 echo '0%)';
             } else {
-                echo number_format(($DonorCount / $Count) * 100) . '%)';
+                echo Text::number_format(($DonorCount / $Count) * 100) . '%)';
             }
             echo '. </p>';
 
@@ -252,7 +252,7 @@ class INVITE_TREE
                 echo '<p style="font-weight: bold;">';
                 echo $ParanoidCount;
                 echo ($ParanoidCount === 1) ? ' user (' : ' users (';
-                echo number_format(($ParanoidCount / $Count) * 100);
+                echo Text::number_format(($ParanoidCount / $Count) * 100);
                 echo '%) ';
                 echo ($ParanoidCount === 1) ? ' is' : ' are';
                 echo ' too paranoid to have their stats shown here, and ';

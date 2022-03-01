@@ -157,11 +157,11 @@ View::header($Name, 'browse,collage,recommend');
     <div class="box box_info box_statistics_collage_torrents">
       <div class="head"><strong>Statistics</strong></div>
       <ul class="stats nobullet">
-        <li>Artists: <?=number_format($NumGroups)?>
+        <li>Artists: <?=Text::number_format($NumGroups)?>
         </li>
-        <li>Subscribers: <?=number_format((int)$Subscribers)?>
+        <li>Subscribers: <?=Text::number_format((int)$Subscribers)?>
         </li>
-        <li>Built by <?=number_format(count($UserAdditions))?>
+        <li>Built by <?=Text::number_format(count($UserAdditions))?>
           user<?=(count($UserAdditions) > 1 ? 's' : '')?>
         </li>
         <li>Last updated: <?=time_diff($Updated)?>
@@ -182,7 +182,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
         break;
     } ?>
           <li><?=Users::format_username($UserID, false, false, false)?>
-            (<?=number_format($Additions)?>)</li>
+            (<?=Text::number_format($Additions)?>)</li>
           <?php
 }
 ?>

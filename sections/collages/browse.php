@@ -379,9 +379,9 @@ foreach ($Collages as $Collage) {
       <div class="tags"><?=$TorrentTags->format('collages.php?action=search&amp;tags=')?>
       </div>
     </td>
-    <td class="number_column"><?=number_format((int)$NumTorrents)?>
+    <td class="number_column"><?=Text::number_format((int)$NumTorrents)?>
     </td>
-    <td class="number_column"><?=number_format((int)$Subscribers)?>
+    <td class="number_column"><?=Text::number_format((int)$Subscribers)?>
     </td>
     <td class="nobr"><?=time_diff($Updated)?>
     </td>

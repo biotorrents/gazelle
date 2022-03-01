@@ -574,7 +574,7 @@ View::header($Title, 'requests');
                 </div>
             </td>
             <td class="nobr">
-                <span id="vote_count_<?=$RequestID?>"><?=number_format($VoteCount)?></span>
+                <span id="vote_count_<?=$RequestID?>"><?=Text::number_format($VoteCount)?></span>
                 <?php if (!$IsFilled && check_perms('site_vote')) { ?>
                 &nbsp;&nbsp; <a
                     href="javascript:Vote(0, <?=$RequestID?>)"

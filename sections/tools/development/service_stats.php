@@ -30,7 +30,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=number_format($MemStats['threads'])?>
+          <?=Text::number_format($MemStats['threads'])?>
           <span class="float_right">(100.000%)</span>
         </td>
       </tr>
@@ -42,8 +42,8 @@ View::header("Service Stats"); ?>
 } ?>>Database:</td>
 
           <td>
-            <?=number_format($dbStats['Threads_created']['Value'])?>
-            <span class="float_right">(<?=number_format(($dbStats['Threads_connected']['Value'] / $dbStats['Threads_created']['Value']) * 100, 3)?>%)</span>
+            <?=Text::number_format($dbStats['Threads_created']['Value'])?>
+            <span class="float_right">(<?=Text::number_format(($dbStats['Threads_connected']['Value'] / $dbStats['Threads_created']['Value']) * 100, 3)?>%)</span>
           </td>
       </tr>
 
@@ -58,14 +58,14 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=number_format($MemStats['total_connections'])?>
+          <?=Text::number_format($MemStats['total_connections'])?>
         </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($dbStats['Connections']['Value'])?>
+          <?=Text::number_format($dbStats['Connections']['Value'])?>
         </td>
       </tr>
 
@@ -80,14 +80,14 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Cache Current Index:</td>
         <td>
-          <?=number_format($MemStats['curr_items'])?>
+          <?=Text::number_format($MemStats['curr_items'])?>
         </td>
       </tr>
 
       <tr>
         <td>Cache Total Index:</td>
         <td>
-          <?=number_format($MemStats['total_items'])?>
+          <?=Text::number_format($MemStats['total_items'])?>
         </td>
       </tr>
 
@@ -99,7 +99,7 @@ View::header("Service Stats"); ?>
 
           <td>
             <?=Format::get_size($MemStats['bytes'])?>
-            <span class="float_right">(<?=number_format(($MemStats['bytes'] / $MemStats['limit_maxbytes']) * 100, 3);?>%)</span>
+            <span class="float_right">(<?=Text::number_format(($MemStats['bytes'] / $MemStats['limit_maxbytes']) * 100, 3);?>%)</span>
           </td>
       </tr>
 
@@ -139,14 +139,14 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=number_format($MemStats['cmd_get'])?>
+          <?=Text::number_format($MemStats['cmd_get'])?>
         </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($dbStats['Com_select']['Value'])?>
+          <?=Text::number_format($dbStats['Com_select']['Value'])?>
         </td>
       </tr>
 
@@ -156,14 +156,14 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=number_format($MemStats['cmd_set'])?>
+          <?=Text::number_format($MemStats['cmd_set'])?>
         </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($dbStats['Com_insert']['Value'] + $dbStats['Com_update']['Value'])?>
+          <?=Text::number_format($dbStats['Com_insert']['Value'] + $dbStats['Com_update']['Value'])?>
         </td>
       </tr>
 
@@ -181,15 +181,15 @@ View::header("Service Stats"); ?>
 } ?>>Cache:</td>
 
           <td>
-            <?=number_format($MemStats['get_hits'])?>
-            <span class="float_right">(<?=number_format(($MemStats['get_hits'] / $MemStats['cmd_get']) * 100, 3);?>%)</span>
+            <?=Text::number_format($MemStats['get_hits'])?>
+            <span class="float_right">(<?=Text::number_format(($MemStats['get_hits'] / $MemStats['cmd_get']) * 100, 3);?>%)</span>
           </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($dbStats['Com_select']['Value'])?>
+          <?=Text::number_format($dbStats['Com_select']['Value'])?>
           <span class="float_right">(100.000%)</span>
         </td>
       </tr>
@@ -201,7 +201,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=number_format($MemStats['cmd_set'])?>
+          <?=Text::number_format($MemStats['cmd_set'])?>
           <span class="float_right">(100.000%)</span>
         </td>
       </tr>
@@ -209,7 +209,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($dbStats['Com_insert']['Value'])?>
+          <?=Text::number_format($dbStats['Com_insert']['Value'])?>
           <span class="float_right">(100.000%)</span>
         </td>
       </tr>
@@ -224,8 +224,8 @@ View::header("Service Stats"); ?>
 } ?>>Cache Increment:</td>
 
           <td>
-            <?=number_format($MemStats['incr_hits'])?>
-            <span class="float_right">(<?=number_format(($MemStats['incr_hits'] / ($MemStats['incr_hits'] + $MemStats['incr_misses'])) * 100, 3);?>%)</span>
+            <?=Text::number_format($MemStats['incr_hits'])?>
+            <span class="float_right">(<?=Text::number_format(($MemStats['incr_hits'] / ($MemStats['incr_hits'] + $MemStats['incr_misses'])) * 100, 3);?>%)</span>
           </td>
       </tr>
 
@@ -235,8 +235,8 @@ View::header("Service Stats"); ?>
 } ?>>Cache Decrement:</td>
 
           <td>
-            <?=number_format($MemStats['decr_hits'])?>
-            <span class="float_right">(<?=number_format(($MemStats['decr_hits'] / ($MemStats['decr_hits'] + $MemStats['decr_misses'])) * 100, 3);?>%)</span>
+            <?=Text::number_format($MemStats['decr_hits'])?>
+            <span class="float_right">(<?=Text::number_format(($MemStats['decr_hits'] / ($MemStats['decr_hits'] + $MemStats['decr_misses'])) * 100, 3);?>%)</span>
           </td>
       </tr>
 
@@ -255,10 +255,10 @@ View::header("Service Stats"); ?>
 } ?>>Cache:</td>
 
           <td>
-            <?=number_format($MemStats['cas_hits'])?>
+            <?=Text::number_format($MemStats['cas_hits'])?>
             <span class="float_right">(
               <?php if ($MemStats['cas_hits'] > 0) {
-    echo number_format(($MemStats['cas_hits'] / ($MemStats['cas_hits'] + $MemStats['cas_misses'])) * 100, 3);
+    echo Text::number_format(($MemStats['cas_hits'] / ($MemStats['cas_hits'] + $MemStats['cas_misses'])) * 100, 3);
 } else {
     echo '0.000';
 } ?>%)
@@ -269,7 +269,7 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($dbStats['Com_update']['Value'])?>
+          <?=Text::number_format($dbStats['Com_update']['Value'])?>
           <span class="float_right">(100.000%)</span>
         </td>
       </tr>
@@ -285,15 +285,15 @@ View::header("Service Stats"); ?>
 } ?>>Cache:</td>
 
           <td>
-            <?=number_format($MemStats['delete_hits'])?>
-            <span class="float_right">(<?=number_format(($MemStats['delete_hits'] / ($MemStats['delete_hits'] + $MemStats['delete_misses'])) * 100, 3);?>%)</span>
+            <?=Text::number_format($MemStats['delete_hits'])?>
+            <span class="float_right">(<?=Text::number_format(($MemStats['delete_hits'] / ($MemStats['delete_hits'] + $MemStats['delete_misses'])) * 100, 3);?>%)</span>
           </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($dbStats['Com_delete']['Value'])?>
+          <?=Text::number_format($dbStats['Com_delete']['Value'])?>
           <span class="float_right">(100.000%)</span>
         </td>
       </tr>
@@ -314,7 +314,7 @@ View::header("Service Stats"); ?>
 } ?>>Cache Flushes:</td>
 
           <td>
-            <?=number_format($MemStats['cmd_flush'])?>
+            <?=Text::number_format($MemStats['cmd_flush'])?>
           </td>
       </tr>
 
@@ -324,7 +324,7 @@ View::header("Service Stats"); ?>
 } ?>>Cache Evicted:</td>
 
           <td>
-            <?=number_format($MemStats['evictions'])?>
+            <?=Text::number_format($MemStats['evictions'])?>
           </td>
       </tr>
 
@@ -336,7 +336,7 @@ View::header("Service Stats"); ?>
           </td>
 
           <td>
-            <?=number_format($dbStats['Slow_queries']['Value'])?>
+            <?=Text::number_format($dbStats['Slow_queries']['Value'])?>
           </td>
       </tr>
 
@@ -399,14 +399,14 @@ View::header("Service Stats"); ?>
 } ?>>Cache:</td>
 
           <td>
-            <?=number_format($MemStats['cmd_get'] / $MemStats['uptime'], 5)?>/s
+            <?=Text::number_format($MemStats['cmd_get'] / $MemStats['uptime'], 5)?>/s
           </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($dbStats['Com_select']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
+          <?=Text::number_format($dbStats['Com_select']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -421,14 +421,14 @@ View::header("Service Stats"); ?>
 } ?>>Cache:</td>
 
           <td>
-            <?=number_format($MemStats['cmd_set'] / $MemStats['uptime'], 5)?>/s
+            <?=Text::number_format($MemStats['cmd_set'] / $MemStats['uptime'], 5)?>/s
           </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format(($dbStats['Com_insert']['Value'] + $dbStats['Com_update']['Value']) / $dbStats['Uptime']['Value'], 5)?>/s
+          <?=Text::number_format(($dbStats['Com_insert']['Value'] + $dbStats['Com_update']['Value']) / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -443,14 +443,14 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=number_format($MemStats['get_hits'] / $MemStats['uptime'], 5)?>/s
+          <?=Text::number_format($MemStats['get_hits'] / $MemStats['uptime'], 5)?>/s
         </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($dbStats['Com_select']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
+          <?=Text::number_format($dbStats['Com_select']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -461,14 +461,14 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=number_format($MemStats['cmd_set'] / $MemStats['uptime'], 5)?>/s
+          <?=Text::number_format($MemStats['cmd_set'] / $MemStats['uptime'], 5)?>/s
         </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($dbStats['Com_insert']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
+          <?=Text::number_format($dbStats['Com_insert']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -479,14 +479,14 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Cache Increment:</td>
         <td>
-          <?=number_format($MemStats['incr_hits'] / $MemStats['uptime'], 5)?>/s
+          <?=Text::number_format($MemStats['incr_hits'] / $MemStats['uptime'], 5)?>/s
         </td>
       </tr>
 
       <tr>
         <td>Cache Decrement:</td>
         <td>
-          <?=number_format($MemStats['decr_hits'] / $MemStats['uptime'], 5)?>/s
+          <?=Text::number_format($MemStats['decr_hits'] / $MemStats['uptime'], 5)?>/s
         </td>
       </tr>
 
@@ -497,14 +497,14 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=number_format($MemStats['cas_hits'] / $MemStats['uptime'], 5)?>/s
+          <?=Text::number_format($MemStats['cas_hits'] / $MemStats['uptime'], 5)?>/s
         </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($dbStats['Com_update']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
+          <?=Text::number_format($dbStats['Com_update']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -515,14 +515,14 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=number_format($MemStats['delete_hits'] / $MemStats['uptime'], 5)?>/s
+          <?=Text::number_format($MemStats['delete_hits'] / $MemStats['uptime'], 5)?>/s
         </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($dbStats['Com_delete']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
+          <?=Text::number_format($dbStats['Com_delete']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -537,21 +537,21 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Cache Flushes:</td>
         <td>
-          <?=number_format($MemStats['cmd_flush'] / $MemStats['uptime'], 5)?>/s
+          <?=Text::number_format($MemStats['cmd_flush'] / $MemStats['uptime'], 5)?>/s
         </td>
       </tr>
 
       <tr>
         <td>Cache Evicted:</td>
         <td>
-          <?=number_format($MemStats['evictions'] / $MemStats['uptime'], 5)?>/s
+          <?=Text::number_format($MemStats['evictions'] / $MemStats['uptime'], 5)?>/s
         </td>
       </tr>
 
       <tr>
         <td>Database Slow:</td>
         <td>
-          <?=number_format($dbStats['Slow_queries']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
+          <?=Text::number_format($dbStats['Slow_queries']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 

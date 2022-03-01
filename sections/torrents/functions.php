@@ -459,11 +459,11 @@ function build_torrents_table($cache, $db, $user, $GroupID, $GroupName, $GroupCa
 
     <td class="number_column nobr"><?=(Format::get_size($Size))?>
     </td>
-    <td class="number_column"><?=(number_format($Snatched))?>
+    <td class="number_column"><?=(Text::number_format($Snatched))?>
     </td>
-    <td class="number_column"><?=(number_format($Seeders))?>
+    <td class="number_column"><?=(Text::number_format($Seeders))?>
     </td>
-    <td class="number_column"><?=(number_format($Leechers))?>
+    <td class="number_column"><?=(Text::number_format($Leechers))?>
     </td>
 </tr>
 

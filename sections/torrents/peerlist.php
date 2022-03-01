@@ -64,7 +64,7 @@ while (list($PeerUserID, $Size, $Active, $Connectable, $Uploaded, $Remaining, $U
     <td><?=($Active) ? '<span style="color: green;">Yes</span>' : '<span style="color: red;">No</span>' ?></td>
     <td><?= ($Connectable) ? '<span style="color: green;">Yes</span>' : '<span style="color: red;">No</span>' ?></td>
     <td class="number_column"><?=Format::get_size($Uploaded) ?></td>
-    <td class="number_column"><?=number_format(($Size - $Remaining) / $Size * 100, 2)?></td>
+    <td class="number_column"><?=Text::number_format(($Size - $Remaining) / $Size * 100, 2)?></td>
     <td><?=esc($UserAgent)?></td>
   </tr>
 <?php

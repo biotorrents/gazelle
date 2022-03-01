@@ -68,8 +68,8 @@ View::header('Tracker info');
 if (!empty($UserPeerStats)) {
     ?>
         User ID: <?=$_GET['userid']?><br />
-        Leeching: <?=$UserPeerStats[0] === false ? "hidden" : number_format($UserPeerStats[0])?><br />
-        Seeding: <?=$UserPeerStats[1] === false ? "hidden" : number_format($UserPeerStats[1])?><br />
+        Leeching: <?=$UserPeerStats[0] === false ? "hidden" : Text::number_format($UserPeerStats[0])?><br />
+        Seeding: <?=$UserPeerStats[1] === false ? "hidden" : Text::number_format($UserPeerStats[1])?><br />
         <?php
 } elseif (!empty($MainStats)) {
         foreach ($MainStats as $Key => $Value) {
@@ -78,7 +78,7 @@ if (!empty($UserPeerStats)) {
                     $Value = Format::get_size($Value);
                     $Key = substr($Key, 6);
                 } else {
-                    $Value = number_format($Value);
+                    $Value = Text::number_format($Value);
                 }
             } ?>
         <?="$Value $Key<br />\n"?>

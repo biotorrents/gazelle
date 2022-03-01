@@ -59,7 +59,7 @@ $Results = Torrents::get_groups(array_keys($Groups)); ?>
 
 <div class="box pad">
   <h3>
-    There are <?=number_format($NumResults)?> groups remaining
+    There are <?=Text::number_format($NumResults)?> groups remaining
   </h3>
 
   <table class="torrent_table">

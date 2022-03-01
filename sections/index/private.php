@@ -145,7 +145,7 @@ if (count($Freeleeches)) {
     <div class="head colhead_dark"><strong>Stats</strong></div>
     <ul class="stats nobullet">
       <?php if (USER_LIMIT > 0) { ?>
-      <li>Maximum users: <?=number_format(USER_LIMIT) ?>
+      <li>Maximum users: <?=Text::number_format(USER_LIMIT) ?>
       </li>
       <?php
 }
@@ -161,7 +161,7 @@ if (($UserCount = $cache->get_value('stats_user_count')) === false) {
 $UserCount = (int)$UserCount;
 ?>
       <li>
-        Enabled users: <?=number_format($UserCount)?>
+        Enabled users: <?=Text::number_format($UserCount)?>
         <a href="/stats/users" class="brackets">Details</a>
       </li>
       <?php
@@ -191,13 +191,13 @@ if (($UserStats = $cache->get_value('stats_users')) === false) {
     $cache->cache_value('stats_users', $UserStats, 0);
 }
 ?>
-      <li>Users active today: <?=number_format($UserStats['Day'])?> (<?=number_format($UserStats['Day'] / $UserCount * 100, 2)?>%)
+      <li>Users active today: <?=Text::number_format($UserStats['Day'])?> (<?=Text::number_format($UserStats['Day'] / $UserCount * 100, 2)?>%)
       </li>
-      <li>Users active this week: <?=number_format($UserStats['Week'])?>
-        (<?=number_format($UserStats['Week'] / $UserCount * 100, 2)?>%)
+      <li>Users active this week: <?=Text::number_format($UserStats['Week'])?>
+        (<?=Text::number_format($UserStats['Week'] / $UserCount * 100, 2)?>%)
       </li>
-      <li>Users active this month: <?=number_format($UserStats['Month'])?>
-        (<?=number_format($UserStats['Month'] / $UserCount * 100, 2)?>%)
+      <li>Users active this month: <?=Text::number_format($UserStats['Month'])?>
+        (<?=Text::number_format($UserStats['Month'] / $UserCount * 100, 2)?>%)
       </li>
       <?php
 
@@ -242,13 +242,13 @@ if (($ArtistCount = $cache->get_value('stats_artist_count')) === false) {
 ?>
       <li>
         Torrents:
-        <?=number_format($TorrentCount)?>
+        <?=Text::number_format($TorrentCount)?>
         <a href="/stats/torrents" class="brackets">Details</a>
       </li>
 
-      <li>Torrent Groups: <?=number_format($GroupCount)?>
+      <li>Torrent Groups: <?=Text::number_format($GroupCount)?>
       </li>
-      <li>Artists: <?=number_format($ArtistCount)?>
+      <li>Artists: <?=Text::number_format($ArtistCount)?>
       </li>
       <?php
 // End Torrent Stats
@@ -276,12 +276,12 @@ if ($RequestCount > 0) {
 }
 
 ?>
-      <li>Requests: <?=number_format($RequestCount)?> (<?=number_format($RequestsFilledPercent, 2)?>% filled)</li>
+      <li>Requests: <?=Text::number_format($RequestCount)?> (<?=Text::number_format($RequestsFilledPercent, 2)?>% filled)</li>
       <?php
 
 if ($SnatchStats = $cache->get_value('stats_snatches')) {
     ?>
-      <li>Snatches: <?=number_format($SnatchStats)?>
+      <li>Snatches: <?=Text::number_format($SnatchStats)?>
       </li>
       <?php
 }
@@ -309,9 +309,9 @@ if (($PeerStats = $cache->get_value('stats_peers')) === false) {
 
 if (!$PeerStatsLocked) {
     $Ratio = Format::get_ratio_html($SeederCount, $LeecherCount);
-    $PeerCount = number_format($SeederCount + $LeecherCount);
-    $SeederCount = number_format($SeederCount);
-    $LeecherCount = number_format($LeecherCount);
+    $PeerCount = Text::number_format($SeederCount + $LeecherCount);
+    $SeederCount = Text::number_format($SeederCount);
+    $LeecherCount = Text::number_format($LeecherCount);
 } else {
     $PeerCount = $SeederCount = $LeecherCount = $Ratio = 'Server busy';
 }
@@ -403,7 +403,7 @@ if ($TopicID) {
             $Ratio = 0;
             $Percent = 0;
         } ?>
-        <li<?=((!empty($UserResponse) && ($UserResponse == $i))?' class="poll_your_answer"':'')?>><?=esc($Answers[$i])?> (<?=number_format($Percent * 100, 2)?>%)</li>
+        <li<?=((!empty($UserResponse) && ($UserResponse == $i))?' class="poll_your_answer"':'')?>><?=esc($Answers[$i])?> (<?=Text::number_format($Percent * 100, 2)?>%)</li>
           <li class="graph">
             <span class="center_poll"
               style="width: <?=round($Ratio * 140)?>px;"></span>
@@ -412,7 +412,7 @@ if ($TopicID) {
           <?php
     } ?>
       </ul>
-      <strong>Votes:</strong> <?=number_format($TotalVotes)?><br />
+      <strong>Votes:</strong> <?=Text::number_format($TotalVotes)?><br />
       <?php } else { ?>
       <div id="poll_container">
         <form class="vote_form" name="poll" id="poll" action="">
@@ -603,7 +603,7 @@ function contest()
   foreach ($Contest as $User) {
       list($UserID, $Points, $Username) = $User; ?>
       <li><?=Users::format_username($UserID, false, false, false)?>
-        (<?=number_format($Points)?>)</li>
+        (<?=Text::number_format($Points)?>)</li>
       <?php
   } ?>
     </ol>

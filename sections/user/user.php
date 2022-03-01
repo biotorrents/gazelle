@@ -399,7 +399,7 @@ if (!$OwnProfile && !$user['DisablePoints']) { ?>
       ?>
             <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Required
               Ratio: <span class="tooltip"
-                title="<?=number_format((double)$RequiredRatio, 5)?>"><?=number_format((double)$RequiredRatio, 2)?></span></li>
+                title="<?=Text::number_format((double)$RequiredRatio, 5)?>"><?=Text::number_format((double)$RequiredRatio, 2)?></span></li>
               <?php
   }
   if (($Override = check_paranoia_here('downloaded'))) {
@@ -414,7 +414,7 @@ if (!$OwnProfile && !$user['DisablePoints']) { ?>
       ?>
                   <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>><a
                       href="userhistory.php?action=token_history&amp;userid=<?=$UserID?>">Tokens</a>:
-                    <?=number_format($FLTokens)?>
+                    <?=Text::number_format($FLTokens)?>
                     </li>
                     <?php
   }
@@ -504,7 +504,7 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
           title="<?=Format::get_size($Uploaded)?>">Data uploaded:
-          <?=$UploadedRank === false ? 'Server busy' : number_format($UploadedRank)?>
+          <?=$UploadedRank === false ? 'Server busy' : Text::number_format($UploadedRank)?>
         </li>
         <?php
   }
@@ -512,23 +512,23 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
           title="<?=Format::get_size($Downloaded)?>">Data downloaded:
-          <?=$DownloadedRank === false ? 'Server busy' : number_format($DownloadedRank)?>
+          <?=$DownloadedRank === false ? 'Server busy' : Text::number_format($DownloadedRank)?>
         </li>
         <?php
   }
   if (($Override = check_paranoia_here('uploads+'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=number_format($Uploads)?>">Torrents uploaded:
-          <?=$UploadsRank === false ? 'Server busy' : number_format($UploadsRank)?>
+          title="<?=Text::number_format($Uploads)?>">Torrents uploaded:
+          <?=$UploadsRank === false ? 'Server busy' : Text::number_format($UploadsRank)?>
         </li>
         <?php
   }
   if (($Override = check_paranoia_here('requestsfilled_count'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=number_format($RequestsFilled)?>">Requests
-          filled: <?=$RequestRank === false ? 'Server busy' : number_format($RequestRank)?>
+          title="<?=Text::number_format($RequestsFilled)?>">Requests
+          filled: <?=$RequestRank === false ? 'Server busy' : Text::number_format($RequestRank)?>
         </li>
         <?php
   }
@@ -536,22 +536,22 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
           title="<?=Format::get_size($TotalSpent)?>">Bounty spent:
-          <?=$BountyRank === false ? 'Server busy' : number_format($BountyRank)?>
+          <?=$BountyRank === false ? 'Server busy' : Text::number_format($BountyRank)?>
         </li>
         <?php } ?>
-        <li class="tooltip" title="<?=number_format($ForumPosts)?>">
-          Posts made: <?=$PostRank === false ? 'Server busy' : number_format($PostRank)?>
+        <li class="tooltip" title="<?=Text::number_format($ForumPosts)?>">
+          Posts made: <?=$PostRank === false ? 'Server busy' : Text::number_format($PostRank)?>
         </li>
         <?php if (($Override = check_paranoia_here('artistsadded'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=number_format($ArtistsAdded)?>">Artists added:
-          <?=$ArtistsRank === false ? 'Server busy' : number_format($ArtistsRank)?>
+          title="<?=Text::number_format($ArtistsAdded)?>">Artists added:
+          <?=$ArtistsRank === false ? 'Server busy' : Text::number_format($ArtistsRank)?>
         </li>
         <?php
   }
   if (check_paranoia_here(array('uploaded', 'downloaded', 'uploads+', 'requestsfilled_count', 'requestsvoted_bounty', 'artistsadded'))) { ?>
-        <li><strong>Overall rank: <?=$OverallRank === false ? 'Server busy' : number_format($OverallRank)?></strong>
+        <li><strong>Overall rank: <?=$OverallRank === false ? 'Server busy' : Text::number_format($OverallRank)?></strong>
         </li>
         <?php } ?>
       </ul>
@@ -573,7 +573,7 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
       if (check_perms('users_view_ips', $Class)) {
           ?>
         <?php if (check_perms('users_view_ips', $Class) && check_perms('users_mod', $Class)) { ?>
-        <li>Tracker IPs: <?=number_format($TrackerIPs)?> <a
+        <li>Tracker IPs: <?=Text::number_format($TrackerIPs)?> <a
             href="userhistory.php?action=tracker_ips&amp;userid=<?=$UserID?>"
             class="brackets">View</a></li>
         <?php
@@ -665,7 +665,7 @@ if (check_perms('users_view_invites')) {
     if ($DisableInvites) {
         echo 'X';
     } else {
-        echo number_format($Invites);
+        echo Text::number_format($Invites);
     }
     echo " ($Pending)"
         ?>
@@ -1347,8 +1347,8 @@ if (!$DisablePoints) {
           }
 
           $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints/1440)), 0));
-          $PointsPerHour = number_format($PointsRate)." ".BONUS_POINTS."/hour";
-          $PointsPerDay = number_format($PointsRate*24)." ".BONUS_POINTS."/day";
+          $PointsPerHour = Text::number_format($PointsRate)." ".BONUS_POINTS."/hour";
+          $PointsPerDay = Text::number_format($PointsRate*24)." ".BONUS_POINTS."/day";
       } else {
           $PointsPerHour = "0 ".BONUS_POINTS."/hour";
           $PointsPerDay = BONUS_POINTS." disabled";

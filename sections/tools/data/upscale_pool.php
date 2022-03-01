@@ -52,8 +52,8 @@ $db->set_query_id($RS);
 if ($db->has_results()) {
     ?>
 <div class="box pad">
-  <p>There are currently <?=number_format($Results)?> enabled users
-    on Ratio Watch and <?=number_format($TotalDisabled)?> already
+  <p>There are currently <?=Text::number_format($Results)?> enabled users
+    on Ratio Watch and <?=Text::number_format($TotalDisabled)?> already
     disabled.</p>
 </div>
 
@@ -98,7 +98,7 @@ if ($db->has_results()) {
     </td>
 
     <td class="number_column">
-      <?=number_format($RequiredRatio, 2)?>
+      <?=Text::number_format($RequiredRatio, 2)?>
     </td>
 
     <td class="number_column">
