@@ -18,9 +18,9 @@ if (!empty($_GET['revisionid'])) { // If they're viewing an old revision
     if (!is_number($RevisionID)) {
         error(0);
     }
-    $Data = $Cache->get_value("artist_{$ArtistID}_revision_$RevisionID", true);
+    $Data = $cache->get_value("artist_{$ArtistID}_revision_$RevisionID", true);
 } else { // viewing the live version
-    $Data = $Cache->get_value("artist_$ArtistID", true);
+    $Data = $cache->get_value("artist_$ArtistID", true);
     $RevisionID = false;
 }
 
@@ -48,13 +48,13 @@ if ($Data) {
     }
     $sql .= "
       GROUP BY a.ArtistID";
-    $DB->query($sql);
+    $db->query($sql);
 
-    if (!$DB->has_results()) {
+    if (!$db->has_results()) {
         error(404);
     }
 
-    list($Name, $Image, $Body) = $DB->next_record(MYSQLI_NUM, array(0));
+    list($Name, $Image, $Body) = $db->next_record(MYSQLI_NUM, array(0));
 }
 
 //----------------- Build list and get stats
@@ -63,10 +63,10 @@ ob_start();
 
 // Requests
 $Requests = [];
-if (empty($LoggedUser['DisableRequests'])) {
-    $Requests = $Cache->get_value("artists_requests_$ArtistID");
+if (empty($user['DisableRequests'])) {
+    $Requests = $cache->get_value("artists_requests_$ArtistID");
     if (!is_array($Requests)) {
-        $DB->query("
+        $db->query("
       SELECT
         r.ID,
         r.CategoryID,
@@ -85,24 +85,24 @@ if (empty($LoggedUser['DisableRequests'])) {
       GROUP BY r.ID
       ORDER BY Votes DESC");
 
-        if ($DB->has_results()) {
-            $Requests = $DB->to_array('ID', MYSQLI_ASSOC, false);
+        if ($db->has_results()) {
+            $Requests = $db->to_array('ID', MYSQLI_ASSOC, false);
         } else {
             $Requests = [];
         }
-        $Cache->cache_value("artists_requests_$ArtistID", $Requests);
+        $cache->cache_value("artists_requests_$ArtistID", $Requests);
     }
 }
 $NumRequests = count($Requests);
 
-if (($GroupIDs = $Cache->get_value("artist_groups_$ArtistID")) === false) {
-    $DB->query("
+if (($GroupIDs = $cache->get_value("artist_groups_$ArtistID")) === false) {
+    $db->query("
     SELECT
       DISTINCTROW ta.GroupID
     FROM torrents_artists AS ta
     WHERE ta.ArtistID = '$ArtistID'");
-    $GroupIDs = $DB->collect('GroupID');
-    $Cache->cache_value("artist_groups_$ArtistID", $GroupIDs, 0);
+    $GroupIDs = $db->collect('GroupID');
+    $cache->cache_value("artist_groups_$ArtistID", $GroupIDs, 0);
 }
 
 if (count($GroupIDs) > 0) {
@@ -127,8 +127,8 @@ if ($UnknownRT === false) {
 }
 
 // Custom sorting for releases
-if (!empty($LoggedUser['SortHide'])) {
-    $SortOrder = array_flip(array_keys($LoggedUser['SortHide']));
+if (!empty($user['SortHide'])) {
+    $SortOrder = array_flip(array_keys($user['SortHide']));
 } else {
     $SortOrder = $ReleaseTypes;
 }
@@ -166,7 +166,7 @@ foreach ($TorrentList as $GroupID => $Group) {
 }
 
 $OpenTable = false;
-$ShowGroups = !isset($LoggedUser['TorrentGrouping']) || $LoggedUser['TorrentGrouping'] === 0;
+$ShowGroups = !isset($user['TorrentGrouping']) || $user['TorrentGrouping'] === 0;
 $HideTorrents = ($ShowGroups ? '' : ' hidden');
 $OldGroupID = 0;
 ?>
@@ -207,7 +207,7 @@ foreach ($TorrentList as $Group) {
             [
               'g' => $Group,
               'url' => Format::get_url($_GET),
-              'cover_art' => (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) ?? true,
+              'cover_art' => (!isset($user['CoverArt']) || $user['CoverArt']) ?? true,
               'thumb' => ImageTools::process($CoverArt, 'thumb'),
               'artists' => Artists::display_artists($Artists),
               'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
@@ -221,7 +221,7 @@ foreach ($TorrentList as $Group) {
         #$DisplayName = Artists::display_artists(Artists::get_artist($GroupID), true, true);
 
         $DisplayName .= "<a href='torrents.php?id=$GroupID' class='tooltip' title='View torrent group' ";
-        if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
+        if (!isset($user['CoverArt']) || $user['CoverArt']) {
             $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
         }
 
@@ -259,13 +259,13 @@ foreach ($TorrentList as $Group) {
         */
 
         if (check_perms('users_mod') || check_perms('torrents_fix_ghosts')) {
-            $DisplayName .= ' <a href="torrents.php?action=fix_group&amp;groupid='.$GroupID.'&amp;artistid='.$ArtistID.'&amp;auth='.$LoggedUser['AuthKey'].'" class="brackets tooltip" title="Fix ghost DB entry">Fix</a>';
+            $DisplayName .= ' <a href="torrents.php?action=fix_group&amp;groupid='.$GroupID.'&amp;artistid='.$ArtistID.'&amp;auth='.$user['AuthKey'].'" class="brackets tooltip" title="Fix ghost DB entry">Fix</a>';
         }
 
         $SnatchedGroupClass = ($GroupFlags['IsSnatched'] ? ' snatched_group' : ''); ?>
     <tr class="group<?=$SnatchedGroupClass?>">
       <?php
-    $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGrouping'] === 1); ?>
+    $ShowGroups = !(!empty($user['TorrentGrouping']) && $user['TorrentGrouping'] === 1); ?>
       <td class="center">
         <div id="showimg_<?=$GroupID?>"
           class="<?=($ShowGroups ? 'hide' : 'show')?>_torrents">
@@ -309,7 +309,7 @@ foreach ($TorrentList as $Group) {
         }
 
         $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : '';
-        $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$LoggedUser['AuthKey']."&amp;torrent_pass=".$LoggedUser['torrent_pass']; ?>
+        $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$user['AuthKey']."&amp;torrent_pass=".$user['torrent_pass']; ?>
     <tr
       class="torrent_row groupid_<?=$GroupID?> group_torrent discog<?=$SnatchedTorrentClass . $SnatchedGroupClass . $HideTorrents?>">
       <td colspan="2">
@@ -319,7 +319,7 @@ foreach ($TorrentList as $Group) {
           <?php
         if (Torrents::can_use_token($Torrent)) { ?>
           | <a
-            href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>&amp;usetoken=1"
+            href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>&amp;usetoken=1"
             class="tooltip" title="Use a FL Token"
             onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
           <?php } ?>
@@ -359,7 +359,7 @@ foreach ($TorrentList as $Group) {
             [
               'g' => $Group,
               'url' => Format::get_url($_GET),
-              'cover_art' => (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) ?? true,
+              'cover_art' => (!isset($user['CoverArt']) || $user['CoverArt']) ?? true,
               'thumb' => ImageTools::process($CoverArt, 'thumb'),
               'artists' => Artists::display_artists($Artists),
               'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
@@ -382,7 +382,7 @@ foreach ($TorrentList as $Group) {
         # sections/torrents/browse.php
         $DisplayName .= "<a class='torrent_title' href='torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID' ";
 
-        if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
+        if (!isset($user['CoverArt']) || $user['CoverArt']) {
             $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
         }
 
@@ -421,7 +421,7 @@ foreach ($TorrentList as $Group) {
         */
 
         if (check_perms('users_mod') || check_perms('torrents_fix_ghosts')) {
-            $DisplayName .= ' <a href="torrents.php?action=fix_group&amp;groupid='.$GroupID.'&amp;artistid='.$ArtistID.'&amp;auth='.$LoggedUser['AuthKey'].'" class="brackets tooltip" title="Fix ghost DB entry">Fix</a>';
+            $DisplayName .= ' <a href="torrents.php?action=fix_group&amp;groupid='.$GroupID.'&amp;artistid='.$ArtistID.'&amp;auth='.$user['AuthKey'].'" class="brackets tooltip" title="Fix ghost DB entry">Fix</a>';
         }
 
         #$ExtraInfo = Torrents::torrent_info($Torrent, true, true);
@@ -429,7 +429,7 @@ foreach ($TorrentList as $Group) {
         $SnatchedGroupClass = ($GroupFlags['IsSnatched'] ? ' snatched_group' : '');
         $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : '';
 
-        $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$LoggedUser['AuthKey']."&amp;torrent_pass=".$LoggedUser['torrent_pass']; ?>
+        $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$user['AuthKey']."&amp;torrent_pass=".$user['torrent_pass']; ?>
     <tr
       class="torrent<?=$SnatchedTorrentClass . $SnatchedGroupClass?>">
       <td class="center">
@@ -443,7 +443,7 @@ foreach ($TorrentList as $Group) {
               <?php
         if (Torrents::can_use_token($Torrent)) { ?>
               | <a
-                href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>&amp;usetoken=1"
+                href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>&amp;usetoken=1"
                 class="tooltip" title="Use a FL Token"
                 onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
               <?php } ?>
@@ -520,23 +520,23 @@ View::header($Name, 'browse,requests,comments,recommend,subscriptions');
   }
 
 if (check_perms('site_torrents_notify')) {
-    if (($Notify = $Cache->get_value('notify_artists_'.$LoggedUser['ID'])) === false) {
-        $DB->query("
+    if (($Notify = $cache->get_value('notify_artists_'.$user['ID'])) === false) {
+        $db->query("
       SELECT ID, Artists
       FROM users_notify_filters
-      WHERE UserID = '$LoggedUser[ID]'
+      WHERE UserID = '$user[ID]'
         AND Label = 'Artist notifications'
       LIMIT 1");
-        $Notify = $DB->next_record(MYSQLI_ASSOC, false);
-        $Cache->cache_value('notify_artists_'.$LoggedUser['ID'], $Notify, 0);
+        $Notify = $db->next_record(MYSQLI_ASSOC, false);
+        $cache->cache_value('notify_artists_'.$user['ID'], $Notify, 0);
     }
     if (stripos($Notify['Artists'], "|$Name|") === false) {
         ?>
-      <a href="artist.php?action=notify&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+      <a href="artist.php?action=notify&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$user['AuthKey']?>"
         class="brackets">Notify of new uploads</a>
       <?php
     } else { ?>
-      <a href="artist.php?action=notifyremove&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+      <a href="artist.php?action=notifyremove&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$user['AuthKey']?>"
         class="brackets">Do not notify of new uploads</a>
       <?php
   }
@@ -567,7 +567,7 @@ if (check_perms('site_torrents_notify')) {
       <a href="artist.php?action=history&amp;artistid=<?=$ArtistID?>"
         class="brackets">View history</a>
       <?php if ($RevisionID && check_perms('site_edit_wiki')) { ?>
-      <a href="artist.php?action=revert&amp;artistid=<?=$ArtistID?>&amp;revisionid=<?=$RevisionID?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+      <a href="artist.php?action=revert&amp;artistid=<?=$ArtistID?>&amp;revisionid=<?=$RevisionID?>&amp;auth=<?=$user['AuthKey']?>"
         class="brackets">Revert to this revision</a>
       <?php } ?>
       <a href="artist.php?id=<?=$ArtistID?>#info"
@@ -575,7 +575,7 @@ if (check_perms('site_torrents_notify')) {
       <a href="artist.php?id=<?=$ArtistID?>#artistcomments"
         class="brackets">Comments</a>
       <?php if (check_perms('site_delete_artist') && check_perms('torrents_delete')) { ?>
-      <a href="artist.php?action=delete&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+      <a href="artist.php?action=delete&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$user['AuthKey']?>"
         class="brackets">Delete</a>
       <?php } ?>
     </div>
@@ -615,8 +615,8 @@ if (check_perms('site_torrents_notify')) {
  * https://dev.biotorrents.de/forums.php?action=viewthread&threadid=9
  *
 if (check_perms('zip_downloader')) {
-    if (isset($LoggedUser['Collector'])) {
-        list($ZIPList, $ZIPPrefs) = $LoggedUser['Collector'];
+    if (isset($user['Collector'])) {
+        list($ZIPList, $ZIPPrefs) = $user['Collector'];
         $ZIPList = explode(':', $ZIPList);
     } else {
         $ZIPList = array('00', '11');
@@ -628,7 +628,7 @@ if (check_perms('zip_downloader')) {
         <form class="download_form" name="zip" action="artist.php" method="post">
           <input type="hidden" name="action" value="download" />
           <input type="hidden" name="auth"
-            value="<?=$LoggedUser['AuthKey']?>" />
+            value="<?=$user['AuthKey']?>" />
           <input type="hidden" name="artistid"
             value="<?=$ArtistID?>" />
           <ul id="list" class="nobullet">
@@ -734,17 +734,17 @@ END THE COLLECTOR
 
 echo $TorrentDisplayList;
 
-$Collages = $Cache->get_value("artists_collages_$ArtistID");
+$Collages = $cache->get_value("artists_collages_$ArtistID");
 if (!is_array($Collages)) {
-    $DB->query("
+    $db->query("
     SELECT c.Name, c.NumTorrents, c.ID
     FROM collages AS c
       JOIN collages_artists AS ca ON ca.CollageID = c.ID
     WHERE ca.ArtistID = '$ArtistID'
       AND Deleted = '0'
       AND CategoryID = '7'");
-    $Collages = $DB->to_array();
-    $Cache->cache_value("artists_collages_$ArtistID", $Collages, 3600 * 6);
+    $Collages = $db->to_array();
+    $cache->cache_value("artists_collages_$ArtistID", $Collages, 3600 * 6);
 }
 if (count($Collages) > 0) {
     if (count($Collages) > MAX_COLLAGES) {
@@ -837,7 +837,7 @@ if ($NumRequests > 0) {
           <span id="vote_count_<?=$RequestID?>"><?=$Request['Votes']?></span>
           <?php if (check_perms('site_vote')) { ?>
           <input type="hidden" id="auth" name="auth"
-            value="<?=$LoggedUser['AuthKey']?>" />
+            value="<?=$user['AuthKey']?>" />
           &nbsp;&nbsp; <a href="javascript:Vote(0, <?=$RequestID?>)"
             class="brackets"><strong>+</strong></a>
           <?php } ?>
@@ -894,4 +894,4 @@ if ($RevisionID) {
 }
 
 $Data = array(array($Name, $Image, $Body));
-$Cache->cache_value($Key, $Data, 3600);
+$cache->cache_value($Key, $Data, 3600);

@@ -66,7 +66,7 @@ if (empty($_GET['type'])) {
           $SphQL->where('userid', $UserInfo['ID']);
       } else {
           $Title = 'My requests';
-          $SphQL->where('userid', $LoggedUser['ID']);
+          $SphQL->where('userid', $user['ID']);
       }
       break;
     case 'voted':
@@ -78,7 +78,7 @@ if (empty($_GET['type'])) {
           $SphQL->where('voter', $UserInfo['ID']);
       } else {
           $Title = 'Requests I have voted on';
-          $SphQL->where('voter', $LoggedUser['ID']);
+          $SphQL->where('voter', $user['ID']);
       }
       break;
     case 'filled':
@@ -90,13 +90,13 @@ if (empty($_GET['type'])) {
           $SphQL->where('fillerid', $UserInfo['ID']);
       } else {
           $Title = 'Requests I have filled';
-          $SphQL->where('fillerid', $LoggedUser['ID']);
+          $SphQL->where('fillerid', $user['ID']);
       }
       break;
     case 'bookmarks':
       $Title = 'Your bookmarked requests';
       $BookmarkView = true;
-      $SphQL->where('bookmarker', $LoggedUser['ID']);
+      $SphQL->where('bookmarker', $user['ID']);
       break;
     default:
       json_die("failure");

@@ -2,7 +2,7 @@
 // perform the back end of subscribing to topics
 authorize();
 
-if (!empty($LoggedUser['DisableForums'])) {
+if (!empty($user['DisableForums'])) {
   error(403);
 }
 
@@ -12,12 +12,12 @@ if (!is_number($_GET['topicid'])) {
 
 $TopicID = (int)$_GET['topicid'];
 
-$DB->prepared_query("
+$db->prepared_query("
   SELECT f.ID
   FROM forums_topics AS t
     JOIN forums AS f ON f.ID = t.ForumID
   WHERE t.ID = $TopicID");
-list($ForumID) = $DB->next_record();
+list($ForumID) = $db->next_record();
 if (!Forums::check_forumperm($ForumID)) {
   error();
 }

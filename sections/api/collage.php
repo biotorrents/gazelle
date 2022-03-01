@@ -8,13 +8,13 @@ if (empty($_GET['id']) || !is_number($_GET['id'])) {
 }
 
 $CollageID = $_GET['id'];
-$CacheKey = "collage_$CollageID";
-$CollageData = $Cache->get_value($CacheKey);
+$cacheKey = "collage_$CollageID";
+$CollageData = $cache->get_value($cacheKey);
 
 if ($CollageData) {
     list($Name, $Description, $CommentList, $Deleted, $CollageCategoryID, $CreatorID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Updated, $Subscribers) = $CollageData;
 } else {
-    $DB->query("
+    $db->query("
     SELECT
       `Name`,
       `Description`,
@@ -32,17 +32,17 @@ if ($CollageData) {
       `ID` = '$CollageID'
     ");
 
-    if (!$DB->has_results()) {
+    if (!$db->has_results()) {
         json_die("failure");
     }
 
-    list($Name, $Description, $CreatorID, $Deleted, $CollageCategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Updated, $Subscribers) = $DB->next_record(MYSQLI_NUM);
+    list($Name, $Description, $CreatorID, $Deleted, $CollageCategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Updated, $Subscribers) = $db->next_record(MYSQLI_NUM);
     $CommentList = null;
     $SetCache = true;
 }
 
 // todo: Cache this
-$DB->query("
+$db->query("
 SELECT
   `GroupID`
 FROM
@@ -50,7 +50,7 @@ FROM
 WHERE
   `CollageID` = $CollageID
 ");
-$TorrentGroups = $DB->collect('GroupID');
+$TorrentGroups = $db->collect('GroupID');
 
 $JSON = array(
   'id'                  => (int) $CollageID,
@@ -71,7 +71,7 @@ $JSON = array(
 if ($CollageCategoryID !== array_search(ARTIST_COLLAGE, $CollageCats)) {
     // Torrent collage
     $TorrentGroups = [];
-    $DB->query("
+    $db->query("
     SELECT
       ct.`GroupID`
     FROM
@@ -85,7 +85,7 @@ if ($CollageCategoryID !== array_search(ARTIST_COLLAGE, $CollageCats)) {
       ct.`Sort`
     ");
 
-    $GroupIDs = $DB->collect('GroupID');
+    $GroupIDs = $db->collect('GroupID');
     $GroupList = Torrents::get_groups($GroupIDs);
 
     foreach ($GroupIDs as $GroupID) {
@@ -124,7 +124,7 @@ if ($CollageCategoryID !== array_search(ARTIST_COLLAGE, $CollageCats)) {
     $JSON['torrentgroups'] = $TorrentGroups;
 } else {
     // Artist collage
-    $DB->query("
+    $db->query("
     SELECT
       ca.`ArtistID`,
       ag.`Name`,
@@ -144,7 +144,7 @@ if ($CollageCategoryID !== array_search(ARTIST_COLLAGE, $CollageCats)) {
     ");
 
     $Artists = [];
-    while (list($ArtistID, $ArtistName, $ArtistImage) = $DB->next_record()) {
+    while (list($ArtistID, $ArtistName, $ArtistImage) = $db->next_record()) {
         $Artists[] = array(
           'id'      => (int) $ArtistID,
           'name'    => $ArtistName,
@@ -168,7 +168,7 @@ if (isset($SetCache)) {
       $Updated,
       (int) $Subscribers
     );
-    $Cache->cache_value($CacheKey, $CollageData, 3600);
+    $cache->cache_value($cacheKey, $CollageData, 3600);
 }
 
 json_print('success', $JSON);

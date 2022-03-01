@@ -163,7 +163,7 @@ class MASS_USER_TORRENTS_TABLE_VIEW
       <input type="hidden" name="type"
         value="<?=esc($this->EditType)?>" />
       <input type="hidden" name="auth"
-        value="<?=G::$LoggedUser['AuthKey']?>" />
+        value="<?=G::$user['AuthKey']?>" />
     </div>
   </form>
 </div>

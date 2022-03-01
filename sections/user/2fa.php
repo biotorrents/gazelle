@@ -11,7 +11,7 @@ if ($Type = $_POST['type'] ?? false) {
         if (!empty($_POST['publickey']) && (strpos($_POST['publickey'], 'BEGIN PGP PUBLIC KEY BLOCK') === false || strpos($_POST['publickey'], 'END PGP PUBLIC KEY BLOCK') === false)) {
             $Error = "Invalid PGP public key";
         } else {
-            $DB->query("
+            $db->query("
               UPDATE users_main
               SET PublicKey = '".db_string($_POST['publickey'])."'
               WHERE ID = $UserID");
@@ -21,7 +21,7 @@ if ($Type = $_POST['type'] ?? false) {
 
     if ($Type === '2FA-E') {
         if ($TwoFA->verifyCode($_POST['twofasecret'], $_POST['twofa'])) {
-            $DB->query("
+            $db->query("
               UPDATE users_main
               SET TwoFactor='".db_string($_POST['twofasecret'])."'
               WHERE ID = $UserID");
@@ -32,7 +32,7 @@ if ($Type = $_POST['type'] ?? false) {
     }
 
     if ($Type === '2FA-D') {
-        $DB->query("
+        $db->query("
           UPDATE users_main
           SET TwoFactor = NULL
           WHERE ID = $UserID");
@@ -42,7 +42,7 @@ if ($Type = $_POST['type'] ?? false) {
     if ($Type === 'U2F-E') {
         try {
             $U2FReg = $U2F->doRegister(json_decode($_POST['u2f-request']), json_decode($_POST['u2f-response']));
-            $DB->query("
+            $db->query("
               INSERT INTO u2f
                 (UserID, KeyHandle, PublicKey, Certificate, Counter, Valid)
               Values ($UserID, '".db_string($U2FReg->keyHandle)."', '".db_string($U2FReg->publicKey)."', '".db_string($U2FReg->certificate)."', '".db_string($U2FReg->counter)."', '1')");
@@ -53,7 +53,7 @@ if ($Type = $_POST['type'] ?? false) {
     }
 
     if ($Type === 'U2F-D') {
-        $DB->query("
+        $db->query("
           DELETE FROM u2f
           WHERE UserID = $UserID");
         $Message = 'U2F tokens deregistered';
@@ -61,22 +61,22 @@ if ($Type = $_POST['type'] ?? false) {
 }
 
 $U2FRegs = [];
-$DB->query("
+$db->query("
   SELECT KeyHandle, PublicKey, Certificate, Counter
   FROM u2f
   WHERE UserID = $UserID");
 
 // Needs to be an array of objects, so we can't use to_array()
-while (list($KeyHandle, $PublicKey, $Certificate, $Counter) = $DB->next_record()) {
+while (list($KeyHandle, $PublicKey, $Certificate, $Counter) = $db->next_record()) {
     $U2FRegs[] = (object)['keyHandle'=>$KeyHandle, 'publicKey'=>$PublicKey, 'certificate'=>$Certificate, 'counter'=>$Counter];
 }
 
-$DB->query("
+$db->query("
   SELECT PublicKey, TwoFactor
   FROM users_main
   WHERE ID = $UserID");
 
-list($PublicKey, $TwoFactor) = $DB->next_record();
+list($PublicKey, $TwoFactor) = $db->next_record();
 list($U2FRequest, $U2FSigs) = $U2F->getRegisterData($U2FRegs);
 View::header("2FA Settings", 'u2f');
 ?>
@@ -172,7 +172,7 @@ View::header("2FA Settings", 'u2f');
         <input type="text" size="60" name="twofasecret" id="twofasecret"
           value="<?=$TwoFASecret?>" readonly><br>
         <img
-          src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->SITE_NAME.':'.$LoggedUser['Username'], $TwoFASecret)?>" />
+          src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->SITE_NAME.':'.$user['Username'], $TwoFASecret)?>" />
         <br />
 
         <input type="text" size="20" maxlength="6" pattern="[0-9]{0,6}" name="twofa" id="twofa"
@@ -203,7 +203,7 @@ View::header("2FA Settings", 'u2f');
 
         <p>
           <img
-            src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->SITE_NAME.':'.$LoggedUser['Username'], $TwoFASecret)?>" />
+            src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->SITE_NAME.':'.$user['Username'], $TwoFASecret)?>" />
         </p>
 
         <p>

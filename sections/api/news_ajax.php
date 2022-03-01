@@ -11,8 +11,8 @@ if (!isset($_GET['count']) || !isset($_GET['offset']) || $Count <= 0 || $Offset 
     json_die('failure');
 }
 
-global $DB;
-$DB->query("
+global $db;
+$db->query("
     SELECT
       ID,
       Title,
@@ -21,7 +21,7 @@ $DB->query("
     FROM news
     ORDER BY Time DESC
     LIMIT $Offset, $Count");
-$News = $DB->to_array(false, MYSQLI_NUM, false);
+$News = $db->to_array(false, MYSQLI_NUM, false);
 
 $NewsResponse = [];
 foreach ($News as $NewsItem) {

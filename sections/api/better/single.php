@@ -1,6 +1,6 @@
 <?php
-if (($Results = $Cache->get_value('better_single_groupids')) === false) {
-  $DB->query("
+if (($Results = $cache->get_value('better_single_groupids')) === false) {
+  $db->query("
     SELECT
       t.ID AS TorrentID,
       t.GroupID AS GroupID
@@ -12,8 +12,8 @@ if (($Results = $Cache->get_value('better_single_groupids')) === false) {
     ORDER BY t.LogScore DESC, t.Time ASC
     LIMIT 30");
 
-  $Results = $DB->to_pair('GroupID', 'TorrentID', false);
-  $Cache->cache_value('better_single_groupids', $Results, 30 * 60);
+  $Results = $db->to_pair('GroupID', 'TorrentID', false);
+  $cache->cache_value('better_single_groupids', $Results, 30 * 60);
 }
 
 $Groups = Torrents::get_groups(array_keys($Results));
@@ -43,7 +43,7 @@ foreach ($Results as $GroupID => $FlacID) {
     'artist' => $JsonArtists,
     'groupName' => $GroupName,
     'groupYear' => (int)$GroupYear,
-    'downloadUrl' => "torrents.php?action=download&id=$FlacID&authkey=".$LoggedUser['AuthKey'].'&torrent_pass='.$LoggedUser['torrent_pass']
+    'downloadUrl' => "torrents.php?action=download&id=$FlacID&authkey=".$user['AuthKey'].'&torrent_pass='.$user['torrent_pass']
   );
 }
 

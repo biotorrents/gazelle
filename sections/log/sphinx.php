@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-$Debug = Debug::go();
+$debug = Debug::go();
 
 if (!empty($_GET['page']) && is_number($_GET['page'])) {
     $Page = min(SPHINX_MAX_MATCHES / LOG_ENTRIES_PER_PAGE, $_GET['page']);
@@ -12,7 +12,7 @@ if (!empty($_GET['page']) && is_number($_GET['page'])) {
 }
 
 if (empty($_GET['search']) || trim($_GET['search']) === '') {
-    $Log = $DB->query(
+    $Log = $db->query(
         "
     SELECT
       `ID`,
@@ -26,14 +26,14 @@ if (empty($_GET['search']) || trim($_GET['search']) === '') {
     LIMIT $Offset, ".LOG_ENTRIES_PER_PAGE
     );
 
-    $NumResults = $DB->record_count();
+    $NumResults = $db->record_count();
     if (!$NumResults) {
         $TotalMatches = 0;
     } elseif ($NumResults === LOG_ENTRIES_PER_PAGE) {
         // This is a lot faster than SQL_CALC_FOUND_ROWS
         $SphQL = new SphinxqlQuery();
         $Result = $SphQL->select('id')->from('log, log_delta')->limit(0, 1, 1)->query();
-        #$Debug->log_var($Result, '$Result');
+        #$debug->log_var($Result, '$Result');
         $TotalMatches = min(SPHINX_MAX_MATCHES, $Result->get_meta('total_found'));
     } else {
         $TotalMatches = $NumResults + $Offset;
@@ -49,8 +49,8 @@ if (empty($_GET['search']) || trim($_GET['search']) === '') {
     ->limit($Offset, LOG_ENTRIES_PER_PAGE, $Offset + LOG_ENTRIES_PER_PAGE);
 
     $Result = $SphQL->query();
-    #$Debug->log_var($Result, '$Result');
-    $Debug['messages']->info('finished sphinxql query');
+    #$debug->log_var($Result, '$Result');
+    $debug['messages']->info('finished sphinxql query');
 
     if ($QueryStatus = $Result->Errno) {
         $QueryError = $Result->Error;
@@ -61,7 +61,7 @@ if (empty($_GET['search']) || trim($_GET['search']) === '') {
 
     if ($NumResults > 0) {
         $LogIDs = $Result->collect('id');
-        $Log = $DB->query("
+        $Log = $db->query("
         SELECT
           `ID`,
           `Message`,
@@ -75,6 +75,6 @@ if (empty($_GET['search']) || trim($_GET['search']) === '') {
         DESC
         ");
     } else {
-        $Log = $DB->query("SET @nothing = 0");
+        $Log = $db->query("SET @nothing = 0");
     }
 }

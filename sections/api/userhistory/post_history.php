@@ -12,17 +12,17 @@ function error_out($reason = '')
     error();
 }
 
-if (!empty($LoggedUser['DisableForums'])) {
+if (!empty($user['DisableForums'])) {
     error_out('You do not have access to the forums!');
 }
 
-$UserID = empty($_GET['userid']) ? $LoggedUser['ID'] : $_GET['userid'];
+$UserID = empty($_GET['userid']) ? $user['ID'] : $_GET['userid'];
 if (!is_number($UserID)) {
     error_out('User does not exist!');
 }
 
-if (isset($LoggedUser['PostsPerPage'])) {
-    $PerPage = $LoggedUser['PostsPerPage'];
+if (isset($user['PostsPerPage'])) {
+    $PerPage = $user['PostsPerPage'];
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
@@ -32,7 +32,7 @@ list($Page, $Limit) = Format::page_limit($PerPage);
 $UserInfo = Users::user_info($UserID);
 extract(array_intersect_key($UserInfo, array_flip(array('Username', 'Enabled', 'Title', 'Avatar', 'Donor', 'Warned'))));
 
-$ViewingOwn = ($UserID === $LoggedUser['ID']);
+$ViewingOwn = ($UserID === $user['ID']);
 $ShowUnread = ($ViewingOwn && (!isset($_GET['showunread']) || !!$_GET['showunread']));
 $ShowGrouped = ($ViewingOwn && (!isset($_GET['group']) || !!$_GET['group']));
 if ($ShowGrouped) {
@@ -44,7 +44,7 @@ if ($ShowGrouped) {
       LEFT JOIN forums_topics AS t ON t.ID = p.TopicID';
     if ($ShowUnread) {
         $SQL .= '
-      LEFT JOIN forums_last_read_topics AS l ON l.TopicID = t.ID AND l.UserID = '.$LoggedUser['ID'];
+      LEFT JOIN forums_last_read_topics AS l ON l.TopicID = t.ID AND l.UserID = '.$user['ID'];
     }
     $SQL .= '
       LEFT JOIN forums AS f ON f.ID = t.ForumID
@@ -59,13 +59,13 @@ if ($ShowGrouped) {
     GROUP BY t.ID
     ORDER BY p.ID DESC
     LIMIT $Limit";
-    $PostIDs = $DB->query($SQL);
-    $DB->query('SELECT FOUND_ROWS()');
-    list($Results) = $DB->next_record();
+    $PostIDs = $db->query($SQL);
+    $db->query('SELECT FOUND_ROWS()');
+    list($Results) = $db->next_record();
 
     if ($Results > $PerPage * ($Page - 1)) {
-        $DB->set_query_id($PostIDs);
-        $PostIDs = $DB->collect('ID');
+        $db->set_query_id($PostIDs);
+        $PostIDs = $db->collect('ID');
         $SQL = "
       SELECT
         p.ID,
@@ -89,7 +89,7 @@ if ($ShowGrouped) {
         LEFT JOIN forums_last_read_topics AS l ON l.UserID = $UserID AND l.TopicID = t.ID
       WHERE p.ID IN (".implode(',', $PostIDs).')
       ORDER BY p.ID DESC';
-        $Posts = $DB->query($SQL);
+        $Posts = $db->query($SQL);
     }
 } else {
     $SQL = '
@@ -111,7 +111,7 @@ if ($ShowGrouped) {
         p.TopicID,
         t.Title,
         t.LastPostID,';
-    if ($UserID === $LoggedUser['ID']) {
+    if ($UserID === $user['ID']) {
         $SQL .= '
         l.PostID AS LastRead,';
     }
@@ -147,16 +147,16 @@ if ($ShowGrouped) {
 
     $SQL .= "
     LIMIT $Limit";
-    $Posts = $DB->query($SQL);
+    $Posts = $db->query($SQL);
 
-    $DB->query('SELECT FOUND_ROWS()');
-    list($Results) = $DB->next_record();
+    $db->query('SELECT FOUND_ROWS()');
+    list($Results) = $db->next_record();
 
-    $DB->set_query_id($Posts);
+    $db->set_query_id($Posts);
 }
 
 $JsonResults = [];
-while (list($PostID, $AddedTime, $Body, $EditedUserID, $EditedTime, $EditedUsername, $TopicID, $ThreadTitle, $LastPostID, $LastRead, $Locked, $Sticky) = $DB->next_record()) {
+while (list($PostID, $AddedTime, $Body, $EditedUserID, $EditedTime, $EditedUsername, $TopicID, $ThreadTitle, $LastPostID, $LastRead, $Locked, $Sticky) = $db->next_record()) {
     $JsonResults[] = array(
     'postId' => (int)$PostID,
     'topicId' => (int)$TopicID,

@@ -7,19 +7,19 @@ if ($_POST['collage_id'] && is_number($_POST['collage_id'])) {
   authorize();
   $CollageID = $_POST['collage_id'];
 
-  $DB->query("
+  $db->query("
     SELECT Name
     FROM collages
     WHERE ID = $CollageID");
-  if (!$DB->has_results()) {
+  if (!$db->has_results()) {
     error('Collage is completely deleted');
   } else {
-    $DB->query("
+    $db->query("
       UPDATE collages
       SET Deleted = '0'
       WHERE ID = $CollageID");
-    $Cache->delete_value("collage_$CollageID");
-    Misc::write_log("Collage $CollageID was recovered by ".$LoggedUser['Username']);
+    $cache->delete_value("collage_$CollageID");
+    Misc::write_log("Collage $CollageID was recovered by ".$user['Username']);
     header("Location: collages.php?id=$CollageID");
   }
 }
@@ -33,7 +33,7 @@ View::header('Collage recovery!');
     <div class="pad">
       <form class="undelete_form" name="collage" action="collages.php" method="post">
         <input type="hidden" name="action" value="recover" />
-        <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+        <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
         <div>
           <strong>Collage ID: </strong>
           <input type="text" name="collage_id" size="8" />

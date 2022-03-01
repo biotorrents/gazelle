@@ -52,7 +52,7 @@ $SQL = "
     Date,
     Author
   FROM wiki_articles
-  WHERE MinClassRead <= '".$LoggedUser['EffectiveClass']."'";
+  WHERE MinClassRead <= '".$user['EffectiveClass']."'";
 
 if ($Search !== '') {
     $SQL .= " AND $Type LIKE '%";
@@ -63,13 +63,13 @@ if ($Search !== '') {
 $SQL .= "
   ORDER BY $Order $Way
   LIMIT $Limit ";
-$RS = $DB->query($SQL);
-$DB->query("
+$RS = $db->query($SQL);
+$db->query("
   SELECT FOUND_ROWS()");
-list($NumResults) = $DB->next_record();
+list($NumResults) = $db->next_record();
 
 View::header('Search Articles');
-$DB->set_query_id($RS);
+$db->set_query_id($RS);
 ?>
 
 <div>
@@ -178,7 +178,7 @@ $DB->set_query_id($RS);
     </tr>
 
     <?php
-    while (list($ID, $Title, $Date, $UserID) = $DB->next_record()) { ?>
+    while (list($ID, $Title, $Date, $UserID) = $db->next_record()) { ?>
     <tr>
       <td><a href="wiki.php?action=article&amp;id=<?=$ID?>"><?=$Title?></a></td>
       <td><?=$Date?>

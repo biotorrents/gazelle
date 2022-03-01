@@ -20,15 +20,15 @@ if (empty($_GET['type']) || !in_array($_GET['type'], array('forums', 'collages',
 }
 $Type = $_GET['type'];
 
-$Edits = $Cache->get_value($Type.'_edits_'.$PostID);
+$Edits = $cache->get_value($Type.'_edits_'.$PostID);
 if (!is_array($Edits)) {
-  $DB->query("
+  $db->query("
     SELECT EditUser, EditTime, Body
     FROM comments_edits
     WHERE Page = '$Type' AND PostID = $PostID
     ORDER BY EditTime DESC");
-  $Edits = $DB->to_array();
-  $Cache->cache_value($Type.'_edits_'.$PostID, $Edits, 0);
+  $Edits = $db->to_array();
+  $cache->cache_value($Type.'_edits_'.$PostID, $Edits, 0);
 }
 
 list($UserID, $Time) = $Edits[$Depth];
@@ -39,21 +39,21 @@ if ($Depth != 0) {
   switch ($Type) {
     case 'forums':
       //Get from normal forum stuffs
-      $DB->query("
+      $db->query("
         SELECT Body
         FROM forums_posts
         WHERE ID = $PostID");
-      list($Body) = $DB->next_record();
+      list($Body) = $db->next_record();
       break;
     case 'collages':
     case 'requests':
     case 'artist':
     case 'torrents':
-      $DB->query("
+      $db->query("
         SELECT Body
         FROM comments
         WHERE Page = '$Type' AND ID = $PostID");
-      list($Body) = $DB->next_record();
+      list($Body) = $db->next_record();
       break;
   }
 }

@@ -9,11 +9,11 @@ if (!empty($_GET['search'])) {
     } elseif (preg_match('/^'.EMAIL_REGEX.'$/i', $_GET['search'])) {
         $_GET['email'] = $_GET['search'];
     } elseif (preg_match(USERNAME_REGEX, $_GET['search'])) {
-        $DB->query("
+        $db->query("
       SELECT ID
       FROM users_main
       WHERE Username = '".db_string($_GET['search'])."'");
-        if (list($ID) = $DB->next_record()) {
+        if (list($ID) = $db->next_record()) {
             header("Location: user.php?id=$ID");
             error();
         }
@@ -991,33 +991,33 @@ View::header('User search');
 <?php
 if ($RunQuery) {
                 if (!empty($_GET['ip'])) {
-                        $DB->query("SELECT ID, IP FROM users_main");
-                    while (list($ID, $EncIP) = $DB->next_record()) {
+                        $db->query("SELECT ID, IP FROM users_main");
+                    while (list($ID, $EncIP) = $db->next_record()) {
                         $IPs[] = $ID.", '".Crypto::decrypt($EncIP)."'";
                     }
-                    $DB->query("CREATE TEMPORARY TABLE users_ips_decrypted (ID INT(10) UNSIGNED NOT NULL, IP VARCHAR(45) NOT NULL, PRIMARY KEY (ID,IP)) ENGINE=MEMORY");
-                    $DB->query("INSERT IGNORE INTO users_ips_decrypted (ID, IP) VALUES(".implode("),(", $IPs).")");
+                    $db->query("CREATE TEMPORARY TABLE users_ips_decrypted (ID INT(10) UNSIGNED NOT NULL, IP VARCHAR(45) NOT NULL, PRIMARY KEY (ID,IP)) ENGINE=MEMORY");
+                    $db->query("INSERT IGNORE INTO users_ips_decrypted (ID, IP) VALUES(".implode("),(", $IPs).")");
                 }
                 if (!empty($_GET['email'])) {
-                        $DB->query("SELECT ID, Email FROM users_main");
-                    while (list($ID, $EncEmail) = $DB->next_record()) {
+                        $db->query("SELECT ID, Email FROM users_main");
+                    while (list($ID, $EncEmail) = $db->next_record()) {
                         $Emails[] = $ID.", '".Crypto::decrypt($EncEmail)."'";
                     }
-                    $DB->query("CREATE TEMPORARY TABLE users_emails_decrypted (ID INT(10) UNSIGNED NOT NULL, Email VARCHAR(255) NOT NULL, PRIMARY KEY (ID,Email)) ENGINE=MEMORY");
-                    $DB->query("INSERT IGNORE INTO users_emails_decrypted (ID, Email) VALUES(".implode("),(", $Emails).")");
+                    $db->query("CREATE TEMPORARY TABLE users_emails_decrypted (ID INT(10) UNSIGNED NOT NULL, Email VARCHAR(255) NOT NULL, PRIMARY KEY (ID,Email)) ENGINE=MEMORY");
+                    $db->query("INSERT IGNORE INTO users_emails_decrypted (ID, Email) VALUES(".implode("),(", $Emails).")");
                 }
-                $Results = $DB->query($SQL);
-                $DB->query('SELECT FOUND_ROWS()');
-                list($NumResults) = $DB->next_record();
+                $Results = $db->query($SQL);
+                $db->query('SELECT FOUND_ROWS()');
+                list($NumResults) = $db->next_record();
                 if (!empty($_GET['ip'])) {
-                    $DB->query("DROP TABLE users_ips_decrypted");
+                    $db->query("DROP TABLE users_ips_decrypted");
                 }
                 if (!empty($_GET['email'])) {
-                    $DB->query("DROP TABLE users_emails_decrypted");
+                    $db->query("DROP TABLE users_emails_decrypted");
                 }
-                $DB->set_query_id($Results);
+                $db->set_query_id($Results);
             } else {
-                $DB->query('SET @nothing = 0');
+                $db->query('SET @nothing = 0');
                 $NumResults = 0;
             }
 ?>
@@ -1047,7 +1047,7 @@ echo $Pages;
       <?php } ?>
     </tr>
     <?php
-while (list($UserID, $Username, $Uploaded, $Downloaded, $Snatched, $Invitees, $Class, $Email, $Enabled, $IP, $Invites, $DisableInvites, $Warned, $Donor, $JoinDate, $LastAccess) = $DB->next_record()) {
+while (list($UserID, $Username, $Uploaded, $Downloaded, $Snatched, $Invitees, $Class, $Email, $Enabled, $IP, $Invites, $DisableInvites, $Warned, $Donor, $JoinDate, $LastAccess) = $db->next_record()) {
     $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
     $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'; ?>
     <tr>
@@ -1067,13 +1067,13 @@ while (list($UserID, $Username, $Uploaded, $Downloaded, $Snatched, $Invitees, $C
       </td>
       <td><?=Format::get_size($Downloaded)?>
       </td>
-      <?php $DB->query("
+      <?php $db->query("
         SELECT COUNT(ud.UserID)
         FROM users_downloads AS ud
           JOIN torrents AS t ON t.ID = ud.TorrentID
         WHERE ud.UserID = $UserID");
-    list($Downloads) = $DB->next_record();
-    $DB->set_query_id($Results); ?>
+    list($Downloads) = $db->next_record();
+    $db->set_query_id($Results); ?>
       <td><?=number_format((int)$Downloads)?>
       </td>
       <td><?=(is_numeric($Snatched) ? number_format($Snatched) : esc($Snatched))?>

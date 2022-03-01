@@ -12,7 +12,7 @@ $group_id = (int) $_GET['groupid'];
 Security::int($group_id);
 
 // Get the torrent group name and the body of the last revision
-$DB->prepared_query("
+$db->prepared_query("
 SELECT
   tg.`title`,
   tg.`subject`,
@@ -36,12 +36,12 @@ WHERE
 ");
 
 
-if (!$DB->has_results()) {
+if (!$db->has_results()) {
     error(404);
 }
-list($title, $subject, $object, $Image, $Body, $picture, $description, $published, $workgroup, $location, $identifier, $category_id) = $DB->next_record();
+list($title, $subject, $object, $Image, $Body, $picture, $description, $published, $workgroup, $location, $identifier, $category_id) = $db->next_record();
 
-$DB->prepared_query("
+$db->prepared_query("
 SELECT
   `id`,
   `user_id`,
@@ -54,9 +54,9 @@ WHERE
 ");
 
 
-if ($DB->has_results()) {
+if ($db->has_results()) {
     $Screenshots = [];
-    while ($S = $DB->next_record(MYSQLI_ASSOC, true)) {
+    while ($S = $db->next_record(MYSQLI_ASSOC, true)) {
         $Screenshots[] = $S;
     }
 }
@@ -84,7 +84,7 @@ View::header(
     <input type="hidden" name="action" value="takegroupedit" />
 
     <input type="hidden" name="auth"
-      value="<?=$LoggedUser['AuthKey']?>" />
+      value="<?=$user['AuthKey']?>" />
 
     <input type="hidden" name="groupid" value="<?=$group_id?>" />
 
@@ -105,7 +105,7 @@ View::textarea(
     value: esc($Body) ?? '',
 );
 
-  $DB->query("
+  $db->query("
   SELECT
     `UserID`
   FROM
@@ -113,7 +113,7 @@ View::textarea(
   WHERE
     `GroupID` = '$group_id'
   ");
-  $Contributed = in_array($LoggedUser['ID'], $DB->collect('UserID'));
+  $Contributed = in_array($user['ID'], $db->collect('UserID'));
 ?>
 
     <h3>
@@ -143,7 +143,7 @@ View::textarea(
     <input type="hidden" name="action" value="screenshotedit" />
 
     <input type="hidden" name="auth"
-      value="<?=$LoggedUser['AuthKey']?>" />
+      value="<?=$user['AuthKey']?>" />
 
     <input type="hidden" name="groupid" value="<?=$group_id?>" />
 
@@ -181,7 +181,7 @@ View::textarea(
     <input type="hidden" name="action" value="nonwikiedit" />
 
     <input type="hidden" name="auth"
-      value="<?=$LoggedUser['AuthKey']?>" />
+      value="<?=$user['AuthKey']?>" />
 
     <input type="hidden" name="groupid" value="<?=$group_id?>" />
 
@@ -296,7 +296,7 @@ View::textarea(
       <input type="hidden" name="action" value="rename" />
 
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
 
       <input type="hidden" name="groupid" value="<?=$group_id?>" />
 
@@ -352,7 +352,7 @@ View::textarea(
     <input type="hidden" name="action" value="merge" />
 
     <input type="hidden" name="auth"
-      value="<?=$LoggedUser['AuthKey']?>" />
+      value="<?=$user['AuthKey']?>" />
 
     <input type="hidden" name="groupid" value="<?=$group_id?>" />
 

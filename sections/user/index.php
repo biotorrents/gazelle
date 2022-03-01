@@ -28,15 +28,15 @@ switch ($_REQUEST['action']) {
   case 'notify_delete':
     authorize();
     if ($_GET['id'] && is_number($_GET['id'])) {
-        $DB->query("DELETE FROM users_notify_filters WHERE ID='".db_string($_GET['id'])."' AND UserID='$LoggedUser[ID]'");
-        $ArtistNotifications = $Cache->get_value('notify_artists_'.$LoggedUser['ID']);
+        $db->query("DELETE FROM users_notify_filters WHERE ID='".db_string($_GET['id'])."' AND UserID='$user[ID]'");
+        $ArtistNotifications = $cache->get_value('notify_artists_'.$user['ID']);
 
         if (is_array($ArtistNotifications) && $ArtistNotifications['ID'] == $_GET['id']) {
-            $Cache->delete_value('notify_artists_'.$LoggedUser['ID']);
+            $cache->delete_value('notify_artists_'.$user['ID']);
         }
     }
 
-    $Cache->delete_value('notify_filters_'.$LoggedUser['ID']);
+    $cache->delete_value('notify_filters_'.$user['ID']);
     header('Location: user.php?action=notify');
     break;
 
@@ -106,14 +106,14 @@ switch ($_REQUEST['action']) {
     }
 
     $UserID = $_REQUEST['id'];
-    $Cache->delete_value('user_info_'.$UserID);
-    $Cache->delete_value('user_info_heavy_'.$UserID);
-    $Cache->delete_value('subscriptions_user_new_'.$UserID);
-    $Cache->delete_value('user_badges_'.$UserID);
-    $Cache->delete_value('staff_pm_new_'.$UserID);
-    $Cache->delete_value('inbox_new_'.$UserID);
-    $Cache->delete_value('notifications_new_'.$UserID);
-    $Cache->delete_value('collage_subs_user_new_'.$UserID);
+    $cache->delete_value('user_info_'.$UserID);
+    $cache->delete_value('user_info_heavy_'.$UserID);
+    $cache->delete_value('subscriptions_user_new_'.$UserID);
+    $cache->delete_value('user_badges_'.$UserID);
+    $cache->delete_value('staff_pm_new_'.$UserID);
+    $cache->delete_value('inbox_new_'.$UserID);
+    $cache->delete_value('notifications_new_'.$UserID);
+    $cache->delete_value('collage_subs_user_new_'.$UserID);
 
     require_once SERVER_ROOT.'/sections/user/user.php';
     break;

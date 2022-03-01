@@ -146,7 +146,7 @@
       let classDistributionData = JSON.parse('{{ classDistribution|json_encode|raw }}');
 
       let classDistributionChart = new Chart(classDistributionCanvas, {
-        type: 'pie',
+        type: 'doughnut',
         data: {
           labels: Object.keys(classDistributionData),
           datasets: [{
@@ -396,7 +396,7 @@
       let devicesData = JSON.parse('{{ devices|json_encode|raw }}');
 
       let devicesChart = new Chart(devicesCanvas, {
-        type: 'pie',
+        type: 'doughnut',
         data: {
           labels: Object.keys(devicesData.device),
           datasets: [{
@@ -433,7 +433,7 @@
       let browsersData = JSON.parse('{{ devices|json_encode|raw }}');
 
       let browsersChart = new Chart(browsersCanvas, {
-        type: 'pie',
+        type: 'doughnut',
         data: {
           labels: Object.keys(browsersData.browser),
           datasets: [{
@@ -476,7 +476,7 @@
       let operatingSystemsData = JSON.parse('{{ devices|json_encode|raw }}');
 
       let operatingSystemsChart = new Chart(operatingSystemsCanvas, {
-        type: 'pie',
+        type: 'doughnut',
         data: {
           labels: Object.keys(operatingSystemsData.os),
           datasets: [{

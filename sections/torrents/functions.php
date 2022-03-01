@@ -3,9 +3,9 @@
 
 function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProperties = true, $ApiCall = false)
 {
-    global $Cache, $DB;
+    global $cache, $db;
     if (!$RevisionID) {
-        $TorrentCache = $Cache->get_value("torrents_details_$GroupID");
+        $TorrentCache = $cache->get_value("torrents_details_$GroupID");
     }
 
     if ($RevisionID || !is_array($TorrentCache)) {
@@ -50,13 +50,13 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
           WHERE g.`id` = '$GroupID'
             GROUP BY NULL";
 
-        $DB->prepared_query($SQL);
-        $TorrentDetails = $DB->next_record(MYSQLI_ASSOC);
+        $db->prepared_query($SQL);
+        $TorrentDetails = $db->next_record(MYSQLI_ASSOC);
         $TorrentDetails['Screenshots'] = [];
         $TorrentDetails['Mirrors'] = [];
 
         # Screenshots (Publications)
-        $DB->query("
+        $db->query("
         SELECT
           `id`,
           `user_id`,
@@ -68,15 +68,15 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
           `group_id` = '$GroupID'
         ");
 
-        if ($DB->has_results()) {
-            while ($Screenshot = $DB->next_record(MYSQLI_ASSOC, true)) {
+        if ($db->has_results()) {
+            while ($Screenshot = $db->next_record(MYSQLI_ASSOC, true)) {
                 $TorrentDetails['Screenshots'][] = $Screenshot;
             }
         }
 
         # Mirrors
         # todo: Fix $GroupID
-        $DB->query("
+        $db->query("
         SELECT
           `id`,
           `user_id`,
@@ -88,14 +88,14 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
           `torrent_id` = '$GroupID'
         ");
   
-        if ($DB->has_results()) {
-            while ($Mirror = $DB->next_record(MYSQLI_ASSOC, true)) {
+        if ($db->has_results()) {
+            while ($Mirror = $db->next_record(MYSQLI_ASSOC, true)) {
                 $TorrentDetails['Mirrors'][] = $Mirror;
             }
         }
   
         // Fetch the individual torrents
-        $DB->query("
+        $db->query("
         SELECT
           t.ID,
           t.Media,
@@ -137,7 +137,7 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
           t.Media ASC,
           t.ID");
 
-        $TorrentList = $DB->to_array('ID', MYSQLI_ASSOC);
+        $TorrentList = $db->to_array('ID', MYSQLI_ASSOC);
         if (count($TorrentList) === 0 && $ApiCall == false) {
             header('Location: log.php?search='.(empty($_GET['torrentid']) ? "Group+$GroupID" : "Torrent+$_GET[torrentid]"));
             error();
@@ -145,15 +145,15 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
             return;
         }
 
-        if (in_array(0, $DB->collect('Seeders'))) {
-            $CacheTime = 600;
+        if (in_array(0, $db->collect('Seeders'))) {
+            $cacheTime = 600;
         } else {
-            $CacheTime = 3600;
+            $cacheTime = 3600;
         }
 
         // Store it all in cache
         if (!$RevisionID) {
-            $Cache->cache_value("torrents_details_$GroupID", array($TorrentDetails, $TorrentList), $CacheTime);
+            $cache->cache_value("torrents_details_$GroupID", array($TorrentDetails, $TorrentList), $cacheTime);
         }
     } else { // If we're reading from cache
         $TorrentDetails = $TorrentCache[0];
@@ -175,7 +175,7 @@ function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProp
 
 function get_torrent_info($TorrentID, $Return = true, $RevisionID = 0, $PersonalProperties = true, $ApiCall = false)
 {
-    global $Cache, $DB;
+    global $cache, $db;
     $GroupID = (int)torrentid_to_groupid($TorrentID);
     $GroupInfo = get_group_info($GroupID, $Return, $RevisionID, $PersonalProperties, $ApiCall);
     if ($GroupInfo) {
@@ -210,13 +210,13 @@ function is_valid_torrenthash($Str)
 // Functionality for the API to resolve input into other data
 function torrenthash_to_torrentid($Str)
 {
-    global $Cache, $DB;
-    $DB->query("
+    global $cache, $db;
+    $db->query("
       SELECT ID
       FROM torrents
       WHERE HEX(info_hash) = '".db_string($Str)."'");
 
-    $TorrentID = (int)array_pop($DB->next_record(MYSQLI_ASSOC));
+    $TorrentID = (int)array_pop($db->next_record(MYSQLI_ASSOC));
     if ($TorrentID) {
         return $TorrentID;
     }
@@ -225,13 +225,13 @@ function torrenthash_to_torrentid($Str)
 
 function torrenthash_to_groupid($Str)
 {
-    global $Cache, $DB;
-    $DB->query("
+    global $cache, $db;
+    $db->query("
       SELECT GroupID
       FROM torrents
       WHERE HEX(info_hash) = '".db_string($Str)."'");
 
-    $GroupID = (int)array_pop($DB->next_record(MYSQLI_ASSOC));
+    $GroupID = (int)array_pop($db->next_record(MYSQLI_ASSOC));
     if ($GroupID) {
         return $GroupID;
     }
@@ -240,13 +240,13 @@ function torrenthash_to_groupid($Str)
 
 function torrentid_to_groupid($TorrentID)
 {
-    global $Cache, $DB;
-    $DB->query("
+    global $cache, $db;
+    $db->query("
       SELECT GroupID
       FROM torrents
       WHERE ID = '".db_string($TorrentID)."'");
 
-    $GroupID = (int)array_pop($DB->next_record(MYSQLI_ASSOC));
+    $GroupID = (int)array_pop($db->next_record(MYSQLI_ASSOC));
     if ($GroupID) {
         return $GroupID;
     }
@@ -256,8 +256,8 @@ function torrentid_to_groupid($TorrentID)
 // After adjusting / deleting logs, recalculate the score for the torrent
 function set_torrent_logscore($TorrentID)
 {
-    global $DB;
-    $DB->query("
+    global $db;
+    $db->query("
       UPDATE torrents
       SET LogScore = (
         SELECT FLOOR(AVG(Score))
@@ -272,24 +272,24 @@ function get_group_requests($GroupID)
     if (empty($GroupID) || !is_number($GroupID)) {
         return [];
     }
-    global $DB, $Cache;
+    global $db, $cache;
 
-    $Requests = $Cache->get_value("requests_group_$GroupID");
+    $Requests = $cache->get_value("requests_group_$GroupID");
     if ($Requests === false) {
-        $DB->query("
+        $db->query("
           SELECT ID
           FROM requests
           WHERE GroupID = $GroupID
             AND TimeFilled IS NULL");
 
-        $Requests = $DB->collect('ID');
-        $Cache->cache_value("requests_group_$GroupID", $Requests, 0);
+        $Requests = $db->collect('ID');
+        $cache->cache_value("requests_group_$GroupID", $Requests, 0);
     }
     return Requests::get_requests($Requests);
 }
 
 // Used by both sections/torrents/details.php and sections/reportsv2/report.php
-function build_torrents_table($Cache, $DB, $LoggedUser, $GroupID, $GroupName, $GroupCategoryID, $TorrentList, $Types, $Username)
+function build_torrents_table($cache, $db, $user, $GroupID, $GroupName, $GroupCategoryID, $TorrentList, $Types, $Username)
 {
     function filelist($Str)
     {
@@ -346,7 +346,7 @@ function build_torrents_table($Cache, $DB, $LoggedUser, $GroupID, $GroupName, $G
             $ReportInfo .= "</table>";
         }
 
-        $CanEdit = (check_perms('torrents_edit') || (($UserID == $LoggedUser['ID'] && !$LoggedUser['DisableWiki'])));
+        $CanEdit = (check_perms('torrents_edit') || (($UserID == $user['ID'] && !$user['DisableWiki'])));
         $RegenLink = check_perms('users_mod') ? ' <a href="torrents.php?action=regen_filelist&amp;torrentid=' . $TorrentID . '" class="brackets">Regenerate</a>' : '';
 
         $FileTable = '
@@ -433,10 +433,10 @@ function build_torrents_table($Cache, $DB, $LoggedUser, $GroupID, $GroupName, $G
     style="font-weight: normal;" id="torrent<?=($TorrentID)?>">
     <td>
         <span>[ <a
-                href="torrents.php?action=download&amp;id=<?=($TorrentID)?>&amp;authkey=<?=($LoggedUser['AuthKey'])?>&amp;torrent_pass=<?=($LoggedUser['torrent_pass'])?>"
+                href="torrents.php?action=download&amp;id=<?=($TorrentID)?>&amp;authkey=<?=($user['AuthKey'])?>&amp;torrent_pass=<?=($user['torrent_pass'])?>"
                 class="tooltip" title="Download"><?=($HasFile ? 'DL' : 'Missing')?></a>
             <?php if (Torrents::can_use_token($Torrent)) { ?>
-            | <a href="torrents.php?action=download&amp;id=<?=($TorrentID)?>&amp;authkey=<?=($LoggedUser['AuthKey'])?>&amp;torrent_pass=<?=($LoggedUser['torrent_pass'])?>&amp;usetoken=1"
+            | <a href="torrents.php?action=download&amp;id=<?=($TorrentID)?>&amp;authkey=<?=($user['AuthKey'])?>&amp;torrent_pass=<?=($user['torrent_pass'])?>&amp;usetoken=1"
                 class="tooltip" title="Use a FL Token"
                 onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
             <?php } ?>
@@ -446,7 +446,7 @@ function build_torrents_table($Cache, $DB, $LoggedUser, $GroupID, $GroupName, $G
             | <a href="torrents.php?action=edit&amp;id=<?=($TorrentID)?>"
                 class="tooltip" title="Edit">ED</a>
             <?php }
-        if (check_perms('torrents_delete') || $UserID == $LoggedUser['ID']) { ?>
+        if (check_perms('torrents_delete') || $UserID == $user['ID']) { ?>
             | <a href="torrents.php?action=delete&amp;torrentid=<?=($TorrentID)?>"
                 class="tooltip" title="Remove">RM</a>
             <?php } ?>

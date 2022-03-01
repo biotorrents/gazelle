@@ -85,7 +85,7 @@ View::header('Ratio requirements');
       </tr>
 
       <?php
-$DL = G::$LoggedUser['BytesDownloaded'];
+$DL = G::$user['BytesDownloaded'];
 $GB = 1024*1024*1024;
 ?>
 

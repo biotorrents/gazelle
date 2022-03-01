@@ -4,7 +4,7 @@ declare(strict_types=1);
 $ENV = ENV::go();
 $twig = Twig::go();
 
-global $LoggedUser;
+global $user;
 
 echo <<<HTML
 <!doctype html>
@@ -19,7 +19,7 @@ echo $twig->render(
     'header/meta-tags.html',
     [
     'ENV' => $ENV,
-    'LoggedUser' => $LoggedUser,
+    'LoggedUser' => $user,
     'title' => esc($PageTitle)
   ]
 );

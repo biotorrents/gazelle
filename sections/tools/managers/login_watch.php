@@ -5,16 +5,16 @@ if (!check_perms('admin_login_watch')) {
 
 if (isset($_POST['submit']) && isset($_POST['ip']) && $_POST['submit'] == 'Unban') {
   authorize();
-  $Cache->delete_value('login_attempts_'.$_POST['ip']);
+  $cache->delete_value('login_attempts_'.$_POST['ip']);
 }
 
 View::header('Login Watch');
 
-$AttemptIPs = $Cache->get_value('login_attempts');
+$AttemptIPs = $cache->get_value('login_attempts');
 $AllAttempts = [];
 foreach($AttemptIPs as $IP => $Time) {
   if (time() > $Time) { continue; }
-  list($Attempts, $Banned) = $Cache->get_value('login_attempts_'.$IP);
+  list($Attempts, $Banned) = $cache->get_value('login_attempts_'.$IP);
   if (!isset($Attempts) && !isset($Banned)) { continue; }
   $AllAttempts[] = [$IP, $Attempts, $Banned, $Time];
 }
@@ -53,7 +53,7 @@ while (list($IP, $Attempts, $Banned, $BannedUntil) = array_shift($AllAttempts)) 
       </td>
       <td>
         <form class="manage_form" name="bans" action="" method="post">
-          <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+          <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
           <input type="hidden" name="ip" value="<?=$IP?>" />
           <input type="hidden" name="action" value="login_watch" />
           <input type="submit" name="submit" value="Unban" />
@@ -62,7 +62,7 @@ while (list($IP, $Attempts, $Banned, $BannedUntil) = array_shift($AllAttempts)) 
 <?php if (check_perms('admin_manage_ipbans')) { ?>
       <td>
         <form class="manage_form" name="bans" action="" method="post">
-          <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+          <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
           <input type="hidden" name="action" value="ip_ban" />
           <input type="hidden" name="start" value="<?=$IP?>" />
           <input type="hidden" name="end" value="<?=$IP?>" />

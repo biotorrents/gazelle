@@ -13,9 +13,9 @@ class G
     private static $G = null;
 
     # Globals
-    public static $DB;
-    public static $Cache;
-    public static $LoggedUser;
+    public static $db;
+    public static $cache;
+    public static $user;
 
 
     /**
@@ -59,10 +59,10 @@ class G
      */
     private static function factory()
     {
-        global $DB, $Cache, $LoggedUser;
+        global $db, $cache, $user;
 
-        self::$DB = $DB;
-        self::$Cache = $Cache;
-        self::$LoggedUser =& $LoggedUser;
+        self::$db = $db;
+        self::$cache = $cache;
+        self::$user =& $user;
     }
 }

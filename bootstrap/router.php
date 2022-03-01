@@ -56,7 +56,7 @@ Flight::route('/api/*', function () {
 
 /** index */
 Flight::route('/', function () {
-    if (isset(G::$LoggedUser['ID'])) {
+    if (isset(G::$user['ID'])) {
         #if (!isset($_REQUEST['action'])) {
         require_once __DIR__.'/../sections/index/private.php';
     #} else {

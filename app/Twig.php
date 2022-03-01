@@ -75,11 +75,11 @@ class Twig
         /*
         # DebugBar
         $Profile = new \Twig\Profiler\Profile();
-        $Debug = Debug::go();
+        $debug = Debug::go();
         $twig->addExtension(
             new \DebugBar\Bridge\Twig\TimeableTwigExtensionProfiler(
                 $Profile,
-                $Debug['time']
+                $debug['time']
             )
         );
         */

@@ -12,7 +12,7 @@ if (check_perms('users_mod')) {
     $badtag = db_string($_POST['badtag']);
     $aliastag = db_string($_POST['aliastag']);
 
-    $DB->query("
+    $db->query("
       INSERT INTO tag_aliases (BadTag, AliasTag)
       VALUES ('$badtag', '$aliastag')");
   }
@@ -23,17 +23,17 @@ if (check_perms('users_mod')) {
     $aliastag = db_string($_POST['aliastag']);
 
     if ($_POST['save']) {
-      $DB->query("
+      $db->query("
         UPDATE tag_aliases
         SET BadTag = '$badtag', AliasTag = '$aliastag'
         WHERE ID = '$aliasid' ");
     }
     if ($_POST['delete']) {
-      $DB->query("
+      $db->query("
         DELETE FROM tag_aliases
         WHERE ID = '$aliasid'");
     }
-    $Cache->delete_value('tag_aliases_search');
+    $cache->delete_value('tag_aliases_search');
   }
 }
 ?>
@@ -70,11 +70,11 @@ if (check_perms('users_mod')) {
     </form>
   </tr>
 <?php
-$DB->query("
+$db->query("
   SELECT ID, BadTag, AliasTag
   FROM tag_aliases
   ORDER BY $orderby");
-while (list($ID, $BadTag, $AliasTag) = $DB->next_record()) {
+while (list($ID, $BadTag, $AliasTag) = $db->next_record()) {
   ?>
   <tr>
     <form class="manage_form" name="aliases" method="post" action="">

@@ -9,7 +9,7 @@ $ArticleID = (int) $_GET['id'];
 $Article = Wiki::get_article($ArticleID);
 list($Revision, $Title, $Body, $Read, $Edit, $Date, $Author) = array_shift($Article);
 
-if ($Edit > $LoggedUser['EffectiveClass']) {
+if ($Edit > $user['EffectiveClass']) {
     error('You do not have access to edit this article.');
 }
 
@@ -25,7 +25,7 @@ View::header(
     <form class="edit_form" name="wiki_article" action="wiki.php" method="post">
       <input type="hidden" name="action" value="edit" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
       <input type="hidden" name="id" value="<?=$ArticleID?>" />
       <input type="hidden" name="revision" value="<?=$Revision?>" />
 

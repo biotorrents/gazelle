@@ -25,25 +25,25 @@ switch ($_REQUEST['action']) {
 
   case 'remove_snatched':
     authorize();
-    $DB->query("
+    $db->query("
       CREATE TEMPORARY TABLE snatched_groups_temp
         (GroupID int PRIMARY KEY)");
 
-    $DB->query("
+    $db->query("
       INSERT INTO snatched_groups_temp
       SELECT DISTINCT GroupID
       FROM torrents AS t
         JOIN xbt_snatched AS s ON s.fid = t.ID
-      WHERE s.uid = '$LoggedUser[ID]'");
+      WHERE s.uid = '$user[ID]'");
 
-    $DB->query("
+    $db->query("
       DELETE b
       FROM bookmarks_torrents AS b
         JOIN snatched_groups_temp AS s
       USING(GroupID)
-      WHERE b.UserID = '$LoggedUser[ID]'");
+      WHERE b.UserID = '$user[ID]'");
 
-    $Cache->delete_value("bookmarks_group_ids_$UserID");
+    $cache->delete_value("bookmarks_group_ids_$UserID");
     header('Location: bookmarks.php');
     error();
     break;

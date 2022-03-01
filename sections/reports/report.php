@@ -17,112 +17,112 @@ $ID = $_GET['id'];
 
 switch ($Short) {
   case 'user':
-    $DB->query("
+    $db->query("
       SELECT Username
       FROM users_main
       WHERE ID = $ID");
-    if (!$DB->has_results()) {
+    if (!$db->has_results()) {
         error(404);
     }
-    list($Username) = $DB->next_record();
+    list($Username) = $db->next_record();
     break;
 
   case 'request_update':
     $NoReason = true;
-    $DB->query("
+    $db->query("
       SELECT Title, Description, TorrentID, CategoryID, Year
       FROM requests
       WHERE ID = $ID");
-    if (!$DB->has_results()) {
+    if (!$db->has_results()) {
         error(404);
     }
-    list($Name, $Desc, $Filled, $CategoryID, $Year) = $DB->next_record();
+    list($Name, $Desc, $Filled, $CategoryID, $Year) = $db->next_record();
     if ($Filled || ($CategoryID != 0 && ($Categories[$CategoryID - 1] != 'Music' || $Year != 0))) {
         error(403);
     }
     break;
 
   case 'request':
-    $DB->query("
+    $db->query("
       SELECT Title, Description, TorrentID
       FROM requests
       WHERE ID = $ID");
-    if (!$DB->has_results()) {
+    if (!$db->has_results()) {
         error(404);
     }
-    list($Name, $Desc, $Filled) = $DB->next_record();
+    list($Name, $Desc, $Filled) = $db->next_record();
     break;
 
   case 'collage':
-    $DB->query("
+    $db->query("
       SELECT Name, Description
       FROM collages
       WHERE ID = $ID");
-    if (!$DB->has_results()) {
+    if (!$db->has_results()) {
         error(404);
     }
-    list($Name, $Desc) = $DB->next_record();
+    list($Name, $Desc) = $db->next_record();
     break;
 
   case 'thread':
-    $DB->query("
+    $db->query("
       SELECT ft.Title, ft.ForumID, um.Username
       FROM forums_topics AS ft
         JOIN users_main AS um ON um.ID = ft.AuthorID
       WHERE ft.ID = $ID");
-    if (!$DB->has_results()) {
+    if (!$db->has_results()) {
         error(404);
     }
-    list($Title, $ForumID, $Username) = $DB->next_record();
-    $DB->query("
+    list($Title, $ForumID, $Username) = $db->next_record();
+    $db->query("
       SELECT MinClassRead
       FROM forums
       WHERE ID = $ForumID");
-    list($MinClassRead) = $DB->next_record();
-    if (!empty($LoggedUser['DisableForums'])
-        || ($MinClassRead > $LoggedUser['EffectiveClass'] && (!isset($LoggedUser['CustomForums'][$ForumID]) || $LoggedUser['CustomForums'][$ForumID] == 0))
-        || (isset($LoggedUser['CustomForums'][$ForumID]) && $LoggedUser['CustomForums'][$ForumID] == 0)) {
+    list($MinClassRead) = $db->next_record();
+    if (!empty($user['DisableForums'])
+        || ($MinClassRead > $user['EffectiveClass'] && (!isset($user['CustomForums'][$ForumID]) || $user['CustomForums'][$ForumID] == 0))
+        || (isset($user['CustomForums'][$ForumID]) && $user['CustomForums'][$ForumID] == 0)) {
         error(403);
     }
     break;
 
   case 'post':
-    $DB->query("
+    $db->query("
       SELECT fp.Body, fp.TopicID, um.Username
       FROM forums_posts AS fp
         JOIN users_main AS um ON um.ID = fp.AuthorID
       WHERE fp.ID = $ID");
-    if (!$DB->has_results()) {
+    if (!$db->has_results()) {
         error(404);
     }
-    list($Body, $TopicID, $Username) = $DB->next_record();
-    $DB->query("
+    list($Body, $TopicID, $Username) = $db->next_record();
+    $db->query("
       SELECT ForumID
       FROM forums_topics
       WHERE ID = $TopicID");
-    list($ForumID) = $DB->next_record();
-    $DB->query("
+    list($ForumID) = $db->next_record();
+    $db->query("
       SELECT MinClassRead
       FROM forums
       WHERE ID = $ForumID");
-    list($MinClassRead) = $DB->next_record();
-    if (!empty($LoggedUser['DisableForums'])
-        || ($MinClassRead > $LoggedUser['EffectiveClass'] && (!isset($LoggedUser['CustomForums'][$ForumID]) || $LoggedUser['CustomForums'][$ForumID] == 0))
-        || (isset($LoggedUser['CustomForums'][$ForumID]) && $LoggedUser['CustomForums'][$ForumID] == 0)) {
+    list($MinClassRead) = $db->next_record();
+    if (!empty($user['DisableForums'])
+        || ($MinClassRead > $user['EffectiveClass'] && (!isset($user['CustomForums'][$ForumID]) || $user['CustomForums'][$ForumID] == 0))
+        || (isset($user['CustomForums'][$ForumID]) && $user['CustomForums'][$ForumID] == 0)) {
         error(403);
     }
     break;
 
   case 'comment':
-    $DB->query("
+    $db->query("
       SELECT c.Body, um.Username
       FROM comments AS c
         JOIN users_main AS um ON um.ID = c.AuthorID
       WHERE c.ID = $ID");
-    if (!$DB->has_results()) {
+    if (!$db->has_results()) {
         error(404);
     }
-    list($Body, $Username) = $DB->next_record();
+    list($Body, $Username) = $db->next_record();
     break;
 }
 
@@ -178,7 +178,7 @@ switch ($Short) {
     <form class="create_form" id="report_form" name="report" action="" method="post">
       <input type="hidden" name="action" value="takereport" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
       <input type="hidden" name="id" value="<?=$ID?>" />
       <input type="hidden" name="type" value="<?=$Short?>" />
       <table class="layout">
@@ -310,7 +310,7 @@ if (empty($NoReason)) {
     <form class="create_form" name="report" id="report_form" action="" method="post">
       <input type="hidden" name="action" value="takereport" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
       <input type="hidden" name="id" value="<?=$ID?>" />
       <input type="hidden" name="type" value="<?=$Short?>" />
       <textarea class="required" rows="10" cols="95" name="reason"></textarea><br /><br />

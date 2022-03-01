@@ -12,9 +12,9 @@ class RevisionHistory
     public static function get_revision_history($Page, $PageID)
     {
         $Table = ($Page == 'artists') ? 'wiki_artists' : 'wiki_torrents';
-        $QueryID = G::$DB->get_query_id();
+        $QueryID = G::$db->get_query_id();
 
-        G::$DB->query("
+        G::$db->query("
         SELECT
           RevisionID,
           Summary,
@@ -24,8 +24,8 @@ class RevisionHistory
           WHERE PageID = $PageID
           ORDER BY RevisionID DESC");
 
-        $Ret = G::$DB->to_array();
-        G::$DB->set_query_id($QueryID);
+        $Ret = G::$db->to_array();
+        G::$db->set_query_id($QueryID);
         return $Ret;
     }
 }

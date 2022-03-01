@@ -144,7 +144,7 @@ View::header('Staff Tools');
   $ToolsHTML = "";
   create_row("Clear/view a cache key", "tools.php?action=clear_cache", check_perms("users_mod"));
   create_row("Rerender stylesheet gallery images", "tools.php?action=rerender_gallery", check_perms("site_debug") || check_perms("users_mod"));
-  create_row("Schedule", "schedule.php?auth=$LoggedUser[AuthKey]", check_perms("site_debug"));
+  create_row("Schedule", "schedule.php?auth=$user[AuthKey]", check_perms("site_debug"));
   create_row("Service stats", "tools.php?action=service_stats", check_perms("site_debug"));
   create_row("Miscellaneous values", "tools.php?action=misc_values", check_perms('users_mod'));
   create_row("Tracker info", "tools.php?action=ocelot_info", check_perms("users_mod"));
@@ -172,7 +172,6 @@ View::header('Staff Tools');
   create_row("Invite pool", "tools.php?action=invite_pool", check_perms("users_view_invites"));
   create_row("Registration log", "tools.php?action=registration_log", check_perms("users_view_ips") && check_perms("users_view_email"));
   create_row("Upscale pool", "tools.php?action=upscale_pool", check_perms("site_view_flow"));
-  create_row("User flow", "tools.php?action=user_flow", check_perms("site_view_flow"));
 
   if ($ToolsHTML) {
       ?>

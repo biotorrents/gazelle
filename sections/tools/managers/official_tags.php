@@ -15,7 +15,7 @@ if (isset($_POST['doit'])) {
     }
     $OldTagIDs = implode(', ', $OldTagIDs);
 
-    $DB->query("
+    $db->query("
       UPDATE tags
       SET TagType = 'other'
       WHERE ID IN ($OldTagIDs)");
@@ -24,28 +24,28 @@ if (isset($_POST['doit'])) {
   if ($_POST['newtag']) {
     $TagName = Misc::sanitize_tag($_POST['newtag']);
 
-    $DB->query("
+    $db->query("
       SELECT ID
       FROM tags
       WHERE Name LIKE '$TagName'");
-    list($TagID) = $DB->next_record();
+    list($TagID) = $db->next_record();
 
     if ($TagID) {
-      $DB->query("
+      $db->query("
         UPDATE tags
         SET TagType = 'genre'
         WHERE ID = $TagID");
     } else { // Tag doesn't exist yet - create tag
-      $DB->query("
+      $db->query("
         INSERT INTO tags
           (Name, UserID, TagType, Uses)
         VALUES
-          ('$TagName', ".$LoggedUser['ID'].", 'genre', 0)");
-      $TagID = $DB->inserted_id();
+          ('$TagName', ".$user['ID'].", 'genre', 0)");
+      $TagID = $db->inserted_id();
     }
   }
 
-  $Cache->delete_value('genre_tags');
+  $cache->delete_value('genre_tags');
 }
 
 View::header('Official Tags Manager');
@@ -57,7 +57,7 @@ View::header('Official Tags Manager');
   <div style="display: inline-block;">
     <form class="manage_form" name="tags" method="post" action="">
       <input type="hidden" name="action" value="official_tags" />
-      <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
       <input type="hidden" name="doit" value="1" />
       <table class="tags_table layout box slight_margin">
         <tr class="colhead_dark">
@@ -75,13 +75,13 @@ View::header('Official Tags Manager');
         </tr>
 <?php
 $i = 0;
-$DB->query("
+$db->query("
   SELECT ID, Name, Uses
   FROM tags
   WHERE TagType = 'genre'
   ORDER BY Name ASC");
-$TagCount = $DB->record_count();
-$Tags = $DB->to_array();
+$TagCount = $db->record_count();
+$Tags = $db->to_array();
 for ($i = 0; $i < $TagCount / 3; $i++) {
   list($TagID1, $TagName1, $TagUses1) = $Tags[$i];
   if (isset($Tags[ceil($TagCount / 3) + $i]))

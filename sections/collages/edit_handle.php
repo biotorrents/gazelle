@@ -8,28 +8,28 @@ if (!is_number($CollageID)) {
     error(0);
 }
 
-$DB->query("
+$db->query("
   SELECT UserID, CategoryID, Locked, MaxGroups, MaxGroupsPerUser
   FROM collages
   WHERE ID = '$CollageID'");
-list($UserID, $CategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser) = $DB->next_record();
+list($UserID, $CategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser) = $db->next_record();
 
 if ($CategoryID === 0
-&& $UserID !== $LoggedUser['ID']
+&& $UserID !== $user['ID']
 && !check_perms('site_collages_delete')) {
     error(403);
 }
 
 if (isset($_POST['name'])) {
-    $DB->query("
+    $db->query("
     SELECT ID, Deleted
     FROM collages
     WHERE Name = '".db_string($_POST['name'])."'
       AND ID != '$CollageID'
     LIMIT 1");
 
-    if ($DB->has_results()) {
-        list($ID, $Deleted) = $DB->next_record();
+    if ($db->has_results()) {
+        list($ID, $Deleted) = $db->next_record();
         if ($Deleted) {
             $Err = 'A collage with that name already exists but needs to be recovered, please <a href="staffpm.php">contact</a> the staff team!';
         } else {
@@ -52,19 +52,19 @@ $Updates = array("Description='".db_string($_POST['description'])."', TagList='"
 
 if (!check_perms('site_collages_delete')
 && ($CategoryID === 0
-&& $UserID === $LoggedUser['ID']
+&& $UserID === $user['ID']
 && check_perms('site_collages_renamepersonal'))) {
-    if (!stristr($_POST['name'], $LoggedUser['Username'])) {
+    if (!stristr($_POST['name'], $user['Username'])) {
         error("Your personal collage's title must include your username.");
     }
 }
 
 if (isset($_POST['featured'])
 && $CategoryID === 0
-&& (($LoggedUser['ID'] === $UserID
+&& (($user['ID'] === $UserID
 && check_perms('site_collages_personal'))
 || check_perms('site_collages_delete'))) {
-    $DB->query("
+    $db->query("
     UPDATE collages
     SET Featured = 0
     WHERE CategoryID = 0
@@ -74,7 +74,7 @@ if (isset($_POST['featured'])
 
 if (check_perms('site_collages_delete')
 || ($CategoryID === 0
-&& $UserID === $LoggedUser['ID']
+&& $UserID === $user['ID']
 && check_perms('site_collages_renamepersonal'))) {
     $Updates[] = "Name = '".db_string($_POST['name'])."'";
 }
@@ -102,11 +102,11 @@ if (check_perms('site_collages_delete')) {
 }
 
 if (!empty($Updates)) {
-    $DB->query('
+    $db->query('
     UPDATE collages
     SET '.implode(', ', $Updates)."
     WHERE ID = $CollageID");
 }
 
-$Cache->delete_value('collage_'.$CollageID);
+$cache->delete_value('collage_'.$CollageID);
 header('Location: collages.php?id='.$CollageID);

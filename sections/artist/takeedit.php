@@ -14,7 +14,7 @@ if (!check_perms('site_edit_wiki')) {
 }
 
 // Variables for database input
-$UserID = $LoggedUser['ID'];
+$UserID = $user['ID'];
 $ArtistID = $_REQUEST['artistid'];
 
 
@@ -37,29 +37,29 @@ if ($_GET['action'] === 'revert') { // if we're reverting to a previous revision
 
 // Insert revision
 if (!$RevisionID) { // edit
-  $DB->query("
+  $db->query("
     INSERT INTO wiki_artists
       (PageID, Body, Image, UserID, Summary, Time)
     VALUES
       ('$ArtistID', '$Body', '$Image', '$UserID', '$Summary', NOW())");
 } else { // revert
-  $DB->query("
+  $db->query("
     INSERT INTO wiki_artists (PageID, Body, Image, UserID, Summary, Time)
     SELECT '$ArtistID', Body, Image, '$UserID', 'Reverted to revision $RevisionID', NOW()
     FROM wiki_artists
     WHERE RevisionID = '$RevisionID'");
 }
 
-$RevisionID = $DB->inserted_id();
+$RevisionID = $db->inserted_id();
 
 // Update artists table (technically, we don't need the RevisionID column, but we can use it for a join which is nice and fast)
-$DB->query("
+$db->query("
   UPDATE artists_group
   SET
     RevisionID = '$RevisionID'
   WHERE ArtistID = '$ArtistID'");
 
 // There we go, all done!
-$Cache->delete_value("artist_$ArtistID"); // Delete artist cache
+$cache->delete_value("artist_$ArtistID"); // Delete artist cache
 header("Location: artist.php?id=$ArtistID");
 ?>

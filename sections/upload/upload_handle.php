@@ -10,7 +10,7 @@
  */
 
 $ENV = ENV::go();
-$Debug = Debug::go();
+$debug = Debug::go();
 
 $Feed = new Feed;
 $Validate = new Validate;
@@ -308,7 +308,7 @@ if (empty($Properties['GroupID']) && empty($ArtistForm)) {
     }
     $LogName .= Artists::display_artists($ArtistForm, false, true, false);
 } elseif (empty($ArtistForm)) {
-    $DB->query("
+    $db->query("
       SELECT ta.ArtistID, ag.Name
       FROM torrents_artists AS ta
         JOIN artists_group AS ag ON ta.ArtistID = ag.ArtistID
@@ -316,7 +316,7 @@ if (empty($Properties['GroupID']) && empty($ArtistForm)) {
       ORDER BY ag.Name ASC", $Properties['GroupID']);
 
     $ArtistForm = [];
-    while (list($ArtistID, $ArtistName) = $DB->next_record(MYSQLI_BOTH, false)) {
+    while (list($ArtistID, $ArtistName) = $db->next_record(MYSQLI_BOTH, false)) {
         array_push($ArtistForm, array('id' => $ArtistID, 'name' => esc($ArtistName)));
         array_push($ArtistsUnescaped, array('name' => $ArtistName));
     }
@@ -378,7 +378,7 @@ if (count($TooLongPaths) > 0) {
 }
 $FilePath = $DirName;
 $FileString = implode("\n", $TmpFileList);
-$Debug['upload']->info('torrent decoded');
+$debug['upload']->info('torrent decoded');
 
 if (!empty($Err)) { // Show the upload form, with the data the user entered
     $UploadForm = $Type;
@@ -429,7 +429,7 @@ if (!preg_match('/^'.IMAGE_REGEX.'$/i', $T['Image'])) {
 
 // Does it belong in a group?
 if ($T['GroupID']) {
-    $DB->prepared_query("
+    $db->prepared_query("
     SELECT
       `id`,
       `picture`,
@@ -445,9 +445,9 @@ if ($T['GroupID']) {
     ", $T['GroupID']);
 
 
-    if ($DB->has_results()) {
+    if ($db->has_results()) {
         // Don't escape tg.title. It's written directly to the log table
-        list($GroupID, $WikiImage, $WikiBody, $RevisionID, $T['Title'], $T['Year'], $T['TagList']) = $DB->next_record(MYSQLI_NUM, array(4));
+        list($GroupID, $WikiImage, $WikiBody, $RevisionID, $T['Title'], $T['Year'], $T['TagList']) = $db->next_record(MYSQLI_NUM, array(4));
         $T['TagList'] = str_replace(array(' ', '.', '_'), array(', ', '.', '.'), $T['TagList']);
 
         if (!$T['Image'] && $WikiImage) {
@@ -467,15 +467,15 @@ if ($T['GroupID']) {
 if (!isset($GroupID) || !$GroupID) {
     foreach ($ArtistForm as $Num => $Artist) {
         // The album hasn't been uploaded. Try to get the artist IDs
-        $DB->query("
+        $db->query("
           SELECT
             ArtistID,
             Name
           FROM artists_group
             WHERE Name = ?", $Artist['name']);
 
-        if ($DB->has_results()) {
-            while (list($ArtistID, $Name) = $DB->next_record(MYSQLI_NUM, false)) {
+        if ($db->has_results()) {
+            while (list($ArtistID, $Name) = $db->next_record(MYSQLI_NUM, false)) {
                 if (!strcasecmp($Artist['name'], $Name)) {
                     $ArtistForm[$Num] = ['id' => $ArtistID, 'name' => $Name];
                     break;
@@ -502,12 +502,12 @@ if ((!isset($GroupID) || !$GroupID)) {
                 $ArtistForm[$Num] = $ArtistsAdded[strtolower($Artist['name'])];
             } else {
                 // Create artist
-                $DB->query("
+                $db->query("
                   INSERT INTO artists_group (Name)
                   VALUES ( ? )", $Artist['name']);
 
-                $ArtistID = $DB->inserted_id();
-                $Cache->increment('stats_artist_count');
+                $ArtistID = $db->inserted_id();
+                $cache->increment('stats_artist_count');
 
                 $ArtistForm[$Num] = array('id' => $ArtistID, 'name' => $Artist['name']);
                 $ArtistsAdded[strtolower($Artist['name'])] = $ArtistForm[$Num];
@@ -519,7 +519,7 @@ if ((!isset($GroupID) || !$GroupID)) {
 
 if (!isset($GroupID) || !$GroupID) {
     // Create torrent group
-    $DB->query(
+    $db->query(
         "
       INSERT INTO torrents_group
         (`category_id`, `title`, `subject`, `object`, `year`,
@@ -541,16 +541,16 @@ if (!isset($GroupID) || !$GroupID) {
         $T['Image']
     );
 
-    $GroupID = $DB->inserted_id();
+    $GroupID = $db->inserted_id();
     foreach ($ArtistForm as $Num => $Artist) {
-        $DB->query("
+        $db->query("
           INSERT IGNORE INTO torrents_artists (GroupID, ArtistID, UserID)
-          VALUES ( ?, ?, ? )", $GroupID, $Artist['id'], $LoggedUser['ID']);
+          VALUES ( ?, ?, ? )", $GroupID, $Artist['id'], $user['ID']);
 
-        $Cache->increment('stats_album_count');
-        $Cache->delete_value('artist_groups_'.$Artist['id']);
+        $cache->increment('stats_album_count');
+        $cache->delete_value('artist_groups_'.$Artist['id']);
     }
-    $Cache->increment('stats_group_count');
+    $cache->increment('stats_group_count');
 
 
     /**
@@ -565,37 +565,37 @@ if (!isset($GroupID) || !$GroupID) {
         $Screenshots = array_slice($Screenshots, 0, 10);
 
         foreach ($Screenshots as $Screenshot) {
-            $DB->query("
+            $db->query("
             INSERT INTO `literature`
             (`group_id`, `user_id`, `timestamp`, `doi`)
-          VALUES (?, ?, NOW(), ?)", $GroupID, $LoggedUser['ID'], $Screenshot);
+          VALUES (?, ?, NOW(), ?)", $GroupID, $user['ID'], $Screenshot);
         }
     }
 }
 
 # Main if/else
 else {
-    $DB->query("
+    $db->query("
       UPDATE torrents_group
       SET `timestamp` = NOW()
         WHERE `id` = ?", $GroupID);
 
-    $Cache->delete_value("torrent_group_$GroupID");
-    $Cache->delete_value("torrents_details_$GroupID");
-    $Cache->delete_value("detail_files_$GroupID");
+    $cache->delete_value("torrent_group_$GroupID");
+    $cache->delete_value("torrents_details_$GroupID");
+    $cache->delete_value("detail_files_$GroupID");
 }
 
 // Description
 if (!isset($NoRevision) || !$NoRevision) {
-    $DB->query("
+    $db->query("
       INSERT INTO wiki_torrents
         (PageID, Body, UserID, Summary, Time, Image)
       VALUES
-        ( ?, ?, ?, 'Uploaded new torrent', NOW(), ? )", $GroupID, $T['GroupDescription'], $LoggedUser['ID'], $T['Image']);
-    $RevisionID = $DB->inserted_id();
+        ( ?, ?, ?, 'Uploaded new torrent', NOW(), ? )", $GroupID, $T['GroupDescription'], $user['ID'], $T['Image']);
+    $RevisionID = $db->inserted_id();
 
     // Revision ID
-    $DB->prepared_query("
+    $db->prepared_query("
     UPDATE
       `torrents_group`
     SET
@@ -612,21 +612,21 @@ if (!$T['GroupID']) {
         $Tag = Misc::sanitize_tag($Tag);
         if (!empty($Tag)) {
             $Tag = Misc::get_alias_tag($Tag);
-            $DB->query("
+            $db->query("
             INSERT INTO tags
               (Name, UserID)
             VALUES
               ( ?, ? )
             ON DUPLICATE KEY UPDATE
-              Uses = Uses + 1;", $Tag, $LoggedUser['ID']);
-            $TagID = $DB->inserted_id();
+              Uses = Uses + 1;", $Tag, $user['ID']);
+            $TagID = $db->inserted_id();
 
-            $DB->query("
+            $db->query("
             INSERT INTO torrents_tags
               (TagID, GroupID, UserID)
             VALUES
               ( ?, ?, ? )
-            ON DUPLICATE KEY UPDATE TagID=TagID", $TagID, $GroupID, $LoggedUser['ID']);
+            ON DUPLICATE KEY UPDATE TagID=TagID", $TagID, $GroupID, $user['ID']);
         }
     }
 }
@@ -635,13 +635,13 @@ if (!$T['GroupID']) {
 $T['FreeTorrent'] = '0';
 $T['FreeLeechType'] = '0';
 
-$DB->query("
+$db->query("
   SELECT Name, First, Second
   FROM misc
   WHERE Second = 'freeleech'");
 
-if ($DB->has_results()) {
-    $FreeLeechTags = $DB->to_array('Name');
+if ($db->has_results()) {
+    $FreeLeechTags = $db->to_array('Name');
     foreach ($FreeLeechTags as $Tag => $Exp) {
         if ($Tag === 'global' || in_array($Tag, $Tags)) {
             $T['FreeTorrent'] = '1';
@@ -659,7 +659,7 @@ if (($TotalSize > 10737418240)) { # 10 GiB
 }
 
 // Torrent
-$DB->query(
+$db->query(
     "
   INSERT INTO torrents
     (GroupID, UserID, Media, Container, Codec, Resolution,
@@ -672,7 +672,7 @@ $DB->query(
       ?, ?, ?, ?, ?, ?, ?, NOW(),
       ?, ?, ? )",
     $GroupID,
-    $LoggedUser['ID'],
+    $user['ID'],
     $T['Media'],
     $T['Container'],
     $T['Codec'],
@@ -691,8 +691,8 @@ $DB->query(
     $T['FreeLeechType']
 );
 
-$TorrentID = $DB->inserted_id();
-$Cache->increment('stats_torrent_count');
+$TorrentID = $db->inserted_id();
+$cache->increment('stats_torrent_count');
 $Tor->Dec['comment'] = 'https://'.SITE_DOMAIN.'/torrents.php?torrentid='.$TorrentID;
 
 
@@ -709,13 +709,13 @@ if (!empty($T['Mirrors'])) {
     $Screenshots = array_slice($Screenshots, 0, 5);
 
     foreach ($Mirrors as $Mirror) {
-        $DB->query(
+        $db->query(
             "
         INSERT INTO `torrents_mirrors`
           (`torrent_id`, `user_id`, `timestamp`, `uri`)
         VALUES (?, ?, NOW(), ?)",
             $TorrentID,
-            $LoggedUser['ID'],
+            $user['ID'],
             $Mirror
         );
     }
@@ -743,14 +743,14 @@ if ($ENV->FEATURE_BIOPHP && !empty($T['Seqhash'])) {
                 $_POST['seqhash_meta3']
             );
 
-            $DB->query(
+            $db->query(
                 "
             INSERT INTO `bioinformatics`
               (`torrent_id`, `user_id`, `timestamp`,
                `name`, `seqhash`)
             VALUES (?, ?, NOW(), ?, ?)",
                 $TorrentID,
-                $LoggedUser['ID'],
+                $user['ID'],
                 $Parsed['name'],
                 $Seqhash
             );
@@ -771,29 +771,29 @@ Tracker::update_tracker('add_torrent', [
   'info_hash'   => rawurlencode($InfoHash),
   'freetorrent' => $T['FreeTorrent']
 ]);
-$Debug['upload']->info('ocelot updated');
+$debug['upload']->info('ocelot updated');
 
 // Prevent deletion of this torrent until the rest of the upload process is done
 // (expire the key after 10 minutes to prevent locking it for too long in case there's a fatal error below)
-$Cache->cache_value("torrent_{$TorrentID}_lock", true, 600);
+$cache->cache_value("torrent_{$TorrentID}_lock", true, 600);
 
 // Give BP if necessary
 // todo: Repurpose this
 if (($Type === "Movies" || $Type === "Anime") && ($T['Container'] === 'ISO' || $T['Container'] === 'M2TS' || $T['Container'] === 'VOB IFO')) {
     $BPAmt = (int) 2*($TotalSize / (1024*1024*1024))*1000;
 
-    $DB->query("
+    $db->query("
       UPDATE users_main
       SET BonusPoints = BonusPoints + ?
-        WHERE ID = ?", $BPAmt, $LoggedUser['ID']);
+        WHERE ID = ?", $BPAmt, $user['ID']);
 
-    $DB->query("
+    $db->query("
       UPDATE users_info
       SET AdminComment = CONCAT(NOW(), ' - Received $BPAmt ".BONUS_POINTS." for uploading a torrent $TorrentID\n\n', AdminComment)
-        WHERE UserID = ?", $LoggedUser['ID']);
+        WHERE UserID = ?", $user['ID']);
 
-    $Cache->delete_value('user_info_heavy_'.$LoggedUser['ID']);
-    $Cache->delete_value('user_stats_'.$LoggedUser['ID']);
+    $cache->delete_value('user_info_heavy_'.$user['ID']);
+    $cache->delete_value('user_stats_'.$user['ID']);
 }
 
 // Add to shop freeleeches if necessary
@@ -810,7 +810,7 @@ if ($T['FreeLeechType'] === 3) {
     }
 
     if ($Expiry > 0) {
-        $DB->query("
+        $db->query("
           INSERT INTO shop_freeleeches
             (TorrentID, ExpiryTime)
           VALUES
@@ -829,17 +829,17 @@ $FileName = "$ENV->TORRENT_STORE/$TorrentID.torrent";
 file_put_contents($FileName, $Tor->encode());
 chmod($FileName, 0400);
 
-Misc::write_log("Torrent $TorrentID ($LogName) (".number_format($TotalSize / (1024 * 1024), 2).' MB) was uploaded by ' . $LoggedUser['Username']);
-Torrents::write_group_log($GroupID, $TorrentID, $LoggedUser['ID'], 'uploaded ('.number_format($TotalSize / (1024 * 1024), 2).' MB)', 0);
+Misc::write_log("Torrent $TorrentID ($LogName) (".number_format($TotalSize / (1024 * 1024), 2).' MB) was uploaded by ' . $user['Username']);
+Torrents::write_group_log($GroupID, $TorrentID, $user['ID'], 'uploaded ('.number_format($TotalSize / (1024 * 1024), 2).' MB)', 0);
 
 Torrents::update_hash($GroupID);
-$Debug['upload']->info('sphinx updated');
+$debug['upload']->info('sphinx updated');
 
 //******************************************************************************//
 //---------------------- Recent Uploads ----------------------------------------//
 
 if (trim($T['Image']) !== '') {
-    $RecentUploads = $Cache->get_value("recent_uploads_$UserID");
+    $RecentUploads = $cache->get_value("recent_uploads_$UserID");
     if (is_array($RecentUploads)) {
         do {
             foreach ($RecentUploads as $Item) {
@@ -857,7 +857,7 @@ if (trim($T['Image']) !== '') {
             'Name' => trim($T['Title']),
             'Artist' => Artists::display_artists($ArtistForm, false, true),
             'WikiImage' => trim($T['Image'])));
-            $Cache->cache_value("recent_uploads_$UserID", $RecentUploads, 0);
+            $cache->cache_value("recent_uploads_$UserID", $RecentUploads, 0);
         } while (0);
     }
 }
@@ -893,7 +893,7 @@ if ($PublicTorrent) {
 <?php
   View::footer();
 } elseif ($RequestID) {
-    header("Location: requests.php?action=takefill&requestid=$RequestID&torrentid=$TorrentID&auth=".$LoggedUser['AuthKey']);
+    header("Location: requests.php?action=takefill&requestid=$RequestID&torrentid=$TorrentID&auth=".$user['AuthKey']);
 } else {
     header("Location: torrents.php?id=$GroupID&torrentid=$TorrentID");
 }
@@ -965,7 +965,7 @@ $Announce .= ' - '.site_url()."torrents.php?action=download&id=$TorrentID";
 
 // ENT_QUOTES is needed to decode single quotes/apostrophes
 send_irc(ANNOUNCE_CHAN, html_entity_decode($Announce, ENT_QUOTES));
-$Debug['upload']->info('announced on irc');
+$debug['upload']->info('announced on irc');
 
 /**
  * Manage motifications
@@ -975,7 +975,7 @@ $Item = $Feed->item(
     $Announce,
     $Body,
     'torrents.php?action=download&amp;authkey=[[AUTHKEY]]&amp;torrent_pass=[[PASSKEY]]&amp;id='.$TorrentID,
-    $Properties['Anonymous'] ? 'Anonymous' : $LoggedUser['Username'],
+    $Properties['Anonymous'] ? 'Anonymous' : $user['Username'],
     'torrents.php?id='.$GroupID,
     trim($T['TagList'])
 );
@@ -1066,18 +1066,18 @@ if ($T['Year']) {
     $SQL .= " AND (FromYear = 0 AND ToYear = 0) ";
 }
 
-$SQL .= " AND UserID != '".$LoggedUser['ID']."' ";
+$SQL .= " AND UserID != '".$user['ID']."' ";
 
-$DB->query("
+$db->query("
 SELECT
   `Paranoia`
 FROM
   `users_main`
 WHERE
-  `ID` = $LoggedUser[ID]
+  `ID` = $user[ID]
 ");
 
-list($Paranoia) = $DB->next_record();
+list($Paranoia) = $db->next_record();
 $Paranoia = unserialize($Paranoia);
 
 if (!is_array($Paranoia)) {
@@ -1085,16 +1085,16 @@ if (!is_array($Paranoia)) {
 }
 
 if (!in_array('notifications', $Paranoia)) {
-    $SQL .= " AND (Users LIKE '%|".$LoggedUser['ID']."|%' OR Users = '') ";
+    $SQL .= " AND (Users LIKE '%|".$user['ID']."|%' OR Users = '') ";
 }
 
-$SQL .= " AND UserID != '".$LoggedUser['ID']."' ";
-$DB->query($SQL);
-$Debug['upload']->info('notification query finished');
+$SQL .= " AND UserID != '".$user['ID']."' ";
+$db->query($SQL);
+$debug['upload']->info('notification query finished');
 
-if ($DB->has_results()) {
-    $UserArray = $DB->to_array('UserID');
-    $FilterArray = $DB->to_array('ID');
+if ($db->has_results()) {
+    $UserArray = $db->to_array('UserID');
+    $FilterArray = $db->to_array('ID');
 
     $InsertSQL = '
       INSERT IGNORE INTO `users_notify_torrents` (`UserID`, `GroupID`, `TorrentID`, `FilterID`)
@@ -1105,12 +1105,12 @@ if ($DB->has_results()) {
         list($FilterID, $UserID, $Passkey) = $User;
         $Rows[] = "('$UserID', '$GroupID', '$TorrentID', '$FilterID')";
         $Feed->populate("torrents_notify_$Passkey", $Item);
-        $Cache->delete_value("notifications_new_$UserID");
+        $cache->delete_value("notifications_new_$UserID");
     }
 
     $InsertSQL .= implode(',', $Rows);
-    $DB->query($InsertSQL);
-    $Debug['upload']->info('notification inserts finished');
+    $db->query($InsertSQL);
+    $debug['upload']->info('notification inserts finished');
 
     foreach ($FilterArray as $Filter) {
         list($FilterID, $UserID, $Passkey) = $Filter;
@@ -1119,7 +1119,7 @@ if ($DB->has_results()) {
 }
 
 // RSS for bookmarks
-$DB->query("
+$db->query("
 SELECT
   u.`ID`,
   u.`torrent_pass`
@@ -1132,17 +1132,17 @@ WHERE
   b.`GroupID` = '$GroupID'
 ");
   
-while (list($UserID, $Passkey) = $DB->next_record()) {
+while (list($UserID, $Passkey) = $db->next_record()) {
     $Feed->populate("torrents_bookmarks_t_$Passkey", $Item);
 }
 
 $Feed->populate('torrents_all', $Item);
 $Feed->populate('torrents_'.strtolower($Type), $Item);
-$Debug['upload']->info('notifications handled');
+$debug['upload']->info('notifications handled');
 
 # Clear cache
-$Cache->delete_value("torrents_details_$GroupID");
-$Cache->delete_value("contest_scores");
+$cache->delete_value("torrents_details_$GroupID");
+$cache->delete_value("contest_scores");
 
 # Allow deletion of this torrent now
-$Cache->delete_value("torrent_{$TorrentID}_lock");
+$cache->delete_value("torrent_{$TorrentID}_lock");

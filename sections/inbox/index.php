@@ -1,18 +1,18 @@
 <?php
 enforce_login();
 
-$StaffIDs = $Cache->get_value('staff_ids');
+$StaffIDs = $cache->get_value('staff_ids');
 if (!is_array($StaffIDs)) {
-  $DB->query("
+  $db->query("
     SELECT m.ID, m.Username
     FROM users_main AS m
       JOIN permissions AS p ON p.ID=m.PermissionID
     WHERE p.DisplayStaff='1'");
-  while (list($StaffID, $StaffName) = $DB->next_record()) {
+  while (list($StaffID, $StaffName) = $db->next_record()) {
     $StaffIDs[$StaffID] = $StaffName;
   }
   uasort($StaffIDs, 'strcasecmp');
-  $Cache->cache_value('staff_ids', $StaffIDs);
+  $cache->cache_value('staff_ids', $StaffIDs);
 }
 
 if (!isset($_REQUEST['action'])) {

@@ -8,7 +8,7 @@ $NewVote = $_GET['vote'];
 
 if (is_number($ThreadID) && is_number($NewVote)) {
     if (!check_perms('site_moderate_forums')) {
-        $DB->query("
+        $db->query("
         SELECT
           `ForumID`
         FROM
@@ -16,7 +16,7 @@ if (is_number($ThreadID) && is_number($NewVote)) {
         WHERE
           `ID` = $ThreadID
         ");
-        list($ForumID) = $DB->next_record();
+        list($ForumID) = $db->next_record();
 
         /*
         if (!in_array($ForumID, FORUMS_TO_REVEAL_VOTERS)) {
@@ -25,17 +25,17 @@ if (is_number($ThreadID) && is_number($NewVote)) {
         */
     }
 
-    $DB->query("
+    $db->query("
     UPDATE
       `forums_polls_votes`
     SET
       `Vote` = $NewVote
     WHERE
       `TopicID` = $ThreadID
-      AND `UserID` = ".$LoggedUser['ID']
+      AND `UserID` = ".$user['ID']
     );
     
-    $Cache->delete_value("polls_$ThreadID");
+    $cache->delete_value("polls_$ThreadID");
     header("Location: forums.php?action=viewthread&threadid=$ThreadID");
 } else {
     error(404);

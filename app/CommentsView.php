@@ -53,7 +53,7 @@ class CommentsView
         - <a href="#quickpost"
           onclick="Quote('<?=$PostID?>','<?=$UserInfo['Username']?>', true);"
           class="brackets">Quote</a>
-        <?php if ($AuthorID == G::$LoggedUser['ID'] || check_perms('site_moderate_forums')) { ?>
+        <?php if ($AuthorID == G::$user['ID'] || check_perms('site_moderate_forums')) { ?>
         - <a href="#post<?=$PostID?>"
           onclick="Edit_Form('<?=$PostID?>','');"
           class="brackets">Edit</a>
@@ -68,7 +68,7 @@ class CommentsView
         <a href="reports.php?action=report&amp;type=comment&amp;id=<?=$PostID?>"
           class="brackets">Report</a>
         <?php
-      if (check_perms('users_warn') && $AuthorID != G::$LoggedUser['ID'] && G::$LoggedUser['Class'] >= $UserInfo['Class']) {
+      if (check_perms('users_warn') && $AuthorID != G::$user['ID'] && G::$user['Class'] >= $UserInfo['Class']) {
           ?>
         <form class="manage_form hidden" name="user"
           id="warn<?=$PostID?>" action="comments.php" method="post">
@@ -89,7 +89,7 @@ class CommentsView
   <tr>
     <?php if (Users::has_avatars_enabled()) { ?>
     <td class="avatar" valign="top">
-      <?=Users::show_avatar($UserInfo['Avatar'], $AuthorID, $UserInfo['Username'], G::$LoggedUser['DisableAvatars'])?>
+      <?=Users::show_avatar($UserInfo['Avatar'], $AuthorID, $UserInfo['Username'], G::$user['DisableAvatars'])?>
     </td>
     <?php } ?>
     <td class="body" valign="top">

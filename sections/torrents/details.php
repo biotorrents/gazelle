@@ -33,19 +33,19 @@ $WikiBody = Text::parse($WikiBody);
 $Artists = Artists::get_artist($GroupID);
 
 
-$CoverArt = $Cache->get_value("torrents_cover_art_$GroupID");
+$CoverArt = $cache->get_value("torrents_cover_art_$GroupID");
 if (!$CoverArt) {
-    $DB->query("
+    $db->query("
       SELECT ID, Image, Summary, UserID, Time
       FROM cover_art
       WHERE GroupID = '$GroupID'
       ORDER BY Time ASC");
 
     $CoverArt = [];
-    $CoverArt = $DB->to_array();
+    $CoverArt = $db->to_array();
     
-    if ($DB->has_results()) {
-        $Cache->cache_value("torrents_cover_art_$GroupID", $CoverArt, 0);
+    if ($db->has_results()) {
+        $cache->cache_value("torrents_cover_art_$GroupID", $CoverArt, 0);
     }
 }
 
@@ -76,7 +76,7 @@ $DisplayName = $twig->render(
       'g' => $TorrentDetails,
       #'cat_icon' => $ENV->CATS->{$TorrentDetails['category_id']}->Icon,
       'url' => Format::get_url($_GET),
-      'cover_art' => (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) ?? true,
+      'cover_art' => (!isset($user['CoverArt']) || $user['CoverArt']) ?? true,
       'thumb' => ImageTools::process($CoverArt, 'thumb'),
       'artists' => Artists::display_artists($Artists),
     ]
@@ -108,7 +108,7 @@ View::header(
     <a href="torrents.php?action=history&amp;groupid=<?=$GroupID?>"
       class="brackets">View history</a>
     <?php if ($RevisionID && check_perms('site_edit_wiki')) { ?>
-    <a href="torrents.php?action=revert&amp;groupid=<?=$GroupID ?>&amp;revisionid=<?=$RevisionID ?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+    <a href="torrents.php?action=revert&amp;groupid=<?=$GroupID ?>&amp;revisionid=<?=$RevisionID ?>&amp;auth=<?=$user['AuthKey']?>"
       class="brackets">Revert to this revision</a>
     <?php
     }
@@ -152,7 +152,7 @@ View::header(
         <strong><?=(count($CoverArt) > 0 ? 'Pictures (' . (count($CoverArt) + 1) . ')' : 'Picture')?></strong>
         <?php
         if (count($CoverArt) > 0) {
-            if (empty($LoggedUser['ShowExtraCovers'])) {
+            if (empty($user['ShowExtraCovers'])) {
                 for ($Index = 0; $Index <= count($CoverArt); $Index++) { ?>
         <span id="cover_controls_<?=($Index)?>" <?=($Index > 0 ? ' style="display: none;"' : '')?>>
           <?php if ($Index === count($CoverArt)) { ?>
@@ -212,10 +212,10 @@ $Index++;
         <?php
         foreach ($CoverArt as $Cover) {
             list($ImageID, $Image, $Summary, $AddedBy) = $Cover; ?>
-        <div id="cover_div_<?=$Index?>" <?=(empty($LoggedUser['ShowExtraCovers']) ? ' style="display: none;"' : '')?>>
+        <div id="cover_div_<?=$Index?>" <?=(empty($user['ShowExtraCovers']) ? ' style="display: none;"' : '')?>>
           <div>
             <?php
-          if (empty($LoggedUser['ShowExtraCovers'])) {
+          if (empty($user['ShowExtraCovers'])) {
               $Src = 'src="" data-gazelle-temp-src="' . ImageTools::process($Image, 'thumb') . '" lightbox-img="'.ImageTools::process($Image).'"';
           } else {
               $Src = 'src="' . ImageTools::process($Image, 'thumb') . '" lightbox-img="'.ImageTools::process($Image).'"';
@@ -229,7 +229,7 @@ $Index++;
               <?=$Summary?>
               <?=(check_perms('users_mod') ? ' added by ' . Users::format_username($AddedBy, false, false, false, false, false) : '')?>
               <span class="remove remove_cover_art"><a href="#"
-                  onclick="if (confirm('Do not delete useful alternative pictures. Are you sure you want to delete this picture?') === true) { ajax.get('torrents.php?action=remove_cover_art&amp;auth=<?=$LoggedUser['AuthKey']?>&amp;id=<?=$ImageID?>&amp;groupid=<?=$GroupID?>'); this.parentNode.parentNode.parentNode.style.display = 'none'; this.parentNode.parentNode.parentNode.previousElementSibling.style.display = 'none'; } else { return false; }"
+                  onclick="if (confirm('Do not delete useful alternative pictures. Are you sure you want to delete this picture?') === true) { ajax.get('torrents.php?action=remove_cover_art&amp;auth=<?=$user['AuthKey']?>&amp;id=<?=$ImageID?>&amp;groupid=<?=$GroupID?>'); this.parentNode.parentNode.parentNode.style.display = 'none'; this.parentNode.parentNode.parentNode.previousElementSibling.style.display = 'none'; } else { return false; }"
                   class="brackets tooltip" title="Remove image">X</a></span>
             </li>
           </ul>
@@ -253,7 +253,7 @@ $Index++;
             <div id="add_cover">
               <input type="hidden" name="action" value="add_cover_art" />
               <input type="hidden" name="auth"
-                value="<?=$LoggedUser['AuthKey']?>" />
+                value="<?=$user['AuthKey']?>" />
               <input type="hidden" name="groupid"
                 value="<?=$GroupID?>" />
             </div>
@@ -289,7 +289,7 @@ $Index++;
         <form class="flex_input_container" name="artists" action="torrents.php" method="post">
           <input type="hidden" name="action" value="add_alias" />
           <input type="hidden" name="auth"
-            value="<?=$LoggedUser['AuthKey']?>" />
+            value="<?=$user['AuthKey']?>" />
           <input type="hidden" name="groupid"
             value="<?=$GroupID?>" />
           <input type="text" id="artist" name="artistname[]" <?php Users::has_autocomplete_enabled('other'); ?>
@@ -305,12 +305,12 @@ $Index++;
       <div class="head">
         <strong>Tags</strong>
         <?php
-        $DeletedTag = $Cache->get_value("deleted_tags_$GroupID".'_'.$LoggedUser['ID']);
+        $DeletedTag = $cache->get_value("deleted_tags_$GroupID".'_'.$user['ID']);
         if (!empty($DeletedTag)) { ?>
         <form style="display: none;" id="undo_tag_delete_form" name="tags" action="torrents.php" method="post">
           <input type="hidden" name="action" value="add_tag" />
           <input type="hidden" name="auth"
-            value="<?=$LoggedUser['AuthKey']?>" />
+            value="<?=$user['AuthKey']?>" />
           <input type="hidden" name="groupid"
             value="<?=$GroupID?>" />
           <input type="hidden" name="tagname"
@@ -336,9 +336,9 @@ $Index++;
             <a href="user.php?id=<?=$Tag['userid']?>"
               title="View the profile of the user that added this tag" class="brackets tooltip view_tag_user">U</a>
             <?php } ?>
-            <?php if (empty($LoggedUser['DisableTagging']) && check_perms('site_delete_tag')) { ?>
+            <?php if (empty($user['DisableTagging']) && check_perms('site_delete_tag')) { ?>
             <span class="remove remove_tag"><a
-                href="torrents.php?action=delete_tag&amp;groupid=<?=$GroupID?>&amp;tagid=<?=$Tag['id']?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+                href="torrents.php?action=delete_tag&amp;groupid=<?=$GroupID?>&amp;tagid=<?=$Tag['id']?>&amp;auth=<?=$user['AuthKey']?>"
                 class="brackets tooltip" title="Remove tag">X</a></span>
             <?php } ?>
           </div>
@@ -355,7 +355,7 @@ $Index++;
       <?php } ?>
     </div>
     <?php
-    if (empty($LoggedUser['DisableTagging'])) {
+    if (empty($user['DisableTagging'])) {
         ?>
     <div class="box box_addtag">
       <div class="head"><strong>Add Tag</strong></div>
@@ -363,7 +363,7 @@ $Index++;
         <form class="flex_input_container" name="tags" action="torrents.php" method="post">
           <input type="hidden" name="action" value="add_tag" />
           <input type="hidden" name="auth"
-            value="<?=$LoggedUser['AuthKey']?>" />
+            value="<?=$user['AuthKey']?>" />
           <input type="hidden" name="groupid"
             value="<?=$GroupID?>" />
           <input type="text" name="tagname" id="tagname" <?php Users::has_autocomplete_enabled('other'); ?>
@@ -450,7 +450,7 @@ foreach ($TorrentList as $Torrent) {
         $ReportInfo .= "</table>";
     }
 
-    $CanEdit = (check_perms('torrents_edit') || (($UserID == $LoggedUser['ID'] && !$LoggedUser['DisableWiki']) && !($Remastered && !$RemasterYear)));
+    $CanEdit = (check_perms('torrents_edit') || (($UserID == $user['ID'] && !$user['DisableWiki']) && !($Remastered && !$RemasterYear)));
 
     $RegenLink = check_perms('users_mod') ? ' <a href="torrents.php?action=regen_filelist&amp;torrentid='.$TorrentID.'" class="brackets">Regenerate</a>' : '';
     $FileTable = '
@@ -544,13 +544,13 @@ foreach ($TorrentList as $Torrent) {
 
     // Freleechizer
     if ($FreeLeechType === '3') {
-        $DB->query("
+        $db->query("
           SELECT UNIX_TIMESTAMP(ExpiryTime)
           FROM shop_freeleeches
           WHERE TorrentID = $TorrentID");
 
-        if ($DB->has_results()) {
-            $ExpiryTime = $DB->next_record(MYSQLI_NUM, false)[0];
+        if ($db->has_results()) {
+            $ExpiryTime = $db->next_record(MYSQLI_NUM, false)[0];
             $ExtraInfo .= " <strong>(".str_replace(['month','week','day','hour','min'], ['m','w','d','h','m'], time_diff(max($ExpiryTime, time()), 1, false)).")</strong>";
         }
     }
@@ -577,12 +577,12 @@ foreach ($TorrentList as $Torrent) {
         $ExtraInfo .= $AddExtra.Format::torrent_label('Bad File Names', 'important_text');
     }
 
-    $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$LoggedUser['AuthKey']."&amp;torrent_pass=".$LoggedUser['torrent_pass'];
-    if (!($TorrentFileName = $Cache->get_value('torrent_file_name_'.$TorrentID))) {
+    $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$user['AuthKey']."&amp;torrent_pass=".$user['torrent_pass'];
+    if (!($TorrentFileName = $cache->get_value('torrent_file_name_'.$TorrentID))) {
         $TorrentFile = file_get_contents(TORRENT_STORE.$TorrentID.'.torrent');
         $Tor = new BencodeTorrent($TorrentFile, false, false);
         $TorrentFileName = $Tor->Dec['info']['name'];
-        $Cache->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
+        $cache->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
     } ?>
 
         <tr
@@ -594,7 +594,7 @@ foreach ($TorrentList as $Torrent) {
               <?php
     if (Torrents::can_use_token($Torrent)) { ?>
               | <a
-                href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>&amp;usetoken=1"
+                href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>&amp;usetoken=1"
                 class="tooltip" title="Use a FL Token"
                 onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
               <?php } ?>
@@ -606,7 +606,7 @@ foreach ($TorrentList as $Torrent) {
                 href="torrents.php?action=edit&amp;id=<?=$TorrentID ?>"
                 class="tooltip" title="Edit release">ED</a>
               <?php }
-    if (check_perms('torrents_delete') || $UserID == $LoggedUser['ID']) { ?>
+    if (check_perms('torrents_delete') || $UserID == $user['ID']) { ?>
               | <a
                 href="torrents.php?action=delete&amp;torrentid=<?=$TorrentID ?>"
                 class="tooltip" title="Remove">RM</a>
@@ -768,7 +768,7 @@ HTML;
     </div>
     <?php
 $Requests = get_group_requests($GroupID);
-if (empty($LoggedUser['DisableRequests']) && count($Requests) > 0) {
+if (empty($user['DisableRequests']) && count($Requests) > 0) {
     ?>
     <div class="box">
       <div class="head">
@@ -809,17 +809,17 @@ if (empty($LoggedUser['DisableRequests']) && count($Requests) > 0) {
     </div>
     <?php
 }
-$Collages = $Cache->get_value("torrent_collages_$GroupID");
+$Collages = $cache->get_value("torrent_collages_$GroupID");
 if (!is_array($Collages)) {
-    $DB->query("
+    $db->query("
     SELECT c.Name, c.NumTorrents, c.ID
     FROM collages AS c
       JOIN collages_torrents AS ct ON ct.CollageID = c.ID
     WHERE ct.GroupID = '$GroupID'
       AND Deleted = '0'
       AND CategoryID != '0'");
-    $Collages = $DB->to_array();
-    $Cache->cache_value("torrent_collages_$GroupID", $Collages, 3600 * 6);
+    $Collages = $db->to_array();
+    $cache->cache_value("torrent_collages_$GroupID", $Collages, 3600 * 6);
 }
 if (count($Collages) > 0) {
     if (count($Collages) > MAX_COLLAGES) {
@@ -864,17 +864,17 @@ if (count($Collages) > 0) {
     <?php
 }
 
-$PersonalCollages = $Cache->get_value("torrent_collages_personal_$GroupID");
+$PersonalCollages = $cache->get_value("torrent_collages_personal_$GroupID");
 if (!is_array($PersonalCollages)) {
-    $DB->query("
+    $db->query("
     SELECT c.Name, c.NumTorrents, c.ID
     FROM collages AS c
       JOIN collages_torrents AS ct ON ct.CollageID = c.ID
     WHERE ct.GroupID = '$GroupID'
       AND Deleted = '0'
       AND CategoryID = '0'");
-    $PersonalCollages = $DB->to_array(false, MYSQLI_NUM);
-    $Cache->cache_value("torrent_collages_personal_$GroupID", $PersonalCollages, 3600 * 6);
+    $PersonalCollages = $db->to_array(false, MYSQLI_NUM);
+    $cache->cache_value("torrent_collages_personal_$GroupID", $PersonalCollages, 3600 * 6);
 }
 
 if (count($PersonalCollages) > 0) {
@@ -944,12 +944,12 @@ if (count($PersonalCollages) > 0) {
         <?php
     }
 
-    $DB->query("
+    $db->query("
       SELECT UserID
       FROM torrents
       WHERE GroupID = $GroupID");
 
-    if (in_array($LoggedUser['ID'], $DB->collect('UserID')) || check_perms('torrents_edit') || check_perms('screenshots_add') || check_perms('screenshots_delete')) {
+    if (in_array($user['ID'], $db->collect('UserID')) || check_perms('torrents_edit') || check_perms('screenshots_add') || check_perms('screenshots_delete')) {
         ?>
         <a class="brackets"
           href="torrents.php?action=editgroup&groupid=<?=$GroupID?>#mirrors_section">Add/Remove</a>
@@ -984,12 +984,12 @@ if (count($PersonalCollages) > 0) {
         <?php
     }
 
-    $DB->query("
+    $db->query("
       SELECT UserID
       FROM torrents
       WHERE GroupID = $GroupID");
 
-    if (in_array($LoggedUser['ID'], $DB->collect('UserID')) || check_perms('torrents_edit') || check_perms('screenshots_add') || check_perms('screenshots_delete')) {
+    if (in_array($user['ID'], $db->collect('UserID')) || check_perms('torrents_edit') || check_perms('screenshots_add') || check_perms('screenshots_delete')) {
         ?>
         <a class="brackets"
           href="torrents.php?action=editgroup&groupid=<?=$GroupID?>#screenshots_section">Add/Remove</a>

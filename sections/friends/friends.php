@@ -17,11 +17,11 @@ define('FRIENDS_PER_PAGE', '20');
 
 View::header('Friends');
 
-$UserID = $LoggedUser['ID'];
+$UserID = $user['ID'];
 list($Page, $Limit) = Format::page_limit(FRIENDS_PER_PAGE);
 
 // Main query
-$DB->prepared_query("
+$db->prepared_query("
   SELECT
     SQL_CALC_FOUND_ROWS
     f.`FriendID`,
@@ -39,11 +39,11 @@ $DB->prepared_query("
   WHERE f.`UserID` = '$UserID'
   ORDER BY `Username`
   LIMIT $Limit");
-$Friends = $DB->to_array(false, MYSQLI_BOTH, array(6, 'Paranoia'));
+$Friends = $db->to_array(false, MYSQLI_BOTH, array(6, 'Paranoia'));
 
 // Number of results (for pagination)
-$DB->prepared_query('SELECT FOUND_ROWS()');
-list($Results) = $DB->next_record();
+$db->prepared_query('SELECT FOUND_ROWS()');
+list($Results) = $db->next_record();
 
 // Start printing stuff?>
 
@@ -70,7 +70,7 @@ foreach ($Friends as $Friend) {
     list($FriendID, $Comment, $Username, $Uploaded, $Downloaded, $Class, $Paranoia, $LastAccess, $Avatar) = $Friend; ?>
     <form class="manage_form" name="friends" action="friends.php" method="post">
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
       <table class="friends_table vertical_margin">
         <tr class="colhead">
           <td colspan="<?=(Users::has_avatars_enabled() ? 3 : 2)?>">

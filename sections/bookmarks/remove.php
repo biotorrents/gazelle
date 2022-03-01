@@ -14,25 +14,25 @@ if (!is_number($_GET['id'])) {
 }
 $PageID = $_GET['id'];
 
-$DB->query("
+$db->query("
   DELETE FROM $Table
-  WHERE UserID = $LoggedUser[ID]
+  WHERE UserID = $user[ID]
     AND $Col = $PageID");
-$Cache->delete_value("bookmarks_{$Type}_$UserID");
+$cache->delete_value("bookmarks_{$Type}_$UserID");
 
-if ($DB->affected_rows()) {
+if ($db->affected_rows()) {
     if ($Type === 'torrent') {
-        $Cache->delete_value("bookmarks_group_ids_$UserID");
+        $cache->delete_value("bookmarks_group_ids_$UserID");
     } elseif ($Type === 'request') {
-        $DB->query("
+        $db->query("
           SELECT UserID
           FROM $Table
           WHERE $Col = $PageID");
 
-        if ($DB->record_count() < 100) {
+        if ($db->record_count() < 100) {
             // Sphinx doesn't like huge MVA updates. Update sphinx_requests_delta
             // and live with the <= 1 minute delay if we have more than 100 bookmarkers
-            $Bookmarkers = implode(',', $DB->collect('UserID'));
+            $Bookmarkers = implode(',', $db->collect('UserID'));
             $SphQL = new SphinxqlQuery();
             $SphQL->raw_query("UPDATE requests, requests_delta SET bookmarker = ($Bookmarkers) WHERE id = $PageID");
         } else {

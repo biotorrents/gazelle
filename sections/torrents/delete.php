@@ -7,7 +7,7 @@ if (!$TorrentID || !is_number($TorrentID)) {
 }
 
 
-$DB->query("
+$db->query("
   SELECT
     t.UserID,
     t.Time,
@@ -17,19 +17,19 @@ $DB->query("
   WHERE t.ID = $TorrentID
   GROUP BY t.UserID");
 
-if (!$DB->has_results()) {
+if (!$db->has_results()) {
   error('Torrent already deleted.');
 }
 
-if ($Cache->get_value('torrent_'.$TorrentID.'_lock')) {
+if ($cache->get_value('torrent_'.$TorrentID.'_lock')) {
   error('Torrent cannot be deleted because the upload process is not completed yet. Please try again later.');
 }
 
 
-list($UserID, $Time, $Snatches) = $DB->next_record();
+list($UserID, $Time, $Snatches) = $db->next_record();
 
 
-if ($LoggedUser['ID'] != $UserID && !check_perms('torrents_delete')) {
+if ($user['ID'] != $UserID && !check_perms('torrents_delete')) {
   error(403);
 }
 
@@ -56,7 +56,7 @@ View::header('Delete torrent', 'reportsv2');
     <div class="pad">
       <form class="delete_form" name="torrent" action="torrents.php" method="post">
         <input type="hidden" name="action" value="takedelete" />
-        <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+        <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
         <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
         <div>
           <strong>Reason: </strong>
@@ -87,7 +87,7 @@ if (check_perms('admin_reports')) {
   require(SERVER_ROOT.'/sections/reportsv2/array.php');
   $ReportID = 0;
 /*
-  $DB->query("
+  $db->query("
       SELECT
         tg.Name,
         tg.ID,
@@ -122,7 +122,7 @@ if (check_perms('admin_reports')) {
         LEFT JOIN users_main AS uploader ON uploader.ID = t.UserID
       WHERE t.ID = $TorrentID");
 */
-  $DB->query("
+  $db->query("
       SELECT
         tg.Name,
         tg.ID,
@@ -150,11 +150,11 @@ if (check_perms('admin_reports')) {
         LEFT JOIN users_main AS uploader ON uploader.ID = t.UserID
       WHERE t.ID = $TorrentID");
 
-  if (!$DB->has_results()) {
+  if (!$db->has_results()) {
     error();
   }
   list($GroupName, $GroupID, $ArtistID, $ArtistName, $Year, $CategoryID, $Time,
-    $Media, $Size, $UploaderID, $UploaderName) = $DB->next_record();
+    $Media, $Size, $UploaderID, $UploaderName) = $db->next_record();
 
   $Type = 'dupe'; //hardcoded default
 
@@ -190,7 +190,7 @@ if (check_perms('admin_reports')) {
         */
       ?>
       <div>
-        <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+        <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
         <input type="hidden" id="reportid<?=$ReportID?>" name="reportid" value="<?=$ReportID?>" />
         <input type="hidden" id="torrentid<?=$ReportID?>" name="torrentid" value="<?=$TorrentID?>" />
         <input type="hidden" id="uploader<?=$ReportID?>" name="uploader" value="<?=$UploaderName?>" />
@@ -210,16 +210,16 @@ if (check_perms('admin_reports')) {
             <a href="log.php?search=Torrent+<?=$TorrentID?>"><?=$TorrentID?></a> (Deleted)
 <?php } else { ?>
             <?=$LinkName?>
-            <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>" class="brackets tooltip" title="Download">DL</a>
+            <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>" class="brackets tooltip" title="Download">DL</a>
             uploaded by <a href="user.php?id=<?=$UploaderID?>"><?=$UploaderName?></a> <?=time_diff($Time)?>
             <br />
-<?php $DB->query("
+<?php $db->query("
         SELECT r.ID
         FROM reportsv2 AS r
           LEFT JOIN torrents AS t ON t.ID = r.TorrentID
         WHERE r.Status != 'Resolved'
           AND t.GroupID = $GroupID");
-      $GroupOthers = ($DB->has_results());
+      $GroupOthers = ($db->has_results());
 
       if ($GroupOthers > 0) { ?>
             <div style="text-align: right;">
@@ -227,13 +227,13 @@ if (check_perms('admin_reports')) {
             </div>
 <?php }
 
-      $DB->query("
+      $db->query("
         SELECT t.UserID
         FROM reportsv2 AS r
           JOIN torrents AS t ON t.ID = r.TorrentID
         WHERE r.Status != 'Resolved'
           AND t.UserID = $UploaderID");
-      $UploaderOthers = ($DB->has_results());
+      $UploaderOthers = ($db->has_results());
 
       if ($UploaderOthers > 0) { ?>
             <div style="text-align: right;">
@@ -241,7 +241,7 @@ if (check_perms('admin_reports')) {
             </div>
 <?php }
 
-      $DB->query("
+      $db->query("
         SELECT DISTINCT req.ID,
           req.FillerID,
           um.Username,
@@ -249,9 +249,9 @@ if (check_perms('admin_reports')) {
         FROM requests AS req
           JOIN users_main AS um ON um.ID = req.FillerID
         AND req.TorrentID = $TorrentID");
-      $Requests = ($DB->has_results());
+      $Requests = ($db->has_results());
       if ($Requests > 0) {
-        while (list($RequestID, $FillerID, $FillerName, $FilledTime) = $DB->next_record()) {
+        while (list($RequestID, $FillerID, $FillerName, $FilledTime) = $db->next_record()) {
     ?>
             <div style="text-align: right;">
               <strong class="important_text"><a href="user.php?id=<?=$FillerID?>"><?=$FillerName?></a> used this torrent to fill <a href="requests.php?action=viewrequest&amp;id=<?=$RequestID?>">this request</a> <?=time_diff($FilledTime)?></strong>

@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);$Amount = (int) db_string($_POST['amount']);
 $To = (int) db_string($_POST['to']);
-$UserID = (int) $LoggedUser['ID'];
+$UserID = (int) $user['ID'];
 $Adjust = isset($_POST['adjust'])?true:false;
 $Message = $_POST['message'];
 
 // 10% tax
 $Tax = 0.1;
 
-if ($LoggedUser['DisablePoints']) {
+if ($user['DisablePoints']) {
     $Err = 'You are not allowed to send '.BONUS_POINTS.'.';
 } else {
     if ($Adjust) {
@@ -26,33 +26,33 @@ if ($LoggedUser['DisablePoints']) {
     } elseif ($Amount < 100) {
         $Err = 'You must send at least 100 '.BONUS_POINTS.'.';
     } else {
-        $DB->query("
+        $db->query("
       SELECT ui.DisablePoints
       FROM users_main AS um
         JOIN users_info AS ui ON um.ID = ui.UserID
       WHERE ID = $To");
-        if (!$DB->has_results()) {
+        if (!$db->has_results()) {
             $Err = 'That user doesn\'t exist.';
         } else {
-            list($Disabled) = $DB->next_record();
+            list($Disabled) = $db->next_record();
             if ($Disabled) {
                 $Err = "This user is not allowed to receive ".BONUS_POINTS.".";
             } else {
-                $DB->query("
+                $db->query("
           SELECT BonusPoints
           FROM users_main
           WHERE ID = $UserID");
-                if ($DB->has_results()) {
-                    list($BP) = $DB->next_record();
+                if ($db->has_results()) {
+                    list($BP) = $db->next_record();
 
                     if ($BP < $Amount) {
                         $Err = 'You don\'t have enough '.BONUS_POINTS.'.';
                     } else {
-                        $DB->query("
+                        $db->query("
               UPDATE users_main
               SET BonusPoints = BonusPoints - $Amount
               WHERE ID = $UserID");
-                        $DB->query("
+                        $db->query("
               UPDATE users_main
               SET BonusPoints = BonusPoints + ".$SentAmount."
               WHERE ID = $To");
@@ -60,11 +60,11 @@ if ($LoggedUser['DisablePoints']) {
                         $UserInfo = Users::user_info($UserID);
                         $ToInfo = Users::user_info($To);
 
-                        $DB->query("
+                        $db->query("
               UPDATE users_info
               SET AdminComment = CONCAT('".sqltime()." - Sent $Amount ".BONUS_POINTS." (".$SentAmount." after tax) to [user]".$ToInfo['Username']."[/user]\n\n', AdminComment)
               WHERE UserID = $UserID");
-                        $DB->query("
+                        $db->query("
               UPDATE users_info
               SET AdminComment = CONCAT('".sqltime()." - Received ".$SentAmount." ".BONUS_POINTS." from [user]".$UserInfo['Username']."[/user]\n\n', AdminComment)
               WHERE UserID = $To");
@@ -77,10 +77,10 @@ if ($LoggedUser['DisablePoints']) {
 
                         Misc::send_pm($To, 0, 'You\'ve received a gift!', $PM);
 
-                        $Cache->delete_value('user_info_heavy_'.$UserID);
-                        $Cache->delete_value('user_stats_'.$UserID);
-                        $Cache->delete_value('user_info_heavy_'.$To);
-                        $Cache->delete_value('user_stats_'.$To);
+                        $cache->delete_value('user_info_heavy_'.$UserID);
+                        $cache->delete_value('user_stats_'.$UserID);
+                        $cache->delete_value('user_info_heavy_'.$To);
+                        $cache->delete_value('user_stats_'.$To);
                     }
                 } else {
                     $Err = 'An unknown error occurred.';

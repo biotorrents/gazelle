@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-$DB->query("
+$db->query("
 UPDATE staff_pm_conversations
 SET Status = 'Resolved', ResolverID = '0'
 WHERE Date < NOW() - INTERVAL 1 MONTH

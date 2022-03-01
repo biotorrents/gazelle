@@ -6,23 +6,23 @@ if (!$ConvID || !is_number($ConvID)) {
     error(404);
 }
 
-$UserID = $LoggedUser['ID'];
-$DB->query("
+$UserID = $user['ID'];
+$db->query("
   SELECT InInbox, InSentbox
   FROM pm_conversations_users
   WHERE UserID = '$UserID'
     AND ConvID = '$ConvID'");
-if (!$DB->has_results()) {
+if (!$db->has_results()) {
     error(403);
 }
-list($InInbox, $InSentbox) = $DB->next_record();
+list($InInbox, $InSentbox) = $db->next_record();
 
 if (!$InInbox && !$InSentbox) {
     error(404);
 }
 
 // Get information on the conversation
-$DB->query("
+$db->query("
   SELECT
     c.Subject,
     cu.Sticky,
@@ -32,15 +32,15 @@ $DB->query("
     JOIN pm_conversations_users AS cu ON c.ID = cu.ConvID
   WHERE c.ID = '$ConvID'
     AND UserID = '$UserID'");
-list($Subject, $Sticky, $UnRead, $ForwardedID) = $DB->next_record();
+list($Subject, $Sticky, $UnRead, $ForwardedID) = $db->next_record();
 
-$DB->query("
+$db->query("
   SELECT um.ID, Username
   FROM pm_messages AS pm
     JOIN users_main AS um ON um.ID = pm.SenderID
   WHERE pm.ConvID = '$ConvID'");
 
-$ConverstionParticipants = $DB->to_array();
+$ConverstionParticipants = $db->to_array();
 
 foreach ($ConverstionParticipants as $Participant) {
     $PMUserID = (int)$Participant['ID'];
@@ -52,13 +52,13 @@ $Users[0]['UserStr'] = 'System'; // in case it's a message from the system
 $Users[0]['Username'] = 'System';
 
 if ($UnRead == '1') {
-    $DB->query("
+    $db->query("
     UPDATE pm_conversations_users
     SET UnRead = '0'
     WHERE ConvID = '$ConvID'
       AND UserID = '$UserID'");
     // Clear the caches of the inbox and sentbox
-    $Cache->decrement("inbox_new_$UserID");
+    $cache->decrement("inbox_new_$UserID");
 }
 
 View::header(
@@ -68,7 +68,7 @@ View::header(
 );
 
 // Get messages
-$DB->query("
+$db->query("
   SELECT SentDate, SenderID, Body, ID
   FROM pm_messages
   WHERE ConvID = '$ConvID'
@@ -83,7 +83,7 @@ $DB->query("
   </div>
   <?php
 
-while (list($SentDate, $SenderID, $Body, $MessageID) = $DB->next_record()) {
+while (list($SentDate, $SenderID, $Body, $MessageID) = $db->next_record()) {
     $Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[url=https://'.SITE_DOMAIN.'/wiki.php?action=article&name=databaseencryption][Encrypted][/url]'; ?>
   <div class="box vertical_space">
     <div class="head" style="overflow: hidden;">
@@ -101,23 +101,23 @@ while (list($SentDate, $SenderID, $Body, $MessageID) = $DB->next_record()) {
   </div>
   <?php
 }
-$DB->query("
+$db->query("
   SELECT UserID
   FROM pm_conversations_users
-  WHERE UserID != '$LoggedUser[ID]'
+  WHERE UserID != '$user[ID]'
     AND ConvID = '$ConvID'
     AND (ForwardedTo = 0 OR ForwardedTo = UserID)");
-$ReceiverIDs = $DB->collect('UserID');
+$ReceiverIDs = $db->collect('UserID');
 
 
-if (!empty($ReceiverIDs) && (empty($LoggedUser['DisablePM']) || array_intersect($ReceiverIDs, array_keys($StaffIDs)))) {
+if (!empty($ReceiverIDs) && (empty($user['DisablePM']) || array_intersect($ReceiverIDs, array_keys($StaffIDs)))) {
     ?>
   <h3>Reply</h3>
   <form class="send_form" name="reply" action="inbox.php" method="post" id="messageform">
     <div class="box pad">
       <input type="hidden" name="action" value="takecompose" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
       <input type="hidden" name="toid"
         value="<?=implode(',', $ReceiverIDs)?>" />
       <input type="hidden" name="convid" value="<?=$ConvID?>" />
@@ -142,7 +142,7 @@ if (!empty($ReceiverIDs) && (empty($LoggedUser['DisablePM']) || array_intersect(
       <input type="hidden" name="action" value="takeedit" />
       <input type="hidden" name="convid" value="<?=$ConvID?>" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
 
       <table class="layout" width="100%">
         <tr>
@@ -169,12 +169,12 @@ if (!empty($ReceiverIDs) && (empty($LoggedUser['DisablePM']) || array_intersect(
     </div>
   </form>
   <?php
-$DB->query("
+$db->query("
   SELECT SupportFor
   FROM users_info
-  WHERE UserID = ".$LoggedUser['ID']);
-list($FLS) = $DB->next_record();
-if ((check_perms('users_mod') || $FLS != '') && (!$ForwardedID || $ForwardedID == $LoggedUser['ID'])) {
+  WHERE UserID = ".$user['ID']);
+list($FLS) = $db->next_record();
+if ((check_perms('users_mod') || $FLS != '') && (!$ForwardedID || $ForwardedID == $user['ID'])) {
     ?>
   <h3>Forward conversation</h3>
   <form class="send_form" name="forward" action="inbox.php" method="post">
@@ -182,12 +182,12 @@ if ((check_perms('users_mod') || $FLS != '') && (!$ForwardedID || $ForwardedID =
       <input type="hidden" name="action" value="forward" />
       <input type="hidden" name="convid" value="<?=$ConvID?>" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
       <label for="receiverid">Forward to</label>
       <select id="receiverid" name="receiverid">
         <?php
   foreach ($StaffIDs as $StaffID => $StaffName) {
-      if ($StaffID == $LoggedUser['ID'] || in_array($StaffID, $ReceiverIDs)) {
+      if ($StaffID == $user['ID'] || in_array($StaffID, $ReceiverIDs)) {
           continue;
       } ?>
         <option value="<?=$StaffID?>"><?=$StaffName?>

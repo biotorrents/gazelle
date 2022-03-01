@@ -28,11 +28,11 @@ require_once 'classes/env.class.php';
 $ENV = ENV::go();
 
 $User = (int) $_GET['user'];
-if (!$Enabled = $Cache->get_value("enabled_$User")) {
+if (!$Enabled = $cache->get_value("enabled_$User")) {
     require_once SERVER_ROOT.'/classes/db.class.php';
-    $DB = new DB; // Load the database wrapper
+    $db = new DB; // Load the database wrapper
 
-    $DB->query("
+    $db->query("
     SELECT
       `Enabled`
     FROM
@@ -41,8 +41,8 @@ if (!$Enabled = $Cache->get_value("enabled_$User")) {
       `ID` = '$User'
     ");
 
-    list($Enabled) = $DB->next_record();
-    $Cache->cache_value("enabled_$User", $Enabled, 0);
+    list($Enabled) = $db->next_record();
+    $cache->cache_value("enabled_$User", $Enabled, 0);
 }
 
 # Check for RSS auth
@@ -85,11 +85,11 @@ switch ($_GET['feed']) {
      */
     case 'feed_news':
         $Feed->channel('News', 'RSS feed for site news.');
-        if (!$News = $Cache->get_value('news')) {
+        if (!$News = $cache->get_value('news')) {
             require_once SERVER_ROOT.'/classes/db.class.php'; // Require the database wrapper
-            $DB = new DB; // Load the database wrapper
+            $db = new DB; // Load the database wrapper
 
-            $DB->query("
+            $db->query("
             SELECT
               `ID`,
               `Title`,
@@ -103,8 +103,8 @@ switch ($_GET['feed']) {
             LIMIT 10
             ");
 
-            $News = $DB->to_array(false, MYSQLI_NUM, false);
-            $Cache->cache_value('news', $News, 1209600);
+            $News = $db->to_array(false, MYSQLI_NUM, false);
+            $cache->cache_value('news', $News, 1209600);
         }
 
         $Count = 0;
@@ -135,11 +135,11 @@ switch ($_GET['feed']) {
      */
     case 'feed_blog':
         $Feed->channel('Blog', 'RSS feed for site blog.');
-        if (!$Blog = $Cache->get_value('blog')) {
+        if (!$Blog = $cache->get_value('blog')) {
             require_once SERVER_ROOT.'/classes/db.class.php'; // Require the database wrapper
-            $DB = new DB; // Load the database wrapper
+            $db = new DB; // Load the database wrapper
 
-            $DB->query("
+            $db->query("
             SELECT
               b.`ID`,
               um.`Username`,
@@ -159,8 +159,8 @@ switch ($_GET['feed']) {
             LIMIT 20
             ");
 
-            $Blog = $DB->to_array();
-            $Cache->cache_value('blog', $Blog, 1209600);
+            $Blog = $db->to_array();
+            $cache->cache_value('blog', $Blog, 1209600);
         }
 
         foreach ($Blog as $BlogItem) {

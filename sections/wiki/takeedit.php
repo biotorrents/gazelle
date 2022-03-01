@@ -24,7 +24,7 @@ $P = db_array($_POST);
 $Article = Wiki::get_article($ArticleID);
 list($OldRevision, $OldTitle, $OldBody, $CurRead, $CurEdit, $OldDate, $OldAuthor) = array_shift($Article);
 
-if ($CurEdit > $LoggedUser['EffectiveClass']) {
+if ($CurEdit > $user['EffectiveClass']) {
     error(403);
 }
 
@@ -40,7 +40,7 @@ if (check_perms('admin_manage_wiki')) {
         error(0);
     }
 
-    if ($Edit > $LoggedUser['EffectiveClass']) {
+    if ($Edit > $user['EffectiveClass']) {
         error('You can\'t restrict articles above your own level.');
     }
 
@@ -55,7 +55,7 @@ if ($MyRevision !== $OldRevision) {
 }
 
 // Store previous revision
-$DB->prepared_query("
+$db->prepared_query("
   INSERT INTO wiki_revisions
     (ID, Revision, Title, Body, Date, Author)
   VALUES
@@ -77,9 +77,9 @@ if ($Read && $Edit) {
 
 $SQL .= "
     Date = NOW(),
-    Author = '$LoggedUser[ID]'
+    Author = '$user[ID]'
   WHERE ID = '$P[id]'";
 
-$DB->prepared_query($SQL);
+$db->prepared_query($SQL);
 Wiki::flush_article($ArticleID);
 Http::redirect("wiki.php?action=article&id=$ArticleID");

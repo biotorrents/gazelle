@@ -2,36 +2,36 @@
 #declare(strict_types=1);
 
 if (check_perms('admin_reports') && !empty($_GET['remove']) && is_number($_GET['remove'])) {
-    $DB->prepared_query("
+    $db->prepared_query("
     DELETE FROM torrents_bad_folders
     WHERE TorrentID = ".$_GET['remove']);
 
-    $DB->prepared_query("
+    $db->prepared_query("
     SELECT GroupID
     FROM torrents
     WHERE ID = ".$_GET['remove']);
 
-    list($GroupID) = $DB->next_record();
-    $Cache->delete_value('torrents_details_'.$GroupID);
+    list($GroupID) = $db->next_record();
+    $cache->delete_value('torrents_details_'.$GroupID);
 }
 
 if (!empty($_GET['filter']) && $_GET['filter'] == 'all') {
     $Join = '';
     $All = true;
 } else {
-    $Join = "JOIN xbt_snatched AS x ON x.fid = tbf.TorrentID AND x.uid = ".$LoggedUser['ID'];
+    $Join = "JOIN xbt_snatched AS x ON x.fid = tbf.TorrentID AND x.uid = ".$user['ID'];
     $All = false;
 }
 
 View::header('Torrents with bad folder names');
-$DB->prepared_query("
+$db->prepared_query("
   SELECT tbf.TorrentID, t.GroupID
   FROM torrents_bad_folders AS tbf
     JOIN torrents AS t ON t.ID = tbf.TorrentID
     $Join
   ORDER BY tbf.TimeAdded ASC");
 
-$TorrentsInfo = $DB->to_array('TorrentID', MYSQLI_ASSOC);
+$TorrentsInfo = $db->to_array('TorrentID', MYSQLI_ASSOC);
 foreach ($TorrentsInfo as $Torrent) {
     $GroupIDs[] = $Torrent['GroupID'];
 }
@@ -94,7 +94,7 @@ foreach ($TorrentsInfo as $TorrentID => $Info) {
       class="torrent torrent_row<?=$Torrents[$TorrentID]['IsSnatched'] ? ' snatched_torrent' : ''?>">
       <td>
         <span class="torrent_links_block">
-          <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>"
+          <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>"
             class="brackets tooltip" title="Download">DL</a>
         </span>
 

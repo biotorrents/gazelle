@@ -3,16 +3,16 @@
 
 $ENV = ENV::go();
 
-if (!$UserCount = $Cache->get_value('stats_user_count')) {
-    $DB->query("
+if (!$UserCount = $cache->get_value('stats_user_count')) {
+    $db->query("
     SELECT COUNT(ID)
     FROM users_main
     WHERE Enabled = '1'");
-    list($UserCount) = $DB->next_record();
-    $Cache->cache_value('stats_user_count', $UserCount, 0);
+    list($UserCount) = $db->next_record();
+    $cache->cache_value('stats_user_count', $UserCount, 0);
 }
 
-$UserID = $LoggedUser['ID'];
+$UserID = $user['ID'];
 
 if (!apcu_exists('DBKEY')) {
     error('Invites disabled until database decrypted');
@@ -23,16 +23,16 @@ if (!apcu_exists('DBKEY')) {
 // This is where we handle things passed to us
 authorize();
 
-$DB->query("
+$db->query("
   SELECT can_leech
   FROM users_main
   WHERE ID = $UserID");
-list($CanLeech) = $DB->next_record();
+list($CanLeech) = $db->next_record();
 
-if ($LoggedUser['RatioWatch']
+if ($user['RatioWatch']
   || !$CanLeech
-  || $LoggedUser['DisableInvites'] == '1'
-  || $LoggedUser['Invites'] == 0
+  || $user['DisableInvites'] == '1'
+  || $user['Invites'] == 0
   && !check_perms('site_send_unlimited_invites')
   || (
       $UserCount >= USER_LIMIT
@@ -44,7 +44,7 @@ if ($LoggedUser['RatioWatch']
 }
 
 $Email = trim($_POST['email']);
-$Username = $LoggedUser['Username'];
+$Username = $user['Username'];
 $SiteName =  $ENV->SITE_NAME ;
 $SiteURL = site_url();
 $InviteExpires = time_plus(60 * 60 * 24 * 3); // 3 days
@@ -67,12 +67,12 @@ foreach ($Emails as $CurEmail) {
             error();
         }
     }
-    $DB->query("
+    $db->query("
     SELECT Email
     FROM invites
-    WHERE InviterID = ".$LoggedUser['ID']);
-    if ($DB->has_results()) {
-        while (list($MaybeEmail) = $DB->next_record()) {
+    WHERE InviterID = ".$user['ID']);
+    if ($db->has_results()) {
+        while (list($MaybeEmail) = $db->next_record()) {
             if (Crypto::decrypt($MaybeEmail) == $CurEmail) {
                 error('You already have a pending invite to that address!');
                 header('Location: user.php?action=invite');
@@ -102,20 +102,20 @@ Thank you,
 $SiteName Staff
 EOT;
 
-    $DB->query("
+    $db->query("
     INSERT INTO invites
       (InviterID, InviteKey, Email, Expires, Reason)
     VALUES
-      ('$LoggedUser[ID]', '$InviteKey', '".Crypto::encrypt($CurEmail)."', '$InviteExpires', '$InviteReason')");
+      ('$user[ID]', '$InviteKey', '".Crypto::encrypt($CurEmail)."', '$InviteExpires', '$InviteReason')");
 
     if (!check_perms('site_send_unlimited_invites')) {
-        $DB->query("
+        $db->query("
       UPDATE users_main
       SET Invites = GREATEST(Invites, 1) - 1
-      WHERE ID = '$LoggedUser[ID]'");
-        $Cache->begin_transaction('user_info_heavy_'.$LoggedUser['ID']);
-        $Cache->update_row(false, array('Invites' => '-1'));
-        $Cache->commit_transaction(0);
+      WHERE ID = '$user[ID]'");
+        $cache->begin_transaction('user_info_heavy_'.$user['ID']);
+        $cache->update_row(false, array('Invites' => '-1'));
+        $cache->commit_transaction(0);
     }
 
     Misc::email($CurEmail, "You have been invited to $ENV->SITE_NAME", $Message);

@@ -30,14 +30,14 @@ if (!empty($Groups[$GroupID])) {
       <td>Info</td>
     </tr>
 <?php
-  $DB->query("SELECT UserID FROM torrents WHERE GroupID = ? AND Anonymous='1'", $GroupID);
-  $AnonUsers = $DB->collect("UserID");
-  $Log = $DB->query("
+  $db->query("SELECT UserID FROM torrents WHERE GroupID = ? AND Anonymous='1'", $GroupID);
+  $AnonUsers = $db->collect("UserID");
+  $Log = $db->query("
       SELECT TorrentID, UserID, Info, Time
       FROM group_log
       WHERE GroupID = ?
       ORDER BY Time DESC", $GroupID);
-  $LogEntries = $DB->to_array(false, MYSQLI_NUM);
+  $LogEntries = $db->to_array(false, MYSQLI_NUM);
   foreach ($LogEntries AS $LogEntry) {
     list($TorrentID, $UserID, $Info, $Time) = $LogEntry;
 ?>
@@ -45,12 +45,12 @@ if (!empty($Groups[$GroupID])) {
       <td><?=$Time?></td>
 <?php
       if ($TorrentID != 0) {
-        $DB->query("
+        $db->query("
           SELECT Container, Version, Media
           FROM torrents
           WHERE ID = $TorrentID");
-        list($Container, $Version, $Media) = $DB->next_record();
-        if (!$DB->has_results()) { ?>
+        list($Container, $Version, $Media) = $db->next_record();
+        if (!$db->has_results()) { ?>
           <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a> (Deleted)</td><?php
         } elseif ($Media == '') { ?>
           <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a></td><?php

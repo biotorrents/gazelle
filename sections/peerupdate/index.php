@@ -19,9 +19,9 @@ ini_set('max_execution_time', 300);
 ob_end_flush();
 gc_enable();
 
-$Cache->InternalCache = false; // We don't want PHP to cache all results internally
-$DB->query("TRUNCATE TABLE torrents_peerlists_compare");
-$DB->query("
+$cache->InternalCache = false; // We don't want PHP to cache all results internally
+$db->query("TRUNCATE TABLE torrents_peerlists_compare");
+$db->query("
   INSERT INTO torrents_peerlists_compare
   SELECT ID, GroupID, Seeders, Leechers, Snatched
   FROM torrents
@@ -29,11 +29,11 @@ $DB->query("
     Seeders = VALUES(Seeders),
     Leechers = VALUES(Leechers),
     Snatches = VALUES(Snatches)");
-$DB->query("
+$db->query("
   CREATE TEMPORARY TABLE tpc_temp
     (TorrentID int, GroupID int, Seeders int, Leechers int, Snatched int,
   PRIMARY KEY (GroupID, TorrentID))");
-$DB->query("
+$db->query("
   INSERT INTO tpc_temp
   SELECT t2.*
   FROM torrents_peerlists AS t1
@@ -44,7 +44,7 @@ $DB->query("
     OR t1.Snatches != t2.Snatches");
 
 $StepSize = 30000;
-$DB->query("
+$db->query("
   SELECT *
   FROM tpc_temp
   ORDER BY GroupID ASC, TorrentID ASC
@@ -53,14 +53,14 @@ $DB->query("
 $RowNum = 0;
 $LastGroupID = 0;
 $UpdatedKeys = $UncachedGroups = 0;
-list($TorrentID, $GroupID, $Seeders, $Leechers, $Snatches) = $DB->next_record(MYSQLI_NUM, false);
+list($TorrentID, $GroupID, $Seeders, $Leechers, $Snatches) = $db->next_record(MYSQLI_NUM, false);
 
 while ($TorrentID) {
     if ($LastGroupID != $GroupID) {
-        $CachedData = $Cache->get_value("torrent_group_$GroupID");
-        if ($CachedData !== false) {
-            if (isset($CachedData['ver']) && $CachedData['ver'] == Cache::GROUP_VERSION) {
-                $CachedStats = &$CachedData['d']['Torrents'];
+        $cachedData = $cache->get_value("torrent_group_$GroupID");
+        if ($cachedData !== false) {
+            if (isset($cachedData['ver']) && $cachedData['ver'] == Cache::GROUP_VERSION) {
+                $cachedStats = &$cachedData['d']['Torrents'];
             }
         } else {
             $UncachedGroups++;
@@ -70,8 +70,8 @@ while ($TorrentID) {
 
     while ($LastGroupID == $GroupID) {
         $RowNum++;
-        if (isset($CachedStats) && is_array($CachedStats[$TorrentID])) {
-            $OldValues = &$CachedStats[$TorrentID];
+        if (isset($cachedStats) && is_array($cachedStats[$TorrentID])) {
+            $OldValues = &$cachedStats[$TorrentID];
             $OldValues['Seeders'] = $Seeders;
             $OldValues['Leechers'] = $Leechers;
             $OldValues['Snatched'] = $Snatches;
@@ -80,7 +80,7 @@ while ($TorrentID) {
         }
 
         if (!($RowNum % $StepSize)) {
-            $DB->query("
+            $db->query("
         SELECT *
         FROM tpc_temp
         WHERE GroupID > $GroupID
@@ -89,12 +89,12 @@ while ($TorrentID) {
         LIMIT $StepSize");
         }
         $LastGroupID = $GroupID;
-        list($TorrentID, $GroupID, $Seeders, $Leechers, $Snatches) = $DB->next_record(MYSQLI_NUM, false);
+        list($TorrentID, $GroupID, $Seeders, $Leechers, $Snatches) = $db->next_record(MYSQLI_NUM, false);
     }
     
     if ($Changed) {
-        $Cache->cache_value("torrent_group_$LastGroupID", $CachedData, 0);
-        unset($CachedStats);
+        $cache->cache_value("torrent_group_$LastGroupID", $cachedData, 0);
+        unset($cachedStats);
         $UpdatedKeys++;
         $Changed = false;
     }
@@ -102,8 +102,8 @@ while ($TorrentID) {
 printf("Updated %d keys, skipped %d keys in %.6fs (%d kB memory)\n", $UpdatedKeys, $UncachedGroups, memory_get_usage(true) >> 10);
 #printf("Updated %d keys, skipped %d keys in %.6fs (%d kB memory)\n", $UpdatedKeys, $UncachedGroups, microtime(true) - $ScriptStartTime, memory_get_usage(true) >> 10);
 
-$DB->query("TRUNCATE TABLE torrents_peerlists");
-$DB->query("
+$db->query("TRUNCATE TABLE torrents_peerlists");
+$db->query("
   INSERT INTO torrents_peerlists
   SELECT *
   FROM torrents_peerlists_compare");

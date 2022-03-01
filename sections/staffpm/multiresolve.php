@@ -5,17 +5,17 @@ if ($IDs = $_POST['id']) {
     $ID = (int)$ID;
 
     // Check if conversation belongs to user
-    $DB->query("
+    $db->query("
       SELECT UserID, AssignedToUser
       FROM staff_pm_conversations
       WHERE ID = $ID");
-    list($UserID, $AssignedToUser) = $DB->next_record();
+    list($UserID, $AssignedToUser) = $db->next_record();
 
-    if ($UserID == $LoggedUser['ID'] || $DisplayStaff == '1' || $UserID == $AssignedToUser) {
+    if ($UserID == $user['ID'] || $DisplayStaff == '1' || $UserID == $AssignedToUser) {
       // Conversation belongs to user or user is staff, queue query
       $Queries[] = "
         UPDATE staff_pm_conversations
-        SET Status = 'Resolved', ResolverID = ".$LoggedUser['ID']."
+        SET Status = 'Resolved', ResolverID = ".$user['ID']."
         WHERE ID = $ID";
     } else {
       // Trying to run disallowed query
@@ -25,11 +25,11 @@ if ($IDs = $_POST['id']) {
 
   // Run queries
   foreach ($Queries as $Query) {
-    $DB->query($Query);
+    $db->query($Query);
   }
   // Clear cache for user
-  $Cache->delete_value("staff_pm_new_$LoggedUser[ID]");
-  $Cache->delete_value("num_staff_pms_$LoggedUser[ID]");
+  $cache->delete_value("staff_pm_new_$user[ID]");
+  $cache->delete_value("num_staff_pms_$user[ID]");
 
   // Done! Return to inbox
   header("Location: staffpm.php");

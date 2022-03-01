@@ -6,19 +6,19 @@ if (!is_number($CollageID)) {
     error(0);
 }
 
-$DB->query("
+$db->query("
   SELECT Name, UserID, CategoryID
   FROM collages
   WHERE ID = '$CollageID'");
-list($Name, $UserID, $CategoryID) = $DB->next_record();
-if ($CategoryID === '0' && $UserID != $LoggedUser['ID'] && !check_perms('site_collages_delete')) {
+list($Name, $UserID, $CategoryID) = $db->next_record();
+if ($CategoryID === '0' && $UserID != $user['ID'] && !check_perms('site_collages_delete')) {
     error(403);
 }
 if ($CategoryID != array_search(ARTIST_COLLAGE, $CollageCats)) {
     error(404);
 }
 
-$DB->query("
+$db->query("
   SELECT
     ca.ArtistID,
     ag.Name,
@@ -31,7 +31,7 @@ $DB->query("
   WHERE ca.CollageID = '$CollageID'
   ORDER BY ca.Sort");
 
-$Artists = $DB->to_array('ArtistID', MYSQLI_ASSOC);
+$Artists = $db->to_array('ArtistID', MYSQLI_ASSOC);
 
 
 View::header(
@@ -123,7 +123,7 @@ View::header(
           <td class="nobr">
             <input type="hidden" name="action" value="manage_artists_handle" />
             <input type="hidden" name="auth"
-              value="<?=$LoggedUser['AuthKey']?>" />
+              value="<?=$user['AuthKey']?>" />
             <input type="hidden" name="collageid"
               value="<?=$CollageID?>" />
             <input type="hidden" name="artistid"
@@ -144,7 +144,7 @@ View::header(
     <div>
       <input type="hidden" name="action" value="manage_artists_handle" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
       <input type="hidden" name="collageid"
         value="<?=$CollageID?>" />
       <input type="hidden" name="artistid" value="1" />

@@ -23,16 +23,16 @@ if (isset($_POST['torrent'])) {
             error(404);
         }
     }
-    $UserID = $LoggedUser['ID'];
+    $UserID = $user['ID'];
 
     // Make sure torrent exists
-    $DB->prepared_query("
+    $db->prepared_query("
       SELECT FreeTorrent, FreeLeechType
       FROM torrents
       WHERE ID = $TorrentID");
 
-    if ($DB->has_results()) {
-        list($FreeTorrent, $FreeLeechType) = $DB->next_record();
+    if ($db->has_results()) {
+        list($FreeTorrent, $FreeLeechType) = $db->next_record();
         if ($FreeTorrent === 2) {
             error('Torrent is already neutral leech.');
         } elseif ($FreeTorrent === 1 && $FreeLeechType !== 3) {
@@ -42,45 +42,45 @@ if (isset($_POST['torrent'])) {
         error('Torrent does not exist');
     }
 
-    $DB->prepared_query("
+    $db->prepared_query("
       SELECT BonusPoints
       FROM users_main
       WHERE ID = $UserID");
 
-    if ($DB->has_results()) {
-        list($Points) = $DB->next_record();
+    if ($db->has_results()) {
+        list($Points) = $db->next_record();
 
         if ($Points >= $Cost) {
-            $DB->prepared_query("
+            $db->prepared_query("
               SELECT TorrentID
               FROM shop_freeleeches
               WHERE TorrentID = $TorrentID");
 
-            if ($DB->has_results()) {
-                $DB->prepared_query("
+            if ($db->has_results()) {
+                $db->prepared_query("
                   UPDATE shop_freeleeches
                   SET ExpiryTime = ExpiryTime + INTERVAL 1 DAY
                   WHERE TorrentID = $TorrentID");
             } else {
-                $DB->prepared_query("
+                $db->prepared_query("
                   INSERT INTO shop_freeleeches
                     (TorrentID, ExpiryTime)
                   VALUES($TorrentID, NOW() + INTERVAL 1 DAY)");
                 Torrents::freeleech_torrents($TorrentID, 1, 3);
             }
 
-            $DB->prepared_query("
+            $db->prepared_query("
               UPDATE users_main
               SET BonusPoints = BonusPoints - $Cost
               WHERE ID = $UserID");
 
-            $DB->prepared_query("
+            $db->prepared_query("
               UPDATE users_info
               SET AdminComment = CONCAT('".sqltime()." - Made TorrentID $TorrentID freeleech for 24 more hours via the store\n\n', AdminComment)
               WHERE UserID = $UserID");
 
-            $Cache->delete_value('user_info_heavy_'.$UserID);
-            $Cache->delete_value('shop_freeleech_list');
+            $cache->delete_value('user_info_heavy_'.$UserID);
+            $cache->delete_value('shop_freeleech_list');
         } else {
             error("Not enough points");
         }

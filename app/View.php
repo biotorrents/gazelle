@@ -70,8 +70,8 @@ class View
             empty($_REQUEST['type']) ? false : $_REQUEST['type'] // Type
         );
 
-        if (!is_array(G::$LoggedUser)
-          || empty(G::$LoggedUser['ID'])
+        if (!is_array(G::$user)
+          || empty(G::$user['ID'])
           || (isset($Options['recover']) && $Options['recover'] === true)) {
             require_once "$ENV->SERVER_ROOT/design/publicheader.php";
         } else {
@@ -92,10 +92,10 @@ class View
     {
         $ENV = ENV::go();
         global $SessionID, $UserSessions, $Time, $Mobile;
-        #global $ScriptStartTime, $SessionID, $UserSessions, $Debug, $Time, $Mobile;
+        #global $ScriptStartTime, $SessionID, $UserSessions, $debug, $Time, $Mobile;
 
-        if (!is_array(G::$LoggedUser)
-          || empty(G::$LoggedUser['ID'])
+        if (!is_array(G::$user)
+          || empty(G::$user['ID'])
           || (isset($Options['recover']) && $Options['recover'] === true)) {
             require_once "$ENV->SERVER_ROOT/design/publicfooter.php";
         } else {

@@ -1,8 +1,8 @@
 <?php
 declare(strict_types = 1);
 
-if (($Results = $Cache->get_value('better_single_groupids')) === false) {
-    $DB->prepared_query("
+if (($Results = $cache->get_value('better_single_groupids')) === false) {
+    $db->prepared_query("
     SELECT
       t.`ID` AS `TorrentID`,
       t.`GroupID` AS `GroupID`
@@ -12,8 +12,8 @@ if (($Results = $Cache->get_value('better_single_groupids')) === false) {
     HAVING COUNT(x.`uid`) = 1
     LIMIT 30");
 
-    $Results = $DB->to_pair('GroupID', 'TorrentID', false);
-    $Cache->cache_value('better_single_groupids', $Results, 30 * 60);
+    $Results = $db->to_pair('GroupID', 'TorrentID', false);
+    $cache->cache_value('better_single_groupids', $Results, 30 * 60);
 }
 
 $Groups = Torrents::get_groups(array_keys($Results));
@@ -69,7 +69,7 @@ foreach ($Results as $GroupID => $TorrentID) {
     class="torrent torrent_row<?=$Torrents[$TorrentID]['IsSnatched'] ? ' snatched_torrent' : ''?>">
     <td>
       <span class="torrent_links_block">
-        <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>"
+        <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>"
           title="Download" class="brackets tooltip">DL</a>
       </span>
 

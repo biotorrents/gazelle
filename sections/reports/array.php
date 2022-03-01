@@ -7,7 +7,7 @@ $Types = array(
     "user" => array(
       "title" => "User",
       "guidelines" => array(
-        "The Report User option is for reporting a user who has broken one of the golden rules outlined <a href=\"rules.php\">here</a>, or if you need to alert staff to something specific about a user that cannot be reported elsewhere.",
+        "The Report User option is for reporting a user who has broken one of the golden rules outlined <a href=\"/rules\">here</a>, or if you need to alert staff to something specific about a user that cannot be reported elsewhere.",
         "We encourage all users to use this feature whenever possible. This will get quicker action than PMing a staff member will.",
         "Please do not report a user in this section for breaking rules such as:
         <ul>

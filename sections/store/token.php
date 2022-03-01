@@ -4,29 +4,29 @@
 $Cost = 1000;
 
 $Purchase = "1 freeleech token";
-$UserID = $LoggedUser['ID'];
+$UserID = $user['ID'];
 
-$DB->prepared_query("
+$db->prepared_query("
   SELECT BonusPoints
   FROM users_main
   WHERE ID = $UserID");
 
-if ($DB->has_results()) {
-    list($Points) = $DB->next_record();
+if ($db->has_results()) {
+    list($Points) = $db->next_record();
 
     if ($Points >= $Cost) {
-        $DB->prepared_query("
+        $db->prepared_query("
           UPDATE users_main
           SET BonusPoints = BonusPoints - $Cost,
             FLTokens = FLTokens + 1
           WHERE ID = $UserID");
 
-        $DB->prepared_query("
+        $db->prepared_query("
           UPDATE users_info
           SET AdminComment = CONCAT('".sqltime()." - Purchased a freeleech token from the store\n\n', AdminComment)
           WHERE UserID = $UserID");
 
-        $Cache->delete_value('user_info_heavy_'.$UserID);
+        $cache->delete_value('user_info_heavy_'.$UserID);
         $Worked = true;
     } else {
         $Worked = false;

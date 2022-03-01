@@ -20,11 +20,11 @@ $CollageID = (int)$_GET['collageid'];
 
 list($NumComments, $Page, $Thread, $LastRead) = Comments::load('collages', $CollageID);
 
-$DB->query("
+$db->query("
   SELECT Name
   FROM collages
   WHERE ID = '$CollageID'");
-list($Name) = $DB->next_record();
+list($Name) = $db->next_record();
 
 // Start printing
 View::header(
@@ -58,7 +58,7 @@ if ($Pages) {
 //---------- Begin printing
 CommentsView::render_comments($Thread, $LastRead, "collages.php?action=comments&amp;collageid=$CollageID");
 if (!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
-    if ($ThreadInfo['MinClassWrite'] <= $LoggedUser['Class'] && !$LoggedUser['DisablePosting']) {
+    if ($ThreadInfo['MinClassWrite'] <= $user['Class'] && !$user['DisablePosting']) {
         View::parse('generic/reply/quickreply.php', array(
       'InputName' => 'pageid',
       'InputID' => $CollageID,

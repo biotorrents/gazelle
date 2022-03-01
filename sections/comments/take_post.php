@@ -5,7 +5,7 @@ if (!isset($_REQUEST['page']) || !in_array($_REQUEST['page'], array('artist', 'c
   error(0);
 }
 
-if ($LoggedUser['DisablePosting']) {
+if ($user['DisablePosting']) {
   error('Your posting privileges have been removed.');
 }
 

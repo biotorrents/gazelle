@@ -1,20 +1,20 @@
 <?php
 if ($ID = (int)($_GET['id'])) {
   // Check if conversation belongs to user
-  $DB->query("
+  $db->query("
     SELECT UserID, AssignedToUser
     FROM staff_pm_conversations
     WHERE ID = $ID");
-  list($UserID, $AssignedToUser) = $DB->next_record();
+  list($UserID, $AssignedToUser) = $db->next_record();
 
-  if ($UserID == $LoggedUser['ID'] || $IsFLS || $AssignedToUser == $LoggedUser['ID']) {
+  if ($UserID == $user['ID'] || $IsFLS || $AssignedToUser == $user['ID']) {
     // Conversation belongs to user or user is staff, resolve it
-    $DB->query("
+    $db->query("
       UPDATE staff_pm_conversations
-      SET Status = 'Resolved', ResolverID = $LoggedUser[ID]
+      SET Status = 'Resolved', ResolverID = $user[ID]
       WHERE ID = $ID");
-    $Cache->delete_value("staff_pm_new_$LoggedUser[ID]");
-    $Cache->delete_value("num_staff_pms_$LoggedUser[ID]");
+    $cache->delete_value("staff_pm_new_$user[ID]");
+    $cache->delete_value("num_staff_pms_$user[ID]");
 
     header('Location: staffpm.php');
   } else {

@@ -12,22 +12,22 @@ if (!is_number($ID) || !is_number($ID) || !is_number($GroupID) || !is_number($Gr
   error(404);
 }
 
-$DB->query("
+$db->query("
   SELECT Image, Summary
   FROM cover_art
   WHERE ID = '$ID'");
-list($Image, $Summary) = $DB->next_record();
+list($Image, $Summary) = $db->next_record();
 
-$DB->query("
+$db->query("
   DELETE FROM cover_art
   WHERE ID = '$ID'");
 
-$DB->query("
+$db->query("
   INSERT INTO group_log
     (GroupID, UserID, Time, Info)
   VALUES
-    ('$GroupID', ".$LoggedUser['ID'].", NOW(), '".db_string("Additional cover \"$Summary - $Image\" removed from group")."')");
+    ('$GroupID', ".$user['ID'].", NOW(), '".db_string("Additional cover \"$Summary - $Image\" removed from group")."')");
 
-$Cache->delete_value("torrents_cover_art_$GroupID");
+$cache->delete_value("torrents_cover_art_$GroupID");
 header('Location: '.$_SERVER['HTTP_REFERER']);
 ?>

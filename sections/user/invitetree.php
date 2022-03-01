@@ -9,16 +9,16 @@ if (isset($_GET['userid']) && check_perms('users_view_invites')) {
     $UserID = $_GET['userid'];
     $Sneaky = true;
 } else {
-    if (!$UserCount = $Cache->get_value('stats_user_count')) {
-        $DB->query("
+    if (!$UserCount = $cache->get_value('stats_user_count')) {
+        $db->query("
       SELECT COUNT(ID)
       FROM users_main
       WHERE Enabled = '1'");
-        list($UserCount) = $DB->next_record();
-        $Cache->cache_value('stats_user_count', $UserCount, 0);
+        list($UserCount) = $db->next_record();
+        $cache->cache_value('stats_user_count', $UserCount, 0);
     }
 
-    $UserID = $LoggedUser['ID'];
+    $UserID = $user['ID'];
     $Sneaky = false;
 }
 list($UserID, $Username, $PermissionID) = array_values(Users::user_info($UserID));

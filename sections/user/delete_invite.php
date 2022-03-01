@@ -4,37 +4,37 @@ declare(strict_types=1);
 authorize();
 
 $InviteKey = db_string($_GET['invite']);
-$DB->query("
+$db->query("
   SELECT InviterID
   FROM invites
   WHERE InviteKey = ?", $InviteKey);
-list($UserID) = $DB->next_record();
-if (!$DB->has_results()) {
+list($UserID) = $db->next_record();
+if (!$db->has_results()) {
     error(404);
 }
-if ($UserID != $LoggedUser['ID'] && $LoggedUser['PermissionID'] != SYSOP) {
+if ($UserID != $user['ID'] && $user['PermissionID'] != SYSOP) {
     error(403);
 }
 
-$DB->query("
+$db->query("
   DELETE FROM invites
   WHERE InviteKey = ?", $InviteKey);
 
 if (!check_perms('site_send_unlimited_invites')) {
-    $DB->query("
+    $db->query("
     SELECT Invites
     FROM users_main
     WHERE ID = ?
     LIMIT 1", $UserID);
-    list($Invites) = $DB->next_record();
+    list($Invites) = $db->next_record();
     if ($Invites < 10) {
-        $DB->query("
+        $db->query("
       UPDATE users_main
       SET Invites = Invites + 1
       WHERE ID = ?", $UserID);
-        $Cache->begin_transaction("user_info_heavy_$UserID");
-        $Cache->update_row(false, ['Invites' => '+1']);
-        $Cache->commit_transaction(0);
+        $cache->begin_transaction("user_info_heavy_$UserID");
+        $cache->update_row(false, ['Invites' => '+1']);
+        $cache->commit_transaction(0);
     }
 }
 header('Location: user.php?action=invite');

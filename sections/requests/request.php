@@ -63,7 +63,7 @@ $DisplayLink .= $Extra;
 $RequestVotes = Requests::get_votes_array($RequestID);
 $VoteCount = count($RequestVotes['Voters']);
 $ProjectCanEdit = (check_perms('project_team') && !$IsFilled && ($Request['CategoryID'] === '0' || ($CategoryName === 'Music' && $Request['Year'] === '0')));
-$UserCanEdit = (!$IsFilled && $LoggedUser['ID'] === $Request['UserID'] && $VoteCount < 2);
+$UserCanEdit = (!$IsFilled && $user['ID'] === $Request['UserID'] && $VoteCount < 2);
 $CanEdit = ($UserCanEdit || $ProjectCanEdit || check_perms('site_moderate_requests'));
 
 // Comments (must be loaded before View::header so that subscriptions and quote notifications are handled properly)
@@ -205,7 +205,7 @@ $encoded_artist = urlencode($encoded_artist);
   for ($i = 0; $i < $VoteMax; $i++) {
       $User = array_shift($RequestVotes['Voters']);
       $Boldify = false;
-      if ($User['UserID'] === $LoggedUser['ID']) {
+      if ($User['UserID'] === $user['ID']) {
           $ViewerVote = true;
           $Boldify = true;
       } ?>
@@ -223,7 +223,7 @@ $encoded_artist = urlencode($encoded_artist);
   reset($RequestVotes['Voters']);
   if (!$ViewerVote) {
       foreach ($RequestVotes['Voters'] as $User) {
-          if ($User['UserID'] === $LoggedUser['ID']) { ?>
+          if ($User['UserID'] === $user['ID']) { ?>
         <tr>
           <td>
             <a
@@ -336,29 +336,29 @@ $encoded_artist = urlencode($encoded_artist);
               <form class="add_form" name="request" action="requests.php" method="get" id="request_form">
                 <input type="hidden" name="action" value="vote" />
                 <input type="hidden" name="auth"
-                  value="<?=$LoggedUser['AuthKey']?>" />
+                  value="<?=$user['AuthKey']?>" />
                 <input type="hidden" id="request_tax"
                   value="<?=$RequestTax?>" />
                 <input type="hidden" id="requestid" name="id"
                   value="<?=$RequestID?>" />
                 <input type="hidden" id="auth" name="auth"
-                  value="<?=$LoggedUser['AuthKey']?>" />
+                  value="<?=$user['AuthKey']?>" />
                 <input type="hidden" id="amount" name="amount" value="0" />
                 <input type="hidden" id="current_uploaded"
-                  value="<?=$LoggedUser['BytesUploaded']?>" />
+                  value="<?=$user['BytesUploaded']?>" />
                 <input type="hidden" id="current_downloaded"
-                  value="<?=$LoggedUser['BytesDownloaded']?>" />
+                  value="<?=$user['BytesDownloaded']?>" />
                 <input type="hidden" id="current_rr"
-                  value="<?=(float)$LoggedUser['RequiredRatio']?>" />
+                  value="<?=(float)$user['RequiredRatio']?>" />
                 <input id="total_bounty" type="hidden"
                   value="<?=$RequestVotes['TotalBounty']?>" />
 
                 <ul>
                   <!-- todo: Return this feature
               <li><strong>Bounty:</strong> <span id="bounty_after_tax">0.00 MiB</span></li> -->
-                  <li><strong>Uploaded:</strong> <span id="new_uploaded"><?= Format::get_size($LoggedUser['BytesUploaded']) ?></span>
+                  <li><strong>Uploaded:</strong> <span id="new_uploaded"><?= Format::get_size($user['BytesUploaded']) ?></span>
                   </li>
-                  <li><strong>Ratio:</strong> <span id="new_ratio"><?= Format::get_ratio_html($LoggedUser['BytesUploaded'], $LoggedUser['BytesDownloaded']) ?></span>
+                  <li><strong>Ratio:</strong> <span id="new_ratio"><?= Format::get_ratio_html($user['BytesUploaded'], $user['BytesDownloaded']) ?></span>
                   </li>
                 </ul>
                 <input type="button" id="button" value="Vote!" class="button-primary" disabled="disabled" onclick="Vote();" />
@@ -381,7 +381,7 @@ $encoded_artist = urlencode($encoded_artist);
               <strong><a
                   href="torrents.php?<?=(strtotime($Request['TimeFilled']) < $TimeCompare ? 'id=' : 'torrentid=') . $Request['TorrentID']?>">Yes</a></strong>,
               by user <?=($Request['AnonymousFill'] ? '<em>Anonymous</em>' : Users::format_username($Request['FillerID'], false, false, false))?>
-              <?php if ($LoggedUser['ID'] == $Request['UserID'] || $LoggedUser['ID'] == $Request['FillerID'] || check_perms('site_moderate_requests')) { ?>
+              <?php if ($user['ID'] == $Request['UserID'] || $user['ID'] == $Request['FillerID'] || check_perms('site_moderate_requests')) { ?>
               <strong><a
                   href="requests.php?action=unfill&amp;id=<?=$RequestID?>"
                   class="brackets">Unfill</a></strong> Unfilling a request without a valid, nontrivial reason will
@@ -398,7 +398,7 @@ $encoded_artist = urlencode($encoded_artist);
                 <div>
                   <input type="hidden" name="action" value="takefill" />
                   <input type="hidden" name="auth"
-                    value="<?=$LoggedUser['AuthKey']?>" />
+                    value="<?=$user['AuthKey']?>" />
                   <input type="hidden" name="requestid"
                     value="<?=$RequestID?>" />
                   <input type="text" size="50" name="link" <?=(!empty($Link) ? " value='$Link'" : '')?>

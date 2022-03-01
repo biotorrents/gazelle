@@ -14,7 +14,7 @@ $Key = (int)$_POST['key'];
 $SQLTime = sqltime();
 
 $UserInfo = Users::user_info($UserID);
-if ($UserInfo['Class'] > $LoggedUser['Class']) {
+if ($UserInfo['Class'] > $user['Class']) {
   error(403);
 }
 
@@ -26,26 +26,26 @@ if ($WarningLength !== 'verbal') {
   $PrivateMessage = "You have received a $WarningLength week warning for [url=$URL]this post[/url].\n\n" . $PrivateMessage;
 
   $WarnTime = time_plus($Time);
-  $AdminComment = date('Y-m-d') . " - Warned until $WarnTime by " . $LoggedUser['Username'] . " for $URL\nReason: $Reason\n\n";
+  $AdminComment = date('Y-m-d') . " - Warned until $WarnTime by " . $user['Username'] . " for $URL\nReason: $Reason\n\n";
 
 } else {
   $Subject = 'You have received a verbal warning';
   $PrivateMessage = "You have received a verbal warning for [url=$URL]this post[/url].\n\n" . $PrivateMessage;
-  $AdminComment = date('Y-m-d') . ' - Verbally warned by ' . $LoggedUser['Username'] . " for $URL\nReason: $Reason\n\n";
+  $AdminComment = date('Y-m-d') . ' - Verbally warned by ' . $user['Username'] . " for $URL\nReason: $Reason\n\n";
   Tools::update_user_notes($UserID, $AdminComment);
 }
 
-$DB->prepared_query("
+$db->prepared_query("
   INSERT INTO users_warnings_forums
     (UserID, Comment)
   VALUES
     ('$UserID', '" . db_string($AdminComment) . "')
   ON DUPLICATE KEY UPDATE
     Comment = CONCAT('" . db_string($AdminComment) . "', Comment)");
-Misc::send_pm($UserID, $LoggedUser['ID'], $Subject, $PrivateMessage);
+Misc::send_pm($UserID, $user['ID'], $Subject, $PrivateMessage);
 
 //edit the post
-$DB->prepared_query("
+$db->prepared_query("
   SELECT
     p.Body,
     p.AuthorID,
@@ -63,10 +63,10 @@ $DB->prepared_query("
     JOIN forums_topics AS t ON p.TopicID = t.ID
     JOIN forums AS f ON t.ForumID = f.ID
   WHERE p.ID = '$PostID'");
-list($OldBody, $AuthorID, $TopicID, $ForumID, $Page) = $DB->next_record();
+list($OldBody, $AuthorID, $TopicID, $ForumID, $Page) = $db->next_record();
 
 // Perform the update
-$DB->prepared_query("
+$db->prepared_query("
   UPDATE forums_posts
   SET Body = '" . db_string($Body) . "',
     EditedUserID = '$UserID',
@@ -74,21 +74,21 @@ $DB->prepared_query("
   WHERE ID = '$PostID'");
 
 $CatalogueID = floor((POSTS_PER_PAGE * $Page - POSTS_PER_PAGE) / THREAD_CATALOGUE);
-$Cache->begin_transaction("thread_$TopicID" . "_catalogue_$CatalogueID");
-if ($Cache->MemcacheDBArray[$Key]['ID'] != $PostID) {
-  $Cache->cancel_transaction();
-  $Cache->delete_value("thread_$TopicID" . "_catalogue_$CatalogueID");
+$cache->begin_transaction("thread_$TopicID" . "_catalogue_$CatalogueID");
+if ($cache->MemcacheDBArray[$Key]['ID'] != $PostID) {
+  $cache->cancel_transaction();
+  $cache->delete_value("thread_$TopicID" . "_catalogue_$CatalogueID");
   //just clear the cache for would be cache-screwer-uppers
 } else {
-  $Cache->update_row($Key, array(
-            'ID' => $Cache->MemcacheDBArray[$Key]['ID'],
-            'AuthorID' => $Cache->MemcacheDBArray[$Key]['AuthorID'],
-            'AddedTime' => $Cache->MemcacheDBArray[$Key]['AddedTime'],
+  $cache->update_row($Key, array(
+            'ID' => $cache->MemcacheDBArray[$Key]['ID'],
+            'AuthorID' => $cache->MemcacheDBArray[$Key]['AuthorID'],
+            'AddedTime' => $cache->MemcacheDBArray[$Key]['AddedTime'],
             'Body' => $Body, //Don't url decode.
-            'EditedUserID' => $LoggedUser['ID'],
+            'EditedUserID' => $user['ID'],
             'EditedTime' => $SQLTime,
-            'Username' => $LoggedUser['Username']));
-  $Cache->commit_transaction(3600 * 24 * 5);
+            'Username' => $user['Username']));
+  $cache->commit_transaction(3600 * 24 * 5);
 }
 $ThreadInfo = Forums::get_thread_info($TopicID);
 if ($ThreadInfo === null) {
@@ -96,17 +96,17 @@ if ($ThreadInfo === null) {
 }
 if ($ThreadInfo['StickyPostID'] == $PostID) {
   $ThreadInfo['StickyPost']['Body'] = $Body;
-  $ThreadInfo['StickyPost']['EditedUserID'] = $LoggedUser['ID'];
+  $ThreadInfo['StickyPost']['EditedUserID'] = $user['ID'];
   $ThreadInfo['StickyPost']['EditedTime'] = $SQLTime;
-  $Cache->cache_value("thread_$TopicID" . '_info', $ThreadInfo, 0);
+  $cache->cache_value("thread_$TopicID" . '_info', $ThreadInfo, 0);
 }
 
-$DB->prepared_query("
+$db->prepared_query("
   INSERT INTO comments_edits
     (Page, PostID, EditUser, EditTime, Body)
   VALUES
     ('forums', $PostID, $UserID, '$SQLTime', '" . db_string($OldBody) . "')");
-$Cache->delete_value("forums_edits_$PostID");
+$cache->delete_value("forums_edits_$PostID");
 
 header("Location: forums.php?action=viewthread&postid=$PostID#post$PostID");
 ?>

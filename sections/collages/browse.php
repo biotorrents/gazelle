@@ -84,7 +84,7 @@ $BaseSQL = $SQL = "
   WHERE Deleted = '0'";
 
 if ($BookmarkView) {
-    $SQL .= " AND bc.UserID = '" . $LoggedUser['ID'] . "'";
+    $SQL .= " AND bc.UserID = '" . $user['ID'] . "'";
 }
 
 if (!empty($Search)) {
@@ -123,11 +123,11 @@ if (!empty($_GET['userid'])) {
         if (!check_paranoia('collagecontribs', $User['Paranoia'], $UserClass, $UserID)) {
             error(403);
         }
-        $DB->query("
+        $db->query("
       SELECT DISTINCT CollageID
       FROM collages_torrents
       WHERE UserID = $UserID");
-        $CollageIDs = $DB->collect('CollageID');
+        $CollageIDs = $db->collect('CollageID');
         if (empty($CollageIDs)) {
             $SQL .= " AND 0";
         } else {
@@ -149,17 +149,17 @@ if (!empty($Categories)) {
 if (isset($_GET['action']) && $_GET['action'] === 'mine') {
     $SQL = $BaseSQL;
     $SQL .= "
-    AND c.UserID = '".$LoggedUser['ID']."'
+    AND c.UserID = '".$user['ID']."'
     AND c.CategoryID = 0";
 }
 
 $SQL .= "
   ORDER BY $Order $Way
   LIMIT $Limit";
-$DB->query($SQL);
-$Collages = $DB->to_array();
-$DB->query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
+$db->query($SQL);
+$Collages = $db->to_array();
+$db->query('SELECT FOUND_ROWS()');
+list($NumResults) = $db->next_record();
 
 View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
 ?>
@@ -278,16 +278,16 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
     <?php
       }
       if (check_perms('site_collages_personal')) {
-          $DB->query("
+          $db->query("
         SELECT ID
         FROM collages
-        WHERE UserID = '$LoggedUser[ID]'
+        WHERE UserID = '$user[ID]'
           AND CategoryID = '0'
           AND Deleted = '0'");
-          $CollageCount = $DB->record_count();
+          $CollageCount = $db->record_count();
 
           if ($CollageCount === 1) {
-              list($CollageID) = $DB->next_record(); ?>
+              list($CollageID) = $db->next_record(); ?>
     <a href="collages.php?id=<?=$CollageID?>"
       class="brackets">Personal collection</a>
     <?php
@@ -311,9 +311,9 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
     <br />
     <?php
       } ?>
-    <a href="collages.php?userid=<?=$LoggedUser['ID']?>"
+    <a href="collages.php?userid=<?=$user['ID']?>"
       class="brackets">Collections you started</a>
-    <a href="collages.php?userid=<?=$LoggedUser['ID']?>&amp;contrib=1"
+    <a href="collages.php?userid=<?=$user['ID']?>&amp;contrib=1"
       class="brackets">Collections you contributed to</a>
     <br /><br />
     <?php

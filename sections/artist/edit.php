@@ -17,7 +17,7 @@ if (!is_number($ArtistID)) {
 
 // Get the artist name and the body of the last revision
 /*
-$DB->query("
+$db->query("
   SELECT
     Name,
     Image,
@@ -27,7 +27,7 @@ $DB->query("
     LEFT JOIN wiki_artists ON wiki_artists.RevisionID = a.RevisionID
   WHERE a.ArtistID = '$ArtistID'");
 */
-$DB->query("
+$db->query("
   SELECT
     Name,
     Image,
@@ -36,11 +36,11 @@ $DB->query("
     LEFT JOIN wiki_artists ON wiki_artists.RevisionID = a.RevisionID
   WHERE a.ArtistID = '$ArtistID'");
 
-if (!$DB->has_results()) {
+if (!$db->has_results()) {
   error("Cannot find an artist with the ID {$ArtistID}: See the <a href=\"log.php?search=Artist+$ArtistID\">site log</a>.");
 }
 
-list($Name, $Image, $Body) = $DB->next_record(MYSQLI_NUM, true);
+list($Name, $Image, $Body) = $db->next_record(MYSQLI_NUM, true);
 
 // Start printing form
 View::header('Edit artist');
@@ -52,7 +52,7 @@ View::header('Edit artist');
   <div class="box pad">
     <form class="edit_form" name="artist" action="artist.php" method="post">
       <input type="hidden" name="action" value="edit" />
-      <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
       <input type="hidden" name="artistid" value="<?=$ArtistID?>" />
       <div>
         <h3>Image:</h3>
@@ -72,7 +72,7 @@ View::header('Edit artist');
   <div class="box pad">
     <form class="rename_form" name="artist" action="artist.php" method="post">
       <input type="hidden" name="action" value="rename" />
-      <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
       <input type="hidden" name="artistid" value="<?=$ArtistID?>" />
       <div>
         <input type="text" name="name" size="92" value="<?=$Name?>" />
@@ -87,7 +87,7 @@ View::header('Edit artist');
   <div class="box pad">
     <form class="merge_form" name="artist" action="artist.php" method="post">
       <input type="hidden" name="action" value="change_artistid" />
-      <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
       <input type="hidden" name="artistid" value="<?=$ArtistID?>" />
       <div>
         <p>Merges this artist ("<?=$Name?>") into the artist specified below (without redirection), so that ("<?=$Name?>") and its aliases will appear as a non-redirecting alias of the artist entered in the text box below.</p><br />
@@ -109,11 +109,11 @@ View::header('Edit artist');
       <ul>
 
 <?php
-  $DB->query("
+  $db->query("
     SELECT AliasID, Name, UserID, Redirect
     FROM artists_alias
     WHERE ArtistID = '$ArtistID'");
-  while (list($AliasID, $AliasName, $User, $Redirect) = $DB->next_record(MYSQLI_NUM, true)) {
+  while (list($AliasID, $AliasName, $User, $Redirect) = $db->next_record(MYSQLI_NUM, true)) {
     if ($AliasName == $Name) {
       $DefaultRedirectID = $AliasID;
     }
@@ -126,7 +126,7 @@ View::header('Edit artist');
     if ($Redirect) { ?>
           (writes redirect to <span class="tooltip" title="Target alias ID"><?=$Redirect?></span>)
 <?php } ?>
-          <a href="artist.php?action=delete_alias&amp;aliasid=<?=$AliasID?>&amp;auth=<?=$LoggedUser['AuthKey']?>" title="Delete this alias" class="brackets tooltip">X</a>
+          <a href="artist.php?action=delete_alias&amp;aliasid=<?=$AliasID?>&amp;auth=<?=$user['AuthKey']?>" title="Delete this alias" class="brackets tooltip">X</a>
         </li>
 <?php }
 ?>
@@ -138,7 +138,7 @@ View::header('Edit artist');
       <p>This redirects artist names as they are written (e.g. when new torrents are uploaded or artists added). All uses of this new alias will be redirected to the alias ID you enter here. Use for common misspellings, inclusion of diacritical marks, etc.</p>
       <form class="add_form" name="aliases" action="artist.php" method="post">
         <input type="hidden" name="action" value="add_alias" />
-        <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+        <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
         <input type="hidden" name="artistid" value="<?=$ArtistID?>" />
         <div>
           <span class="label"><strong>Name:</strong></span>

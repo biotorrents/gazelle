@@ -8,11 +8,11 @@ $ThreadID = $_GET['threadid'];
 $PollOption = $_GET['vote'];
 
 if (is_number($ThreadID) && is_number($PollOption)) {
-  $DB->query("
+  $db->query("
     SELECT ForumID
     FROM forums_topics
     WHERE ID = $ThreadID");
-  list($ForumID) = $DB->next_record();
+  list($ForumID) = $db->next_record();
 
   /*
   if (!in_array($ForumID, FORUMS_TO_REVEAL_VOTERS)) {
@@ -20,29 +20,29 @@ if (is_number($ThreadID) && is_number($PollOption)) {
   }
   */
 
-  $DB->query("
+  $db->query("
     SELECT Answers
     FROM forums_polls
     WHERE TopicID = $ThreadID");
-  if (!$DB->has_results()) {
+  if (!$db->has_results()) {
     error(404);
   }
 
-  list($Answers) = $DB->next_record(MYSQLI_NUM, false);
+  list($Answers) = $db->next_record(MYSQLI_NUM, false);
   $Answers = unserialize($Answers);
   unset($Answers[$PollOption]);
   $Answers = serialize($Answers);
 
-  $DB->query("
+  $db->query("
     UPDATE forums_polls
     SET Answers = '".db_string($Answers)."'
     WHERE TopicID = $ThreadID");
-  $DB->query("
+  $db->query("
     DELETE FROM forums_polls_votes
     WHERE Vote = $PollOption
       AND TopicID = $ThreadID");
 
-  $Cache->delete_value("polls_$ThreadID");
+  $cache->delete_value("polls_$ThreadID");
   header("Location: forums.php?action=viewthread&threadid=$ThreadID");
 } else {
   error(404);

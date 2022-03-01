@@ -2,7 +2,7 @@
 #declare(strict_types=1);
 
 // todo: Cache this
-$DB->query("
+$db->query("
   SELECT
     ca.ArtistID,
     ag.Name,
@@ -14,7 +14,7 @@ $DB->query("
   WHERE ca.CollageID = '$CollageID'
   ORDER BY ca.Sort");
 
-$Artists = $DB->to_array('ArtistID', MYSQLI_ASSOC);
+$Artists = $db->to_array('ArtistID', MYSQLI_ASSOC);
 
 // Loop through the result set, building up $Collage and $TorrentTable
 // Then we print them.
@@ -27,7 +27,7 @@ $UserAdditions = [];
 
 foreach ($Artists as $Artist) {
     $UserID = $Artist['UserID'];
-    if ($UserID === $LoggedUser['ID']) {
+    if ($UserID === $user['ID']) {
         $NumGroupsByUser++;
     }
 
@@ -67,7 +67,7 @@ if (!check_perms('site_collages_delete') && ($Locked || ($MaxGroups > 0 && $NumG
 }
 
 // Silly hack for people who are on the old setting
-$CollageCovers = (isset($LoggedUser['CollageCovers']) ? $LoggedUser['CollageCovers'] : 25 * (abs($LoggedUser['HideCollage'] - 1)));
+$CollageCovers = (isset($user['CollageCovers']) ? $user['CollageCovers'] : 25 * (abs($user['HideCollage'] - 1)));
 $CollagePages = [];
 
 // Pad it out
@@ -134,8 +134,8 @@ View::header($Name, 'browse,collage,recommend');
   } ?>
       <a href="reports.php?action=report&amp;type=collage&amp;id=<?=$CollageID?>"
         class="brackets">Report collage</a>
-      <?php if (check_perms('site_collages_delete') || $CreatorID === $LoggedUser['ID']) { ?>
-      <a href="collages.php?action=delete&amp;collageid=<?=$CollageID?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+      <?php if (check_perms('site_collages_delete') || $CreatorID === $user['ID']) { ?>
+      <a href="collages.php?action=delete&amp;collageid=<?=$CollageID?>&amp;auth=<?=$user['AuthKey']?>"
         class="brackets" onclick="return confirm('Are you sure you want to delete this collage?');">Delete</a>
       <?php } ?>
     </div>
@@ -199,7 +199,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
         <form class="add_form" name="artist" action="collages.php" method="post">
           <input type="hidden" name="action" value="add_artist" />
           <input type="hidden" name="auth"
-            value="<?=$LoggedUser['AuthKey']?>" />
+            value="<?=$user['AuthKey']?>" />
           <input type="hidden" name="collageid"
             value="<?=$CollageID?>" />
           <div>
@@ -217,7 +217,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
         <form class="add_form" name="artists" action="collages.php" method="post">
           <input type="hidden" name="action" value="add_artist_batch" />
           <input type="hidden" name="auth"
-            value="<?=$LoggedUser['AuthKey']?>" />
+            value="<?=$user['AuthKey']?>" />
           <input type="hidden" name="collageid"
             value="<?=$CollageID?>" />
           <div>
@@ -235,7 +235,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
     <h3>Comments</h3>
     <?php
 if ($CommentList === null) {
-    $DB->query("
+    $db->query("
     SELECT
       c.ID,
       c.Body,
@@ -248,7 +248,7 @@ if ($CommentList === null) {
       AND c.PageID = $CollageID
     ORDER BY c.ID DESC
     LIMIT 15");
-    $CommentList = $DB->to_array(false, MYSQLI_NUM);
+    $CommentList = $db->to_array(false, MYSQLI_NUM);
 }
 
 foreach ($CommentList as $Comment) {
@@ -274,7 +274,7 @@ foreach ($CommentList as $Comment) {
     </div>
 
     <?php
-if (!$LoggedUser['DisablePosting']) {
+if (!$user['DisablePosting']) {
     ?>
     <div class="box box_addcomment">
       <div class="head"><strong>Comment</strong></div>
@@ -283,7 +283,7 @@ if (!$LoggedUser['DisablePosting']) {
         <input type="hidden" name="action" value="take_post" />
         <input type="hidden" name="page" value="collages" />
         <input type="hidden" name="auth"
-          value="<?=$LoggedUser['AuthKey']?>" />
+          value="<?=$user['AuthKey']?>" />
         <input type="hidden" name="pageid" value="<?=$CollageID?>" />
         <div class="pad">
           <div>

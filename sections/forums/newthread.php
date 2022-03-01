@@ -75,7 +75,7 @@ View::header(
       <tr class="colhead_dark">
         <td colspan="<?=Users::has_avatars_enabled() ? 2 : 1 ?>">
           <span class="float_left"><a href="#newthreadpreview">#XXXXXX</a>
-            by <strong><?=Users::format_username($LoggedUser['ID'], true, true, true, true, true)?></strong>
+            by <strong><?=Users::format_username($user['ID'], true, true, true, true, true)?></strong>
             Just now
           </span>
           <span id="barpreview" class="float_right">
@@ -88,7 +88,7 @@ View::header(
       <tr>
         <?php if (Users::has_avatars_enabled()) { ?>
         <td class="avatar" valign="top">
-          <?=Users::show_avatar($LoggedUser['Avatar'], $LoggedUser['ID'], $LoggedUser['Username'], $HeavyInfo['DisableAvatars'])?>
+          <?=Users::show_avatar($user['Avatar'], $user['ID'], $user['Username'], $HeavyInfo['DisableAvatars'])?>
         </td>
         <?php } ?>
         <td class="body" valign="top">
@@ -101,7 +101,7 @@ View::header(
     <form class="create_form" name="forum_thread" action="" id="newthreadform" method="post">
       <input type="hidden" name="action" value="new" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
       <input type="hidden" name="forum" value="<?=$ForumID?>" />
       <table id="newthreadtext" class="new_thread skeleton-fix">
         <tr>

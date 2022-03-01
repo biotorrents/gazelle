@@ -8,11 +8,11 @@ if (!$TorrentID || !is_number($TorrentID)) {
     error(404);
 }
 
-if ($Cache->get_value("torrent_{$TorrentID}_lock")) {
+if ($cache->get_value("torrent_{$TorrentID}_lock")) {
     error('Torrent cannot be deleted because the upload process is not completed yet. Please try again later.');
 }
 
-$DB->query("
+$db->query("
   SELECT
     t.UserID,
     t.GroupID,
@@ -28,9 +28,9 @@ $DB->query("
     LEFT JOIN artists_group AS ag ON ag.ArtistID = ta.ArtistID
     LEFT JOIN xbt_snatched AS x ON x.fid = t.ID
   WHERE t.ID = '$TorrentID'");
-list($UploaderID, $GroupID, $Size, $InfoHash, $Name, $ArtistName, $Time, $Snatches) = $DB->next_record(MYSQLI_NUM, false);
+list($UploaderID, $GroupID, $Size, $InfoHash, $Name, $ArtistName, $Time, $Snatches) = $db->next_record(MYSQLI_NUM, false);
 
-if ($LoggedUser['ID'] != $UploaderID && !check_perms('torrents_delete')) {
+if ($user['ID'] != $UploaderID && !check_perms('torrents_delete')) {
     error(403);
 }
 
@@ -57,8 +57,8 @@ if (isset($_SESSION['logged_user']['multi_delete'])) {
 
 $InfoHash = unpack('H*', $InfoHash);
 Torrents::delete_torrent($TorrentID, $GroupID);
-Misc::write_log("Torrent $TorrentID ($Name) (".number_format($Size / (1024 * 1024), 2).' MB) ('.strtoupper($InfoHash[1]).') was deleted by '.$LoggedUser['Username'].': ' .$_POST['reason'].' '.$_POST['extra']);
-Torrents::write_group_log($GroupID, $TorrentID, $LoggedUser['ID'], 'deleted torrent ('.number_format($Size / (1024 * 1024), 2).' MB, '.strtoupper($InfoHash[1]).') for reason: '.$_POST['reason'].' '.$_POST['extra'], 0);
+Misc::write_log("Torrent $TorrentID ($Name) (".number_format($Size / (1024 * 1024), 2).' MB) ('.strtoupper($InfoHash[1]).') was deleted by '.$user['Username'].': ' .$_POST['reason'].' '.$_POST['extra']);
+Torrents::write_group_log($GroupID, $TorrentID, $user['ID'], 'deleted torrent ('.number_format($Size / (1024 * 1024), 2).' MB, '.strtoupper($InfoHash[1]).') for reason: '.$_POST['reason'].' '.$_POST['extra'], 0);
 
 View::header('Torrent deleted');
 ?>

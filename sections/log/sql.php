@@ -42,8 +42,8 @@ DESC
 LIMIT $Limit
 ";
 
-$Log = $DB->query($SQL);
-$DB->query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
+$Log = $db->query($SQL);
+$db->query('SELECT FOUND_ROWS()');
+list($NumResults) = $db->next_record();
 $TotalMatches = $NumResults;
-$DB->set_query_id($Log);
+$db->set_query_id($Log);

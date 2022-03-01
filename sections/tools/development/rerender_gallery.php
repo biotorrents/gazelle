@@ -9,13 +9,13 @@
  */
 
 View::header('Rerender stylesheet gallery images');
-$DB->prepared_query('
+$db->prepared_query('
   SELECT
     ID,
     LOWER(REPLACE(Name," ","_")) AS Name,
     Name AS ProperName
   FROM stylesheets');
-$Styles = $DB->to_array('ID', MYSQLI_BOTH);
+$Styles = $db->to_array('ID', MYSQLI_BOTH);
 $ImagePath = SERVER_ROOT . '/' . STATIC_SERVER . 'css/preview';
 ?>
 <div>

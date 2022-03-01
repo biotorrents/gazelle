@@ -10,7 +10,7 @@ else {
   $JSON['status'] = 'success';
 }
 
-$DB->prepared_query("
+$db->prepared_query("
   SELECT
     ID,
     UserID,
@@ -20,10 +20,10 @@ $DB->prepared_query("
   FROM email_blacklist
   WHERE Email LIKE '%$Search%'");
 
-$EmailResults = $DB->to_array(false, MYSQLI_ASSOC, false);
+$EmailResults = $db->to_array(false, MYSQLI_ASSOC, false);
 
 $Results = [];
-$Count = $DB->record_count();
+$Count = $db->record_count();
 $Results['count'] = $Count;
 
 $Emails = [];

@@ -9,7 +9,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Delete') { //Delete
   if (!is_number($_POST['id']) || $_POST['id'] == '') {
     error(0);
   }
-  $DB->query('
+  $db->query('
     DELETE FROM forums
     WHERE ID = '.$_POST['id']);
 } else { //Edit & Create, Shared Validation
@@ -25,7 +25,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Delete') { //Delete
     error($Err);
   }
 
-  if ($P['minclassread'] > $LoggedUser['Class'] || $P['minclasswrite'] > $LoggedUser['Class'] || $P['minclasscreate'] > $LoggedUser['Class']) {
+  if ($P['minclassread'] > $user['Class'] || $P['minclasswrite'] > $user['Class'] || $P['minclasscreate'] > $user['Class']) {
     error(403);
   }
 
@@ -33,20 +33,20 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Delete') { //Delete
     if (!is_number($_POST['id']) || $_POST['id'] == '') {
       error(0);
     }
-    $DB->query('
+    $db->query('
       SELECT MinClassRead
       FROM forums
       WHERE ID = ' . $P['id']);
-    if (!$DB->has_results()) {
+    if (!$db->has_results()) {
       error(404);
     } else {
-      list($MinClassRead) = $DB->next_record();
-      if ($MinClassRead > $LoggedUser['Class']) {
+      list($MinClassRead) = $db->next_record();
+      if ($MinClassRead > $user['Class']) {
         error(403);
       }
     }
 
-    $DB->query("
+    $db->query("
       UPDATE forums
       SET
         Sort = '$P[sort]',
@@ -58,7 +58,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Delete') { //Delete
         MinClassCreate = '$P[minclasscreate]'
       WHERE ID = '$P[id]'");
   } else { //Create
-    $DB->query("
+    $db->query("
       INSERT INTO forums
         (Sort, CategoryID, Name, Description, MinClassRead, MinClassWrite, MinClassCreate)
       VALUES
@@ -66,7 +66,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Delete') { //Delete
   }
 }
 
-$Cache->delete_value('forums_list'); // Clear cache
+$cache->delete_value('forums_list'); // Clear cache
 
 // Go back
 header('Location: tools.php?action=forum')

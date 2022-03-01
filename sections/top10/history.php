@@ -60,9 +60,9 @@ if (!empty($_GET['date'])) {
         AND Type = 'Weekly'";
     }
 
-    $Details = $Cache->get_value("top10_history_$SQLTime");
+    $Details = $cache->get_value("top10_history_$SQLTime");
     if ($Details === false) {
-        $DB->prepared_query("
+        $db->prepared_query("
         SELECT
           tht.`Rank`,
           tht.`TitleString`,
@@ -98,9 +98,9 @@ if (!empty($_GET['date'])) {
           tht.`Rank` ASC
         ");
 
-        $Details = $DB->to_array();
+        $Details = $db->to_array();
 
-        $Cache->cache_value("top10_history_$SQLTime", $Details, 3600 * 24);
+        $cache->cache_value("top10_history_$SQLTime", $Details, 3600 * 24);
     } ?>
 
   <br />
@@ -194,7 +194,7 @@ if (!empty($_GET['date'])) {
     -->
         </td>
         <td>
-          <span><?=($GroupID ? '<a href="torrents.php?action=download&amp;id='.$TorrentID.'&amp;authkey='.$LoggedUser['AuthKey'].'&amp;torrent_pass='.$LoggedUser['torrent_pass'].' title="Download" class="brackets tooltip">DL</a>' : '(Deleted)')?></span>
+          <span><?=($GroupID ? '<a href="torrents.php?action=download&amp;id='.$TorrentID.'&amp;authkey='.$user['AuthKey'].'&amp;torrent_pass='.$user['torrent_pass'].' title="Download" class="brackets tooltip">DL</a>' : '(Deleted)')?></span>
           <?=$DisplayName?>
           <div class="tags"><?=$TorrentTags->format()?>
           </div>

@@ -67,13 +67,13 @@ class Sphinxql extends mysqli
      */
     public function sph_connect()
     {
-        $Debug = Debug::go();
+        $debug = Debug::go();
 
         if ($this->Connected || $this->connect_errno) {
             return;
         }
 
-        $Debug['messages']->info("connecting to sphinx server $this->Ident");
+        $debug['messages']->info("connecting to sphinx server $this->Ident");
 
         for ($Attempt = 0; $Attempt < 3; $Attempt++) {
             parent::__construct($this->Server, '', '', '', $this->Port, $this->Socket);
@@ -88,9 +88,9 @@ class Sphinxql extends mysqli
             $Errno = $this->connect_errno;
             $Error = $this->connect_error;
             $this->error("Connection failed. (".strval($Errno).": ".strval($Error).")");
-            $Debug['messages']->info("couldn't connect to sphinx server $this->Ident ($Errno $Error)");
+            $debug['messages']->info("couldn't connect to sphinx server $this->Ident ($Errno $Error)");
         } else {
-            $Debug['messages']->info("connected to sphinx server $this->Ident");
+            $debug['messages']->info("connected to sphinx server $this->Ident");
         }
     }
 
@@ -104,7 +104,7 @@ class Sphinxql extends mysqli
     public function error($Msg, $Halt = false)
     {
         $ENV = ENV::go();
-        $Debug = Debug::go();
+        $debug = Debug::go();
         $ErrorMsg = 'SphinxQL ('.$this->Ident.'): '.strval($Msg);
 
         if ($Halt === true && ($ENV->DEV || check_perms('site_debug'))) {
@@ -155,8 +155,8 @@ class Sphinxql extends mysqli
     public static function register_query($QueryString, $QueryProcessTime)
     {
 
-        #$Debug = Debug::go();
-        #$Debug['sphinx']->info(self::$Queries);
+        #$debug = Debug::go();
+        #$debug['sphinx']->info(self::$Queries);
         self::$Queries[] = array($QueryString, $QueryProcessTime);
         self::$Time += $QueryProcessTime;
     }

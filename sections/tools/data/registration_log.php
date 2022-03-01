@@ -70,10 +70,10 @@ $RS .= "
   ORDER BY i.Joindate DESC
   LIMIT $Limit";
   
-$QueryID = $DB->query($RS);
-$DB->query('SELECT FOUND_ROWS()');
-list($Results) = $DB->next_record();
-$DB->set_query_id($QueryID);
+$QueryID = $db->query($RS);
+$db->query('SELECT FOUND_ROWS()');
+list($Results) = $db->next_record();
+$db->set_query_id($QueryID);
 ?>
 
 <form action="" method="post" class="box pad">
@@ -84,7 +84,7 @@ $DB->set_query_id($QueryID);
 </form>
 
 <?php
-if ($DB->has_results()) {
+if ($db->has_results()) {
     ?>
 <div class="linkbox">
   <?php
@@ -104,7 +104,7 @@ if ($DB->has_results()) {
   </tr>
 
   <?php
-  while (list($UserID, $IP, $Email, $Username, $PermissionID, $Uploaded, $Downloaded, $Enabled, $Donor, $Warned, $Joined, $InviterID, $InviterIP, $InviterEmail, $InviterUsername, $InviterPermissionID, $InviterUploaded, $InviterDownloaded, $InviterEnabled, $InviterDonor, $InviterWarned, $InviterJoined) = $DB->next_record()) {
+  while (list($UserID, $IP, $Email, $Username, $PermissionID, $Uploaded, $Downloaded, $Enabled, $Donor, $Warned, $Joined, $InviterID, $InviterIP, $InviterEmail, $InviterUsername, $InviterPermissionID, $InviterUploaded, $InviterDownloaded, $InviterEnabled, $InviterDonor, $InviterWarned, $InviterJoined) = $db->next_record()) {
       $RowClass = $IP === $InviterIP ? 'warning' : '';
       $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]';
       $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';

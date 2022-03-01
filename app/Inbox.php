@@ -12,7 +12,7 @@ class Inbox
      */
     public static function get_inbox_link($WhichBox = 'inbox')
     {
-        $ListFirst = isset(G::$LoggedUser['ListUnreadPMsFirst']) ? G::$LoggedUser['ListUnreadPMsFirst'] : false;
+        $ListFirst = isset(G::$user['ListUnreadPMsFirst']) ? G::$user['ListUnreadPMsFirst'] : false;
 
         if ($WhichBox === 'inbox') {
             if ($ListFirst) {

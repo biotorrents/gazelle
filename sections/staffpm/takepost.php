@@ -10,57 +10,57 @@ if ($Message = db_string($_POST['message'])) {
     // New staff PM conversation
     # This needs to be a Security::checkInt call
     #assert_numbers($_POST, array('level'), 'Invalid recipient');
-    $DB->query("
+    $db->query("
       INSERT INTO staff_pm_conversations
         (Subject, Status, Level, UserID, Date)
       VALUES
-        ('$Subject', 'Unanswered', $_POST[level], $LoggedUser[ID], NOW())"
+        ('$Subject', 'Unanswered', $_POST[level], $user[ID], NOW())"
     );
 
     // New message
-    $ConvID = $DB->inserted_id();
-    $DB->query("
+    $ConvID = $db->inserted_id();
+    $db->query("
       INSERT INTO staff_pm_messages
         (UserID, SentDate, Message, ConvID)
       VALUES
-        ($LoggedUser[ID], NOW(), '$Message', $ConvID)"
+        ($user[ID], NOW(), '$Message', $ConvID)"
     );
 
     header('Location: staffpm.php');
 
   } elseif ($ConvID = (int)$_POST['convid']) {
     // Check if conversation belongs to user
-    $DB->query("
+    $db->query("
       SELECT UserID, AssignedToUser, Level
       FROM staff_pm_conversations
       WHERE ID = $ConvID");
-    list($UserID, $AssignedToUser, $Level) = $DB->next_record();
+    list($UserID, $AssignedToUser, $Level) = $db->next_record();
 
     $LevelCap = 1000;
     $Level = min($Level, $LevelCap);
 
-    if ($UserID == $LoggedUser['ID'] || ($IsFLS && $LoggedUser['EffectiveClass'] >= $Level) || $UserID == $AssignedToUser) {
+    if ($UserID == $user['ID'] || ($IsFLS && $user['EffectiveClass'] >= $Level) || $UserID == $AssignedToUser) {
       // Response to existing conversation
-      $DB->query("
+      $db->query("
         INSERT INTO staff_pm_messages
           (UserID, SentDate, Message, ConvID)
         VALUES
-          (".$LoggedUser['ID'].", NOW(), '$Message', $ConvID)"
+          (".$user['ID'].", NOW(), '$Message', $ConvID)"
       );
 
       // Update conversation
       if ($IsFLS) {
         // FLS/Staff
-        $DB->query("
+        $db->query("
           UPDATE staff_pm_conversations
           SET Date = NOW(),
             Unread = true,
             Status = 'Open'
           WHERE ID = $ConvID");
-        $Cache->delete_value("num_staff_pms_$LoggedUser[ID]");
+        $cache->delete_value("num_staff_pms_$user[ID]");
       } else {
         // User
-        $DB->query("
+        $db->query("
           UPDATE staff_pm_conversations
           SET Date = NOW(),
             Unread = true,
@@ -69,8 +69,8 @@ if ($Message = db_string($_POST['message'])) {
       }
 
       // Clear cache for user
-      $Cache->delete_value("staff_pm_new_$UserID");
-      $Cache->delete_value("staff_pm_new_$LoggedUser[ID]");
+      $cache->delete_value("staff_pm_new_$UserID");
+      $cache->delete_value("staff_pm_new_$user[ID]");
 
       header("Location: staffpm.php?action=viewconv&id=$ConvID");
     } else {

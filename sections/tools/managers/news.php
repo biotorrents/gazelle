@@ -21,12 +21,12 @@ switch ($_GET['action']) {
     if (is_number($_POST['newsid'])) {
         authorize();
 
-        $DB->prepared_query("
+        $db->prepared_query("
         UPDATE news
         SET Title = '".db_string($_POST['title'])."', Body = '".db_string($_POST['body'])."'
         WHERE ID = '".db_string($_POST['newsid'])."'");
-        $Cache->delete_value('news');
-        $Cache->delete_value('feed_news');
+        $cache->delete_value('news');
+        $cache->delete_value('feed_news');
     }
 
     header('Location: index.php');
@@ -36,11 +36,11 @@ switch ($_GET['action']) {
   case 'editnews':
     if (is_number($_GET['id'])) {
         $NewsID = $_GET['id'];
-        $DB->prepared_query("
+        $db->prepared_query("
         SELECT Title, Body
         FROM news
         WHERE ID = $NewsID");
-        list($Title, $Body) = $DB->next_record();
+        list($Title, $Body) = $db->next_record();
     }
 } ?>
 
@@ -58,7 +58,7 @@ switch ($_GET['action']) {
       <input type="hidden" name="action"
         value="<?= ($_GET['action'] === 'news') ? 'takenewnews' : 'takeeditnews';?>">
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>">
+        value="<?=$user['AuthKey']?>">
 
       <?php if ($_GET['action'] === 'editnews') { ?>
       <input type="hidden" name="newsid" value="<?=$NewsID; ?>">
@@ -86,7 +86,7 @@ $Textarea = View::textarea(
 
   <h2>News archive</h2>
   <?php
-$DB->prepared_query('
+$db->prepared_query('
   SELECT
     ID,
     Title,
@@ -94,14 +94,14 @@ $DB->prepared_query('
     Time
   FROM news
   ORDER BY Time DESC');// LIMIT 20
-while (list($NewsID, $Title, $Body, $NewsTime) = $DB->next_record()) {
+while (list($NewsID, $Title, $Body, $NewsTime) = $db->next_record()) {
     ?>
   <div class="box vertical_space news_post">
     <div class="head">
       <strong><?=esc($Title) ?></strong> - posted <?=time_diff($NewsTime) ?>
       - <a href="tools.php?action=editnews&amp;id=<?=$NewsID?>"
         class="brackets">Edit</a>
-      <a href="tools.php?action=deletenews&amp;id=<?=$NewsID?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+      <a href="tools.php?action=deletenews&amp;id=<?=$NewsID?>&amp;auth=<?=$user['AuthKey']?>"
         class="brackets">Delete</a>
     </div>
     <div class="pad"><?=Text::parse($Body) ?>

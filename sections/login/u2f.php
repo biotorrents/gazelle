@@ -1,6 +1,6 @@
 <?php
 
-if (!empty($LoggedUser['ID'])) {
+if (!empty($user['ID'])) {
     Http::redirect('login');
 }
 if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($U2FRegs)) {

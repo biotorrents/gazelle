@@ -15,15 +15,15 @@ class UserRank
      */
     private static function build_table($MemKey, $Query)
     {
-        $QueryID = G::$DB->get_query_id();
+        $QueryID = G::$db->get_query_id();
 
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
         DROP TEMPORARY TABLE IF EXISTS
           `temp_stats`
         ");
 
 
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
         CREATE TEMPORARY TABLE `temp_stats`(
           `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
           `value` BIGINT NOT NULL
@@ -31,23 +31,23 @@ class UserRank
         ");
 
 
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
         INSERT INTO `temp_stats`(`value`) "
         . $Query
         );
 
 
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
         SELECT
           COUNT(`id`)
         FROM
           `temp_stats`
         ");
 
-        list($UserCount) = G::$DB->next_record();
+        list($UserCount) = G::$db->next_record();
 
         $UserCount = (int) $UserCount;
-        G::$DB->query("
+        G::$db->query("
         SELECT
           MIN(`value`)
         FROM
@@ -57,11 +57,11 @@ class UserRank
         ");
 
 
-        $Table = G::$DB->to_array();
-        G::$DB->set_query_id($QueryID);
+        $Table = G::$db->to_array();
+        G::$db->set_query_id($QueryID);
 
         # Give a little variation to the cache length, so all the tables don't expire at the same time
-        G::$Cache->cache_value($MemKey, $Table, 3600 * 24 * rand(800, 1000) * 0.001);
+        G::$cache->cache_value($MemKey, $Table, 3600 * 24 * rand(800, 1000) * 0.001);
 
         return $Table;
     }
@@ -206,17 +206,17 @@ class UserRank
             return 0;
         }
 
-        $Table = G::$Cache->get_value(self::PREFIX.$TableName);
+        $Table = G::$cache->get_value(self::PREFIX.$TableName);
         if (!$Table) {
             # Cache lock!
-            $Lock = G::$Cache->get_value(self::PREFIX.$TableName.'_lock');
+            $Lock = G::$cache->get_value(self::PREFIX.$TableName.'_lock');
 
             if ($Lock) {
                 return false;
             } else {
-                G::$Cache->cache_value(self::PREFIX.$TableName.'_lock', '1', 300);
+                G::$cache->cache_value(self::PREFIX.$TableName.'_lock', '1', 300);
                 $Table = self::build_table(self::PREFIX.$TableName, self::table_query($TableName));
-                G::$Cache->delete_value(self::PREFIX.$TableName.'_lock');
+                G::$cache->delete_value(self::PREFIX.$TableName.'_lock');
             }
         }
 

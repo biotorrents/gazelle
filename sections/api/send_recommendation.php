@@ -12,7 +12,7 @@ if (empty($FriendID) || empty($Type) || empty($ID)) {
 }
 
 // Make sure the recipient is on your friends list and not some random dude.
-$DB->prepared_query("
+$db->prepared_query("
 SELECT
   f.`FriendID`,
   u.`Username`
@@ -25,11 +25,11 @@ RIGHT JOIN `users_main` AS u
 ON
   u.`ID` = f.`FriendID`
 WHERE
-  f.`UserID` = '$LoggedUser[ID]' AND f.`FriendID` = '$FriendID'
+  f.`UserID` = '$user[ID]' AND f.`FriendID` = '$FriendID'
 ");
 
 
-if (!$DB->has_results()) {
+if (!$db->has_results()) {
     echo json_encode(array('status' => 'error', 'response' => 'Not on friend list.'));
     error();
 }
@@ -42,7 +42,7 @@ $Article = 'a';
 switch ($Type) {
     case 'torrent':
     $Link = "torrents.php?id=$ID";
-    $DB->query("
+    $db->query("
     SELECT
       `title`
     FROM
@@ -55,7 +55,7 @@ switch ($Type) {
     case 'artist':
     $Article = 'an';
     $Link = "artist.php?id=$ID";
-    $DB->query("
+    $db->query("
     SELECT
       `Name`
     FROM
@@ -67,7 +67,7 @@ switch ($Type) {
 
     case 'collage':
     $Link = "collages.php?id=$ID";
-    $DB->query("
+    $db->query("
     SELECT
       `Name`
     FROM
@@ -81,14 +81,14 @@ switch ($Type) {
     break;
 }
 
-list($Name) = $DB->next_record();
-$Subject = $LoggedUser['Username'] . " recommended you $Article $Type!";
-$Body = $LoggedUser['Username'] . " recommended you the $Type [url=".site_url()."$Link]$Name".'[/url].';
+list($Name) = $db->next_record();
+$Subject = $user['Username'] . " recommended you $Article $Type!";
+$Body = $user['Username'] . " recommended you the $Type [url=".site_url()."$Link]$Name".'[/url].';
 
 if (!empty($Note)) {
     $Body = "$Body\n\n$Note";
 }
 
-Misc::send_pm($FriendID, $LoggedUser['ID'], $Subject, $Body);
+Misc::send_pm($FriendID, $user['ID'], $Subject, $Body);
 echo json_encode(array('status' => 'success', 'response' => 'Sent!'));
 die();

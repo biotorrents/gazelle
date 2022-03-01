@@ -81,12 +81,12 @@ if ($_POST['users'.$FormID]) {
         $EscapedUsernames[] = db_string(trim($Username));
     }
 
-    $DB->query("
+    $db->query("
     SELECT ID, Paranoia
     FROM users_main
     WHERE Username IN ('" . implode("', '", $EscapedUsernames) . "')
-      AND ID != $LoggedUser[ID]");
-    while (list($UserID, $Paranoia) = $DB->next_record()) {
+      AND ID != $user[ID]");
+    while (list($UserID, $Paranoia) = $db->next_record()) {
         $Paranoia = unserialize($Paranoia);
         if (!in_array('notifications', $Paranoia)) {
             $Users .= '|' . $UserID . '|';
@@ -113,7 +113,7 @@ $NotTagList = str_replace('||', '|', $NotTagList);
 $Users = str_replace('||', '|', $Users);
 
 if ($_POST['id'.$FormID] && is_number($_POST['id'.$FormID])) {
-    $DB->query("
+    $db->query("
     UPDATE users_notify_filters
     SET
       Artists='$ArtistList',
@@ -124,17 +124,17 @@ if ($_POST['id'.$FormID] && is_number($_POST['id'.$FormID])) {
       Media='$MediaList',
       Users ='$Users'
     WHERE ID='".$_POST['id'.$FormID]."'
-      AND UserID='$LoggedUser[ID]'");
+      AND UserID='$user[ID]'");
 } else {
-    $DB->query("
+    $db->query("
     INSERT INTO users_notify_filters
       (UserID, Label, Artists, NewGroupsOnly, Tags, NotTags, Categories, Media, Users)
     VALUES
-      ('$LoggedUser[ID]','".db_string($_POST['label'.$FormID])."','$ArtistList','$NewGroupsOnly','$TagList','$NotTagList','$CategoryList','$MediaList','$Users')");
+      ('$user[ID]','".db_string($_POST['label'.$FormID])."','$ArtistList','$NewGroupsOnly','$TagList','$NotTagList','$CategoryList','$MediaList','$Users')");
 }
 
-$Cache->delete_value('notify_filters_'.$LoggedUser['ID']);
-if (($Notify = $Cache->get_value('notify_artists_'.$LoggedUser['ID'])) !== false && $Notify['ID'] === $_POST['id'.$FormID]) {
-    $Cache->delete_value('notify_artists_'.$LoggedUser['ID']);
+$cache->delete_value('notify_filters_'.$user['ID']);
+if (($Notify = $cache->get_value('notify_artists_'.$user['ID'])) !== false && $Notify['ID'] === $_POST['id'.$FormID]) {
+    $cache->delete_value('notify_artists_'.$user['ID']);
 }
 header('Location: user.php?action=notify');

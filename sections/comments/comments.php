@@ -21,7 +21,7 @@ if (isset($_GET['id']) && is_number($_GET['id'])) {
   $UserInfo = Users::user_info($UserID);
   $Username = $UserInfo['Username'];
 
-  if ($LoggedUser['ID'] === $UserID) {
+  if ($user['ID'] === $UserID) {
     $Self = true;
   } else {
     $Self = false;
@@ -34,14 +34,14 @@ if (isset($_GET['id']) && is_number($_GET['id'])) {
     error(403);
   }
 } else {
-  $UserID = $LoggedUser['ID'];
-  $Username = $LoggedUser['Username'];
+  $UserID = $user['ID'];
+  $Username = $user['Username'];
   $Self = true;
 }
 
 // Posts per page limit stuff
-if (isset($LoggedUser['PostsPerPage'])) {
-  $PerPage = $LoggedUser['PostsPerPage'];
+if (isset($user['PostsPerPage'])) {
+  $PerPage = $user['PostsPerPage'];
 } else {
   $PerPage = POSTS_PER_PAGE;
 }
@@ -180,28 +180,28 @@ $SQL = "
   ORDER BY `comments`.`ID` DESC
   LIMIT $Limit";
 
-$Comments = $DB->query($SQL);
-$Count = $DB->record_count();
+$Comments = $db->query($SQL);
+$Count = $db->record_count();
 
-$DB->query("SELECT FOUND_ROWS()");
-list($Results) = $DB->next_record();
+$db->query("SELECT FOUND_ROWS()");
+list($Results) = $db->next_record();
 $Pages = Format::get_pages($Page, $Results, $PerPage, 11);
-$DB->set_query_id($Comments);
+$db->set_query_id($Comments);
 
 # Remove the weird comment headings on torrent and request comments
 /*
 if ($Action === 'requests') {
-  $RequestIDs = array_flip(array_flip($DB->collect('PageID')));
+  $RequestIDs = array_flip(array_flip($db->collect('PageID')));
   $Artists = [];
 
   foreach ($RequestIDs as $RequestID) {
     $Artists[$RequestID] = Requests::get_artists($RequestID);
   }
-  $DB->set_query_id($Comments);
+  $db->set_query_id($Comments);
 } elseif ($Action === 'torrents') {
-  $GroupIDs = array_flip(array_flip($DB->collect('PageID')));
+  $GroupIDs = array_flip(array_flip($db->collect('PageID')));
   $Artists = Artists::get_artists($GroupIDs);
-  $DB->set_query_id($Comments);
+  $db->set_query_id($Comments);
 }
 */
 
@@ -290,8 +290,8 @@ View::header($Title, 'comments');
   </div>
 <?php
 if ($Count > 0) {
-  $DB->set_query_id($Comments);
-  while (list($AuthorID, $Page, $PageID, $Name, $PostID, $Body, $AddedTime, $EditedTime, $EditedUserID) = $DB->next_record()) {
+  $db->set_query_id($Comments);
+  while (list($AuthorID, $Page, $PageID, $Name, $PostID, $Body, $AddedTime, $EditedTime, $EditedUserID) = $db->next_record()) {
     $Link = Comments::get_url($Page, $PageID, $PostID);
     switch ($Page) {
       case 'artist':

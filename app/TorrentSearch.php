@@ -164,7 +164,7 @@ class TorrentSearch
         || !$GroupResults && !isset(self::$SortOrders[$OrderBy])
         || !in_array($OrderWay, ['asc', 'desc'])
     ) {
-            $Debug = Debug::go();
+            $debug = Debug::go();
             $ErrMsg = "TorrentSearch constructor arguments:\n" . print_r(func_get_args(), true);
             error(400);
         }
@@ -209,7 +209,7 @@ class TorrentSearch
         }
 
         $Offset = ($this->Page - 1) * $ResultLimit;
-        $MinMax = G::$Cache->get_value('sphinx_min_max_matches');
+        $MinMax = G::$cache->get_value('sphinx_min_max_matches');
         $MaxMatches = max($Offset + $ResultLimit, $MinMax ? $MinMax : 1000); # todo: Keep an eye on this
         $this->SphQL->from('torrents, delta')
       ->limit($Offset, $ResultLimit, $MaxMatches);

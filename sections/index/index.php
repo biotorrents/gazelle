@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-if (isset($LoggedUser['ID'])) {
+if (isset($user['ID'])) {
     if (!isset($_REQUEST['action'])) {
         include('private.php');
     } else {

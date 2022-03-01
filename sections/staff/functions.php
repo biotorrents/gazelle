@@ -33,13 +33,13 @@ function make_staff_row($ID, $Paranoia, $Class, $LastAccess, $Remark = '', $Hidd
 }
 
 function get_fls() {
-  global $Cache, $DB;
+  global $cache, $db;
   static $FLS;
   if (is_array($FLS)) {
     return $FLS;
   }
-  if (($FLS = $Cache->get_value('fls')) === false) {
-    $DB->query('
+  if (($FLS = $cache->get_value('fls')) === false) {
+    $db->query('
       SELECT
         m.ID,
         p.Level,
@@ -53,8 +53,8 @@ function get_fls() {
         JOIN users_levels AS l ON l.UserID = i.UserID
       WHERE l.PermissionID = ' . FLS_TEAM . '
       ORDER BY m.Username');
-    $FLS = $DB->to_array(false, MYSQLI_BOTH, array(3, 'Paranoia'));
-    $Cache->cache_value('fls', $FLS, 180);
+    $FLS = $db->to_array(false, MYSQLI_BOTH, array(3, 'Paranoia'));
+    $cache->cache_value('fls', $FLS, 180);
   }
   return $FLS;
 }
@@ -99,7 +99,7 @@ function generate_staff_query($StaffLevel) {
 }
 
 function get_forum_staff() {
-  global $Cache, $DB;
+  global $cache, $db;
   static $ForumStaff;
   if (is_array($ForumStaff)) {
     return $ForumStaff;
@@ -107,23 +107,23 @@ function get_forum_staff() {
 
   // sort the lists differently if the viewer is a staff member
   if (!check_perms('users_mod')) {
-    if (($ForumStaff = $Cache->get_value('forum_staff')) === false) {
-      $DB->query(generate_staff_query('forum_staff'));
-      $ForumStaff = $DB->to_array(false, MYSQLI_BOTH, array(3, 'Paranoia'));
-      $Cache->cache_value('forum_staff', $ForumStaff, 180);
+    if (($ForumStaff = $cache->get_value('forum_staff')) === false) {
+      $db->query(generate_staff_query('forum_staff'));
+      $ForumStaff = $db->to_array(false, MYSQLI_BOTH, array(3, 'Paranoia'));
+      $cache->cache_value('forum_staff', $ForumStaff, 180);
     }
   } else {
-    if (($ForumStaff = $Cache->get_value('forum_staff_mod_view')) === false) {
-      $DB->query(generate_staff_query('forum_staff'));
-      $ForumStaff = $DB->to_array(false, MYSQLI_BOTH, array(3, 'Paranoia'));
-      $Cache->cache_value('forum_staff_mod_view', $ForumStaff, 180);
+    if (($ForumStaff = $cache->get_value('forum_staff_mod_view')) === false) {
+      $db->query(generate_staff_query('forum_staff'));
+      $ForumStaff = $db->to_array(false, MYSQLI_BOTH, array(3, 'Paranoia'));
+      $cache->cache_value('forum_staff_mod_view', $ForumStaff, 180);
     }
   }
   return $ForumStaff;
 }
 
 function get_staff() {
-  global $Cache, $DB;
+  global $cache, $db;
   static $Staff;
   if (is_array($Staff)) {
     return $Staff;
@@ -131,16 +131,16 @@ function get_staff() {
 
   // sort the lists differently if the viewer is a staff member
   if (!check_perms('users_mod')) {
-    if (($Staff = $Cache->get_value('staff')) === false) {
-      $DB->query(generate_staff_query('staff'));
-      $Staff = $DB->to_array(false, MYSQLI_BOTH, array(4, 'Paranoia'));
-      $Cache->cache_value('staff', $Staff, 180);
+    if (($Staff = $cache->get_value('staff')) === false) {
+      $db->query(generate_staff_query('staff'));
+      $Staff = $db->to_array(false, MYSQLI_BOTH, array(4, 'Paranoia'));
+      $cache->cache_value('staff', $Staff, 180);
     }
   } else {
-    if (($Staff = $Cache->get_value('staff_mod_view')) === false) {
-      $DB->query(generate_staff_query('staff'));
-      $Staff = $DB->to_array(false, MYSQLI_BOTH, array(4, 'Paranoia'));
-      $Cache->cache_value('staff_mod_view', $Staff, 180);
+    if (($Staff = $cache->get_value('staff_mod_view')) === false) {
+      $db->query(generate_staff_query('staff'));
+      $Staff = $db->to_array(false, MYSQLI_BOTH, array(4, 'Paranoia'));
+      $cache->cache_value('staff_mod_view', $Staff, 180);
     }
   }
   return $Staff;

@@ -39,7 +39,7 @@ declare(strict_types=1);
  */
 global $HeavyInfo, $UserSubscriptions, $ThreadInfo, $Document;
 
-if (G::$LoggedUser['DisablePosting']) {
+if (G::$user['DisablePosting']) {
     return;
 }
 
@@ -77,14 +77,14 @@ if (!isset($InputTitle)) {
       onsubmit="quickpostform.submit_button.disabled = true;"
       <?php } ?>
 
-      <?php if (!G::$LoggedUser['DisableAutoSave']) { ?>
+      <?php if (!G::$user['DisableAutoSave']) { ?>
       data-autosave-text="quickpost"
       <?php } ?>>
 
       <input type="hidden" name="action" value="<?=$InputAction?>" />
 
       <input type="hidden" name="auth"
-        value="<?=G::$LoggedUser['AuthKey']?>" />
+        value="<?=G::$user['AuthKey']?>" />
 
       <input type="hidden" name="<?=$InputName?>"
         data-autosave-id="<?=$InputID?>"
@@ -131,7 +131,7 @@ if (!isset($InputTitle)) {
             <div class="float_left">
               <a href="#quickreplypreview">#xyz</a>
               by <strong>
-                <?=Users::format_username(G::$LoggedUser['ID'], true, true, true, true)?>
+                <?=Users::format_username(G::$user['ID'], true, true, true, true)?>
               </strong>
               Just now
             </div>
@@ -149,9 +149,9 @@ if (!isset($InputTitle)) {
           <td class="avatar valign_top">
             <?=
           Users::show_avatar(
-              G::$LoggedUser['Avatar'],
-              G::$LoggedUser['ID'],
-              G::$LoggedUser['Username'],
+              G::$user['Avatar'],
+              G::$user['ID'],
+              G::$user['Username'],
               (!isset($HeavyInfo['DisableAvatars']) || $HeavyInfo['DisableAvatars'])
           )
           ?>
@@ -188,7 +188,7 @@ if (!isset($InputTitle)) {
         <?php
       }
 
-      if ($ThreadInfo['LastPostAuthorID'] === G::$LoggedUser['ID']
+      if ($ThreadInfo['LastPostAuthorID'] === G::$user['ID']
           && (check_perms('site_forums_double_post'))) { ?>
         <input id="mergebox" type="checkbox" name="merge" tabindex="2" />
         <label for="mergebox">Merge</label>

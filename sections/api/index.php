@@ -22,7 +22,7 @@ if (!isset($FullToken)) {
  */
 
 # Get people with Donor permissions
-$Donors = $DB->query("
+$Donors = $db->query("
 SELECT
   `ID`
 FROM
@@ -32,8 +32,8 @@ WHERE
 ");
 
 # Add Donors to $UserExceptions or define manually
-if ($DB->record_count()) {
-    $UserExceptions = array_unique($DB->collect('ID'));
+if ($db->record_count()) {
+    $UserExceptions = array_unique($db->collect('ID'));
 } else {
     $UserExceptions = array(
       # 1, 2, 3, etc.
@@ -49,7 +49,7 @@ array_push($UserExceptions, 0, 1);
  * e.g., array(5, 10) = 5 requests every 10 seconds.
  */
 $AjaxLimit = array(1, 6);
-$UserID = $LoggedUser['ID'];
+$UserID = $user['ID'];
 
 # Set proper headers for JSON output
 # https://github.com/OPSnet/Gazelle/blob/master/sections/api/index.php
@@ -60,15 +60,15 @@ header('Content-Type: application/json; charset=utf-8');
 
 # Enforce rate limiting everywhere
 if (!in_array($UserID, $UserExceptions) && isset($_GET['action'])) {
-    if (!$UserRequests = $Cache->get_value("ajax_requests_$UserID")) {
+    if (!$UserRequests = $cache->get_value("ajax_requests_$UserID")) {
         $UserRequests = 0;
-        $Cache->cache_value("ajax_requests_$UserID", '0', $AjaxLimit[1]);
+        $cache->cache_value("ajax_requests_$UserID", '0', $AjaxLimit[1]);
     }
 
     if ($UserRequests > $AjaxLimit[0]) {
         json_die('failure', 'rate limit exceeded');
     } else {
-        $Cache->increment_value("ajax_requests_$UserID");
+        $cache->increment_value("ajax_requests_$UserID");
     }
 }
 

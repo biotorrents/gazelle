@@ -17,7 +17,7 @@ View::header('Manage notifications'); ?>
   </div>
 
   <?php
-$DB->query("
+$db->query("
   SELECT
     `ID`,
     `Label`,
@@ -34,12 +34,12 @@ $DB->query("
     `ToYear`,
     `Users`
   FROM `users_notify_filters`
-  WHERE `UserID` = $LoggedUser[ID]
+  WHERE `UserID` = $user[ID]
 ");
 
-$NumFilters = $DB->record_count();
+$NumFilters = $db->record_count();
 
-$Notifications = $DB->to_array();
+$Notifications = $db->to_array();
 $Notifications[] = array(
   'ID' => false,
   'Label' => '',
@@ -94,11 +94,11 @@ foreach ($Notifications as $N) { // $N stands for Notifications
     } elseif ($NumFilters > 0) { ?>
   <h3>
     <a
-      href="feeds.php?feed=torrents_notify_<?=$N['ID']?>_<?=$LoggedUser['torrent_pass']?>&amp;user=<?=$LoggedUser['ID']?>&amp;auth=<?=$LoggedUser['RSS_Auth']?>&amp;passkey=<?=$LoggedUser['torrent_pass']?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;name=<?=urlencode($N['Label'])?>"><img
+      href="feeds.php?feed=torrents_notify_<?=$N['ID']?>_<?=$user['torrent_pass']?>&amp;user=<?=$user['ID']?>&amp;auth=<?=$user['RSS_Auth']?>&amp;passkey=<?=$user['torrent_pass']?>&amp;authkey=<?=$user['AuthKey']?>&amp;name=<?=urlencode($N['Label'])?>"><img
         src="<?=STATIC_SERVER?>/images/symbols/rss.png"
         alt="RSS feed"></a>
     <?=esc($N['Label'])?>
-    <a href="user.php?action=notify_delete&amp;id=<?=$N['ID']?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+    <a href="user.php?action=notify_delete&amp;id=<?=$N['ID']?>&amp;auth=<?=$user['AuthKey']?>"
       onclick="return confirm('Are you sure you want to delete this notification filter?')" class="brackets">Delete</a>
     <a data-toggle-target="#filter_<?=$N['ID']?>"
       class="brackets">Show</a>
@@ -111,7 +111,7 @@ foreach ($Notifications as $N) { // $N stands for Notifications
     <input type="hidden" name="formid" value="<?=$i?>">
     <input type="hidden" name="action" value="notify_handle">
     <input type="hidden" name="auth"
-      value="<?=$LoggedUser['AuthKey']?>">
+      value="<?=$user['AuthKey']?>">
     <?php if (!$NewFilter) { ?>
     <input type="hidden" name="id<?=$i?>"
       value="<?=$N['ID']?>">

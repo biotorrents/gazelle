@@ -5,8 +5,8 @@ class Collages
 {
     public static function increase_subscriptions($CollageID)
     {
-        $QueryID = G::$DB->get_query_id();
-        G::$DB->prepared_query("
+        $QueryID = G::$db->get_query_id();
+        G::$db->prepared_query("
         UPDATE
           `collages`
         SET
@@ -14,13 +14,13 @@ class Collages
         WHERE
           `ID` = '$CollageID'
         ");
-        G::$DB->set_query_id($QueryID);
+        G::$db->set_query_id($QueryID);
     }
 
     public static function decrease_subscriptions($CollageID)
     {
-        $QueryID = G::$DB->get_query_id();
-        G::$DB->prepared_query("
+        $QueryID = G::$db->get_query_id();
+        G::$db->prepared_query("
         UPDATE
           `collages`
         SET
@@ -32,32 +32,32 @@ class Collages
         WHERE
           `ID` = '$CollageID'
         ");
-        G::$DB->set_query_id($QueryID);
+        G::$db->set_query_id($QueryID);
     }
 
     public static function create_personal_collage()
     {
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
         SELECT
           COUNT(`ID`)
         FROM
           `collages`
         WHERE
-          `UserID` = '".G::$LoggedUser['ID']."' AND `CategoryID` = '0' AND `Deleted` = '0'
+          `UserID` = '".G::$user['ID']."' AND `CategoryID` = '0' AND `Deleted` = '0'
         ");
-        list($CollageCount) = G::$DB->next_record();
+        list($CollageCount) = G::$db->next_record();
 
-        if ($CollageCount >= G::$LoggedUser['Permissions']['MaxCollages']) {
+        if ($CollageCount >= G::$user['Permissions']['MaxCollages']) {
             // todo: Fix this, the query was for COUNT(ID), so I highly doubt that this works... - Y
-            list($CollageID) = G::$DB->next_record();
+            list($CollageID) = G::$db->next_record();
             header("Location: collage.php?id=$CollageID");
             error();
         }
 
-        $NameStr = db_string(G::$LoggedUser['Username']."'s personal collage".($CollageCount > 0 ? ' no. '.($CollageCount + 1) : ''));
-        $Description = db_string('Personal collage for '.G::$LoggedUser['Username'].'. The first 5 albums will appear on his or her [url='.site_url().'user.php?id= '.G::$LoggedUser['ID'].']profile[/url].');
+        $NameStr = db_string(G::$user['Username']."'s personal collage".($CollageCount > 0 ? ' no. '.($CollageCount + 1) : ''));
+        $Description = db_string('Personal collage for '.G::$user['Username'].'. The first 5 albums will appear on his or her [url='.site_url().'user.php?id= '.G::$user['ID'].']profile[/url].');
 
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
         INSERT INTO `collages`(
           `Name`,
           `Description`,
@@ -68,11 +68,11 @@ class Collages
           '$NameStr',
           '$Description',
           '0',
-          ".G::$LoggedUser['ID']."
+          ".G::$user['ID']."
         )
         ");
           
-        $CollageID = G::$DB->inserted_id();
+        $CollageID = G::$db->inserted_id();
         header("Location: collage.php?id=$CollageID");
         error();
     }

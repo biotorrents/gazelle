@@ -81,8 +81,8 @@ if ($ENV->DEV) {
      * Otherwise, nothing of value was lost.
      * @see http://phpdebugbar.com/docs/
      */
-    $Debug = Debug::go();
-    $Render = $Debug->getJavascriptRenderer();
+    $debug = Debug::go();
+    $Render = $debug->getJavascriptRenderer();
     echo $Render->render();
 }
 
@@ -98,6 +98,8 @@ if (!empty($NotificationSpans)) {
 echo $HTML = <<<HTML
     </footer>
     <script>hljs.highlightAll();</script>
+    <script src="/js/vendor/instantpage.min.js" crossorigin="anonymous"></script>
+    <script src="/js/menus.js" crossorigin="anonymous"></script>
   </body>
 </html>
 HTML;

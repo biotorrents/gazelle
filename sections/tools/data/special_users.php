@@ -9,13 +9,13 @@ View::header('Special Users List');
 ?>
 <div>
   <?php
-$DB->query("
+$db->query("
   SELECT ID
   FROM users_main
   WHERE CustomPermissions != ''
     AND CustomPermissions != 'a:0:{}'");
 
-if ($DB->has_results()) {
+if ($db->has_results()) {
     ?>
   <table width="100%">
     <tr class="colhead">
@@ -24,7 +24,7 @@ if ($DB->has_results()) {
     </tr>
 
     <?php
-  while (list($UserID)=$DB->next_record()) {
+  while (list($UserID)=$db->next_record()) {
       ?>
     <tr>
       <td>

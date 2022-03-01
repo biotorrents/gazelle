@@ -6,7 +6,7 @@ if (!check_perms('admin_whitelist')) {
 }
 
 View::header('Client Whitelist Manager');
-$DB->query('
+$db->query('
   SELECT id, vstring, peer_id
   FROM xbt_client_whitelist
   ORDER BY peer_id ASC');
@@ -17,7 +17,7 @@ $DB->query('
 <div class="box pad">
 <form class="add_form" name="clients" action="" method="post">
   <input type="hidden" name="action" value="whitelist_alter" />
-  <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+  <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
   <table>
     <tr class="colhead">
       <td colspan="4">Add client</td>
@@ -43,11 +43,11 @@ $DB->query('
   </tr>
 </table>
 <?php
-while (list($ID, $Client, $Peer_ID) = $DB->next_record()) {
+while (list($ID, $Client, $Peer_ID) = $db->next_record()) {
 ?>
 <form class="manage_form" name="clients" action="" method="post">
   <input type="hidden" name="action" value="whitelist_alter" />
-  <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+  <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
   <table>
     <tr class="row">
       <td>

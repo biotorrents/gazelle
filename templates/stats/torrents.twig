@@ -139,7 +139,7 @@
       let categoryDistributionData = JSON.parse('{{ categoryDistribution|json_encode|raw }}');
 
       let categoryDistributionChart = new Chart(categoryDistributionCanvas, {
-        type: 'pie',
+        type: 'doughnut',
         data: {
           labels: Object.keys(categoryDistributionData),
           datasets: [{
@@ -197,7 +197,7 @@
       ];
 
       let seedersLeechersTotalChart = new Chart(seedersLeechersTotalCanvas, {
-        type: 'pie',
+        type: 'doughnut',
         data: {
           labels: ['Seeders', 'Leechers', 'Snatches'],
           datasets: [{
@@ -241,7 +241,7 @@
       ];
 
       let seedersLeechersAverageChart = new Chart(seedersLeechersAverageCanvas, {
-        type: 'pie',
+        type: 'doughnut',
         data: {
           labels: ['Seeders', 'Leechers', 'Snatches'],
           datasets: [{

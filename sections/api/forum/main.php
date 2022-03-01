@@ -2,8 +2,8 @@
 #declare(strict_types=1);
 
 # todo: Go through line by line
-if (isset($LoggedUser['PostsPerPage'])) {
-    $PerPage = $LoggedUser['PostsPerPage'];
+if (isset($user['PostsPerPage'])) {
+    $PerPage = $user['PostsPerPage'];
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
@@ -18,7 +18,7 @@ foreach ($Forums as $Forum) {
 
 // Now if we have IDs' we run the query
 if (!empty($TopicIDs)) {
-    $DB->query("
+    $db->query("
     SELECT
       l.TopicID,
       l.PostID,
@@ -32,27 +32,27 @@ if (!empty($TopicIDs)) {
       ) AS Page
     FROM forums_last_read_topics AS l
     WHERE l.TopicID IN(".implode(',', $TopicIDs).")
-      AND l.UserID = '$LoggedUser[ID]'");
-    $LastRead = $DB->to_array('TopicID', MYSQLI_ASSOC);
+      AND l.UserID = '$user[ID]'");
+    $LastRead = $db->to_array('TopicID', MYSQLI_ASSOC);
 } else {
     $LastRead = [];
 }
 
-$DB->query("
+$db->query("
   SELECT RestrictedForums
   FROM users_info
-  WHERE UserID = ".$LoggedUser['ID']);
-list($RestrictedForums) = $DB->next_record();
+  WHERE UserID = ".$user['ID']);
+list($RestrictedForums) = $db->next_record();
 $RestrictedForums = explode(',', $RestrictedForums);
-$PermittedForums = array_keys($LoggedUser['PermittedForums']);
+$PermittedForums = array_keys($user['PermittedForums']);
 
 $JsonCategories = [];
 $JsonCategory = [];
 $JsonForums = [];
 foreach ($Forums as $Forum) {
     list($ForumID, $CategoryID, $ForumName, $ForumDescription, $MinRead, $MinWrite, $MinCreate, $NumTopics, $NumPosts, $LastPostID, $LastAuthorID, $LastTopicID, $LastTime, $SpecificRules, $LastTopic, $Locked, $Sticky) = array_values($Forum);
-    if ($LoggedUser['CustomForums'][$ForumID] != 1
-      && ($MinRead > $LoggedUser['Class']
+    if ($user['CustomForums'][$ForumID] != 1
+      && ($MinRead > $user['Class']
       || array_search($ForumID, $RestrictedForums) !== false)
   ) {
         continue;
@@ -75,7 +75,7 @@ foreach ($Forums as $Forum) {
     if ((!$Locked || $Sticky)
       && $LastPostID != 0
       && ((empty($LastRead[$LastTopicID]) || $LastRead[$LastTopicID]['PostID'] < $LastPostID)
-        && strtotime($LastTime) > $LoggedUser['CatchupTime'])
+        && strtotime($LastTime) > $user['CatchupTime'])
   ) {
         $Read = 'unread';
     } else {

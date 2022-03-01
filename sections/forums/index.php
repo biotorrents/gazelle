@@ -3,7 +3,7 @@
 
 enforce_login();
 
-if (!empty($LoggedUser['DisableForums'])) {
+if (!empty($user['DisableForums'])) {
     error(403);
 }
 

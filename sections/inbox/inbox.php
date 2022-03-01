@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-$UserID = $LoggedUser['ID'];
+$UserID = $user['ID'];
 
 if (empty($_GET['action'])) {
     $Section = 'inbox';
@@ -72,11 +72,11 @@ $sql .= "
   GROUP BY c.ID
   ORDER BY cu.Sticky, $Sort
   LIMIT $Limit";
-$Results = $DB->query($sql);
-$DB->query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
-$DB->set_query_id($Results);
-$Count = $DB->record_count();
+$Results = $db->query($sql);
+$db->query('SELECT FOUND_ROWS()');
+list($NumResults) = $db->next_record();
+$db->set_query_id($Results);
+$Count = $db->record_count();
 
 $Pages = Format::get_pages($Page, $NumResults, MESSAGES_PER_PAGE, 9);
 echo $Pages;
@@ -121,7 +121,7 @@ echo $Pages;
   <form class="manage_form" name="messages" action="inbox.php" method="post" id="messageform">
     <input type="hidden" name="action" value="masschange" />
     <input type="hidden" name="auth"
-      value="<?=$LoggedUser['AuthKey']?>" />
+      value="<?=$user['AuthKey']?>" />
     <input type="submit" name="read" class="button-primary" value="Mark as read" />
     <input type="submit" name="unread" value="Mark as unread" />
     <input type="submit" name="delete" value="Delete message(s)" />
@@ -143,7 +143,7 @@ echo $Pages;
         <td colspan="5">No results.</td>
       </tr>
       <?php } else {
-      while (list($ConvID, $Subject, $Unread, $Sticky, $ForwardedID, $SenderID, $Date) = $DB->next_record()) {
+      while (list($ConvID, $Subject, $Unread, $Sticky, $ForwardedID, $SenderID, $Date) = $db->next_record()) {
           if ($Unread === '1') {
               $RowClass = 'unreadpm';
           } else {
@@ -172,17 +172,17 @@ echo $Pages;
         <td><?=time_diff($Date)?>
         </td>
         <?php if (check_perms('users_mod')) { ?>
-        <td><?=(($ForwardedID && $ForwardedID != $LoggedUser['ID']) ? Users::format_username($ForwardedID, false, false, false) : '')?>
+        <td><?=(($ForwardedID && $ForwardedID != $user['ID']) ? Users::format_username($ForwardedID, false, false, false) : '')?>
         </td>
         <?php } ?>
       </tr>
       <?php
-    $DB->set_query_id($Results);
+    $db->set_query_id($Results);
       }
   } ?>
     </table>
     <?php
-    $MsgLimit = ($LoggedUser['PostsPerPage']) ? $LoggedUser['PostsPerPage'] : MESSAGES_PER_PAGE;
+    $MsgLimit = ($user['PostsPerPage']) ? $user['PostsPerPage'] : MESSAGES_PER_PAGE;
     if ($Count > $MsgLimit) { ?>
     <input type="submit" name="read" class="button-primary" value="Mark as read" />
     <input type="submit" name="unread" value="Mark as unread" />

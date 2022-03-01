@@ -71,30 +71,30 @@ class Misc
             return;
         }
 
-        $QueryID = G::$DB->get_query_id();
+        $QueryID = G::$db->get_query_id();
 
         if ($ConvID === '') {
             // Create a new conversation.
-            G::$DB->query("
+            G::$db->query("
             INSERT INTO pm_conversations (Subject)
             VALUES ('$Subject')");
-            $ConvID = G::$DB->inserted_id();
+            $ConvID = G::$db->inserted_id();
 
-            G::$DB->query("
+            G::$db->query("
             INSERT INTO pm_conversations_users
               (UserID, ConvID, InInbox, InSentbox, SentDate, ReceivedDate, UnRead)
             VALUES
               ('$ToID', '$ConvID', '1','0', NOW(), NOW(), '1')");
 
             if ($FromID === $ToID) {
-                G::$DB->query(
+                G::$db->query(
                     "
                 UPDATE pm_conversations_users
                 SET InSentbox = '1'
                   WHERE ConvID = '$ConvID'"
                 );
             } elseif ($FromID !== 0) {
-                G::$DB->query("
+                G::$db->query("
                 INSERT INTO pm_conversations_users
                   (UserID, ConvID, InInbox, InSentbox, SentDate, ReceivedDate, UnRead)
                 VALUES
@@ -103,7 +103,7 @@ class Misc
             $ToID = array($ToID);
         } else {
             // Update the pre-existing conversations
-            G::$DB->query("
+            G::$db->query("
             UPDATE pm_conversations_users
             SET
               InInbox = '1',
@@ -112,7 +112,7 @@ class Misc
             WHERE UserID IN (".implode(',', $ToID).")
               AND ConvID = '$ConvID'");
 
-            G::$DB->query("
+            G::$db->query("
             UPDATE pm_conversations_users
             SET
               InSentbox = '1',
@@ -122,7 +122,7 @@ class Misc
         }
 
         // Now that we have a $ConvID for sure, send the message
-        G::$DB->query("
+        G::$db->query("
       INSERT INTO pm_messages
         (SenderID, ConvID, SentDate, Body)
       VALUES
@@ -130,36 +130,36 @@ class Misc
 
         // Update the cached new message count
         foreach ($ToID as $ID) {
-            G::$DB->query("
+            G::$db->query("
             SELECT COUNT(ConvID)
             FROM pm_conversations_users
               WHERE UnRead = '1'
               AND UserID = '$ID'
               AND InInbox = '1'");
 
-            list($UnRead) = G::$DB->next_record();
-            G::$Cache->cache_value("inbox_new_$ID", $UnRead);
+            list($UnRead) = G::$db->next_record();
+            G::$cache->cache_value("inbox_new_$ID", $UnRead);
         }
 
-        G::$DB->query("
+        G::$db->query("
         SELECT Username
         FROM users_main
           WHERE ID = '$FromID'");
 
-        list($SenderName) = G::$DB->next_record();
+        list($SenderName) = G::$db->next_record();
         foreach ($ToID as $ID) {
-            G::$DB->query("
+            G::$db->query("
             SELECT COUNT(ConvID)
             FROM pm_conversations_users
               WHERE UnRead = '1'
               AND UserID = '$ID'
               AND InInbox = '1'");
                   
-            list($UnRead) = G::$DB->next_record();
-            G::$Cache->cache_value("inbox_new_$ID", $UnRead);
+            list($UnRead) = G::$db->next_record();
+            G::$cache->cache_value("inbox_new_$ID", $UnRead);
         }
 
-        G::$DB->set_query_id($QueryID);
+        G::$db->set_query_id($QueryID);
         return $ConvID;
     }
 
@@ -179,39 +179,39 @@ class Misc
             return -1;
         }
 
-        $QueryID = G::$DB->get_query_id();
-        G::$DB->query("
+        $QueryID = G::$db->get_query_id();
+        G::$db->query("
         SELECT Username
         FROM users_main
           WHERE ID = $AuthorID");
 
-        if (!G::$DB->has_results()) {
-            G::$DB->set_query_id($QueryID);
+        if (!G::$db->has_results()) {
+            G::$db->set_query_id($QueryID);
             return -2;
         }
-        list($AuthorName) = G::$DB->next_record();
+        list($AuthorName) = G::$db->next_record();
 
         $ThreadInfo = [];
         $ThreadInfo['IsLocked'] = 0;
         $ThreadInfo['IsSticky'] = 0;
 
-        G::$DB->query("
+        G::$db->query("
         INSERT INTO forums_topics
           (Title, AuthorID, ForumID, LastPostTime, LastPostAuthorID, CreatedTime)
         VALUES
           ('$Title', '$AuthorID', '$ForumID', NOW(), '$AuthorID', NOW())");
 
-        $TopicID = G::$DB->inserted_id();
+        $TopicID = G::$db->inserted_id();
         $Posts = 1;
 
-        G::$DB->query("
+        G::$db->query("
         INSERT INTO forums_posts
           (TopicID, AuthorID, AddedTime, Body)
         VALUES
           ('$TopicID', '$AuthorID', NOW(), '$PostBody')");
-        $PostID = G::$DB->inserted_id();
+        $PostID = G::$db->inserted_id();
 
-        G::$DB->query("
+        G::$db->query("
         UPDATE forums
         SET
           NumPosts  = NumPosts + 1,
@@ -222,7 +222,7 @@ class Misc
           LastPostTime = NOW()
         WHERE ID = '$ForumID'");
 
-        G::$DB->query("
+        G::$db->query("
         UPDATE forums_topics
         SET
           NumPosts = NumPosts + 1,
@@ -232,18 +232,18 @@ class Misc
         WHERE ID = '$TopicID'");
 
         // Bump this topic to head of the cache
-        list($Forum, , , $Stickies) = G::$Cache->get_value("forums_$ForumID");
+        list($Forum, , , $Stickies) = G::$cache->get_value("forums_$ForumID");
         if (!empty($Forum)) {
             if (count($Forum) === TOPICS_PER_PAGE && $Stickies < TOPICS_PER_PAGE) {
                 array_pop($Forum);
             }
 
-            G::$DB->query("
+            G::$db->query("
             SELECT IsLocked, IsSticky, NumPosts
             FROM forums_topics
               WHERE ID ='$TopicID'");
 
-            list($IsLocked, $IsSticky, $NumPosts) = G::$DB->next_record();
+            list($IsLocked, $IsSticky, $NumPosts) = G::$db->next_record();
             $Part1 = array_slice($Forum, 0, $Stickies, true); // Stickies
 
             $Part2 = array(
@@ -278,11 +278,11 @@ class Misc
             }
 
             $Forum = $Part1 + $Part2 + $Part3;
-            G::$Cache->cache_value("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
+            G::$cache->cache_value("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
         }
 
         // Update the forum root
-        G::$Cache->begin_transaction('forums_list');
+        G::$cache->begin_transaction('forums_list');
         $UpdateArray = array(
             'NumPosts' => '+1',
             'NumTopics' => '+1',
@@ -297,15 +297,15 @@ class Misc
 
         $UpdateArray['NumTopics'] = '+1';
 
-        G::$Cache->update_row($ForumID, $UpdateArray);
-        G::$Cache->commit_transaction(0);
+        G::$cache->update_row($ForumID, $UpdateArray);
+        G::$cache->commit_transaction(0);
 
         $CatalogueID = floor((POSTS_PER_PAGE * ceil($Posts / POSTS_PER_PAGE) - POSTS_PER_PAGE) / THREAD_CATALOGUE);
-        G::$Cache->begin_transaction('thread_'.$TopicID.'_catalogue_'.$CatalogueID);
+        G::$cache->begin_transaction('thread_'.$TopicID.'_catalogue_'.$CatalogueID);
 
         $Post = array(
             'ID' => $PostID,
-            'AuthorID' => G::$LoggedUser['ID'],
+            'AuthorID' => G::$user['ID'],
             'AddedTime' => sqltime(),
             'Body' => $PostBody,
             'EditedUserID' => 0,
@@ -313,14 +313,14 @@ class Misc
             'Username' => ''
         );
         
-        G::$Cache->insert('', $Post);
-        G::$Cache->commit_transaction(0);
+        G::$cache->insert('', $Post);
+        G::$cache->commit_transaction(0);
 
-        G::$Cache->begin_transaction('thread_'.$TopicID.'_info');
-        G::$Cache->update_row(false, array('Posts' => '+1', 'LastPostAuthorID' => $AuthorID));
-        G::$Cache->commit_transaction(0);
+        G::$cache->begin_transaction('thread_'.$TopicID.'_info');
+        G::$cache->update_row(false, array('Posts' => '+1', 'LastPostAuthorID' => $AuthorID));
+        G::$cache->commit_transaction(0);
 
-        G::$DB->set_query_id($QueryID);
+        G::$db->set_query_id($QueryID);
         return $TopicID;
     }
 
@@ -365,7 +365,7 @@ class Misc
     {
         $TagIDs = [];
         foreach ($TagNames as $Index => $TagName) {
-            $Tag = G::$Cache->get_value("tag_id_$TagName");
+            $Tag = G::$cache->get_value("tag_id_$TagName");
             if (is_array($Tag)) {
                 unset($TagNames[$Index]);
                 $TagIDs[$Tag['ID']] = $Tag['Name'];
@@ -373,18 +373,18 @@ class Misc
         }
 
         if (count($TagNames) > 0) {
-            $QueryID = G::$DB->get_query_id();
-            G::$DB->query("
+            $QueryID = G::$db->get_query_id();
+            G::$db->query("
             SELECT ID, Name
             FROM tags
               WHERE Name IN ('".implode("', '", $TagNames)."')");
 
-            $SQLTagIDs = G::$DB->to_array();
-            G::$DB->set_query_id($QueryID);
+            $SQLTagIDs = G::$db->to_array();
+            G::$db->set_query_id($QueryID);
 
             foreach ($SQLTagIDs as $Tag) {
                 $TagIDs[$Tag['ID']] = $Tag['Name'];
-                G::$Cache->cache_value('tag_id_'.$Tag['Name'], $Tag, 0);
+                G::$cache->cache_value('tag_id_'.$Tag['Name'], $Tag, 0);
             }
         }
         return($TagIDs);
@@ -398,19 +398,19 @@ class Misc
      */
     public static function get_alias_tag($BadTag)
     {
-        $QueryID = G::$DB->get_query_id();
-        G::$DB->query("
+        $QueryID = G::$db->get_query_id();
+        G::$db->query("
         SELECT AliasTag
         FROM tag_aliases
           WHERE BadTag = '$BadTag'
           LIMIT 1");
 
-        if (G::$DB->has_results()) {
-            list($AliasTag) = G::$DB->next_record();
+        if (G::$db->has_results()) {
+            list($AliasTag) = G::$db->next_record();
         } else {
             $AliasTag = $BadTag;
         }
-        G::$DB->set_query_id($QueryID);
+        G::$db->set_query_id($QueryID);
         return $AliasTag;
     }
 
@@ -422,11 +422,11 @@ class Misc
     public static function write_log($Message)
     {
         global $Time;
-        $QueryID = G::$DB->get_query_id();
-        G::$DB->query("
+        $QueryID = G::$db->get_query_id();
+        G::$db->query("
         INSERT INTO log (Message, Time)
           VALUES (?, NOW())", $Message);
-        G::$DB->set_query_id($QueryID);
+        G::$db->set_query_id($QueryID);
     }
 
     /**

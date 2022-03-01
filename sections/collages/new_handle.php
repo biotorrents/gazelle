@@ -13,16 +13,16 @@ if ($P['category'] > 0 || check_perms('site_collages_renamepersonal')) {
     $Val->SetFields('name', '1', 'string', 'The name must be between 5 and 255 characters.', array('maxlength' => 255, 'minlength' => 5));
 } else {
     // Get a collage name and make sure it's unique
-    $name = $LoggedUser['Username']."'s personal collage";
+    $name = $user['Username']."'s personal collage";
     $P['name'] = db_string($name);
-    $DB->query("
+    $db->query("
     SELECT ID
     FROM collages
     WHERE Name = '".$P['name']."'");
     $i = 2;
-    while ($DB->has_results()) {
+    while ($db->has_results()) {
         $P['name'] = db_string("$name no. $i");
-        $DB->query("
+        $db->query("
       SELECT ID
       FROM collages
       WHERE Name = '".$P['name']."'");
@@ -34,27 +34,27 @@ $Val->SetFields('description', '1', 'string', 'The description must be between 1
 $Err = $Val->ValidateForm($_POST);
 
 if (!$Err && $P['category'] === '0') {
-    $DB->query("
+    $db->query("
     SELECT COUNT(ID)
     FROM collages
-    WHERE UserID = '$LoggedUser[ID]'
+    WHERE UserID = '$user[ID]'
       AND CategoryID = '0'
       AND Deleted = '0'");
-    list($CollageCount) = $DB->next_record();
-    if (($CollageCount >= $LoggedUser['Permissions']['MaxCollages']) || !check_perms('site_collages_personal')) {
+    list($CollageCount) = $db->next_record();
+    if (($CollageCount >= $user['Permissions']['MaxCollages']) || !check_perms('site_collages_personal')) {
         $Err = 'You may not create a personal collage.';
-    } elseif (check_perms('site_collages_renamepersonal') && !stristr($P['name'], $LoggedUser['Username'])) {
+    } elseif (check_perms('site_collages_renamepersonal') && !stristr($P['name'], $user['Username'])) {
         $Err = "Your personal collage's title must include your username.";
     }
 }
 
 if (!$Err) {
-    $DB->query("
+    $db->query("
     SELECT ID, Deleted
     FROM collages
     WHERE Name = '$P[name]'");
-    if ($DB->has_results()) {
-        list($ID, $Deleted) = $DB->next_record();
+    if ($db->has_results()) {
+        list($ID, $Deleted) = $db->next_record();
         if ($Deleted) {
             $Err = 'That collection already exists but needs to be recovered. Please <a href="staffpm.php">contact</a> the staff team.';
         } else {
@@ -84,13 +84,13 @@ foreach ($TagList as $ID => $Tag) {
 }
 $TagList = implode(' ', $TagList);
 
-$DB->query("
+$db->query("
   INSERT INTO collages
     (Name, Description, UserID, TagList, CategoryID)
   VALUES
-    ('$P[name]', '$P[description]', $LoggedUser[ID], '$TagList', '$P[category]')");
+    ('$P[name]', '$P[description]', $user[ID], '$TagList', '$P[category]')");
 
-$CollageID = $DB->inserted_id();
-$Cache->delete_value("collage_$CollageID");
-Misc::write_log("Collage $CollageID (".$_POST['name'].') was created by '.$LoggedUser['Username']);
+$CollageID = $db->inserted_id();
+$cache->delete_value("collage_$CollageID");
+Misc::write_log("Collage $CollageID (".$_POST['name'].') was created by '.$user['Username']);
 header("Location: collages.php?id=$CollageID");

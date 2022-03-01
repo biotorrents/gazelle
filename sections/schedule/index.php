@@ -47,7 +47,7 @@ if ($AS) {
 }
 $ASBreak = $AS ? '<br />' : "\n";
 
-$DB->query("
+$db->query("
 SELECT
   `NextHour`,
   `NextDay`,
@@ -55,13 +55,13 @@ SELECT
 FROM
   `schedule`
 ");
-list($Hour, $Day, $BiWeek) = $DB->next_record();
+list($Hour, $Day, $BiWeek) = $db->next_record();
 
 $NextHour = date('H');
 $NextDay = date('d');
 $NextBiWeek = (date('d') < 22 && date('d') >= 8) ? 22 : 8;
 
-$DB->query("
+$db->query("
 UPDATE
   `schedule`
 SET

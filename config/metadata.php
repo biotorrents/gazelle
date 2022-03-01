@@ -210,7 +210,7 @@ $Resolutions = [
  * Gazelle's job is to query the right tables, which will shift.
  */
 
-$DB = [
+$db = [
     # torrents_group
     'category_id' => ['name' => 'Category', 'desc' => ''],
     'title' => ['name' => 'Torrent Title', 'desc' => 'Definition line, e.g., Alcohol dehydrogenase ADH1'],
@@ -236,7 +236,7 @@ $DB = [
 ];
 ENV::setPub(
     'DB',
-    $ENV->convert($DB)
+    $ENV->convert($db)
 );
 
 

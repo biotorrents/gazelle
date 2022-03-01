@@ -10,7 +10,7 @@ $ENV = ENV::go();
 
 if (apcu_exists('DBKEY')) {
     # Send email
-    $DB->query("
+    $db->query("
     SELECT
       um.`Username`,
       um.`Email`
@@ -34,7 +34,7 @@ if (apcu_exists('DBKEY')) {
       um.`ID`
     ");
 
-    while (list($Username, $Email) = $DB->next_record()) {
+    while (list($Username, $Email) = $db->next_record()) {
         $Email = Crypto::decrypt($Email);
         $Body = "Hi $Username,\n\nIt has been almost a year since you used your account at ".site_url().". This is an automated email to inform you that your account will be disabled in 10 days if you do not sign in.";
         Misc::email($Email, "Your $ENV->SITE_NAME account is about to be disabled", $Body);
@@ -42,7 +42,7 @@ if (apcu_exists('DBKEY')) {
 
     # The actual deletion clock
     #   AND um.LastAccess < (NOW() - INTERVAL 120 DAY)
-    $DB->query("
+    $db->query("
     SELECT
       um.`ID`
     FROM
@@ -64,8 +64,8 @@ if (apcu_exists('DBKEY')) {
       um.`ID`
     ");
 
-    if ($DB->has_results()) {
-        Tools::disable_users($DB->collect('ID'), 'Disabled for inactivity.', 3);
+    if ($db->has_results()) {
+        Tools::disable_users($db->collect('ID'), 'Disabled for inactivity.', 3);
     }
 }
 */

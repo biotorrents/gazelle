@@ -22,7 +22,7 @@ if (!$Article) {
 }
 
 list($Revision, $Title, $Body, $Read, $Edit, $Date, $AuthorID, $AuthorName, $Aliases, $UserIDs) = array_shift($Article);
-if ($Read > $LoggedUser['EffectiveClass']) {
+if ($Read > $user['EffectiveClass']) {
     json_die('failure', 'higher user class required to view article');
 }
 

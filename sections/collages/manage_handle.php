@@ -8,12 +8,12 @@ if (!is_number($CollageID)) {
   error(404);
 }
 
-$DB->query("
+$db->query("
   SELECT UserID, CategoryID
   FROM collages
   WHERE ID = '$CollageID'");
-list($UserID, $CategoryID) = $DB->next_record();
-if ($CategoryID === '0' && $UserID != $LoggedUser['ID'] && !check_perms('site_collages_delete')) {
+list($UserID, $CategoryID) = $db->next_record();
+if ($CategoryID === '0' && $UserID != $user['ID'] && !check_perms('site_collages_delete')) {
   error(403);
 }
 
@@ -24,18 +24,18 @@ if (!is_number($GroupID)) {
 }
 
 if ($_POST['submit'] === 'Remove') {
-  $DB->query("
+  $db->query("
     DELETE FROM collages_torrents
     WHERE CollageID = '$CollageID'
       AND GroupID = '$GroupID'");
-  $Rows = $DB->affected_rows();
-  $DB->query("
+  $Rows = $db->affected_rows();
+  $db->query("
     UPDATE collages
     SET NumTorrents = NumTorrents - $Rows
     WHERE ID = '$CollageID'");
-  $Cache->delete_value("torrents_details_$GroupID");
-  $Cache->delete_value("torrent_collages_$GroupID");
-  $Cache->delete_value("torrent_collages_personal_$GroupID");
+  $cache->delete_value("torrents_details_$GroupID");
+  $cache->delete_value("torrent_collages_$GroupID");
+  $cache->delete_value("torrent_collages_personal_$GroupID");
 } elseif (isset($_POST['drag_drop_collage_sort_order'])) {
 
   @parse_str($_POST['drag_drop_collage_sort_order'], $Series);
@@ -57,7 +57,7 @@ if ($_POST['submit'] === 'Remove') {
       ON DUPLICATE KEY UPDATE
         Sort = VALUES (Sort)';
 
-    $DB->query($SQL);
+    $db->query($SQL);
   }
 
 } else {
@@ -65,12 +65,12 @@ if ($_POST['submit'] === 'Remove') {
   if (!is_number($Sort)) {
     error(404);
   }
-  $DB->query("
+  $db->query("
     UPDATE collages_torrents
     SET Sort = '$Sort'
     WHERE CollageID = '$CollageID'
       AND GroupID = '$GroupID'");
 }
 
-$Cache->delete_value("collage_$CollageID");
+$cache->delete_value("collage_$CollageID");
 header("Location: collages.php?action=manage&collageid=$CollageID");

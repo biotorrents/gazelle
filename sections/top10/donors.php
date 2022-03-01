@@ -15,7 +15,7 @@ $Limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
 $Limit = in_array($Limit, array(10, 100, 250)) ? $Limit : 10;
 
 $IsMod = check_perms("users_mod");
-$DB->prepared_query("
+$db->prepared_query("
 SELECT
   `UserID`,
   `TotalRank`,
@@ -34,12 +34,12 @@ LIMIT
   $Limit
 ");
 
-$Results = $DB->to_array();
+$Results = $db->to_array();
 generate_user_table('Top Donors', $Results, $Limit);
 echo '</div>';
 View::footer();
 
-// Generate a table based on data from most recent query to $DB
+// Generate a table based on data from most recent query to $db
 function generate_user_table($Caption, $Results, $Limit)
 {
     global $Time, $IsMod; ?>

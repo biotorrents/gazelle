@@ -39,7 +39,7 @@ if (empty($_POST['confirm'])) {
     <form class="confirm_form" name="torrent_group" action="torrents.php" method="post">
       <input type="hidden" name="action" value="newgroup" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
       <input type="hidden" name="confirm" value="true" />
       <input type="hidden" name="torrentid"
         value="<?=$TorrentID?>" />
@@ -65,50 +65,50 @@ if (empty($_POST['confirm'])) {
 <?php
   View::footer();
 } else {
-    $DB->query("
+    $db->query("
     SELECT ArtistID,  Name
     FROM artists_group
     WHERE Name = '$ArtistName'");
-    if (!$DB->has_results()) {
-        $DB->query("
+    if (!$db->has_results()) {
+        $db->query("
       INSERT INTO artists_group (Name)
       VALUES ('$ArtistName')");
-        $ArtistID = $DB->inserted_id();
+        $ArtistID = $db->inserted_id();
     } else {
-        list($ArtistID, $ArtistName) = $DB->next_record();
+        list($ArtistID, $ArtistName) = $db->next_record();
     }
 
-    $DB->query("
+    $db->query("
     SELECT CategoryID
     FROM torrents_group
     WHERE ID = $OldGroupID");
 
-    list($CategoryID) = $DB->next_record();
+    list($CategoryID) = $db->next_record();
 
-    $DB->query("
+    $db->query("
     INSERT INTO torrents_group
       (CategoryID, Name, Year, Time, WikiBody, WikiImage)
     VALUES
       ('$CategoryID', '$Title', '$Year', NOW(), '', '')");
-    $GroupID = $DB->inserted_id();
+    $GroupID = $db->inserted_id();
 
-    $DB->query("
+    $db->query("
     INSERT INTO torrents_artists
       (GroupID, ArtistID, UserID)
     VALUES
-      ('$GroupID', '$ArtistID', '$LoggedUser[ID]')");
+      ('$GroupID', '$ArtistID', '$user[ID]')");
 
-    $DB->query("
+    $db->query("
     UPDATE torrents
     SET GroupID = '$GroupID'
     WHERE ID = '$TorrentID'");
 
     // Delete old group if needed
-    $DB->query("
+    $db->query("
     SELECT ID
     FROM torrents
     WHERE GroupID = '$OldGroupID'");
-    if (!$DB->has_results()) {
+    if (!$db->has_results()) {
         Torrents::delete_group($OldGroupID);
     } else {
         Torrents::update_hash($OldGroupID);
@@ -116,9 +116,9 @@ if (empty($_POST['confirm'])) {
 
     Torrents::update_hash($GroupID);
 
-    $Cache->delete_value("torrent_download_$TorrentID");
+    $cache->delete_value("torrent_download_$TorrentID");
 
-    Misc::write_log("Torrent $TorrentID was edited by " . $LoggedUser['Username']);
+    Misc::write_log("Torrent $TorrentID was edited by " . $user['Username']);
 
     header("Location: torrents.php?id=$GroupID");
 }

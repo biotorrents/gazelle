@@ -4,7 +4,7 @@ declare(strict_types = 1);
 $CollageID = (int) $_GET['collageid'];
 Security::int($CollageID);
 
-$DB->prepared_query("
+$db->prepared_query("
 SELECT
   `Name`,
   `UserID`,
@@ -14,9 +14,9 @@ FROM
 WHERE
   `ID` = '$CollageID'
 ");
-list($Name, $UserID, $CategoryID) = $DB->next_record();
+list($Name, $UserID, $CategoryID) = $db->next_record();
 
-if ($CategoryID === 0 && $UserID !== $LoggedUser['ID'] && !check_perms('site_collages_delete')) {
+if ($CategoryID === 0 && $UserID !== $user['ID'] && !check_perms('site_collages_delete')) {
     error(403);
 }
 
@@ -24,7 +24,7 @@ if ($CategoryID === array_search(ARTIST_COLLAGE, $CollageCats)) {
     error(404);
 }
 
-$DB->prepared_query("
+$db->prepared_query("
 SELECT
   ct.`GroupID`,
   um.`ID`,
@@ -45,9 +45,9 @@ ORDER BY
   ct.`Sort`
 ");
 
-$GroupIDs = $DB->collect('GroupID');
+$GroupIDs = $db->collect('GroupID');
 
-$CollageDataList = $DB->to_array('GroupID', MYSQLI_ASSOC);
+$CollageDataList = $db->to_array('GroupID', MYSQLI_ASSOC);
 if (count($GroupIDs) > 0) {
     $TorrentList = Torrents::get_groups($GroupIDs);
 } else {
@@ -146,7 +146,7 @@ View::header(
           <td class="nobr">
             <input type="hidden" name="action" value="manage_handle" />
             <input type="hidden" name="auth"
-              value="<?=$LoggedUser['AuthKey']?>" />
+              value="<?=$user['AuthKey']?>" />
             <input type="hidden" name="collageid"
               value="<?=$CollageID?>" />
             <input type="hidden" name="groupid"
@@ -167,7 +167,7 @@ View::header(
     <div>
       <input type="hidden" name="action" value="manage_handle" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
       <input type="hidden" name="collageid"
         value="<?=$CollageID?>" />
       <input type="hidden" name="groupid" value="1" />

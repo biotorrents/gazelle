@@ -7,7 +7,7 @@ if (empty($PostID)) {
     json_die('error', 'empty postid');
 }
 
-$DB->query("
+$db->query("
 SELECT
   t.`ForumID`,
   p.`Body`
@@ -20,11 +20,11 @@ WHERE
   p.`ID` = '$PostID'
 ");
 
-if (!$DB->has_results()) {
+if (!$db->has_results()) {
     json_die('error', 'no results');
 }
 
-list($ForumID, $Body) = $DB->next_record();
+list($ForumID, $Body) = $db->next_record();
 if (!Forums::check_forumperm($ForumID)) {
     json_die('error', 'assholes');
 }

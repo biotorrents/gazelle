@@ -51,7 +51,7 @@ if (empty($_GET['type'])) {
   }
 }
 
-$DownloadsQ = $DB->query("
+$DownloadsQ = $db->query("
   SELECT
     t.ID AS TorrentID,
     DATE_FORMAT($Month, '%Y - %m') AS Month,

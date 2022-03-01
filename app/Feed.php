@@ -74,10 +74,10 @@ class Feed
     /**
      * retrieve
      */
-    public function retrieve($CacheKey, $AuthKey, $PassKey)
+    public function retrieve($cacheKey, $AuthKey, $PassKey)
     {
-        global $Cache;
-        $Entries = $Cache->get_value($CacheKey);
+        global $cache;
+        $Entries = $cache->get_value($cacheKey);
 
         if (!$Entries) {
             $Entries = [];
@@ -95,10 +95,10 @@ class Feed
     /**
      * populate
      */
-    public function populate($CacheKey, $Item)
+    public function populate($cacheKey, $Item)
     {
-        global $Cache;
-        $Entries = $Cache->get_value($CacheKey, true);
+        global $cache;
+        $Entries = $cache->get_value($cacheKey, true);
 
         if (!$Entries) {
             $Entries = [];
@@ -109,6 +109,6 @@ class Feed
         }
         
         array_unshift($Entries, $Item);
-        $Cache->cache_value($CacheKey, $Entries, 0); // inf cache
+        $cache->cache_value($cacheKey, $Entries, 0); // inf cache
     }
 }

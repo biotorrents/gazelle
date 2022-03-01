@@ -96,8 +96,8 @@ class Stats
      */
     public function overview(array $options = [])
     {
-        if (G::$Cache->get_value($this->cachePrefix . __FUNCTION__)) {
-            return G::$Cache->get_value($this->cachePrefix . __FUNCTION__);
+        if (G::$cache->get_value($this->cachePrefix . __FUNCTION__)) {
+            return G::$cache->get_value($this->cachePrefix . __FUNCTION__);
         }
 
         $overview = $this->aggregate($options);
@@ -107,7 +107,7 @@ class Stats
             $overview[$k] = $v['value'];
         }
 
-        G::$Cache->cache_value($this->cachePrefix . __FUNCTION__, $overview, $this->cacheDuration);
+        G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $overview, $this->cacheDuration);
         return $overview;
     }
 
@@ -120,8 +120,8 @@ class Stats
      */
     public function topPages(array $options = []): array
     {
-        if (G::$Cache->get_value($this->cachePrefix . __FUNCTION__)) {
-            return G::$Cache->get_value($this->cachePrefix . __FUNCTION__);
+        if (G::$cache->get_value($this->cachePrefix . __FUNCTION__)) {
+            return G::$cache->get_value($this->cachePrefix . __FUNCTION__);
         }
 
         # page
@@ -150,7 +150,7 @@ class Stats
 
         $topPages = ['page' => $page, 'entry_page' => $entry_page, 'exit_page' => $exit_page];
 
-        G::$Cache->cache_value($this->cachePrefix . __FUNCTION__, $topPages, $this->cacheDuration);
+        G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $topPages, $this->cacheDuration);
         return $topPages;
     }
 
@@ -163,8 +163,8 @@ class Stats
      */
     public function sources(array $options = []): array
     {
-        if (G::$Cache->get_value($this->cachePrefix . __FUNCTION__)) {
-            return G::$Cache->get_value($this->cachePrefix . __FUNCTION__);
+        if (G::$cache->get_value($this->cachePrefix . __FUNCTION__)) {
+            return G::$cache->get_value($this->cachePrefix . __FUNCTION__);
         }
 
         # source
@@ -185,7 +185,7 @@ class Stats
 
         $sources = ['source' => $source, 'referrer' => $referrer];
 
-        G::$Cache->cache_value($this->cachePrefix . __FUNCTION__, $sources, $this->cacheDuration);
+        G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $sources, $this->cacheDuration);
         return $sources;
     }
 
@@ -197,8 +197,8 @@ class Stats
      */
     public function overTime(array $options = []): array
     {
-        if (G::$Cache->get_value($this->cachePrefix . __FUNCTION__)) {
-            return G::$Cache->get_value($this->cachePrefix . __FUNCTION__);
+        if (G::$cache->get_value($this->cachePrefix . __FUNCTION__)) {
+            return G::$cache->get_value($this->cachePrefix . __FUNCTION__);
         }
 
         # all metrics raw response
@@ -234,7 +234,7 @@ class Stats
 
         $overTime = ['visitors' => $visitors, 'pageviews' => $pageviews, 'bounce_rate' => $bounce_rate, 'visit_duration' => $visit_duration];
 
-        G::$Cache->cache_value($this->cachePrefix . __FUNCTION__, $overTime, $this->cacheDuration);
+        G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $overTime, $this->cacheDuration);
         return $overTime;
     }
 
@@ -247,8 +247,8 @@ class Stats
      */
     public function locations(array $options = []): array
     {
-        if (G::$Cache->get_value($this->cachePrefix . __FUNCTION__)) {
-            return G::$Cache->get_value($this->cachePrefix . __FUNCTION__);
+        if (G::$cache->get_value($this->cachePrefix . __FUNCTION__)) {
+            return G::$cache->get_value($this->cachePrefix . __FUNCTION__);
         }
 
         # only tracks country by default :/
@@ -260,7 +260,7 @@ class Stats
             'visitors'
         );
 
-        G::$Cache->cache_value($this->cachePrefix . __FUNCTION__, $locations, $this->cacheDuration);
+        G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $locations, $this->cacheDuration);
         return $locations;
     }
 
@@ -272,8 +272,8 @@ class Stats
      */
     public function devices(array $options = []): array
     {
-        if (G::$Cache->get_value($this->cachePrefix . __FUNCTION__)) {
-            return G::$Cache->get_value($this->cachePrefix . __FUNCTION__);
+        if (G::$cache->get_value($this->cachePrefix . __FUNCTION__)) {
+            return G::$cache->get_value($this->cachePrefix . __FUNCTION__);
         }
 
         # device
@@ -302,7 +302,7 @@ class Stats
 
         $devices = ['device' => $device, 'browser' => $browser, 'os' => $os];
 
-        G::$Cache->cache_value($this->cachePrefix . __FUNCTION__, $devices, $this->cacheDuration);
+        G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $devices, $this->cacheDuration);
         return $devices;
     }
 
@@ -383,16 +383,16 @@ class Stats
      */
     public function economyOverTime()
     {
-        if (G::$Cache->get_value($this->cachePrefix . __FUNCTION__)) {
-            return G::$Cache->get_value($this->cachePrefix . __FUNCTION__);
+        if (G::$cache->get_value($this->cachePrefix . __FUNCTION__)) {
+            return G::$cache->get_value($this->cachePrefix . __FUNCTION__);
         }
 
         # torrents
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
             select count(ID), sum(Size), sum(FileCount) from torrents
         ");
 
-        $torrents = G::$DB->to_array();
+        $torrents = G::$db->to_array();
         $torrents = [
             'count' => intval($torrents[0]['count(ID)']),
             'totalDataSize' => intval($torrents[0]['sum(Size)']),
@@ -405,11 +405,11 @@ class Stats
         $torrents['averageFileSize'] = $torrents['totalDataSize'] / $torrents['totalFileCount'];
 
         # users
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
             select count(ID) from users_main where Enabled = '1'
         ");
 
-        $users = G::$DB->to_array();
+        $users = G::$db->to_array();
         $users = [
             'count' => intval($users[0]['count(ID)']),
         ];
@@ -418,11 +418,11 @@ class Stats
         $users['torrentsPerUser'] = $torrents['count'] / $users['count'];
 
         # daily
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
             select count(ID), sum(Size), sum(FileCount) from torrents where Time > subdate(now(), interval 1 day)
         ");
 
-        $daily = G::$DB->to_array();
+        $daily = G::$db->to_array();
         $daily = [
             'count' => intval($daily[0]['count(ID)']),
             'totalSize' => intval($daily[0]['sum(Size)']),
@@ -430,11 +430,11 @@ class Stats
         ];
 
         # weekly
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
             select count(ID), sum(Size), sum(FileCount) from torrents where Time > subdate(now(), interval 7 day)
         ");
 
-        $weekly = G::$DB->to_array();
+        $weekly = G::$db->to_array();
         $weekly = [
             'count' => intval($weekly[0]['count(ID)']),
             'totalSize' => intval($weekly[0]['sum(Size)']),
@@ -442,11 +442,11 @@ class Stats
         ];
 
         # monthly
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
             select count(ID), sum(Size), sum(FileCount) from torrents where Time > subdate(now(), interval 30 day)
         ");
         
-        $monthly = G::$DB->to_array();
+        $monthly = G::$db->to_array();
         $monthly = [
             'count' => intval($monthly[0]['count(ID)']),
             'totalSize' => intval($monthly[0]['sum(Size)']),
@@ -461,7 +461,7 @@ class Stats
             'monthly' => $monthly,
         ];
 
-        G::$Cache->cache_value($this->cachePrefix . __FUNCTION__, $economyOverTime, $this->cacheDuration);
+        G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $economyOverTime, $this->cacheDuration);
         return $economyOverTime;
     }
 
@@ -471,16 +471,16 @@ class Stats
      */
     public function trackerEconomy(): array
     {
-        if (G::$Cache->get_value($this->cachePrefix . __FUNCTION__)) {
-            return G::$Cache->get_value($this->cachePrefix . __FUNCTION__);
+        if (G::$cache->get_value($this->cachePrefix . __FUNCTION__)) {
+            return G::$cache->get_value($this->cachePrefix . __FUNCTION__);
         }
 
         # total upload and download
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
             select sum(Uploaded), sum(Downloaded), count(ID) from users_main where Enabled = '1'
         ");
 
-        $torrents = G::$DB->to_array();
+        $torrents = G::$db->to_array();
 
         # user count: before $torrents work
         $users = [
@@ -502,37 +502,37 @@ class Stats
         $torrents['averageDownload'] = $torrents['totalDownload'] / $users['count'];
 
         # request bounty
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
             select sum(Bounty) from requests_votes
         ");
 
-        $totalBounty = G::$DB->to_array();
+        $totalBounty = G::$db->to_array();
 
         # vote bounty
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
             select sum(requests_votes.Bounty) from requests_votes
             join requests on requests.ID = requests_votes.RequestID where TorrentID > 0
         ");
 
-        $availableBounty = G::$DB->to_array();
+        $availableBounty = G::$db->to_array();
         $requests = [
             'totalBounty' => intval($totalBounty[0]['sum(Bounty)']),
             'availableBounty' => intval($availableBounty[0]['sum(requests_votes.Bounty)']),
         ];
 
         # total snatches for torrents that still exist
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
             select sum(Snatched), count(ID) from torrents
         ");
 
-        $activeSnatches = G::$DB->to_array();
+        $activeSnatches = G::$db->to_array();
 
         # total snatches for all torrents
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
             select count(uid) from xbt_snatched
         ");
 
-        $totalSnatches = G::$DB->to_array();
+        $totalSnatches = G::$db->to_array();
         $snatches = [
             'active' => intval($activeSnatches[0]['sum(Snatched)']),
             'torrents' => intval($activeSnatches[0]['count(ID)']),
@@ -544,18 +544,18 @@ class Stats
         unset($snatches['torrents']);
 
         # seeders
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
             select count(fid) from xbt_files_users where remaining = 0
         ");
 
-        $seeders = G::$DB->to_array();
+        $seeders = G::$db->to_array();
 
         # leechers
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
             select count(fid) from xbt_files_users where remaining > 0
         ");
 
-        $leechers = G::$DB->to_array();
+        $leechers = G::$db->to_array();
         $peers = [
             'seeders' => intval($seeders[0]['count(fid)']),
             'leechers' => intval($leechers[0]['count(fid)']),
@@ -573,11 +573,11 @@ class Stats
             'peers' => $peers,
         ];
 
-        G::$Cache->cache_value($this->cachePrefix . __FUNCTION__, $trackerEconomy, $this->cacheDuration);
+        G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $trackerEconomy, $this->cacheDuration);
         return $trackerEconomy;
 
         /*
-        $DB->prepared_query("
+        $db->prepared_query("
         SELECT COUNT(ID)
         FROM users_main
         WHERE (
@@ -595,26 +595,26 @@ class Stats
      */
     public function torrentsTimeline(): array
     {
-        if (G::$Cache->get_value($this->cachePrefix . __FUNCTION__)) {
-            return G::$Cache->get_value($this->cachePrefix . __FUNCTION__);
+        if (G::$cache->get_value($this->cachePrefix . __FUNCTION__)) {
+            return G::$cache->get_value($this->cachePrefix . __FUNCTION__);
         }
 
         # uploads: real data :)
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
             select date_format(Time, '%Y-%m') as months, count(ID) from torrents
             group by months order by Time asc
         ");
 
-        $uploads = G::$DB->to_array();
+        $uploads = G::$db->to_array();
         $uploads = array_column($uploads, 1, 0);
 
         # deletes: log data :/
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
             select date_format(Time, '%Y-%m') as months, count(ID) from log
             where Message like 'Torrent % deleted %' group by months order by Time asc
         ");
 
-        $deletes = G::$DB->to_array();
+        $deletes = G::$db->to_array();
         $deletes = array_column($deletes, 1, 0);
 
         # cast to int
@@ -628,7 +628,7 @@ class Stats
 
         $torrentsTimeline = ['uploads' => $uploads, 'deletes' => $deletes];
 
-        G::$Cache->cache_value($this->cachePrefix . __FUNCTION__, $torrentsTimeline, $this->cacheDuration);
+        G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $torrentsTimeline, $this->cacheDuration);
         return $torrentsTimeline;
     }
 
@@ -638,26 +638,26 @@ class Stats
      */
     public function usersTimeline(): array
     {
-        if (G::$Cache->get_value($this->cachePrefix . __FUNCTION__)) {
-            return G::$Cache->get_value($this->cachePrefix . __FUNCTION__);
+        if (G::$cache->get_value($this->cachePrefix . __FUNCTION__)) {
+            return G::$cache->get_value($this->cachePrefix . __FUNCTION__);
         }
 
         # registrations
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
             select date_format(JoinDate,'%Y-%m') as months, count(UserID) from users_info
             group by months order by JoinDate asc limit 1, 11
         ");
 
-        $registrations = G::$DB->to_array();
+        $registrations = G::$db->to_array();
         $registrations = array_column($registrations, 1, 0);
 
         # disables
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
             select date_format(BanDate, '%Y-%m') as months, count(UserID) from users_info
             where BanDate > 0 group by months order by BanDate asc limit 1, 11
         ");
 
-        $disables = G::$DB->to_array();
+        $disables = G::$db->to_array();
         $disables = array_column($disables, 1, 0);
 
         # cast to int
@@ -671,7 +671,7 @@ class Stats
 
         $usersTimeline = ['registrations' => $registrations, 'disables' => $disables];
 
-        G::$Cache->cache_value($this->cachePrefix . __FUNCTION__, $usersTimeline, $this->cacheDuration);
+        G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $usersTimeline, $this->cacheDuration);
         return $usersTimeline;
     }
 
@@ -683,18 +683,18 @@ class Stats
     {
         $ENV = ENV::go();
 
-        if (G::$Cache->get_value($this->cachePrefix . __FUNCTION__)) {
-            return G::$Cache->get_value($this->cachePrefix . __FUNCTION__);
+        if (G::$cache->get_value($this->cachePrefix . __FUNCTION__)) {
+            return G::$cache->get_value($this->cachePrefix . __FUNCTION__);
         }
 
         # get torrents by category
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
             select torrents_group.category_id, count(torrents.id) as torrents from torrents
             join torrents_group on torrents_group.id = torrents.GroupID
             group by torrents_group.category_id order by torrents desc
         ");
 
-        $categoryDistribution = G::$DB->to_array();
+        $categoryDistribution = G::$db->to_array();
         $categoryDistribution = array_column($categoryDistribution, 0, 1);
 
         # get category names
@@ -705,7 +705,7 @@ class Stats
         $categoryDistribution = array_flip($categoryDistribution);
 
         # [$name => $torrents]
-        G::$Cache->cache_value($this->cachePrefix . __FUNCTION__, $categoryDistribution, $this->cacheDuration);
+        G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $categoryDistribution, $this->cacheDuration);
         return $categoryDistribution;
     }
 
@@ -715,17 +715,17 @@ class Stats
      */
     public function classDistribution(): array
     {
-        if (G::$Cache->get_value($this->cachePrefix . __FUNCTION__)) {
-            return G::$Cache->get_value($this->cachePrefix . __FUNCTION__);
+        if (G::$cache->get_value($this->cachePrefix . __FUNCTION__)) {
+            return G::$cache->get_value($this->cachePrefix . __FUNCTION__);
         }
 
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
             select permissions.Name, count(users_main.ID) as users from users_main
             join permissions on users_main.PermissionID = permissions.ID where users_main.Enabled = '1'
             group by permissions.Name order by users desc
         ");
         
-        $classDistribution = G::$DB->to_array();
+        $classDistribution = G::$db->to_array();
         $classDistribution = array_column($classDistribution, 1, 0);
 
         # cast to int
@@ -733,7 +733,7 @@ class Stats
             $classDistribution[$k] = intval($v);
         }
 
-        G::$Cache->cache_value($this->cachePrefix . __FUNCTION__, $classDistribution, $this->cacheDuration);
+        G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $classDistribution, $this->cacheDuration);
         return $classDistribution;
     }
 
@@ -743,15 +743,15 @@ class Stats
      */
     public function databaseSpecifics(): array
     {
-        if (G::$Cache->get_value($this->cachePrefix . __FUNCTION__)) {
-            return G::$Cache->get_value($this->cachePrefix . __FUNCTION__);
+        if (G::$cache->get_value($this->cachePrefix . __FUNCTION__)) {
+            return G::$cache->get_value($this->cachePrefix . __FUNCTION__);
         }
 
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
             show table status
         ");
 
-        $databaseSpecifics = G::$DB->to_array();
+        $databaseSpecifics = G::$db->to_array();
         $databaseSpecifics = [
             'name' => array_column($databaseSpecifics, 'Name'),
             'rows' => array_column($databaseSpecifics, 'Rows'),
@@ -783,7 +783,7 @@ class Stats
         # unset unused
         unset($databaseSpecifics['indexSize']);
 
-        G::$Cache->cache_value($this->cachePrefix . __FUNCTION__, $databaseSpecifics, $this->cacheDuration);
+        G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $databaseSpecifics, $this->cacheDuration);
         return $databaseSpecifics;
     }
 }

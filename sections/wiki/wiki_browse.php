@@ -20,7 +20,7 @@ $sql = "
     Date,
     Author
   FROM wiki_articles
-  WHERE MinClassRead <= '".$LoggedUser['EffectiveClass']."'";
+  WHERE MinClassRead <= '".$user['EffectiveClass']."'";
 
 if ($Letter !== '1') {
     $sql .= " AND LEFT(Title,1) = '".db_string($Letter)."'";
@@ -29,7 +29,7 @@ if ($Letter !== '1') {
 }
 
 $sql .= " ORDER BY Title";
-$DB->prepared_query($sql);
+$db->prepared_query($sql);
 ?>
 
 <div>
@@ -49,7 +49,7 @@ if ($Letter) { ?>
       </tr>
 
       <?php
-while (list($ID, $Title, $Date, $UserID) = $DB->next_record()) { ?>
+while (list($ID, $Title, $Date, $UserID) = $db->next_record()) { ?>
       <tr>
         <td><a href="wiki.php?action=article&amp;id=<?=$ID?>"><?=$Title?></a></td>
         <td><?=$Date?>

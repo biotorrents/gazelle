@@ -5,14 +5,14 @@ if (!check_perms('users_warn')) {
 Http::assertRequest($_POST, array('postid'));
 
 $PostID = (int)$_POST['postid'];
-$DB->query("
+$db->query("
   SELECT Body, AuthorID
   FROM comments
   WHERE ID = $PostID");
-if (!$DB->has_results()) {
+if (!$db->has_results()) {
   error(404);
 }
-list($PostBody, $AuthorID) = $DB->next_record();
+list($PostBody, $AuthorID) = $db->next_record();
 $UserInfo = Users::user_info($AuthorID);
 
 View::header('Warn User');

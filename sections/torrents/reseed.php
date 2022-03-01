@@ -8,7 +8,7 @@ if (!is_number($GroupID) || !is_number($TorrentID)) {
     error(0);
 }
 
-$DB->query("
+$db->query("
 SELECT
   `last_action`,
   `LastReseedRequest`,
@@ -19,7 +19,7 @@ FROM
 WHERE
   `ID` = '$TorrentID'
 ");
-list($LastActive, $LastReseedRequest, $UploaderID, $UploadedTime) = $DB->next_record();
+list($LastActive, $LastReseedRequest, $UploaderID, $UploadedTime) = $db->next_record();
 
 if (!check_perms('users_mod')) {
     if (time() - strtotime($LastReseedRequest) < 864000) {
@@ -31,7 +31,7 @@ if (!check_perms('users_mod')) {
     }
 }
 
-$DB->query("
+$db->query("
 UPDATE
   `torrents`
 SET
@@ -47,7 +47,7 @@ $Name = '';
 #$Name .= Artists::display_artists(array('1' => $Artists), false, true);
 $Name .= $GroupName;
 
-$DB->query("
+$db->query("
 SELECT
   `uid`,
   MAX(`tstamp`) AS tstamp
@@ -63,12 +63,12 @@ DESC
 LIMIT 10
 ");
 
-if ($DB->has_results()) {
-    $Users = $DB->to_array();
+if ($db->has_results()) {
+    $Users = $db->to_array();
     foreach ($Users as $User) {
         $UserID = $User['uid'];
 
-        $DB->query("
+        $db->query("
         SELECT
           `UserID`
         FROM
@@ -77,7 +77,7 @@ if ($DB->has_results()) {
           `UserID` = '$UserID'
         ");
 
-        if ($DB->has_results()) {
+        if ($db->has_results()) {
             continue;
         }
 
@@ -89,7 +89,7 @@ if ($DB->has_results()) {
         Hi $Username,
         
         The user
-        [url=".site_url()."user.php?id=$LoggedUser[ID]]$LoggedUser[Username][/url]
+        [url=".site_url()."user.php?id=$user[ID]]$user[Username][/url]
         has requested a re-seed for the torrent
         [url=".site_url()."torrents.php?id=$GroupID&torrentid=$TorrentID]{$Name}[/url],
         which you snatched on ".date('M d Y', $TimeStamp).".
@@ -111,7 +111,7 @@ if ($DB->has_results()) {
     Hi $Username,
     
     The user
-    [url=".site_url()."user.php?id=$LoggedUser[ID]]$LoggedUser[Username][/url]
+    [url=".site_url()."user.php?id=$user[ID]]$user[Username][/url]
     has requested a re-seed for the torrent
     [url=".site_url()."torrents.php?id=$GroupID&torrentid=$TorrentID]{$Name}[/url],
     which you uploaded on ".date('M d Y', strtotime($UploadedTime)).".

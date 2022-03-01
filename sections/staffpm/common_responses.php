@@ -58,11 +58,11 @@ View::header('Staff PMs', 'staffpm');
 <?php
 
 // List common responses
-$DB->query("
+$db->query("
   SELECT ID, Message, Name
   FROM staff_pm_responses
   ORDER BY ID DESC");
-while (list($ID, $Message, $Name) = $DB->next_record()) {
+while (list($ID, $Message, $Name) = $db->next_record()) {
 
 ?>
     <br />

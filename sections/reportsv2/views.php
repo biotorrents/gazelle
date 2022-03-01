@@ -13,12 +13,12 @@ View::header('Reports V2', 'reportsv2');
 
 
 //Grab owner's ID, just for examples
-$DB->prepared_query("
+$db->prepared_query("
   SELECT ID, Username
   FROM users_main
   ORDER BY ID ASC
   LIMIT 1");
-list($OwnerID, $Owner) = $DB->next_record();
+list($OwnerID, $Owner) = $db->next_record();
 $Owner = esc($Owner);
 
 ?>
@@ -29,7 +29,7 @@ $Owner = esc($Owner);
 <div class="float_clear">
   <div class="two_columns pad">
 <?php
-$DB->prepared_query("
+$db->prepared_query("
   SELECT
     um.ID,
     um.Username,
@@ -39,7 +39,7 @@ $DB->prepared_query("
   WHERE r.LastChangeTime > NOW() - INTERVAL 24 HOUR
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-$Results = $DB->to_array();
+$Results = $db->to_array();
 ?>
     <h3>Reports resolved in the last 24 hours</h3>
     <table class="box border">
@@ -50,7 +50,7 @@ $Results = $DB->to_array();
 <?php
 foreach ($Results as $Result) {
   list($UserID, $Username, $Reports) = $Result;
-  if ($Username == $LoggedUser['Username']) {
+  if ($Username == $user['Username']) {
     $RowClass = ' class="highlight"';
   } else {
     $RowClass = '';
@@ -65,7 +65,7 @@ foreach ($Results as $Result) {
 ?>
     </table>
 <?php
-$DB->prepared_query("
+$db->prepared_query("
   SELECT
     um.ID,
     um.Username,
@@ -75,7 +75,7 @@ $DB->prepared_query("
   WHERE r.LastChangeTime > NOW() - INTERVAL 1 WEEK
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-$Results = $DB->to_array();
+$Results = $db->to_array();
 ?>
     <h3>Reports resolved in the last week</h3>
     <table class="box border">
@@ -86,7 +86,7 @@ $Results = $DB->to_array();
 <?php
 foreach ($Results as $Result) {
   list($UserID, $Username, $Reports) = $Result;
-  if ($Username == $LoggedUser['Username']) {
+  if ($Username == $user['Username']) {
     $RowClass = ' class="highlight"';
   } else {
     $RowClass = '';
@@ -101,7 +101,7 @@ foreach ($Results as $Result) {
 ?>
     </table>
 <?php
-$DB->prepared_query("
+$db->prepared_query("
   SELECT
     um.ID,
     um.Username,
@@ -111,7 +111,7 @@ $DB->prepared_query("
   WHERE r.LastChangeTime > NOW() - INTERVAL 1 MONTH
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-$Results = $DB->to_array();
+$Results = $db->to_array();
 ?>
     <h3>Reports resolved in the last month</h3>
     <table class="box border">
@@ -122,7 +122,7 @@ $Results = $DB->to_array();
 <?php
 foreach ($Results as $Result) {
   list($UserID, $Username, $Reports) = $Result;
-  if ($Username == $LoggedUser['Username']) {
+  if ($Username == $user['Username']) {
     $RowClass = ' class="highlight"';
   } else {
     $RowClass = '';
@@ -137,7 +137,7 @@ foreach ($Results as $Result) {
 ?>
     </table>
 <?php
-$DB->prepared_query("
+$db->prepared_query("
   SELECT
     um.ID,
     um.Username,
@@ -146,7 +146,7 @@ $DB->prepared_query("
     JOIN users_main AS um ON um.ID = r.ResolverID
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-$Results = $DB->to_array();
+$Results = $db->to_array();
 ?>
     <h3>Reports resolved ever</h3>
     <table class="box border">
@@ -157,7 +157,7 @@ $Results = $DB->to_array();
 <?php
 foreach ($Results as $Result) {
   list($UserID, $Username, $Reports) = $Result;
-  if ($Username == $LoggedUser['Username']) {
+  if ($Username == $user['Username']) {
     $RowClass = ' class="highlight"';
   } else {
     $RowClass = '';
@@ -232,7 +232,7 @@ foreach ($Results as $Result) {
   </div>
   <div class="two_columns pad">
 <?php
-  $DB->prepared_query("
+  $db->prepared_query("
     SELECT
       r.ResolverID,
       um.Username,
@@ -242,7 +242,7 @@ foreach ($Results as $Result) {
     WHERE r.Status = 'InProgress'
     GROUP BY r.ResolverID");
 
-  $Staff = $DB->to_array();
+  $Staff = $db->to_array();
 ?>
     <h3>Currently assigned reports by staff member</h3>
     <table class="box border">
@@ -252,7 +252,7 @@ foreach ($Results as $Result) {
       </tr>
 <?php
   foreach ($Staff as $Array) {
-    if ($Array['Username'] == $LoggedUser['Username']) {
+    if ($Array['Username'] == $user['Username']) {
       $RowClass = ' class="highlight"';
     } else {
       $RowClass = '';
@@ -268,14 +268,14 @@ foreach ($Results as $Result) {
     </table>
     <h3>Different view modes by report type</h3>
 <?php
-  $DB->prepared_query("
+  $db->prepared_query("
     SELECT
       Type,
       COUNT(ID) AS Count
     FROM reportsv2
     WHERE Status = 'New'
     GROUP BY Type");
-  $Current = $DB->to_array();
+  $Current = $db->to_array();
   if (!empty($Current)) {
 ?>
     <table class="box border">

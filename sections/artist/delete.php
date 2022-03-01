@@ -22,19 +22,19 @@ if (!check_perms('site_delete_artist') || !check_perms('torrents_delete')) {
 
 View::header('Artist deleted');
 
-$DB->query("
+$db->query("
   SELECT Name
   FROM artists_group
   WHERE ArtistID = $ArtistID");
-list($Name) = $DB->next_record();
+list($Name) = $db->next_record();
 
-$DB->query("
+$db->query("
   SELECT tg.Name, tg.ID
   FROM torrents_group AS tg
     LEFT JOIN torrents_artists AS ta ON ta.GroupID = tg.ID
   WHERE ta.ArtistID = $ArtistID");
-$Count = $DB->record_count();
-if ($DB->has_results()) {
+$Count = $db->record_count();
+if ($db->has_results()) {
 ?>
 <div>
   There are still torrents that have <a
@@ -44,7 +44,7 @@ if ($DB->has_results()) {
   <div class="box pad">
     <ul>
       <?php
-  while (list($GroupName, $GroupID) = $DB->next_record(MYSQLI_NUM, true)) {
+  while (list($GroupName, $GroupID) = $db->next_record(MYSQLI_NUM, true)) {
 ?>
       <li>
         <a href="torrents.php?id=<?=$GroupID?>" class="tooltip"
@@ -59,13 +59,13 @@ if ($DB->has_results()) {
 <?php
 }
 
-$DB->query("
+$db->query("
   SELECT r.Title, r.ID
   FROM requests AS r
     LEFT JOIN requests_artists AS ra ON ra.RequestID = r.ID
   WHERE ra.ArtistID = $ArtistID");
-$Count += $DB->record_count();
-if ($DB->has_results()) {
+$Count += $db->record_count();
+if ($db->has_results()) {
 ?>
 <div>
   There are still requests that have <a
@@ -75,7 +75,7 @@ if ($DB->has_results()) {
   <div class="box pad">
     <ul>
       <?php
-  while (list($RequestName, $RequestID) = $DB->next_record(MYSQLI_NUM, true)) {
+  while (list($RequestName, $RequestID) = $db->next_record(MYSQLI_NUM, true)) {
 ?>
       <li>
         <a href="requests.php?action=view&amp;id=<?=$RequestID?>"

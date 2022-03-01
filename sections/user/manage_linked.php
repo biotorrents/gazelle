@@ -18,22 +18,22 @@ switch ($_REQUEST['dupeaction']) {
   case 'update':
     if ($_REQUEST['target']) {
         $Target = $_REQUEST['target'];
-        $DB->query("
+        $db->query("
         SELECT ID
         FROM users_main
         WHERE Username LIKE '".db_string($Target)."'");
-        if (list($TargetID) = $DB->next_record()) {
+        if (list($TargetID) = $db->next_record()) {
             link_users($UserID, $TargetID);
         } else {
             error("User '$Target' not found.");
         }
     }
 
-    $DB->query("
+    $db->query("
       SELECT GroupID
       FROM users_dupes
       WHERE UserID = '$UserID'");
-    list($GroupID) = $DB->next_record();
+    list($GroupID) = $db->next_record();
 
     if ($_REQUEST['dupecomments'] && $GroupID) {
         dupe_comments($GroupID, $_REQUEST['dupecomments']);

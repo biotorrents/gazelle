@@ -4,7 +4,7 @@ declare(strict_types = 1);
 $Security = new Security();
 $UserID = $Security->checkUser('users_override_paranoia');
 
-$DB->query("
+$db->query("
 SELECT
   `Username`
 FROM
@@ -12,7 +12,7 @@ FROM
 WHERE
   `ID` = '$UserID'
 ");
-list($Username) = $DB->next_record();
+list($Username) = $db->next_record();
 
 View::header(
     'Organize Bookmarks',

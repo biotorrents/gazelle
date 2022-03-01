@@ -4,7 +4,7 @@
 // Already done in /sections/ajax/index.php
 //enforce_login();
 
-if (!empty($LoggedUser['DisableForums'])) {
+if (!empty($user['DisableForums'])) {
     echo json_encode(array('status' => 'failure'));
     error();
 } else {

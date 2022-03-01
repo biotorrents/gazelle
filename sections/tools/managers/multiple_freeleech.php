@@ -19,11 +19,11 @@ if (isset($_POST['torrents'])) {
             $Data = explode("id=", $Element);
             if (!empty($Data[1])) {
                 $CollageID = (int) $Data[1];
-                $DB->query("
+                $db->query("
                     SELECT GroupID
                     FROM collages_torrents
                     WHERE CollageID = '$CollageID'");
-                while (list($GroupID) = $DB->next_record()) {
+                while (list($GroupID) = $db->next_record()) {
                     $GroupIDs[] = (int) $GroupID;
                 }
             }
@@ -40,11 +40,11 @@ if (isset($_POST['torrents'])) {
             $Err = 'Invalid freeleech type or freeleech reason';
         } else {
             // Get the torrent IDs
-            $DB->query("
+            $db->query("
                 SELECT ID
                 FROM torrents
                 WHERE GroupID IN (".implode(', ', $GroupIDs).")");
-            $TorrentIDs = $DB->collect('ID');
+            $TorrentIDs = $db->collect('ID');
 
             if (sizeof($TorrentIDs) == 0) {
                 $Err = 'Invalid group IDs';
@@ -59,12 +59,12 @@ if (isset($_POST['torrents'])) {
                     } else {
                         $Bytes = Format::get_bytes($Size . $Units);
 
-                        $DB->query("
+                        $db->query("
                             SELECT ID
                             FROM torrents
                             WHERE ID IN (".implode(', ', $TorrentIDs).")
                               AND Size > '$Bytes'");
-                        $LargeTorrents = $DB->collect('ID');
+                        $LargeTorrents = $db->collect('ID');
                         $TorrentIDs = array_diff($TorrentIDs, $LargeTorrents);
                     }
                 }
@@ -92,7 +92,7 @@ if (isset($_POST['torrents'])) {
     </div>
     <div class="box pad">
         <form class="send_form" action="" method="post">
-            <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+            <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
             <textarea name="torrents" style="width: 95%; height: 200px;"><?=$_POST['torrents']?></textarea><br /><br />
             Mark torrents as:&nbsp;
             <select name="freeleechtype">

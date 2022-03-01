@@ -12,7 +12,7 @@ if (!empty($_GET['page']) && is_number($_GET['page'])) {
   $Limit = 100;
 }
 
-$Result = $DB->query("
+$Result = $db->query("
       SELECT
         SQL_CALC_FOUND_ROWS
         uid,
@@ -21,10 +21,10 @@ $Result = $DB->query("
       WHERE fid = '$TorrentID'
       ORDER BY tstamp DESC
       LIMIT $Limit");
-$Results = $DB->to_array('uid', MYSQLI_ASSOC);
+$Results = $db->to_array('uid', MYSQLI_ASSOC);
 
-$DB->query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
+$db->query('SELECT FOUND_ROWS()');
+list($NumResults) = $db->next_record();
 
 ?>
 <h4 class="tooltip" title="List of users that have reported a snatch to the tracker">List of Snatchers</h4>

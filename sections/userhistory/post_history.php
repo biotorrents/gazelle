@@ -3,17 +3,17 @@
 User post history page
 */
 
-if (!empty($LoggedUser['DisableForums'])) {
+if (!empty($user['DisableForums'])) {
   error(403);
 }
 
-$UserID = empty($_GET['userid']) ? $LoggedUser['ID'] : $_GET['userid'];
+$UserID = empty($_GET['userid']) ? $user['ID'] : $_GET['userid'];
 if (!is_number($UserID)) {
   error(0);
 }
 
-if (isset($LoggedUser['PostsPerPage'])) {
-  $PerPage = $LoggedUser['PostsPerPage'];
+if (isset($user['PostsPerPage'])) {
+  $PerPage = $user['PostsPerPage'];
 } else {
   $PerPage = POSTS_PER_PAGE;
 }
@@ -25,7 +25,7 @@ extract(array_intersect_key($UserInfo, array_flip(array('Username', 'Enabled', '
 
 View::header("Post history for $Username", 'subscriptions,comments');
 
-$ViewingOwn = ($UserID == $LoggedUser['ID']);
+$ViewingOwn = ($UserID == $user['ID']);
 $ShowUnread = ($ViewingOwn && (!isset($_GET['showunread']) || !!$_GET['showunread']));
 $ShowGrouped = ($ViewingOwn && (!isset($_GET['group']) || !!$_GET['group']));
 if ($ShowGrouped) {
@@ -37,7 +37,7 @@ if ($ShowGrouped) {
       LEFT JOIN forums_topics AS t ON t.ID = p.TopicID';
   if ($ShowUnread) {
     $sql .= '
-      LEFT JOIN forums_last_read_topics AS l ON l.TopicID = t.ID AND l.UserID = '.$LoggedUser['ID'];
+      LEFT JOIN forums_last_read_topics AS l ON l.TopicID = t.ID AND l.UserID = '.$user['ID'];
   }
   $sql .= "
       LEFT JOIN forums AS f ON f.ID = t.ForumID
@@ -52,13 +52,13 @@ if ($ShowGrouped) {
     GROUP BY t.ID
     ORDER BY p.ID DESC
     LIMIT $Limit";
-  $PostIDs = $DB->query($sql);
-  $DB->query('SELECT FOUND_ROWS()');
-  list($Results) = $DB->next_record();
+  $PostIDs = $db->query($sql);
+  $db->query('SELECT FOUND_ROWS()');
+  list($Results) = $db->next_record();
 
   if ($Results > $PerPage * ($Page - 1)) {
-    $DB->set_query_id($PostIDs);
-    $PostIDs = $DB->collect('ID');
+    $db->set_query_id($PostIDs);
+    $PostIDs = $db->collect('ID');
     $sql = "
       SELECT
         p.ID,
@@ -83,7 +83,7 @@ if ($ShowGrouped) {
             AND l.TopicID = t.ID
       WHERE p.ID IN (".implode(',', $PostIDs).')
       ORDER BY p.ID DESC';
-    $Posts = $DB->query($sql);
+    $Posts = $db->query($sql);
   }
 } else {
   $sql = '
@@ -105,7 +105,7 @@ if ($ShowGrouped) {
       p.TopicID,
       t.Title,
       t.LastPostID,';
-  $sql .= ($UserID == $LoggedUser['ID']) ? '
+  $sql .= ($UserID == $user['ID']) ? '
       l.PostID AS LastRead,':'
       true AS LastRead,';
   $sql .= "
@@ -139,12 +139,12 @@ if ($ShowGrouped) {
   }
 
   $sql .= " LIMIT $Limit";
-  $Posts = $DB->query($sql);
+  $Posts = $db->query($sql);
 
-  $DB->query('SELECT FOUND_ROWS()');
-  list($Results) = $DB->next_record();
+  $db->query('SELECT FOUND_ROWS()');
+  list($Results) = $db->next_record();
 
-  $DB->set_query_id($Posts);
+  $db->set_query_id($Posts);
 }
 
 ?>
@@ -211,8 +211,8 @@ if (empty($Results)) {
 ?>
   </div>
 <?php
-  $QueryID = $DB->get_query_id();
-  while (list($PostID, $AddedTime, $Body, $EditedUserID, $EditedTime, $EditedUsername, $TopicID, $ThreadTitle, $LastPostID, $LastRead, $Locked, $Sticky) = $DB->next_record()) {
+  $QueryID = $db->get_query_id();
+  while (list($PostID, $AddedTime, $Body, $EditedUserID, $EditedTime, $EditedUsername, $TopicID, $ThreadTitle, $LastPostID, $LastRead, $Locked, $Sticky) = $db->next_record()) {
 ?>
   <table class="box forum_post vertical_margin<?=!Users::has_avatars_enabled() ? ' noavatar' : '' ?>" id="post<?=$PostID ?>">
     <colgroup>
@@ -278,7 +278,7 @@ if (empty($Results)) {
       </td>
     </tr>
 <?php }
-  $DB->set_query_id($QueryID);
+  $db->set_query_id($QueryID);
 ?>
   </table>
 <?php } ?>

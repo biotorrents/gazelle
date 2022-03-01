@@ -65,7 +65,7 @@ if (empty($_GET['type'])) {
           $SphQL->where('userid', $UserInfo['ID']);
       } else {
           $Title = 'My requests';
-          $SphQL->where('userid', $LoggedUser['ID']);
+          $SphQL->where('userid', $user['ID']);
       }
       break;
     case 'voted':
@@ -77,7 +77,7 @@ if (empty($_GET['type'])) {
           $SphQL->where('voter', $UserInfo['ID']);
       } else {
           $Title = 'Requests I have voted on';
-          $SphQL->where('voter', $LoggedUser['ID']);
+          $SphQL->where('voter', $user['ID']);
       }
       break;
     case 'filled':
@@ -89,13 +89,13 @@ if (empty($_GET['type'])) {
           $SphQL->where('fillerid', $UserInfo['ID']);
       } else {
           $Title = 'Requests I have filled';
-          $SphQL->where('fillerid', $LoggedUser['ID']);
+          $SphQL->where('fillerid', $user['ID']);
       }
       break;
     case 'bookmarks':
       $Title = 'Your bookmarked requests';
       $BookmarkView = true;
-      $SphQL->where('bookmarker', $LoggedUser['ID']);
+      $SphQL->where('bookmarker', $user['ID']);
       break;
     default:
       error(404);
@@ -532,7 +532,7 @@ View::header($Title, 'requests');
             $ArtistLink = Artists::display_artists($ArtistForm, true, true);
             $FullName = "<a class='torrent_title' href='requests.php?action=view&amp;id=$RequestID'><span ";
 
-            if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
+            if (!isset($user['CoverArt']) || $user['CoverArt']) {
                 $FullName .= 'data-cover="'.ImageTools::process($Request['Image']).'" ';
             }
 

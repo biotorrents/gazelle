@@ -98,29 +98,29 @@ if (!empty($_POST['action'])) {
 
     $NameSearch = str_replace('\\', '\\\\', trim($_GET['artistname']));
 /*
-    $DB->query("
+    $db->query("
       SELECT ArtistID, Name
       FROM artists_alias
       WHERE Name LIKE '" . db_string($NameSearch) . "'");
 */
-    $DB->query("
+    $db->query("
       SELECT ArtistID, Name
       FROM artists_group
       WHERE Name LIKE '" . db_string($NameSearch) . "'");
-    if (!$DB->has_results()) {
-      if (isset($LoggedUser['SearchType']) && $LoggedUser['SearchType']) {
+    if (!$db->has_results()) {
+      if (isset($user['SearchType']) && $user['SearchType']) {
         header('Location: torrents.php?action=advanced&artistname=' . urlencode($_GET['artistname']));
       } else {
         header('Location: torrents.php?search=' . urlencode($_GET['artistname']));
       }
       error();
     }
-    list($FirstID, $Name) = $DB->next_record(MYSQLI_NUM, false);
-    if ($DB->record_count() === 1 || !strcasecmp($Name, $NameSearch)) {
+    list($FirstID, $Name) = $db->next_record(MYSQLI_NUM, false);
+    if ($db->record_count() === 1 || !strcasecmp($Name, $NameSearch)) {
       header("Location: artist.php?id=$FirstID");
       error();
     }
-    while (list($ID, $Name) = $DB->next_record(MYSQLI_NUM, false)) {
+    while (list($ID, $Name) = $db->next_record(MYSQLI_NUM, false)) {
       if (!strcasecmp($Name, $NameSearch)) {
         header("Location: artist.php?id=$ID");
         error();

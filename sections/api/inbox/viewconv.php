@@ -7,17 +7,17 @@ if (!$ConvID || !is_number($ConvID)) {
 
 
 
-$UserID = $LoggedUser['ID'];
-$DB->query("
+$UserID = $user['ID'];
+$db->query("
   SELECT InInbox, InSentbox
   FROM pm_conversations_users
   WHERE UserID = '$UserID'
     AND ConvID = '$ConvID'");
-if (!$DB->has_results()) {
+if (!$db->has_results()) {
   echo json_encode(array('status' => 'failure'));
   error();
 }
-list($InInbox, $InSentbox) = $DB->next_record();
+list($InInbox, $InSentbox) = $db->next_record();
 
 
 
@@ -28,7 +28,7 @@ if (!$InInbox && !$InSentbox) {
 }
 
 // Get information on the conversation
-$DB->query("
+$db->query("
   SELECT
     c.Subject,
     cu.Sticky,
@@ -40,15 +40,15 @@ $DB->query("
     LEFT JOIN users_main AS um ON um.ID = cu.ForwardedTo
   WHERE c.ID = '$ConvID'
     AND UserID = '$UserID'");
-list($Subject, $Sticky, $UnRead, $ForwardedID, $ForwardedName) = $DB->next_record();
+list($Subject, $Sticky, $UnRead, $ForwardedID, $ForwardedName) = $db->next_record();
 
-$DB->query("
+$db->query("
   SELECT um.ID, Username
   FROM pm_messages AS pm
     JOIN users_main AS um ON um.ID = pm.SenderID
   WHERE pm.ConvID = '$ConvID'");
 
-while (list($PMUserID, $Username) = $DB->next_record()) {
+while (list($PMUserID, $Username) = $db->next_record()) {
   $PMUserID = (int)$PMUserID;
   $Users[$PMUserID]['UserStr'] = Users::format_username($PMUserID, true, true, true, true);
   $Users[$PMUserID]['Username'] = $Username;
@@ -60,24 +60,24 @@ $Users[0]['Username'] = 'System';
 $Users[0]['Avatar'] = '';
 
 if ($UnRead == '1') {
-  $DB->query("
+  $db->query("
     UPDATE pm_conversations_users
     SET UnRead = '0'
     WHERE ConvID = '$ConvID'
       AND UserID = '$UserID'");
   // Clear the caches of the inbox and sentbox
-  $Cache->decrement("inbox_new_$UserID");
+  $cache->decrement("inbox_new_$UserID");
 }
 
 // Get messages
-$DB->query("
+$db->query("
   SELECT SentDate, SenderID, Body, ID
   FROM pm_messages
   WHERE ConvID = '$ConvID'
   ORDER BY ID");
 
 $JsonMessages = [];
-while (list($SentDate, $SenderID, $Body, $MessageID) = $DB->next_record()) {
+while (list($SentDate, $SenderID, $Body, $MessageID) = $db->next_record()) {
   $Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[Encrypted]';
   $JsonMessage = array(
     'messageId' => (int)$MessageID,

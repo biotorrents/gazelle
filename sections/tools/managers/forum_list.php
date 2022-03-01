@@ -24,27 +24,27 @@ if (!check_perms('admin_manage_forums')) {
 }
 
 View::header('Forum Management');
-$DB->query('
+$db->query('
   SELECT ID, Name
   FROM forums
   ORDER BY Sort');
-$ForumArray = $DB->to_array(); // used for generating the 'parent' drop down list
+$ForumArray = $db->to_array(); // used for generating the 'parent' drop down list
 
 // Replace the old hard-coded forum categories
 unset($ForumCats);
-$ForumCats = $Cache->get_value('forums_categories');
+$ForumCats = $cache->get_value('forums_categories');
 if ($ForumCats === false) {
-  $DB->query('
+  $db->query('
     SELECT ID, Name
     FROM forums_categories');
   $ForumCats = [];
-  while (list($ID, $Name) = $DB->next_record()) {
+  while (list($ID, $Name) = $db->next_record()) {
     $ForumCats[$ID] = $Name;
   }
-  $Cache->cache_value('forums_categories', $ForumCats, 0); //Inf cache.
+  $cache->cache_value('forums_categories', $ForumCats, 0); //Inf cache.
 }
 
-$DB->query('
+$db->query('
   SELECT
     ID,
     CategoryID,
@@ -73,13 +73,13 @@ $DB->query('
     <td>Submit</td>
   </tr>
 <?php
-while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinClassWrite, $MinClassCreate) = $DB->next_record()) {
+while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinClassWrite, $MinClassCreate) = $db->next_record()) {
 ?>
   <tr class="row">
     <form class="manage_form" name="forums" action="" method="post">
       <input type="hidden" name="id" value="<?=$ID?>" />
       <input type="hidden" name="action" value="forum_alter" />
-      <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
       <td>
         <select name="categoryid">
 <?php reset($ForumCats);
@@ -129,7 +129,7 @@ while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinCla
   <tr class="row">
     <form class="create_form" name="forum" action="" method="post">
       <input type="hidden" name="action" value="forum_alter" />
-      <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
       <td>
         <select name="categoryid">
 <?php reset($ForumCats);

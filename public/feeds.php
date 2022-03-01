@@ -24,7 +24,7 @@ require_once "$ENV->SERVER_ROOT/classes/feed.class.php";
 */
 
 # Load the classes
-$Cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
+$cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
 $Feed = new Feed;
 
 

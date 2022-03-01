@@ -9,7 +9,7 @@ if (!is_number($RequestID)) {
   error(0);
 }
 
-$DB->query("
+$db->query("
   SELECT
     UserID,
     Title,
@@ -17,9 +17,9 @@ $DB->query("
     GroupID
   FROM requests
   WHERE ID = $RequestID");
-list($UserID, $Title, $CategoryID, $GroupID) = $DB->next_record();
+list($UserID, $Title, $CategoryID, $GroupID) = $db->next_record();
 
-if ($LoggedUser['ID'] != $UserID && !check_perms('site_moderate_requests')) {
+if ($user['ID'] != $UserID && !check_perms('site_moderate_requests')) {
   error(403);
 }
 
@@ -37,40 +37,40 @@ if ($CategoryName != 'Music') {
 
 
 // Delete request, votes and tags
-$DB->query("DELETE FROM requests WHERE ID = '$RequestID'");
-$DB->query("DELETE FROM requests_votes WHERE RequestID = '$RequestID'");
-$DB->query("DELETE FROM requests_tags WHERE RequestID = '$RequestID'");
+$db->query("DELETE FROM requests WHERE ID = '$RequestID'");
+$db->query("DELETE FROM requests_votes WHERE RequestID = '$RequestID'");
+$db->query("DELETE FROM requests_tags WHERE RequestID = '$RequestID'");
 Comments::delete_page('requests', $RequestID);
 
-$DB->query("
+$db->query("
   SELECT ArtistID
   FROM requests_artists
   WHERE RequestID = $RequestID");
-$RequestArtists = $DB->to_array();
+$RequestArtists = $db->to_array();
 foreach ($RequestArtists as $RequestArtist) {
-  $Cache->delete_value("artists_requests_$RequestArtist");
+  $cache->delete_value("artists_requests_$RequestArtist");
 }
-$DB->query("
+$db->query("
   DELETE FROM requests_artists
   WHERE RequestID = '$RequestID'");
-$Cache->delete_value("request_artists_$RequestID");
+$cache->delete_value("request_artists_$RequestID");
 
-G::$DB->query("
+G::$db->query("
   REPLACE INTO sphinx_requests_delta
     (ID)
   VALUES
     ($RequestID)");
 
-if ($UserID != $LoggedUser['ID']) {
-  Misc::send_pm($UserID, 0, 'A request you created has been deleted', "The request \"$FullName\" was deleted by [url=".site_url().'user.php?id='.$LoggedUser['ID'].']'.$LoggedUser['Username'].'[/url] for the reason: [quote]'.$_POST['reason'].'[/quote]');
+if ($UserID != $user['ID']) {
+  Misc::send_pm($UserID, 0, 'A request you created has been deleted', "The request \"$FullName\" was deleted by [url=".site_url().'user.php?id='.$user['ID'].']'.$user['Username'].'[/url] for the reason: [quote]'.$_POST['reason'].'[/quote]');
 }
 
-Misc::write_log("Request $RequestID ($FullName) was deleted by user ".$LoggedUser['ID'].' ('.$LoggedUser['Username'].') for the reason: '.$_POST['reason']);
+Misc::write_log("Request $RequestID ($FullName) was deleted by user ".$user['ID'].' ('.$user['Username'].') for the reason: '.$_POST['reason']);
 
-$Cache->delete_value("request_$RequestID");
-$Cache->delete_value("request_votes_$RequestID");
+$cache->delete_value("request_$RequestID");
+$cache->delete_value("request_votes_$RequestID");
 if ($GroupID) {
-  $Cache->delete_value("requests_group_$GroupID");
+  $cache->delete_value("requests_group_$GroupID");
 }
 
 header('Location: requests.php');

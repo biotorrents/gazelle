@@ -17,8 +17,8 @@ $ENV = ENV::go();
   the latter of which is an array
 */
 
-if (isset($LoggedUser['PostsPerPage'])) {
-    $PerPage = $LoggedUser['PostsPerPage'];
+if (isset($user['PostsPerPage'])) {
+    $PerPage = $user['PostsPerPage'];
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
@@ -40,7 +40,7 @@ if (empty($_POST['body']) || empty($_POST['title'])) {
 
 $Body = $_POST['body'];
 
-if ($LoggedUser['DisablePosting']) {
+if ($user['DisablePosting']) {
     error('Your posting privileges have been removed.');
 }
 
@@ -81,38 +81,38 @@ if (empty($_POST['question']) || empty($_POST['answers']) || !check_perms('forum
     }
 }
 
-$DB->query("
+$db->query("
   INSERT INTO forums_topics
     (Title, AuthorID, ForumID, LastPostTime, LastPostAuthorID, CreatedTime)
   Values
-    ('".db_string($Title)."', '".$LoggedUser['ID']."', '$ForumID', NOW(), '".$LoggedUser['ID']."', NOW())");
-$TopicID = $DB->inserted_id();
+    ('".db_string($Title)."', '".$user['ID']."', '$ForumID', NOW(), '".$user['ID']."', NOW())");
+$TopicID = $db->inserted_id();
 
-$DB->query("
+$db->query("
   INSERT INTO forums_posts
     (TopicID, AuthorID, AddedTime, Body)
   VALUES
-    ('$TopicID', '".$LoggedUser['ID']."', NOW(), '".db_string($Body)."')");
+    ('$TopicID', '".$user['ID']."', NOW(), '".db_string($Body)."')");
 
-$PostID = $DB->inserted_id();
+$PostID = $db->inserted_id();
 
-$DB->query("
+$db->query("
   UPDATE forums
   SET
     NumPosts         = NumPosts + 1,
     NumTopics        = NumTopics + 1,
     LastPostID       = '$PostID',
-    LastPostAuthorID = '".$LoggedUser['ID']."',
+    LastPostAuthorID = '".$user['ID']."',
     LastPostTopicID  = '$TopicID',
     LastPostTime     = NOW()
   WHERE ID = '$ForumID'");
 
-$DB->query("
+$db->query("
   UPDATE forums_topics
   SET
     NumPosts         = NumPosts + 1,
     LastPostID       = '$PostID',
-    LastPostAuthorID = '".$LoggedUser['ID']."',
+    LastPostAuthorID = '".$user['ID']."',
     LastPostTime     = NOW()
   WHERE ID = '$TopicID'");
 
@@ -121,35 +121,35 @@ if (isset($_POST['subscribe'])) {
 }
 
 //Award a badge if necessary
-$DB->query("
+$db->query("
   SELECT COUNT(ID)
   FROM forums_posts
-  WHERE AuthorID = '$LoggedUser[ID]'");
-list($UserPosts) = $DB->next_record(MYSQLI_NUM, false);
+  WHERE AuthorID = '$user[ID]'");
+list($UserPosts) = $db->next_record(MYSQLI_NUM, false);
 foreach ($ENV->AUTOMATED_BADGE_IDS->Posts as $Count => $Badge) {
     if ((int) $UserPosts >= $Count) {
-        $Success = Badges::award_badge($LoggedUser['ID'], $Badge);
+        $Success = Badges::award_badge($user['ID'], $Badge);
         if ($Success) {
-            Misc::send_pm($LoggedUser['ID'], 0, 'You have received a badge!', "You have received a badge for making ".$Count." forum posts.\n\nIt can be enabled from your user settings.");
+            Misc::send_pm($user['ID'], 0, 'You have received a badge!', "You have received a badge for making ".$Count." forum posts.\n\nIt can be enabled from your user settings.");
         }
     }
 }
 
 if (!$NoPoll) { // god, I hate double negatives...
-    $DB->query("
+    $db->query("
     INSERT INTO forums_polls
       (TopicID, Question, Answers)
     VALUES
       ('$TopicID', '".db_string($Question)."', '".db_string(serialize($Answers))."')");
-    $Cache->cache_value("polls_$TopicID", array($Question, $Answers, $Votes, null, '0'), 0);
+    $cache->cache_value("polls_$TopicID", array($Question, $Answers, $Votes, null, '0'), 0);
 
     if ($ForumID === STAFF_FORUM) {
-        send_irc(STAFF_CHAN, 'Poll created by '.$LoggedUser['Username'].": '$Question' ".site_url()."forums.php?action=viewthread&threadid=$TopicID");
+        send_irc(STAFF_CHAN, 'Poll created by '.$user['Username'].": '$Question' ".site_url()."forums.php?action=viewthread&threadid=$TopicID");
     }
 }
 
 // if cache exists modify it, if not, then it will be correct when selected next, and we can skip this block
-if ($Forum = $Cache->get_value("forums_$ForumID")) {
+if ($Forum = $cache->get_value("forums_$ForumID")) {
     list($Forum, , , $Stickies) = $Forum;
 
     // Remove the last thread from the index
@@ -167,53 +167,53 @@ if ($Forum = $Cache->get_value("forums_$ForumID")) {
     $Part2 = array($TopicID => array(
     'ID' => $TopicID,
     'Title' => $Title,
-    'AuthorID' => $LoggedUser['ID'],
+    'AuthorID' => $user['ID'],
     'IsLocked' => 0,
     'IsSticky' => 0,
     'NumPosts' => 1,
     'LastPostID' => $PostID,
     'LastPostTime' => sqltime(),
-    'LastPostAuthorID' => $LoggedUser['ID'],
+    'LastPostAuthorID' => $user['ID'],
     'NoPoll' => $NoPoll
   )); // Bumped
     $Forum = $Part1 + $Part2 + $Part3;
 
-    $Cache->cache_value("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
+    $cache->cache_value("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
 
     // Update the forum root
-    $Cache->begin_transaction('forums_list');
-    $Cache->update_row($ForumID, array(
+    $cache->begin_transaction('forums_list');
+    $cache->update_row($ForumID, array(
     'NumPosts' => '+1',
     'NumTopics' => '+1',
     'LastPostID' => $PostID,
-    'LastPostAuthorID' => $LoggedUser['ID'],
+    'LastPostAuthorID' => $user['ID'],
     'LastPostTopicID' => $TopicID,
     'LastPostTime' => sqltime(),
     'Title' => $Title,
     'IsLocked' => 0,
     'IsSticky' => 0
     ));
-    $Cache->commit_transaction(0);
+    $cache->commit_transaction(0);
 } else {
     // If there's no cache, we have no data, and if there's no data
-    $Cache->delete_value('forums_list');
+    $cache->delete_value('forums_list');
 }
 
-$Cache->begin_transaction("thread_$TopicID".'_catalogue_0');
+$cache->begin_transaction("thread_$TopicID".'_catalogue_0');
 $Post = array(
   'ID' => $PostID,
-  'AuthorID' => $LoggedUser['ID'],
+  'AuthorID' => $user['ID'],
   'AddedTime' => sqltime(),
   'Body' => $Body,
   'EditedUserID' => 0,
   'EditedTime' => null
   );
-$Cache->insert('', $Post);
-$Cache->commit_transaction(0);
+$cache->insert('', $Post);
+$cache->commit_transaction(0);
 
-$Cache->begin_transaction("thread_$TopicID".'_info');
-$Cache->update_row(false, array('Posts' => '+1', 'LastPostAuthorID' => $LoggedUser['ID']));
-$Cache->commit_transaction(0);
+$cache->begin_transaction("thread_$TopicID".'_info');
+$cache->update_row(false, array('Posts' => '+1', 'LastPostAuthorID' => $user['ID']));
+$cache->commit_transaction(0);
 
 
 header("Location: forums.php?action=viewthread&threadid=$TopicID");

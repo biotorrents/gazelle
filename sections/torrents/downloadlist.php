@@ -12,7 +12,7 @@ if (!empty($_GET['page']) && is_number($_GET['page'])) {
   $Limit = 100;
 }
 
-$DB->query("
+$db->query("
   SELECT
     SQL_CALC_FOUND_ROWS
     UserID,
@@ -21,28 +21,28 @@ $DB->query("
   WHERE TorrentID = '$TorrentID'
   ORDER BY Time DESC
   LIMIT $Limit");
-$UserIDs = $DB->collect('UserID');
-$Results = $DB->to_array('UserID', MYSQLI_ASSOC);
+$UserIDs = $db->collect('UserID');
+$Results = $db->to_array('UserID', MYSQLI_ASSOC);
 
-$DB->query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
+$db->query('SELECT FOUND_ROWS()');
+list($NumResults) = $db->next_record();
 
 if (count($UserIDs) > 0) {
   $UserIDs = implode(',', $UserIDs);
-  $DB->query("
+  $db->query("
     SELECT uid
     FROM xbt_snatched
     WHERE fid = '$TorrentID'
       AND uid IN($UserIDs)");
-  $Snatched = $DB->to_array('uid');
+  $Snatched = $db->to_array('uid');
 
-  $DB->query("
+  $db->query("
     SELECT uid
     FROM xbt_files_users
     WHERE fid = '$TorrentID'
       AND Remaining = 0
       AND uid IN($UserIDs)");
-  $Seeding = $DB->to_array('uid');
+  $Seeding = $db->to_array('uid');
 }
 ?>
 <h4 class="tooltip" title="List of users that have clicked the &quot;DL&quot; button">List of Downloaders</h4>

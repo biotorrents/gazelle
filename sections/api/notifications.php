@@ -9,7 +9,7 @@ if (!check_perms('site_torrents_notify')) {
 define('NOTIFICATIONS_PER_PAGE', 50);
 list($Page, $Limit) = Format::page_limit(NOTIFICATIONS_PER_PAGE);
 
-$Results = $DB->query("
+$Results = $db->query("
     SELECT
       SQL_CALC_FOUND_ROWS
       unt.TorrentID,
@@ -20,33 +20,33 @@ $Results = $DB->query("
     FROM users_notify_torrents AS unt
       JOIN torrents AS t ON t.ID = unt.TorrentID
       LEFT JOIN users_notify_filters AS unf ON unf.ID = unt.FilterID
-    WHERE unt.UserID = $LoggedUser[ID]".
+    WHERE unt.UserID = $user[ID]".
     ((!empty($_GET['filterid']) && is_number($_GET['filterid']))
       ? " AND unf.ID = '$_GET[filterid]'"
       : '')."
     ORDER BY TorrentID DESC
     LIMIT $Limit");
-$GroupIDs = array_unique($DB->collect('GroupID'));
+$GroupIDs = array_unique($db->collect('GroupID'));
 
-$DB->query('SELECT FOUND_ROWS()');
-list($TorrentCount) = $DB->next_record();
+$db->query('SELECT FOUND_ROWS()');
+list($TorrentCount) = $db->next_record();
 
 if (count($GroupIDs)) {
     $TorrentGroups = Torrents::get_groups($GroupIDs);
-    $DB->query("
+    $db->query("
     UPDATE users_notify_torrents
     SET UnRead = '0'
-    WHERE UserID = $LoggedUser[ID]");
-    $Cache->delete_value("notifications_new_$LoggedUser[ID]");
+    WHERE UserID = $user[ID]");
+    $cache->delete_value("notifications_new_$user[ID]");
 }
 
-$DB->set_query_id($Results);
+$db->set_query_id($Results);
 
 $JsonNotifications = [];
 $NumNew = 0;
 
 $FilterGroups = [];
-while ($Result = $DB->next_record(MYSQLI_ASSOC)) {
+while ($Result = $db->next_record(MYSQLI_ASSOC)) {
     if (!$Result['FilterID']) {
         $Result['FilterID'] = 0;
     }

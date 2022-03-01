@@ -5,7 +5,7 @@ if (empty($_POST['toid'])) {
   error(404);
 }
 
-if (!empty($LoggedUser['DisablePM']) && !isset($StaffIDs[$_POST['toid']])) {
+if (!empty($user['DisablePM']) && !isset($StaffIDs[$_POST['toid']])) {
   error(403);
 }
 
@@ -18,12 +18,12 @@ if (isset($_POST['convid']) && is_number($_POST['convid'])) {
       $Err = 'A recipient does not exist.';
     }
   }
-  $DB->query("
+  $db->query("
     SELECT UserID
     FROM pm_conversations_users
-    WHERE UserID = '$LoggedUser[ID]'
+    WHERE UserID = '$user[ID]'
       AND ConvID = '$ConvID'");
-  if (!$DB->has_results()) {
+  if (!$db->has_results()) {
     error(403);
   }
 } else {
@@ -52,7 +52,7 @@ if (!empty($Err)) {
   error();
 }
 
-$ConvID = Misc::send_pm($ToID, $LoggedUser['ID'], $Subject, $Body, $ConvID);
+$ConvID = Misc::send_pm($ToID, $user['ID'], $Subject, $Body, $ConvID);
 
 
 header('Location: ' . Inbox::get_inbox_link());

@@ -13,7 +13,7 @@ it's slow to run sub queries, so we had to get
 creative for this one.
 
 The solution I settled on abuses the way
-$DB->to_array() works. What we've done, is
+$db->to_array() works. What we've done, is
 backwards ordering. The results returned by the
 query have the best one for each GroupID last,
 and while to_array traverses the results, it
@@ -47,20 +47,20 @@ $Preferences = array('RemasterTitle DESC', 'Seeders ASC', 'Size ASC');
 $ArtistID = $_REQUEST['artistid'];
 $Preference = $Preferences[$_REQUEST['preference']];
 
-$DB->query("
+$db->query("
   SELECT Name
   FROM artists_group
   WHERE ArtistID = '$ArtistID'");
-list($ArtistName) = $DB->next_record(MYSQLI_NUM, false);
+list($ArtistName) = $db->next_record(MYSQLI_NUM, false);
 
-$DB->query("
+$db->query("
   SELECT GroupID, Importance
   FROM torrents_artists
   WHERE ArtistID = '$ArtistID'");
-if (!$DB->has_results()) {
+if (!$db->has_results()) {
     error(404);
 }
-$Releases = $DB->to_array('GroupID', MYSQLI_ASSOC, false);
+$Releases = $db->to_array('GroupID', MYSQLI_ASSOC, false);
 $GroupIDs = array_keys($Releases);
 
 $SQL = "
@@ -79,7 +79,7 @@ FROM torrents AS t
 ORDER BY t.GroupID ASC, Rank DESC, t.$Preference
 ";
 
-$DownloadsQ = $DB->query($SQL);
+$DownloadsQ = $db->query($SQL);
 $Collector = new TorrentsDL($DownloadsQ, $ArtistName);
 while (list($Downloads, $GroupIDs) = $Collector->get_downloads('GroupID')) {
     $Artists = Artists::get_artists($GroupIDs);
@@ -106,6 +106,6 @@ while (list($Downloads, $GroupIDs) = $Collector->get_downloads('GroupID')) {
 }
 $Collector->finalize();
 $Settings = array(implode(':', $_REQUEST['list']), $_REQUEST['preference']);
-if (!isset($LoggedUser['Collector']) || $LoggedUser['Collector'] != $Settings) {
-    Users::update_site_options($LoggedUser['ID'], array('Collector' => $Settings));
+if (!isset($user['Collector']) || $user['Collector'] != $Settings) {
+    Users::update_site_options($user['ID'], array('Collector' => $Settings));
 }

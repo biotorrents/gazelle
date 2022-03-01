@@ -88,15 +88,15 @@ if (!empty($_POST['extra'])) {
     $Err = 'As useful as blank reports are, could you be a tiny bit more helpful? (Leave a comment)';
 }
 
-$DB->prepared_query("
+$db->prepared_query("
   SELECT `GroupID`
   FROM `torrents`
   WHERE `ID` = '$TorrentID'
   ");
-if (!$DB->has_results()) {
+if (!$db->has_results()) {
     $Err = "A torrent with that ID doesn't exist!";
 }
-list($GroupID) = $DB->next_record();
+list($GroupID) = $db->next_record();
 
 if (!empty($Err)) {
     error($Err);
@@ -104,41 +104,41 @@ if (!empty($Err)) {
     error();
 }
 
-$DB->prepared_query("
+$db->prepared_query("
   SELECT `ID`
   FROM `reportsv2`
   WHERE `TorrentID` = '$TorrentID'
-    AND `ReporterID` = ".db_string($LoggedUser['ID'])."
+    AND `ReporterID` = ".db_string($user['ID'])."
     AND `ReportedTime` > '".time_minus(3)."'");
-if ($DB->has_results()) {
+if ($db->has_results()) {
     header("Location: torrents.php?torrentid=$TorrentID");
     error();
 }
 
-$DB->prepared_query("
+$db->prepared_query("
   INSERT INTO `reportsv2`
     (`ReporterID`, `TorrentID`, `Type`, `UserComment`, `Status`, `ReportedTime`, `Track`, `Image`, `ExtraID`, `Link`)
   VALUES
-    (".db_string($LoggedUser['ID']).", $TorrentID, '".db_string($Type)."', '$Extra', 'New', NOW(), '".db_string($Tracks)."', '".db_string($Images)."', '".db_string($ExtraIDs)."', '".db_string($Links)."')");
+    (".db_string($user['ID']).", $TorrentID, '".db_string($Type)."', '$Extra', 'New', NOW(), '".db_string($Tracks)."', '".db_string($Images)."', '".db_string($ExtraIDs)."', '".db_string($Links)."')");
 
-$ReportID = $DB->inserted_id();
+$ReportID = $db->inserted_id();
 
-$DB->prepared_query("
+$db->prepared_query("
   SELECT `UserID`
   FROM `torrents`
   WHERE `ID` = $TorrentID");
-list($UploaderID) = $DB->next_record();
-$DB->prepared_query("
+list($UploaderID) = $db->next_record();
+$db->prepared_query("
   SELECT `title`, `subject`, `object`
   FROM `torrents_group`
   WHERE `id` = '$GroupID'
   ");
-list($GroupNameEng, $GroupTitle2, $GroupNameJP) = $DB->next_record();
+list($GroupNameEng, $GroupTitle2, $GroupNameJP) = $db->next_record();
 $GroupName = $GroupNameEng ? $GroupNameEng : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP);
 
 Misc::send_pm($UploaderID, 0, "Torrent Reported: $GroupName", "Your torrent, \"[url=".site_url()."torrents.php?torrentid=$TorrentID]".$GroupName."[/url]\", was reported for the reason \"".$ReportType['title']."\".\n\nThe reporter also said: \"$Extra\"\n\nIf you think this report was in error, please contact staff. Failure to challenge some types of reports in a timely manner will be regarded as a lack of defense and may result in the torrent being deleted.");
 
-$Cache->delete_value("reports_torrent_$TorrentID");
-$Cache->increment('num_torrent_reportsv2');
+$cache->delete_value("reports_torrent_$TorrentID");
+$cache->increment('num_torrent_reportsv2');
 
 header("Location: torrents.php?torrentid=$TorrentID");

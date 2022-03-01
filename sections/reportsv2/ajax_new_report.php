@@ -10,7 +10,7 @@ if (!check_perms('admin_reports')) {
 }
 
 
-$DB->prepared_query("
+$db->prepared_query("
   SELECT
     r.ID,
     r.ReporterID,
@@ -69,24 +69,24 @@ $DB->prepared_query("
   ORDER BY ReportedTime ASC
   LIMIT 1");
 
-    if (!$DB->has_results()) {
+    if (!$db->has_results()) {
         error();
     }
 
     list($ReportID, $ReporterID, $ReporterName, $TorrentID, $Type, $UserComment, $ResolverID, $ResolverName, $Status, $ReportedTime, $LastChangeTime,
       $ModComment, $Tracks, $Images, $ExtraIDs, $Links, $LogMessage, $GroupName, $GroupID, $ArtistID, $ArtistName, $Year, $CategoryID, $Time, $Remastered, $RemasterTitle,
-      $RemasterYear, $Media, $Format, $Encoding, $Size, $HasCue, $HasLog, $LogScore, $UploaderID, $UploaderName) = $DB->next_record(MYSQLI_BOTH, array("ModComment"));
+      $RemasterYear, $Media, $Format, $Encoding, $Size, $HasCue, $HasLog, $LogScore, $UploaderID, $UploaderName) = $db->next_record(MYSQLI_BOTH, array("ModComment"));
 
     if (!$GroupID) {
         //Torrent already deleted
-        $DB->prepared_query("
+        $db->prepared_query("
         UPDATE reportsv2
         SET
           Status = 'Resolved',
           LastChangeTime = NOW(),
           ModComment = 'Report already dealt with (torrent deleted)'
         WHERE ID = $ReportID");
-        $Cache->decrement('num_torrent_reportsv2'); ?>
+        $cache->decrement('num_torrent_reportsv2'); ?>
 <div id="report<?=$ReportID?>" class="report box pad center"
   data-reportid="<?=$ReportID?>">
   <a href="reportsv2.php?view=report&amp;id=<?=$ReportID?>">Report
@@ -97,10 +97,10 @@ $DB->prepared_query("
 <?php
       error();
     }
-    $DB->prepared_query("
+    $db->prepared_query("
       UPDATE reportsv2
       SET Status = 'InProgress',
-        ResolverID = ".$LoggedUser['ID']."
+        ResolverID = ".$user['ID']."
       WHERE ID = $ReportID");
 
     if (array_key_exists($Type, $Types[$CategoryID])) {
@@ -139,7 +139,7 @@ $DB->prepared_query("
         ?>
     <div>
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$user['AuthKey']?>" />
       <input type="hidden" id="reportid<?=$ReportID?>"
         name="reportid" value="<?=$ReportID?>" />
       <input type="hidden" id="torrentid<?=$ReportID?>"
@@ -167,19 +167,19 @@ $DB->prepared_query("
           <a href="log.php?search=Torrent+<?=$TorrentID?>"><?=$TorrentID?></a> (Deleted)
           <?php } else { ?>
           <?=$LinkName?>
-          <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>"
+          <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>"
             title="Download" class="brackets tooltip">DL</a>
           uploaded by <a href="user.php?id=<?=$UploaderID?>"><?=$UploaderName?></a> <?=time_diff($Time)?>
           <br />
           <div style="text-align: right;">was reported by <a
               href="user.php?id=<?=$ReporterID?>"><?=$ReporterName?></a> <?=time_diff($ReportedTime)?> for the reason: <strong><?=$ReportType['title']?></strong></div>
-          <?php $DB->prepared_query("
+          <?php $db->prepared_query("
             SELECT r.ID
             FROM reportsv2 AS r
               LEFT JOIN torrents AS t ON t.ID = r.TorrentID
             WHERE r.Status != 'Resolved'
               AND t.GroupID = $GroupID");
-        $GroupOthers = ($DB->record_count() - 1);
+        $GroupOthers = ($db->record_count() - 1);
 
         if ($GroupOthers > 0) { ?>
           <div style="text-align: right;">
@@ -187,13 +187,13 @@ $DB->prepared_query("
               <?=(($GroupOthers > 1) ? "are $GroupOthers other reports" : "is 1 other report")?>
               for torrents in this group</a>
           </div>
-          <?php $DB->prepared_query("
+          <?php $db->prepared_query("
             SELECT t.UserID
             FROM reportsv2 AS r
               JOIN torrents AS t ON t.ID = r.TorrentID
             WHERE r.Status != 'Resolved'
               AND t.UserID = $UploaderID");
-        $UploaderOthers = ($DB->record_count() - 1);
+        $UploaderOthers = ($db->record_count() - 1);
 
         if ($UploaderOthers > 0) { ?>
           <div style="text-align: right;">
@@ -204,7 +204,7 @@ $DB->prepared_query("
           </div>
           <?php }
 
-        $DB->prepared_query("
+        $db->prepared_query("
             SELECT DISTINCT req.ID,
               req.FillerID,
               um.Username,
@@ -216,9 +216,9 @@ $DB->prepared_query("
             WHERE rep.Status != 'Resolved'
               AND req.TimeFilled > '2010-03-04 02:31:49'
               AND req.TorrentID = $TorrentID");
-        $Requests = $DB->has_results();
+        $Requests = $db->has_results();
         if ($Requests > 0) {
-            while (list($RequestID, $FillerID, $FillerName, $FilledTime) = $DB->next_record()) {
+            while (list($RequestID, $FillerID, $FillerName, $FilledTime) = $db->next_record()) {
                 ?>
           <div style="text-align: right;">
             <strong class="important_text"><a
@@ -266,7 +266,7 @@ $DB->prepared_query("
         $First = true;
         $Extras = explode(' ', $ExtraIDs);
         foreach ($Extras as $ExtraID) {
-            $DB->prepared_query("
+            $db->prepared_query("
                 SELECT
                   tg.Name,
                   tg.ID,
@@ -303,7 +303,7 @@ $DB->prepared_query("
                 GROUP BY tg.ID");
 
             list($ExtraGroupName, $ExtraGroupID, $ExtraArtistID, $ExtraArtistName, $ExtraYear, $ExtraTime, $ExtraRemastered, $ExtraRemasterTitle,
-              $ExtraRemasterYear, $ExtraMedia, $ExtraFormat, $ExtraEncoding, $ExtraSize, $ExtraHasCue, $ExtraHasLog, $ExtraLogScore, $ExtraUploaderID, $ExtraUploaderName) = Misc::display_array($DB->next_record());
+              $ExtraRemasterYear, $ExtraMedia, $ExtraFormat, $ExtraEncoding, $ExtraSize, $ExtraHasCue, $ExtraHasLog, $ExtraLogScore, $ExtraUploaderID, $ExtraUploaderName) = Misc::display_array($db->next_record());
 
 
             if ($ExtraGroupName) {
@@ -316,7 +316,7 @@ $DB->prepared_query("
                 } ?>
           <?=($First ? '' : '<br />')?>
           <?=$ExtraLinkName?>
-          <a href="torrents.php?action=download&amp;id=<?=$ExtraID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>"
+          <a href="torrents.php?action=download&amp;id=<?=$ExtraID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>"
             title="Download" class="brackets tooltip">DL</a>
           uploaded by <a
             href="user.php?id=<?=$ExtraUploaderID?>"><?=$ExtraUploaderName?></a> <?=time_diff($ExtraTime)?> <a href="#"

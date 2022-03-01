@@ -14,13 +14,13 @@ $Val->SetFields('title', '1', 'string', 'The title must be between 3 and 100 cha
 $Err = $Val->ValidateForm($_POST);
 
 if (!$Err) {
-    $DB->prepared_query("
+    $db->prepared_query("
       SELECT ID
       FROM wiki_articles
       WHERE Title = '$P[title]'");
 
-    if ($DB->has_results()) {
-        list($ID) = $DB->next_record();
+    if ($db->has_results()) {
+        list($ID) = $db->next_record();
         $Err = 'An article with that name already exists <a href="wiki.php?action=article&amp;id='.$ID.'">here</a>.';
     }
 }
@@ -41,7 +41,7 @@ if (check_perms('admin_manage_wiki')) {
         error(0);
     }
 
-    if ($Edit > $LoggedUser['EffectiveClass']) {
+    if ($Edit > $user['EffectiveClass']) {
         error('You can\'t restrict articles above your own level');
     }
 
@@ -53,22 +53,22 @@ if (check_perms('admin_manage_wiki')) {
     $Edit = 100;
 }
 
-$DB->prepared_query("
+$db->prepared_query("
   INSERT INTO wiki_articles
     (Revision, Title, Body, MinClassRead, MinClassEdit, Date, Author)
   VALUES
-    ('1', '$P[title]', '$P[body]', '$Read', '$Edit', NOW(), '$LoggedUser[ID]')");
+    ('1', '$P[title]', '$P[body]', '$Read', '$Edit', NOW(), '$user[ID]')");
 
-$ArticleID = $DB->inserted_id();
+$ArticleID = $db->inserted_id();
 $TitleAlias = Wiki::normalize_alias($_POST['title']);
 $Dupe = Wiki::alias_to_id($_POST['title']);
 
 if ($TitleAlias !== '' && $Dupe === false) {
-    $DB->prepared_query("
+    $db->prepared_query("
       INSERT INTO wiki_aliases (Alias, ArticleID)
       VALUES ('".db_string($TitleAlias)."', '$ArticleID')");
     Wiki::flush_aliases();
 }
 
-Misc::write_log("Wiki article $ArticleID (".$_POST['title'].") was created by ".$LoggedUser['Username']);
+Misc::write_log("Wiki article $ArticleID (".$_POST['title'].") was created by ".$user['Username']);
 header("Location: wiki.php?action=article&id=$ArticleID");

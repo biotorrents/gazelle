@@ -6,7 +6,7 @@ $ENV = ENV::go();
 $UserID = (int) $_REQUEST['userid'];
 Security::int($UserID);
 
-$DB->query("
+$db->query("
   SELECT
     m.Username,
     m.TwoFactor,
@@ -26,12 +26,12 @@ $DB->query("
     JOIN users_info AS i ON i.UserID = m.ID
     LEFT JOIN permissions AS p ON p.ID = m.PermissionID
   WHERE m.ID = ?", $UserID);
-list($Username, $TwoFactor, $PublicKey, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $Class, $InfoTitle) = $DB->next_record(MYSQLI_NUM, [5, 10]);
+list($Username, $TwoFactor, $PublicKey, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $Class, $InfoTitle) = $db->next_record(MYSQLI_NUM, [5, 10]);
 
 $TwoFA = new RobThree\Auth\TwoFactorAuth($ENV->SITE_NAME);
 $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]';
 
-if ((int) $UserID !== $LoggedUser['ID'] && !check_perms('users_edit_profiles', $Class)) {
+if ((int) $UserID !== $user['ID'] && !check_perms('users_edit_profiles', $Class)) {
     error(403);
 }
 
@@ -169,7 +169,7 @@ $ProfileRewards = Donations::get_profile_rewards($UserID);
         <input type="hidden" name="action" value="take_edit" />
         <input type="hidden" name="userid" value="<?=$UserID?>" />
         <input type="hidden" name="auth"
-          value="<?=$LoggedUser['AuthKey']?>" />
+          value="<?=$user['AuthKey']?>" />
       </div>
 
       <!-- Site Appearance -->
@@ -220,7 +220,7 @@ $ProfileRewards = Donations::get_profile_rewards($UserID);
 
         <!-- Stylesheet additions -->
         <tr id="style_additions_tr"
-          class="<?=($Stylesheets[$LoggedUser['StyleID']]['Additions'][0] ?? false)?'':'hidden'?>">
+          class="<?=($Stylesheets[$user['StyleID']]['Additions'][0] ?? false)?'':'hidden'?>">
 
           <td class="label">
             <strong>Stylesheet additions</strong>
@@ -232,7 +232,7 @@ $ProfileRewards = Donations::get_profile_rewards($UserID);
 
               # Main section
               echo '<section class="style_additions'; # open quote
-              echo ($Style['ID'] === $Stylesheets[$LoggedUser['StyleID']]['ID'])
+              echo ($Style['ID'] === $Stylesheets[$user['StyleID']]['ID'])
                 ? '"' # close quote
                 : ' hidden"'; # hide
               echo ' id="style_additions_' . $Style['Name'] . '">';
@@ -261,7 +261,7 @@ $ProfileRewards = Donations::get_profile_rewards($UserID);
               } # foreach $Addition
 
               # Fix to prevent multiple font entries
-              if ($Style['ID'] === $Stylesheets[$LoggedUser['StyleID']]['ID']) {
+              if ($Style['ID'] === $Stylesheets[$user['StyleID']]['ID']) {
                   # Select options, e.g., fonts
                   echo "<select class='style_additions' name='style_additions[]'>";
   
@@ -1051,11 +1051,11 @@ $RequestsVotedListChecked = checked(!in_array('requestsvoted_list', $Paranoia));
         </tr>
 
         <?php
-$DB->query("
+$db->query("
   SELECT COUNT(UserID)
   FROM users_info
   WHERE Inviter = ?", $UserID);
-list($Invited) = $DB->next_record();
+list($Invited) = $db->next_record();
 ?>
 
         <!-- Invitees -->
@@ -1073,11 +1073,11 @@ list($Invited) = $DB->next_record();
         </tr>
 
         <?php
-$DB->query("
+$db->query("
   SELECT COUNT(ArtistID)
   FROM torrents_artists
   WHERE UserID = ?", $UserID);
-list($ArtistsAdded) = $DB->next_record();
+list($ArtistsAdded) = $db->next_record();
 ?>
 
         <!-- Artists added -->
@@ -1208,7 +1208,7 @@ list($ArtistsAdded) = $DB->next_record();
               </tr>
 
               <?php
-              $DB->query("
+              $db->query("
               SELECT
                 `ID`,
                 `Name`,
@@ -1224,7 +1224,7 @@ list($ArtistsAdded) = $DB->next_record();
                 DESC
               ");
 
-              foreach ($DB->to_array(false, MYSQLI_ASSOC, false) as $row) { ?>
+              foreach ($db->to_array(false, MYSQLI_ASSOC, false) as $row) { ?>
               <tr>
                 <td>
                   <?= $row['Name'] ?>
@@ -1236,7 +1236,7 @@ list($ArtistsAdded) = $DB->next_record();
 
                 <td style='text-align: center'>
                   <a
-                    href='user.php?action=token&amp;do=revoke&amp;user_id=<?=$LoggedUser['ID'] ?>&amp;token_id=<?= $row['ID'] ?>'>Revoke</a>
+                    href='user.php?action=token&amp;do=revoke&amp;user_id=<?=$user['ID'] ?>&amp;token_id=<?= $row['ID'] ?>'>Revoke</a>
               </tr>
               <?php
               } /* foreach */ ?>
@@ -1244,7 +1244,7 @@ list($ArtistsAdded) = $DB->next_record();
 
             <p>
               <a
-                href='user.php?action=token&amp;user_id=<?= $LoggedUser['ID'] ?>'>Click
+                href='user.php?action=token&amp;user_id=<?= $user['ID'] ?>'>Click
                 here to create a new token</a>
             </p>
           </td>

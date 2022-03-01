@@ -2,7 +2,7 @@
 #declare(strict_types=1);
 
 enforce_login();
-if ($LoggedUser['DisablePoints']) {
+if ($user['DisablePoints']) {
     View::header('Store'); ?>
 <div>
   <h2>Denied</h2>

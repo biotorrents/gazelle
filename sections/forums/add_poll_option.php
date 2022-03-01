@@ -11,7 +11,7 @@ if (!is_number($ThreadID)) {
 }
 
 if (!check_perms('site_moderate_forums')) {
-    $DB->query("
+    $db->query("
     SELECT
       `ForumID`
     FROM
@@ -19,7 +19,7 @@ if (!check_perms('site_moderate_forums')) {
     WHERE
       `ID` = $ThreadID
     ");
-    list($ForumID) = $DB->next_record();
+    list($ForumID) = $db->next_record();
 
     /*
     if (!in_array($ForumID, FORUMS_TO_REVEAL_VOTERS)) {
@@ -28,7 +28,7 @@ if (!check_perms('site_moderate_forums')) {
     */
 }
 
-$DB->query("
+$db->query("
 SELECT
   `Answers`
 FROM
@@ -37,16 +37,16 @@ WHERE
   `TopicID` = $ThreadID
 ");
   
-if (!$DB->has_results()) {
+if (!$db->has_results()) {
     error(404);
 }
 
-list($Answers) = $DB->next_record(MYSQLI_NUM, false);
+list($Answers) = $db->next_record(MYSQLI_NUM, false);
 $Answers = unserialize($Answers);
 $Answers[] = $NewOption;
 $Answers = serialize($Answers);
 
-$DB->query("
+$db->query("
 UPDATE
   `forums_polls`
 SET
@@ -54,6 +54,6 @@ SET
 WHERE
   `TopicID` = $ThreadID
 ");
-$Cache->delete_value("polls_$ThreadID");
+$cache->delete_value("polls_$ThreadID");
 
 header("Location: forums.php?action=viewthread&threadid=$ThreadID");

@@ -9,7 +9,7 @@ if (!$GroupID || !is_number($GroupID)) {
 }
 
 if (!check_perms('torrents_edit') && !check_perms('screenshots_add') && !check_perms('screenshots_delete')) {
-    $DB->query("
+    $db->query("
     SELECT
       `UserID`
     FROM
@@ -18,7 +18,7 @@ if (!check_perms('torrents_edit') && !check_perms('screenshots_add') && !check_p
       `GroupID` = '$GroupID'
     ")
     ;
-    if (!in_array($LoggedUser['ID'], $DB->collect('UserID'))) {
+    if (!in_array($user['ID'], $db->collect('UserID'))) {
         error(403);
     }
 }
@@ -34,7 +34,7 @@ if (count($Screenshots) > 10) {
     error("You cannot add more than 10 publications to a group");
 }
 
-$DB->query("
+$db->query("
 SELECT
   `user_id`,
   `doi`
@@ -46,8 +46,8 @@ WHERE
 
 // $Old is an array of the form URL => UserID where UserID is the ID of the User who originally uploaded that image.
 $Old = [];
-if ($DB->has_results()) {
-    while ($S = $DB->next_record(MYSQLI_ASSOC)) {
+if ($db->has_results()) {
+    while ($S = $db->next_record(MYSQLI_ASSOC)) {
         $Old[$S['Image']] = $S['UserID'];
     }
 }
@@ -68,7 +68,7 @@ if (!empty($Deleted)) {
         foreach ($Deleted as $S) {
 
             // If the user who submitted this request uploaded the image, add the image to the list.
-            if ($Old[$S] === $LoggedUser['ID']) {
+            if ($Old[$S] === $user['ID']) {
                 $DeleteList[] = $S;
             } else {
                 error(403);
@@ -78,7 +78,7 @@ if (!empty($Deleted)) {
 
     if (!empty($DeleteList)) {
         $ScreenDel = '';
-        $DB->prepared_query("
+        $db->prepared_query("
         DELETE
         FROM
           `literature`
@@ -90,22 +90,22 @@ if (!empty($Deleted)) {
 
         }
 
-        Torrents::write_group_log($GroupID, 0, $LoggedUser['ID'], "Deleted screenshot(s) ".implode(' , ', $DeleteList), 0);
-        Misc::write_log("Screenshots ( ".implode(' , ', $DeleteList)." ) deleted from Torrent Group ".$GroupID." by ".$LoggedUser['Username']);
+        Torrents::write_group_log($GroupID, 0, $user['ID'], "Deleted screenshot(s) ".implode(' , ', $DeleteList), 0);
+        Misc::write_log("Screenshots ( ".implode(' , ', $DeleteList)." ) deleted from Torrent Group ".$GroupID." by ".$user['Username']);
     }
 }
 
 // New screenshots
 if (!empty($New)) {
     $Screenshot = '';
-    $DB->prepared_query(
+    $db->prepared_query(
         "
     INSERT INTO `literature`
       (`group_id`, `user_id`, `timestamp`, `doi`)
     VALUES
       (?, ?, NOW(), ?)",
         $GroupID,
-        $LoggedUser['ID'],
+        $user['ID'],
         $Screenshot
     );
 
@@ -113,9 +113,9 @@ if (!empty($New)) {
 
     }
 
-    Torrents::write_group_log($GroupID, 0, $LoggedUser['ID'], "Added screenshot(s) ".implode(' , ', $New), 0);
-    Misc::write_log("Screenshots ( ".implode(' , ', $New)." ) added to Torrent Group ".$GroupID." by ".$LoggedUser['Username']);
+    Torrents::write_group_log($GroupID, 0, $user['ID'], "Added screenshot(s) ".implode(' , ', $New), 0);
+    Misc::write_log("Screenshots ( ".implode(' , ', $New)." ) added to Torrent Group ".$GroupID." by ".$user['Username']);
 }
 
-$Cache->delete_value("torrents_details_".$GroupID);
+$cache->delete_value("torrents_details_".$GroupID);
 header("Location: torrents.php?id=$GroupID");

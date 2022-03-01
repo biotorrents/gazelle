@@ -3,12 +3,12 @@
 User topic subscription page
 */
 
-if (!empty($LoggedUser['DisableForums'])) {
+if (!empty($user['DisableForums'])) {
   json_die('failure');
 }
 
-if (isset($LoggedUser['PostsPerPage'])) {
-  $PerPage = $LoggedUser['PostsPerPage'];
+if (isset($user['PostsPerPage'])) {
+  $PerPage = $user['PostsPerPage'];
 } else {
   $PerPage = POSTS_PER_PAGE;
 }
@@ -25,7 +25,7 @@ $sql = '
     JOIN users_subscriptions AS s ON s.TopicID = t.ID
     LEFT JOIN forums AS f ON f.ID = t.ForumID
     LEFT JOIN forums_last_read_topics AS l ON p.TopicID = l.TopicID AND l.UserID = s.UserID
-  WHERE s.UserID = '.$LoggedUser['ID'].'
+  WHERE s.UserID = '.$user['ID'].'
     AND p.ID <= IFNULL(l.PostID, t.LastPostID)
     AND ' . Forums::user_forums_sql();
 if ($ShowUnread) {
@@ -36,13 +36,13 @@ $sql .= "
   GROUP BY t.ID
   ORDER BY t.LastPostID DESC
   LIMIT $Limit";
-$PostIDs = $DB->query($sql);
-$DB->query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
+$PostIDs = $db->query($sql);
+$db->query('SELECT FOUND_ROWS()');
+list($NumResults) = $db->next_record();
 
 if ($NumResults > $PerPage * ($Page - 1)) {
-  $DB->set_query_id($PostIDs);
-  $PostIDs = $DB->collect('ID');
+  $db->set_query_id($PostIDs);
+  $PostIDs = $db->collect('ID');
   $sql = '
     SELECT
       f.ID AS ForumID,
@@ -68,11 +68,11 @@ if ($NumResults > $PerPage * ($Page - 1)) {
       LEFT JOIN users_main AS ed ON ed.ID = um.ID
     WHERE p.ID IN ('.implode(',', $PostIDs).')
     ORDER BY f.Name ASC, t.LastPostID DESC';
-  $DB->query($sql);
+  $db->query($sql);
 }
 
 $JsonPosts = [];
-while (list($ForumID, $ForumName, $TopicID, $ThreadTitle, $Body, $LastPostID, $Locked, $Sticky, $PostID, $AuthorID, $AuthorName, $AuthorAvatar, $EditedUserID, $EditedTime, $EditedUsername) = $DB->next_record()) {
+while (list($ForumID, $ForumName, $TopicID, $ThreadTitle, $Body, $LastPostID, $Locked, $Sticky, $PostID, $AuthorID, $AuthorName, $AuthorAvatar, $EditedUserID, $EditedTime, $EditedUsername) = $db->next_record()) {
   $JsonPost = array(
     'forumId' => (int)$ForumID,
     'forumName' => $ForumName,

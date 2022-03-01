@@ -38,7 +38,7 @@ function esc(mixed $string)
 function logout()
 {
     global $SessionID;
-    G::$LoggedUser['ID'] = G::$LoggedUser['ID'] ?? null;
+    G::$user['ID'] = G::$user['ID'] ?? null;
     
     Cookie::del('session');
     Cookie::del('userid');
@@ -47,19 +47,19 @@ function logout()
     #Cookie::flush();
 
     if ($SessionID) {
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
         DELETE FROM users_sessions
-          WHERE UserID = '" . G::$LoggedUser['ID'] . "'
+          WHERE UserID = '" . G::$user['ID'] . "'
           AND SessionID = '".db_string($SessionID)."'");
 
-        G::$Cache->begin_transaction('users_sessions_' . G::$LoggedUser['ID']);
-        G::$Cache->delete_row($SessionID);
-        G::$Cache->commit_transaction(0);
+        G::$cache->begin_transaction('users_sessions_' . G::$user['ID']);
+        G::$cache->delete_row($SessionID);
+        G::$cache->commit_transaction(0);
     }
 
-    G::$Cache->delete_value('user_info_' . G::$LoggedUser['ID']);
-    G::$Cache->delete_value('user_stats_' . G::$LoggedUser['ID']);
-    G::$Cache->delete_value('user_info_heavy_' . G::$LoggedUser['ID']);
+    G::$cache->delete_value('user_info_' . G::$user['ID']);
+    G::$cache->delete_value('user_stats_' . G::$user['ID']);
+    G::$cache->delete_value('user_info_heavy_' . G::$user['ID']);
 
     Http::redirect('login');
 }
@@ -69,13 +69,13 @@ function logout()
  */
 function logout_all_sessions()
 {
-    $UserID = G::$LoggedUser['ID'];
+    $UserID = G::$user['ID'];
 
-    G::$DB->prepared_query("
+    G::$db->prepared_query("
     DELETE FROM users_sessions
       WHERE UserID = '$UserID'");
 
-    G::$Cache->delete_value('users_sessions_' . $UserID);
+    G::$cache->delete_value('users_sessions_' . $UserID);
     logout();
 }
 
@@ -86,7 +86,7 @@ function enforce_login()
 {
     global $SessionID;
     
-    if (!$SessionID || !G::$LoggedUser) {
+    if (!$SessionID || !G::$user) {
         Cookie::set('redirect', $_SERVER['REQUEST_URI']);
         logout();
     }
@@ -105,8 +105,8 @@ function authorize($Ajax = false)
     if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
         return true;
     } else {
-        if (empty($_REQUEST['auth']) || $_REQUEST['auth'] !== G::$LoggedUser['AuthKey']) {
-            send_irc(DEBUG_CHAN, G::$LoggedUser['Username']." just failed authorize on ".$_SERVER['REQUEST_URI'].(!empty($_SERVER['HTTP_REFERER']) ? " coming from ".$_SERVER['HTTP_REFERER'] : ""));
+        if (empty($_REQUEST['auth']) || $_REQUEST['auth'] !== G::$user['AuthKey']) {
+            send_irc(DEBUG_CHAN, G::$user['Username']." just failed authorize on ".$_SERVER['REQUEST_URI'].(!empty($_SERVER['HTTP_REFERER']) ? " coming from ".$_SERVER['HTTP_REFERER'] : ""));
             error('Invalid authorization key. Go back, refresh, and try again.', $NoHTML = true);
             return false;
         }
@@ -327,13 +327,13 @@ function add_json_info($Json)
         ]);
     }
     if (!isset($Json['debug']) && check_perms('site_debug')) {
-        /** @var DEBUG $Debug */
-        #global $Debug;
-        $Debug = Debug::go();
+        /** @var DEBUG $debug */
+        #global $debug;
+        $debug = Debug::go();
         $Json = array_merge($Json, [
             'debug' => [
-                'queries' => $Debug->get_queries(),
-                'searches' => $Debug->get_sphinxql_queries()
+                'queries' => $debug->get_queries(),
+                'searches' => $debug->get_sphinxql_queries()
             ],
         ]);
     }
@@ -468,7 +468,7 @@ function check_paranoia($Property, $Paranoia = false, $UserClass = false, $UserI
         }
         return $all;
     } else {
-        if (($UserID !== false) && (G::$LoggedUser['ID'] == $UserID)) {
+        if (($UserID !== false) && (G::$user['ID'] == $UserID)) {
             return PARANOIA_ALLOWED;
         }
 

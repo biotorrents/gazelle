@@ -68,7 +68,7 @@ class DonationsView
 
     public static function render_donor_stats($UserID)
     {
-        $OwnProfile = G::$LoggedUser['ID'] === $UserID;
+        $OwnProfile = G::$user['ID'] === $UserID;
         if (check_perms("users_mod") || $OwnProfile || Donations::is_visible($UserID)) {
             ?>
 <div class="box box_info box_userinfo_donor_stats">

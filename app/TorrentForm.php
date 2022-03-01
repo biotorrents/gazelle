@@ -106,7 +106,7 @@ class TorrentForm
             $Announces = ANNOUNCE_URLS[0];
             #$Announces = call_user_func_array('array_merge', ANNOUNCE_URLS);
 
-            $TorrentPass = G::$LoggedUser['torrent_pass'];
+            $TorrentPass = G::$user['torrent_pass'];
             $TorrentSource = Users::get_upload_sources()[0];
 
             echo $twig->render(
@@ -160,19 +160,19 @@ HTML;
     private function head()
     {
         $ENV = ENV::go();
-        G::$DB->query(
+        G::$db->query(
             "
         SELECT
           COUNT(`ID`)
         FROM
           `torrents`
         WHERE
-          `UserID` = ".G::$LoggedUser['ID']
+          `UserID` = ".G::$user['ID']
         );
-        list($Uploads) = G::$DB->next_record();
+        list($Uploads) = G::$db->next_record();
         
         # Torrent form hidden values
-        $AuthKey = G::$LoggedUser['AuthKey'];
+        $AuthKey = G::$user['AuthKey'];
         $HTML = <<<HTML
         <form class="create_form box pad" name="torrent" action="" enctype="multipart/form-data" method="post"
           onsubmit="$('#post').raw().disabled = 'disabled';">
@@ -414,7 +414,7 @@ HTML;
         $ENV = ENV::go();
         $twig = Twig::go();
 
-        $QueryID = G::$DB->get_query_id();
+        $QueryID = G::$db->get_query_id();
         $Torrent = $this->Torrent;
 
         # Start printing the form
@@ -979,9 +979,9 @@ HTML;
               <td>
 HTML;
 
-            $GenreTags = G::$Cache->get_value('genre_tags');
+            $GenreTags = G::$cache->get_value('genre_tags');
             if (!$GenreTags) {
-                G::$DB->query("
+                G::$db->query("
                 SELECT
                   `Name`
                 FROM
@@ -992,8 +992,8 @@ HTML;
                   `Name`
                 ");
 
-                $GenreTags = G::$DB->collect('Name');
-                G::$Cache->cache_value('genre_tags', $GenreTags, 3600*6);
+                $GenreTags = G::$db->collect('Name');
+                G::$cache->cache_value('genre_tags', $GenreTags, 3600*6);
             }
           
             # todo: Find a better place for these
@@ -1223,6 +1223,6 @@ HTML;
         echo '</table>';
 
         # Drink a stiff one
-        G::$DB->set_query_id($QueryID);
+        G::$db->set_query_id($QueryID);
     } # End upload_form()
 } # End TorrentForm()

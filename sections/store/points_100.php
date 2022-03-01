@@ -3,34 +3,34 @@ declare(strict_types=1);
 
 $ENV = ENV::go();
 
-$UserID = $LoggedUser['ID'];
+$UserID = $user['ID'];
 $Purchase = "1,000 $ENV->BONUS_POINTS";
 
 $GiB = 1024 * 1024 * 1024;
 $Cost = 15.0 * $GiB;
 
-$DB->prepared_query("
+$db->prepared_query("
   SELECT Uploaded
   FROM users_main
   WHERE ID = $UserID");
 
-if ($DB->has_results()) {
-    list($Upload) = $DB->next_record();
+if ($db->has_results()) {
+    list($Upload) = $db->next_record();
 
     if ($Upload >= $Cost) {
-        $DB->prepared_query("
+        $db->prepared_query("
           UPDATE users_main
           SET BonusPoints = BonusPoints + 1000,
             Uploaded = Uploaded - $Cost
           WHERE ID = $UserID");
 
-        $DB->prepared_query("
+        $db->prepared_query("
           UPDATE users_info
           SET AdminComment = CONCAT('".sqltime()." - $Purchase from the store\n\n', AdminComment)
           WHERE UserID = $UserID");
 
-        $Cache->delete_value('user_info_heavy_'.$UserID);
-        $Cache->delete_value('user_stats_'.$UserID);
+        $cache->delete_value('user_info_heavy_'.$UserID);
+        $cache->delete_value('user_stats_'.$UserID);
         $Worked = true;
     } else {
         $Worked = false;

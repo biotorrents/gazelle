@@ -27,14 +27,14 @@ class Badges
         if (self::has_badge($UserID, $BadgeID)) {
             return false;
         } else {
-            $QueryID = G::$DB->get_query_id();
-            G::$DB->prepared_query("
+            $QueryID = G::$db->get_query_id();
+            G::$db->prepared_query("
             INSERT INTO `users_badges`(`UserID`, `BadgeID`)
             VALUES($UserID, $BadgeID)
             ");
 
-            G::$DB->set_query_id($QueryID);
-            G::$Cache->delete_value("user_info_$UserID");
+            G::$db->set_query_id($QueryID);
+            G::$cache->delete_value("user_info_$UserID");
             return true;
         }
     }
@@ -83,14 +83,14 @@ class Badges
      */
     public static function display_badge($BadgeID, $Tooltip = false)
     {
-        $Debug = Debug::go();
+        $debug = Debug::go();
 
         $html = '';
-        if (($Badges = G::$Cache->get_value('badges')) && array_key_exists($BadgeID, $Badges)) {
+        if (($Badges = G::$cache->get_value('badges')) && array_key_exists($BadgeID, $Badges)) {
             extract($Badges[$BadgeID]);
         } else {
             self::update_badge_cache();
-            if (($Badges = G::$Cache->get_value('badges')) && array_key_exists($BadgeID, $Badges)) {
+            if (($Badges = G::$cache->get_value('badges')) && array_key_exists($BadgeID, $Badges)) {
                 extract($Badges[$BadgeID]);
             }
         }
@@ -123,9 +123,9 @@ class Badges
      */
     private static function update_badge_cache()
     {
-        $QueryID = G::$DB->get_query_id();
+        $QueryID = G::$db->get_query_id();
 
-        G::$DB->prepared_query("
+        G::$db->prepared_query("
         SELECT
           `ID`,
           `Icon`,
@@ -136,14 +136,14 @@ class Badges
         ");
 
         $badges = [];
-        if (G::$DB->has_results()) {
-            while (list($id, $icon, $name, $description) = G::$DB->next_record()) {
+        if (G::$db->has_results()) {
+            while (list($id, $icon, $name, $description) = G::$db->next_record()) {
                 $badges[$id] = array('Icon' => $icon, 'Name' => $name, 'Description' => $description);
             }
-            G::$Cache->cache_value('badges', $badges);
+            G::$cache->cache_value('badges', $badges);
         }
 
-        G::$DB->set_query_id($QueryID);
+        G::$db->set_query_id($QueryID);
     }
 
 
@@ -152,11 +152,11 @@ class Badges
      */
     public static function get_all_badges()
     {
-        if (($Badges = G::$Cache->get_value('badges'))) {
+        if (($Badges = G::$cache->get_value('badges'))) {
             return $Badges;
         } else {
             self::update_badge_cache();
-            return G::$Cache->get_value('badges');
+            return G::$cache->get_value('badges');
         }
     }
 }

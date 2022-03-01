@@ -9,7 +9,7 @@ authorize();
 $UserID = (int) $_REQUEST['userid'];
 Security::int($UserID);
 
-// For this entire page, we should generally be using $UserID not $LoggedUser['ID'] and $U[] not $LoggedUser[]
+// For this entire page, we should generally be using $UserID not $user['ID'] and $U[] not $user[]
 $U = Users::user_info($UserID);
 
 if (!$U) {
@@ -17,8 +17,8 @@ if (!$U) {
 }
 
 $Permissions = Permissions::get_permissions($U['PermissionID']);
-if ((int) $UserID !== $LoggedUser['ID'] && !check_perms('users_edit_profiles', $Permissions['Class'])) {
-    send_irc(ADMIN_CHAN, 'User '.$LoggedUser['Username'].' ('.site_url().'user.php?id='.$LoggedUser['ID'].') just tried to edit the profile of '.site_url().'user.php?id='.$_REQUEST['userid']);
+if ((int) $UserID !== $user['ID'] && !check_perms('users_edit_profiles', $Permissions['Class'])) {
+    send_irc(ADMIN_CHAN, 'User '.$user['Username'].' ('.site_url().'user.php?id='.$user['ID'].') just tried to edit the profile of '.site_url().'user.php?id='.$_REQUEST['userid']);
     error(403);
 }
 
@@ -142,11 +142,11 @@ if (isset($_POST['p_donor_stats'])) {
 
 // End building $Paranoia
 
-$DB->query("
+$db->query("
   SELECT Email, PassHash, IRCKey
   FROM users_main
   WHERE ID = ?", $UserID);
-list($CurEmail, $CurPassHash, $CurIRCKey) = $DB->next_record();
+list($CurEmail, $CurPassHash, $CurIRCKey) = $db->next_record();
 
 function require_password($Setting = false)
 {
@@ -183,12 +183,12 @@ if (isset($_POST['resetpasskey'])) {
     require_password("Reset Passkey");
 }
 
-if ($LoggedUser['DisableAvatar'] && $_POST['avatar'] != $U['Avatar']) {
+if ($user['DisableAvatar'] && $_POST['avatar'] != $U['Avatar']) {
     error('Your avatar privileges have been revoked.');
 }
 
-if (!empty($LoggedUser['DefaultSearch'])) {
-    $Options['DefaultSearch'] = $LoggedUser['DefaultSearch'];
+if (!empty($user['DefaultSearch'])) {
+    $Options['DefaultSearch'] = $user['DefaultSearch'];
 }
 
 $Options['DisableGrouping2']   = (!empty($_POST['disablegrouping']) ? 0 : 1);
@@ -211,8 +211,8 @@ $Options['ShowExtraCovers']    = (int)!empty($_POST['show_extra_covers']);
 $Options['AutoComplete']       = (int)$_POST['autocomplete'];
 $Options['StyleAdditions']     = $_POST['style_additions'] ?? [];
 
-if (isset($LoggedUser['DisableFreeTorrentTop10'])) {
-    $Options['DisableFreeTorrentTop10'] = $LoggedUser['DisableFreeTorrentTop10'];
+if (isset($user['DisableFreeTorrentTop10'])) {
+    $Options['DisableFreeTorrentTop10'] = $user['DisableFreeTorrentTop10'];
 }
 
 if (!empty($_POST['sorthide'])) {
@@ -267,21 +267,21 @@ foreach ($Badges as $BadgeID => $OldDisplayed) {
 }
 // End Badge settings
 
-$Cache->begin_transaction("user_info_$UserID");
-$Cache->update_row(false, [
+$cache->begin_transaction("user_info_$UserID");
+$cache->update_row(false, [
   'Avatar' => esc($_POST['avatar']),
     'Paranoia' => $Paranoia,
     'Badges' => $NewBadges
 ]);
-$Cache->commit_transaction(0);
+$cache->commit_transaction(0);
 
-$Cache->begin_transaction("user_info_heavy_$UserID");
-$Cache->update_row(false, [
+$cache->begin_transaction("user_info_heavy_$UserID");
+$cache->update_row(false, [
   'StyleID' => $_POST['stylesheet'],
   'StyleURL' => esc($_POST['styleurl'])
 ]);
-$Cache->update_row(false, $Options);
-$Cache->commit_transaction(0);
+$cache->update_row(false, $Options);
+$cache->commit_transaction(0);
 
 $SQL = "
   UPDATE users_main AS m
@@ -300,7 +300,7 @@ $SQL = "
     m.Paranoia = '".db_string(json_encode($Paranoia))."'";
 
 if ($ResetPassword) {
-    $ChangerIP = Crypto::encrypt($LoggedUser['IP']);
+    $ChangerIP = Crypto::encrypt($user['IP']);
     $PassHash = Users::make_sec_hash($_POST['new_pass_1']);
     $SQL.= ",m.PassHash = '".db_string($PassHash)."'";
 }
@@ -309,27 +309,27 @@ if (isset($_POST['resetpasskey'])) {
     $UserInfo = Users::user_heavy_info($UserID);
     $OldPassKey = $UserInfo['torrent_pass'];
     $NewPassKey = Users::make_secret();
-    $ChangerIP = Crypto::encrypt($LoggedUser['IP']);
+    $ChangerIP = Crypto::encrypt($user['IP']);
     $SQL .= ",m.torrent_pass = '$NewPassKey'";
 
-    $Cache->begin_transaction("user_info_heavy_$UserID");
-    $Cache->update_row(false, ['torrent_pass' => $NewPassKey]);
-    $Cache->commit_transaction(0);
-    $Cache->delete_value("user_$OldPassKey");
+    $cache->begin_transaction("user_info_heavy_$UserID");
+    $cache->update_row(false, ['torrent_pass' => $NewPassKey]);
+    $cache->commit_transaction(0);
+    $cache->delete_value("user_$OldPassKey");
     Tracker::update_tracker('change_passkey', ['oldpasskey' => $OldPassKey, 'newpasskey' => $NewPassKey]);
 }
 
 $SQL .= "WHERE m.ID = '".db_string($UserID)."'";
-$DB->query($SQL);
+$db->query($SQL);
 
 if ($BadgesChanged) {
-    $DB->query("
+    $db->query("
       UPDATE users_badges
       SET Displayed = 0
       WHERE UserID = ?", $UserID);
 
     if (!empty($BadgeIDs)) {
-        $DB->query("
+        $db->query("
           UPDATE users_badges
           SET Displayed = 1
           WHERE UserID = $UserID

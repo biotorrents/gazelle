@@ -5,7 +5,7 @@ $GroupID = (int) $_GET['id'];
 $TorrentID = (int) $_GET['torrentid'];
 Security::int($GroupID, $TorrentID);
 
-$DB->prepared_query("
+$db->prepared_query("
 SELECT
   t.`Media`,
   t.`FreeTorrent`,
@@ -30,7 +30,7 @@ WHERE
 ");
 
 
-list($Properties) = $DB->to_array(false, MYSQLI_BOTH);
+list($Properties) = $db->to_array(false, MYSQLI_BOTH);
 if (!$Properties) {
     error(404);
 }
@@ -53,7 +53,7 @@ if (!check_perms('site_moderate_requests')) {
   <form class="send_form" name="mass_message" action="torrents.php" method="post">
     <input type="hidden" name="action" value="takemasspm" />
     <input type="hidden" name="auth"
-      value="<?=$LoggedUser['AuthKey']?>" />
+      value="<?=$user['AuthKey']?>" />
     <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
     <input type="hidden" name="groupid" value="<?=$GroupID?>" />
 
