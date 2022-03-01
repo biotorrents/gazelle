@@ -163,4 +163,19 @@ class Text
                 $string
             );
     }
+
+
+    /**
+     * number_format
+     *
+     * Wrapper around number_format that casts to float.
+     * Hopefully temporary until we clean up the data.
+     *
+     * @see https://www.php.net/manual/en/function.number-format.php
+     */
+    public static function number_format(mixed $num, int $decimals = 0): string
+    {
+        $num = floatval($num);
+        return number_format($num, $decimals);
+    }
 }
