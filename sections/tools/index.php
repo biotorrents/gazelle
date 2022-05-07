@@ -6,7 +6,8 @@ declare(strict_types=1);
  * This page acts as a switch for the tools pages.
  */
 
- $ENV = ENV::go();
+$ENV = ENV::go();
+!d(Http::query());exit;
 
 if (isset($argv[1])) {
     $_REQUEST['action'] = $argv[1];

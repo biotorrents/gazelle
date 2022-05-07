@@ -27,14 +27,17 @@ if (!$News = $cache->get_value('news')) {
     $cache->cache_value('news_latest_title', $News[0][1], 0);
 }
 
+$userId = intval($user['ID']);
+#!d($user);exit;
+
 if ($user['LastReadNews'] !== $News[0][0] && count($News) > 0) {
-    $cache->begin_transaction("user_info_heavy_$UserID");
+    $cache->begin_transaction("user_info_heavy_{$userId}");
     $cache->update_row(false, array('LastReadNews' => $News[0][0]));
     $cache->commit_transaction(0);
     $db->query("
     UPDATE users_info
     SET LastReadNews = '".$News[0][0]."'
-    WHERE UserID = $UserID");
+    WHERE UserID = $userId");
     $user['LastReadNews'] = $News[0][0];
 }
 
@@ -191,7 +194,8 @@ if (($UserStats = $cache->get_value('stats_users')) === false) {
     $cache->cache_value('stats_users', $UserStats, 0);
 }
 ?>
-      <li>Users active today: <?=Text::number_format($UserStats['Day'])?> (<?=Text::number_format($UserStats['Day'] / $UserCount * 100, 2)?>%)
+      <li>Users active today: <?=Text::number_format($UserStats['Day'])?>
+        (<?=Text::number_format($UserStats['Day'] / $UserCount * 100, 2)?>%)
       </li>
       <li>Users active this week: <?=Text::number_format($UserStats['Week'])?>
         (<?=Text::number_format($UserStats['Week'] / $UserCount * 100, 2)?>%)
@@ -489,7 +493,7 @@ if (count($Recommend) >= 4) {
     <table class="torrent_table hidden" id="vanityhouse">
       <?php
   foreach ($Recommend as $Recommendations) {
-      list($GroupID, $UserID, $Username, $GroupName, $TagList) = $Recommendations;
+      list($GroupID, $userId, $Username, $GroupName, $TagList) = $Recommendations;
       $TagsStr = '';
       if ($TagList) {
           // No vanity.house tag.
@@ -506,7 +510,7 @@ if (count($Recommend) >= 4) {
       <tr>
         <td>
           <?=Artists::display_artists($Recommend_artists[$GroupID]) ?>
-          <a href="torrents.php?id=<?=$GroupID?>"><?=$GroupName?></a> (by <?=Users::format_username($UserID, false, false, false)?>)
+          <a href="torrents.php?id=<?=$GroupID?>"><?=$GroupName?></a> (by <?=Users::format_username($userId, false, false, false)?>)
           <?=$TagStr?>
         </td>
       </tr>
@@ -601,8 +605,8 @@ function contest()
     <ol style="padding-left: 5px;">
       <?php
   foreach ($Contest as $User) {
-      list($UserID, $Points, $Username) = $User; ?>
-      <li><?=Users::format_username($UserID, false, false, false)?>
+      list($userId, $Points, $Username) = $User; ?>
+      <li><?=Users::format_username($userId, false, false, false)?>
         (<?=Text::number_format($Points)?>)</li>
       <?php
   } ?>

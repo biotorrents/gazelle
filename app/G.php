@@ -19,6 +19,9 @@ class G
     public static $ENV = null;
     public static $user = null;
 
+    # temporary 500 error fix
+    public static $UserID = null;
+
 
     /**
      * __functions
@@ -68,5 +71,8 @@ class G
         self::$debug = Debug::go();
         self::$ENV = ENV::go();
         self::$user =& $user;
+        
+        # temporary 500 error fix
+        self::$UserID =& $UserID;
     }
 }

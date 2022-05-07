@@ -223,7 +223,7 @@ class Cache extends Memcache
         }
 
         $this->time += (microtime(true) - $startTime) * 1000;
-        return $return;
+        return $return ?? false;
     }
 
 

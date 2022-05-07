@@ -199,7 +199,7 @@ else {
 
 # IRC server address. Used for onsite chat tool
 define('BOT_SERVER', "irc.$ENV->SITE_DOMAIN");
-define('SOCKET_LISTEN_ADDRESS', 'localhost');
+define('SOCKET_LISTEN_ADDRESS', '10.0.0.4');
 define('SOCKET_LISTEN_PORT', 51010);
 define('BOT_NICK', 'ebooks');
 

@@ -58,6 +58,8 @@ $debug['time']->startMeasure('users', 'user handling');
 $Document = basename(parse_url($_SERVER['SCRIPT_NAME'], PHP_URL_PATH), '.php');
 
 $user = [];
+# temporary 500 error fix
+$UserID = [];
 $SessionID = false;
 $FullToken = null;
 
