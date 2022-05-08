@@ -65,12 +65,6 @@ $FullToken = null;
 
 // Only allow using the Authorization header for ajax endpoint
 if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
-    # Banned IP address
-    if (IPv4::isBanned($_SERVER['REMOTE_ADDR'])) {
-        header('Content-Type: application/json');
-        json_die('failure', 'your ip address has been banned');
-    }
-
     # Invalid auth header type
     # Bearer is correct according to RFC 6750
     # https://tools.ietf.org/html/rfc6750
@@ -108,7 +102,6 @@ if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
 
     # No user or revoked API token
     if (empty($user['ID']) || $Revoked === 1) {
-        log_token_attempt(G::$db);
         header('Content-Type: application/json');
         json_die('failure', 'token user mismatch');
     }
@@ -120,7 +113,6 @@ if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
     
         # User doesn't own that token
         if (!is_null($FullToken) && !Users::hasApiToken($UserID, $FullToken)) {
-            log_token_attempt(G::$db, $user['ID']);
             header('Content-type: application/json');
             json_die('failure', 'token revoked');
         }
@@ -130,7 +122,6 @@ if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
             if (is_null($FullToken)) {
                 logout($user['ID'], $SessionID);
             } else {
-                log_token_attempt(G::$db, $user['ID']);
                 header('Content-type: application/json');
                 json_die('failure', 'user disabled');
             }
@@ -220,7 +211,6 @@ if (isset($_COOKIE['session']) && isset($_COOKIE['userid'])) {
         logout($user['ID'], $SessionID);
         if (!is_null($FullToken)) {
             #$UserID->flushCache();
-            log_token_attempt(G::$db, $user['ID']);
             header('Content-type: application/json');
             json_die('error', 'invalid token');
         } else {

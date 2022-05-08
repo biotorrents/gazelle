@@ -27,6 +27,75 @@ class Json
 
 
     /**
+     * checkToken
+     *
+     * Validates an anthorization header.
+     */
+    public function checkToken()
+    {
+        $ENV = ENV::go();
+        
+        # no header present
+        if (empty($_SERVER["HTTP_AUTHORIZATION"])) {
+            return $this->failure("no authorization header present");
+        }
+
+        # https://tools.ietf.org/html/rfc6750
+        $authorizationHeader = explode(" ", esc($_SERVER["HTTP_AUTHORIZATION"]));
+
+        # too much whitespace
+        if (count($authorizationHeader) !== 2) {
+            return $this->failure("token must be given as \"Authorization: Bearer {\$token}\"");
+        }
+
+        # not rfc compliant
+        if ($authorizationHeader[0] !== "Bearer") {
+            return $this->failure("token must be given as \"Authorization: Bearer {\$token}\"");
+        }
+
+        # we have a token
+        $token = $authorizationHeader[1];
+
+        # revoke by default
+        $revoked = 1;
+        $userId = intval(
+            substr(
+                Crypto::decrypt(
+                    base64UrlDecode($token),
+                    $ENV->getPriv('ENCKEY')
+                ),
+                32
+            )
+        );
+    
+        # check database
+        if (!empty($userId)) {
+            [$user['ID'], $revoked] = G::$db->row("select UserID, Revoked from api_user_tokens where UserID = ?", [$userId]);
+        } else {
+            return $this->failure('invalid token format');
+        }
+    
+        # no user or revoked API token
+        if (empty($user['ID']) || intval($revoked) === 1) {
+            return $this->failure('token user mismatch');
+        }
+    
+        # user doesn't own that token
+        if (!is_null($token) && !Users::hasApiToken($userId, $token)) {
+            return $this->failure('token revoked');
+        }
+        
+        # user is disabled
+        if (Users::isDisabled($userId)) {
+            return $this->failure('user disabled');
+        }
+
+        # okay
+        return true;
+    }
+
+
+    /**
      * success
      */
     public function success(array $payload)
@@ -36,15 +105,15 @@ class Json
         }
 
         if (empty($payload)) {
-            return $this->failure(message: 'the server provided no payload', response: 500);
+            return $this->failure(message: "the server provided no payload", response: 500);
         }
 
-        header('Content-Type: application/json; charset=utf-8');
+        header("Content-Type: application/json; charset=utf-8");
         print json_encode(
             array_merge(
                 [
-                    'status' => 'success',
-                    'response' => $payload,
+                    "status" => "success",
+                    "response" => $payload,
                 ],
                 $this->info(),
                 $this->debug()
@@ -62,19 +131,19 @@ class Json
      * @param string $message The error set in the JSON response
      * @param $response HTTP error code (usually 4xx client errors)
      */
-    public function failure(string $message = 'bad request', int $response = 400)
+    public function failure(string $message = "bad request", int $response = 400)
     {
         if (headers_sent()) {
             return false;
         }
 
-        header('Content-Type: application/json; charset=utf-8');
+        header("Content-Type: application/json; charset=utf-8");
         print json_encode(
             array_merge(
                 [
-                    'status' => 'failure',
-                    'response' => $response,
-                    'error' => $message,
+                    "status" => "failure",
+                    "response" => $response,
+                    "error" => $message,
                 ],
                 $this->info(),
                 $this->debug(),
@@ -94,9 +163,9 @@ class Json
 
         if ($ENV->DEV) {
             return [
-                'debug' => [
-                    'queries'  => $debug->get_queries(),
-                    'searches' => $debug->get_sphinxql_queries(),
+                "debug" => [
+                    "queries"  => $debug->get_queries(),
+                    "searches" => $debug->get_sphinxql_queries(),
                 ],
             ];
         } else {
@@ -111,9 +180,9 @@ class Json
     private function info()
     {
         return [
-            'info' => [
-                'source' => $this->source,
-                'version' => $this->version,
+            "info" => [
+                "source" => $this->source,
+                "version" => $this->version,
             ]
         ];
     }
@@ -132,8 +201,8 @@ class Json
     {
         $ENV = ENV::go();
 
-        $token = $ENV->getPriv('SELF_API');
-        $params = implode('&', $params);
+        $token = $ENV->getPriv("SELF_API");
+        $params = implode("&", $params);
 
         $ch = curl_init();
 
@@ -146,7 +215,7 @@ class Json
             $ch,
             CURLOPT_HTTPHEADER,
             [
-                'Accept: application/json',
+                "Accept: application/json",
                 "Authorization: Bearer {$token}",
             ]
         );
