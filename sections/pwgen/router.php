@@ -9,4 +9,4 @@ declare(strict_types=1);
 # endpoints go here
 
 # start the router
-Flight::start();
+#Flight::start();
