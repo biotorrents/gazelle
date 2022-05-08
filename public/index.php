@@ -10,71 +10,71 @@ declare(strict_types=1);
  * Date:   Sat Jan 27 20:42:55 2018 -0100
  */
 
-# Autoload classes via Composer
-require_once __DIR__.'/../vendor/autoload.php';
+# autoload classes via Composer
+require_once __DIR__."/../vendor/autoload.php";
 
-$path = pathinfo($_SERVER['SCRIPT_NAME']);
-$file = $path['filename'];
+$path = pathinfo($_SERVER["SCRIPT_NAME"]);
+$file = $path["filename"];
 
-if ($path['dirname'] !== '/') {
+if ($path["dirname"] !== "/") {
     Http::response(403);
-} elseif (in_array($file, ['announce', 'info_hash', 'peer_id', 'scrape'])) {
+} elseif (in_array($file, ["announce", "info_hash", "peer_id", "scrape"])) {
     die("d14:failure reason40:Invalid .torrent, try downloading again.e");
 }
 
 switch ($file) {
     # ls sections
-    case 'api':
-    case 'artist':
-    case 'better':
-    case 'blog':
-    case 'bookmarks':
-    case 'collages':
-    case 'comments':
-    case 'donate':
-    case 'enable':
-    case 'feeds':
-    case 'forums':
-    case 'friends':
-    case 'image':
-    case 'inbox':
-    case 'index':
-    case 'legal':
-    case 'log':
-    case 'login':
-    case 'logout':
-    case 'peerupdate':
-    case 'pwgen':
-    case 'register':
-    case 'reports':
-    case 'reportsv2':
-    case 'requests':
-    case 'rules':
-    case 'schedule':
-    case 'snatchlist':
-    case 'staff':
-    case 'staffpm':
-    case 'stats':
-    case 'store':
-    case 'tools':
-    case 'top10':
-    case 'torrents':
-    case 'upload':
-    case 'user':
-    case 'userhistory':
-    case 'wiki':
+    case "api":
+    case "artist":
+    case "better":
+    case "blog":
+    case "bookmarks":
+    case "collages":
+    case "comments":
+    case "donate":
+    case "enable":
+    case "feeds":
+    case "forums":
+    case "friends":
+    case "image":
+    case "inbox":
+    case "index":
+    case "legal":
+    case "log":
+    case "login":
+    case "logout":
+    case "peerupdate":
+    case "pwgen":
+    case "register":
+    case "reports":
+    case "reportsv2":
+    case "requests":
+    case "rules":
+    case "schedule":
+    case "snatchlist":
+    case "staff":
+    case "staffpm":
+    case "stats":
+    case "store":
+    case "tools":
+    case "top10":
+    case "torrents":
+    case "upload":
+    case "user":
+    case "userhistory":
+    case "wiki":
         $valid = true;
         break;
 }
 
+# load the app
 if ($valid) {
-    require_once __DIR__.'/../config/app.php';
-    require_once __DIR__.'/../bootstrap/utilities.php';
-    require_once __DIR__.'/../bootstrap/app.php';
+    require_once __DIR__."/../config/app.php";
+    require_once __DIR__."/../bootstrap/utilities.php";
+    require_once __DIR__."/../bootstrap/app.php";
 }
 
-/*
+# 404
 else {
     Http::response(404);
 }
-*/
