@@ -850,9 +850,11 @@ class Users
             $token = base64UrlEncode(Crypto::encrypt(random_bytes(32) . $suffix, $key));
             $hash = password_hash($token, PASSWORD_DEFAULT);
             
+            /*
             if (!Users::hasApiToken($id, $token)) {
                 break;
             }
+            */
         }
 
         G::$db->prepared_query("
@@ -880,39 +882,6 @@ class Users
           `UserID` = '$id'
           AND `Name` = '$name'
         ") === 1;
-    }
-
-    /**
-     * hasApiToken
-     */
-    public function hasApiToken(int $id, string $token): bool
-    {
-        /*
-        return G::$db->scalar("
-        SELECT 1 FROM `api_user_tokens` WHERE `UserID` = '$id' AND `Token` = '$token'
-        ") === 1;
-        */
-
-        G::$db->prepared_query("
-        SELECT
-          `ID`,
-          `Token`
-        FROM
-          `api_user_tokens`
-        WHERE
-          `UserID` = '$id'
-          AND `Revoked` = '0'
-        ");
-        # AND `Token` = '$hash'
-
-
-        [$ID, $Hash] = G::$db->next_record();
-
-        if (password_verify($token, $Hash)) {
-            return true;
-        }
-
-        return false;
     }
 
     /**

@@ -29,9 +29,9 @@ class Json
     /**
      * checkToken
      *
-     * Validates an anthorization header.
+     * Validates an authorization header and API token.
      */
-    public function checkToken()
+    public function checkToken(int $userId)
     {
         $ENV = ENV::go();
         
@@ -53,41 +53,36 @@ class Json
             return $this->failure("token must be given as \"Authorization: Bearer {\$token}\"");
         }
 
-        # we have a token
+        # we have a token!
         $token = $authorizationHeader[1];
 
-        # revoke by default
-        $revoked = 1;
-        $userId = intval(
-            substr(
-                Crypto::decrypt(
-                    base64UrlDecode($token),
-                    $ENV->getPriv('ENCKEY')
-                ),
-                32
-            )
-        );
-    
-        # check database
-        if (!empty($userId)) {
-            [$user['ID'], $revoked] = G::$db->row("select UserID, Revoked from api_user_tokens where UserID = ?", [$userId]);
-        } else {
-            return $this->failure('invalid token format');
+        # empty token
+        if (empty($token)) {
+            return $this->failure("empty token provided");
         }
+
+        # check the database
+        $query = "select UserID, Token, Revoked from api_user_tokens where UserID = ?";
+        $row = G::$db->row($query, [$userId]);
     
-        # no user or revoked API token
-        if (empty($user['ID']) || intval($revoked) === 1) {
-            return $this->failure('token user mismatch');
-        }
-    
-        # user doesn't own that token
-        if (!is_null($token) && !Users::hasApiToken($userId, $token)) {
-            return $this->failure('token revoked');
+        # user revoked the token
+        if (intval($row["Revoked"]) === 1) {
+            return $this->failure("token revoked");
         }
         
+        # user doesn't own that token
+        if ($userId === intval($row["UserID"])) {
+            return $this->failure("token user mismatch");
+        }
+            
         # user is disabled
         if (Users::isDisabled($userId)) {
-            return $this->failure('user disabled');
+            return $this->failure("user disabled");
+        }
+
+        # wrong token provided
+        if (!password_verify($token, strval($row["Token"]))) {
+            return $this->failure("wrong token provided");
         }
 
         # okay
