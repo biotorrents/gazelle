@@ -34,7 +34,7 @@ class G
     public function __clone()
     {
         return trigger_error(
-            'clone not allowed',
+            "clone not allowed",
             E_USER_ERROR
         );
     }
@@ -42,7 +42,7 @@ class G
     public function __wakeup()
     {
         return trigger_error(
-            'wakeup not allowed',
+            "wakeup not allowed",
             E_USER_ERROR
         );
     }
@@ -67,7 +67,7 @@ class G
         global $db, $cache, $debug, $ENV, $user;
 
         self::$db = new DB;
-        self::$cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
+        self::$cache = new Cache($ENV->getPriv("MEMCACHED_SERVERS"));
         self::$debug = Debug::go();
         self::$ENV = ENV::go();
         self::$user =& $user;

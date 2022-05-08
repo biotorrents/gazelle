@@ -29,7 +29,7 @@ class Debug
     public function __clone()
     {
         return trigger_error(
-            'clone not allowed',
+            "clone not allowed",
             E_USER_ERROR
         );
     }
@@ -37,7 +37,7 @@ class Debug
     public function __wakeup()
     {
         return trigger_error(
-            'wakeup not allowed',
+            "wakeup not allowed",
             E_USER_ERROR
         );
     }
@@ -63,8 +63,8 @@ class Debug
 
         # https://stackify.com/display-php-errors/
         if ($ENV->DEV) {
-            ini_set('display_errors', 1);
-            ini_set('display_startup_errors', 1);
+            ini_set("display_errors", 1);
+            ini_set("display_startup_errors", 1);
             error_reporting(E_ALL);
         }
 
@@ -108,8 +108,8 @@ class Debug
               $VarName = $ID;
           }
 
-          $File = array('path' => substr($BackTrace[0]['file'], strlen(SERVER_ROOT)), 'line' => $BackTrace[0]['line']);
-          $this->LoggedVars[$ID] = array($VarName => array('bt' => $File, 'data' => $Var));
+          $File = array("path" => substr($BackTrace[0]["file"], strlen(SERVER_ROOT)), "line" => $BackTrace[0]["line"]);
+          $this->LoggedVars[$ID] = array($VarName => array("bt" => $File, "data" => $Var));
           */
     }
 
@@ -125,7 +125,7 @@ class Debug
     public function get_sphinxql_queries()
     {
         /*
-          if (class_exists('Sphinxql')) {
+          if (class_exists("Sphinxql")) {
               return Sphinxql::$Queries;
           }
           */
@@ -137,7 +137,7 @@ class Debug
     public function get_sphinxql_time()
     {
         /*
-          if (class_exists('Sphinxql')) {
+          if (class_exists("Sphinxql")) {
               return Sphinxql::$Time;
           }
           */
@@ -149,7 +149,7 @@ class Debug
     public function get_ocelot_requests()
     {
         /*
-          if (class_exists('Tracker')) {
+          if (class_exists("Tracker")) {
               return Tracker::$Requests;
           }
           */
@@ -191,16 +191,16 @@ class Debug
   <?php foreach ($OcelotRequests as $i => $Request) { ?>
   <tr>
     <td class="debug_data debug_ocelot_data">
-        <a data-toggle-target="#debug_ocelot_<?=$i?>"><?=esc($Request['path'])?></a>
+        <a data-toggle-target="#debug_ocelot_<?=$i?>"><?=esc($Request["path"])?></a>
         <pre id="debug_ocelot_<?=$i?>"
-          class="hidden"><?=esc($Request['response'])?></pre>
+          class="hidden"><?=esc($Request["response"])?></pre>
     </td>
 
     <td class="debug_info" style="width: 100px;">
-        <?=esc($Request['status'])?>
+        <?=esc($Request["status"])?>
     </td>
     <td class="debug_info debug_timing" style="width: 100px;">
-        <?=Text::number_format($Request['time'], 5)?> ms
+        <?=Text::number_format($Request["time"], 5)?> ms
     </td>
   </tr>
   <?php } ?>
@@ -227,7 +227,7 @@ class Debug
   <tr>
     <td>
         <strong>
-          <a href="#" onclick="$(this).parents('.layout').next('#debug_error').gtoggle(); return false;"
+          <a href="#" onclick="$(this).parents(".layout").next("#debug_error").gtoggle(); return false;"
             class="brackets">View</a>
           <?=Text::number_format(count($Errors))?>
           Errors:
@@ -263,22 +263,22 @@ class Debug
     public function sphinx_table($Queries = false)
     {
         /*
-          $Header = 'Searches';
+          $Header = "Searches";
           if (!is_array($Queries)) {
               $Queries = $this->get_sphinxql_queries();
-              $Header .= ' ('.Text::number_format($this->get_sphinxql_time(), 5).' ms)';
+              $Header .= " (".Text::number_format($this->get_sphinxql_time(), 5)." ms)";
           }
 
           if (empty($Queries)) {
               return;
           }
-          $Header = ' '.Text::number_format(count($Queries))." $Header:"; ?>
+          $Header = " ".Text::number_format(count($Queries))." $Header:"; ?>
 
 <table class="layout">
   <tr>
     <td>
         <strong>
-          <a href="#" onclick="$(this).parents('.layout').next('#debug_sphinx').gtoggle(); return false;"
+          <a href="#" onclick="$(this).parents(".layout").next("#debug_sphinx").gtoggle(); return false;"
             class="brackets">View</a>
           <?=$Header?>
         </strong>
@@ -291,7 +291,7 @@ class Debug
           list($Params, $Time) = $Query; ?>
   <tr class="valign_top">
     <td class="debug_data debug_sphinx_data">
-        <pre><?=str_replace("\t", '  ', $Params)?></pre>
+        <pre><?=str_replace("\t", "  ", $Params)?></pre>
     </td>
     <td class="debug_info debug_sphinx_time" style="width: 130px;"><?=Text::number_format($Time, 5)?> ms</td>
   </tr>
@@ -323,19 +323,19 @@ class FilesCollector extends DataCollector implements Renderable
 
         foreach ($files as $file) {
             # Skip the files from Composer
-            if (strpos($file, '/vendor/') !== false) {
+            if (strpos($file, "/vendor/") !== false) {
                 continue;
             } else {
                 $includes[] = [
-                    'message' => $file,
-                    'is_string' => true,
+                    "message" => $file,
+                    "is_string" => true,
                 ];
             }
         }
 
         return [
-          'count' => count($includes),
-          'messages' => array_reverse($includes),
+          "count" => count($includes),
+          "messages" => array_reverse($includes),
         ];
     }
 
@@ -348,15 +348,15 @@ class FilesCollector extends DataCollector implements Renderable
 
         return [
             $name => [
-                'icon' => 'folder-open',
-                'widget' => 'PhpDebugBar.Widgets.MessagesWidget',
-                'map' => "{$name}.messages",
-                'default' => '{}'
+                "icon" => "folder-open",
+                "widget" => "PhpDebugBar.Widgets.MessagesWidget",
+                "map" => "{$name}.messages",
+                "default" => "{}"
             ],
             
             "{$name}:badge" => [
-                'map' => "{$name}.count",
-                'default' => 'null'
+                "map" => "{$name}.count",
+                "default" => "null"
             ]
         ];
     }
@@ -366,7 +366,7 @@ class FilesCollector extends DataCollector implements Renderable
      */
     public function getName()
     {
-        return 'files';
+        return "files";
     }
 }
 
@@ -388,8 +388,8 @@ class DatabaseCollector extends DataCollector implements Renderable
         $messages = $this->getMessages();
 
         return [
-          'count' => count($messages),
-          'messages' => $messages
+          "count" => count($messages),
+          "messages" => $messages
         ];
     }
     
@@ -402,11 +402,11 @@ class DatabaseCollector extends DataCollector implements Renderable
 
         // sort messages by their timestamp
         usort($messages, function ($a, $b) {
-            if ($a['time'] === $b['time']) {
+            if ($a["time"] === $b["time"]) {
                 return 0;
             }
 
-            return $a['time'] < $b['time'] ? -1 : 1;
+            return $a["time"] < $b["time"] ? -1 : 1;
         });
 
         return $messages;
@@ -437,10 +437,10 @@ class DatabaseCollector extends DataCollector implements Renderable
         }
 
         $this->messages[] = [
-          'message' => $messageText,
-          'message_html' => $messageHtml,
-          'is_string' => $isString,
-          'time' => microtime(true)
+          "message" => $messageText,
+          "message_html" => $messageHtml,
+          "is_string" => $isString,
+          "time" => microtime(true)
         ];
     }
 
@@ -453,15 +453,15 @@ class DatabaseCollector extends DataCollector implements Renderable
 
         return [
             $name => [
-                'icon' => 'database',
-                'widget' => 'PhpDebugBar.Widgets.MessagesWidget',
-                'map' => "{$name}.messages",
-                'default' => '[]'
+                "icon" => "database",
+                "widget" => "PhpDebugBar.Widgets.MessagesWidget",
+                "map" => "{$name}.messages",
+                "default" => "[]"
             ],
 
             "{$name}:badge" => [
-                'map' => "{$name}.count",
-                'default' => 'null'
+                "map" => "{$name}.count",
+                "default" => "null"
             ]
         ];
     }
@@ -471,6 +471,6 @@ class DatabaseCollector extends DataCollector implements Renderable
      */
     public function getName()
     {
-        return 'database';
+        return "database";
     }
 }
