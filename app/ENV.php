@@ -20,45 +20,45 @@ declare(strict_types=1);
 
 class ENV
 {
-    # Disinstantiates itself
+    # disinstantiates itself
     private static $ENV = null;
 
-    # Config options receptacles
-    private static $priv = []; # Passwords, app keys, database, etc.
-    private static $pub = []; # Site meta, options, resources, etc.
+    # config options receptacles
+    private static $priv = []; # passwords, app keys, database, etc.
+    private static $pub = []; # site meta, options, resources, etc.
 
     /**
      * __functions
      */
 
-    # Prevents outside construction
-    private function __construct()
+    # prevents outside construction
+    public function __construct()
     {
-        # Would be expensive, e.g.,
+        # would be expensive, e.g.,
         #   $ENV = new ENV();
         return;
     }
 
-    # Prevents multiple instances
-    private function __clone()
+    # prevents multiple instances
+    public function __clone()
     {
         return trigger_error(
-            'clone not allowed',
+            "clone not allowed",
             E_USER_ERROR
         );
     }
 
-    # Prevents unserializing
+    # prevents unserializing
     public function __wakeup()
     {
         return trigger_error(
-            'wakeup not allowed',
+            "wakeup not allowed",
             E_USER_ERROR
         );
     }
     
     # $this->key returns public->key
-    private function __get($key)
+    public function __get($key)
     {
         return isset(self::$pub[$key])
             ? self::$pub[$key]
@@ -66,7 +66,7 @@ class ENV
     }
     
     # isset
-    private function __isset($key)
+    public function __isset($key)
     {
         return isset(self::$pub[$key]);
     }
@@ -76,7 +76,7 @@ class ENV
      * Gets n' Sets
      */
 
-    # Calls its self's creation or returns itself
+    # calls its self's creation or returns itself
     public static function go(): ENV
     {
         return (self::$ENV === null)
@@ -117,22 +117,22 @@ class ENV
      * Take a mixed input and returns a RecursiveArrayObject.
      * This function is the sausage grinder, so to speak.
      */
-    public function convert(array|object|string $obj): RecursiveArrayObject
+    public function convert(array|object|string $object): RecursiveArrayObject
     {
-        switch (gettype($obj)) {
-            case 'string':
-                $out = json_decode($obj, true);
+        switch (gettype($object)) {
+            case "string":
+                $out = json_decode($object, true);
                 return (json_last_error() === JSON_ERROR_NONE)
                     ? new RecursiveArrayObject($out)
-                    : error('json_last_error_msg: ' . json_last_error_msg());
+                    : trigger_error("json_last_error_msg: " . json_last_error_msg(), E_USER_ERROR);
                 break;
             
-            case 'array':
-            case 'object':
-                return new RecursiveArrayObject($obj);
+            case "array":
+            case "object":
+                return new RecursiveArrayObject($object);
             
             default:
-                return error('ENV->convert expects a JSON string, array, or object.');
+                return trigger_error("ENV->convert expects a JSON string, array, or object.", E_USER_ERROR);
                 break;
         }
     }
@@ -142,25 +142,26 @@ class ENV
      * toArray
      *
      * Takes an object and returns an array.
-     * @param object|string $obj Thing to turn into an array
-     * @return $new New recursive array with $obj contents
+     * @param object|string $object Thing to turn into an array
+     * @return $new New recursive array with $object contents
      * @see https://ben.lobaugh.net/blog/567/php-recursively-convert-an-object-to-an-array
      */
-    public function toArray(object $obj): array
+    public function toArray(object $object): array
     {
-        if (is_object($obj)) {
-            $obj = (array) $obj;
+        if (is_object($object)) {
+            $object = (array) $object;
         }
 
-        if (is_array($obj)) {
+        if (is_array($object)) {
             $new = array();
 
-            foreach ($obj as $key => $value) {
+            foreach ($object as $key => $value) {
                 $new[$key] = $this->toArray($value);
             }
         } else {
-            $new = $obj;
+            $new = $object;
         }
+
         return $new;
     }
 
@@ -172,14 +173,14 @@ class ENV
      * Returns a once-deduplicated RecursiveArrayObject with original nesting intact.
      * Simple and handy if you need to populate a form with arbitrary collections of metadata.
      */
-    public function dedupe(array|object $obj): RecursiveArrayObject
+    public function dedupe(array|object $object): RecursiveArrayObject
     {
-        if (is_object($obj)) {
-            $obj = (array) $obj;
+        if (is_object($object)) {
+            $object = (array) $object;
         }
 
         return new RecursiveArrayObject(
-            array_unique($this->toArray($obj))
+            array_unique($this->toArray($object))
         );
     }
 
@@ -193,10 +194,6 @@ class ENV
      */
     public function flatten(array|object $array, int $level = null): array
     {
-        if (!is_array($array) && !is_object($array)) {
-            return error('ENV->flatten expects an array or object, got ' . gettype($array));
-        }
-
         $new = array();
 
         foreach ($array as $k => $v) {
@@ -224,7 +221,7 @@ class ENV
      * Maps a callback (or default) to an object.
      *
      * Example output:
-     * $Hashes = $ENV->map('md5', $ENV->CATS->{6});
+     * $Hashes = $ENV->map("md5", $ENV->CATS->{6});
      *
      * var_dump($Hashes);
      * object(RecursiveArrayObject)#324 (1) {
@@ -248,24 +245,24 @@ class ENV
      * var_dump($Hashes->Icon);
      * string(32) "52963afccc006d2bce3c890ad9e8f73a"
      *
-     * @param string $fn Callback function
-     * @param object|string $obj Object or property to operate on
+     * @param string $function Callback function
+     * @param object|string $object Object or property to operate on
      * @return object $RAO Mapped RecursiveArrayObject
      */
-    public function map(string $fn = '', object|string $obj = null): RecursiveArrayObject
+    public function map(string $function = "", object|string $object = null): RecursiveArrayObject
     {
-        # Set a default function if desired
-        if (empty($fn) && !is_object($fn)) {
-            $fn = 'array_filter';
+        # set a default function if desired
+        if (empty($function) && !is_object($function)) {
+            $function = "array_filter";
         }
 
-        # Quick sanity check
-        if ($fn === 'array_map') {
+        # quick sanity check
+        if ($function === "array_map") {
             error("ENV->map can't invoke the function it wraps.");
         }
         
         /**
-         * $fn not a closure
+         * $function not a closure
          *
          * var_dump(
          *   gettype(
@@ -273,18 +270,18 @@ class ENV
          * ));
          * string(6) "object"
          */
-        if (is_string($fn) && !is_object($fn)) {
-            $fn = trim(strtok($fn, ' '));
+        if (is_string($function) && !is_object($function)) {
+            $function = trim(strtok($function, " "));
         }
 
-        # Map the sanitized function name
+        # map the sanitized function name
         # to a mapped array conversion
         return new RecursiveArrayObject(
             array_map(
-                $fn,
+                $function,
                 array_map(
-                    $fn,
-                    $this->toArray($obj)
+                    $function,
+                    $this->toArray($object)
                 )
             )
         );

@@ -26,12 +26,12 @@ class G
     /**
      * __functions
      */
-    private function __construct()
+    public function __construct()
     {
         return;
     }
 
-    private function __clone()
+    public function __clone()
     {
         return trigger_error(
             'clone not allowed',
