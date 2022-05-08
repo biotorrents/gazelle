@@ -10,20 +10,19 @@ declare(strict_types=1);
  * Date:   Sat Jan 27 20:42:55 2018 -0100
  */
 
-# autoload classes via Composer
-require_once __DIR__."/../vendor/autoload.php";
-
+# parse the path
 $path = pathinfo($_SERVER["SCRIPT_NAME"]);
 $file = $path["filename"];
 
+# dump any tards
 if ($path["dirname"] !== "/") {
     Http::response(403);
 } elseif (in_array($file, ["announce", "info_hash", "peer_id", "scrape"])) {
     die("d14:failure reason40:Invalid .torrent, try downloading again.e");
 }
 
+# ls -1 sections/
 switch ($file) {
-    # ls sections
     case "api":
     case "artist":
     case "better":
@@ -39,10 +38,8 @@ switch ($file) {
     case "image":
     case "inbox":
     case "index":
-    case "legal":
     case "log":
     case "login":
-    case "logout":
     case "peerupdate":
     case "pwgen":
     case "register":
@@ -69,12 +66,8 @@ switch ($file) {
 
 # load the app
 if ($valid) {
+    require_once __DIR__."/../vendor/autoload.php";
     require_once __DIR__."/../config/app.php";
     require_once __DIR__."/../bootstrap/utilities.php";
     require_once __DIR__."/../bootstrap/app.php";
-}
-
-# 404
-else {
-    Http::response(404);
 }

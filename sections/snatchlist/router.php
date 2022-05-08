@@ -10,3 +10,10 @@ declare(strict_types=1);
 
 # start the router
 Flight::start();
+
+
+/** LEGACY ROUTES */
+
+
+enforce_login();
+include(SERVER_ROOT.'/sections/snatchlist/snatchlist.php');
