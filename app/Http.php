@@ -45,7 +45,7 @@ class Http
             "get" => null,
             "post" => null,
             "cookie" => null,
-            "files" => null
+            "files" => null,
         ];
 
         # error out on bad input
@@ -53,24 +53,14 @@ class Http
             throw new Exception("Supplied method {$method} isn't supported");
         }
 
-        # get
+        # filter input arrays
         $safe["get"] = filter_input_array(INPUT_GET, $_GET);
-
-        # post
         $safe["post"] = filter_input_array(INPUT_POST, $_POST);
-
-        # cookie
         $safe["cookie"] = filter_input_array(INPUT_COOKIE, $_COOKIE);
-
-        # files
         $safe["files"] = filter_input_array(INPUT_POST, $_FILES);
 
         # convert to utf8
-        /*
-        foreach ($safe as $k => $v) {
-            $safe[$k] = esc($v);
-        }
-        */
+        $safe = array_walk_recursive($safe, "esc");
 
         # should be okay
         if (!empty($method)) {
