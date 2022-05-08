@@ -167,6 +167,9 @@ class Cache extends Memcache
      */
     public function get_value($key, $noCache = false)
     {
+        $query = Http::query("get");
+        $clearCache = $query["clearcache"] ?? null;
+
         if (!$this->internalCache) {
             $noCache = true;
         }
@@ -176,8 +179,8 @@ class Cache extends Memcache
             trigger_error('Cache retrieval failed for empty key');
         }
 
-        if (!empty($_GET['clearcache']) && $this->canClear && !isset($this->clearedKeys[$key]) && !Misc::in_array_partial($key, $this->persistentKeys)) {
-            if ($_GET['clearcache'] === '1') {
+        if (!empty($clearCache) && $this->canClear && !isset($this->clearedKeys[$key]) && !Misc::in_array_partial($key, $this->persistentKeys)) {
+            if (intval($clearCache) === 1) {
                 // Because check_perms() isn't true until LoggedUser is pulled from the cache, we have to remove the entries loaded before the LoggedUser data
                 // Because of this, not user cache data will require a secondary pageload following the clearcache to update
                 if (count($this->cacheHits) > 0) {
@@ -193,14 +196,15 @@ class Cache extends Memcache
                 $this->delete($key);
                 $this->time += (microtime(true) - $startTime) * 1000;
 
-                return false;
-            } elseif ($_GET['clearcache'] === $key) {
+                return null;
+            } elseif ($clearCache === $key) {
                 $this->delete($key);
                 $this->time += (microtime(true) - $startTime) * 1000;
 
                 return false;
-            } elseif (substr($_GET['clearcache'], -1) === '*') {
-                $prefix = substr($_GET['clearcache'], 0, -1);
+            } elseif (substr($clearCache, -1) === '*') {
+                $prefix = substr($clearCache, 0, -1);
+
                 if ($prefix === '' || $prefix === substr($key, 0, strlen($prefix))) {
                     $this->delete($key);
                     $this->time += (microtime(true) - $startTime) * 1000;
@@ -208,16 +212,17 @@ class Cache extends Memcache
                     return false;
                 }
             }
+
             $this->clearedKeys[$key] = true;
         }
 
         // For cases like the forums, if a key is already loaded, grab the existing pointer
         if (isset($this->cacheHits[$key]) && !$noCache) {
             $this->time += (microtime(true) - $startTime) * 1000;
-            return $this->cacheHits[$key];
+            return $this->cacheHits[$key] ?? false;
         }
 
-        $return = $this->get($key);
+        $return = $this->get($key) ?? false;
         if ($return !== false) {
             $this->cacheHits[$key] = $noCache ? null : $return;
         }

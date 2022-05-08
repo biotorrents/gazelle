@@ -163,6 +163,7 @@ if (($UserCount = $cache->get_value('stats_user_count')) === false) {
 }
 $UserCount = (int)$UserCount;
 ?>
+<? /*
       <li>
         Enabled users: <?=Text::number_format($UserCount)?>
         <a href="/stats/users" class="brackets">Details</a>
@@ -330,7 +331,7 @@ if (!$PeerStatsLocked) {
       </li>
     </ul>
   </div>
-
+*/?>
   <!-- Polls -->
   <?php
 if (($TopicID = $cache->get_value('polls_featured')) === false) {

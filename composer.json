@@ -49,6 +49,7 @@
     "illuminate/support": "^8.78",
     "mikecao/flight": "^2.0",
     "orpheusnet/bencode-torrent": "dev-master",
+    "povils/figlet": "*",
     "robthree/twofactorauth": "^1.8.1",
     "twig/twig": "^3.3.8",
     "vanilla/nbbc": "^2.3",

@@ -3,8 +3,11 @@ declare(strict_types=1);
 
 class Text
 {
+    # hash algo for cache keys
+    private static $algorithm = "sha3-512";
+
     # cache settings
-    private static $cachePrefix = 'text_';
+    private static $cachePrefix = "text_";
     private static $cacheDuration = 0;
 
         
@@ -24,41 +27,38 @@ class Text
         $ENV = ENV::go();
 
         $debug = Debug::go();
-        $debug['time']->startMeasure('parse', 'parse markdown text');
+        $debug["time"]->startMeasure("parse", "parse markdown text");
 
-        # Return cached if available
-        $cacheKey = self::$cachePrefix . hash('sha3-512', $string);
+        # return cached if available
+        $cacheKey = self::$cachePrefix . hash(self::$algorithm, $string);
         if (G::$cache->get_value($cacheKey)) {
             return G::$cache->get_value($cacheKey);
         }
 
-        # Prepare clean escapes
+        # prepare clean escapes
         $string = self::utf8($string);
         $string = esc($string);
 
-        # Here's the magic pattern:
-        if (!preg_match(
-            "/$ENV->BBCODE_REGEX/s",
-            $string
-        )) {
-            # Markdown
+        # here's the magic pattern:
+        if (!preg_match("/{$ENV->BBCODE_REGEX}/s", $string)) {
+            # markdown
             $parsedown = new \ParsedownExtra();
             $safe ?? $parsedown->setSafeMode(true);
 
-            # Parse early and post-process
+            # parse early and post-process
             $parsed = $parsedown->text($string);
             
-            # Replace links to $ENV->SITE_DOMAIN
-            $parsed = self::fix_links($parsed);
+            # replace links to $ENV->SITE_DOMAIN
+            $parsed = self::fixLinks($parsed);
 
             G::$cache->cache_value($cacheKey, $parsed, self::$cacheDuration);
             return $parsed;
         } else {
-            # BBcode
+            # BBcode (not shitty)
             $nbbc = new \Nbbc\BBCode();
 
             $parsed = $nbbc->parse($string);
-            $parsed = self::fix_links($parsed);
+            $parsed = self::fixLinks($parsed);
 
             G::$cache->cache_value($cacheKey, $parsed, self::$cacheDuration);
             return $parsed;
@@ -73,32 +73,32 @@ class Text
      * and that external links are secure and look like Wikipedia.
      * Takes an already-parsed input, from Markdown or BBcode.
      */
-    private static function fix_links(string $parsed): string
+    private static function fixLinks(string $parsed): string
     {
         $ENV = ENV::go();
 
         $debug = Debug::go();
-        $debug['time']->startMeasure('process', 'post-process text');
+        $debug["time"]->startMeasure("process", "post-process text");
 
-        # Replace links to $ENV->SITE_DOMAIN
+        # replace links to $ENV->SITE_DOMAIN
         $parsed = preg_replace(
-            "/<a href=\"$ENV->RESOURCE_REGEX($ENV->SITE_DOMAIN|$ENV->OLD_SITE_DOMAIN)\//",
-            '<a href="/',
+            "/<a href=\"{$ENV->RESOURCE_REGEX}({$ENV->SITE_DOMAIN}|{$ENV->OLD_SITE_DOMAIN})\//",
+            "<a href=\"/",
             $parsed
         );
                 
-        # Replace external links and add Wikipedia-style CSS class
-        $rel = 'external nofollow noopener noreferrer';
+        # replace external links and add Wikipedia-style icon
+        $rel = "external nofollow noopener noreferrer";
 
         $parsed = preg_replace(
-            '/<a href="https?:\/\//',
-            '<a class="external" rel="'.$rel.'" target="_blank" href="https://',
+            "/<a href=\"https?:\/\//",
+            "<a class=\"external\" rel=\"{$rel}\" target=\"_blank\" href=\"https://",
             $parsed
         );
 
         $parsed = preg_replace(
-            '/<a href="ftps?:\/\//',
-            '<a class="external" rel="'.$rel.'" target="_blank" href="ftps://',
+            "/<a href=\"ftps?:\/\//",
+            "<a class=\"external\" rel=\"{$rel}\" target=\"_blank\" href=\"ftps://",
             $parsed
         );
 
@@ -119,6 +119,7 @@ class Text
     {
         $string = self::utf8($string);
         $figlet = new \Laminas\Text\Figlet();
+
         return $figlet->render($string);
     }
 
@@ -136,7 +137,7 @@ class Text
     {
         # String is already utf8
         $utf8 = preg_match(
-            '%^(?:
+            "%^(?:
             [\x09\x0A\x0D\x20-\x7E]            // ASCII
           | [\xC2-\xDF][\x80-\xBF]             // Non-overlong 2-byte
           | \xE0[\xA0-\xBF][\x80-\xBF]         // Excluding overlongs
@@ -145,7 +146,7 @@ class Text
           | \xF0[\x90-\xBF][\x80-\xBF]{2}      // Planes 1-3
           | [\xF1-\xF3][\x80-\xBF]{3}          // Planes 4-15
           | \xF4[\x80-\x8F][\x80-\xBF]{2}      // Plane 16
-            )*$%xs',
+            )*$%xs",
             $string
         );
 
@@ -159,7 +160,7 @@ class Text
                     mb_detect_order(),
                     true
                 ),
-                'UTF-8',
+                "UTF-8",
                 $string
             );
     }

@@ -37,6 +37,9 @@ class Http
      */
     public static function query(string $method = ""): array
     {
+        # lowercase
+        $method = strtolower($method);
+
         # hold escapes
         $safe = [
             "get" => null,
@@ -46,8 +49,8 @@ class Http
         ];
 
         # error out on bad input
-        if (!in_array($method, $safe)) {
-            
+        if (!empty($method) && !in_array($method, array_keys($safe))) {
+            throw new Exception("Supplied method {$method} isn't supported");
         }
 
         # get
@@ -63,12 +66,18 @@ class Http
         $safe["files"] = filter_input_array(INPUT_POST, $_FILES);
 
         # convert to utf8
+        /*
         foreach ($safe as $k => $v) {
-            $safe[$k] = Text::esc($v);
+            $safe[$k] = esc($v);
         }
+        */
 
         # should be okay
-        return $safe;
+        if (!empty($method)) {
+            return $safe[$method] ?? [];
+        } else {
+            return $safe ?? [];
+        }
     }
 
 

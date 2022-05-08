@@ -7,7 +7,7 @@ declare(strict_types=1);
  */
 
 $ENV = ENV::go();
-!d(Http::query());exit;
+#!d(Http::query());exit;
 
 if (isset($argv[1])) {
     $_REQUEST['action'] = $argv[1];

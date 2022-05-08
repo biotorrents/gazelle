@@ -22,7 +22,8 @@ if ($ENV->DEV) {
   <title>
     <?= esc($PageTitle) ?>
   </title>
-  <script defer data-domain="<?= $ENV->SITE_DOMAIN ?>" src="https://stats.torrents.bio/js/plausible.js"></script>
+  <script defer data-domain="<?= $ENV->SITE_DOMAIN ?>"
+    src="https://stats.torrents.bio/js/plausible.js"></script>
 
   <?=
     $twig->render(
@@ -148,12 +149,17 @@ HTML;
 /**
  * User stylesheet
  */
+
 if (empty(G::$user['StyleURL'])) {
-    if (($StyleColors = G::$cache->get_value('stylesheet_colors')) === false) {
+  /*
+    $StyleColors = G::$cache->get_value('stylesheet_colors') ?? [];
+    if (empty($StyleColors)) {
         G::$db->query('SELECT LOWER(REPLACE(Name, " ", "_")) AS Name, Color FROM stylesheets WHERE COLOR IS NOT NULL');
 
         while (list($StyleName, $StyleColor) = G::$db->next_record()) {
-            $StyleColors[$StyleName] = $StyleColor;
+            #!d($StyleColors, $StyleName);exit;
+            $StyleName = $StyleName ?? "";
+            $StyleColors[$StyleName] = $StyleColor ?? null;
         }
         G::$cache->cache_value('stylesheet_colors', $StyleColors, 0);
     }
@@ -162,12 +168,14 @@ if (empty(G::$user['StyleURL'])) {
   <meta name="theme-color"
     content="<?=$StyleColors[G::$user['StyleName']]?>">
   <?php }
+  */
 
     $userStyle = "$ENV->STATIC_SERVER/css/" . G::$user['StyleName'] . ".css";
     echo $View->pushAsset(
         $userStyle,
         'style'
     );
+    
 } else {
     $StyleURLInfo = parse_url(G::$user['StyleURL']);
     if (substr(G::$user['StyleURL'], -4) === '.css'
@@ -182,6 +190,7 @@ if (empty(G::$user['StyleURL'])) {
     href="<?=$StyleURL?>" title="External CSS">
   <?php
 }
+
 
 $ExtraCSS = explode(',', $CSSIncludes);
 foreach ($ExtraCSS as $CSS) {
