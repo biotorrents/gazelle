@@ -332,13 +332,13 @@ foreach ($TorrentList as $Group) {
       </td>
       <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
       </td>
-      <td class="number_column"><?=Text::number_format($Torrent['Snatched'])?>
+      <td class="number_column"><?=Text::float($Torrent['Snatched'])?>
       </td>
       <td
         class="number_column<?=(($Torrent['Seeders'] === 0) ? ' r00' : '')?>">
-        <?=Text::number_format($Torrent['Seeders'])?>
+        <?=Text::float($Torrent['Seeders'])?>
       </td>
-      <td class="number_column"><?=Text::number_format($Torrent['Leechers'])?>
+      <td class="number_column"><?=Text::float($Torrent['Leechers'])?>
       </td>
     </tr>
 
@@ -482,13 +482,13 @@ foreach ($TorrentList as $Group) {
       </td>
       <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
       </td>
-      <td class="number_column"><?=Text::number_format($Torrent['Snatched'])?>
+      <td class="number_column"><?=Text::float($Torrent['Snatched'])?>
       </td>
       <td
         class="number_column<?=(($Torrent['Seeders'] === 0) ? ' r00' : '')?>">
-        <?=Text::number_format($Torrent['Seeders'])?>
+        <?=Text::float($Torrent['Seeders'])?>
       </td>
-      <td class="number_column"><?=Text::number_format($Torrent['Leechers'])?>
+      <td class="number_column"><?=Text::float($Torrent['Leechers'])?>
       </td>
     </tr>
     <?php
@@ -707,15 +707,15 @@ END THE COLLECTOR
     <div class="box box_info box_statistics_artist">
       <div class="head"><strong>Statistics</strong></div>
       <ul class="stats nobullet">
-        <li>Torrents: <?=Text::number_format($NumTorrents)?>
+        <li>Torrents: <?=Text::float($NumTorrents)?>
         </li>
-        <li>Torrent Groups: <?=Text::number_format($NumGroups)?>
+        <li>Torrent Groups: <?=Text::float($NumGroups)?>
         </li>
-        <li>Snatches: <?=Text::number_format($NumSnatches)?>
+        <li>Snatches: <?=Text::float($NumSnatches)?>
         </li>
-        <li>Seeders: <?=Text::number_format($NumSeeders)?>
+        <li>Seeders: <?=Text::float($NumSeeders)?>
         </li>
-        <li>Leechers: <?=Text::number_format($NumLeechers)?>
+        <li>Leechers: <?=Text::float($NumLeechers)?>
         </li>
       </ul>
     </div>
@@ -759,7 +759,7 @@ if (count($Collages) > 0) {
     } ?>
     <table class="collage_table" id="collages">
       <tr class="colhead">
-        <td width="85%"><a href="#">&uarr;</a>&nbsp;This artist is in <?=Text::number_format(count($Collages))?> collage<?=((count($Collages) > 1) ? 's' : '')?><?=$SeeAll?>
+        <td width="85%"><a href="#">&uarr;</a>&nbsp;This artist is in <?=Text::float(count($Collages))?> collage<?=((count($Collages) > 1) ? 's' : '')?><?=$SeeAll?>
         </td>
         <td># artists</td>
       </tr>
@@ -769,7 +769,7 @@ if (count($Collages) > 0) {
           unset($Collages[$i]); ?>
       <tr>
         <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-        <td><?=Text::number_format($CollageArtists)?>
+        <td><?=Text::float($CollageArtists)?>
         </td>
       </tr>
       <?php
@@ -778,7 +778,7 @@ if (count($Collages) > 0) {
         list($CollageName, $CollageArtists, $CollageID) = $Collage; ?>
       <tr class="collage_rows hidden">
         <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-        <td><?=Text::number_format($CollageArtists)?>
+        <td><?=Text::float($CollageArtists)?>
         </td>
       </tr>
       <?php

@@ -58,7 +58,7 @@ $db->set_query_id($RS);
 
 <div class="box pad">
   <p>
-    <?=Text::number_format($Results)?> unused invites have been sent.
+    <?=Text::float($Results)?> unused invites have been sent.
   </p>
 </div>
 <br />

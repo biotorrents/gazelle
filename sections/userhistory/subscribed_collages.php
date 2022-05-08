@@ -171,13 +171,13 @@ if (!$NumResults) {
     </td>
     <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
     </td>
-    <td class="number_column"><?=Text::number_format($Torrent['Snatched'])?>
+    <td class="number_column"><?=Text::float($Torrent['Snatched'])?>
     </td>
     <td
       class="number_column<?=($Torrent['Seeders'] == 0) ? ' r00' : ''?>">
-      <?=Text::number_format($Torrent['Seeders'])?>
+      <?=Text::float($Torrent['Seeders'])?>
     </td>
-    <td class="number_column"><?=Text::number_format($Torrent['Leechers'])?>
+    <td class="number_column"><?=Text::float($Torrent['Leechers'])?>
     </td>
   </tr>
   <?php
@@ -234,13 +234,13 @@ if (!$NumResults) {
     </td>
     <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
     </td>
-    <td class="number_column"><?=Text::number_format($Torrent['Snatched'])?>
+    <td class="number_column"><?=Text::float($Torrent['Snatched'])?>
     </td>
     <td
       class="number_column<?=($Torrent['Seeders'] == 0) ? ' r00' : ''?>">
-      <?=Text::number_format($Torrent['Seeders'])?>
+      <?=Text::float($Torrent['Seeders'])?>
     </td>
-    <td class="number_column"><?=Text::number_format($Torrent['Leechers'])?>
+    <td class="number_column"><?=Text::float($Torrent['Leechers'])?>
     </td>
   </tr>
   <?php

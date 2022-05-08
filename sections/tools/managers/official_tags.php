@@ -92,7 +92,7 @@ for ($i = 0; $i < $TagCount / 3; $i++) {
         <tr class="row">
           <td style="text-align: center;"><input type="checkbox" name="oldtags[]" value="<?=$TagID1?>" /></td>
           <td><?=$TagName1?></td>
-          <td style="text-align: center;"><?=Text::number_format($TagUses1)?></td>
+          <td style="text-align: center;"><?=Text::float($TagUses1)?></td>
           <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
           <td style="text-align: center;">
 <?php if ($TagID2) { ?>
@@ -100,7 +100,7 @@ for ($i = 0; $i < $TagCount / 3; $i++) {
 <?php } ?>
           </td>
           <td><?=$TagName2?></td>
-          <td style="text-align: center;"><?=Text::number_format($TagUses2)?></td>
+          <td style="text-align: center;"><?=Text::float($TagUses2)?></td>
           <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
           <td style="text-align: center;">
 <?php if ($TagID3) { ?>
@@ -108,7 +108,7 @@ for ($i = 0; $i < $TagCount / 3; $i++) {
 <?php } ?>
           </td>
           <td><?=$TagName3?></td>
-          <td style="text-align: center;"><?=Text::number_format($TagUses3)?></td>
+          <td style="text-align: center;"><?=Text::float($TagUses3)?></td>
         </tr>
 <?php
 }

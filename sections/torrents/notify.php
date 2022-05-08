@@ -73,7 +73,7 @@ if ($OrderTbl === 'tg') {
       : ''));
     list($TorrentCount) = $db->next_record();
     if ($TorrentCount > NOTIFICATIONS_MAX_SLOWSORT) {
-        error('Due to performance issues, torrent lists with more than '.Text::number_format(NOTIFICATIONS_MAX_SLOWSORT).' items cannot be ordered by release year.');
+        error('Due to performance issues, torrent lists with more than '.Text::float(NOTIFICATIONS_MAX_SLOWSORT).' items cannot be ordered by release year.');
     }
 
     $db->query("
@@ -385,11 +385,11 @@ if (empty($Results)) {
         </td>
         <td class="number_column nobr"><?=Format::get_size($TorrentInfo['Size'])?>
         </td>
-        <td class="number_column"><?=Text::number_format($TorrentInfo['Snatched'])?>
+        <td class="number_column"><?=Text::float($TorrentInfo['Snatched'])?>
         </td>
-        <td class="number_column"><?=Text::number_format($TorrentInfo['Seeders'])?>
+        <td class="number_column"><?=Text::float($TorrentInfo['Seeders'])?>
         </td>
-        <td class="number_column"><?=Text::number_format($TorrentInfo['Leechers'])?>
+        <td class="number_column"><?=Text::float($TorrentInfo['Leechers'])?>
         </td>
       </tr>
       <?php

@@ -829,8 +829,8 @@ $FileName = "$ENV->TORRENT_STORE/$TorrentID.torrent";
 file_put_contents($FileName, $Tor->encode());
 chmod($FileName, 0400);
 
-Misc::write_log("Torrent $TorrentID ($LogName) (".Text::number_format($TotalSize / (1024 * 1024), 2).' MB) was uploaded by ' . $user['Username']);
-Torrents::write_group_log($GroupID, $TorrentID, $user['ID'], 'uploaded ('.Text::number_format($TotalSize / (1024 * 1024), 2).' MB)', 0);
+Misc::write_log("Torrent $TorrentID ($LogName) (".Text::float($TotalSize / (1024 * 1024), 2).' MB) was uploaded by ' . $user['Username']);
+Torrents::write_group_log($GroupID, $TorrentID, $user['ID'], 'uploaded ('.Text::float($TotalSize / (1024 * 1024), 2).' MB)', 0);
 
 Torrents::update_hash($GroupID);
 $debug['upload']->info('sphinx updated');

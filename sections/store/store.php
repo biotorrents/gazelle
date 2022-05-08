@@ -35,8 +35,8 @@ if (!$user['DisablePoints']) {
     }
 
     $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints/1440)), 0));
-    $PointsPerHour = Text::number_format($PointsRate) . " ".BONUS_POINTS."/hour";
-    $PointsPerDay = Text::number_format($PointsRate*24) . " ".BONUS_POINTS."/day";
+    $PointsPerHour = Text::float($PointsRate) . " ".BONUS_POINTS."/hour";
+    $PointsPerDay = Text::float($PointsRate*24) . " ".BONUS_POINTS."/day";
 } else {
     $PointsPerHour = "0 ".BONUS_POINTS."/hour";
     $PointsPerDay = BONUS_POINTS." disabled";
@@ -53,7 +53,7 @@ View::header('Store');
   <div class="box">
     <h3 id="lists" class="float_left">
       You have
-      <?=Text::number_format($user['BonusPoints'])?>
+      <?=Text::float($user['BonusPoints'])?>
       <?=BONUS_POINTS?>
       to spend
     </h3>

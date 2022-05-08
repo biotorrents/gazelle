@@ -467,7 +467,7 @@ foreach ($Categories as $CatKey => $CatName) {
       <!-- Submit -->
       <div class="submit">
         <span class="float_left">
-          <?= Text::number_format($TorrentCount) ?>
+          <?= Text::float($TorrentCount) ?>
           Results
         </span>
         <input type="submit" class="button-primary" value="Search" />
@@ -615,13 +615,13 @@ foreach ($Categories as $CatKey => $CatName) {
         </td>
         <td class="number_column nobr"><?= Format::get_size($Torrent['Size']) ?>
         </td>
-        <td class="number_column"><?= Text::number_format($Torrent['Snatched']) ?>
+        <td class="number_column"><?= Text::float($Torrent['Snatched']) ?>
         </td>
         <td
           class="number_column<?= (($Torrent['Seeders'] === 0) ? ' r00' : '') ?>">
-          <?= Text::number_format($Torrent['Seeders']) ?>
+          <?= Text::float($Torrent['Seeders']) ?>
         </td>
-        <td class="number_column"><?= Text::number_format($Torrent['Leechers']) ?>
+        <td class="number_column"><?= Text::float($Torrent['Leechers']) ?>
         </td>
       </tr>
       <?php

@@ -318,7 +318,7 @@ if (check_perms('site_send_unlimited_invites')) {
         <li id="stats_required">
           <a href="/rules/ratio">Required</a>:
           <span class="stat tooltip"
-            title="<?=Text::number_format(G::$user['RequiredRatio'], 5)?>"><?=Text::number_format(G::$user['RequiredRatio'], 2)?></span>
+            title="<?=Text::float(G::$user['RequiredRatio'], 5)?>"><?=Text::float(G::$user['RequiredRatio'], 2)?></span>
         </li>
         <?php } ?>
       </ul>
@@ -339,7 +339,7 @@ if (check_perms('site_send_unlimited_invites')) {
         <li id="bonus_points">
           <a href="wiki.php?action=article&amp;name=bonuspoints"><?=BONUS_POINTS?></a>:
           <span class="stat">
-            <a href="store.php"><?=Text::number_format(G::$user['BonusPoints'])?></a>
+            <a href="store.php"><?=Text::float(G::$user['BonusPoints'])?></a>
           </span>
         </li>
 

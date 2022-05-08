@@ -172,7 +172,7 @@ function generate_user_table($Caption, $Tag, $Details, $Limit)
       <td class="number_column tooltip"
         title="Download speed is reported in base 2 in bytes per second, not bits per second."><?=Format::get_size($Detail['DownSpeed'])?>/s
       </td>
-      <td class="number_column"><?=Text::number_format($Detail['NumUploads'])?>
+      <td class="number_column"><?=Text::float($Detail['NumUploads'])?>
       </td>
       <td class="number_column"><?=Format::get_ratio_html($Detail['Uploaded'], $Detail['Downloaded'])?>
       </td>

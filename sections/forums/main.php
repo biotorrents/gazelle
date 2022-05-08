@@ -90,11 +90,11 @@ foreach ($Forums as $Forum) {
       </td>
 
       <td class="number_column">
-        <?=Text::number_format($NumTopics)?>
+        <?=Text::float($NumTopics)?>
       </td>
 
       <td class="number_column">
-        <?=Text::number_format($NumPosts)?>
+        <?=Text::float($NumPosts)?>
       </td>
       <?php } ?>
     </tr>

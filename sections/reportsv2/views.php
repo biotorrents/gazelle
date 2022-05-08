@@ -58,7 +58,7 @@ foreach ($Results as $Result) {
 ?>
       <tr<?=$RowClass?>>
         <td><a href="reportsv2.php?view=resolver&amp;id=<?=$UserID?>"><?=$Username?></a></td>
-        <td class="number_column"><?=Text::number_format($Reports)?></td>
+        <td class="number_column"><?=Text::float($Reports)?></td>
       </tr>
 <?php
 }
@@ -94,7 +94,7 @@ foreach ($Results as $Result) {
 ?>
       <tr<?=$RowClass?>>
         <td><a href="reportsv2.php?view=resolver&amp;id=<?=$UserID?>"><?=$Username?></a></td>
-        <td class="number_column"><?=Text::number_format($Reports)?></td>
+        <td class="number_column"><?=Text::float($Reports)?></td>
       </tr>
 <?php
 }
@@ -130,7 +130,7 @@ foreach ($Results as $Result) {
 ?>
       <tr<?=$RowClass?>>
         <td><a href="reportsv2.php?view=resolver&amp;id=<?=$UserID?>"><?=$Username?></a></td>
-        <td class="number_column"><?=Text::number_format($Reports)?></td>
+        <td class="number_column"><?=Text::float($Reports)?></td>
       </tr>
 <?php
 }
@@ -165,7 +165,7 @@ foreach ($Results as $Result) {
 ?>
       <tr<?=$RowClass?>>
         <td><a href="reportsv2.php?view=resolver&amp;id=<?=$UserID?>"><?=$Username?></a></td>
-        <td class="number_column"><?=Text::number_format($Reports)?></td>
+        <td class="number_column"><?=Text::float($Reports)?></td>
       </tr>
 <?php
 }
@@ -262,7 +262,7 @@ foreach ($Results as $Result) {
         <td>
           <a href="reportsv2.php?view=staff&amp;id=<?=$Array['ResolverID']?>"><?=esc($Array['Username'])?>'s reports</a>
         </td>
-        <td class="number_column"><?=Text::number_format($Array['Count'])?></td>
+        <td class="number_column"><?=Text::float($Array['Count'])?></td>
       </tr>
 <?php } ?>
     </table>
@@ -298,7 +298,7 @@ foreach ($Results as $Result) {
           <a href="reportsv2.php?view=type&amp;id=<?=esc($Array['Type'])?>"><?=esc($Title)?></a>
         </td>
         <td class="number_column">
-          <?=Text::number_format($Array['Count'])?>
+          <?=Text::float($Array['Count'])?>
         </td>
       </tr>
 <?php

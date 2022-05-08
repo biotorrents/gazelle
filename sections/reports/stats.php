@@ -47,7 +47,7 @@ $Results = $db->to_array();
 ?>
       <tr<?=$RowClass?>>
         <td><?=$Username?></td>
-        <td class="number_column"><?=Text::number_format($Reports)?></td>
+        <td class="number_column"><?=Text::float($Reports)?></td>
       </tr>
 <?php  } ?>
     </table>
@@ -80,7 +80,7 @@ $Results = $db->to_array();
 ?>
       <tr<?=$RowClass?>>
         <td><?=$Username?></td>
-        <td class="number_column"><?=Text::number_format($Reports)?></td>
+        <td class="number_column"><?=Text::float($Reports)?></td>
       </tr>
 <?php  } ?>
     </table>
@@ -113,7 +113,7 @@ $Results = $db->to_array();
 ?>
       <tr<?=$RowClass?>>
         <td><?=$Username?></td>
-        <td class="number_column"><?=Text::number_format($Reports)?></td>
+        <td class="number_column"><?=Text::float($Reports)?></td>
       </tr>
 <?php  } ?>
     </table>
@@ -144,7 +144,7 @@ $Results = $db->to_array();
 ?>
       <tr<?=$RowClass?>>
         <td><?=$Username?></td>
-        <td class="number_column"><?=Text::number_format($Reports)?></td>
+        <td class="number_column"><?=Text::float($Reports)?></td>
       </tr>
 <?php  } ?>
     </table>
@@ -187,7 +187,7 @@ $Results = $db->to_array();
       <tr<?=$RowClass?>>
         <td class="number_column"><?=$i?></td>
         <td><?=$Username?></td>
-        <td class="number_column"><?=Text::number_format($Trashed)?></td>
+        <td class="number_column"><?=Text::float($Trashed)?></td>
       </tr>
 <?php
     $i++;

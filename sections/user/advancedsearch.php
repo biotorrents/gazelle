@@ -1028,7 +1028,7 @@ echo $Pages;
 ?>
 </div>
 <div class="box pad center">
-  <h2><?=Text::number_format($NumResults)?> results</h2>
+  <h2><?=Text::float($NumResults)?> results</h2>
   <table width="100%">
     <tr class="colhead">
       <td>Username</td>
@@ -1074,19 +1074,19 @@ while (list($UserID, $Username, $Uploaded, $Downloaded, $Snatched, $Invitees, $C
         WHERE ud.UserID = $UserID");
     list($Downloads) = $db->next_record();
     $db->set_query_id($Results); ?>
-      <td><?=Text::number_format((int)$Downloads)?>
+      <td><?=Text::float((int)$Downloads)?>
       </td>
-      <td><?=(is_numeric($Snatched) ? Text::number_format($Snatched) : esc($Snatched))?>
+      <td><?=(is_numeric($Snatched) ? Text::float($Snatched) : esc($Snatched))?>
       </td>
       <td>
         <?php if ($DisableInvites) {
         echo 'X';
     } else {
-        echo Text::number_format($Invites);
+        echo Text::float($Invites);
     } ?>
       </td>
       <?php if (isset($_GET['invitees']) && $_GET['invitees'] != 'off') { ?>
-      <td><?=Text::number_format($Invitees)?>
+      <td><?=Text::float($Invitees)?>
       </td>
       <?php } ?>
     </tr>

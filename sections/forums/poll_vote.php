@@ -138,7 +138,7 @@ if (!isset($_POST['vote']) || !is_number($_POST['vote'])) {
           $Percent = 0;
         }
 ?>
-          <li><?=esc($Answers[$i])?> (<?=Text::number_format($Percent * 100, 2)?>%)</li>
+          <li><?=esc($Answers[$i])?> (<?=Text::float($Percent * 100, 2)?>%)</li>
           <li class="graph">
             <span class="center_poll" style="width: <?=round($Ratio * $Size)?>px;"></span>
           </li>
@@ -164,6 +164,6 @@ if (!isset($_POST['vote']) || !is_number($_POST['vote'])) {
     }
 ?>
     </ul>
-    <br /><strong>Votes:</strong> <?=Text::number_format($TotalVotes)?>
+    <br /><strong>Votes:</strong> <?=Text::float($TotalVotes)?>
 <?php
 }

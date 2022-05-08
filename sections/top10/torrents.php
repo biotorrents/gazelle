@@ -650,13 +650,13 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
     </td>
     <td class="number_column nobr"><?=Format::get_size($Data)?>
     </td>
-    <td class="number_column"><?=Text::number_format((double)$Snatched)?>
+    <td class="number_column"><?=Text::float((double)$Snatched)?>
     </td>
-    <td class="number_column"><?=Text::number_format((double)$Seeders)?>
+    <td class="number_column"><?=Text::float((double)$Seeders)?>
     </td>
-    <td class="number_column"><?=Text::number_format((double)$Leechers)?>
+    <td class="number_column"><?=Text::float((double)$Leechers)?>
     </td>
-    <td class="number_column"><?=Text::number_format($Seeders + $Leechers)?>
+    <td class="number_column"><?=Text::float($Seeders + $Leechers)?>
     </td>
 </tr>
 <?php

@@ -7,7 +7,7 @@ if ($user['BytesUploaded'] == 0 && $user['BytesDownloaded'] == 0) {
 } elseif ($user['BytesDownloaded'] == 0) {
   $Ratio = -1;
 } else {
-  $Ratio = Text::number_format(max($user['BytesUploaded'] / $user['BytesDownloaded'] - 0.005, 0), 2); //Subtract .005 to floor to 2 decimals
+  $Ratio = Text::float(max($user['BytesUploaded'] / $user['BytesDownloaded'] - 0.005, 0), 2); //Subtract .005 to floor to 2 decimals
 }
 
 $MyNews = $user['LastReadNews'];

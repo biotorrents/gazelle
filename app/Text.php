@@ -138,14 +138,14 @@ class Text
         # String is already utf8
         $utf8 = preg_match(
             "%^(?:
-            [\x09\x0A\x0D\x20-\x7E]            // ASCII
-          | [\xC2-\xDF][\x80-\xBF]             // Non-overlong 2-byte
-          | \xE0[\xA0-\xBF][\x80-\xBF]         // Excluding overlongs
-          | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  // Straight 3-byte
-          | \xED[\x80-\x9F][\x80-\xBF]         // Excluding surrogates
-          | \xF0[\x90-\xBF][\x80-\xBF]{2}      // Planes 1-3
-          | [\xF1-\xF3][\x80-\xBF]{3}          // Planes 4-15
-          | \xF4[\x80-\x8F][\x80-\xBF]{2}      // Plane 16
+            [\x09\x0A\x0D\x20-\x7E]           // ASCII
+          | [\xC2-\xDF][\x80-\xBF]            // Non-overlong 2-byte
+          | \xE0[\xA0-\xBF][\x80-\xBF]        // Excluding overlongs
+          | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2} // Straight 3-byte
+          | \xED[\x80-\x9F][\x80-\xBF]        // Excluding surrogates
+          | \xF0[\x90-\xBF][\x80-\xBF]{2}     // Planes 1-3
+          | [\xF1-\xF3][\x80-\xBF]{3}         // Planes 4-15
+          | \xF4[\x80-\x8F][\x80-\xBF]{2}     // Plane 16
             )*$%xs",
             $string
         );
@@ -167,16 +167,18 @@ class Text
 
 
     /**
-     * number_format
+     * float
      *
      * Wrapper around number_format that casts to float.
      * Hopefully temporary until we clean up the data.
      *
      * @see https://www.php.net/manual/en/function.number-format.php
      */
-    public static function number_format(mixed $num, int $decimals = 0): string
+    public static function float(mixed $number, int $decimals = 0): string
     {
-        $num = floatval($num);
-        return number_format($num, $decimals);
+        return number_format(
+            floatval($number),
+            $decimals
+        );
     }
 }

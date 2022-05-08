@@ -298,7 +298,7 @@ $encoded_artist = urlencode($encoded_artist);
           <tr>
             <td class="label">Votes</td>
             <td>
-              <span id="votecount"><?= Text::number_format($VoteCount) ?></span>
+              <span id="votecount"><?= Text::float($VoteCount) ?></span>
               <?php if ($CanVote) { ?>
               &nbsp;&nbsp;<a href="javascript:Vote(0)" class="brackets"><strong>+</strong></a>
               <strong>Costs <?= Format::get_size($MinimumVote, 0) ?></strong>

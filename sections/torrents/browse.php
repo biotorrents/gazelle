@@ -611,7 +611,7 @@ View::header('Browse Torrents', 'browse');
         <!-- Result count, submit, and reset -->
         <div class="submit ft_submit">
           <span class="float_left">
-            <?=Text::number_format($NumResults)?>
+            <?=Text::float($NumResults)?>
             Results
           </span>
 
@@ -658,7 +658,7 @@ die();
 <div class="torrents_nomatch box pad" align="center">
   <h2>The requested page contains no matches</h2>
   <p>You are requesting page <?=$Page?>, but the search returned only
-    <?=Text::number_format($LastPage) ?> pages
+    <?=Text::float($LastPage) ?> pages
   </p>
 </div>
 
@@ -834,13 +834,13 @@ die();
     <td class="number_column nobr"><?=Format::get_size($MaxSize)?>(Max)</td>
 
     <!-- Snatches, seeders, and leechers -->
-    <td class="number_column"><?=Text::number_format($TotalSnatched)?>
+    <td class="number_column"><?=Text::float($TotalSnatched)?>
     </td>
     <td
       class="number_column<?=($TotalSeeders === 0 ? ' r00' : '')?>">
-      <?=Text::number_format($TotalSeeders)?>
+      <?=Text::float($TotalSeeders)?>
     </td>
-    <td class="number_column"><?=Text::number_format($TotalLeechers)?>
+    <td class="number_column"><?=Text::float($TotalLeechers)?>
     </td>
   </tr>
 
@@ -896,13 +896,13 @@ die();
     </td>
     <td class="number_column nobr"><?=Format::get_size($Data['Size'])?>
     </td>
-    <td class="number_column"><?=Text::number_format($Data['Snatched'])?>
+    <td class="number_column"><?=Text::float($Data['Snatched'])?>
     </td>
     <td
       class="number_column<?=($Data['Seeders'] === 0) ? ' r00' : ''?>">
-      <?=Text::number_format($Data['Seeders'])?>
+      <?=Text::float($Data['Seeders'])?>
     </td>
-    <td class="number_column"><?=Text::number_format($Data['Leechers'])?>
+    <td class="number_column"><?=Text::float($Data['Leechers'])?>
     </td>
   </tr>
   <?php
@@ -1018,13 +1018,13 @@ die();
     </td>
     <td class="number_column nobr"><?=Format::get_size($Data['Size'])?>
     </td>
-    <td class="number_column"><?=Text::number_format($Data['Snatched'])?>
+    <td class="number_column"><?=Text::float($Data['Snatched'])?>
     </td>
     <td
       class="number_column<?=($Data['Seeders'] === 0) ? ' r00' : ''?>">
-      <?=Text::number_format($Data['Seeders'])?>
+      <?=Text::float($Data['Seeders'])?>
     </td>
-    <td class="number_column"><?=Text::number_format($Data['Leechers'])?>
+    <td class="number_column"><?=Text::float($Data['Leechers'])?>
     </td>
   </tr>
   <?php

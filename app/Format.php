@@ -186,7 +186,7 @@ class Format
             return '∞';
         }
 
-        return Text::number_format(max($Dividend / $Divisor - (0.5 / pow(10, $Decimal)), 0), $Decimal);
+        return Text::float(max($Dividend / $Divisor - (0.5 / pow(10, $Decimal)), 0), $Decimal);
     }
 
 
@@ -403,7 +403,7 @@ class Format
         if (func_num_args() === 1 && $steps >= 4) {
             $levels++;
         }
-        return Text::number_format($size, $levels) . ' ' . $units[$steps];
+        return Text::float($size, $levels) . ' ' . $units[$steps];
     }
 
 

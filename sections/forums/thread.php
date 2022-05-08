@@ -309,7 +309,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
                 $Ratio = 0;
                 $Percent = 0;
             } ?>
-      <li<?=((!empty($UserResponse)&&($UserResponse == $i))?' class="poll_your_answer"':'')?>><?=esc($Answer)?> (<?=Text::number_format($Percent * 100, 2)?>%)</li>
+      <li<?=((!empty($UserResponse)&&($UserResponse == $i))?' class="poll_your_answer"':'')?>><?=esc($Answer)?> (<?=Text::float($Percent * 100, 2)?>%)</li>
         <li class="graph">
           <span class="center_poll"
             style="width: <?=round($Ratio * 750)?>px;"></span>
@@ -321,7 +321,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
         <li>
           <?= ($UserResponse == '0' ? '&raquo;&nbsp;' : '') ?>
           (Blank)
-          (<?= Text::number_format((float) ($Votes[0] / $TotalVotes * 100), 2) ?>%)
+          (<?= Text::float((float) ($Votes[0] / $TotalVotes * 100), 2) ?>%)
         </li>
 
         <li class="graph">
@@ -334,7 +334,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
     </ul>
     <br />
 
-    <strong>Votes:</strong> <?=Text::number_format($TotalVotes)?><br /><br />
+    <strong>Votes:</strong> <?=Text::float($TotalVotes)?><br /><br />
     <?php
     } else {
         //Staff forum, output voters, not percentages
@@ -372,7 +372,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
       <li>
         <a
           href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$user['AuthKey']?>&amp;vote=<?=(int)$i?>"><?=esc($Answer == '' ? 'Blank' : $Answer)?></a>
-        - <?=$StaffVotes[$i]?>&nbsp;(<?=Text::number_format(((float)$Votes[$i] / $TotalVotes) * 100, 2)?>%)
+        - <?=$StaffVotes[$i]?>&nbsp;(<?=Text::float(((float)$Votes[$i] / $TotalVotes) * 100, 2)?>%)
         <a href="forums.php?action=delete_poll_option&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$user['AuthKey']?>&amp;vote=<?=(int)$i?>"
           class="brackets tooltip" title="Delete poll option">X</a>
       </li>
@@ -381,14 +381,14 @@ if ($ThreadInfo['NoPoll'] == 0) {
       <li>
         <a
           href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$user['AuthKey']?>&amp;vote=0"><?=($UserResponse == '0' ? '&raquo;&nbsp;' : '')?>Blank</a>
-        - <?=$StaffVotes[0]?>&nbsp;(<?=Text::number_format(((float)$Votes[0] / $TotalVotes) * 100, 2)?>%)
+        - <?=$StaffVotes[0]?>&nbsp;(<?=Text::float(((float)$Votes[0] / $TotalVotes) * 100, 2)?>%)
       </li>
     </ul>
     <?php
       if ($ForumID == STAFF_FORUM) {
           ?>
     <br />
-    <strong>Votes:</strong> <?=Text::number_format($StaffCount - count($StaffNames))?> / <?=$StaffCount?> current staff, <?=Text::number_format($TotalVotes)?> total
+    <strong>Votes:</strong> <?=Text::float($StaffCount - count($StaffNames))?> / <?=$StaffCount?> current staff, <?=Text::float($TotalVotes)?> total
     <br />
     <strong>Missing votes:</strong> <?=implode(", ", $StaffNames);
           echo "\n"; ?>

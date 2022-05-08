@@ -61,7 +61,7 @@ $Results = Torrents::get_groups($GroupIDs);
 
 <div class="box pad">
   <h3>
-    There are <?=Text::number_format(count($TorrentsInfo))?> torrents
+    There are <?=Text::float(count($TorrentsInfo))?> torrents
     remaining
   </h3>
 

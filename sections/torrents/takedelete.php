@@ -57,8 +57,8 @@ if (isset($_SESSION['logged_user']['multi_delete'])) {
 
 $InfoHash = unpack('H*', $InfoHash);
 Torrents::delete_torrent($TorrentID, $GroupID);
-Misc::write_log("Torrent $TorrentID ($Name) (".Text::number_format($Size / (1024 * 1024), 2).' MB) ('.strtoupper($InfoHash[1]).') was deleted by '.$user['Username'].': ' .$_POST['reason'].' '.$_POST['extra']);
-Torrents::write_group_log($GroupID, $TorrentID, $user['ID'], 'deleted torrent ('.Text::number_format($Size / (1024 * 1024), 2).' MB, '.strtoupper($InfoHash[1]).') for reason: '.$_POST['reason'].' '.$_POST['extra'], 0);
+Misc::write_log("Torrent $TorrentID ($Name) (".Text::float($Size / (1024 * 1024), 2).' MB) ('.strtoupper($InfoHash[1]).') was deleted by '.$user['Username'].': ' .$_POST['reason'].' '.$_POST['extra']);
+Torrents::write_group_log($GroupID, $TorrentID, $user['ID'], 'deleted torrent ('.Text::float($Size / (1024 * 1024), 2).' MB, '.strtoupper($InfoHash[1]).') for reason: '.$_POST['reason'].' '.$_POST['extra'], 0);
 
 View::header('Torrent deleted');
 ?>

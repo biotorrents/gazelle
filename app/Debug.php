@@ -180,7 +180,7 @@ class Debug
     <td>
         <strong>
           <a data-toggle-target="#debug_ocelot" class="brackets">View</a>
-          <?=Text::number_format(count($OcelotRequests))?>
+          <?=Text::float(count($OcelotRequests))?>
           Ocelot requests:
         </strong>
     </td>
@@ -200,7 +200,7 @@ class Debug
         <?=esc($Request["status"])?>
     </td>
     <td class="debug_info debug_timing" style="width: 100px;">
-        <?=Text::number_format($Request["time"], 5)?> ms
+        <?=Text::float($Request["time"], 5)?> ms
     </td>
   </tr>
   <?php } ?>
@@ -229,7 +229,7 @@ class Debug
         <strong>
           <a href="#" onclick="$(this).parents(".layout").next("#debug_error").gtoggle(); return false;"
             class="brackets">View</a>
-          <?=Text::number_format(count($Errors))?>
+          <?=Text::float(count($Errors))?>
           Errors:
         </strong>
     </td>
@@ -266,13 +266,13 @@ class Debug
           $Header = "Searches";
           if (!is_array($Queries)) {
               $Queries = $this->get_sphinxql_queries();
-              $Header .= " (".Text::number_format($this->get_sphinxql_time(), 5)." ms)";
+              $Header .= " (".Text::float($this->get_sphinxql_time(), 5)." ms)";
           }
 
           if (empty($Queries)) {
               return;
           }
-          $Header = " ".Text::number_format(count($Queries))." $Header:"; ?>
+          $Header = " ".Text::float(count($Queries))." $Header:"; ?>
 
 <table class="layout">
   <tr>
@@ -293,7 +293,7 @@ class Debug
     <td class="debug_data debug_sphinx_data">
         <pre><?=str_replace("\t", "  ", $Params)?></pre>
     </td>
-    <td class="debug_info debug_sphinx_time" style="width: 130px;"><?=Text::number_format($Time, 5)?> ms</td>
+    <td class="debug_info debug_sphinx_time" style="width: 130px;"><?=Text::float($Time, 5)?> ms</td>
   </tr>
   <?php
     } ?>

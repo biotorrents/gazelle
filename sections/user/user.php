@@ -399,7 +399,7 @@ if (!$OwnProfile && !$user['DisablePoints']) { ?>
       ?>
             <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Required
               Ratio: <span class="tooltip"
-                title="<?=Text::number_format((double)$RequiredRatio, 5)?>"><?=Text::number_format((double)$RequiredRatio, 2)?></span></li>
+                title="<?=Text::float((double)$RequiredRatio, 5)?>"><?=Text::float((double)$RequiredRatio, 2)?></span></li>
               <?php
   }
   if (($Override = check_paranoia_here('downloaded'))) {
@@ -414,7 +414,7 @@ if (!$OwnProfile && !$user['DisablePoints']) { ?>
       ?>
                   <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>><a
                       href="userhistory.php?action=token_history&amp;userid=<?=$UserID?>">Tokens</a>:
-                    <?=Text::number_format($FLTokens)?>
+                    <?=Text::float($FLTokens)?>
                     </li>
                     <?php
   }
@@ -504,7 +504,7 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
           title="<?=Format::get_size($Uploaded)?>">Data uploaded:
-          <?=$UploadedRank === false ? 'Server busy' : Text::number_format($UploadedRank)?>
+          <?=$UploadedRank === false ? 'Server busy' : Text::float($UploadedRank)?>
         </li>
         <?php
   }
@@ -512,23 +512,23 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
           title="<?=Format::get_size($Downloaded)?>">Data downloaded:
-          <?=$DownloadedRank === false ? 'Server busy' : Text::number_format($DownloadedRank)?>
+          <?=$DownloadedRank === false ? 'Server busy' : Text::float($DownloadedRank)?>
         </li>
         <?php
   }
   if (($Override = check_paranoia_here('uploads+'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=Text::number_format($Uploads)?>">Torrents uploaded:
-          <?=$UploadsRank === false ? 'Server busy' : Text::number_format($UploadsRank)?>
+          title="<?=Text::float($Uploads)?>">Torrents uploaded:
+          <?=$UploadsRank === false ? 'Server busy' : Text::float($UploadsRank)?>
         </li>
         <?php
   }
   if (($Override = check_paranoia_here('requestsfilled_count'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=Text::number_format($RequestsFilled)?>">Requests
-          filled: <?=$RequestRank === false ? 'Server busy' : Text::number_format($RequestRank)?>
+          title="<?=Text::float($RequestsFilled)?>">Requests
+          filled: <?=$RequestRank === false ? 'Server busy' : Text::float($RequestRank)?>
         </li>
         <?php
   }
@@ -536,22 +536,22 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
           title="<?=Format::get_size($TotalSpent)?>">Bounty spent:
-          <?=$BountyRank === false ? 'Server busy' : Text::number_format($BountyRank)?>
+          <?=$BountyRank === false ? 'Server busy' : Text::float($BountyRank)?>
         </li>
         <?php } ?>
-        <li class="tooltip" title="<?=Text::number_format($ForumPosts)?>">
-          Posts made: <?=$PostRank === false ? 'Server busy' : Text::number_format($PostRank)?>
+        <li class="tooltip" title="<?=Text::float($ForumPosts)?>">
+          Posts made: <?=$PostRank === false ? 'Server busy' : Text::float($PostRank)?>
         </li>
         <?php if (($Override = check_paranoia_here('artistsadded'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=Text::number_format($ArtistsAdded)?>">Artists added:
-          <?=$ArtistsRank === false ? 'Server busy' : Text::number_format($ArtistsRank)?>
+          title="<?=Text::float($ArtistsAdded)?>">Artists added:
+          <?=$ArtistsRank === false ? 'Server busy' : Text::float($ArtistsRank)?>
         </li>
         <?php
   }
   if (check_paranoia_here(array('uploaded', 'downloaded', 'uploads+', 'requestsfilled_count', 'requestsvoted_bounty', 'artistsadded'))) { ?>
-        <li><strong>Overall rank: <?=$OverallRank === false ? 'Server busy' : Text::number_format($OverallRank)?></strong>
+        <li><strong>Overall rank: <?=$OverallRank === false ? 'Server busy' : Text::float($OverallRank)?></strong>
         </li>
         <?php } ?>
       </ul>
@@ -573,7 +573,7 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
       if (check_perms('users_view_ips', $Class)) {
           ?>
         <?php if (check_perms('users_view_ips', $Class) && check_perms('users_mod', $Class)) { ?>
-        <li>Tracker IPs: <?=Text::number_format($TrackerIPs)?> <a
+        <li>Tracker IPs: <?=Text::float($TrackerIPs)?> <a
             href="userhistory.php?action=tracker_ips&amp;userid=<?=$UserID?>"
             class="brackets">View</a></li>
         <?php
@@ -665,7 +665,7 @@ if (check_perms('users_view_invites')) {
     if ($DisableInvites) {
         echo 'X';
     } else {
-        echo Text::number_format($Invites);
+        echo Text::float($Invites);
     }
     echo " ($Pending)"
         ?>
@@ -1347,8 +1347,8 @@ if (!$DisablePoints) {
           }
 
           $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints/1440)), 0));
-          $PointsPerHour = Text::number_format($PointsRate)." ".BONUS_POINTS."/hour";
-          $PointsPerDay = Text::number_format($PointsRate*24)." ".BONUS_POINTS."/day";
+          $PointsPerHour = Text::float($PointsRate)." ".BONUS_POINTS."/hour";
+          $PointsPerDay = Text::float($PointsRate*24)." ".BONUS_POINTS."/day";
       } else {
           $PointsPerHour = "0 ".BONUS_POINTS."/hour";
           $PointsPerDay = BONUS_POINTS." disabled";

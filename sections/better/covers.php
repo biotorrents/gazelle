@@ -61,7 +61,7 @@ View::header('Torrent groups with no picture');
 
 <div class="box pad">
   <h3>
-    There are <?=Text::number_format($NumResults)?> groups remaining
+    There are <?=Text::float($NumResults)?> groups remaining
   </h3>
 
   <table class="torrent_table">

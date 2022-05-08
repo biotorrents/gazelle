@@ -298,7 +298,7 @@ if (count($Forum) === 0) {
         <?=time_diff($LastTime, 1)?>
       </span>
     </td>
-    <td class="number_column"><?=Text::number_format($PostCount - 1)?>
+    <td class="number_column"><?=Text::float($PostCount - 1)?>
     </td>
     <td><?=Users::format_username($AuthorID, false, false, false, false, false)?>
     </td>
