@@ -161,4 +161,4 @@ if ($_REQUEST['action'] == 'add_artist') {
     add_artist($CollageID, $ArtistID);
   }
 }
-header("Location: collages.php?id=$CollageID");
+Http::redirect("collages.php?id=$CollageID");

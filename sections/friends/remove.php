@@ -7,4 +7,4 @@ $db->prepared_query("
     AND `FriendID`='$P[friendid]'
 ");
 
-header('Location: friends.php');
+Http::redirect("friends.php");

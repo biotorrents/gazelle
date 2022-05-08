@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 $ENV = ENV::go();
 if (!$ENV->FEATURE_DONATE) {
-    header('Location: index.php');
+    Http::redirect("index.php");
     error();
 }
 

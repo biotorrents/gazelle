@@ -238,6 +238,4 @@ $cache->delete_value("artist_$TargetArtistID");
 $cache->delete_value("artists_requests_$TargetArtistID");
 $cache->delete_value("artists_requests_$ArtistID");
 
-header("Location: artist.php?id=$TargetArtistID");
-
-?>
+Http::redirect("artist.php?id=$TargetArtistID");

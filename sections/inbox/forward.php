@@ -45,7 +45,6 @@ if (!$db->has_results()) {
   header('Location: ' . Inbox::get_inbox_link());
 } else {
   error("$StaffIDs[$ReceiverID] already has this conversation in their inbox.");
-  header("Location: inbox.php?action=viewconv&id=$ConvID");
+  Http::redirect("inbox.php?action=viewconv&id=$ConvID");
 }
 //View::footer();
-?>

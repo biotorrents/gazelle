@@ -120,5 +120,5 @@ if (empty($_POST['confirm'])) {
 
     Misc::write_log("Torrent $TorrentID was edited by " . $user['Username']);
 
-    header("Location: torrents.php?id=$GroupID");
+    Http::redirect("torrents.php?id=$GroupID");
 }

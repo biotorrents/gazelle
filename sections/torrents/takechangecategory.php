@@ -52,4 +52,4 @@ $db->query("
   UPDATE group_log
   SET GroupID = $GroupID
   WHERE GroupID = $OldGroupID");
-header("Location: torrents.php?id=$GroupID");
+Http::redirect("torrents.php?id=$GroupID");

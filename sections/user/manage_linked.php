@@ -44,4 +44,4 @@ switch ($_REQUEST['dupeaction']) {
     error(403);
 }
 echo '\o/';
-header("Location: user.php?id=$UserID");
+Http::redirect("user.php?id=$UserID");

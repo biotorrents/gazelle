@@ -172,7 +172,7 @@ if (isset($_POST['confirm'])) {
 
     Misc::write_log("The artist $ArtistID ($ArtistName) was made into a non-redirecting alias of artist $NewArtistID ($NewArtistName) by user ".$user['ID']." (".$user['Username'].')');
 
-    header("Location: artist.php?action=edit&artistid=$NewArtistID");
+    Http::redirect("artist.php?action=edit&artistid=$NewArtistID");
 } else {
     View::header('Merging Artists'); ?>
 <div class="header">

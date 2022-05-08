@@ -73,5 +73,4 @@ if ($GroupID) {
   $cache->delete_value("requests_group_$GroupID");
 }
 
-header('Location: requests.php');
-?>
+Http::redirect("requests.php");

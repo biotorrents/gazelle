@@ -111,7 +111,7 @@ $db->prepared_query("
     AND `ReporterID` = ".db_string($user['ID'])."
     AND `ReportedTime` > '".time_minus(3)."'");
 if ($db->has_results()) {
-    header("Location: torrents.php?torrentid=$TorrentID");
+    Http::redirect("torrents.php?torrentid=$TorrentID");
     error();
 }
 
@@ -141,4 +141,4 @@ Misc::send_pm($UploaderID, 0, "Torrent Reported: $GroupName", "Your torrent, \"[
 $cache->delete_value("reports_torrent_$TorrentID");
 $cache->increment('num_torrent_reportsv2');
 
-header("Location: torrents.php?torrentid=$TorrentID");
+Http::redirect("torrents.php?torrentid=$TorrentID");

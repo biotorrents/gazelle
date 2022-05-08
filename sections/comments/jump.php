@@ -7,5 +7,5 @@ $URL = Comments::get_url_query((int)$_REQUEST['postid']);
 if (!$URL) {
   error(0);
 }
-header("Location: $URL");
+Http::redirect("$URL");
 die();

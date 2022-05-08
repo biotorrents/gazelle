@@ -51,5 +51,4 @@ list($Remaining) = $db->next_record();
 
 send_irc($Channels, "Report $ReportID resolved by ".preg_replace('/^(.{2})/', '$1·', $user['Username']).' on site ('.(int) $Remaining.' remaining).');
 $cache->delete_value('num_other_reports');
-header('Location: reports.php');
-?>
+Http::redirect("reports.php");

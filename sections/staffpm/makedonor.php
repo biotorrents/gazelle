@@ -41,4 +41,4 @@ Donations::donate($UserID, array(
               "Reason" => $_POST['donation_reason'],
               "SendPM" => true));
 
-header('Location: staffpm.php');
+Http::redirect("staffpm.php");

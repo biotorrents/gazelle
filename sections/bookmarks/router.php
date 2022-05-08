@@ -58,7 +58,7 @@ switch ($_REQUEST['action']) {
       WHERE b.UserID = '$user[ID]'");
 
     $cache->delete_value("bookmarks_group_ids_$UserID");
-    header('Location: bookmarks.php');
+    Http::redirect("bookmarks.php");
     error();
     break;
 

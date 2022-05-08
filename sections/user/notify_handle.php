@@ -103,7 +103,7 @@ if (!$HasFilter) {
 
 if ($Err) {
     error($Err);
-    header('Location: user.php?action=notify');
+    Http::redirect("user.php?action=notify");
     error();
 }
 
@@ -137,4 +137,4 @@ $cache->delete_value('notify_filters_'.$user['ID']);
 if (($Notify = $cache->get_value('notify_artists_'.$user['ID'])) !== false && $Notify['ID'] === $_POST['id'.$FormID]) {
     $cache->delete_value('notify_artists_'.$user['ID']);
 }
-header('Location: user.php?action=notify');
+Http::redirect("user.php?action=notify");

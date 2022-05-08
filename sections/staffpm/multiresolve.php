@@ -32,9 +32,8 @@ if ($IDs = $_POST['id']) {
   $cache->delete_value("num_staff_pms_$user[ID]");
 
   // Done! Return to inbox
-  header("Location: staffpm.php");
+  Http::redirect("staffpm.php");
 } else {
   // No ID
-  header("Location: staffpm.php");
+  Http::redirect("staffpm.php");
 }
-?>

@@ -16,7 +16,7 @@ $ID = $_POST['id'];
 if ($Short === 'request_update') {
   if (empty($_POST['year']) || !is_number($_POST['year'])) {
     error('Year must be specified.');
-    header("Location: reports.php?action=report&type=request_update&id=$ID");
+    Http::redirect("reports.php?action=report&type=request_update&id=$ID");
     die();
   }
   $Reason = '[b]Year[/b]: '.$_POST['year'].".\n\n";
@@ -81,5 +81,4 @@ if (in_array($Short, array('comment', 'post', 'thread'))) {
 
 send_irc($Channels, "$ReportID - ".$user['Username']." just reported a $Short: ".site_url()."$Link : ".strtr($Reason, "\n", ' '));
 $cache->delete_value('num_other_reports');
-header("Location: $Link");
-?>
+Http::redirect("$Link");

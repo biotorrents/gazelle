@@ -16,7 +16,7 @@ $UserID = $user['ID'];
 
 if (!apcu_exists('DBKEY')) {
     error('Invites disabled until database decrypted');
-    header('Location: user.php?action=invite');
+    Http::redirect("user.php?action=invite");
     error();
 }
 
@@ -63,7 +63,7 @@ foreach ($Emails as $CurEmail) {
             continue;
         } else {
             error('Invalid email.');
-            header('Location: user.php?action=invite');
+            Http::redirect("user.php?action=invite");
             error();
         }
     }
@@ -75,7 +75,7 @@ foreach ($Emails as $CurEmail) {
         while (list($MaybeEmail) = $db->next_record()) {
             if (Crypto::decrypt($MaybeEmail) == $CurEmail) {
                 error('You already have a pending invite to that address!');
-                header('Location: user.php?action=invite');
+                Http::redirect("user.php?action=invite");
                 error();
             }
         }
@@ -121,4 +121,4 @@ EOT;
     Misc::email($CurEmail, "You have been invited to $ENV->SITE_NAME", $Message);
 }
 
-header('Location: user.php?action=invite');
+Http::redirect("user.php?action=invite");

@@ -37,7 +37,7 @@ if ($CollageData) {
 }
 
 if ($Deleted === '1') {
-    header("Location: log.php?search=Collage+$CollageID");
+    Http::redirect("log.php?search=Collage+$CollageID");
     error(404);
 }
 

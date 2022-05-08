@@ -86,7 +86,7 @@ switch ($_REQUEST['action']) {
         include SERVER_ROOT.'/sections/tools/managers/ajax_take_enable_request.php';
     } else {
         // Prevent post requests to the ajax page
-        header("Location: tools.php");
+        Http::redirect("tools.php");
         error();
     }
     break;
@@ -131,7 +131,7 @@ switch ($_REQUEST['action']) {
         $cache->delete_value('news');
         $cache->delete_value('feed_news');
     }
-    header('Location: index.php');
+    Http::redirect("index.php");
     break;
 
   case 'deletenews':
@@ -155,7 +155,7 @@ switch ($_REQUEST['action']) {
             $cache->delete_value('news_latest_title');
         }
     }
-    header('Location: index.php');
+    Http::redirect("index.php");
     break;
 
   case 'takenewnews':
@@ -171,7 +171,7 @@ switch ($_REQUEST['action']) {
     $cache->delete_value('news_latest_title');
     $cache->delete_value('news');
 
-    header('Location: index.php');
+    Http::redirect("index.php");
     break;
 
   case 'tokens':

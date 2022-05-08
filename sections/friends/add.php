@@ -24,4 +24,4 @@ $db->prepared_query("
     ('$user[ID]', '$FriendID')
 ");
 
-header('Location: friends.php');
+Http::redirect("friends.php");

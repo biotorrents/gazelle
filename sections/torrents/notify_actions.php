@@ -3,7 +3,7 @@ switch ($_GET['action']) {
   case 'notify_clear':
     $db->query("DELETE FROM users_notify_torrents WHERE UserID = '$user[ID]' AND UnRead = '0'");
     $cache->delete_value('notifications_new_'.$user['ID']);
-    header('Location: torrents.php?action=notify');
+    Http::redirect("torrents.php?action=notify");
     break;
 
   case 'notify_clear_item':
@@ -36,7 +36,7 @@ switch ($_GET['action']) {
     }
     $db->query("DELETE FROM users_notify_torrents WHERE UserID = '$user[ID]' AND FilterID = '$_GET[filterid]' AND UnRead = '0'");
     $cache->delete_value('notifications_new_'.$user['ID']);
-    header('Location: torrents.php?action=notify');
+    Http::redirect("torrents.php?action=notify");
     break;
 
   case 'notify_catchup':
@@ -44,7 +44,7 @@ switch ($_GET['action']) {
     if ($db->affected_rows()) {
       $cache->delete_value('notifications_new_'.$user['ID']);
     }
-    header('Location: torrents.php?action=notify');
+    Http::redirect("torrents.php?action=notify");
     break;
 
   case 'notify_catchup_filter':
@@ -55,7 +55,7 @@ switch ($_GET['action']) {
     if ($db->affected_rows()) {
       $cache->delete_value('notifications_new_'.$user['ID']);
     }
-    header('Location: torrents.php?action=notify');
+    Http::redirect("torrents.php?action=notify");
     break;
   default:
     error(0);

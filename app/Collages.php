@@ -50,7 +50,7 @@ class Collages
         if ($CollageCount >= G::$user['Permissions']['MaxCollages']) {
             // todo: Fix this, the query was for COUNT(ID), so I highly doubt that this works... - Y
             list($CollageID) = G::$db->next_record();
-            header("Location: collage.php?id=$CollageID");
+            Http::redirect("collage.php?id=$CollageID");
             error();
         }
 
@@ -73,7 +73,7 @@ class Collages
         ");
           
         $CollageID = G::$db->inserted_id();
-        header("Location: collage.php?id=$CollageID");
+        Http::redirect("collage.php?id=$CollageID");
         error();
     }
 }

@@ -93,4 +93,4 @@ $db->query("
 $CollageID = $db->inserted_id();
 $cache->delete_value("collage_$CollageID");
 Misc::write_log("Collage $CollageID (".$_POST['name'].') was created by '.$user['Username']);
-header("Location: collages.php?id=$CollageID");
+Http::redirect("collages.php?id=$CollageID");

@@ -49,4 +49,4 @@ Misc::send_pm($AuthorID, $user['ID'], $Subject, $PrivateMessage);
 
 Comments::edit($PostID, $Body);
 
-header("Location: $URL");
+Http::redirect("$URL");

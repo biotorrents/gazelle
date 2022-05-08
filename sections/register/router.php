@@ -22,7 +22,7 @@ $ENV = ENV::go();
 /*
 if (isset($user)) {
     // Silly user, what are you doing here!
-    header('Location: index.php');
+    Http::redirect("index.php");
     error();
 }
 */

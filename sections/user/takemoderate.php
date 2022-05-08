@@ -160,7 +160,7 @@ $db->query("
   GROUP BY m.ID");
 
 if (!$db->has_results()) { // If user doesn't exist
-    header("Location: log.php?search=User+$UserID");
+    Http::redirect("log.php?search=User+$UserID");
 }
 
 $Cur = $db->next_record(MYSQLI_ASSOC, false);
@@ -196,7 +196,7 @@ if ($_POST['UserStatus'] === 'delete' && check_perms('users_delete_users')) {
     $cache->delete_value("user_info_$UserID");
     Tracker::update_tracker('remove_user', array('passkey' => $Cur['torrent_pass']));
 
-    header("Location: log.php?search=User+$UserID");
+    Http::redirect("log.php?search=User+$UserID");
     error();
 }
 
@@ -311,11 +311,11 @@ if ($Username != $Cur['Username'] && check_perms('users_edit_usernames', $Cur['C
     if ($db->next_record() > 0) {
         list($UsedUsernameID) = $db->next_record();
         error("Username already in use by <a href=\"user.php?id=$UsedUsernameID\">$Username</a>");
-        header("Location: user.php?id=$UserID");
+        Http::redirect("user.php?id=$UserID");
         error();
     } elseif ($Username == '0' || $Username == '1') {
         error('You cannot set a username of "0" or "1".');
-        header("Location: user.php?id=$UserID");
+        Http::redirect("user.php?id=$UserID");
         error();
     } else {
         $UpdateSet[] = "Username = '$Username'";
@@ -328,7 +328,7 @@ if ($Title != db_string($Cur['Title']) && check_perms('users_edit_titles')) {
     // Using the unescaped value for the test to avoid confusion
     if (strlen($_POST['Title']) > 1024) {
         error("Custom titles have a maximum length of 1,024 characters.");
-        header("Location: user.php?id=$UserID");
+        Http::redirect("user.php?id=$UserID");
         error();
     } else {
         $UpdateSet[] = "Title = '$Title'";
@@ -782,7 +782,7 @@ if (empty($UpdateSet) && empty($EditSummary)) {
         if (str_replace("\r", '', $Cur['AdminComment']) != str_replace("\r", '', $AdminComment) && check_perms('users_disable_any')) {
             $UpdateSet[] = "AdminComment = '$AdminComment'";
         } else {
-            header("Location: user.php?id=$UserID");
+            Http::redirect("user.php?id=$UserID");
             error();
         }
     } else {
@@ -851,7 +851,7 @@ if (isset($ClearStaffIDCache)) {
 }
 
 // redirect to user page
-header("location: user.php?id=$UserID");
+Http::redirect("user.php?id=$UserID");
 
 function translateUserStatus($Status)
 {

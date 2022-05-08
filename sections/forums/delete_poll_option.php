@@ -43,7 +43,7 @@ if (is_number($ThreadID) && is_number($PollOption)) {
       AND TopicID = $ThreadID");
 
   $cache->delete_value("polls_$ThreadID");
-  header("Location: forums.php?action=viewthread&threadid=$ThreadID");
+  Http::redirect("forums.php?action=viewthread&threadid=$ThreadID");
 } else {
   error(404);
 }

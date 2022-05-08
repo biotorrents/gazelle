@@ -82,4 +82,4 @@ if ($OldObject !== $NewObject) {
     Torrents::write_group_log($group_id, 0, $user['ID'], "$Title3 changed to '$NewObject' from '$OldObject'", 0);
 }
 
-header("Location: torrents.php?id=$group_id");
+Http::redirect("torrents.php?id=$group_id");

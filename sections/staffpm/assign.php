@@ -34,7 +34,7 @@ if ($ConvID = (int)$_GET['convid']) {
           Level = $Level
         WHERE ID = $ConvID");
       $cache->delete_value("num_staff_pms_$user[ID]");
-      header('Location: staffpm.php');
+      Http::redirect("staffpm.php");
     } else {
       error(404);
     }
@@ -91,6 +91,5 @@ if ($ConvID = (int)$_GET['convid']) {
 
 } else {
   // No ID
-  header('Location: staffpm.php');
+  Http::redirect("staffpm.php");
 }
-?>

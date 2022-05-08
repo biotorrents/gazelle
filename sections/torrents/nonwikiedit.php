@@ -224,4 +224,4 @@ while (list($TorrentID) = $db->next_record()) {
 
 Torrents::update_hash($group_id);
 $cache->delete_value("torrents_details_$group_id");
-header("Location: torrents.php?id=$group_id");
+Http::redirect("torrents.php?id=$group_id");

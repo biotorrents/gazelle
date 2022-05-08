@@ -16,13 +16,12 @@ if ($ID = (int)($_GET['id'])) {
     $cache->delete_value("staff_pm_new_$user[ID]");
     $cache->delete_value("num_staff_pms_$user[ID]");
 
-    header('Location: staffpm.php');
+    Http::redirect("staffpm.php");
   } else {
     // Conversation does not belong to user
     error(403);
   }
 } else {
   // No ID
-  header('Location: staffpm.php');
+  Http::redirect("staffpm.php");
 }
-?>

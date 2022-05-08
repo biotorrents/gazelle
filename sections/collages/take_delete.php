@@ -52,4 +52,4 @@ if ($CategoryID == 0) {
 Misc::write_log("Collage $CollageID ($Name) was deleted by ".$user['Username'].": $Reason");
 
 $cache->delete_value("collage_$CollageID");
-header('Location: collages.php');
+Http::redirect("collages.php");

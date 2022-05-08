@@ -51,7 +51,7 @@ switch ($_REQUEST['action']) {
     }
 
     $cache->delete_value('notify_filters_'.$user['ID']);
-    header('Location: user.php?action=notify');
+    Http::redirect("user.php?action=notify");
     break;
 
   case 'search':// User search
@@ -150,6 +150,6 @@ switch ($_REQUEST['action']) {
     if (isset($_REQUEST['id'])) {
         require_once SERVER_ROOT.'/sections/user/user.php';
     } else {
-        header('Location: index.php');
+        Http::redirect("index.php");
     }
 }

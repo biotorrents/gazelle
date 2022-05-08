@@ -38,7 +38,7 @@ if (!empty($_REQUEST['action'])) {
       break;
 
     case 'Contact':
-      header("Location: inbox.php?action=compose&to=$FriendID");
+      Http::redirect("inbox.php?action=compose&to=$FriendID");
       break;
       
     default:

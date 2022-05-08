@@ -299,7 +299,7 @@ else {
         if ($GroupID) {
             header("Location: torrents.php?id=$GroupID&torrentid=".$_GET['torrentid'].'#torrent'.$_GET['torrentid']);
         } else {
-            header("Location: log.php?search=Torrent+$_GET[torrentid]");
+            Http::redirect("log.php?search=Torrent+$_GET[torrentid]");
         }
     } elseif (!empty($_GET['type'])) {
         require_once "$ENV->SERVER_ROOT/sections/torrents/user.php";
@@ -315,7 +315,7 @@ else {
         list($GroupID) = $db->next_record();
 
         if ($GroupID) {
-            header("Location: torrents.php?id=$GroupID");
+            Http::redirect("torrents.php?id=$GroupID");
         } else {
             require_once "$ENV->SERVER_ROOT/sections/torrents/browse.php";
         }

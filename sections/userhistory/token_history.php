@@ -67,7 +67,7 @@ if (isset($_GET['expire'])) {
             ['info_hash' => substr('%'.chunk_split($InfoHash, 2, '%'), 0, -1), 'userid' => $UserID]
         );
     }
-    header("Location: userhistory.php?action=token_history&userid=$UserID");
+    Http::redirect("userhistory.php?action=token_history&userid=$UserID");
 }
 
 # Render HTML

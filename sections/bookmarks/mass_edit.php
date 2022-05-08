@@ -18,4 +18,4 @@ if ($_POST['type'] === 'torrents') {
     }
 }
 
-header('Location: bookmarks.php?type=torrents');
+Http::redirect("bookmarks.php?type=torrents");

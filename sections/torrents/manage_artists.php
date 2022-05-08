@@ -69,5 +69,5 @@ if (count($CleanArtists) > 0) {
     }
     $cache->delete_value("groups_artists_$GroupID");
     Torrents::update_hash($GroupID);
-    header("Location: torrents.php?id=$GroupID");
+    Http::redirect("torrents.php?id=$GroupID");
 }

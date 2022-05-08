@@ -49,4 +49,4 @@ $db->query("
 
 Misc::write_log("The alias $AliasID ($AliasName) was removed from the artist $ArtistID ($ArtistName) by user $user[ID] ($user[Username])");
 
-header("Location: $_SERVER[HTTP_REFERER]");
+Http::redirect("$_SERVER[HTTP_REFERER]");

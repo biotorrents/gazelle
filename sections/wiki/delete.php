@@ -35,4 +35,4 @@ $db->prepared_query("DELETE FROM wiki_revisions WHERE ID = $ID");
 
 Wiki::flush_aliases();
 Wiki::flush_article($ID);
-header("location: wiki.php");
+Http::redirect("wiki.php");

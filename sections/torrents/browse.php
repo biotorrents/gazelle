@@ -39,7 +39,7 @@ if (!empty($_GET['search']) || !empty($_GET['groupname'])) {
 
         if ($db->has_results()) {
             list($ID, $GroupID) = $db->next_record();
-            header("Location: torrents.php?id=$GroupID&torrentid=$ID");
+            Http::redirect("torrents.php?id=$GroupID&torrentid=$ID");
             error();
         }
     }

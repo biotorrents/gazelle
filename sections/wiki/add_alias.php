@@ -40,4 +40,4 @@ if ($NewAlias !== '' && $NewAlias!== 'addalias' && $Dupe === false) { // Not nul
 Wiki::flush_aliases();
 Wiki::flush_article($ArticleID);
 
-header("Location: wiki.php?action=article&id=$ArticleID");
+Http::redirect("wiki.php?action=article&id=$ArticleID");

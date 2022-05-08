@@ -151,5 +151,4 @@ $SphQL->raw_query("
     SET torrentid = 0, fillerid = 0
     WHERE id = $RequestID", false);
 
-header("Location: requests.php?action=view&id=$RequestID");
-?>
+Http::redirect("requests.php?action=view&id=$RequestID");

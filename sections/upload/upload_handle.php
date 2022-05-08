@@ -895,7 +895,7 @@ if ($PublicTorrent) {
 } elseif ($RequestID) {
     header("Location: requests.php?action=takefill&requestid=$RequestID&torrentid=$TorrentID&auth=".$user['AuthKey']);
 } else {
-    header("Location: torrents.php?id=$GroupID&torrentid=$TorrentID");
+    Http::redirect("torrents.php?id=$GroupID&torrentid=$TorrentID");
 }
 
 if (function_exists('fastcgi_finish_request')) {

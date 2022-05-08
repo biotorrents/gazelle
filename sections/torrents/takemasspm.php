@@ -56,4 +56,4 @@ if ($db->has_results()) {
 }
 
 Misc::write_log($user['Username']." sent mass notice to snatchers of torrent $TorrentID in group $GroupID");
-header("Location: torrents.php?id=$GroupID");
+Http::redirect("torrents.php?id=$GroupID");

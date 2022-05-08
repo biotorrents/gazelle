@@ -108,5 +108,4 @@ $db->prepared_query("
     ('forums', $PostID, $UserID, '$SQLTime', '" . db_string($OldBody) . "')");
 $cache->delete_value("forums_edits_$PostID");
 
-header("Location: forums.php?action=viewthread&postid=$PostID#post$PostID");
-?>
+Http::redirect("forums.php?action=viewthread&postid=$PostID#post$PostID");

@@ -14,7 +14,7 @@ if (!empty($_GET['search'])) {
       FROM users_main
       WHERE Username = '".db_string($_GET['search'])."'");
         if (list($ID) = $db->next_record()) {
-            header("Location: user.php?id=$ID");
+            Http::redirect("user.php?id=$ID");
             error();
         }
         $_GET['username'] = $_GET['search'];

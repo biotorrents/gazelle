@@ -71,4 +71,4 @@ if ($TitleAlias !== '' && $Dupe === false) {
 }
 
 Misc::write_log("Wiki article $ArticleID (".$_POST['title'].") was created by ".$user['Username']);
-header("Location: wiki.php?action=article&id=$ArticleID");
+Http::redirect("wiki.php?action=article&id=$ArticleID");

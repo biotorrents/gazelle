@@ -351,4 +351,4 @@ if ($NewRequest) {
 
 Requests::update_sphinx_requests($RequestID);
 
-header("Location: requests.php?action=view&id=$RequestID");
+Http::redirect("requests.php?action=view&id=$RequestID");

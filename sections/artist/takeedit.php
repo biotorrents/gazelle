@@ -61,5 +61,4 @@ $db->query("
 
 // There we go, all done!
 $cache->delete_value("artist_$ArtistID"); // Delete artist cache
-header("Location: artist.php?id=$ArtistID");
-?>
+Http::redirect("artist.php?id=$ArtistID");

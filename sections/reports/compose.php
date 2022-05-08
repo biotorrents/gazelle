@@ -7,7 +7,7 @@ if (empty($Return)) {
   $ToID = $_GET['to'];
   if ($ToID == $user['ID']) {
     error("You cannot start a conversation with yourself!");
-    header('Location: inbox.php');
+    Http::redirect("inbox.php");
   }
 }
 

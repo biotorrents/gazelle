@@ -130,18 +130,18 @@ if (!empty($_POST['action'])) {
         }
         list($FirstID, $Name) = $db->next_record(MYSQLI_NUM, false);
         if ($db->record_count() === 1 || !strcasecmp($Name, $NameSearch)) {
-            header("Location: artist.php?id=$FirstID");
+            Http::redirect("artist.php?id=$FirstID");
             error();
         }
         while (list($ID, $Name) = $db->next_record(MYSQLI_NUM, false)) {
             if (!strcasecmp($Name, $NameSearch)) {
-                header("Location: artist.php?id=$ID");
+                Http::redirect("artist.php?id=$ID");
                 error();
             }
         }
-        header("Location: artist.php?id=$FirstID");
+        Http::redirect("artist.php?id=$FirstID");
         error();
     } else {
-        header('Location: torrents.php');
+        Http::redirect("torrents.php");
     }
 }

@@ -71,6 +71,6 @@ if ($_GET['action']) {
 
     default:
       //You trying to mess with me query string? To the home page with you!
-      header('Location: index.php');
+      Http::redirect("index.php");
   }
 }

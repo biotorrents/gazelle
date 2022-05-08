@@ -216,5 +216,5 @@ $cache->update_row(false, array('Posts' => '+1', 'LastPostAuthorID' => $user['ID
 $cache->commit_transaction(0);
 
 
-header("Location: forums.php?action=viewthread&threadid=$TopicID");
+Http::redirect("forums.php?action=viewthread&threadid=$TopicID");
 die();

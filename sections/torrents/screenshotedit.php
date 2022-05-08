@@ -118,4 +118,4 @@ if (!empty($New)) {
 }
 
 $cache->delete_value("torrents_details_".$GroupID);
-header("Location: torrents.php?id=$GroupID");
+Http::redirect("torrents.php?id=$GroupID");

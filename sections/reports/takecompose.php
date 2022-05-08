@@ -56,5 +56,4 @@ if (!empty($Err)) {
 
 $ConvID = Misc::send_pm($ToID, $user['ID'], $Subject, $Body, $ConvID);
 
-header('Location: reports.php');
-?>
+Http::redirect("reports.php");

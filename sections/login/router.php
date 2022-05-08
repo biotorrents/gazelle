@@ -35,7 +35,7 @@ $cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
 
 # They want the disabled page
 if ($action === 'disabled') {
-    header('Location: disabled.php');
+    Http::redirect("disabled.php");
     exit;
 }
 
@@ -114,7 +114,7 @@ if ($action === 'recover') {
                 $_SESSION['reseterr'] = 'The link you were given has expired.'; // Error message to display on form
             }
             // Show him the first form (enter email address)
-            header('Location: login.php?action=recover');
+            Http::redirect("login.php?action=recover");
         }
     } // End step 2
 
@@ -247,7 +247,7 @@ else {
     if (isset($_POST['username']) && !empty($_POST['username']) && isset($_POST['password']) && !empty($_POST['password'])) {
         if ($Banned) {
             /*
-            header("Location: login.php");
+            Http::redirect("login.php");
             error();
             */
         }
@@ -365,10 +365,10 @@ else {
                                 if (!empty($_COOKIE['redirect'])) {
                                     $URL = $_COOKIE['redirect'];
                                     Cookie::del('redirect');
-                                    header("Location: $URL");
+                                    Http::redirect("$URL");
                                 #error();
                                 } else {
-                                    header('Location: index.php');
+                                    Http::redirect("index.php");
                                     #error();
                                 }
                             } else {
@@ -382,7 +382,7 @@ else {
 
                                 // Save the username in a cookie for the disabled page
                                 Cookie::set('username', db_string($_POST['username']));
-                                header('Location: login.php?action=disabled');
+                                Http::redirect("login.php?action=disabled");
                             # todo: Make sure the type is (int)
                             } elseif ($Enabled === '0') {
                                 $Err = 'Your account has not been confirmed. Please check your email, including the spam folder';

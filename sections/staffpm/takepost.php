@@ -26,7 +26,7 @@ if ($Message = db_string($_POST['message'])) {
         ($user[ID], NOW(), '$Message', $ConvID)"
     );
 
-    header('Location: staffpm.php');
+    Http::redirect("staffpm.php");
 
   } elseif ($ConvID = (int)$_POST['convid']) {
     // Check if conversation belongs to user
@@ -72,21 +72,20 @@ if ($Message = db_string($_POST['message'])) {
       $cache->delete_value("staff_pm_new_$UserID");
       $cache->delete_value("staff_pm_new_$user[ID]");
 
-      header("Location: staffpm.php?action=viewconv&id=$ConvID");
+      Http::redirect("staffpm.php?action=viewconv&id=$ConvID");
     } else {
       // User is trying to respond to conversation that does no belong to them
       error(403);
     }
   } else {
     // Message but no subject or conversation ID
-    header("Location: staffpm.php?action=viewconv&id=$ConvID");
+    Http::redirect("staffpm.php?action=viewconv&id=$ConvID");
 
   }
 } elseif ($ConvID = (int)$_POST['convid']) {
   // No message, but conversation ID
-  header("Location: staffpm.php?action=viewconv&id=$ConvID");
+  Http::redirect("staffpm.php?action=viewconv&id=$ConvID");
 } else {
   // No message or conversation ID
-  header('Location: staffpm.php');
+  Http::redirect("staffpm.php");
 }
-?>

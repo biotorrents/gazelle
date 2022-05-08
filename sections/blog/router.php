@@ -32,7 +32,7 @@ if (check_perms('admin_manage_blog')) {
             $cache->delete_value('blog');
             $cache->delete_value('feed_blog');
         }
-        header('Location: blog.php');
+        Http::redirect("blog.php");
         break;
 
       case 'takeeditblog':
@@ -48,7 +48,7 @@ if (check_perms('admin_manage_blog')) {
             $cache->delete_value('blog');
             $cache->delete_value('feed_blog');
         }
-        header('Location: blog.php');
+        Http::redirect("blog.php");
         break;
 
       case 'editblog':
@@ -71,7 +71,7 @@ if (check_perms('admin_manage_blog')) {
             $cache->delete_value('blog');
             $cache->delete_value('feed_blog');
         }
-        header('Location: blog.php');
+        Http::redirect("blog.php");
         break;
 
       case 'takenewblog':
@@ -86,7 +86,7 @@ if (check_perms('admin_manage_blog')) {
             WHERE ID = $ThreadID");
             if (!$db->has_results()) {
                 error('No such thread exists!');
-                header('Location: blog.php');
+                Http::redirect("blog.php");
             }
         } else {
             $ThreadID = Misc::create_thread($ENV->ANNOUNCEMENT_FORUM, $user['ID'], $Title, $Body);
@@ -116,7 +116,7 @@ if (check_perms('admin_manage_blog')) {
             $cache->delete_value('subscriptions_user_'.$user['ID']);
         }
 
-        header('Location: blog.php');
+        Http::redirect("blog.php");
         break;
     }
     } ?>

@@ -28,7 +28,7 @@ if (!isset($_GET['threadid']) || !is_number($_GET['threadid'])) {
 
         if ($ThreadID) {
             // Redirect postid to threadid when necessary
-            header("Location: api.php?action=forum&type=viewthread&threadid=$ThreadID&postid=$_GET[postid]");
+            Http::redirect("api.php?action=forum&type=viewthread&threadid=$ThreadID&postid=$_GET[postid]");
             error();
         } else {
             echo json_encode(array('status' => 'failure'));

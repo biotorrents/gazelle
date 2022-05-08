@@ -30,5 +30,5 @@ $db->query("
   ON DUPLICATE KEY UPDATE
     PostID = LastPostID");
 $cache->delete_value('subscriptions_user_new_'.$user['ID']);
-header('Location: userhistory.php?action=subscriptions');
+Http::redirect("userhistory.php?action=subscriptions");
 ?>

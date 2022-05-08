@@ -37,4 +37,4 @@ if (!check_perms('site_send_unlimited_invites')) {
         $cache->commit_transaction(0);
     }
 }
-header('Location: user.php?action=invite');
+Http::redirect("user.php?action=invite");

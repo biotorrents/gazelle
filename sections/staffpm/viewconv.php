@@ -299,5 +299,5 @@ if ($ConvID = (int)$_GET['id']) {
   View::footer();
 } else {
     // No ID
-    header('Location: staffpm.php');
+    Http::redirect("staffpm.php");
 }

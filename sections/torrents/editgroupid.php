@@ -110,6 +110,5 @@ if (empty($_POST['confirm'])) {
   $cache->delete_value("torrents_details_$GroupID");
   $cache->delete_value("torrent_download_$TorrentID");
 
-  header("Location: torrents.php?id=$GroupID");
+  Http::redirect("torrents.php?id=$GroupID");
   }
-?>

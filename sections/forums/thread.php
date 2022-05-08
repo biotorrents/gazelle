@@ -25,7 +25,7 @@ if (!isset($_GET['threadid']) || !is_number($_GET['threadid'])) {
       WHERE ID = $_GET[postid]");
         list($ThreadID) = $db->next_record();
         if ($ThreadID) {
-            header("Location: forums.php?action=viewthread&threadid=$ThreadID&postid=$_GET[postid]#post$_GET[postid]");
+            Http::redirect("forums.php?action=viewthread&threadid=$ThreadID&postid=$_GET[postid]#post$_GET[postid]");
             error();
         } else {
             error(404);

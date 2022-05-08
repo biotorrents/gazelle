@@ -103,7 +103,7 @@ if (check_perms('users_mod')) {
     ");
 
     if (!$db->has_results()) { // If user doesn't exist
-        header("Location: log.php?search=User+$UserID");
+        Http::redirect("log.php?search=User+$UserID");
     }
 
     list($Username, $Email, $LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $CustomTitle, $torrent_pass, $Enabled, $Paranoia, $Invites, $DisableLeech, $Visible, $BonusPoints, $IRCLines, $JoinDate, $Info, $Avatar, $AdminComment, $Donor, $Artist, $Warned, $SupportFor, $RestrictedForums, $PermittedForums, $InviterID, $InviterName, $ForumPosts, $RatioWatchEnds, $RatioWatchDownload, $DisableAvatar, $DisableInvites, $DisablePosting, $DisableForums, $DisableTagging, $DisableUpload, $DisableWiki, $DisablePM, $DisablePoints, $DisablePromotion, $DisableIRC, $DisableRequests, $FLTokens, $CommentHash, $InfoTitle, $LockedAccount) = $db->next_record(MYSQLI_NUM, array(8, 11));
@@ -162,7 +162,7 @@ else { // Person viewing is a normal user
     ");
 
     if (!$db->has_results()) { // If user doesn't exist
-        header("Location: log.php?search=User+$UserID");
+        Http::redirect("log.php?search=User+$UserID");
     }
 
     list($Username, $Email, $LastAccess, $IP, $Class, $Uploaded, $Downloaded,

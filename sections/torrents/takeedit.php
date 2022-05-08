@@ -131,7 +131,7 @@ switch ($Type) {
 
     if (!empty($Properties['Remastered']) && !$Properties['UnknownRelease'] && $Properties['RemasterYear'] < 1982 && $Properties['Media'] == 'CD') {
         error('You have selected a year for an album that predates the medium you say it was created on.');
-        header("Location: torrents.php?action=edit&id=$TorrentID");
+        Http::redirect("torrents.php?action=edit&id=$TorrentID");
         error();
     }
 
@@ -139,7 +139,7 @@ switch ($Type) {
 
     if ($Properties['RemasterTitle'] == 'Original Release') {
         error('"Original Release" is not a valid remaster title.');
-        header("Location: torrents.php?action=edit&id=$TorrentID");
+        Http::redirect("torrents.php?action=edit&id=$TorrentID");
         error();
     }
 
@@ -460,4 +460,4 @@ $cache->delete_value("torrent_download_$TorrentID");
 Torrents::update_hash($GroupID);
 // All done!
 
-header("Location: torrents.php?id=$GroupID");
+Http::redirect("torrents.php?id=$GroupID");

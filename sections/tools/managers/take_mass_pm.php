@@ -23,6 +23,6 @@ while(list($UserID) = G::$db->next_record()) {
   Misc::send_pm($UserID, $FromID, $Subject, $Body);
 }
 
-header("Location: tools.php");
+Http::redirect("tools.php");
 
 

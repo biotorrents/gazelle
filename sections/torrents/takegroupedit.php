@@ -254,4 +254,4 @@ if ($db->has_results()) {
     }
 }
 
-header("Location: torrents.php?id=$group_id");
+Http::redirect("torrents.php?id=$group_id");

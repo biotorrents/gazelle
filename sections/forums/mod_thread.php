@@ -154,7 +154,7 @@ if (isset($_POST['delete'])) {
     WHERE Page = 'forums'
       AND PageID = '$TopicID'");
 
-    header("Location: forums.php?action=viewforum&forumid=$ForumID");
+    Http::redirect("forums.php?action=viewforum&forumid=$ForumID");
 } else { // If we're just editing it
     $Action = 'editing';
 
@@ -386,5 +386,5 @@ if (isset($_POST['delete'])) {
     if (count($TopicNotes) > 0) {
         Forums::add_topic_note($TopicID, implode("\n", $TopicNotes));
     }
-    header("Location: forums.php?action=viewthread&threadid=$TopicID&page=$Page");
+    Http::redirect("forums.php?action=viewthread&threadid=$TopicID&page=$Page");
 }

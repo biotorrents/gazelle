@@ -29,7 +29,7 @@ switch ($_GET['action']) {
         $cache->delete_value('feed_news');
     }
 
-    header('Location: index.php');
+    Http::redirect("index.php");
     break;
 
 

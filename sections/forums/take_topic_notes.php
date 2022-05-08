@@ -13,5 +13,5 @@ $TopicID = (int)$_POST['topicid'];
 
 Forums::add_topic_note($TopicID, $_POST['body']);
 
-header("Location: forums.php?action=viewthread&threadid=$TopicID#thread_notes");
+Http::redirect("forums.php?action=viewthread&threadid=$TopicID#thread_notes");
 die();

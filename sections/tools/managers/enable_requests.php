@@ -7,7 +7,7 @@ if (!check_perms('users_mod')) {
 
 if (!FEATURE_EMAIL_REENABLE) {
     // This feature is disabled
-    header('Location: tools.php');
+    Http::redirect("tools.php");
     error();
 }
 

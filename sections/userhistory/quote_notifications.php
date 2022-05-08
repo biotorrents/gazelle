@@ -11,7 +11,7 @@ if ($_GET['showall'] ?? false) {
 if ($_GET['catchup'] ?? false) {
   $db->query("UPDATE users_notify_quoted SET UnRead = '0' WHERE UserID = '$user[ID]'");
   $cache->delete_value('notify_quoted_' . $user['ID']);
-  header('Location: userhistory.php?action=quote_notifications');
+  Http::redirect("userhistory.php?action=quote_notifications");
   error();
 }
 

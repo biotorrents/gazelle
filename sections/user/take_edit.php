@@ -341,4 +341,4 @@ if ($ResetPassword) {
     logout_all_sessions();
 }
 
-header("Location: user.php?action=edit&userid=$UserID");
+Http::redirect("user.php?action=edit&userid=$UserID");

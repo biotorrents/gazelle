@@ -73,4 +73,4 @@ if ($_POST['submit'] === 'Remove') {
 }
 
 $cache->delete_value("collage_$CollageID");
-header("Location: collages.php?action=manage&collageid=$CollageID");
+Http::redirect("collages.php?action=manage&collageid=$CollageID");
