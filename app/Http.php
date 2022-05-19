@@ -10,6 +10,11 @@ declare(strict_types=1);
 
 class Http
 {
+    # optional cookie params
+    private static $cookiePrefix = "";
+    private static $cookieDuration = "tomorrow";
+
+
     /**
      * redirect
      *
@@ -26,6 +31,7 @@ class Http
         header("Location: /{$uri}");
         exit;
     }
+
 
     /**
      * query
@@ -58,9 +64,6 @@ class Http
         $safe["post"] = filter_input_array(INPUT_POST, $_POST);
         $safe["cookie"] = filter_input_array(INPUT_COOKIE, $_COOKIE);
         $safe["files"] = filter_input_array(INPUT_POST, $_FILES);
-
-        # convert to utf8
-        $safe = array_walk_recursive($safe, "esc");
 
         # should be okay
         if (!empty($method)) {
@@ -184,5 +187,101 @@ class Http
         $GLOBALS["http_response_code"] = $code;
         header("{$protocol} {$code} {$text}");
         exit;
+    }
+
+
+    /** COOKIES */
+
+
+    /**
+     * getCookie
+     *
+     * Untrustworthy user input.
+     * Reads from $_COOKIE superglobal.
+     *
+     * @param string $key The cookie key
+     * @return The sanitized cookie or false
+     */
+    public static function getCookie(string $key)
+    {
+        $cookies = self::query("cookie");
+
+        return (isset($cookies[self::$cookiePrefix.$key]))
+            ? $cookies[self::$cookiePrefix.$key]
+            : false;
+    }
+
+
+    /**
+     * setCookie
+     *
+     * Sets secure cookies from an associative array.
+     * Note that $secure and $httponly are hardcoded.
+     *
+     * @see https://www.php.net/manual/en/function.setcookie.php
+     *
+     * @param array $cookies ["key => "value", "foo" => "bar"]
+     * @param string $time The time in strtotime format
+     * @return bool setcookie
+     */
+    public static function setCookie(array $cookies, string $time = "tomorrow")
+    {
+        $ENV = ENV::go();
+
+        foreach ($cookies as $key => $value) {
+            if (empty($key) || empty($value)) {
+                continue;
+            }
+            
+            # set time or use default
+            $time = strtotime($time) ?? self::$cookieDuration;
+
+            setcookie(
+                name: self::$cookiePrefix.$key,
+                value: Text::esc($value),
+                expires_or_options: $time,
+                path: "/",
+                domain: $ENV->SITE_DOMAIN,
+                secure: true,
+                httponly: true
+            );
+        }
+    }
+
+
+    /**
+     * deleteCookie
+     *
+     * Deletes a cookie by key.
+     *
+     * @param string $key The cookie key
+     * @return bool self::setCookie (setcookie)
+     */
+    public static function deleteCookie(string $key)
+    {
+        # 3600s vs. 1s for potential clock desyncs
+        self::setCookie(
+            $key = self::$cookiePrefix.$key,
+            $value = "",
+            $time = time() - 24 * 3600
+        );
+    }
+
+
+    /**
+     * flushCookies
+     *
+     * Delete all user cookies.
+     * Uses the $_COOKIE superglobal.
+     *
+     * @return bool self::del (setcookie)
+     */
+    public static function flushCookies()
+    {
+        $cookies = self::query("cookie");
+
+        foreach ($cookies as $key => $value) {
+            self::deleteCookie($key);
+        }
     }
 }

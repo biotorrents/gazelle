@@ -114,7 +114,7 @@ EOT;
 
             // Cache the number of requests for the modbar
             G::$cache->increment_value(self::CACHE_KEY_NAME);
-            Cookie::del('username');
+            Http::deleteCookie('username');
             $Output = self::RECEIVED_MESSAGE;
 
             Tools::update_user_notes(

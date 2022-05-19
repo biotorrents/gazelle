@@ -9,15 +9,6 @@
  */
 
 
-/**
- * esc
- */
-function esc(mixed $string)
-{
-    return Text::esc($string);
-}
-
-
     /**
      *
      * FROM BOOTSTRAP/APP.PHP
@@ -33,11 +24,11 @@ function logout()
     global $SessionID;
     G::$user['ID'] = G::$user['ID'] ?? null;
     
-    Cookie::del('session');
-    Cookie::del('userid');
-    Cookie::del('keeplogged');
+    Http::deleteCookie('session');
+    Http::deleteCookie('userid');
+    Http::deleteCookie('keeplogged');
     
-    #Cookie::flush();
+    #Http::flushCookies();
 
     if ($SessionID) {
         G::$db->prepared_query("
@@ -80,7 +71,7 @@ function enforce_login()
     global $SessionID;
     
     if (!$SessionID || !G::$user) {
-        Cookie::set('redirect', $_SERVER['REQUEST_URI']);
+        Http::setCookie(['redirect' => $_SERVER['REQUEST_URI']]);
         logout();
     }
 }

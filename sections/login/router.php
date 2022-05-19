@@ -331,8 +331,8 @@ else {
 
                             if (sizeof($U2FRegs) == 0 || !isset($U2FErr)) {
                                 $SessionID = Users::make_secret(64);
-                                Cookie::set('session', $SessionID);
-                                Cookie::set('userid', $UserID);
+                                Http::setCookie(['session' => $SessionID]);
+                                Http::setCookie(['userid' => $UserID]);
 
                                 $db->query("
                                 INSERT INTO users_sessions
@@ -364,7 +364,7 @@ else {
 
                                 if (!empty($_COOKIE['redirect'])) {
                                     $URL = $_COOKIE['redirect'];
-                                    Cookie::del('redirect');
+                                    Http::deleteCookie('redirect');
                                     Http::redirect("$URL");
                                 #error();
                                 } else {
@@ -374,38 +374,38 @@ else {
                             } else {
                                 log_attempt();
                                 $Err = $U2FErr;
-                                Cookie::del('keeplogged');
+                                Http::deleteCookie('keeplogged');
                             }
                         } else {
                             log_attempt();
                             if ($Enabled == 2) {
 
                                 // Save the username in a cookie for the disabled page
-                                Cookie::set('username', db_string($_POST['username']));
+                                Http::setCookie(['username' => db_string($_POST['username'])]);
                                 Http::redirect("login.php?action=disabled");
                             # todo: Make sure the type is (int)
                             } elseif ($Enabled === '0') {
                                 $Err = 'Your account has not been confirmed. Please check your email, including the spam folder';
                             }
-                            Cookie::del('keeplogged');
+                            Http::deleteCookie('keeplogged');
                         }
                     } else {
                         log_attempt();
                         $Err = 'Two-factor authentication failed';
-                        Cookie::del('keeplogged');
+                        Http::deleteCookie('keeplogged');
                     }
                 } else {
                     log_attempt();
                     $Err = 'Your username or password was incorrect';
-                    Cookie::del('keeplogged');
+                    Http::deleteCookie('keeplogged');
                 }
             } else {
                 log_attempt();
-                Cookie::del('keeplogged');
+                Http::deleteCookie('keeplogged');
             }
         } else {
             log_attempt();
-            Cookie::del('keeplogged');
+            Http::deleteCookie('keeplogged');
         }
     }
     require_once __DIR__.'/login.php';
