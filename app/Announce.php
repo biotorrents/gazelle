@@ -11,7 +11,7 @@ declare(strict_types=1);
 class Announce
 {
     # IRC bot config options
-    private static $ircChannels = ["announce", "requests"];
+    private static $ircChannels = ["announce", "debug"];
     private static $ircAddress = "10.0.0.4";
     private static $ircPort = 51010;
 
@@ -19,8 +19,7 @@ class Announce
     private static $foo = "foo";
 
     # slack bot config options
-    private static $slackName = "ebooks";
-    private static $slackChannel = "announce";
+    private static $slackChannels = ["announce", "debug"];
 
     # twitter bot config options
     private static $bar = "bar";
@@ -132,19 +131,47 @@ class Announce
      *
      * @see https://github.com/jolicode/slack-php-api/blob/main/docs/examples/posting-message.php
      */
-    public static function slack(string $message)
+    public static function slack(string $message, array $channels = [])
     {
         $ENV = ENV::go();
 
         # check if slack is enabled
         if (!$ENV->ANNOUNCE_SLACK) {
-            return false;
+            #return false;
         }
-        
+
+        # set default channels
+        if (empty($channels)) {
+            $channels = self::$slackChannels;
+        }
+
+        # webhooks must remain private
+        $webhooks = $ENV->getPriv("SLACK_WEBHOOKS");
+        foreach ($channels as $channel) {
+            try {
+                # set up
+                $curl = curl_init($webhooks[$channel]);
+                $data = json_encode(["text" => $message], JSON_UNESCAPED_SLASHES);
+
+                # options
+                curl_setopt($curl, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+                # do it
+                curl_exec($curl);
+                curl_close($curl);
+            } catch (TypeError $e) {
+                Text::figlet("slack failure", "red");
+                !d($e->getMessage());
+            }
+        }
+
+        /*
         $token = $ENV->getPriv("SLACK_TOKEN");
         $client = JoliCode\Slack\ClientFactory::create($token);
         $message = Text::esc($message);
-        
+
         try {
             # requires token to have the scope "chat:write"
             $client->chatPostMessage([
@@ -156,6 +183,7 @@ class Announce
             Text::figlet("slack failure", "red");
             !d($e->getMessage());
         }
+        */
     }
 
 

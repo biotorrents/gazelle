@@ -10,18 +10,22 @@ declare(strict_types=1);
  * Date:   Sat Jan 27 20:42:55 2018 -0100
  */
 
+# composer autoload
+require_once __DIR__."/../vendor/autoload.php";
+
 # parse the path
 $path = pathinfo($_SERVER["SCRIPT_NAME"]);
 $file = $path["filename"];
 
-# dump any tards
-if ($path["dirname"] !== "/") {
+# dump all tards except the cli ones (me)
+if ($path["dirname"] !== "/" && php_sapi_name() !== "cli") {
     Http::response(403);
 } elseif (in_array($file, ["announce", "info_hash", "peer_id", "scrape"])) {
     die("d14:failure reason40:Invalid .torrent, try downloading again.e");
 }
 
 # ls -1 sections/
+$valid = false;
 switch ($file) {
     case "api":
     case "artist":
@@ -64,9 +68,9 @@ switch ($file) {
         break;
 }
 
-# load the app
-if ($valid) {
-    require_once __DIR__."/../vendor/autoload.php";
+# load the app if page is valid or running from cli
+if ($valid || php_sapi_name() === "cli") {
+    Text::figlet("app loaded", "green");
     require_once __DIR__."/../config/app.php";
     require_once __DIR__."/../bootstrap/utilities.php";
     require_once __DIR__."/../bootstrap/app.php";

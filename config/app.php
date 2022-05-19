@@ -11,14 +11,14 @@ declare(strict_types=1);
  *
  *   $ENV = ENV::go();
  *   $ENV->PUBLIC_VALUE;
- *   $ENV->getPriv('PRIVATE_VALUE');
+ *   $ENV->getPriv("PRIVATE_VALUE");
  *
  * Using a central static $ENV singleton class has additional benefits.
  * The RecursiveArrayObject class included in env.class.php is a powerful tool:
  *
  *   $LongArray = [];
  *   ENV::setPub(
- *     'CONFIG',
+ *     "CONFIG",
  *     $ENV->convert($LongArray)
  *   );
  *
@@ -38,12 +38,12 @@ declare(strict_types=1);
  *   );
  */
 
-# Initialize
-require_once __DIR__.'/../app/ENV.php';
+# initialize
+require_once __DIR__."/../app/ENV.php";
 $ENV = ENV::go();
 
-# Include the configs
-require_once __DIR__.'/public.php'; # Basic info, options, fratures, etc.
-require_once __DIR__.'/private.php'; # ALL THE SITE'S PRIVATE KEYS ARE HERE!
-require_once __DIR__.'/metadata.php'; # Master metadata map for Twig templates
-require_once __DIR__.'/regex.php'; # Regular expressions used throughout the site
+# include the configs
+require_once __DIR__."/public.php"; # Basic info, options, fratures, etc.
+require_once __DIR__."/private.php"; # ALL THE SITE'S PRIVATE KEYS ARE HERE!
+require_once __DIR__."/metadata.php"; # Master metadata map for Twig templates
+require_once __DIR__."/regex.php"; # Regular expressions used throughout the site

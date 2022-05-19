@@ -194,6 +194,16 @@ else {
 
 
 /**
+ * Announce channels
+ */
+
+ENV::setPub('ANNOUNCE_IRC', true);
+ENV::setPub('ANNOUNCE_RSS', true);
+ENV::setPub('ANNOUNCE_SLACK', true);
+ENV::setPub('ANNOUNCE_TWITTER', true);
+
+
+/**
  * IRC/Slack
  */
 

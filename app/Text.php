@@ -115,17 +115,17 @@ class Text
      * Make a silly willy, goofery ballery.
      * @see https://docs.laminas.dev/laminas-text/figlet/
      */
-    public static function figlet(string $message, string $color = "black", string $font = "small"): string
+    public static function figlet(string $message, string $color = "black", string $font = "small")
     {
         # escape the input
-        $string = self::esc($string);
+        $string = self::esc($message);
 
         # object and options
         $figlet = new Povils\Figlet\Figlet();
         $figlet->setFont($font)->setFontColor($color);
         
         # okay done
-        return $figlet->render($message);
+        echo $figlet->render($message);
     }
 
 
@@ -157,7 +157,7 @@ class Text
      */
     public static function utf8(string $string): string
     {
-        # String is already utf8
+        # string is already utf8
         $utf8 = preg_match(
             "%^(?:
             [\x09\x0A\x0D\x20-\x7E]           // ASCII
@@ -172,7 +172,7 @@ class Text
             $string
         );
 
-        # Best effort guess (meh)
+        # best effort guess (meh)
         # https://stackoverflow.com/a/7980354
         return ($utf8)
             ? $string
@@ -196,7 +196,7 @@ class Text
      *
      * @see https://www.php.net/manual/en/function.number-format.php
      */
-    public static function float(mixed $number, int $decimals = 0): string
+    public static function float(mixed $number, int $decimals = 2): float
     {
         return number_format(
             floatval($number),

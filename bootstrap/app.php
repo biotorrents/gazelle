@@ -279,7 +279,7 @@ $debug["time"]->stopMeasure("users", "user handling");
  * Determine the section to load.
  */
 
-
+$_SERVER["REQUEST_URI"] ??= "";
 $Document = (
     $_SERVER["REQUEST_URI"] === "/"
     ? "index"
@@ -290,7 +290,7 @@ $StripPostKeys = array_fill_keys(array("password", "cur_pass", "new_pass_1", "ne
 $cache->cache_value("php_" . getmypid(), array(
   "start" => sqltime(),
   "document" => $Document,
-  "query" => $_SERVER["QUERY_STRING"],
+  "query" => $_SERVER["QUERY_STRING"] ?? "",
   "get" => $_GET,
   "post" => array_diff_key($_POST, $StripPostKeys)), 600);
 
