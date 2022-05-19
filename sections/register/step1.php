@@ -28,7 +28,7 @@ if (empty($Sent)) { ?>
 
   <?php
     if (!empty($_REQUEST['invite'])) {
-        echo '<input type="hidden" name="invite" value="'.esc($_REQUEST['invite']).'" />'."\n";
+        echo '<input type="hidden" name="invite" value="'.Text::esc($_REQUEST['invite']).'" />'."\n";
     } ?>
 
   <table cellpadding="2" cellspacing="1" border="0">
@@ -42,14 +42,14 @@ if (empty($Sent)) { ?>
         <br />
 
         <input type="text" name="username" id="username" class="inputtext" placeholder="Username"
-          value="<?=(!empty($_REQUEST['username']) ? esc($_REQUEST['username']) : '')?>" />
+          value="<?=(!empty($_REQUEST['username']) ? Text::esc($_REQUEST['username']) : '')?>" />
       </td>
     </tr>
 
     <tr valign="top">
       <td align="left">
         <input type="email" name="email" id="email" class="inputtext" placeholder="Email"
-          value="<?=(!empty($_REQUEST['email']) ? esc($_REQUEST['email']) : (!empty($InviteEmail) ? esc($InviteEmail) : ''))?>" />
+          value="<?=(!empty($_REQUEST['email']) ? Text::esc($_REQUEST['email']) : (!empty($InviteEmail) ? Text::esc($InviteEmail) : ''))?>" />
       </td>
     </tr>
 

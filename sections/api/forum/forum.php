@@ -79,13 +79,13 @@ if ($user['CustomForums'][$ForumID] != 1 && $Forums[$ForumID]['MinClassRead'] > 
     json_die("failure", "insufficient permissions to view page");
 }
 
-$ForumName = esc($Forums[$ForumID]['Name']);
+$ForumName = Text::esc($Forums[$ForumID]['Name']);
 $JsonSpecificRules = [];
 foreach ($Forums[$ForumID]['SpecificRules'] as $ThreadIDs) {
     $Thread = Forums::get_thread_info($ThreadIDs);
     $JsonSpecificRules[] = array(
     'threadId' => (int)$ThreadIDs,
-    'thread' => esc($Thread['Title'])
+    'thread' => Text::esc($Thread['Title'])
   );
 }
 
@@ -148,7 +148,7 @@ if (count($Forum) === 0) {
 
         $JsonTopics[] = array(
       'topicId' => (int)$TopicID,
-      'title' => esc($Title),
+      'title' => Text::esc($Title),
       'authorId' => (int)$AuthorID,
       'authorName' => $AuthorName,
       'locked' => $Locked === 1,

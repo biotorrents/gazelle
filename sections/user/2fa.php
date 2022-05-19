@@ -145,7 +145,7 @@ View::header("2FA Settings", 'u2f');
         <br />
 
         <textarea name="publickey" id="publickey" spellcheck="false" cols="64"
-          rows="8"><?=esc($PublicKey)?></textarea>
+          rows="8"><?=Text::esc($PublicKey)?></textarea>
         <br />
 
         <button type="submit" name="type" value="PGP">Update Public Key</button>

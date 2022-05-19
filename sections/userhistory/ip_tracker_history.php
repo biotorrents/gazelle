@@ -87,7 +87,7 @@ foreach ($Results as $Index => $Result) {
     <tr class="row">
       <td>
         <?=$IP?><br /><?=Tools::get_host_by_ajax($IP)?>
-        <a href="http://whatismyipaddress.com/ip/<?=esc($IP)?>"
+        <a href="http://whatismyipaddress.com/ip/<?=Text::esc($IP)?>"
           class="brackets tooltip" title="Search WIMIA.com">WI</a>
       </td>
       <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a></td>

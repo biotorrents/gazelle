@@ -107,14 +107,14 @@ View::header('Forums &gt; Search', 'forum_search');
         <td><strong>Search Terms</strong></td>
         <td>
           <input type="search" name="search" size="70"
-            value="<?=esc($Search)?>" />
+            value="<?=Text::esc($Search)?>" />
         </td>
       </tr>
       <tr>
         <td><strong>Posted By</strong></td>
         <td>
           <input type="search" name="user" placeholder="Username" size="70"
-            value="<?=esc($User)?>" />
+            value="<?=Text::esc($User)?>" />
         </td>
       </tr>
       <tr>

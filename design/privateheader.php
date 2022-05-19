@@ -20,7 +20,7 @@ if ($ENV->DEV) {
 } ?>
 
   <title>
-    <?= esc($PageTitle) ?>
+    <?= Text::esc($PageTitle) ?>
   </title>
   <script defer data-domain="<?= $ENV->SITE_DOMAIN ?>"
     src="https://stats.torrents.bio/js/plausible.js"></script>
@@ -31,7 +31,7 @@ if ($ENV->DEV) {
         [
         'ENV' => $ENV,
         'user' => G::$user,
-        'title' => esc($PageTitle)
+        'title' => Text::esc($PageTitle)
       ]
     );
   ?>
@@ -108,7 +108,7 @@ $AuthKey = G::$user['AuthKey'];
 if (isset(G::$user['Notify'])) {
     foreach (G::$user['Notify'] as $Filter) {
         list($FilterID, $FilterName) = $Filter;
-        $NameEsc = esc($FilterName);
+        $NameEsc = Text::esc($FilterName);
 
         /* @todo temporary, fix
         echo $HTML = <<<HTML

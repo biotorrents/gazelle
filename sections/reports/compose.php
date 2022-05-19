@@ -49,7 +49,7 @@ switch ($Type) {
     } else {
       list($Username) = $db->next_record();
       $TypeLink = "the user [user]{$Username}[/user]";
-      $Subject = 'User Report: '.esc($Username);
+      $Subject = 'User Report: '.Text::esc($Username);
     }
     break;
   case 'request':
@@ -62,8 +62,8 @@ switch ($Type) {
       $Error = 'No request with the reported ID found';
     } else {
       list($Name) = $db->next_record();
-      $TypeLink = 'the request [url='.site_url()."requests.php?action=view&amp;id=$ThingID]".esc($Name).'[/url]';
-      $Subject = 'Request Report: '.esc($Name);
+      $TypeLink = 'the request [url='.site_url()."requests.php?action=view&amp;id=$ThingID]".Text::esc($Name).'[/url]';
+      $Subject = 'Request Report: '.Text::esc($Name);
     }
     break;
   case 'collage':
@@ -75,8 +75,8 @@ switch ($Type) {
       $Error = 'No collage with the reported ID found';
     } else {
       list($Name) = $db->next_record();
-      $TypeLink = 'the collage [url='.site_url()."collage.php?id=$ThingID]".esc($Name).'[/url]';
-      $Subject = 'Collage Report: '.esc($Name);
+      $TypeLink = 'the collage [url='.site_url()."collage.php?id=$ThingID]".Text::esc($Name).'[/url]';
+      $Subject = 'Collage Report: '.Text::esc($Name);
     }
     break;
   case 'thread':
@@ -88,8 +88,8 @@ switch ($Type) {
       $Error = 'No forum thread with the reported ID found';
     } else {
       list($Title) = $db->next_record();
-      $TypeLink = 'the forum thread [url='.site_url()."forums.php?action=viewthread&amp;threadid=$ThingID]".esc($Title).'[/url]';
-      $Subject = 'Forum Thread Report: '.esc($Title);
+      $TypeLink = 'the forum thread [url='.site_url()."forums.php?action=viewthread&amp;threadid=$ThingID]".Text::esc($Title).'[/url]';
+      $Subject = 'Forum Thread Report: '.Text::esc($Title);
     }
     break;
   case 'post':
@@ -116,7 +116,7 @@ switch ($Type) {
     } else {
       list($PostID, $Body, $TopicID, $PostNum) = $db->next_record();
       $TypeLink = 'this [url='.site_url()."forums.php?action=viewthread&amp;threadid=$TopicID&amp;post=$PostNum#post$PostID]forum post[/url]";
-      $Subject = 'Forum Post Report: Post ID #'.esc($PostID);
+      $Subject = 'Forum Post Report: Post ID #'.Text::esc($PostID);
     }
     break;
   case 'comment':
@@ -128,7 +128,7 @@ switch ($Type) {
       $Error = 'No comment with the reported ID found';
     } else {
       $TypeLink = '[url='.site_url()."comments.php?action=jump&amp;postid=$ThingID]this comment[/url]";
-      $Subject = 'Comment Report: ID #'.esc($ThingID);
+      $Subject = 'Comment Report: ID #'.Text::esc($ThingID);
     }
     break;
   default:

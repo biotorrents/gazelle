@@ -161,13 +161,13 @@ if (!$NumResults) {
   foreach ($Results as $Result) {
       switch ($Result['Page']) {
       case 'artist':
-        $Links = 'Artist: <a href="artist.php?id=' . $Result['PageID'] . '">' . esc($Result['Name']) . '</a>';
+        $Links = 'Artist: <a href="artist.php?id=' . $Result['PageID'] . '">' . Text::esc($Result['Name']) . '</a>';
         $JumpLink = 'artist.php?id=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
         break;
 
 
       case 'collages':
-        $Links = 'Collage: <a href="collages.php?id=' . $Result['PageID'] . '">' . esc($Result['Name']) . '</a>';
+        $Links = 'Collage: <a href="collages.php?id=' . $Result['PageID'] . '">' . Text::esc($Result['Name']) . '</a>';
         $JumpLink = 'collages.php?action=comments&collageid=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
         break;
 
@@ -203,10 +203,10 @@ if (!$NumResults) {
 
 
       case 'forums':
-        $Links = 'Forums: <a href="forums.php?action=viewforum&amp;forumid=' . $Result['ForumID'] . '">' . esc($Result['ForumName']) . '</a> &gt; ' .
+        $Links = 'Forums: <a href="forums.php?action=viewforum&amp;forumid=' . $Result['ForumID'] . '">' . Text::esc($Result['ForumName']) . '</a> &gt; ' .
           '<a href="forums.php?action=viewthread&amp;threadid=' . $Result['PageID'] .
-            '" class="tooltip" title="' . esc($Result['Name']) . '">' .
-            esc(Format::cut_string($Result['Name'], 75)) .
+            '" class="tooltip" title="' . Text::esc($Result['Name']) . '">' .
+            Text::esc(Format::cut_string($Result['Name'], 75)) .
           '</a>';
         $JumpLink = 'forums.php?action=viewthread&amp;threadid=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
         break;

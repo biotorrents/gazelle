@@ -269,7 +269,7 @@ foreach ($Badges as $BadgeID => $OldDisplayed) {
 
 $cache->begin_transaction("user_info_$UserID");
 $cache->update_row(false, [
-  'Avatar' => esc($_POST['avatar']),
+  'Avatar' => Text::esc($_POST['avatar']),
     'Paranoia' => $Paranoia,
     'Badges' => $NewBadges
 ]);
@@ -278,7 +278,7 @@ $cache->commit_transaction(0);
 $cache->begin_transaction("user_info_heavy_$UserID");
 $cache->update_row(false, [
   'StyleID' => $_POST['stylesheet'],
-  'StyleURL' => esc($_POST['styleurl'])
+  'StyleURL' => Text::esc($_POST['styleurl'])
 ]);
 $cache->update_row(false, $Options);
 $cache->commit_transaction(0);

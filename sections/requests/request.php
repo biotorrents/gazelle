@@ -189,7 +189,7 @@ $encoded_artist = urlencode($encoded_artist);
     $Split = Tags::get_name_and_class($TagName); ?>
         <li>
           <a class="<?= $Split['class']?>"
-            href="torrents.php?taglist=<?=$TagName?>"><?=esc($Split['name']) ?></a>
+            href="torrents.php?taglist=<?=$TagName?>"><?=Text::esc($Split['name']) ?></a>
           <br style="clear: both;" />
         </li>
         <?php
@@ -212,7 +212,7 @@ $encoded_artist = urlencode($encoded_artist);
         <tr>
           <td>
             <a
-              href="user.php?id=<?= $User['UserID'] ?>"><?= ($Boldify ? '<strong>' : '') . esc($User['Username']) . ($Boldify ? '</strong>' : '') ?></a>
+              href="user.php?id=<?= $User['UserID'] ?>"><?= ($Boldify ? '<strong>' : '') . Text::esc($User['Username']) . ($Boldify ? '</strong>' : '') ?></a>
           </td>
           <td class="number_column">
             <?= ($Boldify ? '<strong>' : '') . Format::get_size($User['Bounty']) . ($Boldify ? "</strong>\n" : "\n") ?>
@@ -227,7 +227,7 @@ $encoded_artist = urlencode($encoded_artist);
         <tr>
           <td>
             <a
-              href="user.php?id=<?= $User['UserID'] ?>"><strong><?= esc($User['Username']) ?></strong></a>
+              href="user.php?id=<?= $User['UserID'] ?>"><strong><?= Text::esc($User['Username']) ?></strong></a>
           </td>
           <td class="number_column">
             <strong><?= Format::get_size($User['Bounty']) ?></strong>

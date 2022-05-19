@@ -29,20 +29,6 @@ $Feed = new Feed;
 
 
 /**
- * esc
- */
-function esc(mixed $string)
-{
-    return htmlspecialchars(
-        $string = strval($string),
-        $flags = ENT_QUOTES | ENT_SUBSTITUTE,
-        $encoding = 'UTF-8',
-        $double_encode = false
-    );
-}
-
-
-/**
  * is_number
  */
 function is_number($Str)
@@ -63,7 +49,7 @@ function display_array($Array, $Escape = [])
 {
     foreach ($Array as $Key => $Val) {
         if ((!is_array($Escape) && $Escape === true) || !in_array($Key, $Escape)) {
-            $Array[$Key] = esc($Val);
+            $Array[$Key] = Text::esc($Val);
         }
     }
 

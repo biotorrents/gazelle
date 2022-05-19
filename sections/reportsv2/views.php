@@ -19,7 +19,7 @@ $db->prepared_query("
   ORDER BY ID ASC
   LIMIT 1");
 list($OwnerID, $Owner) = $db->next_record();
-$Owner = esc($Owner);
+$Owner = Text::esc($Owner);
 
 ?>
 <div class="header">
@@ -260,7 +260,7 @@ foreach ($Results as $Result) {
 ?>
       <tr<?=$RowClass?>>
         <td>
-          <a href="reportsv2.php?view=staff&amp;id=<?=$Array['ResolverID']?>"><?=esc($Array['Username'])?>'s reports</a>
+          <a href="reportsv2.php?view=staff&amp;id=<?=$Array['ResolverID']?>"><?=Text::esc($Array['Username'])?>'s reports</a>
         </td>
         <td class="number_column"><?=Text::float($Array['Count'])?></td>
       </tr>
@@ -295,7 +295,7 @@ foreach ($Results as $Result) {
 ?>
       <tr<?=$Title === 'Urgent' ? ' class="highlight" style="font-weight: bold;"' : ''?>>
         <td>
-          <a href="reportsv2.php?view=type&amp;id=<?=esc($Array['Type'])?>"><?=esc($Title)?></a>
+          <a href="reportsv2.php?view=type&amp;id=<?=Text::esc($Array['Type'])?>"><?=Text::esc($Title)?></a>
         </td>
         <td class="number_column">
           <?=Text::float($Array['Count'])?>

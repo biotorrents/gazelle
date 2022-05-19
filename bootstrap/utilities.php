@@ -8,25 +8,6 @@
  * All the non-classes are now in this file.
  */
 
-/**
- * esc
- *
- * Simple string escape.
- * Replaces display_str.
- *
- * THIS IS GOING AWAY.
- * MOVED TO TEXT CLASS.
- */
-function esc(mixed $string)
-{
-    return htmlspecialchars(
-        $string = Text::utf8(strval($string)),
-        $flags = ENT_QUOTES | ENT_SUBSTITUTE,
-        $encoding = 'UTF-8',
-        $double_encode = false
-    );
-}
-
 
     /**
      *
@@ -173,7 +154,7 @@ function send_irc($Channels = null, $Message = '')
     implode('-', $Dest)
     . '|%|'
     . html_entity_decode(
-        esc($Message),
+        Text::esc($Message),
         ENT_QUOTES
     );
 

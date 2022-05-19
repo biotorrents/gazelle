@@ -156,9 +156,9 @@ class Artists
         if ($MakeLink && !$Escape) {
             error('Invalid parameters to Artists::display_artist()');
         } elseif ($MakeLink) {
-            return '<a href="artist.php?id='.$Artist['id'].'">'.esc($Artist['name']).'</a>';
+            return '<a href="artist.php?id='.$Artist['id'].'">'.Text::esc($Artist['name']).'</a>';
         } elseif ($Escape) {
-            return esc($Artist['name']);
+            return Text::esc($Artist['name']);
         } else {
             return $Artist['name'];
         }

@@ -20,7 +20,7 @@ echo $twig->render(
     [
     'ENV' => $ENV,
     'user' => $user,
-    'title' => esc($PageTitle)
+    'title' => Text::esc($PageTitle)
   ]
 );
 

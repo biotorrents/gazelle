@@ -279,7 +279,7 @@ echo json_encode([
     'forumId' => (int)$ForumID,
     'forumName' => $Forums[$ForumID]['Name'],
     'threadId' => (int)$ThreadID,
-    'threadTitle' => esc($ThreadInfo['Title']),
+    'threadTitle' => Text::esc($ThreadInfo['Title']),
     'subscribed' => in_array($ThreadID, $UserSubscriptions),
     'locked' => $ThreadInfo['IsLocked'] === 1,
     'sticky' => $ThreadInfo['IsSticky'] === 1,

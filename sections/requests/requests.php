@@ -367,7 +367,7 @@ View::header($Title, 'requests');
                     </td>
                     <td>
                         <input type="search" name="search" size="60" class="inputtext" placeholder="Search Terms" value="<?php if (isset($_GET['search'])) {
-        echo esc($_GET['search']);
+        echo Text::esc($_GET['search']);
     } ?>" />
                     </td>
                 </tr>
@@ -379,7 +379,7 @@ View::header($Title, 'requests');
                     <td>
                         <input type="search" name="tags" id="tags" size="50" class="inputtext"
                             placeholder="Tags (comma-separated)"
-                            value="<?=!empty($TagNames) ? esc($TagNames) : ''?>"
+                            value="<?=!empty($TagNames) ? Text::esc($TagNames) : ''?>"
                             <?php Users::has_autocomplete_enabled('other'); ?>
                         />&nbsp;
                         <input type="radio" name="tags_type" id="tags_type0" value="0" <?php Format::selected('tags_type', 0, 'checked')?>
@@ -393,7 +393,7 @@ View::header($Title, 'requests');
                 <tr>
                   <td class="label"><!-- Requested By --></td>
                     <td>
-                      <input type="search" name="requester" size="60" class="inputtext" placeholder="Requested By" value="<?=esc($_GET['requester'])?>" />
+                      <input type="search" name="requester" size="60" class="inputtext" placeholder="Requested By" value="<?=Text::esc($_GET['requester'])?>" />
                     </td>
                 </tr>
                 */ ?>
@@ -567,7 +567,7 @@ View::header($Title, 'requests');
     $TagList = [];
             foreach ($Request['Tags'] as $TagID => $TagName) {
                 $Split = Tags::get_name_and_class($TagName);
-                $TagList[] = '<a class="'.$Split['class'].'" href="?tags='.$TagName.($BookmarkView ? '&amp;type=requests' : '').'">'.esc($Split['name']).'</a>';
+                $TagList[] = '<a class="'.$Split['class'].'" href="?tags='.$TagName.($BookmarkView ? '&amp;type=requests' : '').'">'.Text::esc($Split['name']).'</a>';
             }
             $TagList = implode(', ', $TagList); ?>
                     <?=$TagList?>

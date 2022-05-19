@@ -81,9 +81,9 @@ list ($NumResults) = $db->next_record();
         <input type="hidden" name="action" value="email_blacklist_alter" />
         <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
         <input type="hidden" name="id" value="<?=$Result['ID']?>" />
-        <input type="email" name="email" value="<?=esc($Result['Email'])?>" size="30" />
+        <input type="email" name="email" value="<?=Text::esc($Result['Email'])?>" size="30" />
       </td>
-      <td><input type="text" name="comment" value="<?=esc($Result['Comment'])?>" size="50" /></td>
+      <td><input type="text" name="comment" value="<?=Text::esc($Result['Comment'])?>" size="50" /></td>
       <td><?=Users::format_username($Result ['UserID'], false, false, false)?><br /><?=time_diff($Result ['Time'], 1)?></td>
       <td>
         <input type="submit" name="submit" class="button-primary" value="Edit" />

@@ -38,7 +38,7 @@ View::header(
         <?php
 $ReplyText = View::textarea(
     id: 'body',
-    value: esc($Body) ?? '',
+    value: Text::esc($Body) ?? '',
 );
 
   if (check_perms('admin_manage_wiki')) { ?>

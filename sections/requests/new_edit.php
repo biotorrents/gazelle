@@ -233,7 +233,7 @@ View::header(
         $First = true;
         foreach ($ArtistForm as $Artist) { ?>
             <input type="text" id="artist_0" name="artists[]" <?php Users::has_autocomplete_enabled('other'); ?>
-            size="45" value="<?=esc($Artist['name']) ?>" <?=$Disabled?>/>
+            size="45" value="<?=Text::esc($Artist['name']) ?>" <?=$Disabled?>/>
 
             <?php
             if (empty($Disabled)) {
@@ -306,7 +306,7 @@ View::header(
               </select>
 
               <input type="text" id="tags" name="tags" size="45"
-                value="<?= (!empty($Tags) ? esc($Tags) : '') ?>"
+                value="<?= (!empty($Tags) ? Text::esc($Tags) : '') ?>"
                 <?php Users::has_autocomplete_enabled('other'); ?>
               <?= $Disabled ?>/>
           </td>

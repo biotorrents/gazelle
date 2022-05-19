@@ -36,8 +36,7 @@ class Text
         }
 
         # prepare clean escapes
-        $string = self::utf8($string);
-        $string = esc($string);
+        $string = self::esc($string);
 
         # here's the magic pattern:
         if (!preg_match("/{$ENV->BBCODE_REGEX}/s", $string)) {
@@ -67,7 +66,7 @@ class Text
 
 
     /**
-     * Fix links
+     * fixLinks
      *
      * Make it so that internal links are in the form "/section?p=foo"
      * and that external links are secure and look like Wikipedia.
@@ -110,7 +109,7 @@ class Text
 
 
     /**
-     * Figlet
+     * figlet
      *
      * Make a silly willy, goofery ballery.
      * @see https://docs.laminas.dev/laminas-text/figlet/
@@ -138,7 +137,7 @@ class Text
     public static function esc(mixed $string)
     {
         return htmlspecialchars(
-            $string = Text::utf8(strval($string)),
+            $string = self::utf8(strval($string)),
             $flags = ENT_QUOTES | ENT_SUBSTITUTE,
             $encoding = "UTF-8",
             $double_encode = false

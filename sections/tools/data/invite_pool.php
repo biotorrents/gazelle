@@ -74,7 +74,7 @@ $db->set_query_id($RS);
         <td>
           <input type="hidden" name="action" value="invite_pool" />
           <input type="email" name="search" size="60"
-            value="<?=esc($Search)?>" />
+            value="<?=Text::esc($Search)?>" />
           &nbsp;
           <input type="submit" class="button-primary" value="Search log" />
         </td>
@@ -112,15 +112,15 @@ $db->set_query_id($RS);
     </td>
 
     <td>
-      <?=esc($Email)?>
+      <?=Text::esc($Email)?>
     </td>
 
     <td>
-      <?=esc($IP)?>
+      <?=Text::esc($IP)?>
     </td>
 
     <td>
-      <?=esc($InviteKey)?>
+      <?=Text::esc($InviteKey)?>
     </td>
 
     <td>
@@ -134,7 +134,7 @@ $db->set_query_id($RS);
         <input type="hidden" name="auth"
           value="<?=$user['AuthKey']?>" />
         <input type="hidden" name="invitekey"
-          value="<?=esc($InviteKey)?>" />
+          value="<?=Text::esc($InviteKey)?>" />
         <input type="submit" value="Delete" />
       </form>
     </td>

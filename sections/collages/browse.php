@@ -185,7 +185,7 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
           <td class="label"></td>
           <td>
             <input type="search" name="search" size="60" placeholder="Search terms"
-              value="<?=(!empty($_GET['search']) ? esc($_GET['search']) : '')?>" />
+              value="<?=(!empty($_GET['search']) ? Text::esc($_GET['search']) : '')?>" />
           </td>
         </tr>
 
@@ -193,7 +193,7 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
           <td class="label"></td>
           <td>
             <input type="text" id="tags" name="tags" size="60" placeholder="Tags (comma-separated)"
-              value="<?=(!empty($_GET['tags']) ? esc($_GET['tags']) : '')?>"
+              value="<?=(!empty($_GET['tags']) ? Text::esc($_GET['tags']) : '')?>"
               <?php Users::has_autocomplete_enabled('other'); ?>
             />
             &ensp;

@@ -122,7 +122,7 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
         WHERE t.TagID = ?", $TagID);
             while (list($TorrentID, $ArtistID, $ArtistName, $TorrentName) = $db->next_record()) {
                 $Row = ($ArtistName ? "<a href=\"artist.php?id=$ArtistID\">$ArtistName</a> - " : '');
-                $Row.= "<a href=\"torrents.php?id=$TorrentID\">".esc($TorrentName).'</a>';
+                $Row.= "<a href=\"torrents.php?id=$TorrentID\">".Text::esc($TorrentName).'</a>';
                 $AffectedTorrents[] = $Row;
             }
 
@@ -140,7 +140,7 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
         WHERE t.TagID = ?", $TagID);
             while (list($RequestID, $ArtistID, $ArtistName, $RequestName) = $db->next_record()) {
                 $Row = ($ArtistName ? "<a href=\"artist.php?id=$ArtistID\">$ArtistName</a> - " : '');
-                $Row.= "<a href=\"requests.php?action=viewrequest&amp;id=$RequestID\">".esc($RequestName).'</a>';
+                $Row.= "<a href=\"requests.php?action=viewrequest&amp;id=$RequestID\">".Text::esc($RequestName).'</a>';
                 $AffectedRequests[] = $Row;
             }
         }

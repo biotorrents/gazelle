@@ -76,7 +76,7 @@ $db->set_query_id($RS);
   <div class="header">
     <h2>Search articles</h2>
     <div class="linkbox">
-      <a href="wiki.php?action=create&amp;alias=<?=esc(Wiki::normalize_alias($_GET['search']))?>"
+      <a href="wiki.php?action=create&amp;alias=<?=Text::esc(Wiki::normalize_alias($_GET['search']))?>"
         class="brackets">Create an article</a>
     </div>
   </div>
@@ -98,7 +98,7 @@ $db->set_query_id($RS);
 
           <td colspan="3">
             <input type="search" name="search" id="search" size="70"
-              value="<?=esc($_GET['search'])?>" />
+              value="<?=Text::esc($_GET['search'])?>" />
           </td>
         </tr>
 

@@ -191,13 +191,13 @@ class Debug
   <?php foreach ($OcelotRequests as $i => $Request) { ?>
   <tr>
     <td class="debug_data debug_ocelot_data">
-        <a data-toggle-target="#debug_ocelot_<?=$i?>"><?=esc($Request["path"])?></a>
+        <a data-toggle-target="#debug_ocelot_<?=$i?>"><?=Text::esc($Request["path"])?></a>
         <pre id="debug_ocelot_<?=$i?>"
-          class="hidden"><?=esc($Request["response"])?></pre>
+          class="hidden"><?=Text::esc($Request["response"])?></pre>
     </td>
 
     <td class="debug_info" style="width: 100px;">
-        <?=esc($Request["status"])?>
+        <?=Text::esc($Request["status"])?>
     </td>
     <td class="debug_info debug_timing" style="width: 100px;">
         <?=Text::float($Request["time"], 5)?> ms
@@ -241,13 +241,13 @@ class Debug
           list($Error, $Location, $Call, $Args) = $Error; ?>
   <tr class="valign_top">
     <td class="debug_info debug_error_call">
-        <?=esc($Call)?>(<?=esc($Args)?>)
+        <?=Text::esc($Call)?>(<?=Text::esc($Args)?>)
     </td>
     <td class="debug_data debug_error_data">
-        <?=esc($Error)?>
+        <?=Text::esc($Error)?>
     </td>
     <td>
-        <?=esc($Location)?>
+        <?=Text::esc($Location)?>
     </td>
   </tr>
   <?php

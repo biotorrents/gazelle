@@ -114,14 +114,14 @@ class Validate
 
         switch (false) {
             case $this->HasExtensions($Suspect, 1):
-                return $Err = "The torrent has one or more files without extensions:\n" . esc($Suspect);
+                return $Err = "The torrent has one or more files without extensions:\n" . Text::esc($Suspect);
 
             case $this->CruftFree($Suspect):
-                return $Err = "The torrent has one or more junk files:\n" . esc($Suspect);
+                return $Err = "The torrent has one or more junk files:\n" . Text::esc($Suspect);
 
             case $this->SafeCharacters($Suspect):
                 $BadChars = $this->SafeCharacters('', true);
-                return $Err = "One or more files has the forbidden characters $BadChars:\n" . esc($Suspect);
+                return $Err = "One or more files has the forbidden characters $BadChars:\n" . Text::esc($Suspect);
             
             default:
                 return;
@@ -527,13 +527,13 @@ function get_file_extension($FileName)
 function invalid_error($Name)
 {
     global $Err;
-    $Err = 'The torrent contained one or more invalid files (' . esc($Name) . ')';
+    $Err = 'The torrent contained one or more invalid files (' . Text::esc($Name) . ')';
 }
 
 function forbidden_error($Name)
 {
     global $Err;
-    $Err = 'The torrent contained one or more forbidden files (' . esc($Name) . ')';
+    $Err = 'The torrent contained one or more forbidden files (' . Text::esc($Name) . ')';
 }
 
 function character_error($Character, $AllBlockedChars)

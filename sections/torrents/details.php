@@ -330,7 +330,7 @@ $Index++;
             ?>
         <li>
           <a href="torrents.php?taglist=<?=$Tag['name']?>"
-            class="<?=esc($Tag['class'])?>"><?=esc($Tag['display'])?></a>
+            class="<?=Text::esc($Tag['class'])?>"><?=Text::esc($Tag['display'])?></a>
           <div class="edit_tags_votes float_right">
             <?php if (check_perms('users_warn')) { ?>
             <a href="user.php?id=<?=$Tag['userid']?>"
@@ -490,29 +490,29 @@ foreach ($TorrentList as $Torrent) {
 
   // Similar to Torrents::torrent_info()
     if ($Media) {
-        $ExtraInfo .= '<x style="tooltip" title="Platform">'.esc($Media).'</x>';
+        $ExtraInfo .= '<x style="tooltip" title="Platform">'.Text::esc($Media).'</x>';
     }
 
     if ($Container) {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Format">'.esc($Container).'</x>';
+        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Format">'.Text::esc($Container).'</x>';
     }
 
     if ($Archive) {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Archive">'.esc($Archive).'</x>';
+        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Archive">'.Text::esc($Archive).'</x>';
     }
 
     if ($Codec) {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="License">'.esc($Codec).'</x>';
+        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="License">'.Text::esc($Codec).'</x>';
     }
 
     if ($Resolution) {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Scope">'.esc($Resolution).'</x>';
+        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Scope">'.Text::esc($Resolution).'</x>';
     }
 
     /*
     if ($Version) {
-        $ExtraInfo.=$AddExtra.esc($Version);
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Accession Number">'.esc($Version).'</x>';
+        $ExtraInfo.=$AddExtra.Text::esc($Version);
+        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Accession Number">'.Text::esc($Version).'</x>';
     }
     */
 

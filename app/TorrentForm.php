@@ -183,8 +183,8 @@ HTML;
 
         if (!$this->NewTorrent) {
             # Edit form hidden fields
-            $TorrentID = esc($this->TorrentID);
-            $CategoryID = esc($this->Torrent['CategoryID'] - 1);
+            $TorrentID = Text::esc($this->TorrentID);
+            $CategoryID = Text::esc($this->Torrent['CategoryID'] - 1);
 
             $HTML .= <<<HTML
             <input type="hidden" name="action" value="takeedit" />
@@ -195,8 +195,8 @@ HTML;
         else {
             # Torrent upload hidden fields
             if ($this->Torrent && $this->Torrent['GroupID']) {
-                $GroupID = esc($this->Torrent['GroupID']);
-                $CategoryID = esc($this->Torrent['CategoryID'] - 1);
+                $GroupID = Text::esc($this->Torrent['GroupID']);
+                $CategoryID = Text::esc($this->Torrent['CategoryID'] - 1);
 
                 $HTML .= <<<HTML
                 <input type="hidden" name="groupid" value="$GroupID" />
@@ -206,7 +206,7 @@ HTML;
 
             # Request hidden fields (new or edit?)
             if ($this->Torrent && ($this->Torrent['RequestID'] ?? false)) {
-                $RequestID = esc($this->Torrent['RequestID']);
+                $RequestID = Text::esc($this->Torrent['RequestID']);
                 $HTML .=  <<<HTML
                 <input type="hidden" name="requestid"value="$RequestID" />
 HTML;
@@ -425,7 +425,7 @@ HTML;
         /**
          * Accession Number
          */
-        $CatalogueNumber = esc($Torrent['CatalogueNumber']);
+        $CatalogueNumber = Text::esc($Torrent['CatalogueNumber']);
         $Disabled = $this->Disabled;
         
         echo $twig->render(
@@ -441,7 +441,7 @@ HTML;
          * Version
          */
         
-        $Version = esc($Torrent['Version']);
+        $Version = Text::esc($Torrent['Version']);
 
         echo $twig->render(
             'torrent_form/version.html',
@@ -458,9 +458,9 @@ HTML;
 
         # New torrent upload
         if ($this->NewTorrent) {
-            $Title1 = esc($Torrent['Title']);
-            $Title2 = esc($Torrent['Title2']);
-            $Title3 = esc($Torrent['TitleJP']);
+            $Title1 = Text::esc($Torrent['Title']);
+            $Title2 = Text::esc($Torrent['Title2']);
+            $Title3 = Text::esc($Torrent['TitleJP']);
             #$Disabled = $this->Disabled;
 
             echo $twig->render(
@@ -512,7 +512,7 @@ HTML;
             # If there are already creators listed
             if (!empty($Torrent['Artists'])) {
                 foreach ($Torrent['Artists'] as $Num => $Artist) {
-                    $ArtistName = esc($Artist['name']);
+                    $ArtistName = Text::esc($Artist['name']);
                     $AddRemoveBrackets = ($Num === 0) ?: null;
 
                     echo <<<HTML
@@ -537,7 +537,7 @@ HTML;
          * Workgroup
          */
         if ($this->NewTorrent) {
-            $Affiliation = esc($Torrent['Studio']);
+            $Affiliation = Text::esc($Torrent['Studio']);
 
             echo $twig->render(
                 'torrent_form/workgroup.html',
@@ -556,7 +556,7 @@ HTML;
          * Currently not sanitized to a standard format.
          */
         if ($this->NewTorrent) {
-            $TorrentLocation = esc($Torrent['Series']);
+            $TorrentLocation = Text::esc($Torrent['Series']);
             echo $twig->render(
                 'torrent_form/location.html',
                 [
@@ -577,7 +577,7 @@ HTML;
         /**
          * Year
          */
-        $TorrentYear = esc($Torrent['Year']);
+        $TorrentYear = Text::esc($Torrent['Year']);
 
         echo $twig->render(
             'torrent_form/year.html',
@@ -998,7 +998,7 @@ HTML;
           
             # todo: Find a better place for these
             $Disabled = ($this->DisabledFlag) ? ' disabled="disabled"' : null;
-            $TorrentTagList = esc(implode(', ', explode(',', $Torrent['TagList'])));
+            $TorrentTagList = Text::esc(implode(', ', explode(',', $Torrent['TagList'])));
             $AutocompleteOption = Users::has_autocomplete_enabled('other');
 
             echo <<<HTML
@@ -1031,7 +1031,7 @@ HTML;
          * Another obvious field.
          */
         if ($this->NewTorrent) {
-            $TorrentImage = esc($Torrent['Image']);
+            $TorrentImage = Text::esc($Torrent['Image']);
             $Disabled = $this->Disabled;
 
             echo $twig->render(
@@ -1051,7 +1051,7 @@ HTML;
          * The intended use is for web seeds, Dat mirrors, etc.
          */
         if (!$this->DisabledFlag && $this->NewTorrent) {
-            $TorrentMirrors = esc($Torrent['Mirrors']);
+            $TorrentMirrors = Text::esc($Torrent['Mirrors']);
             echo $twig->render(
                 'torrent_form/mirrors.html',
                 [
@@ -1071,7 +1071,7 @@ HTML;
          * pulling info from DOI to populate the schema.
          */
         if (!$this->DisabledFlag && $this->NewTorrent) {
-            $TorrentSamples = esc($Torrent['Screenshots']);
+            $TorrentSamples = Text::esc($Torrent['Screenshots']);
 
             echo <<<HTML
             <tr id="screenshots_tr">
@@ -1096,7 +1096,7 @@ HTML;
          */
 
         if ($ENV->FEATURE_BIOPHP && !$this->DisabledFlag && $this->NewTorrent) {
-            $TorrentSeqhash = esc($Torrent['Seqhash']);
+            $TorrentSeqhash = Text::esc($Torrent['Seqhash']);
             echo $twig->render(
                 'torrent_form/seqhash.html',
                 [
@@ -1128,7 +1128,7 @@ HTML;
             View::textarea(
                 id: 'album_desc',
                 placeholder: "General info about the torrent subject's function or significance",
-                value: esc($Torrent['GroupDescription']) ?? ''
+                value: Text::esc($Torrent['GroupDescription']) ?? ''
             );
 
             echo '</td></tr>';
@@ -1161,7 +1161,7 @@ HTML;
         View::textarea(
             id: 'release_desc',
             placeholder: 'Specific info about the protocols and equipment used to produce the data',
-            value: esc($Torrent['TorrentDescription'] ?? ''),
+            value: Text::esc($Torrent['TorrentDescription'] ?? ''),
         );
 
         echo '</td></tr>';

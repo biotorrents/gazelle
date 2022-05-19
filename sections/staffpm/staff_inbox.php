@@ -3,7 +3,7 @@
 
 View::header('Staff Inbox');
 
-$View = (isset($_GET['view'])) ? esc($_GET['view']) : '';
+$View = (isset($_GET['view'])) ? Text::esc($_GET['view']) : '';
 $UserLevel = $user['EffectiveClass'];
 
 $LevelCap = 1000;
@@ -179,7 +179,7 @@ if (!$db->has_results()) {
               value="<?=$ID?>" /></td>
           <?php } ?>
           <td><a
-              href="staffpm.php?action=viewconv&amp;id=<?=$ID?>"><?=esc($Subject)?></a></td>
+              href="staffpm.php?action=viewconv&amp;id=<?=$ID?>"><?=Text::esc($Subject)?></a></td>
           <td><?=$UserStr?>
           </td>
           <td><?=time_diff($Date, 2, true)?>

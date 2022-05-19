@@ -115,7 +115,7 @@ echo $Pages;
       </span>
       <br />
       <input type="search" name="search"
-        placeholder="<?=(!empty($_GET['search']) ? esc($_GET['search']) : 'Search '.($Section === 'sentbox' ? 'sentbox' : 'inbox'))?>" />
+        placeholder="<?=(!empty($_GET['search']) ? Text::esc($_GET['search']) : 'Search '.($Section === 'sentbox' ? 'sentbox' : 'inbox'))?>" />
     </div>
   </form>
   <form class="manage_form" name="messages" action="inbox.php" method="post" id="messageform">

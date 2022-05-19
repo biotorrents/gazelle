@@ -66,7 +66,7 @@ switch ($_GET['action']) {
 
       <h3>Title</h3>
       <input type="text" name="title" size="95" <?php if (!empty($Title)) {
-    echo ' value="' .esc($Title).'"';
+    echo ' value="' .Text::esc($Title).'"';
 } ?>>
 
       <h3>Body</h3>
@@ -74,7 +74,7 @@ switch ($_GET['action']) {
       <?php
 $Textarea = View::textarea(
     id: 'body',
-    value: esc($Body) ?? '',
+    value: Text::esc($Body) ?? '',
 ); ?>
 
       <div class="center">
@@ -98,7 +98,7 @@ while (list($NewsID, $Title, $Body, $NewsTime) = $db->next_record()) {
     ?>
   <div class="box vertical_space news_post">
     <div class="head">
-      <strong><?=esc($Title) ?></strong> - posted <?=time_diff($NewsTime) ?>
+      <strong><?=Text::esc($Title) ?></strong> - posted <?=time_diff($NewsTime) ?>
       - <a href="tools.php?action=editnews&amp;id=<?=$NewsID?>"
         class="brackets">Edit</a>
       <a href="tools.php?action=deletenews&amp;id=<?=$NewsID?>&amp;auth=<?=$user['AuthKey']?>"

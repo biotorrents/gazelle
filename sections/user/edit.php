@@ -300,7 +300,7 @@ HTML;
 
           <td>
             <input type="text" size="40" name="styleurl" id="styleurl"
-              value="<?=esc($StyleURL)?>" />
+              value="<?=Text::esc($StyleURL)?>" />
           </td>
         </tr>
 
@@ -663,7 +663,7 @@ HTML;
 
           <td>
             <input type="text" size="50" name="avatar" id="avatar"
-              value="<?=esc($Avatar)?>" />
+              value="<?=Text::esc($Avatar)?>" />
           </td>
         </tr>
 
@@ -745,7 +745,7 @@ HTML;
 
           <td>
             <input type="text" size="50" name="profile_title" id="profile_title"
-              value="<?=esc($InfoTitle)?>" />
+              value="<?=Text::esc($InfoTitle)?>" />
           </td>
         </tr>
 
@@ -759,7 +759,7 @@ HTML;
             <?php
   $textarea = View::textarea(
       id: 'info',
-      value: esc($Info) ?? '',
+      value: Text::esc($Info) ?? '',
   ); ?>
           </td>
         </tr>
@@ -773,7 +773,7 @@ HTML;
 
           <td>
             <input type="text" size="50" name="profile_title_1" id="profile_title_1"
-              value="<?=esc($ProfileRewards['ProfileInfoTitle1'])?>" />
+              value="<?=Text::esc($ProfileRewards['ProfileInfoTitle1'])?>" />
           </td>
         </tr>
 
@@ -787,7 +787,7 @@ HTML;
             <?php
   $textarea = View::textarea(
       id: 'profile_info_1',
-      value: esc($ProfileRewards['ProfileInfo1']) ?? '',
+      value: Text::esc($ProfileRewards['ProfileInfo1']) ?? '',
   ); ?>
           </td>
         </tr>
@@ -1166,7 +1166,7 @@ list($ArtistsAdded) = $db->next_record();
           <td>
             <div>
               <input type="text" size="50" name="irckey" id="irckey"
-                value="<?=esc($IRCKey)?>" />
+                value="<?=Text::esc($IRCKey)?>" />
             </div>
 
             <p class="setting_description">
@@ -1260,7 +1260,7 @@ list($ArtistsAdded) = $db->next_record();
           <td>
             <div>
               <input type="email" size="50" name="email" id="email"
-                value="<?=esc($Email)?>" />
+                value="<?=Text::esc($Email)?>" />
             </div>
           </td>
         </tr>

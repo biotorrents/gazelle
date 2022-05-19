@@ -59,8 +59,8 @@ if (!Forums::check_forumperm($ForumID)) {
     error(403);
 }
 //Escape strings for later display
-$ThreadTitle = esc($ThreadInfo['Title']);
-$ForumName = esc($Forums[$ForumID]['Name']);
+$ThreadTitle = Text::esc($ThreadInfo['Title']);
+$ForumName = Text::esc($Forums[$ForumID]['Name']);
 
 //Post links utilize the catalogue & key params to prevent issues with custom posts per page
 if ($ThreadInfo['Posts'] > $PerPage) {
@@ -296,7 +296,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
   <div class="pad<?php if (/*$LastRead !== null || */$ThreadInfo['IsLocked']) {
         echo ' hidden';
     } ?>" id="threadpoll">
-    <p><strong><?=esc($Question)?></strong></p>
+    <p><strong><?=Text::esc($Question)?></strong></p>
     <?php if ($UserResponse !== null || $Closed || $ThreadInfo['IsLocked'] || !Forums::check_forumperm($ForumID)) { ?>
     <ul class="poll nobullet">
       <?php
@@ -309,7 +309,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
                 $Ratio = 0;
                 $Percent = 0;
             } ?>
-      <li<?=((!empty($UserResponse)&&($UserResponse == $i))?' class="poll_your_answer"':'')?>><?=esc($Answer)?> (<?=Text::float($Percent * 100, 2)?>%)</li>
+      <li<?=((!empty($UserResponse)&&($UserResponse == $i))?' class="poll_your_answer"':'')?>><?=Text::esc($Answer)?> (<?=Text::float($Percent * 100, 2)?>%)</li>
         <li class="graph">
           <span class="center_poll"
             style="width: <?=round($Ratio * 750)?>px;"></span>
@@ -371,7 +371,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
           ?>
       <li>
         <a
-          href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$user['AuthKey']?>&amp;vote=<?=(int)$i?>"><?=esc($Answer == '' ? 'Blank' : $Answer)?></a>
+          href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$user['AuthKey']?>&amp;vote=<?=(int)$i?>"><?=Text::esc($Answer == '' ? 'Blank' : $Answer)?></a>
         - <?=$StaffVotes[$i]?>&nbsp;(<?=Text::float(((float)$Votes[$i] / $TotalVotes) * 100, 2)?>%)
         <a href="forums.php?action=delete_poll_option&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$user['AuthKey']?>&amp;vote=<?=(int)$i?>"
           class="brackets tooltip" title="Delete poll option">X</a>
@@ -416,7 +416,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
           <li>
             <input type="radio" name="vote" id="answer_<?=$i?>"
               value="<?=$i?>" />
-            <label for="answer_<?=$i?>"><?=esc($Answer)?></label>
+            <label for="answer_<?=$i?>"><?=Text::esc($Answer)?></label>
           </li>
           <?php } ?>
           <li>
@@ -714,7 +714,7 @@ if (check_perms('site_moderate_forums')) {
       <td class="label"><label for="thread_title_textbox">Title</label></td>
       <td>
         <input type="text" id="thread_title_textbox" name="title" style="width: 75%;"
-          value="<?=esc($ThreadInfo['Title'])?>"
+          value="<?=Text::esc($ThreadInfo['Title'])?>"
           tabindex="2" />
       </td>
     </tr>
@@ -744,7 +744,7 @@ if (check_perms('site_moderate_forums')) {
               </i>
               <!-- %pcs-comment-start#<?php if ($ThreadInfo['ForumID'] == $Forum['ID']) {
             echo ' selected="selected"';
-        } ?>><?=esc($Forum['Name'])?>
+        } ?>><?=Text::esc($Forum['Name'])?>
             </option>
             <?php
     } ?>

@@ -215,7 +215,7 @@ class Format
 
             return http_build_query($QueryItems, '', $Separator);
         } else {
-            return $Escape ? esc($_SERVER['QUERY_STRING']) : $_SERVER['QUERY_STRING'];
+            return $Escape ? Text::esc($_SERVER['QUERY_STRING']) : $_SERVER['QUERY_STRING'];
         }
     }
 
@@ -443,9 +443,9 @@ class Format
     {
         if (!empty($_GET[$Index])) {
             if ($Return) {
-                return esc($_GET[$Index]);
+                return Text::esc($_GET[$Index]);
             } else {
-                echo esc($_GET[$Index]);
+                echo Text::esc($_GET[$Index]);
             }
         }
     }
@@ -511,8 +511,8 @@ class Format
         
         return sprintf(
             '<strong class="torrent_label tooltip %1$s" title="%2$s" style="white-space: nowrap;">%2$s</strong>',
-            esc($Class),
-            esc($Text)
+            Text::esc($Class),
+            Text::esc($Text)
         );
     }
 

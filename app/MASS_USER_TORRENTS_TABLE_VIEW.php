@@ -105,7 +105,7 @@ class MASS_USER_TORRENTS_TABLE_VIEW
         if ($this->HasTorrents) { ?>
 <div>
   <div class="header">
-    <h2><?=esc($this->Heading)?>
+    <h2><?=Text::esc($this->Heading)?>
     </h2>
   </div>
 
@@ -161,7 +161,7 @@ class MASS_USER_TORRENTS_TABLE_VIEW
     <div>
       <input type="hidden" name="action" value="mass_edit" />
       <input type="hidden" name="type"
-        value="<?=esc($this->EditType)?>" />
+        value="<?=Text::esc($this->EditType)?>" />
       <input type="hidden" name="auth"
         value="<?=G::$user['AuthKey']?>" />
     </div>

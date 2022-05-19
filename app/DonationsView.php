@@ -114,7 +114,7 @@ class DonationsView
                 ?>
 <div class="box">
   <div class="head">
-    <span><?=!empty($ProfileRewards['ProfileInfoTitle' . $i]) ? esc($ProfileRewards['ProfileInfoTitle' . $i]) : "Extra Profile " . ($i + 1)?></span>
+    <span><?=!empty($ProfileRewards['ProfileInfoTitle' . $i]) ? Text::esc($ProfileRewards['ProfileInfoTitle' . $i]) : "Extra Profile " . ($i + 1)?></span>
     <span class="float_right"><a
         data-toggle-target="#profilediv_<?=$i?>"
         data-toggle-replace="Show" class="brackets">Hide</a></span>
@@ -166,7 +166,7 @@ class DonationsView
         <?php foreach ($DonationHistory as $Donation) { ?>
         <tr class="row">
           <td>
-            <?=esc($Donation['Source'])?>
+            <?=Text::esc($Donation['Source'])?>
             (<?=Users::format_username($Donation['AddedBy'])?>)
           </td>
           <td>
@@ -182,10 +182,10 @@ class DonationsView
             <?=$Donation['TotalRank']?>
           </td>
           <td>
-            <?=esc($Donation['Email'])?>
+            <?=Text::esc($Donation['Email'])?>
           </td>
           <td>
-            <?=esc($Donation['Reason'])?>
+            <?=Text::esc($Donation['Reason'])?>
           </td>
         </tr>
         <?php

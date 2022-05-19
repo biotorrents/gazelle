@@ -89,11 +89,11 @@ if (!isset($_POST['vote']) || !is_number($_POST['vote'])) {
 <form class="vote_form" name="poll" id="poll" action="">
   <input type="hidden" name="action" value="poll" />
   <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
-  <input type="hidden" name="large" value="<?=esc($_POST['large'])?>" />
+  <input type="hidden" name="large" value="<?=Text::esc($_POST['large'])?>" />
   <input type="hidden" name="topicid" value="<?=$TopicID?>" />
 <?php for ($i = 1, $il = count($Answers); $i <= $il; $i++) { ?>
   <input type="radio" name="vote" id="answer_<?=$i?>" value="<?=$i?>" />
-  <label for="answer_<?=$i?>"><?=esc($Answers[$i])?></label><br />
+  <label for="answer_<?=$i?>"><?=Text::esc($Answers[$i])?></label><br />
 <?php } ?>
   <br /><input type="radio" name="vote" id="answer_0" value="0" /> <label for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br /><br />
   <input type="button" onclick="ajax.post('index.php', 'poll', function(response) { $('#poll_container').raw().innerHTML = response });" value="Vote" />
@@ -138,7 +138,7 @@ if (!isset($_POST['vote']) || !is_number($_POST['vote'])) {
           $Percent = 0;
         }
 ?>
-          <li><?=esc($Answers[$i])?> (<?=Text::float($Percent * 100, 2)?>%)</li>
+          <li><?=Text::esc($Answers[$i])?> (<?=Text::float($Percent * 100, 2)?>%)</li>
           <li class="graph">
             <span class="center_poll" style="width: <?=round($Ratio * $Size)?>px;"></span>
           </li>
@@ -158,7 +158,7 @@ if (!isset($_POST['vote']) || !is_number($_POST['vote'])) {
       foreach ($StaffVotes as $StaffVote) {
         list($StaffString, $StaffVoted) = $StaffVote;
 ?>
-        <li><a href="forums.php?action=change_vote&amp;threadid=<?=$TopicID?>&amp;auth=<?=$user['AuthKey']?>&amp;vote=<?=(int)$StaffVoted?>"><?=esc(empty($Answers[$StaffVoted]) ? 'Blank' : $Answers[$StaffVoted])?></a> - <?=$StaffString?></li>
+        <li><a href="forums.php?action=change_vote&amp;threadid=<?=$TopicID?>&amp;auth=<?=$user['AuthKey']?>&amp;vote=<?=(int)$StaffVoted?>"><?=Text::esc(empty($Answers[$StaffVoted]) ? 'Blank' : $Answers[$StaffVoted])?></a> - <?=$StaffString?></li>
 <?php
       }
     }

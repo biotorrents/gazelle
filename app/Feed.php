@@ -85,7 +85,7 @@ class Feed
             foreach ($Entries as $Item) {
                 echo str_replace(
                     array('[[PASSKEY]]', '[[AUTHKEY]]'),
-                    array(esc($PassKey), esc($AuthKey)),
+                    array(Text::esc($PassKey), Text::esc($AuthKey)),
                     $Item
                 );
             }

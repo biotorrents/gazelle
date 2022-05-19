@@ -25,7 +25,7 @@ View::header('Top 10 Torrents history!');
         <tr>
           <td class="label">Date</td>
           <td><input type="text" id="date" name="date"
-              value="<?=!empty($_GET['date']) ? esc($_GET['date']) : 'YYYY-MM-DD'?>"
+              value="<?=!empty($_GET['date']) ? Text::esc($_GET['date']) : 'YYYY-MM-DD'?>"
               onfocus="if ($('#date').raw().value == 'YYYY-MM-DD') { $('#date').raw().value = ''; }" /></td>
         </tr>
         <tr>

@@ -458,7 +458,7 @@ class Misc
     {
         foreach ($Array as $Key => $Val) {
             if ((!is_array($Escape) && $Escape === true) || !in_array($Key, $Escape)) {
-                $Array[$Key] = esc($Val);
+                $Array[$Key] = Text::esc($Val);
             }
         }
         return $Array;

@@ -124,22 +124,22 @@ if ($db->has_results()) {
 
     <td>
       <span class="float_left">
-        <?=esc($Email)?>
+        <?=Text::esc($Email)?>
       </span>
 
       <span class="float_left">
-        <?=esc($InviterEmail)?>
+        <?=Text::esc($InviterEmail)?>
       </span>
 
     </td>
 
     <td>
       <span class="float_left">
-        <?=esc($IP)?>
+        <?=Text::esc($IP)?>
       </span>
 
       <span class="float_left">
-        <?=esc($InviterIP)?>
+        <?=Text::esc($InviterIP)?>
       </span>
     </td>
 

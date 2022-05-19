@@ -782,8 +782,8 @@ class Torrents
      */
     public static function filelist_get_file($File)
     {
-        // Need this hack because filelists are always esc()ed
-        $DelimLen = strlen(esc(self::filelist_delim())) + 1;
+        // Need this hack because filelists are always Text::esc()ed
+        $DelimLen = strlen(Text::esc(self::filelist_delim())) + 1;
         list($FileExt, $Size, $Name) = explode(' ', $File, 3);
         if ($Spaces = strspn($Name, ' ')) {
             $Name = str_replace(' ', '&nbsp;', substr($Name, 0, $Spaces)) . substr($Name, $Spaces);
@@ -812,50 +812,50 @@ class Torrents
         if ($ShowMedia && !empty($Data['Media'])) {
             $Info[] = ($HTMLy)
                 ? '<a class="search_link" href="torrents.php?action=advanced&media='
-                    . esc($Data['Media'])
+                    . Text::esc($Data['Media'])
                     . '">'
-                    . esc($Data['Media'])
+                    . Text::esc($Data['Media'])
                     . '</a>'
-                : esc($Data['Media']);
+                : Text::esc($Data['Media']);
         }
 
         # Format
         if (!empty($Data['Container'])) {
             $Info[] = ($HTMLy)
                 ? '<a class="search_link" href="torrents.php?action=advanced&container='
-                    . esc($Data['Container'])
+                    . Text::esc($Data['Container'])
                     . '">'
-                    . esc($Data['Container'])
+                    . Text::esc($Data['Container'])
                     . '</a>'
-                : esc($Data['Container']);
+                : Text::esc($Data['Container']);
         }
 
         # Archive
         if (!empty($Data['Archive'])) {
             # todo: Search on archives, lowest priority
-            $Info[] = esc($Data['Archive']);
+            $Info[] = Text::esc($Data['Archive']);
         }
 
         # Resolution
         if (!empty($Data['Resolution'])) {
             $Info[] = ($HTMLy)
                 ? '<a class="search_link" href="torrents.php?action=advanced&resolution='
-                    . esc($Data['Resolution'])
+                    . Text::esc($Data['Resolution'])
                     . '">'
-                    . esc($Data['Resolution'])
+                    . Text::esc($Data['Resolution'])
                     . '</a>'
-                : esc($Data['Resolution']);
+                : Text::esc($Data['Resolution']);
         }
         
         # License
         if (!empty($Data['Codec'])) {
             $Info[] = ($HTMLy)
                 ? '<a class="search_link" href="torrents.php?action=advanced&codec='
-                    . esc($Data['Codec'])
+                    . Text::esc($Data['Codec'])
                     . '">'
-                    . esc($Data['Codec'])
+                    . Text::esc($Data['Codec'])
                     . '</a>'
-                : esc($Data['Codec']);
+                : Text::esc($Data['Codec']);
         }
 
         # Alignned/Annotated

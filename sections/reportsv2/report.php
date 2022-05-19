@@ -51,7 +51,7 @@ if (!isset($_GET['id']) || !is_number($_GET['id'])) {
     $Artists = Artists::get_artist($GroupID);
     if ($Artists) {
         $DisplayName = '<span dir="ltr">' . Artists::display_artists($Artists, true) . "<a href=\"torrents.php?torrentid=$TorrentID\">$DisplayName</a></span>";
-        $AltName = esc(Artists::display_artists($Artists, false)) . $AltName;
+        $AltName = Text::esc(Artists::display_artists($Artists, false)) . $AltName;
         $Title = $AltName;
     }
     if ($GroupYear > 0) {
@@ -144,11 +144,11 @@ View::header('Report', 'reportsv2,browse,torrent,recommend');
          * The following malarky is needed so that if you get sent back here, the fields are filled in.
          */
         ?>
-        <input id="sitelink" type="hidden" name="sitelink" size="50" value="<?=(!empty($_POST['sitelink']) ? esc($_POST['sitelink']) : '')?>" />
-        <input id="image" type="hidden" name="image" size="50" value="<?=(!empty($_POST['image']) ? esc($_POST['image']) : '')?>" />
-        <input id="track" type="hidden" name="track" size="8" value="<?=(!empty($_POST['track']) ? esc($_POST['track']) : '')?>" />
-        <input id="link" type="hidden" name="link" size="50" value="<?=(!empty($_POST['link']) ? esc($_POST['link']) : '')?>" />
-        <input id="extra" type="hidden" name="extra" value="<?=(!empty($_POST['extra']) ? esc($_POST['extra']) : '')?>" />
+        <input id="sitelink" type="hidden" name="sitelink" size="50" value="<?=(!empty($_POST['sitelink']) ? Text::esc($_POST['sitelink']) : '')?>" />
+        <input id="image" type="hidden" name="image" size="50" value="<?=(!empty($_POST['image']) ? Text::esc($_POST['image']) : '')?>" />
+        <input id="track" type="hidden" name="track" size="8" value="<?=(!empty($_POST['track']) ? Text::esc($_POST['track']) : '')?>" />
+        <input id="link" type="hidden" name="link" size="50" value="<?=(!empty($_POST['link']) ? Text::esc($_POST['link']) : '')?>" />
+        <input id="extra" type="hidden" name="extra" value="<?=(!empty($_POST['extra']) ? Text::esc($_POST['extra']) : '')?>" />
       </div>
     </div>
   <input type="submit" class="button-primary" value="Report" />

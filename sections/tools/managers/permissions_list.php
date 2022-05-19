@@ -42,7 +42,7 @@ if ($db->has_results()) {
     </tr>
 <?php while (list($ID, $Name, $Level, $Secondary, $UserCount) = $db->next_record()) { ?>
     <tr>
-      <td><?=esc($Name); ?></td>
+      <td><?=Text::esc($Name); ?></td>
       <td><?=($Secondary ? 'Secondary' : $Level) ?></td>
       <td><?=Text::float($UserCount); ?></td>
       <td class="center">

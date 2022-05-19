@@ -284,7 +284,7 @@ foreach ($GroupIDs as $GroupID) {
         $DisplayName = "$DisplayName [$GroupYear]";
     }
 
-    $Tags = esc($TorrentTags->format());
+    $Tags = Text::esc($TorrentTags->format());
     $PlainTags = implode(', ', $TorrentTags->get_tags()); ?>
 
 <div class="collage_image image_group_<?=$GroupID?>">

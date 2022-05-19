@@ -102,7 +102,7 @@ View::header(
     <?php
 View::textarea(
     id: 'body',
-    value: esc($Body) ?? '',
+    value: Text::esc($Body) ?? '',
 );
 
   $db->query("

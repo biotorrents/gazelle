@@ -44,7 +44,7 @@ if ($ConvID = (int)$_GET['id']) {
     $OwnerName = $UserInfo['Username']; ?>
 <div>
   <div class="header">
-    <h2>Staff PM - <?=esc($Subject)?>
+    <h2>Staff PM - <?=Text::esc($Subject)?>
     </h2>
     <div class="linkbox">
       <?php

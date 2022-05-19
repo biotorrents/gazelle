@@ -97,7 +97,7 @@ foreach ($Notifications as $N) { // $N stands for Notifications
       href="feeds.php?feed=torrents_notify_<?=$N['ID']?>_<?=$user['torrent_pass']?>&amp;user=<?=$user['ID']?>&amp;auth=<?=$user['RSS_Auth']?>&amp;passkey=<?=$user['torrent_pass']?>&amp;authkey=<?=$user['AuthKey']?>&amp;name=<?=urlencode($N['Label'])?>"><img
         src="<?=STATIC_SERVER?>/images/symbols/rss.png"
         alt="RSS feed"></a>
-    <?=esc($N['Label'])?>
+    <?=Text::esc($N['Label'])?>
     <a href="user.php?action=notify_delete&amp;id=<?=$N['ID']?>&amp;auth=<?=$user['AuthKey']?>"
       onclick="return confirm('Are you sure you want to delete this notification filter?')" class="brackets">Delete</a>
     <a data-toggle-target="#filter_<?=$N['ID']?>"
@@ -145,7 +145,7 @@ foreach ($Notifications as $N) { // $N stands for Notifications
         <td class="label"><strong>One of these artists</strong></td>
         <td>
           <textarea name="artists<?=$i?>" style="width: 100%;"
-            rows="5"><?=esc($N['Artists'])?></textarea>
+            rows="5"><?=Text::esc($N['Artists'])?></textarea>
           Comma-separated list, e.g., Yumeno Aika, Pink Pineapple
         </td>
       </tr>
@@ -154,7 +154,7 @@ foreach ($Notifications as $N) { // $N stands for Notifications
         <td class="label"><strong>One of these users</strong></td>
         <td>
           <textarea name="users<?=$i?>" style="width: 100%;"
-            rows="5"><?=esc($Usernames)?></textarea>
+            rows="5"><?=Text::esc($Usernames)?></textarea>
           Comma-separated list of usernames
         </td>
       </tr>
@@ -163,7 +163,7 @@ foreach ($Notifications as $N) { // $N stands for Notifications
         <td class="label"><strong>At least one of these tags</strong></td>
         <td>
           <textarea name="tags<?=$i?>" style="width: 100%;"
-            rows="2"><?=esc($N['Tags'])?></textarea>
+            rows="2"><?=Text::esc($N['Tags'])?></textarea>
           Comma-separated list, e.g., paizuri, nakadashi
         </td>
       </tr>
@@ -172,7 +172,7 @@ foreach ($Notifications as $N) { // $N stands for Notifications
         <td class="label"><strong>None of these tags</strong></td>
         <td>
           <textarea name="nottags<?=$i?>" style="width: 100%;"
-            rows="2"><?=esc($N['NotTags'])?></textarea>
+            rows="2"><?=Text::esc($N['NotTags'])?></textarea>
           Comma-separated list, e.g., paizuri, nakadashi
         </td>
       </tr>

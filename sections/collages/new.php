@@ -36,7 +36,7 @@ if (isset($Err)) { ?>
             <input type="text" <?=$NoName ? ' class="hidden"' : ''; ?>
             name="name" size="60" id="namebox"
             placeholder="Collection title"
-            value="<?=esc($Name)?>" />
+            value="<?=Text::esc($Name)?>" />
             <span id="personal" <?=$NoName ? '' : ' class="hidden"'; ?>
               style="font-style: oblique;">
               <strong>
@@ -110,7 +110,7 @@ if (($CollageCount < $user['Permissions']['MaxCollages']) && check_perms('site_c
 View::textarea(
     id: 'description',
     placeholder: "Detailed description of the collection's purpose",
-    value: esc($Description) ?? '',
+    value: Text::esc($Description) ?? '',
 ); ?>
           </td>
         </tr>
@@ -120,7 +120,7 @@ View::textarea(
 
           <td>
             <input type="text" id="tags" name="tags" size="60" placeholder="Tags (comma-separated)"
-              value="<?=esc($Tags)?>" />
+              value="<?=Text::esc($Tags)?>" />
           </td>
         </tr>
 

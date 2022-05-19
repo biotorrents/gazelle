@@ -41,7 +41,7 @@ class Json
         }
 
         # https://tools.ietf.org/html/rfc6750
-        $authorizationHeader = explode(" ", esc($_SERVER["HTTP_AUTHORIZATION"]));
+        $authorizationHeader = explode(" ", Text::esc($_SERVER["HTTP_AUTHORIZATION"]));
 
         # too much whitespace
         if (count($authorizationHeader) !== 2) {

@@ -46,15 +46,15 @@ if (empty($_POST['confirm'])) {
       <input type="hidden" name="oldgroupid"
         value="<?=$OldGroupID?>" />
       <input type="hidden" name="artist"
-        value="<?=esc($_POST['artist'])?>" />
+        value="<?=Text::esc($_POST['artist'])?>" />
       <input type="hidden" name="title"
-        value="<?=esc($_POST['title'])?>" />
+        value="<?=Text::esc($_POST['title'])?>" />
       <input type="hidden" name="year" value="<?=$Year?>" />
       <h3>You are attempting to split the torrent <a
           href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a> off into a new group:</h3>
       <ul>
-        <li><?=esc($_POST['artist'])?> -
-          <?=esc($_POST['title'])?>
+        <li><?=Text::esc($_POST['artist'])?> -
+          <?=Text::esc($_POST['title'])?>
           [<?=$Year?>]
         </li>
       </ul>

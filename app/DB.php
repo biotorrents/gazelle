@@ -188,7 +188,7 @@ class DB
         }
 
         if ($ENV->DEV || check_perms('site_debug') || isset($argv[1])) {
-            echo '<pre>'.esc($dbError).'</pre>';
+            echo '<pre>'.Text::esc($dbError).'</pre>';
             if ($ENV->DEV || check_perms('site_debug')) {
                 print_r($this->Queries);
             }
@@ -481,8 +481,8 @@ class DB
         $Return = [];
         while ($Row = mysqli_fetch_array($this->QueryID)) {
             if ($Escape) {
-                $Key = esc($Row[$KeyField]);
-                $Val = esc($Row[$ValField]);
+                $Key = Text::esc($Row[$KeyField]);
+                $Val = Text::esc($Row[$ValField]);
             } else {
                 $Key = $Row[$KeyField];
                 $Val = $Row[$ValField];
@@ -500,7 +500,7 @@ class DB
     {
         $Return = [];
         while ($Row = mysqli_fetch_array($this->QueryID)) {
-            $Return[] = $Escape ? esc($Row[$Key]) : $Row[$Key];
+            $Return[] = $Escape ? Text::esc($Row[$Key]) : $Row[$Key];
         }
         
         mysqli_data_seek($this->QueryID, 0);

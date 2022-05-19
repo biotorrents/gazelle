@@ -441,7 +441,7 @@ View::header('User search');
         <td class="label nobr">Username:</td>
         <td width="24%">
           <input type="text" name="username" size="20"
-            value="<?=esc($_GET['username'])?>" />
+            value="<?=Text::esc($_GET['username'])?>" />
         </td>
         <td class="label nobr">Joined:</td>
         <td width="24%">
@@ -464,10 +464,10 @@ View::header('User search');
             </option>
           </select>
           <input type="text" name="join1" size="10"
-            value="<?=esc($_GET['join1'])?>"
+            value="<?=Text::esc($_GET['join1'])?>"
             placeholder="YYYY-MM-DD" />
           <input type="text" name="join2" size="10"
-            value="<?=esc($_GET['join2'])?>"
+            value="<?=Text::esc($_GET['join2'])?>"
             placeholder="YYYY-MM-DD" />
         </td>
         <td class="label nobr">Enabled:</td>
@@ -496,7 +496,7 @@ View::header('User search');
         <td class="label nobr">Email address:</td>
         <td>
           <input type="text" name="email" size="20"
-            value="<?=esc($_GET['email'])?>" />
+            value="<?=Text::esc($_GET['email'])?>" />
         </td>
         <td class="label nobr">Last active:</td>
         <td width="30%">
@@ -520,10 +520,10 @@ View::header('User search');
             </option>
           </select>
           <input type="text" name="lastactive1" size="10"
-            value="<?=esc($_GET['lastactive1'])?>"
+            value="<?=Text::esc($_GET['lastactive1'])?>"
             placeholder="YYYY-MM-DD" />
           <input type="text" name="lastactive2" size="10"
-            value="<?=esc($_GET['lastactive2'])?>"
+            value="<?=Text::esc($_GET['lastactive2'])?>"
             placeholder="YYYY-MM-DD" />
         </td>
         <td class="label nobr">Primary class:</td>
@@ -554,7 +554,7 @@ View::header('User search');
           IP address:</td>
         <td>
           <input type="text" name="ip" size="20"
-            value="<?=esc($_GET['ip'])?>" />
+            value="<?=Text::esc($_GET['ip'])?>" />
         </td>
         <td class="label nobr">Locked Account:</td>
         <td>
@@ -629,9 +629,9 @@ View::header('User search');
             </option>
           </select>
           <input type="text" name="ratio1" size="6"
-            value="<?=esc($_GET['ratio1'])?>" />
+            value="<?=Text::esc($_GET['ratio1'])?>" />
           <input type="text" name="ratio2" size="6"
-            value="<?=esc($_GET['ratio2'])?>" />
+            value="<?=Text::esc($_GET['ratio2'])?>" />
         </td>
         <td class="label nobr">Donor:</td>
         <td>
@@ -656,7 +656,7 @@ View::header('User search');
         <td class="label nobr">Staff notes:</td>
         <td>
           <input type="text" name="comment" size="20"
-            value="<?=esc($_GET['comment'])?>" />
+            value="<?=Text::esc($_GET['comment'])?>" />
         </td>
         <?php } else { ?>
         <td class="label nobr"></td>
@@ -688,9 +688,9 @@ View::header('User search');
             </option>
           </select>
           <input type="text" name="uploaded1" size="6"
-            value="<?=esc($_GET['uploaded1'])?>" />
+            value="<?=Text::esc($_GET['uploaded1'])?>" />
           <input type="text" name="uploaded2" size="6"
-            value="<?=esc($_GET['uploaded2'])?>" />
+            value="<?=Text::esc($_GET['uploaded2'])?>" />
         </td>
         <td class="label nobr">Warned:</td>
         <td>
@@ -733,9 +733,9 @@ View::header('User search');
             </option>
           </select>
           <input type="text" name="invites1" size="6"
-            value="<?=esc($_GET['invites1'])?>" />
+            value="<?=Text::esc($_GET['invites1'])?>" />
           <input type="text" name="invites2" size="6"
-            value="<?=esc($_GET['invites2'])?>" />
+            value="<?=Text::esc($_GET['invites2'])?>" />
         </td>
         <td class="label tooltip nobr" title="Units are in gibibytes (the base 2 sibling of gigabytes)">Downloaded:</td>
         <td width="30%">
@@ -759,9 +759,9 @@ View::header('User search');
             </option>
           </select>
           <input type="text" name="downloaded1" size="6"
-            value="<?=esc($_GET['downloaded1'])?>" />
+            value="<?=Text::esc($_GET['downloaded1'])?>" />
           <input type="text" name="downloaded2" size="6"
-            value="<?=esc($_GET['downloaded2'])?>" />
+            value="<?=Text::esc($_GET['downloaded2'])?>" />
         </td>
         <td class="label tooltip nobr" title="Only display users that have a disabled account linked by IP address">
           <label for="disabled_ip">Disabled accounts<br />linked by IP:</label>
@@ -816,9 +816,9 @@ View::header('User search');
             </option>
           </select>
           <input type="text" name="snatched1" size="6"
-            value="<?=esc($_GET['snatched1'])?>" />
+            value="<?=Text::esc($_GET['snatched1'])?>" />
           <input type="text" name="snatched2" size="6"
-            value="<?=esc($_GET['snatched2'])?>" />
+            value="<?=Text::esc($_GET['snatched2'])?>" />
         </td>
         <td class="label nobr">Disabled uploads:</td>
         <td>
@@ -854,19 +854,19 @@ View::header('User search');
             </option>
           </select>
           <input type="text" name="invitees1" size="6"
-            value="<?=esc($_GET['invitees1'])?>" />
+            value="<?=Text::esc($_GET['invitees1'])?>" />
           <input type="text" name="invitees2" size="6"
-            value="<?=esc($_GET['invitees2'])?>" />
+            value="<?=Text::esc($_GET['invitees2'])?>" />
         </td>
         <td class="label nobr">Passkey:</td>
         <td>
           <input type="text" name="passkey" size="20"
-            value="<?=esc($_GET['passkey'])?>" />
+            value="<?=Text::esc($_GET['passkey'])?>" />
         </td>
         <td class="label nobr">Tracker IP:</td>
         <td>
           <input type="text" name="tracker_ip" size="20"
-            value="<?=esc($_GET['tracker_ip'])?>" />
+            value="<?=Text::esc($_GET['tracker_ip'])?>" />
         </td>
       </tr>
 
@@ -876,7 +876,7 @@ View::header('User search');
           Avatar URL:</td>
         <td>
           <input type="text" name="avatar" size="20"
-            value="<?=esc($_GET['avatar'])?>" />
+            value="<?=Text::esc($_GET['avatar'])?>" />
         </td>
         <td class="label nobr">Stylesheet:</td>
         <td>
@@ -903,7 +903,7 @@ View::header('User search');
             </option>
           </select>
           <input type="text" name="cc" size="2"
-            value="<?=esc($_GET['cc'])?>" />
+            value="<?=Text::esc($_GET['cc'])?>" />
         </td>
       </tr>
 
@@ -977,7 +977,7 @@ View::header('User search');
             </option>
           </select>
           <input type="text" name="email_cnt" size="6"
-            value="<?=esc($_GET['email_cnt'])?>" />
+            value="<?=Text::esc($_GET['email_cnt'])?>" />
         </td>
       </tr>
       <tr>
@@ -1055,9 +1055,9 @@ while (list($UserID, $Username, $Uploaded, $Downloaded, $Snatched, $Invitees, $C
       </td>
       <td><?=Format::get_ratio_html($Uploaded, $Downloaded)?>
       </td>
-      <td style="word-break: break-all;"><?=esc($IP)?>
+      <td style="word-break: break-all;"><?=Text::esc($IP)?>
       </td>
-      <td><?=esc($Email)?>
+      <td><?=Text::esc($Email)?>
       </td>
       <td><?=time_diff($JoinDate)?>
       </td>
@@ -1076,7 +1076,7 @@ while (list($UserID, $Username, $Uploaded, $Downloaded, $Snatched, $Invitees, $C
     $db->set_query_id($Results); ?>
       <td><?=Text::float((int)$Downloads)?>
       </td>
-      <td><?=(is_numeric($Snatched) ? Text::float($Snatched) : esc($Snatched))?>
+      <td><?=(is_numeric($Snatched) ? Text::float($Snatched) : Text::esc($Snatched))?>
       </td>
       <td>
         <?php if ($DisableInvites) {

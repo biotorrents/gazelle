@@ -57,7 +57,7 @@ foreach ($Forums as $Forum) {
   ) {
         continue;
     }
-    $ForumDescription = esc($ForumDescription);
+    $ForumDescription = Text::esc($ForumDescription);
 
     if ($CategoryID != $LastCategoryID) {
         if (!empty($JsonForums) && !empty($JsonCategory)) {
@@ -95,7 +95,7 @@ foreach ($Forums as $Forum) {
     'lastTopicId' => (float)$LastTopicID,
     'lastTime' => $LastTime,
     'specificRules' => $SpecificRules,
-    'lastTopic' => esc($LastTopic),
+    'lastTopic' => Text::esc($LastTopic),
     'read' => $Read === 1,
     'locked' => $Locked === 1,
     'sticky' => $Sticky === 1
