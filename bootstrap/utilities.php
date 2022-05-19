@@ -13,6 +13,9 @@
  *
  * Simple string escape.
  * Replaces display_str.
+ *
+ * THIS IS GOING AWAY.
+ * MOVED TO TEXT CLASS.
  */
 function esc(mixed $string)
 {
@@ -138,6 +141,9 @@ function is_number($Str)
  * Send a message to an IRC bot listening on SOCKET_LISTEN_PORT
  *
  * @param string $Raw An IRC protocol snippet to send.
+ *
+ * THIS IS GOING AWAY.
+ * MOVED TO ANNOUNCE CLASS.
  */
 function send_irc($Channels = null, $Message = '')
 {

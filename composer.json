@@ -47,6 +47,7 @@
     "erusev/parsedown-extra": "0.8.0",
     "guzzlehttp/guzzle": "^7.4.1",
     "illuminate/support": "^8.78",
+    "jolicode/slack-php-api": "^4.5",
     "mikecao/flight": "^2.0",
     "orpheusnet/bencode-torrent": "dev-master",
     "povils/figlet": "*",

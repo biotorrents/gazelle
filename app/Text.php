@@ -115,12 +115,34 @@ class Text
      * Make a silly willy, goofery ballery.
      * @see https://docs.laminas.dev/laminas-text/figlet/
      */
-    public static function figlet(string $string): string
+    public static function figlet(string $message, string $color = "black", string $font = "small"): string
     {
-        $string = self::utf8($string);
-        $figlet = new \Laminas\Text\Figlet();
+        # escape the input
+        $string = self::esc($string);
 
-        return $figlet->render($string);
+        # object and options
+        $figlet = new Povils\Figlet\Figlet();
+        $figlet->setFont($font)->setFontColor($color);
+        
+        # okay done
+        return $figlet->render($message);
+    }
+
+
+    /**
+     * esc
+     *
+     * Simple string escape.
+     * Replaces display_str.
+     */
+    public static function esc(mixed $string)
+    {
+        return htmlspecialchars(
+            $string = Text::utf8(strval($string)),
+            $flags = ENT_QUOTES | ENT_SUBSTITUTE,
+            $encoding = "UTF-8",
+            $double_encode = false
+        );
     }
 
 
