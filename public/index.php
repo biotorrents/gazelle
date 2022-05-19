@@ -70,7 +70,6 @@ switch ($file) {
 
 # load the app if page is valid or running from cli
 if ($valid || php_sapi_name() === "cli") {
-    Text::figlet("app loaded", "green");
     require_once __DIR__."/../config/app.php";
     require_once __DIR__."/../bootstrap/utilities.php";
     require_once __DIR__."/../bootstrap/app.php";

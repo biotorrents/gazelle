@@ -4,7 +4,7 @@ declare(strict_types=1);
 class Cookie
 {
     # Optional cookie prefix
-    private static $prefix = '';
+    private static $prefix = "";
 
 
     /**
@@ -42,7 +42,7 @@ class Cookie
         string $key = null,
         mixed $value = null,
         int $time = 86400,
-        string $path = '/'
+        string $path = "/"
     ) {
         $ENV = ENV::go();
 
@@ -74,7 +74,7 @@ class Cookie
         # 3600s vs. 1s for potential clock desyncs
         self::set(
             $key = self::$prefix.$key,
-            $value = '',
+            $value = "",
             $time = time() - 24 * 3600
         );
     }

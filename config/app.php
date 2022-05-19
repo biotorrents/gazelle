@@ -14,17 +14,17 @@ declare(strict_types=1);
  *   $ENV->getPriv("PRIVATE_VALUE");
  *
  * Using a central static $ENV singleton class has additional benefits.
- * The RecursiveArrayObject class included in env.class.php is a powerful tool:
+ * The RecursiveArrayObject class included in ENV.php is a powerful tool:
  *
- *   $LongArray = [];
+ *   $longArray = [];
  *   ENV::setPub(
  *     "CONFIG",
- *     $ENV->convert($LongArray)
+ *     $ENV->convert($longArray)
  *   );
  *
  *   $ENV = ENV::go();
- *   foreach ($ENV->CATS as $Cat) {
- *     var_dump($Cat->Name);
+ *   foreach ($ENV->CATS as $cat) {
+ *     var_dump($cat->Name);
  *   }
  *
  * One more example using custom RecursiveArrayObject methods:
@@ -43,7 +43,7 @@ require_once __DIR__."/../app/ENV.php";
 $ENV = ENV::go();
 
 # include the configs
-require_once __DIR__."/public.php"; # Basic info, options, fratures, etc.
+require_once __DIR__."/public.php"; # basic info, options, fratures, etc.
 require_once __DIR__."/private.php"; # ALL THE SITE'S PRIVATE KEYS ARE HERE!
-require_once __DIR__."/metadata.php"; # Master metadata map for Twig templates
-require_once __DIR__."/regex.php"; # Regular expressions used throughout the site
+require_once __DIR__."/metadata.php"; # master metadata map for Twig templates
+require_once __DIR__."/regex.php"; # regular expressions used throughout the site
