@@ -9,6 +9,15 @@
  */
 
 
+/**
+ * esc
+ */
+function esc(mixed $string)
+{
+    return Text::esc($string);
+}
+
+
     /**
      *
      * FROM BOOTSTRAP/APP.PHP
