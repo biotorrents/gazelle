@@ -6,9 +6,17 @@ declare(strict_types=1);
  * @see https://flightphp.com/learn
  */
 
+
 /** index */
+
+# index
 Flight::route("/", function () {
-    if (isset(G::$user["ID"])) {
+    $app = App::go();
+
+    global $SessionID;
+!d($SessionID);exit;
+
+    if (isset($app->user["ID"])) {
         #if (!isset($_REQUEST["action"])) {
         require_once __DIR__."/../sections/index/private.php";
     #} else {
@@ -30,16 +38,17 @@ Flight::route("/", function () {
 
 
 /** legal */
+
+# about
 Flight::route("/about", function () {
-    $ENV = ENV::go();
-    $twig = Twig::go();
+    $app = App::go();
 
     $text = Text::parse(
-        file_get_contents("{$ENV->SERVER_ROOT}/templates/legal/about.md")
+        file_get_contents("{$app->env->SERVER_ROOT}/templates/legal/about.md")
     );
 
     View::header("About");
-    echo $twig->render("legal/tldr.twig", ["text" => $text]);
+    echo $app->twig->render("legal/tldr.twig", ["text" => $text]);
     View::footer();
 });
 
@@ -51,29 +60,27 @@ Flight::route("/canary", function () {
 
 # dmca
 Flight::route("/dmca", function () {
-    $ENV = ENV::go();
-    $twig = Twig::go();
+    $app = App::go();
 
     $text = Text::parse(
-        file_get_contents("{$ENV->SERVER_ROOT}/templates/legal/dmca.md")
+        file_get_contents("{$app->env->SERVER_ROOT}/templates/legal/dmca.md")
     );
 
     View::header("DMCA");
-    echo $twig->render("legal/tldr.twig", ["text" => $text]);
+    echo $app->twigg->render("legal/tldr.twig", ["text" => $text]);
     View::footer();
 });
 
 # privacy
 Flight::route("/privacy", function () {
-    $ENV = ENV::go();
-    $twig = Twig::go();
+    $app = App::go();
 
     $text = Text::parse(
-        file_get_contents("{$ENV->SERVER_ROOT}/templates/legal/privacy.md")
+        file_get_contents("{$app->env->SERVER_ROOT}/templates/legal/privacy.md")
     );
 
     View::header("Privacy");
-    echo $twig->render("legal/tldr.twig", ["text" => $text]);
+    echo $app->twig->render("legal/tldr.twig", ["text" => $text]);
     View::footer();
 });
 

@@ -52,6 +52,7 @@ class Http
             "post" => [],
             "cookie" => [],
             "files" => [],
+            "server" => [],
         ];
 
         # error out on bad input
@@ -59,7 +60,8 @@ class Http
             throw new Exception("Supplied method {$method} isn't supported");
         }
 
-        # filter input arrays
+        # escape each untrusted superglobal
+        # sucks less than filter_input_array
         foreach ($_GET as $key => $value) {
             array_push($safe["get"], [Text::esc($key), Text::esc($value)]);
         }
@@ -75,6 +77,20 @@ class Http
         foreach ($_FILES as $key => $value) {
             array_push($safe["files"], [Text::esc($key), Text::esc($value)]);
         }
+
+        foreach ($_SERVER as $key => $value) {
+            # sanitize client spoofed keys
+            if (str_starts_with($key, "HTTP")) {
+                array_push($safe["server"], [Text::esc($key), Text::esc($value)]);
+            }
+
+            # make server keys available
+            # note strip_tags not Text::esc
+            else {
+                array_push($safe["server"], [strip_tags($key), strip_tags($value)]);
+            }
+        }
+
 
         # should be okay
         if (!empty($method)) {

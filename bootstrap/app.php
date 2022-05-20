@@ -11,6 +11,7 @@ declare(strict_types=1);
  * The debugging should catch exceptions.
  */
 
+ !d($_SERVER);exit;
 # quick sanity checks
 Security::oops();
 
@@ -148,6 +149,9 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
     $LightInfo = Users::user_info($user["ID"]);
     $HeavyInfo = Users::user_heavy_info($user["ID"]);
 
+    #global $SessionID;
+    #!d($SessionID);exit;
+    
     /**
      * Load user information.
      * User info is broken up into many sections:
