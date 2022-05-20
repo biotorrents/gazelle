@@ -5,6 +5,7 @@ class Misc
 {
     /**
      * email
+     * THIS IS GOING AWAY
      *
      * @param string $to
      * @param string $subject

@@ -7,44 +7,48 @@ declare(strict_types=1);
  * The blunt singleton, for your procedural code.
  * @see https://phpdelusions.net/pdo/pdo_wrapper
  */
-class Database
+class Database extends PDO
 {
     # instance
     private $pdo;
 
     # hash algo for cache keys
-    private static $algorithm = "sha3-512";
+    private $algorithm = "sha3-512";
 
     # cache settings
-    private $cachePrefix = 'stats_';
-    private $cacheDuration = 3600;
-    
+    private $cachePrefix = "database_";
+    private $cacheDuration = 300; # five minutes
+
 
     /**
      * __construct
      */
     public function __construct($options = [])
     {
-        $ENV = ENV::go();
+        $app = App::go();
 
-        $host = $ENV->getPriv("SQL_HOST");
-        $port = $ENV->getPriv("SQL_PORT");
+        # vars
+        $host = $app->env->getPriv("SQL_HOST");
+        $port = $app->env->getPriv("SQL_PORT");
 
-        $username = $ENV->getPriv("SQL_USER");
-        $password = $ENV->getPriv("SQL_PASS");
+        $username = $app->env->getPriv("SQL_USER");
+        $password = $app->env->getPriv("SQL_PASS");
 
-        $db = $ENV->getPriv("SQL_DB");
+        $db = $app->env->getPriv("SQL_DB");
         $charset = "utf8mb4";
 
-        $default_options = [
+        # defaults
+        $defaultOptions = [
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES => false,
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         ];
 
-        $options = array_replace($default_options, $options);
+        # construct
+        $options = array_replace($defaultOptions, $options);
         $dsn = "mysql:host={$host};dbname={$db};port={$port};charset={$charset}";
 
+        # do it
         try {
             $this->pdo = new PDO($dsn, $username, $password, $options);
         } catch (PDOException $e) {
@@ -60,13 +64,43 @@ class Database
      */
     public function do(string $query, array $args = [])
     {
-        if (empty($args)) {
-            return $this->pdo->query($query);
+        $app = App::go();
+
+        # debug
+        if ($app->env->DEV) {
+            $app->debug["database"]->log(
+                $this->pdo->debugDumpParams()
+            );
         }
 
+        # prepare
         $statement = $this->pdo->prepare($query);
+
+        # return cached if available
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, $statement);
+        if ($app->cache->get_value($cacheKey)) {
+            return $app->cache->get_value($cacheKey);
+        }
+
+        /*
+        # no params
+        if (empty($args)) {
+            $app->cache->cache_value($cacheKey, $query, $this->cacheDuration);
+            return $this->pdo->query($query);
+        }
+        */
+
+        # execute
         $statement->execute($args);
 
+        # errors
+        $errors = $this->pdo->errorInfo();
+        if ($errors) {
+            throw new PDOException("{$errors[0]}: {$errors[2]}");
+        }
+
+        # good
+        $app->cache->cache_value($cacheKey, $statement, $this->cacheDuration);
         return $statement;
     }
 
@@ -104,6 +138,20 @@ class Database
 
 
     /**
+     * column
+     *
+     * Gets a single column.
+     */
+    public function column(string $query, array $args = [])
+    {
+        $statement = $this->do($query, $args);
+        $column = $statement->fetchColumn();
+
+        return $column;
+    }
+
+
+    /**
      * multi
      *
      * Gets all results.
@@ -125,9 +173,9 @@ class Database
     public function rowCount(string $query, array $args = []): int
     {
         $statement = $this->do($query, $args);
-        $count = $statement->rowCount();
+        $rowCount = $statement->rowCount();
 
-        return $count;
+        return $rowCount;
     }
 
 
@@ -139,30 +187,22 @@ class Database
     public function columnCount(string $query, array $args = []): int
     {
         $statement = $this->do($query, $args);
-        $count = $statement->columnCount();
+        $columnCount = $statement->columnCount();
 
-        return $count;
+        return $columnCount;
     }
 
 
     /**
-     * lastInsertId
+     * meta
      *
-     * Gets the last auto-increment.
+     * Gets the column metadata.
      */
-    public function lastInsertId()
+    public function meta(string $query, array $args = []): int
     {
-        return $this->pdo->lastInsertId();
-    }
+        $statement = $this->do($query, $args);
+        $meta = $statement->getColumnMeta();
 
-
-    /**
-     * errorInfo
-     *
-     * Gets the last error details.
-     */
-    public function errorInfo()
-    {
-        return $this->pdo->errorInfo();
+        return $meta;
     }
 } # class

@@ -52,8 +52,14 @@ class Cache extends Memcache
     /**
      * __construct
      */
-    public function __construct($servers)
+    public function __construct($servers = [])
     {
+        $ENV = ENV::go();
+        
+        if (empty($servers)) {
+            $servers = $ENV->getPriv("MEMCACHED_SERVERS");
+        }
+
         if (is_subclass_of($this, 'Memcached')) {
             parent::__construct();
         }

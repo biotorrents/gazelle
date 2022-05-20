@@ -8,18 +8,18 @@ declare(strict_types=1);
 class Stats
 {
     # private values
-    private $baseUri = '';
-    private $siteId = '';
-    private $token = '';
+    private $baseUri = "";
+    private $siteId = "";
+    private $token = "";
 
     # default options
     private $limit = 10;
-    private $metrics = 'visitors,pageviews,bounce_rate,visit_duration';
-    private $period = '30d';
+    private $metrics = "visitors,pageviews,bounce_rate,visit_duration";
+    private $period = "30d";
 
     # cache settings
-    private $cachePrefix = 'stats_';
-    private $cacheDuration = 3600;
+    private $cachePrefix = "stats_";
+    private $cacheDuration = 3600; # one hour
 
 
     /**
@@ -31,7 +31,7 @@ class Stats
 
         $this->baseUri = $ENV->PLAUSIBLE_URI;
         $this->siteId = $ENV->SITE_DOMAIN;
-        $this->token = $ENV->getPriv('PLAUSIBLE_KEY');
+        $this->token = $ENV->getPriv("PLAUSIBLE_KEY");
     }
 
 
@@ -42,7 +42,7 @@ class Stats
      */
     public function realtime(): int
     {
-        $path = 'stats/realtime/visitors';
+        $path = "stats/realtime/visitors";
         return $this->curl($path);
     }
 
@@ -54,7 +54,7 @@ class Stats
      */
     private function aggregate(array $options = []): array
     {
-        $path = 'stats/aggregate';
+        $path = "stats/aggregate";
         return $this->curl($path, $options);
     }
 
@@ -66,7 +66,7 @@ class Stats
      */
     private function timeseries(array $options = []): array
     {
-        $path = 'stats/timeseries';
+        $path = "stats/timeseries";
         return $this->curl($path, $options);
     }
 
@@ -78,7 +78,7 @@ class Stats
      */
     private function breakdown(array $options = []): array
     {
-        $path = 'stats/breakdown';
+        $path = "stats/breakdown";
         return $this->curl($path, $options);
     }
 
@@ -104,7 +104,7 @@ class Stats
         $overview = array_shift($overview);
 
         foreach ($overview as $k => $v) {
-            $overview[$k] = $v['value'];
+            $overview[$k] = $v["value"];
         }
 
         G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $overview, $this->cacheDuration);
@@ -125,30 +125,30 @@ class Stats
         }
 
         # page
-        $options['property'] = 'event:page';
+        $options["property"] = "event:page";
         $page = $this->export(
             $this->breakdown($options),
-            'page',
-            'visitors'
+            "page",
+            "visitors"
         );
 
         # entry_page
-        $options['property'] = 'visit:entry_page';
+        $options["property"] = "visit:entry_page";
         $entry_page= $this->export(
             $this->breakdown($options),
-            'entry_page',
-            'visitors'
+            "entry_page",
+            "visitors"
         );
 
         # exit_page
-        $options['property'] = 'visit:exit_page';
+        $options["property"] = "visit:exit_page";
         $exit_page = $this->export(
             $this->breakdown($options),
-            'exit_page',
-            'visitors'
+            "exit_page",
+            "visitors"
         );
 
-        $topPages = ['page' => $page, 'entry_page' => $entry_page, 'exit_page' => $exit_page];
+        $topPages = ["page" => $page, "entry_page" => $entry_page, "exit_page" => $exit_page];
 
         G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $topPages, $this->cacheDuration);
         return $topPages;
@@ -168,22 +168,22 @@ class Stats
         }
 
         # source
-        $options['property'] = 'visit:source';
+        $options["property"] = "visit:source";
         $source= $this->export(
             $this->breakdown($options),
-            'source',
-            'visitors'
+            "source",
+            "visitors"
         );
 
         # referrer
-        $options['property'] = 'visit:referrer';
+        $options["property"] = "visit:referrer";
         $referrer = $this->export(
             $this->breakdown($options),
-            'referrer',
-            'visitors'
+            "referrer",
+            "visitors"
         );
 
-        $sources = ['source' => $source, 'referrer' => $referrer];
+        $sources = ["source" => $source, "referrer" => $referrer];
 
         G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $sources, $this->cacheDuration);
         return $sources;
@@ -207,32 +207,32 @@ class Stats
         # visitors
         $visitors = $this->export(
             $overTime,
-            'date',
-            'visitors'
+            "date",
+            "visitors"
         );
 
         # pageviews
         $pageviews = $this->export(
             $overTime,
-            'date',
-            'pageviews'
+            "date",
+            "pageviews"
         );
 
         # bounce_rate
         $bounce_rate = $this->export(
             $overTime,
-            'date',
-            'bounce_rate'
+            "date",
+            "bounce_rate"
         );
 
         # visit_duration
         $visit_duration = $this->export(
             $overTime,
-            'date',
-            'visit_duration'
+            "date",
+            "visit_duration"
         );
 
-        $overTime = ['visitors' => $visitors, 'pageviews' => $pageviews, 'bounce_rate' => $bounce_rate, 'visit_duration' => $visit_duration];
+        $overTime = ["visitors" => $visitors, "pageviews" => $pageviews, "bounce_rate" => $bounce_rate, "visit_duration" => $visit_duration];
 
         G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $overTime, $this->cacheDuration);
         return $overTime;
@@ -252,12 +252,12 @@ class Stats
         }
 
         # only tracks country by default :/
-        $options['property'] = 'visit:country';
+        $options["property"] = "visit:country";
 
         $locations = $this->export(
             $this->breakdown($options),
-            'country',
-            'visitors'
+            "country",
+            "visitors"
         );
 
         G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $locations, $this->cacheDuration);
@@ -277,30 +277,30 @@ class Stats
         }
 
         # device
-        $options['property'] = 'visit:device';
+        $options["property"] = "visit:device";
         $device = $this->export(
             $this->breakdown($options),
-            'device',
-            'visitors'
+            "device",
+            "visitors"
         );
 
         # browser
-        $options['property'] = 'visit:browser';
+        $options["property"] = "visit:browser";
         $browser= $this->export(
             $this->breakdown($options),
-            'browser',
-            'visitors'
+            "browser",
+            "visitors"
         );
 
         # os
-        $options['property'] = 'visit:os';
+        $options["property"] = "visit:os";
         $os = $this->export(
             $this->breakdown($options),
-            'os',
-            'visitors'
+            "os",
+            "visitors"
         );
 
-        $devices = ['device' => $device, 'browser' => $browser, 'os' => $os];
+        $devices = ["device" => $device, "browser" => $browser, "os" => $os];
 
         G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $devices, $this->cacheDuration);
         return $devices;
@@ -310,32 +310,32 @@ class Stats
     /**
      * curl
      *
-     * @param string $path The path, e.g., 'stats/aggregate'
+     * @param string $path The path, e.g., "stats/aggregate"
      * @param array $options The options for the query string
      */
     private function curl(string $path, array $options = [])
     {
         # basic params
-        $options['site_id'] = $this->siteId;
-        $options['limit'] = $this->limit;
-        $options['metrics'] = $this->metrics;
-        $options['period'] = $this->period;
+        $options["site_id"] = $this->siteId;
+        $options["limit"] = $this->limit;
+        $options["metrics"] = $this->metrics;
+        $options["period"] = $this->period;
 
         # https://plausible.io/docs/stats-api
         $map = [
-            'compare' => $options['compare'] ?? null,
-            'filters' => $options['filters'] ?? null,
-            'interval' => $options['interval'] ?? null,
-            'limit' => $options['limit'] ?? null,
-            'metrics' => $options['metrics'] ?? null,
-            'page' => $options['page'] ?? null,
-            'period' => $options['period'] ?? null,
-            'property' => $options['property'] ?? null,
-            'site_id' => $options['site_id'] ?? null,
+            "compare" => $options["compare"] ?? null,
+            "filters" => $options["filters"] ?? null,
+            "interval" => $options["interval"] ?? null,
+            "limit" => $options["limit"] ?? null,
+            "metrics" => $options["metrics"] ?? null,
+            "page" => $options["page"] ?? null,
+            "period" => $options["period"] ?? null,
+            "property" => $options["property"] ?? null,
+            "site_id" => $options["site_id"] ?? null,
         ];
 
         # build query string
-        $query = '?site_id=' . $options['site_id'];
+        $query = "?site_id=" . $options["site_id"];
         foreach ($map as $k => $v) {
             if (!is_null($v)) {
                 $query .= "&{$k}={$v}";
@@ -361,7 +361,7 @@ class Stats
      */
     private function export(array $input, string $label, string $data): array
     {
-        if (array_key_exists('results', $input)) {
+        if (array_key_exists("results", $input)) {
             $input = array_shift($input);
         }
 
@@ -394,15 +394,15 @@ class Stats
 
         $torrents = G::$db->to_array();
         $torrents = [
-            'count' => intval($torrents[0]['count(ID)']),
-            'totalDataSize' => intval($torrents[0]['sum(Size)']),
-            'totalFileCount' => intval($torrents[0]['sum(FileCount)']),
+            "count" => intval($torrents[0]["count(ID)"]),
+            "totalDataSize" => intval($torrents[0]["sum(Size)"]),
+            "totalFileCount" => intval($torrents[0]["sum(FileCount)"]),
         ];
 
         # secondary stats: averages
-        $torrents['averageDataSize'] =  $torrents['totalDataSize'] / $torrents['count'];
-        $torrents['averageFileCount'] = $torrents['totalFileCount'] / $torrents['count'];
-        $torrents['averageFileSize'] = $torrents['totalDataSize'] / $torrents['totalFileCount'];
+        $torrents["averageDataSize"] =  $torrents["totalDataSize"] / $torrents["count"];
+        $torrents["averageFileCount"] = $torrents["totalFileCount"] / $torrents["count"];
+        $torrents["averageFileSize"] = $torrents["totalDataSize"] / $torrents["totalFileCount"];
 
         # users
         G::$db->prepared_query("
@@ -411,11 +411,11 @@ class Stats
 
         $users = G::$db->to_array();
         $users = [
-            'count' => intval($users[0]['count(ID)']),
+            "count" => intval($users[0]["count(ID)"]),
         ];
 
         # secondary stats: averages
-        $users['torrentsPerUser'] = $torrents['count'] / $users['count'];
+        $users["torrentsPerUser"] = $torrents["count"] / $users["count"];
 
         # daily
         G::$db->prepared_query("
@@ -424,9 +424,9 @@ class Stats
 
         $daily = G::$db->to_array();
         $daily = [
-            'count' => intval($daily[0]['count(ID)']),
-            'totalSize' => intval($daily[0]['sum(Size)']),
-            'fileCount' => intval($daily[0]['sum(FileCount)']),
+            "count" => intval($daily[0]["count(ID)"]),
+            "totalSize" => intval($daily[0]["sum(Size)"]),
+            "fileCount" => intval($daily[0]["sum(FileCount)"]),
         ];
 
         # weekly
@@ -436,9 +436,9 @@ class Stats
 
         $weekly = G::$db->to_array();
         $weekly = [
-            'count' => intval($weekly[0]['count(ID)']),
-            'totalSize' => intval($weekly[0]['sum(Size)']),
-            'fileCount' => intval($weekly[0]['sum(FileCount)']),
+            "count" => intval($weekly[0]["count(ID)"]),
+            "totalSize" => intval($weekly[0]["sum(Size)"]),
+            "fileCount" => intval($weekly[0]["sum(FileCount)"]),
         ];
 
         # monthly
@@ -448,17 +448,17 @@ class Stats
         
         $monthly = G::$db->to_array();
         $monthly = [
-            'count' => intval($monthly[0]['count(ID)']),
-            'totalSize' => intval($monthly[0]['sum(Size)']),
-            'fileCount' => intval($monthly[0]['sum(FileCount)']),
+            "count" => intval($monthly[0]["count(ID)"]),
+            "totalSize" => intval($monthly[0]["sum(Size)"]),
+            "fileCount" => intval($monthly[0]["sum(FileCount)"]),
         ];
 
         $economyOverTime = [
-            'torrents' => $torrents,
-            'users' => $users,
-            'daily' => $daily,
-            'weekly' => $weekly,
-            'monthly' => $monthly,
+            "torrents" => $torrents,
+            "users" => $users,
+            "daily" => $daily,
+            "weekly" => $weekly,
+            "monthly" => $monthly,
         ];
 
         G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $economyOverTime, $this->cacheDuration);
@@ -484,22 +484,22 @@ class Stats
 
         # user count: before $torrents work
         $users = [
-            'count' => intval($torrents[0]['count(ID)']),
+            "count" => intval($torrents[0]["count(ID)"]),
         ];
         
         $torrents = [
-            'totalUpload' => intval($torrents[0]['sum(Uploaded)']),
-            'totalDownload' => intval($torrents[0]['sum(Downloaded)']),
+            "totalUpload" => intval($torrents[0]["sum(Uploaded)"]),
+            "totalDownload" => intval($torrents[0]["sum(Downloaded)"]),
 
         ];
 
         # secondary stats: averages
-        $users['averageRatio'] = Format::get_ratio($torrents['totalUpload'], $torrents['totalDownload']);
-        $users['totalBuffer'] = $torrents['totalUpload'] - $torrents['totalDownload'];
-        $users['averageBuffer'] = ($torrents['totalUpload'] - $torrents['totalDownload']) / $users['count'];
+        $users["averageRatio"] = Format::get_ratio($torrents["totalUpload"], $torrents["totalDownload"]);
+        $users["totalBuffer"] = $torrents["totalUpload"] - $torrents["totalDownload"];
+        $users["averageBuffer"] = ($torrents["totalUpload"] - $torrents["totalDownload"]) / $users["count"];
 
-        $torrents['averageUpload'] = $torrents['totalUpload'] / $users['count'];
-        $torrents['averageDownload'] = $torrents['totalDownload'] / $users['count'];
+        $torrents["averageUpload"] = $torrents["totalUpload"] / $users["count"];
+        $torrents["averageDownload"] = $torrents["totalDownload"] / $users["count"];
 
         # request bounty
         G::$db->prepared_query("
@@ -516,8 +516,8 @@ class Stats
 
         $availableBounty = G::$db->to_array();
         $requests = [
-            'totalBounty' => intval($totalBounty[0]['sum(Bounty)']),
-            'availableBounty' => intval($availableBounty[0]['sum(requests_votes.Bounty)']),
+            "totalBounty" => intval($totalBounty[0]["sum(Bounty)"]),
+            "availableBounty" => intval($availableBounty[0]["sum(requests_votes.Bounty)"]),
         ];
 
         # total snatches for torrents that still exist
@@ -534,14 +534,14 @@ class Stats
 
         $totalSnatches = G::$db->to_array();
         $snatches = [
-            'active' => intval($activeSnatches[0]['sum(Snatched)']),
-            'torrents' => intval($activeSnatches[0]['count(ID)']),
-            'total' => intval($totalSnatches[0]['count(uid)']),
+            "active" => intval($activeSnatches[0]["sum(Snatched)"]),
+            "torrents" => intval($activeSnatches[0]["count(ID)"]),
+            "total" => intval($totalSnatches[0]["count(uid)"]),
         ];
 
         # move snatches->torrents to torrents->count
-        $torrents['count'] = $snatches['torrents'];
-        unset($snatches['torrents']);
+        $torrents["count"] = $snatches["torrents"];
+        unset($snatches["torrents"]);
 
         # seeders
         G::$db->prepared_query("
@@ -557,20 +557,20 @@ class Stats
 
         $leechers = G::$db->to_array();
         $peers = [
-            'seeders' => intval($seeders[0]['count(fid)']),
-            'leechers' => intval($leechers[0]['count(fid)']),
-            'total' => null,
+            "seeders" => intval($seeders[0]["count(fid)"]),
+            "leechers" => intval($leechers[0]["count(fid)"]),
+            "total" => null,
         ];
 
         # secondary stats: averages
-        $peers['total'] = $peers['seeders'] + $peers['leechers'];
+        $peers["total"] = $peers["seeders"] + $peers["leechers"];
 
         $trackerEconomy = [
-            'torrents' => $torrents,
-            'users' => $users,
-            'requests' => $requests,
-            'snatches' => $snatches,
-            'peers' => $peers,
+            "torrents" => $torrents,
+            "users" => $users,
+            "requests" => $requests,
+            "snatches" => $snatches,
+            "peers" => $peers,
         ];
 
         G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $trackerEconomy, $this->cacheDuration);
@@ -626,7 +626,7 @@ class Stats
             $deletes[$k] = intval($v);
         }
 
-        $torrentsTimeline = ['uploads' => $uploads, 'deletes' => $deletes];
+        $torrentsTimeline = ["uploads" => $uploads, "deletes" => $deletes];
 
         G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $torrentsTimeline, $this->cacheDuration);
         return $torrentsTimeline;
@@ -669,7 +669,7 @@ class Stats
             $disables[$k] = intval($v);
         }
 
-        $usersTimeline = ['registrations' => $registrations, 'disables' => $disables];
+        $usersTimeline = ["registrations" => $registrations, "disables" => $disables];
 
         G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $usersTimeline, $this->cacheDuration);
         return $usersTimeline;
@@ -753,37 +753,37 @@ class Stats
 
         $databaseSpecifics = G::$db->to_array();
         $databaseSpecifics = [
-            'name' => array_column($databaseSpecifics, 'Name'),
-            'rows' => array_column($databaseSpecifics, 'Rows'),
-            'dataSize' => array_column($databaseSpecifics, 'Data_length'),
-            'indexSize' => array_column($databaseSpecifics, 'Index_length'),
+            "name" => array_column($databaseSpecifics, "Name"),
+            "rows" => array_column($databaseSpecifics, "Rows"),
+            "dataSize" => array_column($databaseSpecifics, "Data_length"),
+            "indexSize" => array_column($databaseSpecifics, "Index_length"),
         ];
 
         # unset empty rows
-        foreach ($databaseSpecifics['rows'] as $k => $v) {
+        foreach ($databaseSpecifics["rows"] as $k => $v) {
             if (empty($v)) {
-                unset($databaseSpecifics['name'][$k]);
-                unset($databaseSpecifics['rows'][$k]);
-                unset($databaseSpecifics['dataSize'][$k]);
-                unset($databaseSpecifics['indexSize'][$k]);
+                unset($databaseSpecifics["name"][$k]);
+                unset($databaseSpecifics["rows"][$k]);
+                unset($databaseSpecifics["dataSize"][$k]);
+                unset($databaseSpecifics["indexSize"][$k]);
             }
         }
 
         # dataSize: B => MiB
-        foreach ($databaseSpecifics['dataSize'] as $k => $v) {
-            $databaseSpecifics['dataSize'][$k] = ($v / 1024 / 1024) + ($databaseSpecifics['indexSize'][$k] / 1024 / 1024);
-            unset($databaseSpecifics['indexSize'][$k]);
+        foreach ($databaseSpecifics["dataSize"] as $k => $v) {
+            $databaseSpecifics["dataSize"][$k] = ($v / 1024 / 1024) + ($databaseSpecifics["indexSize"][$k] / 1024 / 1024);
+            unset($databaseSpecifics["indexSize"][$k]);
         }
 
         # cast to int
-        foreach ($databaseSpecifics['rows'] as $k => $v) {
-            $databaseSpecifics['rows'][$k] = intval($v);
+        foreach ($databaseSpecifics["rows"] as $k => $v) {
+            $databaseSpecifics["rows"][$k] = intval($v);
         }
 
         # unset unused
-        unset($databaseSpecifics['indexSize']);
+        unset($databaseSpecifics["indexSize"]);
 
         G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $databaseSpecifics, $this->cacheDuration);
         return $databaseSpecifics;
     }
-}
+} # class

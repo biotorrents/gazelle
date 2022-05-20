@@ -3,6 +3,8 @@ declare(strict_types = 1);
 
 /**
  * G class
+ * 
+ * THIS IS GOING AWAY
  *
  * A stopgap until the main app is a singleton.
  * Holds the database, cache, and user globals.
