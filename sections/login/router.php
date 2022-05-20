@@ -330,7 +330,7 @@ else {
                             }
 
                             if (sizeof($U2FRegs) == 0 || !isset($U2FErr)) {
-                                $SessionID = Users::make_secret(64);
+                                $SessionID = Text::random(64);
                                 Http::setCookie(['session' => $SessionID]);
                                 Http::setCookie(['userid' => $UserID]);
 

@@ -2,15 +2,16 @@
 declare(strict_types=1);
 
 /**
- * PDO
+ * Database
  *
  * The blunt singleton, for your procedural code.
  * @see https://phpdelusions.net/pdo/pdo_wrapper
  */
+
 class Database extends PDO
 {
     # instance
-    private $pdo;
+    private static $instance;
 
     # hash algo for cache keys
     private $algorithm = "sha3-512";
@@ -21,8 +22,85 @@ class Database extends PDO
 
 
     /**
-     * __construct
+     * __functions
      */
+    public function __construct()
+    {
+        return;
+    }
+
+    public function __clone()
+    {
+        return trigger_error(
+            "clone not allowed",
+            E_USER_ERROR
+        );
+    }
+
+    public function __wakeup()
+    {
+        return trigger_error(
+            "wakeup not allowed",
+            E_USER_ERROR
+        );
+    }
+
+
+    /**
+     * go
+     */
+    public static function go($options = [])
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+            self::$instance->factory($options = []);
+        }
+
+        return self::$instance;
+    }
+
+
+    /**
+     * factory
+     */
+    private function factory($options = [])
+    {
+        $app = App::go();
+
+        # vars
+        $host = $app->env->getPriv("SQL_HOST");
+        $port = $app->env->getPriv("SQL_PORT");
+
+        $username = $app->env->getPriv("SQL_USER");
+        $password = $app->env->getPriv("SQL_PASS");
+
+        $db = $app->env->getPriv("SQL_DB");
+        $charset = "utf8mb4";
+
+        # defaults
+        $defaultOptions = [
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        ];
+
+        # construct
+        $options = array_replace($defaultOptions, $options);
+        $dsn = "mysql:host={$host};dbname={$db};port={$port};charset={$charset}";
+
+        # do it
+        try {
+            $this->pdo = new PDO($dsn, $username, $password, $options);
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage(), intval($e->getCode()));
+        }
+    }
+
+
+
+    /**
+     * __construct
+     * /
     public function __construct($options = [])
     {
         $app = App::go();
@@ -55,6 +133,7 @@ class Database extends PDO
             throw new PDOException($e->getMessage(), intval($e->getCode()));
         }
     }
+    */
 
 
     /**

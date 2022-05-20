@@ -11,40 +11,34 @@ declare(strict_types=1);
  * The debugging should catch exceptions.
  */
 
-# Quick sanity checks
+# quick sanity checks
 Security::oops();
 
-# Debugging
+# load the app
+$app = App::go();
+$app->debug["messages"]->info("app loaded");
+
+# legacy - GOING AWAY
+$G = G::go();
 $debug = Debug::go();
-$debug["messages"]->info("debug okay");
-
-# Load the config
 $ENV = ENV::go();
-$debug["messages"]->info("config okay");
-
-# Database
 $db = new DB;
-$debug["messages"]->info("database okay");
-
-# Cache
 $cache = new Cache($ENV->getPriv("MEMCACHED_SERVERS"));
-$debug["messages"]->info("cache okay");
 
-# Globals
-# Note: G::go is called twice
-# This is necessary for $user
-G::go();
-$debug["messages"]->info("globals okay");
 
-# Start a buffer
+/** start idiocy */
+
+
+# start a buffer
 ob_start();
 
+
 /**
- * User handling stuff.
- * Needs to be a session class.
+ * user handling stuff
  */
 
-$debug["time"]->startMeasure("users", "user handling");
+$app->debug["time"]->startMeasure("users", "user handling");
+
 
  /**
   * Implement api tokens to use with ajax endpoint
@@ -54,8 +48,14 @@ $debug["time"]->startMeasure("users", "user handling");
   * Date:   Thu Oct 15 00:09:15 2020 +0000
   */
 
-// Set the document we are loading
-$Document = basename(parse_url($_SERVER["SCRIPT_NAME"], PHP_URL_PATH), ".php");
+# set the document we are loading
+$_SERVER["REQUEST_URI"] ??= "";
+if ($_SERVER["REQUEST_URI"] === "/") {
+    $document = "index";
+} else {
+    $regex = "/^\/(\w+)(?:\.php)?.*$/";
+    $document = preg_replace($regex, "$1", $_SERVER["REQUEST_URI"]);
+}
 
 $user = [];
 # temporary 500 error fix
@@ -64,12 +64,12 @@ $SessionID = false;
 $FullToken = null;
 
 // Only allow using the Authorization header for ajax endpoint
-if ($Document === "api") {
+if ($document === "api") {
     $userId = intval(
         substr(
             Crypto::decrypt(
                 base64UrlDecode($FullToken),
-                $ENV->getPriv("ENCKEY")
+                $app->env->getPriv("ENCKEY")
             ),
             32
         )
@@ -78,10 +78,11 @@ if ($Document === "api") {
     $json = new Json();
     $json->checkToken($userId);
 }
-# End OPS API token additions
+# end OPS API token additions
+
 
 /**
- * Session handling and cookies
+ * session handling and cookies
  */
 
 if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
@@ -93,9 +94,9 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
         logout();
     }
 
-    $UserSessions = $cache->get_value("users_sessions_$UserID");
+    $UserSessions = $app->cacheOld->get_value("users_sessions_$UserID");
     if (!is_array($UserSessions)) {
-        $db->prepared_query(
+        $app->dbOld->prepared_query(
             "
         SELECT
           SessionID,
@@ -107,8 +108,8 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
         ORDER BY LastUpdate DESC"
         );
 
-        $UserSessions = $db->to_array("SessionID", MYSQLI_ASSOC);
-        $cache->cache_value("users_sessions_$UserID", $UserSessions, 0);
+        $UserSessions = $app->dbOld->to_array("SessionID", MYSQLI_ASSOC);
+        $app->cacheOld->cache_value("users_sessions_$UserID", $UserSessions, 0);
     }
 
     if (!array_key_exists($SessionID, $UserSessions)) {
@@ -116,15 +117,15 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
     }
 
     // Check if user is enabled
-    $Enabled = $cache->get_value("enabled_".$user["ID"]);
+    $Enabled = $app->cacheOld->get_value("enabled_".$user["ID"]);
     if ($Enabled === false) {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
         SELECT Enabled
           FROM users_main
           WHERE ID = '$user[ID]'");
 
-        list($Enabled) = $db->next_record();
-        $cache->cache_value("enabled_".$user["ID"], $Enabled, 0);
+        list($Enabled) = $app->dbOld->next_record();
+        $app->cacheOld->cache_value("enabled_".$user["ID"], $Enabled, 0);
     }
 
     if ($Enabled === 2) {
@@ -132,15 +133,15 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
     }
 
     // Up/Down stats
-    $UserStats = $cache->get_value("user_stats_".$user["ID"]);
+    $UserStats = $app->cacheOld->get_value("user_stats_".$user["ID"]);
     if (!is_array($UserStats)) {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
         SELECT Uploaded AS BytesUploaded, Downloaded AS BytesDownloaded, RequiredRatio
         FROM users_main
           WHERE ID = '$user[ID]'");
 
-        $UserStats = $db->next_record(MYSQLI_ASSOC);
-        $cache->cache_value("user_stats_".$user["ID"], $UserStats, 3600);
+        $UserStats = $app->dbOld->next_record(MYSQLI_ASSOC);
+        $app->cacheOld->cache_value("user_stats_".$user["ID"], $UserStats, 3600);
     }
 
     // Get info such as username
@@ -161,7 +162,7 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
 
     // Create LoggedUser array
     $user = array_merge($HeavyInfo, $LightInfo, $UserStats);
-    $user["RSS_Auth"] = md5($user["ID"] . $ENV->getPriv("RSS_HASH") . $user["torrent_pass"]);
+    $user["RSS_Auth"] = md5($user["ID"] . $app->env->getPriv("RSS_HASH") . $user["torrent_pass"]);
 
     // $user["RatioWatch"] as a bool to disable things for users on Ratio Watch
     $user["RatioWatch"] = (
@@ -175,11 +176,11 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
     $user["Permissions"]["MaxCollages"] += \Donations::get_personal_collages($user["ID"]);
 
     // Change necessary triggers in external components
-    $cache->CanClear = check_perms("admin_clear_cache");
+    $app->cacheOld->CanClear = check_perms("admin_clear_cache");
 
     // Update LastUpdate every 10 minutes
     if (strtotime($UserSessions[$SessionID]["LastUpdate"]) + 600 < time()) {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
         UPDATE users_main
         SET LastAccess = NOW()
         WHERE ID = '$user[ID]'
@@ -199,36 +200,31 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
         WHERE UserID = '$user[ID]'
         AND SessionID = '".db_string($SessionID)."'";
 
-        $db->prepared_query($SessionQuery);
-        $cache->begin_transaction("users_sessions_$UserID");
-        $cache->delete_row($SessionID);
+        $app->dbOld->prepared_query($SessionQuery);
+        $app->cacheOld->begin_transaction("users_sessions_$UserID");
+        $app->cacheOld->delete_row($SessionID);
 
         $UsersSessionCache = array(
         "SessionID" => $SessionID,
         "IP" => (apcu_exists("DBKEY") ? Crypto::encrypt($_SERVER["REMOTE_ADDR"]) : $UserSessions[$SessionID]["IP"]),
         "LastUpdate" => sqltime() );
 
-        $cache->insert_front($SessionID, $UsersSessionCache);
-        $cache->commit_transaction(0);
+        $app->cacheOld->insert_front($SessionID, $UsersSessionCache);
+        $app->cacheOld->commit_transaction(0);
     }
 
     // Notifications
     if (isset($user["Permissions"]["site_torrents_notify"])) {
-        $user["Notify"] = $cache->get_value("notify_filters_".$user["ID"]);
+        $user["Notify"] = $app->cacheOld->get_value("notify_filters_".$user["ID"]);
         if (!is_array($user["Notify"])) {
-            $db->prepared_query("
+            $app->dbOld->prepared_query("
             SELECT ID, Label
             FROM users_notify_filters
               WHERE UserID = '$user[ID]'");
 
-            $user["Notify"] = $db->to_array("ID");
-            $cache->cache_value("notify_filters_".$user["ID"], $user["Notify"], 2592000);
+            $user["Notify"] = $app->dbOld->to_array("ID");
+            $app->cacheOld->cache_value("notify_filters_".$user["ID"], $user["Notify"], 2592000);
         }
-    }
-
-    // We've never had to disable the wiki privs of anyone.
-    if ($user["DisableWiki"]) {
-        unset($user["Permissions"]["site_edit_wiki"]);
     }
 
     // IP changed
@@ -240,15 +236,15 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
         $CurIP = db_string($user["IP"]);
         $NewIP = db_string($_SERVER["REMOTE_ADDR"]);
 
-        $cache->begin_transaction("user_info_heavy_".$user["ID"]);
-        $cache->update_row(false, array("IP" => Crypto::encrypt($_SERVER["REMOTE_ADDR"])));
-        $cache->commit_transaction(0);
+        $app->cacheOld->begin_transaction("user_info_heavy_".$user["ID"]);
+        $app->cacheOld->update_row(false, array("IP" => Crypto::encrypt($_SERVER["REMOTE_ADDR"])));
+        $app->cacheOld->commit_transaction(0);
     }
 
     // Get stylesheets
-    $Stylesheets = $cache->get_value("stylesheets");
+    $Stylesheets = $app->cacheOld->get_value("stylesheets");
     if (!is_array($Stylesheets)) {
-        $db->prepared_query('
+        $app->dbOld->prepared_query('
         SELECT
           ID,
           LOWER(REPLACE(Name, " ", "_")) AS Name,
@@ -257,8 +253,8 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
           Additions AS ProperAdditions
         FROM stylesheets');
 
-        $Stylesheets = $db->to_array("ID", MYSQLI_BOTH);
-        $cache->cache_value("stylesheets", $Stylesheets, 0);
+        $Stylesheets = $app->dbOld->to_array("ID", MYSQLI_BOTH);
+        $app->cacheOld->cache_value("stylesheets", $Stylesheets, 0);
     }
 
     // todo: Clean up this messy solution
@@ -268,28 +264,18 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
     }
 }
 
-# 2nd G
-G::go();
-
-# Measure all that
-$debug["time"]->stopMeasure("users", "user handling");
+# measure all that
+$app->debug["time"]->stopMeasure("users", "user handling");
 
 
 /**
  * Determine the section to load.
  */
 
-$_SERVER["REQUEST_URI"] ??= "";
-$Document = (
-    $_SERVER["REQUEST_URI"] === "/"
-    ? "index"
-    : basename(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), ".php")
-);
-
 $StripPostKeys = array_fill_keys(array("password", "cur_pass", "new_pass_1", "new_pass_2", "verifypassword", "confirm_password", "ChangePassword", "Password"), true);
-$cache->cache_value("php_" . getmypid(), array(
+$app->cacheOld->cache_value("php_" . getmypid(), array(
   "start" => sqltime(),
-  "document" => $Document,
+  "document" => $document,
   "query" => $_SERVER["QUERY_STRING"] ?? "",
   "get" => $_GET,
   "post" => array_diff_key($_POST, $StripPostKeys)), 600);
@@ -298,22 +284,22 @@ $cache->cache_value("php_" . getmypid(), array(
 define("STAFF_LOCKED", 1);
 
 $AllowedPages = ["staffpm", "api", "locked", "logout", "login"];
-if (isset(G::$user["LockedAccount"]) && !in_array($Document, $AllowedPages)) {
-    require_once "$ENV->SERVER_ROOT/sections/locked/index.php";
+if (isset($app->user["LockedAccount"]) && !in_array($document, $AllowedPages)) {
+    require_once "{$app->env->SERVER_ROOT}/sections/locked/index.php";
 } else {
     # Routing: transition from homebrew to Flight
     # This check is necessary because the codebase is shit
     # Flight enforces strict standards that break most things
-    if (file_exists("$ENV->SERVER_ROOT/sections/$Document/router.php") && str_contains($_SERVER["REQUEST_URI"], ".php")) {
-        require_once "$ENV->SERVER_ROOT/sections/$Document/router.php";
+    if (file_exists("{$app->env->SERVER_ROOT}/sections/$document/router.php")) {
+        require_once "{$app->env->SERVER_ROOT}/sections/$document/router.php";
     } else {
         require_once __DIR__."/router.php";
     }
 }
 
-$debug["messages"]->info("completed module execution");
+$app->debug["messages"]->info("completed module execution");
 
 // Flush to user
 ob_end_flush();
 
-$debug["messages"]->info("set headers and send to user");
+$app->debug["messages"]->info("set headers and send to user");

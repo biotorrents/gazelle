@@ -9,17 +9,22 @@ declare(strict_types = 1);
  * Supersedes G::class and ENV::go().
  * Will eventually kill Misc::class.
  */
+
 class App
 {
     # singleton
-    private static $app = null;
+    private static $instance = null;
 
     # env is special
     public $env = null;
 
     # the rest of the globals
-    public $cache = null;
-    public $db = null;
+    public $cacheNew = null; # new
+    public $cacheOld = null; # old
+
+    public $dbNew = null; # new
+    public $dbOld = null; # old
+
     public $debug = null;
     public $twig = null;
     public $user = null;
@@ -53,28 +58,32 @@ class App
     /**
      * go
      */
-    public static function go()
+    public static function go(array $options = [])
     {
-        if (self::$app === null) {
-            self::$app = new self();
-            self::$app->factory();
+        if (self::$instance === null) {
+            self::$instance = new self();
+            self::$instance->factory($options);
         }
 
-        return self::$app;
+        return self::$instance;
     }
 
 
     /**
      * factory
      */
-    private function factory()
+    private function factory(array $options = [])
     {
         # env is special
         $this->env = ENV::go();
 
         # the rest of the globals
-        $this->cache = new Cache();
-        $this->db = new Database();
+        #$this->cacheNew = CacheRedis::go(); # new
+        $this->cacheOld = new Cache(); # old
+
+        $this->dbNew = Database::go(); # new
+        $this->dbOld = new DB(); # old
+
         $this->debug = Debug::go();
         $this->twig = Twig::go();
         $this->user =& $user; # todo
@@ -95,11 +104,16 @@ class App
     {
         $app = self::go();
 
+        # check if email is enabled
+        if (!$app->env->FEATURE_SEND_EMAIL) {
+            return false;
+        }
+
         # wrap to 70 characters for RFC compliance
         # https://www.php.net/manual/en/function.mail.php
         $body = wordwrap($body, 70, "\r\n");
 
-        $secret = Users::make_secret();
+        $secret = Text::random();
         $headers = [
             "Content-Language" => "en-US",
             "Content-Transfer-Encoding" => "7bit",
@@ -109,9 +123,7 @@ class App
             "Message-ID" => "<{$secret}@{$app->env->SITE_DOMAIN}>",
         ];
 
-        # check if email is enabled
-        if ($app->env->FEATURE_SEND_EMAIL) {
-            mail($to, $subject, $body, $headers);
-        }
+        # send the email
+        mail($to, $subject, $body, $headers);
     }
-}
+} # class

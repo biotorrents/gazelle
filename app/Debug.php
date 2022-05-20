@@ -5,7 +5,7 @@ use DebugBar\DataCollector\DataCollector;
 use DebugBar\DataCollector\Renderable;
 
 /**
- * Debug class
+ * Debug
  *
  * Converted to a singleton class.
  * Uses DebugBar to handle event tracking.
@@ -13,10 +13,11 @@ use DebugBar\DataCollector\Renderable;
  * @see http://phpdebugbar.com/docs/
  */
 
-class Debug
+class Debug # extends DebugBar\StandardDebugBar
 {
     # singleton
-    private static $debug = null;
+    private static $instance = null;
+
 
     /**
      * __functions
@@ -46,40 +47,49 @@ class Debug
     /**
      * go
      */
-    public static function go()
+    public static function go(array $options = [])
     {
-        return (self::$debug === null)
-            ? self::$debug = Debug::factory()
-            : self::$debug;
+        return (self::$instance === null)
+            ? self::$instance = self::factory()
+            : self::$instance;
+
+        /*
+        if (self::$instance === null) {
+            self::$instance = new self();
+            self::$instance->factory($options);
+        }
+
+        return self::$instance;
+        */
     }
 
 
     /**
      * factory
      */
-    private static function factory()
+    private static function factory(array $options = [])
     {
-        $ENV = ENV::go();
+        $app = App::go();
 
         # https://stackify.com/display-php-errors/
-        if ($ENV->DEV) {
+        if ($app->env->DEV) {
             ini_set("display_errors", 1);
             ini_set("display_startup_errors", 1);
             error_reporting(E_ALL);
         }
 
-        $debugBar = new \DebugBar\StandardDebugBar();
+        $debugBar = new DebugBar\StandardDebugBar();
 
-        # Custom collectors
+        # custom collectors
         $debugBar->addCollector(new DatabaseCollector());
         $debugBar->addCollector(new FilesCollector());
 
-        # http://phpdebugbar.com/docs/bridge-collectors.html#twig
         /*
+        # http://phpdebugbar.com/docs/bridge-collectors.html#twig
         $debugBar->addCollector(
-            new \DebugBar\Bridge\TwigProfileCollector(
-                \Twig::go(),
-                \DebugBar\DataCollector\TimeDataCollector
+            new DebugBar\Bridge\TwigProfileCollector(
+                $app->twig,
+                DebugBar\DataCollector\TimeDataCollector
             )
         );
         */
@@ -102,7 +112,7 @@ class Debug
     {
         /*
           $BackTrace = debug_backtrace();
-          $ID = Users::make_secret(5);
+          $ID = Text::random(5);
 
           if (!$VarName) {
               $VarName = $ID;
@@ -301,7 +311,7 @@ class Debug
 <?php
 */
     }
-}
+} # class
 
 
 /**
@@ -368,7 +378,7 @@ class FilesCollector extends DataCollector implements Renderable
     {
         return "files";
     }
-}
+} # class
 
 
 /**
@@ -380,6 +390,10 @@ class FilesCollector extends DataCollector implements Renderable
 
 class DatabaseCollector extends DataCollector implements Renderable
 {
+    # collectors
+    private $messages = [];
+
+
     /**
      * collect
      */
@@ -473,4 +487,4 @@ class DatabaseCollector extends DataCollector implements Renderable
     {
         return "database";
     }
-}
+} # class

@@ -204,4 +204,32 @@ class Text
             )
         );
     }
-}
+
+
+    /**
+     * random
+     *
+     * @param int $length
+     * @return string Random alphanumeric string
+     */
+    public static function random(int $length = 32): string
+    {
+        # strrev to obscure bcrypt format
+        $secret = strrev(
+            password_hash(
+                random_bytes(256),
+                PASSWORD_DEFAULT
+            )
+        );
+        
+        return substr(
+            preg_filter(
+                "/[^a-z0-9]/i",
+                "",
+                $secret
+            ),
+            1,
+            $length
+        );
+    }
+} # class

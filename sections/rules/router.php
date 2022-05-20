@@ -8,29 +8,27 @@ declare(strict_types=1);
 
 # golden
 Flight::route("/rules", function () {
-    $ENV = ENV::go();
-    $twig = Twig::go();
+    $app = App::go();
 
     $text = Text::parse(
-        file_get_contents("{$ENV->SERVER_ROOT}/templates/rules/golden.md")
+        file_get_contents("{$app->env->SERVER_ROOT}/templates/rules/golden.md")
     );
 
     View::header("Golden rules");
-    echo $twig->render("rules/rules.twig", ["text" => $text]);
+    echo $app->twig->render("rules/rules.twig", ["text" => $text]);
     View::footer();
 });
 
 # chat
 Flight::route("/rules/chat", function () {
-    $ENV = ENV::go();
-    $twig = Twig::go();
+    $app = App::go();
 
     $text = Text::parse(
-        file_get_contents("{$ENV->SERVER_ROOT}/templates/rules/chat.md")
+        file_get_contents("{$app->env->SERVER_ROOT}/templates/rules/chat.md")
     );
 
     View::header("Chat rules");
-    echo $twig->render("rules/rules.twig", ["text" => $text]);
+    echo $app->twig->render("rules/rules.twig", ["text" => $text]);
     View::footer();
 });
 
@@ -41,16 +39,15 @@ Flight::route("/rules/clients", function () {
 
 # collages
 Flight::route("/rules/collages", function () {
-    $ENV = ENV::go();
-    $twig = Twig::go();
+    $app = App::go();
 
     $text = Text::parse(
-        file_get_contents("{$ENV->SERVER_ROOT}/templates/rules/collages.md"),
+        file_get_contents("{$app->env->SERVER_ROOT}/templates/rules/collages.md"),
         false
     );
 
     View::header("Collection rules");
-    echo $twig->render("rules/rules.twig", ["text" => $text]);
+    echo $app->twig->render("rules/rules.twig", ["text" => $text]);
     View::footer();
 });
 
@@ -60,29 +57,27 @@ Flight::route("/rules/ratio", function () {
 
 # requests
 Flight::route("/rules/requests", function () {
-    $ENV = ENV::go();
-    $twig = Twig::go();
+    $app = App::go();
     
     $text = Text::parse(
-        file_get_contents("{$ENV->SERVER_ROOT}/templates/rules/requests.md")
+        file_get_contents("{$app->env->SERVER_ROOT}/templates/rules/requests.md")
     );
     
     View::header("Request rules");
-    echo $twig->render("rules/rules.twig", ["text" => $text]);
+    echo $app->twig->render("rules/rules.twig", ["text" => $text]);
     View::footer();
 });
 
 # tags
 Flight::route("/rules/tags", function () {
-    $ENV = ENV::go();
-    $twig = Twig::go();
+    $app = App::go();
     
     $text = Text::parse(
-        file_get_contents("{$ENV->SERVER_ROOT}/templates/rules/tags.md")
+        file_get_contents("{$app->env->SERVER_ROOT}/templates/rules/tags.md")
     );
     
     View::header("Tagging rules");
-    echo $twig->render("rules/rules.twig", ["text" => $text]);
+    echo $app->twig->render("rules/rules.twig", ["text" => $text]);
     View::footer();
 });
 

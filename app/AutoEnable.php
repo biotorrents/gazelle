@@ -194,7 +194,7 @@ EOT;
 
                 if ($Status === self::APPROVED) {
                     // Generate token
-                    $Token = db_string(Users::make_secret());
+                    $Token = db_string(Text::random());
                     G::$db->query("
                     UPDATE
                       `users_enable_requests`
@@ -211,7 +211,7 @@ EOT;
                 // Send email
                 $Subject = "Your enable request for $ENV->SITE_NAME has been ";
                 $Subject .= ($Status === self::APPROVED) ? 'approved' : 'denied';
-                Misc::email($Email, $Subject, $TPL->get());
+                App::email($Email, $Subject, $TPL->get());
             }
         } else {
             foreach ($Results as $Result) {

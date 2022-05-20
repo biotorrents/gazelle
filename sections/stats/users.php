@@ -1,13 +1,14 @@
 <?php
 declare(strict_types=1);
 
+$app = App::go();
 $stats = new Stats();
-$twig = Twig::go();
 
 
 /**
- * Plausible
+ * plausible
  */
+
 $realtime = $stats->realtime();
 #!d($realtime);
 
@@ -29,9 +30,11 @@ $devices = $stats->devices();
 $locations = $stats->locations();
 #!d($locations);
 
+
 /**
- * Database
+ * database
  */
+
 $usersTimeline = $stats->usersTimeline();
 #!d($usersTimeline);
 
@@ -39,23 +42,27 @@ $classDistribution = $stats->classDistribution();
 #!d($classDistribution);
 
 
-View::header('Detailed user statistics', 'vendor/chart.min,vendor/chartjs-chart-graph.min');
+/**
+ * view
+ */
 
-echo $twig->render(
-    'stats/users.twig',
+View::header("Detailed user statistics", "vendor/chart.min,vendor/chartjs-chart-graph.min");
+
+echo $app->twig->render(
+    "stats/users.twig",
     [
-        # Plausible
-        'realtime' => $realtime,
-        'overview' => $overview,
-        'overTime' => $overTime,
-        'topPages' => $topPages,
-        'sources' => $sources,
-        'devices' => $devices,
-        'locations' => $locations,
+        # plausible
+        "realtime" => $realtime,
+        "overview" => $overview,
+        "overTime" => $overTime,
+        "topPages" => $topPages,
+        "sources" => $sources,
+        "devices" => $devices,
+        "locations" => $locations,
 
-        # Database
-        'usersTimeline' => $usersTimeline,
-        'classDistribution' => $classDistribution,
+        # database
+        "usersTimeline" => $usersTimeline,
+        "classDistribution" => $classDistribution,
     ]
 );
 

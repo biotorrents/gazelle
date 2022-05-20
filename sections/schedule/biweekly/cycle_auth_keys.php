@@ -8,10 +8,10 @@ SET
   `AuthKey` =
     MD5(
       CONCAT(
-        `AuthKey`, RAND(), '".Users::make_secret()."',
+        `AuthKey`, RAND(), '".Text::random()."',
         SHA1(
           CONCAT(
-            RAND(), RAND(), '".Users::make_secret()."'
+            RAND(), RAND(), '".Text::random()."'
           )
         )
       )

@@ -4,52 +4,6 @@
 class Misc
 {
     /**
-     * email
-     * THIS IS GOING AWAY
-     *
-     * @param string $to
-     * @param string $subject
-     * @param string $body
-     */
-    public static function email(string $to, string $subject, string $body)
-    {
-        $ENV = ENV::go();
-
-        # Wrap to 70 characters for RFC compliance
-        # https://www.php.net/manual/en/function.mail.php
-        $body = wordwrap($body, 70, "\r\n");
-
-        $secret = Users::make_secret();
-        $headers = [
-            'Content-Language' => 'en-US',
-            'Content-Transfer-Encoding' => '7bit',
-            'Content-Type' => 'text/plain; charset=UTF-8; format=flowed',
-            'From' => "{$ENV->SITE_NAME} <gazelle@{$ENV->SITE_DOMAIN}>",
-            'MIME-Version' => '1.0',
-            'Message-ID' => "<{$secret}@{$ENV->SITE_DOMAIN}>",
-        ];
-
-        // Check if email is enabled
-        if ($ENV->FEATURE_SEND_EMAIL) {
-            mail($to, $subject, $body, $headers);
-        }
-    }
-
-
-    /**
-     * Sanitize a string to be allowed as a filename.
-     *
-     * @param string $EscapeStr the string to escape
-     * @return the string with all banned characters removed.
-     */
-    public static function file_string($EscapeStr)
-    {
-        $ENV = ENV::go();
-        return str_replace($ENV->BAD_CHARS, '', $EscapeStr);
-    }
-
-
-    /**
      * Sends a PM from $FromId to $ToId.
      *
      * @param string $ToID ID of user to send PM to. If $ToID is an array and $ConvID is empty, a message will be sent to multiple users.
@@ -496,27 +450,4 @@ class Misc
     {
         return strpos(substr($Data, 0, 10), ':') !== false;
     }
-
-    /**
-     * display_recommend
-     */
-    public static function display_recommend($ID, $Type, $Hide = true)
-    {
-        if ($Hide) {
-            $Hide = ' style="display: none;"';
-        } ?>
-<div id="recommendation_div" data-id="<?=$ID?>"
-    data-type="<?=$Type?>" <?=$Hide?> class="center">
-    <div style="display: inline-block;">
-        <strong>Recommend to:</strong>
-        <select id="friend" name="friend">
-            <option value="0" selected="selected">Choose friend</option>
-        </select>
-        <input type="text" id="recommendation_note" placeholder="Add note..." />
-        <button id="send_recommendation" disabled="disabled">Send</button>
-    </div>
-    <div class="new" id="recommendation_status"><br /></div>
-</div>
-<?php
-    }
-}
+} # class

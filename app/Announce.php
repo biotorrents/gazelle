@@ -64,10 +64,10 @@ class Announce
      */
     public static function irc(string $message, array $channels = [])
     {
-        $ENV = ENV::go();
+        $app = App::go();
 
         # check if IRC is enabled
-        if (!$ENV->ANNOUNCE_IRC) {
+        if (!$app->env->ANNOUNCE_IRC) {
             return false;
         }
 
@@ -108,12 +108,12 @@ class Announce
      *
      * Make an RSS feed entry.
      */
-    public static function rss()
+    public static function rss(string $message)
     {
-        $ENV = ENV::go();
+        $app = App::go();
 
         # check if RSS is enabled
-        if (!$ENV->ANNOUNCE_RSS) {
+        if (!$app->env->ANNOUNCE_RSS) {
             return false;
         }
 
@@ -133,11 +133,11 @@ class Announce
      */
     public static function slack(string $message, array $channels = [])
     {
-        $ENV = ENV::go();
+        $app = App::go();
 
         # check if slack is enabled
-        if (!$ENV->ANNOUNCE_SLACK) {
-            #return false;
+        if (!$app->env->ANNOUNCE_SLACK) {
+            return false;
         }
 
         # set default channels
@@ -146,7 +146,7 @@ class Announce
         }
 
         # webhooks must remain private
-        $webhooks = $ENV->getPriv("SLACK_WEBHOOKS");
+        $webhooks = $app->env->getPriv("SLACK_WEBHOOKS");
         foreach ($channels as $channel) {
             try {
                 # set up
@@ -166,24 +166,6 @@ class Announce
                 !d($e->getMessage());
             }
         }
-
-        /*
-        $token = $ENV->getPriv("SLACK_TOKEN");
-        $client = JoliCode\Slack\ClientFactory::create($token);
-        $message = Text::esc($message);
-
-        try {
-            # requires token to have the scope "chat:write"
-            $client->chatPostMessage([
-                "username" => self::$slackName,
-                "channel" => self::$slackChannel,
-                "text" => $message,
-            ]);
-        } catch (JoliCode\Slack\Exception\SlackErrorResponse $e) {
-            Text::figlet("slack failure", "red");
-            !d($e->getMessage());
-        }
-        */
     }
 
 
@@ -192,12 +174,12 @@ class Announce
      *
      * todo
      */
-    public static function twitter()
+    public static function twitter(string $message)
     {
-        $ENV = ENV::go();
+        $app = App::go();
 
         # check if twitter is enabled
-        if (!$ENV->ANNOUNCE_TWITTER) {
+        if (!$app->env->ANNOUNCE_TWITTER) {
             return false;
         }
         
@@ -208,4 +190,4 @@ class Announce
             !d($e->getMessage());
         }
     }
-}
+} # class

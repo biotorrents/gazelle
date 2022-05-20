@@ -101,7 +101,7 @@ if (!empty($_REQUEST['confirm'])) {
         }
 
         if (!$Err) {
-            $torrent_pass = Users::make_secret();
+            $torrent_pass = Text::random();
 
             // Previously SELECT COUNT(ID) FROM users_main, which is a lot slower
             $db->query("
@@ -156,7 +156,7 @@ if (!empty($_REQUEST['confirm'])) {
         FROM stylesheets
         WHERE `Default` = '1'");
             list($StyleID) = $db->next_record();
-            $AuthKey = Users::make_secret();
+            $AuthKey = Text::random();
 
             if ($InviteReason !== '') {
                 $InviteReason = db_string(sqltime()." - $InviteReason");
@@ -251,7 +251,7 @@ if (!empty($_REQUEST['confirm'])) {
             $TPL->set('SITE_NAME', $ENV->SITE_NAME);
             $TPL->set('SITE_DOMAIN', SITE_DOMAIN);
 
-            Misc::email($_REQUEST['email'], "New account confirmation at $ENV->SITE_NAME", $TPL->get());
+            App::email($_REQUEST['email'], "New account confirmation at $ENV->SITE_NAME", $TPL->get());
             Tracker::update_tracker('add_user', array('id' => $UserID, 'passkey' => $torrent_pass));
             $Sent = 1;
         }

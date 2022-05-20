@@ -705,7 +705,7 @@ if ($EnableUser != $Cur['Enabled'] && check_perms('users_disable_users')) {
 }
 
 if ($ResetPasskey == 1 && check_perms('users_edit_reset_keys')) {
-    $Passkey = db_string(Users::make_secret());
+    $Passkey = db_string(Text::random());
     $UpdateSet[] = "torrent_pass = '$Passkey'";
     $EditSummary[] = 'passkey reset';
     $HeavyUpdates['torrent_pass'] = $Passkey;
@@ -716,7 +716,7 @@ if ($ResetPasskey == 1 && check_perms('users_edit_reset_keys')) {
 }
 
 if ($ResetAuthkey == 1 && check_perms('users_edit_reset_keys')) {
-    $Authkey = db_string(Users::make_secret());
+    $Authkey = db_string(Text::random());
     $UpdateSet[] = "AuthKey = '$Authkey'";
     $EditSummary[] = 'authkey reset';
     $HeavyUpdates['AuthKey'] = $Authkey;
@@ -724,7 +724,7 @@ if ($ResetAuthkey == 1 && check_perms('users_edit_reset_keys')) {
 
 if ($SendHackedMail && check_perms('users_disable_any')) {
     $EditSummary[] = "hacked account email sent to $HackedEmail";
-    Misc::email($HackedEmail, "Your $ENV->SITE_NAME account", "Your $ENV->SITE_NAME account appears to have been compromised. As a security measure, we have disabled your account. To resolve this, please visit us on Slack.");
+    App::email($HackedEmail, "Your $ENV->SITE_NAME account", "Your $ENV->SITE_NAME account appears to have been compromised. As a security measure, we have disabled your account. To resolve this, please visit us on Slack.");
 }
 
 if ($MergeStatsFrom && check_perms('users_edit_ratio')) {

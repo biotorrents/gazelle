@@ -1,10 +1,14 @@
 <?php
 declare(strict_types=1);
 
+/**
+ * Crypto
+ */
+
 class Crypto
 {
     # databse crypto cipher
-    private static $cipher = 'aes-256-cbc';
+    private static $cipher = "aes-256-cbc";
 
 
     /**
@@ -17,22 +21,22 @@ class Crypto
      */
     public static function encrypt(string $plaintext): string|bool
     {
-        if (apcu_exists('DBKEY')) {
-            $iv_size = openssl_cipher_iv_length(self::$cipher);
-            $iv = openssl_random_pseudo_bytes($iv_size);
-
-            return base64_encode(
-                $iv . openssl_encrypt(
-                    $plaintext,
-                    self::$cipher,
-                    apcu_fetch('DBKEY'),
-                    OPENSSL_RAW_DATA,
-                    $iv
-                )
-            );
-        } else {
+        if (!apcu_exists("DBKEY")) {
             return false;
         }
+
+        $iv_size = openssl_cipher_iv_length(self::$cipher);
+        $iv = openssl_random_pseudo_bytes($iv_size);
+
+        return base64_encode(
+            $iv . openssl_encrypt(
+                $plaintext,
+                self::$cipher,
+                apcu_fetch("DBKEY"),
+                OPENSSL_RAW_DATA,
+                $iv
+            )
+        );
     }
 
 
@@ -46,20 +50,20 @@ class Crypto
      */
     public static function decrypt(string $ciphertext): string|bool
     {
-        if (apcu_exists('DBKEY')) {
-            $iv_size = openssl_cipher_iv_length(self::$cipher);
-            $iv = substr(base64_decode($ciphertext), 0, $iv_size);
-            $ciphertext = substr(base64_decode($ciphertext), $iv_size);
-
-            return openssl_decrypt(
-                $ciphertext,
-                self::$cipher,
-                apcu_fetch('DBKEY'),
-                OPENSSL_RAW_DATA,
-                $iv
-            );
-        } else {
+        if (!apcu_exists("DBKEY")) {
             return false;
         }
+
+        $iv_size = openssl_cipher_iv_length(self::$cipher);
+        $iv = substr(base64_decode($ciphertext), 0, $iv_size);
+        $ciphertext = substr(base64_decode($ciphertext), $iv_size);
+
+        return openssl_decrypt(
+            $ciphertext,
+            self::$cipher,
+            apcu_fetch("DBKEY"),
+            OPENSSL_RAW_DATA,
+            $iv
+        );
     }
-}
+} # class

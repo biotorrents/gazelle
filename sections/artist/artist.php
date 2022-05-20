@@ -580,7 +580,6 @@ if (check_perms('site_torrents_notify')) {
       <?php } ?>
     </div>
   </div>
-  <?php /* Misc::display_recommend($ArtistID, "artist"); */ ?>
   <div class="sidebar one-third column">
     <?php if ($Image) { ?>
     <div class="box box_image">

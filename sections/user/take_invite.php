@@ -80,7 +80,7 @@ foreach ($Emails as $CurEmail) {
             }
         }
     }
-    $InviteKey = db_string(Users::make_secret());
+    $InviteKey = db_string(Text::random());
 
     $DisabledChan = DISABLED_CHAN;
     $IRCServer = BOT_SERVER;
@@ -118,7 +118,7 @@ EOT;
         $cache->commit_transaction(0);
     }
 
-    Misc::email($CurEmail, "You have been invited to $ENV->SITE_NAME", $Message);
+    App::email($CurEmail, "You have been invited to $ENV->SITE_NAME", $Message);
 }
 
 Http::redirect("user.php?action=invite");

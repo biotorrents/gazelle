@@ -17,27 +17,27 @@ class Users
      */
     public static function get_classes()
     {
-        $debug = Debug::go();
+        $app = App::go();
 
         // Get permissions
-        list($Classes, $ClassLevels) = G::$cache->get_value('classes');
+        list($Classes, $ClassLevels) = $app->cacheOld->get_value('classes');
         if (!$Classes || !$ClassLevels) {
-            $QueryID = G::$db->get_query_id();
+            $QueryID = $app->dbOld->get_query_id();
 
-            G::$db->query('
+            $app->dbOld->query('
             SELECT `ID`, `Name`, `Abbreviation`, `Level`, `Secondary`
             FROM `permissions`
             ORDER BY `Level`
             ');
 
-            $Classes = G::$db->to_array('ID');
-            $ClassLevels = G::$db->to_array('Level');
+            $Classes = $app->dbOld->to_array('ID');
+            $ClassLevels = $app->dbOld->to_array('Level');
 
-            G::$db->set_query_id($QueryID);
-            G::$cache->cache_value('classes', [$Classes, $ClassLevels], 0);
+            $app->dbOld->set_query_id($QueryID);
+            $app->cacheOld->cache_value('classes', [$Classes, $ClassLevels], 0);
         }
 
-        $debug['messages']->info('loaded permissions');
+        $app->debug['messages']->info('loaded permissions');
         return [$Classes, $ClassLevels];
     }
 
@@ -65,14 +65,16 @@ class Users
      */
     public static function user_info($UserID)
     {
+        $app = App::go();
+
         global $Classes;
-        $UserInfo = G::$cache->get_value("user_info_".$UserID);
+        $UserInfo = $app->cacheOld->get_value("user_info_".$UserID);
 
         // the !isset($UserInfo['Paranoia']) can be removed after a transition period
         if (empty($UserInfo) || empty($UserInfo['ID']) || empty($UserInfo['Class'])) {
-            $OldQueryID = G::$db->get_query_id();
+            $OldQueryID = $app->dbOld->get_query_id();
 
-            G::$db->query("
+            $app->dbOld->query("
             SELECT
               m.`ID`,
               m.`Username`,
@@ -105,7 +107,7 @@ class Users
               m.`ID`
             ");
 
-            if (!G::$db->has_results()) { // Deleted user, maybe?
+            if (!$app->dbOld->has_results()) { // Deleted user, maybe?
                 $UserInfo = [
                     'ID'           => $UserID,
                     'Username'     => '',
@@ -123,7 +125,7 @@ class Users
                     'Class'        => 0
                 ];
             } else {
-                $UserInfo = G::$db->next_record(MYSQLI_ASSOC, ['Paranoia', 'Title']);
+                $UserInfo = $app->dbOld->next_record(MYSQLI_ASSOC, ['Paranoia', 'Title']);
                 $UserInfo['CatchupTime'] = strtotime($UserInfo['CatchupTime']);
 
                 if (!is_array($UserInfo['Paranoia'])) {
@@ -137,7 +139,7 @@ class Users
                 $UserInfo['Class'] = $Classes[$UserInfo['PermissionID']]['Level'] ?? null;
 
                 # Badges
-                G::$db->query("
+                $app->dbOld->query("
                 SELECT
                   `BadgeID`,
                   `Displayed`
@@ -148,8 +150,8 @@ class Users
                 ");
 
                 $Badges = [];
-                if (G::$db->has_results()) {
-                    while (list($BadgeID, $Displayed) = G::$db->next_record()) {
+                if ($app->dbOld->has_results()) {
+                    while (list($BadgeID, $Displayed) = $app->dbOld->next_record()) {
                         $Badges[$BadgeID] = $Displayed;
                     }
                 }
@@ -175,14 +177,14 @@ class Users
             }
             $UserInfo['EffectiveClass'] = $EffectiveClass;
 
-            G::$cache->cache_value("user_info_$UserID", $UserInfo, 2592000);
-            G::$db->set_query_id($OldQueryID);
+            $app->cacheOld->cache_value("user_info_$UserID", $UserInfo, 2592000);
+            $app->dbOld->set_query_id($OldQueryID);
         }
 
         # Warned?
         if (strtotime($UserInfo['Warned']) < time()) {
             $UserInfo['Warned'] = null;
-            G::$cache->cache_value("user_info_$UserID", $UserInfo, 2592000);
+            $app->cacheOld->cache_value("user_info_$UserID", $UserInfo, 2592000);
         }
 
         return $UserInfo;
@@ -199,10 +201,12 @@ class Users
      */
     public static function user_heavy_info($UserID)
     {
-        $HeavyInfo = G::$cache->get_value("user_info_heavy_$UserID");
+        $app = App::go();
+
+        $HeavyInfo = $app->cacheOld->get_value("user_info_heavy_$UserID");
         if (empty($HeavyInfo)) {
-            $QueryID = G::$db->get_query_id();
-            G::$db->query("
+            $QueryID = $app->dbOld->get_query_id();
+            $app->dbOld->query("
             SELECT
               m.`Invites`,
               m.`torrent_pass`,
@@ -243,7 +247,7 @@ class Users
               m.`ID` = '$UserID'
             ");
 
-            $HeavyInfo = G::$db->next_record(MYSQLI_ASSOC, ['CustomPermissions', 'SiteOptions']);
+            $HeavyInfo = $app->dbOld->next_record(MYSQLI_ASSOC, ['CustomPermissions', 'SiteOptions']);
             $HeavyInfo['CustomPermissions'] = [];
 
             if (!empty($HeavyInfo['CustomPermissions'])) {
@@ -263,13 +267,13 @@ class Users
             }
             unset($HeavyInfo['PermittedForums']);
 
-            G::$db->query("
+            $app->dbOld->query("
             SELECT `PermissionID`
             FROM `users_levels`
               WHERE `UserID` = $UserID
             ");
 
-            $PermIDs = G::$db->collect('PermissionID');
+            $PermIDs = $app->dbOld->collect('PermissionID');
             foreach ($PermIDs as $PermID) {
                 $Perms = Permissions::get_permissions($PermID);
 
@@ -306,8 +310,8 @@ class Users
             }
             unset($HeavyInfo['SiteOptions']);
 
-            G::$db->set_query_id($QueryID);
-            G::$cache->cache_value("user_info_heavy_$UserID", $HeavyInfo, 0);
+            $app->dbOld->set_query_id($QueryID);
+            $app->cacheOld->cache_value("user_info_heavy_$UserID", $HeavyInfo, 0);
         }
         return $HeavyInfo;
     }
@@ -321,6 +325,8 @@ class Users
      */
     public static function update_site_options($UserID, $NewOptions)
     {
+        $app = App::go();
+
         if (!is_number($UserID)) {
             error(0);
         }
@@ -329,10 +335,10 @@ class Users
             return false;
         }
 
-        $QueryID = G::$db->get_query_id();
+        $QueryID = $app->dbOld->get_query_id();
 
         // Get SiteOptions
-        G::$db->query("
+        $app->dbOld->query("
         SELECT
           `SiteOptions`
         FROM
@@ -341,7 +347,7 @@ class Users
           `UserID` = $UserID
         ");
 
-        list($SiteOptions) = G::$db->next_record(MYSQLI_NUM, false);
+        list($SiteOptions) = $app->dbOld->next_record(MYSQLI_NUM, false);
         $SiteOptions = json_decode($SiteOptions, true);
 
         // Get HeavyInfo
@@ -352,59 +358,23 @@ class Users
         $HeavyInfo = array_merge($HeavyInfo, $NewOptions);
 
         // Update DB
-        G::$db->query("
+        $app->dbOld->query("
         UPDATE users_info
         SET SiteOptions = '".db_string(json_encode($SiteOptions, true))."'
           WHERE UserID = $UserID");
-        G::$db->set_query_id($QueryID);
+        $app->dbOld->set_query_id($QueryID);
 
         // Update cache
-        G::$cache->cache_value("user_info_heavy_$UserID", $HeavyInfo, 0);
+        $app->cacheOld->cache_value("user_info_heavy_$UserID", $HeavyInfo, 0);
 
-        // Update G::$user if the options are changed for the current
-        if (G::$user['ID'] == $UserID) {
-            G::$user = array_merge(G::$user, $NewOptions);
-            G::$user['ID'] = $UserID; // We don't want to allow userid switching
+        // Update $app->user if the options are changed for the current
+        if ($app->user['ID'] == $UserID) {
+            $app->user = array_merge($app->user, $NewOptions);
+            $app->user['ID'] = $UserID; // We don't want to allow userid switching
         }
         return true;
     }
 
-    /**
-     * Generate a random string
-     *
-     * @param int $ength
-     * @return string Random alphanumeric string
-     */
-    public static function make_secret(int $length = 32): string
-    {
-        # strrev() to obscure bcrypt format
-        $secret = strrev(
-            password_hash(
-                random_bytes(256),
-                PASSWORD_DEFAULT
-            )
-        );
-        
-        return substr(
-            preg_filter(
-                '/[^a-z0-9]/i',
-                '',
-                $secret
-            ),
-            1,
-            $length
-        );
-        
-        /*
-        $Secret = '';
-        $Chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        for ($i = 0; $i < $Length; $i++) {
-            $Secret .= $Chars[random_int(0, strlen($Chars)-1)];
-        }
-        return str_shuffle($Secret);
-        */
-    }
-    
 
     /**
      * Verify a password against a password hash
@@ -546,7 +516,7 @@ class Users
 
         # Warned?
         $Str .= ($IsWarned && $UserInfo['Warned'])
-          ? '<a href="wiki.php?action=article&amp;name=warnings"'.'><img src="'.STATIC_SERVER.'common/symbols/warned.png" alt="Warned" title="Warned'.(G::$user['ID'] === $UserID ? ' - Expires '.date('Y-m-d H:i', strtotime($UserInfo['Warned']))
+          ? '<a href="wiki.php?action=article&amp;name=warnings"'.'><img src="'.STATIC_SERVER.'common/symbols/warned.png" alt="Warned" title="Warned'.($app->user['ID'] === $UserID ? ' - Expires '.date('Y-m-d H:i', strtotime($UserInfo['Warned']))
           : '').'" class="tooltip" /></a>'
           : '';
 
@@ -610,22 +580,24 @@ class Users
      */
     public static function get_bookmarks($UserID)
     {
+        $app = App::go();
+
         $UserID = (int)$UserID;
 
-        if (($Data = G::$cache->get_value("bookmarks_group_ids_$UserID"))) {
+        if (($Data = $app->cacheOld->get_value("bookmarks_group_ids_$UserID"))) {
             list($GroupIDs, $BookmarkData) = $Data;
         } else {
-            $QueryID = G::$db->get_query_id();
-            G::$db->query("
+            $QueryID = $app->dbOld->get_query_id();
+            $app->dbOld->query("
             SELECT GroupID, Sort, `Time`
             FROM bookmarks_torrents
               WHERE UserID = $UserID
               ORDER BY Sort, `Time` ASC");
 
-            $GroupIDs = G::$db->collect('GroupID');
-            $BookmarkData = G::$db->to_array('GroupID', MYSQLI_ASSOC);
-            G::$db->set_query_id($QueryID);
-            G::$cache->cache_value("bookmarks_group_ids_$UserID", [$GroupIDs, $BookmarkData], 3600);
+            $GroupIDs = $app->dbOld->collect('GroupID');
+            $BookmarkData = $app->dbOld->to_array('GroupID', MYSQLI_ASSOC);
+            $app->dbOld->set_query_id($QueryID);
+            $app->cacheOld->cache_value("bookmarks_group_ids_$UserID", [$GroupIDs, $BookmarkData], 3600);
         }
 
         $TorrentList = Torrents::get_groups($GroupIDs);
@@ -682,7 +654,7 @@ class Users
           // no break
 
         case 3:
-          switch (G::$user['Identicons']) {
+          switch ($app->user['Identicons']) {
           case 0:
             $Type = 'identicon';
             break;
@@ -750,18 +722,18 @@ class Users
     public static function has_autocomplete_enabled($Type, $Output = true)
     {
         $Enabled = false;
-        if (empty(G::$user['AutoComplete'])) {
+        if (empty($app->user['AutoComplete'])) {
             $Enabled = true;
-        } elseif (G::$user['AutoComplete'] !== 1) {
+        } elseif ($app->user['AutoComplete'] !== 1) {
             switch ($Type) {
             case 'search':
-              if (G::$user['AutoComplete'] === 2) {
+              if ($app->user['AutoComplete'] === 2) {
                   $Enabled = true;
               }
               break;
 
             case 'other':
-              if (G::$user['AutoComplete'] !== 2) {
+              if ($app->user['AutoComplete'] !== 2) {
                   $Enabled = true;
               }
               break;
@@ -787,8 +759,10 @@ class Users
      */
     public static function reset_password($UserID, $Username, $Email)
     {
-        $ResetKey = Users::make_secret();
-        G::$db->query("
+        $app = App::go();
+
+        $ResetKey = Text::random();
+        $app->dbOld->query("
         UPDATE users_info
         SET
           ResetKey = '" . db_string($ResetKey) . "',
@@ -801,10 +775,10 @@ class Users
         $TPL->set('Username', $Username);
         $TPL->set('ResetKey', $ResetKey);
         $TPL->set('IP', $_SERVER['REMOTE_ADDR']);
-        $TPL->set('SITE_NAME', $ENV->SITE_NAME);
+        $TPL->set('SITE_NAME', $app->env->SITE_NAME);
         $TPL->set('SITE_DOMAIN', SITE_DOMAIN);
 
-        Misc::email($Email, 'Password reset information for ' . $ENV->SITE_NAME, $TPL->get());
+        App::email($Email, 'Password reset information for ' . $app->env->SITE_NAME, $TPL->get());
     }
 
     /*
@@ -812,30 +786,31 @@ class Users
      */
     public static function get_upload_sources()
     {
-        $ENV = ENV::go();
-        if (!($SourceKey = G::$cache->get_value('source_key_new'))) {
-            G::$cache->cache_value('source_key_new', $SourceKey = [Users::make_secret(), time()]);
+        $app = App::go();
+
+        if (!($SourceKey = $app->cacheOld->get_value('source_key_new'))) {
+            $app->cacheOld->cache_value('source_key_new', $SourceKey = [Text::random(), time()]);
         }
 
-        $SourceKeyOld = G::$cache->get_value('source_key_old');
+        $SourceKeyOld = $app->cacheOld->get_value('source_key_old');
         if ($SourceKey[1]-time() > 3600) {
-            G::$cache->cache_value('source_key_old', $SourceKeyOld = $SourceKey);
-            G::$cache->cache_value('source_key_new', $SourceKey = [Users::make_secret(), time()]);
+            $app->cacheOld->cache_value('source_key_old', $SourceKeyOld = $SourceKey);
+            $app->cacheOld->cache_value('source_key_new', $SourceKey = [Text::random(), time()]);
         }
 
-        G::$db->query(
+        $app->dbOld->query(
             "
         SELECT
           COUNT(`ID`)
         FROM
           `torrents`
         WHERE
-          `UserID` = ".G::$user['ID']
+          `UserID` = ".$app->user['ID']
         );
           
-        list($Uploads) = G::$db->next_record();
-        $Source[0] = $ENV->SITE_NAME.'-'.substr(hash('sha256', $SourceKey[0].G::$user['ID'].$Uploads), 0, 10);
-        $Source[1] = $SourceKeyOld ? $ENV->SITE_NAME.'-'.substr(hash('sha256', $SourceKeyOld[0].G::$user['ID'].$Uploads), 0, 10) : $Source[0];
+        list($Uploads) = $app->dbOld->next_record();
+        $Source[0] = $app->env->SITE_NAME.'-'.substr(hash('sha256', $SourceKey[0].$app->user['ID'].$Uploads), 0, 10);
+        $Source[1] = $SourceKeyOld ? $app->env->SITE_NAME.'-'.substr(hash('sha256', $SourceKeyOld[0].$app->user['ID'].$Uploads), 0, 10) : $Source[0];
         return $Source;
     }
 
@@ -846,6 +821,8 @@ class Users
      */
     public function createApiToken(int $id, string $name, string $key): string
     {
+        $app = App::go();
+
         $suffix = sprintf('%014d', $id);
 
         while (true) {
@@ -860,7 +837,7 @@ class Users
             */
         }
 
-        G::$db->prepared_query("
+        $app->dbOld->prepared_query("
         INSERT INTO `api_user_tokens`
           (`UserID`, `Name`, `Token`)
         VALUES
@@ -871,12 +848,15 @@ class Users
         return $token;
     }
 
+
     /**
      * hasTokenByName
      */
     public function hasTokenByName(int $id, string $name)
     {
-        return G::$db->scalar("
+        $app = App::go();
+
+        return $app->dbOld->scalar("
         SELECT
           1
         FROM
@@ -887,12 +867,15 @@ class Users
         ") === 1;
     }
 
+
     /**
      * revokeApiTokenById
      */
     public function revokeApiTokenById(int $id, int $tokenId): int
     {
-        G::$db->prepared_query("
+        $app = App::go();
+
+        $app->dbOld->prepared_query("
         UPDATE
           `api_user_tokens`
         SET
@@ -903,8 +886,9 @@ class Users
         ");
 
 
-        return G::$db->affected_rows();
+        return $app->dbOld->affected_rows();
     }
+
 
     /**
      * enabledState
@@ -914,9 +898,11 @@ class Users
      */
     protected function enabledState(int $id): int
     {
-        #if ($this->forceCacheFlush || ($enabled = G::$cache->get_value("enabled_$id")) === false) {
-        if ($enabled = G::$cache->get_value("enabled_$id") === false) {
-            G::$db->prepared_query("
+        $app = App::go();
+
+        #if ($this->forceCacheFlush || ($enabled = $app->cacheOld->get_value("enabled_$id")) === false) {
+        if ($enabled = $app->cacheOld->get_value("enabled_$id") === false) {
+            $app->dbOld->prepared_query("
             SELECT
               `Enabled`
             FROM
@@ -925,12 +911,13 @@ class Users
             ");
             
 
-            [$enabled] = G::$db->next_record(MYSQLI_NUM);
-            G::$cache->cache_value('enabled_' . $id, (int) $enabled, 86400 * 3);
+            [$enabled] = $app->dbOld->next_record(MYSQLI_NUM);
+            $app->cacheOld->cache_value('enabled_' . $id, (int) $enabled, 86400 * 3);
         }
 
         return $enabled;
     }
+
 
     /**
      * isUnconfirmed
@@ -940,6 +927,7 @@ class Users
         return Users::enabledState($id) === 0;
     }
 
+
     /**
      * isEnabled
      */
@@ -947,6 +935,7 @@ class Users
     {
         return Users::enabledState($id) === 1;
     }
+
 
     /**
      * isDisabled

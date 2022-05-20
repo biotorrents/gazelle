@@ -21,11 +21,12 @@ declare(strict_types=1);
 class ENV
 {
     # disinstantiates itself
-    private static $ENV = null;
+    private static $instance = null;
 
     # config options receptacles
     private static $priv = []; # passwords, app keys, database, etc.
     private static $pub = []; # site meta, options, resources, etc.
+
 
     /**
      * __functions
@@ -35,7 +36,7 @@ class ENV
     public function __construct()
     {
         # would be expensive, e.g.,
-        #   $ENV = new ENV();
+        #   $env = new ENV();
         return;
     }
 
@@ -77,14 +78,17 @@ class ENV
      */
 
     # calls its self's creation or returns itself
-    public static function go(): ENV
+    public static function go(array $options = []): ENV
     {
-        return (self::$ENV === null)
-            ? self::$ENV = new ENV()
-            : self::$ENV;
+        if (self::$instance === null) {
+            self::$instance = new self();
+            #self::$instance->factory($options);
+        }
+
+        return self::$instance;
     }
 
-    # get
+    # getPriv
     public function getPriv($key)
     {
         return isset(self::$priv[$key])
@@ -92,6 +96,7 @@ class ENV
             : false;
     }
 
+    # getPub
     public function getPub($key)
     {
         return isset(self::$pub[$key])
@@ -99,12 +104,13 @@ class ENV
             : false;
     }
 
-    # set
+    # setPriv
     public static function setPriv($key, $value)
     {
         return self::$priv[$key] = $value;
     }
 
+    # setPub
     public static function setPub($key, $value)
     {
         return self::$pub[$key] = $value;
@@ -142,6 +148,7 @@ class ENV
      * toArray
      *
      * Takes an object and returns an array.
+     *
      * @param object|string $object Thing to turn into an array
      * @return $new New recursive array with $object contents
      * @see https://ben.lobaugh.net/blog/567/php-recursively-convert-an-object-to-an-array
@@ -221,9 +228,9 @@ class ENV
      * Maps a callback (or default) to an object.
      *
      * Example output:
-     * $Hashes = $ENV->map("md5", $ENV->CATS->{6});
+     * $hashes = $app->env->map("md5", $app->env->CATS->{6});
      *
-     * var_dump($Hashes);
+     * var_dump($hashes);
      * object(RecursiveArrayObject)#324 (1) {
      *   ["storage":"ArrayObject":private]=>
      *   array(6) {
@@ -242,12 +249,12 @@ class ENV
      *   }
      * }
      *
-     * var_dump($Hashes->Icon);
+     * var_dump($hashes->Icon);
      * string(32) "52963afccc006d2bce3c890ad9e8f73a"
      *
      * @param string $function Callback function
      * @param object|string $object Object or property to operate on
-     * @return object $RAO Mapped RecursiveArrayObject
+     * @return object Mapped RecursiveArrayObject
      */
     public function map(string $function = "", object|string $object = null): RecursiveArrayObject
     {
@@ -258,7 +265,7 @@ class ENV
 
         # quick sanity check
         if ($function === "array_map") {
-            error("ENV->map can't invoke the function it wraps.");
+            throw new Exception("ENV->map can't invoke the function it wraps");
         }
         
         /**
@@ -286,7 +293,7 @@ class ENV
             )
         );
     }
-}
+} # class
 
 
 /**
@@ -354,4 +361,4 @@ class RecursiveArrayObject extends ArrayObject
     {
         unset($this[$name]);
     }
-}
+} # class

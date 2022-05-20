@@ -394,7 +394,6 @@ View::header(
       <?php } ?>
     </div>
   </div>
-  <?php /* Misc::display_recommend($CollageID, "collage"); */ ?>
   <div class="sidebar one-third column">
     <div class="box box_category">
       <div class="head"><strong>Category</strong></div>
