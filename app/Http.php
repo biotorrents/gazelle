@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * HTTP class
+ * Http
  *
  * For sending raw HTTP interactions,
  * e.g., response codes and headers.
@@ -48,10 +48,10 @@ class Http
 
         # hold escapes
         $safe = [
-            "get" => null,
-            "post" => null,
-            "cookie" => null,
-            "files" => null,
+            "get" => [],
+            "post" => [],
+            "cookie" => [],
+            "files" => [],
         ];
 
         # error out on bad input
@@ -60,16 +60,27 @@ class Http
         }
 
         # filter input arrays
-        $safe["get"] = filter_input_array(INPUT_GET, $_GET);
-        $safe["post"] = filter_input_array(INPUT_POST, $_POST);
-        $safe["cookie"] = filter_input_array(INPUT_COOKIE, $_COOKIE);
-        $safe["files"] = filter_input_array(INPUT_POST, $_FILES);
+        foreach ($_GET as $key => $value) {
+            array_push($safe["get"], [Text::esc($key), Text::esc($value)]);
+        }
+
+        foreach ($_POST as $key => $value) {
+            array_push($safe["post"], [Text::esc($key), Text::esc($value)]);
+        }
+
+        foreach ($_COOKIE as $key => $value) {
+            array_push($safe["cookie"], [Text::esc($key), Text::esc($value)]);
+        }
+        
+        foreach ($_FILES as $key => $value) {
+            array_push($safe["files"], [Text::esc($key), Text::esc($value)]);
+        }
 
         # should be okay
         if (!empty($method)) {
-            return $safe[$method] ?? [];
+            return $safe[$method];
         } else {
-            return $safe ?? [];
+            return $safe;
         }
     }
 
@@ -221,29 +232,32 @@ class Http
      * @see https://www.php.net/manual/en/function.setcookie.php
      *
      * @param array $cookies ["key => "value", "foo" => "bar"]
-     * @param string $time The time in strtotime format
+     * @param string $when The time in strtotime format
      * @return bool setcookie
      */
-    public static function setCookie(array $cookies, string $time = "tomorrow")
+    public static function setCookie(array $cookies, string $when = "tomorrow")
     {
         $ENV = ENV::go();
 
         foreach ($cookies as $key => $value) {
-            if (empty($key) || empty($value)) {
+            if (empty($key)) {
                 continue;
             }
             
             # set time or use default
-            $time = strtotime($time) ?? self::$cookieDuration;
+            $time = strtotime($when) ?? self::$cookieDuration;
 
             setcookie(
-                name: self::$cookiePrefix.$key,
-                value: Text::esc($value),
-                expires_or_options: $time,
-                path: "/",
-                domain: $ENV->SITE_DOMAIN,
-                secure: true,
-                httponly: true
+                self::$cookiePrefix.$key,
+                Text::esc($value),
+                [
+                    "expires" => $time,
+                    "path" => "/",
+                    "domain" => $ENV->SITE_DOMAIN,
+                    "secure" => true,
+                    "httponly" => true,
+                    "samesite" => "Strict",
+                ]
             );
         }
     }
@@ -259,12 +273,7 @@ class Http
      */
     public static function deleteCookie(string $key)
     {
-        # 3600s vs. 1s for potential clock desyncs
-        self::setCookie(
-            $key = self::$cookiePrefix.$key,
-            $value = "",
-            $time = time() - 24 * 3600
-        );
+        return self::setCookie([self::$cookiePrefix.$key, ""], "now");
     }
 
 
@@ -284,4 +293,4 @@ class Http
             self::deleteCookie($key);
         }
     }
-}
+} # class
