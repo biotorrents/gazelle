@@ -14,11 +14,13 @@ class App
     # singleton
     private static $app = null;
 
-    # globals
+    # env is special
+    public $env = null;
+
+    # the rest of the globals
     public $cache = null;
     public $db = null;
     public $debug = null;
-    public $env = null;
     public $twig = null;
     public $user = null;
 
@@ -67,12 +69,15 @@ class App
      */
     private function factory()
     {
+        # env is special
+        $this->env = ENV::go();
+
+        # the rest of the globals
         $this->cache = new Cache();
         $this->db = new Database();
         $this->debug = Debug::go();
-        $this->env = ENV::go();
         $this->twig = Twig::go();
-        $this->user =& $user;
+        $this->user =& $user; # todo
     }
 
 
