@@ -139,9 +139,6 @@ class Donations
             $Rank = self::get_rank($UserID);
             $TotalRank = self::get_total_rank($UserID);
 
-            // Now that their rank and total rank has been set, we can calculate their special rank
-            self::calculate_special_rank($UserID);
-
             // Hand out invites
             G::$db->query("
             SELECT
@@ -222,103 +219,6 @@ class Donations
 
 
     /**
-     * calculate_special_rank
-     */
-    private static function calculate_special_rank($UserID)
-    {
-        $UserID = (int) $UserID;
-        $QueryID = G::$db->get_query_id();
-
-        // Are they are special?
-        G::$db->query("
-        SELECT
-          `TotalRank`,
-          `SpecialRank`
-        FROM
-          `users_donor_ranks`
-        WHERE
-          `UserID` = '$UserID'
-        ");
-
-        if (G::$db->has_results()) {
-            // Adjust their special rank depending on the total rank.
-            list($TotalRank, $SpecialRank) = G::$db->next_record();
-            if ($TotalRank < 10) {
-                $SpecialRank = 0;
-            }
-
-            if ($SpecialRank < 1 && $TotalRank >= 10) {
-                Misc::send_pm($UserID, 0, 'Special Donor Rank 1', 'Thank You');
-                $SpecialRank = 1;
-            }
-
-            if ($SpecialRank < 2 && $TotalRank >= 20) {
-                Misc::send_pm($UserID, 0, 'Special Donor Rank 2', 'Thank You');
-                $SpecialRank = 2;
-            }
-
-            if ($SpecialRank < 3 && $TotalRank >= 50) {
-                Misc::send_pm($UserID, 0, 'Special Donor Rank 3', 'Thank You');
-                $SpecialRank = 3;
-            }
-
-            // Make them special
-            G::$db->query("
-            UPDATE
-              `users_donor_ranks`
-            SET
-              `SpecialRank` = '$SpecialRank'
-            WHERE
-              `UserID` = '$UserID'
-            ");
-            G::$cache->delete_value("donor_info_$UserID");
-        }
-        G::$db->set_query_id($QueryID);
-    }
-
-
-    /**
-     * expire_ranks
-     */
-    public static function expire_ranks()
-    {
-        $QueryID = G::$db->get_query_id();
-        G::$db->query("
-        SELECT
-          `UserID`,
-          `Rank`
-        FROM
-          `users_donor_ranks`
-        WHERE
-          `Rank` > 1 AND `SpecialRank` != 3 AND `RankExpirationTime` < NOW() - INTERVAL 766 HOUR
-        ");
-
-        // 2 hours less than 32 days to account for schedule run times
-        if (G::$db->record_count() > 0) {
-            $UserIDs = [];
-            while (list($UserID, $Rank) = G::$db->next_record()) {
-                G::$cache->delete_value("donor_info_$UserID");
-                G::$cache->delete_value("donor_title_$UserID");
-                G::$cache->delete_value("donor_profile_rewards_$UserID");
-                $UserIDs[] = $UserID;
-            }
-            $In = implode(',', $UserIDs);
-
-            G::$db->query("
-            UPDATE
-              `users_donor_ranks`
-            SET
-              `Rank` = Rank - IF(Rank = " . MAX_RANK . ", 2, 1),
-              `RankExpirationTime` = NOW()
-            WHERE
-              `UserID` IN($In)
-            ");
-        }
-        G::$db->set_query_id($QueryID);
-    }
-
-
-    /**
      * calculate_rank
      */
     private static function calculate_rank($Amount)
@@ -348,41 +248,7 @@ class Donations
         );
     }
 
-
-    /**
-     * hide_stats
-     */
-    public static function hide_stats($UserID)
-    {
-        $QueryID = G::$db->get_query_id();
-        G::$db->query("
-        INSERT INTO `users_donor_ranks`(`UserID`, `Hidden`)
-        VALUES('$UserID', '1')
-        ON DUPLICATE KEY
-        UPDATE
-          `Hidden` = '1'
-        ");
-        G::$db->set_query_id($QueryID);
-    }
-
-
-    /**
-     * show_stats
-     */
-    public static function show_stats($UserID)
-    {
-        $QueryID = G::$db->get_query_id();
-        G::$db->query("
-        INSERT INTO `users_donor_ranks`(`UserID`, `Hidden`)
-        VALUES('$UserID', '0')
-        ON DUPLICATE KEY
-        UPDATE
-          `Hidden` = '0'
-        ");
-        G::$db->set_query_id($QueryID);
-    }
-
-
+ 
     /**
      * is_visible
      */
@@ -410,7 +276,8 @@ class Donations
     public static function has_donor_forum($UserID)
     {
         $ENV = ENV::go();
-        return self::get_rank($UserID) >= $ENV->DONOR_FORUM_RANK || self::get_special_rank($UserID) >= MAX_SPECIAL_RANK;
+        return self::get_rank($UserID) >= $ENV->DONOR_FORUM_RANK;
+        #return self::get_rank($UserID) >= $ENV->DONOR_FORUM_RANK || self::get_special_rank($UserID) >= MAX_SPECIAL_RANK;
     }
 
 
@@ -474,7 +341,7 @@ class Donations
 
             $DonorInfo = array(
                 'Rank' => (int) $Rank,
-                'SRank' => (int) $SpecialRank,
+                #'SRank' => (int) $SpecialRank,
                 'TotRank' => (int) $TotalRank,
                 'Time' => $DonationTime,
                 'ExpireTime' => $ExpireTime,
@@ -492,15 +359,6 @@ class Donations
     public static function get_rank($UserID)
     {
         return self::get_donor_info($UserID)['Rank'];
-    }
-
-
-    /**
-     * get_special_rank
-     */
-    public static function get_special_rank($UserID)
-    {
-        return self::get_donor_info($UserID)['SRank'];
     }
 
 
@@ -544,8 +402,9 @@ class Donations
     {
         $Rewards = [];
         $Rank = self::get_rank($UserID);
-        $SpecialRank = self::get_special_rank($UserID);
-        $HasAll = $SpecialRank === 3;
+        #$SpecialRank = self::get_special_rank($UserID);
+        $HasAll = null; # todo: delete
+        #$HasAll = $SpecialRank === 3;
 
         $Rewards = array(
             'HasAvatarMouseOverText' => false,
@@ -580,9 +439,12 @@ class Donations
             $Rewards["HasProfileInfo4"] = true;
         }
 
+        /*
         if ($SpecialRank >= 2) {
             $Rewards["HasSecondAvatar"] = true;
         }
+        */
+
         return $Rewards;
     }
 
@@ -655,8 +517,9 @@ class Donations
     public static function update_rewards($UserID)
     {
         $Rank = self::get_rank($UserID);
-        $SpecialRank = self::get_special_rank($UserID);
-        $HasAll = $SpecialRank === 3;
+        #$SpecialRank = self::get_special_rank($UserID);
+        $HasAll = null; # todo: remove
+        #$HasAll = $SpecialRank === 3;
         $Counter = 0;
         $Insert = [];
         $Values = [];
@@ -719,6 +582,7 @@ class Donations
             self::add_profile_info_reward($i, $Insert, $Values, $Update);
         }
 
+        /*
         if ($SpecialRank >= 2) {
             if (isset($_POST['second_avatar'])) {
                 $SecondAvatar = db_string($_POST['second_avatar']);
@@ -731,6 +595,7 @@ class Donations
                 $Update[] = "SecondAvatar = '$SecondAvatar'";
             }
         }
+        */
 
         $Insert = implode(', ', $Insert);
         $Values = implode(', ', $Values);
@@ -751,104 +616,6 @@ class Donations
 
         G::$cache->delete_value("donor_profile_rewards_$UserID");
         G::$cache->delete_value("donor_info_$UserID");
-    }
-
-
-    /**
-     * get_donation_history
-     */
-    public static function get_donation_history($UserID)
-    {
-        $UserID = (int) $UserID;
-        if (empty($UserID)) {
-            error(404);
-        }
-
-        $QueryID = G::$db->get_query_id();
-        G::$db->query("
-        SELECT
-          `Amount`,
-          `Email`,
-          `Time`,
-          `Currency`,
-          `Reason`,
-          `Source`,
-          `AddedBy`,
-          `Rank`,
-          `TotalRank`
-        FROM
-          `donations`
-        WHERE
-          `UserID` = '$UserID'
-        ORDER BY
-          `Time`
-        DESC
-        ");
-
-        $DonationHistory = G::$db->to_array(false, MYSQLI_ASSOC, false);
-        G::$db->set_query_id($QueryID);
-        return $DonationHistory;
-    }
-
-
-    /**
-     * get_rank_expiration
-     */
-    public static function get_rank_expiration($UserID)
-    {
-        $DonorInfo = self::get_donor_info($UserID);
-        if ($DonorInfo['SRank'] === MAX_SPECIAL_RANK || $DonorInfo['Rank'] === 1) {
-            $Return = 'Never';
-        } elseif ($DonorInfo['ExpireTime']) {
-            $ExpireTime = strtotime($DonorInfo['ExpireTime']);
-            if ($ExpireTime - time() < 60) {
-                $Return = 'Soon';
-            } else {
-                $Expiration = time_diff($ExpireTime); // 32 days
-                $Return = "in $Expiration";
-            }
-        } else {
-            $Return = '';
-        }
-        return $Return;
-    }
-
-
-    /**
-     * get_leaderboard_position
-     */
-    public static function get_leaderboard_position($UserID)
-    {
-        $UserID = (int) $UserID;
-        $QueryID = G::$db->get_query_id();
-        G::$db->query("SET @RowNum := 0");
-
-        G::$db->query("
-        SELECT
-          `Position`
-        FROM
-          (
-          SELECT
-            d.UserID,
-            @RowNum := @RowNum + 1 AS POSITION
-          FROM
-            `users_donor_ranks` AS d
-          ORDER BY
-            `TotalRank`
-          DESC
-          ) l
-        WHERE
-          `UserID` = '$UserID'
-        ");
-
-        if (G::$db->has_results()) {
-            list($Position) = G::$db->next_record();
-        } else {
-            $Position = 0;
-        }
-
-        G::$db->set_query_id($QueryID);
-        return $Position;
     }
 
 

@@ -134,12 +134,6 @@ if (!isset($_POST['p_donor_heart'])) {
     $Paranoia[] = 'hide_donor_heart';
 }
 
-if (isset($_POST['p_donor_stats'])) {
-    Donations::show_stats($UserID);
-} else {
-    Donations::hide_stats($UserID);
-}
-
 // End building $Paranoia
 
 $db->query("

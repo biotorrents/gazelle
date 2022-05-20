@@ -163,10 +163,10 @@ if (($UserCount = $cache->get_value('stats_user_count')) === false) {
 }
 $UserCount = (int)$UserCount;
 ?>
-<? /*
+      <?php /*
       <li>
         Enabled users: <?=Text::float($UserCount)?>
-        <a href="/stats/users" class="brackets">Details</a>
+      <a href="/stats/users" class="brackets">Details</a>
       </li>
       <?php
 
@@ -331,7 +331,7 @@ if (!$PeerStatsLocked) {
       </li>
     </ul>
   </div>
-*/?>
+  */?>
   <!-- Polls -->
   <?php
 if (($TopicID = $cache->get_value('polls_featured')) === false) {
@@ -447,6 +447,7 @@ if ($TopicID) {
 }
 // polls();
 ?>
+</div>
 </div>
 <div class="main_column two-thirds column">
   <?php
@@ -573,49 +574,3 @@ foreach ($News as $NewsItem) {
 </div>
 <?php
 View::footer(array('disclaimer'=>true));
-
-function contest()
-{
-    global $db, $cache, $user;
-
-    list($Contest, $TotalPoints) = $cache->get_value('contest');
-    if (!$Contest) {
-        $db->query("
-      SELECT
-        UserID,
-        SUM(Points),
-        Username
-      FROM users_points AS up
-        JOIN users_main AS um ON um.ID = up.UserID
-      GROUP BY UserID
-      ORDER BY SUM(Points) DESC
-      LIMIT 20");
-        $Contest = $db->to_array();
-
-        $db->query("
-      SELECT SUM(Points)
-      FROM users_points");
-        list($TotalPoints) = $db->next_record();
-
-        $cache->cache_value('contest', array($Contest, $TotalPoints), 600);
-    } ?>
-<!-- Contest Section -->
-<div class="box box_contest">
-  <div class="head colhead_dark"><strong>Quality time scoreboard</strong></div>
-  <div class="pad">
-    <ol style="padding-left: 5px;">
-      <?php
-  foreach ($Contest as $User) {
-      list($userId, $Points, $Username) = $User; ?>
-      <li><?=Users::format_username($userId, false, false, false)?>
-        (<?=Text::float($Points)?>)</li>
-      <?php
-  } ?>
-    </ol>
-    Total uploads: <?=$TotalPoints?><br />
-    <a href="index.php?action=scoreboard">Full scoreboard</a>
-  </div>
-</div>
-<!-- END contest Section -->
-<?php
-} // contest()

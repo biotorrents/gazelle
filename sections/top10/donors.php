@@ -70,7 +70,6 @@ function generate_user_table($Caption, $Results, $Limit)
       <td class="center">Position</td>
       <td>User</td>
       <td style="text-align: left;">Total Donor Points</td>
-      <td style="text-align: left;">Current Donor Rank</td>
       <td style="text-align: left;">Last Donated</td>
     </tr>
 
@@ -100,10 +99,6 @@ function generate_user_table($Caption, $Results, $Limit)
 
       <td style="text-align: left;">
         <?=check_perms('users_mod') || $Position < 51 ? $Result['TotalRank'] : 'Hidden'; ?>
-      </td>
-
-      <td style="text-align: left;">
-        <?=$Result['Hidden'] && !$IsMod ? 'Hidden' : DonationsView::render_rank($Result['Rank'], $Result['SpecialRank'])?>
       </td>
 
       <td style="text-align: left;">

@@ -863,10 +863,6 @@ HTML;
           </td>
 
           <td>
-            <input type="checkbox" id="p_donor_stats" name="p_donor_stats" onchange="AlterParanoia();" <?=$DonorIsVisible ? ' checked="checked"' : ''?>
-            />
-            <label for="p_donor_stats">Show donor stats</label>
-
             <input type="checkbox" id="p_donor_heart" name="p_donor_heart" onchange="AlterParanoia();" <?=checked(!in_array('hide_donor_heart', $Paranoia))?>
             />
             <label for="p_donor_heart">Show donor heart</label>

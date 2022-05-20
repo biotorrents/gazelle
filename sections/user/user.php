@@ -698,7 +698,6 @@ if ($Override = check_perms('users_mod') || $OwnProfile || !empty($SupportFor)) 
     </div>
     <?php
 include(SERVER_ROOT.'/sections/user/community_stats.php');
-DonationsView::render_donor_stats($UserID);
 ?>
   </div>
   <div class="main_column two-thirds column">
@@ -734,7 +733,6 @@ if (!$Info) {
       </div>
     </div>
     <?php
-DonationsView::render_profile_rewards($EnabledRewards, $ProfileRewards);
 
 if (check_paranoia_here('snatched')) {
     $RecentSnatches = $cache->get_value("recent_snatches_$UserID");
@@ -963,9 +961,6 @@ if ((check_perms('users_view_invites')) && $Invited > 0) {
   <?php
 }
 
-if (check_perms('users_mod')) {
-    DonationsView::render_donation_history(Donations::get_donation_history($UserID));
-}
 
 // Requests
 if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')) {
@@ -1677,9 +1672,6 @@ if (!$DisablePoints) {
       </tr>
     </table>
     <?php
-  }
-  if (check_perms('users_mod')) {
-      DonationsView::render_mod_donations($UserID);
   }
 ?>
     <table class="box skeleton-fix" id="submit_box">

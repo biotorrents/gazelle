@@ -507,7 +507,7 @@ class Users
                 $IconImage = 'donor.png';
                 $IconText = 'Donor';
                 $DonorHeart = $DonorRank;
-                $SpecialRank = Donations::get_special_rank($UserID);
+                #$SpecialRank = Donations::get_special_rank($UserID);
                 $EnabledRewards = Donations::get_enabled_rewards($UserID);
                 $DonorRewards = Donations::get_rewards($UserID);
 
@@ -522,9 +522,12 @@ class Users
                 if ($EnabledRewards['HasCustomDonorIcon'] && !empty($DonorRewards['CustomIcon'])) {
                     $IconImage = ImageTools::process($DonorRewards['CustomIcon']);
                 } else {
+                    /* wtf
                     if ($SpecialRank === MAX_SPECIAL_RANK) {
                         $DonorHeart = 6;
-                    } elseif ($DonorRank === 5) {
+                    } else
+                    */
+                    if ($DonorRank === 5) {
                         $DonorHeart = 4; // Two points between rank 4 and 5
                     } elseif ($DonorRank >= MAX_RANK) {
                         $DonorHeart = 5;
