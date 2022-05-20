@@ -134,7 +134,7 @@ class Text
      * Simple string escape.
      * Replaces display_str.
      */
-    public static function esc(mixed $string)
+    public static function esc(mixed $string): string
     {
         return htmlspecialchars(
             $string = self::utf8(strval($string)),
@@ -197,9 +197,11 @@ class Text
      */
     public static function float(mixed $number, int $decimals = 2): float
     {
-        return number_format(
-            floatval($number),
-            $decimals
+        return floatval(
+            number_format(
+                floatval($number),
+                $decimals
+            )
         );
     }
 }
