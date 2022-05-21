@@ -1,0 +1,37 @@
+{# https://symfony.com/doc/current/templates.html#template-inheritance-and-layouts #}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{ title }}</title>
+    {{ include("_base/metaTags.twig") }}
+
+    {% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="/css/base.css" />
+    {% endblock %}
+
+    {% block rss %}
+    <link rel="stylesheet" type="text/css" href="/css/base.css" />
+    {% endblock %}
+
+</head>
+
+<body>
+    {% block body %}
+    <div id="sidebar">
+        {% block sidebar %}
+        <ul>
+            <li><a href="{{ path('homepage') }}">Home</a></li>
+            <li><a href="{{ path('blog_index') }}">Blog</a></li>
+        </ul>
+        {% endblock %}
+    </div>
+
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+    {% endblock %}
+</body>
+
+</html>

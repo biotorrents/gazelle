@@ -124,6 +124,15 @@ class Twig # extends Twig\Environment
             }
         ));
 
+        # Text::float
+        $twig->addFilter(new Twig\TwigFilter(
+            "float",
+            function ($number, $decimals = 2) {
+                return Text::float($number, $decimals);
+            }
+        ));
+        
+
 
         /**
          * OPS

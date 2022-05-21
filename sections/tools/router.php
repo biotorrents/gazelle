@@ -50,10 +50,6 @@ switch ($_REQUEST['action']) {
     include SERVER_ROOT.'/sections/tools/services/get_host.php';
     break;
 
-  case 'get_cc':
-    include SERVER_ROOT.'/sections/tools/services/get_cc.php';
-    break;
-
   // Managers
   case 'forum':
     include SERVER_ROOT.'/sections/tools/managers/forum_list.php';
@@ -370,10 +366,6 @@ switch ($_REQUEST['action']) {
     include SERVER_ROOT.'/sections/tools/development/service_stats.php';
     break;
 
-  case 'database_specifics':
-    include SERVER_ROOT.'/sections/tools/data/database_specifics.php';
-    break;
-
   case 'special_users':
     include SERVER_ROOT.'/sections/tools/data/special_users.php';
     break;
@@ -390,10 +382,6 @@ switch ($_REQUEST['action']) {
 
   case 'misc_values':
     include SERVER_ROOT.'/sections/tools/development/misc_values.php';
-    break;
-
-  case 'recommendations':
-    include SERVER_ROOT.'/sections/tools/misc/recommendations.php';
     break;
 
   case 'database_key':

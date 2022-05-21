@@ -3,13 +3,6 @@
 
 class Users
 {
-    # Needed for OPS compatibility?
-    # Re: JSON API keys implementation
-    public function __construct()
-    {
-        return self::user_info($UserID);
-    }
-
     /**
      * Get $Classes (list of classes keyed by ID) and $ClassLevels
      *    (list of classes keyed by level)
@@ -450,6 +443,7 @@ class Users
         $Username = $UserInfo['Username'];
         $Paranoia = $UserInfo['Paranoia'];
 
+        $UserInfo['Class'] ??= [];
         if ($UserInfo['Class'] < $Classes[MOD]['Level']) {
             $OverrideParanoia = check_perms('users_override_paranoia', $UserInfo['Class']);
         } else {

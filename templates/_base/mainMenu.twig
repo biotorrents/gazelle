@@ -35,30 +35,30 @@ https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-ba
 </nav>
 #}
 
-<nav>
+<nav id="main-menu">
   <ul class="menu">
 
-    {# Logo #}
+    {# logo #}
     <li class="logo">
       <a href="/" aria-label="Home"></a>
     </li>
 
-    {# Search #}
+    {# search #}
     <li class="item">
       <form id="select_search" name="select_search" method="get">
 
         {#
-        Workaround for some endpoints that need &action=search
-        Needed for forums, wiki, and users
+        workaround for some endpoints that need &action=search
+        needed for forums, wiki, and users
         #}
         <input type="hidden" name="action" value="search" />
 
-        {# Advanced vs. basic search from user settings #}
+        {# advanced vs. basic search from user settings #}
         {% if user.SearchType %}
         <input type="hidden" name="advanced_search" value="true">
         {% endif %}
 
-        {# Select which site area to search #}
+        {# select which site area to search #}
         <select id="search_what" name="search_what">
           <option value="torrents">Torrents</option>
           {# <option value="artist">Authors</option> #}
@@ -70,153 +70,153 @@ https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-ba
         </select>
 
         {#
-        The universal search bar itself
-        todo: Change "search" to "advgroupname" if user.SearchType && search-what = torrents
+        the universal search bar itself
+        todo: change "search" to "advgroupname" if user.SearchType && search-what = torrents
         #}
         <input type="text" id="search" name="search" aria-label="Search the site" placeholder="Search the site"
           maxlength="10000" size="30" autocomplete="off" spellcheck="false" />
 
-        {# Submit button, maybe unnecessary #}
+        {# submit button, maybe unnecessary #}
         {# <input type="submit" value="🔎"> #}
       </form>
     </li>
 
-    {# Spacer #}
+    {# spacer #}
     <li class="spacer"></li>
 
-    {# Torrents #}
+    {# torrents #}
     <li class="item has-submenu">
       <a tabindex="0">🌊&nbsp;Torrents</a>
       <ul class="submenu">
 
-        {# Search #}
+        {# search #}
         <li class="subitem">
           <a href="/torrents.php">Search</a>
         </li>
 
-        {# Collages #}
+        {# collages #}
         <li class="subitem">
           <a href="/collages.php">Collections</a>
         </li>
 
-        {# Requests #}
+        {# requests #}
         <li class="subitem">
           <a href="/requests.php">Requests</a>
         </li>
 
-        {# Top 10 #}
+        {# top 10 #}
         <li class="subitem">
           <a href="/top10.php">Top&nbsp;10</a>
         </li>
 
-        {# Better #}
+        {# better #}
         <li class="subitem">
           <a href="/better.php">Better</a>
         </li>
       </ul>
     </li>
 
-    {# Community #}
+    {# community #}
     <li class="item has-submenu">
       <a tabindex="0">📣&nbsp;Community</a>
       <ul class="submenu">
 
-        {# Forums #}
+        {# forums #}
         <li class="subitem">
           <a href="/forums.php">Forums</a>
         </li>
 
-        {# Slack #}
+        {# slack #}
         {% if ENV.FEATURE_IRC %}
         <li class="subitem">
           <a href="https://slack.{{ ENV.SITE_DOMAIN }}" target="_blank">Slack</a>
         </li>
         {% endif %}
 
-        {# Rules #}
+        {# rules #}
         <li class="subitem">
           <a href="/rules">Rules</a>
         </li>
 
-        {# Wiki #}
+        {# wiki #}
         <li class="subitem">
           <a href="/wiki.php">Wiki</a>
         </li>
       </ul>
     </li>
 
-    {# User #}
+    {# user #}
     <li class="item has-submenu">
       <a tabindex="0">👤&nbsp;User</a>
       <ul class="submenu">
 
-        {# Profile #}
+        {# profile #}
         <li class="subitem">
           <a href="/user.php?id={{ user.ID }}">{{ user.Username }}</a>
         </li>
 
-        {# Settings #}
+        {# settings #}
         <li class="subitem">
           <a href="/user.php?action=edit&amp;userid={{ user.ID }}">Settings</a>
         </li>
 
-        {# Inbox #}
+        {# inbox #}
         <li class="subitem">
           <a href="/{{ inbox }}">Inbox</a>
         </li>
 
-        {# Staff Inbox #}
+        {# staff inbox #}
         <li class="subitem">
           <a href="/staffpm.php">Staff&nbsp;Inbox</a>
         </li>
 
-        {# Logout #}
+        {# logout #}
         <li class="subitem">
           <a href="/logout">Logout</a>
         </li>
       </ul>
     </li>
 
-    {# Links #}
+    {# links #}
     <li class="item has-submenu">
       <a tabindex="0">🔔&nbsp;More</a>
       <ul class="submenu">
 
-        {# Uploads #}
+        {# uploads #}
         <li class="subitem">
           <a href="/torrents.php?type=uploaded&amp;userid={{ user.ID }}">Uploads</a>
         </li>
 
-        {# Bookmarks #}
+        {# bookmarks #}
         <li class="subitem">
           <a href="/bookmarks.php?type=torrents">Bookmarks</a>
         </li>
 
-        {# Notifications #}
+        {# notifications #}
         {% if notify %}
         <li class="subitem">
           <a href="/user.php?action=notify">Notifications</a>
         </li>
         {% endif %}
 
-        {# Subscriptions #}
+        {# subscriptions #}
         <li class="subitem">
           <a href="/userhistory.php?action=subscriptions">Subscriptions</a>
         </li>
 
-        {# Comments #}
+        {# comments #}
         <li class="subitem">
           <a href="/comments.php">Comments</a>
         </li>
 
-        {# Friends #}
+        {# friends #}
         <li class="subitem">
           <a href="/friends.php">Friends</a>
         </li>
       </ul>
     </li>
 
-    {# Hamburger Menu #}
+    {# hamburger menu #}
     <li class="toggle">
       <a href="#"><i class="fal fa-bars"></i></a>
     </li>

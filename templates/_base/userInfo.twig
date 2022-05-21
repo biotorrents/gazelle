@@ -1,0 +1,103 @@
+<nav id="userinfo">
+
+    {# major #}
+    <ul id="userinfo_major">
+
+        {# upload #}
+        <li id="nav_upload">
+            <a href="/upload.php">Upload</a>
+        </li>
+
+        {# invite #}
+        <li id="nav_invite">
+            <a href="/user.php?action=invite">Invite {{ user.Invites }}</a>
+        </li>
+
+        {# donate #}
+        {% if ENV.FEATURE_DONATE %}
+        <li id="nav_donate">
+            <a href="/donate.php">Donate</a>
+        </li>
+        {% endif %}
+
+        {# staff #}
+        <li id="nav_staff">
+            <a href="/staff.php">Staff</a>
+        </li>
+    </ul>
+
+
+    {# stats #}
+    <ul id="userinfo_stats">
+
+        {# seeding #}
+        <li id="stats_seeding">
+            <a href="/torrents.php?type=seeding&userid={{ user.ID }}">Up</a>:
+            <span class="stat tooltip" title="{{ user.BytesUploaded|get_size(levels = 5) }}">
+                {{ user.BytesUploaded|get_size }}
+            </span>
+        </li>
+
+        {# leeching #}
+        <li id="stats_leeching">
+            <a href="/torrents.php?type=leeching&userid={{ user.ID }}">Down</a>:
+            <span class="stat tooltip" title="{{ user.BytesDownloaded|get_size(levels = 5) }}">
+                {{ user.BytesDownloaded|get_size }}
+            </span>
+        </li>
+
+        {# ratio #}
+        <li id="stats_ratio">
+            Ratio:
+            <span class="stat">
+                {{ get_ratio_html(dividend = user.BytesUploaded, divisor = user.BytesDownloaded) }}
+            </span>
+        </li>
+
+        {# required ratio #}
+        {% if user.RequiredRatio and user.RequiredRatio > 0 %}
+        <li id="stats_required">
+            <a href="/rules/ratio">Required</a>:
+            <span class="stat tooltip" title="{{ user.RequiredRatio|float(decimals = 5) }}">
+                {{ user.RequiredRatio|float }}
+            </span>
+        </li>
+        {% endif %}
+    </ul>
+
+
+    {# extra #}
+    <ul id="userinfo_extra">
+
+        {# freeleech tokens #}
+        {% if userFLTokens > 0 %}
+        <li id="fl_tokens">
+            <a href="/wiki.php?action=article&name=tokens">Tokens</a>:
+            <span class="stat">
+                <a href="/userhistory.php?action=token_history&userid={{ user.ID }}">
+                    {{ user.FLTokens }}
+                </a>
+            </span>
+        </li>
+        {% endif %}
+
+        {# bonus points #}
+        <li id="bonus_points">
+            <a href="/wiki.php?action=article&name=bonuspoints">{{ ENV.BONUS_POINTS }}</a>:
+            <span class="stat">
+                <a href="/store.php">{{ user.BonusPoints }}</a>
+            </span>
+        </li>
+
+        {# hit and runs #}
+        {% if user.HnR > 0 %}
+        <li id="hnr">
+            <a href="/snatchlist.php">HnRs</a>:
+            <span class="stat">
+                <a>{{ user.HnR }}</a>
+            </span>
+        </li>
+        {% endif %}
+    </ul>
+
+</nav>

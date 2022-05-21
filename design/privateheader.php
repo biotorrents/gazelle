@@ -27,7 +27,7 @@ if ($ENV->DEV) {
 
   <?=
     $twig->render(
-        'header/meta-tags.twig',
+        '_base/metaTags.twig',
         [
         'ENV' => $ENV,
         'user' => G::$user,
@@ -151,31 +151,30 @@ HTML;
  */
 
 if (empty(G::$user['StyleURL'])) {
-  /*
-    $StyleColors = G::$cache->get_value('stylesheet_colors') ?? [];
-    if (empty($StyleColors)) {
-        G::$db->query('SELECT LOWER(REPLACE(Name, " ", "_")) AS Name, Color FROM stylesheets WHERE COLOR IS NOT NULL');
+    /*
+      $StyleColors = G::$cache->get_value('stylesheet_colors') ?? [];
+      if (empty($StyleColors)) {
+          G::$db->query('SELECT LOWER(REPLACE(Name, " ", "_")) AS Name, Color FROM stylesheets WHERE COLOR IS NOT NULL');
 
-        while (list($StyleName, $StyleColor) = G::$db->next_record()) {
-            #!d($StyleColors, $StyleName);exit;
-            $StyleName = $StyleName ?? "";
-            $StyleColors[$StyleName] = $StyleColor ?? null;
-        }
-        G::$cache->cache_value('stylesheet_colors', $StyleColors, 0);
-    }
+          while (list($StyleName, $StyleColor) = G::$db->next_record()) {
+              #!d($StyleColors, $StyleName);exit;
+              $StyleName = $StyleName ?? "";
+              $StyleColors[$StyleName] = $StyleColor ?? null;
+          }
+          G::$cache->cache_value('stylesheet_colors', $StyleColors, 0);
+      }
 
-    if (isset($StyleColors[G::$user['StyleName']])) { ?>
-  <meta name="theme-color"
-    content="<?=$StyleColors[G::$user['StyleName']]?>">
-  <?php }
-  */
+      if (isset($StyleColors[G::$user['StyleName']])) { ?>
+    <meta name="theme-color"
+      content="<?=$StyleColors[G::$user['StyleName']]?>">
+    <?php }
+    */
 
     $userStyle = "$ENV->STATIC_SERVER/css/" . G::$user['StyleName'] . ".css";
     echo $View->pushAsset(
         $userStyle,
         'style'
     );
-    
 } else {
     $StyleURLInfo = parse_url(G::$user['StyleURL']);
     if (substr(G::$user['StyleURL'], -4) === '.css'
@@ -246,7 +245,7 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
     </h1>
 
     <?= $twig->render(
-    'header/main-menu.twig',
+    '_base/mainMenu.twig',
     [
           'ENV' => $ENV,
           'user' => G::$user,
