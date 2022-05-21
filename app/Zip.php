@@ -3,11 +3,11 @@
 
 
 /**
- * 
+ *
  * THIS NEEDS TO GO AWAY
  * DEFAULT ZipArchive EXISTS
  * @see https://www.php.net/manual/en/class.ziparchive.php
- * 
+ *
  */
 
  
@@ -101,13 +101,6 @@ class Zip
     {
         header("Content-type: application/octet-stream"); // Stream download
         header("Content-disposition: attachment; filename=\"$ArchiveName.zip\""); // Name the archive - Should not be urlencoded
-    }
-
-    public static function unlimit()
-    {
-        ob_end_clean();
-        set_time_limit(3600); // Limit 1 hour
-        ini_set('memory_limit', '1024M'); // Because the buffers can get extremely large
     }
 
     public function add_file($FileData, $ArchivePath, $TimeStamp = 0)

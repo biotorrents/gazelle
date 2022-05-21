@@ -126,4 +126,17 @@ class App
         # send the email
         mail($to, $subject, $body, $headers);
     }
+
+
+    /**
+     * unlimit
+     *
+     * Beef the specs for a time.
+     */
+    public static function unlimit()
+    {
+        ob_end_clean();
+        set_time_limit(3600); # one hour
+        ini_set("memory_limit", "2G"); # all the shit hetzner memory
+    }
 } # class

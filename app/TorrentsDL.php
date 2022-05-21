@@ -31,7 +31,7 @@ class TorrentsDL
     public function __construct(&$QueryResult, $Title)
     {
         G::$cache->InternalCache = false; // The internal cache is almost completely useless for this
-        Zip::unlimit(); // Need more memory and longer timeout
+        App::unlimit(); // Need more memory and longer timeout
         $this->QueryResult = $QueryResult;
         $this->Title = $Title;
         $this->User = G::$user;
