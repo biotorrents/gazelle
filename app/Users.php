@@ -270,7 +270,7 @@ class Users
             $app->dbOld->query("
             SELECT `PermissionID`
             FROM `users_levels`
-              WHERE `UserID` = $UserID
+              WHERE `UserID` = '$UserID'
             ");
 
             $PermIDs = $app->dbOld->collect('PermissionID');

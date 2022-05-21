@@ -48,10 +48,11 @@ class Http
 
         # hold escapes
         $safe = [
-            "get" => [],
-            "post" => [],
             "cookie" => [],
             "files" => [],
+            "get" => [],
+            "post" => [],
+            "request" => [],
             "server" => [],
         ];
 
@@ -62,6 +63,14 @@ class Http
 
         # escape each untrusted superglobal
         # sucks less than filter_input_array
+        foreach ($_COOKIE as $key => $value) {
+            array_push($safe["cookie"], [Text::esc($key), Text::esc($value)]);
+        }
+
+        foreach ($_FILES as $key => $value) {
+            array_push($safe["files"], [Text::esc($key), Text::esc($value)]);
+        }
+
         foreach ($_GET as $key => $value) {
             array_push($safe["get"], [Text::esc($key), Text::esc($value)]);
         }
@@ -70,24 +79,20 @@ class Http
             array_push($safe["post"], [Text::esc($key), Text::esc($value)]);
         }
 
-        foreach ($_COOKIE as $key => $value) {
-            array_push($safe["cookie"], [Text::esc($key), Text::esc($value)]);
-        }
-        
-        foreach ($_FILES as $key => $value) {
-            array_push($safe["files"], [Text::esc($key), Text::esc($value)]);
+        foreach ($_REQUEST as $key => $value) {
+            array_push($safe["request"], [Text::esc($key), Text::esc($value)]);
         }
 
         foreach ($_SERVER as $key => $value) {
             # sanitize client spoofed keys
-            if (str_starts_with($key, "HTTP")) {
+            if (str_starts_with($key, "HTTP_")) {
                 array_push($safe["server"], [Text::esc($key), Text::esc($value)]);
             }
 
             # make server keys available
-            # note strip_tags not Text::esc
+            # NOT NECESSARILY SAFE VALUES!
             else {
-                array_push($safe["server"], [strip_tags($key), strip_tags($value)]);
+                array_push($safe["server"], [$key, $value]);
             }
         }
 

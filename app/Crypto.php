@@ -19,11 +19,14 @@ class Crypto
      * @param string $plaintext
      * @return Encrypted string or false if DB key not accessible
      */
-    public static function encrypt(string $plaintext): string|bool
+    public static function encrypt(mixed $plaintext): string|bool
     {
         if (!apcu_exists("DBKEY")) {
             return false;
         }
+
+        # fix null error: missing value
+        $plaintext = strval($plaintext);
 
         $iv_size = openssl_cipher_iv_length(self::$cipher);
         $iv = openssl_random_pseudo_bytes($iv_size);
@@ -48,11 +51,14 @@ class Crypto
      * @param string $ciphertext
      * @return Decrypted string or false if DB key not accessible
      */
-    public static function decrypt(string $ciphertext): string|bool
+    public static function decrypt(mixed $ciphertext): string|bool
     {
         if (!apcu_exists("DBKEY")) {
             return false;
         }
+
+        # fix null error: missing value
+        $ciphertext = strval($ciphertext);
 
         $iv_size = openssl_cipher_iv_length(self::$cipher);
         $iv = substr(base64_decode($ciphertext), 0, $iv_size);

@@ -11,7 +11,6 @@ declare(strict_types=1);
  * The debugging should catch exceptions.
  */
 
- !d($_SERVER);exit;
 # quick sanity checks
 Security::oops();
 
