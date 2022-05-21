@@ -750,7 +750,6 @@ $PermissionsArray = array(
     'admin_manage_fls' => 'Can manage FLS.',
     'admin_reports' => 'Can access reports system.',
     'admin_advanced_user_search' => 'Can access advanced user search.',
-    'admin_create_users' => 'Can create users through an administrative form.',
     'admin_donor_log' => 'Can view the donor log.',
     'admin_manage_ipbans' => 'Can manage IP bans.',
     'admin_clear_cache' => 'Can clear cached.',
@@ -927,7 +926,6 @@ $PermissionsArray = array(
       display_perm('admin_manage_fls', 'Can manage FLS');
       display_perm('admin_reports', 'Can access reports system');
       display_perm('admin_advanced_user_search', 'Can access advanced user search');
-      display_perm('admin_create_users', 'Can create users through an administrative form');
       display_perm('admin_donor_log', 'Can view the donor log');
       display_perm('admin_manage_ipbans', 'Can manage IP bans');
       display_perm('admin_clear_cache', 'Can clear cached pages');

@@ -45,7 +45,6 @@ View::header('Staff Tools');
   // begin Administration category
   $ToolsHTML = "";
   create_row("Client whitelist", "tools.php?action=whitelist", check_perms("admin_whitelist"));
-  create_row("Create user", "tools.php?action=create_user", check_perms("admin_create_users"));
   create_row("Permissions manager", "tools.php?action=permissions", check_perms("admin_manage_permissions"));
   create_row("Special users", "tools.php?action=special_users", check_perms("admin_manage_permissions"));
   create_row("Database key", "tools.php?action=database_key", check_perms("admin_manage_permissions"));

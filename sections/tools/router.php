@@ -390,10 +390,6 @@ switch ($_REQUEST['action']) {
     include SERVER_ROOT.'/sections/tools/development/clear_cache.php';
     break;
 
-  case 'create_user':
-    include SERVER_ROOT.'/sections/tools/misc/create_user.php';
-    break;
-
   case 'manipulate_tree':
     include SERVER_ROOT.'/sections/tools/misc/manipulate_tree.php';
     break;
