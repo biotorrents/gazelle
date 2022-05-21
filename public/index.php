@@ -17,8 +17,8 @@ require_once __DIR__."/../vendor/autoload.php";
 $path = pathinfo($_SERVER["SCRIPT_NAME"]);
 $file = $path["filename"];
 
-# dump all tards except the cli ones (me)
-if ($path["dirname"] !== "/" && php_sapi_name() !== "cli") {
+# dump all tards
+if ($path["dirname"] !== "/") {
     Http::response(403);
 } elseif (in_array($file, ["announce", "info_hash", "peer_id", "scrape"])) {
     die("d14:failure reason40:Invalid .torrent, try downloading again.e");
@@ -44,7 +44,6 @@ switch ($file) {
     case "index":
     case "log":
     case "login":
-    case "peerupdate":
     case "pwgen":
     case "register":
     case "reports":
@@ -68,9 +67,9 @@ switch ($file) {
         break;
 }
 
-# load the app if page is valid or running from cli
-if ($valid || php_sapi_name() === "cli") {
+# load on valid request
+if ($valid) {
     require_once __DIR__."/../config/app.php";
     require_once __DIR__."/../bootstrap/utilities.php";
-    require_once __DIR__."/../bootstrap/app.php";
+    require_once __DIR__."/../bootstrap/web.php";
 }

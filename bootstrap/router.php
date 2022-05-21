@@ -13,9 +13,6 @@ declare(strict_types=1);
 Flight::route("/", function () {
     $app = App::go();
 
-    global $SessionID;
-!d($SessionID);exit;
-
     if (isset($app->user["ID"])) {
         #if (!isset($_REQUEST["action"])) {
         require_once __DIR__."/../sections/index/private.php";
