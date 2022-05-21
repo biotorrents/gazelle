@@ -2,15 +2,18 @@
 declare(strict_types = 1);
 
 /**
- * Adapted from
- * https://github.com/OPSnet/Gazelle/blob/master/app/Json.php
+ * Json
+ *
+ * Adapted from OPS's abstract class.
+ *
+ * @see https://github.com/OPSnet/Gazelle/blob/master/app/Json.php
  */
 
 class Json
 {
-    private $mode;
-    private $source;
-    private $version;
+    private $mode = null;
+    private $source = null;
+    private $version = null;
 
 
     /**
@@ -18,10 +21,10 @@ class Json
      */
     public function __construct()
     {
-        $ENV = ENV::go();
+        $app = App::go();
 
         $this->mode = 0;
-        $this->source = $ENV->SITE_NAME;
+        $this->source = $app->env->SITE_NAME;
         $this->version = 1;
     }
 
@@ -33,15 +36,18 @@ class Json
      */
     public function checkToken(int $userId)
     {
-        $ENV = ENV::go();
+        $app = App::go();
+
+        # escape bearer token
+        $server = Http::query("server");
         
         # no header present
-        if (empty($_SERVER["HTTP_AUTHORIZATION"])) {
+        if (empty($server["HTTP_AUTHORIZATION"])) {
             return $this->failure("no authorization header present");
         }
 
         # https://tools.ietf.org/html/rfc6750
-        $authorizationHeader = explode(" ", Text::esc($_SERVER["HTTP_AUTHORIZATION"]));
+        $authorizationHeader = explode(" ", $server["HTTP_AUTHORIZATION"]);
 
         # too much whitespace
         if (count($authorizationHeader) !== 2) {
@@ -63,7 +69,7 @@ class Json
 
         # check the database
         $query = "select UserID, Token, Revoked from api_user_tokens where UserID = ?";
-        $row = G::$db->row($query, [$userId]);
+        $row = $app->dbOld->row($query, [$userId]);
     
         # user revoked the token
         if (intval($row["Revoked"]) === 1) {
@@ -100,7 +106,7 @@ class Json
         }
 
         if (empty($payload)) {
-            return $this->failure(message: "the server provided no payload", response: 500);
+            return $this->failure("the server provided no payload", 500);
         }
 
         header("Content-Type: application/json; charset=utf-8");
@@ -141,7 +147,7 @@ class Json
                     "error" => $message,
                 ],
                 $this->info(),
-                $this->debug(),
+                $this->debug()
             ),
             $this->mode
         );
@@ -153,14 +159,14 @@ class Json
      */
     private function debug()
     {
-        $ENV = ENV::go();
+        $app = App::go();
         $debug = Debug::go();
 
-        if ($ENV->DEV) {
+        if ($app->env->DEV) {
             return [
                 "debug" => [
-                    "queries"  => $debug->get_queries(),
-                    "searches" => $debug->get_sphinxql_queries(),
+                    "queries"  => $app->debug->get_queries(),
+                    "searches" => $app->debug->get_sphinxql_queries(),
                 ],
             ];
         } else {
@@ -178,7 +184,7 @@ class Json
             "info" => [
                 "source" => $this->source,
                 "version" => $this->version,
-            ]
+            ],
         ];
     }
 
@@ -194,20 +200,20 @@ class Json
      */
     public function fetch(string $action, array $params = [])
     {
-        $ENV = ENV::go();
+        $app = App::go();
 
-        $token = $ENV->getPriv("SELF_API");
+        $token = $app->env->getPriv("SELF_API");
         $params = implode("&", $params);
 
-        $ch = curl_init();
+        $curl = curl_init();
 
-        # todo: Make this use localhost and not HTTPS
-        curl_setopt($ch, CURLOPT_URL, "https://{$ENV->SITE_DOMAIN}/api.php?action={$action}&{$params}");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        # todo: make this use localhost and not HTTPS
+        curl_setopt($curl, CURLOPT_URL, "https://{$app->env->SITE_DOMAIN}/api.php?action={$action}&{$params}");
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-        # https://docs.biotorrents.de
+        # https://docs.torrents.bio
         curl_setopt(
-            $ch,
+            $curl,
             CURLOPT_HTTPHEADER,
             [
                 "Accept: application/json",
@@ -215,14 +221,14 @@ class Json
             ]
         );
 
-        $data = curl_exec($ch);
-        curl_close($ch);
+        $data = curl_exec($curl);
+        curl_close($curl);
 
-        # Error out on bad query
+        # error out on bad query
         if ($data) {
             return $this->success($data);
         } else {
             return $this->failure();
         }
     }
-}
+} # class
