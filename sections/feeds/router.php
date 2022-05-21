@@ -2,14 +2,261 @@
 declare(strict_types=1);
 
 /**
- * Flight router
- * @see https://flightphp.com/learn
+ * torrents
  */
 
-# endpoints go here
+# all torrents
+Flight::route("/feed/torrents/all/@authKey/@passKey", function (string $authKey, string $passKey) {
+    $feed = new Feed();
+    $feed->open();
+    $feed->channel("All New Torrents", "RSS feed for all new torrent uploads");
+    $feed->retrieve("torrents_all", $authKey, $passKey);
+    $feed->close();
+});
+
+# sequences
+Flight::route("/feed/torrents/sequences/@authKey/@passKey", function (string $authKey, string $passKey) {
+    $feed = new Feed();
+    $feed->open();
+    $feed->channel("New Sequence Torrents", "RSS feed for all new Sequence torrents");
+    $feed->retrieve("torrents_sequences", $authKey, $passKey);
+    $feed->close();
+});
+
+# graphs
+Flight::route("/feed/torrents/graphs/@authKey/@passKey", function (string $authKey, string $passKey) {
+    $feed = new Feed();
+    $feed->open();
+    $feed->channel("New Graph Torrents", "RSS feed for all new Graph torrents");
+    $feed->retrieve("torrents_graphs", $authKey, $passKey);
+    $feed->close();
+});
+
+# systems
+Flight::route("/feed/torrents/systems/@authKey/@passKey", function (string $authKey, string $passKey) {
+    $feed = new Feed();
+    $feed->open();
+    $feed->channel("New Systems Torrents", "RSS feed for all new Systems torrents");
+    $feed->retrieve("torrents_systems", $authKey, $passKey);
+    $feed->close();
+});
+
+# geometric
+Flight::route("/feed/torrents/geometric/@authKey/@passKey", function (string $authKey, string $passKey) {
+    $feed = new Feed();
+    $feed->open();
+    $feed->channel("New Geometric Torrents", "RSS feed for all new Geometric torrents");
+    $feed->retrieve("torrents_geometric", $authKey, $passKey);
+    $feed->close();
+});
+
+# scalar/vector
+Flight::route("/feed/torrents/scalarVector/@authKey/@passKey", function (string $authKey, string $passKey) {
+    $feed = new Feed();
+    $feed->open();
+    $feed->channel("New Scalar/Vector Torrents", "RSS feed for all new Scalar/Vector torrents");
+    $feed->retrieve("torrents_scalars/vectors", $authKey, $passKey);
+    $feed->close();
+});
+
+# patterns
+Flight::route("/feed/torrents/patterns/@authKey/@passKey", function (string $authKey, string $passKey) {
+    $feed = new Feed();
+    $feed->open();
+    $feed->channel("New Pattern Torrents", "RSS feed for all new Pattern torrents");
+    $feed->retrieve("torrents_patterns", $authKey, $passKey);
+    $feed->close();
+});
+
+# constraints
+Flight::route("/feed/torrents/constraints/@authKey/@passKey", function (string $authKey, string $passKey) {
+    $feed = new Feed();
+    $feed->open();
+    $feed->channel("New Constraint Torrents", "RSS feed for all new Constraint torrents");
+    $feed->retrieve("torrents_constraints", $authKey, $passKey);
+    $feed->close();
+});
+
+# images
+Flight::route("/feed/torrents/images/@authKey/@passKey", function (string $authKey, string $passKey) {
+    $feed = new Feed();
+    $feed->open();
+    $feed->channel("New Image Torrents", "RSS feed for all new Image torrents");
+    $feed->retrieve("torrents_images", $authKey, $passKey);
+    $feed->close();
+});
+
+# spatial
+Flight::route("/feed/torrents/spatial/@authKey/@passKey", function (string $authKey, string $passKey) {
+    $feed = new Feed();
+    $feed->open();
+    $feed->channel("New Spatial Torrents", "RSS feed for all new Spatial torrents");
+    $feed->retrieve("torrents_spatial", $authKey, $passKey);
+    $feed->close();
+});
+
+# models
+Flight::route("/feed/torrents/models/@authKey/@passKey", function (string $authKey, string $passKey) {
+    $feed = new Feed();
+    $feed->open();
+    $feed->channel("New Model Torrents", "RSS feed for all new Model torrents");
+    $feed->retrieve("torrents_models", $authKey, $passKey);
+    $feed->close();
+});
+
+# documents
+Flight::route("/feed/torrents/documents/@authKey/@passKey", function (string $authKey, string $passKey) {
+    $feed = new Feed();
+    $feed->open();
+    $feed->channel("New Document Torrents", "RSS feed for all new Document torrents");
+    $feed->retrieve("torrents_documents", $authKey, $passKey);
+    $feed->close();
+});
+
+# machine data
+Flight::route("/feed/torrents/machineData/@authKey/@passKey", function (string $authKey, string $passKey) {
+    $feed = new Feed();
+    $feed->open();
+    $feed->channel("New Machine Data Torrents", "RSS feed for all new Machine Data torrents");
+    $feed->retrieve("torrents_machine data", $authKey, $passKey);
+    $feed->close();
+});
+
+
+/**
+ * news/blog
+ */
+
+# news
+Flight::route("/feed/news/@authKey/@passKey", function (string $authKey, string $passKey) {
+    $app = App::go();
+
+    $feed = new Feed();
+    $feed->open();
+    $feed->channel('News', 'RSS feed for site news');
+
+    $news = $app->cacheOld->get_value('news');
+    if (!$news) {
+        $app->dbOld->query("
+            select ID, Title, Body, Time from news
+            order by Time desc limit 10
+        ");
+
+        $news = $app->dbOld->to_array(false, MYSQLI_NUM, false);
+        $app->cacheOld->cache_value('news', $news, 1209600);
+    }
+
+    foreach ($news as $item) {
+        list($id, $title, $body, $time) = $item;
+
+        if (strtotime($time) >= time()) {
+            continue;
+        }
+
+        echo $feed->item(
+            title: $title,
+            description: $body,
+            page: "index.php#news{$id}",
+            creator: $app->env->SITE_NAME,
+            date: $time
+        );
+    }
+
+    $feed->close();
+});
+
+# blog
+Flight::route("/feed/blog/@authKey/@passKey", function (string $authKey, string $passKey) {
+    $app = App::go();
+
+    $feed = new Feed();
+    $feed->open();
+    $feed->channel('Blog', 'RSS feed for site blog.');
+
+    $blog = $cache->get_value('blog');
+    if (!$blog) {
+        $app->dbOld->query("
+            select blog.ID, users_main.Username, blog.UserID, blog.Title, blog.Body, blog.Time, blog.ThreadID from blog
+            left join users_main on blog.UserID = users_main.ID
+            order by Time desc limit 20
+        ");
+
+        $blog = $db->to_array();
+        $app->cacheOld->cache_value('blog', $blog, 1209600);
+    }
+
+    foreach ($blog as $item) {
+        list($id, $author, $authorId, $title, $body, $time, $threadId) = $item;
+        if ($threadId) {
+            echo $feed->item(
+                title: $title,
+                description: $body,
+                page: "forums.php?action=viewthread&amp;threadid={$threadId}",
+                creator: $app->env->SITE_NAME,
+                date: $time
+            );
+        } else {
+            echo $feed->item(
+                title: $title,
+                description: $body,
+                page: "blog.php#blog{$id}",
+                creator: $app->env->SITE_NAME,
+                date: $time
+            );
+        }
+    }
+
+    $feed->close();
+});
+
+
+/**
+ * user
+ *
+ * START HERE
+ */
+
+# all torrents
+Flight::route("/feed/torrents/user/@authKey/@passKey", function (string $authKey, string $passKey) {
+    $feed = new Feed();
+    $feed->channel("All New Torrents", "RSS feed for all new torrent uploads.");
+    $feed->retrieve("torrents_all", $authKey, $passKey);
+    $feed->close();
+
+
+    // Personalized torrents
+    if (empty($_GET['name']) && substr($_GET['feed'], 0, 16) === 'torrents_notify_') {
+        // All personalized torrent notifications
+        $feed->channel('Personalized torrent notifications', 'RSS feed for personalized torrent notifications.');
+        $feed->retrieve($_GET['feed'], $_GET['authkey'], $_GET['passkey']);
+    } elseif (!empty($_GET['name']) && substr($_GET['feed'], 0, 16) === 'torrents_notify_') {
+        // Specific personalized torrent notification channel
+        $feed->channel(Text::esc($_GET['name']), 'Personal RSS feed: '.Text::esc($_GET['name']));
+        $feed->retrieve($_GET['feed'], $_GET['authkey'], $_GET['passkey']);
+    } elseif (!empty($_GET['name']) && substr($_GET['feed'], 0, 21) === 'torrents_bookmarks_t_') {
+        // Bookmarks
+        $feed->channel('Bookmarked torrent notifications', 'RSS feed for bookmarked torrents.');
+        $feed->retrieve($_GET['feed'], $_GET['authkey'], $_GET['passkey']);
+    } else {
+        $feed->channel('All Torrents', 'RSS feed for all new torrent uploads.');
+        $feed->retrieve('torrents_all', $_GET['authkey'], $_GET['passkey']);
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 # start the router
-#Flight::start();
+Flight::start();
 
 
 /** LEGACY ROUTES */
@@ -17,33 +264,33 @@ declare(strict_types=1);
 
 // Main feeds page
 //
-// The feeds don't use bootstrap/app.php, their code resides entirely in feeds.php in the document root.
+// The feeds don"t use bootstrap/app.php, their code resides entirely in feeds.php in the document root.
 // Bear this in mind when you try to use bootstrap functions.
 
 if (
-  empty($_GET['feed'])
-  || empty($_GET['authkey'])
-  || empty($_GET['auth'])
-  || empty($_GET['passkey'])
-  || empty($_GET['user'])
-  || !is_number($_GET['user'])
-  || strlen($_GET['authkey']) !== 32
-  || strlen($_GET['passkey']) !== 32
-  || strlen($_GET['auth']) !== 32
+  empty($_GET["feed"])
+  || empty($_GET["authkey"])
+  || empty($_GET["auth"])
+  || empty($_GET["passkey"])
+  || empty($_GET["user"])
+  || !is_number($_GET["user"])
+  || strlen($_GET["authkey"]) !== 32
+  || strlen($_GET["passkey"]) !== 32
+  || strlen($_GET["auth"]) !== 32
 ) {
-    $Feed->open_feed();
-    $Feed->channel('Blocked', 'RSS feed.');
-    $Feed->close_feed();
+    $feed->open();
+    $feed->channel("Blocked", "RSS feed.");
+    $feed->close();
     error(400, $NoHTML = true);
 }
 
 # Initialize
-require_once 'classes/env.class.php';
+require_once "classes/env.class.php";
 $ENV = ENV::go();
 
-$User = (int) $_GET['user'];
+$User = (int) $_GET["user"];
 if (!$Enabled = $cache->get_value("enabled_$User")) {
-    require_once SERVER_ROOT.'/classes/db.class.php';
+    require_once SERVER_ROOT."/classes/db.class.php";
     $db = new DB; // Load the database wrapper
 
     $db->query("
@@ -52,7 +299,7 @@ if (!$Enabled = $cache->get_value("enabled_$User")) {
     FROM
       `users_main`
     WHERE
-      `ID` = '$User'
+      `ID` = \"$User\"
     ");
 
     list($Enabled) = $db->next_record();
@@ -60,237 +307,9 @@ if (!$Enabled = $cache->get_value("enabled_$User")) {
 }
 
 # Check for RSS auth
-if (md5($User.$ENV->getPriv('RSS_HASH').$_GET['passkey']) !== $_GET['auth'] || (int) $Enabled !== 1) {
-    $Feed->open_feed();
-    $Feed->channel('Blocked', 'RSS feed.');
-    $Feed->close_feed();
+if (md5($User.$ENV->getPriv("RSS_HASH").$_GET["passkey"]) !== $_GET["auth"] || (int) $Enabled !== 1) {
+    $feed->open();
+    $feed->channel("Blocked", "RSS feed.");
+    $feed->close();
     error(400, $NoHTML = true);
 }
-
-# Start RSS stream
-require_once SERVER_ROOT.'/classes/text.class.php';
-$Feed->open_feed();
-
-/**
- * Torrent feeds
- * These depend on the correct cache key being set on upload_handle.php
- */
-/*
-$TorrentFeeds =
-array_map(
-    'strtolower',
-    array_column(
-        $ENV->toArray($ENV->CATS),
-        'Name'
-    )
-);
-
-$Request = Text::esc($_GET['feed']);
-$Channel = array_search($Request, $TorrentFeeds);
-
-if ($Channel) {
-    $Feed->retrieve($Request, $_GET['authkey'], $_GET['passkey']);
-}
-*/
-
-switch ($_GET['feed']) {
-    /**
-     * News
-     */
-    case 'feed_news':
-        $Feed->channel('News', 'RSS feed for site news.');
-        if (!$News = $cache->get_value('news')) {
-            require_once SERVER_ROOT.'/classes/db.class.php'; // Require the database wrapper
-            $db = new DB; // Load the database wrapper
-
-            $db->query("
-            SELECT
-              `ID`,
-              `Title`,
-              `Body`,
-              `Time`
-            FROM
-              `news`
-            ORDER BY
-              `Time`
-            DESC
-            LIMIT 10
-            ");
-
-            $News = $db->to_array(false, MYSQLI_NUM, false);
-            $cache->cache_value('news', $News, 1209600);
-        }
-
-        $Count = 0;
-        foreach ($News as $NewsItem) {
-            list($NewsID, $Title, $Body, $NewsTime) = $NewsItem;
-            if (strtotime($NewsTime) >= time()) {
-                continue;
-            }
-
-            echo $Feed->item(
-                $Title,
-                $Body,
-                "index.php#news$NewsID",
-                "$ENV->SITE_NAME Staff",
-                '',
-                '',
-                $NewsTime
-            );
-
-            if (++$Count > 4) {
-                break;
-            }
-        }
-        break;
-
-    /**
-     * Blog
-     */
-    case 'feed_blog':
-        $Feed->channel('Blog', 'RSS feed for site blog.');
-        if (!$Blog = $cache->get_value('blog')) {
-            require_once SERVER_ROOT.'/classes/db.class.php'; // Require the database wrapper
-            $db = new DB; // Load the database wrapper
-
-            $db->query("
-            SELECT
-              b.`ID`,
-              um.`Username`,
-              b.`UserID`,
-              b.`Title`,
-              b.`Body`,
-              b.`Time`,
-              b.`ThreadID`
-            FROM
-              `blog` AS b
-            LEFT JOIN `users_main` AS um
-            ON
-              b.`UserID` = um.`ID`
-            ORDER BY
-              `Time`
-            DESC
-            LIMIT 20
-            ");
-
-            $Blog = $db->to_array();
-            $cache->cache_value('blog', $Blog, 1209600);
-        }
-
-        foreach ($Blog as $BlogItem) {
-            list($BlogID, $Author, $AuthorID, $Title, $Body, $BlogTime, $ThreadID) = $BlogItem;
-            if ($ThreadID) {
-                echo $Feed->item(
-                    $Title,
-                    $Body,
-                    "forums.php?action=viewthread&amp;threadid=$ThreadID",
-                    "$ENV->SITE_NAME Staff",
-                    '',
-                    '',
-                    $BlogTime
-                );
-            } else {
-                echo $Feed->item(
-                    $Title,
-                    $Body,
-                    "blog.php#blog$BlogID",
-                    "$ENV->SITE_NAME Staff",
-                    '',
-                    '',
-                    $BlogTime
-                );
-            }
-        }
-        break;
-
-        /**
-         * ugh
-         */
-        case 'torrents_all':
-            $Feed->channel('All New Torrents', 'RSS feed for all new torrent uploads.');
-            $Feed->retrieve('torrents_all', $_GET['authkey'], $_GET['passkey']);
-            break;
-
-        case 'torrents_sequences':
-            $Feed->channel('New Sequences Torrents', 'RSS feed for all new Sequences torrents.');
-            $Feed->retrieve('torrents_sequences', $_GET['authkey'], $_GET['passkey']);
-            break;
-
-        case 'torrents_graphs':
-            $Feed->channel('New Graphs Torrents', 'RSS feed for all new Graphs torrents.');
-            $Feed->retrieve('torrents_graphs', $_GET['authkey'], $_GET['passkey']);
-            break;
-
-        case 'torrents_systems':
-            $Feed->channel('New Systems Torrents', 'RSS feed for all new Systems torrents.');
-            $Feed->retrieve('torrents_systems', $_GET['authkey'], $_GET['passkey']);
-            break;
-
-        case 'torrents_geometric':
-            $Feed->channel('New Geometric Torrents', 'RSS feed for all new Geometric torrents.');
-            $Feed->retrieve('torrents_geometric', $_GET['authkey'], $_GET['passkey']);
-            break;
-
-        # %2F
-        case 'torrents_scalars/vectors':
-            $Feed->channel('New Scalars/Vectors Torrents', 'RSS feed for all new Scalars/Vectors torrents.');
-            $Feed->retrieve('torrents_scalars/vectors', $_GET['authkey'], $_GET['passkey']);
-            break;
-
-        case 'torrents_patterns':
-            $Feed->channel('New Patterns Torrents', 'RSS feed for all new Patterns torrents.');
-            $Feed->retrieve('torrents_patterns', $_GET['authkey'], $_GET['passkey']);
-            break;
-
-        case 'torrents_constraints':
-            $Feed->channel('New Constraints Torrents', 'RSS feed for all new Constraints torrents.');
-            $Feed->retrieve('torrents_constraints', $_GET['authkey'], $_GET['passkey']);
-            break;
-
-        case 'torrents_images':
-            $Feed->channel('New Images Torrents', 'RSS feed for all new Images torrents.');
-            $Feed->retrieve('torrents_images', $_GET['authkey'], $_GET['passkey']);
-            break;
-
-        case 'torrents_spatial':
-            $Feed->channel('New Spatial Torrents', 'RSS feed for all new Spatial torrents.');
-            $Feed->retrieve('torrents_spatial', $_GET['authkey'], $_GET['passkey']);
-            break;
-
-        case 'torrents_models':
-            $Feed->channel('New Models Torrents', 'RSS feed for all new Models torrents.');
-            $Feed->retrieve('torrents_models', $_GET['authkey'], $_GET['passkey']);
-            break;
-
-        case 'torrents_documents':
-            $Feed->channel('New Documents Torrents', 'RSS feed for all new Documents torrents.');
-            $Feed->retrieve('torrents_documents', $_GET['authkey'], $_GET['passkey']);
-            break;
-
-        # %20
-        case 'torrents_machine data':
-            $Feed->channel('New Machine Data Torrents', 'RSS feed for all new Machine Data torrents.');
-            $Feed->retrieve('torrents_machine data', $_GET['authkey'], $_GET['passkey']);
-            break;
-
-        default:
-            // Personalized torrents
-            if (empty($_GET['name']) && substr($_GET['feed'], 0, 16) === 'torrents_notify_') {
-                // All personalized torrent notifications
-                $Feed->channel('Personalized torrent notifications', 'RSS feed for personalized torrent notifications.');
-                $Feed->retrieve($_GET['feed'], $_GET['authkey'], $_GET['passkey']);
-            } elseif (!empty($_GET['name']) && substr($_GET['feed'], 0, 16) === 'torrents_notify_') {
-                // Specific personalized torrent notification channel
-                $Feed->channel(Text::esc($_GET['name']), 'Personal RSS feed: '.Text::esc($_GET['name']));
-                $Feed->retrieve($_GET['feed'], $_GET['authkey'], $_GET['passkey']);
-            } elseif (!empty($_GET['name']) && substr($_GET['feed'], 0, 21) === 'torrents_bookmarks_t_') {
-                // Bookmarks
-                $Feed->channel('Bookmarked torrent notifications', 'RSS feed for bookmarked torrents.');
-                $Feed->retrieve($_GET['feed'], $_GET['authkey'], $_GET['passkey']);
-            } else {
-                $Feed->channel('All Torrents', 'RSS feed for all new torrent uploads.');
-                $Feed->retrieve('torrents_all', $_GET['authkey'], $_GET['passkey']);
-            }
-}
-
-$Feed->close_feed();
