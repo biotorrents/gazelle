@@ -1,29 +1,22 @@
 <?php
 declare(strict_types=1);
 
-/**
- * Flight router
- * @see https://flightphp.com/learn
- */
+# enable
+Flight::route("/enable/@token", function (string $token) {
+    $app = App::go();
 
-# endpoints go here
+    if (isset($app->user["ID"]) || !isset($token) || !$app->env->FEATURE_EMAIL_REENABLE) {
+        Http::redirect();
+    }
+    
+    if (isset($token)) {
+        $error = AutoEnable::handle_token($token);
+    }
+    
+    View::header("Enable Request");
+    echo $error; # this is always set
+    View::footer();
+});
 
 # start the router
-#Flight::start();
-
-
-/** LEGACY ROUTES */
-
-
-if (isset($user['ID']) || !isset($_GET['token']) || !FEATURE_EMAIL_REENABLE) {
-    Http::redirect("index.php");
-    error();
-}
-
-if (isset($_GET['token'])) {
-    $Err = AutoEnable::handle_token($_GET['token']);
-}
-
-View::header('Enable Request');
-echo $Err; // This will always be set
-View::footer();
+Flight::start();

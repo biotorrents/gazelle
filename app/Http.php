@@ -20,8 +20,9 @@ class Http
      *
      * Simple header("Location: foo") wrapper.
      * Handles checks, format, and exiting.
+     * Goes to "/" by default with no argument.
      */
-    public static function redirect(string $uri)
+    public static function redirect(string $uri = "")
     {
         if (headers_sent()) {
             return false;
