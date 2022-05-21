@@ -40,12 +40,6 @@ if (!isset($_REQUEST['action'])) {
     #error('Need to set an "action" parameter in sections/tools/tools.php.');
 }
 
-if (substr($_REQUEST['action'], 0, 16) === 'rerender_gallery' && !isset($argv[1])) {
-    if (!check_perms('site_debug')) {
-        error(403);
-    }
-}
-
 $Val = new Validate;
 $Feed = new Feed;
 
@@ -404,10 +398,6 @@ switch ($_REQUEST['action']) {
 
   case 'database_key':
     include SERVER_ROOT.'/sections/tools/misc/database_key.php';
-    break;
-
-  case 'rerender_gallery':
-    include SERVER_ROOT.'/sections/tools/development/rerender_gallery.php';
     break;
 
   case 'mass_pm':
