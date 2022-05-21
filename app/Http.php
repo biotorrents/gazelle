@@ -10,8 +10,8 @@ declare(strict_types=1);
 
 class Http
 {
-    # optional cookie params
-    private static $cookiePrefix = "";
+    # cookie params
+    private static $cookiePrefix = "__Host-";
     private static $cookieDuration = "tomorrow";
 
 
