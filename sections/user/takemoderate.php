@@ -753,7 +753,7 @@ if ($MergeStatsFrom && check_perms('users_edit_ratio')) {
 }
 
 if ($Pass && check_perms('users_edit_password')) {
-    $UpdateSet[] = "PassHash = '".db_string(Users::make_sec_hash($Pass))."'";
+    $UpdateSet[] = "PassHash = '".db_string(Auth::makeHash($Pass))."'";
     $EditSummary[] = 'password reset';
 
     $cache->delete_value("user_info_$UserID");

@@ -43,6 +43,7 @@
     "ext-memcache": "*",
     "ext-mysqli": "*",
     "ext-zip": "*",
+    "delight-im/auth": "^8.3",
     "erusev/parsedown": "1.8.0-beta-7",
     "erusev/parsedown-extra": "0.8.0",
     "guzzlehttp/guzzle": "^7.4.1",

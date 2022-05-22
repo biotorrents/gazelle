@@ -6,10 +6,19 @@ declare(strict_types=1);
  * @see https://flightphp.com/learn
  */
 
-# endpoints go here
+# registration page
+Flight::route("/register", function () {
+    require_once __DIR__."/clients.php";
+});
+
+# verify new registration
+Flight::route("/verify/@selector/@token", function ($selector, $token) {
+    require_once __DIR__."/verify.php";
+});
+
 
 # start the router
-#Flight::start();
+Flight::start();
 
 
 /** LEGACY ROUTES */
@@ -126,7 +135,7 @@ if (!empty($_REQUEST['confirm'])) {
         VALUES
           ('".db_string(trim($_POST['username']))."',
           '".Crypto::encrypt($_POST['email'])."',
-          '".db_string(Users::make_sec_hash($_POST['password']))."',
+          '".db_string(Auth::makeHash($_POST['password']))."',
           '".db_string($torrent_pass)."',
           '".Crypto::encrypt($_SERVER['REMOTE_ADDR'])."',
           '$Class',

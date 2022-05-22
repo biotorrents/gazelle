@@ -285,4 +285,14 @@ class Twig # extends Twig\Environment
 
         return $twig;
     }
+
+
+    /**
+     * render
+     */
+    public function render(string $template, array $vars = [])
+    {
+        $twig = self::$instance ?? self::go();
+        echo $twig->render($template, $vars);
+    }
 } # class

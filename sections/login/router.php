@@ -96,7 +96,7 @@ if ($action === 'recover') {
                       i.`ResetExpires` = NULL
                       WHERE m.`ID` = ?
                       AND i.`UserID` = m.`ID`",
-                        Users::make_sec_hash($_REQUEST['password']),
+                        Auth::makeHash($_REQUEST['password']),
                         $UserID
                     );
 
@@ -274,7 +274,7 @@ if ($action === 'recover') {
               AND Username != ''", $_POST['username']);
             list($UserID, $PermissionID, $CustomPermissions, $PassHash, $TwoFactor, $Enabled) = $app->dbOld->next_record(MYSQLI_NUM, array(2));
             if (!$Banned) {
-                if ($UserID && Users::check_password($_POST['password'], $PassHash)) {
+                if ($UserID && Auth::checkHash($_POST['password'], $PassHash)) {
                     // Update hash if better algorithm available
                     if (password_needs_rehash($PassHash, PASSWORD_DEFAULT)) {
                         $app->dbOld->query("

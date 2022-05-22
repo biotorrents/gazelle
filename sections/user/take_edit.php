@@ -149,7 +149,7 @@ function require_password($Setting = false)
         error('A setting you changed requires you to enter your current password'.($Setting ? ' (Setting: '.$Setting.')' : ''));
     }
 
-    if (!Users::check_password($_POST['cur_pass'], $CurPassHash)) {
+    if (!Auth::checkHash($_POST['cur_pass'], $CurPassHash)) {
         error('The password you entered was incorrect'.($Setting ? ' (Required by setting: '.$Setting.')' : ''));
     }
 }
@@ -295,7 +295,7 @@ $SQL = "
 
 if ($ResetPassword) {
     $ChangerIP = Crypto::encrypt($user['IP']);
-    $PassHash = Users::make_sec_hash($_POST['new_pass_1']);
+    $PassHash = Auth::makeHash($_POST['new_pass_1']);
     $SQL.= ",m.PassHash = '".db_string($PassHash)."'";
 }
 

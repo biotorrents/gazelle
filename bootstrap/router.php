@@ -102,6 +102,10 @@ Flight::route("/logout", function () {
     logout_all_sessions();
 });
 
+# verify new registration
+Flight::route("/verify/@selector/@token", function ($selector, $token) {
+    require_once __DIR__."/../sections/register/verify.php";
+});
 
 # start the router
 Flight::start();

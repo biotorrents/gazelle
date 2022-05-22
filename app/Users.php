@@ -370,49 +370,6 @@ class Users
 
 
     /**
-     * Verify a password against a password hash
-     *
-     * @param $Password password
-     * @param $Hash password hash
-     * @return true on correct password
-     */
-    public static function check_password($Password, $Hash)
-    {
-        if (!$Password || !$Hash) {
-            return false;
-        }
-
-        return password_verify(
-            str_replace(
-                "\0",
-                "",
-                hash("sha512", $Password, true)
-            ),
-            $Hash
-        );
-    }
-
-
-    /**
-     * Create salted hash for a given string
-     *
-     * @param $Str string to hash
-     * @return salted hash
-     */
-    public static function make_sec_hash($Str)
-    {
-        return password_hash(
-            str_replace(
-                "\0",
-                "",
-                hash("sha512", $Str, true)
-            ),
-            PASSWORD_DEFAULT
-        );
-    }
-
-
-    /**
      * Returns a username string for display
      *
      * @param int $UserID
