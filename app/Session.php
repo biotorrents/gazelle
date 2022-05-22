@@ -21,7 +21,7 @@ class Session
     /**
      * __construct
      */
-    public function __construct()
+    public function __construct(string $username = "")
     {
         # relies on cookies
         $cookie = Http::query("cookie");
@@ -34,6 +34,11 @@ class Session
         if ($this->id === null) {
             # users_sessions.SessionID char(64)
             $this->id = Text::random(64);
+        }
+
+        # try to get a userId
+        if ($this->userId === null && empty($username)) {
+            throw new Exception("Please provide a username, e.g., new Session(\"foo\")");
         }
 
         session_id($this->id);
