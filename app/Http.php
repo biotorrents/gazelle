@@ -11,7 +11,7 @@ declare(strict_types=1);
 class Http
 {
     # cookie params
-    private static $cookiePrefix = "__Host-";
+    private static $cookiePrefix = "__Secure-";
     private static $cookieDuration = "tomorrow";
 
 

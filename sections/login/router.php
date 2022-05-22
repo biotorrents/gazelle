@@ -6,7 +6,20 @@ declare(strict_types=1);
  * @see https://flightphp.com/learn
  */
 
-# endpoints go here
+# login
+Flight::route("/login", function () {
+    require_once __DIR__."/clients.php";
+});
+
+# disabled
+Flight::route("/login/disabled", function () {
+    require_once __DIR__."/disabled.php";
+});
+
+# recover
+Flight::route("/login/recover", function () {
+    require_once __DIR__."/recover_step1.php";
+});
 
 # start the router
 #Flight::start();
@@ -24,20 +37,14 @@ declare(strict_types=1);
  */
 
 # Initialize
-$ENV = ENV::go();
+$app = App::go();
+
 $Validate = new Validate;
-$TwoFA = new \RobThree\Auth\TwoFactorAuth($ENV->SITE_NAME);
-$U2F = new \u2flib_server\U2F("https://$ENV->SITE_DOMAIN");
+$TwoFA = new RobThree\Auth\TwoFactorAuth($app->env->SITE_NAME);
+$U2F = new u2flib_server\U2F("https://{$app->env->SITE_DOMAIN}");
 
 # Fix Flight, ugh
 $action = $_REQUEST['action'] ?? null;
-$cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
-
-# They want the disabled page
-if ($action === 'disabled') {
-    Http::redirect("disabled.php");
-    exit;
-}
 
 # IP ban after failed logins
 if (Tools::site_ban_ip($_SERVER['REMOTE_ADDR'])) {
@@ -49,7 +56,7 @@ if ($action === 'recover') {
     // Recover password
     if (!empty($_REQUEST['key'])) {
         // User has entered a new password, use step 2
-        $db->query("
+        $app->dbOld->query("
         SELECT
           m.`ID`,
           m.`Email`,
@@ -58,7 +65,7 @@ if ($action === 'recover') {
           INNER JOIN `users_info` AS i ON i.`UserID` = m.`ID`
           WHERE i.`ResetKey` = ?
           AND i.`ResetKey` != ''", $_REQUEST['key']);
-        list($UserID, $Email, $Country, $Expires) = $db->next_record();
+        list($UserID, $Email, $Country, $Expires) = $app->dbOld->next_record();
 
         if (!apcu_exists('DBKEY')) {
             error('Database not fully decrypted. Please wait for staff to fix this and try again later.');
@@ -77,7 +84,7 @@ if ($action === 'recover') {
                 $Err = $Validate->ValidateForm($_REQUEST);
                 if ($Err == '') {
                     // Form validates without error, set new secret and password.
-                    $db->query(
+                    $app->dbOld->query(
                         "
                     UPDATE
                       `users_main` AS m,
@@ -106,7 +113,7 @@ if ($action === 'recover') {
             // Either his key has expired, or he hasn't requested a pass change at all
             if (strtotime($Expires) < time() && $UserID) {
                 // If his key has expired, clear all the reset information
-                $db->query("
+                $app->dbOld->query("
                 UPDATE users_info
                 SET ResetKey = '',
                   ResetExpires = NULL
@@ -132,7 +139,7 @@ if ($action === 'recover') {
 
             if (!$Err) {
                 // Form validates correctly
-                $db->query("
+                $app->dbOld->query("
                 SELECT
                   `Email`
                 FROM
@@ -143,7 +150,7 @@ if ($action === 'recover') {
                  * Note that if any user has a blank email field,
                  * the comparison will fail and the script will 500!
                  */
-                while (list($EncEmail) = $db->next_record()) {
+                while (list($EncEmail) = $app->dbOld->next_record()) {
                     if (trim(
                         strtolower($_REQUEST['email'])
                     ) === strtolower(Crypto::decrypt($EncEmail))) {
@@ -151,7 +158,7 @@ if ($action === 'recover') {
                     }
                 }
 
-                $db->query("
+                $app->dbOld->query("
                 SELECT
                   `ID`,
                   `Username`,
@@ -162,7 +169,7 @@ if ($action === 'recover') {
                   `Email` = '$EncEmail'
                 ");
 
-                list($UserID, $Username, $Email) = $db->next_record();
+                list($UserID, $Username, $Email) = $app->dbOld->next_record();
                 $Email = Crypto::decrypt($Email);
 
                 if ($UserID) {
@@ -172,12 +179,12 @@ if ($action === 'recover') {
                     $Sent = 1; // If $Sent is 1, recover_step1.php displays a success message
 
                     //Log out all of the users current sessions
-                    $cache->delete_value("user_info_$UserID");
-                    $cache->delete_value("user_info_heavy_$UserID");
-                    $cache->delete_value("user_stats_$UserID");
-                    $cache->delete_value("enabled_$UserID");
+                    $app->cacheOld->delete_value("user_info_$UserID");
+                    $app->cacheOld->delete_value("user_info_heavy_$UserID");
+                    $app->cacheOld->delete_value("user_stats_$UserID");
+                    $app->cacheOld->delete_value("enabled_$UserID");
 
-                    $db->query("
+                    $app->dbOld->query("
                     SELECT
                       `SessionID`
                     FROM
@@ -186,11 +193,11 @@ if ($action === 'recover') {
                       `UserID` = '$UserID'
                     ");
 
-                    while (list($SessionID) = $db->next_record()) {
-                        $cache->delete_value("session_$UserID"."_$SessionID");
+                    while (list($SessionID) = $app->dbOld->next_record()) {
+                        $app->cacheOld->delete_value("session_$UserID"."_$SessionID");
                     }
 
-                    $db->query("
+                    $app->dbOld->query("
                     UPDATE
                       `users_sessions`
                     SET
@@ -217,30 +224,29 @@ if ($action === 'recover') {
 } // End password recovery
 
 // Normal login
-else {
     $Validate->SetFields('username', true, 'regex', 'You did not enter a valid username', array('regex' => USERNAME_REGEX));
     $Validate->SetFields('password', '1', 'string', 'You entered an invalid password', array('minlength' => '15', 'maxlength' => '307200'));
 
     try {
-        list($Attempts, $Banned) = $cache->get_value('login_attempts_'.db_string($_SERVER['REMOTE_ADDR']));
+        list($Attempts, $Banned) = $app->cacheOld->get_value('login_attempts_'.db_string($_SERVER['REMOTE_ADDR']));
     } catch (Exception $e) {
-        $cache->add_value('login_attempts_'.db_string($_SERVER['REMOTE_ADDR']), 0);
+        $app->cacheOld->add_value('login_attempts_'.db_string($_SERVER['REMOTE_ADDR']), 0);
     }
     // Function to log a user's login attempt
     function log_attempt()
     {
-        global $cache, $Attempts;
+        $app = App::go();
 
         $Attempts = ($Attempts ?? 0) + 1;
-        $cache->cache_value('login_attempts_'.db_string($_SERVER['REMOTE_ADDR']), array($Attempts, ($Attempts > 5)), 60*60*$Attempts);
-        $AllAttempts = ($cache->get_value('login_attempts')) ? false : [];
+        $app->cacheOld->cache_value('login_attempts_'.db_string($_SERVER['REMOTE_ADDR']), array($Attempts, ($Attempts > 5)), 60*60*$Attempts);
+        $AllAttempts = ($app->cacheOld->get_value('login_attempts')) ? false : [];
         $AllAttempts[$_SERVER['REMOTE_ADDR']] = time()+(60*60*$Attempts);
         foreach ($AllAttempts as $IP => $Time) {
             if ($Time < time()) {
                 unset($AllAttempts[$IP]);
             }
         }
-        $cache->cache_value('login_attempts', $AllAttempts, 0);
+        $app->cacheOld->cache_value('login_attempts', $AllAttempts, 0);
     }
 
     // If user has submitted form
@@ -255,7 +261,7 @@ else {
 
         if (!$Err) {
             // Passes preliminary validation (username and password "look right")
-            $db->query("
+            $app->dbOld->query("
             SELECT
               ID,
               PermissionID,
@@ -266,12 +272,12 @@ else {
             FROM users_main
               WHERE Username = ?
               AND Username != ''", $_POST['username']);
-            list($UserID, $PermissionID, $CustomPermissions, $PassHash, $TwoFactor, $Enabled) = $db->next_record(MYSQLI_NUM, array(2));
+            list($UserID, $PermissionID, $CustomPermissions, $PassHash, $TwoFactor, $Enabled) = $app->dbOld->next_record(MYSQLI_NUM, array(2));
             if (!$Banned) {
                 if ($UserID && Users::check_password($_POST['password'], $PassHash)) {
                     // Update hash if better algorithm available
                     if (password_needs_rehash($PassHash, PASSWORD_DEFAULT)) {
-                        $db->query("
+                        $app->dbOld->query("
                         UPDATE users_main
                         SET PassHash = ?
                           WHERE Username = ?", make_sec_hash($_POST['password']), $_POST['username']);
@@ -281,12 +287,12 @@ else {
                         # todo: Make sure the type is (int)
                         if ($Enabled === '1') {
                             $U2FRegs = [];
-                            $db->query("
+                            $app->dbOld->query("
                             SELECT KeyHandle, PublicKey, Certificate, Counter, Valid
                             FROM u2f
                               WHERE UserID = ?", $UserID);
                             // Needs to be an array of objects, so we can't use to_array()
-                            while (list($KeyHandle, $PublicKey, $Certificate, $Counter, $Valid) = $db->next_record()) {
+                            while (list($KeyHandle, $PublicKey, $Certificate, $Counter, $Valid) = $app->dbOld->next_record()) {
                                 $U2FRegs[] = (object)['keyHandle'=>$KeyHandle, 'publicKey'=>$PublicKey, 'certificate'=>$Certificate, 'counter'=>$Counter, 'valid'=>$Valid];
                             }
 
@@ -299,7 +305,7 @@ else {
                                         if ($U2FReg->valid != '1') {
                                             error('Token disabled.');
                                         }
-                                        $db->query(
+                                        $app->dbOld->query(
                                             "UPDATE u2f
                                 SET Counter = ?
                                 WHERE KeyHandle = ?
@@ -315,7 +321,7 @@ else {
                                         }
                                         if ($e->getMessage() == 'Counter too low.') {
                                             $BadHandle = json_decode($_POST['u2f-response'], true)['keyHandle'];
-                                            $db->query("UPDATE u2f
+                                            $app->dbOld->query("UPDATE u2f
                                   SET Valid = '0'
                                   WHERE KeyHandle = ?
                                   AND UserID = ?", $BadHandle, $UserID);
@@ -334,7 +340,7 @@ else {
                                 Http::setCookie(['session' => $SessionID]);
                                 Http::setCookie(['userid' => $UserID]);
 
-                                $db->query("
+                                $app->dbOld->query("
                                 INSERT INTO users_sessions
                                   (UserID, SessionID, KeepLogged, IP, LastUpdate, FullUA)
                                 VALUES
@@ -345,13 +351,13 @@ else {
                                   NOW(),
                                   '".db_string($_SERVER['HTTP_USER_AGENT'])."')");
 
-                                $cache->begin_transaction("users_sessions_$UserID");
-                                $cache->insert_front($SessionID, [
+                                $app->cacheOld->begin_transaction("users_sessions_$UserID");
+                                $app->cacheOld->insert_front($SessionID, [
                                   'SessionID' => $SessionID,
                                   'IP' => (apcu_exists('DBKEY')?Crypto::encrypt($_SERVER['REMOTE_ADDR']):'0.0.0.0'),
                                   'LastUpdate' => sqltime()
                                 ]);
-                                $cache->commit_transaction(0);
+                                $app->cacheOld->commit_transaction(0);
 
                                 $Sql = "
                                 UPDATE users_main
@@ -360,7 +366,7 @@ else {
                                   LastAccess = NOW()
                                   WHERE ID = '".db_string($UserID)."'";
 
-                                $db->query($Sql);
+                                $app->dbOld->query($Sql);
 
                                 if (!empty($_COOKIE['redirect'])) {
                                     $URL = $_COOKIE['redirect'];
@@ -409,4 +415,3 @@ else {
         }
     }
     require_once __DIR__.'/login.php';
-}

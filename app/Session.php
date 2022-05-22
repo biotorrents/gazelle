@@ -14,28 +14,38 @@ class Session
     public $id = null;
     public $userId = null;
 
+    # login atempts
+    public $attempts = 0;
+
 
     /**
      * __construct
      */
     public function __construct()
     {
-        $app = App::go();
-
         # relies on cookies
         $cookie = Http::query("cookie");
 
+        # attempt to read cookies
         $this->id = $cookie["session"] ?? null;
         $this->userId = $cookie["userid"] ?? null;
+
+        # generate new session key
+        if ($this->id === null) {
+            # users_sessions.SessionID char(64)
+            $this->id = Text::random(64);
+        }
+
+        session_id($this->id);
+        session_start();
     }
+
 
     /**
      * enforceLogin
      */
     public function enforceLogin()
     {
-        $app = App::go();
-
         # sanitize request
         $server = Http::query("server");
 
@@ -128,5 +138,32 @@ class Session
 
         $app->cacheOld->delete_value("users_sessions_{$this->userId}");
         $this->logout();
+    }
+
+
+    /**
+     * logAttempt
+     *
+     * Function to log a user's login attempt.
+     */
+    public function logAttempt()
+    {
+        $app = App::go();
+
+        $server = Http::query("server");
+    
+        $attempts = $this->attempts++;
+        $app->cacheOld->cache_value("login_attempts_{$server["REMOTE_ADDR"]}", [$attempts, ($attempts > 5)], 60 * 60 * $attempts);
+
+        $allAttempts = $app->cacheOld->get_value("login_attempts") ?? [];
+        $allAttempts[$server["REMOTE_ADDR"]] = time() + (60 * 60 * $attempts);
+
+        foreach ($allAttempts as $ip => $time) {
+            if ($time < time()) {
+                unset($allAttempts[$ip]);
+            }
+        }
+
+        $app->cacheOld->cache_value("login_attempts", $allAttempts, 0);
     }
 } # class

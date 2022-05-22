@@ -16,7 +16,7 @@ echo <<<HTML
 HTML;
 
 echo $twig->render(
-    'header/meta-tags.twig',
+    '_base/metaTags.twig',
     [
     'ENV' => $ENV,
     'user' => $user,

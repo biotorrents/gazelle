@@ -209,27 +209,31 @@ class Text
     /**
      * random
      *
-     * @param int $length
-     * @return string Random alphanumeric string
+     * Generate a more truly "random" alpha-numeric string.
+     * @see https://github.com/illuminate/support/blob/master/Str.php
+     *
+     * @param  int  $length
+     * @return string
      */
-    public static function random(int $length = 32): string
+    public static function random($length = 32): string
     {
-        # strrev to obscure bcrypt format
-        $secret = strrev(
-            password_hash(
-                random_bytes(256),
-                PASSWORD_DEFAULT
-            )
-        );
-        
-        return substr(
-            preg_filter(
-                "/[^a-z0-9]/i",
-                "",
-                $secret
-            ),
-            1,
-            $length
-        );
+        $string = "";
+
+        while (($len = strlen($string)) < $length) {
+            $size = $length - $len;
+            $bytes = random_bytes($size);
+
+            $string .= substr(
+                str_replace(
+                    ["/", "+", "="],
+                    "",
+                    base64_encode($bytes)
+                ),
+                0,
+                $size
+            );
+        }
+
+        return $string;
     }
 } # class
