@@ -4,14 +4,15 @@ declare(strict_types=1);
 $app = App::go();
 
 $auth = new Auth();
-!d($auth);exit;
+#!d($auth);exit;
 
 
 View::header('Verify your email');
 
-$app->twig->render(
+!d($app->twig->render(
     'test.twig',
     [
+        "dumb" => "ass"
         /*
         'economyOverTime' => $economyOverTime,
         'trackerEconomy' => $trackerEconomy,
@@ -20,6 +21,6 @@ $app->twig->render(
         'databaseSpecifics' => $databaseSpecifics,
         */
     ]
-);
+));
 
 View::footer();

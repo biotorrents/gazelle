@@ -289,8 +289,24 @@ class Twig # extends Twig\Environment
 
     /**
      * render
+     *
+     * Returns a Twig render
+     * (e.g., for a variable).
      */
     public function render(string $template, array $vars = [])
+    {
+        $twig = self::$instance ?? self::go();
+        return $twig->render($template, $vars);
+    }
+
+
+    /**
+     * print
+     *
+     * Prints a Twig render
+     * (e.g., for a page).
+     */
+    public function print(string $template, array $vars = [])
     {
         $twig = self::$instance ?? self::go();
         echo $twig->render($template, $vars);
