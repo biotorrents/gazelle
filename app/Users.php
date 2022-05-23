@@ -720,16 +720,19 @@ class Users
           ResetExpires = '" . time_plus(60 * 60) . "'
         WHERE UserID = '$UserID'");
 
-        require_once SERVER_ROOT . '/classes/templates.class.php';
-        $TPL = new TEMPLATE;
-        $TPL->open(SERVER_ROOT . '/templates/password_reset.tpl'); // Password reset template
-        $TPL->set('Username', $Username);
-        $TPL->set('ResetKey', $ResetKey);
-        $TPL->set('IP', $_SERVER['REMOTE_ADDR']);
-        $TPL->set('SITE_NAME', $app->env->SITE_NAME);
-        $TPL->set('SITE_DOMAIN', SITE_DOMAIN);
+        $email = $app->twig->render(
+            "email/passphraseReset.twig",
+            [
+            'Username'=> $Username,
+           'ResetKey'=> $ResetKey,
+          'IP'=> $_SERVER['REMOTE_ADDR'],
+          'SITE_NAME'=> $app->env->SITE_NAME,
+            'SITE_DOMAIN'=> SITE_DOMAIN,
+    
+        ]
+        );
 
-        App::email($Email, 'Password reset information for ' . $app->env->SITE_NAME, $TPL->get());
+        App::email($Email, 'Password reset information for ' . $app->env->SITE_NAME, $email);
     }
 
     /*

@@ -142,6 +142,8 @@ EOT;
      */
     public static function handle_requests($IDs, $Status, $Comment)
     {
+        $app = App::go();
+
         # Error checking
         if ($Status !== self::APPROVED && $Status !== self::DENIED && $Status !== self::DISCARDED) {
             error(404);
@@ -176,17 +178,6 @@ EOT;
 
         if ($Status !== self::DISCARDED) {
             // Prepare email
-            require_once SERVER_ROOT.'/classes/templates.class.php';
-            $TPL = new TEMPLATE;
-
-            if ($Status === self::APPROVED) {
-                $TPL->open(SERVER_ROOT.'/templates/enable_request_accepted.tpl');
-                $TPL->set('SITE_DOMAIN', SITE_DOMAIN);
-            } else {
-                $TPL->open(SERVER_ROOT.'/templates/enable_request_denied.tpl');
-            }
-            $TPL->set('SITE_NAME', $ENV->SITE_NAME);
-
             foreach ($Results as $Result) {
                 list($Email, $ID, $UserID) = $Result;
                 $Email = Crypto::decrypt($Email);
@@ -205,13 +196,17 @@ EOT;
                       $Token,
                       $ID
                     ");
-                    $TPL->set('TOKEN', $Token);
                 }
-
+                if ($Status === self::APPROVED) {
+                    $email = $app->twig->render("email/enableApproved.twig", ["ENV" => $app->env,"token" => $token]);
+                } else {
+                    $email = $app->twig->render("email/enableDeclined.twig");
+                }
+    
                 // Send email
                 $Subject = "Your enable request for $ENV->SITE_NAME has been ";
                 $Subject .= ($Status === self::APPROVED) ? 'approved' : 'denied';
-                App::email($Email, $Subject, $TPL->get());
+                App::email($Email, $Subject, $email);
             }
         } else {
             foreach ($Results as $Result) {

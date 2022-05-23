@@ -251,16 +251,16 @@ if (!empty($_REQUEST['confirm'])) {
                 $TreeLevel = 1;
             }
 
-            include(SERVER_ROOT.'/classes/templates.class.php');
-            $TPL = new TEMPLATE;
-            $TPL->open(SERVER_ROOT.'/templates/new_registration.tpl');
+            $email = $app->twig->render("email/verifyRegistration.twig",
+            [
+                'Username'=> $_REQUEST['username'],
+                'TorrentKey'=> $torrent_pass,
+               'SITE_NAME'=> $ENV->SITE_NAME,
+                'SITE_DOMAIN'=> SITE_DOMAIN,
+    
+            ]);
 
-            $TPL->set('Username', $_REQUEST['username']);
-            $TPL->set('TorrentKey', $torrent_pass);
-            $TPL->set('SITE_NAME', $ENV->SITE_NAME);
-            $TPL->set('SITE_DOMAIN', SITE_DOMAIN);
-
-            App::email($_REQUEST['email'], "New account confirmation at $ENV->SITE_NAME", $TPL->get());
+            App::email($_REQUEST['email'], "New account confirmation at $ENV->SITE_NAME", $email);
             Tracker::update_tracker('add_user', array('id' => $UserID, 'passkey' => $torrent_pass));
             $Sent = 1;
         }
