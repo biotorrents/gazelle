@@ -115,7 +115,7 @@ View::header('Miscellaneous Values');
     </tr>
 
     <tr>
-      <form class="create_form" name="misc_values" action="" method="post">
+      <form name="misc_values" action="" method="post">
         <input type="hidden" name="action" value="misc_values" />
         <input type="hidden" name="auth"
           value="<?=$user['AuthKey']?>" />

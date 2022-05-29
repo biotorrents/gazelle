@@ -174,7 +174,7 @@ HTML;
         # Torrent form hidden values
         $AuthKey = G::$user['AuthKey'];
         $HTML = <<<HTML
-        <form class="create_form box pad" name="torrent" action="" enctype="multipart/form-data" method="post"
+        <form class="box pad" name="torrent" action="" enctype="multipart/form-data" method="post"
           onsubmit="$('#post').raw().disabled = 'disabled';">
 
         <input type="hidden" name="submit" value="true" />

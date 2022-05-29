@@ -98,7 +98,7 @@ View::header(
     </table>
   </div>
   <div class="box pad">
-    <form class="create_form" name="forum_thread" action="" id="newthreadform" method="post">
+    <form name="forum_thread" action="" id="newthreadform" method="post">
       <input type="hidden" name="action" value="new" />
       <input type="hidden" name="auth"
         value="<?=$user['AuthKey']?>" />

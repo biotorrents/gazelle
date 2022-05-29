@@ -127,7 +127,7 @@ while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinCla
     <td colspan="8">Create forum</td>
   </tr>
   <tr class="row">
-    <form class="create_form" name="forum" action="" method="post">
+    <form name="forum" action="" method="post">
       <input type="hidden" name="action" value="forum_alter" />
       <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
       <td>

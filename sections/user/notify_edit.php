@@ -105,7 +105,7 @@ foreach ($Notifications as $N) { // $N stands for Notifications
   </h3>
   <?php } ?>
   <form
-    class="box pad slight_margin <?=($NewFilter ? 'create_form' : 'edit_form')?>"
+    class="box pad slight_margin"
     id="<?=($NewFilter ? 'filter_form' : '')?>"
     name="notification" action="user.php" method="post">
     <input type="hidden" name="formid" value="<?=$i?>">

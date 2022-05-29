@@ -1,10 +1,10 @@
-/* Skeleton CSS */
+/* colors */
 $skeletonDefault: #33c3f0;
 $skeletonFocus: #1eaedb;
 $skeletonHalfdark: scale-color($skeletonFocus, $lightness: -50%);
 
 /**
- * Typography
+ * typography
  */
 
 body {
@@ -26,7 +26,7 @@ body {
   }
 }
 
-/* Text elements */
+/* text elements */
 a {
   color: black;
   text-decoration: underline;
@@ -42,21 +42,13 @@ h2 {
 }
 
 /**
- * Layout
+ * layout
  */
 
-main {
+form#registerform {
   display: flex;
   flex-flow: column wrap;
-  align-items: center;
-  gap: 1rem;
-  margin: 5% auto;
-  width: 90%;
-
-  &:after {
-    content: "";
-    min-height: 100%;
-  }
+  gap: 2rem;
 }
 
 header,

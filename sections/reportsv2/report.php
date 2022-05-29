@@ -99,7 +99,7 @@ View::header('Report', 'reportsv2,browse,torrent,recommend');
     </table>
   </div>
 
-  <form class="create_form" name="report" action="reportsv2.php?action=takereport" enctype="multipart/form-data" method="post" id="reportform">
+  <form name="report" action="reportsv2.php?action=takereport" enctype="multipart/form-data" method="post" id="reportform">
     <div>
       <input type="hidden" name="submit" value="true" />
       <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />

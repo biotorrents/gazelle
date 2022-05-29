@@ -183,7 +183,7 @@ if (check_perms('admin_reports')) {
   }
 ?>
   <div id="report<?=$ReportID?>" class="report">
-    <form class="create_form" name="report" id="reportform_<?=$ReportID?>" action="reports.php" method="post">
+    <form name="report" id="reportform_<?=$ReportID?>" action="reports.php" method="post">
 <?php
         /*
         * Some of these are for takeresolve, some for the JavaScript.

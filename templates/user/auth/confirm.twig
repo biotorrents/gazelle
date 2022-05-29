@@ -5,9 +5,19 @@
 <h1>Confirm your new account</h1>
 
 {% if response is not null %}
-<p class="important_text">
+<p class="error">
     {{ response }}
 </p>
+{% else %}
+<p class="info">
+    Thanks for confirming your email.
+    Please enjoy the site!
+
+    <a href="/rules" class="button-primary">Rules</a>
+    <a href="/wiki" class="button">Wiki</a>
+
+</p>
+
 {% endif %}
 
 {% endblock %}

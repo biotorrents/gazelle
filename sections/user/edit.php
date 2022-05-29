@@ -70,7 +70,7 @@ if ($SiteOptions) {
  */
 View::header(
     "$Username $ENV->CRUMB Settings",
-    'user,password_validate,cssgallery,preview_paranoia,user_settings,vendor/easymde.min',
+    'user,cssgallery,preview_paranoia,user_settings,vendor/easymde.min',
     'vendor/easymde.min'
 );
 

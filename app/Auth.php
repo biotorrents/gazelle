@@ -177,6 +177,9 @@ class Auth # extends Delight\Auth\Auth
     {
         $app = App::go();
 
+        # https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#login
+        $message = "Login failed; invalid username or password";
+
         $username = Esc::string($username);
         $passphrase = Esc::string($passphrase);
 
@@ -185,13 +188,13 @@ class Auth # extends Delight\Auth\Auth
             # make sure to catch both UnknownUsernameException and AmbiguousUsernameException
             $response = $this->auth->loginWithUsername($username, $passphrase, $this->remember());
         } catch (Delight\Auth\InvalidEmailException $e) {
-            return $this->failure;
+            return $mesage;
         } catch (Delight\Auth\InvalidPasswordException $e) {
-            return $this->failure;
+            return $message;
         } catch (Delight\Auth\EmailNotVerifiedException $e) {
-            return $this->failure;
+            return $message;
         } catch (Delight\Auth\TooManyRequestsException $e) {
-            return $this->failure;
+            return $message;
         } catch (Exception $e) {
             return $e->getMessage();
         }
@@ -204,17 +207,17 @@ class Auth # extends Delight\Auth\Auth
 
     /**
      * confirmEmail
-     * 
+     *
      * @return string|array error or [0 => oldEmail, 1 => newEmail]
      */
     public function confirmEmail(string $selector, string $token)
     {
         $app = App::go();
 
+        $message = "Invalid selector or token";
+
         $selector = Esc::string($selector);
         $token = Esc::string($token);
-
-        $message = "Invalid selector or token";
 
         try {
             # if you want the user to be automatically signed in after successful confirmation,
@@ -540,6 +543,8 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = App::go();
 
+        $message = "Error toggling reset preferences";
+
         $enabled = Esc::bool($enabled);
         $passphrase = Esc::string($passphrase);
 
@@ -550,13 +555,13 @@ If you need the custom user information only rarely, you may just retrieve it as
                 throw new Exception("We can't say if the user is who they claim to be");
             }
         } catch (Delight\Auth\NotLoggedInException $e) {
+            return $message;
         } catch (Delight\Auth\TooManyRequestsException $e) {
+            return $message;
         } catch (Exception $e) {
             return $e->getMessage();
         }
 
-        # dump and return
-        !d($response);
         return $response;
     } # toggleReset
 

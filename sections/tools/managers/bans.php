@@ -131,7 +131,7 @@ $db->set_query_id($Bans);
     <td>Submit</td>
   </tr>
   <tr class="row">
-    <form class="create_form" name="ban" action="" method="post">
+    <form name="ban" action="" method="post">
       <input type="hidden" name="action" value="ip_ban" />
       <input type="hidden" name="auth"
         value="<?=$user['AuthKey']?>" />

@@ -1,0 +1,19 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+<h1>Recover your account</h1>
+
+{% if response is not null %}
+<p class="error">
+    {{ response }}
+</p>
+{% else %}
+<p class="info">
+    {# https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#password-recovery #}
+    If that email address is in our database, we will send you an email to reset your password
+</p>
+
+{% endif %}
+
+{% endblock %}

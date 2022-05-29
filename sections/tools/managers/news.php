@@ -52,7 +52,6 @@ switch ($_GET['action']) {
   </div>
 
   <form
-    class="<?= ($_GET['action'] === 'news') ? 'create_form' : 'edit_form';?>"
     name="news_post" action="tools.php" method="post">
     <div class="box pad">
       <input type="hidden" name="action"

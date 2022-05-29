@@ -10,8 +10,6 @@ View::header('Register');
 <script src="<?=STATIC_SERVER?>js/validate.js" type="text/javascript">
 </script>
 
-<script src="<?=STATIC_SERVER?>js/password_validate.js"
-  type="text/javascript"></script>
 
 <?php if (!empty($Err)) { ?>
 <p class="important_text">
@@ -22,7 +20,7 @@ View::header('Register');
 
 if (empty($Sent)) { ?>
 
-<form class="create_form" name="user" id="registerform" method="post" action="" onsubmit="return formVal();">
+<form name="user" id="registerform" method="post" action="" onsubmit="return formVal();">
   <input type="hidden" name="auth"
     value="<?=$user['AuthKey']?>" />
 

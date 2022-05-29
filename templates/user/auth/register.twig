@@ -2,16 +2,16 @@
 
 {% block content %}
 
-<h1>Register for a new account</h1>
+<h2>Register for a new account</h2>
 
 {% if response is not null %}
-<p class="important_text">
+<p class="error">
     {{ response }}
 </p>
 {% endif %}
 
 {% if emailSent is not null %}
-<p class="important_text_alt">
+<p class="info">
     We sent an email to the address you provided.
     After you confirm your email address, you may log into your account.
 </p>
@@ -21,7 +21,8 @@
 
 
 {# start the registration form itself #}
-<form class="create_form" name="user" id="registerform" method="post" action="/register" onsubmit="return formVal();">
+<form name="register" id="register" method="post" action="/register">
+
     {% if user.AuthKey is defined %}
     <input type="hidden" name="authKey" value="{{ user.AuthKey }}" />
     {% endif %}
@@ -36,37 +37,35 @@
         If you do, we won't be changing it for you.
     </p>
 
-    <input type="text" name="username" id="username" class="inputtext" placeholder="Username" />
-    <br /><br />
+    <input type="text" name="username" id="username" placeholder="Username" />
 
-    <input type="email" name="email" id="email" class="inputtext" placeholder="Email" />
-    <br /><br />
+    <input type="email" name="email" id="email" placeholder="Email" />
 
-    <input type="password" minlength="15" name="passphrase" id="new_pass_1" class="inputtext"
-        placeholder="Passphrase" />
-    <strong id="pass_strength"></strong>
-    <br /><br />
+    <input type="password" name="passphrase" id="passphrase" minlength="15" placeholder="Passphrase" />
 
-    <input type="password" minlength="15" name="confirm_password" id="new_pass_2" class="inputtext"
+    <input type="password" name="confirmPassphrase" id="confirmPassphrase" minlength="15"
         placeholder="Confirm passphrase" />
-    <strong id="pass_match"></strong>
-    <br /><br />
 
-    <input type="checkbox" name="isAdult" id="isAdult" value="true" />
-    <label for="isAdult">I'm 18 years or older</label>
-    <br /><br />
+    <ul>
+        <li>
+            <input type="checkbox" name="isAdult" id="isAdult" value="true" />
+            <label for="isAdult">I'm 18 years or older</label>
+        </li>
 
-    <input type="checkbox" name="privacyConsent" id="privacyConsent" value="true" />
-    <label for="privacyConsent">I consent to the <a href="/privacy">privacy policy</a></label>
-    <br /><br />
+        <li>
+            <input type="checkbox" name="privacyConsent" id="privacyConsent" value="true" />
+            <label for="privacyConsent">I consent to the <a href="/privacy">privacy policy</a></label>
+        </li>
 
-    <input type="checkbox" name="ruleWikiPledge" id="ruleWikiPledge" value="true" />
-    <label for="ruleWikiPledge">I'll read the site rules and wiki</label>
-    <br /><br />
+        <li>
+            <input type="checkbox" name="ruleWikiPledge" id="ruleWikiPledge" value="true" />
+            <label for="ruleWikiPledge">I'll read the site rules and wiki</label>
+        </li>
+    </ul>
 
-    <input type="submit" name="submit" value="Submit" class="button-primary" />
+    <input type="submit" name="submit" id="submit" value="Submit" class="button-primary" />
 
 </form>
 
-{% endif %} {# if sent #}
+{% endif %} {# if !emailSent #}
 {% endblock %}

@@ -23,7 +23,7 @@ View::header('Warn User');
     <h2>Warning <a href="user.php?id=<?=$AuthorID?>"><?=$UserInfo['Username']?></a></h2>
   </div>
   <div class="box pad">
-    <form class="create_form" name="warning" action="" onsubmit="quickpostform.submit_button.disabled=true;" method="post">
+    <form name="warning" action="" onsubmit="quickpostform.submit_button.disabled=true;" method="post">
       <input type="hidden" name="postid" value="<?=$PostID?>" />
       <input type="hidden" name="action" value="take_warn" />
       <table class="layout" align="center">

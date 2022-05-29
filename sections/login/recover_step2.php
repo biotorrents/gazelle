@@ -4,7 +4,7 @@ declare(strict_types=1);
 $ENV = ENV::go();
 $twig = Twig::go();
 
-View::header('Recover Password', 'validate,password_validate');
+View::header('Recover Password', 'validate');
 echo '<h2>Reset your password</h2>';
 
 if (empty($PassWasReset)) {

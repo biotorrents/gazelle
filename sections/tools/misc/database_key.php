@@ -32,7 +32,7 @@ View::header('Database Encryption Key'); ?>
     key loaded
   </h4>
 
-  <form class="create_form" name="db_key" action="" method="post">
+  <form name="db_key" action="" method="post">
     <input type="hidden" name="action" value="database_key" />
 
     <input type="hidden" name="auth"
