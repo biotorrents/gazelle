@@ -8,6 +8,9 @@
     {{ include("_base/metaTags.twig") }}
 
     {% block stylesheets %}
+    <link rel="stylesheet" href="/css/normalize.min.css">
+    <link rel="stylesheet" href="/css/skeleton.min.css">
+
     <link rel="stylesheet" type="text/css" href="/css/base.css" />
     {% endblock %}
 
@@ -18,20 +21,52 @@
 </head>
 
 <body>
-    {% block body %}
-    <div id="sidebar">
-        {% block sidebar %}
-        <ul>
-            <li><a href="{{ path('homepage') }}">Home</a></li>
-            <li><a href="{{ path('blog_index') }}">Blog</a></li>
-        </ul>
-        {% endblock %}
-    </div>
 
-    <div id="content">
-        {% block content %}{% endblock %}
-    </div>
-    {% endblock %}
-</body>
+    <body class="container">
+        <header id="header">
+
+            {# mainMenu #}
+            {% block mainMenu %}
+            {% include("_base/mainMenu.twig") %}
+            {% endblock %}
+
+            {# userInfo #}
+            {% block userInfo %}
+            {% include("_base/userInfo.twig") %}
+            {% endblock %}
+
+        </header>
+        <main class="row">
+
+            {% block body %}
+
+
+            {# main content #}
+            <section id="content" class="two-thirds column">
+                {% block content %}{% endblock %}
+            </section>
+            {% endblock %}
+
+            <section id="sidebar" class="one-third column">
+                {% block sidebar %}
+                {# include sidebar #}
+                {% endblock %}
+            </section>
+
+        </main>
+
+        {# footer #}
+        <footer id="footer">
+            {% block footer %}
+            {# include footer #}
+            {% endblock %}
+        </footer>
+
+
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/instantpage.min.js" type="module"></script>
+
+
+    </body>
 
 </html>
