@@ -11,7 +11,7 @@ ENV::setPub('DEV', true);
 
 # Disable Kint on production
 if (!$ENV->DEV) {
-    \Kint\Kint::$enabled_mode	= false;
+    Kint\Kint::$enabled_mode	= false;
 }
 
 
@@ -263,7 +263,7 @@ ENV::setPub(
     'OPEN_REGISTRATION',
     (!$ENV->DEV
         ? true # Production
-        : false) # Development
+        : true) # Development
 );
 
 # The maximum number of users the site can have, 0 for no limit

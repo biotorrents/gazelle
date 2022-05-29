@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 # registration page
 Flight::route("/register", function () {
-    require_once __DIR__."/clients.php";
+    require_once __DIR__."/register.php";
 });
 
 # verify new registration
