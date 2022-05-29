@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 # login
 Flight::route("/login", function () {
-    require_once __DIR__."/clients.php";
+    require_once __DIR__."/login.php";
 });
 
 # disabled
