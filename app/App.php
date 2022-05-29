@@ -102,7 +102,7 @@ class App
      */
     public static function email(string $to, string $subject, string $body)
     {
-        $app = self::go();
+        $app = App::go();
 
         # check if email is enabled
         if (!$app->env->FEATURE_SEND_EMAIL) {

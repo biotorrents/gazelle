@@ -82,6 +82,11 @@ class Twig # extends Twig\Environment
             ]
         );
 
+        # globals
+        $twig->addGlobal("env", $app->env);
+        $twig->addGlobal("user", $app->user);
+        #!d($twig->getGlobals());exit;
+
         /*
         # DebugBar
         $profile = new Twig\Profiler\Profile();

@@ -1,0 +1,13 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+<h1>Confirm your new account</h1>
+
+{% if response is not null %}
+<p class="important_text">
+    {{ response }}
+</p>
+{% endif %}
+
+{% endblock %}

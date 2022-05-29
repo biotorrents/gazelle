@@ -14,7 +14,7 @@
         </li>
 
         {# donate #}
-        {% if ENV.FEATURE_DONATE %}
+        {% if env.FEATURE_DONATE %}
         <li id="nav_donate">
             <a href="/donate.php">Donate</a>
         </li>
@@ -83,7 +83,7 @@
 
         {# bonus points #}
         <li id="bonus_points">
-            <a href="/wiki.php?action=article&name=bonuspoints">{{ ENV.BONUS_POINTS }}</a>:
+            <a href="/wiki.php?action=article&name=bonuspoints">{{ env.BONUS_POINTS }}</a>:
             <span class="stat">
                 <a href="/store.php">{{ user.BonusPoints }}</a>
             </span>

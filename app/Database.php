@@ -13,6 +13,9 @@ class Database extends PDO
     # instance
     private static $instance;
 
+    # pdo connection
+    public $pdo = null;
+
     # hash algo for cache keys
     private $algorithm = "sha3-512";
 
@@ -97,45 +100,6 @@ class Database extends PDO
     }
 
 
-
-    /**
-     * __construct
-     * /
-    public function __construct($options = [])
-    {
-        $app = App::go();
-
-        # vars
-        $host = $app->env->getPriv("SQL_HOST");
-        $port = $app->env->getPriv("SQL_PORT");
-
-        $username = $app->env->getPriv("SQL_USER");
-        $password = $app->env->getPriv("SQL_PASS");
-
-        $db = $app->env->getPriv("SQL_DB");
-        $charset = "utf8mb4";
-
-        # defaults
-        $defaultOptions = [
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        ];
-
-        # construct
-        $options = array_replace($defaultOptions, $options);
-        $dsn = "mysql:host={$host};dbname={$db};port={$port};charset={$charset}";
-
-        # do it
-        try {
-            $this->pdo = new PDO($dsn, $username, $password, $options);
-        } catch (PDOException $e) {
-            throw new PDOException($e->getMessage(), intval($e->getCode()));
-        }
-    }
-    */
-
-
     /**
      * do
      *
@@ -155,19 +119,19 @@ class Database extends PDO
         # prepare
         $statement = $this->pdo->prepare($query);
 
+        /*
         # return cached if available
         $cacheKey = $this->cachePrefix . hash($this->algorithm, $statement);
         if ($app->cache->get_value($cacheKey)) {
             return $app->cache->get_value($cacheKey);
         }
+        */
 
-        /*
         # no params
         if (empty($args)) {
             $app->cache->cache_value($cacheKey, $query, $this->cacheDuration);
             return $this->pdo->query($query);
         }
-        */
 
         # execute
         $statement->execute($args);
@@ -179,7 +143,7 @@ class Database extends PDO
         }
 
         # good
-        $app->cache->cache_value($cacheKey, $statement, $this->cacheDuration);
+        #$app->cache->cache_value($cacheKey, $statement, $this->cacheDuration);
         return $statement;
     }
 

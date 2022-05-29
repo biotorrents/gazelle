@@ -52,8 +52,13 @@ class Esc
      */
     public static function string(mixed $unsafe): string
     {
+        return Text::esc($unsafe);
+
+        /*
+        # deprecated as of PHP 8.1.0, use htmlspecialchars() instead
         $safe = filter_var($unsafe, FILTER_SANITIZE_STRING);
         return strval($safe);
+        */
     }
 
 
