@@ -1,9 +1,14 @@
-Dear {{ username }},
+{#
+The username, at this point, has not yet been confirmed as acceptable to the owner of the email address.
+It could contain offensive or misleading language chosen by someone who is not actually the owner of the address.
+#}
 
-Thanks for registering an account at {{ ENV.SITE_NAME }}.
+Hello,
+
+Thanks for registering an account at {{ env.SITE_NAME }}.
 This email is to confirm your newly created account.
 
 Please click this link within 24 hours to verify your email and enable your account:
 {{ verifyUri }}
 
-{{ ENV.SITE_NAME }}
+{{ env.SITE_NAME }}

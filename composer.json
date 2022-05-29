@@ -18,8 +18,8 @@
   "support": {
     "email": "hello@torrents.bio",
     "issues": "https://github.com/biotorrents/gazelle/issues",
-    "forum": "https://torrents.bio/forums.php",
-    "wiki": "https://torrents.bio/wiki.php",
+    "forum": "https://torrents.bio/forums",
+    "wiki": "https://torrents.bio/wiki",
     "source": "https://github.com/biotorrents/gazelle",
     "docs": "https://docs.torrents.bio",
     "chat": "https://slack.torrents.bio"
@@ -31,27 +31,32 @@
     },
     {
       "type": "other",
-      "url": "https://torrents.bio/donate.php"
+      "url": "https://torrents.bio/donate"
     }
   ],
   "require": {
-    "php": ">=8.1.1",
+    "php": "^8.1.5",
     "ext-apcu": "*",
     "ext-curl": "*",
     "ext-gd": "*",
     "ext-mbstring": "*",
     "ext-memcache": "*",
     "ext-mysqli": "*",
+    "ext-pdo": "*",
+    "ext-redis": "*",
     "ext-zip": "*",
-    "delight-im/auth": "^8.3",
+    "cartalyst/sentinel": "^6.0",
     "erusev/parsedown": "1.8.0-beta-7",
     "erusev/parsedown-extra": "0.8.0",
     "guzzlehttp/guzzle": "^7.4.1",
-    "illuminate/support": "^8.78",
+    "illuminate/database": "^9.14",
+    "illuminate/events": "^9.14",
+    "illuminate/support": "^9",
     "mikecao/flight": "^2.0",
     "orpheusnet/bencode-torrent": "dev-master",
     "povils/figlet": "*",
     "robthree/twofactorauth": "^1.8.1",
+    "symfony/http-foundation": "^6.1",
     "twig/twig": "^3.3.8",
     "vanilla/nbbc": "^2.3",
     "yubico/u2flib-server": "^1.0.2"
