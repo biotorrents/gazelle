@@ -11,14 +11,17 @@ if (empty($selector) || empty($token)) {
 
 $response = $auth->confirmEmail($selector, $token);
 
+# success
 if (is_array($response)) {
     $oldEmail = $response[0];
     $newEmail = $response[1];
 
-    $response = "Thanks for confirming your email {$newEmail}";
+    unset($response);
+    $success = true;
 }
 
 $app->twig->display("user/auth/confirm.twig", [
     "title" => "Confirm account",
     "response" => $response ?? null,
+    "success" => $success ?? null,
 ]);

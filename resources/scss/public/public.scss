@@ -11,7 +11,6 @@ body {
   background: white;
   color: black;
   font-family: "NotoSans-SemiCondensed", sans-serif;
-  font-size: 1.2rem;
 
   b,
   strong {
@@ -37,18 +36,18 @@ a {
   }
 }
 
-h2 {
-  text-align: center;
-}
-
 /**
  * layout
  */
 
-form#registerform {
+form#register {
   display: flex;
   flex-flow: column wrap;
   gap: 2rem;
+
+  ul {
+    list-style: none;
+  }
 }
 
 header,
@@ -81,25 +80,24 @@ footer {
   text-align: center;
 }
 
-#logo {
-  width: 220px;
-  height: 50px;
-  background-image: url("/images/logos/torrents.bio.png");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  margin: 1rem auto;
+figure#logo {
+    height: 5rem;
+    margin: 5rem;
+    background-image: url("/images/logos/torrents.bio.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
 
   &:after {
     content: "℠";
-    font-size: 1rem;
+    font-size: 1.5rem;
     font-weight: normal;
     margin-left: 100%;
   }
 }
 
 /**
- * Classes
+ * classes
  */
 
 .mouseless {

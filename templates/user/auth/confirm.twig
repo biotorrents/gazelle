@@ -2,12 +2,13 @@
 
 {% block content %}
 
-<h1>Confirm your new account</h1>
+<h2>Confirm your new account</h2>
 
 {% if response is not null %}
 <p class="error">
     {{ response }}
 </p>
+
 {% else %}
 <p class="info">
     Thanks for confirming your email.
@@ -15,7 +16,6 @@
 
     <a href="/rules" class="button-primary">Rules</a>
     <a href="/wiki" class="button">Wiki</a>
-
 </p>
 
 {% endif %}

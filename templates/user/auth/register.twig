@@ -21,21 +21,15 @@
 
 
 {# start the registration form itself #}
-<form name="register" id="register" method="post" action="/register">
+<form name="register" id="register" method="post">
 
     {% if user.AuthKey is defined %}
-    <input type="hidden" name="authKey" value="{{ user.AuthKey }}" />
+    <input type="hidden" name="authKey" id="authKey" value="{{ user.AuthKey }}" />
     {% endif %}
 
     {% if invite is not null %}
-    <input type="hidden" name="invite" value="{{ invite }}" />
+    <input type="hidden" name="invite" id="invite" value="{{ invite }}" />
     {% endif %}
-
-    <p>
-        Use common sense when picking your username.
-        <strong>Don't choose one associated with your real name.</strong>
-        If you do, we won't be changing it for you.
-    </p>
 
     <input type="text" name="username" id="username" placeholder="Username" />
 

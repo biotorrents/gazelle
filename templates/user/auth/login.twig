@@ -1,0 +1,23 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+<p class="center mouseless">
+    A platform to share <strong>biological sequence</strong>
+    and <strong>medical imaging</strong> data<sup>1</sup>
+</p>
+
+{% if response is not null %}
+<p class="error">
+    {{ response }}
+</p>
+{% endif %}
+
+
+<form name="login" id="login" method="post">
+
+    {# TODO #}
+
+
+
+{% endblock %}

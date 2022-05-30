@@ -13,13 +13,16 @@ if (!empty(["post"]) && isset($post["submit"])) {
     $response = $auth->register(
         email: $post["email"] ?? "",
         passphrase: $post["passphrase"] ?? "",
+        confirmPassphrase: $post["confirmPassphrase"] ?? "",
         username: $post["username"] ?? "",
         invite: $get["invite"] ?? "",
         post: $post ?? []
     );
 
+    # success
     if (is_int($response)) {
         $emailSent = true;
+        unset($response);
     }
 }
 

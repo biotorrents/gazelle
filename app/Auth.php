@@ -89,12 +89,13 @@ class Auth # extends Delight\Auth\Auth
      *
      * @see https://github.com/delight-im/PHP-Auth#registration-sign-up
      */
-    public function register(string $email, string $passphrase, string $username, string $invite = "", array $post = [])
+    public function register(string $email, string $passphrase, string $confirmPassphrase, string $username, string $invite = "", array $post = [])
     {
         $app = App::go();
 
         $email = Esc::email($email);
         $passphrase = Esc::string($passphrase);
+        $confirmPassphrase = Esc::string($confirmPassphrase);
         $username = Esc::string($username);
         $invite = Esc::string($invite);
 
@@ -122,16 +123,12 @@ class Auth # extends Delight\Auth\Auth
             }
 
             # extra form fields (privacy consent, age check, etc.)
-            if (!isset($post["isAdult"])) {
-                throw new Exception("You need to confirm you're of legal age");
+            if ($passphrase !== $confirmPassphrase) {
+                throw new Exception("The entered passphrases don't match");
             }
 
-            if (!isset($post["privacyConsent"])) {
-                throw new Exception("You need to consent to the privacy policy");
-            }
-
-            if (!isset($post["ruleWikiPledge"])) {
-                throw new Exception("You need to pledge you'll read the rules and wiki");
+            if (!isset($post["isAdult"]) || !isset($post["privacyConsent"]) || !isset($post["ruleWikiPledge"])) {
+                throw new Exception("You need to check the legal age, privacy consent, and rules/wiki boxes");
             }
 
             # if you want to enforce unique usernames, simply call registerWithUniqueUsername instead of register, and be prepared to catch the DuplicateUsernameException
@@ -162,8 +159,6 @@ class Auth # extends Delight\Auth\Auth
             return $e->getMessage();
         }
 
-        # dump and return
-        #!d($response);
         return $response;
     } # register
 
@@ -178,7 +173,7 @@ class Auth # extends Delight\Auth\Auth
         $app = App::go();
 
         # https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#login
-        $message = "Login failed; invalid username or password";
+        $message = $this->failure;
 
         $username = Esc::string($username);
         $passphrase = Esc::string($passphrase);
@@ -199,8 +194,6 @@ class Auth # extends Delight\Auth\Auth
             return $e->getMessage();
         }
 
-        # dump and return
-        !d($response);
         return $response;
     } # login
 
@@ -235,8 +228,6 @@ class Auth # extends Delight\Auth\Auth
             return $e->getMessage();
         }
 
-        # dump and return
-        !d($response);
         return $response;
     } # confirmEmail
 
@@ -281,7 +272,7 @@ class Auth # extends Delight\Auth\Auth
                 $app = App::go();
 
                 # build the verification uri
-                $uri = urlencode("https://{$app->env->SITE_DOMAIN}/recover/{$selector}/{$token}");
+                $uri = "https://{$app->env->SITE_DOMAIN}/recover/{$selector}/{$token}";
 
                 # email it to the prospective user
                 $to = $email;
@@ -297,13 +288,8 @@ class Auth # extends Delight\Auth\Auth
         } catch (Delight\Auth\TooManyRequestsException $e) {
         } catch (Exception $e) {
             return $e->getMessage();
-
-
-            die("Too many requests");
         }
 
-        # dump and return
-        !d($response);
         return $response;
     } # recoverStart
 
@@ -334,8 +320,6 @@ class Auth # extends Delight\Auth\Auth
             return $e->getMessage();
         }
 
-        # dump and return
-        !d($response);
         return $response;
     } # recoverMiddle
 
@@ -366,8 +350,6 @@ class Auth # extends Delight\Auth\Auth
             return $e->getMessage();
         }
 
-        # dump and return
-        !d($response);
         return $response;
     } # recoverEnd
 
@@ -393,8 +375,6 @@ class Auth # extends Delight\Auth\Auth
             return $e->getMessage();
         }
 
-        # dump and return
-        !d($response);
         return $response;
     } # changePassphrase
 
@@ -430,8 +410,6 @@ class Auth # extends Delight\Auth\Auth
             return $e->getMessage();
         }
 
-        # dump and return
-        !d($response);
         return $response;
     } # changeEmail
 
@@ -462,8 +440,6 @@ class Auth # extends Delight\Auth\Auth
             return $e->getMessage();
         }
 
-        # dump and return
-        !d($response);
         return $response;
     } # resendConfirmation
 
@@ -475,9 +451,12 @@ class Auth # extends Delight\Auth\Auth
      */
     public function logout()
     {
+        $message = "Unable to log out: please manually clear cookies";
+
         try {
             $response = $this->auth->logOutEverywhere();
         } catch (Delight\Auth\NotLoggedInException $e) {
+            return $message;
         } catch (Exception $e) {
             return $e->getMessage();
         }
@@ -485,8 +464,6 @@ class Auth # extends Delight\Auth\Auth
         # you can destroy the entire session by calling a second method
         $this->auth->destroySession();
 
-        # dump and return
-        !d($response);
         return $response;
     } # logout
 
@@ -518,18 +495,20 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = App::go();
 
+        $message = $this->failure;
+
         $passphrase = Esc::string($passphrase);
 
         try {
             $response = $this->auth->reconfirmPassword($passphrase);
         } catch (Delight\Auth\NotLoggedInException $e) {
+            return $this->message;
         } catch (Delight\Auth\TooManyRequestsException $e) {
+            return $this->message;
         } catch (Exception $e) {
             return $e->getMessage();
         }
 
-        # dump and return
-        !d($response);
         return $response;
     } # enforceLogin
 

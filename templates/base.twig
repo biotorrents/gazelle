@@ -73,8 +73,8 @@
 {# head body break #}
 
 
-<body class="container">
-    <header id="header">
+<body>
+    <header>
 
         {% if private %}
         {# private #}
@@ -88,31 +88,34 @@
         {% endif %}
     </header>
 
-    <main class="row">
-
-        {% if private %}
-        {# private content #}
-        <section id="content" class="two-thirds column">
-
-            {% else %}
-            {# public content #}
-            <section id="content" class="column">
-
-                {% endif %}
-
-                {% block content %}
-                {% endblock %}
-            </section>
-
+    <main class="container">
+        <div class="row">
 
             {% if private %}
-            {# private sidebar #}
-            <section id="sidebar" class="one-third column">
-                {% block sidebar %}
-                {% endblock %}
-            </section>
-            {% endif %}
+            {# private content #}
+            <section id="content" class="two-thirds column">
 
+                {% else %}
+                {# public content #}
+                <figure id="logo"></figure>
+                <section id="content" class="column">
+
+                    {% endif %}
+
+                    {% block content %}
+                    {% endblock %}
+                </section>
+
+
+                {% if private %}
+                {# private sidebar #}
+                <section id="sidebar" class="one-third column">
+                    {% block sidebar %}
+                    {% endblock %}
+                </section>
+                {% endif %}
+
+        </div>
     </main>
 
     {# footer #}
