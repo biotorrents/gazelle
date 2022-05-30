@@ -8,6 +8,10 @@ declare(strict_types = 1);
  * Secure auth built on delight-im/auth.
  * Replaces various homebrew components.
  *
+ * Functions like an oracle service:
+ * takes queries and returns obscure messages.
+ *
+ *
  * @see https://github.com/delight-im/PHP-Auth
  */
 
@@ -26,8 +30,8 @@ class Auth # extends Delight\Auth\Auth
     # hash algo for passwords
     private static $algorithm = "sha3-512";
 
-    # generic failure error message
-    private $failure = "Invalid username or passphrase";
+    # https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#authentication-and-error-messages
+    private $message = "Invalid username, passphrase, or 2FA";
 
 
     /**
@@ -84,6 +88,9 @@ class Auth # extends Delight\Auth\Auth
     /**
      * register
      *
+     * Returns a variety of different responses, unlike most.
+     * We want them to register *before* they get vague messages.
+     *
      * @param array $post Http::query("post")
      * @return string|int error or userId
      *
@@ -139,22 +146,22 @@ class Auth # extends Delight\Auth\Auth
                 $uri = "https://{$app->env->SITE_DOMAIN}/confirm/{$selector}/{$token}";
 
                 # email it to the prospective user
-                $subject = "Your new {$app->env->SITE_NAME} registration";
+                $subject = "Confirm your new {$app->env->SITE_NAME} account";
                 $body = $app->twig->render("email/verifyRegistration.twig", ["env" => $app->env, "uri" => $uri]);
 
                 App::email($email, $subject, $body);
                 Announce::slack("{$email}\n{$subject}\n{$body}", ["debug"]);
             });
         } catch (Delight\Auth\InvalidEmailException $e) {
-            return "Your email was invalid";
+            return "Please use a different email";
         } catch (Delight\Auth\InvalidPasswordException $e) {
-            return "Your passphrase was invalid";
+            return "Please use a different passphrase";
         } catch (Delight\Auth\UserAlreadyExistsException $e) {
-            return "That username already exists";
+            return "Please use a different username";
         } catch (Delight\Auth\TooManyRequestsException $e) {
-            return "You've made too many requests";
+            return "Please try again later";
         } catch (Delight\Auth\DuplicateUsernameException $e) {
-            return "That username already exists";
+            return "Please use a different username";
         } catch (Exception $e) {
             return $e->getMessage();
         }
@@ -173,7 +180,7 @@ class Auth # extends Delight\Auth\Auth
         $app = App::go();
 
         # https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#login
-        $message = $this->failure;
+        $message = $this->message;
 
         $username = Esc::string($username);
         $passphrase = Esc::string($passphrase);
@@ -190,8 +197,6 @@ class Auth # extends Delight\Auth\Auth
             return $message;
         } catch (Delight\Auth\TooManyRequestsException $e) {
             return $message;
-        } catch (Exception $e) {
-            return $e->getMessage();
         }
 
         return $response;
@@ -224,8 +229,6 @@ class Auth # extends Delight\Auth\Auth
             return $message;
         } catch (Delight\Auth\TooManyRequestsException $e) {
             return $message;
-        } catch (Exception $e) {
-            return $e->getMessage();
         }
 
         return $response;
@@ -264,6 +267,8 @@ class Auth # extends Delight\Auth\Auth
     {
         $app = App::go();
 
+        $message = "Unable to start account recovery";
+
         $email = Esc::email($email);
         $ip = Esc::ip($ip);
 
@@ -283,11 +288,13 @@ class Auth # extends Delight\Auth\Auth
                 Announce::slack("{$to}\n{$subject}\n{$body}", ["debug"]);
             });
         } catch (Delight\Auth\InvalidEmailException $e) {
+            return $message;
         } catch (Delight\Auth\EmailNotVerifiedException $e) {
+            return $message;
         } catch (Delight\Auth\ResetDisabledException $e) {
+            return $message;
         } catch (Delight\Auth\TooManyRequestsException $e) {
-        } catch (Exception $e) {
-            return $e->getMessage();
+            return $message;
         }
 
         return $response;
@@ -305,6 +312,8 @@ class Auth # extends Delight\Auth\Auth
     {
         $app = App::go();
 
+        $message = "Unable to continue account recovery";
+
         $selector = Esc::string($selector);
         $token = Esc::string($token);
 
@@ -313,11 +322,13 @@ class Auth # extends Delight\Auth\Auth
             # ask the user for their new passphrase
             $response = $this->auth->canResetPasswordOrThrow($selector, $token);
         } catch (Delight\Auth\InvalidSelectorTokenPairException $e) {
+            return $message;
         } catch (Delight\Auth\TokenExpiredException $e) {
+            return $message;
         } catch (Delight\Auth\ResetDisabledException $e) {
+            return $message;
         } catch (Delight\Auth\TooManyRequestsException $e) {
-        } catch (Exception $e) {
-            return $e->getMessage();
+            return $message;
         }
 
         return $response;
@@ -335,6 +346,8 @@ class Auth # extends Delight\Auth\Auth
     {
         $app = App::go();
 
+        $message = "Unable to finish account recovery";
+
         $selector = Esc::string($selector);
         $token = Esc::string($token);
         $passphrase = Esc::string($passphrase);
@@ -342,12 +355,15 @@ class Auth # extends Delight\Auth\Auth
         try {
             $response = $this->auth->resetPassword($selector, $token, $passphrase);
         } catch (Delight\Auth\InvalidSelectorTokenPairException $e) {
+            return $message;
         } catch (Delight\Auth\TokenExpiredException $e) {
+            return $message;
         } catch (Delight\Auth\ResetDisabledException $e) {
+            return $message;
         } catch (Delight\Auth\InvalidPasswordException $e) {
+            return $message;
         } catch (Delight\Auth\TooManyRequestsException $e) {
-        } catch (Exception $e) {
-            return $e->getMessage();
+            return $message;
         }
 
         return $response;
@@ -363,16 +379,19 @@ class Auth # extends Delight\Auth\Auth
     {
         $app = App::go();
 
+        $message = "Unable to update passphrase";
+
         $oldPassphrase = Esc::string($oldPassphrase);
         $newPassphrase = Esc::string($newPassphrase);
 
         try {
             $response = $auth->changePassword($oldPassphrase, $newPassphrase);
         } catch (Delight\Auth\NotLoggedInException $e) {
+            return $message;
         } catch (Delight\Auth\InvalidPasswordException $e) {
+            return $message;
         } catch (Delight\Auth\TooManyRequestsException $e) {
-        } catch (Exception $e) {
-            return $e->getMessage();
+            return $message;
         }
 
         return $response;
@@ -388,6 +407,8 @@ class Auth # extends Delight\Auth\Auth
     {
         $app = App::go();
 
+        $message = "Unable to update email";
+
         $newEmail = Esc::email($newEmail);
         $passphrase = Esc::string($passphrase);
 
@@ -402,12 +423,15 @@ class Auth # extends Delight\Auth\Auth
                 die("We can't say if the user is who they claim to be");
             }
         } catch (Delight\Auth\InvalidEmailException $e) {
+            return $message;
         } catch (Delight\Auth\UserAlreadyExistsException $e) {
+            return $message;
         } catch (Delight\Auth\EmailNotVerifiedException $e) {
+            return $message;
         } catch (Delight\Auth\NotLoggedInException $e) {
+            return $message;
         } catch (Delight\Auth\TooManyRequestsException $e) {
-        } catch (Exception $e) {
-            return $e->getMessage();
+            return $message;
         }
 
         return $response;
@@ -423,6 +447,8 @@ class Auth # extends Delight\Auth\Auth
     {
         $app = App::go();
 
+        $message = "Unable to resend confirmation email";
+
         $email = Esc::email($email);
 
         try {
@@ -435,9 +461,9 @@ class Auth # extends Delight\Auth\Auth
             
             echo 'The user may now respond to the confirmation request (usually by clicking a link)';
         } catch (Delight\Auth\ConfirmationRequestNotFound $e) {
+            return $message;
         } catch (Delight\Auth\TooManyRequestsException $e) {
-        } catch (Exception $e) {
-            return $e->getMessage();
+            return $message;
         }
 
         return $response;
@@ -457,8 +483,6 @@ class Auth # extends Delight\Auth\Auth
             $response = $this->auth->logOutEverywhere();
         } catch (Delight\Auth\NotLoggedInException $e) {
             return $message;
-        } catch (Exception $e) {
-            return $e->getMessage();
         }
         
         # you can destroy the entire session by calling a second method
@@ -495,7 +519,7 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = App::go();
 
-        $message = $this->failure;
+        $message = $this->message;
 
         $passphrase = Esc::string($passphrase);
 
@@ -505,8 +529,6 @@ If you need the custom user information only rarely, you may just retrieve it as
             return $this->message;
         } catch (Delight\Auth\TooManyRequestsException $e) {
             return $this->message;
-        } catch (Exception $e) {
-            return $e->getMessage();
         }
 
         return $response;
@@ -522,7 +544,7 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = App::go();
 
-        $message = "Error toggling reset preferences";
+        $message = "Unable to update reset preference";
 
         $enabled = Esc::bool($enabled);
         $passphrase = Esc::string($passphrase);
@@ -537,8 +559,6 @@ If you need the custom user information only rarely, you may just retrieve it as
             return $message;
         } catch (Delight\Auth\TooManyRequestsException $e) {
             return $message;
-        } catch (Exception $e) {
-            return $e->getMessage();
         }
 
         return $response;

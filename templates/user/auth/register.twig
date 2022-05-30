@@ -12,8 +12,8 @@
 
 {% if emailSent is not null %}
 <p class="info">
-    We sent an email to the address you provided.
-    After you confirm your email address, you may log into your account.
+    {# https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#account-creation #}
+    A link to activate your account has been emailed to the address provided.
 </p>
 
 
@@ -21,43 +21,78 @@
 
 
 {# start the registration form itself #}
-<form name="register" id="register" method="post">
+<form name="register" id="register" method="post" autocomplete="off">
 
+    {# csrfToken #}
+    {% if csrfToken is defined %}
+    <input type="hidden" name="csrfToken" id="csrfToken" value="{{ csrfToken }}" required />
+    {% endif %}
+
+    {# authKey #}
     {% if user.AuthKey is defined %}
     <input type="hidden" name="authKey" id="authKey" value="{{ user.AuthKey }}" />
     {% endif %}
 
-    {% if invite is not null %}
+    {# invite #}
+    {% if invite is defined %}
     <input type="hidden" name="invite" id="invite" value="{{ invite }}" />
     {% endif %}
 
-    <input type="text" name="username" id="username" placeholder="Username" />
+    {# username #}
+    {% if post.username is defined %}
+    <input type="text" name="username" id="username" placeholder="Username" value="{{ post.username }}" required />
+    {% else %}
+    <input type="text" name="username" id="username" placeholder="Username" required />
+    {% endif %}
 
-    <input type="email" name="email" id="email" placeholder="Email" />
+    {# email #}
+    {% if post.email is defined %}
+    <input type="email" name="email" id="email" placeholder="Email address" value="{{ post.email }}" required />
+    {% else %}
+    <input type="email" name="email" id="email" placeholder="Email address" required />
+    {% endif %}
 
-    <input type="password" name="passphrase" id="passphrase" minlength="15" placeholder="Passphrase" />
+    {# passphrase #}
+    <input type="password" name="passphrase" id="passphrase" placeholder="Passphrase" minlength="15" required />
 
-    <input type="password" name="confirmPassphrase" id="confirmPassphrase" minlength="15"
-        placeholder="Confirm passphrase" />
+    {# confirmPassphrase #}
+    <input type="password" name="confirmPassphrase" id="confirmPassphrase" placeholder="Confirm passphrase"
+        minlength="15" required />
 
     <ul>
         <li>
+            {# isAdult #}
+            {% if post.isAdult is defined %}
+            <input type="checkbox" name="isAdult" id="isAdult" value="true" checked />
+            {% else %}
             <input type="checkbox" name="isAdult" id="isAdult" value="true" />
+            {% endif %}
             <label for="isAdult">I'm 18 years or older</label>
         </li>
 
         <li>
+            {# privacyConsent #}
+            {% if post.privacyConsent is defined %}
+            <input type="checkbox" name="privacyConsent" id="privacyConsent" value="true" checked />
+            {% else %}
             <input type="checkbox" name="privacyConsent" id="privacyConsent" value="true" />
+            {% endif %}
             <label for="privacyConsent">I consent to the <a href="/privacy">privacy policy</a></label>
         </li>
 
         <li>
+            {# ruleWikiPledge #}
+            {% if post.ruleWikiPledge is defined %}
+            <input type="checkbox" name="ruleWikiPledge" id="ruleWikiPledge" value="true" checked />
+            {% else %}
             <input type="checkbox" name="ruleWikiPledge" id="ruleWikiPledge" value="true" />
+            {% endif %}
             <label for="ruleWikiPledge">I'll read the site rules and wiki</label>
         </li>
     </ul>
 
-    <input type="submit" name="submit" id="submit" value="Submit" class="button-primary" />
+    {# submit #}
+    <input type="submit" name="submit" id="submit" value="Create my account" class="button-primary" />
 
 </form>
 

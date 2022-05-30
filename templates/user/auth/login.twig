@@ -4,8 +4,22 @@
 
 <p class="center mouseless">
     A platform to share <strong>biological sequence</strong>
-    and <strong>medical imaging</strong> data<sup>1</sup>
+    and <strong>medical imaging</strong> data
+    {% if post is empty %}
+    <sup>1</sup>
+    {% endif %}
 </p>
+
+<p id="cookiesDisabled" class="hidden error">
+    You appear to have cookies disabled
+</p>
+
+<noscript>
+    <p class="error">
+        {{ env.SITE_NAME }} requires JavaScript to function properly.
+        Please enable JavaScript in your browser.
+    </p>
+</noscript>
 
 {% if response is not null %}
 <p class="error">
@@ -14,10 +28,70 @@
 {% endif %}
 
 
-<form name="login" id="login" method="post">
+<form name="login" id="login" method="post" autocomplete="off">
 
-    {# TODO #}
+    {# csrfToken #}
+    {% if csrfToken is defined %}
+    <input type="hidden" name="csrfToken" id="csrfToken" value="{{ csrfToken }}" required />
+    {% endif %}
+
+    {# username #}
+    <input type="text" name="username" id="username" placeholder="Username" autofocus="autofocus" required />
+
+    {# passphrase #}
+    <input type="password" name="passphrase" id="passphrase" placeholder="Passphrase" minlength="15" required />
+
+    {# twofa #}
+    <input type="text" name="twofa" id="twofa" placeholder="2FA" maxlength="6" pattern="[0-9]{6}" inputmode="numeric"
+        size="6" />
+
+    <ul>
+        <li>
+            {# rememberMe #}
+            {% if post.rememberMe is defined %}
+            <input type="checkbox" name="rememberMe" id="rememberMe" value="true" checked />
+            {% else %}
+            <input type="checkbox" name="rememberMe" id="rememberMe" value="true" />
+            {% endif %}
+            <label for="isAdult">Remember me for a week</label>
+        </li>
+    </ul>
+
+    {# log in #}
+    <input type="submit" name="submit" id="submit" value="Log in" class="button-primary" />
+
+    {# register #}
+    {% if env.OPEN_REGISTRATION is defined %}
+    <a href="/register" class="button">Register</a>
+    {% endif %}
+
+    {# recover #}
+    {% if post is not empty %}
+    <a href="/recover" class="button">Recover account</a>
+    {% endif %}
+
+</form>
+
+{# flavor text #}
+{% if post is empty %}
+<p class="center mouseless">
+    1. …and graphs, scalars, vectors, patterns, constraints, models, and more
+</p>
+
+{% endif %}
 
 
+<script>
+    document.cookie = "test=test;max-age=10";
+    let value = document.cookie
+        .split("; ")
+        .find(row => row.startsWith("test="))
+        .split("=")[1];
+
+    if (value !== "test") {
+        let element = document.getElementById("cookiesDisabled");
+        element.classList.remove("hidden");
+    }
+</script>
 
 {% endblock %}

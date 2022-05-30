@@ -44,9 +44,7 @@ Flight::route("/about", function () {
         file_get_contents("{$app->env->SERVER_ROOT}/templates/legal/about.md")
     );
 
-    View::header("About");
-    echo $app->twig->render("legal/tldr.twig", ["text" => $text]);
-    View::footer();
+    $app->twig->display("legal/tldr.twig", ["title" => "About", "text" => $text]);
 });
 
 # canary
@@ -63,9 +61,7 @@ Flight::route("/dmca", function () {
         file_get_contents("{$app->env->SERVER_ROOT}/templates/legal/dmca.md")
     );
 
-    View::header("DMCA");
-    echo $app->twigg->render("legal/tldr.twig", ["text" => $text]);
-    View::footer();
+    $app->twig->display("legal/tldr.twig", ["title" => "DMCA", "text" => $text]);
 });
 
 # privacy
@@ -76,9 +72,7 @@ Flight::route("/privacy", function () {
         file_get_contents("{$app->env->SERVER_ROOT}/templates/legal/privacy.md")
     );
 
-    View::header("Privacy");
-    echo $app->twig->render("legal/tldr.twig", ["text" => $text]);
-    View::footer();
+    $app->twig->display("legal/tldr.twig", ["title" => "Privacy", "text" => $text]);
 });
 
 # pubkey
@@ -99,7 +93,8 @@ Flight::route("/login", function () {
 /** logout */
 Flight::route("/logout", function () {
     # no more bullshit
-    logout_all_sessions();
+    $auth = new Auth();
+    $auth->logout();
 });
 
 

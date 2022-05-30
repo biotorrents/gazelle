@@ -31,4 +31,5 @@ $app->twig->display("user/auth/register.twig", [
     "response" => $response ?? null,
     "emailSent" => $emailSent ?? null,
     "invite" => $get["invite"] ?? null,
+    "post" => $post ?? null,
 ]);

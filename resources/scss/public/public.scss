@@ -1,7 +1,11 @@
-/* colors */
+/**
+ * colors
+ */
+
 $skeletonDefault: #33c3f0;
 $skeletonFocus: #1eaedb;
 $skeletonHalfdark: scale-color($skeletonFocus, $lightness: -50%);
+
 
 /**
  * typography
@@ -36,19 +40,10 @@ a {
   }
 }
 
+
 /**
  * layout
  */
-
-form#register {
-  display: flex;
-  flex-flow: column wrap;
-  gap: 2rem;
-
-  ul {
-    list-style: none;
-  }
-}
 
 header,
 footer {
@@ -63,6 +58,7 @@ header {
   position: sticky;
   text-align: right;
   top: 0;
+  z-index: 1;
 
   a {
     color: white;
@@ -77,16 +73,17 @@ header {
 }
 
 footer {
+  margin: 5rem 0;
   text-align: center;
 }
 
 figure#logo {
-    height: 5rem;
-    margin: 5rem;
-    background-image: url("/images/logos/torrents.bio.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
+  height: 5rem;
+  margin: 5rem;
+  background-image: url("/images/logos/torrents.bio.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 
   &:after {
     content: "℠";
@@ -96,12 +93,28 @@ figure#logo {
   }
 }
 
+form {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 2rem;
+
+  a.button {
+    margin-bottom: 0;
+  }
+
+  ul {
+    list-style: none;
+  }
+}
+
+
 /**
  * classes
  */
 
 .mouseless {
   cursor: default;
+  margin: 5rem;
 }
 
 .info {
@@ -112,11 +125,4 @@ figure#logo {
 .error {
   color: red;
   font-family: "NotoSans-SemiCondensedBold", sans-serif;
-}
-
-/* Legal */
-.tldr {
-  width: 50%;
-  height: 500px;
-  overflow-y: scroll;
 }

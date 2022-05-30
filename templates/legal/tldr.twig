@@ -1,3 +1,7 @@
-<section class="tldr">
-    {{ text|raw }}
-</section>
+{% extends "base.twig" %}
+
+{% block content %}
+
+{{ text|raw }}
+
+{% endblock %}
