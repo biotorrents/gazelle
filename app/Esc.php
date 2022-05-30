@@ -123,4 +123,21 @@ class Esc
         $safe = filter_var($unsafe, FILTER_VALIDATE_REGEXP);
         return strval($safe);
     }
+
+
+    /** CUSTOM FILTERS */
+
+
+    /**
+     * username
+     */
+    public static function username(mixed $unsafe): string
+    {
+        $app = App::go();
+
+        $safe = self::string($unsafe);
+        if (preg_match($app->env->USERNAME_REGEX, $safe)) {
+            return strval($safe);
+        }
+    }
 } # class

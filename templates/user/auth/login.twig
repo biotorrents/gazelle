@@ -28,12 +28,31 @@
 {% endif %}
 
 
-<form name="login" id="login" method="post" autocomplete="off">
+{# u2f login form #}
+{% if post.u2f-request is defined and post.u2f-response is defined %}
+<p class="info">
+    This account is protected by a Universal Two Factor token.
+    Please insert your U2F token and press it if necessary.
+</p>
 
-    {# csrfToken #}
-    {% if csrfToken is defined %}
-    <input type="hidden" name="csrfToken" id="csrfToken" value="{{ csrfToken }}" required />
-    {% endif %}
+<form id="u2f" method="post">
+    {{ form_token("/login") }}
+
+    <input type="hidden" name="username" value="{{ post.username }}" />
+
+    <input type="hidden" name="password" value="{{ post.passphrase }}" />
+
+    <input type="hidden" name="u2f-request" value='{{ u2fAuthData }}' />
+
+    <input type="hidden" name="u2f-response" />
+</form>
+
+{% endif %}
+
+
+{# regular login form #}
+<form name="login" id="login" method="post" autocomplete="off">
+    {{ form_token("/login") }}
 
     {# username #}
     <input type="text" name="username" id="username" placeholder="Username" autofocus="autofocus" required />
@@ -72,15 +91,16 @@
 
 </form>
 
+
 {# flavor text #}
 {% if post is empty %}
-<p class="center mouseless">
-    1. …and graphs, scalars, vectors, patterns, constraints, models, and more
-</p>
+<ol class="center mouseless">
+    <li>…and graphs, scalars, vectors, patterns, constraints, models, and more</li>
+</ol>
 
 {% endif %}
 
-
+{# cookie test #}
 <script>
     document.cookie = "test=test;max-age=10";
     let value = document.cookie

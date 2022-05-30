@@ -83,11 +83,25 @@ Flight::route("/pubkey", function () {
 
 
 /** login */
+
+# login
 Flight::route("/login", function () {
-    # 2022-02-13: currently lots of crazy logic here
-    require_once __DIR__."/../sections/login/router.php";
-    #require_once __DIR__."/../sections/login/login.php";
+    $app = App::go();
+    require_once "{$app->env->SERVER_ROOT}/sections/user/auth/login.php";
 });
+
+# disabled
+Flight::route("/disabled", function () {
+    $app = App::go();
+    require_once "{$app->env->SERVER_ROOT}/sections/user/auth/disabled.php";
+});
+
+# recover
+Flight::route("/recover", function () {
+    $app = App::go();
+    require_once "{$app->env->SERVER_ROOT}/sections/user/auth/recover.php";
+});
+
 
 
 /** logout */
@@ -103,7 +117,7 @@ Flight::route("/logout", function () {
  */
 
 # registration page
-Flight::route("/register", function () {
+Flight::route("/register(/@invite)", function ($invite) {
     $app = App::go();
     require_once "{$app->env->SERVER_ROOT}/sections/user/auth/register.php";
 });

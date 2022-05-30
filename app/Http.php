@@ -35,6 +35,29 @@ class Http
 
 
     /**
+     * csrf
+     *
+     * Validates a CSRF token.
+     *
+     * @see https://github.com/paragonie/anti-csrf
+     */
+    public static function csrf()
+    {
+        $post = self::query("post");
+        $csrf = new ParagonIE\AntiCSRF\AntiCSRF;
+
+        if (!empty($post)) {
+            if ($csrf->validateRequest()) {
+                return true;
+            } else {
+                Announce::slack("csrf token failure", ["debug"]);
+                return false;
+            }
+        }
+    }
+
+
+    /**
      * query
      *
      * Validates and escapes request parameters.
@@ -96,7 +119,7 @@ class Http
 
         foreach ($_SERVER as $key => $value) {
             # sanitize client spoofed keys
-            if (str_starts_with($key, "HTTP_")) {
+            if (str_starts_with($key, "HTTP_") || str_starts_with($key, "REMOTE_")) {
                 $key = Text::esc($key);
                 $value = Text::esc($value);
                 $safe["server"][$key] = $value;
@@ -248,10 +271,10 @@ class Http
      */
     public static function getCookie(string $key)
     {
-        $cookies = self::query("cookie");
+        $cookie = self::query("cookie");
 
-        return (isset($cookies[self::$cookiePrefix.$key]))
-            ? $cookies[self::$cookiePrefix.$key]
+        return (isset($cookie[self::$cookiePrefix.$key]))
+            ? $cookie[self::$cookiePrefix.$key]
             : false;
     }
 
@@ -264,15 +287,15 @@ class Http
      *
      * @see https://www.php.net/manual/en/function.setcookie.php
      *
-     * @param array $cookies ["key => "value", "foo" => "bar"]
-     * @param string $when The time in strtotime format
+     * @param array $cookie ["key => "value", "foo" => "bar"]
+     * @param string $when strtotime format
      * @return bool setcookie
      */
-    public static function setCookie(array $cookies, string $when = "tomorrow")
+    public static function setCookie(array $cookie, string $when = "tomorrow")
     {
         $ENV = ENV::go();
 
-        foreach ($cookies as $key => $value) {
+        foreach ($cookie as $key => $value) {
             if (empty($key)) {
                 continue;
             }
@@ -320,9 +343,9 @@ class Http
      */
     public static function flushCookies()
     {
-        $cookies = self::query("cookie");
+        $cookie = self::query("cookie");
 
-        foreach ($cookies as $key => $value) {
+        foreach ($cookie as $key => $value) {
             self::deleteCookie($key);
         }
     }

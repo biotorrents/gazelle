@@ -55,6 +55,7 @@
     "illuminate/support": "^9",
     "mikecao/flight": "^2.0",
     "orpheusnet/bencode-torrent": "dev-master",
+    "paragonie/anti-csrf": "^2.3",
     "povils/figlet": "*",
     "robthree/twofactorauth": "^1.8.1",
     "symfony/http-foundation": "^6.1",

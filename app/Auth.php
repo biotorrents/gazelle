@@ -103,7 +103,7 @@ class Auth # extends Delight\Auth\Auth
         $email = Esc::email($email);
         $passphrase = Esc::string($passphrase);
         $confirmPassphrase = Esc::string($confirmPassphrase);
-        $username = Esc::string($username);
+        $username = Esc::username($username);
         $invite = Esc::string($invite);
 
         try {
@@ -150,7 +150,7 @@ class Auth # extends Delight\Auth\Auth
                 $body = $app->twig->render("email/verifyRegistration.twig", ["env" => $app->env, "uri" => $uri]);
 
                 App::email($email, $subject, $body);
-                Announce::slack("{$email}\n{$subject}\n{$body}", ["debug"]);
+                $app->cacheOld->increment("stats_user_count");
             });
         } catch (Delight\Auth\InvalidEmailException $e) {
             return "Please use a different email";
@@ -175,15 +175,16 @@ class Auth # extends Delight\Auth\Auth
      *
      * @see https://github.com/delight-im/PHP-Auth#login-sign-in
      */
-    public function login(string $username, string $passphrase)
+    public function login(string $username, string $passphrase, int $twofa = 000000)
     {
         $app = App::go();
 
         # https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#login
         $message = $this->message;
 
-        $username = Esc::string($username);
+        $username = Esc::username($username);
         $passphrase = Esc::string($passphrase);
+        $twofa = Esc::int($twofa);
 
         try {
             # simply call the method loginWithUsername instead of method login
@@ -282,7 +283,7 @@ class Auth # extends Delight\Auth\Auth
                 # email it to the prospective user
                 $to = $email;
                 $subject = "Your {$app->env->SITE_NAME} passphrase recovery";
-                $body = $app->twig->render("email/passphraseReset.twig", ["env" => $app->env, "uri" => $uri, "ip" => $ip]);
+                $body = $app->twig->render("email/passphraseReset.twig", ["uri" => $uri, "ip" => $ip]);
 
                 App::email($to, $subject, $body);
                 Announce::slack("{$to}\n{$subject}\n{$body}", ["debug"]);
@@ -342,7 +343,7 @@ class Auth # extends Delight\Auth\Auth
      *
      * @see https://github.com/delight-im/PHP-Auth#step-3-of-3-updating-the-password
      */
-    public function recoverEnd(string $selector, string $token, string $passphrase)
+    public function recoverEnd(string $selector, string $token, string $passphrase, string $confirmPassphrase)
     {
         $app = App::go();
 
@@ -351,8 +352,13 @@ class Auth # extends Delight\Auth\Auth
         $selector = Esc::string($selector);
         $token = Esc::string($token);
         $passphrase = Esc::string($passphrase);
+        $confirmPassphrase = Esc::string($confirmPassphrase);
 
         try {
+            if ($passphrase !== $confirmPassphrase) {
+                throw new Exception("The entered passphrases don't match");
+            }
+
             $response = $this->auth->resetPassword($selector, $token, $passphrase);
         } catch (Delight\Auth\InvalidSelectorTokenPairException $e) {
             return $message;
@@ -364,6 +370,8 @@ class Auth # extends Delight\Auth\Auth
             return $message;
         } catch (Delight\Auth\TooManyRequestsException $e) {
             return $message;
+        } catch (Exception $e) {
+            return $e->getMessage();
         }
 
         return $response;

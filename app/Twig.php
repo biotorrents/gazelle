@@ -87,6 +87,22 @@ class Twig # extends Twig\Environment
         $twig->addGlobal("user", $app->user);
         #!d($twig->getGlobals());exit;
 
+        # https://github.com/paragonie/anti-csrf
+        $twig->addFunction(
+            new Twig\TwigFunction(
+                'form_token',
+                function ($lock_to = null) {
+                    static $csrf;
+                    if ($csrf === null) {
+                        $csrf = new ParagonIE\AntiCSRF\AntiCSRF;
+                    }
+                    return $csrf->insertToken($lock_to, false);
+                },
+                ['is_safe' => ['html']]
+            )
+        );
+
+
         /*
         # DebugBar
         $profile = new Twig\Profiler\Profile();

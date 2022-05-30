@@ -22,11 +22,7 @@
 
 {# start the registration form itself #}
 <form name="register" id="register" method="post" autocomplete="off">
-
-    {# csrfToken #}
-    {% if csrfToken is defined %}
-    <input type="hidden" name="csrfToken" id="csrfToken" value="{{ csrfToken }}" required />
-    {% endif %}
+    {{ form_token("/register") }}
 
     {# authKey #}
     {% if user.AuthKey is defined %}
