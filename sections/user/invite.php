@@ -140,7 +140,7 @@ if (!$Sneaky
   <div class="box pad">
     <p>
       Do not trade or sell invites under any circumstances.
-      Do not send an invite to anyone who has previously had a <?= $ENV->SITE_NAME ?> account.
+      Do not send an invite to anyone who has previously had a <?= $ENV->siteName ?> account.
       Please direct them to <code>#disabled</code> on Slack if they wish to reactivate their account.
     </p>
 

@@ -314,7 +314,7 @@ function add_json_info($Json)
     if (!isset($Json['info'])) {
         $Json = array_merge($Json, [
             'info' => [
-                'source' => $ENV->SITE_NAME,
+                'source' => $ENV->siteName,
                 'version' => 1,
             ],
         ]);

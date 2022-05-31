@@ -119,7 +119,7 @@ class App
             "Content-Language" => "en-US",
             "Content-Transfer-Encoding" => "7bit",
             "Content-Type" => "text/plain; charset=UTF-8; format=flowed",
-            "From" => "{$app->env->SITE_NAME} <gazelle@{$app->env->SITE_DOMAIN}>",
+            "From" => "{$app->env->siteName} <gazelle@{$app->env->SITE_DOMAIN}>",
             "MIME-Version" => "1.0",
             "Message-ID" => "<{$secret}@{$app->env->SITE_DOMAIN}>",
         ];
@@ -174,8 +174,8 @@ class App
         # https://developer.mozilla.org/en-US/docs/Web/Manifest
         $manifest = [
             "\$schema" => "https://json.schemastore.org/web-manifest-combined.json",
-            "name" => $app->env->SITE_NAME,
-            "short_name" => $app->env->SITE_NAME,
+            "name" => $app->env->siteName,
+            "short_name" => $app->env->siteName,
             "start_url" => "/",
             "display" => "standalone",
             "background_color" => "#ffffff",

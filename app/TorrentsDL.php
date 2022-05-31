@@ -168,7 +168,7 @@ class TorrentsDL
         $NumSkipped = count($this->SkippedFiles);
 
         # wtf
-        return "Collector Download Summary for $this->Title - $ENV->SITE_NAME\r\n"
+        return "Collector Download Summary for $this->Title - $ENV->siteName\r\n"
       . "\r\n"
       . "User:    {$this->User[Username]}\r\n"
       . "Passkey: {$this->User[torrent_pass]}\r\n"

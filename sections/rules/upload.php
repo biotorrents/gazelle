@@ -45,7 +45,7 @@ View::header('Upload rules', 'rules');
       <h4 id="Intro"><a href="#Introk"><strong>&uarr;</strong></a> Introduction</h4>
       <div class="box">
         <p>
-          <?= $ENV->SITE_NAME ?> is the global DIYbio community's
+          <?= $ENV->siteName ?> is the global DIYbio community's
           distributed data repository.
           The content includes richly annotated and searchable biological sequence and medical imaging data.
           It follows the example of private BitTorrent sites to
@@ -62,7 +62,7 @@ View::header('Upload rules', 'rules');
 
         <p>
           Thanks for taking an interest in this project and contributing to its success.
-          Please note that <?= $ENV->SITE_NAME ?> isn't a pirate
+          Please note that <?= $ENV->siteName ?> isn't a pirate
           website.
         </p>
       </div>
@@ -95,7 +95,7 @@ View::header('Upload rules', 'rules');
       <ul>
         <li id="r1.1"><a href="#h1"><strong>&uarr;</strong></a> <a href="#r1.1">1.1</a>
           <strong>Biology Only.</strong>
-          <?= $ENV->SITE_NAME ?> is an annotated repository of
+          <?= $ENV->siteName ?> is an annotated repository of
           biology data
           and a bioinformatics learning community.
           Gazelle in its current state requires lots of hardcoded metadata.
@@ -122,7 +122,7 @@ View::header('Upload rules', 'rules');
 
         <li id="r1.4"><a href="#h1"><strong>&uarr;</strong></a> <a href="#r1.4">1.4</a>
           <strong>Speak English.</strong>
-          <?= $ENV->SITE_NAME ?> is an Anglophone site.
+          <?= $ENV->siteName ?> is an Anglophone site.
           Everything but private messages, and especially torrents and the forums, should be in English.
         </li>
 
@@ -193,7 +193,7 @@ View::header('Upload rules', 'rules');
 
         <li id="r1.10"><a href="#h1"><strong>&uarr;</strong></a> <a href="#r1.10">1.10</a>
           <strong>Metadata.</strong>
-          Avoid matching folder names to <?= $ENV->SITE_NAME ?>
+          Avoid matching folder names to <?= $ENV->siteName ?>
           metadata.
           The site design will change but the torrents are evergreen.
           When What.cd went down, it was possible to seed most of your old torrents at Redacted.ch because the info
@@ -382,7 +382,7 @@ View::header('Upload rules', 'rules');
 
         <li id="r3.12"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.12">3.12</a>
           <strong>License.</strong>
-          <?= $ENV->SITE_NAME ?> only allows permissive licenses.
+          <?= $ENV->siteName ?> only allows permissive licenses.
           If your data is original, please consider licensing it under one of the available options.
           The "Unspecified" option is for compatibility with existing releases of variable metadata completeness.
           <br /><br />
@@ -454,7 +454,7 @@ View::header('Upload rules', 'rules');
 
         <li id="r3.19"><a href="#h3"><strong>&uarr;</strong></a> <a href="#r3.19">3.19</a>
           <strong>Mirrors.</strong>
-          <?= $ENV->SITE_NAME ?> supports up to two FTP/HTTP web
+          <?= $ENV->siteName ?> supports up to two FTP/HTTP web
           seeds on
           an experimental basis according to
           <a href="https://www.bittorrent.org/beps/bep_0019.html" target="_blank">BEP 19 (GetRight style)</a>.

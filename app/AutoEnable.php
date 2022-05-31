@@ -204,7 +204,7 @@ EOT;
                 }
     
                 // Send email
-                $Subject = "Your enable request for $ENV->SITE_NAME has been ";
+                $Subject = "Your enable request for $ENV->siteName has been ";
                 $Subject .= ($Status === self::APPROVED) ? 'approved' : 'denied';
                 App::email($Email, $Subject, $email);
             }

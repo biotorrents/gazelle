@@ -146,7 +146,7 @@ class Auth # extends Delight\Auth\Auth
                 $uri = "https://{$app->env->SITE_DOMAIN}/confirm/{$selector}/{$token}";
 
                 # email it to the prospective user
-                $subject = "Confirm your new {$app->env->SITE_NAME} account";
+                $subject = "Confirm your new {$app->env->siteName} account";
                 $body = $app->twig->render("email/verifyRegistration.twig", ["env" => $app->env, "uri" => $uri]);
 
                 App::email($email, $subject, $body);
@@ -282,7 +282,7 @@ class Auth # extends Delight\Auth\Auth
 
                 # email it to the prospective user
                 $to = $email;
-                $subject = "Your {$app->env->SITE_NAME} passphrase recovery";
+                $subject = "Your {$app->env->siteName} passphrase recovery";
                 $body = $app->twig->render("email/passphraseReset.twig", ["uri" => $uri, "ip" => $ip]);
 
                 App::email($to, $subject, $body);

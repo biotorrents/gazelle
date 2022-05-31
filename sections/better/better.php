@@ -11,7 +11,7 @@ View::header('Better');
 
 <div class="box pad">
   <p>
-    Here at <?= $ENV->SITE_NAME ?>, we believe that there's always
+    Here at <?= $ENV->siteName ?>, we believe that there's always
     room for improvement.
     To aid our effort in the pursuit of perfection, we've put together a few simple lists that can help you build
     ratio or something and help us improve our overall quality.

@@ -13,7 +13,7 @@ if (!empty($_POST)) {
 $app = App::go();
 $auth = new Auth();
 
-$twofa = new RobThree\Auth\TwoFactorAuth($app->env->SITE_NAME);
+$twofa = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
 $u2f = new u2flib_server\U2F("https://{$app->env->SITE_DOMAIN}");
 
 # variables

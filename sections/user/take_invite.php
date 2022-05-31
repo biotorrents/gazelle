@@ -45,7 +45,7 @@ if ($user['RatioWatch']
 
 $Email = trim($_POST['email']);
 $Username = $user['Username'];
-$SiteName =  $ENV->SITE_NAME ;
+$SiteName =  $ENV->siteName ;
 $SiteURL = site_url();
 $InviteExpires = time_plus(60 * 60 * 24 * 3); // 3 days
 $InviteReason = check_perms('users_invite_notes') ? db_string($_POST['reason']) : '';
@@ -118,7 +118,7 @@ EOT;
         $cache->commit_transaction(0);
     }
 
-    App::email($CurEmail, "You have been invited to $ENV->SITE_NAME", $Message);
+    App::email($CurEmail, "You have been invited to $ENV->siteName", $Message);
 }
 
 Http::redirect("user.php?action=invite");

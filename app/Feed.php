@@ -68,7 +68,7 @@ class Feed
         $site = site_url();
 
         # echo commas because <<<XML would copy whitespace
-        echo "<title>{$title} {$app->env->SEP} {$app->env->SITE_NAME}</title>",
+        echo "<title>{$title} {$app->env->SEP} {$app->env->siteName}</title>",
              "<link>{$site}{$section}</link>",
              "<description>{$description}</description>",
              "<language>en-us</language>",

@@ -170,7 +170,7 @@ Flight::route("/feed/news/@authKey/@passKey", function (string $authKey, string 
             title: $title,
             description: $body,
             page: "index.php#news{$id}",
-            creator: $app->env->SITE_NAME,
+            creator: $app->env->siteName,
             date: $time
         );
     }
@@ -206,7 +206,7 @@ Flight::route("/feed/blog/@authKey/@passKey", function (string $authKey, string 
                 title: $title,
                 description: $body,
                 page: "forums.php?action=viewthread&amp;threadid={$threadId}",
-                creator: $app->env->SITE_NAME,
+                creator: $app->env->siteName,
                 date: $time
             );
         } else {
@@ -214,7 +214,7 @@ Flight::route("/feed/blog/@authKey/@passKey", function (string $authKey, string 
                 title: $title,
                 description: $body,
                 page: "blog.php#blog{$id}",
-                creator: $app->env->SITE_NAME,
+                creator: $app->env->siteName,
                 date: $time
             );
         }

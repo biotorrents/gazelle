@@ -21,7 +21,7 @@ if (!$env->dev) {
 
 # site name
 ENV::setPub(
-    'SITE_NAME',
+    'siteName',
     (!$env->dev
         ? 'torrents.bio' # production
         : 'dev.torrents.bio') # development

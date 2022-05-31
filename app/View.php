@@ -63,7 +63,7 @@ class View
             $PageTitle .= " $ENV->SEP ";
         }
 
-        $PageTitle .= $ENV->SITE_NAME;
+        $PageTitle .= $ENV->siteName;
         $PageID = array(
             $Document, // Document
             empty($_REQUEST['action']) ? false : $_REQUEST['action'], // Action

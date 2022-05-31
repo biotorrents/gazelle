@@ -24,7 +24,7 @@ class Json
         $app = App::go();
 
         $this->mode = 0;
-        $this->source = $app->env->SITE_NAME;
+        $this->source = $app->env->siteName;
         $this->version = 1;
     }
 

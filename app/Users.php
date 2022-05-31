@@ -726,13 +726,13 @@ class Users
             'Username'=> $Username,
            'ResetKey'=> $ResetKey,
           'IP'=> $_SERVER['REMOTE_ADDR'],
-          'SITE_NAME'=> $app->env->SITE_NAME,
+          'SITE_NAME'=> $app->env->siteName,
             'SITE_DOMAIN'=> SITE_DOMAIN,
     
         ]
         );
 
-        App::email($Email, 'Password reset information for ' . $app->env->SITE_NAME, $email);
+        App::email($Email, 'Password reset information for ' . $app->env->siteName, $email);
     }
 
     /*
@@ -763,8 +763,8 @@ class Users
         );
           
         list($Uploads) = $app->dbOld->next_record();
-        $Source[0] = $app->env->SITE_NAME.'-'.substr(hash('sha256', $SourceKey[0].$app->user['ID'].$Uploads), 0, 10);
-        $Source[1] = $SourceKeyOld ? $app->env->SITE_NAME.'-'.substr(hash('sha256', $SourceKeyOld[0].$app->user['ID'].$Uploads), 0, 10) : $Source[0];
+        $Source[0] = $app->env->siteName.'-'.substr(hash('sha256', $SourceKey[0].$app->user['ID'].$Uploads), 0, 10);
+        $Source[1] = $SourceKeyOld ? $app->env->siteName.'-'.substr(hash('sha256', $SourceKeyOld[0].$app->user['ID'].$Uploads), 0, 10) : $Source[0];
         return $Source;
     }
 

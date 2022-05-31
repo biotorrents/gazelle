@@ -28,7 +28,7 @@ $db->query("
   WHERE m.ID = ?", $UserID);
 list($Username, $TwoFactor, $PublicKey, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $Class, $InfoTitle) = $db->next_record(MYSQLI_NUM, [5, 10]);
 
-$TwoFA = new RobThree\Auth\TwoFactorAuth($ENV->SITE_NAME);
+$TwoFA = new RobThree\Auth\TwoFactorAuth($ENV->siteName);
 $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]';
 
 if ((int) $UserID !== $user['ID'] && !check_perms('users_edit_profiles', $Class)) {

@@ -724,7 +724,7 @@ if ($ResetAuthkey == 1 && check_perms('users_edit_reset_keys')) {
 
 if ($SendHackedMail && check_perms('users_disable_any')) {
     $EditSummary[] = "hacked account email sent to $HackedEmail";
-    App::email($HackedEmail, "Your $ENV->SITE_NAME account", "Your $ENV->SITE_NAME account appears to have been compromised. As a security measure, we have disabled your account. To resolve this, please visit us on Slack.");
+    App::email($HackedEmail, "Your $ENV->siteName account", "Your $ENV->siteName account appears to have been compromised. As a security measure, we have disabled your account. To resolve this, please visit us on Slack.");
 }
 
 if ($MergeStatsFrom && check_perms('users_edit_ratio')) {

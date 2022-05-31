@@ -144,7 +144,7 @@ if (isset($_GET['type']) && isset($_GET['userid'])) {
             #require_once SERVER_ROOT.'/classes/time.class.php';
             $dbURL = db_string($URL);
             $AdminComment = ucfirst($TypeName)." reset automatically (Size: ".Text::float((strlen($Data)) / 1024)." kB, Height: ".$Height."px). Used to be $dbURL";
-            $PrivMessage = "$ENV->SITE_NAME has the following requirements for {$TypeName}s:\n\n".
+            $PrivMessage = "$ENV->siteName has the following requirements for {$TypeName}s:\n\n".
         "[b]".ucfirst($TypeName)."s must not exceed ".($MaxFileSize / 1024)." kB or be vertically longer than {$MaxImageHeight}px.[/b]\n\n".
         "Your $TypeName at $dbURL has been found to exceed these rules. As such, it has been automatically reset. You are welcome to reinstate your $TypeName once it has been resized down to an acceptable size.";
             reset_image($UserID, $Type, $AdminComment, $PrivMessage);

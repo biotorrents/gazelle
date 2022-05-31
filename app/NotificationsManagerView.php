@@ -61,7 +61,7 @@ class NotificationsManagerView
 
 <tr>
   <td class="label tooltip"
-    title="Notify when you receive a new private message from <?= $ENV->SITE_NAME ?> staff">
+    title="Notify when you receive a new private message from <?= $ENV->siteName ?> staff">
     <strong>Staff Messages</strong>
   </td>
 

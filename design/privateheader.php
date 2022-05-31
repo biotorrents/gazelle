@@ -114,7 +114,7 @@ if (isset(G::$user['Notify'])) {
         echo $HTML = <<<HTML
         <link rel="alternate" type="application/rss+xml"
           href="feeds.php?feed=torrents_notify_$FilterID_$PassKey&amp;user=$ID&amp;auth=$RssAuth&amp;passkey=$PassKey&amp;authkey=$AuthKey"
-          title="$NameEsc $ENV->SEP $ENV->SITE_NAME" />
+          title="$NameEsc $ENV->SEP $ENV->siteName" />
 HTML;
         */
     }
@@ -127,7 +127,7 @@ foreach ($ENV->CATS as $Cat) {
     echo $HTML = <<<HTML
     <link rel="alternate" type="application/rss+xml"
       href="feeds.php?feed=torrents_$name&amp;user=$ID&amp;auth=$RssAuth&amp;passkey=$PassKey&amp;authkey=$AuthKey"
-      title="New $Cat->Name Torrents $ENV->SEP $ENV->SITE_NAME" />
+      title="New $Cat->Name Torrents $ENV->SEP $ENV->siteName" />
 HTML;
 }
 
@@ -135,15 +135,15 @@ HTML;
 echo $HTML = <<<HTML
 <link rel="alternate" type="application/rss+xml"
   href="feeds.php?feed=torrents_all&amp;user=$ID&amp;auth=$RssAuth&amp;passkey=$PassKey&amp;authkey=$AuthKey"
-  title="All New Torrents $ENV->SEP $ENV->SITE_NAME" />
+  title="All New Torrents $ENV->SEP $ENV->siteName" />
 
 <link rel="alternate" type="application/rss+xml"
   href="feeds.php?feed=feed_news&amp;user=$ID&amp;auth=$RssAuth&amp;passkey=$PassKey&amp;authkey=$AuthKey"
-  title="News $ENV->SEP $ENV->SITE_NAME" />
+  title="News $ENV->SEP $ENV->siteName" />
 
 <link rel="alternate" type="application/rss+xml"
   href="feeds.php?feed=feed_news&amp;user=$ID&amp;auth=$RssAuth&amp;passkey=$PassKey&amp;authkey=$AuthKey"
-  title="Blog $ENV->SEP $ENV->SITE_NAME" />
+  title="Blog $ENV->SEP $ENV->siteName" />
 HTML;
 
 /**
@@ -241,7 +241,7 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
   class="<?=($BodyStyles??'')?>">
   <div id="wrapper">
     <h1 class="hidden">
-      <?= $ENV->SITE_NAME ?>
+      <?= $ENV->siteName ?>
     </h1>
 
     <?= $twig->render(

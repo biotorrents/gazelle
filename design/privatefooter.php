@@ -13,7 +13,7 @@ echo $HTML = '</main><footer>';
 # Disclaimer
 echo $HTML = <<<HTML
 <p>
-  No data are hosted on $ENV->SITE_NAME's servers.
+  No data are hosted on $ENV->siteName's servers.
   All torrents are user-generated content.
   Torrents without a specified license may be protected by copyright.
 </p>
@@ -62,7 +62,7 @@ echo $HTML = <<<HTML
 <p>
   &copy;
   $Year
-  $ENV->SITE_NAME
+  $ENV->siteName
   $Sep
   <a href="/canary">Warrant Canary</a>
 </p>

@@ -31,7 +31,7 @@ list($FrontLineSupport, $ForumStaff, $Staff) = $SupportStaff;
 
 <div>
     <h2 class="header">
-        <?= $ENV->SITE_NAME ?>
+        <?= $ENV->siteName ?>
         Staff
     </h2>
 
