@@ -27,7 +27,7 @@ if (!Forums::check_forumperm($ForumID, 'Write') || !Forums::check_forumperm($For
 
 $ENV = ENV::go();
 View::header(
-    "Forums $ENV->CRUMB ".$Forum['Name']." $ENV->CRUMB New Topic",
+    "Forums $ENV->crumb ".$Forum['Name']." $ENV->crumb New Topic",
     'comments,vendor/easymde.min',
     'vendor/easymde.min'
 );
@@ -36,10 +36,10 @@ View::header(
 <div>
   <h2>
     <a href="forums.php">Forums</a>
-    <?=$ENV->CRUMB?>
+    <?=$ENV->crumb?>
     <a href="forums.php?action=viewforum&amp;forumid=<?=$ForumID?>">
       <?=$Forum['Name']?></a>
-    <?=$ENV->CRUMB?>
+    <?=$ENV->crumb?>
     <span id="newthreadtitle">
       New Topic
     </span>

@@ -69,7 +69,7 @@ if ($SiteOptions) {
  * Show header
  */
 View::header(
-    "$Username $ENV->CRUMB Settings",
+    "$Username $ENV->crumb Settings",
     'user,cssgallery,preview_paranoia,user_settings,vendor/easymde.min',
     'vendor/easymde.min'
 );
@@ -90,7 +90,7 @@ $ProfileRewards = Donations::get_profile_rewards($UserID);
   <div class="header">
     <h2>
       <?=Users::format_username($UserID, false, false, false)?>
-      <?=$ENV->CRUMB?> Settings
+      <?=$ENV->crumb?> Settings
     </h2>
   </div>
 

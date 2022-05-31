@@ -45,10 +45,10 @@ View::header();
   <div class="header">
     <h2>
       <a href="forums.php">Forums</a>
-      <?=$ENV->CRUMB?>
+      <?=$ENV->crumb?>
       <a
         href="forums.php?action=viewforum&amp;forumid=<?=$ForumID?>"><?=$Forums[$ForumID]['Name']?></a>
-      <?=$ENV->CRUMB?>
+      <?=$ENV->crumb?>
       Edit forum specific rules
     </h2>
   </div>

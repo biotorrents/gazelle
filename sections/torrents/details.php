@@ -96,7 +96,7 @@ View::header(
 <section class="header">
   <h2 class="row">
     <a href="/torrents.php">Torrents</a>
-    <?= $ENV->CRUMB ?>
+    <?= $ENV->crumb ?>
     <?= $Title ?>
   </h2>
 
@@ -143,8 +143,6 @@ View::header(
   </div>
 </section>
 
-
-  <?php Misc::display_recommend($GroupID, "torrent"); ?>
   <div class="sidebar one-third column">
     <div class="box box_image box_image_albumart box_albumart">
       <!-- .box_albumart deprecated -->

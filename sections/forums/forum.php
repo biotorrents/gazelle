@@ -83,13 +83,13 @@ if (!Forums::check_forumperm($ForumID)) {
 
 // Start printing
 $ENV = ENV::go();
-View::header("Forums $ENV->CRUMB ".$Forums[$ForumID]['Name']);
+View::header("Forums $ENV->crumb ".$Forums[$ForumID]['Name']);
 ?>
 
 <div class="header">
   <h2>
     <a href="forums.php">Forums</a>
-    <?=$ENV->CRUMB?>
+    <?=$ENV->crumb?>
     <?=$ForumName?>
   </h2>
 
@@ -310,7 +310,7 @@ if (count($Forum) === 0) {
 
 <div class="breadcrumbs">
   <p>
-    <a href="forums.php">Forums</a> <?=$ENV->CRUMB?> <?=$ForumName?>
+    <a href="forums.php">Forums</a> <?=$ENV->crumb?> <?=$ForumName?>
   </p>
 </div>
 
