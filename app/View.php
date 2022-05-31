@@ -60,7 +60,7 @@ class View
         global $Document, $Mobile, $Classes;
 
         if ($PageTitle !== '') {
-            $PageTitle .= " $ENV->SEP ";
+            $PageTitle .= " $ENV->separator ";
         }
 
         $PageTitle .= $ENV->siteName;

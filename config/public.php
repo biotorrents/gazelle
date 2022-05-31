@@ -31,7 +31,7 @@ ENV::setPub(
 ENV::setPub('siteDescription', 'An open platform for libre biology data');
 
 # navigation glyphs
-ENV::setPub('SEP', '-'); # e.g., News - dev.torrents.bio
+ENV::setPub('separator', '-'); # e.g., News - dev.torrents.bio
 ENV::setPub('CRUMB', '›'); # e.g., Forums › Board › Thread
 
 # The FQDN of your site, e.g., dev.torrents.bio
