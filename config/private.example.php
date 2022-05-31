@@ -12,7 +12,7 @@ declare(strict_types=1);
 ENV::setPriv('IMAGE_PSK', '');
 
  # Production
-if (!$ENV->DEV) {
+if (!$env->DEV) {
     # Unused in OT Gazelle. Currently used for API token auth
     ENV::setPriv('ENCKEY', '');
   
@@ -52,13 +52,13 @@ ENV::setPriv('SQL_KEY', "/var/www/tls-keys/client-key-ohm.pem");
 ENV::setPriv('SQL_CA', "/var/www/tls-keys/ca.pem");
 
 /*
-ENV::setPriv('SQL_CERT', "$ENV->WEB_ROOT/tls-keys/client-cert-ohm.pem");
-ENV::setPriv('SQL_KEY', "$ENV->WEB_ROOT/tls-keys/client-key-ohm.pem");
-ENV::setPriv('SQL_CA', "$ENV->WEB_ROOT/tls-keys/ca.pem");
+ENV::setPriv('SQL_CERT', "$env->WEB_ROOT/tls-keys/client-cert-ohm.pem");
+ENV::setPriv('SQL_KEY', "$env->WEB_ROOT/tls-keys/client-key-ohm.pem");
+ENV::setPriv('SQL_CA', "$env->WEB_ROOT/tls-keys/ca.pem");
 */
 
 # Production
-if (!$ENV->DEV) {
+if (!$env->DEV) {
     ENV::setPriv('SQL_DB', 'gazelle_production');
     ENV::setPriv('SQL_USER', 'gazelle_production');
     ENV::setPriv('SQL_PASS', '');
@@ -80,7 +80,7 @@ else {
 ENV::setPriv('TRACKER_HOST', '0.0.0.0');
 
  # Production
-if (!$ENV->DEV) {
+if (!$env->DEV) {
     ENV::setPriv('TRACKER_PORT', 34000);
   
     # Must be 32 alphanumeric characters and match site_password in ocelot.conf
@@ -107,7 +107,7 @@ else {
 ENV::setPub('PLAUSIBLE_URI', 'https://stats.torrents.bio/api/v1');
 
 # Production
-if (!$ENV->DEV) {
+if (!$env->DEV) {
     ENV::setPriv('PLAUSIBLE_KEY', '');
 }
 
