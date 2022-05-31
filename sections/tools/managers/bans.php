@@ -1,6 +1,9 @@
 <?php
 #declare(strict_types=1);
 
+
+$app = App::go();
+
 $ENV = ENV::go();
 
 if (!check_perms('admin_manage_ipbans')) {
@@ -68,7 +71,7 @@ if (!empty($_REQUEST['notes'])) {
     $sql .= "WHERE Reason LIKE '%".db_string($_REQUEST['notes'])."%' ";
 }
 
-if (!empty($_REQUEST['ip']) && preg_match('/'.$ENV->IP_REGEX.'/', $_REQUEST['ip'])) {
+if (!empty($_REQUEST['ip']) && preg_match($app->env->regexIp, $_REQUEST['ip'])) {
     if (!empty($_REQUEST['notes'])) {
         $sql .= "AND '".Tools::ip_to_unsigned($_REQUEST['ip'])."' BETWEEN FromIP AND ToIP ";
     } else {

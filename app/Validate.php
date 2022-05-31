@@ -314,6 +314,8 @@ class Validate
 
     public function ValidateForm($ValidateArray)
     {
+        $app = App::go();
+
         reset($this->Fields);
         foreach ($this->Fields as $FieldKey => $Field) {
             $ValidateVar = $ValidateArray[$FieldKey];
@@ -380,7 +382,7 @@ class Validate
                         $MinLength = 6;
                     }
 
-                    if (!preg_match("/^".EMAIL_REGEX."$/i", $ValidateVar)) {
+                    if (!preg_match($app->env->regexEmail, $ValidateVar)) {
                         return $Field['ErrorMessage'];
                     } elseif (strlen($ValidateVar) > $MaxLength) {
                         return $Field['ErrorMessage'];
@@ -400,7 +402,7 @@ class Validate
                         $MinLength = 10;
                     }
 
-                    if (!preg_match('/^'.URL_REGEX.'$/i', $ValidateVar)) {
+                    if (!preg_match($app->env->regexUri, $ValidateVar)) {
                         return $Field['ErrorMessage'];
                     } elseif (strlen($ValidateVar) > $MaxLength) {
                         return $Field['ErrorMessage'];
@@ -420,7 +422,7 @@ class Validate
                         $MinLength = 1;
                     }
 
-                    if (!preg_match(USERNAME_REGEX, $ValidateVar)) {
+                    if (!preg_match($app->env->regexUsername, $ValidateVar)) {
                         return $Field['ErrorMessage'];
                     } elseif (strlen($ValidateVar) > $MaxLength) {
                         return $Field['ErrorMessage'];

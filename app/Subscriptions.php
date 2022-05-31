@@ -12,6 +12,8 @@ class Subscriptions
      */
     public static function quote_notify($Body, $PostID, $Page, $PageID)
     {
+        $app = App::go();
+
         $QueryID = G::$db->get_query_id();
         /*
          * Explanation of the parameters PageID and Page: Page contains where
@@ -29,7 +31,7 @@ class Subscriptions
             $Level = 0;
             foreach ($Matches as $M) {
                 if ($M[0] != '[/quote]') {
-                    if ($Level == 0 && isset($M[1]) && strlen($M[1]) > 0 && preg_match(USERNAME_REGEX, $M[1])) {
+                    if ($Level == 0 && isset($M[1]) && strlen($M[1]) > 0 && preg_match($app->env->regexUsername, $M[1])) {
                         $Usernames[] = preg_replace('/(^[.,]*)|([.,]*$)/', '', $M[1]); // wut?
                     }
                     ++$Level;

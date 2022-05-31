@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+
+$app = App::go();
+
 authorize();
 
 $GroupID = $_POST['groupid'];
@@ -26,7 +29,7 @@ if (!check_perms('torrents_edit') && !check_perms('screenshots_add') && !check_p
 $Screenshots = $_POST['screenshots'] ?? [];
 $Screenshots = array_map("trim", $Screenshots);
 $Screenshots = array_filter($Screenshots, function ($s) {
-    return preg_match('/^'.DOI_REGEX.'$/i', $s);
+    return preg_match($app->env->regexDoi, $s);
 });
 $Screenshots = array_unique($Screenshots);
 

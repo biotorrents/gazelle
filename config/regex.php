@@ -10,127 +10,142 @@ declare(strict_types=1);
  */
 
 # resource_type://username:password@domain:port/path?query_string#anchor
-define("RESOURCE_REGEX", "(https?|ftps?|dat|ipfs):\/\/");
+define("regexResource", "(https?|ftps?|dat|ipfs):\/\/");
 ENV::setPub(
-    "RESOURCE_REGEX",
+    "regexResource",
     "/(https?|ftps?|dat|ipfs):\/\//"
 );
 
-define("IP_REGEX", "(\d{1,3}\.){3}\d{1,3}");
+
+#define("regexIp", "(\d{1,3}\.){3}\d{1,3}");
 ENV::setPub(
-    "IP_REGEX",
+    "regexIp",
     "/(\d{1,3}\.){3}\d{1,3}/"
 );
 
-define("DOMAIN_REGEX", "([a-z0-9\-\_]+\.)*[a-z0-9\-\_]+");
+
+#define("regexDomain", "([a-z0-9\-\_]+\.)*[a-z0-9\-\_]+");
 ENV::setPub(
-    "DOMAIN_REGEX",
+    "regexDomain",
     "/([a-z0-9\-\_]+\.)*[a-z0-9\-\_]+/"
 );
 
-define("PORT_REGEX", ":\d{1,5}");
+#define("regexPort", ":\d{1,5}");
 ENV::setPub(
-    "PORT_REGEX",
+    "regexPort",
     "/:\d{1,5}/"
 );
 
-define("URL_REGEX", "(".RESOURCE_REGEX.")(".IP_REGEX."|".DOMAIN_REGEX.")(".PORT_REGEX.")?(\/\S*)*");
+
+#define("regexUri", "(".regexResource.")(".regexIp."|".regexDomain.")(".regexPort.")?(\/\S*)*");
 ENV::setPub(
-    "URL_REGEX",
-    "/({$env->RESOURCE_REGEX})({$env->IP_REGEX}|{$env->DOMAIN_REGEX})({$env->PORT_REGEX})?(\/\S*)*/"
+    "regexUri",
+    "/^({$env->regexResource})({$env->regexIp}|{$env->regexDomain})({$env->regexPort})?(\/\S*)*/i"
 );
 
-define("USERNAME_REGEX", "/^[a-z0-9_]{2,20}$/iD");
+
+#define("regexUsername", "/^[a-z0-9_]{2,20}$/iD");
 ENV::setPub(
-    "USERNAME_REGEX",
+    "regexUsername",
     "/^[a-z0-9_]{2,20}$/iD"
 );
 
-define("EMAIL_REGEX", "[_a-z0-9-]+([.+][_a-z0-9-]+)*@".DOMAIN_REGEX);
+#define("regexEmail", "[_a-z0-9-]+([.+][_a-z0-9-]+)*@".regexDomain);
 ENV::setPub(
-    "EMAIL_REGEX",
-    "/[_a-z0-9-]+([.+][_a-z0-9-]+)*@{$env->DOMAIN_REGEX}/"
+    "regexEmail",
+    "/^[_a-z0-9-]+([.+][_a-z0-9-]+)*@{$env->regexDomain}$/i"
 );
 
-define("IMAGE_REGEX", URL_REGEX."\/\S+\.(jpg|jpeg|tif|tiff|png|gif|bmp)(\?\S*)?");
+
+#define("regexImage", regexUri."\/\S+\.(jpg|jpeg|tif|tiff|png|gif|bmp)(\?\S*)?");
 ENV::setPub(
-    "IMAGE_REGEX",
-    "/{$env->URL_REGEX}\/\S+\.(jpg|jpeg|tif|tiff|png|gif|bmp)(\?\S*)?/"
+    "regexImage",
+    "/{$env->regexUri}\/\S+\.(jpg|jpeg|tif|tiff|png|gif|bmp)(\?\S*)?/i"
 );
 
-define("VIDEO_REGEX", URL_REGEX."\/\S+\.(webm)(\?\S*)?");
+
+#define("regexVideo", regexUri."\/\S+\.(webm)(\?\S*)?");
 ENV::setPub(
-    "VIDEO_REGEX",
-    "/{$env->URL_REGEX}\/\S+\.(webm)(\?\S*)?/"
+    "regexVideo",
+    "/{$env->regexUri}\/\S+\.(webm)(\?\S*)?/i"
 );
 
-define("CSS_REGEX", URL_REGEX."\/\S+\.css(\?\S*)?");
+
+#define("regexCss", regexUri."\/\S+\.css(\?\S*)?");
 ENV::setPub(
-    "CSS_REGEX",
-    "/{$env->URL_REGEX}\/\S+\.css(\?\S*)?/"
+    "regexCss",
+    "/{$env->regexUri}\/\S+\.css(\?\S*)?/i"
 );
 
-define("SITELINK_REGEX", RESOURCE_REGEX."(www.)?".preg_quote(SITE_DOMAIN, "/"));
+
+#define("regexSiteLink", regexResource."(www.)?".preg_quote(SITE_DOMAIN, "/"));
 ENV::setPub(
-    "SITELINK_REGEX",
-    "/{$env->RESOURCE_REGEX}(www.)?".preg_quote(SITE_DOMAIN, "/")."/"
+    "regexSiteLink",
+    "/{$env->regexResource}(www.)?".preg_quote(SITE_DOMAIN, "/")."/"
 );
 
-define("TORRENT_REGEX", SITELINK_REGEX."\/torrents\.php\?(.*&)?torrentid=(\d+)"); // torrentid = group 4
+
 ENV::setPub(
-    "TORRENT_REGEX",
-    "/{$env->SITELINK_REGEX}\/torrents\.php\?(.*&)?torrentid=(\d+)/"
+    "regexTorrent",
+    "/{$env->regexSiteLink}\/torrents\.php\?(.*&)?torrentid=(\d+)/i"
 );
 
-define("TORRENT_GROUP_REGEX", SITELINK_REGEX."\/torrents\.php\?(.*&)?id=(\d+)"); // id = group 4
+
 ENV::setPub(
-    "TORRENT_GROUP_REGEX",
-    "/{$env->SITELINK_REGEX}\/torrents\.php\?(.*&)?id=(\d+)/"
+    "regexTorrentGroup",
+    "/^{$env->regexSiteLink}\/torrents\.php\?(.*&)?id=(\d+)/i"
 );
 
-define("ARTIST_REGEX", SITELINK_REGEX."\/artist\.php\?(.*&)?id=(\d+)"); // id = group 4
+
 ENV::setPub(
-    "ARTIST_REGEX",
-    "/{$env->SITELINK_REGEX}\/artist\.php\?(.*&)?id=(\d+)/"
+    "regexArtist",
+    "/^{$env->regexSiteLink}\/artist\.php\?(.*&)?id=(\d+)/i"
 );
+
 
 # https://stackoverflow.com/a/3180176
 ENV::setPub(
-    "HTML_REGEX",
+    "regexHtml",
     "/<([\w]+)([^>]*?)(([\s]*\/>)|(>((([^<]*?|<\!\-\-.*?\-\->)|(?R))*)<\/\\1[\s]*>))/s"
 );
 
+
 ENV::setPub(
-    "BBCODE_REGEX",
+    "regexBBCode",
     "/\[([\w]+)([^\]]*?)(([\s]*\/\])|(\]((([^\[]*?|\[\!\-\-.*?\-\-\])|(?R))*)\[\/\\1[\s]*\]))/s"
 );
 
+
 # https://www.crossref.org/blog/dois-and-matching-regular-expressions/
 ENV::setPub(
-    "DOI_REGEX",
+    "regexDoi",
     "/10.\d{4,9}\/[-._;()\/:A-Z0-9]+/"
 );
 
+
 # https://www.biostars.org/p/13753/
 ENV::setPub(
-    "ENTREZ_REGEX",
+    "regexEntrez",
     "/\d*/"
 );
 
+
 # https://www.wikidata.org/wiki/Property:P496
 ENV::setPub(
-    "ORCID_REGEX",
+    "regexOrcid",
     "/0000-000(1-[5-9]|2-[0-9]|3-[0-4])\d{3}-\d{3}[\dX]/"
 );
 
+
 # https://www.biostars.org/p/13753/
 ENV::setPub(
-    "REFSEQ_REGEX",
+    "regexRefSeq",
     "/\w{2}_\d{1,}\.\d{1,}/"
 );
 
+
 # https://www.uniprot.org/help/accession_numbers
 ENV::setPub(
-    "UNIPROT_REGEX",
+    "regexUniProt",
     "/[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}/"
 );

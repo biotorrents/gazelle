@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+
+$app = App::go();
+
 /**
  * Fill a request
  */
@@ -17,7 +20,7 @@ if (!empty($_GET['torrentid']) && is_number($_GET['torrentid'])) {
         error('You forgot to supply a link to the filling torrent');
     } else {
         $Link = $_POST['link'];
-        if (!preg_match('/'.TORRENT_REGEX.'/i', $Link, $Matches)) {
+        if (!preg_match($app->env->regexTorrent, $Link, $Matches)) {
             error('Your link didn\'t seem to be a valid torrent link');
         } else {
             $TorrentID = $Matches[4];

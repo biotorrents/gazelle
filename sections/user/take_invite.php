@@ -1,6 +1,7 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
 $ENV = ENV::go();
 
 if (!$UserCount = $cache->get_value('stats_user_count')) {
@@ -58,7 +59,7 @@ if (strpos($Email, '|') !== false && check_perms('site_send_unlimited_invites'))
 }
 
 foreach ($Emails as $CurEmail) {
-    if (!preg_match("/^".EMAIL_REGEX."$/i", $CurEmail)) {
+    if (!preg_match($app->env->regexEmail, $CurEmail)) {
         if (count($Emails) > 1) {
             continue;
         } else {

@@ -1,6 +1,9 @@
 <?php
 #declare(strict_types=1);
 
+
+$app = App::go();
+
 //******************************************************************************//
 //----------------- Take request -----------------------------------------------//
 authorize();
@@ -93,7 +96,7 @@ if (empty($_POST['image'])) {
     $Image = '';
 } else {
     ImageTools::blacklisted($_POST['image']);
-    if (preg_match('/'.IMAGE_REGEX.'/', trim($_POST['image'])) > 0) {
+    if (preg_match($app->env->regexImage, trim($_POST['image'])) > 0) {
         $Image = trim($_POST['image']);
     } else {
         $Err = Text::esc($_POST['image']).' does not appear to be a valid link to an image.';

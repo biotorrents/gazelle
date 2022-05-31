@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 /** LEGACY ROUTES */
 
+$app = App::go();
+
 
 if (!check_perms('site_proxy_images')) {
     img_error('forbidden');
@@ -26,7 +28,7 @@ if (!extension_loaded('openssl') && strtoupper($URL[4]) === 'S') {
 }
 
 /*
-if (!(preg_match('/^'.IMAGE_REGEX.'/is', $URL, $Matches) || preg_match('/^'.VIDEO_REGEX.'/is', $URL, $Matches))) {
+if (!(preg_match($app->env->regexImage, $URL, $Matches) || preg_match($app->env->regexVideo, $URL, $Matches))) {
   img_error('invalid');
 }
 */

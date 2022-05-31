@@ -1,14 +1,15 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
 $ENV = ENV::go();
 
 if (!empty($_GET['search'])) {
-    if (preg_match('/^'.$ENV->IP_REGEX.'$/', $_GET['search'])) {
+    if (preg_match($app->env->regexIp, $_GET['search'])) {
         $_GET['ip'] = $_GET['search'];
-    } elseif (preg_match('/^'.EMAIL_REGEX.'$/i', $_GET['search'])) {
+    } elseif (preg_match($app->env->regexEmail, $_GET['search'])) {
         $_GET['email'] = $_GET['search'];
-    } elseif (preg_match(USERNAME_REGEX, $_GET['search'])) {
+    } elseif (preg_match($app->env->regexUsername, $_GET['search'])) {
         $db->query("
       SELECT ID
       FROM users_main

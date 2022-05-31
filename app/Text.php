@@ -39,7 +39,7 @@ class Text
         $string = self::esc($string);
 
         # here's the magic pattern:
-        if (!preg_match($ENV->BBCODE_REGEX, $string)) {
+        if (!preg_match($ENV->regexBBCode, $string)) {
             # markdown
             $parsedown = new \ParsedownExtra();
             $safe ?? $parsedown->setSafeMode(true);
@@ -81,7 +81,7 @@ class Text
 
         # replace links to $ENV->SITE_DOMAIN
         $parsed = preg_replace(
-            "/<a href=\"{$ENV->RESOURCE_REGEX}({$ENV->SITE_DOMAIN}|{$ENV->OLD_SITE_DOMAIN})\//",
+            "/<a href=\"{$ENV->regexResource}({$ENV->SITE_DOMAIN}|{$ENV->OLD_SITE_DOMAIN})\//",
             "<a href=\"/",
             $parsed
         );

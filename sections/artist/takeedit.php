@@ -1,4 +1,10 @@
 <?php
+
+
+
+$app = App::go();
+
+
 /*********************************************************************\
 The page that handles the backend of the 'edit artist' function.
 \*********************************************************************/
@@ -30,7 +36,7 @@ if ($_GET['action'] === 'revert') { // if we're reverting to a previous revision
   $Image = db_string($_POST['image']);
   ImageTools::blacklisted($Image);
   // Trickery
-  if (!preg_match("/^".IMAGE_REGEX."$/i", $Image)) {
+  if (!preg_match($app->env->regexImage, $Image)) {
     $Image = '';
   }
 }

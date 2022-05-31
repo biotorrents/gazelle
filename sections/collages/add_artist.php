@@ -1,4 +1,9 @@
 <?php
+declare(strict_types=1);
+
+
+$app = App::go();
+
 //NumTorrents is actually the number of things in the collage, the name just isn't generic.
 
 authorize();
@@ -86,7 +91,7 @@ if ($MaxGroupsPerUser > 0) {
 }
 
 if ($_REQUEST['action'] == 'add_artist') {
-  $Val->SetFields('url', '1', 'regex', 'The URL must be a link to a artist on the site.', array('regex' => '/^'.ARTIST_REGEX.'/i'));
+  $Val->SetFields('url', '1', 'regex', 'The URL must be a link to a artist on the site.', array('regex' => $app->env->regexArtist));
   $Err = $Val->ValidateForm($_POST);
 
   if ($Err) {
@@ -96,7 +101,7 @@ if ($_REQUEST['action'] == 'add_artist') {
   $URL = $_POST['url'];
 
   // Get artist ID
-  preg_match('/^'.ARTIST_REGEX.'/i', $URL, $Matches);
+  preg_match($app->env->regexArtist, $URL, $Matches);
   $ArtistID = $Matches[4];
   if (!$ArtistID || (int)$ArtistID === 0) {
     error(404);
@@ -135,7 +140,7 @@ if ($_REQUEST['action'] == 'add_artist') {
 
   foreach ($URLs as $URL) {
     $Matches = [];
-    if (preg_match('/^'.ARTIST_REGEX.'/i', $URL, $Matches)) {
+    if (preg_match($app->env->regexArtist, $URL, $Matches)) {
       $ArtistIDs[] = $Matches[4];
       $ArtistID = $Matches[4];
     } else {

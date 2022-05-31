@@ -1,6 +1,9 @@
 <?php
 #declare(strict_types=1);
 
+
+$app = App::go();
+
 /**
  * Take upload
  *
@@ -423,7 +426,7 @@ if ($T['Archive'] === 'Autofill') {
 $Body = $T['GroupDescription'];
 
 // Trickery
-if (!preg_match('/^'.IMAGE_REGEX.'$/i', $T['Image'])) {
+if (!preg_match($app->env->regexImage, $T['Image'])) {
     $T['Image'] = '';
 }
 
@@ -561,7 +564,7 @@ if (!isset($GroupID) || !$GroupID) {
      * THESE ARE ASSOCIATED WITH TORRENT GROUPS.s
      */
     if (!empty($T['Screenshots'])) {
-        $Screenshots = $Validate->textarea2array($T['Screenshots'], $ENV->DOI_REGEX);
+        $Screenshots = $Validate->textarea2array($T['Screenshots'], $ENV->regexDoi);
         $Screenshots = array_slice($Screenshots, 0, 10);
 
         foreach ($Screenshots as $Screenshot) {
@@ -705,7 +708,7 @@ $Tor->Dec['comment'] = 'https://'.SITE_DOMAIN.'/torrents.php?torrentid='.$Torren
  */
 
 if (!empty($T['Mirrors'])) {
-    $Mirrors = $Validate->textarea2array($T['Mirrors'], $ENV->URL_REGEX);
+    $Mirrors = $Validate->textarea2array($T['Mirrors'], $ENV->regexUri);
     $Screenshots = array_slice($Screenshots, 0, 5);
 
     foreach ($Mirrors as $Mirror) {

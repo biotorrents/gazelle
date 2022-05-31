@@ -136,7 +136,7 @@ class Esc
         $app = App::go();
 
         $safe = self::string($unsafe);
-        if (preg_match($app->env->USERNAME_REGEX, $safe)) {
+        if (preg_match($app->env->regexUsername, $safe)) {
             return strval($safe);
         }
     }

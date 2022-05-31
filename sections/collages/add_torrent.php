@@ -1,6 +1,9 @@
 <?php
 #declare(strict_types=1);
 
+
+$app = App::go();
+
 authorize();
 
 require_once SERVER_ROOT.'/classes/validate.class.php';
@@ -88,7 +91,7 @@ if ($MaxGroupsPerUser > 0) {
 }
 
 if ($_REQUEST['action'] == 'add_torrent') {
-    $Val->SetFields('url', '1', 'regex', 'The URL must be a link to a torrent on the site.', array('regex' => '/^'.TORRENT_GROUP_REGEX.'/i'));
+    $Val->SetFields('url', '1', 'regex', 'The URL must be a link to a torrent on the site.', array('regex' => $app->env->regexTorrentGroup));
     $Err = $Val->ValidateForm($_POST);
 
     if ($Err) {
@@ -98,7 +101,7 @@ if ($_REQUEST['action'] == 'add_torrent') {
     $URL = $_POST['url'];
 
     // Get torrent ID
-    preg_match('/^'.TORRENT_GROUP_REGEX.'/i', $URL, $Matches);
+    preg_match($app->env->regexTorrentGroup, $URL, $Matches);
     $TorrentID = (int) $Matches[4];
     Security::int($TorrentID);
 
@@ -135,7 +138,7 @@ if ($_REQUEST['action'] == 'add_torrent') {
 
     foreach ($URLs as $URL) {
         $Matches = [];
-        if (preg_match('/^'.TORRENT_GROUP_REGEX.'/i', $URL, $Matches)) {
+        if (preg_match($app->env->regexTorrentGroup, $URL, $Matches)) {
             $GroupIDs[] = $Matches[4];
             $GroupID = $Matches[4];
         } else {
