@@ -58,7 +58,7 @@ ENV::setPub(
 );
 
 # The FQDN of your image host, e.g., pics.torrents.bio
-ENV::setPub('IMAGE_DOMAIN', 'pics.torrents.bio');
+ENV::setPub('imageDomain', 'pics.torrents.bio');
 
 # Web root. Currently used for Twig but may also include config files
 ENV::setPub('WEB_ROOT', '/var/www/');

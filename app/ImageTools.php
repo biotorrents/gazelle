@@ -22,14 +22,14 @@ class ImageTools
             return '';
         }
         
-        if (preg_match('/^https:\/\/('.$ENV->SITE_DOMAIN.'|'.$ENV->IMAGE_DOMAIN.')\//', $Url) || $Url[0] === '/') {
+        if (preg_match('/^https:\/\/('.$ENV->SITE_DOMAIN.'|'.$ENV->imageDomain.')\//', $Url) || $Url[0] === '/') {
             if (strpos($Url, '?') === false) {
                 $Url .= '?';
             }
             return $Url;
         } else {
             return 'https://'
-            . $ENV->IMAGE_DOMAIN
+            . $ENV->imageDomain
             . ($Thumb?"/$Thumb/":'/')
             . '?h='
             . rawurlencode(base64_encode(hash_hmac('sha256', $Url, $Psk, true)))
