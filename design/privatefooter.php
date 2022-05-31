@@ -69,7 +69,7 @@ echo $HTML = <<<HTML
 HTML;
 
 # Debug
-if ($ENV->DEV) {
+if ($ENV->dev) {
     /**
      * DebugBar trial, missing important collectors:
      *

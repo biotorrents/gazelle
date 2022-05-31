@@ -188,9 +188,9 @@ class DB
             send_irc(ADMIN_CHAN, $this->Error);
         }
 
-        if ($ENV->DEV || check_perms('site_debug') || isset($argv[1])) {
+        if ($ENV->dev || check_perms('site_debug') || isset($argv[1])) {
             echo '<pre>'.Text::esc($dbError).'</pre>';
-            if ($ENV->DEV || check_perms('site_debug')) {
+            if ($ENV->dev || check_perms('site_debug')) {
                 print_r($this->Queries);
             }
             error(400, $NoHTML = true);
@@ -341,7 +341,7 @@ class DB
             $this->QueryID = mysqli_stmt_get_result($this->StatementID);
 
             # Return query info in dev
-            if ($ENV->DEV) {
+            if ($ENV->dev) {
                 #$debug['database']->log($Query);
                 if (!empty(mysqli_error($this->LinkID))) {
                     d(mysqli_error($this->LinkID));

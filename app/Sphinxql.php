@@ -107,7 +107,7 @@ class Sphinxql extends mysqli
         $debug = Debug::go();
         $ErrorMsg = 'SphinxQL ('.$this->Ident.'): '.strval($Msg);
 
-        if ($Halt === true && ($ENV->DEV || check_perms('site_debug'))) {
+        if ($Halt === true && ($ENV->dev || check_perms('site_debug'))) {
             echo '<pre>'.Text::esc($ErrorMsg).'</pre>';
             error();
         } elseif ($Halt === true) {

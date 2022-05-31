@@ -111,7 +111,7 @@ class Database extends PDO
 
         /*
         # debug
-        if ($app->env->DEV) {
+        if ($app->env->dev) {
             $app->debug["database"]->log(
                 $this->pdo->debugDumpParams()
             );

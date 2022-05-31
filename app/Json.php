@@ -162,7 +162,7 @@ class Json
         $app = App::go();
         $debug = Debug::go();
 
-        if ($app->env->DEV) {
+        if ($app->env->dev) {
             return [
                 "debug" => [
                     "queries"  => $app->debug->get_queries(),

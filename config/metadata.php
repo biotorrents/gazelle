@@ -1,8 +1,9 @@
 <?php
 declare(strict_types=1);
 
+
 /**
- * Site categories and meta
+ * site categories and meta
  *
  * THIS IS THE OLD FORMAT AND WILL GO AWAY.
  * PLEASE SEE $env->{DB,META,CATS} BELOW.

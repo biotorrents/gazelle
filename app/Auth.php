@@ -43,7 +43,7 @@ class Auth # extends Delight\Auth\Auth
     {
         $app = App::go();
 
-        if ($app->env->DEV === true) {
+        if ($app->env->dev === true) {
             $throttling = false;
         } else {
             $throttling = true;

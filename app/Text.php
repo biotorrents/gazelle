@@ -39,7 +39,7 @@ class Text
         $string = self::esc($string);
 
         # here's the magic pattern:
-        if (!preg_match("/{$ENV->BBCODE_REGEX}/s", $string)) {
+        if (!preg_match($ENV->BBCODE_REGEX, $string)) {
             # markdown
             $parsedown = new \ParsedownExtra();
             $safe ?? $parsedown->setSafeMode(true);

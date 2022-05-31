@@ -5,7 +5,7 @@ $ENV = ENV::go();
 $twig = Twig::go();
 $View = new View();
 
-if ($ENV->DEV) {
+if ($ENV->dev) {
     $debug = Debug::go();
     $Render = $debug->getJavascriptRenderer();
 }
@@ -15,7 +15,7 @@ if ($ENV->DEV) {
 <html>
 
 <head>
-  <?php if ($ENV->DEV) {
+  <?php if ($ENV->dev) {
     echo $Render->renderHead();
 } ?>
 
@@ -74,7 +74,7 @@ $Styles = array_filter(
     )
 );
 
-if ($ENV->DEV) {
+if ($ENV->dev) {
     array_push($Styles, 'development');
 }
 

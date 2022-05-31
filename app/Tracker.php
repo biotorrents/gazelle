@@ -49,7 +49,7 @@ class Tracker
         }
 
         # Production
-        if (!$ENV->DEV) {
+        if (!$ENV->dev) {
             $maxAttempts = 3;
         }
         
@@ -208,7 +208,7 @@ class Tracker
             }
 
             // Spend some time retrying if we're not in dev
-            if (!$ENV->DEV) {
+            if (!$ENV->dev) {
                 $sleep = 6;
             }
 

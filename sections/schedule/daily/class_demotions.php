@@ -5,7 +5,7 @@ $ENV = ENV::go();
 
 # Prevent demotion on dev site
 # (higher perms for testing)
-if (!$ENV->DEV) {
+if (!$ENV->dev) {
     $Query = $db->query('
     SELECT ID
     FROM users_main

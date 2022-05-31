@@ -1,49 +1,49 @@
 <?php
 declare(strict_types=1);
 
+
 /**
- * Environment
- * Config Loader v2
+ * public 
  */
 
-# Development or production?
-ENV::setPub('DEV', true);
+# development or production?
+ENV::setPub('dev', true);
 
-# Disable Kint on production
-if (!$env->DEV) {
+# disable kint on production
+if (!$env->dev) {
     Kint\Kint::$enabled_mode	= false;
 }
 
 
 /**
- * Site identity
+ * site identity
  */
 
-# Site name
+# site name
 ENV::setPub(
     'SITE_NAME',
-    (!$env->DEV
-        ? 'torrents.bio' # Production
-        : 'dev.torrents.bio') # Development
+    (!$env->dev
+        ? 'torrents.bio' # production
+        : 'dev.torrents.bio') # development
 );
 
-# Meta description
+# meta description
 ENV::setPub('DESCRIPTION', 'An open platform for libre biology data');
 
-# Navigation glyphs
+# navigation glyphs
 ENV::setPub('SEP', '-'); # e.g., News - dev.torrents.bio
 ENV::setPub('CRUMB', '›'); # e.g., Forums › Board › Thread
 
 # The FQDN of your site, e.g., dev.torrents.bio
 ( # Old format
-    !$env->DEV
+    !$env->dev
         ? define('SITE_DOMAIN', 'torrents.bio') # Production
         : define('SITE_DOMAIN', 'dev.torrents.bio') # Development
 );
 
 ENV::setPub(
     'SITE_DOMAIN',
-    (!$env->DEV
+    (!$env->dev
         ? 'torrents.bio' # Production
         : 'dev.torrents.bio') # Development
 );
@@ -52,7 +52,7 @@ ENV::setPub(
 # If not needed, simply set to the same values as $env->SITE_DOMAIN
 ENV::setPub(
     'OLD_SITE_DOMAIN',
-    (!$env->DEV
+    (!$env->dev
         ? 'biotorrents.de' # Production
         : 'dev.torrents.bio') # Development
 );
@@ -65,28 +65,28 @@ ENV::setPub('WEB_ROOT', '/var/www/');
 
 # The root of the server, used for includes, e.g., /var/www/html/dev.biotorrents.de/
 ( # Old format
-    !$env->DEV
+    !$env->dev
         ? define('SERVER_ROOT', '/var/www/html/biotorrents.de/') # Production
         : define('SERVER_ROOT', '/var/www/html/dev.torrents.bio/') # Development
 );
 
 ENV::setPub(
     'SERVER_ROOT',
-    (!$env->DEV
+    (!$env->dev
         ? '/var/www/html/biotorrents.de/' # Production
         : '/var/www/html/dev.torrents.bio/') # Development
 );
 
 # Where torrent files are stored, e.g., /var/www/torrents-dev/
 ( # Old format
-    !$env->DEV
+    !$env->dev
         ? define('TORRENT_STORE', '/var/www/torrents/') # Production
         : define('TORRENT_STORE', '/var/www/torrents-dev/') # Development
 );
 
 ENV::setPub(
     'TORRENT_STORE',
-    (!$env->DEV
+    (!$env->dev
         ? '/var/www/torrents/' # Production
         : '/var/www/torrents-dev/') # Development);
 );
@@ -106,7 +106,7 @@ ENV::setPub('SRI', 'sha512');
  */
 
  # Production
-if (!$env->DEV) {
+if (!$env->dev) {
     define('ANNOUNCE_URLS', [
          [ # Tier 1
            'https://track.biotorrents.de:443',
@@ -169,7 +169,7 @@ define('SPHINX_MAX_MATCHES', 1000); // Must be <= the server's max_matches varia
  */
 
  # Production
-if (!$env->DEV) {
+if (!$env->dev) {
     ENV::setPriv(
         'MEMCACHED_SERVERS',
         [[
@@ -261,7 +261,7 @@ ENV::setPub('FEATURE_BIOPHP', false);
 # Set to false to disable open registration, true to allow anyone to register
 ENV::setPub(
     'OPEN_REGISTRATION',
-    (!$env->DEV
+    (!$env->dev
         ? true # Production
         : true) # Development
 );
