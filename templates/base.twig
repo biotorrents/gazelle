@@ -91,12 +91,25 @@
     <main class="container">
         <div class="row">
 
+
+            <figure id="logo"></figure>
+
+            <section id="content" class="two-thirds column">
+                {% block content %}
+                {% endblock %}
+            </section>
+            <section id="sidebar" class="one-third column">
+                {% block sidebar %}
+                {% endblock %}
+            </section>
+
+            {#
             {% if private %}
-            {# private content #}
+            {# private content # }
             <section id="content" class="two-thirds column">
 
                 {% else %}
-                {# public content #}
+                {# public content # }
                 <figure id="logo"></figure>
                 <section id="content" class="column">
 
@@ -108,13 +121,13 @@
 
 
                 {% if private %}
-                {# private sidebar #}
+                {# private sidebar # }
                 <section id="sidebar" class="one-third column">
                     {% block sidebar %}
                     {% endblock %}
                 </section>
                 {% endif %}
-
+#}
         </div>
     </main>
 

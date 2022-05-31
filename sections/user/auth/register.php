@@ -1,24 +1,38 @@
 <?php
 declare(strict_types=1);
 
-$app = App::go();
-
-if (Http::csrf() === false) {
-    Http::response(403);
+# https://github.com/paragonie/anti-csrf
+$csrf = new ParagonIE\AntiCSRF\AntiCSRF;
+if (!empty($_POST)) {
+    if (!$csrf->validateRequest()) {
+        Http::response(403);
+    }
 }
 
+
+$app = App::go();
 $auth = new Auth();
 
-$get = Http::query("get");
+# variables
 $post = Http::query("post");
+$server = Http::query("server");
+
+$username = $post["username"] ?? ""; # MariaDB
+$email = $post["email"] ?? ""; # MariaDB
+$passphrase = $post["passphrase"] ?? ""; # Auth::makeHash
+$confirmPassphrase = $post["confirmPassphrase"] ?? "";
+
+# gazelle switch
+$success = false;
+
 
 # delight-im/auth
 if (!empty(["post"]) && isset($post["submit"])) {
     $response = $auth->register(
-        email: $post["email"] ?? "",
-        passphrase: $post["passphrase"] ?? "",
-        confirmPassphrase: $post["confirmPassphrase"] ?? "",
-        username: $post["username"] ?? "",
+        email: $post["email"],
+        passphrase: $post["passphrase"],
+        confirmPassphrase: $post["confirmPassphrase"],
+        username: $post["username"],
         invite: $invite ?? "",
         post: $post ?? []
     );
@@ -26,6 +40,7 @@ if (!empty(["post"]) && isset($post["submit"])) {
     # success
     if (is_int($response)) {
         $emailSent = true;
+        $success = true;
         unset($response);
     }
 }
@@ -35,7 +50,7 @@ if (!empty(["post"]) && isset($post["submit"])) {
 
 
 try {
-    if ($invite) {
+    if ($success === true && !empty($invite)) {
         $query = "select inviterId, email, reason from invites where inviteKey = ?";
         $row = $app->dbNew->row($query, [$invite]);
 
@@ -104,54 +119,56 @@ try {
 
 
 try {
-    # generate keys and handle users_main
-    $torrent_pass = Text::random();
+    if ($success === true) {
+        # generate keys and handle users_main
+        $torrent_pass = Text::random();
 
-    $query = "
-        insert into users_main
-        (username, email, passHash, torrent_pass, ip, permissionId, enabled, invites, flTokens, uploaded)
-        values (:username, :email, :passHash, :torrent_pass, :ip, :permissionId, :enabled, :invites, :flTokens, :uploaded)
-    ";
+        $query = "
+            insert into users_main
+            (username, email, passHash, torrent_pass, ip, permissionId, enabled, invites, flTokens, uploaded)
+            values (:username, :email, :passHash, :torrent_pass, :ip, :permissionId, :enabled, :invites, :flTokens, :uploaded)
+        ";
 
-    $app->dbNew->do($query, [
-        "username" => $username,
-        "email" => $email,
-        "passHash" => Auth::makeHash($password),
-        "torrent_pass" => $torrent_pass,
-        "ip" => Crypto::encrypt($server['REMOTE_ADDR']),
-        "permissionId" => USER, # todo: constant
-        "enabled" => 0,
-        "invites" => $app->env->STARTING_INVITES,
-        "flTokens" => $app->env->STARTING_TOKENS,
-        "uploaded" => $app->env->STARTING_UPLOAD,
-    ]);
+        $app->dbNew->do($query, [
+            "username" => $username,
+            "email" => $email,
+            "passHash" => Auth::makeHash($passphrase),
+            "torrent_pass" => $torrent_pass,
+            "ip" => Crypto::encrypt($server['REMOTE_ADDR']),
+            "permissionId" => USER, # todo: constant
+            "enabled" => 0,
+            "invites" => $app->env->STARTING_INVITES,
+            "flTokens" => $app->env->STARTING_TOKENS,
+            "uploaded" => $app->env->STARTING_UPLOAD,
+        ]);
 
-    # default stylesheet
-    $query = "select id from stylesheets where default = 1";
-    $styleId = $app->dbNew->do($query) ?? null;
+        # default stylesheet
+        $query = "select id from stylesheets where `default` = 1";
+        $styleId = $app->dbNew->do($query) ?? null;
 
-    # users_info
-    $adminComment ??= "";
-    $query = "
-        insert into users_info (userId, styleId, authKey, inviter, joinDate, adminComment)
-        values (:userId, :styleId, :authKey, :inviter, :joinDate, :adminComment)
-    ";
+        # users_info
+        $adminComment ??= "";
+        $query = "
+            insert into users_info (userId, styleId, authKey, inviter, joinDate, adminComment)
+            values (:userId, :styleId, :authKey, :inviter, :joinDate, :adminComment)
+        ";
 
-    $app->dbNew->do($query, [
-        "userId" => $userId,
-        "styleId" => $styleId,
-        "authKey" => $authKey,
-        "inviter" => $inviterId,
-        "joinDate" => "now()",
-        "adminComment" => $adminComment,
-    ]);
+        $app->dbNew->do($query, [
+            "userId" => $userId,
+            "styleId" => $styleId,
+            "authKey" => $authKey,
+            "inviter" => $inviterId,
+            "joinDate" => "now()",
+            "adminComment" => $adminComment,
+        ]);
 
-    # users_notifications_settings
-    $query = "insert into users_notifications_settings (userId) values (?)";
-    $app->dbNew->do($query, [$userId]);
+        # users_notifications_settings
+        $query = "insert into users_notifications_settings (userId) values (?)";
+        $app->dbNew->do($query, [$userId]);
 
-    # update ocelot with the new user
-    Tracker::update_tracker('add_user', array('id' => $userId, 'passkey' => $torrent_pass));
+        # update ocelot with the new user
+        Tracker::update_tracker('add_user', array('id' => $userId, 'passkey' => $torrent_pass));
+    }
 } catch (Exception $e) {
     $response = $e->getMessage();
 }

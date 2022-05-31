@@ -1,36 +1,50 @@
 <?php
 declare(strict_types=1);
 
-$app = App::go();
-
-if (Http::csrf() === false) {
-    Http::response(403);
+# https://github.com/paragonie/anti-csrf
+$csrf = new ParagonIE\AntiCSRF\AntiCSRF;
+if (!empty($_POST)) {
+    if (!$csrf->validateRequest()) {
+        Http::response(403);
+    }
 }
 
+
+$app = App::go();
 $auth = new Auth();
+
 $twofa = new RobThree\Auth\TwoFactorAuth($app->env->SITE_NAME);
 $u2f = new u2flib_server\U2F("https://{$app->env->SITE_DOMAIN}");
 
+# variables
 $post = Http::query("post");
 $cookie = Http::query("cookie");
 $server = Http::query("server");
 
-$username = Esc::username($post["username"]) ?? null;
-$passphrase = Esc::string($post["passphrase"]) ?? null;
-$token = Esc::int($post["twofa"]) ?? null;
+$username = $post["username"] ?? null;
+$passphrase = $post["passphrase"] ?? null;
+$token = $post["twofa"] ?? null;
+
 
 # delight-im/auth
 if (!empty($post)) {
     $response = $auth->login($username, $passphrase, $token);
+    #!d($response);exit;
 }
 
 
 /** GAZELLE 2FA */
 
 
+if (!empty($post)) {
+    # common gazelle vars
+    $query = "select id from users_main where username = ?";
+    $userId = $app->dbNew->single($query, [$username]);
+}
+
 try {
     # user set token
-    if (!empty($token)) {
+    if (!empty($post) && !empty($token)) {
         # get the seed
         $query = "select twoFactor from users_main where username = ?";
         $seed = $app->dbNew->single($query, [$username]);
@@ -55,10 +69,7 @@ try {
 
 try {
     # user set u2f
-    if (!empty($post["u2f-request"]) && !empty($post["u2f-response"])) {
-        $query = "select id from users_main where username = ?";
-        $userId = $app->dbNew->single($query, [$username]);
-
+    if (!empty($post) && !empty($post["u2f-request"]) && !empty($post["u2f-response"])) {
         if (!empty($userId)) {
             $query = "select * from u2f where userId = ?";
             $ref = $app->dbNew->row($query, [$userId]);
@@ -67,12 +78,12 @@ try {
         if (!empty($ref)) {
             # needs to be an array of objects
             $payload = [
-            "keyHandle" => $ref["KeyHandle"],
-            "publicKey" => $ref["PublicKey"],
-            "certificate" => $ref["Certificate"],
-            "counter" => $ref["Counter"],
-            "valid" => $ref["Valid"],
-      ];
+                "keyHandle" => $ref["KeyHandle"],
+                "publicKey" => $ref["PublicKey"],
+                "certificate" => $ref["Certificate"],
+                "counter" => $ref["Counter"],
+                "valid" => $ref["Valid"],
+            ];
         }
 
         try {
@@ -107,28 +118,30 @@ try {
 
 
 try {
-    $sessionId = Text::random(64);
+    if (!empty($post)) {
+        $sessionId = Text::random(64);
 
-    Http::setCookie(["session" => $sessionId]);
-    Http::setCookie(["userId" => $userId]);
+        Http::setCookie(["session" => $sessionId]);
+        Http::setCookie(["userId" => $userId]);
 
-    $query = "insert into users_sessions (userId, sessionId, keepLogged, ip, lastUpdate) values (?, ?, ?, ?, ?)";
-    $app->dbNew->do($query, [$userId, $sessionId, 1, Crypto::encrypt($server["REMOTE_ADDR"]), "now()"]);
+        $query = "insert into users_sessions (userId, sessionId, keepLogged, ip, lastUpdate) values (?, ?, ?, ?, ?)";
+        $app->dbNew->do($query, [$userId, $sessionId, 1, Crypto::encrypt($server["REMOTE_ADDR"]), "now()"]);
 
-    $query = "update users_main set lastLogin = now(), lastAccess = now() where id = ?";
-    $app->dbNew->do($query, [$userId]);
+        $query = "update users_main set lastLogin = now(), lastAccess = now() where id = ?";
+        $app->dbNew->do($query, [$userId]);
 
-    $app->cacheOld->begin_transaction("users_sessions_{$userId}");
-    $app->cacheOld->insert_front($sessionId, [
-        "sessionId" => $SessionID,
-        "ip" => Crypto::encrypt($server["REMOTE_ADDR"]),
-        "lastUpdate" => sqltime()
-    ]);
-    $app->cacheOld->commit_transaction(0);
+        $app->cacheOld->begin_transaction("users_sessions_{$userId}");
+        $app->cacheOld->insert_front($sessionId, [
+            "sessionId" => $SessionID,
+            "ip" => Crypto::encrypt($server["REMOTE_ADDR"]),
+            "lastUpdate" => sqltime()
+        ]);
+        $app->cacheOld->commit_transaction(0);
 
-    if (!empty($cookie["redirect"])) {
-        Http::deleteCookie("redirect");
-        Http::redirect($cookie["redirect"]);
+        if (!empty($cookie["redirect"])) {
+            Http::deleteCookie("redirect");
+            Http::redirect($cookie["redirect"]);
+        }
     }
 } catch (Exception $e) {
     $response = $e->getMessage();

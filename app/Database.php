@@ -109,12 +109,14 @@ class Database extends PDO
     {
         $app = App::go();
 
+        /*
         # debug
         if ($app->env->DEV) {
             $app->debug["database"]->log(
                 $this->pdo->debugDumpParams()
             );
         }
+        */
 
         # prepare
         $statement = $this->pdo->prepare($query);
@@ -122,14 +124,14 @@ class Database extends PDO
         /*
         # return cached if available
         $cacheKey = $this->cachePrefix . hash($this->algorithm, $statement);
-        if ($app->cache->get_value($cacheKey)) {
-            return $app->cache->get_value($cacheKey);
+        if ($app->cacheOld->get_value($cacheKey)) {
+            return $app->cacheOld->get_value($cacheKey);
         }
         */
 
         # no params
         if (empty($args)) {
-            $app->cache->cache_value($cacheKey, $query, $this->cacheDuration);
+            #$app->cacheOld->cache_value($cacheKey, $query, $this->cacheDuration);
             return $this->pdo->query($query);
         }
 
@@ -138,12 +140,12 @@ class Database extends PDO
 
         # errors
         $errors = $this->pdo->errorInfo();
-        if ($errors) {
+        if ($errors[0] !== "00000") {
             throw new PDOException("{$errors[0]}: {$errors[2]}");
         }
 
         # good
-        #$app->cache->cache_value($cacheKey, $statement, $this->cacheDuration);
+        #$app->cacheOld->cache_value($cacheKey, $statement, $this->cacheDuration);
         return $statement;
     }
 

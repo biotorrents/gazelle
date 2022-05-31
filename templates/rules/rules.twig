@@ -1,75 +1,68 @@
-<section>
-    {{ text|raw }}
-</section>
+{% extends "base.twig" %}
 
-<section>
-    <table class="skeleton-fix">
-        <tr>
-            <th>Category</th>
-            <th>Additional information</th>
-        </tr>
 
-        <tr>
-            <td>
-                <strong><a href="/rules/upload">Upload</a></strong>
-            </td>
-            <td>
-                <strong>If you only read one rules page, this is the one to read</strong>
-            </td>
-        </tr>
+{% block content %}
 
-        <tr>
-            <td>
-                <strong><a href="/rules/ratio">Ratio</a></strong>
-            </td>
-            <td>
-                <strong>There's really two pages: required ratio table and calculation</strong>
-            </td>
-        </tr>
+{{ content|raw }}
 
-        <tr>
-            <td>
-                <a href="/rules/requests">Requests</a>
-            </td>
-            <td>
-                These rules govern requests
-            </td>
-        </tr>
+{% endblock %}
 
-        <tr>
-            <td>
-                <a href="/rules/collages">Collections</a>
-            </td>
-            <td>
-                These rules govern collections
-            </td>
-        </tr>
 
-        <tr>
-            <td>
-                <a href="/rules/clients">Clients</a>
-            </td>
-            <td>
-                We allow these clients to connect to our tracker
-            </td>
-        </tr>
+{% block sidebar %}
 
-        <tr>
-            <td>
-                <a href="/rules/chat">Chat</a>
-            </td>
-            <td>
-                Read before posting in our forums or talking on Slack
-            </td>
-        </tr>
+<h2>Other rule pages</h2>
 
-        <tr>
-            <td>
-                <a href="/rules/tags">Tagging</a>
-            </td>
-            <td>
-                These rules govern tags
-            </td>
-        </tr>
-    </table>
-</section>
+<ul>
+    <li>
+        {# upload #}
+        <strong><a href="/rules/upload">Upload</a></strong>
+        &mdash;
+        <strong>If you only read one rules page, this is the one to read</strong>
+
+    </li>
+
+    <li>
+        {# ratio #}
+        <strong><a href="/rules/ratio">Ratio</a></strong>
+        &mdash;
+        <strong>There's really two pages: required ratio table and calculation</strong>
+    </li>
+
+    <li>
+        {# requests #}
+        <a href="/rules/requests">Requests</a>
+        &mdash;
+        These rules govern requests
+    </li>
+
+    <li>
+        {# collages #}
+        <a href="/rules/collages">Collections</a>
+        &mdash;
+        These rules govern collections
+    </li>
+
+    <li>
+        {# clients #}
+        <a href="/rules/clients">Clients</a>
+        &mdash;
+        We allow these clients to connect to our tracker
+    </li>
+
+    <li>
+        {# chat #}
+        <a href="/rules/chat">Chat</a>
+        &mdash;
+        Read before posting in our forums or talking on Slack
+    </li>
+
+    <li>
+        {# tags #}
+        <a href="/rules/tags">Tagging</a>
+        &mdash;
+        These rules govern tags
+    </li>
+
+</ul>
+
+{% endblock %}

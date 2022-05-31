@@ -1,4 +1,4 @@
-## Privacy Policy
+## Privacy policy
 
 Omics Tools LLC safeguards the personal data we collect from you on our website.
 You consent on account registration by checking the box labelled,

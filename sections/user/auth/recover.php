@@ -1,14 +1,19 @@
 <?php
 declare(strict_types=1);
 
-$app = App::go();
-
-if (Http::csrf() === false) {
-    Http::response(403);
+# https://github.com/paragonie/anti-csrf
+$csrf = new ParagonIE\AntiCSRF\AntiCSRF;
+if (!empty($_POST)) {
+    if (!$csrf->validateRequest()) {
+        Http::response(403);
+    }
 }
 
+
+$app = App::go();
 $auth = new Auth();
 
+# variables
 $post = Http::query("post");
 $server = Http::query("server");
 
@@ -17,6 +22,7 @@ $ip = Esc::ip($server["REMOTE_ADDR"]) ?? null;
 
 $passphrase = Esc::string($post["passphrase"]) ?? null;
 $confirmPassphrase = Esc::string($post["confirmPassphrase"]) ?? null;
+
 
 # step one: send recover email
 if (!empty($email) && !empty($ip)) {

@@ -1,4 +1,4 @@
-## DMCA Information
+## DMCA policy
 
 _If_ you're a copyright owner or an agent of one,
 _and_ you reasonably believe that user-generated content on the domains torrents.bio or biotorrents.de infringes your copyrights:

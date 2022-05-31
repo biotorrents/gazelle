@@ -32,30 +32,7 @@ class Http
         header("Location: /{$uri}");
         exit;
     }
-
-
-    /**
-     * csrf
-     *
-     * Validates a CSRF token.
-     *
-     * @see https://github.com/paragonie/anti-csrf
-     */
-    public static function csrf()
-    {
-        $post = self::query("post");
-        $csrf = new ParagonIE\AntiCSRF\AntiCSRF;
-
-        if (!empty($post)) {
-            if ($csrf->validateRequest()) {
-                return true;
-            } else {
-                Announce::slack("csrf token failure", ["debug"]);
-                return false;
-            }
-        }
-    }
-
+    
 
     /**
      * query
