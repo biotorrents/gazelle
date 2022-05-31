@@ -67,7 +67,7 @@ class Announce
         $app = App::go();
 
         # check if IRC is enabled
-        if (!$app->env->ANNOUNCE_IRC) {
+        if (!$app->env->announceIrc) {
             return false;
         }
 
@@ -113,7 +113,7 @@ class Announce
         $app = App::go();
 
         # check if RSS is enabled
-        if (!$app->env->ANNOUNCE_RSS) {
+        if (!$app->env->announceRss) {
             return false;
         }
 
@@ -136,7 +136,7 @@ class Announce
         $app = App::go();
 
         # check if slack is enabled
-        if (!$app->env->ANNOUNCE_SLACK) {
+        if (!$app->env->announceSlack) {
             return false;
         }
 
@@ -179,7 +179,7 @@ class Announce
         $app = App::go();
 
         # check if twitter is enabled
-        if (!$app->env->ANNOUNCE_TWITTER) {
+        if (!$app->env->announceTwitter) {
             return false;
         }
         
