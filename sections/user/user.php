@@ -233,7 +233,7 @@ function check_paranoia_here($Setting)
 
 View::header(
     $Username,
-    'user,requests,comments,info_paster,wall'
+    'user,requests,comments,wall'
 );
 
 ?>
@@ -1684,12 +1684,6 @@ if (!$DisablePoints) {
         <td class="label tooltip" title="This message will be entered into staff notes only.">Reason:</td>
         <td>
           <textarea rows="2" class="wide_input_text" name="Reason" id="Reason" onkeyup="resize('Reason');"></textarea>
-        </td>
-      </tr>
-      <tr>
-        <td class="label">Paste user stats:</td>
-        <td>
-          <button type="button" id="paster">Paste</button>
         </td>
       </tr>
 

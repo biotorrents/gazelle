@@ -1,19 +1,20 @@
 <?php
 declare(strict_types = 1);
 
+
 /**
- * Feed start class
+ * feed start class
  *
  * Simplified version of bootstrap/app.php,
  * used for the sitewide RSS system.
  */
 
-# Let's prevent people from clearing feeds
+# let's prevent people from clearing feeds
 if (isset($_GET['clearcache'])) {
     unset($_GET['clearcache']);
 }
 
-# Initialize
+# initialize
 require_once __DIR__.'/../config/app.php';
 $ENV = ENV::go();
 
@@ -23,7 +24,7 @@ require_once "$ENV->SERVER_ROOT/classes/cache.class.php";
 require_once "$ENV->SERVER_ROOT/classes/feed.class.php";
 */
 
-# Load the classes
+# load the classes
 $cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
 $Feed = new Feed;
 
@@ -37,7 +38,7 @@ function is_number($Str)
         return false;
     }
 
-    # We're converting input to an int, then string, and comparing to the original
+    # we're converting input to an int, then string, and comparing to the original
     return ($Str === strval(intval($Str)));
 }
 
@@ -70,11 +71,11 @@ function site_url()
 }
 
 
-# Set the headers
+# set the headers
 header('Cache-Control: no-cache, must-revalidate, post-check=0, pre-check=0');
 header('Pragma:');
 header('Expires: '.date('D, d M Y H:i:s', time() + (2 * 60 * 60)).' GMT');
 header('Last-Modified: '.date('D, d M Y H:i:s').' GMT');
 
-# Load the feeds section
+# load the feeds section
 require_once "$ENV->SERVER_ROOT/sections/feeds/index.php";
