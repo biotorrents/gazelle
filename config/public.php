@@ -28,7 +28,7 @@ ENV::setPub(
 );
 
 # meta description
-ENV::setPub('DESCRIPTION', 'An open platform for libre biology data');
+ENV::setPub('siteDescription', 'An open platform for libre biology data');
 
 # navigation glyphs
 ENV::setPub('SEP', '-'); # e.g., News - dev.torrents.bio

@@ -180,7 +180,7 @@ class App
             "display" => "standalone",
             "background_color" => "#ffffff",
             "theme_color" => "#0288d1",
-            "description" => $app->env->DESCRIPTION,
+            "description" => $app->env->siteDescription,
             "icons" => [
                 [
                     "src" => "/images/logos/liquidrop-bookish-1k.png",
