@@ -1,13 +1,6 @@
 <?php
 #declare(strict_types = 1);
 
-/**
- * Utilities
- *
- * Miscellaneous function not in classes.
- * All the non-classes are now in this file.
- */
-
 
     /**
      *
@@ -48,6 +41,7 @@ function logout()
     Http::redirect('login');
 }
 
+
 /**
  * logout_all_sessions
  */
@@ -63,6 +57,7 @@ function logout_all_sessions()
     logout();
 }
 
+
 /**
  * enforce_login
  */
@@ -75,6 +70,7 @@ function enforce_login()
         logout();
     }
 }
+
 
 /**
  * Make sure $_GET['auth'] is the same as the user's authorization key.
@@ -117,6 +113,7 @@ function is_number($Str)
     # todo: Strict equality breaks everything
     return $Str == strval(intval($Str));
 }
+
 
 /**
  * Send a message to an IRC bot listening on SOCKET_LISTEN_PORT
@@ -166,6 +163,7 @@ function send_irc($Channels = null, $Message = '')
     fwrite($IRCSocket, $Command);
     fclose($IRCSocket);
 }
+
 
 /**
  * Error handling
@@ -217,6 +215,7 @@ function error(int|string $error = 400, $NoHTML = false, $Log = false)
     View::footer();
 }
 
+
 /**
  * Convenience function. See doc in permissions.class.php
  */
@@ -224,6 +223,7 @@ function check_perms($PermissionName, $MinClass = 0)
 {
     return Permissions::check_perms($PermissionName, $MinClass);
 }
+
 
 /**
  * Print the site's URL including the appropriate URI scheme, including the trailing slash
@@ -250,6 +250,7 @@ function json_die($Status, $Message = 'bad parameters')
     die();
 }
 
+
 /**
  * Print JSON status result with an optional message.
  */
@@ -271,6 +272,7 @@ function json_print($Status, $Message)
     );
 }
 
+
 /**
  * json_error
  */
@@ -288,6 +290,7 @@ function json_error($Code)
     die();
 }
 
+
 /**
  * json_or_error
  */
@@ -299,6 +302,7 @@ function json_or_error($JsonError, $Error = null, $NoHTML = false)
         error($Error ?? $JsonError, $NoHTML);
     }
 }
+
 
 /**
  * add_json_info
@@ -363,9 +367,10 @@ function parseUrlArgs(string $urlArgs, string $param): array
     return array_key_exists($param, $list) ? $list[$param] : [];
 }
 
+
 /**
  * base64UrlEncode
- * base64UrlDecode
+ *
  * @see https://github.com/OPSnet/Gazelle/blob/master/app/Util/Text.php
  */
 function base64UrlEncode($data)
@@ -373,6 +378,12 @@ function base64UrlEncode($data)
     return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
 }
 
+
+/**
+ * base64UrlDecode
+ *
+ * @see https://github.com/OPSnet/Gazelle/blob/master/app/Util/Text.php
+ */
 function base64UrlDecode($data)
 {
     return base64_decode(str_pad(
@@ -420,6 +431,7 @@ function base64UrlDecode($data)
 //   +
 // invitedcount: the number of users this user has directly invited
 
+
 /**
  * Return whether currently logged in user can see $Property on a user with $Paranoia, $UserClass and (optionally) $UserID
  * If $Property is an array of properties, returns whether currently logged in user can see *all* $Property ...
@@ -432,6 +444,7 @@ function base64UrlDecode($data)
  *               2 representing that the paranoia was overridden,
  *               false representing access denied.
  */
+
 define("PARANOIA_ALLOWED", 1);
 define("PARANOIA_OVERRIDDEN", 2);
 
@@ -526,6 +539,7 @@ function time_ago($TimeStamp)
     }
     return time() - $TimeStamp;
 }
+
 
 /**
  * Returns a <span> by default but can optionally return the raw time
@@ -634,6 +648,7 @@ function time_plus($Offset)
     return date('Y-m-d H:i:s', time() + $Offset);
 }
 
+
 /**
  * time_minus
  */
@@ -645,6 +660,7 @@ function time_minus($Offset, $Fuzzy = false)
         return date('Y-m-d H:i:s', time() - $Offset);
     }
 }
+
 
 // This is never used anywhere with $timestamp set
 // todo: Why don't we just use NOW() in the sql queries?

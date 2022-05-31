@@ -1,8 +1,9 @@
 <?php
 declare(strict_types=1);
 
+
 /**
- * Autoload
+ * spl_autoload_register
  *
  * Load classes automatically when they're needed.
  * Temporary fix for class/filename mismatches.

@@ -296,7 +296,7 @@ if (isset($app->user["LockedAccount"]) && !in_array($document, $AllowedPages)) {
     if (file_exists("{$app->env->SERVER_ROOT}/sections/$document/router.php")) {
         require_once "{$app->env->SERVER_ROOT}/sections/$document/router.php";
     } else {
-        require_once __DIR__."/router.php";
+        require_once "{$app->env->SERVER_ROOT}/routes/web.php";
     }
 }
 

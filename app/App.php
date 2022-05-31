@@ -111,7 +111,7 @@ class App
 
         # wrap to 70 characters for RFC compliance
         # https://www.php.net/manual/en/function.mail.php
-        $body = wordwrap($body, 70, "\r\n");
+        #$body = wordwrap($body, 70, "\r\n");
 
         $secret = Text::random();
         $headers = [
@@ -138,5 +138,25 @@ class App
         ob_end_clean(); # clear output buffer
         set_time_limit(3600); # one hour
         ini_set("memory_limit", "2G"); # all the shit hetzner memory
+    }
+
+
+    /**
+     * recursiveGlob
+     *
+     * @see https://stackoverflow.com/a/12172557
+     */
+    public static function recursiveGlob($folder, $extension)
+    {
+        $globFiles = glob("{$folder}/*.{$extension}");
+        $globFolders  = glob("{$folder}/*", GLOB_ONLYDIR);
+    
+        foreach ($globFolders as $folder) {
+            recursiveGlob($folder, $extension);
+        }
+    
+        foreach ($globFiles as $file) {
+            require_once $file;
+        }
     }
 } # class
