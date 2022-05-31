@@ -34,7 +34,7 @@ if ($_GET['do'] === 'revoke') {
     } elseif (Users::hasTokenByName($userId, $tokenName)) {
         $error = 'You have already generated a token with that name.';
     } else {
-        $token = Users::createApiToken($userId, $tokenName, $ENV->getPriv('ENCKEY'));
+        $token = Users::createApiToken($userId, $tokenName, $ENV->getPriv('siteCryptoKey'));
     }
 }
 

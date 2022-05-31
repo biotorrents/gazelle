@@ -29,9 +29,9 @@ class Stats
     {
         $ENV = ENV::go();
 
-        $this->baseUri = $ENV->PLAUSIBLE_URI;
+        $this->baseUri = $ENV->plausibleUri;
         $this->siteId = $ENV->SITE_DOMAIN;
-        $this->token = $ENV->getPriv("PLAUSIBLE_KEY");
+        $this->token = $ENV->getPriv("plausibleKey");
     }
 
 

@@ -146,7 +146,7 @@ class Announce
         }
 
         # webhooks must remain private
-        $webhooks = $app->env->getPriv("SLACK_WEBHOOKS");
+        $webhooks = $app->env->getPriv("slackWebhooks");
         foreach ($channels as $channel) {
             try {
                 # set up

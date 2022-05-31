@@ -69,7 +69,7 @@ if ($document === "api") {
         substr(
             Crypto::decrypt(
                 base64UrlDecode($FullToken),
-                $app->env->getPriv("ENCKEY")
+                $app->env->getPriv("siteCryptoKey")
             ),
             32
         )
@@ -165,7 +165,7 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
 
     // Create LoggedUser array
     $user = array_merge($HeavyInfo, $LightInfo, $UserStats);
-    $user["RSS_Auth"] = md5($user["ID"] . $app->env->getPriv("RSS_HASH") . $user["torrent_pass"]);
+    $user["RSS_Auth"] = md5($user["ID"] . $app->env->getPriv("rssHash") . $user["torrent_pass"]);
 
     // $user["RatioWatch"] as a bool to disable things for users on Ratio Watch
     $user["RatioWatch"] = (

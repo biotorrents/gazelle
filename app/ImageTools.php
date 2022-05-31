@@ -16,7 +16,7 @@ class ImageTools
     public static function process($Url = '', $Thumb = false)
     {
         $ENV = ENV::go();
-        $Psk = $ENV->getPriv('IMAGE_PSK');
+        $Psk = $ENV->getPriv('imagePsk');
 
         if (!$Url) {
             return '';

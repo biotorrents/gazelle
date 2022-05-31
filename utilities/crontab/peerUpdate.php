@@ -18,7 +18,7 @@ Text::figlet("starting peerUpdate", "blue");
 
 # kill on bad auth
 $argv[1] ??= null;
-if (empty($argv[1]) || $argv[1] !== $app->env->getPriv("SCHEDULE_KEY")) {
+if (empty($argv[1]) || $argv[1] !== $app->env->getPriv("scheduleKey")) {
     Text::figlet("bad key", "red");
     exit;
 }

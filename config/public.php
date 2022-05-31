@@ -34,90 +34,91 @@ ENV::setPub("siteDescription", "An open platform for libre biology data");
 ENV::setPub("separator", "-"); # e.g., News - dev.torrents.bio
 ENV::setPub("crumb", "›"); # e.g., Forums › Board › Thread
 
-# The FQDN of your site, e.g., dev.torrents.bio
-( # Old format
+# website FQDN, e.g., dev.torrents.bio
+( # old format
     !$env->dev
-        ? define("SITE_DOMAIN", "torrents.bio") # Production
-        : define("SITE_DOMAIN", "dev.torrents.bio") # Development
+        ? define("SITE_DOMAIN", "torrents.bio") # production
+        : define("SITE_DOMAIN", "dev.torrents.bio") # development
 );
 
 ENV::setPub(
     "SITE_DOMAIN",
     (!$env->dev
-        ? "torrents.bio" # Production
-        : "dev.torrents.bio") # Development
+        ? "torrents.bio" # production
+        : "dev.torrents.bio") # development
 );
 
-# Old domain, to handle the biotorrents.de => torrents.bio migration
-# If not needed, simply set to the same values as $env->SITE_DOMAIN
+# old domain, to handle the biotorrents.de => torrents.bio migration
+# if not needed, simply set to the same values as $env->siteDomainNew
 ENV::setPub(
     "OLD_SITE_DOMAIN",
     (!$env->dev
-        ? "biotorrents.de" # Production
-        : "dev.torrents.bio") # Development
+        ? "biotorrents.de" # production
+        : "dev.torrents.bio") # pevelopment
 );
 
-# The FQDN of your image host, e.g., pics.torrents.bio
+# image host FQDN, e.g., pics.torrents.bio
 ENV::setPub("imageDomain", "pics.torrents.bio");
 
-# Web root. Currently used for Twig but may also include config files
+# web root: currently used for twig
 ENV::setPub("webRoot", "/var/www/");
 
-# The root of the server, used for includes, e.g., /var/www/html/dev.biotorrents.de/
-( # Old format
+# app filesystem route (not web root), e.g., /var/www/html/dev.torrents.bio/
+( # old format
     !$env->dev
-        ? define("SERVER_ROOT", "/var/www/html/biotorrents.de/") # Production
-        : define("SERVER_ROOT", "/var/www/html/dev.torrents.bio/") # Development
+        ? define("SERVER_ROOT", "/var/www/html/biotorrents.de/") # production
+        : define("SERVER_ROOT", "/var/www/html/dev.torrents.bio/") # development
 );
 
 ENV::setPub(
     "SERVER_ROOT",
     (!$env->dev
-        ? "/var/www/html/biotorrents.de/" # Production
-        : "/var/www/html/dev.torrents.bio/") # Development
+        ? "/var/www/html/biotorrents.de/" # production
+        : "/var/www/html/dev.torrents.bio/") # development
 );
 
-# Where torrent files are stored, e.g., /var/www/torrents-dev/
-( # Old format
+# where torrent files are stored, e.g., /var/www/torrents-dev/
+( # old format
     !$env->dev
-        ? define("TORRENT_STORE", "/var/www/torrents/") # Production
-        : define("TORRENT_STORE", "/var/www/torrents-dev/") # Development
+        ? define("TORRENT_STORE", "/var/www/torrents/") # production
+        : define("TORRENT_STORE", "/var/www/torrents-dev/") # development
 );
 
 ENV::setPub(
     "TORRENT_STORE",
     (!$env->dev
-        ? "/var/www/torrents/" # Production
-        : "/var/www/torrents-dev/") # Development);
+        ? "/var/www/torrents/" # production
+        : "/var/www/torrents-dev/") # development);
 );
 
-# Allows you to run static content off another server. Default is usually what you want
+# allows you to run static content off another server
+# the default is usually what you want though
 define("STATIC_SERVER", "/public/");
 ENV::setPub("STATIC_SERVER", "/public/");
 
-# The hashing algorithm used for SRI
+# hash algorithm used for SRI
 ENV::setPub("SRI", "sha512");
 
 
 /**
- * Tracker URLs
+ *  tracker
  *
- * Added to torrents à la http://bittorrent.org/beps/bep_0012.html
+ * @see http://bittorrent.org/beps/bep_0012.html
  */
 
- # Production
+# production
 if (!$env->dev) {
     define("ANNOUNCE_URLS", [
-         [ # Tier 1
+         [ # tier 1
            "https://track.biotorrents.de:443",
-          ], [] # Tier 2
+          ], [] # tier 2
       ]);
 
     $AnnounceURLs = [
-      [ # Tier 1
+      [ # tier 1
         "https://track.biotorrents.de:443",
       ],
-      [ # Tier 2
+      [ # tier 2
         #"udp://tracker.coppersurfer.tk:6969/announce",
         #"udp://tracker.cyberia.is:6969/announce",
         #"udp://tracker.leechers-paradise.org:6969/announce",
@@ -129,18 +130,18 @@ if (!$env->dev) {
     );
 }
 
-# Development
+# development
 else {
     define("ANNOUNCE_URLS", [
-      [ # Tier 1
+      [ # tier 1
         "https://trx.biotorrents.de:443",
-      ], [] # Tier 2
+      ], [] # tier 2
     ]);
 
     $AnnounceURLs = [
-      [ # Tier 1
+      [ # tier 1
         "https://trx.biotorrents.de:443",
-      ], [], # Tier 2
+      ], [], # tier 2
     ];
     ENV::setPub(
         "ANNOUNCE_URLS",
@@ -150,15 +151,15 @@ else {
 
 
 /**
- * Search
+ * search
  */
 
-# SphinxqlQuery needs constants
-# $env breaks the torrent and request pages
+# SphinxqlQuery needs constants to work
+# $app->env breaks the torrent and request pages
 define("SPHINXQL_HOST", "127.0.0.1");
 define("SPHINXQL_PORT", 9306);
 define("SPHINXQL_SOCK", false);
-define("SPHINX_MAX_MATCHES", 1000); // Must be <= the server's max_matches variable (default 1000)
+define("SPHINX_MAX_MATCHES", 1000); # must be <= server max_matches (default 1000)
 
 
 /**
@@ -168,7 +169,7 @@ define("SPHINX_MAX_MATCHES", 1000); // Must be <= the server's max_matches varia
  * one each for development and production.
  */
 
- # Production
+ # production
 if (!$env->dev) {
     ENV::setPriv(
         "MEMCACHED_SERVERS",
@@ -180,7 +181,7 @@ if (!$env->dev) {
     );
 }
 
-# Development
+# development
 else {
     ENV::setPriv(
         "MEMCACHED_SERVERS",
@@ -194,7 +195,7 @@ else {
 
 
 /**
- * Announce channels
+ * announce channels
  */
 
 ENV::setPub("announceIrc", true);
@@ -225,24 +226,18 @@ define("DISABLED_CHAN", "#support");
 
 
 /**
- * Features
+ * features
  */
 
-# Enable donation page
+# enable donation page
 ENV::setPub("FEATURE_DONATE", true);
 
-# Send re-enable requests to user"s email
+# send re-enable requests to user's email
 define("FEATURE_EMAIL_REENABLE", true);
 ENV::setPub("FEATURE_EMAIL_REENABLE", true);
 
-# Require users to verify login from unknown locations
-ENV::setPub("FEATURE_ENFORCE_LOCATIONS", false);
-
-# Attempt to send messages to IRC
-ENV::setPub("FEATURE_IRC", true);
-
-# Attempt to send email from the site
-ENV::setPub("FEATURE_SEND_EMAIL", true);
+# attempt to send email from the site
+ENV::setPub("enableSiteEmail", true);
 
 # Allow the site encryption key to be set without an account
 # (should only be used for initial setup)
@@ -283,7 +278,7 @@ ENV::setPub("BONUS_POINTS", "Bonus Points");
 ENV::setPub("BP_COEFF", 1.5); # OT default 0.5
 
 # Tag namespaces (configurable via CSS selectors)
-#define("TAG_NAMESPACES", ["male", "female", "parody", "character"]);
+#ENV::setPub("tagNamespaces", ["male", "female", "parody", "character"]);
 
 # Banned stuff (file characters, browsers, etc.)
 ENV::setPub(
@@ -291,24 +286,6 @@ ENV::setPub(
     ["\"", "*", "/", ":", "<", ">", "?", "\\", "|"]
 );
 
-# Password length limits
-ENV::setPub("PW_MIN", 15); # Brute force
-ENV::setPub("PW_MAX", 10000); # DDoS; default 307200
-
-# Misc stuff like generic reusable snippets
-# Example of a variable using heredoc syntax
-ENV::setPub(
-    "PW_ADVICE",
-    <<<HTML
-    <p>
-      Any password $env->PW_MIN characters or longer is accepted, but a strong password
-      <ul>
-        <li>is a pass<em>phrase</em> of mixed case with many small words,</li>
-        <li>that contains complex characters including Unicode and emoji.</li>
-      </ul>
-    </p>
-HTML
-);
 
 
 /**

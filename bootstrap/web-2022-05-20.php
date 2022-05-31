@@ -75,7 +75,7 @@ if ($document === "api") {
         substr(
             Crypto::decrypt(
                 base64UrlDecode($bearerToken),
-                $app->env->getPriv("ENCKEY")
+                $app->env->getPriv("siteCryptoKey")
             ),
             32
         )
@@ -158,7 +158,7 @@ $heavyInfo = Users::user_heavy_info($session->userId) ?? [];
 
 # create user array
 $user = array_merge($heavyInfo, $lightInfo, $userStats);
-$user["RSS_Auth"] = md5($user["ID"] . $app->env->getPriv("RSS_HASH") . $user["torrent_pass"]);
+$user["RSS_Auth"] = md5($user["ID"] . $app->env->getPriv("rssHash") . $user["torrent_pass"]);
 
 # $user["RatioWatch"] as a bool to disable things for users on ratio watch
 $user["RatioWatch"] = (

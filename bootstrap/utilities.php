@@ -128,7 +128,7 @@ function send_irc($Channels = null, $Message = '')
     $ENV = ENV::go();
 
     // Check if IRC is enabled
-    if (!$ENV->FEATURE_IRC || !$Channels) {
+    if (!$ENV->announceIrc || !$Channels) {
         return false;
     }
 

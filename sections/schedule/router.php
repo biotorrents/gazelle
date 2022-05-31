@@ -48,8 +48,8 @@ function run_all_in($Dir)
     }
 }
 
-if ((!isset($_REQUEST['key']) || $_REQUEST['key'] !== $ENV->getPriv('SCHEDULE_KEY'))
-    #|| (!isset($argv[1]) || $argv[1] !== $ENV->getPriv('SCHEDULE_KEY'))
+if ((!isset($_REQUEST['key']) || $_REQUEST['key'] !== $ENV->getPriv('scheduleKey'))
+    #|| (!isset($argv[1]) || $argv[1] !== $ENV->getPriv('scheduleKey'))
     && !$AS) {
     error(403);
 }

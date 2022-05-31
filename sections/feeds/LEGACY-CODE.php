@@ -50,7 +50,7 @@ if (!$Enabled = $cache->get_value("enabled_$User")) {
 }
 
 # Check for RSS auth
-if (md5($User.$ENV->getPriv("RSS_HASH").$_GET["passkey"]) !== $_GET["auth"] || (int) $Enabled !== 1) {
+if (md5($User.$ENV->getPriv("rssHash").$_GET["passkey"]) !== $_GET["auth"] || (int) $Enabled !== 1) {
     $feed->open();
     $feed->channel("Blocked", "RSS feed.");
     $feed->close();

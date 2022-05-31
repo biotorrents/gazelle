@@ -6,7 +6,7 @@ $ENV = ENV::go();
 $Key = $_REQUEST['key'];
 $Type = $_REQUEST['type'];
 
-if (($Key !== $ENV->getPriv('TRACKER_SECRET')) || $_SERVER['REMOTE_ADDR'] !== $ENV->getPriv('TRACKER_HOST')) {
+if (($Key !== $ENV->getPriv('trackerSecret')) || $_SERVER['REMOTE_ADDR'] !== $ENV->getPriv('trackerHost')) {
     send_irc(DEBUG_CHAN, 'Ocelot Auth Failure '.$_SERVER['REMOTE_ADDR']);
     error(403);
 }

@@ -106,7 +106,7 @@ class App
         $app = self::go();
 
         # check if email is enabled
-        if (!$app->env->FEATURE_SEND_EMAIL) {
+        if (!$app->env->enableSiteEmail) {
             return false;
         }
 

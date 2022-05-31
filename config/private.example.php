@@ -1,100 +1,95 @@
 <?php
 declare(strict_types=1);
 
+
 /**
- * App keys
+ * private app keys
  *
  * Separate keys for development and production.
  * Increased security and protection against config overwrites.
  */
 
-# Pre-shared key for generating hmacs for the image proxy
-ENV::setPriv('IMAGE_PSK', '');
+# pre-shared key for generating hmacs for the image proxy
+ENV::setPriv("imagePsk", "");
 
- # Production
-if (!$env->dev) {
-    # Unused in OT Gazelle. Currently used for API token auth
-    ENV::setPriv('ENCKEY', '');
+# production
+if (!$app->env->dev) {
+    # currently used for API token auth
+    ENV::setPriv("siteCryptoKey", "");
   
-    # Alphanumeric random key. This key must be the argument to schedule.php for the schedule to work
-    ENV::setPriv('SCHEDULE_KEY', '');
+    # alphanumeric random key: the scheduler argument
+    ENV::setPriv("scheduleKey", "");
   
-    # Random key. Used for generating unique RSS auth key
-    ENV::setPriv('RSS_HASH', '');
+    # used for generating unique RSS auth key
+    ENV::setPriv("rssHash", "");
 
-    # System API key. Used for getting resources via Json->fetch()
-    ENV::setPriv('SELF_API', '');
+    # used for getting resources via Json->fetch
+    ENV::setPriv("siteApiKey", "");
 }
 
-# Development
+# development
 else {
-    ENV::setPriv('ENCKEY', '');
-    ENV::setPriv('SCHEDULE_KEY', '');
-    ENV::setPriv('RSS_HASH', '');
-    ENV::setPriv('SELF_API', '');
+    ENV::setPriv("siteCryptoKey", "");
+    ENV::setPriv("scheduleKey", "");
+    ENV::setPriv("rssHash", "");
+    ENV::setPriv("siteApiKey", "");
 }
 
 
 /**
- * Database
+ * database
  */
 
-# Common info
-ENV::setPriv('SQL_HOST', '10.0.0.3');
-ENV::setPriv('SQL_PORT', 3306);
+# common info
+ENV::setPriv("sqlHost", "");
+ENV::setPriv("sqlPort", 3306);
 
-# Leave set even if using TCP due to DB::class strict mode
-ENV::setPriv('SQL_SOCK', '/var/run/mysqld/mysqld.sock');
+# leave set even if using TCP due to DB::class strict mode
+ENV::setPriv("sqlSocket", "");
 
 # TLS client certs
-ENV::setPriv('SQL_CERT', "/var/www/tls-keys/client-cert-ohm.pem");
-ENV::setPriv('SQL_KEY', "/var/www/tls-keys/client-key-ohm.pem");
-ENV::setPriv('SQL_CA', "/var/www/tls-keys/ca.pem");
+ENV::setPriv("sqlCert", "");
+ENV::setPriv("sqlKey", "");
+ENV::setPriv("sqlCertAuthority", "");
 
-/*
-ENV::setPriv('SQL_CERT', "$env->webRoot/tls-keys/client-cert-ohm.pem");
-ENV::setPriv('SQL_KEY', "$env->webRoot/tls-keys/client-key-ohm.pem");
-ENV::setPriv('SQL_CA', "$env->webRoot/tls-keys/ca.pem");
-*/
-
-# Production
-if (!$env->dev) {
-    ENV::setPriv('SQL_DB', 'gazelle_production');
-    ENV::setPriv('SQL_USER', 'gazelle_production');
-    ENV::setPriv('SQL_PASS', '');
+# production
+if (!$app->env->dev) {
+    ENV::setPriv("sqlDatabase", "");
+    ENV::setPriv("sqlUsername", "");
+    ENV::setPriv("sqlPassphrase", "");
 }
 
-# Development
+# development
 else {
-    ENV::setPriv('SQL_DB', 'gazelle_development');
-    ENV::setPriv('SQL_USER', 'gazelle_development');
-    ENV::setPriv('SQL_PASS', '');
+    ENV::setPriv("sqlDatabase", "");
+    ENV::setPriv("sqlUsername", "");
+    ENV::setPriv("sqlPassphrase", "");
 }
 
 
 /**
- * Tracker
+ * tracker
  */
 
-# Ocelot connection, e.g., 0.0.0.0
-ENV::setPriv('TRACKER_HOST', '0.0.0.0');
+# ocelot connection, e.g., 0.0.0.0
+ENV::setPriv("trackerHost", "");
 
- # Production
-if (!$env->dev) {
-    ENV::setPriv('TRACKER_PORT', 34000);
+# production
+if (!$app->env->dev) {
+    ENV::setPriv("trackerPort", 34000);
   
-    # Must be 32 alphanumeric characters and match site_password in ocelot.conf
-    ENV::setPriv('TRACKER_SECRET', '');
+    # must be 32 alphanumeric characters and match site_password in ocelot.conf
+    ENV::setPriv("trackerSecret", "");
 
-    # Must be 32 alphanumeric characters and match report_password in ocelot.conf
-    ENV::setPriv('TRACKER_REPORTKEY', '');
+    # must be 32 alphanumeric characters and match report_password in ocelot.conf
+    ENV::setPriv("trackerReportKey", "");
 }
 
-# Development
+# development
 else {
-    ENV::setPriv('TRACKER_PORT', 34001);
-    ENV::setPriv('TRACKER_SECRET', '');
-    ENV::setPriv('TRACKER_REPORTKEY', '');
+    ENV::setPriv("trackerPort", 34001);
+    ENV::setPriv("trackerSecret", "");
+    ENV::setPriv("trackerReportKey", "");
 }
 
 
@@ -103,15 +98,30 @@ else {
  * @see https://plausible.io/docs/stats-api
  */
 
-# Base URI for API calls
-ENV::setPub('PLAUSIBLE_URI', 'https://stats.torrents.bio/api/v1');
+# base URI for API calls
+ENV::setPub("plausibleUri", "");
 
-# Production
-if (!$env->dev) {
-    ENV::setPriv('PLAUSIBLE_KEY', '');
+# production
+if (!$app->env->dev) {
+    ENV::setPriv("plausibleKey", "");
 }
 
-# Development
+# development
 else {
-    ENV::setPriv('PLAUSIBLE_KEY', '');
+    ENV::setPriv("plausibleKey", "");
 }
+
+
+/**
+ * slack announce
+ * @see https://slack.com/help/articles/115005265063-Incoming-webhooks-for-Slack
+ */
+
+ENV::setPriv(
+    "slackWebhooks",
+    [
+        "announce" => "",
+        "debug" => "",
+        "requests" => "",
+    ]
+);

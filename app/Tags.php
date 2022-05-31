@@ -315,10 +315,12 @@ class Tags
         $Class = "";
         $Split = explode(':', $Tag);
         
-        if (count($Split) > 1 && in_array($Split[1], TAG_NAMESPACES)) {
+        /*
+        if (count($Split) > 1 && in_array($Split[1], tagNamespaces)) {
             $Name = $Split[0];
             $Class = "tag_" . $Split[1];
         }
+        */
         return array("name" => Text::esc($Name), "class" => Text::esc($Class));
     }
 }

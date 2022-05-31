@@ -32,7 +32,7 @@ class Tracker
      *   );
      *
      * Will send this request:
-     *   GET /{$ENV->TRACKER_SECRET}/update?action=change_passkey&oldpasskey={$oldPassKey}&newpasskey={$newPassKey} HTTP/1.1
+     *   GET /{$ENV->trackerSecret}/update?action=change_passkey&oldpasskey={$oldPassKey}&newpasskey={$newPassKey} HTTP/1.1
      *
      * @param string $action The action to send
      * @param array $updates An associative array of key->value pairs to send to the tracker
@@ -43,7 +43,7 @@ class Tracker
         $ENV = ENV::go();
 
         // Build request
-        $get = $ENV->getPriv('TRACKER_SECRET') . "/update?action={$action}";
+        $get = $ENV->getPriv('trackerSecret') . "/update?action={$action}";
         foreach ($updates as $k => $v) {
             $get .= "&{$k}={$v}";
         }
@@ -148,12 +148,12 @@ class Tracker
         $ENV = ENV::go();
 
         # no report key
-        if (!defined($ENV->getPriv('TRACKER_REPORTKEY'))) {
+        if (!defined($ENV->getPriv('trackerReportKey'))) {
             return false;
         }
 
         # there is a report key
-        $get = $ENV->getPriv('TRACKER_REPORTKEY') . '/report?';
+        $get = $ENV->getPriv('trackerReportKey') . '/report?';
 
         # main stats
         if ($type === self::STATS_MAIN) {
@@ -214,8 +214,8 @@ class Tracker
 
             // Send request
             $file = fsockopen(
-                $ENV->getPriv('TRACKER_HOST'),
-                $ENV->getPriv('TRACKER_PORT'),
+                $ENV->getPriv('trackerHost'),
+                $ENV->getPriv('trackerPort'),
                 $errorNum,
                 $errorString
             );

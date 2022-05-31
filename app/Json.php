@@ -202,7 +202,7 @@ class Json
     {
         $app = App::go();
 
-        $token = $app->env->getPriv("SELF_API");
+        $token = $app->env->getPriv("siteApiKey");
         $params = implode("&", $params);
 
         $curl = curl_init();
