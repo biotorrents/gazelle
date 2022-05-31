@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+
 /**
  * torrents
  */
@@ -14,6 +15,7 @@ Flight::route("/feed/torrents/all/@authKey/@passKey", function (string $authKey,
     $feed->close();
 });
 
+
 # sequences
 Flight::route("/feed/torrents/sequences/@authKey/@passKey", function (string $authKey, string $passKey) {
     $feed = new Feed();
@@ -22,6 +24,7 @@ Flight::route("/feed/torrents/sequences/@authKey/@passKey", function (string $au
     $feed->retrieve("torrents_sequences", $authKey, $passKey);
     $feed->close();
 });
+
 
 # graphs
 Flight::route("/feed/torrents/graphs/@authKey/@passKey", function (string $authKey, string $passKey) {
@@ -32,6 +35,7 @@ Flight::route("/feed/torrents/graphs/@authKey/@passKey", function (string $authK
     $feed->close();
 });
 
+
 # systems
 Flight::route("/feed/torrents/systems/@authKey/@passKey", function (string $authKey, string $passKey) {
     $feed = new Feed();
@@ -40,6 +44,7 @@ Flight::route("/feed/torrents/systems/@authKey/@passKey", function (string $auth
     $feed->retrieve("torrents_systems", $authKey, $passKey);
     $feed->close();
 });
+
 
 # geometric
 Flight::route("/feed/torrents/geometric/@authKey/@passKey", function (string $authKey, string $passKey) {
@@ -50,6 +55,7 @@ Flight::route("/feed/torrents/geometric/@authKey/@passKey", function (string $au
     $feed->close();
 });
 
+
 # scalar/vector
 Flight::route("/feed/torrents/scalarVector/@authKey/@passKey", function (string $authKey, string $passKey) {
     $feed = new Feed();
@@ -58,6 +64,7 @@ Flight::route("/feed/torrents/scalarVector/@authKey/@passKey", function (string 
     $feed->retrieve("torrents_scalars/vectors", $authKey, $passKey);
     $feed->close();
 });
+
 
 # patterns
 Flight::route("/feed/torrents/patterns/@authKey/@passKey", function (string $authKey, string $passKey) {
@@ -68,6 +75,7 @@ Flight::route("/feed/torrents/patterns/@authKey/@passKey", function (string $aut
     $feed->close();
 });
 
+
 # constraints
 Flight::route("/feed/torrents/constraints/@authKey/@passKey", function (string $authKey, string $passKey) {
     $feed = new Feed();
@@ -76,6 +84,7 @@ Flight::route("/feed/torrents/constraints/@authKey/@passKey", function (string $
     $feed->retrieve("torrents_constraints", $authKey, $passKey);
     $feed->close();
 });
+
 
 # images
 Flight::route("/feed/torrents/images/@authKey/@passKey", function (string $authKey, string $passKey) {
@@ -86,6 +95,7 @@ Flight::route("/feed/torrents/images/@authKey/@passKey", function (string $authK
     $feed->close();
 });
 
+
 # spatial
 Flight::route("/feed/torrents/spatial/@authKey/@passKey", function (string $authKey, string $passKey) {
     $feed = new Feed();
@@ -94,6 +104,7 @@ Flight::route("/feed/torrents/spatial/@authKey/@passKey", function (string $auth
     $feed->retrieve("torrents_spatial", $authKey, $passKey);
     $feed->close();
 });
+
 
 # models
 Flight::route("/feed/torrents/models/@authKey/@passKey", function (string $authKey, string $passKey) {
@@ -104,6 +115,7 @@ Flight::route("/feed/torrents/models/@authKey/@passKey", function (string $authK
     $feed->close();
 });
 
+
 # documents
 Flight::route("/feed/torrents/documents/@authKey/@passKey", function (string $authKey, string $passKey) {
     $feed = new Feed();
@@ -112,6 +124,7 @@ Flight::route("/feed/torrents/documents/@authKey/@passKey", function (string $au
     $feed->retrieve("torrents_documents", $authKey, $passKey);
     $feed->close();
 });
+
 
 # machine data
 Flight::route("/feed/torrents/machineData/@authKey/@passKey", function (string $authKey, string $passKey) {
@@ -165,6 +178,7 @@ Flight::route("/feed/news/@authKey/@passKey", function (string $authKey, string 
     $feed->close();
 });
 
+
 # blog
 Flight::route("/feed/blog/@authKey/@passKey", function (string $authKey, string $passKey) {
     $app = App::go();
@@ -212,104 +226,54 @@ Flight::route("/feed/blog/@authKey/@passKey", function (string $authKey, string 
 
 /**
  * user
- *
- * START HERE
  */
 
-# all torrents
-Flight::route("/feed/torrents/user/@authKey/@passKey", function (string $authKey, string $passKey) {
+# torrent bookmarks
+Flight::route("/feed/user/bookmarks/@authKey/@passKey", function (string $authKey, string $passKey) {
     $feed = new Feed();
-    $feed->channel("All New Torrents", "RSS feed for all new torrent uploads.");
-    $feed->retrieve("torrents_all", $authKey, $passKey);
-    $feed->close();
+    $feed->open();
+    $feed->channel('Bookmarked torrent notifications', 'RSS feed for bookmarked torrents');
 
-
-    // Personalized torrents
-    if (empty($_GET['name']) && substr($_GET['feed'], 0, 16) === 'torrents_notify_') {
-        // All personalized torrent notifications
-        $feed->channel('Personalized torrent notifications', 'RSS feed for personalized torrent notifications.');
-        $feed->retrieve($_GET['feed'], $_GET['authkey'], $_GET['passkey']);
-    } elseif (!empty($_GET['name']) && substr($_GET['feed'], 0, 16) === 'torrents_notify_') {
-        // Specific personalized torrent notification channel
-        $feed->channel(Text::esc($_GET['name']), 'Personal RSS feed: '.Text::esc($_GET['name']));
-        $feed->retrieve($_GET['feed'], $_GET['authkey'], $_GET['passkey']);
-    } elseif (!empty($_GET['name']) && substr($_GET['feed'], 0, 21) === 'torrents_bookmarks_t_') {
-        // Bookmarks
-        $feed->channel('Bookmarked torrent notifications', 'RSS feed for bookmarked torrents.');
-        $feed->retrieve($_GET['feed'], $_GET['authkey'], $_GET['passkey']);
-    } else {
-        $feed->channel('All Torrents', 'RSS feed for all new torrent uploads.');
-        $feed->retrieve('torrents_all', $_GET['authkey'], $_GET['passkey']);
+    /*
+    if (!empty($_GET['name']) && substr($_GET['feed'], 0, 21) === 'torrents_bookmarks_t_') {
+        $feed->retrieve($_GET['name'], $_GET['authkey'], $_GET['passkey']);
     }
+    */
+
+    $feed->retrieve("", $authKey, $passKey);
+    $feed->close();
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-# start the router
-Flight::start();
-
-
-/** LEGACY ROUTES */
-
-
-// Main feeds page
-//
-// The feeds don"t use bootstrap/app.php, their code resides entirely in feeds.php in the document root.
-// Bear this in mind when you try to use bootstrap functions.
-
-if (
-  empty($_GET["feed"])
-  || empty($_GET["authkey"])
-  || empty($_GET["auth"])
-  || empty($_GET["passkey"])
-  || empty($_GET["user"])
-  || !is_number($_GET["user"])
-  || strlen($_GET["authkey"]) !== 32
-  || strlen($_GET["passkey"]) !== 32
-  || strlen($_GET["auth"]) !== 32
-) {
+# torrent notifications
+Flight::route("/feed/user/notifications/@authKey/@passKey", function (string $authKey, string $passKey) {
+    $feed = new Feed();
     $feed->open();
-    $feed->channel("Blocked", "RSS feed.");
+    $feed->channel('Personalized torrent notifications', 'RSS feed for personalized torrent notifications');
+
+    /*
+    if (empty($_GET['name']) && substr($_GET['feed'], 0, 16) === 'torrents_notify_') {
+        $feed->retrieve($_GET['name'], $_GET['authkey'], $_GET['passkey']);
+    }
+    */
+
+    $feed->retrieve("", $authKey, $passKey);
     $feed->close();
-    error(400, $NoHTML = true);
-}
+});
 
-# Initialize
-require_once "classes/env.class.php";
-$ENV = ENV::go();
 
-$User = (int) $_GET["user"];
-if (!$Enabled = $cache->get_value("enabled_$User")) {
-    require_once SERVER_ROOT."/classes/db.class.php";
-    $db = new DB; // Load the database wrapper
-
-    $db->query("
-    SELECT
-      `Enabled`
-    FROM
-      `users_main`
-    WHERE
-      `ID` = \"$User\"
-    ");
-
-    list($Enabled) = $db->next_record();
-    $cache->cache_value("enabled_$User", $Enabled, 0);
-}
-
-# Check for RSS auth
-if (md5($User.$ENV->getPriv("RSS_HASH").$_GET["passkey"]) !== $_GET["auth"] || (int) $Enabled !== 1) {
+# custom feeds
+Flight::route("/feed/user/@feedName/@authKey/@passKey", function (string $feedName, string $authKey, string $passKey) {
+    $feed = new Feed();
     $feed->open();
-    $feed->channel("Blocked", "RSS feed.");
+    $feed->channel($feedName, "Personal RSS feed: $feedName");
+
+    /*
+    if (empty($_GET['name']) && substr($_GET['feed'], 0, 16) === 'torrents_notify_') {
+        $feed->retrieve($_GET['name'], $_GET['authkey'], $_GET['passkey']);
+    }
+    */
+
+    $feed->retrieve("", $authKey, $passKey);
     $feed->close();
-    error(400, $NoHTML = true);
-}
+});
