@@ -52,9 +52,9 @@ ENV::setPriv('SQL_KEY', "/var/www/tls-keys/client-key-ohm.pem");
 ENV::setPriv('SQL_CA', "/var/www/tls-keys/ca.pem");
 
 /*
-ENV::setPriv('SQL_CERT', "$env->WEB_ROOT/tls-keys/client-cert-ohm.pem");
-ENV::setPriv('SQL_KEY', "$env->WEB_ROOT/tls-keys/client-key-ohm.pem");
-ENV::setPriv('SQL_CA', "$env->WEB_ROOT/tls-keys/ca.pem");
+ENV::setPriv('SQL_CERT', "$env->webRoot/tls-keys/client-cert-ohm.pem");
+ENV::setPriv('SQL_KEY', "$env->webRoot/tls-keys/client-key-ohm.pem");
+ENV::setPriv('SQL_CA', "$env->webRoot/tls-keys/ca.pem");
 */
 
 # Production

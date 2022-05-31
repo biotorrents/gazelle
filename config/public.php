@@ -61,7 +61,7 @@ ENV::setPub(
 ENV::setPub("imageDomain", "pics.torrents.bio");
 
 # Web root. Currently used for Twig but may also include config files
-ENV::setPub("WEB_ROOT", "/var/www/");
+ENV::setPub("webRoot", "/var/www/");
 
 # The root of the server, used for includes, e.g., /var/www/html/dev.biotorrents.de/
 ( # Old format

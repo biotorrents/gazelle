@@ -76,7 +76,7 @@ class Twig # extends Twig\Environment
             [
                 "auto_reload" => true,
                 "autoescape" => "name",
-                "cache" => "{$app->env->WEB_ROOT}/cache/twig",
+                "cache" => "{$app->env->webRoot}/cache/twig",
                 "debug" => $app->env->dev,
                 "strict_variables" => true,
             ]
