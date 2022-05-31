@@ -207,10 +207,12 @@ switch ($_GET['action']) {
     require_once "$ENV->SERVER_ROOT/sections/api/info.php";
     break;
 
+    /*
   case 'manifest':
     require_once "$ENV->SERVER_ROOT/manifest.php";
     json_die('success', manifest());
     break;
+    */
 
   case 'stats':
     require_once "$ENV->SERVER_ROOT/sections/api/stats.php";

@@ -26,6 +26,12 @@ Flight::route("/dmca", function () {
 });
 
 
+# manifest
+Flight::route("/manifest", function () {
+    echo App::manifest();
+});
+
+
 # privacy
 Flight::route("/privacy", function () {
     $app = App::go();

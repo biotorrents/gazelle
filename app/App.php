@@ -1,6 +1,7 @@
 <?php
 declare(strict_types = 1);
 
+
 /**
  * App
  *
@@ -102,7 +103,7 @@ class App
      */
     public static function email(string $to, string $subject, string $body)
     {
-        $app = App::go();
+        $app = self::go();
 
         # check if email is enabled
         if (!$app->env->FEATURE_SEND_EMAIL) {
@@ -152,11 +153,57 @@ class App
         $globFolders  = glob("{$folder}/*", GLOB_ONLYDIR);
     
         foreach ($globFolders as $folder) {
-            recursiveGlob($folder, $extension);
+            self::recursiveGlob($folder, $extension);
         }
     
         foreach ($globFiles as $file) {
             require_once $file;
         }
+    }
+
+
+    /**
+     * manifest
+     *
+     * Prints an app manifest.
+     */
+    public static function manifest()
+    {
+        $app = self::go();
+
+        # https://developer.mozilla.org/en-US/docs/Web/Manifest
+        $manifest = [
+            "\$schema" => "https://json.schemastore.org/web-manifest-combined.json",
+            "name" => $app->env->SITE_NAME,
+            "short_name" => $app->env->SITE_NAME,
+            "start_url" => "/",
+            "display" => "standalone",
+            "background_color" => "#ffffff",
+            "theme_color" => "#0288d1",
+            "description" => $app->env->DESCRIPTION,
+            "icons" => [
+                [
+                    "src" => "/images/logos/liquidrop-bookish-1k.png",
+                    "sizes" => "1024x1024",
+                    "type" => "image/png",
+                ],
+                [
+                    "src" => "/images/logos/liquidrop-postmod-1k.png",
+                    "sizes" => "1024x1024",
+                    "type" => "image/png",
+                ],
+            ],
+            /*
+            "related_applications" => [
+                [
+                    "platform" => "play",
+                    "url" => "https://play.google.com/store/apps/details?id=cheeaun.hackerweb",
+                ],
+            ],
+            */
+        ];
+            
+        # return json
+        return json_encode($manifest, JSON_UNESCAPED_SLASHES);
     }
 } # class

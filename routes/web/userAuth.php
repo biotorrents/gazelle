@@ -68,3 +68,19 @@ Flight::route("/confirm/@selector/@token", function ($selector, $token) {
     $app = App::go();
     require_once "{$app->env->SERVER_ROOT}/sections/user/auth/confirm.php";
 });
+
+
+# pwgen
+Flight::route("/pwgen(/@method)", function ($method) {
+    $app = App::go();
+
+    if ($method === "diceware") {
+        header("Content-Type: text/plain; charset=utf-8");
+        require_once "{$app->env->SERVER_ROOT}/sections/user/pwgen/diceware.php";
+    }
+
+    if ($method === "hash") {
+        header("Content-Type: text/plain; charset=utf-8");
+        require_once "{$app->env->SERVER_ROOT}/sections/user/pwgen/hash.php";
+    }
+});
