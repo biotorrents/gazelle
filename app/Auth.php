@@ -113,7 +113,7 @@ class Auth # extends Delight\Auth\Auth
             }
 
             # disallow registration without invite if site is closed
-            if (!$app->env->OPEN_REGISTRATION && empty($invite)) {
+            if (!$app->env->openRegistration && empty($invite)) {
                 throw new Exception("Open registration is disabled, no invite code provided");
             }
         

@@ -726,7 +726,7 @@ class Users
             'Username'=> $Username,
            'ResetKey'=> $ResetKey,
           'IP'=> $_SERVER['REMOTE_ADDR'],
-          'SITE_NAME'=> $app->env->siteName,
+          'siteName'=> $app->env->siteName,
             'SITE_DOMAIN'=> SITE_DOMAIN,
     
         ]

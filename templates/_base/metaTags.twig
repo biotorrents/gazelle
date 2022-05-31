@@ -1,11 +1,11 @@
 <link rel="canonical" href="https://{{ env.SITE_DOMAIN }}" />
 <link rel="manifest" href="/manifest" />
-<link rel="search" type="application/opensearchdescription+xml" title="{{ env.SITE_NAME }}"
+<link rel="search" type="application/opensearchdescription+xml" title="{{ env.siteName }}"
     href="{{ env.STATIC_SERVER }}/opensearch.xml" />
 <link rel="shortcut icon" href="/images/favicon.png" />
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="description" content="{{ env.DESCRIPTION }}" />
+<meta name="description" content="{{ env.siteDescription }}" />
 <meta name="language" content="en-US" />
 {# default "index, follow" #}
 <meta name="robots" content="none" />
@@ -18,9 +18,9 @@
 {% endif %}
 
 {# https://developers.facebook.com/tools/debug/ #}
-<meta property="og:description" content="{{ env.DESCRIPTION }}" />
+<meta property="og:description" content="{{ env.siteDescription }}" />
 <meta property="og:image" content="{{ env.STATIC_SERVER }}/images/logos/liquidrop-bookish.png" />
-<meta property="og:site_name" content="{{ env.SITE_NAME }}" />
+<meta property="og:site_name" content="{{ env.siteName }}" />
 <meta property="og:title" content="{{ title }}" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://{{ env.SITE_DOMAIN }}" />

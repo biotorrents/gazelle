@@ -9,9 +9,9 @@
 
 {# page title #}
 {% if title is defined %}
-{% set title = "#{title} #{env.SEP} #{env.SITE_NAME}" %}
+{% set title = "#{title} #{env.separator} #{env.siteName}" %}
 {% else %}
-{% set title = env.SITE_NAME %}
+{% set title = env.siteName %}
 {% endif %}
 
 <!DOCTYPE html>
