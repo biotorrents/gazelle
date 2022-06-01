@@ -20,8 +20,10 @@ class Social
 
     # cache settings
     private $cachePrefix = "social_";
-    private $cachePrefixUser = null;
     private $cacheDuration = 3600; # one hour
+
+    # hash algo for cache keys
+    private $algorithm = "sha3-512";
 
 
     /**
@@ -39,10 +41,6 @@ class Social
             $this->baseUri = $app->env->discourseUri;
             $this->token = $app->env->getPriv("discourseKey");
             $this->username = "system"; # todo
-            
-            if (!empty($this->username)) {
-                $this->cachePrefixUser = "{$this->cachePrefix}{$this->username}_";
-            }
         } catch (Exception $e) {
             return $e->getMessage();
         }
@@ -55,18 +53,24 @@ class Social
      * @param string $path The path, e.g., "stats/aggregate"
      * @param array $options The options for the query string
      */
-    private function curl(string $path, string $method = "", array $options = [])
+    private function curl(string $path, string $method = "get", array $options = [])
     {
+        $app = App::go();
+
+        # return cached if available
+        $cacheKey = $this->cachePrefix . hash($thisalgorithm, json_encode(["path" => $path, $method = "method", "options" => $options]));
+        if ($app->cacheOld->get_value($cacheKey)) {
+            return $app->cacheOld->get_value($cacheKey);
+        }
+        
         if (!empty($options)) {
             $payload = json_encode($options);
         }
 
         # method
-        $allowedMethods = ["post", "put", "delete"];
-        if (!empty($method) && in_array($method, $allowedMethods)) {
+        $allowedMethods = ["get", "post", "put", "delete"];
+        if (in_array($method, $allowedMethods)) {
             $method = strtoupper($method);
-        } else {
-            $method = "GET";
         }
 
         # options
@@ -89,6 +93,7 @@ class Social
         $info = curl_getinfo($ch);
         curl_close($ch);
 
+        $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 
@@ -114,6 +119,7 @@ class Social
         # download
         # todo
     }
+
 
     /**
      * createTopicPostPM
@@ -144,16 +150,7 @@ class Social
      */
     public function getSite()
     {
-        $app = App::go();
-
-        $cacheKey = $this->cachePrefix . __FUNCTION__;
-        if ($app->cacheOld->get_value($cacheKey)) {
-            return $app->cacheOld->get_value($cacheKey);
-        }
-
         $response = $this->curl("site.json");
-
-        $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 
@@ -168,16 +165,7 @@ class Social
      */
     public function listCategories()
     {
-        $app = App::go();
-
-        $cacheKey = $this->cachePrefix . __FUNCTION__;
-        if ($app->cacheOld->get_value($cacheKey)) {
-            return $app->cacheOld->get_value($cacheKey);
-        }
-
         $response = $this->curl("categories.json");
-
-        $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 
@@ -187,24 +175,14 @@ class Social
      *
      * @see https://docs.discourse.org/#tag/Categories/operation/listCategoryTopics
      */
-    public function listCategoryTopics(string $category)
+    public function listCategoryTopics(string $slug)
     {
-        $app = App::go();
-
-        $cacheKey = $this->cachePrefix . __FUNCTION__;
-        if ($app->cacheOld->get_value($cacheKey)) {
-            return $app->cacheOld->get_value($cacheKey);
+        if (!in_array($slug, array_keys($app->env->discourseCategories))) {
+            throw new Exception("supplied slug {$slug} is invalid");
         }
 
-        if (!in_array($category, array_keys($app->env->discourseCategories))) {
-            throw new Exception("supplied category {$category} is invalid");
-        }
-
-        $slug = $category;
-        $id = $app->env->discourseCategories[$category];
+        $id = $app->env->discourseCategories[$slug];
         $response = $this->curl("c/{$slug}/{$id}.json");
-
-        $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 
@@ -214,23 +192,14 @@ class Social
      *
      * @see https://docs.discourse.org/#tag/Categories/operation/getCategory
      */
-    public function getCategory(string $category)
+    public function getCategory(string $slug)
     {
-        $app = App::go();
-
-        $cacheKey = $this->cachePrefix . __FUNCTION__;
-        if ($app->cacheOld->get_value($cacheKey)) {
-            return $app->cacheOld->get_value($cacheKey);
-        }
-
         if (!in_array($category, array_keys($app->env->discourseCategories))) {
-            throw new Exception("supplied category {$category} is invalid");
+            throw new Exception("supplied slug {$slug} is invalid");
         }
 
-        $id = $app->env->discourseCategories[$category];
+        $id = $app->env->discourseCategories[$slug];
         $response = $this->curl("c/{$id}/show.json");
-
-        $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 
@@ -245,16 +214,7 @@ class Social
      */
     public function getGroup(string $name)
     {
-        $app = App::go();
-
-        $cacheKey = $this->cachePrefix . __FUNCTION__;
-        if ($app->cacheOld->get_value($cacheKey)) {
-            return $app->cacheOld->get_value($cacheKey);
-        }
-
         $response = $this->curl("groups/{$name}.json");
-
-        $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 
@@ -266,16 +226,7 @@ class Social
      */
     public function listGroupMembers(string $name)
     {
-        $app = App::go();
-
-        $cacheKey = $this->cachePrefix . __FUNCTION__;
-        if ($app->cacheOld->get_value($cacheKey)) {
-            return $app->cacheOld->get_value($cacheKey);
-        }
-
         $response = $this->curl("groups/{$name}/members.json");
-
-        $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 
@@ -287,16 +238,7 @@ class Social
      */
     public function listGroups()
     {
-        $app = App::go();
-
-        $cacheKey = $this->cachePrefix . __FUNCTION__;
-        if ($app->cacheOld->get_value($cacheKey)) {
-            return $app->cacheOld->get_value($cacheKey);
-        }
-
         $response = $this->curl("groups.json");
-
-        $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 
@@ -311,16 +253,7 @@ class Social
      */
     public function getNotifications()
     {
-        $app = App::go();
-
-        $cacheKey = $this->cachePrefixUser . __FUNCTION__;
-        if ($app->cacheOld->get_value($cacheKey)) {
-            return $app->cacheOld->get_value($cacheKey);
-        }
-
         $response = $this->curl("notifications.json");
-
-        $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 
@@ -335,21 +268,12 @@ class Social
      */
     public function markNotificationsAsRead(int $id = 0)
     {
-        $app = App::go();
-
-        $cacheKey = $this->cachePrefixUser . __FUNCTION__;
-        if ($app->cacheOld->get_value($cacheKey)) {
-            return $app->cacheOld->get_value($cacheKey);
-        }
-
         $options = [];
         if ($id !== 0) {
             $options = ["id" => $id];
         }
         
         $response = $this->curl("notifications.json", "put", $options);
-
-        $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 
@@ -364,6 +288,8 @@ class Social
      */
     public function listPosts()
     {
+        $response = $this->curl("posts.json");
+        return $response;
     }
 
 
@@ -372,8 +298,10 @@ class Social
      *
      * @see https://docs.discourse.org/#tag/Posts/operation/getPost
      */
-    public function getPost()
+    public function getPost(int $id)
     {
+        $response = $this->curl("posts/{$id}.json");
+        return $response;
     }
 
 
@@ -382,8 +310,11 @@ class Social
      *
      * @see https://docs.discourse.org/#tag/Posts/operation/updatePost
      */
-    public function updatePost()
+    public function updatePost(int $id, string $raw, string $edit_reason = "")
     {
+        $options = ["raw" => $raw, "edit_reason" => $edit_reason];
+        $response = $this->curl("posts/{$id}.json", "put", $options);
+        return $response;
     }
 
 
@@ -392,8 +323,10 @@ class Social
      *
      * @see https://docs.discourse.org/#tag/Posts/operation/deletePost
      */
-    public function deletePost()
+    public function deletePost(int $id)
     {
+        $response = $this->curl("posts/{$id}.json", "delete");
+        return $response;
     }
 
 
@@ -402,8 +335,10 @@ class Social
      *
      * @see https://docs.discourse.org/#tag/Posts/operation/postReplies
      */
-    public function postReplies()
+    public function postReplies(int $id)
     {
+        $response = $this->curl("posts/{$id}/replies.json");
+        return $response;
     }
 
 
@@ -412,8 +347,11 @@ class Social
      *
      * @see https://docs.discourse.org/#tag/Posts/operation/lockPost
      */
-    public function lockPost()
+    public function lockPost(int $id, bool $locked = true)
     {
+        $options = ["locked" => $locked];
+        $response = $this->curl("posts/{$id}/locked.json", "put", $options);
+        return $response;
     }
 
 
@@ -445,8 +383,10 @@ class Social
      *
      * @see https://docs.discourse.org/#tag/Topics/operation/getTopic
      */
-    public function getTopic()
+    public function getTopic(int $id)
     {
+        $response = $this->curl("t/{$id}.json");
+        return $response;
     }
 
 
@@ -457,6 +397,8 @@ class Social
      */
     public function removeTopic()
     {
+        $response = $this->curl("t/{$id}.json", "delete");
+        return $response;
     }
 
 
@@ -465,8 +407,11 @@ class Social
      *
      * @see https://docs.discourse.org/#tag/Topics/operation/updateTopic
      */
-    public function updateTopic()
+    public function updateTopic(string $title, int $category_id)
     {
+        $options = ["title" => $title, "category_id" => $category_id];
+        $response = $this->curl("t/{$id}.json", "put", $options);
+        return $response;
     }
 
 
@@ -485,8 +430,10 @@ class Social
      *
      * @see https://docs.discourse.org/#tag/Topics/operation/bookmarkTopic
      */
-    public function bookmarkTopic()
+    public function bookmarkTopic(int $id)
     {
+        $response = $this->curl("t/{$id}/bookmark.json", "put");
+        return $response;
     }
 
 
@@ -505,6 +452,8 @@ class Social
      */
     public function listLatestTopics()
     {
+        $response = $this->curl("latest.json");
+        return $response;
     }
 
 
@@ -515,6 +464,8 @@ class Social
      */
     public function listTopTopics()
     {
+        $response = $this->curl("top.json");
+        return $response;
     }
 
 
@@ -566,8 +517,10 @@ class Social
      *
      * @see https://docs.discourse.org/#tag/Private-Messages/operation/listUserPrivateMessages
      */
-    public function listUserPrivateMessages()
+    public function listUserPrivateMessages(string $username)
     {
+        $response = $this->curl("topics/private-messages/{$username}.json");
+        return $response;
     }
 
 
@@ -576,8 +529,10 @@ class Social
      *
      * @see https://docs.discourse.org/#tag/Private-Messages/operation/getUserSentPrivateMessages
      */
-    public function getUserSentPrivateMessages()
+    public function getUserSentPrivateMessages(string $username)
     {
+        $response = $this->curl("topics/private-messages-sent/{$username}.json");
+        return $response;
     }
 
 
@@ -591,6 +546,8 @@ class Social
      */
     public function listTags()
     {
+        $response = $this->curl("tags.json");
+        return $response;
     }
 
 
@@ -599,8 +556,10 @@ class Social
      *
      * @see https://docs.discourse.org/#tag/Tags/operation/getTag
      */
-    public function getTag()
+    public function getTag(string $name)
     {
+        $response = $this->curl("tag/{$name}.json");
+        return $response;
     }
 
 
@@ -612,8 +571,10 @@ class Social
      *
      * @see https://docs.discourse.org/#tag/Users/operation/getUser
      */
-    public function getUser()
+    public function getUser(string $username)
     {
+        $response = $this->curl("u/{$username}.json");
+        return $response;
     }
 
 
@@ -622,8 +583,10 @@ class Social
      *
      * @see https://docs.discourse.org/#tag/Users/operation/getUserExternalId
      */
-    public function getUserExternalId()
+    public function getUserExternalId(string $external_id)
     {
+        $response = $this->curl("u/by-external/{$external_id}.json");
+        return $response;
     }
 
 
@@ -652,8 +615,11 @@ class Social
      *
      * @see https://docs.discourse.org/#tag/Users/operation/listUserActions
      */
-    public function listUserActions()
+    public function listUserActions(int $offset, string $username, string $filter)
     {
+        $options = ["offset" => $offset, "username" => $username, "filter" => $filter];
+        $response = $this->curl("user_actions.json", "get", $options);
+        return $response;
     }
 
 
@@ -665,8 +631,10 @@ class Social
      *
      * @see https://docs.discourse.org/#tag/Users/operation/adminGetUser
      */
-    public function adminGetUser()
+    public function adminGetUser(int $id)
     {
+        $response = $this->curl("admin/users/{$id}.json");
+        return $response;
     }
 
 
@@ -677,17 +645,8 @@ class Social
      */
     public function deleteUser(int $id, bool $purge = false)
     {
-        $app = App::go();
-
-        $cacheKey = $this->cachePrefix . __FUNCTION__;
-        if ($app->cacheOld->get_value($cacheKey)) {
-            return $app->cacheOld->get_value($cacheKey);
-        }
-
         $options = ["delete_posts" => $purge, "block_email" => $purge, "block_urls" => $purge, "block_ip" => $purge];
         $response = $this->curl("admin/users/{$id}.json", "delete", $options);
-
-        $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 
@@ -704,17 +663,8 @@ class Social
      */
     public function suspendUser(int $id, string $suspended_until, string $reason = "")
     {
-        $app = App::go();
-
-        $cacheKey = $this->cachePrefix . __FUNCTION__;
-        if ($app->cacheOld->get_value($cacheKey)) {
-            return $app->cacheOld->get_value($cacheKey);
-        }
-
         $options = ["suspended_until" => $suspended_until, "reason" => $reason];
         $response = $this->curl("admin/users/{$id}/suspend.json", "put", $options);
-
-        $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 
@@ -726,16 +676,7 @@ class Social
      */
     public function anonymizeUser(int $id)
     {
-        $app = App::go();
-
-        $cacheKey = $this->cachePrefix . __FUNCTION__;
-        if ($app->cacheOld->get_value($cacheKey)) {
-            return $app->cacheOld->get_value($cacheKey);
-        }
-
         $response = $this->curl("admin/users/{$id}/anonymize.json", "put");
-
-        $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 
@@ -747,21 +688,12 @@ class Social
      */
     public function adminListUsers(string $flag)
     {
-        $app = App::go();
-
         $allowedFlags = ["active", "new", "staff", "suspended", "blocked", "suspect"];
         if (!in_array($flag, $allowedFlags)) {
             throw new Exception("provided flag {$flag} is unsupported");
         }
 
-        $cacheKey = $this->cachePrefix . __FUNCTION__;
-        if ($app->cacheOld->get_value($cacheKey)) {
-            return $app->cacheOld->get_value($cacheKey);
-        }
-
         $response = $this->curl("admin/users/list/{$flag}.json");
-
-        $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 } # class
