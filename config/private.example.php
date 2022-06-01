@@ -125,3 +125,19 @@ ENV::setPriv(
         "requests" => "",
     ]
 );
+
+
+/**
+ * discourse
+ * @see https://docs.discourse.org
+ */
+
+# production
+if (!$app->env->dev) {
+    ENV::setPriv("discourseKey", "");
+}
+
+# development
+else {
+    ENV::setPriv("discourseKey", "");
+}
