@@ -21,8 +21,46 @@ $signature ??= null;
 
 
 # 1. Validate the signature: ensure that HMAC-SHA256 of PAYLOAD (using discourse_connect_secret, as the key) is equal to the sig (sig will be hex encoded).
+$connectSecret = $app->env->getPriv("connectSecret") ?? null;
+if ($connectSecret === null) {
+    throw new Exception("you must set \$app->env->connectSecret in config/private.php");
+}
+
+# payload is base64
+# signature is hex
+$hmac = hash_hmac("sha256", $payload, $connectSecret);
+if (!ctype_xdigit($hmac)) {
+    throw new Exception("hmac hash not valid hexidecimal");
+}
+
+if ($hmac !== $signature) {
+    throw new Exception("hmac doesn't match signature");
+}
+
+ 
 # 2. Perform whatever authentication it has to
+# todo
+/*
+$query = "select id from users_main where email = ?";
+$good = $app->dbNew->single($query, [ Crypto::encrypt($user->email) ]);
+if (!$good) {
+    throw new Exception("user email doesn't exist");
+}
+*/
+
+
 # 3. Create a new url-encoded payload with at least nonce, email, and external_id. You can also provide some additional data, here’s a list of all keys that Discourse will understand:
+# todo
+
 # 4. Base64 encode payload
+# todo
+#$encoded = base64_encode($payload);
+
 # 5. Calculate a HMAC-SHA256 hash of the payload using discourse_connect_secret as the key and Base64 encoded payload as text
+# todo
+#$hmac = hash_hmac("sha256", $encoded, $connectSecret);
+
+
 # 6. Redirect back to the return_sso_url with an sso and sig query parameter (http://discourse_site/session/sso_login?sso=payload&sig=sig)
+# todo
+#Http::redirect("https://discourse_site/session/sso_login?sso={$payload}&sig={$sig}");

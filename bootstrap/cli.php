@@ -20,7 +20,8 @@ if (php_sapi_name() === "cli") {
 
     # start debug info
     if ($app->env->dev === true) {
-        Text::figlet($_SERVER["SCRIPT_FILENAME"], "green");
+        $server = Http::query("server");
+        Text::figlet($server["SCRIPT_FILENAME"], "green");
 
         # basic info
         echo "\n" . php_uname();

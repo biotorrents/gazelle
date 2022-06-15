@@ -28,8 +28,17 @@ class Http
             return false;
         }
 
+        $parsed = parse_url($uri);
         $uri = htmlentities($uri);
-        header("Location: /{$uri}");
+
+        if (!parsed["scheme"] || !parsed["host"]) {
+            # local
+            header("Location: /{$uri}");
+        } else {
+            # remote
+            header("Location: {$uri}");
+        }
+        
         exit;
     }
     
