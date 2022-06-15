@@ -102,3 +102,16 @@ Flight::route("/pwgen(/@method)", function ($method) {
         require_once "{$app->env->SERVER_ROOT}/sections/user/pwgen/hash.php";
     }
 });
+
+# discourse connect
+# https://meta.discourse.org/t/discourseconnect-official-single-sign-on-for-discourse-sso/13045
+# e.g., https://somesite.com/sso?sso=PAYLOAD&sig=SIG
+Flight::route("/discourse?sso=@payload&sig=@signature", function () {
+    $app = App::go();
+
+    if ($app->env->enableDiscourse === true) {
+        require_once "{$app->env->SERVER_ROOT}/sections/social/discourseConnect.php";
+    } else {
+        return false;
+    }
+});

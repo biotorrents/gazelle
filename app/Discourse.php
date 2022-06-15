@@ -11,7 +11,7 @@ declare(strict_types = 1);
  * @see https://docs.discourse.org
  */
 
-class Social
+class Discourse
 {
     # api info
     private $baseUri = null;
@@ -25,6 +25,9 @@ class Social
     # hash algo for cache keys
     private $algorithm = "sha3-512";
 
+    # discourse connect
+    private $connectSecret = null;
+
 
     /**
      * __construct
@@ -34,13 +37,14 @@ class Social
         $app = App::go();
 
         if (!$app->env->enableDiscourse) {
-            return false;
+            throw new Exception("you must set \$app.env.enableDiscourse = true in config/private.php");
         }
 
         try {
             $this->baseUri = $app->env->discourseUri;
             $this->token = $app->env->getPriv("discourseKey");
             $this->username = "system"; # todo
+            $this->connectSecret = $app->env->getPriv("connectSecret");
         } catch (Exception $e) {
             return $e->getMessage();
         }
@@ -57,8 +61,11 @@ class Social
     {
         $app = App::go();
 
+        # normalize
+        $method = strtolower($method);
+
         # return cached if available
-        $cacheKey = $this->cachePrefix . hash($thisalgorithm, json_encode(["path" => $path, $method = "method", "options" => $options]));
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode(["path" => $path, "method" => $method, "options" => $options]));
         if ($app->cacheOld->get_value($cacheKey)) {
             return $app->cacheOld->get_value($cacheKey);
         }
@@ -89,6 +96,7 @@ class Social
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
         $response = json_decode(curl_exec($ch), true);
         $info = curl_getinfo($ch);
         curl_close($ch);

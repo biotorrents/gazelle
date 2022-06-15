@@ -74,7 +74,7 @@ ENV::setPub(
     "SERVER_ROOT",
     (!$env->dev
         ? "/var/www/html/biotorrents.de/" # production
-        : "/var/www/html/dev.torrents.bio/") # development
+        : "/var/www/html/dev.torrents.bio") # development
 );
 
 # where torrent files are stored, e.g., /var/www/torrents-dev/
