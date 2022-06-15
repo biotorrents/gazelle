@@ -577,7 +577,7 @@ foreach ($TorrentList as $Torrent) {
 
     $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$user['AuthKey']."&amp;torrent_pass=".$user['torrent_pass'];
     if (!($TorrentFileName = $cache->get_value('torrent_file_name_'.$TorrentID))) {
-        $TorrentFile = file_get_contents(TORRENT_STORE.$TorrentID.'.torrent');
+        $TorrentFile = file_get_contents(TORRENT_STORE.'/'.$TorrentID.'.torrent');
         $Tor = new BencodeTorrent($TorrentFile, false, false);
         $TorrentFileName = $Tor->Dec['info']['name'];
         $cache->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);

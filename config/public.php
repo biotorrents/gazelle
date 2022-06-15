@@ -17,6 +17,9 @@ if (!$env->dev) {
 
 /**
  * site identity
+ * 
+ * NO TRAILING SLASHES ON ANY PATHS!
+ * e.g., /var/www = good, /var/www/ = bad
  */
 
 # site name
@@ -61,13 +64,14 @@ ENV::setPub(
 ENV::setPub("imageDomain", "pics.torrents.bio");
 
 # web root: currently used for twig
-ENV::setPub("webRoot", "/var/www/");
+ENV::setPub("webRoot", "/var/www");
 
-# app filesystem route (not web root), e.g., /var/www/html/dev.torrents.bio/
+# app filesystem route (not web root)
+# e.g., /var/www/html/dev.torrents.bio
 ( # old format
     !$env->dev
         ? define("SERVER_ROOT", "/var/www/html/biotorrents.de/") # production
-        : define("SERVER_ROOT", "/var/www/html/dev.torrents.bio/") # development
+        : define("SERVER_ROOT", "/var/www/html/dev.torrents.bio") # development
 );
 
 ENV::setPub(
@@ -81,14 +85,14 @@ ENV::setPub(
 ( # old format
     !$env->dev
         ? define("TORRENT_STORE", "/var/www/torrents/") # production
-        : define("TORRENT_STORE", "/var/www/torrents-dev/") # development
+        : define("TORRENT_STORE", "/var/www/torrents-dev") # development
 );
 
 ENV::setPub(
     "TORRENT_STORE",
     (!$env->dev
         ? "/var/www/torrents/" # production
-        : "/var/www/torrents-dev/") # development);
+        : "/var/www/torrents-dev") # development);
 );
 
 # allows you to run static content off another server
