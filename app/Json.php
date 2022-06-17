@@ -99,7 +99,7 @@ class Json
     /**
      * success
      */
-    public function success(array $payload)
+    public function success(array|object $payload)
     {
         if (headers_sent()) {
             return false;
@@ -159,6 +159,9 @@ class Json
      */
     private function debug()
     {
+        return [];
+
+        /*
         $app = App::go();
         $debug = Debug::go();
 
@@ -172,6 +175,7 @@ class Json
         } else {
             return [];
         }
+        */
     }
 
 

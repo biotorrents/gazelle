@@ -19,7 +19,7 @@ if (php_sapi_name() === "cli") {
     $startTime = microtime(true);
 
     # start debug info
-    if ($app->env->dev === true) {
+    if ($app->env->dev) {
         $server = Http::query("server");
         Text::figlet($server["SCRIPT_FILENAME"], "green");
 
@@ -63,8 +63,9 @@ if (php_sapi_name() === "cli") {
         }
         echo "\n\n"; # clear
     } # if dev
-    
+
+
     /**
      * script output goes here
      */
-}
+} # if cli

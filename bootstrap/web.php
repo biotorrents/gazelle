@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+
 /**
  * Main app bootstrapping
  *
@@ -14,23 +15,39 @@ declare(strict_types=1);
 # quick sanity checks
 Security::oops();
 
+# find the document we're loading
+$server = Http::query("server");
+$server["REQUEST_URI"] ??= "";
+
+if ($server["REQUEST_URI"] === "/") {
+    $document = "index";
+} else {
+    $regex = "/^\/(\w+)(?:\.php)?.*$/";
+    $document = preg_replace($regex, "$1", $server["REQUEST_URI"]);
+}
+
+# api check
+if ($document === "api") {
+    require_once "{$app->env->SERVER_ROOT}/routes/api.php";
+    exit;
+}
+
 # load the app
 $app = App::go();
 $app->debug["messages"]->info("app loaded");
 
-# legacy - GOING AWAY
+# legacy: GOING AWAY
 $G = G::go();
 $debug = Debug::go();
 $ENV = ENV::go();
 $db = new DB;
 $cache = new Cache($ENV->getPriv("MEMCACHED_SERVERS"));
 
-
-/** start idiocy */
-
-
 # start a buffer
 ob_start();
+
+
+/** */
 
 
 /**
@@ -48,6 +65,7 @@ $app->debug["time"]->startMeasure("users", "user handling");
   * Date:   Thu Oct 15 00:09:15 2020 +0000
   */
 
+/* HANDLE IN API ROUTER
 # set the document we are loading
 $_SERVER["REQUEST_URI"] ??= "";
 if ($_SERVER["REQUEST_URI"] === "/") {
@@ -56,13 +74,16 @@ if ($_SERVER["REQUEST_URI"] === "/") {
     $regex = "/^\/(\w+)(?:\.php)?.*$/";
     $document = preg_replace($regex, "$1", $_SERVER["REQUEST_URI"]);
 }
+*/
 
+# ?
 $user = [];
 # temporary 500 error fix
 $UserID = [];
 $SessionID = false;
 $FullToken = null;
 
+/* HANDLE IN API ROUTER
 // Only allow using the Authorization header for ajax endpoint
 if ($document === "api") {
     $userId = intval(
@@ -78,8 +99,8 @@ if ($document === "api") {
     $json = new Json();
     $json->checkToken($userId);
 }
+*/
 # end OPS API token additions
-
 
 /**
  * session handling and cookies
@@ -260,11 +281,13 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
         $app->cacheOld->cache_value("stylesheets", $Stylesheets, 0);
     }
 
+    /*
     // todo: Clean up this messy solution
     $user["StyleName"] = $Stylesheets[$user["StyleID"]]["Name"];
     if (empty($user["Username"])) {
         logout(); // Ghost
     }
+    */
 }
 
 # measure all that
@@ -275,6 +298,18 @@ $app->debug["time"]->stopMeasure("users", "user handling");
  * Determine the section to load.
  */
 
+/*
+# set the document we are loading
+$_SERVER["REQUEST_URI"] ??= "";
+if ($_SERVER["REQUEST_URI"] === "/") {
+    $document = "index";
+} else {
+    $regex = "/^\/(\w+)(?:\.php)?.*$/";
+    $document = preg_replace($regex, "$1", $_SERVER["REQUEST_URI"]);
+}
+*/
+
+/*
 $StripPostKeys = array_fill_keys(array("password", "cur_pass", "new_pass_1", "new_pass_2", "verifypassword", "confirm_password", "ChangePassword", "Password"), true);
 $app->cacheOld->cache_value("php_" . getmypid(), array(
   "start" => sqltime(),
@@ -282,11 +317,14 @@ $app->cacheOld->cache_value("php_" . getmypid(), array(
   "query" => $_SERVER["QUERY_STRING"] ?? "",
   "get" => $_GET,
   "post" => array_diff_key($_POST, $StripPostKeys)), 600);
+*/
 
 // Locked account constant
-define("STAFF_LOCKED", 1);
+#define("STAFF_LOCKED", 1);
 
-$AllowedPages = ["staffpm", "api", "locked", "logout", "login"];
+$AllowedPages = ["locked", "logout", "login"];
+#$AllowedPages = ["staffpm", "api", "locked", "logout", "login"];
+
 if (isset($app->user["LockedAccount"]) && !in_array($document, $AllowedPages)) {
     require_once "{$app->env->SERVER_ROOT}/sections/locked/index.php";
 } else {
