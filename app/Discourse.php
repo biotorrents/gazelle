@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 
 /**
- * Social
+ * Discourse
  *
  * Discourse API wrapper class to clean up most non-tracker app code.
  * News, blog, comments, wiki, forums, private messages, profiles, etc.
@@ -70,10 +70,6 @@ class Discourse
             return $app->cacheOld->get_value($cacheKey);
         }
         
-        if (!empty($options)) {
-            $payload = json_encode($options);
-        }
-
         # method
         $allowedMethods = ["get", "post", "put", "delete"];
         if (in_array($method, $allowedMethods)) {
@@ -81,6 +77,7 @@ class Discourse
         }
 
         # options
+        $payload ??= "";
         if (!empty($options)) {
             $payload = json_encode($options);
         }
@@ -403,7 +400,7 @@ class Discourse
      *
      * @see https://docs.discourse.org/#tag/Topics/operation/removeTopic
      */
-    public function removeTopic()
+    public function removeTopic(int $id)
     {
         $response = $this->curl("t/{$id}.json", "delete");
         return $response;
@@ -415,7 +412,7 @@ class Discourse
      *
      * @see https://docs.discourse.org/#tag/Topics/operation/updateTopic
      */
-    public function updateTopic(string $title, int $category_id)
+    public function updateTopic(int $id, string $title, int $category_id)
     {
         $options = ["title" => $title, "category_id" => $category_id];
         $response = $this->curl("t/{$id}.json", "put", $options);

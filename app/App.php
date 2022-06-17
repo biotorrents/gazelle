@@ -203,7 +203,10 @@ class App
             */
         ];
             
+        # return array
+        return $manifest;
+
         # return json
-        return json_encode($manifest, JSON_UNESCAPED_SLASHES);
+        #return json_encode($manifest, JSON_UNESCAPED_SLASHES);
     }
 } # class

@@ -15,7 +15,7 @@ if (headers_sent()) {
 }
 
 # https://github.com/OPSnet/Gazelle/blob/master/sections/api/index.php
-header("Content-Type: application/json; charset=utf-8");
+#header("Content-Type: application/json; charset=utf-8");
 
 $app = App::go();
 $json = new Json();
@@ -23,8 +23,9 @@ $json = new Json();
 $get = Http::query("get");
 $post = Http::query("post");
 
+/*
 # fail out
-$json->checkToken();
+$json->checkToken($app->user["ID"]);
 
 # rate limit exceptions
 $query = "select id from users_main where permissionId = 20"; # donors
@@ -34,7 +35,7 @@ $userExceptions = $app->dbNew->multi($query, []);
 array_push($userExceptions, 0, 1);
 
 # ajaxLimit = [x requests, y seconds]
-$ajaxLimit = [1, 6];
+$ajaxLimit = [1, 5];
 $userId = $user["ID"];
 
 # enforce rate limiting everywhere
@@ -50,6 +51,7 @@ if (!in_array($userId, $userExceptions)) {
         $app->cacheOld->increment_value("ajax_requests_{$userId}");
     }
 }
+*/
 
 # include routes
-require_once __DIR__."/../routes/api.php";
+require_once "{$app->env->serverRoot}/routes/api.php";

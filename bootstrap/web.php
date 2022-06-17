@@ -15,23 +15,6 @@ declare(strict_types=1);
 # quick sanity checks
 Security::oops();
 
-# find the document we're loading
-$server = Http::query("server");
-$server["REQUEST_URI"] ??= "";
-
-if ($server["REQUEST_URI"] === "/") {
-    $document = "index";
-} else {
-    $regex = "/^\/(\w+)(?:\.php)?.*$/";
-    $document = preg_replace($regex, "$1", $server["REQUEST_URI"]);
-}
-
-# api check
-if ($document === "api") {
-    require_once "{$app->env->SERVER_ROOT}/routes/api.php";
-    exit;
-}
-
 # load the app
 $app = App::go();
 $app->debug["messages"]->info("app loaded");

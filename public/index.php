@@ -26,7 +26,23 @@ if ($path["dirname"] !== "/") {
     die("d14:failure reason40:Invalid .torrent, try downloading again.e");
 }
 
-# load the app
+# find the document we're loading
+$server["REQUEST_URI"] ??= "";
+if ($server["REQUEST_URI"] === "/") {
+    $document = "index";
+} else {
+    $regex = "/^\/(\w+)(?:\.php)?.*$/";
+    $document = preg_replace($regex, "$1", $server["REQUEST_URI"]);
+}
+
+# load the core app
 require_once __DIR__."/../config/app.php";
 require_once __DIR__."/../bootstrap/utilities.php";
-require_once __DIR__."/../bootstrap/web.php";
+
+# web vs. api bootstrap
+# (cli is included directly)
+if ($document !== "api") {
+    require_once __DIR__."/../bootstrap/web.php";
+} else {
+    require_once __DIR__."/../bootstrap/api.php";
+}
