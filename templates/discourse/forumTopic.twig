@@ -7,7 +7,6 @@
     <tr>
         <th class="center">{# user #}</th>
         <th class="u-full-width">{# post #}</th>
-        <th class="center">{# actions #}</th>
     </tr>
 
     {% for post in topic.post_stream.posts %}
@@ -23,11 +22,15 @@
 
         <td>
             {{ post.cooked|raw }}
+
+            <aside class="right">
+                <a class="button" href="#" title="profile">Quote</a>
+                <a class="button" href="#" title="profile">Like</a>
+            </aside>
+
+
         </td>
 
-        <td>
-            todo
-        </td>
 
     </tr>
     {% endfor %}

@@ -175,7 +175,7 @@ class Auth # extends Delight\Auth\Auth
      *
      * @see https://github.com/delight-im/PHP-Auth#login-sign-in
      */
-    public function login(string $username, string $passphrase, int $twofa = 000000)
+    public function login(string $username, string $passphrase, int|string $twofa = 000000)
     {
         $app = App::go();
 

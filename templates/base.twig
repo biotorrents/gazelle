@@ -100,6 +100,7 @@
         {% endif %}
     </header>
 
+
     <main class="container">
         <div class="row">
 
@@ -110,14 +111,16 @@
             {% endif %}
 
 
-
-
             {# main content #}
+            {% if breadcrumbs is defined %}
             <h2 id="breadcrumbs">{{ include("_base/breadcrumbs.twig") }}</h2>
+            {% endif %}
+
             <section id="content" class="{{ layoutContent }}">
                 {% block content %}
                 {% endblock %}
             </section>
+
 
             {# sidebar #}
             <section id="sidebar" class="{{ layoutSidebar }}">
@@ -128,6 +131,7 @@
 
         </div>
     </main>
+
 
     {# footer #}
     <footer>

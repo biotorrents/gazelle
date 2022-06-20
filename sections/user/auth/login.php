@@ -125,14 +125,14 @@ try {
         Http::setCookie(["userId" => $userId]);
 
         $query = "insert into users_sessions (userId, sessionId, keepLogged, ip, lastUpdate) values (?, ?, ?, ?, ?)";
-        $app->dbNew->do($query, [$userId, $sessionId, 1, Crypto::encrypt($server["REMOTE_ADDR"]), "now()"]);
+        $app->dbNew->do($query, [$userId, $sessionId, 1, Crypto::encrypt($server["REMOTE_ADDR"]), sqltime()]);
 
         $query = "update users_main set lastLogin = now(), lastAccess = now() where id = ?";
         $app->dbNew->do($query, [$userId]);
 
         $app->cacheOld->begin_transaction("users_sessions_{$userId}");
         $app->cacheOld->insert_front($sessionId, [
-            "sessionId" => $SessionID,
+            "sessionId" => $sessionId,
             "ip" => Crypto::encrypt($server["REMOTE_ADDR"]),
             "lastUpdate" => sqltime()
         ]);

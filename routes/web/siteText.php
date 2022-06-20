@@ -36,7 +36,8 @@ Flight::route("/dmca", function () {
 
 # manifest
 Flight::route("/manifest", function () {
-    echo App::manifest();
+    header("Content-Type: application/json; charset=utf-8");
+    echo json_encode(App::manifest());
 });
 
 

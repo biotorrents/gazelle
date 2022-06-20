@@ -11,7 +11,7 @@
 </p>
 
 <p id="cookiesDisabled" class="hidden error">
-    You appear to have cookies disabled
+    You appear to have cookies disabled.
 </p>
 
 <noscript>
@@ -46,9 +46,7 @@
 
     <input type="hidden" name="u2f-response" />
 </form>
-
 {% endif %}
-
 
 {# regular login form #}
 <form name="login" id="login" method="post" autocomplete="off">
@@ -80,7 +78,7 @@
     <input type="submit" name="submit" id="submit" value="Log in" class="button-primary" />
 
     {# register #}
-    {% if env.openRegistration is defined %}
+    {% if env.openRegistration == true %}
     <a href="/register" class="button">Register</a>
     {% endif %}
 

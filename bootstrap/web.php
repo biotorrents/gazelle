@@ -185,6 +185,7 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
     // Change necessary triggers in external components
     $app->cacheOld->CanClear = check_perms("admin_clear_cache");
 
+    /*
     // Update LastUpdate every 10 minutes
     if (strtotime($UserSessions[$SessionID]["LastUpdate"]) + 600 < time()) {
         $app->dbOld->prepared_query("
@@ -219,6 +220,7 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
         $app->cacheOld->insert_front($SessionID, $UsersSessionCache);
         $app->cacheOld->commit_transaction(0);
     }
+    */
 
     // Notifications
     if (isset($user["Permissions"]["site_torrents_notify"])) {
