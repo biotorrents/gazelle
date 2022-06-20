@@ -2,6 +2,11 @@
 declare(strict_types = 1);
 
 
+/**
+ * Routes specific to the Discourse API.
+ * @see app/Discourse.php
+ */
+
 # $discourse->getSite()
 Flight::route("/api/social/site", function () {
     $json = new Json();
@@ -134,6 +139,22 @@ Flight::route("/api/social/posts/@id/replies", function () {
     /** TOPICS */
 
 
+# $discourse->listLatestTopics()
+Flight::route("/api/social/topics/latest", function () {
+    $json = new Json();
+    $discourse = new Discourse();
+    $json->success($discourse->listLatestTopics());
+});
+
+
+# $discourse->listTopTopics()
+Flight::route("/api/social/topics/top", function () {
+    $json = new Json();
+    $discourse = new Discourse();
+    $json->success($discourse->listTopTopics());
+});
+
+
 # $discourse->getTopic()
 Flight::route("/api/social/topics/@id", function () {
     $json = new Json();
@@ -170,22 +191,6 @@ Flight::route("/api/social/topics/@id", function ($id) {
     $json->success($discourse->bookmarkTopic($id));
 });
 */
-
-
-# $discourse->listLatestTopics()
-Flight::route("/api/social/topics/latest", function () {
-    $json = new Json();
-    $discourse = new Discourse();
-    $json->success($discourse->listLatestTopics());
-});
-
-
-# $discourse->listTopTopics()
-Flight::route("/api/social/topics/top", function () {
-    $json = new Json();
-    $discourse = new Discourse();
-    $json->success($discourse->listTopTpoics());
-});
 
 
     /** PRIVATE MESSAGES */
@@ -231,6 +236,20 @@ Flight::route("/api/social/tags/@name", function () {
 
 
     /** USERS */
+    /** START HERE */
+
+
+/*
+# $discourse->getTag()
+Flight::route("/api/social/tags/@name", function () {
+    $json = new Json();
+    $discourse = new Discourse();
+    $json->success($discourse->listTags($name));
+});
+*/
+
+
+    /** ADMIN */
     /** START HERE */
 
 
