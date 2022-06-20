@@ -1,0 +1,56 @@
+{% extends "base.twig" %}
+
+
+{% block content %}
+
+<table id="forumTopic" class="u-full-width">
+    <tr>
+        <th class="center">{# user #}</th>
+        <th class="u-full-width">{# post #}</th>
+        <th class="center">{# actions #}</th>
+    </tr>
+
+    {% for post in topic.post_stream.posts %}
+    <tr>
+        <td style="vertical-align: top;" class="topic-avatar">
+            {% if post.avatar_template is not empty %}
+            <img src="https://boards.torrents.bio/{{ post.avatar_template }}" alt="avatar" />
+            {% endif %}
+
+            <a href="/user/{{ post.username }}" title="profile">{{ post.username }}</a>
+        </td>
+
+
+        <td>
+            {{ post.cooked|raw }}
+        </td>
+
+        <td>
+            todo
+        </td>
+
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+<h2>Suggested</h2>
+
+<ul>
+
+    {% for topic in topic.suggested_topics %}
+    <li>
+        <a href="/topic/{{ category }}/{{ topic.slug }}">{{ topic.title }}</a>
+        <br />
+        {{ topic.last_posted_at|relativeTime }}
+    </li>
+    {% endfor %}
+
+</ul>
+
+{% endblock %}

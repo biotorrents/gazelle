@@ -9,7 +9,6 @@ $discourse = new Discourse();
 $categories = $discourse->listCategories();
 $categories = array_column($categories, "categories");
 $categories = array_shift($categories);
-#!d($categories);
 
 # unset functional
 $showThese = ["Staff", "Uncategorized", "Marketplace"];
@@ -23,13 +22,17 @@ foreach ($categories as $key => $category) {
 $latestTopics = $discourse->listLatestTopics();
 $latestTopics = array_column($latestTopics, "topics");
 $latestTopics = array_shift($latestTopics);
-#!d($latestTopics);
+
+foreach ($latestTopics as $key => $value) {
+    $latestTopics[$key]["categorySlug"] = $app->env->discourseCategories->{$value["category_id"]};
+}
 
 
 $app->twig->display(
     "discourse/forumIndex.twig",
     [
-        "title" => "Forums",
+        "sidebar" => true,
+        "title" => "Boards",
         "categories" => $categories,
         "latestTopics" => $latestTopics,
     ]

@@ -3,8 +3,6 @@
 
 {% block content %}
 
-<h2>Forums</h2>
-
 <table>
     <tr>
         <th>Category</th>
@@ -15,7 +13,7 @@
     {% for category in categories %}
     <tr>
         <td>
-            <a href="/category/{{ category.slug }}">{{ category.name }}</a>
+            <a href="/boards/{{ category.slug }}">{{ category.name }}</a>
             <br />
             {{ category.description_text }}
         </td>
@@ -38,7 +36,7 @@
 
     {% for topic in latestTopics %}
     <li>
-        <a href="/topic/{{ topic.slug }}">{{ topic.title }}</a>
+        <a href="/boards/{{ topic.categorySlug }}/{{ topic.slug }}">{{ topic.title }}</a>
         <br />
         {{ topic.last_posted_at|relativeTime }}
     </li>

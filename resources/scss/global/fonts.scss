@@ -15,6 +15,23 @@ ul {
   }
 }
 
+
+/**
+ * breadcrumbs
+ */
+
+h2#breadcrumbs {
+  li {
+    display: inline;
+    list-style: none;
+    margin: 0;
+  }
+}
+
+h2#pageTitle {
+  padding-top: 5rem;
+}
+
 /**
  * Spacing classes
  */
@@ -31,7 +48,7 @@ ul {
 }
 
 .right {
-  float: right;
+  /* float: right; */
   text-align: right;
 }
 
@@ -116,7 +133,10 @@ pre {
  */
 
 /* No IE6/7 */
-html>/**/body ol {
+html>
+
+/**/
+body ol {
   list-style-type: none;
   counter-reset: level1;
 }

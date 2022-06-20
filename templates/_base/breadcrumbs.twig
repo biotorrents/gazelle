@@ -1,0 +1,12 @@
+{# breadcrumbs #}
+{% set breadcrumbs = breadcrumbs() %}
+{% for item in breadcrumbs %}
+
+{% if loop.last %}
+<li><a href="{{ item.path }}">{{ item.name }}</a></li>
+
+{% else %}
+<li><a href="{{ item.path }}">{{ item.name }}</a> {{ env.crumb }}</li>
+
+{% endif %}
+{% endfor %}

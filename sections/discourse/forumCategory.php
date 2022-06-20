@@ -4,14 +4,13 @@ declare(strict_types=1);
 $app = App::go();
 $discourse = new Discourse();
 
-
 # category
-$category = $discourse->getCategory($slug);
+$category = $discourse->getCategory($categorySlug);
 $category = array_shift($category);
-#!d($category);
+#!d($category);exit;
 
 # topics
-$topics = $discourse->listCategoryTopics($slug);
+$topics = $discourse->listCategoryTopics($categorySlug);
 $topics = array_column($topics, "topics");
 $topics = array_shift($topics);
 #!d($topics);exit;

@@ -43,7 +43,7 @@ Flight::route("/manifest", function () {
 # privacy
 Flight::route("/privacy", function () {
     $app = App::go();
-    $content = Text::parse(file_get_contents("{$app->env->SERVER_ROOT}/templates/siterText/legal/privacy.md"));
+    $content = Text::parse(file_get_contents("{$app->env->SERVER_ROOT}/templates/siteText/legal/privacy.md"));
     $app->twig->display("siteText/tldr.twig", ["title" => "Privacy", "content" => $content]);
 });
 

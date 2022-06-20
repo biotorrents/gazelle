@@ -591,4 +591,50 @@ class Format
 
         return $return;
     }
+
+
+    /**
+     * breadcrumbs
+     *
+     * @see https://stackoverflow.com/a/38581989
+     */
+    public static function breadcrumbs()
+    {
+        $app = App::go();
+        $server = Http::query("server");
+
+        $path = explode("/", $server["REQUEST_URI"]);
+        $path = array_values(array_filter($path));
+
+        $length = count($path);
+        $crumbs = [];
+
+        for ($i = 0; $i < $length; $i++) {
+            $crumbs[$i]["name"] = $path[$i];
+            $crumbs[$i]["path"] = array_slice($path, 0, $i);
+        }
+
+        foreach ($crumbs as $i => $crumb) {
+            # first implode empty bug
+            if (empty($crumb["path"])) {
+                $crumbs[$i]["path"] = "/{$crumb["name"]}";
+            }
+            
+            # normal path parse
+            else {
+                $crumbs[$i]["path"] = "/" . implode("/", $crumb["path"]);
+                $crumbs[$i]["path"] .= "/{$crumb["name"]}";
+            }
+
+            # link text format
+            $crumbs[$i]["name"] = preg_replace("/\W/", " ", $crumb["name"]);
+            $crumbs[$i]["name"] = ucfirst($crumbs[$i]["name"]);
+        }
+
+        #$crumbs = array_map("array_filter", $crumbs);
+        #$crumbs = array_filter($crumbs);
+        #!d($crumbs);exit;
+
+        return $crumbs;
+    }
 }

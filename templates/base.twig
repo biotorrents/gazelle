@@ -26,7 +26,6 @@
 {% set layoutSidebar = "" %}
 {% endif %}
 
-
 <!DOCTYPE html>
 <html>
 
@@ -110,7 +109,11 @@
             <figure id="logo"></figure>
             {% endif %}
 
+
+
+
             {# main content #}
+            <h2 id="breadcrumbs">{{ include("_base/breadcrumbs.twig") }}</h2>
             <section id="content" class="{{ layoutContent }}">
                 {% block content %}
                 {% endblock %}

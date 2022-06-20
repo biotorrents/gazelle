@@ -200,11 +200,8 @@ class Discourse
     {
         $app = App::go();
 
-        if (!in_array($slug, array_keys($app->env->discourseCategories))) {
-            throw new Exception("supplied slug {$slug} is invalid");
-        }
-
-        $id = $app->env->discourseCategories[$slug];
+        $discourseCategories = (array) $app->env->discourseCategories;
+        $id = array_search($slug, $discourseCategories);
         $response = $this->curl("c/{$slug}/{$id}.json");
 
         return $response;
@@ -220,11 +217,8 @@ class Discourse
     {
         $app = App::go();
 
-        if (!in_array($slug, array_keys($app->env->discourseCategories))) {
-            throw new Exception("supplied slug {$slug} is invalid");
-        }
-
-        $id = $app->env->discourseCategories[$slug];
+        $discourseCategories = (array) $app->env->discourseCategories;
+        $id = array_search($slug, $discourseCategories);
         $response = $this->curl("c/{$id}/show.json");
 
         return $response;

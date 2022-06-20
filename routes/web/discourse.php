@@ -13,13 +13,19 @@ declare(strict_types = 1);
 # forum index
 Flight::route("/boards", function () {
     $app = App::go();
-    require_once "{$app->env->serverRoot}/sections/discourse/forums.php";
+    require_once "{$app->env->serverRoot}/sections/discourse/forumIndex.php";
 });
 
 # category
-Flight::route("/category/@slug", function ($slug) {
+Flight::route("/boards/@categorySlug", function (string $categorySlug) {
     $app = App::go();
-    require_once "{$app->env->serverRoot}/sections/discourse/category.php";
+    require_once "{$app->env->serverRoot}/sections/discourse/forumCategory.php";
+});
+
+# topic
+Flight::route("/boards/@categorySlug/@topicSlug", function (string $categorySlug, string $topicSlug) {
+    $app = App::go();
+    require_once "{$app->env->serverRoot}/sections/discourse/forumTopic.php";
 });
 
 

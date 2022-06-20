@@ -3,29 +3,56 @@
 
 {% block content %}
 
-<h2>{{ title }}</h2>
-
-<table>
+<table class="u-full-width">
     <tr>
-        <th>Topic</th>
-        <th>Replies</th>
-        <th>Views</th>
-        <th>Activity</th>
+        <th class="center"></th>
+        <th class="u-full-width">Topic</th>
+        <th class="center">Replies</th>
+        <th class="center">Views</th>
+        <th class="right">Activity</th>
     </tr>
 
     {% for topic in topics %}
     <tr>
+        <td class="nobr">
+            {% if topic.unseen == true %}
+            <span title="unseen">⭐</span>
+            {% endif %}
+
+            {% if topic.pinned == true %}
+            <span title="pinned">📌</span>
+            {% endif %}
+
+            {% if topic.closed == true %}
+            <span title="closed">🔒</span>
+            {% endif %}
+
+            {% if topic.archived == true %}
+            <span title="archived">🗃️</span>
+            {% endif %}
+        </td>
+
         <td>
-            <a href="/topic/{{ topic.slug }}">{{ topic.title }}</a>
+            <a href="/boards/{{ category.slug}}/{{ topic.slug }}">{{ topic.title }}</a>
+
+            {% if topic.tags is not empty %}
+            <br />
+
+            {% for tag in topic.tags %}
+            <a href="/tag/{{ tag }}">{{ tag }}</a>
+
+            {% endfor %}
+            {% endif %}
+
         </td>
 
         <td>{{ topic.reply_count }}</td>
         <td>{{ topic.views }}</td>
 
         {% if topic.last_posted_at is not null %}
-        <td>{{ topic.last_posted_at|relativeTime }}</td>
+        <td class="nobr">{{ topic.last_posted_at|relativeTime }}</td>
         {% else %}
-        <td>{{ topic.created_at|relativeTime }}</td>
+        <td class="nobr">{{ topic.created_at|relativeTime }}</td>
         {% endif %}
 
     </tr>

@@ -129,14 +129,21 @@ class Twig # extends Twig\Environment
             }
         ));
 
-                # Format::relativeTime
-                $twig->addFilter(new Twig\TwigFilter(
-                    "relativeTime",
-                    function ($time) {
-                        return Format::relativeTime($time);
-                    }
-                ));
-        
+        # Format::relativeTime
+        $twig->addFilter(new Twig\TwigFilter(
+            "relativeTime",
+            function ($time) {
+                return Format::relativeTime($time);
+            }
+        ));
+
+        # Format::get_ratio_html
+        $twig->addFunction(new Twig\TwigFunction(
+            "breadcrumbs",
+            function () {
+                return Format::breadcrumbs();
+            }
+        ));
 
         # Format::get_size
         $twig->addFilter(new Twig\TwigFilter(
