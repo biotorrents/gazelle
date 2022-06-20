@@ -717,7 +717,7 @@ if ($RatioWatchEnds && (time() < strtotime($RatioWatchEnds)) && ($Downloaded * $
     <div class="box">
       <div class="head">
         <?=!empty($InfoTitle) ? $InfoTitle : 'Profile';?>
-        <span class="float_right"><a data-toggle-target="#profilediv" data-toggle-replace="Show"
+        <span class="u-pull-right"><a data-toggle-target="#profilediv" data-toggle-replace="Show"
             class="brackets">Hide</a></span>&nbsp;
       </div>
       <div class="pad profileinfo" id="profilediv">
@@ -778,7 +778,7 @@ if (check_paranoia_here('snatched')) {
     <div class="box" id="recent_snatches">
       <div class="head">
         Recent Snatches
-        <span class="float_right"><a
+        <span class="u-pull-right"><a
             onclick="$('#recent_snatches_images').gtoggle(); this.innerHTML = (this.innerHTML == 'Hide' ? 'Show' : 'Hide'); wall('#recent_snatches_images', '.collage_image', [2,3]); return false;"
             class="brackets">Show</a></span>&nbsp;
       </div>
@@ -844,7 +844,7 @@ if (check_paranoia_here('uploads')) {
     <div class="box" id="recent_uploads">
       <div class="head">
         Recent Uploads
-        <span class="float_right"><a
+        <span class="u-pull-right"><a
             onclick="$('#recent_uploads_images').gtoggle(); this.innerHTML = (this.innerHTML == 'Hide' ? 'Show' : 'Hide'); wall('#recent_uploads_images', '.collage_image', [2,3]); return false;"
             class="brackets">Show</a></span>&nbsp;
       </div>
@@ -905,7 +905,7 @@ foreach ($Collages as $CollageInfo) {
         <?=Text::esc($CName)?> - <a
           href="collages.php?id=<?=$CollageID?>" class="brackets">See
           full</a>
-        <span class="float_right">
+        <span class="u-pull-right">
           <a data-toggle-target="#collage<?=$CollageID?>_box .collage_images"
             data-toggle-replace="Show" class="brackets">Hide</a>
         </span>
@@ -951,7 +951,7 @@ if ((check_perms('users_view_invites')) && $Invited > 0) {
     $Tree = new INVITE_TREE($UserID, array('visible' => false)); ?>
     <div class="box" id="invitetree_box">
       <div class="head">
-        Invite Tree <span class="float_right"><a data-toggle-target="#invitetree" class="brackets">Toggle</a></span>
+        Invite Tree <span class="u-pull-right"><a data-toggle-target="#invitetree" class="brackets">Toggle</a></span>
       </div>
       <div id="invitetree" class="hidden">
         <?php $Tree->make_tree(); ?>
@@ -977,7 +977,7 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
         $SphRequests = $SphQLResult->to_array('id', MYSQLI_ASSOC); ?>
   <div class="box" id="requests_box">
     <div class="head">
-      Requests <span class="float_right"><a data-toggle-target="#requests" class="brackets">Show</a></span>
+      Requests <span class="u-pull-right"><a data-toggle-target="#requests" class="brackets">Show</a></span>
     </div>
     <div id="requests" class="hidden">
       <table cellpadding="6" cellspacing="1" border="0" width="100%">
@@ -1077,7 +1077,7 @@ if (check_perms('users_mod', $Class) || $IsFLS) {
         $StaffPMs = $db->to_array(); ?>
   <div class="box" id="staffpms_box">
     <div class="head">
-      Staff PMs <a data-toggle-target="#staffpms" class="brackets float_right">Toggle</a>
+      Staff PMs <a data-toggle-target="#staffpms" class="brackets u-pull-right">Toggle</a>
     </div>
     <table width="100%" class="message_table hidden" id="staffpms">
       <tr class="colhead">
@@ -1155,7 +1155,7 @@ if (check_perms('users_mod', $Class)) { ?>
       <div class="head">
         Staff Notes
         <a href="#" name="admincommentbutton" onclick="ChangeTo('text'); return false;" class="brackets">Edit</a>
-        <span class="float_right">
+        <span class="u-pull-right">
           <a data-toggle-target="#staffnotes" class="brackets">Toggle</a>
         </span>
       </div>

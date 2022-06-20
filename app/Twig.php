@@ -129,6 +129,15 @@ class Twig # extends Twig\Environment
             }
         ));
 
+                # Format::relativeTime
+                $twig->addFilter(new Twig\TwigFilter(
+                    "relativeTime",
+                    function ($time) {
+                        return Format::relativeTime($time);
+                    }
+                ));
+        
+
         # Format::get_size
         $twig->addFilter(new Twig\TwigFilter(
             "get_size",

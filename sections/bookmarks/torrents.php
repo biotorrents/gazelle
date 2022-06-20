@@ -98,7 +98,7 @@ foreach ($GroupIDs as $GroupID) {
 
   <td colspan="5">
     <?=$DisplayName?>
-    <span style="text-align: right;" class="float_right">
+    <span style="text-align: right;" class="u-pull-right">
       <?=time_diff($AddedTime); ?>
       <?php if (!$Sneaky) { ?>
       <br />
@@ -200,9 +200,9 @@ foreach ($GroupIDs as $GroupID) {
       | <a href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>"
         class="tooltip" title="Report">RP</a> ]
     </span>
-    <span class="float_right float_clear"><?=time_diff($AddedTime); ?></span>
+    <span class="u-pull-right u-cf"><?=time_diff($AddedTime); ?></span>
     <?php if (!$Sneaky) { ?>
-    <span class="float_right float_clear"><a
+    <span class="u-pull-right u-cf"><a
         href="#group_<?=$GroupID?>" class="brackets remove_bookmark"
         onclick="Unbookmark('torrent', <?=$GroupID?>, ''); return false;">Remove
         bookmark</a></span>

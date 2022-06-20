@@ -281,16 +281,16 @@ foreach ($TorrentList as $Group) {
           </strong>
 
           <?php if (Bookmarks::has_bookmarked('torrent', $GroupID)) { ?>
-          <span class="remove_bookmark float_right">
-            <a class="float_right" href="#"
+          <span class="remove_bookmark u-pull-right">
+            <a class="u-pull-right" href="#"
               id="bookmarklink_torrent_<?=$GroupID?>"
               class="brackets"
               onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove
               bookmark</a>
           </span>
           <?php } else { ?>
-          <span class="add_bookmark float_right">
-            <a class="float_right" href="#"
+          <span class="add_bookmark u-pull-right">
+            <a class="u-pull-right" href="#"
               id="bookmarklink_torrent_<?=$GroupID?>"
               class="brackets"
               onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
@@ -436,7 +436,7 @@ foreach ($TorrentList as $Group) {
       </td>
       <td class="big_info">
         <div class="group_info clear">
-          <div class="float_right">
+          <div class="u-pull-right">
             <span>
               [ <a href="<?=$TorrentDL?>" class="tooltip"
                 title="Download">DL</a>
@@ -453,14 +453,14 @@ foreach ($TorrentList as $Group) {
             </span>
             <br />
             <?php if (Bookmarks::has_bookmarked('torrent', $GroupID)) { ?>
-            <span class="remove_bookmark float_right">
+            <span class="remove_bookmark u-pull-right">
               <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
                 class="brackets"
                 onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove
                 bookmark</a>
             </span>
             <?php } else { ?>
-            <span class="add_bookmark float_right">
+            <span class="add_bookmark u-pull-right">
               <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
                 class="brackets"
                 onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
@@ -635,10 +635,10 @@ if (check_perms('zip_downloader')) {
             <li id="list<?=$ListItem?>">
               <input type="hidden" name="list[]"
                 value="<?=$ListItem?>" />
-              <span class="float_left"><?=$ZIPOptions[$ListItem]['2']?></span>
+              <span class="u-pull-left"><?=$ZIPOptions[$ListItem]['2']?></span>
               <span class="remove remove_collector"><a href="#"
                   onclick="remove_selection('<?=$ListItem?>'); return false;"
-                  class="float_right brackets tooltip" title="Remove format from the Collector">X</a></span>
+                  class="u-pull-right brackets tooltip" title="Remove format from the Collector">X</a></span>
               <br style="clear: all;" />
             </li>
             <?php } ?>

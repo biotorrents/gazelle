@@ -367,7 +367,7 @@ while (list($ID, $Title, $ForumID, $ForumName, $LastTime, $PostID, $Body, $Threa
   }
     if ($Type == 'body') { ?>
         <a data-toggle-target="#post_<?=$PostID?>_text">(Show)</a>
-        <span class="float_right tooltip last_read" title="Jump to post"><a href="forums.php?action=viewthread&amp;threadid=<?=$ID?><?php if (!empty($PostID)) {
+        <span class="u-pull-right tooltip last_read" title="Jump to post"><a href="forums.php?action=viewthread&amp;threadid=<?=$ID?><?php if (!empty($PostID)) {
         echo "&amp;postid=$PostID#post$PostID";
     } ?>"></a></span>
         <?php } ?>

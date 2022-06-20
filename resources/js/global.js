@@ -328,7 +328,7 @@ function add_selection() {
       "</span>" +
       '            <a href="#" onclick="remove_selection(\'' +
       selected.value +
-      '\'); return false;" class="float_right" class="brackets">X</a>' +
+      '\'); return false;" class="u-pull-right" class="brackets">X</a>' +
       '            <br style="clear: all;" />';
     $("#list").raw().appendChild(listitem);
     $("#opt" + selected.value).raw().disabled = true;

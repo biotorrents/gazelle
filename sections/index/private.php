@@ -544,7 +544,7 @@ foreach ($News as $NewsItem) {
         class="brackets">Edit</a>
       <?php } ?>
 
-      <span class="float_right">
+      <span class="u-pull-right">
         <a data-toggle-target="#newsbody<?=$NewsID?>"
           data-toggle-replace="Show" class="brackets">Hide</a>
       </span>

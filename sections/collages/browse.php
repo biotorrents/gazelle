@@ -370,7 +370,7 @@ foreach ($Collages as $Collage) {
       <a class="torrent_title" id="collage_name"
         href="collages.php?id=<?=$ID?>"><?=$Name?></a>
       <?php if ($BookmarkView) { ?>
-      <span class="float_right">
+      <span class="u-pull-right">
         <a href="#"
           onclick="Unbookmark('collage', <?=$ID?>, ''); return false;"
           class="brackets">Remove bookmark</a>

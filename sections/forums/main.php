@@ -70,7 +70,7 @@ foreach ($Forums as $Forum) {
       <td class="number_column">0</td>
       <?php } else { ?>
       <td>
-        <span class="float_left last_topic">
+        <span class="u-pull-left last_topic">
           <a href="forums.php?action=viewthread&amp;threadid=<?=$LastTopicID?>"
             class="tooltip"
             data-title-plain="<?=Text::esc($LastTopic)?>"><?=Text::esc(Format::cut_string($LastTopic, 50, 1))?></a>
@@ -83,7 +83,7 @@ foreach ($Forums as $Forum) {
         </a>
         <?php } ?>
 
-        <span class="float_right last_poster">
+        <span class="u-pull-right last_poster">
           by <?=Users::format_username($LastAuthorID, false, false, false)?>
           <?=time_diff($LastTime, 1)?>
         </span>

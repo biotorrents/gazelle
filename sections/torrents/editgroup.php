@@ -156,7 +156,7 @@ View::textarea(
         <td id="screenshots">
           <?php
   if ($Contributed || check_perms('screenshots_add') || check_perms('torrents_edit')) { ?>
-          <a class="float_right brackets" onclick="AddScreenshotField()">+</a>
+          <a class="u-pull-right brackets" onclick="AddScreenshotField()">+</a>
           <?php } ?>
         </td>
       </tr>

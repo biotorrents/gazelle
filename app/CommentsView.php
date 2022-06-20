@@ -46,7 +46,7 @@ class CommentsView
   </colgroup>
   <tr class="colhead_dark">
     <td colspan="<?=(Users::has_avatars_enabled() ? 2 : 1)?>">
-      <div class="float_left"><a class="post_id"
+      <div class="u-pull-left"><a class="post_id"
           href="<?=$Link?>">#<?=$PostID?></a>
         <?=$Header?>
         <?php if ($Tools) { ?>
@@ -64,7 +64,7 @@ class CommentsView
           class="brackets">Delete</a>
         <?php } ?>
       </div>
-      <div id="bar<?=$PostID?>" class="float_right">
+      <div id="bar<?=$PostID?>" class="u-pull-right">
         <a href="reports.php?action=report&amp;type=comment&amp;id=<?=$PostID?>"
           class="brackets">Report</a>
         <?php

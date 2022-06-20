@@ -1,15 +1,11 @@
 /**
- * Main column and sidebar
+ * main column and sidebar
  * NOW DONE BY SKELETON.CSS
  */
 
-/* Main column and sidebar */
-.main_column {
-  float: left;
-}
-
-.sidebar {
-  float: right;
+#content,
+#sidebar {
+  padding: 1rem;
 }
 
 /* Box: soon to be <section> */
@@ -26,11 +22,11 @@
 }
 
 /* Grow and shrink */
-.flex > .grow {
+.flex>.grow {
   flex-grow: 1;
 }
 
-.flex > .shrink {
+.flex>.shrink {
   flex-shrink: 1;
 }
 
@@ -39,7 +35,7 @@
   display: flex;
 }
 
-.flex_input_container > input[type="text"] {
+.flex_input_container>input[type="text"] {
   flex-grow: 1;
   box-sizing: border-box;
   width: 50%;
@@ -126,19 +122,6 @@ footer {
 
 .textarea_wrap:last-of-type {
   margin-bottom: 0;
-}
-
-/* Floaters */
-.float_left {
-  float: left;
-}
-
-.float_right {
-  float: right;
-}
-
-.float_clear {
-  clear: both;
 }
 
 /* Images */
@@ -228,8 +211,7 @@ img {
 
   &:before {
     --tw-bg-opacity: 1;
-    -webkit-animation: pulse-ring 3s cubic-bezier(0.215, 0.61, 0.355, 1)
-      infinite;
+    -webkit-animation: pulse-ring 3s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
     animation: pulse-ring 3s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
     background-color: #9ae6b4;
     background-color: rgba(16, 185, 129, var(--tw-bg-opacity));
@@ -246,8 +228,7 @@ img {
 
   &:after {
     --tw-bg-opacity: 1;
-    -webkit-animation: pulse-dot 3s cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s
-      infinite;
+    -webkit-animation: pulse-dot 3s cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s infinite;
     animation: pulse-dot 3s cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s infinite;
     background-color: #fff;
     background-color: rgba(16, 185, 129, var(--tw-bg-opacity));

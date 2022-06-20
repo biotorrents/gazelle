@@ -51,14 +51,14 @@ View::header('Store');
   </div>
 
   <div class="box">
-    <h3 id="lists" class="float_left">
+    <h3 id="lists" class="u-pull-left">
       You have
       <?=Text::float($user['BonusPoints'])?>
       <?=BONUS_POINTS?>
       to spend
     </h3>
 
-    <h3 id="lists" class="float_right">You're making <?=$PointsPerHour?> (<?=$PointsPerDay?>)</h3>
+    <h3 id="lists" class="u-pull-right">You're making <?=$PointsPerHour?> (<?=$PointsPerDay?>)</h3>
     <table width="100%" class="store_table">
       <tr class="colhead">
         <td style="width: 100px;">Item</td>

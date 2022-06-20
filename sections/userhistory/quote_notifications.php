@@ -130,12 +130,12 @@ foreach ($Results as $Result) {
   <table class="forum_post box vertical_margin noavatar">
     <tr class="colhead_dark notify_<?=$Result['Page']?>">
       <td colspan="2">
-        <span class="float_left">
+        <span class="u-pull-left">
           <?=$Links?>
           <?=($Result['UnRead'] ? ' <span class="new">(New!)</span>' : '')?>
         </span>
       <td colspan="1">
-        <span class="float_right">
+        <span class="u-pull-right">
           Quoted by <?=Users::format_username($Result['QuoterID'], false, false, false, false) . ' ' . time_diff($Result['Date']) ?>
         </span>
       </td>

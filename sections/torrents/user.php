@@ -466,7 +466,7 @@ foreach ($Categories as $CatKey => $CatName) {
 
       <!-- Submit -->
       <div class="submit">
-        <span class="float_left">
+        <span class="u-pull-left">
           <?= Text::float($TorrentCount) ?>
           Results
         </span>

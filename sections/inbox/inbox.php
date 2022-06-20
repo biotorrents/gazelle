@@ -99,7 +99,7 @@ echo $Pages;
       /> Subject
       <input type="radio" name="searchtype" value="message" <?=(!empty($_GET['searchtype']) && $_GET['searchtype'] === 'message' ? ' checked="checked"' : '')?>
       /> Message
-      <span class="float_right">
+      <span class="u-pull-right">
         <?php // provide a temporary toggle for sorting PMs
     $ToggleTitle = 'Temporary toggle switch for sorting PMs. To permanently change the sorting behavior, edit the setting in your profile.';
     $BaseURL = 'inbox.php';

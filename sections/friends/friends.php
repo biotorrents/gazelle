@@ -74,7 +74,7 @@ foreach ($Friends as $Friend) {
       <table class="friends_table vertical_margin">
         <tr class="colhead">
           <td colspan="<?=(Users::has_avatars_enabled() ? 3 : 2)?>">
-            <span class="float_left"><?=Users::format_username($FriendID, true, true, true, true)?>
+            <span class="u-pull-left"><?=Users::format_username($FriendID, true, true, true, true)?>
               <?php if (check_paranoia('ratio', $Paranoia, $Class, $FriendID)) { ?>
               &nbsp;Ratio: <strong><?=Format::get_ratio_html($Uploaded, $Downloaded)?></strong>
               <?php
@@ -93,7 +93,7 @@ foreach ($Friends as $Friend) {
     } ?>
             </span>
             <?php if (check_paranoia('lastseen', $Paranoia, $Class, $FriendID)) { ?>
-            <span class="float_right"><?=time_diff($LastAccess)?></span>
+            <span class="u-pull-right"><?=time_diff($LastAccess)?></span>
             <?php } ?>
           </td>
         </tr>

@@ -128,7 +128,7 @@ if (!isset($InputTitle)) {
 
         <tr class="colhead_dark">
           <td colspan="<?=(Users::has_avatars_enabled() ? 2 : 1)?>">
-            <div class="float_left">
+            <div class="u-pull-left">
               <a href="#quickreplypreview">#xyz</a>
               by <strong>
                 <?=Users::format_username(G::$user['ID'], true, true, true, true)?>
@@ -136,7 +136,7 @@ if (!isset($InputTitle)) {
               Just now
             </div>
 
-            <div class="float_right">
+            <div class="u-pull-right">
               <a href="#quickreplypreview" class="brackets">Report</a>
               &nbsp;
               <a href="#">&uarr;</a>

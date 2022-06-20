@@ -252,10 +252,10 @@ if (!$NumResults) {
   <table style="margin-top: 8px;" class="subscribed_collages_table">
     <tr class="colhead_dark">
       <td>
-        <span class="float_left">
+        <span class="u-pull-left">
           <strong><a href="collage.php?id=<?=$CollageID?>"><?=$CollageName?></a></strong> (<?=$NewTorrentCount?> new torrent<?=($NewTorrentCount == 1 ? '' : 's')?>)
         </span>&nbsp;
-        <span class="float_right">
+        <span class="u-pull-right">
           <a data-toggle-target="#discog_table_<?=$CollageID?>"
             data-toggle-replace="<?=($ShowAll ? 'Hide' : 'Show')?>"
             class="brackets"><?=($ShowAll ? 'Show' : 'Hide')?></a>&nbsp;&nbsp;&nbsp;<a

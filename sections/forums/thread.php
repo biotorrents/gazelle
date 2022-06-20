@@ -511,7 +511,7 @@ foreach ($Thread as $Key => $Post) {
   </colgroup>
   <tr class="colhead_dark">
     <td colspan="<?=Users::has_avatars_enabled() ? 2 : 1?>">
-      <div class="float_left"><a class="post_id"
+      <div class="u-pull-left"><a class="post_id"
           href="forums.php?action=viewthread&amp;threadid=<?=$ThreadID?>&amp;postid=<?=$PostID?>#post<?=$PostID?>">#<?=$PostID?></a>
         <?=Users::format_username($AuthorID, true, true, true, true, true);
     echo "\n"; ?>
@@ -550,7 +550,7 @@ foreach ($Thread as $Key => $Post) {
       }
   } ?>
       </div>
-      <div id="bar<?=$PostID?>" class="float_right">
+      <div id="bar<?=$PostID?>" class="u-pull-right">
         <a href="reports.php?action=report&amp;type=post&amp;id=<?=$PostID?>"
           class="brackets">Report</a>
         <?php
@@ -763,7 +763,7 @@ if (check_perms('site_moderate_forums')) {
     <tr>
       <td colspan="2" class="center">
         <input type="submit" value="Edit" tabindex="2" />
-        <span class="float_right">
+        <span class="u-pull-right">
           <input type="submit" name="trash" value="Trash" tabindex="2" />
         </span>
       </td>

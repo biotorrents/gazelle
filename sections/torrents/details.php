@@ -241,7 +241,7 @@ $Index++;
     if (check_perms('site_edit_wiki') && $WikiImage !== '') { ?>
       <div id="add_cover_div">
         <div style="padding: 10px;">
-          <span class="additional_add_artists float_right">
+          <span class="additional_add_artists u-pull-right">
             <a onclick="addCoverField(); return false;" href="#" class="brackets">Add alternate cover</a>
           </span>
         </div>
@@ -263,14 +263,14 @@ $Index++;
 
     <div class="box box_artists">
       <div class="head"><strong>Author(s)</strong>
-        <?=check_perms('torrents_edit') ? '<span class="edit_artists"><a onclick="ArtistManager(); return false;" href="#" class="brackets float_right">Edit</a></span>' : ''?>
+        <?=check_perms('torrents_edit') ? '<span class="edit_artists"><a onclick="ArtistManager(); return false;" href="#" class="brackets u-pull-right">Edit</a></span>' : ''?>
       </div>
 
       <ul class="stats nobullet" id="artist_list">
         <?php foreach ($Artists as $Num => $Artist) { ?>
         <li class="artist"><?=Artists::display_artist($Artist)?>
           <?php if (check_perms('torrents_edit')) { ?>
-          <span class="remove remove_artist float_right"><a href="javascript:void(0);"
+          <span class="remove remove_artist u-pull-right"><a href="javascript:void(0);"
               onclick="ajax.get('torrents.php?action=delete_alias&amp;auth=' + authkey + '&amp;groupid=<?=$GroupID?>&amp;artistid=<?=$Artist['id']?>&amp;importance=4'); this.parentNode.parentNode.style.display = 'none';"
               class="brackets tooltip" title="Remove artist">X</a></span>
           <?php } ?>
@@ -329,7 +329,7 @@ $Index++;
         <li>
           <a href="torrents.php?taglist=<?=$Tag['name']?>"
             class="<?=Text::esc($Tag['class'])?>"><?=Text::esc($Tag['display'])?></a>
-          <div class="edit_tags_votes float_right">
+          <div class="edit_tags_votes u-pull-right">
             <?php if (check_perms('users_warn')) { ?>
             <a href="user.php?id=<?=$Tag['userid']?>"
               title="View the profile of the user that added this tag" class="brackets tooltip view_tag_user">U</a>
@@ -455,8 +455,8 @@ foreach ($TorrentList as $Torrent) {
   <table class="filelist_table">
     <tr class="colhead_dark">
       <td>
-        <div class="filelist_title float_left">File Names' . $RegenLink . '</div>
-        <div class="filelist_path float_right">' . ($FilePath ? "/$FilePath/" : '') . '</div>
+        <div class="filelist_title u-pull-left">File Names' . $RegenLink . '</div>
+        <div class="filelist_path u-pull-right">' . ($FilePath ? "/$FilePath/" : '') . '</div>
       </td>
       <td class="nobr">
         <strong>Size</strong>
@@ -771,7 +771,7 @@ if (empty($user['DisableRequests']) && count($Requests) > 0) {
     <div class="box">
       <div class="head">
         <span style="font-weight: bold;">Requests (<?=Text::float(count($Requests))?>)</span>
-        <a data-toggle-target="#requests" data-toggle-replace="Hide" class="float_right brackets">Show</a>
+        <a data-toggle-target="#requests" data-toggle-replace="Hide" class="u-pull-right brackets">Show</a>
       </div>
       <table id="requests" class="request_table hidden">
         <tr class="colhead">
@@ -938,7 +938,7 @@ if (count($PersonalCollages) > 0) {
         <?php
     if (count($Mirrors) > 0) {
         ?>
-        <a class="float_right brackets" data-toggle-target=".torrent_mirrors" data-toggle-replace="Show">Hide</a>
+        <a class="u-pull-right brackets" data-toggle-target=".torrent_mirrors" data-toggle-replace="Show">Hide</a>
         <?php
     }
 
@@ -978,7 +978,7 @@ if (count($PersonalCollages) > 0) {
         <?php
     if (count($Screenshots) > 0) {
         ?>
-        <a class="float_right brackets" data-toggle-target=".torrent_screenshots" data-toggle-replace="Show">Hide</a>
+        <a class="u-pull-right brackets" data-toggle-target=".torrent_screenshots" data-toggle-replace="Show">Hide</a>
         <?php
     }
 

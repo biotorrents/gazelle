@@ -216,7 +216,7 @@ function user_dupes_table($UserID)
   <div class="box" id="l_a_box">
     <div class="head">
       Linked Accounts (<?=max($DupeCount - 1, 0)?>) <span
-        class="float_right"><a data-toggle-target=".linkedaccounts" class="brackets">Toggle</a></span>
+        class="u-pull-right"><a data-toggle-target=".linkedaccounts" class="brackets">Toggle</a></span>
     </div>
     <table width="100%" class="layout hidden linkedaccounts">
       <?=($DupeCount ? "<tr>\n" : '')?>
@@ -260,7 +260,7 @@ function user_dupes_table($UserID)
             <textarea name="dupecomments" onkeyup="resize('dupecommentsbox');" id="dupecommentsbox" cols="65" rows="5"
               style="width: 98%;"><?=Text::esc($Comments)?></textarea>
           </div>
-          <span class="float_right"><a href="#"
+          <span class="u-pull-right"><a href="#"
               onclick="$('#dupecomments').gtoggle(); $('#editdupecomments').gtoggle(); resize('dupecommentsbox'); return false;"
               class="brackets">Edit linked account comments</a></span>
         </td>

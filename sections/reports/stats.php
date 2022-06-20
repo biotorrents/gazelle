@@ -15,7 +15,7 @@ View::header('Other reports stats');
     <a href="reports.php?action=stats">Stats</a>
   </div>
 </div>
-<div class="thin float_clear">
+<div class="thin u-cf">
   <div class="two_columns pad">
 <?php
 if (check_perms('admin_reports')) {

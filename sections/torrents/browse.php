@@ -177,7 +177,7 @@ View::header('Browse Torrents', 'browse');
           <span id="ft_advanced" class="<?=$HideAdvanced?>">Advanced
             Search (<a class="clickable" onclick="toggleTorrentSearch('basic')">Basic</a>)</span>
         </strong>
-        <span class="float_right">
+        <span class="u-pull-right">
           <a onclick="return toggleTorrentSearch(0);" id="ft_toggle" class="brackets"><?=$HideFilter ? 'Show' : 'Hide'?></a>
         </span>
       </div>
@@ -610,7 +610,7 @@ View::header('Browse Torrents', 'browse');
 
         <!-- Result count, submit, and reset -->
         <div class="submit ft_submit">
-          <span class="float_left">
+          <span class="u-pull-left">
             <?=Text::float($NumResults)?>
             Results
           </span>
@@ -809,7 +809,7 @@ die();
         <?=$DisplayName?>
 
         <?php if (in_array($GroupID, $Bookmarks)) { ?>
-        <span class="remove_bookmark float_right">
+        <span class="remove_bookmark u-pull-right">
           <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
             class="brackets"
             onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove
@@ -817,7 +817,7 @@ die();
         </span>
 
         <?php } else { ?>
-        <span class="add_bookmark float_right">
+        <span class="add_bookmark u-pull-right">
           <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
             class="brackets"
             onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
@@ -868,7 +868,7 @@ die();
   <tr
     class="group_torrent groupid_<?=$GroupID?> <?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($user['TorrentGrouping']) && $user['TorrentGrouping'] === 1 ? ' hidden' : '')?>">
     <td colspan="3">
-      <span class="float_right">
+      <span class="u-pull-right">
         [ <a href="<?=$TorrentDL?>" class="tooltip"
           title="Download"><?=$Data['HasFile'] ? 'DL' : 'Missing'?></a>
         <?php
@@ -967,7 +967,7 @@ die();
     <td class="big_info">
       <div class="group_info clear">
         <div class="torrent_interactions">
-          <span class="float_right">
+          <span class="u-pull-right">
             [ <a href="<?=$TorrentDL?>" class="tooltip"
               title="Download">DL</a>
             <?php
@@ -983,14 +983,14 @@ die();
           </span>
           <br />
           <?php if (in_array($GroupID, $Bookmarks)) { ?>
-          <span class="remove_bookmark float_right">
+          <span class="remove_bookmark u-pull-right">
             <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
               class="brackets"
               onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove
               bookmark</a>
           </span>
           <?php } else { ?>
-          <span class="add_bookmark float_right">
+          <span class="add_bookmark u-pull-right">
             <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
               class="brackets"
               onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>

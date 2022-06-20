@@ -226,7 +226,7 @@ if (!$NumResults) {
     <tr
       class="colhead_dark notify_<?=$Result['Page']?>">
       <td colspan="<?=Users::has_avatars_enabled() ? 2 : 1 ?>">
-        <span class="float_left">
+        <span class="u-pull-left">
           <?=$Links . ($Result['PostID'] < $Result['LastPost'] ? ' <span class="new">(New!)</span>' : '')?>
         </span>
         <a class="tooltip last_read" title="Jump to last read"
@@ -239,7 +239,7 @@ if (!$NumResults) {
         </a>
         <?php if ($Result['Page'] === 'forums') { ?>
         <span id="bar<?=$Result['PostID'] ?>"
-          class="float_right">
+          class="u-pull-right">
           <a href="#"
             onclick="Subscribe(<?=$Result['PageID']?>); return false;"
             id="subscribelink<?=$Result['PageID']?>"
@@ -247,7 +247,7 @@ if (!$NumResults) {
           <?php } else { ?>
           <span
             id="bar_<?=$Result['Page'] . $Result['PostID'] ?>"
-            class="float_right">
+            class="u-pull-right">
             <a href="#"
               onclick="SubscribeComments('<?=$Result['Page']?>', <?=$Result['PageID']?>); return false;"
               id="subscribelink_<?=$Result['Page'] . $Result['PageID']?>"

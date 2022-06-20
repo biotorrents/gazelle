@@ -1,5 +1,5 @@
 /**
- * Sortable tables
+ * sortable tables
  */
 
 $bmp: "/images/symbols/table-order.png";
@@ -32,7 +32,7 @@ $nrsr: no-repeat scroll right;
   cursor: default;
 }
 
-/* Generic */
+/* generic */
 #sortable {
   list-style-type: none;
   margin: 0;
@@ -46,7 +46,7 @@ $nrsr: no-repeat scroll right;
   }
 }
 
-/* Drag and drop controls */
+/* drag and drop controls */
 .drag_drop_save {
   padding: 6px 0;
   overflow: hidden;
@@ -74,7 +74,7 @@ $nrsr: no-repeat scroll right;
   }
 }
 
-/* The main torrent page header */
+/* the main torrent page header */
 table.torrent-header {
   margin: 2rem 0;
   margin-left: auto !important;

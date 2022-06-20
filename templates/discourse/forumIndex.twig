@@ -7,15 +7,15 @@
 
 <table>
     <tr>
-        <th>Topic</th>
-        <th>Threads</th>
+        <th>Category</th>
+        <th>Topics</th>
         <th>Posts</th>
     </tr>
 
     {% for category in categories %}
     <tr>
         <td>
-            <a href="/forums/{{ category.slug }}">{{ category.name }}</a>
+            <a href="/category/{{ category.slug }}">{{ category.name }}</a>
             <br />
             {{ category.description_text }}
         </td>
@@ -32,13 +32,15 @@
 
 {% block sidebar %}
 
-<h2>Latest topics</h2>
+<h2>Latest</h2>
 
 <ul>
 
     {% for topic in latestTopics %}
     <li>
-        <a href="/forums/{{ topic.slug }}">{{ topic.title }}</a>
+        <a href="/topic/{{ topic.slug }}">{{ topic.title }}</a>
+        <br />
+        {{ topic.last_posted_at|relativeTime }}
     </li>
     {% endfor %}
 

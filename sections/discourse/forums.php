@@ -19,7 +19,6 @@ foreach ($categories as $key => $category) {
     }
 }
 
-
 # latest topics
 $latestTopics = $discourse->listLatestTopics();
 $latestTopics = array_column($latestTopics, "topics");

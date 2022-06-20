@@ -26,7 +26,7 @@ $Owner = Text::esc($Owner);
   <h2>Reports v2 Information</h2>
 <?php include('header.php'); ?>
 </div>
-<div class="float_clear">
+<div class="u-cf">
   <div class="two_columns pad">
 <?php
 $db->prepared_query("

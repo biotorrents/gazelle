@@ -271,7 +271,7 @@ if (count($Forum) === 0) {
       title="<?=ucwords(str_replace('_', ' ', $Read))?>">
     </td>
     <td>
-      <span class="float_left last_topic">
+      <span class="u-pull-left last_topic">
         <?php
     $TopicLength = 75 - (2 * count($PageLinks));
             unset($PageLinks);
@@ -293,7 +293,7 @@ if (count($Forum) === 0) {
           -->
       </a>
       <?php } ?>
-      <span class="float_right last_poster">
+      <span class="u-pull-right last_poster">
         by <?=Users::format_username($LastAuthorID, false, false, false, false, false)?>
         <?=time_diff($LastTime, 1)?>
       </span>

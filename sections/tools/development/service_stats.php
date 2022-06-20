@@ -31,7 +31,7 @@ View::header("Service Stats"); ?>
         <td>Cache:</td>
         <td>
           <?=Text::float($MemStats['threads'])?>
-          <span class="float_right">(100.000%)</span>
+          <span class="u-pull-right">(100.000%)</span>
         </td>
       </tr>
 
@@ -43,7 +43,7 @@ View::header("Service Stats"); ?>
 
           <td>
             <?=Text::float($dbStats['Threads_created']['Value'])?>
-            <span class="float_right">(<?=Text::float(($dbStats['Threads_connected']['Value'] / $dbStats['Threads_created']['Value']) * 100, 3)?>%)</span>
+            <span class="u-pull-right">(<?=Text::float(($dbStats['Threads_connected']['Value'] / $dbStats['Threads_created']['Value']) * 100, 3)?>%)</span>
           </td>
       </tr>
 
@@ -99,7 +99,7 @@ View::header("Service Stats"); ?>
 
           <td>
             <?=Format::get_size($MemStats['bytes'])?>
-            <span class="float_right">(<?=Text::float(($MemStats['bytes'] / $MemStats['limit_maxbytes']) * 100, 3);?>%)</span>
+            <span class="u-pull-right">(<?=Text::float(($MemStats['bytes'] / $MemStats['limit_maxbytes']) * 100, 3);?>%)</span>
           </td>
       </tr>
 
@@ -182,7 +182,7 @@ View::header("Service Stats"); ?>
 
           <td>
             <?=Text::float($MemStats['get_hits'])?>
-            <span class="float_right">(<?=Text::float(($MemStats['get_hits'] / $MemStats['cmd_get']) * 100, 3);?>%)</span>
+            <span class="u-pull-right">(<?=Text::float(($MemStats['get_hits'] / $MemStats['cmd_get']) * 100, 3);?>%)</span>
           </td>
       </tr>
 
@@ -190,7 +190,7 @@ View::header("Service Stats"); ?>
         <td>Database:</td>
         <td>
           <?=Text::float($dbStats['Com_select']['Value'])?>
-          <span class="float_right">(100.000%)</span>
+          <span class="u-pull-right">(100.000%)</span>
         </td>
       </tr>
 
@@ -202,7 +202,7 @@ View::header("Service Stats"); ?>
         <td>Cache:</td>
         <td>
           <?=Text::float($MemStats['cmd_set'])?>
-          <span class="float_right">(100.000%)</span>
+          <span class="u-pull-right">(100.000%)</span>
         </td>
       </tr>
 
@@ -210,7 +210,7 @@ View::header("Service Stats"); ?>
         <td>Database:</td>
         <td>
           <?=Text::float($dbStats['Com_insert']['Value'])?>
-          <span class="float_right">(100.000%)</span>
+          <span class="u-pull-right">(100.000%)</span>
         </td>
       </tr>
 
@@ -225,7 +225,7 @@ View::header("Service Stats"); ?>
 
           <td>
             <?=Text::float($MemStats['incr_hits'])?>
-            <span class="float_right">(<?=Text::float(($MemStats['incr_hits'] / ($MemStats['incr_hits'] + $MemStats['incr_misses'])) * 100, 3);?>%)</span>
+            <span class="u-pull-right">(<?=Text::float(($MemStats['incr_hits'] / ($MemStats['incr_hits'] + $MemStats['incr_misses'])) * 100, 3);?>%)</span>
           </td>
       </tr>
 
@@ -236,7 +236,7 @@ View::header("Service Stats"); ?>
 
           <td>
             <?=Text::float($MemStats['decr_hits'])?>
-            <span class="float_right">(<?=Text::float(($MemStats['decr_hits'] / ($MemStats['decr_hits'] + $MemStats['decr_misses'])) * 100, 3);?>%)</span>
+            <span class="u-pull-right">(<?=Text::float(($MemStats['decr_hits'] / ($MemStats['decr_hits'] + $MemStats['decr_misses'])) * 100, 3);?>%)</span>
           </td>
       </tr>
 
@@ -256,7 +256,7 @@ View::header("Service Stats"); ?>
 
           <td>
             <?=Text::float($MemStats['cas_hits'])?>
-            <span class="float_right">(
+            <span class="u-pull-right">(
               <?php if ($MemStats['cas_hits'] > 0) {
     echo Text::float(($MemStats['cas_hits'] / ($MemStats['cas_hits'] + $MemStats['cas_misses'])) * 100, 3);
 } else {
@@ -270,7 +270,7 @@ View::header("Service Stats"); ?>
         <td>Database:</td>
         <td>
           <?=Text::float($dbStats['Com_update']['Value'])?>
-          <span class="float_right">(100.000%)</span>
+          <span class="u-pull-right">(100.000%)</span>
         </td>
       </tr>
 
@@ -286,7 +286,7 @@ View::header("Service Stats"); ?>
 
           <td>
             <?=Text::float($MemStats['delete_hits'])?>
-            <span class="float_right">(<?=Text::float(($MemStats['delete_hits'] / ($MemStats['delete_hits'] + $MemStats['delete_misses'])) * 100, 3);?>%)</span>
+            <span class="u-pull-right">(<?=Text::float(($MemStats['delete_hits'] / ($MemStats['delete_hits'] + $MemStats['delete_misses'])) * 100, 3);?>%)</span>
           </td>
       </tr>
 
@@ -294,7 +294,7 @@ View::header("Service Stats"); ?>
         <td>Database:</td>
         <td>
           <?=Text::float($dbStats['Com_delete']['Value'])?>
-          <span class="float_right">(100.000%)</span>
+          <span class="u-pull-right">(100.000%)</span>
         </td>
       </tr>
 

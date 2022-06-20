@@ -1,0 +1,36 @@
+{% extends "base.twig" %}
+
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+<table>
+    <tr>
+        <th>Topic</th>
+        <th>Replies</th>
+        <th>Views</th>
+        <th>Activity</th>
+    </tr>
+
+    {% for topic in topics %}
+    <tr>
+        <td>
+            <a href="/topic/{{ topic.slug }}">{{ topic.title }}</a>
+        </td>
+
+        <td>{{ topic.reply_count }}</td>
+        <td>{{ topic.views }}</td>
+
+        {% if topic.last_posted_at is not null %}
+        <td>{{ topic.last_posted_at|relativeTime }}</td>
+        {% else %}
+        <td>{{ topic.created_at|relativeTime }}</td>
+        {% endif %}
+
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% endblock %}

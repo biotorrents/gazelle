@@ -20,7 +20,7 @@ class Discourse
 
     # cache settings
     private $cachePrefix = "social_";
-    private $cacheDuration = 3600; # one hour
+    private $cacheDuration = 300; # five minutes
 
     # hash algo for cache keys
     private $algorithm = "sha3-512";
@@ -127,6 +127,20 @@ class Discourse
 
 
     /**
+     * pluck
+     *
+     * array_column wrapper, mostly.
+     */
+    private function pluck(array $response, string $column)
+    {
+        $response = array_column($response, $column);
+        $response = array_shift($response);
+
+        return $response;
+    }
+
+
+    /**
      * createTopicPostPM
      *
      * Main function to handle user comments.
@@ -171,6 +185,8 @@ class Discourse
     public function listCategories()
     {
         $response = $this->curl("categories.json");
+        #$response = $this->pluck($response, "categories");
+
         return $response;
     }
 
@@ -182,12 +198,15 @@ class Discourse
      */
     public function listCategoryTopics(string $slug)
     {
+        $app = App::go();
+
         if (!in_array($slug, array_keys($app->env->discourseCategories))) {
             throw new Exception("supplied slug {$slug} is invalid");
         }
 
         $id = $app->env->discourseCategories[$slug];
         $response = $this->curl("c/{$slug}/{$id}.json");
+
         return $response;
     }
 
@@ -199,12 +218,15 @@ class Discourse
      */
     public function getCategory(string $slug)
     {
-        if (!in_array($category, array_keys($app->env->discourseCategories))) {
+        $app = App::go();
+
+        if (!in_array($slug, array_keys($app->env->discourseCategories))) {
             throw new Exception("supplied slug {$slug} is invalid");
         }
 
         $id = $app->env->discourseCategories[$slug];
         $response = $this->curl("c/{$id}/show.json");
+
         return $response;
     }
 

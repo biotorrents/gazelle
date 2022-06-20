@@ -618,7 +618,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
     <td class="big_info">
         <div class="group_info clear">
 
-            <span class="float_right">
+            <span class="u-pull-right">
                 <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>"
                     title="Download" class="brackets tooltip">DL</a>
                 </span>
@@ -628,7 +628,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
             <?php
     if ($IsBookmarked) {
         ?>
-            <span class="remove_bookmark float_right">
+            <span class="remove_bookmark u-pull-right">
                 <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
                     class="bookmarklink_torrent_<?=$GroupID?> brackets"
                     onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove
@@ -636,7 +636,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
             </span>
             <?php
     } else { ?>
-            <span class="add_bookmark float_right">
+            <span class="add_bookmark u-pull-right">
                 <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
                     class="bookmarklink_torrent_<?=$GroupID?> brackets"
                     onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
