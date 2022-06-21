@@ -33,3 +33,15 @@ Flight::route("/boards/@categorySlug/@topicSlug", function (string $categorySlug
     /** COMMENTS */
     /** NEWS */
     /** WIKI */
+
+# wiki index
+Flight::route("/wikiNew", function () {
+    $app = App::go();
+    require_once "{$app->env->serverRoot}/sections/discourse/wikiIndex.php";
+});
+
+# category
+Flight::route("/wikiNew/@articleSlug", function (string $articleSlug) {
+    $app = App::go();
+    require_once "{$app->env->serverRoot}/sections/discourse/wikiArticle.php";
+});

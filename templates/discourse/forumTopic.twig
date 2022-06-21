@@ -4,21 +4,22 @@
 {% block content %}
 
 <table id="forumTopic" class="u-full-width">
+    {#
     <tr>
-        <th class="center">{# user #}</th>
-        <th class="u-full-width">{# post #}</th>
+        <th class="center">{# user # }</th>
+        <th class="u-full-width">{# post # }</th>
     </tr>
+    #}
 
     {% for post in topic.post_stream.posts %}
     <tr>
-        <td style="vertical-align: top;" class="topic-avatar">
+        <td class="center">
             {% if post.avatar_template is not empty %}
             <img src="https://boards.torrents.bio/{{ post.avatar_template }}" alt="avatar" />
             {% endif %}
 
             <a href="/user/{{ post.username }}" title="profile">{{ post.username }}</a>
         </td>
-
 
         <td>
             {{ post.cooked|raw }}
@@ -30,8 +31,6 @@
 
 
         </td>
-
-
     </tr>
     {% endfor %}
 

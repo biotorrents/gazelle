@@ -90,15 +90,18 @@ table.torrent-header {
  * boards/forums/discourse
  */
 
+table#forumIndex {
+  width: 100%;
+}
+
 table#forumTopic {
   td {
     vertical-align: top;
   }
-
 }
 
-.topic-post.sticky-avatar .topic-avatar {
-  position: sticky;
-  top: calc(var(--header-offset) - 0.25em);
-  margin-bottom: 25px;
+table#wikiArticle {
+  td {
+    border-bottom: none;
+  }
 }

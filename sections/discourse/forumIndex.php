@@ -11,12 +11,17 @@ $categories = array_column($categories, "categories");
 $categories = array_shift($categories);
 
 # unset functional
-$showThese = ["Staff", "Uncategorized", "Marketplace"];
+$showThese = ["News", "Blog", "Uncategorized", "Marketplace", "Staff"];
 foreach ($categories as $key => $category) {
     if (!in_array($category["name"], $showThese)) {
         unset($categories[$key]);
     }
 }
+
+# sort on position
+usort($categories, function ($a, $b) {
+    return $a["position"] <=> $b["position"];
+});
 
 # latest topics
 $latestTopics = $discourse->listLatestTopics();
@@ -31,6 +36,7 @@ foreach ($latestTopics as $key => $value) {
 $app->twig->display(
     "discourse/forumIndex.twig",
     [
+        "breadcrumbs" => true,
         "sidebar" => true,
         "title" => "Boards",
         "categories" => $categories,

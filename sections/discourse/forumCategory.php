@@ -19,6 +19,7 @@ $topics = array_shift($topics);
 $app->twig->display(
     "discourse/forumCategory.twig",
     [
+        "breadcrumbs" => true,
         "title" => $category["name"],
         "category" => $category,
         "topics" => $topics,

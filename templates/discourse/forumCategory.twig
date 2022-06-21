@@ -14,7 +14,7 @@
 
     {% for topic in topics %}
     <tr>
-        <td class="nobr">
+        <td class="center nobr">
             {% if topic.unseen == true %}
             <span title="unseen">⭐</span>
             {% endif %}
@@ -39,20 +39,20 @@
             <br />
 
             {% for tag in topic.tags %}
-            <a href="/tag/{{ tag }}">{{ tag }}</a>
+            <a href="/tags/{{ tag }}">{{ tag }}</a>
 
             {% endfor %}
             {% endif %}
 
         </td>
 
-        <td>{{ topic.reply_count }}</td>
-        <td>{{ topic.views }}</td>
+        <td class="center">{{ topic.reply_count }}</td>
+        <td class="center">{{ topic.views }}</td>
 
         {% if topic.last_posted_at is not null %}
-        <td class="nobr">{{ topic.last_posted_at|relativeTime }}</td>
+        <td class="right nobr">{{ topic.last_posted_at|relativeTime }}</td>
         {% else %}
-        <td class="nobr">{{ topic.created_at|relativeTime }}</td>
+        <td class="right nobr">{{ topic.created_at|relativeTime }}</td>
         {% endif %}
 
     </tr>

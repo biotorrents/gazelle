@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<table>
+<table id="forumIndex">
     <tr>
         <th>Category</th>
         <th>Topics</th>
@@ -29,6 +29,11 @@
 
 
 {% block sidebar %}
+
+<form method="post">
+    <input type="text" id="query" name="query" placeholder="Search the forums" />
+</form>
+
 
 <h2>Latest</h2>
 

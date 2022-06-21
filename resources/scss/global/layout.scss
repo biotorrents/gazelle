@@ -3,6 +3,11 @@
  * NOW DONE BY SKELETON.CSS
  */
 
+/* override main skeleton resolution */
+.container {
+  max-width: 1920px !important;
+}
+
 #content,
 #sidebar {
   padding: 1rem;
