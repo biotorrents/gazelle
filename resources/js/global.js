@@ -18,7 +18,7 @@ function html_entity_decode(str) {
  */
 function get_size(size) {
   var steps = 0;
-  for (; size >= 1024; size /= 1024, steps++);
+  for (; size >= 1024; size /= 1024, steps++) { }
   var exts = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"];
   return size.toFixed(2) + (exts[steps] || "");
 }
@@ -294,12 +294,12 @@ window.onkeydown = function (e) {
       (
         $(
           '[id!="lightbox"] > [lightbox-img="' +
-            $("#lightbox > img").raw().src +
-            '"]'
+          $("#lightbox > img").raw().src +
+          '"]'
         )
           .raw()
-          [(e.keyCode == 39 ? "next" : "previous") + "Sibling"].click() ||
-        function () {}
+        [(e.keyCode == 39 ? "next" : "previous") + "Sibling"].click() ||
+        function () { }
       )();
     }
   }
@@ -372,8 +372,8 @@ function getCover(event) {
           ? wh - ch
           : ph + 10
         : ph - ch - 10 < 0
-        ? 0
-        : ph - ch - 10;
+          ? 0
+          : ph - ch - 10;
     coverCont.style.top = pos + "px";
     if (mevent.clientX > window.innerWidth / 2) {
       coverCont.style.left = "initial";
