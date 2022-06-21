@@ -1,4 +1,4 @@
-/* Wikipedia-style external links */
+/* wikipedia-style external links */
 a.external {
   background-image: url("/images/symbols/external-link-ltr-icon.svg");
   background-position: center right;
@@ -33,7 +33,7 @@ h2#pageTitle {
 }
 
 /**
- * Spacing classes
+ * spacing classes
  */
 
 .center {
@@ -88,7 +88,7 @@ pre {
 }
 
 /**
- * Torrent form
+ * torrent form
  */
 
 .torrent_form {
@@ -104,7 +104,7 @@ pre {
   }
 }
 
-/* Good/bad examples on rules pages */
+/* good/bad examples on rules pages */
 .important_text {
   color: red;
   font-weight: bold;
@@ -128,11 +128,11 @@ pre {
 }
 
 /**
- * Ordered lists
+ * ordered lists
  * https://stackoverflow.com/a/2730079
  */
 
-/* No IE6/7 */
+/* no IE6/7 */
 html>
 
 /**/
@@ -156,14 +156,14 @@ ol li ol li:before {
   counter-increment: level2;
 }
 
-/* Disclaimer */
+/* disclaimer */
 .halfwide {
   max-width: 50%;
   margin: auto;
   text-align: center;
 }
 
-/* Details and summary (HTML5) */
+/* details and summary (HTML5) */
 details {
   font-weight: normal;
 }

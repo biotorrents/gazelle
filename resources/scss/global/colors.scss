@@ -1,16 +1,17 @@
 /**
- * RGB color intensity border
+ * RGB color intensity border.
  * For semi-transparent elements,
- * e.g., unread forum post borders
+ * e.g., unread forum post borders.
  */
+
 @mixin transparent-border($c, $a) {
   border: 2px solid change-color($color: $c, $alpha: $a);
 }
 
-/* The shadow under floating elements */
+/* the shadow under floating elements */
 $shadow: 2px 2px 10px -2px slategray;
 
-/* Torrent labels for the Format class */
+/* torrent labels for the Format class */
 .tl_notice,
 .tl_snatched {
   color: #222;
@@ -30,7 +31,8 @@ $shadow: 2px 2px 10px -2px slategray;
   color: red;
 }
 
-/* Wiki diff colors */
+/* wiki diff colors */
+/*
 .line_new {
   color: green;
 }
@@ -42,8 +44,9 @@ $shadow: 2px 2px 10px -2px slategray;
 .line_deleted {
   color: red;
 }
+*/
 
-/* Ratio watch? */
+/* ratio watch? */
 @mixin dark-red($amount) {
   color: scale-color(red, $lightness: $amount);
 }
@@ -97,7 +100,7 @@ $shadow: 2px 2px 10px -2px slategray;
   color: red;
 }
 
-/* Tag modifiers */
+/* tag modifiers */
 /*
 .tag_parody {
 	color: #e08e00 !important;
@@ -113,7 +116,7 @@ $shadow: 2px 2px 10px -2px slategray;
 }
 */
 
-/* Noty button fix */
+/* noty button fix */
 .noty_buttons {
   button {
     background: none;

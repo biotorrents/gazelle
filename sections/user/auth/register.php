@@ -26,23 +26,27 @@ $confirmPassphrase = $post["confirmPassphrase"] ?? "";
 $success = false;
 
 
-# delight-im/auth
-if (!empty(["post"]) && isset($post["submit"])) {
-    $response = $auth->register(
-        email: $post["email"],
-        passphrase: $post["passphrase"],
-        confirmPassphrase: $post["confirmPassphrase"],
-        username: $post["username"],
-        invite: $invite ?? "",
-        post: $post ?? []
-    );
+try {
+    # delight-im/auth
+    if (!empty(["post"]) && isset($post["submit"])) {
+        $response = $auth->register(
+            email: $post["email"],
+            passphrase: $post["passphrase"],
+            confirmPassphrase: $post["confirmPassphrase"],
+            username: $post["username"],
+            invite: $invite ?? "",
+            post: $post ?? []
+        );
 
-    # success
-    if (is_int($response)) {
-        $emailSent = true;
-        $success = true;
-        unset($response);
+        # success
+        if (is_int($response)) {
+            $emailSent = true;
+            $success = true;
+            $userId = $response;
+        }
     }
+} catch (Exception $e) {
+    $response = $e->getMessage();
 }
 
 
@@ -50,7 +54,7 @@ if (!empty(["post"]) && isset($post["submit"])) {
 
 
 try {
-    if ($success === true && !empty($invite)) {
+    if ($success && !empty($invite)) {
         $query = "select inviterId, email, reason from invites where inviteKey = ?";
         $row = $app->dbNew->row($query, [$invite]);
 

@@ -3,9 +3,12 @@
  * NOW DONE BY SKELETON.CSS
  */
 
-/* override main skeleton resolution */
+/*
+override main skeleton resolution
+taken to match twitter
+*/
 .container {
-  max-width: 1920px !important;
+  max-width: 1280px !important;
 }
 
 #content,
@@ -13,20 +16,20 @@
   padding: 1rem;
 }
 
-/* Box: soon to be <section> */
+/* box: soon to be <section> */
 .box {
   margin-bottom: 2rem;
 }
 
 /*
- * Flex elements
+ * flex elements
  */
 
 .flex {
   display: flex;
 }
 
-/* Grow and shrink */
+/* grow and shrink */
 .flex>.grow {
   flex-grow: 1;
 }
@@ -35,7 +38,7 @@
   flex-shrink: 1;
 }
 
-/* Text input */
+/* text input */
 .flex_input_container {
   display: flex;
 }
@@ -47,21 +50,16 @@
 }
 
 /**
- * Section elements
+ * section elements
  */
 .style_addition input {
   margin-left: 0.5rem;
 }
 
 /**
- * Aside elements
+ * aside elements
  */
 aside {
-  max-width: 66%;
-
-  p {
-    text-align: center;
-  }
 
   /**
    * "Please consult the Upload Rules"
@@ -89,7 +87,7 @@ aside {
 }
 
 /**
- * Footer
+ * footer
  */
 
 footer {
@@ -102,7 +100,7 @@ footer {
 }
 
 /*
- * Misc
+ * misc
  */
 
 .hidden {
@@ -113,14 +111,14 @@ footer {
   visibility: hidden;
 }
 
-/* Permissions form submit button */
+/* permissions form submit button */
 .submit_container {
   clear: both;
   margin: 1rem;
   text-align: right;
 }
 
-/* Textarea */
+/* textarea */
 .textarea_wrap {
   margin-bottom: 0.5rem;
 }
@@ -129,16 +127,17 @@ footer {
   margin-bottom: 0;
 }
 
-/* Images */
+/* images */
 img {
   border: none;
+  max-width: 100%;
 }
 
 .webm {
   max-width: 100%;
 }
 
-/* Donor hearts and badges */
+/* donor hearts and badges */
 .donor_icon {
   margin-left: 2px;
   margin-right: 2px;
@@ -170,12 +169,7 @@ img {
   margin: 10px 0;
 }
 
-/* Image dimension limits */
-img {
-  max-width: 100%;
-}
-
-/* Covers */
+/* covers */
 #coverCont {
   position: fixed;
   max-width: 30%;
@@ -195,7 +189,7 @@ img {
 }
 
 /**
- * Donate button
+ * donate button
  * PNG to avoid the botnet
  */
 .donate_button {
@@ -206,7 +200,7 @@ img {
   }
 }
 
-/* User and torrent stats */
+/* user and torrent stats */
 .pulsating-circle {
   height: 10px;
   left: 50%;

@@ -1,3 +1,4 @@
+/*
 var username;
 var postid;
 var url = {
@@ -5,8 +6,8 @@ var url = {
 };
 
 /**
- * QuoteJump()
- */
+ * QuoteJump
+ * /
 function QuoteJump(event, post) {
   var button = event.button;
   var url, pattern;
@@ -55,8 +56,8 @@ function QuoteJump(event, post) {
 }
 
 /**
- * Quote()
- */
+ * Quote
+ * /
 var original_post;
 function Quote(post, user, link = false) {
   username = user;
@@ -144,8 +145,8 @@ function Quote(post, user, link = false) {
 }
 
 /**
- * Edit_Form()
- */
+ * Edit_Form
+ * /
 function Edit_Form(post, key) {
   postid = post;
   var boxWidth, postuserid, pmbox, inputname;
@@ -165,8 +166,8 @@ function Edit_Form(post, key) {
     pmbox =
       postuserid != userid
         ? '<span id="pmbox' +
-          postid +
-          '"><label>PM user on edit? <input type="checkbox" name="pm" value="1" /></label></span>'
+        postid +
+        '"><label>PM user on edit? <input type="checkbox" name="pm" value="1" /></label></span>'
         : "";
     inputname = location.href.match(/forums\.php/) ? "post" : "postid";
     $("#bar" + postid).raw().cancel = $("#content" + postid).raw().innerHTML;
@@ -207,7 +208,7 @@ function Edit_Form(post, key) {
    * If it's the initial edit, fetch the post content to be edited.
    * If editing is already underway and edit is pressed again, reset the post
    * (keeps current functionality, move into brackets to stop from happening).
-   */
+   * /
   var post_endpoint = location.href.match(/forums\.php/)
     ? "?action=get_post&post="
     : "comments.php?action=get&postid=";
@@ -223,8 +224,8 @@ function Edit_Form(post, key) {
 }
 
 /**
- * Cancel_Edit()
- */
+ * Cancel_Edit
+ * /
 function Cancel_Edit(postid) {
   var answer = confirm("Are you sure you want to cancel?");
   if (answer) {
@@ -235,8 +236,8 @@ function Cancel_Edit(postid) {
 }
 
 /**
- * Preview_Edit()
- */
+ * Preview_Edit
+ * /
 function Preview_Edit(postid) {
   $("#bar" + postid).raw().innerHTML =
     '<input type="button" value="Editor" onclick="Cancel_Preview(' +
@@ -259,8 +260,8 @@ function Preview_Edit(postid) {
 }
 
 /**
- * Cancel_Preview()
- */
+ * Cancel_Preview
+ * /
 function Cancel_Preview(postid) {
   $("#bar" + postid).raw().innerHTML =
     '<input type="button" value="Preview" onclick="Preview_Edit(' +
@@ -281,8 +282,8 @@ function Cancel_Preview(postid) {
 }
 
 /**
- * Save_Edit()
- */
+ * Save_Edit
+ * /
 function Save_Edit(postid) {
   $("#reply_box").gshow();
   if (location.href.match(/forums\.php/)) {
@@ -322,8 +323,8 @@ function Save_Edit(postid) {
 }
 
 /**
- * Delete()
- */
+ * Delete
+ * /
 function Delete(post) {
   postid = post;
   if (confirm("Are you sure you wish to delete this post?") == true) {
@@ -346,8 +347,8 @@ function Delete(post) {
 }
 
 /**
- * Quick_Preview()
- */
+ * Quick_Preview
+ * /
 function Quick_Preview() {
   var quickreplybuttons;
   $("#post_preview").raw().value = "Make changes";
@@ -360,8 +361,8 @@ function Quick_Preview() {
 }
 
 /**
- * Quick_Edit()
- */
+ * Quick_Edit
+ * /
 function Quick_Edit() {
   var quickreplybuttons;
   $("#post_preview").raw().value = "Preview";
@@ -371,8 +372,8 @@ function Quick_Edit() {
 }
 
 /**
- * Newthread_Preview()
- */
+ * Newthread_Preview
+ * /
 function Newthread_Preview(mode) {
   $("#newthreadpreviewbutton").gtoggle();
   $("#newthreadeditbutton").gtoggle();
@@ -423,16 +424,16 @@ function Newthread_Preview(mode) {
 }
 
 /**
- * LoadEdit()
- */
+ * LoadEdit
+ * /
 function LoadEdit(type, post, depth) {
   ajax.get(
     "forums.php?action=ajax_get_edit&postid=" +
-      post +
-      "&depth=" +
-      depth +
-      "&type=" +
-      type,
+    post +
+    "&depth=" +
+    depth +
+    "&type=" +
+    type,
     function (response) {
       $("#content" + post).raw().innerHTML = response;
     }
@@ -440,8 +441,8 @@ function LoadEdit(type, post, depth) {
 }
 
 /**
- * AddPollOption()
- */
+ * AddPollOption
+ * /
 function AddPollOption(id) {
   var list = $("#poll_options").raw();
   var item = document.createElement("li");
@@ -488,7 +489,7 @@ function AddPollOption(id) {
  * The form is required to remove the stored text once it is submitted.
  *
  * Topic ID is required to retrieve the right text on the right topic
- */
+ * /
 function StoreText(field, form, topic) {
   this.field = document.getElementById(field);
   this.form = document.getElementById(form);
@@ -555,8 +556,8 @@ StoreText.prototype = {
 };
 
 /**
- * Do the needful :^)
- */
+ * do the needful :^)
+ * /
 $(document).ready(function () {
   var fadeSpeed = 0;
   var avatars = [];
@@ -603,3 +604,4 @@ if ($("[data-autosave-text]").raw()) {
     $("[data-autosave-id]").raw().attributes["value"].value
   );
 }
+*/
