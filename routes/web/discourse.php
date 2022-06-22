@@ -10,38 +10,78 @@ declare(strict_types = 1);
 
     /** FORUMS */
 
-# forum index
+# e.g., /boards/staff/about-the-staff-category
+Flight::route("/boards(/@categorySlug(/@topicSlug))", function ($categorySlug, $topicSlug) {
+    $app = App::go();
+
+    # topic
+    if ($topicSlug !== null) {
+        require_once "{$app->env->serverRoot}/sections/discourse/forumTopic.php";
+    }
+
+    # category
+    elseif ($topicSlug === null && $categorySlug !== null) {
+        require_once "{$app->env->serverRoot}/sections/discourse/forumCategory.php";
+    }
+
+    # index
+    else {
+        require_once "{$app->env->serverRoot}/sections/discourse/forumIndex.php";
+    }
+});
+
+
+    /** BLOG */
+
+
+# blog
 Flight::route("/boards", function () {
     $app = App::go();
     require_once "{$app->env->serverRoot}/sections/discourse/forumIndex.php";
 });
 
-# category
-Flight::route("/boards/@categorySlug", function (string $categorySlug) {
-    $app = App::go();
-    require_once "{$app->env->serverRoot}/sections/discourse/forumCategory.php";
-});
 
-# topic
-Flight::route("/boards/@categorySlug/@topicSlug", function (string $categorySlug, string $topicSlug) {
-    $app = App::go();
-    require_once "{$app->env->serverRoot}/sections/discourse/forumTopic.php";
-});
-
-
-    /** BLOG */
     /** COMMENTS */
     /** NEWS */
-    /** WIKI */
+    /** PRIVATE MESSAGES */
 
-# wiki index
-Flight::route("/wiki", function () {
+
+# inbox
+Flight::route("/@username/messages(/@filter)", function ($username, $filter) {
     $app = App::go();
-    require_once "{$app->env->serverRoot}/sections/discourse/wikiIndex.php";
+
+    $filter = Text::esc(strtolower($filter));
+    $allowedFilters = ["new", "unread", "archive"];
+
+    if (!in_array($filter, $allowedFilters)) {
+        Http::response(404);
+    }
+
+    require_once "{$app->env->serverRoot}/sections/discourse/inbox.php";
 });
 
-# category
-Flight::route("/wiki/@articleSlug", function (string $articleSlug) {
+
+# outbox
+Flight::route("/@username/messages/sent", function () {
     $app = App::go();
-    require_once "{$app->env->serverRoot}/sections/discourse/wikiArticle.php";
+    require_once "{$app->env->serverRoot}/sections/discourse/outbox.php";
+});
+
+
+    /** TAGS */
+    /** WIKI */
+
+# e.g., /wiki/bonus-points
+Flight::route("/wiki(/@articleSlug)", function ($articleSlug) {
+    $app = App::go();
+
+    # article
+    if ($articleSlug !== null) {
+        require_once "{$app->env->serverRoot}/sections/discourse/wikiArticle.php";
+    }
+
+    # index
+    else {
+        require_once "{$app->env->serverRoot}/sections/discourse/wikiIndex.php";
+    }
 });
