@@ -5,6 +5,23 @@ $app = App::go();
 $discourse = new Discourse();
 
 
+# filters
+$allowedFilters = [
+  # e.g., https://boards.torrents.bio/u/ohm/messages/sent
+  "sent", "new", "unread", "archive",
+
+  # custom pages for gazelle features
+  "compose", "recommend", "staff",
+
+  # empty bypass
+  null,
+];
+
+if (!in_array($filter, $allowedFilters)) {
+    Http::response(404);
+}
+
+
 # inbox/outbox
 $inbox = $discourse->listUserPrivateMessages();
 $outbox = $discourse->getUserSentPrivateMessages();

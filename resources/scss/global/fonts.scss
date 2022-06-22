@@ -6,15 +6,6 @@ a.external {
   padding-right: 13px;
 }
 
-/* ul fix */
-ul {
-  list-style: square;
-
-  li {
-    margin-left: 2rem;
-  }
-}
-
 
 /**
  * breadcrumbs
@@ -31,6 +22,7 @@ h2#breadcrumbs {
 h2#pageTitle {
   padding-top: 5rem;
 }
+
 
 /**
  * spacing classes
@@ -87,6 +79,7 @@ pre {
   }
 }
 
+
 /**
  * torrent form
  */
@@ -127,6 +120,7 @@ pre {
   color: red;
 }
 
+
 /**
  * ordered lists
  * https://stackoverflow.com/a/2730079
@@ -154,6 +148,18 @@ ol li ol {
 ol li ol li:before {
   content: counter(level1) "." counter(level2) " ";
   counter-increment: level2;
+}
+
+
+/**
+ * unordered lists
+ */
+
+ul {
+  &.nobullet li {
+    list-style: none;
+    margin: 0;
+  }
 }
 
 /* disclaimer */

@@ -6,6 +6,7 @@
 <table id="wikiArticle" class="u-full-width">
     <tr>
         <td>
+            {# discourse outputs safe html #}
             {{ post.cooked|raw }}
         </td>
     </tr>
@@ -18,7 +19,7 @@
 {% block sidebar %}
 
 <form method="post">
-    <input type="text" id="query" name="query" placeholder="Search the wiki" />
+    <input type="text" id="search" name="search" placeholder="Search the wiki" />
 </form>
 
 

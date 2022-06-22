@@ -6,9 +6,13 @@
 <h3>Actions</h3>
 
 <form method="post">
-    <input type="button" class="button-primary" id="create" name="create" value="new thread" />
+    {{ form_token(query.server.REQUEST_URI) }}
+
+    <input type="button" id="create" name="create" value="new thread" class="button-primary" />
+
+    <input type="button" id="unread" name="unread" value="unread" class="button-orange" />
+
     <input type="button" id="subscribe" name="subscribe" value="subscribe" />
-    <input type="button" id="unread" name="unread" value="unread" />
 </form>
 
 

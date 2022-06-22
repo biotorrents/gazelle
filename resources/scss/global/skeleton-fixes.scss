@@ -128,6 +128,15 @@ ol ul {
   font-size: 100% !important;
 }
 
+/* ul fix */
+ul {
+  list-style: square !important;
+
+  li {
+    margin-left: 2rem;
+  }
+}
+
 /* red button */
 .button.button-red,
 button.button-red,

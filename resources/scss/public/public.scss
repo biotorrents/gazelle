@@ -13,7 +13,6 @@ $skeletonHalfdark: scale-color($skeletonFocus, $lightness: -50%);
 
 body {
   background: white;
-  color: black;
   font-family: "NotoSans-SemiCondensed", sans-serif;
 
   b,
@@ -31,7 +30,8 @@ body {
 
 /* text elements */
 a {
-  color: black;
+  color: #222;
+  /* skeleton */
   text-decoration: underline;
 
   &:hover {
@@ -45,14 +45,20 @@ a {
  * layout
  */
 
+/*
 header,
 footer {
   height: 4.2rem;
   line-height: 4.2rem;
   max-width: 100%;
 }
+*/
 
 header {
+  height: 4.2rem;
+  line-height: 4.2rem;
+  max-width: 100%;
+
   background: $skeletonHalfdark;
   padding: 0 1%;
   position: sticky;
@@ -75,6 +81,10 @@ header {
 footer {
   margin: 5rem 0;
   text-align: center;
+
+  p {
+    margin-bottom: 0;
+  }
 }
 
 figure#logo {
