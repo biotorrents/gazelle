@@ -30,23 +30,6 @@
 
 {% block sidebar %}
 
-<form method="post">
-    <input type="text" id="query" name="query" placeholder="Search the forums" />
-</form>
-
-
-<h2>Latest</h2>
-
-<ul>
-
-    {% for topic in latestTopics %}
-    <li>
-        <a href="/boards/{{ topic.categorySlug }}/{{ topic.slug }}">{{ topic.title }}</a>
-        <br />
-        {{ topic.last_posted_at|relativeTime }}
-    </li>
-    {% endfor %}
-
-</ul>
+{{ include("discourse/forumSidebar.twig") }}
 
 {% endblock %}

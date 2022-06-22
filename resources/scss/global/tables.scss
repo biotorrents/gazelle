@@ -97,6 +97,11 @@ table#forumIndex {
 table#forumTopic {
   td {
     vertical-align: top;
+
+    &.avatar {
+      text-align: center;
+      width: 5rem;
+    }
   }
 }
 

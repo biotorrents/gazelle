@@ -13,7 +13,7 @@
 
     {% for post in topic.post_stream.posts %}
     <tr>
-        <td class="center">
+        <td class="avatar">
             {% if post.avatar_template is not empty %}
             <img src="https://boards.torrents.bio/{{ post.avatar_template }}" alt="avatar" />
             {% endif %}
@@ -41,18 +41,6 @@
 
 {% block sidebar %}
 
-<h2>Suggested</h2>
-
-<ul>
-
-    {% for topic in topic.suggested_topics %}
-    <li>
-        <a href="/topic/{{ category }}/{{ topic.slug }}">{{ topic.title }}</a>
-        <br />
-        {{ topic.last_posted_at|relativeTime }}
-    </li>
-    {% endfor %}
-
-</ul>
+{{ include("discourse/forumSidebar.twig") }}
 
 {% endblock %}

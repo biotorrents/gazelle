@@ -11,7 +11,7 @@ $categories = array_column($categories, "categories");
 $categories = array_shift($categories);
 
 # unset functional
-$showThese = ["News", "Blog", "Uncategorized", "Marketplace", "Staff"];
+$showThese = ["Uncategorized", "Marketplace", "Staff"];
 foreach ($categories as $key => $category) {
     if (!in_array($category["name"], $showThese)) {
         unset($categories[$key]);

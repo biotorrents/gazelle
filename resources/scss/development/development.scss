@@ -8,9 +8,16 @@ strong {
   font-weight: normal !important;
 }
 
-/* Font Awesome exception to the Comic Sans rule */
-i:not(.fa):not(.fab):not(.fad):not(.fal):not(.far):not(.fas):not(.phpdebugbar-fa),
-em:not(.fa):not(.fab):not(.fad):not(.fal):not(.far):not(.fas):not(.phpdebugbar-fa) {
+/* font awesome exception */
+i:not(.fa),
+i:not(.fas):not(.fa-solid),
+i:not(.far):not(.fa-regular),
+i:not(.fal):not(.fa-light),
+i:not(.fat):not(.fa-thin),
+i:not(.fad):not(.fa-duotone),
+i:not(.fab):not(.fa-brands),
+i:not(.phpdebugbar-fa),
+em {
   font-family: $comicNeueItalic, sans-serif !important;
   font-style: normal !important;
 }

@@ -20,6 +20,7 @@ $app->twig->display(
     "discourse/forumCategory.twig",
     [
         "breadcrumbs" => true,
+        "sidebar" => true,
         "title" => $category["name"],
         "category" => $category,
         "topics" => $topics,

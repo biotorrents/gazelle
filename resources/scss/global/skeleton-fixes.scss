@@ -1,10 +1,11 @@
 /**
- * Fixes needed to use skeleton.css
+ * fixes needed to use skeleton.css
  * to its best no-fuss advantage
  */
 
+
 /**
- * Set heading font size
+ * set heading font size
  *
  * h1 { font-size: 5.0rem; }
  * h2 { font-size: 4.2rem; }
@@ -15,7 +16,7 @@
  */
 
 @mixin heading-attributes($size) {
-  font-size: $size !important;
+  font-size: $size  !important;
   margin-top: 2rem !important;
 }
 
@@ -43,44 +44,44 @@ h6 {
   @include heading-attributes(0.75rem);
 }
 
-/* Correct content/sidebar overflow */
+/* correct content/sidebar overflow */
 @media (min-width: 550px) {
+
   .column,
   .columns {
     margin-left: 0 !important;
   }
 }
 
-/* Forum list headings */
+/* forum list headings */
 table.forum_index {
   h4 {
     margin: 0.25rem !important;
   }
 }
 
-/* Checkbox and radio labels */
+/* checkbox and radio labels */
 label,
 legend {
   display: inline !important;
 }
 
-/* Tables usually containing forms */
-/* BP */
+/* tables usually containing forms */
 table.store_table,
-/* top10 and many */ form.search_form,
-/* edit collage */ table.collage_edit,
-/* forum lists */ table.forum_index,
-/* notif filters */ form[name="notification"],
-/* service stats */ div.permission_container,
-/* user settings */ table.user_options,
-/* GENERIC */ table.skeleton-fix {
+form.search_form,
+table.collage_edit,
+table.forum_index,
+form[name="notification"],
+div.permission_container,
+table.user_options,
+table.skeleton-fix {
   td {
     border-bottom: 0 !important;
     padding: 0.5rem !important;
   }
 }
 
-/* Duplicate input rules here */
+/* duplicate input rules here */
 input,
 input[type="search"],
 input[type="text"] {
@@ -94,7 +95,7 @@ fieldset {
   margin-bottom: 0 !important;
 }
 
-/* Block elements */
+/* block elements */
 pre,
 blockquote,
 dl,
@@ -106,23 +107,101 @@ form {
   margin-bottom: 0 !important;
 }
 
-/* Inline code */
+/* inline code */
 code {
   padding: 0 !important;
 }
 
-/* Poll options */
+/* poll options */
 ul#poll_options {
   list-style: none !important;
   margin-left: 0 !important;
   margin-bottom: 0.5rem !important;
 }
 
-/* Nested lists */
+/* nested lists */
 ul ul,
 ul ol,
 ol ol,
 ol ul {
   margin: 0 !important;
   font-size: 100% !important;
+}
+
+/* warning button */
+.button.button-warning,
+button.button-warning,
+input[type="submit"].button-warning,
+input[type="reset"].button-warning,
+input[type="button"].button-warning {
+  color: #FFF;
+  background-color: rgba(orange, 0.75);
+  border-color: rgba(orange, 0.75);
+}
+
+.button.button-warning:hover,
+button.button-warning:hover,
+input[type="submit"].button-warning:hover,
+input[type="reset"].button-warning:hover,
+input[type="button"].button-warning:hover,
+.button.button-warning:focus,
+button.button-warning:focus,
+input[type="submit"].button-warning:focus,
+input[type="reset"].button-warning:focus,
+input[type="button"].button-warning:focus {
+  color: #FFF;
+  background-color: orange;
+  border-color: orange;
+}
+
+/* error button */
+.button.button-error,
+button.button-error,
+input[type="submit"].button-error,
+input[type="reset"].button-error,
+input[type="button"].button-error {
+  color: #FFF;
+  background-color: rgba(red, 0.75);
+  border-color: rgba(red, 0.75);
+}
+
+.button.button-error:hover,
+button.button-error:hover,
+input[type="submit"].button-error:hover,
+input[type="reset"].button-error:hover,
+input[type="button"].button-error:hover,
+.button.button-error:focus,
+button.button-error:focus,
+input[type="submit"].button-error:focus,
+input[type="reset"].button-error:focus,
+input[type="button"].button-error:focus {
+  color: #FFF;
+  background-color: red;
+  border-color: red;
+}
+
+/* okay button */
+.button.button-okay,
+button.button-okay,
+input[type="submit"].button-okay,
+input[type="reset"].button-okay,
+input[type="button"].button-okay {
+  color: #FFF;
+  background-color: rgba(green, 0.75);
+  border-color: rgba(green, 0.75);
+}
+
+.button.button-okay:hover,
+button.button-okay:hover,
+input[type="submit"].button-okay:hover,
+input[type="reset"].button-okay:hover,
+input[type="button"].button-okay:hover,
+.button.button-okay:focus,
+button.button-okay:focus,
+input[type="submit"].button-okay:focus,
+input[type="reset"].button-okay:focus,
+input[type="button"].button-okay:focus {
+  color: #FFF;
+  background-color: green;
+  border-color: green;
 }
