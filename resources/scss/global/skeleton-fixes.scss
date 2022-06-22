@@ -128,80 +128,108 @@ ol ul {
   font-size: 100% !important;
 }
 
-/* warning button */
-.button.button-warning,
-button.button-warning,
-input[type="submit"].button-warning,
-input[type="reset"].button-warning,
-input[type="button"].button-warning {
+/* red button */
+.button.button-red,
+button.button-red,
+input[type="submit"].button-red,
+input[type="reset"].button-red,
+input[type="button"].button-red {
   color: #FFF;
-  background-color: rgba(orange, 0.75);
-  border-color: rgba(orange, 0.75);
+  background-color: rgba(red, 0.50);
+  border-color: rgba(red, 0.50);
 }
 
-.button.button-warning:hover,
-button.button-warning:hover,
-input[type="submit"].button-warning:hover,
-input[type="reset"].button-warning:hover,
-input[type="button"].button-warning:hover,
-.button.button-warning:focus,
-button.button-warning:focus,
-input[type="submit"].button-warning:focus,
-input[type="reset"].button-warning:focus,
-input[type="button"].button-warning:focus {
-  color: #FFF;
-  background-color: orange;
-  border-color: orange;
-}
-
-/* error button */
-.button.button-error,
-button.button-error,
-input[type="submit"].button-error,
-input[type="reset"].button-error,
-input[type="button"].button-error {
+.button.button-red:hover,
+button.button-red:hover,
+input[type="submit"].button-red:hover,
+input[type="reset"].button-red:hover,
+input[type="button"].button-red:hover,
+.button.button-red:focus,
+button.button-red:focus,
+input[type="submit"].button-red:focus,
+input[type="reset"].button-red:focus,
+input[type="button"].button-red:focus {
   color: #FFF;
   background-color: rgba(red, 0.75);
   border-color: rgba(red, 0.75);
 }
 
-.button.button-error:hover,
-button.button-error:hover,
-input[type="submit"].button-error:hover,
-input[type="reset"].button-error:hover,
-input[type="button"].button-error:hover,
-.button.button-error:focus,
-button.button-error:focus,
-input[type="submit"].button-error:focus,
-input[type="reset"].button-error:focus,
-input[type="button"].button-error:focus {
+/* green button */
+.button.button-green,
+button.button-green,
+input[type="submit"].button-green,
+input[type="reset"].button-green,
+input[type="button"].button-green {
   color: #FFF;
-  background-color: red;
-  border-color: red;
+  background-color: rgba(green, 0.50);
+  border-color: rgba(green, 0.50);
 }
 
-/* okay button */
-.button.button-okay,
-button.button-okay,
-input[type="submit"].button-okay,
-input[type="reset"].button-okay,
-input[type="button"].button-okay {
+.button.button-green:hover,
+button.button-green:hover,
+input[type="submit"].button-green:hover,
+input[type="reset"].button-green:hover,
+input[type="button"].button-green:hover,
+.button.button-green:focus,
+button.button-green:focus,
+input[type="submit"].button-green:focus,
+input[type="reset"].button-green:focus,
+input[type="button"].button-green:focus {
   color: #FFF;
   background-color: rgba(green, 0.75);
   border-color: rgba(green, 0.75);
 }
 
-.button.button-okay:hover,
-button.button-okay:hover,
-input[type="submit"].button-okay:hover,
-input[type="reset"].button-okay:hover,
-input[type="button"].button-okay:hover,
-.button.button-okay:focus,
-button.button-okay:focus,
-input[type="submit"].button-okay:focus,
-input[type="reset"].button-okay:focus,
-input[type="button"].button-okay:focus {
+/* orange button */
+.button.button-orange,
+button.button-orange,
+input[type="submit"].button-orange,
+input[type="reset"].button-orange,
+input[type="button"].button-orange {
+  color: #555;
+  background-color: rgba(orange, 0.50);
+  border-color: rgba(orange, 0.50);
+}
+
+.button.button-orange:hover,
+button.button-orange:hover,
+input[type="submit"].button-orange:hover,
+input[type="reset"].button-orange:hover,
+input[type="button"].button-orange:hover,
+.button.button-orange:focus,
+button.button-orange:focus,
+input[type="submit"].button-orange:focus,
+input[type="reset"].button-orange:focus,
+input[type="button"].button-orange:focus {
+  color: #333;
+  background-color: rgba(orange, 0.75);
+  border-color: rgba(orange, 0.75);
+
+}
+
+/* purple button */
+.button.button-purple,
+button.button-purple,
+input[type="submit"].button-purple,
+input[type="reset"].button-purple,
+input[type="button"].button-purple {
   color: #FFF;
-  background-color: green;
-  border-color: green;
+  background-color: rgba(purple, 0.50);
+  border-color: rgba(purple, 0.50);
+}
+
+.button.button-purple:hover,
+button.button-purple:hover,
+input[type="submit"].button-purple:hover,
+input[type="reset"].button-purple:hover,
+input[type="button"].button-purple:hover,
+.button.button-purple:focus,
+button.button-purple:focus,
+input[type="submit"].button-purple:focus,
+input[type="reset"].button-purple:focus,
+input[type="button"].button-purple:focus {
+  color: #FFF;
+  background-color: rgba(purple, 0.75);
+  border-color: rgba(purple, 0.75);
+
 }

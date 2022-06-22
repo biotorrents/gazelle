@@ -538,9 +538,9 @@ class Discourse
      *
      * @see https://docs.discourse.org/#tag/Private-Messages/operation/listUserPrivateMessages
      */
-    public function listUserPrivateMessages(string $username)
+    public function listUserPrivateMessages()
     {
-        $response = $this->curl("topics/private-messages/{$username}.json");
+        $response = $this->curl("topics/private-messages/{$this->username}.json");
         return $response;
     }
 
@@ -550,9 +550,9 @@ class Discourse
      *
      * @see https://docs.discourse.org/#tag/Private-Messages/operation/getUserSentPrivateMessages
      */
-    public function getUserSentPrivateMessages(string $username)
+    public function getUserSentPrivateMessages()
     {
-        $response = $this->curl("topics/private-messages-sent/{$username}.json");
+        $response = $this->curl("topics/private-messages-sent/{$this->username}.json");
         return $response;
     }
 

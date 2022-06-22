@@ -15,12 +15,12 @@ Flight::route("/boards(/@categorySlug(/@topicSlug))", function ($categorySlug, $
     $app = App::go();
 
     # topic
-    if ($topicSlug !== null) {
+    if (empty($topicSlug)) {
         require_once "{$app->env->serverRoot}/sections/discourse/boards/topic.php";
     }
 
     # category
-    elseif ($topicSlug === null && $categorySlug !== null) {
+    elseif (empty($topicSlug) && empty($categorySlug)) {
         require_once "{$app->env->serverRoot}/sections/discourse/boards/category.php";
     }
 
@@ -50,18 +50,26 @@ Flight::route("/blog", function () {
 Flight::route("/@username/messages(/@filter)", function ($username, $filter) {
     $app = App::go();
 
-    $filter = Text::esc(strtolower($filter));
-    $allowedFilters = ["new", "unread", "archive", "sent"];
+    $allowedFilters = [
+        # e.g., https://boards.torrents.bio/u/ohm/messages/sent
+        "sent", "new", "unread", "archive",
+
+        # custom pages for gazelle features
+        "compose", "recommend", "staff",
+
+        # empty bypass
+        null,
+    ];
 
     if (!in_array($filter, $allowedFilters)) {
         Http::response(404);
     }
 
-    require_once "{$app->env->serverRoot}/sections/discourse/inbox.php";
+    # create and reply should be integrated
+    require_once "{$app->env->serverRoot}/sections/discourse/messages/index.php";
 });
 
 
-    /** TAGS */
     /** WIKI */
 
 # e.g., /wiki/bonus-points

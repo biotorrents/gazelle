@@ -1,0 +1,73 @@
+<form method="post">
+    <input type="text" id="query" name="query" placeholder="Search your private messages" />
+</form>
+
+
+<h3>Actions</h3>
+
+
+<form method="post">
+    {{ form_token(query.server.REQUEST_URI) }}
+
+    <select name="action" id="action">
+        <option value="">Do this to the selected messages</option>
+        <option value="markRead">Mark read</option>
+        <option value="markUnread">Mark unread</option>
+        <option value="archive">Archive</option>
+        <option value="delete">Delete</option>
+    </select>
+
+    <input type="submit" id="apply" name="apply" value="apply to selected" class="button-primary" />
+</form>
+
+
+
+<h3>Filters</h3>
+
+<form method="post">
+    {{ form_token(query.server.REQUEST_URI) }}
+
+    <input type="submit" id="inbox" name="inbox" value="inbox" class="button-primary" />
+
+    <input type="submit" id="sent" name="sent" value="sent" />
+
+    <input type="submit" id="new" name="new" value="new" class="button-red" />
+
+    <input type="submit" id="unread" name="unread" value="unread" class="button-orange" />
+
+    <input type="submit" id="archive" name="archive" value="archive" />
+</form>
+
+
+{% if latestTopics is defined %}
+<h3>Latest</h3>
+
+<ul>
+
+    {% for topic in latestTopics %}
+    <li>
+        <a href="/boards/{{ topic.categorySlug }}/{{ topic.slug }}">{{ topic.title }}</a>
+        <br />
+        {{ topic.last_posted_at|relativeTime }}
+    </li>
+    {% endfor %}
+
+</ul>
+{% endif %}
+
+
+{% if topic.suggested_topics is defined %}
+<h3>Suggested</h3>
+
+<ul>
+
+    {% for topic in topic.suggested_topics %}
+    <li>
+        <a href="/boards/{{ category }}/{{ topic.slug }}">{{ topic.title }}</a>
+        <br />
+        {{ topic.last_posted_at|relativeTime }}
+    </li>
+    {% endfor %}
+
+</ul>
+{% endif %}

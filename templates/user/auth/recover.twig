@@ -23,7 +23,7 @@
 
 {% if emailSent is null %}
 <form name="recover" id="recover" method="post">
-    {{ form_token("/recover") }}
+    {{ form_token(query.server.REQUEST_URI) }}
 
     <input type="email" name="email" id="email" placeholder="Email address" required />
 
@@ -42,7 +42,7 @@
 </p>
 
 <form name="recover" id="recover" method="post">
-    {{ form_token("/recover") }}
+    {{ form_token(query.server.REQUEST_URI) }}
 
     <input type="hidden" name="selector" value="{{ selector }}" />
 

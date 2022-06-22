@@ -34,7 +34,7 @@
 </p>
 
 <form method="post">
-    {{ form_token("/disabled") }}
+    {{ form_token(query.server.REQUEST_URI) }}
 
     {% if username is defined %}
     <input type="hidden" name="username" id="username" value="{{ username }}" />

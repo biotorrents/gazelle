@@ -41,9 +41,21 @@
     {# start javascript block #}
     {% block javascript %}
 
+    {# gazelle global #}
+    <script defer src="/js/global.js"></script>
+
+    {# core essentials #}
     <script defer src="/js/vendor/jquery.min.js"></script>
     <script defer src="/js/vendor/instantpage.min.js" type="module"></script>
+
+    {# easymde #}
+    <script defer src="/js/vendor/easymde.min.js"></script>
+    <script defer src="/js/vendor/highlight.min.js"></script>
+
+    {# plausible #}
+    {% if env.enablePlausible == true %}
     <script defer data-domain="{{ env.SITE_DOMAIN }}" src="https://stats.torrents.bio/js/plausible.js"></script>
+    {% endif %}
 
     {% endblock %}
     {# end javascript block #}
@@ -52,9 +64,16 @@
     {# start stylesheets block #}
     {% block stylesheets %}
 
+    {# gazelle global #}
+    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+
+    {# core essentials #}
     <link rel="stylesheet" type="text/css" href="/css/vendor/normalize.min.css">
     <link rel="stylesheet" type="text/css" href="/css/vendor/skeleton.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+
+    {# easymde #}
+    <link rel="stylesheet" type="text/css" href="/css/vendor/easymde.min.css" />
+    <link rel="stylesheet" type="text/css" href="/css/vendor/highlight.min.css" />
 
     {% if private %}
     {# private #}

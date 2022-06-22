@@ -1,49 +1,64 @@
-<textarea id="{{ id }}" name="{{ name }}" placeholder="{{ placeholder }}">{{ value }}</textarea>
+{#
+{% set vars = { "id": someVar, "name": someVar, "placeholder": someVar, "value": someVar } %}
+{% include "_base/textarea.twig with vars %}
+
+https://twig.symfony.com/doc/3.x/tags/include.html
+#}
+
+
+{% if required is defined %}
+{% set required = "required" %}
+
+{% else %}
+{% set required = "" %}
+
+{% endif %}
+
+
+<textarea id="{{ id }}" name="{{ name }}" placeholder="{{ placeholder }}" class="easyMDE">{{ value }}</textarea>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function (event) {
-        'use strict';
+    (() => {
 
-        const easyMDE = new EasyMDE({
-            // https://github.com/Ionaru/easy-markdown-editor#configuration
-            element: document.getElementById('{{ id }}'),
+        document.addEventListener("DOMContentLoaded", function (event) {
+            "use strict";
 
-            autoDownloadFontAwesome: false,
-            /*
-            autosave: {
-                enabled: true,
-                uniqueId: '{{ uuid }}'
-            },
-            */
-            forceSync: true,
-            inputStyle: 'contenteditable',
-            nativeSpellcheck: true,
-            renderingConfig: {
-                codeSyntaxHighlighting: true,
-            },
+            const easyMDE = new EasyMDE({
+                // https://github.com/Ionaru/easy-markdown-editor#configuration
+                element: document.getElementById("{{ id }}"),
 
-            toolbar: [
-                // https://github.com/Ionaru/easy-markdown-editor#toolbar-icons
-                'bold', 'italic', 'strikethrough', 'heading',
-                '|', 'code', 'quote', 'unordered-list', 'ordered-list', 'clean-block',
-                '|', 'link', 'image', 'table',
-                '|', 'preview', 'side-by-side', 'fullscreen',
-                '|', 'guide',
-                {
-                    name: 'plain',
-                    action: function customFunction(editor) {
-                        easyMDE.toTextArea();
-                    },
-                    className: 'fa fa-power-off',
-                    title: 'Plain Text Editor',
+                autoDownloadFontAwesome: false,
+                forceSync: true,
+                inputStyle: "contenteditable",
+                nativeSpellcheck: true,
+                renderingConfig: {
+                    codeSyntaxHighlighting: true,
                 },
-            ],
 
-            shortcuts: {
-                // https://github.com/Ionaru/easy-markdown-editor#keyboard-shortcuts
-                'toggleStrikethrough': 'Cmd-Alt-S',
-                'drawTable': 'Cmd-Alt-T',
-            },
+                toolbar: [
+                    // https://github.com/Ionaru/easy-markdown-editor#toolbar-icons
+                    "bold", "italic", "strikethrough", "heading",
+                    "|", "code", "quote", "unordered-list", "ordered-list", "clean-block",
+                    "|", "link", "image", "table",
+                    "|", "preview", "side-by-side", "fullscreen",
+                    "|", "guide",
+                    {
+                        name: "plain",
+                        action: function customFunction(editor) {
+                            easyMDE.toTextArea();
+                        },
+                        className: "fa fa-power-off",
+                        title: "Plain Text Editor",
+                    },
+                ],
+
+                shortcuts: {
+                    // https://github.com/Ionaru/easy-markdown-editor#keyboard-shortcuts
+                    "toggleStrikethrough": "Cmd-Alt-S",
+                    "drawTable": "Cmd-Alt-T",
+                },
+            });
         });
-    });
+
+    })();
 </script>

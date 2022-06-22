@@ -85,6 +85,9 @@ class Twig # extends Twig\Environment
         # globals
         $twig->addGlobal("env", $app->env);
         $twig->addGlobal("user", $app->user);
+
+        $query = Http::query();
+        $twig->addGlobal("query", $query);
         #!d($twig->getGlobals());exit;
 
         # https://github.com/paragonie/anti-csrf

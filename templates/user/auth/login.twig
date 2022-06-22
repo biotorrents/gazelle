@@ -36,7 +36,7 @@
 </p>
 
 <form id="u2f" method="post">
-    {{ form_token("/login") }}
+    {{ form_token(query.server.REQUEST_URI) }}
 
     <input type="hidden" name="username" value="{{ post.username }}" />
 
@@ -50,7 +50,7 @@
 
 {# regular login form #}
 <form name="login" id="login" method="post" autocomplete="off">
-    {{ form_token("/login") }}
+    {{ form_token(query.server.REQUEST_URI) }}
 
     {# username #}
     <input type="text" name="username" id="username" placeholder="Username" autofocus="autofocus" required />

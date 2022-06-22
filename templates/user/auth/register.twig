@@ -22,7 +22,7 @@
 
 {# start the registration form itself #}
 <form name="register" id="register" method="post" autocomplete="off">
-    {{ form_token("/register") }}
+    {{ form_token(query.server.REQUEST_URI) }}
 
     {# authKey #}
     {% if user.AuthKey is defined %}
