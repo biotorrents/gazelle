@@ -5,33 +5,27 @@ $app = App::go();
 $discourse = new Discourse();
 
 
-# topics
-$topics = $discourse->listCategoryTopics($categorySlug);
+# topic
+$topics = $discourse->listCategoryTopics("wiki");
 $topics = array_column($topics, "topics");
 $topics = array_shift($topics);
-#!d($topics);exit;
+$topics = array_shift($topics);
 
-# find the right one
-# (by path slug)
-$topicId ??= null;
-foreach ($topics as $topic) {
-    if ($topicSlug === $topic["slug"]) {
-        $topicId = $topic["id"];
-        break;
-    }
-}
-
+$topicId = $topics["id"];
 $topic = $discourse->getTopic($topicId);
-#!d($topic);exit;
+$post = array_shift($topic["post_stream"]);
+$post = array_shift($post);
+#!d($post);exit;
 
 
 $app->twig->display(
-    "discourse/forumTopic.twig",
+    "discourse/wiki/article.twig",
     [
         "breadcrumbs" => true,
         "sidebar" => true,
         "title" => $topic["title"],
-        "category" => $categorySlug,
+        "category" => "wiki",
         "topic" => $topic,
+        "post" => $post,
     ]
 );

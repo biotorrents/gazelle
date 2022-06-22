@@ -17,7 +17,7 @@ $topics = array_shift($topics);
 
 
 $app->twig->display(
-    "discourse/forumCategory.twig",
+    "discourse/boards/category.twig",
     [
         "breadcrumbs" => true,
         "sidebar" => true,

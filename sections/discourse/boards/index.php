@@ -34,7 +34,7 @@ foreach ($latestTopics as $key => $value) {
 
 
 $app->twig->display(
-    "discourse/forumIndex.twig",
+    "discourse/boards/index.twig",
     [
         "breadcrumbs" => true,
         "sidebar" => true,

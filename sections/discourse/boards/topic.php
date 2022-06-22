@@ -6,7 +6,7 @@ $discourse = new Discourse();
 
 
 # topics
-$topics = $discourse->listCategoryTopics("wiki");
+$topics = $discourse->listCategoryTopics($categorySlug);
 $topics = array_column($topics, "topics");
 $topics = array_shift($topics);
 #!d($topics);exit;
@@ -15,26 +15,23 @@ $topics = array_shift($topics);
 # (by path slug)
 $topicId ??= null;
 foreach ($topics as $topic) {
-    if ($articleSlug === $topic["slug"]) {
+    if ($topicSlug === $topic["slug"]) {
         $topicId = $topic["id"];
         break;
     }
 }
 
 $topic = $discourse->getTopic($topicId);
-$post = array_shift($topic["post_stream"]);
-$post = array_shift($post);
-#!d($post);exit;
+#!d($topic);exit;
 
 
 $app->twig->display(
-    "discourse/wikiArticle.twig",
+    "discourse/boards/topic.twig",
     [
         "breadcrumbs" => true,
         "sidebar" => true,
         "title" => $topic["title"],
-        "category" => "wiki",
+        "category" => $categorySlug,
         "topic" => $topic,
-        "post" => $post,
     ]
 );

@@ -16,17 +16,17 @@ Flight::route("/boards(/@categorySlug(/@topicSlug))", function ($categorySlug, $
 
     # topic
     if ($topicSlug !== null) {
-        require_once "{$app->env->serverRoot}/sections/discourse/forumTopic.php";
+        require_once "{$app->env->serverRoot}/sections/discourse/boards/topic.php";
     }
 
     # category
     elseif ($topicSlug === null && $categorySlug !== null) {
-        require_once "{$app->env->serverRoot}/sections/discourse/forumCategory.php";
+        require_once "{$app->env->serverRoot}/sections/discourse/boards/category.php";
     }
 
     # index
     else {
-        require_once "{$app->env->serverRoot}/sections/discourse/forumIndex.php";
+        require_once "{$app->env->serverRoot}/sections/discourse/boards/index.php";
     }
 });
 
@@ -35,9 +35,9 @@ Flight::route("/boards(/@categorySlug(/@topicSlug))", function ($categorySlug, $
 
 
 # blog
-Flight::route("/boards", function () {
+Flight::route("/blog", function () {
     $app = App::go();
-    require_once "{$app->env->serverRoot}/sections/discourse/forumIndex.php";
+    require_once "{$app->env->serverRoot}/sections/discourse/blog/index.php";
 });
 
 
@@ -46,25 +46,18 @@ Flight::route("/boards", function () {
     /** PRIVATE MESSAGES */
 
 
-# inbox
+# inbox and outbox
 Flight::route("/@username/messages(/@filter)", function ($username, $filter) {
     $app = App::go();
 
     $filter = Text::esc(strtolower($filter));
-    $allowedFilters = ["new", "unread", "archive"];
+    $allowedFilters = ["new", "unread", "archive", "sent"];
 
     if (!in_array($filter, $allowedFilters)) {
         Http::response(404);
     }
 
     require_once "{$app->env->serverRoot}/sections/discourse/inbox.php";
-});
-
-
-# outbox
-Flight::route("/@username/messages/sent", function () {
-    $app = App::go();
-    require_once "{$app->env->serverRoot}/sections/discourse/outbox.php";
 });
 
 
@@ -77,11 +70,11 @@ Flight::route("/wiki(/@articleSlug)", function ($articleSlug) {
 
     # article
     if ($articleSlug !== null) {
-        require_once "{$app->env->serverRoot}/sections/discourse/wikiArticle.php";
+        require_once "{$app->env->serverRoot}/sections/discourse/wiki/article.php";
     }
 
     # index
     else {
-        require_once "{$app->env->serverRoot}/sections/discourse/wikiIndex.php";
+        require_once "{$app->env->serverRoot}/sections/discourse/wiki/index.php";
     }
 });
