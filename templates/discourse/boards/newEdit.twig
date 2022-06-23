@@ -1,0 +1,45 @@
+{% extends "base.twig" %}
+
+{% if form is not defined %}
+{% set form = "create" %}
+{% endif %}
+
+
+{% block content %}
+
+{# create/edit form #}
+<section class="createTopicPostPM">
+    {% if form == "create" %}
+    <h3>Create a new thread</h3>
+    {% endif %}
+
+    {% if form == "edit" %}
+    <h3>Edit your thread</h3>
+    {% endif %}
+
+    <form method="post">
+        {{ form_token(query.server.REQUEST_URI) }}
+
+        <input type="text" id="subject" name="subject" placeholder="Thread subject line" value="" required />
+
+        <input type="text" id="excerpt" name="excerpt" placeholder="Short thread summary" value="" />
+
+        <input type="text" id="tags" name="tags" placeholder="#thread #tags #here" value="" />
+
+        {% set vars = { "id": "body", "name": "body", "placeholder": "Draft your post", "value": "" } %}
+        {{ include("_base/textarea.twig", vars)|raw }}
+
+        <input type="submit" id="{{ form }}" name="{{ form }}" value="post thread" class="button-primary" />
+
+        <input type="button" id="preview" name="preview" value="preview" />
+    </form>
+</section>
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+{{ include("discourse/boards/sidebar.twig") }}
+
+{% endblock %}

@@ -13,6 +13,13 @@ if ($app->env->enableDiscourse) {
 
     /** FORUMS */
 
+    # new/edit thread
+    # must come first
+    Flight::route("/boards/post", function () {
+        $app = App::go();
+        require_once "{$app->env->serverRoot}/sections/discourse/boards/newEdit.php";
+    });
+
     # e.g., /boards/staff/about-the-staff-category
     Flight::route("/boards(/@categorySlug(/@topicSlug))", function ($categorySlug, $topicSlug) {
         $app = App::go();

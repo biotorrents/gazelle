@@ -1,5 +1,7 @@
 <form method="post">
-    <input type="text" id="query" name="query" placeholder="Search the forums" />
+    {{ form_token(query.server.REQUEST_URI) }}
+
+    <input type="text" id="search" name="search" placeholder="Search the forums" />
 </form>
 
 
@@ -48,3 +50,13 @@
 
 </ul>
 {% endif %}
+
+
+<h3>Rules</h3>
+
+<p>
+    Please consider reading through the
+    <a href="/rules/chat">social norms</a>
+    before participating in the boards.
+    Thanks!
+</p>

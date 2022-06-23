@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+Http::csrf();
+
 $app = App::go();
 $discourse = new Discourse();
 
@@ -47,7 +49,7 @@ $app->twig->display(
     [
         "breadcrumbs" => true,
         "sidebar" => true,
-        "title" => $topic["title"],
+        "title" => "{$topic["title"]} {$app->env->separator} Wiki",
         "category" => "wiki",
         "topic" => $topic,
         "post" => $post,

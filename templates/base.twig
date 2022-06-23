@@ -26,6 +26,7 @@
 {% set layoutSidebar = "" %}
 {% endif %}
 
+
 <!DOCTYPE html>
 <html>
 
@@ -40,6 +41,13 @@
 
     {# start javascript block #}
     {% block javascript %}
+
+    {# extra js #}
+    {% if js is defined %}
+    {% for js in js %}
+    <script defer src="/js/{{ js }}.js"></script>
+    {% endfor %}
+    {% endif %}
 
     {# gazelle global #}
     <script defer src="/js/global.js"></script>
@@ -64,6 +72,13 @@
     {# start stylesheets block #}
     {% block stylesheets %}
 
+    {# extra css #}
+    {% if css is defined %}
+    {% for css in css %}
+    <link rel="stylesheet" type="text/css" href="/css/{{ css }}.css" />
+    {% endfor %}
+    {% endif %}
+
     {# gazelle global #}
     <link rel="stylesheet" type="text/css" href="/css/global.css" />
 
@@ -81,7 +96,6 @@
     {% else %}
     {# public #}
     <link rel="stylesheet" type="text/css" href="/css/public.css" />
-
     {% endif %}
 
     {% if env.dev is defined %}

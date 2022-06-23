@@ -95,6 +95,14 @@ fieldset {
   margin-bottom: 0 !important;
 }
 
+/* easymde button fix */
+div.editor-toolbar {
+  button {
+    font-size: revert;
+    line-height: revert;
+  }
+}
+
 /* block elements */
 pre,
 blockquote,

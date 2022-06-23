@@ -8,8 +8,8 @@
         <th class="center"></th>
         <th class="u-full-width">Topic</th>
         <th class="center">Replies</th>
-        <th class="center">Views</th>
-        <th class="right">Activity</th>
+        {# <th class="center">Views</th> #}
+        <th class="right">Last activity</th>
     </tr>
 
     {% for topic in topics %}
@@ -33,7 +33,14 @@
         </td>
 
         <td>
+            {# title #}
             <a href="/boards/{{ category.slug}}/{{ topic.slug }}">{{ topic.title }}</a>
+
+            {# excerpt #}
+            {% if topic.excerpt is defined %}
+            <br />
+            {{ topic.excerpt }}
+            {% endif %}
 
             {% if topic.tags is not empty %}
             <br />
@@ -47,7 +54,8 @@
         </td>
 
         <td class="center">{{ topic.reply_count }}</td>
-        <td class="center">{{ topic.views }}</td>
+
+        {# <td class="center">{{ topic.views }}</td> #}
 
         {% if topic.last_posted_at is not null %}
         <td class="right nobr">{{ topic.last_posted_at|relativeTime }}</td>

@@ -16,6 +16,10 @@ $fontPath: "/fonts/";
 @import url($fontPath + "fa/css/all.min.css");
 $fontAwesome: "FontAwesome";
 
+i.fa-thin {
+  font-weight: 300;
+}
+
 /*
 .fa,
 .fas,

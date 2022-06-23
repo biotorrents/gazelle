@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+Http::csrf();
+
 $app = App::go();
 $discourse = new Discourse();
 

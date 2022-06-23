@@ -41,6 +41,24 @@ class Http
         
         exit;
     }
+
+
+    /**
+     * csrf
+     *
+     * @see https://github.com/paragonie/anti-csrf
+     */
+    public static function csrf()
+    {
+        $csrf = new ParagonIE\AntiCSRF\AntiCSRF;
+        if (!empty($_POST)) {
+            if ($csrf->validateRequest()) {
+                return true;
+            } else {
+                self::response(403);
+            }
+        }
+    }
     
 
     /**

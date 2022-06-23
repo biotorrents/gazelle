@@ -21,12 +21,53 @@
             <a href="/user/{{ post.username }}" title="profile">{{ post.username }}</a>
         </td>
 
-        <td>
+        <td id="post-{{post.post_number }}">
+            {# discourse outputs safe html #}
             {{ post.cooked|raw }}
 
-            <aside class="right">
-                <a class="button" href="#" title="profile">Quote</a>
-                <a class="button" href="#" title="profile">Like</a>
+            <aside class="postActions">
+                Last activity:
+                {{ post.updated_at|relativeTime }}
+
+                <span class="spacer"></span>
+
+                <a onclick="" title="collapse" class="hidden">
+                    <i class="fa-solid fa-angles-right"></i>
+                </a>
+
+                <a onclick="" title="like this post">
+                    <i class="fa-thin fa-heart"></i>
+                </a>
+
+                <a onclick="" title="share a link to this post">
+                    <i class="fa-thin fa-link"></i>
+                </a>
+
+                <a onclick="" title="show more">
+                    <i class="fa-thin fa-ellipsis"></i>
+                </a>
+
+                <span class="hidden">
+                    <a onclick="" title="privately flag this post for attention">
+                        <i class="fa-thin fa-flag"></i>
+                    </a>
+
+                    <a onclick="" title="edit this post">
+                        <i class="fa-thin fa-pencil"></i>
+                    </a>
+
+                    <a onclick="" title="bookmark this post">
+                        <i class="fa-thin fa-bookmark"></i>
+                    </a>
+
+                    <a onclick="" title="post admin actions">
+                        <i class="fa-thin fa-wrench"></i>
+                    </a>
+                </span>
+
+                <a onclick="" title="begin composing a reply to this post" class="reply">
+                    <i class="fa-thin fa-reply"></i>
+                </a>
             </aside>
 
 

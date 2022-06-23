@@ -194,6 +194,14 @@ class Json
 
 
     /**
+     * selfTest
+     */
+    public function selfTest()
+    {
+    }
+
+
+    /**
      * fetch
      *
      * Get resources over the API to populate Gazelle display.

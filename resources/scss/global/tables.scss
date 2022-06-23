@@ -90,11 +90,13 @@ table.torrent-header {
  * boards/forums/discourse
  */
 
+/* forum index */
 table#forumIndex,
 table#privateMessages {
   width: 100%;
 }
 
+/* forum thread */
 table#forumTopic {
   td {
     vertical-align: top;
@@ -106,8 +108,35 @@ table#forumTopic {
   }
 }
 
+/* wiki */
 table#wikiArticle {
   td {
     border-bottom: none;
+  }
+}
+
+/* available reactions to posts */
+aside.postActions {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+  gap: 2rem;
+
+  background: whitesmoke;
+  padding: 1rem;
+
+  .spacer {
+    flex-grow: 1;
+  }
+
+  a {
+    text-decoration: none;
+
+    &.reply {
+      &:after {
+        content: "Reply";
+      }
+    }
+
   }
 }
