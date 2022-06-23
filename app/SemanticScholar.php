@@ -113,7 +113,7 @@ class SemanticScholar
 
 
     /**
-     * upsert
+     * scrape
      *
      * Get everything related to a basic object.
      * Mostly used for packaging into MySQL format:
@@ -129,40 +129,43 @@ class SemanticScholar
      *   KEY `id` (`id`,`torrentId`) USING BTREE,
      *   PRIMARY KEY (`id`,`torrentId`,`object`)
      * ) ENGINE=InnoDB;
-     *
-     * @param $object one of ["paper", "author", "dataset"]
      */
-    public function fetchAll(string $object)
+    public function scrape()
     {
-        /*
-        $object = Text::esc(strtolower($object));
-        $allowedObjects = ["paper", "author", "dataset"];
+        $endpoints = [];
 
-        if (!in_array($object, $allowedObjects)) {
-            throw new Exception("\$object must be one of paper, author, dataset; got {$object}");
-        }
+        foreach ($this->params as $key => $value) {
+            if (!$value) {
+                continue;
+            }
 
-        # from the api endpoints
-        switch ($object) {
-            case "paper":
-                $endpoints = ["paperDetails", "paperAuthors", "paperCitations", "paperReferences"];
-                break;
+            switch ($key) {
+                case "paperId":
+                    array_push(
+                        $endpoints,
+                        "paperDetails",
+                        "paperAuthors",
+                        "paperCitations",
+                        "paperReferences",
+                        "singlePositiveRecommends"
+                    );
+                    break;
 
-            case "author":
-                $endpoints = ["authorDetails", "authorPapers"];
-                break;
-
-            case "recommendations":
-                $endpoints = ["singlePositiveRecommends"];
-                break;
-
-            case "dataset":
-                $endpoints = ["listReleaseDatasets"];
-                break;
-
-            default:
-                $endpoints = [];
-                break;
+                case "authorId":
+                    array_push(
+                        $endpoints,
+                        "authorDetails",
+                        "authorPapers"
+                    );
+                    break;
+                
+                case "releaseId":
+                    array_push(
+                        $endpoints,
+                        "listReleaseDatasets"
+                    );
+                    break;
+            }
         }
 
         $data ??= [];
@@ -175,9 +178,7 @@ class SemanticScholar
             }
         }
 
-        $out = [$object => $data];
-        return $out;
-        */
+        return $data;
     }
 
 
@@ -593,7 +594,7 @@ class SemanticScholar
         ];
 
         $uri = "{$this->recommendationsUri}/papers/forpaper/{$this->params["paperId"]}";
-        $response = $this->curl($uri, $this->paperFields);
+        $response = $this->curl($uri, $fields);
 
         return $response;
     }
