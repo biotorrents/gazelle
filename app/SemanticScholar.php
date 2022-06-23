@@ -19,6 +19,10 @@ class SemanticScholar
     private $recommendationsUri = "https://api.semanticscholar.org/recommendations/v1";
     private $datasetsUri = "https://api.semanticscholar.org/datasets/v1";
 
+    # fallback api result limit
+    # 50 = half of SS's default
+    private $limit = 50;
+
     # construct params
     private $params = [
         "paperId" => null,
@@ -96,6 +100,8 @@ class SemanticScholar
         if (!empty($search)) {
             $query .= "&query={$search}";
         }
+        $query .= "&limit={$this->limit}";
+
 
         # okay
         $uri = "{$uri}/{$query}";
@@ -144,9 +150,9 @@ class SemanticScholar
                     array_push(
                         $endpoints,
                         "paperDetails",
-                        "paperAuthors",
-                        "paperCitations",
-                        "paperReferences",
+                        #"paperAuthors",
+                        #"paperCitations",
+                        #"paperReferences",
                         "singlePositiveRecommends"
                     );
                     break;
@@ -155,7 +161,7 @@ class SemanticScholar
                     array_push(
                         $endpoints,
                         "authorDetails",
-                        "authorPapers"
+                        #"authorPapers"
                     );
                     break;
                 
@@ -296,8 +302,8 @@ class SemanticScholar
 
 
             ],
-
-           "embedding",
+            
+            #"embedding",
             "tldr",
         ];
 
@@ -325,6 +331,7 @@ class SemanticScholar
             "paperCount",
             "citationCount",
             "hIndex",
+
             "papers" => [
                 "externalIds",
                 "url",
@@ -443,6 +450,7 @@ class SemanticScholar
             "paperCount",
             "citationCount",
             "hIndex",
+
             "papers" => [
                 "externalIds",
                 "url",
@@ -487,6 +495,7 @@ class SemanticScholar
             "paperCount",
             "citationCount",
             "hIndex",
+
             "papers" => [
                 "externalIds",
                 "url",
@@ -590,7 +599,6 @@ class SemanticScholar
             "fieldsOfStudy",
             "s2FieldsOfStudy",
             "authors",
-                   
         ];
 
         $uri = "{$this->recommendationsUri}/papers/forpaper/{$this->params["paperId"]}";
