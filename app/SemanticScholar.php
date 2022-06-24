@@ -6,6 +6,7 @@ declare(strict_types = 1);
  * SemanticScholar
  *
  * Helper class for the Academic Graph API and others.
+ * The scrape function is pretty much what you want.
  *
  * @see https://api.semanticscholar.org/api-docs/graph
  * @see https://api.semanticscholar.org/api-docs/recommendations
@@ -19,7 +20,7 @@ class SemanticScholar
     private $recommendationsUri = "https://api.semanticscholar.org/recommendations/v1";
     private $datasetsUri = "https://api.semanticscholar.org/datasets/v1";
 
-    # fallback api result limit
+    # api result limit
     # 50 = half of SS's default
     private $limit = 50;
 
@@ -86,6 +87,7 @@ class SemanticScholar
             if (!is_array($field)) {
                 $query .= "{$field},";
             } else {
+                # not recursive
                 foreach ($field as $value) {
                     $query .= "{$key}.{$value},";
                     #!d($key, $value);
@@ -100,10 +102,9 @@ class SemanticScholar
         if (!empty($search)) {
             $query .= "&query={$search}";
         }
-        $query .= "&limit={$this->limit}";
-
 
         # okay
+        $query .= "&limit={$this->limit}";
         $uri = "{$uri}/{$query}";
 
         # https://www.php.net/manual/en/curl.examples-basic.php
@@ -121,23 +122,14 @@ class SemanticScholar
     /**
      * scrape
      *
-     * Get everything related to a basic object.
-     * Mostly used for packaging into MySQL format:
+     * Get everything related to the available objects.
+     * Mostly used for packaging into MySQL format.
      *
-     * CREATE TABLE `semanticScholar` (
-     *   `id` VARCHAR(255) NOT NULL,
-     *   `torrentId` INT,
-     *   `artistId` INT,
-     *   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-     *   `updated` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-     *   `object` VARCHAR(25) NOT NULL,
-     *   `json` TEXT,
-     *   KEY `id` (`id`,`torrentId`) USING BTREE,
-     *   PRIMARY KEY (`id`,`torrentId`,`object`)
-     * ) ENGINE=InnoDB;
+     * @param bool $save true to write json to db
      */
-    public function scrape()
+    public function scrape(bool $save = false)
     {
+        # determined by $this
         $endpoints = [];
 
         foreach ($this->params as $key => $value) {
@@ -145,40 +137,54 @@ class SemanticScholar
                 continue;
             }
 
+            # fn names
             switch ($key) {
                 case "paperId":
-                    array_push(
-                        $endpoints,
-                        "paperDetails",
-                        #"paperAuthors",
-                        #"paperCitations",
-                        #"paperReferences",
-                        "singlePositiveRecommends"
-                    );
+                    $endpoints[$value] = array_merge($endpoints, ["paper", "recommendations"]);
                     break;
 
                 case "authorId":
-                    array_push(
-                        $endpoints,
-                        "authorDetails",
-                        #"authorPapers"
-                    );
+                    $endpoints[$value] = array_merge($endpoints, ["author"]);
                     break;
                 
                 case "releaseId":
-                    array_push(
-                        $endpoints,
-                        "listReleaseDatasets"
-                    );
+                    $endpoints[$value] = array_merge($endpoints, ["datasets"]);
                     break;
             }
         }
 
+        # populate data
         $data ??= [];
-        foreach ($endpoints as $endpoint) {
+        foreach ($endpoints as $id => $info) {
+            foreach ($info as $endpoint) {
+                try {
+                    $data[$id][$endpoint] ??= [];
+                    $data[$id][$endpoint] = call_user_func([$this, $endpoint]);
+                } catch (Exception $e) {
+                    return $e->getMesage();
+                }
+            }
+        }
+
+        # try to get dataset download links
+        $datasets = array_column($data, "datasets");
+        if (!empty($this->releaseId) && !empty($datasets)) {
+            foreach ($datasets as $dataset) {
+                try {
+                    $data[$this->releaseId]["downloadLinks"] ??= [];
+                    $data[$this->releaseId]["downloadLinks"][$dataset["name"]]
+                        = $this->downloadLinks($dataset["name"])
+                        ?? null;
+                } catch (Exception $e) {
+                    return $e->getMesage();
+                }
+            }
+        }
+
+        # upsert?
+        if ($save) {
             try {
-                $data[$endpoint] ??= [];
-                $data[$endpoint] = call_user_func([$this, $endpoint]);
+                $this->upsert($data);
             } catch (Exception $e) {
                 return $e->getMesage();
             }
@@ -188,17 +194,69 @@ class SemanticScholar
     }
 
 
+    /**
+     * upsert
+     *
+     * CREATE TABLE `semanticScholar` (
+     *   `id` VARCHAR(100) NOT NULL,
+     *   `externalIds` VARCHAR(255) NOT NULL,
+     *   `torrentGroupId` INT,
+     *   `artistIds` INT,
+     *   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+     *   `updated` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+     *   `json` TEXT,
+     *   KEY `id` (`id`,`torrentId`) USING BTREE,
+     *   PRIMARY KEY (`id`,`torrentId`)
+     * ) ENGINE=InnoDB;
+
+     */
+    private function upsert($data)
+    {
+        $app = App::go();
+
+        foreach ($data as $id => $data) {
+            $json = json_encode($data);
+            $query = "
+                insert into semanticScholar
+                (id, externalIds, torrentGroupId, artistIds, created, updated, json)
+                values (:id, :externalIds, :torrentGroupId, :artistIds, :created, :updated, :json)
+                on duplicate key update json = :json
+            ";
+
+            $vars = [
+                "id" => $id,
+                "externalIds" => null, # todo
+                "torrentGroupId" => null, # todo
+                "artistIds" => null, # todo
+                "json" => $json,
+            ];
+
+            $app->dbNew->do($query, $vars);
+        }
+    }
+
+
     /** ACADEMIC GRAPH API */
 
 
     /**
-     * paperSearch
+     * search
+     *
+     * Search the Academic Graph API for papers and authors.
+     *
+     * @param string $query get results related to this
+     * @param string $what one of ["papers", "authors"]
      *
      * @see https://api.semanticscholar.org/api-docs/graph#operation/get_graph_get_paper_search
      */
-    public function paperSearch(string $query)
+    public function search(string $query, string $what = "papers")
     {
-        $fields = [
+        if (!in_array($what, ["papers", "authors"])) {
+            throw new Exception("expected [\"papers\", \"authors\"], got {$what}");
+        }
+
+        # it doesn't ignore invalid
+        $paperFields = [
             "externalIds",
             "url",
             "title",
@@ -217,19 +275,60 @@ class SemanticScholar
             "authors",
         ];
        
-        $uri = "{$this->academicGraphUri}/paper/search";
-        $response = $this->curl($uri, $fields, $query);
+        $authorFields = [
+            "externalIds",
+            "url",
+            "name",
+            "aliases",
+            "affiliations",
+            "homepage",
+            "paperCount",
+            "citationCount",
+            "hIndex",
 
-        return $response;
+            "papers" => [
+                "externalIds",
+                "url",
+                "title",
+                "abstract",
+                "venue",
+                "year",
+                "referenceCount",
+                "citationCount",
+                "influentialCitationCount",
+                "isOpenAccess",
+                "fieldsOfStudy",
+                "s2FieldsOfStudy",
+                "publicationTypes",
+                "publicationDate",
+                "journal",
+                "authors",
+            ],
+        ];
+
+        # api calls
+        if ($what === "papers") {
+            $uri = "{$this->academicGraphUri}/paper/search";
+            $response = $this->curl($uri, $paperFields, $query);
+
+            return $response;
+        }
+
+        if ($what === "authors") {
+            $uri = "{$this->academicGraphUri}/author/search";
+            $response = $this->curl($uri, $authorFields, $query);
+
+            return $response;
+        }
     }
 
 
     /**
-     * paperDetails
+     * paper
      *
      * @see https://api.semanticscholar.org/api-docs/graph#operation/get_graph_get_paper
      */
-    public function paperDetails()
+    public function paper()
     {
         $fields = [
             "externalIds",
@@ -315,175 +414,11 @@ class SemanticScholar
 
 
     /**
-     * paperAuthors
-     *
-     * @see https://api.semanticscholar.org/api-docs/graph#operation/get_graph_get_paper_authors
-     */
-    public function paperAuthors()
-    {
-        $fields = [
-            "externalIds",
-            "url",
-            "name",
-            "aliases",
-            "affiliations",
-            "homepage",
-            "paperCount",
-            "citationCount",
-            "hIndex",
-
-            "papers" => [
-                "externalIds",
-                "url",
-                "title",
-                "abstract",
-                "venue",
-                "year",
-                "referenceCount",
-                "citationCount",
-                "influentialCitationCount",
-                "isOpenAccess",
-                "fieldsOfStudy",
-                "s2FieldsOfStudy",
-                "publicationTypes",
-                "publicationDate",
-                "journal",
-                "authors",
-            ],
-        ];
-
-        $uri = "{$this->academicGraphUri}/paper/{$this->params["paperId"]}/authors";
-        $response = $this->curl($uri, $fields);
-
-        return $response;
-    }
-
-
-    /**
-     * paperCitations
-     *
-     * @see https://api.semanticscholar.org/api-docs/graph#operation/get_graph_get_paper_citations
-     */
-    public function paperCitations()
-    {
-        $fields = [
-            "contexts",
-            "intents",
-            "isInfluential",
-            "corpusId",
-            "externalIds",
-            "url",
-            "title",
-            "abstract",
-            "venue",
-            "year",
-            "referenceCount",
-            "citationCount",
-            "influentialCitationCount",
-            "isOpenAccess",
-            "fieldsOfStudy",
-            "s2FieldsOfStudy",
-            "publicationTypes",
-            "publicationDate",
-            "journal",
-            "authors",
-        ];
-
-        $uri = "{$this->academicGraphUri}/paper/{$this->params["paperId"]}/citations";
-        $response = $this->curl($uri, $fields);
-
-        return $response;
-    }
-
-
-    /**
-     * paperReferences
-     *
-     * @see https://api.semanticscholar.org/api-docs/graph#operation/get_graph_get_paper_references
-     */
-    public function paperReferences()
-    {
-        $fields = [
-            "contexts",
-            "intents",
-            "isInfluential",
-            "corpusId",
-            "externalIds",
-            "url",
-            "title",
-            "abstract",
-            "venue",
-            "year",
-            "referenceCount",
-            "citationCount",
-            "influentialCitationCount",
-            "isOpenAccess",
-            "fieldsOfStudy",
-            "s2FieldsOfStudy",
-            "publicationTypes",
-            "publicationDate",
-            "journal",
-            "authors",
-        ];
-
-        $uri = "{$this->academicGraphUri}/paper/{$this->params["paperId"]}/references";
-        $response = $this->curl($uri, $fields);
-
-        return $response;
-    }
-
-
-    /**
-     * authorSearch
-     *
-     * @see https://api.semanticscholar.org/api-docs/graph#operation/get_graph_get_author_search
-     */
-    public function authorSearch(string $query)
-    {
-        $fields = [
-            "externalIds",
-            "url",
-            "name",
-            "aliases",
-            "affiliations",
-            "homepage",
-            "paperCount",
-            "citationCount",
-            "hIndex",
-
-            "papers" => [
-                "externalIds",
-                "url",
-                "title",
-                "abstract",
-                "venue",
-                "year",
-                "referenceCount",
-                "citationCount",
-                "influentialCitationCount",
-                "isOpenAccess",
-                "fieldsOfStudy",
-                "s2FieldsOfStudy",
-                "publicationTypes",
-                "publicationDate",
-                "journal",
-                "authors",
-            ],
-        ];
-
-        $uri = "{$this->academicGraphUri}/author/search";
-        $response = $this->curl($uri, $fields, $query);
-
-        return $response;
-    }
-
-
-    /**
-     * authorDetails
+     * author
      *
      * @see https://api.semanticscholar.org/api-docs/graph#operation/get_graph_get_author
      */
-    public function authorDetails()
+    public function author()
     {
         $fields = [
             "externalIds",
@@ -523,67 +458,15 @@ class SemanticScholar
     }
 
 
-    /**
-     * authorPapers
-     *
-     * @see https://api.semanticscholar.org/api-docs/graph#operation/get_graph_get_author_papers
-     */
-    public function authorPapers()
-    {
-        $fields = [
-
-            "externalIds",
-            "url",
-            "title",
-            "abstract",
-            "venue",
-            "year",
-            "referenceCount",
-            "citationCount",
-            "influentialCitationCount",
-            "isOpenAccess",
-            "fieldsOfStudy",
-            "s2FieldsOfStudy",
-            "publicationTypes",
-            "publicationDate",
-            "journal",
-            "authors",
-
-            "citations" => [
-                "corpusId",
-                "url",
-                "title",
-                "venue",
-                "year",
-                "authors",
-            ],
-
-            "references" => [
-                "corpusId",
-                "url",
-                "title",
-                "venue",
-                "year",
-                "authors",
-            ],
-        ];
-
-        $uri = "{$this->academicGraphUri}/author/{$this->params["authorId"]}/papers";
-        $response = $this->curl($uri, $fields);
-
-        return $response;
-    }
-
-
     /** RECOMMENDATIONS API */
 
 
     /**
-     * singlePositiveRecommends
+     * recommendations
      *
      * @see https://api.semanticscholar.org/api-docs/recommendations#operation/get_papers_for_paper
      */
-    public function singlePositiveRecommends()
+    public function recommendations()
     {
         $fields = [
             "externalIds",
@@ -612,11 +495,11 @@ class SemanticScholar
 
 
     /**
-     * listReleases
+     * releases
      *
      * @see https://api.semanticscholar.org/api-docs/datasets#operation/get_releases
      */
-    public function listReleases()
+    public function releases()
     {
         $uri = "{$this->datasetsUri}/release";
         $response = $this->curl($uri);
@@ -626,11 +509,11 @@ class SemanticScholar
 
 
     /**
-     * listReleaseDatasets
+     * datasets
      *
      * @see https://api.semanticscholar.org/api-docs/datasets#operation/get_release
      */
-    public function listReleaseDatasets()
+    public function datasets()
     {
         $uri = "{$this->datasetsUri}/release/{$this->params["releaseId"]}";
         $response = $this->curl($uri);
@@ -640,11 +523,11 @@ class SemanticScholar
 
 
     /**
-     * datasetDownloadLinks
+     * downloadLinks
      */
-    public function datasetDownloadLinks(string $datasetName)
+    public function downloadLinks(string $datasetName)
     {
-        $uri = "{$this->datasetsUri}/release/{$this->params["releaseId"]}/dataset/$datasetName}";
+        $uri = "{$this->datasetsUri}/release/{$this->params["releaseId"]}/dataset/{$datasetName}";
         $response = $this->curl($uri);
 
         return $response;
