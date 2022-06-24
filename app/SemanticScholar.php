@@ -21,8 +21,8 @@ class SemanticScholar
     private $datasetsUri = "https://api.semanticscholar.org/datasets/v1";
 
     # api result limit
-    # 50 = half of SS's default
-    private $limit = 50;
+    # default = 100
+    private $limit = 10;
 
     # construct params
     private $params = [
@@ -114,7 +114,7 @@ class SemanticScholar
         $info = curl_getinfo($ch);
         curl_close($ch);
 
-        $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
+        #$app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 
@@ -126,8 +126,9 @@ class SemanticScholar
      * Mostly used for packaging into MySQL format.
      *
      * @param bool $save true to write json to db
+     * @param array $options extra metadata (see upsert)
      */
-    public function scrape(bool $save = false)
+    public function scrape(bool $save = false, array $options = [])
     {
         # determined by $this
         $endpoints = [];
@@ -184,9 +185,9 @@ class SemanticScholar
         # upsert?
         if ($save) {
             try {
-                $this->upsert($data);
-            } catch (Exception $e) {
-                return $e->getMesage();
+                $this->upsert($data, $options);
+            } catch (PDOException $e) {
+                return $e;
             }
         }
 
@@ -196,43 +197,65 @@ class SemanticScholar
 
     /**
      * upsert
-     *
-     * CREATE TABLE `semanticScholar` (
-     *   `id` VARCHAR(100) NOT NULL,
-     *   `externalIds` VARCHAR(255) NOT NULL,
-     *   `torrentGroupId` INT,
-     *   `artistIds` INT,
-     *   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-     *   `updated` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-     *   `json` TEXT,
-     *   KEY `id` (`id`,`torrentId`) USING BTREE,
-     *   PRIMARY KEY (`id`,`torrentId`)
-     * ) ENGINE=InnoDB;
-
      */
-    private function upsert($data)
+    private function upsert(array $data, array $options = [])
     {
         $app = App::go();
 
+        if (empty($options["torrentGroupId"])) {
+            throw new Exception("you need to pass at least \$options[\"torrentGroupId\"]");
+        }
+
         foreach ($data as $id => $data) {
+            # don't write errors to db
+            $error = array_column($data, "error") ?? [];
+            if (!empty($error)) {
+                continue;
+            }
+            
+            # serialize
             $json = json_encode($data);
+
             $query = "
                 insert into semanticScholar
-                (id, externalIds, torrentGroupId, artistIds, created, updated, json)
-                values (:id, :externalIds, :torrentGroupId, :artistIds, :created, :updated, :json)
+                (id, externalIds, torrentGroupId, artistIds, json)
+                values (:id, :externalIds, :torrentGroupId, :artistIds, :json)
                 on duplicate key update json = :json
             ";
 
             $vars = [
                 "id" => $id,
-                "externalIds" => null, # todo
-                "torrentGroupId" => null, # todo
-                "artistIds" => null, # todo
+                #"externalIds" => "", # todo
+                "torrentGroupId" => $options["torrentGroupId"],
+                #"artistIds" => "", # todo
                 "json" => $json,
             ];
 
+            # do it
             $app->dbNew->do($query, $vars);
         }
+    }
+
+
+    /**
+     * fetch
+     *
+     * Get an entry from the database.
+     *
+     * @param string $id the identifier (usually a doi)
+     */
+    public function fetch(string $id)
+    {
+        $app = App::go();
+
+        try {
+            $query = "select * from semanticScholar where id = ?";
+            $app->dbNew->row($query, [$id]);
+        } catch (PDOException $e) {
+            return $e;
+        }
+
+        return $data;
     }
 
 
@@ -268,7 +291,7 @@ class SemanticScholar
             "influentialCitationCount",
             "isOpenAccess",
             "fieldsOfStudy",
-            "s2FieldsOfStudy",
+            #"s2FieldsOfStudy",
             "publicationTypes",
             "publicationDate",
             "journal",
@@ -298,7 +321,7 @@ class SemanticScholar
                 "influentialCitationCount",
                 "isOpenAccess",
                 "fieldsOfStudy",
-                "s2FieldsOfStudy",
+                #"s2FieldsOfStudy",
                 "publicationTypes",
                 "publicationDate",
                 "journal",
@@ -342,7 +365,7 @@ class SemanticScholar
             "influentialCitationCount",
             "isOpenAccess",
             "fieldsOfStudy",
-            "s2FieldsOfStudy",
+            #"s2FieldsOfStudy",
             "publicationTypes",
             "publicationDate",
             "journal",
@@ -357,8 +380,6 @@ class SemanticScholar
                 "paperCount",
                 "citationCount",
                 "hIndex",
-
-
             ],
 
             "citations" => [
@@ -374,7 +395,7 @@ class SemanticScholar
                 "influentialCitationCount",
                 "isOpenAccess",
                 "fieldsOfStudy",
-                "s2FieldsOfStudy",
+                #"s2FieldsOfStudy",
                 "publicationTypes",
                 "publicationDate",
                 "journal",
@@ -393,13 +414,11 @@ class SemanticScholar
                 "influentialCitationCount",
                 "isOpenAccess",
                 "fieldsOfStudy",
-                "s2FieldsOfStudy",
+                #"s2FieldsOfStudy",
                 "authors",
                 "publicationTypes",
                 "publicationDate",
                 "journal",
-
-
             ],
             
             #"embedding",
@@ -443,7 +462,7 @@ class SemanticScholar
                 "influentialCitationCount",
                 "isOpenAccess",
                 "fieldsOfStudy",
-                "s2FieldsOfStudy",
+                #"s2FieldsOfStudy",
                 "publicationTypes",
                 "publicationDate",
                 "journal",
@@ -480,7 +499,7 @@ class SemanticScholar
             "influentialCitationCount",
             "isOpenAccess",
             "fieldsOfStudy",
-            "s2FieldsOfStudy",
+            #"s2FieldsOfStudy",
             "authors",
         ];
 

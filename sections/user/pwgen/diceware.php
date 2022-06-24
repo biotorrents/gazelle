@@ -5,7 +5,7 @@ declare(strict_types=1);
 $app = App::go();
 
 # load the dictionary
-require_once "{$app->env->SERVER_ROOT}/sections/user/pwgen/wordlist.php";
+require_once "{$app->env->serverRoot}/sections/user/pwgen/wordlist.php";
 
 # passphrase length (words)
 $passphraseLength = 10;
@@ -30,7 +30,7 @@ foreach ($dice as $die) {
 }
 
 $passphrase = trim($passphrase);
-$passphrase = preg_replace("/ /", "-", $passphrase);
+#$passphrase = preg_replace("/ /", "-", $passphrase);
 
 # vomit diceware
 echo $passphrase;
