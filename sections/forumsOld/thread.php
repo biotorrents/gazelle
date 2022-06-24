@@ -740,9 +740,7 @@ if (check_perms('site_moderate_forums')) {
             label="<?=$ForumCats[$Forum['CategoryID']]?>">
             <?php $OpenGroup = true;
         } ?>
-            <option value="<?=$Forum['ID']?>" <i>
-              </i>
-              <!-- %pcs-comment-start#<?php if ($ThreadInfo['ForumID'] == $Forum['ID']) {
+            <option value="<?=$Forum['ID']?>" <?php if ($ThreadInfo['ForumID'] == $Forum['ID']) {
             echo ' selected="selected"';
         } ?>><?=Text::esc($Forum['Name'])?>
             </option>

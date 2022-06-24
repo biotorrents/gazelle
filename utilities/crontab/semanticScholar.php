@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 
 /**
- * scrape the semantic scholar api
- * find torrents with identifiers
- * attempt to find and save the data
+ * 1. find torrents with identifiers
+ * 2. scrape the semantic scholar api
+ * 3. attempt to find and save the data
+ * 4. ???
+ * 5. profit
  *
 CREATE TABLE `semanticScholar` (
     `id` VARCHAR(100) NOT NULL,

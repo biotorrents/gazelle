@@ -25,7 +25,8 @@ if (is_number($ThreadID) && is_number($NewVote)) {
         */
     }
 
-    $db->query("
+    $db->query(
+        "
     UPDATE
       `forums_polls_votes`
     SET

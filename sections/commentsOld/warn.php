@@ -1,6 +1,6 @@
 <?php
 if (!check_perms('users_warn')) {
-  error(404);
+    error(404);
 }
 Http::assertRequest($_POST, array('postid'));
 
@@ -10,7 +10,7 @@ $db->query("
   FROM comments
   WHERE ID = $PostID");
 if (!$db->has_results()) {
-  error(404);
+    error(404);
 }
 list($PostBody, $AuthorID) = $db->next_record();
 $UserInfo = Users::user_info($AuthorID);
@@ -41,21 +41,24 @@ View::header('Warn User');
               <option value="1">1 week</option>
               <option value="2">2 weeks</option>
               <option value="4">4 weeks</option>
-  <?php if (check_perms('users_mod')) { ?>
+              <?php if (check_perms('users_mod')) { ?>
               <option value="8">8 weeks</option>
-  <?php } ?>
-            </select></td>
+              <?php } ?>
+            </select>
+          </td>
         </tr>
         <tr>
           <td class="label">Private message:</td>
           <td>
-            <textarea id="message" style="width: 95%;" tabindex="1" onkeyup="resize('message');" name="privatemessage" cols="90" rows="4"></textarea>
+            <textarea id="message" style="width: 95%;" tabindex="1" onkeyup="resize('message');" name="privatemessage"
+              cols="90" rows="4"></textarea>
           </td>
         </tr>
         <tr>
           <td class="label">Edit post:</td>
           <td>
-            <textarea id="body" style="width: 95%;" tabindex="1" onkeyup="resize('body');" name="body" cols="90" rows="8"><?=$PostBody?></textarea>
+            <textarea id="body" style="width: 95%;" tabindex="1" onkeyup="resize('body');" name="body" cols="90"
+              rows="8"><?=$PostBody?></textarea>
             <br />
             <input type="submit" id="submit_button" value="Warn user" tabindex="1" />
           </td>

@@ -17,12 +17,12 @@ It will be accompanied with:
 
 // Quick SQL injection check
 if (!$_POST['post'] || !is_number($_POST['post']) || !is_number($_POST['key'])) {
-  error(0, true);
+    error(0, true);
 }
 // End injection check
 
 if ($user['DisablePosting']) {
-  error('Your posting privileges have been removed.');
+    error('Your posting privileges have been removed.');
 }
 
 // Variables for database input
@@ -58,25 +58,25 @@ list($OldBody, $AuthorID, $TopicID, $IsLocked, $ForumID, $MinClassWrite, $Page) 
 
 // Make sure they aren't trying to edit posts they shouldn't
 if (!Forums::check_forumperm($ForumID, 'Write') || ($IsLocked && !check_perms('site_moderate_forums'))) {
-  error('Either the thread is locked, or you lack the permission to edit this post.', true);
+    error('Either the thread is locked, or you lack the permission to edit this post.', true);
 }
 if ($UserID != $AuthorID && !check_perms('site_moderate_forums')) {
-  error(403,true);
+    error(403, true);
 }
 if ($user['DisablePosting']) {
-  error('Your posting privileges have been removed.', true);
+    error('Your posting privileges have been removed.', true);
 }
 if (!$db->has_results()) {
-  error(404, true);
+    error(404, true);
 }
 
 // Send a PM to the user to notify them of the edit
 if ($UserID != $AuthorID && $DoPM) {
-  $PMSubject = "Your post #$PostID has been edited";
-  $PMurl = site_url()."forums.php?action=viewthread&postid=$PostID#post$PostID";
-  $ProfLink = '[url='.site_url()."user.php?id=$UserID]".$user['Username'].'[/url]';
-  $PMBody = "One of your posts has been edited by $ProfLink: [url]{$PMurl}[/url]";
-  Misc::send_pm($AuthorID, 0, $PMSubject, $PMBody);
+    $PMSubject = "Your post #$PostID has been edited";
+    $PMurl = site_url()."forums.php?action=viewthread&postid=$PostID#post$PostID";
+    $ProfLink = '[url='.site_url()."user.php?id=$UserID]".$user['Username'].'[/url]';
+    $PMBody = "One of your posts has been edited by $ProfLink: [url]{$PMurl}[/url]";
+    Misc::send_pm($AuthorID, 0, $PMSubject, $PMBody);
 }
 
 // Perform the update
@@ -91,10 +91,10 @@ $db->query("
 $CatalogueID = floor((POSTS_PER_PAGE * $Page - POSTS_PER_PAGE) / THREAD_CATALOGUE);
 $cache->begin_transaction("thread_$TopicID"."_catalogue_$CatalogueID");
 if ($cache->MemcacheDBArray[$Key]['ID'] != $PostID) {
-  $cache->cancel_transaction();
-  $cache->delete_value("thread_$TopicID"."_catalogue_$CatalogueID"); //just clear the cache for would be cache-screwer-uppers
+    $cache->cancel_transaction();
+    $cache->delete_value("thread_$TopicID"."_catalogue_$CatalogueID"); //just clear the cache for would be cache-screwer-uppers
 } else {
-  $cache->update_row($Key, array(
+    $cache->update_row($Key, array(
       'ID'=>$cache->MemcacheDBArray[$Key]['ID'],
       'AuthorID'=>$cache->MemcacheDBArray[$Key]['AuthorID'],
       'AddedTime'=>$cache->MemcacheDBArray[$Key]['AddedTime'],
@@ -103,17 +103,17 @@ if ($cache->MemcacheDBArray[$Key]['ID'] != $PostID) {
       'EditedTime'=>$SQLTime,
       'Username'=>$user['Username']
       ));
-  $cache->commit_transaction(3600 * 24 * 5);
+    $cache->commit_transaction(3600 * 24 * 5);
 }
 $ThreadInfo = Forums::get_thread_info($TopicID);
 if ($ThreadInfo === null) {
-  error(404);
+    error(404);
 }
 if ($ThreadInfo['StickyPostID'] == $PostID) {
-  $ThreadInfo['StickyPost']['Body'] = $Body;
-  $ThreadInfo['StickyPost']['EditedUserID'] = $user['ID'];
-  $ThreadInfo['StickyPost']['EditedTime'] = $SQLTime;
-  $cache->cache_value("thread_$TopicID".'_info', $ThreadInfo, 0);
+    $ThreadInfo['StickyPost']['Body'] = $Body;
+    $ThreadInfo['StickyPost']['EditedUserID'] = $user['ID'];
+    $ThreadInfo['StickyPost']['EditedTime'] = $SQLTime;
+    $cache->cache_value("thread_$TopicID".'_info', $ThreadInfo, 0);
 }
 
 $db->query("
@@ -125,4 +125,6 @@ $cache->delete_value("forums_edits_$PostID");
 // This gets sent to the browser, which echoes it in place of the old body
 echo Text::parse($Body);
 ?>
-<br /><br /><div class="last_edited">Last edited by <a href="user.php?id=<?=$user['ID']?>"><?=$user['Username']?></a> Just now</div>
+<br /><br />
+<div class="last_edited">Last edited by <a
+    href="user.php?id=<?=$user['ID']?>"><?=$user['Username']?></a> Just now</div>

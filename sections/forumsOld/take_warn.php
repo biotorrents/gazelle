@@ -1,6 +1,6 @@
 <?php
 if (!check_perms('users_warn')) {
-  error(404);
+    error(404);
 }
 Http::assertRequest($_POST, array('reason', 'privatemessage', 'body', 'length', 'postid', 'userid'));
 
@@ -15,24 +15,23 @@ $SQLTime = sqltime();
 
 $UserInfo = Users::user_info($UserID);
 if ($UserInfo['Class'] > $user['Class']) {
-  error(403);
+    error(403);
 }
 
 $URL = site_url() . "forums.php?action=viewthread&amp;postid=$PostID#post$PostID";
 if ($WarningLength !== 'verbal') {
-  $Time = (int)$WarningLength * (7 * 24 * 60 * 60);
-  Tools::warn_user($UserID, $Time, "$URL - $Reason");
-  $Subject = 'You have received a warning';
-  $PrivateMessage = "You have received a $WarningLength week warning for [url=$URL]this post[/url].\n\n" . $PrivateMessage;
+    $Time = (int)$WarningLength * (7 * 24 * 60 * 60);
+    Tools::warn_user($UserID, $Time, "$URL - $Reason");
+    $Subject = 'You have received a warning';
+    $PrivateMessage = "You have received a $WarningLength week warning for [url=$URL]this post[/url].\n\n" . $PrivateMessage;
 
-  $WarnTime = time_plus($Time);
-  $AdminComment = date('Y-m-d') . " - Warned until $WarnTime by " . $user['Username'] . " for $URL\nReason: $Reason\n\n";
-
+    $WarnTime = time_plus($Time);
+    $AdminComment = date('Y-m-d') . " - Warned until $WarnTime by " . $user['Username'] . " for $URL\nReason: $Reason\n\n";
 } else {
-  $Subject = 'You have received a verbal warning';
-  $PrivateMessage = "You have received a verbal warning for [url=$URL]this post[/url].\n\n" . $PrivateMessage;
-  $AdminComment = date('Y-m-d') . ' - Verbally warned by ' . $user['Username'] . " for $URL\nReason: $Reason\n\n";
-  Tools::update_user_notes($UserID, $AdminComment);
+    $Subject = 'You have received a verbal warning';
+    $PrivateMessage = "You have received a verbal warning for [url=$URL]this post[/url].\n\n" . $PrivateMessage;
+    $AdminComment = date('Y-m-d') . ' - Verbally warned by ' . $user['Username'] . " for $URL\nReason: $Reason\n\n";
+    Tools::update_user_notes($UserID, $AdminComment);
 }
 
 $db->prepared_query("
@@ -76,11 +75,11 @@ $db->prepared_query("
 $CatalogueID = floor((POSTS_PER_PAGE * $Page - POSTS_PER_PAGE) / THREAD_CATALOGUE);
 $cache->begin_transaction("thread_$TopicID" . "_catalogue_$CatalogueID");
 if ($cache->MemcacheDBArray[$Key]['ID'] != $PostID) {
-  $cache->cancel_transaction();
-  $cache->delete_value("thread_$TopicID" . "_catalogue_$CatalogueID");
-  //just clear the cache for would be cache-screwer-uppers
+    $cache->cancel_transaction();
+    $cache->delete_value("thread_$TopicID" . "_catalogue_$CatalogueID");
+//just clear the cache for would be cache-screwer-uppers
 } else {
-  $cache->update_row($Key, array(
+    $cache->update_row($Key, array(
             'ID' => $cache->MemcacheDBArray[$Key]['ID'],
             'AuthorID' => $cache->MemcacheDBArray[$Key]['AuthorID'],
             'AddedTime' => $cache->MemcacheDBArray[$Key]['AddedTime'],
@@ -88,17 +87,17 @@ if ($cache->MemcacheDBArray[$Key]['ID'] != $PostID) {
             'EditedUserID' => $user['ID'],
             'EditedTime' => $SQLTime,
             'Username' => $user['Username']));
-  $cache->commit_transaction(3600 * 24 * 5);
+    $cache->commit_transaction(3600 * 24 * 5);
 }
 $ThreadInfo = Forums::get_thread_info($TopicID);
 if ($ThreadInfo === null) {
-  error(404);
+    error(404);
 }
 if ($ThreadInfo['StickyPostID'] == $PostID) {
-  $ThreadInfo['StickyPost']['Body'] = $Body;
-  $ThreadInfo['StickyPost']['EditedUserID'] = $user['ID'];
-  $ThreadInfo['StickyPost']['EditedTime'] = $SQLTime;
-  $cache->cache_value("thread_$TopicID" . '_info', $ThreadInfo, 0);
+    $ThreadInfo['StickyPost']['Body'] = $Body;
+    $ThreadInfo['StickyPost']['EditedUserID'] = $user['ID'];
+    $ThreadInfo['StickyPost']['EditedTime'] = $SQLTime;
+    $cache->cache_value("thread_$TopicID" . '_info', $ThreadInfo, 0);
 }
 
 $db->prepared_query("
