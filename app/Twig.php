@@ -105,7 +105,6 @@ class Twig # extends Twig\Environment
             )
         );
 
-
         /*
         # DebugBar
         $profile = new Twig\Profiler\Profile();
@@ -140,7 +139,7 @@ class Twig # extends Twig\Environment
             }
         ));
 
-        # Format::get_ratio_html
+        # Format::breadcrumbs
         $twig->addFunction(new Twig\TwigFunction(
             "breadcrumbs",
             function () {
@@ -171,7 +170,6 @@ class Twig # extends Twig\Environment
                 return Text::float($number, $decimals);
             }
         ));
-        
 
 
         /**
@@ -213,15 +211,6 @@ class Twig # extends Twig\Environment
             }
         ));
 
-        /*
-        $twig->addFilter(new Twig\TwigFilter(
-            "ipaddr",
-            function ($ipaddr) {
-                return new Twig\Markup(Tools::display_ip($ipaddr), "UTF-8");
-            }
-        ));
-        */
-
         $twig->addFilter(new Twig\TwigFilter(
             "octet_size",
             function ($size, array $option = []) {
@@ -247,15 +236,6 @@ class Twig # extends Twig\Environment
                     : "";
             }
         ));
-
-        /*
-        $twig->addFilter(new Twig\TwigFilter(
-            "shorten",
-            function (string $text, int $length) {
-                return shortenString($text, $length);
-            }
-        ));
-        */
 
         $twig->addFilter(new Twig\TwigFilter(
             "time_diff",
@@ -308,15 +288,6 @@ class Twig # extends Twig\Environment
             );
         }));
 
-        /*
-        $twig->addFunction(new Twig\TwigFunction("shorten", function ($text, $length) {
-            return new Twig\Markup(
-                shortenString($text, $length),
-                "UTF-8"
-            );
-        }));
-        */
-
         $twig->addTest(
             new Twig\TwigTest("numeric", function ($value) {
                 return is_numeric($value);
@@ -324,31 +295,5 @@ class Twig # extends Twig\Environment
         );
 
         return $twig;
-    }
-
-
-    /**
-     * render
-     *
-     * Returns a Twig render
-     * (e.g., for a variable).
-     */
-    public function render(string $template, array $vars = [])
-    {
-        $twig = self::$instance ?? self::go();
-        return $twig->render($template, $vars);
-    }
-
-
-    /**
-     * print
-     *
-     * Prints a Twig render
-     * (e.g., for a page).
-     */
-    public function print(string $template, array $vars = [])
-    {
-        $twig = self::$instance ?? self::go();
-        echo $twig->render($template, $vars);
     }
 } # class

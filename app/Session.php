@@ -3,6 +3,8 @@ declare(strict_types = 1);
 
 /**
  * Session
+ * 
+ * PROLLY NOT NEEDED!
  *
  * All session handling stuff.
  * Logins, logouts, cookies, etc.

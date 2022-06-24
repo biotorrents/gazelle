@@ -174,7 +174,7 @@ class SemanticScholar
                     $data[$this->releaseId]["downloadLinks"] ??= [];
                     $data[$this->releaseId]["downloadLinks"][$dataset["name"]]
                         = $this->downloadLinks($dataset["name"])
-                        ?? null;
+                        ?? [];
                 } catch (Exception $e) {
                     return $e->getMesage();
                 }

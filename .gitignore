@@ -43,3 +43,6 @@ yarn-error.log
 
 # config
 /config/private.php
+
+# dumps
+/utilities/dump/**

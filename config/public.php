@@ -314,10 +314,6 @@ ENV::setPub(
     ["ren", "tw", "se"]
 );
 
-# Semantic Scholar
-# https://api.semanticscholar.org
-ENV::setPub("SS", "https://api.semanticscholar.org/v1/paper/");
-
 # IP Geolocation
 ENV::setPub("IP_GEO", "https://tools.keycdn.com/geo.json?host=");
 
