@@ -37,67 +37,28 @@ ob_start();
  * user handling stuff
  */
 
+$user ??= [];
 $app->debug["time"]->startMeasure("users", "user handling");
 
+$get = Http::query("get");
+$post = Http::query("post");
+$server = Http::query("server");
 
- /**
-  * Implement api tokens to use with ajax endpoint
-  *
-  * commit 7c208fc4c396a16c77289ef886d0015db65f2af1
-  * Author: itismadness <itismadness@orpheus.network>
-  * Date:   Thu Oct 15 00:09:15 2020 +0000
-  */
-
-/* HANDLE IN API ROUTER
-# set the document we are loading
-$_SERVER["REQUEST_URI"] ??= "";
-if ($_SERVER["REQUEST_URI"] === "/") {
-    $document = "index";
-} else {
-    $regex = "/^\/(\w+)(?:\.php)?.*$/";
-    $document = preg_replace($regex, "$1", $_SERVER["REQUEST_URI"]);
+$sessionId = Http::getCookie("session");
+if ($sessionId) {
+    $query = "select userId from users_sessions where sessionId = ? and active = 1";
+    $userId = $app->dbNew->single($query, [$sessionId]);
 }
-*/
+#!d($userId, $sessionId);exit;
 
-# ?
-$user = [];
-# temporary 500 error fix
-$UserID = [];
-$SessionID = false;
-$FullToken = null;
-
-/* HANDLE IN API ROUTER
-// Only allow using the Authorization header for ajax endpoint
-if ($document === "api") {
-    $userId = intval(
-        substr(
-            Crypto::decrypt(
-                base64UrlDecode($FullToken),
-                $app->env->getPriv("siteCryptoKey")
-            ),
-            32
-        )
-    );
-
-    $json = new Json();
-    $json->checkToken($userId);
-}
-*/
-# end OPS API token additions
-
-/**
- * session handling and cookies
- */
-
-if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
-    $SessionID = $_COOKIE["session"];
-    $user["ID"] = (int) $_COOKIE["userid"];
-
-    $UserID = $user["ID"]; // todo: UserID should not be LoggedUser
+if ($userId && $sessionId) {
+    /*
     if (!$user["ID"] || !$SessionID) {
         logout();
     }
+    */
 
+    /*
     $UserSessions = $app->cacheOld->get_value("users_sessions_$UserID");
     if (!is_array($UserSessions)) {
         $app->dbOld->prepared_query(
@@ -119,42 +80,28 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
     if (!array_key_exists($SessionID, $UserSessions)) {
         logout();
     }
+    */
 
-    // Check if user is enabled
-    $Enabled = $app->cacheOld->get_value("enabled_".$user["ID"]);
-    if ($Enabled === false) {
-        $app->dbOld->prepared_query("
-        SELECT Enabled
-          FROM users_main
-          WHERE ID = '$user[ID]'");
-
-        list($Enabled) = $app->dbOld->next_record();
-        $app->cacheOld->cache_value("enabled_".$user["ID"], $Enabled, 0);
+    # check if user is enabled
+    $enabled = $app->cacheOld->get_value("enabled_{$userId}");
+    if (!$enabled) {
+        $query = "select enabled from users_main where id = ?";
+        $enabled = $app->dbNew->single($query, [$userId]);
+        $app->cacheOld->cache_value("enabled_{$userId}", $enabled, 0);
     }
 
-    if ($Enabled === 2) {
+    if (intval($enabled) === 2) {
         logout();
     }
 
-    // Up/Down stats
-    $UserStats = $app->cacheOld->get_value("user_stats_".$user["ID"]);
-    if (!is_array($UserStats)) {
-        $app->dbOld->prepared_query("
-        SELECT Uploaded AS BytesUploaded, Downloaded AS BytesDownloaded, RequiredRatio
-        FROM users_main
-          WHERE ID = '$user[ID]'");
-
-        $UserStats = $app->dbOld->next_record(MYSQLI_ASSOC);
-        $app->cacheOld->cache_value("user_stats_".$user["ID"], $UserStats, 3600);
+    # user stats
+    $userStats = $app->cacheOld->get_value("user_stats_{$userId}");
+    if (!is_array($userStats)) {
+        $query = "select uploaded AS BytesUploaded, downloaded AS BytesDownloaded, RequiredRatio from users_main where id = ?";
+        $userStats = $app->dbNew->row($query, [$userId]);
+        $app->cacheOld->cache_value("user_stats_{$userId}", $userStats, 3600);
     }
 
-    // Get info such as username
-    $LightInfo = Users::user_info($user["ID"]);
-    $HeavyInfo = Users::user_heavy_info($user["ID"]);
-
-    #global $SessionID;
-    #!d($SessionID);exit;
-    
     /**
      * Load user information.
      * User info is broken up into many sections:
@@ -167,22 +114,27 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
      *  - Permissions
      */
 
-    // Create LoggedUser array
-    $user = array_merge($HeavyInfo, $LightInfo, $UserStats);
-    $user["RSS_Auth"] = md5($user["ID"] . $app->env->getPriv("rssHash") . $user["torrent_pass"]);
+    # todo: split this into info/properties or core/extra
+    $heavyInfo = Users::user_heavy_info($userId);
+    $lightInfo = Users::user_info($userId);
+    #!d($heavyInfo, $lightInfo);exit;
 
-    // $user["RatioWatch"] as a bool to disable things for users on Ratio Watch
+    $user = array_merge($heavyInfo, $lightInfo, $userStats);
+    $user["RSS_Auth"] = md5($userId . $app->env->getPriv("rssHash") . $user["torrent_pass"]);
+    #!d($user);exit;
+
+    # $user["RatioWatch"] as a bool to disable things for users on Ratio Watch
     $user["RatioWatch"] = (
         $user["RatioWatchEnds"]
-     && time() < strtotime($user["RatioWatchEnds"])
-     && ($user["BytesDownloaded"] * $user["RequiredRatio"]) > $user["BytesUploaded"]
+        && time() < strtotime($user["RatioWatchEnds"])
+        && ($user["BytesDownloaded"] * $user["RequiredRatio"]) > $user["BytesUploaded"]
     );
 
-    // Load in the permissions
-    $user["Permissions"] = \Permissions::get_permissions_for_user($user["ID"], $user["CustomPermissions"]);
-    $user["Permissions"]["MaxCollages"] += \Donations::get_personal_collages($user["ID"]);
+    # load the permissions
+    $user["Permissions"] = Permissions::get_permissions_for_user($userId, $user["CustomPermissions"]);
+    $user["Permissions"]["MaxCollages"] += Donations::get_personal_collages($userId);
 
-    // Change necessary triggers in external components
+    # change necessary triggers in external components
     $app->cacheOld->CanClear = check_perms("admin_clear_cache");
 
     /*
@@ -222,22 +174,20 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
     }
     */
 
-    // Notifications
+    # notifications
     if (isset($user["Permissions"]["site_torrents_notify"])) {
-        $user["Notify"] = $app->cacheOld->get_value("notify_filters_".$user["ID"]);
-        if (!is_array($user["Notify"])) {
-            $app->dbOld->prepared_query("
-            SELECT ID, Label
-            FROM users_notify_filters
-              WHERE UserID = '$user[ID]'");
+        $user["Notify"] = $app->cacheOld->get_value("notify_filters_{$userId}");
 
-            $user["Notify"] = $app->dbOld->to_array("ID");
-            $app->cacheOld->cache_value("notify_filters_".$user["ID"], $user["Notify"], 2592000);
+        if (!is_array($user["Notify"])) {
+            $query = "select id, label from users_notify_filters where userId = ?";
+            $user["Notify"] = $app->dbNew->row($query, [$userId]);
+            $app->cacheOld->cache_value("notify_filters_{$userId}", $user["Notify"], 2592000); # 30 days
         }
     }
 
-    // IP changed
-    if (apcu_exists("DBKEY") && Crypto::decrypt($user["IP"]) != $_SERVER["REMOTE_ADDR"]) {
+    /*
+    # ip changed
+    if (apcu_exists("DBKEY") && Crypto::decrypt($user["IP"]) !== $_SERVER["REMOTE_ADDR"]) {
         if (Tools::site_ban_ip($_SERVER["REMOTE_ADDR"])) {
             error("Your IP address has been banned.");
         }
@@ -249,6 +199,7 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
         $app->cacheOld->update_row(false, array("IP" => Crypto::encrypt($_SERVER["REMOTE_ADDR"])));
         $app->cacheOld->commit_transaction(0);
     }
+    */
 
     // Get stylesheets
     $Stylesheets = $app->cacheOld->get_value("stylesheets");
@@ -273,59 +224,60 @@ if (isset($_COOKIE["session"]) && isset($_COOKIE["userid"])) {
         logout(); // Ghost
     }
     */
-}
+
+    $authenticated = true;
+} # if ($userId && $sessionId)
 
 # measure all that
 $app->debug["time"]->stopMeasure("users", "user handling");
 
 
 /**
- * Determine the section to load.
+ * determine the section to load
+ * $document is determined by the public index
  */
 
-/*
-# set the document we are loading
-$_SERVER["REQUEST_URI"] ??= "";
-if ($_SERVER["REQUEST_URI"] === "/") {
-    $document = "index";
-} else {
-    $regex = "/^\/(\w+)(?:\.php)?.*$/";
-    $document = preg_replace($regex, "$1", $_SERVER["REQUEST_URI"]);
-}
-*/
+ # strip sensitive post keys and cache the page
+$stripPostKeys = array_fill_keys([
+    "password", "cur_pass", "new_pass_1", "new_pass_2", "verifypassword", "confirm_password", "ChangePassword", "Password"
+], true);
 
-/*
-$StripPostKeys = array_fill_keys(array("password", "cur_pass", "new_pass_1", "new_pass_2", "verifypassword", "confirm_password", "ChangePassword", "Password"), true);
-$app->cacheOld->cache_value("php_" . getmypid(), array(
+$app->cacheOld->cache_value("php_" . getmypid(), [
   "start" => sqltime(),
   "document" => $document,
-  "query" => $_SERVER["QUERY_STRING"] ?? "",
-  "get" => $_GET,
-  "post" => array_diff_key($_POST, $StripPostKeys)), 600);
-*/
+  "query" => $server["QUERY_STRING"] ?? "",
+  "get" => $get,
+  "post" => array_diff_key($post, $stripPostKeys)
+], 600);
 
-// Locked account constant
-#define("STAFF_LOCKED", 1);
+# flush to user
+#ob_end_flush();
+#$app->debug["messages"]->info("set headers and send to user");
 
-$AllowedPages = ["locked", "logout", "login"];
-#$AllowedPages = ["staffpm", "api", "locked", "logout", "login"];
-
-if (isset($app->user["LockedAccount"]) && !in_array($document, $AllowedPages)) {
+# allow some possibly useful banned pages
+# todo: banning prevents login and therefore participation
+$allowedPages = ["api", "locked", "login", "logout"];
+if (isset($user["LockedAccount"]) && !in_array($document, $allowedPages)) {
     require_once "{$app->env->SERVER_ROOT}/sections/locked/index.php";
-} else {
-    # Routing: transition from homebrew to Flight
-    # This check is necessary because the codebase is shit
-    # Flight enforces strict standards that break most things
-    if (file_exists("{$app->env->SERVER_ROOT}/sections/$document/router.php")) {
-        require_once "{$app->env->SERVER_ROOT}/sections/$document/router.php";
+}
+
+# index workaround to prevent an infinite loop
+if ($document === "index") {
+    if ($authenticated) {
+        require_once "{$app->env->SERVER_ROOT}/sections/index/private.php";
     } else {
-        require_once "{$app->env->SERVER_ROOT}/routes/web.php";
+        Http::redirect("login");
     }
 }
 
-$app->debug["messages"]->info("completed module execution");
-
-// Flush to user
-ob_end_flush();
-
-$app->debug["messages"]->info("set headers and send to user");
+# routing: transition from homebrew to flight
+# use legacy gazelle index.php
+$fileName = "{$app->env->SERVER_ROOT}/sections/$document/router.php";
+if (file_exists($fileName)) {
+    require_once $fileName;
+}
+    
+# use new flight router
+else {
+    require_once "{$app->env->SERVER_ROOT}/routes/web.php";
+}

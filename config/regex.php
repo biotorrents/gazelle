@@ -50,12 +50,6 @@ ENV::setPub(
     "/^[a-z0-9_]{2,20}$/iD"
 );
 
-#define("regexEmail", "[_a-z0-9-]+([.+][_a-z0-9-]+)*@".regexDomain);
-ENV::setPub(
-    "regexEmail",
-    "/^[_a-z0-9-]+([.+][_a-z0-9-]+)*@{$env->regexDomain}$/i"
-);
-
 
 #define("regexImage", regexUri."\/\S+\.(jpg|jpeg|tif|tiff|png|gif|bmp)(\?\S*)?");
 ENV::setPub(

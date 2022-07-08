@@ -29,7 +29,7 @@ $token = $post["twofa"] ?? null;
 # delight-im/auth
 if (!empty($post)) {
     $response = $auth->login($username, $passphrase, $token);
-    #!d($response);exit;
+    #!d($response);
 }
 
 
@@ -40,6 +40,7 @@ if (!empty($post)) {
     # common gazelle vars
     $query = "select id from users_main where username = ?";
     $userId = $app->dbNew->single($query, [$username]);
+    #!d($userId);
 }
 
 try {
@@ -48,6 +49,7 @@ try {
         # get the seed
         $query = "select twoFactor from users_main where username = ?";
         $seed = $app->dbNew->single($query, [$username]);
+        #!d($seed);
 
         # no seed
         if (!$seed) {
@@ -89,13 +91,14 @@ try {
         try {
             $response = $u2f->doAuthenticate(json_decode($post["u2f-request"]), $payload, json_decode($post["u2f-response"]));
             $u2fAuthData = json_encode($u2f->getAuthenticateData($response));
+            #!d($response, $u2fAuthData);
 
             if (boolval($response->valid) !== true) {
                 throw new Exception("Unable to validate the U2F token");
             }
 
             $query = "update u2f set counter = ? where keyHandle = ? and userId = ?";
-            $app->dbNew->do($query, [$$response->counter, $response->keyHandle, $userId]);
+            $app->dbNew->do($query, [$response->counter, $response->keyHandle, $userId]);
         } catch (Exception $e) {
             # hardcoded u2f library exception here?
             if ($e->getMessage() === "Counter too low.") {
@@ -124,8 +127,8 @@ try {
         Http::setCookie(["session" => $sessionId]);
         Http::setCookie(["userId" => $userId]);
 
-        $query = "insert into users_sessions (userId, sessionId, keepLogged, ip, lastUpdate) values (?, ?, ?, ?, ?)";
-        $app->dbNew->do($query, [$userId, $sessionId, 1, Crypto::encrypt($server["REMOTE_ADDR"]), sqltime()]);
+        $query = "insert into users_sessions (userId, sessionId, keepLogged, ip, lastUpdate, fullUa) values (?, ?, ?, ?, ?, ?)";
+        $app->dbNew->do($query, [$userId, $sessionId, 1, Crypto::encrypt($server["REMOTE_ADDR"]), sqltime(), $server["HTTP_USER_AGENT"]]);
 
         $query = "update users_main set lastLogin = now(), lastAccess = now() where id = ?";
         $app->dbNew->do($query, [$userId]);
@@ -150,6 +153,9 @@ try {
 
 /** TWIG TEMPLATE */
 
+if (empty($response)) {
+    Http::redirect();
+}
 
 $app->twig->display("user/auth/login.twig", [
   "response" => $response ?? null,

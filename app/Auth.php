@@ -187,9 +187,15 @@ class Auth # extends Delight\Auth\Auth
         $twofa = Esc::int($twofa);
 
         try {
-            # simply call the method loginWithUsername instead of method login
-            # make sure to catch both UnknownUsernameException and AmbiguousUsernameException
-            $response = $this->auth->loginWithUsername($username, $passphrase, $this->remember());
+            # try email validation
+            $test = (filter_var($username, FILTER_VALIDATE_EMAIL));
+            if (!empty($test)) {
+                $response = $this->auth->login($username, $passphrase, $this->remember());
+            } else {
+                # simply call the method loginWithUsername instead of method login
+                # make sure to catch both UnknownUsernameException and AmbiguousUsernameException
+                $response = $this->auth->loginWithUsername($username, $passphrase, $this->remember());
+            }
         } catch (Delight\Auth\InvalidEmailException $e) {
             return $mesage;
         } catch (Delight\Auth\InvalidPasswordException $e) {

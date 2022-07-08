@@ -29,7 +29,7 @@
 
 
 {# u2f login form #}
-{% if post is not empty and post.u2f-request is defined and post.u2f-response is defined %}
+{% if post is not empty and post.u2f_request is defined and post.u2f_response is defined %}
 <p class="info">
     This account is protected by a Universal Two Factor token.
     Please insert your U2F token and press it if necessary.
@@ -53,7 +53,7 @@
     {{ form_token(query.server.REQUEST_URI) }}
 
     {# username #}
-    <input type="text" name="username" id="username" placeholder="Username" autofocus="autofocus" required />
+    <input type="text" name="username" id="username" placeholder="Username or email" autofocus="autofocus" required />
 
     {# passphrase #}
     <input type="password" name="passphrase" id="passphrase" placeholder="Passphrase" minlength="15" required />

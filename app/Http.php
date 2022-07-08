@@ -31,6 +31,9 @@ class Http
         $parsed = parse_url($uri);
         $uri = htmlentities($uri);
 
+        $parsed["scheme"] ??= null;
+        $parsed["host"] ??= null;
+
         if (!$parsed["scheme"] || !$parsed["host"]) {
             # local
             header("Location: /{$uri}");

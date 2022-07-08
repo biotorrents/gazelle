@@ -1,4 +1,4 @@
-# BioTorrents.de Gazelle
+# 🧪 BioGazelle
 
 This software is twice removed from the original
 [What.cd Gazelle](https://github.com/WhatCD/Gazelle).
