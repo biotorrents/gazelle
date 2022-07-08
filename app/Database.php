@@ -148,7 +148,9 @@ class Database extends PDO
      */
     public function single(string $query, array $args = [])
     {
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, [$query, $args]);
+        $app = App::go();
+
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
         if ($app->cacheOld->get_value($cacheKey)) {
             return $app->cacheOld->get_value($cacheKey);
         }
@@ -172,7 +174,9 @@ class Database extends PDO
      */
     public function row(string $query, array $args = [])
     {
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, [$query, $args]);
+        $app = App::go();
+
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
         if ($app->cacheOld->get_value($cacheKey)) {
             return $app->cacheOld->get_value($cacheKey);
         }
@@ -194,7 +198,9 @@ class Database extends PDO
      */
     public function multi(string $query, array $args = []): array
     {
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, [$query, $args]);
+        $app = App::go();
+
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
         if ($app->cacheOld->get_value($cacheKey)) {
             return $app->cacheOld->get_value($cacheKey);
         }

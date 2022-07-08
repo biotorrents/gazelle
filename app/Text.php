@@ -236,4 +236,14 @@ class Text
 
         return $string;
     }
+
+
+    /**
+     * toSeconds
+     */
+    public static function toSeconds(string $string): int
+    {
+        $parsed = strtotime($string) ?? time();
+        return time() - $parsed;
+    }
 } # class

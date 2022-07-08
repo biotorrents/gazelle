@@ -6,12 +6,10 @@ $app = App::go();
 
 # get the news
 # todo: use discourse
-$newsCount = 2;
 $news = $app->cacheOld->get_value("news");
-
 if (!$news) {
-    $query = "select * from news order by time desc limit ?";
-    $news = $app->dbNew->multi($query, [$newsCount]);
+    $query = "select * from news order by time desc";
+    $news = $app->dbNew->multi($query, [1]);
     $app->cacheOld->cache_value('news', $news, 3600 * 24 * 30);
 }
 #!d($news);exit;
@@ -80,6 +78,7 @@ $app->twig->display(
     "index/private.twig",
     [
     "sidebar" => true,
+    "news" => $news,
 
     /*
       "breadcrumbs" => true,
