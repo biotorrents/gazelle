@@ -81,8 +81,14 @@ class Twig # extends Twig\Environment
                 "strict_variables" => true,
             ]
         );
+        
+        if ($app->env->dev) {
+            $twig->addExtension(new \Twig\Extension\DebugExtension());
+        }
 
         # globals
+        $twig->addGlobal("app", $app);
+
         $twig->addGlobal("env", $app->env);
         $twig->addGlobal("user", $app->user);
 

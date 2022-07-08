@@ -225,6 +225,8 @@ if ($userId && $sessionId) {
     }
     */
 
+    # the user is loaded
+    $app->user = $user;
     $authenticated = true;
 } # if ($userId && $sessionId)
 

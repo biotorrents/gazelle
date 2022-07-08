@@ -54,7 +54,7 @@ https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-ba
         <input type="hidden" name="action" value="search" />
 
         {# advanced vs. basic search from user settings #}
-        {% if user.SearchType %}
+        {% if app.user.SearchType %}
         <input type="hidden" name="advanced_search" value="true">
         {% endif %}
 
@@ -71,7 +71,7 @@ https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-ba
 
         {#
         the universal search bar itself
-        todo: change "search" to "advgroupname" if user.SearchType && search-what = torrents
+        todo: change "search" to "advgroupname" if app.user.SearchType && search-what = torrents
         #}
         <input type="text" id="search" name="search" aria-label="Search the site" placeholder="Search the site"
           maxlength="10000" size="30" autocomplete="off" spellcheck="false" />
@@ -152,18 +152,19 @@ https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-ba
 
         {# profile #}
         <li class="subitem">
-          <a href="/user.php?id={{ user.ID }}">{{ user.Username }}</a>
+          <a href="/user.php?id={{ app.user.ID }}">{{ app.user.Username }}</a>
         </li>
 
         {# settings #}
         <li class="subitem">
-          <a href="/user.php?action=edit&amp;userid={{ user.ID }}">Settings</a>
+          <a href="/user.php?action=edit&amp;userid={{ app.user.ID }}">Settings</a>
         </li>
 
-        {# inbox #}
+        {# inbox # }
         <li class="subitem">
           <a href="/{{ inbox }}">Inbox</a>
         </li>
+        #}
 
         {# staff inbox #}
         <li class="subitem">
@@ -184,7 +185,7 @@ https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-ba
 
         {# uploads #}
         <li class="subitem">
-          <a href="/torrents.php?type=uploaded&amp;userid={{ user.ID }}">Uploads</a>
+          <a href="/torrents.php?type=uploaded&amp;userid={{ app.user.ID }}">Uploads</a>
         </li>
 
         {# bookmarks #}
@@ -193,7 +194,7 @@ https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-ba
         </li>
 
         {# notifications #}
-        {% if notify %}
+        {% if notify is defined %}
         <li class="subitem">
           <a href="/user.php?action=notify">Notifications</a>
         </li>

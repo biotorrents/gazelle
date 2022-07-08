@@ -121,14 +121,6 @@ class Database extends PDO
         # prepare
         $statement = $this->pdo->prepare($query);
 
-        /*
-        # return cached if available
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, $statement);
-        if ($app->cacheOld->get_value($cacheKey)) {
-            return $app->cacheOld->get_value($cacheKey);
-        }
-        */
-
         # no params
         if (empty($args)) {
             #$app->cacheOld->cache_value($cacheKey, $query, $this->cacheDuration);
@@ -145,7 +137,6 @@ class Database extends PDO
         }
 
         # good
-        #$app->cacheOld->cache_value($cacheKey, $statement, $this->cacheDuration);
         return $statement;
     }
 
@@ -157,13 +148,19 @@ class Database extends PDO
      */
     public function single(string $query, array $args = [])
     {
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, [$query, $args]);
+        if ($app->cacheOld->get_value($cacheKey)) {
+            return $app->cacheOld->get_value($cacheKey);
+        }
+        
         $statement = $this->do($query, $args);
-        $single = $statement->fetchColumn();
+        $ref = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-        if (is_array($single)) {
-            return array_shift($single);
-        } else {
-            return $single;
+        foreach ($ref as $row) {
+            foreach ($row as $key => $value) {
+                $app->cacheOld->cache_value($cacheKey, $value, $this->cacheDuration);
+                return $value;
+            }
         }
     }
 
@@ -175,24 +172,18 @@ class Database extends PDO
      */
     public function row(string $query, array $args = [])
     {
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, [$query, $args]);
+        if ($app->cacheOld->get_value($cacheKey)) {
+            return $app->cacheOld->get_value($cacheKey);
+        }
+
         $statement = $this->do($query, $args);
-        $row = $statement->fetch();
+        $ref = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-        return $row;
-    }
-
-
-    /**
-     * column
-     *
-     * Gets a single column.
-     */
-    public function column(string $query, array $args = [])
-    {
-        $statement = $this->do($query, $args);
-        $column = $statement->fetchColumn();
-
-        return $column;
+        foreach ($ref as $row) {
+            $app->cacheOld->cache_value($cacheKey, $row, $this->cacheDuration);
+            return $row;
+        }
     }
 
 
@@ -203,10 +194,16 @@ class Database extends PDO
      */
     public function multi(string $query, array $args = []): array
     {
-        $statement = $this->do($query, $args);
-        $multi = $statement->fetchAll();
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, [$query, $args]);
+        if ($app->cacheOld->get_value($cacheKey)) {
+            return $app->cacheOld->get_value($cacheKey);
+        }
 
-        return $multi;
+        $statement = $this->do($query, $args);
+        $ref = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        $app->cacheOld->cache_value($cacheKey, $ref, $this->cacheDuration);
+        return $ref;
     }
 
 

@@ -1,0 +1,118 @@
+<form method="post">
+    {{ form_token(query.server.REQUEST_URI) }}
+
+    <input type="text" id="search" name="search" placeholder="Search the site" />
+
+    {# select which site area to search #}
+    <select id="search_what" name="search_what">
+        <option value="torrents">Torrents</option>
+        {# <option value="artist">Authors</option> #}
+        <option value="requests">Requests</option>
+        <option value="forums">Forums</option>
+        <option value="wiki">Wiki</option>
+        <option value="log">Log</option>
+        <option value="user">Users</option>
+    </select>
+
+</form>
+
+
+<h3>Actions</h3>
+
+<form method="post">
+    {{ form_token(query.server.REQUEST_URI) }}
+
+    <input type="button" id="create" name="create" value="new thread" class="button-primary" />
+
+    <input type="button" id="unread" name="unread" value="unread" class="button-orange" />
+
+    <input type="button" id="subscribe" name="subscribe" value="subscribe" />
+</form>
+
+
+{% if freeleeches is defined %}
+<h3>Current freeleeches</h3>
+
+<ul>
+
+    {% for blog in blog %}
+    <li>
+        <a href="{# /boards/{{ topic.categorySlug }}/{{ topic.slug }} #}">{{ blog.Title }}</a>
+        <br />
+        by {{ topic.Username }} as {{ topic.Time }}
+    </li>
+    {% endfor %}
+
+</ul>
+{% endif %}
+
+{#
+    <ul class="stats nobullet">
+      <?php
+  for ($i = 0; $i < count($freeleeches); $i++) {
+      list($ID, $ExpiryTime, $Name, $Image) = $freeleeches[$i];
+      if ($ExpiryTime < time()) {
+          continue;
+      }
+      $DisplayTime = '('.str_replace(['year','month','week','day','hour','min','Just now','s',' '], ['y','M','w','d','h','m','0m'], time_diff($ExpiryTime, 1, false)).') ';
+      $DisplayName = '<a href="torrents.php?torrentid='.$ID.'"';
+      if (!isset($user['CoverArt']) || $user['CoverArt']) {
+          $DisplayName .= ' data-cover="'.ImageTools::process($Image, 'thumb').'"';
+      }
+      $DisplayName .= '>'.$Name.'</a>'; ?>
+      <li>
+        <strong class="fl_time"><?=$DisplayTime?></strong>
+        <?=$DisplayName?>
+      </li>
+      <?php
+  } ?>
+    </ul>
+  </div>
+  <?php
+}
+?>
+#}
+
+
+{% if blog is defined %}
+<h3>Latest blog posts</h3>
+
+<ul>
+
+    {% for blog in blog %}
+    <li>
+        <a href="{# /boards/{{ topic.categorySlug }}/{{ topic.slug }} #}">{{ blog.Title }}</a>
+        <br />
+        by {{ topic.Username }} as {{ topic.Time }}
+    </li>
+    {% endfor %}
+
+</ul>
+{% endif %}
+
+
+{% if topic.suggested_topics is defined %}
+<h3>Suggested</h3>
+
+<ul>
+
+    {% for topic in topic.suggested_topics %}
+    <li>
+        <a href="/boards/{{ category }}/{{ topic.slug }}">{{ topic.title }}</a>
+        <br />
+        {{ topic.last_posted_at|relativeTime }}
+    </li>
+    {% endfor %}
+
+</ul>
+{% endif %}
+
+
+<h3>Rules</h3>
+
+<p>
+    Please consider reading through the
+    <a href="/rules/chat">social norms</a>
+    before participating in the boards.
+    Thanks!
+</p>

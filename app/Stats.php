@@ -786,4 +786,199 @@ class Stats
         G::$cache->cache_value($this->cachePrefix . __FUNCTION__, $databaseSpecifics, $this->cacheDuration);
         return $databaseSpecifics;
     }
+
+
+    /** homepage stats */
+
+
+    /*
+  <!-- Stats -->
+  <div class="box">
+    <div class="head colhead_dark"><strong>Stats</strong></div>
+    <ul class="stats nobullet">
+      <?php if (USER_LIMIT > 0) { ?>
+      <li>Maximum users: <?=Text::float(USER_LIMIT) ?>
+      </li>
+      <?php
+}
+
+if (($UserCount = $cache->get_value('stats_user_count')) === false) {
+    $db->query("
+    SELECT COUNT(ID)
+    FROM users_main
+    WHERE Enabled = '1'");
+    list($UserCount) = $db->next_record();
+    $cache->cache_value('stats_user_count', $UserCount, 86400);
+}
+$UserCount = (int)$UserCount;
+?>
+      <?php /*
+      <li>
+        Enabled users: <?=Text::float($UserCount)?>
+      <a href="/stats/users" class="brackets">Details</a>
+      </li>
+      <?php
+
+if (($UserStats = $cache->get_value('stats_users')) === false) {
+    $db->query("
+    SELECT COUNT(ID)
+    FROM users_main
+    WHERE Enabled = '1'
+      AND LastAccess > '".time_minus(3600 * 24)."'");
+    list($UserStats['Day']) = $db->next_record();
+
+    $db->query("
+    SELECT COUNT(ID)
+    FROM users_main
+    WHERE Enabled = '1'
+      AND LastAccess > '".time_minus(3600 * 24 * 7)."'");
+    list($UserStats['Week']) = $db->next_record();
+
+    $db->query("
+    SELECT COUNT(ID)
+    FROM users_main
+    WHERE Enabled = '1'
+      AND LastAccess > '".time_minus(3600 * 24 * 30)."'");
+    list($UserStats['Month']) = $db->next_record();
+
+    $cache->cache_value('stats_users', $UserStats, 0);
+}
+?>
+      <li>Users active today: <?=Text::float($UserStats['Day'])?>
+        (<?=Text::float($UserStats['Day'] / $UserCount * 100, 2)?>%)
+      </li>
+      <li>Users active this week: <?=Text::float($UserStats['Week'])?>
+        (<?=Text::float($UserStats['Week'] / $UserCount * 100, 2)?>%)
+      </li>
+      <li>Users active this month: <?=Text::float($UserStats['Month'])?>
+        (<?=Text::float($UserStats['Month'] / $UserCount * 100, 2)?>%)
+      </li>
+      <?php
+
+if (($TorrentCount = $cache->get_value('stats_torrent_count')) === false) {
+    $db->query("
+    SELECT COUNT(ID)
+    FROM torrents");
+    list($TorrentCount) = $db->next_record();
+    $cache->cache_value('stats_torrent_count', $TorrentCount, 86400); // 1 day cache
+}
+
+if (($GroupCount = $cache->get_value('stats_group_count')) === false) {
+    $db->query("
+    SELECT COUNT(ID)
+    FROM torrents_group");
+    list($GroupCount) = $db->next_record();
+    $cache->cache_value('stats_group_count', $GroupCount, 86400); // 1 day cache
+}
+
+if (($TorrentSizeTotal = $cache->get_value('stats_torrent_size_total')) === false) {
+    $db->query("
+    SELECT SUM(Size)
+    FROM torrents");
+    list($TorrentSizeTotal) = $db->next_record();
+    $cache->cache_value('stats_torrent_size_total', $TorrentSizeTotal, 86400); // 1 day cache
+}
+?>
+      <li>
+        Total size of torrents:
+        <?=Format::get_size($TorrentSizeTotal)?>
+      </li>
+
+      <?php
+if (($ArtistCount = $cache->get_value('stats_artist_count')) === false) {
+    $db->query("
+    SELECT COUNT(ArtistID)
+    FROM artists_group");
+    list($ArtistCount) = $db->next_record();
+    $cache->cache_value('stats_artist_count', $ArtistCount, 86400); // 1 day cache
+}
+
+?>
+      <li>
+        Torrents:
+        <?=Text::float($TorrentCount)?>
+        <a href="/stats/torrents" class="brackets">Details</a>
+      </li>
+
+      <li>Torrent Groups: <?=Text::float($GroupCount)?>
+      </li>
+      <li>Artists: <?=Text::float($ArtistCount)?>
+      </li>
+      <?php
+// End Torrent Stats
+
+if (($RequestStats = $cache->get_value('stats_requests')) === false) {
+    $db->query("
+    SELECT COUNT(ID)
+    FROM requests");
+    list($RequestCount) = $db->next_record();
+    $db->query("
+    SELECT COUNT(ID)
+    FROM requests
+    WHERE FillerID > 0");
+    list($FilledCount) = $db->next_record();
+    $cache->cache_value('stats_requests', array($RequestCount, $FilledCount), 11280);
+} else {
+    list($RequestCount, $FilledCount) = $RequestStats;
+}
+
+// Do not divide by zero
+if ($RequestCount > 0) {
+    $RequestsFilledPercent = $FilledCount / $RequestCount * 100;
+} else {
+    $RequestsFilledPercent = 0;
+}
+
+?>
+      <li>Requests: <?=Text::float($RequestCount)?> (<?=Text::float($RequestsFilledPercent, 2)?>% filled)</li>
+      <?php
+
+if ($SnatchStats = $cache->get_value('stats_snatches')) {
+    ?>
+      <li>Snatches: <?=Text::float($SnatchStats)?>
+      </li>
+      <?php
+}
+
+if (($PeerStats = $cache->get_value('stats_peers')) === false) {
+    // Cache lock!
+    $PeerStatsLocked = $cache->get_value('stats_peers_lock');
+    if (!$PeerStatsLocked) {
+        $cache->cache_value('stats_peers_lock', 1, 30);
+        $db->query("
+      SELECT IF(remaining=0,'Seeding','Leeching') AS Type, COUNT(uid)
+      FROM xbt_files_users
+      WHERE active = 1
+      GROUP BY Type");
+        $PeerCount = $db->to_array(0, MYSQLI_NUM, false);
+        $SeederCount = $PeerCount['Seeding'][1] ?: 0;
+        $LeecherCount = $PeerCount['Leeching'][1] ?: 0;
+        $cache->cache_value('stats_peers', array($LeecherCount, $SeederCount), 604800); // 1 week cache
+        $cache->delete_value('stats_peers_lock');
+    }
+} else {
+    $PeerStatsLocked = false;
+    list($LeecherCount, $SeederCount) = $PeerStats;
+}
+
+if (!$PeerStatsLocked) {
+    $Ratio = Format::get_ratio_html($SeederCount, $LeecherCount);
+    $PeerCount = Text::float($SeederCount + $LeecherCount);
+    $SeederCount = Text::float($SeederCount);
+    $LeecherCount = Text::float($LeecherCount);
+} else {
+    $PeerCount = $SeederCount = $LeecherCount = $Ratio = 'Server busy';
+}
+?>
+      <li>Peers: <?=$PeerCount?>
+      </li>
+      <li>Seeders: <?=$SeederCount?>
+      </li>
+      <li>Leechers: <?=$LeecherCount?>
+      </li>
+      <li>Seeder/leecher ratio: <?=$Ratio?>
+      </li>
+    </ul>
+  </div>
+*/
 } # class
