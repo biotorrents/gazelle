@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 
@@ -16,7 +17,6 @@ spl_autoload_register(function (string $class) {
     $app = App::go();
 
     $path = "{$app->env->SERVER_ROOT}/app/{$class}.php";
-
     if (!file_exists($path)) {
         switch ($class) {
             case 'TORRENT':
@@ -33,7 +33,7 @@ spl_autoload_register(function (string $class) {
         $path = "{$app->env->SERVER_ROOT}/app/{$name}.php";
     }
 
-    if (!empty($name)) {
+    if ($name) {
         require_once $path;
     }
 });

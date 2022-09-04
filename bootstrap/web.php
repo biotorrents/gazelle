@@ -12,7 +12,6 @@ App::gotcha();
 
 # load the app
 $app = App::go();
-!d($app->userNew);exit;
 
 # legacy: GOING AWAY
 $G = G::go();
@@ -35,7 +34,6 @@ $server = Http::query("server");
  * $document is determined by the public index
  */
 
-/*
 # strip sensitive post keys and cache the page
 $stripPostKeys = array_fill_keys([
     "password", "cur_pass", "new_pass_1", "new_pass_2", "verifypassword", "confirm_password", "ChangePassword", "Password"
@@ -48,7 +46,6 @@ $app->cacheOld->cache_value("php_" . getmypid(), [
   "get" => $get,
   "post" => array_diff_key($post, $stripPostKeys)
 ], 600);
-*/
 
 /*
 # redirect unauthenticated to login page
@@ -67,6 +64,8 @@ if (isset($user["LockedAccount"]) && !in_array($document, $allowedPages)) {
 # index workaround to prevent an infinite loop
 if (!empty($app->userNew->core) && $document === "index") {
     require_once "{$app->env->SERVER_ROOT}/sections/index/private.php";
+} else {
+    require_once "{$app->env->SERVER_ROOT}/sections/user/auth/login.php";
 }
 
 # routing: transition from homebrew to flight

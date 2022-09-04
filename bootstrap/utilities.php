@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types = 1);
 
 
@@ -16,11 +17,11 @@ function logout()
 {
     global $SessionID;
     G::$user['ID'] = G::$user['ID'] ?? null;
-    
+
     Http::deleteCookie('session');
     Http::deleteCookie('userid');
     Http::deleteCookie('keeplogged');
-    
+
     #Http::flushCookies();
 
     if ($SessionID) {
@@ -64,7 +65,7 @@ function logout_all_sessions()
 function enforce_login()
 {
     global $SessionID;
-    
+
     if (!$SessionID || !G::$user) {
         Http::setCookie(['redirect' => $_SERVER['REQUEST_URI']]);
         logout();
@@ -139,7 +140,7 @@ function send_irc($Channels = null, $Message = '')
     if (is_string($Channels)) {
         $Channels = explode(' ', $Channels);
     }
-    
+
     # Strip leading #channel hash
     foreach ($Channels as $c) {
         array_push($Dest, preg_replace('/^#/', '', $c));
@@ -240,7 +241,7 @@ function site_url()
      * @see https://github.com/OPSnet/Gazelle/blob/master/classes/util.php
      */
 
-     
+
 /**
  * Print JSON status result with an optional message and die.
  */
@@ -507,7 +508,7 @@ function check_paranoia($Property, $Paranoia = false, $UserClass = false, $UserI
                 return PARANOIA_OVERRIDDEN;
             }
             break;
-            
+
           case 'invitedcount':
             if (check_perms('users_view_invites', $UserClass)) {
                 return PARANOIA_OVERRIDDEN;
@@ -662,11 +663,14 @@ function time_minus($Offset, $Fuzzy = false)
 }
 
 
-// This is never used anywhere with $timestamp set
-// todo: Why don't we just use NOW() in the sql queries?
+/**
+ * sqltime
+ *
+ * THIS IS GOING AWAY
+ */
 function sqltime($timestamp = null)
 {
-    return date('Y-m-d H:i:s', ($timestamp ?? time()));
+    return App::sqlTime($timestamp);
 }
 
 
@@ -784,7 +788,7 @@ $PermissionsArray = array(
     'artist_edit_vanityhouse' => 'Can mark artists as part of Vanity House.',
     'site_tag_aliases_read' => 'Can view the list of tag aliases.'
   );
-  
+
   function permissions_form()
   {
       echo <<<HTML
@@ -797,7 +801,7 @@ $PermissionsArray = array(
           <tr>
             <td>
   HTML;
-  
+
       display_perm('site_leech', 'Can leech.');
       display_perm('site_upload', 'Can upload.');
       display_perm('site_vote', 'Can vote on requests.');
@@ -837,7 +841,7 @@ $PermissionsArray = array(
       display_perm('project_team', 'Part of the project team.');
       display_perm('site_tag_aliases_read', 'Can view the list of tag aliases.');
       display_perm('site_ratio_watch_immunity', 'Immune from being put on ratio watch.');
-  
+
       echo <<<HTML
             </td>
           </tr>
@@ -853,7 +857,7 @@ $PermissionsArray = array(
           <tr>
             <td>
   HTML;
-  
+
       display_perm('users_edit_usernames', 'Can edit usernames.');
       display_perm('users_edit_ratio', 'Can edit anyone\'s upload/download amounts.');
       display_perm('users_edit_own_ratio', 'Can edit own upload/download amounts.');
@@ -886,7 +890,7 @@ $PermissionsArray = array(
       display_perm('users_make_invisible', 'Can make users invisible');
       display_perm('users_logout', 'Can log users out');
       display_perm('users_mod', 'Can access basic moderator tools (Admin comment)');
-  
+
       echo <<<HTML
               <strong class="important_text">
                 Everything is only applicable to users with the same or lower class level
@@ -905,7 +909,7 @@ $PermissionsArray = array(
           <tr>
             <td>
   HTML;
-  
+
       display_perm('torrents_edit', 'Can edit any torrent');
       display_perm('torrents_delete', 'Can delete torrents');
       display_perm('torrents_delete_fast', 'Can delete more than 3 torrents at a time.');
@@ -918,7 +922,7 @@ $PermissionsArray = array(
       display_perm('torrents_fix_ghosts', 'Can fix ghost groups on artist pages.');
       display_perm('screenshots_add', 'Can add screenshots to any torrent and delete their own screenshots.');
       display_perm('screenshots_delete', 'Can delete any screenshot from any torrent.');
-  
+
       echo <<<HTML
             </td>
           </tr>
@@ -934,7 +938,7 @@ $PermissionsArray = array(
           <tr>
             <td>
   HTML;
-  
+
       display_perm('admin_manage_news', 'Can manage site news');
       display_perm('admin_manage_blog', 'Can manage the site blog');
       display_perm('admin_manage_polls', 'Can manage polls');
@@ -950,7 +954,7 @@ $PermissionsArray = array(
       display_perm('admin_schedule', 'Can run the site schedule.');
       display_perm('admin_login_watch', 'Can manage login watch.');
       display_perm('admin_manage_wiki', 'Can manage wiki access.');
-  
+
       echo <<<HTML
             </td>
           </tr>

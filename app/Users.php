@@ -102,7 +102,7 @@ class Users
         $userId = $app->dbNew->single($query, [$sessionId]);
 
         # double check
-        if ($userId !== Http::getCookie("userid")) {
+        if (intval($userId) !== intval(Http::getCookie("userId"))) {
             Http::response(401);
         }
 
@@ -170,7 +170,7 @@ class Users
         $app->cacheOld->CanClear = check_perms("admin_clear_cache");
 
         # update lastUpdate every 10 minutes
-        if (strtotime($UserSessions[$SessionID]["LastUpdate"]) + 600 < time()) {
+        if (strtotime($userSession[$sessionId]["LastUpdate"]) + 600 < time()) {
             $query = "update users_main set lastAccess = now() where id = ?";
             $app->dbNew->do($query, [$userId]);
 
@@ -202,6 +202,7 @@ class Users
             }
         }
 
+        /*
         # ip changed
         if (Crypto::decrypt($user["IP"]) !== $server["REMOTE_ADDR"]) {
             # should be done by the firewall
@@ -218,6 +219,7 @@ class Users
             $app->cacheOld->update_row(false, [ "ip" => Crypto::encrypt($server["REMOTE_ADDR"]) ]);
             $app->cacheOld->commit_transaction(0);
         }
+        */
 
         # stylesheets
         $stylesheets = $app->cacheOld->get_value("stylesheets");
@@ -266,14 +268,14 @@ class Users
 
         try {
             $query = "select * from users where id = ?";
-            $core = $app->dbNew->row($query, [$id]);
+            $core = $app->dbNew->row($query, [$userId]);
             $this->core = $core ?? [];
 
             $query = "select * from users_main cross join users_info on users_main.id = users_info.userId where id = ?";
-            $extra = $app->dbNew->row($query, [$id]);
+            $extra = $app->dbNew->row($query, [$userId]);
             $this->extra = $extra ?? [];
 
-            $cacheKey = $this->cachePrefix . $id;
+            $cacheKey = $this->cachePrefix . $userId;
             $app->cacheOld->cache_value($cacheKey, ["core" => $core, "extra" => $extra], $this->cacheDuration);
         } catch (Exception $e) {
             return $e->getMessage();

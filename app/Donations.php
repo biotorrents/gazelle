@@ -287,7 +287,7 @@ class Donations
     public static function get_donor_info($UserID)
     {
         // Our cache class should prevent identical memcached requests
-        $DonorInfo = G::$cache->get_value("donor_info_$UserID");
+        #$DonorInfo = G::$cache->get_value("donor_info_$UserID");
         if ($DonorInfo === false) {
             # todo: Investigate Rank in donations table
             $QueryID = G::$db->get_query_id();
