@@ -487,7 +487,6 @@ class Users
 
         if ($Class) {
             foreach (array_keys($UserInfo['ExtraClasses']) as $ExtraClass) {
-                $Str .= ' ['.Users::make_class_abbrev_string($ExtraClass).']';
             }
 
             if ($Title) {
@@ -528,11 +527,6 @@ class Users
         return $Classes[$ClassID]['Name'];
     }
 
-    public static function make_class_abbrev_string($ClassID)
-    {
-        global $Classes;
-        return '<abbr title="'.$Classes[$ClassID]['Name'].'">'.$Classes[$ClassID]['Abbreviation'].'</abbr>';
-    }
 
     /**
      * Returns an array with User Bookmark data: group IDs, collage data, torrent data
