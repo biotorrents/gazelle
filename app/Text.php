@@ -1,6 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
+/**
+ * Text parsing and escaping
+ *
+ * @see https://github.com/erusev/parsedown-extra
+ * @see https://github.com/vanilla/nbbc
+ */
 class Text
 {
     # hash algo for cache keys
@@ -10,7 +17,7 @@ class Text
     private static $cachePrefix = "text_";
     private static $cacheDuration = 0;
 
-        
+
     /**
      * parse
      *
@@ -24,42 +31,43 @@ class Text
      */
     public static function parse(string $string, bool $safe = true): string
     {
-        $ENV = ENV::go();
+        $app = App::go();
 
-        $debug = Debug::go();
-        $debug["time"]->startMeasure("parse", "parse markdown text");
+        $app->debug["time"]->startMeasure("parse", "parse markdown text");
 
         # return cached if available
         $cacheKey = self::$cachePrefix . hash(self::$algorithm, $string);
-        if (G::$cache->get_value($cacheKey)) {
-            return G::$cache->get_value($cacheKey);
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
         }
 
         # prepare clean escapes
         $string = self::esc($string);
 
         # here's the magic pattern:
-        if (!preg_match($ENV->regexBBCode, $string)) {
+        if (!preg_match($app->env->regexBBCode, $string)) {
             # markdown
-            $parsedown = new \ParsedownExtra();
+            $parsedown = new ParsedownExtra();
             $safe ?? $parsedown->setSafeMode(true);
 
             # parse early and post-process
             $parsed = $parsedown->text($string);
-            
-            # replace links to $ENV->SITE_DOMAIN
+
+            # replace links to $app->env->siteDomain
             $parsed = self::fixLinks($parsed);
 
-            G::$cache->cache_value($cacheKey, $parsed, self::$cacheDuration);
+            $app->cacheOld->cache_value($cacheKey, $parsed, self::$cacheDuration);
             return $parsed;
         } else {
             # BBcode (not shitty)
-            $nbbc = new \Nbbc\BBCode();
+            $nbbc = new Nbbc\BBCode();
 
             $parsed = $nbbc->parse($string);
             $parsed = self::fixLinks($parsed);
 
-            G::$cache->cache_value($cacheKey, $parsed, self::$cacheDuration);
+            $app->cacheOld->cache_value($cacheKey, $parsed, self::$cacheDuration);
             return $parsed;
         }
     }
@@ -74,18 +82,17 @@ class Text
      */
     private static function fixLinks(string $parsed): string
     {
-        $ENV = ENV::go();
+        $app = App::go();
 
-        $debug = Debug::go();
-        $debug["time"]->startMeasure("process", "post-process text");
+        $app->debug["time"]->startMeasure("process", "post-process text");
 
-        # replace links to $ENV->SITE_DOMAIN
+        # replace links to $app->env->siteDomain
         $parsed = preg_replace(
-            "/<a href=\"{$ENV->regexResource}({$ENV->SITE_DOMAIN}|{$ENV->OLD_SITE_DOMAIN})\//",
+            "/<a href=\"{$app->env->regexResource}({$app->env->SITE_DOMAIN}|{$app->env->OLD_SITE_DOMAIN})\//",
             "<a href=\"/",
             $parsed
         );
-                
+
         # replace external links and add Wikipedia-style icon
         $rel = "external nofollow noopener noreferrer";
 
@@ -122,7 +129,7 @@ class Text
         # object and options
         $figlet = new Povils\Figlet\Figlet();
         $figlet->setFont($font)->setFontColor($color);
-        
+
         # okay done
         echo $figlet->render($message);
     }
