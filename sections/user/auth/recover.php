@@ -2,12 +2,7 @@
 declare(strict_types=1);
 
 # https://github.com/paragonie/anti-csrf
-$csrf = new ParagonIE\AntiCSRF\AntiCSRF;
-if (!empty($_POST)) {
-    if (!$csrf->validateRequest()) {
-        Http::response(403);
-    }
-}
+Http::csrf();
 
 
 $app = App::go();
