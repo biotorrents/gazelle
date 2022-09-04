@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 
@@ -13,7 +14,7 @@ declare(strict_types=1);
  */
 
 # quick sanity checks
-Security::oops();
+App::gotcha();
 
 # load the app
 $app = App::go();
@@ -23,7 +24,7 @@ $app->debug["messages"]->info("app loaded");
 $G = G::go();
 $debug = Debug::go();
 $ENV = ENV::go();
-$db = new DB;
+$db = new DB();
 $cache = new Cache($ENV->getPriv("MEMCACHED_SERVERS"));
 
 
@@ -250,7 +251,7 @@ $app->cacheOld->cache_value("php_" . getmypid(), [
 if (!$authenticated) {
     require_once "{$app->env->SERVER_ROOT}/sections/user/auth/login.php";
 }
- 
+
 # allow some possibly useful banned pages
 # todo: banning prevents login and therefore participation
 $allowedPages = ["api", "locked", "login", "logout"];
@@ -269,7 +270,7 @@ $fileName = "{$app->env->SERVER_ROOT}/sections/$document/router.php";
 if (file_exists($fileName)) {
     require_once $fileName;
 }
-    
+
 # use new flight router
 else {
     require_once "{$app->env->SERVER_ROOT}/routes/web.php";

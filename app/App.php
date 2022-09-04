@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 
 /**
@@ -95,6 +96,17 @@ class App
 
 
     /**
+     * gotcha
+     *
+     * Basic sanity checks, just in case.
+     */
+    public static function gotcha()
+    {
+        return;
+    }
+
+
+    /**
      * email
      *
      * @param string $to
@@ -154,11 +166,11 @@ class App
     {
         $globFiles = glob("{$folder}/*.{$extension}");
         $globFolders  = glob("{$folder}/*", GLOB_ONLYDIR);
-    
+
         foreach ($globFolders as $folder) {
             self::recursiveGlob($folder, $extension);
         }
-    
+
         foreach ($globFiles as $file) {
             require_once $file;
         }
@@ -205,7 +217,7 @@ class App
             ],
             */
         ];
-            
+
         # return array
         return $manifest;
 

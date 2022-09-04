@@ -12,17 +12,6 @@ declare(strict_types = 1);
 class Security
 {
     /**
-     * oops
-     *
-     * Basic sanity checks are now enforced by the Composer config.
-     * Please add checks here if you shit up the codebase or discover something.
-     */
-    public static function oops()
-    {
-        return;
-    }
-
-    /**
      * Check integer
      *
      * Makes sure a number ID is valid,
