@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 
 /**
@@ -43,7 +44,7 @@ class Auth # extends Delight\Auth\Auth
     {
         $app = App::go();
 
-        if ($app->env->dev === true) {
+        if ($app->env->dev) {
             $throttling = false;
         } else {
             $throttling = true;
@@ -75,7 +76,7 @@ class Auth # extends Delight\Auth\Auth
             $this->user["isSuspended"] = $this->auth->isSuspended();
             $this->user["isRemembered"] = $this->auth->isRemembered();
             $this->user["isPasswordResetEnabled"] = $this->auth->isPasswordResetEnabled();
-            
+
             # info loaded
             return true;
         } else {
@@ -116,7 +117,7 @@ class Auth # extends Delight\Auth\Auth
             if (!$app->env->openRegistration && empty($invite)) {
                 throw new Exception("Open registration is disabled, no invite code provided");
             }
-        
+
             /*
             # you may want to exclude non-printing control characters and certain printable special characters
             if (preg_match("/[\x00-\x1f\x7f\/:\\\\]/", $username) === 1) {
@@ -196,17 +197,7 @@ class Auth # extends Delight\Auth\Auth
                 # make sure to catch both UnknownUsernameException and AmbiguousUsernameException
                 $response = $this->auth->loginWithUsername($username, $passphrase, $this->remember());
             }
-        } catch (Delight\Auth\InvalidEmailException $e) {
-            return $mesage;
-        } catch (Delight\Auth\InvalidPasswordException $e) {
-            return $message;
-        } catch (Delight\Auth\EmailNotVerifiedException $e) {
-            return $message;
-        } catch (Delight\Auth\TooManyRequestsException $e) {
-            return $message;
-        } catch (Delight\Auth\UnknownUsernameException $e) {
-            return $message;
-        } catch (Delight\Auth\AmbiguousUsernameException $e) {
+        } catch (Exception $e) {
             return $message;
         }
 
@@ -232,13 +223,7 @@ class Auth # extends Delight\Auth\Auth
             # if you want the user to be automatically signed in after successful confirmation,
             # just call confirmEmailAndSignIn instead of confirmEmail
             $response = $this->auth->confirmEmailAndSignIn($selector, $token, $this->remember());
-        } catch (Delight\Auth\InvalidSelectorTokenPairException $e) {
-            return $message;
-        } catch (Delight\Auth\TokenExpiredException $e) {
-            return $message;
-        } catch (Delight\Auth\UserAlreadyExistsException $e) {
-            return $message;
-        } catch (Delight\Auth\TooManyRequestsException $e) {
+        } catch (Exception $e) {
             return $message;
         }
 
@@ -298,13 +283,7 @@ class Auth # extends Delight\Auth\Auth
                 App::email($to, $subject, $body);
                 Announce::slack("{$to}\n{$subject}\n{$body}", ["debug"]);
             });
-        } catch (Delight\Auth\InvalidEmailException $e) {
-            return $message;
-        } catch (Delight\Auth\EmailNotVerifiedException $e) {
-            return $message;
-        } catch (Delight\Auth\ResetDisabledException $e) {
-            return $message;
-        } catch (Delight\Auth\TooManyRequestsException $e) {
+        } catch (Exception $e) {
             return $message;
         }
 
@@ -332,13 +311,7 @@ class Auth # extends Delight\Auth\Auth
             # put the selector and token in hidden fields
             # ask the user for their new passphrase
             $response = $this->auth->canResetPasswordOrThrow($selector, $token);
-        } catch (Delight\Auth\InvalidSelectorTokenPairException $e) {
-            return $message;
-        } catch (Delight\Auth\TokenExpiredException $e) {
-            return $message;
-        } catch (Delight\Auth\ResetDisabledException $e) {
-            return $message;
-        } catch (Delight\Auth\TooManyRequestsException $e) {
+        } catch (Exception $e) {
             return $message;
         }
 
@@ -370,18 +343,8 @@ class Auth # extends Delight\Auth\Auth
             }
 
             $response = $this->auth->resetPassword($selector, $token, $passphrase);
-        } catch (Delight\Auth\InvalidSelectorTokenPairException $e) {
-            return $message;
-        } catch (Delight\Auth\TokenExpiredException $e) {
-            return $message;
-        } catch (Delight\Auth\ResetDisabledException $e) {
-            return $message;
-        } catch (Delight\Auth\InvalidPasswordException $e) {
-            return $message;
-        } catch (Delight\Auth\TooManyRequestsException $e) {
-            return $message;
         } catch (Exception $e) {
-            return $e->getMessage();
+            return $message;
         }
 
         return $response;
@@ -404,11 +367,7 @@ class Auth # extends Delight\Auth\Auth
 
         try {
             $response = $auth->changePassword($oldPassphrase, $newPassphrase);
-        } catch (Delight\Auth\NotLoggedInException $e) {
-            return $message;
-        } catch (Delight\Auth\InvalidPasswordException $e) {
-            return $message;
-        } catch (Delight\Auth\TooManyRequestsException $e) {
+        } catch (Exception $e) {
             return $message;
         }
 
@@ -440,15 +399,7 @@ class Auth # extends Delight\Auth\Auth
             } else {
                 die("We can't say if the user is who they claim to be");
             }
-        } catch (Delight\Auth\InvalidEmailException $e) {
-            return $message;
-        } catch (Delight\Auth\UserAlreadyExistsException $e) {
-            return $message;
-        } catch (Delight\Auth\EmailNotVerifiedException $e) {
-            return $message;
-        } catch (Delight\Auth\NotLoggedInException $e) {
-            return $message;
-        } catch (Delight\Auth\TooManyRequestsException $e) {
+        } catch (Exception $e) {
             return $message;
         }
 
@@ -475,12 +426,10 @@ class Auth # extends Delight\Auth\Auth
                 echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
                 echo '  For SMS, consider using a third-party service and a compatible SDK';
             });
-        
-            
+
+
             echo 'The user may now respond to the confirmation request (usually by clicking a link)';
-        } catch (Delight\Auth\ConfirmationRequestNotFound $e) {
-            return $message;
-        } catch (Delight\Auth\TooManyRequestsException $e) {
+        } catch (Exception $e) {
             return $message;
         }
 
@@ -499,10 +448,10 @@ class Auth # extends Delight\Auth\Auth
 
         try {
             $response = $this->auth->logOutEverywhere();
-        } catch (Delight\Auth\NotLoggedInException $e) {
+        } catch (Exception $e) {
             return $message;
         }
-        
+
         # you can destroy the entire session by calling a second method
         $this->auth->destroySession();
 
@@ -543,10 +492,8 @@ If you need the custom user information only rarely, you may just retrieve it as
 
         try {
             $response = $this->auth->reconfirmPassword($passphrase);
-        } catch (Delight\Auth\NotLoggedInException $e) {
-            return $this->message;
-        } catch (Delight\Auth\TooManyRequestsException $e) {
-            return $this->message;
+        } catch (Exception $e) {
+            return $message;
         }
 
         return $response;
@@ -573,9 +520,7 @@ If you need the custom user information only rarely, you may just retrieve it as
             } else {
                 throw new Exception("We can't say if the user is who they claim to be");
             }
-        } catch (Delight\Auth\NotLoggedInException $e) {
-            return $message;
-        } catch (Delight\Auth\TooManyRequestsException $e) {
+        } catch (Exception $e) {
             return $message;
         }
 

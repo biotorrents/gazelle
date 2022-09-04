@@ -12,6 +12,7 @@ App::gotcha();
 
 # load the app
 $app = App::go();
+!d($app->userNew);exit;
 
 # legacy: GOING AWAY
 $G = G::go();
