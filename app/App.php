@@ -29,7 +29,9 @@ class App
 
     public $debug = null;
     public $twig = null;
-    public $user = null;
+
+    public $userOld = null; # old
+    public $userNew = null; # new
 
 
     /**
@@ -88,7 +90,9 @@ class App
 
         $this->debug = Debug::go();
         $this->twig = Twig::go();
-        $this->user =& $user; # todo
+
+        $this->userOld =& $user; # old
+        $this->userNew = Users::go(["id" => 1]); # new
     }
 
 

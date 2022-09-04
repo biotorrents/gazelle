@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 
@@ -96,7 +97,7 @@ class Database extends PDO
         try {
             $this->pdo = new PDO($dsn, $username, $password, $options);
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage(), intval($e->getCode()));
+            throw new Exception($e->getMessage(), intval($e->getCode()));
         }
     }
 
@@ -134,7 +135,7 @@ class Database extends PDO
         # errors
         $errors = $this->pdo->errorInfo();
         if ($errors[0] !== "00000") {
-            throw new PDOException("{$errors[0]}: {$errors[2]}");
+            throw new Exception("{$errors[0]}: {$errors[2]}");
         }
 
         # good
@@ -155,7 +156,7 @@ class Database extends PDO
         if ($app->cacheOld->get_value($cacheKey) && !$app->env->dev) {
             return $app->cacheOld->get_value($cacheKey);
         }
-        
+
         $statement = $this->do($query, $args);
         $ref = $statement->fetchAll(PDO::FETCH_ASSOC);
 

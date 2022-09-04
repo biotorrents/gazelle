@@ -1,18 +1,124 @@
 <?php
+
 #declare(strict_types=1);
 
 
 /**
  * User class
- * 
+ *
  * $app->user->core contains necessary info from delight-im/auth.
  * $app->user->extra contains various profile, etc., info from Gazelle.
- * 
+ *
  * @see https://wiki.archlinux.org/title/Official_repositories
  */
 
 class Users
 {
+    # singleton
+    private static $instance = null;
+
+    # user info
+    public $core = null;
+    public $extra = null;
+
+    # hash algo for cache keys
+    private $algorithm = "sha3-512";
+
+    # cache settings
+    private $cachePrefix = "users_";
+    private $cacheDuration = 300; # five minutes
+
+
+    /**
+     * __functions
+     */
+    public function __construct()
+    {
+        return;
+    }
+
+    public function __clone()
+    {
+        return trigger_error(
+            "clone not allowed",
+            E_USER_ERROR
+        );
+    }
+
+    public function __wakeup()
+    {
+        return trigger_error(
+            "wakeup not allowed",
+            E_USER_ERROR
+        );
+    }
+
+
+    /**
+     * go
+     */
+    public static function go(array $options = [])
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+            self::$instance->factory($options);
+        }
+
+        return self::$instance;
+    }
+
+
+    /**
+     * factory
+     */
+    private function factory(array $options = [])
+    {
+        $app = App::go();
+
+        $id = $options["id"] ?? null;
+        if (!$id) {
+            throw new Exception("missing required \$options[\"id\"]");
+        }
+
+        $cacheKey = $this->cachePrefix . $id;
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
+
+        if ($cacheHit) {
+            #return $cacheHit;
+        }
+
+        /*
+        # this needs to be simpler
+        $query = "
+            select users_main.id, users_main.username, users_main.permissionId, users_main.paranoia, users_main.enabled, users_main.title, users_main.visible,
+            users_info.artist, users_info.donor, users_info.warned, users_info.avatar, users_info.catchupTime,
+            locked_accounts.type as lockedAccount,
+            group_concat(users_levels.permissionId separator ',') as levels
+            from users_main
+            inner join users_info on users_info.userId = users_main.id
+            left join locked_accounts on locked_accounts.userId = users_main.id
+            left join users_levels on users_levels.userId = users_main.id
+            where users_main.id = ?
+            group by users_main.id
+        ";
+        */
+
+        try {
+            $query = "select * from users where id = ?";
+            $core = $app->dbNew->row($query, [$id]);
+            $this->core = $core ?? [];
+
+            $query = "select * from users_main cross join users_info on users_main.id = users_info.userId where id = ?";
+            $extra = $app->dbNew->row($query, [$id]);
+            $this->extra = $extra ?? [];
+
+            $app->cacheOld->cache_value($cacheKey, ["core" => $core, "extra" => $extra], $this->cacheDuration);
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+
     /**
      * Get $Classes (list of classes keyed by ID) and $ClassLevels
      *    (list of classes keyed by level)
@@ -597,7 +703,7 @@ class Users
         switch ($Setting) {
         case 0:
           if (!empty($Avatar)) {
-              $ToReturn = ($ReturnHTML ? "<a href=\"user.php?id=$UserID\"><img src=\"$Avatar\" ".($Size?"width=\"$Size\" ":"")."$Style $AvatarMouseOverText$SecondAvatar $Class /></a>" : $Avatar);
+              $ToReturn = ($ReturnHTML ? "<a href=\"user.php?id=$UserID\"><img src=\"$Avatar\" ".($Size ? "width=\"$Size\" " : "")."$Style $AvatarMouseOverText$SecondAvatar $Class /></a>" : $Avatar);
           } else {
               $URL = STATIC_SERVER.'images/avatars/default.png';
               $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar />" : $URL);
@@ -693,7 +799,7 @@ class Users
           'IP'=> $_SERVER['REMOTE_ADDR'],
           'siteName'=> $app->env->siteName,
             'SITE_DOMAIN'=> SITE_DOMAIN,
-    
+
         ]
         );
 
@@ -726,7 +832,7 @@ class Users
         WHERE
           `UserID` = ".$app->user['ID']
         );
-          
+
         list($Uploads) = $app->dbOld->next_record();
         $Source[0] = $app->env->siteName.'-'.substr(hash('sha256', $SourceKey[0].$app->user['ID'].$Uploads), 0, 10);
         $Source[1] = $SourceKeyOld ? $app->env->siteName.'-'.substr(hash('sha256', $SourceKeyOld[0].$app->user['ID'].$Uploads), 0, 10) : $Source[0];
@@ -748,7 +854,7 @@ class Users
             // prevent collisions with an existing token name
             $token = base64UrlEncode(Crypto::encrypt(random_bytes(32) . $suffix, $key));
             $hash = password_hash($token, PASSWORD_DEFAULT);
-            
+
             /*
             if (!Users::hasApiToken($id, $token)) {
                 break;
@@ -828,7 +934,7 @@ class Users
               `users_main`
             WHERE `ID` = '$id' 
             ");
-            
+
 
             [$enabled] = $app->dbOld->next_record(MYSQLI_NUM);
             $app->cacheOld->cache_value('enabled_' . $id, (int) $enabled, 86400 * 3);
