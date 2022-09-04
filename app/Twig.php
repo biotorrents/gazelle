@@ -90,7 +90,7 @@ class Twig # extends Twig\Environment
         $twig->addGlobal("app", $app);
 
         $twig->addGlobal("env", $app->env);
-        $twig->addGlobal("user", $app->user);
+        $twig->addGlobal("user", $app->userOld);
 
         $query = Http::query();
         $twig->addGlobal("query", $query);

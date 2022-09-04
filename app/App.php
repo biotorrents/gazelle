@@ -92,7 +92,7 @@ class App
         $this->twig = Twig::go();
 
         $this->userOld =& $user; # old
-        $this->userNew = Users::go(["id" => 1]); # new
+        $this->userNew = Users::go(); # new
     }
 
 
@@ -227,5 +227,17 @@ class App
 
         # return json
         #return json_encode($manifest, JSON_UNESCAPED_SLASHES);
+    }
+
+
+    /**
+     * sqlTime
+     */
+    public static function sqlTime($timestamp = null): string
+    {
+        return date(
+            "Y-m-d H:i:s",
+            $timestamp ?? time()
+        );
     }
 } # class

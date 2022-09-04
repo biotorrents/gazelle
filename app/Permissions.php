@@ -13,16 +13,16 @@ class Permissions
     {
         $app = App::go();
 
-        $app->user['EffectiveClass'] ??= 1000;
-        if ($app->user['EffectiveClass'] >= 1000) {
+        $app->userOld['EffectiveClass'] ??= 1000;
+        if ($app->userOld['EffectiveClass'] >= 1000) {
             return true;
         } // Sysops can do anything
 
-        if ($app->user['EffectiveClass'] < $MinClass) {
+        if ($app->userOld['EffectiveClass'] < $MinClass) {
             return false;
         } // MinClass failure
         
-        return $app->user['Permissions'][$PermissionName] ?? false; // Return actual permission
+        return $app->userOld['Permissions'][$PermissionName] ?? false; // Return actual permission
     }
 
     /**

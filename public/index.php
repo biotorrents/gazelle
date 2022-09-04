@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 
@@ -19,7 +20,7 @@ $server = Http::query("server");
 $path = pathinfo($server["SCRIPT_NAME"]);
 $file = $path["filename"];
 
-# dump all tards
+# dump tards
 if ($path["dirname"] !== "/") {
     Http::response(403);
 } elseif (in_array($file, ["announce", "info_hash", "peer_id", "scrape"])) {
@@ -27,7 +28,7 @@ if ($path["dirname"] !== "/") {
 }
 
 # find the document we're loading
-$server["REQUEST_URI"] ??= "";
+$server["REQUEST_URI"] ??= "/";
 if ($server["REQUEST_URI"] === "/") {
     $document = "index";
 } else {

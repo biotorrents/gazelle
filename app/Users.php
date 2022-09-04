@@ -18,15 +18,15 @@ class Users
     private static $instance = null;
 
     # user info
-    public $core = null;
-    public $extra = null;
+    public $core = [];
+    public $extra = [];
 
     # hash algo for cache keys
     private $algorithm = "sha3-512";
 
     # cache settings
     private $cachePrefix = "users_";
-    private $cacheDuration = 300; # five minutes
+    private $cacheDuration = 3600; # one hour
 
 
     /**
@@ -75,17 +75,178 @@ class Users
     {
         $app = App::go();
 
-        $id = $options["id"] ?? null;
-        if (!$id) {
-            throw new Exception("missing required \$options[\"id\"]");
+        # start debug
+        $app->debug["time"]->startMeasure("users", "user handling");
+
+        # no crypto
+        if (!apcu_exists("DBKEY")) {
+            return false;
         }
 
-        $cacheKey = $this->cachePrefix . $id;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        # auth class
+        $auth = new Auth();
+        $authenticated = false;
 
-        if ($cacheHit) {
-            #return $cacheHit;
+        # untrusted input
+        $sessionId = Http::getCookie("session") ?? null;
+        $userId = Http::getCookie("userid") ?? null;
+        $server = Http::query("server") ?? null;
+
+        # unauthenticated
+        if (!$sessionId) {
+            return false;
         }
+
+        # get userId
+        $query = "select userId from users_sessions where sessionId = ? and active = 1";
+        $userId = $app->dbNew->single($query, [$sessionId]);
+
+        # double check
+        if ($userId !== Http::getCookie("userid")) {
+            Http::response(401);
+        }
+
+        # no session
+        if (!$userId && !$sessionId) {
+            return false;
+        }
+
+        # cache session
+        $session = $app->cacheOld->get_value("users_sessions_{$userId}");
+        if (!$session) {
+            $query = "select sessionId, ip, lastUpdate from users_sessions where userId = ? and active = 1 order by lastUpdate desc";
+            $session = $app->dbNew->row($query, [$userId]);
+            $app->cacheOld->cache_value("users_sessions_{$userId}", $session, $this->cacheDuration);
+        }
+
+        # bad session
+        if (!array_key_exists($sessionId, $session)) {
+            $auth->logout();
+            return false;
+        }
+
+        # check enabled
+        $enabled = $app->cacheOld->get_value("enabled_{$userId}");
+        if (!$enabled) {
+            $query = "select enabled from users_main where id = ?";
+            $enabled = $app->dbNew->single($query, [$userId]);
+            $app->cacheOld->cache_value("enabled_{$userId}", $enabled, $this->cacheDuration);
+        }
+
+        # double check
+        if (intval($enabled) === 2) {
+            $auth->logout();
+            return false;
+        }
+
+        # user stats
+        $stats = $app->cacheOld->get_value("user_stats_{$userId}");
+        if (!$stats) {
+            $query = "select uploaded, downloaded, requiredRatio from users_main where id = ?";
+            $stats = $app->dbNew->row($query, [$userId]);
+            $app->cacheOld->cache_value("user_stats_{$userId}", $stats, $this->cacheDuration);
+        }
+
+        # original gazelle user info
+        $heavyInfo = self::user_heavy_info($userId);
+        $lightInfo = self::user_info($userId);
+
+        # original gazelle keys, etc.
+        $user = array_merge($heavyInfo, $lightInfo, $stats);
+        $user["RSS_Auth"] = md5($userId . $app->env->getPriv("rssHash") . $user["torrent_pass"]);
+
+        # ratio watch
+        $user["RatioWatch"] = (
+            $user["RatioWatchEnds"]
+              && time() < strtotime($user["RatioWatchEnds"])
+              && ($stats["Downloaded"] * $stats["RequiredRatio"]) > $stats["Uploaded"]
+        );
+
+        # permissions
+        $user["Permissions"] = Permissions::get_permissions_for_user($userId, $user["CustomPermissions"]);
+        $user["Permissions"]["MaxCollages"] += Donations::get_personal_collages($userId);
+
+        # change necessary triggers in external components
+        $app->cacheOld->CanClear = check_perms("admin_clear_cache");
+
+        # update lastUpdate every 10 minutes
+        if (strtotime($UserSessions[$SessionID]["LastUpdate"]) + 600 < time()) {
+            $query = "update users_main set lastAccess = now() where id = ?";
+            $app->dbNew->do($query, [$userId]);
+
+            $query = "update users_sessions set ip = ?, lastUpdate = now() where userId = ? and sessionId = ?";
+            $app->dbNew->do($query, [ Crypto::encrypt($server["REMOTE_ADDR"]), $userId, $sessionId ]);
+
+            # cache transaction
+            $app->cacheOld->begin_transaction("users_sessions_{$userId}");
+            $app->cacheOld->delete_row($sessionId);
+
+            $sessionCache = [
+                "sessionId" => $sessionId,
+                "ip" => Crypto::encrypt($server["REMOTE_ADDR"]),
+                "lastUpdate" => App::sqlTime(),
+              ];
+
+            $app->cacheOld->insert_front($sessionId, $sessionCache);
+            $app->cacheOld->commit_transaction(0);
+        }
+
+        # notifications
+        if ($user["Permissions"]["site_torrents_notify"]) {
+            $user["Notify"] = $app->cacheOld->get_value("notify_filters_{$userId}");
+
+            if (!$user["Notify"]) {
+                $query = "select id, label from users_notify_filters where userId = ?";
+                $user["Notify"] = $app->dbNew->row($query, [$userId]);
+                $app->cacheOld->cache_value("notify_filters_{$userId}", $user["Notify"], $this->cacheDuration);
+            }
+        }
+
+        # ip changed
+        if (Crypto::decrypt($user["IP"]) !== $server["REMOTE_ADDR"]) {
+            # should be done by the firewall
+            if (Tools::site_ban_ip($server["REMOTE_ADDR"])) {
+                error("Your IP address is banned");
+            }
+
+            # current and new
+            $currentIp = $user["IP"];
+            $newIp = $server["REMOTE_ADDR"];
+
+            # cache
+            $app->cacheOld->begin_transaction("user_info_heavy_{$userId}");
+            $app->cacheOld->update_row(false, [ "ip" => Crypto::encrypt($server["REMOTE_ADDR"]) ]);
+            $app->cacheOld->commit_transaction(0);
+        }
+
+        # stylesheets
+        $stylesheets = $app->cacheOld->get_value("stylesheets");
+        if (!$stylesheets) {
+            # ugh
+            $query = "
+                select id,
+                lower(replace(name, , ' ', '_')) as name, name as properName,
+                lower(replace(additions, ' ', '_')) as additions, additions as properAdditions
+                from stylesheets
+            ";
+
+            $stylesheets = $app->dbNew->row($query);
+            $app->cacheOld->cache_value("stylesheets", $stylesheets, $this->cacheDuration);
+        }
+
+        // todo: Clean up this messy solution
+        $user["StyleName"] = $stylesheets[$user["StyleID"]]["Name"];
+        if (empty($user["Username"])) {
+            $auth->logout(); # ghost
+        }
+
+        # the user is loaded
+        $app->userOld = $user;
+        $authenticated = true;
+
+
+        /** */
+
 
         /*
         # this needs to be simpler
@@ -112,10 +273,14 @@ class Users
             $extra = $app->dbNew->row($query, [$id]);
             $this->extra = $extra ?? [];
 
+            $cacheKey = $this->cachePrefix . $id;
             $app->cacheOld->cache_value($cacheKey, ["core" => $core, "extra" => $extra], $this->cacheDuration);
         } catch (Exception $e) {
             return $e->getMessage();
         }
+
+        # end debug
+        $app->debug["time"]->stopMeasure("users", "user handling");
     }
 
 
@@ -476,10 +641,10 @@ class Users
         // Update cache
         $app->cacheOld->cache_value("user_info_heavy_$UserID", $HeavyInfo, 0);
 
-        // Update $app->user if the options are changed for the current
-        if ($app->user['ID'] == $UserID) {
-            $app->user = array_merge($app->user, $NewOptions);
-            $app->user['ID'] = $UserID; // We don't want to allow userid switching
+        // Update $app->userOld if the options are changed for the current
+        if ($app->userOld['ID'] == $UserID) {
+            $app->userOld = array_merge($app->userOld, $NewOptions);
+            $app->userOld['ID'] = $UserID; // We don't want to allow userid switching
         }
         return true;
     }
@@ -583,7 +748,7 @@ class Users
 
         # Warned?
         $Str .= ($IsWarned && $UserInfo['Warned'])
-          ? '<a href="wiki.php?action=article&amp;name=warnings"'.'><img src="'.STATIC_SERVER.'common/symbols/warned.png" alt="Warned" title="Warned'.($app->user['ID'] === $UserID ? ' - Expires '.date('Y-m-d H:i', strtotime($UserInfo['Warned']))
+          ? '<a href="wiki.php?action=article&amp;name=warnings"'.'><img src="'.STATIC_SERVER.'common/symbols/warned.png" alt="Warned" title="Warned'.($app->userOld['ID'] === $UserID ? ' - Expires '.date('Y-m-d H:i', strtotime($UserInfo['Warned']))
           : '').'" class="tooltip" /></a>'
           : '';
 
@@ -715,7 +880,7 @@ class Users
           // no break
 
         case 3:
-          switch ($app->user['Identicons']) {
+          switch ($app->userOld['Identicons']) {
           case 0:
             $Type = 'identicon';
             break;
@@ -830,12 +995,12 @@ class Users
         FROM
           `torrents`
         WHERE
-          `UserID` = ".$app->user['ID']
+          `UserID` = ".$app->userOld['ID']
         );
 
         list($Uploads) = $app->dbOld->next_record();
-        $Source[0] = $app->env->siteName.'-'.substr(hash('sha256', $SourceKey[0].$app->user['ID'].$Uploads), 0, 10);
-        $Source[1] = $SourceKeyOld ? $app->env->siteName.'-'.substr(hash('sha256', $SourceKeyOld[0].$app->user['ID'].$Uploads), 0, 10) : $Source[0];
+        $Source[0] = $app->env->siteName.'-'.substr(hash('sha256', $SourceKey[0].$app->userOld['ID'].$Uploads), 0, 10);
+        $Source[1] = $SourceKeyOld ? $app->env->siteName.'-'.substr(hash('sha256', $SourceKeyOld[0].$app->userOld['ID'].$Uploads), 0, 10) : $Source[0];
         return $Source;
     }
 

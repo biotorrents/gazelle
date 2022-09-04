@@ -25,7 +25,7 @@ $post = Http::query("post");
 
 /*
 # fail out
-$json->checkToken($app->user["ID"]);
+$json->checkToken($app->userOld["ID"]);
 
 # rate limit exceptions
 $query = "select id from users_main where permissionId = 20"; # donors

@@ -20,7 +20,7 @@ Flight::route("/disabled", function () {
 Flight::route("/enable/@token", function (string $token) {
     $app = App::go();
 
-    if (isset($app->user["ID"]) || !isset($token) || !$app->env->FEATURE_EMAIL_REENABLE) {
+    if (isset($app->userOld["ID"]) || !isset($token) || !$app->env->FEATURE_EMAIL_REENABLE) {
         Http::redirect();
     }
     

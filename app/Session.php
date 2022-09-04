@@ -85,8 +85,8 @@ class Session
         }
 
         # fail them
-        if (empty($request["auth"]) || $request["auth"] !== $app->user["AuthKey"]) {
-            Announce::slack("{$app->user["Username"]} just failed authorize on {$server["REQUEST_URI"]}", ["debug"]);
+        if (empty($request["auth"]) || $request["auth"] !== $app->userOld["AuthKey"]) {
+            Announce::slack("{$app->userOld["Username"]} just failed authorize on {$server["REQUEST_URI"]}", ["debug"]);
             error("Invalid authorization key. Go back, refresh, and try again.");
 
             return false;
