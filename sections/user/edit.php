@@ -490,26 +490,6 @@ HTML;
             </ul>
           </td>
         </tr>
-
-        <!-- Autocompletion -->
-        <tr id="tor_autocomp_tr">
-          <td class="label">
-            <strong>Autocompletion</strong>
-          </td>
-
-          <td>
-            <select name="autocomplete">
-              <option value="0" <?=empty($SiteOptions['AutoComplete']) ? ' selected="selected"' : ''?>>Everywhere
-              </option>
-
-              <option value="2" <?=$SiteOptions['AutoComplete'] === 2 ? ' selected="selected"' : ''?>>Searches
-                only</option>
-
-              <option value="1" <?=$SiteOptions['AutoComplete'] === 1 ? ' selected="selected"' : ''?>>Disable
-              </option>
-            </select>
-          </td>
-        </tr>
       </table>
 
       <!-- Community -->

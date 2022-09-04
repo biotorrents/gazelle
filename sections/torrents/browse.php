@@ -229,7 +229,7 @@ View::header('Browse Torrents', 'browse');
             <td class="ft_artistname">
               <input type="search" spellcheck="false" size="65" id="artist" name="artistname"
                 class="inputtext smaller fti_advanced" placeholder="Author (ORCiD pending)"
-                value="<?Format::form('artistname')?>" <?php Users::has_autocomplete_enabled('other'); ?>/>
+                value="<?Format::form('artistname')?>" />
             </td>
           </tr>
 
@@ -473,7 +473,6 @@ View::header('Browse Torrents', 'browse');
               <input type="search" size="37" id="tags" name="taglist" class="inputtext smaller"
                 placeholder="Tags (comma-separated)"
                 value="<?=Text::esc($Search->get_terms('taglist'))?>"
-                <?php Users::has_autocomplete_enabled('other'); ?>
               aria-label="Tags to search">&nbsp;
               <input type="radio" name="tags_type" id="tags_type0" value="0" <?Format::selected(
             'tags_type',

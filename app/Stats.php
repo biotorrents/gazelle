@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
+
 /**
  * Plausible Stats API
  * @see https://plausible.io/docs
  */
+
 class Stats
 {
     # private values

@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
+
 /**
  * Text parsing and escaping
  *
  * @see https://github.com/erusev/parsedown-extra
  * @see https://github.com/vanilla/nbbc
  */
+
 class Text
 {
     # hash algo for cache keys

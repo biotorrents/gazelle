@@ -379,9 +379,7 @@ View::header($Title, 'requests');
                     <td>
                         <input type="search" name="tags" id="tags" size="50" class="inputtext"
                             placeholder="Tags (comma-separated)"
-                            value="<?=!empty($TagNames) ? Text::esc($TagNames) : ''?>"
-                            <?php Users::has_autocomplete_enabled('other'); ?>
-                        />&nbsp;
+                            value="<?=!empty($TagNames) ? Text::esc($TagNames) : ''?>" />&nbsp;
                         <input type="radio" name="tags_type" id="tags_type0" value="0" <?php Format::selected('tags_type', 0, 'checked')?>
                         /><label for="tags_type0"> Any</label>&nbsp;&nbsp;
                         <input type="radio" name="tags_type" id="tags_type1" value="1" <?php Format::selected('tags_type', 1, 'checked')?>

@@ -232,8 +232,7 @@ View::header(
     if (!empty($ArtistForm)) {
         $First = true;
         foreach ($ArtistForm as $Artist) { ?>
-            <input type="text" id="artist_0" name="artists[]" <?php Users::has_autocomplete_enabled('other'); ?>
-            size="45" value="<?=Text::esc($Artist['name']) ?>" <?=$Disabled?>/>
+            <input type="text" id="artist_0" name="artists[]" size="45" value="<?=Text::esc($Artist['name']) ?>" <?=$Disabled?>/>
 
             <?php
             if (empty($Disabled)) {
@@ -246,8 +245,7 @@ View::header(
             }
         }
     } else { ?>
-            <input type="text" id="artist_0" name="artists[]" <?php Users::has_autocomplete_enabled('other'); ?>
-            size="45" <?=$Disabled?>/>
+            <input type="text" id="artist_0" name="artists[]" size="45" <?=$Disabled?>/>
 
             <?php if (empty($Disabled)) { ?>
             <a class="add_artist_button brackets" onclick="AddArtistField()">+</a>
@@ -306,9 +304,7 @@ View::header(
               </select>
 
               <input type="text" id="tags" name="tags" size="45"
-                value="<?= (!empty($Tags) ? Text::esc($Tags) : '') ?>"
-                <?php Users::has_autocomplete_enabled('other'); ?>
-              <?= $Disabled ?>/>
+                value="<?= (!empty($Tags) ? Text::esc($Tags) : '') ?>" <?= $Disabled ?> />
           </td>
         </tr>
 

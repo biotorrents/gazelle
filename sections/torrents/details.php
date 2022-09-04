@@ -290,8 +290,7 @@ $Index++;
             value="<?=$user['AuthKey']?>" />
           <input type="hidden" name="groupid"
             value="<?=$GroupID?>" />
-          <input type="text" id="artist" name="artistname[]" <?php Users::has_autocomplete_enabled('other'); ?>
-          />
+          <input type="text" id="artist" name="artistname[]" />
           <input type="submit" class="button-primary" value="Add" />
         </form>
       </div>
@@ -364,8 +363,7 @@ $Index++;
             value="<?=$user['AuthKey']?>" />
           <input type="hidden" name="groupid"
             value="<?=$GroupID?>" />
-          <input type="text" name="tagname" id="tagname" <?php Users::has_autocomplete_enabled('other'); ?>
-          />
+          <input type="text" name="tagname" id="tagname" />
           <input type="submit" class="button-primary" value="Add" />
         </form>
         <br />

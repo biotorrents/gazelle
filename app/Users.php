@@ -1,6 +1,16 @@
 <?php
 #declare(strict_types=1);
 
+
+/**
+ * User class
+ * 
+ * $app->user->core contains necessary info from delight-im/auth.
+ * $app->user->extra contains various profile, etc., info from Gazelle.
+ * 
+ * @see https://wiki.archlinux.org/title/Official_repositories
+ */
+
 class Users
 {
     /**
@@ -661,45 +671,6 @@ class Users
         return isset($HeavyInfo['DisableAvatars']) && ($HeavyInfo['DisableAvatars'] !== 1);
     }
 
-    /**
-     * Checks whether user has autocomplete enabled
-     *
-     * 0 - Enabled everywhere (default), 1 - Disabled, 2 - Searches only
-     *
-     * @param string $Type the type of the input.
-     * @param boolean $Output echo out HTML
-     * @return boolean
-     */
-    public static function has_autocomplete_enabled($Type, $Output = true)
-    {
-        $Enabled = false;
-        if (empty($app->user['AutoComplete'])) {
-            $Enabled = true;
-        } elseif ($app->user['AutoComplete'] !== 1) {
-            switch ($Type) {
-            case 'search':
-              if ($app->user['AutoComplete'] === 2) {
-                  $Enabled = true;
-              }
-              break;
-
-            case 'other':
-              if ($app->user['AutoComplete'] !== 2) {
-                  $Enabled = true;
-              }
-              break;
-            }
-        }
-
-        if ($Enabled && $Output) {
-            return ' data-gazelle-autocomplete="true"';
-        }
-
-        if (!$Output) {
-            // Don't return a boolean if you're echoing HTML
-            return $Enabled;
-        }
-    }
 
     /*
      * Initiate a password reset

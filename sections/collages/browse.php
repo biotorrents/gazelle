@@ -193,9 +193,7 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
           <td class="label"></td>
           <td>
             <input type="text" id="tags" name="tags" size="60" placeholder="Tags (comma-separated)"
-              value="<?=(!empty($_GET['tags']) ? Text::esc($_GET['tags']) : '')?>"
-              <?php Users::has_autocomplete_enabled('other'); ?>
-            />
+              value="<?=(!empty($_GET['tags']) ? Text::esc($_GET['tags']) : '')?>" />
             &ensp;
             <input type="radio" name="tags_type" id="tags_type0" value="0" <?Format::selected(
     'tags_type',

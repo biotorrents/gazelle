@@ -488,7 +488,6 @@ HTML;
         if ($this->NewTorrent) {
             # Useful variables
             $Disabled = $this->Disabled;
-            $AutocompleteOption = Users::has_autocomplete_enabled('other');
           
             $AddRemoveBrackets = <<<HTML
             <a class="add_artist_button brackets" onclick="AddArtistField()">+</a>
@@ -517,14 +516,14 @@ HTML;
 
                     echo <<<HTML
                     <input type="text" id="artist_$Num" name="artists[]" size="45"
-                      value="$ArtistName" $AutocompleteOption $Disabled />
+                      value="$ArtistName" $Disabled />
                     $AddRemoveBrackets
 HTML;
                 }
             } else {
                 echo <<<HTML
                 <input type="text" id="artist_0" name="artists[]" size="45"
-                  value="" $AutocompleteOption $Disabled />
+                  value="" $Disabled />
                 $AddRemoveBrackets
 HTML;
             }
@@ -999,7 +998,6 @@ HTML;
             # todo: Find a better place for these
             $Disabled = ($this->DisabledFlag) ? ' disabled="disabled"' : null;
             $TorrentTagList = Text::esc(implode(', ', explode(',', $Torrent['TagList'])));
-            $AutocompleteOption = Users::has_autocomplete_enabled('other');
 
             echo <<<HTML
             <select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;" $Disabled>
@@ -1018,7 +1016,7 @@ HTML;
                 </select>
                 <input type="text" id="tags" name="tags" size="60"
                   placeholder="Comma-seperated list of at least 5 tags"
-                  value="$TorrentTagList" $AutocompleteOption />
+                  value="$TorrentTagList" />
               </td>
             </tr>
 HTML;

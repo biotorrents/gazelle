@@ -105,18 +105,6 @@
             covers per page
         </td>
     </tr>
-    <tr id="tor_autocomp_tr">
-        <td class="label tooltip" title="Autocomplete will try to predict the word or phrase that you're typing. Selecting &quot;Everywhere&quot; will enable autocomplete on artist and tag fields across the site. Selecting &quot;Searches only&quot; will enable autocomplete in searches.">
-            <strong>Autocompletion</strong>
-        </td>
-        <td>
-            <select name="autocomplete">
-                <option value="0"{{ selected(option.AutoComplete is null) }}>Everywhere</option>
-                <option value="2"{{ selected(option.AutoComplete == 2) }}>Searches only</option>
-                <option value="1"{{ selected(option.AutoComplete == 1) }}>Disable</option>
-            </select>
-        </td>
-    </tr>
     <tr id="tor_voting_tr">
         <td class="label tooltip" title="This option allows you to enable or disable &quot;up&quot; and &quot;down&quot; voting links on artist pages, collages, and snatched lists.">
             <strong>Voting links</strong>

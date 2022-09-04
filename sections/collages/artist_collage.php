@@ -203,8 +203,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
           <input type="hidden" name="collageid"
             value="<?=$CollageID?>" />
           <div>
-            <input type="text" id="artist" size="20" name="url" <?php Users::has_autocomplete_enabled('other'); ?>
-            />
+            <input type="text" id="artist" size="20" name="url" />
           </div>
           <div class="submit_div">
             <input type="submit" value="Add" />

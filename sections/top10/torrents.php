@@ -68,8 +68,7 @@ if (check_perms('site_advanced_top10')) {
                     <td class="ft_taglist">
                         <input type="text" name="tags" id="tags" size="65" value="<?php if (!empty($_GET['tags'])) {
         echo Text::esc($_GET['tags']);
-    } ?>" <?php Users::has_autocomplete_enabled('other'); ?>
-                        />&nbsp;
+    } ?>" />&nbsp;
                         <input type="radio" id="rdoAll" name="anyall" value="all" <?=((!isset($_GET['anyall'])||$_GET['anyall']!=='any')?' checked="checked"':'')?>
                         /><label for="rdoAll"> All</label>&nbsp;&nbsp;
                         <input type="radio" id="rdoAny" name="anyall" value="any" <?=((!isset($_GET['anyall'])||$_GET['anyall']==='any')?' checked="checked"':'')?>
