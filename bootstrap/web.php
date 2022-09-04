@@ -26,9 +26,6 @@ $ENV = ENV::go();
 $db = new DB;
 $cache = new Cache($ENV->getPriv("MEMCACHED_SERVERS"));
 
-# start a buffer
-ob_start();
-
 
 /** */
 
@@ -37,14 +34,17 @@ ob_start();
  * user handling stuff
  */
 
-$user ??= [];
 $app->debug["time"]->startMeasure("users", "user handling");
+$authenticated = false;
+$user ??= [];
 
 $get = Http::query("get");
 $post = Http::query("post");
 $server = Http::query("server");
 
-$sessionId = Http::getCookie("session");
+$sessionId = Http::getCookie("session") ?? null;
+$userId = Http::getCookie("userid") ?? null;
+
 if ($sessionId) {
     $query = "select userId from users_sessions where sessionId = ? and active = 1";
     $userId = $app->dbNew->single($query, [$sessionId]);
@@ -52,12 +52,6 @@ if ($sessionId) {
 #!d($userId, $sessionId);exit;
 
 if ($userId && $sessionId) {
-    /*
-    if (!$user["ID"] || !$SessionID) {
-        logout();
-    }
-    */
-
     /*
     $UserSessions = $app->cacheOld->get_value("users_sessions_$UserID");
     if (!is_array($UserSessions)) {
@@ -239,7 +233,7 @@ $app->debug["time"]->stopMeasure("users", "user handling");
  * $document is determined by the public index
  */
 
- # strip sensitive post keys and cache the page
+# strip sensitive post keys and cache the page
 $stripPostKeys = array_fill_keys([
     "password", "cur_pass", "new_pass_1", "new_pass_2", "verifypassword", "confirm_password", "ChangePassword", "Password"
 ], true);
@@ -252,10 +246,11 @@ $app->cacheOld->cache_value("php_" . getmypid(), [
   "post" => array_diff_key($post, $stripPostKeys)
 ], 600);
 
-# flush to user
-#ob_end_flush();
-#$app->debug["messages"]->info("set headers and send to user");
-
+# redirect unauthenticated to login page
+if (!$authenticated) {
+    require_once "{$app->env->SERVER_ROOT}/sections/user/auth/login.php";
+}
+ 
 # allow some possibly useful banned pages
 # todo: banning prevents login and therefore participation
 $allowedPages = ["api", "locked", "login", "logout"];
@@ -264,12 +259,8 @@ if (isset($user["LockedAccount"]) && !in_array($document, $allowedPages)) {
 }
 
 # index workaround to prevent an infinite loop
-if ($document === "index") {
-    if ($authenticated) {
-        require_once "{$app->env->SERVER_ROOT}/sections/index/private.php";
-    } else {
-        Http::redirect("login");
-    }
+if ($authenticated && $document === "index") {
+    require_once "{$app->env->SERVER_ROOT}/sections/index/private.php";
 }
 
 # routing: transition from homebrew to flight

@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+
 /**
  * Database
  *
@@ -21,7 +22,7 @@ class Database extends PDO
 
     # cache settings
     private $cachePrefix = "database_";
-    private $cacheDuration = 300; # five minutes
+    private $cacheDuration = 60; # one minute
 
 
     /**
@@ -151,7 +152,7 @@ class Database extends PDO
         $app = App::go();
 
         $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
-        if ($app->cacheOld->get_value($cacheKey)) {
+        if ($app->cacheOld->get_value($cacheKey) && !$app->env->dev) {
             return $app->cacheOld->get_value($cacheKey);
         }
         
@@ -177,7 +178,7 @@ class Database extends PDO
         $app = App::go();
 
         $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
-        if ($app->cacheOld->get_value($cacheKey)) {
+        if ($app->cacheOld->get_value($cacheKey) && !$app->env->dev) {
             return $app->cacheOld->get_value($cacheKey);
         }
 
@@ -201,7 +202,7 @@ class Database extends PDO
         $app = App::go();
 
         $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
-        if ($app->cacheOld->get_value($cacheKey)) {
+        if ($app->cacheOld->get_value($cacheKey) && !$app->env->dev) {
             return $app->cacheOld->get_value($cacheKey);
         }
 

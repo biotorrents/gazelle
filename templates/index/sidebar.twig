@@ -35,11 +35,18 @@
 
 <ul>
 
-    {% for blog in blog %}
+    {% for freeleech in freeleeches %}
     <li>
         <a href="{# /boards/{{ topic.categorySlug }}/{{ topic.slug }} #}">{{ blog.Title }}</a>
         <br />
-        by {{ topic.Username }} as {{ topic.Time }}
+
+        <span class="u-pull-left">
+            {{ topic.Username }}
+        </span>
+
+        <span class="u-pull-right">
+            {{ topic.Time|relativeTime }}
+        </span>
     </li>
     {% endfor %}
 
@@ -47,8 +54,8 @@
 {% endif %}
 
 {#
-    <ul class="stats nobullet">
-      <?php
+<ul class="stats nobullet">
+    <?php
   for ($i = 0; $i < count($freeleeches); $i++) {
       list($ID, $ExpiryTime, $Name, $Image) = $freeleeches[$i];
       if ($ExpiryTime < time()) {
@@ -60,17 +67,50 @@
           $DisplayName .= ' data-cover="'.ImageTools::process($Image, 'thumb').'"';
       }
       $DisplayName .= '>'.$Name.'</a>'; ?>
-      <li>
-        <strong class="fl_time"><?=$DisplayTime?></strong>
+    <li>
+        <strong class="fl_time">
+            <?=$DisplayTime?>
+        </strong>
         <?=$DisplayName?>
-      </li>
-      <?php
+    </li>
+    <?php
   } ?>
-    </ul>
-  </div>
-  <?php
+</ul>
+</div>
+<?php
 }
 ?>
+
+if (count($Freeleeches)) {
+?>
+<div class="box">
+    <div class="head colhead_dark"><strong><a
+                href="torrents.php?freetorrent=1&order_by=seeders&order_way=asc">Freeleeches</a></strong></div>
+    <ul class="stats nobullet">
+        <?php
+  for ($i = 0; $i < count($freeleeches); $i++) {
+      list($ID, $ExpiryTime, $Name, $Image) = $freeleeches[$i];
+      if ($ExpiryTime < time()) {
+          continue;
+      }
+      $DisplayTime = '('.str_replace(['year','month','week','day','hour','min','Just now','s',' '], ['y','M','w','d','h','m','0m'], time_diff($ExpiryTime, 1, false)).') ';
+      $DisplayName = '<a href="torrents.php?torrentid='.$ID.'"';
+      if (!isset($user['CoverArt']) || $user['CoverArt']) {
+          $DisplayName .= ' data-cover="'.ImageTools::process($Image, 'thumb').'"';
+      }
+      $DisplayName .= '>'.$Name.'</a>'; ?>
+        <li>
+            <strong class="fl_time">
+                <?=$DisplayTime?>
+            </strong>
+            <?=$DisplayName?>
+        </li>
+        <?php
+  } ?>
+    </ul>
+</div>
+<?php
+}
 #}
 
 
@@ -83,7 +123,14 @@
     <li>
         <a href="{# /boards/{{ topic.categorySlug }}/{{ topic.slug }} #}">{{ blog.Title }}</a>
         <br />
-        by {{ topic.Username }} as {{ topic.Time }}
+
+        <span class="u-pull-left">
+            {{ topic.Username }}
+        </span>
+
+        <span class="u-pull-right">
+            {{ topic.Time|relativeTime }}
+        </span>
     </li>
     {% endfor %}
 
@@ -106,13 +153,3 @@
 
 </ul>
 {% endif %}
-
-
-<h3>Rules</h3>
-
-<p>
-    Please consider reading through the
-    <a href="/rules/chat">social norms</a>
-    before participating in the boards.
-    Thanks!
-</p>

@@ -111,6 +111,11 @@ class Cache extends Memcache
     public function cache_value($key, $value, $duration = 2592000)
     {
         $startTime = microtime(true);
+
+        if (is_string($duration)) {
+            $parsed = strtotime($duration) ?? time();
+            $duration = time() - $parsed;
+        }
         if (empty($key)) {
             trigger_error('Cache insert failed for empty key');
         }

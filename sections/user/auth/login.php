@@ -153,8 +153,9 @@ try {
 
 /** TWIG TEMPLATE */
 
+# todo: redirect to requested page
 if (empty($response)) {
-    Http::redirect();
+    #Http::redirect();
 }
 
 $app->twig->display("user/auth/login.twig", [

@@ -1,3 +1,24 @@
+/* font size wrappers */
+.x-small {
+  font-size: x-small;
+}
+
+.small {
+  font-size: small;
+}
+
+.medium {
+  font-size: medium;
+}
+
+.large {
+  font-size: large;
+}
+
+.x-large {
+  font-size: x-large;
+}
+
 /* wikipedia-style external links */
 a.external {
   background-image: url("/images/symbols/external-link-ltr-icon.svg");

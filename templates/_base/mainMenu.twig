@@ -39,29 +39,29 @@ https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-ba
   <ul class="menu">
 
     {# logo #}
-    <li class="logo">
+    <li id="logo">
       <a href="/" aria-label="Home"></a>
     </li>
 
-    {# search #}
+    {# search # }
     <li class="item">
       <form id="select_search" name="select_search" method="get">
 
         {#
         workaround for some endpoints that need &action=search
         needed for forums, wiki, and users
-        #}
+        # }
         <input type="hidden" name="action" value="search" />
 
-        {# advanced vs. basic search from user settings #}
+        {# advanced vs. basic search from user settings # }
         {% if app.user.SearchType %}
         <input type="hidden" name="advanced_search" value="true">
         {% endif %}
 
-        {# select which site area to search #}
+        {# select which site area to search # }
         <select id="search_what" name="search_what">
           <option value="torrents">Torrents</option>
-          {# <option value="artist">Authors</option> #}
+          {# <option value="artist">Authors</option> # }
           <option value="requests">Requests</option>
           <option value="forums">Forums</option>
           <option value="wiki">Wiki</option>
@@ -72,49 +72,80 @@ https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-ba
         {#
         the universal search bar itself
         todo: change "search" to "advgroupname" if app.user.SearchType && search-what = torrents
-        #}
+        # }
         <input type="text" id="search" name="search" aria-label="Search the site" placeholder="Search the site"
           maxlength="10000" size="30" autocomplete="off" spellcheck="false" />
 
-        {# submit button, maybe unnecessary #}
-        {# <input type="submit" value="🔎"> #}
+        {# submit button, maybe unnecessary # }
+        {# <input type="submit" value="🔎"> # }
       </form>
     </li>
+    #}
 
     {# spacer #}
     <li class="spacer"></li>
 
     {# torrents #}
+    <li class="item">
+      <a href="/torrents">🌊&nbsp;Torrents</a>
+    </li>
+
+    {# collections #}
+    <li class="item">
+      <a href="/collections">🪙&nbsp;Collections</a>
+    </li>
+
+    {# community #}
+    <li class="item ">
+      <a tabindex="0">📣&nbsp;Boards</a>
+      <ul class="submenu">
+
+        {# boards #}
+        <li class="item">
+          <a href="/boards">📣&nbsp;Boards</a>
+        </li>
+
+        {# wiki #}
+        <li class="subitem">
+          <a href="/wiki.php">Wiki</a>
+        </li>
+      </ul>
+    </li>
+
+
+
+    {# torrents # }
     <li class="item has-submenu">
       <a tabindex="0">🌊&nbsp;Torrents</a>
       <ul class="submenu">
 
-        {# search #}
+        {# search # }
         <li class="subitem">
           <a href="/torrents.php">Search</a>
         </li>
 
-        {# collages #}
+        {# collages # }
         <li class="subitem">
           <a href="/collages.php">Collections</a>
         </li>
 
-        {# requests #}
+        {# requests # }
         <li class="subitem">
           <a href="/requests.php">Requests</a>
         </li>
 
-        {# top 10 #}
+        {# top 10 # }
         <li class="subitem">
           <a href="/top10.php">Top&nbsp;10</a>
         </li>
 
-        {# better #}
+        {# better # }
         <li class="subitem">
           <a href="/better.php">Better</a>
         </li>
       </ul>
     </li>
+    #}
 
     {# community #}
     <li class="item has-submenu">

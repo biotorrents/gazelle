@@ -78,6 +78,7 @@ Flight::route("/pwgen(/@method)", function ($method) {
     }
 });
 
+
 # discourse connect
 # https://meta.discourse.org/t/discourseconnect-official-single-sign-on-for-discourse-sso/13045
 # e.g., https://somesite.com/sso?sso=PAYLOAD&sig=SIG

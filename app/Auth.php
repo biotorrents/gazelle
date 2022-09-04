@@ -182,7 +182,7 @@ class Auth # extends Delight\Auth\Auth
         # https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#login
         $message = $this->message;
 
-        $username = Esc::username($username);
+        #$username = Esc::username($username);
         $passphrase = Esc::string($passphrase);
         $twofa = Esc::int($twofa);
 
@@ -203,6 +203,10 @@ class Auth # extends Delight\Auth\Auth
         } catch (Delight\Auth\EmailNotVerifiedException $e) {
             return $message;
         } catch (Delight\Auth\TooManyRequestsException $e) {
+            return $message;
+        } catch (Delight\Auth\UnknownUsernameException $e) {
+            return $message;
+        } catch (Delight\Auth\AmbiguousUsernameException $e) {
             return $message;
         }
 

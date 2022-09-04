@@ -3,33 +3,60 @@
 
 {% block content %}
 
-<h3>Latest news</h3>
-
-{{ dump(news) }}
+{% if latestUploads is defined %}
+<h3>Latest uploads</h3>
 
 {#
-<table id="forumIndex">
-    <tr>
-        <th>Category</th>
-        <th>Topics</th>
-        <th>Posts</th>
-    </tr>
-
-    {% for category in categories %}
-    <tr>
-        <td>
-            <a href="/boards/{{ category.slug }}">{{ category.name }}</a>
-            <br />
-            {{ category.description_text }}
-        </td>
-
-        <td>{{ category.topic_count }}</td>
-        <td>{{ category.post_count }}</td>
-    </tr>
-    {% endfor %}
-
-</table>
+<div id="last_uploads" class="box news_post">
+    <div class="head">
+        <strong>Latest Uploads</strong>
+    </div>
+    <div class="head">
+        <ul class="collage_images" id="collage_page0">
+            {% for upload in latest %}
+            {% set title = upload.name ~ '<br />(' ~ upload.tags ~ ')<br />uploaded by ' ~ upload.username ~ ' ' ~
+            upload.uploadDate|time_diff %}
+            {% set alt = title|replace({'<br />': ' '}) %}
+            <li class="image_group_{{ upload.groupId }}">
+                <a
+                    href="torrents.php?id={{ upload.groupId }}&amp;torrentid={{ upload.torrentId }}>#torrent{{ upload.torrentId }}">
+                    <img class="tooltip_interactive" src="{{ upload.imageUrl|image }}" alt="{{ alt }}"
+                        title="{{ title }}" data-title-plain="{{ alt }}" width="118" /></a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 #}
+{% endif %}
+
+{% if news is defined %}
+<h3>
+    {{ news.Title }}
+
+    <span class="u-pull-right small">
+        {{ news.Time|relativeTime }}
+    </span>
+</h3>
+
+{{ news.Body }}
+
+<div id="more_news">
+    <h3>More news</h3>
+
+    <p>
+        To browse past site news, please
+        <a href="/boards/news">visit the news archive</a>.
+    </p>
+</div>
+
+{#
+<?php if (check_perms('admin_manage_news')) { ?>
+&ndash;
+<a href="tools.php?action=editnews&amp;id=<?=$NewsID?>" class="brackets">Edit</a>
+<?php } ?>
+#}
+{% endif %}
 
 {% endblock %}
 
@@ -39,47 +66,3 @@
 {{ include("index/sidebar.twig") }}
 
 {% endblock %}
-
-
-{#
-<div class="main_column two-thirds column">
-
-    <div id="last_uploads" class="box news_post">
-        <div class="head">
-            <strong>Latest Uploads</strong>
-        </div>
-        <div class="head">
-            <ul class="collage_images" id="collage_page0">
-                {% for upload in latest %}
-                {% set title = upload.name ~ '<br />(' ~ upload.tags ~ ')<br />uploaded by ' ~ upload.username ~ ' ' ~
-                upload.uploadDate|time_diff %}
-                {% set alt = title|replace({'<br />': ' '}) %}
-                <li class="image_group_{{ upload.groupId }}">
-                    <a
-                        href="torrents.php?id={{ upload.groupId }}&amp;torrentid={{ upload.torrentId }}>#torrent{{ upload.torrentId }}">
-                        <img class="tooltip_interactive" src="{{ upload.imageUrl|image }}" alt="{{ alt }}"
-                            title="{{ title }}" data-title-plain="{{ alt }}" width="118" /></a>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-
-    {% for article in news[0:5] %}
-    <div id="news{{ article.0 }}" class="box news_post">
-        <div class="head">
-            <strong>{{ article.1|bb_format }}</strong> {{ article.3|time_diff }}
-            {% if admin %}
-            - <a href="tools.php?action=editnews&amp;id={{ article.0 }}" class="brackets">Edit</a>
-            {% endif %}
-            <span style="float: right;"><a href="#"
-                    onclick="$('#newsbody{{ article.0 }}').gtoggle(); this.innerHTML = (this.innerHTML == 'Hide' ? 'Show' : 'Hide'); return false;"
-                    class="brackets">Hide</a></span>
-        </div>
-
-        <div id="newsbody{{ article.0 }}" class="pad">{{ article.2|bb_format }}</div>
-    </div>
-    {% endfor %}
-</div>
-</div>
-#}

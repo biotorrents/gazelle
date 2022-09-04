@@ -9,8 +9,8 @@ $app = App::go();
 $news = $app->cacheOld->get_value("news");
 if (!$news) {
     $query = "select * from news order by time desc";
-    $news = $app->dbNew->multi($query, [1]);
-    $app->cacheOld->cache_value('news', $news, 3600 * 24 * 30);
+    $news = $app->dbNew->row($query);
+    $app->cacheOld->cache_value("news", $news, "one day");
 }
 #!d($news);exit;
 
@@ -32,10 +32,11 @@ if ($user['LastReadNews'] !== $News[0][0] && count($News) > 0) {
 $blog = $app->cacheOld->get_value("blog");
 if (!$blog) {
     $query = "
-        SELECT b.ID, um.Username, b.UserID, b.Title, b.Body, b.Time, b.ThreadID FROM blog AS b
-        LEFT JOIN users_main AS um ON b.UserID = um.ID ORDER BY Time DESC LIMIT ?
+        select *, users_main.username from blog
+        left join users_main on blog.userId = users_main.id
+        order by time desc limit ?
     ";
-    $blog = $app->dbNew->multi($query, [5]);
+    $blog = $app->dbNew->multi($query, [3]);
     $app->cacheOld->cache_value("blog", $blog, 3600 * 24 * 30);
 }
 #!d($blog);exit;
@@ -97,75 +98,10 @@ exit;
 
 
 
-$ENV = ENV::go();
-
-# fix for flight
-$cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
-$user = G::$user;
-$db = new DB;
-
-
-$userId = intval($user['ID']);
-#!d($user);exit;
-
-
-View::header('News', 'news_ajax');
 ?>
 
 <div class="sidebar one-third column">
-  <?php /*
 
-  <div class="box">
-    <div class="head colhead_dark"><strong><a href="blog.php">Latest blog posts</a></strong></div>
-    <ul class="stats nobullet">
-      <?php
-for ($i = 0; $i < $limit; $i++) {
-    list($BlogID, $Author, $AuthorID, $Title, $Body, $BlogTime, $ThreadID) = $blog[$i]; ?>
-      <li>
-        <?=($i + 1)?>. <a
-          href="blog.php#blog<?=$BlogID?>"><?=$Title?></a>
-      </li>
-      <?php
-}
-?>
-    </ul>
-  </div>
-  */ ?>
-
-
-
-
-
-  <?php /*
-if (count($Freeleeches)) {
-    ?>
-  <div class="box">
-    <div class="head colhead_dark"><strong><a
-          href="torrents.php?freetorrent=1&order_by=seeders&order_way=asc">Freeleeches</a></strong></div>
-    <ul class="stats nobullet">
-      <?php
-  for ($i = 0; $i < count($freeleeches); $i++) {
-      list($ID, $ExpiryTime, $Name, $Image) = $freeleeches[$i];
-      if ($ExpiryTime < time()) {
-          continue;
-      }
-      $DisplayTime = '('.str_replace(['year','month','week','day','hour','min','Just now','s',' '], ['y','M','w','d','h','m','0m'], time_diff($ExpiryTime, 1, false)).') ';
-      $DisplayName = '<a href="torrents.php?torrentid='.$ID.'"';
-      if (!isset($user['CoverArt']) || $user['CoverArt']) {
-          $DisplayName .= ' data-cover="'.ImageTools::process($Image, 'thumb').'"';
-      }
-      $DisplayName .= '>'.$Name.'</a>'; ?>
-      <li>
-        <strong class="fl_time"><?=$DisplayTime?></strong>
-        <?=$DisplayName?>
-      </li>
-      <?php
-  } ?>
-    </ul>
-  </div>
-  <?php
-}
-*/ ?>
 
   <!-- Polls -->
   <?php /*
@@ -359,55 +295,3 @@ if (count($Recommend) >= 4) {
   <?php
 }
 */
-
-
-$Count = 0;
-foreach ($News as $NewsItem) {
-    list($NewsID, $Title, $Body, $NewsTime) = $NewsItem;
-    if (strtotime($NewsTime) > time()) {
-        continue;
-    } ?>
-  <div id="news<?=$NewsID?>" class="box news_post">
-    <div class="head">
-      <strong>
-        <?=$Title?>
-      </strong>
-
-      <?=time_diff($NewsTime)?>
-
-      <?php if (check_perms('admin_manage_news')) { ?>
-      &ndash;
-      <a href="tools.php?action=editnews&amp;id=<?=$NewsID?>"
-        class="brackets">Edit</a>
-      <?php } ?>
-
-      <span class="u-pull-right">
-        <a data-toggle-target="#newsbody<?=$NewsID?>"
-          data-toggle-replace="Show" class="brackets">Hide</a>
-      </span>
-    </div>
-
-    <div id="newsbody<?=$NewsID?>" class="pad">
-      <?=Text::parse($Body)?>
-    </div>
-  </div>
-
-  <?php
-  if (++$Count > ($NewsCount - 1)) {
-      break;
-  }
-}
-?>
-  <div id="more_news" class="box">
-    <div class="head">
-      <em><span><a href="#"
-            onclick="news_ajax(event, 3, <?=$NewsCount?>, <?=check_perms('admin_manage_news') ? 1 : 0; ?>); return false;">Click
-            to load more news</a>.</span> To browse old news posts, <a
-          href="forums.php?action=viewforum&amp;forumid=<?=$ENV->ANNOUNCEMENT_FORUM?>">click
-          here</a>.</em>
-    </div>
-  </div>
-</div>
-</div>
-<?php
-View::footer(array('disclaimer'=>true));
