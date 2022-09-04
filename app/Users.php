@@ -21,6 +21,10 @@ class Users
     public $core = [];
     public $extra = [];
 
+    # legacy gazelle
+    public $lightInfo = [];
+    public $heavyInfo = [];
+
     # hash algo for cache keys
     private $algorithm = "sha3-512";
 
@@ -78,10 +82,12 @@ class Users
         # start debug
         $app->debug["time"]->startMeasure("users", "user handling");
 
+        /*
         # no crypto
         if (!apcu_exists("DBKEY")) {
             return false;
         }
+        */
 
         # auth class
         $auth = new Auth();
@@ -89,7 +95,7 @@ class Users
 
         # untrusted input
         $sessionId = Http::getCookie("session") ?? null;
-        $userId = Http::getCookie("userid") ?? null;
+        $userId = Http::getCookie("userId") ?? null;
         $server = Http::query("server") ?? null;
 
         # unauthenticated
@@ -148,29 +154,36 @@ class Users
         }
 
         # original gazelle user info
-        $heavyInfo = self::user_heavy_info($userId);
-        $lightInfo = self::user_info($userId);
+        $this->heavyInfo = self::user_heavy_info($userId) ?? [];
+        $this->lightInfo = self::user_info($userId) ?? [];
 
+        /*
         # original gazelle keys, etc.
         $user = array_merge($heavyInfo, $lightInfo, $stats);
         $user["RSS_Auth"] = md5($userId . $app->env->getPriv("rssHash") . $user["torrent_pass"]);
+        */
 
+        /*
         # ratio watch
         $user["RatioWatch"] = (
             $user["RatioWatchEnds"]
               && time() < strtotime($user["RatioWatchEnds"])
               && ($stats["Downloaded"] * $stats["RequiredRatio"]) > $stats["Uploaded"]
         );
+        */
 
+        /*
         # permissions
         $user["Permissions"] = Permissions::get_permissions_for_user($userId, $user["CustomPermissions"]);
         $user["Permissions"]["MaxCollages"] += Donations::get_personal_collages($userId);
+        */
 
         # change necessary triggers in external components
         $app->cacheOld->CanClear = check_perms("admin_clear_cache");
 
+        /*
         # update lastUpdate every 10 minutes
-        if (strtotime($userSession[$sessionId]["LastUpdate"]) + 600 < time()) {
+        if (strtotime($session[$sessionId]["lastUpdate"]) + 600 < time()) {
             $query = "update users_main set lastAccess = now() where id = ?";
             $app->dbNew->do($query, [$userId]);
 
@@ -179,7 +192,7 @@ class Users
 
             # cache transaction
             $app->cacheOld->begin_transaction("users_sessions_{$userId}");
-            $app->cacheOld->delete_row($sessionId);
+            $app->cacheOld->delete_row($session);
 
             $sessionCache = [
                 "sessionId" => $sessionId,
@@ -190,7 +203,9 @@ class Users
             $app->cacheOld->insert_front($sessionId, $sessionCache);
             $app->cacheOld->commit_transaction(0);
         }
+        */
 
+        /*
         # notifications
         if ($user["Permissions"]["site_torrents_notify"]) {
             $user["Notify"] = $app->cacheOld->get_value("notify_filters_{$userId}");
@@ -201,6 +216,7 @@ class Users
                 $app->cacheOld->cache_value("notify_filters_{$userId}", $user["Notify"], $this->cacheDuration);
             }
         }
+        */
 
         /*
         # ip changed
@@ -236,14 +252,15 @@ class Users
             $app->cacheOld->cache_value("stylesheets", $stylesheets, $this->cacheDuration);
         }
 
-        // todo: Clean up this messy solution
+        /*
+        # todo: clean up this messy solution
         $user["StyleName"] = $stylesheets[$user["StyleID"]]["Name"];
         if (empty($user["Username"])) {
             $auth->logout(); # ghost
         }
+        */
 
         # the user is loaded
-        $app->userOld = $user;
         $authenticated = true;
 
 
