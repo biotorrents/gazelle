@@ -292,6 +292,13 @@ class Users
             $extra = $app->dbNew->row($query, [$userId]);
             $this->extra = $extra ?? [];
 
+            # for my own sanity
+            foreach ($this as $key => $value) {
+                if (is_array($value)) {
+                    ksort($this->$key);
+                }
+            }
+
             $cacheKey = $this->cachePrefix . $userId;
             $app->cacheOld->cache_value($cacheKey, ["core" => $core, "extra" => $extra], $this->cacheDuration);
         } catch (Exception $e) {

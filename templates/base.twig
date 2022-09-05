@@ -1,12 +1,10 @@
 {# https://symfony.com/doc/current/templates.html#template-inheritance-and-layouts #}
 
-{# private or public #}
-{% if user.core is not empty %}
-{% set private = true %}
-
-{% else %}
-{% set private = false %}
-{% endif %}
+{#
+<pre>
+    {{ dump(user) }}
+</pre>
+#}
 
 {# page title #}
 {% if title is defined %}
@@ -90,7 +88,7 @@
     <link rel="stylesheet" type="text/css" href="/css/vendor/easymde.min.css" />
     <link rel="stylesheet" type="text/css" href="/css/vendor/highlight.min.css" />
 
-    {% if private %}
+    {% if authenticated %}
     {# private #}
 
     {% else %}
@@ -121,7 +119,7 @@
 <body>
     <header>
 
-        {% if private %}
+        {% if authenticated %}
         {# private #}
         {{ include("_base/mainMenu.twig") }}
         {{ include("_base/userInfo.twig") }}
@@ -139,7 +137,7 @@
 
 
             {# splash logo #}
-            {% if private != true %}
+            {% if authenticated != true %}
             <figure id="logo"></figure>
             {% endif %}
 
@@ -169,7 +167,7 @@
     {# footer #}
     <footer>
         {% block footer %}
-        {% if private %}
+        {% if authenticated %}
         {# private #}
 
         {% else %}

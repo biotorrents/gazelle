@@ -183,12 +183,12 @@ https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-ba
 
         {# profile #}
         <li class="subitem">
-          <a href="/user.php?id={{ app.user.ID }}">{{ app.user.Username }}</a>
+          <a href="/user.php?id={{ user.core.id }}">{{ user.core.username }}</a>
         </li>
 
         {# settings #}
         <li class="subitem">
-          <a href="/user.php?action=edit&amp;userid={{ app.user.ID }}">Settings</a>
+          <a href="/user.php?action=edit&amp;userid={{ user.core.id }}">Settings</a>
         </li>
 
         {# inbox # }
@@ -216,7 +216,7 @@ https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-ba
 
         {# uploads #}
         <li class="subitem">
-          <a href="/torrents.php?type=uploaded&amp;userid={{ app.user.ID }}">Uploads</a>
+          <a href="/torrents.php?type=uploaded&amp;userid={{ user.core.id }}">Uploads</a>
         </li>
 
         {# bookmarks #}

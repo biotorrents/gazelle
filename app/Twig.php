@@ -91,12 +91,19 @@ class Twig # extends Twig\Environment
             $twig->addExtension(new Twig\Extension\DebugExtension());
         }
 
-        # globals
+        # globals: app and env
         $twig->addGlobal("app", $app);
-
         $twig->addGlobal("env", $app->env);
-        $twig->addGlobal("user", $app->userNew);
 
+        # user and authenticated
+        $twig->addGlobal("user", $app->userNew);
+        if (!empty($app->userNew->core)) {
+            $twig->addGlobal("authenticated", true);
+        } else {
+            $twig->addGlobal("authenticated", false);
+        }
+
+        # query
         $query = Http::query();
         $twig->addGlobal("query", $query);
         #!d($twig->getGlobals());exit;
