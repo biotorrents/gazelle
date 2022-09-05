@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 
@@ -16,10 +17,10 @@ ENV::setPriv("imagePsk", "");
 if (!$app->env->dev) {
     # currently used for API token auth
     ENV::setPriv("siteCryptoKey", "");
-  
+
     # alphanumeric random key: the scheduler argument
     ENV::setPriv("scheduleKey", "");
-  
+
     # used for generating unique RSS auth key
     ENV::setPriv("rssHash", "");
 
@@ -77,7 +78,7 @@ ENV::setPriv("trackerHost", "");
 # production
 if (!$app->env->dev) {
     ENV::setPriv("trackerPort", 34000);
-  
+
     # must be 32 alphanumeric characters and match site_password in ocelot.conf
     ENV::setPriv("trackerSecret", "");
 

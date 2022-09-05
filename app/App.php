@@ -75,24 +75,32 @@ class App
 
     /**
      * factory
+     *
+     * These need to be in a specific order to load right,
+     * i.e., user depends on debug and twig depends on user.
      */
     private function factory(array $options = [])
     {
-        # env is special
+        # env: FIRST
         $this->env = ENV::go();
 
-        # the rest of the globals
+        # cache
         #$this->cacheNew = CacheRedis::go(); # new
         $this->cacheOld = new Cache(); # old
 
+        # database
         $this->dbNew = Database::go(); # new
         $this->dbOld = new DB(); # old
 
+        # debug
         $this->debug = Debug::go();
-        $this->twig = Twig::go();
 
-        $this->userOld =& $user; # old
+        # user
         $this->userNew = Users::go(); # new
+        $this->userOld =& $user; # old
+
+        # twig: LAST
+        $this->twig = Twig::go();
     }
 
 
@@ -103,6 +111,7 @@ class App
      * gotcha
      *
      * Basic sanity checks, just in case.
+     * You know, for <? and other such nonsense.
      */
     public static function gotcha()
     {

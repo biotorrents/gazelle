@@ -1,7 +1,7 @@
 {# https://symfony.com/doc/current/templates.html#template-inheritance-and-layouts #}
 
 {# private or public #}
-{% if app.user.Username is defined %}
+{% if user.core is not empty %}
 {% set private = true %}
 
 {% else %}

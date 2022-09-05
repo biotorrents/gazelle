@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 
@@ -349,7 +350,7 @@ $META = [
             "Metadata",
             "Notebook",
         ],
-    
+
         /**
          * 2.
          * Machine Data
@@ -491,7 +492,7 @@ $META = [
             "SIF"    => ["sif"],
             "TGF"    => ["tgf"],
         ],
-        
+
         /**
          * 2.
          * Image vector
@@ -521,7 +522,7 @@ $META = [
             "TIFF"      => ["tif", "tiff"],
             "WebP"      => ["webp"],
         ],
-    
+
         /**
          * 2.
          * Map vector
@@ -583,7 +584,7 @@ $META = [
             "Excel"        => ["xls", "xlt", "xlm", "xlsx", "xlsm", "xltx", "xltm", "xlsb", "xla", "xlam", "xll", "xlw"],
             "PDF"          => ["pdf", "fdf", "xfdf"],
         ],
-    
+
         /**
          * 2.
          * Extra formats
@@ -659,7 +660,7 @@ $META = [
             "Element",
             "Schema",
         ],
-    
+
         /**
          * 2.
          * Scalar
@@ -676,7 +677,7 @@ $META = [
             "Volume",
             "Work",
         ],
-    
+
         /**
          * 2.
          * Vector

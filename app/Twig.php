@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -16,6 +17,9 @@ class Twig # extends Twig\Environment
 {
     # singleton
     private static $instance = null;
+
+    # twig instance
+    private $twig = null;
 
 
     /**
@@ -49,8 +53,8 @@ class Twig # extends Twig\Environment
     public static function go(array $options = [])
     {
         return (self::$instance === null)
-        ? self::$instance = self::factory($options)
-        : self::$instance;
+            ? self::$instance = self::factory($options)
+            : self::$instance;
 
         /*
         if (self::$instance === null) {
@@ -81,16 +85,17 @@ class Twig # extends Twig\Environment
                 "strict_variables" => true,
             ]
         );
-        
+
+        # debug
         if ($app->env->dev) {
-            $twig->addExtension(new \Twig\Extension\DebugExtension());
+            $twig->addExtension(new Twig\Extension\DebugExtension());
         }
 
         # globals
         $twig->addGlobal("app", $app);
 
         $twig->addGlobal("env", $app->env);
-        $twig->addGlobal("user", $app->userOld);
+        $twig->addGlobal("user", $app->userNew);
 
         $query = Http::query();
         $twig->addGlobal("query", $query);
@@ -99,15 +104,15 @@ class Twig # extends Twig\Environment
         # https://github.com/paragonie/anti-csrf
         $twig->addFunction(
             new Twig\TwigFunction(
-                'form_token',
+                "form_token",
                 function ($lock_to = null) {
                     static $csrf;
                     if ($csrf === null) {
-                        $csrf = new ParagonIE\AntiCSRF\AntiCSRF;
+                        $csrf = new ParagonIE\AntiCSRF\AntiCSRF();
                     }
                     return $csrf->insertToken($lock_to, false);
                 },
-                ['is_safe' => ['html']]
+                ["is_safe" => ["html"]]
             )
         );
 
@@ -181,7 +186,7 @@ class Twig # extends Twig\Environment
         /**
          * OPS
          */
-        
+
         $twig->addFilter(new Twig\TwigFilter(
             "article",
             function ($word) {
