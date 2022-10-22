@@ -105,8 +105,8 @@ ENV::setPub(
 
 # allows you to run static content off another server
 # the default is usually what you want though
-define("STATIC_SERVER", "/public/");
-ENV::setPub("STATIC_SERVER", "/public/");
+define("staticServer", "/public/");
+ENV::setPub("staticServer", "/public/");
 
 # hash algorithm used for SRI
 ENV::setPub("SRI", "sha512");

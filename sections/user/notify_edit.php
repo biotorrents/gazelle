@@ -95,7 +95,7 @@ foreach ($Notifications as $N) { // $N stands for Notifications
   <h3>
     <a
       href="feeds.php?feed=torrents_notify_<?=$N['ID']?>_<?=$user['torrent_pass']?>&amp;user=<?=$user['ID']?>&amp;auth=<?=$user['RSS_Auth']?>&amp;passkey=<?=$user['torrent_pass']?>&amp;authkey=<?=$user['AuthKey']?>&amp;name=<?=urlencode($N['Label'])?>"><img
-        src="<?=STATIC_SERVER?>/images/symbols/rss.png"
+        src="<?=staticServer?>/images/symbols/rss.png"
         alt="RSS feed"></a>
     <?=Text::esc($N['Label'])?>
     <a href="user.php?action=notify_delete&amp;id=<?=$N['ID']?>&amp;auth=<?=$user['AuthKey']?>"

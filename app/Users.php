@@ -730,12 +730,12 @@ class Users
 
         # Warned?
         $Str .= ($IsWarned && $UserInfo['Warned'])
-          ? '<a href="wiki.php?action=article&amp;name=warnings"'.'><img src="'.STATIC_SERVER.'common/symbols/warned.png" alt="Warned" title="Warned'.($app->userOld['ID'] === $UserID ? ' - Expires '.date('Y-m-d H:i', strtotime($UserInfo['Warned']))
+          ? '<a href="wiki.php?action=article&amp;name=warnings"'.'><img src="'.staticServer.'common/symbols/warned.png" alt="Warned" title="Warned'.($app->userOld['ID'] === $UserID ? ' - Expires '.date('Y-m-d H:i', strtotime($UserInfo['Warned']))
           : '').'" class="tooltip" /></a>'
           : '';
 
         $Str .= ($IsEnabled && $UserInfo['Enabled'] === 2)
-          ? '<a href="/rules"><img src="'.STATIC_SERVER.'common/symbols/disabled.png" alt="Banned" title="Disabled" class="tooltip" /></a>'
+          ? '<a href="/rules"><img src="'.staticServer.'common/symbols/disabled.png" alt="Banned" title="Disabled" class="tooltip" /></a>'
           : '';
 
         if ($Class) {
@@ -852,7 +852,7 @@ class Users
           if (!empty($Avatar)) {
               $ToReturn = ($ReturnHTML ? "<a href=\"user.php?id=$UserID\"><img src=\"$Avatar\" ".($Size ? "width=\"$Size\" " : "")."$Style $AvatarMouseOverText$SecondAvatar $Class /></a>" : $Avatar);
           } else {
-              $URL = STATIC_SERVER.'images/avatars/default.png';
+              $URL = staticServer.'images/avatars/default.png';
               $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar />" : $URL);
           }
           break;
@@ -906,7 +906,7 @@ class Users
           break;
 
         default:
-          $URL = STATIC_SERVER.'images/avatars/default.png';
+          $URL = staticServer.'images/avatars/default.png';
           $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar $Class/>" : $URL);
         }
         return $ToReturn;

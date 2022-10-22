@@ -247,7 +247,7 @@ foreach ($GroupIDs as $GroupID) {
     class="bookmark_<?=$GroupID?>">
 
     <?php if (!$picture) {
-        $picture = STATIC_SERVER.'common/noartwork.png';
+        $picture = staticServer.'common/noartwork.png';
     } ?>
 
     <img class="tooltip"
@@ -284,7 +284,7 @@ View::header($Title, 'browse,collage,wall');
   <div class="header">
     <h2><?php if (!$Sneaky) { ?><a
         href="feeds.php?feed=torrents_bookmarks_t_<?=$user['torrent_pass']?>&amp;user=<?=$user['ID']?>&amp;auth=<?=$user['RSS_Auth']?>&amp;passkey=<?=$user['torrent_pass']?>&amp;authkey=<?=$user['AuthKey']?>&amp;name=<?=urlencode($ENV->siteName.': Bookmarked Torrents')?>"><img
-          src="<?=STATIC_SERVER?>/images/symbols/rss.png"
+          src="<?=staticServer?>/images/symbols/rss.png"
           alt="RSS feed" /></a>&nbsp;<?php } ?><?=$Title?>
     </h2>
     <div class="linkbox">

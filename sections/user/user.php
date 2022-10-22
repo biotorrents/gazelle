@@ -912,7 +912,7 @@ foreach ($Collages as $CollageInfo) {
         extract(Torrents::array_group($Group[$C['GroupID']]));
 
         if (!$C['WikiImage']) {
-            $C['WikiImage'] = STATIC_SERVER.'common/noartwork.png';
+            $C['WikiImage'] = staticServer.'common/noartwork.png';
         }
 
         $Name = '';

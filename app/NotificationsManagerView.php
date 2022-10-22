@@ -19,7 +19,7 @@ class NotificationsManagerView
 
         foreach ($Scripts as $Script) {
             echo View::pushAsset(
-                "$ENV->STATIC_SERVER/js/$Script.js",
+                "$ENV->staticServer/js/$Script.js",
                 'script'
             );
         }

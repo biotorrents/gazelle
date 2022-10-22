@@ -17,7 +17,7 @@ class View
     {
         $ENV = ENV::go();
 
-        $uri = preg_replace(".$ENV->STATIC_SERVER.", '', $uri);
+        $uri = preg_replace(".$ENV->staticServer.", '', $uri);
         #$integrity = base64_encode(hash_file($ENV->SRI, "$ENV->SERVER_ROOT/$uri", true));
 
         switch ($type) {

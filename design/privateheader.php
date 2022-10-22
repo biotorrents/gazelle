@@ -55,7 +55,7 @@ $Scripts = array_filter(
 
 foreach ($Scripts as $Script) {
     echo $View->pushAsset(
-        "$ENV->STATIC_SERVER/js/$Script.js",
+        "$ENV->staticServer/js/$Script.js",
         'script'
     );
 }
@@ -80,7 +80,7 @@ if ($ENV->dev) {
 
 foreach ($Styles as $Style) {
     echo $View->pushAsset(
-        "$ENV->STATIC_SERVER/css/$Style.css",
+        "$ENV->staticServer/css/$Style.css",
         'style'
     );
 }
@@ -90,7 +90,7 @@ foreach ($Styles as $Style) {
 $Fonts = ['fa-brands-400', 'fa-regular-400', 'fa-solid-900'];
 foreach ($Fonts as $Font) {
     echo $View->pushAsset(
-        "$ENV->STATIC_SERVER/css/vendor/fa/webfonts/$Font.woff2",
+        "$ENV->staticServer/css/vendor/fa/webfonts/$Font.woff2",
         'font'
     );
 }
@@ -170,7 +170,7 @@ if (empty(G::$user['StyleURL'])) {
     <?php }
     */
 
-    $userStyle = "$ENV->STATIC_SERVER/css/" . G::$user['StyleName'] . ".css";
+    $userStyle = "$ENV->staticServer/css/" . G::$user['StyleName'] . ".css";
     echo $View->pushAsset(
         $userStyle,
         'style'

@@ -203,7 +203,7 @@ $ProfileRewards = null;
                 <div class="preview_image"
                   name="<?=($Style['Name'])?>">
                   <img
-                    src="<?=STATIC_SERVER.'css/preview/thumb_'.$Style['Name'].'.png'?>"
+                    src="<?=staticServer.'css/preview/thumb_'.$Style['Name'].'.png'?>"
                     alt="<?=$Style['Name']?>" />
                   <p class="preview_name">
                     <label><input type="radio" name="stylesheet_gallery"
