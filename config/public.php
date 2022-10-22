@@ -92,12 +92,12 @@ ENV::setPub(
 # where torrent files are stored, e.g., /var/www/torrents-dev/
 ( # old format
     !$env->dev
-        ? define("TORRENT_STORE", "/var/www/torrents/") # production
-        : define("TORRENT_STORE", "/var/www/torrents-dev") # development
+        ? define("torrentStore", "/var/www/torrents/") # production
+        : define("torrentStore", "/var/www/torrents-dev") # development
 );
 
 ENV::setPub(
-    "TORRENT_STORE",
+    "torrentStore",
     (!$env->dev
         ? "/var/www/torrents/" # production
         : "/var/www/torrents-dev") # development);

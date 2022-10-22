@@ -186,7 +186,7 @@ $db->query("
   VALUES ('$UserID', '$TorrentID', NOW())");
 
 Torrents::set_snatch_update_time($UserID, Torrents::SNATCHED_UPDATE_AFTERDL);
-$Contents = file_get_contents(TORRENT_STORE.'/'.$TorrentID.'.torrent');
+$Contents = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
 $FileName = TorrentsDL::construct_file_name($TorrentID);
 
 header('Content-Type: application/x-bittorrent; charset=utf-8');

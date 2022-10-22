@@ -379,7 +379,7 @@ class Torrents
             G::$cache->decrement('num_torrent_reportsv2', $Reports);
         }
 
-        unlink(TORRENT_STORE.'/'.$ID.'.torrent');
+        unlink(torrentStore.'/'.$ID.'.torrent');
         G::$db->query("
         DELETE FROM torrents_bad_tags
           WHERE TorrentID = ?", $ID);
@@ -706,7 +706,7 @@ class Torrents
           WHERE ID = ?", $TorrentID);
         if (G::$db->has_results()) {
             list($GroupID) = G::$db->next_record(MYSQLI_NUM, false);
-            $Contents = file_get_contents(TORRENT_STORE.'/'.$TorrentID.'.torrent');
+            $Contents = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
             if (\Misc::is_new_torrent($Contents)) {
                 $Tor = new \BencodeTorrent($Contents);
                 $FilePath = (isset($Tor->Dec['info']['files']) ? Text::utf8($Tor->get_name()) : '');

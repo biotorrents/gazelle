@@ -75,7 +75,7 @@ while (list($Downloads, $GroupIDs) = $Collector->get_downloads('TorrentID')) {
     $Artists = Artists::get_artists($GroupIDs);
     $TorrentIDs = array_keys($GroupIDs);
     foreach ($TorrentIDs as $TorrentID) {
-        $TorrentFile = file_get_contents(TORRENT_STORE.'/'.$TorrentID.'.torrent');
+        $TorrentFile = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
         $Download =& $Downloads[$TorrentID];
         // unzip(1) corrupts files if an emdash is present. Replace them.
         $Download['Artist'] = str_replace('&ndash;', '-', Artists::display_artists($Artists[$Download['GroupID']], false, true, false));

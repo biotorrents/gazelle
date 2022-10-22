@@ -828,7 +828,7 @@ if ($T['FreeLeechType'] === 3) {
 //******************************************************************************//
 //--------------- Write torrent file -------------------------------------------//
 
-$FileName = "$ENV->TORRENT_STORE/$TorrentID.torrent";
+$FileName = "$ENV->torrentStore/$TorrentID.torrent";
 file_put_contents($FileName, $Tor->encode());
 chmod($FileName, 0400);
 
