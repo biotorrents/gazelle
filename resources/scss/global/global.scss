@@ -142,18 +142,18 @@ ul.votedalbums li {
   margin: 0;
 }
 
-tr.torrent .bookmark > a:before {
+tr.torrent .bookmark>a:before {
   text-decoration: none;
   font-weight: normal;
 }
 
-tr.torrent .bookmark > a:after {
+tr.torrent .bookmark>a:after {
   text-decoration: none;
   font-weight: normal;
 }
 
 .ui-state-highlight {
-  background: #007dc6 /* {bgColorHighlight} */;
+  background: #007dc6;
   opacity: 0.15;
   width: 50%;
 }
@@ -178,8 +178,8 @@ tr.torrent .bookmark > a:after {
   min-height: 100px;
 }
 
-#userinfo .brackets:before,
-#userinfo .brackets:after {
+#userInfo .brackets:before,
+#userInfo .brackets:after {
   content: "";
 }
 
@@ -187,7 +187,7 @@ tr.torrent .bookmark > a:after {
   overflow: hidden;
 }
 
-.group_image + .group_info {
+.group_image+.group_info {
   margin-left: 100px;
 }
 
@@ -211,7 +211,7 @@ tr.torrent .bookmark > a:after {
   display: flex;
 }
 
-.forum_post .colhead_dark div > * {
+.forum_post .colhead_dark div>* {
   margin-left: 2px;
   margin-right: 2px;
 }
@@ -298,31 +298,31 @@ div.torrent_artists {
   font-size: 10pt;
 }
 
-.net_box > .box {
+.net_box>.box {
   min-height: 60px;
   display: flex;
   align-items: center;
 }
 
-.net_box > .box > span {
+.net_box>.box>span {
   width: 100%;
 }
 
-#lightbox > img {
+#lightbox>img {
   max-width: 100%;
 }
 
-.filter_torrents #ft_basic > .clickable,
-.filter_torrents #ft_advanced > .clickable {
+.filter_torrents #ft_basic>.clickable,
+.filter_torrents #ft_advanced>.clickable {
   font-weight: 100;
 }
 
-.sidebar .box_tags > ul.stats > li {
+.sidebar .box_tags>ul.stats>li {
   display: flex;
   justify-content: space-between;
 }
 
-.sidebar .box_tags > ul.stats > li > a {
+.sidebar .box_tags>ul.stats>li>a {
   word-break: break-all;
 }
 

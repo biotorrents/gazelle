@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 /**
@@ -64,7 +65,7 @@ class Validate
                 $String
             )
         );
-        
+
         return array_unique(
             preg_grep(
                 "/^$Regex$/i",
@@ -73,7 +74,7 @@ class Validate
         );
     }
 
-    
+
     /**
      * title
      *
@@ -122,7 +123,7 @@ class Validate
             case $this->SafeCharacters($Suspect):
                 $BadChars = $this->SafeCharacters('', true);
                 return $Err = "One or more files has the forbidden characters $BadChars:\n" . Text::esc($Suspect);
-            
+
             default:
                 return;
         }
@@ -171,14 +172,14 @@ class Validate
             'thepiratebay.org',
             'torrentday',
         ];
-        
+
         # $Keywords match
         foreach ($Keywords as &$Value) {
             if (strpos(strtolower($FileName), $Value) !== false) {
                 return false;
             }
         }
-    
+
         # Incomplete data
         if (preg_match('/INCOMPLETE~\*/i', $FileName)) {
             return false;
@@ -186,7 +187,7 @@ class Validate
 
         return true;
     }
-      
+
     /**
      * These characters are invalid on Windows NTFS:
      *   : ? / < > \ * | "
@@ -238,7 +239,7 @@ class Validate
         $Sorted = (usort($UnNested, function ($a, $b) {
             return $b <=> $a;
         })) ? $UnNested : null;  # Ternary wrap because &uarr; returns true
-        
+
         # Harvest the wheat
         # todo: Entries seem duplicated here
         $Heaviest = array_slice($Sorted, 0, 20);
@@ -256,10 +257,10 @@ class Validate
             # todo: Reduce nesting by one level
             foreach ($Matches as $Match) {
                 $Match = strtolower($Match);
-        
+
                 foreach ($FileTypeNames as $FileTypeName) {
                     $SearchMe = [ $FileTypeName, $FileTypes[$FileTypeName] ];
-        
+
                     if (in_array($Match, $SearchMe[1])) {
                         return $SearchMe[0];
                         break;
@@ -415,7 +416,7 @@ class Validate
                     } else {
                         $MaxLength = 20;
                     }
-                    
+
                     if (isset($Field['MinLength'])) {
                         $MinLength = $Field['MinLength'];
                     } else {
@@ -526,11 +527,6 @@ function get_file_extension($FileName)
  * todo: Make one function, e.g., Validate->error($type)
  */
 
-function invalid_error($Name)
-{
-    global $Err;
-    $Err = 'The torrent contained one or more invalid files (' . Text::esc($Name) . ')';
-}
 
 function forbidden_error($Name)
 {

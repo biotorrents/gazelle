@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -9,8 +10,8 @@ declare(strict_types=1);
  */
 class Tracker
 {
-    const STATS_MAIN = 0;
-    const STATS_USER = 1;
+    public const STATS_MAIN = 0;
+    public const STATS_USER = 1;
 
     # requests
     public static $requests = [];
@@ -18,7 +19,7 @@ class Tracker
     # cache settings
     private static $cachePrefix = 'tracker_';
     private static $cacheDuration = 3600;
-    
+
 
     /**
      * update_tracker
@@ -52,7 +53,7 @@ class Tracker
         if (!$ENV->dev) {
             $maxAttempts = 3;
         }
-        
+
         # Development
         else {
             $maxAttempts = 1;
@@ -159,12 +160,12 @@ class Tracker
         if ($type === self::STATS_MAIN) {
             $get .= 'get=stats';
         }
-        
+
         # user stats
         elseif ($type === self::STATS_USER && !empty($params['key'])) {
             $get .= "get=user&key={$params['key']}";
         }
-        
+
         # no stats
         else {
             return false;
@@ -201,7 +202,7 @@ class Tracker
         $sleep = 0;
         $success = false;
         $startTime = microtime(true);
-        
+
         while (!$success && $attempts++ < $maxAttempts) {
             if ($sleep) {
                 sleep($sleep);
@@ -219,7 +220,7 @@ class Tracker
                 $errorNum,
                 $errorString
             );
-            
+
             if ($file) {
                 if (fwrite($file, $header) === false) {
                     $err = "Failed to fwrite";
