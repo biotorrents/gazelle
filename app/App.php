@@ -115,7 +115,7 @@ class App
      */
     public static function gotcha()
     {
-        return;
+        return true;
     }
 
 

@@ -1,6 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
+
+/**
+ * userAuth
+ */
 
 # login
 Flight::route("/login", function () {
@@ -23,11 +28,11 @@ Flight::route("/enable/@token", function (string $token) {
     if (isset($app->userOld["ID"]) || !isset($token) || !$app->env->FEATURE_EMAIL_REENABLE) {
         Http::redirect();
     }
-    
+
     if (isset($token)) {
         $error = AutoEnable::handle_token($token);
     }
-    
+
     View::header("Enable Request");
     echo $error; # this is always set
     View::footer();
