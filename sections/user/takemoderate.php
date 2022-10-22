@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 // Are they being tricky blighters?
 if (!$_POST['userid'] || !is_number($_POST['userid'])) {
     error(404);
@@ -205,7 +207,7 @@ $UpdateSet = [];
 $EditSummary = [];
 $TrackerUserUpdates = array('passkey' => $Cur['torrent_pass']);
 
-$QueryID = G::$db->get_query_id();
+$QueryID = $app->dbOld->get_query_id();
 
 if ($LockType == '---' || $LockedAccount == 0) {
     if ($Cur['Type']) {
