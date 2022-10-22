@@ -72,10 +72,10 @@ ENV::setPub(
 );
 
 
-#define("regexSiteLink", regexResource."(www.)?".preg_quote(SITE_DOMAIN, "/"));
+#define("regexSiteLink", regexResource."(www.)?".preg_quote(siteDomain, "/"));
 ENV::setPub(
     "regexSiteLink",
-    "/{$env->regexResource}(www.)?".preg_quote(SITE_DOMAIN, "/")."/"
+    "/{$env->regexResource}(www.)?".preg_quote(siteDomain, "/")."/"
 );
 
 

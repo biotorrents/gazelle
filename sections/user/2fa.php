@@ -4,7 +4,7 @@ declare(strict_types = 1);
 $ENV = ENV::go();
 
 $TwoFA = new RobThree\Auth\TwoFactorAuth($ENV->siteName);
-$U2F = new \u2flib_server\U2F("https://$ENV->SITE_DOMAIN");
+$U2F = new \u2flib_server\U2F("https://$ENV->siteDomain");
 
 if ($Type = $_POST['type'] ?? false) {
     if ($Type === 'PGP') {

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 
@@ -17,7 +18,7 @@ if (!$env->dev) {
 
 /**
  * site identity
- * 
+ *
  * NO TRAILING SLASHES ON ANY PATHS!
  * e.g., /var/www = good, /var/www/ = bad
  */
@@ -40,12 +41,12 @@ ENV::setPub("crumb", "›"); # e.g., Forums › Board › Thread
 # website FQDN, e.g., dev.torrents.bio
 ( # old format
     !$env->dev
-        ? define("SITE_DOMAIN", "torrents.bio") # production
-        : define("SITE_DOMAIN", "dev.torrents.bio") # development
+        ? define("siteDomain", "torrents.bio") # production
+        : define("siteDomain", "dev.torrents.bio") # development
 );
 
 ENV::setPub(
-    "SITE_DOMAIN",
+    "siteDomain",
     (!$env->dev
         ? "torrents.bio" # production
         : "dev.torrents.bio") # development
@@ -54,7 +55,7 @@ ENV::setPub(
 # old domain, to handle the biotorrents.de => torrents.bio migration
 # if not needed, simply set to the same values as $env->siteDomainNew
 ENV::setPub(
-    "OLD_SITE_DOMAIN",
+    "oldSiteDomain",
     (!$env->dev
         ? "biotorrents.de" # production
         : "dev.torrents.bio") # pevelopment
@@ -82,8 +83,8 @@ ENV::setPub(
 );
 
 ENV::setPub(
-  "serverRoot",
-  (!$env->dev
+    "serverRoot",
+    (!$env->dev
       ? "/var/www/html/biotorrents.de/" # production
       : "/var/www/html/dev.torrents.bio") # development
 );
@@ -220,7 +221,7 @@ ENV::setPub("announceTwitter", true);
  */
 
 # IRC server address. Used for onsite chat tool
-define("BOT_SERVER", "irc.$env->SITE_DOMAIN");
+define("BOT_SERVER", "irc.$env->siteDomain");
 define("SOCKET_LISTEN_ADDRESS", "10.0.0.4");
 define("SOCKET_LISTEN_PORT", 51010);
 define("BOT_NICK", "ebooks");

@@ -144,9 +144,9 @@ class App
             "Content-Language" => "en-US",
             "Content-Transfer-Encoding" => "7bit",
             "Content-Type" => "text/plain; charset=UTF-8; format=flowed",
-            "From" => "{$app->env->siteName} <gazelle@{$app->env->SITE_DOMAIN}>",
+            "From" => "{$app->env->siteName} <gazelle@{$app->env->siteDomain}>",
             "MIME-Version" => "1.0",
-            "Message-ID" => "<{$secret}@{$app->env->SITE_DOMAIN}>",
+            "Message-ID" => "<{$secret}@{$app->env->siteDomain}>",
         ];
 
         # send the email

@@ -316,7 +316,7 @@ class Http
                 [
                     "expires" => $time,
                     "path" => "/",
-                    "domain" => $ENV->SITE_DOMAIN,
+                    "domain" => $ENV->siteDomain,
                     "secure" => true,
                     "httponly" => true,
                     "samesite" => "Strict",

@@ -945,7 +945,7 @@ class Users
            'ResetKey'=> $ResetKey,
           'IP'=> $_SERVER['REMOTE_ADDR'],
           'siteName'=> $app->env->siteName,
-            'SITE_DOMAIN'=> SITE_DOMAIN,
+            'siteDomain'=> siteDomain,
 
         ]
         );

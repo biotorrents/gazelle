@@ -696,7 +696,7 @@ $db->query(
 
 $TorrentID = $db->inserted_id();
 $cache->increment('stats_torrent_count');
-$Tor->Dec['comment'] = 'https://'.SITE_DOMAIN.'/torrents.php?torrentid='.$TorrentID;
+$Tor->Dec['comment'] = 'https://'.siteDomain.'/torrents.php?torrentid='.$TorrentID;
 
 
 /**

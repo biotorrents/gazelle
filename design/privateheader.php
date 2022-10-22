@@ -22,7 +22,7 @@ if ($ENV->dev) {
   <title>
     <?= Text::esc($PageTitle) ?>
   </title>
-  <script defer data-domain="<?= $ENV->SITE_DOMAIN ?>"
+  <script defer data-domain="<?= $ENV->siteDomain ?>"
     src="https://stats.torrents.bio/js/plausible.js"></script>
 
   <?=
@@ -179,7 +179,7 @@ if (empty(G::$user['StyleURL'])) {
     $StyleURLInfo = parse_url(G::$user['StyleURL']);
     if (substr(G::$user['StyleURL'], -4) === '.css'
         && empty($StyleURLInfo['query']) && empty($StyleURLInfo['fragment'])
-        && ($StyleURLInfo['host'] === SITE_DOMAIN)
+        && ($StyleURLInfo['host'] === siteDomain)
         && file_exists(SERVER_ROOT.$StyleURLInfo['path'])) {
         $StyleURL = G::$user['StyleURL'].'?v='.filemtime(SERVER_ROOT.$StyleURLInfo['path']);
     } else {

@@ -144,7 +144,7 @@ class Auth # extends Delight\Auth\Auth
                 $app = App::go();
 
                 # build the verification uri
-                $uri = "https://{$app->env->SITE_DOMAIN}/confirm/{$selector}/{$token}";
+                $uri = "https://{$app->env->siteDomain}/confirm/{$selector}/{$token}";
 
                 # email it to the prospective user
                 $subject = "Confirm your new {$app->env->siteName} account";
@@ -273,7 +273,7 @@ class Auth # extends Delight\Auth\Auth
                 $app = App::go();
 
                 # build the verification uri
-                $uri = "https://{$app->env->SITE_DOMAIN}/recover/{$selector}/{$token}";
+                $uri = "https://{$app->env->siteDomain}/recover/{$selector}/{$token}";
 
                 # email it to the prospective user
                 $to = $email;

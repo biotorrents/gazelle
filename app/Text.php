@@ -90,7 +90,7 @@ class Text
 
         # replace links to $app->env->siteDomain
         $parsed = preg_replace(
-            "/<a href=\"{$app->env->regexResource}({$app->env->SITE_DOMAIN}|{$app->env->OLD_SITE_DOMAIN})\//",
+            "/<a href=\"{$app->env->regexResource}({$app->env->siteDomain}|{$app->env->OLD_siteDomain})\//",
             "<a href=\"/",
             $parsed
         );

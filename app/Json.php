@@ -220,7 +220,7 @@ class Json
         $curl = curl_init();
 
         # todo: make this use localhost and not HTTPS
-        curl_setopt($curl, CURLOPT_URL, "https://{$app->env->SITE_DOMAIN}/api.php?action={$action}&{$params}");
+        curl_setopt($curl, CURLOPT_URL, "https://{$app->env->siteDomain}/api.php?action={$action}&{$params}");
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
         # https://docs.torrents.bio

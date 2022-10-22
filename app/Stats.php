@@ -33,7 +33,7 @@ class Stats
         $app = App::go();
 
         $this->baseUri = $app->env->plausibleUri;
-        $this->siteId = $app->env->SITE_DOMAIN;
+        $this->siteId = $app->env->siteDomain;
         $this->token = $app-env->getPriv("plausibleKey");
     }
 

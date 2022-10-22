@@ -181,7 +181,9 @@ function check_perms($PermissionName, $MinClass = 0)
  */
 function site_url()
 {
-    return 'https://' . SITE_DOMAIN . '/';
+    $app = App::go();
+
+    return "https://{$app->env->siteDomain}";
 }
 # End OT/Bio Gazelle util.php
 

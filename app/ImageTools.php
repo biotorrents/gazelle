@@ -22,7 +22,7 @@ class ImageTools
             return '';
         }
         
-        if (preg_match('/^https:\/\/('.$ENV->SITE_DOMAIN.'|'.$ENV->imageDomain.')\//', $Url) || $Url[0] === '/') {
+        if (preg_match('/^https:\/\/('.$ENV->siteDomain.'|'.$ENV->imageDomain.')\//', $Url) || $Url[0] === '/') {
             if (strpos($Url, '?') === false) {
                 $Url .= '?';
             }

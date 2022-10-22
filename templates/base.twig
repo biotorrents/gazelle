@@ -60,7 +60,7 @@
 
     {# plausible #}
     {% if env.enablePlausible == true %}
-    <script defer data-domain="{{ env.SITE_DOMAIN }}" src="https://stats.torrents.bio/js/plausible.js"></script>
+    <script defer data-domain="{{ env.siteDomain }}" src="https://stats.torrents.bio/js/plausible.js"></script>
     {% endif %}
 
     {% endblock %}

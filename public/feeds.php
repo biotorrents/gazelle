@@ -67,7 +67,7 @@ function display_array($Array, $Escape = [])
 function site_url()
 {
     $ENV = ENV::go();
-    return "https://$ENV->SITE_DOMAIN/";
+    return "https://$ENV->siteDomain/";
 }
 
 
