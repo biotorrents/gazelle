@@ -281,7 +281,7 @@ if (!empty($_REQUEST['action'])) {
 
 # If $_REQUEST['action'] is empty
 else {
-    enforce_login();
+    #enforce_login();
 
     if (!empty($_GET['id'])) {
         require_once "$ENV->SERVER_ROOT/sections/torrents/details.php";
