@@ -725,50 +725,6 @@ class Users
         }
 
         if ($Badges) {
-            $DonorRank = Donations::get_rank($UserID);
-            if ($DonorRank === 0 && $UserInfo['Donor'] === 1) {
-                $DonorRank = 1;
-            }
-
-            if ($ShowDonorIcon && $DonorRank > 0) {
-                $IconLink = 'donate.php';
-                $IconImage = 'donor.png';
-                $IconText = 'Donor';
-                $DonorHeart = $DonorRank;
-                #$SpecialRank = Donations::get_special_rank($UserID);
-                $EnabledRewards = Donations::get_enabled_rewards($UserID);
-                $DonorRewards = Donations::get_rewards($UserID);
-
-                if ($EnabledRewards['HasDonorIconMouseOverText'] && !empty($DonorRewards['IconMouseOverText'])) {
-                    $IconText = Text::esc($DonorRewards['IconMouseOverText']);
-                }
-
-                if ($EnabledRewards['HasDonorIconLink'] && !empty($DonorRewards['CustomIconLink'])) {
-                    $IconLink = Text::esc($DonorRewards['CustomIconLink']);
-                }
-
-                if ($EnabledRewards['HasCustomDonorIcon'] && !empty($DonorRewards['CustomIcon'])) {
-                    $IconImage = ImageTools::process($DonorRewards['CustomIcon']);
-                } else {
-                    /* wtf
-                    if ($SpecialRank === MAX_SPECIAL_RANK) {
-                        $DonorHeart = 6;
-                    } else
-                    */
-                    if ($DonorRank === 5) {
-                        $DonorHeart = 4; // Two points between rank 4 and 5
-                    } elseif ($DonorRank >= MAX_RANK) {
-                        $DonorHeart = 5;
-                    }
-
-                    if ($DonorHeart === 1) {
-                        $IconImage = STATIC_SERVER . 'common/symbols/donor.png';
-                    } else {
-                        $IconImage = STATIC_SERVER . "common/symbols/donor_{$DonorHeart}.png";
-                    }
-                }
-                $Str .= "<a target='_blank' href='$IconLink'><img class='donor_icon tooltip' src='$IconImage' alt='$IconText' title='$IconText' /></a>";
-            }
             $Str .= Badges::display_badges(Badges::get_displayed_badges($UserID), true);
         }
 
@@ -873,10 +829,10 @@ class Users
         $AvatarMouseOverText = '';
         $SecondAvatar = '';
         $Class = 'class="double_avatar"';
-        $EnabledRewards = Donations::get_enabled_rewards($UserID);
+        $EnabledRewards = null;
 
         if ($EnabledRewards['HasAvatarMouseOverText']) {
-            $Rewards = Donations::get_rewards($UserID);
+            $Rewards = null;
             $AvatarMouseOverText = $Rewards['AvatarMouseOverText'];
         }
 

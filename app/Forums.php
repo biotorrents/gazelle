@@ -106,10 +106,6 @@ class Forums
             return true;
         }
 
-        if ($ForumID === DONOR_FORUM && Donations::has_donor_forum(G::$user['ID'])) {
-            return true;
-        }
-
         if ($Forums[$ForumID]['MinClass' . $Perm] > G::$user['Class'] && (!isset(G::$user['CustomForums'][$ForumID]) || G::$user['CustomForums'][$ForumID] == 0)) {
             return false;
         }
@@ -403,10 +399,6 @@ class Forums
         // I couldn't come up with a good name, please rename this if you can. -- Y
         $RestrictedForums = self::get_restricted_forums();
         $PermittedForums = self::get_permitted_forums();
-
-        if (Donations::has_donor_forum(G::$user['ID']) && !in_array(DONOR_FORUM, $PermittedForums)) {
-            $PermittedForums[] = DONOR_FORUM;
-        }
 
         $SQL = "((f.`MinClassRead` <= '" . G::$user['Class'] . "'";
         if (count($RestrictedForums)) {

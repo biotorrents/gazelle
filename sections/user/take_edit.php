@@ -233,7 +233,6 @@ unset($Options['ShowQueryList']);
 unset($Options['ShowCacheList']);
 
 $UnseededAlerts = isset($_POST['unseededalerts']) ? 1 : 0;
-Donations::update_rewards($UserID);
 NotificationsManager::save_settings($UserID);
 
 // Begin Badge settings

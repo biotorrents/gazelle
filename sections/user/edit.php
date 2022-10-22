@@ -74,16 +74,15 @@ View::header(
     'vendor/easymde.min'
 );
 
-$DonorRank = Donations::get_rank($UserID);
-$DonorIsVisible = Donations::is_visible($UserID);
+$DonorRank = null;
+$DonorIsVisible = null;
 
 if ($DonorIsVisible === null) {
     $DonorIsVisible = true;
 }
 
-extract(Donations::get_enabled_rewards($UserID));
-$Rewards = Donations::get_rewards($UserID);
-$ProfileRewards = Donations::get_profile_rewards($UserID);
+$Rewards = null;
+$ProfileRewards = null;
 ?>
 
 <div>
@@ -836,18 +835,6 @@ HTML;
           </td>
         </tr>
 
-        <!-- Donations -->
-        <tr id="para_donations_tr">
-          <td class="label">
-            <strong>Donations</strong>
-          </td>
-
-          <td>
-            <input type="checkbox" id="p_donor_heart" name="p_donor_heart" onchange="AlterParanoia();" <?=checked(!in_array('hide_donor_heart', $Paranoia))?>
-            />
-            <label for="p_donor_heart">Show donor heart</label>
-          </td>
-        </tr>
 
         <!-- Statistics -->
         <tr id="para_stats_tr">

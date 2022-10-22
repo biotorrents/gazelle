@@ -21,10 +21,6 @@ if ($UserID === $user['ID']) {
     $Preview = 0;
 }
 
-# Donor rewards (extra profile fields, etc.)
-$EnabledRewards = Donations::get_enabled_rewards($UserID);
-$ProfileRewards = Donations::get_profile_rewards($UserID);
-
 /**
  * Staff view main query
  */
@@ -399,7 +395,7 @@ if (!$OwnProfile && !$user['DisablePoints']) { ?>
       ?>
             <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Required
               Ratio: <span class="tooltip"
-                title="<?=Text::float((double)$RequiredRatio, 5)?>"><?=Text::float((double)$RequiredRatio, 2)?></span></li>
+                title="<?=Text::float((float)$RequiredRatio, 5)?>"><?=Text::float((float)$RequiredRatio, 2)?></span></li>
               <?php
   }
   if (($Override = check_paranoia_here('downloaded'))) {
@@ -558,13 +554,13 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
     </div>
     <?php
      if (check_perms('users_view_ips', $Class)) {
-          $db->query("
+         $db->query("
         SELECT COUNT(DISTINCT IP)
         FROM xbt_snatched
         WHERE uid = '$UserID'
           AND IP != ''");
-          list($TrackerIPs) = $db->next_record();
-      }
+         list($TrackerIPs) = $db->next_record();
+     }
       ?>
     <div class="box box_info box_userinfo_history">
       <div class="head colhead_dark">History</div>
@@ -580,12 +576,12 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
       }
       }
      if (check_perms('users_mod', $Class)) {
-          ?>
+         ?>
         <li>Stats: N/A <a
             href="userhistory.php?action=stats&amp;userid=<?=$UserID?>"
             class="brackets">View</a></li>
         <?php
-      } ?>
+     } ?>
       </ul>
     </div>
 
@@ -838,7 +834,7 @@ if (check_paranoia_here('uploads')) {
 
         $cache->cache_value("recent_uploads_$UserID", $RecentUploads, 0); // inf cache
     }
-    
+
     if (!empty($RecentUploads)) {
         ?>
     <div class="box" id="recent_uploads">
@@ -1218,7 +1214,7 @@ if (check_perms('users_mod', $Class)) { ?>
         if ($CurClass['Secondary']) {
             continue;
         }
-        
+
         if ($Class == $CurClass['Level']) {
             $Selected = ' selected="selected"';
         } else {
@@ -1434,7 +1430,7 @@ if (!$DisablePoints) {
         $i = 0;
         foreach (array_keys($AllBadges) as $BadgeID) {
             ?><input type="checkbox" name="badges[]" class="badge_checkbox"
-            value="<?=$BadgeID?>" <?=(in_array($BadgeID, $UserBadgeIDs))?" checked":""?>/><?=Badges::display_badge($BadgeID, true)?>
+            value="<?=$BadgeID?>" <?=(in_array($BadgeID, $UserBadgeIDs)) ? " checked" : ""?>/><?=Badges::display_badge($BadgeID, true)?>
           <?php $i++;
             if ($i % 8 == 0) {
                 echo "<br />";
@@ -1542,7 +1538,7 @@ if (!$DisablePoints) {
         </td>
       </tr>
       <?php if (check_perms('users_disable_posts') || check_perms('users_disable_any')) {
-       ?>
+        ?>
       <tr>
         <td class="label">Disable:</td>
         <td>
