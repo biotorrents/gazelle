@@ -1,9 +1,10 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 /**
  * Session
- * 
+ *
  * PROLLY NOT NEEDED!
  *
  * All session handling stuff.
@@ -102,10 +103,11 @@ class Session
      *
      * Log out the current session.
      */
+    /*
     public function logout()
     {
         $app = App::go();
-    
+
         Http::deleteCookie("session");
         Http::deleteCookie("userid");
         Http::deleteCookie("keeplogged");
@@ -127,6 +129,7 @@ class Session
         # send to login
         #Http::redirect("login");
     }
+    */
 
 
     /**
@@ -135,6 +138,7 @@ class Session
      * Log out all user sessions.
      * Prefer this to self::logout.
      */
+    /*
     public function logoutAll()
     {
         $app = App::go();
@@ -146,6 +150,7 @@ class Session
         $app->cacheOld->delete_value("users_sessions_{$this->userId}");
         $this->logout();
     }
+    */
 
 
     /**
@@ -158,7 +163,7 @@ class Session
         $app = App::go();
 
         $server = Http::query("server");
-    
+
         $attempts = $this->attempts++;
         $app->cacheOld->cache_value("login_attempts_{$server["REMOTE_ADDR"]}", [$attempts, ($attempts > 5)], 60 * 60 * $attempts);
 

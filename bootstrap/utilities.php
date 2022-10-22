@@ -11,55 +11,6 @@
 
 
 /**
- * Log out the current session
- */
-function logout()
-{
-    global $SessionID;
-    G::$user['ID'] = G::$user['ID'] ?? null;
-
-    Http::deleteCookie('session');
-    Http::deleteCookie('userid');
-    Http::deleteCookie('keeplogged');
-
-    #Http::flushCookies();
-
-    if ($SessionID) {
-        G::$db->prepared_query("
-        DELETE FROM users_sessions
-          WHERE UserID = '" . G::$user['ID'] . "'
-          AND SessionID = '".db_string($SessionID)."'");
-
-        G::$cache->begin_transaction('users_sessions_' . G::$user['ID']);
-        G::$cache->delete_row($SessionID);
-        G::$cache->commit_transaction(0);
-    }
-
-    G::$cache->delete_value('user_info_' . G::$user['ID']);
-    G::$cache->delete_value('user_stats_' . G::$user['ID']);
-    G::$cache->delete_value('user_info_heavy_' . G::$user['ID']);
-
-    Http::redirect('login');
-}
-
-
-/**
- * logout_all_sessions
- */
-function logout_all_sessions()
-{
-    $UserID = G::$user['ID'];
-
-    G::$db->prepared_query("
-    DELETE FROM users_sessions
-      WHERE UserID = '$UserID'");
-
-    G::$cache->delete_value('users_sessions_' . $UserID);
-    logout();
-}
-
-
-/**
  * enforce_login
  */
 function enforce_login()
@@ -68,7 +19,7 @@ function enforce_login()
 
     if (!$SessionID || !G::$user) {
         Http::setCookie(['redirect' => $_SERVER['REQUEST_URI']]);
-        logout();
+        #logout();
     }
 }
 
@@ -176,24 +127,23 @@ function send_irc($Channels = null, $Message = '')
  */
 function error(int|string $error = 400, $NoHTML = false, $Log = false)
 {
-    $ENV = ENV::go();
-    $twig = Twig::go();
+    $app = App::go();
 
     # https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
     $map = [
         400 => [
-            '400 Bad Request',
-            'The server cannot or will not process the request due to an apparent client error (e.g., malformed request syntax, size too large, invalid request message framing, or deceptive request routing).',
+            "400 Bad Request",
+            "The server cannot or will not process the request due to an apparent client error (e.g., malformed request syntax, size too large, invalid request message framing, or deceptive request routing).",
         ],
 
         403 => [
-            '403 Forbidden',
-            'The request contained valid data and was understood by the server, but the server is refusing action. This may be due to the user not having the necessary permissions for a resource or needing an account of some sort, or attempting a prohibited action (e.g. creating a duplicate record where only one is allowed). This code is also typically used if the request provided authentication by answering the WWW-Authenticate header field challenge, but the server did not accept that authentication. The request should not be repeated.',
+            "403 Forbidden",
+            "The request contained valid data and was understood by the server, but the server is refusing action. This may be due to the user not having the necessary permissions for a resource or needing an account of some sort, or attempting a prohibited action (e.g. creating a duplicate record where only one is allowed). This code is also typically used if the request provided authentication by answering the WWW-Authenticate header field challenge, but the server did not accept that authentication. The request should not be repeated.",
         ],
 
         404 => [
-            '404 Not Found',
-            'The requested resource could not be found but may be available in the future. Subsequent requests by the client are permissible.',
+            "404 Not Found",
+            "The requested resource could not be found but may be available in the future. Subsequent requests by the client are permissible.",
         ],
     ];
 
@@ -201,16 +151,16 @@ function error(int|string $error = 400, $NoHTML = false, $Log = false)
         $title = $map[$error][0];
         $body = $map[$error][1];
     } else {
-        $title = 'Other Error';
-        $body = "A function supplied this error message: $error";
+        $title = "Other Error";
+        $body = "A function supplied this error message: {$error}";
     }
 
     # Output HTML error page
     View::header($title);
 
-    echo $twig->render(
-        'error.twig',
-        ['title' => $title, 'body' => $body]
+    echo $app->twig->display(
+        "error.twig",
+        ["title" => $title, "body" => $body]
     );
 
     View::footer();
