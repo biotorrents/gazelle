@@ -1,33 +1,25 @@
 <?php
 declare(strict_types=1);
 
-if (!empty($_GET['filter']) && $_GET['filter'] === 'all') {
-    $Join = '';
-    $All = true;
-} else {
-    $Join = "
-    JOIN `torrents` AS t
-    ON
-      t.`GroupID` = tg.`id`
-    JOIN `xbt_snatched` AS x
-    ON
-      x.`fid` = t.`ID` AND x.`uid` = '$user[ID]'
-    ";
-    $All = false;
+$app = App::go();
+
+$query = "
+    select sql_calc_found_rows torrents_group.id
+    from torrents_group where torrents_group.picture = ''
+    order by rand() limit 20
+";
+
+$ref = $app->dbNew->multi($query) ?? [];
+
+$groups = [];
+foreach ($ref as $row) {
+    $groups[] = Torrents::get_groups($row["id"]);
 }
 
-$db->prepared_query("
-SELECT SQL_CALC_FOUND_ROWS
-  tg.`id`
-FROM
-  `torrents_group` AS tg
-$Join
-WHERE
-  tg.`picture` = ''
-ORDER BY
-  RAND()
-LIMIT 20
-");
+exit;
+
+
+/** continue */
 
 
 $Groups = $db->to_array('id', MYSQLI_ASSOC);
