@@ -1,6 +1,10 @@
 <?php
+
 #declare(strict_types=1);
 
+/**
+ * Misc
+ */
 class Misc
 {
     /**
@@ -109,7 +113,7 @@ class Misc
               WHERE UnRead = '1'
               AND UserID = '$ID'
               AND InInbox = '1'");
-                  
+
             list($UnRead) = G::$db->next_record();
             G::$cache->cache_value("inbox_new_$ID", $UnRead);
         }
@@ -267,7 +271,7 @@ class Misc
             'EditedTime' => null,
             'Username' => ''
         );
-        
+
         G::$cache->insert('', $Post);
         G::$cache->commit_transaction(0);
 

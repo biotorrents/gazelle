@@ -1,6 +1,8 @@
 <?php
-declare(strict_types = 1);
 
+declare(strict_types=1);
+
+/*
 $Security = new Security();
 $UserID = $Security->checkUser('users_override_paranoia');
 
@@ -25,3 +27,4 @@ list(, $CollageDataList, $TorrentList) = Users::get_bookmarks($UserID); // todo:
 $TT = new MASS_USER_TORRENTS_TABLE_VIEW($TorrentList, $CollageDataList, $EditType, 'Organize Torrent Bookmarks');
 $TT->render_all();
 View::footer();
+*/

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -57,7 +58,7 @@ class ENV
             E_USER_ERROR
         );
     }
-    
+
     # $this->key returns public->key
     public function __get($key)
     {
@@ -65,13 +66,13 @@ class ENV
             ? self::$pub[$key]
             : false;
     }
-    
+
     # isset
     public function __isset($key)
     {
         return isset(self::$pub[$key]);
     }
-    
+
 
     /**
      * Gets n' Sets
@@ -132,11 +133,11 @@ class ENV
                     ? new RecursiveArrayObject($out)
                     : trigger_error("json_last_error_msg: " . json_last_error_msg(), E_USER_ERROR);
                 break;
-            
+
             case "array":
             case "object":
                 return new RecursiveArrayObject($object);
-            
+
             default:
                 return trigger_error("ENV->convert expects a JSON string, array, or object.", E_USER_ERROR);
                 break;
@@ -209,7 +210,7 @@ class ENV
                 $v = $this->toArray($v);
             }
             */
-    
+
             if (is_array($v)) {
                 $new = array_merge($new, $this->flatten($v));
             } else {
@@ -267,7 +268,7 @@ class ENV
         if ($function === "array_map") {
             throw new Exception("ENV->map can't invoke the function it wraps");
         }
-        
+
         /**
          * $function not a closure
          *
@@ -353,7 +354,7 @@ class RecursiveArrayObject extends ArrayObject
         return array_key_exists($name, $this);
     }
 
-    
+
     /**
      * __unset
      */
