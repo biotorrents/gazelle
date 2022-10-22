@@ -7,10 +7,10 @@ declare(strict_types=1);
  */
 
 # Development or production?
-ENV::setPub('DEV', true);
+ENV::setPub('dev', true);
 
 # Disable Kint on production
-if (!$ENV->DEV) {
+if (!$env->dev) {
     \Kint\Kint::$enabled_mode	= false;
 }
 
@@ -22,7 +22,7 @@ if (!$ENV->DEV) {
 # Site name
 ENV::setPub(
     'SITE_NAME',
-    (!$ENV->DEV
+    (!$env->dev
         ? 'torrents.bio' # Production
         : 'dev.torrents.bio') # Development
 );
@@ -36,23 +36,23 @@ ENV::setPub('CRUMB', '›'); # e.g., Forums › Board › Thread
 
 # The FQDN of your site, e.g., dev.torrents.bio
 ( # Old format
-    !$ENV->DEV
+    !$env->dev
         ? define('SITE_DOMAIN', 'torrents.bio') # Production
         : define('SITE_DOMAIN', 'dev.torrents.bio') # Development
 );
 
 ENV::setPub(
     'SITE_DOMAIN',
-    (!$ENV->DEV
+    (!$env->dev
         ? 'torrents.bio' # Production
         : 'dev.torrents.bio') # Development
 );
 
 # Old domain, to handle the biotorrents.de => torrents.bio migration
-# If not needed, simply set to the same values as $ENV->SITE_DOMAIN
+# If not needed, simply set to the same values as $env->SITE_DOMAIN
 ENV::setPub(
     'OLD_SITE_DOMAIN',
-    (!$ENV->DEV
+    (!$env->dev
         ? 'biotorrents.de' # Production
         : 'dev.torrents.bio') # Development
 );
@@ -65,28 +65,28 @@ ENV::setPub('WEB_ROOT', '/var/www/');
 
 # The root of the server, used for includes, e.g., /var/www/html/dev.biotorrents.de/
 ( # Old format
-    !$ENV->DEV
+    !$env->dev
         ? define('SERVER_ROOT', '/var/www/html/biotorrents.de/') # Production
         : define('SERVER_ROOT', '/var/www/html/dev.torrents.bio/') # Development
 );
 
 ENV::setPub(
     'SERVER_ROOT',
-    (!$ENV->DEV
+    (!$env->dev
         ? '/var/www/html/biotorrents.de/' # Production
         : '/var/www/html/dev.torrents.bio/') # Development
 );
 
 # Where torrent files are stored, e.g., /var/www/torrents-dev/
 ( # Old format
-    !$ENV->DEV
+    !$env->dev
         ? define('TORRENT_STORE', '/var/www/torrents/') # Production
         : define('TORRENT_STORE', '/var/www/torrents-dev/') # Development
 );
 
 ENV::setPub(
     'TORRENT_STORE',
-    (!$ENV->DEV
+    (!$env->dev
         ? '/var/www/torrents/' # Production
         : '/var/www/torrents-dev/') # Development);
 );
@@ -106,7 +106,7 @@ ENV::setPub('SRI', 'sha512');
  */
 
  # Production
-if (!$ENV->DEV) {
+if (!$env->dev) {
     define('ANNOUNCE_URLS', [
          [ # Tier 1
            'https://track.biotorrents.de:443',
@@ -125,7 +125,7 @@ if (!$ENV->DEV) {
     ];
     ENV::setPub(
         'ANNOUNCE_URLS',
-        $ENV->convert($AnnounceURLs)
+        $env->convert($AnnounceURLs)
     );
 }
 
@@ -144,7 +144,7 @@ else {
     ];
     ENV::setPub(
         'ANNOUNCE_URLS',
-        $ENV->convert($AnnounceURLs)
+        $env->convert($AnnounceURLs)
     );
 }
 
@@ -154,7 +154,7 @@ else {
  */
 
 # SphinxqlQuery needs constants
-# $ENV breaks the torrent and request pages
+# $env breaks the torrent and request pages
 define('SPHINXQL_HOST', '127.0.0.1');
 define('SPHINXQL_PORT', 9306);
 define('SPHINXQL_SOCK', false);
@@ -169,7 +169,7 @@ define('SPHINX_MAX_MATCHES', 1000); // Must be <= the server's max_matches varia
  */
 
  # Production
-if (!$ENV->DEV) {
+if (!$env->dev) {
     ENV::setPriv(
         'MEMCACHED_SERVERS',
         [[
@@ -208,7 +208,7 @@ ENV::setPub('ANNOUNCE_TWITTER', true);
  */
 
 # IRC server address. Used for onsite chat tool
-define('BOT_SERVER', "irc.$ENV->SITE_DOMAIN");
+define('BOT_SERVER', "irc.$env->SITE_DOMAIN");
 define('SOCKET_LISTEN_ADDRESS', '10.0.0.4');
 define('SOCKET_LISTEN_PORT', 51010);
 define('BOT_NICK', 'ebooks');
@@ -261,7 +261,7 @@ ENV::setPub('FEATURE_BIOPHP', false);
 # Set to false to disable open registration, true to allow anyone to register
 ENV::setPub(
     'OPEN_REGISTRATION',
-    (!$ENV->DEV
+    (!$env->dev
         ? true # Production
         : false) # Development
 );
@@ -301,7 +301,7 @@ ENV::setPub(
     'PW_ADVICE',
     <<<HTML
     <p>
-      Any password $ENV->PW_MIN characters or longer is accepted, but a strong password
+      Any password $env->PW_MIN characters or longer is accepted, but a strong password
       <ul>
         <li>is a pass<em>phrase</em> of mixed case with many small words,</li>
         <li>that contains complex characters including Unicode and emoji.</li>
@@ -448,5 +448,5 @@ $AutomatedBadgeIDs = [
 ];
 ENV::setPub(
     'AUTOMATED_BADGE_IDS',
-    $ENV->convert($AutomatedBadgeIDs)
+    $env->convert($AutomatedBadgeIDs)
 );

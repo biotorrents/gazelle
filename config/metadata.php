@@ -5,7 +5,7 @@ declare(strict_types=1);
  * Site categories and meta
  *
  * THIS IS THE OLD FORMAT AND WILL GO AWAY.
- * PLEASE SEE $ENV->{DB,META,CATS} BELOW.
+ * PLEASE SEE $env->{DB,META,CATS} BELOW.
  */
 
 # Categories
@@ -202,7 +202,7 @@ $Resolutions = [
 
 
 /**
- * $ENV->DB
+ * $env->DB
  *
  * One flat array with all possible torrent/group fields.
  * These are mostly used in Twig templates as {{ db.title }}.
@@ -236,12 +236,12 @@ $db = [
 ];
 ENV::setPub(
     'DB',
-    $ENV->convert($db)
+    $env->convert($db)
 );
 
 
 /**
- * $ENV->META
+ * $env->META
  *
  * Main metadata object.
  * Responsible for defining field values.
@@ -357,7 +357,7 @@ $META = [
             'Binary',
             'Text',
         ],
-    ], # End $ENV->META->Platforms
+    ], # End $env->META->Platforms
 
     /**
      * 1.
@@ -595,7 +595,7 @@ $META = [
             'Jupyter'      => ['ipynb'],
             'Ontology'     => ['cgif', 'cl', 'clif', 'csv', 'htm', 'html', 'kif', 'obo', 'owl', 'rdf', 'rdfa', 'rdfs', 'rif', 'tsv', 'xcl', 'xht', 'xhtml', 'xml'],
         ],
-    ], # End $ENV->META->Formats
+    ], # End $env->META->Formats
 
 
     /**
@@ -691,7 +691,7 @@ $META = [
             'Velocity',
             'Weight',
         ],
-    ], # End $ENV->META->Scopes
+    ], # End $env->META->Scopes
 
     /**
      * 1.
@@ -717,11 +717,11 @@ $META = [
         'OpenMTA',
         'Public Domain',
         'Unspecified',
-    ], # End $ENV->META->Licenses
+    ], # End $env->META->Licenses
 ];
 ENV::setPub(
     'META',
-    $ENV->convert($META)
+    $env->convert($META)
 );
 
 
@@ -742,11 +742,11 @@ $CATS = [
         'ID' => 1,
         'Name' => 'Sequences',
         'Description' => "For data that's ACGT, ACGU, amino acid letters on disk.",
-        'Platforms' => $ENV->META->Platforms->Sequences,
+        'Platforms' => $env->META->Platforms->Sequences,
         'Formats' => [
-            $ENV->META->Formats->Sequences,
-            $ENV->META->Formats->Proteins,
-            $ENV->META->Formats->Plain,
+            $env->META->Formats->Sequences,
+            $env->META->Formats->Proteins,
+            $env->META->Formats->Plain,
         ],
     ],
 
@@ -754,11 +754,11 @@ $CATS = [
         'ID' => 2,
         'Name' => 'Graphs',
         'Description' => 'For pathway and regulatory network data, structured taxonomies, etc.',
-        'Platforms' => $ENV->META->Platforms->Graphs,
+        'Platforms' => $env->META->Platforms->Graphs,
         'Formats' => [
-            $ENV->META->Formats->GraphXml,
-            $ENV->META->Formats->GraphTxt,
-            $ENV->META->Formats->Plain,
+            $env->META->Formats->GraphXml,
+            $env->META->Formats->GraphTxt,
+            $env->META->Formats->Plain,
         ],
     ],
 
@@ -766,11 +766,11 @@ $CATS = [
         'ID' => 3,
         'Name' => 'Systems',
         'Description' => 'For data that examines one facet broadly, not one subject deeply.',
-        'Platforms' => $ENV->META->Platforms->Graphs,
+        'Platforms' => $env->META->Platforms->Graphs,
         'Formats' => [
-            $ENV->META->Formats->GraphXml,
-            $ENV->META->Formats->GraphTxt,
-            $ENV->META->Formats->Plain,
+            $env->META->Formats->GraphXml,
+            $env->META->Formats->GraphTxt,
+            $env->META->Formats->Plain,
         ],
     ],
 
@@ -778,11 +778,11 @@ $CATS = [
         'ID' => 4,
         'Name' => 'Geometric',
         'Description' => "For structured data (XML, etc.) that describes the subject's orientation in space.",
-        'Platforms' => $ENV->META->Platforms->Graphs,
+        'Platforms' => $env->META->Platforms->Graphs,
         'Formats' => [
-            $ENV->META->Formats->GraphXml,
-            $ENV->META->Formats->GraphTxt,
-            $ENV->META->Formats->Plain,
+            $env->META->Formats->GraphXml,
+            $env->META->Formats->GraphTxt,
+            $env->META->Formats->Plain,
         ],
     ],
 
@@ -790,11 +790,11 @@ $CATS = [
         'ID' => 5,
         'Name' => 'Scalars/Vectors',
         'Description' => 'For data that describes observations over time and/or space.',
-        'Platforms' => $ENV->META->Platforms->Graphs,
+        'Platforms' => $env->META->Platforms->Graphs,
         'Formats' => [
-            $ENV->META->Formats->GraphXml,
-            $ENV->META->Formats->GraphTxt,
-            $ENV->META->Formats->Plain,
+            $env->META->Formats->GraphXml,
+            $env->META->Formats->GraphTxt,
+            $env->META->Formats->Plain,
         ],
     ],
 
@@ -802,11 +802,11 @@ $CATS = [
         'ID' => 6,
         'Name' => 'Patterns',
         'Description' => 'For data that describes recurring structures in nature such as common pathways or motifs in the proteome or metabolome.',
-        'Platforms' => $ENV->META->Platforms->Graphs,
+        'Platforms' => $env->META->Platforms->Graphs,
         'Formats' => [
-            $ENV->META->Formats->GraphXml,
-            $ENV->META->Formats->GraphTxt,
-            $ENV->META->Formats->Plain,
+            $env->META->Formats->GraphXml,
+            $env->META->Formats->GraphTxt,
+            $env->META->Formats->Plain,
         ],
     ],
 
@@ -814,11 +814,11 @@ $CATS = [
         'ID' => 7,
         'Name' => 'Constraints',
         'Description' => 'For data that records experimental control behavior, checks readings against known physical constants, tracks the thermodynamic limits of reactions, etc.',
-        'Platforms' => $ENV->META->Platforms->Graphs,
+        'Platforms' => $env->META->Platforms->Graphs,
         'Formats' => [
-            $ENV->META->Formats->GraphXml,
-            $ENV->META->Formats->GraphTxt,
-            $ENV->META->Formats->Plain,
+            $env->META->Formats->GraphXml,
+            $env->META->Formats->GraphTxt,
+            $env->META->Formats->Plain,
         ],
     ],
 
@@ -826,10 +826,10 @@ $CATS = [
         'ID' => 8,
         'Name' => 'Images',
         'Description' => 'For data you can look at!',
-        'Platforms' => $ENV->META->Platforms->Images,
+        'Platforms' => $env->META->Platforms->Images,
         'Formats' => [
-            $ENV->META->Formats->ImgRaster,
-            $ENV->META->Formats->ImgVector,
+            $env->META->Formats->ImgRaster,
+            $env->META->Formats->ImgVector,
         ],
     ],
 
@@ -837,12 +837,12 @@ $CATS = [
         'ID' => 9,
         'Name' => 'Spatial',
         'Description' => "For data that's limited to specific locations or otherwise describes macroscopic space.",
-        'Platforms' => $ENV->META->Platforms->Graphs,
+        'Platforms' => $env->META->Platforms->Graphs,
         'Formats' => [
-            $ENV->META->Formats->MapRaster,
-            $ENV->META->Formats->MapVector,
-            $ENV->META->Formats->ImgRaster,
-            $ENV->META->Formats->ImgVector,
+            $env->META->Formats->MapRaster,
+            $env->META->Formats->MapVector,
+            $env->META->Formats->ImgRaster,
+            $env->META->Formats->ImgVector,
         ],
     ],
 
@@ -850,12 +850,12 @@ $CATS = [
         'ID' => 10,
         'Name' => 'Models',
         'Description' => 'For projections, simulations, and other hypothetical or computer-generated data.',
-        'Platforms' => $ENV->META->Platforms->Graphs,
+        'Platforms' => $env->META->Platforms->Graphs,
         'Formats' => [
-            $ENV->META->Formats->MapRaster,
-            $ENV->META->Formats->MapVector,
-            $ENV->META->Formats->ImgRaster,
-            $ENV->META->Formats->ImgVector,
+            $env->META->Formats->MapRaster,
+            $env->META->Formats->MapVector,
+            $env->META->Formats->ImgRaster,
+            $env->META->Formats->ImgVector,
         ],
     ],
 
@@ -863,11 +863,11 @@ $CATS = [
         'ID' => 11,
         'Name' => 'Documents',
         'Description' => 'For documentation, software, disk images, and literature datasets.',
-        'Platforms' => $ENV->META->Platforms->Documents,
+        'Platforms' => $env->META->Platforms->Documents,
         'Formats' => [
-            $ENV->META->Formats->BinDoc,
-            $ENV->META->Formats->CpuGen,
-            $ENV->META->Formats->Plain,
+            $env->META->Formats->BinDoc,
+            $env->META->Formats->CpuGen,
+            $env->META->Formats->Plain,
         ],
     ],
 
@@ -875,13 +875,13 @@ $CATS = [
         'ID' => 12,
         'Name' => 'Machine Data',
         'Description' => 'For raw reads and machine data of any category.',
-        'Platforms' => $ENV->META->Platforms->Raw,
+        'Platforms' => $env->META->Platforms->Raw,
         'Formats' => [
-            $ENV->META->Formats->Plain,
+            $env->META->Formats->Plain,
         ],
     ],
 ];
 ENV::setPub(
     'CATS',
-    $ENV->convert($CATS)
+    $env->convert($CATS)
 );

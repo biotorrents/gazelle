@@ -1,9 +1,10 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 /**
  * G class
- * 
+ *
  * THIS IS GOING AWAY
  *
  * A stopgap until the main app is a singleton.
@@ -18,7 +19,7 @@ class G
     public static $db = null;
     public static $cache = null;
     public static $debug = null;
-    public static $ENV = null;
+    public static $env = null;
     public static $user = null;
 
     # temporary 500 error fix
@@ -66,15 +67,12 @@ class G
      */
     private static function factory()
     {
-        global $db, $cache, $debug, $ENV, $user;
+        global $db, $cache, $debug, $env, $user;
+        self::$env = ENV::go();
 
-        self::$db = new DB;
-        self::$cache = new Cache($ENV->getPriv("MEMCACHED_SERVERS"));
+        self::$db = new DB();
+        self::$cache = new Cache($env->getPriv("MEMCACHED_SERVERS"));
         self::$debug = Debug::go();
-        self::$ENV = ENV::go();
         self::$user =& $user;
-        
-        # temporary 500 error fix
-        self::$UserID =& $UserID;
     }
 }

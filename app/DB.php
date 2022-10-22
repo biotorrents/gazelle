@@ -158,16 +158,16 @@ class DB
     {
         $ENV = ENV::go();
 
-        $this->Database = $ENV->getPriv('SQL_DB');
-        $this->User = $ENV->getPriv('SQL_USER');
-        $this->Pass = $ENV->getPriv('SQL_PASS');
-        $this->Server = $ENV->getPriv('SQL_HOST');
-        $this->Port = $ENV->getPriv('SQL_PORT');
-        $this->Socket = $ENV->getPriv('SQL_SOCK');
+        $this->Database = $ENV->getPriv('sqlDatabase');
+        $this->User = $ENV->getPriv('sqlUsername');
+        $this->Pass = $ENV->getPriv('sqlPassphrase');
+        $this->Server = $ENV->getPriv('sqlHost');
+        $this->Port = $ENV->getPriv('sqlPort');
+        $this->Socket = $ENV->getPriv('sqlSocket');
 
-        $this->Key = $ENV->getPriv('SQL_KEY');
-        $this->Cert = $ENV->getPriv('SQL_CERT');
-        $this->CA = $ENV->getPriv('SQL_CA');
+        $this->Key = $ENV->getPriv('sqlKey');
+        $this->Cert = $ENV->getPriv('sqlCert');
+        $this->CA = $ENV->getPriv('sqlCertAuthority');
     }
 
 

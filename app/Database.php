@@ -68,13 +68,13 @@ class Database extends PDO
         $app = App::go();
 
         # vars
-        $host = $app->env->getPriv("SQL_HOST");
-        $port = $app->env->getPriv("SQL_PORT");
+        $host = $app->env->getPriv("sqlHost");
+        $port = $app->env->getPriv("sqlPort");
 
-        $username = $app->env->getPriv("SQL_USER");
-        $password = $app->env->getPriv("SQL_PASS");
+        $username = $app->env->getPriv("sqlUsername");
+        $password = $app->env->getPriv("sqlPassphrase");
 
-        $db = $app->env->getPriv("SQL_DB");
+        $db = $app->env->getPriv("sqlDatabase");
         $charset = "utf8mb4";
 
         # defaults

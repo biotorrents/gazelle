@@ -36,7 +36,7 @@ ENV::setPub(
 define('URL_REGEX', '('.RESOURCE_REGEX.')('.IP_REGEX.'|'.DOMAIN_REGEX.')('.PORT_REGEX.')?(\/\S*)*');
 ENV::setPub(
     'URL_REGEX',
-    "($ENV->RESOURCE_REGEX)($ENV->IP_REGEX|$ENV->DOMAIN_REGEX)($ENV->PORT_REGEX)?(\/\S*)*"
+    "($env->RESOURCE_REGEX)($env->IP_REGEX|$env->DOMAIN_REGEX)($env->PORT_REGEX)?(\/\S*)*"
 );
 
 define('USERNAME_REGEX', '/^[a-z0-9_]{2,20}$/iD');
@@ -48,49 +48,49 @@ ENV::setPub(
 define('EMAIL_REGEX', '[_a-z0-9-]+([.+][_a-z0-9-]+)*@'.DOMAIN_REGEX);
 ENV::setPub(
     'EMAIL_REGEX',
-    "[_a-z0-9-]+([.+][_a-z0-9-]+)*@$ENV->DOMAIN_REGEX"
+    "[_a-z0-9-]+([.+][_a-z0-9-]+)*@$env->DOMAIN_REGEX"
 );
 
 define('IMAGE_REGEX', URL_REGEX.'\/\S+\.(jpg|jpeg|tif|tiff|png|gif|bmp)(\?\S*)?');
 ENV::setPub(
     'IMAGE_REGEX',
-    "$ENV->URL_REGEX\/\S+\.(jpg|jpeg|tif|tiff|png|gif|bmp)(\?\S*)?"
+    "$env->URL_REGEX\/\S+\.(jpg|jpeg|tif|tiff|png|gif|bmp)(\?\S*)?"
 );
 
 define('VIDEO_REGEX', URL_REGEX.'\/\S+\.(webm)(\?\S*)?');
 ENV::setPub(
     'VIDEO_REGEX',
-    "$ENV->URL_REGEX\/\S+\.(webm)(\?\S*)?"
+    "$env->URL_REGEX\/\S+\.(webm)(\?\S*)?"
 );
 
 define('CSS_REGEX', URL_REGEX.'\/\S+\.css(\?\S*)?');
 ENV::setPub(
     'CSS_REGEX',
-    "$ENV->URL_REGEX\/\S+\.css(\?\S*)?"
+    "$env->URL_REGEX\/\S+\.css(\?\S*)?"
 );
 
 define('SITELINK_REGEX', RESOURCE_REGEX.'(www.)?'.preg_quote(SITE_DOMAIN, '/'));
 ENV::setPub(
     'SITELINK_REGEX',
-    "$ENV->RESOURCE_REGEX(www.)?".preg_quote(SITE_DOMAIN, '/')
+    "$env->RESOURCE_REGEX(www.)?".preg_quote(SITE_DOMAIN, '/')
 );
 
 define('TORRENT_REGEX', SITELINK_REGEX.'\/torrents\.php\?(.*&)?torrentid=(\d+)'); // torrentid = group 4
 ENV::setPub(
     'TORRENT_REGEX',
-    "$ENV->SITELINK_REGEX\/torrents\.php\?(.*&)?torrentid=(\d+)"
+    "$env->SITELINK_REGEX\/torrents\.php\?(.*&)?torrentid=(\d+)"
 );
 
 define('TORRENT_GROUP_REGEX', SITELINK_REGEX.'\/torrents\.php\?(.*&)?id=(\d+)'); // id = group 4
 ENV::setPub(
     'TORRENT_GROUP_REGEX',
-    "$ENV->SITELINK_REGEX\/torrents\.php\?(.*&)?id=(\d+)"
+    "$env->SITELINK_REGEX\/torrents\.php\?(.*&)?id=(\d+)"
 );
 
 define('ARTIST_REGEX', SITELINK_REGEX.'\/artist\.php\?(.*&)?id=(\d+)'); // id = group 4
 ENV::setPub(
     'ARTIST_REGEX',
-    "$ENV->SITELINK_REGEX\/artist\.php\?(.*&)?id=(\d+)"
+    "$env->SITELINK_REGEX\/artist\.php\?(.*&)?id=(\d+)"
 );
 
 # https://stackoverflow.com/a/3180176
