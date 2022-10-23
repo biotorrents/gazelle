@@ -249,4 +249,27 @@ class App
             $timestamp ?? time()
         );
     }
+
+
+    /**
+     * ajaxPagination
+     *
+     * Used for pagination of peer/snatch/download lists on torrent details.
+     * THIS SHOULD EITHER GO AWAY OR GO SOMEWHERE ELSE.
+     */
+    public static function ajaxPagination($action, $torrentId, $resultCount, $currentPage)
+    {
+        $pageCount = ceil($resultCount / 100);
+        $pageLinks = [];
+
+        for ($i = 1; $i <= $pageCount; $i++) {
+            if ($i === $currentPage) {
+                $pageLinks[] = $i;
+            } else {
+                $pageLinks[] = "<a href='#' onclick='{$action}({$torrentId}, {$i})'>{$i}</a>";
+            }
+        }
+
+        return implode(" | ", $pageLinks);
+    }
 } # class

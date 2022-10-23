@@ -1,7 +1,6 @@
 <?php
 #declare(strict_types=1);
 
-require_once SERVER_ROOT.'/sections/torrents/functions.php';
 
 $TorrentID = (int) $_GET['id'];
 $TorrentHash = (string) $_GET['hash'];
@@ -11,10 +10,10 @@ if ($TorrentID && $TorrentHash) {
 }
 
 if ($TorrentHash) {
-    if (!is_valid_torrenthash($TorrentHash)) {
+    if (!TorrentFunctions::is_valid_torrenthash($TorrentHash)) {
         json_die('failure', 'bad hash parameter');
     } else {
-        $TorrentID = (int) torrenthash_to_torrentid($TorrentHash);
+        $TorrentID = (int) TorrentFunctions::torrenthash_to_torrentid($TorrentHash);
         if (!$TorrentID) {
             json_die('failure', 'bad hash parameter');
         }
@@ -25,7 +24,7 @@ if ($TorrentID <= 0) {
     json_die('failure', 'bad id parameter');
 }
 
-$TorrentCache = get_torrent_info($TorrentID, true, 0, true, true);
+$TorrentCache = TorrentFunctions::get_torrent_info($TorrentID, true, 0, true, true);
 if (!$TorrentCache) {
     json_die('failure', 'bad id parameter');
 }

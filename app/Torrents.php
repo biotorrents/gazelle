@@ -230,7 +230,7 @@ class Torrents
     /**
      * Supplements a torrent array with information that only concerns certain users and therefore cannot be cached
      *
-     * @param array $Torrent torrent array preferably in the form used by Torrents::get_groups() or get_group_info()
+     * @param array $Torrent torrent array preferably in the form used by Torrents::get_groups() or TorrentFunctions::get_group_info()
      * @param int $TorrentID
      */
     public static function torrent_properties(&$Torrent, &$Flags)

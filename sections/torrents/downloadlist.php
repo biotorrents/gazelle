@@ -47,7 +47,7 @@ if (count($UserIDs) > 0) {
 ?>
 <h4 class="tooltip" title="List of users that have clicked the &quot;DL&quot; button">List of Downloaders</h4>
 <?php if ($NumResults > 100) { ?>
-<div class="linkbox"><?=js_pages('show_downloads', $_GET['torrentid'], $NumResults, $Page)?></div>
+<div class="linkbox"><?=App::ajaxPagination('show_downloads', $_GET['torrentid'], $NumResults, $Page)?></div>
 <?php } ?>
 <table>
   <tr class="colhead_dark" style="font-weight: bold;">
@@ -87,5 +87,5 @@ foreach ($Results as $ID=>$Data) {
   </tr>
 </table>
 <?php if ($NumResults > 100) { ?>
-<div class="linkbox"><?=js_pages('show_downloads', $_GET['torrentid'], $NumResults, $Page)?></div>
+<div class="linkbox"><?=App::ajaxPagination('show_downloads', $_GET['torrentid'], $NumResults, $Page)?></div>
 <?php } ?>

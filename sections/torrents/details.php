@@ -14,9 +14,8 @@ if (!empty($_GET['revisionid']) && is_number($_GET['revisionid'])) {
     $RevisionID = 0;
 }
 
-require_once SERVER_ROOT.'/sections/torrents/functions.php';
 
-$TorrentCache = get_group_info($GroupID, true, $RevisionID);
+$TorrentCache = TorrentFunctions::get_group_info($GroupID, true, $RevisionID);
 $TorrentDetails = $TorrentCache[0];
 $TorrentList = $TorrentCache[1];
 
@@ -763,7 +762,7 @@ HTML;
       </table>
     </div>
     <?php
-$Requests = get_group_requests($GroupID);
+$Requests = TorrentFunctions::get_group_requests($GroupID);
 if (empty($user['DisableRequests']) && count($Requests) > 0) {
     ?>
     <div class="box">

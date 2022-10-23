@@ -8,7 +8,6 @@
 
 $ENV = ENV::go();
 
-require_once "$ENV->SERVER_ROOT/sections/torrents/functions.php";
 
 // If we're not coming from torrents.php, check we're being returned because of an error.
 if (!isset($_GET['id']) || !is_number($_GET['id'])) {
@@ -25,7 +24,7 @@ if (!isset($_GET['id']) || !is_number($_GET['id'])) {
     WHERE t.`ID` = " . $_GET['id']);
     list($CategoryID, $GroupID, $Username) = $db->next_record();
     $Artists = Artists::get_artist($GroupID);
-    $TorrentCache = get_group_info($GroupID, true);
+    $TorrentCache = TorrentFunctions::get_group_info($GroupID, true);
     $GroupDetails = $TorrentCache[0];
     $TorrentList = $TorrentCache[1];
     // Resolve the torrentlist to the one specific torrent being reported
@@ -94,7 +93,7 @@ View::header('Report', 'reportsv2,browse,torrent,recommend');
       </tr>
       <?php
       $LangName = $GroupName ? $GroupName : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP);
-      build_torrents_table($cache, $db, $user, $GroupID, $LangName, $GroupCategoryID, $TorrentList, $Types, $Username);
+      TorrentFunctions::build_torrents_table($cache, $db, $user, $GroupID, $LangName, $GroupCategoryID, $TorrentList, $Types, $Username);
       ?>
     </table>
   </div>

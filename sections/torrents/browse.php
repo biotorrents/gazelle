@@ -4,7 +4,6 @@
 $ENV = ENV::go();
 $twig = Twig::go();
 
-require_once SERVER_ROOT.'/sections/torrents/functions.php';
 
 // The "order by x" links on columns headers
 function header_link($SortKey, $DefaultWay = 'desc')
@@ -30,7 +29,7 @@ if (!empty($_GET['search']) || !empty($_GET['groupname'])) {
     }
 
     // Search by info hash
-    if ($InfoHash = is_valid_torrenthash($InfoHash)) {
+    if ($InfoHash = TorrentFunctions::is_valid_torrenthash($InfoHash)) {
         $InfoHash = db_string(pack('H*', $InfoHash));
         $db->query("
           SELECT ID, GroupID

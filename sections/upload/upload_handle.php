@@ -18,9 +18,6 @@ $debug = Debug::go();
 $Feed = new Feed;
 $Validate = new Validate;
 
-require_once "$ENV->SERVER_ROOT/classes/feed.class.php";
-require_once "$ENV->SERVER_ROOT/classes/validate.class.php";
-require_once "$ENV->SERVER_ROOT/sections/torrents/functions.php";
 
 enforce_login();
 authorize();
