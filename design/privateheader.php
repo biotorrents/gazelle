@@ -415,11 +415,11 @@ if (check_perms('users_mod')) {
               FROM staff_pm_conversations
               WHERE Status = 'Unanswered'
                 AND (AssignedToUser = ".$app->userNew->core["id"]."
-                  OR (LEAST('$LevelCap', Level) <= '".G::$user['EffectiveClass']."'
-                    AND Level <= ".G::$user['Class']."))");
+                  OR (LEAST('$LevelCap', Level) <= '".$app->userNew->extra['EffectiveClass']."'
+                    AND Level <= ".$app->userNew->extra['Class']."))");
         }
 
-        if (G::$user['PermissionID'] === FORUM_MOD) {
+        if ($app->userNew->extra['PermissionID'] === FORUM_MOD) {
             $app->dbOld->query("
               SELECT COUNT(ID)
               FROM staff_pm_conversations
