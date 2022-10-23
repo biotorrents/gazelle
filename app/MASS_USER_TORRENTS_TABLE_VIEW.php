@@ -152,6 +152,8 @@ class MASS_USER_TORRENTS_TABLE_VIEW
      */
     public function footer()
     {
+      $app = App::go();
+      
         if ($this->HasTorrents) { ?>
       </tbody>
     </table>
@@ -163,7 +165,7 @@ class MASS_USER_TORRENTS_TABLE_VIEW
       <input type="hidden" name="type"
         value="<?=Text::esc($this->EditType)?>" />
       <input type="hidden" name="auth"
-        value="<?=G::$user['AuthKey']?>" />
+        value="<?=$app->userNew->extra['AuthKey']?>" />
     </div>
   </form>
 </div>

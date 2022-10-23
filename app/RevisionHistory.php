@@ -1,9 +1,17 @@
 <?php
+
 #declare(strict_types=1);
+
+
+/**
+ * RevisionHistory
+ */
 
 class RevisionHistory
 {
     /**
+     * get_revision_history
+     *
      * Read the revision history of an artist or torrent page
      * @param string $Page artists or torrents
      * @param in $PageID
@@ -11,10 +19,12 @@ class RevisionHistory
      */
     public static function get_revision_history($Page, $PageID)
     {
-        $Table = ($Page == 'artists') ? 'wiki_artists' : 'wiki_torrents';
-        $QueryID = G::$db->get_query_id();
+        $app = App::go();
 
-        G::$db->query("
+        $Table = ($Page == 'artists') ? 'wiki_artists' : 'wiki_torrents';
+        $QueryID = $app->dbOld->get_query_id();
+
+        $app->dbOld->query("
         SELECT
           RevisionID,
           Summary,
@@ -24,8 +34,9 @@ class RevisionHistory
           WHERE PageID = $PageID
           ORDER BY RevisionID DESC");
 
-        $Ret = G::$db->to_array();
-        G::$db->set_query_id($QueryID);
+        $Ret = $app->dbOld->to_array();
+        $app->dbOld->set_query_id($QueryID);
+
         return $Ret;
     }
 }

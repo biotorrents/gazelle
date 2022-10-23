@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 // This class is used in upload.php to display the upload form, and the edit
@@ -13,7 +14,7 @@ class TorrentForm
      * The goal is to loop through multidimensional $ENV objects,
      * recursively copying parts to arrays in place as needed.
      */
-    
+
     # Formats
     # See classes/config.php
     public $SeqFormats = [];
@@ -47,7 +48,7 @@ class TorrentForm
         $this->NewTorrent = $NewTorrent;
         $this->Torrent = $Torrent;
         $this->Error = $Error;
-        
+
         $this->UploadForm = $UploadForm;
         $this->Categories = $Categories;
         $this->TorrentID = $TorrentID;
@@ -89,6 +90,8 @@ class TorrentForm
      */
     public function render()
     {
+        $app = App::go();
+
         $ENV = ENV::go();
         $twig  = Twig::go();
 
@@ -106,7 +109,7 @@ class TorrentForm
             $Announces = ANNOUNCE_URLS[0];
             #$Announces = call_user_func_array('array_merge', ANNOUNCE_URLS);
 
-            $TorrentPass = G::$user['torrent_pass'];
+            $TorrentPass = $app->userNew->extra['torrent_pass'];
             $TorrentSource = Users::get_upload_sources()[0];
 
             echo $twig->render(
@@ -159,20 +162,22 @@ HTML;
      */
     private function head()
     {
+        $app = App::go();
+
         $ENV = ENV::go();
-        G::$db->query(
+        $app->dbOld->query(
             "
         SELECT
           COUNT(`ID`)
         FROM
           `torrents`
         WHERE
-          `UserID` = ".G::$user['ID']
+          `UserID` = ".$app->userNew->core["id"]
         );
-        list($Uploads) = G::$db->next_record();
-        
+        list($Uploads) = $app->dbOld->next_record();
+
         # Torrent form hidden values
-        $AuthKey = G::$user['AuthKey'];
+        $AuthKey = $app->userNew->extra['AuthKey'];
         $HTML = <<<HTML
         <form class="box pad" name="torrent" action="" enctype="multipart/form-data" method="post"
           onsubmit="$('#post').raw().disabled = 'disabled';">
@@ -280,7 +285,7 @@ HTML;
             </table>
 HTML;
         } # fi NewTorrent
-        
+
         # Start the dynamic form
         $HTML .= '<div id="dynamic_form">';
         return $HTML;
@@ -379,7 +384,7 @@ HTML;
 HTML;
             echo '</aside></td></tr>';
         }
-        
+
 
         /**
          * Submit button
@@ -411,23 +416,25 @@ HTML;
      */
     public function upload_form()
     {
+        $app = App::go();
+
         $ENV = ENV::go();
         $twig = Twig::go();
 
-        $QueryID = G::$db->get_query_id();
+        $QueryID = $app->dbOld->get_query_id();
         $Torrent = $this->Torrent;
 
         # Start printing the form
         echo '<h2 class="header">Torrent Form</h2>';
         echo '<table class="torrent_form skeleton-fix">';
 
-        
+
         /**
          * Accession Number
          */
         $CatalogueNumber = Text::esc($Torrent['CatalogueNumber']);
         $Disabled = $this->Disabled;
-        
+
         echo $twig->render(
             'torrent_form/identifier.html',
             [
@@ -440,7 +447,7 @@ HTML;
         /**
          * Version
          */
-        
+
         $Version = Text::esc($Torrent['Version']);
 
         echo $twig->render(
@@ -473,8 +480,8 @@ HTML;
                 ]
             );
         } # fi NewTorrent
-        
-        
+
+
         /**
          * Creator(s)
          * CURRENTLY BROKEN
@@ -488,7 +495,7 @@ HTML;
         if ($this->NewTorrent) {
             # Useful variables
             $Disabled = $this->Disabled;
-          
+
             $AddRemoveBrackets = <<<HTML
             <a class="add_artist_button brackets" onclick="AddArtistField()">+</a>
             <a class="remove_artist_button brackets" onclick="RemoveArtistField()">&minus;</a>
@@ -527,7 +534,7 @@ HTML;
                 $AddRemoveBrackets
 HTML;
             }
-        
+
             echo '</td></tr>';
         } # fi $NewTorrent
 
@@ -615,7 +622,7 @@ HTML;
             if ($License === ($Torrent['Codec'] ?? false)) {
                 echo " selected";
             }
-            
+
             echo ">$License</option>\n";
         }
 
@@ -635,8 +642,8 @@ HTML;
          * = Begin if NewTorrent fields again =
          * ====================================
          */
-        
-        
+
+
         /**
          * Media
          *
@@ -646,7 +653,7 @@ HTML;
          * This could be the data genesis platform or program,
          * or a genre of physical media (e.g., vinyl record).
          */
-        
+
 
         /**
          * Make select element
@@ -668,17 +675,17 @@ HTML;
                     <select name="media">
                       <option>---</option>
   HTML;
-  
+
             foreach ($Media as $Media) {
                 echo "<option value='$Media'";
-  
+
                 if ($Media === ($Torrent['Media'] ?? false)) {
                     echo ' selected';
                 }
-  
+
                 echo ">$Media</option>\n";
             }
-  
+
             echo <<<HTML
                     </select>
                     <p>
@@ -688,7 +695,7 @@ HTML;
                 </tr>
   HTML;
         } # End mediaSelect()
-  
+
 
         /**
          * Platform: Sequences
@@ -700,7 +707,7 @@ HTML;
                 $Torrent = $Torrent,
                 $Media = $ENV->CATS->{1}->Platforms
             );
-            
+
 
             /**
              * Platform: Graphs
@@ -711,7 +718,7 @@ HTML;
                 $Torrent = $Torrent,
                 $Media = $ENV->CATS->{2}->Platforms
             );
-            
+
 
             /**
              * Platform: Scalars/Vectors
@@ -762,8 +769,8 @@ HTML;
           <input type="hidden" name="media" value="$TorrentMedia" />
 HTML;
         }
-        
-        
+
+
         /**
          * Format
          *
@@ -798,7 +805,7 @@ HTML;
                     echo ">$Type</option>\n";
                 }
             }
-        
+
 
             echo <<<HTML
                 </select>
@@ -825,7 +832,7 @@ HTML;
             $Torrent = $Torrent,
             $FileTypes = $ENV->CATS->{1}->Formats
         );
-        
+
 
         /**
          * Format: Graphs
@@ -931,7 +938,7 @@ HTML;
 
             echo ">$Res</option>\n";
         }
-        
+
         echo <<<HTML
             </select>
             <!-- Enter your own -->
@@ -978,9 +985,9 @@ HTML;
               <td>
 HTML;
 
-            $GenreTags = G::$cache->get_value('genre_tags');
+            $GenreTags = $app->cacheOld->get_value('genre_tags');
             if (!$GenreTags) {
-                G::$db->query("
+                $app->dbOld->query("
                 SELECT
                   `Name`
                 FROM
@@ -991,10 +998,10 @@ HTML;
                   `Name`
                 ");
 
-                $GenreTags = G::$db->collect('Name');
-                G::$cache->cache_value('genre_tags', $GenreTags, 3600*6);
+                $GenreTags = $app->dbOld->collect('Name');
+                $app->cacheOld->cache_value('genre_tags', $GenreTags, 3600*6);
             }
-          
+
             # todo: Find a better place for these
             $Disabled = ($this->DisabledFlag) ? ' disabled="disabled"' : null;
             $TorrentTagList = Text::esc(implode(', ', explode(',', $Torrent['TagList'])));
@@ -1173,7 +1180,7 @@ HTML;
          * More fields could be created as the need arises.
          */
 
-         
+
         /**
          * Aligned/Annontated
          *
@@ -1221,6 +1228,6 @@ HTML;
         echo '</table>';
 
         # Drink a stiff one
-        G::$db->set_query_id($QueryID);
+        $app->dbOld->set_query_id($QueryID);
     } # End upload_form()
 } # End TorrentForm()

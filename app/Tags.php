@@ -194,14 +194,16 @@ class Tags
      */
     public static function get_aliases()
     {
-        $TagAliases = G::$cache->get_value('tag_aliases_search');
+        $app = App::go();
+
+        $TagAliases = $app->cacheOld->get_value('tag_aliases_search');
         if ($TagAliases === false) {
-            G::$db->query('
+            $app->dbOld->query('
             SELECT ID, BadTag, AliasTag
             FROM tag_aliases
               ORDER BY BadTag');
-      
-            $TagAliases = G::$db->to_array(false, MYSQLI_ASSOC, false);
+
+            $TagAliases = $app->dbOld->to_array(false, MYSQLI_ASSOC, false);
             // Unify tag aliases to be in_this_format as tags not in.this.format
             array_walk_recursive($TagAliases, function (&$val) {
                 $val = preg_replace("/\./", "_", $val);
@@ -214,7 +216,7 @@ class Tags
                     }
                 }
             }
-            G::$cache->cache_value('tag_aliases_search', $TagAliases, 3600 * 24 * 7); // cache for 7 days
+            $app->cacheOld->cache_value('tag_aliases_search', $TagAliases, 3600 * 24 * 7); // cache for 7 days
         }
         return $TagAliases;
     }
@@ -314,7 +316,7 @@ class Tags
         $Name = $Tag;
         $Class = "";
         $Split = explode(':', $Tag);
-        
+
         /*
         if (count($Split) > 1 && in_array($Split[1], tagNamespaces)) {
             $Name = $Split[0];

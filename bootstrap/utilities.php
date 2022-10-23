@@ -15,9 +15,9 @@
  */
 function enforce_login()
 {
-    global $SessionID;
+    $app = App::go();
 
-    if (!$SessionID || !G::$user) {
+    if (empty($app->userNew->core)) {
         Http::setCookie(['redirect' => $_SERVER['REQUEST_URI']]);
         #logout();
     }
@@ -33,12 +33,14 @@ function enforce_login()
  */
 function authorize($Ajax = false)
 {
+    $app = App::go();
+
     # Ugly workaround for API tokens
     if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
         return true;
     } else {
-        if (empty($_REQUEST['auth']) || $_REQUEST['auth'] !== G::$user['AuthKey']) {
-            send_irc(DEBUG_CHAN, G::$user['Username']." just failed authorize on ".$_SERVER['REQUEST_URI'].(!empty($_SERVER['HTTP_REFERER']) ? " coming from ".$_SERVER['HTTP_REFERER'] : ""));
+        if (empty($_REQUEST['auth']) || $_REQUEST['auth'] !== $app->userNew->extra['AuthKey']) {
+            send_irc(DEBUG_CHAN, $app->userNew->extra['Username']." just failed authorize on ".$_SERVER['REQUEST_URI'].(!empty($_SERVER['HTTP_REFERER']) ? " coming from ".$_SERVER['HTTP_REFERER'] : ""));
             error('Invalid authorization key. Go back, refresh, and try again.', $NoHTML = true);
             return false;
         }
@@ -423,7 +425,7 @@ function check_paranoia($Property, $Paranoia = false, $UserClass = false, $UserI
         }
         return $all;
     } else {
-        if (($UserID !== false) && (G::$user['ID'] == $UserID)) {
+        if (($UserID !== false) && ($app->userNew->core["id"] == $UserID)) {
             return PARANOIA_ALLOWED;
         }
 

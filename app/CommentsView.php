@@ -6,7 +6,6 @@
  * THIS IS GOING AWAY
  */
 
-
 class CommentsView
 {
     /**
@@ -39,6 +38,8 @@ class CommentsView
      */
     public static function render_comment($AuthorID, $PostID, $Body, $AddedTime, $EditedUserID, $EditedTime, $Link, $Unread = false, $Header = '', $Tools = true)
     {
+        $app = App::go();
+
         $UserInfo = Users::user_info($AuthorID);
         $Header = Users::format_username($AuthorID, true, true, true, true, true) . time_diff($AddedTime) . $Header; ?>
 <table
@@ -59,7 +60,7 @@ class CommentsView
         - <a href="#quickpost"
           onclick="Quote('<?=$PostID?>','<?=$UserInfo['Username']?>', true);"
           class="brackets">Quote</a>
-        <?php if ($AuthorID == G::$user['ID'] || check_perms('site_moderate_forums')) { ?>
+        <?php if ($AuthorID == $app->userNew->core["id"] || check_perms('site_moderate_forums')) { ?>
         - <a href="#post<?=$PostID?>"
           onclick="Edit_Form('<?=$PostID?>','');"
           class="brackets">Edit</a>
@@ -74,7 +75,7 @@ class CommentsView
         <a href="reports.php?action=report&amp;type=comment&amp;id=<?=$PostID?>"
           class="brackets">Report</a>
         <?php
-      if (check_perms('users_warn') && $AuthorID != G::$user['ID'] && G::$user['Class'] >= $UserInfo['Class']) {
+      if (check_perms('users_warn') && $AuthorID != $app->userNew->core["id"] && $app->userNew->extra['Class'] >= $UserInfo['Class']) {
           ?>
         <form class="manage_form hidden" name="user"
           id="warn<?=$PostID?>" action="comments.php" method="post">
@@ -95,7 +96,7 @@ class CommentsView
   <tr>
     <?php if (Users::has_avatars_enabled()) { ?>
     <td class="avatar" valign="top">
-      <?=Users::show_avatar($UserInfo['Avatar'], $AuthorID, $UserInfo['Username'], G::$user['DisableAvatars'])?>
+      <?=Users::show_avatar($UserInfo['Avatar'], $AuthorID, $UserInfo['Username'], $app->userNew->extra['DisableAvatars'])?>
     </td>
     <?php } ?>
     <td class="body" valign="top">

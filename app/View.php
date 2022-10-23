@@ -80,17 +80,6 @@ class View
 
         # hardcode private (public already twig'd)
         require_once "$ENV->SERVER_ROOT/design/privateheader.php";
-
-        /*
-        # this is going away
-        if (!is_array(G::$user)
-          || empty(G::$user['ID'])
-          || (isset($Options['recover']) && $Options['recover'] === true)) {
-            require_once "$ENV->SERVER_ROOT/design/publicheader.php";
-        } else {
-            require_once "$ENV->SERVER_ROOT/design/privateheader.php";
-        }
-        */
     }
 
 
@@ -110,17 +99,6 @@ class View
 
         # hardcode private (public already twig'd)
         require_once "$ENV->SERVER_ROOT/design/privatefooter.php";
-
-        /*
-        # this is going away
-        if (!is_array(G::$user)
-          || empty(G::$user['ID'])
-          || (isset($Options['recover']) && $Options['recover'] === true)) {
-            require_once "$ENV->SERVER_ROOT/design/publicfooter.php";
-        } else {
-            require_once "$ENV->SERVER_ROOT/design/privatefooter.php";
-        }
-        */
     }
 
 
