@@ -1,26 +1,36 @@
 <?php
+
 #declare(strict_types=1);
+
+
+/**
+ * Requests
+ */
 
 class Requests
 {
     /**
+     * update_sphinx_requests
+     *
      * Update the sphinx requests delta table for a request.
      *
      * @param $RequestID
      */
     public static function update_sphinx_requests($RequestID)
     {
-        $QueryID = G::$db->get_query_id();
-        G::$db->query("
+        $app = App::go();
+
+        $QueryID = $app->dbOld->get_query_id();
+        $app->dbOld->query("
         SELECT REPLACE(t.Name, '.', '_')
         FROM tags AS t
           JOIN requests_tags AS rt ON t.ID = rt.TagID
           WHERE rt.RequestID = $RequestID");
 
-        $TagList = G::$db->collect(0, false);
+        $TagList = $app->dbOld->collect(0, false);
         $TagList = db_string(implode(' ', $TagList));
 
-        G::$db->query("
+        $app->dbOld->query("
         REPLACE INTO sphinx_requests_delta (
           ID, UserID, TimeAdded, LastVote, CategoryID, Title, TagList,
           CatalogueNumber, FillerID, TorrentID,
@@ -36,7 +46,7 @@ class Requests
         WHERE ID = $RequestID
           GROUP BY r.ID");
 
-        G::$db->query("
+        $app->dbOld->query("
         UPDATE sphinx_requests_delta
         SET ArtistList = (
           SELECT GROUP_CONCAT(ag.Name SEPARATOR ' ')
@@ -47,11 +57,14 @@ class Requests
         )
           WHERE ID = $RequestID");
 
-        G::$db->set_query_id($QueryID);
-        G::$cache->delete_value("request_$RequestID");
+        $app->dbOld->set_query_id($QueryID);
+        $app->cacheOld->delete_value("request_$RequestID");
     }
 
+
     /**
+     * get_requests
+     *
      * Function to get data from an array of $RequestIDs. Order of keys doesn't matter (let's keep it that way).
      *
      * @param array $RequestIDs
@@ -63,6 +76,8 @@ class Requests
     // In places where the output from this is merged with sphinx filters, it will be in a different order.
     public static function get_requests($RequestIDs, $Return = true)
     {
+        $app = App::go();
+
         $Found = $NotFound = array_fill_keys($RequestIDs, false);
         // Try to fetch the requests from the cache first.
         foreach ($RequestIDs as $i => $RequestID) {
@@ -71,7 +86,7 @@ class Requests
                 continue;
             }
 
-            $Data = G::$cache->get_value("request_$RequestID");
+            $Data = $app->cacheOld->get_value("request_$RequestID");
             if (!empty($Data)) {
                 unset($NotFound[$RequestID]);
                 $Found[$RequestID] = $Data;
@@ -89,8 +104,8 @@ class Requests
          */
 
         if (count($NotFound) > 0) {
-            $QueryID = G::$db->get_query_id();
-            G::$db->query("
+            $QueryID = $app->dbOld->get_query_id();
+            $app->dbOld->query("
             SELECT
               ID,
               UserID,
@@ -111,18 +126,18 @@ class Requests
               WHERE ID IN ($IDs)
               ORDER BY ID");
 
-            $Requests = G::$db->to_array(false, MYSQLI_ASSOC, true);
-            $Tags = self::get_tags(G::$db->collect('ID', false));
+            $Requests = $app->dbOld->to_array(false, MYSQLI_ASSOC, true);
+            $Tags = self::get_tags($app->dbOld->collect('ID', false));
 
             foreach ($Requests as $Request) {
                 $Request['AnonymousFill'] = false;
                 if ($Request['FillerID']) {
-                    G::$db->query("
+                    $app->dbOld->query("
                     SELECT Anonymous
                     FROM torrents
                       WHERE ID = ".$Request['TorrentID']);
 
-                    list($Anonymous) = G::$db->next_record();
+                    list($Anonymous) = $app->dbOld->next_record();
                     if ($Anonymous) {
                         $Request['AnonymousFill'] = true;
                     }
@@ -131,9 +146,9 @@ class Requests
                 unset($NotFound[$Request['ID']]);
                 $Request['Tags'] = isset($Tags[$Request['ID']]) ? $Tags[$Request['ID']] : [];
                 $Found[$Request['ID']] = $Request;
-                G::$cache->cache_value('request_'.$Request['ID'], $Request, 0);
+                $app->cacheOld->cache_value('request_'.$Request['ID'], $Request, 0);
             }
-            G::$db->set_query_id($QueryID);
+            $app->dbOld->set_query_id($QueryID);
 
             // Orphan requests. There shouldn't ever be any
             if (count($NotFound) > 0) {
@@ -148,7 +163,10 @@ class Requests
         }
     }
 
+
     /**
+     * get_request
+     *
      * Return a single request. Wrapper for get_requests
      *
      * @param int $RequestID
@@ -163,15 +181,21 @@ class Requests
         return false;
     }
 
+
+    /**
+     * get_artists
+     */
     public static function get_artists($RequestID)
     {
-        $Artists = G::$cache->get_value("request_artists_$RequestID");
+        $app = App::go();
+
+        $Artists = $app->cacheOld->get_value("request_artists_$RequestID");
         if (is_array($Artists)) {
             $Results = $Artists;
         } else {
             $Results = [];
-            $QueryID = G::$db->get_query_id();
-            G::$db->query("
+            $QueryID = $app->dbOld->get_query_id();
+            $app->dbOld->query("
             SELECT
               ra.ArtistID,
               ag.Name
@@ -180,20 +204,26 @@ class Requests
             WHERE ra.RequestID = $RequestID
               ORDER BY ag.Name ASC;");
 
-            $ArtistRaw = G::$db->to_array();
-            G::$db->set_query_id($QueryID);
+            $ArtistRaw = $app->dbOld->to_array();
+            $app->dbOld->set_query_id($QueryID);
 
             foreach ($ArtistRaw as $ArtistRow) {
                 list($ArtistID, $ArtistName) = $ArtistRow;
                 $Results[] = array('id' => $ArtistID, 'name' => $ArtistName);
             }
-            G::$cache->cache_value("request_artists_$RequestID", $Results);
+            $app->cacheOld->cache_value("request_artists_$RequestID", $Results);
         }
         return $Results;
     }
 
+
+    /**
+     * get_tags
+     */
     public static function get_tags($RequestIDs)
     {
+        $app = App::go();
+
         if (empty($RequestIDs)) {
             return [];
         }
@@ -202,8 +232,8 @@ class Requests
             $RequestIDs = implode(',', $RequestIDs);
         }
 
-        $QueryID = G::$db->get_query_id();
-        G::$db->query("
+        $QueryID = $app->dbOld->get_query_id();
+        $app->dbOld->query("
         SELECT
           rt.RequestID,
           rt.TagID,
@@ -213,8 +243,8 @@ class Requests
         WHERE rt.RequestID IN ($RequestIDs)
           ORDER BY rt.TagID ASC");
 
-        $Tags = G::$db->to_array(false, MYSQLI_NUM, false);
-        G::$db->set_query_id($QueryID);
+        $Tags = $app->dbOld->to_array(false, MYSQLI_NUM, false);
+        $app->dbOld->set_query_id($QueryID);
 
         $Results = [];
         foreach ($Tags as $TagsRow) {
@@ -224,12 +254,18 @@ class Requests
         return $Results;
     }
 
+
+    /**
+     * get_votes_array
+     */
     public static function get_votes_array($RequestID)
     {
-        $RequestVotes = G::$cache->get_value("request_votes_$RequestID");
+        $app = App::go();
+
+        $RequestVotes = $app->cacheOld->get_value("request_votes_$RequestID");
         if (!is_array($RequestVotes)) {
-            $QueryID = G::$db->get_query_id();
-            G::$db->query("
+            $QueryID = $app->dbOld->get_query_id();
+            $app->dbOld->query("
             SELECT
               rv.UserID,
               rv.Bounty,
@@ -239,15 +275,15 @@ class Requests
             WHERE rv.RequestID = $RequestID
               ORDER BY rv.Bounty DESC");
 
-            if (!G::$db->has_results()) {
+            if (!$app->dbOld->has_results()) {
                 return array(
                     'TotalBounty' => 0,
                     'Voters' => []);
             }
-            $Votes = G::$db->to_array();
+            $Votes = $app->dbOld->to_array();
 
             $RequestVotes = [];
-            $RequestVotes['TotalBounty'] = array_sum(G::$db->collect('Bounty'));
+            $RequestVotes['TotalBounty'] = array_sum($app->dbOld->collect('Bounty'));
 
             foreach ($Votes as $Vote) {
                 list($UserID, $Bounty, $Username) = $Vote;
@@ -256,9 +292,9 @@ class Requests
             }
 
             $RequestVotes['Voters'] = $VotesArray;
-            G::$cache->cache_value("request_votes_$RequestID", $RequestVotes);
-            G::$db->set_query_id($QueryID);
+            $app->cacheOld->cache_value("request_votes_$RequestID", $RequestVotes);
+            $app->dbOld->set_query_id($QueryID);
         }
         return $RequestVotes;
     }
-}
+} # class
