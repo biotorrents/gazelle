@@ -230,8 +230,6 @@ class Tools
     {
         $app = App::go();
 
-        global $Time;
-
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query("
         SELECT Warned

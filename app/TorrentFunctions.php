@@ -16,9 +16,10 @@ class TorrentFunctions
      */
     public static function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProperties = true, $ApiCall = false)
     {
-        global $cache, $db;
+        $app = App::go();
+
         if (!$RevisionID) {
-            $TorrentCache = $cache->get_value("torrents_details_$GroupID");
+            $TorrentCache = $app->cacheOld->get_value("torrents_details_$GroupID");
         }
 
         if ($RevisionID || !is_array($TorrentCache)) {
@@ -63,13 +64,13 @@ class TorrentFunctions
           WHERE g.`id` = '$GroupID'
             GROUP BY NULL";
 
-            $db->prepared_query($SQL);
-            $TorrentDetails = $db->next_record(MYSQLI_ASSOC);
+            $app->dbOld->prepared_query($SQL);
+            $TorrentDetails = $app->dbOld->next_record(MYSQLI_ASSOC);
             $TorrentDetails['Screenshots'] = [];
             $TorrentDetails['Mirrors'] = [];
 
             # Screenshots (Publications)
-            $db->query("
+            $app->dbOld->query("
         SELECT
           `id`,
           `user_id`,
@@ -81,15 +82,15 @@ class TorrentFunctions
           `group_id` = '$GroupID'
         ");
 
-            if ($db->has_results()) {
-                while ($Screenshot = $db->next_record(MYSQLI_ASSOC, true)) {
+            if ($app->dbOld->has_results()) {
+                while ($Screenshot = $app->dbOld->next_record(MYSQLI_ASSOC, true)) {
                     $TorrentDetails['Screenshots'][] = $Screenshot;
                 }
             }
 
             # Mirrors
             # todo: Fix $GroupID
-            $db->query("
+            $app->dbOld->query("
         SELECT
           `id`,
           `user_id`,
@@ -101,14 +102,14 @@ class TorrentFunctions
           `torrent_id` = '$GroupID'
         ");
 
-            if ($db->has_results()) {
-                while ($Mirror = $db->next_record(MYSQLI_ASSOC, true)) {
+            if ($app->dbOld->has_results()) {
+                while ($Mirror = $app->dbOld->next_record(MYSQLI_ASSOC, true)) {
                     $TorrentDetails['Mirrors'][] = $Mirror;
                 }
             }
 
             // Fetch the individual torrents
-            $db->query("
+            $app->dbOld->query("
         SELECT
           t.ID,
           t.Media,
@@ -150,7 +151,7 @@ class TorrentFunctions
           t.Media ASC,
           t.ID");
 
-            $TorrentList = $db->to_array('ID', MYSQLI_ASSOC);
+            $TorrentList = $app->dbOld->to_array('ID', MYSQLI_ASSOC);
             if (count($TorrentList) === 0 && $ApiCall == false) {
                 header('Location: log.php?search='.(empty($_GET['torrentid']) ? "Group+$GroupID" : "Torrent+$_GET[torrentid]"));
                 error();
@@ -158,15 +159,15 @@ class TorrentFunctions
                 return;
             }
 
-            if (in_array(0, $db->collect('Seeders'))) {
-                $cacheTime = 600;
+            if (in_array(0, $app->dbOld->collect('Seeders'))) {
+                $app->cacheOldTime = 600;
             } else {
-                $cacheTime = 3600;
+                $app->cacheOldTime = 3600;
             }
 
             // Store it all in cache
             if (!$RevisionID) {
-                $cache->cache_value("torrents_details_$GroupID", array($TorrentDetails, $TorrentList), $cacheTime);
+                $app->cacheOld->cache_value("torrents_details_$GroupID", array($TorrentDetails, $TorrentList), $app->cacheOldTime);
             }
         } else { // If we're reading from cache
             $TorrentDetails = $TorrentCache[0];
@@ -192,7 +193,8 @@ class TorrentFunctions
      */
     public static function get_torrent_info($TorrentID, $Return = true, $RevisionID = 0, $PersonalProperties = true, $ApiCall = false)
     {
-        global $cache, $db;
+        $app = App::go();
+        
         $GroupID = (int)self::orrentid_to_groupid($TorrentID);
         $GroupInfo = get_group_info($GroupID, $Return, $RevisionID, $PersonalProperties, $ApiCall);
         if ($GroupInfo) {
@@ -235,13 +237,14 @@ class TorrentFunctions
     // Functionality for the API to resolve input into other data
     public function torrenthash_to_torrentid($Str)
     {
-        global $cache, $db;
-        $db->query("
+        $app = App::go();
+        
+        $app->dbOld->query("
       SELECT ID
       FROM torrents
       WHERE HEX(info_hash) = '".db_string($Str)."'");
 
-        $TorrentID = (int)array_pop($db->next_record(MYSQLI_ASSOC));
+        $TorrentID = (int)array_pop($app->dbOld->next_record(MYSQLI_ASSOC));
         if ($TorrentID) {
             return $TorrentID;
         }
@@ -254,13 +257,14 @@ class TorrentFunctions
      */
     public function torrenthash_to_groupid($Str)
     {
-        global $cache, $db;
-        $db->query("
+        $app = App::go();
+        
+        $app->dbOld->query("
       SELECT GroupID
       FROM torrents
       WHERE HEX(info_hash) = '".db_string($Str)."'");
 
-        $GroupID = (int)array_pop($db->next_record(MYSQLI_ASSOC));
+        $GroupID = (int)array_pop($app->dbOld->next_record(MYSQLI_ASSOC));
         if ($GroupID) {
             return $GroupID;
         }
@@ -273,13 +277,14 @@ class TorrentFunctions
      */
     public function torrentid_to_groupid($TorrentID)
     {
-        global $cache, $db;
-        $db->query("
+        $app = App::go();
+        
+        $app->dbOld->query("
       SELECT GroupID
       FROM torrents
       WHERE ID = '".db_string($TorrentID)."'");
 
-        $GroupID = (int)array_pop($db->next_record(MYSQLI_ASSOC));
+        $GroupID = (int)array_pop($app->dbOld->next_record(MYSQLI_ASSOC));
         if ($GroupID) {
             return $GroupID;
         }
@@ -293,8 +298,9 @@ class TorrentFunctions
     // After adjusting / deleting logs, recalculate the score for the torrent
     public function set_torrent_logscore($TorrentID)
     {
-        global $db;
-        $db->query("
+        $app = App::go();
+        
+        $app->dbOld->query("
       UPDATE torrents
       SET LogScore = (
         SELECT FLOOR(AVG(Score))
@@ -310,21 +316,22 @@ class TorrentFunctions
      */
     public function get_group_requests($GroupID)
     {
+        $app = App::go();
+        
         if (empty($GroupID) || !is_number($GroupID)) {
             return [];
         }
-        global $db, $cache;
 
-        $Requests = $cache->get_value("requests_group_$GroupID");
+        $Requests = $app->cacheOld->get_value("requests_group_$GroupID");
         if ($Requests === false) {
-            $db->query("
+            $app->dbOld->query("
           SELECT ID
           FROM requests
           WHERE GroupID = $GroupID
             AND TimeFilled IS NULL");
 
-            $Requests = $db->collect('ID');
-            $cache->cache_value("requests_group_$GroupID", $Requests, 0);
+            $Requests = $app->dbOld->collect('ID');
+            $app->cacheOld->cache_value("requests_group_$GroupID", $Requests, 0);
         }
         return Requests::get_requests($Requests);
     }
@@ -334,7 +341,7 @@ class TorrentFunctions
      * build_torrents_table
      */
     // Used by both sections/torrents/details.php and sections/reportsv2/report.php
-    public function build_torrents_table($cache, $db, $user, $GroupID, $GroupName, $GroupCategoryID, $TorrentList, $Types, $Username)
+    public function build_torrents_table($app->cacheOld, $app->dbOld, $user, $GroupID, $GroupName, $GroupCategoryID, $TorrentList, $Types, $Username)
     {
         function filelist($Str)
         {

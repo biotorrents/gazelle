@@ -180,7 +180,6 @@ class DB
         #$debug = Debug::go();
 
         global $argv;
-        #global #$debug, $argv;
 
         $dbError = 'MySQL: '.strval($Msg).' SQL error: '.strval($this->Errno).' ('.strval($this->Error).')';
 

@@ -25,7 +25,6 @@ class Misc
     {
         $app = App::go();
 
-        global $Time;
         $UnescapedSubject = $Subject;
         $UnescapedBody = $Body;
         $Subject = db_string($Subject);
@@ -144,7 +143,6 @@ class Misc
     {
         $app = App::go();
 
-        global $Time;
         if (!$ForumID || !$AuthorID || !is_number($AuthorID) || !$Title || !$PostBody) {
             return -1;
         }
@@ -407,7 +405,6 @@ class Misc
     {
         $app = App::go();
 
-        global $Time;
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query("
         INSERT INTO log (Message, Time)

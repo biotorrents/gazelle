@@ -58,22 +58,24 @@ function diff($OldText, $NewText)
 
 function get_body($ID, $Rev)
 {
+    $app = App::go();
+
     # $Rev is a str, $Revision an int
-    global $db, $Revision, $Body;
-    
+    global $Revision, $Body;
+
     if ((int) $Rev === $Revision) {
         $Str = $Body;
     } else {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
           SELECT Body
           FROM wiki_revisions
           WHERE ID = '$ID'
             AND Revision = '$Rev'");
 
-        if (!$db->has_results()) {
+        if (!$app->dbOld->has_results()) {
             error(404);
         }
-        list($Str) = $db->next_record();
+        list($Str) = $app->dbOld->next_record();
     }
     return $Str;
 }

@@ -519,7 +519,6 @@ class Format
 
     /**
      * Formats a CSS class name from a Category ID
-     * @global array $Categories
      * @param int|string $CategoryID This number will be subtracted by one
      * @return string
      */
@@ -536,7 +535,6 @@ class Format
 
     /**
      * Formats a CSS class name from a Category ID
-     * @global array $Categories
      * @param int|string $CategoryID This number will be subtracted by one
      * @return string
      */

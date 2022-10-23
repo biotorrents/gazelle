@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -22,11 +23,13 @@ define('INDEX_ARTICLE', '1');
 
 function class_list($Selected = 0)
 {
-    global $Classes, $user;
+    $app = App::go();
+
+    global $Classes;
     $Return = '';
 
     foreach ($Classes as $ID => $Class) {
-        if ($Class['Level'] <= $user['EffectiveClass']) {
+        if ($Class['Level'] <= $app->user->extra['EffectiveClass']) {
             $Return.='<option value="'.$Class['Level'].'"';
 
             if ($Selected === $Class['Level']) {
@@ -85,7 +88,7 @@ if (!empty($_REQUEST['action'])) {
     case 'article':
       require_once "$ENV->SERVER_ROOT/sections/wiki/article.php";
       break;
-      
+
     case 'search':
       require_once "$ENV->SERVER_ROOT/sections/wiki/search.php";
       break;

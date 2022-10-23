@@ -309,7 +309,6 @@ class Torrents
     {
         $app = App::go();
 
-        global $Time;
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query("
         INSERT INTO `group_log`(
@@ -1428,8 +1427,6 @@ class Torrents
      */
     public static function display_string($GroupID, $Mode = self::DISPLAYSTRING_DEFAULT)
     {
-        #global $ReleaseTypes; // I hate this
-
         $GroupInfo = self::get_groups(array($GroupID), true, true, false)[$GroupID];
         $ExtendedArtists = $GroupInfo['ExtendedArtists'];
 
