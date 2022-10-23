@@ -1,8 +1,16 @@
 <?php
 #declare(strict_types = 1);
 
-$ENV = ENV::go();
-$twig = Twig::go();
+
+/**
+ * main torrent search interface
+ */
+
+$app = App::go();
+
+$get = Http::query("get");
+$post = Http::query("post");
+$server = Http::query("server");
 
 
 // The "order by x" links on columns headers
@@ -52,7 +60,7 @@ if (!empty($_GET['setdefault'])) {
     $db->query("
       SELECT SiteOptions
       FROM users_info
-      WHERE UserID = ?", $user['ID']);
+      WHERE UserID = ?", $app->userNew->core["id"]);
 
     list($SiteOptions) = $db->next_record(MYSQLI_NUM, false);
     $SiteOptions = json_decode($SiteOptions, true) ?? [];
@@ -61,7 +69,7 @@ if (!empty($_GET['setdefault'])) {
     $db->query("
       UPDATE users_info
       SET SiteOptions = ?
-      WHERE UserID = ?", json_encode($SiteOptions), $user['ID']);
+      WHERE UserID = ?", json_encode($SiteOptions), $app->userNew->core["id"]);
 
     $cache->begin_transaction("user_info_heavy_$UserID");
     $cache->update_row(false, ['DefaultSearch' => $SiteOptions['DefaultSearch']]);
@@ -72,7 +80,7 @@ if (!empty($_GET['setdefault'])) {
     $db->query("
       SELECT SiteOptions
       FROM users_info
-      WHERE UserID = ?", $user['ID']);
+      WHERE UserID = ?", $app->userNew->core["id"]);
 
     list($SiteOptions) = $db->next_record(MYSQLI_NUM, false);
     $SiteOptions = json_decode($SiteOptions, true) ?? [];
@@ -81,7 +89,7 @@ if (!empty($_GET['setdefault'])) {
     $db->query("
       UPDATE users_info
       SET SiteOptions = ?
-      WHERE UserID = ?", json_encode($SiteOptions), $user['ID']);
+      WHERE UserID = ?", json_encode($SiteOptions), $app->userNew->core["id"]);
 
     $cache->begin_transaction("user_info_heavy_$UserID");
     $cache->update_row(false, ['DefaultSearch' => '']);
@@ -89,23 +97,28 @@ if (!empty($_GET['setdefault'])) {
 
 // Use default search options
 } elseif (empty($_SERVER['QUERY_STRING']) || (count($_GET) === 1 && isset($_GET['page']))) {
-    if (!empty($user['DefaultSearch'])) {
+    if (!empty($app->userNew->extra['DefaultSearch'])) {
         if (!empty($_GET['page'])) {
             $Page = $_GET['page'];
-            parse_str($user['DefaultSearch'], $_GET);
+            parse_str($app->userNew->extra['DefaultSearch'], $_GET);
             $_GET['page'] = $Page;
         } else {
-            parse_str($user['DefaultSearch'], $_GET);
+            parse_str($app->userNew->extra['DefaultSearch'], $_GET);
         }
     }
 }
 
+/*
 // Terms were not submitted via the search form
 if (isset($_GET['searchsubmit'])) {
     $GroupResults = !empty($_GET['group_results']);
 } else {
-    $GroupResults = !$user['DisableGrouping2'];
+    $GroupResults = !$app->userNew->extra['DisableGrouping2'];
 }
+*/
+
+# hardcoded for now
+$GroupResults = true;
 
 if (!empty($_GET['order_way']) && $_GET['order_way'] === 'asc') {
     $OrderWay = 'asc';
@@ -123,17 +136,17 @@ $Page = !empty($_GET['page']) ? (int) $_GET['page'] : 1;
 $Search = new TorrentSearch($GroupResults, $OrderBy, $OrderWay, $Page, TORRENTS_PER_PAGE);
 
 # Three profile toggle options
-if (isset($user['HideLolicon']) && $user['HideLolicon'] === 1) {
+if (isset($app->userNew->extra['HideLolicon']) && $app->userNew->extra['HideLolicon'] === 1) {
     $Search->insert_hidden_tags('!lolicon !shotacon !toddlercon');
 }
 
 # 2
-if (isset($user['HideScat']) && $user['HideScat'] === 1) {
+if (isset($app->userNew->extra['HideScat']) && $app->userNew->extra['HideScat'] === 1) {
     $Search->insert_hidden_tags('!scat');
 }
 
 # 3
-if (isset($user['HideSnuff']) && $user['HideSnuff'] === 1) {
+if (isset($app->userNew->extra['HideSnuff']) && $app->userNew->extra['HideSnuff'] === 1) {
     $Search->insert_hidden_tags('!snuff');
 }
 
@@ -141,10 +154,10 @@ $Results = $Search->query($_GET);
 $Groups = $Search->get_groups();
 $NumResults = $Search->record_count();
 
-$HideFilter = isset($user['ShowTorFilter']) && $user['ShowTorFilter'] === 0;
+$HideFilter = isset($app->userNew->extra['ShowTorFilter']) && $app->userNew->extra['ShowTorFilter'] === 0;
 // This is kinda ugly, but the enormous if paragraph was really hard to read
 $AdvancedSearch = !empty($_GET['advanced_search']) && $_GET['advanced_search'] === 'true';
-$AdvancedSearch |= !empty($user['SearchType']) && (empty($_GET['advanced_search']) || $_GET['advanced_search'] === 'true');
+$AdvancedSearch |= !empty($app->userNew->extra['SearchType']) && (empty($_GET['advanced_search']) || $_GET['advanced_search'] === 'true');
 $AdvancedSearch &= check_perms('site_advanced_search');
 if ($AdvancedSearch) {
     $Action = 'advanced_search=true';
@@ -184,9 +197,9 @@ View::header('Browse Torrents', 'browse');
         class="pad<?=$HideFilter ? ' hidden' : ''?>">
         <?php
         # Three profile toggles
-        if ((isset($user['HideLolicon']) && $user['HideLolicon'] === 1)
-         || (isset($user['HideScat'])    && $user['HideScat']    === 1)
-         || (isset($user['HideSnuff'])   && $user['HideSnuff']   === 1)
+        if ((isset($app->userNew->extra['HideLolicon']) && $app->userNew->extra['HideLolicon'] === 1)
+         || (isset($app->userNew->extra['HideScat'])    && $app->userNew->extra['HideScat']    === 1)
+         || (isset($app->userNew->extra['HideSnuff'])   && $app->userNew->extra['HideSnuff']   === 1)
         ) { ?>
         <svg title="Your profile settings exclude some results" class="search_warning tooltip" width="10" height="15">
           <rect x=3 width="4" height="10" rx="2" ry="2" />
@@ -278,7 +291,7 @@ View::header('Browse Torrents', 'browse');
 
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Sequences</option>
-                <?php foreach ($ENV->META->Platforms->Sequences as $Platform) { ?>
+                <?php foreach ($app->env->META->Platforms->Sequences as $Platform) { ?>
                 <option
                   value="<?=Text::esc($Platform); # pcs-comment-start; keep quote?>"
                   <?Format::selected('media', $Platform)?>><?=Text::esc($Platform); ?>
@@ -288,7 +301,7 @@ View::header('Browse Torrents', 'browse');
 
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Graphs</option>
-                <?php foreach ($ENV->META->Platforms->Graphs as $Platform) { ?>
+                <?php foreach ($app->env->META->Platforms->Graphs as $Platform) { ?>
                 <option
                   value="<?=Text::esc($Platform); # pcs-comment-start; keep quote?>"
                   <?Format::selected('media', $Platform)?>><?=Text::esc($Platform); ?>
@@ -298,7 +311,7 @@ View::header('Browse Torrents', 'browse');
 
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Images</option>
-                <?php foreach ($ENV->META->Platforms->Images as $Platform) { ?>
+                <?php foreach ($app->env->META->Platforms->Images as $Platform) { ?>
                 <option
                   value="<?=Text::esc($Platform); # pcs-comment-start; keep quote?>"
                   <?Format::selected('media', $Platform)?>><?=Text::esc($Platform); ?>
@@ -308,7 +321,7 @@ View::header('Browse Torrents', 'browse');
 
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Documents</option>
-                <?php foreach ($ENV->META->Platforms->Documents as $Platform) { ?>
+                <?php foreach ($app->env->META->Platforms->Documents as $Platform) { ?>
                 <option
                   value="<?=Text::esc($Platform); # pcs-comment-start; keep quote?>"
                   <?Format::selected('media', $Platform)?>><?=Text::esc($Platform); ?>
@@ -419,7 +432,7 @@ View::header('Browse Torrents', 'browse');
               <!-- Codec/License -->
               <select name="codec" class="ft_codec fti_advanced">
                 <option value="">License</option>
-                <?php foreach ($ENV->META->Licenses as $License) { ?>
+                <?php foreach ($app->env->META->Licenses as $License) { ?>
                 <option value="<?=Text::esc($License); ?>"
                   <?Format::selected('codec', $License)?>><?=Text::esc($License); ?>
                 </option>
@@ -472,7 +485,7 @@ View::header('Browse Torrents', 'browse');
               <input type="search" size="37" id="tags" name="taglist" class="inputtext smaller"
                 placeholder="Tags (comma-separated)"
                 value="<?=Text::esc($Search->get_terms('taglist'))?>"
-              aria-label="Tags to search">&nbsp;
+                aria-label="Tags to search">&nbsp;
               <input type="radio" name="tags_type" id="tags_type0" value="0" <?Format::selected(
             'tags_type',
             0,
@@ -480,10 +493,10 @@ View::header('Browse Torrents', 'browse');
         )?>
               /><label for="tags_type0"> Any</label>&nbsp;&nbsp;
               <input type="radio" name="tags_type" id="tags_type1" value="1" <?Format::selected(
-            'tags_type',
-            1,
-            'checked'
-        )?>
+                    'tags_type',
+                    1,
+                    'checked'
+                )?>
               /><label for="tags_type1"> All</label><br /><br />
               Use !tag to exclude tags
             </td>
@@ -560,7 +573,7 @@ View::header('Browse Torrents', 'browse');
           </tr>
         </table>
         <table
-          class="layout cat_list<?php if (empty($user['ShowTags'])) { ?> hidden<?php } ?>"
+          class="layout cat_list<?php if (empty($app->userNew->extra['ShowTags'])) { ?> hidden<?php } ?>"
           id="taglist">
           <tr>
             <?php
@@ -601,7 +614,7 @@ View::header('Browse Torrents', 'browse');
           <tr>
             <td class="label">
               <a class="brackets" data-toggle-target="#taglist"
-                data-toggle-replace="<?=(empty($user['ShowTags']) ? 'Hide tags' : 'View tags')?>"><?=(empty($user['ShowTags']) ? 'View tags' : 'Hide tags')?></a>
+                data-toggle-replace="<?=(empty($app->userNew->extra['ShowTags']) ? 'Hide tags' : 'View tags')?>"><?=(empty($app->userNew->extra['ShowTags']) ? 'View tags' : 'Hide tags')?></a>
             </td>
           </tr>
         </table>
@@ -629,7 +642,7 @@ View::header('Browse Torrents', 'browse');
           <input type="submit" name="setdefault" value="Make Default" />
           <?php }
 
-      if (!empty($user['DefaultSearch'])) { ?>
+      if (!empty($app->userNew->extra['DefaultSearch'])) { ?>
           <input type="submit" name="cleardefault" value="Clear Default" />
           <?php } ?>
         </div>
@@ -733,7 +746,7 @@ die();
       $GroupName = empty($GroupInfo['title']) ? (empty($GroupInfo['subject']) ? $GroupInfo['object'] : $GroupInfo['subject']) : $GroupInfo['title'];
       $GroupTitle2 = $GroupInfo['subject'];
       $GroupNameJP = $GroupInfo['object'];
-      
+
       if ($GroupResults) {
           $Torrents = $GroupInfo['Torrents'];
           $GroupTime = $MaxSize = $TotalLeechers = $TotalSeeders = $TotalSnatched = 0;
@@ -770,12 +783,12 @@ die();
           // These torrents are in a group
           $CoverArt = $GroupInfo['picture'];
 
-          $DisplayName = $twig->render(
+          $DisplayName = $app->twig->render(
               'torrents/display_name.html',
               [
                 'g' => $GroupInfo,
                 'url' => Format::get_url($_GET),
-                'cover_art' => (!isset($user['CoverArt']) || $user['CoverArt']) ?? true,
+                'cover_art' => (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) ?? true,
                 'thumb' => ImageTools::process($CoverArt, 'thumb'),
                 'artists' => Artists::display_artists($Artists),
                 'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
@@ -784,7 +797,7 @@ die();
           ); ?>
   <tr class="group<?=$SnatchedGroupClass?>">
     <?php
-      $ShowGroups = !(!empty($user['TorrentGrouping']) && $user['TorrentGrouping'] === 1); ?>
+      $ShowGroups = !(!empty($app->userNew->extra['TorrentGrouping']) && $app->userNew->extra['TorrentGrouping'] === 1); ?>
     <td class="center">
       <div id="showimg_<?=$GroupID?>"
         class="<?=($ShowGroups ? 'hide' : 'show')?>_torrents">
@@ -855,7 +868,7 @@ die();
         }
 
         $SnatchedTorrentClass = $Data['IsSnatched'] ? ' snatched_torrent' : '';
-        $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$user['AuthKey']."&amp;torrent_pass=".$user['torrent_pass'];
+        $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$app->userNew->extra['AuthKey']."&amp;torrent_pass=".$app->userNew->extra['torrent_pass'];
 
         if (!($TorrentFileName = $cache->get_value('torrent_file_name_'.$TorrentID))) {
             $TorrentFile = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
@@ -864,7 +877,7 @@ die();
             $cache->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
         } ?>
   <tr
-    class="group_torrent groupid_<?=$GroupID?> <?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($user['TorrentGrouping']) && $user['TorrentGrouping'] === 1 ? ' hidden' : '')?>">
+    class="group_torrent groupid_<?=$GroupID?> <?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($app->userNew->extra['TorrentGrouping']) && $app->userNew->extra['TorrentGrouping'] === 1 ? ' hidden' : '')?>">
     <td colspan="3">
       <span class="u-pull-right">
         [ <a href="<?=$TorrentDL?>" class="tooltip"
@@ -872,7 +885,7 @@ die();
         <?php
         if (Torrents::can_use_token($Data)) { ?>
         | <a
-          href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>&amp;usetoken=1"
+          href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>&amp;usetoken=1"
           class="tooltip" title="Use a FL Token"
           onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
         <?php } ?>
@@ -931,12 +944,12 @@ die();
           }
 
           # Render Twig
-          $DisplayName = $twig->render(
+          $DisplayName = $app->twig->render(
               'torrents/display_name.html',
               [
                 'g' => $GroupInfo,
                 'url' => Format::get_url($_GET),
-                'cover_art' => (!isset($user['CoverArt']) || $user['CoverArt']) ?? true,
+                'cover_art' => (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) ?? true,
                 'thumb' => ImageTools::process($CoverArt, 'thumb'),
                 'artists' => Artists::display_artists($Artists),
                 'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
@@ -945,7 +958,7 @@ die();
           );
 
           $SnatchedTorrentClass = $Data['IsSnatched'] ? ' snatched_torrent' : '';
-          $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$user['AuthKey']."&amp;torrent_pass=".$user['torrent_pass'];
+          $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$app->userNew->extra['AuthKey']."&amp;torrent_pass=".$app->userNew->extra['torrent_pass'];
 
           if (!($TorrentFileName = $cache->get_value('torrent_file_name_'.$TorrentID))) {
               $TorrentFile = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
@@ -971,7 +984,7 @@ die();
             <?php
           if (Torrents::can_use_token($Data)) { ?>
             | <a
-              href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>&amp;usetoken=1"
+              href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>&amp;usetoken=1"
               class="tooltip" title="Use a FL Token"
               onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
             <?php } ?>
@@ -999,15 +1012,15 @@ die();
         <!--
         <br />
         <div style="display: inline;" class="torrent_info"><?=$ExtraInfo?>
-          -->
-        <?php if ($Reported) { ?>
-          / <strong class="torrent_label tl_reported tooltip important_text"
-            title="Type: <?=ucfirst($Reports[0]['Type'])?><br>Comment: <?=htmlentities(htmlentities($Reports[0]['UserComment']))?>">Reported</strong><?php } ?>
-        </div>
-        <!--
-        <div class="tags"><?=$TorrentTags->format("torrents.php?$Action&amp;taglist=")?>
-        </div>
         -->
+        <?php if ($Reported) { ?>
+        / <strong class="torrent_label tl_reported tooltip important_text"
+          title="Type: <?=ucfirst($Reports[0]['Type'])?><br>Comment: <?=htmlentities(htmlentities($Reports[0]['UserComment']))?>">Reported</strong><?php } ?>
+      </div>
+      <!--
+        <div class="tags"><?=$TorrentTags->format("torrents.php?$Action&amp;taglist=")?>
+      </div>
+      -->
       </div>
     </td>
     <td class="number_column"><?=$Data['FileCount']?>

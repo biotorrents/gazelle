@@ -1,12 +1,13 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 class View
 {
     /**
      * @var string Path relative to where (P)HTML templates reside
      */
-    const IncludePath = './design/views/';
+    public const IncludePath = './design/views/';
 
 
     /**
@@ -70,6 +71,11 @@ class View
             empty($_REQUEST['type']) ? false : $_REQUEST['type'] // Type
         );
 
+        # hardcode private (public already twig'd)
+        require_once "$ENV->SERVER_ROOT/design/privateheader.php";
+
+        /*
+        # this is going away
         if (!is_array(G::$user)
           || empty(G::$user['ID'])
           || (isset($Options['recover']) && $Options['recover'] === true)) {
@@ -77,8 +83,9 @@ class View
         } else {
             require_once "$ENV->SERVER_ROOT/design/privateheader.php";
         }
+        */
     }
-    
+
 
     /**
      * This function is to include the footer file on a page.
