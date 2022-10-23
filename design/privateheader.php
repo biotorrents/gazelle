@@ -158,16 +158,16 @@ HTML;
 
 if (empty($app->userNew->extra['StyleURL'])) {
     /*
-      $StyleColors = G::$cache->get_value('stylesheet_colors') ?? [];
+      $StyleColors = $app->cacheOld->get_value('stylesheet_colors') ?? [];
       if (empty($StyleColors)) {
-          G::$db->query('SELECT LOWER(REPLACE(Name, " ", "_")) AS Name, Color FROM stylesheets WHERE COLOR IS NOT NULL');
+          $app->dbOld->query('SELECT LOWER(REPLACE(Name, " ", "_")) AS Name, Color FROM stylesheets WHERE COLOR IS NOT NULL');
 
-          while (list($StyleName, $StyleColor) = G::$db->next_record()) {
+          while (list($StyleName, $StyleColor) = $app->dbOld->next_record()) {
               #!d($StyleColors, $StyleName);exit;
               $StyleName = $StyleName ?? "";
               $StyleColors[$StyleName] = $StyleColor ?? null;
           }
-          G::$cache->cache_value('stylesheet_colors', $StyleColors, 0);
+          $app->cacheOld->cache_value('stylesheet_colors', $StyleColors, 0);
       }
 
       if (isset($StyleColors[$app->userNew->extra['StyleName']])) { ?>
@@ -406,11 +406,11 @@ if (check_perms('users_mod')) {
 
 /** Buggy af rn 2022-01-12
 if (check_perms('users_mod')) {
-    $NumStaffPMs = G::$cache->get_value('num_staff_pms_'.$app->userNew->core["id"]);
+    $NumStaffPMs = $app->cacheOld->get_value('num_staff_pms_'.$app->userNew->core["id"]);
     if ($NumStaffPMs === false) {
         if (check_perms('users_mod')) {
             $LevelCap = 1000;
-            G::$db->query("
+            $app->dbOld->query("
               SELECT COUNT(ID)
               FROM staff_pm_conversations
               WHERE Status = 'Unanswered'
@@ -420,7 +420,7 @@ if (check_perms('users_mod')) {
         }
 
         if (G::$user['PermissionID'] === FORUM_MOD) {
-            G::$db->query("
+            $app->dbOld->query("
               SELECT COUNT(ID)
               FROM staff_pm_conversations
               WHERE Status='Unanswered'
@@ -428,8 +428,8 @@ if (check_perms('users_mod')) {
                   OR Level = '". $Classes[FORUM_MOD]['Level'] . "')");
         }
 
-        list($NumStaffPMs) = G::$db->next_record();
-        G::$cache->cache_value('num_staff_pms_'.$app->userNew->core["id"], $NumStaffPMs, 1000);
+        list($NumStaffPMs) = $app->dbOld->next_record();
+        $app->cacheOld->cache_value('num_staff_pms_'.$app->userNew->core["id"], $NumStaffPMs, 1000);
     }
 
     if ($NumStaffPMs > 0) {
@@ -440,61 +440,61 @@ if (check_perms('users_mod')) {
 
 if (check_perms('admin_reports')) {
     // Torrent reports code
-    $NumTorrentReports = G::$cache->get_value('num_torrent_reportsv2');
+    $NumTorrentReports = $app->cacheOld->get_value('num_torrent_reportsv2');
     if ($NumTorrentReports === false) {
-        G::$db->query("
+        $app->dbOld->query("
           SELECT COUNT(ID)
           FROM reportsv2
           WHERE Status = 'New'");
 
-        list($NumTorrentReports) = G::$db->next_record();
-        G::$cache->cache_value('num_torrent_reportsv2', $NumTorrentReports, 0);
+        list($NumTorrentReports) = $app->dbOld->next_record();
+        $app->cacheOld->cache_value('num_torrent_reportsv2', $NumTorrentReports, 0);
     }
 
     $ModBar[] = '<a href="reportsv2.php">'.$NumTorrentReports.(($NumTorrentReports === 1) ? ' Report' : ' Reports').'</a>';
 
     // Other reports code
-    $NumOtherReports = G::$cache->get_value('num_other_reports');
+    $NumOtherReports = $app->cacheOld->get_value('num_other_reports');
     if ($NumOtherReports === false) {
-        G::$db->query("
+        $app->dbOld->query("
           SELECT COUNT(ID)
           FROM reportsv2
           WHERE Status = 'New'");
 
-        list($NumOtherReports) = G::$db->next_record();
-        G::$cache->cache_value('num_other_reports', $NumOtherReports, 0);
+        list($NumOtherReports) = $app->dbOld->next_record();
+        $app->cacheOld->cache_value('num_other_reports', $NumOtherReports, 0);
     }
 
     if ($NumOtherReports > 0) {
         $ModBar[] = '<a href="reports.php">'.$NumOtherReports.(($NumTorrentReports === 1) ? ' Other report' : ' Other reports').'</a>';
     }
 } elseif (check_perms('project_team')) {
-    $NumUpdateReports = G::$cache->get_value('num_update_reports');
+    $NumUpdateReports = $app->cacheOld->get_value('num_update_reports');
     if ($NumUpdateReports === false) {
-        G::$db->query("
+        $app->dbOld->query("
           SELECT COUNT(ID)
           FROM reportsv2
           WHERE Status = 'New'
             AND Type = 'request_update'");
 
-        list($NumUpdateReports) = G::$db->next_record();
-        G::$cache->cache_value('num_update_reports', $NumUpdateReports, 0);
+        list($NumUpdateReports) = $app->dbOld->next_record();
+        $app->cacheOld->cache_value('num_update_reports', $NumUpdateReports, 0);
     }
 
     if ($NumUpdateReports > 0) {
         $ModBar[] = '<a href="reports.php">Request update reports</a>';
     }
 } elseif (check_perms('site_moderate_forums')) {
-    $NumForumReports = G::$cache->get_value('num_forum_reports');
+    $NumForumReports = $app->cacheOld->get_value('num_forum_reports');
     if ($NumForumReports === false) {
-        G::$db->query("
+        $app->dbOld->query("
           SELECT COUNT(ID)
           FROM reportsv2
           WHERE Status = 'New'
             AND Type IN('artist_comment', 'collages_comment', 'post', 'requests_comment', 'thread', 'torrents_comment')");
 
-        list($NumForumReports) = G::$db->next_record();
-        G::$cache->cache_value('num_forum_reports', $NumForumReports, 0);
+        list($NumForumReports) = $app->dbOld->next_record();
+        $app->cacheOld->cache_value('num_forum_reports', $NumForumReports, 0);
     }
 
     if ($NumForumReports > 0) {
@@ -503,11 +503,11 @@ if (check_perms('admin_reports')) {
 }
 
 if (check_perms('users_mod') && FEATURE_EMAIL_REENABLE) {
-    $NumEnableRequests = G::$cache->get_value(AutoEnable::CACHE_KEY_NAME);
+    $NumEnableRequests = $app->cacheOld->get_value(AutoEnable::CACHE_KEY_NAME);
     if ($NumEnableRequests === false) {
-        G::$db->query("SELECT COUNT(1) FROM users_enable_requests WHERE Outcome IS NULL");
-        list($NumEnableRequests) = G::$db->next_record();
-        G::$cache->cache_value(AutoEnable::CACHE_KEY_NAME, $NumEnableRequests);
+        $app->dbOld->query("SELECT COUNT(1) FROM users_enable_requests WHERE Outcome IS NULL");
+        list($NumEnableRequests) = $app->dbOld->next_record();
+        $app->cacheOld->cache_value(AutoEnable::CACHE_KEY_NAME, $NumEnableRequests);
     }
 
     if ($NumEnableRequests > 0) {

@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+
+/**
+ * View
+ *
+ * THIS IS GOING AWAY
+ */
+
 class View
 {
     /**
@@ -101,6 +108,11 @@ class View
         global $SessionID, $UserSessions, $Time, $Mobile;
         #global $ScriptStartTime, $SessionID, $UserSessions, $debug, $Time, $Mobile;
 
+        # hardcode private (public already twig'd)
+        require_once "$ENV->SERVER_ROOT/design/privatefooter.php";
+
+        /*
+        # this is going away
         if (!is_array(G::$user)
           || empty(G::$user['ID'])
           || (isset($Options['recover']) && $Options['recover'] === true)) {
@@ -108,6 +120,7 @@ class View
         } else {
             require_once "$ENV->SERVER_ROOT/design/privatefooter.php";
         }
+        */
     }
 
 

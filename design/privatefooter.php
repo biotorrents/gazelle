@@ -1,5 +1,11 @@
 <?php
+
 declare(strict_types=1);
+
+
+/**
+ * THIS IS GOING AWAY
+ */
 
 $ENV = ENV::go();
 $Sep = '&emsp;';
@@ -20,7 +26,7 @@ echo $HTML = <<<HTML
 HTML;
 
 # Sessions
-if (count($UserSessions) > 1) {
+if (count($UserSessions ?? []) > 1) {
     foreach ($UserSessions as $ThisSessionID => $Session) {
         if ($ThisSessionID !== $SessionID) {
             $LastActive = $Session;
@@ -57,7 +63,7 @@ HTML;
 # Site meta
 $Year = date('Y');
 $Load = sys_getloadavg();
-  
+
 echo $HTML = <<<HTML
 <p>
   &copy;

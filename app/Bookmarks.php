@@ -1,111 +1,110 @@
 <?php
+
 #declare(strict_types=1);
+
+
+/**
+ * Bookmarks
+ */
 
 class Bookmarks
 {
     /**
-     * Check if can bookmark
+     * can_bookmark
      *
-     * @param string $Type
-     * @return boolean
+     * Check if can bookmark.
      */
-    public static function can_bookmark($Type)
+    public static function can_bookmark(string $type): bool
     {
-        return in_array($Type, array(
-            'torrent',
-            'artist',
-            'collage',
-            'request'
-        ));
+        $type = strtolower(strval($type));
+        $allowedTypes = ["torrent", "artist", "collage", "request"];
+
+        return in_array($type, $allowedTypes);
     }
 
     /**
-     * Get the bookmark schema.
-     * Recommended usage:
-     * list($Table, $Col) = bookmark_schema('torrent');
+     * bookmark_schema
      *
-     * @param string $Type the type to get the schema for
+     * Get the bookmark schema, e.g.:
+     * list($table, $column) = bookmark_schema('torrent');
+     *
+     * @param string $type the type to get the schema for
      */
-    public static function bookmark_schema($Type)
+    public static function bookmark_schema(string $type): array
     {
-        switch ($Type) {
+        $type = strtolower(strval($type));
+
+        switch ($type) {
           case 'torrent':
-              return array(
-                  'bookmarks_torrents',
-                  'GroupID'
-              );
+              return ['bookmarks_torrents', 'GroupID'];
               break;
 
           case 'artist':
-              return array(
-                  'bookmarks_artists',
-                  'ArtistID'
-              );
+              return ['bookmarks_artists', 'ArtistID'];
               break;
 
           case 'collage':
-              return array(
-                  'bookmarks_collages',
-                  'CollageID'
-               );
+              return ['bookmarks_collages', 'CollageID'];
               break;
 
           case 'request':
-              return array(
-                  'bookmarks_requests',
-                  'RequestID'
-              );
+              return ['bookmarks_requests', 'RequestID'];
               break;
 
           default:
-              error('h4x');
+              Http::response(403);
+              break;
         }
     }
 
     /**
-     * Check if something is bookmarked
+     * has_bookmarked
      *
-     * @param string $Type
-     *          type of bookmarks to check
-     * @param int $ID
-     *          bookmark's id
+     * Check if something is bookmarked.
+     *
+     * @param string $type the type of bookmarks to check
+     * @param int $id the bookmark's id
      * @return boolean
      */
-    public static function has_bookmarked($Type, $ID)
+    public static function has_bookmarked(string $type, int $id): bool
     {
-        return in_array($ID, self::all_bookmarks($Type));
+        return in_array($id, self::all_bookmarks($type));
     }
 
     /**
-     * Fetch all bookmarks of a certain type for a user.
-     * If UserID is false than defaults to G::$user['ID']
+     * all_bookmarks
      *
-     * @param string $Type
-     *          type of bookmarks to fetch
-     * @param int $UserID
-     *          userid whose bookmarks to get
+     * Fetch all bookmarks of a certain type for a user.
+     * If $userId is empty, defaults to $app->userNew->core["id"].
+     *
+     * @param string $type the type of bookmarks to fetch
+     * @param int $userId the userId whose bookmarks to get
      * @return array the bookmarks
      */
-    public static function all_bookmarks($Type, $UserID = false)
+    public static function all_bookmarks(string $type, int $userId = 0): array
     {
-        if ($UserID === false) {
-            $UserID = G::$user['ID'];
+        $app = App::go();
+
+        $type = strtolower(strval($type));
+
+        if (empty($userId)) {
+            $userId = $app->userNew->core["id"];
         }
 
-        $cacheKey = "bookmarks_$Type".'_'.$UserID;
-        if (($Bookmarks = G::$cache->get_value($cacheKey)) === false) {
-            list($Table, $Col) = self::bookmark_schema($Type);
-            $QueryID = G::$db->get_query_id();
+        $cacheKey = "bookmarks_{$type}_{$userId}";
+        $bookmarks = $app->cacheOld->get_value($cacheKey);
 
-            G::$db->prepared_query("
-            SELECT `$Col`
-            FROM `$Table`
-              WHERE UserID = '$UserID'");
+        if (!$bookmarks) {
+            list($table, $column) = self::bookmark_schema($type);
+            $queryId = $app->dbOld->get_query_id();
 
-            $Bookmarks = G::$db->collect($Col);
-            G::$db->set_query_id($QueryID);
-            G::$cache->cache_value($cacheKey, $Bookmarks, 0);
+            $app->dbOld->prepared_query("select {$column} from {$table} where userId = {$userId}");
+            $bookmarks = $app->dbOld->collect($column) ?? [];
+
+            $app->dbOld->set_query_id($queryId);
+            $app->cacheOld->cache_value($cacheKey, $bookmarks, 0);
         }
-        return $Bookmarks;
+
+        return $bookmarks;
     }
 }

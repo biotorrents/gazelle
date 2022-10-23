@@ -13,6 +13,35 @@ $post = Http::query("post");
 $server = Http::query("server");
 
 
+/** */
+
+
+# shims
+$Resolutions = [
+  "Contig",
+  "Scaffold",
+  "Chromosome",
+  "Genome",
+  "Proteome",
+  "Transcriptome",
+];
+
+$Categories = [
+  "Sequences",
+  "Graphs",
+  "Systems",
+  "Geometric",
+  "Scalars/Vectors",
+  "Patterns",
+  "Constraints",
+  "Images",
+  "Spatial",
+  "Models",
+  "Documents",
+  "Machine Data",
+];
+$GroupedCategories = $Categories;
+
 // The "order by x" links on columns headers
 function header_link($SortKey, $DefaultWay = 'desc')
 {
@@ -39,13 +68,13 @@ if (!empty($_GET['search']) || !empty($_GET['groupname'])) {
     // Search by info hash
     if ($InfoHash = TorrentFunctions::is_valid_torrenthash($InfoHash)) {
         $InfoHash = db_string(pack('H*', $InfoHash));
-        $db->query("
+        $app->dbOld->query("
           SELECT ID, GroupID
           FROM torrents
           WHERE info_hash = '$InfoHash'");
 
-        if ($db->has_results()) {
-            list($ID, $GroupID) = $db->next_record();
+        if ($app->dbOld->has_results()) {
+            list($ID, $GroupID) = $app->dbOld->next_record();
             Http::redirect("torrents.php?id=$GroupID&torrentid=$ID");
             error();
         }
@@ -57,43 +86,43 @@ if (!empty($_GET['setdefault'])) {
     $UnsetList = ['page', 'setdefault'];
     $UnsetRegexp = '/(&|^)('.implode('|', $UnsetList).')=.*?(&|$)/i';
 
-    $db->query("
+    $app->dbOld->query("
       SELECT SiteOptions
       FROM users_info
       WHERE UserID = ?", $app->userNew->core["id"]);
 
-    list($SiteOptions) = $db->next_record(MYSQLI_NUM, false);
+    list($SiteOptions) = $app->dbOld->next_record(MYSQLI_NUM, false);
     $SiteOptions = json_decode($SiteOptions, true) ?? [];
     $SiteOptions['DefaultSearch'] = preg_replace($UnsetRegexp, '', $_SERVER['QUERY_STRING']);
 
-    $db->query("
+    $app->dbOld->query("
       UPDATE users_info
       SET SiteOptions = ?
       WHERE UserID = ?", json_encode($SiteOptions), $app->userNew->core["id"]);
 
-    $cache->begin_transaction("user_info_heavy_$UserID");
-    $cache->update_row(false, ['DefaultSearch' => $SiteOptions['DefaultSearch']]);
-    $cache->commit_transaction(0);
+    $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
+    $app->cacheOld->update_row(false, ['DefaultSearch' => $SiteOptions['DefaultSearch']]);
+    $app->cacheOld->commit_transaction(0);
 
 // Clearing default search options
 } elseif (!empty($_GET['cleardefault'])) {
-    $db->query("
+    $app->dbOld->query("
       SELECT SiteOptions
       FROM users_info
       WHERE UserID = ?", $app->userNew->core["id"]);
 
-    list($SiteOptions) = $db->next_record(MYSQLI_NUM, false);
+    list($SiteOptions) = $app->dbOld->next_record(MYSQLI_NUM, false);
     $SiteOptions = json_decode($SiteOptions, true) ?? [];
     $SiteOptions['DefaultSearch'] = '';
 
-    $db->query("
+    $app->dbOld->query("
       UPDATE users_info
       SET SiteOptions = ?
       WHERE UserID = ?", json_encode($SiteOptions), $app->userNew->core["id"]);
 
-    $cache->begin_transaction("user_info_heavy_$UserID");
-    $cache->update_row(false, ['DefaultSearch' => '']);
-    $cache->commit_transaction(0);
+    $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
+    $app->cacheOld->update_row(false, ['DefaultSearch' => '']);
+    $app->cacheOld->commit_transaction(0);
 
 // Use default search options
 } elseif (empty($_SERVER['QUERY_STRING']) || (count($_GET) === 1 && isset($_GET['page']))) {
@@ -173,6 +202,7 @@ if ($AdvancedSearch) {
 # Fortunately it's very easy to search via
 # torrentsearch.class.php
 View::header('Browse Torrents', 'browse');
+#echo "<html><head></head><body>";
 ?>
 
 <div>
@@ -340,7 +370,7 @@ View::header('Browse Torrents', 'browse');
 
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">NucleoSeq</option>
-                <?php foreach (array_merge($SeqFormats, $PlainFormats) as $Key => $Container) { ?>
+                <?php foreach (array_merge((array) $app->env->META->Formats->Sequences, (array) $app->env->META->Formats->Plain) as $Key => $Container) { ?>
                 <option value="<?=Text::esc($Key);?>"
                   <?Format::selected('container', $Key)?>><?=Text::esc($Key);?>
                 </option>
@@ -349,7 +379,7 @@ View::header('Browse Torrents', 'browse');
 
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">ProtSeq</option>
-                <?php foreach (array_merge($ProtFormats, $PlainFormats) as $Key => $Container) { ?>
+                <?php foreach (array_merge((array) $app->env->META->Formats->Proteins, (array) $app->env->META->Formats->Plain) as $Key => $Container) { ?>
                 <option value="<?=Text::esc($Key);?>"
                   <?Format::selected('container', $Key)?>><?=Text::esc($Key);?>
                 </option>
@@ -359,7 +389,7 @@ View::header('Browse Torrents', 'browse');
 
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">XMLs</option>
-                <?php foreach (array_merge($GraphXmlFormats, $GraphTxtFormats, $PlainFormats) as $Key => $Container) { ?>
+                <?php foreach (array_merge((array) $app->env->META->Formats->GraphXml, (array) $app->env->META->Formats->GraphTxt, (array) $app->env->META->Formats->Plain) as $Key => $Container) { ?>
                 <option value="<?=Text::esc($Key);?>"
                   <?Format::selected('container', $Key)?>><?=Text::esc($Key);?>
                 </option>
@@ -368,7 +398,7 @@ View::header('Browse Torrents', 'browse');
 
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">Raster</option>
-                <?php foreach (array_merge($ImgFormats, $MapRasterFormats, $PlainFormats) as $Key => $Container) { ?>
+                <?php foreach (array_merge((array) $app->env->META->Formats->ImgRaster, (array) $app->env->META->Formats->ImgVector, (array) $app->env->META->Formats->MapRaster, (array) $app->env->META->Formats->Plain) as $Key => $Container) { ?>
                 <option value="<?=Text::esc($Key);?>"
                   <?Format::selected('container', $Key)?>><?=Text::esc($Key);?>
                 </option>
@@ -377,7 +407,7 @@ View::header('Browse Torrents', 'browse');
 
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">Vector</option>
-                <?php foreach (array_merge($MapVectorFormats, $PlainFormats) as $Key => $Container) { ?>
+                <?php foreach (array_merge((array) $app->env->META->Formats->MapVector, (array) $app->env->META->Formats->Plain) as $Key => $Container) { ?>
                 <option value="<?=Text::esc($Key);?>"
                   <?Format::selected('container', $Key)?>><?=Text::esc($Key);?>
                 </option>
@@ -386,7 +416,7 @@ View::header('Browse Torrents', 'browse');
 
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">Extras</option>
-                <?php foreach (array_merge($BinDocFormats, $CpuGenFormats, $PlainFormats) as $Key => $Container) { ?>
+                <?php foreach (array_merge((array) $app->env->META->Formats->BinDoc, (array) $app->env->META->Formats->CpuGen, (array) $app->env->META->Formats->Plain) as $Key => $Container) { ?>
                 <option value="<?=Text::esc($Key);?>"
                   <?Format::selected('container', $Key)?>><?=Text::esc($Key);?>
                 </option>
@@ -577,15 +607,15 @@ View::header('Browse Torrents', 'browse');
           id="taglist">
           <tr>
             <?php
-  $GenreTags = $cache->get_value('genre_tags');
+  $GenreTags = $app->cacheOld->get_value('genre_tags');
   if (!$GenreTags) {
-      $db->query('
+      $app->dbOld->query('
       SELECT Name
       FROM tags
         WHERE TagType = \'genre\'
       ORDER BY Name');
-      $GenreTags = $db->collect('Name');
-      $cache->cache_value('genre_tags', $GenreTags, 3600 * 6);
+      $GenreTags = $app->dbOld->collect('Name');
+      $app->cacheOld->cache_value('genre_tags', $GenreTags, 3600 * 6);
   }
 
   $x = 0;
@@ -733,7 +763,7 @@ die();
 
   // Start printing torrent list
   foreach ($Results as $Key => $GroupID) {
-      $GroupInfo = $Groups[$GroupID];
+      $GroupInfo = $Groups[$GroupID] ?? [];
       if (empty($GroupInfo['Torrents'])) {
           continue;
       }
@@ -870,11 +900,11 @@ die();
         $SnatchedTorrentClass = $Data['IsSnatched'] ? ' snatched_torrent' : '';
         $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$app->userNew->extra['AuthKey']."&amp;torrent_pass=".$app->userNew->extra['torrent_pass'];
 
-        if (!($TorrentFileName = $cache->get_value('torrent_file_name_'.$TorrentID))) {
+        if (!($TorrentFileName = $app->cacheOld->get_value('torrent_file_name_'.$TorrentID))) {
             $TorrentFile = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
             $Tor = new BencodeTorrent($TorrentFile, false, false);
             $TorrentFileName = $Tor->Dec['info']['name'];
-            $cache->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
+            $app->cacheOld->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
         } ?>
   <tr
     class="group_torrent groupid_<?=$GroupID?> <?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($app->userNew->extra['TorrentGrouping']) && $app->userNew->extra['TorrentGrouping'] === 1 ? ' hidden' : '')?>">
@@ -960,12 +990,15 @@ die();
           $SnatchedTorrentClass = $Data['IsSnatched'] ? ' snatched_torrent' : '';
           $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$app->userNew->extra['AuthKey']."&amp;torrent_pass=".$app->userNew->extra['torrent_pass'];
 
-          if (!($TorrentFileName = $cache->get_value('torrent_file_name_'.$TorrentID))) {
+          /*
+          # todo: bring this back
+          if (!($TorrentFileName = $app->cacheOld->get_value('torrent_file_name_'.$TorrentID))) {
               $TorrentFile = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
               $Tor = new BencodeTorrent($TorrentFile, false, false);
               $TorrentFileName = $Tor->Dec['info']['name'];
-              $cache->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
-          } ?>
+              $app->cacheOld->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
+          }
+          */ ?>
   <tr
     class="torrent<?=$SnatchedTorrentClass . $SnatchedGroupClass?>">
     <?php if ($GroupResults) { ?>
