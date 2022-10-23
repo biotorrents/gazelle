@@ -2,55 +2,77 @@
 
 #declare(strict_types=1);
 
+
+/**
+ * Torrents
+ */
+
 class Torrents
 {
     public const FILELIST_DELIM = 0xF7; // Hex for &divide; Must be the same as phrase_boundary in sphinx.conf!
     public const SNATCHED_UPDATE_INTERVAL = 3600; // How often we want to update users' snatch lists
     public const SNATCHED_UPDATE_AFTERDL = 300; // How long after a torrent download we want to update a user's snatch lists
 
-  /**
-   * Function to get data and torrents for an array of GroupIDs. Order of keys doesn't matter
-   *
-   * @param array $GroupIDs
-   * @param boolean $Return if false, nothing is returned. For priming cache.
-   * @param boolean $GetArtists if true, each group will contain the result of
-   *  Artists::get_artists($GroupID), in result[$GroupID]['ExtendedArtists']
-   * @param boolean $Torrents if true, each group contains a list of torrents, in result[$GroupID]['Torrents']
-   *
-   * @return array each row of the following format:
-   * GroupID => (
-   *  ID
-   *  Name
-   *  Year
-   *  RecordLabel
-   *  CatalogueNumber
-   *  TagList
-   *  ReleaseType
-   *  VanityHouse
-   *  WikiImage
-   *  CategoryID
-   *  Torrents => {
-   *    ID => {
-   *      GroupID, Media, Format, Encoding, RemasterYear, Remastered,
-   *      RemasterTitle, RemasterRecordLabel, RemasterCatalogueNumber, Scene,
-   *      HasLog, HasCue, LogScore, FileCount, FreeTorrent, Size, Leechers,
-   *      Seeders, Snatched, Time, HasFile, PersonalFL, IsSnatched
-   *    }
-   *  }
-   *  Artists => {
-   *    {
-   *      id, name, aliasid // Only main artists
-   *    }
-   *  }
-   *  ExtendedArtists => {
-   *    [1-6] => { // See documentation on Artists::get_artists
-   *      id, name, aliasid
-   *    }
-   *  }
-   *  Flags => {
-   *    IsSnatched
-   *  }
-   */
+    // Some constants for self::display_string's $Mode parameter
+    public const DISPLAYSTRING_HTML = 1; // Whether or not to use HTML for the output (e.g. VH tooltip)
+    public const DISPLAYSTRING_ARTISTS = 2; // Whether or not to display artists
+    public const DISPLAYSTRING_YEAR = 4; // Whether or not to display the group's year
+    public const DISPLAYSTRING_VH = 8; // Whether or not to display the VH flag
+    public const DISPLAYSTRING_RELEASETYPE = 16; // Whether or not to display the release type
+    public const DISPLAYSTRING_LINKED = 33; // Whether or not to link artists and the group
+    // The constant for linking is 32, but because linking only works with HTML, this constant is defined as 32|1 = 33, i.e. LINKED also includes HTML
+    // Keep this in mind when defining presets below!
+
+    // Presets to facilitate the use of $Mode
+    public const DISPLAYSTRING_DEFAULT = 63; // HTML|ARTISTS|YEAR|VH|RELEASETYPE|LINKED = 63
+    public const DISPLAYSTRING_SHORT = 6; // Very simple format, only artists and year, no linking (e.g. for forum thread titles)
+
+
+    /**
+     * get_groups
+     *
+     * Function to get data and torrents for an array of GroupIDs. Order of keys doesn't matter
+     *
+     * @param array $GroupIDs
+     * @param boolean $Return if false, nothing is returned. For priming cache.
+     * @param boolean $GetArtists if true, each group will contain the result of
+     *  Artists::get_artists($GroupID), in result[$GroupID]['ExtendedArtists']
+     * @param boolean $Torrents if true, each group contains a list of torrents, in result[$GroupID]['Torrents']
+     *
+     * @return array each row of the following format:
+     * GroupID => (
+     *  ID
+     *  Name
+     *  Year
+     *  RecordLabel
+     *  CatalogueNumber
+     *  TagList
+     *  ReleaseType
+     *  VanityHouse
+     *  WikiImage
+     *  CategoryID
+     *  Torrents => {
+     *    ID => {
+     *      GroupID, Media, Format, Encoding, RemasterYear, Remastered,
+     *      RemasterTitle, RemasterRecordLabel, RemasterCatalogueNumber, Scene,
+     *      HasLog, HasCue, LogScore, FileCount, FreeTorrent, Size, Leechers,
+     *      Seeders, Snatched, Time, HasFile, PersonalFL, IsSnatched
+     *    }
+     *  }
+     *  Artists => {
+     *    {
+     *      id, name, aliasid // Only main artists
+     *    }
+     *  }
+     *  ExtendedArtists => {
+     *    [1-6] => { // See documentation on Artists::get_artists
+     *      id, name, aliasid
+     *    }
+     *  }
+     *  Flags => {
+     *    IsSnatched
+     *  }
+     */
     public static function get_groups($GroupIDs, $Return = true, $GetArtists = true, $Torrents = true)
     {
         $app = App::go();
@@ -200,7 +222,10 @@ class Torrents
         }
     }
 
+
     /**
+     * array_group
+     *
      * Returns a reconfigured array from a Torrent Group
      *
      * Use this with extract() instead of the volatile list($GroupID, ...)
@@ -230,7 +255,10 @@ class Torrents
         );
     }
 
+
     /**
+     * torrent_properties
+     *
      * Supplements a torrent array with information that only concerns certain users and therefore cannot be cached
      *
      * @param array $Torrent torrent array preferably in the form used by Torrents::get_groups() or TorrentFunctions::get_group_info()
@@ -263,7 +291,10 @@ class Torrents
         }
     }
 
-    /*
+
+    /**
+     * write_group_log
+     *
      * Write to the group log.
      *
      * @param int $GroupID
@@ -301,7 +332,10 @@ class Torrents
         $app->dbOld->set_query_id($QueryID);
     }
 
+
     /**
+     * delete_torrent
+     *
      * Delete a torrent.
      *
      * @param int $ID The ID of the torrent to delete.
@@ -345,7 +379,7 @@ class Torrents
         $app->dbOld->query("
         DELETE FROM torrents
           WHERE ID = $ID");
-        \Tracker::update_tracker('delete_torrent', array('info_hash' => rawurlencode($InfoHash), 'id' => $ID, 'reason' => $OcelotReason));
+        Tracker::update_tracker('delete_torrent', array('info_hash' => rawurlencode($InfoHash), 'id' => $ID, 'reason' => $OcelotReason));
 
         $app->cacheOld->decrement('stats_torrent_count');
 
@@ -356,9 +390,9 @@ class Torrents
         list($Count) = $app->dbOld->next_record();
 
         if ($Count == 0) {
-            \Torrents::delete_group($GroupID);
+            Torrents::delete_group($GroupID);
         } else {
-            \Torrents::update_hash($GroupID);
+            Torrents::update_hash($GroupID);
         }
 
         // Torrent notifications
@@ -416,7 +450,10 @@ class Torrents
         $app->dbOld->set_query_id($QueryID);
     }
 
+
     /**
+     * delete_group
+     *
      * Delete a group, called after all of its torrents have been deleted.
      * IMPORTANT: Never call this unless you're certain the group is no longer used by any torrents
      *
@@ -567,7 +604,10 @@ class Torrents
         $app->dbOld->set_query_id($QueryID);
     }
 
+
     /**
+     * update_hash
+     *
      * Update the cache and sphinx delta index to keep everything up-to-date.
      *
      * @param int $GroupID
@@ -701,7 +741,10 @@ class Torrents
         $app->dbOld->set_query_id($QueryID);
     }
 
+
     /**
+     * regenerate_filelist
+     *
      * Regenerate a torrent's file list from its meta data,
      * update the database record and clear relevant cache keys
      *
@@ -745,7 +788,10 @@ class Torrents
         $app->dbOld->set_query_id($QueryID);
     }
 
+
     /**
+     * filelist_delim
+     *
      * Return UTF-8 encoded string to use as file delimiter in torrent file lists
      */
     public static function filelist_delim()
@@ -757,7 +803,10 @@ class Torrents
         return $FilelistDelimUTF8 = utf8_encode(chr(self::FILELIST_DELIM));
     }
 
+
     /**
+     * filelist_format_file
+     *
      * Create a string that contains file info in a format that's easy to use for Sphinx
      *
      * @param array $File (File size, File name)
@@ -773,7 +822,10 @@ class Torrents
         return sprintf("%s s%ds %s %s", ".$Ext", $Size, $Name, self::filelist_delim());
     }
 
+
     /**
+     * filelist_old_format
+     *
      * Create a string that contains file info in the old format for the API
      *
      * @param string $File string with the format .EXT sSIZEs NAME DELIMITER
@@ -785,7 +837,10 @@ class Torrents
         return $File['name'] . '{{{' . $File['size'] . '}}}';
     }
 
+
     /**
+     * filelist_get_file
+     *
      * Translate a formatted file info string into a more useful array structure
      *
      * @param string $File string with the format .EXT sSIZEs NAME DELIMITER
@@ -806,7 +861,10 @@ class Torrents
           );
     }
 
+
     /**
+     * torrent_info
+     *
      * Format the information about a torrent.
      * @param $Data an array a subset of the following keys:
      *  Format, Encoding, HasLog, LogScore HasCue, Media, Scene, RemasterYear
@@ -917,7 +975,10 @@ class Torrents
         return implode(' | ', $Info);
     }
 
+
     /**
+     * freeleech_torrents
+     *
      * Will freeleech / neutral leech / normalise a set of torrents
      *
      * @param array $TorrentIDs An array of torrent IDs to iterate over
@@ -950,10 +1011,10 @@ class Torrents
 
         foreach ($Torrents as $Torrent) {
             list($TorrentID, $GroupID, $InfoHash) = $Torrent;
-            \Tracker::update_tracker('update_torrent', array('info_hash' => rawurlencode($InfoHash), 'freetorrent' => $FreeNeutral));
+            Tracker::update_tracker('update_torrent', array('info_hash' => rawurlencode($InfoHash), 'freetorrent' => $FreeNeutral));
             $app->cacheOld->delete_value("torrent_download_$TorrentID");
-            \Misc::write_log((G::$user['Username']??'System')." marked torrent $TorrentID freeleech type $FreeLeechType");
-            \Torrents::write_group_log($GroupID, $TorrentID, (G::$user['ID']??0), "marked as freeleech type $FreeLeechType", 0);
+            Misc::write_log(($app->userNew->core["username"]??'System')." marked torrent $TorrentID freeleech type $FreeLeechType");
+            Torrents::write_group_log($GroupID, $TorrentID, ($app->userNew->core["id"]??0), "marked as freeleech type $FreeLeechType", 0);
 
             if ($Announce && ($FreeLeechType === 1 || $FreeLeechType === 3)) {
                 send_irc(ANNOUNCE_CHAN, 'FREELEECH - '.site_url()."torrents.php?id=$GroupID / ".site_url()."torrents.php?action=download&id=$TorrentID");
@@ -961,11 +1022,14 @@ class Torrents
         }
 
         foreach ($GroupIDs as $GroupID) {
-            \Torrents::update_hash($GroupID);
+            Torrents::update_hash($GroupID);
         }
     }
 
+
     /**
+     * freeleech_groups
+     *
      * Convenience function to allow for passing groups to Torrents::freeleech_torrents()
      *
      * @param array $GroupIDs the groups in question
@@ -994,7 +1058,10 @@ class Torrents
         $app->dbOld->set_query_id($QueryID);
     }
 
+
     /**
+     * has_token
+     *
      * Check if the logged in user has an active freeleech token
      *
      * @param int $TorrentID
@@ -1004,12 +1071,12 @@ class Torrents
     {
         $app = App::go();
 
-        if (empty(G::$user)) {
+        if (empty($app->userNew->core)) {
             return false;
         }
 
         static $TokenTorrents;
-        $UserID = G::$user['ID'];
+        $UserID = $app->userNew->core["id"];
         if (!isset($TokenTorrents)) {
             $TokenTorrents = $app->cacheOld->get_value("users_tokens_$UserID");
 
@@ -1030,7 +1097,10 @@ class Torrents
         return isset($TokenTorrents[$TorrentID]);
     }
 
+
     /**
+     * can_use_token
+     *
      * Check if the logged in user can use a freeleech token on this torrent
      *
      * @param int $Torrent
@@ -1038,18 +1108,21 @@ class Torrents
      */
     public static function can_use_token($Torrent)
     {
-        if (empty(G::$user)) {
+        if (empty($app->userNew->core)) {
             return false;
         }
 
-        return (G::$user['FLTokens'] > 0
+        return ($app->userNew->extra['FLTokens'] > 0
       && $Torrent['Size'] <= 10737418240
       && !$Torrent['PersonalFL']
       && empty($Torrent['FreeTorrent'])
-      && G::$user['CanLeech'] == '1');
+      && $app->userNew->extra['CanLeech'] == '1');
     }
 
+
     /**
+     * has_snatched
+     *
      * Build snatchlists and check if a torrent has been snatched
      * if a user has the 'ShowSnatched' option enabled
      * @param int $TorrentID
@@ -1059,11 +1132,11 @@ class Torrents
     {
         $app = App::go();
 
-        if (empty(G::$user) || !isset(G::$user['ShowSnatched']) || !G::$user['ShowSnatched']) {
+        if (empty($app->userNew->core) || !isset($app->userNew->extra['ShowSnatched']) || !$app->userNew->extra['ShowSnatched']) {
             return false;
         }
 
-        $UserID = G::$user['ID'];
+        $UserID = $app->userNew->core["id"];
         $Buckets = 64;
         $LastBucket = $Buckets - 1;
         $BucketID = $TorrentID & $LastBucket;
@@ -1139,13 +1212,17 @@ class Torrents
         return isset($CurSnatchedTorrents[$TorrentID]);
     }
 
+
+    /**
+     * is_seeding
+     */
     public static function is_seeding($TorrentID)
     {
-        if (empty(G::$user) || !isset(G::$user['ShowSnatched']) || !G::$user['ShowSnatched']) {
+        if (empty($app->userNew->core) || !isset($app->userNew->extra['ShowSnatched']) || !$app->userNew->extra['ShowSnatched']) {
             return false;
         }
 
-        $UserID = G::$user['ID'];
+        $UserID = $app->userNew->core["id"];
         $Buckets = 64;
         $LastBucket = $Buckets - 1;
         $BucketID = $TorrentID & $LastBucket;
@@ -1225,15 +1302,19 @@ class Torrents
         return isset($CurSeedingTorrents[$TorrentID]);
     }
 
+
+    /**
+     * is_leeching
+     */
     public static function is_leeching($TorrentID)
     {
         $app = App::go();
 
-        if (empty(G::$user) || !isset(G::$user['ShowSnatched']) || !G::$user['ShowSnatched']) {
+        if (empty($app->userNew->core) || !isset($app->userNew->extra['ShowSnatched']) || !$app->userNew->extra['ShowSnatched']) {
             return false;
         }
 
-        $UserID = G::$user['ID'];
+        $UserID = $app->userNew->core["id"];
         $Buckets = 64;
         $LastBucket = $Buckets - 1;
         $BucketID = $TorrentID & $LastBucket;
@@ -1315,6 +1396,8 @@ class Torrents
 
 
     /**
+     * set_snatch_update_time
+     *
      * Change the schedule for when the next update to a user's cached snatch list should be performed.
      * By default, the change will only be made if the new update would happen sooner than the current
      * @param int $Time Seconds until the next update
@@ -1335,25 +1418,14 @@ class Torrents
         }
     }
 
-    // Some constants for self::display_string's $Mode parameter
-  public const DISPLAYSTRING_HTML = 1; // Whether or not to use HTML for the output (e.g. VH tooltip)
-  public const DISPLAYSTRING_ARTISTS = 2; // Whether or not to display artists
-  public const DISPLAYSTRING_YEAR = 4; // Whether or not to display the group's year
-  public const DISPLAYSTRING_VH = 8; // Whether or not to display the VH flag
-  public const DISPLAYSTRING_RELEASETYPE = 16; // Whether or not to display the release type
-  public const DISPLAYSTRING_LINKED = 33; // Whether or not to link artists and the group
-  // The constant for linking is 32, but because linking only works with HTML, this constant is defined as 32|1 = 33, i.e. LINKED also includes HTML
-  // Keep this in mind when defining presets below!
 
-  // Presets to facilitate the use of $Mode
-  public const DISPLAYSTRING_DEFAULT = 63; // HTML|ARTISTS|YEAR|VH|RELEASETYPE|LINKED = 63
-  public const DISPLAYSTRING_SHORT = 6; // Very simple format, only artists and year, no linking (e.g. for forum thread titles)
-
-  /**
-   * Return the display string for a given torrent group $GroupID.
-   * @param int $GroupID
-   * @return string
-   */
+    /**
+     * display_string
+     *
+     * Return the display string for a given torrent group $GroupID.
+     * @param int $GroupID
+     * @return string
+     */
     public static function display_string($GroupID, $Mode = self::DISPLAYSTRING_DEFAULT)
     {
         #global $ReleaseTypes; // I hate this
@@ -1392,6 +1464,9 @@ class Torrents
     }
 
 
+    /**
+     * get_reports
+     */
     // Used to get reports info on a unison cache in both browsing pages and torrent pages.
     public static function get_reports($TorrentID)
     {
@@ -1425,4 +1500,4 @@ class Torrents
         }
         return $Reports;
     }
-}
+} # class

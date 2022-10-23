@@ -1,8 +1,12 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 
 /**
  * Security
+ *
+ * THIS IS GOING AWAY
  *
  * Designed to hold common authentication functions from various sources:
  *  - bootstrap/app.php
@@ -24,6 +28,7 @@ class Security
         }
     }
 
+
     /**
      * UserID checks
      *
@@ -33,6 +38,8 @@ class Security
      */
     public function checkUser($Permissions = [], $UserID = null)
     {
+        $app = App::go();
+
         /*
         if (!$UserID) {
             error('$UserID is required.');
@@ -43,7 +50,7 @@ class Security
         if ($_GET['userid'] && empty($UserID)) {
             $UserID = $_GET['userid'];
         } else {
-            $UserID = G::$user['ID'];
+            $UserID = $app->userNew->core["id"];
         }
 
         # NaN

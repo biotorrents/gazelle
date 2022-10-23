@@ -1,5 +1,13 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
+
+/**
+ * Wiki
+ *
+ * THIS IS GOING AWAY
+ */
 
 class Wiki
 {
@@ -36,11 +44,13 @@ class Wiki
      */
     public static function get_aliases()
     {
-        $Aliases = G::$cache->get_value('wiki_aliases');
-        if (!$Aliases) {
-            $QueryID = G::$db->get_query_id();
+        $app = App::go();
 
-            G::$db->prepared_query("
+        $Aliases = $app->cacheOld->get_value('wiki_aliases');
+        if (!$Aliases) {
+            $QueryID = $app->dbOld->get_query_id();
+
+            $app->dbOld->prepared_query("
             SELECT
               `Alias`,
               `ArticleID`
@@ -48,9 +58,9 @@ class Wiki
               `wiki_aliases`
             ");
 
-            $Aliases = G::$db->to_pair('Alias', 'ArticleID');
-            G::$db->set_query_id($QueryID);
-            G::$cache->cache_value('wiki_aliases', $Aliases, 3600 * 24 * 14); // 2 weeks
+            $Aliases = $app->dbOld->to_pair('Alias', 'ArticleID');
+            $app->dbOld->set_query_id($QueryID);
+            $app->cacheOld->cache_value('wiki_aliases', $Aliases, 3600 * 24 * 14); // 2 weeks
         }
 
         return $Aliases;
@@ -63,7 +73,9 @@ class Wiki
      */
     public static function flush_aliases()
     {
-        G::$cache->delete_value('wiki_aliases');
+        $app = App::go();
+
+        $app->cacheOld->delete_value('wiki_aliases');
     }
 
 
@@ -95,11 +107,13 @@ class Wiki
      */
     public static function get_article($ArticleID, $Error = true)
     {
-        $Contents = G::$cache->get_value('wiki_article_'.$ArticleID);
-        if (!$Contents) {
-            $QueryID = G::$db->get_query_id();
+        $app = App::go();
 
-            G::$db->prepared_query("
+        $Contents = $app->cacheOld->get_value('wiki_article_'.$ArticleID);
+        if (!$Contents) {
+            $QueryID = $app->dbOld->get_query_id();
+
+            $app->dbOld->prepared_query("
             SELECT
               w.`Revision`,
               w.`Title`,
@@ -125,17 +139,17 @@ class Wiki
               w.`ID`
             ");
 
-            if (!G::$db->has_results()) {
+            if (!$app->dbOld->has_results()) {
                 if ($Error) {
                     error(404);
                 } else {
                     return false;
                 }
             }
-            
-            $Contents = G::$db->to_array();
-            G::$db->set_query_id($QueryID);
-            G::$cache->cache_value('wiki_article_'.$ArticleID, $Contents, 3600 * 24 * 14); // 2 weeks
+
+            $Contents = $app->dbOld->to_array();
+            $app->dbOld->set_query_id($QueryID);
+            $app->cacheOld->cache_value('wiki_article_'.$ArticleID, $Contents, 3600 * 24 * 14); // 2 weeks
         }
 
         return $Contents;
@@ -150,6 +164,8 @@ class Wiki
      */
     public static function flush_article($ArticleID)
     {
-        G::$cache->delete_value('wiki_article_'.$ArticleID);
+        $app = App::go();
+
+        $app->cacheOld->delete_value('wiki_article_'.$ArticleID);
     }
 }

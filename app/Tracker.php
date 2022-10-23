@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
+
 /**
- * Tracker class
+ * Tracker
  *
  * Handles interactions with Ocelot.
  * todo: Turn this into a class with nice functions like update_user, delete_torrent, etc.
  */
+
 class Tracker
 {
     public const STATS_MAIN = 0;
@@ -41,6 +43,8 @@ class Tracker
      */
     public static function update_tracker(string $action, array $updates, bool $toIrc = false)
     {
+        $app = App::go();
+
         $ENV = ENV::go();
 
         // Build request
@@ -63,9 +67,9 @@ class Tracker
         if (self::send_request($get, $maxAttempts, $err) === false) {
             send_irc(DEBUG_CHAN, "{$maxAttempts} {$err} {$get}");
 
-            if (G::$cache->get_value('ocelot_error_reported') === false) {
+            if ($app->cacheOld->get_value('ocelot_error_reported') === false) {
                 send_irc(ADMIN_CHAN, "Failed to update Ocelot: {$err} {$get}");
-                G::$cache->cache_value('ocelot_error_reported', true, 3600);
+                $app->cacheOld->cache_value('ocelot_error_reported', true, 3600);
             }
 
             return false;
@@ -276,24 +280,26 @@ class Tracker
      */
     public static function allowedClients(): array
     {
-        $allowedClients = G::$cache->get_value(self::$cachePrefix. __FUNCTION__) ?? [];
+        $app = App::go();
+
+        $allowedClients = $app->cacheOld->get_value(self::$cachePrefix. __FUNCTION__) ?? [];
 
         if (!empty($allowedClients)) {
             return $allowedClients;
         }
 
-        G::$db->query("
+        $app->dbOld->query("
             select peer_id, vstring from xbt_client_whitelist
             where vstring not like '//%' order by vstring asc
         ");
 
-        $allowedClients = G::$db->to_array();
+        $allowedClients = $app->dbOld->to_array();
         $allowedClients = array_combine(
             array_column($allowedClients, 'peer_id'),
             array_column($allowedClients, 'vstring'),
         );
 
-        G::$cache->cache_value(self::$cachePrefix. __FUNCTION__, $allowedClients, self::$cacheDuration);
+        $app->cacheOld->cache_value(self::$cachePrefix. __FUNCTION__, $allowedClients, self::$cacheDuration);
         return $allowedClients;
     }
-}
+} # class
