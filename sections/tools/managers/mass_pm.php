@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 if (!check_perms("users_mod")) {
     error(403);
 }
@@ -23,7 +25,7 @@ View::header(
     <div class="box pad">
       <input type="hidden" name="action" value="take_mass_pm" />
       <input type="hidden" name="auth"
-        value="<?=G::$user['AuthKey']?>" />
+        value="<?=$app->userNew->extra$user['AuthKey']?>" />
       <div id="quickpost">
         <h3>Class</h3>
         <select id="class_id" name="class_id">

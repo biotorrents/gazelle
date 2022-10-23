@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+$app = App::go();
+
 View::header('Ratio requirements');
 ?>
 
@@ -85,7 +87,7 @@ View::header('Ratio requirements');
       </tr>
 
       <?php
-$DL = G::$user['BytesDownloaded'];
+$DL = $app->userNew->extra['Downloaded'];
 $GB = 1024*1024*1024;
 ?>
 

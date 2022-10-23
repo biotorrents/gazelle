@@ -1,13 +1,17 @@
 <?php
+
 #declare(strict_types=1);
 
+
 /**
- * Class to manage locked accounts
+ * LockedAccounts
  */
+
 class LockedAccounts
 {
-
     /**
+     * lock_account
+     *
      * Lock an account
      *
      * @param int $UserID The ID of the user to lock
@@ -18,22 +22,27 @@ class LockedAccounts
      */
     public static function lock_account($UserID, $Type, $Message, $Reason, $LockedByUserID)
     {
+        $app = App::go();
+
         if ($LockedByUserID === 0) {
             $Username = "System";
         } else {
-            G::$db->query("SELECT Username FROM users_main WHERE ID = '" . $LockedByUserID . "'");
-            list($Username) = G::$db->next_record();
+            $app->dbOld->query("SELECT Username FROM users_main WHERE ID = '" . $LockedByUserID . "'");
+            list($Username) = $app->dbOld->next_record();
         }
 
-        G::$db->query("
+        $app->dbOld->query("
         INSERT INTO locked_accounts (UserID, Type)
           VALUES ('" . $UserID . "', " . $Type . ")");
-          
+
         Tools::update_user_notes($UserID, sqltime() . " - " . db_string($Message) . " by $Username\nReason: " . db_string($Reason) . "\n\n");
-        G::$cache->delete_value("user_info_$UserID");
+        $app->cacheOld->delete_value("user_info_$UserID");
     }
 
+
     /**
+     * unlock_account
+     *
      * Unlock an account
      *
      * @param int $UserID The ID of the user to unlock
@@ -44,18 +53,20 @@ class LockedAccounts
      */
     public static function unlock_account($UserID, $Type, $Message, $Reason, $UnlockedByUserID)
     {
+        $app = App::go();
+
         if ($UnlockedByUserID === 0) {
             $Username = "System";
         } else {
-            G::$db->query("SELECT Username FROM users_main WHERE ID = '" . $UnlockedByUserID . "'");
-            list($Username) = G::$db->next_record();
+            $app->dbOld->query("SELECT Username FROM users_main WHERE ID = '" . $UnlockedByUserID . "'");
+            list($Username) = $app->dbOld->next_record();
         }
 
-        G::$db->query("DELETE FROM locked_accounts WHERE UserID = '$UserID' AND Type = '". $Type ."'");
+        $app->dbOld->query("DELETE FROM locked_accounts WHERE UserID = '$UserID' AND Type = '". $Type ."'");
 
-        if (G::$db->affected_rows() === 1) {
-            G::$cache->delete_value("user_info_$UserID");
+        if ($app->dbOld->affected_rows() === 1) {
+            $app->cacheOld->delete_value("user_info_$UserID");
             Tools::update_user_notes($UserID, sqltime() . " - " . db_string($Message) . " by $Username\nReason: " . db_string($Reason) . "\n\n");
         }
     }
-}
+} # class

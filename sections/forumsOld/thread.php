@@ -1,6 +1,10 @@
 <?php
 #declare(strict_types = 1);
 
+
+$app = App::go();
+
+
 // todo: Normalize thread_*_info don't need to waste all that ram on things that are already in other caches
 
 /**********|| Page to show individual threads || ********************************\
@@ -309,7 +313,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
                 $Ratio = 0;
                 $Percent = 0;
             } ?>
-      <li<?=((!empty($UserResponse)&&($UserResponse == $i))?' class="poll_your_answer"':'')?>><?=Text::esc($Answer)?> (<?=Text::float($Percent * 100, 2)?>%)</li>
+      <li<?=((!empty($UserResponse)&&($UserResponse == $i)) ? ' class="poll_your_answer"' : '')?>><?=Text::esc($Answer)?> (<?=Text::float($Percent * 100, 2)?>%)</li>
         <li class="graph">
           <span class="center_poll"
             style="width: <?=round($Ratio * 750)?>px;"></span>
@@ -633,12 +637,12 @@ if (!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
   }
 
 if (check_perms('site_moderate_forums')) {
-    G::$db->prepared_query("
+    $app->dbOld->prepared_query("
       SELECT ID, AuthorID, AddedTime, Body
       FROM forums_topic_notes
       WHERE TopicID = $ThreadID
       ORDER BY ID ASC");
-    $Notes = G::$db->to_array(); ?>
+    $Notes = $app->dbOld->to_array(); ?>
 <br />
 <h3 id="thread_notes">Notes</h3> <a data-toggle-target="#thread_notes_table" class="brackets">Toggle</a>
 <form action="forums.php" method="post">

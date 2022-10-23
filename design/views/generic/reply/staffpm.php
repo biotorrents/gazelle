@@ -1,3 +1,11 @@
+<?php
+#declare(strict_types = 1);
+
+
+$app = App::go();
+?>
+
+
 <div id="compose"
   class="<?=($Hidden ? 'hidden' : '')?>">
 
@@ -23,7 +31,7 @@ $TextPrev = new TEXTAREA_PREVIEW(
 
     <strong>Send to: </strong>
     <select name="level">
-      <?php if (!isset(G::$user['LockedAccount'])) { ?>
+      <?php if (!isset($app->userNew->extra['LockedAccount'])) { ?>
       <option value="0" selected="selected">First Line Support</option>
       <option value="800">Forum Moderators</option>
       <?php } ?>

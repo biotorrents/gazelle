@@ -84,7 +84,7 @@ function reset_image($UserID, $Type, $AdminComment, $PrivMessage)
         $PMSubject = 'Your donor icon has been automatically reset';
     }
 
-    $UserInfo = G::$cache->get_value($cacheKey, true);
+    $UserInfo = $app->cacheOld->get_value($cacheKey, true);
     if ($UserInfo !== false) {
         if ($UserInfo[$dbColumn] === '') {
             // This image has already been reset
@@ -92,23 +92,23 @@ function reset_image($UserID, $Type, $AdminComment, $PrivMessage)
         }
 
         $UserInfo[$dbColumn] = '';
-        G::$cache->cache_value($cacheKey, $UserInfo, 2592000); // cache for 30 days
+        $app->cacheOld->cache_value($cacheKey, $UserInfo, 2592000); // cache for 30 days
     }
 
     // Reset the avatar or donor icon URL
-    G::$db->query("
+    $app->dbOld->query("
       UPDATE $dbTable
       SET $dbColumn = ''
       WHERE UserID = '$UserID'");
 
     // Write comment to staff notes
-    G::$db->query("
+    $app->dbOld->query("
       UPDATE users_info
       SET AdminComment = CONCAT('".sqltime().' - '.db_string($AdminComment)."\n\n', AdminComment)
       WHERE UserID = '$UserID'");
 
     // Clear cache keys
-    G::$cache->delete_value($cacheKey);
+    $app->cacheOld->delete_value($cacheKey);
     Misc::send_pm($UserID, 0, $PMSubject, $PrivMessage);
 }
 
