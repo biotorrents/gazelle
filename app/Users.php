@@ -158,12 +158,6 @@ class Users
         $this->lightInfo = self::user_info($userId) ?? [];
 
         /*
-        # original gazelle keys, etc.
-        $user = array_merge($heavyInfo, $lightInfo, $stats);
-        $user["RSS_Auth"] = md5($userId . $app->env->getPriv("rssHash") . $user["torrent_pass"]);
-        */
-
-        /*
         # ratio watch
         $user["RatioWatch"] = (
             $user["RatioWatchEnds"]
@@ -237,13 +231,12 @@ class Users
         }
         */
 
-        # stylesheets
+        # get all stylesheets
         $stylesheets = $app->cacheOld->get_value("stylesheets");
         if (!$stylesheets) {
-            # ugh
             $query = "
                 select id,
-                lower(replace(name, , ' ', '_')) as name, name as properName,
+                lower(replace(name, ' ', '_')) as name, name as properName,
                 lower(replace(additions, ' ', '_')) as additions, additions as properAdditions
                 from stylesheets
             ";
@@ -251,14 +244,6 @@ class Users
             $stylesheets = $app->dbNew->row($query);
             $app->cacheOld->cache_value("stylesheets", $stylesheets, $this->cacheDuration);
         }
-
-        /*
-        # todo: clean up this messy solution
-        $user["StyleName"] = $stylesheets[$user["StyleID"]]["Name"];
-        if (empty($user["Username"])) {
-            $auth->logout(); # ghost
-        }
-        */
 
         # the user is loaded
         $authenticated = true;
@@ -291,6 +276,16 @@ class Users
             $query = "select * from users_main cross join users_info on users_main.id = users_info.userId where id = ?";
             $extra = $app->dbNew->row($query, [$userId]);
             $this->extra = $extra ?? [];
+
+            # rss auth
+            $this->extra["RSS_Auth"] = md5(
+                $userId
+                . $app->env->getPriv("rssHash")
+                . $extra["torrent_pass"]
+            );
+
+            # user stylesheet
+            $this->extra["StyleName"] = $stylesheets[$extra["StyleID"]]["Name"];
 
             # for my own sanity
             foreach ($this as $key => $value) {

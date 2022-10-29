@@ -135,6 +135,33 @@ class Twig # extends Twig\Environment
         );
         */
 
+        # DebugBar
+        $twig->addFunction(new Twig\TwigFunction("debugHeader", function () {
+            $app = App::go();
+            $render = $app->debug->getJavascriptRenderer();
+
+            return new Twig\Markup(
+                $render->renderHead(),
+                "UTF-8"
+            );
+        }));
+
+        /*
+        $twig->addFunction(
+            new Twig\TwigFunction(
+                "debugHeader",
+                function () {
+                    $app = App::go();
+
+                    $render = $app->debug->getJavascriptRenderer();
+                    echo $render->renderHead();
+
+                    return;
+                }
+            )
+        );
+        */
+
         # https://philfrilling.com/blog/2017-01/php-convert-seconds-hhmmss-format
         $twig->addFilter(new Twig\TwigFilter(
             "hhmmss",

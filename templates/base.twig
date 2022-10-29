@@ -6,6 +6,7 @@
 </pre>
 #}
 
+
 {# page title #}
 {% if title is defined %}
 {% set title = "#{title} #{env.separator} #{env.siteName}" %}
@@ -14,8 +15,9 @@
 {% set title = env.siteName %}
 {% endif %}
 
+
 {# layout: sidebar? #}
-{% if sidebar is defined %}
+{% if sidebar %}
 {% set layoutContent = "two-thirds column" %}
 {% set layoutSidebar = "one-third column" %}
 
@@ -25,6 +27,17 @@
 {% endif %}
 
 
+{# user variables #}
+{% if authenticated %}
+{% set userId = user.core.id ?? null %}
+{% set rssKey = user.extra.RSS_Auth ?? null %}
+{% set passKey = user.extra.torrent_pass ?? null %}
+{% set authKey = user.extra.AuthKey ?? null %}
+{% set userStyle = user.extra.StyleName ?? "bookish" %}
+{% endif %}
+
+
+{# html #}
 <!DOCTYPE html>
 <html>
 
@@ -40,13 +53,6 @@
     {# start javascript block #}
     {% block javascript %}
 
-    {# extra js #}
-    {% if js is defined %}
-    {% for js in js %}
-    <script defer src="/js/{{ js }}.js"></script>
-    {% endfor %}
-    {% endif %}
-
     {# gazelle global #}
     <script defer src="/js/global.js"></script>
 
@@ -54,13 +60,25 @@
     <script defer src="/js/vendor/jquery.min.js"></script>
     <script defer src="/js/vendor/instantpage.min.js" type="module"></script>
 
+    {# DebugBar #}
+    {% if env.dev %}
+    {{ debugHeader() }}
+    {% endif %}
+    
     {# easymde #}
     <script defer src="/js/vendor/easymde.min.js"></script>
     <script defer src="/js/vendor/highlight.min.js"></script>
 
     {# plausible #}
-    {% if env.enablePlausible == true %}
+    {% if env.enablePlausible %}
     <script defer data-domain="{{ env.siteDomain }}" src="https://stats.torrents.bio/js/plausible.js"></script>
+    {% endif %}
+
+    {# extra js #}
+    {% if js is defined %}
+    {% for js in js %}
+    <script defer src="/js/{{ js }}.js"></script>
+    {% endfor %}
     {% endif %}
 
     {% endblock %}
@@ -69,13 +87,6 @@
 
     {# start stylesheets block #}
     {% block stylesheets %}
-
-    {# extra css #}
-    {% if css is defined %}
-    {% for css in css %}
-    <link rel="stylesheet" type="text/css" href="/css/{{ css }}.css" />
-    {% endfor %}
-    {% endif %}
 
     {# gazelle global #}
     <link rel="stylesheet" type="text/css" href="/css/global.css" />
@@ -90,14 +101,22 @@
 
     {% if authenticated %}
     {# private #}
+    <link rel="stylesheet" type="text/css" href="/css/{{ userStyle }}.css" />
 
     {% else %}
     {# public #}
     <link rel="stylesheet" type="text/css" href="/css/public.css" />
     {% endif %}
 
-    {% if env.dev is defined %}
+    {% if env.dev %}
     <link rel="stylesheet" type="text/css" href="/css/development.css" />
+    {% endif %}
+
+    {# extra css #}
+    {% if css is defined %}
+    {% for css in css %}
+    <link rel="stylesheet" type="text/css" href="/css/{{ css }}.css" />
+    {% endfor %}
     {% endif %}
 
     {% endblock %}
@@ -106,6 +125,40 @@
 
     {# start rss block #}
     {% block rss %}
+
+    {# user notification feeds #}
+    {# todo: test this #}
+    {% if authenticated and user.extra.Notify is defined %}
+    {% for filter in user.extra.Notify %}
+    <link rel="alternate" type="application/rss+xml"
+        href="/feeds?feed=torrents_notify_{{ filter.ID }}_{{ passKey }}&user={{ userId }}&auth={{ rssKey }}&passkey={{ passKey }}&authkey={{ authKey }}"
+        title="{{ filter.Name }} {{ env.separator }} {{ env.siteName }}" />
+    {% endfor %}
+    {% endif %}
+
+    {# new category uploads #}
+    {% for category in env.CATS %}
+    <link rel="alternate" type="application/rss+xml"
+        href="feeds?feed=torrents_{{ category.Name|lower }}&user={{ userId }}&auth={{ rssKey }}&passkey={{ passKey }}&authkey={{ authKey }}"
+        title="New {{ category.Name }} Torrents {{ env.separator }} {{ env.siteName }}" />
+    {% endfor %}
+
+    {# all torrents #}
+    <link rel="alternate" type="application/rss+xml"
+        href="feeds?feed=torrents_all&user={{ userId }}&auth={{ rssKey }}&passkey={{ passKey }}&authkey={{ authKey }}"
+        title="All New Torrents {{ env.separator }} {{ env.siteName }}" />
+    
+    {# news #}
+    <link rel="alternate" type="application/rss+xml"
+        href="feeds?feed=feed_news&user={{ userId }}&auth={{ rssKey }}&passkey={{ passKey }}&authkey={{ authKey }}"
+        title="Site News {{ env.separator }} {{ env.siteName }}" />
+  
+    {# blog: same feed #}
+    {#
+    <link rel="alternate" type="application/rss+xml"
+        href="feeds?feed=feed_news&user={{ userId }}&auth={{ rssKey }}&passkey={{ passKey }}&authkey={{ authKey }}"
+        title="Blog {{ env.separator }} {{ env.siteName }}" />
+    #}
 
     {% endblock %}
     {# end rss block #}
@@ -136,7 +189,7 @@
 
 
             {# splash logo #}
-            {% if authenticated != true %}
+            {% if not authenticated %}
             <figure id="logo"></figure>
             {% endif %}
 

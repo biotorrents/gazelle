@@ -50,7 +50,7 @@
         <li id="stats_ratio">
             Ratio:
             <span class="stat">
-                {{ get_ratio_html(dividend = user.extra.Uploaded, divisor = user.extra.Downloaded) }}
+                {{ get_ratio_html(dividend = user.extra.Uploaded, divisor = user.extra.Downloaded)|raw }}
             </span>
         </li>
 
