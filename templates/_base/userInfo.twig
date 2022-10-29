@@ -4,26 +4,34 @@
     <ul id="userInfoMajor">
 
         {# upload #}
+        {#
         <li id="nav_upload">
             <a href="/upload.php">Upload</a>
         </li>
+        #}
 
         {# invite #}
+        {#
         <li id="nav_invite">
             <a href="/user.php?action=invite">Invite {{ user.extra.Invites }}</a>
         </li>
+        #}
 
         {# donate #}
+        {#
         {% if env.FEATURE_DONATE %}
         <li id="nav_donate">
             <a href="/donate.php">Donate</a>
         </li>
         {% endif %}
+        #}
 
         {# staff #}
+        {#
         <li id="nav_staff">
             <a href="/staff.php">Staff</a>
         </li>
+        #}
     </ul>
 
 

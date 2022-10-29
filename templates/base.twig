@@ -34,6 +34,11 @@
 {% set passKey = user.extra.torrent_pass ?? null %}
 {% set authKey = user.extra.AuthKey ?? null %}
 {% set userStyle = user.extra.StyleName ?? "bookish" %}
+
+{# todo: test this #}
+{% set styleAdditions = null %}
+{# {% set styleAdditions = user.extra.StyleAdditions|join("style_") ?? null %} #}
+
 {% endif %}
 
 
@@ -169,7 +174,7 @@
 {# head body break #}
 
 
-<body>
+<body class="{{ styleAdditions }}">
     <header>
         {% if authenticated %}
         {# private #}
