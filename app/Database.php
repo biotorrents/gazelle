@@ -54,11 +54,11 @@ class Database extends PDO
     /**
      * go
      */
-    public static function go($options = [])
+    public static function go(array $options = [])
     {
         if (self::$instance === null) {
             self::$instance = new self();
-            self::$instance->factory($options = []);
+            self::$instance->factory($options);
         }
 
         return self::$instance;
@@ -68,7 +68,7 @@ class Database extends PDO
     /**
      * factory
      */
-    private function factory($options = [])
+    private function factory(array $options = [])
     {
         $app = App::go();
 
