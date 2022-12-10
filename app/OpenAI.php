@@ -87,6 +87,10 @@ class OpenAI
             throw new \Exception("groupId {$groupId} not found");
         }
 
+        $description = \Text::parse($description);
+        $description = strip_tags($description);
+        !d($description);exit;
+
         /*
         # strip_bbcode
         # https://github.com/phpbb/phpbb/blob/master/phpBB/includes/functions_content.php
