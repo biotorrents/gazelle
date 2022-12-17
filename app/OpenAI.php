@@ -188,7 +188,7 @@ class OpenAI
         # query the openai api
         $response = $this->client->completions()->create([
             "model" => $this->model,
-            "prompt" => "List 10 keywords as a JSON array: {$description}",
+            "prompt" => "List 10 keywords in the format [\"one\", \"two\", \"three\"]: {$description}",
             "max_tokens" => $this->maxTokens,
         ]);
         !d($response);
@@ -204,17 +204,41 @@ class OpenAI
         }
 
         # convert to gazelle tags
+        $keywords = array_unique($keywords);
         foreach ($keywords as $key => $value) {
             $value = strtolower(trim($value));
             $value = str_replace(" ", ".", $value);
             $value = str_replace("..", ".", $value);
+            $value = \Text::esc($value);
             $keywords[$key] = $value;
         }
         !d($keywords);
-        
+
+        # insert into the database
+        # sections/upload/upload_handle.php
+        foreach ($keywords as $keyword) {
+            $keyword = \Misc::get_alias_tag($keyword);
+
+            # inset into tags
+            $query = "
+                insert into tags (name, userId) values (?, 0)
+                on duplicate key update uses = uses + 1
+            ";
+            $app->dbNew->do($query, [$keyword]);
+
+            # get tagId
+            $tagId = $app->dbNew->pdo->lastInsertId();
+
+            # insert into torrents_tags
+            $query = "
+                insert into torrents_tags (tagId, groupId, userId) values (?, ?, 0)
+                on duplicate key update tagId = tagId
+            ";
+            $app->dbNew->do($query, [$tagId, $groupId]);
+        }
+
         $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
         return $response;
-
     }
 
 
