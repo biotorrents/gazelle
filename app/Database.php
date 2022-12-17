@@ -8,6 +8,9 @@ declare(strict_types=1);
  *
  * The blunt singleton, for your procedural code.
  * @see https://phpdelusions.net/pdo/pdo_wrapper
+ * 
+ * Also uses the Laravel Eloquent ORM for migrations.
+ * @see https://laravel.com/docs/9.x/eloquent
  */
 
 class Database extends PDO
@@ -17,6 +20,9 @@ class Database extends PDO
 
     # pdo connection
     public $pdo = null;
+
+    # eloquent capsuke
+    public $eloquent = null;
 
     # hash algo for cache keys
     private $algorithm = "sha3-512";
@@ -54,11 +60,11 @@ class Database extends PDO
     /**
      * go
      */
-    public static function go($options = [])
+    public static function go(array $options = [])
     {
         if (self::$instance === null) {
             self::$instance = new self();
-            self::$instance->factory($options = []);
+            self::$instance->factory($options);
         }
 
         return self::$instance;
@@ -68,7 +74,7 @@ class Database extends PDO
     /**
      * factory
      */
-    private function factory($options = [])
+    private function factory(array $options = [])
     {
         $app = App::go();
 
@@ -99,6 +105,28 @@ class Database extends PDO
         } catch (PDOException $e) {
             throw new Exception($e->getMessage(), intval($e->getCode()));
         }
+
+        /*
+        # eloquent
+        try {
+            $this->eloquent = new Illuminate\Database\Capsule\Manager;
+            $this->eloquent->addConnection([
+                "driver" => "mysql",
+                "host" => $host,
+                "database" => $db,
+                "username" => $username,
+                "password" => $password,
+                "charset" => $charset,
+                "collation" => "utf8_unicode_ci",
+                "prefix" => "",
+            ]);
+
+            $this->eloquent->setAsGlobal();
+            $this->eloquent->bootEloquent();
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), intval($e->getCode()));
+        }
+        */
     }
 
 

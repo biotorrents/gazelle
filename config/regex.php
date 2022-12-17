@@ -14,34 +14,39 @@ declare(strict_types=1);
 define("regexResource", "(https?|ftps?|dat|ipfs):\/\/");
 ENV::setPub(
     "regexResource",
-    "/(https?|ftps?|dat|ipfs):\/\//"
+    "(https?|ftps?|dat|ipfs):\/\/"
+    #"/(https?|ftps?|dat|ipfs):\/\//"
 );
 
 
 #define("regexIp", "(\d{1,3}\.){3}\d{1,3}");
 ENV::setPub(
     "regexIp",
-    "/(\d{1,3}\.){3}\d{1,3}/"
+    "(\d{1,3}\.){3}\d{1,3}"
+    #"/(\d{1,3}\.){3}\d{1,3}/"
 );
 
 
 #define("regexDomain", "([a-z0-9\-\_]+\.)*[a-z0-9\-\_]+");
 ENV::setPub(
     "regexDomain",
-    "/([a-z0-9\-\_]+\.)*[a-z0-9\-\_]+/"
+    "([a-z0-9\-\_]+\.)*[a-z0-9\-\_]+"
+    #"/([a-z0-9\-\_]+\.)*[a-z0-9\-\_]+/"
 );
 
 #define("regexPort", ":\d{1,5}");
 ENV::setPub(
     "regexPort",
-    "/:\d{1,5}/"
+    ":\d{1,5}"
+    #"/:\d{1,5}/"
 );
 
 
 #define("regexUri", "(".regexResource.")(".regexIp."|".regexDomain.")(".regexPort.")?(\/\S*)*");
 ENV::setPub(
     "regexUri",
-    "/^({$env->regexResource})({$env->regexIp}|{$env->regexDomain})({$env->regexPort})?(\/\S*)*/i"
+    "^({$env->regexResource})({$env->regexIp}|{$env->regexDomain})({$env->regexPort})?(\/\S*)*"
+    #"/^({$env->regexResource})({$env->regexIp}|{$env->regexDomain})({$env->regexPort})?(\/\S*)*/i"
 );
 
 
@@ -76,7 +81,8 @@ ENV::setPub(
 #define("regexSiteLink", regexResource."(www.)?".preg_quote(siteDomain, "/"));
 ENV::setPub(
     "regexSiteLink",
-    "/{$env->regexResource}(www.)?".preg_quote(siteDomain, "/")."/"
+    "{$env->regexResource}(www.)?" . preg_quote(siteDomain, "/")
+    #"/{$env->regexResource}(www.)?".preg_quote(siteDomain, "/")."/"
 );
 
 

@@ -14,7 +14,7 @@ declare(strict_types=1);
 ENV::setPriv("imagePsk", "");
 
 # production
-if (!$app->env->dev) {
+if (!$env->dev) {
     # currently used for API token auth
     ENV::setPriv("siteCryptoKey", "");
 
@@ -76,7 +76,7 @@ else {
 ENV::setPriv("trackerHost", "");
 
 # production
-if (!$app->env->dev) {
+if (!$env->dev) {
     ENV::setPriv("trackerPort", 34000);
 
     # must be 32 alphanumeric characters and match site_password in ocelot.conf
@@ -99,11 +99,14 @@ else {
  * @see https://plausible.io/docs/stats-api
  */
 
+# enable or disable plausible stats
+ENV::setPub("enablePlausible", true);
+
 # base URI for API calls
 ENV::setPub("plausibleUri", "");
 
 # production
-if (!$app->env->dev) {
+if (!$env->dev) {
     ENV::setPriv("plausibleKey", "");
 }
 
@@ -133,8 +136,39 @@ ENV::setPriv(
  * @see https://docs.discourse.org
  */
 
+# enable or disable most social features
+ENV::setPub("enableDiscourse", true);
+
+# discourse forum categories
+$discourseCategories = [
+    # [id, slug]
+    1 => "uncategorized",
+    3 => "staff",
+    5 => "blog",
+    6 => "comments",
+    7 => "marketplace",
+    8 => "news",
+    9 => "wiki",
+
+    # [slug, id]
+    "uncategorized" => 1,
+    "staff" => 3,
+    "blog" => 5,
+    "comments" => 6,
+    "marketplace" => 7,
+    "news" => 8,
+    "wiki" => 9,
+];
+ENV::setPub(
+    "discourseCategories",
+    $env->convert($discourseCategories)
+);
+
+# base URI for API calls
+ENV::setPub("discourseUri", "");
+
 # production
-if (!$app->env->dev) {
+if (!$env->dev) {
     ENV::setPriv("discourseKey", "");
 }
 
@@ -142,3 +176,24 @@ if (!$app->env->dev) {
 else {
     ENV::setPriv("discourseKey", "");
 }
+
+# discourse connect shared secret
+# see https://meta.discourse.org/t/discourseconnect-official-single-sign-on-for-discourse-sso/13045
+ENV::setPriv("connectSecret", "");
+
+
+/**
+ * OpenAI API
+ */
+
+# enable or disable the integration
+ENV::setPub("enableOpenAi", true);
+
+# secret key and organization id
+ENV::setPriv(
+    "openAiApi",
+    [
+        "secretKey" => "",
+        "organizationId" => "",
+    ]
+);
