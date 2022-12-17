@@ -1803,9 +1803,9 @@ CREATE TABLE `openai` (
 	`promptTokens` SMALLINT,
 	`completionTokens` SMALLINT,
 	`totalTokens` SMALLINT,
-    `failCount` TINYINT,
+  `failCount` TINYINT,
 	`json` JSON,
-    `type` VARCHAR(16),
+  `type` VARCHAR(16),
 	PRIMARY KEY (`id`,`jobId`,`groupId`)
 );
 

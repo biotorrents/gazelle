@@ -29,24 +29,24 @@ namespace Gazelle;
  * Database table schema:
  * 
 CREATE TABLE `openai` (
-	`id` INT NOT NULL AUTO_INCREMENT,
-	`jobId` VARCHAR(128) NOT NULL,
-	`groupId` INT NOT NULL,
-	`object` VARCHAR(32),
-	`created` DATETIME DEFAULT NOW(),
-	`updated` DATETIME DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP,
-	`model` VARCHAR(32),
-	`text` TEXT,
-	`index` TINYINT,
-	`logprobs` TINYINT,
-	`finishReason` VARCHAR(16),
-	`promptTokens` SMALLINT,
-	`completionTokens` SMALLINT,
-	`totalTokens` SMALLINT,
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `jobId` VARCHAR(128) NOT NULL,
+    `groupId` INT NOT NULL,
+    `object` VARCHAR(32),
+    `created` DATETIME DEFAULT NOW(),
+    `updated` DATETIME DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP,
+    `model` VARCHAR(32),
+    `text` TEXT,
+    `index` TINYINT,
+    `logprobs` TINYINT,
+    `finishReason` VARCHAR(16),
+    `promptTokens` SMALLINT,
+    `completionTokens` SMALLINT,
+    `totalTokens` SMALLINT,
     `failCount` TINYINT,
-	`json` JSON,
+    `json` JSON,
     `type` VARCHAR(16),
-	PRIMARY KEY (`id`,`jobId`,`groupId`)
+    PRIMARY KEY (`id`,`jobId`,`groupId`)
 );
  * 
  * todo: just namespace the app already
