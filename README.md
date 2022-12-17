@@ -52,21 +52,29 @@ The default recursive regex BBcode parser is replaced by
 [Vanilla NBBC](https://github.com/vanilla/nbbc).
 Parsed texts are cached for speed.
 
-## ENV recursive singleton
+## App singleton
 
 [The site configuration](config/public.php)
-is being migrated to a format govered by the
-[ENV special class](app/ENV.php)
-for modified recursive ArrayObjects.
+uses extensible ArrayObjects with by the
+[ENV special class](app/ENV.php).
+Also, the whole app is always instantly available:
+the config, database, cache, current user, Twig engine, etc.,
+are accessible with a simple call to `App::go()`.
 
 ## Twig template system
 
-Similar to ENV, the
+BioGazelle's
 [Twig interface](app/Twig.php)
-operates as a singleton because it's an external module with its own cache.
+takes cues from OPS's extended filters and functions.
 Twig provides a security benefit by escaping rendered output,
 and a secondary benefit of clarifying the PHP running the site sections.
-Several custom filters are available from OPS.
+Everything you could need is a globally available template variable.
+
+A quick note about template inheritance.
+Everything extends a clean HTML5 base template.
+Torrent, collections, requests, etc., and their respective sidebars
+are implemented as semantic HTML5 in easily digestible chunks of content.
+No more mixed PHP code and HTML markup!
 
 ## Active data minimization
 
