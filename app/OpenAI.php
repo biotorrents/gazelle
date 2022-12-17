@@ -199,7 +199,7 @@ class OpenAI
 
         # process response into an array
         $keywords = json_decode(\Text::oneLine($response["choices"][0]["text"]), true);
-        if (!is_array($keywords)) {
+        if (!$keywords || !is_array($keywords)) {
             throw new \Exception("openai fucked up jobId {$response["id"]}");
         }
 
@@ -207,12 +207,16 @@ class OpenAI
         $keywords = array_unique($keywords);
         foreach ($keywords as $key => $value) {
             $value = strtolower(trim($value));
+
             $value = str_replace(" ", ".", $value);
+            $value = str_replace("-", ".", $value);
+            $value = str_replace(["(", ")"], "", $value);
+
             $value = str_replace("..", ".", $value);
             $value = \Text::esc($value);
+
             $keywords[$key] = $value;
         }
-        !d($keywords);
 
         # insert into the database
         # sections/upload/upload_handle.php
@@ -286,20 +290,6 @@ class OpenAI
             "totalTokens" => $response["usage"]["total_tokens"],
             "json" => json_encode($response),
             "type" => $type,
-
-            /*
-            # You must include a unique parameter marker for each value you wish to pass in to the statement when you call PDOStatement::execute().
-            # You cannot use a named parameter marker of the same name more than once in a prepared statement, unless emulation mode is on.
-            # https://www.php.net/manual/en/pdo.prepare.php
-            "jobIdUpdate" => $response["id"],
-            "objectUpdate" => $response["object"],
-            "modelUpdate" => $response["model"],
-            "textUpdate" => \Text::oneLine($response["choices"][0]["text"]),
-            "indexUpdate" => $response["choices"][0]["index"],
-            "logprobsUpdate" => $response["choices"][0]["logprobs"],
-            "finishReasonUpdate" => $response["choices"][0]["finish_reason"],
-            "jsonUpdate" => json_encode($response),
-            */
         ];
 
         # get the failCount
@@ -310,23 +300,10 @@ class OpenAI
         # increment on an error
         if (empty($data["text"]) || $data["finishReason"] !== "stop") {
             $data["failCount"] = $failCount++;
-            #$data["failCountUpdate"] = $failCount++;
         }
-
-        /*
-        # get the tokens used
-        $query = "select promptTokens, completionTokens, totalTokens from openai where groupId = ?";
-        $row = $app->dbNew->row($query, [$groupId]);
-
-        if ($row) {
-            $data["promptTokensUpdate"] = $row["promptTokens"] + $response["usage"]["prompt_tokens"];
-            $data["completionTokensUpdate"] = $row["completionTokens"] + $response["usage"]["completion_tokens"];
-            $data["totalTokensUpdate"] = $row["totalTokens"] + $response["usage"]["total_tokens"];
-        }
-        */
 
         # debug
-        #!d($data);exit;
+        !d($data);
 
         # the upsert query
         $query = "
@@ -346,35 +323,6 @@ class OpenAI
                 :failCount, :json, :type
             )
         ";
-
-        /*
-        $query = "
-        insert into openai (
-            jobId, groupId,
-            object, created, model,
-            text, `index`, logprobs, finishReason,
-            promptTokens, completionTokens, totalTokens,
-            failCount, json
-        )
-
-        values (
-            :jobId, :groupId,
-            :object, :created, :model,
-            :text, :index, :logprobs, :finishReason,
-            :promptTokens, :completionTokens, :totalTokens,
-            :failCount, :json
-        )
-
-        on duplicate key update
-            jobId = :jobIdUpdate,
-            object = :objectUpdate, model = :modelUpdate,
-            text = :textUpdate, `index` = :indexUpdate, logprobs = :logprobsUpdate, finishReason = :finishReasonUpdate,
-            promptTokens = :promptTokensUpdate, completionTokens = :completionTokensUpdate, totalTokens = :totalTokensUpdate,
-            failCount = :failCountUpdate, json = :jsonUpdate
-        ";
-        */
-
-        #!d($query);exit;
 
         # do it
         $app->dbNew->do($query, $data);

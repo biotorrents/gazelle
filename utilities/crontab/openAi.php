@@ -10,6 +10,13 @@ declare(strict_types=1);
 # cli bootstrap
 require_once __DIR__."/../../bootstrap/cli.php";
 
+# ensure only one is running
+$currentWorkers = intval(system("ps ax | grep openAi.php | grep -v grep | wc -l"));
+if ($currentWorkers > 1) {
+    Text::figlet("too many workers", "red");
+    exit;
+}
+
 # load up an openai instance
 $openai = new Gazelle\OpenAI();
 
@@ -61,11 +68,11 @@ foreach ($ref as $row) {
 }
 
 # clean up the stragglers
-$query = "select jobId, text from openai";
+$query = "select jobId, text, finishReason from openai";
 $ref = $app->dbNew->do($query, []);
 
 foreach ($ref as $row) {
-    if (empty($row["text"])) {
+    if (empty($row["text"]) || $row["finishReason"] !== "stop") {
         Text::figlet("deleting empty {$row["jobId"]}", "blue");
         $query = "delete from openai where jobId = ?";
         $app->dbNew->do($query, [ $row["jobId"] ]);
