@@ -17,7 +17,7 @@ class Text
 
     # cache settings
     private static $cachePrefix = "text_";
-    private static $cacheDuration = 0;
+    private static $cacheDuration = 0; # forever
 
 
     /**
@@ -229,7 +229,7 @@ class Text
      * Generate a more truly "random" alpha-numeric string.
      * @see https://github.com/illuminate/support/blob/master/Str.php
      *
-     * @param  int  $length
+     * @param int $length
      * @return string
      */
     public static function random($length = 32): string
@@ -262,5 +262,23 @@ class Text
     {
         $parsed = strtotime($string) ?? time();
         return time() - $parsed;
+    }
+
+
+    /**
+     * oneLine
+     * 
+     * Makes a multi-line string into a single-line one.
+     */
+    static function oneLine(string $string): string
+    {
+        while (preg_match("/[\n\r]/", $string)) {
+            $string = preg_replace("/[\n\r]/", " ", $string);
+        }
+
+        $string = preg_replace("/\s+/", " ", $string);
+        $string = trim($string);
+
+        return $string;
     }
 } # class

@@ -39,6 +39,9 @@ declare(strict_types=1);
  *   );
  */
 
+# important php.ini params
+date_default_timezone_set("UTC");
+
 # initialize
 require_once __DIR__."/../app/ENV.php";
 $env = ENV::go();

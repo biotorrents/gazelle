@@ -51,6 +51,7 @@
     "guzzlehttp/guzzle": "^7.4.1",
     "illuminate/support": "^9",
     "mikecao/flight": "^2.0",
+    "nesbot/carbon": "^2.64",
     "openai-php/client": "^0.2.1",
     "orpheusnet/bencode-torrent": "dev-master",
     "paragonie/anti-csrf": "^2.3",
