@@ -24,9 +24,19 @@ $openai = new Gazelle\OpenAI();
 $query = "
     select distinct torrents_group.id from torrents_group
     left join openai on torrents_group.id = openai.groupId
+    where openai.groupId is null
+";
+
+/*
+$query = "
+    select distinct torrents_group.id from torrents_group
+    left join openai on torrents_group.id = openai.groupId
     where openai.groupId is null and openai.failCount < 3
 ";
+*/
+
 $ref = $app->dbNew->multi($query, []);
+#!d($ref);exit;
 
 foreach ($ref as $row) {
     # summary
@@ -72,7 +82,9 @@ $ref = $app->dbNew->do($query, []);
 
 foreach ($ref as $row) {
     if (empty($row["text"]) || $row["finishReason"] !== "stop") {
-        Text::figlet("deleting empty {$row["jobId"]}", "blue");
+        Text::figlet("deleting empty row", "blue");
+        !d($row["jobId"]);
+        
         $query = "delete from openai where jobId = ?";
         $app->dbNew->do($query, [ $row["jobId"] ]);
     }
