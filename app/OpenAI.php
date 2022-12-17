@@ -56,7 +56,7 @@ class OpenAI
 {
     # client and params
     public $client = null;
-    private $maxTokens = 1000; # $0.01
+    private $maxTokens = 1000; # $0.02
     private $model = "text-davinci-003";
 
     # cache settings
@@ -115,7 +115,7 @@ class OpenAI
         $cacheHit = $app->cacheOld->get_value($cacheKey);
                 
         if ($cacheHit) {
-            return $cacheHit;
+            #return $cacheHit;
         }
 
         # get the torrent group description
@@ -123,7 +123,7 @@ class OpenAI
         $description = $app->dbNew->single($query, [$groupId]);
 
         if (!$description || empty($description)) {
-            throw new \Exception("groupId {$groupId} not found or descrription empty");
+            throw new \Exception("groupId {$groupId} not found or description empty");
         }
 
         # process the description
@@ -179,7 +179,7 @@ class OpenAI
         }
 
         if (!$description || empty($description)) {
-            throw new \Exception("groupId {$groupId} not found or descrription empty");
+            throw new \Exception("groupId {$groupId} not found or description empty");
         }
 
         # process the description

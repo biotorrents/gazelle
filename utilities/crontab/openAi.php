@@ -24,10 +24,9 @@ $openai = new Gazelle\OpenAI();
 $query = "
     select distinct torrents_group.id from torrents_group
     left join openai on torrents_group.id = openai.groupId
-    where openai.groupId is null
+    where openai.groupId is null and openai.failCount < 3
 ";
 $ref = $app->dbNew->multi($query, []);
-#!d($ref);exit;
 
 foreach ($ref as $row) {
     # summary
@@ -35,8 +34,8 @@ foreach ($ref as $row) {
         Text::figlet("summary: groupId {$row["id"]}", "green");
         $openai->summarize($row["id"]);
 
-        echo "\n\n sleeping 5s \n\n";
-        sleep(5);
+        echo "\n\n sleeping 10s \n\n";
+        sleep(10);
     } catch (Exception $e) {
         Text::figlet("error", "red");
         ~d($e->getMessage());
@@ -53,8 +52,8 @@ foreach ($ref as $row) {
         Text::figlet("keywords: groupId {$row["id"]}", "green");
         $openai->keywords($row["id"]);
 
-        echo "\n\n sleeping 5s \n\n";
-        sleep(5);
+        echo "\n\n sleeping 10s \n\n";
+        sleep(10);
     } catch (Exception $e) {
         Text::figlet("error", "red");
         ~d($e->getMessage());
