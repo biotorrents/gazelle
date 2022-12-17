@@ -305,7 +305,7 @@ class OpenAI
         # debug
         !d($data);
 
-        # the upsert query
+        # the query itself
         $query = "
             insert into openai (
                 jobId, groupId,

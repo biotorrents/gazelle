@@ -89,14 +89,6 @@ class Text
         $app->debug["time"]->startMeasure("process", "post-process text");
 
         # replace links to $app->env->siteDomain
-
-        /*
-        !d("/<a href=\"{$app->env->regexResource}({$app->env->siteDomain}|{$app->env->oldSiteDomain})\//");
-        !d("<a href=\"/");
-        !d($parsed);
-        exit;
-        */
-
         $parsed = preg_replace(
             "/<a href=\"{$app->env->regexResource}({$app->env->siteDomain}|{$app->env->oldSiteDomain})\//",
             "<a href=\"/",
