@@ -293,8 +293,8 @@ class OpenAI
         ];
 
         # get the failCount
-        $query = "select failCount from openai where groupId = ?";
-        $failCount = $app->dbNew->single($query, [$groupId]) ?? 0;
+        $query = "select failCount from openai where groupId = ? and type = ?";
+        $failCount = $app->dbNew->single($query, [$groupId, $type]) ?? 0;
         $data["failCount"] = $failCount;
 
         # increment on an error
