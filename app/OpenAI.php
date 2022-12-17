@@ -30,8 +30,9 @@ namespace Gazelle;
 class OpenAI
 {
     # client and params
-    private $client = null;
+    public $client = null;
     private $maxTokens = 1000;
+    #private $model = "text-curie-001";
     private $model = "text-davinci-003";
 
     # cache
@@ -59,10 +60,10 @@ class OpenAI
     /**
      * test
      */
-    function test() {
+    function test(string $prompt = "hello") {
         $response = $this->client->completions()->create([
             "model" => $this->model,
-            "prompt" => "say hello",
+            "prompt" => $prompt,
             "max_tokens" => $this->maxTokens,
             "temperature" => 0,
         ]);
@@ -89,7 +90,6 @@ class OpenAI
 
         $description = \Text::parse($description);
         $description = strip_tags($description);
-        !d($description);exit;
 
         /*
         # strip_bbcode

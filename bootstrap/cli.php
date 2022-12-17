@@ -51,11 +51,11 @@ if ($app->env->dev) {
 
     # includes
     echo "\n"; # clear
-    Text::figlet("includes", "yellow");
+    Text::figlet("includes", "light_gray");
 
     $includes = get_included_files();
     foreach ($includes as $include) {
-        if (!str_starts_with($include, "{$app->env->SERVER_ROOT}/vendor")) {
+        if (!str_starts_with($include, "{$app->env->serverRoot}/vendor")) {
             echo "\n" . $include;
         }
     }

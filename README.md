@@ -9,7 +9,7 @@ It shares several features with
 The goal is to organize a functional database with pleasant interfaces,
 and render insightful views using data from robust external sources.
 
-# Changelog: OT → Bio
+# Changelog: Bio ← OT
 
 ## Bearer token authorization
 
@@ -20,8 +20,17 @@ and used with the JSON API.
 
 ## Routing system
 
-Bio Gazelle uses the Flight router to define app routes.
+BioGazelle uses the Flight router to define app routes.
 Features include clean URIs and centralized middleware.
+
+## OpenAI integration
+
+One of BioGazelle's major goals is to place data in context.
+It uses
+[OpenAI's completions API](https://beta.openai.com/docs/api-reference/completions)
+to generate tl;dr summaries and tags from torrent descriptions.
+Just paste your abstract into the torrent group description
+and get a succinct natural language summary with torrent and SEO tags.
 
 ## Good typography
 
@@ -80,14 +89,14 @@ Besides that, BioTorrents has several passive developments in progress:
 
 ## Proper application layout
 
-Bio Gazelle takes cues from the best-of-breed PHP framework Laravel.
+BioGazelle takes cues from the best-of-breed PHP framework Laravel.
 The source code is reorganized along Laravel's lines while maintaining the comfy familiarity of OT/WCD Gazelle.
 The app logic, config, and Git repo lies outside the web root for enhanced security.
 An ongoing project involves modernizing the app based on Laravel's excellent tools.
 
 ## Decent debugging
 
-Bio Gazelle seeks to be easy and fun to develop.
+BioGazelle seeks to be easy and fun to develop.
 We're collecting the old debug class monstrosity into a nice little bar.
 There's also no more `DEBUG_MODE` or random permissions.
 There's just a dev mode that spits everything out, and a prod mode that doesn't.
@@ -101,8 +110,9 @@ There's just a dev mode that spits everything out, and a prod mode that doesn't.
 - TLS database connections
 - Semantic HTML5 themes (WIP)
 - Single entry point for app init
+- Laravel-inspired shell (`php shell`)
 
-# Changelog: WCD → OT
+# Changelog: OT ← WCD
 
 ## Integrated Database Encryption
 
