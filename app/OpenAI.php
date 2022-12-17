@@ -24,6 +24,30 @@ namespace Gazelle;
  * @see https://beta.openai.com/docs/introduction
  * @see https://github.com/openai-php/client
  * 
+ * ========================================
+ * 
+ * Database table schema:
+ * 
+CREATE TABLE `openai` (
+	`id` INT NOT NULL AUTO_INCREMENT,
+	`jobId` VARCHAR(128) NOT NULL,
+	`torrentGroupId` INT NOT NULL,
+	`object` VARCHAR(32),
+	`created` TIMESTAMP,
+	`updated` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`model` VARCHAR(32),
+	`text` TEXT,
+	`index` INT,
+	`logprobs` INT,
+	`finishReason` VARCHAR(32),
+	`promptTokens` INT,
+	`completionTokens` INT,
+	`totalTokens` INT,
+	`json` JSON,
+	KEY `torrentGroupId` (`torrentGroupId`,`text`) USING BTREE,
+	PRIMARY KEY (`id`,`jobId`,`torrentGroupId`)
+);
+ * 
  * todo: just namespace the app already
  */
 
@@ -32,7 +56,6 @@ class OpenAI
     # client and params
     public $client = null;
     private $maxTokens = 1000;
-    #private $model = "text-curie-001";
     private $model = "text-davinci-003";
 
     # cache
@@ -90,33 +113,9 @@ class OpenAI
 
         $description = \Text::parse($description);
         $description = strip_tags($description);
+        #!d($description);
 
         /*
-        # strip_bbcode
-        # https://github.com/phpbb/phpbb/blob/master/phpBB/includes/functions_content.php
-        $text = $description;
-
-        $uid = '[0-9a-z]{5,}';
-        $text = preg_replace("#\[\/?[a-z0-9\*\+\-]+(?:=(?:&quot;.*&quot;|[^\]]*))?(?::[a-z])?(\:$uid)\]#", ' ', $text);
-
-        # get_preg_expression
-        # https://github.com/phpbb/phpbb/blob/master/phpBB/includes/functions.php
-        $match = array(
-				'#<!\-\- e \-\-><a href="mailto:(.*?)">.*?</a><!\-\- e \-\->#',
-				'#<!\-\- l \-\-><a (?:class="[\w-]+" )?href="(.*?)(?:(&amp;|\?)sid=[0-9a-f]{32})?">.*?</a><!\-\- l \-\->#',
-				'#<!\-\- ([mw]) \-\-><a (?:class="[\w-]+" )?href="http://(.*?)">\2</a><!\-\- \1 \-\->#',
-				'#<!\-\- ([mw]) \-\-><a (?:class="[\w-]+" )?href="(.*?)">.*?</a><!\-\- \1 \-\->#',
-				'#<!\-\- s(.*?) \-\-><img src="\{SMILIES_PATH\}\/.*? \/><!\-\- s\1 \-\->#',
-				'#<!\-\- .*? \-\->#s',
-				'#<.*?>#s',
-		);
-
-		$replace = array('\1', '\1', '\2', '\1', '', '');
-		$text = preg_replace($match, $replace, $text);
-
-        !d($text);exit;
-        */
-
         $response = $this->client->completions()->create([
             "model" => $this->model,
             "prompt" => "Summarize in 100 words: {$description}",
@@ -125,5 +124,6 @@ class OpenAI
         ]);
 
         return $response;
+        **/
     }
 } # class

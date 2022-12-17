@@ -119,6 +119,8 @@ There's just a dev mode that spits everything out, and a prod mode that doesn't.
 - Semantic HTML5 themes (WIP)
 - Single entry point for app init
 - Laravel-inspired shell (`php shell`)
+- Dead simple PDO database wrapper, fully parameterized
+- Simple and fast Redis cache (WIP)
 
 # Changelog: OT ← WCD
 
