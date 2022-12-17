@@ -1788,6 +1788,27 @@ CREATE TABLE `xbt_snatched` (
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
+CREATE TABLE `openai` (
+	`id` INT NOT NULL AUTO_INCREMENT,
+	`jobId` VARCHAR(128) NOT NULL,
+	`groupId` INT NOT NULL,
+	`object` VARCHAR(32),
+	`created` DATETIME DEFAULT NOW(),
+	`updated` DATETIME DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP,
+	`model` VARCHAR(32),
+	`text` TEXT,
+	`index` TINYINT,
+	`logprobs` TINYINT,
+	`finishReason` VARCHAR(16),
+	`promptTokens` SMALLINT,
+	`completionTokens` SMALLINT,
+	`totalTokens` SMALLINT,
+    `failCount` TINYINT,
+	`json` JSON,
+    `type` VARCHAR(16),
+	PRIMARY KEY (`id`,`jobId`,`groupId`)
+);
+
 -- Okay, that's all for the schema structure
 -- Now we have the default values to initialize the DB with
 SET FOREIGN_KEY_CHECKS = 1;

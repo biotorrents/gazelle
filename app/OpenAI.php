@@ -39,13 +39,13 @@ CREATE TABLE `openai` (
 	`text` TEXT,
 	`index` TINYINT,
 	`logprobs` TINYINT,
-	`finishReason` VARCHAR(32),
+	`finishReason` VARCHAR(16),
 	`promptTokens` SMALLINT,
 	`completionTokens` SMALLINT,
 	`totalTokens` SMALLINT,
     `failCount` TINYINT,
 	`json` JSON,
-    `type` VARCHAR(32),
+    `type` VARCHAR(16),
 	PRIMARY KEY (`id`,`jobId`,`groupId`)
 );
  * 
@@ -120,23 +120,21 @@ class OpenAI
         }
 
         # get the torrent group description
-        $description = $app->dbNew->single("select description from torrents_group where id = ?", [$groupId]);
-        if (!$description) {
+        $query = "select description from torrents_group where id = ?";
+        $description = $app->dbNew->single($query, [$groupId]);
+
+        if (!$description || empty($description)) {
             throw new \Exception("groupId {$groupId} not found");
         }
 
         # process the description
-        $description = \Text::parse($description);
-        $description = strip_tags($description);
-        $description = \Text::oneLine($description);
-        #!d($description);exit;
+        $description = $this->processDescription($description);
 
         # query the openai api
         $response = $this->client->completions()->create([
             "model" => $this->model,
             "prompt" => "Summarize in 100 words: {$description}",
             "max_tokens" => $this->maxTokens,
-            "temperature" => 0,
         ]);
         !d($response);
 
@@ -170,8 +168,54 @@ class OpenAI
         if ($cacheHit) {
             return $cacheHit;
         }
-        
 
+        # try to get a tl;dr summary
+        $query = "select text from openai where groupId = ?";
+        $description = $app->dbNew->single($query, [$groupId]);
+
+        # get a description if no summary exists
+        if (!$description || empty($description)) {
+            $query = "select description from torrents_group where id = ?";
+            $description = $app->dbNew->single($query, [$groupId]);
+        }
+
+        if (!$description || empty($description)) {
+            throw new \Exception("groupId {$groupId} not found");
+        }
+
+        # process the description
+        $description = $this->processDescription($description);
+
+        # query the openai api
+        $response = $this->client->completions()->create([
+            "model" => $this->model,
+            "prompt" => "List 10 comma-separated keywords for: {$description}",
+            "max_tokens" => $this->maxTokens,
+        ]);
+        !d($response);
+
+        # cast to an array and save to the database
+        $response = $response->toArray();
+        $this->insertResponse($groupId, "keywords", $response);
+        
+        $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
+        return $response;
+
+    }
+
+
+    /**
+     * processDescription
+     * 
+     * Remove garbage from a text prompt.
+     */
+    private function processDescription(string $description): string
+    {
+        $description = \Text::parse($description);
+        $description = strip_tags($description);
+        $description = \Text::oneLine($description);
+
+        return $description;
     }
 
 
