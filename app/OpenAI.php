@@ -56,7 +56,7 @@ class OpenAI
 {
     # client and params
     public $client = null;
-    private $maxTokens = 1000;
+    private $maxTokens = 1000; # $0.01
     private $model = "text-davinci-003";
 
     # cache settings
@@ -90,7 +90,6 @@ class OpenAI
             "model" => $this->model,
             "prompt" => $prompt,
             "max_tokens" => $this->maxTokens,
-            "temperature" => 0,
         ]);
 
         return $response;
@@ -109,7 +108,7 @@ class OpenAI
     {
         $app = \App::go();
 
-        $app->debug["time"]->startMeasure("summarize", "openai: summarize torrent group description");
+        $app->debug["time"]->startMeasure("summarize", "openai: summarize groupId {$groupId}");
 
         # return cached if available
         $cacheKey = "{$this->cachePrefix}_summary_{$groupId}";
@@ -124,7 +123,7 @@ class OpenAI
         $description = $app->dbNew->single($query, [$groupId]);
 
         if (!$description || empty($description)) {
-            throw new \Exception("groupId {$groupId} not found");
+            throw new \Exception("groupId {$groupId} not found or descrription empty");
         }
 
         # process the description
@@ -159,14 +158,14 @@ class OpenAI
     {
         $app = \App::go();
 
-        $app->debug["time"]->startMeasure("keywords", "openai: keywords from summary or torrent group description");
+        $app->debug["time"]->startMeasure("keywords", "openai: keywords for groupId {$groupId}");
 
         # return cached if available
         $cacheKey = "{$this->cachePrefix}_keywords_{$groupId}";
         $cacheHit = $app->cacheOld->get_value($cacheKey);
                         
         if ($cacheHit) {
-            return $cacheHit;
+            #return $cacheHit;
         }
 
         # try to get a tl;dr summary
@@ -180,7 +179,7 @@ class OpenAI
         }
 
         if (!$description || empty($description)) {
-            throw new \Exception("groupId {$groupId} not found");
+            throw new \Exception("groupId {$groupId} not found or descrription empty");
         }
 
         # process the description
@@ -189,7 +188,7 @@ class OpenAI
         # query the openai api
         $response = $this->client->completions()->create([
             "model" => $this->model,
-            "prompt" => "List 10 comma-separated keywords for: {$description}",
+            "prompt" => "List 10 keywords as a JSON array: {$description}",
             "max_tokens" => $this->maxTokens,
         ]);
         !d($response);
@@ -197,6 +196,21 @@ class OpenAI
         # cast to an array and save to the database
         $response = $response->toArray();
         $this->insertResponse($groupId, "keywords", $response);
+
+        # process response into an array
+        $keywords = json_decode(\Text::oneLine($response["choices"][0]["text"]), true);
+        if (!is_array($keywords)) {
+            throw new \Exception("openai fucked up jobId {$response["id"]}");
+        }
+
+        # convert to gazelle tags
+        foreach ($keywords as $key => $value) {
+            $value = strtolower(trim($value));
+            $value = str_replace(" ", ".", $value);
+            $value = str_replace("..", ".", $value);
+            $keywords[$key] = $value;
+        }
+        !d($keywords);
         
         $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
         return $response;
