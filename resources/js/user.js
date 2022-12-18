@@ -1,5 +1,8 @@
 "use strict";
 
+/**
+ * ChangeTo
+ */
 function ChangeTo(to) {
   if (to == "text") {
     $("#admincommentlinks").ghide();
@@ -24,12 +27,18 @@ function ChangeTo(to) {
   }
 }
 
+/**
+ * UncheckIfDisabled
+ */
 function UncheckIfDisabled(checkbox) {
   if (checkbox.disabled) {
     checkbox.checked = false;
   }
 }
 
+/**
+ * AlterParanoia
+ */
 function AlterParanoia() {
   // Required Ratio is almost deducible from downloaded, the count of seeding and the count of snatched
   // we will "warn" the user by automatically checking the required ratio box when they are
@@ -122,6 +131,9 @@ function AlterParanoia() {
   }
 }
 
+/**
+ * ParanoiaReset
+ */
 function ParanoiaReset(checkbox, drops) {
   var selects = $("select");
   for (var i = 0; i < selects.length; i++) {
@@ -156,15 +168,24 @@ function ParanoiaReset(checkbox, drops) {
   }
 }
 
+/**
+ * ParanoiaResetOff
+ */
 function ParanoiaResetOff() {
   ParanoiaReset(true, 0);
 }
 
+/**
+ * ParanoiaResetStats
+ */
 function ParanoiaResetStats() {
   ParanoiaReset(3, 0);
   $("input[name=p_collages_l]").raw().checked = false;
 }
 
+/**
+ * ParanoiaResetOn
+ */
 function ParanoiaResetOn() {
   ParanoiaReset(false, 0);
   $("input[name=p_collages_c]").raw().checked = false;
@@ -173,6 +194,9 @@ function ParanoiaResetOn() {
 
 document.addEventListener("DOMContentLoaded", AlterParanoia);
 
+/**
+ * ToggleWarningAdjust
+ */
 function ToggleWarningAdjust(selector) {
   if (selector.options[selector.selectedIndex].value == "---") {
     $("#ReduceWarningTR").gshow();
@@ -185,6 +209,9 @@ function ToggleWarningAdjust(selector) {
 
 document.addEventListener("DOMContentLoaded", ToggleIdenticons);
 
+/**
+ * ToggleIdenticons
+ */
 function ToggleIdenticons() {
   var disableAvatars = $("#disableavatars");
   if (disableAvatars.length) {
@@ -197,6 +224,9 @@ function ToggleIdenticons() {
   }
 }
 
+/**
+ * userform_submit
+ */
 function userform_submit() {
   if ($("#resetpasskey").is(":checked")) {
     if (!confirm("Are you sure you want to reset your passkey?")) {
@@ -206,6 +236,9 @@ function userform_submit() {
   return formVal();
 }
 
+/**
+ * togglePassKey
+ */
 function togglePassKey(key) {
   if ($("#passkey").raw().innerHTML == "View") {
     $("#passkey").raw().innerHTML = key;
@@ -214,6 +247,9 @@ function togglePassKey(key) {
   }
 }
 
+/**
+ * commStats
+ */
 function commStats(userid) {
   $(".user_commstats").html("Loading&hellip;");
   console.log(userid);
@@ -232,6 +268,9 @@ function commStats(userid) {
   );
 }
 
+/**
+ * displayCommStats
+ */
 function displayCommStats(stats) {
   var baseid = "#user_commstats_";
   for (x in stats) {
@@ -271,7 +310,9 @@ function displayCommStats(stats) {
   }
 }
 
-// Generate random passwords
+/**
+ * pwgen
+ */
 function pwgen(field) {
   $.ajax({
     url: "/sections/pwgen/diceware.php",

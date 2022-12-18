@@ -10,7 +10,7 @@ $app = App::go();
 
 $get = Http::query("get");
 $post = Http::query("post");
-!d($post);
+#!d($post);
 $server = Http::query("server");
 
 
