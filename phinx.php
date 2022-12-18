@@ -8,7 +8,7 @@ declare(strict_types=1);
  */
 
 # composer autoload
-require_once __DIR__."/../vendor/autoload.php";
+require_once __DIR__."/vendor/autoload.php";
 
 # load the app
 $app = App::go();
@@ -34,7 +34,7 @@ return
             "user" => $app->env->getPriv("sqlUsername"),
             "pass" => $app->env->getPriv("sqlPassphrase"),
             "port" => $app->env->getPriv("sqlPort"),
-            "charset" => "utf8",
+            "charset" => "utf8mb4",
         ],
 
         "development" => [
@@ -44,7 +44,7 @@ return
             "user" => $app->env->getPriv("sqlUsername"),
             "pass" => $app->env->getPriv("sqlPassphrase"),
             "port" => $app->env->getPriv("sqlPort"),
-            "charset" => "utf8",
+            "charset" => "utf8mb4",
         ],
 
         /*
@@ -60,5 +60,5 @@ return
         */
     ],
 
-    "version_order" => "creation"
+    "version_order" => "creation",
 ];

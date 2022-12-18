@@ -119,7 +119,7 @@ class Twig # extends Twig\Environment
                     }
                     return $csrf->insertToken($lock_to, false);
                 },
-                ["is_safe" => ["html"]]
+                [ "is_safe" => ["html"] ]
             )
         );
 

@@ -23,7 +23,9 @@ $file = $path["filename"];
 # dump tards
 if ($path["dirname"] !== "/") {
     Http::response(403);
-} elseif (in_array($file, ["announce", "info_hash", "peer_id", "scrape"])) {
+}
+
+if (in_array($file, ["announce", "info_hash", "peer_id", "scrape"])) {
     die("d14:failure reason40:Invalid .torrent, try downloading again.e");
 }
 
@@ -41,7 +43,7 @@ require_once __DIR__."/../config/app.php";
 require_once __DIR__."/../bootstrap/utilities.php";
 
 # web vs. api bootstrap
-# (cli is included directly)
+# cli is included directly
 if ($document !== "api") {
     require_once __DIR__."/../bootstrap/web.php";
 } else {
