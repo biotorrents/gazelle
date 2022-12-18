@@ -10,6 +10,7 @@ $app = App::go();
 
 $get = Http::query("get");
 $post = Http::query("post");
+!d($post);
 $server = Http::query("server");
 
 
@@ -209,11 +210,11 @@ $app->twig->display("torrents/browse.twig", [
   #"hideBasic" => $HideBasic,
   "hideAdvanced" => false,
   #"hideAdvanced" => $HideAdvanced,
-  "nucleoSeq" => array_merge((array) $app->env->META->Formats->Sequences, (array) $app->env->META->Formats->Plain),
-  "protSeq" => array_merge((array) $app->env->META->Formats->Proteins, (array) $app->env->META->Formats->Plain),
+  "nucleoSeq" => $app->env->META->Formats->Sequences,
+  "protSeq" => $app->env->META->Formats->Proteins,
   "xmls" => array_merge((array) $app->env->META->Formats->GraphXml, (array) $app->env->META->Formats->GraphTxt, (array) $app->env->META->Formats->Plain),
-  "raster" => array_merge((array) $app->env->META->Formats->ImgRaster, (array) $app->env->META->Formats->ImgVector, (array) $app->env->META->Formats->MapRaster, (array) $app->env->META->Formats->Plain),
-  "vector" => array_merge((array) $app->env->META->Formats->MapVector, (array) $app->env->META->Formats->Plain),
+  "raster" => array_merge((array) $app->env->META->Formats->ImgRaster, (array) $app->env->META->Formats->MapRaster),
+  "vector" => array_merge((array) $app->env->META->Formats->ImgVector, (array) $app->env->META->Formats->MapVector),
   "extras" => array_merge((array) $app->env->META->Formats->BinDoc, (array) $app->env->META->Formats->CpuGen, (array) $app->env->META->Formats->Plain),
   "searchHasFilters" => $Search->has_filters(),
   "resultCount" => Text::float($NumResults),

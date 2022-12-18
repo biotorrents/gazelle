@@ -2,7 +2,7 @@
  # main torrent search form
  #}
 
-<form class="search_form" name="torrents" method="post" onsubmit="$(this).disableUnset();">
+<form class="search_form" name="torrents" method="post" {# onsubmit="$(this).disableUnset();" #}>
 
     {# csrf token #}
     {{ form_token(query.server.REQUEST_URI) }}
@@ -125,11 +125,19 @@
             <td class="nobr ft_ripspecifics">
 
               <select name="media" class="ft_media fti_advanced">
-                <option value="">Sequences</option>
+                <option value="Sequences">Sequences</option>
+
                 {% for platform in env.META.Platforms.Sequences %}
-                <option value="{{ platform }}"
-                {# {{ (query.post.media == platform) ?? "selected" }} #}
-                >
+
+
+                {% if query.post.media == platform %}
+                {% set selected = "selected" %}
+                {% else %}
+                {% set selected = "" %}
+                {% endif %}
+
+                
+                <option value="{{ platform }}" {{ selected }}>
                   {{ platform }}
                 </option>
                 {% endfor %}
@@ -138,34 +146,28 @@
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Graphs</option>
                 {% for platform in env.META.Platforms.Graphs %}
-                <option value="{{ platform }}"
-                {# {{ (query.post.media == platform) ?? "selected" }} #}
-                >
+                <option value="{{ platform }}" {# {{ (query.post.media == platform) ?? "selected" }} #}>
                   {{ platform }}
                 </option>
-                             {% endfor %}
+                {% endfor %}
               </select>
 
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Images</option>
                 {% for platform in env.META.Platforms.Images %}
-                <option value="{{ platform }}"
-                {# {{ (query.post.media == platform) ?? "selected" }} #}
-                >
+                <option value="{{ platform }}" {# {{ (query.post.media == platform) ?? "selected" }} #}>
                   {{ platform }}
                 </option>     
-                        {% endfor %}
+                {% endfor %}
               </select>
 
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Documents</option>
                 {% for platform in env.META.Platforms.Documents %}
-                <option value="{{ platform }}"
-                {# {{ (query.post.media == platform) ?? "selected" }} #}
-                >
+                <option value="{{ platform }}" {# {{ (query.post.media == platform) ?? "selected" }} #}>
                   {{ platform }}
                 </option>      
-                       {% endfor %}
+                {% endfor %}
               </select>
 
             </td>
@@ -180,9 +182,7 @@
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">NucleoSeq</option>
                 {% for key, value in nucleoSeq %}
-                <option value="{{ key }}"
-                  {# {{ (query.post.container == key) ?? "selected" }} #}
-                  >
+                <option value="{{ key }}" {# {{ (query.post.container == key) ?? "selected" }} #}>
                   {{ key }}
                 </option>
                 {% endfor %}
@@ -191,57 +191,47 @@
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">ProtSeq</option>
                 {% for key, value in protSeq %}
-                <option value="{{ key }}"
-                  {# {{ (query.post.container == key) ?? "selected" }} #}
-                  >
+                <option value="{{ key }}" {# {{ (query.post.container == key) ?? "selected" }} #}>
                   {{ key }}
                 </option>    
-                           {% endfor %}
+               {% endfor %}
               </select>
 
 
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">XMLs</option>
                 {% for key, value in xmls %}
-                <option value="{{ key }}"
-                  {# {{ (query.post.container == key) ?? "selected" }} #}
-                  >
+                <option value="{{ key }}" {# {{ (query.post.container == key) ?? "selected" }} #}>
                   {{ key }}
                 </option>       
-                        {% endfor %}
+                 {% endfor %}
               </select>
 
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">Raster</option>
                 {% for key, value in raster %}
-                <option value="{{ key }}"
-                  {# {{ (query.post.container == key) ?? "selected" }} #}
-                  >
+                <option value="{{ key }}" {# {{ (query.post.container == key) ?? "selected" }} #}>
                   {{ key }}
                 </option>      
-                         {% endfor %}
+                {% endfor %}
               </select>
 
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">Vector</option>
                 {% for key, value in vector %}
-                <option value="{{ key }}"
-                  {# {{ (query.post.container == key) ?? "selected" }} #}
-                  >
+                <option value="{{ key }}" {# {{ (query.post.container == key) ?? "selected" }} #}>
                   {{ key }}
                 </option>
-                          {% endfor %}
+                {% endfor %}
               </select>
 
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">Extras</option>
                 {% for key, value in extras %}
-                <option value="{{ key }}"
-                  {# {{ (query.post.container == key) ?? "selected" }} #}
-                  >
+                <option value="{{ key }}" {# {{ (query.post.container == key) ?? "selected" }} #}>
                   {{ key }}
                 </option>       
-                        {% endfor %}
+               {% endfor %}
               </select>
 
             </td>
@@ -256,10 +246,7 @@
                 <option value="">Scope</option>
 
                   {% for resolution in resolutions %}
-                <option
-                  value="{{ resolution }}"
-                     {# {{ (query.post.resolution == resolution) ?? "selected" }} #}
-                     >
+                <option value="{{ resolution }}" {# {{ (query.post.resolution == resolution) ?? "selected" }} #}>
                  {{ resolution }}
                 </option>
                 {% endfor %}
@@ -269,15 +256,11 @@
               <select name=" censored" class="ft_censored fti_advanced">
                 <option value="">Alignment</option>
 
-                <option value="1"
-                     {# {{ (query.post.censored == 1) ?? "selected" }} #}
-                     >
+                <option value="1" {# {{ (query.post.censored == 1) ?? "selected" }} #}>
                   Aligned
                 </option>
 
-                <option value="0"
-                     {# {{ (query.post.censored == 0) ?? "selected" }} #}
-                     >
+                <option value="0" {# {{ (query.post.censored == 0) ?? "selected" }} #}>
                   Not Aligned
                 </option>
               </select>
@@ -286,27 +269,19 @@
               <select name="freetorrent" class="ft_freetorrent fti_advanced">
                 <option value="">Leech Status</option>
 
-                <option value="1"
-                     {# {{ (query.post.freetorrent == 1) ?? "selected" }} #}
-                     >
+                <option value="1" {# {{ (query.post.freetorrent == 1) ?? "selected" }} #}>
                   Freeleech
                 </option>
 
-                <option value="2"
-                     {# {{ (query.post.freetorrent == 2) ?? "selected" }} #}
-                     >
+                <option value="2" {# {{ (query.post.freetorrent == 2) ?? "selected" }} #}>
                   Neutral Leech
                 </option>
 
-                <option value="3"
-                     {# {{ (query.post.freetorrent == 3) ?? "selected" }} #}
-                     >
+                <option value="3" {# {{ (query.post.freetorrent == 3) ?? "selected" }} #}>
                   Either
                 </option>
 
-                <option value="0"
-                     {# {{ (query.post.freetorrent == 0) ?? "selected" }} #}
-                     >
+                <option value="0" {# {{ (query.post.freetorrent == 0) ?? "selected" }} #}>
                   Normal
                 </option>
 
@@ -316,9 +291,7 @@
               <select name="codec" class="ft_codec fti_advanced">
                 <option value="">License</option>
                   {% for license in env.META.Licenses %}
-                <option value="{{ license }}"
-                     {# {{ (query.post.codec == license) ?? "selected" }} #}
-                     >
+                <option value="{{ license }}" {# {{ (query.post.codec == license) ?? "selected" }} #}>
                    {{ license }}
                 </option>
                 {% endfor %}
@@ -330,42 +303,35 @@
           <tr id="size" class="ftr_advanced{{ hideAdvanced }}">
             <td class="label">Size</td>
             <td class="ft_size">
+
               <input type="size_min" spellcheck="false" size="6" name="size_min" class="inputtext smaller fti_advanced"
                 placeholder="Min" value="{{ query.post.size_min ?? null }}" />
+
               &ndash;
+
               <input type="size_max" spellcheck="false" size="6" name="size_max" class="inputtext smaller fti_advanced"
                 placeholder="Max" value="{{ query.post.size_max ?? null }}" />
+
               <select name="size_unit" class="ft_size fti_advanced">
                 <option value="">Unit</option>
 
-
-                <option value="0"
-                     {# {{ (query.post.size_unit == 0) ?? "selected" }} #}
-                     >
+                <option value="0" {# {{ (query.post.size_unit == 0) ?? "selected" }} #}>
                   B
                 </option>
 
-                <option value="1"
-                     {# {{ (query.post.size_unit == 0) ?? "selected" }} #}
-                     >
+                <option value="1" {# {{ (query.post.size_unit == 0) ?? "selected" }} #}>
                   KiB
                 </option>
 
-                <option value="2"
-                     {# {{ (query.post.size_unit == 0) ?? "selected" }} #}
-                     >
+                <option value="2" {# {{ (query.post.size_unit == 0) ?? "selected" }} #}>
                   MiB
                 </option>
 
-                <option value="3"
-                     {# {{ (query.post.size_unit == 0) ?? "selected" }} #}
-                     >
+                <option value="3" {# {{ (query.post.size_unit == 0) ?? "selected" }} #}>
                   GiB
                 </option>
 
-                <option value="4"
-                     {# {{ (query.post.size_unit == 0) ?? "selected" }} #}
-                     >
+                <option value="4" {# {{ (query.post.size_unit == 0) ?? "selected" }} #}>
                   TiB
                 </option>
               </select>
@@ -413,28 +379,67 @@
             <td class="label">Order By</td>
             <td class="ft_order">
               <select name="order_by" style="width: auto;" class="ft_order_by" aria-label="Property to order by">
-                <option value="time" <?Format::selected('order_by', 'time')?>>Time
-                  Added</option>
-                <option value="year" <?Format::selected('order_by', 'year')?>>Year
+                <option value="time"
+                {# {{ (query.post.order_by == "time") ?? "selected" }} #}
+                  >
+                  Time Added
                 </option>
-                <option value="size" <?Format::selected('order_by', 'size')?>>Size
+
+                <option value="year"
+                 {# {{ (query.post.order_by == "year") ?? "selected" }} #}
+                 >
+                  Year
                 </option>
-                <option value="snatched" <?Format::selected('order_by', 'snatched')?>>Snatched
+
+                <option value="size"
+                {# {{ (query.post.order_by == "size") ?? "selected" }} #}
+                >
+                  Size
                 </option>
-                <option value="seeders" <?Format::selected('order_by', 'seeders')?>>Seeders
+
+                <option value="snatched"
+                {# {{ (query.post.order_by == "snatched") ?? "selected" }} #}
+                >
+                  Snatched
                 </option>
-                <option value="leechers" <?Format::selected('order_by', 'leechers')?>>Leechers
+
+                <option value="seeders"
+                {# {{ (query.post.order_by == "seeders") ?? "selected" }} #}
+                >
+                  Seeders
                 </option>
-                <option value="cataloguenumber" <?Format::selected('order_by', 'cataloguenumber')?>>Accession
-                  Number</option>
-                <option value="random" <?Format::selected('order_by', 'random')?>>Random
+
+                <option value="leechers"   
+                 {# {{ (query.post.order_by == "leechers") ?? "selected" }} #}
+                >
+                  Leechers
                 </option>
+
+                <option value="cataloguenumber"      
+                {# {{ (query.post.order_by == "cataloguenumber") ?? "selected" }} #}
+                >
+                  Accession Number
+                </option>
+
+                <option value="random"
+                {# {{ (query.post.order_by == "random") ?? "selected" }} #}
+                >
+                  Random
+                </option>
+
               </select>
 
               <select name="order_way" class="ft_order_way" aria-label="Direction to order">
-                <option value="desc" <?Format::selected('order_way', 'desc')?>>Descending
+                <option value="desc"
+                {# {{ (query.post.order_way == "desc") ?? "selected" }} #}
+                >
+                  Descending
                 </option>
-                <option value="asc" <?Format::selected('order_way', 'asc')?>>Ascending
+
+                <option value="asc"
+                {# {{ (query.post.order_way == "asc") ?? "selected" }} #}
+                >
+                  Ascending
                 </option>
               </select>
             </td>
