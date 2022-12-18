@@ -103,7 +103,7 @@ View::header(
       <input type="hidden" name="auth"
         value="<?=$user['AuthKey']?>" />
       <input type="hidden" name="forum" value="<?=$ForumID?>" />
-      <table id="newthreadtext" class="new_thread skeleton-fix">
+      <table id="newthreadtext" class="new_thread skeletonFix">
         <tr>
           <td class="label">Title</td>
           <td><input id="title" class="required" type="text" name="title" style="width: 98%;" /></td>

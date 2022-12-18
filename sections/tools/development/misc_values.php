@@ -13,7 +13,7 @@ if (!check_perms('admin_manage_permissions')) {
   <h1>Miscellaneous Values</h1>
 </div>
 
-<table class="skeleton-fix">
+<table class="skeletonFix">
   <tr>
     <th>Name</th>
     <th>First</th>

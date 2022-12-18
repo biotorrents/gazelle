@@ -128,7 +128,7 @@ View::header(
       </div>
 
       <!-- Main table -->
-      <table class="skeleton-fix">
+      <table class="skeletonFix">
         <tr>
           <td colspan="2" class="center">Please make sure your request follows the
             <a href="/rules/requests">request rules</a>!

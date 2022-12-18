@@ -1171,7 +1171,7 @@ if (check_perms('users_mod', $Class)) { ?>
       </div>
     </div>
 
-    <table class="box skeleton-fix" id="user_info_box">
+    <table class="box skeletonFix" id="user_info_box">
       <tr class="colhead">
         <td colspan="2">
           User Information
@@ -1443,7 +1443,7 @@ if (!$DisablePoints) {
     </table>
 
     <?php if (check_perms('users_warn')) { ?>
-    <table class="box skeleton-fix" id="warn_user_box">
+    <table class="box skeletonFix" id="warn_user_box">
       <tr class="colhead">
         <td colspan="2">
           Warnings
@@ -1505,7 +1505,7 @@ if (!$DisablePoints) {
       <?php } ?>
     </table>
     <?php if (check_perms('users_disable_any')) { ?>
-    <table class="box skeleton-fix" id="user_lock_account">
+    <table class="box skeletonFix" id="user_lock_account">
       <tr class="colhead">
         <td colspan="2">
           Lock Account
@@ -1531,7 +1531,7 @@ if (!$DisablePoints) {
       </tr>
     </table>
     <?php }  ?>
-    <table class="box skeleton-fix" id="user_privs_box">
+    <table class="box skeletonFix" id="user_privs_box">
       <tr class="colhead">
         <td colspan="2">
           User Privileges
@@ -1652,7 +1652,7 @@ if (!$DisablePoints) {
   } ?>
     </table>
     <?php if (check_perms('users_logout')) { ?>
-    <table class="box skeleton-fix" id="session_box">
+    <table class="box skeletonFix" id="session_box">
       <tr class="colhead">
         <td colspan="2">
           Session
@@ -1670,7 +1670,7 @@ if (!$DisablePoints) {
     <?php
   }
 ?>
-    <table class="box skeleton-fix" id="submit_box">
+    <table class="box skeletonFix" id="submit_box">
       <tr class="colhead">
         <td colspan="2">
           Submit

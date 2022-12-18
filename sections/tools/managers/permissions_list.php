@@ -33,7 +33,7 @@ $db->prepared_query("
 if ($db->has_results()) {
     ?>
   <div class="box">
-  <table class="skeleton-fix">
+  <table class="skeletonFix">
     <tr class="colhead">
       <td>Name</td>
       <td>Level</td>

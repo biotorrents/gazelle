@@ -170,7 +170,7 @@ $db->set_query_id($RS);
   </div>
   <?php } ?>
 
-  <table class="skeleton-fix">
+  <table class="skeletonFix">
     <tr>
       <th>Article</th>
       <th>Last updated on</th>

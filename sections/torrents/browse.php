@@ -301,7 +301,7 @@ View::header('Browse Torrents', 'browse');
         <?php
         } ?>
 
-        <table class="torrent_search skeleton-fix">
+        <table class="torrent_search skeletonFix">
           <tr id="numbers" class="ftr_advanced<?=$HideAdvanced?>">
             <td class="label">
               <!--

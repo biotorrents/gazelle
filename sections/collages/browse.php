@@ -180,7 +180,7 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
         <input type="hidden" name="action" value="search" />
       </div>
 
-      <table cellpadding="6" cellspacing="1" border="0" class="skeleton-fix" width="100%">
+      <table cellpadding="6" cellspacing="1" border="0" class="skeletonFix" width="100%">
         <tr id="search_terms">
           <td class="label"></td>
           <td>
