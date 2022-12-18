@@ -235,7 +235,7 @@ define("DISABLED_CHAN", "#support");
  */
 
 # enable donation page
-ENV::setPub("FEATURE_DONATE", true);
+ENV::setPub("enableDonations", true);
 
 # send re-enable requests to user's email
 define("FEATURE_EMAIL_REENABLE", true);

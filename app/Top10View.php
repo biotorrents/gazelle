@@ -11,7 +11,7 @@ class Top10View
   <a href="top10.php?type=torrents" class="brackets"><?=self::get_selected_link("Torrents", $Selected === "torrents")?></a>
   <a href="top10.php?type=users" class="brackets"><?=self::get_selected_link("Users", $Selected === "users")?></a>
   <a href="top10.php?type=tags" class="brackets"><?=self::get_selected_link("Tags", $Selected === "tags")?></a>
-  <?php if ($ENV->FEATURE_DONATE) { ?>
+  <?php if ($ENV->enableDonations) { ?>
   <a href="top10.php?type=donors" class="brackets"><?=self::get_selected_link("Donors", $Selected === "donors")?></a>
   <?php } ?>
 </div>

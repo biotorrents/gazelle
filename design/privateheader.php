@@ -288,7 +288,7 @@ if (check_perms('site_send_unlimited_invites')) {
           <a href="user.php?action=invite">Invite<?=$Invites?></a>
         </li>
 
-        <?php if ($ENV->FEATURE_DONATE) { ?>
+        <?php if ($ENV->enableDonations) { ?>
         <li id="nav_donate">
           <a href="donate.php">Donate</a>
         </li>
