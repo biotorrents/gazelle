@@ -1,15 +1,19 @@
-{# main torrent search form #}
-<form class="search_form" name="torrents" method="get" onsubmit="$(this).disableUnset();">
+{##
+ # main torrent search form
+ #}
+
+<form class="search_form" name="torrents" method="post" onsubmit="$(this).disableUnset();">
 
     {# csrf token #}
     {{ form_token(query.server.REQUEST_URI) }}
 
+    {# basic/advanced filter #}
     <div class="box filter_torrents">
       <div class="head">
         <strong>
-          <span id="ft_basic" class="<?=$HideBasic?>">Basic Search
+          <span id="ft_basic" class="{{ hideBasic }}">Basic Search
             (<a class="clickable" onclick="toggleTorrentSearch('advanced')">Advanced</a>)</span>
-          <span id="ft_advanced" class="<?=$HideAdvanced?>">Advanced
+          <span id="ft_advanced" class="{{ hideAdvanced }}">Advanced
             Search (<a class="clickable" onclick="toggleTorrentSearch('basic')">Basic</a>)</span>
         </strong>
         <span class="u-pull-right">
@@ -38,7 +42,7 @@
 
 
 
-          <tr id="numbers" class="ftr_advanced<?=$HideAdvanced?>">
+          <tr id="numbers" class="ftr_advanced{{ hideAdvanced }}">
 
 
             <td class="label">
@@ -48,75 +52,75 @@
             </td>
             <td class="ft_numbers">
               <input type="search" size="30" name="numbers" class="inputtext smallest fti_advanced"
-                placeholder="Accession Number / Version" value="<?Format::form('numbers')?>" />
+                placeholder="Accession Number / Version" value="{{ query.post.numbers ?? null }}" />
             </td>
           </tr>
 
           <tr id="album_torrent_title"
-            class="ftr_advanced<?=$HideAdvanced?>">
+            class="ftr_advanced{{ hideAdvanced }}">
             <td class="label">
               {# Torrent Title / Organism / Strain or Variety #}
             </td>
             <td class="ft_groupname">
               <input type="search" spellcheck="false" size="65" name="advgroupname"
                 class="inputtext smaller fti_advanced" placeholder="Torrent Title / Organism / Strain or Variety"
-                value="<?Format::form('advgroupname')?>" />
+                value="{{ query.post.advgroupname ?? null }}" />
             </td>
           </tr>
 
           <tr id="artist_name"
-            class="ftr_advanced<?=$HideAdvanced?>">
+            class="ftr_advanced{{ hideAdvanced }}">
             <td class="label">
               {# Artist Name #}
             </td>
             <td class="ft_artistname">
               <input type="search" spellcheck="false" size="65" id="artist" name="artistname"
                 class="inputtext smaller fti_advanced" placeholder="Author (ORCiD pending)"
-                value="<?Format::form('artistname')?>" />
+                value="{{ query.post.artistname ?? null }}" />
             </td>
           </tr>
 
-          <tr id="location" class="ftr_advanced<?=$HideAdvanced?>">
+          <tr id="location" class="ftr_advanced{{ hideAdvanced }}">
             <td class="label">
               {# Studio / Series #}
             </td>
             <td class="ft_location">
               <input type="search" name="location" class="inputtext smallest fti_advanced"
-                placeholder="Department or Lab / Location" value="<?Format::form('location')?>" size="40" />
+                placeholder="Department or Lab / Location" value="{{ query.post.location ?? null }}" size="40" />
 
               {# Year #}
               <input type="search" name="year" class="inputtext smallest fti_advanced" placeholder="Year"
-                value="<?Format::form('year')?>" size="20" />
+                value="{{ query.post.year ?? null }}" size="20" />
             </td>
           </tr>
 
           <tr id="torrent_description"
-            class="ftr_advanced<?=$HideAdvanced?>">
+            class="ftr_advanced{{ hideAdvanced }}">
             <td class="label">
               {# Torrent Description #}
             </td>
             <td class="ft_description">
               <input type="search" spellcheck="false" size="65" name="description" class="inputtext fti_advanced"
                 placeholder="Torrent Description"
-                value="<?php Format::form('description') ?>" /><br /><br />
+                value="{{ query.post.description ?? null }}" /><br /><br />
               Search torrent descriptions (not group information)
             </td>
           </tr>
 
-          <tr id="file_list" class="ftr_advanced<?=$HideAdvanced?>">
+          <tr id="file_list" class="ftr_advanced{{ hideAdvanced }}">
             <td class="label">
               {# File List #}
             </td>
             <td class="ft_filelist">
               <input type="search" spellcheck="false" size="65" name="filelist" class="inputtext fti_advanced"
-                placeholder="File List" value="<?Format::form('filelist')?>" /><br /><br />
+                placeholder="File List" value="{{ query.post.filelist ?? null }}" /><br /><br />
               Universal Search finds info hashes
             </td>
           </tr>
 
           {# Platforms #}
           <tr id="rip_specifics"
-            class="ftr_advanced<?=$HideAdvanced?>">
+            class="ftr_advanced{{ hideAdvanced }}">
             <td class="label">Platforms</td>
             <td class="nobr ft_ripspecifics">
 
@@ -165,7 +169,7 @@
 
           {# Formats #}
           <tr id="rip_specifics"
-            class="ftr_advanced<?=$HideAdvanced?>">
+            class="ftr_advanced{{ hideAdvanced }}">
             <td class="label">Formats</td>
             <td class="nobr ft_ripspecifics">
 
@@ -228,18 +232,18 @@
           </tr>
 
           {# Misc #}
-          <tr id="misc" class="ftr_advanced<?=$HideAdvanced?>">
+          <tr id="misc" class="ftr_advanced{{ hideAdvanced }}">
             <td class="label">Misc</td>
             <td class="nobr ft_misc">
 
               <select name="resolution" class="ft_resolution fti_advanced">
                 <option value="">Scope</option>
-                <?php foreach ($Resolutions as $Resolution) { ?>
+                  {% for resolution in resolutions %}
                 <option
-                  value="<?=Text::esc($Resolution);?>"
-                  <?Format::selected('resolution', $Resolution)?>><?=Text::esc($Resolution); ?>
+                  value="<?=Text::esc({{ resolution }});?>"
+                  <?Format::selected('resolution', {{ resolution }})?>><?=Text::esc({{ resolution }}); ?>
                 </option>
-                <?php } ?>
+                {% endfor %}
               </select>
 
               {# Aligned/Censored #}
@@ -263,24 +267,24 @@
               {# Codec/License #}
               <select name="codec" class="ft_codec fti_advanced">
                 <option value="">License</option>
-                <?php foreach ($app->env->META->Licenses as $License) { ?>
-                <option value="<?=Text::esc($License); ?>"
-                  <?Format::selected('codec', $License)?>><?=Text::esc($License); ?>
+                  {% for license in env.META.Licenses %}
+                <option value="<?=Text::esc({{ license }}); ?>"
+                  <?Format::selected('codec', {{ license }})?>><?=Text::esc({{ license }}); ?>
                 </option>
-                <?php } ?>
+                {% endfor %}
               </select>
             </td>
           </tr>
 
           {# Size #}
-          <tr id="size" class="ftr_advanced<?=$HideAdvanced?>">
+          <tr id="size" class="ftr_advanced{{ hideAdvanced }}">
             <td class="label">Size</td>
             <td class="ft_size">
               <input type="size_min" spellcheck="false" size="6" name="size_min" class="inputtext smaller fti_advanced"
-                placeholder="Min" value="<?Format::form('size_min')?>" />
+                placeholder="Min" value="{{ query.post.size_min ?? null }}" />
               &ndash;
               <input type="size_max" spellcheck="false" size="6" name="size_max" class="inputtext smaller fti_advanced"
-                placeholder="Max" value="<?Format::form('size_max')?>" />
+                placeholder="Max" value="{{ query.post.size_max ?? null }}" />
               <select name="size_unit" class="ft_size fti_advanced">
                 <option value="">Unit</option>
                 <option value="0" <?Format::selected('size_unit', 0)?>>B
@@ -298,13 +302,13 @@
           </tr>
 
           {# Start basic search options #}
-          <tr id="search_terms" class="ftr_basic<?=$HideBasic?>">
+          <tr id="search_terms" class="ftr_basic{{ hideBasic }}">
             <td class="label">
               {# Universal Search #}
             </td>
             <td class="ftb_search">
               <input type="search" spellcheck="false" size="48" name="search" class="inputtext fti_basic"
-                placeholder="Universal Search" value="<?Format::form('search')?>" aria-label="Terms to search">
+                placeholder="Universal Search" value="{{ query.post.search ?? null }}" aria-label="Terms to search">
             </td>
           </tr>
 
@@ -473,9 +477,9 @@
           <input type="submit" name="setdefault" value="Make Default" />
           <?php }
 
-      if (!empty($app->userNew->extra['DefaultSearch'])) { ?>
+          {% if user.extra.DefaultSearch is defined %}
           <input type="submit" name="cleardefault" value="Clear Default" />
-          <?php } ?>
+          {% endif %}
         </div>
       </div>
     </div>

@@ -198,6 +198,39 @@ if ($AdvancedSearch) {
     $HideAdvanced = ' hidden';
 }
 
+
+/**
+ * VIEW THE TWIG TEMPLATE HERE
+ */
+
+$app->twig->display("torrents/browse.twig", [
+  "resolutions" => $Resolutions,
+  "hideBasic" => true,
+  #"hideBasic" => $HideBasic,
+  "hideAdvanced" => false,
+  #"hideAdvanced" => $HideAdvanced,
+]);
+
+exit;
+
+
+
+
+
+/**
+ * OLD SHIT BELOW
+ * SOON TO BE TWIG
+ */
+
+
+
+
+
+
+
+
+
+
 # Start the search form
 # Fortunately it's very easy to search via
 # torrentsearch.class.php
