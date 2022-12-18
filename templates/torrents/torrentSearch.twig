@@ -127,9 +127,10 @@
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Sequences</option>
                 {% for platform in env.META.Platforms.Sequences %}
-                <option
-                  value="<?=Text::esc({{ platform }});?>"
-                  <?Format::selected('media', {{ platform }})?>><?=Text::esc({{ platform }}); ?>
+                <option value="{{ platform }}"
+                {# {{ (query.post.media == platform) ?? "selected" }} #}
+                >
+                  {{ platform }}
                 </option>
                 {% endfor %}
               </select>
@@ -137,31 +138,34 @@
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Graphs</option>
                 {% for platform in env.META.Platforms.Graphs %}
-                <option
-                  value="<?=Text::esc({{ platform }});?>"
-                  <?Format::selected('media', {{ platform }})?>><?=Text::esc({{ platform }}); ?>
+                <option value="{{ platform }}"
+                {# {{ (query.post.media == platform) ?? "selected" }} #}
+                >
+                  {{ platform }}
                 </option>
-                {% endfor %}
+                             {% endfor %}
               </select>
 
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Images</option>
                 {% for platform in env.META.Platforms.Images %}
-                <option
-                  value="<?=Text::esc({{ platform }});?>"
-                  <?Format::selected('media', {{ platform }})?>><?=Text::esc({{ platform }}); ?>
-                </option>
-                {% endfor %}
+                <option value="{{ platform }}"
+                {# {{ (query.post.media == platform) ?? "selected" }} #}
+                >
+                  {{ platform }}
+                </option>     
+                        {% endfor %}
               </select>
 
               <select name="media" class="ft_media fti_advanced">
                 <option value="">Documents</option>
                 {% for platform in env.META.Platforms.Documents %}
-                <option
-                  value="<?=Text::esc({{ platform }});?>"
-                  <?Format::selected('media', {{ platform }})?>><?=Text::esc({{ platform }}); ?>
-                </option>
-                {% endfor %}
+                <option value="{{ platform }}"
+                {# {{ (query.post.media == platform) ?? "selected" }} #}
+                >
+                  {{ platform }}
+                </option>      
+                       {% endfor %}
               </select>
 
             </td>
@@ -175,57 +179,69 @@
 
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">NucleoSeq</option>
-                <?php foreach (array_merge((array) $app->env->META->Formats->Sequences, (array) $app->env->META->Formats->Plain) as $Key => $Container) { ?>
-                <option value="<?=Text::esc($Key);?>"
-                  <?Format::selected('container', $Key)?>><?=Text::esc($Key);?>
+                {% for key, value in nucleoSeq %}
+                <option value="{{ key }}"
+                  {# {{ (query.post.container == key) ?? "selected" }} #}
+                  >
+                  {{ key }}
                 </option>
-                <?php } ?>
+                {% endfor %}
               </select>
 
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">ProtSeq</option>
-                <?php foreach (array_merge((array) $app->env->META->Formats->Proteins, (array) $app->env->META->Formats->Plain) as $Key => $Container) { ?>
-                <option value="<?=Text::esc($Key);?>"
-                  <?Format::selected('container', $Key)?>><?=Text::esc($Key);?>
-                </option>
-                <?php } ?>
+                {% for key, value in protSeq %}
+                <option value="{{ key }}"
+                  {# {{ (query.post.container == key) ?? "selected" }} #}
+                  >
+                  {{ key }}
+                </option>    
+                           {% endfor %}
               </select>
 
 
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">XMLs</option>
-                <?php foreach (array_merge((array) $app->env->META->Formats->GraphXml, (array) $app->env->META->Formats->GraphTxt, (array) $app->env->META->Formats->Plain) as $Key => $Container) { ?>
-                <option value="<?=Text::esc($Key);?>"
-                  <?Format::selected('container', $Key)?>><?=Text::esc($Key);?>
-                </option>
-                <?php } ?>
+                {% for key, value in xmls %}
+                <option value="{{ key }}"
+                  {# {{ (query.post.container == key) ?? "selected" }} #}
+                  >
+                  {{ key }}
+                </option>       
+                        {% endfor %}
               </select>
 
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">Raster</option>
-                <?php foreach (array_merge((array) $app->env->META->Formats->ImgRaster, (array) $app->env->META->Formats->ImgVector, (array) $app->env->META->Formats->MapRaster, (array) $app->env->META->Formats->Plain) as $Key => $Container) { ?>
-                <option value="<?=Text::esc($Key);?>"
-                  <?Format::selected('container', $Key)?>><?=Text::esc($Key);?>
-                </option>
-                <?php } ?>
+                {% for key, value in raster %}
+                <option value="{{ key }}"
+                  {# {{ (query.post.container == key) ?? "selected" }} #}
+                  >
+                  {{ key }}
+                </option>      
+                         {% endfor %}
               </select>
 
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">Vector</option>
-                <?php foreach (array_merge((array) $app->env->META->Formats->MapVector, (array) $app->env->META->Formats->Plain) as $Key => $Container) { ?>
-                <option value="<?=Text::esc($Key);?>"
-                  <?Format::selected('container', $Key)?>><?=Text::esc($Key);?>
+                {% for key, value in vector %}
+                <option value="{{ key }}"
+                  {# {{ (query.post.container == key) ?? "selected" }} #}
+                  >
+                  {{ key }}
                 </option>
-                <?php } ?>
+                          {% endfor %}
               </select>
 
               <select id=" container" name="container" class="ft_container fti_advanced">
                 <option value="">Extras</option>
-                <?php foreach (array_merge((array) $app->env->META->Formats->BinDoc, (array) $app->env->META->Formats->CpuGen, (array) $app->env->META->Formats->Plain) as $Key => $Container) { ?>
-                <option value="<?=Text::esc($Key);?>"
-                  <?Format::selected('container', $Key)?>><?=Text::esc($Key);?>
-                </option>
-                <?php } ?>
+                {% for key, value in extras %}
+                <option value="{{ key }}"
+                  {# {{ (query.post.container == key) ?? "selected" }} #}
+                  >
+                  {{ key }}
+                </option>       
+                        {% endfor %}
               </select>
 
             </td>
@@ -238,10 +254,12 @@
 
               <select name="resolution" class="ft_resolution fti_advanced">
                 <option value="">Scope</option>
+
                   {% for resolution in resolutions %}
                 <option
-                  value="<?=Text::esc({{ resolution }});?>"
-                  <?Format::selected('resolution', {{ resolution }})?>><?=Text::esc({{ resolution }}); ?>
+                  value="{{ resolution }}"
+                     {# {{ (query.post.resolution == resolution) ?? "selected" }} #}
+                 {{ resolution }}
                 </option>
                 {% endfor %}
               </select>
@@ -249,27 +267,58 @@
               {# Aligned/Censored #}
               <select name=" censored" class="ft_censored fti_advanced">
                 <option value="">Alignment</option>
-                <option value="1" <?Format::selected('censored', 1)?>>Aligned
+
+                <option value="1"
+                     {# {{ (query.post.censored == 1) ?? "selected" }} #}
+                     >
+                  Aligned
                 </option>
-                <option value="0" <?Format::selected('censored', 0)?>>Not Aligned
+
+                <option value="0"
+                     {# {{ (query.post.censored == 0) ?? "selected" }} #}
+                     >
+                  Not Aligned
                 </option>
               </select>
 
               {# Leech Status #}
               <select name="freetorrent" class="ft_freetorrent fti_advanced">
                 <option value="">Leech Status</option>
-                <option value="1" <?Format::selected('freetorrent', 1)?>>Freeleech</option>
-                <option value="2" <?Format::selected('freetorrent', 2)?>>Neutral Leech</option>
-                <option value="3" <?Format::selected('freetorrent', 3)?>>Either</option>
-                <option value="0" <?Format::selected('freetorrent', 0)?>>Normal</option>
+
+                <option value="1"
+                     {# {{ (query.post.freetorrent == 1) ?? "selected" }} #}
+                     >
+                  Freeleech
+                </option>
+
+                <option value="2"
+                     {# {{ (query.post.freetorrent == 2) ?? "selected" }} #}
+                     >
+                  Neutral Leech
+                </option>
+
+                <option value="3"
+                     {# {{ (query.post.freetorrent == 3) ?? "selected" }} #}
+                     >
+                  Either
+                </option>
+
+                <option value="0"
+                     {# {{ (query.post.freetorrent == 0) ?? "selected" }} #}
+                     >
+                  Normal
+                </option>
+
               </select>
 
               {# Codec/License #}
               <select name="codec" class="ft_codec fti_advanced">
                 <option value="">License</option>
                   {% for license in env.META.Licenses %}
-                <option value="<?=Text::esc({{ license }}); ?>"
-                  <?Format::selected('codec', {{ license }})?>><?=Text::esc({{ license }}); ?>
+                <option value="{{ license }}"
+                     {# {{ (query.post.codec == license) ?? "selected" }} #}
+                     >
+                   {{ license }}
                 </option>
                 {% endfor %}
               </select>
