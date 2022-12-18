@@ -2,7 +2,7 @@
  # main torrent search form
  #}
 
-<form class="search_form" name="torrents" method="post" {# onsubmit="$(this).disableUnset();" #}>
+<form class="search_form" name="torrents" method="post">
 
     {# csrf token #}
     {{ form_token(query.server.REQUEST_URI) }}
@@ -17,50 +17,31 @@
             Search (<a class="clickable" onclick="toggleTorrentSearch('basic')">Basic</a>)</span>
         </strong>
         <span class="u-pull-right">
-          <a onclick="return toggleTorrentSearch(0);" id="ft_toggle" class="brackets"><?=$HideFilter ? 'Show' : 'Hide'?></a>
+          <a onclick="return toggleTorrentSearch(0);" id="ft_toggle" class="brackets">{{ (hideFilter) ? "Show" : "Hide" }}</a>
         </span>
       </div>
-      <div id="ft_container"
-        class="pad<?=$HideFilter ? ' hidden' : ''?>">
-        {#
-        <?php
-        # Three profile toggles
-        if ((isset($app->userNew->extra['HideLolicon']) && $app->userNew->extra['HideLolicon'] === 1)
-         || (isset($app->userNew->extra['HideScat'])    && $app->userNew->extra['HideScat']    === 1)
-         || (isset($app->userNew->extra['HideSnuff'])   && $app->userNew->extra['HideSnuff']   === 1)
-        ) { ?>
-        <svg title="Your profile settings exclude some results" class="search_warning tooltip" width="10" height="15">
-          <rect x=3 width="4" height="10" rx="2" ry="2" />
-          <circle cx="5" cy="13" r="2" />
-        </svg>
-        <?php
-        } ?>
-        #}
+      <div id="ft_container" class="pad {{ (hideFilter) ? "hidden" : "" }}">
 
+        {# main advanced search table #}
         <table class="torrent_search skeleton-fix">
 
 
 
+              {# Accession Number / Version #}
+          <tr id="numbers" class="ftr_advanced {{ hideAdvanced }}">
+            <td class="label" />
 
-          <tr id="numbers" class="ftr_advanced{{ hideAdvanced }}">
-
-
-            <td class="label">
-              {#
-                Accession Number / Version
-              #}
-            </td>
             <td class="ft_numbers">
               <input type="search" size="30" name="numbers" class="inputtext smallest fti_advanced"
                 placeholder="Accession Number / Version" value="{{ query.post.numbers ?? null }}" />
             </td>
           </tr>
 
+              {# Torrent Title / Organism / Strain or Variety #}
           <tr id="album_torrent_title"
             class="ftr_advanced{{ hideAdvanced }}">
-            <td class="label">
-              {# Torrent Title / Organism / Strain or Variety #}
-            </td>
+            <td class="label" />
+
             <td class="ft_groupname">
               <input type="search" spellcheck="false" size="65" name="advgroupname"
                 class="inputtext smaller fti_advanced" placeholder="Torrent Title / Organism / Strain or Variety"

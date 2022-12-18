@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 
@@ -184,7 +185,7 @@ class Announce
         if (!$app->env->announceTwitter) {
             return false;
         }
-        
+
         try {
             # todo
         } catch (Exception $e) {

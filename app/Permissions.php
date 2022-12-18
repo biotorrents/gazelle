@@ -1,5 +1,11 @@
 <?php
+
 #declare(strict_types=1);
+
+
+/**
+ * Permissions
+ */
 
 class Permissions
 {
@@ -21,7 +27,7 @@ class Permissions
         if ($app->userOld['EffectiveClass'] < $MinClass) {
             return false;
         } // MinClass failure
-        
+
         return $app->userOld['Permissions'][$PermissionName] ?? false; // Return actual permission
     }
 

@@ -1,30 +1,35 @@
 <?php
+
 #declare(strict_types=1);
+
+
+/**
+ * Artists
+ */
 
 class Artists
 {
-
-  /**
-   * Given an array of GroupIDs, return their associated artists.
-   *
-   * @param array $GroupIDs
-   * @return an array of the following form:
-   *  GroupID => {
-   *    [ArtistType] => {
-   *      id, name, aliasid
-   *    }
-   *  }
-   *
-   * ArtistType is an int. It can be:
-   * 1 => Main artist
-   * 2 => Guest artist
-   * 4 => Composer
-   * 5 => Conductor
-   * 6 => DJ
-   */
+    /**
+     * Given an array of GroupIDs, return their associated artists.
+     *
+     * @param array $GroupIDs
+     * @return an array of the following form:
+     *  GroupID => {
+     *    [ArtistType] => {
+     *      id, name, aliasid
+     *    }
+     *  }
+     *
+     * ArtistType is an int. It can be:
+     * 1 => Main artist
+     * 2 => Guest artist
+     * 4 => Composer
+     * 5 => Conductor
+     * 6 => DJ
+     */
     public static function get_artists($GroupIDs)
     {
-      $app = App::go();
+        $app = App::go();
 
         $Results = [];
         $dbs = [];
@@ -114,7 +119,7 @@ class Artists
         if (!empty($Artists)) {
             $ampersand = ($Escape) ? ' &amp; ' : ' & ';
             $link = '';
-    
+
             switch (count($Artists)) {
               case 0:
                 break;
@@ -122,7 +127,7 @@ class Artists
               case 4:
                 $link .= Artists::display_artist($Artists[2], $MakeLink, $Escape). ", ";
                 // no break
-  
+
               case 3:
                 $link .= Artists::display_artist($Artists[2], $MakeLink, $Escape). ", ";
                 // no break
@@ -138,13 +143,13 @@ class Artists
               default:
                 $link = Artists::display_artist($Artists[0], $MakeLink, $Escape).' et al.';
             }
-            
+
             return $link;
         } else {
             return '';
         }
     }
-    
+
     /**
      * Formats a single artist name.
      *
@@ -174,7 +179,7 @@ class Artists
      */
     public static function delete_artist($ArtistID)
     {
-      $app = App::go();
+        $app = App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->prepared_query("
@@ -272,7 +277,7 @@ class Artists
         } else {
             $Username = 'System';
         }
-        
+
         Misc::write_log("Artist $ArtistID ($Name) was deleted by $Username");
         $app->dbOld->set_query_id($QueryID);
     }

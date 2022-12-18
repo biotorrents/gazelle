@@ -221,6 +221,7 @@ $app->twig->display("torrents/browse.twig", [
   "advancedSearch" => $AdvancedSearch,
   "groupResults" => $GroupResults,
   "tagList" => $Search->get_terms('taglist'),
+  "hideFilter" => $HideFilter,
 ]);
 
 exit;

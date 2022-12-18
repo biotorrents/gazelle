@@ -2,15 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Gazelle;
-
 
 /**
  * OpenAI
  *
  * Client for the OpenAI API.
  * Example request for a common use case:
- * 
+ *
  * curl -X POST https://api.openai.com/v1/completions \
  *   -H 'Authorization: Bearer {secretKey}' \
  *   -H 'OpenAI-Organization: {organizationId}' \
@@ -20,14 +18,14 @@ namespace Gazelle;
  *     "prompt": "Summarize in 100 words: {torrent group description}",
  *     "max_tokens": 1000
  *   }'
- * 
+ *
  * @see https://beta.openai.com/docs/introduction
  * @see https://github.com/openai-php/client
- * 
+ *
  * ========================================
- * 
+ *
  * Database table schema:
- * 
+ *
 CREATE TABLE `openai` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `jobId` VARCHAR(128) NOT NULL,
@@ -48,9 +46,11 @@ CREATE TABLE `openai` (
     `type` VARCHAR(16),
     PRIMARY KEY (`id`,`jobId`,`groupId`)
 );
- * 
+ *
  * todo: just namespace the app already
  */
+
+namespace Gazelle;
 
 class OpenAI
 {
@@ -67,7 +67,8 @@ class OpenAI
     /**
      * __construct
      */
-    function __construct(array $options = []) {
+    public function __construct(array $options = [])
+    {
         $app = \App::go();
 
         if (!$app->env->enableOpenAi) {
@@ -75,7 +76,7 @@ class OpenAI
         }
 
         $openAiApi = $app->env->getPriv("openAiApi");
-        $this->client = \OpenAI::client( $openAiApi["secretKey"] );
+        $this->client = \OpenAI::client($openAiApi["secretKey"]);
 
         return $this;
     }
@@ -84,7 +85,7 @@ class OpenAI
     /**
      * test
      */
-    function test(string $prompt = "hello"): OpenAI\Responses\Completions\CreateResponse
+    public function test(string $prompt = "hello"): OpenAI\Responses\Completions\CreateResponse
     {
         $response = $this->client->completions()->create([
             "model" => $this->model,
@@ -98,13 +99,13 @@ class OpenAI
 
     /**
      * summarize
-     * 
+     *
      * Generate a summary of a torrent group description.
      * Store the summary in the database for later use.
-     * 
+     *
      * @see https://beta.openai.com/docs/api-reference/completions
      */
-    function summarize(int $groupId): array
+    public function summarize(int $groupId): array
     {
         $app = \App::go();
 
@@ -113,7 +114,7 @@ class OpenAI
         # return cached if available
         $cacheKey = "{$this->cachePrefix}_summary_{$groupId}";
         $cacheHit = $app->cacheOld->get_value($cacheKey);
-                
+
         if ($cacheHit) {
             #return $cacheHit;
         }
@@ -148,13 +149,13 @@ class OpenAI
 
     /**
      * keywords
-     * 
+     *
      * Generate a list of keywords from a summary (good) or a torrent group description (bad).
      * Store the summary in the database for later use.
-     * 
+     *
      * @see https://beta.openai.com/docs/api-reference/completions
      */
-    function keywords(int $groupId): array
+    public function keywords(int $groupId): array
     {
         $app = \App::go();
 
@@ -163,7 +164,7 @@ class OpenAI
         # return cached if available
         $cacheKey = "{$this->cachePrefix}_keywords_{$groupId}";
         $cacheHit = $app->cacheOld->get_value($cacheKey);
-                        
+
         if ($cacheHit) {
             #return $cacheHit;
         }
@@ -248,7 +249,7 @@ class OpenAI
 
     /**
      * processDescription
-     * 
+     *
      * Remove garbage from a text prompt.
      */
     private function processDescription(string $description): string
@@ -263,10 +264,11 @@ class OpenAI
 
     /**
      * insertResponse
-     * 
+     *
      * Write an OpenAI API response to the database.
      */
-    private function insertResponse(int $groupId, string $type, array $response) {
+    private function insertResponse(int $groupId, string $type, array $response)
+    {
         $app = \App::go();
 
         $allowedTypes = ["summary", "keywords"];

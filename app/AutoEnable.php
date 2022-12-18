@@ -1,18 +1,24 @@
 <?php
+
 #declare(strict_types=1);
+
+
+/**
+ * AutoEnable
+ */
 
 class AutoEnable
 {
     // Constants for database values
-    const APPROVED = 1;
-    const DENIED = 2;
-    const DISCARDED = 3;
+    public const APPROVED = 1;
+    public const DENIED = 2;
+    public const DISCARDED = 3;
 
     // Cache key to store the number of enable requests
-    const CACHE_KEY_NAME = 'num_enable_requests';
+    public const CACHE_KEY_NAME = 'num_enable_requests';
 
     // The default request rejected message
-    const REJECTED_MESSAGE = <<<EOT
+    public const REJECTED_MESSAGE = <<<EOT
     <p>
       Your request to re-enable your account has been rejected.
     </p>
@@ -24,7 +30,7 @@ class AutoEnable
 EOT;
 
     // The default request received message
-    const RECEIVED_MESSAGE = <<<EOT
+    public const RECEIVED_MESSAGE = <<<EOT
     <p>
       Your request to re-enable your account has been received.
     </p>
@@ -44,7 +50,7 @@ EOT;
      */
     public static function new_request($Username, $Email)
     {
-      $app = App::go();
+        $app = App::go();
 
         if (empty($Username)) {
             Http::redirect('login');
@@ -204,7 +210,7 @@ EOT;
                 } else {
                     $email = $app->twig->render("email/enableDeclined.twig");
                 }
-    
+
                 // Send email
                 $Subject = "Your enable request for $ENV->siteName has been ";
                 $Subject .= ($Status === self::APPROVED) ? 'approved' : 'denied';
@@ -264,7 +270,7 @@ EOT;
      */
     public static function unresolve_request($ID)
     {
-      $app = App::go();
+        $app = App::go();
 
         $ID = (int) $ID;
         if (empty($ID)) {
@@ -338,7 +344,7 @@ EOT;
      */
     public static function handle_token($Token)
     {
-      $app = App::go();
+        $app = App::go();
 
         $Token = db_string($Token);
         $app->dbOld->query("
@@ -387,7 +393,7 @@ EOT;
                 WHERE
                   `ID` = '$UserID'
                 ");
-                
+
                 $app->dbOld->query("
                 UPDATE
                   `users_info`
