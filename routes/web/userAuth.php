@@ -10,14 +10,14 @@ declare(strict_types=1);
 # login
 Flight::route("/login", function () {
     $app = App::go();
-    require_once "{$app->env->SERVER_ROOT}/sections/user/auth/login.php";
+    require_once "{$app->env->serverRoot}/sections/user/auth/login.php";
 });
 
 
 # disabled
 Flight::route("/disabled", function () {
     $app = App::go();
-    require_once "{$app->env->SERVER_ROOT}/sections/user/auth/disabled.php";
+    require_once "{$app->env->serverRoot}/sections/user/auth/disabled.php";
 });
 
 
@@ -42,7 +42,7 @@ Flight::route("/enable/@token", function (string $token) {
 # recover
 Flight::route("/recover", function () {
     $app = App::go();
-    require_once "{$app->env->SERVER_ROOT}/sections/user/auth/recover.php";
+    require_once "{$app->env->serverRoot}/sections/user/auth/recover.php";
 });
 
 
@@ -57,14 +57,14 @@ Flight::route("/logout", function () {
 # register
 Flight::route("/register(/@invite)", function ($invite) {
     $app = App::go();
-    require_once "{$app->env->SERVER_ROOT}/sections/user/auth/register.php";
+    require_once "{$app->env->serverRoot}/sections/user/auth/register.php";
 });
 
 
 # confirm email
 Flight::route("/confirm/@selector/@token", function ($selector, $token) {
     $app = App::go();
-    require_once "{$app->env->SERVER_ROOT}/sections/user/auth/confirm.php";
+    require_once "{$app->env->serverRoot}/sections/user/auth/confirm.php";
 });
 
 
@@ -74,12 +74,12 @@ Flight::route("/pwgen(/@method)", function ($method) {
 
     if ($method === "diceware") {
         header("Content-Type: text/plain; charset=utf-8");
-        require_once "{$app->env->SERVER_ROOT}/sections/user/pwgen/diceware.php";
+        require_once "{$app->env->serverRoot}/sections/user/pwgen/diceware.php";
     }
 
     if ($method === "hash") {
         header("Content-Type: text/plain; charset=utf-8");
-        require_once "{$app->env->SERVER_ROOT}/sections/user/pwgen/hash.php";
+        require_once "{$app->env->serverRoot}/sections/user/pwgen/hash.php";
     }
 });
 
@@ -91,7 +91,7 @@ Flight::route("/discourse?sso=@payload&sig=@signature", function () {
     $app = App::go();
 
     if ($app->env->enableDiscourse === true) {
-        require_once "{$app->env->SERVER_ROOT}/sections/social/discourseConnect.php";
+        require_once "{$app->env->serverRoot}/sections/social/discourseConnect.php";
     } else {
         return false;
     }

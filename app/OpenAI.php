@@ -299,7 +299,7 @@ class OpenAI
 
         # increment on an error
         if (empty($data["text"]) || $data["finishReason"] !== "stop") {
-            $data["failCount"] = $failCount++;
+            $data["failCount"]++;
         }
 
         # debug

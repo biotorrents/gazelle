@@ -46,14 +46,14 @@ $app->cacheOld->cache_value("php_" . getmypid(), [
 # redirect unauthenticated to login page
 $authenticated ??= true; # todo
 if (!$authenticated || empty($app->userNew->core)) {
-    require_once "{$app->env->SERVER_ROOT}/sections/user/auth/login.php";
+    require_once "{$app->env->serverRoot}/sections/user/auth/login.php";
     exit;
 }
 
 /*
 # redirect unauthenticated to login page
 if (!$authenticated) {
-    require_once "{$app->env->SERVER_ROOT}/sections/user/auth/login.php";
+    require_once "{$app->env->serverRoot}/sections/user/auth/login.php";
 }
 */
 
@@ -62,7 +62,7 @@ if (!$authenticated) {
 # todo: banning prevents login and therefore participation
 $allowedPages = ["api", "locked", "login", "logout"];
 if (isset($user["LockedAccount"]) && !in_array($document, $allowedPages)) {
-    require_once "{$app->env->SERVER_ROOT}/sections/locked/index.php";
+    require_once "{$app->env->serverRoot}/sections/locked/index.php";
     exit;
 }
 */
@@ -70,17 +70,17 @@ if (isset($user["LockedAccount"]) && !in_array($document, $allowedPages)) {
 # index page
 $document ??= "index";
 if ($document === "index") {
-    require_once "{$app->env->SERVER_ROOT}/sections/index/private.php";
+    require_once "{$app->env->serverRoot}/sections/index/private.php";
     exit;
 }
 
 # routing: homebrew
-$fileName = "{$app->env->SERVER_ROOT}/sections/$document/router.php";
+$fileName = "{$app->env->serverRoot}/sections/$document/router.php";
 if (file_exists($fileName)) {
     require_once $fileName;
     exit;
 }
 
 # routing: flight
-require_once "{$app->env->SERVER_ROOT}/routes/web.php";
+require_once "{$app->env->serverRoot}/routes/web.php";
 exit;
