@@ -10,7 +10,12 @@ declare(strict_types=1);
 # login
 Flight::route("/login", function () {
     $app = App::go();
-    require_once "{$app->env->serverRoot}/sections/user/auth/login.php";
+
+    if (!empty($app->userNew->core)) {
+        Http::redirect();
+    } else {
+        require_once "{$app->env->serverRoot}/sections/user/auth/login.php";
+    }
 });
 
 

@@ -140,5 +140,8 @@ class Esc
         if (preg_match($app->env->regexUsername, $safe)) {
             return strval($safe);
         }
+
+        # failure
+        return "";
     }
 } # class

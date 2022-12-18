@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+
 /**
  * Announce
  *
@@ -8,6 +9,7 @@ declare(strict_types=1);
  * The point is to have, e.g., Announce::slack("foo") in one place.
  * Better yet, Announce:all("foo") that hits IRC, RSS, Slack, and Twitter.
  */
+
 class Announce
 {
     # IRC bot config options

@@ -10,7 +10,7 @@ declare(strict_types=1);
  * Replaces various homebrew components.
  *
  * Functions like an oracle service:
- * takes queries and returns obscure messages.
+ * takes queries and returns messages.
  *
  *
  * @see https://github.com/delight-im/PHP-Auth

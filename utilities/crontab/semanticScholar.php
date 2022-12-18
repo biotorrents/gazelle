@@ -10,8 +10,8 @@ declare(strict_types=1);
  * 5. profit
  *
 CREATE TABLE `semanticScholar` (
-    `id` VARCHAR(100) NOT NULL,
-    `torrentGroupId` INT,
+    `id` VARCHAR(128) NOT NULL,
+    `groupId` INT,
     `artistIds` VARCHAR(255),
     `externalIds` VARCHAR(255),
     `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -41,13 +41,13 @@ foreach ($ref as $row) {
         !d($row["URI"]);
 
         $semanticScholar = new SemanticScholar(["paperId" => $row["URI"]]);
-        $options = ["torrentGroupId" => $row["TorrentID"]];
+        $options = ["groupId" => $row["TorrentID"]];
         $semanticScholar->scrape(true, $options);
 
         # save memory
         $semanticScholar = null;
         unset($semanticScholar);
-    } catch (PDOException $e) {
+    } catch (Exception $e) {
         Text::figlet("failure!", "red");
         !d($e);
         continue;
