@@ -148,7 +148,7 @@ if (!$ID) {
         WHERE r.`Status` = 'New'
           AND r.`Type` = '$ID'";
       break;
-      
+
     default:
       error(404);
       break;

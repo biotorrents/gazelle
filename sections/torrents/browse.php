@@ -569,10 +569,10 @@ View::header('Browse Torrents', 'browse');
         )?>
               /><label for="tags_type0"> Any</label>&nbsp;&nbsp;
               <input type="radio" name="tags_type" id="tags_type1" value="1" <?Format::selected(
-                    'tags_type',
-                    1,
-                    'checked'
-                )?>
+            'tags_type',
+            1,
+            'checked'
+        )?>
               /><label for="tags_type1"> All</label><br /><br />
               Use !tag to exclude tags
             </td>

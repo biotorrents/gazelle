@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 // The SQL query's line below controls the deletion clock

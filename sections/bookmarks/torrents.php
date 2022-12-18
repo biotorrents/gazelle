@@ -62,7 +62,7 @@ foreach ($GroupIDs as $GroupID) {
     $DisplayName = '';
     #$DisplayName = Artists::display_artists($Artists);
     $GroupName = empty($title) ? (empty($subject) ? $object : $subject) : $title;
-    
+
     $DisplayName .= '<a href="torrents.php?id='.$GroupID.'" ';
     if (!isset($user['CoverArt']) || $user['CoverArt']) {
         $DisplayName .= 'data-cover="'.ImageTools::process($picture, 'thumb').'" ';

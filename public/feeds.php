@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 
 /**
@@ -20,7 +21,7 @@ $ENV = ENV::go();
 
 # load the classes
 $cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
-$Feed = new Feed;
+$Feed = new Feed();
 
 
 /**

@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 /**
  * Json
@@ -40,7 +41,7 @@ class Json
 
         # escape bearer token
         $server = Http::query("server");
-        
+
         # no header present
         if (empty($server["HTTP_AUTHORIZATION"])) {
             return $this->failure("no authorization header present");
@@ -70,17 +71,17 @@ class Json
         # check the database
         $query = "select UserID, Token, Revoked from api_user_tokens where UserID = ?";
         $row = $app->dbOld->row($query, [$userId]);
-    
+
         # user revoked the token
         if (intval($row["Revoked"]) === 1) {
             return $this->failure("token revoked");
         }
-        
+
         # user doesn't own that token
         if ($userId === intval($row["UserID"])) {
             return $this->failure("token user mismatch");
         }
-            
+
         # user is disabled
         if (Users::isDisabled($userId)) {
             return $this->failure("user disabled");

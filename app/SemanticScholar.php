@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 
 /**
@@ -147,7 +148,7 @@ class SemanticScholar
                 case "authorId":
                     $endpoints[$value] = array_merge($endpoints, ["author"]);
                     break;
-                
+
                 case "releaseId":
                     $endpoints[$value] = array_merge($endpoints, ["datasets"]);
                     break;
@@ -212,7 +213,7 @@ class SemanticScholar
             if (!empty($error)) {
                 continue;
             }
-            
+
             # serialize
             $json = json_encode($data);
 
@@ -297,7 +298,7 @@ class SemanticScholar
             "journal",
             "authors",
         ];
-       
+
         $authorFields = [
             "externalIds",
             "url",
@@ -420,7 +421,7 @@ class SemanticScholar
                 "publicationDate",
                 "journal",
             ],
-            
+
             #"embedding",
             "tldr",
         ];

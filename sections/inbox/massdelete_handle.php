@@ -1,20 +1,21 @@
 <?php
+
 authorize();
 
 $UserID = $user['ID'];
 
 if (!isset($_POST['messages']) || !is_array($_POST['messages'])) {
-  error('You forgot to select messages to delete.');
-  header('Location: ' . Inbox::get_inbox_link());
-  error();
+    error('You forgot to select messages to delete.');
+    header('Location: ' . Inbox::get_inbox_link());
+    error();
 }
 
 $Messages = $_POST['messages'];
-foreach ($Messages AS $ConvID) {
-  $ConvID = trim($ConvID);
-  if (!is_number($ConvID)) {
-    error(0);
-  }
+foreach ($Messages as $ConvID) {
+    $ConvID = trim($ConvID);
+    if (!is_number($ConvID)) {
+        error(0);
+    }
 }
 $ConvIDs = implode(',', $Messages);
 $db->query("
@@ -24,11 +25,11 @@ $db->query("
     AND UserID=$UserID");
 list($MessageCount) = $db->next_record();
 if ($MessageCount != count($Messages)) {
-  error(0);
+    error(0);
 }
 
 if (isset($_POST['delete'])) {
-  $db->query("
+    $db->query("
     UPDATE pm_conversations_users
     SET
       InInbox = '0',
@@ -38,14 +39,14 @@ if (isset($_POST['delete'])) {
     WHERE ConvID IN($ConvIDs)
       AND UserID = $UserID");
 } elseif (isset($_POST['unread'])) {
-  $db->query("
+    $db->query("
     UPDATE pm_conversations_users
     SET Unread = '1'
     WHERE ConvID IN($ConvIDs)
     AND InInbox = '1'
     AND UserID = $UserID");
 } elseif (isset($_POST['read'])) {
-  $db->query("
+    $db->query("
     UPDATE pm_conversations_users
     SET Unread = '0'
     WHERE ConvID IN($ConvIDs) AND UserID = $UserID");
@@ -53,4 +54,3 @@ if (isset($_POST['delete'])) {
 $cache->delete_value('inbox_new_'.$UserID);
 
 header('Location: ' . Inbox::get_inbox_link());
-?>

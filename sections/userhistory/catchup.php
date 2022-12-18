@@ -1,8 +1,9 @@
 <?php
+
 authorize();
 $UserSubscriptions = Subscriptions::get_subscriptions();
 if (!empty($UserSubscriptions)) {
-  $db->query("
+    $db->query("
     INSERT INTO forums_last_read_topics (UserID, TopicID, PostID)
       SELECT '$user[ID]', ID, LastPostID
       FROM forums_topics
@@ -31,4 +32,3 @@ $db->query("
     PostID = LastPostID");
 $cache->delete_value('subscriptions_user_new_'.$user['ID']);
 Http::redirect("userhistory.php?action=subscriptions");
-?>

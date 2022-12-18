@@ -80,7 +80,7 @@ include serverRoot.'/sections/log/sphinx.php';
             </tr>
             <?php
   }
-  
+
 $Usernames = [];
 while (list($ID, $Message, $LogTime) = $db->next_record()) {
     $MessageParts = explode(' ', $Message);

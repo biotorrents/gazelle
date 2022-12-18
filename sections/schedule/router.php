@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -43,7 +44,7 @@ function run_all_in($Dir)
         include($Dir.'/'.$Task);
 
         if ($ScheduleDebug) {
-            echo $Dir.'/'.$Task.': '.Text::float(microtime(true)-$TimeStart, 3).($AS?"<br>":"\n");
+            echo $Dir.'/'.$Task.': '.Text::float(microtime(true)-$TimeStart, 3).($AS ? "<br>" : "\n");
         }
     }
 }

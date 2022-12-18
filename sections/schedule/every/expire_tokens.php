@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 // Expire old FL tokens and clear cache where needed
@@ -7,7 +8,7 @@ $db->query("
   FROM users_freeleeches
   WHERE Expired = FALSE
     AND Time < (NOW() - INTERVAL 4 DAY)");
-    
+
 if ($db->has_results()) {
     while (list($UserID) = $db->next_record()) {
         $cache->delete_value("users_tokens_$UserID");

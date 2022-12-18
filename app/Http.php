@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -41,7 +42,7 @@ class Http
             # remote
             header("Location: {$uri}");
         }
-        
+
         exit;
     }
 
@@ -53,7 +54,7 @@ class Http
      */
     public static function csrf()
     {
-        $csrf = new ParagonIE\AntiCSRF\AntiCSRF;
+        $csrf = new ParagonIE\AntiCSRF\AntiCSRF();
         if (!empty($_POST)) {
             if ($csrf->validateRequest()) {
                 return true;
@@ -62,7 +63,7 @@ class Http
             }
         }
     }
-    
+
 
     /**
      * query
@@ -170,7 +171,7 @@ class Http
                 }
             }
         }
-        
+
         # generic empty
         else {
             foreach ($request as $r) {
@@ -185,7 +186,7 @@ class Http
         return true;
     }
 
-    
+
     /**
      * response
      *
@@ -306,7 +307,7 @@ class Http
             if (empty($key)) {
                 continue;
             }
-            
+
             # set time or use default
             $time = strtotime($when) ?? self::$cookieDuration;
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 // Record who's seeding how much, used for ratio watch

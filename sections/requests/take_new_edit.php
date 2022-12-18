@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 
@@ -345,7 +346,7 @@ if ($NewRequest) {
 
     $AnnounceTitle = empty($Title) ? (empty($Title2) ? $TitleJP : $Title2) : $Title;
 
-    $Announce = "\"$AnnounceTitle\"".(isset($ArtistForm)?(' - '.Artists::display_artists($ArtistForm, false, false)):'').' '.site_url()."requests.php?action=view&id=$RequestID - ".implode(' ', $Tags);
+    $Announce = "\"$AnnounceTitle\"".(isset($ArtistForm) ? (' - '.Artists::display_artists($ArtistForm, false, false)) : '').' '.site_url()."requests.php?action=view&id=$RequestID - ".implode(' ', $Tags);
     send_irc(REQUEST_CHAN, $Announce);
 } else {
     $cache->delete_value("request_$RequestID");

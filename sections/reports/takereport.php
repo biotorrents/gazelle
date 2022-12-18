@@ -1,30 +1,31 @@
 <?php
+
 authorize();
 
 if (empty($_POST['id']) || !is_number($_POST['id']) || empty($_POST['type']) || ($_POST['type'] !== 'request_update' && empty($_POST['reason']))) {
-  error(404);
+    error(404);
 }
 
 include(serverRoot.'/sections/reports/array.php');
 
 if (!array_key_exists($_POST['type'], $Types)) {
-  error(403);
+    error(403);
 }
 $Short = $_POST['type'];
 $Type = $Types[$Short];
 $ID = $_POST['id'];
 if ($Short === 'request_update') {
-  if (empty($_POST['year']) || !is_number($_POST['year'])) {
-    error('Year must be specified.');
-    Http::redirect("reports.php?action=report&type=request_update&id=$ID");
-    die();
-  }
-  $Reason = '[b]Year[/b]: '.$_POST['year'].".\n\n";
-  // If the release type is somehow invalid, return "Not given"; otherwise, return the release type.
-  $Reason .= '[b]Release type[/b]: '.((empty($_POST['releasetype']) || !is_number($_POST['releasetype']) || $_POST['releasetype'] === '0') ? 'Not given' : $ReleaseTypes[$_POST['releasetype']]).". \n\n";
-  $Reason .= '[b]Additional comments[/b]: '.$_POST['comment'];
+    if (empty($_POST['year']) || !is_number($_POST['year'])) {
+        error('Year must be specified.');
+        Http::redirect("reports.php?action=report&type=request_update&id=$ID");
+        die();
+    }
+    $Reason = '[b]Year[/b]: '.$_POST['year'].".\n\n";
+    // If the release type is somehow invalid, return "Not given"; otherwise, return the release type.
+    $Reason .= '[b]Release type[/b]: '.((empty($_POST['releasetype']) || !is_number($_POST['releasetype']) || $_POST['releasetype'] === '0') ? 'Not given' : $ReleaseTypes[$_POST['releasetype']]).". \n\n";
+    $Reason .= '[b]Additional comments[/b]: '.$_POST['comment'];
 } else {
-  $Reason = $_POST['reason'];
+    $Reason = $_POST['reason'];
 }
 
 switch ($Short) {
@@ -71,12 +72,12 @@ $ReportID = $db->inserted_id();
 
 $Channels = [];
 if ($Short === 'request_update') {
-  $Channels[] = '#requestedits';
-  $cache->increment('num_update_reports');
+    $Channels[] = '#requestedits';
+    $cache->increment('num_update_reports');
 }
 
 if (in_array($Short, array('comment', 'post', 'thread'))) {
-  $Channels[] = '#forumreports';
+    $Channels[] = '#forumreports';
 }
 
 send_irc($Channels, "$ReportID - ".$user['Username']." just reported a $Short: ".site_url()."$Link : ".strtr($Reason, "\n", ' '));

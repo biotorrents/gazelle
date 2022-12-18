@@ -2,7 +2,7 @@
 declare(strict_types=1);$Amount = (int) db_string($_POST['amount']);
 $To = (int) db_string($_POST['to']);
 $UserID = (int) $user['ID'];
-$Adjust = isset($_POST['adjust'])?true:false;
+$Adjust = isset($_POST['adjust']) ? true : false;
 $Message = $_POST['message'];
 
 // 10% tax
@@ -95,7 +95,7 @@ View::header('Send '.BONUS_POINTS); ?>
   <h2 id='general'>Send <?=BONUS_POINTS?>
   </h2>
   <div class='box pad' style='padding: 10px 10px 10px 20p;'>
-    <p><?=$Err?'Error: '.$Err:'Sent '.$Amount.' '.BONUS_POINTS.' ('.$SentAmount.' after tax) to '.$ToInfo['Username'].'.'?>
+    <p><?=$Err ? 'Error: '.$Err : 'Sent '.$Amount.' '.BONUS_POINTS.' ('.$SentAmount.' after tax) to '.$ToInfo['Username'].'.'?>
     </p>
     <p><a href='/user.php?id=<?=$To?>'>Return</a></p>
   </div>

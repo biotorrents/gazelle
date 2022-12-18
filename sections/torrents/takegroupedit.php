@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 
 $app = App::go();
@@ -111,7 +111,6 @@ if (empty($revision_id)) { // edit
     NOW()
   )
   ");
-
 } else { // revert
     $db->query("
     SELECT

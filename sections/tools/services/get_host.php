@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 if (isset($_SERVER['http_if_modified_since'])) {

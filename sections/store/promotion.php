@@ -50,7 +50,7 @@ $Classes = array(
     'MinRatio'    => 1.3,
     'TorUnique'   => false
   ),
-  
+
   POWER_TM => array(
     'Name'        => 'Titty Monster',
     'Price'       => 100000,
@@ -179,11 +179,11 @@ if ($db->has_results()) {
 
 View::header('Store'); ?>
 <div>
-  <h2>Purchase <?=isset($Err)?"Failed":"Successful"?>
+  <h2>Purchase <?=isset($Err) ? "Failed" : "Successful"?>
   </h2>
   <div class="box">
     <p>
-      <?=isset($Err)?"Error: ".implode("<br />Error: ", $Err):"You have been promoted to ".$Classes[$To]['Name']."!"?>
+      <?=isset($Err) ? "Error: ".implode("<br />Error: ", $Err) : "You have been promoted to ".$Classes[$To]['Name']."!"?>
     </p>
     <p>
       <a href="/store.php">Back to Store</a>

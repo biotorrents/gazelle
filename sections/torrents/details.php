@@ -42,7 +42,7 @@ if (!$CoverArt) {
 
     $CoverArt = [];
     $CoverArt = $db->to_array();
-    
+
     if ($db->has_results()) {
         $cache->cache_value("torrents_cover_art_$GroupID", $CoverArt, 0);
     }
@@ -693,7 +693,7 @@ foreach ($TorrentList as $Torrent) {
     if (!empty($Description)) {
         echo '<blockquote class="torrent_description">'.Text::parse($Description).'</blockquote>';
     }
-    
+
     echo "\n<blockquote>"; ?>
             <div class="spoilerContainer hideContainer">
               <?php
@@ -712,7 +712,7 @@ foreach ($TorrentList as $Torrent) {
     $ArtistString = (count($ArtistArray) > 3)
         ? implode("\n    and ", $ArtistArray)
         : implode(' and ', $ArtistArray);
-    
+
     # DOI number
     $BibtexDOI = (count($Screenshots) > 0)
         ? $Screenshots[0]['Image']

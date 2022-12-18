@@ -3,7 +3,7 @@
 
 $CollageID = $_GET['collageid'];
 if (!is_number($CollageID) || !$CollageID) {
-  error(404);
+    error(404);
 }
 
 $db->query("
@@ -13,7 +13,7 @@ $db->query("
 list($Name, $CategoryID, $UserID) = $db->next_record();
 
 if (!check_perms('site_collages_delete') && $UserID != $user['ID']) {
-  error(403);
+    error(403);
 }
 
 View::header('Delete collage');
@@ -30,7 +30,7 @@ View::header('Delete collage');
         <input type="hidden" name="collageid" value="<?=$CollageID?>" />
 <?php
 if ($CategoryID == 0) {
-?>
+    ?>
         <div class="alertbar" style="margin-bottom: 1em;">
           <strong>Warning: This is a personal collage. If you delete this collage, it <em>cannot</em> be recovered!</strong>
         </div>

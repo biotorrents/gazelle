@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -58,7 +59,7 @@ switch ($Action) {
   case 'jump':
     require serverRoot . '/sections/comments/jump.php';
     break;
-    
+
   case 'artist':
   case 'collages':
   case 'requests':

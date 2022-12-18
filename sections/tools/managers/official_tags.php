@@ -1,51 +1,51 @@
 <?php
 if (!check_perms('users_mod')) {
-  error(403);
+    error(403);
 }
 
 if (isset($_POST['doit'])) {
-  authorize();
+    authorize();
 
-  if (isset($_POST['oldtags'])) {
-    $OldTagIDs = $_POST['oldtags'];
-    foreach ($OldTagIDs AS $OldTagID) {
-      if (!is_number($OldTagID)) {
-        error(403);
-      }
-    }
-    $OldTagIDs = implode(', ', $OldTagIDs);
+    if (isset($_POST['oldtags'])) {
+        $OldTagIDs = $_POST['oldtags'];
+        foreach ($OldTagIDs as $OldTagID) {
+            if (!is_number($OldTagID)) {
+                error(403);
+            }
+        }
+        $OldTagIDs = implode(', ', $OldTagIDs);
 
-    $db->query("
+        $db->query("
       UPDATE tags
       SET TagType = 'other'
       WHERE ID IN ($OldTagIDs)");
-  }
+    }
 
-  if ($_POST['newtag']) {
-    $TagName = Misc::sanitize_tag($_POST['newtag']);
+    if ($_POST['newtag']) {
+        $TagName = Misc::sanitize_tag($_POST['newtag']);
 
-    $db->query("
+        $db->query("
       SELECT ID
       FROM tags
       WHERE Name LIKE '$TagName'");
-    list($TagID) = $db->next_record();
+        list($TagID) = $db->next_record();
 
-    if ($TagID) {
-      $db->query("
+        if ($TagID) {
+            $db->query("
         UPDATE tags
         SET TagType = 'genre'
         WHERE ID = $TagID");
-    } else { // Tag doesn't exist yet - create tag
-      $db->query("
+        } else { // Tag doesn't exist yet - create tag
+            $db->query("
         INSERT INTO tags
           (Name, UserID, TagType, Uses)
         VALUES
           ('$TagName', ".$user['ID'].", 'genre', 0)");
-      $TagID = $db->inserted_id();
+            $TagID = $db->inserted_id();
+        }
     }
-  }
 
-  $cache->delete_value('genre_tags');
+    $cache->delete_value('genre_tags');
 }
 
 View::header('Official Tags Manager');
@@ -83,12 +83,13 @@ $db->query("
 $TagCount = $db->record_count();
 $Tags = $db->to_array();
 for ($i = 0; $i < $TagCount / 3; $i++) {
-  list($TagID1, $TagName1, $TagUses1) = $Tags[$i];
-  if (isset($Tags[ceil($TagCount / 3) + $i]))
-    list($TagID2, $TagName2, $TagUses2) = $Tags[ceil($TagCount / 3) + $i];
-  if (isset($Tags[2 * ceil($TagCount / 3) + $i]))
-    list($TagID3, $TagName3, $TagUses3) = $Tags[2 * ceil($TagCount / 3) + $i];
-?>
+    list($TagID1, $TagName1, $TagUses1) = $Tags[$i];
+    if (isset($Tags[ceil($TagCount / 3) + $i])) {
+        list($TagID2, $TagName2, $TagUses2) = $Tags[ceil($TagCount / 3) + $i];
+    }
+    if (isset($Tags[2 * ceil($TagCount / 3) + $i])) {
+        list($TagID3, $TagName3, $TagUses3) = $Tags[2 * ceil($TagCount / 3) + $i];
+    } ?>
         <tr class="row">
           <td style="text-align: center;"><input type="checkbox" name="oldtags[]" value="<?=$TagID1?>" /></td>
           <td><?=$TagName1?></td>

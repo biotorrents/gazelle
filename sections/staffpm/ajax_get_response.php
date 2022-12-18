@@ -1,8 +1,10 @@
 <?php
+
 enforce_login();
 
 // Get user level
-$db->query("
+$db->query(
+    "
   SELECT
     i.SupportFor,
     p.DisplayStaff
@@ -14,24 +16,22 @@ $db->query("
 list($SupportFor, $DisplayStaff) = $db->next_record();
 
 if (!$IsFLS) {
-  // Logged in user is not FLS or Staff
-  error(403);
+    // Logged in user is not FLS or Staff
+    error(403);
 }
 
 if ($ID = (int)$_GET['id']) {
-  $db->query("
+    $db->query("
     SELECT Message
     FROM staff_pm_responses
     WHERE ID = $ID");
-  list($Message) = $db->next_record();
-  if ($_GET['plain'] == 1) {
-    echo $Message;
-  } else {
-    echo Text::parse($Message);
-  }
-
+    list($Message) = $db->next_record();
+    if ($_GET['plain'] == 1) {
+        echo $Message;
+    } else {
+        echo Text::parse($Message);
+    }
 } else {
-  // No ID
-  echo '-1';
+    // No ID
+    echo '-1';
 }
-?>

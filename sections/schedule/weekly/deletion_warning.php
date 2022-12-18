@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 // Send warnings to uploaders of torrents that will be deleted this week
@@ -16,7 +17,7 @@ WHERE t.`last_action` < NOW() - INTERVAL 20 DAY
   AND u.`UnseededAlerts` = '1'
 ORDER BY t.`last_action` ASC
 ");
-  
+
 $TorrentIDs = $db->to_array();
 $TorrentAlerts = [];
 

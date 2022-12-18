@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 
@@ -84,7 +85,7 @@ foreach ($ref as $row) {
     if (empty($row["text"]) || $row["finishReason"] !== "stop") {
         Text::figlet("deleting empty row", "blue");
         !d($row["jobId"]);
-        
+
         $query = "delete from openai where jobId = ?";
         $app->dbNew->do($query, [ $row["jobId"] ]);
     }

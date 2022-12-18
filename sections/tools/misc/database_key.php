@@ -28,7 +28,7 @@ View::header('Database Encryption Key'); ?>
 <div class="box pad slight_margin">
   <h4>
     There is
-    <?=((apcu_exists('DBKEY') && apcu_fetch('DBKEY'))?"already a":"NO")?>
+    <?=((apcu_exists('DBKEY') && apcu_fetch('DBKEY')) ? "already a" : "NO")?>
     key loaded
   </h4>
 

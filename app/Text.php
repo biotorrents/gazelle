@@ -259,10 +259,10 @@ class Text
 
     /**
      * oneLine
-     * 
+     *
      * Makes a multi-line string into a single-line one.
      */
-    static function oneLine(string $string): string
+    public static function oneLine(string $string): string
     {
         while (preg_match("/[\n\r]/", $string)) {
             $string = preg_replace("/[\n\r]/", " ", $string);

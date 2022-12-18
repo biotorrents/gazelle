@@ -74,7 +74,7 @@ switch ($Action) {
     $Conditions[] = "`comments`.`AuthorID` = $UserID";
     break;
 
-  
+
   # collage comments
   case 'collages':
     $Field1 = '`collages`.`ID`';

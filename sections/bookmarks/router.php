@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -71,7 +72,7 @@ switch ($_REQUEST['action']) {
       case 'torrents':
         require serverRoot.'/sections/bookmarks/edit_torrents.php';
         break;
-        
+
       default:
         error(404);
     }

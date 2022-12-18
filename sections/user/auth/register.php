@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 # https://github.com/paragonie/anti-csrf
@@ -87,11 +88,11 @@ try {
                 $treePosition = 2;
                 $treeLevel = 2;
             }
-            
+
             # normal tree position calculation
             $query = "select treePosition from invite_tree where treePosition = ? and treeLevel = ? and treeId = ?";
             $treePosition = $app->dbNew->single($query, [$treePosition, $treeLevel, $treeId]);
-            
+
             if (!empty($treePosition)) {
                 $query = "update invite_tree set treePosition = treePosition + 1 where treeId = ? and treePosition >= ?";
                 $app->dbNew->do($query, [$treeId, $treePosition]);

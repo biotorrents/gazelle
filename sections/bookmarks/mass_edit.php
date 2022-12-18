@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 authorize();
@@ -8,8 +9,8 @@ if ($UserID !== $user['ID']
 }
 
 if ($_POST['type'] === 'torrents') {
-    $BU = new MASS_USER_BOOKMARKS_EDITOR;
-  
+    $BU = new MASS_USER_BOOKMARKS_EDITOR();
+
     if ($_POST['delete']) {
         $BU->mass_remove();
     } elseif ($_POST['update']) {

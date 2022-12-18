@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -21,7 +22,7 @@ class ImageTools
         if (!$Url) {
             return '';
         }
-        
+
         if (preg_match('/^https:\/\/('.$ENV->siteDomain.'|'.$ENV->imageDomain.')\//', $Url) || $Url[0] === '/') {
             if (strpos($Url, '?') === false) {
                 $Url .= '?';
@@ -30,7 +31,7 @@ class ImageTools
         } else {
             return 'https://'
             . $ENV->imageDomain
-            . ($Thumb?"/$Thumb/":'/')
+            . ($Thumb ? "/$Thumb/" : '/')
             . '?h='
             . rawurlencode(base64_encode(hash_hmac('sha256', $Url, $Psk, true)))
             . '&i='

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -111,7 +112,7 @@ switch ($_GET['action']) {
   case 'browse':
     require_once "$ENV->serverRoot/sections/api/browse.php";
     break;
-  
+
    case 'tcomments':
     require_once "$ENV->serverRoot/sections/api/tcomments.php";
     break;
@@ -122,7 +123,7 @@ switch ($_GET['action']) {
   case 'collage':
     require_once "$ENV->serverRoot/sections/api/collage.php";
     break;
-  
+
   case 'artist':
     require_once "$ENV->serverRoot/sections/api/artist.php";
     break;
@@ -149,7 +150,7 @@ switch ($_GET['action']) {
   case 'usersearch':
     require_once "$ENV->serverRoot/sections/api/usersearch.php";
     break;
-  
+
   case 'community_stats':
     require_once "$ENV->serverRoot/sections/api/community_stats.php";
     break;
@@ -229,11 +230,11 @@ switch ($_GET['action']) {
   case 'wiki':
     require_once "$ENV->serverRoot/sections/api/wiki.php";
     break;
-  
+
   case 'ontology':
     require_once "$ENV->serverRoot/sections/api/ontology.php";
     break;
-  
+
   /**
    * Under construction
    */

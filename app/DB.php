@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 /**
  * MySQL wrapper class
@@ -502,7 +503,7 @@ class DB
         while ($Row = mysqli_fetch_array($this->QueryID)) {
             $Return[] = $Escape ? Text::esc($Row[$Key]) : $Row[$Key];
         }
-        
+
         mysqli_data_seek($this->QueryID, 0);
         return $Return;
     }

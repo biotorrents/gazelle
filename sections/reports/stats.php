@@ -2,7 +2,7 @@
 #declare(strict_types=1);
 
 if (!check_perms('admin_reports') && !check_perms('site_moderate_forums')) {
-  error(403);
+    error(403);
 }
 View::header('Other reports stats');
 
@@ -19,7 +19,7 @@ View::header('Other reports stats');
   <div class="two_columns pad">
 <?php
 if (check_perms('admin_reports')) {
-$db->query("
+    $db->query("
   SELECT um.Username,
     COUNT(r.ID) AS Reports
   FROM reports AS r
@@ -28,8 +28,7 @@ $db->query("
     AND r.ReportedTime > NOW() - INTERVAL 24 HOUR
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-$Results = $db->to_array();
-?>
+    $Results = $db->to_array(); ?>
     <h3><strong>Reports resolved in the last 24 hours</strong></h3>
     <table class="box border">
       <tr class="colhead">
@@ -38,18 +37,18 @@ $Results = $db->to_array();
       </tr>
 <?php
   foreach ($Results as $Result) {
-    list($Username, $Reports) = $Result;
-    if ($Username == $user['Username']) {
-      $RowClass = ' class="highlight"';
-    } else {
-      $RowClass = '';
-    }
-?>
+      list($Username, $Reports) = $Result;
+      if ($Username == $user['Username']) {
+          $RowClass = ' class="highlight"';
+      } else {
+          $RowClass = '';
+      } ?>
       <tr<?=$RowClass?>>
         <td><?=$Username?></td>
         <td class="number_column"><?=Text::float($Reports)?></td>
       </tr>
-<?php  } ?>
+<?php
+  } ?>
     </table>
 <?php
 $db->query("
@@ -61,8 +60,7 @@ $db->query("
     AND r.ReportedTime > NOW() - INTERVAL 1 WEEK
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-$Results = $db->to_array();
-?>
+    $Results = $db->to_array(); ?>
     <h3><strong>Reports resolved in the last week</strong></h3>
     <table class="box border">
       <tr class="colhead">
@@ -71,18 +69,18 @@ $Results = $db->to_array();
       </tr>
 <?php
   foreach ($Results as $Result) {
-    list($Username, $Reports) = $Result;
-    if ($Username == $user['Username']) {
-      $RowClass = ' class="highlight"';
-    } else {
-      $RowClass = '';
-    }
-?>
+      list($Username, $Reports) = $Result;
+      if ($Username == $user['Username']) {
+          $RowClass = ' class="highlight"';
+      } else {
+          $RowClass = '';
+      } ?>
       <tr<?=$RowClass?>>
         <td><?=$Username?></td>
         <td class="number_column"><?=Text::float($Reports)?></td>
       </tr>
-<?php  } ?>
+<?php
+  } ?>
     </table>
 <?php
 $db->query("
@@ -94,8 +92,7 @@ $db->query("
     AND r.ReportedTime > NOW() - INTERVAL 1 MONTH
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-$Results = $db->to_array();
-?>
+    $Results = $db->to_array(); ?>
     <h3><strong>Reports resolved in the last month</strong></h3>
     <table class="box border">
       <tr class="colhead">
@@ -104,18 +101,18 @@ $Results = $db->to_array();
       </tr>
 <?php
   foreach ($Results as $Result) {
-    list($Username, $Reports) = $Result;
-    if ($Username == $user['Username']) {
-      $RowClass = ' class="highlight"';
-    } else {
-      $RowClass = '';
-    }
-?>
+      list($Username, $Reports) = $Result;
+      if ($Username == $user['Username']) {
+          $RowClass = ' class="highlight"';
+      } else {
+          $RowClass = '';
+      } ?>
       <tr<?=$RowClass?>>
         <td><?=$Username?></td>
         <td class="number_column"><?=Text::float($Reports)?></td>
       </tr>
-<?php  } ?>
+<?php
+  } ?>
     </table>
 <?php
 $db->query("
@@ -125,8 +122,7 @@ $db->query("
     JOIN users_main AS um ON um.ID = r.ResolverID
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-$Results = $db->to_array();
-?>
+    $Results = $db->to_array(); ?>
     <h3><strong>Reports resolved since "other" reports (2009-08-21)</strong></h3>
     <table class="box border">
       <tr class="colhead">
@@ -135,21 +131,21 @@ $Results = $db->to_array();
       </tr>
 <?php
   foreach ($Results as $Result) {
-    list($Username, $Reports) = $Result;
-    if ($Username == $user['Username']) {
-      $RowClass = ' class="highlight"';
-    } else {
-      $RowClass = '';
-    }
-?>
+      list($Username, $Reports) = $Result;
+      if ($Username == $user['Username']) {
+          $RowClass = ' class="highlight"';
+      } else {
+          $RowClass = '';
+      } ?>
       <tr<?=$RowClass?>>
         <td><?=$Username?></td>
         <td class="number_column"><?=Text::float($Reports)?></td>
       </tr>
-<?php  } ?>
+<?php
+  } ?>
     </table>
 <?php
-} //if (check_perms('admin_reports')) ?>
+} //if (check_perms('admin_reports'))?>
   </div>
   <div class="two_columns pad">
 <?php
@@ -177,13 +173,12 @@ $Results = $db->to_array();
 <?php
   $i = 1;
   foreach ($Results as $Result) {
-    list($Username, $Trashed) = $Result;
-    if ($Username == $user['Username']) {
-      $RowClass = ' class="highlight"';
-    } else {
-      $RowClass = '';
-    }
-?>
+      list($Username, $Trashed) = $Result;
+      if ($Username == $user['Username']) {
+          $RowClass = ' class="highlight"';
+      } else {
+          $RowClass = '';
+      } ?>
       <tr<?=$RowClass?>>
         <td class="number_column"><?=$i?></td>
         <td><?=$Username?></td>

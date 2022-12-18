@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 # Fix random memory exhaustion errors
@@ -15,7 +16,7 @@ class BencodeDecode extends Bencode
     private $Pos = 0;
     public $Dec = [];
     public $ExitOnError = true;
-    const SnipLength = 40;
+    public const SnipLength = 40;
 
     /**
      * Decode prepararations
@@ -205,7 +206,7 @@ class BencodeDecode extends Bencode
             }
             exit();
         }
-        
+
         $ErrorPos = $this->Pos;
         return false;
     }

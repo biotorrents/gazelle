@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use DebugBar\DataCollector\DataCollector;
@@ -26,7 +27,7 @@ class Debug # extends DebugBar\StandardDebugBar
     {
         return;
     }
-  
+
     public function __clone()
     {
         return trigger_error(
@@ -34,7 +35,7 @@ class Debug # extends DebugBar\StandardDebugBar
             E_USER_ERROR
         );
     }
-  
+
     public function __wakeup()
     {
         return trigger_error(
@@ -42,8 +43,8 @@ class Debug # extends DebugBar\StandardDebugBar
             E_USER_ERROR
         );
     }
-  
-  
+
+
     /**
      * go
      */
@@ -363,7 +364,7 @@ class FilesCollector extends DataCollector implements Renderable
                 "map" => "{$name}.messages",
                 "default" => "{}"
             ],
-            
+
             "{$name}:badge" => [
                 "map" => "{$name}.count",
                 "default" => "null"
@@ -406,7 +407,7 @@ class DatabaseCollector extends DataCollector implements Renderable
           "messages" => $messages
         ];
     }
-    
+
     /**
      * getMessages
      */

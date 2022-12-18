@@ -5,8 +5,7 @@ class Top10View
 {
     public static function render_linkbox($Selected)
     {
-      $ENV = ENV::go();
-        ?>
+        $ENV = ENV::go(); ?>
 <div class="linkbox">
   <a href="top10.php?type=torrents" class="brackets"><?=self::get_selected_link("Torrents", $Selected === "torrents")?></a>
   <a href="top10.php?type=users" class="brackets"><?=self::get_selected_link("Users", $Selected === "users")?></a>

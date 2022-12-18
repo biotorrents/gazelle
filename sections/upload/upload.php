@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -111,7 +112,7 @@ if (!$GenreTags) {
     ORDER BY
       `Name`
     ");
-    
+
     $GenreTags = $db->collect('Name');
     $cache->cache_value('genre_tags', $GenreTags, 3600 * 6);
 }

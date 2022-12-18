@@ -193,7 +193,7 @@ if (!$NumResults) {
 
         $GroupInfo = $TorrentGroups[$Result['PageID']];
         $Links = 'Torrent: ' . Artists::display_artists($GroupInfo['ExtendedArtists']) . '<a href="torrents.php?id=' . $GroupInfo['id'] . '" dir="ltr">' . $GroupInfo['title'] . '</a>';
-       
+
         if ($GroupInfo['year'] > 0) {
             $Links .= " [" . $GroupInfo['year'] . "]";
         }

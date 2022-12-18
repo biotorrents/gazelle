@@ -1,4 +1,5 @@
 <?php
+
 if (!check_perms('users_warn')) {
     error(404);
 }

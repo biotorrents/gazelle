@@ -1,4 +1,5 @@
 <?php
+
 authorize();
 
 if (!check_perms('site_moderate_forums')) {

@@ -214,7 +214,7 @@ foreach ($TorrentList as $Group) {
               'extra_info' => Torrents::torrent_info($Data, true, true),
             ]
         );
-      
+
 
         /*
         $DisplayName = '';
@@ -366,7 +366,7 @@ foreach ($TorrentList as $Group) {
               'extra_info' => Torrents::torrent_info($Torrent, true, true),
             ]
         );
-      
+
 
         /*
         # Start making $DisplayName (first torrent result line)

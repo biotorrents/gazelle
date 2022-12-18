@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -34,7 +35,7 @@ if (!isset($_REQUEST['action'])) {
     case 'edit':
       include serverRoot.'/sections/requests/new_edit.php';
       break;
-      
+
     case 'takevote':
       include serverRoot.'/sections/requests/take_vote.php';
       break;
@@ -65,7 +66,7 @@ if (!isset($_REQUEST['action'])) {
     case 'viewrequest':
       include serverRoot.'/sections/requests/request.php';
       break;
-    
+
     # Single search bar workaround
     case 'search':
       include serverRoot.'/sections/requests/requests.php';

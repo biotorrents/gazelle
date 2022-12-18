@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -97,7 +98,7 @@ class CacheRedis # extends Redis
         if (!$value) {
             throw new Exception("cache key {$key} doesn't exist");
         }
-        
+
         # just a single value
         return $value;
     }
@@ -131,7 +132,7 @@ class CacheRedis # extends Redis
 
             return true;
         }
-        
+
         # $k => [$a, $b, $c, [$d, $e, $f]]
         else {
             self::$redis->mset([$key, $value]);

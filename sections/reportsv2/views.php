@@ -6,7 +6,7 @@
  * All the different views are self explanatory by their names.
  */
 if (!check_perms('admin_reports')) {
-  error(403);
+    error(403);
 }
 
 View::header('Reports V2', 'reportsv2');
@@ -49,13 +49,12 @@ $Results = $db->to_array();
       </tr>
 <?php
 foreach ($Results as $Result) {
-  list($UserID, $Username, $Reports) = $Result;
-  if ($Username == $user['Username']) {
-    $RowClass = ' class="highlight"';
-  } else {
-    $RowClass = '';
-  }
-?>
+    list($UserID, $Username, $Reports) = $Result;
+    if ($Username == $user['Username']) {
+        $RowClass = ' class="highlight"';
+    } else {
+        $RowClass = '';
+    } ?>
       <tr<?=$RowClass?>>
         <td><a href="reportsv2.php?view=resolver&amp;id=<?=$UserID?>"><?=$Username?></a></td>
         <td class="number_column"><?=Text::float($Reports)?></td>
@@ -85,13 +84,12 @@ $Results = $db->to_array();
       </tr>
 <?php
 foreach ($Results as $Result) {
-  list($UserID, $Username, $Reports) = $Result;
-  if ($Username == $user['Username']) {
-    $RowClass = ' class="highlight"';
-  } else {
-    $RowClass = '';
-  }
-?>
+    list($UserID, $Username, $Reports) = $Result;
+    if ($Username == $user['Username']) {
+        $RowClass = ' class="highlight"';
+    } else {
+        $RowClass = '';
+    } ?>
       <tr<?=$RowClass?>>
         <td><a href="reportsv2.php?view=resolver&amp;id=<?=$UserID?>"><?=$Username?></a></td>
         <td class="number_column"><?=Text::float($Reports)?></td>
@@ -121,13 +119,12 @@ $Results = $db->to_array();
       </tr>
 <?php
 foreach ($Results as $Result) {
-  list($UserID, $Username, $Reports) = $Result;
-  if ($Username == $user['Username']) {
-    $RowClass = ' class="highlight"';
-  } else {
-    $RowClass = '';
-  }
-?>
+    list($UserID, $Username, $Reports) = $Result;
+    if ($Username == $user['Username']) {
+        $RowClass = ' class="highlight"';
+    } else {
+        $RowClass = '';
+    } ?>
       <tr<?=$RowClass?>>
         <td><a href="reportsv2.php?view=resolver&amp;id=<?=$UserID?>"><?=$Username?></a></td>
         <td class="number_column"><?=Text::float($Reports)?></td>
@@ -156,13 +153,12 @@ $Results = $db->to_array();
       </tr>
 <?php
 foreach ($Results as $Result) {
-  list($UserID, $Username, $Reports) = $Result;
-  if ($Username == $user['Username']) {
-    $RowClass = ' class="highlight"';
-  } else {
-    $RowClass = '';
-  }
-?>
+    list($UserID, $Username, $Reports) = $Result;
+    if ($Username == $user['Username']) {
+        $RowClass = ' class="highlight"';
+    } else {
+        $RowClass = '';
+    } ?>
       <tr<?=$RowClass?>>
         <td><a href="reportsv2.php?view=resolver&amp;id=<?=$UserID?>"><?=$Username?></a></td>
         <td class="number_column"><?=Text::float($Reports)?></td>
@@ -252,19 +248,19 @@ foreach ($Results as $Result) {
       </tr>
 <?php
   foreach ($Staff as $Array) {
-    if ($Array['Username'] == $user['Username']) {
-      $RowClass = ' class="highlight"';
-    } else {
-      $RowClass = '';
-    }
-?>
+      if ($Array['Username'] == $user['Username']) {
+          $RowClass = ' class="highlight"';
+      } else {
+          $RowClass = '';
+      } ?>
       <tr<?=$RowClass?>>
         <td>
           <a href="reportsv2.php?view=staff&amp;id=<?=$Array['ResolverID']?>"><?=Text::esc($Array['Username'])?>'s reports</a>
         </td>
         <td class="number_column"><?=Text::float($Array['Count'])?></td>
       </tr>
-<?php } ?>
+<?php
+  } ?>
     </table>
     <h3>Different view modes by report type</h3>
 <?php
@@ -277,7 +273,7 @@ foreach ($Results as $Result) {
     GROUP BY Type");
   $Current = $db->to_array();
   if (!empty($Current)) {
-?>
+      ?>
     <table class="box border">
       <tr class="colhead">
         <td class="colhead_dark">Type</td>
@@ -285,14 +281,13 @@ foreach ($Results as $Result) {
       </tr>
 <?php
     foreach ($Current as $Array) {
-      //Ugliness
-      foreach ($Types as $Category) {
-        if (!empty($Category[$Array['Type']])) {
-          $Title = $Category[$Array['Type']]['title'];
-          break;
-        }
-      }
-?>
+        //Ugliness
+        foreach ($Types as $Category) {
+            if (!empty($Category[$Array['Type']])) {
+                $Title = $Category[$Array['Type']]['title'];
+                break;
+            }
+        } ?>
       <tr<?=$Title === 'Urgent' ? ' class="highlight" style="font-weight: bold;"' : ''?>>
         <td>
           <a href="reportsv2.php?view=type&amp;id=<?=Text::esc($Array['Type'])?>"><?=Text::esc($Title)?></a>

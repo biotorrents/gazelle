@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 /**
  * Feed
@@ -146,11 +147,11 @@ class Feed
         if (!$entries) {
             $entries = [];
         }
-        
+
         if (count($entries) >= 50) {
             array_pop($entries);
         }
-        
+
         array_unshift($entries, $item);
         $app->cacheOld->cache_value($cacheKey, $entries, 0);
     }

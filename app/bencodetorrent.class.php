@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 # todo: Replace this with https://github.com/OPSnet/bencode-torrent

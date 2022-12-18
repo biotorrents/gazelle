@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -40,7 +41,7 @@ if (!empty($_REQUEST['action'])) {
     case 'Contact':
       Http::redirect("inbox.php?action=compose&to=$FriendID");
       break;
-      
+
     default:
       error(404);
   }

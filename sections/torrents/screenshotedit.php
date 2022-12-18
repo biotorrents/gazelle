@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 
@@ -90,7 +91,6 @@ if (!empty($Deleted)) {
         ");
 
         foreach ($DeleteList as $ScreenDel) {
-
         }
 
         Torrents::write_group_log($GroupID, 0, $user['ID'], "Deleted screenshot(s) ".implode(' , ', $DeleteList), 0);
@@ -113,7 +113,6 @@ if (!empty($New)) {
     );
 
     foreach ($New as $Screenshot) {
-
     }
 
     Torrents::write_group_log($GroupID, 0, $user['ID'], "Added screenshot(s) ".implode(' , ', $New), 0);

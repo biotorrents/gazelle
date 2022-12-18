@@ -63,11 +63,11 @@ if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
     View::header('Store'); ?>
 <div>
     <h2 id='general'>
-        Purchase <?=isset($Err)?'Failed':'Successful'?>
+        Purchase <?=isset($Err) ? 'Failed' : 'Successful'?>
     </h2>
     <div class='box pad'>
         <p>
-            <?=isset($Err)?'Error: '.$Err:'You have purchased a badge'?>
+            <?=isset($Err) ? 'Error: '.$Err : 'You have purchased a badge'?>
         </p>
 
         <p>

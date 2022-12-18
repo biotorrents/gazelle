@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -24,7 +25,7 @@ Make sure all constants are defined in config.php and not in random files
 enforce_login();
 
 #require_once serverRoot."/classes/validate.class.php" ;
-$Val = new Validate;
+$Val = new Validate();
 
 if (empty($_REQUEST['action'])) {
     $_REQUEST['action'] = '';

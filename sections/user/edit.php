@@ -219,7 +219,7 @@ $ProfileRewards = null;
 
         <!-- Stylesheet additions -->
         <tr id="style_additions_tr"
-          class="<?=($Stylesheets[$user['StyleID']]['Additions'][0] ?? false)?'':'hidden'?>">
+          class="<?=($Stylesheets[$user['StyleID']]['Additions'][0] ?? false) ? '' : 'hidden'?>">
 
           <td class="label">
             <strong>Stylesheet additions</strong>
@@ -235,7 +235,7 @@ $ProfileRewards = null;
                 ? '"' # close quote
                 : ' hidden"'; # hide
               echo ' id="style_additions_' . $Style['Name'] . '">';
- 
+
               # For each style addition
               $StyleAdditions = explode(';', $Style['Additions']);
               $Select = ['default_font'];
@@ -243,7 +243,7 @@ $ProfileRewards = null;
 
               foreach ($StyleAdditions as $i => $Addition) {
                   $Types = explode('=', $Addition);
-             
+
                   switch ($Types[0]) {
                   case 'select':
                       array_push($Select, $Types[1]);
@@ -263,7 +263,7 @@ $ProfileRewards = null;
               if ($Style['ID'] === $Stylesheets[$user['StyleID']]['ID']) {
                   # Select options, e.g., fonts
                   echo "<select class='style_additions' name='style_additions[]'>";
-  
+
                   foreach ($Select as $Option) {
                       $Selected = (in_array($Option, $SiteOptions['StyleAdditions'])
                         ? 'selected'
@@ -313,7 +313,7 @@ HTML;
           <td>
             <label>
               <input type="checkbox" name="autoload_comm_stats" <?Format::selected(
-              'AutoloadCommStats' ,
+              'AutoloadCommStats',
               1,
               'checked',
               $SiteOptions
@@ -345,13 +345,13 @@ HTML;
           <td>
             <ul class="options_list nobullet">
               <li>
-                <input type="radio" name="searchtype" id="search_type_simple" value="0" <?=(int)$SiteOptions['SearchType']===0?' checked="checked"':''?>
+                <input type="radio" name="searchtype" id="search_type_simple" value="0" <?=(int)$SiteOptions['SearchType']===0 ? ' checked="checked"' : ''?>
                 />
                 <label for="search_type_simple">Simple</label>
               </li>
 
               <li>
-                <input type="radio" name="searchtype" id="search_type_advanced" value="1" <?=(int)$SiteOptions['SearchType']===1?' checked="checked"':''?>
+                <input type="radio" name="searchtype" id="search_type_advanced" value="1" <?=(int)$SiteOptions['SearchType']===1 ? ' checked="checked"' : ''?>
                 />
                 <label for="search_type_advanced">Advanced</label>
               </li>
@@ -578,7 +578,7 @@ HTML;
         $Count = 0;
         foreach ($Badges as $BadgeID => $Displayed) { ?>
             <input type="checkbox" name="badges[]" class="badge_checkbox"
-              value="<?=$BadgeID?>" <?=($Displayed)?"checked ":""?>/>
+              value="<?=$BadgeID?>" <?=($Displayed) ? "checked " : ""?>/>
             <?=Badges::display_badge($BadgeID, true)?>
             <?php
         $Count++;

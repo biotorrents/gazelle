@@ -12,11 +12,11 @@ The page that handles the backend of the 'edit artist' function.
 authorize();
 
 if (!$_REQUEST['artistid'] || !is_number($_REQUEST['artistid'])) {
-  error(404);
+    error(404);
 }
 
 if (!check_perms('site_edit_wiki')) {
-  error(403);
+    error(403);
 }
 
 // Variables for database input
@@ -25,20 +25,20 @@ $ArtistID = $_REQUEST['artistid'];
 
 
 if ($_GET['action'] === 'revert') { // if we're reverting to a previous revision
-  authorize();
-  $RevisionID = $_GET['revisionid'];
-  if (!is_number($RevisionID)) {
-    error(0);
-  }
+    authorize();
+    $RevisionID = $_GET['revisionid'];
+    if (!is_number($RevisionID)) {
+        error(0);
+    }
 } else { // with edit, the variables are passed with POST
-  $Body = db_string($_POST['body']);
-  $Summary = db_string($_POST['summary']);
-  $Image = db_string($_POST['image']);
-  ImageTools::blacklisted($Image);
-  // Trickery
-  if (!preg_match($app->env->regexImage, $Image)) {
-    $Image = '';
-  }
+    $Body = db_string($_POST['body']);
+    $Summary = db_string($_POST['summary']);
+    $Image = db_string($_POST['image']);
+    ImageTools::blacklisted($Image);
+    // Trickery
+    if (!preg_match($app->env->regexImage, $Image)) {
+        $Image = '';
+    }
 }
 
 // Insert revision
@@ -49,7 +49,7 @@ if (!$RevisionID) { // edit
     VALUES
       ('$ArtistID', '$Body', '$Image', '$UserID', '$Summary', NOW())");
 } else { // revert
-  $db->query("
+    $db->query("
     INSERT INTO wiki_artists (PageID, Body, Image, UserID, Summary, Time)
     SELECT '$ArtistID', Body, Image, '$UserID', 'Reverted to revision $RevisionID', NOW()
     FROM wiki_artists

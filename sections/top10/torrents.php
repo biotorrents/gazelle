@@ -69,9 +69,9 @@ if (check_perms('site_advanced_top10')) {
                         <input type="text" name="tags" id="tags" size="65" value="<?php if (!empty($_GET['tags'])) {
         echo Text::esc($_GET['tags']);
     } ?>" />&nbsp;
-                        <input type="radio" id="rdoAll" name="anyall" value="all" <?=((!isset($_GET['anyall'])||$_GET['anyall']!=='any')?' checked="checked"':'')?>
+                        <input type="radio" id="rdoAll" name="anyall" value="all" <?=((!isset($_GET['anyall'])||$_GET['anyall']!=='any') ? ' checked="checked"' : '')?>
                         /><label for="rdoAll"> All</label>&nbsp;&nbsp;
-                        <input type="radio" id="rdoAny" name="anyall" value="any" <?=((!isset($_GET['anyall'])||$_GET['anyall']==='any')?' checked="checked"':'')?>
+                        <input type="radio" id="rdoAny" name="anyall" value="any" <?=((!isset($_GET['anyall'])||$_GET['anyall']==='any') ? ' checked="checked"' : '')?>
                         /><label for="rdoAny"> Any</label>
                     </td>
                 </tr>
@@ -83,7 +83,7 @@ if (check_perms('site_advanced_top10')) {
                             <?php foreach ($Categories as $CategoryName) { ?>
                             <option
                                 value="<?=Text::esc($CategoryName)?>"
-                                <?=(($CategoryName===($_GET['category']??false))?'selected="selected"':'')?>><?=Text::esc($CategoryName)?>
+                                <?=(($CategoryName===($_GET['category']??false)) ? 'selected="selected"' : '')?>><?=Text::esc($CategoryName)?>
                             </option>
                             <?php } ?>
                         </select>
@@ -518,7 +518,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
     foreach ($Details as $Detail) {
         list($TorrentID, $GroupID, $GroupName, $GroupTitle2, $GroupNameJP, $GroupCategoryID, $WikiImage, $TagsList,
       $Media, $Year, $Studio, $Snatched, $Seeders, $Leechers, $Data, $Size) = $Detail;
-  
+
         /*
         list($TorrentID, $GroupID, $GroupName, $GroupTitle2, $GroupNameJP, $GroupCategoryID, $WikiImage, $TagsList,
       $Media, $Year, $Snatched, $Seeders, $Leechers, $Data, $Size) = $Detail;
@@ -551,7 +551,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
                 $Label = '<br />📅&nbsp;';
                 $DisplayName .= $Label."<a href='torrents.php?action=search&year=$Year'>$Year</a>";
             }
-          
+
             # Studio
             if ($Studio) {
                 $DisplayName .= "&ensp;🏫&nbsp;&nbsp;<a href='torrents.php?action=search&location=$Studio'>$Studio</a>";
@@ -563,13 +563,13 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
                 $Label = '&ensp;'; # breaking
                 $DisplayName .= $Label.Artists::display_artists($Artists[$GroupID], true, true);
             }
-    
+
             # Catalogue Number
             if ($CatalogueNumber) {
                 $Label = '&ensp;🔑&nbsp;';
                 $DisplayName .= $Label."<a href='torrents.php?action=search&numbers=$CatalogueNumber'>$CatalogueNumber</a>";
             }
-    
+
             /*
             if ($Year > 0) {
                 $ExtraInfo .= $Year;
@@ -649,11 +649,11 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
     </td>
     <td class="number_column nobr"><?=Format::get_size($Data)?>
     </td>
-    <td class="number_column"><?=Text::float((double)$Snatched)?>
+    <td class="number_column"><?=Text::float((float)$Snatched)?>
     </td>
-    <td class="number_column"><?=Text::float((double)$Seeders)?>
+    <td class="number_column"><?=Text::float((float)$Seeders)?>
     </td>
-    <td class="number_column"><?=Text::float((double)$Leechers)?>
+    <td class="number_column"><?=Text::float((float)$Leechers)?>
     </td>
     <td class="number_column"><?=Text::float($Seeders + $Leechers)?>
     </td>

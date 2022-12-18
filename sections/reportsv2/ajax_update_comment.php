@@ -1,10 +1,11 @@
 <?php
+
 // perform the back end of updating a report comment
 
 authorize();
 
 if (!check_perms('admin_reports')) {
-  error(403);
+    error(403);
 }
 
 $ReportID = (int) $_POST['reportid'];
@@ -18,7 +19,7 @@ $db->prepared_query("
   WHERE ID = $ReportID");
 list($ModComment) = $db->next_record();
 if (isset($ModComment)) {
-  $db->prepared_query("
+    $db->prepared_query("
     UPDATE reportsv2
     SET ModComment = '$Message'
     WHERE ID = $ReportID");

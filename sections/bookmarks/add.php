@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 authorize();
 
@@ -8,7 +9,7 @@ if (!Bookmarks::can_bookmark($_GET['type'])) {
 }
 
 include serverRoot.'/classes/feed.class.php'; // RSS feeds
-$Feed = new Feed;
+$Feed = new Feed();
 
 $Type = $_GET['type'];
 list($Table, $Col) = Bookmarks::bookmark_schema($Type);

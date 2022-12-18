@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 
@@ -37,7 +38,7 @@ if ($hmac !== $signature) {
     throw new Exception("hmac doesn't match signature");
 }
 
- 
+
 # 2. Perform whatever authentication it has to
 # todo
 /*

@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 $ENV = ENV::go();
@@ -94,7 +95,7 @@ $JsonTorrentDetails = [
 
     'citations'     => $Citations,
     'mirrors'       => ($TorrentDetails['Mirrors']) ?: false,
-  
+
     'description'   => $TorrentDetails['description'],
    #'description'   => Text::parse($TorrentDetails['description']),
     'picture'       => $TorrentDetails['picture'],

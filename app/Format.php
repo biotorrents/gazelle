@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 class Format
@@ -58,7 +59,7 @@ class Format
                     array_pop($DescArr);
                     $CutDesc = implode(' ', $DescArr);
                 }
-                
+
                 if ($ShowDots) {
                     $CutDesc .= '…';
                 }
@@ -508,7 +509,7 @@ class Format
         if (empty($Class)) {
             $Class = self::find_torrent_label_class($Text);
         }
-        
+
         return sprintf(
             '<strong class="torrent_label tooltip %1$s" title="%2$s" style="white-space: nowrap;">%2$s</strong>',
             Text::esc($Class),
@@ -567,14 +568,14 @@ class Format
         $d[4] = [604800, "week"];
         $d[5] = [2592000, "month"];
         $d[6] = [31104000, "year"];
-    
+
         $w = [];
         $return = [];
 
         $now = time();
         $diff = ($now - $time);
         $secondsLeft = $diff;
-    
+
         for ($i = 6; $i > -1; $i--) {
             $w[$i] = intval($secondsLeft / $d[$i][0]);
             $secondsLeft -= ($w[$i] * $d[$i][0]);
@@ -617,7 +618,7 @@ class Format
             if (empty($crumb["path"])) {
                 $crumbs[$i]["path"] = "/{$crumb["name"]}";
             }
-            
+
             # normal path parse
             else {
                 $crumbs[$i]["path"] = "/" . implode("/", $crumb["path"]);

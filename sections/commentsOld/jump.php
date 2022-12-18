@@ -1,4 +1,5 @@
 <?php
+
 if (!isset($_REQUEST['postid']) || !is_number($_REQUEST['postid'])) {
     error(0);
 }

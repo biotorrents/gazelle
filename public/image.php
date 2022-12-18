@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 # Functions and headers needed by the image proxy
@@ -118,7 +119,7 @@ function image_height($Type, $Data)
                     $Str []= 'Started $i, + '.($Block['Length'] + 2);
                     $i += ($Block['Length'] + 2);
                 }
-                
+
                 # We're at the FFC0 block
                 else {
                     # Skip FF C0 Length(2) precision(1)
@@ -129,17 +130,17 @@ function image_height($Type, $Data)
                 }
             }
             break;
-            
+
         case 'gif':
             $Data = substr($Data, 8);
             $Height = unpack('vHeight', $Data);
             return $Height['Height'];
-        
+
         case 'png':
             $Data = substr($Data, 20);
             $Height = unpack('NHeight', $Data);
             return $Height['Height'];
-            
+
         default:
             return 0;
     }

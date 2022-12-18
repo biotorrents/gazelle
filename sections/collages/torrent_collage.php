@@ -182,7 +182,7 @@ foreach ($GroupIDs as $GroupID) {
         $Data = current($Torrents);
         #$ExtraInfo = Torrents::torrent_info($Data, true, true);
         #$DisplayName .= "<br />$ExtraInfo";
-    
+
         $DisplayName = $twig->render(
             'torrents/display_name.html',
             [
@@ -195,8 +195,8 @@ foreach ($GroupIDs as $GroupID) {
               'extra_info' => Torrents::torrent_info($Data, true, true),
             ]
         );
-  
-  
+
+
         /*
         $TorrentID = key($Torrents);
         $Torrent = current($Torrents);

@@ -15,8 +15,8 @@ $app = App::go();
 $ENV = ENV::go();
 $debug = Debug::go();
 
-$Feed = new Feed;
-$Validate = new Validate;
+$Feed = new Feed();
+$Validate = new Validate();
 
 
 enforce_login();
@@ -149,7 +149,7 @@ if (!$_POST['groupid']) {
         'Version must be between 0 and 10 characters.',
         array('maxlength' => 10, 'minlength' => 0)
     );
-        
+
     # torrents_group.title
     $Validate->SetFields(
         'title',
@@ -234,7 +234,7 @@ if (!$_POST['groupid']) {
         'Scope must be between 4 and 20 characters.',
         array('maxlength' => 20, 'minlength' => 4)
     );
-        
+
     # torrents_group.tag_list
     $Validate->SetFields(
         'tags',
@@ -1131,7 +1131,7 @@ ON
 WHERE
   b.`GroupID` = '$GroupID'
 ");
-  
+
 while (list($UserID, $Passkey) = $db->next_record()) {
     $Feed->populate("torrents_bookmarks_t_$Passkey", $Item);
 }

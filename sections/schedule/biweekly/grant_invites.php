@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 /*
@@ -134,7 +135,7 @@ if (count($UserIDs) > 0) {
         $cache->update_row(false, array('Invites' => '+1'));
         $cache->commit_transaction(0);
     }
-    
+
     $db->query('
       UPDATE users_main
       SET Invites = Invites + 1

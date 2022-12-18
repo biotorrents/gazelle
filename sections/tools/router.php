@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -40,8 +41,8 @@ if (!isset($_REQUEST['action'])) {
     #error('Need to set an "action" parameter in sections/tools/tools.php.');
 }
 
-$Val = new Validate;
-$Feed = new Feed;
+$Val = new Validate();
+$Feed = new Feed();
 
 # Finally
 switch ($_REQUEST['action']) {
@@ -254,7 +255,7 @@ switch ($_REQUEST['action']) {
             $Abbreviation = $_REQUEST['abbreviation'];
             $Secondary = empty($_REQUEST['secondary']) ? 0 : 1;
             $Forums = $_REQUEST['forums'];
-            $DisplayStaff = isset($_REQUEST['displaystaff']) ? $_REQUEST['displaystaff']: 0;
+            $DisplayStaff = isset($_REQUEST['displaystaff']) ? $_REQUEST['displaystaff'] : 0;
             $Values['MaxCollages'] = $_REQUEST['maxcollages'];
 
             if (!$Err) {
@@ -395,7 +396,7 @@ switch ($_REQUEST['action']) {
   case 'take_mass_pm':
     include serverRoot.'/sections/tools/managers/take_mass_pm.php';
     break;
-    
+
   default:
     include serverRoot.'/sections/tools/tools.php';
 }

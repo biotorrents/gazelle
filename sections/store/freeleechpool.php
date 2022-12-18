@@ -47,7 +47,7 @@ if (isset($_POST['donation'])) {
                     $Torrents = [];
 
                     for ($i = 0; $i < $NumTorrents; $i++) {
-                        $TorrentSize = intval($Pool * (($i===$NumTorrents-1)?1:(rand(10, 80)/100)) * 100000); # todo
+                        $TorrentSize = intval($Pool * (($i===$NumTorrents-1) ? 1 : (rand(10, 80)/100)) * 100000); # todo
                         $db->prepared_query("
                           SELECT ID, Size
                           FROM torrents

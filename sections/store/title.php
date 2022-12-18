@@ -30,7 +30,7 @@ if (isset($_POST['title'])) {
               UPDATE users_info
               SET AdminComment = CONCAT(NOW(), ' - Changed title to ', ?, ' via the store\n\n', AdminComment)
               WHERE UserID = ?", $Title, $UserID);
-              
+
             $cache->delete_value('user_info_'.$UserID);
             $cache->delete_value('user_info_heavy_'.$UserID);
         } else {

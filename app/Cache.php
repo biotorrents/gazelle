@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 /**
  * Cache class
@@ -23,7 +24,7 @@ declare(strict_types = 1);
 class Cache extends Memcache
 {
     // Torrent Group cache version
-    const GROUP_VERSION = 5;
+    public const GROUP_VERSION = 5;
 
     public $cacheHits = [];
     public $canClear = false;
@@ -55,7 +56,7 @@ class Cache extends Memcache
     public function __construct($servers = [])
     {
         $ENV = ENV::go();
-        
+
         if (empty($servers)) {
             $servers = $ENV->getPriv("MEMCACHED_SERVERS");
         }

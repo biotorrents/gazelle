@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 
@@ -258,7 +259,7 @@ foreach ($Badges as $BadgeID => $OldDisplayed) {
         $Displayed = false;
         $BadgesChanged = true;
     }
-    $NewBadges[$BadgeID] = $Displayed?'1':'0';
+    $NewBadges[$BadgeID] = $Displayed ? '1' : '0';
 }
 // End Badge settings
 

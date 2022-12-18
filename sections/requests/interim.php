@@ -1,11 +1,11 @@
 <?php
 if (!isset($_GET['id']) || !is_number($_GET['id'])) {
-  error(404);
+    error(404);
 }
 
 $Action = $_GET['action'];
 if ($Action !== 'unfill' && $Action !== 'delete') {
-  error(404);
+    error(404);
 }
 
 $db->query("
@@ -15,13 +15,13 @@ $db->query("
 list($RequestorID, $FillerID) = $db->next_record();
 
 if ($Action === 'unfill') {
-  if ($user['ID'] !== $RequestorID && $user['ID'] !== $FillerID && !check_perms('site_moderate_requests')) {
-    error(403);
-  }
+    if ($user['ID'] !== $RequestorID && $user['ID'] !== $FillerID && !check_perms('site_moderate_requests')) {
+        error(403);
+    }
 } elseif ($Action === 'delete') {
-  if ($user['ID'] !== $RequestorID && !check_perms('site_moderate_requests')) {
-    error(403);
-  }
+    if ($user['ID'] !== $RequestorID && !check_perms('site_moderate_requests')) {
+        error(403);
+    }
 }
 
 View::header(ucwords($Action) . ' Request');

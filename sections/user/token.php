@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 /**
  * Adapted from
@@ -48,7 +49,7 @@ if (is_null($token)) {
         </div>
 HTML;
     }
-    
+
     echo $HTML = <<<HTML
     <div class="box pad">
       <p>

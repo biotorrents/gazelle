@@ -1,11 +1,12 @@
 <?php
+
 #declare(strict_types=1);
 
 if (!empty($_GET['userid'])) {
     if (!check_perms('users_override_paranoia')) {
         json_die('failure');
     }
-   
+
     $UserID = $_GET['userid'];
     $Sneaky = ($UserID !== $user['ID']);
 

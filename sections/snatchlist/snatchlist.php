@@ -19,7 +19,7 @@ $db->query("
   LEFT JOIN xbt_files_users AS f ON s.TorrentID = f.fid AND s.UserID = f.uid
   WHERE s.UserID = $UserID");
 if ($db->has_results()) {
-  $Torrents = $db->to_array(false, MYSQLI_ASSOC, false);
+    $Torrents = $db->to_array(false, MYSQLI_ASSOC, false);
 }
 
 //Include the header
@@ -39,24 +39,25 @@ View::header('Snatch List');
     </tr>
 <?php
 foreach ($Torrents as $Torrent) {
-  $DisplayName = "<a href=\"torrents.php?id=$Torrent[ID]&torrentid=$Torrent[TorrentID]\" ";
-  if (!isset($user['CoverArt']) || $user['CoverArt']) {
-    $DisplayName .= 'data-cover="'.ImageTools::process($Torrent['WikiImage'], 'thumb').'" ';
-  }
-  $DisplayName .= "dir=\"ltr\">$Torrent[Name]</a>";
+    $DisplayName = "<a href=\"torrents.php?id=$Torrent[ID]&torrentid=$Torrent[TorrentID]\" ";
+    if (!isset($user['CoverArt']) || $user['CoverArt']) {
+        $DisplayName .= 'data-cover="'.ImageTools::process($Torrent['WikiImage'], 'thumb').'" ';
+    }
+    $DisplayName .= "dir=\"ltr\">$Torrent[Name]</a>";
 
-  $HnR = false;
-  if ($Torrent['SeedTime'] < (2*24*60*60) &&
+    $HnR = false;
+    if ($Torrent['SeedTime'] < (2*24*60*60) &&
       $Torrent['active'] != "1" &&
       $Torrent['UserID'] != $UserID
-  ) $HnR = true;
-?>
+  ) {
+        $HnR = true;
+    } ?>
   <tr class="torrent">
     <td><div class="<?=Format::css_category($Torrent['CategoryID'])?>"></div></td>
     <td><a><?=$DisplayName ?></a></td>
     <td class="number_column"><?=time_diff(time()+$Torrent['SeedTime'], 2, false) ?></td>
     <td class="number_column"><?=$Torrent['LastUpdate'] ?></td>
-    <td class="number_column"><?=($HnR?'<a class="hnr-yes">Yes</a>':'<a class="hnr-no">No</a>') ?></td>
+    <td class="number_column"><?=($HnR ? '<a class="hnr-yes">Yes</a>' : '<a class="hnr-no">No</a>') ?></td>
   </tr>
 <?php
 }

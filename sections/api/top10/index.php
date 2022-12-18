@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 // Already done in /sections/ajax/index.php

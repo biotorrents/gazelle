@@ -384,7 +384,7 @@ if (count($_GET)) {
 
         if ($_GET['disabled_ip']) {
             $Distinct = 'DISTINCT ';
-                $Join['um2'] = ' JOIN users_main AS um2 ON um2.IP = um1.IP AND um2.Enabled = \'2\' ';
+            $Join['um2'] = ' JOIN users_main AS um2 ON um2.IP = um1.IP AND um2.Enabled = \'2\' ';
         }
 
         if (!empty($_GET['passkey'])) {
@@ -992,7 +992,7 @@ View::header('User search');
 <?php
 if ($RunQuery) {
                 if (!empty($_GET['ip'])) {
-                        $db->query("SELECT ID, IP FROM users_main");
+                    $db->query("SELECT ID, IP FROM users_main");
                     while (list($ID, $EncIP) = $db->next_record()) {
                         $IPs[] = $ID.", '".Crypto::decrypt($EncIP)."'";
                     }
@@ -1000,7 +1000,7 @@ if ($RunQuery) {
                     $db->query("INSERT IGNORE INTO users_ips_decrypted (ID, IP) VALUES(".implode("),(", $IPs).")");
                 }
                 if (!empty($_GET['email'])) {
-                        $db->query("SELECT ID, Email FROM users_main");
+                    $db->query("SELECT ID, Email FROM users_main");
                     while (list($ID, $EncEmail) = $db->next_record()) {
                         $Emails[] = $ID.", '".Crypto::decrypt($EncEmail)."'";
                     }

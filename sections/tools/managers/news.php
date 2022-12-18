@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 enforce_login();
 if (!check_perms('admin_manage_news')) {

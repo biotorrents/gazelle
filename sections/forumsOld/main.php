@@ -14,7 +14,7 @@ $OpenTable = false;
 
 foreach ($Forums as $Forum) {
     list($ForumID, $CategoryID, $ForumName, $ForumDescription, $MinRead, $MinWrite, $MinCreate, $NumTopics, $NumPosts, $LastPostID, $LastAuthorID, $LastTopicID, $LastTime, $SpecificRules, $LastTopic, $Locked, $Sticky) = array_values($Forum);
-  
+
     if (!Forums::check_forumperm($ForumID)) {
         continue;
     }

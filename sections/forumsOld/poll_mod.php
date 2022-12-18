@@ -1,4 +1,5 @@
 <?php
+
 authorize();
 
 if (!check_perms('forums_polls_moderate')) {

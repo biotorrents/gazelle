@@ -1,9 +1,10 @@
 <?php
+
 //Include all the basic stuff...
 
 enforce_login();
 if (isset($_GET['method'])) {
-  switch ($_GET['method']) {
+    switch ($_GET['method']) {
     case 'transcode':
       include(serverRoot.'/sections/ajax/better/transcode.php');
       break;
@@ -33,6 +34,5 @@ if (isset($_GET['method'])) {
       break;
   }
 } else {
-  echo json_encode(array('status' => 'failure'));
+    echo json_encode(array('status' => 'failure'));
 }
-?>

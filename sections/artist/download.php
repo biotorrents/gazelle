@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types = 1);
 
 // todo: Freeleech in ratio hit calculations, in addition to a warning of whats freeleech in the Summary.txt

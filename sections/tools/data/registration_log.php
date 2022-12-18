@@ -69,7 +69,7 @@ if ($DateSearch) {
 $RS .= "
   ORDER BY i.Joindate DESC
   LIMIT $Limit";
-  
+
 $QueryID = $db->query($RS);
 $db->query('SELECT FOUND_ROWS()');
 list($Results) = $db->next_record();

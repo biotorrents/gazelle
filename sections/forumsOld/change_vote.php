@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 authorize();
@@ -35,7 +36,7 @@ if (is_number($ThreadID) && is_number($NewVote)) {
       `TopicID` = $ThreadID
       AND `UserID` = ".$user['ID']
     );
-    
+
     $cache->delete_value("polls_$ThreadID");
     Http::redirect("forums.php?action=viewthread&threadid=$ThreadID");
 } else {

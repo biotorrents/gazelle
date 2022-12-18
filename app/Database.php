@@ -8,7 +8,7 @@ declare(strict_types=1);
  *
  * The blunt singleton, for your procedural code.
  * @see https://phpdelusions.net/pdo/pdo_wrapper
- * 
+ *
  * Also uses the Laravel Eloquent ORM for migrations.
  * @see https://laravel.com/docs/9.x/eloquent
  */

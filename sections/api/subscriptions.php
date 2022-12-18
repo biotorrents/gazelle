@@ -4,13 +4,13 @@ User topic subscription page
 */
 
 if (!empty($user['DisableForums'])) {
-  json_die('failure');
+    json_die('failure');
 }
 
 if (isset($user['PostsPerPage'])) {
-  $PerPage = $user['PostsPerPage'];
+    $PerPage = $user['PostsPerPage'];
 } else {
-  $PerPage = POSTS_PER_PAGE;
+    $PerPage = POSTS_PER_PAGE;
 }
 list($Page, $Limit) = Format::page_limit($PerPage);
 
@@ -29,7 +29,7 @@ $sql = '
     AND p.ID <= IFNULL(l.PostID, t.LastPostID)
     AND ' . Forums::user_forums_sql();
 if ($ShowUnread) {
-  $sql .= '
+    $sql .= '
     AND IF(l.PostID IS NULL OR (t.IsLocked = \'1\' && t.IsSticky = \'0\'), t.LastPostID, l.PostID) < t.LastPostID';
 }
 $sql .= "
@@ -41,9 +41,9 @@ $db->query('SELECT FOUND_ROWS()');
 list($NumResults) = $db->next_record();
 
 if ($NumResults > $PerPage * ($Page - 1)) {
-  $db->set_query_id($PostIDs);
-  $PostIDs = $db->collect('ID');
-  $sql = '
+    $db->set_query_id($PostIDs);
+    $PostIDs = $db->collect('ID');
+    $sql = '
     SELECT
       f.ID AS ForumID,
       f.Name AS ForumName,
@@ -68,12 +68,12 @@ if ($NumResults > $PerPage * ($Page - 1)) {
       LEFT JOIN users_main AS ed ON ed.ID = um.ID
     WHERE p.ID IN ('.implode(',', $PostIDs).')
     ORDER BY f.Name ASC, t.LastPostID DESC';
-  $db->query($sql);
+    $db->query($sql);
 }
 
 $JsonPosts = [];
 while (list($ForumID, $ForumName, $TopicID, $ThreadTitle, $Body, $LastPostID, $Locked, $Sticky, $PostID, $AuthorID, $AuthorName, $AuthorAvatar, $EditedUserID, $EditedTime, $EditedUsername) = $db->next_record()) {
-  $JsonPost = array(
+    $JsonPost = array(
     'forumId' => (int)$ForumID,
     'forumName' => $ForumName,
     'threadId' => (int)$TopicID,
@@ -83,10 +83,9 @@ while (list($ForumID, $ForumName, $TopicID, $ThreadTitle, $Body, $LastPostID, $L
     'locked' => $Locked == 1,
     'new' => ($PostID < $LastPostID && !$Locked)
   );
-  $JsonPosts[] = $JsonPost;
+    $JsonPosts[] = $JsonPost;
 }
 
 json_die('success', array(
   'threads' => $JsonPosts
 ));
-?>

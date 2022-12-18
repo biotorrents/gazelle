@@ -1,14 +1,15 @@
 <?php
+
 #declare(strict_types=1);
 
 if (!check_perms('admin_reports') || empty($_POST['id'])) {
-  print
+    print
     json_encode(
-      array(
+        array(
         'status' => 'failure'
       )
     );
-  die();
+    die();
 }
 
 $ID = (int)$_POST['id'];
@@ -21,7 +22,7 @@ $db->query("
   WHERE ID = ?", $Notes, $ID);
 print
   json_encode(
-    array(
+      array(
       'status' => 'success'
     )
   );

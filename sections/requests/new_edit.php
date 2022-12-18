@@ -168,7 +168,7 @@ View::header(
 
           <td>
             <input type="text" id="catalogue" name="cataloguenumber" size="15"
-              value="<?= (isset($CatalogueNumber)?$CatalogueNumber:'') ?>"
+              value="<?= (isset($CatalogueNumber) ? $CatalogueNumber : '') ?>"
               <?= $Disabled ?>/>
             <?php if (empty($Disabled)) { ?>
             <input type="button" autofill="jav" value="Autofill" style="pointer-events: none; opacity: 0.5;"></input>
@@ -211,7 +211,7 @@ View::header(
 
           <td>
             <input type="text" id="title_jp" name="title_jp" size="45"
-              value="<?= !empty($TitleJP)?$TitleJP:'' ?>"
+              value="<?= !empty($TitleJP) ? $TitleJP : '' ?>"
               <?= $Disabled ?>/>
           </td>
         </tr>
@@ -338,7 +338,7 @@ View::header(
             <code><?= site_url() ?>torrents.php?id=</code>
 
             <input type="text" name="groupid"
-              value="<?= isset($GroupID)?$GroupID:'' ?>"
+              value="<?= isset($GroupID) ? $GroupID : '' ?>"
               size="15" />
           </td>
         </tr>

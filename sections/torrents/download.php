@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 if (!isset($_REQUEST['authkey']) || !isset($_REQUEST['torrent_pass'])) {

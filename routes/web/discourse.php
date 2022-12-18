@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 
 /**
@@ -23,7 +24,7 @@ if ($app->env->enableDiscourse) {
     # e.g., /boards/staff/about-the-staff-category
     Flight::route("/boards(/@categorySlug(/@topicSlug))", function ($categorySlug, $topicSlug) {
         $app = App::go();
-   
+
         # topic
         if (!empty($topicSlug)) {
             require_once "{$app->env->serverRoot}/sections/discourse/boards/topic.php";

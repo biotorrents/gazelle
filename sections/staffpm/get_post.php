@@ -1,4 +1,5 @@
 <?php
+
 // todo: Make this use the cache version of the thread, save the db query
 
 /*********************************************************************\

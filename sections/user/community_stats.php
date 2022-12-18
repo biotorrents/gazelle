@@ -7,10 +7,10 @@ $db->query("
   WHERE AuthorID = $UserID
   GROUP BY Page");
 $Comments = $db->to_array('Page');
-$NumComments = isset($Comments['torrents']) ? $Comments['torrents'][1]:0;
-$NumArtistComments = isset($Comments['artist']) ? $Comments['artist'][1]:0;
-$NumCollageComments = isset($Comments['collages']) ? $Comments['collages'][1]:0;
-$NumRequestComments = isset($Comments['requests']) ? $Comments['requests'][1]:0;
+$NumComments = isset($Comments['torrents']) ? $Comments['torrents'][1] : 0;
+$NumArtistComments = isset($Comments['artist']) ? $Comments['artist'][1] : 0;
+$NumCollageComments = isset($Comments['collages']) ? $Comments['collages'][1] : 0;
+$NumRequestComments = isset($Comments['requests']) ? $Comments['requests'][1] : 0;
 
 $db->query("
   SELECT COUNT(ID)

@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 if (!isset($_GET['userid']) || !is_number($_GET['userid'])) {

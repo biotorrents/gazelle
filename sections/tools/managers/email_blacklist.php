@@ -1,24 +1,24 @@
 <?php
 define('EMAILS_PER_PAGE', 25);
 if (!check_perms('users_view_email')) {
-  error(403);
+    error(403);
 }
-list ($Page, $Limit) = Format::page_limit(EMAILS_PER_PAGE);
+list($Page, $Limit) = Format::page_limit(EMAILS_PER_PAGE);
 
 View::header('Manage email blacklist');
 $Where = "";
 if (!empty($_POST['email'])) {
-  $Email = db_string($_POST['email']);
-  $Where .= " WHERE Email LIKE '%$Email%'";
+    $Email = db_string($_POST['email']);
+    $Where .= " WHERE Email LIKE '%$Email%'";
 }
 if (!empty($_POST['comment'])) {
-  $Comment = db_string($_POST['comment']);
-  if (!empty($Where)) {
-    $Where .= " AND";
-  } else {
-    $Where .= " WHERE";
-  }
-  $Where .= " Comment LIKE '%$Comment%'";
+    $Comment = db_string($_POST['comment']);
+    if (!empty($Where)) {
+        $Where .= " AND";
+    } else {
+        $Where .= " WHERE";
+    }
+    $Where .= " Comment LIKE '%$Comment%'";
 }
 $db->prepared_query("
   SELECT
@@ -34,7 +34,7 @@ $db->prepared_query("
   LIMIT $Limit");
 $Results = $db->to_array(false, MYSQLI_ASSOC, false);
 $db->prepared_query('SELECT FOUND_ROWS()');
-list ($NumResults) = $db->next_record();
+list($NumResults) = $db->next_record();
 ?>
 <div class="header">
   <h2>Email Blacklist</h2>
@@ -74,7 +74,7 @@ list ($NumResults) = $db->next_record();
   </tr>
 <?php
   foreach ($Results as $Result) {
-?>
+      ?>
   <tr>
     <form class="manage_form" name="email_blacklist" action="tools.php" method="post">
       <td>
@@ -91,7 +91,8 @@ list ($NumResults) = $db->next_record();
       </td>
     </form>
   </tr>
-<?php } ?>
+<?php
+  } ?>
 </table>
 <div class="linkbox pager">
   <br />

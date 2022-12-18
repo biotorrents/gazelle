@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 
 /**
@@ -69,7 +70,7 @@ class Discourse
         if ($app->cacheOld->get_value($cacheKey)) {
             return $app->cacheOld->get_value($cacheKey);
         }
-        
+
         # method
         $allowedMethods = ["get", "post", "put", "delete"];
         if (in_array($method, $allowedMethods)) {
@@ -93,7 +94,7 @@ class Discourse
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        
+
         $response = json_decode(curl_exec($ch), true);
         $info = curl_getinfo($ch);
         curl_close($ch);
@@ -293,7 +294,7 @@ class Discourse
         if ($id !== 0) {
             $options = ["id" => $id];
         }
-        
+
         $response = $this->curl("notifications.json", "put", $options);
         return $response;
     }

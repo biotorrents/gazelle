@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 # https://github.com/paragonie/anti-csrf
@@ -69,7 +70,7 @@ try {
         $sessionId = $row["sessionId"] ?? null;
         $app->cacheOld->delete_value("session_{$userId}_{$sessionId}");
     }
-    
+
     # delete all stored sessions
     $query = "delete * from users_sessions where userId = ?";
     $ref = $app-dbNew->do($query, [$userId]);

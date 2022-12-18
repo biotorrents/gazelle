@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 class SphinxqlResult
@@ -98,7 +99,7 @@ class SphinxqlResult
         while ($Row = $this->fetch_array()) {
             $Return[$Row[$Key1]] = $Row[$Key2];
         }
-        
+
         $this->data_seek(0);
         return $Return;
     }

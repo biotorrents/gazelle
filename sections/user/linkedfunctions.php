@@ -3,7 +3,7 @@
 
 function link_users($UserID, $TargetID)
 {
-  $app = App::go();
+    $app = App::go();
 
     authorize();
     if (!check_perms('users_mod')) {
@@ -60,7 +60,7 @@ function link_users($UserID, $TargetID)
         UPDATE dupe_groups
         SET Comments = CONCAT('".db_string($Comments)."\n\n',Comments)
         WHERE ID = $TargetGroupID");
-        
+
             $app->dbOld->query("DELETE FROM dupe_groups WHERE ID = $UserGroupID");
             $GroupID = $UserGroupID;
         } else {
@@ -87,7 +87,7 @@ function link_users($UserID, $TargetID)
 
 function unlink_user($UserID)
 {
-  $app = App::go();
+    $app = App::go();
 
     authorize();
     if (!check_perms('users_mod')) {
@@ -102,7 +102,7 @@ function unlink_user($UserID)
     if ($UserInfo === false) {
         return;
     }
-    
+
     $AdminComment = sqltime()." - Linked accounts updated: [user]".$UserInfo['Username']."[/user] unlinked by ".$app->userNew->core['username'];
     $app->dbOld->query("
     UPDATE users_info AS i
@@ -120,7 +120,7 @@ function unlink_user($UserID)
 
 function delete_dupegroup($GroupID)
 {
-  $app = App::go();
+    $app = App::go();
 
     authorize();
     if (!check_perms('users_mod')) {
@@ -136,7 +136,7 @@ function delete_dupegroup($GroupID)
 
 function dupe_comments($GroupID, $Comments)
 {
-  $app = App::go();
+    $app = App::go();
 
     authorize();
     if (!check_perms('users_mod')) {
@@ -176,7 +176,7 @@ function dupe_comments($GroupID, $Comments)
 
 function user_dupes_table($UserID)
 {
-  $app = App::go();
+    $app = App::go();
 
     if (!check_perms('users_mod')) {
         error(403);

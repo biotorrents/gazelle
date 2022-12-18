@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 authorize();
@@ -36,7 +37,7 @@ FROM
 WHERE
   `TopicID` = $ThreadID
 ");
-  
+
 if (!$db->has_results()) {
     error(404);
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 // Love or hate, this makes things a hell of a lot faster
@@ -17,7 +18,7 @@ $db->query("
   FROM xbt_files_users
   WHERE active = 1
   GROUP BY Type");
-  
+
 $PeerCount = $db->to_array(0, MYSQLI_NUM, false);
 $SeederCount = isset($PeerCount['Seeding'][1]) ? $PeerCount['Seeding'][1] : 0;
 $LeecherCount = isset($PeerCount['Leeching'][1]) ? $PeerCount['Leeching'][1] : 0;

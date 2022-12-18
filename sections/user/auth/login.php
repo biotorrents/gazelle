@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 # https://github.com/paragonie/anti-csrf
@@ -143,7 +144,7 @@ try {
 } catch (Exception $e) {
     $response = $e->getMessage();
 }
-  
+
 
 /** TWIG TEMPLATE */
 
