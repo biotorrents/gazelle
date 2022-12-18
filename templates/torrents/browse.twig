@@ -2,47 +2,39 @@
 
 {% block content %}
 
+{# include the main search form #}
 {% include "torrents/search.twig" %}
 
-  <!-- No results message -->
-  <?php if ($NumResults === 0) { ?>
+  {# no results message #}
+  {% if resultCount == 0 %}
   <div class="torrents_nomatch box pad" align="center">
     <h2>Your search did not match anything</h2>
     <p>Make sure all names are spelled correctly, or try making your search less specific</p>
   </div>
 </div>
-<?php
-View::footer();
-die();
-  }
 
-  if ($NumResults < ($Page - 1) * TORRENTS_PER_PAGE + 1) {
-      $LastPage = ceil($NumResults / TORRENTS_PER_PAGE);
-      $Pages = Format::get_pages(0, $NumResults, TORRENTS_PER_PAGE); ?>
+{# todo: foter and exit #}
 
+  {% endif %}
+
+
+
+{% if bullshit %}
 <div class="torrents_nomatch box pad" align="center">
   <h2>The requested page contains no matches</h2>
-  <p>You are requesting page <?=$Page?>, but the search returned only
-    <?=Text::float($LastPage) ?> pages
+  <p>You are requesting page {{ page }}, but the search returned only
+    {{ lastPage }} pages
   </p>
 </div>
-
-<div class="linkbox">Go to page <?=$Pages?>
+<div class="linkbox">Go to page {{ pages }}
 </div>
 </div>
+{% endif %}
 
-<?php
-    View::footer();
-      error();
-  }
 
-  // List of pages
-  $Pages = Format::get_pages($Page, $NumResults, TORRENTS_PER_PAGE);
 
-  $Bookmarks = Bookmarks::all_bookmarks('torrent');
-  ?>
-
-<div class="linkbox"><?=$Pages?>
+<div class="linkbox">
+{{ pages }}
 </div>
 
 <!-- Results table headings -->
@@ -50,9 +42,11 @@ die();
   class="box torrent_table cats <?=$GroupResults ? 'grouping' : 'no_grouping'?>"
   id="torrent_table">
   <tr class="colhead">
-    <?php if ($GroupResults) { ?>
+
+  {% if groupResults %}
     <td class="small"></td>
-    <?php } ?>
+    {% endif %}
+
     <td class="small cats_col"></td>
     <td>Name / <a
         href="<?=header_link('year')?>">Year</a>
@@ -400,10 +394,8 @@ die();
   }
 ?>
 </table>
-<div class="linkbox"><?=$Pages?>
+<div class="linkbox">{{ pages }}
 </div>
 </div>
-<?php
-View::footer();
 
 {% endblock %}

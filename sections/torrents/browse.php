@@ -200,6 +200,18 @@ if ($AdvancedSearch) {
 }
 
 
+
+if ($NumResults < ($Page - 1) * TORRENTS_PER_PAGE + 1) {
+  $LastPage = ceil($NumResults / TORRENTS_PER_PAGE);
+  $Pages = Format::get_pages(0, $NumResults, TORRENTS_PER_PAGE);
+
+}
+  // List of pages
+  $Pages = Format::get_pages($Page, $NumResults, TORRENTS_PER_PAGE);
+
+  $Bookmarks = Bookmarks::all_bookmarks('torrent');
+
+
 /**
  * VIEW THE TWIG TEMPLATE HERE
  */
@@ -222,6 +234,11 @@ $app->twig->display("torrents/browse.twig", [
   "groupResults" => $GroupResults,
   "tagList" => $Search->get_terms('taglist'),
   "hideFilter" => $HideFilter,
+  "pages" => $Pages,
+  "bookmarks" => Bookmarks::all_bookmarks('torrent'),
+  "lastPage" => $LastPage ?? null,
+  "page" => $Page,
+  "bullshit" => ($NumResults < ($Page - 1) * TORRENTS_PER_PAGE + 1),
 ]);
 
 exit;

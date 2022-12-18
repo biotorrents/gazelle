@@ -2,6 +2,11 @@
 
 #declare(strict_types=1);
 
+
+/**
+ * Format
+ */
+
 class Format
 {
     /**

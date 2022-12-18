@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "easymde": "^2.16.1"
+    "easymde": "^2.16.1",
+    "prettier": "^2.8.1"
   }
 }
