@@ -59,11 +59,11 @@ function header_link($SortKey, $DefaultWay = 'desc')
     return "torrents.php?order_way=$NewWay&amp;order_by=$SortKey&amp;".Format::get_url(['order_way', 'order_by']);
 }
 
-if (!empty($_GET['search']) || !empty($_GET['groupname'])) {
-    if (!empty($_GET['search'])) {
-        $InfoHash = $_GET['search'];
+if (!empty($_POST['search']) || !empty($_POST['groupname'])) {
+    if (!empty($_POST['search'])) {
+        $InfoHash = $_POST['search'];
     } else {
-        $InfoHash = $_GET['groupname'];
+        $InfoHash = $_POST['groupname'];
     }
 
     // Search by info hash
@@ -83,7 +83,7 @@ if (!empty($_GET['search']) || !empty($_GET['groupname'])) {
 }
 
 // Setting default search options
-if (!empty($_GET['setdefault'])) {
+if (!empty($_POST['setdefault'])) {
     $UnsetList = ['page', 'setdefault'];
     $UnsetRegexp = '/(&|^)('.implode('|', $UnsetList).')=.*?(&|$)/i';
 
@@ -106,7 +106,7 @@ if (!empty($_GET['setdefault'])) {
     $app->cacheOld->commit_transaction(0);
 
 // Clearing default search options
-} elseif (!empty($_GET['cleardefault'])) {
+} elseif (!empty($_POST['cleardefault'])) {
     $app->dbOld->query("
       SELECT SiteOptions
       FROM users_info
@@ -126,22 +126,22 @@ if (!empty($_GET['setdefault'])) {
     $app->cacheOld->commit_transaction(0);
 
 // Use default search options
-} elseif (empty($_SERVER['QUERY_STRING']) || (count($_GET) === 1 && isset($_GET['page']))) {
+} elseif (empty($_SERVER['QUERY_STRING']) || (count($_POST) === 1 && isset($_POST['page']))) {
     if (!empty($app->userNew->extra['DefaultSearch'])) {
-        if (!empty($_GET['page'])) {
-            $Page = $_GET['page'];
-            parse_str($app->userNew->extra['DefaultSearch'], $_GET);
-            $_GET['page'] = $Page;
+        if (!empty($_POST['page'])) {
+            $Page = $_POST['page'];
+            parse_str($app->userNew->extra['DefaultSearch'], $_POST);
+            $_POST['page'] = $Page;
         } else {
-            parse_str($app->userNew->extra['DefaultSearch'], $_GET);
+            parse_str($app->userNew->extra['DefaultSearch'], $_POST);
         }
     }
 }
 
 /*
 // Terms were not submitted via the search form
-if (isset($_GET['searchsubmit'])) {
-    $GroupResults = !empty($_GET['group_results']);
+if (isset($_POST['searchsubmit'])) {
+    $GroupResults = !empty($_POST['group_results']);
 } else {
     $GroupResults = !$app->userNew->extra['DisableGrouping2'];
 }
@@ -150,29 +150,29 @@ if (isset($_GET['searchsubmit'])) {
 # hardcoded for now
 $GroupResults = true;
 
-if (!empty($_GET['order_way']) && $_GET['order_way'] === 'asc') {
+if (!empty($_POST['order_way']) && $_POST['order_way'] === 'asc') {
     $OrderWay = 'asc';
 } else {
     $OrderWay = 'desc';
 }
 
-if (empty($_GET['order_by']) || !isset(TorrentSearch::$SortOrders[$_GET['order_by']])) {
+if (empty($_POST['order_by']) || !isset(TorrentSearch::$SortOrders[$_POST['order_by']])) {
     $OrderBy = 'time'; // For header links
 } else {
-    $OrderBy = $_GET['order_by'];
+    $OrderBy = $_POST['order_by'];
 }
 
-$Page = !empty($_GET['page']) ? (int) $_GET['page'] : 1;
+$Page = !empty($_POST['page']) ? (int) $_POST['page'] : 1;
 $Search = new TorrentSearch($GroupResults, $OrderBy, $OrderWay, $Page, TORRENTS_PER_PAGE);
 
-$Results = $Search->query($_GET);
+$Results = $Search->query($_POST);
 $Groups = $Search->get_groups();
 $NumResults = $Search->record_count();
 
 $HideFilter = isset($app->userNew->extra['ShowTorFilter']) && $app->userNew->extra['ShowTorFilter'] === 0;
 // This is kinda ugly, but the enormous if paragraph was really hard to read
-$AdvancedSearch = !empty($_GET['advanced_search']) && $_GET['advanced_search'] === 'true';
-$AdvancedSearch |= !empty($app->userNew->extra['SearchType']) && (empty($_GET['advanced_search']) || $_GET['advanced_search'] === 'true');
+$AdvancedSearch = !empty($_POST['advanced_search']) && $_POST['advanced_search'] === 'true';
+$AdvancedSearch |= !empty($app->userNew->extra['SearchType']) && (empty($_POST['advanced_search']) || $_POST['advanced_search'] === 'true');
 $AdvancedSearch &= check_perms('site_advanced_search');
 if ($AdvancedSearch) {
     $Action = 'advanced_search=true';
@@ -642,7 +642,7 @@ View::header('Browse Torrents', 'browse');
             <td>
               <input type="checkbox"
                 name="filter_cat[<?=($CatKey + 1)?>]"
-                id="cat_<?=($CatKey + 1)?>" value="1" <?php if (isset($_GET['filter_cat'][$CatKey + 1])) { ?>
+                id="cat_<?=($CatKey + 1)?>" value="1" <?php if (isset($_POST['filter_cat'][$CatKey + 1])) { ?>
               checked="checked"<?php } ?> />
               <label for="cat_<?=($CatKey + 1)?>"><?=$CatName?></label>
             </td>
@@ -712,7 +712,7 @@ View::header('Browse Torrents', 'browse');
           <input type="hidden" name="searchsubmit" value="1" />
 
           <input type="button" value="Reset" <input type="button" value="Reset"
-            onclick="window.location.href = 'torrents.php<?php if (isset($_GET['advanced_search']) && $_GET['advanced_search'] === 'true') { ?>?advanced_search=true<?php } ?>'" />
+            onclick="window.location.href = 'torrents.php<?php if (isset($_POST['advanced_search']) && $_POST['advanced_search'] === 'true') { ?>?advanced_search=true<?php } ?>'" />
 
           &emsp;
 
@@ -865,7 +865,7 @@ die();
               'torrents/display_name.html',
               [
                 'g' => $GroupInfo,
-                'url' => Format::get_url($_GET),
+                'url' => Format::get_url($_POST),
                 'cover_art' => (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) ?? true,
                 'thumb' => ImageTools::process($CoverArt, 'thumb'),
                 'artists' => Artists::display_artists($Artists),
@@ -1026,7 +1026,7 @@ die();
               'torrents/display_name.html',
               [
                 'g' => $GroupInfo,
-                'url' => Format::get_url($_GET),
+                'url' => Format::get_url($_POST),
                 'cover_art' => (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) ?? true,
                 'thumb' => ImageTools::process($CoverArt, 'thumb'),
                 'artists' => Artists::display_artists($Artists),
