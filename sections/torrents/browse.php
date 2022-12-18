@@ -215,6 +215,11 @@ $app->twig->display("torrents/browse.twig", [
   "raster" => array_merge((array) $app->env->META->Formats->ImgRaster, (array) $app->env->META->Formats->ImgVector, (array) $app->env->META->Formats->MapRaster, (array) $app->env->META->Formats->Plain),
   "vector" => array_merge((array) $app->env->META->Formats->MapVector, (array) $app->env->META->Formats->Plain),
   "extras" => array_merge((array) $app->env->META->Formats->BinDoc, (array) $app->env->META->Formats->CpuGen, (array) $app->env->META->Formats->Plain),
+  "searchHasFilters" => $Search->has_filters(),
+  "resultCount" => Text::float($NumResults),
+  "advancedSearch" => $AdvancedSearch,
+  "groupResults" => $GroupResults,
+  "tagList" => $Search->get_terms('taglist'),
 ]);
 
 exit;

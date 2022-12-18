@@ -259,6 +259,7 @@
                 <option
                   value="{{ resolution }}"
                      {# {{ (query.post.resolution == resolution) ?? "selected" }} #}
+                     >
                  {{ resolution }}
                 </option>
                 {% endfor %}
@@ -336,15 +337,36 @@
                 placeholder="Max" value="{{ query.post.size_max ?? null }}" />
               <select name="size_unit" class="ft_size fti_advanced">
                 <option value="">Unit</option>
-                <option value="0" <?Format::selected('size_unit', 0)?>>B
+
+
+                <option value="0"
+                     {# {{ (query.post.size_unit == 0) ?? "selected" }} #}
+                     >
+                  B
                 </option>
-                <option value="1" <?Format::selected('size_unit', 1)?>>KiB
+
+                <option value="1"
+                     {# {{ (query.post.size_unit == 0) ?? "selected" }} #}
+                     >
+                  KiB
                 </option>
-                <option value="2" <?Format::selected('size_unit', 2)?>>MiB
+
+                <option value="2"
+                     {# {{ (query.post.size_unit == 0) ?? "selected" }} #}
+                     >
+                  MiB
                 </option>
-                <option value="3" <?Format::selected('size_unit', 3)?>>GiB
+
+                <option value="3"
+                     {# {{ (query.post.size_unit == 0) ?? "selected" }} #}
+                     >
+                  GiB
                 </option>
-                <option value="4" <?Format::selected('size_unit', 4)?>>TiB
+
+                <option value="4"
+                     {# {{ (query.post.size_unit == 0) ?? "selected" }} #}
+                     >
+                  TiB
                 </option>
               </select>
             </td>
@@ -368,7 +390,7 @@
             <td class="ft_taglist">
               <input type="search" size="37" id="tags" name="taglist" class="inputtext smaller"
                 placeholder="Tags (comma-separated)"
-                value="<?=Text::esc($Search->get_terms('taglist'))?>"
+                value="{{ tagList }}"
                 aria-label="Tags to search">&nbsp;
               <input type="radio" name="tags_type" id="tags_type0" value="0" <?Format::selected(
             'tags_type',
@@ -424,7 +446,7 @@
               <label for="group_results">Group Torrents</label>
             </td>
             <td class="ft_group_results">
-              <input type="checkbox" value="1" name="group_results" id="group_results" <?=$GroupResults ? ' checked="checked"' : ''?>
+              <input type="checkbox" value="1" name="group_results" id="group_results" {{ (groupResults) ? "checked='checked'" : "" }}>
               />
             </td>
           </tr>
@@ -460,6 +482,7 @@
           class="layout cat_list<?php if (empty($app->userNew->extra['ShowTags'])) { ?> hidden<?php } ?>"
           id="taglist">
           <tr>
+            {#
             <?php
   $GenreTags = $app->cacheOld->get_value('genre_tags');
   if (!$GenreTags) {
@@ -490,6 +513,7 @@
   ?>
             <td colspan="<?=(7 - ($x % 7))?>"> </td>
             <?php } ?>
+            #}
           </tr>
         </table>
 
@@ -506,14 +530,14 @@
         {# Result count, submit, and reset #}
         <div class="submit ft_submit">
           <span class="u-pull-left">
-            <?=Text::float($NumResults)?>
+            {{ resultCount }}
             Results
           </span>
 
           <input type="submit" value="Search" class="button-primary" />
 
           <input type="hidden" name="advanced_search" id="ft_type"
-            value="<?=($AdvancedSearch ? 'true' : 'false')?>" />
+            value="{{ (advancedSearch) ? true : false }}" />
 
           <input type="hidden" name="searchsubmit" value="1" />
 
@@ -522,9 +546,9 @@
 
           &emsp;
 
-          <?php if ($Search->has_filters()) { ?>
+            {% if searchHasFilters %}
           <input type="submit" name="setdefault" value="Make Default" />
-          <?php }
+          {% endif %}
 
           {% if user.extra.DefaultSearch is defined %}
           <input type="submit" name="cleardefault" value="Clear Default" />
