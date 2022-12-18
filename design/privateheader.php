@@ -186,8 +186,8 @@ if (empty($app->userNew->extra['StyleURL'])) {
     if (substr($app->userNew->extra['StyleURL'], -4) === '.css'
         && empty($StyleURLInfo['query']) && empty($StyleURLInfo['fragment'])
         && ($StyleURLInfo['host'] === siteDomain)
-        && file_exists(SERVER_ROOT.$StyleURLInfo['path'])) {
-        $StyleURL = $app->userNew->extra['StyleURL'].'?v='.filemtime(SERVER_ROOT.$StyleURLInfo['path']);
+        && file_exists(serverRoot.$StyleURLInfo['path'])) {
+        $StyleURL = $app->userNew->extra['StyleURL'].'?v='.filemtime(serverRoot.$StyleURLInfo['path']);
     } else {
         $StyleURL = $app->userNew->extra['StyleURL'];
     } ?>

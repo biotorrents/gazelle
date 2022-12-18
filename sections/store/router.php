@@ -30,75 +30,75 @@ View::footer();
     if (isset($_REQUEST['item'])) {
         switch ($_REQUEST['item']) {
       case 'upload_1':
-        include SERVER_ROOT.'/sections/store/upload_1.php';
+        include serverRoot.'/sections/store/upload_1.php';
         break;
 
       case 'upload_10':
-        include SERVER_ROOT.'/sections/store/upload_10.php';
+        include serverRoot.'/sections/store/upload_10.php';
         break;
 
       case 'upload_100':
-        include SERVER_ROOT.'/sections/store/upload_100.php';
+        include serverRoot.'/sections/store/upload_100.php';
         break;
 
       case 'upload_1000':
-        include SERVER_ROOT.'/sections/store/upload_1000.php';
+        include serverRoot.'/sections/store/upload_1000.php';
         break;
 
       case 'points_1':
-        include SERVER_ROOT.'/sections/store/points_1.php';
+        include serverRoot.'/sections/store/points_1.php';
         break;
 
       case 'points_10':
-        include SERVER_ROOT.'/sections/store/points_10.php';
+        include serverRoot.'/sections/store/points_10.php';
         break;
 
       case 'points_100':
-        include SERVER_ROOT.'/sections/store/points_100.php';
+        include serverRoot.'/sections/store/points_100.php';
         break;
 
       case 'points_1000':
-        include SERVER_ROOT.'/sections/store/points_1000.php';
+        include serverRoot.'/sections/store/points_1000.php';
         break;
 
       case 'token':
-        include SERVER_ROOT.'/sections/store/token.php';
+        include serverRoot.'/sections/store/token.php';
         break;
 
       case 'freeleechize':
-        include SERVER_ROOT.'/sections/store/freeleechize.php';
+        include serverRoot.'/sections/store/freeleechize.php';
         break;
 
       case 'freeleechpool':
-        include SERVER_ROOT.'/sections/store/freeleechpool.php';
+        include serverRoot.'/sections/store/freeleechpool.php';
         break;
 
       case 'invite':
-        include SERVER_ROOT.'/sections/store/invite.php';
+        include serverRoot.'/sections/store/invite.php';
         break;
 
       case 'title':
-        include SERVER_ROOT.'/sections/store/title.php';
+        include serverRoot.'/sections/store/title.php';
         break;
 
       case 'promotion':
-        include SERVER_ROOT.'/sections/store/promotion.php';
+        include serverRoot.'/sections/store/promotion.php';
         break;
 
       case 'become_admin':
-        include SERVER_ROOT.'/sections/store/become_admin.php';
+        include serverRoot.'/sections/store/become_admin.php';
         break;
 
       case 'badge':
-        include SERVER_ROOT.'/sections/store/badge.php';
+        include serverRoot.'/sections/store/badge.php';
         break;
 
       case 'coinbadge':
-        include SERVER_ROOT.'/sections/store/coinbadge.php';
+        include serverRoot.'/sections/store/coinbadge.php';
         break;
 
       case 'capture_user':
-        include SERVER_ROOT.'/sections/store/capture_user.php';
+        include serverRoot.'/sections/store/capture_user.php';
         break;
 
       default:
@@ -106,6 +106,6 @@ View::footer();
         break;
     }
     } else {
-        include SERVER_ROOT.'/sections/store/store.php';
+        include serverRoot.'/sections/store/store.php';
     }
 }

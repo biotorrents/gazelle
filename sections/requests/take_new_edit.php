@@ -165,7 +165,7 @@ if (!empty($Err)) {
     error($Err);
     $Div = $_POST['unit'] === 'mb' ? 1024 * 1024 : 1024 * 1024 * 1024;
     $Bounty /= $Div;
-    include(SERVER_ROOT.'/sections/requests/new_edit.php');
+    include(serverRoot.'/sections/requests/new_edit.php');
     #error();
 }
 

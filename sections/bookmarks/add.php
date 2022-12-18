@@ -7,7 +7,7 @@ if (!Bookmarks::can_bookmark($_GET['type'])) {
     error(404);
 }
 
-include SERVER_ROOT.'/classes/feed.class.php'; // RSS feeds
+include serverRoot.'/classes/feed.class.php'; // RSS feeds
 $Feed = new Feed;
 
 $Type = $_GET['type'];

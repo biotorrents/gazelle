@@ -24,7 +24,7 @@ if (isset($_GET['userid']) && check_perms('users_view_invites')) {
 list($UserID, $Username, $PermissionID) = array_values(Users::user_info($UserID));
 
 $ENV = ENV::go();
-require_once SERVER_ROOT.'/classes/invite_tree.class.php';
+require_once serverRoot.'/classes/invite_tree.class.php';
 $Tree = new INVITE_TREE($UserID);
 View::header("$Username $ENV->crumb Invites $ENV->crumb Tree");
 ?>

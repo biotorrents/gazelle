@@ -9,7 +9,6 @@ $app = App::go();
 
 authorize();
 
-include(SERVER_ROOT.'/classes/validate.class.php');
 $Val = new Validate();
 
 function add_artist($CollageID, $ArtistID)

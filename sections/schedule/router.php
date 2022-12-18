@@ -35,7 +35,7 @@ $AS = check_perms('admin_schedule');
 
 function run_all_in($Dir)
 {
-    $Tasks = array_diff(scandir(SERVER_ROOT.'/sections/schedule/'.$Dir, 1), ['.', '..']);
+    $Tasks = array_diff(scandir(serverRoot.'/sections/schedule/'.$Dir, 1), ['.', '..']);
     extract($GLOBALS);
 
     foreach ($Tasks as $Task) {

@@ -142,8 +142,7 @@ if (isset($_GET['type']) && isset($_GET['userid'])) {
         }
 
         if ((strlen($Data2) > $MaxFileSize || image_height($FileType, $Data2) > $MaxImageHeight) && $UserID !== 1 && $UserID !== 2) {
-            require_once SERVER_ROOT.'/classes/db.class.php';
-            #require_once SERVER_ROOT.'/classes/time.class.php';
+            require_once serverRoot.'/classes/db.class.php';
             $dbURL = db_string($URL);
             $AdminComment = ucfirst($TypeName)." reset automatically (Size: ".Text::float((strlen($Data)) / 1024)." kB, Height: ".$Height."px). Used to be $dbURL";
             $PrivMessage = "$ENV->siteName has the following requirements for {$TypeName}s:\n\n".

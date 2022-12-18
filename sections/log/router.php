@@ -21,7 +21,7 @@ if (!defined('LOG_ENTRIES_PER_PAGE')) {
 }
 
 View::header("Site log");
-include SERVER_ROOT.'/sections/log/sphinx.php';
+include serverRoot.'/sections/log/sphinx.php';
 ?>
 
 <div>

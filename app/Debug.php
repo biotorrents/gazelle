@@ -118,7 +118,7 @@ class Debug # extends DebugBar\StandardDebugBar
               $VarName = $ID;
           }
 
-          $File = array("path" => substr($BackTrace[0]["file"], strlen(SERVER_ROOT)), "line" => $BackTrace[0]["line"]);
+          $File = array("path" => substr($BackTrace[0]["file"], strlen(serverRoot)), "line" => $BackTrace[0]["line"]);
           $this->LoggedVars[$ID] = array($VarName => array("bt" => $File, "data" => $Var));
           */
     }

@@ -362,7 +362,7 @@ class TorrentFunctions
 
             if ($NumReports > 0) {
                 $Reported = true;
-                include(SERVER_ROOT.'/sections/reportsv2/array.php');
+                include(serverRoot.'/sections/reportsv2/array.php');
                 $ReportInfo = '
             <table class="reportinfo_table">
               <tr class="colhead_dark" style="font-weight: bold;">

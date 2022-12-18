@@ -71,15 +71,8 @@ ENV::setPub("webRoot", "/var/www");
 # e.g., /var/www/html/dev.torrents.bio
 ( # old format
     !$env->dev
-        ? define("SERVER_ROOT", "/var/www/html/biotorrents.de/") # production
-        : define("SERVER_ROOT", "/var/www/html/dev.torrents.bio") # development
-);
-
-ENV::setPub(
-    "SERVER_ROOT",
-    (!$env->dev
-        ? "/var/www/html/biotorrents.de/" # production
-        : "/var/www/html/dev.torrents.bio") # development
+        ? define("serverRoot", "/var/www/html/biotorrents.de/") # production
+        : define("serverRoot", "/var/www/html/dev.torrents.bio") # development
 );
 
 ENV::setPub(

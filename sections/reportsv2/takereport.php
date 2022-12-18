@@ -104,7 +104,7 @@ list($GroupID) = $db->next_record();
 
 if (!empty($Err)) {
     error($Err);
-    include(SERVER_ROOT.'/sections/reportsv2/report.php');
+    include(serverRoot.'/sections/reportsv2/report.php');
     error();
 }
 

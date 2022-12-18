@@ -10,7 +10,7 @@
  * which are off limits to most members.
  */
 
-require_once SERVER_ROOT.'/classes/torrent_form.class.php';
+require_once serverRoot.'/classes/torrent_form.class.php';
 if (!is_number($_GET['id']) || !$_GET['id']) {
     error(400);
 }

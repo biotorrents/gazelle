@@ -23,7 +23,7 @@ Make sure all constants are defined in config.php and not in random files
 
 enforce_login();
 
-#require_once SERVER_ROOT."/classes/validate.class.php" ;
+#require_once serverRoot."/classes/validate.class.php" ;
 $Val = new Validate;
 
 if (empty($_REQUEST['action'])) {
@@ -129,7 +129,7 @@ switch ($_REQUEST['action']) {
     $cache->delete_value('notifications_new_'.$UserID);
     $cache->delete_value('collage_subs_user_new_'.$UserID);
 
-    require_once SERVER_ROOT.'/sections/user/user.php';
+    require_once serverRoot.'/sections/user/user.php';
     break;
 
   case 'take_donate':
@@ -139,7 +139,7 @@ switch ($_REQUEST['action']) {
     break;
 
   case 'points':
-    require_once SERVER_ROOT.'/sections/user/points.php';
+    require_once serverRoot.'/sections/user/points.php';
     break;
 
   case 'token':
@@ -148,7 +148,7 @@ switch ($_REQUEST['action']) {
 
   default:
     if (isset($_REQUEST['id'])) {
-        require_once SERVER_ROOT.'/sections/user/user.php';
+        require_once serverRoot.'/sections/user/user.php';
     } else {
         Http::redirect("index.php");
     }

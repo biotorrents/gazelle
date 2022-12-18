@@ -33,7 +33,7 @@ $ENV = ENV::go();
 
 $User = (int) $_GET["user"];
 if (!$Enabled = $cache->get_value("enabled_$User")) {
-    require_once SERVER_ROOT."/classes/db.class.php";
+    require_once serverRoot."/classes/db.class.php";
     $db = new DB; // Load the database wrapper
 
     $db->query("

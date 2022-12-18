@@ -94,7 +94,6 @@ if (!empty($ArtistForm)) {
 /**
  * TorrentForm
  */
-#require_once SERVER_ROOT.'/classes/torrent_form.class.php';
 $TorrentForm = new TorrentForm($Properties ?? false, $Err ?? false);
 
 /**

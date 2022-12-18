@@ -325,7 +325,7 @@ if (empty($Properties['GroupID']) && empty($ArtistForm)) {
 
 if ($Err) { // Show the upload form, with the data the user entered
     $UploadForm = $Type;
-    require_once SERVER_ROOT.'/sections/upload/upload.php' ;
+    require_once serverRoot.'/sections/upload/upload.php' ;
     error(400, $NoHTML = true);
 }
 
@@ -382,7 +382,7 @@ $debug['upload']->info('torrent decoded');
 
 if (!empty($Err)) { // Show the upload form, with the data the user entered
     $UploadForm = $Type;
-    include(SERVER_ROOT.'/sections/upload/upload.php');
+    include(serverRoot.'/sections/upload/upload.php');
     error();
 }
 
@@ -756,7 +756,7 @@ if ($ENV->FEATURE_BIOPHP && !empty($T['Seqhash'])) {
             );
         } catch (Exception $Err) {
             $UploadForm = $Type;
-            require_once SERVER_ROOT.'/sections/upload/upload.php' ;
+            require_once serverRoot.'/sections/upload/upload.php' ;
             error($Err->getMessage(), $NoHTML = true);
         }
     }

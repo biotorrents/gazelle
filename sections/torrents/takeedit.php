@@ -11,8 +11,7 @@
 enforce_login();
 authorize();
 
-require_once SERVER_ROOT.'/classes/validate.class.php';
-$Validate = new VALIDATE;
+$Validate = new Validate;
 
 
 //******************************************************************************//

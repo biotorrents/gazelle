@@ -10,7 +10,7 @@ define('REPORTS_PER_PAGE', '10');
 
 list($Page, $Limit) = Format::page_limit(REPORTS_PER_PAGE);
 
-include(SERVER_ROOT . '/sections/reports/array.php');
+include(serverRoot . '/sections/reports/array.php');
 
 // Header
 View::header('Reports', 'reports');

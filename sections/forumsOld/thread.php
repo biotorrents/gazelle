@@ -342,7 +342,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
     <?php
     } else {
         //Staff forum, output voters, not percentages
-        include(SERVER_ROOT.'/sections/staff/functions.php');
+        include(serverRoot.'/sections/staff/functions.php');
         $Staff = get_staff();
 
         $StaffNames = [];

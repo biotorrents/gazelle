@@ -26,7 +26,7 @@ class View
         $ENV = ENV::go();
 
         $uri = preg_replace(".$ENV->staticServer.", '', $uri);
-        #$integrity = base64_encode(hash_file($ENV->SRI, "$ENV->SERVER_ROOT/$uri", true));
+        #$integrity = base64_encode(hash_file($ENV->SRI, "$ENV->serverRoot/$uri", true));
 
         switch ($type) {
             case 'script':
@@ -79,7 +79,7 @@ class View
         );
 
         # hardcode private (public already twig'd)
-        require_once "$ENV->SERVER_ROOT/design/privateheader.php";
+        require_once "$ENV->serverRoot/design/privateheader.php";
     }
 
 
@@ -98,7 +98,7 @@ class View
         #global $ScriptStartTime, $SessionID, $UserSessions, $debug, $Time, $Mobile;
 
         # hardcode private (public already twig'd)
-        require_once "$ENV->SERVER_ROOT/design/privatefooter.php";
+        require_once "$ENV->serverRoot/design/privatefooter.php";
     }
 
 

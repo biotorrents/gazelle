@@ -2,7 +2,6 @@
 #declare(strict_types=1);
 
 authorize();
-include(SERVER_ROOT.'/classes/validate.class.php');
 
 $Val = new Validate;
 
@@ -74,7 +73,7 @@ if ($Err) {
     $Category = $_POST['category'];
     $Tags = $_POST['tags'];
     $Description = $_POST['description'];
-    include(SERVER_ROOT.'/sections/collages/new.php');
+    include(serverRoot.'/sections/collages/new.php');
     error();
 }
 

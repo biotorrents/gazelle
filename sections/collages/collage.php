@@ -70,9 +70,9 @@ if (!empty($CollageSubscriptions) && in_array($CollageID, $CollageSubscriptions)
 }
 
 if ($CollageCategoryID === array_search(ARTIST_COLLAGE, $CollageCats)) {
-    include SERVER_ROOT.'/sections/collages/artist_collage.php';
+    include serverRoot.'/sections/collages/artist_collage.php';
 } else {
-    include SERVER_ROOT.'/sections/collages/torrent_collage.php';
+    include serverRoot.'/sections/collages/torrent_collage.php';
 }
 
 if (isset($SetCache)) {

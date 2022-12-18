@@ -18,12 +18,6 @@ if (isset($_GET['clearcache'])) {
 require_once __DIR__.'/../config/app.php';
 $ENV = ENV::go();
 
-/*
-require_once "$ENV->SERVER_ROOT/classes/misc.class.php";
-require_once "$ENV->SERVER_ROOT/classes/cache.class.php";
-require_once "$ENV->SERVER_ROOT/classes/feed.class.php";
-*/
-
 # load the classes
 $cache = new Cache($ENV->getPriv('MEMCACHED_SERVERS'));
 $Feed = new Feed;
@@ -78,4 +72,4 @@ header('Expires: '.date('D, d M Y H:i:s', time() + (2 * 60 * 60)).' GMT');
 header('Last-Modified: '.date('D, d M Y H:i:s').' GMT');
 
 # load the feeds section
-require_once "$ENV->SERVER_ROOT/sections/feeds/index.php";
+require_once "$ENV->serverRoot/sections/feeds/index.php";

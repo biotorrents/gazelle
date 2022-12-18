@@ -21,7 +21,7 @@ function img_error($Type)
     $ENV = ENV::go();
 
     header('Content-type: image/gif');
-    error(file_get_contents("$ENV->SERVER_ROOT/sections/image/err_imgs/$Type.png"));
+    error(file_get_contents("$ENV->serverRoot/sections/image/err_imgs/$Type.png"));
 }
 
 

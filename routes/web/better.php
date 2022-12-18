@@ -17,33 +17,33 @@ Flight::route("/better", function () {
 # single
 Flight::route("/better/single", function () {
     $app = App::go();
-    require_once "{$app->env->SERVER_ROOT}/sections/better/single.php";
+    require_once "{$app->env->serverRoot}/sections/better/single.php";
 });
 
 
 # literature
 Flight::route("/better/literature", function () {
     $app = App::go();
-    require_once "{$app->env->SERVER_ROOT}/sections/better/literature.php";
+    require_once "{$app->env->serverRoot}/sections/better/literature.php";
 });
 
 
 # pictures
 Flight::route("/better/pictures", function () {
     $app = App::go();
-    require_once "{$app->env->SERVER_ROOT}/sections/better/pictures.php";
+    require_once "{$app->env->serverRoot}/sections/better/pictures.php";
 });
 
 
 # folders
 Flight::route("/better/folders", function () {
     $app = App::go();
-    require_once "{$app->env->SERVER_ROOT}/sections/better/folders.php";
+    require_once "{$app->env->serverRoot}/sections/better/folders.php";
 });
 
 
 # tags
 Flight::route("/better/tags", function () {
     $app = App::go();
-    require_once "{$app->env->SERVER_ROOT}/sections/better/tags.php";
+    require_once "{$app->env->serverRoot}/sections/better/tags.php";
 });

@@ -76,7 +76,7 @@ class Twig # extends Twig\Environment
 
         # https://twig.symfony.com/doc/3.x/api.html
         $twig = new Twig\Environment(
-            new Twig\Loader\FilesystemLoader("{$app->env->SERVER_ROOT}/templates"),
+            new Twig\Loader\FilesystemLoader("{$app->env->serverRoot}/templates"),
             [
                 "auto_reload" => true,
                 "autoescape" => "name",

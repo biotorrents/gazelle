@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types = 1);
 
-include SERVER_ROOT.'/sections/reports/array.php';
+include serverRoot.'/sections/reports/array.php';
 
 if (empty($_GET['type']) || empty($_GET['id']) || !is_number($_GET['id'])) {
     error(404);

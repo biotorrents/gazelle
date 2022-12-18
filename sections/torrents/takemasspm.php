@@ -11,7 +11,6 @@
 authorize();
 enforce_login();
 
-require_once SERVER_ROOT.'/classes/validate.class.php';
 $Validate = new Validate;
 
 $TorrentID = (int)$_POST['torrentid'];

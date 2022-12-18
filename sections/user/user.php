@@ -693,7 +693,7 @@ if ($Override = check_perms('users_mod') || $OwnProfile || !empty($SupportFor)) 
       </ul>
     </div>
     <?php
-include(SERVER_ROOT.'/sections/user/community_stats.php');
+include(serverRoot.'/sections/user/community_stats.php');
 ?>
   </div>
   <div class="main_column two-thirds column">
@@ -938,12 +938,12 @@ foreach ($Collages as $CollageInfo) {
 
 // Linked accounts
 if (check_perms('users_mod')) {
-    include(SERVER_ROOT.'/sections/user/linkedfunctions.php');
+    include(serverRoot.'/sections/user/linkedfunctions.php');
     user_dupes_table($UserID);
 }
 
 if ((check_perms('users_view_invites')) && $Invited > 0) {
-    include(SERVER_ROOT.'/classes/invite_tree.class.php');
+    include(serverRoot.'/classes/invite_tree.class.php');
     $Tree = new INVITE_TREE($UserID, array('visible' => false)); ?>
     <div class="box" id="invitetree_box">
       <div class="head">

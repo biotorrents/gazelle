@@ -18,7 +18,7 @@ declare(strict_types=1);
 enforce_login();
 $ENV = ENV::go();
 
-include SERVER_ROOT.'/sections/staff/functions.php';
+include serverRoot.'/sections/staff/functions.php';
 View::header(
     'Staff',
     'vendor/easymde.min',
