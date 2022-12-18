@@ -357,6 +357,8 @@ define("REQUESTS_PER_PAGE", 25);
 define("MESSAGES_PER_PAGE", 25);
 define("LOG_ENTRIES_PER_PAGE", 50);
 
+ENV::setPub("paginationDefault", 25);
+
 # Cache catalogues
 define("THREAD_CATALOGUE", 500); // Limit to THREAD_CATALOGUE posts per cache key
 

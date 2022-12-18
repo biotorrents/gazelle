@@ -165,21 +165,6 @@ if (empty($_GET['order_by']) || !isset(TorrentSearch::$SortOrders[$_GET['order_b
 $Page = !empty($_GET['page']) ? (int) $_GET['page'] : 1;
 $Search = new TorrentSearch($GroupResults, $OrderBy, $OrderWay, $Page, TORRENTS_PER_PAGE);
 
-# Three profile toggle options
-if (isset($app->userNew->extra['HideLolicon']) && $app->userNew->extra['HideLolicon'] === 1) {
-    $Search->insert_hidden_tags('!lolicon !shotacon !toddlercon');
-}
-
-# 2
-if (isset($app->userNew->extra['HideScat']) && $app->userNew->extra['HideScat'] === 1) {
-    $Search->insert_hidden_tags('!scat');
-}
-
-# 3
-if (isset($app->userNew->extra['HideSnuff']) && $app->userNew->extra['HideSnuff'] === 1) {
-    $Search->insert_hidden_tags('!snuff');
-}
-
 $Results = $Search->query($_GET);
 $Groups = $Search->get_groups();
 $NumResults = $Search->record_count();
