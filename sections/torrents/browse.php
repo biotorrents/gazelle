@@ -1,20 +1,110 @@
 <?php
-#declare(strict_types = 1);
+
+declare(strict_types=1);
 
 
 /**
  * main torrent search interface
  */
 
+# https://github.com/paragonie/anti-csrf
+Http::csrf();
+
 $app = App::go();
 
 $get = Http::query("get");
 $post = Http::query("post");
-#!d($post);
-$server = Http::query("server");
 
 
-/** */
+/** torrent search handling */
+
+
+# result grouping
+$groupResults = true;
+$post["groupResults"] ??= null;
+
+if (!$post["groupResults"]) {
+    $groupResults = false;
+}
+
+# ordered results field
+$post["orderBy"] ??= null;
+if (!$post["orderBy"] || !TorrentSearch::$SortOrders[ $post["orderBy"] ]) {
+    $orderBy = "time"; # for header links
+} else {
+    $orderBy = $post["orderBy"];
+}
+
+# ascending or descending?
+$post["orderWay"] ??= null;
+if ($post["orderWay"] && $post["orderWay"] === "asc") {
+    $orderWay = "asc";
+} else {
+    $orderWay = "desc";
+}
+
+# current search page
+$currentPage = intval($post["page"] ?? 1);
+$pagination = $app->env->paginationDefault;
+
+# TorrentSearch instance variables
+$torrentSearch = new TorrentSearch($groupResults, $orderBy, $orderWay, $currentPage, $pagination);
+$searchResults = $torrentSearch->query($post);
+$resultGroups = $torrentSearch->get_groups();
+$resultCount = $torrentSearch->record_count();
+
+# search by infoHash
+$post["search"] ??= null;
+$post["groupname"] ??= null;
+
+if ($post["search"] || $post["groupname"]) {
+    if ($post["search"]) {
+        $infoHash = $post["search"];
+    } else {
+        $infoHash = $post["groupname"];
+    }
+
+    $validInfoHash = TorrentFunctions::is_valid_torrenthash($infoHash);
+    if ($validInfoHash) {
+        $infoHash = pack("H*", $infoHash);
+
+        $query = "select id, groupId from torrents where info_hash = ?";
+        $ref = $app->dbNew->row($query, [$infoHash]);
+
+        if ($ref) {
+            Http::redirect("/torrents/{$ref["GroupID"]}/{$ref["ID"]}");
+        }
+    }
+} # if ($post["search"] || $post["groupname"])
+
+# advanced search stuff
+# disabled by default
+$advancedSearch = false;
+$post["advancedSearch"] ??= null;
+
+if ($post["advancedSearch"]) {
+    $advancedSearch = true;
+}
+
+$hideBasic = '';
+$hideAdvanced = ' hidden';
+
+if ($advancedSearch) {
+    $hideBasic = ' hidden';
+    $hideAdvanced = '';
+}
+
+# result pagination stuff
+if ($resultCount < ($currentPage - 1) * $pagination + 1) {
+    $LastPage = ceil($resultCount / $pagination);
+    $currentPages = Format::get_pages(0, $resultCount, $pagination);
+}
+
+$currentPages = Format::get_pages($currentPage, $resultCount, $pagination);
+$bookmarks = Bookmarks::all_bookmarks('torrent');
+
+
+/** legacy variables */
 
 
 # shims
@@ -46,9 +136,9 @@ $GroupedCategories = $Categories;
 // The "order by x" links on columns headers
 function header_link($SortKey, $DefaultWay = 'desc')
 {
-    global $OrderBy, $OrderWay;
-    if ($SortKey === $OrderBy) {
-        if ($OrderWay === 'desc') {
+    global $orderBy, $orderWay;
+    if ($SortKey === $orderBy) {
+        if ($orderWay === 'desc') {
             $NewWay = 'asc';
         } else {
             $NewWay = 'desc';
@@ -56,34 +146,13 @@ function header_link($SortKey, $DefaultWay = 'desc')
     } else {
         $NewWay = $DefaultWay;
     }
-    return "torrents.php?order_way=$NewWay&amp;order_by=$SortKey&amp;".Format::get_url(['order_way', 'order_by']);
+    return "torrents.php?orderWay=$NewWay&amp;orderBy=$SortKey&amp;".Format::get_url(['orderWay', 'orderBy']);
 }
 
-if (!empty($_POST['search']) || !empty($_POST['groupname'])) {
-    if (!empty($_POST['search'])) {
-        $InfoHash = $_POST['search'];
-    } else {
-        $InfoHash = $_POST['groupname'];
-    }
 
-    // Search by info hash
-    if ($InfoHash = TorrentFunctions::is_valid_torrenthash($InfoHash)) {
-        $InfoHash = db_string(pack('H*', $InfoHash));
-        $app->dbOld->query("
-          SELECT ID, GroupID
-          FROM torrents
-          WHERE info_hash = '$InfoHash'");
-
-        if ($app->dbOld->has_results()) {
-            list($ID, $GroupID) = $app->dbOld->next_record();
-            Http::redirect("torrents.php?id=$GroupID&torrentid=$ID");
-            error();
-        }
-    }
-}
-
+/*
 // Setting default search options
-if (!empty($_POST['setdefault'])) {
+if (!empty($post['setdefault'])) {
     $UnsetList = ['page', 'setdefault'];
     $UnsetRegexp = '/(&|^)('.implode('|', $UnsetList).')=.*?(&|$)/i';
 
@@ -106,7 +175,7 @@ if (!empty($_POST['setdefault'])) {
     $app->cacheOld->commit_transaction(0);
 
 // Clearing default search options
-} elseif (!empty($_POST['cleardefault'])) {
+} elseif (!empty($post['cleardefault'])) {
     $app->dbOld->query("
       SELECT SiteOptions
       FROM users_info
@@ -126,75 +195,25 @@ if (!empty($_POST['setdefault'])) {
     $app->cacheOld->commit_transaction(0);
 
 // Use default search options
-} elseif (empty($_SERVER['QUERY_STRING']) || (count($_POST) === 1 && isset($_POST['page']))) {
+} elseif (empty($_SERVER['QUERY_STRING']) || (count($post) === 1 && isset($post['page']))) {
     if (!empty($app->userNew->extra['DefaultSearch'])) {
-        if (!empty($_POST['page'])) {
-            $Page = $_POST['page'];
-            parse_str($app->userNew->extra['DefaultSearch'], $_POST);
-            $_POST['page'] = $Page;
+        if (!empty($post['page'])) {
+            $currentPage = $post['page'];
+            parse_str($app->userNew->extra['DefaultSearch'], $post);
+            $post['page'] = $currentPage;
         } else {
-            parse_str($app->userNew->extra['DefaultSearch'], $_POST);
+            parse_str($app->userNew->extra['DefaultSearch'], $post);
         }
     }
 }
-
-/*
-// Terms were not submitted via the search form
-if (isset($_POST['searchsubmit'])) {
-    $GroupResults = !empty($_POST['group_results']);
-} else {
-    $GroupResults = !$app->userNew->extra['DisableGrouping2'];
-}
 */
 
-# hardcoded for now
-$GroupResults = true;
-
-if (!empty($_POST['order_way']) && $_POST['order_way'] === 'asc') {
-    $OrderWay = 'asc';
-} else {
-    $OrderWay = 'desc';
-}
-
-if (empty($_POST['order_by']) || !isset(TorrentSearch::$SortOrders[$_POST['order_by']])) {
-    $OrderBy = 'time'; // For header links
-} else {
-    $OrderBy = $_POST['order_by'];
-}
-
-$Page = !empty($_POST['page']) ? (int) $_POST['page'] : 1;
-$Search = new TorrentSearch($GroupResults, $OrderBy, $OrderWay, $Page, TORRENTS_PER_PAGE);
-
-$Results = $Search->query($_POST);
-$Groups = $Search->get_groups();
-$NumResults = $Search->record_count();
-
-$HideFilter = isset($app->userNew->extra['ShowTorFilter']) && $app->userNew->extra['ShowTorFilter'] === 0;
-// This is kinda ugly, but the enormous if paragraph was really hard to read
-$AdvancedSearch = !empty($_POST['advanced_search']) && $_POST['advanced_search'] === 'true';
-$AdvancedSearch |= !empty($app->userNew->extra['SearchType']) && (empty($_POST['advanced_search']) || $_POST['advanced_search'] === 'true');
-$AdvancedSearch &= check_perms('site_advanced_search');
-if ($AdvancedSearch) {
-    $Action = 'advanced_search=true';
-    $HideBasic = ' hidden';
-    $HideAdvanced = '';
-} else {
-    $Action = 'advanced_search=false';
-    $HideBasic = '';
-    $HideAdvanced = ' hidden';
-}
 
 
 
-if ($NumResults < ($Page - 1) * TORRENTS_PER_PAGE + 1) {
-  $LastPage = ceil($NumResults / TORRENTS_PER_PAGE);
-  $Pages = Format::get_pages(0, $NumResults, TORRENTS_PER_PAGE);
 
-}
-  // List of pages
-  $Pages = Format::get_pages($Page, $NumResults, TORRENTS_PER_PAGE);
 
-  $Bookmarks = Bookmarks::all_bookmarks('torrent');
+
 
 
 /**
@@ -202,31 +221,59 @@ if ($NumResults < ($Page - 1) * TORRENTS_PER_PAGE + 1) {
  */
 
 $app->twig->display("torrents/browse.twig", [
+  "js" => ["browse"],
+
   "resolutions" => $Resolutions,
+
   "hideBasic" => true,
-  #"hideBasic" => $HideBasic,
+  #"hideBasic" => $hideBasic,
+
   "hideAdvanced" => false,
-  #"hideAdvanced" => $HideAdvanced,
-  "nucleoSeq" => $app->env->META->Formats->Sequences,
-  "protSeq" => $app->env->META->Formats->Proteins,
-  "xmls" => array_merge((array) $app->env->META->Formats->GraphXml, (array) $app->env->META->Formats->GraphTxt, (array) $app->env->META->Formats->Plain),
-  "raster" => array_merge((array) $app->env->META->Formats->ImgRaster, (array) $app->env->META->Formats->MapRaster),
-  "vector" => array_merge((array) $app->env->META->Formats->ImgVector, (array) $app->env->META->Formats->MapVector),
-  "extras" => array_merge((array) $app->env->META->Formats->BinDoc, (array) $app->env->META->Formats->CpuGen, (array) $app->env->META->Formats->Plain),
-  "searchHasFilters" => $Search->has_filters(),
-  "resultCount" => Text::float($NumResults),
-  "advancedSearch" => $AdvancedSearch,
-  "groupResults" => $GroupResults,
-  "tagList" => $Search->get_terms('taglist'),
-  "hideFilter" => $HideFilter,
-  "pages" => $Pages,
+  #"hideAdvanced" => $hideAdvanced,
+
+  "xmls" => array_merge(
+      $app->env->toArray($app->env->META->Formats->GraphXml),
+      $app->env->toArray($app->env->META->Formats->GraphTxt)
+  ),
+
+  "raster" => array_merge(
+      $app->env->toArray($app->env->META->Formats->ImgRaster),
+      $app->env->toArray($app->env->META->Formats->MapRaster)
+  ),
+
+  "vector" => array_merge(
+      $app->env->toArray($app->env->META->Formats->ImgVector),
+      $app->env->toArray($app->env->META->Formats->MapVector)
+  ),
+
+  "extras" => array_merge(
+      $app->env->toArray($app->env->META->Formats->BinDoc),
+      $app->env->toArray($app->env->META->Formats->CpuGen),
+      $app->env->toArray($app->env->META->Formats->Plain)
+  ),
+
+  "searchHasFilters" => $torrentSearch->has_filters(),
+  "resultCount" => Text::float($resultCount),
+  "advancedSearch" => $advancedSearch,
+  "groupResults" => $groupResults,
+  "tagList" => $torrentSearch->get_terms('taglist'),
+  "hideFilter" => false, # legacy
+  "pages" => $currentPages,
   "bookmarks" => Bookmarks::all_bookmarks('torrent'),
   "lastPage" => $LastPage ?? null,
-  "page" => $Page,
-  "bullshit" => ($NumResults < ($Page - 1) * TORRENTS_PER_PAGE + 1),
+  "page" => $currentPage,
+  "bullshit" => ($resultCount < ($currentPage - 1) * $pagination + 1),
 ]);
 
 exit;
+
+
+
+
+
+
+
+
 
 
 
@@ -236,6 +283,15 @@ exit;
  * OLD SHIT BELOW
  * SOON TO BE TWIG
  */
+
+
+
+
+
+
+
+
+
 
 
 
@@ -262,9 +318,9 @@ View::header('Browse Torrents', 'browse');
     <div class="box filter_torrents">
       <div class="head">
         <strong>
-          <span id="ft_basic" class="<?=$HideBasic?>">Basic Search
+          <span id="ft_basic" class="<?=$hideBasic?>">Basic Search
             (<a class="clickable" onclick="toggleTorrentSearch('advanced')">Advanced</a>)</span>
-          <span id="ft_advanced" class="<?=$HideAdvanced?>">Advanced
+          <span id="ft_advanced" class="<?=$hideAdvanced?>">Advanced
             Search (<a class="clickable" onclick="toggleTorrentSearch('basic')">Basic</a>)</span>
         </strong>
         <span class="u-pull-right">
@@ -287,7 +343,7 @@ View::header('Browse Torrents', 'browse');
         } ?>
 
         <table class="torrent_search skeletonFix">
-          <tr id="numbers" class="ftr_advanced<?=$HideAdvanced?>">
+          <tr id="numbers" class="ftr_advanced<?=$hideAdvanced?>">
             <td class="label">
               <!--
                 Accession Number / Version
@@ -300,7 +356,7 @@ View::header('Browse Torrents', 'browse');
           </tr>
 
           <tr id="album_torrent_title"
-            class="ftr_advanced<?=$HideAdvanced?>">
+            class="ftr_advanced<?=$hideAdvanced?>">
             <td class="label">
               <!-- Torrent Title / Organism / Strain or Variety -->
             </td>
@@ -312,7 +368,7 @@ View::header('Browse Torrents', 'browse');
           </tr>
 
           <tr id="artist_name"
-            class="ftr_advanced<?=$HideAdvanced?>">
+            class="ftr_advanced<?=$hideAdvanced?>">
             <td class="label">
               <!-- Artist Name -->
             </td>
@@ -323,7 +379,7 @@ View::header('Browse Torrents', 'browse');
             </td>
           </tr>
 
-          <tr id="location" class="ftr_advanced<?=$HideAdvanced?>">
+          <tr id="location" class="ftr_advanced<?=$hideAdvanced?>">
             <td class="label">
               <!-- Studio / Series -->
             </td>
@@ -338,7 +394,7 @@ View::header('Browse Torrents', 'browse');
           </tr>
 
           <tr id="torrent_description"
-            class="ftr_advanced<?=$HideAdvanced?>">
+            class="ftr_advanced<?=$hideAdvanced?>">
             <td class="label">
               <!-- Torrent Description -->
             </td>
@@ -350,7 +406,7 @@ View::header('Browse Torrents', 'browse');
             </td>
           </tr>
 
-          <tr id="file_list" class="ftr_advanced<?=$HideAdvanced?>">
+          <tr id="file_list" class="ftr_advanced<?=$hideAdvanced?>">
             <td class="label">
               <!-- File List -->
             </td>
@@ -363,7 +419,7 @@ View::header('Browse Torrents', 'browse');
 
           <!-- Platforms -->
           <tr id="rip_specifics"
-            class="ftr_advanced<?=$HideAdvanced?>">
+            class="ftr_advanced<?=$hideAdvanced?>">
             <td class="label">Platforms</td>
             <td class="nobr ft_ripspecifics">
 
@@ -412,7 +468,7 @@ View::header('Browse Torrents', 'browse');
 
           <!-- Formats -->
           <tr id="rip_specifics"
-            class="ftr_advanced<?=$HideAdvanced?>">
+            class="ftr_advanced<?=$hideAdvanced?>">
             <td class="label">Formats</td>
             <td class="nobr ft_ripspecifics">
 
@@ -475,7 +531,7 @@ View::header('Browse Torrents', 'browse');
           </tr>
 
           <!-- Misc -->
-          <tr id="misc" class="ftr_advanced<?=$HideAdvanced?>">
+          <tr id="misc" class="ftr_advanced<?=$hideAdvanced?>">
             <td class="label">Misc</td>
             <td class="nobr ft_misc">
 
@@ -520,7 +576,7 @@ View::header('Browse Torrents', 'browse');
           </tr>
 
           <!-- Size -->
-          <tr id="size" class="ftr_advanced<?=$HideAdvanced?>">
+          <tr id="size" class="ftr_advanced<?=$hideAdvanced?>">
             <td class="label">Size</td>
             <td class="ft_size">
               <input type="size_min" spellcheck="false" size="6" name="size_min" class="inputtext smaller fti_advanced"
@@ -545,7 +601,7 @@ View::header('Browse Torrents', 'browse');
           </tr>
 
           <!-- Start basic search options -->
-          <tr id="search_terms" class="ftr_basic<?=$HideBasic?>">
+          <tr id="search_terms" class="ftr_basic<?=$hideBasic?>">
             <td class="label">
               <!-- Universal Search -->
             </td>
@@ -562,7 +618,7 @@ View::header('Browse Torrents', 'browse');
             <td class="ft_taglist">
               <input type="search" size="37" id="tags" name="taglist" class="inputtext smaller"
                 placeholder="Tags (comma-separated)"
-                value="<?=Text::esc($Search->get_terms('taglist'))?>"
+                value="<?=Text::esc($torrentSearch->get_terms('taglist'))?>"
                 aria-label="Tags to search">&nbsp;
               <input type="radio" name="tags_type" id="tags_type0" value="0" <?Format::selected(
             'tags_type',
@@ -584,29 +640,29 @@ View::header('Browse Torrents', 'browse');
           <tr id="order">
             <td class="label">Order By</td>
             <td class="ft_order">
-              <select name="order_by" style="width: auto;" class="ft_order_by" aria-label="Property to order by">
-                <option value="time" <?Format::selected('order_by', 'time')?>>Time
+              <select name="orderBy" style="width: auto;" class="ft_orderBy" aria-label="Property to order by">
+                <option value="time" <?Format::selected('orderBy', 'time')?>>Time
                   Added</option>
-                <option value="year" <?Format::selected('order_by', 'year')?>>Year
+                <option value="year" <?Format::selected('orderBy', 'year')?>>Year
                 </option>
-                <option value="size" <?Format::selected('order_by', 'size')?>>Size
+                <option value="size" <?Format::selected('orderBy', 'size')?>>Size
                 </option>
-                <option value="snatched" <?Format::selected('order_by', 'snatched')?>>Snatched
+                <option value="snatched" <?Format::selected('orderBy', 'snatched')?>>Snatched
                 </option>
-                <option value="seeders" <?Format::selected('order_by', 'seeders')?>>Seeders
+                <option value="seeders" <?Format::selected('orderBy', 'seeders')?>>Seeders
                 </option>
-                <option value="leechers" <?Format::selected('order_by', 'leechers')?>>Leechers
+                <option value="leechers" <?Format::selected('orderBy', 'leechers')?>>Leechers
                 </option>
-                <option value="cataloguenumber" <?Format::selected('order_by', 'cataloguenumber')?>>Accession
+                <option value="cataloguenumber" <?Format::selected('orderBy', 'cataloguenumber')?>>Accession
                   Number</option>
-                <option value="random" <?Format::selected('order_by', 'random')?>>Random
+                <option value="random" <?Format::selected('orderBy', 'random')?>>Random
                 </option>
               </select>
 
-              <select name="order_way" class="ft_order_way" aria-label="Direction to order">
-                <option value="desc" <?Format::selected('order_way', 'desc')?>>Descending
+              <select name="orderWay" class="ft_orderWay" aria-label="Direction to order">
+                <option value="desc" <?Format::selected('orderWay', 'desc')?>>Descending
                 </option>
-                <option value="asc" <?Format::selected('order_way', 'asc')?>>Ascending
+                <option value="asc" <?Format::selected('orderWay', 'asc')?>>Ascending
                 </option>
               </select>
             </td>
@@ -618,7 +674,7 @@ View::header('Browse Torrents', 'browse');
               <label for="group_results">Group Torrents</label>
             </td>
             <td class="ft_group_results">
-              <input type="checkbox" value="1" name="group_results" id="group_results" <?=$GroupResults ? ' checked="checked"' : ''?>
+              <input type="checkbox" value="1" name="group_results" id="group_results" <?=$groupResults ? ' checked="checked"' : ''?>
               />
             </td>
           </tr>
@@ -642,7 +698,7 @@ View::header('Browse Torrents', 'browse');
             <td>
               <input type="checkbox"
                 name="filter_cat[<?=($CatKey + 1)?>]"
-                id="cat_<?=($CatKey + 1)?>" value="1" <?php if (isset($_POST['filter_cat'][$CatKey + 1])) { ?>
+                id="cat_<?=($CatKey + 1)?>" value="1" <?php if (isset($post['filter_cat'][$CatKey + 1])) { ?>
               checked="checked"<?php } ?> />
               <label for="cat_<?=($CatKey + 1)?>"><?=$CatName?></label>
             </td>
@@ -700,23 +756,23 @@ View::header('Browse Torrents', 'browse');
         <!-- Result count, submit, and reset -->
         <div class="submit ft_submit">
           <span class="u-pull-left">
-            <?=Text::float($NumResults)?>
+            <?=Text::float($resultCount)?>
             Results
           </span>
 
           <input type="submit" value="Search" class="button-primary" />
 
           <input type="hidden" name="advanced_search" id="ft_type"
-            value="<?=($AdvancedSearch ? 'true' : 'false')?>" />
+            value="<?=($advancedSearch ? 'true' : 'false')?>" />
 
           <input type="hidden" name="searchsubmit" value="1" />
 
           <input type="button" value="Reset" <input type="button" value="Reset"
-            onclick="window.location.href = 'torrents.php<?php if (isset($_POST['advanced_search']) && $_POST['advanced_search'] === 'true') { ?>?advanced_search=true<?php } ?>'" />
+            onclick="window.location.href = 'torrents.php<?php if (isset($post['advanced_search']) && $post['advanced_search'] === 'true') { ?>?advanced_search=true<?php } ?>'" />
 
           &emsp;
 
-          <?php if ($Search->has_filters()) { ?>
+          <?php if ($torrentSearch->has_filters()) { ?>
           <input type="submit" name="setdefault" value="Make Default" />
           <?php }
 
@@ -729,7 +785,7 @@ View::header('Browse Torrents', 'browse');
   </form>
 
   <!-- No results message -->
-  <?php if ($NumResults === 0) { ?>
+  <?php if ($resultCount === 0) { ?>
   <div class="torrents_nomatch box pad" align="center">
     <h2>Your search did not match anything</h2>
     <p>Make sure all names are spelled correctly, or try making your search less specific</p>
@@ -740,18 +796,18 @@ View::footer();
 die();
   }
 
-  if ($NumResults < ($Page - 1) * TORRENTS_PER_PAGE + 1) {
-      $LastPage = ceil($NumResults / TORRENTS_PER_PAGE);
-      $Pages = Format::get_pages(0, $NumResults, TORRENTS_PER_PAGE); ?>
+  if ($resultCount < ($currentPage - 1) * $pagination + 1) {
+      $LastPage = ceil($resultCount / $pagination);
+      $currentPages = Format::get_pages(0, $resultCount, $pagination); ?>
 
 <div class="torrents_nomatch box pad" align="center">
   <h2>The requested page contains no matches</h2>
-  <p>You are requesting page <?=$Page?>, but the search returned only
+  <p>You are requesting page <?=$currentPage?>, but the search returned only
     <?=Text::float($LastPage) ?> pages
   </p>
 </div>
 
-<div class="linkbox">Go to page <?=$Pages?>
+<div class="linkbox">Go to page <?=$currentPages?>
 </div>
 </div>
 
@@ -761,20 +817,20 @@ die();
   }
 
   // List of pages
-  $Pages = Format::get_pages($Page, $NumResults, TORRENTS_PER_PAGE);
+  $currentPages = Format::get_pages($currentPage, $resultCount, $pagination);
 
-  $Bookmarks = Bookmarks::all_bookmarks('torrent');
+  $bookmarks = Bookmarks::all_bookmarks('torrent');
   ?>
 
-<div class="linkbox"><?=$Pages?>
+<div class="linkbox"><?=$currentPages?>
 </div>
 
 <!-- Results table headings -->
 <table
-  class="box torrent_table cats <?=$GroupResults ? 'grouping' : 'no_grouping'?>"
+  class="box torrent_table cats <?=$groupResults ? 'grouping' : 'no_grouping'?>"
   id="torrent_table">
   <tr class="colhead">
-    <?php if ($GroupResults) { ?>
+    <?php if ($groupResults) { ?>
     <td class="small"></td>
     <?php } ?>
     <td class="small cats_col"></td>
@@ -810,8 +866,8 @@ die();
   <?php
 
   // Start printing torrent list
-  foreach ($Results as $Key => $GroupID) {
-      $GroupInfo = $Groups[$GroupID] ?? [];
+  foreach ($searchResults as $Key => $GroupID) {
+      $GroupInfo = $resultGroups[$GroupID] ?? [];
       if (empty($GroupInfo['Torrents'])) {
           continue;
       }
@@ -825,7 +881,7 @@ die();
       $GroupTitle2 = $GroupInfo['subject'];
       $GroupNameJP = $GroupInfo['object'];
 
-      if ($GroupResults) {
+      if ($groupResults) {
           $Torrents = $GroupInfo['Torrents'];
           $GroupTime = $MaxSize = $TotalLeechers = $TotalSeeders = $TotalSnatched = 0;
           foreach ($Torrents as $T) {
@@ -857,7 +913,7 @@ die();
 
       # Similar to the logic down the page, and on
       # torrents.class.php and sections/artist/artist.php
-      if ($GroupResults && (count($Torrents) > 1 && isset($GroupedCategories[$CategoryID - 1]))) {
+      if ($groupResults && (count($Torrents) > 1 && isset($GroupedCategories[$CategoryID - 1]))) {
           // These torrents are in a group
           $CoverArt = $GroupInfo['picture'];
 
@@ -865,7 +921,7 @@ die();
               'torrents/display_name.html',
               [
                 'g' => $GroupInfo,
-                'url' => Format::get_url($_POST),
+                'url' => Format::get_url($post),
                 'cover_art' => (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) ?? true,
                 'thumb' => ImageTools::process($CoverArt, 'thumb'),
                 'artists' => Artists::display_artists($Artists),
@@ -897,7 +953,7 @@ die();
       <div class="group_info clear">
         <?=$DisplayName?>
 
-        <?php if (in_array($GroupID, $Bookmarks)) { ?>
+        <?php if (in_array($GroupID, $bookmarks)) { ?>
         <span class="remove_bookmark u-pull-right">
           <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
             class="brackets"
@@ -1026,7 +1082,7 @@ die();
               'torrents/display_name.html',
               [
                 'g' => $GroupInfo,
-                'url' => Format::get_url($_POST),
+                'url' => Format::get_url($post),
                 'cover_art' => (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) ?? true,
                 'thumb' => ImageTools::process($CoverArt, 'thumb'),
                 'artists' => Artists::display_artists($Artists),
@@ -1049,7 +1105,7 @@ die();
           */ ?>
   <tr
     class="torrent<?=$SnatchedTorrentClass . $SnatchedGroupClass?>">
-    <?php if ($GroupResults) { ?>
+    <?php if ($groupResults) { ?>
     <td></td>
     <?php } ?>
     <td class="center cats_col">
@@ -1074,7 +1130,7 @@ die();
               class="tooltip" title="Report">RP</a> ]
           </span>
           <br />
-          <?php if (in_array($GroupID, $Bookmarks)) { ?>
+          <?php if (in_array($GroupID, $bookmarks)) { ?>
           <span class="remove_bookmark u-pull-right">
             <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
               class="brackets"
@@ -1124,7 +1180,7 @@ die();
   }
 ?>
 </table>
-<div class="linkbox"><?=$Pages?>
+<div class="linkbox"><?=$currentPages?>
 </div>
 </div>
 <?php

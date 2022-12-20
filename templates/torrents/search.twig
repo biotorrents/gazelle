@@ -106,12 +106,12 @@
             <td class="nobr ft_ripspecifics">
 
               <select name="media" class="ft_media fti_advanced">
-                <option value="Sequences">Sequences</option>
+                <option>Sequences</option>
 
                 {% for platform in env.META.Platforms.Sequences %}
 
 
-                {% if query.post.media == platform %}
+                {% if query.post.media is defined and query.post.media == platform %}
                 {% set selected = "selected" %}
                 {% else %}
                 {% set selected = "" %}
@@ -125,7 +125,7 @@
               </select>
 
               <select name="media" class="ft_media fti_advanced">
-                <option value="">Graphs</option>
+                <option>Graphs</option>
                 {% for platform in env.META.Platforms.Graphs %}
                 <option value="{{ platform }}" {# {{ (query.post.media == platform) ?? "selected" }} #}>
                   {{ platform }}
@@ -134,7 +134,7 @@
               </select>
 
               <select name="media" class="ft_media fti_advanced">
-                <option value="">Images</option>
+                <option>Images</option>
                 {% for platform in env.META.Platforms.Images %}
                 <option value="{{ platform }}" {# {{ (query.post.media == platform) ?? "selected" }} #}>
                   {{ platform }}
@@ -143,7 +143,7 @@
               </select>
 
               <select name="media" class="ft_media fti_advanced">
-                <option value="">Documents</option>
+                <option>Documents</option>
                 {% for platform in env.META.Platforms.Documents %}
                 <option value="{{ platform }}" {# {{ (query.post.media == platform) ?? "selected" }} #}>
                   {{ platform }}
@@ -161,8 +161,8 @@
             <td class="nobr ft_ripspecifics">
 
               <select id=" container" name="container" class="ft_container fti_advanced">
-                <option value="">NucleoSeq</option>
-                {% for key, value in nucleoSeq %}
+                <option>NucleoSeq</option>
+                {% for key, value in env.META.Formats.Sequences %}
                 <option value="{{ key }}" {# {{ (query.post.container == key) ?? "selected" }} #}>
                   {{ key }}
                 </option>
@@ -170,8 +170,8 @@
               </select>
 
               <select id=" container" name="container" class="ft_container fti_advanced">
-                <option value="">ProtSeq</option>
-                {% for key, value in protSeq %}
+                <option>ProtSeq</option>
+                {% for key, value in env.META.Formats.Proteins %}
                 <option value="{{ key }}" {# {{ (query.post.container == key) ?? "selected" }} #}>
                   {{ key }}
                 </option>    
@@ -180,7 +180,7 @@
 
 
               <select id=" container" name="container" class="ft_container fti_advanced">
-                <option value="">XMLs</option>
+                <option>XMLs</option>
                 {% for key, value in xmls %}
                 <option value="{{ key }}" {# {{ (query.post.container == key) ?? "selected" }} #}>
                   {{ key }}
@@ -189,7 +189,7 @@
               </select>
 
               <select id=" container" name="container" class="ft_container fti_advanced">
-                <option value="">Raster</option>
+                <option>Raster</option>
                 {% for key, value in raster %}
                 <option value="{{ key }}" {# {{ (query.post.container == key) ?? "selected" }} #}>
                   {{ key }}
@@ -198,7 +198,7 @@
               </select>
 
               <select id=" container" name="container" class="ft_container fti_advanced">
-                <option value="">Vector</option>
+                <option>Vector</option>
                 {% for key, value in vector %}
                 <option value="{{ key }}" {# {{ (query.post.container == key) ?? "selected" }} #}>
                   {{ key }}
@@ -207,7 +207,7 @@
               </select>
 
               <select id=" container" name="container" class="ft_container fti_advanced">
-                <option value="">Extras</option>
+                <option>Extras</option>
                 {% for key, value in extras %}
                 <option value="{{ key }}" {# {{ (query.post.container == key) ?? "selected" }} #}>
                   {{ key }}
@@ -224,7 +224,7 @@
             <td class="nobr ft_misc">
 
               <select name="resolution" class="ft_resolution fti_advanced">
-                <option value="">Scope</option>
+                <option>Scope</option>
 
                   {% for resolution in resolutions %}
                 <option value="{{ resolution }}" {# {{ (query.post.resolution == resolution) ?? "selected" }} #}>
@@ -235,7 +235,7 @@
 
               {# Aligned/Censored #}
               <select name=" censored" class="ft_censored fti_advanced">
-                <option value="">Alignment</option>
+                <option>Alignment</option>
 
                 <option value="1" {# {{ (query.post.censored == 1) ?? "selected" }} #}>
                   Aligned
@@ -248,7 +248,7 @@
 
               {# Leech Status #}
               <select name="freetorrent" class="ft_freetorrent fti_advanced">
-                <option value="">Leech Status</option>
+                <option>Leech Status</option>
 
                 <option value="1" {# {{ (query.post.freetorrent == 1) ?? "selected" }} #}>
                   Freeleech
@@ -270,7 +270,7 @@
 
               {# Codec/License #}
               <select name="codec" class="ft_codec fti_advanced">
-                <option value="">License</option>
+                <option>License</option>
                   {% for license in env.META.Licenses %}
                 <option value="{{ license }}" {# {{ (query.post.codec == license) ?? "selected" }} #}>
                    {{ license }}
@@ -294,7 +294,7 @@
                 placeholder="Max" value="{{ query.post.size_max ?? null }}" />
 
               <select name="size_unit" class="ft_size fti_advanced">
-                <option value="">Unit</option>
+                <option>Unit</option>
 
                 <option value="0" {# {{ (query.post.size_unit == 0) ?? "selected" }} #}>
                   B
@@ -320,7 +320,7 @@
           </tr>
 
           {# Start basic search options #}
-          <tr id="search_terms" class="ftr_basic{{ hideBasic }}">
+          <tr id="search_terms" class="ftr_basic {{ hideBasic }}">
             <td class="label">
               {# Universal Search #}
             </td>
@@ -359,80 +359,60 @@
           <tr id="order">
             <td class="label">Order By</td>
             <td class="ft_order">
-              <select name="order_by" style="width: auto;" class="ft_order_by" aria-label="Property to order by">
-                <option value="time"
-                {# {{ (query.post.order_by == "time") ?? "selected" }} #}
-                  >
+              <select name="orderBy" style="width: auto;" class="ft_orderBy" aria-label="Property to order by">
+                <option value="time" {# {{ (query.post.orderBy == "time") ?? "selected" }} #}>
                   Time Added
                 </option>
 
-                <option value="year"
-                 {# {{ (query.post.order_by == "year") ?? "selected" }} #}
-                 >
+                <option value="year" {# {{ (query.post.orderBy == "year") ?? "selected" }} #}>
                   Year
                 </option>
 
-                <option value="size"
-                {# {{ (query.post.order_by == "size") ?? "selected" }} #}
-                >
+                <option value="size" {# {{ (query.post.orderBy == "size") ?? "selected" }} #}>
                   Size
                 </option>
 
-                <option value="snatched"
-                {# {{ (query.post.order_by == "snatched") ?? "selected" }} #}
-                >
+                <option value="snatched" {# {{ (query.post.orderBy == "snatched") ?? "selected" }} #}>
                   Snatched
                 </option>
 
-                <option value="seeders"
-                {# {{ (query.post.order_by == "seeders") ?? "selected" }} #}
-                >
+                <option value="seeders" {# {{ (query.post.orderBy == "seeders") ?? "selected" }} #}>
                   Seeders
                 </option>
 
-                <option value="leechers"   
-                 {# {{ (query.post.order_by == "leechers") ?? "selected" }} #}
-                >
+                <option value="leechers" {# {{ (query.post.orderBy == "leechers") ?? "selected" }} #}>
                   Leechers
                 </option>
 
-                <option value="cataloguenumber"      
-                {# {{ (query.post.order_by == "cataloguenumber") ?? "selected" }} #}
-                >
+                <option value="cataloguenumber" {# {{ (query.post.orderBy == "cataloguenumber") ?? "selected" }} #}>
                   Accession Number
                 </option>
 
-                <option value="random"
-                {# {{ (query.post.order_by == "random") ?? "selected" }} #}
-                >
+                <option value="random" {# {{ (query.post.orderBy == "random") ?? "selected" }} #}>
                   Random
                 </option>
 
               </select>
 
-              <select name="order_way" class="ft_order_way" aria-label="Direction to order">
-                <option value="desc"
-                {# {{ (query.post.order_way == "desc") ?? "selected" }} #}
-                >
+              <select name="orderWay" class="ft_orderWay" aria-label="Direction to order">
+                <option value="desc" {# {{ (query.post.orderWay == "desc") ?? "selected" }} #}>
                   Descending
                 </option>
 
-                <option value="asc"
-                {# {{ (query.post.order_way == "asc") ?? "selected" }} #}
-                >
+                <option value="asc" {# {{ (query.post.orderWay == "asc") ?? "selected" }} #}>
                   Ascending
                 </option>
               </select>
             </td>
           </tr>
 
-          {# Use torrent groups? #}
-          <tr id="search_group_results">
+          {# use torrent groups? #}
+          <tr id="search_groupResults">
             <td class="label">
-              <label for="group_results">Group Torrents</label>
+              <label for="groupResults">Group Torrents</label>
             </td>
-            <td class="ft_group_results">
-              <input type="checkbox" value="1" name="group_results" id="group_results" {{ (groupResults) ? "checked='checked'" : "" }}>
+            <td class="ft_groupResults">
+              <input type="checkbox" value="1" name="groupResults" id="groupResults" {{ (groupResults) ? "checked='checked'" : "" }}>
               />
             </td>
           </tr>

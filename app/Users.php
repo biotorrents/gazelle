@@ -4,10 +4,10 @@
 
 
 /**
- * User class
+ * Users
  *
- * $app->user->core contains necessary info from delight-im/auth.
- * $app->user->extra contains various profile, etc., info from Gazelle.
+ * $this->core contains necessary info from delight-im/auth.
+ * $this->extra contains various profile, etc., info from Gazelle.
  *
  * @see https://wiki.archlinux.org/title/Official_repositories
  */
@@ -646,7 +646,7 @@ class Users
         $SiteOptions = json_decode($SiteOptions, true);
 
         // Get HeavyInfo
-        $HeavyInfo = Users::user_heavy_info($UserID);
+        $HeavyInfo = self::user_heavy_info($UserID);
 
         // Insert new/replace old options
         $SiteOptions = array_merge($SiteOptions, $NewOptions);
@@ -738,9 +738,9 @@ class Users
             }
 
             if ($Title) {
-                $Str .= ' <strong>('.Users::make_class_string($UserInfo['PermissionID']).')</strong>';
+                $Str .= ' <strong>('.self::make_class_string($UserInfo['PermissionID']).')</strong>';
             } else {
-                $Str .= ' ('.Users::make_class_string($UserInfo['PermissionID']).')';
+                $Str .= ' ('.self::make_class_string($UserInfo['PermissionID']).')';
             }
         }
 
@@ -998,7 +998,7 @@ class Users
             $hash = password_hash($token, PASSWORD_DEFAULT);
 
             /*
-            if (!Users::hasApiToken($id, $token)) {
+            if (!self::hasApiToken($id, $token)) {
                 break;
             }
             */
@@ -1091,7 +1091,7 @@ class Users
      */
     public function isUnconfirmed(int $id)
     {
-        return Users::enabledState($id) === 0;
+        return self::enabledState($id) === 0;
     }
 
 
@@ -1100,7 +1100,7 @@ class Users
      */
     public function isEnabled(int $id)
     {
-        return Users::enabledState($id) === 1;
+        return self::enabledState($id) === 1;
     }
 
 
@@ -1109,6 +1109,6 @@ class Users
      */
     public function isDisabled(int $id)
     {
-        return Users::enabledState($id) === 2;
+        return self::enabledState($id) === 2;
     }
 }

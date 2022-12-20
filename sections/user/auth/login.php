@@ -149,9 +149,9 @@ try {
 /** TWIG TEMPLATE */
 
 
-# todo: redirect to requested page
-if (empty($response)) {
-    #Http::redirect();
+# try to load the user
+if (!empty($app->userNew->core)) {
+    Http::redirect();
 }
 
 $app->twig->display("user/auth/login.twig", [

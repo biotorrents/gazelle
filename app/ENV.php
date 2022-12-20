@@ -150,19 +150,19 @@ class ENV
      *
      * Takes an object and returns an array.
      *
-     * @param object|string $object Thing to turn into an array
-     * @return $new New recursive array with $object contents
+     * @param object|string $object thing to turn into an array
+     * @return array|string $new new recursive array with $object contents
+     *
      * @see https://ben.lobaugh.net/blog/567/php-recursively-convert-an-object-to-an-array
      */
-    public function toArray(object $object): array
+    public function toArray(object|string $object): array|string
     {
         if (is_object($object)) {
             $object = (array) $object;
         }
 
         if (is_array($object)) {
-            $new = array();
-
+            $new = [];
             foreach ($object as $key => $value) {
                 $new[$key] = $this->toArray($value);
             }
