@@ -318,9 +318,6 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
         </td>
       </tr>
     </table>
-    <script type="text/javascript">
-      ChangeCategory($('#newcategoryid').raw().value);
-    </script>
   </form>
 </div>
 <?php

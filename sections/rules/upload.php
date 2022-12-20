@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 $ENV = ENV::go();
-View::header('Upload rules', 'rules');
+View::header('Upload rules');
 ?>
 
 <!-- Upload -->
@@ -14,13 +14,6 @@ View::header('Upload rules', 'rules');
   </div>
 
   <!-- Uploading Rules Index Links -->
-  <form class="search_form" name="rules" onsubmit="return false" action="">
-    <input type="text" id="search_string" value="Filter (empty to reset)" />
-    <span id="Index">Searching for <strong>upload</strong> returns all rules containing that term.
-      Searching for <strong>upload+trump</strong> returns all rules containing both terms.</span>
-  </form>
-  <br />
-
   <div class="before_rules">
     <div class="box">
       <ul>

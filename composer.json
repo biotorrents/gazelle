@@ -49,7 +49,7 @@
     "erusev/parsedown": "1.8.0-beta-7",
     "erusev/parsedown-extra": "0.8.0",
     "guzzlehttp/guzzle": "^7.4.1",
-    "illuminate/support": "^9",
+    "illuminate/support": "^9.44",
     "mikecao/flight": "^2.0",
     "nesbot/carbon": "^2.64",
     "openai-php/client": "^0.2.1",
