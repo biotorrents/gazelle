@@ -418,34 +418,28 @@
           </tr>
         </table>
 
+        {# category filter #}
         <table class="layout cat_list ft_cat_list">
-          <?php
-            $x = 0;
-            reset($Categories);
-            foreach ($Categories as $CatKey => $CatName) {
-                if ($x % 7 === 0) {
-                    if ($x > 0) {
-                        ?>
+        {% set x = 0 %}
+        {% for key, value in categories %}
+        {% if x % 6 == 0 %}
+                  {% if x > 0 %}
           </tr>
-          <?php
-                    } ?>
+                    {% endif %}
           <tr>
-            <?php
-                }
-                $x++; ?>
+                {% endif %}
+                {% set x = x + 1 %}
             <td>
               <input type="checkbox"
-                name="filter_cat[<?=($CatKey + 1)?>]"
-                id="cat_<?=($CatKey + 1)?>" value="1" <?php if (isset($_GET['filter_cat'][$CatKey + 1])) { ?>
-              checked="checked"<?php } ?> />
-              <label for="cat_<?=($CatKey + 1)?>"><?=$CatName?></label>
+                name="filter_cat[{{ key + 1 }}]"
+                id="cat_{{ key + 1 }}" value="1" {# {{ (query.post.filter_cat.{{ key + 1 }}) ?? "checked" }} #} />
+              <label for="cat_{{ key + 1 }}">{{ value }}</label>
             </td>
-            <?php
-            } ?>
+           {% endfor %}
           </tr>
         </table>
 
-        {# Categories #}
+{# tag list #}
         <table class="layout cat_list">
           <tr>
             <td class="label">
@@ -455,11 +449,11 @@
           </tr>
         </table>
 
-        {# Result count, submit, and reset #}
+        {# result count, submit, and reset #}
         <div class="submit ft_submit">
           <span class="u-pull-left">
             {{ resultCount }}
-            Results
+            results
           </span>
 
           <input type="submit" value="Search" class="button-primary" />
@@ -472,15 +466,19 @@
           <input type="button" value="Reset" <input type="button" value="Reset"
             onclick="window.location.href = 'torrents.php<?php if (isset($_GET['advanced_search']) && $_GET['advanced_search'] === 'true') { ?>?advanced_search=true<?php } ?>'" />
 
+          {# set/clear default search #}
+          {#
           &emsp;
 
-            {% if searchHasFilters %}
-          <input type="submit" name="setdefault" value="Make Default" />
+          {% if searchHasFilters %}
+            <input type="submit" name="setdefault" value="Make Default" />
           {% endif %}
 
           {% if user.extra.DefaultSearch is defined %}
-          <input type="submit" name="cleardefault" value="Clear Default" />
+            <input type="submit" name="cleardefault" value="Clear Default" />
           {% endif %}
+          #}
+
         </div> {# div class="submit ft_submit" #}
       </div> {# div id="ft_container" class="pad" #}
     </div> {# div class="box filter_torrents" #}

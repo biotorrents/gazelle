@@ -13,7 +13,7 @@
   </div>
 </div>
 
-{# todo: foter and exit #}
+{# todo: footer and exit #}
 
   {% endif %}
 
@@ -32,12 +32,12 @@
 {% endif %}
 
 
-
+{# pagination #}
 <div class="linkbox">
 {{ pages }}
 </div>
 
-<!-- Results table headings -->
+{# results table headings #}
 <table
   class="box torrent_table cats <?=$GroupResults ? 'grouping' : 'no_grouping'?>"
   id="torrent_table">
@@ -77,15 +77,24 @@
       </a>
     </td>
   </tr>
-  <?php
 
-  // Start printing torrent list
+{# start printing torrent list #}
+{% for key, value in searchResults %}
   foreach ($Results as $Key => $GroupID) {
+
+        {% set groupInfo = resultGroups.value %}
       $GroupInfo = $Groups[$GroupID] ?? [];
+
+      {% if groupInfo.Torrents is empty %}
+      {# todo: continue #}
+      {% endif %}
       if (empty($GroupInfo['Torrents'])) {
           continue;
       }
 
+
+      {# NOT NEEDED #}
+      {#
       $CategoryID = $GroupInfo['category_id'];
       $GroupYear = $GroupInfo['year'];
       $Artists = $GroupInfo['Artists'];
@@ -94,7 +103,10 @@
       $GroupName = empty($GroupInfo['title']) ? (empty($GroupInfo['subject']) ? $GroupInfo['object'] : $GroupInfo['subject']) : $GroupInfo['title'];
       $GroupTitle2 = $GroupInfo['subject'];
       $GroupNameJP = $GroupInfo['object'];
+      #}
 
+      {# use torrent groups #}
+      {% if groupResults %}
       if ($GroupResults) {
           $Torrents = $GroupInfo['Torrents'];
           $GroupTime = $MaxSize = $TotalLeechers = $TotalSeeders = $TotalSnatched = 0;
@@ -105,10 +117,16 @@
               $TotalSeeders += $T['Seeders'];
               $TotalSnatched += $T['Snatched'];
           }
-      } else {
+      }
+
+      {# don't use torrent groups #}
+      {% else %}
+      
+      else {
           $TorrentID = $Key;
           $Torrents = [$TorrentID => $GroupInfo['Torrents'][$TorrentID]];
       }
+      {% endif %} {# if groupResults #}
 
       $TorrentTags = new Tags($GroupInfo['tag_list']);
 
@@ -392,6 +410,7 @@
   <?php
       }
   }
+  {% endfor %} {# for key, value in searchResults #}
 ?>
 </table>
 <div class="linkbox">{{ pages }}

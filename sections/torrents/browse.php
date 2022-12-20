@@ -263,6 +263,10 @@ $app->twig->display("torrents/browse.twig", [
   "lastPage" => $LastPage ?? null,
   "page" => $currentPage,
   "bullshit" => ($resultCount < ($currentPage - 1) * $pagination + 1),
+  "categories" => $Categories,
+
+  "searchResults" => $searchResults,
+  "resultGroups" => $resultGroups,
 ]);
 
 exit;

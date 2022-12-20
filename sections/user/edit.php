@@ -1,12 +1,20 @@
 <?php
+
 #declare(strict_types = 1);
 
-$ENV = ENV::go();
+
+/**
+ * user settings handler
+ */
+
+$app = App::go();
+
+$ENV = ENV::go(); # legacy
 
 $UserID = (int) $_REQUEST['userid'];
 Security::int($UserID);
 
-$db->query("
+$app->dbOld->query("
   SELECT
     m.Username,
     m.TwoFactor,
@@ -26,7 +34,7 @@ $db->query("
     JOIN users_info AS i ON i.UserID = m.ID
     LEFT JOIN permissions AS p ON p.ID = m.PermissionID
   WHERE m.ID = ?", $UserID);
-list($Username, $TwoFactor, $PublicKey, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $Class, $InfoTitle) = $db->next_record(MYSQLI_NUM, [5, 10]);
+list($Username, $TwoFactor, $PublicKey, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $Class, $InfoTitle) = $app->dbOld->next_record(MYSQLI_NUM, [5, 10]);
 
 $TwoFA = new RobThree\Auth\TwoFactorAuth($ENV->siteName);
 $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]';
@@ -1014,11 +1022,11 @@ $RequestsVotedListChecked = checked(!in_array('requestsvoted_list', $Paranoia));
         </tr>
 
         <?php
-$db->query("
+$app->dbOld->query("
   SELECT COUNT(UserID)
   FROM users_info
   WHERE Inviter = ?", $UserID);
-list($Invited) = $db->next_record();
+list($Invited) = $app->dbOld->next_record();
 ?>
 
         <!-- Invitees -->
@@ -1036,11 +1044,11 @@ list($Invited) = $db->next_record();
         </tr>
 
         <?php
-$db->query("
+$app->dbOld->query("
   SELECT COUNT(ArtistID)
   FROM torrents_artists
   WHERE UserID = ?", $UserID);
-list($ArtistsAdded) = $db->next_record();
+list($ArtistsAdded) = $app->dbOld->next_record();
 ?>
 
         <!-- Artists added -->
@@ -1171,7 +1179,7 @@ list($ArtistsAdded) = $db->next_record();
               </tr>
 
               <?php
-              $db->query("
+              $app->dbOld->query("
               SELECT
                 `ID`,
                 `Name`,
@@ -1187,7 +1195,7 @@ list($ArtistsAdded) = $db->next_record();
                 DESC
               ");
 
-              foreach ($db->to_array(false, MYSQLI_ASSOC, false) as $row) { ?>
+              foreach ($app->dbOld->to_array(false, MYSQLI_ASSOC, false) as $row) { ?>
               <tr>
                 <td>
                   <?= $row['Name'] ?>
