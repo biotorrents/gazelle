@@ -1113,18 +1113,125 @@ class Users
     }
 
 
+    /** security stuff */
+
+
     /**
-     * get2FA
+     * createPGP
      */
-    public function get2FA()
+    public function createPGP(string $publicKey)
+    {
+        $app = App::go();
+
+        $publicKey = trim($publicKey);
+        if (empty($publicKey) || str_starts_with($publicKey, "BEGIN PGP PUBLIC KEY BLOCK") || str_ends_with($publicKey, "END PGP PUBLIC KEY BLOCK")) {
+            throw new Exception("invalid pgp key format");
+        }
+
+        $query = "update users_main set publicKey = ? where id = ?";
+        $app->dbNew->do($query, [ $publicKey, $this->core["id"] ]);
+
+        return true;
+    }
+
+
+    /**
+     * readPGP
+     */
+    public function readPGP()
+    {
+        $app = App::go();
+
+        $query = "select publicKey from users_main where id = ?";
+        $publicKey = $app->dbNew->single($query, [ $this->core["id"] ]);
+
+        return $publicKey;
+    }
+
+
+    /**
+     * updatePGP
+     */
+    public function updatePGP(string $publicKey)
+    {
+        return $this->createPGP($publicKey);
+    }
+
+
+    /**
+     * deletePGP
+     */
+    public function deletePGP()
+    {
+        $app = App::go();
+
+        $query = "update users_main set publicKey = null where id = ?";
+        $app->dbNew->do($query, [ $this->core["id"] ]);
+
+        return true;
+    }
+
+
+    /**
+     * create2FA
+     */
+    public function create2FA()
     {
     }
 
 
     /**
-     * getU2F
+     * read2FA
      */
-    public function getU2F()
+    public function read2FA()
+    {
+    }
+
+
+    /**
+     * update2FA
+     */
+    public function update2FA()
+    {
+    }
+
+
+    /**
+     * delete2FA
+     */
+    public function delete2FA()
+    {
+    }
+
+
+    /**
+     * createU2F
+     */
+    public function createU2F()
+    {
+    }
+
+
+    /**
+     * readU2F
+     */
+    public function readU2F()
+    {
+    }
+
+
+    /**
+     * updateU2F
+     */
+    public function updateU2F()
+    {
+    }
+
+
+    /**
+     * deleteU2F
+     */
+    public function deleteU2F()
     {
     }
 } # class
