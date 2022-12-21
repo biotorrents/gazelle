@@ -1232,9 +1232,38 @@ class Users
 
     /**
      * createU2F
+     *
+     * todo: buy a device to test this
      */
-    public function createU2F()
+    public function createU2F(string $request, string $response)
     {
+        $app = App::go();
+
+        $u2f = new u2flib_server\U2F("https://{$app->env->siteDomain}");
+        $good = $u2f->doRegister($request, $response);
+
+        if (!$good) {
+            throw new Exception("bad u2f request or response");
+        }
+
+        # upsert
+        $query = "
+            replace into u2f
+            (userId, keyHandle, publicKey, certificate, counter, valid)
+            values
+            (:userId, :keyHandle, :publicKey, :certificate, :counter, :valid)
+        ";
+
+        $app->dbNew->do($query, [
+            "userId" => $this->core["id"],
+            "keyHandle" => $good->keyHandle,
+            "publicKey" => $good->publicKey,
+            "certificate" => $good->certificate,
+            "counter" => $good->counter,
+            "valid" => 1,
+        ]);
+
+        return true;
     }
 
 
@@ -1243,14 +1272,21 @@ class Users
      */
     public function readU2F()
     {
+        $app = App::go();
+
+        $query = "select * from u2f where userId = ?";
+        $row = $app->dbNew->row($query, [ $this->core["id"] ]);
+
+        return $row;
     }
 
 
     /**
      * updateU2F
      */
-    public function updateU2F()
+    public function updateU2F(string $request, string $response)
     {
+        return $this->createU2F($request, $response);
     }
 
 
@@ -1259,5 +1295,11 @@ class Users
      */
     public function deleteU2F()
     {
+        $app = App::go();
+
+        $query = "delete from u2f where userId = ?";
+        $app->dbNew->do($query, [ $this->core["id"] ]);
+
+        return true;
     }
 } # class
