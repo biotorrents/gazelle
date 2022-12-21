@@ -1111,4 +1111,20 @@ class Users
     {
         return self::enabledState($id) === 2;
     }
-}
+
+
+    /**
+     * get2FA
+     */
+    public function get2FA()
+    {
+    }
+
+
+    /**
+     * getU2F
+     */
+    public function getU2F()
+    {
+    }
+} # class

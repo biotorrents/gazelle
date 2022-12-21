@@ -45,6 +45,7 @@
     "ext-pdo": "*",
     "ext-redis": "*",
     "ext-zip": "*",
+    "abraham/twitteroauth": "^4.0",
     "delight-im/auth": "^8.3",
     "erusev/parsedown": "1.8.0-beta-7",
     "erusev/parsedown-extra": "0.8.0",

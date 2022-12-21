@@ -1,282 +1,37 @@
-<?php
+{% extends "base.twig" %}
 
-#declare(strict_types = 1);
-
-
-/**
- * main user settings page
- */
-
-# https://github.com/paragonie/anti-csrf
-Http::csrf();
-
-$app = App::go();
-!d($app->userNew);
-
-# 2fa libraries
-$twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
-$u2f = new u2flib_server\U2F("https://{$app->env->siteDomain}");
-
-#$email = Crypto::decrypt($app->userNew->core["email"]) ?? "[encrypted]";
-
-/** */
-
-$DonorRank = null;
-$DonorIsVisible = null;
-
-if ($DonorIsVisible === null) {
-    $DonorIsVisible = true;
-}
-
-$Rewards = null;
-$ProfileRewards = null;
-
-
-        # get all stylesheets
-        #$stylesheets = $app->cacheOld->get_value("stylesheets");
-        if (!$stylesheets) {
-            $query = "
-                select id,
-                lower(replace(name, ' ', '_')) as name, name as properName,
-                lower(replace(additions, ' ', '_')) as additions, additions as properAdditions
-                from stylesheets
-            ";
-
-            $stylesheets = $app->dbNew->multi($query);
-            #$app->cacheOld->cache_value("stylesheets", $stylesheets, $this->cacheDuration);
-        }
-
-        #!d($stylesheets);exit;
-
-/*
-$app->dbOld->query("
-  SELECT
-    m.Username,
-    m.TwoFactor,
-    m.PublicKey,
-    m.Email,
-    m.IRCKey,
-    m.Paranoia,
-    i.Info,
-    i.Avatar,
-    i.StyleID,
-    i.StyleURL,
-    i.SiteOptions,
-    i.UnseededAlerts,
-    p.Level AS Class,
-    i.InfoTitle
-  FROM users_main AS m
-    JOIN users_info AS i ON i.UserID = m.ID
-    LEFT JOIN permissions AS p ON p.ID = m.PermissionID
-  WHERE m.ID = ?", $UserID);
-list($Username, $TwoFactor, $PublicKey, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $Class, $InfoTitle) = $app->dbOld->next_record(MYSQLI_NUM, [5, 10]);
-*/
-
-/*
-if ((int) $UserID !== $user['ID'] && !check_perms('users_edit_profiles', $Class)) {
-    error(403);
-}
-
-$Paranoia = json_decode($Paranoia, true);
-if (!is_array($Paranoia)) {
-    $Paranoia = [];
-}
-*/
-
-function paranoia_level($Setting)
-{
-    global $Paranoia;
-    // 0: very paranoid; 1: stats allowed, list disallowed; 2: not paranoid
-    return (in_array($Setting . '+', $Paranoia)) ? 0 : (in_array($Setting, $Paranoia) ? 1 : 2);
-}
-
-function display_paranoia($FieldName)
-{
-    $Level = paranoia_level($FieldName);
-    echo "<label><input type='checkbox' name='p_{$FieldName}_c'" . checked($Level >= 1) . " onchange='AlterParanoia()' /> Show count</label>&nbsp;";
-    echo "<label><input type='checkbox' name='p_{$FieldName}_l'" . checked($Level >= 2) . " onchange='AlterParanoia()' /> Show list</label>&nbsp;";
-}
-
-function checked($Checked)
-{
-    return ($Checked ? ' checked="checked"' : '');
-}
-
-/*
-if ($SiteOptions) {
-    $SiteOptions = json_decode($SiteOptions, true) ?? [];
-} else {
-    $SiteOptions = [];
-}
-*/
-
-
-
-
-
-/**
- * VIEW THE TWIG TEMPLATE HERE
- */
-
- $app->twig->display("user/settings.twig", [
-  "css" => ["vendor/easymde.min"],
-  "js" => ["user", "cssgallery", "preview_paranoia", "user_settings", "vendor/easymde.min"],
-
-  "stylesheets" => $stylesheets,
-
-  "twoFactor" => $twoFactor,
-  "u2f" => $u2f,
-
-]);
-
-exit;
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**
- * OLD SHIT BELOW
- * SOON TO BE TWIG
- */
-
-
-
-
-
-
-
-
-
-/**
- * Show header
- */
-View::header(
-    "$Username $ENV->crumb Settings",
-    'user,cssgallery,preview_paranoia,user_settings,vendor/easymde.min',
-    'vendor/easymde.min'
-);
-
-?>
+{% block content %}
 
 <div>
   <div class="header">
-    <h2>
-      <?=Users::format_username($UserID, false, false, false)?>
-      <?=$ENV->crumb?> Settings
-    </h2>
+    <h2>{{ user.core.username }} {{ env.crumb }} Settings</h2>
   </div>
 
-  <!-- Side menu / settings filter -->
   <form class="edit_form" name="user" id="userform" method="post" autocomplete="off">
-    <div class="sidebar one-third column">
-      <div class="box" id="settings_sections">
 
-        <div class="head">
-          <strong>Sections</strong>
-        </div>
-
-        <ul class="nobullet">
-          <li data-gazelle-section-id="all_settings">
-            <h2>
-              <a href="#">All Settings</a>
-            </h2>
-          </li>
-
-          <li data-gazelle-section-id="site_appearance">
-            <h2>
-              <a href="#">Site Appearance</a>
-            </h2>
-          </li>
-
-          <li data-gazelle-section-id="torrent_settings">
-            <h2>
-              <a href="#">Torrents</a>
-            </h2>
-          </li>
-
-          <li data-gazelle-section-id="community_settings">
-            <h2>
-              <a href="#">Community</a>
-            </h2>
-          </li>
-
-          <li data-gazelle-section-id="notification_settings">
-            <h2>
-              <a href="#">Notifications</a>
-            </h2>
-          </li>
-
-          <li data-gazelle-section-id="profile_settings">
-            <h2>
-              <a href="#">Profile</a>
-            </h2>
-          </li>
-
-          <li data-gazelle-section-id="paranoia_settings">
-            <h2>
-              <a href="#">Paranoia</a>
-            </h2>
-          </li>
-
-          <li data-gazelle-section-id="security_settings">
-            <h2>
-              <a href="#">Security</a>
-            </h2>
-          </li>
-
-          <li data-gazelle-section-id="live_search">
-            <input type="text" id="settings_search" placeholder="Filter settings" />
-          </li>
-
-          <li>
-            <input type="submit" id="submit" class="button-primary" value="Save profile" />
-          </li>
-
-        </ul>
-      </div>
-    </div>
-
-    <div class="main_column two-thirds column">
-      <div>
+{# hidden fields #}
         <input type="hidden" name="action" value="take_edit" />
-        <input type="hidden" name="userid" value="<?=$UserID?>" />
-        <input type="hidden" name="auth"
-          value="<?=$user['AuthKey']?>" />
-      </div>
+        <input type="hidden" name="userid" value="{{ user.core.id }}" />
+        <input type="hidden" name="auth" value="{{ user.extra.AuthKey }}" />
 
-      <!-- Site Appearance -->
-      <table cellpadding="6" cellspacing="1" border="0" width="100%" class="layout border user_options"
-        id="site_appearance">
-        <tr class="colhead_dark">
-          <td colspan="2">
-            <strong>Site Appearance</strong>
-          </td>
-        </tr>
+      {# site appearance #}
+      <h3>Site appearance</h3>
+      <table class="layout border user_options" id="site_appearance">
 
         <!-- Stylesheet -->
         <tr id="site_style_tr">
-          <td class="label">
-            <strong>Stylesheet</strong>
-          </td>
+          <th>Stylesheet</th>
 
           <td>
-            <select name="stylesheet" id="stylesheet">
-              <?php foreach ($Stylesheets as $Style) { ?>
-
-              <option value="<?=($Style['ID'])?>"
-                <?=(int) $Style['ID'] === $StyleID ? ' selected="selected"' : ''?>><?=($Style['ProperName'])?>
+           <select name="stylesheet" id="stylesheet">
+            {% for stylesheet in stylesheets %}
+              <option value="{{ stylesheet.id }}" {# {{ (stylesheet.ID == user.extra.StyleID) ?? "selected" }} #}>
+                {{ stylesheet.properName }}
               </option>
-              <?php } ?>
+              {% endfor %} {# for stylesheet in stylesheets #}
             </select>
+
+            {#
             &ensp;
             <a data-toggle-target="#css_gallery" class="brackets">Show gallery</a>
             <div id="css_gallery" class="hidden">
@@ -296,16 +51,16 @@ View::header(
               </div>
               <?php } ?>
             </div>
+            #}
           </td>
         </tr>
 
-        <!-- Stylesheet additions -->
-        <tr id="style_additions_tr"
-          class="<?=($Stylesheets[$user['StyleID']]['Additions'][0] ?? false) ? '' : 'hidden'?>">
 
-          <td class="label">
-            <strong>Stylesheet additions</strong>
-          </td>
+        {# stylesheet additions #}
+        {#
+        <tr id="style_additions_tr" class="<?=($Stylesheets[$user['StyleID']]['Additions'][0] ?? false) ? '' : 'hidden'?>">
+
+          <th>Stylesheet additions</th>
 
           <td>
             <?php
@@ -372,27 +127,25 @@ HTML;
           ?>
           </td>
         </tr>
+        #}
 
-        <!-- External stylesheet URL -->
+        {# external stylesheet uri #}
         <tr id="site_extstyle_tr">
-          <td class="label">
-            <strong>External stylesheet URL</strong>
-          </td>
+          <th>External stylesheet URI</th>
 
           <td>
-            <input type="text" size="40" name="styleurl" id="styleurl"
-              value="<?=Text::esc($StyleURL)?>" />
+            <input type="text" size="40" name="styleurl" id="styleurl" value="{{ user.extra.StyleURL }}" />
           </td>
         </tr>
 
-        <!-- Profile stats -->
-        <?php if (check_perms('users_mod')) { ?>
+
+        {# profile stats #}
+        {# {% if checkPerms("users_mod) %} #}
         <tr id="site_autostats_tr">
-          <td class="label tooltip" title="Staff Only">
-            <strong>Profile stats</strong>
-          </td>
+          <th>Profile stats</th>
 
           <td>
+          {#
             <label>
               <input type="checkbox" name="autoload_comm_stats" <?Format::selected(
               'AutoloadCommStats',
@@ -403,26 +156,20 @@ HTML;
               />
               Automatically fetch the snatch and peer stats on profile pages
             </label>
+            #}
           </td>
         </tr>
-        <?php } ?>
-      </table>
+        {# {% endif %} #}
+      </table> {# site appearance #}
 
-      <!-- Torrents -->
-      <table cellpadding="6" cellspacing="1" border="0" width="100%" class="layout border user_options"
-        id="torrent_settings">
-        <tr class="colhead_dark">
-          <td colspan="2">
-            <strong>Torrents</strong>
-          </td>
-        </tr>
 
-        <!-- Default search type -->
-        <?php if (check_perms('site_advanced_search')) { ?>
+{# torrents #}
+<h3>Torrents</h3>
+      <table class="layout border user_options" id="torrent_settings">
+
+        {# default search type #}
         <tr id="tor_searchtype_tr">
-          <td class="label">
-            <strong>Default search type</strong>
-          </td>
+          <th>Default search type</th>
 
           <td>
             <ul class="options_list nobullet">
@@ -440,13 +187,10 @@ HTML;
             </ul>
           </td>
         </tr>
-        <?php } ?>
 
-        <!-- Torrent grouping -->
+        {# torrent grouping #}
         <tr id="tor_group_tr">
-          <td class="label">
-            <strong>Torrent grouping</strong>
-          </td>
+          <th>Torrent grouping</th>
 
           <td>
             <div class="option_group">
@@ -457,11 +201,9 @@ HTML;
           </td>
         </tr>
 
-        <!-- Torrent group display -->
+        {# torrent group display #}
         <tr id="tor_gdisp_search_tr">
-          <td class="label">
-            <strong>Torrent group display</strong>
-          </td>
+          <th>Torrent group display</th>
 
           <td>
             <div class="option_group">
@@ -482,11 +224,9 @@ HTML;
           </td>
         </tr>
 
-        <!-- Snatched torrents indicator -->
+        {# snatched torrents indicator #}
         <tr id="tor_snatched_tr">
-          <td class="label">
-            <strong>Snatched torrents indicator</strong>
-          </td>
+          <th>Snatched torrents indicator</th>
 
           <td>
             <input type="checkbox" name="showsnatched" id="showsnatched" <?=!empty($SiteOptions['ShowSnatched']) ? ' checked="checked"' : ''?>
@@ -495,11 +235,9 @@ HTML;
           </td>
         </tr>
 
-        <!-- Cover art (torrents) -->
+        {# cover art (torrents) #}
         <tr id="tor_cover_tor_tr">
-          <td class="label">
-            <strong>Cover art (torrents)</strong>
-          </td>
+          <th>Cover art (torrents)</th>
 
           <td>
             <ul class="options_list nobullet">
@@ -519,11 +257,9 @@ HTML;
           </td>
         </tr>
 
-        <!-- Cover art (collections) -->
+        {# cover art (collections) #}
         <tr id="tor_cover_coll_tr">
-          <td class="label">
-            <strong>Cover art (collections)</strong>
-          </td>
+          <th>Cover art (collections)</th>
 
           <td>
             <select name="collagecovers" id="collagecovers">
@@ -549,11 +285,9 @@ HTML;
           </td>
         </tr>
 
-        <!-- Torrent search filters -->
+        {# torrent search filters #}
         <tr id="tor_showfilt_tr">
-          <td class="label">
-            <strong>Torrent search filters</strong>
-          </td>
+          <th>Torrent search filters</th>
 
           <td>
             <ul class="options_list nobullet">
@@ -573,15 +307,13 @@ HTML;
         </tr>
       </table>
 
-      <!-- Community -->
-      <table cellpadding="6" cellspacing="1" border="0" width="100%" class="layout border user_options"
-        id="community_settings">
-        <tr class="colhead_dark">
-          <td colspan="2">
-            <strong>Community</strong>
-          </td>
-        </tr>
 
+
+      {# community #}
+      <h3>Community</h3>
+      <table class="layout border user_options" id="community_settings">
+
+{#
         <!-- Posts per page (forums) -->
         <tr id="comm_ppp_tr">
           <td class="label">
@@ -602,12 +334,11 @@ HTML;
             posts per page
           </td>
         </tr>
+#}
 
-        <!-- Inbox sorting -->
+        {# inbox sorting #}
         <tr id="comm_inbsort_tr">
-          <td class="label">
-            <strong>Inbox sorting</strong>
-          </td>
+          <th>Inbox sorting</th>
 
           <td>
             <input type="checkbox" name="list_unread_pms_first" id="list_unread_pms_first" <?=!empty($SiteOptions['ListUnreadPMsFirst']) ? ' checked="checked"' : ''?>
@@ -616,11 +347,9 @@ HTML;
           </td>
         </tr>
 
-        <!-- Avatar display (posts) -->
+        {# avatar display (posts) #}
         <tr id="comm_avatars_tr">
-          <td class="label">
-            <strong>Avatar display (posts)</strong>
-          </td>
+          <th>Avatar display (posts)</th>
 
           <td>
             <select name="disableavatars" id="disableavatars">
@@ -632,6 +361,7 @@ HTML;
           </td>
         </tr>
 
+{#
         <!-- Auto-save reply text -->
         <tr id="comm_autosave_tr">
           <td class="label">
@@ -644,12 +374,12 @@ HTML;
             <label for="disableautosave">Disable text auto-saving</label>
           </td>
         </tr>
+#}
 
-        <!-- Displayed badges -->
+        {# displayed badges #}
+        {#
         <tr id="comm_badge_tr">
-          <td class="label">
-            <strong>Displayed badges</strong>
-          </td>
+          <th>Displayed badges</th>
 
           <td>
             <?php
@@ -669,22 +399,21 @@ HTML;
     } ?>
           </td>
         </tr>
+        #}
       </table>
 
-      <!-- Notifications -->
-      <table cellpadding="6" cellspacing="1" border="0" width="100%" class="layout border user_options"
-        id="notification_settings">
-        <tr class="colhead_dark">
-          <td colspan="2">
-            <strong>Notifications</strong>
-          </td>
-        </tr>
 
-        <!-- Automatic thread subscriptions -->
+
+
+
+
+      {# notifications #}
+      <h3>Notifications</h3>
+      <table class="layout border user_options" id="notification_settings">
+
+        {# automatic thread subscriptions #}
         <tr id="notif_autosubscribe_tr">
-          <td class="label">
-            <strong>Automatic thread subscriptions</strong>
-          </td>
+          <th>Automatic thread subscriptions</th>
 
           <td>
             <input type="checkbox" name="autosubscribe" id="autosubscribe" <?=!empty($SiteOptions['AutoSubscribe']) ? ' checked="checked"' : ''?>
@@ -693,11 +422,9 @@ HTML;
           </td>
         </tr>
 
-        <!-- Unseeded torrent alerts -->
+        {# unseeded torrent alerts #}
         <tr id="notif_unseeded_tr">
-          <td class="label">
-            <strong>Unseeded torrent alerts</strong>
-          </td>
+          <th>Unseeded torrent alerts</th>
 
           <td>
             <input type="checkbox" name="unseededalerts" id="unseededalerts" <?=checked($UnseededAlerts)?> />
@@ -707,27 +434,25 @@ HTML;
         <?php NotificationsManagerView::render_settings(NotificationsManager::get_settings($UserID)); ?>
       </table>
 
-      <!-- Profile -->
-      <table cellpadding="6" cellspacing="1" border="0" width="100%" class="layout border user_options"
-        id="profile_settings">
-        <tr class="colhead_dark">
-          <td colspan="2">
-            <strong>Profile</strong>
-          </td>
-        </tr>
 
-        <!-- Avatar URL -->
+
+
+
+      {# profile #}
+      <h3>Profile</h3>
+      <table class="layout border user_options" id="profile_settings">
+
+        {# avatar uri #}
         <tr id="pers_avatar_tr">
-          <td class="label tooltip" title="512 KiB max size / 600 px max height">
-            <strong>Avatar URL</strong>
-          </td>
+          <th>Avatar URL</th>
 
           <td>
             <input type="text" size="50" name="avatar" id="avatar"
-              value="<?=Text::esc($Avatar)?>" />
+              value="{{ user.extra.Avatar }}" />
           </td>
         </tr>
 
+{# STUPID
         <!-- Second avatar URL -->
         <?php if ($HasSecondAvatar) { ?>
         <tr id="pers_avatar2_tr">
@@ -741,7 +466,9 @@ HTML;
           </td>
         </tr>
         <?php }
+#}
 
+{# STUPID
 # Avatar mouseover text
   if ($HasAvatarMouseOverText) { ?>
         <tr id="pers_avatarhover_tr">
@@ -755,7 +482,9 @@ HTML;
           </td>
         </tr>
         <?php }
+#}
 
+{# STUPID
 # Donor icon mouseover text
   if ($HasDonorIconMouseOverText) { ?>
         <tr id="pers_donorhover_tr">
@@ -769,7 +498,9 @@ HTML;
           </td>
         </tr>
         <?php }
+#}
 
+{# FUCK THIS
 # Donor icon link
   if ($HasDonorIconLink) { ?>
         <tr id="pers_donorlink_tr">
@@ -783,7 +514,9 @@ HTML;
           </td>
         </tr>
         <?php }
+#}
 
+{# JUST USE A HEART
 # Custom donor icon URL
   if ($HasCustomDonorIcon) { ?>
         <tr id="pers_donoricon_tr">
@@ -797,64 +530,33 @@ HTML;
           </td>
         </tr>
         <?php } ?>
+#}
 
-        <!-- Profile title 1 -->
+
+        {# profile title #}
         <tr id="pers_proftitle_tr">
-          <td class="label">
-            <strong>Profile title 1</strong>
-          </td>
+          <th>Profile title</th>
 
           <td>
-            <input type="text" size="50" name="profile_title" id="profile_title"
-              value="<?=Text::esc($InfoTitle)?>" />
+            <input type="text" size="50" name="profile_title" id="profile_title" value="{{ user.extra.InfoTitle }}" />
           </td>
         </tr>
 
-        <!-- Profile info 1 -->
+        {# profile content #}
         <tr id="pers_profinfo_tr">
-          <td class="label">
-            <strong>Profile info 1</strong>
+          <th>Profile content</th>
           </td>
 
           <td>
-            <?php
-  $textarea = View::textarea(
-      id: 'info',
-      value: Text::esc($Info) ?? '',
-  ); ?>
+          {% set variables = {"id": "info", "name": "info", "placeholder": "What are you passionate about?", "value": user.extra.Info} %}
+            {% include "_base/textarea.twig" with variables %}
           </td>
         </tr>
-
-        <!-- Excuse this numbering confusion, we start numbering our profile info/titles at 1 in the donor_rewards table -->
-        <?php if ($HasProfileInfo1) { ?>
-        <tr id="pers_proftitle2_tr">
-          <td class="label">
-            <strong>Profile title 2</strong>
-          </td>
-
-          <td>
-            <input type="text" size="50" name="profile_title_1" id="profile_title_1"
-              value="<?=Text::esc($ProfileRewards['ProfileInfoTitle1'])?>" />
-          </td>
-        </tr>
-
-        <!-- 2 -->
-        <tr id="pers_profinfo2_tr">
-          <td class="label">
-            <strong>Profile info 2</strong>
-          </td>
-
-          <td>
-            <?php
-  $textarea = View::textarea(
-      id: 'profile_info_1',
-      value: Text::esc($ProfileRewards['ProfileInfo1']) ?? '',
-  ); ?>
-          </td>
-        </tr>
-        <?php } ?>
-
       </table>
+
+
+
+{# PARANOIA TODO: THIS WHOLE SECTION IS FUCKED UP
 
       <!-- Paranoia -->
       <table cellpadding="6" cellspacing="1" border="0" width="100%" class="layout border user_options"
@@ -1146,14 +848,14 @@ list($ArtistsAdded) = $app->dbOld->next_record();
         </tr>
       </table>
 
+END PARANOIA CLUSTERFUCK #}
+
+
+
+{# security #}
+<h3>Security</h3>
       <!-- Security -->
-      <table cellpadding="6" cellspacing="1" border="0" width="100%" class="layout border user_options"
-        id="security_settings">
-        <tr class="colhead_dark">
-          <td colspan="2">
-            <strong>Security</strong>
-          </td>
-        </tr>
+      <table class="layout border user_options" id="security_settings">
 
         <!-- 2FA, U2F, and PGP -->
         <tr id="acc_2fa_tr">
@@ -1344,7 +1046,328 @@ list($ArtistsAdded) = $app->dbOld->next_record();
           </td>
         </tr>
       </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{#
+
+
+
+
     </div>
   </form>
 </div>
-<?php View::footer();
+#}
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+{{ include("user/sidebar.twig") }}
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+<?php
+declare(strict_types=1);
+
+$ENV = ENV::go();
+
+$TwoFA = new RobThree\Auth\TwoFactorAuth($ENV->siteName);
+$U2F = new \u2flib_server\U2F("https://$ENV->siteDomain");
+
+if ($Type = $_POST['type'] ?? false) {
+    if ($Type === 'PGP') {
+        if (!empty($_POST['publickey']) && (strpos($_POST['publickey'], 'BEGIN PGP PUBLIC KEY BLOCK') === false || strpos($_POST['publickey'], 'END PGP PUBLIC KEY BLOCK') === false)) {
+            $Error = "Invalid PGP public key";
+        } else {
+            $db->query("
+              UPDATE users_main
+              SET PublicKey = '".db_string($_POST['publickey'])."'
+              WHERE ID = $UserID");
+            $Message = 'Public key '.(empty($_POST['publickey']) ? 'removed' : 'updated') ;
+        }
+    }
+
+    if ($Type === '2FA-E') {
+        if ($TwoFA->verifyCode($_POST['twofasecret'], $_POST['twofa'])) {
+            $db->query("
+              UPDATE users_main
+              SET TwoFactor='".db_string($_POST['twofasecret'])."'
+              WHERE ID = $UserID");
+            $Message = "Two Factor Authentication enabled";
+        } else {
+            $Error = "Invalid 2FA verification code";
+        }
+    }
+
+    if ($Type === '2FA-D') {
+        $db->query("
+          UPDATE users_main
+          SET TwoFactor = NULL
+          WHERE ID = $UserID");
+        $Message = "Two Factor Authentication disabled";
+    }
+
+    if ($Type === 'U2F-E') {
+        try {
+            $U2FReg = $U2F->doRegister(json_decode($_POST['u2f-request']), json_decode($_POST['u2f-response']));
+            $db->query("
+              INSERT INTO u2f
+                (UserID, KeyHandle, PublicKey, Certificate, Counter, Valid)
+              Values ($UserID, '".db_string($U2FReg->keyHandle)."', '".db_string($U2FReg->publicKey)."', '".db_string($U2FReg->certificate)."', '".db_string($U2FReg->counter)."', '1')");
+            $Message = "U2F token registered";
+        } catch (Exception $e) {
+            $Error = "Failed to register U2F token";
+        }
+    }
+
+    if ($Type === 'U2F-D') {
+        $db->query("
+          DELETE FROM u2f
+          WHERE UserID = $UserID");
+        $Message = 'U2F tokens deregistered';
+    }
+}
+
+$U2FRegs = [];
+$db->query("
+  SELECT KeyHandle, PublicKey, Certificate, Counter
+  FROM u2f
+  WHERE UserID = $UserID");
+
+// Needs to be an array of objects, so we can't use to_array()
+while (list($KeyHandle, $PublicKey, $Certificate, $Counter) = $db->next_record()) {
+    $U2FRegs[] = (object)['keyHandle'=>$KeyHandle, 'publicKey'=>$PublicKey, 'certificate'=>$Certificate, 'counter'=>$Counter];
+}
+
+$db->query("
+  SELECT PublicKey, TwoFactor
+  FROM users_main
+  WHERE ID = $UserID");
+
+list($PublicKey, $TwoFactor) = $db->next_record();
+list($U2FRequest, $U2FSigs) = $U2F->getRegisterData($U2FRegs);
+View::header("2FA Settings", 'u2f');
+?>
+
+<h2>Additional Account Security Options</h2>
+<div>
+  <?php if (isset($Message)) { ?>
+  <div class="alertbar"><?=$Message?>
+  </div>
+  <?php }
+
+   if (isset($Error)) { ?>
+  <div class="alertbar error"><?=$Error?>
+  </div>
+  <?php } ?>
+
+  <div class="box">
+    <div class="head">
+      <strong>PGP Public Key</strong>
+    </div>
+
+    <div class="pad">
+      <?php if (empty($PublicKey)) {
+       if (!empty($TwoFactor) || sizeof($U2FRegs) > 0) { ?>
+      <strong class="important_text">
+        You have a form of 2FA enabled but no PGP key associated with your account.
+        If you lose access to your 2FA device, you will permanently lose access to your account.
+      </strong>
+      <?php } ?>
+
+      <p>
+        When setting up any form of second factor authentication, it is strongly recommended that you add your PGP
+        public key as a form of secure recovery in the event that you lose access to your second factor device.
+      </p>
+
+      <p>
+        After adding a PGP public key to your account, you will be able to disable your account's second factor
+        protection by solving a challenge that only someone with your private key could solve.
+      </p>
+
+      <p>
+        Additionally, being able to solve such a challenge when given manually by staff will suffice to provide proof of
+        ownership of your account, provided no revocation certificate has been published for your key.
+      </p>
+
+      <p>
+        Before adding your PGP public key, please make sure that you have taken the necessary precautions to protect it
+        from loss (backup) or theft (revocation certificate).
+      </p>
+      <?php
+   } else { ?>
+      <p>
+        The PGP public key associated with your account is shown below.
+      </p>
+
+      <p>
+        This key can be used to create challenges that are only solvable by the holder of the related private key.
+        Successfully solving these challenges is necessary for disabling any form of second factor authentication or
+        proving ownership of this account to staff when you are unable to login.
+      </p>
+      <?php } ?>
+
+      <form method="post">
+        <input type="hidden" name="type" value="PGP">
+        Public Key
+        <br />
+
+        <textarea name="publickey" id="publickey" spellcheck="false" cols="64"
+          rows="8"><?=Text::esc($PublicKey)?></textarea>
+        <br />
+
+        <button type="submit" name="type" value="PGP">Update Public Key</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="box">
+    <div class="head">
+      <strong>Two-Factor Authentication (2FA-TOTP)</strong>
+    </div>
+
+    <div class="pad">
+      <?php $TwoFASecret = empty($TwoFactor) ? $TwoFA->createSecret() : $TwoFactor;
+      if (empty($TwoFactor)) {
+          if (sizeof($U2FRegs) === 0) { ?>
+      <p>
+        Two Factor Authentication is not currently enabled for this account.
+        To enable it, add the secret key below to your 2FA client either manually or by scanning the QR code, then enter
+        a verification code generated by your 2FA client and click the "Enable 2FA" button.
+      </p>
+
+      <form method="post">
+        <input type="text" size="60" name="twofasecret" id="twofasecret"
+          value="<?=$TwoFASecret?>" readonly><br>
+        <img
+          src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$user['Username'], $TwoFASecret)?>" />
+        <br />
+
+        <input type="text" size="20" maxlength="6" pattern="[0-9]{0,6}" name="twofa" id="twofa"
+          placeholder="Verification Code" autocomplete="off">
+        <br /><br />
+
+        <button type="submit" name="type" value="2FA-E">Enable 2FA</button>
+      </form>
+
+      <?php } else { ?>
+      <p>
+        Two Factor Authentication is not currently enabled for this account.
+        To enable 2FA, you must first disable U2F below.
+      </p>
+      <?php }
+      } else {?>
+      <form method="post">
+        <input type="hidden" name="type" value="2FA-D">
+        <p>
+          2FA is enabled for this account with the following secret:
+        </p>
+
+        <p>
+          <input type="text" size="50" name="twofasecret" id="twofasecret"
+            value="<?=$TwoFASecret?>" onclick="this.select()"
+            readonly />
+        </p>
+
+        <p>
+          <img
+            src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$user['Username'], $TwoFASecret)?>" />
+        </p>
+
+        <p>
+          To disable 2FA, click the button below.
+        </p>
+
+        <button type="submit" name="type" value="2FA-D">Disable 2FA</button>
+      </form>
+      <?php } ?>
+    </div>
+  </div>
+
+  <div class="box">
+    <div class="head">
+      <strong>Universal Two Factor (FIDO U2F)</strong>
+    </div>
+
+    <div class="pad">
+      <?php if (sizeof($U2FRegs) === 0) { ?>
+      <?php if (empty($TwoFactor)) { ?>
+      <form method="post" id="u2f_register_form">
+        <input type="hidden" name="u2f-request"
+          value='<?=json_encode($U2FRequest)?>' />
+
+        <input type="hidden" name="u2f-sigs"
+          value='<?=json_encode($U2FSigs)?>' />
+
+        <input type="hidden" name="u2f-response" />
+
+        <input type="hidden" value="U2F-E" />
+      </form>
+
+      <p>
+        Universal Two Factor is not currently enabled for this account.
+        To enable Universal Two Factor, plug in your U2F token and press the button on it.
+      </p>
+
+      <?php } else { ?>
+      <p>
+        Universal Two Factor is not currently enabled for this account.
+        To enable Universal Two Factor, you must first disable normal 2FA above.
+      </p>
+      <?php } ?>
+
+      <?php } else { ?>
+      <form method="post" id="u2f_register_form">
+        <input type="hidden" name="u2f-request"
+          value='<?=json_encode($U2FRequest)?>' />
+
+        <input type="hidden" name="u2f-sigs"
+          value='<?=json_encode($U2FSigs)?>' />
+
+        <input type="hidden" name="u2f-response" />
+
+        <input type="hidden" value="U2F-E" />
+
+        <p>
+          Universal Two Factor is enabled.
+          To add an additional U2F token, plug it in and press the button on it.
+          To disable U2F completely and deregister all tokens, press the button below.
+        </p>
+        <button type="submit" name="type" value="U2F-D">Disable U2F</button>
+      </form>
+      <?php } ?>
+    </div>
+  </div>
+</div>
+<?php
+View::footer();

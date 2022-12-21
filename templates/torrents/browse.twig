@@ -37,46 +37,60 @@
 {{ pages }}
 </div>
 
-{# results table headings #}
-<table
-  class="box torrent_table cats <?=$GroupResults ? 'grouping' : 'no_grouping'?>"
-  id="torrent_table">
+{# start results table headings #}
+{% if groupResults %}
+{% set grouping = "grouping" %}
+{% else %}
+{% set grouping = "no_grouping" %}
+{% endif %}
+
+<table id="torrent_table" class="box torrent_table cats {{ grouping }}">
   <tr class="colhead">
 
+{# grouped #}
   {% if groupResults %}
-    <td class="small"></td>
-    {% endif %}
+    <th class="small" />
+  {% endif %}
 
-    <td class="small cats_col"></td>
-    <td>Name / <a
-        href="<?=header_link('year')?>">Year</a>
-    </td>
-    <td>Files</td>
-    <td><a
-        href="<?=header_link('time')?>">Time</a>
-    </td>
-    <td><a
-        href="<?=header_link('size')?>">Size</a>
-    </td>
-    <td class="sign snatches">
-      <a href="<?=header_link('snatched')?>"
-        aria-label="Sort by snatches">
-        ↻
-      </a>
-    </td>
-    <td class="sign seeders">
-      <a href="<?=header_link('seeders')?>"
-        aria-label="Sort by seeders">
-        &uarr;
-      </a>
-    </td>
-    <td class="sign leechers">
-      <a href="<?=header_link('leechers')?>"
-        aria-label="Sort by leechers">
-        &darr;
-      </a>
-    </td>
+{# category icon #}
+    <th class="small cats_col" />
+
+{# name/year #}
+    <th>
+    Name / <a href="<?=header_link('year')?>">Year</a>
+    </th>
+
+    {# files #}
+    <th>
+    Files
+    </th>
+
+    {# time #}
+    <th>
+    <a href="<?=header_link('time')?>">Time</a>
+    </th>
+
+    {# size #}
+    <th>
+    <a href="<?=header_link('size')?>">Size</a>
+    </th>
+
+    {# snatches #}
+    <th class="sign snatches">
+      <a href="<?=header_link('snatched')?>" aria-label="Sort by snatches">↻</a>
+    </th>
+
+    {# seeders #}
+    <th class="sign seeders">
+      <a href="<?=header_link('seeders')?>" aria-label="Sort by seeders">&uarr;</a>
+    </th>
+
+    {# leechers #}
+    <th class="sign leechers">
+      <a href="<?=header_link('leechers')?>" aria-label="Sort by leechers">&darr;</a>
+    </th>
   </tr>
+  {# end results table headings #}
 
 {# start printing torrent list #}
 {% for key, value in searchResults %}

@@ -175,19 +175,47 @@ class Announce
     /**
      * twitter
      *
-     * todo
+     * @see https://twitteroauth.com
      */
     public static function twitter(string $message)
     {
         $app = App::go();
 
         # check if twitter is enabled
-        if (!$app->env->announceTwitter) {
+        if (!$app->env->enableTwitter) {
             return false;
         }
 
         try {
-            # todo
+            $twitterCredentials = $app->env->getPriv("twitterApi");
+
+            $connection = new Abraham\TwitterOAuth\TwitterOAuth(
+                $twitterCredentials["consumerKey"],
+                $twitterCredentials["consumerSecret"],
+                $twitterCredentials["accessToken"],
+                $twitterCredentials["accessTokenSecret"]
+            );
+
+            # set api version
+           # $connection->setApiVersion("2");
+            $content = $connection->get("account/verify_credentials");
+            !d($content);
+            $statues = $connection->post("statuses/update", ["status" => "hello world"]);
+            !d($statues);
+            return;
+
+            # https://twitteroauth.com/redirect.php
+            define("OAUTH_CALLBACK", "fuck");
+            $request_token = $connection->oauth('oauth/request_token', array('oauth_callback' => OAUTH_CALLBACK));
+
+            $_SESSION['oauth_token'] = $request_token['oauth_token'];
+            $_SESSION['oauth_token_secret'] = $request_token['oauth_token_secret'];
+
+            $url = $connection->url('oauth/authorize', array('oauth_token' => $request_token['oauth_token']));
+
+            return $statues = $connection->post("statuses/update", ["status" => "hello world"]);
+
+            return $content = $connection->get("account/verify_credentials");
         } catch (Exception $e) {
             Text::figlet("twitter failure", "red");
             !d($e->getMessage());

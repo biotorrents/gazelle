@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 $ENV = ENV::go();
 
+$app = App::go();
+$db = $app->dbOld;
+
 $TwoFA = new RobThree\Auth\TwoFactorAuth($ENV->siteName);
 $U2F = new \u2flib_server\U2F("https://$ENV->siteDomain");
 
