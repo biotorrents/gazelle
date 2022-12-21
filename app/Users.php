@@ -1175,8 +1175,21 @@ class Users
     /**
      * create2FA
      */
-    public function create2FA()
+    public function create2FA(string $secret, string $code)
     {
+        $app = App::go();
+
+        $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
+        $good = $twoFactor->verifyCode($secret, $code);
+
+        if (!$good) {
+            throw new Exception("bad 2fa secret or code");
+        }
+
+        $query = "update users_main set twoFactor = ? where id = ?";
+        $app->dbNew->do($query, [ $secret, $this->core["id"] ]);
+
+        return true;
     }
 
 
@@ -1185,14 +1198,21 @@ class Users
      */
     public function read2FA()
     {
+        $app = App::go();
+
+        $query = "select twoFactor from users_main where id = ?";
+        $secret = $app->dbNew->single($query, [ $this->core["id"] ]);
+
+        return $secret;
     }
 
 
     /**
      * update2FA
      */
-    public function update2FA()
+    public function update2FA(string $secret, string $code)
     {
+        return $this->create2FA($secret, $code);
     }
 
 
@@ -1201,6 +1221,12 @@ class Users
      */
     public function delete2FA()
     {
+        $app = App::go();
+
+        $query = "update users_main set twoFactor = null where id = ?";
+        $app->dbNew->do($query, [ $this->core["id"] ]);
+
+        return true;
     }
 
 
