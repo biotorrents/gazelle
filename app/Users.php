@@ -1242,6 +1242,7 @@ class Users
         $u2f = new u2flib_server\U2F("https://{$app->env->siteDomain}");
         $good = $u2f->doRegister($request, $response);
 
+        # does this even null on fail or just throw an exception?
         if (!$good) {
             throw new Exception("bad u2f request or response");
         }
