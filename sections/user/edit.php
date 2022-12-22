@@ -59,6 +59,14 @@ if ($post["twoFactorDelete"]) {
     }
 }
 
+if (empty($app->userNew->extra["TwoFactor"])) {
+    $twoFactorSecret = $twoFactor->createSecret();
+    $twoFactorImage = $twoFactor->getQRCodeImageAsDataUri(
+        "{$app->env->siteName}:{$app->userNew->core["username"]}",
+        $twoFactorSecret
+    );
+}
+
 # u2f
 $post["u2fRequest"] ??= null;
 $post["u2fResponse"] ??= null;
@@ -186,11 +194,16 @@ if ($SiteOptions) {
  $app->twig->display("user/settings.twig", [
   "css" => ["vendor/easymde.min"],
   "js" => ["user", "cssgallery", "preview_paranoia", "user_settings", "vendor/easymde.min"],
+  "sidebar" => true,
 
   "stylesheets" => $stylesheets,
 
   "twoFactor" => $twoFactor,
   "u2f" => $u2f,
+
+  # new 2fa init
+  "twoFactorSecret" => $twoFactorSecret ?? null,
+  "twoFactorImage" => $twoFactorImage ?? null,
 
 ]);
 

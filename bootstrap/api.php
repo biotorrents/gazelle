@@ -47,7 +47,7 @@ if (!in_array($userId, $userExceptions)) {
     }
 
     if ($userRequests > $ajaxLimit[0]) {
-        $json->failure("rate limit exceeded");
+        $json->failure(400, "rate limit exceeded");
     } else {
         $app->cacheOld->increment_value("ajax_requests_{$userId}");
     }

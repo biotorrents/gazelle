@@ -14,9 +14,9 @@
         <input type="hidden" name="userid" value="{{ user.core.id }}" />
         <input type="hidden" name="auth" value="{{ user.extra.AuthKey }}" />
 
-      {# site appearance #}
-      <h3>Site appearance</h3>
-      <table class="layout border user_options" id="site_appearance">
+      {# site appearance settings #}
+      <h3>Site appearance settings</h3>
+      <table id="siteAppearanceSettings" class="userSettings">
 
         <!-- Stylesheet -->
         <tr id="site_style_tr">
@@ -163,9 +163,9 @@ HTML;
       </table> {# site appearance #}
 
 
-{# torrents #}
-<h3>Torrents</h3>
-      <table class="layout border user_options" id="torrent_settings">
+{# torrent settings #}
+<h3>Torrent settings</h3>
+      <table id="torrentSettings" class="userSettings">
 
         {# default search type #}
         <tr id="tor_searchtype_tr">
@@ -309,9 +309,9 @@ HTML;
 
 
 
-      {# community #}
-      <h3>Community</h3>
-      <table class="layout border user_options" id="community_settings">
+      {# community settings #}
+      <h3>Community settings</h3>
+      <table id="communitySettings" class="userSettings">
 
 {#
         <!-- Posts per page (forums) -->
@@ -407,9 +407,9 @@ HTML;
 
 
 
-      {# notifications #}
-      <h3>Notifications</h3>
-      <table class="layout border user_options" id="notification_settings">
+      {# notification settings #}
+      <h3>Notification settings</h3>
+      <table id="notificationSettings" class="userSettings">
 
         {# automatic thread subscriptions #}
         <tr id="notif_autosubscribe_tr">
@@ -438,9 +438,9 @@ HTML;
 
 
 
-      {# profile #}
-      <h3>Profile</h3>
-      <table class="layout border user_options" id="profile_settings">
+      {# profile settings #}
+      <h3>Profile settings</h3>
+      <table id="profileSettings" class="userSettings">
 
         {# avatar uri #}
         <tr id="pers_avatar_tr">
@@ -559,7 +559,7 @@ HTML;
 {# PARANOIA TODO: THIS WHOLE SECTION IS FUCKED UP
 
       <!-- Paranoia -->
-      <table cellpadding="6" cellspacing="1" border="0" width="100%" class="layout border user_options"
+      <table cellpadding="6" cellspacing="1" border="0" width="100%" class="userSettings"
         id="paranoia_settings">
         <tr class="colhead_dark">
           <td colspan="2">
@@ -852,10 +852,129 @@ END PARANOIA CLUSTERFUCK #}
 
 
 
-{# security #}
-<h3>Security</h3>
-      <!-- Security -->
-      <table class="layout border user_options" id="security_settings">
+{# security settings #}
+<h3>Security settings</h3>
+      <table id="securitySettings" class="userSettings">
+      
+
+        {# 2fa (totp) #}
+        <tr id="acc_2fa_tr">
+          <th>Two factor authentication (TOTP)</th>
+
+          <td>
+                {# api output #}
+         <p id="twoFactorResponse"></p>
+
+          {# no 2fa settings yet #}
+          {% if user.extra.TwoFactor is empty %}
+          <div id="twoFactorDisabled">
+          <p>
+          Two factor authentication isn't yet enabled for your account.
+          Please scan the QR code in your authenticator app, enter the six-digit number, and click "Enable 2FA."
+          <a href="https://apps.apple.com/us/app/authenticator/id766157276">Matt Rubin's Authenticator</a>
+          is one secure recommended app.
+         </p>
+
+        <p>
+          <img src="{{ twoFactorImage }}" />
+        </p>
+
+        <p>
+          <input type="text" id="twoFactorSecret" name="twoFactorSecret" value="{{ twoFactorSecret }}" readonly />
+        </p>
+
+          <p>
+          <input type="text" id="twoFactorCode" name="twoFactorCode" pattern="[0-9]{6}" placeholder="Enter, e.g., 123456" />
+        <a id="verifyTwoFactor" class="button button-primary">enable 2fa</a>
+        </p>
+        </div>
+
+{# 2fa settings exist #}
+        {% else %}
+        <div id="twoFactorEnabled">
+        <p>
+          Two factor authentication is enabled for your account, with this secret:
+        </p>
+
+        <p>
+          <img src="{{ twoFactorImage }}" />
+        </p>
+
+        <p>
+          <input type="text" id="twoFactorSecret" name="twoFactorSecret" value="{{ twoFactorSecret }}" readonly />
+        </p>
+
+
+        <p>
+        <input type="text" id="twoFactorCode" name="twoFactorCode" placeholder="Enter, e.g., 123456" />
+        <a id="disableTwoFactor" class="button button-primary">disable 2fa</a>
+        </p>
+        </div>
+
+         {% endif %} {# if user.extra.TwoFactor is empty #}
+
+
+
+  <div class="box">
+
+    <div class="pad">
+      <?php $TwoFASecret = empty($TwoFactor) ? $TwoFA->createSecret() : $TwoFactor;
+      if (empty($TwoFactor)) {
+          if (sizeof($U2FRegs) === 0) { ?>
+
+      <form method="post">
+        <input type="text" size="60" name="twofasecret" id="twofasecret"
+          value="<?=$TwoFASecret?>" readonly>
+          <br>
+        <img
+          src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$user['Username'], $TwoFASecret)?>" />
+        <br />
+
+        <input type="text" size="20" maxlength="6"  name="twofa" id="twofa"
+          placeholder="Verification Code" autocomplete="off">
+        <br /><br />
+
+        <button type="submit" name="type" value="2FA-E">Enable 2FA</button>
+      </form>
+
+      <?php } else { ?>
+      <p>
+        Two Factor Authentication is not currently enabled for this account.
+        To enable 2FA, you must first disable U2F below.
+      </p>
+      <?php }
+      } else {?>
+      <form method="post">
+        <input type="hidden" name="type" value="2FA-D">
+        <p>
+          2FA is enabled for this account with the following secret:
+        </p>
+
+        <p>
+          <input type="text" size="50" name="twofasecret" id="twofasecret"
+            value="<?=$TwoFASecret?>" onclick="this.select()"
+            readonly />
+        </p>
+
+        <p>
+          <img
+            src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$user['Username'], $TwoFASecret)?>" />
+        </p>
+
+        <p>
+          To disable 2FA, click the button below.
+        </p>
+
+        <button type="submit" name="type" value="2FA-D">Disable 2FA</button>
+      </form>
+      <?php } ?>
+    </div>
+  </div>
+
+
+          </td>
+        </tr>
+
 
         <!-- 2FA, U2F, and PGP -->
         <tr id="acc_2fa_tr">
@@ -868,6 +987,32 @@ END PARANOIA CLUSTERFUCK #}
           </td>
         </tr>
 
+
+
+        <!-- 2FA, U2F, and PGP -->
+        <tr id="acc_2fa_tr">
+          <td class="label">
+            <strong>2FA, U2F, and PGP</strong>
+          </td>
+
+          <td>
+            <a href="user.php?action=2fa">Click here to view additional account security options</a>
+          </td>
+        </tr>
+
+
+        <!-- 2FA, U2F, and PGP -->
+        <tr id="acc_2fa_tr">
+          <td class="label">
+            <strong>2FA, U2F, and PGP</strong>
+          </td>
+
+          <td>
+            <a href="user.php?action=2fa">Click here to view additional account security options</a>
+          </td>
+        </tr>
+
+{# HANDLED IN SIDEBAR - REQUIRED FOR ALL SETTINGS
         <!-- Current password -->
         <tr id="acc_currentpassword_tr">
           <td class="label">
@@ -884,6 +1029,7 @@ END PARANOIA CLUSTERFUCK #}
             </strong>
           </td>
         </tr>
+#}
 
         <tr id="acc_resetpk_tr">
           <td class="label">
@@ -1093,7 +1239,7 @@ END PARANOIA CLUSTERFUCK #}
 
 
 
-
+{#
 
 
 <?php
@@ -1251,68 +1397,6 @@ View::header("2FA Settings", 'u2f');
     </div>
   </div>
 
-  <div class="box">
-    <div class="head">
-      <strong>Two-Factor Authentication (2FA-TOTP)</strong>
-    </div>
-
-    <div class="pad">
-      <?php $TwoFASecret = empty($TwoFactor) ? $TwoFA->createSecret() : $TwoFactor;
-      if (empty($TwoFactor)) {
-          if (sizeof($U2FRegs) === 0) { ?>
-      <p>
-        Two Factor Authentication is not currently enabled for this account.
-        To enable it, add the secret key below to your 2FA client either manually or by scanning the QR code, then enter
-        a verification code generated by your 2FA client and click the "Enable 2FA" button.
-      </p>
-
-      <form method="post">
-        <input type="text" size="60" name="twofasecret" id="twofasecret"
-          value="<?=$TwoFASecret?>" readonly><br>
-        <img
-          src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$user['Username'], $TwoFASecret)?>" />
-        <br />
-
-        <input type="text" size="20" maxlength="6" pattern="[0-9]{0,6}" name="twofa" id="twofa"
-          placeholder="Verification Code" autocomplete="off">
-        <br /><br />
-
-        <button type="submit" name="type" value="2FA-E">Enable 2FA</button>
-      </form>
-
-      <?php } else { ?>
-      <p>
-        Two Factor Authentication is not currently enabled for this account.
-        To enable 2FA, you must first disable U2F below.
-      </p>
-      <?php }
-      } else {?>
-      <form method="post">
-        <input type="hidden" name="type" value="2FA-D">
-        <p>
-          2FA is enabled for this account with the following secret:
-        </p>
-
-        <p>
-          <input type="text" size="50" name="twofasecret" id="twofasecret"
-            value="<?=$TwoFASecret?>" onclick="this.select()"
-            readonly />
-        </p>
-
-        <p>
-          <img
-            src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$user['Username'], $TwoFASecret)?>" />
-        </p>
-
-        <p>
-          To disable 2FA, click the button below.
-        </p>
-
-        <button type="submit" name="type" value="2FA-D">Disable 2FA</button>
-      </form>
-      <?php } ?>
-    </div>
-  </div>
 
   <div class="box">
     <div class="head">
@@ -1371,3 +1455,6 @@ View::header("2FA Settings", 'u2f');
 </div>
 <?php
 View::footer();
+
+
+#}

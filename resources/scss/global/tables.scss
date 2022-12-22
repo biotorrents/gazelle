@@ -85,7 +85,6 @@ table.torrent-header {
   }
 }
 
-
 /**
  * boards/forums/discourse
  */
@@ -137,6 +136,18 @@ aside.postActions {
         content: "Reply";
       }
     }
+  }
+}
 
+/**
+ * user settings
+ */
+
+.userSettings {
+  margin-bottom: 5rem !important;
+
+  th {
+    vertical-align: text-top;
+    width: 33%;
   }
 }

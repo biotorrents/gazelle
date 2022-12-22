@@ -1063,9 +1063,14 @@ class Users
      * Used in bootstrap/app.php
      * @see https://github.com/OPSnet/Gazelle/blob/master/app/User.php
      */
-    protected function enabledState(int $id): int
+    protected static function enabledState(int $id): int
     {
         $app = App::go();
+
+        # system user: hardcoded
+        if ($id === 0) {
+            return 1;
+        }
 
         #if ($this->forceCacheFlush || ($enabled = $app->cacheOld->get_value("enabled_$id")) === false) {
         if ($enabled = $app->cacheOld->get_value("enabled_$id") === false) {
@@ -1089,7 +1094,7 @@ class Users
     /**
      * isUnconfirmed
      */
-    public function isUnconfirmed(int $id)
+    public static function isUnconfirmed(int $id)
     {
         return self::enabledState($id) === 0;
     }
@@ -1098,7 +1103,7 @@ class Users
     /**
      * isEnabled
      */
-    public function isEnabled(int $id)
+    public static function isEnabled(int $id)
     {
         return self::enabledState($id) === 1;
     }
@@ -1107,7 +1112,7 @@ class Users
     /**
      * isDisabled
      */
-    public function isDisabled(int $id)
+    public static function isDisabled(int $id)
     {
         return self::enabledState($id) === 2;
     }
