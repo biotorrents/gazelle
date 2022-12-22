@@ -5,6 +5,9 @@ declare(strict_types=1);
 
 /**
  * Gazelle\API\Internal
+ *
+ * Some little widgetry for site Ajax calls and such.
+ * Mostly used for passing silly willies every which way.
  */
 
 namespace Gazelle\API;
@@ -15,6 +18,7 @@ class Internal extends Base
      * proxyToken
      *
      * Securely adds a token to an internal request.
+     * At least, it's not exposed to the frontend...
      */
     private static function proxyToken()
     {
@@ -24,14 +28,11 @@ class Internal extends Base
             return false;
         }
 
-        $json = new \Json();
-
         $siteApiKey = $app->env->getPriv("siteApiKey");
-        $good = $json->checkToken(0, $siteApiKey); # hardcoded
+        $good = $this->checkToken(0, $siteApiKey); # hardcoded
 
         if (!$good) {
-            $json->failure();
-            exit;
+            $this->failure();
         }
 
         return true;
@@ -39,70 +40,57 @@ class Internal extends Base
 
 
     /**
-     * verifyTwoFactor
+     * createTwoFactor
      */
-    public static function verifyTwoFactor()
+    public static function createTwoFactor()
     {
-        # self::proxyToken();
-
         $app = \App::go();
 
-        $json = new \Json();
-        $post = \Http::query("post");
+        self::proxyToken();
 
+        $post = \Http::query("post");
 
         $post["secret"] ??= null;
         $post["code"] ??= null;
 
         if (empty($post["secret"]) || empty($post["code"])) {
-            return $json->failure(400, "empty 2fa secret or code");
+            $this->failure(400, "empty 2fa secret or code");
         }
 
         try {
             $app->userNew->create2FA($post["secret"], $post["code"]);
         } catch (\Exception $e) {
-            return $json->failure(400, $e->getMessage());
+            $this->failure(400, $e->getMessage());
         }
 
-        return $json->success("successfully created a 2fa key");
-    }
-
-
-    /** */
-
-
-    /**
-     * create
-     */
-    public function create(array $options = [])
-    {
-        return false;
+        $this->success("successfully created a 2fa key");
     }
 
 
     /**
-     * read
+     * deleteTwoFactor
      */
-    public function read(array $options = [])
+    public static function deleteTwoFactor()
     {
-        return false;
-    }
+        $app = \App::go();
 
+        self::proxyToken();
 
-    /**
-     * update
-     */
-    public function update(array $options = [])
-    {
-        return false;
-    }
+        $post = \Http::query("post");
 
+        $post["secret"] ??= null;
+        $post["code"] ??= null;
 
-    /**
-     * delete
-     */
-    public function delete(array $options = [])
-    {
-        return false;
+        if (empty($post["secret"]) || empty($post["code"])) {
+            $this->failure(400, "empty 2fa secret or code");
+        }
+
+        try {
+            $app->userNew->delete2FA($post["secret"], $post["code"]);
+        } catch (\Exception $e) {
+            $this->failure(400, $e->getMessage());
+        }
+
+        $this->success("successfully deleted a 2fa key");
     }
 } # class

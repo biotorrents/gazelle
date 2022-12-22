@@ -5,14 +5,15 @@ declare(strict_types=1);
 
 /**
  * internal api routes
+ * yeah, we getting crudded
  */
 
 /*
-Flight::route("/api/internal/verifyTwoFactor", function () {
-    $json = new Json();
-    $discourse = new Discourse();
-    $json->success($discourse->getSite());
+Flight::route("/api/internal/foo", function () {
+    #require_once "bar";
 });
 */
 
-Flight::route("POST /api/internal/verifyTwoFactor", ["Gazelle\API\Internal", "verifyTwoFactor"]);
+# 2fa (totp)
+Flight::route("POST /api/internal/createTwoFactor", ["Gazelle\API\Internal", "createTwoFactor"]);
+Flight::route("POST /api/internal/deleteTwoFactor", ["Gazelle\API\Internal", "deleteTwoFactor"]);

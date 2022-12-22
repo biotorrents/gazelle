@@ -1231,9 +1231,16 @@ class Users
     /**
      * delete2FA
      */
-    public function delete2FA()
+    public function delete2FA(string $secret, string $code)
     {
         $app = App::go();
+
+        $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
+        $good = $twoFactor->verifyCode($secret, $code);
+
+        if (!$good) {
+            throw new Exception("bad 2fa secret or code");
+        }
 
         $query = "update users_main set twoFactor = null where id = ?";
         $app->dbNew->do($query, [ $this->core["id"] ]);

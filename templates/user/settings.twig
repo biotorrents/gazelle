@@ -893,6 +893,7 @@ END PARANOIA CLUSTERFUCK #}
         {% else %}
         <div id="twoFactorEnabled">
         <p>
+          Note that TOTP (authenticator app) and U2F (hardware key) are mutually exclusive!
           Two factor authentication is enabled for your account, with this secret:
         </p>
 
@@ -915,61 +916,13 @@ END PARANOIA CLUSTERFUCK #}
 
 
 
-  <div class="box">
-
-    <div class="pad">
-      <?php $TwoFASecret = empty($TwoFactor) ? $TwoFA->createSecret() : $TwoFactor;
-      if (empty($TwoFactor)) {
-          if (sizeof($U2FRegs) === 0) { ?>
-
-      <form method="post">
-        <input type="text" size="60" name="twofasecret" id="twofasecret"
-          value="<?=$TwoFASecret?>" readonly>
-          <br>
-        <img
-          src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$user['Username'], $TwoFASecret)?>" />
-        <br />
-
-        <input type="text" size="20" maxlength="6"  name="twofa" id="twofa"
-          placeholder="Verification Code" autocomplete="off">
-        <br /><br />
-
-        <button type="submit" name="type" value="2FA-E">Enable 2FA</button>
-      </form>
-
-      <?php } else { ?>
       <p>
         Two Factor Authentication is not currently enabled for this account.
         To enable 2FA, you must first disable U2F below.
       </p>
-      <?php }
-      } else {?>
-      <form method="post">
-        <input type="hidden" name="type" value="2FA-D">
-        <p>
           2FA is enabled for this account with the following secret:
         </p>
 
-        <p>
-          <input type="text" size="50" name="twofasecret" id="twofasecret"
-            value="<?=$TwoFASecret?>" onclick="this.select()"
-            readonly />
-        </p>
-
-        <p>
-          <img
-            src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$user['Username'], $TwoFASecret)?>" />
-        </p>
-
-        <p>
-          To disable 2FA, click the button below.
-        </p>
-
-        <button type="submit" name="type" value="2FA-D">Disable 2FA</button>
-      </form>
-      <?php } ?>
-    </div>
-  </div>
 
 
           </td>
@@ -1263,25 +1216,7 @@ if ($Type = $_POST['type'] ?? false) {
         }
     }
 
-    if ($Type === '2FA-E') {
-        if ($TwoFA->verifyCode($_POST['twofasecret'], $_POST['twofa'])) {
-            $db->query("
-              UPDATE users_main
-              SET TwoFactor='".db_string($_POST['twofasecret'])."'
-              WHERE ID = $UserID");
-            $Message = "Two Factor Authentication enabled";
-        } else {
-            $Error = "Invalid 2FA verification code";
-        }
-    }
 
-    if ($Type === '2FA-D') {
-        $db->query("
-          UPDATE users_main
-          SET TwoFactor = NULL
-          WHERE ID = $UserID");
-        $Message = "Two Factor Authentication disabled";
-    }
 
     if ($Type === 'U2F-E') {
         try {

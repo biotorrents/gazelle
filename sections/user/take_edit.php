@@ -1,13 +1,16 @@
 <?php
 
+/**
+
+THIS IS GOING AWAY
 #declare(strict_types=1);
 
 
 $app = App::go();
 
-/**
+/ **
  * START CHECKS
- */
+ * /
 
 authorize();
 $UserID = (int) $_REQUEST['userid'];
@@ -41,7 +44,7 @@ $Val->SetFields('new_pass_2', 1, "compare", "Your passwords do not match.", ['co
 if (check_perms('site_advanced_search')) {
     $Val->SetFields('searchtype', 1, "number", "You forgot to select your default search preference.", ['minlength' => 0, 'maxlength' => 1]);
 }
-*/
+* /
 
 $ValErr = $Val->ValidateForm($_POST);
 if ($ValErr) {
@@ -52,9 +55,9 @@ if (!apcu_exists('DBKEY')) {
     error("Cannot edit profile until database fully decrypted");
 }
 
-/**
+/ **
  * END CHECKS
- */
+ * /
 
 // Begin building $Paranoia
 // Reduce the user's input paranoia until it becomes consistent
@@ -338,3 +341,4 @@ if ($ResetPassword) {
 }
 
 Http::redirect("user.php?action=edit&userid=$UserID");
+*/
