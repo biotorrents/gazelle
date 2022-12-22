@@ -58,6 +58,7 @@
     "paragonie/anti-csrf": "^2.3",
     "povils/figlet": "*",
     "robthree/twofactorauth": "^1.8.1",
+    "spatie/once": "^3.1",
     "twig/twig": "^3.3.8",
     "vanilla/nbbc": "^2.3",
     "yubico/u2flib-server": "^1.0.2"

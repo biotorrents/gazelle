@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 
 /**
- * Json
+ * Gazelle\API\Base
  *
  * Adapted from OPS's abstract class.
  *
  * @see https://github.com/OPSnet/Gazelle/blob/master/app/Json.php
  */
 
-class Json
+namespace Gazelle\API;
+
+class Base
 {
     private $mode = null;
     private $source = null;
@@ -23,7 +25,7 @@ class Json
      */
     public function __construct()
     {
-        $app = App::go();
+        $app = \App::go();
 
         $this->mode = 0;
         $this->source = $app->env->siteName;
@@ -38,12 +40,12 @@ class Json
      */
     public function checkToken(int $userId, string $token = "")
     {
-        $app = App::go();
+        $app = \App::go();
 
         # get the token off the headers
         if (empty($token)) {
             # escape bearer token
-            $server = Http::query("server");
+            $server = \Http::query("server");
 
             # no header present
             if (empty($server["HTTP_AUTHORIZATION"])) {
@@ -189,8 +191,7 @@ class Json
         return [];
 
         /*
-        $app = App::go();
-        $debug = Debug::go();
+        $app = \App::go();
 
         if ($app->env->dev) {
             return [
@@ -226,52 +227,4 @@ class Json
     public function selfTest()
     {
     }
-
-
-    /**
-     * fetch
-     *
-     * NOT NEEDED FOR SITE AJAX!
-     *
-     * Get resources over the API to populate Gazelle display.
-     * Instead of copy-pasting the same SQL queries in many places.
-     *
-     * Takes a query string, e.g., "action=torrentgroup&id=1."
-     * Requires an API key for the user ID 0 (minor database surgery).
-     */
-    /*
-    public function fetch(string $action, array $params = [])
-    {
-        $app = App::go();
-
-        $token = $app->env->getPriv("siteApiKey");
-        $params = implode("&", $params);
-
-        $curl = curl_init();
-
-        # todo: make this use localhost and not HTTPS
-        curl_setopt($curl, CURLOPT_URL, "https://{$app->env->siteDomain}/api.php?action={$action}&{$params}");
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-        # https://docs.torrents.bio
-        curl_setopt(
-            $curl,
-            CURLOPT_HTTPHEADER,
-            [
-                "Accept: application/json",
-                "Authorization: Bearer {$token}",
-            ]
-        );
-
-        $data = curl_exec($curl);
-        curl_close($curl);
-
-        # error out on bad query
-        if ($data) {
-            return $this->success($data);
-        } else {
-            return $this->failure();
-        }
-    }
-    */
 } # class

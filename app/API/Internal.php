@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 
 /**
- * API\Internal
+ * Gazelle\API\Internal
  */
 
 namespace Gazelle\API;
 
-class Internal # extends Base
+class Internal extends Base
 {
     /**
      * proxyToken
@@ -43,7 +43,7 @@ class Internal # extends Base
      */
     public static function verifyTwoFactor()
     {
-       # self::proxyToken();
+        # self::proxyToken();
 
         $app = \App::go();
 

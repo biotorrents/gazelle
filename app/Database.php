@@ -10,6 +10,7 @@ declare(strict_types=1);
  * @see https://phpdelusions.net/pdo/pdo_wrapper
  *
  * Also uses the Laravel Eloquent ORM for migrations.
+ * Maybe for models, I'm not really sold on this idea.
  * @see https://laravel.com/docs/9.x/eloquent
  */
 
@@ -153,7 +154,6 @@ class Database extends PDO
 
         # no params
         if (empty($args)) {
-            #$app->cacheOld->cache_value($cacheKey, $query, $this->cacheDuration);
             return $this->pdo->query($query);
         }
 

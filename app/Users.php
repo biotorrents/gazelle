@@ -314,6 +314,18 @@ class Users
     {
         $app = App::go();
 
+        $query = "select * from permissions order by level asc";
+        $ref = $app->dbNew->multi($query, []);
+
+        $oldReturnFormat = [
+            array_column($ref, "ID"),
+            array_column($ref, "Level"),
+        ];
+
+        # this looks right, didn't check
+        return $oldReturnFormat;
+
+        /*
         // Get permissions
         list($Classes, $ClassLevels) = $app->cacheOld->get_value('classes');
         if (!$Classes || !$ClassLevels) {
@@ -334,6 +346,7 @@ class Users
 
         $app->debug['messages']->info('loaded permissions');
         return [$Classes, $ClassLevels];
+        */
     }
 
 
@@ -907,6 +920,10 @@ class Users
         return $ToReturn;
     }
 
+
+    /**
+     * has_avatars_enabled
+     */
     public static function has_avatars_enabled()
     {
         global $HeavyInfo;
@@ -947,6 +964,7 @@ class Users
 
         App::email($Email, 'Password reset information for ' . $app->env->siteName, $email);
     }
+
 
     /*
      * @return array of strings that can be added to next source flag ( [current, old] )
@@ -1060,7 +1078,6 @@ class Users
     /**
      * enabledState
      *
-     * Used in bootstrap/app.php
      * @see https://github.com/OPSnet/Gazelle/blob/master/app/User.php
      */
     protected static function enabledState(int $id): int
@@ -1068,26 +1085,16 @@ class Users
         $app = App::go();
 
         # system user: hardcoded
+        # (for internal api requests)
         if ($id === 0) {
             return 1;
         }
 
-        #if ($this->forceCacheFlush || ($enabled = $app->cacheOld->get_value("enabled_$id")) === false) {
-        if ($enabled = $app->cacheOld->get_value("enabled_$id") === false) {
-            $app->dbOld->prepared_query("
-            SELECT
-              `Enabled`
-            FROM
-              `users_main`
-            WHERE `ID` = '$id' 
-            ");
+        # all database results are automatically cached, my guy
+        $query = "select enabled from users_main where id = ?";
+        $enabled = $app->dbNew->single($query, [$id]);
 
-
-            [$enabled] = $app->dbOld->next_record(MYSQLI_NUM);
-            $app->cacheOld->cache_value('enabled_' . $id, (int) $enabled, 86400 * 3);
-        }
-
-        return $enabled;
+        return intval($enabled);
     }
 
 
