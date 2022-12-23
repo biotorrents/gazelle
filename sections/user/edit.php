@@ -222,6 +222,10 @@ if ($SiteOptions) {
   "twoFactorSecret" => $twoFactorSecret ?? null,
   "twoFactorImage" => $twoFactorImage ?? null,
 
+  # random placeholders
+  "twoFactorPlaceHolder" => random_int(100000, 999999),
+  "ircKeyPlaceholder" => Text::random(32),
+
 ]);
 
 exit;

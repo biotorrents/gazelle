@@ -132,7 +132,7 @@ HTML;
           <th>External stylesheet URI</th>
 
           <td>
-            <input type="text" id="styleSheetUri" name="styleSheetUri" placeholder="Link to an external CSS file" value="{{ user.extra.StyleURL }}" />
+            <input type="text" id="styleSheetUri" name="styleSheetUri" placeholder="e.g., https://{{ env.siteDomain }}/css/bookish.css" value="{{ user.extra.StyleURL }}" />
           </td>
         </tr>
 
@@ -454,7 +454,7 @@ HTML;
           <th>Profile title</th>
 
           <td>
-            <input type="text" id="profileTitle"name="profileTitle" value="{{ user.extra.InfoTitle }}" />
+            <input type="text" id="profileTitle"name="profileTitle" placeholder="e.g., I am the greatest man that ever lived" value="{{ user.extra.InfoTitle }}" />
           </td>
         </tr>
 
@@ -800,7 +800,7 @@ END PARANOIA CLUSTERFUCK #}
         </p>
 
           <p>
-          <input type="text" id="twoFactorCode" name="twoFactorCode" pattern="[0-9]{6}" placeholder="e.g., 123456" />
+          <input type="text" id="twoFactorCode" name="twoFactorCode" pattern="[0-9]{6}" placeholder="e.g., {{ twoFactorPlaceHolder }}" />
         <a id="verifyTwoFactor" class="button button-primary">enable 2fa</a>
         </p>
         </div>
@@ -823,7 +823,7 @@ END PARANOIA CLUSTERFUCK #}
 
 
         <p>
-        <input type="text" id="twoFactorCode" name="twoFactorCode" placeholder="e.g., 123456" />
+        <input type="text" id="twoFactorCode" name="twoFactorCode" placeholder="e.g., {{ twoFactorPlaceHolder }}" />
         <a id="disableTwoFactor" class="button button-primary">disable 2fa</a>
         </p>
         </div>
@@ -985,7 +985,7 @@ END PARANOIA CLUSTERFUCK #}
           They must be between 6 and 32 characters long.
           </p>
 
-          <input type="text" id="ircKey" name="ircKey" value="{{ user.extra.IRCKey }}" />
+          <input type="text" id="ircKey" name="ircKey" placeholder="e.g., {{ ircKeyPlaceholder }}" value="{{ user.extra.IRCKey }}" />
 
           </td>
         </tr>
@@ -1056,15 +1056,15 @@ END PARANOIA CLUSTERFUCK #}
           <th>Passphrase</th>
 
           <td>
-          <input type="password" minlength="15" name="newPassphrase1" id="newPassphrase1" maxlength="307200" placeholder="New passphrase" />
+          <input type="password" minlength="15" name="newPassphrase1" id="newPassphrase1" maxlength="307200" placeholder="Enter a new passphrase" />
            <strong id="passphraseStrength"></strong>
            <br />
 
-          <input type="password" minlength="15" name="newPassphrase2" id="newPassphrase2" maxlength="307200" placeholder="Confirm new passphrase" />
+          <input type="password" minlength="15" name="newPassphrase2" id="newPassphrase2" maxlength="307200" placeholder="Confirm the new passphrase" />
            <strong id="passphraseMatch"></strong>
            <br /><br />
 
-           <input type="text" id="suggestedPassphrase" readonly />
+           <input type="text" id="suggestedPassphrase" placeholder="Secure diceware passphrase" readonly />
            <br />
 
             <a id="createPassphrase" class="button">suggest a secure passphrase</a>
