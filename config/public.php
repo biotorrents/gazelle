@@ -64,6 +64,9 @@ ENV::setPub(
 # image host FQDN, e.g., pics.torrents.bio
 ENV::setPub("imageDomain", "pics.torrents.bio");
 
+# documentation site
+ENV::setPub("docsDomain", "docs.torrents.bio");
+
 # web root: currently used for twig
 ENV::setPub("webRoot", "/var/www");
 
@@ -215,9 +218,17 @@ ENV::setPub("announceTwitter", true);
 
 # IRC server address. Used for onsite chat tool
 define("BOT_SERVER", "irc.$env->siteDomain");
+ENV::setPub("ircHostname", "irc.{$env->siteDomain}");
+
+
 define("SOCKET_LISTEN_ADDRESS", "10.0.0.4");
+ENV::setPub("ircAddress", "10.0.0.4");
+
 define("SOCKET_LISTEN_PORT", 51010);
+ENV::setPub("ircPort", 51010);
+
 define("BOT_NICK", "ebooks");
+ENV::setPub("ircBotNick", "ebooks");
 
 # IRC channels for official business
 define("ANNOUNCE_CHAN", "#announce");

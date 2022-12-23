@@ -58,12 +58,12 @@
     {# start javascript block #}
     {% block javascript %}
 
-    {# gazelle global #}
-    <script defer src="/js/global.js"></script>
+    {# core essentials: do not defer #}
+    <script src="/js/vendor/jquery.min.js"></script>
+    <script src="/js/vendor/instantpage.min.js" type="module"></script>
 
-    {# core essentials #}
-    <script defer src="/js/vendor/jquery.min.js"></script>
-    <script defer src="/js/vendor/instantpage.min.js" type="module"></script>
+    {# gazelle global: do not defer #}
+    <script src="/js/global.js"></script>
 
     {# DebugBar #}
     {% if env.dev %}

@@ -146,3 +146,14 @@ nav {
     display: none;
   }
 }
+
+/**
+ * optional sticky header
+ */
+
+header.sticky {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 666;
+}

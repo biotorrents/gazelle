@@ -148,6 +148,10 @@ aside.postActions {
 
   th {
     vertical-align: text-top;
-    width: 33%;
+    width: 33% !important;
+  }
+
+  tr {
+    margin-bottom: 2rem;
   }
 }

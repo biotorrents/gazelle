@@ -287,6 +287,11 @@ class Users
             # user stylesheet
             $this->extra["StyleName"] = $stylesheets[$extra["StyleID"]]["Name"];
 
+            # api bearer tokens
+            $query = "select * from api_user_tokens where userId = ? and revoked = 0";
+            $bearerTokens = $app->dbNew->multi($query, [$userId]);
+            $this->extra["bearerTokens"] = $bearerTokens;
+
             # for my own sanity
             foreach ($this as $key => $value) {
                 if (is_array($value)) {
