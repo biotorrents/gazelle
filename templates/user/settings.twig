@@ -128,7 +128,7 @@ HTML;
         #}
 
         {# external stylesheet uri #}
-        <tr id="site_extstyle_tr">
+        <tr>
           <th>External stylesheet URI</th>
 
           <td>
@@ -139,7 +139,7 @@ HTML;
 
         {# profile stats #}
         {# {% if checkPerms("users_mod) %} #}
-        <tr id="site_autostats_tr">
+        <tr>
           <th>Profile stats</th>
 
           <td>
@@ -166,7 +166,7 @@ HTML;
       <table id="torrentSettings" class="userSettings">
 
         {# default search type #}
-        <tr id="tor_searchtype_tr">
+        <tr>
           <th>Default search type</th>
 
           <td>
@@ -187,7 +187,7 @@ HTML;
         </tr>
 
         {# torrent grouping #}
-        <tr id="tor_group_tr">
+        <tr>
           <th>Torrent grouping</th>
 
           <td>
@@ -200,7 +200,7 @@ HTML;
         </tr>
 
         {# torrent group display #}
-        <tr id="tor_gdisp_search_tr">
+        <tr>
           <th>Torrent group display</th>
 
           <td>
@@ -223,7 +223,7 @@ HTML;
         </tr>
 
         {# snatched torrents indicator #}
-        <tr id="tor_snatched_tr">
+        <tr>
           <th>Snatched torrents indicator</th>
 
           <td>
@@ -234,7 +234,7 @@ HTML;
         </tr>
 
         {# cover art (torrents) #}
-        <tr id="tor_cover_tor_tr">
+        <tr>
           <th>Cover art (torrents)</th>
 
           <td>
@@ -256,7 +256,7 @@ HTML;
         </tr>
 
         {# cover art (collections) #}
-        <tr id="tor_cover_coll_tr">
+        <tr>
           <th>Cover art (collections)</th>
 
           <td>
@@ -284,7 +284,7 @@ HTML;
         </tr>
 
         {# torrent search filters #}
-        <tr id="tor_showfilt_tr">
+        <tr>
           <th>Torrent search filters</th>
 
           <td>
@@ -335,7 +335,7 @@ HTML;
 #}
 
         {# inbox sorting #}
-        <tr id="comm_inbsort_tr">
+        <tr>
           <th>Inbox sorting</th>
 
           <td>
@@ -346,7 +346,7 @@ HTML;
         </tr>
 
         {# avatar display (posts) #}
-        <tr id="comm_avatars_tr">
+        <tr>
           <th>Avatar display (posts)</th>
 
           <td>
@@ -410,7 +410,7 @@ HTML;
       <table id="notificationSettings" class="userSettings">
 
         {# automatic thread subscriptions #}
-        <tr id="notif_autosubscribe_tr">
+        <tr>
           <th>Automatic thread subscriptions</th>
 
           <td>
@@ -421,7 +421,7 @@ HTML;
         </tr>
 
         {# unseeded torrent alerts #}
-        <tr id="notif_unseeded_tr">
+        <tr>
           <th>Unseeded torrent alerts</th>
 
           <td>
@@ -441,112 +441,30 @@ HTML;
       <table id="profileSettings" class="userSettings">
 
         {# avatar uri #}
-        <tr id="pers_avatar_tr">
+        <tr>
           <th>Avatar URL</th>
 
           <td>
-            <input type="text" size="50" name="avatar" id="avatar"
-              value="{{ user.extra.Avatar }}" />
+            <input type="text" id="avatar" name="avatar" placeholder="e.g., https://i.imgur.com/wJgDWzd.png" value="{{ user.extra.Avatar }}" />
           </td>
         </tr>
-
-{# STUPID
-        <!-- Second avatar URL -->
-        <?php if ($HasSecondAvatar) { ?>
-        <tr id="pers_avatar2_tr">
-          <td class="label">
-            <strong>Second avatar URL</strong>
-          </td>
-
-          <td>
-            <input type="text" size="50" name="second_avatar" id="second_avatar"
-              value="<?=$Rewards['SecondAvatar']?>" />
-          </td>
-        </tr>
-        <?php }
-#}
-
-{# STUPID
-# Avatar mouseover text
-  if ($HasAvatarMouseOverText) { ?>
-        <tr id="pers_avatarhover_tr">
-          <td class="label">
-            <strong>Avatar mouseover text</strong>
-          </td>
-
-          <td>
-            <input type="text" size="50" name="avatar_mouse_over_text" id="avatar_mouse_over_text"
-              value="<?=$Rewards['AvatarMouseOverText']?>" />
-          </td>
-        </tr>
-        <?php }
-#}
-
-{# STUPID
-# Donor icon mouseover text
-  if ($HasDonorIconMouseOverText) { ?>
-        <tr id="pers_donorhover_tr">
-          <td class="label">
-            <strong>Donor icon mouseover text</strong>
-          </td>
-
-          <td>
-            <input type="text" size="50" name="donor_icon_mouse_over_text" id="donor_icon_mouse_over_text"
-              value="<?=$Rewards['IconMouseOverText']?>" />
-          </td>
-        </tr>
-        <?php }
-#}
-
-{# FUCK THIS
-# Donor icon link
-  if ($HasDonorIconLink) { ?>
-        <tr id="pers_donorlink_tr">
-          <td class="label">
-            <strong>Donor icon link</strong>
-          </td>
-
-          <td>
-            <input type="text" size="50" name="donor_icon_link" id="donor_icon_link"
-              value="<?=$Rewards['CustomIconLink']?>" />
-          </td>
-        </tr>
-        <?php }
-#}
-
-{# JUST USE A HEART
-# Custom donor icon URL
-  if ($HasCustomDonorIcon) { ?>
-        <tr id="pers_donoricon_tr">
-          <td class="label">
-            <strong>Custom donor icon URL</strong>
-          </td>
-
-          <td>
-            <input type="text" size="50" name="donor_icon_custom_url" id="donor_icon_custom_url"
-              value="<?=$Rewards['CustomIcon']?>" />
-          </td>
-        </tr>
-        <?php } ?>
-#}
-
 
         {# profile title #}
-        <tr id="pers_proftitle_tr">
+        <tr>
           <th>Profile title</th>
 
           <td>
-            <input type="text" size="50" name="profile_title" id="profile_title" value="{{ user.extra.InfoTitle }}" />
+            <input type="text" id="profileTitle"name="profileTitle" value="{{ user.extra.InfoTitle }}" />
           </td>
         </tr>
 
         {# profile content #}
-        <tr id="pers_profinfo_tr">
+        <tr>
           <th>Profile content</th>
           </td>
 
           <td>
-          {% set variables = {"id": "info", "name": "info", "placeholder": "What are you passionate about?", "value": user.extra.Info} %}
+          {% set variables = {"id": "profileContent", "name": "profileContent", "placeholder": "What are you passionate about?", "value": user.extra.Info} %}
             {% include "_base/textarea.twig" with variables %}
           </td>
         </tr>
@@ -856,11 +774,11 @@ END PARANOIA CLUSTERFUCK #}
       
 
         {# 2fa (totp) #}
-        <tr id="acc_2fa_tr">
+        <tr>
           <th>Two factor authentication (TOTP)</th>
 
           <td>
-                {# api output #}
+           {# api output #}
          <p id="twoFactorResponse"></p>
 
           {# no 2fa settings yet #}
@@ -882,7 +800,7 @@ END PARANOIA CLUSTERFUCK #}
         </p>
 
           <p>
-          <input type="text" id="twoFactorCode" name="twoFactorCode" pattern="[0-9]{6}" placeholder="Enter, e.g., 123456" />
+          <input type="text" id="twoFactorCode" name="twoFactorCode" pattern="[0-9]{6}" placeholder="e.g., 123456" />
         <a id="verifyTwoFactor" class="button button-primary">enable 2fa</a>
         </p>
         </div>
@@ -905,7 +823,7 @@ END PARANOIA CLUSTERFUCK #}
 
 
         <p>
-        <input type="text" id="twoFactorCode" name="twoFactorCode" placeholder="Enter, e.g., 123456" />
+        <input type="text" id="twoFactorCode" name="twoFactorCode" placeholder="e.g., 123456" />
         <a id="disableTwoFactor" class="button button-primary">disable 2fa</a>
         </p>
         </div>
@@ -917,7 +835,7 @@ END PARANOIA CLUSTERFUCK #}
 
 
         {# u2f #}
-        <tr id="acc_u2f_tr">
+        <tr>
           <th>Universal two factor (U2F)</th>
 
           {# this is a mess: just open a popup #}
@@ -978,7 +896,7 @@ END PARANOIA CLUSTERFUCK #}
 
 
         {# pgp #}
-        <tr id="acc_pgp_tr">
+        <tr>
           <th>PGP public key</th>
 
           <td>
@@ -1027,7 +945,7 @@ END PARANOIA CLUSTERFUCK #}
 
           {% endif %} {# if user.extra.PublicKey is empty #}
 
-        <textarea id="publicKey" name="publicKey" cols="72" spellcheck="false">{{ user.extra.PublicKey }}</textarea>
+        <textarea id="publicKey" name="publicKey" spellcheck="false">{{ user.extra.PublicKey }}</textarea>
 
           </td>
         </tr>
@@ -1035,7 +953,7 @@ END PARANOIA CLUSTERFUCK #}
 
 
 {# reset passkey #}
-        <tr id="acc_resetpk_tr">
+        <tr>
           <th>Reset tracker passkey</th>
 
           <td>
@@ -1053,7 +971,7 @@ END PARANOIA CLUSTERFUCK #}
         </tr>
 
         {# ircKey #}
-        <tr id="acc_irckey_tr">
+        <tr>
           <th>IRC key</th>
 
           <td>
@@ -1074,7 +992,7 @@ END PARANOIA CLUSTERFUCK #}
 
 
         {# api bearer tokens #}
-        <tr id="acc_api_keys_tr">
+        <tr>
           <th>API bearer tokens</th>
 
           <td>
@@ -1125,7 +1043,7 @@ END PARANOIA CLUSTERFUCK #}
 
 
         {# email address #}
-        <tr id="acc_email_tr">
+        <tr>
           <th>Email address</th>
 
           <td>
@@ -1134,19 +1052,19 @@ END PARANOIA CLUSTERFUCK #}
         </tr>
 
        {# passphrase #}
-        <tr id="acc_password_tr">
+        <tr>
           <th>Passphrase</th>
 
           <td>
-          <input type="password" minlength="15" size="50" name="newPassphrase1" id="newPassphrase1" maxlength="307200" placeholder="New passphrase" />
+          <input type="password" minlength="15" name="newPassphrase1" id="newPassphrase1" maxlength="307200" placeholder="New passphrase" />
            <strong id="passphraseStrength"></strong>
            <br />
 
-          <input type="password" minlength="15" size="50" name="newPassphrase2" id="newPassphrase2" maxlength="307200" placeholder="Confirm new passphrase" />
+          <input type="password" minlength="15" name="newPassphrase2" id="newPassphrase2" maxlength="307200" placeholder="Confirm new passphrase" />
            <strong id="passphraseMatch"></strong>
            <br /><br />
 
-           <input type="text" size="50" id="suggestedPassphrase" readonly />
+           <input type="text" id="suggestedPassphrase" readonly />
            <br />
 
             <a id="createPassphrase" class="button">suggest a secure passphrase</a>

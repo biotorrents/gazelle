@@ -119,6 +119,7 @@ class Internal extends Base
             # how many times to roll?
             foreach (range(1, $passphraseLength) as $i) {
                 $x = "";
+
                 foreach (range(1, 5) as $y) {
                     $x .= random_int(1, 6);
                 }
@@ -128,11 +129,11 @@ class Internal extends Base
 
             # concatenate wordlist entries
             foreach ($dice as $die) {
-                $passphrase .= $eff_large_wordlist[$die] . " ";
+                $passphrase .= "{$eff_large_wordlist[$die]} ";
             }
 
+            # the passphrase string
             $passphrase = trim($passphrase);
-            #$passphrase = preg_replace("/ /", "-", $passphrase);
         }
 
         # random data hash
@@ -147,6 +148,6 @@ class Internal extends Base
         }
 
         # failure
-        self::failure(400, $e->getMessage());
+        self::failure();
     }
 } # class

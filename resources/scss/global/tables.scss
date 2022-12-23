@@ -154,4 +154,15 @@ aside.postActions {
   tr {
     margin-bottom: 2rem;
   }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  textarea {
+    width: 100%;
+  }
+
+  #publicKey {
+    font-family: monospace;
+  }
 }

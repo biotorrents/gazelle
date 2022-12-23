@@ -27,7 +27,6 @@ a.external {
   padding-right: 13px;
 }
 
-
 /**
  * breadcrumbs
  */
@@ -43,7 +42,6 @@ h2#breadcrumbs {
 h2#pageTitle {
   padding-top: 5rem;
 }
-
 
 /**
  * spacing classes
@@ -84,12 +82,6 @@ h2#pageTitle {
   }
 }
 
-/* GPG keys */
-#publickey {
-  font-family: monospace;
-  width: initial;
-}
-
 /* <pre> spacing fixes */
 code,
 pre {
@@ -99,7 +91,6 @@ pre {
     display: none;
   }
 }
-
 
 /**
  * torrent form
@@ -141,7 +132,6 @@ pre {
   color: red;
 }
 
-
 /**
  * ordered lists
  * https://stackoverflow.com/a/2730079
@@ -170,7 +160,6 @@ ol li ol li:before {
   content: counter(level1) "." counter(level2) " ";
   counter-increment: level2;
 }
-
 
 /**
  * unordered lists
