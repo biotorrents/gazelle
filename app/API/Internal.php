@@ -107,7 +107,7 @@ class Internal extends Base
         # diceware
         if ($type === "diceware") {
             # load the dictionary
-            require_once "{$app->env->serverRoot}/sections/user/pwgen/wordlist.php";
+            require_once "{$app->env->serverRoot}/resources/php/wordlist.php";
 
             # passphrase length (words)
             $passphraseLength = 5;
