@@ -2,34 +2,32 @@
 
 {% block content %}
 
-<div>
-  <div class="header">
-    <h2>{{ user.core.username }} {{ env.crumb }} Settings</h2>
-  </div>
+<div class="header">
+  <h2>Settings for {{ user.core.username }}</h2>
+</div>
 
-  <form class="edit_form" name="user" id="userform" method="post" autocomplete="off">
+<form method="post" id="userSettingsForm" name="userSettingsForm">
 
-{# hidden fields #}
-        <input type="hidden" name="action" value="take_edit" />
-        <input type="hidden" name="userid" value="{{ user.core.id }}" />
-        <input type="hidden" name="auth" value="{{ user.extra.AuthKey }}" />
+  {# hidden fields #}
+  <input type="hidden" name="userId" value="{{ user.core.id }}" />
+  <input type="hidden" name="authKey" value="{{ user.extra.AuthKey }}" />
 
-      {# site appearance settings #}
-      <h3>Site appearance settings</h3>
-      <table id="siteAppearanceSettings" class="userSettings">
+  {# site appearance settings #}
+  <h3>Site appearance settings</h3>
+  <table id="siteAppearanceSettings" class="userSettings">
 
-        <!-- Stylesheet -->
-        <tr id="site_style_tr">
-          <th>Stylesheet</th>
+    {# stylesheet #}
+    <tr>
+      <th>Stylesheet</th>
 
-          <td>
-           <select name="stylesheet" id="stylesheet">
-            {% for stylesheet in stylesheets %}
-              <option value="{{ stylesheet.id }}" {# {{ (stylesheet.ID == user.extra.StyleID) ?? "selected" }} #}>
-                {{ stylesheet.properName }}
-              </option>
-              {% endfor %} {# for stylesheet in stylesheets #}
-            </select>
+      <td>
+        <select name="stylesheet" id="stylesheet">
+          {% for stylesheet in stylesheets %}
+            <option value="{{ stylesheet.id }}" {# {{ (stylesheet.ID == user.extra.StyleID) ?? "selected" }} #}>
+              {{ stylesheet.properName }}
+            </option>
+          {% endfor %} {# for stylesheet in stylesheets #}
+        </select>
 
             {#
             &ensp;
@@ -134,7 +132,7 @@ HTML;
           <th>External stylesheet URI</th>
 
           <td>
-            <input type="text" size="40" name="styleurl" id="styleurl" value="{{ user.extra.StyleURL }}" />
+            <input type="text" id="styleSheetUri" name="styleSheetUri" placeholder="Link to an external CSS file" value="{{ user.extra.StyleURL }}" />
           </td>
         </tr>
 
@@ -871,7 +869,7 @@ END PARANOIA CLUSTERFUCK #}
           <p>
           Two factor authentication isn't yet enabled for your account.
           Please scan the QR code in your authenticator app, enter the six-digit number, and click "Enable 2FA."
-          <a href="https://apps.apple.com/us/app/authenticator/id766157276">Matt Rubin's Authenticator</a>
+          <a href="https://apps.apple.com/us/app/authenticator/id766157276" class="external" target="_blank">Matt Rubin's Authenticator</a>
           is one secure recommended app.
          </p>
 
@@ -919,11 +917,13 @@ END PARANOIA CLUSTERFUCK #}
 
 
         {# u2f #}
-        {# todo
         <tr id="acc_u2f_tr">
           <th>Universal two factor (U2F)</th>
 
+          {# this is a mess: just open a popup #}
           <td>
+          <a href="/user/settings/u2f" class="button button-primary" target="_blank">manage u2f settings</a>
+          {#
     <div class="pad">
       <?php if (sizeof($U2FRegs) === 0) { ?>
       <?php if (empty($TwoFactor)) { ?>
@@ -972,10 +972,9 @@ END PARANOIA CLUSTERFUCK #}
       </form>
       <?php } ?>
     </div>
+    #}
           </td>
         </tr>
-        #}
-
 
 
         {# pgp #}
@@ -1081,7 +1080,7 @@ END PARANOIA CLUSTERFUCK #}
           <td>
             <p>
               Please generate API bearer tokens to access our
-              <a href="{{ env.docsDomain }}" target="_blank">JSON API</a>.
+              <a href="{{ env.docsDomain }}" class="external" target="_blank">JSON API</a>.
               Rememeber to revoke tokens you no longer use.
             </p>
 
@@ -1096,7 +1095,7 @@ END PARANOIA CLUSTERFUCK #}
             You have no API bearer tokens. :(
             </p>
 
-            <a id="createBearerToken" class="button-primary">create new token</a>
+            <a id="createBearerToken" class="button button-primary">create new token</a>
 
             {# yes tokens #}
             {% else %}
@@ -1139,63 +1138,23 @@ END PARANOIA CLUSTERFUCK #}
           <th>Passphrase</th>
 
           <td>
-            <div>
-              <label>
-                <input type="password" minlength="15" size="40" name="new_pass_1" id="new_pass_1" maxlength="307200"
-                  value="" placeholder="New password" />
-                <strong id="pass_strength"></strong>
-              </label>
-            </div>
+          <input type="password" minlength="15" size="50" name="newPassphrase1" id="newPassphrase1" maxlength="307200" placeholder="New passphrase" />
+           <strong id="passphraseStrength"></strong>
+           <br />
 
-            <div>
-              <label>
-                <input type="password" minlength="15" size="40" name="new_pass_2" id="new_pass_2" maxlength="307200"
-                  value="" placeholder="Confirm new password" />
-                <strong id="pass_match"></strong>
-              </label>
-            </div>
+          <input type="password" minlength="15" size="50" name="newPassphrase2" id="newPassphrase2" maxlength="307200" placeholder="Confirm new passphrase" />
+           <strong id="passphraseMatch"></strong>
+           <br /><br />
 
-            <div>
-              <textarea id="password_display" name="password_display" rows="2" cols="50" onclick="this.select();"
-                readonly></textarea>
-              <button type="button" id="password_create" onclick="pwgen('password_display');">Generate</button>
-            </div>
+           <input type="text" size="50" id="suggestedPassphrase" readonly />
+           <br />
 
-            <p class="setting_description">
-            </p>
+            <a id="createPassphrase" class="button">suggest a secure passphrase</a>
           </td>
         </tr>
       </table>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{#
-
-
-
-
-    </div>
   </form>
-</div>
-#}
 
 {% endblock %}
 

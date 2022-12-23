@@ -46,25 +46,49 @@
    * delete 2fa (totp)
    */
   $("#deleteTwoFactor").click(() => {
+    // the data to send
+    var request = {
+      secret: $("#twoFactorSecret").val(),
+      code: $("#twoFactorCode").val(),
+    };
+
+    // sanity checks
+    if (
+      !request.code ||
+      request.code.length !== 6 ||
+      Number.isNaN(request.code)
+    ) {
+      alert("please enter the 6-digit code from your authenticator app");
+    }
+
     // ajax request
-    $.ajax({
-      url: "/api/internal/deleteTwoFactor",
-      type: "DELETE",
-      success: (response) => {
-        $("#twoFactorResponse").html(response.data);
+    $.post("/api/internal/deleteTwoFactor", request, (response) => {
+      $("#twoFactorResponse").html(response.data);
 
-        if (response.status === "success") {
-          $("#twoFactorResponse").removeClass("failure");
-          $("#twoFactorResponse").addClass("success");
+      if (response.status === "success") {
+        $("#twoFactorResponse").removeClass("failure");
+        $("#twoFactorResponse").addClass("success");
 
-          $("#twoFactorEnabled").hide();
-        }
+        $("#twoFactorEnabled").hide();
+      }
 
-        if (response.status === "failure") {
-          $("#twoFactorResponse").removeClass("success");
-          $("#twoFactorResponse").addClass("failure");
-        }
-      },
+      if (response.status === "failure") {
+        $("#twoFactorResponse").removeClass("success");
+        $("#twoFactorResponse").addClass("failure");
+      }
+    });
+  });
+
+  /**
+   * suggest a passphrase
+   */
+  $("#createPassphrase").click(() => {
+    var request = null;
+
+    // ajax request
+    $.post("/api/internal/createPassphrase", request, (response) => {
+      $("#suggestedPassphrase").val(response.data);
+      $("#suggestedPassphrase").select();
     });
   });
 

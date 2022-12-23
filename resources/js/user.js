@@ -309,17 +309,3 @@ function displayCommStats(stats) {
     }
   }
 }
-
-/**
- * pwgen
- */
-function pwgen(field) {
-  $.ajax({
-    url: "/sections/pwgen/diceware.php",
-    data: {},
-    type: "post",
-    success: function (output) {
-      $("#" + field).val(output);
-    },
-  });
-}

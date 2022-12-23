@@ -29,10 +29,10 @@ class Internal extends Base
         }
 
         $siteApiKey = $app->env->getPriv("siteApiKey");
-        $good = $this->checkToken(0, $siteApiKey); # hardcoded
+        $good = self::checkToken(0, $siteApiKey); # hardcoded
 
         if (!$good) {
-            $this->failure();
+            self::failure();
         }
 
         return true;
@@ -92,5 +92,61 @@ class Internal extends Base
         }
 
         $this->success("successfully deleted a 2fa key");
+    }
+
+
+    /**
+     * createPassphrase
+     */
+    public static function createPassphrase(string $type = "diceware")
+    {
+        $app = \App::go();
+
+        self::proxyToken();
+
+        # diceware
+        if ($type === "diceware") {
+            # load the dictionary
+            require_once "{$app->env->serverRoot}/sections/user/pwgen/wordlist.php";
+
+            # passphrase length (words)
+            $passphraseLength = 5;
+
+            # containers
+            $dice = [];
+            $passphrase = "";
+
+            # how many times to roll?
+            foreach (range(1, $passphraseLength) as $i) {
+                $x = "";
+                foreach (range(1, 5) as $y) {
+                    $x .= random_int(1, 6);
+                }
+
+                array_push($dice, intval($x));
+            }
+
+            # concatenate wordlist entries
+            foreach ($dice as $die) {
+                $passphrase .= $eff_large_wordlist[$die] . " ";
+            }
+
+            $passphrase = trim($passphrase);
+            #$passphrase = preg_replace("/ /", "-", $passphrase);
+        }
+
+        # random data hash
+        if ($type === "hash") {
+            # vomit hashes of secure randomness
+            $passphrase = password_hash(random_bytes(256), PASSWORD_DEFAULT);
+        }
+
+        # success
+        if (!empty($passphrase)) {
+            self::success($passphrase);
+        }
+
+        # failure
+        self::failure(400, $e->getMessage());
     }
 } # class

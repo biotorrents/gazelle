@@ -199,11 +199,6 @@ $.fn.extend({
 });
 */
 
-if ($("meta[name=authkey]").raw()) {
-  var authkey = $("meta[name=authkey]").raw().content;
-  var userid = parseInt($("meta[name=userid]").raw().content);
-}
-
 /**
  * Check or uncheck checkboxes in formElem
  * If masterElem is false, toggle each box, otherwise use masterElem's status on all boxes

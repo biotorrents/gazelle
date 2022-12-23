@@ -17,3 +17,6 @@ Flight::route("/api/internal/foo", function () {
 # 2fa (totp)
 Flight::route("POST /api/internal/createTwoFactor", ["Gazelle\API\Internal", "createTwoFactor"]);
 Flight::route("POST /api/internal/deleteTwoFactor", ["Gazelle\API\Internal", "deleteTwoFactor"]);
+
+# suggest a passphrase
+Flight::route("POST /api/internal/createPassphrase", ["Gazelle\API\Internal", "createPassphrase"]);

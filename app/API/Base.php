@@ -15,22 +15,9 @@ namespace Gazelle\API;
 
 class Base
 {
-    private $mode = null;
-    private $source = null;
-    private $version = null;
-
-
-    /**
-     * __construct
-     */
-    public function __construct()
-    {
-        $app = \App::go();
-
-        $this->mode = 0;
-        $this->source = $app->env->siteName;
-        $this->version = 1;
-    }
+    private static $mode = 0;
+    private static $source = null;
+    private static $version = 1;
 
 
     /**
@@ -38,7 +25,7 @@ class Base
      *
      * Validates an authorization header and API token.
      */
-    public function checkToken(int $userId, string $token = "")
+    public static function checkToken(int $userId, string $token = "")
     {
         $app = \App::go();
 
@@ -49,7 +36,7 @@ class Base
 
             # no header present
             if (empty($server["HTTP_AUTHORIZATION"])) {
-                return $this->failure(401, "no authorization header present");
+                return self::failure(401, "no authorization header present");
             }
 
             # https://tools.ietf.org/html/rfc6750
@@ -57,12 +44,12 @@ class Base
 
             # too much whitespace
             if (count($authorizationHeader) !== 2) {
-                return $this->failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
+                return self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
             }
 
             # not rfc compliant
             if ($authorizationHeader[0] !== "Bearer") {
-                return $this->failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
+                return self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
             }
 
             # we have a token!
@@ -70,7 +57,7 @@ class Base
 
             # empty token
             if (empty($token)) {
-                return $this->failure(401, "empty token provided");
+                return self::failure(401, "empty token provided");
             }
         } # if (empty($token))
 
@@ -80,27 +67,27 @@ class Base
         #~d($row);exit;
 
         if (!$row) {
-            return $this->failure(401, "token not found");
+            return self::failure(401, "token not found");
         }
 
         # user revoked the token
         if (intval($row["Revoked"]) === 1) {
-            return $this->failure(401, "token revoked");
+            return self::failure(401, "token revoked");
         }
 
         # user doesn't own that token
         if ($userId !== intval($row["UserID"])) {
-            return $this->failure(401, "token user mismatch");
+            return self::failure(401, "token user mismatch");
         }
 
         # user is disabled
-        if (Users::isDisabled($userId)) {
-            return $this->failure(401, "user disabled");
+        if (\Users::isDisabled($userId)) {
+            return self::failure(401, "user disabled");
         }
 
         # wrong token provided
         if (!password_verify($token, strval($row["Token"]))) {
-            return $this->failure(401, "wrong token provided");
+            return self::failure(401, "wrong token provided");
         }
 
         # okay
@@ -113,14 +100,14 @@ class Base
      *
      * @see https://jsonapi.org/examples/
      */
-    public function success($response)
+    public static function success($response)
     {
         if (headers_sent()) {
             return false;
         }
 
         if (empty($response)) {
-            return $this->failure("the server provided no payload", 500);
+            return self::failure("the server provided no payload", 500);
         }
 
         header("Content-Type: application/json; charset=utf-8");
@@ -133,9 +120,9 @@ class Base
                 "data" => $response,
 
                 "meta" => [
-                    "info" => $this->info(),
-                    "debug" => $this->debug(),
-                    "mode" => $this->mode,
+                    "info" => self::info(),
+                    "debug" => self::debug(),
+                    "mode" => self::$mode,
                 ],
             ],
         );
@@ -154,7 +141,7 @@ class Base
      *
      * @see https://jsonapi.org/format/#error-objects
      */
-    public function failure(int $code = 400, string $response = "bad request")
+    public static function failure(int $code = 400, string $response = "bad request")
     {
         if (headers_sent()) {
             return false;
@@ -170,9 +157,9 @@ class Base
                 "data" => $response,
 
                 "meta" => [
-                    "info" => $this->info(),
-                    "debug" => $this->debug(),
-                    "mode" => $this->mode,
+                    "info" => self::info(),
+                    "debug" => self::debug(),
+                    "mode" => self::$mode,
                 ],
             ],
         );
@@ -186,7 +173,7 @@ class Base
      *
      * todo
      */
-    private function debug()
+    private static function debug()
     {
         return [];
 
@@ -210,13 +197,13 @@ class Base
     /**
      * info
      */
-    private function info()
+    private static function info()
     {
+        $app = \App::go();
+
         return [
-            "info" => [
-                "source" => $this->source,
-                "version" => $this->version,
-            ],
+            "source" => $app->env->siteName,
+            "version" => self::$version,
         ];
     }
 
@@ -224,7 +211,7 @@ class Base
     /**
      * selfTest
      */
-    public function selfTest()
+    public static function selfTest()
     {
     }
 } # class
