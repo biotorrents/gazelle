@@ -292,6 +292,11 @@ class Users
             $bearerTokens = $app->dbNew->multi($query, [$userId]);
             $this->extra["bearerTokens"] = $bearerTokens;
 
+            # permissions
+            $query = "select * from permissions where id = ?";
+            $permissions = $app->dbNew->row($query, [ $this->extra["PermissionID"] ]);
+            $this->extra["permissions"] = $permissions;
+
             # for my own sanity
             foreach ($this as $key => $value) {
                 if (is_array($value)) {
@@ -861,66 +866,66 @@ class Users
 
         // Case 1 is avatars disabled
         switch ($Setting) {
-        case 0:
-          if (!empty($Avatar)) {
-              $ToReturn = ($ReturnHTML ? "<a href=\"user.php?id=$UserID\"><img src=\"$Avatar\" ".($Size ? "width=\"$Size\" " : "")."$Style $AvatarMouseOverText$SecondAvatar $Class /></a>" : $Avatar);
-          } else {
-              $URL = staticServer.'images/avatars/default.png';
-              $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar />" : $URL);
-          }
-          break;
+            case 0:
+                if (!empty($Avatar)) {
+                    $ToReturn = ($ReturnHTML ? "<a href=\"user.php?id=$UserID\"><img src=\"$Avatar\" ".($Size ? "width=\"$Size\" " : "")."$Style $AvatarMouseOverText$SecondAvatar $Class /></a>" : $Avatar);
+                } else {
+                    $URL = staticServer.'images/avatars/default.png';
+                    $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar />" : $URL);
+                }
+                break;
 
-        case 2:
-          $ShowAvatar = true;
-          // no break
+            case 2:
+                $ShowAvatar = true;
+                // no break
 
-        case 3:
-          switch ($app->userOld['Identicons']) {
-          case 0:
-            $Type = 'identicon';
-            break;
-          case 1:
-            $Type = 'monsterid';
-            break;
-          case 2:
-            $Type = 'wavatar';
-            break;
-          case 3:
-            $Type = 'retro';
-            break;
-          case 4:
-            $Type = '1';
-            $Robot = true;
-            break;
-          case 5:
-            $Type = '2';
-            $Robot = true;
-            break;
-          case 6:
-            $Type = '3';
-            $Robot = true;
-            break;
-          default:
-            $Type = 'identicon';
-        }
+            case 3:
+                switch ($app->userOld['Identicons']) {
+                    case 0:
+                        $Type = 'identicon';
+                        break;
+                    case 1:
+                        $Type = 'monsterid';
+                        break;
+                    case 2:
+                        $Type = 'wavatar';
+                        break;
+                    case 3:
+                        $Type = 'retro';
+                        break;
+                    case 4:
+                        $Type = '1';
+                        $Robot = true;
+                        break;
+                    case 5:
+                        $Type = '2';
+                        $Robot = true;
+                        break;
+                    case 6:
+                        $Type = '3';
+                        $Robot = true;
+                        break;
+                    default:
+                        $Type = 'identicon';
+                }
 
-          $Rating = 'pg';
-          if (!isset($Robot) || !$Robot) {
-              $URL = 'https://secure.gravatar.com/avatar/'.md5(strtolower(trim($Username)))."?s=$Size&amp;d=$Type&amp;r=$Rating";
-          } else {
-              $URL = 'https://robohash.org/'.md5($Username)."?set=set$Type&amp;size={$Size}x$Size";
-          }
+                $Rating = 'pg';
+                if (!isset($Robot) || !$Robot) {
+                    $URL = 'https://secure.gravatar.com/avatar/'.md5(strtolower(trim($Username)))."?s=$Size&amp;d=$Type&amp;r=$Rating";
+                } else {
+                    $URL = 'https://robohash.org/'.md5($Username)."?set=set$Type&amp;size={$Size}x$Size";
+                }
 
-          if ($ShowAvatar === true && !empty($Avatar)) {
-              $ToReturn = ($ReturnHTML ? "<img src=\"$Avatar\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar $Class />" : $Avatar);
-          } else {
-              $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText $Class />" : $URL);
-          }
-          break;
+                if ($ShowAvatar === true && !empty($Avatar)) {
+                    $ToReturn = ($ReturnHTML ? "<img src=\"$Avatar\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar $Class />" : $Avatar);
+                } else {
+                    $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText $Class />" : $URL);
+                }
+                break;
 
-        default:
-          $URL = staticServer.'images/avatars/default.png';
-          $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar $Class/>" : $URL);
+            default:
+                $URL = staticServer.'images/avatars/default.png';
+                $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar $Class/>" : $URL);
         }
         return $ToReturn;
     }

@@ -21,7 +21,7 @@
       <th>Stylesheet</th>
 
       <td>
-        <select name="stylesheet" id="stylesheet">
+        <select id="stylesheet" name="stylesheet">
           {% for stylesheet in stylesheets %}
             <option value="{{ stylesheet.id }}" {# {{ (stylesheet.ID == user.extra.StyleID) ?? "selected" }} #}>
               {{ stylesheet.properName }}

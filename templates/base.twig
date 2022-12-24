@@ -65,6 +65,9 @@
     {# gazelle global: do not defer #}
     <script src="/js/global.js"></script>
 
+    {# main menu #}
+    <script defer src="/js/menus.js"></script>
+
     {# DebugBar #}
     {% if env.dev %}
     {{ debugHeader() }}
@@ -107,6 +110,11 @@
     {% if authenticated %}
     {# private #}
     <link rel="stylesheet" type="text/css" href="/css/{{ userStyle }}.css" />
+
+    {# external stylesheet #}
+    {% if user.extra.StyleURL is defined %}
+    <link rel="stylesheet" type="text/css" href="{{ user.extra.StyleURL }}" />
+    {% endif %}
 
     {% else %}
     {# public #}

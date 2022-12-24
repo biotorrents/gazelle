@@ -1,17 +1,17 @@
 <?php
 
-#declare(strict_types = 1);
+declare(strict_types=1);
 
 
 /**
  * main user settings page
  */
 
-# https://github.com/paragonie/anti-csrf
-Http::csrf();
-
 $app = App::go();
 !d($app->userNew);
+
+# https://github.com/paragonie/anti-csrf
+Http::csrf();
 
 # request vars
 $get = Http::query("get");
@@ -111,6 +111,25 @@ if ($post["u2fDelete"]) {
 */
 
 
+/** stylesheets, paranoia, options */
+
+
+# get the stylesheets
+$query = "
+    select id,
+    lower(replace(name, ' ', '_')) as name, name as properName,
+    lower(replace(additions, ' ', '_')) as additions, additions as properAdditions
+    from stylesheets
+";
+$stylesheets = $app->dbNew->multi($query, []);
+
+# paranoia settings
+$paranoia = json_decode($app->userNew->extra["Paranoia"], true) ?? [];
+
+# site options
+$siteOptions = json_decode($app->userNew->extra["SiteOptions"], true) ?? [];
+
+
 /** legacy code */
 
 
@@ -125,21 +144,6 @@ $Rewards = null;
 $ProfileRewards = null;
 
 
-        # get all stylesheets
-        #$stylesheets = $app->cacheOld->get_value("stylesheets");
-        if (!$stylesheets) {
-            $query = "
-                select id,
-                lower(replace(name, ' ', '_')) as name, name as properName,
-                lower(replace(additions, ' ', '_')) as additions, additions as properAdditions
-                from stylesheets
-            ";
-
-            $stylesheets = $app->dbNew->multi($query);
-            #$app->cacheOld->cache_value("stylesheets", $stylesheets, $this->cacheDuration);
-        }
-
-        #!d($stylesheets);exit;
 
 /*
 $app->dbOld->query("
@@ -170,10 +174,6 @@ if ((int) $UserID !== $user['ID'] && !check_perms('users_edit_profiles', $Class)
     error(403);
 }
 
-$Paranoia = json_decode($Paranoia, true);
-if (!is_array($Paranoia)) {
-    $Paranoia = [];
-}
 */
 
 function paranoia_level($Setting)
@@ -196,11 +196,6 @@ function checked($Checked)
 }
 
 /*
-if ($SiteOptions) {
-    $SiteOptions = json_decode($SiteOptions, true) ?? [];
-} else {
-    $SiteOptions = [];
-}
 */
 
 
@@ -211,20 +206,22 @@ if ($SiteOptions) {
  * VIEW THE TWIG TEMPLATE HERE
  */
 
- $app->twig->display("user/settings.twig", [
-  "css" => ["vendor/easymde.min"],
-  "js" => ["user", "cssgallery", "preview_paranoia", "userSettings", "vendor/easymde.min"],
-  "sidebar" => true,
+$app->twig->display("user/settings.twig", [
+ "css" => ["vendor/easymde.min"],
+ "js" => ["user", "cssgallery", "preview_paranoia", "userSettings", "vendor/easymde.min"],
+ "sidebar" => true,
 
-  "stylesheets" => $stylesheets,
+ "stylesheets" => $stylesheets,
+ "paranoia" => $paranoia,
+ "siteOptions" => $siteOptions,
 
-  # 2fa (totp)
-  "twoFactorSecret" => $twoFactorSecret ?? null,
-  "twoFactorImage" => $twoFactorImage ?? null,
+ # 2fa (totp)
+ "twoFactorSecret" => $twoFactorSecret ?? null,
+ "twoFactorImage" => $twoFactorImage ?? null,
 
-  # random placeholders
-  "twoFactorPlaceHolder" => random_int(100000, 999999),
-  "ircKeyPlaceholder" => Text::random(32),
+ # random placeholders
+ "twoFactorPlaceHolder" => random_int(100000, 999999),
+ "ircKeyPlaceholder" => Text::random(32),
 
 ]);
 
@@ -405,8 +402,7 @@ function require_password($Setting = false)
 // Email change
 $CurEmail = Crypto::decrypt($CurEmail);
 if ($CurEmail !== $_POST['email']) {
-
-  // Non-admins have to authenticate to change email
+    // Non-admins have to authenticate to change email
     if (!check_perms('users_edit_profiles')) {
         require_password("Change Email");
     }

@@ -5,11 +5,278 @@
 
 /**
  * Permissions
+ *
+ * We need to turn this:
+ *
+ * 'a:100:{s:10:\"site_leech\";i:1;s:11:\"site_upload\";i:1;s:9:\"site_vote\";i:1;s:20:\"site_submit_requests\";i:1;s:20:\"site_advanced_search\";i:1;s:10:\"site_top10\";i:1;s:19:\"site_advanced_top10\";i:1;s:16:\"site_album_votes\";i:1;s:20:\"site_torrents_notify\";i:1;s:20:\"site_collages_create\";i:1;s:20:\"site_collages_manage\";i:1;s:20:\"site_collages_delete\";i:1;s:23:\"site_collages_subscribe\";i:1;s:22:\"site_collages_personal\";i:1;s:28:\"site_collages_renamepersonal\";i:1;s:19:\"site_make_bookmarks\";i:1;s:14:\"site_edit_wiki\";i:1;s:22:\"site_can_invite_always\";i:1;s:27:\"site_send_unlimited_invites\";i:1;s:22:\"site_moderate_requests\";i:1;s:18:\"site_delete_artist\";i:1;s:20:\"site_moderate_forums\";i:1;s:17:\"site_admin_forums\";i:1;s:23:\"site_forums_double_post\";i:1;s:14:\"site_view_flow\";i:1;s:18:\"site_view_full_log\";i:1;s:28:\"site_view_torrent_snatchlist\";i:1;s:18:\"site_recommend_own\";i:1;s:27:\"site_manage_recommendations\";i:1;s:15:\"site_delete_tag\";i:1;s:23:\"site_disable_ip_history\";i:1;s:14:\"zip_downloader\";i:1;s:10:\"site_debug\";i:1;s:17:\"site_proxy_images\";i:1;s:16:\"site_search_many\";i:1;s:20:\"users_edit_usernames\";i:1;s:16:\"users_edit_ratio\";i:1;s:20:\"users_edit_own_ratio\";i:1;s:17:\"users_edit_titles\";i:1;s:18:\"users_edit_avatars\";i:1;s:18:\"users_edit_invites\";i:1;s:22:\"users_edit_watch_hours\";i:1;s:21:\"users_edit_reset_keys\";i:1;s:19:\"users_edit_profiles\";i:1;s:18:\"users_view_friends\";i:1;s:20:\"users_reset_own_keys\";i:1;s:19:\"users_edit_password\";i:1;s:19:\"users_promote_below\";i:1;s:16:\"users_promote_to\";i:1;s:16:\"users_give_donor\";i:1;s:10:\"users_warn\";i:1;s:19:\"users_disable_users\";i:1;s:19:\"users_disable_posts\";i:1;s:17:\"users_disable_any\";i:1;s:18:\"users_delete_users\";i:1;s:18:\"users_view_invites\";i:1;s:20:\"users_view_seedleech\";i:1;s:19:\"users_view_uploaded\";i:1;s:15:\"users_view_keys\";i:1;s:14:\"users_view_ips\";i:1;s:16:\"users_view_email\";i:1;s:18:\"users_invite_notes\";i:1;s:23:\"users_override_paranoia\";i:1;s:12:\"users_logout\";i:1;s:20:\"users_make_invisible\";i:1;s:9:\"users_mod\";i:1;s:13:\"torrents_edit\";i:1;s:15:\"torrents_delete\";i:1;s:20:\"torrents_delete_fast\";i:1;s:18:\"torrents_freeleech\";i:1;s:20:\"torrents_search_fast\";i:1;i:1;s:19:\"torrents_fix_ghosts\";i:1;s:17:\"admin_manage_news\";i:1;s:17:\"admin_manage_blog\";i:1;s:18:\"admin_manage_polls\";i:1;s:19:\"admin_manage_forums\";i:1;s:16:\"admin_manage_fls\";i:1;s:13:\"admin_reports\";i:1;s:26:\"admin_advanced_user_search\";i:1;i:1;s:15:\"admin_donor_log\";i:1;s:19:\"admin_manage_ipbans\";i:1;i:1;s:17:\"admin_clear_cache\";i:1;s:15:\"admin_whitelist\";i:1;s:24:\"admin_manage_permissions\";i:1;s:14:\"admin_schedule\";i:1;s:17:\"admin_login_watch\";i:1;s:17:\"admin_manage_wiki\";i:1;i:1;s:21:\"site_collages_recover\";i:1;s:19:\"torrents_add_artist\";i:1;s:13:\"edit_unknowns\";i:1;s:19:\"forums_polls_create\";i:1;s:21:\"forums_polls_moderate\";i:1;s:12:\"project_team\";i:1;s:25:\"torrents_edit_vanityhouse\";i:1;s:23:\"artist_edit_vanityhouse\";i:1;s:21:\"site_tag_aliases_read\";i:1;}'
+ *
+ * ...into some kind of sensible JSON.
  */
 
 class Permissions
 {
-    /* Check to see if a user has the permission to perform an action
+    /**
+     * listRoles
+     *
+     * Lists all the site roles, e.g.,
+     * [
+     *   "sysop",
+     *   "moderator",
+     *   "user",
+     *   "etc.",
+     * ]
+     */
+    public static function listRoles()
+    {
+        $app = App::go();
+
+        # this table should be called "roles" tbh
+        $query = "select id, name from permissions";
+        $ref = $app->dbNew->multi($query, []);
+
+        $roles = array_combine(
+            array_column($ref, "id"),
+            array_column($ref, "name")
+        );
+
+        return $roles;
+    }
+
+
+    /**
+     * getUserRole
+     *
+     * Gets the current user's permissions info.
+     */
+    public static function getUserRole()
+    {
+        $app = App::go();
+
+        $query = "select id, name, values from permissions where id = ?";
+        $row = $app->dbNew->row($query, [  $app->userNew->extra["PermissionID"] ]);
+
+        return $row;
+    }
+
+
+    /**
+     * listPermissions
+     *
+     * Lists all the site permissions.
+     * Currently hardcoded based on $permissionsArray in bootstrap/utilities.php because ugh...
+     */
+    public static function listPermissions()
+    {
+        $permissions = [
+            "admin_advanced_user_search" => "Can access advanced user search",
+            "admin_clear_cache" => "Can clear cached",
+            "admin_donor_log" => "Can view the donor log",
+            "admin_login_watch" => "Can manage login watch",
+            "admin_manage_blog" => "Can manage the site blog",
+            "admin_manage_fls" => "Can manage FLS",
+            "admin_manage_forums" => "Can manage forums (add/edit/delete)",
+            "admin_manage_ipbans" => "Can manage IP bans",
+            "admin_manage_news" => "Can manage site news",
+            "admin_manage_permissions" => "Can edit permission classes/user permissions",
+            "admin_manage_polls" => "Can manage polls",
+            "admin_manage_wiki" => "Can manage wiki access",
+            "admin_reports" => "Can access reports system",
+            "admin_schedule" => "Can run the site schedule",
+            "admin_whitelist" => "Can manage the list of allowed clients",
+            "artist_edit_vanityhouse" => "Can mark artists as part of Vanity House",
+            "edit_unknowns" => "Can edit unknown release information",
+            "forums_polls_create" => "Can create polls in the forums",
+            "forums_polls_moderate" => "Can feature and close polls",
+            "project_team" => "Is part of the project team",
+            "screenshots_add" => "Can add screenshots to any torrent and delete their own screenshots",
+            "screenshots_delete" => "Can delete any screenshot from any torrent",
+            "site_admin_forums" => "Forum administrator access",
+            "site_advanced_search" => "Advanced search access",
+            "site_advanced_top10" => "Advanced Top 10 access",
+            "site_can_invite_always" => "Can invite past user limit",
+            "site_collages_create" => "Collage create access",
+            "site_collages_delete" => "Collage delete access",
+            "site_collages_manage" => "Collage manage access",
+            "site_collages_personal" => "Can have a personal collage",
+            "site_collages_recover" => "Can recover 'deleted' collages",
+            "site_collages_renamepersonal" => "Can rename own personal collages",
+            "site_collages_subscribe" => "Collage subscription access",
+            "site_debug" => "Developer access",
+            "site_delete_artist" => "Can delete artists (must be able to delete torrents+requests)",
+            "site_delete_tag" => "Can delete tags",
+            "site_edit_wiki" => "Wiki edit access",
+            "site_forums_double_post" => "Can double post in the forums",
+            "site_leech" => "Can leech (Does this work?)",
+            "site_make_bookmarks" => "Bookmarks access",
+            "site_manage_recommendations" => "Recommendations management access",
+            "site_moderate_forums" => "Forum moderation access",
+            "site_moderate_requests" => "Request moderation access",
+            "site_proxy_images" => "Image proxy & anti-canary",
+            "site_ratio_watch_immunity" => "Immune from being put on ratio watch",
+            "site_recommend_own" => "Can recommend own torrents",
+            "site_search_many" => "Can go past low limit of search results",
+            "site_send_unlimited_invites" => "Unlimited invites",
+            "site_submit_requests" => "Request create access",
+            "site_tag_aliases_read" => "Can view the list of tag aliases",
+            "site_top10" => "Top 10 access",
+            "site_torrents_notify" => "Notifications access",
+            "site_upload" => "Upload torrent access",
+            "site_view_flow" => "Can view stats and data pools",
+            "site_view_full_log" => "Can view old log entries",
+            "site_view_torrent_snatchlist" => "Can view torrent snatch lists",
+            "site_vote" => "Request vote access",
+            "torrents_add_artist" => "Can add artists to any group",
+            "torrents_delete" => "Can delete torrents",
+            "torrents_delete_fast" => "Can delete more than 3 torrents at a time",
+            "torrents_edit" => "Can edit any torrent",
+            "torrents_edit_vanityhouse" => "Can mark groups as part of Vanity House",
+            "torrents_fix_ghosts" => "Can fix 'ghost' groups on artist pages",
+            "torrents_freeleech" => "Can make torrents freeleech",
+            "torrents_search_fast" => "Rapid search (for scripts)",
+            "users_delete_users" => "Can delete users",
+            "users_disable_any" => "Can disable any users' rights",
+            "users_disable_posts" => "Can disable users' posting privileges",
+            "users_disable_users" => "Can disable users",
+            "users_edit_avatars" => "Can edit avatars",
+            "users_edit_invites" => "Can edit invite numbers and cancel sent invites",
+            "users_edit_own_ratio" => "Can edit own upload/download amounts",
+            "users_edit_password" => "Can change passwords",
+            "users_edit_profiles" => "Can edit anyone's profile",
+            "users_edit_ratio" => "Can edit anyone's upload/download amounts",
+            "users_edit_reset_keys" => "Can reset passkey/authkey",
+            "users_edit_titles" => "Can edit titles",
+            "users_edit_usernames" => "Can edit usernames",
+            "users_edit_watch_hours" => "Can edit contrib watch hours",
+            "users_give_donor" => "Can give donor access",
+            "users_invite_notes" => "Can add a staff note when inviting someone",
+            "users_logout" => "Can log users out (old?)",
+            "users_make_invisible" => "Can make users invisible",
+            "users_mod" => "Basic moderator tools",
+            "users_override_paranoia" => "Can override paranoia",
+            "users_promote_below" => "Can promote users to below current level",
+            "users_promote_to" => "Can promote users up to current level",
+            "users_reset_own_keys" => "Can reset own passkey/authkey",
+            "users_view_email" => "Can view email addresses",
+            "users_view_friends" => "Can view anyone's friends",
+            "users_view_invites" => "Can view who user has invited",
+            "users_view_ips" => "Can view IP addresses",
+            "users_view_keys" => "Can view passkeys",
+            "users_view_seedleech" => "Can view what a user is seeding or leeching",
+            "users_view_uploaded" => "Can view a user's uploads, regardless of privacy level",
+            "users_warn" => "Can warn users",
+            "zip_downloader" => "Download multiple torrents at once",
+        ];
+
+        return $permissions;
+    }
+
+
+    /**
+     * can
+     *
+     * Checks if a user can do something or not.
+     * Cutting the Gordian knot here with a string search.
+     */
+    public static function can(string $permission): bool
+    {
+        $userRole = self::getUserRole();
+
+        $can = Illuminate\Support\Str::contains($userRole["values"], $permission);
+
+        return $can;
+    }
+
+
+    /**
+     * givePermissionTo
+     *
+     * FOR A USER!
+     *
+     * @see https://spatie.be/docs/laravel-permission/v5/basic-usage/basic-usage
+     */
+    public static function givePermissionTo(string $permission)
+    {
+    }
+
+
+    /**
+     * revokePermissionTo
+     *
+     * FOR A USER!
+     *
+     * @see https://spatie.be/docs/laravel-permission/v5/basic-usage/basic-usage
+     */
+    public static function revokePermissionTo(string $permission)
+    {
+    }
+
+
+    /**
+     * assignRole
+     *
+     * FOR A USER!
+     *
+     * @see https://spatie.be/docs/laravel-permission/v5/basic-usage/basic-usage
+     */
+    public static function assignRole(string $role)
+    {
+    }
+
+
+    /**
+     * removeRole
+     *
+     * FOR A USER!
+     *
+     * @see https://spatie.be/docs/laravel-permission/v5/basic-usage/basic-usage
+     */
+    public static function removeRole(string $role)
+    {
+    }
+
+
+    /**
+     * createRole
+     *
+     * Creates a new role.
+     */
+    public static function createRole(string $roleName, array $permissions, bool $staffRole = false)
+    {
+        $app = App::go();
+
+        $query = "replace into permissions (name, values, displayStaff) values (?, ?, ?)";
+        $app->dbNew->do($query, [$roleName, json_encode($permissions), $staffRole]);
+    }
+
+
+    /**
+     * updateRole
+     */
+    public static function updateRole(string $roleName, array $permissions, bool $staffRole = false)
+    {
+        return self::createRole($roleName, $permissions, $staffRole);
+    }
+
+
+    /**
+     * deleteRole
+     *
+     * Deletes a role.
+     */
+    public static function deleteRole(string $roleName)
+    {
+        $app = App::go();
+
+        $query = "delete from permissions where name = ?";
+        $app->dbNew->do($query, [$roleName]);
+    }
+
+
+    /** LEGACY CODE */
+
+
+    /**
+     * Check to see if a user has the permission to perform an action
      * This is called by check_perms in util.php, for convenience.
      *
      * @param string PermissionName
@@ -30,6 +297,7 @@ class Permissions
 
         return $app->userOld['Permissions'][$PermissionName] ?? false; // Return actual permission
     }
+
 
     /**
      * Gets the permissions associated with a certain permissionid
@@ -56,6 +324,7 @@ class Permissions
         }
         return $Permission;
     }
+
 
     /**
      * Get a user's permissions.
@@ -120,6 +389,10 @@ class Permissions
         );
     }
 
+
+    /**
+     * is_mod
+     */
     public static function is_mod($UserID)
     {
         return self::get_permissions_for_user($UserID)['users_mod'] ?? false;
