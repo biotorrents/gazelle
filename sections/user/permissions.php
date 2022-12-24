@@ -25,6 +25,7 @@ $Delta = [];
 if (isset($_POST['action'])) {
     authorize();
 
+    $PermissionsArray = Permissions::listPermissions();
     foreach ($PermissionsArray as $Perm => $Explaination) {
         $Setting = isset($_POST["perm_$Perm"]) ? 1 : 0;
         $Default = isset($Defaults[$Perm]) ? 1 : 0;
