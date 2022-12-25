@@ -72,7 +72,9 @@ class Tracker
                 $app->cacheOld->cache_value('ocelot_error_reported', true, 3600);
             }
 
-            return false;
+            # this needs to throw
+            throw new Exception(__FUNCTION__ . ": {$err} {$get}");
+            #return false;
         }
 
         return true;

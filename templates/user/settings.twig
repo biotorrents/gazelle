@@ -3,12 +3,13 @@
 {% block content %}
 
 <div class="header">
-  <h2>Settings for {{ user.core.username }}</h2>
+  <h2>User settings for {{ user.core.username }}</h2>
 </div>
 
 <form method="post" id="userSettingsForm" name="userSettingsForm">
 
   {# hidden fields #}
+  	{{ form_token(query.server.REQUEST_URI) }}
   <input type="hidden" name="userId" value="{{ user.core.id }}" />
   <input type="hidden" name="authKey" value="{{ user.extra.AuthKey }}" />
 
@@ -21,9 +22,9 @@
       <th>Stylesheet</th>
 
       <td>
-        <select id="stylesheet" name="stylesheet">
+        <select id="styleId" name="styleId">
           {% for stylesheet in stylesheets %}
-            <option value="{{ stylesheet.id }}" {{ (stylesheet.id == user.extra.StyleID) ? "selected" : "" }}>
+            <option value="{{ stylesheet.id }}" {{ (stylesheet.id == siteOptions.styleId) ? "selected" : "" }}>
               {{ stylesheet.properName }}
             </option>
           {% endfor %} {# for stylesheet in stylesheets #}
@@ -132,7 +133,7 @@ HTML;
           <th>External stylesheet URI</th>
 
           <td>
-            <input type="text" id="styleSheetUri" name="styleSheetUri" placeholder="e.g., https://{{ env.siteDomain }}/css/bookish.css" value="{{ user.extra.StyleURL }}" />
+            <input type="text" id="styleUri" name="styleUri" placeholder="e.g., https://{{ env.siteDomain }}/css/bookish.css" value="{{ siteOptions.styleUri }}" />
           </td>
         </tr>
 
@@ -148,13 +149,13 @@ HTML;
           <th>Default search type</th>
 
           <td>
-                <input type="radio" id="searchTypeSimple" name="searchType" value="0" {{ (siteOptions.SearchType == 0) ? "checked" : "" }} />
-                <label for="search_type_simple">Simple</label>
+                <input type="radio" id="searchTypeSimple" name="searchType" value="simple" {{ (siteOptions.searchType == "simple") ? "checked" : "" }} />
+                <label for="searchTypeSimple">Simple</label>
 
                 &emsp;
 
-                <input type="radio" id="searchTypeAdvanced" name="searchType" value="1" {{ (siteOptions.SearchType == 1) ? "checked" : "" }} />
-                <label for="search_type_advanced">Advanced</label>
+                <input type="radio" id="searchTypeAdvanced" name="searchType" value="advanced" {{ (siteOptions.searchType == "advanced") ? "checked" : "" }} />
+                <label for="searchTypeAdvanced">Advanced</label>
           </td>
         </tr>
 
@@ -163,8 +164,8 @@ HTML;
           <th>Torrent grouping</th>
 
           <td>
-              <input type="checkbox" id="disableGrouping" name="disableGrouping" {{ (siteOptions.DisableGrouping2 == 0) ? "checked" : "" }} />
-              <label for="disableGrouping">Enable torrent grouping</label>
+              <input type="checkbox" id="disableGrouping" name="disableGrouping" {{ (siteOptions.disableGrouping == true) ? "checked" : "" }} />
+              <label for="disableGrouping">Disable torrent grouping</label>
           </td>
         </tr>
 
@@ -173,12 +174,12 @@ HTML;
           <th>Torrent group display</th>
 
           <td>
-            <input type="radio" id="torrentGroupingOpen" name="torrentGrouping" value="0" {{ (siteOptions.TorrentGrouping == 0) ? "checked" : "" }} />
+            <input type="radio" id="torrentGroupingOpen" name="torrentGrouping" value="open" {{ (siteOptions.torrentGrouping == "open") ? "checked" : "" }} />
             <label for="torrent_grouping_open">Open</label>
 
             &emsp;
 
-             <input type="radio" id="torrentGroupingClosed" name="torrentGrouping" value="1" {{ (siteOptions.TorrentGrouping == 1) ? "checked" : "" }} />
+             <input type="radio" id="torrentGroupingClosed" name="torrentGrouping" value="closed" {{ (siteOptions.torrentGrouping == "closed") ? "checked" : "" }} />
              <label for="torrent_grouping_closed">Closed</label>
           </td>
         </tr>
@@ -188,7 +189,7 @@ HTML;
           <th>Snatched torrents indicator</th>
 
           <td>
-            <input type="checkbox" id="showSnatched" name="showSnatched" {{ (siteOptions.ShowSnatched == 1) ? "checked" : "" }} />
+            <input type="checkbox" id="showSnatched" name="showSnatched" {{ (siteOptions.showSnatched == true) ? "checked" : "" }} />
             <label for="showSnatched">Enable snatched torrents indicator</label>
           </td>
         </tr>
@@ -198,12 +199,12 @@ HTML;
           <th>Cover art (torrents)</th>
 
           <td>
-             <input type="checkbox" id="coverArtTorrents" name="coverArtTorrents" {{ (siteOptions.CoverArt == 1) ? "checked" : "" }} />
+             <input type="checkbox" id="coverArtTorrents" name="coverArtTorrents" {{ (siteOptions.coverArtTorrents == true) ? "checked" : "" }} />
             <label for="coverArtTorrents">Enable cover artwork</label>
 
             <br />
 
-            <input type="checkbox" id="coverArtTorrentsExtra" name="coverArtTorrentsExtra" {{ (siteOptions.ShowExtraCovers == 1) ? "checked" : "" }} />
+            <input type="checkbox" id="coverArtTorrentsExtra" name="coverArtTorrentsExtra" {{ (siteOptions.coverArtTorrentsExtra == true) ? "checked" : "" }} />
             <label for="coverArtTorrentsExtra">Enable additional cover artwork</label>
           </td>
         </tr>
@@ -215,27 +216,27 @@ HTML;
           <td>
             <select id="coverArtCollections" name="coverArtCollections">
 
-              <option value="10" {{ (siteOptions.CollageCovers == 10) ? "selected" : "" }}>
+              <option value="10" {{ (siteOptions.coverArtCollections == 10) ? "selected" : "" }}>
               10
               </option>
 
-              <option value="25" {{ (siteOptions.CollageCovers == 25 or siteOptions.CollageCovers is null) ? "selected" : "" }}>
+              <option value="25" {{ (siteOptions.coverArtCollections == 25) ? "selected" : "" }}>
               25 (default)
               </option>
 
-              <option value="50" {{ (siteOptions.CollageCovers == 50) ? "selected" : "" }}>
+              <option value="50" {{ (siteOptions.coverArtCollections == 50) ? "selected" : "" }}>
               50
               </option>
 
-              <option value="100" {{ (siteOptions.CollageCovers == 100) ? "selected" : "" }}>
+              <option value="100" {{ (siteOptions.coverArtCollections == 100) ? "selected" : "" }}>
               100
               </option>
 
-              <option value="1000000" {{ (siteOptions.CollageCovers == 1000000) ? "selected" : "" }}>
+              <option value="1000000" {{ (siteOptions.coverArtCollections == 1000000) ? "selected" : "" }}>
               all
               </option>
 
-              <option value="0" {{ (siteOptions.CollageCovers == 0 or siteOptions.HideCollage is defined) ? "selected" : "" }}>
+              <option value="0" {{ (siteOptions.coverArtCollections == 0) ? "selected" : "" }}>
               no
               </option>
 
@@ -250,12 +251,12 @@ HTML;
           <th>Torrent search filters</th>
 
           <td>
-            <input type="checkbox" id="showTorrentFilter" name="showTorrentFilter" {{ (siteOptions.ShowTorFilter is defined) ? "checked" : "" }} />
+            <input type="checkbox" id="showTorrentFilter" name="showTorrentFilter" {{ (siteOptions.showTorrentFilter == true) ? "checked" : "" }} />
             <label for="showTorrentFilter">Display filter controls</label>
 
             <br />
 
-           <input type="checkbox" id="showTagFilter" name="showTagFilter" {{ (siteOptions.ShowTags is defined) ? "checked" : "" }} />
+           <input type="checkbox" id="showTagFilter" name="showTagFilter" {{ (siteOptions.showTagFilter == true) ? "checked" : "" }} />
            <label for="showTagFilter">Display official tag filters</label>
           </td>
         </tr>
@@ -295,7 +296,7 @@ HTML;
           <th>Inbox sorting</th>
 
           <td>
-            <input type="checkbox" id="listUnreadsFirst" name="listUnreadsFirst" {{ (siteOptions.ListUnreadPMsFirst is defined) ? "checked" : "" }} />
+            <input type="checkbox" id="listUnreadsFirst" name="listUnreadsFirst" {{ (siteOptions.listUnreadsFirst == true) ? "checked" : "" }} />
             <label for="listUnreadsFirst">List unread private messages first</label>
           </td>
         </tr>
@@ -305,32 +306,12 @@ HTML;
           <th>Avatar display (posts)</th>
 
           <td>
-            <select id="disableAvatars" name="disableAvatars">
-              <option value="1" {{ (siteOptions.DisableAvatars == 1) ? "selected" : "" }}>
-              Disable avatars
-              </option>
-
-              <option value="0"  {{ (siteOptions.DisableAvatars == 0) ? "selected" : "" }}>
-              Show avatars
-              </option>
-            </select>
+            <input type="checkbox" id="disableAvatars" name="disableAvatars" {{ (siteOptions.disableAvatars == true) ? "checked" : "" }} />
+            <label for="disableAvatars">Disable user avatars</label>
           </td>
         </tr>
 
-{#
-        <!-- Auto-save reply text -->
-        <tr id="comm_autosave_tr">
-          <td class="label">
-            <strong>Auto-save reply text</strong>
-          </td>
 
-          <td>
-            <input type="checkbox" name="disableautosave" id="disableautosave" <?=!empty($SiteOptions['DisableAutoSave']) ? ' checked="checked"' : ''?>
-            />
-            <label for="disableautosave">Disable text auto-saving</label>
-          </td>
-        </tr>
-#}
 
         {# displayed badges #}
         {#
@@ -372,7 +353,7 @@ HTML;
           <th>Automatic thread subscriptions</th>
 
           <td>
-            <input type="checkbox" id="autoSubscribe" name="autoSubscribe" {{ (siteOptions.AutoSubscribe is defined) ? "checked" : "" }} />
+            <input type="checkbox" id="autoSubscribe" name="autoSubscribe" {{ (siteOptions.autoSubscribe == true) ? "checked" : "" }} />
             <label for="autoSubscribe">Enable automatic thread subscriptions</label>
           </td>
         </tr>
@@ -382,7 +363,7 @@ HTML;
           <th>Unseeded torrent alerts</th>
 
           <td>
-            <input type="checkbox" id="unseededAlerts" name="unseededAlerts" {{ (user.extra.UnseededAlerts) ? "checked" : "" }} />
+            <input type="checkbox" id="unseededAlerts" name="unseededAlerts" {{ (siteOptions.unseededAlerts == true) ? "checked" : "" }} />
             <label for="unseededAlerts">Enable unseeded torrent alerts</label>
           </td>
         </tr>
@@ -936,10 +917,10 @@ END PARANOIA CLUSTERFUCK #}
 
           <p class="important_text">
           IRC keys are stored in plaintext and must not be your password!
-          They must be between 6 and 32 characters long.
+          They must be between 8 and 32 characters long.
           </p>
 
-          <input type="text" id="ircKey" name="ircKey" placeholder="e.g., {{ ircKeyPlaceholder }}" value="{{ user.extra.IRCKey }}" />
+          <input type="text" id="ircKey" name="ircKey" minlength="8" maxlength="32" placeholder="e.g., {{ ircKeyPlaceholder }}" value="{{ user.extra.IRCKey }}" />
 
           </td>
         </tr>
@@ -1010,11 +991,11 @@ END PARANOIA CLUSTERFUCK #}
           <th>Passphrase</th>
 
           <td>
-          <input type="password" minlength="15" name="newPassphrase1" id="newPassphrase1" maxlength="307200" placeholder="Enter a new passphrase" />
+          <input type="password" minlength="15" name="newPassphrase1" id="newPassphrase1" placeholder="Enter a new passphrase" />
            <strong id="passphraseStrength"></strong>
            <br />
 
-          <input type="password" minlength="15" name="newPassphrase2" id="newPassphrase2" maxlength="307200" placeholder="Confirm the new passphrase" />
+          <input type="password" minlength="15" name="newPassphrase2" id="newPassphrase2" placeholder="Confirm the new passphrase" />
            <strong id="passphraseMatch"></strong>
            <br /><br />
 

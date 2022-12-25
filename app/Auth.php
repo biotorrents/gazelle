@@ -77,12 +77,13 @@ class Auth # extends Delight\Auth\Auth
             $this->user["isRemembered"] = $this->auth->isRemembered();
             $this->user["isPasswordResetEnabled"] = $this->auth->isPasswordResetEnabled();
 
-            # info loaded
+            # success
             return true;
-        } else {
-            $this->user = [];
-            return false;
         }
+
+        # failure
+        $this->user = [];
+        return false;
     }
 
 
@@ -526,6 +527,24 @@ If you need the custom user information only rarely, you may just retrieve it as
 
         return $response;
     } # toggleReset
+
+
+    /**
+     * isPassphraseAllowed
+     * 
+     * @see https://github.com/delight-im/PHP-Auth#how-can-i-implement-custom-password-requirements
+     */
+    public function isPassphraseAllowed(string $passphrase)
+    {
+        # failure
+        if (strlen($passphrase) < 15) {
+            return false;
+        }
+
+        # success
+        return true;
+    }
+
 
 
     /** GAZELLE USER STUFF */

@@ -1342,4 +1342,228 @@ class Users
 
         return true;
     }
+
+
+    /** update user settings */
+
+
+    /**
+     * updateSettings
+     *
+     * Updates the user settings in a transaction.
+     * Kind of a monster function, but I don't wanna refactor.
+     */
+    public function updateSettings(array $data)
+    {
+        $app = App::go();
+
+        # delight-im/auth
+        $auth = new Auth();
+
+        # make sure the data exists
+        if (empty($data)) {
+            throw new Exception("nothing to update");
+        }
+
+        # default to the current user
+        $userId = $data["userId"] ?? $this->core["id"];
+        if (!$userId) {
+            throw new Exception("userId not found");
+        }
+
+        # check permissions to update another user
+        $moderatorUpdate = false;
+        if ($userId !== $this->core["id"]) {
+            $good = Permissions::can("users_edit_profiles");
+            if (!$good) {
+                throw new Exception("you ain't a killer, you still learnin' how to walk");
+            }
+
+            # it's a moderator update
+            $moderatorUpdate = true;
+        }
+
+        /** */
+
+        try {
+            # start the transaction
+            $app->dbNew->beginTransaction();
+
+
+            # validate the passphrase
+            # only if it's the current user
+            if (!$moderatorUpdate) {
+                $currentPassphrase = Esc::string($data["currentPassphrase"]);
+                $good = $auth->auth->reconfirmPassword($currentPassphrase);
+
+                if (!$good) {
+                    throw new Exception("current passphrase doesn't match");
+                }
+            } # if (!$moderatorUpdate)
+
+
+            # validate the authKey
+            # only if it's the current user
+            if (!$moderatorUpdate) {
+                $authKey = Esc::string($data["authKey"]);
+                if ($authKey !== $this->extra["AuthKey"]) {
+                    throw new Exception("authKey doesn't match");
+                }
+            } # if (!$moderatorUpdate)
+
+
+            # update the passphrase
+            $newPassphrase1 = Esc::string($data["newPassphrase1"]);
+            $newPassphrase2 = Esc::string($data["newPassphrase2"]);
+
+            if (!empty($newPassphrase1) && !empty($newPassphrase2)) {
+                # do they match?
+                if ($newPassphrase1 !== $newPassphrase2) {
+                    throw new Exception("new passphrase doesn't match");
+                }
+
+                # is it allowed?
+                $good = $auth->isPassphraseAllowed($newPassphrase1);
+                if (!$good) {
+                    throw new Exception("new passphrase isn't allowed");
+                }
+
+                # try to update the passphrase (this throws)
+                $auth->auth->admin()->changePasswordForUserById($userId, $newPassphrase1);
+            } # if (!empty($newPassphrase1) && !empty($newPassphrase2))
+
+
+            # todo: update the email
+            # maybe admins can't change it?
+            $email = Esc::email($data["email"]);
+            if (!$moderatorUpdate && $email !== $this->core["email"]) {
+                # throw on bad email
+                if (empty($email)) {
+                    throw new Exception("invalid email address");
+                }
+
+                # https://github.com/delight-im/PHP-Auth#changing-the-current-users-email-address
+                $auth->changeEmail($email, function ($selector, $token) {
+                    /*
+                    echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email to the *new* address)';
+                    echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
+                    echo '  For SMS, consider using a third-party service and a compatible SDK';
+                    */
+                });
+            } # if (!$moderatorUpdate && $email !== $this->core["email"])
+
+
+            # the rest should go fairly quickly
+            # it's just gazelle users_info stuff
+
+
+            # avatar
+            $avatar = Esc::url($data["avatar"]);
+            $query = "update users_info set avatar = ? where userId = ?";
+            $app->dbNew->do($query, [$avatar, $userId]);
+
+
+            # ircKey
+            $ircKey = Esc::string($data["ircKey"]);
+            $hash = password_hash($ircKey, PASSWORD_DEFAULT);
+
+            if (strlen($ircKey) < 8 || strlen($ircKey) > 32) {
+                throw new Exception("ircKey must be 8-32 chatacters");
+            }
+
+            # theoretically an admin can't set it to the user's passphrase
+            # unless they're my brother and use something like "butthole1"
+            if ($hash === $this->core["password"]) {
+                throw new Exception("ircKey can't be your passphrase");
+            }
+
+            $query = "update users_main set ircKey = ? where id = ?";
+            $app->dbNew->do($query, [$ircKey, $userId]);
+
+
+            # profileTitle
+            $profileTitle = Esc::string($data["profileTitle"]);
+            $query = "update users_info set infoTitle = ? where userId = ?";
+            $app->dbNew->do($query, [$profileTitle, $userId]);
+
+
+            # profileContent
+            $profileContent = Esc::string($data["profileContent"]);
+            $query = "update users_info set info = ? where userId = ?";
+            $app->dbNew->do($query, [$profileContent, $userId]);
+
+
+            # publicKey
+            $publicKey = Esc::string($data["profileContent"]);
+            $this->updatePGP($publicKey);
+
+
+            # resetPassKey: very important to only update if requested
+            # or everyone will get locked out of the tracker all the time
+            $resetPassKey = Esc::bool($data["resetPassKey"]);
+            if ($resetPassKey) {
+                $oldPassKey = $this->extra["torrent_pass"];
+                $newPassKey = Text::random(32);
+
+                # update the tracker
+                Tracker::update_tracker(
+                    "change_passkey",
+                    ["oldpasskey" => $oldPassKey, "newpasskey" => $newPassKey]
+                );
+
+                # update the database
+                $query = "update users_main set torrent_pass = ? where id = ?";
+                $app->dbNew->do($query, [$newPassKey, $userId]);
+            } # if ($resetPassKey)
+
+
+            # stylesheet
+            $stylesheet = Esc::int($data["stylesheet"]);
+            $query = "update users_info set styleId = ? where userId = ?";
+            $app->dbNew->do($query, [$stylesheet, $userId]);
+
+
+            # styleSheetUri
+            $styleSheetUri = Esc::url($data["styleSheetUri"]);
+            $query = "update users_info set styleUrl = ? where userId = ?";
+            $app->dbNew->do($query, [$styleSheetUri, $userId]);
+
+
+            # torrentGrouping
+            $torrentGrouping = Esc::int($data["torrentGrouping"]);
+            $query = "update users_info set torrentGrouping = ? where userId = ?";
+            $app->dbNew->do($query, [$torrentGrouping, $userId]);
+
+
+            # siteOptions
+            $siteOptions = [
+                "autoSubscribe" => Esc::bool($data["autoSubscribe"]),
+                "coverArtCollections" => Esc::int($data["coverArtCollections"]),
+                "coverArtTorrents" => Esc::bool($data["coverArtTorrents"]),
+                "coverArtTorrentsExtra" => Esc::bool($data["coverArtTorrentsExtra"]),
+                "disableAvatars" => Esc::bool($data["disableAvatars"]),
+                "disableGrouping" => Esc::bool($data["disableGrouping"]),
+                "listUnreadsFirst" => Esc::bool($data["listUnreadsFirst"]),
+                "searchType" => Esc::string($data["searchType"]),
+                "showTagFilter" => Esc::bool($data["showTagFilter"]),
+                "showTorrentFilter" => Esc::bool($data["showTorrentFilter"]),
+                "snowSnatched" => Esc::bool($data["showSnatched"]),
+                "styleId" => Esc::int($data["styleId"]),
+                "styleUri" => Esc::url($data["styleUri"]),
+                "torrentGrouping" => Esc::string($data["torrentGrouping"]),
+                "unseededAlerts" => Esc::bool($data["unseededAlerts"]),
+            ];
+
+            $query = "update users_info set siteOptions = ? where userId = ?";
+            $app->dbNew->do($query, [json_encode($siteOptions), $userId]);
+
+
+            # commit the transaction
+            $app->dbNew->commit();
+        } catch (Exception $e) {
+            # failure
+            $app->dbNew->rollback();
+            throw new Exception($e->getMessage());
+        }
+    } # updateSettings
 } # class

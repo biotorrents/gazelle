@@ -53,7 +53,8 @@ class Esc
      */
     public static function string(mixed $unsafe): string
     {
-        return Text::esc($unsafe);
+        $safe = Text::esc($unsafe);
+        return strval($safe);
 
         /*
         # deprecated as of PHP 8.1.0, use htmlspecialchars() instead
@@ -138,10 +139,11 @@ class Esc
 
         $safe = self::string($unsafe);
         if (preg_match($app->env->regexUsername, $safe)) {
+            # success
             return strval($safe);
         }
 
         # failure
-        return "";
+        return strval("");
     }
 } # class
