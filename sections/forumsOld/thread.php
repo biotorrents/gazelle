@@ -582,7 +582,7 @@ foreach ($Thread as $Key => $Post) {
   <tr>
     <?php if (Users::hasAvatarsEnabled()) { ?>
     <td class="avatar valign_top">
-      <?=Users::show_avatar($Avatar, $AuthorID, $Username, $HeavyInfo['DisableAvatars'], 150, true)?>
+      <?=Users::displayAvatar($Avatar, $Username)?>
     </td>
     <?php } ?>
     <td class="body valign_top" <?php if (!Users::hasAvatarsEnabled()) {

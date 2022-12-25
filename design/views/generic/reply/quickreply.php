@@ -151,11 +151,9 @@ if (!isset($InputTitle)) {
           <?php if (Users::hasAvatarsEnabled()) { ?>
           <td class="avatar valign_top">
             <?=
-          Users::show_avatar(
+          Users::displayAvatar(
               $app->userNew->extra['Avatar'],
-              $app->userNew->core["id"],
-              $app->userNew->core['Username'],
-              (!isset($HeavyInfo['DisableAvatars']) || $HeavyInfo['DisableAvatars'])
+              $app->userNew->core['Username']
           )
           ?>
           </td>

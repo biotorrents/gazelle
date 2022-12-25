@@ -255,7 +255,7 @@ if (empty($Results)) {
     <tr>
 <?php if (Users::hasAvatarsEnabled()) { ?>
       <td class="avatar" valign="top">
-        <?=Users::show_avatar($Avatar, $UserID, $Username, $HeavyInfo['DisableAvatars'])?>
+        <?=Users::displayAvatar($Avatar, $Username)?>
       </td>
 <?php } ?>
       <td class="body" valign="top">

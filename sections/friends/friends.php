@@ -99,7 +99,7 @@ foreach ($Friends as $Friend) {
         <tr>
           <?php if (Users::hasAvatarsEnabled()) { ?>
           <td class="col_avatar avatar" valign="top">
-            <?=Users::show_avatar($Avatar, $FriendID, $Username, $HeavyInfo['DisableAvatars'])?>
+            <?=Users::displayAvatar($Avatar, $Username)?>
           </td>
           <?php } ?>
           <td valign="top">

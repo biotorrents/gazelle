@@ -320,7 +320,7 @@ if ($Avatar && Users::hasAvatarsEnabled()) {
     <div class="box box_image box_image_avatar">
       <div class="head colhead_dark">User</div>
       <div class="avatar" align="center">
-        <?=       Users::show_avatar($Avatar, $UserID, $Username, $HeavyInfo['DisableAvatars'])?>
+        <?=       Users::displayAvatar($Avatar, $Username)?>
       </div>
     </div>
     <?php

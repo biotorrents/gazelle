@@ -263,7 +263,7 @@ if (!$NumResults) {
       class="row<?=$ShowCollapsed ? ' hidden' : '' ?>">
       <?php if (Users::hasAvatarsEnabled()) { ?>
       <td class="avatar" valign="top">
-        <?=Users::show_avatar($Result['LastReadAvatar'], $Result['LastReadUserID'], $Result['LastReadUsername'], $HeavyInfo['DisableAvatars'])?>
+        <?=Users::displayAvatar($Result['LastReadAvatar'], $Result['LastReadUsername'])?>
       </td>
       <?php } ?>
       <td class="body" valign="top">

@@ -767,103 +767,31 @@ class Users
 
 
     /**
-     * Generate HTML for a user's avatar or just return the avatar URL
-     * @param unknown $Avatar
-     * @param unknown $UserID
-     * @param unknown $Username
-     * @param unknown $Setting
-     * @param number $Size
-     * @param string $ReturnHTML
-     * @return string
+     * displayAvatar
+     *
+     * Return HTML for a user's avatar.
+     * Few of the old params were ever used.
+     *
+     * @param string $uri the avatar location
+     * @param string $username the username
+     * @return string the html, obviously
      */
-    public static function show_avatar($Avatar, $UserID, $Username, $Setting, $Size = 120, $ReturnHTML = true)
+    public static function displayAvatar(string $uri, string $username): string
     {
-        $Avatar = ImageTools::process($Avatar, 'avatar');
-        $Style = 'style="max-height: 300px;"';
-        $AvatarMouseOverText = '';
-        $SecondAvatar = '';
-        $Class = 'class="double_avatar"';
-        $EnabledRewards = null;
+        $app = App::go();
 
-        if ($EnabledRewards['HasAvatarMouseOverText']) {
-            $Rewards = null;
-            $AvatarMouseOverText = $Rewards['AvatarMouseOverText'];
+        # ImageTools::process
+        $uri = ImageTools::process($uri, "avatar");
+
+        # disabled or missing: show default
+        if (!self::hasAvatarsEnabled() || empty($uri)) {
+            $uri = "{$app->env->staticServer}/images/avatars/default.png";
+
+            return "<img src='{$uri}' alt='default avatar' width='120' />";
         }
 
-        if (!empty($AvatarMouseOverText)) {
-            $AvatarMouseOverText =  "title=\"$AvatarMouseOverText\" alt=\"$AvatarMouseOverText\"";
-        } else {
-            $AvatarMouseOverText = "alt=\"$Username's avatar\"";
-        }
-
-        if ($EnabledRewards['HasSecondAvatar'] && !empty($Rewards['SecondAvatar'])) {
-            $SecondAvatar = ' data-gazelle-second-avatar="' . ImageTools::process($Rewards['SecondAvatar'], 'avatar') . '"';
-        }
-
-        // Case 1 is avatars disabled
-        switch ($Setting) {
-            case 0:
-                if (!empty($Avatar)) {
-                    $ToReturn = ($ReturnHTML ? "<a href=\"user.php?id=$UserID\"><img src=\"$Avatar\" ".($Size ? "width=\"$Size\" " : "")."$Style $AvatarMouseOverText$SecondAvatar $Class /></a>" : $Avatar);
-                } else {
-                    $URL = staticServer.'images/avatars/default.png';
-                    $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar />" : $URL);
-                }
-                break;
-
-            case 2:
-                $ShowAvatar = true;
-                // no break
-
-            case 3:
-                switch ($app->userOld['Identicons']) {
-                    case 0:
-                        $Type = 'identicon';
-                        break;
-                    case 1:
-                        $Type = 'monsterid';
-                        break;
-                    case 2:
-                        $Type = 'wavatar';
-                        break;
-                    case 3:
-                        $Type = 'retro';
-                        break;
-                    case 4:
-                        $Type = '1';
-                        $Robot = true;
-                        break;
-                    case 5:
-                        $Type = '2';
-                        $Robot = true;
-                        break;
-                    case 6:
-                        $Type = '3';
-                        $Robot = true;
-                        break;
-                    default:
-                        $Type = 'identicon';
-                }
-
-                $Rating = 'pg';
-                if (!isset($Robot) || !$Robot) {
-                    $URL = 'https://secure.gravatar.com/avatar/'.md5(strtolower(trim($Username)))."?s=$Size&amp;d=$Type&amp;r=$Rating";
-                } else {
-                    $URL = 'https://robohash.org/'.md5($Username)."?set=set$Type&amp;size={$Size}x$Size";
-                }
-
-                if ($ShowAvatar === true && !empty($Avatar)) {
-                    $ToReturn = ($ReturnHTML ? "<img src=\"$Avatar\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar $Class />" : $Avatar);
-                } else {
-                    $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText $Class />" : $URL);
-                }
-                break;
-
-            default:
-                $URL = staticServer.'images/avatars/default.png';
-                $ToReturn = ($ReturnHTML ? "<img src=\"$URL\" width=\"$Size\" $Style $AvatarMouseOverText$SecondAvatar $Class/>" : $URL);
-        }
-        return $ToReturn;
+        # return the user's avatar
+        return "<img src='{$uri}' alt='avatar for {$username}' width='120' />";
     }
 
 

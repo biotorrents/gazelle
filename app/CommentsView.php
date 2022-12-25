@@ -96,7 +96,7 @@ class CommentsView
   <tr>
     <?php if (Users::hasAvatarsEnabled()) { ?>
     <td class="avatar" valign="top">
-      <?=Users::show_avatar($UserInfo['Avatar'], $AuthorID, $UserInfo['Username'], $app->userNew->extra['DisableAvatars'])?>
+      <?=Users::displayAvatar($UserInfo['Avatar'], $UserInfo['Username'])?>
     </td>
     <?php } ?>
     <td class="body" valign="top">

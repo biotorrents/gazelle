@@ -88,7 +88,7 @@ View::header(
       <tr>
         <?php if (Users::hasAvatarsEnabled()) { ?>
         <td class="avatar" valign="top">
-          <?=Users::show_avatar($user['Avatar'], $user['ID'], $user['Username'], $HeavyInfo['DisableAvatars'])?>
+          <?=Users::displayAvatar($user['Avatar'], $user['Username'])?>
         </td>
         <?php } ?>
         <td class="body" valign="top">
