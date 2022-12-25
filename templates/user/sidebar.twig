@@ -4,14 +4,14 @@
 <form method="post">
 	{{ form_token(query.server.REQUEST_URI) }}
 
-	<input type="text" id="currentPassphrase" name="currentPassphrase" placeholder="Please enter your current passphrase"/>
+	<input type="text" form="userSettingsForm" id="currentPassphrase" name="currentPassphrase" placeholder="Please enter your current passphrase"/>
 
-	<p>You must enter your current passphrase to change any user settings</p>
+	<label for="currentPassphrase">You must enter your current passphrase to change any user settings</label>
 
-	<input type="button" id="save" name="save" value="save" class="button-primary"/>
+	<input type="submit" form="userSettingsForm" id="save" name="save" value="save" class="button-primary"/>
 
-	<input
-	type="button" id="previewParanoia" name="previewParanoia" value="preview paranoia" class="button-orange"/>
+
+	<input type="button" id="previewParanoia" name="previewParanoia" value="preview paranoia" class="button-orange"/>
 
 {#
     {% if env.enableDonations %}

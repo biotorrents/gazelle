@@ -8,14 +8,15 @@ declare(strict_types=1);
  */
 
 $app = App::go();
-!d($app->userNew);
+#!d($app->userNew);
 
 # https://github.com/paragonie/anti-csrf
-Http::csrf();
+#Http::csrf();
 
 # request vars
 $get = Http::query("get");
 $post = Http::query("post");
+!d($post);
 
 # 2fa libraries
 $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
@@ -128,6 +129,7 @@ $paranoia = json_decode($app->userNew->extra["Paranoia"], true) ?? [];
 
 # site options
 $siteOptions = json_decode($app->userNew->extra["SiteOptions"], true) ?? [];
+#!d($siteOptions);exit;
 
 
 /** legacy code */
@@ -190,14 +192,18 @@ function display_paranoia($FieldName)
     echo "<label><input type='checkbox' name='p_{$FieldName}_l'" . checked($Level >= 2) . " onchange='AlterParanoia()' /> Show list</label>&nbsp;";
 }
 
-function checked($Checked)
-{
-    return ($Checked ? ' checked="checked"' : '');
+
+
+/** BEGIN THE ACTUAL FORM HANDLING */
+
+# errors array
+$errors = [];
+
+# validdate current passphrase
+$post["currentPassphrase"] ??= null;
+if (!$post["currentPassphrase"]) {
+
 }
-
-/*
-*/
-
 
 
 
@@ -222,6 +228,9 @@ $app->twig->display("user/settings.twig", [
  # random placeholders
  "twoFactorPlaceHolder" => random_int(100000, 999999),
  "ircKeyPlaceholder" => Text::random(32),
+
+ # notifications manager (legacy)
+ "notificationsManagerSettings" => NotificationsManagerView::render_settings(NotificationsManager::get_settings($app->userNew->core["id"])),
 
 ]);
 

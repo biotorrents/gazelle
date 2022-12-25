@@ -22,7 +22,7 @@ class Database extends PDO
     # pdo connection
     public $pdo = null;
 
-    # eloquent capsuke
+    # eloquent capsule
     public $eloquent = null;
 
     # hash algo for cache keys
@@ -140,14 +140,14 @@ class Database extends PDO
     {
         $app = App::go();
 
-        /*
         # debug
         if ($app->env->dev) {
+            /*
             $app->debug["database"]->log(
                 $this->pdo->debugDumpParams()
             );
+            */
         }
-        */
 
         # prepare
         $statement = $this->pdo->prepare($query);
@@ -243,6 +243,9 @@ class Database extends PDO
     }
 
 
+    /** statement metadata */
+
+
     /**
      * rowCount
      *
@@ -274,13 +277,87 @@ class Database extends PDO
     /**
      * meta
      *
-     * Gets the column metadata.
+     * Gets the query metadata.
      */
-    public function meta(string $query, array $args = []): int
+    public function meta(PDOStatement $statement): array
     {
-        $statement = $this->do($query, $args);
-        $meta = $statement->getColumnMeta();
+        $meta = [ "pdo" => [], "statement" => [] ];
+
+        /** */
+
+        # https://www.php.net/manual/en/pdo.errorcode.php
+        $meta["pdo"]["errorCode"] = $this->pdo->errorCode();
+
+        # https://www.php.net/manual/en/pdo.errorinfo.php
+        $meta["pdo"]["errorInfo"] = $this->pdo->errorInfo();
+
+        # https://www.php.net/manual/en/pdo.getavailabledrivers.php
+        $meta["pdo"]["availableDrivers"] = $this->pdo->getAvailableDrivers();
+
+        # https://www.php.net/manual/en/pdo.intransaction.php
+        $meta["pdo"]["inTransaction"] = $this->pdo->inTransaction();
+
+        # https://www.php.net/manual/en/pdo.lastinsertid.php
+        $meta["pdo"]["lastInsertId"] = $this->pdo->lastInsertId();
+
+        /** */
+
+        # https://www.php.net/manual/en/pdostatement.columncount.php
+        $meta["statement"]["columnCount"] = $statement->columnCount();
+
+        # https://www.php.net/manual/en/pdostatement.debugdumpparams.php
+        $meta["statement"]["debugDumpParams"] = $statement->debugDumpParams();
+
+        # https://www.php.net/manual/en/pdostatement.errorcode.php
+        $meta["statement"]["errorCode"] = $statement->errorCode();
+
+        # https://www.php.net/manual/en/pdostatement.errorinfo.php
+        $meta["statement"]["errorInfo"] = $statement->errorInfo();
+
+        # https://www.php.net/manual/en/pdostatement.getcolumnmeta.php
+        #$meta["statement"]["columnMeta"] = $statement->getColumnMeta($todo);
+
+        # https://www.php.net/manual/en/pdostatement.rowcount.php
+        $meta["statement"]["rowCount"] = $statement->rowCount();
+
+        /** */
 
         return $meta;
+    }
+
+
+    /** transaction wrappers */
+
+
+    /**
+     * beginTransaction
+     *
+     * @see https://www.php.net/manual/en/pdo.begintransaction.php
+     */
+    public function beginTransaction(): bool
+    {
+        return $this->pdo->beginTransaction();
+    }
+
+
+    /**
+     * commit
+     *
+     * @see https://www.php.net/manual/en/pdo.commit.php
+     */
+    public function commit(): bool
+    {
+        return $this->pdo->commit();
+    }
+
+
+    /**
+     * rollBack
+     *
+     * @see https://www.php.net/manual/en/pdo.rollback.php
+     */
+    public function rollBack(): bool
+    {
+        return $this->pdo->rollBack();
     }
 } # class

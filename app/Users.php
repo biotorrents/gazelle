@@ -269,10 +269,12 @@ class Users
         */
 
         try {
+            # delight-im/auth
             $query = "select * from users where id = ?";
             $core = $app->dbNew->row($query, [$userId]);
             $this->core = $core ?? [];
 
+            # gazelle
             $query = "select * from users_main cross join users_info on users_main.id = users_info.userId where id = ?";
             $extra = $app->dbNew->row($query, [$userId]);
             $this->extra = $extra ?? [];
@@ -296,6 +298,10 @@ class Users
             $query = "select * from permissions where id = ?";
             $permissions = $app->dbNew->row($query, [ $this->extra["PermissionID"] ]);
             $this->extra["permissions"] = $permissions;
+
+            # todo: site options
+            #$this->extra["siteOptions"] = json_decode($this->extra["SiteOptions"], true);
+            #unset($this->extra["SiteOptions"]);
 
             # for my own sanity
             foreach ($this as $key => $value) {
@@ -361,6 +367,8 @@ class Users
 
 
     /**
+     * THIS IS GOING AWAY!
+     *
      * Get user info, is used for the current user and usernames all over the site.
      *
      * @param $UserID int   The UserID to get info for
@@ -510,6 +518,8 @@ class Users
 
 
     /**
+     * THIS IS GOING AWAY!
+     *
      * Gets the heavy user info
      * Only used for current user
      *

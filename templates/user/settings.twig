@@ -23,7 +23,7 @@
       <td>
         <select id="stylesheet" name="stylesheet">
           {% for stylesheet in stylesheets %}
-            <option value="{{ stylesheet.id }}" {# {{ (stylesheet.ID == user.extra.StyleID) ?? "selected" }} #}>
+            <option value="{{ stylesheet.id }}" {{ (stylesheet.id == user.extra.StyleID) ? "selected" : "" }}>
               {{ stylesheet.properName }}
             </option>
           {% endfor %} {# for stylesheet in stylesheets #}
@@ -136,29 +136,7 @@ HTML;
           </td>
         </tr>
 
-
-        {# profile stats #}
-        {# {% if checkPerms("users_mod) %} #}
-        <tr>
-          <th>Profile stats</th>
-
-          <td>
-          {#
-            <label>
-              <input type="checkbox" name="autoload_comm_stats" <?Format::selected(
-              'AutoloadCommStats',
-              1,
-              'checked',
-              $SiteOptions
-          ); ?>
-              />
-              Automatically fetch the snatch and peer stats on profile pages
-            </label>
-            #}
-          </td>
-        </tr>
-        {# {% endif %} #}
-      </table> {# site appearance #}
+      </table> {# siteAppearanceSettings #}
 
 
 {# torrent settings #}
@@ -170,19 +148,13 @@ HTML;
           <th>Default search type</th>
 
           <td>
-            <ul class="options_list nobullet">
-              <li>
-                <input type="radio" name="searchtype" id="search_type_simple" value="0" <?=(int)$SiteOptions['SearchType']===0 ? ' checked="checked"' : ''?>
-                />
+                <input type="radio" id="searchTypeSimple" name="searchType" value="0" {{ (siteOptions.SearchType == 0) ? "checked" : "" }} />
                 <label for="search_type_simple">Simple</label>
-              </li>
 
-              <li>
-                <input type="radio" name="searchtype" id="search_type_advanced" value="1" <?=(int)$SiteOptions['SearchType']===1 ? ' checked="checked"' : ''?>
-                />
+                &emsp;
+
+                <input type="radio" id="searchTypeAdvanced" name="searchType" value="1" {{ (siteOptions.SearchType == 1) ? "checked" : "" }} />
                 <label for="search_type_advanced">Advanced</label>
-              </li>
-            </ul>
           </td>
         </tr>
 
@@ -191,11 +163,8 @@ HTML;
           <th>Torrent grouping</th>
 
           <td>
-            <div class="option_group">
-              <input type="checkbox" name="disablegrouping" id="disablegrouping" <?=$SiteOptions['DisableGrouping2'] === 0 ? ' checked="checked"' : ''?>
-              />
-              <label for="disablegrouping">Enable torrent grouping</label>
-            </div>
+              <input type="checkbox" id="disableGrouping" name="disableGrouping" {{ (siteOptions.DisableGrouping2 == 0) ? "checked" : "" }} />
+              <label for="disableGrouping">Enable torrent grouping</label>
           </td>
         </tr>
 
@@ -204,21 +173,13 @@ HTML;
           <th>Torrent group display</th>
 
           <td>
-            <div class="option_group">
-              <ul class="options_list nobullet">
-                <li>
-                  <input type="radio" name="torrentgrouping" id="torrent_grouping_open" value="0" <?=$SiteOptions['TorrentGrouping'] === 0 ? ' checked="checked"' : ''?>
-                  />
-                  <label for="torrent_grouping_open">Open</label>
-                </li>
+            <input type="radio" id="torrentGroupingOpen" name="torrentGrouping" value="0" {{ (siteOptions.TorrentGrouping == 0) ? "checked" : "" }} />
+            <label for="torrent_grouping_open">Open</label>
 
-                <li>
-                  <input type="radio" name="torrentgrouping" id="torrent_grouping_closed" value="1" <?=$SiteOptions['TorrentGrouping'] === 1 ? ' checked="checked"' : ''?>
-                  />
-                  <label for="torrent_grouping_closed">Closed</label>
-                </li>
-              </ul>
-            </div>
+            &emsp;
+
+             <input type="radio" id="torrentGroupingClosed" name="torrentGrouping" value="1" {{ (siteOptions.TorrentGrouping == 1) ? "checked" : "" }} />
+             <label for="torrent_grouping_closed">Closed</label>
           </td>
         </tr>
 
@@ -227,9 +188,8 @@ HTML;
           <th>Snatched torrents indicator</th>
 
           <td>
-            <input type="checkbox" name="showsnatched" id="showsnatched" <?=!empty($SiteOptions['ShowSnatched']) ? ' checked="checked"' : ''?>
-            />
-            <label for="showsnatched">Enable snatched torrents indicator</label>
+            <input type="checkbox" id="showSnatched" name="showSnatched" {{ (siteOptions.ShowSnatched == 1) ? "checked" : "" }} />
+            <label for="showSnatched">Enable snatched torrents indicator</label>
           </td>
         </tr>
 
@@ -238,20 +198,13 @@ HTML;
           <th>Cover art (torrents)</th>
 
           <td>
-            <ul class="options_list nobullet">
-              <li>
-                <input type="hidden" name="coverart" value="" />
-                <input type="checkbox" name="coverart" id="coverart" <?=!isset($SiteOptions['CoverArt']) || $SiteOptions['CoverArt'] ? ' checked="checked"' : ''?>
-                />
-                <label for="coverart">Enable cover artwork</label>
-              </li>
+             <input type="checkbox" id="coverArtTorrents" name="coverArtTorrents" {{ (siteOptions.CoverArt == 1) ? "checked" : "" }} />
+            <label for="coverArtTorrents">Enable cover artwork</label>
 
-              <li>
-                <input type="checkbox" name="show_extra_covers" id="show_extra_covers" <?=$SiteOptions['ShowExtraCovers'] ? ' checked="checked"' : ''?>
-                />
-                <label for="show_extra_covers">Enable additional cover artwork</label>
-              </li>
-            </ul>
+            <br />
+
+            <input type="checkbox" id="coverArtTorrentsExtra" name="coverArtTorrentsExtra" {{ (siteOptions.ShowExtraCovers == 1) ? "checked" : "" }} />
+            <label for="coverArtTorrentsExtra">Enable additional cover artwork</label>
           </td>
         </tr>
 
@@ -260,25 +213,34 @@ HTML;
           <th>Cover art (collections)</th>
 
           <td>
-            <select name="collagecovers" id="collagecovers">
-              <option value="10" <?=$SiteOptions['CollageCovers'] === 10 ? ' selected="selected"' : ''?>>10
+            <select id="coverArtCollections" name="coverArtCollections">
+
+              <option value="10" {{ (siteOptions.CollageCovers == 10) ? "selected" : "" }}>
+              10
               </option>
 
-              <option value="25" <?=($SiteOptions['CollageCovers'] === 25 || !isset($SiteOptions['CollageCovers'])) ? ' selected="selected"' : ''?>>25
-                (default)</option>
-
-              <option value="50" <?=$SiteOptions['CollageCovers'] === 50 ? ' selected="selected"' : ''?>>50
+              <option value="25" {{ (siteOptions.CollageCovers == 25 or siteOptions.CollageCovers is null) ? "selected" : "" }}>
+              25 (default)
               </option>
 
-              <option value="100" <?=$SiteOptions['CollageCovers'] === 100 ? ' selected="selected"' : ''?>>100
+              <option value="50" {{ (siteOptions.CollageCovers == 50) ? "selected" : "" }}>
+              50
               </option>
 
-              <option value="1000000" <?=$SiteOptions['CollageCovers'] === 1000000 ? ' selected="selected"' : ''?>>All
+              <option value="100" {{ (siteOptions.CollageCovers == 100) ? "selected" : "" }}>
+              100
               </option>
 
-              <option value="0" <?=($SiteOptions['CollageCovers'] === 0 || (!isset($SiteOptions['CollageCovers']) && $SiteOptions['HideCollage'])) ? ' selected="selected"' : ''?>>None
+              <option value="1000000" {{ (siteOptions.CollageCovers == 1000000) ? "selected" : "" }}>
+              all
               </option>
+
+              <option value="0" {{ (siteOptions.CollageCovers == 0 or siteOptions.HideCollage is defined) ? "selected" : "" }}>
+              no
+              </option>
+
             </select>
+
             covers per page
           </td>
         </tr>
@@ -288,22 +250,16 @@ HTML;
           <th>Torrent search filters</th>
 
           <td>
-            <ul class="options_list nobullet">
-              <li>
-                <input type="checkbox" name="showtfilter" id="showtfilter" <?=(!isset($SiteOptions['ShowTorFilter']) || $SiteOptions['ShowTorFilter'] ? ' checked="checked"' : '')?>
-                />
-                <label for="showtfilter">Display filter controls</label>
-              </li>
+            <input type="checkbox" id="showTorrentFilter" name="showTorrentFilter" {{ (siteOptions.ShowTorFilter is defined) ? "checked" : "" }} />
+            <label for="showTorrentFilter">Display filter controls</label>
 
-              <li>
-                <input type="checkbox" name="showtags" id="showtags" <?php Format::selected('ShowTags', 1, 'checked', $SiteOptions); ?>
-                />
-                <label for="showtags">Display official tag filters</label>
-              </li>
-            </ul>
+            <br />
+
+           <input type="checkbox" id="showTagFilter" name="showTagFilter" {{ (siteOptions.ShowTags is defined) ? "checked" : "" }} />
+           <label for="showTagFilter">Display official tag filters</label>
           </td>
         </tr>
-      </table>
+      </table> {# torrentSettings #}
 
 
 
@@ -339,9 +295,8 @@ HTML;
           <th>Inbox sorting</th>
 
           <td>
-            <input type="checkbox" name="list_unread_pms_first" id="list_unread_pms_first" <?=!empty($SiteOptions['ListUnreadPMsFirst']) ? ' checked="checked"' : ''?>
-            />
-            <label for="list_unread_pms_first">List unread private messages first</label>
+            <input type="checkbox" id="listUnreadsFirst" name="listUnreadsFirst" {{ (siteOptions.ListUnreadPMsFirst is defined) ? "checked" : "" }} />
+            <label for="listUnreadsFirst">List unread private messages first</label>
           </td>
         </tr>
 
@@ -350,11 +305,14 @@ HTML;
           <th>Avatar display (posts)</th>
 
           <td>
-            <select name="disableavatars" id="disableavatars">
-              <option value="1" <?=(int)$SiteOptions['DisableAvatars'] === 1 ? ' selected="selected"' : ''?>>Disable
-                avatars</option>
-              <option value="0" <?=(int)$SiteOptions['DisableAvatars'] === 0 ? ' selected="selected"' : ''?>>Show
-                avatars</option>
+            <select id="disableAvatars" name="disableAvatars">
+              <option value="1" {{ (siteOptions.DisableAvatars == 1) ? "selected" : "" }}>
+              Disable avatars
+              </option>
+
+              <option value="0"  {{ (siteOptions.DisableAvatars == 0) ? "selected" : "" }}>
+              Show avatars
+              </option>
             </select>
           </td>
         </tr>
@@ -398,7 +356,7 @@ HTML;
           </td>
         </tr>
         #}
-      </table>
+      </table> {# communitySettings #}
 
 
 
@@ -414,9 +372,8 @@ HTML;
           <th>Automatic thread subscriptions</th>
 
           <td>
-            <input type="checkbox" name="autosubscribe" id="autosubscribe" <?=!empty($SiteOptions['AutoSubscribe']) ? ' checked="checked"' : ''?>
-            />
-            <label for="autosubscribe">Enable automatic thread subscriptions</label>
+            <input type="checkbox" id="autoSubscribe" name="autoSubscribe" {{ (siteOptions.AutoSubscribe is defined) ? "checked" : "" }} />
+            <label for="autoSubscribe">Enable automatic thread subscriptions</label>
           </td>
         </tr>
 
@@ -425,12 +382,14 @@ HTML;
           <th>Unseeded torrent alerts</th>
 
           <td>
-            <input type="checkbox" name="unseededalerts" id="unseededalerts" <?=checked($UnseededAlerts)?> />
-            <label for="unseededalerts">Enable unseeded torrent alerts</label>
+            <input type="checkbox" id="unseededAlerts" name="unseededAlerts" {{ (user.extra.UnseededAlerts) ? "checked" : "" }} />
+            <label for="unseededAlerts">Enable unseeded torrent alerts</label>
           </td>
         </tr>
-        <?php NotificationsManagerView::render_settings(NotificationsManager::get_settings($UserID)); ?>
-      </table>
+
+        {# legacy call to NotificationsManagerView::render_settings #}
+        {{ notificationsManagerSettings|raw }}
+      </table> {# notificationSettings #}
 
 
 
@@ -468,7 +427,7 @@ HTML;
             {% include "_base/textarea.twig" with variables %}
           </td>
         </tr>
-      </table>
+      </table> {# profileSettings #}
 
 
 
@@ -935,12 +894,7 @@ END PARANOIA CLUSTERFUCK #}
       {% else %}
       <p>
         The PGP public key associated with your account is shown below.
-        This key can be used to create challenges that are only solvable by the holder of the related private key.
-      </p>
-
-      <p>
-        Successfully solving these challenges is necessary for disabling any form of second factor authentication or
-        proving ownership of this account to staff when you are unable to login.
+        This key helps create challenges that are only solvable by you, to verify account ownership.
       </p>
 
           {% endif %} {# if user.extra.PublicKey is empty #}
@@ -1070,7 +1024,7 @@ END PARANOIA CLUSTERFUCK #}
             <a id="createPassphrase" class="button">suggest a secure passphrase</a>
           </td>
         </tr>
-      </table>
+      </table> {# securitySettings #}
 
   </form>
 

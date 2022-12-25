@@ -63,11 +63,56 @@ class Permissions
      * listPermissions
      *
      * Lists all the site permissions.
-     * Currently hardcoded based on $permissionsArray in bootstrap/utilities.php because ugh...
      */
     public static function listPermissions()
     {
-        $permissions = [
+        # in progress: simple crud natural language permissions
+        $newPermissions = [
+            # torrents
+            "create torrents",
+            "read torrents",
+            "update own torrents",
+            "update any torrents",
+            "delete own torrents",
+            "delete any torrents",
+
+            # collections
+            "create collections",
+            "read collections",
+            "update own collections",
+            "update any collections",
+            "delete own collections",
+            "delete any collections",
+
+            # requests
+            "create requests",
+            "read requests",
+            "update own requests",
+            "update any requests",
+            "delete own requests",
+            "delete any requests",
+
+            # posts
+            "create posts",
+            "read posts",
+            "update own posts",
+            "update any posts",
+            "delete own posts",
+            "delete any posts",
+
+            # user profiles
+            "create user profiles",
+            "read user profiles",
+            "update own user profiles",
+            "update any user profiles",
+            "delete own user profiles",
+            "delete any user profiles",
+
+            # todo: other items and misc admin permissions
+        ];
+
+        # from bootstrap/utilities.php
+        $oldPermissions = [
             "admin_advanced_user_search" => "Can access advanced user search",
             "admin_clear_cache" => "Can clear cached",
             "admin_donor_log" => "Can view the donor log",
@@ -167,7 +212,7 @@ class Permissions
             "zip_downloader" => "Download multiple torrents at once",
         ];
 
-        return $permissions;
+        return $oldPermissions;
     }
 
 
@@ -181,9 +226,26 @@ class Permissions
     {
         $userRole = self::getUserRole();
 
-        $can = Illuminate\Support\Str::contains($userRole["values"], $permission);
+        # try json first
+        $rolePermissions = json_decode($userRole["values"], true);
+        if ($rolePermissions) {
+            return in_array($permission, $rolePermissions);
+        }
 
-        return $can;
+        # try to unserialize
+        $rolePermissions = unserialize($userRole["values"]);
+        if ($rolePermissions) {
+            return in_array($permission, array_keys($rolePermissions));
+        }
+
+        # try string search
+        $rolePermissions = $userRole["values"];
+        if ($rolePermissions) {
+            return Illuminate\Support\Str::contains($rolePermissions, $permission);
+        }
+
+        # default deny
+        return false;
     }
 
 

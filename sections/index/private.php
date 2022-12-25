@@ -6,13 +6,8 @@ $app = App::go();
 
 # get the news
 # todo: use discourse
-$news = $app->cacheOld->get_value("news");
-if (!$news) {
-    $query = "select * from news order by time desc";
-    $news = $app->dbNew->row($query);
-    $app->cacheOld->cache_value("news", $news, "one day");
-}
-#!d($news);exit;
+$query = "select * from news order by time desc";
+$news = $app->dbNew->row($query);
 
 /*
 if ($user['LastReadNews'] !== $News[0][0] && count($News) > 0) {
@@ -29,17 +24,12 @@ if ($user['LastReadNews'] !== $News[0][0] && count($News) > 0) {
 
 # get the blog
 # todo: use discourse
-$blog = $app->cacheOld->get_value("blog");
-if (!$blog) {
-    $query = "
-        select *, users_main.username from blog
-        left join users_main on blog.userId = users_main.id
-        order by time desc limit ?
-    ";
-    $blog = $app->dbNew->multi($query, [3]);
-    $app->cacheOld->cache_value("blog", $blog, 3600 * 24 * 30);
-}
-#!d($blog);exit;
+$query = "
+    select *, users_main.username from blog
+    left join users_main on blog.userId = users_main.id
+    order by time desc limit ?
+";
+$blog = $app->dbNew->multi($query, [3]);
 
 /*
 if (count($blog) < 5) {
@@ -75,9 +65,7 @@ if (!$freeleeches) {
 /** twig template */
 
 
-$app->twig->display(
-    "index/private.twig",
-    [
+$app->twig->display("index/private.twig", [
     "sidebar" => true,
     "news" => $news,
 
@@ -88,8 +76,7 @@ $app->twig->display(
       "category" => $category,
       "topics" => $topics,
       */
-  ]
-);
+]);
 
 
 exit;
