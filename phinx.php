@@ -7,8 +7,8 @@ declare(strict_types=1);
  * Phinx config
  */
 
-# composer autoload
-require_once __DIR__."/vendor/autoload.php";
+# bootstrap the app
+require_once __DIR__."/bootstrap/cli.php";
 
 # load the app
 $app = App::go();

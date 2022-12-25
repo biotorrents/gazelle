@@ -177,7 +177,7 @@ define("SPHINX_MAX_MATCHES", 1000); # must be <= server max_matches (default 100
  * one each for development and production.
  */
 
- # production
+# production
 if (!$env->dev) {
     ENV::setPriv(
         "MEMCACHED_SERVERS",
@@ -302,6 +302,26 @@ ENV::setPub(
     ["\"", "*", "/", ":", "<", ">", "?", "\\", "|"]
 );
 
+# default site options
+$defaultSiteOptions = [
+    "autoSubscribe" => true,
+    "coverArtCollections" => 25,
+    "coverArtTorrents" => true,
+    "coverArtTorrentsExtra" => true,
+    "disableAvatars" => false,
+    "disableGrouping" => false,
+    "listUnreadsFirst" => true,
+    "searchType" => "simple",
+    "showTagFilter" => true,
+    "showTorrentFilter" => true,
+    "showSnatched" => true,
+    "styleId" => 1,
+    "styleUri" => "",
+    "torrentGrouping" => "open",
+    "unseededAlerts" => true,
+];
+
+ENV::setPub("defaultSiteOptions", json_encode($defaultSiteOptions));
 
 
 /**

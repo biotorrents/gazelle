@@ -1547,7 +1547,7 @@ class Users
                 "searchType" => Esc::string($data["searchType"]),
                 "showTagFilter" => Esc::bool($data["showTagFilter"]),
                 "showTorrentFilter" => Esc::bool($data["showTorrentFilter"]),
-                "snowSnatched" => Esc::bool($data["showSnatched"]),
+                "showSnatched" => Esc::bool($data["showSnatched"]),
                 "styleId" => Esc::int($data["styleId"]),
                 "styleUri" => Esc::url($data["styleUri"]),
                 "torrentGrouping" => Esc::string($data["torrentGrouping"]),
@@ -1566,4 +1566,18 @@ class Users
             throw new Exception($e->getMessage());
         }
     } # updateSettings
+
+
+    /**
+     * defaultSiteOptions
+     *
+     * Initialize a new user with some default options,
+     * mostly so the user settings page doesn't explode.
+     */
+    public function defaultSiteOptions(): string
+    {
+        $app = App::go();
+
+        return $app->env->defaultSiteOptions;
+    }
 } # class
