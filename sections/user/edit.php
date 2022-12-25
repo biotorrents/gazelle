@@ -8,7 +8,7 @@ declare(strict_types=1);
  */
 
 $app = App::go();
-#!d($app->userNew);
+!d($app->userNew);
 
 # https://github.com/paragonie/anti-csrf
 #Http::csrf();

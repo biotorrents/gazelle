@@ -315,7 +315,7 @@ if (check_perms('users_mod')) {
 
   <div class="sidebar one-third column">
     <?php
-if ($Avatar && Users::has_avatars_enabled()) {
+if ($Avatar && Users::hasAvatarsEnabled()) {
     ?>
     <div class="box box_image box_image_avatar">
       <div class="head colhead_dark">User</div>

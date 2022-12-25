@@ -118,12 +118,8 @@ class Users
         }
 
         # cache session
-        $session = $app->cacheOld->get_value("users_sessions_{$userId}");
-        if (!$session) {
-            $query = "select sessionId, ip, lastUpdate from users_sessions where userId = ? and active = 1 order by lastUpdate desc";
-            $session = $app->dbNew->row($query, [$userId]);
-            $app->cacheOld->cache_value("users_sessions_{$userId}", $session, $this->cacheDuration);
-        }
+        $query = "select sessionId, ip, lastUpdate from users_sessions where userId = ? and active = 1 order by lastUpdate desc";
+        $session = $app->dbNew->row($query, [$userId]);
 
         # bad session
         if (!array_key_exists($sessionId, $session)) {
@@ -132,12 +128,8 @@ class Users
         }
 
         # check enabled
-        $enabled = $app->cacheOld->get_value("enabled_{$userId}");
-        if (!$enabled) {
-            $query = "select enabled from users_main where id = ?";
-            $enabled = $app->dbNew->single($query, [$userId]);
-            $app->cacheOld->cache_value("enabled_{$userId}", $enabled, $this->cacheDuration);
-        }
+        $query = "select enabled from users_main where id = ?";
+        $enabled = $app->dbNew->single($query, [$userId]);
 
         # double check
         if (intval($enabled) === 2) {
@@ -146,12 +138,8 @@ class Users
         }
 
         # user stats
-        $stats = $app->cacheOld->get_value("user_stats_{$userId}");
-        if (!$stats) {
-            $query = "select uploaded, downloaded, requiredRatio from users_main where id = ?";
-            $stats = $app->dbNew->row($query, [$userId]);
-            $app->cacheOld->cache_value("user_stats_{$userId}", $stats, $this->cacheDuration);
-        }
+        $query = "select uploaded, downloaded, requiredRatio from users_main where id = ?";
+        $stats = $app->dbNew->row($query, [$userId]);
 
         # original gazelle user info
         $this->heavyInfo = self::user_heavy_info($userId) ?? [];
@@ -232,18 +220,13 @@ class Users
         */
 
         # get all stylesheets
-        $stylesheets = $app->cacheOld->get_value("stylesheets");
-        if (!$stylesheets) {
-            $query = "
-                select id,
-                lower(replace(name, ' ', '_')) as name, name as properName,
-                lower(replace(additions, ' ', '_')) as additions, additions as properAdditions
-                from stylesheets
-            ";
-
-            $stylesheets = $app->dbNew->row($query);
-            $app->cacheOld->cache_value("stylesheets", $stylesheets, $this->cacheDuration);
-        }
+        $query = "
+            select id,
+            lower(replace(name, ' ', '_')) as name, name as properName,
+            lower(replace(additions, ' ', '_')) as additions, additions as properAdditions
+            from stylesheets
+        ";
+        $stylesheets = $app->dbNew->multi($query);
 
         # the user is loaded
         $authenticated = true;
@@ -300,7 +283,7 @@ class Users
             $this->extra["permissions"] = $permissions;
 
             # todo: site options
-            #$this->extra["siteOptions"] = json_decode($this->extra["SiteOptions"], true);
+            $this->extra["siteOptions"] = json_decode($this->extra["SiteOptions"], true);
             #unset($this->extra["SiteOptions"]);
 
             # for my own sanity
@@ -644,65 +627,6 @@ class Users
         return $HeavyInfo;
     }
 
-    /**
-     * Updates the site options in the database
-     *
-     * @param int $UserID the UserID to set the options for
-     * @param array $NewOptions the new options to set
-     * @return false if $NewOptions is empty, true otherwise
-     */
-    public static function update_site_options($UserID, $NewOptions)
-    {
-        $app = App::go();
-
-        if (!is_number($UserID)) {
-            error(0);
-        }
-
-        if (empty($NewOptions)) {
-            return false;
-        }
-
-        $QueryID = $app->dbOld->get_query_id();
-
-        // Get SiteOptions
-        $app->dbOld->query("
-        SELECT
-          `SiteOptions`
-        FROM
-          `users_info`
-        WHERE
-          `UserID` = $UserID
-        ");
-
-        list($SiteOptions) = $app->dbOld->next_record(MYSQLI_NUM, false);
-        $SiteOptions = json_decode($SiteOptions, true);
-
-        // Get HeavyInfo
-        $HeavyInfo = self::user_heavy_info($UserID);
-
-        // Insert new/replace old options
-        $SiteOptions = array_merge($SiteOptions, $NewOptions);
-        $HeavyInfo = array_merge($HeavyInfo, $NewOptions);
-
-        // Update DB
-        $app->dbOld->query("
-        UPDATE users_info
-        SET SiteOptions = '".db_string(json_encode($SiteOptions, true))."'
-          WHERE UserID = $UserID");
-        $app->dbOld->set_query_id($QueryID);
-
-        // Update cache
-        $app->cacheOld->cache_value("user_info_heavy_$UserID", $HeavyInfo, 0);
-
-        // Update $app->userOld if the options are changed for the current
-        if ($app->userOld['ID'] == $UserID) {
-            $app->userOld = array_merge($app->userOld, $NewOptions);
-            $app->userOld['ID'] = $UserID; // We don't want to allow userid switching
-        }
-        return true;
-    }
-
 
     /**
      * Returns a username string for display
@@ -796,6 +720,7 @@ class Users
         return $Str;
     }
 
+
     /**
      * Given a class ID, return its name.
      *
@@ -839,6 +764,7 @@ class Users
         $TorrentList = Torrents::get_groups($GroupIDs);
         return [$GroupIDs, $BookmarkData, $TorrentList];
     }
+
 
     /**
      * Generate HTML for a user's avatar or just return the avatar URL
@@ -942,12 +868,11 @@ class Users
 
 
     /**
-     * has_avatars_enabled
+     * hasAvatarsEnabled
      */
-    public static function has_avatars_enabled()
+    public static function hasAvatarsEnabled(): bool
     {
-        global $HeavyInfo;
-        return isset($HeavyInfo['DisableAvatars']) && ($HeavyInfo['DisableAvatars'] !== 1);
+        return $this->extra["siteOptions"]["disableAvatars"];
     }
 
 

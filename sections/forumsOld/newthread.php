@@ -67,13 +67,13 @@ View::header(
     <?php } ?>
     <table class="forum_post box vertical_margin" style="text-align: left;">
       <colgroup>
-        <?php if (Users::has_avatars_enabled()) { ?>
+        <?php if (Users::hasAvatarsEnabled()) { ?>
         <col class="col_avatar" />
         <?php } ?>
         <col class="col_post_body" />
       </colgroup>
       <tr class="colhead_dark">
-        <td colspan="<?=Users::has_avatars_enabled() ? 2 : 1 ?>">
+        <td colspan="<?=Users::hasAvatarsEnabled() ? 2 : 1 ?>">
           <span class="u-pull-left"><a href="#newthreadpreview">#XXXXXX</a>
             by <strong><?=Users::format_username($user['ID'], true, true, true, true, true)?></strong>
             Just now
@@ -86,7 +86,7 @@ View::header(
         </td>
       </tr>
       <tr>
-        <?php if (Users::has_avatars_enabled()) { ?>
+        <?php if (Users::hasAvatarsEnabled()) { ?>
         <td class="avatar" valign="top">
           <?=Users::show_avatar($user['Avatar'], $user['ID'], $user['Username'], $HeavyInfo['DisableAvatars'])?>
         </td>

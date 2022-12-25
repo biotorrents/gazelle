@@ -102,17 +102,6 @@ if (check_perms('site_advanced_top10')) {
 
 // Default setting to have them shown
 $DisableFreeTorrentTop10 = (isset($user['DisableFreeTorrentTop10']) ? $user['DisableFreeTorrentTop10'] : 0);
-// Did they just toggle it?
-if (isset($_GET['freeleech'])) {
-    // What did they choose?
-    $NewPref = (($_GET['freeleech'] === 'hide') ? 1 : 0);
-
-    // Pref id different
-    if ($NewPref !== $DisableFreeTorrentTop10) {
-        $DisableFreeTorrentTop10 = $NewPref;
-        Users::update_site_options($user['ID'], array('DisableFreeTorrentTop10' => $DisableFreeTorrentTop10));
-    }
-}
 
 // Modify the Where query
 if ($DisableFreeTorrentTop10) {

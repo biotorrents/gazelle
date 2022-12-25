@@ -216,16 +216,16 @@ if (!$NumResults) {
     } ?>
 
   <table
-    class="forum_post box vertical_margin<?=(!Users::has_avatars_enabled() ? ' noavatar' : '')?>">
+    class="forum_post box vertical_margin<?=(!Users::hasAvatarsEnabled() ? ' noavatar' : '')?>">
     <colgroup>
-      <?php if (Users::has_avatars_enabled()) { ?>
+      <?php if (Users::hasAvatarsEnabled()) { ?>
       <col class="col_avatar" />
       <?php } ?>
       <col class="col_post_body" />
     </colgroup>
     <tr
       class="colhead_dark notify_<?=$Result['Page']?>">
-      <td colspan="<?=Users::has_avatars_enabled() ? 2 : 1 ?>">
+      <td colspan="<?=Users::hasAvatarsEnabled() ? 2 : 1 ?>">
         <span class="u-pull-left">
           <?=$Links . ($Result['PostID'] < $Result['LastPost'] ? ' <span class="new">(New!)</span>' : '')?>
         </span>
@@ -261,7 +261,7 @@ if (!$NumResults) {
     <?php if (!empty($Result['LastReadBody'])) { // if a user is subscribed to a topic/comments but hasn't accessed the site ever, LastReadBody will be null - in this case we don't display a post.?>
     <tr
       class="row<?=$ShowCollapsed ? ' hidden' : '' ?>">
-      <?php if (Users::has_avatars_enabled()) { ?>
+      <?php if (Users::hasAvatarsEnabled()) { ?>
       <td class="avatar" valign="top">
         <?=Users::show_avatar($Result['LastReadAvatar'], $Result['LastReadUserID'], $Result['LastReadUsername'], $HeavyInfo['DisableAvatars'])?>
       </td>

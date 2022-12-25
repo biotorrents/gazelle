@@ -495,7 +495,7 @@ foreach ($Thread as $Key => $Post) {
     ) {
       echo ' forum_unread';
   }
-    if (!Users::has_avatars_enabled()) {
+    if (!Users::hasAvatarsEnabled()) {
         echo ' noavatar';
     }
     if ($ThreadInfo['OP'] == $AuthorID) {
@@ -508,13 +508,13 @@ foreach ($Thread as $Key => $Post) {
         echo ' staff_post';
     } ?>" id="post<?=$PostID?>">
   <colgroup>
-    <?php if (Users::has_avatars_enabled()) { ?>
+    <?php if (Users::hasAvatarsEnabled()) { ?>
     <col class="col_avatar" />
     <?php } ?>
     <col class="col_post_body" />
   </colgroup>
   <tr class="colhead_dark">
-    <td colspan="<?=Users::has_avatars_enabled() ? 2 : 1?>">
+    <td colspan="<?=Users::hasAvatarsEnabled() ? 2 : 1?>">
       <div class="u-pull-left"><a class="post_id"
           href="forums.php?action=viewthread&amp;threadid=<?=$ThreadID?>&amp;postid=<?=$PostID?>#post<?=$PostID?>">#<?=$PostID?></a>
         <?=Users::format_username($AuthorID, true, true, true, true, true);
@@ -580,12 +580,12 @@ foreach ($Thread as $Key => $Post) {
     </td>
   </tr>
   <tr>
-    <?php if (Users::has_avatars_enabled()) { ?>
+    <?php if (Users::hasAvatarsEnabled()) { ?>
     <td class="avatar valign_top">
       <?=Users::show_avatar($Avatar, $AuthorID, $Username, $HeavyInfo['DisableAvatars'], 150, true)?>
     </td>
     <?php } ?>
-    <td class="body valign_top" <?php if (!Users::has_avatars_enabled()) {
+    <td class="body valign_top" <?php if (!Users::hasAvatarsEnabled()) {
       echo ' colspan="2"';
   } ?>>
       <div id="content<?=$PostID?>">

@@ -43,16 +43,16 @@ class CommentsView
         $UserInfo = Users::user_info($AuthorID);
         $Header = Users::format_username($AuthorID, true, true, true, true, true) . time_diff($AddedTime) . $Header; ?>
 <table
-  class="forum_post box vertical_margin<?=(!Users::has_avatars_enabled() ? ' noavatar' : '') . ($Unread ? ' forum_unread' : '')?>"
+  class="forum_post box vertical_margin<?=(!Users::hasAvatarsEnabled() ? ' noavatar' : '') . ($Unread ? ' forum_unread' : '')?>"
   id="post<?=$PostID?>">
   <colgroup>
-    <?php if (Users::has_avatars_enabled()) { ?>
+    <?php if (Users::hasAvatarsEnabled()) { ?>
     <col class="col_avatar" />
     <?php } ?>
     <col class="col_post_body" />
   </colgroup>
   <tr class="colhead_dark">
-    <td colspan="<?=(Users::has_avatars_enabled() ? 2 : 1)?>">
+    <td colspan="<?=(Users::hasAvatarsEnabled() ? 2 : 1)?>">
       <div class="u-pull-left"><a class="post_id"
           href="<?=$Link?>">#<?=$PostID?></a>
         <?=$Header?>
@@ -94,7 +94,7 @@ class CommentsView
     </td>
   </tr>
   <tr>
-    <?php if (Users::has_avatars_enabled()) { ?>
+    <?php if (Users::hasAvatarsEnabled()) { ?>
     <td class="avatar" valign="top">
       <?=Users::show_avatar($UserInfo['Avatar'], $AuthorID, $UserInfo['Username'], $app->userNew->extra['DisableAvatars'])?>
     </td>

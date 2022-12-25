@@ -107,6 +107,3 @@ while (list($Downloads, $GroupIDs) = $Collector->get_downloads('GroupID')) {
 }
 $Collector->finalize();
 $Settings = array(implode(':', $_REQUEST['list']), $_REQUEST['preference']);
-if (!isset($user['Collector']) || $user['Collector'] != $Settings) {
-    Users::update_site_options($user['ID'], array('Collector' => $Settings));
-}
