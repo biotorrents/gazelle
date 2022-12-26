@@ -11,7 +11,7 @@ $app = App::go();
 !d($app->userNew);
 
 # https://github.com/paragonie/anti-csrf
-#Http::csrf();
+Http::csrf();
 
 # request vars
 $get = Http::query("get");
@@ -171,12 +171,6 @@ $app->dbOld->query("
 list($Username, $TwoFactor, $PublicKey, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $Class, $InfoTitle) = $app->dbOld->next_record(MYSQLI_NUM, [5, 10]);
 */
 
-/*
-if ((int) $UserID !== $user['ID'] && !check_perms('users_edit_profiles', $Class)) {
-    error(403);
-}
-
-*/
 
 function paranoia_level($Setting)
 {
@@ -196,15 +190,12 @@ function display_paranoia($FieldName)
 
 /** BEGIN THE ACTUAL FORM HANDLING */
 
-# errors array
-$errors = [];
-
-# validdate current passphrase
-$post["currentPassphrase"] ??= null;
-if (!$post["currentPassphrase"]) {
-
+try {
+    $app->userNew->updateSettings($post);
+    NotificationsManager::save_settings($app->userNew->core["id"]);
+} catch (Exception $e) {
+    $error = $e->getMessage();
 }
-
 
 
 
@@ -232,6 +223,7 @@ $app->twig->display("user/settings.twig", [
  # notifications manager (legacy)
  "notificationsManagerSettings" => NotificationsManagerView::render_settings(NotificationsManager::get_settings($app->userNew->core["id"])),
 
+ "error" => $error ?? null,
 ]);
 
 exit;
@@ -248,63 +240,6 @@ exit;
 
 
 /** TAKE_EDIT STUFF BELOW */
-
-
-#declare(strict_types=1);
-
-
-$app = App::go();
-
-/**
- * START CHECKS
- */
-
-authorize();
-$UserID = (int) $_REQUEST['userid'];
-Security::int($UserID);
-
-// For this entire page, we should generally be using $UserID not $user['ID'] and $U[] not $user[]
-$U = Users::user_info($UserID);
-
-if (!$U) {
-    error(404);
-}
-
-$Permissions = Permissions::get_permissions($U['PermissionID']);
-if ((int) $UserID !== $user['ID'] && !check_perms('users_edit_profiles', $Permissions['Class'])) {
-    send_irc(ADMIN_CHAN, 'User '.$user['Username'].' ('.site_url().'user.php?id='.$user['ID'].') just tried to edit the profile of '.site_url().'user.php?id='.$_REQUEST['userid']);
-    error(403);
-}
-
-$Val->SetFields('stylesheet', 1, "number", "You forgot to select a stylesheet.");
-$Val->SetFields('styleurl', 0, "regex", "You did not enter a valid stylesheet URL.", ['regex' => $app->env->regexCss]);
-$Val->SetFields('postsperpage', 1, "number", "You forgot to select your posts per page option.", ['inarray' => [25, 50, 100]]);
-//$Val->SetFields('hidecollage', 1, "number", "You forgot to select your collage option.", ['minlength' => 0, 'maxlength' => 1]);
-$Val->SetFields('collagecovers', 1, "number", "You forgot to select your collage option.");
-$Val->SetFields('avatar', 0, "regex", "You did not enter a valid avatar URL.", ['regex' => $app->env->regexImage]);
-$Val->SetFields('email', 1, "email", "You did not enter a valid email address.");
-$Val->SetFields('irckey', 0, "string", "You did not enter a valid IRC key. An IRC key must be between 6 and 32 characters long.", ['minlength' => 6, 'maxlength' => 32]);
-$Val->SetFields('new_pass_1', 0, "regex", "You did not enter a valid password. A valid password is 15 characters or longer.", ['regex' => '/(?=^.{15,}$).*$/']);
-$Val->SetFields('new_pass_2', 1, "compare", "Your passwords do not match.", ['comparefield' => 'new_pass_1']);
-
-/*
-if (check_perms('site_advanced_search')) {
-    $Val->SetFields('searchtype', 1, "number", "You forgot to select your default search preference.", ['minlength' => 0, 'maxlength' => 1]);
-}
-*/
-
-$ValErr = $Val->ValidateForm($_POST);
-if ($ValErr) {
-    error($ValErr);
-}
-
-if (!apcu_exists('DBKEY')) {
-    error("Cannot edit profile until database fully decrypted");
-}
-
-/**
- * END CHECKS
- */
 
 // Begin building $Paranoia
 // Reduce the user's input paranoia until it becomes consistent
@@ -390,100 +325,17 @@ if (!isset($_POST['p_donor_heart'])) {
 
 // End building $Paranoia
 
-$db->query("
-  SELECT Email, PassHash, IRCKey
-  FROM users_main
-  WHERE ID = ?", $UserID);
-list($CurEmail, $CurPassHash, $CurIRCKey) = $db->next_record();
 
-function require_password($Setting = false)
-{
-    global $CurPassHash;
-    if (empty($_POST['cur_pass'])) {
-        error('A setting you changed requires you to enter your current password'.($Setting ? ' (Setting: '.$Setting.')' : ''));
-    }
 
-    if (!Auth::checkHash($_POST['cur_pass'], $CurPassHash)) {
-        error('The password you entered was incorrect'.($Setting ? ' (Required by setting: '.$Setting.')' : ''));
-    }
-}
 
-// Email change
-$CurEmail = Crypto::decrypt($CurEmail);
-if ($CurEmail !== $_POST['email']) {
-    // Non-admins have to authenticate to change email
-    if (!check_perms('users_edit_profiles')) {
-        require_password("Change Email");
-    }
-}
 
-if (!empty($_POST['new_pass_1']) && !empty($_POST['new_pass_2'])) {
-    require_password("Change Password");
-    $ResetPassword = true;
-}
 
-if ($CurIRCKey != $_POST['irckey']) {
-    require_password("Change IRC Key");
-}
 
-if (isset($_POST['resetpasskey'])) {
-    require_password("Reset Passkey");
-}
 
-if ($user['DisableAvatar'] && $_POST['avatar'] != $U['Avatar']) {
-    error('Your avatar privileges have been revoked.');
-}
 
-if (!empty($user['DefaultSearch'])) {
-    $Options['DefaultSearch'] = $user['DefaultSearch'];
-}
 
-$Options['DisableGrouping2']   = (!empty($_POST['disablegrouping']) ? 0 : 1);
-$Options['TorrentGrouping']    = (!empty($_POST['torrentgrouping']) ? 1 : 0);
-$Options['PostsPerPage']       = (int)$_POST['postsperpage'];
-$Options['CollageCovers']      = (empty($_POST['collagecovers']) ? 0 : $_POST['collagecovers']);
-$Options['ShowTorFilter']      = (empty($_POST['showtfilter']) ? 0 : 1);
-$Options['ShowTags']           = (!empty($_POST['showtags']) ? 1 : 0);
-$Options['AutoSubscribe']      = (!empty($_POST['autosubscribe']) ? 1 : 0);
-$Options['AutoloadCommStats']  = (check_perms('users_mod') && !empty($_POST['autoload_comm_stats']) ? 1 : 0);
-$Options['DisableAvatars']     = db_string($_POST['disableavatars']);
-$Options['Identicons']         = (!empty($_POST['identicons']) ? (int)$_POST['identicons'] : 0);
-$Options['DisablePMAvatars']   = (!empty($_POST['disablepmavatars']) ? 1 : 0);
-$Options['NotifyOnQuote']      = (!empty($_POST['notifications_Quotes_popup']) ? 1 : 0);
-$Options['ListUnreadPMsFirst'] = (!empty($_POST['list_unread_pms_first']) ? 1 : 0);
-$Options['ShowSnatched']       = (!empty($_POST['showsnatched']) ? 1 : 0);
-$Options['DisableAutoSave']    = (!empty($_POST['disableautosave']) ? 1 : 0);
-$Options['CoverArt']           = (int)!empty($_POST['coverart']);
-$Options['ShowExtraCovers']    = (int)!empty($_POST['show_extra_covers']);
-$Options['StyleAdditions']     = $_POST['style_additions'] ?? [];
 
-if (isset($user['DisableFreeTorrentTop10'])) {
-    $Options['DisableFreeTorrentTop10'] = $user['DisableFreeTorrentTop10'];
-}
 
-if (!empty($_POST['sorthide'])) {
-    $JSON = json_decode($_POST['sorthide']);
-    foreach ($JSON as $J) {
-        $E = explode('_', $J);
-        $Options['SortHide'][$E[0]] = $E[1];
-    }
-} else {
-    $Options['SortHide'] = [];
-}
-
-if (check_perms('site_advanced_search')) {
-    $Options['SearchType'] = $_POST['searchtype'];
-} else {
-    unset($Options['SearchType']);
-}
-
-// todo: Remove the following after a significant amount of time
-unset($Options['ArtistNoRedirect']);
-unset($Options['ShowQueryList']);
-unset($Options['ShowCacheList']);
-
-$UnseededAlerts = isset($_POST['unseededalerts']) ? 1 : 0;
-NotificationsManager::save_settings($UserID);
 
 // Begin Badge settings
 if (!empty($_POST['badges'])) {
@@ -512,60 +364,10 @@ foreach ($Badges as $BadgeID => $OldDisplayed) {
 }
 // End Badge settings
 
-$cache->begin_transaction("user_info_$UserID");
-$cache->update_row(false, [
-  'Avatar' => Text::esc($_POST['avatar']),
-    'Paranoia' => $Paranoia,
-    'Badges' => $NewBadges
-]);
-$cache->commit_transaction(0);
 
-$cache->begin_transaction("user_info_heavy_$UserID");
-$cache->update_row(false, [
-  'StyleID' => $_POST['stylesheet'],
-  'StyleURL' => Text::esc($_POST['styleurl'])
-]);
-$cache->update_row(false, $Options);
-$cache->commit_transaction(0);
 
-$SQL = "
-  UPDATE users_main AS m
-    JOIN users_info AS i ON m.ID = i.UserID
-  SET
-    i.StyleID = '".db_string($_POST['stylesheet'])."',
-    i.StyleURL = '".db_string($_POST['styleurl'])."',
-    i.Avatar = '".db_string($_POST['avatar'])."',
-    i.SiteOptions = '".db_string(json_encode($Options))."',
-    i.NotifyOnQuote = '".db_string($Options['NotifyOnQuote'])."',
-    i.Info = '".db_string($_POST['info'])."',
-    i.InfoTitle = '".db_string($_POST['profile_title'])."',
-    i.UnseededAlerts = '$UnseededAlerts',
-    m.Email = '".Crypto::encrypt($_POST['email'])."',
-    m.IRCKey = '".db_string($_POST['irckey'])."',
-    m.Paranoia = '".db_string(json_encode($Paranoia))."'";
 
-if ($ResetPassword) {
-    $ChangerIP = Crypto::encrypt($user['IP']);
-    $PassHash = Auth::makeHash($_POST['new_pass_1']);
-    $SQL.= ",m.PassHash = '".db_string($PassHash)."'";
-}
 
-if (isset($_POST['resetpasskey'])) {
-    $UserInfo = Users::user_heavy_info($UserID);
-    $OldPassKey = $UserInfo['torrent_pass'];
-    $NewPassKey = Text::random();
-    $ChangerIP = Crypto::encrypt($user['IP']);
-    $SQL .= ",m.torrent_pass = '$NewPassKey'";
-
-    $cache->begin_transaction("user_info_heavy_$UserID");
-    $cache->update_row(false, ['torrent_pass' => $NewPassKey]);
-    $cache->commit_transaction(0);
-    $cache->delete_value("user_$OldPassKey");
-    Tracker::update_tracker('change_passkey', ['oldpasskey' => $OldPassKey, 'newpasskey' => $NewPassKey]);
-}
-
-$SQL .= "WHERE m.ID = '".db_string($UserID)."'";
-$db->query($SQL);
 
 if ($BadgesChanged) {
     $db->query("
@@ -581,9 +383,3 @@ if ($BadgesChanged) {
             AND BadgeID IN (".db_string(implode(',', $BadgeIDs)).")");
     }
 }
-
-if ($ResetPassword) {
-    logout_all_sessions();
-}
-
-Http::redirect("user.php?action=edit&userid=$UserID");

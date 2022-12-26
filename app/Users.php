@@ -1247,7 +1247,7 @@ class Users
             # only if it's the current user
             if (!$moderatorUpdate) {
                 $currentPassphrase = Esc::string($data["currentPassphrase"]);
-                $good = $auth->auth->reconfirmPassword($currentPassphrase);
+                $good = $auth->library->reconfirmPassword($currentPassphrase);
 
                 if (!$good) {
                     throw new Exception("current passphrase doesn't match");
@@ -1281,20 +1281,20 @@ class Users
                     throw new Exception("new passphrase isn't allowed");
                 }
 
-                # try to update the passphrase (this throws)
-                $auth->auth->admin()->changePasswordForUserById($userId, $newPassphrase1);
+                # update the passphrase and log out old sessions
+                $auth->library->admin()->changePasswordForUserById($userId, $newPassphrase1);
+                $auth->library->logOutEverywhereElse();
             } # if (!empty($newPassphrase1) && !empty($newPassphrase2))
 
 
             # todo: update the email
             # maybe admins can't change it?
             $email = Esc::email($data["email"]);
-            if (!$moderatorUpdate && $email !== $this->core["email"]) {
-                # throw on bad email
-                if (empty($email)) {
-                    throw new Exception("invalid email address");
-                }
+            if (empty($email)) {
+                throw new Exception("invalid email address");
+            }
 
+            if (!$moderatorUpdate && $email !== $this->core["email"]) {
                 # https://github.com/delight-im/PHP-Auth#changing-the-current-users-email-address
                 $auth->changeEmail($email, function ($selector, $token) {
                     /*
@@ -1312,21 +1312,25 @@ class Users
 
             # avatar
             $avatar = Esc::url($data["avatar"]);
+            $good = preg_match($app->env->regexImage, $avatar);
+
+            if (!$good && !empty($avatar)) {
+                throw new Exception("invalid avatar");
+            }
+
             $query = "update users_info set avatar = ? where userId = ?";
             $app->dbNew->do($query, [$avatar, $userId]);
 
 
             # ircKey
             $ircKey = Esc::string($data["ircKey"]);
-            $hash = password_hash($ircKey, PASSWORD_DEFAULT);
-
             if (strlen($ircKey) < 8 || strlen($ircKey) > 32) {
                 throw new Exception("ircKey must be 8-32 chatacters");
             }
 
             # theoretically an admin can't set it to the user's passphrase
             # unless they're my brother and use something like "butthole1"
-            if ($hash === $this->core["password"]) {
+            if (!Auth::checkHash($this->core["password"], $hash)) {
                 throw new Exception("ircKey can't be your passphrase");
             }
 
@@ -1378,6 +1382,12 @@ class Users
 
             # styleSheetUri
             $styleSheetUri = Esc::url($data["styleSheetUri"]);
+            $good = preg_match($app->env->regexCss, $stylesheet);
+
+            if (!$good && !empty($styleSheetUri)) {
+                throw new Exception("invalid styleSheetUri");
+            }
+
             $query = "update users_info set styleUrl = ? where userId = ?";
             $app->dbNew->do($query, [$styleSheetUri, $userId]);
 

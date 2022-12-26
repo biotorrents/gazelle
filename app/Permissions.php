@@ -15,6 +15,10 @@
 
 class Permissions
 {
+    # delight-im/auth
+    public $library = null;
+
+
     /**
      * listRoles
      *
@@ -40,6 +44,38 @@ class Permissions
         );
 
         return $roles;
+
+        /** */
+
+        # todo: migrate over to delight-im/auth
+        return Delight\Auth\Role::getMap();
+
+        /*
+        $roles = [
+            1 => "ADMIN",
+            2 => "AUTHOR",
+            4 => "COLLABORATOR",
+            8 => "CONSULTANT",
+            16 => "CONSUMER",
+            32 => "CONTRIBUTOR",
+            64 => "COORDINATOR",
+            128 => "CREATOR",
+            256 => "DEVELOPER",
+            512 => "DIRECTOR",
+            1024 => "EDITOR",
+            2048 => "EMPLOYEE",
+            4096 => "MAINTAINER",
+            8192 => "MANAGER",
+            16384 => "MODERATOR",
+            32768 => "PUBLISHER",
+            65536 => "REVIEWER",
+            131072 => "SUBSCRIBER",
+            262144 => "SUPER_ADMIN",
+            524288 => "SUPER_EDITOR",
+            1048576 => "SUPER_MODERATOR",
+            2097152 => "TRANSLATOR",
+        ];
+        */
     }
 
 
@@ -220,7 +256,6 @@ class Permissions
      * can
      *
      * Checks if a user can do something or not.
-     * Cutting the Gordian knot here with a string search.
      */
     public static function can(string $permission): bool
     {
@@ -232,27 +267,31 @@ class Permissions
             return in_array($permission, $rolePermissions);
         }
 
+        # default deny
+        return false;
+
+        /*
         # try to unserialize
         $rolePermissions = unserialize($userRole["values"]);
         if ($rolePermissions) {
             return in_array($permission, array_keys($rolePermissions));
         }
+        */
 
+        /*
         # try string search
         $rolePermissions = $userRole["values"];
         if ($rolePermissions) {
             return Illuminate\Support\Str::contains($rolePermissions, $permission);
         }
-
-        # default deny
-        return false;
+        */
     }
 
 
     /**
      * givePermissionTo
      *
-     * FOR A USER!
+     * Grants a permission to a role.
      *
      * @see https://spatie.be/docs/laravel-permission/v5/basic-usage/basic-usage
      */
@@ -264,7 +303,7 @@ class Permissions
     /**
      * revokePermissionTo
      *
-     * FOR A USER!
+     * Revokes a permission from a role.
      *
      * @see https://spatie.be/docs/laravel-permission/v5/basic-usage/basic-usage
      */
@@ -276,9 +315,9 @@ class Permissions
     /**
      * assignRole
      *
-     * FOR A USER!
+     * Grants a role to a user.
      *
-     * @see https://spatie.be/docs/laravel-permission/v5/basic-usage/basic-usage
+     * @see https://github.com/delight-im/PHP-Auth#assigning-roles-to-users
      */
     public static function assignRole(string $role)
     {
@@ -288,9 +327,9 @@ class Permissions
     /**
      * removeRole
      *
-     * FOR A USER!
+     * Revokes a role from a user.
      *
-     * @see https://spatie.be/docs/laravel-permission/v5/basic-usage/basic-usage
+     * @see https://github.com/delight-im/PHP-Auth#taking-roles-away-from-users
      */
     public static function removeRole(string $role)
     {
@@ -300,7 +339,7 @@ class Permissions
     /**
      * createRole
      *
-     * Creates a new role.
+     * Creates a role.
      */
     public static function createRole(string $roleName, array $permissions, bool $staffRole = false)
     {
@@ -312,7 +351,25 @@ class Permissions
 
 
     /**
+     * readRole
+     *
+     * Reads a role.
+     */
+    public static function readRole(string $roleName)
+    {
+        $app = App::go();
+
+        $query = "select name, values, displayStaff from permissions where name = ?";
+        $row = $app->dbNew->row($query, [$roleName]);
+
+        return $row;
+    }
+
+
+    /**
      * updateRole
+     *
+     * Updates a role.
      */
     public static function updateRole(string $roleName, array $permissions, bool $staffRole = false)
     {

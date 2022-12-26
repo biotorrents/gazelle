@@ -10,9 +10,6 @@ declare(strict_types=1);
 # bootstrap the app
 require_once __DIR__."/bootstrap/cli.php";
 
-# load the app
-$app = App::go();
-
 # config array
 return
 [

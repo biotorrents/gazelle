@@ -19,7 +19,7 @@ declare(strict_types=1);
 class Auth # extends Delight\Auth\Auth
 {
     # library instance
-    private $auth = null;
+    public $library = null;
 
     # user state
     public $user = [];
@@ -51,7 +51,7 @@ class Auth # extends Delight\Auth\Auth
         }
 
         try {
-            $this->auth = new Delight\Auth\Auth(
+            $this->library = new Delight\Auth\Auth(
                 databaseConnection: $app->dbNew->pdo,
                 throttling: $throttling
             );
@@ -59,23 +59,23 @@ class Auth # extends Delight\Auth\Auth
             return $e->getMessage();
         }
 
-        if ($this->auth && $this->auth->check()) {
+        if ($this->library && $this->library->check()) {
             # https://github.com/delight-im/PHP-Auth#accessing-user-information
-            $this->user["id"] = $this->auth->getUserId();
-            $this->user["email"] = $this->auth->getEmail();
-            $this->user["username"] = $this->auth->getUsername();
-            $this->user["ip"] = $this->auth->getIpAddress();
-            $this->user["roles"] = $this->auth->getRoles();
+            $this->user["id"] = $this->library->getUserId();
+            $this->user["email"] = $this->library->getEmail();
+            $this->user["username"] = $this->library->getUsername();
+            $this->user["ip"] = $this->library->getIpAddress();
+            $this->user["roles"] = $this->library->getRoles();
 
             # https://github.com/delight-im/PHP-Auth#status-information
-            $this->user["isNormal"] = $this->auth->isNormal();
-            $this->user["isArchived"] = $this->auth->isArchived();
-            $this->user["isBanned"] = $this->auth->isBanned();
-            $this->user["isLocked"] = $this->auth->isLocked();
-            $this->user["isPendingReview"] = $this->auth->isPendingReview();
-            $this->user["isSuspended"] = $this->auth->isSuspended();
-            $this->user["isRemembered"] = $this->auth->isRemembered();
-            $this->user["isPasswordResetEnabled"] = $this->auth->isPasswordResetEnabled();
+            $this->user["isNormal"] = $this->library->isNormal();
+            $this->user["isArchived"] = $this->library->isArchived();
+            $this->user["isBanned"] = $this->library->isBanned();
+            $this->user["isLocked"] = $this->library->isLocked();
+            $this->user["isPendingReview"] = $this->library->isPendingReview();
+            $this->user["isSuspended"] = $this->library->isSuspended();
+            $this->user["isRemembered"] = $this->library->isRemembered();
+            $this->user["isPasswordResetEnabled"] = $this->library->isPasswordResetEnabled();
 
             # success
             return true;
@@ -141,7 +141,7 @@ class Auth # extends Delight\Auth\Auth
             }
 
             # if you want to enforce unique usernames, simply call registerWithUniqueUsername instead of register, and be prepared to catch the DuplicateUsernameException
-            $response = $this->auth->registerWithUniqueUsername($email, $passphrase, $username, function ($selector, $token) use ($email) {
+            $response = $this->library->registerWithUniqueUsername($email, $passphrase, $username, function ($selector, $token) use ($email) {
                 $app = App::go();
 
                 # build the verification uri
@@ -192,11 +192,11 @@ class Auth # extends Delight\Auth\Auth
             # try email validation
             $test = (filter_var($username, FILTER_VALIDATE_EMAIL));
             if (!empty($test)) {
-                $response = $this->auth->login($username, $passphrase, $this->remember());
+                $response = $this->library->login($username, $passphrase, $this->remember());
             } else {
                 # simply call the method loginWithUsername instead of method login
                 # make sure to catch both UnknownUsernameException and AmbiguousUsernameException
-                $response = $this->auth->loginWithUsername($username, $passphrase, $this->remember());
+                $response = $this->library->loginWithUsername($username, $passphrase, $this->remember());
             }
         } catch (Exception $e) {
             return $message;
@@ -223,7 +223,7 @@ class Auth # extends Delight\Auth\Auth
         try {
             # if you want the user to be automatically signed in after successful confirmation,
             # just call confirmEmailAndSignIn instead of confirmEmail
-            $response = $this->auth->confirmEmailAndSignIn($selector, $token, $this->remember());
+            $response = $this->library->confirmEmailAndSignIn($selector, $token, $this->remember());
         } catch (Exception $e) {
             return $message;
         }
@@ -270,7 +270,7 @@ class Auth # extends Delight\Auth\Auth
         $ip = Esc::ip($ip);
 
         try {
-            $response = $this->auth->forgotPassword($email, function ($selector, $token) use ($email, $ip) {
+            $response = $this->library->forgotPassword($email, function ($selector, $token) use ($email, $ip) {
                 $app = App::go();
 
                 # build the verification uri
@@ -311,7 +311,7 @@ class Auth # extends Delight\Auth\Auth
         try {
             # put the selector and token in hidden fields
             # ask the user for their new passphrase
-            $response = $this->auth->canResetPasswordOrThrow($selector, $token);
+            $response = $this->library->canResetPasswordOrThrow($selector, $token);
         } catch (Exception $e) {
             return $message;
         }
@@ -343,7 +343,7 @@ class Auth # extends Delight\Auth\Auth
                 throw new Exception("The entered passphrases don't match");
             }
 
-            $response = $this->auth->resetPassword($selector, $token, $passphrase);
+            $response = $this->library->resetPassword($selector, $token, $passphrase);
         } catch (Exception $e) {
             return $message;
         }
@@ -448,13 +448,13 @@ class Auth # extends Delight\Auth\Auth
         $message = "Unable to log out: please manually clear cookies";
 
         try {
-            $response = $this->auth->logOutEverywhere();
+            $response = $this->library->logOutEverywhere();
         } catch (Exception $e) {
             return $message;
         }
 
         # you can destroy the entire session by calling a second method
-        $this->auth->destroySession();
+        $this->library->destroySession();
 
         return $response;
     } # logout
@@ -492,7 +492,7 @@ If you need the custom user information only rarely, you may just retrieve it as
         $passphrase = Esc::string($passphrase);
 
         try {
-            $response = $this->auth->reconfirmPassword($passphrase);
+            $response = $this->library->reconfirmPassword($passphrase);
         } catch (Exception $e) {
             return $message;
         }
@@ -531,7 +531,7 @@ If you need the custom user information only rarely, you may just retrieve it as
 
     /**
      * isPassphraseAllowed
-     * 
+     *
      * @see https://github.com/delight-im/PHP-Auth#how-can-i-implement-custom-password-requirements
      */
     public function isPassphraseAllowed(string $passphrase)
