@@ -224,7 +224,7 @@ $Index++;
           <ul class="stats nobullet">
             <li>
               <?=$Summary?>
-              <?=(check_perms('users_mod') ? ' added by ' . Users::format_username($AddedBy, false, false, false, false, false) : '')?>
+              <?=(check_perms('users_mod') ? ' added by ' . User::format_username($AddedBy, false, false, false, false, false) : '')?>
               <span class="remove remove_cover_art"><a href="#"
                   onclick="if (confirm('Do not delete useful alternative pictures. Are you sure you want to delete this picture?') === true) { ajax.get('torrents.php?action=remove_cover_art&amp;auth=<?=$user['AuthKey']?>&amp;id=<?=$ImageID?>&amp;groupid=<?=$GroupID?>'); this.parentNode.parentNode.parentNode.style.display = 'none'; this.parentNode.parentNode.parentNode.previousElementSibling.style.display = 'none'; } else { return false; }"
                   class="brackets tooltip" title="Remove image">X</a></span>
@@ -420,7 +420,7 @@ foreach ($TorrentList as $Torrent) {
         foreach ($Reports as $Report) {
             if (check_perms('admin_reports')) {
                 $ReporterID = $Report['ReporterID'];
-                $Reporter = Users::user_info($ReporterID);
+                $Reporter = User::user_info($ReporterID);
                 $ReporterName = $Reporter['Username'];
                 $ReportLinks = "<a href='user.php?id=$ReporterID'>$ReporterName</a> <a href='reportsv2.php?view=report&amp;id=$Report[ID]'>reported it</a>";
             } else {
@@ -631,12 +631,12 @@ foreach ($TorrentList as $Torrent) {
   if ($Anonymous) {
       if (check_perms('users_mod')) { ?>
                 <em class="tooltip"
-                  title="<?=Users::user_info($UserID)['Username']?>">Anonymous</em>
+                  title="<?=User::user_info($UserID)['Username']?>">Anonymous</em>
                 <?php } else {
           ?><em>Anonymous</em><?php
       }
   } else {
-      echo Users::format_username($UserID, false, false, false);
+      echo User::format_username($UserID, false, false, false);
   } ?> <?=time_diff($TorrentTime); ?>
                 <?php if ($Seeders === 0) {
       if ($LastActive && time() - strtotime($LastActive) >= 1209600) { ?>
@@ -1008,7 +1008,7 @@ if (count($PersonalCollages) > 0) {
 
       /* todo: Bring this back
       if (check_perms('users_mod')) {
-        ?><img class='tooltip lightbox-init' title='<?=Users::format_username($Screenshot['UserID'], false, false, false)?> - <?=time_diff($Screenshot['Time'])?>' lightbox-img="<?=$SSURL?>" src="<?=$ThumbURL?>" /><?php
+        ?><img class='tooltip lightbox-init' title='<?=User::format_username($Screenshot['UserID'], false, false, false)?> - <?=time_diff($Screenshot['Time'])?>' lightbox-img="<?=$SSURL?>" src="<?=$ThumbURL?>" /><?php
       } else {
         ?><img class='tooltip lightbox-init' title='Added <?=time_diff($Screenshot['Time'])?>' lightbox-img="<?=$SSURL?>" src="<?=$ThumbURL?>" /><?php
       }

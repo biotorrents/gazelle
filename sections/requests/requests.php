@@ -40,7 +40,7 @@ if (!empty($_GET['userid'])) {
     if (!is_number($_GET['userid'])) {
         error('User ID must be an integer');
     }
-    $UserInfo = Users::user_info($_GET['userid']);
+    $UserInfo = User::user_info($_GET['userid']);
     if (empty($UserInfo)) {
         error('That user does not exist');
     }
@@ -519,7 +519,7 @@ View::header($Title, 'requests');
 
             if ($Request['TorrentID'] !== 0) {
                 $IsFilled = true;
-                $FillerInfo = Users::user_info($Request['FillerID']);
+                $FillerInfo = User::user_info($Request['FillerID']);
             } else {
                 $IsFilled = false;
             }
@@ -604,7 +604,7 @@ View::header($Title, 'requests');
             </td>
             <td>
                 <a
-                    href="user.php?id=<?=$Request['UserID']?>"><?=Users::format_username($Request['UserID'], false, false, false)?></a>
+                    href="user.php?id=<?=$Request['UserID']?>"><?=User::format_username($Request['UserID'], false, false, false)?></a>
             </td>
             <td class="nobr">
                 <?=time_diff($Request['TimeAdded'], 1)?>

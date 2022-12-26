@@ -16,7 +16,7 @@ function make_staff_row($ID, $Paranoia, $Class, $LastAccess, $Remark = '', $Hidd
 {
     echo "\t\t\t<tr class=\"row\">
         <td class=\"nobr\">
-          " . Users::format_username($ID, false, false, false) . "
+          " . User::format_username($ID, false, false, false) . "
         </td>
         <td class=\"nobr\">
           "; //used for proper indentation of HTML

@@ -183,7 +183,7 @@ $db->set_query_id($RS);
       <td><a href="wiki.php?action=article&amp;id=<?=$ID?>"><?=$Title?></a></td>
       <td><?=$Date?>
       </td>
-      <td><?=Users::format_username($UserID, false, false, false)?>
+      <td><?=User::format_username($UserID, false, false, false)?>
       </td>
     </tr>
     <?php } ?>

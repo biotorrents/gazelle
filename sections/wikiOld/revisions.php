@@ -47,7 +47,7 @@ View::header("Revisions of ".$Title);
         </td>
         <td><?=$Title?>
         </td>
-        <td><?=Users::format_username($AuthorID, false, false, false)?>
+        <td><?=User::format_username($AuthorID, false, false, false)?>
         </td>
         <td><?=time_diff($Date)?>
         </td>
@@ -79,7 +79,7 @@ while (list($Revision, $Title, $AuthorID, $Date) = $db->next_record()) { ?>
         </td>
 
         <td>
-          <?=Users::format_username($AuthorID, false, false, false)?>
+          <?=User::format_username($AuthorID, false, false, false)?>
         </td>
 
         <td>

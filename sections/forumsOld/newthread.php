@@ -67,15 +67,15 @@ View::header(
     <?php } ?>
     <table class="forum_post box vertical_margin" style="text-align: left;">
       <colgroup>
-        <?php if (Users::hasAvatarsEnabled()) { ?>
+        <?php if (User::hasAvatarsEnabled()) { ?>
         <col class="col_avatar" />
         <?php } ?>
         <col class="col_post_body" />
       </colgroup>
       <tr class="colhead_dark">
-        <td colspan="<?=Users::hasAvatarsEnabled() ? 2 : 1 ?>">
+        <td colspan="<?=User::hasAvatarsEnabled() ? 2 : 1 ?>">
           <span class="u-pull-left"><a href="#newthreadpreview">#XXXXXX</a>
-            by <strong><?=Users::format_username($user['ID'], true, true, true, true, true)?></strong>
+            by <strong><?=User::format_username($user['ID'], true, true, true, true, true)?></strong>
             Just now
           </span>
           <span id="barpreview" class="u-pull-right">
@@ -86,9 +86,9 @@ View::header(
         </td>
       </tr>
       <tr>
-        <?php if (Users::hasAvatarsEnabled()) { ?>
+        <?php if (User::hasAvatarsEnabled()) { ?>
         <td class="avatar" valign="top">
-          <?=Users::displayAvatar($user['Avatar'], $user['Username'])?>
+          <?=User::displayAvatar($user['Avatar'], $user['Username'])?>
         </td>
         <?php } ?>
         <td class="body" valign="top">

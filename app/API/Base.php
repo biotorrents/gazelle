@@ -81,7 +81,7 @@ class Base
         }
 
         # user is disabled
-        if (\Users::isDisabled($userId)) {
+        if (\User::isDisabled($userId)) {
             return self::failure(401, "user disabled");
         }
 

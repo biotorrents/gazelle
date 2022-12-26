@@ -200,9 +200,9 @@ $db->set_query_id($Reports);
         <tr>
           <td colspan="2">
 <?php          if ($ClaimerID == $user['ID']) { ?>
-            <span id="claimed_<?=$ReportID?>">Claimed by <?=Users::format_username($ClaimerID, false, false, false, false)?> <a href="#" onclick="unClaim(<?=$ReportID?>); return false;" class="brackets">Unclaim</a></span>
+            <span id="claimed_<?=$ReportID?>">Claimed by <?=User::format_username($ClaimerID, false, false, false, false)?> <a href="#" onclick="unClaim(<?=$ReportID?>); return false;" class="brackets">Unclaim</a></span>
 <?php          } elseif ($ClaimerID) { ?>
-            <span id="claimed_<?=$ReportID?>">Claimed by <?=Users::format_username($ClaimerID, false, false, false, false)?></span>
+            <span id="claimed_<?=$ReportID?>">Claimed by <?=User::format_username($ClaimerID, false, false, false, false)?></span>
 <?php          } else { ?>
             <a href="#" id="claim_<?=$ReportID?>" onclick="claim(<?=$ReportID?>); return false;" class="brackets">Claim</a>
 <?php          } ?>
@@ -228,7 +228,7 @@ $db->set_query_id($Reports);
         </tr>
 <?php
       } else {
-          $ResolverInfo = Users::user_info($ResolverID); ?>
+          $ResolverInfo = User::user_info($ResolverID); ?>
         <tr>
           <td colspan="2">
             Resolved by <a href="users.php?id=<?=$ResolverID?>"><?=$ResolverInfo['Username']?></a>

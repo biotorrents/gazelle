@@ -110,7 +110,7 @@ class TorrentForm
             #$Announces = call_user_func_array('array_merge', ANNOUNCE_URLS);
 
             $TorrentPass = $app->userNew->extra['torrent_pass'];
-            $TorrentSource = Users::get_upload_sources()[0];
+            $TorrentSource = User::get_upload_sources()[0];
 
             echo $twig->render(
                 'torrent_form/announce_source.html',

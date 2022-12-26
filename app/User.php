@@ -4,7 +4,7 @@
 
 
 /**
- * Users
+ * User
  *
  * $this->core contains necessary info from delight-im/auth.
  * $this->extra contains various profile, etc., info from Gazelle.
@@ -12,7 +12,7 @@
  * @see https://wiki.archlinux.org/title/Official_repositories
  */
 
-class Users
+class User
 {
     # singleton
     private static $instance = null;

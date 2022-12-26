@@ -40,19 +40,19 @@ class CommentsView
     {
         $app = App::go();
 
-        $UserInfo = Users::user_info($AuthorID);
-        $Header = Users::format_username($AuthorID, true, true, true, true, true) . time_diff($AddedTime) . $Header; ?>
+        $UserInfo = User::user_info($AuthorID);
+        $Header = User::format_username($AuthorID, true, true, true, true, true) . time_diff($AddedTime) . $Header; ?>
 <table
-  class="forum_post box vertical_margin<?=(!Users::hasAvatarsEnabled() ? ' noavatar' : '') . ($Unread ? ' forum_unread' : '')?>"
+  class="forum_post box vertical_margin<?=(!User::hasAvatarsEnabled() ? ' noavatar' : '') . ($Unread ? ' forum_unread' : '')?>"
   id="post<?=$PostID?>">
   <colgroup>
-    <?php if (Users::hasAvatarsEnabled()) { ?>
+    <?php if (User::hasAvatarsEnabled()) { ?>
     <col class="col_avatar" />
     <?php } ?>
     <col class="col_post_body" />
   </colgroup>
   <tr class="colhead_dark">
-    <td colspan="<?=(Users::hasAvatarsEnabled() ? 2 : 1)?>">
+    <td colspan="<?=(User::hasAvatarsEnabled() ? 2 : 1)?>">
       <div class="u-pull-left"><a class="post_id"
           href="<?=$Link?>">#<?=$PostID?></a>
         <?=$Header?>
@@ -94,9 +94,9 @@ class CommentsView
     </td>
   </tr>
   <tr>
-    <?php if (Users::hasAvatarsEnabled()) { ?>
+    <?php if (User::hasAvatarsEnabled()) { ?>
     <td class="avatar" valign="top">
-      <?=Users::displayAvatar($UserInfo['Avatar'], $UserInfo['Username'])?>
+      <?=User::displayAvatar($UserInfo['Avatar'], $UserInfo['Username'])?>
     </td>
     <?php } ?>
     <td class="body" valign="top">
@@ -111,7 +111,7 @@ class CommentsView
             onclick="LoadEdit('<?=substr($Link, 0, strcspn($Link, '.'))?>', <?=$PostID?>, 1); return false;">&laquo;</a>
           <?php } ?>
           Last edited by
-          <?=Users::format_username($EditedUserID, false, false, false) ?>
+          <?=User::format_username($EditedUserID, false, false, false) ?>
           <?=time_diff($EditedTime, 2, true, true)?>
           <?php } ?>
         </div>

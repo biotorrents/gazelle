@@ -9,7 +9,7 @@ Http::assertRequest($_POST, array('postid', 'userid', 'key'));
 $PostID = (int) $_POST['postid'];
 $UserID = (int) $_POST['userid'];
 $Key = (int) $_POST['key'];
-$UserInfo = Users::user_info($UserID);
+$UserInfo = User::user_info($UserID);
 
 $db->prepared_query("
   SELECT p.Body, t.ForumID

@@ -372,7 +372,7 @@ class TorrentFunctions
                 foreach ($Reports as $Report) {
                     if (check_perms('admin_reports')) {
                         $ReporterID = $Report['ReporterID'];
-                        $Reporter = Users::user_info($ReporterID);
+                        $Reporter = User::user_info($ReporterID);
                         $ReporterName = $Reporter['Username'];
                         $ReportLinks = "<a href=\"user.php?id=$ReporterID\">$ReporterName</a> <a href=\"reportsv2.php?view=report&amp;id=$Report[ID]\">reported it</a>";
                     } else {
@@ -527,12 +527,12 @@ class TorrentFunctions
   if ($Anonymous) {
       if (check_perms('users_mod')) { ?>
             <em class="tooltip"
-                title="<?=Users::user_info($UserID)['Username']?>">Anonymous</em>
+                title="<?=User::user_info($UserID)['Username']?>">Anonymous</em>
             <?php } else {
           ?><em>Anonymous</em><?php
       }
   } else {
-      print(Users::format_username($UserID, false, false, false));
+      print(User::format_username($UserID, false, false, false));
   } ?> <?=time_diff($TorrentTime); ?>
             <?php if ($Seeders === 0) {
       if ($LastActive && time() - strtotime($LastActive) >= 1209600) { ?>

@@ -20,7 +20,7 @@ if (!$db->has_results()) {
 }
 list($AuthorID) = $db->next_record();
 
-$UserInfo = Users::user_info($AuthorID);
+$UserInfo = User::user_info($AuthorID);
 if ($UserInfo['Class'] > $user['Class']) {
     error(403);
 }

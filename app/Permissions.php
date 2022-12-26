@@ -458,7 +458,7 @@ class Permissions
     {
         $app = App::go();
 
-        $UserInfo = Users::user_info($UserID);
+        $UserInfo = User::user_info($UserID);
 
         // Fetch custom permissions if they weren't passed in.
         if ($CustomPermissions === false) {

@@ -111,7 +111,7 @@ if ($_REQUEST['usetoken'] && $FreeTorrent === '0') {
             error('You cannot use tokens while leech disabled.');
         }
     } else {
-        $UInfo = Users::user_heavy_info($UserID);
+        $UInfo = User::user_heavy_info($UserID);
         if ($UInfo['CanLeech'] !== '1') {
             error('You may not use tokens while leech disabled.');
         }
@@ -148,7 +148,7 @@ if ($_REQUEST['usetoken'] && $FreeTorrent === '0') {
               WHERE ID = $UserID");
 
             // Fix for downloadthemall messing with the cached token count
-            $UInfo = Users::user_heavy_info($UserID);
+            $UInfo = User::user_heavy_info($UserID);
             $FLTokens = $UInfo['FLTokens'];
 
             $cache->begin_transaction("user_info_heavy_$UserID");

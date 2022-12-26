@@ -135,7 +135,7 @@ foreach ($Results as $Result) {
         </span>
       <td colspan="1">
         <span class="u-pull-right">
-          Quoted by <?=Users::format_username($Result['QuoterID'], false, false, false, false) . ' ' . time_diff($Result['Date']) ?>
+          Quoted by <?=User::format_username($Result['QuoterID'], false, false, false, false) . ' ' . time_diff($Result['Date']) ?>
         </span>
       </td>
     </tr>

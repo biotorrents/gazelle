@@ -17,7 +17,7 @@ $CommStats = array(
   'seedingperc' => false,
 );
 
-$User = Users::user_info($UserID);
+$User = User::user_info($UserID);
 
 function check_paranoia_here($Setting)
 {

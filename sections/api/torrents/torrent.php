@@ -76,7 +76,7 @@ foreach ($FileList as &$File) {
 
 unset($File);
 $FileList = implode('|||', $FileList);
-$Userinfo = Users::user_info($Torrent['UserID']);
+$Userinfo = User::user_info($Torrent['UserID']);
 
 $JsonTorrentList[] = [
   'id'          => (int) $Torrent['ID'],

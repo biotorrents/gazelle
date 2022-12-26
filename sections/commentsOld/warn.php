@@ -13,7 +13,7 @@ if (!$db->has_results()) {
     error(404);
 }
 list($PostBody, $AuthorID) = $db->next_record();
-$UserInfo = Users::user_info($AuthorID);
+$UserInfo = User::user_info($AuthorID);
 
 View::header('Warn User');
 ?>

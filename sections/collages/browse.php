@@ -114,7 +114,7 @@ if (!empty($_GET['userid'])) {
     if (!is_number($UserID)) {
         error(404);
     }
-    $User = Users::user_info($UserID);
+    $User = User::user_info($UserID);
     $Perms = Permissions::get_permissions($User['PermissionID']);
     $UserClass = $Perms['Class'];
 
@@ -383,7 +383,7 @@ foreach ($Collages as $Collage) {
     </td>
     <td class="nobr"><?=time_diff($Updated)?>
     </td>
-    <td><?=Users::format_username($UserID, false, false, false)?>
+    <td><?=User::format_username($UserID, false, false, false)?>
     </td>
   </tr>
   <?php

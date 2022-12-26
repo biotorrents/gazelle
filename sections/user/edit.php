@@ -346,7 +346,7 @@ if (!empty($_POST['badges'])) {
 
 $NewBadges = [];
 $BadgesChanged = false;
-$Badges = Users::user_info($UserID)['Badges'];
+$Badges = User::user_info($UserID)['Badges'];
 
 foreach ($Badges as $BadgeID => $OldDisplayed) {
     if (in_array($BadgeID, $BadgeIDs)) { // Is the current badge in the list of badges the user wants to display?

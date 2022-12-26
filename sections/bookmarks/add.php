@@ -103,7 +103,7 @@ if (!$db->has_results()) {
         while ($Torrent = $db->next_record()) {
             $Title = $GroupTitle;
             list($TorrentID, $Media, $Freeleech, $UploaderID, $Anonymous) = $Torrent;
-            $UploaderInfo = Users::user_info($UploaderID);
+            $UploaderInfo = User::user_info($UploaderID);
 
             $Item = $Feed->item(
                 $Title,

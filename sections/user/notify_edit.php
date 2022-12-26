@@ -73,7 +73,7 @@ foreach ($Notifications as $N) { // $N stands for Notifications
 
     $Usernames = '';
     foreach ($N['Users'] as $UserID) {
-        $UserInfo = Users::user_info($UserID);
+        $UserInfo = User::user_info($UserID);
         $Usernames .= $UserInfo['Username'] . ', ';
     }
     $Usernames = rtrim($Usernames, ', ');

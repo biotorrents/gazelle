@@ -181,7 +181,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
     if ($i > 5) {
         break;
     } ?>
-          <li><?=Users::format_username($UserID, false, false, false)?>
+          <li><?=User::format_username($UserID, false, false, false)?>
             (<?=Text::float($Additions)?>)</li>
           <?php
 }
@@ -254,7 +254,7 @@ foreach ($CommentList as $Comment) {
     list($CommentID, $Body, $UserID, $Username, $CommentTime) = $Comment; ?>
     <div class="box comment">
       <div class="head">
-        <?=Users::format_username($UserID, false, false, false) ?>
+        <?=User::format_username($UserID, false, false, false) ?>
         <?=time_diff($CommentTime) ?>
         <br />
         <a href="reports.php?action=report&amp;type=comment&amp;id=<?=$CommentID?>"

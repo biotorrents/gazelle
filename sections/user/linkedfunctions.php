@@ -39,8 +39,8 @@ function link_users($UserID, $TargetID)
     WHERE UserID = $UserID");
     list($UserGroupID, $Comments) = $app->dbOld->next_record();
 
-    $UserInfo = Users::user_info($UserID);
-    $TargetInfo = Users::user_info($TargetID);
+    $UserInfo = User::user_info($UserID);
+    $TargetInfo = User::user_info($TargetID);
 
     if (!$UserInfo || !$TargetInfo) {
         return;
@@ -98,7 +98,7 @@ function unlink_user($UserID)
         error(403);
     }
 
-    $UserInfo = Users::user_info($UserID);
+    $UserInfo = User::user_info($UserID);
     if ($UserInfo === false) {
         return;
     }
@@ -225,8 +225,8 @@ function user_dupes_table($UserID)
     foreach ($Dupes as $Dupe) {
         $i++;
         list($DupeID) = $Dupe;
-        $DupeInfo = Users::user_info($DupeID); ?>
-      <td align="left"><?=Users::format_username($DupeID, true, true, true, true)?>
+        $DupeInfo = User::user_info($DupeID); ?>
+      <td align="left"><?=User::format_username($DupeID, true, true, true, true)?>
         <a href="user.php?action=dupes&amp;dupeaction=remove&amp;auth=<?=$app->userNew->extra['AuthKey']?>&amp;userid=<?=$UserID?>&amp;removeid=<?=$DupeID?>"
           onclick="return confirm('Are you sure you wish to remove <?=$DupeInfo['Username']?> from this group?');"
           class="brackets tooltip" title="Remove linked account">X</a>

@@ -168,7 +168,7 @@ if ($db->has_results()) {
 
             $db->prepared_query("
               UPDATE users_info
-              SET AdminComment = CONCAT('".sqltime()." - Class changed to ".Users::make_class_string($To)." via store purchase\n\n', AdminComment)
+              SET AdminComment = CONCAT('".sqltime()." - Class changed to ".User::make_class_string($To)." via store purchase\n\n', AdminComment)
               WHERE UserID = $UserID");
 
             $cache->delete_value("user_info_$UserID");

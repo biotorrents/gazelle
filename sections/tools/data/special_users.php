@@ -28,7 +28,7 @@ if ($db->has_results()) {
       ?>
     <tr>
       <td>
-        <?=Users::format_username($UserID, true, true, true, true)?>
+        <?=User::format_username($UserID, true, true, true, true)?>
       </td>
 
       <td>

@@ -111,7 +111,7 @@ View::header($Title, 'wiki');
           <ul>
             <li>Version: r<?=$Revision?>
             </li>
-            <li>Last edited by: <?=Users::format_username($AuthorID, false, false, false)?>
+            <li>Last edited by: <?=User::format_username($AuthorID, false, false, false)?>
             </li>
             <li>Last updated: <?=time_diff($Date)?>
             </li>

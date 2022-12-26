@@ -55,7 +55,7 @@ while (list($PeerUserID, $Size, $Active, $Connectable, $Uploaded, $Remaining, $U
 <?php
   if (check_perms('users_mod')) {
       ?>
-    <td><?=Users::format_username($PeerUserID, false, false, false)?></td>
+    <td><?=User::format_username($PeerUserID, false, false, false)?></td>
 <?php
   } else {
       ?>

@@ -149,8 +149,8 @@ if (!$db->has_results()) {
   // List messages
   while (list($ID, $Subject, $UserID, $Status, $Level, $AssignedToUser, $Date, $Unread, $NumReplies, $ResolverID) = $db->next_record()) {
 
-    //$UserInfo = Users::user_info($UserID);
-      $UserStr = Users::format_username($UserID, true, true, true, true);
+    //$UserInfo = User::user_info($UserID);
+      $UserStr = User::format_username($UserID, true, true, true, true);
 
       // Get assigned
       if ($AssignedToUser == '') {
@@ -162,14 +162,14 @@ if (!$db->has_results()) {
           }
       } else {
           // Assigned to user
-          // $UserInfo = Users::user_info($AssignedToUser);
-          $Assigned = Users::format_username($AssignedToUser, true, true, true, true);
+          // $UserInfo = User::user_info($AssignedToUser);
+          $Assigned = User::format_username($AssignedToUser, true, true, true, true);
       }
 
       // Get resolver
       if ($ViewString == 'Resolved') {
-          //$UserInfo = Users::user_info($ResolverID);
-          $ResolverStr = Users::format_username($ResolverID, true, true, true, true);
+          //$UserInfo = User::user_info($ResolverID);
+          $ResolverStr = User::format_username($ResolverID, true, true, true, true);
       }
 
       // Table row?>

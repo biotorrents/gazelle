@@ -20,7 +20,7 @@ if (isset($user['PostsPerPage'])) {
 
 list($Page, $Limit) = Format::page_limit($PerPage);
 
-$UserInfo = Users::user_info($UserID);
+$UserInfo = User::user_info($UserID);
 extract(array_intersect_key($UserInfo, array_flip(array('Username', 'Enabled', 'Title', 'Avatar', 'Donor', 'Warned'))));
 
 View::header("Post history for $Username", 'subscriptions,comments');
@@ -211,15 +211,15 @@ if (empty($Results)) {
   $QueryID = $db->get_query_id();
         while (list($PostID, $AddedTime, $Body, $EditedUserID, $EditedTime, $EditedUsername, $TopicID, $ThreadTitle, $LastPostID, $LastRead, $Locked, $Sticky) = $db->next_record()) {
             ?>
-  <table class="box forum_post vertical_margin<?=!Users::hasAvatarsEnabled() ? ' noavatar' : '' ?>" id="post<?=$PostID ?>">
+  <table class="box forum_post vertical_margin<?=!User::hasAvatarsEnabled() ? ' noavatar' : '' ?>" id="post<?=$PostID ?>">
     <colgroup>
-<?php if (Users::hasAvatarsEnabled()) { ?>
+<?php if (User::hasAvatarsEnabled()) { ?>
       <col class="col_avatar" />
 <?php } ?>
       <col class="col_post_body" />
     </colgroup>
     <tr class="colhead_dark">
-      <td colspan="<?=Users::hasAvatarsEnabled() ? 2 : 1 ?>">
+      <td colspan="<?=User::hasAvatarsEnabled() ? 2 : 1 ?>">
         <span class="u-pull-left">
           <?=time_diff($AddedTime) ?>
           in <a href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>&amp;postid=<?=$PostID?>#post<?=$PostID?>" class="tooltip" title="<?=Text::esc($ThreadTitle)?>"><?=Format::cut_string($ThreadTitle, 75)?></a>
@@ -253,9 +253,9 @@ if (empty($Results)) {
     if (!$ShowGrouped) {
         ?>
     <tr>
-<?php if (Users::hasAvatarsEnabled()) { ?>
+<?php if (User::hasAvatarsEnabled()) { ?>
       <td class="avatar" valign="top">
-        <?=Users::displayAvatar($Avatar, $Username)?>
+        <?=User::displayAvatar($Avatar, $Username)?>
       </td>
 <?php } ?>
       <td class="body" valign="top">
@@ -268,7 +268,7 @@ if (empty($Results)) {
           <a href="#content<?=$PostID?>" onclick="LoadEdit(<?=$PostID?>, 1);">&laquo;</a>
 <?php } ?>
           Last edited by
-          <?=Users::format_username($EditedUserID, false, false, false) ?> <?=time_diff($EditedTime, 2, true, true)?>
+          <?=User::format_username($EditedUserID, false, false, false) ?> <?=time_diff($EditedTime, 2, true, true)?>
 <?php } ?>
         </div>
       </td>

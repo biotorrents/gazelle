@@ -236,7 +236,7 @@ View::header(
 <div>
   <div class="header">
     <h2>
-      <?=Users::format_username($UserID, true, true, true, false, true)?>
+      <?=User::format_username($UserID, true, true, true, false, true)?>
     </h2>
   </div>
 
@@ -315,12 +315,12 @@ if (check_perms('users_mod')) {
 
   <div class="sidebar one-third column">
     <?php
-if ($Avatar && Users::hasAvatarsEnabled()) {
+if ($Avatar && User::hasAvatarsEnabled()) {
     ?>
     <div class="box box_image box_image_avatar">
       <div class="head colhead_dark">User</div>
       <div class="avatar" align="center">
-        <?=       Users::displayAvatar($Avatar, $Username)?>
+        <?=       User::displayAvatar($Avatar, $Username)?>
       </div>
     </div>
     <?php
@@ -591,7 +591,7 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
         <li>Class: <?=$ClassLevels[$Class]['Name']?>
         </li>
         <?php
-$UserInfo = Users::user_info($UserID);
+$UserInfo = User::user_info($UserID);
 if (!empty($UserInfo['ExtraClasses'])) {
     ?>
         <li>
@@ -1095,11 +1095,11 @@ if (check_perms('users_mod', $Class) || $IsFLS) {
             }
         } else {
             // Assigned to user
-            $Assigned = Users::format_username($UserID, true, true, true, true);
+            $Assigned = User::format_username($UserID, true, true, true, true);
         }
 
         if ($ResolverID) {
-            $Resolver = Users::format_username($ResolverID, true, true, true, true);
+            $Resolver = User::format_username($ResolverID, true, true, true, true);
         } else {
             $Resolver = '(unresolved)';
         } ?>

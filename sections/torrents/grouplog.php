@@ -59,7 +59,7 @@ if (!empty($Groups[$GroupID])) {
       } else { ?>
         <td></td>
 <?php } ?>
-      <td><?=in_array($UserID, $AnonUsers) ? 'Anonymous' : Users::format_username($UserID, false, false, false)?></td>
+      <td><?=in_array($UserID, $AnonUsers) ? 'Anonymous' : User::format_username($UserID, false, false, false)?></td>
       <td><?=$Info?></td>
     </tr>
 <?php

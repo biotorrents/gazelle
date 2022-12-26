@@ -485,7 +485,7 @@ if ($ThreadInfo['StickyPostID']) {
 
 foreach ($Thread as $Key => $Post) {
     list($PostID, $AuthorID, $AddedTime, $Body, $EditedUserID, $EditedTime, $EditedUsername) = array_values($Post);
-    list($AuthorID, $Username, $PermissionID, $Paranoia, $Artist, $Donor, $Warned, $Avatar, $Enabled, $UserTitle) = array_values(Users::user_info($AuthorID)); ?>
+    list($AuthorID, $Username, $PermissionID, $Paranoia, $Artist, $Donor, $Warned, $Avatar, $Enabled, $UserTitle) = array_values(User::user_info($AuthorID)); ?>
 <table class="forum_post wrap_overflow box vertical_margin<?php
   if ((
         (!$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky'])
@@ -495,7 +495,7 @@ foreach ($Thread as $Key => $Post) {
     ) {
       echo ' forum_unread';
   }
-    if (!Users::hasAvatarsEnabled()) {
+    if (!User::hasAvatarsEnabled()) {
         echo ' noavatar';
     }
     if ($ThreadInfo['OP'] == $AuthorID) {
@@ -508,16 +508,16 @@ foreach ($Thread as $Key => $Post) {
         echo ' staff_post';
     } ?>" id="post<?=$PostID?>">
   <colgroup>
-    <?php if (Users::hasAvatarsEnabled()) { ?>
+    <?php if (User::hasAvatarsEnabled()) { ?>
     <col class="col_avatar" />
     <?php } ?>
     <col class="col_post_body" />
   </colgroup>
   <tr class="colhead_dark">
-    <td colspan="<?=Users::hasAvatarsEnabled() ? 2 : 1?>">
+    <td colspan="<?=User::hasAvatarsEnabled() ? 2 : 1?>">
       <div class="u-pull-left"><a class="post_id"
           href="forums.php?action=viewthread&amp;threadid=<?=$ThreadID?>&amp;postid=<?=$PostID?>#post<?=$PostID?>">#<?=$PostID?></a>
-        <?=Users::format_username($AuthorID, true, true, true, true, true);
+        <?=User::format_username($AuthorID, true, true, true, true, true);
     echo "\n"; ?>
         <?=time_diff($AddedTime, 2);
     echo "\n"; ?>
@@ -559,7 +559,7 @@ foreach ($Thread as $Key => $Post) {
           class="brackets">Report</a>
         <?php
   if (check_perms('users_warn') && $AuthorID != $user['ID']) {
-      $AuthorInfo = Users::user_info($AuthorID);
+      $AuthorInfo = User::user_info($AuthorID);
       if ($user['Class'] >= $AuthorInfo['Class']) {
           ?>
         <form class="manage_form hidden" name="user"
@@ -580,12 +580,12 @@ foreach ($Thread as $Key => $Post) {
     </td>
   </tr>
   <tr>
-    <?php if (Users::hasAvatarsEnabled()) { ?>
+    <?php if (User::hasAvatarsEnabled()) { ?>
     <td class="avatar valign_top">
-      <?=Users::displayAvatar($Avatar, $Username)?>
+      <?=User::displayAvatar($Avatar, $Username)?>
     </td>
     <?php } ?>
-    <td class="body valign_top" <?php if (!Users::hasAvatarsEnabled()) {
+    <td class="body valign_top" <?php if (!User::hasAvatarsEnabled()) {
       echo ' colspan="2"';
   } ?>>
       <div id="content<?=$PostID?>">
@@ -599,7 +599,7 @@ foreach ($Thread as $Key => $Post) {
             onclick="LoadEdit('forums', <?=$PostID?>, 1); return false;">&laquo;</a>
           <?php } ?>
           Last edited by
-          <?=Users::format_username($EditedUserID, false, false, false, false, false) ?>
+          <?=User::format_username($EditedUserID, false, false, false, false, false) ?>
           <?=time_diff($EditedTime, 2, true, true)?>
         </div>
         <?php } ?>
@@ -655,7 +655,7 @@ if (check_perms('site_moderate_forums')) {
   foreach ($Notes as $Note) {
       ?>
     <tr>
-      <td><?=Users::format_username($Note['AuthorID'])?>
+      <td><?=User::format_username($Note['AuthorID'])?>
         (<?=time_diff($Note['AddedTime'], 2, true, true)?>)
       </td>
       <td><?=Text::parse($Note['Body'])?>

@@ -84,7 +84,7 @@ foreach ($Forums as $Forum) {
         <?php } ?>
 
         <span class="u-pull-right last_poster">
-          by <?=Users::format_username($LastAuthorID, false, false, false)?>
+          by <?=User::format_username($LastAuthorID, false, false, false)?>
           <?=time_diff($LastTime, 1)?>
         </span>
       </td>

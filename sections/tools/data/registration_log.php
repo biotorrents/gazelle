@@ -113,8 +113,8 @@ if ($db->has_results()) {
 
   <tr class="<?=$RowClass?>">
     <td>
-      <?=Users::format_username($UserID, true, true, true, true)?><br />
-      <?=Users::format_username($InviterID, true, true, true, true)?>
+      <?=User::format_username($UserID, true, true, true, true)?><br />
+      <?=User::format_username($InviterID, true, true, true, true)?>
     </td>
 
     <td>

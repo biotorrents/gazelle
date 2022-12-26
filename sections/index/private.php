@@ -270,7 +270,7 @@ if (count($Recommend) >= 4) {
       <tr>
         <td>
           <?=Artists::display_artists($Recommend_artists[$GroupID]) ?>
-          <a href="torrents.php?id=<?=$GroupID?>"><?=$GroupName?></a> (by <?=Users::format_username($userId, false, false, false)?>)
+          <a href="torrents.php?id=<?=$GroupID?>"><?=$GroupName?></a> (by <?=User::format_username($userId, false, false, false)?>)
           <?=$TagStr?>
         </td>
       </tr>

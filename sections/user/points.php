@@ -57,8 +57,8 @@ if ($user['DisablePoints']) {
               SET BonusPoints = BonusPoints + ".$SentAmount."
               WHERE ID = $To");
 
-                        $UserInfo = Users::user_info($UserID);
-                        $ToInfo = Users::user_info($To);
+                        $UserInfo = User::user_info($UserID);
+                        $ToInfo = User::user_info($To);
 
                         $db->query("
               UPDATE users_info

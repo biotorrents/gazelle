@@ -1052,7 +1052,7 @@ while (list($UserID, $Username, $Uploaded, $Downloaded, $Snatched, $Invitees, $C
     $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
     $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'; ?>
     <tr>
-      <td><?=Users::format_username($UserID, true, true, true, true)?>
+      <td><?=User::format_username($UserID, true, true, true, true)?>
       </td>
       <td><?=Format::get_ratio_html($Uploaded, $Downloaded)?>
       </td>

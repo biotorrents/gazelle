@@ -119,7 +119,7 @@ foreach ($TorrentList as $Torrent) {
     # todo: Limit to 100 files
     unset($File);
     $FileList = implode('|||', $FileList);
-    $Userinfo = Users::user_info($Torrent['UserID']);
+    $Userinfo = User::user_info($Torrent['UserID']);
 
     $Reports = Torrents::get_reports($Torrent['ID']);
     $Torrent['Reported'] = count($Reports) > 0;

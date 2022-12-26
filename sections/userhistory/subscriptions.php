@@ -216,16 +216,16 @@ if (!$NumResults) {
     } ?>
 
   <table
-    class="forum_post box vertical_margin<?=(!Users::hasAvatarsEnabled() ? ' noavatar' : '')?>">
+    class="forum_post box vertical_margin<?=(!User::hasAvatarsEnabled() ? ' noavatar' : '')?>">
     <colgroup>
-      <?php if (Users::hasAvatarsEnabled()) { ?>
+      <?php if (User::hasAvatarsEnabled()) { ?>
       <col class="col_avatar" />
       <?php } ?>
       <col class="col_post_body" />
     </colgroup>
     <tr
       class="colhead_dark notify_<?=$Result['Page']?>">
-      <td colspan="<?=Users::hasAvatarsEnabled() ? 2 : 1 ?>">
+      <td colspan="<?=User::hasAvatarsEnabled() ? 2 : 1 ?>">
         <span class="u-pull-left">
           <?=$Links . ($Result['PostID'] < $Result['LastPost'] ? ' <span class="new">(New!)</span>' : '')?>
         </span>
@@ -261,9 +261,9 @@ if (!$NumResults) {
     <?php if (!empty($Result['LastReadBody'])) { // if a user is subscribed to a topic/comments but hasn't accessed the site ever, LastReadBody will be null - in this case we don't display a post.?>
     <tr
       class="row<?=$ShowCollapsed ? ' hidden' : '' ?>">
-      <?php if (Users::hasAvatarsEnabled()) { ?>
+      <?php if (User::hasAvatarsEnabled()) { ?>
       <td class="avatar" valign="top">
-        <?=Users::displayAvatar($Result['LastReadAvatar'], $Result['LastReadUsername'])?>
+        <?=User::displayAvatar($Result['LastReadAvatar'], $Result['LastReadUsername'])?>
       </td>
       <?php } ?>
       <td class="body" valign="top">
@@ -271,7 +271,7 @@ if (!$NumResults) {
           <?=Text::parse($Result['LastReadBody']) ?>
           <?php if ($Result['LastReadEditedUserID']) { ?>
           <br /><br />
-          Last edited by <?=Users::format_username($Result['LastReadEditedUserID'], false, false, false) ?>
+          Last edited by <?=User::format_username($Result['LastReadEditedUserID'], false, false, false) ?>
           <?=time_diff($Result['LastReadEditedTime'])?>
           <?php } ?>
         </div>

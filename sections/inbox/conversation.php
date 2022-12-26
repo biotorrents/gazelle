@@ -44,7 +44,7 @@ $ConverstionParticipants = $db->to_array();
 
 foreach ($ConverstionParticipants as $Participant) {
     $PMUserID = (int)$Participant['ID'];
-    $Users[$PMUserID]['UserStr'] = Users::format_username($PMUserID, true, true, true, true);
+    $Users[$PMUserID]['UserStr'] = User::format_username($PMUserID, true, true, true, true);
     $Users[$PMUserID]['Username'] = $Participant['Username'];
 }
 

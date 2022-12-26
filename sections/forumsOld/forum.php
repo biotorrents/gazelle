@@ -294,13 +294,13 @@ if (count($Forum) === 0) {
       </a>
       <?php } ?>
       <span class="u-pull-right last_poster">
-        by <?=Users::format_username($LastAuthorID, false, false, false, false, false)?>
+        by <?=User::format_username($LastAuthorID, false, false, false, false, false)?>
         <?=time_diff($LastTime, 1)?>
       </span>
     </td>
     <td class="number_column"><?=Text::float($PostCount - 1)?>
     </td>
-    <td><?=Users::format_username($AuthorID, false, false, false, false, false)?>
+    <td><?=User::format_username($AuthorID, false, false, false, false, false)?>
     </td>
   </tr>
   <?php

@@ -14,7 +14,7 @@ $UserID = (int)$_POST['userid'];
 $Key = (int)$_POST['key'];
 $SQLTime = sqltime();
 
-$UserInfo = Users::user_info($UserID);
+$UserInfo = User::user_info($UserID);
 if ($UserInfo['Class'] > $user['Class']) {
     error(403);
 }

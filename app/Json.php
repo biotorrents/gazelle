@@ -92,7 +92,7 @@ class Json
         }
 
         # user is disabled
-        if (Users::isDisabled($userId)) {
+        if (User::isDisabled($userId)) {
             return $this->failure(401, "user disabled");
         }
 

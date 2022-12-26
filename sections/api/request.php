@@ -26,8 +26,8 @@ if ($Request === false) {
 }
 
 $CategoryID = $Request['CategoryID'];
-$Requestor = Users::user_info($Request['UserID']);
-$Filler = $Request['FillerID'] ? Users::user_info($Request['FillerID']) : null;
+$Requestor = User::user_info($Request['UserID']);
+$Filler = $Request['FillerID'] ? User::user_info($Request['FillerID']) : null;
 //Convenience variables
 $IsFilled = !empty($Request['TorrentID']);
 $CanVote = !$IsFilled && check_perms('site_vote');
@@ -64,7 +64,7 @@ list($NumComments, $Page, $Thread) = Comments::load('requests', $RequestID, fals
 $JsonRequestComments = [];
 foreach ($Thread as $Key => $Post) {
     list($PostID, $AuthorID, $AddedTime, $Body, $EditedUserID, $EditedTime, $EditedUsername) = array_values($Post);
-    list($AuthorID, $Username, $PermissionID, $Paranoia, $Artist, $Donor, $Warned, $Avatar, $Enabled, $UserTitle) = array_values(Users::user_info($AuthorID));
+    list($AuthorID, $Username, $PermissionID, $Paranoia, $Artist, $Donor, $Warned, $Avatar, $Enabled, $UserTitle) = array_values(User::user_info($AuthorID));
     $JsonRequestComments[] = array(
     'postId'          => (int)$PostID,
     'authorId'        => (int)$AuthorID,
@@ -72,7 +72,7 @@ foreach ($Thread as $Key => $Post) {
     'donor'           => ($Donor == 1),
     'warned'          => (bool)$Warned,
     'enabled'         => ($Enabled == 2 ? false : true),
-    'class'           => Users::make_class_string($PermissionID),
+    'class'           => User::make_class_string($PermissionID),
     'addedTime'       => $AddedTime,
     'avatar'          => $Avatar,
     'comment'         => Text::parse($Body),

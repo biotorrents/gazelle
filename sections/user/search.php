@@ -79,8 +79,8 @@ View::header('User search');
   foreach ($Results as $Result) {
       list($UserID, $Username, $Enabled, $PermissionID, $Donor, $Warned) = $Result; ?>
       <tr>
-        <td><?=Users::format_username($UserID, true, true, true, true); ?></td>
-        <td><?=Users::make_class_string($PermissionID); ?></td>
+        <td><?=User::format_username($UserID, true, true, true, true); ?></td>
+        <td><?=User::make_class_string($PermissionID); ?></td>
       </tr>
 <?php
   } ?>

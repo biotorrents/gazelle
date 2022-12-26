@@ -24,7 +24,7 @@ if (isset($_GET['userid']) && check_perms('users_view_invites')) {
     $Sneaky = false;
 }
 
-list($UserID, $Username, $PermissionID) = array_values(Users::user_info($UserID));
+list($UserID, $Username, $PermissionID) = array_values(User::user_info($UserID));
 
 $db->query("
   SELECT InviteKey, Email, Expires
@@ -101,7 +101,7 @@ View::header('Invites');
 ?>
 <div>
   <div class="header">
-    <h2><?=Users::format_username($UserID, false, false, false)?>
+    <h2><?=User::format_username($UserID, false, false, false)?>
       &gt; Invites</h2>
     <div class="linkbox">
       <a href="user.php?action=invitetree<?php if ($Sneaky) {
@@ -256,7 +256,7 @@ if (!empty($Pending)) {
       $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'
 ?>
       <tr class="row">
-        <td><?=Users::format_username($ID, true, true, true, true)?>
+        <td><?=User::format_username($ID, true, true, true, true)?>
         </td>
         <td><?=Text::esc($Email)?>
         </td>

@@ -122,7 +122,7 @@ if (!isset($InputTitle)) {
         id="preview_wrap_<?=$ReplyText->getID()?>">
 
         <colgroup>
-          <?php if (Users::hasAvatarsEnabled()) { ?>
+          <?php if (User::hasAvatarsEnabled()) { ?>
           <col class="col_avatar" />
           <?php } ?>
 
@@ -130,11 +130,11 @@ if (!isset($InputTitle)) {
         </colgroup>
 
         <tr class="colhead_dark">
-          <td colspan="<?=(Users::hasAvatarsEnabled() ? 2 : 1)?>">
+          <td colspan="<?=(User::hasAvatarsEnabled() ? 2 : 1)?>">
             <div class="u-pull-left">
               <a href="#quickreplypreview">#xyz</a>
               by <strong>
-                <?=Users::format_username($app->userNew->core["id"], true, true, true, true)?>
+                <?=User::format_username($app->userNew->core["id"], true, true, true, true)?>
               </strong>
               Just now
             </div>
@@ -148,10 +148,10 @@ if (!isset($InputTitle)) {
         </tr>
 
         <tr>
-          <?php if (Users::hasAvatarsEnabled()) { ?>
+          <?php if (User::hasAvatarsEnabled()) { ?>
           <td class="avatar valign_top">
             <?=
-          Users::displayAvatar(
+          User::displayAvatar(
               $app->userNew->extra['Avatar'],
               $app->userNew->core['Username']
           )

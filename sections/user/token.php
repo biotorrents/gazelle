@@ -25,17 +25,17 @@ if (!empty($_GET['do']) && $userId !== $user['ID'] && !check_perms('users_mod'))
 }
 
 if ($_GET['do'] === 'revoke') {
-    Users::revokeApiTokenById($userId, $tokenId);
+    User::revokeApiTokenById($userId, $tokenId);
     header('Location: user.php?action=edit&userid=' . $userId);
     die();
 } elseif ($_GET['do'] === 'generate') {
     $tokenName = $_POST['token_name'] ?? '';
     if (empty(trim($tokenName))) {
         $error = 'You must supply a name for the token.';
-    } elseif (Users::hasTokenByName($userId, $tokenName)) {
+    } elseif (User::hasTokenByName($userId, $tokenName)) {
         $error = 'You have already generated a token with that name.';
     } else {
-        $token = Users::createApiToken($userId, $tokenName, $ENV->getPriv('siteCryptoKey'));
+        $token = User::createApiToken($userId, $tokenName, $ENV->getPriv('siteCryptoKey'));
     }
 }
 

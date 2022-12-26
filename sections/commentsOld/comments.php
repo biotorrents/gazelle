@@ -18,7 +18,7 @@ declare(strict_types=1);
 // User ID
 if (isset($_GET['id']) && is_number($_GET['id'])) {
     $UserID = (int)$_GET['id'];
-    $UserInfo = Users::user_info($UserID);
+    $UserInfo = User::user_info($UserID);
     $Username = $UserInfo['Username'];
 
     if ($user['ID'] === $UserID) {
@@ -70,7 +70,7 @@ switch ($Action) {
     $Field2 = '`artists_group`.`Name`';
     $Table = '`artists_group`';
     $Title = 'Artist comments left by ' . ($Self ? 'you' : $Username);
-    $Header = 'Artist comments left by ' . ($Self ? 'you' : Users::format_username($UserID, false, false, false));
+    $Header = 'Artist comments left by ' . ($Self ? 'you' : User::format_username($UserID, false, false, false));
     $Conditions[] = "`comments`.`AuthorID` = $UserID";
     break;
 
@@ -86,19 +86,19 @@ switch ($Action) {
         $Conditions[] = "`collages`.`UserID` = $UserID";
         $Conditions[] = "`comments`.`AuthorID` != $UserID";
         $Title = 'Comments left on collages ' . ($Self ? 'you' : $Username) . ' created';
-        $Header = 'Comments left on collages ' . ($Self ? 'you' : Users::format_username($UserID, false, false, false)) . ' created';
+        $Header = 'Comments left on collages ' . ($Self ? 'you' : User::format_username($UserID, false, false, false)) . ' created';
     } elseif ($Type == 'contributed') {
         $Conditions[] = 'IF(`collages`.`CategoryID` = ' . array_search('Artists', $CollageCats) . ', `collages_artists`.`ArtistID`, `collages_torrents`.`GroupID`) IS NOT NULL';
         $Conditions[] = "`comments`.`AuthorID` != $UserID";
         $Join[] = "LEFT JOIN `collages_torrents` ON `collages_torrents`.`CollageID` = `collages`.`ID` AND `collages_torrents`.`UserID` = $UserID";
         $Join[] = "LEFT JOIN `collages_artists` ON `collages_artists`.`CollageID` = `collages`.`ID` AND `collages_artists`.`UserID` = $UserID";
         $Title = 'Comments left on collages ' . ($Self ? 'you\'ve' : $Username . ' has') . ' contributed to';
-        $Header = 'Comments left on collages ' . ($Self ? 'you\'ve' : Users::format_username($UserID, false, false, false).' has') . ' contributed to';
+        $Header = 'Comments left on collages ' . ($Self ? 'you\'ve' : User::format_username($UserID, false, false, false).' has') . ' contributed to';
     } else {
         $Type = 'default';
         $Conditions[] = "`comments`.`AuthorID` = $UserID";
         $Title = 'Collage comments left by ' . ($Self ? 'you' : $Username);
-        $Header = 'Collage comments left by ' . ($Self ? 'you' : Users::format_username($UserID, false, false, false));
+        $Header = 'Collage comments left by ' . ($Self ? 'you' : User::format_username($UserID, false, false, false));
     }
     break;
 
@@ -113,18 +113,18 @@ switch ($Action) {
         $Conditions[] = "`requests`.`UserID` = $UserID";
         $Conditions[] = "`comments`.`AuthorID` != $UserID";
         $Title = 'Comments left on requests ' . ($Self ? 'you' : $Username) . ' created';
-        $Header = 'Comments left on requests ' . ($Self ? 'you' : Users::format_username($UserID, false, false, false)) . ' created';
+        $Header = 'Comments left on requests ' . ($Self ? 'you' : User::format_username($UserID, false, false, false)) . ' created';
     } elseif ($Type == 'voted') {
         $Conditions[] = "`requests_votes`.`UserID` = $UserID";
         $Conditions[] = "`comments`.`AuthorID` != $UserID";
         $Join[] = 'JOIN `requests_votes` ON `requests_votes`.`RequestID` = `requests`.`ID`';
         $Title = 'Comments left on requests ' . ($Self ? 'you\'ve' : $Username . ' has') . ' voted on';
-        $Header = 'Comments left on requests ' . ($Self ? 'you\'ve' : Users::format_username($UserID, false, false, false) . ' has') . ' voted on';
+        $Header = 'Comments left on requests ' . ($Self ? 'you\'ve' : User::format_username($UserID, false, false, false) . ' has') . ' voted on';
     } else {
         $Type = 'default';
         $Conditions[] = "`comments`.`AuthorID` = $UserID";
         $Title = 'Request comments left by ' . ($Self ? 'you' : $Username);
-        $Header = 'Request comments left by ' . ($Self ? 'you' : Users::format_username($UserID, false, false, false));
+        $Header = 'Request comments left by ' . ($Self ? 'you' : User::format_username($UserID, false, false, false));
     }
     break;
 
@@ -143,12 +143,12 @@ switch ($Action) {
         $Conditions[] = '`comments`.`AddedTime` > `torrents`.`Time`';
         $Conditions[] = "`comments`.`AuthorID` != $UserID";
         $Title = 'Comments left on torrents ' . ($Self ? 'you\'ve' : $Username . ' has') . ' uploaded';
-        $Header = 'Comments left on torrents ' . ($Self ? 'you\'ve' : Users::format_username($UserID, false, false, false) . ' has') . ' uploaded';
+        $Header = 'Comments left on torrents ' . ($Self ? 'you\'ve' : User::format_username($UserID, false, false, false) . ' has') . ' uploaded';
     } else {
         $Type = 'default';
         $Conditions[] = "`comments`.`AuthorID` = $UserID";
         $Title = 'Torrent comments left by ' . ($Self ? 'you' : $Username);
-        $Header = 'Torrent comments left by ' . ($Self ? 'you' : Users::format_username($UserID, false, false, false));
+        $Header = 'Torrent comments left by ' . ($Self ? 'you' : User::format_username($UserID, false, false, false));
     }
     break;
 }

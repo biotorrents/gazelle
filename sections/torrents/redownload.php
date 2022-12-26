@@ -12,7 +12,7 @@ if (!check_perms('zip_downloader')) {
     error(403);
 }
 
-$User = Users::user_info($UserID);
+$User = User::user_info($UserID);
 $Perms = Permissions::get_permissions($User['PermissionID']);
 $UserClass = $Perms['Class'];
 list($UserID, $Username) = array_values($User);

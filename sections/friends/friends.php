@@ -72,8 +72,8 @@ foreach ($Friends as $Friend) {
         value="<?=$user['AuthKey']?>" />
       <table class="friends_table vertical_margin">
         <tr class="colhead">
-          <td colspan="<?=(Users::hasAvatarsEnabled() ? 3 : 2)?>">
-            <span class="u-pull-left"><?=Users::format_username($FriendID, true, true, true, true)?>
+          <td colspan="<?=(User::hasAvatarsEnabled() ? 3 : 2)?>">
+            <span class="u-pull-left"><?=User::format_username($FriendID, true, true, true, true)?>
               <?php if (check_paranoia('ratio', $Paranoia, $Class, $FriendID)) { ?>
               &nbsp;Ratio: <strong><?=Format::get_ratio_html($Uploaded, $Downloaded)?></strong>
               <?php
@@ -97,9 +97,9 @@ foreach ($Friends as $Friend) {
           </td>
         </tr>
         <tr>
-          <?php if (Users::hasAvatarsEnabled()) { ?>
+          <?php if (User::hasAvatarsEnabled()) { ?>
           <td class="col_avatar avatar" valign="top">
-            <?=Users::displayAvatar($Avatar, $Username)?>
+            <?=User::displayAvatar($Avatar, $Username)?>
           </td>
           <?php } ?>
           <td valign="top">

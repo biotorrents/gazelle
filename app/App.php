@@ -96,7 +96,7 @@ class App
         $this->debug = Debug::go();
 
         # user
-        $this->userNew = Users::go(); # new
+        $this->userNew = User::go(); # new
         $this->userOld =& $user; # old
 
         # twig: LAST

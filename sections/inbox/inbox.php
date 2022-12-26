@@ -167,12 +167,12 @@ echo $Pages;
               echo "</strong>\n";
           } ?>
         </td>
-        <td><?=Users::format_username($SenderID, true, true, true, true)?>
+        <td><?=User::format_username($SenderID, true, true, true, true)?>
         </td>
         <td><?=time_diff($Date)?>
         </td>
         <?php if (check_perms('users_mod')) { ?>
-        <td><?=(($ForwardedID && $ForwardedID != $user['ID']) ? Users::format_username($ForwardedID, false, false, false) : '')?>
+        <td><?=(($ForwardedID && $ForwardedID != $user['ID']) ? User::format_username($ForwardedID, false, false, false) : '')?>
         </td>
         <?php } ?>
       </tr>

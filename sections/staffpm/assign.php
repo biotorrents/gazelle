@@ -67,7 +67,7 @@ if ($ConvID = (int)$_GET['convid']) {
         WHERE ID = $ConvID");
             $cache->delete_value("num_staff_pms_$user[ID]");
         } else {
-            $UserInfo = Users::user_info($NewLevel);
+            $UserInfo = User::user_info($NewLevel);
             $Level = $Classes[$UserInfo['PermissionID']]['Level'];
             if (!$Level) {
                 error('Assign to user not found.');

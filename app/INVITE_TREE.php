@@ -160,7 +160,7 @@ class INVITE_TREE
             $UserClass = $Classes[$Class]['Level']; ?>
 
     <strong>
-        <?=Users::format_username($ID, true, true, ($Enabled !== 2 ? false : true), true)?>
+        <?=User::format_username($ID, true, true, ($Enabled !== 2 ? false : true), true)?>
     </strong>
 
     <?php
@@ -202,7 +202,7 @@ class INVITE_TREE
                     continue;
                 }
 
-                $LastClass = Users::make_class_string($ClassID);
+                $LastClass = User::make_class_string($ClassID);
                 if ($ClassCount > 1) {
                     if ($LastClass === 'Torrent Celebrity') {
                         $LastClass = 'Torrent Celebrities';

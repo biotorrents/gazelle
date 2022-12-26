@@ -45,7 +45,7 @@ foreach ($Results as $Result) {
     'donor' => $Donor == 1,
     'warned' => (bool)$Warned,
     'enabled' => ($Enabled == 2 ? false : true),
-    'class' => Users::make_class_string($PermissionID),
+    'class' => User::make_class_string($PermissionID),
     'avatar' => $Avatar
   ];
 }

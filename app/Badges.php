@@ -17,7 +17,7 @@ class Badges
      */
     public static function get_badges($UserID)
     {
-        return Users::user_info($UserID)['Badges'];
+        return User::user_info($UserID)['Badges'];
     }
 
 

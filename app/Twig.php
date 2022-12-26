@@ -309,14 +309,14 @@ class Twig # extends Twig\Environment
         $twig->addFilter(new Twig\TwigFilter(
             "user_url",
             function ($userId) {
-                return new Twig\Markup(Users::format_username($userId, false, false, false), "UTF-8");
+                return new Twig\Markup(User::format_username($userId, false, false, false), "UTF-8");
             }
         ));
 
         $twig->addFilter(new Twig\TwigFilter(
             "user_full",
             function ($userId) {
-                return new Twig\Markup(Users::format_username($userId, true, true, true, true), "UTF-8");
+                return new Twig\Markup(User::format_username($userId, true, true, true, true), "UTF-8");
             }
         ));
 

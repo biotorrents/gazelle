@@ -142,7 +142,7 @@ if (!empty($SearchWhere)) {
     $SearchWhere = " AND $SearchWhere";
 }
 
-$User = Users::user_info($UserID);
+$User = User::user_info($UserID);
 $Perms = Permissions::get_permissions($User['PermissionID']);
 $UserClass = $Perms['Class'];
 
@@ -314,7 +314,7 @@ list($TorrentCount) = $db->next_record();
 
 $Results = Torrents::get_groups($GroupIDs);
 $Action = Text::esc($_GET['type']);
-$User = Users::user_info($UserID);
+$User = User::user_info($UserID);
 
 View::header($User['Username']."'s $Action torrents", 'browse');
 $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);

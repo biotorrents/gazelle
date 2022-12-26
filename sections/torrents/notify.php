@@ -162,7 +162,7 @@ if (!empty($GroupIDs)) {
     }
 }
 if ($Sneaky) {
-    $UserInfo = Users::user_info($UserID);
+    $UserInfo = User::user_info($UserID);
     View::header($UserInfo['Username'].'\'s notifications', 'notifications');
 } else {
     View::header('My notifications', 'notifications');

@@ -126,7 +126,7 @@ class BencodeTorrent extends BencodeDecode
      */
     public function make_sourced()
     {
-        $Sources = Users::get_upload_sources();
+        $Sources = User::get_upload_sources();
         if (empty($this->Dec)) {
             return false;
         }

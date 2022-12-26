@@ -51,9 +51,9 @@ $db->query("
 
 while (list($PMUserID, $Username) = $db->next_record()) {
     $PMUserID = (int)$PMUserID;
-    $Users[$PMUserID]['UserStr'] = Users::format_username($PMUserID, true, true, true, true);
+    $Users[$PMUserID]['UserStr'] = User::format_username($PMUserID, true, true, true, true);
     $Users[$PMUserID]['Username'] = $Username;
-    $UserInfo = Users::user_info($PMUserID);
+    $UserInfo = User::user_info($PMUserID);
     $Users[$PMUserID]['Avatar'] = $UserInfo['Avatar'];
 }
 $Users[0]['UserStr'] = 'System'; // in case it's a message from the system
