@@ -172,9 +172,11 @@ function error(int|string $error = 400, $NoHTML = false, $Log = false)
 /**
  * Convenience function. See doc in permissions.class.php
  */
-function check_perms($PermissionName, $MinClass = 0)
+function check_perms(string $permission, $unused = 0)
 {
-    return Permissions::check_perms($PermissionName, $MinClass);
+    $app = App::go();
+
+    return $app->userNew->can($permission);
 }
 
 
@@ -500,8 +502,11 @@ function time_ago($TimeStamp)
  * Returns a <span> by default but can optionally return the raw time
  * difference in text (e.g., "16 hours and 28 minutes", "1 day, 18 hours").
  */
-function time_diff($TimeStamp, $Levels = 2, $Span = true, $Lowercase = false)
+function time_diff(int $timestamp, $unusedLevels = 2, $unusedSpan = true, $unusedLowercase = false)
 {
+    return Carbon\Carbon::createFromTimeStamp($timestamp)->diffForHumans();
+
+    /*
     if (!$TimeStamp) {
         return 'Never';
     }
@@ -587,6 +592,7 @@ function time_diff($TimeStamp, $Levels = 2, $Span = true, $Lowercase = false)
     } else {
         return $Return;
     }
+    */
 }
 
 

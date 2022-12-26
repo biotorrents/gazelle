@@ -255,7 +255,7 @@ class Permissions
     /**
      * can
      *
-     * Checks if a user can do something or not.
+     * Checks if a user can do something.
      */
     public static function can(string $permission): bool
     {

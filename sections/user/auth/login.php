@@ -2,13 +2,19 @@
 
 declare(strict_types=1);
 
+
+/**
+ * user login page
+ */
+
+$app = App::go();
+
 # https://github.com/paragonie/anti-csrf
 Http::csrf();
 
-$app = App::go();
+# libraries
 $auth = new Auth();
-
-$twofa = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
+$twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
 $u2f = new u2flib_server\U2F("https://{$app->env->siteDomain}");
 
 # variables
@@ -18,33 +24,27 @@ $server = Http::query("server");
 
 $username = $post["username"] ?? null;
 $passphrase = $post["passphrase"] ?? null;
-$token = $post["twofa"] ?? null;
-
+$token = $post["twoFactor"] ?? null;
 
 # delight-im/auth
 if (!empty($post)) {
     $response = $auth->login($username, $passphrase, $token);
-    #!d($response);
+    #!d($response);exit;
+
+    # gazelle userId
+    $query = "select id from users_main where username = ?";
+    $userId = $app->dbNew->single($query, [$username]);
 }
 
 
 /** GAZELLE 2FA */
 
 
-if (!empty($post)) {
-    # common gazelle vars
-    $query = "select id from users_main where username = ?";
-    $userId = $app->dbNew->single($query, [$username]);
-    #!d($userId);
-}
-
 try {
-    # user set token
     if (!empty($post) && !empty($token)) {
         # get the seed
-        $query = "select twoFactor from users_main where username = ?";
+        $query = "select twoFactor from users_main where username = ? and twoFactor is not null";
         $seed = $app->dbNew->single($query, [$username]);
-        #!d($seed);
 
         # no seed
         if (!$seed) {
@@ -52,10 +52,10 @@ try {
         }
 
         # failed to verify
-        if (!$twofa->verifyCode($seed, $token)) {
+        if (!$twoFactor->verifyCode($seed, $token)) {
             throw new Exception("Unable to verify the 2FA token");
         }
-    } # if 2fa
+    }
 } catch (Exception $e) {
     $response = $e->getMessage();
 }
@@ -65,15 +65,12 @@ try {
 
 
 try {
-    # user set u2f
     if (!empty($post) && !empty($post["u2f-request"]) && !empty($post["u2f-response"])) {
-        if (!empty($userId)) {
-            $query = "select * from u2f where userId = ?";
-            $ref = $app->dbNew->row($query, [$userId]);
-        }
+        $query = "select * from u2f where userId = ? and twoFactor is not null";
+        $ref = $app->dbNew->row($query, [$userId]);
 
         if (!empty($ref)) {
-            # needs to be an array of objects
+            # todo: needs to be an array of objects
             $payload = [
                 "keyHandle" => $ref["KeyHandle"],
                 "publicKey" => $ref["PublicKey"],
@@ -106,7 +103,7 @@ try {
             # I know it's lazy
             throw new Exception($e->getMessage());
         }
-    } # if u2f
+    }
 } catch (Exception $e) {
     $response = $e->getMessage();
 }
@@ -115,6 +112,7 @@ try {
 /** GAZELLE SESSION */
 
 
+/*
 try {
     if (!empty($post)) {
         $sessionId = Text::random(64);
@@ -144,13 +142,14 @@ try {
 } catch (Exception $e) {
     $response = $e->getMessage();
 }
+*/
 
 
 /** TWIG TEMPLATE */
 
 
 # try to load the user
-if (!empty($app->userNew->core)) {
+if ($auth->library->isLoggedIn()) {
     Http::redirect();
 }
 

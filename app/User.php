@@ -20,6 +20,7 @@ class User
     # user info
     public $core = [];
     public $extra = [];
+    public $permissions = [];
 
     # legacy gazelle
     public $lightInfo = [];
@@ -29,7 +30,7 @@ class User
     private $algorithm = "sha3-512";
 
     # cache settings
-    private $cachePrefix = "users_";
+    private $cachePrefix = "user_";
     private $cacheDuration = 3600; # one hour
 
 
@@ -98,34 +99,46 @@ class User
         $userId = Http::getCookie("userId") ?? null;
         $server = Http::query("server") ?? null;
 
+        /*
         # unauthenticated
         if (!$sessionId) {
             return false;
         }
+        */
 
+        /*
         # get userId
         $query = "select userId from users_sessions where sessionId = ? and active = 1";
         $userId = $app->dbNew->single($query, [$sessionId]);
+        */
 
+        /*
         # double check
         if (intval($userId) !== intval(Http::getCookie("userId"))) {
             Http::response(401);
         }
+        */
 
+        /*
         # no session
         if (!$userId && !$sessionId) {
             return false;
         }
+        */
 
+        /*
         # cache session
         $query = "select sessionId, ip, lastUpdate from users_sessions where userId = ? and active = 1 order by lastUpdate desc";
         $session = $app->dbNew->row($query, [$userId]);
+        */
 
+        /*
         # bad session
         if (!array_key_exists($sessionId, $session)) {
             $auth->logout();
             return false;
         }
+        */
 
         # check enabled
         $query = "select enabled from users_main where id = ?";
@@ -161,7 +174,7 @@ class User
         */
 
         # change necessary triggers in external components
-        $app->cacheOld->CanClear = check_perms("admin_clear_cache");
+        #$app->cacheOld->CanClear = check_perms("admin_clear_cache");
 
         /*
         # update lastUpdate every 10 minutes
@@ -254,13 +267,22 @@ class User
         try {
             # delight-im/auth
             $query = "select * from users where id = ?";
-            $core = $app->dbNew->row($query, [$userId]);
-            $this->core = $core ?? [];
+            $row = $app->dbNew->row($query, [$userId]);
+            $this->core = $row ?? [];
 
             # gazelle
             $query = "select * from users_main cross join users_info on users_main.id = users_info.userId where id = ?";
-            $extra = $app->dbNew->row($query, [$userId]);
-            $this->extra = $extra ?? [];
+            $row = $app->dbNew->row($query, [$userId]);
+            $this->extra = $row ?? [];
+
+            # permissions
+            $query = "select id, name, `values` from permissions where id = ?";
+            $row = $app->dbNew->row($query, [ $this->extra["PermissionID"] ]);
+            $this->permissions = $row ?? [];
+
+            if ($this->permissions["values"]) {
+                $this->permissions["values"] = json_decode($this->permissions["values"], true);
+            }
 
             # rss auth
             $this->extra["RSS_Auth"] = md5(
@@ -277,10 +299,12 @@ class User
             $bearerTokens = $app->dbNew->multi($query, [$userId]);
             $this->extra["bearerTokens"] = $bearerTokens;
 
+            /*
             # permissions
             $query = "select * from permissions where id = ?";
             $permissions = $app->dbNew->row($query, [ $this->extra["PermissionID"] ]);
             $this->extra["permissions"] = $permissions;
+            */
 
             # todo: site options
             $this->extra["siteOptions"] = json_decode($this->extra["SiteOptions"], true);
@@ -294,7 +318,7 @@ class User
             }
 
             $cacheKey = $this->cachePrefix . $userId;
-            $app->cacheOld->cache_value($cacheKey, ["core" => $core, "extra" => $extra], $this->cacheDuration);
+            $app->cacheOld->cache_value($cacheKey, ["core" => $this->core, "extra" => $this->extra, "permissions" => $this->permissions], $this->cacheDuration);
         } catch (Exception $e) {
             return $e->getMessage();
         }
@@ -305,10 +329,32 @@ class User
 
 
     /**
-     * Get $Classes (list of classes keyed by ID) and $ClassLevels
-     *    (list of classes keyed by level)
-     * @return array ($Classes, $ClassLevels)
+     * can
+     *
+     * Checks if a user can do something.
      */
+    public function can(string $permission): bool
+    {
+        return in_array($permission, $this->permissions["values"]);
+    }
+
+
+    /**
+     * cant
+     *
+     * Checks if a user can't do something.
+     */
+    public function cant(string $permission): bool
+    {
+        return !in_array($permission, $this->permissions["values"]);
+    }
+
+
+    /**
+         * Get $Classes (list of classes keyed by ID) and $ClassLevels
+         *    (list of classes keyed by level)
+         * @return array ($Classes, $ClassLevels)
+         */
     public static function get_classes()
     {
         $app = App::go();
