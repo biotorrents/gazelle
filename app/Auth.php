@@ -363,11 +363,11 @@ class Auth # extends Delight\Auth\Auth
         $enabled = Esc::bool($enabled);
 
         if ($enabled === true) {
-            return $this->longRemember;
+            return time() + $this->longRemember;
         }
 
         if ($enabled === false) {
-            return $this->shortRemember;
+            return time() + $this->shortRemember;
         }
     }
 
@@ -666,7 +666,7 @@ If you need the custom user information only rarely, you may just retrieve it as
 
 
 
-    /** GAZELLE USER STUFF */
+    /** gazelle hash checking */
 
 
     /**
@@ -714,5 +714,74 @@ If you need the custom user information only rarely, you may just retrieve it as
             ),
             $hash
         );
+    }
+
+
+    /** session handling */
+
+
+    /**
+     * createSession
+     */
+    public function createSession(int $userId, bool $rememberMe)
+    {
+        $app = App::go();
+
+        $server = Http::query("server");
+
+        $query = "
+            insert into users_sessions
+            (userId, sessionId, expires, ipAddress, userAgent)
+            values
+            (:userId, :sessionId, :expires, :ipAddress, :userAgent)
+        ";
+
+        $data = [
+            "userId" => $userId,
+            "sessionId" => Text::random(128),
+            "expires" => $this->remember($rememberMe),
+            "ipAddress" => $server["REMOTE_ADDR"] ?? null,
+            "userAgent" => $server["HTTP_USER_AGENT"] ?? null,
+        ];
+
+        $app->dbNew->do($query, $data);
+    }
+
+
+    /**
+     * readSession
+     */
+    public function readSession(string $sessionId)
+    {
+        $app = App::go();
+
+        $query = "select * from users_sessions where sessionId = ?";
+        $row = $app->dbNew->row($query, [$sessionId]);
+
+        return $row;
+    }
+
+
+    /**
+     * updateSession
+     */
+    public function updateSession(string $sessionId, bool $rememberMe = false)
+    {
+        $app = App::go();
+
+        $query = "update users_sessions set expires = ? where sessionId = ?";
+        $app->dbNew->do($query, [$this->remember($rememberMe), $sessionId]);
+    }
+
+
+    /**
+     * deleteSession
+     */
+    public function deleteSession(string $sessionId)
+    {
+        $app = App::go();
+
+        $query = "delete from users_sessions where sessionId = ?";
+        $app->dbNew->do($query, [$sessionId]);
     }
 } # class
