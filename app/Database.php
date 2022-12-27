@@ -222,6 +222,30 @@ class Database extends PDO
 
 
     /**
+     * column
+     *
+     * Gets a single column.
+     */
+    /*
+    public function column(string $query, array $args = [])
+    {
+        $app = App::go();
+
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
+        if ($app->cacheOld->get_value($cacheKey) && !$app->env->dev) {
+            return $app->cacheOld->get_value($cacheKey);
+        }
+
+        $statement = $this->do($query, $args);
+        $ref = $statement->fetchColumn();
+
+        $app->cacheOld->cache_value($cacheKey, $ref, $this->cacheDuration);
+        return $ref;
+    }
+    */
+
+
+    /**
      * multi
      *
      * Gets all results.

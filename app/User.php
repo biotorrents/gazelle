@@ -92,7 +92,7 @@ class User
         $this->auth = $auth;
 
         # untrusted input
-        $sessionId = Http::getCookie("session") ?? null;
+        $sessionId = Http::getCookie("sessionId") ?? null;
         $userId = Http::getCookie("userId") ?? null;
         $server = Http::query("server") ?? null;
 
@@ -102,8 +102,10 @@ class User
         }
 
         # get userId
-        $query = "select userId from users_sessions where sessionId = ? and expires < now()";
-        $userId = $app->dbNew->single($query, [$sessionId]);
+        $now = Carbon\Carbon::now()->toDateString();
+
+        $query = "select userId from users_sessions where sessionId = ? and expires > ?";
+        $userId = $app->dbNew->single($query, [$sessionId, $now]);
 
         # double check
         if (intval($userId) !== intval(Http::getCookie("userId"))) {
@@ -116,11 +118,12 @@ class User
         }
 
         # get most recent session
-        $query = "select sessionId, ip, lastUpdate from users_sessions where userId = ? order by expires desc";
-        $session = $app->dbNew->row($query, [$userId]);
+        $query = "select sessionId from users_sessions where userId = ? order by expires desc";
+        $ref = $app->dbNew->multi($query, [$userId]);
+        $sessions = array_column($ref, "sessionId");
 
         # bad session
-        if (!array_key_exists($sessionId, $session)) {
+        if (!in_array($sessionId, $sessions)) {
             return false;
         }
 

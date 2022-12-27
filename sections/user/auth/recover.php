@@ -69,7 +69,7 @@ try {
     $app->cacheOld->delete_value("enabled_{$userId}");
 
     $query = "select sessionId from users_sessions where userId = ?";
-    $ref = $app-dbNew->column($query, [$userId]);
+    $ref = $app->dbNew->multi($query, [$userId]);
 
     foreach ($ref as $row) {
         $sessionId = $row["sessionId"] ?? null;
@@ -78,7 +78,7 @@ try {
 
     # delete all stored sessions
     $query = "delete from users_sessions where userId = ?";
-    $ref = $app-dbNew->do($query, [$userId]);
+    $app->dbNew->do($query, [$userId]);
 } catch (Exception $e) {
     $response = $e->getMessage();
 }

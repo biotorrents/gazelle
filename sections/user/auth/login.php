@@ -8,6 +8,7 @@ declare(strict_types=1);
  */
 
 $app = App::go();
+!d($app->userNew);exit;
 
 # https://github.com/paragonie/anti-csrf
 Http::csrf();
@@ -19,52 +20,15 @@ $u2f = new u2flib_server\U2F("https://{$app->env->siteDomain}");
 
 # variables
 $post = Http::query("post");
-$cookie = Http::query("cookie");
-$server = Http::query("server");
-
-$username = $post["username"] ?? null;
-$passphrase = $post["passphrase"] ?? null;
-$token = $post["twoFactor"] ?? null;
-$rememberMe = $post["rememberMe"] ?? null;
 
 # delight-im/auth
 if (!empty($post)) {
     $response = $auth->login($post);
     #!d($response);exit;
-
-    # gazelle userId
-    $query = "select id from users_main where username = ?";
-    $userId = $app->dbNew->single($query, [$post["username"]]);
 }
 
 
-/** GAZELLE 2FA */
-
-
-/*
-try {
-    if (!empty($post) && !empty($post["twoFactor"])) {
-        # get the seed
-        $query = "select twoFactor from users_main where username = ? and twoFactor is not null";
-        $seed = $app->dbNew->single($query, [$username]);
-
-        # no seed
-        if (!$seed) {
-            throw new Exception("Unable to find the 2FA seed");
-        }
-
-        # failed to verify
-        if (!$twoFactor->verifyCode($seed, $token)) {
-            throw new Exception("Unable to verify the 2FA token");
-        }
-    }
-} catch (Exception $e) {
-    $response = $e->getMessage();
-}
-*/
-
-
-/** GAZELLE U2F */
+/** gazelle u2f */
 
 
 /*
@@ -114,43 +78,7 @@ try {
 */
 
 
-/** GAZELLE SESSION */
-
-
-/*
-try {
-    if (!empty($post)) {
-        $sessionId = Text::random(64);
-
-        Http::setCookie(["session" => $sessionId]);
-        Http::setCookie(["userId" => $userId]);
-
-        $query = "insert into users_sessions (userId, sessionId, keepLogged, ip, lastUpdate, fullUa) values (?, ?, ?, ?, ?, ?)";
-        $app->dbNew->do($query, [$userId, $sessionId, 1, Crypto::encrypt($server["REMOTE_ADDR"]), sqltime(), $server["HTTP_USER_AGENT"]]);
-
-        $query = "update users_main set lastLogin = now(), lastAccess = now() where id = ?";
-        $app->dbNew->do($query, [$userId]);
-
-        $app->cacheOld->begin_transaction("users_sessions_{$userId}");
-        $app->cacheOld->insert_front($sessionId, [
-            "sessionId" => $sessionId,
-            "ip" => Crypto::encrypt($server["REMOTE_ADDR"]),
-            "lastUpdate" => sqltime()
-        ]);
-        $app->cacheOld->commit_transaction(0);
-
-        if (!empty($cookie["redirect"])) {
-            Http::deleteCookie("redirect");
-            Http::redirect($cookie["redirect"]);
-        }
-    }
-} catch (Exception $e) {
-    $response = $e->getMessage();
-}
-*/
-
-
-/** TWIG TEMPLATE */
+/** twig template */
 
 
 # try to load the user

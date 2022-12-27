@@ -119,7 +119,7 @@ class Auth # extends Delight\Auth\Auth
             }
 
             # if you want to enforce unique usernames, simply call registerWithUniqueUsername instead of register, and be prepared to catch the DuplicateUsernameException
-            $response = $this->library->registerWithUniqueUsername($email, $passphrase, $username, function ($selector, $token) use ($email) {
+            $this->library->registerWithUniqueUsername($email, $passphrase, $username, function ($selector, $token) use ($email) {
                 $app = App::go();
 
                 # build the verification uri
@@ -145,8 +145,6 @@ class Auth # extends Delight\Auth\Auth
         } catch (Exception $e) {
             return $e->getMessage();
         }
-
-        return $response;
     } # register
 
 
@@ -166,9 +164,9 @@ class Auth # extends Delight\Auth\Auth
         $passphrase = Esc::string($data["passphrase"]);
         $rememberMe = Esc::bool($data["rememberMe"]);
 
-        $twoFactor = Esc::int($data["twoFactor"]);
-        $u2fRequest = $post["u2f-request"] ?? null;
-        $u2fResponse = $post["u2f-response"] ?? null;
+        $twoFactor = Esc::int($data["twoFactor"]) ?? null;
+        $u2fRequest = $data["u2f-request"] ?? null;
+        $u2fResponse = $data["u2f-response"] ?? null;
 
         $query = "select id from users_main where username = ?";
         $userId = $app->dbNew->single($query, [$username]);
@@ -178,7 +176,7 @@ class Auth # extends Delight\Auth\Auth
             # simply call the method loginWithUsername instead of method login
             # make sure to catch both UnknownUsernameException and AmbiguousUsernameException
             $username = Esc::username($username);
-            $response = $this->library->loginWithUsername($username, $passphrase, $this->remember($rememberMe));
+            $this->library->loginWithUsername($username, $passphrase, $this->remember($rememberMe));
 
             /*
             # try email validation
@@ -193,6 +191,7 @@ class Auth # extends Delight\Auth\Auth
             }
             */
         } catch (Exception $e) {
+            #!d($e);exit;
             return $message;
         }
 
@@ -201,6 +200,7 @@ class Auth # extends Delight\Auth\Auth
             try {
                 $this->verify2FA($userId, $twoFactor);
             } catch (Exception $e) {
+                #!d($e);exit;
                 return $message;
             }
         }
@@ -210,16 +210,18 @@ class Auth # extends Delight\Auth\Auth
             try {
                 $this->verify2FA($userId, $twoFactor);
             } catch (Exception $e) {
+                #!d($e);exit;
                 return $message;
             }
         }
 
         # gazelle session
-
-
-
-
-        return $response;
+        try {
+            $this->createSession($userId, $rememberMe);
+        } catch (Exception $e) {
+            #!d($e);exit;
+            return $message;
+        }
     } # login
 
 
@@ -302,30 +304,6 @@ class Auth # extends Delight\Auth\Auth
 
 
     /**
-     * makeSession
-     */
-    public function makeSession()
-    {
-        $app = App::go();
-
-
-        /*
-                +------------+---------------+------+-----+---------+-------+
-        | Field      | Type          | Null | Key | Default | Extra |
-        +------------+---------------+------+-----+---------+-------+
-        | UserID     | int(11)       | NO   | PRI | NULL    |       |
-        | SessionID  | char(64)      | NO   | PRI | NULL    |       |
-        | KeepLogged | enum('0','1') | NO   |     | 0       |       |
-        | IP         | varchar(90)   | NO   |     | NULL    |       |
-        | LastUpdate | datetime      | YES  | MUL | NULL    |       |
-        | Active     | tinyint(4)    | NO   | MUL | 1       |       |
-        | FullUA     | text          | YES  |     | NULL    |       |
-        +------------+---------------+------+-----+---------+-------+
-        */
-    }
-
-
-    /**
      * confirmEmail
      *
      * @return string|array error or [0 => oldEmail, 1 => newEmail]
@@ -342,12 +320,10 @@ class Auth # extends Delight\Auth\Auth
         try {
             # if you want the user to be automatically signed in after successful confirmation,
             # just call confirmEmailAndSignIn instead of confirmEmail
-            $response = $this->library->confirmEmailAndSignIn($selector, $token, $this->remember());
+            $this->library->confirmEmailAndSignIn($selector, $token, $this->remember());
         } catch (Exception $e) {
             return $message;
         }
-
-        return $response;
     } # confirmEmail
 
 
@@ -389,7 +365,7 @@ class Auth # extends Delight\Auth\Auth
         $ip = Esc::ip($ip);
 
         try {
-            $response = $this->library->forgotPassword($email, function ($selector, $token) use ($email, $ip) {
+            $this->library->forgotPassword($email, function ($selector, $token) use ($email, $ip) {
                 $app = App::go();
 
                 # build the verification uri
@@ -406,8 +382,6 @@ class Auth # extends Delight\Auth\Auth
         } catch (Exception $e) {
             return $message;
         }
-
-        return $response;
     } # recoverStart
 
 
@@ -430,12 +404,10 @@ class Auth # extends Delight\Auth\Auth
         try {
             # put the selector and token in hidden fields
             # ask the user for their new passphrase
-            $response = $this->library->canResetPasswordOrThrow($selector, $token);
+            $this->library->canResetPasswordOrThrow($selector, $token);
         } catch (Exception $e) {
             return $message;
         }
-
-        return $response;
     } # recoverMiddle
 
 
@@ -462,12 +434,10 @@ class Auth # extends Delight\Auth\Auth
                 throw new Exception("The entered passphrases don't match");
             }
 
-            $response = $this->library->resetPassword($selector, $token, $passphrase);
+            $this->library->resetPassword($selector, $token, $passphrase);
         } catch (Exception $e) {
             return $message;
         }
-
-        return $response;
     } # recoverEnd
 
 
@@ -486,12 +456,10 @@ class Auth # extends Delight\Auth\Auth
         $newPassphrase = Esc::string($newPassphrase);
 
         try {
-            $response = $auth->changePassword($oldPassphrase, $newPassphrase);
+            $auth->changePassword($oldPassphrase, $newPassphrase);
         } catch (Exception $e) {
             return $message;
         }
-
-        return $response;
     } # changePassphrase
 
 
@@ -511,7 +479,7 @@ class Auth # extends Delight\Auth\Auth
 
         try {
             if ($auth->reconfirmPassword($passphrase)) {
-                $response = $auth->changeEmail($newEmail, function ($selector, $token) use ($newEmail) {
+                $auth->changeEmail($newEmail, function ($selector, $token) use ($newEmail) {
                     echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email to the *new* address)';
                     echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
                     echo '  For SMS, consider using a third-party service and a compatible SDK';
@@ -522,8 +490,6 @@ class Auth # extends Delight\Auth\Auth
         } catch (Exception $e) {
             return $message;
         }
-
-        return $response;
     } # changeEmail
 
 
@@ -541,7 +507,7 @@ class Auth # extends Delight\Auth\Auth
         $email = Esc::email($email);
 
         try {
-            $response = $auth->resendConfirmationForEmail($email, function ($selector, $token) {
+            $auth->resendConfirmationForEmail($email, function ($selector, $token) {
                 echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email)';
                 echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
                 echo '  For SMS, consider using a third-party service and a compatible SDK';
@@ -552,8 +518,6 @@ class Auth # extends Delight\Auth\Auth
         } catch (Exception $e) {
             return $message;
         }
-
-        return $response;
     } # resendConfirmation
 
 
@@ -567,15 +531,13 @@ class Auth # extends Delight\Auth\Auth
         $message = "Unable to log out: please manually clear cookies";
 
         try {
-            $response = $this->library->logOutEverywhere();
+            $this->library->logOutEverywhere();
         } catch (Exception $e) {
             return $message;
         }
 
         # you can destroy the entire session by calling a second method
         $this->library->destroySession();
-
-        return $response;
     } # logout
 
 
@@ -611,12 +573,10 @@ If you need the custom user information only rarely, you may just retrieve it as
         $passphrase = Esc::string($passphrase);
 
         try {
-            $response = $this->library->reconfirmPassword($passphrase);
+            $this->library->reconfirmPassword($passphrase);
         } catch (Exception $e) {
             return $message;
         }
-
-        return $response;
     } # enforceLogin
 
 
@@ -636,15 +596,13 @@ If you need the custom user information only rarely, you may just retrieve it as
 
         try {
             if ($auth->reconfirmPassword($passphrase)) {
-                $response = $auth->setPasswordResetEnabled(boolval($enabled));
+                $auth->setPasswordResetEnabled(boolval($enabled));
             } else {
                 throw new Exception("We can't say if the user is who they claim to be");
             }
         } catch (Exception $e) {
             return $message;
         }
-
-        return $response;
     } # toggleReset
 
 
@@ -723,7 +681,7 @@ If you need the custom user information only rarely, you may just retrieve it as
     /**
      * createSession
      */
-    public function createSession(int $userId, bool $rememberMe)
+    public function createSession(int $userId, bool $rememberMe = false)
     {
         $app = App::go();
 
@@ -736,15 +694,20 @@ If you need the custom user information only rarely, you may just retrieve it as
             (:userId, :sessionId, :expires, :ipAddress, :userAgent)
         ";
 
+        $expires = Carbon\Carbon::createFromTimestamp($this->remember($rememberMe))->toDateString();
+
         $data = [
             "userId" => $userId,
             "sessionId" => Text::random(128),
-            "expires" => $this->remember($rememberMe),
+            "expires" => $expires,
             "ipAddress" => $server["REMOTE_ADDR"] ?? null,
             "userAgent" => $server["HTTP_USER_AGENT"] ?? null,
         ];
 
         $app->dbNew->do($query, $data);
+
+        Http::setCookie([ "sessionId" => $data["sessionId"] ]);
+        Http::setCookie([ "userId" => $userId ]);
     }
 
 
@@ -769,8 +732,10 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = App::go();
 
+        $expires = Carbon\Carbon::createFromTimestamp($this->remember($rememberMe))->toDateString();
+
         $query = "update users_sessions set expires = ? where sessionId = ?";
-        $app->dbNew->do($query, [$this->remember($rememberMe), $sessionId]);
+        $app->dbNew->do($query, [$expires, $sessionId]);
     }
 
 
@@ -783,5 +748,7 @@ If you need the custom user information only rarely, you may just retrieve it as
 
         $query = "delete from users_sessions where sessionId = ?";
         $app->dbNew->do($query, [$sessionId]);
+
+        Http::flushCookies();
     }
 } # class
