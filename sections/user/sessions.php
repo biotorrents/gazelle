@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 //todo: restrict to viewing below class, username in h2
 if (isset($_GET['userid']) && check_perms('users_view_ips') && check_perms('users_logout')) {
     if (!is_number($_GET['userid'])) {
@@ -14,7 +16,7 @@ if (isset($_GET['userid']) && check_perms('users_view_ips') && check_perms('user
 if (isset($_POST['all'])) {
     authorize();
 
-    $db->query("
+    $app->dbOld->query("
     DELETE FROM users_sessions
     WHERE UserID = '$UserID'
       AND SessionID != '$SessionID'");
@@ -24,7 +26,7 @@ if (isset($_POST['all'])) {
 if (isset($_POST['session'])) {
     authorize();
 
-    $db->query("
+    $app->dbOld->query("
     DELETE FROM users_sessions
     WHERE UserID = '$UserID'
       AND SessionID = '".db_string($_POST['session'])."'");
@@ -33,17 +35,8 @@ if (isset($_POST['session'])) {
 
 $UserSessions = $cache->get_value('users_sessions_'.$UserID);
 if (!is_array($UserSessions)) {
-    $db->query("
-    SELECT
-      SessionID,
-      Browser,
-      OperatingSystem,
-      IP,
-      LastUpdate
-    FROM users_sessions
-    WHERE UserID = '$UserID'
-    ORDER BY LastUpdate DESC");
-    $UserSessions = $db->to_array('SessionID', MYSQLI_ASSOC);
+    $app->dbOld->query("select * from users_sessions where userId = {$UserID} order by expires desc");
+    $UserSessions = $app->dbOld->to_array('SessionID', MYSQLI_ASSOC);
     $cache->cache_value("users_sessions_$UserID", $UserSessions, 0);
 }
 

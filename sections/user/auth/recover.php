@@ -2,11 +2,16 @@
 
 declare(strict_types=1);
 
+
+/**
+ * account recovery page
+ */
+
+$app = App::go();
+
 # https://github.com/paragonie/anti-csrf
 Http::csrf();
 
-
-$app = App::go();
 $auth = new Auth();
 
 # variables
@@ -72,7 +77,7 @@ try {
     }
 
     # delete all stored sessions
-    $query = "delete * from users_sessions where userId = ?";
+    $query = "delete from users_sessions where userId = ?";
     $ref = $app-dbNew->do($query, [$userId]);
 } catch (Exception $e) {
     $response = $e->getMessage();

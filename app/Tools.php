@@ -183,7 +183,7 @@ class Tools
             SELECT SessionID
             FROM users_sessions
               WHERE UserID = '$UserID'
-              AND Active = 1");
+            ");
 
             while (list($SessionID) = $app->dbOld->next_record()) {
                 $app->cacheOld->delete_value("session_$UserID"."_$SessionID");

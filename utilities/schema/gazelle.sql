@@ -1610,19 +1610,13 @@ CREATE TABLE `users_seedtime` (
 
 
 CREATE TABLE `users_sessions` (
-  `UserID` int NOT NULL,
-  `SessionID` char(64) NOT NULL,
-  `KeepLogged` enum('0','1') NOT NULL DEFAULT '0',
-  `IP` varchar(90) NOT NULL,
-  `LastUpdate` datetime,
-  `Active` tinyint NOT NULL DEFAULT '1',
-  `FullUA` text,
-  PRIMARY KEY (`UserID`,`SessionID`),
-  KEY `UserID` (`UserID`),
-  KEY `LastUpdate` (`LastUpdate`),
-  KEY `Active` (`Active`),
-  KEY `ActiveAgeKeep` (`Active`,`LastUpdate`,`KeepLogged`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
+	`userId` INT NOT NULL,
+	`sessionId` VARCHAR(128) NOT NULL,
+	`expires` DATETIME NOT NULL,
+	`ipAddress` VARCHAR(128),
+	`userAgent` TEXT,
+	PRIMARY KEY (`userId`,`sessionId`)
+);
 
 
 CREATE TABLE `users_subscriptions` (

@@ -25,23 +25,25 @@ $server = Http::query("server");
 $username = $post["username"] ?? null;
 $passphrase = $post["passphrase"] ?? null;
 $token = $post["twoFactor"] ?? null;
+$rememberMe = $post["rememberMe"] ?? null;
 
 # delight-im/auth
 if (!empty($post)) {
-    $response = $auth->login($username, $passphrase, $token);
+    $response = $auth->login($post);
     #!d($response);exit;
 
     # gazelle userId
     $query = "select id from users_main where username = ?";
-    $userId = $app->dbNew->single($query, [$username]);
+    $userId = $app->dbNew->single($query, [$post["username"]]);
 }
 
 
 /** GAZELLE 2FA */
 
 
+/*
 try {
-    if (!empty($post) && !empty($token)) {
+    if (!empty($post) && !empty($post["twoFactor"])) {
         # get the seed
         $query = "select twoFactor from users_main where username = ? and twoFactor is not null";
         $seed = $app->dbNew->single($query, [$username]);
@@ -59,11 +61,13 @@ try {
 } catch (Exception $e) {
     $response = $e->getMessage();
 }
+*/
 
 
 /** GAZELLE U2F */
 
 
+/*
 try {
     if (!empty($post) && !empty($post["u2f-request"]) && !empty($post["u2f-response"])) {
         $query = "select * from u2f where userId = ? and twoFactor is not null";
@@ -107,6 +111,7 @@ try {
 } catch (Exception $e) {
     $response = $e->getMessage();
 }
+*/
 
 
 /** GAZELLE SESSION */
@@ -149,7 +154,7 @@ try {
 
 
 # try to load the user
-if ($auth->library->isLoggedIn()) {
+if ($app->userNew->isLoggedIn()) {
     Http::redirect();
 }
 

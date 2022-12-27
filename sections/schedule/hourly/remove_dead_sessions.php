@@ -2,6 +2,17 @@
 
 declare(strict_types=1);
 
+
+/**
+ * remove dead sessions
+ */
+
+$app = App::go();
+
+$query = "delete from users_sessions where expires > now()";
+$app->dbNew->do($query, []);
+
+/*
 $AgoMins = time_minus(60 * 30);
 $AgoDays = time_minus(3600 * 24 * 30);
 
@@ -23,3 +34,4 @@ while (list($UserID, $SessionID) = $db->next_record()) {
     $cache->delete_row($SessionID);
     $cache->commit_transaction(0);
 }
+*/

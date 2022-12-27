@@ -1,6 +1,6 @@
 <?php
 
-#declare(strict_types=1);
+declare(strict_types=1);
 
 
 /**
@@ -8,6 +8,7 @@
  *
  * $this->core contains necessary info from delight-im/auth.
  * $this->extra contains various profile, etc., info from Gazelle.
+ * $this->permissions contains role and permission info.
  *
  * @see https://wiki.archlinux.org/title/Official_repositories
  */
@@ -101,7 +102,7 @@ class User
         }
 
         # get userId
-        $query = "select userId from users_sessions where sessionId = ? and active = 1";
+        $query = "select userId from users_sessions where sessionId = ? and expires < now()";
         $userId = $app->dbNew->single($query, [$sessionId]);
 
         # double check
@@ -115,7 +116,7 @@ class User
         }
 
         # get most recent session
-        $query = "select sessionId, ip, lastUpdate from users_sessions where userId = ? and active = 1 order by lastUpdate desc";
+        $query = "select sessionId, ip, lastUpdate from users_sessions where userId = ? order by expires desc";
         $session = $app->dbNew->row($query, [$userId]);
 
         # bad session
@@ -150,6 +151,7 @@ class User
         */
 
         /*
+        THIS IS GOING AWAY
         # permissions
         $user["Permissions"] = Permissions::get_permissions_for_user($userId, $user["CustomPermissions"]);
         $user["Permissions"]["MaxCollages"] += Donations::get_personal_collages($userId);
@@ -159,6 +161,7 @@ class User
         #$app->cacheOld->CanClear = check_perms("admin_clear_cache");
 
         /*
+        THIS IS GOING AWAY
         # update lastUpdate every 10 minutes
         if (strtotime($session[$sessionId]["lastUpdate"]) + 600 < time()) {
             $query = "update users_main set lastAccess = now() where id = ?";
@@ -244,12 +247,12 @@ class User
         */
 
         try {
-            # delight-im/auth
+            # core: delight-im/auth
             $query = "select * from users where id = ?";
             $row = $app->dbNew->row($query, [$userId]);
             $this->core = $row ?? [];
 
-            # gazelle
+            # extra: gazelle
             $query = "select * from users_main cross join users_info on users_main.id = users_info.userId where id = ?";
             $row = $app->dbNew->row($query, [$userId]);
             $this->extra = $row ?? [];

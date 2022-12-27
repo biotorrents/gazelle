@@ -21,6 +21,10 @@ class Auth # extends Delight\Auth\Auth
     # library instance
     public $library = null;
 
+    # 2fa libraries
+    private $twoFactor = null;
+    private $u2f = null;
+
     # seconds * minutes * hours * days
     private $shortRemember = 60 * 60 * 24 * 1;
     private $longRemember = 60 * 60 * 24 * 7;
@@ -52,6 +56,9 @@ class Auth # extends Delight\Auth\Auth
                 databaseConnection: $app->dbNew->pdo,
                 throttling: $throttling
             );
+
+            $this->twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
+            $this->u2f = new u2flib_server\U2F("https://{$app->env->siteDomain}");
         } catch (Exception $e) {
             return $e->getMessage();
         }
@@ -148,33 +155,174 @@ class Auth # extends Delight\Auth\Auth
      *
      * @see https://github.com/delight-im/PHP-Auth#login-sign-in
      */
-    public function login(string $username, string $passphrase, int|string $twofa = 000000)
+    public function login(array $data)
     {
         $app = App::go();
 
         # https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#login
         $message = $this->message;
 
-        #$username = Esc::username($username);
-        $passphrase = Esc::string($passphrase);
-        $twofa = Esc::int($twofa);
+        $username = Esc::string($data["username"]);
+        $passphrase = Esc::string($data["passphrase"]);
+        $rememberMe = Esc::bool($data["rememberMe"]);
 
+        $twoFactor = Esc::int($data["twoFactor"]);
+        $u2fRequest = $post["u2f-request"] ?? null;
+        $u2fResponse = $post["u2f-response"] ?? null;
+
+        $query = "select id from users_main where username = ?";
+        $userId = $app->dbNew->single($query, [$username]);
+
+        # delight-im/auth
         try {
+            # simply call the method loginWithUsername instead of method login
+            # make sure to catch both UnknownUsernameException and AmbiguousUsernameException
+            $username = Esc::username($username);
+            $response = $this->library->loginWithUsername($username, $passphrase, $this->remember($rememberMe));
+
+            /*
             # try email validation
-            $test = (filter_var($username, FILTER_VALIDATE_EMAIL));
-            if (!empty($test)) {
-                $response = $this->library->login($username, $passphrase, $this->remember());
+            $usingEmail = Esc::email($username);
+            if (!empty($usingEmail)) {
+                $response = $this->library->login($username, $passphrase, $this->remember($rememberMe));
             } else {
                 # simply call the method loginWithUsername instead of method login
                 # make sure to catch both UnknownUsernameException and AmbiguousUsernameException
-                $response = $this->library->loginWithUsername($username, $passphrase, $this->remember());
+                $username = Esc::username($username);
+                $response = $this->library->loginWithUsername($username, $passphrase, $this->remember($rememberMe));
             }
+            */
         } catch (Exception $e) {
             return $message;
         }
 
+        # gazelle 2fa
+        if (!empty($twoFactor)) {
+            try {
+                $this->verify2FA($userId, $twoFactor);
+            } catch (Exception $e) {
+                return $message;
+            }
+        }
+
+        # gazelle u2f
+        if (!empty($u2fRequest) && !empty($u2fResponse)) {
+            try {
+                $this->verify2FA($userId, $twoFactor);
+            } catch (Exception $e) {
+                return $message;
+            }
+        }
+
+        # gazelle session
+
+
+
+
         return $response;
     } # login
+
+
+    /**
+     * verify2FA
+     */
+    public function verify2FA(int $userId, int $twoFactorCode)
+    {
+        $app = App::go();
+
+        # get the secret
+        $query = "select twoFactor from users_main where id = ? and twoFactor is not null";
+        $twoFactorSecret = $app->dbNew->single($query, [$userId]);
+
+        # no secret
+        if (!$twoFactorSecret) {
+            throw new Exception("Unable to find the 2FA seed");
+        }
+
+        # failed to verify
+        if (!$this->twoFactor->verifyCode($twoFactorSecret, $twoFactorCode)) {
+            throw new Exception("Unable to verify the 2FA token");
+        }
+
+        # okay
+        return true;
+    }
+
+
+    /**
+     * verifyU2F
+     */
+    public function verifyU2F(int $userId, $request, $response)
+    {
+        $app = App::go();
+
+        $query = "select * from u2f where userId = ? and twoFactor is not null";
+        $ref = $app->dbNew->row($query, [$userId]);
+
+        if (empty($ref)) {
+            throw new Exception("U2F data not found");
+        }
+
+        # todo: needs to be an array of objects
+        $payload = [
+            "keyHandle" => $ref["KeyHandle"],
+            "publicKey" => $ref["PublicKey"],
+            "certificate" => $ref["Certificate"],
+            "counter" => $ref["Counter"],
+            "valid" => $ref["Valid"],
+        ];
+
+        try {
+            $response = $u2f->doAuthenticate(json_decode($post["u2f-request"]), $payload, json_decode($post["u2f-response"]));
+            $u2fAuthData = json_encode($u2f->getAuthenticateData($response));
+            #!d($response, $u2fAuthData);
+
+            if (boolval($response->valid) !== true) {
+                throw new Exception("Unable to validate the U2F token");
+            }
+
+            $query = "update u2f set counter = ? where keyHandle = ? and userId = ?";
+            $app->dbNew->do($query, [$response->counter, $response->keyHandle, $userId]);
+        } catch (Exception $e) {
+            # hardcoded u2f library exception here?
+            if ($e->getMessage() === "Counter too low.") {
+                $badHandle = json_decode($post["u2f-response"], true)["keyHandle"];
+
+                $query = "update u2f set valid = 0 where keyHandle = ? and userId = ?";
+                $app->dbNew->do($query, [$badHandle, $userId]);
+            }
+
+            # I know it's lazy
+            throw new Exception($e->getMessage());
+        }
+
+        # okay
+        return true;
+    }
+
+
+    /**
+     * makeSession
+     */
+    public function makeSession()
+    {
+        $app = App::go();
+
+
+        /*
+                +------------+---------------+------+-----+---------+-------+
+        | Field      | Type          | Null | Key | Default | Extra |
+        +------------+---------------+------+-----+---------+-------+
+        | UserID     | int(11)       | NO   | PRI | NULL    |       |
+        | SessionID  | char(64)      | NO   | PRI | NULL    |       |
+        | KeepLogged | enum('0','1') | NO   |     | 0       |       |
+        | IP         | varchar(90)   | NO   |     | NULL    |       |
+        | LastUpdate | datetime      | YES  | MUL | NULL    |       |
+        | Active     | tinyint(4)    | NO   | MUL | 1       |       |
+        | FullUA     | text          | YES  |     | NULL    |       |
+        +------------+---------------+------+-----+---------+-------+
+        */
+    }
 
 
     /**
@@ -524,7 +672,7 @@ If you need the custom user information only rarely, you may just retrieve it as
     /**
      * makeHash
      *
-     * Create salted hash for a given string.
+     * Create a salted hash for a string.
      *
      * @param string $string plaintext
      * @return string salted hash
