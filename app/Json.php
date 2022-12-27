@@ -91,10 +91,12 @@ class Json
             return $this->failure(401, "token user mismatch");
         }
 
+        /*
         # user is disabled
         if (User::isDisabled($userId)) {
             return $this->failure(401, "user disabled");
         }
+        */
 
         # wrong token provided
         if (!password_verify($token, strval($row["Token"]))) {

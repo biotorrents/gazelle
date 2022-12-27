@@ -7,7 +7,6 @@ if (!check_perms("users_mod")) {
     error(403);
 }
 
-$Classes = User::get_classes()[0];
 // If your user base is large, sending a PM to the lower classes will take a long time
 // add the class ID into this array to skip it when presenting the list of classes
 $SkipClassIDs = array(USER, MEMBER, POWER, ELITE, TORRENT_MASTER, DONOR, POWER_TM, ELITE_TM);
@@ -25,18 +24,22 @@ View::header(
     <div class="box pad">
       <input type="hidden" name="action" value="take_mass_pm" />
       <input type="hidden" name="auth"
-        value="<?=$app->userNew->extra$user['AuthKey']?>" />
+        value="<?=$app->userNew->extra['AuthKey']?>" />
       <div id="quickpost">
         <h3>Class</h3>
         <select id="class_id" name="class_id">
           <option>---</option>
-          <?php foreach ($Classes as $Class) {
-    if (!in_array($Class['ID'], $SkipClassIDs)) { ?>
+          <?php
+          /*
+          foreach ($Classes as $Class) {
+              if (!in_array($Class['ID'], $SkipClassIDs)) { ?>
           <option value="<?=$Class['ID']?>">
             <?=$Class['Name']?>
           </option>
           <?php }
-} ?>
+              }
+              */
+?>
         </select>
         <h3>Subject</h3>
         <input type="text" class="required" name="subject" size="95" /><br />

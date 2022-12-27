@@ -80,10 +80,12 @@ class Base
             return self::failure(401, "token user mismatch");
         }
 
+        /*
         # user is disabled
         if (\User::isDisabled($userId)) {
             return self::failure(401, "user disabled");
         }
+        */
 
         # wrong token provided
         if (!password_verify($token, strval($row["Token"]))) {

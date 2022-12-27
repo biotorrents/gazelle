@@ -75,8 +75,6 @@ class Twig # extends Twig\Environment
     {
         $app = App::go();
 
-        $auth = new Auth();
-
         # https://twig.symfony.com/doc/3.x/api.html
         $twig = new Twig\Environment(
             new Twig\Loader\FilesystemLoader("{$app->env->serverRoot}/templates"),
@@ -100,7 +98,7 @@ class Twig # extends Twig\Environment
 
         # user and authenticated
         $twig->addGlobal("user", $app->userNew);
-        $twig->addGlobal("authenticated", $auth->library->isLoggedIn());
+        $twig->addGlobal("authenticated", $app->userNew->isLoggedIn());
 
         # query
         $query = Http::query();

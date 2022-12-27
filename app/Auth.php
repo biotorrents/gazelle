@@ -21,9 +21,6 @@ class Auth # extends Delight\Auth\Auth
     # library instance
     public $library = null;
 
-    # user state
-    public $user = [];
-
     # seconds * minutes * hours * days
     private $shortRemember = 60 * 60 * 24 * 1;
     private $longRemember = 60 * 60 * 24 * 7;
@@ -58,32 +55,6 @@ class Auth # extends Delight\Auth\Auth
         } catch (Exception $e) {
             return $e->getMessage();
         }
-
-        if ($this->library && $this->library->check()) {
-            # https://github.com/delight-im/PHP-Auth#accessing-user-information
-            $this->user["id"] = $this->library->getUserId();
-            $this->user["email"] = $this->library->getEmail();
-            $this->user["username"] = $this->library->getUsername();
-            $this->user["ip"] = $this->library->getIpAddress();
-            $this->user["roles"] = $this->library->getRoles();
-
-            # https://github.com/delight-im/PHP-Auth#status-information
-            $this->user["isNormal"] = $this->library->isNormal();
-            $this->user["isArchived"] = $this->library->isArchived();
-            $this->user["isBanned"] = $this->library->isBanned();
-            $this->user["isLocked"] = $this->library->isLocked();
-            $this->user["isPendingReview"] = $this->library->isPendingReview();
-            $this->user["isSuspended"] = $this->library->isSuspended();
-            $this->user["isRemembered"] = $this->library->isRemembered();
-            $this->user["isPasswordResetEnabled"] = $this->library->isPasswordResetEnabled();
-
-            # success
-            return true;
-        }
-
-        # failure
-        $this->user = [];
-        return false;
     }
 
 

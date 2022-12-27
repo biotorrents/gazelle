@@ -8,7 +8,7 @@ declare(strict_types=1);
  */
 
 $app = App::go();
-!d($app->userNew);
+#!d($app->userNew->core);exit;
 
 # https://github.com/paragonie/anti-csrf
 Http::csrf();
@@ -16,9 +16,11 @@ Http::csrf();
 # request vars
 $get = Http::query("get");
 $post = Http::query("post");
-!d($post);
+#!d($post);
 
 # 2fa libraries
+#$auth = new Auth();
+#!d($auth->isLoggedIn());exit;
 $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
 $u2f = new u2flib_server\U2F("https://{$app->env->siteDomain}");
 
@@ -128,7 +130,7 @@ $stylesheets = $app->dbNew->multi($query, []);
 $paranoia = json_decode($app->userNew->extra["Paranoia"], true) ?? [];
 
 # site options
-$siteOptions = json_decode($app->userNew->extra["SiteOptions"], true) ?? [];
+$siteOptions = $app->userNew->extra["siteOptions"];
 #!d($siteOptions);exit;
 
 

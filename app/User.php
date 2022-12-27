@@ -17,6 +17,9 @@ class User
     # singleton
     private static $instance = null;
 
+    # delight-im/auth
+    public $auth = null;
+
     # user info
     public $core = [];
     public $extra = [];
@@ -83,62 +86,42 @@ class User
         # start debug
         $app->debug["time"]->startMeasure("users", "user handling");
 
-        /*
-        # no crypto
-        if (!apcu_exists("DBKEY")) {
-            return false;
-        }
-        */
-
         # auth class
         $auth = new Auth();
-        $authenticated = false;
+        $this->auth = $auth;
 
         # untrusted input
         $sessionId = Http::getCookie("session") ?? null;
         $userId = Http::getCookie("userId") ?? null;
         $server = Http::query("server") ?? null;
 
-        /*
         # unauthenticated
         if (!$sessionId) {
             return false;
         }
-        */
 
-        /*
         # get userId
         $query = "select userId from users_sessions where sessionId = ? and active = 1";
         $userId = $app->dbNew->single($query, [$sessionId]);
-        */
 
-        /*
         # double check
         if (intval($userId) !== intval(Http::getCookie("userId"))) {
-            Http::response(401);
+            return false;
         }
-        */
 
-        /*
         # no session
         if (!$userId && !$sessionId) {
             return false;
         }
-        */
 
-        /*
-        # cache session
+        # get most recent session
         $query = "select sessionId, ip, lastUpdate from users_sessions where userId = ? and active = 1 order by lastUpdate desc";
         $session = $app->dbNew->row($query, [$userId]);
-        */
 
-        /*
         # bad session
         if (!array_key_exists($sessionId, $session)) {
-            $auth->logout();
             return false;
         }
-        */
 
         # check enabled
         $query = "select enabled from users_main where id = ?";
@@ -146,7 +129,6 @@ class User
 
         # double check
         if (intval($enabled) === 2) {
-            $auth->logout();
             return false;
         }
 
@@ -241,9 +223,6 @@ class User
         ";
         $stylesheets = $app->dbNew->multi($query);
 
-        # the user is loaded
-        $authenticated = true;
-
 
         /** */
 
@@ -299,16 +278,9 @@ class User
             $bearerTokens = $app->dbNew->multi($query, [$userId]);
             $this->extra["bearerTokens"] = $bearerTokens;
 
-            /*
-            # permissions
-            $query = "select * from permissions where id = ?";
-            $permissions = $app->dbNew->row($query, [ $this->extra["PermissionID"] ]);
-            $this->extra["permissions"] = $permissions;
-            */
-
             # todo: site options
             $this->extra["siteOptions"] = json_decode($this->extra["SiteOptions"], true);
-            #unset($this->extra["SiteOptions"]);
+            unset($this->extra["SiteOptions"]);
 
             # for my own sanity
             foreach ($this as $key => $value) {
@@ -316,9 +288,6 @@ class User
                     ksort($this->$key);
                 }
             }
-
-            $cacheKey = $this->cachePrefix . $userId;
-            $app->cacheOld->cache_value($cacheKey, ["core" => $this->core, "extra" => $this->extra, "permissions" => $this->permissions], $this->cacheDuration);
         } catch (Exception $e) {
             return $e->getMessage();
         }
@@ -351,47 +320,57 @@ class User
 
 
     /**
-         * Get $Classes (list of classes keyed by ID) and $ClassLevels
-         *    (list of classes keyed by level)
-         * @return array ($Classes, $ClassLevels)
-         */
-    public static function get_classes()
+     * isLoggedIn
+     *
+     * @see https://github.com/delight-im/PHP-Auth#accessing-user-information
+     */
+    public function isLoggedIn()
+    {
+        return !empty($this->core);
+    }
+
+
+        /**
+     * enabledState
+     *
+     * @see https://github.com/OPSnet/Gazelle/blob/master/app/User.php
+     */
+    private function enabledState(): int
     {
         $app = App::go();
 
-        $query = "select * from permissions order by level asc";
-        $ref = $app->dbNew->multi($query, []);
+        # all database results are automatically cached, my guy
+        $query = "select enabled from users_main where id = ?";
+        $enabled = $app->dbNew->single($query, [ $this->core["id"] ]);
 
-        $oldReturnFormat = [
-            array_column($ref, "ID"),
-            array_column($ref, "Level"),
-        ];
+        return intval($enabled);
+    }
 
-        # this looks right, didn't check
-        return $oldReturnFormat;
 
-        /*
-        // Get permissions
-        list($Classes, $ClassLevels) = $app->cacheOld->get_value('classes');
-        if (!$Classes || !$ClassLevels) {
-            $QueryID = $app->dbOld->get_query_id();
+    /**
+     * isUnconfirmed
+     */
+    public function isUnconfirmed(): bool
+    {
+        return $this->enabledState() === 0;
+    }
 
-            $app->dbOld->query('
-            SELECT `ID`, `Name`, `Abbreviation`, `Level`, `Secondary`
-            FROM `permissions`
-            ORDER BY `Level`
-            ');
 
-            $Classes = $app->dbOld->to_array('ID');
-            $ClassLevels = $app->dbOld->to_array('Level');
+    /**
+     * isEnabled
+     */
+    public function isEnabled(): bool
+    {
+        return $this->enabledState() === 1;
+    }
 
-            $app->dbOld->set_query_id($QueryID);
-            $app->cacheOld->cache_value('classes', [$Classes, $ClassLevels], 0);
-        }
 
-        $app->debug['messages']->info('loaded permissions');
-        return [$Classes, $ClassLevels];
-        */
+    /**
+     * isDisabled
+     */
+    public function isDisabled(): bool
+    {
+        return $this->enabledState() === 2;
     }
 
 
@@ -921,6 +900,7 @@ class User
 
     /**
      * createApiToken
+     *
      * @see https://github.com/OPSnet/Gazelle/commit/7c208fc4c396a16c77289ef886d0015db65f2af1
      */
     public function createApiToken(int $id, string $name, string $key): string
@@ -928,26 +908,23 @@ class User
         $app = App::go();
 
         $suffix = sprintf('%014d', $id);
+        $token = base64UrlEncode(Crypto::encrypt(random_bytes(32) . $suffix, $key));
+        $hash = password_hash($token, PASSWORD_DEFAULT);
 
+        /*
+        # prevent collisions with an existing token name
         while (true) {
-            // prevent collisions with an existing token name
             $token = base64UrlEncode(Crypto::encrypt(random_bytes(32) . $suffix, $key));
             $hash = password_hash($token, PASSWORD_DEFAULT);
 
-            /*
-            if (!self::hasApiToken($id, $token)) {
+            if (!$this->hasApiToken($id, $token)) {
                 break;
             }
-            */
         }
+        */
 
-        $app->dbOld->prepared_query("
-        INSERT INTO `api_user_tokens`
-          (`UserID`, `Name`, `Token`)
-        VALUES
-          ('$id', '$name', '$hash')
-        ");
-
+        $query = "insert into api_user_tokens (userId, name, token) values (?, ?, ?)";
+        $app->dbNew->do($query, [$id, $name, $hash]);
 
         return $token;
     }
@@ -960,87 +937,22 @@ class User
     {
         $app = App::go();
 
-        return $app->dbOld->scalar("
-        SELECT
-          1
-        FROM
-          `api_user_tokens`
-        WHERE
-          `UserID` = '$id'
-          AND `Name` = '$name'
-        ") === 1;
+        $query = "select 1 from user_api_tokens where userId = ? and name = ?";
+        $good = $app->dbNew->single($query, [$id, $name]);
+
+        return $good;
     }
 
 
     /**
      * revokeApiTokenById
      */
-    public function revokeApiTokenById(int $id, int $tokenId): int
+    public function revokeApiTokenById(int $id, int $tokenId)
     {
         $app = App::go();
 
-        $app->dbOld->prepared_query("
-        UPDATE
-          `api_user_tokens`
-        SET
-          `Revoked` = '1'
-        WHERE
-          `UserID` = '$id'
-          AND `ID` = '$tokenId'
-        ");
-
-
-        return $app->dbOld->affected_rows();
-    }
-
-
-    /**
-     * enabledState
-     *
-     * @see https://github.com/OPSnet/Gazelle/blob/master/app/User.php
-     */
-    protected static function enabledState(int $id): int
-    {
-        $app = App::go();
-
-        # system user: hardcoded
-        # (for internal api requests)
-        if ($id === 0) {
-            return 1;
-        }
-
-        # all database results are automatically cached, my guy
-        $query = "select enabled from users_main where id = ?";
-        $enabled = $app->dbNew->single($query, [$id]);
-
-        return intval($enabled);
-    }
-
-
-    /**
-     * isUnconfirmed
-     */
-    public static function isUnconfirmed(int $id)
-    {
-        return self::enabledState($id) === 0;
-    }
-
-
-    /**
-     * isEnabled
-     */
-    public static function isEnabled(int $id)
-    {
-        return self::enabledState($id) === 1;
-    }
-
-
-    /**
-     * isDisabled
-     */
-    public static function isDisabled(int $id)
-    {
-        return self::enabledState($id) === 2;
+        $query = "update user_api_tokens set revoked = 1 where userId = ? and id = ?";
+        $app->dbNew->do($query, [$id, $tokenId]);
     }
 
 
@@ -1054,9 +966,16 @@ class User
     {
         $app = App::go();
 
-        $publicKey = trim($publicKey);
-        if (empty($publicKey) || str_starts_with($publicKey, "BEGIN PGP PUBLIC KEY BLOCK") || str_ends_with($publicKey, "END PGP PUBLIC KEY BLOCK")) {
-            throw new Exception("invalid pgp key format");
+        # nested but much easier to read
+        $publicKey = Esc::string($publicKey);
+        if (!empty($publicKey)) {
+            if (str_starts_with($publicKey, "-----BEGIN PGP PUBLIC KEY BLOCK-----")) {
+                throw new Exception("invalid pgp key format");
+            }
+
+            if (str_ends_with($publicKey, "-----END PGP PUBLIC KEY BLOCK-----")) {
+                throw new Exception("invalid pgp key format");
+            }
         }
 
         $query = "update users_main set publicKey = ? where id = ?";
@@ -1256,9 +1175,6 @@ class User
     {
         $app = App::go();
 
-        # delight-im/auth
-        $auth = new Auth();
-
         # make sure the data exists
         if (empty($data)) {
             throw new Exception("nothing to update");
@@ -1273,7 +1189,7 @@ class User
         # check permissions to update another user
         $moderatorUpdate = false;
         if ($userId !== $this->core["id"]) {
-            $good = Permissions::can("users_edit_profiles");
+            $good = $this->can("users_edit_profiles");
             if (!$good) {
                 throw new Exception("you ain't a killer, you still learnin' how to walk");
             }
@@ -1293,7 +1209,7 @@ class User
             # only if it's the current user
             if (!$moderatorUpdate) {
                 $currentPassphrase = Esc::string($data["currentPassphrase"]);
-                $good = $auth->library->reconfirmPassword($currentPassphrase);
+                $good = $this->auth->library->reconfirmPassword($currentPassphrase);
 
                 if (!$good) {
                     throw new Exception("current passphrase doesn't match");
@@ -1322,14 +1238,14 @@ class User
                 }
 
                 # is it allowed?
-                $good = $auth->isPassphraseAllowed($newPassphrase1);
+                $good = $this->auth->isPassphraseAllowed($newPassphrase1);
                 if (!$good) {
                     throw new Exception("new passphrase isn't allowed");
                 }
 
                 # update the passphrase and log out old sessions
-                $auth->library->admin()->changePasswordForUserById($userId, $newPassphrase1);
-                $auth->library->logOutEverywhereElse();
+                $this->auth->library->admin()->changePasswordForUserById($userId, $newPassphrase1);
+                $this->auth->library->logOutEverywhereElse();
             } # if (!empty($newPassphrase1) && !empty($newPassphrase2))
 
 
@@ -1342,7 +1258,7 @@ class User
 
             if (!$moderatorUpdate && $email !== $this->core["email"]) {
                 # https://github.com/delight-im/PHP-Auth#changing-the-current-users-email-address
-                $auth->changeEmail($email, function ($selector, $token) {
+                $this->auth->changeEmail($email, function ($selector, $token) {
                     /*
                     echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email to the *new* address)';
                     echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
