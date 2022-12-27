@@ -73,6 +73,7 @@ Flight::route("/confirm/@selector/@token", function ($selector, $token) {
 });
 
 
+/*
 # pwgen
 Flight::route("/pwgen(/@method)", function ($method) {
     $app = App::go();
@@ -87,6 +88,7 @@ Flight::route("/pwgen(/@method)", function ($method) {
         require_once "{$app->env->serverRoot}/sections/user/pwgen/hash.php";
     }
 });
+*/
 
 
 # discourse connect

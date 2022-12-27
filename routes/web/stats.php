@@ -3,6 +3,10 @@
 declare(strict_types=1);
 
 
+/**
+ * stats
+ */
+
 # torrents
 Flight::route("/stats/torrents", function () {
     $app = App::go();

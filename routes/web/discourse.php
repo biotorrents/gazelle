@@ -11,7 +11,6 @@ declare(strict_types=1);
 $app = App::go();
 
 if ($app->env->enableDiscourse) {
-
     /** FORUMS */
 
     # new/edit thread

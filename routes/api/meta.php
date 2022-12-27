@@ -3,16 +3,19 @@
 declare(strict_types=1);
 
 
+/**
+ * meta
+ */
+
 # manifest
 Flight::route("/api/manifest", function () {
-    $app = App::go();
-    $json = new Json();
-    $json->success($app::manifest());
+    Gazelle\API::success(App::manifest());
 });
+
 
 # metadata
 Flight::route("/api/metadata", function () {
     $app = App::go();
-    $json = new Json();
-    $json->success($app->env->CATS);
+
+    Gazelle\API::success($app->env->CATS);
 });

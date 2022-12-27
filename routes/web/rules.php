@@ -3,6 +3,10 @@
 declare(strict_types=1);
 
 
+/**
+ * rules
+ */
+
 # golden
 Flight::route("/rules", function () {
     $app = App::go();

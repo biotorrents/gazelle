@@ -207,7 +207,7 @@ class Http
             case 100: $text = "Continue"; break;
             case 101: $text = "Switching Protocols"; break;
 
-            # 2xx success
+                # 2xx success
             case 200: $text = "OK"; break;
             case 201: $text = "Created"; break;
             case 202: $text = "Accepted"; break;
@@ -216,7 +216,7 @@ class Http
             case 205: $text = "Reset Content"; break;
             case 206: $text = "Partial Content"; break;
 
-            # 3xx redirection
+                # 3xx redirection
             case 300: $text = "Multiple Choices"; break;
             case 301: $text = "Moved Permanently"; break;
             case 302: $text = "Found"; break;
@@ -224,7 +224,7 @@ class Http
             case 304: $text = "Not Modified"; break;
             case 305: $text = "Use Proxy"; break;
 
-            # 4xx client errors
+                # 4xx client errors
             case 400: $text = "Bad Request"; break;
             case 401: $text = "Unauthorized"; break;
             case 402: $text = "Payment Required"; break;
@@ -242,7 +242,7 @@ class Http
             case 414: $text = "URI Too Long"; break;
             case 415: $text = "Unsupported Media Type"; break;
 
-            # 5xx server errors
+                # 5xx server errors
             case 500: $text = "Internal Server Error"; break;
             case 501: $text = "Not Implemented"; break;
             case 502: $text = "Bad Gateway"; break;
@@ -265,7 +265,7 @@ class Http
     }
 
 
-    /** COOKIES */
+    /** cookies */
 
 
     /**

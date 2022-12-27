@@ -14,13 +14,11 @@ Flight::route("/torrents(/@group(/@torrent))", function ($group, $torrent) {
     # browse
     if (!$group) {
         require_once "{$app->env->serverRoot}/sections/torrents/browse.php";
-        exit;
     }
 
     # group
     else {
         require_once "{$app->env->serverRoot}/sections/torrents/details.php";
-        exit;
     }
 });
 

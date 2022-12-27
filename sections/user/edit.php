@@ -205,7 +205,7 @@ try {
  * VIEW THE TWIG TEMPLATE HERE
  */
 
-$app->twig->display("user/settings.twig", [
+$app->twig->display("user/settings/settings.twig", [
  "css" => ["vendor/easymde.min"],
  "js" => ["user", "cssgallery", "preview_paranoia", "userSettings", "vendor/easymde.min"],
  "sidebar" => true,
