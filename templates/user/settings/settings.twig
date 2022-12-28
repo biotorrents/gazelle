@@ -398,7 +398,7 @@ HTML;
           <th>Profile title</th>
 
           <td>
-            <input type="text" id="profileTitle"name="profileTitle" placeholder="e.g., I am the greatest man that ever lived" value="{{ user.extra.InfoTitle }}" />
+            <input type="text" id="profileTitle" name="profileTitle" placeholder="e.g., I am the greatest man that ever lived" value="{{ user.extra.InfoTitle }}" />
           </td>
         </tr>
 
@@ -412,6 +412,37 @@ HTML;
             {% include "_base/textarea.twig" with variables %}
           </td>
         </tr>
+
+        {# recent snatches #}
+        <tr>
+          <th>Recent torrent activity</th>
+
+          <td>
+            {# recent snatches #}
+            <input type="checkbox" id="recentSnatches" name="recentSnatches" {{ (siteOptions.recentSnatches == true) ? "checked" : "" }} />
+            <label for="recentSnatches">Show snatches</label>
+
+            <br />
+
+        {# recent uploads #}
+            <input type="checkbox" id="recentUploads" name="recentUploads" {{ (siteOptions.recentUploads == true) ? "checked" : "" }} />
+            <label for="recentUploads">Show uploads</label>
+
+            <br />
+
+             {# recent requests #}
+            <input type="checkbox" id="recentRequests" name="recentRequests" {{ (siteOptions.recentRequests == true) ? "checked" : "" }} />
+            <label for="recentRequests">Show requests</label>
+
+            <br />
+
+        {# recent collages #}
+            <input type="checkbox" id="recentCollages" name="recentCollages" {{ (siteOptions.recentCollages == true) ? "checked" : "" }} />
+            <label for="recentCollages">Show collages</label>
+
+          </td>
+        </tr>
+
       </table> {# profileSettings #}
 
 

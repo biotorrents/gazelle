@@ -319,6 +319,10 @@ $defaultSiteOptions = [
     "styleUri" => "",
     "torrentGrouping" => "open",
     "unseededAlerts" => true,
+    "recentSnatches" => true,
+    "recentUploads" => true,
+    "recentCollages" => true,
+    "recentRequests" => true,
 ];
 
 ENV::setPub("defaultSiteOptions", json_encode($defaultSiteOptions));

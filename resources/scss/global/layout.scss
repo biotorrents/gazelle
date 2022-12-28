@@ -30,11 +30,11 @@ taken to match twitter
 }
 
 /* grow and shrink */
-.flex>.grow {
+.flex > .grow {
   flex-grow: 1;
 }
 
-.flex>.shrink {
+.flex > .shrink {
   flex-shrink: 1;
 }
 
@@ -43,7 +43,7 @@ taken to match twitter
   display: flex;
 }
 
-.flex_input_container>input[type="text"] {
+.flex_input_container > input[type="text"] {
   flex-grow: 1;
   box-sizing: border-box;
   width: 50%;
@@ -60,7 +60,6 @@ taken to match twitter
  * aside elements
  */
 aside {
-
   /**
    * "Please consult the Upload Rules"
    * admonishment on torrent_form.class.php.
@@ -210,7 +209,8 @@ img {
 
   &:before {
     --tw-bg-opacity: 1;
-    -webkit-animation: pulse-ring 3s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    -webkit-animation: pulse-ring 3s cubic-bezier(0.215, 0.61, 0.355, 1)
+      infinite;
     animation: pulse-ring 3s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
     background-color: #9ae6b4;
     background-color: rgba(16, 185, 129, var(--tw-bg-opacity));
@@ -227,7 +227,8 @@ img {
 
   &:after {
     --tw-bg-opacity: 1;
-    -webkit-animation: pulse-dot 3s cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s infinite;
+    -webkit-animation: pulse-dot 3s cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s
+      infinite;
     animation: pulse-dot 3s cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s infinite;
     background-color: #fff;
     background-color: rgba(16, 185, 129, var(--tw-bg-opacity));
@@ -247,3 +248,9 @@ img {
   max-height: 50rem;
 }
 */
+
+/* user profile page */
+.profileAvatar {
+  padding: 2rem;
+  text-align: center;
+}

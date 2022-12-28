@@ -125,11 +125,12 @@ $query = "
 $stylesheets = $app->dbNew->multi($query, []);
 
 # paranoia settings
-$paranoia = json_decode($app->userNew->extra["Paranoia"], true) ?? [];
+$paranoia = $app->userNew->paranoia;
+#!d($paranoia);exit;
 
 # site options
 $siteOptions = $app->userNew->extra["siteOptions"];
-
+#!d($siteOptions);exit;
 
 /** legacy code */
 

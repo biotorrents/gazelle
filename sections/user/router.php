@@ -151,6 +151,6 @@ switch ($_REQUEST['action']) {
     if (isset($_REQUEST['id'])) {
         require_once serverRoot.'/sections/user/user.php';
     } else {
-        Http::redirect("index.php");
+        #Http::redirect("index.php");
     }
 }

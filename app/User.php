@@ -24,6 +24,8 @@ class User
     # user info
     public $core = [];
     public $extra = [];
+
+    public $paranoia = [];
     public $permissions = [];
 
     # legacy gazelle
@@ -220,15 +222,6 @@ class User
         }
         */
 
-        # get all stylesheets
-        $query = "
-            select id,
-            lower(replace(name, ' ', '_')) as name, name as properName,
-            lower(replace(additions, ' ', '_')) as additions, additions as properAdditions
-            from stylesheets
-        ";
-        $stylesheets = $app->dbNew->multi($query);
-
 
         /** */
 
@@ -260,6 +253,12 @@ class User
             $row = $app->dbNew->row($query, [$userId]);
             $this->extra = $row ?? [];
 
+            # paranoia
+            if ($this->extra["Paranoia"]) {
+                $this->paranoia = json_decode($this->extra["Paranoia"], true);
+                unset($this->extra["Paranoia"]);
+            }
+
             # permissions
             $query = "select id, name, `values` from permissions where id = ?";
             $row = $app->dbNew->row($query, [ $this->extra["PermissionID"] ]);
@@ -273,11 +272,20 @@ class User
             $this->extra["RSS_Auth"] = md5(
                 $userId
                 . $app->env->getPriv("rssHash")
-                . $extra["torrent_pass"]
+                . $this->extra["torrent_pass"]
             );
 
+            # get all stylesheets
+            $query = "
+                select id,
+                lower(replace(name, ' ', '_')) as name, name as properName,
+                lower(replace(additions, ' ', '_')) as additions, additions as properAdditions
+                from stylesheets
+            ";
+            $stylesheets = $app->dbNew->multi($query);
+
             # user stylesheet
-            $this->extra["StyleName"] = $stylesheets[$extra["StyleID"]]["Name"];
+            $this->extra["StyleName"] = $stylesheets[$this->extra["StyleID"]]["name"];
 
             # api bearer tokens
             $query = "select * from api_user_tokens where userId = ? and revoked = 0";
@@ -815,8 +823,9 @@ class User
         $uri = ImageTools::process($uri, "avatar");
 
         # disabled or missing: show default
-        if (!self::hasAvatarsEnabled() || empty($uri)) {
-            $uri = "{$app->env->staticServer}/images/avatars/default.png";
+        if (empty($uri)) {
+            #if (!self::hasAvatarsEnabled() || empty($uri)) {
+            $uri = "/images/avatars/default.png";
 
             return "<img src='{$uri}' alt='default avatar' width='120' />";
         }
@@ -831,6 +840,8 @@ class User
      */
     public static function hasAvatarsEnabled(): bool
     {
+        !d($this->extra["siteOptions"]["disableAvatars"]);
+        exit;
         return $this->extra["siteOptions"]["disableAvatars"];
     }
 
@@ -1292,13 +1303,17 @@ class User
 
             # ircKey
             $ircKey = Esc::string($data["ircKey"]);
-            if (strlen($ircKey) < 8 || strlen($ircKey) > 32) {
-                throw new Exception("ircKey must be 8-32 chatacters");
+            $hash = Auth::makeHash($ircKey);
+
+            if (!empty($ircKey)) {
+                if (strlen($ircKey) < 8 || strlen($ircKey) > 32) {
+                    throw new Exception("ircKey must be 8-32 chatacters");
+                }
             }
 
             # theoretically an admin can't set it to the user's passphrase
             # unless they're my brother and use something like "butthole1"
-            if (!Auth::checkHash($this->core["password"], $hash)) {
+            if (Auth::checkHash($this->core["password"], $hash)) {
                 throw new Exception("ircKey can't be your passphrase");
             }
 
@@ -1325,7 +1340,9 @@ class User
 
             # resetPassKey: very important to only update if requested
             # or everyone will get locked out of the tracker all the time
+            $data["resetPassKey"] ??= null;
             $resetPassKey = Esc::bool($data["resetPassKey"]);
+
             if ($resetPassKey) {
                 $oldPassKey = $this->extra["torrent_pass"];
                 $newPassKey = Text::random(32);
@@ -1343,14 +1360,17 @@ class User
 
 
             # stylesheet
+            $data["stylesheet"] ??= null;
             $stylesheet = Esc::int($data["stylesheet"]);
+
             $query = "update users_info set styleId = ? where userId = ?";
             $app->dbNew->do($query, [$stylesheet, $userId]);
 
 
             # styleSheetUri
+            $data["styleSheetUri"] ??= null;
             $styleSheetUri = Esc::url($data["styleSheetUri"]);
-            $good = preg_match($app->env->regexCss, $stylesheet);
+            $good = preg_match($app->env->regexCss, $styleSheetUri);
 
             if (!$good && !empty($styleSheetUri)) {
                 throw new Exception("invalid styleSheetUri");
@@ -1368,21 +1388,25 @@ class User
 
             # siteOptions
             $siteOptions = [
-                "autoSubscribe" => Esc::bool($data["autoSubscribe"]),
-                "coverArtCollections" => Esc::int($data["coverArtCollections"]),
-                "coverArtTorrents" => Esc::bool($data["coverArtTorrents"]),
-                "coverArtTorrentsExtra" => Esc::bool($data["coverArtTorrentsExtra"]),
-                "disableAvatars" => Esc::bool($data["disableAvatars"]),
-                "disableGrouping" => Esc::bool($data["disableGrouping"]),
-                "listUnreadsFirst" => Esc::bool($data["listUnreadsFirst"]),
-                "searchType" => Esc::string($data["searchType"]),
-                "showTagFilter" => Esc::bool($data["showTagFilter"]),
-                "showTorrentFilter" => Esc::bool($data["showTorrentFilter"]),
-                "showSnatched" => Esc::bool($data["showSnatched"]),
-                "styleId" => Esc::int($data["styleId"]),
-                "styleUri" => Esc::url($data["styleUri"]),
-                "torrentGrouping" => Esc::string($data["torrentGrouping"]),
-                "unseededAlerts" => Esc::bool($data["unseededAlerts"]),
+                "autoSubscribe" => Esc::bool($data["autoSubscribe"] ?? null),
+                "coverArtCollections" => Esc::int($data["coverArtCollections"] ?? null),
+                "coverArtTorrents" => Esc::bool($data["coverArtTorrents"] ?? null),
+                "coverArtTorrentsExtra" => Esc::bool($data["coverArtTorrentsExtra"] ?? null),
+                "disableAvatars" => Esc::bool($data["disableAvatars"] ?? null),
+                "disableGrouping" => Esc::bool($data["disableGrouping"] ?? null),
+                "listUnreadsFirst" => Esc::bool($data["listUnreadsFirst"] ?? null),
+                "searchType" => Esc::string($data["searchType"] ?? null),
+                "showTagFilter" => Esc::bool($data["showTagFilter"] ?? null),
+                "showTorrentFilter" => Esc::bool($data["showTorrentFilter"] ?? null),
+                "showSnatched" => Esc::bool($data["showSnatched"] ?? null),
+                "styleId" => Esc::int($data["styleId"] ?? null),
+                "styleUri" => Esc::url($data["styleUri"] ?? null),
+                "torrentGrouping" => Esc::string($data["torrentGrouping"] ?? null),
+                "unseededAlerts" => Esc::bool($data["unseededAlerts"] ?? null),
+                "recentSnatches" => Esc::bool($data["recentSnatches"] ?? null),
+                "recentUploads" => Esc::bool($data["recentUploads"] ?? null),
+                "recentCollages" => Esc::bool($data["recentCollages"] ?? null),
+                "recentRequests" => Esc::bool($data["recentRequests"] ?? null),
             ];
 
             $query = "update users_info set siteOptions = ? where userId = ?";
@@ -1410,5 +1434,362 @@ class User
         $app = App::go();
 
         return $app->env->defaultSiteOptions;
+    }
+
+
+    /** profile info */
+
+
+    /**
+     * readProfile
+     *
+     * Gets an external user's profile.
+     */
+    public function readProfile(int $userId)
+    {
+        $app = App::go();
+
+        # return this
+        $data = [ "core" => [], "extra" => [], "paranoia" => [], "permissions" => [] ];
+
+        # not a mod: suppress fields
+        $suppressedFields = [];
+        if ($this->cant("users_mod")) {
+            $suppressedFields = [
+                "",
+                "",
+                "",
+            ];
+        }
+
+        # core: delight-im/auth
+        $query = "select * from users where id = ?";
+        $row = $app->dbNew->row($query, [$userId]);
+        $data["core"] = $row ?? [];
+
+        # extra: gazelle
+        $query = "select * from users_main cross join users_info on users_main.id = users_info.userId where id = ?";
+        $row = $app->dbNew->row($query, [$userId]);
+        $data["extra"] = $row ?? [];
+
+        # paranoia
+        if ($data["extra"]["Paranoia"]) {
+            $data["paranoia"] = json_decode($data["extra"]["Paranoia"], true);
+            unset($data["extra"]["Paranoia"]);
+        }
+
+        # permissions
+        $query = "select id, name, `values` from permissions where id = ?";
+        $row = $app->dbNew->row($query, [ $data["extra"]["PermissionID"] ]);
+        $data["permissions"] = $row ?? [];
+
+        if ($data["permissions"]["values"]) {
+            $data["permissions"]["values"] = json_decode($data["permissions"]["values"], true);
+        }
+
+        # okay
+        return $data;
+
+        /*
+        # old staff view query
+        if (check_perms('users_mod')) {
+            $db->query("
+            SELECT
+              m.`Username`,
+              m.`Email`,
+              m.`LastAccess`,
+              m.`IP`,
+              p.`Level` AS Class,
+              m.`Uploaded`,
+              m.`Downloaded`,
+              m.`RequiredRatio`,
+              m.`Title`,
+              m.`torrent_pass`,
+              m.`Enabled`,
+              m.`Paranoia`,
+              m.`Invites`,
+              m.`can_leech`,
+              m.`Visible`,
+              m.`BonusPoints`,
+              m.`IRCLines`,
+              i.`JoinDate`,
+              i.`Info`,
+              i.`Avatar`,
+              i.`AdminComment`,
+              i.`Donor`,
+              i.`Artist`,
+              i.`Warned`,
+              i.`SupportFor`,
+              i.`RestrictedForums`,
+              i.`PermittedForums`,
+              i.`Inviter`,
+              inviter.`Username`,
+              COUNT(posts.id) AS ForumPosts,
+              i.`RatioWatchEnds`,
+              i.`RatioWatchDownload`,
+              i.`DisableAvatar`,
+              i.`DisableInvites`,
+              i.`DisablePosting`,
+              i.`DisableForums`,
+              i.`DisableTagging`,
+              i.`DisableUpload`,
+              i.`DisableWiki`,
+              i.`DisablePM`,
+              i.`DisablePoints`,
+              i.`DisablePromotion`,
+              i.`DisableIRC`,
+              i.`DisableRequests`,
+              m.`FLTokens`,
+              SHA1(i.`AdminComment`),
+              i.`InfoTitle`,
+              la.`Type` AS LockedAccount
+            FROM
+              `users_main` AS m
+            JOIN `users_info` AS i
+            ON
+              i.`UserID` = m.`ID`
+            LEFT JOIN `users_main` AS inviter
+            ON
+              i.`Inviter` = inviter.`ID`
+            LEFT JOIN `permissions` AS p
+            ON
+              p.`ID` = m.`PermissionID`
+            LEFT JOIN `forums_posts` AS posts
+            ON
+              posts.`AuthorID` = m.`ID`
+            LEFT JOIN `locked_accounts` AS la
+            ON
+              la.`UserID` = m.`ID`
+            WHERE
+              m.`ID` = '$userId'
+            GROUP BY
+              `AuthorID`
+            ");
+        }
+
+        # old normal view query
+        else {
+            $db->query("
+            SELECT
+              m.`Username`,
+              m.`Email`,
+              m.`LastAccess`,
+              m.`IP`,
+              p.`Level` AS Class,
+              m.`Uploaded`,
+              m.`Downloaded`,
+              m.`RequiredRatio`,
+              m.`Enabled`,
+              m.`Paranoia`,
+              m.`Invites`,
+              m.`Title`,
+              m.`torrent_pass`,
+              m.`can_leech`,
+              i.`JoinDate`,
+              i.`Info`,
+              i.`Avatar`,
+              m.`FLTokens`,
+              m.`BonusPoints`,
+              m.`IRCLines`,
+              i.`Donor`,
+              i.`Warned`,
+              COUNT(posts.id) AS ForumPosts,
+              i.`Inviter`,
+              i.`DisableInvites`,
+              inviter.`username`,
+              i.`InfoTitle`
+            FROM
+              `users_main` AS m
+            JOIN `users_info` AS i
+            ON
+              i.`UserID` = m.`ID`
+            LEFT JOIN `permissions` AS p
+            ON
+              p.`ID` = m.`PermissionID`
+            LEFT JOIN `users_main` AS inviter
+            ON
+              i.`Inviter` = inviter.`ID`
+            LEFT JOIN `forums_posts` AS posts
+            ON
+              posts.`AuthorID` = m.`ID`
+            WHERE
+              m.`ID` = '$userId'
+            GROUP BY
+              `AuthorID`
+            ");
+        }
+        */
+    }
+
+
+    /** recent torrent activity */
+
+
+    /**
+     * recentSnatches
+     *
+     * Gets a list of a user's recent snatches.
+     */
+    public function recentSnatches(int $userId): array
+    {
+        $app = App::go();
+
+        $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        $query = "
+            select torrents_group.id, torrents_group.title, torrents_group.subject, torrents_group.object, torrents_group.picture
+            from xbt_snatched inner join torrents on torrents.id = xbt_snatched.fid
+            inner join torrents_group on torrents_group.id = torrents.groupId
+            where xbt_snatched.uid = ? and torrents_group.picture is not null
+            group by torrents_group.id, xbt_snatched.tstamp
+            order by xbt_snatched.tstamp desc limit 5
+        ";
+        $ref = $app->dbNew->multi($query, [$userId]);
+
+        # return if empty
+        if (empty($ref)) {
+            return [];
+        }
+
+        # append creators
+        $creators = Artists::get_artists(array_column($ref, "id"));
+        foreach ($ref as $key => $row) {
+            $ref[$key]["creator"] = Artists::display_artists($creators[$row["id"]], false, true);
+        }
+
+        $app->cacheOld->cache_value($cacheKey, $ref, $this->cacheDuration);
+        return $ref;
+    }
+
+
+    /**
+     * recentUploads
+     *
+     * Gets a list of a user's recent uploads.
+     */
+    public function recentUploads(int $userId): array
+    {
+        $app = App::go();
+
+        $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        $query = "
+            select torrents_group.id, torrents_group.title, torrents_group.subject, torrents_group.object, torrents_group.picture
+            from torrents_group inner join torrents on torrents.groupId = torrents_group.id
+            where torrents.userId = ? and torrents_group.picture != ''
+            group by torrents_group.id, torrents.time
+            order by torrents.time desc limit 5
+        ";
+        $ref = $app->dbNew->multi($query, [$userId]);
+
+        # return if empty
+        if (empty($ref)) {
+            return [];
+        }
+
+        # append creators
+        $creators = Artists::get_artists(array_column($ref, "id"));
+        foreach ($ref as $key => $row) {
+            $ref[$key]["creator"] = Artists::display_artists($creators[$row["id"]], false, true);
+        }
+
+        $app->cacheOld->cache_value($cacheKey, $ref, $this->cacheDuration);
+        return $ref;
+    }
+
+
+    /**
+     * recentRequests
+     *
+     * Gets a list of a user's recent requests.
+     */
+    public function recentRequests(int $userId): array
+    {
+        # todo
+        return [];
+
+        $app = App::go();
+
+        $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        $query = "
+            todo
+        ";
+        $ref = $app->dbNew->multi($query, [$userId]);
+
+        # return if empty
+        if (empty($ref)) {
+            return [];
+        }
+
+        # append creators
+        $creators = Artists::get_artists(array_column($ref, "id"));
+        foreach ($ref as $key => $row) {
+            $ref[$key]["creator"] = Artists::display_artists($creators[$row["id"]], false, true);
+        }
+
+        $app->cacheOld->cache_value($cacheKey, $ref, $this->cacheDuration);
+        return $ref;
+    }
+
+
+    /**
+     * recentCollages
+     *
+     * Gets a list of a user's recent collages.
+     */
+    public function recentCollages(int $userId): array
+    {
+        $app = App::go();
+
+        $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        # and categoryId = 0
+        $query = "
+            select id, name from collages
+            where userId = ? and deleted = 0
+            order by featured desc, name asc      
+        ";
+        $ref = $app->dbNew->multi($query, [$userId]);
+
+        # return if empty
+        if (empty($ref)) {
+            return [];
+        }
+
+        # loop through results
+        $data = [];
+        foreach ($ref as $row) {
+            $query = "
+                select collages_torrents.groupId, torrents_group.picture, torrents_group.category_id
+                from collages_torrents join torrents group on torrents_group.id = collages_torrents.groupId
+                where collages_torrents.collageId = ?
+                order by collages_torrents.sort limit 5
+            ";
+            $data[] = $app->dbNew->multi($query, [ $row["id"] ]);
+        }
+
+        $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
+        return $data;
     }
 } # class

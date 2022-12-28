@@ -106,19 +106,17 @@ class Twig # extends Twig\Environment
         #!d($twig->getGlobals());exit;
 
         # https://github.com/paragonie/anti-csrf
-        $twig->addFunction(
-            new Twig\TwigFunction(
-                "form_token",
-                function ($lock_to = null) {
-                    static $csrf;
-                    if ($csrf === null) {
-                        $csrf = new ParagonIE\AntiCSRF\AntiCSRF();
-                    }
-                    return $csrf->insertToken($lock_to, false);
-                },
-                [ "is_safe" => ["html"] ]
-            )
-        );
+        $twig->addFunction(new Twig\TwigFunction(
+            "form_token",
+            function ($lock_to = null) {
+                static $csrf;
+                if ($csrf === null) {
+                    $csrf = new ParagonIE\AntiCSRF\AntiCSRF();
+                }
+                return $csrf->insertToken($lock_to, false);
+            },
+            [ "is_safe" => ["html"] ]
+        ));
 
         /*
         # DebugBar
@@ -143,67 +141,58 @@ class Twig # extends Twig\Environment
             );
         }));
 
-        /*
-        $twig->addFunction(
-            new Twig\TwigFunction(
-                "debugHeader",
-                function () {
-                    $app = App::go();
+        # can
+        $twig->addFunction(new Twig\TwigFunction("can", function ($permission) {
+            $app = App::go();
 
-                    $render = $app->debug->getJavascriptRenderer();
-                    echo $render->renderHead();
+            return $app->userNew->can($permission);
+        }));
 
-                    return;
-                }
-            )
-        );
-        */
+        # cant
+        $twig->addFunction(new Twig\TwigFunction("cant", function ($permission) {
+            $app = App::go();
+
+            return $app->userNew->cant($permission);
+        }));
+
+        # Text::parse
+        $twig->addFilter(new Twig\TwigFilter("parse", function ($string) {
+            return new Twig\Markup(
+                Text::parse($string),
+                "UTF-8"
+            );
+        }));
 
         # https://philfrilling.com/blog/2017-01/php-convert-seconds-hhmmss-format
-        $twig->addFilter(new Twig\TwigFilter(
-            "hhmmss",
-            function ($seconds) {
-                return sprintf(
-                    "%02dm %02ds", # mm:ss
+        $twig->addFilter(new Twig\TwigFilter("hhmmss", function ($seconds) {
+            return sprintf(
+                "%02dm %02ds", # mm:ss
                     #"%02d:%02d:%02d", # hh:mm:ss
                     #($seconds / 3600), # hh
-                    (intval($seconds / 60) % 60), # mm
-                    ($seconds % 60) # ss
-                );
-            }
-        ));
+                (intval($seconds / 60) % 60), # mm
+                ($seconds % 60) # ss
+            );
+        }));
 
         # Format::relativeTime
-        $twig->addFilter(new Twig\TwigFilter(
-            "relativeTime",
-            function ($time) {
-                return Format::relativeTime($time);
-            }
-        ));
+        $twig->addFilter(new Twig\TwigFilter("relativeTime", function ($time) {
+            return Format::relativeTime($time);
+        }));
 
         # Format::breadcrumbs
-        $twig->addFunction(new Twig\TwigFunction(
-            "breadcrumbs",
-            function () {
-                return Format::breadcrumbs();
-            }
-        ));
+        $twig->addFunction(new Twig\TwigFunction("breadcrumbs", function () {
+            return Format::breadcrumbs();
+        }));
 
         # Format::get_size
-        $twig->addFilter(new Twig\TwigFilter(
-            "get_size",
-            function ($size, $levels = 2) {
-                return Format::get_size($size, $levels);
-            }
-        ));
+        $twig->addFilter(new Twig\TwigFilter("get_size", function ($size, $levels = 2) {
+            return Format::get_size($size, $levels);
+        }));
 
         # Format::get_ratio_html
-        $twig->addFunction(new Twig\TwigFunction(
-            "get_ratio_html",
-            function ($dividend, $divisor, $color = true) {
-                return Format::get_ratio_html($dividend, $divisor, $color);
-            }
-        ));
+        $twig->addFunction(new Twig\TwigFunction("get_ratio_html", function ($dividend, $divisor, $color = true) {
+            return Format::get_ratio_html($dividend, $divisor, $color);
+        }));
 
         # Text::float
         $twig->addFilter(new Twig\TwigFilter(
@@ -233,20 +222,6 @@ class Twig # extends Twig\Environment
         ));
 
         $twig->addFilter(new Twig\TwigFilter(
-            "bb_format",
-            function ($text) {
-                return new Twig\Markup(Text::parse($text), "UTF-8");
-            }
-        ));
-
-        $twig->addFilter(new Twig\TwigFilter(
-            "checked",
-            function ($isChecked) {
-                return $isChecked ? " checked=\"checked\"" : "";
-            }
-        ));
-
-        $twig->addFilter(new Twig\TwigFilter(
             "image",
             function ($i) {
                 return new Twig\Markup(ImageTools::process($i, true), "UTF-8");
@@ -267,15 +242,6 @@ class Twig # extends Twig\Environment
             "plural",
             function ($number) {
                 return plural($number);
-            }
-        ));
-
-        $twig->addFilter(new Twig\TwigFilter(
-            "selected",
-            function ($isSelected) {
-                return $isSelected
-                    ? " selected=\"selected\""
-                    : "";
             }
         ));
 
@@ -329,12 +295,6 @@ class Twig # extends Twig\Environment
                 "UTF-8"
             );
         }));
-
-        $twig->addTest(
-            new Twig\TwigTest("numeric", function ($value) {
-                return is_numeric($value);
-            })
-        );
 
         return $twig;
     }
