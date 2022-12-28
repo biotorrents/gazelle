@@ -15,7 +15,7 @@ https://twig.symfony.com/doc/3.x/tags/include.html
 {% endif %}
 
 
-<textarea id="{{ id }}" name="{{ name }}" placeholder="{{ placeholder }}" class="easyMDE">{{ value }}</textarea>
+<textarea id="{{ id }}" name="{{ name }}" placeholder="{{ placeholder }}" class="easyMDE">{{ value|raw }}</textarea>
 
 <script>
     (() => {

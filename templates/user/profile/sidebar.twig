@@ -1,28 +1,63 @@
 {# avatar #}
+<h3>Avatar</h3>
+
 <figure class="userProfileAvatar">
 {{ avatar|raw }}
 
   <figcaption>{{ data.core.username }} joined {{ data.core.registered|relativeTime }}</figcaption>
 </figure>
 
+
+{% if badges is not empty %}
+<h3>Badges</h3>
+
+{{ badgesDisplay|raw }}
+{% endif %}
+
+
 <div id="userProfileSidebar">
 {# user profile actions #}
 <h3>Actions</h3>
 
-{# send pm #}
+
+{# your own profile #}
+{% if isOwnProfile %}
+
+{# edit settings #}
+<a href="/user/update/{{ userId }}" class="button button-primary">edit settings</a>
+
+{# preview as other #}
+<a href="/user/{{ userId }}/preview" class="button button-orange">preview profile</a>
+
+{# log out #}
+<a href="/logout" class="button button-red">log out</a>
+
+{% endif %} {# if not isOwnProfile #}
+
+
+{# someone else's profile #}
 {% if not isOwnProfile %}
+
+{# send pm #}
 <a href="/messages/compose/{{ userId }}" class="button button-primary">send message</a>
-{% endif %}
 
 {# add/remove from friends #}
 {% if not isFriend %}
 <a href="/friends/create/{{ userId }}" class="button button-orange">add friend</a>
 {% else %}
-<a href="/friends/create/{{ userId }}" class="button">remove friend</a>
+<a href="/friends/create/{{ userId }}" class="button button-orange">remove friend</a>
 {% endif %}
 
 {# snitches get stitches #}
 <a href="/report/{{ userId }}" class="button button-red">report user</a>
+
+{% endif %} {# if not isOwnProfile #}
+
+
+{# user stats #}
+{# todo: reimagine/simplify paranoia #}
+
+
 
 
 {# moderator actions: this is actually nonsense #}

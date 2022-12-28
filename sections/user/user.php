@@ -56,6 +56,19 @@ if ($good) {
 
 $avatar = User::displayAvatar($data["extra"]["Avatar"], $data["core"]["username"]);
 
+$badges = array_keys(Badges::get_badges($userId));
+$badgesDisplay = Badges::display_badges($badges, true);
+#!d($badges, $badgesDisplay);exit;
+
+if (!empty($Badges)) { ?>
+<div class="box">
+  <div class="head colhead_dark">Badges</div>
+  <div class="pad">
+    <?=Badges::display_badges($Badges, true)?>
+  </div>
+</div>
+<?php
+}
 
 
 
@@ -99,6 +112,8 @@ $app->twig->display("user/profile/profile.twig", [
   "isFriend" => $isFriend,
   #"previewParanoia" => $previewParanoia,
   "avatar" => $avatar,
+  "badges" => $badges,
+  "badgesDisplay" => $badgesDisplay,
 
   # recent torrent activity
   "recentSnatches" => $recentSnatches,

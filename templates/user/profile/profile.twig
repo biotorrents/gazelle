@@ -251,16 +251,6 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
 
   <div class="sidebar one-third column">
 
-    $Badges = array_keys(Badges::get_badges($UserID));
-    if (!empty($Badges)) { ?>
-    <div class="box">
-      <div class="head colhead_dark">Badges</div>
-      <div class="pad">
-        <?=Badges::display_badges($Badges, true)?>
-      </div>
-    </div>
-    <?php
-}
 if (!$OwnProfile && !$user['DisablePoints']) { ?>
     <div class="box point_gift_box">
       <div class="head colhead_dark">Send <?=BONUS_POINTS?>
