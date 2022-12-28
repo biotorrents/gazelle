@@ -155,6 +155,14 @@ class Twig # extends Twig\Environment
             return $app->userNew->cant($permission);
         }));
 
+        # ImageTools::process
+        $twig->addFunction(new Twig\TwigFunction("processImage", function ($uri, $thumbnail) {
+            return new Twig\Markup(
+                ImageTools::process($uri, $thumbnail),
+                "UTF-8"
+            );
+        }));
+
         # Text::parse
         $twig->addFilter(new Twig\TwigFilter("parse", function ($string) {
             return new Twig\Markup(

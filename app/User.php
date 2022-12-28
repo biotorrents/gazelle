@@ -292,7 +292,7 @@ class User
             $bearerTokens = $app->dbNew->multi($query, [$userId]);
             $this->extra["bearerTokens"] = $bearerTokens;
 
-            # todo: site options
+            # site options
             $this->extra["siteOptions"] = json_decode($this->extra["SiteOptions"], true);
             unset($this->extra["SiteOptions"]);
 
@@ -827,11 +827,11 @@ class User
             #if (!self::hasAvatarsEnabled() || empty($uri)) {
             $uri = "/images/avatars/default.png";
 
-            return "<img src='{$uri}' alt='default avatar' width='120' />";
+            return "<img src='{$uri}' alt='default avatar' title='default avatar' width='120' />";
         }
 
         # return the user's avatar
-        return "<img src='{$uri}' alt='avatar for {$username}' width='120' />";
+        return "<img src='{$uri}' alt='avatar for {$username}' title='avatar for {$username}' width='120' />";
     }
 
 
@@ -1486,6 +1486,10 @@ class User
         if ($data["permissions"]["values"]) {
             $data["permissions"]["values"] = json_decode($data["permissions"]["values"], true);
         }
+
+        # site options
+        $data["extra"]["siteOptions"] = json_decode($data["extra"]["SiteOptions"], true);
+        unset($data["extra"]["SiteOptions"]);
 
         # okay
         return $data;

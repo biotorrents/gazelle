@@ -37,76 +37,59 @@
 
 
 {# recent snatches #}
-{#
-if (check_paranoia_here('snatched')) {
-    $RecentSnatches = $cache->get_value("recent_snatches_$UserID");
-    if ($RecentSnatches === false) {
-        $db->prepared_query("
-        SELECT
-          g.`id`,
-          g.`title`,
-          g.`subject`,
-          g.`object`,
-          g.`picture`
-        FROM
-          `xbt_snatched` AS s
-        INNER JOIN `torrents` AS t
-        ON
-          t.`ID` = s.`fid`
-        INNER JOIN `torrents_group` AS g
-        ON
-          t.`GroupID` = g.`id`
-        WHERE
-          s.`uid` = '$UserID' AND g.`picture` != ''
-        GROUP BY
-          g.`id`,
-          s.`tstamp`
-        ORDER BY
-          s.`tstamp`
-        DESC
-        LIMIT 5
-        ");
+{% if siteOptions.recentSnatches and recentSnatches is not empty %}
+<h3>Recent snatches</h3>
 
-        $RecentSnatches = $db->to_array();
+<section id="recentSnatches" class="collage_images">
 
-        $Artists = Artists::get_artists($db->collect('ID'));
-        foreach ($RecentSnatches as $Key => $SnatchInfo) {
-            $RecentSnatches[$Key]['Artist'] = Artists::display_artists($Artists[$SnatchInfo['ID']], false, true);
-        }
+{% for item in recentSnatches %}
+<div style="width: 120px;" class="collage_image">
+  <a href="torrents/{{ item.id }}">
+    <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%" />
+  </a>
+</div>
+{% endfor %}
 
-        $cache->cache_value("recent_snatches_$UserID", $RecentSnatches, 0); //inf cache
-    }
+</section>
+{% endif %}
 
-    if (!empty($RecentSnatches)) {
-        ?>
-    <div class="box" id="recent_snatches">
-      <div class="head">
-        Recent Snatches
-        <span class="u-pull-right"><a
-            onclick="$('#recent_snatches_images').gtoggle(); this.innerHTML = (this.innerHTML == 'Hide' ? 'Show' : 'Hide'); wall('#recent_snatches_images', '.collage_image', [2,3]); return false;"
-            class="brackets">Show</a></span>&nbsp;
-      </div>
-      <div id="recent_snatches_images" class="collage_images hidden">
-        <?php foreach ($RecentSnatches as $RS) {
-            $RSName = empty($RS['Name']) ? (empty($RS['Title2']) ? $RS['NameJP'] : $RS['Title2']) : $RS['Name']; ?>
-        <div style='width: 100px;' class='collage_image'>
-          <a
-            href="torrents.php?id=<?=$RS['ID']?>">
-            <img class="tooltip"
-              title="<?=Text::esc($RS['Artist'])?><?=Text::esc($RSName)?>"
-              src="<?=ImageTools::process($RS['WikiImage'], 'thumb')?>"
-              alt="<?=Text::esc($RS['Artist'])?><?=Text::esc($RSName)?>"
-              width="100%" />
-          </a>
-        </div>
-        <?php
-        } ?>
-      </div>
-    </div>
-    <?php
-    }
-}
-#}
+
+{# recent requests #}
+{% if siteOptions.recentRequests and recentRequests is not empty %}
+<h3>Recent requests</h3>
+
+<section id="recentRequests" class="collage_images">
+
+{% for item in recentRequests %}
+<div style="width: 120px;" class="collage_image">
+  <a href="torrents/{{ item.id }}">
+    <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%" />
+  </a>
+</div>
+{% endfor %}
+
+</section>
+{% endif %}
+
+
+{# recent uploads #}
+{% if siteOptions.recentUploads and recentUploads is not empty %}
+<h3>Recent uploads</h3>
+
+<section id="recentUploads" class="collage_images">
+
+{% for item in recentUploads %}
+<div style="width: 120px;" class="collage_image">
+  <a href="torrents/{{ item.id }}">
+    <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%" />
+  </a>
+</div>
+{% endfor %}
+
+</section>
+{% endif %}
+
+
 
 {# recent requests #}
 {#
@@ -205,39 +188,7 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
 }
 #}
 
-{# recent uploads #}
-{#
 
-    if (!empty($RecentUploads)) {
-        ?>
-    <div class="box" id="recent_uploads">
-      <div class="head">
-        Recent Uploads
-        <span class="u-pull-right"><a
-            onclick="$('#recent_uploads_images').gtoggle(); this.innerHTML = (this.innerHTML == 'Hide' ? 'Show' : 'Hide'); wall('#recent_uploads_images', '.collage_image', [2,3]); return false;"
-            class="brackets">Show</a></span>&nbsp;
-      </div>
-      <div id="recent_uploads_images" class="collage_images hidden">
-        <?php foreach ($RecentUploads as $RU) {
-            $RUName = empty($RU['Name']) ? (empty($RU['Title2']) ? $RU['NameJP'] : $RU['Title2']) : $RU['Name']; ?>
-        <div style='width: 100px;' class='collage_image'>
-          <a
-            href="torrents.php?id=<?=$RU['ID']?>">
-            <img class="tooltip"
-              title="<?=$RU['Artist']?><?=$RUName?>"
-              src="<?=ImageTools::process($RU['WikiImage'], 'thumb')?>"
-              alt="<?=$RU['Artist']?><?=$RUName?>"
-              width="100%" />
-          </a>
-        </div>
-        <?php
-        } ?>
-      </div>
-    </div>
-    <?php
-    }
-}
-#}
 
 {# recent collages #}
 {#

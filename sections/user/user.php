@@ -7,7 +7,7 @@
  */
 
 $app = App::go();
-#!d($app->userNew);
+#!d($app->userNew);exit;
 
 # https://github.com/paragonie/anti-csrf
 Http::csrf();
@@ -76,34 +76,6 @@ $recentCollages = $app->userNew->recentCollages($userId);
 
 
 
-if (!empty($RecentSnatches)) {
-    ?>
-  <div class="box" id="recent_snatches">
-    <div class="head">
-      Recent Snatches
-      <span class="u-pull-right"><a
-          onclick="$('#recent_snatches_images').gtoggle(); this.innerHTML = (this.innerHTML == 'Hide' ? 'Show' : 'Hide'); wall('#recent_snatches_images', '.collage_image', [2,3]); return false;"
-          class="brackets">Show</a></span>&nbsp;
-    </div>
-    <div id="recent_snatches_images" class="collage_images hidden">
-      <?php foreach ($RecentSnatches as $RS) {
-          $RSName = empty($RS['Name']) ? (empty($RS['Title2']) ? $RS['NameJP'] : $RS['Title2']) : $RS['Name']; ?>
-      <div style='width: 100px;' class='collage_image'>
-        <a
-          href="torrents.php?id=<?=$RS['ID']?>">
-          <img class="tooltip"
-            title="<?=Text::esc($RS['Artist'])?><?=Text::esc($RSName)?>"
-            src="<?=ImageTools::process($RS['WikiImage'], 'thumb')?>"
-            alt="<?=Text::esc($RS['Artist'])?><?=Text::esc($RSName)?>"
-            width="100%" />
-        </a>
-      </div>
-      <?php
-      } ?>
-    </div>
-  </div>
-  <?php
-}
 
 
 
@@ -119,6 +91,7 @@ $app->twig->display("user/profile/profile.twig", [
   #"js" => ["user", "requests", "comments", "wall"],
 
   "data" => $data,
+  "siteOptions" => $data["extra"]["siteOptions"],
 
   #"error" => $error ?? null,
 

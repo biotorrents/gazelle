@@ -402,7 +402,7 @@ class Format
             $steps = 0;
             abs($size) >= 1024 && $steps < count($units);
             $size /= 1024, $steps++
-            ) {
+        ) {
             # apparently useless, but defines $steps
         }
 
@@ -429,11 +429,11 @@ class Format
         }
 
         switch (strtolower($Unit[0])) {
-          case 'k': return round($Value * 1024);
-          case 'm': return round($Value * 1048576);
-          case 'g': return round($Value * 1073741824);
-          case 't': return round($Value * 1099511627776);
-          default: return 0;
+            case 'k': return round($Value * 1024);
+            case 'm': return round($Value * 1048576);
+            case 'g': return round($Value * 1073741824);
+            case 't': return round($Value * 1099511627776);
+            default: return 0;
         }
     }
 
@@ -559,41 +559,9 @@ class Format
      *
      * @see https://stackoverflow.com/a/7487809
      */
-    public static function relativeTime(string $time)
+    public static function relativeTime(string|int $time): string
     {
-        $time = strtotime($time);
-        if (!$time) {
-            throw new Exception("invalid time string {$time}");
-        }
-
-        $d[0] = [1, "second"];
-        $d[1] = [60, "minute"];
-        $d[2] = [3600, "hour"];
-        $d[3] = [86400, "day"];
-        $d[4] = [604800, "week"];
-        $d[5] = [2592000, "month"];
-        $d[6] = [31104000, "year"];
-
-        $w = [];
-        $return = [];
-
-        $now = time();
-        $diff = ($now - $time);
-        $secondsLeft = $diff;
-
-        for ($i = 6; $i > -1; $i--) {
-            $w[$i] = intval($secondsLeft / $d[$i][0]);
-            $secondsLeft -= ($w[$i] * $d[$i][0]);
-
-            if ($w[$i]!== 0) {
-                array_push($return, abs($w[$i]) . " " . $d[$i][1] . (($w[$i] > 1) ? "s" : ""));
-            }
-        }
-
-        $return = "{$return[0]}, {$return[1]}";
-        $return .= ($diff > 0) ? " ago" : " left";
-
-        return $return;
+        return Carbon\Carbon::parse($time)->diffForHumans();
     }
 
 

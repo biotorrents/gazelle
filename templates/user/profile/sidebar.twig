@@ -1,6 +1,8 @@
 {# avatar #}
-<figure class="profileAvatar">
+<figure class="userProfileAvatar">
 {{ avatar|raw }}
+
+  <figcaption>{{ data.core.username }} joined {{ data.core.registered|relativeTime }}</figcaption>
 </figure>
 
 <div id="userProfileSidebar">
@@ -8,7 +10,7 @@
 <h3>Actions</h3>
 
 {# send pm #}
-{% if isOwnProfile %}
+{% if not isOwnProfile %}
 <a href="/messages/compose/{{ userId }}" class="button button-primary">send message</a>
 {% endif %}
 
@@ -33,45 +35,47 @@
 <a href="#staffTools" class="button">staff tools</a>
 {% endif %}
 
-{# update settings # }
+{# update settings #}
 {% if can("users_edit_profiles") %}
 <a href="/user/edit/{{ userId }}" class="button">user settings</a>
 {% endif %}
 
-{# read invites # }
+{# read invites #}
 {% if can("users_view_invites") %}
 <a href="/user/invites/{{ userId }}" class="button">invites</a>
 {% endif %}
 
-{# update permissions # }
+{# update permissions #}
 {% if can("admin_manage_permissions") %}
 <a href="/user/permissions/{{ userId }}" class="button">permissions</a>
 {% endif %}
 
-{# read sessions # }
+{# read sessions #}
 {% if can("users_view_ips") %}
 <a href="/user/sessions/{{ userId }}" class="button">sessions</a>
 {% endif %}
 
-{# read reports # }
+{# read reports #}
 {% if can("admin_reports") %}
 <a href="/user/reports/{{ userId }}" class="button">reports</a>
 {% endif %}
 
-{# read freeleech token history # }
+{# read freeleech token history #}
 {% if can("users_mod") %}
 <a href="/user/history/{{ userId }}" class="button">freeleech tokens</a>
 {% endif %}
 
-{# clear cache # }
+{# clear cache #}
 {% if can("admin_clear_cache") and can("users_override_paranoia") %}
 <a href="/user/clearCache/{{ userId }}" class="button">clear cache</a>
 {% endif %}
 
 
-#}
 
 </div> {# userProfileSidebar #}
+
+
+
 {#
 <form method="post">
 	<input type="text" form="userSettingsForm" id="currentPassphrase" name="currentPassphrase" placeholder="Please enter your current passphrase"/>

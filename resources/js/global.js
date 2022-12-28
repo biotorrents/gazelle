@@ -1,4 +1,16 @@
-"use strict";
+/**
+ * global javascript
+ */
+
+(() => {
+  "use strict";
+
+  // jquery ui tooltips
+  // https://jqueryui.com/tooltip/
+  $(document).tooltip();
+})();
+
+/** legacy */
 
 /**
  * html_entity_decode
@@ -426,13 +438,4 @@ $(function () {
       (e.target.attributes["lightbox-size"] || []).value || e.target.width
     );
   });
-});
-
-/**
- * jQuery tooltips
- * Replaces Tooltipster
- * @see https://jqueryui.com/tooltip/
- */
-$(function () {
-  $(document).tooltip();
 });
