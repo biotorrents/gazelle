@@ -4,6 +4,18 @@
 
 
 /**
+ * carbon
+ *
+ * Returns a Carbon instance.
+ * Defaults to the current time.
+ */
+function carbon($when = "")
+{
+    return Carbon\Carbon::parse($when);
+}
+
+
+/**
  *
  * FROM BOOTSTRAP/APP.PHP
  *

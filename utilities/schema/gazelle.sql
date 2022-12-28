@@ -504,17 +504,6 @@ CREATE TABLE `forums_topic_notes` (
 
 
 -- 2020-03-09
-CREATE TABLE `friends` (
-  `UserID` int unsigned NOT NULL,
-  `FriendID` int unsigned NOT NULL,
-  `Comment` text,
-  PRIMARY KEY (`UserID`,`FriendID`),
-  KEY `UserID` (`UserID`),
-  KEY `FriendID` (`FriendID`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
--- 2020-03-09
 CREATE TABLE `group_log` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `GroupID` int NOT NULL,
@@ -1394,6 +1383,17 @@ CREATE TABLE `users_freeleeches` (
   KEY `Time` (`Time`),
   KEY `Expired_Time` (`Expired`,`Time`)
 ) ENGINE=InnoDB CHARSET=utf8mb4;
+
+
+CREATE TABLE `users_friends` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `userId` INT NOT NULL,
+  `friendId` INT NOT NULL,
+  `comment` VARCHAR(255),
+  `created` DATETIME DEFAULT NOW(),
+  `updated` DATETIME ON UPDATE NOW(),
+  PRIMARY KEY (`id`, `userId`,`friendId`)
+);
 
 
 CREATE TABLE `users_info` (

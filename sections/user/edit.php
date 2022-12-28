@@ -8,7 +8,6 @@ declare(strict_types=1);
  */
 
 $app = App::go();
-#!d($app->userNew->core);exit;
 
 # https://github.com/paragonie/anti-csrf
 Http::csrf();
@@ -16,11 +15,8 @@ Http::csrf();
 # request vars
 $get = Http::query("get");
 $post = Http::query("post");
-#!d($post);
 
 # 2fa libraries
-#$auth = new Auth();
-#!d($auth->isLoggedIn());exit;
 $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
 $u2f = new u2flib_server\U2F("https://{$app->env->siteDomain}");
 
@@ -28,6 +24,7 @@ $u2f = new u2flib_server\U2F("https://{$app->env->siteDomain}");
 /** gpg/2fa/u2f stuff */
 
 
+/*
 # pgp
 $post["pgpPublicKey"] ??= null;
 if ($post["pgpPublicKey"]) {
@@ -38,6 +35,7 @@ if ($post["pgpPublicKey"]) {
         !d($e->getMessage());
     }
 }
+*/
 
 # 2fa
 /*
@@ -131,7 +129,6 @@ $paranoia = json_decode($app->userNew->extra["Paranoia"], true) ?? [];
 
 # site options
 $siteOptions = $app->userNew->extra["siteOptions"];
-#!d($siteOptions);exit;
 
 
 /** legacy code */
@@ -146,33 +143,6 @@ if ($DonorIsVisible === null) {
 
 $Rewards = null;
 $ProfileRewards = null;
-
-
-
-/*
-$app->dbOld->query("
-  SELECT
-    m.Username,
-    m.TwoFactor,
-    m.PublicKey,
-    m.Email,
-    m.IRCKey,
-    m.Paranoia,
-    i.Info,
-    i.Avatar,
-    i.StyleID,
-    i.StyleURL,
-    i.SiteOptions,
-    i.UnseededAlerts,
-    p.Level AS Class,
-    i.InfoTitle
-  FROM users_main AS m
-    JOIN users_info AS i ON i.UserID = m.ID
-    LEFT JOIN permissions AS p ON p.ID = m.PermissionID
-  WHERE m.ID = ?", $UserID);
-list($Username, $TwoFactor, $PublicKey, $Email, $IRCKey, $Paranoia, $Info, $Avatar, $StyleID, $StyleURL, $SiteOptions, $UnseededAlerts, $Class, $InfoTitle) = $app->dbOld->next_record(MYSQLI_NUM, [5, 10]);
-*/
-
 
 function paranoia_level($Setting)
 {
@@ -192,13 +162,14 @@ function display_paranoia($FieldName)
 
 /** BEGIN THE ACTUAL FORM HANDLING */
 
-try {
-    $app->userNew->updateSettings($post);
-    NotificationsManager::save_settings($app->userNew->core["id"]);
-} catch (Exception $e) {
-    $error = $e->getMessage();
+if (!empty($post)) {
+    try {
+        $app->userNew->updateSettings($post);
+        NotificationsManager::save_settings($app->userNew->core["id"]);
+    } catch (Exception $e) {
+        $error = $e->getMessage();
+    }
 }
-
 
 
 /**
