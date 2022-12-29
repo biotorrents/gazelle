@@ -340,7 +340,7 @@ if (check_perms('site_send_unlimited_invites')) {
         <?php } ?>
 
         <li id="bonus_points">
-          <a href="wiki.php?action=article&amp;name=bonuspoints"><?=BONUS_POINTS?></a>:
+          <a href="wiki.php?action=article&amp;name=bonuspoints"><?=bonusPoints?></a>:
           <span class="stat">
             <a href="store.php"><?=Text::float($app->userNew->extra['BonusPoints'])?></a>
           </span>

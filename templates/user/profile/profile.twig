@@ -20,6 +20,15 @@
 {% endif %}
 
 
+{# preview mode #}
+{% if previewMode %}
+<div class="alertbar info">
+    You're viewing your profile in preview mode.
+    Here's what it looks like to another user.
+</div>
+{% endif %}
+
+
 {# profile title #}
 {% if data.extra.InfoTitle is not empty %}
 <h3>{{ data.extra.InfoTitle }}</h3>
@@ -253,7 +262,7 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
 
 if (!$OwnProfile && !$user['DisablePoints']) { ?>
     <div class="box point_gift_box">
-      <div class="head colhead_dark">Send <?=BONUS_POINTS?>
+      <div class="head colhead_dark">Send <?=bonusPoints?>
       </div>
       <div class="pad">
         <form action="user.php" method="post">
@@ -898,7 +907,7 @@ if (check_perms('users_mod', $Class)) { ?>
         </td>
       </tr>
       <tr>
-        <td class="label"><?=BONUS_POINTS?>:</td>
+        <td class="label"><?=bonusPoints?>:</td>
         <td>
           <input type="text" size="20" name="BonusPoints"
             value="<?=$BonusPoints?>" />
@@ -930,11 +939,11 @@ if (!$DisablePoints) {
           }
 
           $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints/1440)), 0));
-          $PointsPerHour = Text::float($PointsRate)." ".BONUS_POINTS."/hour";
-          $PointsPerDay = Text::float($PointsRate*24)." ".BONUS_POINTS."/day";
+          $PointsPerHour = Text::float($PointsRate)." ".bonusPoints."/hour";
+          $PointsPerDay = Text::float($PointsRate*24)." ".bonusPoints."/day";
       } else {
-          $PointsPerHour = "0 ".BONUS_POINTS."/hour";
-          $PointsPerDay = BONUS_POINTS." disabled";
+          $PointsPerHour = "0 ".bonusPoints."/hour";
+          $PointsPerDay = bonusPoints." disabled";
       } ?>
           <?=$PointsPerHour?> (<?=$PointsPerDay?>)
         </td>
@@ -1163,7 +1172,7 @@ if (!$DisablePoints) {
             upload</label> |
           <input type="checkbox" name="DisablePoints" id="DisablePoints" <?php if ($DisablePoints==1) { ?>
           checked="checked"
-          <?php } ?> /> <label for="DisablePoints"><?=BONUS_POINTS?></label>
+          <?php } ?> /> <label for="DisablePoints"><?=bonusPoints?></label>
           <br /><br />
 
           <input type="checkbox" name="DisableTagging" id="DisableTagging" <?php if ($DisableTagging==1) { ?>

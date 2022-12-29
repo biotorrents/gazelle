@@ -4,7 +4,7 @@ declare(strict_types=1);
 $ENV = ENV::go();
 
 $UserID = $user['ID'];
-$Purchase = "1,000 $ENV->BONUS_POINTS";
+$Purchase = "1,000 $ENV->bonusPoints";
 
 $GiB = 1024 * 1024 * 1024;
 $Cost = 15.0 * $GiB;

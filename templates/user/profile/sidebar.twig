@@ -32,16 +32,18 @@
 {# log out #}
 <a href="/logout" class="button button-red">log out</a>
 
-{% endif %} {# if not isOwnProfile #}
+{% endif %} {# if isOwnProfile #}
 
 
 {# someone else's profile #}
 {% if not isOwnProfile %}
 
 {# send pm #}
+{# inbox.php?action=compose&to={{ userId }} #}
 <a href="/messages/compose/{{ userId }}" class="button button-primary">send message</a>
 
 {# add/remove from friends #}
+{# friends.php?action=add&friendid={{ userId }}&auth={{ user.extra.AuthKey }} #}
 {% if not isFriend %}
 <a href="/friends/create/{{ userId }}" class="button button-orange">add friend</a>
 {% else %}
@@ -49,7 +51,30 @@
 {% endif %}
 
 {# snitches get stitches #}
+{# reports.php?action=report&type=user&id={{ userId }} #}
 <a href="/report/{{ userId }}" class="button button-red">report user</a>
+
+{# gift bonus points #}
+<input type="number" id="giftBonusPointsAmount" />
+<a id="giftBonusPointsSubmit" class="button button-green">gift {{ env.bonusPoints }}</a>
+
+    <div class="box point_gift_box">
+      <div class="head colhead_dark">Send <?=bonusPoints?>
+      </div>
+      <div class="pad">
+        <form action="user.php" method="post">
+          <input type="hidden" name="action" value="points">
+          <input type="hidden" name="to" value="<?=$userId?>">
+          <div class="flex_input_container">
+            <input type="text" name="amount" placeholder="Amount">
+            <input type="submit" class="button-primary" value="Send">
+          </div>
+          <textarea name="message" rows="2" placeholder="Message"></textarea>
+          <label><input type="checkbox" name="adjust"> Adjust for tax?</label>
+        </form>
+        <p>Note: 10% of your gift is taken as tax.</p>
+      </div>
+    </div>
 
 {% endif %} {# if not isOwnProfile #}
 
@@ -71,36 +96,43 @@
 {% endif %}
 
 {# update settings #}
+{# user.php?action=edit&userid={{ userId }} #}
 {% if can("users_edit_profiles") %}
 <a href="/user/edit/{{ userId }}" class="button">user settings</a>
 {% endif %}
 
 {# read invites #}
+{# user.php?action=invite&userid={{ userId }} #}
 {% if can("users_view_invites") %}
 <a href="/user/invites/{{ userId }}" class="button">invites</a>
 {% endif %}
 
 {# update permissions #}
+{# user.php?action=permissions&userid={{ userId }} #}
 {% if can("admin_manage_permissions") %}
 <a href="/user/permissions/{{ userId }}" class="button">permissions</a>
 {% endif %}
 
 {# read sessions #}
+{# user.php?action=sessions&userid={{ userId }} #}
 {% if can("users_view_ips") %}
 <a href="/user/sessions/{{ userId }}" class="button">sessions</a>
 {% endif %}
 
 {# read reports #}
+{# reportsv2.php?view=reporter&id={{ userId }} #}
 {% if can("admin_reports") %}
 <a href="/user/reports/{{ userId }}" class="button">reports</a>
 {% endif %}
 
 {# read freeleech token history #}
+{# userhistory.php?action=token_history&userid={{ userId }} #}
 {% if can("users_mod") %}
 <a href="/user/history/{{ userId }}" class="button">freeleech tokens</a>
 {% endif %}
 
 {# clear cache #}
+{# user.php?action=clearcache&id={{ userId }} #}
 {% if can("admin_clear_cache") and can("users_override_paranoia") %}
 <a href="/user/clearCache/{{ userId }}" class="button">clear cache</a>
 {% endif %}

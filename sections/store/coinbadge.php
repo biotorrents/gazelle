@@ -57,7 +57,7 @@ View::header('Store');
               WHERE Name = 'CoinBadge'");
           }
       } else {
-          $Err = 'Not enough '.BONUS_POINTS.'.';
+          $Err = 'Not enough '.bonusPoints.'.';
       }
 
       if (isset($Err)) { ?>
@@ -82,7 +82,7 @@ View::header('Store');
   <div class="box pad">
     <p>You bought the Oppaicoin badge</p>
     <p>This badge has been purchased <?=Text::float($Purchases)?>
-      times and now costs <?=Text::float($Price)?> <?=BONUS_POINTS?>.</p>
+      times and now costs <?=Text::float($Price)?> <?=bonusPoints?>.</p>
   </div>
   <?php } ?>
   <?php
@@ -99,7 +99,7 @@ View::header('Store');
   <div class="box pad">
     <p><?=Text::float($Purchases)?> people have bought this badge
     </p>
-    <p>Current cost: <?=Text::float($Price)?> <?=BONUS_POINTS?>
+    <p>Current cost: <?=Text::float($Price)?> <?=bonusPoints?>
     </p>
     <?php if (Badges::hasBadge($UserID, 255)) { ?>
     <p>You already own this badge</p>

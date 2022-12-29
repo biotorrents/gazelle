@@ -630,11 +630,11 @@ if ($DisablePM != $Cur['DisablePM'] && check_perms('users_disable_any')) {
 
 if ($DisablePoints != $Cur['DisablePoints'] && check_perms('users_disable_any')) {
     $UpdateSet[] = "DisablePoints = '$DisablePoints'";
-    $EditSummary[] = BONUS_POINTS.' earning ' . ($DisablePoints ? 'disabled' : 'enabled');
+    $EditSummary[] = bonusPoints.' earning ' . ($DisablePoints ? 'disabled' : 'enabled');
     $HeavyUpdates['DisablePoints'] = $DisablePoints;
 
     if (!empty($UserReason)) {
-        Misc::send_pm($UserID, 0, 'Your '.BONUS_POINTS.'-earning ability has been disabled', "Your ".BONUS_POINTS."-earning ability has been disabled. The reason given was: [quote]{$UserReason}[/quote] If you would like to discuss this, please join ".DISABLED_CHAN.' on our IRC network. Instructions can be found [url='.site_url().'wiki.php?action=article&amp;name=IRC+-+How+to+join]here[/url].');
+        Misc::send_pm($UserID, 0, 'Your '.bonusPoints.'-earning ability has been disabled', "Your ".bonusPoints."-earning ability has been disabled. The reason given was: [quote]{$UserReason}[/quote] If you would like to discuss this, please join ".DISABLED_CHAN.' on our IRC network. Instructions can be found [url='.site_url().'wiki.php?action=article&amp;name=IRC+-+How+to+join]here[/url].');
     }
 }
 

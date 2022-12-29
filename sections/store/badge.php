@@ -55,7 +55,7 @@ if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
                     $cache->delete_value("user_info_heavy_$UserID");
                 }
             } else {
-                $Err = 'Not enough '.BONUS_POINTS.'.';
+                $Err = 'Not enough '.bonusPoints.'.';
             }
         }
     }
@@ -84,7 +84,7 @@ if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
         <p>
             Badge cost:
             <?=Text::float($Prices[$BadgeID])?>
-            <?=BONUS_POINTS?>
+            <?=bonusPoints?>
         </p>
 
         <?php if (isset($Err)) { ?>

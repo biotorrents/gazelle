@@ -30,6 +30,7 @@ class Badges
             $data[$key] = $row["displayed"];
         }
 
+        #!d($data);exit;
         return $data;
     }
 
@@ -72,11 +73,12 @@ class Badges
         $badges = self::getBadges($userId);
 
         foreach ($badges as $id => $displayed) {
-            if ($displayed) {
+            if (!empty($displayed)) {
                 $data[] = $id;
             }
         }
 
+        #!d($data);exit;
         return $data;
     }
 

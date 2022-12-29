@@ -6,9 +6,11 @@
   <h2>User settings for {{ user.core.username }}</h2>
 </div>
 
-<p class="important_text">
+{% if error %}
+<div class="alertbar error">
 {{ error }}
-</p>
+</div>
+{% endif %}
 
 <form method="post" id="userSettingsForm" name="userSettingsForm">
 
@@ -762,7 +764,7 @@ END PARANOIA CLUSTERFUCK #}
           {% if user.extra.TwoFactor is empty %}
           <div id="twoFactorDisabled">
           <p>
-          Two factor authentication isn't yet enabled for your account.
+          <span class="warning">Two factor authentication isn't enabled on your account!</span>
           Please scan the QR code in your authenticator app, enter the six-digit number, and click "Enable 2FA."
           <a href="https://apps.apple.com/us/app/authenticator/id766157276" class="external" target="_blank">Matt Rubin's Authenticator</a>
           is one secure recommended app.
@@ -778,7 +780,10 @@ END PARANOIA CLUSTERFUCK #}
 
           <p>
           <input type="text" id="twoFactorCode" name="twoFactorCode" pattern="[0-9]{6}" placeholder="e.g., {{ twoFactorPlaceHolder }}" />
-        <a id="verifyTwoFactor" class="button button-primary">enable 2fa</a>
+          </p>
+
+          <p>
+        <a id="createTwoFactor" class="button button-primary">enable 2fa</a>
         </p>
         </div>
 
@@ -801,7 +806,7 @@ END PARANOIA CLUSTERFUCK #}
 
         <p>
         <input type="text" id="twoFactorCode" name="twoFactorCode" placeholder="e.g., {{ twoFactorPlaceHolder }}" />
-        <a id="disableTwoFactor" class="button button-primary">disable 2fa</a>
+        <a id="deleteTwoFactor" class="button button-primary">disable 2fa</a>
         </p>
         </div>
 

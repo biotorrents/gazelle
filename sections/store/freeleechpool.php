@@ -97,7 +97,7 @@ if (isset($_POST['donation'])) {
         <p>
             You donated
             <?=Text::float($Donation)?>
-            <?=BONUS_POINTS?>
+            <?=bonusPoints?>
             to the Freeleech Pool
         </p>
 
@@ -135,7 +135,7 @@ View::footer();
             <strong>
                 There are currently
                 <?=Text::float($Pool)?>
-                <?=BONUS_POINTS?>
+                <?=bonusPoints?>
                 in the Freeleech Pool
             </strong>
             <br /><br />

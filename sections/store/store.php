@@ -35,11 +35,11 @@ if (!$user['DisablePoints']) {
     }
 
     $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints/1440)), 0));
-    $PointsPerHour = Text::float($PointsRate) . " ".BONUS_POINTS."/hour";
-    $PointsPerDay = Text::float($PointsRate*24) . " ".BONUS_POINTS."/day";
+    $PointsPerHour = Text::float($PointsRate) . " ".bonusPoints."/hour";
+    $PointsPerDay = Text::float($PointsRate*24) . " ".bonusPoints."/day";
 } else {
-    $PointsPerHour = "0 ".BONUS_POINTS."/hour";
-    $PointsPerDay = BONUS_POINTS." disabled";
+    $PointsPerHour = "0 ".bonusPoints."/hour";
+    $PointsPerDay = bonusPoints." disabled";
 }
 
 // Include the header
@@ -54,7 +54,7 @@ View::header('Store');
     <h3 id="lists" class="u-pull-left">
       You have
       <?=Text::float($user['BonusPoints'])?>
-      <?=BONUS_POINTS?>
+      <?=bonusPoints?>
       to spend
     </h3>
 
@@ -73,7 +73,7 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          15 <?=BONUS_POINTS?>
+          15 <?=bonusPoints?>
         </td>
 
         <td class="nobr">
@@ -88,7 +88,7 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          150 <?=BONUS_POINTS?>
+          150 <?=bonusPoints?>
         </td>
 
         <td class="nobr">
@@ -103,7 +103,7 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          1,500 <?=BONUS_POINTS?>
+          1,500 <?=bonusPoints?>
         </td>
 
         <td class="nobr">
@@ -118,7 +118,7 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          15,000 <?=BONUS_POINTS?>
+          15,000 <?=bonusPoints?>
         </td>
 
         <td class="nobr">
@@ -129,7 +129,7 @@ View::header('Store');
       <!-- Bonus Points: 10^1 -->
       <tr class="row">
         <td class="nobr">
-          <a href="store.php?item=points_1">10 <?=BONUS_POINTS?></a>
+          <a href="store.php?item=points_1">10 <?=bonusPoints?></a>
         </td>
 
         <td class="nobr">
@@ -137,14 +137,14 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          Purchase 10 <?=BONUS_POINTS?>
+          Purchase 10 <?=bonusPoints?>
         </td>
       </tr>
 
       <!-- Bonus Points: 10^2 -->
       <tr class="row">
         <td class="nobr">
-          <a href="store.php?item=points_10">100 <?=BONUS_POINTS?></a>
+          <a href="store.php?item=points_10">100 <?=bonusPoints?></a>
         </td>
 
         <td class="nobr">
@@ -152,14 +152,14 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          Purchase 100 <?=BONUS_POINTS?>
+          Purchase 100 <?=bonusPoints?>
         </td>
       </tr>
 
       <!-- Bonus Points: 10^3 -->
       <tr class="row">
         <td class="nobr">
-          <a href="store.php?item=points_100">1,000 <?=BONUS_POINTS?></a>
+          <a href="store.php?item=points_100">1,000 <?=bonusPoints?></a>
         </td>
 
         <td class="nobr">
@@ -167,14 +167,14 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          Purchase 1,000 <?=BONUS_POINTS?>
+          Purchase 1,000 <?=bonusPoints?>
         </td>
       </tr>
 
       <!-- Bonus Points: 10^4 -->
       <tr class="row">
         <td class="nobr">
-          <a href="store.php?item=points_1000">10,000 <?=BONUS_POINTS?></a>
+          <a href="store.php?item=points_1000">10,000 <?=bonusPoints?></a>
         </td>
 
         <td class="nobr">
@@ -182,7 +182,7 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          Purchase 10,000 <?=BONUS_POINTS?>
+          Purchase 10,000 <?=bonusPoints?>
         </td>
       </tr>
 
@@ -193,7 +193,7 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          1,000 <?=BONUS_POINTS?>
+          1,000 <?=bonusPoints?>
         </td>
 
         <td class="nobr">
@@ -208,7 +208,7 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          2,000 <?=BONUS_POINTS?>
+          2,000 <?=bonusPoints?>
         </td>
 
         <td class="nobr">
@@ -223,7 +223,7 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          5,000 <?=BONUS_POINTS?>
+          5,000 <?=bonusPoints?>
         </td>
 
         <td class="nobr">
@@ -238,7 +238,7 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          10,000 <?=BONUS_POINTS?>
+          10,000 <?=bonusPoints?>
         </td>
 
         <td class="nobr">

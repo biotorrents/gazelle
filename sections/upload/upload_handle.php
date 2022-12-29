@@ -789,7 +789,7 @@ if (($Type === "Movies" || $Type === "Anime") && ($T['Container'] === 'ISO' || $
 
     $db->query("
       UPDATE users_info
-      SET AdminComment = CONCAT(NOW(), ' - Received $BPAmt ".BONUS_POINTS." for uploading a torrent $TorrentID\n\n', AdminComment)
+      SET AdminComment = CONCAT(NOW(), ' - Received $BPAmt ".bonusPoints." for uploading a torrent $TorrentID\n\n', AdminComment)
         WHERE UserID = ?", $user['ID']);
 
     $cache->delete_value('user_info_heavy_'.$user['ID']);

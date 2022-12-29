@@ -21,7 +21,7 @@ if ($user['DisablePoints']) {
 <div>
     <h2>Denied</h2>
     <div class="box">
-        <p>You are not allowed to spend <?=BONUS_POINTS?>.</p>
+        <p>You are not allowed to spend <?=bonusPoints?>.</p>
     </div>
 </div>
 <?php

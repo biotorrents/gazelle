@@ -288,8 +288,8 @@ ENV::setPub("STARTING_UPLOAD", 5368709120);
 ENV::setPub("DONOR_INVITES", 2);
 
 # Bonus Points
-define("BONUS_POINTS", "Bonus Points");
-ENV::setPub("BONUS_POINTS", "Bonus Points");
+define("bonusPoints", "Bonus Points");
+ENV::setPub("bonusPoints", "Bonus Points");
 
 ENV::setPub("BP_COEFF", 1.5); # OT default 0.5
 
@@ -311,18 +311,18 @@ $defaultSiteOptions = [
     "disableAvatars" => false,
     "disableGrouping" => false,
     "listUnreadsFirst" => true,
+    "recentCollages" => true,
+    "recentRequests" => true,
+    "recentSnatches" => true,
+    "recentUploads" => true,
     "searchType" => "simple",
+    "showSnatched" => true,
     "showTagFilter" => true,
     "showTorrentFilter" => true,
-    "showSnatched" => true,
     "styleId" => 1,
     "styleUri" => "",
     "torrentGrouping" => "open",
     "unseededAlerts" => true,
-    "recentSnatches" => true,
-    "recentUploads" => true,
-    "recentCollages" => true,
-    "recentRequests" => true,
 ];
 
 ENV::setPub("defaultSiteOptions", json_encode($defaultSiteOptions));

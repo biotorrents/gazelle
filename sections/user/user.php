@@ -1,5 +1,6 @@
 <?php
-#declare(strict_types = 1);
+
+declare(strict_types=1);
 
 
 /**
@@ -7,7 +8,6 @@
  */
 
 $app = App::go();
-#!d($app->userNew);exit;
 
 # https://github.com/paragonie/anti-csrf
 Http::csrf();
@@ -19,11 +19,8 @@ $post = Http::query("post");
 $get["id"] ??= null;
 $userId = Esc::int($get["id"]);
 
-$get["previewParanoia"] ??= null;
-$previewParanoia = Esc::bool($get["previewParanoia"]);
-
-$get["paranoiaSettings"] ??= null;
-$paranoiaSettings = Esc::string($get["paranoiaSettings"]);
+$get["previewMode"] ??= null;
+$previewMode = Esc::bool($get["previewMode"]);
 
 # user data
 $data = $app->userNew->readProfile($userId);
@@ -35,14 +32,10 @@ if ($userId === $app->userNew->core["id"]) {
     $isOwnProfile = true;
 }
 
-/*
-# preview paranoia
-$previewParanoia = false;
-if ($isOwnProfile && $previewParanoia === true) {
+# preview mode
+if ($isOwnProfile && $previewMode) {
     $isOwnProfile = false;
-    $customParanoia = explode(",", $paranoiaSettings);
 }
-*/
 
 # is the user your friend?
 $query = "select 1 from users_friends where userId = ? and friendId = ?";
@@ -56,9 +49,14 @@ if ($good) {
 # avatar = the last airbender
 $avatar = User::displayAvatar($data["extra"]["Avatar"], $data["core"]["username"]);
 
-$badges = array_keys(Badges::getBadges($userId));
-$badgesDisplay = Badges::displayBadges($badges, true);
-#!d($badges, $badgesDisplay);exit;
+# badges
+if ($isOwnProfile) {
+    $badges = Badges::getBadges($userId);
+    $badgesDisplay = Badges::displayBadges(array_keys($badges), true);
+} else {
+    $badges = Badges::getDisplayedBadges($userId);
+    $badgesDisplay = Badges::displayBadges($badges, true);
+}
 
 
 /** recent torrent activity */
@@ -77,12 +75,6 @@ $recentCollages = $app->userNew->recentCollages($userId);
 #!d($recentCollages);exit;
 
 
-
-
-
-
-
-
 /** twig template */
 
 
@@ -90,7 +82,7 @@ $app->twig->display("user/profile/profile.twig", [
   "sidebar" => true,
 
   #"css" => [""],
-  #"js" => ["user", "requests", "comments", "wall"],
+  "js" => ["user", "requests", "comments", "wall"],
 
   "data" => $data,
   "siteOptions" => $data["extra"]["siteOptions"],
@@ -98,8 +90,8 @@ $app->twig->display("user/profile/profile.twig", [
   #"error" => $error ?? null,
 
   "isOwnProfile" => $isOwnProfile,
+  "previewMode" => $previewMode,
   "isFriend" => $isFriend,
-  #"previewParanoia" => $previewParanoia,
   "avatar" => $avatar,
   "badges" => $badges,
   "badgesDisplay" => $badgesDisplay,
@@ -175,131 +167,10 @@ foreach ($Paranoia as $P) {
         $ParanoiaLevel++;
     }
 }
-
-$JoinedDate = time_diff($JoinDate);
-$LastAccess = time_diff($LastAccess);
-
-function check_paranoia_here($Setting)
-{
-    global $Paranoia, $Class, $userId, $previewParanoia;
-    if ($previewParanoia == 1) {
-        return check_paranoia($Setting, $Paranoia, $Class);
-    } else {
-        return check_paranoia($Setting, $Paranoia, $Class, $userId);
-    }
-}
-
-View::header(
-    $Username,
-    'user,requests,comments,wall'
-);
-
 ?>
-<div>
-  <div class="header">
-    <h2>
-      <?=User::format_username($userId, true, true, true, false, true)?>
-    </h2>
-  </div>
-
-  <div class="linkbox">
-    <?php
-if (!$isOwnProfile) {
-    ?>
-    <a href="inbox.php?action=compose&amp;to=<?=$userId?>"
-      class="brackets">Send message</a>
-    <?php
-  $db->query("
-    SELECT FriendID
-    FROM friends
-    WHERE UserID = '$user[ID]'
-      AND FriendID = '$userId'");
-    if (!$db->has_results()) {
-        ?>
-    <a href="friends.php?action=add&amp;friendid=<?=$userId?>&amp;auth=<?=$user['AuthKey']?>"
-      class="brackets">Add to friends</a>
-    <?php
-    } ?>
-    <a href="reports.php?action=report&amp;type=user&amp;id=<?=$userId?>"
-      class="brackets">Report user</a>
-    <?php
-}
-
-if (check_perms('users_edit_profiles', $Class) || $user['ID'] == $userId) {
-    ?>
-    <a href="user.php?action=edit&amp;userid=<?=$userId?>"
-      class="brackets">Settings</a>
-    <?php
-}
-if (check_perms('users_view_invites', $Class)) {
-    ?>
-    <a href="user.php?action=invite&amp;userid=<?=$userId?>"
-      class="brackets">Invites</a>
-    <?php
-}
-if (check_perms('admin_manage_permissions', $Class)) {
-    ?>
-    <a href="user.php?action=permissions&amp;userid=<?=$userId?>"
-      class="brackets">Permissions</a>
-    <?php
-}
-if ($user['ID'] == $userId || check_perms('users_view_ips', $Class)) {
-    ?>
-    <a href="user.php?action=sessions&amp;userid=<?=$userId?>"
-      class="brackets">Sessions</a>
-    <?php
-}
-if (check_perms('admin_reports')) {
-    ?>
-    <a href="reportsv2.php?view=reporter&amp;id=<?=$userId?>"
-      class="brackets">Reports</a>
-    <?php
-}
-if (check_perms('users_mod')) {
-    ?>
-    <a href="userhistory.php?action=token_history&amp;userid=<?=$userId?>"
-      class="brackets">FL tokens</a>
-    <?php
-}
-if (check_perms('admin_clear_cache') && check_perms('users_override_paranoia')) {
-    ?>
-    <a href="user.php?action=clearcache&amp;id=<?=$userId?>"
-      class="brackets">Clear cache</a>
-    <?php
-}
-if (check_perms('users_mod')) {
-    ?>
-    <a href="#staff_tools" class="brackets">Jump to staff tools</a>
-    <?php
-}
-?>
-  </div>
-
   <div class="sidebar one-third column">
-    <?php
-if ($Avatar && User::hasAvatarsEnabled()) {
-    ?>
-    <div class="box box_image box_image_avatar">
-      <div class="head colhead_dark">User</div>
-      <div class="avatar" align="center">
-        <?=       User::displayAvatar($Avatar, $Username)?>
-      </div>
-    </div>
-    <?php
-}
-    $Badges = array_keys(Badges::getBadges($userId));
-if (!empty($Badges)) { ?>
-    <div class="box">
-      <div class="head colhead_dark">Badges</div>
-      <div class="pad">
-        <?=Badges::displayBadges($Badges, true)?>
-      </div>
-    </div>
-    <?php
-}
-if (!$isOwnProfile && !$user['DisablePoints']) { ?>
     <div class="box point_gift_box">
-      <div class="head colhead_dark">Send <?=BONUS_POINTS?>
+      <div class="head colhead_dark">Send <?=bonusPoints?>
       </div>
       <div class="pad">
         <form action="user.php" method="post">
@@ -315,7 +186,6 @@ if (!$isOwnProfile && !$user['DisablePoints']) { ?>
         <p>Note: 10% of your gift is taken as tax.</p>
       </div>
     </div>
-    <?php } ?>
 
     <div class="box box_info box_userinfo_stats">
       <div class="head colhead_dark">Statistics</div>
@@ -1268,7 +1138,7 @@ if (check_perms('users_mod', $Class)) { ?>
         </td>
       </tr>
       <tr>
-        <td class="label"><?=BONUS_POINTS?>:</td>
+        <td class="label"><?=bonusPoints?>:</td>
         <td>
           <input type="text" size="20" name="BonusPoints"
             value="<?=$BonusPoints?>" />
@@ -1300,11 +1170,11 @@ if (!$DisablePoints) {
     }
 
     $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints/1440)), 0));
-    $PointsPerHour = Text::float($PointsRate)." ".BONUS_POINTS."/hour";
-    $PointsPerDay = Text::float($PointsRate*24)." ".BONUS_POINTS."/day";
+    $PointsPerHour = Text::float($PointsRate)." ".bonusPoints."/hour";
+    $PointsPerDay = Text::float($PointsRate*24)." ".bonusPoints."/day";
 } else {
-    $PointsPerHour = "0 ".BONUS_POINTS."/hour";
-    $PointsPerDay = BONUS_POINTS." disabled";
+    $PointsPerHour = "0 ".bonusPoints."/hour";
+    $PointsPerDay = bonusPoints." disabled";
 } ?>
           <?=$PointsPerHour?> (<?=$PointsPerDay?>)
         </td>
@@ -1533,7 +1403,7 @@ if (!$DisablePoints) {
             upload</label> |
           <input type="checkbox" name="DisablePoints" id="DisablePoints" <?php if ($DisablePoints==1) { ?>
           checked="checked"
-          <?php } ?> /> <label for="DisablePoints"><?=BONUS_POINTS?></label>
+          <?php } ?> /> <label for="DisablePoints"><?=bonusPoints?></label>
           <br /><br />
 
           <input type="checkbox" name="DisableTagging" id="DisableTagging" <?php if ($DisableTagging==1) { ?>

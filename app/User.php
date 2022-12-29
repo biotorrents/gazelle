@@ -986,11 +986,11 @@ class User
         # nested but much easier to read
         $publicKey = Esc::string($publicKey);
         if (!empty($publicKey)) {
-            if (str_starts_with($publicKey, "-----BEGIN PGP PUBLIC KEY BLOCK-----")) {
+            if (!str_starts_with($publicKey, "-----BEGIN PGP PUBLIC KEY BLOCK-----")) {
                 throw new Exception("invalid pgp key format");
             }
 
-            if (str_ends_with($publicKey, "-----END PGP PUBLIC KEY BLOCK-----")) {
+            if (!str_ends_with($publicKey, "-----END PGP PUBLIC KEY BLOCK-----")) {
                 throw new Exception("invalid pgp key format");
             }
         }
@@ -1343,7 +1343,7 @@ class User
 
 
             # publicKey
-            $publicKey = Esc::string($data["profileContent"]);
+            $publicKey = Esc::string($data["publicKey"]);
             $this->updatePGP($publicKey);
 
 
@@ -1404,18 +1404,18 @@ class User
                 "disableAvatars" => Esc::bool($data["disableAvatars"] ?? null),
                 "disableGrouping" => Esc::bool($data["disableGrouping"] ?? null),
                 "listUnreadsFirst" => Esc::bool($data["listUnreadsFirst"] ?? null),
+                "recentCollages" => Esc::bool($data["recentCollages"] ?? null),
+                "recentRequests" => Esc::bool($data["recentRequests"] ?? null),
+                "recentSnatches" => Esc::bool($data["recentSnatches"] ?? null),
+                "recentUploads" => Esc::bool($data["recentUploads"] ?? null),
                 "searchType" => Esc::string($data["searchType"] ?? null),
+                "showSnatched" => Esc::bool($data["showSnatched"] ?? null),
                 "showTagFilter" => Esc::bool($data["showTagFilter"] ?? null),
                 "showTorrentFilter" => Esc::bool($data["showTorrentFilter"] ?? null),
-                "showSnatched" => Esc::bool($data["showSnatched"] ?? null),
                 "styleId" => Esc::int($data["styleId"] ?? null),
                 "styleUri" => Esc::url($data["styleUri"] ?? null),
                 "torrentGrouping" => Esc::string($data["torrentGrouping"] ?? null),
                 "unseededAlerts" => Esc::bool($data["unseededAlerts"] ?? null),
-                "recentSnatches" => Esc::bool($data["recentSnatches"] ?? null),
-                "recentUploads" => Esc::bool($data["recentUploads"] ?? null),
-                "recentCollages" => Esc::bool($data["recentCollages"] ?? null),
-                "recentRequests" => Esc::bool($data["recentRequests"] ?? null),
             ];
 
             $query = "update users_info set siteOptions = ? where userId = ?";
@@ -1425,7 +1425,6 @@ class User
             # commit the transaction
             $app->dbNew->commit();
         } catch (Exception $e) {
-            # failure
             $app->dbNew->rollback();
             throw new Exception($e->getMessage());
         }

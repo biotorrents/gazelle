@@ -30,7 +30,7 @@ if ($db->has_results()) {
         $Worked = true;
     } else {
         $Worked = false;
-        $ErrMessage = "Not enough ".BONUS_POINTS.".";
+        $ErrMessage = "Not enough ".bonusPoints.".";
     }
 }
 

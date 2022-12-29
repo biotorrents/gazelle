@@ -121,6 +121,7 @@ There's just a dev mode that spits everything out, and a prod mode that doesn't.
 - Laravel-inspired shell (`php shell`)
 - Dead simple PDO database wrapper, fully parameterized
 - Simple and fast Redis cache (WIP)
+- Polite copy; the site says "please" and "thank you"
 
 # Changelog: OT ← WCD
 

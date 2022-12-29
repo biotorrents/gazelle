@@ -9,7 +9,7 @@ $Message = $_POST['message'];
 $Tax = 0.1;
 
 if ($user['DisablePoints']) {
-    $Err = 'You are not allowed to send '.BONUS_POINTS.'.';
+    $Err = 'You are not allowed to send '.bonusPoints.'.';
 } else {
     if ($Adjust) {
         $Amount = $Amount/(1-$Tax);
@@ -20,11 +20,11 @@ if ($user['DisablePoints']) {
     $Amount = (int) $Amount;
 
     if ($UserID == $To) {
-        $Err = 'If you sent '.BONUS_POINTS.' to yourself it wouldn\'t even do anything. Stop that.';
+        $Err = 'If you sent '.bonusPoints.' to yourself it wouldn\'t even do anything. Stop that.';
     } elseif ($Amount < 0) {
-        $Err = 'You can\'t send a negative amount of '.BONUS_POINTS.'.';
+        $Err = 'You can\'t send a negative amount of '.bonusPoints.'.';
     } elseif ($Amount < 100) {
-        $Err = 'You must send at least 100 '.BONUS_POINTS.'.';
+        $Err = 'You must send at least 100 '.bonusPoints.'.';
     } else {
         $db->query("
       SELECT ui.DisablePoints
@@ -36,7 +36,7 @@ if ($user['DisablePoints']) {
         } else {
             list($Disabled) = $db->next_record();
             if ($Disabled) {
-                $Err = "This user is not allowed to receive ".BONUS_POINTS.".";
+                $Err = "This user is not allowed to receive ".bonusPoints.".";
             } else {
                 $db->query("
           SELECT BonusPoints
@@ -46,7 +46,7 @@ if ($user['DisablePoints']) {
                     list($BP) = $db->next_record();
 
                     if ($BP < $Amount) {
-                        $Err = 'You don\'t have enough '.BONUS_POINTS.'.';
+                        $Err = 'You don\'t have enough '.bonusPoints.'.';
                     } else {
                         $db->query("
               UPDATE users_main
@@ -62,14 +62,14 @@ if ($user['DisablePoints']) {
 
                         $db->query("
               UPDATE users_info
-              SET AdminComment = CONCAT('".sqltime()." - Sent $Amount ".BONUS_POINTS." (".$SentAmount." after tax) to [user]".$ToInfo['Username']."[/user]\n\n', AdminComment)
+              SET AdminComment = CONCAT('".sqltime()." - Sent $Amount ".bonusPoints." (".$SentAmount." after tax) to [user]".$ToInfo['Username']."[/user]\n\n', AdminComment)
               WHERE UserID = $UserID");
                         $db->query("
               UPDATE users_info
-              SET AdminComment = CONCAT('".sqltime()." - Received ".$SentAmount." ".BONUS_POINTS." from [user]".$UserInfo['Username']."[/user]\n\n', AdminComment)
+              SET AdminComment = CONCAT('".sqltime()." - Received ".$SentAmount." ".bonusPoints." from [user]".$UserInfo['Username']."[/user]\n\n', AdminComment)
               WHERE UserID = $To");
 
-                        $PM = '[user]'.$UserInfo['Username'].'[/user] has sent you a gift of '.$SentAmount.' '.BONUS_POINTS.'!';
+                        $PM = '[user]'.$UserInfo['Username'].'[/user] has sent you a gift of '.$SentAmount.' '.bonusPoints.'!';
 
                         if (!empty($Message)) {
                             $PM .= "\n\n".'[quote='.$UserInfo['Username'].']'.$Message.'[/quote]';
@@ -90,12 +90,12 @@ if ($user['DisablePoints']) {
     }
 }
 
-View::header('Send '.BONUS_POINTS); ?>
+View::header('Send '.bonusPoints); ?>
 <div>
-  <h2 id='general'>Send <?=BONUS_POINTS?>
+  <h2 id='general'>Send <?=bonusPoints?>
   </h2>
   <div class='box pad' style='padding: 10px 10px 10px 20p;'>
-    <p><?=$Err ? 'Error: '.$Err : 'Sent '.$Amount.' '.BONUS_POINTS.' ('.$SentAmount.' after tax) to '.$ToInfo['Username'].'.'?>
+    <p><?=$Err ? 'Error: '.$Err : 'Sent '.$Amount.' '.bonusPoints.' ('.$SentAmount.' after tax) to '.$ToInfo['Username'].'.'?>
     </p>
     <p><a href='/user.php?id=<?=$To?>'>Return</a></p>
   </div>

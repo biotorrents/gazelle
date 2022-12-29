@@ -54,16 +54,16 @@ class Internal extends Base
         $post["code"] ??= null;
 
         if (empty($post["secret"]) || empty($post["code"])) {
-            $this->failure(400, "empty 2fa secret or code");
+            self::failure(400, "empty 2fa secret or code");
         }
 
         try {
             $app->userNew->create2FA($post["secret"], $post["code"]);
         } catch (\Exception $e) {
-            $this->failure(400, $e->getMessage());
+            self::failure(400, $e->getMessage());
         }
 
-        $this->success("successfully created a 2fa key");
+        self::success("successfully created a 2fa key");
     }
 
 
@@ -82,16 +82,16 @@ class Internal extends Base
         $post["code"] ??= null;
 
         if (empty($post["secret"]) || empty($post["code"])) {
-            $this->failure(400, "empty 2fa secret or code");
+            self::failure(400, "empty 2fa secret or code");
         }
 
         try {
             $app->userNew->delete2FA($post["secret"], $post["code"]);
         } catch (\Exception $e) {
-            $this->failure(400, $e->getMessage());
+            self::failure(400, $e->getMessage());
         }
 
-        $this->success("successfully deleted a 2fa key");
+        self::success("successfully deleted a 2fa key");
     }
 
 

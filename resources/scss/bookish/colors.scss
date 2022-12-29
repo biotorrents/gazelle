@@ -56,6 +56,10 @@ input[type="file"] {
     @include alertbar(silver);
   }
 
+  &.info {
+    @include alertbar(green);
+  }
+
   &.warning {
     @include alertbar(orange);
   }
