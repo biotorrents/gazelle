@@ -318,29 +318,31 @@ HTML;
 
 
         {# displayed badges #}
-        {#
-        <tr id="comm_badge_tr">
+        <tr>
           <th>Displayed badges</th>
 
-          <td>
-            <?php
-            $Badges = Badges::get_badges($UserID);
-    if (empty($Badges)) {
-        ?><span>You have no badges :(</span><?php
-    } else {
-        $Count = 0;
-        foreach ($Badges as $BadgeID => $Displayed) { ?>
-            <input type="checkbox" name="badges[]" class="badge_checkbox"
-              value="<?=$BadgeID?>" <?=($Displayed) ? "checked " : ""?>/>
-            <?=Badges::display_badge($BadgeID, true)?>
-            <?php
-        $Count++;
-            echo ($Count % 8) ? '' : '<br>';
-        }
-    } ?>
+          <td class="badgesFlex">
+          {# no badges #}
+          {% if badges is empty %}
+          You have no badges. :(
+
+            {# yes badges #}
+            {% else %}
+
+
+            {% for badgeId, displayed in badges %}
+
+<span class="flexItem">
+            <input type="checkbox" name="badges[]" value="{{ badgeId }}" {{ (displayed) ? "checked" : "" }} />
+            &nbsp;
+            <label>{{ displayBadge(badgeId) }}</label>
+</span>
+
+            {% endfor %}
+
+            {% endif %}
           </td>
         </tr>
-        #}
       </table> {# communitySettings #}
 
 
@@ -386,7 +388,7 @@ HTML;
 
         {# avatar uri #}
         <tr>
-          <th>Avatar URL</th>
+          <th>Avatar URI</th>
 
           <td>
             <input type="text" id="avatar" name="avatar" placeholder="e.g., https://i.imgur.com/wJgDWzd.png" value="{{ user.extra.Avatar }}" />

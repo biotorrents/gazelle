@@ -93,15 +93,19 @@
   {# end results table headings #}
 
 {# start printing torrent list #}
+<pre>
+{{ dump(searchResults)}}
+</pre>
 {% for key, value in searchResults %}
+{#}
   foreach ($Results as $Key => $GroupID) {
 
-        {% set groupInfo = resultGroups.value %}
+        {% set groupInfo = resultGroups.key %}
       $GroupInfo = $Groups[$GroupID] ?? [];
 
       {% if groupInfo.Torrents is empty %}
-      {# todo: continue #}
-      {% endif %}
+      {# todo: continue # }
+      {% endif %} # }
       if (empty($GroupInfo['Torrents'])) {
           continue;
       }
@@ -119,7 +123,7 @@
       $GroupNameJP = $GroupInfo['object'];
       #}
 
-      {# use torrent groups #}
+      {# use torrent groups # }
       {% if groupResults %}
       if ($GroupResults) {
           $Torrents = $GroupInfo['Torrents'];
@@ -133,14 +137,14 @@
           }
       }
 
-      {# don't use torrent groups #}
+      {# don't use torrent groups # }
       {% else %}
       
       else {
           $TorrentID = $Key;
           $Torrents = [$TorrentID => $GroupInfo['Torrents'][$TorrentID]];
       }
-      {% endif %} {# if groupResults #}
+      {% endif %} {# if groupResults # }
 
       $TorrentTags = new Tags($GroupInfo['tag_list']);
 
@@ -424,6 +428,7 @@
   <?php
       }
   }
+  #}
   {% endfor %} {# for key, value in searchResults #}
 ?>
 </table>

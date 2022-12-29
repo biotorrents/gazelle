@@ -187,6 +187,14 @@ class Twig # extends Twig\Environment
             return Format::relativeTime($time);
         }));
 
+        # Badges::displayBadge
+        $twig->addFunction(new Twig\TwigFunction("displayBadge", function ($badgeId) {
+            return new Twig\Markup(
+                Badges::displayBadge($badgeId),
+                "UTF-8"
+            );
+        }));
+
         # Format::breadcrumbs
         $twig->addFunction(new Twig\TwigFunction("breadcrumbs", function () {
             return Format::breadcrumbs();

@@ -21,9 +21,9 @@ if (!$BadgeID) {
     $Err = 'No badge specified';
 } elseif (!in_array($BadgeID, $ShopBadgeIDs)) {
     $Err = 'Invalid badge ID';
-} elseif (Badges::has_badge($UserID, $BadgeID)) {
+} elseif (Badges::hasBadge($UserID, $BadgeID)) {
     $Err = 'You already have this badge';
-} elseif ((int) $BadgeID !== $ShopBadgeIDs[0] && !Badges::has_badge($UserID, $ShopBadgeIDs[array_search($BadgeID, $ShopBadgeIDs)-1])) {
+} elseif ((int) $BadgeID !== $ShopBadgeIDs[0] && !Badges::hasBadge($UserID, $ShopBadgeIDs[array_search($BadgeID, $ShopBadgeIDs)-1])) {
     $Err = "You haven't purchased the badges before this one!";
 }
 
@@ -39,7 +39,7 @@ if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
             $BP = (int) $BP;
 
             if ($BP >= $Prices[$BadgeID]) {
-                if (!Badges::award_badge($UserID, $BadgeID)) {
+                if (!Badges::awardBadge($UserID, $BadgeID)) {
                     $Err = 'Could not award badge, unknown error occurred.';
                 } else {
                     $db->prepared_query("

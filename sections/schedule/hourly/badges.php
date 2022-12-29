@@ -17,7 +17,7 @@ foreach ($ENV->AUTOMATED_BADGE_IDS->DL as $DL => $Badge) {
     if ($db->has_results()) {
         $IDs = $db->collect('ID');
         foreach ($IDs as $ID) {
-            if (Badges::award_badge($ID, $Badge)) {
+            if (Badges::awardBadge($ID, $Badge)) {
                 Misc::send_pm($ID, 0, 'You have received a badge!', "You have received a badge for downloading ".$DL."GiB of data.\n\nIt can be enabled from your user settings.");
             }
         }
@@ -36,7 +36,7 @@ foreach ($ENV->AUTOMATED_BADGE_IDS->UL as $UL => $Badge) {
     if ($db->has_results()) {
         $IDs = $db->collect('ID');
         foreach ($IDs as $ID) {
-            if (Badges::award_badge($ID, $Badge)) {
+            if (Badges::awardBadge($ID, $Badge)) {
                 Misc::send_pm($ID, 0, 'You have received a badge!', "You have received a badge for uploading ".$UL."GiB of data.\n\nIt can be enabled from your user settings.");
             }
         }
@@ -57,7 +57,7 @@ foreach ($ENV->AUTOMATED_BADGE_IDS->Tags as $Tag => $Badge) {
     if ($db->has_results()) {
         $IDs = $db->collect('uid');
         foreach ($IDs as $ID) {
-            if (Badges::award_badge($ID, $Badge)) {
+            if (Badges::awardBadge($ID, $Badge)) {
                 Misc::send_pm($ID, 0, 'You have recieved a badge!', "You have received a badge for mysterious reasons.\n\nIt can be enabled from your user settings.");
             }
         }

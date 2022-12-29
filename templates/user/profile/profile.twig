@@ -1014,15 +1014,15 @@ if (!$DisablePoints) {
         <td class="label">Badges Owned:</td>
         <td>
           <?php
-    $AllBadges = Badges::get_all_badges();
+    $AllBadges = Badges::getAllBadges();
         $UserBadgeIDs = [];
-        foreach (array_keys(Badges::get_badges($UserID)) as $b) {
+        foreach (array_keys(Badges::getBadges($UserID)) as $b) {
             $UserBadgeIDs[] = $b;
         }
         $i = 0;
         foreach (array_keys($AllBadges) as $BadgeID) {
             ?><input type="checkbox" name="badges[]" class="badge_checkbox"
-            value="<?=$BadgeID?>" <?=(in_array($BadgeID, $UserBadgeIDs)) ? " checked" : ""?>/><?=Badges::display_badge($BadgeID, true)?>
+            value="<?=$BadgeID?>" <?=(in_array($BadgeID, $UserBadgeIDs)) ? " checked" : ""?>/><?=Badges::displayBadge($BadgeID, true)?>
           <?php $i++;
             if ($i % 8 == 0) {
                 echo "<br />";

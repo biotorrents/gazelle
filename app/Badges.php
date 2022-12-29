@@ -10,14 +10,14 @@ declare(strict_types=1);
 class Badges
 {
     /**
-     * get_badges
+     * getBadges
      *
      * Given a userId, returns that user's badges.
      *
      * @param int $userId
      * @return array of badgeId's
      */
-    public static function get_badges(int $userId): array
+    public static function getBadges(int $userId): array
     {
         $app = App::go();
 
@@ -35,7 +35,7 @@ class Badges
 
 
     /**
-     * award_badge
+     * awardBadge
      *
      * Awards a userId a badgeId.
      *
@@ -43,11 +43,11 @@ class Badges
      * @param int $badgeId
      * @return bool success?
      */
-    public static function award_badge(int $userId, int $badgeId): bool
+    public static function awardBadge(int $userId, int $badgeId): bool
     {
         $app = App::go();
 
-        if (self::has_badge($userId, $badgeId)) {
+        if (self::hasBadge($userId, $badgeId)) {
             return false;
         }
 
@@ -59,17 +59,17 @@ class Badges
 
 
     /**
-     * get_displayed_badges
+     * getDisplayedBadges
      *
      * Given a userId, return that user's displayed badges.
      *
      * @param int $userId
      * @return array of badgeId's
      */
-    public static function get_displayed_badges(int $userId): array
+    public static function getDisplayedBadges(int $userId): array
     {
         $data = [];
-        $badges = self::get_badges($userId);
+        $badges = self::getBadges($userId);
 
         foreach ($badges as $id => $displayed) {
             if ($displayed) {
@@ -82,7 +82,7 @@ class Badges
 
 
     /**
-     * has_badge
+     * hasBadge
      *
      * Returns true if a user owns a badge.
      *
@@ -90,16 +90,16 @@ class Badges
      * @param int $badgeId
      * @return bool
      */
-    public static function has_badge(int $userId, int $badgeId): bool
+    public static function hasBadge(int $userId, int $badgeId): bool
     {
-        $badges = self::get_badges($userId);
+        $badges = self::getBadges($userId);
 
         return array_key_exists($badgeId, $badges);
     }
 
 
     /**
-     * display_badge
+     * displayBadge
      *
      * Creates HTML for displaying a badge.
      *
@@ -107,7 +107,7 @@ class Badges
      * @param bool $tooltip should the html contain a tooltip?
      * @return string html
      */
-    public static function display_badge(int $badgeId, bool $tooltip = true): string
+    public static function displayBadge(int $badgeId, bool $tooltip = true): string
     {
         $app = App::go();
 
@@ -125,16 +125,16 @@ class Badges
 
 
     /**
-     * display_badges
+     * displayBadges
      *
      * This should be a flexbox but idgaf.
      */
-    public static function display_badges(array $badgeIds, $tooltip = false): string
+    public static function displayBadges(array $badgeIds, $tooltip = false): string
     {
         $data = [];
 
         foreach ($badgeIds as $badgeId) {
-            $data[] = self::display_badge($badgeId, $tooltip);
+            $data[] = self::displayBadge($badgeId, $tooltip);
         }
 
         return implode("&emsp;", $data);
@@ -142,9 +142,9 @@ class Badges
 
 
     /**
-     * get_all_badges
+     * getAllBadges
      */
-    public static function get_all_badges(): array
+    public static function getAllBadges(): array
     {
         $app = App::go();
 

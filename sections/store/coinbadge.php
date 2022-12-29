@@ -23,7 +23,7 @@ View::header('Store');
   <?php
   if (isset($_GET['confirm'])
    && $_GET['confirm'] === 1
-   && !Badges::has_badge($UserID, 255)) {
+   && !Badges::hasBadge($UserID, 255)) {
       $db->prepared_query("
       SELECT BonusPoints
       FROM users_main
@@ -31,7 +31,7 @@ View::header('Store');
 
       list($Points) = $db->has_results() ? $db->next_record() : [0];
       if ($Points > $Price) {
-          if (!Badges::award_badge($UserID, 255)) {
+          if (!Badges::awardBadge($UserID, 255)) {
               $Err = 'Could not award badge, unknown error occurred.';
           } else {
               $db->prepared_query("
@@ -87,7 +87,7 @@ View::header('Store');
   <?php } ?>
   <?php
   } else {
-      if (Badges::has_badge($UserID, 255)) {
+      if (Badges::hasBadge($UserID, 255)) {
           ?>
   <h2>Oppaicoin Status</h2>
   <?php
@@ -101,7 +101,7 @@ View::header('Store');
     </p>
     <p>Current cost: <?=Text::float($Price)?> <?=BONUS_POINTS?>
     </p>
-    <?php if (Badges::has_badge($UserID, 255)) { ?>
+    <?php if (Badges::hasBadge($UserID, 255)) { ?>
     <p>You already own this badge</p>
     <?php } else { ?>
 

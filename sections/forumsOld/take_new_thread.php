@@ -129,7 +129,7 @@ $db->query("
 list($UserPosts) = $db->next_record(MYSQLI_NUM, false);
 foreach ($ENV->AUTOMATED_BADGE_IDS->Posts as $Count => $Badge) {
     if ((int) $UserPosts >= $Count) {
-        $Success = Badges::award_badge($user['ID'], $Badge);
+        $Success = Badges::awardBadge($user['ID'], $Badge);
         if ($Success) {
             Misc::send_pm($user['ID'], 0, 'You have received a badge!', "You have received a badge for making ".$Count." forum posts.\n\nIt can be enabled from your user settings.");
         }

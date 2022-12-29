@@ -716,7 +716,7 @@ class User
         }
 
         if ($Badges) {
-            $Str .= Badges::display_badges(Badges::get_displayed_badges($UserID), true);
+            $Str .= Badges::displayBadges(Badges::getDisplayedBadges($UserID), true);
         }
 
         # Warned?

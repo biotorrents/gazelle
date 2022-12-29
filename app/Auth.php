@@ -706,8 +706,8 @@ If you need the custom user information only rarely, you may just retrieve it as
 
         $app->dbNew->do($query, $data);
 
-        Http::setCookie([ "sessionId" => $data["sessionId"] ]);
-        Http::setCookie([ "userId" => $userId ]);
+        Http::setCookie([ "sessionId" => $data["sessionId"] ], $expires);
+        Http::setCookie([ "userId" => $userId ], $expires);
     }
 
 

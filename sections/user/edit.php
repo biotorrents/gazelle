@@ -114,6 +114,8 @@ if ($post["u2fDelete"]) {
 
 /** stylesheets, paranoia, options */
 
+# badges
+$badges = Badges::getBadges($app->userNew->core["id"]);
 
 # get the stylesheets
 $query = "
@@ -131,6 +133,7 @@ $paranoia = $app->userNew->paranoia;
 # site options
 $siteOptions = $app->userNew->extra["siteOptions"];
 #!d($siteOptions);exit;
+
 
 /** legacy code */
 
@@ -182,6 +185,7 @@ $app->twig->display("user/settings/settings.twig", [
  "js" => ["user", "cssgallery", "preview_paranoia", "userSettings", "vendor/easymde.min"],
  "sidebar" => true,
 
+ "badges" => $badges,
  "stylesheets" => $stylesheets,
  "paranoia" => $paranoia,
  "siteOptions" => $siteOptions,

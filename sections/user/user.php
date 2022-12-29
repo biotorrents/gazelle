@@ -53,23 +53,12 @@ if ($good) {
     $isFriend = true;
 }
 
-
+# avatar = the last airbender
 $avatar = User::displayAvatar($data["extra"]["Avatar"], $data["core"]["username"]);
 
-$badges = array_keys(Badges::get_badges($userId));
-$badgesDisplay = Badges::display_badges($badges, true);
+$badges = array_keys(Badges::getBadges($userId));
+$badgesDisplay = Badges::displayBadges($badges, true);
 #!d($badges, $badgesDisplay);exit;
-
-if (!empty($Badges)) { ?>
-<div class="box">
-  <div class="head colhead_dark">Badges</div>
-  <div class="pad">
-    <?=Badges::display_badges($Badges, true)?>
-  </div>
-</div>
-<?php
-}
-
 
 
 /** recent torrent activity */
@@ -298,12 +287,12 @@ if ($Avatar && User::hasAvatarsEnabled()) {
     </div>
     <?php
 }
-    $Badges = array_keys(Badges::get_badges($userId));
+    $Badges = array_keys(Badges::getBadges($userId));
 if (!empty($Badges)) { ?>
     <div class="box">
       <div class="head colhead_dark">Badges</div>
       <div class="pad">
-        <?=Badges::display_badges($Badges, true)?>
+        <?=Badges::displayBadges($Badges, true)?>
       </div>
     </div>
     <?php
@@ -1395,15 +1384,15 @@ if (!$DisablePoints) {
         <td class="label">Badges Owned:</td>
         <td>
           <?php
-    $AllBadges = Badges::get_all_badges();
+    $AllBadges = Badges::getAllBadges();
         $UserBadgeIDs = [];
-        foreach (array_keys(Badges::get_badges($userId)) as $b) {
+        foreach (array_keys(Badges::getBadges($userId)) as $b) {
             $UserBadgeIDs[] = $b;
         }
         $i = 0;
         foreach (array_keys($AllBadges) as $BadgeID) {
             ?><input type="checkbox" name="badges[]" class="badge_checkbox"
-            value="<?=$BadgeID?>" <?=(in_array($BadgeID, $UserBadgeIDs)) ? " checked" : ""?>/><?=Badges::display_badge($BadgeID, true)?>
+            value="<?=$BadgeID?>" <?=(in_array($BadgeID, $UserBadgeIDs)) ? " checked" : ""?>/><?=Badges::displayBadge($BadgeID, true)?>
           <?php $i++;
             if ($i % 8 == 0) {
                 echo "<br />";

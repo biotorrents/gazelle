@@ -253,4 +253,14 @@ img {
 .userProfileAvatar {
   padding: 2rem;
   text-align: center;
+
+  figcaption {
+    margin-top: 1rem;
+  }
+}
+
+.badgesFlex {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 2rem;
 }

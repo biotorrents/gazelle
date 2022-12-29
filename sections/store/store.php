@@ -282,15 +282,15 @@ if ($db->has_results()) {
     foreach ($Badges as $ID => $Badge) { ?>
       <tr class="row">
         <?php
-        if (($ID === 0 || Badges::has_badge($user['ID'], $Badges[$ID-1]['BadgeID']))
-        && !Badges::has_badge($user['ID'], $Badge['BadgeID'])) {
+        if (($ID === 0 || Badges::hasBadge($user['ID'], $Badges[$ID-1]['BadgeID']))
+        && !Badges::hasBadge($user['ID'], $Badge['BadgeID'])) {
             $BadgeText = '<a href="store.php?item=badge&badge='.$Badge['BadgeID'].'">'.$Badge['Name'].'</a>';
         } else {
             $BadgeText = $Badge['Name'];
         } ?>
 
         <td class="nobr">
-          <?=Badges::display_badge($Badge['BadgeID'])?>
+          <?=Badges::displayBadge($Badge['BadgeID'])?>
           <span class="badge_name" style="margin-left: 10px;"><?=$BadgeText?></span>
         </td>
 
