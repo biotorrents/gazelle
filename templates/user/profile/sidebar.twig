@@ -1,178 +1,250 @@
 {# avatar #}
-{# <h3>Avatar</h3> #}
+<section class="userProfileSidebar">
+	<figure class="userProfileAvatar">
+		{{ avatar|raw }}
 
-<figure class="userProfileAvatar">
-{{ avatar|raw }}
-
-  <figcaption>{{ data.core.username }} joined {{ data.core.registered|relativeTime }}</figcaption>
-</figure>
-
-
-{% if badges is not empty %}
-<h3>Badges</h3>
-
-{{ badgesDisplay|raw }}
-{% endif %}
-
-
-<div id="userProfileSidebar">
-{# user profile actions #}
-<h3>Actions</h3>
+		<figcaption>
+			{{ data.core.username }}
+			joined
+			{{ data.core.registered|relativeTime }}
+			and has a ratio of
+			{{ ratio(data.extra.Uploaded, data.extra.Downloaded) }}
+		</figcaption>
+	</figure>
+</section>
 
 
-{# your own profile #}
-{% if isOwnProfile %}
-<form>
+{# badges #}
+<section>
+	{% if badges is not empty %}
+		<h3>Badges</h3>
 
-{# edit settings #}
-<a href="/user/update/{{ userId }}" class="button button-primary">edit settings</a>
-
-{# preview as other #}
-<a href="/user/{{ userId }}/preview" class="button button-orange">preview profile</a>
-
-{# log out #}
-<a href="/logout" class="button button-red">log out</a>
-
-</form>
-{% endif %} {# if isOwnProfile #}
+		{{ badgesDisplay|raw }}
+	{% endif %}
+</section>
 
 
-{# someone else's profile #}
-{% if not isOwnProfile %}
-<form>
+<section
+	class="userProfileSidebar">
+	{# user profile actions #}
+	<h3>Actions</h3>
 
-{# send pm #}
-{# inbox.php?action=compose&to={{ userId }} #}
-<a href="/messages/compose/{{ userId }}" class="button button-primary">send message</a>
+	{# your own profile #}
+	{% if isOwnProfile %}
+		<form>
 
-{# add/remove from friends #}
-{# friends.php?action=add&friendid={{ userId }}&auth={{ user.extra.AuthKey }} #}
-{% if not isFriend %}
-<a href="/friends/create/{{ userId }}" class="button button-orange">add friend</a>
-{% else %}
-<a href="/friends/create/{{ userId }}" class="button button-orange">remove friend</a>
-{% endif %}
+			{# edit settings #}
+			<a href="/user/update/{{ userId }}" class="button button-primary">edit settings</a>
 
-{# snitches get stitches #}
-{# reports.php?action=report&type=user&id={{ userId }} #}
-<a href="/report/{{ userId }}" class="button button-red">report user</a>
+			{# preview as other #}
+			<a href="/user/{{ userId }}/preview" class="button button-orange">preview profile</a>
 
-<hr />
+			{# log out #}
+			<a href="/logout" class="button button-red">log out</a>
 
-{# gift bonus points #}
-<input type="number" id="giftBonusPointsAmount" placeholder="{{ env.bonusPoints }}" />
+		</form>
+	{% endif %}
+	{# if isOwnProfile #}
 
-<input type="text" id="giftBonusPointsMessage" placeholder="Enter an optional message" />
+	{# someone else's profile #}
+	{% if not isOwnProfile %}
+		<form>
 
-<label>
-	<input type="checkbox" id="giftBonusPointsAdjust" name="giftBonusPointsAdjust" value="true" />
-	Adjust your gift for 15% tax?
-</label>
+			{# send pm #}
+			{# inbox.php?action=compose&to={{ userId }} #}
+				<a href="/messages/compose/{{ userId }}" class="button button-primary"> send message</a>
 
-<a id="giftBonusPointsSubmit" class="button button-green">gift {{ env.bonusPoints }}</a>
+			{# add/remove from friends #}
+			{# friends.php?action=add&friendid={{ userId }}&auth={{ user.extra.AuthKey }} #}
+			{% if not isFriend %}
+				<a href="/friends/create/{{ userId }}" class="button button-orange">add friend</a>
+			{% else %}
+				<a href="/friends/create/{{ userId }}" class="button button-orange">remove friend</a>
+			{% endif %}
+			{# if not isFriend #}
 
-</form>
-{% endif %} {# if not isOwnProfile #}
+			{# snitches get stitches #}
+			{# reports.php?action=report&type=user&id={{ userId }} #}
+				<a href="/report/{{ userId }}" class="button button-red"> report user</a>
+
+			<hr/>
+
+			{# gift bonus points #}
+			<input type="number" id="giftBonusPointsAmount" placeholder="{{ env.bonusPoints }}"/>
+
+			<input type="text" id="giftBonusPointsMessage" placeholder="Enter an optional message"/>
+
+			<label>
+				<input type="checkbox" id="giftBonusPointsAdjust" name="giftBonusPointsAdjust" value="true"/>
+				Adjust your gift for 15% tax?
+			</label>
+
+			<a id="giftBonusPointsSubmit" class="button button-green">gift{{ env.bonusPoints }}</a>
+
+		</form>
+	{% endif %}
+	{# if not isOwnProfile #}
+</section>
 
 
 {# user stats #}
-{# todo: reimagine/simplify paranoia #}
+<section class="userProfileSidebar">
+	<h3>Percentile ranks</h3>
+
+	<p>Hover over the percentiles for the values.</p>
+
+	<table id="userProfilePercentiles">
+		<tr>
+			<th>Overall</th>
+			<td>
+				{{ percentileStats.overall|float }}
+			</td>
+		</tr>
+
+		<tr>
+			<th>Creators added</th>
+			<td title="{{ communityStats.creatorsAdded }}">
+				{{ percentileStats.creatorsAdded|float }}
+			</td>
+		</tr>
+
+		<tr>
+			<th>Downloaded</th>
+			<td title="{{ data.extra.Downloaded|get_size }}">
+				{{ percentileStats.downloaded|float }}
+			</td>
+		</tr>
+
+		<tr>
+			<th>Posts</th>
+			<td title="{{ communityStats.forumPosts|number_format }}">
+				{{ percentileStats.posts|float }}
+			</td>
+		</tr>
+
+		<tr>
+			<th>Requests filled</th>
+			<td title="{{ requestStats.requestsFilledCount|number_format }}">
+				{{ percentileStats.requestsFilled|float }}
+			</td>
+		</tr>
+
+		<tr>
+			<th>Requests voted</th>
+			<td title="{{ requestStats.requestsVotedBounty|get_size }}">
+				{{ percentileStats.requestsVoted|float }}
+			</td>
+		</tr>
+
+		<tr>
+			<th>Uploaded</th>
+			<td title="{{ data.extra.Uploaded|get_size }}">
+				{{ percentileStats.uploaded|float }}
+			</td>
+		</tr>
+
+		<tr>
+			<th>Uploads</th>
+			<td title="{{ torrentStats.uploadCount|number_format }}">
+				{{ percentileStats.uploads|float }}
+			</td>
+		</tr>
+	</table>
+</section>
 
 
+<section>
+	<h3>Requests</h3>
+
+	<table id="userProfileRequests">
+		<tr>
+			<th>Created</th>
+			<td>
+				{{ requestStats.requestsCreatedCount }}
+				for
+				{{ requestStats.requestsCreatedBounty|get_size }}
+			</td>
+		</tr>
+
+		<tr>
+			<th>Filled</th>
+			<td>
+				{{ requestStats.requestsFilledCount }}
+				for
+				{{ requestStats.requestsFilledBounty|get_size }}
+			</td>
+		</tr>
+
+		<tr>
+			<th>Voted on</th>
+			<td>
+				{{ requestStats.requestsVotedCount }}
+				for
+				{{ requestStats.requestsVotedBounty|get_size }}
+			</td>
+		</tr>
+	</table>
+</section>
 
 
-{# moderator actions #}
-{% if can("users_mod") %}
-<h3>Moderate</h3>
+<section
+	class="userProfileSidebar">
+	{# moderator actions #}
+	{% if can("users_mod") %}
+		<h3>Moderate</h3>
 
-<p>Most of this is actually bullshit.</p>
+		<p>Most of this is actually bullshit.</p>
 
-<form>
+		<form>
 
-{# go to staff tools #}
-{% if can("users_mod") %}
-<a href="#staffTools" class="button">staff tools</a>
-{% endif %}
+			{# go to staff tools #}
+			{% if can("users_mod") %}
+				<a href="#staffTools" class="button">staff tools</a>
+			{% endif %}
 
-{# update settings #}
-{# user.php?action=edit&userid={{ userId }} #}
-{% if can("users_edit_profiles") %}
-<a href="/user/edit/{{ userId }}" class="button">user settings</a>
-{% endif %}
+			{# update settings #}
+			{# user.php?action=edit&userid={{ userId }} #}
+			{% if can("users_edit_profiles") %}
+				<a href="/user/edit/{{ userId }}" class="button">user settings</a>
+			{% endif %}
 
-{# read invites #}
-{# user.php?action=invite&userid={{ userId }} #}
-{% if can("users_view_invites") %}
-<a href="/user/invites/{{ userId }}" class="button">invites</a>
-{% endif %}
+			{# read invites #}
+			{# user.php?action=invite&userid={{ userId }} #}
+			{% if can("users_view_invites") %}
+				<a href="/user/invites/{{ userId }}" class="button">invites</a>
+			{% endif %}
 
-{# update permissions #}
-{# user.php?action=permissions&userid={{ userId }} #}
-{% if can("admin_manage_permissions") %}
-<a href="/user/permissions/{{ userId }}" class="button">permissions</a>
-{% endif %}
+			{# update permissions #}
+			{# user.php?action=permissions&userid={{ userId }} #}
+			{% if can("admin_manage_permissions") %}
+				<a href="/user/permissions/{{ userId }}" class="button">permissions</a>
+			{% endif %}
 
-{# read sessions #}
-{# user.php?action=sessions&userid={{ userId }} #}
-{% if can("users_view_ips") %}
-<a href="/user/sessions/{{ userId }}" class="button">sessions</a>
-{% endif %}
+			{# read sessions #}
+			{# user.php?action=sessions&userid={{ userId }} #}
+			{% if can("users_view_ips") %}
+				<a href="/user/sessions/{{ userId }}" class="button">sessions</a>
+			{% endif %}
 
-{# read reports #}
-{# reportsv2.php?view=reporter&id={{ userId }} #}
-{% if can("admin_reports") %}
-<a href="/user/reports/{{ userId }}" class="button">reports</a>
-{% endif %}
+			{# read reports #}
+			{# reportsv2.php?view=reporter&id={{ userId }} #}
+			{% if can("admin_reports") %}
+				<a href="/user/reports/{{ userId }}" class="button">reports</a>
+			{% endif %}
 
-{# read freeleech token history #}
-{# userhistory.php?action=token_history&userid={{ userId }} #}
-{% if can("users_mod") %}
-<a href="/user/history/{{ userId }}" class="button">freeleech tokens</a>
-{% endif %}
+			{# read freeleech token history #}
+			{# userhistory.php?action=token_history&userid={{ userId }} #}
+			{% if can("users_mod") %}
+				<a href="/user/history/{{ userId }}" class="button">freeleech tokens</a>
+			{% endif %}
 
-{# clear cache #}
-{# user.php?action=clearcache&id={{ userId }} #}
-{% if can("admin_clear_cache") and can("users_override_paranoia") %}
-<a href="/user/clearCache/{{ userId }}" class="button">clear cache</a>
-{% endif %}
+			{# clear cache #}
+			{# user.php?action=clearcache&id={{ userId }} #}
+			{% if can("admin_clear_cache") and can("users_override_paranoia") %}
+				<a href="/user/clearCache/{{ userId }}" class="button">clear cache</a>
+			{% endif %}
 
-</form>
-{% endif %} {# if can("users_mod") #}
-
-
-</div> {# userProfileSidebar #}
-
-
-
-{#
-<form method="post">
-	<input type="text" form="userSettingsForm" id="currentPassphrase" name="currentPassphrase" placeholder="Please enter your current passphrase"/>
-
-	<label for="currentPassphrase">You must enter your current passphrase to change any user settings</label>
-
-	<input type="submit" form="userSettingsForm" id="save" name="save" value="save" class="button-primary"/>
-
-
-	<input type="button" id="previewParanoia" name="previewParanoia" value="preview paranoia" class="button-orange"/>
-
-</form>
-#}
-
-{# go to section #}
-{#
-<div id="userSettingsSidebar">
-	<h3>Go to section</h3>
-
-	<a href="#siteAppearanceSettings" class="button">site appearence</a>
-
-	<a href="#torrentSettings" class="button">torrents</a>
-
-	<a href="#communitySettings" class="button">community</a>
-
-	<a href="#notificationSettings" class="button">notifications</a>
-
-	<a href="#profileSettings" class="button">profile</a>
-
-	<a href="#securitySettings" class="button">security</a>
-</div>
-#}
+		</form>
+	{% endif %}
+	{# if can("users_mod") #}
+</section>

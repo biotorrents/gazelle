@@ -1823,7 +1823,7 @@ class User
         $cacheHit = $app->cacheOld->get_value($cacheKey);
 
         if ($cacheHit) {
-            return $cacheHit;
+            #return $cacheHit;
         }
 
         # get the user data
@@ -1867,6 +1867,16 @@ class User
         }
 
 
+        # forum posts
+        # userhistory.php?action=posts&userid={{ userId }}
+        $query = "select count(id) from forums_posts where authorId = ?";
+        $data["forumPosts"] = $app->dbNew->single($query, [$userId]) ?? 0;
+
+
+        # irc lines
+        $data["ircLines"] = $profile["extra"]["IRCLines"] ?? 0;
+
+
         # collages created
         # collages.php?userid={{ userId }}
         $query = "select count(id) from collages where deleted = 0 and userId = ?";
@@ -1881,16 +1891,6 @@ class User
             where deleted = 0 and collages_torrents.userId = ?
         ";
         $data["collageContributions"] = $app->dbNew->single($query, [$userId]) ?? 0;
-
-
-        # forum posts
-        # userhistory.php?action=posts&userid={{ userId }}
-        $query = "select count(id) from forums_posts where authorId = ?";
-        $data["forumPosts"] = $app->dbNew->single($query, [$userId]) ?? 0;
-
-
-        # irc lines
-        $data["ircLines"] = $profile["extra"]["IRCLines"] ?? 0;
 
 
         # requests: filled and the bounty
@@ -1936,12 +1936,17 @@ class User
         $data["referencesAdded"] = $app->dbNew->single($query, [$userId]) ?? 0;
 
 
+        # creators added
+        $query = "select count(artistId) from torrents_artists where userId = ?";
+        $data["creatorsAdded"] = $app->dbNew->single($query, [$userId]) ?? 0;
+
+
         # invited users
         $query = "select count(userId) from users_info where inviter = ?";
         $data["usersInvited"] = $app->dbNew->single($query, [$userId]) ?? 0;
 
 
-        asort($data);
+        #ksort($data);
 
         $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
         return $data;
@@ -1965,8 +1970,11 @@ class User
         $cacheHit = $app->cacheOld->get_value($cacheKey);
 
         if ($cacheHit) {
-            return $cacheHit;
+            #return $cacheHit;
         }
+
+        # get the user data
+        $profile = $this->readProfile($userId);
 
         # start the return data
         $data = [];
@@ -2040,7 +2048,86 @@ class User
         $data["uniqueDownloads"] = $row["count(distinct users_downloads.torrentId)"] ?? 0;
 
 
-        asort($data);
+        # ratio
+        if ($profile["extra"]["Downloaded"] === 0) {
+            $data["ratio"] = 1;
+        } else {
+            $data["ratio"] = round($profile["extra"]["Uploaded"] / $profile["extra"]["Downloaded"], 2);
+        }
+
+
+        #ksort($data);
+
+        $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
+        return $data;
+    }
+
+
+    /**
+     * percentileStats
+     *
+     * Gets a user's percentile rank.
+     *
+     * @param int $userId
+     * @return array
+     */
+    public function percentileStats(int $userId): array
+    {
+        $app = App::go();
+
+        $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
+
+        if ($cacheHit) {
+            #return $cacheHit;
+        }
+
+        # get the user data
+        $profile = $this->readProfile($userId);
+        $communityStats = $this->communityStats($userId);
+        $torrentStats = $this->torrentStats($userId);
+
+        # start the return data
+        $data = [];
+
+        # uploaded
+        $data["uploaded"] = UserRank::get_rank('uploaded', $profile["extra"]["Uploaded"]);
+
+        # downloaded
+        $data["downloaded"] = UserRank::get_rank('downloaded', $profile["extra"]["Downloaded"]);
+
+        # uploads
+        $data["uploads"] = UserRank::get_rank('uploads', $torrentStats["uploadCount"]);
+
+        # requestsFilled
+        $data["requestsFilled"] = UserRank::get_rank('requests', $communityStats["requestsFilledCount"]);
+
+        # posts
+        $data["posts"] = UserRank::get_rank('posts', $communityStats["forumPosts"]);
+
+        # requestsVoted
+        $data["requestsVoted"] = UserRank::get_rank('bounty', $communityStats["requestsVotedBounty"]);
+
+        # creatorsAdded
+        $data["creatorsAdded"] = UserRank::get_rank('artists', $communityStats["creatorsAdded"]);
+
+        # overall
+        $data["overall"] = UserRank::overall_score(
+            $data["uploaded"],
+            $data["downloaded"],
+            $data["uploads"],
+            $data["requestsFilled"],
+            $data["posts"],
+            $data["requestsVoted"],
+            $data["creatorsAdded"],
+            $torrentStats["ratio"]
+        );
+
+        foreach ($data as $key => $value) {
+            $data[$key] = floatval($value);
+        }
+
+        ksort($data);
 
         $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
         return $data;

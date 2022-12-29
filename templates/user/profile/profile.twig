@@ -2,9 +2,7 @@
 
 {% block content %}
 
-<div class="header">
-  <h2>Profile for {{ data.core.username }}</h2>
-</div>
+<h2>Profile for {{ data.core.username }}</h2>
 
 
 {# ratio watch: unblockable shaming notice #}
@@ -52,7 +50,7 @@
 <section id="recentSnatches" class="collage_images">
 
 {% for item in recentSnatches %}
-<div style="width: 120px;" class="collage_image">
+<div style="width: 20%;" class="collage_image">
   <a href="torrents/{{ item.id }}">
     <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%" />
   </a>
@@ -70,7 +68,7 @@
 <section id="recentRequests" class="collage_images">
 
 {% for item in recentRequests %}
-<div style="width: 120px;" class="collage_image">
+<div style="width: 20%;" class="collage_image">
   <a href="torrents/{{ item.id }}">
     <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%" />
   </a>
@@ -88,7 +86,7 @@
 <section id="recentUploads" class="collage_images">
 
 {% for item in recentUploads %}
-<div style="width: 120px;" class="collage_image">
+<div style="width: 33%;" class="collage_image">
   <a href="torrents/{{ item.id }}">
     <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%" />
   </a>
@@ -241,18 +239,12 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
 
 
 
-
-
-
-
 <h3>User stats</h3>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-{# user stats #}
+{# community stats #}
 <section>
-
-  {# community #}
   <canvas class="chart" id="communityStats"></canvas>
   <script>
     (() => {
@@ -297,7 +289,59 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
     })();
   </script>
 </section>
-<br /><br />
+
+
+{# torrent stats #}
+<section>
+  <canvas class="chart" id="torrentStats"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+  let torrentStatsCanvas = document.getElementById("torrentStats").getContext("2d");
+      let torrentStatsData = JSON.parse('{{ torrentStats|json_encode|raw }}');
+
+  let torrentStatsChart = new Chart(torrentStatsCanvas, {
+    type: "bar",
+    data: {
+      labels: Object.keys(torrentStatsData),
+      datasets: [
+        {
+          label: "Count",
+          data: Object.values(torrentStatsData),
+          // all shades 500: every other reverse
+          backgroundColor: [
+            "#607d8b" + 50,
+            "#795548" + 50,
+            "#ff9800" + 50,
+            "#ffeb3b" + 50,
+            "#8bc34a" + 50,
+            "#009688" + 50,
+            "#03a9f4" + 50,
+            "#3f51b5" + 50,
+            "#9c27b0" + 50,
+            "#f44336" + 50,
+          ],
+        },
+      ],
+    },
+
+    options: {
+      indexAxis: "y",
+
+      plugins: {
+        title: {
+          display: true,
+          text: "Torrents",
+        },
+      },
+    },
+  });
+
+
+    })();
+  </script>
+</section>
 
 
 
@@ -305,12 +349,12 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
 {#
 <section>
   <canvas class="chart" id="canvas"></canvas>
-  <script>
+<script>
     fetch('https://unpkg.com/world-atlas/countries-50m.json')
       .then((r) => r.json())
       .then((data) => {
         const countries = ChartGeo.topojson.feature(data, data.objects.countries).features;
-
+  
         const chart = new Chart(document.getElementById('canvas').getContext('2d'), {
           type: 'choropleth',
           data: {
@@ -341,13 +385,12 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
           },
         });
       });
-  </script>
+</script>
 </section>
 #}
 
 
 {% endblock %}
-
 
 {% block sidebar %}
 
@@ -367,31 +410,6 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
   <div class="sidebar one-third column">
 
 if (!$OwnProfile && !$user['DisablePoints']) { ?>
-    <div class="box point_gift_box">
-      <div class="head colhead_dark">Send <?=bonusPoints?>
-      </div>
-      <div class="pad">
-        <form action="user.php" method="post">
-          <input type="hidden" name="action" value="points">
-          <input type="hidden" name="to" value="<?=$UserID?>">
-          <div class="flex_input_container">
-            <input type="text" name="amount" placeholder="Amount">
-            <input type="submit" class="button-primary" value="Send">
-          </div>
-          <textarea name="message" rows="2" placeholder="Message"></textarea>
-          <label><input type="checkbox" name="adjust"> Adjust for tax?</label>
-        </form>
-        <p>Note: 10% of your gift is taken as tax.</p>
-      </div>
-    </div>
-    <?php } ?>
-
-    <div class="box box_info box_userinfo_stats">
-      <div class="head colhead_dark">Statistics</div>
-      <ul class="stats nobullet">
-        <li>Joined: <?=$JoinedDate?>
-        </li>
-        <?php if (($Override = check_paranoia_here('lastseen'))) { ?>
         <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Last
           seen: <?=$LastAccess?>
           </li>
@@ -414,13 +432,6 @@ if (!$OwnProfile && !$user['DisablePoints']) { ?>
             <?=Format::get_size($Downloaded)?>
           </li>
           <?php
-  }
-  if (($Override = check_paranoia_here('ratio'))) {
-      ?>
-          <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Ratio:
-            <?=Format::get_ratio_html($Uploaded, $Downloaded)?>
-            </li>
-            <?php
   }
   if (($Override = check_paranoia_here('requiredratio')) && isset($RequiredRatio)) {
       ?>
@@ -456,133 +467,12 @@ if (!$OwnProfile && !$user['DisablePoints']) { ?>
     </div>
     <?php
 
-if (check_paranoia_here('requestsfilled_count') || check_paranoia_here('requestsfilled_bounty')) {
-    $db->query("
-    SELECT
-      COUNT(DISTINCT r.ID),
-      SUM(rv.Bounty)
-    FROM requests AS r
-      LEFT JOIN requests_votes AS rv ON r.ID = rv.RequestID
-    WHERE r.FillerID = $UserID");
-    list($RequestsFilled, $TotalBounty) = $db->next_record();
-} else {
-    $RequestsFilled = $TotalBounty = 0;
-}
 
-if (check_paranoia_here('requestsvoted_count') || check_paranoia_here('requestsvoted_bounty')) {
-    $db->query("
-    SELECT COUNT(RequestID), SUM(Bounty)
-    FROM requests_votes
-    WHERE UserID = $UserID");
-    list($RequestsVoted, $TotalSpent) = $db->next_record();
-    $db->query("
-    SELECT COUNT(r.ID), SUM(rv.Bounty)
-    FROM requests AS r
-      LEFT JOIN requests_votes AS rv ON rv.RequestID = r.ID AND rv.UserID = r.UserID
-    WHERE r.UserID = $UserID");
-    list($RequestsCreated, $RequestsCreatedSpent) = $db->next_record();
-} else {
-    $RequestsVoted = $TotalSpent = $RequestsCreated = $RequestsCreatedSpent = 0;
-}
 
-if (check_paranoia_here('uploads+')) {
-    $db->query("
-    SELECT COUNT(ID)
-    FROM torrents
-    WHERE UserID = '$UserID'");
-    list($Uploads) = $db->next_record();
-} else {
-    $Uploads = 0;
-}
 
-if (check_paranoia_here('artistsadded')) {
-    $db->query("
-    SELECT COUNT(DISTINCT ArtistID)
-    FROM torrents_artists
-    WHERE UserID = $UserID");
-    list($ArtistsAdded) = $db->next_record();
-} else {
-    $ArtistsAdded = 0;
-}
 
-//Do the ranks
-$UploadedRank = UserRank::get_rank('uploaded', $Uploaded);
-$DownloadedRank = UserRank::get_rank('downloaded', $Downloaded);
-$UploadsRank = UserRank::get_rank('uploads', $Uploads);
-$RequestRank = UserRank::get_rank('requests', $RequestsFilled);
-$PostRank = UserRank::get_rank('posts', $ForumPosts);
-$BountyRank = UserRank::get_rank('bounty', $TotalSpent);
-$ArtistsRank = UserRank::get_rank('artists', $ArtistsAdded);
-
-if ($Downloaded == 0) {
-    $Ratio = 1;
-} elseif ($Uploaded == 0) {
-    $Ratio = 0.5;
-} else {
-    $Ratio = round($Uploaded / $Downloaded, 2);
-}
-$OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsRank, $RequestRank, $PostRank, $BountyRank, $ArtistsRank, $Ratio);
 
 ?>
-    <div class="box box_info box_userinfo_percentile">
-      <div class="head colhead_dark">Percentile Rankings (hover for values)</div>
-      <ul class="stats nobullet">
-        <?php if (($Override = check_paranoia_here('uploaded'))) { ?>
-        <li
-          class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=Format::get_size($Uploaded)?>">Data uploaded:
-          <?=$UploadedRank === false ? 'Server busy' : Text::float($UploadedRank)?>
-        </li>
-        <?php
-  }
-  if (($Override = check_paranoia_here('downloaded'))) { ?>
-        <li
-          class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=Format::get_size($Downloaded)?>">Data downloaded:
-          <?=$DownloadedRank === false ? 'Server busy' : Text::float($DownloadedRank)?>
-        </li>
-        <?php
-  }
-  if (($Override = check_paranoia_here('uploads+'))) { ?>
-        <li
-          class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=Text::float($Uploads)?>">Torrents uploaded:
-          <?=$UploadsRank === false ? 'Server busy' : Text::float($UploadsRank)?>
-        </li>
-        <?php
-  }
-  if (($Override = check_paranoia_here('requestsfilled_count'))) { ?>
-        <li
-          class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=Text::float($RequestsFilled)?>">Requests
-          filled: <?=$RequestRank === false ? 'Server busy' : Text::float($RequestRank)?>
-        </li>
-        <?php
-  }
-  if (($Override = check_paranoia_here('requestsvoted_bounty'))) { ?>
-        <li
-          class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=Format::get_size($TotalSpent)?>">Bounty spent:
-          <?=$BountyRank === false ? 'Server busy' : Text::float($BountyRank)?>
-        </li>
-        <?php } ?>
-        <li class="tooltip" title="<?=Text::float($ForumPosts)?>">
-          Posts made: <?=$PostRank === false ? 'Server busy' : Text::float($PostRank)?>
-        </li>
-        <?php if (($Override = check_paranoia_here('artistsadded'))) { ?>
-        <li
-          class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=Text::float($ArtistsAdded)?>">Artists added:
-          <?=$ArtistsRank === false ? 'Server busy' : Text::float($ArtistsRank)?>
-        </li>
-        <?php
-  }
-  if (check_paranoia_here(array('uploaded', 'downloaded', 'uploads+', 'requestsfilled_count', 'requestsvoted_bounty', 'artistsadded'))) { ?>
-        <li><strong>Overall rank: <?=$OverallRank === false ? 'Server busy' : Text::float($OverallRank)?></strong>
-        </li>
-        <?php } ?>
-      </ul>
-    </div>
     <?php
      if (check_perms('users_view_ips', $Class)) {
          $db->query("

@@ -30,11 +30,13 @@ class Esc
 
     /**
      * float
+     *
+     * todo: this takes, e.g., 4.20 and returns 420
      */
     public static function float(mixed $unsafe): float
     {
-        $safe = filter_var($unsafe, FILTER_SANITIZE_NUMBER_FLOAT);
-        return floatval($safe);
+        #$safe = filter_var($unsafe, FILTER_SANITIZE_NUMBER_FLOAT);
+        return floatval($unsafe);
     }
 
 

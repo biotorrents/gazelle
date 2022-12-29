@@ -79,8 +79,37 @@ $recentCollages = $app->userNew->recentCollages($userId);
 
 
 $communityStats = $app->userNew->communityStats($userId);
+#!d($communityStats);exit;
+
+# build request stats
+$requestStats = [];
+foreach ($communityStats as $key => $value) {
+    if (str_starts_with($key, "requests")) {
+        $requestStats[$key] = $value;
+        unset($communityStats[$key]);
+    }
+}
+
+# unset comments
+unset($communityStats["collageComments"]);
+unset($communityStats["creatorComments"]);
+unset($communityStats["requestComments"]);
+unset($communityStats["torrentComments"]);
+
+# unset misc
+unset($communityStats["ircLines"]);
+
+
 $torrentStats = $app->userNew->torrentStats($userId);
-!d($communityStats, $torrentStats);exit;
+#!d($torrentStats);exit;
+
+# unset misc
+$ratio = $torrentStats["ratio"];
+unset($torrentStats["ratio"]);
+
+
+$percentileStats = $app->userNew->percentileStats($userId);
+#!d($percentileStats);exit;
 
 
 /** twig template */
@@ -112,7 +141,10 @@ $app->twig->display("user/profile/profile.twig", [
 
   # user stats
   "communityStats" => $communityStats,
+  "requestStats" => $requestStats,
   "torrentStats" => $torrentStats,
+  "ratio" => $ratio,
+  "percentileStats" => $percentileStats,
 
 
 
@@ -160,45 +192,7 @@ if (check_perms('site_proxy_images') && !empty($CustomTitle)) {
     );
 }
 
-if ($previewParanoia == 1) {
-    if (strlen($paranoiaSettings) == 0) {
-        $Paranoia = [];
-    } else {
-        $Paranoia = $customParanoia;
-    }
-} else {
-    $Paranoia = json_decode($Paranoia, true);
-    if (!is_array($Paranoia)) {
-        $Paranoia = [];
-    }
-}
-$ParanoiaLevel = 0;
-foreach ($Paranoia as $P) {
-    $ParanoiaLevel++;
-    if (strpos($P, '+') !== false) {
-        $ParanoiaLevel++;
-    }
-}
 ?>
-  <div class="sidebar one-third column">
-    <div class="box point_gift_box">
-      <div class="head colhead_dark">Send <?=bonusPoints?>
-      </div>
-      <div class="pad">
-        <form action="user.php" method="post">
-          <input type="hidden" name="action" value="points">
-          <input type="hidden" name="to" value="<?=$userId?>">
-          <div class="flex_input_container">
-            <input type="text" name="amount" placeholder="Amount">
-            <input type="submit" class="button-primary" value="Send">
-          </div>
-          <textarea name="message" rows="2" placeholder="Message"></textarea>
-          <label><input type="checkbox" name="adjust"> Adjust for tax?</label>
-        </form>
-        <p>Note: 10% of your gift is taken as tax.</p>
-      </div>
-    </div>
-
     <div class="box box_info box_userinfo_stats">
       <div class="head colhead_dark">Statistics</div>
       <ul class="stats nobullet">

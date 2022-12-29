@@ -167,7 +167,7 @@ aside.postActions {
   }
 }
 
-#userProfileSidebar,
+.userProfileSidebar,
 #userSettingsSidebar {
   a {
     width: 100%;
@@ -177,5 +177,12 @@ aside.postActions {
     /* border: 1px solid #e1e1e1; */
     margin: 1rem auto;
     width: 100%;
+  }
+}
+
+#userProfilePercentiles,
+#userProfileRequests {
+  td {
+    text-align: right;
   }
 }

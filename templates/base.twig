@@ -56,10 +56,16 @@
     {# start javascript block #}
     {% block javascript %}
 
-    {# core essentials: do not defer #}
+    {# jquery: do not defer #}
     <script src="/js/vendor/jquery.min.js"></script>
     <script src="/js/vendor/jquery-ui.min.js"></script>
+
+    {# instantpage: do not defer #}
     <script src="/js/vendor/instantpage.min.js" type="module"></script>
+
+    {# easymde: do not defer #}
+    <script src="/js/vendor/easymde.min.js"></script>
+    <script src="/js/vendor/highlight.min.js"></script>
 
     {# gazelle global: do not defer #}
     <script src="/js/global.js"></script>
@@ -72,9 +78,6 @@
     {{ debugHeader() }}
     {% endif %}
     
-    {# easymde #}
-    <script defer src="/js/vendor/easymde.min.js"></script>
-    <script defer src="/js/vendor/highlight.min.js"></script>
 
     {# plausible #}
     {% if env.enablePlausible %}
@@ -82,6 +85,7 @@
     {% endif %}
 
     {# extra js #}
+    {# todo: figure out a way to not defer vendor scripts #}
     {% if js is defined %}
     {% for js in js %}
     <script defer src="/js/{{ js }}.js"></script>
@@ -95,9 +99,9 @@
     {# start stylesheets block #}
     {% block stylesheets %}
 
-    {# core essentials #}
-    <link rel="stylesheet" type="text/css" href="/css/vendor/normalize.min.css">
+    {# skeleton, normalize, and jquery #}
     <link rel="stylesheet" type="text/css" href="/css/vendor/skeleton.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/vendor/normalize.min.css">
     <link rel="stylesheet" type="text/css" href="/css/vendor/jquery-ui.min.css">
 
     {# gazelle global #}

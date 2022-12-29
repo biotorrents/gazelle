@@ -205,18 +205,10 @@ class Twig # extends Twig\Environment
             return Format::get_size($size, $levels);
         }));
 
-        # Format::get_ratio_html
-        $twig->addFunction(new Twig\TwigFunction("get_ratio_html", function ($dividend, $divisor, $color = true) {
-            return Format::get_ratio_html($dividend, $divisor, $color);
-        }));
-
         # Text::float
-        $twig->addFilter(new Twig\TwigFilter(
-            "float",
-            function ($number, $decimals = 2) {
-                return Text::float($number, $decimals);
-            }
-        ));
+        $twig->addFilter(new Twig\TwigFilter("float", function ($number, $decimals = 2) {
+            return Text::float($number, $decimals);
+        }));
 
 
         /**
@@ -305,6 +297,7 @@ class Twig # extends Twig\Environment
             );
         }));
 
+        # Format::get_ratio_html
         $twig->addFunction(new Twig\TwigFunction("ratio", function ($up, $down) {
             return new Twig\Markup(
                 Format::get_ratio_html($up, $down),
