@@ -75,6 +75,14 @@ $recentCollages = $app->userNew->recentCollages($userId);
 #!d($recentCollages);exit;
 
 
+/** user stats */
+
+
+$communityStats = $app->userNew->communityStats($userId);
+$torrentStats = $app->userNew->torrentStats($userId);
+!d($communityStats, $torrentStats);exit;
+
+
 /** twig template */
 
 
@@ -82,7 +90,7 @@ $app->twig->display("user/profile/profile.twig", [
   "sidebar" => true,
 
   #"css" => [""],
-  "js" => ["user", "requests", "comments", "wall"],
+  "js" => ["user", "requests", "comments", "wall", "vendor/chart.min"],
 
   "data" => $data,
   "siteOptions" => $data["extra"]["siteOptions"],
@@ -101,6 +109,10 @@ $app->twig->display("user/profile/profile.twig", [
   "recentUploads" => $recentUploads,
   "recentRequests" => $recentRequests,
   "recentCollages" => $recentCollages,
+
+  # user stats
+  "communityStats" => $communityStats,
+  "torrentStats" => $torrentStats,
 
 
 

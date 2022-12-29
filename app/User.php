@@ -1819,7 +1819,19 @@ class User
     {
         $app = App::go();
 
+        $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        # get the user data
+        $profile = $this->readProfile($userId);
+
+        # start the return data
         $data = [];
+
 
         # comments
         $query = "select page, count(id) from comments where authorId = ? group by page";
@@ -1829,43 +1841,208 @@ class User
             $data["totalComments"] ??= 0;
             $data["totalComments"] += $row["count(id)"];
 
+            # comments.php?id={{ userId }}&action=artist
             $data["creatorComments"] ??= 0;
             if ($row["page"] === "artist") {
                 $data["creatorComments"] += $row["count(id)"];
             }
 
+            # comments.php?id={{ userId }}&action=artist
             $data["collageComments"] ??= 0;
             if ($row["page"] === "collages") {
                 $data["collageComments"] += $row["count(id)"];
             }
 
+            # comments.php?id={{ userId }}&action=requests
             $data["requestComments"] ??= 0;
             if ($row["page"] === "requests") {
                 $data["requestComments"] += $row["count(id)"];
             }
 
+            # comments.php?id={{ userId }}
             $data["torrentComments"] ??= 0;
             if ($row["page"] === "torrents") {
                 $data["torrentComments"] += $row["count(id)"];
             }
         }
 
-        # collages
+
+        # collages created
+        # collages.php?userid={{ userId }}
         $query = "select count(id) from collages where deleted = 0 and userId = ?";
-        $data["collageCount"] = $app->dbNew->single($query, [$userId]);
+        $data["collagesCreated"] = $app->dbNew->single($query, [$userId]) ?? 0;
+
 
         # collage contributions
+        # collages.php?userid={{ userId }}&contrib=1
         $query = "
             select count(distinct collageId) from collages_torrents
             join collages on collages.id = collages_torrents.collageId
             where deleted = 0 and collages_torrents.userId = ?
         ";
-        $data["collageContributions"] = $app->dbNew->single($query, [$userId]);
+        $data["collageContributions"] = $app->dbNew->single($query, [$userId]) ?? 0;
+
+
+        # forum posts
+        # userhistory.php?action=posts&userid={{ userId }}
+        $query = "select count(id) from forums_posts where authorId = ?";
+        $data["forumPosts"] = $app->dbNew->single($query, [$userId]) ?? 0;
+
+
+        # irc lines
+        $data["ircLines"] = $profile["extra"]["IRCLines"] ?? 0;
+
+
+        # requests: filled and the bounty
+        # requests.php?type=filled&userid={{ userId }}
+        $query = "
+            select count(distinct requests.id), sum(requests_votes.bounty) from requests
+            left join requests_votes on requests_votes.requestId = requests.id
+            where requests.fillerId = ?
+        ";
+        $row = $app->dbNew->row($query, [$userId]);
+
+        $data["requestsFilledCount"] = $row["count(distinct requests.id)"] ?? 0;
+        $data["requestsFilledBounty"] = $row["sum(requests_votes.bounty)"] ?? 0;
+
+
+        # requests: voted on and the bounty
+        # requests.php?type=voted&userid={{ userId }}
+        $query = "select count(requestId), sum(bounty) from requests_votes where userId = ?";
+        $row = $app->dbNew->row($query, [$userId]);
+
+        $data["requestsVotedCount"] = $row["count(requestId)"] ?? 0;
+        $data["requestsVotedBounty"] = $row["sum(bounty)"] ?? 0;
+
+        # typing fix
+        $data["requestsVotedBounty"] = Esc::int($data["requestsVotedBounty"]);
+
+
+        # requests: created and the bounty
+        # requests.php?type=created&userid={{ userId }}
+        $query = "
+            select count(requests.id), sum(requests_votes.bounty) from requests
+            left join requests_votes on requests_votes.requestId = requests.id and requests_votes.userId = requests.userId
+            where requests.userId = ?
+        ";
+        $row = $app->dbNew->row($query, [$userId]);
+
+        $data["requestsCreatedCount"] = $row["count(requests.id)"] ?? 0;
+        $data["requestsCreatedBounty"] = $row["sum(requests_votes.bounty)"] ?? 0;
+
+
+        # screenshots (doi numbers) added
+        $query = "select count(*) from literature where user_id = ?";
+        $data["referencesAdded"] = $app->dbNew->single($query, [$userId]) ?? 0;
+
+
+        # invited users
+        $query = "select count(userId) from users_info where inviter = ?";
+        $data["usersInvited"] = $app->dbNew->single($query, [$userId]) ?? 0;
+
+
+        asort($data);
+
+        $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
+        return $data;
+    }
+
+
+    /**
+     * torrentStats
+     *
+     * Fetch downloads, seeds, etc., for a userId.
+     * Replaces sections/user/community_stats.php.
+     *
+     * @param int $userId
+     * @return array
+     */
+    public function torrentStats(int $userId): array
+    {
+        $app = App::go();
+
+        $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        # start the return data
+        $data = [];
+
 
         # unique groups
+        # torrents.php?type=uploaded&userid={{ userId }}&filter=uniquegroup
         $query = "select count(distinct groupId) from torrents where userId = ?";
-        $data["uniqueGroups"] = $app->dbNew->single($query, [$userId]);
+        $data["uniqueGroups"] = $app->dbNew->single($query, [$userId]) ?? 0;
 
+
+        # torrent uploads
+        # torrents.php?type=uploaded&userid={{ userId }}
+        # torrents.php?action=redownload&type=uploads&userid={{ userId }}
+        $query = "select count(id) from torrents where userId = ?";
+        $data["uploadCount"] = $app->dbNew->single($query, [$userId]) ?? 0;
+
+
+        # seeding and leeching
+        # todo: test this in production
+        # torrents.php?type=seeding&userid={{ userId }}
+        # torrents.php?action=redownload&type=seeding&userid={{ userId }}
+        # torrents.php?type=leeching&userid={{ userId }}
+        $query = "
+            select if(remaining = 0, 'seeding', 'leeching') as type, count(uid) from xbt_files_users
+            inner join torrents on torrents.id = xbt_files_users.fid
+            where xbt_files_users.uid = ? and active = 1 group by type
+        ";
+        $row = $app->dbNew->row($query, [$userId]);
+        #!d($row);exit;
+
+        /*
+        $data["seedingCount"] = $row["foo"] ?? 0;
+        $data["leechingCount"] = $row["foo"] ?? 0;
+        */
+
+
+        # snatches
+        # torrents.php?type=snatched&userid={{ userId }}
+        # torrents.php?action=redownload&type=snatches&userid={{ userId }}
+        # check_perms("site_view_torrent_snatchlist")
+        $query = "
+            select count(uid), count(distinct fid) from xbt_snatched
+            inner join torrents on torrents.id = xbt_snatched.fid
+            where uid = ?
+        ";
+        $row = $app->dbNew->row($query, [$userId]);
+
+        $data["totalSnatches"] = $row["count(uid)"] ?? 0;
+        $data["uniqueSnatches"] = $row["count(distinct fid)"] ?? 0;
+
+
+        # seeding percent
+        # todo: uncomment $data["seedingCount"]
+        #$data["seedingPercent"] = 100 * min(1, round($data["seedingCount"] / $data["uniqueSnatches"], 2)) ?? 0;
+
+        # typing fix
+        #$data["seedingPercent"] = Esc::float($data["seedingPercent"]);
+
+
+        # downloads
+        # torrents.php?type=downloaded&userid={{ userId }}
+        $query = "
+            select count(users_downloads.userId), count(distinct users_downloads.torrentId) from users_downloads
+            join torrents on torrents.id = users_downloads.torrentId
+            where users_downloads.userId = ?
+        ";
+        $row = $app->dbNew->row($query, [$userId]);
+
+        $data["totalDownloads"] = $row["count(users_downloads.userId)"] ?? 0;
+        $data["uniqueDownloads"] = $row["count(distinct users_downloads.torrentId)"] ?? 0;
+
+
+        asort($data);
+
+        $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
         return $data;
     }
 } # class

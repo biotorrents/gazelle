@@ -240,6 +240,112 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
 #}
 
 
+
+
+
+
+
+<h3>User stats</h3>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{# user stats #}
+<section>
+
+  {# community #}
+  <canvas class="chart" id="communityStats"></canvas>
+  <script>
+    (() => {
+      'use strict';
+
+      let communityStatsCanvas = document.getElementById('communityStats').getContext('2d');
+      let communityStatsData = JSON.parse('{{ communityStats|json_encode|raw }}');
+
+      let communityStatsChart = new Chart(communityStatsCanvas, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(communityStatsData),
+          datasets: [{
+            label: 'Count',
+            data: Object.values(communityStatsData),
+            backgroundColor: [
+              '#f44336' + 50,
+              '#9c27b0' + 50,
+              '#3f51b5' + 50,
+              '#03a9f4' + 50,
+              '#009688' + 50,
+              '#8bc34a' + 50,
+              '#ffeb3b' + 50,
+              '#ff9800' + 50,
+              '#795548' + 50,
+              '#607d8b' + 50,
+            ],
+          }],
+        },
+
+        options: {
+          indexAxis: 'y',
+
+          plugins: {
+            title: {
+              display: true,
+              text: 'Community',
+            },
+          },
+        },
+      });
+    })();
+  </script>
+</section>
+<br /><br />
+
+
+
+
+{#
+<section>
+  <canvas class="chart" id="canvas"></canvas>
+  <script>
+    fetch('https://unpkg.com/world-atlas/countries-50m.json')
+      .then((r) => r.json())
+      .then((data) => {
+        const countries = ChartGeo.topojson.feature(data, data.objects.countries).features;
+
+        const chart = new Chart(document.getElementById('canvas').getContext('2d'), {
+          type: 'choropleth',
+          data: {
+            labels: countries.map((d) => d.properties.name),
+            datasets: [
+              {
+                label: 'Countries',
+                data: countries.map((d) => ({
+                  feature: d,
+                  value: Math.random(),
+                })),
+              },
+            ],
+          },
+          options: {
+            showOutline: true,
+            showGraticule: true,
+            plugins: {
+              legend: {
+                display: false,
+              },
+            },
+            scales: {
+              xy: {
+                projection: 'equalEarth',
+              },
+            },
+          },
+        });
+      });
+  </script>
+</section>
+#}
+
+
 {% endblock %}
 
 
