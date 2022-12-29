@@ -1,5 +1,5 @@
 {# avatar #}
-<h3>Avatar</h3>
+{# <h3>Avatar</h3> #}
 
 <figure class="userProfileAvatar">
 {{ avatar|raw }}
@@ -22,6 +22,7 @@
 
 {# your own profile #}
 {% if isOwnProfile %}
+<form>
 
 {# edit settings #}
 <a href="/user/update/{{ userId }}" class="button button-primary">edit settings</a>
@@ -32,11 +33,13 @@
 {# log out #}
 <a href="/logout" class="button button-red">log out</a>
 
+</form>
 {% endif %} {# if isOwnProfile #}
 
 
 {# someone else's profile #}
 {% if not isOwnProfile %}
+<form>
 
 {# send pm #}
 {# inbox.php?action=compose&to={{ userId }} #}
@@ -54,28 +57,21 @@
 {# reports.php?action=report&type=user&id={{ userId }} #}
 <a href="/report/{{ userId }}" class="button button-red">report user</a>
 
+<hr />
+
 {# gift bonus points #}
-<input type="number" id="giftBonusPointsAmount" />
+<input type="number" id="giftBonusPointsAmount" placeholder="{{ env.bonusPoints }}" />
+
+<input type="text" id="giftBonusPointsMessage" placeholder="Enter an optional message" />
+
+<label>
+	<input type="checkbox" id="giftBonusPointsAdjust" name="giftBonusPointsAdjust" value="true" />
+	Adjust your gift for 15% tax?
+</label>
+
 <a id="giftBonusPointsSubmit" class="button button-green">gift {{ env.bonusPoints }}</a>
 
-    <div class="box point_gift_box">
-      <div class="head colhead_dark">Send <?=bonusPoints?>
-      </div>
-      <div class="pad">
-        <form action="user.php" method="post">
-          <input type="hidden" name="action" value="points">
-          <input type="hidden" name="to" value="<?=$userId?>">
-          <div class="flex_input_container">
-            <input type="text" name="amount" placeholder="Amount">
-            <input type="submit" class="button-primary" value="Send">
-          </div>
-          <textarea name="message" rows="2" placeholder="Message"></textarea>
-          <label><input type="checkbox" name="adjust"> Adjust for tax?</label>
-        </form>
-        <p>Note: 10% of your gift is taken as tax.</p>
-      </div>
-    </div>
-
+</form>
 {% endif %} {# if not isOwnProfile #}
 
 
@@ -85,10 +81,13 @@
 
 
 
-{# moderator actions: this is actually nonsense #}
+{# moderator actions #}
 {% if can("users_mod") %}
 <h3>Moderate</h3>
-{% endif %}
+
+<p>Most of this is actually bullshit.</p>
+
+<form>
 
 {# go to staff tools #}
 {% if can("users_mod") %}
@@ -137,6 +136,8 @@
 <a href="/user/clearCache/{{ userId }}" class="button">clear cache</a>
 {% endif %}
 
+</form>
+{% endif %} {# if can("users_mod") #}
 
 
 </div> {# userProfileSidebar #}

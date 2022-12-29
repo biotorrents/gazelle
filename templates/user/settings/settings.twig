@@ -348,10 +348,6 @@ HTML;
       </table> {# communitySettings #}
 
 
-
-
-
-
       {# notification settings #}
       <h3>Notification settings</h3>
       <table id="notificationSettings" class="userSettings">
@@ -379,9 +375,6 @@ HTML;
         {# legacy call to NotificationsManagerView::render_settings #}
         {{ notificationsManagerSettings|raw }}
       </table> {# notificationSettings #}
-
-
-
 
 
       {# profile settings #}
@@ -448,7 +441,6 @@ HTML;
         </tr>
 
       </table> {# profileSettings #}
-
 
 
 {# PARANOIA TODO: THIS WHOLE SECTION IS FUCKED UP
@@ -746,7 +738,6 @@ list($ArtistsAdded) = $app->dbOld->next_record();
 END PARANOIA CLUSTERFUCK #}
 
 
-
 {# security settings #}
 <h3>Security settings</h3>
       <table id="securitySettings" class="userSettings">
@@ -927,8 +918,6 @@ END PARANOIA CLUSTERFUCK #}
           </td>
         </tr>
 
-
-
 {# reset passkey #}
         <tr>
           <th>Reset tracker passkey</th>
@@ -966,7 +955,6 @@ END PARANOIA CLUSTERFUCK #}
 
           </td>
         </tr>
-
 
         {# api bearer tokens #}
         <tr>
@@ -1018,13 +1006,12 @@ END PARANOIA CLUSTERFUCK #}
           </td>
         </tr>
 
-
         {# email address #}
         <tr>
           <th>Email address</th>
 
           <td>
-              <input type="email" id="email" name="email" value="{{ user.core.email }}" />
+              <input type="email" id="email" name="email" placeholder="foo@bar.com" value="{{ user.core.email }}" />
           </td>
         </tr>
 
@@ -1033,18 +1020,23 @@ END PARANOIA CLUSTERFUCK #}
           <th>Passphrase</th>
 
           <td>
+          <p>
           <input type="password" minlength="15" name="newPassphrase1" id="newPassphrase1" placeholder="Enter a new passphrase" />
            <strong id="passphraseStrength"></strong>
-           <br />
+           </p>
 
+<p>
           <input type="password" minlength="15" name="newPassphrase2" id="newPassphrase2" placeholder="Confirm the new passphrase" />
            <strong id="passphraseMatch"></strong>
-           <br /><br />
+</p>
 
+<p>
            <input type="text" id="suggestedPassphrase" placeholder="Secure diceware passphrase" readonly />
-           <br />
+</p>
 
-            <a id="createPassphrase" class="button">suggest a secure passphrase</a>
+<p>
+            <a id="createPassphrase" class="button button-orange">suggest a secure passphrase</a>
+            </p>
           </td>
         </tr>
       </table> {# securitySettings #}
@@ -1061,29 +1053,7 @@ END PARANOIA CLUSTERFUCK #}
 {% endblock %}
 
 
-
-
-
-
-
-
-{#
-
-if ($Type = $_POST['type'] ?? false) {
-    if ($Type === 'PGP') {
-        if (!empty($_POST['publickey']) && (strpos($_POST['publickey'], 'BEGIN PGP PUBLIC KEY BLOCK') === false || strpos($_POST['publickey'], 'END PGP PUBLIC KEY BLOCK') === false)) {
-            $Error = "Invalid PGP public key";
-        } else {
-            $db->query("
-              UPDATE users_main
-              SET PublicKey = '".db_string($_POST['publickey'])."'
-              WHERE ID = $UserID");
-            $Message = 'Public key '.(empty($_POST['publickey']) ? 'removed' : 'updated') ;
-        }
-    }
-
-
-
+{# U2F STUFF HERE
     if ($Type === 'U2F-E') {
         try {
             $U2FReg = $U2F->doRegister(json_decode($_POST['u2f-request']), json_decode($_POST['u2f-response']));
@@ -1103,7 +1073,6 @@ if ($Type = $_POST['type'] ?? false) {
           WHERE UserID = $UserID");
         $Message = 'U2F tokens deregistered';
     }
-}
 
 $U2FRegs = [];
 $db->query("
@@ -1115,31 +1084,4 @@ $db->query("
 while (list($KeyHandle, $PublicKey, $Certificate, $Counter) = $db->next_record()) {
     $U2FRegs[] = (object)['keyHandle'=>$KeyHandle, 'publicKey'=>$PublicKey, 'certificate'=>$Certificate, 'counter'=>$Counter];
 }
-
-$db->query("
-  SELECT PublicKey, TwoFactor
-  FROM users_main
-  WHERE ID = $UserID");
-
-list($PublicKey, $TwoFactor) = $db->next_record();
-list($U2FRequest, $U2FSigs) = $U2F->getRegisterData($U2FRegs);
-View::header("2FA Settings", 'u2f');
-?>
-
-<h2>Additional Account Security Options</h2>
-<div>
-  <?php if (isset($Message)) { ?>
-  <div class="alertbar"><?=$Message?>
-  </div>
-  <?php }
-
-   if (isset($Error)) { ?>
-  <div class="alertbar error"><?=$Error?>
-  </div>
-  <?php } ?>
-
-
-
-</div>
-
 #}

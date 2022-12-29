@@ -982,7 +982,7 @@ if (check_perms('users_mod', $Class)) { ?>
     <div class="box" id="staff_notes_box">
       <div class="head">
         Staff Notes
-        <a href="#" name="admincommentbutton" onclick="ChangeTo('text'); return false;" class="brackets">Edit</a>
+        <a href="#" name="admincommentbutton" class="brackets">Edit</a>
         <span class="u-pull-right">
           <a data-toggle-target="#staffnotes" class="brackets">Toggle</a>
         </span>
@@ -995,7 +995,7 @@ if (check_perms('users_mod', $Class)) { ?>
         <textarea id="admincomment" onkeyup="resize('admincomment');" class="AdminComment hidden" name="AdminComment"
           cols="65" rows="26"
           style="width: 98%;"><?=Text::esc($AdminComment)?></textarea>
-        <a href="#" name="admincommentbutton" onclick="ChangeTo('text'); return false;" class="brackets">Toggle
+        <a href="#" name="admincommentbutton" class="brackets">Toggle
           edit</a>
         <script type="text/javascript">
           resize('admincomment');

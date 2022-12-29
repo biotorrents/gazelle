@@ -65,7 +65,7 @@ collage by {{ user_id|user_url }}
 {% endif %}
 {% if can_add %}
 <div class="box box_add{{ object }}">
-    <div class="head"><strong>Add {{ object_name }}</strong><span class="u-pull-right"><a href="#" onclick="$('.add_{{ object }}_container').toggle_class('hidden'); this.innerHTML = (this.innerHTML == 'Batch add' ? 'Individual add' : 'Batch add'); return false;" class="brackets">Batch add</a></span></div>
+    <div class="head"><strong>Add {{ object_name }}</strong><span class="u-pull-right"><a href="#" onclick="$('.add_{{ object }}_container').toggleClass('hidden'); this.innerHTML = (this.innerHTML == 'Batch add' ? 'Individual add' : 'Batch add'); return false;" class="brackets">Batch add</a></span></div>
     <div class="pad add_{{ object }}_container">
         <form class="add_form" name="{{ object }}" action="collages.php" method="post">
             <input type="hidden" name="action" value="add_{{ object }}" />

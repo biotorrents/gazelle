@@ -93,6 +93,30 @@
   });
 
   /**
+   * hide everything but selected
+   */
+  let allSettingsSections = [
+    "siteAppearanceSettings",
+    "torrentSettings",
+    "communitySettings",
+    "notificationSettings",
+    "profileSettings",
+    "securitySettings",
+  ];
+
+  allSettingsSections.forEach(() => {
+    /**
+     * todo:
+     * doing a forEach loop is probably stupid,
+     * but i need a way to call $("#foo").hide()
+     * on all the shit that's not selected,
+     * and apply "button-primary" to that which is selected,
+     * then i get mad salesforce-tier ui points,
+     * maybe
+     */
+  });
+
+  /**
    * some notifications stuff
    * "i'm sure there is a better way to do this"
    */

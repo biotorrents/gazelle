@@ -1,31 +1,10 @@
-"use strict";
-
 /**
- * ChangeTo
+ * user profile javascript
  */
-function ChangeTo(to) {
-  if (to == "text") {
-    $("#admincommentlinks").ghide();
-    $("#admincomment").gshow();
-    resize("admincomment");
 
-    var buttons = document.getElementsByName("admincommentbutton");
-    for (var i = 0; i < buttons.length; i++) {
-      buttons[i].setAttribute("onclick", "ChangeTo('links'); return false;");
-    }
-  } else if (to == "links") {
-    ajax.post("api.php?action=preview", "form", function (response) {
-      $("#admincommentlinks").raw().innerHTML = response;
-      $("#admincomment").ghide();
-      $("#admincommentlinks").gshow();
-
-      var buttons = document.getElementsByName("admincommentbutton");
-      for (var i = 0; i < buttons.length; i++) {
-        buttons[i].setAttribute("onclick", "ChangeTo('text'); return false;");
-      }
-    });
-  }
-}
+(() => {
+  "use strict";
+})();
 
 /**
  * UncheckIfDisabled

@@ -193,7 +193,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
     <?php if (check_perms('site_collages_manage') && !isset($PreventAdditions)) { ?>
     <div class="box box_addartist">
       <div class="head"><strong>Add Artists</strong><span class="u-pull-right"><a href="#"
-            onclick="$('.add_artist_container').toggle_class('hidden'); this.innerHTML = (this.innerHTML === 'Batch add' ? 'Individual add' : 'Batch add'); return false;"
+            onclick="$('.add_artist_container').toggleClass('hidden'); this.innerHTML = (this.innerHTML === 'Batch add' ? 'Individual add' : 'Batch add'); return false;"
             class="brackets">Batch add</a></span></div>
       <div class="pad add_artist_container">
         <form class="add_form" name="artist" action="collages.php" method="post">

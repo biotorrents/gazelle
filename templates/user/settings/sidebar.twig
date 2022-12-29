@@ -4,11 +4,11 @@
 <form method="post">
 	<input type="password" form="userSettingsForm" id="currentPassphrase" name="currentPassphrase" placeholder="Current passphrase" required />
 
-	<label for="currentPassphrase">Please enter your current passphrase to update your settings</label>
+	<label for="currentPassphrase">Please enter your passphrase to update any of your settings</label>
 
-	<input type="submit" form="userSettingsForm" id="save" name="save" value="save" class="button-primary"/>
+	<input type="submit" form="userSettingsForm" id="save" name="save" value="save" class="button-primary" />
 
-	<input type="button" id="previewParanoia" name="previewParanoia" value="preview paranoia" class="button-orange"/>
+	<a href="/user/{{ user.core.id }}/preview" target="_blank" class="button button-orange">preview profile</a>
 
 {#
     {% if env.enableDonations %}
@@ -24,6 +24,7 @@
 <div id="userSettingsSidebar">
 	<h3>Go to section</h3>
 
+<form>
 	<a href="#siteAppearanceSettings" class="button">site appearence</a>
 
 	<a href="#torrentSettings" class="button">torrents</a>
@@ -35,4 +36,5 @@
 	<a href="#profileSettings" class="button">profile</a>
 
 	<a href="#securitySettings" class="button">security</a>
+</form>
 </div>

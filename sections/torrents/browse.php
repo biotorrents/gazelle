@@ -318,7 +318,7 @@ View::header('Browse Torrents', 'browse');
     <h2>Torrents</h2>
   </div>
 
-  <form class="search_form" name="torrents" method="get" onsubmit="$(this).disableUnset();">
+  <form class="search_form" name="torrents" method="get">
     <div class="box filter_torrents">
       <div class="head">
         <strong>

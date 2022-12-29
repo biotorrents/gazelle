@@ -252,9 +252,39 @@
         {% endblock %}
     </footer>
 
-{# global javascript variables #}
+{# global inline javascript #}
 <script>
-    hljs.highlightAll;
+
+    // chart color arrays
+    // https://www.chartjs.org
+
+    // all shades 500: every other forward
+    var chartBackgroundForward = [
+        '#f44336' + 50,
+        '#9c27b0' + 50,
+        '#3f51b5' + 50,
+        '#03a9f4' + 50,
+        '#009688' + 50,
+        '#8bc34a' + 50,
+        '#ffeb3b' + 50,
+        '#ff9800' + 50,
+        '#795548' + 50,
+        '#607d8b' + 50,
+    ];
+
+    // all shades 500: every other reverse
+    var chartBackgroundReverse = [
+        '#607d8b' + 50,
+        '#795548' + 50,
+        '#ff9800' + 50,
+        '#ffeb3b' + 50,
+        '#8bc34a' + 50,
+        '#009688' + 50,
+        '#03a9f4' + 50,
+        '#3f51b5' + 50,
+        '#9c27b0' + 50,
+        '#f44336' + 50,
+    ];
 </script>
 </body>
 

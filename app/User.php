@@ -1804,4 +1804,68 @@ class User
         $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
         return $data;
     }
+
+
+    /**
+     * communityStats
+     *
+     * Fetch forum posts, IRC lines, etc., for a userId.
+     * Replaces sections/user/community_stats.php.
+     *
+     * @param int $userId
+     * @return array
+     */
+    public function communityStats(int $userId): array
+    {
+        $app = App::go();
+
+        $data = [];
+
+        # comments
+        $query = "select page, count(id) from comments where authorId = ? group by page";
+        $ref = $app->dbNew->multi($query, [$userId]);
+
+        foreach ($ref as $row) {
+            $data["totalComments"] ??= 0;
+            $data["totalComments"] += $row["count(id)"];
+
+            $data["creatorComments"] ??= 0;
+            if ($row["page"] === "artist") {
+                $data["creatorComments"] += $row["count(id)"];
+            }
+
+            $data["collageComments"] ??= 0;
+            if ($row["page"] === "collages") {
+                $data["collageComments"] += $row["count(id)"];
+            }
+
+            $data["requestComments"] ??= 0;
+            if ($row["page"] === "requests") {
+                $data["requestComments"] += $row["count(id)"];
+            }
+
+            $data["torrentComments"] ??= 0;
+            if ($row["page"] === "torrents") {
+                $data["torrentComments"] += $row["count(id)"];
+            }
+        }
+
+        # collages
+        $query = "select count(id) from collages where deleted = 0 and userId = ?";
+        $data["collageCount"] = $app->dbNew->single($query, [$userId]);
+
+        # collage contributions
+        $query = "
+            select count(distinct collageId) from collages_torrents
+            join collages on collages.id = collages_torrents.collageId
+            where deleted = 0 and collages_torrents.userId = ?
+        ";
+        $data["collageContributions"] = $app->dbNew->single($query, [$userId]);
+
+        # unique groups
+        $query = "select count(distinct groupId) from torrents where userId = ?";
+        $data["uniqueGroups"] = $app->dbNew->single($query, [$userId]);
+
+        return $data;
+    }
 } # class

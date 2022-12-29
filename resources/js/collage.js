@@ -54,7 +54,7 @@ var collageShow = {
 
   createUL: function (data) {
     var ul = document.createElement("div");
-    $(ul).add_class("collage_images");
+    $(ul).addClass("collage_images");
     ul.id = "collage_page" + this.pg;
     $(ul).html(data);
 
@@ -87,11 +87,11 @@ var collageShow = {
 
     $(ul).gshow();
     if (s) {
-      $(s).remove_class("selected");
+      $(s).removeClass("selected");
     }
 
     if (el) {
-      $(el.parentNode).add_class("selected");
+      $(el.parentNode).addClass("selected");
     }
 
     $(".collage_image img").on("load", function () {
@@ -126,27 +126,27 @@ var collageShow = {
 
     // Toggle the first, prev, next, and last links
     if (this.pg > 0) {
-      $("#prevpage").remove_class("invisible");
+      $("#prevpage").removeClass("invisible");
     } else {
-      $("#prevpage").add_class("invisible");
+      $("#prevpage").addClass("invisible");
     }
 
     if (this.pg > 1) {
-      $("#firstpage").remove_class("invisible");
+      $("#firstpage").removeClass("invisible");
     } else {
-      $("#firstpage").add_class("invisible");
+      $("#firstpage").addClass("invisible");
     }
 
     if (this.pg < this.max) {
-      $("#nextpage").remove_class("invisible");
+      $("#nextpage").removeClass("invisible");
     } else {
-      $("#nextpage").add_class("invisible");
+      $("#nextpage").addClass("invisible");
     }
 
     if (this.pg < this.max - 1) {
-      $("#lastpage").remove_class("invisible");
+      $("#lastpage").removeClass("invisible");
     } else {
-      $("#lastpage").add_class("invisible");
+      $("#lastpage").addClass("invisible");
     }
 
     // Toggle the bar
