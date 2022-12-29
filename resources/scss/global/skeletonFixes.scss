@@ -3,7 +3,6 @@
  * to its best no-fuss advantage
  */
 
-
 /**
  * set heading font size
  *
@@ -16,7 +15,7 @@
  */
 
 @mixin heading-attributes($size) {
-  font-size: $size  !important;
+  font-size: $size !important;
   margin-top: 2rem !important;
 }
 
@@ -46,7 +45,6 @@ h6 {
 
 /* correct content/sidebar overflow */
 @media (min-width: 550px) {
-
   .column,
   .columns {
     margin-left: 0 !important;
@@ -75,10 +73,12 @@ form[name="notification"],
 div.permission_container,
 table.user_options,
 table.skeletonFix {
+  /*
   td {
     border-bottom: 0 !important;
     padding: 0.5rem !important;
   }
+  */
 }
 
 /* duplicate input rules here */
@@ -151,9 +151,9 @@ button.button-red,
 input[type="submit"].button-red,
 input[type="reset"].button-red,
 input[type="button"].button-red {
-  color: #FFF;
-  background-color: rgba(red, 0.50);
-  border-color: rgba(red, 0.50);
+  color: #fff;
+  background-color: rgba(red, 0.5);
+  border-color: rgba(red, 0.5);
 }
 
 .button.button-red:hover,
@@ -166,7 +166,7 @@ button.button-red:focus,
 input[type="submit"].button-red:focus,
 input[type="reset"].button-red:focus,
 input[type="button"].button-red:focus {
-  color: #FFF;
+  color: #fff;
   background-color: rgba(red, 0.75);
   border-color: rgba(red, 0.75);
 }
@@ -177,9 +177,9 @@ button.button-green,
 input[type="submit"].button-green,
 input[type="reset"].button-green,
 input[type="button"].button-green {
-  color: #FFF;
-  background-color: rgba(green, 0.50);
-  border-color: rgba(green, 0.50);
+  color: #fff;
+  background-color: rgba(green, 0.5);
+  border-color: rgba(green, 0.5);
 }
 
 .button.button-green:hover,
@@ -192,7 +192,7 @@ button.button-green:focus,
 input[type="submit"].button-green:focus,
 input[type="reset"].button-green:focus,
 input[type="button"].button-green:focus {
-  color: #FFF;
+  color: #fff;
   background-color: rgba(green, 0.75);
   border-color: rgba(green, 0.75);
 }
@@ -204,8 +204,8 @@ input[type="submit"].button-orange,
 input[type="reset"].button-orange,
 input[type="button"].button-orange {
   color: #555;
-  background-color: rgba(orange, 0.50);
-  border-color: rgba(orange, 0.50);
+  background-color: rgba(orange, 0.5);
+  border-color: rgba(orange, 0.5);
 }
 
 .button.button-orange:hover,
@@ -221,7 +221,6 @@ input[type="button"].button-orange:focus {
   color: #333;
   background-color: rgba(orange, 0.75);
   border-color: rgba(orange, 0.75);
-
 }
 
 /* purple button */
@@ -230,9 +229,9 @@ button.button-purple,
 input[type="submit"].button-purple,
 input[type="reset"].button-purple,
 input[type="button"].button-purple {
-  color: #FFF;
-  background-color: rgba(purple, 0.50);
-  border-color: rgba(purple, 0.50);
+  color: #fff;
+  background-color: rgba(purple, 0.5);
+  border-color: rgba(purple, 0.5);
 }
 
 .button.button-purple:hover,
@@ -245,8 +244,7 @@ button.button-purple:focus,
 input[type="submit"].button-purple:focus,
 input[type="reset"].button-purple:focus,
 input[type="button"].button-purple:focus {
-  color: #FFF;
+  color: #fff;
   background-color: rgba(purple, 0.75);
   border-color: rgba(purple, 0.75);
-
 }

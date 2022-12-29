@@ -332,15 +332,15 @@ HTML;
 
             {% for badgeId, displayed in badges %}
 
-<span class="flexItem">
+          <span class="flexItem">
             <input type="checkbox" name="badges[]" value="{{ badgeId }}" {{ (displayed) ? "checked" : "" }} />
             &nbsp;
             <label>{{ displayBadge(badgeId) }}</label>
-</span>
+          </span>
 
             {% endfor %}
 
-            {% endif %}
+            {% endif %} {# if badges is empty #}
           </td>
         </tr>
       </table> {# communitySettings #}

@@ -1205,7 +1205,7 @@ class User
 
         # check permissions to update another user
         $moderatorUpdate = false;
-        if ($userId !== $this->core["id"]) {
+        if (intval($userId) !== $this->core["id"]) {
             $good = $this->can("users_edit_profiles");
             if (!$good) {
                 throw new Exception("you ain't a killer, you still learnin' how to walk");
@@ -1299,6 +1299,15 @@ class User
 
             $query = "update users_info set avatar = ? where userId = ?";
             $app->dbNew->do($query, [$avatar, $userId]);
+
+
+            # badges
+            $query = "update users_badges set displayed = 0 where userId = ?";
+            $app->dbNew->do($query, [$userId]);
+
+            $badges = implode(", ", $data["badges"]);
+            $query = "update users_badges set displayed = 1 where userId = ? and badgeId in ({$badges})";
+            $app->dbNew->do($query, [$userId]);
 
 
             # ircKey
