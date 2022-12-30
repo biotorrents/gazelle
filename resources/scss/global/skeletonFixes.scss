@@ -21,27 +21,33 @@
 }
 
 h1:not(#logo) {
-  @include headingAttributes(2.5rem);
+  @include headingAttributes(3.5rem);
+  /* @include headingAttributes(2.5rem); */
 }
 
 h2 {
-  @include headingAttributes(2.1rem);
+  @include headingAttributes(3rem);
+  /* @include headingAttributes(2.1rem); */
 }
 
 h3 {
-  @include headingAttributes(1.8rem);
+  @include headingAttributes(2.5rem);
+  /* @include headingAttributes(1.8rem); */
 }
 
 h4 {
-  @include headingAttributes(1.5rem);
+  @include headingAttributes(2rem);
+  /* @include headingAttributes(1.5rem); */
 }
 
 h5 {
-  @include headingAttributes(1.2rem);
+  @include headingAttributes(1.5rem);
+  /* @include headingAttributes(1.2rem); */
 }
 
 h6 {
-  @include headingAttributes(0.75rem);
+  @include headingAttributes(1rem);
+  /* @include headingAttributes(0.75rem); */
 }
 
 /* correct content/sidebar overflow */

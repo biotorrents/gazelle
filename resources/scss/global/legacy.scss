@@ -5,6 +5,7 @@
  * https://git.oppaiti.me/Oppaitime/Gazelle/src/branch/master/static/styles/global.css
  */
 
+/*
 pre {
   overflow: auto;
 }
@@ -31,7 +32,7 @@ textarea {
   color: #ff0000;
 }
 
-/* Make [+] on add multiple artists stay at the bottom (on torrent details page) */
+/* Make [+] on add multiple artists stay at the bottom (on torrent details page) * /
 div#AddArtists {
   position: relative;
   display: inline-block;
@@ -163,8 +164,7 @@ span.secondary_class {
 }
 
 .headerSort span {
-  background: url("/images/table-order.png") no-repeat scroll right -38px
-    transparent;
+  background: url("/images/table-order.png") no-repeat scroll right -38px transparent;
   padding: 0px 20px 0 0;
 }
 
@@ -174,8 +174,7 @@ span.secondary_class {
 }
 
 .headerSortUp span {
-  background: url("/images/table-order.png") no-repeat scroll right -79px
-    transparent;
+  background: url("/images/table-order.png") no-repeat scroll right -79px transparent;
 }
 
 .headerSort.sorter-false,
@@ -228,7 +227,7 @@ tr.torrent .bookmark > a:after {
 }
 
 .ui-state-highlight {
-  background: #007dc6 /*{bgColorHighlight}*/;
+  background: #007dc6 /*{bgColorHighlight}* /;
   opacity: 0.15;
   width: 50%;
 }
@@ -237,18 +236,18 @@ tr.torrent .bookmark > a:after {
   word-break: break-all;
 }
 
-/* Fix long overflow for Opera (doesn't support word-break). */
+/* Fix long overflow for Opera (doesn't support word-break). * /
 .reportinfo_table {
   table-layout: fixed;
 }
 
-/* Wrap release info for consistent DOM and to limit table expansion. */
+/* Wrap release info for consistent DOM and to limit table expansion. * /
 .no_overflow {
   width: 100%;
   overflow: hidden;
 }
 
-/* Stylesheet gallery in user profile editing */
+/* Stylesheet gallery in user profile editing * /
 #css_gallery {
   overflow: hidden;
   margin-top: 10px;
@@ -448,3 +447,4 @@ form.edit_form[name="screenshots_form"] input[type="text"],
 form.edit_form[name="screenshots_form"] img {
   width: 400px;
 }
+*/

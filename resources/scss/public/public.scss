@@ -6,7 +6,6 @@ $skeletonDefault: #33c3f0;
 $skeletonFocus: #1eaedb;
 $skeletonHalfdark: scale-color($skeletonFocus, $lightness: -50%);
 
-
 /**
  * typography
  */
@@ -39,7 +38,6 @@ a {
     text-decoration: none;
   }
 }
-
 
 /**
  * layout
@@ -107,7 +105,6 @@ form {
     list-style: none;
   }
 }
-
 
 /**
  * classes

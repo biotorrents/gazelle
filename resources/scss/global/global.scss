@@ -1,3 +1,4 @@
+/*
 .collage_images {
   padding: 0px;
   width: 100%;
@@ -20,7 +21,7 @@ ul.collage_images li {
 
 ul.collage_images li a {
   display: block;
-  /* height: 118px; */
+  /* height: 118px; * /
   width: 100%;
   overflow: hidden;
 }
@@ -80,7 +81,7 @@ a.beta {
   color: #ff0000;
 }
 
-/* Make [+] on add multiple artists stay at the bottom (on torrent details page) */
+/* Make [+] on add multiple artists stay at the bottom (on torrent details page) * /
 div#AddArtists {
   position: relative;
   display: inline-block;
@@ -142,12 +143,12 @@ ul.votedalbums li {
   margin: 0;
 }
 
-tr.torrent .bookmark>a:before {
+tr.torrent .bookmark > a:before {
   text-decoration: none;
   font-weight: normal;
 }
 
-tr.torrent .bookmark>a:after {
+tr.torrent .bookmark > a:after {
   text-decoration: none;
   font-weight: normal;
 }
@@ -187,7 +188,7 @@ tr.torrent .bookmark>a:after {
   overflow: hidden;
 }
 
-.group_image+.group_info {
+.group_image + .group_info {
   margin-left: 100px;
 }
 
@@ -211,7 +212,7 @@ tr.torrent .bookmark>a:after {
   display: flex;
 }
 
-.forum_post .colhead_dark div>* {
+.forum_post .colhead_dark div > * {
   margin-left: 2px;
   margin-right: 2px;
 }
@@ -298,31 +299,31 @@ div.torrent_artists {
   font-size: 10pt;
 }
 
-.net_box>.box {
+.net_box > .box {
   min-height: 60px;
   display: flex;
   align-items: center;
 }
 
-.net_box>.box>span {
+.net_box > .box > span {
   width: 100%;
 }
 
-#lightbox>img {
+#lightbox > img {
   max-width: 100%;
 }
 
-.filter_torrents #ft_basic>.clickable,
-.filter_torrents #ft_advanced>.clickable {
+.filter_torrents #ft_basic > .clickable,
+.filter_torrents #ft_advanced > .clickable {
   font-weight: 100;
 }
 
-.sidebar .box_tags>ul.stats>li {
+.sidebar .box_tags > ul.stats > li {
   display: flex;
   justify-content: space-between;
 }
 
-.sidebar .box_tags>ul.stats>li>a {
+.sidebar .box_tags > ul.stats > li > a {
   word-break: break-all;
 }
 
@@ -334,3 +335,4 @@ form.edit_form[name="screenshots_form"] input[type="text"],
 form.edit_form[name="screenshots_form"] img {
   width: 400px;
 }
+*/

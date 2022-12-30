@@ -1,5 +1,5 @@
 /**
- * Icons
+ * icons
  *
  * All default sitewide icons:
  *  - category icons,
@@ -16,7 +16,7 @@ $nrcc: no-repeat center center;
 }
 
 /**
- * Category icons
+ * category icons
  */
 
 .cats_sequences::before {
@@ -67,7 +67,7 @@ $nrcc: no-repeat center center;
   @include bioicons("📡");
 }
 
-/* Related to browse page? */
+/* related to browse page? */
 #cat-selector ul {
   width: 100%;
 }
@@ -76,7 +76,7 @@ $nrcc: no-repeat center center;
   display: inline;
 }
 
-/* Shown on torrent details header table */
+/* shown on torrent details header table */
 img.torrent_header {
   width: 1.2rem;
   height: 1.2rem;
@@ -85,7 +85,7 @@ img.torrent_header {
 }
 
 /**
- * Forum icons
+ * forum icons
  */
 
 .unread {
@@ -121,7 +121,7 @@ img.torrent_header {
 }
 
 /**
- * Badges
+ * badges
  */
 
 img.badge {
