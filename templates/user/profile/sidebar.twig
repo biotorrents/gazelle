@@ -79,7 +79,7 @@
 			</label>
 
 			<a id="giftBonusPointsSubmit" class="button button-green">
-				gift{{ env.bonusPoints }}
+				gift {{ env.bonusPoints }}
 			</a>
 
 		</form>
@@ -90,106 +90,106 @@
 
 {# percentile ranks #}
 {% if siteOptions.percentileStats and percentileStats is not empty %}
-<section>
-	<h3>Percentile ranks</h3>
+	<section>
+		<h3>Percentile ranks</h3>
 
-	<p>Hover over the percentiles for the values.</p>
+		<p>Hover over the percentiles for the values.</p>
 
-	<table id="userProfilePercentiles">
-		<tr>
-			<th>Overall</th>
-			<td>
-				{{ percentileStats.overall|float }}
-			</td>
-		</tr>
+		<table id="userProfilePercentiles">
+			<tr>
+				<th>Overall</th>
+				<td>
+					{{ percentileStats.overall|float }}
+				</td>
+			</tr>
 
-		<tr>
-			<th>Creators added</th>
-			<td title="{{ communityStats.creatorsAdded }}">
-				{{ percentileStats.creatorsAdded|float }}
-			</td>
-		</tr>
+			<tr>
+				<th>Creators added</th>
+				<td title="{{ communityStats.creatorsAdded }}">
+					{{ percentileStats.creatorsAdded|float }}
+				</td>
+			</tr>
 
-		<tr>
-			<th>Downloaded</th>
-			<td title="{{ data.extra.Downloaded|get_size }}">
-				{{ percentileStats.downloaded|float }}
-			</td>
-		</tr>
+			<tr>
+				<th>Downloaded</th>
+				<td title="{{ data.extra.Downloaded|get_size }}">
+					{{ percentileStats.downloaded|float }}
+				</td>
+			</tr>
 
-		<tr>
-			<th>Posts</th>
-			<td title="{{ communityStats.forumPosts|number_format }}">
-				{{ percentileStats.posts|float }}
-			</td>
-		</tr>
+			<tr>
+				<th>Posts</th>
+				<td title="{{ communityStats.forumPosts|number_format }}">
+					{{ percentileStats.posts|float }}
+				</td>
+			</tr>
 
-		<tr>
-			<th>Requests filled</th>
-			<td title="{{ requestStats.requestsFilledCount|number_format }}">
-				{{ percentileStats.requestsFilled|float }}
-			</td>
-		</tr>
+			<tr>
+				<th>Requests filled</th>
+				<td title="{{ requestStats.requestsFilledCount|number_format }}">
+					{{ percentileStats.requestsFilled|float }}
+				</td>
+			</tr>
 
-		<tr>
-			<th>Requests voted</th>
-			<td title="{{ requestStats.requestsVotedBounty|get_size }}">
-				{{ percentileStats.requestsVoted|float }}
-			</td>
-		</tr>
+			<tr>
+				<th>Requests voted</th>
+				<td title="{{ requestStats.requestsVotedBounty|get_size }}">
+					{{ percentileStats.requestsVoted|float }}
+				</td>
+			</tr>
 
-		<tr>
-			<th>Uploaded</th>
-			<td title="{{ data.extra.Uploaded|get_size }}">
-				{{ percentileStats.uploaded|float }}
-			</td>
-		</tr>
+			<tr>
+				<th>Uploaded</th>
+				<td title="{{ data.extra.Uploaded|get_size }}">
+					{{ percentileStats.uploaded|float }}
+				</td>
+			</tr>
 
-		<tr>
-			<th>Uploads</th>
-			<td title="{{ torrentStats.uploadCount|number_format }}">
-				{{ percentileStats.uploads|float }}
-			</td>
-		</tr>
-	</table>
-</section>
+			<tr>
+				<th>Uploads</th>
+				<td title="{{ torrentStats.uploadCount|number_format }}">
+					{{ percentileStats.uploads|float }}
+				</td>
+			</tr>
+		</table>
+	</section>
 {% endif %}
 
 
 {# request stats #}
 {% if siteOptions.requestStats and requestStats is not empty %}
-<section>
-	<h3>Requests</h3>
+	<section>
+		<h3>Requests</h3>
 
-	<table id="userProfileRequests">
-		<tr>
-			<th>Created</th>
-			<td>
-				{{ requestStats.requestsCreatedCount }}
-				for
-				{{ requestStats.requestsCreatedBounty|get_size }}
-			</td>
-		</tr>
+		<table id="userProfileRequests">
+			<tr>
+				<th>Created</th>
+				<td>
+					{{ requestStats.requestsCreatedCount }}
+					for
+					{{ requestStats.requestsCreatedBounty|get_size }}
+				</td>
+			</tr>
 
-		<tr>
-			<th>Filled</th>
-			<td>
-				{{ requestStats.requestsFilledCount }}
-				for
-				{{ requestStats.requestsFilledBounty|get_size }}
-			</td>
-		</tr>
+			<tr>
+				<th>Filled</th>
+				<td>
+					{{ requestStats.requestsFilledCount }}
+					for
+					{{ requestStats.requestsFilledBounty|get_size }}
+				</td>
+			</tr>
 
-		<tr>
-			<th>Voted on</th>
-			<td>
-				{{ requestStats.requestsVotedCount }}
-				for
-				{{ requestStats.requestsVotedBounty|get_size }}
-			</td>
-		</tr>
-	</table>
-</section>
+			<tr>
+				<th>Voted on</th>
+				<td>
+					{{ requestStats.requestsVotedCount }}
+					for
+					{{ requestStats.requestsVotedBounty|get_size }}
+				</td>
+			</tr>
+		</table>
+	</section>
 {% endif %}
 
 
@@ -204,13 +204,13 @@
 			<a id="togglePassKey" class="button">toggle passkey</a>
 			<input type="text" id="displayPassKey" value="{{ data.extra.torrent_pass }}" class="monospace" readonly/>
 
-			<hr />
+			<hr/>
 
 			{# toggle authkey #}
 			<a id="toggleAuthKey" class="button">toggle authkey</a>
 			<input type="text" id="displayAuthKey" value="{{ data.extra.AuthKey }}" class="monospace" readonly/>
 
-			<hr />
+			<hr/>
 
 			{# toggle rss key #}
 			<a id="toggleRssKey" class="button">toggle rss key</a>

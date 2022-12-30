@@ -1292,6 +1292,7 @@ class User
                 "coverArtCollections" => Esc::int($data["coverArtCollections"] ?? null),
                 "coverArtTorrents" => Esc::bool($data["coverArtTorrents"] ?? null),
                 "coverArtTorrentsExtra" => Esc::bool($data["coverArtTorrentsExtra"] ?? null),
+                "desaturate" => Esc::bool($data["desaturate"] ?? null),
                 "disableAvatars" => Esc::bool($data["disableAvatars"] ?? null),
                 "disableGrouping" => Esc::bool($data["disableGrouping"] ?? null),
                 "listUnreadsFirst" => Esc::bool($data["listUnreadsFirst"] ?? null),
@@ -1302,6 +1303,7 @@ class User
                 "recentUploads" => Esc::bool($data["recentUploads"] ?? null),
                 "requestStats" => Esc::bool($data["requestStats"] ?? null),
                 "searchType" => Esc::string($data["searchType"] ?? null),
+                "font" => Esc::string($data["font"] ?? null),
                 "showSnatched" => Esc::bool($data["showSnatched"] ?? null),
                 "showTagFilter" => Esc::bool($data["showTagFilter"] ?? null),
                 "showTorrentFilter" => Esc::bool($data["showTorrentFilter"] ?? null),
@@ -1534,8 +1536,8 @@ class User
         # and categoryId = 0
         $query = "
             select id, name from collages
-            where userId = ? and deleted = 0
-            order by featured desc, name asc      
+            where userId = ? and deleted = '0'
+            order by featured desc, name asc limit 5
         ";
         $ref = $app->dbNew->multi($query, [$userId]);
 
@@ -1544,17 +1546,39 @@ class User
             return [];
         }
 
+        # add pictures (random torrent in collage)
+        $data = [];
+        foreach ($ref as $index => $row) {
+            $query = "
+                select picture from torrents_group
+                join collages_torrents on collages_torrents.groupId = torrents_group.id
+                where torrents_group.picture != '' and collages_torrents.collageId = ?
+                order by rand() limit 1
+            ";
+            $picture = $app->dbNew->single($query, [ $row["id"] ]);
+
+            if (!$picture) {
+                continue;
+            }
+
+            $data[$index]["id"] = $row["id"];
+            $data[$index]["title"] = $row["name"];
+            $data[$index]["picture"] = $picture;
+        }
+
+        /*
         # loop through results
         $data = [];
         foreach ($ref as $row) {
             $query = "
                 select collages_torrents.groupId, torrents_group.picture, torrents_group.category_id
-                from collages_torrents join torrents group on torrents_group.id = collages_torrents.groupId
+                from collages_torrents join torrents_group on torrents_group.id = collages_torrents.groupId
                 where collages_torrents.collageId = ?
                 order by collages_torrents.sort limit 5
             ";
             $data[] = $app->dbNew->multi($query, [ $row["id"] ]);
         }
+        */
 
         $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
         return $data;

@@ -3,15 +3,9 @@
  */
 
 .userSettings {
-  margin-bottom: 5rem !important;
-
   th {
     vertical-align: text-top;
     width: 33% !important;
-  }
-
-  tr {
-    margin-bottom: 2rem;
   }
 
   input[type="text"],
@@ -26,44 +20,9 @@
   }
 }
 
-/* stylesheet gallery */
-#css_gallery {
-  overflow: hidden;
-  margin-top: 10px;
-}
-
-.preview_wrapper {
-  position: relative;
-  display: inline-block;
-  width: 40%;
-  margin: 0 10px;
-}
-
-.preview_image {
-  display: block;
-  cursor: pointer;
-  overflow: hidden;
-
-  img {
-    width: 100%;
-  }
-}
-
-.preview_name {
-  text-align: center;
-  margin-top: 5px;
-}
-
 /**
  * user profile page
  */
-
-.userProfileSidebar,
-#userSettingsSidebar {
-  a {
-    width: 100%;
-  }
-}
 
 #userProfilePercentiles,
 #userProfileRequests {
@@ -84,4 +43,12 @@
   display: flex;
   flex-flow: row wrap;
   gap: 1rem;
+}
+
+/* recent torrent activity, e.g., last five uploads */
+.recentTorrentActivity {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 1rem;
+  align-items: center;
 }

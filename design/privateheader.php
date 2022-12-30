@@ -176,7 +176,14 @@ if (empty($app->userNew->extra['StyleURL'])) {
     <?php }
     */
 
+    /*
     $userStyle = "$ENV->staticServer/css/" . ($app->userNew->extra['StyleName'] ??  "bookish"). ".css";
+    echo $View->pushAsset(
+        $userStyle,
+        'style'
+    );
+    */
+    $userStyle = "$ENV->staticServer/css/" . "bookish". ".css";
     echo $View->pushAsset(
         $userStyle,
         'style'

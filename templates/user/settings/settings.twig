@@ -20,8 +20,9 @@
   <input type="hidden" name="authKey" value="{{ user.extra.AuthKey }}" />
 
   {# site appearance settings #}
+  <section id="siteAppearanceSettings">
   <h3>Site appearance settings</h3>
-  <table id="siteAppearanceSettings" class="userSettings">
+  <table class="userSettings">
 
     {# stylesheet #}
     <tr>
@@ -143,12 +144,68 @@ HTML;
           </td>
         </tr>
 
-      </table> {# siteAppearanceSettings #}
+                {# site font #}
+        <tr>
+          <th>Site font</th>
+
+          <td>
+
+            <select id="font" name="font">
+
+              <option value="" {{ (siteOptions.font == "") ? "selected" : "" }}>
+              Default
+              </option>
+
+              <option value="notoSans" {{ (siteOptions.font == "notoSans") ? "selected" : "" }}>
+              Noto Sans
+              </option>
+
+              <option value="notoSerif" {{ (siteOptions.font == "notoSerif") ? "selected" : "" }}>
+              Noto Serif
+              </option>
+
+{#
+              <option value="luxiSans" {{ (siteOptions.font == "luxiSans") ? "selected" : "" }}>
+              Luxi Sans
+              </option>
+
+              <option value="luxiSerif" {{ (siteOptions.font == "luxiSerif") ? "selected" : "" }}>
+              Luxi Serif
+              </option>
+#}
+              <option value="openDyslexic" {{ (siteOptions.font == "openDyslexic") ? "selected" : "" }}>
+              OpenDyslexic
+              </option>
+
+              <option value="comicNeue" {{ (siteOptions.font == "comicNeue") ? "selected" : "" }}>
+              Comic Neue
+              </option>
+
+            </select>
+
+         </td>
+        </tr>
+
+
+        {# calm mode #}
+        <tr>
+          <th>Calm mode</th>
+
+          <td>
+                <input type="checkbox" id="desaturate" name="desaturate" value="desaturate" {{ (siteOptions.desaturate) ? "checked" : "" }} />
+                <label for="desaturate">Browse the site in grayscale</label>
+         </td>
+        </tr>
+ 
+
+      </table>
+      </section> {# siteAppearanceSettings #}
 
 
 {# torrent settings #}
+<section id="torrentSettings">
 <h3>Torrent settings</h3>
-      <table id="torrentSettings" class="userSettings">
+      <table class="userSettings">
 
         {# default search type #}
         <tr>
@@ -266,13 +323,15 @@ HTML;
            <label for="showTagFilter">Display official tag filters</label>
           </td>
         </tr>
-      </table> {# torrentSettings #}
+      </table>
+      </section> {# torrentSettings #}
 
 
 
       {# community settings #}
+      <section id="communitySettings">
       <h3>Community settings</h3>
-      <table id="communitySettings" class="userSettings">
+      <table class="userSettings">
 
 {#
         <!-- Posts per page (forums) -->
@@ -345,12 +404,14 @@ HTML;
             {% endif %} {# if badges is empty #}
           </td>
         </tr>
-      </table> {# communitySettings #}
+      </table>
+      </section> {# communitySettings #}
 
 
       {# notification settings #}
+      <section id="notificationSettings">
       <h3>Notification settings</h3>
-      <table id="notificationSettings" class="userSettings">
+      <table class="userSettings">
 
         {# automatic thread subscriptions #}
         <tr>
@@ -374,12 +435,14 @@ HTML;
 
         {# legacy call to NotificationsManagerView::render_settings #}
         {{ notificationsManagerSettings|raw }}
-      </table> {# notificationSettings #}
+      </table>
+      </section> {# notificationSettings #}
 
 
       {# profile settings #}
+      <section id="profileSettings">
       <h3>Profile settings</h3>
-      <table id="profileSettings" class="userSettings">
+      <table class="userSettings">
 
         {# avatar uri #}
         <tr>
@@ -471,50 +534,12 @@ HTML;
           </td>
         </tr>
 
-      </table> {# profileSettings #}
+      </table>
+      </section> {# profileSettings #}
 
 
 {# PARANOIA TODO: THIS WHOLE SECTION IS FUCKED UP
-
-      <!-- Paranoia -->
-      <table cellpadding="6" cellspacing="1" border="0" width="100%" class="userSettings"
-        id="paranoia_settings">
-        <tr class="colhead_dark">
-          <td colspan="2">
-            <strong>Paranoia</strong>
-          </td>
-        </tr>
-
-        <tr>
-          <td class="label">&nbsp;</td>
-          <td>
-            <p>
-              <strong>Select the profile elements you wish to display to other users.</strong>
-            </p>
-
-            <p>
-              For example, if you select "Show count" for "Requests (filled)," the number of requests you have filled
-              will be visible.
-              If you select "Show bounty," the amount of request bounty you have received will be visible.
-              If you select "Show list," the full list of requests you have filled will be visible.
-            </p>
-
-            <p>
-              <span class="warning">
-                Note: Paranoia has nothing to do with your security on this site.
-                These settings only determine if others can view your site activity.
-                Some information will remain available in the site log.
-              </span>
-            </p>
-          </td>
-        </tr>
-
         <!-- Recent activity -->
-        <tr id="para_lastseen_tr">
-          <td class="label">
-            <strong>Recent activity</strong>
-          </td>
-
           <td>
             <label>
               <input type="checkbox" name="p_lastseen" <?=checked(!in_array('lastseen', $Paranoia))?>
@@ -522,28 +547,8 @@ HTML;
               Last seen
             </label>
           </td>
-        </tr>
-
-        <!-- Presets -->
-        <tr id="para_presets_tr">
-          <td class="label">
-            <strong>Presets</strong>
-          </td>
-
-          <td>
-            <input type="button" onclick="ParanoiaResetOff();" value="Everything" />
-            <input type="button" onclick="ParanoiaResetStats();" value="Stats Only" />
-            <input type="button" onclick="ParanoiaResetOn();" value="Nothing" />
-          </td>
-        </tr>
-
 
         <!-- Statistics -->
-        <tr id="para_stats_tr">
-          <td class="label">
-            <strong>Statistics</strong>
-          </td>
-
           <td>
             <?php
 $UploadChecked = checked(!in_array('uploaded', $Paranoia));
@@ -555,21 +560,14 @@ $RatioChecked = checked(!in_array('ratio', $Paranoia));
             <label><input type="checkbox" name="p_downloaded" onchange="AlterParanoia();" <?=$DownloadChecked?> /> Downloaded</label>&ensp;
             <label><input type="checkbox" name="p_ratio" onchange="AlterParanoia();" <?=$RatioChecked?> /> Ratio</label>
           </td>
-        </tr>
 
         <!-- Required Ratio -->
-        <tr id="para_reqratio_tr">
-          <td class="label">
-            <strong>Required Ratio</strong>
-          </td>
-
           <td>
             <label>
               <input type="checkbox" name="p_requiredratio" <?=checked(!in_array('requiredratio', $Paranoia))?>
               /> Required Ratio
             </label>
           </td>
-        </tr>
 
         <!-- Comments (torrents) -->
         <tr id="para_comments_tr">
@@ -611,11 +609,6 @@ $RatioChecked = checked(!in_array('ratio', $Paranoia));
           </td>
 
           <td>
-            <?php
-$RequestsFilledCountChecked = checked(!in_array('requestsfilled_count', $Paranoia));
-$RequestsFilledBountyChecked = checked(!in_array('requestsfilled_bounty', $Paranoia));
-$RequestsFilledListChecked = checked(!in_array('requestsfilled_list', $Paranoia));
-?>
 
             <label><input type="checkbox" name="p_requestsfilled_count" onchange="AlterParanoia();" <?=$RequestsFilledCountChecked?> /> Show
               count</label>&nbsp;
@@ -632,11 +625,6 @@ $RequestsFilledListChecked = checked(!in_array('requestsfilled_list', $Paranoia)
           </td>
 
           <td>
-            <?php
-$RequestsVotedCountChecked = checked(!in_array('requestsvoted_count', $Paranoia));
-$RequestsVotedBountyChecked = checked(!in_array('requestsvoted_bounty', $Paranoia));
-$RequestsVotedListChecked = checked(!in_array('requestsvoted_list', $Paranoia));
-?>
 
             <label><input type="checkbox" name="p_requestsvoted_count" onchange="AlterParanoia();" <?=$RequestsVotedCountChecked?> /> Show
               count</label>&nbsp;
@@ -758,20 +746,13 @@ list($ArtistsAdded) = $app->dbOld->next_record();
             </label>
           </td>
         </tr>
-
-        <!-- Preview paranoia -->
-        <tr id="para_preview_tr">
-          <td></td>
-          <td><a href="#" id="preview_paranoia" class="brackets">Preview paranoia</a></td>
-        </tr>
-      </table>
-
 END PARANOIA CLUSTERFUCK #}
 
 
 {# security settings #}
+<section id="securitySettings">
 <h3>Security settings</h3>
-      <table id="securitySettings" class="userSettings">
+      <table class="userSettings">
       
 
         {# 2fa (totp) #}
@@ -1070,7 +1051,8 @@ END PARANOIA CLUSTERFUCK #}
             </p>
           </td>
         </tr>
-      </table> {# securitySettings #}
+      </table>
+      </section> {# securitySettings #}
 
   </form>
 

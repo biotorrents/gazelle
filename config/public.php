@@ -305,10 +305,12 @@ ENV::setPub(
 # default site options
 $defaultSiteOptions = [
   "autoSubscribe" => true,
+  "font" => "",
   "communityStats" => true,
   "coverArtCollections" => 25,
   "coverArtTorrents" => true,
   "coverArtTorrentsExtra" => true,
+  "desaturate" => false,
   "disableAvatars" => false,
   "disableGrouping" => false,
   "listUnreadsFirst" => true,

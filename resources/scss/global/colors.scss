@@ -135,3 +135,15 @@ $shadow: 2px 2px 10px -2px slategray;
     padding: 0;
   }
 }
+
+/**
+ * calm mode: desaturate the site
+ * default is 25% grayscale
+ */
+body {
+  filter: grayscale(25%);
+
+  &.desaturate {
+    filter: grayscale(100%);
+  }
+}

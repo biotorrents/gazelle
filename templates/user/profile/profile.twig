@@ -45,57 +45,59 @@
 
 {# recent snatches #}
 {% if siteOptions.recentSnatches and recentSnatches is not empty %}
+<section id="recentSnatches">
+
 <h3>Recent snatches</h3>
 
-<section id="recentSnatches" class="collage_images">
-
+<div class="recentTorrentActivity">
 {% for item in recentSnatches %}
-<div style="width: 20%;" class="collage_image">
-  <a href="torrents/{{ item.id }}">
+<div>
+  <a href="/torrents/{{ item.id }}">
     <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%" />
   </a>
 </div>
 {% endfor %}
-
-</section>
-{% endif %}
-
-
-{# recent requests #}
-{% if siteOptions.recentRequests and recentRequests is not empty %}
-<h3>Recent requests</h3>
-
-<section id="recentRequests" class="collage_images">
-
-{% for item in recentRequests %}
-<div style="width: 20%;" class="collage_image">
-  <a href="torrents/{{ item.id }}">
-    <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%" />
-  </a>
 </div>
-{% endfor %}
-
 </section>
 {% endif %}
 
 
 {# recent uploads #}
 {% if siteOptions.recentUploads and recentUploads is not empty %}
-<h3>Recent uploads</h3>
+<section id="recentUploads">
 
-<section id="recentUploads" class="collage_images">
+<h3>Recent uploads</h3>
+<div class="recentTorrentActivity">
 
 {% for item in recentUploads %}
-<div style="width: 20%;" class="collage_image">
-  <a href="torrents/{{ item.id }}">
+<div>
+  <a href="/torrents/{{ item.id }}">
     <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%" />
   </a>
 </div>
 {% endfor %}
-
+</div>
 </section>
 {% endif %}
 
+
+{# recent requests #}
+{% if siteOptions.recentRequests and recentRequests is not empty %}
+<section id="recentRequests">
+
+<h3>Recent requests</h3>
+<div class="recentTorrentActivity">
+
+{% for item in recentRequests %}
+<div>
+  <a href="/torrents/{{ item.id }}">
+    <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%" />
+  </a>
+</div>
+{% endfor %}
+</div>
+</section>
+{% endif %}
 
 
 {# recent requests #}
@@ -197,45 +199,26 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
 
 
 
+
 {# recent collages #}
-{#
-    <div class="box" id="collage<?=$CollageID?>_box">
-      <div class="head">
-        <?=Text::esc($CName)?> - <a
-          href="collages.php?id=<?=$CollageID?>" class="brackets">See
-          full</a>
-        <span class="u-pull-right">
-          <a data-toggle-target="#collage<?=$CollageID?>_box .collage_images"
-            data-toggle-replace="Show" class="brackets">Hide</a>
-        </span>
-      </div>
-      <div id="user_collage_images" class="collage_images" data-wall-child=".collage_image" data-wall-size="5">
-        <?php foreach ($Collage as $C) {
-        $Group = Torrents::get_groups(array($C['GroupID']), true, true, false);
-        extract(Torrents::array_group($Group[$C['GroupID']]));
+{% if siteOptions.recentCollages and recentCollages is not empty %}
+<section id="recentCollages">
 
-        if (!$C['WikiImage']) {
-            $C['WikiImage'] = staticServer.'common/noartwork.png';
-        }
+<h3>Recent collages</h3>
+<div class="recentTorrentActivity">
 
-        $Name = '';
-        $Name .= Artists::display_artists($Artists, false, true);
-        $Name .= $GroupName; ?>
-        <div class="collage_image">
-          <a href="torrents.php?id=<?=$GroupID?>">
-            <img class="tooltip" title="<?=$Name?>"
-              src="<?=ImageTools::process($C['WikiImage'], 'thumb')?>"
-              alt="<?=$Name?>" width="100%" />
-          </a>
-        </div>
-        <?php
-    } ?>
-      </div>
-    </div>
-    <?php
-}
-?>
-#}
+{% for item in recentCollages %}
+<div>
+  <a href="/collages/{{ item.id }}">
+    <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%" />
+  </a>
+</div>
+{% endfor %}
+</div>
+</section>
+{% endif %}
+
+
 
 
 

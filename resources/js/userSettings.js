@@ -6,8 +6,34 @@
   "use strict";
 
   /**
+   * site appearance filter previews
+   */
+
+  // font
+  $("#font").change(() => {
+    let fontSelection = $("#font").children("option:selected").val();
+    let fontClasses = [
+      "notoSans",
+      "notoSerif",
+      "luxiSans",
+      "luxiSerif",
+      "openDyslexic",
+      "comicNeue",
+    ];
+
+    $("body").removeClass(fontClasses);
+    $("body").addClass(fontSelection);
+  });
+
+  // desaturate
+  $("#desaturate").change(() => {
+    $("body").toggleClass("desaturate");
+  });
+
+  /**
    * create 2fa (totp)
    */
+  $("#twoFactorResponse").hide();
   $("#createTwoFactor").click(() => {
     // the data to send
     var request = {
@@ -26,6 +52,7 @@
 
     // ajax request
     $.post("/api/internal/createTwoFactor", request, (response) => {
+      $("#twoFactorResponse").show();
       $("#twoFactorResponse").html(response.data);
 
       if (response.status === "success") {
@@ -45,6 +72,7 @@
   /**
    * delete 2fa (totp)
    */
+  $("#twoFactorResponse").hide();
   $("#deleteTwoFactor").click(() => {
     // the data to send
     var request = {

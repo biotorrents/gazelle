@@ -20,13 +20,15 @@ body {
   }
 }
 
-/*
-header,
-.header {
-  margin: 2rem;
-  text-align: center;
+/* headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $notoSerif, serif;
 }
-*/
 
 /* links */
 a {
