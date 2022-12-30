@@ -141,7 +141,6 @@ View::header('Staff Tools');
 
   // begin Development category
   $ToolsHTML = "";
-  create_row("Clear/view a cache key", "tools.php?action=clear_cache", check_perms("users_mod"));
   create_row("Schedule", "schedule.php?auth=$user[AuthKey]", check_perms("site_debug"));
   create_row("Service stats", "tools.php?action=service_stats", check_perms("site_debug"));
   create_row("Miscellaneous values", "tools.php?action=misc_values", check_perms('users_mod'));

@@ -46,10 +46,6 @@ $Feed = new Feed();
 
 # Finally
 switch ($_REQUEST['action']) {
-  // Services
-  case 'get_host':
-    include serverRoot.'/sections/tools/services/get_host.php';
-    break;
 
   // Managers
   case 'forum':
@@ -373,10 +369,6 @@ switch ($_REQUEST['action']) {
   // END Data
 
   // Misc
-  case 'clear_cache':
-    include serverRoot.'/sections/tools/development/clear_cache.php';
-    break;
-
   case 'manipulate_tree':
     include serverRoot.'/sections/tools/misc/manipulate_tree.php';
     break;

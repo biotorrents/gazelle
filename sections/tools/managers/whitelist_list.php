@@ -1,70 +1,53 @@
 <?php
-#declare(strict_types = 1);
 
-if (!check_perms('admin_whitelist')) {
+declare(strict_types=1);
+
+
+/**
+ * torrent client whitelist
+ */
+
+$app = App::go();
+
+# https://github.com/paragonie/anti-csrf
+Http::csrf();
+
+if (!check_perms("admin_whitelist")) {
     error(403);
 }
 
-View::header('Client Whitelist Manager');
-$db->query('
-  SELECT id, vstring, peer_id
-  FROM xbt_client_whitelist
-  ORDER BY peer_id ASC');
-?>
-<div class="header">
-  <h2>Client Whitelist</h2>
-</div>
-<div class="box pad">
-<form class="add_form" name="clients" action="" method="post">
-  <input type="hidden" name="action" value="whitelist_alter" />
-  <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
-  <table>
-    <tr class="colhead">
-      <td colspan="4">Add client</td>
-    </tr>
-    <tr class="row">
-      <td>
-        <input type="text" size="60" name="client" placeholder="Client name" />
-      </td>
-      <td>
-        <input type="text" size="10" name="peer_id" placeholder="Peer ID" />
-      </td>
-      <td>
-        <input type="submit" class="button-primary" value="Create" />
-      </td>
-    </tr>
-  </table>
-</form>
-<table width="100%">
-  <tr class="colhead">
-    <td>Client</td>
-    <td>Peer ID</td>
-    <td>Submit</td>
-  </tr>
-</table>
-<?php
-while (list($ID, $Client, $Peer_ID) = $db->next_record()) {
-    ?>
-<form class="manage_form" name="clients" action="" method="post">
-  <input type="hidden" name="action" value="whitelist_alter" />
-  <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
-  <table>
-    <tr class="row">
-      <td>
-        <input type="hidden" name="id" value="<?=$ID?>" />
-        <input type="text" size="60" name="client" value="<?=$Client?>" />
-      </td>
-      <td>
-        <input type="text" size="10" name="peer_id" value="<?=$Peer_ID?>" />
-      </td>
-      <td>
-        <input type="submit" name="submit" class="button-primary" value="Edit" />
-        <input type="submit" name="submit" value="Delete" />
-      </td>
-    </tr>
-  </table>
-</form>
-<?php
-} ?>
-</div>
-<?php View::footer(); ?>
+# query
+$post = Http::query("post");
+#!d($post);
+
+# create
+$post["create"] ??= null;
+if (!empty($post) && $post["create"]) {
+    $query = "insert into xbt_client_whitelist (peer_id, vstring) values (?, ?)";
+    $app->dbNew->do($query, [ $post["peerId"], $post["clientName"] ]);
+}
+
+# read
+$query = "select id, vstring, peer_id from xbt_client_whitelist order by peer_id asc";
+$ref = $app->dbNew->multi($query, []);
+#!d($ref);exit;
+
+# update
+$post["update"] ??= null;
+if (!empty($post) && $post["update"]) {
+    $query = "update xbt_client_whitelist set peer_id = ?, vstring = ? where id = ?";
+    $app->dbNew->do($query, [ $post["peerId"], $post["clientName"], $post["id"] ]);
+}
+
+# delete
+$post["delete"] ??= null;
+if (!empty($post) && $post["delete"]) {
+    $query = "delete from xbt_client_whitelist where id = ?";
+    $app->dbNew->do($query, [ $post["id"] ]);
+}
+
+# twig
+$app->twig->display("admin/clientWhitelist.twig", [
+    "sidebar" => true,
+    "clients" => $ref,
+]);
