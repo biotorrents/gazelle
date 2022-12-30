@@ -26,13 +26,31 @@
   });
 
   // desaturate
-  $("#desaturate").change(() => {
-    $("body").toggleClass("desaturate");
+  $("#desaturate").click(() => {
+    let modeSelection = $("#desaturate").prop("checked");
+    let modeClasses = ["desaturate", "darkMode"];
+
+    if (modeSelection) {
+      $("#darkMode").prop("checked", false);
+      $("body").removeClass(modeClasses);
+      $("body").addClass("desaturate");
+    } else {
+      $("body").removeClass(modeClasses);
+    }
   });
 
   // dark mode
-  $("#darkMode").change(() => {
-    $("body").toggleClass("darkMode");
+  $("#darkMode").click(() => {
+    let modeSelection = $("#darkMode").prop("checked");
+    let modeClasses = ["desaturate", "darkMode"];
+
+    if (modeSelection) {
+      $("#desaturate").prop("checked", false);
+      $("body").removeClass(modeClasses);
+      $("body").addClass("darkMode");
+    } else {
+      $("body").removeClass(modeClasses);
+    }
   });
 
   /**

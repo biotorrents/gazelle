@@ -1315,6 +1315,11 @@ class User
                 "unseededAlerts" => Esc::bool($data["unseededAlerts"] ?? null),
             ];
 
+            # this shouldn't be possible with normal ui usage
+            if ($siteOptions["desaturate"] && $siteOptions["darkMode"]) {
+                throw new Exception("you can't use grayscale and dark mode at the same time");
+            }
+
             $query = "update users_info set siteOptions = ? where userId = ?";
             $app->dbNew->do($query, [json_encode($siteOptions), $userId]);
 
