@@ -10,7 +10,7 @@ declare(strict_types=1);
 $ENV = ENV::go();
 $Sep = '&emsp;';
 
-$LastActive = $LastActive ?? ['LastUpdate' => null, 'IP' => null];
+#$LastActive = $LastActive ?? ['LastUpdate' => null, 'IP' => null];
 
 # End <main#content.container>, begin <footer>
 # #content is Gazelle, .container is Skeleton
@@ -25,6 +25,7 @@ echo $HTML = <<<HTML
 </p>
 HTML;
 
+/*
 # Sessions
 if (count($UserSessions ?? []) > 1) {
     foreach ($UserSessions as $ThisSessionID => $Session) {
@@ -59,6 +60,7 @@ if (!empty($LastActive)) {
     </p>
 HTML;
 }
+*/
 
 # Site meta
 $Year = date('Y');

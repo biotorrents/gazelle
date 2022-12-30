@@ -247,6 +247,7 @@
         {% block footer %}
         {% if authenticated %}
         {# private #}
+        {{ include("_base/privateFooter.twig") }}
 
         {% else %}
         {# public #}

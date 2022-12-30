@@ -107,6 +107,8 @@ $torrentStats = $app->userNew->torrentStats($userId);
 $ratio = $torrentStats["ratio"];
 unset($torrentStats["ratio"]);
 
+$torrentClients = $torrentStats["torrentClients"];
+unset($torrentStats["torrentClients"]);
 
 $percentileStats = $app->userNew->percentileStats($userId);
 #!d($percentileStats);exit;
@@ -119,7 +121,7 @@ $app->twig->display("user/profile/profile.twig", [
   "sidebar" => true,
 
   #"css" => [""],
-  "js" => ["user", "requests", "comments", "wall", "vendor/chart.min"],
+  "js" => ["user", "requests", "wall", "vendor/chart.min"],
 
   "data" => $data,
   "siteOptions" => $data["extra"]["siteOptions"],

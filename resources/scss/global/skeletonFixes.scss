@@ -5,6 +5,7 @@
 
 /**
  * set heading font size
+ * here are the (huge) defaults
  *
  * h1 { font-size: 5.0rem; }
  * h2 { font-size: 4.2rem; }
@@ -14,33 +15,33 @@
  * h6 { font-size: 1.5rem; }
  */
 
-@mixin heading-attributes($size) {
+@mixin headingAttributes($size) {
   font-size: $size !important;
   margin-top: 2rem !important;
 }
 
 h1:not(#logo) {
-  @include heading-attributes(2.5rem);
+  @include headingAttributes(2.5rem);
 }
 
 h2 {
-  @include heading-attributes(2.1rem);
+  @include headingAttributes(2.1rem);
 }
 
 h3 {
-  @include heading-attributes(1.8rem);
+  @include headingAttributes(1.8rem);
 }
 
 h4 {
-  @include heading-attributes(1.5rem);
+  @include headingAttributes(1.5rem);
 }
 
 h5 {
-  @include heading-attributes(1.2rem);
+  @include headingAttributes(1.2rem);
 }
 
 h6 {
-  @include heading-attributes(0.75rem);
+  @include headingAttributes(0.75rem);
 }
 
 /* correct content/sidebar overflow */
@@ -65,13 +66,6 @@ legend {
 }
 
 /* tables usually containing forms */
-table.store_table,
-form.search_form,
-table.collage_edit,
-table.forum_index,
-form[name="notification"],
-div.permission_container,
-table.user_options,
 table.skeletonFix {
   /*
   td {

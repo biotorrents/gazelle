@@ -346,48 +346,6 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
 
 
 
-{#
-<section>
-  <canvas class="chart" id="canvas"></canvas>
-<script>
-    fetch('https://unpkg.com/world-atlas/countries-50m.json')
-      .then((r) => r.json())
-      .then((data) => {
-        const countries = ChartGeo.topojson.feature(data, data.objects.countries).features;
-  
-        const chart = new Chart(document.getElementById('canvas').getContext('2d'), {
-          type: 'choropleth',
-          data: {
-            labels: countries.map((d) => d.properties.name),
-            datasets: [
-              {
-                label: 'Countries',
-                data: countries.map((d) => ({
-                  feature: d,
-                  value: Math.random(),
-                })),
-              },
-            ],
-          },
-          options: {
-            showOutline: true,
-            showGraticule: true,
-            plugins: {
-              legend: {
-                display: false,
-              },
-            },
-            scales: {
-              xy: {
-                projection: 'equalEarth',
-              },
-            },
-          },
-        });
-      });
-</script>
-</section>
-#}
 
 
 {% endblock %}
@@ -397,82 +355,53 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
 {{ include("user/profile/sidebar.twig") }}
 
 {% endblock %}
-{# linkbox # }
-<div class="linkbox">
 
 
 
+{# misc shit to incorporate
 
 
 
-
-
-  <div class="sidebar one-third column">
-
-if (!$OwnProfile && !$user['DisablePoints']) { ?>
-        <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Last
-          seen: <?=$LastAccess?>
-          </li>
-          <?php
-  }
-  if (($Override = check_paranoia_here('uploaded'))) {
-      ?>
           <li
             class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
             title="<?=Format::get_size($Uploaded, 5)?>">Uploaded:
             <?=Format::get_size($Uploaded)?>
           </li>
-          <?php
-  }
-  if (($Override = check_paranoia_here('downloaded'))) {
-      ?>
+
+
           <li
             class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
             title="<?=Format::get_size($Downloaded, 5)?>">Downloaded:
             <?=Format::get_size($Downloaded)?>
           </li>
-          <?php
-  }
-  if (($Override = check_paranoia_here('requiredratio')) && isset($RequiredRatio)) {
-      ?>
-            <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Required
-              Ratio: <span class="tooltip"
-                title="<?=Text::float((float)$RequiredRatio, 5)?>"><?=Text::float((float)$RequiredRatio, 2)?></span></li>
-              <?php
-  }
-  if (($Override = check_paranoia_here('downloaded'))) {
-      ?>
+
+
+
+
+
               <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Total
                 Seeding: <span class="tooltip"
                   title="<?=Format::get_size($TotalSeeding)?>"><?=Format::get_size($TotalSeeding)?>
                   </li>
-                  <?php
-  }
-  if ($OwnProfile || ($Override = check_paranoia_here(false)) || check_perms('users_mod')) {
-      ?>
+
+
+
+
                   <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>><a
                       href="userhistory.php?action=token_history&amp;userid=<?=$UserID?>">Tokens</a>:
                     <?=Text::float($FLTokens)?>
                     </li>
-                    <?php
-  }
-  if (($OwnProfile || check_perms('users_mod')) && $Warned) {
-      ?>
+
+
                     <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Warning
                       expires in: <?=time_diff((date('Y-m-d H:i', strtotime($Warned))))?>
                       </li>
-                      <?php
-  } ?>
-      </ul>
-    </div>
-    <?php
 
 
 
 
 
 
-?>
     <?php
      if (check_perms('users_view_ips', $Class)) {
          $db->query("
@@ -496,15 +425,7 @@ if (!$OwnProfile && !$user['DisablePoints']) { ?>
         <?php
       }
       }
-     if (check_perms('users_mod', $Class)) {
-         ?>
-        <li>Stats: N/A <a
-            href="userhistory.php?action=stats&amp;userid=<?=$UserID?>"
-            class="brackets">View</a></li>
-        <?php
-     } ?>
-      </ul>
-    </div>
+
 
     <div class="box box_info box_userinfo_personal">
       <div class="head colhead_dark">Personal</div>
@@ -528,40 +449,10 @@ if (!empty($UserInfo['ExtraClasses'])) {
         </li>
         <?php
 }
-// An easy way for people to measure the paranoia of a user, for e.g. contest eligibility
-if ($ParanoiaLevel == 0) {
-    $ParanoiaLevelText = 'Off';
-} elseif ($ParanoiaLevel == 1) {
-    $ParanoiaLevelText = 'Very Low';
-} elseif ($ParanoiaLevel <= 5) {
-    $ParanoiaLevelText = 'Low';
-} elseif ($ParanoiaLevel <= 20) {
-    $ParanoiaLevelText = 'High';
-} else {
-    $ParanoiaLevelText = 'Very high';
-}
-?>
-        <li>Paranoia level: <span class="tooltip"
-            title="<?=$ParanoiaLevel?>"><?=$ParanoiaLevelText?></span></li>
-        <?php if (check_perms('users_view_email', $Class) || $OwnProfile) { ?>
-        <li>Email: <a href="mailto:<?=Text::esc($Email)?>"><?=Text::esc($Email)?></a>
-        </li>
-        <?php }
 
-if (check_perms('users_view_ips', $Class)) {
-    $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]'; ?>
-        <li>IP: <?=Text::esc($IP)?>
-        </li>
-        <li>Host: <?=Tools::get_host_by_ajax($IP)?>
-        </li>
-        <?php
-}
 
 if (check_perms('users_view_keys', $Class) || $OwnProfile) {
     ?>
-        <li>Passkey: <a href="#" id="passkey"
-            onclick="togglePassKey('<?=Text::esc($torrent_pass)?>'); return false;"
-            class="brackets">View</a></li>
         <?php
 }
 if (check_perms('users_view_invites')) {
@@ -597,26 +488,11 @@ if (!isset($SupportFor)) {
     WHERE UserID = '.$user['ID']);
     list($SupportFor) = $db->next_record();
 }
-if ($Override = check_perms('users_mod') || $OwnProfile || !empty($SupportFor)) {
-    ?>
-        <li<?=(($Override === 2 || $SupportFor) ? ' class="paranoia_override"' : '')?>>Clients:
-          <?php
-    $db->query("
-      SELECT DISTINCT useragent
-      FROM xbt_files_users
-      WHERE uid = $UserID");
-    $Clients = $db->collect(0);
-    echo implode('; ', $Clients); ?>
-          </li>
-          <?php
-}
-?>
-      </ul>
-    </div>
-    <?php
-include(serverRoot.'/sections/user/community_stats.php');
-?>
-  </div>
+
+
+
+
+
   <div class="main_column two-thirds column">
     <?php
 
@@ -1000,44 +876,7 @@ if (!$DisablePoints) {
       <?php
   }
 
-  if (check_perms('users_edit_password')) {
-      ?>
-      <tr>
-        <td class="label">New password:</td>
-        <td>
-          <textarea id="password_display" name="password_display" rows="2" cols="50" onclick="this.select();"
-            readonly></textarea>
-          <button type="button" id="password_create" onclick="pwgen('password_display');">Generate</button>
-        </td>
-      </tr>
-      <?php
-  }
 
-    if (check_perms('users_edit_badges')) {
-        ?>
-      <tr id="user_badge_edit_tr">
-        <td class="label">Badges Owned:</td>
-        <td>
-          <?php
-    $AllBadges = Badges::getAllBadges();
-        $UserBadgeIDs = [];
-        foreach (array_keys(Badges::getBadges($UserID)) as $b) {
-            $UserBadgeIDs[] = $b;
-        }
-        $i = 0;
-        foreach (array_keys($AllBadges) as $BadgeID) {
-            ?><input type="checkbox" name="badges[]" class="badge_checkbox"
-            value="<?=$BadgeID?>" <?=(in_array($BadgeID, $UserBadgeIDs)) ? " checked" : ""?>/><?=Badges::displayBadge($BadgeID, true)?>
-          <?php $i++;
-            if ($i % 8 == 0) {
-                echo "<br />";
-            }
-        } ?>
-        </td>
-      </tr>
-      <?php
-    } ?>
-    </table>
 
     <?php if (check_perms('users_warn')) { ?>
     <table class="box skeletonFix" id="warn_user_box">
@@ -1128,75 +967,6 @@ if (!$DisablePoints) {
       </tr>
     </table>
     <?php }  ?>
-    <table class="box skeletonFix" id="user_privs_box">
-      <tr class="colhead">
-        <td colspan="2">
-          User Privileges
-        </td>
-      </tr>
-      <?php if (check_perms('users_disable_posts') || check_perms('users_disable_any')) {
-        ?>
-      <tr>
-        <td class="label">Disable:</td>
-        <td>
-          <input type="checkbox" name="DisablePosting" id="DisablePosting" <?php if ($DisablePosting==1) { ?>
-          checked="checked"
-          <?php } ?> /> <label for="DisablePosting">Posting</label>
-          <?php if (check_perms('users_disable_any')) { ?>
-          |
-          <input type="checkbox" name="DisableAvatar" id="DisableAvatar" <?php if ($DisableAvatar==1) { ?>
-          checked="checked"
-          <?php } ?> /> <label for="DisableAvatar">Avatar</label> |
-          <input type="checkbox" name="DisableForums" id="DisableForums" <?php if ($DisableForums==1) { ?>
-          checked="checked"
-          <?php } ?> /> <label for="DisableForums">Forums</label> |
-          <input type="checkbox" name="DisableIRC" id="DisableIRC" <?php if ($DisableIRC==1) { ?> checked="checked"
-          <?php } ?> /> <label for="DisableIRC">IRC</label> |
-          <input type="checkbox" name="DisablePM" id="DisablePM" <?php if ($DisablePM==1) { ?> checked="checked"
-          <?php } ?> /> <label for="DisablePM">PM</label> |
-          <br /><br />
-
-          <input type="checkbox" name="DisableLeech" id="DisableLeech" <?php if ($DisableLeech==0) { ?> checked="checked"
-          <?php } ?> /> <label for="DisableLeech">Leech</label> |
-          <input type="checkbox" name="DisableRequests" id="DisableRequests" <?php if ($DisableRequests==1) { ?>
-          checked="checked"
-          <?php } ?> /> <label for="DisableRequests">Requests</label>
-          |
-          <input type="checkbox" name="DisableUpload" id="DisableUpload" <?php if ($DisableUpload==1) { ?>
-          checked="checked"
-          <?php } ?> /> <label for="DisableUpload">Torrent
-            upload</label> |
-          <input type="checkbox" name="DisablePoints" id="DisablePoints" <?php if ($DisablePoints==1) { ?>
-          checked="checked"
-          <?php } ?> /> <label for="DisablePoints"><?=bonusPoints?></label>
-          <br /><br />
-
-          <input type="checkbox" name="DisableTagging" id="DisableTagging" <?php if ($DisableTagging==1) { ?>
-          checked="checked"
-          <?php } ?> /> <label for="DisableTagging" class="tooltip"
-            title="This only disables a user's ability to delete tags.">Tagging</label> |
-          <input type="checkbox" name="DisableWiki" id="DisableWiki" <?php if ($DisableWiki==1) { ?> checked="checked"
-          <?php } ?> /> <label for="DisableWiki">Wiki</label> |
-          <input type="checkbox" name="DisablePromotion" id="DisablePromotion" <?php if ($DisablePromotion==1) { ?>
-          checked="checked"
-          <?php } ?> /> <label
-            for="DisablePromotion">Promotions</label> |
-          <input type="checkbox" name="DisableInvites" id="DisableInvites" <?php if ($DisableInvites==1) { ?>
-          checked="checked"
-          <?php } ?> /> <label for="DisableInvites">Invites</label>
-        </td>
-      </tr>
-      <tr>
-        <td class="label">Hacked:</td>
-        <td>
-          <input type="checkbox" name="SendHackedMail" id="SendHackedMail" />
-          <label for="SendHackedMail">Send hacked account email</label>
-        </td>
-      </tr>
-
-      <?php
-    }
-    }
 
   if (check_perms('users_disable_any')) {
       ?>
@@ -1223,77 +993,9 @@ if (!$DisablePoints) {
             <?php } ?>
           </select>
         </td>
-      </tr>
-      <tr>
-        <td class="label">User reason:</td>
-        <td>
-          <input type="text" class="wide_input_text" name="UserReason" />
-        </td>
-      </tr>
-      <tr>
-        <td class="label tooltip" title="Enter a comma-delimited list of forum IDs.">Restricted forums:</td>
-        <td>
-          <input type="text" class="wide_input_text" name="RestrictedForums"
-            value="<?=Text::esc($RestrictedForums)?>" />
-        </td>
-      </tr>
-      <tr>
-        <td class="label tooltip" title="Enter a comma-delimited list of forum IDs.">Extra forums:</td>
-        <td>
-          <input type="text" class="wide_input_text" name="PermittedForums"
-            value="<?=Text::esc($PermittedForums)?>" />
-        </td>
-      </tr>
 
-      <?php
-  } ?>
-    </table>
-    <?php if (check_perms('users_logout')) { ?>
-    <table class="box skeletonFix" id="session_box">
-      <tr class="colhead">
-        <td colspan="2">
-          Session
-        </td>
-      </tr>
-      <tr>
-        <td class="label">Reset session:</td>
-        <td><input type="checkbox" name="ResetSession" id="ResetSession" /></td>
-      </tr>
-      <tr>
-        <td class="label">Log out:</td>
-        <td><input type="checkbox" name="LogOut" id="LogOut" /></td>
-      </tr>
-    </table>
-    <?php
-  }
-?>
-    <table class="box skeletonFix" id="submit_box">
-      <tr class="colhead">
-        <td colspan="2">
-          Submit
-        </td>
-      </tr>
-      <tr>
+
         <td class="label tooltip" title="This message will be entered into staff notes only.">Reason:</td>
-        <td>
           <textarea rows="2" class="wide_input_text" name="Reason" id="Reason" onkeyup="resize('Reason');"></textarea>
-        </td>
-      </tr>
 
-      <tr>
-        <td align="right" colspan="2">
-          <input type="submit" class="button-primary" value="Save changes" />
-        </td>
-      </tr>
-    </table>
-  </form>
-  <?php
-}
-?>
-</div>
-</div>
-<?php View::footer();
-#}
-
-
-
+          #}

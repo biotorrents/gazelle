@@ -1,6 +1,6 @@
 {# avatar #}
-<section class="userProfileSidebar">
-	<figure class="userProfileAvatar">
+<section>
+	<figure id="userProfileAvatar">
 		{{ avatar|raw }}
 
 		<figcaption>
@@ -24,8 +24,7 @@
 </section>
 
 
-<section
-	class="userProfileSidebar">
+<section>
 	{# user profile actions #}
 	<h3>Actions</h3>
 
@@ -79,7 +78,9 @@
 				Adjust your gift for 15% tax?
 			</label>
 
-			<a id="giftBonusPointsSubmit" class="button button-green">gift{{ env.bonusPoints }}</a>
+			<a id="giftBonusPointsSubmit" class="button button-green">
+				gift{{ env.bonusPoints }}
+			</a>
 
 		</form>
 	{% endif %}
@@ -88,7 +89,7 @@
 
 
 {# user stats #}
-<section class="userProfileSidebar">
+<section>
 	<h3>Percentile ranks</h3>
 
 	<p>Hover over the percentiles for the values.</p>
@@ -187,10 +188,40 @@
 </section>
 
 
-<section
-	class="userProfileSidebar">
-	{# moderator actions #}
-	{% if can("users_mod") %}
+{# your own little section #}
+{% if not isOwnProfile %}
+	<section>
+		<h3>Just for you</h3>
+
+		<ul>
+			<li>
+				lastLogin<br/>
+				<code>{{ data.core.last_login|relativeTime }}</code>
+			</li>
+
+			<li>
+				ipAddress<br/>
+				<code>{{ data.extra.IP }}</code>
+			</li>
+
+			<li>
+				passKey<br/>
+				<code>{{ data.extra.torrent_pass }}</code>
+			</li>
+
+			<li>
+				authKey<br/>
+				<code>{{ data.extra.AuthKey }}</code>
+			</li>
+		</ul>
+	</section>
+{% endif %}
+
+
+{# moderator actions #}
+{% if can("users_mod") %}
+	<section>
+
 		<h3>Moderate</h3>
 
 		<p>Most of this is actually bullshit.</p>
@@ -236,12 +267,6 @@
 			{# userhistory.php?action=token_history&userid={{ userId }} #}
 			{% if can("users_mod") %}
 				<a href="/user/history/{{ userId }}" class="button">freeleech tokens</a>
-			{% endif %}
-
-			{# clear cache #}
-			{# user.php?action=clearcache&id={{ userId }} #}
-			{% if can("admin_clear_cache") and can("users_override_paranoia") %}
-				<a href="/user/clearCache/{{ userId }}" class="button">clear cache</a>
 			{% endif %}
 
 		</form>

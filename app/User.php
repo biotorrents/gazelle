@@ -24,8 +24,6 @@ class User
     # user info
     public $core = [];
     public $extra = [];
-
-    public $paranoia = [];
     public $permissions = [];
 
     # legacy gazelle
@@ -253,12 +251,6 @@ class User
             $row = $app->dbNew->row($query, [$userId]);
             $this->extra = $row ?? [];
 
-            # paranoia
-            if ($this->extra["Paranoia"]) {
-                $this->paranoia = json_decode($this->extra["Paranoia"], true);
-                unset($this->extra["Paranoia"]);
-            }
-
             # permissions
             $query = "select id, name, `values` from permissions where id = ?";
             $row = $app->dbNew->row($query, [ $this->extra["PermissionID"] ]);
@@ -338,7 +330,7 @@ class User
      *
      * @see https://github.com/delight-im/PHP-Auth#accessing-user-information
      */
-    public function isLoggedIn()
+    public function isLoggedIn(): bool
     {
         return !empty($this->core);
     }
@@ -1457,18 +1449,8 @@ class User
     {
         $app = App::go();
 
-        # return this
-        $data = [ "core" => [], "extra" => [], "paranoia" => [], "permissions" => [] ];
-
-        # not a mod: suppress fields
-        $suppressedFields = [];
-        if ($this->cant("users_mod")) {
-            $suppressedFields = [
-                "",
-                "",
-                "",
-            ];
-        }
+        # return basically $this
+        $data = [ "core" => [], "extra" => [], "permissions" => [] ];
 
         # core: delight-im/auth
         $query = "select * from users where id = ?";
@@ -1479,12 +1461,6 @@ class User
         $query = "select * from users_main cross join users_info on users_main.id = users_info.userId where id = ?";
         $row = $app->dbNew->row($query, [$userId]);
         $data["extra"] = $row ?? [];
-
-        # paranoia
-        if ($data["extra"]["Paranoia"]) {
-            $data["paranoia"] = json_decode($data["extra"]["Paranoia"], true);
-            unset($data["extra"]["Paranoia"]);
-        }
 
         # permissions
         $query = "select id, name, `values` from permissions where id = ?";
@@ -1572,58 +1548,6 @@ class User
             LEFT JOIN `locked_accounts` AS la
             ON
               la.`UserID` = m.`ID`
-            WHERE
-              m.`ID` = '$userId'
-            GROUP BY
-              `AuthorID`
-            ");
-        }
-
-        # old normal view query
-        else {
-            $db->query("
-            SELECT
-              m.`Username`,
-              m.`Email`,
-              m.`LastAccess`,
-              m.`IP`,
-              p.`Level` AS Class,
-              m.`Uploaded`,
-              m.`Downloaded`,
-              m.`RequiredRatio`,
-              m.`Enabled`,
-              m.`Paranoia`,
-              m.`Invites`,
-              m.`Title`,
-              m.`torrent_pass`,
-              m.`can_leech`,
-              i.`JoinDate`,
-              i.`Info`,
-              i.`Avatar`,
-              m.`FLTokens`,
-              m.`BonusPoints`,
-              m.`IRCLines`,
-              i.`Donor`,
-              i.`Warned`,
-              COUNT(posts.id) AS ForumPosts,
-              i.`Inviter`,
-              i.`DisableInvites`,
-              inviter.`username`,
-              i.`InfoTitle`
-            FROM
-              `users_main` AS m
-            JOIN `users_info` AS i
-            ON
-              i.`UserID` = m.`ID`
-            LEFT JOIN `permissions` AS p
-            ON
-              p.`ID` = m.`PermissionID`
-            LEFT JOIN `users_main` AS inviter
-            ON
-              i.`Inviter` = inviter.`ID`
-            LEFT JOIN `forums_posts` AS posts
-            ON
-              posts.`AuthorID` = m.`ID`
             WHERE
               m.`ID` = '$userId'
             GROUP BY
@@ -1959,6 +1883,8 @@ class User
      * Fetch downloads, seeds, etc., for a userId.
      * Replaces sections/user/community_stats.php.
      *
+     * userhistory.php?action=stats&userid={{ userId }}
+     *
      * @param int $userId
      * @return array
      */
@@ -2054,6 +1980,12 @@ class User
         } else {
             $data["ratio"] = round($profile["extra"]["Uploaded"] / $profile["extra"]["Downloaded"], 2);
         }
+
+        # torrent clients
+        $query = "select distinct userAgent from xbt_files_users where uid = ?";
+        $ref = $app->dbNew->multi($query, [$userId]);
+
+        $data["torrentClients"] = array_column($ref, "userAgent");
 
 
         #ksort($data);

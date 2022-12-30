@@ -115,24 +115,6 @@ switch ($_REQUEST['action']) {
     require_once 'hnr.php';
     break;
 
-  case 'clearcache':
-    if (!check_perms('admin_clear_cache') || !check_perms('users_override_paranoia')) {
-        error(403);
-    }
-
-    $UserID = $_REQUEST['id'];
-    $cache->delete_value('user_info_'.$UserID);
-    $cache->delete_value('user_info_heavy_'.$UserID);
-    $cache->delete_value('subscriptions_user_new_'.$UserID);
-    $cache->delete_value('user_badges_'.$UserID);
-    $cache->delete_value('staff_pm_new_'.$UserID);
-    $cache->delete_value('inbox_new_'.$UserID);
-    $cache->delete_value('notifications_new_'.$UserID);
-    $cache->delete_value('collage_subs_user_new_'.$UserID);
-
-    require_once serverRoot.'/sections/user/user.php';
-    break;
-
   case 'take_donate':
     break;
 

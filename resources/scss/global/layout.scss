@@ -3,25 +3,31 @@
  * NOW DONE BY SKELETON.CSS
  */
 
-/*
-override main skeleton resolution
-taken to match twitter
-*/
+/**
+ * override main skeleton resolution
+ * taken from twitter tbh
+ */
 .container {
   max-width: 1280px !important;
 }
 
 #content,
 #sidebar {
-  padding: 1rem;
+  padding: 2rem;
 }
 
-/* box: soon to be <section> */
-.box {
-  margin-bottom: 2rem;
+#sidebar {
+  hr {
+    margin: 1rem auto;
+    width: 100%;
+  }
 }
 
-/*
+section {
+  margin-bottom: 5rem;
+}
+
+/**
  * flex elements
  */
 
@@ -50,13 +56,6 @@ taken to match twitter
 }
 
 /**
- * section elements
- */
-.style_addition input {
-  margin-left: 0.5rem;
-}
-
-/**
  * aside elements
  */
 aside {
@@ -71,13 +70,13 @@ aside {
     text-align: center;
   }
 
-  /* Announce and source */
+  /* announce and source */
   &.announce_source,
   &.torrent_upload {
     margin: 1rem auto;
   }
 
-  /* Torrent upload error */
+  /* torrent upload error */
   &.upload_error {
     color: red;
     margin: 2rem auto;
@@ -189,7 +188,7 @@ img {
 
 /**
  * donate button
- * PNG to avoid the botnet
+ * png to avoid the botnet
  */
 .donate_button {
   margin: 2rem auto;
@@ -248,19 +247,3 @@ img {
   max-height: 50rem;
 }
 */
-
-/* user profile page */
-.userProfileAvatar {
-  padding: 2rem;
-  text-align: center;
-
-  figcaption {
-    margin-top: 1rem;
-  }
-}
-
-.badgesFlex {
-  display: flex;
-  flex-flow: row wrap;
-  gap: 1rem;
-}
