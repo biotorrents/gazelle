@@ -30,6 +30,11 @@
     $("body").toggleClass("desaturate");
   });
 
+  // dark mode
+  $("#darkMode").change(() => {
+    $("body").toggleClass("darkMode");
+  });
+
   /**
    * create 2fa (totp)
    */

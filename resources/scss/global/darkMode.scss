@@ -1,0 +1,33 @@
+/**
+ * https://gist.github.com/aaronice/5c083b9a8a3cbee29c7cd6bf3c708233
+ */
+
+/*
+  Parts of this code is inspired from the following:
+  [1] https://userstyles.org/styles/105000/smart-dark
+*/
+
+body.darkMode {
+  background-color: #222 !important;
+  filter: contrast(90%) invert(90%) hue-rotate(180deg) !important;
+
+  /*
+  text-rendering: optimizeSpeed;
+  image-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+  -webkit-image-rendering: optimizeSpeed;
+  */
+
+  img,
+  video,
+  iframe,
+  canvas,
+  svg,
+  embed[type="application/x-shockwave-flash"],
+  object[type="application/x-shockwave-flash"],
+  *[style*="url("] {
+    filter: invert(100%) hue-rotate(-180deg) !important;
+    -ms-filter: invert(100%) !important;
+    -webkit-filter: invert(100%) hue-rotate(-180deg) !important;
+  }
+}

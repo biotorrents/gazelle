@@ -227,6 +227,7 @@ $openDyslexicItalic: "OpenDyslexic-Italic";
   }
 
   /* font awesome exception */
+  /*
   i:not(.fa),
   i:not(.fas):not(.fa-solid),
   i:not(.far):not(.fa-regular),
@@ -235,6 +236,7 @@ $openDyslexicItalic: "OpenDyslexic-Italic";
   i:not(.fad):not(.fa-duotone),
   i:not(.fab):not(.fa-brands),
   i:not(.phpdebugbar-fa),
+  */
   em {
     font-family: $italic;
     font-style: normal;
@@ -370,6 +372,25 @@ body.openDyslexic {
     $notoMono,
     $notoMonoBold
   );
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $openDyslexic, sans-serif;
+  }
+
+  .menu,
+  .button,
+  .button-primary,
+  .button-red,
+  .button-green,
+  .button-orange,
+  .button-purple {
+    font-family: $openDyslexic, sans-serif;
+  }
 }
 
 /* comic neue */
@@ -381,4 +402,23 @@ body.comicNeue {
     $notoMono,
     $notoMonoBold
   );
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $comicNeue, sans-serif;
+  }
+
+  .menu,
+  .button,
+  .button-primary,
+  .button-red,
+  .button-green,
+  .button-orange,
+  .button-purple {
+    font-family: $comicNeue, sans-serif;
+  }
 }

@@ -61,80 +61,6 @@
           </td>
         </tr>
 
-
-        {# stylesheet additions #}
-        {#
-        <tr id="style_additions_tr" class="<?=($Stylesheets[$user['StyleID']]['Additions'][0] ?? false) ? '' : 'hidden'?>">
-
-          <th>Stylesheet additions</th>
-
-          <td>
-            <?php
-          foreach ($Stylesheets as $Style) {
-
-              # Main section
-              echo '<section class="style_additions'; # open quote
-              echo ($Style['ID'] === $Stylesheets[$user['StyleID']]['ID'])
-                ? '"' # close quote
-                : ' hidden"'; # hide
-              echo ' id="style_additions_' . $Style['Name'] . '">';
-
-              # For each style addition
-              $StyleAdditions = explode(';', $Style['Additions']);
-              $Select = ['default_font'];
-              $Checkbox = [];
-
-              foreach ($StyleAdditions as $i => $Addition) {
-                  $Types = explode('=', $Addition);
-
-                  switch ($Types[0]) {
-                  case 'select':
-                      array_push($Select, $Types[1]);
-                      break;
-
-                  case 'checkbox':
-                      array_push($Checkbox, $Types[1]);
-                      break;
-
-                  default:
-                      break;
-
-                  }
-              } # foreach $Addition
-
-              # Fix to prevent multiple font entries
-              if ($Style['ID'] === $Stylesheets[$user['StyleID']]['ID']) {
-                  # Select options, e.g., fonts
-                  echo "<select class='style_additions' name='style_additions[]'>";
-
-                  foreach ($Select as $Option) {
-                      $Selected = (in_array($Option, $SiteOptions['StyleAdditions'])
-                        ? 'selected'
-                        : '');
-                      echo "<option value='$Option' id='addition_$Option' $Selected>$Option</option>";
-                  }
-                  echo '</select>';
-              }
-
-              # Checkbox options, e.g., pink and haze
-              foreach ($Checkbox as $Option) {
-                  $Checked = (in_array($Option, $SiteOptions['StyleAdditions'])
-                  ? 'checked'
-                  : '');
-
-                  echo <<<HTML
-                  <input type="checkbox" name="style_additions[]" value="$Option"
-                    id="addition_$Option" $Checked />
-                  <label for="addition_$Option">$Option</label>
-HTML;
-              }
-              echo '</section>';
-          } # foreach $Style
-          ?>
-          </td>
-        </tr>
-        #}
-
         {# external stylesheet uri #}
         <tr>
           <th>External stylesheet URI</th>
@@ -144,7 +70,7 @@ HTML;
           </td>
         </tr>
 
-                {# site font #}
+        {# site font #}
         <tr>
           <th>Site font</th>
 
@@ -192,10 +118,22 @@ HTML;
           <th>Calm mode</th>
 
           <td>
-                <input type="checkbox" id="desaturate" name="desaturate" value="desaturate" {{ (siteOptions.desaturate) ? "checked" : "" }} />
+                <input type="checkbox" id="desaturate" name="desaturate" value="true" {{ (siteOptions.desaturate) ? "checked" : "" }} />
                 <label for="desaturate">Browse the site in grayscale</label>
          </td>
         </tr>
+
+        {# dark mode #}
+        <tr>
+          <th>Dark mode</th>
+
+          <td>
+                <input type="checkbox" id="darkMode" name="darkMode" value="true" {{ (siteOptions.darkMode) ? "checked" : "" }} />
+                <label for="darkMode">Browse the site in dark mode</label>
+         </td>
+        </tr>
+ 
+
  
 
       </table>
