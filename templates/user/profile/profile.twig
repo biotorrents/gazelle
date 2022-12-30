@@ -86,7 +86,7 @@
 <section id="recentUploads" class="collage_images">
 
 {% for item in recentUploads %}
-<div style="width: 33%;" class="collage_image">
+<div style="width: 20%;" class="collage_image">
   <a href="torrents/{{ item.id }}">
     <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%" />
   </a>
@@ -244,6 +244,7 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 {# community stats #}
+{% if siteOptions.communityStats and communityStats is not empty %}
 <section>
   <canvas class="chart" id="communityStats"></canvas>
   <script>
@@ -289,9 +290,10 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
     })();
   </script>
 </section>
-
+{% endif %}
 
 {# torrent stats #}
+{% if siteOptions.torrentStats and torrentStats is not empty %}
 <section>
   <canvas class="chart" id="torrentStats"></canvas>
   <script>
@@ -342,7 +344,7 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
     })();
   </script>
 </section>
-
+{% endif %}
 
 
 

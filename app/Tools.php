@@ -102,49 +102,6 @@ class Tools
 
 
     /**
-     * get_host_by_ajax
-     *
-     * Gets an hostname using AJAX
-     *
-     * @param $IP the IP to fetch
-     * @return a span with JavaScript code
-     */
-    public static function get_host_by_ajax($IP)
-    {
-        static $ID = 0;
-        ++$ID;
-        return '<span id="host_'.$ID.'">Resolving host...<script type="text/javascript">ajax.get(\'tools.php?action=get_host&ip='.$IP.'\',function(host) {$(\'#host_'.$ID.'\').raw().innerHTML=host;});</script></span>';
-    }
-
-
-    /**
-     * lookup_ip
-     *
-     * Looks up the full host of an IP address, by system call.
-     * Used as the server-side counterpart to get_host_by_ajax.
-     *
-     * @param string $IP The IP address to look up.
-     * @return string the host.
-     */
-    public static function lookup_ip($IP)
-    {
-        $Output = explode(' ', shell_exec('host -W 1 '.escapeshellarg($IP)));
-        if (count($Output) == 1 && empty($Output[0])) {
-            return '';
-        }
-
-        if (count($Output) != 5) {
-            return false;
-        }
-
-        if ($Output[2].' '.$Output[3] == 'not found:') {
-            return false;
-        }
-        return trim($Output[4]);
-    }
-
-
-    /**
      * disable_users
      *
      * Disable an array of users.

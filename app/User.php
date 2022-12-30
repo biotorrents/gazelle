@@ -35,7 +35,7 @@ class User
 
     # cache settings
     private $cachePrefix = "user_";
-    private $cacheDuration = 3600; # one hour
+    private $cacheDuration = 300; # five minutes
 
 
     /**
@@ -164,31 +164,6 @@ class User
         #$app->cacheOld->CanClear = check_perms("admin_clear_cache");
 
         /*
-        THIS IS GOING AWAY
-        # update lastUpdate every 10 minutes
-        if (strtotime($session[$sessionId]["lastUpdate"]) + 600 < time()) {
-            $query = "update users_main set lastAccess = now() where id = ?";
-            $app->dbNew->do($query, [$userId]);
-
-            $query = "update users_sessions set ip = ?, lastUpdate = now() where userId = ? and sessionId = ?";
-            $app->dbNew->do($query, [ Crypto::encrypt($server["REMOTE_ADDR"]), $userId, $sessionId ]);
-
-            # cache transaction
-            $app->cacheOld->begin_transaction("users_sessions_{$userId}");
-            $app->cacheOld->delete_row($session);
-
-            $sessionCache = [
-                "sessionId" => $sessionId,
-                "ip" => Crypto::encrypt($server["REMOTE_ADDR"]),
-                "lastUpdate" => App::sqlTime(),
-              ];
-
-            $app->cacheOld->insert_front($sessionId, $sessionCache);
-            $app->cacheOld->commit_transaction(0);
-        }
-        */
-
-        /*
         # notifications
         if ($user["Permissions"]["site_torrents_notify"]) {
             $user["Notify"] = $app->cacheOld->get_value("notify_filters_{$userId}");
@@ -223,22 +198,6 @@ class User
 
         /** */
 
-
-        /*
-        # this needs to be simpler
-        $query = "
-            select users_main.id, users_main.username, users_main.permissionId, users_main.paranoia, users_main.enabled, users_main.title, users_main.visible,
-            users_info.artist, users_info.donor, users_info.warned, users_info.avatar, users_info.catchupTime,
-            locked_accounts.type as lockedAccount,
-            group_concat(users_levels.permissionId separator ',') as levels
-            from users_main
-            inner join users_info on users_info.userId = users_main.id
-            left join locked_accounts on locked_accounts.userId = users_main.id
-            left join users_levels on users_levels.userId = users_main.id
-            where users_main.id = ?
-            group by users_main.id
-        ";
-        */
 
         try {
             # core: delight-im/auth
@@ -336,7 +295,7 @@ class User
     }
 
 
-        /**
+    /**
      * enabledState
      *
      * @see https://github.com/OPSnet/Gazelle/blob/master/app/User.php
@@ -345,7 +304,6 @@ class User
     {
         $app = App::go();
 
-        # all database results are automatically cached, my guy
         $query = "select enabled from users_main where id = ?";
         $enabled = $app->dbNew->single($query, [ $this->core["id"] ]);
 
@@ -560,22 +518,9 @@ class User
               i.`RatioWatchDownload`,
               i.`StyleID`,
               i.`StyleURL`,
-              i.`DisableInvites`,
-              i.`DisablePosting`,
-              i.`DisableUpload`,
-              i.`DisableWiki`,
-              i.`DisableAvatar`,
-              i.`DisablePM`,
-              i.`DisablePoints`,
-              i.`DisablePromotion`,
-              i.`DisableRequests`,
-              i.`DisableForums`,
-              i.`DisableTagging`,
               i.`SiteOptions`,
               i.`LastReadNews`,
               i.`LastReadBlog`,
-              i.`RestrictedForums`,
-              i.`PermittedForums`,
               m.`FLTokens`,
               m.`BonusPoints`,
               m.`HnR`,
@@ -596,19 +541,6 @@ class User
                 $HeavyInfo['CustomPermissions'] = json_decode($HeavyInfo['CustomPermissions'], true);
             }
 
-            # Allowed and denied forums
-            $RestrictedForums = [];
-            if (!empty($HeavyInfo['RestrictedForums'])) {
-                $RestrictedForums = array_map('trim', explode(',', $HeavyInfo['RestrictedForums']));
-            }
-            unset($HeavyInfo['RestrictedForums']);
-
-            $PermittedForums = [];
-            if (!empty($HeavyInfo['PermittedForums'])) {
-                $PermittedForums = array_map('trim', explode(',', $HeavyInfo['PermittedForums']));
-            }
-            unset($HeavyInfo['PermittedForums']);
-
             $app->dbOld->query("
             SELECT `PermissionID`
             FROM `users_levels`
@@ -618,33 +550,10 @@ class User
             $PermIDs = $app->dbOld->collect('PermissionID');
             foreach ($PermIDs as $PermID) {
                 $Perms = Permissions::get_permissions($PermID);
-
-                if (!empty($Perms['PermittedForums'])) {
-                    $PermittedForums = array_merge($PermittedForums, array_map('trim', explode(',', $Perms['PermittedForums'])));
-                }
             }
 
             $Perms = Permissions::get_permissions($HeavyInfo['PermissionID']);
             unset($HeavyInfo['PermissionID']);
-            if (!empty($Perms['PermittedForums'])) {
-                $PermittedForums = array_merge($PermittedForums, array_map('trim', explode(',', $Perms['PermittedForums'])));
-            }
-
-            $HeavyInfo['CustomForums'] = null;
-            if (!empty($PermittedForums) || !empty($RestrictedForums)) {
-                $HeavyInfo['CustomForums'] = [];
-                foreach ($RestrictedForums as $ForumID) {
-                    $HeavyInfo['CustomForums'][$ForumID] = 0;
-                }
-
-                foreach ($PermittedForums as $ForumID) {
-                    $HeavyInfo['CustomForums'][$ForumID] = 1;
-                }
-            }
-
-            if (isset($HeavyInfo['CustomForums'][''])) {
-                unset($HeavyInfo['CustomForums']['']);
-            }
 
             $HeavyInfo['SiteOptions'] = json_decode($HeavyInfo['SiteOptions'], true);
             if (!empty($HeavyInfo['SiteOptions'])) {
@@ -655,6 +564,7 @@ class User
             $app->dbOld->set_query_id($QueryID);
             $app->cacheOld->cache_value("user_info_heavy_$UserID", $HeavyInfo, 0);
         }
+
         return $HeavyInfo;
     }
 
@@ -748,6 +658,7 @@ class User
                 $Str .= ' <span class="user_title">('.$UserInfo['Title'].')</span>';
             }
         }
+
         return $Str;
     }
 
@@ -832,8 +743,6 @@ class User
      */
     public static function hasAvatarsEnabled(): bool
     {
-        !d($this->extra["siteOptions"]["disableAvatars"]);
-        exit;
         return $this->extra["siteOptions"]["disableAvatars"];
     }
 
@@ -903,6 +812,7 @@ class User
         list($Uploads) = $app->dbOld->next_record();
         $Source[0] = $app->env->siteName.'-'.substr(hash('sha256', $SourceKey[0].$app->userOld['ID'].$Uploads), 0, 10);
         $Source[1] = $SourceKeyOld ? $app->env->siteName.'-'.substr(hash('sha256', $SourceKeyOld[0].$app->userOld['ID'].$Uploads), 0, 10) : $Source[0];
+
         return $Source;
     }
 
@@ -971,7 +881,7 @@ class User
     /**
      * createPGP
      */
-    public function createPGP(string $publicKey)
+    public function createPGP(string $publicKey): void
     {
         $app = App::go();
 
@@ -989,15 +899,13 @@ class User
 
         $query = "update users_main set publicKey = ? where id = ?";
         $app->dbNew->do($query, [ $publicKey, $this->core["id"] ]);
-
-        return true;
     }
 
 
     /**
      * readPGP
      */
-    public function readPGP()
+    public function readPGP(): ?string
     {
         $app = App::go();
 
@@ -1011,30 +919,28 @@ class User
     /**
      * updatePGP
      */
-    public function updatePGP(string $publicKey)
+    public function updatePGP(string $publicKey): void
     {
-        return $this->createPGP($publicKey);
+        $this->createPGP($publicKey);
     }
 
 
     /**
      * deletePGP
      */
-    public function deletePGP()
+    public function deletePGP(): void
     {
         $app = App::go();
 
         $query = "update users_main set publicKey = null where id = ?";
         $app->dbNew->do($query, [ $this->core["id"] ]);
-
-        return true;
     }
 
 
     /**
      * create2FA
      */
-    public function create2FA(string $secret, string $code)
+    public function create2FA(string $secret, string $code): void
     {
         $app = App::go();
 
@@ -1047,15 +953,13 @@ class User
 
         $query = "update users_main set twoFactor = ? where id = ?";
         $app->dbNew->do($query, [ $secret, $this->core["id"] ]);
-
-        return true;
     }
 
 
     /**
      * read2FA
      */
-    public function read2FA()
+    public function read2FA(): ?string
     {
         $app = App::go();
 
@@ -1069,16 +973,16 @@ class User
     /**
      * update2FA
      */
-    public function update2FA(string $secret, string $code)
+    public function update2FA(string $secret, string $code): void
     {
-        return $this->create2FA($secret, $code);
+        $this->create2FA($secret, $code);
     }
 
 
     /**
      * delete2FA
      */
-    public function delete2FA(string $secret, string $code)
+    public function delete2FA(string $secret, string $code): void
     {
         $app = App::go();
 
@@ -1091,8 +995,6 @@ class User
 
         $query = "update users_main set twoFactor = null where id = ?";
         $app->dbNew->do($query, [ $this->core["id"] ]);
-
-        return true;
     }
 
 
@@ -1101,7 +1003,7 @@ class User
      *
      * todo: buy a device to test this
      */
-    public function createU2F(string $request, string $response)
+    public function createU2F(string $request, string $response): void
     {
         $app = App::go();
 
@@ -1129,15 +1031,13 @@ class User
             "counter" => $good->counter,
             "valid" => 1,
         ]);
-
-        return true;
     }
 
 
     /**
      * readU2F
      */
-    public function readU2F()
+    public function readU2F(): ?array
     {
         $app = App::go();
 
@@ -1151,23 +1051,21 @@ class User
     /**
      * updateU2F
      */
-    public function updateU2F(string $request, string $response)
+    public function updateU2F(string $request, string $response): void
     {
-        return $this->createU2F($request, $response);
+        $this->createU2F($request, $response);
     }
 
 
     /**
      * deleteU2F
      */
-    public function deleteU2F()
+    public function deleteU2F(): void
     {
         $app = App::go();
 
         $query = "delete from u2f where userId = ?";
         $app->dbNew->do($query, [ $this->core["id"] ]);
-
-        return true;
     }
 
 
@@ -1180,7 +1078,7 @@ class User
      * Updates the user settings in a transaction.
      * Kind of a monster function, but I don't wanna refactor.
      */
-    public function updateSettings(array $data)
+    public function updateSettings(array $data): void
     {
         $app = App::go();
 
@@ -1449,7 +1347,7 @@ class User
      *
      * Gets an external user's profile.
      */
-    public function readProfile(int $userId)
+    public function readProfile(int $userId): array
     {
         $app = App::go();
 
@@ -1488,84 +1386,6 @@ class User
 
         # okay
         return $data;
-
-        /*
-        # old staff view query
-        if (check_perms('users_mod')) {
-            $db->query("
-            SELECT
-              m.`Username`,
-              m.`Email`,
-              m.`LastAccess`,
-              m.`IP`,
-              p.`Level` AS Class,
-              m.`Uploaded`,
-              m.`Downloaded`,
-              m.`RequiredRatio`,
-              m.`Title`,
-              m.`torrent_pass`,
-              m.`Enabled`,
-              m.`Paranoia`,
-              m.`Invites`,
-              m.`can_leech`,
-              m.`Visible`,
-              m.`BonusPoints`,
-              m.`IRCLines`,
-              i.`JoinDate`,
-              i.`Info`,
-              i.`Avatar`,
-              i.`AdminComment`,
-              i.`Donor`,
-              i.`Artist`,
-              i.`Warned`,
-              i.`SupportFor`,
-              i.`RestrictedForums`,
-              i.`PermittedForums`,
-              i.`Inviter`,
-              inviter.`Username`,
-              COUNT(posts.id) AS ForumPosts,
-              i.`RatioWatchEnds`,
-              i.`RatioWatchDownload`,
-              i.`DisableAvatar`,
-              i.`DisableInvites`,
-              i.`DisablePosting`,
-              i.`DisableForums`,
-              i.`DisableTagging`,
-              i.`DisableUpload`,
-              i.`DisableWiki`,
-              i.`DisablePM`,
-              i.`DisablePoints`,
-              i.`DisablePromotion`,
-              i.`DisableIRC`,
-              i.`DisableRequests`,
-              m.`FLTokens`,
-              SHA1(i.`AdminComment`),
-              i.`InfoTitle`,
-              la.`Type` AS LockedAccount
-            FROM
-              `users_main` AS m
-            JOIN `users_info` AS i
-            ON
-              i.`UserID` = m.`ID`
-            LEFT JOIN `users_main` AS inviter
-            ON
-              i.`Inviter` = inviter.`ID`
-            LEFT JOIN `permissions` AS p
-            ON
-              p.`ID` = m.`PermissionID`
-            LEFT JOIN `forums_posts` AS posts
-            ON
-              posts.`AuthorID` = m.`ID`
-            LEFT JOIN `locked_accounts` AS la
-            ON
-              la.`UserID` = m.`ID`
-            WHERE
-              m.`ID` = '$userId'
-            GROUP BY
-              `AuthorID`
-            ");
-        }
-        */
     }
 
 
@@ -1881,8 +1701,6 @@ class User
         $data["usersInvited"] = $app->dbNew->single($query, [$userId]) ?? 0;
 
 
-        #ksort($data);
-
         $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
         return $data;
     }
@@ -1998,8 +1816,6 @@ class User
 
         $data["torrentClients"] = array_column($ref, "userAgent");
 
-
-        #ksort($data);
 
         $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
         return $data;

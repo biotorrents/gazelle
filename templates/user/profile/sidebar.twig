@@ -88,7 +88,8 @@
 </section>
 
 
-{# user stats #}
+{# percentile ranks #}
+{% if siteOptions.percentileStats and percentileStats is not empty %}
 <section>
 	<h3>Percentile ranks</h3>
 
@@ -152,8 +153,11 @@
 		</tr>
 	</table>
 </section>
+{% endif %}
 
 
+{# request stats #}
+{% if siteOptions.requestStats and requestStats is not empty %}
 <section>
 	<h3>Requests</h3>
 
@@ -186,6 +190,7 @@
 		</tr>
 	</table>
 </section>
+{% endif %}
 
 
 {# your own little section #}

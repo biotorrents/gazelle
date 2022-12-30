@@ -8,7 +8,7 @@ declare(strict_types=1);
  */
 
 $app = App::go();
-!d($app->userNew);exit;
+#!d($app->userNew);exit;
 
 # https://github.com/paragonie/anti-csrf
 Http::csrf();
@@ -161,14 +161,6 @@ exit;
 
 
 
-
-
-
-
-
-
-
-$Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]';
 
 $db->query("
   SELECT SUM(t.Size)
@@ -471,8 +463,6 @@ if ($ParanoiaLevel == 0) {
         if (check_perms('users_view_ips', $Class)) {
             $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]'; ?>
         <li>IP: <?=Text::esc($IP)?>
-        </li>
-        <li>Host: <?=Tools::get_host_by_ajax($IP)?>
         </li>
         <?php
         }

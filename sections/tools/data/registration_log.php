@@ -99,7 +99,6 @@ if ($db->has_results()) {
     <td>Email</td>
     <td>IP address</td>
     <td>Country</td>
-    <td>Host</td>
     <td>Registered</td>
   </tr>
 
@@ -141,11 +140,6 @@ if ($db->has_results()) {
       <span class="u-pull-left">
         <?=Text::esc($InviterIP)?>
       </span>
-    </td>
-
-    <td>
-      <?=Tools::get_host_by_ajax($IP)?><br />
-      <?=Tools::get_host_by_ajax($InviterIP)?>
     </td>
 
     <td>
