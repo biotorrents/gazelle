@@ -4,6 +4,24 @@
 
 (() => {
   "use strict";
+
+  // toggle passkey
+  $("#displayPassKey").hide();
+  $("#togglePassKey").click(() => {
+    $("#displayPassKey").toggle();
+  });
+
+  // toggle authkey
+  $("#displayAuthKey").hide();
+  $("#toggleAuthKey").click(() => {
+    $("#displayAuthKey").toggle();
+  });
+
+  // toggle rss key
+  $("#displayRssKey").hide();
+  $("#toggleRssKey").click(() => {
+    $("#displayRssKey").toggle();
+  });
 })();
 
 /** legacy code */
@@ -44,28 +62,5 @@ function ToggleIdenticons() {
     } else {
       $("#identicons").ghide();
     }
-  }
-}
-
-/**
- * userform_submit
- */
-function userform_submit() {
-  if ($("#resetpasskey").is(":checked")) {
-    if (!confirm("Are you sure you want to reset your passkey?")) {
-      return false;
-    }
-  }
-  return formVal();
-}
-
-/**
- * togglePassKey
- */
-function togglePassKey(key) {
-  if ($("#passkey").raw().innerHTML == "View") {
-    $("#passkey").raw().innerHTML = key;
-  } else {
-    $("#passkey").raw().innerHTML = "View";
   }
 }

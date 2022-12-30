@@ -189,31 +189,29 @@
 
 
 {# your own little section #}
-{% if not isOwnProfile %}
+{% if isOwnProfile %}
 	<section>
 		<h3>Just for you</h3>
 
-		<ul>
-			<li>
-				lastLogin<br/>
-				<code>{{ data.core.last_login|relativeTime }}</code>
-			</li>
+		<form>
 
-			<li>
-				ipAddress<br/>
-				<code>{{ data.extra.IP }}</code>
-			</li>
+			{# toggle passkey #}
+			<a id="togglePassKey" class="button">toggle passkey</a>
+			<input type="text" id="displayPassKey" value="{{ data.extra.torrent_pass }}" class="monospace" readonly/>
 
-			<li>
-				passKey<br/>
-				<code>{{ data.extra.torrent_pass }}</code>
-			</li>
+			<hr />
 
-			<li>
-				authKey<br/>
-				<code>{{ data.extra.AuthKey }}</code>
-			</li>
-		</ul>
+			{# toggle authkey #}
+			<a id="toggleAuthKey" class="button">toggle authkey</a>
+			<input type="text" id="displayAuthKey" value="{{ data.extra.AuthKey }}" class="monospace" readonly/>
+
+			<hr />
+
+			{# toggle rss key #}
+			<a id="toggleRssKey" class="button">toggle rss key</a>
+			<input type="text" id="displayRssKey" value="{{ data.extra.RSS_Auth }}" class="monospace" readonly/>
+
+		</form>
 	</section>
 {% endif %}
 

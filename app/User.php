@@ -1390,16 +1390,19 @@ class User
             # siteOptions
             $siteOptions = [
                 "autoSubscribe" => Esc::bool($data["autoSubscribe"] ?? null),
+                "communityStats" => Esc::bool($data["communityStats"] ?? null),
                 "coverArtCollections" => Esc::int($data["coverArtCollections"] ?? null),
                 "coverArtTorrents" => Esc::bool($data["coverArtTorrents"] ?? null),
                 "coverArtTorrentsExtra" => Esc::bool($data["coverArtTorrentsExtra"] ?? null),
                 "disableAvatars" => Esc::bool($data["disableAvatars"] ?? null),
                 "disableGrouping" => Esc::bool($data["disableGrouping"] ?? null),
                 "listUnreadsFirst" => Esc::bool($data["listUnreadsFirst"] ?? null),
+                "percentileStats" => Esc::bool($data["percentileStats"] ?? null),
                 "recentCollages" => Esc::bool($data["recentCollages"] ?? null),
                 "recentRequests" => Esc::bool($data["recentRequests"] ?? null),
                 "recentSnatches" => Esc::bool($data["recentSnatches"] ?? null),
                 "recentUploads" => Esc::bool($data["recentUploads"] ?? null),
+                "requestStats" => Esc::bool($data["requestStats"] ?? null),
                 "searchType" => Esc::string($data["searchType"] ?? null),
                 "showSnatched" => Esc::bool($data["showSnatched"] ?? null),
                 "showTagFilter" => Esc::bool($data["showTagFilter"] ?? null),
@@ -1407,6 +1410,7 @@ class User
                 "styleId" => Esc::int($data["styleId"] ?? null),
                 "styleUri" => Esc::url($data["styleUri"] ?? null),
                 "torrentGrouping" => Esc::string($data["torrentGrouping"] ?? null),
+                "torrentStats" => Esc::bool($data["torrentStats"] ?? null),
                 "unseededAlerts" => Esc::bool($data["unseededAlerts"] ?? null),
             ];
 
@@ -1461,6 +1465,13 @@ class User
         $query = "select * from users_main cross join users_info on users_main.id = users_info.userId where id = ?";
         $row = $app->dbNew->row($query, [$userId]);
         $data["extra"] = $row ?? [];
+
+        # rss auth
+        $data["extra"]["RSS_Auth"] = md5(
+            $userId
+            . $app->env->getPriv("rssHash")
+            . $data["extra"]["torrent_pass"]
+        );
 
         # permissions
         $query = "select id, name, `values` from permissions where id = ?";

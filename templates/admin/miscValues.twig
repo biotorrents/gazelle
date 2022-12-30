@@ -1,73 +1,25 @@
-<?php
+{% extends "base.twig" %}
 
-declare(strict_types=1);
+{% block content %}
 
+	<h2>Miscellaneous values</h2>
 
-/**
- * miscellaneous values
- */
-
-$app = App::go();
-
-# https://github.com/paragonie/anti-csrf
-Http::csrf();
-
-if (!check_perms("admin_manage_permissions") && !check_perms("users_mod")) {
-    error(403);
-}
-
-# query
-$post = Http::query("post");
-$post["databaseKey"] ??= null;
-
-# create
-
-# read
-$query = "select * from misc";
-$ref = $app->dbNew->multi($query, []);
-!d($ref);exit;
-
-# update
-
-# delete
-
-# twig
-$app->twig->display("admin/miscValues.twig", [
-    "sidebar" => true,
-]);
-
-exit;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if (!check_perms('admin_manage_permissions')) {
-    View::header('Site Options');
-    $db->prepared_query("SELECT Name, First, Second FROM misc"); ?>
-
-<div class="header">
-  <h1>Miscellaneous Values</h1>
-</div>
-
-<table class="skeletonFix">
+	<table>
   <tr>
     <th>Name</th>
     <th>First</th>
     <th>Second</th>
   </tr>
+
+
+	</table>
+
+
+
+
+
+
+<table class="skeletonFix">
 
   <?php
   while (list($Name, $First, $Second) = $db->next_record()) {
@@ -225,3 +177,54 @@ while (list($ID, $Name, $First, $Second) = $db->next_record()) {
 </div>
 <?php
 View::footer();
+
+
+
+
+
+
+
+
+
+
+
+
+	{# yes key #}
+	{% if isKeySet %}
+		<div class="alertbar info">
+			There's already a key loaded.
+		</div>
+
+		{# no key #}
+	{% else %}
+		<div class="alertbar error">
+			There's <strong>no</strong> key loaded.
+		</div>
+
+
+	{% endif %}
+
+	<section>
+		<form method="post">
+
+			{{ form_token(query.server.REQUEST_URI) }}
+
+			<p>
+				<input type="text" name="databaseKey" style="width: 100%" placeholder="Enter a database encryption key" required/>
+			</p>
+
+			<p>
+				<input type="submit" name="update" class="button-primary" value="update"/>
+			</p>
+
+		</form>
+	</section>
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+	{{ include("admin/sidebar.twig") }}
+
+{% endblock %}

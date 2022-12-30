@@ -126,10 +126,6 @@ $query = "
 ";
 $stylesheets = $app->dbNew->multi($query, []);
 
-# paranoia settings
-$paranoia = $app->userNew->paranoia;
-#!d($paranoia);exit;
-
 # site options
 $siteOptions = $app->userNew->extra["siteOptions"];
 #!d($siteOptions);exit;
@@ -147,20 +143,6 @@ if ($DonorIsVisible === null) {
 
 $Rewards = null;
 $ProfileRewards = null;
-
-function paranoia_level($Setting)
-{
-    global $Paranoia;
-    // 0: very paranoid; 1: stats allowed, list disallowed; 2: not paranoid
-    return (in_array($Setting . '+', $Paranoia)) ? 0 : (in_array($Setting, $Paranoia) ? 1 : 2);
-}
-
-function display_paranoia($FieldName)
-{
-    $Level = paranoia_level($FieldName);
-    echo "<label><input type='checkbox' name='p_{$FieldName}_c'" . checked($Level >= 1) . " onchange='AlterParanoia()' /> Show count</label>&nbsp;";
-    echo "<label><input type='checkbox' name='p_{$FieldName}_l'" . checked($Level >= 2) . " onchange='AlterParanoia()' /> Show list</label>&nbsp;";
-}
 
 
 
@@ -182,12 +164,11 @@ if (!empty($post)) {
 
 $app->twig->display("user/settings/settings.twig", [
  "css" => ["vendor/easymde.min"],
- "js" => ["user", "cssgallery", "preview_paranoia", "userSettings", "vendor/easymde.min"],
+ "js" => ["user", "cssgallery", "userSettings", "vendor/easymde.min"],
  "sidebar" => true,
 
  "badges" => $badges,
  "stylesheets" => $stylesheets,
- "paranoia" => $paranoia,
  "siteOptions" => $siteOptions,
 
  # 2fa (totp)
@@ -218,101 +199,6 @@ exit;
 
 
 /** TAKE_EDIT STUFF BELOW */
-
-// Begin building $Paranoia
-// Reduce the user's input paranoia until it becomes consistent
-if (isset($_POST['p_uniquegroups_l'])) {
-    $_POST['p_uploads_l'] = 'on';
-    $_POST['p_uploads_c'] = 'on';
-}
-
-if (isset($_POST['p_uploads_l'])) {
-    $_POST['p_uniquegroups_l'] = 'on';
-    $_POST['p_uniquegroups_c'] = 'on';
-    $_POST['p_perfectflacs_l'] = 'on';
-    $_POST['p_perfectflacs_c'] = 'on';
-    $_POST['p_artistsadded'] = 'on';
-}
-
-if (isset($_POST['p_collagecontribs_l'])) {
-    $_POST['p_collages_l'] = 'on';
-    $_POST['p_collages_c'] = 'on';
-}
-
-if (isset($_POST['p_snatched_c']) && isset($_POST['p_seeding_c']) && isset($_POST['p_downloaded'])) {
-    $_POST['p_requiredratio'] = 'on';
-}
-
-// if showing exactly 2 of stats, show all 3 of stats
-$StatsShown = 0;
-$Stats = ['downloaded', 'uploaded', 'ratio'];
-foreach ($Stats as $S) {
-    if (isset($_POST["p_$S"])) {
-        $StatsShown++;
-    }
-}
-
-if ($StatsShown === 2) {
-    foreach ($Stats as $S) {
-        $_POST["p_$S"] = 'on';
-    }
-}
-
-$Paranoia = [];
-$Checkboxes = ['downloaded', 'uploaded', 'ratio', 'lastseen', 'requiredratio', 'invitedcount', 'artistsadded', 'notifications'];
-foreach ($Checkboxes as $C) {
-    if (!isset($_POST["p_$C"])) {
-        $Paranoia[] = $C;
-    }
-}
-
-$SimpleSelects = ['torrentcomments', 'collages', 'collagecontribs', 'uploads', 'uniquegroups', 'perfectflacs', 'seeding', 'leeching', 'snatched'];
-foreach ($SimpleSelects as $S) {
-    if (!isset($_POST["p_$S".'_c']) && !isset($_POST["p_$S".'_l'])) {
-        // Very paranoid - don't show count or list
-        $Paranoia[] = "$S+";
-    } elseif (!isset($_POST["p_$S".'_l'])) {
-        // A little paranoid - show count, don't show list
-        $Paranoia[] = $S;
-    }
-}
-
-$Bounties = ['requestsfilled', 'requestsvoted'];
-foreach ($Bounties as $B) {
-    if (isset($_POST["p_$B".'_list'])) {
-        $_POST["p_$B".'_count'] = 'on';
-        $_POST["p_$B".'_bounty'] = 'on';
-    }
-
-    if (!isset($_POST["p_$B".'_list'])) {
-        $Paranoia[] = $B.'_list';
-    }
-
-    if (!isset($_POST["p_$B".'_count'])) {
-        $Paranoia[] = $B.'_count';
-    }
-
-    if (!isset($_POST["p_$B".'_bounty'])) {
-        $Paranoia[] = $B.'_bounty';
-    }
-}
-
-if (!isset($_POST['p_donor_heart'])) {
-    $Paranoia[] = 'hide_donor_heart';
-}
-
-// End building $Paranoia
-
-
-
-
-
-
-
-
-
-
-
 
 
 // Begin Badge settings

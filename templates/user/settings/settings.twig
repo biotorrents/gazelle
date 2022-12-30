@@ -410,7 +410,7 @@ HTML;
           </td>
         </tr>
 
-        {# recent snatches #}
+        {# recent torrent activity #}
         <tr>
           <th>Recent torrent activity</th>
 
@@ -436,6 +436,37 @@ HTML;
         {# recent collages #}
             <input type="checkbox" id="recentCollages" name="recentCollages" {{ (siteOptions.recentCollages == true) ? "checked" : "" }} />
             <label for="recentCollages">Show collages</label>
+
+          </td>
+        </tr>
+
+
+                {# user profile stats #}
+        <tr>
+          <th>User profile stats</th>
+
+          <td>
+            {# community stats #}
+            <input type="checkbox" id="communityStats" name="communityStats" {{ (siteOptions.communityStats == true) ? "checked" : "" }} />
+            <label for="communityStats">Show community stats</label>
+
+            <br />
+
+        {# torrent stats #}
+            <input type="checkbox" id="torrentStats" name="torrentStats" {{ (siteOptions.torrentStats == true) ? "checked" : "" }} />
+            <label for="torrentStats">Show torrent stats</label>
+
+            <br />
+
+             {# percentile rankings #}
+            <input type="checkbox" id="percentileStats" name="percentileStats" {{ (siteOptions.percentileStats == true) ? "checked" : "" }} />
+            <label for="percentileStats">Show percentile rankings</label>
+
+            <br />
+
+        {# request stats #}
+            <input type="checkbox" id="requestStats" name="requestStats" {{ (siteOptions.requestStats == true) ? "checked" : "" }} />
+            <label for="requestStats">Show request stats</label>
 
           </td>
         </tr>
