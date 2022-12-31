@@ -304,6 +304,7 @@ ENV::setPub(
 
 # default site options
 $defaultSiteOptions = [
+  "donorIcon" => true,
   "autoSubscribe" => true,
   "calmMode" => false,
   "communityStats" => true,

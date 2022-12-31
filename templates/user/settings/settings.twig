@@ -261,6 +261,20 @@
            <label for="showTagFilter">Display official tag filters</label>
           </td>
         </tr>
+
+{# torrent text files #}
+{#
+          <tr id="tor_dltext_tr">
+        <td class="label tooltip" title="Some ISPs block the downloading of torrent files. Enable this option if you wish to download torrent files with a &quot;.txt&quot; file extension.">
+            <strong>Text file downloads</strong>
+        </td>
+        <td>
+            <input type="checkbox" name="downloadalt" id="downloadalt"{{ checked(download_text) }} />
+            <label for="downloadalt">Enable downloading torrent files as text files</label>
+        </td>
+    </tr>
+#}
+
       </table>
       </section> {# torrentSettings #}
 
@@ -342,6 +356,20 @@
             {% endif %} {# if badges is empty #}
           </td>
         </tr>
+
+        {# donor icon #}
+        {% if user.extra.Donor is not empty %}
+        <tr>
+          <th>Donor icon</th>
+
+          <td>
+            <input type="checkbox" id="donorIcon" name="donorIcon" {{ (siteOptions.donorIcon == true) ? "checked" : "" }} />
+            <label for="donorIcon">
+            Show a donor icon ❤️ next to your name
+            </label>
+          </td>
+        </tr>
+        {% endif %}
       </table>
       </section> {# communitySettings #}
 

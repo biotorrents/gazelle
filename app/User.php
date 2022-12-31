@@ -1298,6 +1298,7 @@ class User
 
             # siteOptions
             $siteOptions = [
+                "donorIcon" => Esc::bool($data["donorIcon"] ?? null),
                 "autoSubscribe" => Esc::bool($data["autoSubscribe"] ?? null),
                 "calmMode" => Esc::bool($data["calmMode"] ?? null),
                 "communityStats" => Esc::bool($data["communityStats"] ?? null),
