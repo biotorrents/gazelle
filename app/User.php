@@ -1288,12 +1288,12 @@ class User
             # siteOptions
             $siteOptions = [
                 "autoSubscribe" => Esc::bool($data["autoSubscribe"] ?? null),
+                "calmMode" => Esc::bool($data["calmMode"] ?? null),
                 "communityStats" => Esc::bool($data["communityStats"] ?? null),
                 "coverArtCollections" => Esc::int($data["coverArtCollections"] ?? null),
                 "coverArtTorrents" => Esc::bool($data["coverArtTorrents"] ?? null),
                 "coverArtTorrentsExtra" => Esc::bool($data["coverArtTorrentsExtra"] ?? null),
                 "darkMode" => Esc::bool($data["darkMode"] ?? null),
-                "desaturate" => Esc::bool($data["desaturate"] ?? null),
                 "disableAvatars" => Esc::bool($data["disableAvatars"] ?? null),
                 "disableGrouping" => Esc::bool($data["disableGrouping"] ?? null),
                 "font" => Esc::string($data["font"] ?? null),
@@ -1316,8 +1316,8 @@ class User
             ];
 
             # this shouldn't be possible with normal ui usage
-            if ($siteOptions["desaturate"] && $siteOptions["darkMode"]) {
-                throw new Exception("you can't use grayscale and dark mode at the same time");
+            if ($siteOptions["calmMode"] && $siteOptions["darkMode"]) {
+                throw new Exception("you can't use calm mode and dark mode at the same time");
             }
 
             $query = "update users_info set siteOptions = ? where userId = ?";

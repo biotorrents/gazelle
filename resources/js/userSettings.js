@@ -10,7 +10,7 @@
    */
 
   // font
-  $("#font").change(() => {
+  $("#font").on("change", () => {
     let fontSelection = $("#font").children("option:selected").val();
     let fontClasses = [
       "notoSans",
@@ -25,27 +25,27 @@
     $("body").addClass(fontSelection);
   });
 
-  // desaturate
-  $("#desaturate").click(() => {
-    let modeSelection = $("#desaturate").prop("checked");
-    let modeClasses = ["desaturate", "darkMode"];
+  // calm mode
+  $("#calmMode").on("click", () => {
+    let modeSelection = $("#calmMode").prop("checked");
+    let modeClasses = ["calmMode", "darkMode"];
 
     if (modeSelection) {
       $("#darkMode").prop("checked", false);
       $("body").removeClass(modeClasses);
-      $("body").addClass("desaturate");
+      $("body").addClass("calmMode");
     } else {
       $("body").removeClass(modeClasses);
     }
   });
 
   // dark mode
-  $("#darkMode").click(() => {
+  $("#darkMode").on("click", () => {
     let modeSelection = $("#darkMode").prop("checked");
-    let modeClasses = ["desaturate", "darkMode"];
+    let modeClasses = ["calmMode", "darkMode"];
 
     if (modeSelection) {
-      $("#desaturate").prop("checked", false);
+      $("#calmMode").prop("checked", false);
       $("body").removeClass(modeClasses);
       $("body").addClass("darkMode");
     } else {
@@ -57,7 +57,7 @@
    * create 2fa (totp)
    */
   $("#twoFactorResponse").hide();
-  $("#createTwoFactor").click(() => {
+  $("#createTwoFactor").on("click", () => {
     // the data to send
     var request = {
       secret: $("#twoFactorSecret").val(),
@@ -96,7 +96,7 @@
    * delete 2fa (totp)
    */
   $("#twoFactorResponse").hide();
-  $("#deleteTwoFactor").click(() => {
+  $("#deleteTwoFactor").on("click", () => {
     // the data to send
     var request = {
       secret: $("#twoFactorSecret").val(),
@@ -133,7 +133,7 @@
   /**
    * suggest a passphrase
    */
-  $("#createPassphrase").click(() => {
+  $("#createPassphrase").on("click", () => {
     var request = null;
 
     // ajax request
@@ -171,6 +171,7 @@
    * some notifications stuff
    * "i'm sure there is a better way to do this"
    */
+  /*
   $("#notifications_Inbox_traditional").click(function () {
     $("#notifications_Inbox_popup").prop("checked", false);
   });
@@ -186,4 +187,5 @@
   $("#notifications_Torrents_popup").click(function () {
     $("#notifications_Torrents_traditional").prop("checked", false);
   });
+  */
 })();
