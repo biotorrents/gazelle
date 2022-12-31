@@ -1,104 +1,125 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
+
+/**
+ * Badges
+ */
 
 class Badges
 {
     /**
-     * Given a UserID, returns that user's badges
+     * getBadges
      *
-     * @param int $UserID
-     * @return array of BadgeIDs
+     * Given a userId, returns that user's badges.
+     *
+     * @param int $userId
+     * @return array of badgeId's
      */
-    public static function get_badges($UserID)
+    public static function getBadges(int $userId): array
     {
-        return Users::user_info($UserID)['Badges'];
+        $app = App::go();
+
+        $query = "select badgeId, displayed from users_badges where userId = ?";
+        $ref = $app->dbNew->multi($query, [$userId]);
+
+        $data = [];
+        foreach ($ref as $row) {
+            $key = $row["badgeId"];
+            $data[$key] = $row["displayed"];
+        }
+
+        #!d($data);exit;
+        return $data;
     }
 
 
     /**
-     * Awards UserID the given BadgeID
+     * awardBadge
      *
-     * @param int $UserID
-     * @param int $BadgeID
+     * Awards a userId a badgeId.
+     *
+     * @param int $userId
+     * @param int $badgeId
      * @return bool success?
      */
-    public static function award_badge($UserID, $BadgeID)
+    public static function awardBadge(int $userId, int $badgeId): bool
     {
-        if (self::has_badge($UserID, $BadgeID)) {
-            return false;
-        } else {
-            $QueryID = G::$db->get_query_id();
-            G::$db->prepared_query("
-            INSERT INTO `users_badges`(`UserID`, `BadgeID`)
-            VALUES($UserID, $BadgeID)
-            ");
+        $app = App::go();
 
-            G::$db->set_query_id($QueryID);
-            G::$cache->delete_value("user_info_$UserID");
-            return true;
+        if (self::hasBadge($userId, $badgeId)) {
+            return false;
         }
+
+        $query = "insert into users_badges (userId, badgeId) values (?, ?)";
+        $app->dbNew->do($query, [$userId, $badgeId]);
+
+        return true;
     }
 
 
     /**
-     * Given a UserID, return that user's displayed badges
+     * getDisplayedBadges
      *
-     * @param int $UserID
-     * @return array of BadgeIDs
+     * Given a userId, return that user's displayed badges.
+     *
+     * @param int $userId
+     * @return array of badgeId's
      */
-    public static function get_displayed_badges($UserID)
+    public static function getDisplayedBadges(int $userId): array
     {
-        $Result = [];
-        $Badges = self::get_badges($UserID);
+        $data = [];
+        $badges = self::getBadges($userId);
 
-        foreach ($Badges as $Badge => $Displayed) {
-            if ($Displayed) {
-                $Result[] = $Badge;
+        foreach ($badges as $id => $displayed) {
+            if (!empty($displayed)) {
+                $data[] = $id;
             }
         }
-        return $Result;
+
+        #!d($data);exit;
+        return $data;
     }
 
 
     /**
-     * Returns true if the given user owns the given badge
+     * hasBadge
      *
-     * @param int $UserID
-     * @param int $BadgeID
+     * Returns true if a user owns a badge.
+     *
+     * @param int $userId
+     * @param int $badgeId
      * @return bool
      */
-    public static function has_badge($UserID, $BadgeID)
+    public static function hasBadge(int $userId, int $badgeId): bool
     {
-        $Badges = self::get_badges($UserID);
-        return (array_key_exists($BadgeID, $Badges)) ?: false;
+        $badges = self::getBadges($userId);
+
+        return array_key_exists($badgeId, $badges);
     }
 
 
     /**
+     * displayBadge
+     *
      * Creates HTML for displaying a badge.
      *
-     * @param int $BadgeID
-     * @param bool $Tooltip Should HTML contain a tooltip?
-     * @return string HTML
+     * @param int $badgeId
+     * @param bool $tooltip should the html contain a tooltip?
+     * @return string html
      */
-    public static function display_badge($BadgeID, $Tooltip = false)
+    public static function displayBadge(int $badgeId, bool $tooltip = true): string
     {
-        $debug = Debug::go();
+        $app = App::go();
 
-        $html = '';
-        if (($Badges = G::$cache->get_value('badges')) && array_key_exists($BadgeID, $Badges)) {
-            extract($Badges[$BadgeID]);
-        } else {
-            self::update_badge_cache();
-            if (($Badges = G::$cache->get_value('badges')) && array_key_exists($BadgeID, $Badges)) {
-                extract($Badges[$BadgeID]);
-            }
-        }
+        $query = "select * from badges where id = ?";
+        $row = $app->dbNew->row($query, [$badgeId]);
 
-        if ($Tooltip) {
-            $html .= "<a class='badge_icon'><img class='badge tooltip' alt='$Name' title='$Name: $Description' src='$Icon' /></a>";
+        if ($tooltip) {
+            $html = "<img class='badge' alt='{$row["Name"]}: {$row["Description"]}' title='{$row["Name"]}: {$row["Description"]}' src='{$row["Icon"]}' />";
         } else {
-            $html .= "<a class='badge_icon'><img class='badge' alt='$Name' title='$Name' src='$Icon' /></a>";
+            $html = "<img class='badge' alt='{$row["Name"]}: {$row["Description"]}' src='{$row["Icon"]}' />"; # no title
         }
 
         return $html;
@@ -106,57 +127,32 @@ class Badges
 
 
     /**
-     * display_badges()
+     * displayBadges
+     *
+     * This should be a flexbox but idgaf.
      */
-    public static function display_badges($BadgeIDs, $Tooltip = false)
+    public static function displayBadges(array $badgeIds, $tooltip = false): string
     {
-        $html = '';
-        foreach ($BadgeIDs as $BadgeID) {
-            $html .= self::display_badge($BadgeID, $Tooltip);
+        $data = [];
+
+        foreach ($badgeIds as $badgeId) {
+            $data[] = self::displayBadge($badgeId, $tooltip);
         }
-        return $html;
+
+        return implode("&emsp;", $data);
     }
 
 
     /**
-     * update_badge_cache()
+     * getAllBadges
      */
-    private static function update_badge_cache()
+    public static function getAllBadges(): array
     {
-        $QueryID = G::$db->get_query_id();
+        $app = App::go();
 
-        G::$db->prepared_query("
-        SELECT
-          `ID`,
-          `Icon`,
-          `Name`,
-          `Description`
-        FROM
-          `badges`
-        ");
+        $query = "select * from badges";
+        $ref = $app->dbNew->multi($query, []);
 
-        $badges = [];
-        if (G::$db->has_results()) {
-            while (list($id, $icon, $name, $description) = G::$db->next_record()) {
-                $badges[$id] = array('Icon' => $icon, 'Name' => $name, 'Description' => $description);
-            }
-            G::$cache->cache_value('badges', $badges);
-        }
-
-        G::$db->set_query_id($QueryID);
-    }
-
-
-    /**
-     * get_all_badges()
-     */
-    public static function get_all_badges()
-    {
-        if (($Badges = G::$cache->get_value('badges'))) {
-            return $Badges;
-        } else {
-            self::update_badge_cache();
-            return G::$cache->get_value('badges');
-        }
+        return $ref;
     }
 }

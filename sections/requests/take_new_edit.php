@@ -1,5 +1,9 @@
 <?php
+
 #declare(strict_types=1);
+
+
+$app = App::go();
 
 //******************************************************************************//
 //----------------- Take request -----------------------------------------------//
@@ -93,7 +97,7 @@ if (empty($_POST['image'])) {
     $Image = '';
 } else {
     ImageTools::blacklisted($_POST['image']);
-    if (preg_match('/'.IMAGE_REGEX.'/', trim($_POST['image'])) > 0) {
+    if (preg_match($app->env->regexImage, trim($_POST['image'])) > 0) {
         $Image = trim($_POST['image']);
     } else {
         $Err = Text::esc($_POST['image']).' does not appear to be a valid link to an image.';
@@ -162,7 +166,7 @@ if (!empty($Err)) {
     error($Err);
     $Div = $_POST['unit'] === 'mb' ? 1024 * 1024 : 1024 * 1024 * 1024;
     $Bounty /= $Div;
-    include(SERVER_ROOT.'/sections/requests/new_edit.php');
+    include(serverRoot.'/sections/requests/new_edit.php');
     #error();
 }
 
@@ -342,7 +346,7 @@ if ($NewRequest) {
 
     $AnnounceTitle = empty($Title) ? (empty($Title2) ? $TitleJP : $Title2) : $Title;
 
-    $Announce = "\"$AnnounceTitle\"".(isset($ArtistForm)?(' - '.Artists::display_artists($ArtistForm, false, false)):'').' '.site_url()."requests.php?action=view&id=$RequestID - ".implode(' ', $Tags);
+    $Announce = "\"$AnnounceTitle\"".(isset($ArtistForm) ? (' - '.Artists::display_artists($ArtistForm, false, false)) : '').' '.site_url()."requests.php?action=view&id=$RequestID - ".implode(' ', $Tags);
     send_irc(REQUEST_CHAN, $Announce);
 } else {
     $cache->delete_value("request_$RequestID");

@@ -1,7 +1,7 @@
 <?php
 if (!($IsFLS)) {
-  // Logged in user is not FLS or Staff
-  error(403);
+    // Logged in user is not FLS or Staff
+    error(403);
 }
 
 View::header('Staff PMs', 'staffpm');
@@ -63,8 +63,7 @@ $db->query("
   FROM staff_pm_responses
   ORDER BY ID DESC");
 while (list($ID, $Message, $Name) = $db->next_record()) {
-
-?>
+    ?>
     <br />
     <div id="ajax_message_<?=$ID?>" class="hidden center alertbar"></div>
     <br />

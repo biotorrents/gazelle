@@ -32,7 +32,7 @@ class RevisionHistoryView
     </td>
     <?php if (check_perms('users_mod')) { ?>
     <td>
-      <?=Users::format_username($UserID, false, false, false)?>
+      <?=User::format_username($UserID, false, false, false)?>
     </td>
     <?php } ?>
     <td>

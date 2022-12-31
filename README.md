@@ -1,4 +1,4 @@
-# BioTorrents.de Gazelle
+# 🧪 BioGazelle
 
 This software is twice removed from the original
 [What.cd Gazelle](https://github.com/WhatCD/Gazelle).
@@ -9,7 +9,7 @@ It shares several features with
 The goal is to organize a functional database with pleasant interfaces,
 and render insightful views using data from robust external sources.
 
-# Changelog: OT → Bio
+# Changelog: Bio ← OT
 
 ## Bearer token authorization
 
@@ -20,8 +20,17 @@ and used with the JSON API.
 
 ## Routing system
 
-Bio Gazelle uses the Flight router to define app routes.
+BioGazelle uses the Flight router to define app routes.
 Features include clean URIs and centralized middleware.
+
+## OpenAI integration
+
+One of BioGazelle's major goals is to place data in context.
+It uses
+[OpenAI's completions API](https://beta.openai.com/docs/api-reference/completions)
+to generate tl;dr summaries and tags from torrent descriptions.
+Just paste your abstract into the torrent group description
+and get a succinct natural language summary with torrent and SEO tags.
 
 ## Good typography
 
@@ -43,21 +52,29 @@ The default recursive regex BBcode parser is replaced by
 [Vanilla NBBC](https://github.com/vanilla/nbbc).
 Parsed texts are cached for speed.
 
-## ENV recursive singleton
+## App singleton
 
 [The site configuration](config/public.php)
-is being migrated to a format govered by the
-[ENV special class](app/ENV.php)
-for modified recursive ArrayObjects.
+uses extensible ArrayObjects with by the
+[ENV special class](app/ENV.php).
+Also, the whole app is always instantly available:
+the config, database, cache, current user, Twig engine, etc.,
+are accessible with a simple call to `App::go()`.
 
 ## Twig template system
 
-Similar to ENV, the
+BioGazelle's
 [Twig interface](app/Twig.php)
-operates as a singleton because it's an external module with its own cache.
+takes cues from OPS's extended filters and functions.
 Twig provides a security benefit by escaping rendered output,
 and a secondary benefit of clarifying the PHP running the site sections.
-Several custom filters are available from OPS.
+Everything you could need is a globally available template variable.
+
+A quick note about template inheritance.
+Everything extends a clean HTML5 base template.
+Torrent, collections, requests, etc., and their respective sidebars
+are implemented as semantic HTML5 in easily digestible chunks of content.
+No more mixed PHP code and HTML markup!
 
 ## Active data minimization
 
@@ -80,14 +97,14 @@ Besides that, BioTorrents has several passive developments in progress:
 
 ## Proper application layout
 
-Bio Gazelle takes cues from the best-of-breed PHP framework Laravel.
+BioGazelle takes cues from the best-of-breed PHP framework Laravel.
 The source code is reorganized along Laravel's lines while maintaining the comfy familiarity of OT/WCD Gazelle.
 The app logic, config, and Git repo lies outside the web root for enhanced security.
 An ongoing project involves modernizing the app based on Laravel's excellent tools.
 
 ## Decent debugging
 
-Bio Gazelle seeks to be easy and fun to develop.
+BioGazelle seeks to be easy and fun to develop.
 We're collecting the old debug class monstrosity into a nice little bar.
 There's also no more `DEBUG_MODE` or random permissions.
 There's just a dev mode that spits everything out, and a prod mode that doesn't.
@@ -101,8 +118,12 @@ There's just a dev mode that spits everything out, and a prod mode that doesn't.
 - TLS database connections
 - Semantic HTML5 themes (WIP)
 - Single entry point for app init
+- Laravel-inspired shell (`php shell`)
+- Dead simple PDO database wrapper, fully parameterized
+- Simple and fast Redis cache (WIP)
+- Polite copy; the site says "please" and "thank you"
 
-# Changelog: WCD → OT
+# Changelog: OT ← WCD
 
 ## Integrated Database Encryption
 

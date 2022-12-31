@@ -82,7 +82,7 @@ if ($db->has_results()) {
       ?>
   <tr class="row">
     <td>
-      <?=Users::format_username($UserID, true, true, true, true)?>
+      <?=User::format_username($UserID, true, true, true, true)?>
     </td>
 
     <td class="number_column">

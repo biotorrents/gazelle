@@ -1,7 +1,8 @@
 <?php
+
 authorize();
 if (!check_perms('site_edit_wiki')) {
-  error(403);
+    error(403);
 }
 
 $ID = $_GET['id'];
@@ -9,7 +10,7 @@ $GroupID = $_GET['groupid'];
 
 
 if (!is_number($ID) || !is_number($ID) || !is_number($GroupID) || !is_number($GroupID)) {
-  error(404);
+    error(404);
 }
 
 $db->query("
@@ -30,4 +31,3 @@ $db->query("
 
 $cache->delete_value("torrents_cover_art_$GroupID");
 header('Location: '.$_SERVER['HTTP_REFERER']);
-?>

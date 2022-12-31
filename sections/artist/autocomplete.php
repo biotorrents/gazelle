@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 if (empty($_GET['query'])) {
@@ -46,7 +47,7 @@ foreach ($AutoSuggest as $Suggestion) {
 
     if (stripos($Name, $FullName) === 0) {
         $Response['suggestions'][] = array('value' => $Name, 'data' => $ID);
-        
+
         if (++$Matched > 9) {
             break;
         }

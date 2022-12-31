@@ -91,7 +91,7 @@ if (isset($_POST['type'])) {
         ON DUPLICATE KEY UPDATE
           `First` = CONVERT(`First`, UNSIGNED INTEGER) + " . (60 * 60 * $Duration)
             );
-        
+
             Torrents::freeleech_torrents($IDs, 1, 3, false);
             echo("Success! Now run the indexer.");
         } else {

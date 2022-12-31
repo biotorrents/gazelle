@@ -1,8 +1,12 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 
 /**
  * Security
+ *
+ * THIS IS GOING AWAY
  *
  * Designed to hold common authentication functions from various sources:
  *  - bootstrap/app.php
@@ -11,17 +15,6 @@ declare(strict_types = 1);
 
 class Security
 {
-    /**
-     * oops
-     *
-     * Basic sanity checks are now enforced by the Composer config.
-     * Please add checks here if you shit up the codebase or discover something.
-     */
-    public static function oops()
-    {
-        return;
-    }
-
     /**
      * Check integer
      *
@@ -35,6 +28,7 @@ class Security
         }
     }
 
+
     /**
      * UserID checks
      *
@@ -44,6 +38,8 @@ class Security
      */
     public function checkUser($Permissions = [], $UserID = null)
     {
+        $app = App::go();
+
         /*
         if (!$UserID) {
             error('$UserID is required.');
@@ -54,7 +50,7 @@ class Security
         if ($_GET['userid'] && empty($UserID)) {
             $UserID = $_GET['userid'];
         } else {
-            $UserID = G::$user['ID'];
+            $UserID = $app->userNew->core["id"];
         }
 
         # NaN

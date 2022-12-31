@@ -1,7 +1,12 @@
-<section>
-    <h2 class="center">{{ title }}</h2>
-    <div class="box">
-        <p>{{ body }}</p>
-        <p><a href="log.php?search={{ title }}">Search the site log</a></p>
-    </div>
-</section>
+{% extends "base.twig" %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+<p>{{ content }}</p>
+<p><a href="/search/log/{{ title }}">Search the site log</a></p>
+
+{{ content|raw }}
+
+{% endblock %}

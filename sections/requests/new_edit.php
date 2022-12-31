@@ -128,7 +128,7 @@ View::header(
       </div>
 
       <!-- Main table -->
-      <table class="skeleton-fix">
+      <table class="skeletonFix">
         <tr>
           <td colspan="2" class="center">Please make sure your request follows the
             <a href="/rules/requests">request rules</a>!
@@ -168,7 +168,7 @@ View::header(
 
           <td>
             <input type="text" id="catalogue" name="cataloguenumber" size="15"
-              value="<?= (isset($CatalogueNumber)?$CatalogueNumber:'') ?>"
+              value="<?= (isset($CatalogueNumber) ? $CatalogueNumber : '') ?>"
               <?= $Disabled ?>/>
             <?php if (empty($Disabled)) { ?>
             <input type="button" autofill="jav" value="Autofill" style="pointer-events: none; opacity: 0.5;"></input>
@@ -211,7 +211,7 @@ View::header(
 
           <td>
             <input type="text" id="title_jp" name="title_jp" size="45"
-              value="<?= !empty($TitleJP)?$TitleJP:'' ?>"
+              value="<?= !empty($TitleJP) ? $TitleJP : '' ?>"
               <?= $Disabled ?>/>
           </td>
         </tr>
@@ -232,8 +232,7 @@ View::header(
     if (!empty($ArtistForm)) {
         $First = true;
         foreach ($ArtistForm as $Artist) { ?>
-            <input type="text" id="artist_0" name="artists[]" <?php Users::has_autocomplete_enabled('other'); ?>
-            size="45" value="<?=Text::esc($Artist['name']) ?>" <?=$Disabled?>/>
+            <input type="text" id="artist_0" name="artists[]" size="45" value="<?=Text::esc($Artist['name']) ?>" <?=$Disabled?>/>
 
             <?php
             if (empty($Disabled)) {
@@ -246,8 +245,7 @@ View::header(
             }
         }
     } else { ?>
-            <input type="text" id="artist_0" name="artists[]" <?php Users::has_autocomplete_enabled('other'); ?>
-            size="45" <?=$Disabled?>/>
+            <input type="text" id="artist_0" name="artists[]" size="45" <?=$Disabled?>/>
 
             <?php if (empty($Disabled)) { ?>
             <a class="add_artist_button brackets" onclick="AddArtistField()">+</a>
@@ -306,9 +304,7 @@ View::header(
               </select>
 
               <input type="text" id="tags" name="tags" size="45"
-                value="<?= (!empty($Tags) ? Text::esc($Tags) : '') ?>"
-                <?php Users::has_autocomplete_enabled('other'); ?>
-              <?= $Disabled ?>/>
+                value="<?= (!empty($Tags) ? Text::esc($Tags) : '') ?>" <?= $Disabled ?> />
           </td>
         </tr>
 
@@ -342,7 +338,7 @@ View::header(
             <code><?= site_url() ?>torrents.php?id=</code>
 
             <input type="text" name="groupid"
-              value="<?= isset($GroupID)?$GroupID:'' ?>"
+              value="<?= isset($GroupID) ? $GroupID : '' ?>"
               size="15" />
           </td>
         </tr>

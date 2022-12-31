@@ -1,0 +1,60 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+<h2>Recover your account</h2>
+
+{% if response is not null %}
+<p class="error">
+    {{ response }}
+</p>
+{% endif %}
+
+
+{# step one #}
+
+
+{% if stepOne is not null %}
+<p class="info">
+    {# https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#password-recovery #}
+    If that email address is in our database, we will send you an email to reset your password.
+</p>
+{% endif %}
+
+{% if emailSent is null %}
+<form name="recover" id="recover" method="post">
+    {{ form_token(query.server.REQUEST_URI) }}
+
+    <input type="email" name="email" id="email" placeholder="Email address" required />
+
+    <input type="submit" name="reset" value="Request passphrase reset" class="button-primary" />
+</form>
+{% endif %}
+
+
+{# step two #}
+
+
+{% if stepTwo is not null %}
+<p class="info">
+    Thanks for confirming your email.
+    Please set a new passphrase below.
+</p>
+
+<form name="recover" id="recover" method="post">
+    {{ form_token(query.server.REQUEST_URI) }}
+
+    <input type="hidden" name="selector" value="{{ selector }}" />
+
+    <input type="hidden" name="token" value="{{ token }}" />
+
+    <input type="password" name="passphrase" id="passphrase" placeholder="Passphrase" minlength="15" required />
+
+    <input type="password" name="confirmPassphrase" id="confirmPassphrase" placeholder="Confirm passphrase"
+        minlength="15" required />
+
+    <input type="submit" name="reset" value="Update passphrase" class="button-primary" />
+</form>
+{% endif %}
+
+{% endblock %}

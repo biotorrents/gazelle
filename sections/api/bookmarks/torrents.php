@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 if (!empty($_GET['userid'])) {
@@ -27,7 +28,7 @@ if (!empty($_GET['userid'])) {
 $Sneaky = ($UserID !== $user['ID']);
 $JsonBookmarks = [];
 
-list($GroupIDs, $CollageDataList, $GroupList) = Users::get_bookmarks($UserID);
+list($GroupIDs, $CollageDataList, $GroupList) = User::get_bookmarks($UserID);
 foreach ($GroupIDs as $GroupID) {
     if (!isset($GroupList[$GroupID])) {
         continue;

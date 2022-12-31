@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 /**
  * MySQL wrapper class
@@ -180,7 +181,6 @@ class DB
         #$debug = Debug::go();
 
         global $argv;
-        #global #$debug, $argv;
 
         $dbError = 'MySQL: '.strval($Msg).' SQL error: '.strval($this->Errno).' ('.strval($this->Error).')';
 
@@ -188,9 +188,9 @@ class DB
             send_irc(ADMIN_CHAN, $this->Error);
         }
 
-        if ($ENV->DEV || check_perms('site_debug') || isset($argv[1])) {
+        if ($ENV->dev || check_perms('site_debug') || isset($argv[1])) {
             echo '<pre>'.Text::esc($dbError).'</pre>';
-            if ($ENV->DEV || check_perms('site_debug')) {
+            if ($ENV->dev || check_perms('site_debug')) {
                 print_r($this->Queries);
             }
             error(400, $NoHTML = true);
@@ -341,7 +341,7 @@ class DB
             $this->QueryID = mysqli_stmt_get_result($this->StatementID);
 
             # Return query info in dev
-            if ($ENV->DEV) {
+            if ($ENV->dev) {
                 #$debug['database']->log($Query);
                 if (!empty(mysqli_error($this->LinkID))) {
                     d(mysqli_error($this->LinkID));
@@ -503,7 +503,7 @@ class DB
         while ($Row = mysqli_fetch_array($this->QueryID)) {
             $Return[] = $Escape ? Text::esc($Row[$Key]) : $Row[$Key];
         }
-        
+
         mysqli_data_seek($this->QueryID, 0);
         return $Return;
     }

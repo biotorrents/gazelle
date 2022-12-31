@@ -1,5 +1,10 @@
 <?php
 
+#declare(strict_types = 1);
+
+
+$app = App::go();
+
 /**
  * This page handles the backend from when a user submits a report.
  * It checks for (in order):
@@ -40,7 +45,7 @@ foreach ($ReportType['report_fields'] as $Field => $Value) {
 }
 
 if (!empty($_POST['sitelink'])) {
-    if (preg_match_all('/'.TORRENT_REGEX.'/i', $_POST['sitelink'], $Matches)) {
+    if (preg_match_all($app->env->regexTorrent, $_POST['sitelink'], $Matches)) {
         $ExtraIDs = implode(' ', $Matches[4]);
 
         if (in_array($TorrentID, $Matches[4])) {
@@ -53,7 +58,7 @@ if (!empty($_POST['sitelink'])) {
 
 if (!empty($_POST['link'])) {
     // resource_type://domain:port/filepathname?query_string#anchor
-    if (preg_match_all('/'.URL_REGEX.'/is', $_POST['link'], $Matches)) {
+    if (preg_match_all($app->env->regexUri, $_POST['link'], $Matches)) {
         $Links = implode(' ', $Matches[0]);
     } else {
         $Err = "The extra links you provided weren't links...";
@@ -63,7 +68,7 @@ if (!empty($_POST['link'])) {
 }
 
 if (!empty($_POST['image'])) {
-    if (preg_match("/^(".IMAGE_REGEX.")( ".IMAGE_REGEX.")*$/is", trim($_POST['image']), $Matches)) {
+    if (preg_match($app->env->regexImage, trim($_POST['image']), $Matches)) {
         $Images = $Matches[0];
     } else {
         $Err = "The extra image links you provided weren't links to images...";
@@ -100,7 +105,7 @@ list($GroupID) = $db->next_record();
 
 if (!empty($Err)) {
     error($Err);
-    include(SERVER_ROOT.'/sections/reportsv2/report.php');
+    include(serverRoot.'/sections/reportsv2/report.php');
     error();
 }
 

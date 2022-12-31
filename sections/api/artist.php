@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 # todo: Go through line by line
@@ -145,7 +146,7 @@ if (($Importances = $cache->get_value("artist_groups_$ArtistID")) === false) {
       tg.`Name`
     DESC
     ");
-    
+
     $GroupIDs = $db->collect('GroupID');
     $Importances = $db->to_array(false, MYSQLI_BOTH, false);
     $cache->cache_value("artist_groups_$ArtistID", $Importances, 0);

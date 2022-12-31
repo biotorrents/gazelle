@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 if (!isset($_GET['userid']) || !is_number($_GET['userid'])) {
@@ -16,7 +17,7 @@ $CommStats = array(
   'seedingperc' => false,
 );
 
-$User = Users::user_info($UserID);
+$User = User::user_info($UserID);
 
 function check_paranoia_here($Setting)
 {

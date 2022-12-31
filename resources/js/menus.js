@@ -13,22 +13,22 @@
   const toggle = document.querySelector(".toggle");
   const menu = document.querySelector(".menu");
 
-  // Toggle mobile menu
+  // toggle mobile menu
   function toggleMenu() {
     if (menu.classList.contains("active")) {
       menu.classList.remove("active");
 
-      // Adds the menu (hamburger) icon
+      // adds the menu (hamburger) icon
       toggle.querySelector("a").innerHTML = "<i class='fal fa-bars'></i>";
     } else {
       menu.classList.add("active");
 
-      // Adds the close (x) icon
+      // adds the close (x) icon
       toggle.querySelector("a").innerHTML = "<i class='fal fa-times'></i>";
     }
   }
 
-  // Event listener
+  // event listener
   toggle.addEventListener("click", toggleMenu, false);
 
   /**
@@ -37,7 +37,7 @@
 
   const items = document.querySelectorAll(".item");
 
-  // Activate submenu
+  // activate submenu
   function toggleItem() {
     if (this.classList.contains("submenu-active")) {
       this.classList.remove("submenu-active");
@@ -49,7 +49,7 @@
     }
   }
 
-  // Event listeners
+  // event listeners
   for (let item of items) {
     if (item.querySelector(".submenu")) {
       item.addEventListener("click", toggleItem, false);
@@ -61,7 +61,7 @@
    * 9. Let Users Close the Submenu By Clicking Anywhere on the Page
    */
 
-  // Close submenu from anywhere
+  // close submenu from anywhere
   function closeSubmenu(e) {
     let isClickInside = menu.contains(e.target);
 
@@ -70,11 +70,11 @@
     }
   }
 
-  // Event listener
+  // event listener
   document.addEventListener("click", closeSubmenu, false);
 
   /**
-   * Change the search bar target
+   * change the search bar target
    * https://stackoverflow.com/a/16750165
    */
   $("#select_search").change(function () {

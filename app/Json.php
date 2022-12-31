@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 
 /**
  * Json
@@ -24,7 +26,7 @@ class Json
         $app = App::go();
 
         $this->mode = 0;
-        $this->source = $app->env->SITE_NAME;
+        $this->source = $app->env->siteName;
         $this->version = 1;
     }
 
@@ -34,61 +36,71 @@ class Json
      *
      * Validates an authorization header and API token.
      */
-    public function checkToken(int $userId)
+    public function checkToken(int $userId, string $token = "")
     {
         $app = App::go();
 
-        # escape bearer token
-        $server = Http::query("server");
-        
-        # no header present
-        if (empty($server["HTTP_AUTHORIZATION"])) {
-            return $this->failure("no authorization header present");
-        }
-
-        # https://tools.ietf.org/html/rfc6750
-        $authorizationHeader = explode(" ", $server["HTTP_AUTHORIZATION"]);
-
-        # too much whitespace
-        if (count($authorizationHeader) !== 2) {
-            return $this->failure("token must be given as \"Authorization: Bearer {\$token}\"");
-        }
-
-        # not rfc compliant
-        if ($authorizationHeader[0] !== "Bearer") {
-            return $this->failure("token must be given as \"Authorization: Bearer {\$token}\"");
-        }
-
-        # we have a token!
-        $token = $authorizationHeader[1];
-
-        # empty token
+        # get the token off the headers
         if (empty($token)) {
-            return $this->failure("empty token provided");
-        }
+            # escape bearer token
+            $server = Http::query("server");
+
+            # no header present
+            if (empty($server["HTTP_AUTHORIZATION"])) {
+                return $this->failure(401, "no authorization header present");
+            }
+
+            # https://tools.ietf.org/html/rfc6750
+            $authorizationHeader = explode(" ", $server["HTTP_AUTHORIZATION"]);
+
+            # too much whitespace
+            if (count($authorizationHeader) !== 2) {
+                return $this->failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
+            }
+
+            # not rfc compliant
+            if ($authorizationHeader[0] !== "Bearer") {
+                return $this->failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
+            }
+
+            # we have a token!
+            $token = $authorizationHeader[1];
+
+            # empty token
+            if (empty($token)) {
+                return $this->failure(401, "empty token provided");
+            }
+        } # if (empty($token))
 
         # check the database
         $query = "select UserID, Token, Revoked from api_user_tokens where UserID = ?";
-        $row = $app->dbOld->row($query, [$userId]);
-    
+        $row = $app->dbNew->row($query, [$userId]);
+        #~d($row);exit;
+
+        if (!$row) {
+            return $this->failure(401, "token not found");
+        }
+
         # user revoked the token
         if (intval($row["Revoked"]) === 1) {
-            return $this->failure("token revoked");
+            return $this->failure(401, "token revoked");
         }
-        
+
         # user doesn't own that token
-        if ($userId === intval($row["UserID"])) {
-            return $this->failure("token user mismatch");
+        if ($userId !== intval($row["UserID"])) {
+            return $this->failure(401, "token user mismatch");
         }
-            
+
+        /*
         # user is disabled
-        if (Users::isDisabled($userId)) {
-            return $this->failure("user disabled");
+        if (User::isDisabled($userId)) {
+            return $this->failure(401, "user disabled");
         }
+        */
 
         # wrong token provided
         if (!password_verify($token, strval($row["Token"]))) {
-            return $this->failure("wrong token provided");
+            return $this->failure(401, "wrong token provided");
         }
 
         # okay
@@ -98,29 +110,37 @@ class Json
 
     /**
      * success
+     *
+     * @see https://jsonapi.org/examples/
      */
-    public function success(array $payload)
+    public function success($response)
     {
         if (headers_sent()) {
             return false;
         }
 
-        if (empty($payload)) {
+        if (empty($response)) {
             return $this->failure("the server provided no payload", 500);
         }
 
         header("Content-Type: application/json; charset=utf-8");
         print json_encode(
-            array_merge(
-                [
-                    "status" => "success",
-                    "response" => $payload,
+            [
+                "id" => uniqid(),
+                "status" => "success",
+                "code" => 200,
+
+                "data" => $response,
+
+                "meta" => [
+                    "info" => $this->info(),
+                    "debug" => $this->debug(),
+                    "mode" => $this->mode,
                 ],
-                $this->info(),
-                $this->debug()
-            ),
-            $this->mode
+            ],
         );
+
+        exit;
     }
 
 
@@ -131,8 +151,10 @@ class Json
      *
      * @param string $message The error set in the JSON response
      * @param $response HTTP error code (usually 4xx client errors)
+     *
+     * @see https://jsonapi.org/format/#error-objects
      */
-    public function failure(string $message = "bad request", int $response = 400)
+    public function failure(int $code = 400, string $response = "bad request")
     {
         if (headers_sent()) {
             return false;
@@ -140,29 +162,39 @@ class Json
 
         header("Content-Type: application/json; charset=utf-8");
         print json_encode(
-            array_merge(
-                [
-                    "status" => "failure",
-                    "response" => $response,
-                    "error" => $message,
+            [
+                "id" => uniqid(),
+                "status" => "failure",
+                "code" => $code,
+
+                "data" => $response,
+
+                "meta" => [
+                    "info" => $this->info(),
+                    "debug" => $this->debug(),
+                    "mode" => $this->mode,
                 ],
-                $this->info(),
-                $this->debug()
-            ),
-            $this->mode
+            ],
         );
+
+        exit;
     }
 
 
     /**
      * debug
+     *
+     * todo
      */
     private function debug()
     {
+        return [];
+
+        /*
         $app = App::go();
         $debug = Debug::go();
 
-        if ($app->env->DEV) {
+        if ($app->env->dev) {
             return [
                 "debug" => [
                     "queries"  => $app->debug->get_queries(),
@@ -172,6 +204,7 @@ class Json
         } else {
             return [];
         }
+        */
     }
 
 
@@ -190,45 +223,9 @@ class Json
 
 
     /**
-     * fetch
-     *
-     * Get resources over the API to populate Gazelle display.
-     * Instead of copy-pasting the same SQL queries in many places.
-     *
-     * Takes a query string, e.g., "action=torrentgroup&id=1."
-     * Requires an API key for the user ID 0 (minor database surgery).
+     * selfTest
      */
-    public function fetch(string $action, array $params = [])
+    public function selfTest()
     {
-        $app = App::go();
-
-        $token = $app->env->getPriv("SELF_API");
-        $params = implode("&", $params);
-
-        $curl = curl_init();
-
-        # todo: make this use localhost and not HTTPS
-        curl_setopt($curl, CURLOPT_URL, "https://{$app->env->SITE_DOMAIN}/api.php?action={$action}&{$params}");
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-        # https://docs.torrents.bio
-        curl_setopt(
-            $curl,
-            CURLOPT_HTTPHEADER,
-            [
-                "Accept: application/json",
-                "Authorization: Bearer {$token}",
-            ]
-        );
-
-        $data = curl_exec($curl);
-        curl_close($curl);
-
-        # error out on bad query
-        if ($data) {
-            return $this->success($data);
-        } else {
-            return $this->failure();
-        }
     }
 } # class

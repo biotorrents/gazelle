@@ -1,0 +1,65 @@
+{% extends "base.twig" %}
+
+
+{% block content %}
+
+<table id="wikiArticle" class="u-full-width">
+    <tr>
+        <td>
+            {# discourse outputs safe html #}
+            {{ post.cooked|raw }}
+        </td>
+    </tr>
+
+</table>
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+<form method="post">
+    {{ form_token(query.server.REQUEST_URI) }}
+
+    <input type="text" id="search" name="search" placeholder="Search the wiki" />
+</form>
+
+
+<h3>Actions</h3>
+
+<form method="post">
+    {{ form_token(query.server.REQUEST_URI) }}
+
+    <input type="button" id="create" name="create" value="create" class="button-primary" />
+
+    <input type="button" id="edit" name="edit" value="edit" />
+
+    <input type="button" id="history" name="history" value="history" />
+</form>
+
+
+<h3>Navigation</h3>
+
+<ul>
+    <li>
+        <a href="/wiki">Main page</a>
+    </li>
+
+    <li>
+        <a href="/wiki/special">Special pages</a>
+    </li>
+
+    <li>
+        <a href="/wiki/latest">Recent changes</a>
+    </li>
+
+    <li>
+        <a href="/wiki/random">Random article</a>
+    </li>
+
+    <li>
+        <a href="javascript:print();">Printable version</a>
+    </li>
+</ul>
+
+{% endblock %}

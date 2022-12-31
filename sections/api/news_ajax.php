@@ -1,5 +1,8 @@
 <?php
+
 #declare(strict_types=1);
+
+$app = App::go();
 
 // Don't allow bigger queries than specified below regardless of called function
 $SizeLimit = 10;
@@ -11,8 +14,7 @@ if (!isset($_GET['count']) || !isset($_GET['offset']) || $Count <= 0 || $Offset 
     json_die('failure');
 }
 
-global $db;
-$db->query("
+$app->dbOld->query("
     SELECT
       ID,
       Title,
@@ -21,7 +23,7 @@ $db->query("
     FROM news
     ORDER BY Time DESC
     LIMIT $Offset, $Count");
-$News = $db->to_array(false, MYSQLI_NUM, false);
+$News = $app->dbOld->to_array(false, MYSQLI_NUM, false);
 
 $NewsResponse = [];
 foreach ($News as $NewsItem) {

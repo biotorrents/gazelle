@@ -1,16 +1,19 @@
 <?php
+
 declare(strict_types=1);
 
+
 /**
- * Tracker class
+ * Tracker
  *
  * Handles interactions with Ocelot.
  * todo: Turn this into a class with nice functions like update_user, delete_torrent, etc.
  */
+
 class Tracker
 {
-    const STATS_MAIN = 0;
-    const STATS_USER = 1;
+    public const STATS_MAIN = 0;
+    public const STATS_USER = 1;
 
     # requests
     public static $requests = [];
@@ -18,7 +21,7 @@ class Tracker
     # cache settings
     private static $cachePrefix = 'tracker_';
     private static $cacheDuration = 3600;
-    
+
 
     /**
      * update_tracker
@@ -32,7 +35,7 @@ class Tracker
      *   );
      *
      * Will send this request:
-     *   GET /{$ENV->TRACKER_SECRET}/update?action=change_passkey&oldpasskey={$oldPassKey}&newpasskey={$newPassKey} HTTP/1.1
+     *   GET /{$ENV->trackerSecret}/update?action=change_passkey&oldpasskey={$oldPassKey}&newpasskey={$newPassKey} HTTP/1.1
      *
      * @param string $action The action to send
      * @param array $updates An associative array of key->value pairs to send to the tracker
@@ -40,19 +43,21 @@ class Tracker
      */
     public static function update_tracker(string $action, array $updates, bool $toIrc = false)
     {
+        $app = App::go();
+
         $ENV = ENV::go();
 
         // Build request
-        $get = $ENV->getPriv('TRACKER_SECRET') . "/update?action={$action}";
+        $get = $ENV->getPriv('trackerSecret') . "/update?action={$action}";
         foreach ($updates as $k => $v) {
             $get .= "&{$k}={$v}";
         }
 
         # Production
-        if (!$ENV->DEV) {
+        if (!$ENV->dev) {
             $maxAttempts = 3;
         }
-        
+
         # Development
         else {
             $maxAttempts = 1;
@@ -62,12 +67,14 @@ class Tracker
         if (self::send_request($get, $maxAttempts, $err) === false) {
             send_irc(DEBUG_CHAN, "{$maxAttempts} {$err} {$get}");
 
-            if (G::$cache->get_value('ocelot_error_reported') === false) {
+            if ($app->cacheOld->get_value('ocelot_error_reported') === false) {
                 send_irc(ADMIN_CHAN, "Failed to update Ocelot: {$err} {$get}");
-                G::$cache->cache_value('ocelot_error_reported', true, 3600);
+                $app->cacheOld->cache_value('ocelot_error_reported', true, 3600);
             }
 
-            return false;
+            # this needs to throw
+            throw new Exception(__FUNCTION__ . ": {$err} {$get}");
+            #return false;
         }
 
         return true;
@@ -148,23 +155,23 @@ class Tracker
         $ENV = ENV::go();
 
         # no report key
-        if (!defined($ENV->getPriv('TRACKER_REPORTKEY'))) {
+        if (!defined($ENV->getPriv('trackerReportKey'))) {
             return false;
         }
 
         # there is a report key
-        $get = $ENV->getPriv('TRACKER_REPORTKEY') . '/report?';
+        $get = $ENV->getPriv('trackerReportKey') . '/report?';
 
         # main stats
         if ($type === self::STATS_MAIN) {
             $get .= 'get=stats';
         }
-        
+
         # user stats
         elseif ($type === self::STATS_USER && !empty($params['key'])) {
             $get .= "get=user&key={$params['key']}";
         }
-        
+
         # no stats
         else {
             return false;
@@ -201,25 +208,25 @@ class Tracker
         $sleep = 0;
         $success = false;
         $startTime = microtime(true);
-        
+
         while (!$success && $attempts++ < $maxAttempts) {
             if ($sleep) {
                 sleep($sleep);
             }
 
             // Spend some time retrying if we're not in dev
-            if (!$ENV->DEV) {
+            if (!$ENV->dev) {
                 $sleep = 6;
             }
 
             // Send request
             $file = fsockopen(
-                $ENV->getPriv('TRACKER_HOST'),
-                $ENV->getPriv('TRACKER_PORT'),
+                $ENV->getPriv('trackerHost'),
+                $ENV->getPriv('trackerPort'),
                 $errorNum,
                 $errorString
             );
-            
+
             if ($file) {
                 if (fwrite($file, $header) === false) {
                     $err = "Failed to fwrite";
@@ -275,24 +282,26 @@ class Tracker
      */
     public static function allowedClients(): array
     {
-        $allowedClients = G::$cache->get_value(self::$cachePrefix. __FUNCTION__) ?? [];
+        $app = App::go();
+
+        $allowedClients = $app->cacheOld->get_value(self::$cachePrefix. __FUNCTION__) ?? [];
 
         if (!empty($allowedClients)) {
             return $allowedClients;
         }
 
-        G::$db->query("
+        $app->dbOld->query("
             select peer_id, vstring from xbt_client_whitelist
             where vstring not like '//%' order by vstring asc
         ");
 
-        $allowedClients = G::$db->to_array();
+        $allowedClients = $app->dbOld->to_array();
         $allowedClients = array_combine(
             array_column($allowedClients, 'peer_id'),
             array_column($allowedClients, 'vstring'),
         );
 
-        G::$cache->cache_value(self::$cachePrefix. __FUNCTION__, $allowedClients, self::$cacheDuration);
+        $app->cacheOld->cache_value(self::$cachePrefix. __FUNCTION__, $allowedClients, self::$cacheDuration);
         return $allowedClients;
     }
-}
+} # class

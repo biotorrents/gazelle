@@ -1,14 +1,14 @@
 /**
  * Upload, Invite, etc.
  */
-#userinfo {
+#userInfo {
   color: #222;
   /* padding: 0.5em 0; */
   width: 100%;
   text-align: center;
 }
 
-#userinfo ul {
+#userInfo ul {
   display: inline;
   margin: 0 1%;
 
@@ -17,35 +17,35 @@
     margin: 0 0.1rem;
     line-height: 2rem;
     vertical-align: middle;
-    padding: 0;
+    padding: 1rem;
   }
 }
 
-#userinfo a {
+#userInfo a {
   color: #222;
   text-decoration: none;
 }
 
-#userinfo a:hover {
+#userInfo a:hover {
   text-decoration: underline;
 }
 
 /* Major? */
-#userinfo_major .brackets:before {
+#userInfoMajor .brackets:before {
   font-weight: bold;
 }
 
-#userinfo_major .brackets:after {
+#userInfoMajor .brackets:after {
   font-weight: bold;
 }
 
 /* Minor? */
-#userinfo_minor {
+#userInfoMinor {
   position: absolute;
   text-align: left;
 }
 
-#userinfo_minor > li > ul {
+#userInfoMinor > li > ul {
   display: none;
   position: absolute;
   padding: 5px;
@@ -54,6 +54,6 @@
   z-index: 100;
 }
 
-#userinfo #userinfo_minor li {
+#userInfo #userInfoMinor li {
   display: block;
 }

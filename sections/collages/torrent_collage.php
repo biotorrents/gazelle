@@ -111,16 +111,16 @@ foreach ($GroupIDs as $GroupID) {
   <td colspan="5">
     <?=$DisplayName?>
     <?php if (Bookmarks::has_bookmarked('torrent', $GroupID)) { ?>
-    <span class="remove_bookmark float_right">
-      <a class="float_right" href="#"
+    <span class="remove_bookmark u-pull-right">
+      <a class="u-pull-right" href="#"
         id="bookmarklink_torrent_<?=$GroupID?>"
         class="remove_bookmark brackets"
         onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove
         bookmark</a>
     </span>
     <?php } else { ?>
-    <span class="add_bookmark float_right">
-      <a class="float_right" href="#"
+    <span class="add_bookmark u-pull-right">
+      <a class="u-pull-right" href="#"
         id="bookmarklink_torrent_<?=$GroupID?>"
         class="add_bookmark brackets"
         onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
@@ -141,7 +141,7 @@ foreach ($GroupIDs as $GroupID) {
   class="group_torrent torrent_row groupid_<?=$GroupID?> <?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($user['TorrentGrouping']) && $user['TorrentGrouping'] === 1 ? ' hidden' : '')?>">
 
   <td colspan="3">
-    <span class="brackets float_right">
+    <span class="brackets u-pull-right">
       <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>"
         class="tooltip" title="Download">DL</a>
       <?php if (Torrents::can_use_token($Torrent)) { ?>
@@ -182,7 +182,7 @@ foreach ($GroupIDs as $GroupID) {
         $Data = current($Torrents);
         #$ExtraInfo = Torrents::torrent_info($Data, true, true);
         #$DisplayName .= "<br />$ExtraInfo";
-    
+
         $DisplayName = $twig->render(
             'torrents/display_name.html',
             [
@@ -195,8 +195,8 @@ foreach ($GroupIDs as $GroupID) {
               'extra_info' => Torrents::torrent_info($Data, true, true),
             ]
         );
-  
-  
+
+
         /*
         $TorrentID = key($Torrents);
         $Torrent = current($Torrents);
@@ -228,7 +228,7 @@ foreach ($GroupIDs as $GroupID) {
   <td></td>
 
   <td>
-    <span class="brackets float_right">
+    <span class="brackets u-pull-right">
       <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>"
         class="tooltip" title="Download">DL</a>
       <?php if (Torrents::can_use_token($Torrent)) { ?>
@@ -290,7 +290,7 @@ foreach ($GroupIDs as $GroupID) {
 <div class="collage_image image_group_<?=$GroupID?>">
   <a href="torrents.php?id=<?=$GroupID?>">
     <?php if (!$picture) {
-        $picture = STATIC_SERVER.'common/noartwork.png';
+        $picture = staticServer.'common/noartwork.png';
     } ?>
     <img class="tooltip_interactive"
       src="<?=ImageTools::process($picture, 'thumb')?>"
@@ -428,8 +428,8 @@ if (check_perms('zip_downloader')) {
 <?php foreach ($ZIPList as $ListItem) { ?>
           <li id="list<?=$ListItem?>">
             <input type="hidden" name="list[]" value="<?=$ListItem?>" />
-            <span class="float_left"><?=$ZIPOptions[$ListItem]['2']?></span>
-            <span class="remove remove_collector"><a href="#" onclick="remove_selection('<?=$ListItem?>'); return false;" class="float_right brackets">X</a></span>
+            <span class="u-pull-left"><?=$ZIPOptions[$ListItem]['2']?></span>
+            <span class="remove remove_collector"><a href="#" onclick="remove_selection('<?=$ListItem?>'); return false;" class="u-pull-right brackets">X</a></span>
             <br style="clear: all;" />
           </li>
 <?php } ?>
@@ -555,7 +555,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
         break;
     } ?>
           <li>
-            <?=Users::format_username($UserID, false, false, false)?>
+            <?=User::format_username($UserID, false, false, false)?>
             (<?=Text::float($Additions)?>)
           </li>
           <?php
@@ -566,8 +566,8 @@ foreach ($UserAdditions as $UserID => $Additions) {
 
     <?php if (check_perms('site_collages_manage') && !isset($PreventAdditions)) { ?>
     <div class="box box_addtorrent">
-      <div class="head"><strong>Add Torrent Group</strong><span class="float_right"><a href="#"
-            onclick="$('.add_torrent_container').toggle_class('hidden'); this.innerHTML = (this.innerHTML == 'Batch add' ? 'Individual add' : 'Batch add'); return false;"
+      <div class="head"><strong>Add Torrent Group</strong><span class="u-pull-right"><a href="#"
+            onclick="$('.add_torrent_container').toggleClass('hidden'); this.innerHTML = (this.innerHTML == 'Batch add' ? 'Individual add' : 'Batch add'); return false;"
             class="brackets">Batch add</a></span></div>
       <div class="pad add_torrent_container">
         <form class="add_form" name="torrent" action="collages.php" method="post">
@@ -628,7 +628,7 @@ foreach ($CommentList as $Comment) {
     list($CommentID, $Body, $UserID, $Username, $CommentTime) = $Comment; ?>
     <div class="box comment">
       <div class="head">
-        <?=Users::format_username($UserID, false, false, false) ?>
+        <?=User::format_username($UserID, false, false, false) ?>
         <?=time_diff($CommentTime) ?>
         <br />
         <a href="reports.php?action=report&amp;type=comment&amp;id=<?=$CommentID?>"

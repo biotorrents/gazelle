@@ -193,7 +193,7 @@ if (!$NumResults) {
 
         $GroupInfo = $TorrentGroups[$Result['PageID']];
         $Links = 'Torrent: ' . Artists::display_artists($GroupInfo['ExtendedArtists']) . '<a href="torrents.php?id=' . $GroupInfo['id'] . '" dir="ltr">' . $GroupInfo['title'] . '</a>';
-       
+
         if ($GroupInfo['year'] > 0) {
             $Links .= " [" . $GroupInfo['year'] . "]";
         }
@@ -216,17 +216,17 @@ if (!$NumResults) {
     } ?>
 
   <table
-    class="forum_post box vertical_margin<?=(!Users::has_avatars_enabled() ? ' noavatar' : '')?>">
+    class="forum_post box vertical_margin<?=(!User::hasAvatarsEnabled() ? ' noavatar' : '')?>">
     <colgroup>
-      <?php if (Users::has_avatars_enabled()) { ?>
+      <?php if (User::hasAvatarsEnabled()) { ?>
       <col class="col_avatar" />
       <?php } ?>
       <col class="col_post_body" />
     </colgroup>
     <tr
       class="colhead_dark notify_<?=$Result['Page']?>">
-      <td colspan="<?=Users::has_avatars_enabled() ? 2 : 1 ?>">
-        <span class="float_left">
+      <td colspan="<?=User::hasAvatarsEnabled() ? 2 : 1 ?>">
+        <span class="u-pull-left">
           <?=$Links . ($Result['PostID'] < $Result['LastPost'] ? ' <span class="new">(New!)</span>' : '')?>
         </span>
         <a class="tooltip last_read" title="Jump to last read"
@@ -239,7 +239,7 @@ if (!$NumResults) {
         </a>
         <?php if ($Result['Page'] === 'forums') { ?>
         <span id="bar<?=$Result['PostID'] ?>"
-          class="float_right">
+          class="u-pull-right">
           <a href="#"
             onclick="Subscribe(<?=$Result['PageID']?>); return false;"
             id="subscribelink<?=$Result['PageID']?>"
@@ -247,7 +247,7 @@ if (!$NumResults) {
           <?php } else { ?>
           <span
             id="bar_<?=$Result['Page'] . $Result['PostID'] ?>"
-            class="float_right">
+            class="u-pull-right">
             <a href="#"
               onclick="SubscribeComments('<?=$Result['Page']?>', <?=$Result['PageID']?>); return false;"
               id="subscribelink_<?=$Result['Page'] . $Result['PageID']?>"
@@ -261,9 +261,9 @@ if (!$NumResults) {
     <?php if (!empty($Result['LastReadBody'])) { // if a user is subscribed to a topic/comments but hasn't accessed the site ever, LastReadBody will be null - in this case we don't display a post.?>
     <tr
       class="row<?=$ShowCollapsed ? ' hidden' : '' ?>">
-      <?php if (Users::has_avatars_enabled()) { ?>
+      <?php if (User::hasAvatarsEnabled()) { ?>
       <td class="avatar" valign="top">
-        <?=Users::show_avatar($Result['LastReadAvatar'], $Result['LastReadUserID'], $Result['LastReadUsername'], $HeavyInfo['DisableAvatars'])?>
+        <?=User::displayAvatar($Result['LastReadAvatar'], $Result['LastReadUsername'])?>
       </td>
       <?php } ?>
       <td class="body" valign="top">
@@ -271,7 +271,7 @@ if (!$NumResults) {
           <?=Text::parse($Result['LastReadBody']) ?>
           <?php if ($Result['LastReadEditedUserID']) { ?>
           <br /><br />
-          Last edited by <?=Users::format_username($Result['LastReadEditedUserID'], false, false, false) ?>
+          Last edited by <?=User::format_username($Result['LastReadEditedUserID'], false, false, false) ?>
           <?=time_diff($Result['LastReadEditedTime'])?>
           <?php } ?>
         </div>

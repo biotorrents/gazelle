@@ -1,8 +1,9 @@
 <?php
+
 $ConvID = $_GET['id'];
 if (!$ConvID || !is_number($ConvID)) {
-  echo json_encode(array('status' => 'failure'));
-  error();
+    echo json_encode(array('status' => 'failure'));
+    error();
 }
 
 
@@ -14,8 +15,8 @@ $db->query("
   WHERE UserID = '$UserID'
     AND ConvID = '$ConvID'");
 if (!$db->has_results()) {
-  echo json_encode(array('status' => 'failure'));
-  error();
+    echo json_encode(array('status' => 'failure'));
+    error();
 }
 list($InInbox, $InSentbox) = $db->next_record();
 
@@ -23,8 +24,8 @@ list($InInbox, $InSentbox) = $db->next_record();
 
 
 if (!$InInbox && !$InSentbox) {
-  echo json_encode(array('status' => 'failure'));
-  error();
+    echo json_encode(array('status' => 'failure'));
+    error();
 }
 
 // Get information on the conversation
@@ -49,24 +50,24 @@ $db->query("
   WHERE pm.ConvID = '$ConvID'");
 
 while (list($PMUserID, $Username) = $db->next_record()) {
-  $PMUserID = (int)$PMUserID;
-  $Users[$PMUserID]['UserStr'] = Users::format_username($PMUserID, true, true, true, true);
-  $Users[$PMUserID]['Username'] = $Username;
-  $UserInfo = Users::user_info($PMUserID);
-  $Users[$PMUserID]['Avatar'] = $UserInfo['Avatar'];
+    $PMUserID = (int)$PMUserID;
+    $Users[$PMUserID]['UserStr'] = User::format_username($PMUserID, true, true, true, true);
+    $Users[$PMUserID]['Username'] = $Username;
+    $UserInfo = User::user_info($PMUserID);
+    $Users[$PMUserID]['Avatar'] = $UserInfo['Avatar'];
 }
 $Users[0]['UserStr'] = 'System'; // in case it's a message from the system
 $Users[0]['Username'] = 'System';
 $Users[0]['Avatar'] = '';
 
 if ($UnRead == '1') {
-  $db->query("
+    $db->query("
     UPDATE pm_conversations_users
     SET UnRead = '0'
     WHERE ConvID = '$ConvID'
       AND UserID = '$UserID'");
-  // Clear the caches of the inbox and sentbox
-  $cache->decrement("inbox_new_$UserID");
+    // Clear the caches of the inbox and sentbox
+    $cache->decrement("inbox_new_$UserID");
 }
 
 // Get messages
@@ -78,8 +79,8 @@ $db->query("
 
 $JsonMessages = [];
 while (list($SentDate, $SenderID, $Body, $MessageID) = $db->next_record()) {
-  $Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[Encrypted]';
-  $JsonMessage = array(
+    $Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[Encrypted]';
+    $JsonMessage = array(
     'messageId' => (int)$MessageID,
     'senderId' => (int)$SenderID,
     'senderName' => $Users[(int)$SenderID]['Username'],
@@ -88,12 +89,12 @@ while (list($SentDate, $SenderID, $Body, $MessageID) = $db->next_record()) {
     'bbBody' => $Body,
     'body' => Text::parse($Body)
   );
-  $JsonMessages[] = $JsonMessage;
+    $JsonMessages[] = $JsonMessage;
 }
 
 print
   json_encode(
-    array(
+      array(
       'status' => 'success',
       'response' => array(
         'convId' => (int)$ConvID,
@@ -103,4 +104,3 @@ print
       )
     )
   );
-?>

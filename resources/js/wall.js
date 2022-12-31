@@ -1,3 +1,6 @@
+/**
+ * wall
+ */
 function wall(parent, children, style, min) {
   var min = +min || 2;
   var b = $(parent + ":not(.hidden)").raw();
@@ -42,10 +45,17 @@ function wall(parent, children, style, min) {
     }
   }
 
+  /**
+   * getW
+   */
   function getW(e) {
     var a = window.getComputedStyle(e).width.match(/[0-9.]+/);
     return a ? parseFloat(a[0]) : 0;
   }
+
+  /**
+   * getH
+   */
   function getH(e) {
     var a = window.getComputedStyle(e).height.match(/[0-9.]+/);
     return a ? parseFloat(a[0]) : 0;

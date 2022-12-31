@@ -13,7 +13,6 @@ $ENV = ENV::go();
 
 // Number of users per page
 define('FRIENDS_PER_PAGE', '20');
-#include_once "$ENV->SERVER_ROOT/classes/paranoia.class.php";
 
 View::header('Friends');
 
@@ -73,8 +72,8 @@ foreach ($Friends as $Friend) {
         value="<?=$user['AuthKey']?>" />
       <table class="friends_table vertical_margin">
         <tr class="colhead">
-          <td colspan="<?=(Users::has_avatars_enabled() ? 3 : 2)?>">
-            <span class="float_left"><?=Users::format_username($FriendID, true, true, true, true)?>
+          <td colspan="<?=(User::hasAvatarsEnabled() ? 3 : 2)?>">
+            <span class="u-pull-left"><?=User::format_username($FriendID, true, true, true, true)?>
               <?php if (check_paranoia('ratio', $Paranoia, $Class, $FriendID)) { ?>
               &nbsp;Ratio: <strong><?=Format::get_ratio_html($Uploaded, $Downloaded)?></strong>
               <?php
@@ -93,14 +92,14 @@ foreach ($Friends as $Friend) {
     } ?>
             </span>
             <?php if (check_paranoia('lastseen', $Paranoia, $Class, $FriendID)) { ?>
-            <span class="float_right"><?=time_diff($LastAccess)?></span>
+            <span class="u-pull-right"><?=time_diff($LastAccess)?></span>
             <?php } ?>
           </td>
         </tr>
         <tr>
-          <?php if (Users::has_avatars_enabled()) { ?>
+          <?php if (User::hasAvatarsEnabled()) { ?>
           <td class="col_avatar avatar" valign="top">
-            <?=Users::show_avatar($Avatar, $FriendID, $Username, $HeavyInfo['DisableAvatars'])?>
+            <?=User::displayAvatar($Avatar, $Username)?>
           </td>
           <?php } ?>
           <td valign="top">

@@ -1,48 +1,56 @@
-<nav id="userinfo">
+<nav id="userInfo">
 
     {# major #}
-    <ul id="userinfo_major">
+    <ul id="userInfoMajor">
 
         {# upload #}
+        {#
         <li id="nav_upload">
             <a href="/upload.php">Upload</a>
         </li>
+        #}
 
         {# invite #}
+        {#
         <li id="nav_invite">
-            <a href="/user.php?action=invite">Invite {{ user.Invites }}</a>
+            <a href="/user.php?action=invite">Invite {{ user.extra.Invites }}</a>
         </li>
+        #}
 
         {# donate #}
-        {% if ENV.FEATURE_DONATE %}
+        {#
+        {% if env.enableDonations %}
         <li id="nav_donate">
             <a href="/donate.php">Donate</a>
         </li>
         {% endif %}
+        #}
 
         {# staff #}
+        {#
         <li id="nav_staff">
             <a href="/staff.php">Staff</a>
         </li>
+        #}
     </ul>
 
 
     {# stats #}
-    <ul id="userinfo_stats">
+    <ul id="userInfo_stats">
 
         {# seeding #}
         <li id="stats_seeding">
-            <a href="/torrents.php?type=seeding&userid={{ user.ID }}">Up</a>:
-            <span class="stat tooltip" title="{{ user.BytesUploaded|get_size(levels = 5) }}">
-                {{ user.BytesUploaded|get_size }}
+            <a href="/torrents.php?type=seeding&userid={{ user.core.id }}">Up</a>:
+            <span class="stat tooltip" title="{{ user.extra.Uploaded|get_size(levels = 5) }}">
+                {{ user.extra.Uploaded|get_size }}
             </span>
         </li>
 
         {# leeching #}
         <li id="stats_leeching">
-            <a href="/torrents.php?type=leeching&userid={{ user.ID }}">Down</a>:
-            <span class="stat tooltip" title="{{ user.BytesDownloaded|get_size(levels = 5) }}">
-                {{ user.BytesDownloaded|get_size }}
+            <a href="/torrents.php?type=leeching&userid={{ user.core.id }}">Down</a>:
+            <span class="stat tooltip" title="{{ user.extra.Downloaded|get_size(levels = 5) }}">
+                {{ user.extra.Downloaded|get_size }}
             </span>
         </li>
 
@@ -50,16 +58,16 @@
         <li id="stats_ratio">
             Ratio:
             <span class="stat">
-                {{ get_ratio_html(dividend = user.BytesUploaded, divisor = user.BytesDownloaded) }}
+                {{ ratio(user.extra.Uploaded, user.extra.Downloaded) }}
             </span>
         </li>
 
         {# required ratio #}
-        {% if user.RequiredRatio and user.RequiredRatio > 0 %}
+        {% if user.extra.RequiredRatio and user.extra.RequiredRatio > 0 %}
         <li id="stats_required">
             <a href="/rules/ratio">Required</a>:
-            <span class="stat tooltip" title="{{ user.RequiredRatio|float(decimals = 5) }}">
-                {{ user.RequiredRatio|float }}
+            <span class="stat tooltip" title="{{ user.extra.RequiredRatio|float(decimals = 5) }}">
+                {{ user.extra.RequiredRatio|float }}
             </span>
         </li>
         {% endif %}
@@ -67,15 +75,15 @@
 
 
     {# extra #}
-    <ul id="userinfo_extra">
+    <ul id="userInfoExtra">
 
         {# freeleech tokens #}
-        {% if userFLTokens > 0 %}
+        {% if user.extra.FLTokens > 0 %}
         <li id="fl_tokens">
             <a href="/wiki.php?action=article&name=tokens">Tokens</a>:
             <span class="stat">
-                <a href="/userhistory.php?action=token_history&userid={{ user.ID }}">
-                    {{ user.FLTokens }}
+                <a href="/userhistory.php?action=token_history&userid={{ user.core.id }}">
+                    {{ user.extra.FLTokens }}
                 </a>
             </span>
         </li>
@@ -83,18 +91,18 @@
 
         {# bonus points #}
         <li id="bonus_points">
-            <a href="/wiki.php?action=article&name=bonuspoints">{{ ENV.BONUS_POINTS }}</a>:
+            <a href="/wiki.php?action=article&name=bonuspoints">{{ env.bonusPoints }}</a>:
             <span class="stat">
-                <a href="/store.php">{{ user.BonusPoints }}</a>
+                <a href="/store.php">{{ user.extra.BonusPoints }}</a>
             </span>
         </li>
 
         {# hit and runs #}
-        {% if user.HnR > 0 %}
+        {% if user.extra.HnR > 0 %}
         <li id="hnr">
             <a href="/snatchlist.php">HnRs</a>:
             <span class="stat">
-                <a>{{ user.HnR }}</a>
+                <a>{{ user.extra.HnR }}</a>
             </span>
         </li>
         {% endif %}

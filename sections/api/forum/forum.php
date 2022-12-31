@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 # todo: Go through line by line
@@ -137,9 +138,9 @@ if (count($Forum) === 0) {
         } else {
             $Read = 'read';
         }
-        $UserInfo = Users::user_info($AuthorID);
+        $UserInfo = User::user_info($AuthorID);
         $AuthorName = $UserInfo['Username'];
-        $UserInfo = Users::user_info($LastAuthorID);
+        $UserInfo = User::user_info($LastAuthorID);
         $LastAuthorName = $UserInfo['Username'];
         // Bug fix for no last time available
         if (!$LastTime) {

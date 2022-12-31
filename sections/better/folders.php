@@ -1,27 +1,27 @@
 <?php
 #declare(strict_types=1);
 
-if (check_perms('admin_reports') && !empty($_GET['remove']) && is_number($_GET['remove'])) {
-    $db->prepared_query("
-    DELETE FROM torrents_bad_folders
-    WHERE TorrentID = ".$_GET['remove']);
+$app = App::go();
 
-    $db->prepared_query("
-    SELECT GroupID
-    FROM torrents
-    WHERE ID = ".$_GET['remove']);
+$query = "
+    select torrents_bad_folders.torrentId, torrents.groupId
+    from torrents_bad_folders
+    join torrents on torrents.id = torrents_bad_folders.torrentId
+    order by rand() limit 20
+";
 
-    list($GroupID) = $db->next_record();
-    $cache->delete_value('torrents_details_'.$GroupID);
+$ref = $app->dbNew->multi($query) ?? [];
+
+$groups = [];
+foreach ($ref as $row) {
+    $groups[] = Torrents::get_groups($row["groupId"]);
 }
 
-if (!empty($_GET['filter']) && $_GET['filter'] == 'all') {
-    $Join = '';
-    $All = true;
-} else {
-    $Join = "JOIN xbt_snatched AS x ON x.fid = tbf.TorrentID AND x.uid = ".$user['ID'];
-    $All = false;
-}
+exit;
+
+
+/** continue */
+
 
 View::header('Torrents with bad folder names');
 $db->prepared_query("

@@ -1,8 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
+
 /**
- * Autoload
+ * spl_autoload_register
  *
  * Load classes automatically when they're needed.
  * Temporary fix for class/filename mismatches.
@@ -14,8 +16,7 @@ declare(strict_types=1);
 spl_autoload_register(function (string $class) {
     $app = App::go();
 
-    $path = "{$app->env->SERVER_ROOT}/app/{$class}.php";
-
+    $path = "{$app->env->serverRoot}/app/{$class}.php";
     if (!file_exists($path)) {
         switch ($class) {
             case 'TORRENT':
@@ -29,10 +30,10 @@ spl_autoload_register(function (string $class) {
                 break;
         }
 
-        $path = "{$app->env->SERVER_ROOT}/app/{$name}.php";
+        $path = "{$app->env->serverRoot}/app/{$name}.php";
     }
 
-    if (!empty($name)) {
+    if ($name) {
         require_once $path;
     }
 });

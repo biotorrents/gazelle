@@ -1,8 +1,9 @@
 <?php
+
 authorize();
 
 if (!check_perms('admin_reports') && !check_perms('project_team') && !check_perms('site_moderate_forums')) {
-  error(403);
+    error(403);
 }
 
 $ReportID = (int) $_POST['reportid'];
@@ -13,15 +14,15 @@ $db->query("
   WHERE ID = $ReportID");
 list($Type) = $db->next_record();
 if (!check_perms('admin_reports')) {
-  if (check_perms('site_moderate_forums')) {
-    if (!in_array($Type, array('comment', 'post', 'thread'))) {
-      error($Type);
+    if (check_perms('site_moderate_forums')) {
+        if (!in_array($Type, array('comment', 'post', 'thread'))) {
+            error($Type);
+        }
+    } elseif (check_perms('project_team')) {
+        if ($Type != 'request_update') {
+            error(403);
+        }
     }
-  } elseif (check_perms('project_team')) {
-    if ($Type != 'request_update') {
-      error(403);
-    }
-  }
 }
 
 $db->query("
@@ -34,13 +35,13 @@ $db->query("
 $Channels = [];
 
 if ($Type == 'request_update') {
-  $Channels[] = '#requestedits';
-  $cache->decrement('num_update_reports');
+    $Channels[] = '#requestedits';
+    $cache->decrement('num_update_reports');
 }
 
 if (in_array($Type, array('comment', 'post', 'thread'))) {
-  $Channels[] = '#forumreports';
-  $cache->decrement('num_forum_reports');
+    $Channels[] = '#forumreports';
+    $cache->decrement('num_forum_reports');
 }
 
 $db->query("

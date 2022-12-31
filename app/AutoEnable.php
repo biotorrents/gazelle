@@ -1,18 +1,24 @@
 <?php
+
 #declare(strict_types=1);
+
+
+/**
+ * AutoEnable
+ */
 
 class AutoEnable
 {
     // Constants for database values
-    const APPROVED = 1;
-    const DENIED = 2;
-    const DISCARDED = 3;
+    public const APPROVED = 1;
+    public const DENIED = 2;
+    public const DISCARDED = 3;
 
     // Cache key to store the number of enable requests
-    const CACHE_KEY_NAME = 'num_enable_requests';
+    public const CACHE_KEY_NAME = 'num_enable_requests';
 
     // The default request rejected message
-    const REJECTED_MESSAGE = <<<EOT
+    public const REJECTED_MESSAGE = <<<EOT
     <p>
       Your request to re-enable your account has been rejected.
     </p>
@@ -24,7 +30,7 @@ class AutoEnable
 EOT;
 
     // The default request received message
-    const RECEIVED_MESSAGE = <<<EOT
+    public const RECEIVED_MESSAGE = <<<EOT
     <p>
       Your request to re-enable your account has been received.
     </p>
@@ -44,12 +50,14 @@ EOT;
      */
     public static function new_request($Username, $Email)
     {
+        $app = App::go();
+
         if (empty($Username)) {
             Http::redirect('login');
         }
 
         // Get the user's ID
-        G::$db->query("
+        $app->dbOld->query("
         SELECT
           um.`ID`,
           ui.`BanReason`
@@ -62,10 +70,10 @@ EOT;
           AND um.`Enabled` = '2'
         ");
 
-        if (G::$db->has_results()) {
+        if ($app->dbOld->has_results()) {
             // Make sure the user can make another request
-            list($UserID, $BanReason) = G::$db->next_record();
-            G::$db->query("
+            list($UserID, $BanReason) = $app->dbOld->next_record();
+            $app->dbOld->query("
             SELECT
               1
             FROM
@@ -83,7 +91,7 @@ EOT;
         }
 
         $IP = $_SERVER['REMOTE_ADDR'];
-        if (G::$db->has_results() || !isset($UserID)) {
+        if ($app->dbOld->has_results() || !isset($UserID)) {
             // User already has/had a pending activation request or username is invalid
             $Output = sprintf(self::REJECTED_MESSAGE, DISABLED_CHAN, BOT_SERVER);
             if (isset($UserID)) {
@@ -95,7 +103,7 @@ EOT;
         } else {
             // New disable activation request
             $UserAgent = db_string($_SERVER['HTTP_USER_AGENT']);
-            G::$db->query(
+            $app->dbOld->query(
                 "
                 INSERT INTO `users_enable_requests`(
                   `UserID`,
@@ -110,16 +118,16 @@ EOT;
                 Crypto::encrypt($IP),
                 $UserAgent
             );
-            $RequestID = G::$db->inserted_id();
+            $RequestID = $app->dbOld->inserted_id();
 
             // Cache the number of requests for the modbar
-            G::$cache->increment_value(self::CACHE_KEY_NAME);
+            $app->cacheOld->increment_value(self::CACHE_KEY_NAME);
             Http::deleteCookie('username');
             $Output = self::RECEIVED_MESSAGE;
 
             Tools::update_user_notes(
                 $UserID,
-                sqltime() . " - Enable request " . G::$db->inserted_id() . " received from $IP\n\n"
+                sqltime() . " - Enable request " . $app->dbOld->inserted_id() . " received from $IP\n\n"
             );
 
             if ($BanReason === 3) {
@@ -142,6 +150,8 @@ EOT;
      */
     public static function handle_requests($IDs, $Status, $Comment)
     {
+        $app = App::go();
+
         # Error checking
         if ($Status !== self::APPROVED && $Status !== self::DENIED && $Status !== self::DISCARDED) {
             error(404);
@@ -161,7 +171,7 @@ EOT;
             }
         }
 
-        G::$db->query("
+        $app->dbOld->query("
         SELECT
           `Email`,
           `ID`,
@@ -172,21 +182,10 @@ EOT;
           `ID` IN(".implode(',', $IDs).")
           AND `Outcome` IS NULL
         ");
-        $Results = G::$db->to_array(false, MYSQLI_NUM);
+        $Results = $app->dbOld->to_array(false, MYSQLI_NUM);
 
         if ($Status !== self::DISCARDED) {
             // Prepare email
-            require_once SERVER_ROOT.'/classes/templates.class.php';
-            $TPL = new TEMPLATE;
-
-            if ($Status === self::APPROVED) {
-                $TPL->open(SERVER_ROOT.'/templates/enable_request_accepted.tpl');
-                $TPL->set('SITE_DOMAIN', SITE_DOMAIN);
-            } else {
-                $TPL->open(SERVER_ROOT.'/templates/enable_request_denied.tpl');
-            }
-            $TPL->set('SITE_NAME', $ENV->SITE_NAME);
-
             foreach ($Results as $Result) {
                 list($Email, $ID, $UserID) = $Result;
                 $Email = Crypto::decrypt($Email);
@@ -195,7 +194,7 @@ EOT;
                 if ($Status === self::APPROVED) {
                     // Generate token
                     $Token = db_string(Text::random());
-                    G::$db->query("
+                    $app->dbOld->query("
                     UPDATE
                       `users_enable_requests`
                     SET
@@ -205,13 +204,17 @@ EOT;
                       $Token,
                       $ID
                     ");
-                    $TPL->set('TOKEN', $Token);
+                }
+                if ($Status === self::APPROVED) {
+                    $email = $app->twig->render("email/enableApproved.twig", ["ENV" => $app->env,"token" => $token]);
+                } else {
+                    $email = $app->twig->render("email/enableDeclined.twig");
                 }
 
                 // Send email
-                $Subject = "Your enable request for $ENV->SITE_NAME has been ";
+                $Subject = "Your enable request for $ENV->siteName has been ";
                 $Subject .= ($Status === self::APPROVED) ? 'approved' : 'denied';
-                App::email($Email, $Subject, $TPL->get());
+                App::email($Email, $Subject, $email);
             }
         } else {
             foreach ($Results as $Result) {
@@ -221,8 +224,8 @@ EOT;
         }
 
         // User notes stuff
-        $StaffID = G::$user['ID'] ?? 0;
-        G::$db->query("
+        $StaffID = $app->userNew['ID'] ?? 0;
+        $app->dbOld->query("
         SELECT
           `Username`
         FROM
@@ -232,8 +235,8 @@ EOT;
           $StaffID
         ");
 
-        if (G::$db->has_results()) {
-            list($StaffUser) = G::$db->next_record();
+        if ($app->dbOld->has_results()) {
+            list($StaffUser) = $app->dbOld->next_record();
         } else {
             $StaffUser = "System";
             $StaffID = 0;
@@ -247,7 +250,7 @@ EOT;
         }
 
         // Update database values and decrement cache
-        G::$db->query("
+        $app->dbOld->query("
         UPDATE
           `users_enable_requests`
         SET
@@ -257,7 +260,7 @@ EOT;
           $StaffID,
           $Status
         ");
-        G::$cache->decrement_value(self::CACHE_KEY_NAME, count($IDs));
+        $app->cacheOld->decrement_value(self::CACHE_KEY_NAME, count($IDs));
     }
 
     /**
@@ -267,12 +270,14 @@ EOT;
      */
     public static function unresolve_request($ID)
     {
+        $app = App::go();
+
         $ID = (int) $ID;
         if (empty($ID)) {
             error(404);
         }
 
-        G::$db->query("
+        $app->dbOld->query("
         SELECT
           `UserID`
         FROM
@@ -281,24 +286,24 @@ EOT;
           `Outcome` = '" . self::DISCARDED . "' AND `ID` = '$ID'
         ");
 
-        if (!G::$db->has_results()) {
+        if (!$app->dbOld->has_results()) {
             error(404);
         } else {
-            list($UserID) = G::$db->next_record();
+            list($UserID) = $app->dbOld->next_record();
         }
 
-        G::$db->query("
+        $app->dbOld->query("
         SELECT
           `Username`
         FROM
           `users_main`
         WHERE
-          `ID` = '".G::$user['ID']."'
+          `ID` = '".$app->userNew['ID']."'
         ");
-        list($StaffUser) = G::$db->next_record();
+        list($StaffUser) = $app->dbOld->next_record();
 
         Tools::update_user_notes($UserID, sqltime()." - Enable request $ID unresolved by [user]".$StaffUser.'[/user]'."\n\n");
-        G::$db->query("
+        $app->dbOld->query("
         UPDATE
           `users_enable_requests`
         SET
@@ -308,7 +313,7 @@ EOT;
         WHERE
           `ID` = '$ID'
         ");
-        G::$cache->increment_value(self::CACHE_KEY_NAME);
+        $app->cacheOld->increment_value(self::CACHE_KEY_NAME);
     }
 
     /**
@@ -339,8 +344,10 @@ EOT;
      */
     public static function handle_token($Token)
     {
+        $app = App::go();
+
         $Token = db_string($Token);
-        G::$db->query("
+        $app->dbOld->query("
         SELECT
           uer.`UserID`,
           uer.`HandledTimestamp`,
@@ -356,9 +363,9 @@ EOT;
           `Token` = '$Token'
         ");
 
-        if (G::$db->has_results()) {
-            list($UserID, $Timestamp, $TorrentPass, $Visible, $IP) = G::$db->next_record();
-            G::$db->query("
+        if ($app->dbOld->has_results()) {
+            list($UserID, $Timestamp, $TorrentPass, $Visible, $IP) = $app->dbOld->next_record();
+            $app->dbOld->query("
             UPDATE
               `users_enable_requests`
             SET
@@ -373,11 +380,11 @@ EOT;
                 $Err = "Token has expired. Please visit ".DISABLED_CHAN." on ".BOT_SERVER." to discuss this with staff.";
             } else {
                 // Good request, decrement cache value and enable account
-                G::$cache->decrement_value(AutoEnable::CACHE_KEY_NAME);
+                $app->cacheOld->decrement_value(AutoEnable::CACHE_KEY_NAME);
                 $VisibleTrIP = ($Visible && Crypto::decrypt($IP) !== '127.0.0.1') ? '1' : '0';
                 Tracker::update_tracker('add_user', array('id' => $UserID, 'passkey' => $TorrentPass, 'visible' => $VisibleTrIP));
 
-                G::$db->query("
+                $app->dbOld->query("
                 UPDATE
                   `users_main`
                 SET
@@ -386,8 +393,8 @@ EOT;
                 WHERE
                   `ID` = '$UserID'
                 ");
-                
-                G::$db->query("
+
+                $app->dbOld->query("
                 UPDATE
                   `users_info`
                 SET
@@ -396,7 +403,7 @@ EOT;
                   `UserID` = '$UserID'
                 ");
 
-                G::$cache->delete_value("user_info_$UserID");
+                $app->cacheOld->delete_value("user_info_$UserID");
                 $Err = "Your account has been enabled. You may now log in.";
             }
         } else {

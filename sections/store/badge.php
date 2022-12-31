@@ -21,9 +21,9 @@ if (!$BadgeID) {
     $Err = 'No badge specified';
 } elseif (!in_array($BadgeID, $ShopBadgeIDs)) {
     $Err = 'Invalid badge ID';
-} elseif (Badges::has_badge($UserID, $BadgeID)) {
+} elseif (Badges::hasBadge($UserID, $BadgeID)) {
     $Err = 'You already have this badge';
-} elseif ((int) $BadgeID !== $ShopBadgeIDs[0] && !Badges::has_badge($UserID, $ShopBadgeIDs[array_search($BadgeID, $ShopBadgeIDs)-1])) {
+} elseif ((int) $BadgeID !== $ShopBadgeIDs[0] && !Badges::hasBadge($UserID, $ShopBadgeIDs[array_search($BadgeID, $ShopBadgeIDs)-1])) {
     $Err = "You haven't purchased the badges before this one!";
 }
 
@@ -39,7 +39,7 @@ if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
             $BP = (int) $BP;
 
             if ($BP >= $Prices[$BadgeID]) {
-                if (!Badges::award_badge($UserID, $BadgeID)) {
+                if (!Badges::awardBadge($UserID, $BadgeID)) {
                     $Err = 'Could not award badge, unknown error occurred.';
                 } else {
                     $db->prepared_query("
@@ -55,7 +55,7 @@ if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
                     $cache->delete_value("user_info_heavy_$UserID");
                 }
             } else {
-                $Err = 'Not enough '.BONUS_POINTS.'.';
+                $Err = 'Not enough '.bonusPoints.'.';
             }
         }
     }
@@ -63,11 +63,11 @@ if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
     View::header('Store'); ?>
 <div>
     <h2 id='general'>
-        Purchase <?=isset($Err)?'Failed':'Successful'?>
+        Purchase <?=isset($Err) ? 'Failed' : 'Successful'?>
     </h2>
     <div class='box pad'>
         <p>
-            <?=isset($Err)?'Error: '.$Err:'You have purchased a badge'?>
+            <?=isset($Err) ? 'Error: '.$Err : 'You have purchased a badge'?>
         </p>
 
         <p>
@@ -84,7 +84,7 @@ if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
         <p>
             Badge cost:
             <?=Text::float($Prices[$BadgeID])?>
-            <?=BONUS_POINTS?>
+            <?=bonusPoints?>
         </p>
 
         <?php if (isset($Err)) { ?>

@@ -50,7 +50,7 @@ $Classes = array(
     'MinRatio'    => 1.3,
     'TorUnique'   => false
   ),
-  
+
   POWER_TM => array(
     'Name'        => 'Titty Monster',
     'Price'       => 100000,
@@ -168,7 +168,7 @@ if ($db->has_results()) {
 
             $db->prepared_query("
               UPDATE users_info
-              SET AdminComment = CONCAT('".sqltime()." - Class changed to ".Users::make_class_string($To)." via store purchase\n\n', AdminComment)
+              SET AdminComment = CONCAT('".sqltime()." - Class changed to ".User::make_class_string($To)." via store purchase\n\n', AdminComment)
               WHERE UserID = $UserID");
 
             $cache->delete_value("user_info_$UserID");
@@ -179,11 +179,11 @@ if ($db->has_results()) {
 
 View::header('Store'); ?>
 <div>
-  <h2>Purchase <?=isset($Err)?"Failed":"Successful"?>
+  <h2>Purchase <?=isset($Err) ? "Failed" : "Successful"?>
   </h2>
   <div class="box">
     <p>
-      <?=isset($Err)?"Error: ".implode("<br />Error: ", $Err):"You have been promoted to ".$Classes[$To]['Name']."!"?>
+      <?=isset($Err) ? "Error: ".implode("<br />Error: ", $Err) : "You have been promoted to ".$Classes[$To]['Name']."!"?>
     </p>
     <p>
       <a href="/store.php">Back to Store</a>

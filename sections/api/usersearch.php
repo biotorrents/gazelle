@@ -4,18 +4,18 @@
  **********************************************************************/
 
 if (empty($_GET['search'])) {
-  json_die("failure", "no search terms");
+    json_die("failure", "no search terms");
 } else {
-  $_GET['username'] = $_GET['search'];
+    $_GET['username'] = $_GET['search'];
 }
 
 define('USERS_PER_PAGE', 30);
 
 if (isset($_GET['username'])) {
-  $_GET['username'] = trim($_GET['username']);
+    $_GET['username'] = trim($_GET['username']);
 
-  list($Page, $Limit) = Format::page_limit(USERS_PER_PAGE);
-  $db->query("
+    list($Page, $Limit) = Format::page_limit(USERS_PER_PAGE);
+    $db->query("
     SELECT
       SQL_CALC_FOUND_ROWS
       ID,
@@ -30,23 +30,22 @@ if (isset($_GET['username'])) {
     WHERE Username LIKE '%".db_string($_GET['username'])."%'
     ORDER BY Username
     LIMIT $Limit");
-  $Results = $db->to_array();
-  $db->query('SELECT FOUND_ROWS();');
-  list($NumResults) = $db->next_record();
-
+    $Results = $db->to_array();
+    $db->query('SELECT FOUND_ROWS();');
+    list($NumResults) = $db->next_record();
 }
 
 $JsonUsers = [];
 foreach ($Results as $Result) {
-  list($UserID, $Username, $Enabled, $PermissionID, $Donor, $Warned, $Avatar) = $Result;
+    list($UserID, $Username, $Enabled, $PermissionID, $Donor, $Warned, $Avatar) = $Result;
 
-  $JsonUsers[] = [
+    $JsonUsers[] = [
     'userId' => (int)$UserID,
     'username' => $Username,
     'donor' => $Donor == 1,
     'warned' => (bool)$Warned,
     'enabled' => ($Enabled == 2 ? false : true),
-    'class' => Users::make_class_string($PermissionID),
+    'class' => User::make_class_string($PermissionID),
     'avatar' => $Avatar
   ];
 }

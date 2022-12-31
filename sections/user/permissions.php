@@ -9,7 +9,7 @@ if (!isset($_REQUEST['userid']) || !is_number($_REQUEST['userid'])) {
     error(404);
 }
 
-list($UserID, $Username, $PermissionID) = array_values(Users::user_info($_REQUEST['userid']));
+list($UserID, $Username, $PermissionID) = array_values(User::user_info($_REQUEST['userid']));
 
 $db->query("
   SELECT CustomPermissions
@@ -25,6 +25,7 @@ $Delta = [];
 if (isset($_POST['action'])) {
     authorize();
 
+    $PermissionsArray = Permissions::listPermissions();
     foreach ($PermissionsArray as $Perm => $Explaination) {
         $Setting = isset($_POST["perm_$Perm"]) ? 1 : 0;
         $Default = isset($Defaults[$Perm]) ? 1 : 0;
@@ -81,7 +82,7 @@ View::header("$Username &gt; Permissions");
   //]]>
 </script>
 <div class="header">
-  <h2><?=Users::format_username($UserID, false, false, false)?> &gt;
+  <h2><?=User::format_username($UserID, false, false, false)?> &gt;
     Permissions</h2>
   <div class="linkbox">
     <a href="#" onclick="reset(); return false;" class="brackets">Defaults</a>
@@ -98,7 +99,7 @@ View::header("$Username &gt; Permissions");
 </div>
 <br />
 <form class="manage_form" name="permissions" id="permissionsform" method="post" action="">
-  <table class="permission_head skeleton-fix">
+  <table class="permission_head skeletonFix">
     <tr>
       <td class="label">Extra personal collages</td>
       <td><input type="text" name="maxcollages" size="5"

@@ -1,5 +1,11 @@
 <?php
+
 #declare(strict_types=1);
+
+
+/**
+ * Format
+ */
 
 class Format
 {
@@ -58,7 +64,7 @@ class Format
                     array_pop($DescArr);
                     $CutDesc = implode(' ', $DescArr);
                 }
-                
+
                 if ($ShowDots) {
                     $CutDesc .= '…';
                 }
@@ -137,33 +143,32 @@ class Format
 
 
     /**
+     * get_ratio_html
+     *
      * Calculates and formats a ratio.
      *
-     * @param int $dividend numerator
-     * @param int $divisor demoninator
-     * @param boolean $color if true, ratio will be colored
-     * @return string formatted ratio HTML
+     * @param int $dividend upload
+     * @param int $divisor download
+     * @return string formatted ratio html
      */
-    public static function get_ratio_html($dividend, $divisor, $color = true)
+    public static function get_ratio_html(int $dividend, int $divisor, $unusedColor = true)
     {
         $ratio = self::get_ratio($dividend, $divisor);
 
-        if ($ratio === false) {
-            return '&ndash;';
+        if (!$ratio) {
+            return "&ndash;";
         }
 
-        if ($ratio === '∞') {
-            return '<span class="tooltip r99" title="Infinite">∞</span>';
+        if ($ratio === "∞") {
+            return "<span class='r99' title='infinite'>∞</span>";
         }
 
-        if ($color) {
-            $ratio = sprintf(
-                '<span class="tooltip %s" title="%s">%s</span>',
-                self::get_ratio_color($ratio),
-                self::get_ratio($dividend, $divisor, 5),
-                $ratio
-            );
-        }
+        $ratio = sprintf(
+            "<span class='%s' title='%s'>%s</span>",
+            self::get_ratio_color($ratio),
+            self::get_ratio($dividend, $divisor, 5),
+            $ratio
+        );
 
         return $ratio;
     }
@@ -396,7 +401,7 @@ class Format
             $steps = 0;
             abs($size) >= 1024 && $steps < count($units);
             $size /= 1024, $steps++
-            ) {
+        ) {
             # apparently useless, but defines $steps
         }
 
@@ -423,11 +428,11 @@ class Format
         }
 
         switch (strtolower($Unit[0])) {
-          case 'k': return round($Value * 1024);
-          case 'm': return round($Value * 1048576);
-          case 'g': return round($Value * 1073741824);
-          case 't': return round($Value * 1099511627776);
-          default: return 0;
+            case 'k': return round($Value * 1024);
+            case 'm': return round($Value * 1048576);
+            case 'g': return round($Value * 1073741824);
+            case 't': return round($Value * 1099511627776);
+            default: return 0;
         }
     }
 
@@ -508,7 +513,7 @@ class Format
         if (empty($Class)) {
             $Class = self::find_torrent_label_class($Text);
         }
-        
+
         return sprintf(
             '<strong class="torrent_label tooltip %1$s" title="%2$s" style="white-space: nowrap;">%2$s</strong>',
             Text::esc($Class),
@@ -519,7 +524,6 @@ class Format
 
     /**
      * Formats a CSS class name from a Category ID
-     * @global array $Categories
      * @param int|string $CategoryID This number will be subtracted by one
      * @return string
      */
@@ -536,7 +540,6 @@ class Format
 
     /**
      * Formats a CSS class name from a Category ID
-     * @global array $Categories
      * @param int|string $CategoryID This number will be subtracted by one
      * @return string
      */
@@ -544,5 +547,65 @@ class Format
     {
         global $Categories;
         return ucwords(str_replace('-', ' ', $Categories[$CategoryID - 1]));
+    }
+
+
+    /**
+     * relativeTime
+     *
+     * @param string strtotime-compatible
+     * @return string e.g., 4 minutes, 20 seconds ago
+     *
+     * @see https://stackoverflow.com/a/7487809
+     */
+    public static function relativeTime(string|int $time): string
+    {
+        return Carbon\Carbon::parse($time)->diffForHumans();
+    }
+
+
+    /**
+     * breadcrumbs
+     *
+     * @see https://stackoverflow.com/a/38581989
+     */
+    public static function breadcrumbs()
+    {
+        $app = App::go();
+        $server = Http::query("server");
+
+        $path = explode("/", $server["REQUEST_URI"]);
+        $path = array_values(array_filter($path));
+
+        $length = count($path);
+        $crumbs = [];
+
+        for ($i = 0; $i < $length; $i++) {
+            $crumbs[$i]["name"] = $path[$i];
+            $crumbs[$i]["path"] = array_slice($path, 0, $i);
+        }
+
+        foreach ($crumbs as $i => $crumb) {
+            # first implode empty bug
+            if (empty($crumb["path"])) {
+                $crumbs[$i]["path"] = "/{$crumb["name"]}";
+            }
+
+            # normal path parse
+            else {
+                $crumbs[$i]["path"] = "/" . implode("/", $crumb["path"]);
+                $crumbs[$i]["path"] .= "/{$crumb["name"]}";
+            }
+
+            # link text format
+            $crumbs[$i]["name"] = preg_replace("/\W/", " ", $crumb["name"]);
+            $crumbs[$i]["name"] = ucfirst($crumbs[$i]["name"]);
+        }
+
+        #$crumbs = array_map("array_filter", $crumbs);
+        #$crumbs = array_filter($crumbs);
+        #!d($crumbs);exit;
+
+        return $crumbs;
     }
 }

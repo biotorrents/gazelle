@@ -108,7 +108,7 @@ $db->set_query_id($RS);
       $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'; ?>
   <tr class="row">
     <td>
-      <?=Users::format_username($UserID, true, true, true, true)?>
+      <?=User::format_username($UserID, true, true, true, true)?>
     </td>
 
     <td>

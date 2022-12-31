@@ -15,7 +15,7 @@ if (!check_perms('admin_reports')) {
     error(403);
 }
 
-require_once SERVER_ROOT.'/classes/reports.class.php';
+require_once serverRoot.'/classes/reports.class.php';
 
 define('REPORTS_PER_PAGE', '10');
 list($Page, $Limit) = Format::page_limit(REPORTS_PER_PAGE);
@@ -148,7 +148,7 @@ if (!$ID) {
         WHERE r.`Status` = 'New'
           AND r.`Type` = '$ID'";
       break;
-      
+
     default:
       error(404);
       break;

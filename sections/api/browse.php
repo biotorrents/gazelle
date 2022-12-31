@@ -1,7 +1,13 @@
 <?php
+
 #declare(strict_types=1);
 
-include SERVER_ROOT.'/sections/torrents/functions.php';
+$app = App::go();
+
+$get = Http::request("get");
+$post = Http::request("post");
+$server = Http::request("server");
+
 
 if (!empty($_GET['order_way']) && $_GET['order_way'] === 'asc') {
     $OrderWay = 'asc';

@@ -21,7 +21,7 @@ if (!defined('LOG_ENTRIES_PER_PAGE')) {
 }
 
 View::header("Site log");
-include SERVER_ROOT.'/sections/log/sphinx.php';
+include serverRoot.'/sections/log/sphinx.php';
 ?>
 
 <div>
@@ -80,7 +80,7 @@ include SERVER_ROOT.'/sections/log/sphinx.php';
             </tr>
             <?php
   }
-  
+
 $Usernames = [];
 while (list($ID, $Message, $LogTime) = $db->next_record()) {
     $MessageParts = explode(' ', $Message);
@@ -88,8 +88,8 @@ while (list($ID, $Message, $LogTime) = $db->next_record()) {
     $Color = $Colon = false;
 
     for ($i = 0, $PartCount = sizeof($MessageParts); $i < $PartCount; $i++) {
-        if (strpos($MessageParts[$i], 'https://'.SITE_DOMAIN) === 0) {
-            $Offset = strlen('https://'.SITE_DOMAIN.'/');
+        if (strpos($MessageParts[$i], 'https://'.siteDomain) === 0) {
+            $Offset = strlen('https://'.siteDomain.'/');
             $MessageParts[$i] = '<a href="'.substr($MessageParts[$i], $Offset).'">'.substr($MessageParts[$i], $Offset).'</a>';
         }
 

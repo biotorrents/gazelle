@@ -68,11 +68,10 @@ if (check_perms('site_advanced_top10')) {
                     <td class="ft_taglist">
                         <input type="text" name="tags" id="tags" size="65" value="<?php if (!empty($_GET['tags'])) {
         echo Text::esc($_GET['tags']);
-    } ?>" <?php Users::has_autocomplete_enabled('other'); ?>
-                        />&nbsp;
-                        <input type="radio" id="rdoAll" name="anyall" value="all" <?=((!isset($_GET['anyall'])||$_GET['anyall']!=='any')?' checked="checked"':'')?>
+    } ?>" />&nbsp;
+                        <input type="radio" id="rdoAll" name="anyall" value="all" <?=((!isset($_GET['anyall'])||$_GET['anyall']!=='any') ? ' checked="checked"' : '')?>
                         /><label for="rdoAll"> All</label>&nbsp;&nbsp;
-                        <input type="radio" id="rdoAny" name="anyall" value="any" <?=((!isset($_GET['anyall'])||$_GET['anyall']==='any')?' checked="checked"':'')?>
+                        <input type="radio" id="rdoAny" name="anyall" value="any" <?=((!isset($_GET['anyall'])||$_GET['anyall']==='any') ? ' checked="checked"' : '')?>
                         /><label for="rdoAny"> Any</label>
                     </td>
                 </tr>
@@ -84,7 +83,7 @@ if (check_perms('site_advanced_top10')) {
                             <?php foreach ($Categories as $CategoryName) { ?>
                             <option
                                 value="<?=Text::esc($CategoryName)?>"
-                                <?=(($CategoryName===($_GET['category']??false))?'selected="selected"':'')?>><?=Text::esc($CategoryName)?>
+                                <?=(($CategoryName===($_GET['category']??false)) ? 'selected="selected"' : '')?>><?=Text::esc($CategoryName)?>
                             </option>
                             <?php } ?>
                         </select>
@@ -103,17 +102,6 @@ if (check_perms('site_advanced_top10')) {
 
 // Default setting to have them shown
 $DisableFreeTorrentTop10 = (isset($user['DisableFreeTorrentTop10']) ? $user['DisableFreeTorrentTop10'] : 0);
-// Did they just toggle it?
-if (isset($_GET['freeleech'])) {
-    // What did they choose?
-    $NewPref = (($_GET['freeleech'] === 'hide') ? 1 : 0);
-
-    // Pref id different
-    if ($NewPref !== $DisableFreeTorrentTop10) {
-        $DisableFreeTorrentTop10 = $NewPref;
-        Users::update_site_options($user['ID'], array('DisableFreeTorrentTop10' => $DisableFreeTorrentTop10));
-    }
-}
 
 // Modify the Where query
 if ($DisableFreeTorrentTop10) {
@@ -519,7 +507,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
     foreach ($Details as $Detail) {
         list($TorrentID, $GroupID, $GroupName, $GroupTitle2, $GroupNameJP, $GroupCategoryID, $WikiImage, $TagsList,
       $Media, $Year, $Studio, $Snatched, $Seeders, $Leechers, $Data, $Size) = $Detail;
-  
+
         /*
         list($TorrentID, $GroupID, $GroupName, $GroupTitle2, $GroupNameJP, $GroupCategoryID, $WikiImage, $TagsList,
       $Media, $Year, $Snatched, $Seeders, $Leechers, $Data, $Size) = $Detail;
@@ -552,7 +540,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
                 $Label = '<br />📅&nbsp;';
                 $DisplayName .= $Label."<a href='torrents.php?action=search&year=$Year'>$Year</a>";
             }
-          
+
             # Studio
             if ($Studio) {
                 $DisplayName .= "&ensp;🏫&nbsp;&nbsp;<a href='torrents.php?action=search&location=$Studio'>$Studio</a>";
@@ -564,13 +552,13 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
                 $Label = '&ensp;'; # breaking
                 $DisplayName .= $Label.Artists::display_artists($Artists[$GroupID], true, true);
             }
-    
+
             # Catalogue Number
             if ($CatalogueNumber) {
                 $Label = '&ensp;🔑&nbsp;';
                 $DisplayName .= $Label."<a href='torrents.php?action=search&numbers=$CatalogueNumber'>$CatalogueNumber</a>";
             }
-    
+
             /*
             if ($Year > 0) {
                 $ExtraInfo .= $Year;
@@ -618,7 +606,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
     <td class="big_info">
         <div class="group_info clear">
 
-            <span class="float_right">
+            <span class="u-pull-right">
                 <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>"
                     title="Download" class="brackets tooltip">DL</a>
                 </span>
@@ -628,7 +616,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
             <?php
     if ($IsBookmarked) {
         ?>
-            <span class="remove_bookmark float_right">
+            <span class="remove_bookmark u-pull-right">
                 <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
                     class="bookmarklink_torrent_<?=$GroupID?> brackets"
                     onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove
@@ -636,7 +624,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
             </span>
             <?php
     } else { ?>
-            <span class="add_bookmark float_right">
+            <span class="add_bookmark u-pull-right">
                 <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
                     class="bookmarklink_torrent_<?=$GroupID?> brackets"
                     onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
@@ -650,11 +638,11 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
     </td>
     <td class="number_column nobr"><?=Format::get_size($Data)?>
     </td>
-    <td class="number_column"><?=Text::float((double)$Snatched)?>
+    <td class="number_column"><?=Text::float((float)$Snatched)?>
     </td>
-    <td class="number_column"><?=Text::float((double)$Seeders)?>
+    <td class="number_column"><?=Text::float((float)$Seeders)?>
     </td>
-    <td class="number_column"><?=Text::float((double)$Leechers)?>
+    <td class="number_column"><?=Text::float((float)$Leechers)?>
     </td>
     <td class="number_column"><?=Text::float($Seeders + $Leechers)?>
     </td>

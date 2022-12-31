@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use DebugBar\DataCollector\DataCollector;
@@ -26,7 +27,7 @@ class Debug # extends DebugBar\StandardDebugBar
     {
         return;
     }
-  
+
     public function __clone()
     {
         return trigger_error(
@@ -34,7 +35,7 @@ class Debug # extends DebugBar\StandardDebugBar
             E_USER_ERROR
         );
     }
-  
+
     public function __wakeup()
     {
         return trigger_error(
@@ -42,8 +43,8 @@ class Debug # extends DebugBar\StandardDebugBar
             E_USER_ERROR
         );
     }
-  
-  
+
+
     /**
      * go
      */
@@ -72,10 +73,12 @@ class Debug # extends DebugBar\StandardDebugBar
         $app = App::go();
 
         # https://stackify.com/display-php-errors/
-        if ($app->env->DEV) {
+        if ($app->env->dev) {
+            /*
             ini_set("display_errors", 1);
             ini_set("display_startup_errors", 1);
             error_reporting(E_ALL);
+            */
         }
 
         $debugBar = new DebugBar\StandardDebugBar();
@@ -118,7 +121,7 @@ class Debug # extends DebugBar\StandardDebugBar
               $VarName = $ID;
           }
 
-          $File = array("path" => substr($BackTrace[0]["file"], strlen(SERVER_ROOT)), "line" => $BackTrace[0]["line"]);
+          $File = array("path" => substr($BackTrace[0]["file"], strlen(serverRoot)), "line" => $BackTrace[0]["line"]);
           $this->LoggedVars[$ID] = array($VarName => array("bt" => $File, "data" => $Var));
           */
     }
@@ -363,7 +366,7 @@ class FilesCollector extends DataCollector implements Renderable
                 "map" => "{$name}.messages",
                 "default" => "{}"
             ],
-            
+
             "{$name}:badge" => [
                 "map" => "{$name}.count",
                 "default" => "null"
@@ -406,7 +409,7 @@ class DatabaseCollector extends DataCollector implements Renderable
           "messages" => $messages
         ];
     }
-    
+
     /**
      * getMessages
      */

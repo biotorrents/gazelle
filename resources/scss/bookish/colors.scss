@@ -44,7 +44,7 @@ input[type="file"] {
   text-align: center;
   color: #222;
   font-weight: bold;
-  width: 33%;
+  /* width: 33%; */
   margin: 2em auto;
   padding: 1rem;
   border-radius: 4px;
@@ -54,6 +54,10 @@ input[type="file"] {
 .alertbar {
   &.modbar {
     @include alertbar(silver);
+  }
+
+  &.info {
+    @include alertbar(green);
   }
 
   &.warning {

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -26,15 +27,15 @@ if (empty($_REQUEST['action'])) {
 
 switch ($_REQUEST['action']) {
   case 'add':
-    require SERVER_ROOT.'/sections/bookmarks/add.php';
+    require serverRoot.'/sections/bookmarks/add.php';
     break;
 
   case 'remove':
-    require SERVER_ROOT.'/sections/bookmarks/remove.php';
+    require serverRoot.'/sections/bookmarks/remove.php';
     break;
 
   case 'mass_edit':
-    require SERVER_ROOT.'/sections/bookmarks/mass_edit.php';
+    require serverRoot.'/sections/bookmarks/mass_edit.php';
     break;
 
   case 'remove_snatched':
@@ -69,9 +70,9 @@ switch ($_REQUEST['action']) {
 
     switch ($_REQUEST['type']) {
       case 'torrents':
-        require SERVER_ROOT.'/sections/bookmarks/edit_torrents.php';
+        require serverRoot.'/sections/bookmarks/edit_torrents.php';
         break;
-        
+
       default:
         error(404);
     }
@@ -84,21 +85,21 @@ switch ($_REQUEST['action']) {
 
     switch ($_REQUEST['type']) {
       case 'torrents':
-        require SERVER_ROOT.'/sections/bookmarks/torrents.php';
+        require serverRoot.'/sections/bookmarks/torrents.php';
         break;
 
       case 'artists':
-        require SERVER_ROOT.'/sections/bookmarks/artists.php';
+        require serverRoot.'/sections/bookmarks/artists.php';
         break;
 
       case 'collages':
         $_GET['bookmarks'] = '1';
-        require SERVER_ROOT.'/sections/collages/browse.php';
+        require serverRoot.'/sections/collages/browse.php';
         break;
 
       case 'requests':
         $_GET['type'] = 'bookmarks';
-        require SERVER_ROOT.'/sections/requests/requests.php';
+        require serverRoot.'/sections/requests/requests.php';
         break;
 
       default:

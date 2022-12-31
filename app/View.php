@@ -1,12 +1,20 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
+
+/**
+ * View
+ *
+ * THIS IS GOING AWAY
+ */
 
 class View
 {
     /**
      * @var string Path relative to where (P)HTML templates reside
      */
-    const IncludePath = './design/views/';
+    public const IncludePath = './design/views/';
 
 
     /**
@@ -17,8 +25,8 @@ class View
     {
         $ENV = ENV::go();
 
-        $uri = preg_replace(".$ENV->STATIC_SERVER.", '', $uri);
-        #$integrity = base64_encode(hash_file($ENV->SRI, "$ENV->SERVER_ROOT/$uri", true));
+        $uri = preg_replace(".$ENV->staticServer.", '', $uri);
+        #$integrity = base64_encode(hash_file($ENV->SRI, "$ENV->serverRoot/$uri", true));
 
         switch ($type) {
             case 'script':
@@ -60,25 +68,20 @@ class View
         global $Document, $Mobile, $Classes;
 
         if ($PageTitle !== '') {
-            $PageTitle .= " $ENV->SEP ";
+            $PageTitle .= " $ENV->separator ";
         }
 
-        $PageTitle .= $ENV->SITE_NAME;
+        $PageTitle .= $ENV->siteName;
         $PageID = array(
             $Document, // Document
             empty($_REQUEST['action']) ? false : $_REQUEST['action'], // Action
             empty($_REQUEST['type']) ? false : $_REQUEST['type'] // Type
         );
 
-        if (!is_array(G::$user)
-          || empty(G::$user['ID'])
-          || (isset($Options['recover']) && $Options['recover'] === true)) {
-            require_once "$ENV->SERVER_ROOT/design/publicheader.php";
-        } else {
-            require_once "$ENV->SERVER_ROOT/design/privateheader.php";
-        }
+        # hardcode private (public already twig'd)
+        require_once "$ENV->serverRoot/design/privateheader.php";
     }
-    
+
 
     /**
      * This function is to include the footer file on a page.
@@ -94,13 +97,8 @@ class View
         global $SessionID, $UserSessions, $Time, $Mobile;
         #global $ScriptStartTime, $SessionID, $UserSessions, $debug, $Time, $Mobile;
 
-        if (!is_array(G::$user)
-          || empty(G::$user['ID'])
-          || (isset($Options['recover']) && $Options['recover'] === true)) {
-            require_once "$ENV->SERVER_ROOT/design/publicfooter.php";
-        } else {
-            require_once "$ENV->SERVER_ROOT/design/privatefooter.php";
-        }
+        # hardcode private (public already twig'd)
+        require_once "$ENV->serverRoot/design/privatefooter.php";
     }
 
 
@@ -121,13 +119,13 @@ class View
         string $placeholder = '',
         string $value = '',
     ) {
-        $twig = Twig::go();
+        $app = App::go();
 
         $name = (empty($name)) ?? $id;
         $uuid = uniqid(); # autosave
 
-        echo $twig->render(
-            'input/textarea.twig',
+        $app->twig->display(
+            '_base/textarea.twig',
             [
               'id' => $id,
               'name' => $name,

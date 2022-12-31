@@ -1,31 +1,41 @@
 /**
- * Main column and sidebar
+ * main column and sidebar
  * NOW DONE BY SKELETON.CSS
  */
 
-/* Main column and sidebar */
-.main_column {
-  float: left;
+/**
+ * override main skeleton resolution
+ * taken from twitter tbh
+ */
+.container {
+  max-width: 1280px !important;
 }
 
-.sidebar {
-  float: right;
+#content,
+#sidebar {
+  padding: 2rem;
 }
 
-/* Box: soon to be <section> */
-.box {
-  margin-bottom: 2rem;
+#sidebar {
+  hr {
+    margin: 1rem auto;
+    width: 100%;
+  }
 }
 
-/*
- * Flex elements
+section {
+  margin-bottom: 5rem;
+}
+
+/**
+ * flex elements
  */
 
 .flex {
   display: flex;
 }
 
-/* Grow and shrink */
+/* grow and shrink */
 .flex > .grow {
   flex-grow: 1;
 }
@@ -34,7 +44,7 @@
   flex-shrink: 1;
 }
 
-/* Text input */
+/* text input */
 .flex_input_container {
   display: flex;
 }
@@ -46,22 +56,9 @@
 }
 
 /**
- * Section elements
- */
-.style_addition input {
-  margin-left: 0.5rem;
-}
-
-/**
- * Aside elements
+ * aside elements
  */
 aside {
-  max-width: 66%;
-
-  p {
-    text-align: center;
-  }
-
   /**
    * "Please consult the Upload Rules"
    * admonishment on torrent_form.class.php.
@@ -73,13 +70,13 @@ aside {
     text-align: center;
   }
 
-  /* Announce and source */
+  /* announce and source */
   &.announce_source,
   &.torrent_upload {
     margin: 1rem auto;
   }
 
-  /* Torrent upload error */
+  /* torrent upload error */
   &.upload_error {
     color: red;
     margin: 2rem auto;
@@ -88,7 +85,7 @@ aside {
 }
 
 /**
- * Footer
+ * footer
  */
 
 footer {
@@ -101,7 +98,7 @@ footer {
 }
 
 /*
- * Misc
+ * misc
  */
 
 .hidden {
@@ -112,14 +109,14 @@ footer {
   visibility: hidden;
 }
 
-/* Permissions form submit button */
+/* permissions form submit button */
 .submit_container {
   clear: both;
   margin: 1rem;
   text-align: right;
 }
 
-/* Textarea */
+/* textarea */
 .textarea_wrap {
   margin-bottom: 0.5rem;
 }
@@ -128,29 +125,17 @@ footer {
   margin-bottom: 0;
 }
 
-/* Floaters */
-.float_left {
-  float: left;
-}
-
-.float_right {
-  float: right;
-}
-
-.float_clear {
-  clear: both;
-}
-
-/* Images */
+/* images */
 img {
   border: none;
+  max-width: 100%;
 }
 
 .webm {
   max-width: 100%;
 }
 
-/* Donor hearts and badges */
+/* donor hearts and badges */
 .donor_icon {
   margin-left: 2px;
   margin-right: 2px;
@@ -182,12 +167,7 @@ img {
   margin: 10px 0;
 }
 
-/* Image dimension limits */
-img {
-  max-width: 100%;
-}
-
-/* Covers */
+/* covers */
 #coverCont {
   position: fixed;
   max-width: 30%;
@@ -207,8 +187,8 @@ img {
 }
 
 /**
- * Donate button
- * PNG to avoid the botnet
+ * donate button
+ * png to avoid the botnet
  */
 .donate_button {
   margin: 2rem auto;
@@ -218,7 +198,7 @@ img {
   }
 }
 
-/* User and torrent stats */
+/* user and torrent stats */
 .pulsating-circle {
   height: 10px;
   left: 50%;

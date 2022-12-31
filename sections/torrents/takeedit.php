@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 //******************************************************************************//
@@ -11,8 +12,7 @@
 enforce_login();
 authorize();
 
-require_once SERVER_ROOT.'/classes/validate.class.php';
-$Validate = new VALIDATE;
+$Validate = new Validate();
 
 
 //******************************************************************************//
@@ -38,8 +38,8 @@ if (!$Properties['Remastered']) {
 }
 */
 
-$Properties['BadTags'] = (isset($_POST['bad_tags']))? 1 : 0;
-$Properties['BadFolders'] = (isset($_POST['bad_folders']))? 1 : 0;
+$Properties['BadTags'] = (isset($_POST['bad_tags'])) ? 1 : 0;
+$Properties['BadFolders'] = (isset($_POST['bad_folders'])) ? 1 : 0;
 $Properties['BadFiles'] = (isset($_POST['bad_files'])) ? 1 : 0;
 $Properties['Format'] = $_POST['format'];
 $Properties['Media'] = $_POST['media'];

@@ -8,7 +8,7 @@
 ****************************************************************/
 
 if (!check_perms('torrents_edit')) {
-  error(403);
+    error(403);
 }
 
 $OldGroupID = $_POST['oldgroupid'];
@@ -16,36 +16,35 @@ $GroupID = $_POST['groupid'];
 $TorrentID = $_POST['torrentid'];
 
 if (!is_number($OldGroupID) || !is_number($GroupID) || !is_number($TorrentID) || !$OldGroupID || !$GroupID || !$TorrentID) {
-  error(0);
+    error(0);
 }
 if ($OldGroupID == $GroupID) {
-  header('Location: '.$_SERVER['HTTP_REFERER']);
-  error();
+    header('Location: '.$_SERVER['HTTP_REFERER']);
+    error();
 }
 
 //Everything is legit, let's just confim they're not retarded
 if (empty($_POST['confirm'])) {
-  $db->query("
+    $db->query("
     SELECT Name
     FROM torrents_group
     WHERE ID = $OldGroupID");
-  if (!$db->has_results()) {
-    //Trying to move to an empty group? I think not!
-    set_message('The destination torrent group does not exist!');
-    header('Location: '.$_SERVER['HTTP_REFERER']);
-    error();
-  }
-  list($Name) = $db->next_record();
-  $db->query("
+    if (!$db->has_results()) {
+        //Trying to move to an empty group? I think not!
+        set_message('The destination torrent group does not exist!');
+        header('Location: '.$_SERVER['HTTP_REFERER']);
+        error();
+    }
+    list($Name) = $db->next_record();
+    $db->query("
     SELECT CategoryID, Name
     FROM torrents_group
     WHERE ID = $GroupID");
-  list($CategoryID, $NewName) = $db->next_record();
+    list($CategoryID, $NewName) = $db->next_record();
 
-  $Artists = Artists::get_artists(array($OldGroupID, $GroupID));
+    $Artists = Artists::get_artists(array($OldGroupID, $GroupID));
 
-  View::header();
-?>
+    View::header(); ?>
   <div>
     <div class="header">
       <h2>Torrent Group ID Change Confirmation</h2>
@@ -73,42 +72,42 @@ if (empty($_POST['confirm'])) {
 <?php
   View::footer();
 } else {
-  authorize();
+    authorize();
 
-  $db->query("
+    $db->query("
     UPDATE torrents
     SET GroupID = '$GroupID'
     WHERE ID = $TorrentID");
 
-  // Delete old torrent group if it's empty now
-  $db->query("
+    // Delete old torrent group if it's empty now
+    $db->query("
     SELECT COUNT(ID)
     FROM torrents
     WHERE GroupID = '$OldGroupID'");
-  list($TorrentsInGroup) = $db->next_record();
-  if ($TorrentsInGroup == 0) {
-    $db->query("
+    list($TorrentsInGroup) = $db->next_record();
+    if ($TorrentsInGroup == 0) {
+        $db->query("
       UPDATE comments
       SET PageID = '$GroupID'
       WHERE Page = 'torrents'
         AND PageID = '$OldGroupID'");
-    $cache->delete_value("torrent_comments_{$GroupID}_catalogue_0");
-    $cache->delete_value("torrent_comments_$GroupID");
-    Torrents::delete_group($OldGroupID);
-  } else {
-    Torrents::update_hash($OldGroupID);
-  }
-  Torrents::update_hash($GroupID);
+        $cache->delete_value("torrent_comments_{$GroupID}_catalogue_0");
+        $cache->delete_value("torrent_comments_$GroupID");
+        Torrents::delete_group($OldGroupID);
+    } else {
+        Torrents::update_hash($OldGroupID);
+    }
+    Torrents::update_hash($GroupID);
 
-  Misc::write_log("Torrent $TorrentID was edited by " . $user['Username']); // TODO: this is probably broken
-  Torrents::write_group_log($GroupID, 0, $user['ID'], "merged group $OldGroupID", 0);
-  $db->query("
+    Misc::write_log("Torrent $TorrentID was edited by " . $user['Username']); // TODO: this is probably broken
+    Torrents::write_group_log($GroupID, 0, $user['ID'], "merged group $OldGroupID", 0);
+    $db->query("
     UPDATE group_log
     SET GroupID = $GroupID
     WHERE GroupID = $OldGroupID");
 
-  $cache->delete_value("torrents_details_$GroupID");
-  $cache->delete_value("torrent_download_$TorrentID");
+    $cache->delete_value("torrents_details_$GroupID");
+    $cache->delete_value("torrent_download_$TorrentID");
 
-  Http::redirect("torrents.php?id=$GroupID");
-  }
+    Http::redirect("torrents.php?id=$GroupID");
+}

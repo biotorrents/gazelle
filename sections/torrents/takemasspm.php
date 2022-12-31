@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 //******************************************************************************//
@@ -11,8 +12,7 @@
 authorize();
 enforce_login();
 
-require_once SERVER_ROOT.'/classes/validate.class.php';
-$Validate = new Validate;
+$Validate = new Validate();
 
 $TorrentID = (int)$_POST['torrentid'];
 $GroupID = (int)$_POST['groupid'];

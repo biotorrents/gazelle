@@ -1,28 +1,4 @@
 /**
- * spoiler button stuff
- * from bbcode.js, will move
- */
-function BBSpoiler(link) {
-  if ($(link.nextSibling).has_class("hidden")) {
-    $(link.nextSibling).gshow();
-    $(link).html("Hide");
-    if ($(link).attr("value")) {
-      $(link).attr("value", "Hide" + $(link).attr("value").substring(4));
-    }
-  } else {
-    $(link.nextSibling).ghide();
-    $(link).html("Show");
-    if ($(link).attr("value")) {
-      $(link).attr("value", "Show" + $(link).attr("value").substring(4));
-    }
-  }
-}
-
-$(function () {
-  $(document).on("click", ".spoilerButton", (e) => BBSpoiler(e.target));
-});
-
-/**
  * show_peers
  */
 function show_peers(TorrentID, Page) {
@@ -199,48 +175,6 @@ function toggle_group(groupid, link, event) {
 }
 
 /**
- * toggle_edition
- */
-function toggle_edition(groupid, editionid, lnk, event) {
-  var clickedRow = lnk;
-  while (clickedRow.nodeName != "TR") {
-    clickedRow = clickedRow.parentNode;
-  }
-
-  //var showing = has_class(nextElementSibling(clickedRow), 'hidden');
-  var showing = $(clickedRow).nextElementSibling().has_class("hidden");
-  var allEditions = event.ctrlKey;
-  var group_rows = $("tr.groupid_" + groupid);
-
-  for (var i = 0; i < group_rows.length; i++) {
-    var row = $(group_rows.raw(i));
-    if (row.has_class("edition") && (allEditions || row.raw(0) == clickedRow)) {
-      var tooltip = showing
-        ? 'Collapse this edition. Hold "Ctrl" while clicking to collapse all editions in this torrent group.'
-        : 'Expand this edition. Hold "Ctrl" while clicking to expand all editions in this torrent group.';
-      $("a", row).raw().innerHTML = showing ? "&minus;" : "+";
-      $("a", row).updateTooltip(tooltip);
-      continue;
-    }
-
-    if (allEditions || row.has_class("edition_" + editionid)) {
-      if (showing && !row.has_class("torrentdetails")) {
-        row.gshow();
-      } else {
-        row.ghide();
-      }
-    }
-  }
-
-  if (event.preventDefault) {
-    event.preventDefault();
-  } else {
-    // for IE < 9 support
-    event.returnValue = false;
-  }
-}
-
-/**
  * toggleTorrentSearch
  */
 function toggleTorrentSearch(mode) {
@@ -305,13 +239,4 @@ function addCoverField() {
     x.appendChild(field);
     hasCoverAddButton = true;
   }
-}
-
-/**
- * ToggleEditionRows
- */
-function ToggleEditionRows() {
-  $("#edition_title").gtoggle();
-  $("#edition_label").gtoggle();
-  $("#edition_catalogue").gtoggle();
 }

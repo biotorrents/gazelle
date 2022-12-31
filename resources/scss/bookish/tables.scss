@@ -1,8 +1,8 @@
 /**
- * Tables
+ * tables
  */
 
-@mixin alternating-rows {
+@mixin alternatingRows {
   tr:nth-child(2n) {
     background: whitesmoke;
   }
@@ -12,23 +12,25 @@
   }
 }
 
-/* Every table */
+/* every table */
 table {
   border-collapse: collapse;
   width: 100%;
 
+  /*
   td,
   td:first-child {
     padding: 0.5rem !important;
   }
+  */
 }
 
-/* Special tables */
+/* special tables */
 .torrent_table,
 .collage_table,
 .request_table,
 .top10_table {
-  @include alternating-rows;
+  @include alternatingRows;
 
   th,
   td {
@@ -37,7 +39,7 @@ table {
 }
 
 /**
- * Torrent form
+ * torrent form
  */
 
 .torrent_form,
@@ -51,26 +53,14 @@ table {
   }
 }
 
-/**
- * colhead
- * The main table heading.
- */
-
-.colhead,
-.colhead_dark,
-th {
-  padding: 0.5em 0;
-  border-bottom: 1px solid #e1e1e1;
-}
-
-/* Torrent and collage tables */
+/* torrent and collage tables */
 .torrent_table .group_torrent .torrent span {
   font-weight: normal;
   float: right;
 }
 
 /**
- * Forums
+ * forums
  */
 
 @mixin forum-post($color) {
@@ -100,7 +90,7 @@ table.slice {
   margin-top: -1px;
 }
 
-/* Get rid of extraneous padding in the Top Contributors box */
+/* get rid of extra padding in the top contributors box */
 #request_top_contrib {
   border: none;
 

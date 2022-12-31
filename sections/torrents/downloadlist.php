@@ -1,15 +1,15 @@
 <?php
 if (!isset($_GET['torrentid']) || !is_number($_GET['torrentid']) || !check_perms('site_view_torrent_snatchlist')) {
-  error(404);
+    error(404);
 }
 $TorrentID = $_GET['torrentid'];
 
 if (!empty($_GET['page']) && is_number($_GET['page'])) {
-  $Page = $_GET['page'];
-  $Limit = (string)(($Page - 1) * 100) .', 100';
+    $Page = $_GET['page'];
+    $Limit = (string)(($Page - 1) * 100) .', 100';
 } else {
-  $Page = 1;
-  $Limit = 100;
+    $Page = 1;
+    $Limit = 100;
 }
 
 $db->query("
@@ -28,26 +28,26 @@ $db->query('SELECT FOUND_ROWS()');
 list($NumResults) = $db->next_record();
 
 if (count($UserIDs) > 0) {
-  $UserIDs = implode(',', $UserIDs);
-  $db->query("
+    $UserIDs = implode(',', $UserIDs);
+    $db->query("
     SELECT uid
     FROM xbt_snatched
     WHERE fid = '$TorrentID'
       AND uid IN($UserIDs)");
-  $Snatched = $db->to_array('uid');
+    $Snatched = $db->to_array('uid');
 
-  $db->query("
+    $db->query("
     SELECT uid
     FROM xbt_files_users
     WHERE fid = '$TorrentID'
       AND Remaining = 0
       AND uid IN($UserIDs)");
-  $Seeding = $db->to_array('uid');
+    $Seeding = $db->to_array('uid');
 }
 ?>
 <h4 class="tooltip" title="List of users that have clicked the &quot;DL&quot; button">List of Downloaders</h4>
 <?php if ($NumResults > 100) { ?>
-<div class="linkbox"><?=js_pages('show_downloads', $_GET['torrentid'], $NumResults, $Page)?></div>
+<div class="linkbox"><?=App::ajaxPagination('show_downloads', $_GET['torrentid'], $NumResults, $Page)?></div>
 <?php } ?>
 <table>
   <tr class="colhead_dark" style="font-weight: bold;">
@@ -62,22 +62,21 @@ if (count($UserIDs) > 0) {
 $i = 0;
 
 foreach ($Results as $ID=>$Data) {
-  list($SnatcherID, $Timestamp) = array_values($Data);
+    list($SnatcherID, $Timestamp) = array_values($Data);
 
-  $User = Users::format_username($SnatcherID, true, true, true, true);
+    $User = User::format_username($SnatcherID, true, true, true, true);
 
-  if (!array_key_exists($SnatcherID, $Snatched) && $SnatcherID != $UserID) {
-    $User = '<span style="font-style: italic;">'.$User.'</span>';
-    if (array_key_exists($SnatcherID, $Seeding)) {
-      $User = '<strong>'.$User.'</strong>';
+    if (!array_key_exists($SnatcherID, $Snatched) && $SnatcherID != $UserID) {
+        $User = '<span style="font-style: italic;">'.$User.'</span>';
+        if (array_key_exists($SnatcherID, $Seeding)) {
+            $User = '<strong>'.$User.'</strong>';
+        }
     }
-  }
-  if ($i % 2 == 0 && $i > 0) { ?>
+    if ($i % 2 == 0 && $i > 0) { ?>
   </tr>
   <tr>
 <?php
-  }
-?>
+  } ?>
     <td><?=$User?></td>
     <td><?=time_diff($Timestamp)?></td>
 <?php
@@ -87,5 +86,5 @@ foreach ($Results as $ID=>$Data) {
   </tr>
 </table>
 <?php if ($NumResults > 100) { ?>
-<div class="linkbox"><?=js_pages('show_downloads', $_GET['torrentid'], $NumResults, $Page)?></div>
+<div class="linkbox"><?=App::ajaxPagination('show_downloads', $_GET['torrentid'], $NumResults, $Page)?></div>
 <?php } ?>

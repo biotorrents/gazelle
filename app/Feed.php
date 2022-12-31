@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 /**
  * Feed
@@ -68,7 +69,7 @@ class Feed
         $site = site_url();
 
         # echo commas because <<<XML would copy whitespace
-        echo "<title>{$title} {$app->env->SEP} {$app->env->SITE_NAME}</title>",
+        echo "<title>{$title} {$app->env->separator} {$app->env->siteName}</title>",
              "<link>{$site}{$section}</link>",
              "<description>{$description}</description>",
              "<language>en-us</language>",
@@ -146,11 +147,11 @@ class Feed
         if (!$entries) {
             $entries = [];
         }
-        
+
         if (count($entries) >= 50) {
             array_pop($entries);
         }
-        
+
         array_unshift($entries, $item);
         $app->cacheOld->cache_value($cacheKey, $entries, 0);
     }

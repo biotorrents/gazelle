@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 $db->query('TRUNCATE TABLE top_snatchers;');

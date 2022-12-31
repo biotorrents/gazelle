@@ -1,11 +1,19 @@
 <?php
 #declare(strict_types=1);
 
+
+/**
+ * THIS WHOLE FILE IS GOING AWAY
+ */
+
+$app = App::go();
+#!d($app->userNew);exit;
+
 $ENV = ENV::go();
 $twig = Twig::go();
 $View = new View();
 
-if ($ENV->DEV) {
+if ($ENV->dev) {
     $debug = Debug::go();
     $Render = $debug->getJavascriptRenderer();
 }
@@ -15,22 +23,20 @@ if ($ENV->DEV) {
 <html>
 
 <head>
-  <?php if ($ENV->DEV) {
+  <?php if ($ENV->dev) {
     echo $Render->renderHead();
 } ?>
 
   <title>
     <?= Text::esc($PageTitle) ?>
   </title>
-  <script defer data-domain="<?= $ENV->SITE_DOMAIN ?>"
+  <script defer data-domain="<?= $ENV->siteDomain ?>"
     src="https://stats.torrents.bio/js/plausible.js"></script>
 
   <?=
     $twig->render(
         '_base/metaTags.twig',
         [
-        'ENV' => $ENV,
-        'user' => G::$user,
         'title' => Text::esc($PageTitle)
       ]
     );
@@ -55,7 +61,7 @@ $Scripts = array_filter(
 
 foreach ($Scripts as $Script) {
     echo $View->pushAsset(
-        "$ENV->STATIC_SERVER/js/$Script.js",
+        "$ENV->staticServer/js/$Script.js",
         'script'
     );
 }
@@ -74,13 +80,13 @@ $Styles = array_filter(
     )
 );
 
-if ($ENV->DEV) {
+if ($ENV->dev) {
     array_push($Styles, 'development');
 }
 
 foreach ($Styles as $Style) {
     echo $View->pushAsset(
-        "$ENV->STATIC_SERVER/css/$Style.css",
+        "$ENV->staticServer/css/$Style.css",
         'style'
     );
 }
@@ -90,7 +96,7 @@ foreach ($Styles as $Style) {
 $Fonts = ['fa-brands-400', 'fa-regular-400', 'fa-solid-900'];
 foreach ($Fonts as $Font) {
     echo $View->pushAsset(
-        "$ENV->STATIC_SERVER/css/vendor/fa/webfonts/$Font.woff2",
+        "$ENV->staticServer/css/vendor/fa/webfonts/$Font.woff2",
         'font'
     );
 }
@@ -100,13 +106,13 @@ foreach ($Fonts as $Font) {
  * User notification feeds
  * (generic feeds in HTML below)
  */
-$ID = G::$user['ID'];
-$RssAuth = G::$user['RSS_Auth'];
-$PassKey = G::$user['torrent_pass'];
-$AuthKey = G::$user['AuthKey'];
+$ID = $app->userNew->core['id'];
+$RssAuth = $app->userNew->extra['RSS_Auth'] ?? "";
+$PassKey = $app->userNew->extra['torrent_pass'] ?? "";
+$AuthKey = $app->userNew->extra['AuthKey'] ?? "";
 
-if (isset(G::$user['Notify'])) {
-    foreach (G::$user['Notify'] as $Filter) {
+if (isset($app->userNew->extra['Notify'])) {
+    foreach ($app->userNew->extra['Notify'] as $Filter) {
         list($FilterID, $FilterName) = $Filter;
         $NameEsc = Text::esc($FilterName);
 
@@ -114,7 +120,7 @@ if (isset(G::$user['Notify'])) {
         echo $HTML = <<<HTML
         <link rel="alternate" type="application/rss+xml"
           href="feeds.php?feed=torrents_notify_$FilterID_$PassKey&amp;user=$ID&amp;auth=$RssAuth&amp;passkey=$PassKey&amp;authkey=$AuthKey"
-          title="$NameEsc $ENV->SEP $ENV->SITE_NAME" />
+          title="$NameEsc $ENV->separator $ENV->siteName" />
 HTML;
         */
     }
@@ -127,7 +133,7 @@ foreach ($ENV->CATS as $Cat) {
     echo $HTML = <<<HTML
     <link rel="alternate" type="application/rss+xml"
       href="feeds.php?feed=torrents_$name&amp;user=$ID&amp;auth=$RssAuth&amp;passkey=$PassKey&amp;authkey=$AuthKey"
-      title="New $Cat->Name Torrents $ENV->SEP $ENV->SITE_NAME" />
+      title="New $Cat->Name Torrents $ENV->separator $ENV->siteName" />
 HTML;
 }
 
@@ -135,55 +141,62 @@ HTML;
 echo $HTML = <<<HTML
 <link rel="alternate" type="application/rss+xml"
   href="feeds.php?feed=torrents_all&amp;user=$ID&amp;auth=$RssAuth&amp;passkey=$PassKey&amp;authkey=$AuthKey"
-  title="All New Torrents $ENV->SEP $ENV->SITE_NAME" />
+  title="All New Torrents $ENV->separator $ENV->siteName" />
 
 <link rel="alternate" type="application/rss+xml"
   href="feeds.php?feed=feed_news&amp;user=$ID&amp;auth=$RssAuth&amp;passkey=$PassKey&amp;authkey=$AuthKey"
-  title="News $ENV->SEP $ENV->SITE_NAME" />
+  title="News $ENV->separator $ENV->siteName" />
 
 <link rel="alternate" type="application/rss+xml"
   href="feeds.php?feed=feed_news&amp;user=$ID&amp;auth=$RssAuth&amp;passkey=$PassKey&amp;authkey=$AuthKey"
-  title="Blog $ENV->SEP $ENV->SITE_NAME" />
+  title="Blog $ENV->separator $ENV->siteName" />
 HTML;
 
 /**
  * User stylesheet
  */
 
-if (empty(G::$user['StyleURL'])) {
+if (empty($app->userNew->extra['StyleURL'])) {
     /*
-      $StyleColors = G::$cache->get_value('stylesheet_colors') ?? [];
+      $StyleColors = $app->cacheOld->get_value('stylesheet_colors') ?? [];
       if (empty($StyleColors)) {
-          G::$db->query('SELECT LOWER(REPLACE(Name, " ", "_")) AS Name, Color FROM stylesheets WHERE COLOR IS NOT NULL');
+          $app->dbOld->query('SELECT LOWER(REPLACE(Name, " ", "_")) AS Name, Color FROM stylesheets WHERE COLOR IS NOT NULL');
 
-          while (list($StyleName, $StyleColor) = G::$db->next_record()) {
+          while (list($StyleName, $StyleColor) = $app->dbOld->next_record()) {
               #!d($StyleColors, $StyleName);exit;
               $StyleName = $StyleName ?? "";
               $StyleColors[$StyleName] = $StyleColor ?? null;
           }
-          G::$cache->cache_value('stylesheet_colors', $StyleColors, 0);
+          $app->cacheOld->cache_value('stylesheet_colors', $StyleColors, 0);
       }
 
-      if (isset($StyleColors[G::$user['StyleName']])) { ?>
+      if (isset($StyleColors[$app->userNew->extra['StyleName']])) { ?>
     <meta name="theme-color"
-      content="<?=$StyleColors[G::$user['StyleName']]?>">
+      content="<?=$StyleColors[$app->userNew->extra['StyleName']]?>">
     <?php }
     */
 
-    $userStyle = "$ENV->STATIC_SERVER/css/" . G::$user['StyleName'] . ".css";
+    /*
+    $userStyle = "$ENV->staticServer/css/" . ($app->userNew->extra['StyleName'] ??  "bookish"). ".css";
+    echo $View->pushAsset(
+        $userStyle,
+        'style'
+    );
+    */
+    $userStyle = "$ENV->staticServer/css/" . "bookish". ".css";
     echo $View->pushAsset(
         $userStyle,
         'style'
     );
 } else {
-    $StyleURLInfo = parse_url(G::$user['StyleURL']);
-    if (substr(G::$user['StyleURL'], -4) === '.css'
+    $StyleURLInfo = parse_url($app->userNew->extra['StyleURL']);
+    if (substr($app->userNew->extra['StyleURL'], -4) === '.css'
         && empty($StyleURLInfo['query']) && empty($StyleURLInfo['fragment'])
-        && ($StyleURLInfo['host'] === SITE_DOMAIN)
-        && file_exists(SERVER_ROOT.$StyleURLInfo['path'])) {
-        $StyleURL = G::$user['StyleURL'].'?v='.filemtime(SERVER_ROOT.$StyleURLInfo['path']);
+        && ($StyleURLInfo['host'] === siteDomain)
+        && file_exists(serverRoot.$StyleURLInfo['path'])) {
+        $StyleURL = $app->userNew->extra['StyleURL'].'?v='.filemtime(serverRoot.$StyleURLInfo['path']);
     } else {
-        $StyleURL = G::$user['StyleURL'];
+        $StyleURL = $app->userNew->extra['StyleURL'];
     } ?>
   <link rel="stylesheet" type="text/css" media="screen"
     href="<?=$StyleURL?>" title="External CSS">
@@ -204,7 +217,7 @@ global $ClassLevels;
 // Get notifications early to change menu items if needed
 global $NotificationSpans;
 
-$NotificationsManager = new NotificationsManager(G::$user['ID']);
+$NotificationsManager = new NotificationsManager($app->userNew->core['id']);
 $Notifications = $NotificationsManager->get_notifications();
 $UseNoty = $NotificationsManager->use_noty();
 $NewSubscriptions = false;
@@ -231,8 +244,8 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
 </head>
 
 <?php
-  if (!empty(G::$user['StyleAdditions'])) {
-      $BodyStyles = 'style_'.implode(' style_', G::$user['StyleAdditions']);
+  if (!empty($app->userNew->extra['StyleAdditions'])) {
+      $BodyStyles = 'style_'.implode(' style_', $app->userNew->extra['StyleAdditions']);
   }
 ?>
 
@@ -241,14 +254,12 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
   class="<?=($BodyStyles??'')?>">
   <div id="wrapper">
     <h1 class="hidden">
-      <?= $ENV->SITE_NAME ?>
+      <?= $ENV->siteName ?>
     </h1>
 
     <?= $twig->render(
     '_base/mainMenu.twig',
     [
-          'ENV' => $ENV,
-          'user' => G::$user,
           'inbox' => Inbox::get_inbox_link(),
           'notify' => check_perms('site_torrents_notify'),
         ]
@@ -256,7 +267,7 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
         ?>
 
     <?php
-if (isset(G::$user['SearchType']) && G::$user['SearchType']) { // Advanced search
+if (isset($app->userNew->extra['SearchType']) && $app->userNew->extra['SearchType']) { // Advanced search
             $UseAdvancedSearch = true;
         } else {
             $UseAdvancedSearch = false;
@@ -273,8 +284,8 @@ if (isset(G::$user['SearchType']) && G::$user['SearchType']) { // Advanced searc
         <?php
 if (check_perms('site_send_unlimited_invites')) {
     $Invites = ' (∞)';
-} elseif (G::$user['Invites'] > 0) {
-    $Invites = ' ('.G::$user['Invites'].')';
+} elseif ($app->userNew->extra['Invites'] > 0) {
+    $Invites = ' ('.$app->userNew->extra['Invites'].')';
 } else {
     $Invites = '';
 }
@@ -284,7 +295,7 @@ if (check_perms('site_send_unlimited_invites')) {
           <a href="user.php?action=invite">Invite<?=$Invites?></a>
         </li>
 
-        <?php if ($ENV->FEATURE_DONATE) { ?>
+        <?php if ($ENV->enableDonations) { ?>
         <li id="nav_donate">
           <a href="donate.php">Donate</a>
         </li>
@@ -298,26 +309,26 @@ if (check_perms('site_send_unlimited_invites')) {
       <ul id="userinfo_stats">
         <li id="stats_seeding">
           <a
-            href="torrents.php?type=seeding&amp;userid=<?=G::$user['ID']?>">Up</a>:
+            href="torrents.php?type=seeding&amp;userid=<?=$app->userNew->core["id"]?>">Up</a>:
           <span class="stat tooltip"
-            title="<?=Format::get_size(G::$user['BytesUploaded'], 5)?>"><?=Format::get_size(G::$user['BytesUploaded'])?></span>
+            title="<?=Format::get_size($app->userNew->extra['Uploaded'], 5)?>"><?=Format::get_size($app->userNew->extra['Uploaded'])?></span>
         </li>
 
         <li id="stats_leeching">
           <a
-            href="torrents.php?type=leeching&amp;userid=<?=G::$user['ID']?>">Down</a>:
+            href="torrents.php?type=leeching&amp;userid=<?=$app->userNew->core["id"]?>">Down</a>:
           <span class="stat tooltip"
-            title="<?=Format::get_size(G::$user['BytesDownloaded'], 5)?>"><?=Format::get_size(G::$user['BytesDownloaded'])?></span>
+            title="<?=Format::get_size($app->userNew->extra['Downloaded'], 5)?>"><?=Format::get_size($app->userNew->extra['Downloaded'])?></span>
         </li>
 
         <li id="stats_ratio">
-          Ratio: <span class="stat"><?=Format::get_ratio_html(G::$user['BytesUploaded'], G::$user['BytesDownloaded'])?></span>
+          Ratio: <span class="stat"><?=Format::get_ratio_html($app->userNew->extra['Uploaded'], $app->userNew->extra['Downloaded'])?></span>
         </li>
-        <?php if (!empty(G::$user['RequiredRatio']) && G::$user['RequiredRatio'] > 0) { ?>
+        <?php if (!empty($app->userNew->extra['RequiredRatio']) && $app->userNew->extra['RequiredRatio'] > 0) { ?>
         <li id="stats_required">
           <a href="/rules/ratio">Required</a>:
           <span class="stat tooltip"
-            title="<?=Text::float(G::$user['RequiredRatio'], 5)?>"><?=Text::float(G::$user['RequiredRatio'], 2)?></span>
+            title="<?=Text::float($app->userNew->extra['RequiredRatio'], 5)?>"><?=Text::float($app->userNew->extra['RequiredRatio'], 2)?></span>
         </li>
         <?php } ?>
       </ul>
@@ -325,28 +336,28 @@ if (check_perms('site_send_unlimited_invites')) {
 
       <ul id="userinfo_extra">
 
-        <?php if (G::$user['FLTokens'] > 0) { ?>
+        <?php if ($app->userNew->extra['FLTokens'] > 0) { ?>
         <li id="fl_tokens">
           <a href="wiki.php?action=article&amp;name=tokens">Tokens</a>:
           <span class="stat">
             <a
-              href="userhistory.php?action=token_history&amp;userid=<?=G::$user['ID']?>"><?=G::$user['FLTokens']?></a>
+              href="userhistory.php?action=token_history&amp;userid=<?=$app->userNew->core["id"]?>"><?=$app->userNew->extra['FLTokens']?></a>
           </span>
         </li>
         <?php } ?>
 
         <li id="bonus_points">
-          <a href="wiki.php?action=article&amp;name=bonuspoints"><?=BONUS_POINTS?></a>:
+          <a href="wiki.php?action=article&amp;name=bonuspoints"><?=bonusPoints?></a>:
           <span class="stat">
-            <a href="store.php"><?=Text::float(G::$user['BonusPoints'])?></a>
+            <a href="store.php"><?=Text::float($app->userNew->extra['BonusPoints'])?></a>
           </span>
         </li>
 
-        <?php if (G::$user['HnR'] > 0) { ?>
+        <?php if ($app->userNew->extra['HnR'] > 0) { ?>
         <li id="hnr">
           <a href="snatchlist.php">HnRs</a>:
           <span class="stat">
-            <a><?=G::$user['HnR']?></a>
+            <a><?=$app->userNew->extra['HnR']?></a>
           </span>
         </li>
         <?php } ?>
@@ -376,11 +387,14 @@ if ($NotificationsManager->is_traditional(NotificationsManager::INBOX)) {
     $NotificationsManager->clear_notifications_array();
 }
 
-if (G::$user['RatioWatch']) {
-    $Alerts[] = '<a href="/rules/ratio">Ratio Watch</a>: You have '.time_diff(G::$user['RatioWatchEnds'], 3).' to get your ratio over your required ratio or your leeching abilities will be disabled.';
-} elseif ((int) G::$user['CanLeech'] !== 1) {
+/*
+# todo: bring this back
+if ($app->userNew->extra['RatioWatch']) {
+    $Alerts[] = '<a href="/rules/ratio">Ratio Watch</a>: You have '.time_diff($app->userNew->extra['RatioWatchEnds'], 3).' to get your ratio over your required ratio or your leeching abilities will be disabled.';
+} elseif ((int) $app->userNew->extra['CanLeech'] !== 1) {
     $Alerts[] = '<a href="/rules/ratio">Ratio Watch</a>: Your downloading privileges are disabled until you meet your required ratio.';
 }
+*/
 
 // Torrents
 if ($NotificationsManager->is_traditional(NotificationsManager::TORRENTS)) {
@@ -399,30 +413,30 @@ if (check_perms('users_mod')) {
 
 /** Buggy af rn 2022-01-12
 if (check_perms('users_mod')) {
-    $NumStaffPMs = G::$cache->get_value('num_staff_pms_'.G::$user['ID']);
+    $NumStaffPMs = $app->cacheOld->get_value('num_staff_pms_'.$app->userNew->core["id"]);
     if ($NumStaffPMs === false) {
         if (check_perms('users_mod')) {
             $LevelCap = 1000;
-            G::$db->query("
+            $app->dbOld->query("
               SELECT COUNT(ID)
               FROM staff_pm_conversations
               WHERE Status = 'Unanswered'
-                AND (AssignedToUser = ".G::$user['ID']."
-                  OR (LEAST('$LevelCap', Level) <= '".G::$user['EffectiveClass']."'
-                    AND Level <= ".G::$user['Class']."))");
+                AND (AssignedToUser = ".$app->userNew->core["id"]."
+                  OR (LEAST('$LevelCap', Level) <= '".$app->userNew->extra['EffectiveClass']."'
+                    AND Level <= ".$app->userNew->extra['Class']."))");
         }
 
-        if (G::$user['PermissionID'] === FORUM_MOD) {
-            G::$db->query("
+        if ($app->userNew->extra['PermissionID'] === FORUM_MOD) {
+            $app->dbOld->query("
               SELECT COUNT(ID)
               FROM staff_pm_conversations
               WHERE Status='Unanswered'
-                AND (AssignedToUser = ".G::$user['ID']."
+                AND (AssignedToUser = ".$app->userNew->core["id"]."
                   OR Level = '". $Classes[FORUM_MOD]['Level'] . "')");
         }
 
-        list($NumStaffPMs) = G::$db->next_record();
-        G::$cache->cache_value('num_staff_pms_'.G::$user['ID'], $NumStaffPMs, 1000);
+        list($NumStaffPMs) = $app->dbOld->next_record();
+        $app->cacheOld->cache_value('num_staff_pms_'.$app->userNew->core["id"], $NumStaffPMs, 1000);
     }
 
     if ($NumStaffPMs > 0) {
@@ -433,61 +447,61 @@ if (check_perms('users_mod')) {
 
 if (check_perms('admin_reports')) {
     // Torrent reports code
-    $NumTorrentReports = G::$cache->get_value('num_torrent_reportsv2');
+    $NumTorrentReports = $app->cacheOld->get_value('num_torrent_reportsv2');
     if ($NumTorrentReports === false) {
-        G::$db->query("
+        $app->dbOld->query("
           SELECT COUNT(ID)
           FROM reportsv2
           WHERE Status = 'New'");
 
-        list($NumTorrentReports) = G::$db->next_record();
-        G::$cache->cache_value('num_torrent_reportsv2', $NumTorrentReports, 0);
+        list($NumTorrentReports) = $app->dbOld->next_record();
+        $app->cacheOld->cache_value('num_torrent_reportsv2', $NumTorrentReports, 0);
     }
 
     $ModBar[] = '<a href="reportsv2.php">'.$NumTorrentReports.(($NumTorrentReports === 1) ? ' Report' : ' Reports').'</a>';
 
     // Other reports code
-    $NumOtherReports = G::$cache->get_value('num_other_reports');
+    $NumOtherReports = $app->cacheOld->get_value('num_other_reports');
     if ($NumOtherReports === false) {
-        G::$db->query("
+        $app->dbOld->query("
           SELECT COUNT(ID)
           FROM reportsv2
           WHERE Status = 'New'");
 
-        list($NumOtherReports) = G::$db->next_record();
-        G::$cache->cache_value('num_other_reports', $NumOtherReports, 0);
+        list($NumOtherReports) = $app->dbOld->next_record();
+        $app->cacheOld->cache_value('num_other_reports', $NumOtherReports, 0);
     }
 
     if ($NumOtherReports > 0) {
         $ModBar[] = '<a href="reports.php">'.$NumOtherReports.(($NumTorrentReports === 1) ? ' Other report' : ' Other reports').'</a>';
     }
 } elseif (check_perms('project_team')) {
-    $NumUpdateReports = G::$cache->get_value('num_update_reports');
+    $NumUpdateReports = $app->cacheOld->get_value('num_update_reports');
     if ($NumUpdateReports === false) {
-        G::$db->query("
+        $app->dbOld->query("
           SELECT COUNT(ID)
           FROM reportsv2
           WHERE Status = 'New'
             AND Type = 'request_update'");
 
-        list($NumUpdateReports) = G::$db->next_record();
-        G::$cache->cache_value('num_update_reports', $NumUpdateReports, 0);
+        list($NumUpdateReports) = $app->dbOld->next_record();
+        $app->cacheOld->cache_value('num_update_reports', $NumUpdateReports, 0);
     }
 
     if ($NumUpdateReports > 0) {
         $ModBar[] = '<a href="reports.php">Request update reports</a>';
     }
 } elseif (check_perms('site_moderate_forums')) {
-    $NumForumReports = G::$cache->get_value('num_forum_reports');
+    $NumForumReports = $app->cacheOld->get_value('num_forum_reports');
     if ($NumForumReports === false) {
-        G::$db->query("
+        $app->dbOld->query("
           SELECT COUNT(ID)
           FROM reportsv2
           WHERE Status = 'New'
             AND Type IN('artist_comment', 'collages_comment', 'post', 'requests_comment', 'thread', 'torrents_comment')");
 
-        list($NumForumReports) = G::$db->next_record();
-        G::$cache->cache_value('num_forum_reports', $NumForumReports, 0);
+        list($NumForumReports) = $app->dbOld->next_record();
+        $app->cacheOld->cache_value('num_forum_reports', $NumForumReports, 0);
     }
 
     if ($NumForumReports > 0) {
@@ -496,11 +510,11 @@ if (check_perms('admin_reports')) {
 }
 
 if (check_perms('users_mod') && FEATURE_EMAIL_REENABLE) {
-    $NumEnableRequests = G::$cache->get_value(AutoEnable::CACHE_KEY_NAME);
+    $NumEnableRequests = $app->cacheOld->get_value(AutoEnable::CACHE_KEY_NAME);
     if ($NumEnableRequests === false) {
-        G::$db->query("SELECT COUNT(1) FROM users_enable_requests WHERE Outcome IS NULL");
-        list($NumEnableRequests) = G::$db->next_record();
-        G::$cache->cache_value(AutoEnable::CACHE_KEY_NAME, $NumEnableRequests);
+        $app->dbOld->query("SELECT COUNT(1) FROM users_enable_requests WHERE Outcome IS NULL");
+        list($NumEnableRequests) = $app->dbOld->next_record();
+        $app->cacheOld->cache_value(AutoEnable::CACHE_KEY_NAME, $NumEnableRequests);
     }
 
     if ($NumEnableRequests > 0) {

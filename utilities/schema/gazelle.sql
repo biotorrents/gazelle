@@ -504,17 +504,6 @@ CREATE TABLE `forums_topic_notes` (
 
 
 -- 2020-03-09
-CREATE TABLE `friends` (
-  `UserID` int unsigned NOT NULL,
-  `FriendID` int unsigned NOT NULL,
-  `Comment` text,
-  PRIMARY KEY (`UserID`,`FriendID`),
-  KEY `UserID` (`UserID`),
-  KEY `FriendID` (`FriendID`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
--- 2020-03-09
 CREATE TABLE `group_log` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `GroupID` int NOT NULL,
@@ -1396,6 +1385,17 @@ CREATE TABLE `users_freeleeches` (
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
+CREATE TABLE `users_friends` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `userId` INT NOT NULL,
+  `friendId` INT NOT NULL,
+  `comment` VARCHAR(255),
+  `created` DATETIME DEFAULT NOW(),
+  `updated` DATETIME ON UPDATE NOW(),
+  PRIMARY KEY (`id`, `userId`,`friendId`)
+);
+
+
 CREATE TABLE `users_info` (
   `UserID` int unsigned NOT NULL,
   `StyleID` int unsigned NOT NULL,
@@ -1418,18 +1418,6 @@ CREATE TABLE `users_info` (
   `JoinDate` datetime,
   `Inviter` int DEFAULT NULL,
   `WarnedTimes` int NOT NULL DEFAULT '0',
-  `DisableAvatar` enum('0','1') NOT NULL DEFAULT '0',
-  `DisableInvites` enum('0','1') NOT NULL DEFAULT '0',
-  `DisablePosting` enum('0','1') NOT NULL DEFAULT '0',
-  `DisableForums` enum('0','1') NOT NULL DEFAULT '0',
-  `DisableIRC` enum('0','1') DEFAULT '0',
-  `DisableTagging` enum('0','1') NOT NULL DEFAULT '0',
-  `DisableUpload` enum('0','1') NOT NULL DEFAULT '0',
-  `DisableWiki` enum('0','1') NOT NULL DEFAULT '0',
-  `DisablePM` enum('0','1') NOT NULL DEFAULT '0',
-  `DisablePoints` enum('0','1') NOT NULL DEFAULT '0',
-  `DisablePromotion` enum('0','1') NOT NULL DEFAULT '0',
-  `DisableRequests` enum('0','1') NOT NULL DEFAULT '0',
   `RatioWatchEnds` datetime,
   `RatioWatchDownload` bigint unsigned NOT NULL DEFAULT '0',
   `RatioWatchTimes` tinyint unsigned NOT NULL DEFAULT '0',
@@ -1445,7 +1433,6 @@ CREATE TABLE `users_info` (
   `InfoTitle` varchar(255) NOT NULL DEFAULT '',
   UNIQUE KEY `UserID` (`UserID`),
   KEY `SupportFor` (`SupportFor`),
-  KEY `DisableInvites` (`DisableInvites`),
   KEY `Donor` (`Donor`),
   KEY `Warned` (`Warned`),
   KEY `JoinDate` (`JoinDate`),
@@ -1610,19 +1597,13 @@ CREATE TABLE `users_seedtime` (
 
 
 CREATE TABLE `users_sessions` (
-  `UserID` int NOT NULL,
-  `SessionID` char(64) NOT NULL,
-  `KeepLogged` enum('0','1') NOT NULL DEFAULT '0',
-  `IP` varchar(90) NOT NULL,
-  `LastUpdate` datetime,
-  `Active` tinyint NOT NULL DEFAULT '1',
-  `FullUA` text,
-  PRIMARY KEY (`UserID`,`SessionID`),
-  KEY `UserID` (`UserID`),
-  KEY `LastUpdate` (`LastUpdate`),
-  KEY `Active` (`Active`),
-  KEY `ActiveAgeKeep` (`Active`,`LastUpdate`,`KeepLogged`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
+	`userId` INT NOT NULL,
+	`sessionId` VARCHAR(128) NOT NULL,
+	`expires` DATETIME NOT NULL,
+	`ipAddress` VARCHAR(128),
+	`userAgent` TEXT,
+	PRIMARY KEY (`userId`,`sessionId`)
+);
 
 
 CREATE TABLE `users_subscriptions` (
@@ -1788,6 +1769,27 @@ CREATE TABLE `xbt_snatched` (
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
+CREATE TABLE `openai` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `jobId` VARCHAR(128) NOT NULL,
+    `groupId` INT NOT NULL,
+    `object` VARCHAR(32),
+    `created` DATETIME DEFAULT NOW(),
+    `updated` DATETIME DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP,
+    `model` VARCHAR(32),
+    `text` TEXT,
+    `index` TINYINT,
+    `logprobs` TINYINT,
+    `finishReason` VARCHAR(16),
+    `promptTokens` SMALLINT,
+    `completionTokens` SMALLINT,
+    `totalTokens` SMALLINT,
+    `failCount` TINYINT DEFAULT 0,
+    `json` JSON,
+    `type` VARCHAR(16),
+    PRIMARY KEY (`id`,`jobId`,`groupId`)
+);
+
 -- Okay, that's all for the schema structure
 -- Now we have the default values to initialize the DB with
 SET FOREIGN_KEY_CHECKS = 1;
@@ -1806,8 +1808,6 @@ INSERT INTO `permissions` (`ID`, `Level`, `Name`, `Values`, `DisplayStaff`) VALU
 INSERT INTO `stylesheets` (`ID`, `Name`, `Description`, `Default`, `Additions`, `Color`) VALUES
   (1, 'bookish', 'BioTorrents.de Stylesheet', '1', 'select=noto_sans;select=luxi_sans;select=noto_serif;select=luxi_serif;select=opendyslexic;select=comic_neue;checkbox=matcha', '#000000'),
   (2, 'postmod', 'What.cd Stylesheet', '0', 'select=noto_sans;select=luxi_sans;select=noto_serif;select=luxi_serif;select=opendyslexic;select=comic_neue;', '#000000'),
-  (3, 'oppai', 'Oppaitime Stylesheet', '0', 'select=noto_sans;select=luxi_sans;select=noto_serif;select=luxi_serif;select=opendyslexic;select=comic_neue', '#fbc2e5'),
-  (4, 'beluga', 'Beluga Stylesheet', '0', 'select=noto_sans;select=luxi_sans;select=noto_serif;select=luxi_serif;select=opendyslexic;select=comic_neue;checkbox=pink;checkbox=haze', '#23252a');
 
 
 INSERT INTO `wiki_articles` (`ID`, `Revision`, `Title`, `Body`, `MinClassRead`, `MinClassEdit`, `Date`, `Author`) VALUES

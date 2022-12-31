@@ -1,8 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
 authorize();
-include(SERVER_ROOT.'/sections/user/linkedfunctions.php');
+include(serverRoot.'/sections/user/linkedfunctions.php');
 
 if (!check_perms('users_mod')) {
     error(403);

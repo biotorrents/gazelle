@@ -1,13 +1,21 @@
 <?php
+
 declare(strict_types=1);
+
+
+/**
+ * UserRank
+ */
 
 class UserRank
 {
-    # Prefix for memcache keys, to make life easier
+    # prefix for memcache keys, to make life easier
     private static $cachePrefix = 'percentiles_';
 
 
     /**
+     * build_table
+     *
      * Returns a 101 row array (101 percentiles: 0-100),
      * with the minimum value for that percentile as the value for each row.
      *
@@ -15,15 +23,17 @@ class UserRank
      */
     private static function build_table($cacheKey, $query)
     {
-        $queryId = G::$db->get_query_id();
+        $app = App::go();
 
-        G::$db->prepared_query("
+        $queryId = $app->dbOld->get_query_id();
+
+        $app->dbOld->prepared_query("
         DROP TEMPORARY TABLE IF EXISTS
           `temp_stats`
         ");
 
 
-        G::$db->prepared_query("
+        $app->dbOld->prepared_query("
         CREATE TEMPORARY TABLE `temp_stats`(
           `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
           `value` BIGINT NOT NULL
@@ -31,24 +41,24 @@ class UserRank
         ");
 
 
-        G::$db->prepared_query(
+        $app->dbOld->prepared_query(
             "
         INSERT INTO `temp_stats`(`value`) "
         . $query
         );
 
 
-        G::$db->prepared_query("
+        $app->dbOld->prepared_query("
         SELECT
           COUNT(`id`)
         FROM
           `temp_stats`
         ");
 
-        list($UserCount) = G::$db->next_record();
+        list($UserCount) = $app->dbOld->next_record();
 
         $UserCount = (int) $UserCount;
-        G::$db->query("
+        $app->dbOld->query("
         SELECT
           MIN(`value`)
         FROM
@@ -58,11 +68,11 @@ class UserRank
         ");
 
 
-        $table = G::$db->to_array();
-        G::$db->set_query_id($queryId);
+        $table = $app->dbOld->to_array();
+        $app->dbOld->set_query_id($queryId);
 
         # Randomize the cache length so all the tables don't expire at the same time
-        G::$cache->cache_value($cacheKey, $table, random_int(43200, 86400)); # 12h => 1d
+        $app->cacheOld->cache_value($cacheKey, $table, random_int(43200, 86400)); # 12h => 1d
 
         return $table;
     }
@@ -203,21 +213,23 @@ class UserRank
      */
     public static function get_rank($tableName, $value)
     {
+        $app = App::go();
+
         if ($value === 0) {
             return 0;
         }
 
-        $table = G::$cache->get_value(self::$cachePrefix . $tableName);
+        $table = $app->cacheOld->get_value(self::$cachePrefix . $tableName);
         if (!$table) {
             # cache lock!
-            $lock = G::$cache->get_value(self::$cachePrefix . "{$tableName}_lock");
+            $lock = $app->cacheOld->get_value(self::$cachePrefix . "{$tableName}_lock");
 
             if ($lock) {
                 return false;
             } else {
-                G::$cache->cache_value(self::$cachePrefix . "{$tableName}_lock", 1, 300);
+                $app->cacheOld->cache_value(self::$cachePrefix . "{$tableName}_lock", 1, 300);
                 $table = self::build_table(self::$cachePrefix . $tableName, self::table_query($tableName));
-                G::$cache->delete_value(self::$cachePrefix . "{$tableName}_lock");
+                $app->cacheOld->delete_value(self::$cachePrefix . "{$tableName}_lock");
             }
         }
 
@@ -251,7 +263,7 @@ class UserRank
         if (in_array(false, func_get_args(), true)) {
             return false;
         }
-        
+
         $totalScore += $uploaded * 15;
         $totalScore += $downloaded * 8;
         $totalScore += $uploads * 25;
@@ -261,7 +273,7 @@ class UserRank
         $totalScore += $artists;
         $totalScore /= (15 + 8 + 25 + 2 + 1 + 1 + 1);
         $totalScore *= $ratio;
-        
+
         return $totalScore;
     }
 }

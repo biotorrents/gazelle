@@ -69,7 +69,7 @@ if ($DateSearch) {
 $RS .= "
   ORDER BY i.Joindate DESC
   LIMIT $Limit";
-  
+
 $QueryID = $db->query($RS);
 $db->query('SELECT FOUND_ROWS()');
 list($Results) = $db->next_record();
@@ -99,7 +99,6 @@ if ($db->has_results()) {
     <td>Email</td>
     <td>IP address</td>
     <td>Country</td>
-    <td>Host</td>
     <td>Registered</td>
   </tr>
 
@@ -113,8 +112,8 @@ if ($db->has_results()) {
 
   <tr class="<?=$RowClass?>">
     <td>
-      <?=Users::format_username($UserID, true, true, true, true)?><br />
-      <?=Users::format_username($InviterID, true, true, true, true)?>
+      <?=User::format_username($UserID, true, true, true, true)?><br />
+      <?=User::format_username($InviterID, true, true, true, true)?>
     </td>
 
     <td>
@@ -123,29 +122,24 @@ if ($db->has_results()) {
     </td>
 
     <td>
-      <span class="float_left">
+      <span class="u-pull-left">
         <?=Text::esc($Email)?>
       </span>
 
-      <span class="float_left">
+      <span class="u-pull-left">
         <?=Text::esc($InviterEmail)?>
       </span>
 
     </td>
 
     <td>
-      <span class="float_left">
+      <span class="u-pull-left">
         <?=Text::esc($IP)?>
       </span>
 
-      <span class="float_left">
+      <span class="u-pull-left">
         <?=Text::esc($InviterIP)?>
       </span>
-    </td>
-
-    <td>
-      <?=Tools::get_host_by_ajax($IP)?><br />
-      <?=Tools::get_host_by_ajax($InviterIP)?>
     </td>
 
     <td>

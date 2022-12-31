@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -96,202 +97,204 @@ switch ($_GET['action']) {
      * Torrents
      */
     case 'torrent':
-      require_once "$ENV->SERVER_ROOT/sections/api/torrents/torrent.php";
+      require_once "$ENV->serverRoot/sections/api/torrents/torrent.php";
       break;
 
     case 'group':
-      require_once "$ENV->SERVER_ROOT/sections/api/torrents/group.php";
+      require_once "$ENV->serverRoot/sections/api/torrents/group.php";
       break;
 
   // So the album art script can function without breaking the rate limit
   case 'torrentgroupalbumart':
-    require_once "$ENV->SERVER_ROOT/sections/api/torrentgroupalbumart.php";
+    require_once "$ENV->serverRoot/sections/api/torrentgroupalbumart.php";
     break;
 
   case 'browse':
-    require_once "$ENV->SERVER_ROOT/sections/api/browse.php";
+    require_once "$ENV->serverRoot/sections/api/browse.php";
     break;
-  
+
    case 'tcomments':
-    require_once "$ENV->SERVER_ROOT/sections/api/tcomments.php";
+    require_once "$ENV->serverRoot/sections/api/tcomments.php";
     break;
 
   /**
    * Features
    */
   case 'collage':
-    require_once "$ENV->SERVER_ROOT/sections/api/collage.php";
+    require_once "$ENV->serverRoot/sections/api/collage.php";
     break;
-  
+
   case 'artist':
-    require_once "$ENV->SERVER_ROOT/sections/api/artist.php";
+    require_once "$ENV->serverRoot/sections/api/artist.php";
     break;
 
   case 'request':
-    require_once "$ENV->SERVER_ROOT/sections/api/request.php";
+    require_once "$ENV->serverRoot/sections/api/request.php";
     break;
 
   case 'requests':
-    require_once "$ENV->SERVER_ROOT/sections/api/requests.php";
+    require_once "$ENV->serverRoot/sections/api/requests.php";
     break;
 
   case 'top10':
-    require_once "$ENV->SERVER_ROOT/sections/api/top10/index.php";
+    require_once "$ENV->serverRoot/sections/api/top10/index.php";
     break;
 
   /**
    * Users
    */
   case 'user':
-    require_once "$ENV->SERVER_ROOT/sections/api/user.php";
+    require_once "$ENV->serverRoot/sections/api/user.php";
     break;
 
   case 'usersearch':
-    require_once "$ENV->SERVER_ROOT/sections/api/usersearch.php";
+    require_once "$ENV->serverRoot/sections/api/usersearch.php";
     break;
-  
+
   case 'community_stats':
-    require_once "$ENV->SERVER_ROOT/sections/api/community_stats.php";
+    require_once "$ENV->serverRoot/sections/api/community_stats.php";
     break;
 
   case 'user_recents':
-    require_once "$ENV->SERVER_ROOT/sections/api/user_recents.php";
+    require_once "$ENV->serverRoot/sections/api/user_recents.php";
     break;
 
   case 'userhistory':
-    require_once "$ENV->SERVER_ROOT/sections/api/userhistory/index.php";
+    require_once "$ENV->serverRoot/sections/api/userhistory/index.php";
     break;
 
   /**
    * Account
    */
   case 'inbox':
-    require_once "$ENV->SERVER_ROOT/sections/api/inbox/index.php";
+    require_once "$ENV->serverRoot/sections/api/inbox/index.php";
     break;
 
   case 'bookmarks':
-    require_once "$ENV->SERVER_ROOT/sections/api/bookmarks/index.php";
+    require_once "$ENV->serverRoot/sections/api/bookmarks/index.php";
     break;
 
   case 'notifications':
-    require_once "$ENV->SERVER_ROOT/sections/api/notifications.php";
+    require_once "$ENV->serverRoot/sections/api/notifications.php";
     break;
 
   case 'get_user_notifications':
-    require_once "$ENV->SERVER_ROOT/sections/api/get_user_notifications.php";
+    require_once "$ENV->serverRoot/sections/api/get_user_notifications.php";
     break;
 
   case 'clear_user_notification':
-    require_once "$ENV->SERVER_ROOT/sections/api/clear_user_notification.php";
+    require_once "$ENV->serverRoot/sections/api/clear_user_notification.php";
     break;
 
   /**
    * Forums
    */
   case 'forum':
-    require_once "$ENV->SERVER_ROOT/sections/api/forum/index.php";
+    require_once "$ENV->serverRoot/sections/api/forum/index.php";
     break;
 
   case 'subscriptions':
-    require_once "$ENV->SERVER_ROOT/sections/api/subscriptions.php";
+    require_once "$ENV->serverRoot/sections/api/subscriptions.php";
     break;
 
   case 'raw_bbcode':
-    require_once "$ENV->SERVER_ROOT/sections/api/raw_bbcode.php";
+    require_once "$ENV->serverRoot/sections/api/raw_bbcode.php";
     break;
 
   /**
    * Meta
    */
   case 'index':
-    require_once "$ENV->SERVER_ROOT/sections/api/info.php";
+    require_once "$ENV->serverRoot/sections/api/info.php";
     break;
 
+    /*
   case 'manifest':
-    require_once "$ENV->SERVER_ROOT/manifest.php";
+    require_once "$ENV->serverRoot/manifest.php";
     json_die('success', manifest());
     break;
+    */
 
   case 'stats':
-    require_once "$ENV->SERVER_ROOT/sections/api/stats.php";
+    require_once "$ENV->serverRoot/sections/api/stats.php";
     break;
 
   case 'loadavg':
-    require_once "$ENV->SERVER_ROOT/sections/api/loadavg.php";
+    require_once "$ENV->serverRoot/sections/api/loadavg.php";
     break;
 
   case 'announcements':
-    require_once "$ENV->SERVER_ROOT/sections/api/announcements.php";
+    require_once "$ENV->serverRoot/sections/api/announcements.php";
     break;
 
   case 'wiki':
-    require_once "$ENV->SERVER_ROOT/sections/api/wiki.php";
+    require_once "$ENV->serverRoot/sections/api/wiki.php";
     break;
-  
+
   case 'ontology':
-    require_once "$ENV->SERVER_ROOT/sections/api/ontology.php";
+    require_once "$ENV->serverRoot/sections/api/ontology.php";
     break;
-  
+
   /**
    * Under construction
    */
   case 'preview':
-    require_once "$ENV->SERVER_ROOT/sections/api/preview.php";
+    require_once "$ENV->serverRoot/sections/api/preview.php";
     break;
 
   case 'better':
-    require_once "$ENV->SERVER_ROOT/sections/api/better/index.php";
+    require_once "$ENV->serverRoot/sections/api/better/index.php";
     break;
 
   case 'get_friends':
-    require_once "$ENV->SERVER_ROOT/sections/api/get_friends.php";
+    require_once "$ENV->serverRoot/sections/api/get_friends.php";
     break;
 
   case 'news_ajax':
-    require_once "$ENV->SERVER_ROOT/sections/api/news_ajax.php";
+    require_once "$ENV->serverRoot/sections/api/news_ajax.php";
     break;
 
   case 'send_recommendation':
-    require_once "$ENV->SERVER_ROOT/sections/api/send_recommendation.php";
+    require_once "$ENV->serverRoot/sections/api/send_recommendation.php";
     break;
 
   /*
   case 'similar_artists':
-    require_once "$ENV->SERVER_ROOT/sections/api/similar_artists.php";
+    require_once "$ENV->serverRoot/sections/api/similar_artists.php";
     break;
   */
 
   /*
   case 'votefavorite':
-    require_once "$ENV->SERVER_ROOT/sections/api/takevote.php";
+    require_once "$ENV->serverRoot/sections/api/takevote.php";
     break;
   */
 
   /*
   case 'torrent_info':
-    require_once "$ENV->SERVER_ROOT/sections/api/torrent_info.php";
+    require_once "$ENV->serverRoot/sections/api/torrent_info.php";
     break;
   */
 
   /*
   case 'checkprivate':
-    include "$ENV->SERVER_ROOT/sections/api/checkprivate.php";
+    include "$ENV->serverRoot/sections/api/checkprivate.php";
     break;
   */
 
   case 'autofill':
-    require_once "$ENV->SERVER_ROOT/sections/api/autofill/doi.php";
+    require_once "$ENV->serverRoot/sections/api/autofill/doi.php";
     /*
     if ($_GET['cat'] === 'anime') {
-        require_once "$ENV->SERVER_ROOT/sections/api/autofill/anime.php";
+        require_once "$ENV->serverRoot/sections/api/autofill/anime.php";
     }
 
     if ($_GET['cat'] === 'jav') {
-        require_once "$ENV->SERVER_ROOT/sections/api/autofill/jav.php";
+        require_once "$ENV->serverRoot/sections/api/autofill/jav.php";
     }
 
     if ($_GET['cat'] === 'manga') {
-        require_once "$ENV->SERVER_ROOT/sections/api/autofill/manga.php";
+        require_once "$ENV->serverRoot/sections/api/autofill/manga.php";
     }
     */
     break;

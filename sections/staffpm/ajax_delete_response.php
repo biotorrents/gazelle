@@ -1,8 +1,10 @@
 <?php
+
 enforce_login();
 
 // Get user level
-$db->query("
+$db->query(
+    "
   SELECT
     i.SupportFor,
     p.DisplayStaff
@@ -14,18 +16,16 @@ $db->query("
 list($SupportFor, $DisplayStaff) = $db->next_record();
 
 if (!($SupportFor != '' || $DisplayStaff == '1')) {
-  // Logged in user is not FLS or Staff
-  error(403);
+    // Logged in user is not FLS or Staff
+    error(403);
 }
 
 if ($ID = (int)$_POST['id']) {
-  $db->query("
+    $db->query("
     DELETE FROM staff_pm_responses
     WHERE ID = $ID");
-  echo '1';
-
+    echo '1';
 } else {
-  // No ID
-  echo '-1';
+    // No ID
+    echo '-1';
 }
-?>

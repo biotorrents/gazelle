@@ -1,22 +1,26 @@
 <?php
 if (!check_perms('admin_login_watch')) {
-  error(403);
+    error(403);
 }
 
 if (isset($_POST['submit']) && isset($_POST['ip']) && $_POST['submit'] == 'Unban') {
-  authorize();
-  $cache->delete_value('login_attempts_'.$_POST['ip']);
+    authorize();
+    $cache->delete_value('login_attempts_'.$_POST['ip']);
 }
 
 View::header('Login Watch');
 
 $AttemptIPs = $cache->get_value('login_attempts');
 $AllAttempts = [];
-foreach($AttemptIPs as $IP => $Time) {
-  if (time() > $Time) { continue; }
-  list($Attempts, $Banned) = $cache->get_value('login_attempts_'.$IP);
-  if (!isset($Attempts) && !isset($Banned)) { continue; }
-  $AllAttempts[] = [$IP, $Attempts, $Banned, $Time];
+foreach ($AttemptIPs as $IP => $Time) {
+    if (time() > $Time) {
+        continue;
+    }
+    list($Attempts, $Banned) = $cache->get_value('login_attempts_'.$IP);
+    if (!isset($Attempts) && !isset($Banned)) {
+        continue;
+    }
+    $AllAttempts[] = [$IP, $Attempts, $Banned, $Time];
 }
 
 ?>
@@ -37,7 +41,7 @@ foreach($AttemptIPs as $IP => $Time) {
     </tr>
 <?php
 while (list($IP, $Attempts, $Banned, $BannedUntil) = array_shift($AllAttempts)) {
-?>
+    ?>
     <tr class="row">
       <td>
         <?=$IP?>
@@ -46,7 +50,7 @@ while (list($IP, $Attempts, $Banned, $BannedUntil) = array_shift($AllAttempts)) 
         <?=$Attempts?>
       </td>
       <td>
-        <?=($Banned?'Yes':'No')?>
+        <?=($Banned ? 'Yes' : 'No')?>
       </td>
       <td>
         <?=time_diff($BannedUntil)?>

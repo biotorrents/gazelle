@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -35,7 +36,7 @@ $AS = check_perms('admin_schedule');
 
 function run_all_in($Dir)
 {
-    $Tasks = array_diff(scandir(SERVER_ROOT.'/sections/schedule/'.$Dir, 1), ['.', '..']);
+    $Tasks = array_diff(scandir(serverRoot.'/sections/schedule/'.$Dir, 1), ['.', '..']);
     extract($GLOBALS);
 
     foreach ($Tasks as $Task) {
@@ -43,13 +44,13 @@ function run_all_in($Dir)
         include($Dir.'/'.$Task);
 
         if ($ScheduleDebug) {
-            echo $Dir.'/'.$Task.': '.Text::float(microtime(true)-$TimeStart, 3).($AS?"<br>":"\n");
+            echo $Dir.'/'.$Task.': '.Text::float(microtime(true)-$TimeStart, 3).($AS ? "<br>" : "\n");
         }
     }
 }
 
-if ((!isset($_REQUEST['key']) || $_REQUEST['key'] !== $ENV->getPriv('SCHEDULE_KEY'))
-    #|| (!isset($argv[1]) || $argv[1] !== $ENV->getPriv('SCHEDULE_KEY'))
+if ((!isset($_REQUEST['key']) || $_REQUEST['key'] !== $ENV->getPriv('scheduleKey'))
+    #|| (!isset($argv[1]) || $argv[1] !== $ENV->getPriv('scheduleKey'))
     && !$AS) {
     error(403);
 }

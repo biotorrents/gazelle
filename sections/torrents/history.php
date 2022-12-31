@@ -2,7 +2,7 @@
 #declare(strict_types = 1);
 
 if (!isset($_GET['groupid']) || !is_number($_GET['groupid'])) {
-  error(0);
+    error(0);
 }
 $GroupID = (int)$_GET['groupid'];
 
@@ -11,7 +11,7 @@ $db->query("
   FROM `torrents_group`
   WHERE `id` = $GroupID");
 if (!$db->has_results()) {
-  error(404);
+    error(404);
 }
 list($Name) = $db->next_record();
 

@@ -1,13 +1,14 @@
 <?php
+
 // perform the back end of updating a resolve type
 
 if (!check_perms('admin_reports')) {
-  error(403);
+    error(403);
 }
 
 if (empty($_GET['newresolve'])) {
-  echo "No new resolve";
-  error();
+    echo "No new resolve";
+    error();
 }
 
 $ReportID = (int) $_GET['reportid'];
@@ -15,19 +16,19 @@ $CategoryID = (int) $_GET['categoryid'];
 $NewType = $_GET['newresolve'];
 
 if (!empty($Types[$CategoryID])) {
-  $TypeList = $Types['master'] + $Types[$CategoryID];
-  $Priorities = [];
-  foreach ($TypeList as $Key => $Value) {
-    $Priorities[$Key] = $Value['priority'];
-  }
-  array_multisort($Priorities, SORT_ASC, $TypeList);
+    $TypeList = $Types['master'] + $Types[$CategoryID];
+    $Priorities = [];
+    foreach ($TypeList as $Key => $Value) {
+        $Priorities[$Key] = $Value['priority'];
+    }
+    array_multisort($Priorities, SORT_ASC, $TypeList);
 } else {
-  $TypeList = $Types['master'];
+    $TypeList = $Types['master'];
 }
 
 if (!array_key_exists($NewType, $TypeList)) {
-  echo "No resolve from that category";
-  error();
+    echo "No resolve from that category";
+    error();
 }
 
 $db->prepared_query("

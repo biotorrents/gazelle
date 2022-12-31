@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -36,44 +37,40 @@ if (isset($argv[1])) {
 
 # Error checking
 if (!isset($_REQUEST['action'])) {
-    include SERVER_ROOT.'/sections/tools/tools.php';
+    include serverRoot.'/sections/tools/tools.php';
     #error('Need to set an "action" parameter in sections/tools/tools.php.');
 }
 
-$Val = new Validate;
-$Feed = new Feed;
+$Val = new Validate();
+$Feed = new Feed();
 
 # Finally
 switch ($_REQUEST['action']) {
-  // Services
-  case 'get_host':
-    include SERVER_ROOT.'/sections/tools/services/get_host.php';
-    break;
 
   // Managers
   case 'forum':
-    include SERVER_ROOT.'/sections/tools/managers/forum_list.php';
+    include serverRoot.'/sections/tools/managers/forum_list.php';
     break;
 
   case 'forum_alter':
-    include SERVER_ROOT.'/sections/tools/managers/forum_alter.php';
+    include serverRoot.'/sections/tools/managers/forum_alter.php';
     break;
 
   case 'whitelist':
-    include SERVER_ROOT.'/sections/tools/managers/whitelist_list.php';
+    include serverRoot.'/sections/tools/managers/whitelist_list.php';
     break;
 
   case 'whitelist_alter':
-    include SERVER_ROOT.'/sections/tools/managers/whitelist_alter.php';
+    include serverRoot.'/sections/tools/managers/whitelist_alter.php';
     break;
 
   case 'enable_requests':
-    include SERVER_ROOT.'/sections/tools/managers/enable_requests.php';
+    include serverRoot.'/sections/tools/managers/enable_requests.php';
     break;
 
   case 'ajax_take_enable_request':
     if (FEATURE_EMAIL_REENABLE) {
-        include SERVER_ROOT.'/sections/tools/managers/ajax_take_enable_request.php';
+        include serverRoot.'/sections/tools/managers/ajax_take_enable_request.php';
     } else {
         // Prevent post requests to the ajax page
         Http::redirect("tools.php");
@@ -82,28 +79,28 @@ switch ($_REQUEST['action']) {
     break;
 
   case 'login_watch':
-    include SERVER_ROOT.'/sections/tools/managers/login_watch.php';
+    include serverRoot.'/sections/tools/managers/login_watch.php';
     break;
 
   case 'email_blacklist':
-    include SERVER_ROOT.'/sections/tools/managers/email_blacklist.php';
+    include serverRoot.'/sections/tools/managers/email_blacklist.php';
     break;
 
   case 'email_blacklist_alter':
-    include SERVER_ROOT.'/sections/tools/managers/email_blacklist_alter.php';
+    include serverRoot.'/sections/tools/managers/email_blacklist_alter.php';
     break;
 
   case 'email_blacklist_search':
-    include SERVER_ROOT.'/sections/tools/managers/email_blacklist_search.php';
+    include serverRoot.'/sections/tools/managers/email_blacklist_search.php';
     break;
 
   case 'editnews':
   case 'news':
-    include SERVER_ROOT.'/sections/tools/managers/news.php';
+    include serverRoot.'/sections/tools/managers/news.php';
     break;
 
   case 'edit_tags':
-    include SERVER_ROOT.'/sections/tools/misc/tags.php';
+    include serverRoot.'/sections/tools/misc/tags.php';
     break;
 
   case 'takeeditnews':
@@ -165,39 +162,39 @@ switch ($_REQUEST['action']) {
     break;
 
   case 'tokens':
-    include SERVER_ROOT.'/sections/tools/managers/tokens.php';
+    include serverRoot.'/sections/tools/managers/tokens.php';
     break;
 
   case 'multiple_freeleech':
-    include SERVER_ROOT.'/sections/tools/managers/multiple_freeleech.php';
+    include serverRoot.'/sections/tools/managers/multiple_freeleech.php';
     break;
 
   case 'ocelot':
-    include SERVER_ROOT.'/sections/tools/managers/ocelot.php';
+    include serverRoot.'/sections/tools/managers/ocelot.php';
     break;
 
   case 'ocelot_info':
-    include SERVER_ROOT.'/sections/tools/data/ocelot_info.php';
+    include serverRoot.'/sections/tools/data/ocelot_info.php';
     break;
 
   case 'official_tags':
-    include SERVER_ROOT.'/sections/tools/managers/official_tags.php';
+    include serverRoot.'/sections/tools/managers/official_tags.php';
     break;
 
   case 'freeleech':
-    include SERVER_ROOT.'/sections/tools/managers/sitewide_freeleech.php';
+    include serverRoot.'/sections/tools/managers/sitewide_freeleech.php';
     break;
 
   case 'tag_aliases':
-    include SERVER_ROOT.'/sections/tools/managers/tag_aliases.php';
+    include serverRoot.'/sections/tools/managers/tag_aliases.php';
     break;
 
   case 'global_notification':
-    include SERVER_ROOT.'/sections/tools/managers/global_notification.php';
+    include serverRoot.'/sections/tools/managers/global_notification.php';
     break;
 
   case 'take_global_notification':
-    include SERVER_ROOT.'/sections/tools/managers/take_global_notification.php';
+    include serverRoot.'/sections/tools/managers/take_global_notification.php';
     break;
 
   case 'permissions':
@@ -254,7 +251,7 @@ switch ($_REQUEST['action']) {
             $Abbreviation = $_REQUEST['abbreviation'];
             $Secondary = empty($_REQUEST['secondary']) ? 0 : 1;
             $Forums = $_REQUEST['forums'];
-            $DisplayStaff = isset($_REQUEST['displaystaff']) ? $_REQUEST['displaystaff']: 0;
+            $DisplayStaff = isset($_REQUEST['displaystaff']) ? $_REQUEST['displaystaff'] : 0;
             $Values['MaxCollages'] = $_REQUEST['maxcollages'];
 
             if (!$Err) {
@@ -298,7 +295,7 @@ switch ($_REQUEST['action']) {
             }
         }
 
-        include SERVER_ROOT.'/sections/tools/managers/permissions_alter.php';
+        include serverRoot.'/sections/tools/managers/permissions_alter.php';
     } else {
         if (!empty($_REQUEST['removeid'])) {
             $db->prepared_query("
@@ -336,66 +333,58 @@ switch ($_REQUEST['action']) {
             $cache->delete_value('classes');
         }
 
-        include SERVER_ROOT.'/sections/tools/managers/permissions_list.php';
+        include serverRoot.'/sections/tools/managers/permissions_list.php';
     }
     break;
 
   case 'ip_ban':
     // todo: Clean up DB table ip_bans
-    include SERVER_ROOT.'/sections/tools/managers/bans.php';
+    include serverRoot.'/sections/tools/managers/bans.php';
     break;
 
   case 'quick_ban':
-    include SERVER_ROOT.'/sections/tools/misc/quick_ban.php';
+    include serverRoot.'/sections/tools/misc/quick_ban.php';
     break;
 
   // Data
   case 'registration_log':
-    include SERVER_ROOT.'/sections/tools/data/registration_log.php';
+    include serverRoot.'/sections/tools/data/registration_log.php';
     break;
 
   case 'upscale_pool':
-    include SERVER_ROOT.'/sections/tools/data/upscale_pool.php';
+    include serverRoot.'/sections/tools/data/upscale_pool.php';
     break;
 
   case 'invite_pool':
-    include SERVER_ROOT.'/sections/tools/data/invite_pool.php';
+    include serverRoot.'/sections/tools/data/invite_pool.php';
     break;
 
   case 'service_stats':
-    include SERVER_ROOT.'/sections/tools/development/service_stats.php';
-    break;
-
-  case 'special_users':
-    include SERVER_ROOT.'/sections/tools/data/special_users.php';
+    include serverRoot.'/sections/tools/development/service_stats.php';
     break;
   // END Data
 
   // Misc
-  case 'clear_cache':
-    include SERVER_ROOT.'/sections/tools/development/clear_cache.php';
-    break;
-
   case 'manipulate_tree':
-    include SERVER_ROOT.'/sections/tools/misc/manipulate_tree.php';
+    include serverRoot.'/sections/tools/misc/manipulate_tree.php';
     break;
 
   case 'misc_values':
-    include SERVER_ROOT.'/sections/tools/development/misc_values.php';
+    include serverRoot.'/sections/tools/development/misc_values.php';
     break;
 
   case 'database_key':
-    include SERVER_ROOT.'/sections/tools/misc/database_key.php';
+    include serverRoot.'/sections/tools/misc/database_key.php';
     break;
 
   case 'mass_pm':
-    include SERVER_ROOT.'/sections/tools/managers/mass_pm.php';
+    include serverRoot.'/sections/tools/managers/mass_pm.php';
     break;
 
   case 'take_mass_pm':
-    include SERVER_ROOT.'/sections/tools/managers/take_mass_pm.php';
+    include serverRoot.'/sections/tools/managers/take_mass_pm.php';
     break;
-    
+
   default:
-    include SERVER_ROOT.'/sections/tools/tools.php';
+    include serverRoot.'/sections/tools/tools.php';
 }

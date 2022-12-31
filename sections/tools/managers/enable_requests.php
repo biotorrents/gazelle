@@ -212,7 +212,7 @@ $db->set_query_id($QueryID);
         while (list($Checked, $UserID) = $db->next_record()) { ?>
         <tr>
             <td>
-                <?=Users::format_username($UserID)?>
+                <?=User::format_username($UserID)?>
             </td>
 
             <td>
@@ -438,7 +438,7 @@ if ($NumResults > 0) { ?>
         </td>
 
         <td>
-            <?=Users::format_username($UserID)?>
+            <?=User::format_username($UserID)?>
         </td>
 
         <td>
@@ -477,7 +477,7 @@ if ($NumResults > 0) { ?>
         </td>
         <?php } else { ?>
         <td>
-            <?=Users::format_username($CheckedBy);?>
+            <?=User::format_username($CheckedBy);?>
         </td>
 
         <td>

@@ -1,34 +1,29 @@
 <?php
 declare(strict_types=1);
 
-$All = (!empty($_GET['filter']) && $_GET['filter'] === 'all');
-$Join = $All
-    ? ''
-    : ("
-        JOIN `torrents` AS t ON t.`GroupID` = tg.`id`
-        JOIN `xbt_snatched` AS x ON x.`fid` = t.`ID`
-        AND x.`uid` = '$user[ID]'
-    ");
+$app = App::go();
+
+$query = "
+    select sql_calc_found_rows torrents_group.id
+    from torrents_group.id
+    where torrents_group.id not in
+    (select distinct group_id from literature)
+    order by rand() limit 20
+";
+
+$ref = $app->dbNew->multi($query);
+#!d($ref);exit;
+
+$groups = [];
+foreach ($ref as $row) {
+    $groups[] = Torrents::get_groups($row["id"]);
+}
+
+exit;
+
+/** continue */
 
 View::header('Torrent groups with no publications');
-
-$db->prepared_query("
-SELECT SQL_CALC_FOUND_ROWS
-  tg.`id`
-FROM
-  `torrents_group` AS tg
-$Join
-WHERE
-  tg.`id` NOT IN(
-  SELECT DISTINCT
-    `group_id`
-  FROM
-    `literature`
-  )
-ORDER BY
-  RAND()
-LIMIT 20
-");
 
 $Groups = $db->to_array('id', MYSQLI_ASSOC);
 $db->prepared_query('SELECT FOUND_ROWS()');

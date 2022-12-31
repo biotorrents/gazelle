@@ -1,26 +1,27 @@
 <?php
-function class_list($Selected = 0) {
-  global $Classes;
-  $Return = '';
-  foreach ($Classes as $ID => $Class) {
-    if ($Class['Secondary']) {
-      continue;
-    }
+function class_list($Selected = 0)
+{
+    global $Classes;
+    $Return = '';
+    foreach ($Classes as $ID => $Class) {
+        if ($Class['Secondary']) {
+            continue;
+        }
 
-    $Name = $Class['Name'];
-    $Level = $Class['Level'];
-    $Return .= "<option value=\"$Level\"";
-    if ($Selected == $Level) {
-      $Return .= ' selected="selected"';
+        $Name = $Class['Name'];
+        $Level = $Class['Level'];
+        $Return .= "<option value=\"$Level\"";
+        if ($Selected == $Level) {
+            $Return .= ' selected="selected"';
+        }
+        $Return .= '>'.Format::cut_string($Name, 20, 1)."</option>\n";
     }
-    $Return .= '>'.Format::cut_string($Name, 20, 1)."</option>\n";
-  }
-  reset($Classes);
-  return $Return;
+    reset($Classes);
+    return $Return;
 }
 
 if (!check_perms('admin_manage_forums')) {
-  error(403);
+    error(403);
 }
 
 View::header('Forum Management');
@@ -34,14 +35,14 @@ $ForumArray = $db->to_array(); // used for generating the 'parent' drop down lis
 unset($ForumCats);
 $ForumCats = $cache->get_value('forums_categories');
 if ($ForumCats === false) {
-  $db->query('
+    $db->query('
     SELECT ID, Name
     FROM forums_categories');
-  $ForumCats = [];
-  while (list($ID, $Name) = $db->next_record()) {
-    $ForumCats[$ID] = $Name;
-  }
-  $cache->cache_value('forums_categories', $ForumCats, 0); //Inf cache.
+    $ForumCats = [];
+    while (list($ID, $Name) = $db->next_record()) {
+        $ForumCats[$ID] = $Name;
+    }
+    $cache->cache_value('forums_categories', $ForumCats, 0); //Inf cache.
 }
 
 $db->query('
@@ -74,7 +75,7 @@ $db->query('
   </tr>
 <?php
 while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinClassWrite, $MinClassCreate) = $db->next_record()) {
-?>
+    ?>
   <tr class="row">
     <form class="manage_form" name="forums" action="" method="post">
       <input type="hidden" name="id" value="<?=$ID?>" />
@@ -83,10 +84,13 @@ while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinCla
       <td>
         <select name="categoryid">
 <?php reset($ForumCats);
-  foreach ($ForumCats as $CurCat => $CatName) {
-?>
-          <option value="<?=$CurCat?>"<?php if ($CurCat == $CategoryID) { echo ' selected="selected"'; } ?>><?=$CatName?></option>
-<?php } ?>
+    foreach ($ForumCats as $CurCat => $CatName) {
+        ?>
+          <option value="<?=$CurCat?>"<?php if ($CurCat == $CategoryID) {
+            echo ' selected="selected"';
+        } ?>><?=$CatName?></option>
+<?php
+    } ?>
         </select>
       </td>
       <td>
@@ -127,14 +131,16 @@ while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinCla
     <td colspan="8">Create forum</td>
   </tr>
   <tr class="row">
-    <form class="create_form" name="forum" action="" method="post">
+    <form name="forum" action="" method="post">
       <input type="hidden" name="action" value="forum_alter" />
       <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
       <td>
         <select name="categoryid">
 <?php reset($ForumCats);
-  foreach($ForumCats as $CurCat => $CatName) { ?>
-          <option value="<?=$CurCat?>"<?php if ($CurCat == $CategoryID) { echo ' selected="selected"'; } ?>><?=$CatName?></option>
+  foreach ($ForumCats as $CurCat => $CatName) { ?>
+          <option value="<?=$CurCat?>"<?php if ($CurCat == $CategoryID) {
+      echo ' selected="selected"';
+  } ?>><?=$CatName?></option>
 <?php } ?>
         </select>
       </td>

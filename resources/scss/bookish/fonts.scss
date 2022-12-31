@@ -1,5 +1,5 @@
 /**
- * Base typography
+ * base typography
  */
 
 body {
@@ -20,24 +20,17 @@ body {
   }
 }
 
-header,
-.header {
-  margin: 2rem;
-  text-align: center;
+/* headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $notoSerif, serif;
 }
 
-/* Section and table headers ("box" class headings) */
-.head,
-.colhead,
-.colhead_dark,
-th {
-  padding: 0.5em 0;
-  border-bottom: 1px solid #e1e1e1;
-  margin-bottom: 1rem;
-  font-size: larger;
-}
-
-/* Links */
+/* links */
 a {
   color: #222;
   text-decoration: underline;
@@ -48,7 +41,7 @@ a:hover {
   text-decoration: none;
 }
 
-/* Tags */
+/* tags */
 .tags {
   font-style: italic;
 
@@ -65,7 +58,7 @@ a:hover {
   }
 }
 
-/* Dupe for grouped "Details" on torrents.php */
+/* dupe for grouped "details" on torrents.php */
 a.search_link,
 a.brackets,
 table#taglist a {
@@ -78,7 +71,7 @@ table#taglist a {
 }
 
 /**
- * Blockquotes, figures, and captions
+ * blockquotes, figures, and captions
  */
 
 blockquote {
@@ -110,12 +103,6 @@ ul {
 }
 
 /* Markdown Extra new features */
-hr {
-  @include transparent-border($c: #222, $a: 0.5);
-  margin: 2rem auto;
-  width: 66%;
-}
-
 .footnotes {
   ol {
     margin: -0.5rem 0 0 -1rem;
@@ -129,7 +116,7 @@ hr {
   font-family: sans-serif;
 }
 
-/* Definition lists */
+/* definition lists */
 dl {
   margin-top: 0.5rem;
 
@@ -163,7 +150,7 @@ ul.nobullet,
   }
 }
 
-/* Bullets (home page) */
+/* bullets (home page) */
 ul.stats li {
   padding: 0 0 1px 0;
 }
@@ -184,7 +171,7 @@ ul.poll li {
   margin-bottom: 1rem;
 }
 
-/* Alerts, Toolbox, etc. */
+/* alerts, toolbox, etc. */
 .alertbar {
   a {
     color: #222;

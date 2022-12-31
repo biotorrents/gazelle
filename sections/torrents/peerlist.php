@@ -1,15 +1,15 @@
 <?php
 if (!isset($_GET['torrentid']) || !is_number($_GET['torrentid'])) {
-  error(404);
+    error(404);
 }
 $TorrentID = $_GET['torrentid'];
 
 if (!empty($_GET['page']) && is_number($_GET['page'])) {
-  $Page = $_GET['page'];
-  $Limit = (string)(($Page - 1) * 100) .', 100';
+    $Page = $_GET['page'];
+    $Limit = (string)(($Page - 1) * 100) .', 100';
 } else {
-  $Page = 1;
-  $Limit = 100;
+    $Page = 1;
+    $Limit = 100;
 }
 
 $Result = $db->query("
@@ -36,7 +36,7 @@ $db->set_query_id($Result);
 ?>
 <h4>Peer List</h4>
 <?php if ($NumResults > 100) { ?>
-<div class="linkbox"><?=js_pages('show_peers', $_GET['torrentid'], $NumResults, $Page)?></div>
+<div class="linkbox"><?=App::ajaxPagination('show_peers', $_GET['torrentid'], $NumResults, $Page)?></div>
 <?php } ?>
 
 <table>
@@ -50,17 +50,18 @@ $db->set_query_id($Result);
   </tr>
 <?php
 while (list($PeerUserID, $Size, $Active, $Connectable, $Uploaded, $Remaining, $UserAgent) = $db->next_record()) {
-?>
+    ?>
   <tr class="row">
 <?php
   if (check_perms('users_mod')) {
-?>
-    <td><?=Users::format_username($PeerUserID, false, false, false)?></td>
-<?php } else {
-?>
+      ?>
+    <td><?=User::format_username($PeerUserID, false, false, false)?></td>
+<?php
+  } else {
+      ?>
     <td>Peer</td>
-<?php }
-?>
+<?php
+  } ?>
     <td><?=($Active) ? '<span style="color: green;">Yes</span>' : '<span style="color: red;">No</span>' ?></td>
     <td><?= ($Connectable) ? '<span style="color: green;">Yes</span>' : '<span style="color: red;">No</span>' ?></td>
     <td class="number_column"><?=Format::get_size($Uploaded) ?></td>
@@ -72,5 +73,5 @@ while (list($PeerUserID, $Size, $Active, $Connectable, $Uploaded, $Remaining, $U
 ?>
 </table>
 <?php if ($NumResults > 100) { ?>
-<div class="linkbox"><?=js_pages('show_peers', $_GET['torrentid'], $NumResults, $Page)?></div>
+<div class="linkbox"><?=App::ajaxPagination('show_peers', $_GET['torrentid'], $NumResults, $Page)?></div>
 <?php } ?>

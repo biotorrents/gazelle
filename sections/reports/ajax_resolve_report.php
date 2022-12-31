@@ -1,8 +1,9 @@
 <?php
+
 authorize();
 
 if (!check_perms('admin_reports') && !check_perms('project_team') && !check_perms('site_moderate_forums')) {
-  ajax_error();
+    ajax_error();
 }
 
 $ReportID = (int) $_POST['reportid'];
@@ -13,15 +14,15 @@ $db->query("
   WHERE ID = $ReportID");
 list($Type) = $db->next_record();
 if (!check_perms('admin_reports')) {
-  if (check_perms('site_moderate_forums')) {
-    if (!in_array($Type, array('comment', 'post', 'thread'))) {
-      ajax_error();
+    if (check_perms('site_moderate_forums')) {
+        if (!in_array($Type, array('comment', 'post', 'thread'))) {
+            ajax_error();
+        }
+    } elseif (check_perms('project_team')) {
+        if ($Type != 'request_update') {
+            ajax_error();
+        }
     }
-  } elseif (check_perms('project_team')) {
-    if ($Type != 'request_update') {
-      ajax_error();
-    }
-  }
 }
 
 $db->query("
@@ -34,13 +35,13 @@ $db->query("
 $Channels = [];
 
 if ($Type == 'request_update') {
-  $Channels[] = '#requestedits';
-  $cache->decrement('num_update_reports');
+    $Channels[] = '#requestedits';
+    $cache->decrement('num_update_reports');
 }
 
 if (in_array($Type, array('comment', 'post', 'thread'))) {
-  $Channels[] = '#forumreports';
-  $cache->decrement('num_forum_reports');
+    $Channels[] = '#forumreports';
+    $cache->decrement('num_forum_reports');
 }
 
 $db->query("
@@ -53,13 +54,14 @@ send_irc([$Channels], "Report $ReportID resolved by ".preg_replace('/^(.{2})/', 
 $cache->delete_value('num_other_reports');
 ajax_success();
 
-function ajax_error($Error = 'error') {
-  echo json_encode(array('status' => $Error));
-  die();
+function ajax_error($Error = 'error')
+{
+    echo json_encode(array('status' => $Error));
+    die();
 }
 
-function ajax_success() {
-  echo json_encode(array('status' => 'success'));
-  die();
+function ajax_success()
+{
+    echo json_encode(array('status' => 'success'));
+    die();
 }
-?>

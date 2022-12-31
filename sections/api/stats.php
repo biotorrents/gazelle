@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 // Begin user stats
@@ -85,7 +86,7 @@ if (($ArtistCount = $cache->get_value('stats_artist_count')) === false) {
     FROM
       `artists_group`
     ");
-    
+
     list($ArtistCount) = $db->next_record();
     $cache->cache_value('stats_artist_count', $ArtistCount, 604860); // staggered 1 week cache
 }

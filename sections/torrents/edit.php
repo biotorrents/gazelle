@@ -10,7 +10,7 @@
  * which are off limits to most members.
  */
 
-require_once SERVER_ROOT.'/classes/torrent_form.class.php';
+require_once serverRoot.'/classes/torrent_form.class.php';
 if (!is_number($_GET['id']) || !$_GET['id']) {
     error(400);
 }
@@ -318,9 +318,6 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
         </td>
       </tr>
     </table>
-    <script type="text/javascript">
-      ChangeCategory($('#newcategoryid').raw().value);
-    </script>
   </form>
 </div>
 <?php

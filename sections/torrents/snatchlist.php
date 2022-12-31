@@ -1,15 +1,15 @@
 <?php
 if (!isset($_GET['torrentid']) || !is_number($_GET['torrentid']) || !check_perms('site_view_torrent_snatchlist')) {
-  error(404);
+    error(404);
 }
 $TorrentID = $_GET['torrentid'];
 
 if (!empty($_GET['page']) && is_number($_GET['page'])) {
-  $Page = $_GET['page'];
-  $Limit = (string)(($Page - 1) * 100) .', 100';
+    $Page = $_GET['page'];
+    $Limit = (string)(($Page - 1) * 100) .', 100';
 } else {
-  $Page = 1;
-  $Limit = 100;
+    $Page = 1;
+    $Limit = 100;
 }
 
 $Result = $db->query("
@@ -30,7 +30,7 @@ list($NumResults) = $db->next_record();
 <h4 class="tooltip" title="List of users that have reported a snatch to the tracker">List of Snatchers</h4>
 
 <?php if ($NumResults > 100) { ?>
-<div class="linkbox"><?=js_pages('show_snatches', $_GET['torrentid'], $NumResults, $Page)?></div>
+<div class="linkbox"><?=App::ajaxPagination('show_snatches', $_GET['torrentid'], $NumResults, $Page)?></div>
 <?php } ?>
 
 <table>
@@ -46,16 +46,15 @@ list($NumResults) = $db->next_record();
 $i = 0;
 
 foreach ($Results as $ID=>$Data) {
-  list($SnatcherID, $Timestamp) = array_values($Data);
+    list($SnatcherID, $Timestamp) = array_values($Data);
 
-  if ($i % 2 == 0 && $i > 0) {
-?>
+    if ($i % 2 == 0 && $i > 0) {
+        ?>
   </tr>
   <tr>
 <?php
-  }
-?>
-    <td><?=Users::format_username($SnatcherID, true, true, true, true)?></td>
+    } ?>
+    <td><?=User::format_username($SnatcherID, true, true, true, true)?></td>
     <td><?=time_diff($Timestamp)?></td>
 <?php
   $i++;
@@ -64,5 +63,5 @@ foreach ($Results as $ID=>$Data) {
   </tr>
 </table>
 <?php if ($NumResults > 100) { ?>
-<div class="linkbox"><?=js_pages('show_snatches', $_GET['torrentid'], $NumResults, $Page)?></div>
+<div class="linkbox"><?=App::ajaxPagination('show_snatches', $_GET['torrentid'], $NumResults, $Page)?></div>
 <?php } ?>

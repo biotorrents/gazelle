@@ -1,5 +1,20 @@
 /**
- * Sortable tables
+ * alternating rows
+ */
+table.alternatingRows {
+  tr:nth-child(2n) {
+    background: whitesmoke;
+  }
+
+  tr:nth-child(2n-1) {
+    background: white;
+  }
+}
+
+/** */
+
+/**
+ * sortable tables
  */
 
 $bmp: "/images/symbols/table-order.png";
@@ -32,7 +47,7 @@ $nrsr: no-repeat scroll right;
   cursor: default;
 }
 
-/* Generic */
+/* generic */
 #sortable {
   list-style-type: none;
   margin: 0;
@@ -46,7 +61,7 @@ $nrsr: no-repeat scroll right;
   }
 }
 
-/* Drag and drop controls */
+/* drag and drop controls */
 .drag_drop_save {
   padding: 6px 0;
   overflow: hidden;
@@ -67,14 +82,7 @@ $nrsr: no-repeat scroll right;
   border: 0;
 }
 
-/* API keys */
-#acc_api_keys_tr {
-  table {
-    display: inline-block !important;
-  }
-}
-
-/* The main torrent page header */
+/* the main torrent page header */
 table.torrent-header {
   margin: 2rem 0;
   margin-left: auto !important;
@@ -82,5 +90,59 @@ table.torrent-header {
 
   td.controls {
     text-align: right;
+  }
+}
+
+/**
+ * boards/forums/discourse
+ */
+
+/* forum index */
+table#forumIndex,
+table#privateMessages {
+  width: 100%;
+}
+
+/* forum thread */
+table#forumTopic {
+  td {
+    vertical-align: top;
+
+    &.avatar {
+      text-align: center;
+      width: 5rem;
+    }
+  }
+}
+
+/* wiki */
+table#wikiArticle {
+  td {
+    border-bottom: none;
+  }
+}
+
+/* available reactions to posts */
+aside.postActions {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+  gap: 2rem;
+
+  background: whitesmoke;
+  padding: 1rem;
+
+  .spacer {
+    flex-grow: 1;
+  }
+
+  a {
+    text-decoration: none;
+
+    &.reply {
+      &:after {
+        content: "Reply";
+      }
+    }
   }
 }

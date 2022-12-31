@@ -1,31 +1,44 @@
 /**
- * Fonts
+ * fonts
  *
- * Enables sitewide access to the font engine.
- * All themes can use the font toggle options.
+ * enables sitewide access to the font engine
+ * all themes can use the font toggle options
  */
 
-/* Font Path */
+/* font path */
 $fontPath: "/fonts/";
 
 /**
- * Font Awesome
+ * font awesome
  */
 
 @import url($fontPath + "fa/css/all.min.css");
-$fontAwesome: "Font Awesome 5 Pro";
+$fontAwesome: "FontAwesome";
 
-.fa,
-.fab,
-.fad,
-.fal,
-.far,
-.fas {
-  font-family: $fontAwesome;
+i.fa-thin {
+  font-weight: 300;
 }
 
+/*
+.fa,
+.fas,
+.fa-solid,
+.far,
+.fa-regular,
+.fal,
+.fa-light,
+.fat,
+.fa-thin,
+.fad,
+.fa-duotone,
+.fab,
+.fa-brands {
+  font-family: $fontAwesome  !important;
+}
+*/
+
 /**
- * Noto Sans
+ * noto sans
  */
 
 $notoSans: "NotoSans-SemiCondensed";
@@ -48,7 +61,7 @@ $notoSansItalic: "NotoSans-SemiCondensedItalic";
 }
 
 /**
- * Noto Serif
+ * noto serif
  */
 
 $notoSerif: "NotoSerif-SemiCondensed";
@@ -71,7 +84,7 @@ $notoSerifItalic: "NotoSerif-SemiCondensedItalic";
 }
 
 /**
- * Noto Mono
+ * noto mono
  */
 
 $notoMono: "NotoSansMono-SemiCondensed";
@@ -88,7 +101,7 @@ $notoMonoBold: "NotoSansMono-SemiCondensedBold";
 }
 
 /**
- * Luxi Sans
+ * luxi sans
  */
 
 $luxiSans: "LuxiSans";
@@ -111,7 +124,7 @@ $luxiSansItalic: "LuxiSans-Italic";
 }
 
 /**
- * Luxi Serif
+ * luxi serif
  */
 
 $luxiSerif: "LuxiSerif";
@@ -134,7 +147,7 @@ $luxiSerifItalic: "LuxiSerif-Italic";
 }
 
 /**
- * Luxi Mono
+ * luxi mono
  */
 
 $luxiMono: "LuxiMono";
@@ -157,7 +170,7 @@ $luxiMonoItalic: "LuxiMono-Italic";
 }
 
 /**
- * Comic Neue
+ * comic neue
  */
 
 $comicNeue: "ComicNeue-Regular";
@@ -203,119 +216,209 @@ $openDyslexicItalic: "OpenDyslexic-Italic";
 }
 
 /*
- * Theme options
+ * theme options
  */
 
-@mixin font-styles($b, $i, $m, $mb, $mi: null) {
+@mixin fontStyles($bold, $italic, $monospace, $monoBold, $monoItalic: null) {
   b,
   strong {
-    font-family: $b;
+    font-family: $bold;
     font-weight: normal;
   }
 
-  .colhead,
-  .colhead_dark,
-  th {
-    font-family: $b;
-    font-weight: normal;
-  }
-
-  /* Font Awesome exception to the Comic Sans rule */
-  i:not(.fa):not(.fab):not(.fad):not(.fal):not(.far):not(.fas),
-  em:not(.fa):not(.fab):not(.fad):not(.fal):not(.far):not(.fas) {
-    font-family: $i;
+  /* font awesome exception */
+  /*
+  i:not(.fa),
+  i:not(.fas):not(.fa-solid),
+  i:not(.far):not(.fa-regular),
+  i:not(.fal):not(.fa-light),
+  i:not(.fat):not(.fa-thin),
+  i:not(.fad):not(.fa-duotone),
+  i:not(.fab):not(.fa-brands),
+  i:not(.phpdebugbar-fa),
+  */
+  em {
+    font-family: $italic;
     font-style: normal;
   }
 
   code,
   pre,
   tt {
-    font-family: $m;
+    font-family: $monospace;
     margin-bottom: 1rem;
     word-wrap: break-word;
-    /* word-wrap: pre; */
 
     b,
     strong {
-      font-family: $mb;
+      font-family: $monoBold;
       font-weight: normal;
     }
 
     i,
     em {
-      /* Noto Mono workaround: no italics */
-      @if ($mi) {
-        font-family: $mi;
+      /* noto mono workaround: no italics */
+      @if ($monoItalic) {
+        font-family: $monoItalic;
         font-style: normal;
       }
     }
   }
 }
 
-/* Noto Sans */
-body.style_noto_sans {
+/* noto sans */
+body.notoSans {
   font-family: $notoSans, sans-serif;
-  @include font-styles(
-    $notoSansBold,
-    $notoSansItalic,
-    $notoMono,
-    $notoMonoBold
-  );
+  @include fontStyles($notoSansBold, $notoSansItalic, $notoMono, $notoMonoBold);
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $notoSerif, serif;
+  }
 }
 
-/* Noto Serif */
-body.style_noto_serif {
+/* noto serif */
+body.notoSerif {
   font-family: $notoSerif, serif;
-  @include font-styles(
+  @include fontStyles(
     $notoSerifBold,
     $notoSerifItalic,
     $notoMono,
     $notoMonoBold
   );
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $notoSans, sans-serif;
+  }
+
+  .menu,
+  .button,
+  .button-primary,
+  .button-red,
+  .button-green,
+  .button-orange,
+  .button-purple {
+    font-family: $notoSans, sans-serif;
+  }
 }
 
-/* Luxi Sans */
-body.style_luxi_sans {
+/* luxi sans */
+body.luxiSans {
   font-family: $luxiSans, sans-serif;
-  @include font-styles(
+  @include fontStyles(
     $luxiSansBold,
     $luxiSansItalic,
     $luxiMono,
     $luxiMonoBold,
     $luxiMonoItalic
   );
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $luxiSerif, serif;
+  }
 }
 
-/* Luxi Serif */
-body.style_luxi_serif {
+/* luxi serif */
+body.luxiSerif {
   font-family: $luxiSerif, serif;
-  @include font-styles(
+  @include fontStyles(
     $luxiSerifBold,
     $luxiSerifItalic,
     $luxiMono,
     $luxiMonoBold,
     $luxiMonoItalic
   );
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $luxiSans, sans-serif;
+  }
+
+  .menu,
+  .button,
+  .button-primary,
+  .button-red,
+  .button-green,
+  .button-orange,
+  .button-purple {
+    font-family: $luxiSans, sans-serif;
+  }
 }
 
 /* OpenDyslexic */
-body.style_opendyslexic {
+body.openDyslexic {
   font-family: $openDyslexic, sans-serif;
-  @include font-styles(
+  @include fontStyles(
     $openDyslexicBold,
     $openDyslexicItalic,
     $notoMono,
     $notoMonoBold
   );
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $openDyslexic, sans-serif;
+  }
+
+  .menu,
+  .button,
+  .button-primary,
+  .button-red,
+  .button-green,
+  .button-orange,
+  .button-purple {
+    font-family: $openDyslexic, sans-serif;
+  }
 }
 
-/* Comic Neue */
-body.style_comic_neue {
+/* comic neue */
+body.comicNeue {
   font-family: $comicNeue, sans-serif;
-  @include font-styles(
+  @include fontStyles(
     $comicNeueBold,
     $comicNeueItalic,
     $notoMono,
     $notoMonoBold
   );
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $comicNeue, sans-serif;
+  }
+
+  .menu,
+  .button,
+  .button-primary,
+  .button-red,
+  .button-green,
+  .button-orange,
+  .button-purple {
+    font-family: $comicNeue, sans-serif;
+  }
 }

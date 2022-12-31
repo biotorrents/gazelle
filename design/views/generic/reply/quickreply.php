@@ -37,9 +37,12 @@ declare(strict_types=1);
  *   'SubscribeBox' => true
  * ));
  */
+
+$app = App::go();
+
 global $HeavyInfo, $UserSubscriptions, $ThreadInfo, $Document;
 
-if (G::$user['DisablePosting']) {
+if ($app->userNew->extra['DisablePosting']) {
     return;
 }
 
@@ -70,21 +73,21 @@ if (!isset($InputTitle)) {
   </h3>
 
   <div class="box pad">
-    <form class="send_form" name="reply" id="quickpostform" <?=isset($Action)?'action="'.$Action.'"':''?>
+    <form class="send_form" name="reply" id="quickpostform" <?=isset($Action) ? 'action="'.$Action.'"' : ''?>
       method="post"
 
       <?php if (!check_perms('users_mod')) { ?>
       onsubmit="quickpostform.submit_button.disabled = true;"
       <?php } ?>
 
-      <?php if (!G::$user['DisableAutoSave']) { ?>
+      <?php if (!$app->userNew->extra['DisableAutoSave']) { ?>
       data-autosave-text="quickpost"
       <?php } ?>>
 
       <input type="hidden" name="action" value="<?=$InputAction?>" />
 
       <input type="hidden" name="auth"
-        value="<?=G::$user['AuthKey']?>" />
+        value="<?=$app->userNew->extra['AuthKey']?>" />
 
       <input type="hidden" name="<?=$InputName?>"
         data-autosave-id="<?=$InputID?>"
@@ -119,7 +122,7 @@ if (!isset($InputTitle)) {
         id="preview_wrap_<?=$ReplyText->getID()?>">
 
         <colgroup>
-          <?php if (Users::has_avatars_enabled()) { ?>
+          <?php if (User::hasAvatarsEnabled()) { ?>
           <col class="col_avatar" />
           <?php } ?>
 
@@ -127,16 +130,16 @@ if (!isset($InputTitle)) {
         </colgroup>
 
         <tr class="colhead_dark">
-          <td colspan="<?=(Users::has_avatars_enabled() ? 2 : 1)?>">
-            <div class="float_left">
+          <td colspan="<?=(User::hasAvatarsEnabled() ? 2 : 1)?>">
+            <div class="u-pull-left">
               <a href="#quickreplypreview">#xyz</a>
               by <strong>
-                <?=Users::format_username(G::$user['ID'], true, true, true, true)?>
+                <?=User::format_username($app->userNew->core["id"], true, true, true, true)?>
               </strong>
               Just now
             </div>
 
-            <div class="float_right">
+            <div class="u-pull-right">
               <a href="#quickreplypreview" class="brackets">Report</a>
               &nbsp;
               <a href="#">&uarr;</a>
@@ -145,14 +148,12 @@ if (!isset($InputTitle)) {
         </tr>
 
         <tr>
-          <?php if (Users::has_avatars_enabled()) { ?>
+          <?php if (User::hasAvatarsEnabled()) { ?>
           <td class="avatar valign_top">
             <?=
-          Users::show_avatar(
-              G::$user['Avatar'],
-              G::$user['ID'],
-              G::$user['Username'],
-              (!isset($HeavyInfo['DisableAvatars']) || $HeavyInfo['DisableAvatars'])
+          User::displayAvatar(
+              $app->userNew->extra['Avatar'],
+              $app->userNew->core['Username']
           )
           ?>
           </td>
@@ -188,7 +189,7 @@ if (!isset($InputTitle)) {
         <?php
       }
 
-      if ($ThreadInfo['LastPostAuthorID'] === G::$user['ID']
+      if ($ThreadInfo['LastPostAuthorID'] === $app->userNew->core["id"]
           && (check_perms('site_forums_double_post'))) { ?>
         <input id="mergebox" type="checkbox" name="merge" tabindex="2" />
         <label for="mergebox">Merge</label>

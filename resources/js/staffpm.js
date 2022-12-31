@@ -81,7 +81,7 @@ function Assign() {
 
 function PreviewResponse(id) {
   var div = "#response_div_" + id;
-  if ($(div).has_class("hidden")) {
+  if ($(div).hasClass("hidden")) {
     var ToPost = [];
     ToPost["message"] = document.getElementById("response_message_" + id).value;
     ajax.post("?action=preview", ToPost, function (data) {
@@ -96,7 +96,7 @@ function PreviewResponse(id) {
 }
 
 function PreviewMessage() {
-  if ($("#preview").has_class("hidden")) {
+  if ($("#preview").hasClass("hidden")) {
     var ToPost = [];
     ToPost["message"] = document.getElementById("quickpost").value;
     ajax.post("?action=preview", ToPost, function (data) {
@@ -125,7 +125,7 @@ function Quote(post, user) {
       username +
       "]" +
       //response.replace(/(img|aud)(\]|=)/ig,'url$2').replace(/\[url\=(https?:\/\/[^\s\[\]<>"\'()]+?)\]\[url\](.+?)\[\/url\]\[\/url\]/gi, "[url]$1[/url]")
-      html_entity_decode(response) +
+      response + // todo: html_entity_decode
       "[/quote]";
     resize("quickpost");
   });

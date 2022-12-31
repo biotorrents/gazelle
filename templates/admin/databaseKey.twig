@@ -1,0 +1,45 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+	<h2>Database encryption key</h2>
+
+	{# yes key #}
+	{% if isKeySet %}
+		<div class="alertbar info">
+			There's already a key loaded.
+		</div>
+
+		{# no key #}
+	{% else %}
+		<div class="alertbar error">
+			There's <strong>no</strong> key loaded.
+		</div>
+
+
+	{% endif %}
+
+	<section>
+		<form method="post">
+
+			{{ form_token(query.server.REQUEST_URI) }}
+
+			<p>
+				<input type="text" name="databaseKey" style="width: 100%" placeholder="Enter a database encryption key" required/>
+			</p>
+
+			<p>
+				<input type="submit" name="update" class="button-primary" value="update"/>
+			</p>
+
+		</form>
+	</section>
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+	{{ include("admin/sidebar.twig") }}
+
+{% endblock %}

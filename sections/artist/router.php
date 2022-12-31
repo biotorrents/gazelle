@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -33,28 +34,28 @@ enforce_login();
 if (!empty($_POST['action'])) {
     switch ($_POST['action']) {
     case 'edit':
-      require(SERVER_ROOT . '/sections/artist/takeedit.php');
+      require(serverRoot . '/sections/artist/takeedit.php');
       break;
     case 'download':
-      require(SERVER_ROOT . '/sections/artist/download.php');
+      require(serverRoot . '/sections/artist/download.php');
       break;
     case 'rename':
-      require(SERVER_ROOT . '/sections/artist/rename.php');
+      require(serverRoot . '/sections/artist/rename.php');
       break;
     case 'add_similar':
-      require(SERVER_ROOT . '/sections/artist/add_similar.php');
+      require(serverRoot . '/sections/artist/add_similar.php');
       break;
     case 'add_alias':
-      require(SERVER_ROOT . '/sections/artist/add_alias.php');
+      require(serverRoot . '/sections/artist/add_alias.php');
       break;
     case 'change_artistid':
-      require(SERVER_ROOT . '/sections/artist/change_artistid.php');
+      require(serverRoot . '/sections/artist/change_artistid.php');
       break;
     case 'concert_thread':
-      include(SERVER_ROOT . '/sections/artist/concert_thread.php');
+      include(serverRoot . '/sections/artist/concert_thread.php');
       break;
     case 'take_concert_thread':
-      include(SERVER_ROOT . '/sections/artist/take_concert_thread.php');
+      include(serverRoot . '/sections/artist/take_concert_thread.php');
       break;
     default:
       error(0);
@@ -66,40 +67,40 @@ if (!empty($_POST['action'])) {
       break;
 
     case 'edit':
-      require(SERVER_ROOT . '/sections/artist/edit.php');
+      require(serverRoot . '/sections/artist/edit.php');
       break;
     case 'delete':
-      require(SERVER_ROOT . '/sections/artist/delete.php');
+      require(serverRoot . '/sections/artist/delete.php');
       break;
     case 'revert':
-      require(SERVER_ROOT . '/sections/artist/takeedit.php');
+      require(serverRoot . '/sections/artist/takeedit.php');
       break;
     case 'history':
-      require(SERVER_ROOT . '/sections/artist/history.php');
+      require(serverRoot . '/sections/artist/history.php');
       break;
     case 'vote_similar':
-      require(SERVER_ROOT . '/sections/artist/vote_similar.php');
+      require(serverRoot . '/sections/artist/vote_similar.php');
       break;
     case 'delete_similar':
-      require(SERVER_ROOT . '/sections/artist/delete_similar.php');
+      require(serverRoot . '/sections/artist/delete_similar.php');
       break;
     case 'similar':
-      require(SERVER_ROOT . '/sections/artist/similar.php');
+      require(serverRoot . '/sections/artist/similar.php');
       break;
     case 'similar_bg':
-      require(SERVER_ROOT . '/sections/artist/similar_bg.php');
+      require(serverRoot . '/sections/artist/similar_bg.php');
       break;
     case 'notify':
-      require(SERVER_ROOT . '/sections/artist/notify.php');
+      require(serverRoot . '/sections/artist/notify.php');
       break;
     case 'notifyremove':
-      require(SERVER_ROOT . '/sections/artist/notifyremove.php');
+      require(serverRoot . '/sections/artist/notifyremove.php');
       break;
     case 'delete_alias':
-      require(SERVER_ROOT . '/sections/artist/delete_alias.php');
+      require(serverRoot . '/sections/artist/delete_alias.php');
       break;
     case 'change_artistid':
-      require(SERVER_ROOT . '/sections/artist/change_artistid.php');
+      require(serverRoot . '/sections/artist/change_artistid.php');
       break;
     default:
       error(0);
@@ -107,7 +108,7 @@ if (!empty($_POST['action'])) {
   }
 } else {
     if (!empty($_GET['id'])) {
-        include(SERVER_ROOT . '/sections/artist/artist.php');
+        include(serverRoot . '/sections/artist/artist.php');
     } elseif (!empty($_GET['artistname'])) {
         $NameSearch = str_replace('\\', '\\\\', trim($_GET['artistname']));
         /*

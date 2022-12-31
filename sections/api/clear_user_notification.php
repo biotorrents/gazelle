@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 $Type = $_POST['type'];
@@ -39,7 +40,7 @@ switch ($Type) {
   case NotificationsManager::GLOBALNOTICE:
     NotificationsManager::clear_global_notification();
     break;
-    
+
   default:
     break;
 }
