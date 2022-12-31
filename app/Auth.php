@@ -638,7 +638,15 @@ If you need the custom user information only rarely, you may just retrieve it as
     public static function makeHash(string $string): string
     {
         $string = Esc::string($string);
+        $hash = password_hash(
+            hash(self::$algorithm, $string, true),
+            PASSWORD_DEFAULT
+        );
 
+        return $hash;
+
+        /*
+        # old: str_replace
         return password_hash(
             str_replace(
                 "\0",
@@ -647,6 +655,7 @@ If you need the custom user information only rarely, you may just retrieve it as
             ),
             PASSWORD_DEFAULT
         );
+        */
     }
 
 
@@ -665,6 +674,13 @@ If you need the custom user information only rarely, you may just retrieve it as
         $hash = Esc::string($hash);
 
         return password_verify(
+            hash(self::$algorithm, $string, true),
+            $hash
+        );
+
+        /*
+        # old: str_replace
+        return password_verify(
             str_replace(
                 "\0",
                 "",
@@ -672,6 +688,7 @@ If you need the custom user information only rarely, you may just retrieve it as
             ),
             $hash
         );
+        */
     }
 
 

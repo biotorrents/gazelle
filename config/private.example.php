@@ -24,8 +24,8 @@ if (!$env->dev) {
     # used for generating unique RSS auth key
     ENV::setPriv("rssHash", "");
 
-    # used for getting resources via Json->fetch
-    ENV::setPriv("siteApiKey", "");
+    # hashed with the sessionId for internal api calls
+    ENV::setPriv("siteApiSecret", "");
 }
 
 # development
@@ -33,7 +33,7 @@ else {
     ENV::setPriv("siteCryptoKey", "");
     ENV::setPriv("scheduleKey", "");
     ENV::setPriv("rssHash", "");
-    ENV::setPriv("siteApiKey", "");
+    ENV::setPriv("siteApiSecret", "");
 }
 
 

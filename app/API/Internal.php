@@ -15,41 +15,48 @@ namespace Gazelle\API;
 class Internal extends Base
 {
     /**
-     * proxyToken
+     * validateFrontendHash
      *
-     * Securely adds a token to an internal request.
-     * At least, it's not exposed to the frontend...
+     * Checks a frontend key against a backend one.
+     * The key is hash(sessionId . siteApiSecret).
      */
-    private static function proxyToken()
+    private static function validateFrontendHash(): void
     {
         $app = \App::go();
 
         if (headers_sent()) {
-            return false;
+            self::failure();
         }
 
-        $siteApiKey = $app->env->getPriv("siteApiKey");
-        $good = self::checkToken(0, $siteApiKey); # hardcoded
+        $post = \Http::query("post");
+        $frontendHash = $post["frontendHash"] ??= null;
+
+        if (!$frontendHash) {
+            self::failure();
+        }
+
+        $query = "select sessionId from users_sessions where userId = ? order by expires desc limit 1";
+        $sessionId = $app->dbNew->single($query, [ $app->userNew->core["id"] ]);
+
+        $backendKey = implode(".", [$sessionId, $app->env->getPriv("siteApiSecret")]);
+        $good = \Auth::checkHash($backendKey, $frontendHash);
 
         if (!$good) {
             self::failure();
         }
-
-        return true;
     }
 
 
     /**
      * createTwoFactor
      */
-    public static function createTwoFactor()
+    public static function createTwoFactor(): void
     {
         $app = \App::go();
 
-        self::proxyToken();
+        self::validateFrontendHash();
 
         $post = \Http::query("post");
-
         $post["secret"] ??= null;
         $post["code"] ??= null;
 
@@ -70,14 +77,13 @@ class Internal extends Base
     /**
      * deleteTwoFactor
      */
-    public static function deleteTwoFactor()
+    public static function deleteTwoFactor(): void
     {
         $app = \App::go();
 
-        self::proxyToken();
+        self::validateFrontendHash();
 
         $post = \Http::query("post");
-
         $post["secret"] ??= null;
         $post["code"] ??= null;
 
@@ -98,11 +104,11 @@ class Internal extends Base
     /**
      * createPassphrase
      */
-    public static function createPassphrase(string $type = "diceware")
+    public static function createPassphrase(string $type = "diceware"): void
     {
         $app = \App::go();
 
-        self::proxyToken();
+        self::validateFrontendHash();
 
         # diceware
         if ($type === "diceware") {

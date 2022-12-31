@@ -100,6 +100,15 @@ class Twig # extends Twig\Environment
         $twig->addGlobal("user", $app->userNew);
         $twig->addGlobal("authenticated", $app->userNew->isLoggedIn());
 
+        # session internal api key
+        $frontendKey = implode(".", [
+            Http::getCookie("sessionId"),
+            $app->env->getPriv("siteApiSecret"),
+        ]);
+
+        $frontendHash = Auth::makeHash($frontendKey);
+        $twig->addGlobal("frontendHash", $frontendHash);
+
         # query
         $query = Http::query();
         $twig->addGlobal("query", $query);

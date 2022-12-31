@@ -60,6 +60,7 @@
   $("#createTwoFactor").on("click", () => {
     // the data to send
     var request = {
+      frontendHash: frontendHash,
       secret: $("#twoFactorSecret").val(),
       code: $("#twoFactorCode").val(),
     };
@@ -71,6 +72,7 @@
       Number.isNaN(request.code)
     ) {
       alert("please enter the 6-digit code from your authenticator app");
+      return;
     }
 
     // ajax request
@@ -81,7 +83,6 @@
       if (response.status === "success") {
         $("#twoFactorResponse").removeClass("failure");
         $("#twoFactorResponse").addClass("success");
-
         $("#twoFactorDisabled").hide();
       }
 
@@ -99,6 +100,7 @@
   $("#deleteTwoFactor").on("click", () => {
     // the data to send
     var request = {
+      frontendHash: frontendHash,
       secret: $("#twoFactorSecret").val(),
       code: $("#twoFactorCode").val(),
     };
@@ -110,16 +112,17 @@
       Number.isNaN(request.code)
     ) {
       alert("please enter the 6-digit code from your authenticator app");
+      return;
     }
 
     // ajax request
     $.post("/api/internal/deleteTwoFactor", request, (response) => {
+      $("#twoFactorResponse").show();
       $("#twoFactorResponse").html(response.data);
 
       if (response.status === "success") {
         $("#twoFactorResponse").removeClass("failure");
         $("#twoFactorResponse").addClass("success");
-
         $("#twoFactorEnabled").hide();
       }
 
@@ -134,12 +137,14 @@
    * suggest a passphrase
    */
   $("#createPassphrase").on("click", () => {
-    var request = null;
+    // the data to send
+    var request = {
+      frontendHash: frontendHash,
+    };
 
     // ajax request
     $.post("/api/internal/createPassphrase", request, (response) => {
       $("#suggestedPassphrase").val(response.data);
-      $("#suggestedPassphrase").select();
     });
   });
 
@@ -166,26 +171,4 @@
      * maybe
      */
   });
-
-  /**
-   * some notifications stuff
-   * "i'm sure there is a better way to do this"
-   */
-  /*
-  $("#notifications_Inbox_traditional").click(function () {
-    $("#notifications_Inbox_popup").prop("checked", false);
-  });
-
-  $("#notifications_Inbox_popup").click(function () {
-    $("#notifications_Inbox_traditional").prop("checked", false);
-  });
-
-  $("#notifications_Torrents_traditional").click(function () {
-    $("#notifications_Torrents_popup").prop("checked", false);
-  });
-
-  $("#notifications_Torrents_popup").click(function () {
-    $("#notifications_Torrents_traditional").prop("checked", false);
-  });
-  */
 })();
