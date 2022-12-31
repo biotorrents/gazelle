@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 
 /**
  * ENV
@@ -8,9 +10,9 @@ declare(strict_types=1);
  * but for securely loading a site config it does exactly what we need:
  *
  *  - Ensure that only one instance of itself can ever exist
- *  - Load the instance everywhere we need to do $ENV->VALUE
- *  - No memory penalty because of multiple $ENV instances
- *  - Static values in classes/config.php are immutable
+ *  - Load the instance everywhere we need to do $app->env->configValue
+ *  - No memory penalty because of multiple app instances
+ *  - Static values in config/foo.php are immutable
  *  - Site configs don't exist in the constants table
  *  - Separate public and private config values
  *
@@ -24,8 +26,8 @@ class ENV
     private static $instance = null;
 
     # config options receptacles
-    private static $priv = []; # passwords, app keys, database, etc.
-    private static $pub = []; # site meta, options, resources, etc.
+    private static $private = []; # passwords, app keys, database, etc.
+    private static $public = []; # site meta, options, resources, etc.
 
 
     /**
@@ -57,21 +59,21 @@ class ENV
             E_USER_ERROR
         );
     }
-    
+
     # $this->key returns public->key
     public function __get($key)
     {
-        return isset(self::$pub[$key])
-            ? self::$pub[$key]
+        return isset(self::$public[$key])
+            ? self::$public[$key]
             : false;
     }
-    
+
     # isset
     public function __isset($key)
     {
-        return isset(self::$pub[$key]);
+        return isset(self::$public[$key]);
     }
-    
+
 
     /**
      * Gets n' Sets
@@ -91,29 +93,29 @@ class ENV
     # getPriv
     public function getPriv($key)
     {
-        return isset(self::$priv[$key])
-            ? self::$priv[$key]
+        return isset(self::$private[$key])
+            ? self::$private[$key]
             : false;
     }
 
     # getPub
     public function getPub($key)
     {
-        return isset(self::$pub[$key])
-            ? self::$pub[$key]
+        return isset(self::$public[$key])
+            ? self::$public[$key]
             : false;
     }
 
     # setPriv
     public static function setPriv($key, $value)
     {
-        return self::$priv[$key] = $value;
+        return self::$private[$key] = $value;
     }
 
     # setPub
     public static function setPub($key, $value)
     {
-        return self::$pub[$key] = $value;
+        return self::$public[$key] = $value;
     }
 
 
@@ -132,11 +134,11 @@ class ENV
                     ? new RecursiveArrayObject($out)
                     : trigger_error("json_last_error_msg: " . json_last_error_msg(), E_USER_ERROR);
                 break;
-            
+
             case "array":
             case "object":
                 return new RecursiveArrayObject($object);
-            
+
             default:
                 return trigger_error("ENV->convert expects a JSON string, array, or object.", E_USER_ERROR);
                 break;
@@ -149,19 +151,19 @@ class ENV
      *
      * Takes an object and returns an array.
      *
-     * @param object|string $object Thing to turn into an array
-     * @return $new New recursive array with $object contents
+     * @param object|string $object thing to turn into an array
+     * @return array|string $new new recursive array with $object contents
+     *
      * @see https://ben.lobaugh.net/blog/567/php-recursively-convert-an-object-to-an-array
      */
-    public function toArray(object $object): array
+    public function toArray(object|string $object): array|string
     {
         if (is_object($object)) {
             $object = (array) $object;
         }
 
         if (is_array($object)) {
-            $new = array();
-
+            $new = [];
             foreach ($object as $key => $value) {
                 $new[$key] = $this->toArray($value);
             }
@@ -176,7 +178,7 @@ class ENV
     /**
      * dedupe
      *
-     * Takes a collection (usually an array) of various jumbled $ENV slices.
+     * Takes a collection (usually an array) of various jumbled $app->env slices.
      * Returns a once-deduplicated RecursiveArrayObject with original nesting intact.
      * Simple and handy if you need to populate a form with arbitrary collections of metadata.
      */
@@ -195,21 +197,20 @@ class ENV
     /**
      * flatten
      *
-     * Takes an $ENV node or array of them
+     * Takes an $app->env node or array of them,
      * and flattens out the multi-dimensionality.
      * It returns a flat array with keys intact.
      */
     public function flatten(array|object $array, int $level = null): array
     {
-        $new = array();
-
+        $new = [];
         foreach ($array as $k => $v) {
             /*
              if (is_object($v)) {
                 $v = $this->toArray($v);
             }
             */
-    
+
             if (is_array($v)) {
                 $new = array_merge($new, $this->flatten($v));
             } else {
@@ -229,8 +230,8 @@ class ENV
      *
      * Example output:
      * $hashes = $app->env->map("md5", $app->env->CATS->{6});
-     *
      * var_dump($hashes);
+     *
      * object(RecursiveArrayObject)#324 (1) {
      *   ["storage":"ArrayObject":private]=>
      *   array(6) {
@@ -249,12 +250,9 @@ class ENV
      *   }
      * }
      *
-     * var_dump($hashes->Icon);
-     * string(32) "52963afccc006d2bce3c890ad9e8f73a"
-     *
-     * @param string $function Callback function
-     * @param object|string $object Object or property to operate on
-     * @return object Mapped RecursiveArrayObject
+     * @param string $function callback function
+     * @param object|string $object object or property to operate on
+     * @return object function-mapped RecursiveArrayObject
      */
     public function map(string $function = "", object|string $object = null): RecursiveArrayObject
     {
@@ -267,7 +265,7 @@ class ENV
         if ($function === "array_map") {
             throw new Exception("ENV->map can't invoke the function it wraps");
         }
-        
+
         /**
          * $function not a closure
          *
@@ -353,7 +351,7 @@ class RecursiveArrayObject extends ArrayObject
         return array_key_exists($name, $this);
     }
 
-    
+
     /**
      * __unset
      */

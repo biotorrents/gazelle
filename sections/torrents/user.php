@@ -142,7 +142,7 @@ if (!empty($SearchWhere)) {
     $SearchWhere = " AND $SearchWhere";
 }
 
-$User = Users::user_info($UserID);
+$User = User::user_info($UserID);
 $Perms = Permissions::get_permissions($User['PermissionID']);
 $UserClass = $Perms['Class'];
 
@@ -220,7 +220,7 @@ switch ($_GET['type']) {
       `users_downloads` AS ud
         JOIN `torrents` AS t ON t.`ID` = ud.`TorrentID`";
     break;
-    
+
   default:
     error(404);
 }
@@ -314,7 +314,7 @@ list($TorrentCount) = $db->next_record();
 
 $Results = Torrents::get_groups($GroupIDs);
 $Action = Text::esc($_GET['type']);
-$User = Users::user_info($UserID);
+$User = User::user_info($UserID);
 
 View::header($User['Username']."'s $Action torrents", 'browse');
 $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
@@ -466,7 +466,7 @@ foreach ($Categories as $CatKey => $CatName) {
 
       <!-- Submit -->
       <div class="submit">
-        <span class="float_left">
+        <span class="u-pull-left">
           <?= Text::float($TorrentCount) ?>
           Results
         </span>
@@ -566,20 +566,19 @@ foreach ($Categories as $CatKey => $CatName) {
           $Label = '&ensp;🦠&nbsp;';
           $DisplayName .= $Label."<a href='torrents.php?action=search&advgroupname=$GroupTitle2'><em>$GroupTitle2</em></a>";
       }
-                              
+
       # Strain/Variety
       if ($GroupNameJP) {
           $Label = '&nbsp;';
           $DisplayName .= $Label."<a href='torrents.php?action=search&advgroupname=$GroupNameJP'>$GroupNameJP</a>";
       }
-            
+
       # Authors
       if (isset($Artists)) {
           # Emoji in classes/astists.class.php
           $Label = '&ensp;';
           $DisplayName .= $Label.'<div class="torrent_artists">'.Artists::display_artists($Artists).'</div>';
-      }
-      ?>
+      } ?>
 
       <tr
         class="torrent torrent_row<?= ($Torrent['IsSnatched'] ? ' snatched_torrent' : '') . ($GroupFlags['IsSnatched'] ? ' snatched_group' : '') ?>">

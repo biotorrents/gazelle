@@ -23,7 +23,7 @@ View::header('Store');
   <?php
   if (isset($_GET['confirm'])
    && $_GET['confirm'] === 1
-   && !Badges::has_badge($UserID, 255)) {
+   && !Badges::hasBadge($UserID, 255)) {
       $db->prepared_query("
       SELECT BonusPoints
       FROM users_main
@@ -31,7 +31,7 @@ View::header('Store');
 
       list($Points) = $db->has_results() ? $db->next_record() : [0];
       if ($Points > $Price) {
-          if (!Badges::award_badge($UserID, 255)) {
+          if (!Badges::awardBadge($UserID, 255)) {
               $Err = 'Could not award badge, unknown error occurred.';
           } else {
               $db->prepared_query("
@@ -57,7 +57,7 @@ View::header('Store');
               WHERE Name = 'CoinBadge'");
           }
       } else {
-          $Err = 'Not enough '.BONUS_POINTS.'.';
+          $Err = 'Not enough '.bonusPoints.'.';
       }
 
       if (isset($Err)) { ?>
@@ -82,12 +82,12 @@ View::header('Store');
   <div class="box pad">
     <p>You bought the Oppaicoin badge</p>
     <p>This badge has been purchased <?=Text::float($Purchases)?>
-      times and now costs <?=Text::float($Price)?> <?=BONUS_POINTS?>.</p>
+      times and now costs <?=Text::float($Price)?> <?=bonusPoints?>.</p>
   </div>
   <?php } ?>
   <?php
   } else {
-      if (Badges::has_badge($UserID, 255)) {
+      if (Badges::hasBadge($UserID, 255)) {
           ?>
   <h2>Oppaicoin Status</h2>
   <?php
@@ -99,9 +99,9 @@ View::header('Store');
   <div class="box pad">
     <p><?=Text::float($Purchases)?> people have bought this badge
     </p>
-    <p>Current cost: <?=Text::float($Price)?> <?=BONUS_POINTS?>
+    <p>Current cost: <?=Text::float($Price)?> <?=bonusPoints?>
     </p>
-    <?php if (Badges::has_badge($UserID, 255)) { ?>
+    <?php if (Badges::hasBadge($UserID, 255)) { ?>
     <p>You already own this badge</p>
     <?php } else { ?>
 

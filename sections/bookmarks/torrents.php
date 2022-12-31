@@ -36,7 +36,7 @@ $TorrentTable = '';
 $NumGroups = 0;
 $ArtistCount = [];
 
-list($GroupIDs, $CollageDataList, $TorrentList) = Users::get_bookmarks($UserID);
+list($GroupIDs, $CollageDataList, $TorrentList) = User::get_bookmarks($UserID);
 foreach ($GroupIDs as $GroupID) {
     if (!isset($TorrentList[$GroupID])) {
         continue;
@@ -62,7 +62,7 @@ foreach ($GroupIDs as $GroupID) {
     $DisplayName = '';
     #$DisplayName = Artists::display_artists($Artists);
     $GroupName = empty($title) ? (empty($subject) ? $object : $subject) : $title;
-    
+
     $DisplayName .= '<a href="torrents.php?id='.$GroupID.'" ';
     if (!isset($user['CoverArt']) || $user['CoverArt']) {
         $DisplayName .= 'data-cover="'.ImageTools::process($picture, 'thumb').'" ';
@@ -98,7 +98,7 @@ foreach ($GroupIDs as $GroupID) {
 
   <td colspan="5">
     <?=$DisplayName?>
-    <span style="text-align: right;" class="float_right">
+    <span style="text-align: right;" class="u-pull-right">
       <?=time_diff($AddedTime); ?>
       <?php if (!$Sneaky) { ?>
       <br />
@@ -200,9 +200,9 @@ foreach ($GroupIDs as $GroupID) {
       | <a href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>"
         class="tooltip" title="Report">RP</a> ]
     </span>
-    <span class="float_right float_clear"><?=time_diff($AddedTime); ?></span>
+    <span class="u-pull-right u-cf"><?=time_diff($AddedTime); ?></span>
     <?php if (!$Sneaky) { ?>
-    <span class="float_right float_clear"><a
+    <span class="u-pull-right u-cf"><a
         href="#group_<?=$GroupID?>" class="brackets remove_bookmark"
         onclick="Unbookmark('torrent', <?=$GroupID?>, ''); return false;">Remove
         bookmark</a></span>
@@ -247,7 +247,7 @@ foreach ($GroupIDs as $GroupID) {
     class="bookmark_<?=$GroupID?>">
 
     <?php if (!$picture) {
-        $picture = STATIC_SERVER.'common/noartwork.png';
+        $picture = staticServer.'common/noartwork.png';
     } ?>
 
     <img class="tooltip"
@@ -283,8 +283,8 @@ View::header($Title, 'browse,collage,wall');
 <div>
   <div class="header">
     <h2><?php if (!$Sneaky) { ?><a
-        href="feeds.php?feed=torrents_bookmarks_t_<?=$user['torrent_pass']?>&amp;user=<?=$user['ID']?>&amp;auth=<?=$user['RSS_Auth']?>&amp;passkey=<?=$user['torrent_pass']?>&amp;authkey=<?=$user['AuthKey']?>&amp;name=<?=urlencode($ENV->SITE_NAME.': Bookmarked Torrents')?>"><img
-          src="<?=STATIC_SERVER?>/images/symbols/rss.png"
+        href="feeds.php?feed=torrents_bookmarks_t_<?=$user['torrent_pass']?>&amp;user=<?=$user['ID']?>&amp;auth=<?=$user['RSS_Auth']?>&amp;passkey=<?=$user['torrent_pass']?>&amp;authkey=<?=$user['AuthKey']?>&amp;name=<?=urlencode($ENV->siteName.': Bookmarked Torrents')?>"><img
+          src="<?=staticServer?>/images/symbols/rss.png"
           alt="RSS feed" /></a>&nbsp;<?php } ?><?=$Title?>
     </h2>
     <div class="linkbox">

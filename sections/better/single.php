@@ -1,20 +1,28 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
-if (($Results = $cache->get_value('better_single_groupids')) === false) {
-    $db->prepared_query("
-    SELECT
-      t.`ID` AS `TorrentID`,
-      t.`GroupID` AS `GroupID`
-    FROM `xbt_files_users` AS x
-      JOIN `torrents` AS t ON t.`ID`=x.`fid`
-    GROUP BY x.`fid`
-    HAVING COUNT(x.`uid`) = 1
-    LIMIT 30");
+$app = App::go();
 
-    $Results = $db->to_pair('GroupID', 'TorrentID', false);
-    $cache->cache_value('better_single_groupids', $Results, 30 * 60);
+$query = "
+    select torrents.id, torrents.groupId from xbt_files_users
+    join torrents on torrents.id = xbt_files_users.fid
+    group by xbt_files_users.fid
+    having count(xbt_files_users.uid) = 1
+    limit 20
+";
+
+$ref = $app->dbNew->multi($query) ?? [];
+!d($ref);exit;
+
+$groups = [];
+foreach ($ref as $row) {
+    $groups[] = Torrents::get_groups($row["id"]);
 }
+
+
+
+/** continue */
+
 
 $Groups = Torrents::get_groups(array_keys($Results));
 View::header('Single seeder torrents'); ?>

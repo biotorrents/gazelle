@@ -1,6 +1,9 @@
 <?php
 #declare(strict_types=1);
 
+
+$app = App::go();
+
 /**
  * Take upload
  *
@@ -12,12 +15,9 @@
 $ENV = ENV::go();
 $debug = Debug::go();
 
-$Feed = new Feed;
-$Validate = new Validate;
+$Feed = new Feed();
+$Validate = new Validate();
 
-require_once "$ENV->SERVER_ROOT/classes/feed.class.php";
-require_once "$ENV->SERVER_ROOT/classes/validate.class.php";
-require_once "$ENV->SERVER_ROOT/sections/torrents/functions.php";
 
 enforce_login();
 authorize();
@@ -149,7 +149,7 @@ if (!$_POST['groupid']) {
         'Version must be between 0 and 10 characters.',
         array('maxlength' => 10, 'minlength' => 0)
     );
-        
+
     # torrents_group.title
     $Validate->SetFields(
         'title',
@@ -234,7 +234,7 @@ if (!$_POST['groupid']) {
         'Scope must be between 4 and 20 characters.',
         array('maxlength' => 20, 'minlength' => 4)
     );
-        
+
     # torrents_group.tag_list
     $Validate->SetFields(
         'tags',
@@ -325,7 +325,7 @@ if (empty($Properties['GroupID']) && empty($ArtistForm)) {
 
 if ($Err) { // Show the upload form, with the data the user entered
     $UploadForm = $Type;
-    require_once SERVER_ROOT.'/sections/upload/upload.php' ;
+    require_once serverRoot.'/sections/upload/upload.php' ;
     error(400, $NoHTML = true);
 }
 
@@ -382,7 +382,7 @@ $debug['upload']->info('torrent decoded');
 
 if (!empty($Err)) { // Show the upload form, with the data the user entered
     $UploadForm = $Type;
-    include(SERVER_ROOT.'/sections/upload/upload.php');
+    include(serverRoot.'/sections/upload/upload.php');
     error();
 }
 
@@ -423,7 +423,7 @@ if ($T['Archive'] === 'Autofill') {
 $Body = $T['GroupDescription'];
 
 // Trickery
-if (!preg_match('/^'.IMAGE_REGEX.'$/i', $T['Image'])) {
+if (!preg_match($app->env->regexImage, $T['Image'])) {
     $T['Image'] = '';
 }
 
@@ -561,7 +561,7 @@ if (!isset($GroupID) || !$GroupID) {
      * THESE ARE ASSOCIATED WITH TORRENT GROUPS.s
      */
     if (!empty($T['Screenshots'])) {
-        $Screenshots = $Validate->textarea2array($T['Screenshots'], $ENV->DOI_REGEX);
+        $Screenshots = $Validate->textarea2array($T['Screenshots'], $ENV->regexDoi);
         $Screenshots = array_slice($Screenshots, 0, 10);
 
         foreach ($Screenshots as $Screenshot) {
@@ -693,7 +693,7 @@ $db->query(
 
 $TorrentID = $db->inserted_id();
 $cache->increment('stats_torrent_count');
-$Tor->Dec['comment'] = 'https://'.SITE_DOMAIN.'/torrents.php?torrentid='.$TorrentID;
+$Tor->Dec['comment'] = 'https://'.siteDomain.'/torrents.php?torrentid='.$TorrentID;
 
 
 /**
@@ -705,7 +705,7 @@ $Tor->Dec['comment'] = 'https://'.SITE_DOMAIN.'/torrents.php?torrentid='.$Torren
  */
 
 if (!empty($T['Mirrors'])) {
-    $Mirrors = $Validate->textarea2array($T['Mirrors'], $ENV->URL_REGEX);
+    $Mirrors = $Validate->textarea2array($T['Mirrors'], $ENV->regexUri);
     $Screenshots = array_slice($Screenshots, 0, 5);
 
     foreach ($Mirrors as $Mirror) {
@@ -756,7 +756,7 @@ if ($ENV->FEATURE_BIOPHP && !empty($T['Seqhash'])) {
             );
         } catch (Exception $Err) {
             $UploadForm = $Type;
-            require_once SERVER_ROOT.'/sections/upload/upload.php' ;
+            require_once serverRoot.'/sections/upload/upload.php' ;
             error($Err->getMessage(), $NoHTML = true);
         }
     }
@@ -789,7 +789,7 @@ if (($Type === "Movies" || $Type === "Anime") && ($T['Container'] === 'ISO' || $
 
     $db->query("
       UPDATE users_info
-      SET AdminComment = CONCAT(NOW(), ' - Received $BPAmt ".BONUS_POINTS." for uploading a torrent $TorrentID\n\n', AdminComment)
+      SET AdminComment = CONCAT(NOW(), ' - Received $BPAmt ".bonusPoints." for uploading a torrent $TorrentID\n\n', AdminComment)
         WHERE UserID = ?", $user['ID']);
 
     $cache->delete_value('user_info_heavy_'.$user['ID']);
@@ -825,7 +825,7 @@ if ($T['FreeLeechType'] === 3) {
 //******************************************************************************//
 //--------------- Write torrent file -------------------------------------------//
 
-$FileName = "$ENV->TORRENT_STORE/$TorrentID.torrent";
+$FileName = "$ENV->torrentStore/$TorrentID.torrent";
 file_put_contents($FileName, $Tor->encode());
 chmod($FileName, 0400);
 
@@ -1131,7 +1131,7 @@ ON
 WHERE
   b.`GroupID` = '$GroupID'
 ");
-  
+
 while (list($UserID, $Passkey) = $db->next_record()) {
     $Feed->populate("torrents_bookmarks_t_$Passkey", $Item);
 }

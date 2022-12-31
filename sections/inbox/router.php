@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -57,5 +58,5 @@ switch ($_REQUEST['action']) {
     require('forward.php');
     break;
   default:
-    require(SERVER_ROOT.'/sections/inbox/inbox.php');
+    require(serverRoot.'/sections/inbox/inbox.php');
 }

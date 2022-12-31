@@ -18,8 +18,8 @@
   "support": {
     "email": "hello@torrents.bio",
     "issues": "https://github.com/biotorrents/gazelle/issues",
-    "forum": "https://torrents.bio/forums.php",
-    "wiki": "https://torrents.bio/wiki.php",
+    "forum": "https://torrents.bio/boards",
+    "wiki": "https://torrents.bio/wiki",
     "source": "https://github.com/biotorrents/gazelle",
     "docs": "https://docs.torrents.bio",
     "chat": "https://slack.torrents.bio"
@@ -31,36 +31,46 @@
     },
     {
       "type": "other",
-      "url": "https://torrents.bio/donate.php"
+      "url": "https://torrents.bio/donate"
     }
   ],
   "require": {
-    "php": ">=8.1.1",
+    "php": "^8.1.5",
     "ext-apcu": "*",
     "ext-curl": "*",
     "ext-gd": "*",
     "ext-mbstring": "*",
     "ext-memcache": "*",
     "ext-mysqli": "*",
+    "ext-pdo": "*",
+    "ext-redis": "*",
     "ext-zip": "*",
+    "abraham/twitteroauth": "^4.0",
+    "delight-im/auth": "^8.3",
     "erusev/parsedown": "1.8.0-beta-7",
     "erusev/parsedown-extra": "0.8.0",
     "guzzlehttp/guzzle": "^7.4.1",
-    "illuminate/support": "^8.78",
+    "illuminate/support": "^9.44",
     "mikecao/flight": "^2.0",
+    "nesbot/carbon": "^2.64",
+    "openai-php/client": "^0.2.1",
     "orpheusnet/bencode-torrent": "dev-master",
+    "paragonie/anti-csrf": "^2.3",
     "povils/figlet": "*",
     "robthree/twofactorauth": "^1.8.1",
+    "spatie/once": "^3.1",
     "twig/twig": "^3.3.8",
     "vanilla/nbbc": "^2.3",
     "yubico/u2flib-server": "^1.0.2"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.4",
-    "robmorgan/phinx": "^0.12.9",
     "kint-php/kint": "^4.1.1",
     "maximebf/debugbar": "^1.17.3",
-    "phpunit/phpunit": "^9.5.11"
+    "phplucidframe/console-table": "^1.2",
+    "phpunit/phpunit": "^9.5.11",
+    "psy/psysh": "^0.11.9",
+    "robmorgan/phinx": "^0.13.3"
   },
   "autoload": {
     "psr-4": {

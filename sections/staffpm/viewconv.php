@@ -37,8 +37,8 @@ if ($ConvID = (int)$_GET['id']) {
         'vendor/easymde.min'
     );
 
-    $UserInfo = Users::user_info($UserID);
-    $UserStr = Users::format_username($UserID, true, true, true, true);
+    $UserInfo = User::user_info($UserID);
+    $UserStr = User::format_username($UserID, true, true, true, true);
 
     $OwnerID = $UserID;
     $OwnerName = $UserInfo['Username']; ?>
@@ -88,8 +88,8 @@ if ($ConvID = (int)$_GET['id']) {
             $Username = $OwnerName;
         } else {
             // Staff/FLS
-            $UserInfo = Users::user_info($UserID);
-            $UserString = Users::format_username($UserID, true, true, true, true);
+            $UserInfo = User::user_info($UserID);
+            $UserString = User::format_username($UserID, true, true, true, true);
             $Username = $UserInfo['Username'];
         } ?>
     <div class="box vertical_space" id="post<?=$MessageID?>">

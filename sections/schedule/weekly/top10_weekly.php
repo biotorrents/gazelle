@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 $db->query("
@@ -54,7 +55,7 @@ foreach ($Top10 as $Torrent) {
     }
 
     $DisplayName .= $GroupName;
-  
+
     /*
     if ($GroupCategoryID === 1 && $GroupYear > 0) {
         $DisplayName .= " [$GroupYear]";

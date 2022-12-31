@@ -1,6 +1,8 @@
 <?php
+
 #declare(strict_types=1);
 
+$app = App::go();
 $ENV = ENV::go();
 
 if (!$UserCount = $cache->get_value('stats_user_count')) {
@@ -45,7 +47,7 @@ if ($user['RatioWatch']
 
 $Email = trim($_POST['email']);
 $Username = $user['Username'];
-$SiteName =  $ENV->SITE_NAME ;
+$SiteName =  $ENV->siteName ;
 $SiteURL = site_url();
 $InviteExpires = time_plus(60 * 60 * 24 * 3); // 3 days
 $InviteReason = check_perms('users_invite_notes') ? db_string($_POST['reason']) : '';
@@ -58,7 +60,7 @@ if (strpos($Email, '|') !== false && check_perms('site_send_unlimited_invites'))
 }
 
 foreach ($Emails as $CurEmail) {
-    if (!preg_match("/^".EMAIL_REGEX."$/i", $CurEmail)) {
+    if (!preg_match($app->env->regexEmail, $CurEmail)) {
         if (count($Emails) > 1) {
             continue;
         } else {
@@ -118,7 +120,7 @@ EOT;
         $cache->commit_transaction(0);
     }
 
-    App::email($CurEmail, "You have been invited to $ENV->SITE_NAME", $Message);
+    App::email($CurEmail, "You have been invited to $ENV->siteName", $Message);
 }
 
 Http::redirect("user.php?action=invite");

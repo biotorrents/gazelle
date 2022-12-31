@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -12,6 +13,9 @@ class CacheRedis # extends Redis
 {
     # singleton
     private static $instance = null;
+
+    # redis
+    private static $redis = null;
 
     # default key lifetime (seconds)
     private $cacheDuration = 86400; # one day
@@ -65,42 +69,20 @@ class CacheRedis # extends Redis
 
         $redis = new Redis();
         $redis->connect(
-            $app->env->getPriv("REDIS_HOST"),
-            $app->env->getPriv("REDIS_PORT"),
+            $app->env->getPriv("redisHost"),
+            $app->env->getPriv("redisPort"),
         );
 
         if ($redis->isConnected()) {
+            self::$redis = $redis;
             return $redis;
         } else {
-            throw new Exception("Unable to establish PhpRedis cache connection");
+            throw new Exception("unable to establish PhpRedis cache connection");
         }
     }
 
 
     /** NON-SINGLETON METHODS */
-
-
-    /**
-     * __construct
-     * /
-    public function __construct()
-    {
-        $ENV = ENV::go();
-
-        $cache = new Redis();
-        $cache->connect(
-            $ENV->getPriv("REDIS_HOST"),
-            $ENV->getPriv("REDIS_PORT"),
-        );
-
-        if ($cache->isConnected()) {
-            $app->cacheNew = $cache;
-            return $cache;
-        } else {
-            throw new Exception("Unable to establish cache connection");
-        }
-    }
-    */
 
 
     /**
@@ -110,15 +92,13 @@ class CacheRedis # extends Redis
      */
     public function get(string $key)
     {
-        $app = App::go();
-
-        $value = $app->cacheNew->get($key);
+        $value = self::$redis->get($key);
 
         # PhpRedis returns false on bad key
-        if ($value === false) {
-            throw new Exception("Cache key {$key} doesn't exist");
+        if (!$value) {
+            throw new Exception("cache key {$key} doesn't exist");
         }
-        
+
         # just a single value
         return $value;
     }
@@ -137,8 +117,6 @@ class CacheRedis # extends Redis
      */
     public function set(string $key, $value, int $cacheDuration = 0)
     {
-        $app = App::go();
-
         # default expiration time in seconds
         if ($cacheDuration === 0) {
             $cacheDuration = time() + $this->cacheDuration;
@@ -149,22 +127,22 @@ class CacheRedis # extends Redis
 
         # $k => $v
         if (!is_array($value) || !is_object($value)) {
-            $app->cacheNew->set($key, $value);
-            $app->cacheNew->expireAt($key, $cacheDuration);
+            self::$redis->set($key, $value);
+            self::$redis->expireAt($key, $cacheDuration);
 
             return true;
         }
-        
+
         # $k => [$a, $b, $c, [$d, $e, $f]]
         else {
-            $app->cacheNew->mset([$key, $value]);
-            $app->cacheNew->expireAt($key, $cacheDuration);
+            self::$redis->mset([$key, $value]);
+            self::$redis->expireAt($key, $cacheDuration);
 
             return true;
         }
 
         # bad value provided
-        throw new Exception("Provided value {$value} is malformed");
+        throw new Exception("provided value {$value} is malformed");
         return false;
     }
 
@@ -176,9 +154,7 @@ class CacheRedis # extends Redis
      */
     public function keys(string $pattern = "*")
     {
-        $app = App::go();
-
-        return $app->cacheNew->keys($pattern);
+        return self::$redis->keys($pattern);
     }
 
 
@@ -189,9 +165,7 @@ class CacheRedis # extends Redis
      */
     public function info()
     {
-        $app = App::go();
-
-        return $app->cacheNew->info();
+        return self::$redis->info();
     }
 
 
@@ -202,9 +176,7 @@ class CacheRedis # extends Redis
      */
     public function ping(string $message = "")
     {
-        $app = App::go();
-
-        return $app->cacheNew->ping($message);
+        return self::$redis->ping($message);
     }
 
 
@@ -215,9 +187,7 @@ class CacheRedis # extends Redis
      */
     public function flush()
     {
-        $app = App::go();
-
-        return $app->cacheNew->flushAll();
+        return self::$redis->flushAll();
     }
 
 
@@ -229,13 +199,11 @@ class CacheRedis # extends Redis
      */
     public function delete(bool $now = false, string ...$keys)
     {
-        $app = App::go();
-
         foreach ($keys as $key) {
             if ($now === false) {
-                $app->cacheNew->unlink($key);
+                self::$redis->unlink($key);
             } else {
-                $app->cacheNew->del($key);
+                self::$redis->del($key);
             }
         }
     }
@@ -248,8 +216,6 @@ class CacheRedis # extends Redis
      */
     public function count()
     {
-        $app = App::go();
-
-        return $app->cacheNew->dbSize();
+        return self::$redis->dbSize();
     }
 }

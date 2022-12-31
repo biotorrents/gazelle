@@ -1,5 +1,8 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
+
+
+$app = App::go();
 
 /**
  * Input validation
@@ -80,7 +83,7 @@ else {
     }
 
     // Trickery
-    if (!preg_match("/^".IMAGE_REGEX."$/i", $picture)) {
+    if (!preg_match($app->env->regexImage, $picture)) {
         $picture = '';
     }
 
@@ -108,7 +111,6 @@ if (empty($revision_id)) { // edit
     NOW()
   )
   ");
-
 } else { // revert
     $db->query("
     SELECT

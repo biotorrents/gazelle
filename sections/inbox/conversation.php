@@ -44,7 +44,7 @@ $ConverstionParticipants = $db->to_array();
 
 foreach ($ConverstionParticipants as $Participant) {
     $PMUserID = (int)$Participant['ID'];
-    $Users[$PMUserID]['UserStr'] = Users::format_username($PMUserID, true, true, true, true);
+    $Users[$PMUserID]['UserStr'] = User::format_username($PMUserID, true, true, true, true);
     $Users[$PMUserID]['Username'] = $Participant['Username'];
 }
 
@@ -84,16 +84,16 @@ $db->query("
   <?php
 
 while (list($SentDate, $SenderID, $Body, $MessageID) = $db->next_record()) {
-    $Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[url=https://'.SITE_DOMAIN.'/wiki.php?action=article&name=databaseencryption][Encrypted][/url]'; ?>
+    $Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[url=https://'.siteDomain.'/wiki.php?action=article&name=databaseencryption][Encrypted][/url]'; ?>
   <div class="box vertical_space">
     <div class="head" style="overflow: hidden;">
-      <div class="float_left">
+      <div class="u-pull-left">
         <strong><?=$Users[(int)$SenderID]['UserStr']?></strong>
         <?=time_diff($SentDate)?> - <a href="#quickpost"
           onclick="Quote('<?=$MessageID?>','<?=$Users[(int)$SenderID]['Username']?>');"
           class="brackets">Quote</a>
       </div>
-      <div class="float_right"><a href="#">&uarr;</a> <a href="#messageform">&darr;</a></div>
+      <div class="u-pull-right"><a href="#">&uarr;</a> <a href="#messageform">&darr;</a></div>
     </div>
     <div class="body" id="message<?=$MessageID?>">
       <?=Text::parse($Body)?>

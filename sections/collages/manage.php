@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 $CollageID = (int) $_GET['collageid'];
 Security::int($CollageID);
@@ -141,7 +141,7 @@ View::header(
           </td>
           <td><?=trim($TorrentLink)?>
           </td>
-          <td class="nobr"><?=Users::format_username($UserID, $Username, false, false, false)?>
+          <td class="nobr"><?=User::format_username($UserID, $Username, false, false, false)?>
           </td>
           <td class="nobr">
             <input type="hidden" name="action" value="manage_handle" />

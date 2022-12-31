@@ -1,20 +1,30 @@
 <?php
+
 #declare(strict_types=1);
+
+
+/**
+ * Tools
+ */
 
 class Tools
 {
     /**
+     * site_ban_ip
+     *
      * Returns true if given IP is banned.
      *
      * @param string $IP
      */
     public static function site_ban_ip($IP)
     {
+        $app = App::go();
+
         $debug = Debug::go();
 
         $A = substr($IP, 0, strcspn($IP, '.:'));
         $IPNum = Tools::ip_to_unsigned($IP);
-        $IPBans = G::$cache->get_value('ip_bans_'.$A);
+        $IPBans = $app->cacheOld->get_value('ip_bans_'.$A);
 
         if (!is_array($IPBans)) {
             $SQL = sprintf("
@@ -22,11 +32,11 @@ class Tools
             FROM ip_bans
               WHERE FromIP BETWEEN %d << 24 AND (%d << 24) - 1", $A, $A + 1);
 
-            $QueryID = G::$db->get_query_id();
-            G::$db->query($SQL);
-            $IPBans = G::$db->to_array(0, MYSQLI_NUM);
-            G::$db->set_query_id($QueryID);
-            G::$cache->cache_value('ip_bans_'.$A, $IPBans, 0);
+            $QueryID = $app->dbOld->get_query_id();
+            $app->dbOld->query($SQL);
+            $IPBans = $app->dbOld->to_array(0, MYSQLI_NUM);
+            $app->dbOld->set_query_id($QueryID);
+            $app->cacheOld->cache_value('ip_bans_'.$A, $IPBans, 0);
         }
 
         #$debug->log_var($IPBans, 'IP bans for class '.$A);
@@ -39,7 +49,10 @@ class Tools
         return false;
     }
 
+
     /**
+     * ip_to_unsigned
+     *
      * Returns the unsigned form of an IP address.
      *
      * @param string $IP The IP address x.x.x.x
@@ -63,6 +76,8 @@ class Tools
 
 
     /**
+     * get_host_by_ip
+     *
      * Gets the hostname for an IP address
      *
      * @param $IP the IP to get the hostname for
@@ -85,46 +100,10 @@ class Tools
         return ($host ? end(explode(' ', $host)) : $IP);
     }
 
+
     /**
-     * Gets an hostname using AJAX
+     * disable_users
      *
-     * @param $IP the IP to fetch
-     * @return a span with JavaScript code
-     */
-    public static function get_host_by_ajax($IP)
-    {
-        static $ID = 0;
-        ++$ID;
-        return '<span id="host_'.$ID.'">Resolving host...<script type="text/javascript">ajax.get(\'tools.php?action=get_host&ip='.$IP.'\',function(host) {$(\'#host_'.$ID.'\').raw().innerHTML=host;});</script></span>';
-    }
-
-    /**
-     * Looks up the full host of an IP address, by system call.
-     * Used as the server-side counterpart to get_host_by_ajax.
-     *
-     * @param string $IP The IP address to look up.
-     * @return string the host.
-     */
-    public static function lookup_ip($IP)
-    {
-        // todo: Use the G::$cache
-        $Output = explode(' ', shell_exec('host -W 1 '.escapeshellarg($IP)));
-        if (count($Output) == 1 && empty($Output[0])) {
-            return '';
-        }
-
-        if (count($Output) != 5) {
-            return false;
-        }
-
-        if ($Output[2].' '.$Output[3] == 'not found:') {
-            return false;
-        }
-        return trim($Output[4]);
-    }
-
-    
-    /**
      * Disable an array of users.
      *
      * @param array $UserIDs (You can also send it one ID as an int, because fuck types)
@@ -132,12 +111,14 @@ class Tools
      */
     public static function disable_users($UserIDs, $AdminComment, $BanReason = 1)
     {
-        $QueryID = G::$db->get_query_id();
+        $app = App::go();
+
+        $QueryID = $app->dbOld->get_query_id();
         if (!is_array($UserIDs)) {
             $UserIDs = array($UserIDs);
         }
 
-        G::$db->query("
+        $app->dbOld->query("
         UPDATE users_info AS i
           JOIN users_main AS m ON m.ID = i.UserID
         SET m.Enabled = '2',
@@ -148,36 +129,36 @@ class Tools
           i.RatioWatchDownload = ".($BanReason == 2 ? 'm.Downloaded' : "'0'")."
         WHERE m.ID IN(".implode(',', $UserIDs).') ');
 
-        G::$cache->decrement('stats_user_count', G::$db->affected_rows());
+        $app->cacheOld->decrement('stats_user_count', $app->dbOld->affected_rows());
         foreach ($UserIDs as $UserID) {
-            G::$cache->delete_value("enabled_$UserID");
-            G::$cache->delete_value("user_info_$UserID");
-            G::$cache->delete_value("user_info_heavy_$UserID");
-            G::$cache->delete_value("user_stats_$UserID");
+            $app->cacheOld->delete_value("enabled_$UserID");
+            $app->cacheOld->delete_value("user_info_$UserID");
+            $app->cacheOld->delete_value("user_info_heavy_$UserID");
+            $app->cacheOld->delete_value("user_stats_$UserID");
 
-            G::$db->query("
+            $app->dbOld->query("
             SELECT SessionID
             FROM users_sessions
               WHERE UserID = '$UserID'
-              AND Active = 1");
+            ");
 
-            while (list($SessionID) = G::$db->next_record()) {
-                G::$cache->delete_value("session_$UserID"."_$SessionID");
+            while (list($SessionID) = $app->dbOld->next_record()) {
+                $app->cacheOld->delete_value("session_$UserID"."_$SessionID");
             }
-            G::$cache->delete_value("users_sessions_$UserID");
+            $app->cacheOld->delete_value("users_sessions_$UserID");
 
-            G::$db->query("
+            $app->dbOld->query("
             DELETE FROM users_sessions
               WHERE UserID = '$UserID'");
         }
 
         // Remove the users from the tracker.
-        G::$db->query('
+        $app->dbOld->query('
         SELECT torrent_pass
         FROM users_main
           WHERE ID in ('.implode(', ', $UserIDs).')');
 
-        $PassKeys = G::$db->collect('torrent_pass');
+        $PassKeys = $app->dbOld->collect('torrent_pass');
         $Concat = '';
         foreach ($PassKeys as $PassKey) {
             if (strlen($Concat) > 3950) { // Ocelot's read buffer is 4 KiB and anything exceeding it is truncated
@@ -189,10 +170,13 @@ class Tools
         }
 
         Tracker::update_tracker('remove_users', array('passkeys' => $Concat));
-        G::$db->set_query_id($QueryID);
+        $app->dbOld->set_query_id($QueryID);
     }
 
+
     /**
+     * warn_user
+     *
      * Warn a user.
      *
      * @param int $UserID
@@ -201,18 +185,18 @@ class Tools
      */
     public static function warn_user($UserID, $Duration, $Reason)
     {
-        global $Time;
+        $app = App::go();
 
-        $QueryID = G::$db->get_query_id();
-        G::$db->query("
+        $QueryID = $app->dbOld->get_query_id();
+        $app->dbOld->query("
         SELECT Warned
         FROM users_info
           WHERE UserID = $UserID
           AND Warned IS NOT NULL");
-          
-        if (G::$db->has_results()) {
+
+        if ($app->dbOld->has_results()) {
             //User was already warned, appending new warning to old.
-            list($OldDate) = G::$db->next_record();
+            list($OldDate) = $app->dbOld->next_record();
             $NewExpDate = date('Y-m-d H:i:s', strtotime($OldDate) + $Duration);
 
             Misc::send_pm(
@@ -222,9 +206,9 @@ class Tools
                 "When you received your latest warning (set to expire on ".date('Y-m-d', (time() + $Duration)).'), you already had a different warning (set to expire on '.date('Y-m-d', strtotime($OldDate)).").\n\n Due to this collision, your warning status will now expire at $NewExpDate."
             );
 
-            $AdminComment = date('Y-m-d')." - Warning (Clash) extended to expire at $NewExpDate by " . G::$user['Username'] . "\nReason: $Reason\n\n";
+            $AdminComment = date('Y-m-d')." - Warning (Clash) extended to expire at $NewExpDate by " . $app->userNew->core["username"] . "\nReason: $Reason\n\n";
 
-            G::$db->query('
+            $app->dbOld->query('
             UPDATE users_info
             SET
               Warned = \''.db_string($NewExpDate).'\',
@@ -235,13 +219,13 @@ class Tools
             //Not changing, user was not already warned
             $WarnTime = time_plus($Duration);
 
-            G::$cache->begin_transaction("user_info_$UserID");
-            G::$cache->update_row(false, array('Warned' => $WarnTime));
-            G::$cache->commit_transaction(0);
+            $app->cacheOld->begin_transaction("user_info_$UserID");
+            $app->cacheOld->update_row(false, array('Warned' => $WarnTime));
+            $app->cacheOld->commit_transaction(0);
 
-            $AdminComment = date('Y-m-d')." - Warned until $WarnTime by " . G::$user['Username'] . "\nReason: $Reason\n\n";
+            $AdminComment = date('Y-m-d')." - Warned until $WarnTime by " . $app->userNew->core["username"] . "\nReason: $Reason\n\n";
 
-            G::$db->query('
+            $app->dbOld->query('
             UPDATE users_info
             SET
               Warned = \''.db_string($WarnTime).'\',
@@ -249,25 +233,33 @@ class Tools
               AdminComment = CONCAT(\''.db_string($AdminComment).'\', AdminComment)
               WHERE UserID = \''.db_string($UserID).'\'');
         }
-        G::$db->set_query_id($QueryID);
+        $app->dbOld->set_query_id($QueryID);
     }
 
+
     /**
+     * update_user_notes
+     *
      * Update the notes of a user
      * @param unknown $UserID ID of user
      * @param unknown $AdminComment Comment to update with
      */
     public static function update_user_notes($UserID, $AdminComment)
     {
-        $QueryID = G::$db->get_query_id();
-        G::$db->query('
+        $app = App::go();
+
+        $QueryID = $app->dbOld->get_query_id();
+        $app->dbOld->query('
         UPDATE users_info
         SET AdminComment = CONCAT(\''.db_string($AdminComment).'\', AdminComment)
           WHERE UserID = \''.db_string($UserID).'\'');
-        G::$db->set_query_id($QueryID);
+        $app->dbOld->set_query_id($QueryID);
     }
 
+
     /**
+     * check_cidr_range
+     *
     * Check if an IP address is part of a given CIDR range.
     * @param string $CheckIP the IP address to be looked up
     * @param string $Subnet the CIDR subnet to be checked against

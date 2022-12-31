@@ -5,7 +5,7 @@
  * The important function is AddMore().
  */
 if (!check_perms('admin_reports')) {
-  error(403);
+    error(403);
 }
 
 View::header('Reports V2', 'reportsv2');

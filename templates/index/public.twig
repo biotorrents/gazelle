@@ -1,6 +1,6 @@
 <div id="logo">
-<img src="{{ constant('STATIC_SERVER') }}/styles/public/images/loginlogo.png" alt="{{
-    constant('SITE_NAME') }}" title="{{ constant('SITE_NAME') }}" />
+<img src="{{ constant('staticServer') }}/styles/public/images/loginlogo.png" alt="{{
+    constant('siteName') }}" title="{{ constant('siteName') }}" />
 </div>
 
 <div class="main">
@@ -22,7 +22,7 @@ Fall asleep, or hearing, die.</div>
 <div class="actions">
     <span class="action-bar">
     <a href="/login.php">Enter</a>
-{% if constant('OPEN_REGISTRATION') %}
+{% if constant('openRegistration') %}
     <a title="Obtain an account by supplying a valid email address" href="register.php">Register</a>
 {% endif %}
 {% if constant('OPEN_EXTERNAL_REFERRALS') %}

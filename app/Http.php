@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -22,15 +23,45 @@ class Http
      * Handles checks, format, and exiting.
      * Goes to "/" by default with no argument.
      */
-    public static function redirect(string $uri = "")
+    public static function redirect(string $uri = ""): void
     {
         if (headers_sent()) {
-            return false;
+            exit;
         }
 
+        $parsed = parse_url($uri);
         $uri = htmlentities($uri);
-        header("Location: /{$uri}");
+
+        $parsed["scheme"] ??= null;
+        $parsed["host"] ??= null;
+
+        if (!$parsed["scheme"] || !$parsed["host"]) {
+            # local
+            header("Location: /{$uri}");
+        } else {
+            # remote
+            header("Location: {$uri}");
+        }
+
         exit;
+    }
+
+
+    /**
+     * csrf
+     *
+     * @see https://github.com/paragonie/anti-csrf
+     */
+    public static function csrf()
+    {
+        $csrf = new ParagonIE\AntiCSRF\AntiCSRF();
+        if (!empty($_POST)) {
+            if ($csrf->validateRequest()) {
+                return true;
+            } else {
+                self::response(403);
+            }
+        }
     }
 
 
@@ -39,8 +70,8 @@ class Http
      *
      * Validates and escapes request parameters.
      *
-     * @param string $method The HTTP method to filter, if any
-     * @return array $safe The filtered
+     * @param string $method the method to filter, if any
+     * @return array $safe the filtered superglobal
      */
     public static function query(string $method = ""): array
     {
@@ -59,7 +90,7 @@ class Http
 
         # error out on bad input
         if (!empty($method) && !in_array($method, array_keys($safe))) {
-            throw new Exception("Supplied method {$method} isn't supported");
+            throw new Exception("the method {$method} isn't supported");
         }
 
         # escape each untrusted superglobal
@@ -83,20 +114,44 @@ class Http
         }
 
         foreach ($_POST as $key => $value) {
-            $key = Text::esc($key);
-            $value = Text::esc($value);
-            $safe["post"][$key] = $value;
+            # not recursive
+            if (is_array($value)) {
+                foreach ($value as $k => $v) {
+                    $k = Text::esc($k);
+                    $v = Text::esc($v);
+                    $safe["post"][$key][$v] = $v;
+                }
+            }
+
+            # normal key => value
+            else {
+                $key = Text::esc($key);
+                $value = Text::esc($value);
+                $safe["post"][$key] = $value;
+            }
         }
 
         foreach ($_REQUEST as $key => $value) {
-            $key = Text::esc($key);
-            $value = Text::esc($value);
-            $safe["request"][$key] = $value;
+            # not recursive
+            if (is_array($value)) {
+                foreach ($value as $k => $v) {
+                    $k = Text::esc($k);
+                    $v = Text::esc($v);
+                    $safe["request"][$key][$v] = $v;
+                }
+            }
+
+            # normal key => value
+            else {
+                $key = Text::esc($key);
+                $value = Text::esc($value);
+                $safe["request"][$key] = $value;
+            }
         }
 
         foreach ($_SERVER as $key => $value) {
             # sanitize client spoofed keys
-            if (str_starts_with($key, "HTTP_")) {
+            if (str_starts_with($key, "HTTP_") || str_starts_with($key, "REMOTE_")) {
                 $key = Text::esc($key);
                 $value = Text::esc($value);
                 $safe["server"][$key] = $value;
@@ -112,9 +167,9 @@ class Http
         # should be okay
         if (!empty($method)) {
             return $safe[$method];
-        } else {
-            return $safe;
         }
+
+        return $safe;
     }
 
 
@@ -124,10 +179,10 @@ class Http
      * Used to check if keys in $_POST and $_GET are all set, and throws an error if not.
      * This reduces "if" statement redundancy for a lot of variables.
      *
-     * @param array $request Either $_POST or $_GET, or whatever other array you want to check.
-     * @param array $keys The keys to ensure are set.
-     * @param boolean $allowEmpty If set to true, a key that is in the request but blank will not throw an error.
-     * @param int $error The error code to throw if one of the keys isn't in the array.
+     * @param array $request either $_POST or $_GET
+     * @param array $keys the keys to ensure are set
+     * @param boolean $allowEmpty if true, empty keys won't error
+     * @param int $error the error code absent an asserted key
      */
     public static function assertRequest(array $request, array $keys = null, bool $allowEmpty = false, int $error = 400): bool
     {
@@ -140,7 +195,7 @@ class Http
                 }
             }
         }
-        
+
         # generic empty
         else {
             foreach ($request as $r) {
@@ -155,7 +210,7 @@ class Http
         return true;
     }
 
-    
+
     /**
      * response
      *
@@ -165,62 +220,99 @@ class Http
      * @see https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
      * @see https://www.php.net/manual/en/function.http-response-code.php#107261
      */
-    public static function response(int $code = 200)
+    public static function response(int $code = 200): void
     {
         if (headers_sent()) {
-            return false;
+            exit;
         }
 
         switch ($code) {
             # 1xx informational response
-            case 100: $text = "Continue"; break;
-            case 101: $text = "Switching Protocols"; break;
+            case 100: $text = "Continue";
+                break;
+            case 101: $text = "Switching Protocols";
+                break;
 
-            # 2xx success
-            case 200: $text = "OK"; break;
-            case 201: $text = "Created"; break;
-            case 202: $text = "Accepted"; break;
-            case 203: $text = "Non-Authoritative Information"; break;
-            case 204: $text = "No Content"; break;
-            case 205: $text = "Reset Content"; break;
-            case 206: $text = "Partial Content"; break;
+                # 2xx success
+            case 200: $text = "OK";
+                break;
+            case 201: $text = "Created";
+                break;
+            case 202: $text = "Accepted";
+                break;
+            case 203: $text = "Non-Authoritative Information";
+                break;
+            case 204: $text = "No Content";
+                break;
+            case 205: $text = "Reset Content";
+                break;
+            case 206: $text = "Partial Content";
+                break;
 
-            # 3xx redirection
-            case 300: $text = "Multiple Choices"; break;
-            case 301: $text = "Moved Permanently"; break;
-            case 302: $text = "Found"; break;
-            case 303: $text = "See Other"; break;
-            case 304: $text = "Not Modified"; break;
-            case 305: $text = "Use Proxy"; break;
+                # 3xx redirection
+            case 300: $text = "Multiple Choices";
+                break;
+            case 301: $text = "Moved Permanently";
+                break;
+            case 302: $text = "Found";
+                break;
+            case 303: $text = "See Other";
+                break;
+            case 304: $text = "Not Modified";
+                break;
+            case 305: $text = "Use Proxy";
+                break;
 
-            # 4xx client errors
-            case 400: $text = "Bad Request"; break;
-            case 401: $text = "Unauthorized"; break;
-            case 402: $text = "Payment Required"; break;
-            case 403: $text = "Forbidden"; break;
-            case 404: $text = "Not Found"; break;
-            case 405: $text = "Method Not Allowed"; break;
-            case 406: $text = "Not Acceptable"; break;
-            case 407: $text = "Proxy Authentication Required"; break;
-            case 408: $text = "Request Timeout"; break;
-            case 409: $text = "Conflict"; break;
-            case 410: $text = "Gone"; break;
-            case 411: $text = "Length Required"; break;
-            case 412: $text = "Precondition Failed"; break;
-            case 413: $text = "Payload Too Large"; break;
-            case 414: $text = "URI Too Long"; break;
-            case 415: $text = "Unsupported Media Type"; break;
+                # 4xx client errors
+            case 400: $text = "Bad Request";
+                break;
+            case 401: $text = "Unauthorized";
+                break;
+            case 402: $text = "Payment Required";
+                break;
+            case 403: $text = "Forbidden";
+                break;
+            case 404: $text = "Not Found";
+                break;
+            case 405: $text = "Method Not Allowed";
+                break;
+            case 406: $text = "Not Acceptable";
+                break;
+            case 407: $text = "Proxy Authentication Required";
+                break;
+            case 408: $text = "Request Timeout";
+                break;
+            case 409: $text = "Conflict";
+                break;
+            case 410: $text = "Gone";
+                break;
+            case 411: $text = "Length Required";
+                break;
+            case 412: $text = "Precondition Failed";
+                break;
+            case 413: $text = "Payload Too Large";
+                break;
+            case 414: $text = "URI Too Long";
+                break;
+            case 415: $text = "Unsupported Media Type";
+                break;
 
-            # 5xx server errors
-            case 500: $text = "Internal Server Error"; break;
-            case 501: $text = "Not Implemented"; break;
-            case 502: $text = "Bad Gateway"; break;
-            case 503: $text = "Service Unavailable"; break;
-            case 504: $text = "Gateway Timeout"; break;
-            case 505: $text = "HTTP Version Not Supported"; break;
+                # 5xx server errors
+            case 500: $text = "Internal Server Error";
+                break;
+            case 501: $text = "Not Implemented";
+                break;
+            case 502: $text = "Bad Gateway";
+                break;
+            case 503: $text = "Service Unavailable";
+                break;
+            case 504: $text = "Gateway Timeout";
+                break;
+            case 505: $text = "HTTP Version Not Supported";
+                break;
 
             default:
-                exit("Unknown HTTP status code " . htmlentities($code));
+                exit("unknown http status code " . htmlentities($code));
                 break;
         }
 
@@ -234,7 +326,7 @@ class Http
     }
 
 
-    /** COOKIES */
+    /** cookies */
 
 
     /**
@@ -243,15 +335,15 @@ class Http
      * Untrustworthy user input.
      * Reads from $_COOKIE superglobal.
      *
-     * @param string $key The cookie key
-     * @return The sanitized cookie or false
+     * @param string $key the cookie key
+     * @return the sanitized cookie or false
      */
-    public static function getCookie(string $key)
+    public static function getCookie(string $key): string|bool
     {
-        $cookies = self::query("cookie");
+        $cookie = self::query("cookie");
 
-        return (isset($cookies[self::$cookiePrefix.$key]))
-            ? $cookies[self::$cookiePrefix.$key]
+        return (isset($cookie[self::$cookiePrefix.$key]))
+            ? $cookie[self::$cookiePrefix.$key]
             : false;
     }
 
@@ -264,19 +356,19 @@ class Http
      *
      * @see https://www.php.net/manual/en/function.setcookie.php
      *
-     * @param array $cookies ["key => "value", "foo" => "bar"]
-     * @param string $when The time in strtotime format
+     * @param array $cookie ["key => "value", "foo" => "bar"]
+     * @param string $when strtotime format
      * @return bool setcookie
      */
-    public static function setCookie(array $cookies, string $when = "tomorrow")
+    public static function setCookie(array $cookie, string $when = "tomorrow"): void
     {
-        $ENV = ENV::go();
+        $app = App::go;
 
-        foreach ($cookies as $key => $value) {
+        foreach ($cookie as $key => $value) {
             if (empty($key)) {
                 continue;
             }
-            
+
             # set time or use default
             $time = strtotime($when) ?? self::$cookieDuration;
 
@@ -286,7 +378,7 @@ class Http
                 [
                     "expires" => $time,
                     "path" => "/",
-                    "domain" => $ENV->SITE_DOMAIN,
+                    "domain" => $app->env->siteDomain,
                     "secure" => true,
                     "httponly" => true,
                     "samesite" => "Strict",
@@ -304,9 +396,9 @@ class Http
      * @param string $key The cookie key
      * @return bool self::setCookie (setcookie)
      */
-    public static function deleteCookie(string $key)
+    public static function deleteCookie(string $key): void
     {
-        return self::setCookie([self::$cookiePrefix.$key, ""], "now");
+        self::setCookie([self::$cookiePrefix.$key, ""], "now");
     }
 
 
@@ -318,11 +410,11 @@ class Http
      *
      * @return bool self::del (setcookie)
      */
-    public static function flushCookies()
+    public static function flushCookies(): void
     {
-        $cookies = self::query("cookie");
+        $cookie = self::query("cookie");
 
-        foreach ($cookies as $key => $value) {
+        foreach ($cookie as $key => $value) {
             self::deleteCookie($key);
         }
     }

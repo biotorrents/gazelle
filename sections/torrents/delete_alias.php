@@ -1,12 +1,13 @@
 <?php
+
 $ArtistID = db_string($_GET['artistid']);
 $GroupID = db_string($_GET['groupid']);
 
 if (!is_number($ArtistID) || !is_number($GroupID)) {
-  error(404);
+    error(404);
 }
 if (!check_perms('torrents_edit')) {
-  error(403);
+    error(403);
 }
 
 // Remove artist from this group.
@@ -26,7 +27,7 @@ $db->query("
   FROM `torrents_group`
   WHERE `id` = $GroupID");
 if (!$db->has_results()) {
-  error(404);
+    error(404);
 }
 list($GroupName) = $db->next_record(MYSQLI_NUM, false);
 
@@ -46,8 +47,8 @@ $db->query("
     AND ag.ArtistID = $ArtistID");
 $GroupCount = $db->record_count();
 if (($ReqCount + $GroupCount) == 0) {
-  // The only group to use this artist
-  Artists::delete_artist($ArtistID);
+    // The only group to use this artist
+    Artists::delete_artist($ArtistID);
 }
 
 $cache->delete_value("torrents_details_$GroupID"); // Delete torrent group cache
@@ -59,4 +60,3 @@ Torrents::update_hash($GroupID);
 $cache->delete_value("artist_groups_$ArtistID");
 
 header('Location: '.$_SERVER['HTTP_REFERER']);
-?>

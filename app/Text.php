@@ -1,5 +1,14 @@
 <?php
+
 declare(strict_types=1);
+
+
+/**
+ * Text parsing and escaping
+ *
+ * @see https://github.com/erusev/parsedown-extra
+ * @see https://github.com/vanilla/nbbc
+ */
 
 class Text
 {
@@ -8,9 +17,9 @@ class Text
 
     # cache settings
     private static $cachePrefix = "text_";
-    private static $cacheDuration = 0;
+    private static $cacheDuration = 0; # forever
 
-        
+
     /**
      * parse
      *
@@ -24,42 +33,43 @@ class Text
      */
     public static function parse(string $string, bool $safe = true): string
     {
-        $ENV = ENV::go();
+        $app = App::go();
 
-        $debug = Debug::go();
-        $debug["time"]->startMeasure("parse", "parse markdown text");
+        $app->debug["time"]->startMeasure("parse", "parse markdown text");
 
         # return cached if available
         $cacheKey = self::$cachePrefix . hash(self::$algorithm, $string);
-        if (G::$cache->get_value($cacheKey)) {
-            return G::$cache->get_value($cacheKey);
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
         }
 
         # prepare clean escapes
         $string = self::esc($string);
 
         # here's the magic pattern:
-        if (!preg_match("/{$ENV->BBCODE_REGEX}/s", $string)) {
+        if (!preg_match($app->env->regexBBCode, $string)) {
             # markdown
-            $parsedown = new \ParsedownExtra();
+            $parsedown = new ParsedownExtra();
             $safe ?? $parsedown->setSafeMode(true);
 
             # parse early and post-process
             $parsed = $parsedown->text($string);
-            
-            # replace links to $ENV->SITE_DOMAIN
+
+            # replace links to $app->env->siteDomain
             $parsed = self::fixLinks($parsed);
 
-            G::$cache->cache_value($cacheKey, $parsed, self::$cacheDuration);
+            $app->cacheOld->cache_value($cacheKey, $parsed, self::$cacheDuration);
             return $parsed;
         } else {
             # BBcode (not shitty)
-            $nbbc = new \Nbbc\BBCode();
+            $nbbc = new Nbbc\BBCode();
 
             $parsed = $nbbc->parse($string);
             $parsed = self::fixLinks($parsed);
 
-            G::$cache->cache_value($cacheKey, $parsed, self::$cacheDuration);
+            $app->cacheOld->cache_value($cacheKey, $parsed, self::$cacheDuration);
             return $parsed;
         }
     }
@@ -74,18 +84,17 @@ class Text
      */
     private static function fixLinks(string $parsed): string
     {
-        $ENV = ENV::go();
+        $app = App::go();
 
-        $debug = Debug::go();
-        $debug["time"]->startMeasure("process", "post-process text");
+        $app->debug["time"]->startMeasure("process", "post-process text");
 
-        # replace links to $ENV->SITE_DOMAIN
+        # replace links to $app->env->siteDomain
         $parsed = preg_replace(
-            "/<a href=\"{$ENV->RESOURCE_REGEX}({$ENV->SITE_DOMAIN}|{$ENV->OLD_SITE_DOMAIN})\//",
+            "/<a href=\"{$app->env->regexResource}({$app->env->siteDomain}|{$app->env->oldSiteDomain})\//",
             "<a href=\"/",
             $parsed
         );
-                
+
         # replace external links and add Wikipedia-style icon
         $rel = "external nofollow noopener noreferrer";
 
@@ -122,7 +131,7 @@ class Text
         # object and options
         $figlet = new Povils\Figlet\Figlet();
         $figlet->setFont($font)->setFontColor($color);
-        
+
         # okay done
         echo $figlet->render($message);
     }
@@ -156,17 +165,30 @@ class Text
      */
     public static function utf8(string $string): string
     {
+        # best effort guess (meh)
+        # https://stackoverflow.com/a/7980354
+        return iconv(
+            mb_detect_encoding(
+                $string,
+                mb_detect_order(),
+                true
+            ),
+            "UTF-8",
+            $string
+        );
+
+        /*
         # string is already utf8
         $utf8 = preg_match(
             "%^(?:
-            [\x09\x0A\x0D\x20-\x7E]           // ASCII
-          | [\xC2-\xDF][\x80-\xBF]            // Non-overlong 2-byte
-          | \xE0[\xA0-\xBF][\x80-\xBF]        // Excluding overlongs
-          | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2} // Straight 3-byte
-          | \xED[\x80-\x9F][\x80-\xBF]        // Excluding surrogates
-          | \xF0[\x90-\xBF][\x80-\xBF]{2}     // Planes 1-3
-          | [\xF1-\xF3][\x80-\xBF]{3}         // Planes 4-15
-          | \xF4[\x80-\x8F][\x80-\xBF]{2}     // Plane 16
+            [\x09\x0A\x0D\x20-\x7E]           // ascii
+          | [\xC2-\xDF][\x80-\xBF]            // non-overlong 2-byte
+          | \xE0[\xA0-\xBF][\x80-\xBF]        // excluding overlongs
+          | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2} // straight 3-byte
+          | \xED[\x80-\x9F][\x80-\xBF]        // excluding surrogates
+          | \xF0[\x90-\xBF][\x80-\xBF]{2}     // planes 1-3
+          | [\xF1-\xF3][\x80-\xBF]{3}         // planes 4-15
+          | \xF4[\x80-\x8F][\x80-\xBF]{2}     // plane 16
             )*$%xs",
             $string
         );
@@ -184,6 +206,7 @@ class Text
                 "UTF-8",
                 $string
             );
+        */
     }
 
 
@@ -212,7 +235,7 @@ class Text
      * Generate a more truly "random" alpha-numeric string.
      * @see https://github.com/illuminate/support/blob/master/Str.php
      *
-     * @param  int  $length
+     * @param int $length
      * @return string
      */
     public static function random($length = 32): string
@@ -233,6 +256,34 @@ class Text
                 $size
             );
         }
+
+        return $string;
+    }
+
+
+    /**
+     * toSeconds
+     */
+    public static function toSeconds(string $string): int
+    {
+        $parsed = strtotime($string) ?? time();
+        return time() - $parsed;
+    }
+
+
+    /**
+     * oneLine
+     *
+     * Makes a multi-line string into a single-line one.
+     */
+    public static function oneLine(string $string): string
+    {
+        while (preg_match("/[\n\r]/", $string)) {
+            $string = preg_replace("/[\n\r]/", " ", $string);
+        }
+
+        $string = preg_replace("/\s+/", " ", $string);
+        $string = trim($string);
 
         return $string;
     }

@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 // If a user has downloaded more than 10 GiBs while on ratio watch, disable leeching privileges, and send the user a message
@@ -15,7 +16,7 @@ $Users = $db->to_pair('torrent_pass', 'ID');
 if (count($Users) > 0) {
     $Subject = 'Leeching Disabled';
     $Message = 'You have downloaded more than 10 GB while on Ratio Watch. Your leeching privileges have been disabled. Please reread the rules.';
-    
+
     foreach ($Users as $TorrentPass => $UserID) {
         Misc::send_pm($UserID, 0, $Subject, $Message);
         Tracker::update_tracker('update_user', array('passkey' => $TorrentPass, 'can_leech' => '0'));

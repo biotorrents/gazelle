@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -94,7 +95,6 @@ if (!empty($ArtistForm)) {
 /**
  * TorrentForm
  */
-#require_once SERVER_ROOT.'/classes/torrent_form.class.php';
 $TorrentForm = new TorrentForm($Properties ?? false, $Err ?? false);
 
 /**
@@ -112,7 +112,7 @@ if (!$GenreTags) {
     ORDER BY
       `Name`
     ");
-    
+
     $GenreTags = $db->collect('Name');
     $cache->cache_value('genre_tags', $GenreTags, 3600 * 6);
 }

@@ -114,7 +114,7 @@ if (!empty($_GET['userid'])) {
     if (!is_number($UserID)) {
         error(404);
     }
-    $User = Users::user_info($UserID);
+    $User = User::user_info($UserID);
     $Perms = Permissions::get_permissions($User['PermissionID']);
     $UserClass = $Perms['Class'];
 
@@ -180,7 +180,7 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
         <input type="hidden" name="action" value="search" />
       </div>
 
-      <table cellpadding="6" cellspacing="1" border="0" class="skeleton-fix" width="100%">
+      <table cellpadding="6" cellspacing="1" border="0" class="skeletonFix" width="100%">
         <tr id="search_terms">
           <td class="label"></td>
           <td>
@@ -193,9 +193,7 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
           <td class="label"></td>
           <td>
             <input type="text" id="tags" name="tags" size="60" placeholder="Tags (comma-separated)"
-              value="<?=(!empty($_GET['tags']) ? Text::esc($_GET['tags']) : '')?>"
-              <?php Users::has_autocomplete_enabled('other'); ?>
-            />
+              value="<?=(!empty($_GET['tags']) ? Text::esc($_GET['tags']) : '')?>" />
             &ensp;
             <input type="radio" name="tags_type" id="tags_type0" value="0" <?Format::selected(
     'tags_type',
@@ -205,10 +203,10 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
 
             <label for="tags_type0"> Any</label>&nbsp;&nbsp;
             <input type="radio" name="tags_type" id="tags_type1" value="1" <?Format::selected(
-                  'tags_type',
-                  1,
-                  'checked'
-              )?> />
+    'tags_type',
+    1,
+    'checked'
+)?> />
 
             <label for="tags_type1"> All</label>
           </td>
@@ -370,7 +368,7 @@ foreach ($Collages as $Collage) {
       <a class="torrent_title" id="collage_name"
         href="collages.php?id=<?=$ID?>"><?=$Name?></a>
       <?php if ($BookmarkView) { ?>
-      <span class="float_right">
+      <span class="u-pull-right">
         <a href="#"
           onclick="Unbookmark('collage', <?=$ID?>, ''); return false;"
           class="brackets">Remove bookmark</a>
@@ -385,7 +383,7 @@ foreach ($Collages as $Collage) {
     </td>
     <td class="nobr"><?=time_diff($Updated)?>
     </td>
-    <td><?=Users::format_username($UserID, false, false, false)?>
+    <td><?=User::format_username($UserID, false, false, false)?>
     </td>
   </tr>
   <?php

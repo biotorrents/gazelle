@@ -1,0 +1,43 @@
+{% from 'macro/form.twig' import checked, selected %}
+<table cellpadding="6" cellspacing="1" border="0" width="100%" class="layout border user_options" id="torrent_settings">
+    
+    <tr id="tor_reltype_tr">
+        <td style="vertical-align: top;" class="label"><strong>Order of release types<br />(artist pages)</strong></td>
+        <td>
+            <p class="min_padding">Drag and drop release types to change the order of display on artist pages.<br />
+            Check the box of a release type if it should be collapsed when an artist page is viewed.</p>
+            <a href="#" id="reset_sortable" class="brackets">Reset to default</a>
+            <ul class="sortable_list" id="sortable">
+{% set release -%}
+    {%- for r in release_order -%}
+                <li class="sortable_item"><input type="checkbox" id="{{ r.id }}"{{ checked(r.checked) }} /> <label for="{{ r.id }}">{{ r.label }}</label></li>
+    {%- endfor -%}
+{% endset -%}
+                {{- release }}
+            </ul>
+            <input type="hidden" id="sorthide" name="sorthide" value="" />
+        </td>
+    </tr>
+
+    <tr id="tor_voting_tr">
+        <td class="label tooltip" title="This option allows you to enable or disable &quot;up&quot; and &quot;down&quot; voting links on artist pages, collages, and snatched lists.">
+            <strong>Voting links</strong>
+        </td>
+        <td>
+            <input type="checkbox" name="novotelinks" id="novotelinks"{{ checked(option.NoVoteLinks) }} />
+            <label for="novotelinks">Disable voting links</label>
+        </td>
+    </tr>
+
+
+    <tr id="tor_dltext_tr">
+        <td class="label tooltip" title="Some ISPs block the downloading of torrent files. Enable this option if you wish to download torrent files with a &quot;.txt&quot; file extension.">
+            <strong>Text file downloads</strong>
+        </td>
+        <td>
+            <input type="checkbox" name="downloadalt" id="downloadalt"{{ checked(download_text) }} />
+            <label for="downloadalt">Enable downloading torrent files as text files</label>
+        </td>
+    </tr>
+
+</table>

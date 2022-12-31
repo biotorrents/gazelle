@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -29,5 +30,5 @@ if ($user['DisableUpload']) {
 if (!empty($_POST['submit'])) {
     require_once 'upload_handle.php';
 } else {
-    require_once SERVER_ROOT.'/sections/upload/upload.php';
+    require_once serverRoot.'/sections/upload/upload.php';
 }

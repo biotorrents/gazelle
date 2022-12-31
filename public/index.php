@@ -1,5 +1,11 @@
 <?php
+
 declare(strict_types=1);
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 
 /**
  * @see https://en.wikipedia.org/wiki/Front_controller
@@ -18,14 +24,32 @@ $server = Http::query("server");
 $path = pathinfo($server["SCRIPT_NAME"]);
 $file = $path["filename"];
 
-# dump all tards
+# dump tards
 if ($path["dirname"] !== "/") {
     Http::response(403);
-} elseif (in_array($file, ["announce", "info_hash", "peer_id", "scrape"])) {
+}
+
+if (in_array($file, ["announce", "info_hash", "peer_id", "scrape"])) {
     die("d14:failure reason40:Invalid .torrent, try downloading again.e");
 }
 
-# load the app
+# find the document we're loading
+$server["REQUEST_URI"] ??= "/";
+if ($server["REQUEST_URI"] === "/") {
+    $document = "index";
+} else {
+    $regex = "/^\/(\w+)(?:\.php)?.*$/";
+    $document = preg_replace($regex, "$1", $server["REQUEST_URI"]);
+}
+
+# load the core app
 require_once __DIR__."/../config/app.php";
 require_once __DIR__."/../bootstrap/utilities.php";
-require_once __DIR__."/../bootstrap/web.php";
+
+# web vs. api bootstrap
+# cli is included directly
+if ($document !== "api") {
+    require_once __DIR__."/../bootstrap/web.php";
+} else {
+    require_once __DIR__."/../bootstrap/api.php";
+}

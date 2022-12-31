@@ -6,12 +6,12 @@ if (!check_perms('users_mod')) {
 }
 
 if (isset($_GET['userid']) && is_number($_GET['userid'])) {
-    $UserHeavyInfo = Users::user_heavy_info($_GET['userid']);
+    $UserHeavyInfo = User::user_heavy_info($_GET['userid']);
 
     if (isset($UserHeavyInfo['torrent_pass'])) {
         $TorrentPass = $UserHeavyInfo['torrent_pass'];
         $UserPeerStats = Tracker::user_peer_count($TorrentPass);
-        $UserInfo = Users::user_info($_GET['userid']);
+        $UserInfo = User::user_info($_GET['userid']);
         $UserLevel = $Classes[$UserInfo['PermissionID']]['Level'];
 
         if (!check_paranoia('leeching+', $UserInfo['Paranoia'], $UserLevel, $_GET['userid'])) {

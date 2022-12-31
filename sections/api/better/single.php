@@ -1,6 +1,7 @@
 <?php
+
 if (($Results = $cache->get_value('better_single_groupids')) === false) {
-  $db->query("
+    $db->query("
     SELECT
       t.ID AS TorrentID,
       t.GroupID AS GroupID
@@ -12,32 +13,32 @@ if (($Results = $cache->get_value('better_single_groupids')) === false) {
     ORDER BY t.LogScore DESC, t.Time ASC
     LIMIT 30");
 
-  $Results = $db->to_pair('GroupID', 'TorrentID', false);
-  $cache->cache_value('better_single_groupids', $Results, 30 * 60);
+    $Results = $db->to_pair('GroupID', 'TorrentID', false);
+    $cache->cache_value('better_single_groupids', $Results, 30 * 60);
 }
 
 $Groups = Torrents::get_groups(array_keys($Results));
 
 $JsonResults = [];
 foreach ($Results as $GroupID => $FlacID) {
-  if (!isset($Groups[$GroupID])) {
-    continue;
-  }
-  $Group = $Groups[$GroupID];
-  extract(Torrents::array_group($Group));
+    if (!isset($Groups[$GroupID])) {
+        continue;
+    }
+    $Group = $Groups[$GroupID];
+    extract(Torrents::array_group($Group));
 
-  $JsonArtists = [];
-  if (count($Artists) > 0) {
-    foreach ($Artists as $Artist) {
-      $JsonArtists[] = array(
+    $JsonArtists = [];
+    if (count($Artists) > 0) {
+        foreach ($Artists as $Artist) {
+            $JsonArtists[] = array(
         'id' => (int)$Artist['id'],
         'name' => $Artist['name'],
         'aliasId' => (int)$Artist['aliasid']
       );
+        }
     }
-  }
 
-  $JsonResults[] = array(
+    $JsonResults[] = array(
     'torrentId' => (int)$FlacID,
     'groupId' => (int)$GroupID,
     'artist' => $JsonArtists,
@@ -48,7 +49,7 @@ foreach ($Results as $GroupID => $FlacID) {
 }
 
 echo json_encode(
-  array(
+    array(
     'status' => 'success',
     'response' => $JsonResults
   )

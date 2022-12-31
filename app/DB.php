@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 /**
  * MySQL wrapper class
@@ -158,16 +159,16 @@ class DB
     {
         $ENV = ENV::go();
 
-        $this->Database = $ENV->getPriv('SQL_DB');
-        $this->User = $ENV->getPriv('SQL_USER');
-        $this->Pass = $ENV->getPriv('SQL_PASS');
-        $this->Server = $ENV->getPriv('SQL_HOST');
-        $this->Port = $ENV->getPriv('SQL_PORT');
-        $this->Socket = $ENV->getPriv('SQL_SOCK');
+        $this->Database = $ENV->getPriv('sqlDatabase');
+        $this->User = $ENV->getPriv('sqlUsername');
+        $this->Pass = $ENV->getPriv('sqlPassphrase');
+        $this->Server = $ENV->getPriv('sqlHost');
+        $this->Port = $ENV->getPriv('sqlPort');
+        $this->Socket = $ENV->getPriv('sqlSocket');
 
-        $this->Key = $ENV->getPriv('SQL_KEY');
-        $this->Cert = $ENV->getPriv('SQL_CERT');
-        $this->CA = $ENV->getPriv('SQL_CA');
+        $this->Key = $ENV->getPriv('sqlKey');
+        $this->Cert = $ENV->getPriv('sqlCert');
+        $this->CA = $ENV->getPriv('sqlCertAuthority');
     }
 
 
@@ -180,7 +181,6 @@ class DB
         #$debug = Debug::go();
 
         global $argv;
-        #global #$debug, $argv;
 
         $dbError = 'MySQL: '.strval($Msg).' SQL error: '.strval($this->Errno).' ('.strval($this->Error).')';
 
@@ -188,9 +188,9 @@ class DB
             send_irc(ADMIN_CHAN, $this->Error);
         }
 
-        if ($ENV->DEV || check_perms('site_debug') || isset($argv[1])) {
+        if ($ENV->dev || check_perms('site_debug') || isset($argv[1])) {
             echo '<pre>'.Text::esc($dbError).'</pre>';
-            if ($ENV->DEV || check_perms('site_debug')) {
+            if ($ENV->dev || check_perms('site_debug')) {
                 print_r($this->Queries);
             }
             error(400, $NoHTML = true);
@@ -341,7 +341,7 @@ class DB
             $this->QueryID = mysqli_stmt_get_result($this->StatementID);
 
             # Return query info in dev
-            if ($ENV->DEV) {
+            if ($ENV->dev) {
                 #$debug['database']->log($Query);
                 if (!empty(mysqli_error($this->LinkID))) {
                     d(mysqli_error($this->LinkID));
@@ -503,7 +503,7 @@ class DB
         while ($Row = mysqli_fetch_array($this->QueryID)) {
             $Return[] = $Escape ? Text::esc($Row[$Key]) : $Row[$Key];
         }
-        
+
         mysqli_data_seek($this->QueryID, 0);
         return $Return;
     }

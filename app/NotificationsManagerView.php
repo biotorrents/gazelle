@@ -19,7 +19,7 @@ class NotificationsManagerView
 
         foreach ($Scripts as $Script) {
             echo View::pushAsset(
-                "$ENV->STATIC_SERVER/js/$Script.js",
+                "$ENV->staticServer/js/$Script.js",
                 'script'
             );
         }
@@ -61,7 +61,7 @@ class NotificationsManagerView
 
 <tr>
   <td class="label tooltip"
-    title="Notify when you receive a new private message from <?= $ENV->SITE_NAME ?> staff">
+    title="Notify when you receive a new private message from <?= $ENV->siteName ?> staff">
     <strong>Staff Messages</strong>
   </td>
 

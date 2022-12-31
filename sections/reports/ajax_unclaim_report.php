@@ -1,20 +1,21 @@
 <?php
+
 #declare(strict_types=1);
 
 if (!check_perms('site_moderate_forums') || empty($_POST['id']) || empty($_POST['remove'])) {
-  print
+    print
     json_encode(
-      array(
+        array(
         'status' => 'failure'
       )
     );
-  die();
+    die();
 }
 $ID = (int)$_POST['id'];
 $db->query("UPDATE reports SET ClaimerID = '0' WHERE ID = '$ID'");
 print
   json_encode(
-    array(
+      array(
       'status' => 'success',
     )
   );

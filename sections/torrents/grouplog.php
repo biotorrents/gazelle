@@ -3,17 +3,17 @@
 
 $GroupID = $_GET['groupid'];
 if (!is_number($GroupID)) {
-  error(404);
+    error(404);
 }
 
 View::header("History for Group $GroupID");
 
 $Groups = Torrents::get_groups([$GroupID], true, true, false);
 if (!empty($Groups[$GroupID])) {
-  $Group = $Groups[$GroupID];
-  $Title = Artists::display_artists($Group['ExtendedArtists']).'<a href="torrents.php?id='.$GroupID.'">'.($Group['Name'] ? $Group['Name'] : ($Group['Title2'] ? $Group['Title2']: $Group['NameJP'])).'</a>';
+    $Group = $Groups[$GroupID];
+    $Title = Artists::display_artists($Group['ExtendedArtists']).'<a href="torrents.php?id='.$GroupID.'">'.($Group['Name'] ? $Group['Name'] : ($Group['Title2'] ? $Group['Title2'] : $Group['NameJP'])).'</a>';
 } else {
-  $Title = "Group $GroupID";
+    $Title = "Group $GroupID";
 }
 ?>
 
@@ -38,19 +38,18 @@ if (!empty($Groups[$GroupID])) {
       WHERE GroupID = ?
       ORDER BY Time DESC", $GroupID);
   $LogEntries = $db->to_array(false, MYSQLI_NUM);
-  foreach ($LogEntries AS $LogEntry) {
-    list($TorrentID, $UserID, $Info, $Time) = $LogEntry;
-?>
+  foreach ($LogEntries as $LogEntry) {
+      list($TorrentID, $UserID, $Info, $Time) = $LogEntry; ?>
     <tr class="row">
       <td><?=$Time?></td>
 <?php
       if ($TorrentID != 0) {
-        $db->query("
+          $db->query("
           SELECT Container, Version, Media
           FROM torrents
           WHERE ID = $TorrentID");
-        list($Container, $Version, $Media) = $db->next_record();
-        if (!$db->has_results()) { ?>
+          list($Container, $Version, $Media) = $db->next_record();
+          if (!$db->has_results()) { ?>
           <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a> (Deleted)</td><?php
         } elseif ($Media == '') { ?>
           <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a></td><?php
@@ -60,7 +59,7 @@ if (!empty($Groups[$GroupID])) {
       } else { ?>
         <td></td>
 <?php } ?>
-      <td><?=in_array($UserID, $AnonUsers)?'Anonymous':Users::format_username($UserID, false, false, false)?></td>
+      <td><?=in_array($UserID, $AnonUsers) ? 'Anonymous' : User::format_username($UserID, false, false, false)?></td>
       <td><?=$Info?></td>
     </tr>
 <?php

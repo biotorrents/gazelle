@@ -85,7 +85,7 @@ while (list($Downloads, $GroupIDs) = $Collector->get_downloads('GroupID')) {
     $Artists = Artists::get_artists($GroupIDs);
     $TorrentIDs = array_keys($GroupIDs);
     foreach ($TorrentIDs as $TorrentID) {
-        file_get_contents(TORRENT_STORE.$TorrentID.'.torrent');
+        file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
         $GroupID = $GroupIDs[$TorrentID];
         $Download =& $Downloads[$GroupID];
         $Download['Artist'] = Artists::display_artists($Artists[$Download['GroupID']], false, true, false);
@@ -99,6 +99,3 @@ while (list($Downloads, $GroupIDs) = $Collector->get_downloads('GroupID')) {
 }
 $Collector->finalize();
 $Settings = array(implode(':', $_REQUEST['list']), $_REQUEST['preference']);
-if (!isset($user['Collector']) || $user['Collector'] != $Settings) {
-    Users::update_site_options($user['ID'], array('Collector' => $Settings));
-}

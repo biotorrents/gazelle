@@ -10,11 +10,11 @@
         {%- endif -%}
         {%- if user.isWarned -%}
             &nbsp;<a href="wiki.php?action=article&amp;name=warnings"><img src="{{
-                constant('STATIC_SERVER') }}/common/symbols/warned.png" alt="Warned" title="Warned
+                constant('staticServer') }}/common/symbols/warned.png" alt="Warned" title="Warned
                 {%- if own_profile or viewer.permitted('users_mod') %} – Expires {{ user.warningExpiry }}{% endif %}" class="tooltip" /></a>
         {%- endif -%}
         {%- if user.isDisabled -%}
-        &nbsp;<a href="rules.php"><img src="{{ constant('STATIC_SERVER') }}/common/symbols/disabled.png" alt="Banished" title="Naughty person" class="tooltip" /></a>
+        &nbsp;<a href="rules.php"><img src="{{ constant('staticServer') }}/common/symbols/disabled.png" alt="Banished" title="Naughty person" class="tooltip" /></a>
         {%- endif -%}
         {% for badge, name in user.secondaryBadges %}
             <span class="tooltip secondary_class" title="{{ name }}">{{ badge }}</span>

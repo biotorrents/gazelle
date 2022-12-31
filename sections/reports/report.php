@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types = 1);
 
-include SERVER_ROOT.'/sections/reports/array.php';
+include serverRoot.'/sections/reports/array.php';
 
 if (empty($_GET['type']) || empty($_GET['id']) || !is_number($_GET['id'])) {
     error(404);
@@ -175,7 +175,7 @@ switch ($Short) {
   <div class="box pad center">
     <p><strong>It will greatly increase the turnover rate of the updates if you can fill in as much of the following
         details as possible.</strong></p>
-    <form class="create_form" id="report_form" name="report" action="" method="post">
+    <form id="report_form" name="report" action="" method="post">
       <input type="hidden" name="action" value="takereport" />
       <input type="hidden" name="auth"
         value="<?=$user['AuthKey']?>" />
@@ -307,7 +307,7 @@ if (empty($NoReason)) {
     ?>
   <h3>Reason</h3>
   <div class="box pad center">
-    <form class="create_form" name="report" id="report_form" action="" method="post">
+    <form name="report" id="report_form" action="" method="post">
       <input type="hidden" name="action" value="takereport" />
       <input type="hidden" name="auth"
         value="<?=$user['AuthKey']?>" />

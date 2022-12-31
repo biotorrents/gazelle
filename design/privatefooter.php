@@ -1,10 +1,16 @@
 <?php
+
 declare(strict_types=1);
+
+
+/**
+ * THIS IS GOING AWAY
+ */
 
 $ENV = ENV::go();
 $Sep = '&emsp;';
 
-$LastActive = $LastActive ?? ['LastUpdate' => null, 'IP' => null];
+#$LastActive = $LastActive ?? ['LastUpdate' => null, 'IP' => null];
 
 # End <main#content.container>, begin <footer>
 # #content is Gazelle, .container is Skeleton
@@ -13,14 +19,15 @@ echo $HTML = '</main><footer>';
 # Disclaimer
 echo $HTML = <<<HTML
 <p>
-  No data are hosted on $ENV->SITE_NAME's servers.
+  No data are hosted on $ENV->siteName's servers.
   All torrents are user-generated content.
   Torrents without a specified license may be protected by copyright.
 </p>
 HTML;
 
+/*
 # Sessions
-if (count($UserSessions) > 1) {
+if (count($UserSessions ?? []) > 1) {
     foreach ($UserSessions as $ThisSessionID => $Session) {
         if ($ThisSessionID !== $SessionID) {
             $LastActive = $Session;
@@ -53,23 +60,24 @@ if (!empty($LastActive)) {
     </p>
 HTML;
 }
+*/
 
 # Site meta
 $Year = date('Y');
 $Load = sys_getloadavg();
-  
+
 echo $HTML = <<<HTML
 <p>
   &copy;
   $Year
-  $ENV->SITE_NAME
+  $ENV->siteName
   $Sep
   <a href="/canary">Warrant Canary</a>
 </p>
 HTML;
 
 # Debug
-if ($ENV->DEV) {
+if ($ENV->dev) {
     /**
      * DebugBar trial, missing important collectors:
      *

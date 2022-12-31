@@ -1,0 +1,35 @@
+/**
+ * sidebar actions
+ */
+#sidebar {
+  form {
+    display: flex;
+    flex-flow: column wrap;
+    gap: 2rem;
+
+    a.button {
+      margin-bottom: 0;
+    }
+
+    ul {
+      list-style: none;
+    }
+  }
+}
+
+/**
+ * upload form
+ */
+
+.torrent_form {
+  label {
+    font-weight: bold;
+  }
+
+  .required {
+    &:after {
+      color: red;
+      content: "*";
+    }
+  }
+}

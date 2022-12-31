@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 
 /**
  * Announce
@@ -8,6 +10,7 @@ declare(strict_types=1);
  * The point is to have, e.g., Announce::slack("foo") in one place.
  * Better yet, Announce:all("foo") that hits IRC, RSS, Slack, and Twitter.
  */
+
 class Announce
 {
     # IRC bot config options
@@ -67,7 +70,7 @@ class Announce
         $app = App::go();
 
         # check if IRC is enabled
-        if (!$app->env->ANNOUNCE_IRC) {
+        if (!$app->env->announceIrc) {
             return false;
         }
 
@@ -113,7 +116,7 @@ class Announce
         $app = App::go();
 
         # check if RSS is enabled
-        if (!$app->env->ANNOUNCE_RSS) {
+        if (!$app->env->announceRss) {
             return false;
         }
 
@@ -136,7 +139,7 @@ class Announce
         $app = App::go();
 
         # check if slack is enabled
-        if (!$app->env->ANNOUNCE_SLACK) {
+        if (!$app->env->announceSlack) {
             return false;
         }
 
@@ -146,7 +149,7 @@ class Announce
         }
 
         # webhooks must remain private
-        $webhooks = $app->env->getPriv("SLACK_WEBHOOKS");
+        $webhooks = $app->env->getPriv("slackWebhooks");
         foreach ($channels as $channel) {
             try {
                 # set up
@@ -172,19 +175,47 @@ class Announce
     /**
      * twitter
      *
-     * todo
+     * @see https://twitteroauth.com
      */
     public static function twitter(string $message)
     {
         $app = App::go();
 
         # check if twitter is enabled
-        if (!$app->env->ANNOUNCE_TWITTER) {
+        if (!$app->env->enableTwitter) {
             return false;
         }
-        
+
         try {
-            # todo
+            $twitterCredentials = $app->env->getPriv("twitterApi");
+
+            $connection = new Abraham\TwitterOAuth\TwitterOAuth(
+                $twitterCredentials["consumerKey"],
+                $twitterCredentials["consumerSecret"],
+                $twitterCredentials["accessToken"],
+                $twitterCredentials["accessTokenSecret"]
+            );
+
+            # set api version
+           # $connection->setApiVersion("2");
+            $content = $connection->get("account/verify_credentials");
+            !d($content);
+            $statues = $connection->post("statuses/update", ["status" => "hello world"]);
+            !d($statues);
+            return;
+
+            # https://twitteroauth.com/redirect.php
+            define("OAUTH_CALLBACK", "fuck");
+            $request_token = $connection->oauth('oauth/request_token', array('oauth_callback' => OAUTH_CALLBACK));
+
+            $_SESSION['oauth_token'] = $request_token['oauth_token'];
+            $_SESSION['oauth_token_secret'] = $request_token['oauth_token_secret'];
+
+            $url = $connection->url('oauth/authorize', array('oauth_token' => $request_token['oauth_token']));
+
+            return $statues = $connection->post("statuses/update", ["status" => "hello world"]);
+
+            return $content = $connection->get("account/verify_credentials");
         } catch (Exception $e) {
             Text::figlet("twitter failure", "red");
             !d($e->getMessage());

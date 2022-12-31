@@ -140,7 +140,7 @@ $encoded_artist = urlencode($encoded_artist);
         <?php
     } else { ?>
         <img style="width: 100%;"
-          src="<?=STATIC_SERVER?>common/noartwork.png"
+          src="<?=staticServer?>common/noartwork.png"
           alt="<?=$CategoryName?>" class="tooltip"
           title="<?=$CategoryName?>" height="220" border="0" />
         <?php } ?>
@@ -244,12 +244,12 @@ $encoded_artist = urlencode($encoded_artist);
     <div class="box">
       <div class="head"><strong>Info</strong></div>
       <div class="pad">
-        <table class="request_form skeleton-fix">
+        <table class="request_form skeletonFix">
           <tr>
             <td class="label">Created</td>
             <td>
               <?= time_diff($Request['TimeAdded']) ?> by
-              <strong><?= Users::format_username($Request['UserID'], false, false, false) ?></strong>
+              <strong><?= User::format_username($Request['UserID'], false, false, false) ?></strong>
             </td>
           </tr>
           <?php if ($CategoryName == 'Movies') {
@@ -380,7 +380,7 @@ $encoded_artist = urlencode($encoded_artist);
             <td>
               <strong><a
                   href="torrents.php?<?=(strtotime($Request['TimeFilled']) < $TimeCompare ? 'id=' : 'torrentid=') . $Request['TorrentID']?>">Yes</a></strong>,
-              by user <?=($Request['AnonymousFill'] ? '<em>Anonymous</em>' : Users::format_username($Request['FillerID'], false, false, false))?>
+              by user <?=($Request['AnonymousFill'] ? '<em>Anonymous</em>' : User::format_username($Request['FillerID'], false, false, false))?>
               <?php if ($user['ID'] == $Request['UserID'] || $user['ID'] == $Request['FillerID'] || check_perms('site_moderate_requests')) { ?>
               <strong><a
                   href="requests.php?action=unfill&amp;id=<?=$RequestID?>"

@@ -99,7 +99,7 @@ echo $Pages;
       /> Subject
       <input type="radio" name="searchtype" value="message" <?=(!empty($_GET['searchtype']) && $_GET['searchtype'] === 'message' ? ' checked="checked"' : '')?>
       /> Message
-      <span class="float_right">
+      <span class="u-pull-right">
         <?php // provide a temporary toggle for sorting PMs
     $ToggleTitle = 'Temporary toggle switch for sorting PMs. To permanently change the sorting behavior, edit the setting in your profile.';
     $BaseURL = 'inbox.php';
@@ -167,12 +167,12 @@ echo $Pages;
               echo "</strong>\n";
           } ?>
         </td>
-        <td><?=Users::format_username($SenderID, true, true, true, true)?>
+        <td><?=User::format_username($SenderID, true, true, true, true)?>
         </td>
         <td><?=time_diff($Date)?>
         </td>
         <?php if (check_perms('users_mod')) { ?>
-        <td><?=(($ForwardedID && $ForwardedID != $user['ID']) ? Users::format_username($ForwardedID, false, false, false) : '')?>
+        <td><?=(($ForwardedID && $ForwardedID != $user['ID']) ? User::format_username($ForwardedID, false, false, false) : '')?>
         </td>
         <?php } ?>
       </tr>

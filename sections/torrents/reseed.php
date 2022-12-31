@@ -81,7 +81,7 @@ if ($db->has_results()) {
             continue;
         }
 
-        $UserInfo = Users::user_info($UserID);
+        $UserInfo = User::user_info($UserID);
         $Username = $UserInfo['Username'];
         $TimeStamp = $User['tstamp'];
 
@@ -104,7 +104,7 @@ if ($db->has_results()) {
     }
     $NumUsers = count($Users);
 } else {
-    $UserInfo = Users::user_info($UploaderID);
+    $UserInfo = User::user_info($UploaderID);
     $Username = $UserInfo['Username'];
 
     $Request = "

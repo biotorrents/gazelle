@@ -1,44 +1,56 @@
 <?php
+
 #declare(strict_types=1);
 
-//require_once 'mass_user_torrents_editor.class.php';
 
 /**
+ * MASS_USER_BOOKMARKS_EDITOR
+ *
  * This class helps with mass-editing bookmarked torrents.
- *
  * It can later be used for other bookmark tables.
- *
  */
 class MASS_USER_BOOKMARKS_EDITOR extends MASS_USER_TORRENTS_EDITOR
 {
-    public function __construct($Table = 'bookmarks_torrents')
+    /**
+     * __construct
+     */
+    public function __construct($table = "bookmarks_torrents")
     {
-        $this->set_table($Table);
+        $this->set_table($table);
     }
 
+
     /**
-     * Runs a SQL query and clears the Cache key
+     * query_and_clear_cache
      *
-     * G::$cache->delete_value didn't always work, but setting the key to null, did. (?)
+     * Runs a SQL query and clears the cache key.
+     * $app->cacheOld->delete_value didn't always work,
+     * but setting the key to null, did. (?)
      *
      * @param string $sql
      */
     protected function query_and_clear_cache($sql)
     {
-        $QueryID = G::$db->get_query_id();
-        if (is_string($sql) && G::$db->query($sql)) {
-            G::$cache->delete_value('bookmarks_group_ids_' . G::$user['ID']);
+        $app = App::go();
+
+        $QueryID = $app->dbOld->get_query_id();
+        if (is_string($sql) && $app->dbOld->query($sql)) {
+            $app->cacheOld->delete_value('bookmarks_group_ids_' . $app->userNew->core["id"]);
         }
-        G::$db->set_query_id($QueryID);
+        $app->dbOld->set_query_id($QueryID);
     }
 
+
     /**
-     * Uses (checkboxes) $_POST['remove'] to delete entries.
+     * mass_remove
      *
+     * Uses (checkboxes) $_POST['remove'] to delete entries.
      * Uses an IN() to match multiple items in one query.
      */
     public function mass_remove()
     {
+        $app = App::go();
+
         $SQL = [];
         foreach ($_POST['remove'] as $GroupID => $K) {
             if (is_number($GroupID)) {
@@ -53,22 +65,27 @@ class MASS_USER_BOOKMARKS_EDITOR extends MASS_USER_TORRENTS_EDITOR
               WHERE UserID = %d
               AND GroupID IN (%s)',
                 $this->Table,
-                G::$user['ID'],
+                $app->userNew->core["id"],
                 implode(', ', $SQL)
             );
             $this->query_and_clear_cache($SQL);
         }
     }
 
+
     /**
+     * mass_update
+     *
      * Uses $_POST['sort'] values to update the DB.
      */
     public function mass_update()
     {
+        $app = App::go();
+
         $SQL = [];
         foreach ($_POST['sort'] as $GroupID => $Sort) {
             if (is_number($Sort) && is_number($GroupID)) {
-                $SQL[] = sprintf('(%d, %d, %d)', $GroupID, $Sort, G::$user['ID']);
+                $SQL[] = sprintf('(%d, %d, %d)', $GroupID, $Sort, $app->userNew->core["id"]);
             }
         }
 
@@ -87,4 +104,4 @@ class MASS_USER_BOOKMARKS_EDITOR extends MASS_USER_TORRENTS_EDITOR
             $this->query_and_clear_cache($SQL);
         }
     }
-}
+} # class

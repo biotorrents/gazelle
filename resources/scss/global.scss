@@ -1,13 +1,14 @@
+/**
+ * global
+ */
+
 @import "./assets";
-@import "./global/global";
-@import "./global/legacy";
 
 @import "./global/colors";
-@import "./global/debug";
 @import "./global/fonts";
+@import "./global/forms";
 @import "./global/layout";
-@import "./global/log";
-@import "./global/main-menu";
-@import "./global/settings";
-@import "./global/skeleton-fixes";
+@import "./global/mainMenu";
+@import "./global/user";
+@import "./global/skeletonFixes";
 @import "./global/tables";

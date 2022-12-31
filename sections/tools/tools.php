@@ -46,13 +46,12 @@ View::header('Staff Tools');
   $ToolsHTML = "";
   create_row("Client whitelist", "tools.php?action=whitelist", check_perms("admin_whitelist"));
   create_row("Permissions manager", "tools.php?action=permissions", check_perms("admin_manage_permissions"));
-  create_row("Special users", "tools.php?action=special_users", check_perms("admin_manage_permissions"));
   create_row("Database key", "tools.php?action=database_key", check_perms("admin_manage_permissions"));
 
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="admin-tools skeleton-fix">
+      <table class="admin-tools skeletonFix">
         <tr class="colhead">
           <td>Administration</td>
         </tr>
@@ -71,7 +70,7 @@ View::header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="admin-tools skeleton-fix">
+      <table class="admin-tools skeletonFix">
         <tr class="colhead">
           <td>Announcements</td>
         </tr>
@@ -88,7 +87,7 @@ View::header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="admin-tools skeleton-fix">
+      <table class="admin-tools skeletonFix">
         <tr class="colhead">
           <td>Community</td>
         </tr>
@@ -110,7 +109,7 @@ View::header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="admin-tools skeleton-fix">
+      <table class="admin-tools skeletonFix">
         <tr class="colhead">
           <td>Queue</td>
         </tr>
@@ -129,7 +128,7 @@ View::header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="admin-tools skeleton-fix">
+      <table class="admin-tools skeletonFix">
         <tr class="colhead">
           <td>Managers</td>
         </tr>
@@ -141,7 +140,6 @@ View::header('Staff Tools');
 
   // begin Development category
   $ToolsHTML = "";
-  create_row("Clear/view a cache key", "tools.php?action=clear_cache", check_perms("users_mod"));
   create_row("Schedule", "schedule.php?auth=$user[AuthKey]", check_perms("site_debug"));
   create_row("Service stats", "tools.php?action=service_stats", check_perms("site_debug"));
   create_row("Miscellaneous values", "tools.php?action=misc_values", check_perms('users_mod'));
@@ -150,7 +148,7 @@ View::header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="admin-tools skeleton-fix">
+      <table class="admin-tools skeletonFix">
         <tr class="colhead">
           <td>Development</td>
         </tr>
@@ -174,7 +172,7 @@ View::header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="admin-tools skeleton-fix">
+      <table class="admin-tools skeletonFix">
         <tr class="colhead">
           <td>Site Information</td>
         </tr>
@@ -197,7 +195,7 @@ View::header('Staff Tools');
   if ($ToolsHTML) {
       ?>
     <div class="permission_subcontainer">
-      <table class="admin-tools skeleton-fix">
+      <table class="admin-tools skeletonFix">
         <tr class="colhead">
           <td>Torrents</td>
         </tr>

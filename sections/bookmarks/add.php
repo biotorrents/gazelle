@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 authorize();
 
@@ -7,8 +8,8 @@ if (!Bookmarks::can_bookmark($_GET['type'])) {
     error(404);
 }
 
-include SERVER_ROOT.'/classes/feed.class.php'; // RSS feeds
-$Feed = new Feed;
+include serverRoot.'/classes/feed.class.php'; // RSS feeds
+$Feed = new Feed();
 
 $Type = $_GET['type'];
 list($Table, $Col) = Bookmarks::bookmark_schema($Type);
@@ -102,7 +103,7 @@ if (!$db->has_results()) {
         while ($Torrent = $db->next_record()) {
             $Title = $GroupTitle;
             list($TorrentID, $Media, $Freeleech, $UploaderID, $Anonymous) = $Torrent;
-            $UploaderInfo = Users::user_info($UploaderID);
+            $UploaderInfo = User::user_info($UploaderID);
 
             $Item = $Feed->item(
                 $Title,

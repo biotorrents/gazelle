@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 # todo: Go through line by line
@@ -81,7 +82,7 @@ foreach ($Forums as $Forum) {
     } else {
         $Read = 'read';
     }
-    $UserInfo = Users::user_info($LastAuthorID);
+    $UserInfo = User::user_info($LastAuthorID);
 
     $JsonForums[] = array(
     'forumId' => (int)$ForumID,

@@ -1,9 +1,58 @@
 <?php
-#declare(strict_types=1);
 
-if (!check_perms('admin_manage_permissions') && !check_perms('users_mod')) {
+declare(strict_types=1);
+
+
+/**
+ * miscellaneous values
+ */
+
+$app = App::go();
+
+# https://github.com/paragonie/anti-csrf
+Http::csrf();
+
+if (!check_perms("admin_manage_permissions") && !check_perms("users_mod")) {
     error(403);
 }
+
+# query
+$post = Http::query("post");
+$post["databaseKey"] ??= null;
+
+# create
+
+# read
+$query = "select * from misc";
+$ref = $app->dbNew->multi($query, []);
+!d($ref);exit;
+
+# update
+
+# delete
+
+# twig
+$app->twig->display("admin/miscValues.twig", [
+    "sidebar" => true,
+]);
+
+exit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 if (!check_perms('admin_manage_permissions')) {
     View::header('Site Options');
@@ -13,7 +62,7 @@ if (!check_perms('admin_manage_permissions')) {
   <h1>Miscellaneous Values</h1>
 </div>
 
-<table class="skeleton-fix">
+<table class="skeletonFix">
   <tr>
     <th>Name</th>
     <th>First</th>
@@ -115,7 +164,7 @@ View::header('Miscellaneous Values');
     </tr>
 
     <tr>
-      <form class="create_form" name="misc_values" action="" method="post">
+      <form name="misc_values" action="" method="post">
         <input type="hidden" name="action" value="misc_values" />
         <input type="hidden" name="auth"
           value="<?=$user['AuthKey']?>" />

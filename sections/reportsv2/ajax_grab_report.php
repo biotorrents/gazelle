@@ -4,13 +4,13 @@
  * the Claim / Claim all button.
  */
 if (!check_perms('admin_reports')) {
-  //error(403);
-  echo '403';
-  error();
+    //error(403);
+    echo '403';
+    error();
 }
 
 if (!is_number($_GET['id'])) {
-  error();
+    error();
 }
 
 $db->prepared_query("
@@ -20,7 +20,7 @@ $db->prepared_query("
   WHERE ID = " . $_GET['id']);
 
 if ($db->affected_rows() == 0) {
-  echo '0';
+    echo '0';
 } else {
-  echo '1';
+    echo '1';
 }

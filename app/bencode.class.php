@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 /**
@@ -98,7 +99,7 @@ class Bencode
             $IsDict = true;
             ksort($this->Data); // Dictionaries must be sorted
         }
-        
+
         $Ret = $IsDict ? 'd' : 'l';
         foreach ($this->Data as $Key => $Value) {
             if ($IsDict) {

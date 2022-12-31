@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 $CollageID = $_GET['collageid'];
 if (!is_number($CollageID)) {
@@ -118,7 +118,7 @@ View::header(
           </td>
           <td><?=(trim($Artist['Name']) ?: '&nbsp;')?>
           </td>
-          <td class="nobr"><?=Users::format_username($Artist['UserID'], $$Artist['Username'], false, false, false)?>
+          <td class="nobr"><?=User::format_username($Artist['UserID'], $$Artist['Username'], false, false, false)?>
           </td>
           <td class="nobr">
             <input type="hidden" name="action" value="manage_artists_handle" />

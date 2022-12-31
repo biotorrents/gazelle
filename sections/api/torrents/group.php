@@ -1,8 +1,8 @@
 <?php
+
 #declare(strict_types=1);
 
 $ENV = ENV::go();
-require_once "$ENV->SERVER_ROOT/sections/torrents/functions.php";
 
 # Either id or hash
 $GroupID = (int) $_GET['id'];
@@ -15,10 +15,10 @@ if ($GroupID && $TorrentHash) {
 
 # Get id from hash
 if ($TorrentHash) {
-    if (!is_valid_torrenthash($TorrentHash)) {
+    if (!TorrentFunctions::is_valid_torrenthash($TorrentHash)) {
         json_die('failure', 'bad hash parameter');
     } else {
-        $GroupID = (int) torrenthash_to_groupid($TorrentHash);
+        $GroupID = (int) TorrentFunctions::torrenthash_to_groupid($TorrentHash);
         if (!$GroupID) {
             json_die('failure', 'bad hash parameter');
         }
@@ -30,7 +30,7 @@ if ($GroupID <= 0) {
     json_die('failure', 'bad id parameter');
 }
 
-$TorrentCache = get_group_info($GroupID, true, 0, true, true);
+$TorrentCache = TorrentFunctions::get_group_info($GroupID, true, 0, true, true);
 if (!$TorrentCache) {
     json_die('failure', 'bad id parameter');
 }
@@ -95,7 +95,7 @@ $JsonTorrentDetails = [
 
     'citations'     => $Citations,
     'mirrors'       => ($TorrentDetails['Mirrors']) ?: false,
-  
+
     'description'   => $TorrentDetails['description'],
    #'description'   => Text::parse($TorrentDetails['description']),
     'picture'       => $TorrentDetails['picture'],
@@ -119,7 +119,7 @@ foreach ($TorrentList as $Torrent) {
     # todo: Limit to 100 files
     unset($File);
     $FileList = implode('|||', $FileList);
-    $Userinfo = Users::user_info($Torrent['UserID']);
+    $Userinfo = User::user_info($Torrent['UserID']);
 
     $Reports = Torrents::get_reports($Torrent['ID']);
     $Torrent['Reported'] = count($Reports) > 0;

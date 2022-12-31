@@ -31,9 +31,9 @@ $db->prepared_query("
   GROUP BY p.ID
   ORDER BY p.Secondary ASC, p.Level ASC");
 if ($db->has_results()) {
-?>
+    ?>
   <div class="box">
-  <table class="skeleton-fix">
+  <table class="skeletonFix">
     <tr class="colhead">
       <td>Name</td>
       <td>Level</td>

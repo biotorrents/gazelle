@@ -1,6 +1,11 @@
 <?php
 #declare(strict_types=1);
 
+
+/**
+ * THIS IS GOING AWAY
+ */
+
 class CommentsView
 {
     /**
@@ -33,27 +38,29 @@ class CommentsView
      */
     public static function render_comment($AuthorID, $PostID, $Body, $AddedTime, $EditedUserID, $EditedTime, $Link, $Unread = false, $Header = '', $Tools = true)
     {
-        $UserInfo = Users::user_info($AuthorID);
-        $Header = Users::format_username($AuthorID, true, true, true, true, true) . time_diff($AddedTime) . $Header; ?>
+        $app = App::go();
+
+        $UserInfo = User::user_info($AuthorID);
+        $Header = User::format_username($AuthorID, true, true, true, true, true) . time_diff($AddedTime) . $Header; ?>
 <table
-  class="forum_post box vertical_margin<?=(!Users::has_avatars_enabled() ? ' noavatar' : '') . ($Unread ? ' forum_unread' : '')?>"
+  class="forum_post box vertical_margin<?=(!User::hasAvatarsEnabled() ? ' noavatar' : '') . ($Unread ? ' forum_unread' : '')?>"
   id="post<?=$PostID?>">
   <colgroup>
-    <?php if (Users::has_avatars_enabled()) { ?>
+    <?php if (User::hasAvatarsEnabled()) { ?>
     <col class="col_avatar" />
     <?php } ?>
     <col class="col_post_body" />
   </colgroup>
   <tr class="colhead_dark">
-    <td colspan="<?=(Users::has_avatars_enabled() ? 2 : 1)?>">
-      <div class="float_left"><a class="post_id"
+    <td colspan="<?=(User::hasAvatarsEnabled() ? 2 : 1)?>">
+      <div class="u-pull-left"><a class="post_id"
           href="<?=$Link?>">#<?=$PostID?></a>
         <?=$Header?>
         <?php if ($Tools) { ?>
         - <a href="#quickpost"
           onclick="Quote('<?=$PostID?>','<?=$UserInfo['Username']?>', true);"
           class="brackets">Quote</a>
-        <?php if ($AuthorID == G::$user['ID'] || check_perms('site_moderate_forums')) { ?>
+        <?php if ($AuthorID == $app->userNew->core["id"] || check_perms('site_moderate_forums')) { ?>
         - <a href="#post<?=$PostID?>"
           onclick="Edit_Form('<?=$PostID?>','');"
           class="brackets">Edit</a>
@@ -64,11 +71,11 @@ class CommentsView
           class="brackets">Delete</a>
         <?php } ?>
       </div>
-      <div id="bar<?=$PostID?>" class="float_right">
+      <div id="bar<?=$PostID?>" class="u-pull-right">
         <a href="reports.php?action=report&amp;type=comment&amp;id=<?=$PostID?>"
           class="brackets">Report</a>
         <?php
-      if (check_perms('users_warn') && $AuthorID != G::$user['ID'] && G::$user['Class'] >= $UserInfo['Class']) {
+      if (check_perms('users_warn') && $AuthorID != $app->userNew->core["id"] && $app->userNew->extra['Class'] >= $UserInfo['Class']) {
           ?>
         <form class="manage_form hidden" name="user"
           id="warn<?=$PostID?>" action="comments.php" method="post">
@@ -87,9 +94,9 @@ class CommentsView
     </td>
   </tr>
   <tr>
-    <?php if (Users::has_avatars_enabled()) { ?>
+    <?php if (User::hasAvatarsEnabled()) { ?>
     <td class="avatar" valign="top">
-      <?=Users::show_avatar($UserInfo['Avatar'], $AuthorID, $UserInfo['Username'], G::$user['DisableAvatars'])?>
+      <?=User::displayAvatar($UserInfo['Avatar'], $UserInfo['Username'])?>
     </td>
     <?php } ?>
     <td class="body" valign="top">
@@ -104,7 +111,7 @@ class CommentsView
             onclick="LoadEdit('<?=substr($Link, 0, strcspn($Link, '.'))?>', <?=$PostID?>, 1); return false;">&laquo;</a>
           <?php } ?>
           Last edited by
-          <?=Users::format_username($EditedUserID, false, false, false) ?>
+          <?=User::format_username($EditedUserID, false, false, false) ?>
           <?=time_diff($EditedTime, 2, true, true)?>
           <?php } ?>
         </div>

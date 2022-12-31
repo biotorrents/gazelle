@@ -4,7 +4,7 @@ declare(strict_types=1);
 $ENV = ENV::go();
 
 $UserID = $user['ID'];
-$Purchase = "100 $ENV->BONUS_POINTS";
+$Purchase = "100 $ENV->bonusPoints";
 
 $GiB = 1024 * 1024 * 1024;
 $Cost = 1.5 * $GiB;
@@ -41,11 +41,11 @@ if ($db->has_results()) {
 View::header('Store'); ?>
 <div>
   <h2>Purchase
-    <?= $Worked?"Successful":"Failed"?>
+    <?= $Worked ? "Successful" : "Failed"?>
   </h2>
   <div class="box">
     <p>
-      <?= $Worked?("You purchased ".$Purchase):("Error: ".$ErrMessage)?>
+      <?= $Worked ? ("You purchased ".$Purchase) : ("Error: ".$ErrMessage)?>
     </p>
     <p>
       <a href="/store.php">Back to Store</a>

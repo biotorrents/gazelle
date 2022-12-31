@@ -1,14 +1,15 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
 $ENV = ENV::go();
 
 if (!empty($_GET['search'])) {
-    if (preg_match('/^'.$ENV->IP_REGEX.'$/', $_GET['search'])) {
+    if (preg_match($app->env->regexIp, $_GET['search'])) {
         $_GET['ip'] = $_GET['search'];
-    } elseif (preg_match('/^'.EMAIL_REGEX.'$/i', $_GET['search'])) {
+    } elseif (preg_match($app->env->regexEmail, $_GET['search'])) {
         $_GET['email'] = $_GET['search'];
-    } elseif (preg_match(USERNAME_REGEX, $_GET['search'])) {
+    } elseif (preg_match($app->env->regexUsername, $_GET['search'])) {
         $db->query("
       SELECT ID
       FROM users_main
@@ -383,7 +384,7 @@ if (count($_GET)) {
 
         if ($_GET['disabled_ip']) {
             $Distinct = 'DISTINCT ';
-                $Join['um2'] = ' JOIN users_main AS um2 ON um2.IP = um1.IP AND um2.Enabled = \'2\' ';
+            $Join['um2'] = ' JOIN users_main AS um2 ON um2.IP = um1.IP AND um2.Enabled = \'2\' ';
         }
 
         if (!empty($_GET['passkey'])) {
@@ -991,7 +992,7 @@ View::header('User search');
 <?php
 if ($RunQuery) {
                 if (!empty($_GET['ip'])) {
-                        $db->query("SELECT ID, IP FROM users_main");
+                    $db->query("SELECT ID, IP FROM users_main");
                     while (list($ID, $EncIP) = $db->next_record()) {
                         $IPs[] = $ID.", '".Crypto::decrypt($EncIP)."'";
                     }
@@ -999,7 +1000,7 @@ if ($RunQuery) {
                     $db->query("INSERT IGNORE INTO users_ips_decrypted (ID, IP) VALUES(".implode("),(", $IPs).")");
                 }
                 if (!empty($_GET['email'])) {
-                        $db->query("SELECT ID, Email FROM users_main");
+                    $db->query("SELECT ID, Email FROM users_main");
                     while (list($ID, $EncEmail) = $db->next_record()) {
                         $Emails[] = $ID.", '".Crypto::decrypt($EncEmail)."'";
                     }
@@ -1051,7 +1052,7 @@ while (list($UserID, $Username, $Uploaded, $Downloaded, $Snatched, $Invitees, $C
     $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
     $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'; ?>
     <tr>
-      <td><?=Users::format_username($UserID, true, true, true, true)?>
+      <td><?=User::format_username($UserID, true, true, true, true)?>
       </td>
       <td><?=Format::get_ratio_html($Uploaded, $Downloaded)?>
       </td>

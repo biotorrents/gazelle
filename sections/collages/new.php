@@ -24,7 +24,7 @@ if (isset($Err)) { ?>
   <?php
 } ?>
   <div class="box pad">
-    <form class="create_form" name="collage" action="collages.php" method="post">
+    <form name="collage" action="collages.php" method="post">
       <input type="hidden" name="action" value="new_handle" />
       <input type="hidden" name="auth"
         value="<?=$user['AuthKey']?>" />

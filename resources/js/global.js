@@ -1,24 +1,113 @@
-"use strict";
-
 /**
- * html_entity_decode
+ * global javascript
  */
-function html_entity_decode(str) {
-  var el = document.createElement("div");
-  el.innerHTML = str;
 
-  for (var i = 0, ret = ""; i < el.childNodes.length; i++) {
-    ret += el.childNodes[i].nodeValue;
-  }
-  return ret;
-}
+(() => {
+  "use strict";
+
+  // jquery ui tooltips
+  // https://jqueryui.com/tooltip/
+  $(document).tooltip();
+
+  // code syntax highlighting
+  // https://highlightjs.org
+  hljs.highlightAll;
+
+  // start jquery extensions
+  // todo: continue to prune
+  $.fn.extend({
+    gshow: function () {
+      return this.removeClass("hidden");
+    },
+
+    ghide: function (force) {
+      return this.addClass("hidden", force);
+    },
+
+    gtoggle: function (force) {
+      if (this[0].className.split(" ").indexOf("hidden") === -1) {
+        this.addClass("hidden", force);
+      } else {
+        this.removeClass("hidden");
+      }
+      return this;
+    },
+
+    listen: function (event, callback) {
+      for (let i = 0; i < this.length; i++) {
+        let object = this[i];
+        if (document.addEventListener) {
+          object.addEventListener(event, callback, false);
+        } else {
+          object.attachEvent("on" + event, callback);
+        }
+      }
+      return this;
+    },
+
+    enable: function () {
+      $(this).prop("disabled", false);
+      return this;
+    },
+
+    disable: function () {
+      $(this).prop("disabled", true);
+      return this;
+    },
+
+    raw: function (number) {
+      if (typeof number === "undefined") {
+        number = 0;
+      }
+      return $(this).get(number);
+    },
+
+    nextElementSibling: function () {
+      let here = this[0];
+      if (here.nextElementSibling) {
+        return $(here.nextElementSibling);
+      }
+      do {
+        here = here.nextSibling;
+      } while (here.nodeType !== 1);
+      return $(here);
+    },
+
+    previousElementSibling: function () {
+      let here = this[0];
+      if (here.previousElementSibling) {
+        return $(here.previousElementSibling);
+      }
+      do {
+        here = here.nextSibling;
+      } while (here.nodeType !== 1);
+      return $(here);
+    },
+
+    // prevent double submission of forms
+    preventDoubleSubmission: function () {
+      $(this).submit(function (e) {
+        let form = $(this);
+        if (form.data("submitted") === true) {
+          e.preventDefault();
+        } else {
+          form.data("submitted", true);
+        }
+      });
+      return this;
+    },
+  });
+  // end jquery extensions
+})();
+
+/** legacy */
 
 /**
  * get_size
  */
 function get_size(size) {
   var steps = 0;
-  for (; size >= 1024; size /= 1024, steps++);
+  for (; size >= 1024; size /= 1024, steps++) {}
   var exts = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"];
   return size.toFixed(2) + (exts[steps] || "");
 }
@@ -58,154 +147,12 @@ function save_message(message, err = false) {
   $("#content").raw().insertBefore(messageDiv, $("#content").raw().firstChild);
 }
 
-$.fn.extend({
-  gshow: function () {
-    return this.remove_class("hidden");
-  },
-  ghide: function (force) {
-    return this.add_class("hidden", force);
-  },
-  gtoggle: function (force) {
-    if (this[0].className.split(" ").indexOf("hidden") == -1) {
-      this.add_class("hidden", force);
-    } else {
-      this.remove_class("hidden");
-    }
-    return this;
-  },
-  listen: function (event, callback) {
-    for (var i = 0; i < this.length; i++) {
-      var object = this[i];
-      if (document.addEventListener) {
-        object.addEventListener(event, callback, false);
-      } else {
-        object.attachEvent("on" + event, callback);
-      }
-    }
-    return this;
-  },
-  add_class: function (class_name, force) {
-    for (var i = 0; i < this.length; i++) {
-      var object = this[i];
-      if (object.className === "") {
-        object.className = class_name;
-      } else if (
-        force ||
-        object.className.split(" ").indexOf(class_name) == -1
-      ) {
-        object.className = object.className + " " + class_name;
-      }
-    }
-    return this;
-  },
-  remove_class: function (class_name) {
-    for (var i = 0; i < this.length; i++) {
-      var object = this[i];
-      var classes = object.className.split(" ");
-      var result = classes.indexOf(class_name);
-      if (result != -1) {
-        classes.splice(result, 1);
-        object.className = classes.join(" ");
-      }
-    }
-    return this;
-  },
-  has_class: function (class_name) {
-    for (var i = 0; i < this.length; i++) {
-      var object = this[i];
-      var classes = object.className.split(" ");
-      if (classes.indexOf(class_name) != -1) {
-        return true;
-      }
-    }
-    return false;
-  },
-  toggle_class: function (class_name) {
-    for (var i = 0, il; i < this.length; i++) {
-      var object = this[i];
-      var classes = object.className.split(" ");
-      var result = classes.indexOf(class_name);
-      if (result != -1) {
-        classes.splice(result, 1);
-        object.className = classes.join(" ");
-      } else {
-        if (object.className === "") {
-          object.className = class_name;
-        } else {
-          object.className = object.className + " " + class_name;
-        }
-      }
-    }
-    return this;
-  },
-  disable: function () {
-    $(this).prop("disabled", true);
-    return this;
-  },
-  enable: function () {
-    $(this).prop("disabled", false);
-    return this;
-  },
-  raw: function (number) {
-    if (typeof number == "undefined") {
-      number = 0;
-    }
-    return $(this).get(number);
-  },
-  nextElementSibling: function () {
-    var here = this[0];
-    if (here.nextElementSibling) {
-      return $(here.nextElementSibling);
-    }
-    do {
-      here = here.nextSibling;
-    } while (here.nodeType != 1);
-    return $(here);
-  },
-  previousElementSibling: function () {
-    var here = this[0];
-    if (here.previousElementSibling) {
-      return $(here.previousElementSibling);
-    }
-    do {
-      here = here.nextSibling;
-    } while (here.nodeType != 1);
-    return $(here);
-  },
-
-  // Disable unset form elements to allow search URLs cleanups
-  disableUnset: function () {
-    $("input, select", this)
-      .filter(function () {
-        return $(this).val() === "";
-      })
-      .disable();
-    return this;
-  },
-
-  // Prevent double submission of forms
-  preventDoubleSubmission: function () {
-    $(this).submit(function (e) {
-      var $form = $(this);
-      if ($form.data("submitted") === true) {
-        e.preventDefault();
-      } else {
-        $form.data("submitted", true);
-      }
-    });
-    return this;
-  },
-});
-
-if ($("meta[name=authkey]").raw()) {
-  var authkey = $("meta[name=authkey]").raw().content;
-  var userid = parseInt($("meta[name=userid]").raw().content);
-}
-
 /**
- * Check or uncheck checkboxes in formElem
- * If masterElem is false, toggle each box, otherwise use masterElem's status on all boxes
- * If elemSelector is false, act on all checkboxes in formElem
+ * toggleChecks
+ *
+ * Check or uncheck checkboxes in formElem.
+ * If masterElem is false, toggle each box, otherwise use masterElem's status on all boxes.
+ * If elemSelector is false, act on all checkboxes in formElem.
  */
 function toggleChecks(formElem, masterElem, elemSelector) {
   elemSelector = elemSelector || "input:checkbox";
@@ -218,6 +165,9 @@ function toggleChecks(formElem, masterElem, elemSelector) {
   }
 }
 
+/**
+ * lightbox
+ */
 var lightbox = {
   init: function (image, size) {
     if ($("#lightbox").length == 0 || $("#curtain").length == 0) {
@@ -251,6 +201,7 @@ var lightbox = {
       lightbox.box(image);
     }
   },
+
   box: function (image) {
     var hasA = false;
     if (
@@ -265,6 +216,7 @@ var lightbox = {
       $("#curtain").gshow().listen("click", lightbox.unbox);
     }
   },
+
   box_async: function (image) {
     var hasA = false;
     if (
@@ -277,13 +229,14 @@ var lightbox = {
       $("#lightbox").raw().innerHTML = '<img src="' + image.src + '" alt="" />';
     }
   },
+
   unbox: function (data) {
     $("#curtain").ghide();
     $("#lightbox").ghide().raw().innerHTML = "";
   },
 };
 
-// Horrible hack to let arrow keys work as forward/back in lightbox
+// horrible hack to let arrow keys work as forward/back in lightbox
 window.onkeydown = function (e) {
   e = e || window.event;
   if (e.keyCode == 37 || e.keyCode == 39) {
@@ -305,6 +258,9 @@ window.onkeydown = function (e) {
   }
 };
 
+/**
+ * resize
+ */
 function resize(id) {
   var textarea = document.getElementById(id);
   if (textarea.scrollHeight > textarea.clientHeight) {
@@ -313,7 +269,11 @@ function resize(id) {
   }
 }
 
-//ZIP downloader stuff
+/**
+ * add_selection
+ *
+ * ZIP downloader stuff.
+ */
 function add_selection() {
   var selected = $("#formats").raw().options[$("#formats").raw().selectedIndex];
   if (selected.disabled === false) {
@@ -328,18 +288,24 @@ function add_selection() {
       "</span>" +
       '            <a href="#" onclick="remove_selection(\'' +
       selected.value +
-      '\'); return false;" class="float_right" class="brackets">X</a>' +
+      '\'); return false;" class="u-pull-right" class="brackets">X</a>' +
       '            <br style="clear: all;" />';
     $("#list").raw().appendChild(listitem);
     $("#opt" + selected.value).raw().disabled = true;
   }
 }
 
+/**
+ * remove_selection
+ */
 function remove_selection(index) {
   $("#list" + index).remove();
   $("#opt" + index).raw().disabled = "";
 }
 
+/**
+ * preload
+ */
 function preload(image) {
   var img = document.createElement("img");
   img.style.display = "none";
@@ -384,7 +350,7 @@ function getCover(event) {
     }
   };
   document.addEventListener("mousemove", coverListener);
-  //Preload next image
+  // preload next image
   if ($(".torrent_table, .request_table").length > 0) {
     var as = $("[data-cover]");
     var a = event.target;
@@ -396,18 +362,19 @@ function getCover(event) {
     );
   }
 }
+
+/**
+ * ungetCover
+ */
 function ungetCover(event) {
   $("#coverCont img").remove();
   coverCont.style.display = "none";
   document.removeEventListener("mousemove", coverListener);
 }
 
-// Apparently firefox doesn't implement NodeList.forEach until FF50
-// Remove this shim after that's stable for a while
-if (typeof NodeList.prototype.forEach !== "function") {
-  NodeList.prototype.forEach = Array.prototype.forEach;
-}
-
+/**
+ * iife
+ */
 $(function () {
   document.querySelectorAll("[data-toggle-target]").forEach(function (el) {
     el.addEventListener("click", function (event) {
@@ -429,13 +396,4 @@ $(function () {
       (e.target.attributes["lightbox-size"] || []).value || e.target.width
     );
   });
-});
-
-/**
- * jQuery tooltips
- * Replaces Tooltipster
- * @see https://jqueryui.com/tooltip/
- */
-$(function () {
-  $(document).tooltip();
 });

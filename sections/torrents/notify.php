@@ -162,7 +162,7 @@ if (!empty($GroupIDs)) {
     }
 }
 if ($Sneaky) {
-    $UserInfo = Users::user_info($UserID);
+    $UserInfo = User::user_info($UserID);
     View::header($UserInfo['Username'].'\'s notifications', 'notifications');
 } else {
     View::header('My notifications', 'notifications');
@@ -361,14 +361,14 @@ if (empty($Results)) {
                     echo '<strong class="new">New!</strong>';
                 } ?>
               <?php if (Bookmarks::has_bookmarked('torrent', $GroupID)) { ?>
-              <span class="remove_bookmark float_right">
+              <span class="remove_bookmark u-pull-right">
                 <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
                   class="brackets"
                   onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove
                   bookmark</a>
               </span>
               <?php } else { ?>
-              <span class="add_bookmark float_right">
+              <span class="add_bookmark u-pull-right">
                 <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
                   class="brackets"
                   onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>

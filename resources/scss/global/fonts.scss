@@ -1,22 +1,28 @@
-/* Wikipedia-style external links */
-a.external {
-  background-image: url("/images/symbols/external-link-ltr-icon.svg");
-  background-position: center right;
-  background-repeat: no-repeat;
-  padding-right: 13px;
+/**
+ * font size wrappers
+ */
+.x-small {
+  font-size: x-small;
 }
 
-/* ul fix */
-ul {
-  list-style: square;
+.small {
+  font-size: small;
+}
 
-  li {
-    margin-left: 2rem;
-  }
+.medium {
+  font-size: medium;
+}
+
+.large {
+  font-size: large;
+}
+
+.x-large {
+  font-size: x-large;
 }
 
 /**
- * Spacing classes
+ * text spacing
  */
 
 .center {
@@ -26,12 +32,12 @@ ul {
 }
 
 .left {
-  float: left;
+  /* float: left; */
   text-align: left;
 }
 
 .right {
-  float: right;
+  /* float: right; */
   text-align: right;
 }
 
@@ -39,7 +45,54 @@ ul {
   white-space: nowrap;
 }
 
-/* Brackets [Bookmark] */
+/* disclaimer */
+.halfwide {
+  max-width: 50%;
+  margin: auto;
+  text-align: center;
+}
+
+/**
+ * wikipedia-style external links
+ */
+a.external {
+  background-image: url("/images/symbols/external-link-ltr-icon.svg");
+  background-position: center right;
+  background-repeat: no-repeat;
+  padding-right: 13px;
+}
+
+/**
+ * monospace fixes, etc.
+ */
+.monospace {
+  font-family: monospace;
+}
+
+code,
+pre {
+  white-space: pre-wrap;
+
+  br {
+    display: none;
+  }
+}
+
+/**
+ * breadcrumbs
+ */
+
+h2#breadcrumbs {
+  li {
+    display: inline;
+    list-style: none;
+    margin: 0;
+  }
+}
+
+/**
+ * brackets, e.g., [bookmark]
+ */
 .brackets {
   cursor: pointer;
   text-indent: 0px;
@@ -54,69 +107,16 @@ ul {
   }
 }
 
-/* GPG keys */
-#publickey {
-  font-family: monospace;
-  width: initial;
-}
-
-/* <pre> spacing fixes */
-code,
-pre {
-  white-space: pre-wrap;
-
-  br {
-    display: none;
-  }
-}
-
 /**
- * Torrent form
- */
-
-.torrent_form {
-  label {
-    font-weight: bold;
-  }
-
-  .required {
-    &:after {
-      color: red;
-      content: "*";
-    }
-  }
-}
-
-/* Good/bad examples on rules pages */
-.important_text {
-  color: red;
-  font-weight: bold;
-}
-
-.important_text_alt {
-  color: green;
-  font-weight: bold;
-}
-
-.important_text_semi {
-  color: orange;
-  font-weight: bold;
-}
-
-.invalid,
-.warning,
-.error,
-.new {
-  color: red;
-}
-
-/**
- * Ordered lists
+ * ordered lists
  * https://stackoverflow.com/a/2730079
  */
 
-/* No IE6/7 */
-html>/**/body ol {
+/* no IE6/7 */
+html>
+
+/**/
+body ol {
   list-style-type: none;
   counter-reset: level1;
 }
@@ -136,14 +136,18 @@ ol li ol li:before {
   counter-increment: level2;
 }
 
-/* Disclaimer */
-.halfwide {
-  max-width: 50%;
-  margin: auto;
-  text-align: center;
+/**
+ * unordered lists
+ */
+
+ul {
+  &.nobullet li {
+    list-style: none;
+    margin: 0;
+  }
 }
 
-/* Details and summary (HTML5) */
+/* details and summary (HTML5) */
 details {
   font-weight: normal;
 }

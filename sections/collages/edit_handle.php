@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 authorize();
@@ -37,7 +38,7 @@ if (isset($_POST['name'])) {
         }
 
         $ErrNoEscape = true;
-        include(SERVER_ROOT.'/sections/collages/edit.php');
+        include(serverRoot.'/sections/collages/edit.php');
         error();
     }
 }

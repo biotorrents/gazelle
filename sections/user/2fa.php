@@ -1,10 +1,13 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 $ENV = ENV::go();
 
-$TwoFA = new RobThree\Auth\TwoFactorAuth($ENV->SITE_NAME);
-$U2F = new \u2flib_server\U2F("https://$ENV->SITE_DOMAIN");
+$app = App::go();
+$db = $app->dbOld;
+
+$TwoFA = new RobThree\Auth\TwoFactorAuth($ENV->siteName);
+$U2F = new \u2flib_server\U2F("https://$ENV->siteDomain");
 
 if ($Type = $_POST['type'] ?? false) {
     if ($Type === 'PGP') {
@@ -172,7 +175,7 @@ View::header("2FA Settings", 'u2f');
         <input type="text" size="60" name="twofasecret" id="twofasecret"
           value="<?=$TwoFASecret?>" readonly><br>
         <img
-          src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->SITE_NAME.':'.$user['Username'], $TwoFASecret)?>" />
+          src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$user['Username'], $TwoFASecret)?>" />
         <br />
 
         <input type="text" size="20" maxlength="6" pattern="[0-9]{0,6}" name="twofa" id="twofa"
@@ -203,7 +206,7 @@ View::header("2FA Settings", 'u2f');
 
         <p>
           <img
-            src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->SITE_NAME.':'.$user['Username'], $TwoFASecret)?>" />
+            src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$user['Username'], $TwoFASecret)?>" />
         </p>
 
         <p>

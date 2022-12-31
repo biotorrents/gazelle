@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 # todo: Go through line by line
@@ -41,7 +42,7 @@ if (!empty($_GET['userid'])) {
     if (!is_number($_GET['userid'])) {
         json_die("failure");
     }
-    $UserInfo = Users::user_info($_GET['userid']);
+    $UserInfo = User::user_info($_GET['userid']);
     if (empty($UserInfo)) {
         json_die("failure");
     }
@@ -323,8 +324,8 @@ if ($NumResults == 0) {
         $Request = $Requests[$RequestID];
         $VoteCount = $SphRequest['votes'];
         $Bounty = $SphRequest['bounty'] * 1024; // Sphinx stores bounty in kB
-        $Requestor = Users::user_info($Request['UserID']);
-        $Filler = $Request['FillerID'] ? Users::user_info($Request['FillerID']) : null;
+        $Requestor = User::user_info($Request['UserID']);
+        $Filler = $Request['FillerID'] ? User::user_info($Request['FillerID']) : null;
 
         if ($Request['CategoryID'] == 0) {
             $CategoryName = 'Unknown';

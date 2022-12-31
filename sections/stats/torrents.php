@@ -1,5 +1,11 @@
 <?php
+
 declare(strict_types=1);
+
+
+/**
+ * torrent stats page
+ */
 
 $stats = new Stats();
 $twig = Twig::go();

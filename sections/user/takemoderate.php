@@ -1,5 +1,8 @@
 <?php
+
 #declare(strict_types=1);
+
+$app = App::go();
 
 // Are they being tricky blighters?
 if (!$_POST['userid'] || !is_number($_POST['userid'])) {
@@ -175,12 +178,6 @@ if (!check_perms('users_mod', $Cur['Class'])) {
     error();
 }
 
-if (!empty($_POST['donor_points_submit']) && !empty($_POST['donation_value']) && is_numeric($_POST['donation_value'])) {
-    Donations::regular_donate($UserID, $_POST['donation_value'], "Add Points", $_POST['donation_reason'], $_POST['donation_currency']);
-} elseif (!empty($_POST['donor_values_submit'])) {
-    Donations::update_rank($UserID, $_POST['donor_rank'], $_POST['total_donor_rank'], $_POST['reason']);
-}
-
 // If we're deleting the user, we can ignore all the other crap
 if ($_POST['UserStatus'] === 'delete' && check_perms('users_delete_users')) {
     Misc::write_log("User account $UserID (".$Cur['Username'].") was deleted by ".$user['Username']);
@@ -205,7 +202,7 @@ $UpdateSet = [];
 $EditSummary = [];
 $TrackerUserUpdates = array('passkey' => $Cur['torrent_pass']);
 
-$QueryID = G::$db->get_query_id();
+$QueryID = $app->dbOld->get_query_id();
 
 if ($LockType == '---' || $LockedAccount == 0) {
     if ($Cur['Type']) {
@@ -283,7 +280,7 @@ if ($Classes[$Class]['Level'] != $Cur['Class']
   )
   ) {
     $UpdateSet[] = "PermissionID = '$Class'";
-    $EditSummary[] = 'class changed to '.Users::make_class_string($Class);
+    $EditSummary[] = 'class changed to '.User::make_class_string($Class);
     $LightUpdates['PermissionID'] = $Class;
     $DeleteKeys = true;
 
@@ -633,11 +630,11 @@ if ($DisablePM != $Cur['DisablePM'] && check_perms('users_disable_any')) {
 
 if ($DisablePoints != $Cur['DisablePoints'] && check_perms('users_disable_any')) {
     $UpdateSet[] = "DisablePoints = '$DisablePoints'";
-    $EditSummary[] = BONUS_POINTS.' earning ' . ($DisablePoints ? 'disabled' : 'enabled');
+    $EditSummary[] = bonusPoints.' earning ' . ($DisablePoints ? 'disabled' : 'enabled');
     $HeavyUpdates['DisablePoints'] = $DisablePoints;
 
     if (!empty($UserReason)) {
-        Misc::send_pm($UserID, 0, 'Your '.BONUS_POINTS.'-earning ability has been disabled', "Your ".BONUS_POINTS."-earning ability has been disabled. The reason given was: [quote]{$UserReason}[/quote] If you would like to discuss this, please join ".DISABLED_CHAN.' on our IRC network. Instructions can be found [url='.site_url().'wiki.php?action=article&amp;name=IRC+-+How+to+join]here[/url].');
+        Misc::send_pm($UserID, 0, 'Your '.bonusPoints.'-earning ability has been disabled', "Your ".bonusPoints."-earning ability has been disabled. The reason given was: [quote]{$UserReason}[/quote] If you would like to discuss this, please join ".DISABLED_CHAN.' on our IRC network. Instructions can be found [url='.site_url().'wiki.php?action=article&amp;name=IRC+-+How+to+join]here[/url].');
     }
 }
 
@@ -724,7 +721,7 @@ if ($ResetAuthkey == 1 && check_perms('users_edit_reset_keys')) {
 
 if ($SendHackedMail && check_perms('users_disable_any')) {
     $EditSummary[] = "hacked account email sent to $HackedEmail";
-    App::email($HackedEmail, "Your $ENV->SITE_NAME account", "Your $ENV->SITE_NAME account appears to have been compromised. As a security measure, we have disabled your account. To resolve this, please visit us on Slack.");
+    App::email($HackedEmail, "Your $ENV->siteName account", "Your $ENV->siteName account appears to have been compromised. As a security measure, we have disabled your account. To resolve this, please visit us on Slack.");
 }
 
 if ($MergeStatsFrom && check_perms('users_edit_ratio')) {
@@ -753,7 +750,7 @@ if ($MergeStatsFrom && check_perms('users_edit_ratio')) {
 }
 
 if ($Pass && check_perms('users_edit_password')) {
-    $UpdateSet[] = "PassHash = '".db_string(Users::make_sec_hash($Pass))."'";
+    $UpdateSet[] = "PassHash = '".db_string(Auth::makeHash($Pass))."'";
     $EditSummary[] = 'password reset';
 
     $cache->delete_value("user_info_$UserID");

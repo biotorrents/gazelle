@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 enforce_login();
 if (!check_perms('admin_manage_news')) {
@@ -52,7 +52,6 @@ switch ($_GET['action']) {
   </div>
 
   <form
-    class="<?= ($_GET['action'] === 'news') ? 'create_form' : 'edit_form';?>"
     name="news_post" action="tools.php" method="post">
     <div class="box pad">
       <input type="hidden" name="action"

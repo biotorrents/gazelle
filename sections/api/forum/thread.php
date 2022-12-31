@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 # todo: Go through line by line
@@ -248,9 +249,9 @@ if ($ThreadInfo['StickyPostID']) {
 $JsonPosts = [];
 foreach ($Thread as $Key => $Post) {
     list($PostID, $AuthorID, $AddedTime, $Body, $EditedUserID, $EditedTime) = array_values($Post);
-    list($AuthorID, $Username, $PermissionID, $Paranoia, $Artist, $Donor, $Warned, $Avatar, $Enabled, $UserTitle) = array_values(Users::user_info($AuthorID));
+    list($AuthorID, $Username, $PermissionID, $Paranoia, $Artist, $Donor, $Warned, $Avatar, $Enabled, $UserTitle) = array_values(User::user_info($AuthorID));
 
-    $UserInfo = Users::user_info($EditedUserID);
+    $UserInfo = User::user_info($EditedUserID);
     $JsonPosts[] = [
     'postId' => (int)$PostID,
     'addedTime' => $AddedTime,

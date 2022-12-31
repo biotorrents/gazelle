@@ -30,7 +30,7 @@ body.style_matcha {
   }
 
   /* Upload, Invite, etc. */
-  #userinfo {
+  #userInfo {
     background: #fff9c7;
     box-shadow: 0 2px 10px -2px slategray;
     color: #222;
@@ -67,7 +67,7 @@ body.style_matcha {
     }
   }
 
-  #userinfo_minor > li > ul {
+  #userInfoMinor>li>ul {
     display: none;
     position: absolute;
     padding: 5px;
@@ -88,10 +88,10 @@ body.style_matcha {
 
   /* Box */
   .box,
-    .pad,
-    section,
-    /* Exceptions, fixes, etc. */
-    table.user_options {
+  .pad,
+  section,
+  /* Exceptions, fixes, etc. */
+  table.user_options {
     background-color: white;
     border: none;
     margin-bottom: 1em;
@@ -105,7 +105,7 @@ body.style_matcha {
   .artist_table,
   .request_table,
   .forum_index,
-  #userinfo_minor > li > ul,
+  #userInfoMinor>li>ul,
   .permissions table {
     box-shadow: 0 5px 4px -4px slategray;
   }
@@ -237,4 +237,6 @@ body.style_matcha {
   .forum_post.sticky_post {
     border: 2px solid #fbe180;
   }
-} /* end body.style_matcha */
+}
+
+/* end body.style_matcha */

@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 // todo: make this use the cache version of the thread, save the db query

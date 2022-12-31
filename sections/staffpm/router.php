@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -56,9 +57,6 @@ switch ($_REQUEST['action']) {
     break;
   case 'assign':
     require('assign.php');
-    break;
-  case 'make_donor':
-    require('makedonor.php');
     break;
   case 'responses':
     require('common_responses.php');

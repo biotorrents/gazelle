@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 
 /**
  * Twig
@@ -16,6 +18,9 @@ class Twig # extends Twig\Environment
 {
     # singleton
     private static $instance = null;
+
+    # twig instance
+    private $twig = null;
 
 
     /**
@@ -49,8 +54,8 @@ class Twig # extends Twig\Environment
     public static function go(array $options = [])
     {
         return (self::$instance === null)
-        ? self::$instance = self::factory($options)
-        : self::$instance;
+            ? self::$instance = self::factory($options)
+            : self::$instance;
 
         /*
         if (self::$instance === null) {
@@ -72,15 +77,46 @@ class Twig # extends Twig\Environment
 
         # https://twig.symfony.com/doc/3.x/api.html
         $twig = new Twig\Environment(
-            new Twig\Loader\FilesystemLoader("{$app->env->SERVER_ROOT}/templates"),
+            new Twig\Loader\FilesystemLoader("{$app->env->serverRoot}/templates"),
             [
                 "auto_reload" => true,
                 "autoescape" => "name",
-                "cache" => "{$app->env->WEB_ROOT}/cache/twig",
-                "debug" => $app->env->DEV,
+                "cache" => "{$app->env->webRoot}/cache/twig",
+                "debug" => $app->env->dev,
                 "strict_variables" => true,
             ]
         );
+
+        # debug
+        if ($app->env->dev) {
+            $twig->addExtension(new Twig\Extension\DebugExtension());
+        }
+
+        # globals: app and env
+        $twig->addGlobal("app", $app);
+        $twig->addGlobal("env", $app->env);
+
+        # user and authenticated
+        $twig->addGlobal("user", $app->userNew);
+        $twig->addGlobal("authenticated", $app->userNew->isLoggedIn());
+
+        # query
+        $query = Http::query();
+        $twig->addGlobal("query", $query);
+        #!d($twig->getGlobals());exit;
+
+        # https://github.com/paragonie/anti-csrf
+        $twig->addFunction(new Twig\TwigFunction(
+            "form_token",
+            function ($lock_to = null) {
+                static $csrf;
+                if ($csrf === null) {
+                    $csrf = new ParagonIE\AntiCSRF\AntiCSRF();
+                }
+                return $csrf->insertToken($lock_to, false);
+            },
+            [ "is_safe" => ["html"] ]
+        ));
 
         /*
         # DebugBar
@@ -94,50 +130,91 @@ class Twig # extends Twig\Environment
         );
         */
 
+        # DebugBar
+        $twig->addFunction(new Twig\TwigFunction("debugHeader", function () {
+            $app = App::go();
+            $render = $app->debug->getJavascriptRenderer();
+
+            return new Twig\Markup(
+                $render->renderHead(),
+                "UTF-8"
+            );
+        }));
+
+        # can
+        $twig->addFunction(new Twig\TwigFunction("can", function ($permission) {
+            $app = App::go();
+
+            return $app->userNew->can($permission);
+        }));
+
+        # cant
+        $twig->addFunction(new Twig\TwigFunction("cant", function ($permission) {
+            $app = App::go();
+
+            return $app->userNew->cant($permission);
+        }));
+
+        # ImageTools::process
+        $twig->addFunction(new Twig\TwigFunction("processImage", function ($uri, $thumbnail) {
+            return new Twig\Markup(
+                ImageTools::process($uri, $thumbnail),
+                "UTF-8"
+            );
+        }));
+
+        # Text::parse
+        $twig->addFilter(new Twig\TwigFilter("parse", function ($string) {
+            return new Twig\Markup(
+                Text::parse($string),
+                "UTF-8"
+            );
+        }));
+
         # https://philfrilling.com/blog/2017-01/php-convert-seconds-hhmmss-format
-        $twig->addFilter(new Twig\TwigFilter(
-            "hhmmss",
-            function ($seconds) {
-                return sprintf(
-                    "%02dm %02ds", # mm:ss
+        $twig->addFilter(new Twig\TwigFilter("hhmmss", function ($seconds) {
+            return sprintf(
+                "%02dm %02ds", # mm:ss
                     #"%02d:%02d:%02d", # hh:mm:ss
                     #($seconds / 3600), # hh
-                    (intval($seconds / 60) % 60), # mm
-                    ($seconds % 60) # ss
-                );
-            }
-        ));
+                (intval($seconds / 60) % 60), # mm
+                ($seconds % 60) # ss
+            );
+        }));
+
+        # Format::relativeTime
+        $twig->addFilter(new Twig\TwigFilter("relativeTime", function ($time) {
+            return Format::relativeTime($time);
+        }));
+
+        # Badges::displayBadge
+        $twig->addFunction(new Twig\TwigFunction("displayBadge", function ($badgeId) {
+            return new Twig\Markup(
+                Badges::displayBadge($badgeId),
+                "UTF-8"
+            );
+        }));
+
+        # Format::breadcrumbs
+        $twig->addFunction(new Twig\TwigFunction("breadcrumbs", function () {
+            return Format::breadcrumbs();
+        }));
 
         # Format::get_size
-        $twig->addFilter(new Twig\TwigFilter(
-            "get_size",
-            function ($size, $levels = 2) {
-                return Format::get_size($size, $levels);
-            }
-        ));
-
-        # Format::get_ratio_html
-        $twig->addFunction(new Twig\TwigFunction(
-            "get_ratio_html",
-            function ($dividend, $divisor, $color = true) {
-                return Format::get_ratio_html($dividend, $divisor, $color);
-            }
-        ));
+        $twig->addFilter(new Twig\TwigFilter("get_size", function ($size, $levels = 2) {
+            return Format::get_size($size, $levels);
+        }));
 
         # Text::float
-        $twig->addFilter(new Twig\TwigFilter(
-            "float",
-            function ($number, $decimals = 2) {
-                return Text::float($number, $decimals);
-            }
-        ));
-        
+        $twig->addFilter(new Twig\TwigFilter("float", function ($number, $decimals = 2) {
+            return Text::float($number, $decimals);
+        }));
 
 
         /**
          * OPS
          */
-        
+
         $twig->addFilter(new Twig\TwigFilter(
             "article",
             function ($word) {
@@ -153,34 +230,11 @@ class Twig # extends Twig\Environment
         ));
 
         $twig->addFilter(new Twig\TwigFilter(
-            "bb_format",
-            function ($text) {
-                return new Twig\Markup(Text::parse($text), "UTF-8");
-            }
-        ));
-
-        $twig->addFilter(new Twig\TwigFilter(
-            "checked",
-            function ($isChecked) {
-                return $isChecked ? " checked=\"checked\"" : "";
-            }
-        ));
-
-        $twig->addFilter(new Twig\TwigFilter(
             "image",
             function ($i) {
                 return new Twig\Markup(ImageTools::process($i, true), "UTF-8");
             }
         ));
-
-        /*
-        $twig->addFilter(new Twig\TwigFilter(
-            "ipaddr",
-            function ($ipaddr) {
-                return new Twig\Markup(Tools::display_ip($ipaddr), "UTF-8");
-            }
-        ));
-        */
 
         $twig->addFilter(new Twig\TwigFilter(
             "octet_size",
@@ -198,24 +252,6 @@ class Twig # extends Twig\Environment
                 return plural($number);
             }
         ));
-
-        $twig->addFilter(new Twig\TwigFilter(
-            "selected",
-            function ($isSelected) {
-                return $isSelected
-                    ? " selected=\"selected\""
-                    : "";
-            }
-        ));
-
-        /*
-        $twig->addFilter(new Twig\TwigFilter(
-            "shorten",
-            function (string $text, int $length) {
-                return shortenString($text, $length);
-            }
-        ));
-        */
 
         $twig->addFilter(new Twig\TwigFilter(
             "time_diff",
@@ -243,14 +279,14 @@ class Twig # extends Twig\Environment
         $twig->addFilter(new Twig\TwigFilter(
             "user_url",
             function ($userId) {
-                return new Twig\Markup(Users::format_username($userId, false, false, false), "UTF-8");
+                return new Twig\Markup(User::format_username($userId, false, false, false), "UTF-8");
             }
         ));
 
         $twig->addFilter(new Twig\TwigFilter(
             "user_full",
             function ($userId) {
-                return new Twig\Markup(Users::format_username($userId, true, true, true, true), "UTF-8");
+                return new Twig\Markup(User::format_username($userId, true, true, true, true), "UTF-8");
             }
         ));
 
@@ -261,27 +297,13 @@ class Twig # extends Twig\Environment
             );
         }));
 
+        # Format::get_ratio_html
         $twig->addFunction(new Twig\TwigFunction("ratio", function ($up, $down) {
             return new Twig\Markup(
                 Format::get_ratio_html($up, $down),
                 "UTF-8"
             );
         }));
-
-        /*
-        $twig->addFunction(new Twig\TwigFunction("shorten", function ($text, $length) {
-            return new Twig\Markup(
-                shortenString($text, $length),
-                "UTF-8"
-            );
-        }));
-        */
-
-        $twig->addTest(
-            new Twig\TwigTest("numeric", function ($value) {
-                return is_numeric($value);
-            })
-        );
 
         return $twig;
     }

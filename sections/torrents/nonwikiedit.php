@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 authorize();
@@ -89,7 +90,6 @@ if ($OldYear !== $year) {
       NOW(),
       '$Message')
     ");
-
 }
 
 $db->prepared_query("

@@ -12,7 +12,7 @@ ID of the artist, and must be set.
 
 $ArtistID = $_GET['artistid'];
 if (!is_number($ArtistID)) {
-  error(0);
+    error(0);
 }
 
 // Get the artist name and the body of the last revision
@@ -37,7 +37,7 @@ $db->query("
   WHERE a.ArtistID = '$ArtistID'");
 
 if (!$db->has_results()) {
-  error("Cannot find an artist with the ID {$ArtistID}: See the <a href=\"log.php?search=Artist+$ArtistID\">site log</a>.");
+    error("Cannot find an artist with the ID {$ArtistID}: See the <a href=\"log.php?search=Artist+$ArtistID\">site log</a>.");
 }
 
 list($Name, $Image, $Body) = $db->next_record(MYSQLI_NUM, true);

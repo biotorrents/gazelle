@@ -11,7 +11,7 @@ $db->prepared_query("
   SELECT BonusPoints
   FROM users_main
   WHERE ID = $UserID");
-  
+
 if ($db->has_results()) {
     list($Points) = $db->next_record();
 
@@ -39,11 +39,11 @@ if ($db->has_results()) {
 View::header('Store'); ?>
 <div>
   <h2>Purchase
-    <?= $Worked?"Successful":"Failed"?>
+    <?= $Worked ? "Successful" : "Failed"?>
   </h2>
   <div class="box">
     <p>
-      <?= $Worked?("You purchased ".$Purchase):("Error: ".$ErrMessage)?>
+      <?= $Worked ? ("You purchased ".$Purchase) : ("Error: ".$ErrMessage)?>
     </p>
     <p>
       <a href="/store.php">Back to Store</a>

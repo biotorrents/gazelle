@@ -98,7 +98,7 @@ exit;
 // Generate a table based on data from most recent query to $db
 function generate_user_table($Caption, $Tag, $Details, $Limit)
 {
-    global $Time; ?>
+    ?>
   <h3>Top <?=$Limit.' '.$Caption; ?>
     <small class="top10_quantity_links">
       <?php
@@ -161,7 +161,7 @@ function generate_user_table($Caption, $Tag, $Details, $Limit)
     <tr class="row">
       <td class="center"><?=$Rank?>
       </td>
-      <td><?=Users::format_username($Detail['ID'], false, false, false)?>
+      <td><?=User::format_username($Detail['ID'], false, false, false)?>
       </td>
       <td class="number_column"><?=Format::get_size($Detail['Uploaded'])?>
       </td>

@@ -1,29 +1,36 @@
 <?php
+
 #declare(strict_types=1);
+
+
+/**
+ * Artists
+ */
 
 class Artists
 {
-
-  /**
-   * Given an array of GroupIDs, return their associated artists.
-   *
-   * @param array $GroupIDs
-   * @return an array of the following form:
-   *  GroupID => {
-   *    [ArtistType] => {
-   *      id, name, aliasid
-   *    }
-   *  }
-   *
-   * ArtistType is an int. It can be:
-   * 1 => Main artist
-   * 2 => Guest artist
-   * 4 => Composer
-   * 5 => Conductor
-   * 6 => DJ
-   */
+    /**
+     * Given an array of GroupIDs, return their associated artists.
+     *
+     * @param array $GroupIDs
+     * @return an array of the following form:
+     *  GroupID => {
+     *    [ArtistType] => {
+     *      id, name, aliasid
+     *    }
+     *  }
+     *
+     * ArtistType is an int. It can be:
+     * 1 => Main artist
+     * 2 => Guest artist
+     * 4 => Composer
+     * 5 => Conductor
+     * 6 => DJ
+     */
     public static function get_artists($GroupIDs)
     {
+        $app = App::go();
+
         $Results = [];
         $dbs = [];
 
@@ -32,7 +39,7 @@ class Artists
                 continue;
             }
 
-            $Artists = G::$cache->get_value('groups_artists_'.$GroupID);
+            $Artists = $app->cacheOld->get_value('groups_artists_'.$GroupID);
             if (is_array($Artists)) {
                 $Results[$GroupID] = $Artists;
             } else {
@@ -46,8 +53,8 @@ class Artists
                 $IDs = 'null';
             }
 
-            $QueryID = G::$db->get_query_id();
-            G::$db->prepared_query("
+            $QueryID = $app->dbOld->get_query_id();
+            $app->dbOld->prepared_query("
             SELECT
               ta.`GroupID`,
               ta.`ArtistID`,
@@ -64,17 +71,17 @@ class Artists
               ag.`Name` ASC;
             ");
 
-            while (list($GroupID, $ArtistID, $ArtistName) = G::$db->next_record(MYSQLI_BOTH, false)) {
+            while (list($GroupID, $ArtistID, $ArtistName) = $app->dbOld->next_record(MYSQLI_BOTH, false)) {
                 $Results[$GroupID][] = array('id' => $ArtistID, 'name' => $ArtistName);
                 $New[$GroupID][] = array('id' => $ArtistID, 'name' => $ArtistName);
             }
 
-            G::$db->set_query_id($QueryID);
+            $app->dbOld->set_query_id($QueryID);
             foreach ($dbs as $GroupID) {
                 if (isset($New[$GroupID])) {
-                    G::$cache->cache_value("groups_artists_$GroupID", $New[$GroupID]);
+                    $app->cacheOld->cache_value("groups_artists_$GroupID", $New[$GroupID]);
                 } else {
-                    G::$cache->cache_value("groups_artists_$GroupID", []);
+                    $app->cacheOld->cache_value("groups_artists_$GroupID", []);
                 }
             }
 
@@ -112,7 +119,7 @@ class Artists
         if (!empty($Artists)) {
             $ampersand = ($Escape) ? ' &amp; ' : ' & ';
             $link = '';
-    
+
             switch (count($Artists)) {
               case 0:
                 break;
@@ -120,7 +127,7 @@ class Artists
               case 4:
                 $link .= Artists::display_artist($Artists[2], $MakeLink, $Escape). ", ";
                 // no break
-  
+
               case 3:
                 $link .= Artists::display_artist($Artists[2], $MakeLink, $Escape). ", ";
                 // no break
@@ -136,13 +143,13 @@ class Artists
               default:
                 $link = Artists::display_artist($Artists[0], $MakeLink, $Escape).' et al.';
             }
-            
+
             return $link;
         } else {
             return '';
         }
     }
-    
+
     /**
      * Formats a single artist name.
      *
@@ -172,8 +179,10 @@ class Artists
      */
     public static function delete_artist($ArtistID)
     {
-        $QueryID = G::$db->get_query_id();
-        G::$db->prepared_query("
+        $app = App::go();
+
+        $QueryID = $app->dbOld->get_query_id();
+        $app->dbOld->prepared_query("
         SELECT
           `NAME`
         FROM
@@ -181,10 +190,10 @@ class Artists
         WHERE
           `ArtistID` = $ArtistID
         ");
-        list($Name) = G::$db->next_record(MYSQLI_NUM, false);
+        list($Name) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
         // Delete requests
-        G::$db->prepared_query("
+        $app->dbOld->prepared_query("
         SELECT
           `RequestID`
         FROM
@@ -193,10 +202,10 @@ class Artists
           `ArtistID` = $ArtistID AND `ArtistID` != 0
         ");
 
-        $Requests = G::$db->to_array();
+        $Requests = $app->dbOld->to_array();
         foreach ($Requests as $Request) {
             list($RequestID) = $Request;
-            G::$db->prepared_query("
+            $app->dbOld->prepared_query("
             DELETE
             FROM
               `requests`
@@ -204,7 +213,7 @@ class Artists
               `ID` = '$RequestID'
             ");
 
-            G::$db->prepared_query("
+            $app->dbOld->prepared_query("
             DELETE
             FROM
               `requests_votes`
@@ -212,7 +221,7 @@ class Artists
               `RequestID` = '$RequestID'
             ");
 
-            G::$db->prepared_query("
+            $app->dbOld->prepared_query("
             DELETE
             FROM
               `requests_tags`
@@ -220,7 +229,7 @@ class Artists
               `RequestID` = '$RequestID'
             ");
 
-            G::$db->prepared_query("
+            $app->dbOld->prepared_query("
             DELETE
             FROM
               `requests_artists`
@@ -230,17 +239,17 @@ class Artists
         }
 
         // Delete artist
-        G::$db->prepared_query("
+        $app->dbOld->prepared_query("
         DELETE
         FROM
           `artists_group`
         WHERE
           `ArtistID` = '$ArtistID'
         ");
-        G::$cache->decrement('stats_artist_count');
+        $app->cacheOld->decrement('stats_artist_count');
 
         // Delete wiki revisions
-        G::$db->prepared_query("
+        $app->dbOld->prepared_query("
         DELETE
         FROM
           `wiki_artists`
@@ -249,7 +258,7 @@ class Artists
         ");
 
         // Delete tags
-        G::$db->prepared_query("
+        $app->dbOld->prepared_query("
         DELETE
         FROM
           `artists_tags`
@@ -259,18 +268,18 @@ class Artists
 
         // Delete artist comments, subscriptions and quote notifications
         Comments::delete_page('artist', $ArtistID);
-        G::$cache->delete_value("artist_$ArtistID");
-        G::$cache->delete_value("artist_groups_$ArtistID");
+        $app->cacheOld->delete_value("artist_$ArtistID");
+        $app->cacheOld->delete_value("artist_groups_$ArtistID");
 
         // Record in log
-        if (!empty(G::$user['Username'])) {
-            $Username = G::$user['Username'];
+        if (!empty($app->userNew['Username'])) {
+            $Username = $app->userNew['Username'];
         } else {
             $Username = 'System';
         }
-        
+
         Misc::write_log("Artist $ArtistID ($Name) was deleted by $Username");
-        G::$db->set_query_id($QueryID);
+        $app->dbOld->set_query_id($QueryID);
     }
 
     /**

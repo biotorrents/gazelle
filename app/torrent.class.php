@@ -1,7 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
-# todo: Rplace with https://github.com/OPSnet/bencode-torrent
+# todo: Replace with https://github.com/OPSnet/bencode-torrent
 
 /*******************************************************************************
 |~~~~ Gazelle bencode parser                         ~~~~|

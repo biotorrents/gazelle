@@ -1,11 +1,19 @@
 <?php
 #declare(strict_types=1);
 
+
+/**
+ * INVITE_TREE
+ */
 class INVITE_TREE
 {
     public $UserID = 0;
     public $Visible = true;
 
+
+    /**
+     * INVITE_TREE
+     */
     // Set things up
     public function INVITE_TREE($UserID, $Options = [])
     {
@@ -15,14 +23,20 @@ class INVITE_TREE
         }
     }
 
+
+    /**
+     * make_tree
+     */
     public function make_tree()
     {
-        $QueryID = G::$db->get_query_id();
+        $app = App::go();
+
+        $QueryID = $app->dbOld->get_query_id();
         $UserID = $this->UserID; ?>
 
 <div class="invitetree pad">
     <?php
-    G::$db->query("
+    $app->dbOld->query("
     SELECT
       `TreePosition`,
       `TreeID`,
@@ -33,12 +47,12 @@ class INVITE_TREE
       `UserID` = $UserID
     ");
 
-        list($TreePosition, $TreeID, $TreeLevel) = G::$db->next_record(MYSQLI_NUM, false);
+        list($TreePosition, $TreeID, $TreeLevel) = $app->dbOld->next_record(MYSQLI_NUM, false);
         if (!$TreeID) {
             return;
         }
 
-        G::$db->query("
+        $app->dbOld->query("
         SELECT
           `TreePosition`
         FROM
@@ -50,13 +64,13 @@ class INVITE_TREE
         LIMIT 1
         ");
 
-        if (G::$db->has_results()) {
-            list($MaxPosition) = G::$db->next_record(MYSQLI_NUM, false);
+        if ($app->dbOld->has_results()) {
+            list($MaxPosition) = $app->dbOld->next_record(MYSQLI_NUM, false);
         } else {
             $MaxPosition = false;
         }
 
-        $TreeQuery = G::$db->query("
+        $TreeQuery = $app->dbOld->query("
         SELECT
           it.`UserID`,
           `Enabled`,
@@ -106,7 +120,7 @@ class INVITE_TREE
 
         // We store this in an output buffer, so we can show the summary at the top without having to loop through twice
         ob_start();
-        while (list($ID, $Enabled, $Class, $Donor, $Uploaded, $Downloaded, $Paranoia, $TreePosition, $TreeLevel) = G::$db->next_record(MYSQLI_NUM, false)) {
+        while (list($ID, $Enabled, $Class, $Donor, $Uploaded, $Downloaded, $Paranoia, $TreePosition, $TreeLevel) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
 
             // Do stats
             $Count++;
@@ -146,7 +160,7 @@ class INVITE_TREE
             $UserClass = $Classes[$Class]['Level']; ?>
 
     <strong>
-        <?=Users::format_username($ID, true, true, ($Enabled !== 2 ? false : true), true)?>
+        <?=User::format_username($ID, true, true, ($Enabled !== 2 ? false : true), true)?>
     </strong>
 
     <?php
@@ -166,7 +180,7 @@ class INVITE_TREE
 
     <?php
       $PreviousTreeLevel = $TreeLevel;
-            G::$db->set_query_id($TreeQuery);
+            $app->dbOld->set_query_id($TreeQuery);
         }
 
         $Tree = ob_get_clean();
@@ -188,7 +202,7 @@ class INVITE_TREE
                     continue;
                 }
 
-                $LastClass = Users::make_class_string($ClassID);
+                $LastClass = User::make_class_string($ClassID);
                 if ($ClassCount > 1) {
                     if ($LastClass === 'Torrent Celebrity') {
                         $LastClass = 'Torrent Celebrities';
@@ -266,6 +280,6 @@ class INVITE_TREE
 </div>
 
 <?php
-    G::$db->set_query_id($QueryID);
+    $app->dbOld->set_query_id($QueryID);
     }
-}
+} # class

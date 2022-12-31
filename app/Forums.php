@@ -1,5 +1,13 @@
 <?php
+
 #declare(strict_types=1);
+
+
+/**
+ * Forums
+ *
+ * THIS IS GOING AWAY
+ */
 
 class Forums
 {
@@ -13,9 +21,11 @@ class Forums
      */
     public static function get_thread_info($ThreadID, $Return = true, $SelectiveCache = false)
     {
-        if ((!$ThreadInfo = G::$cache->get_value('thread_' . $ThreadID . '_info')) || !isset($ThreadInfo['Ranking'])) {
-            $QueryID = G::$db->get_query_id();
-            G::$db->query(
+        $app = App::go();
+
+        if ((!$ThreadInfo = $app->cacheOld->get_value('thread_' . $ThreadID . '_info')) || !isset($ThreadInfo['Ranking'])) {
+            $QueryID = $app->dbOld->get_query_id();
+            $app->dbOld->query(
                 "
             SELECT
               t.`Title`,
@@ -44,15 +54,15 @@ class Forums
                 $ThreadID
             );
 
-            if (!G::$db->has_results()) {
-                G::$db->set_query_id($QueryID);
+            if (!$app->dbOld->has_results()) {
+                $app->dbOld->set_query_id($QueryID);
                 return;
             }
 
-            $ThreadInfo = G::$db->next_record(MYSQLI_ASSOC, false);
+            $ThreadInfo = $app->dbOld->next_record(MYSQLI_ASSOC, false);
             if ($ThreadInfo['StickyPostID']) {
                 $ThreadInfo['Posts']--;
-                G::$db->query(
+                $app->dbOld->query(
                     "
                 SELECT
                   p.`ID`,
@@ -72,15 +82,15 @@ class Forums
                     $ThreadID,
                     $ThreadInfo['StickyPostID']
                 );
-                list($ThreadInfo['StickyPost']) = G::$db->to_array(false, MYSQLI_ASSOC);
+                list($ThreadInfo['StickyPost']) = $app->dbOld->to_array(false, MYSQLI_ASSOC);
             }
 
-            G::$db->set_query_id($QueryID);
+            $app->dbOld->set_query_id($QueryID);
             if (!$SelectiveCache || !$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky']) {
-                G::$cache->cache_value('thread_'.$ThreadID.'_info', $ThreadInfo, 0);
+                $app->cacheOld->cache_value('thread_'.$ThreadID.'_info', $ThreadInfo, 0);
             }
         }
-        
+
         if ($Return) {
             return $ThreadInfo;
         }
@@ -95,20 +105,18 @@ class Forums
      */
     public static function check_forumperm($ForumID, $Perm = 'Read')
     {
+        $app = App::go();
+
         $Forums = self::get_forums();
-        if (isset(G::$user['CustomForums'][$ForumID]) && G::$user['CustomForums'][$ForumID] === 1) {
+        if (isset($app->userNew->extra['CustomForums'][$ForumID]) && $app->userNew->extra['CustomForums'][$ForumID] === 1) {
             return true;
         }
 
-        if ($ForumID === DONOR_FORUM && Donations::has_donor_forum(G::$user['ID'])) {
-            return true;
-        }
-
-        if ($Forums[$ForumID]['MinClass' . $Perm] > G::$user['Class'] && (!isset(G::$user['CustomForums'][$ForumID]) || G::$user['CustomForums'][$ForumID] == 0)) {
+        if ($Forums[$ForumID]['MinClass' . $Perm] > $app->userNew->extra['Class'] && (!isset($app->userNew->extra['CustomForums'][$ForumID]) || $app->userNew->extra['CustomForums'][$ForumID] == 0)) {
             return false;
         }
-        
-        if (isset(G::$user['CustomForums'][$ForumID]) && G::$user['CustomForums'][$ForumID] === 0) {
+
+        if (isset($app->userNew->extra['CustomForums'][$ForumID]) && $app->userNew->extra['CustomForums'][$ForumID] === 0) {
             return false;
         }
 
@@ -122,10 +130,12 @@ class Forums
      */
     public static function get_forum_info($ForumID)
     {
-        $Forum = G::$cache->get_value("ForumInfo_$ForumID");
+        $app = App::go();
+
+        $Forum = $app->cacheOld->get_value("ForumInfo_$ForumID");
         if (!$Forum) {
-            $QueryID = G::$db->get_query_id();
-            G::$db->query(
+            $QueryID = $app->dbOld->get_query_id();
+            $app->dbOld->query(
                 "
             SELECT
               `Name`,
@@ -144,14 +154,14 @@ class Forums
                 $ForumID
             );
 
-            if (!G::$db->has_results()) {
+            if (!$app->dbOld->has_results()) {
                 return false;
             }
 
             // Makes an array, with $Forum['Name'], etc.
-            $Forum = G::$db->next_record(MYSQLI_ASSOC);
-            G::$db->set_query_id($QueryID);
-            G::$cache->cache_value("ForumInfo_$ForumID", $Forum, 86400);
+            $Forum = $app->dbOld->next_record(MYSQLI_ASSOC);
+            $app->dbOld->set_query_id($QueryID);
+            $app->cacheOld->cache_value("ForumInfo_$ForumID", $Forum, 86400);
         }
         return $Forum;
     }
@@ -162,10 +172,12 @@ class Forums
      */
     public static function get_forum_categories()
     {
-        $ForumCats = G::$cache->get_value('forums_categories');
+        $app = App::go();
+
+        $ForumCats = $app->cacheOld->get_value('forums_categories');
         if ($ForumCats === false) {
-            $QueryID = G::$db->get_query_id();
-            G::$db->query("
+            $QueryID = $app->dbOld->get_query_id();
+            $app->dbOld->query("
             SELECT
               `ID`,
               `Name`
@@ -174,12 +186,12 @@ class Forums
             ");
 
             $ForumCats = [];
-            while (list($ID, $Name) = G::$db->next_record()) {
+            while (list($ID, $Name) = $app->dbOld->next_record()) {
                 $ForumCats[$ID] = $Name;
             }
 
-            G::$db->set_query_id($QueryID);
-            G::$cache->cache_value('forums_categories', $ForumCats, 0);
+            $app->dbOld->set_query_id($QueryID);
+            $app->cacheOld->cache_value('forums_categories', $ForumCats, 0);
         }
         return $ForumCats;
     }
@@ -190,9 +202,11 @@ class Forums
      */
     public static function get_forums()
     {
-        if (!$Forums = G::$cache->get_value('forums_list')) {
-            $QueryID = G::$db->get_query_id();
-            G::$db->query("
+        $app = App::go();
+
+        if (!$Forums = $app->cacheOld->get_value('forums_list')) {
+            $QueryID = $app->dbOld->get_query_id();
+            $app->dbOld->query("
             SELECT
               f.`ID`,
               f.`CategoryID`,
@@ -227,9 +241,9 @@ class Forums
               f.`CategoryID`,
               f.`Sort`
             ");
-            $Forums = G::$db->to_array('ID', MYSQLI_ASSOC, false);
+            $Forums = $app->dbOld->to_array('ID', MYSQLI_ASSOC, false);
 
-            G::$db->query("
+            $app->dbOld->query("
             SELECT
               `ForumID`,
               `ThreadID`
@@ -238,11 +252,11 @@ class Forums
             ");
 
             $SpecificRules = [];
-            while (list($ForumID, $ThreadID) = G::$db->next_record(MYSQLI_NUM, false)) {
+            while (list($ForumID, $ThreadID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
                 $SpecificRules[$ForumID][] = $ThreadID;
             }
 
-            G::$db->set_query_id($QueryID);
+            $app->dbOld->set_query_id($QueryID);
             foreach ($Forums as $ForumID => &$Forum) {
                 if (isset($SpecificRules[$ForumID])) {
                     $Forum['SpecificRules'] = $SpecificRules[$ForumID];
@@ -250,7 +264,7 @@ class Forums
                     $Forum['SpecificRules'] = [];
                 }
             }
-            G::$cache->cache_value('forums_list', $Forums, 0);
+            $app->cacheOld->cache_value('forums_list', $Forums, 0);
         }
         return $Forums;
     }
@@ -261,8 +275,10 @@ class Forums
      */
     public static function get_permitted_forums()
     {
-        if (isset(G::$user['CustomForums'])) {
-            return (array)array_keys(G::$user['CustomForums'], 1);
+        $app = App::go();
+
+        if (isset($app->userNew->extra['CustomForums'])) {
+            return (array)array_keys($app->userNew->extra['CustomForums'], 1);
         } else {
             return [];
         }
@@ -274,8 +290,10 @@ class Forums
      */
     public static function get_restricted_forums()
     {
-        if (isset(G::$user['CustomForums'])) {
-            return (array)array_keys(G::$user['CustomForums'], 0);
+        $app = App::go();
+
+        if (isset($app->userNew->extra['CustomForums'])) {
+            return (array)array_keys($app->userNew->extra['CustomForums'], 0);
         } else {
             return [];
         }
@@ -288,8 +306,10 @@ class Forums
      */
     public static function get_last_read($Forums)
     {
-        if (isset(G::$user['PostsPerPage'])) {
-            $PerPage = G::$user['PostsPerPage'];
+        $app = App::go();
+
+        if (isset($app->userNew->extra['PostsPerPage'])) {
+            $PerPage = $app->userNew->extra['PostsPerPage'];
         } else {
             $PerPage = POSTS_PER_PAGE;
         }
@@ -302,8 +322,8 @@ class Forums
         }
 
         if (!empty($TopicIDs)) {
-            $QueryID = G::$db->get_query_id();
-            G::$db->query(
+            $QueryID = $app->dbOld->get_query_id();
+            $app->dbOld->query(
                 "
             SELECT
               l.`TopicID`,
@@ -323,11 +343,11 @@ class Forums
             WHERE
               l.`TopicID` IN(".implode(',', $TopicIDs).") AND l.`UserID` = ? ",
                 $PerPage,
-                G::$user['ID']
+                $app->userNew->core["id"]
             );
 
-            $LastRead = G::$db->to_array('TopicID', MYSQLI_ASSOC);
-            G::$db->set_query_id($QueryID);
+            $LastRead = $app->dbOld->to_array('TopicID', MYSQLI_ASSOC);
+            $app->dbOld->set_query_id($QueryID);
         } else {
             $LastRead = [];
         }
@@ -343,12 +363,14 @@ class Forums
      */
     public static function add_topic_note($TopicID, $Note, $UserID = null)
     {
+        $app = App::go();
+
         if ($UserID === null) {
-            $UserID = G::$user['ID'];
+            $UserID = $app->userNew->core["id"];
         }
 
-        $QueryID = G::$db->get_query_id();
-        G::$db->query("
+        $QueryID = $app->dbOld->get_query_id();
+        $app->dbOld->query("
         INSERT INTO `forums_topic_notes`(
           `TopicID`,
           `AuthorID`,
@@ -363,8 +385,8 @@ class Forums
         )
         ");
 
-        G::$db->set_query_id($QueryID);
-        return (bool) G::$db->affected_rows();
+        $app->dbOld->set_query_id($QueryID);
+        return (bool) $app->dbOld->affected_rows();
     }
 
     /**
@@ -379,11 +401,13 @@ class Forums
      */
     public static function is_unread($Locked, $Sticky, $LastPostID, $LastRead, $LastTopicID, $LastTime)
     {
+        $app = App::go();
+
         return (!$Locked || $Sticky)
             && $LastPostID !== 0
             && (
                 (empty($LastRead[$LastTopicID]) || $LastRead[$LastTopicID]['PostID'] < $LastPostID)
-                && strtotime($LastTime) > G::$user['CatchupTime']
+                && strtotime($LastTime) > $app->userNew->extra['CatchupTime']
             );
     }
 
@@ -394,15 +418,13 @@ class Forums
      */
     public static function user_forums_sql()
     {
+        $app = App::go();
+
         // I couldn't come up with a good name, please rename this if you can. -- Y
         $RestrictedForums = self::get_restricted_forums();
         $PermittedForums = self::get_permitted_forums();
 
-        if (Donations::has_donor_forum(G::$user['ID']) && !in_array(DONOR_FORUM, $PermittedForums)) {
-            $PermittedForums[] = DONOR_FORUM;
-        }
-
-        $SQL = "((f.`MinClassRead` <= '" . G::$user['Class'] . "'";
+        $SQL = "((f.`MinClassRead` <= '" . $app->userNew->extra['Class'] . "'";
         if (count($RestrictedForums)) {
             $SQL .= " AND f.`ID` NOT IN ('" . implode("', '", $RestrictedForums) . "')";
         }
@@ -411,7 +433,7 @@ class Forums
         if (count($PermittedForums)) {
             $SQL .= " OR f.`ID` IN ('" . implode("', '", $PermittedForums) . "')";
         }
-        
+
         $SQL .= ')';
         return $SQL;
     }

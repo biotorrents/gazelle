@@ -60,7 +60,7 @@ function news_ajax(event, count, offset, privileged) {
                   this[2] +
                   ' - <a href="tools.php?action=editnews&amp;id=' +
                   this[0] +
-                  '" class="brackets">Edit</a><span class="float_right"><a class="brackets" data-toggle-target="#newsbody' +
+                  '" class="brackets">Edit</a><span class="u-pull-right"><a class="brackets" data-toggle-target="#newsbody' +
                   this[0] +
                   '" data-toggle-replace="Show">Hide</a></span></div>'
               );
@@ -70,7 +70,7 @@ function news_ajax(event, count, offset, privileged) {
                   this[1] +
                   "</strong> " +
                   this[2] +
-                  '<span class="float_right"><a class="brackets" data-toggle-target="#newsbody' +
+                  '<span class="u-pull-right"><a class="brackets" data-toggle-target="#newsbody' +
                   this[0] +
                   '" data-toggle-replace="Show">Hide</a></span></div>'
               );

@@ -18,7 +18,7 @@ declare(strict_types=1);
 enforce_login();
 $ENV = ENV::go();
 
-include SERVER_ROOT.'/sections/staff/functions.php';
+include serverRoot.'/sections/staff/functions.php';
 View::header(
     'Staff',
     'vendor/easymde.min',
@@ -31,7 +31,7 @@ list($FrontLineSupport, $ForumStaff, $Staff) = $SupportStaff;
 
 <div>
     <h2 class="header">
-        <?= $ENV->SITE_NAME ?>
+        <?= $ENV->siteName ?>
         Staff
     </h2>
 

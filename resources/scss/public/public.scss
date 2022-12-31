@@ -1,17 +1,18 @@
-/* Skeleton CSS */
+/**
+ * colors
+ */
+
 $skeletonDefault: #33c3f0;
 $skeletonFocus: #1eaedb;
 $skeletonHalfdark: scale-color($skeletonFocus, $lightness: -50%);
 
 /**
- * Typography
+ * typography
  */
 
 body {
   background: white;
-  color: black;
   font-family: "NotoSans-SemiCondensed", sans-serif;
-  font-size: 1.2rem;
 
   b,
   strong {
@@ -19,16 +20,15 @@ body {
     font-weight: normal;
   }
 
-  i,
   em {
     font-family: "NotoSans-SemiCondensedItalic", sans-serif;
     font-style: normal;
   }
 }
 
-/* Text elements */
+/* text elements */
 a {
-  color: black;
+  color: #222;
   text-decoration: underline;
 
   &:hover {
@@ -37,46 +37,26 @@ a {
   }
 }
 
-h2 {
-  text-align: center;
-}
-
 /**
- * Layout
+ * layout
  */
 
-main {
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
-  gap: 1rem;
-  margin: 5% auto;
-  width: 90%;
-
-  &:after {
-    content: "";
-    min-height: 100%;
-  }
-}
-
-header,
-footer {
+header {
   height: 4.2rem;
   line-height: 4.2rem;
   max-width: 100%;
-}
 
-header {
   background: $skeletonHalfdark;
   padding: 0 1%;
   position: sticky;
   text-align: right;
   top: 0;
+  z-index: 1;
 
   a {
     color: white;
     text-decoration: none;
-    margin: 0 0.5rem;
+    margin: 0 1rem;
 
     &:hover {
       color: white;
@@ -86,32 +66,51 @@ header {
 }
 
 footer {
+  margin: 5rem 0;
   text-align: center;
+
+  p {
+    margin-bottom: 0;
+  }
 }
 
-#logo {
-  width: 220px;
-  height: 50px;
+figure#logo {
+  height: 5rem;
+  margin: 5rem;
   background-image: url("/images/logos/torrents.bio.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
-  margin: 1rem auto;
 
   &:after {
     content: "℠";
-    font-size: 1rem;
+    font-size: 1.5rem;
     font-weight: normal;
     margin-left: 100%;
   }
 }
 
+form {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 2rem;
+
+  a.button {
+    margin-bottom: 0;
+  }
+
+  ul {
+    list-style: none;
+  }
+}
+
 /**
- * Classes
+ * classes
  */
 
 .mouseless {
   cursor: default;
+  margin: 5rem;
 }
 
 .info {
@@ -122,11 +121,4 @@ footer {
 .error {
   color: red;
   font-family: "NotoSans-SemiCondensedBold", sans-serif;
-}
-
-/* Legal */
-.tldr {
-  width: 50%;
-  height: 500px;
-  overflow-y: scroll;
 }

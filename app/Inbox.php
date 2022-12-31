@@ -1,5 +1,11 @@
 <?php
+
 #declare(strict_types=1);
+
+
+/**
+ * THIS IS GOING AWAY
+ */
 
 class Inbox
 {
@@ -12,7 +18,9 @@ class Inbox
      */
     public static function get_inbox_link($WhichBox = 'inbox')
     {
-        $ListFirst = isset(G::$user['ListUnreadPMsFirst']) ? G::$user['ListUnreadPMsFirst'] : false;
+        $app = App::go();
+
+        $ListFirst = isset($app->userNew->extra['ListUnreadPMsFirst']) ? $app->userNew->extra['ListUnreadPMsFirst'] : false;
 
         if ($WhichBox === 'inbox') {
             if ($ListFirst) {

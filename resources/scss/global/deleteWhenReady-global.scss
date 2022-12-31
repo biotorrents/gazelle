@@ -1,0 +1,338 @@
+/*
+.collage_images {
+  padding: 0px;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0;
+}
+
+.collage_images {
+  display: block;
+}
+
+ul.collage_images li {
+  border: none;
+  float: left;
+  margin: 0;
+  width: 146px;
+  list-style: none;
+  list-style-type: none;
+}
+
+ul.collage_images li a {
+  display: block;
+  /* height: 118px; * /
+  width: 100%;
+  overflow: hidden;
+}
+
+div.collage_image {
+  width: 20%;
+  display: inline-block;
+}
+
+[data-toggle-target],
+[data-quote-jump],
+.clickable {
+  cursor: pointer;
+}
+
+.spoilerButton {
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.selected a {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.collage td {
+  padding: 0px;
+  border: none;
+}
+
+abbr[title] {
+  text-decoration: none;
+}
+
+pre {
+  overflow: auto;
+}
+
+.disable_grouping {
+  display: none;
+}
+
+form textarea,
+form input {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+a.beta {
+  font-weight: bold;
+  color: #ff0000;
+}
+
+/* Make [+] on add multiple artists stay at the bottom (on torrent details page) * /
+div#AddArtists {
+  position: relative;
+  display: inline-block;
+}
+
+div#AddArtists a {
+  position: absolute;
+  right: 0pt;
+  bottom: 0pt;
+}
+
+.clear:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+.new-subscriptions {
+  font-weight: bold;
+}
+
+#forums #quickpost {
+  width: 95%;
+}
+
+td.label,
+.valign_top {
+  vertical-align: top;
+}
+
+.breadcrumbs {
+  font-weight: bold;
+  text-align: right;
+}
+
+.paranoia_override {
+  font-style: italic;
+}
+
+.album_votes {
+  text-align: center;
+}
+
+.favoritecount {
+  font-size: 150%;
+  font-weight: bold;
+}
+
+.favoritecount_small {
+  font-size: 110%;
+  font-weight: bold;
+}
+
+ul.votedalbums li {
+  list-style: none;
+  list-style-type: none;
+  margin: 0;
+}
+
+tr.torrent .bookmark > a:before {
+  text-decoration: none;
+  font-weight: normal;
+}
+
+tr.torrent .bookmark > a:after {
+  text-decoration: none;
+  font-weight: normal;
+}
+
+.ui-state-highlight {
+  background: #007dc6;
+  opacity: 0.15;
+  width: 50%;
+}
+
+.voted_type {
+  font-weight: bold;
+}
+
+.torrent_table .group .votes_info_td strong {
+  font-size: inherit;
+}
+
+.invite_table td {
+  min-width: 55px;
+}
+
+.preview_wrap {
+  text-align: left;
+}
+
+.text_preview {
+  min-height: 100px;
+}
+
+#userInfo .brackets:before,
+#userInfo .brackets:after {
+  content: "";
+}
+
+.group_image {
+  overflow: hidden;
+}
+
+.group_image + .group_info {
+  margin-left: 100px;
+}
+
+.group_image img {
+  cursor: pointer;
+}
+
+.user_title {
+  font-weight: normal;
+}
+
+.option_group {
+  margin-bottom: 10px;
+}
+
+.option_group:last-child {
+  margin-bottom: 0px;
+}
+
+.forum_post .colhead_dark div {
+  display: flex;
+}
+
+.forum_post .colhead_dark div > * {
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.forum_post blockquote {
+  overflow-x: auto;
+}
+
+.number_column {
+  text-align: center;
+}
+
+.wide_input_text {
+  width: 95%;
+}
+
+.top_artist_list li {
+  margin-left: 25px;
+  margin-bottom: 5px;
+  list-style-type: decimal;
+  font-size: 150%;
+}
+
+.permission_subcontainer {
+  margin-bottom: 10px;
+}
+
+.two_columns {
+  float: left;
+  width: 50%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
+.field_div .label,
+.submit_div .label {
+  float: left;
+  padding: 0 5px;
+  text-align: right;
+  width: 150px;
+}
+
+.field_div .input,
+.submit_div .input {
+  padding: 0 5px;
+}
+
+.small_label {
+  text-align: right;
+  width: auto;
+}
+
+.display_block {
+  display: block;
+}
+
+.friends_table textarea {
+  max-width: 540px;
+}
+
+div.torrent_artists {
+  display: inline-block;
+}
+
+.search_warning {
+  position: absolute;
+}
+
+#admincommentlinks {
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+.poll_your_answer {
+  font-weight: bold;
+}
+
+.net_box {
+  display: inline-block;
+  width: calc(20% - 4px);
+  margin: 2px;
+  vertical-align: top;
+  font-size: 10pt;
+}
+
+.net_box > .box {
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.net_box > .box > span {
+  width: 100%;
+}
+
+#lightbox > img {
+  max-width: 100%;
+}
+
+.filter_torrents #ft_basic > .clickable,
+.filter_torrents #ft_advanced > .clickable {
+  font-weight: 100;
+}
+
+.sidebar .box_tags > ul.stats > li {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sidebar .box_tags > ul.stats > li > a {
+  word-break: break-all;
+}
+
+.edit_tags_votes {
+  display: flex;
+}
+
+form.edit_form[name="screenshots_form"] input[type="text"],
+form.edit_form[name="screenshots_form"] img {
+  width: 400px;
+}
+*/

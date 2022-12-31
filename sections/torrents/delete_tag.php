@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 if (!empty($user['DisableTagging']) || !check_perms('site_delete_tag')) {

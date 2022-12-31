@@ -20,7 +20,7 @@ if (isset($_GET['userid'])) {
 Security::int($UserID);
 
 # Get user info
-$UserInfo = Users::user_info($UserID);
+$UserInfo = User::user_info($UserID);
 $Perms = Permissions::get_permissions($UserInfo['PermissionID']);
 $UserClass = $Perms['Class'];
 
@@ -109,7 +109,7 @@ $Pages = Format::get_pages($Page, $NumResults, 25);
 <div class="header">
   <h2>
     Freeleech token history for
-    <?= Users::format_username($UserID, false, false, false) ?>
+    <?= User::format_username($UserID, false, false, false) ?>
   </h2>
 </div>
 

@@ -1,24 +1,6 @@
 /**
- * ChangeCategory
+ * ArtistManager
  */
-function ChangeCategory(catid) {
-  /*
-  if (catid == 1) {
-    $('#split_releasetype').gshow();
-    $('#split_artist').gshow();
-    $('#split_year').gshow();
-  } else if (catid == 4 || catid == 6) {
-    $('#split_releasetype').ghide();
-    $('#split_year').gshow();
-    $('#split_artist').ghide();
-  } else {
-    $('#split_releasetype').ghide();
-    $('#split_artist').ghide();
-    $('#split_year').ghide();
-  }
-  */
-}
-
 function ArtistManager() {
   var GroupID = window.location.search.match(/[?&]id=(\d+)/);
   if (typeof GroupID == "undefined") {
@@ -110,6 +92,9 @@ function ArtistManager() {
   }
 }
 
+/**
+ * SelectArtist
+ */
 function SelectArtist(e, obj) {
   if (window.event) {
     e = window.event;
@@ -129,6 +114,9 @@ function SelectArtist(e, obj) {
   StartBox = Number(obj.id.substr(17));
 }
 
+/**
+ * ArtistManagerSubmit
+ */
 function ArtistManagerSubmit() {
   var Selection = new Array();
   var MainSelectionCount = 0;
@@ -171,12 +159,18 @@ function ArtistManagerSubmit() {
   $("#artistmanager_form").raw().submit();
 }
 
+/**
+ * ArtistManagerDelete
+ */
 function ArtistManagerDelete() {
   $("#manager_action").raw().value = "delete";
   ArtistManagerSubmit();
   $("#manager_action").raw().value = "manage";
 }
 
+/**
+ * Vote
+ */
 function Vote(amount, requestid) {
   if (typeof amount == "undefined") {
     amount = parseInt($("#amount").raw().value);

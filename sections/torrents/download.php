@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 if (!isset($_REQUEST['authkey']) || !isset($_REQUEST['torrent_pass'])) {
@@ -110,7 +111,7 @@ if ($_REQUEST['usetoken'] && $FreeTorrent === '0') {
             error('You cannot use tokens while leech disabled.');
         }
     } else {
-        $UInfo = Users::user_heavy_info($UserID);
+        $UInfo = User::user_heavy_info($UserID);
         if ($UInfo['CanLeech'] !== '1') {
             error('You may not use tokens while leech disabled.');
         }
@@ -147,7 +148,7 @@ if ($_REQUEST['usetoken'] && $FreeTorrent === '0') {
               WHERE ID = $UserID");
 
             // Fix for downloadthemall messing with the cached token count
-            $UInfo = Users::user_heavy_info($UserID);
+            $UInfo = User::user_heavy_info($UserID);
             $FLTokens = $UInfo['FLTokens'];
 
             $cache->begin_transaction("user_info_heavy_$UserID");
@@ -186,7 +187,7 @@ $db->query("
   VALUES ('$UserID', '$TorrentID', NOW())");
 
 Torrents::set_snatch_update_time($UserID, Torrents::SNATCHED_UPDATE_AFTERDL);
-$Contents = file_get_contents(TORRENT_STORE.$TorrentID.'.torrent');
+$Contents = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
 $FileName = TorrentsDL::construct_file_name($TorrentID);
 
 header('Content-Type: application/x-bittorrent; charset=utf-8');

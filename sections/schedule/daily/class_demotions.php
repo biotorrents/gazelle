@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 $ENV = ENV::go();
 
 # Prevent demotion on dev site
 # (higher perms for testing)
-if (!$ENV->DEV) {
+if (!$ENV->dev) {
     $Query = $db->query('
     SELECT ID
     FROM users_main
@@ -30,7 +31,7 @@ if (!$ENV->DEV) {
         $cache->commit_transaction(2592000);
         $cache->delete_value("user_info_$UserID");
         $cache->delete_value("user_info_heavy_$UserID");
-        Misc::send_pm($UserID, 0, 'You have been demoted to '.Users::make_class_string(MEMBER), "You now only meet the requirements for the \"".Users::make_class_string(MEMBER)."\" user class.\n\nTo read more about ".$ENV->SITE_NAME."'s user classes, read [url=".site_url()."wiki.php?action=article&amp;name=userclasses]this wiki article[/url].");
+        Misc::send_pm($UserID, 0, 'You have been demoted to '.User::make_class_string(MEMBER), "You now only meet the requirements for the \"".User::make_class_string(MEMBER)."\" user class.\n\nTo read more about ".$ENV->siteName."'s user classes, read [url=".site_url()."wiki.php?action=article&amp;name=userclasses]this wiki article[/url].");
     }
     echo "demoted 2\n";
 
@@ -54,7 +55,7 @@ if (!$ENV->DEV) {
         $cache->commit_transaction(2592000);
         $cache->delete_value("user_info_$UserID");
         $cache->delete_value("user_info_heavy_$UserID");
-        Misc::send_pm($UserID, 0, 'You have been demoted to '.Users::make_class_string(USER), "You now only meet the requirements for the \"".Users::make_class_string(USER)."\" user class.\n\nTo read more about ".$ENV->SITE_NAME."'s user classes, read [url=".site_url()."wiki.php?action=article&amp;name=userclasses]this wiki article[/url].");
+        Misc::send_pm($UserID, 0, 'You have been demoted to '.User::make_class_string(USER), "You now only meet the requirements for the \"".User::make_class_string(USER)."\" user class.\n\nTo read more about ".$ENV->siteName."'s user classes, read [url=".site_url()."wiki.php?action=article&amp;name=userclasses]this wiki article[/url].");
     }
     echo "demoted 4\n";
 }

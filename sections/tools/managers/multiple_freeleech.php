@@ -15,7 +15,7 @@ if (isset($_POST['torrents'])) {
             if (!empty($Data[1])) {
                 $GroupIDs[] = (int) $Data[1];
             }
-        } else if (strpos($Element, "collages.php") !== false) {
+        } elseif (strpos($Element, "collages.php") !== false) {
             $Data = explode("id=", $Element);
             if (!empty($Data[1])) {
                 $CollageID = (int) $Data[1];
