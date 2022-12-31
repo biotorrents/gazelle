@@ -1,8 +1,10 @@
 {# https://symfony.com/doc/current/templates.html#template-inheritance-and-layouts #}
 
+{#
 <pre>
-    {{ dump(authenticated) }}
+    {{ dump() }}
 </pre>
+#}
 
 
 {# page title #}
@@ -32,16 +34,11 @@
 {% set passKey = user.extra.torrent_pass ?? null %}
 {% set authKey = user.extra.AuthKey ?? null %}
 {% set userStyle = user.extra.StyleName ?? "bookish" %}
-
-{# todo: test this #}
-{% set styleAdditions = null %}
-{# {% set styleAdditions = user.extra.StyleAdditions|join("style_") ?? null %} #}
-
 {% endif %}
 
 
 {# html #}
-<!DOCTYPE html>
+<!doctype html>
 <html>
 
 <head>
@@ -55,6 +52,9 @@
 
     {# start javascript block #}
     {% block javascript %}
+
+    {# todo: app.js with vite #}
+    {# <script src="/js/app.min.js"></script> #}
 
     {# jquery: do not defer #}
     <script src="/js/vendor/jquery.min.js"></script>
@@ -98,6 +98,9 @@
 
     {# start stylesheets block #}
     {% block stylesheets %}
+
+    {# todo: app.css with vite #}
+    {# <link rel="stylesheet" type="text/css" href="/css/app.min.css"> #}
 
     {# skeleton, normalize, and jquery #}
     <link rel="stylesheet" type="text/css" href="/css/vendor/skeleton.min.css">
@@ -194,21 +197,8 @@
 
 {# head body break #}
 
-{# calm mode #}
-{% if user.extra.siteOptions.calmMode %}
-{% set calmMode = "calmMode" %}
-{% else %}
-{% set calmMode = "" %}
-{% endif %}
 
-{# dark mode #}
-{% if user.extra.siteOptions.darkMode %}
-{% set darkMode = "darkMode" %}
-{% else %}
-{% set darkMode = "" %}
-{% endif %}
-
-<body class="{{ user.extra.siteOptions.font }} {{ calmMode }} {{ darkMode }}">
+<body class="{{ bodyStyles }}">
 
     <header>
         {% if authenticated %}

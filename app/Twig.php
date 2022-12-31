@@ -100,6 +100,17 @@ class Twig # extends Twig\Environment
         $twig->addGlobal("user", $app->userNew);
         $twig->addGlobal("authenticated", $app->userNew->isLoggedIn());
 
+        # body styles
+        $bodyStyles = [
+            ($app->env->dev) ? "development" : null,
+            ($app->userNew->extra["siteOptions"]["font"]) ?? null,
+            ($app->userNew->extra["siteOptions"]["calmMode"]) ? "calmMode" : null,
+            ($app->userNew->extra["siteOptions"]["darkMode"]) ? "darkMode" : null,
+        ];
+
+        $bodyStyles = implode(" ", array_filter($bodyStyles));
+        $twig->addGlobal("bodyStyles", $bodyStyles);
+
         # session internal api key
         $frontendKey = implode(".", [
             Http::getCookie("sessionId"),

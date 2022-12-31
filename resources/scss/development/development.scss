@@ -1,37 +1,48 @@
-/*
-body {
+/**
+ * set development mode in comic neue
+ * the silly willies are an environment hint
+ */
+
+body.development {
   font-family: $comicNeue, sans-serif !important;
-}
 
-b,
-strong {
-  font-family: $comicNeueBold, sans-serif !important;
-  font-weight: normal !important;
-}
-*/
+  b,
+  strong {
+    font-family: $comicNeueBold, sans-serif !important;
+    font-weight: normal !important;
+  }
 
-/* font awesome exception */
-/*
-i:not(.fa),
-i:not(.fas):not(.fa-solid),
-i:not(.far):not(.fa-regular),
-i:not(.fal):not(.fa-light),
-i:not(.fat):not(.fa-thin),
-i:not(.fad):not(.fa-duotone),
-i:not(.fab):not(.fa-brands),
-i:not(.phpdebugbar-fa),
-em {
-  font-family: $comicNeueItalic, sans-serif !important;
-  font-style: normal !important;
-}
-*/
+  em {
+    font-family: $comicNeueItalic, sans-serif !important;
+    font-style: normal !important;
+  }
 
-/* DebugBar icon fix */
-a.phpdebugbar-tab i {
-  display: inline;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $comicNeue, sans-serif;
+  }
 
-  /* &nbsp; */
-  &:after {
-    content: "\00A0";
+  .menu,
+  .button,
+  .button-primary,
+  .button-red,
+  .button-green,
+  .button-orange,
+  .button-purple {
+    font-family: $comicNeue, sans-serif;
+  }
+
+  /* DebugBar icon fix */
+  a.phpdebugbar-tab i {
+    display: inline;
+
+    /* &nbsp; */
+    &:after {
+      content: "\00A0";
+    }
   }
 }
