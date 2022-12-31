@@ -1,4 +1,6 @@
-/* sidebar */
+/**
+ * sidebar actions
+ */
 #sidebar {
   form {
     display: flex;
@@ -11,6 +13,23 @@
 
     ul {
       list-style: none;
+    }
+  }
+}
+
+/**
+ * upload form
+ */
+
+.torrent_form {
+  label {
+    font-weight: bold;
+  }
+
+  .required {
+    &:after {
+      color: red;
+      content: "*";
     }
   }
 }

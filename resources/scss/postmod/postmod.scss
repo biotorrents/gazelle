@@ -371,12 +371,12 @@ td.center.cats_col {
   border-right: none;
 }
 
-table.grouping>tbody>tr.torrent>td:first-child+td+td,
-table.no_grouping>tbody>tr.torrent>td:first-child+td,
-table.grouping>tbody>tr.group>td:first-child+td+td,
-table.grouping>tbody>tr.colhead>td:first-child+td+td,
-table.no_grouping>tbody>tr.group>td:first-child+td,
-table.no_grouping>tbody>tr.colhead>td:first-child+td {
+table.grouping > tbody > tr.torrent > td:first-child + td + td,
+table.no_grouping > tbody > tr.torrent > td:first-child + td,
+table.grouping > tbody > tr.group > td:first-child + td + td,
+table.grouping > tbody > tr.colhead > td:first-child + td + td,
+table.no_grouping > tbody > tr.group > td:first-child + td,
+table.no_grouping > tbody > tr.colhead > td:first-child + td {
   border-left: none;
 }
 
@@ -688,7 +688,7 @@ ul.poll li.graph {
   padding-top: 5px;
 }
 
-#content form.search_form+.torrent_table {
+#content form.search_form + .torrent_table {
   margin-top: 20px;
 }
 
@@ -1105,11 +1105,11 @@ ol {
   list-style-position: inside;
 }
 
-tr.torrent .bookmark>a:before {
+tr.torrent .bookmark > a:before {
   color: #646054;
 }
 
-tr.torrent .bookmark>a:after {
+tr.torrent .bookmark > a:after {
   color: #646054;
 }
 
@@ -1154,7 +1154,7 @@ div[class~="tooltipster-base"] {
   color: #444;
 }
 
-div[class~="tooltipster-content"]>a {
+div[class~="tooltipster-content"] > a {
   color: #0a84af;
 }
 

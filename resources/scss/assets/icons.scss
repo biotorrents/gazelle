@@ -1,16 +1,16 @@
 /**
  * icons
  *
- * All default sitewide icons:
+ * all default sitewide icons:
  *  - category icons,
  *  - forum icons, and
- *  - badge styles.
+ *  - badge styles
  */
 
 $posts: "/images/forums/";
 $nrcc: no-repeat center center;
 
-@mixin bioicons($emoji) {
+@mixin bioIcons($emoji) {
   content: $emoji;
   font-size: xx-large;
 }
@@ -20,51 +20,51 @@ $nrcc: no-repeat center center;
  */
 
 .cats_sequences::before {
-  @include bioicons("🧬");
+  @include bioIcons("🧬");
 }
 
 .cats_graphs::before {
-  @include bioicons("📈");
+  @include bioIcons("📈");
 }
 
 .cats_systems::before {
-  @include bioicons("🌐");
+  @include bioIcons("🌐");
 }
 
 .cats_geometric::before {
-  @include bioicons("💠");
+  @include bioIcons("💠");
 }
 
 .cats_scalars\/vectors::before {
-  @include bioicons("⏱️");
+  @include bioIcons("⏱️");
 }
 
 .cats_patterns::before {
-  @include bioicons("❄️");
+  @include bioIcons("❄️");
 }
 
 .cats_constraints::before {
-  @include bioicons("⚙️");
+  @include bioIcons("⚙️");
 }
 
 .cats_images::before {
-  @include bioicons("🔬");
+  @include bioIcons("🔬");
 }
 
 .cats_spatial::before {
-  @include bioicons("🗺️");
+  @include bioIcons("🗺️");
 }
 
 .cats_models::before {
-  @include bioicons("🏗️");
+  @include bioIcons("🏗️");
 }
 
 .cats_documents::before {
-  @include bioicons("📓");
+  @include bioIcons("📓");
 }
 
 .cats_machinedata::before {
-  @include bioicons("📡");
+  @include bioIcons("📡");
 }
 
 /* related to browse page? */

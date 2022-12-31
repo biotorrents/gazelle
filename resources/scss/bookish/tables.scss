@@ -2,7 +2,7 @@
  * tables
  */
 
-@mixin alternating-rows {
+@mixin alternatingRows {
   tr:nth-child(2n) {
     background: whitesmoke;
   }
@@ -30,7 +30,7 @@ table {
 .collage_table,
 .request_table,
 .top10_table {
-  @include alternating-rows;
+  @include alternatingRows;
 
   th,
   td {
@@ -51,19 +51,6 @@ table {
   td {
     vertical-align: top;
   }
-}
-
-/**
- * colhead
- *
- * THIS IS GOING AWAY!
- */
-
-.colhead,
-.colhead_dark,
-th {
-  padding: 0.5em 0;
-  border-bottom: 1px solid #e1e1e1;
 }
 
 /* torrent and collage tables */

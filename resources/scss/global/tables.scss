@@ -1,4 +1,19 @@
 /**
+ * alternating rows
+ */
+table.alternatingRows {
+  tr:nth-child(2n) {
+    background: whitesmoke;
+  }
+
+  tr:nth-child(2n-1) {
+    background: white;
+  }
+}
+
+/** */
+
+/**
  * sortable tables
  */
 
@@ -65,13 +80,6 @@ $nrsr: no-repeat scroll right;
 #manage_collage_table .ui-sortable-helper td,
 #manage_collage_table .ui-sortable-placeholder {
   border: 0;
-}
-
-/* API keys */
-#acc_api_keys_tr {
-  table {
-    display: inline-block !important;
-  }
 }
 
 /* the main torrent page header */

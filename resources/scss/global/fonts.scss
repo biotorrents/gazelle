@@ -1,9 +1,6 @@
-/* monospace */
-.monospace {
-  font-family: monospace;
-}
-
-/* font size wrappers */
+/**
+ * font size wrappers
+ */
 .x-small {
   font-size: x-small;
 }
@@ -24,12 +21,61 @@
   font-size: x-large;
 }
 
-/* wikipedia-style external links */
+/**
+ * text spacing
+ */
+
+.center {
+  margin: auto;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.left {
+  /* float: left; */
+  text-align: left;
+}
+
+.right {
+  /* float: right; */
+  text-align: right;
+}
+
+.nobr {
+  white-space: nowrap;
+}
+
+/* disclaimer */
+.halfwide {
+  max-width: 50%;
+  margin: auto;
+  text-align: center;
+}
+
+/**
+ * wikipedia-style external links
+ */
 a.external {
   background-image: url("/images/symbols/external-link-ltr-icon.svg");
   background-position: center right;
   background-repeat: no-repeat;
   padding-right: 13px;
+}
+
+/**
+ * monospace fixes, etc.
+ */
+.monospace {
+  font-family: monospace;
+}
+
+code,
+pre {
+  white-space: pre-wrap;
+
+  br {
+    display: none;
+  }
 }
 
 /**
@@ -44,35 +90,9 @@ h2#breadcrumbs {
   }
 }
 
-h2#pageTitle {
-  padding-top: 5rem;
-}
-
 /**
- * spacing classes
+ * brackets, e.g., [bookmark]
  */
-
-.center {
-  margin: auto;
-  text-align: center;
-  vertical-align: middle;
-}
-
-.left {
-  float: left;
-  text-align: left;
-}
-
-.right {
-  /* float: right; */
-  text-align: right;
-}
-
-.nobr {
-  white-space: nowrap;
-}
-
-/* Brackets [Bookmark] */
 .brackets {
   cursor: pointer;
   text-indent: 0px;
@@ -85,56 +105,6 @@ h2#pageTitle {
   &:after {
     content: "]";
   }
-}
-
-/* <pre> spacing fixes */
-code,
-pre {
-  white-space: pre-wrap;
-
-  br {
-    display: none;
-  }
-}
-
-/**
- * torrent form
- */
-
-.torrent_form {
-  label {
-    font-weight: bold;
-  }
-
-  .required {
-    &:after {
-      color: red;
-      content: "*";
-    }
-  }
-}
-
-/* good/bad examples on rules pages */
-.important_text {
-  color: red;
-  font-weight: bold;
-}
-
-.important_text_alt {
-  color: green;
-  font-weight: bold;
-}
-
-.important_text_semi {
-  color: orange;
-  font-weight: bold;
-}
-
-.invalid,
-.warning,
-.error,
-.new {
-  color: red;
 }
 
 /**
@@ -175,13 +145,6 @@ ul {
     list-style: none;
     margin: 0;
   }
-}
-
-/* disclaimer */
-.halfwide {
-  max-width: 50%;
-  margin: auto;
-  text-align: center;
 }
 
 /* details and summary (HTML5) */

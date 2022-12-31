@@ -20,7 +20,6 @@ body {
     font-weight: normal;
   }
 
-  i,
   em {
     font-family: "NotoSans-SemiCondensedItalic", sans-serif;
     font-style: normal;
@@ -30,7 +29,6 @@ body {
 /* text elements */
 a {
   color: #222;
-  /* skeleton */
   text-decoration: underline;
 
   &:hover {

@@ -8,13 +8,13 @@
   width: 100%;
 }
 
-#menu>ul {
+#menu > ul {
   display: flex;
   width: 80%;
   margin: 0 auto;
 }
 
-#menu>ul>li {
+#menu > ul > li {
   display: flex;
   flex: 1 1 auto;
   height: 2.5rem;
@@ -22,7 +22,7 @@
   position: relative;
 }
 
-#menu ul>li>a {
+#menu ul > li > a {
   padding: 0.5rem 0;
   display: inline-block;
   width: 100%;
@@ -40,7 +40,7 @@
   backdrop-filter: blur(1rem);
 }
 
-.nav_dropdown>div {
+.nav_dropdown > div {
   position: absolute;
   width: 100%;
   z-index: 99999;
@@ -57,12 +57,12 @@
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-#nav_links>#links_menu {
+#nav_links > #links_menu {
   width: 8rem;
   margin-left: -4rem;
 }
 
-.nav_dropdown>div>a {
+.nav_dropdown > div > a {
   display: none;
   height: 2.5rem;
   line-height: 2.5rem;
@@ -74,7 +74,7 @@
   }
 }
 
-.nav_dropdown:hover>div>a {
+.nav_dropdown:hover > div > a {
   display: block;
 }
 
