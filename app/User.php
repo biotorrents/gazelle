@@ -1116,7 +1116,10 @@ class User
             # only if it's the current user
             if (!$moderatorUpdate) {
                 $currentPassphrase = Esc::string($data["currentPassphrase"]);
-                $good = $this->auth->library->reconfirmPassword($currentPassphrase);
+
+                $hash = Auth::makeHash($currentPassphrase);
+                $good = Auth::checkhash($currentPassphrase, $hash);
+                #$good = $this->auth->library->reconfirmPassword($currentPassphrase);
 
                 if (!$good) {
                     throw new Exception("current passphrase doesn't match");
@@ -1151,8 +1154,12 @@ class User
                 }
 
                 # update the passphrase and log out old sessions
-                $this->auth->library->admin()->changePasswordForUserById($userId, $newPassphrase1);
-                $this->auth->library->logOutEverywhereElse();
+                try {
+                    $this->auth->library->admin()->changePasswordForUserById($userId, $newPassphrase1);
+                    #$this->auth->library->logOutEverywhereElse();
+                } catch (Exception $e) {
+                    throw new Exception($e->getMessage());
+                }
             } # if (!empty($newPassphrase1) && !empty($newPassphrase2))
 
 
@@ -1233,8 +1240,12 @@ class User
 
 
             # publicKey
-            $publicKey = Esc::string($data["publicKey"]);
-            $this->updatePGP($publicKey);
+            try {
+                $publicKey = Esc::string($data["publicKey"]);
+                $this->updatePGP($publicKey);
+            } catch (Exception $e) {
+                throw new Exception($e->getMessage());
+            }
 
 
             # resetPassKey: very important to only update if requested

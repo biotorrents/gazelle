@@ -194,8 +194,21 @@
 
 {# head body break #}
 
+{# calm mode #}
+{% if user.extra.siteOptions.calmMode %}
+{% set calmMode = "calmMode" %}
+{% else %}
+{% set calmMode = "" %}
+{% endif %}
 
-<body class="{{ user.extra.siteOptions.font }} {{ user.extra.siteOptions.calmMode }} {{ user.extra.siteOptions.darkMode }}">
+{# dark mode #}
+{% if user.extra.siteOptions.darkMode %}
+{% set darkMode = "darkMode" %}
+{% else %}
+{% set darkMode = "" %}
+{% endif %}
+
+<body class="{{ user.extra.siteOptions.font }} {{ calmMode }} {{ darkMode }}">
 
     <header>
         {% if authenticated %}
