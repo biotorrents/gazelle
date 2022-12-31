@@ -9,7 +9,8 @@
 
 	<input type="submit" form="userSettingsForm" id="save" name="save" value="save settings" class="button-primary" />
 
-	<a href="/user/{{ user.core.id }}/preview" target="_blank" class="button button-orange">preview profile</a>
+	{# /user/{{ user.core.id }}/preview #}
+	<a href="/user.php?id={{ user.core.id }}&previewMode=true" target="_blank" class="button button-orange">preview profile</a>
 
 {#
     {% if env.enableDonations %}

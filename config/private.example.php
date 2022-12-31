@@ -25,7 +25,7 @@ if (!$env->dev) {
     ENV::setPriv("rssHash", "");
 
     # hashed with the sessionId for internal api calls
-    ENV::setPriv("siteApiSecret", "");
+    ENV::setPriv("siteApiSecret", file_get_contents("{$env->webRoot}/siteApiSecret.txt"));
 }
 
 # development
@@ -33,7 +33,7 @@ else {
     ENV::setPriv("siteCryptoKey", "");
     ENV::setPriv("scheduleKey", "");
     ENV::setPriv("rssHash", "");
-    ENV::setPriv("siteApiSecret", "");
+    ENV::setPriv("siteApiSecret", file_get_contents("{$env->webRoot}/siteApiSecret.txt"));
 }
 
 
