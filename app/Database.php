@@ -226,8 +226,7 @@ class Database extends PDO
      *
      * Gets a single column.
      */
-    /*
-    public function column(string $query, array $args = [])
+    public function column(string $query, string $column, array $args = [])
     {
         $app = App::go();
 
@@ -236,13 +235,17 @@ class Database extends PDO
             return $app->cacheOld->get_value($cacheKey);
         }
 
+        /*
         $statement = $this->do($query, $args);
         $ref = $statement->fetchColumn();
+        */
+
+        $ref = $this->multi($query, []);
+        $ref = array_column($ref, $column);
 
         $app->cacheOld->cache_value($cacheKey, $ref, $this->cacheDuration);
         return $ref;
     }
-    */
 
 
     /**

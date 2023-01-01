@@ -267,6 +267,9 @@
     // session-specific, for internal api calls
     var frontendHash = "{{ frontendHash }}";
 
+    // site options: needs single quotes
+    var siteOptions = JSON.parse('{{ siteOptions|raw }}');
+
     // chart color arrays
     // https://www.chartjs.org
 

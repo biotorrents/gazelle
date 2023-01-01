@@ -129,8 +129,16 @@ $searchTerms = [
   "orderBy" => $post["orderBy"] ?? null,
   "orderWay" => $post["orderWay"] ?? null,
   "groupResults" => $post["groupResults"] ?? null,
+  "filter_cat" => $post["filter_cat"] ?? null,
 
 ];
+
+
+/** tags */
+
+$query = "select name from tags where tagType = 'genre' order by name";
+$ref = $app->dbNew->multi($query, []);
+$officialTags = array_column($ref, "name");
 
 
 /** legacy variables */
@@ -293,6 +301,7 @@ $app->twig->display("torrents/browse.twig", [
   "page" => $currentPage,
   "bullshit" => ($resultCount < ($currentPage - 1) * $pagination + 1),
   "categories" => $Categories,
+  "officialTags" => $officialTags,
 
   "searchTerms" => $searchTerms,
   "searchResults" => $searchResults,

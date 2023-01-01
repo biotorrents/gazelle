@@ -100,6 +100,12 @@ class Twig # extends Twig\Environment
         $twig->addGlobal("user", $app->userNew);
         $twig->addGlobal("authenticated", $app->userNew->isLoggedIn());
 
+        # site options
+        $twig->addGlobal(
+            "siteOptions",
+            json_encode($app->userNew->extra["siteOptions"] ?? [])
+        );
+
         # body styles
         $bodyStyles = [];
         if (!empty($app->userNew->extra)) {

@@ -72,6 +72,14 @@ legend {
 }
 
 /* tables usually containing forms */
+table {
+  tr {
+    &:last-child > * {
+      border: none;
+    }
+  }
+}
+
 table.skeletonFix {
   /*
   td {
@@ -81,21 +89,14 @@ table.skeletonFix {
   */
 }
 
-/* duplicate input rules here */
 /*
-input,
-input[type="search"],
-input[type="text"] {
-  margin: 0 !important;
-}
-*/
-
 input,
 textarea,
 select,
 fieldset {
   margin-bottom: 0 !important;
 }
+*/
 
 /* easymde button fix */
 div.editor-toolbar {
@@ -106,6 +107,7 @@ div.editor-toolbar {
 }
 
 /* block elements */
+/*
 pre,
 blockquote,
 dl,
@@ -116,6 +118,7 @@ ol,
 form {
   margin-bottom: 0 !important;
 }
+*/
 
 /* inline code */
 code {
@@ -143,9 +146,13 @@ ul {
   list-style: square !important;
 
   li {
-    margin-left: 2rem;
+    margin-left: 2rem !important;
   }
 }
+
+/**
+ * extra button colors
+ */
 
 /* red button */
 .button.button-red,

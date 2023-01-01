@@ -22,6 +22,13 @@ table {
  * torrent search table
  */
 
+#searchFormHeader {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
 .torrentSearch {
   th {
     text-align: right;
@@ -29,28 +36,65 @@ table {
   }
 
   td {
-    input[type="text"] {
-      width: 90%;
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 2rem;
+    align-items: baseline;
+
+    label {
+      display: block !important;
+      margin-top: 1rem;
     }
 
-    &.selectFlex {
+    div,
+    input[type="text"] {
+      width: 100%;
+    }
+  }
+
+  .wrapThis {
+    flex-wrap: wrap;
+  }
+
+  /* start tagging */
+  #tagFilter {
+    th,
+    td {
+      border-bottom: none;
+    }
+
+    #tagColumn {
+      flex-direction: column;
+    }
+
+    #tagRow {
       display: flex;
       flex-flow: row nowrap;
       gap: 2rem;
-      align-items: center;
+      align-items: baseline;
     }
   }
+
+  .officialTag {
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  #formControls {
+    justify-content: center;
+  }
+  /* end tagging */
 }
 
 /**
  * sortable tables
  */
 
-$bmp: "/images/symbols/table-order.png";
+$bitmap: "/images/symbols/table-order.png";
 $nrsr: no-repeat scroll right;
 
 @mixin bitmap($px) {
-  background: url($bmp) $nrsr $px transparent;
+  background: url($bitmap) $nrsr $px transparent;
 }
 
 .headerSort {

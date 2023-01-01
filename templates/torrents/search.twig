@@ -4,441 +4,457 @@
 
 <h2>Torrents</h2>
 
-	{# basic/advanced filter #}
-	{% if user.extra.siteOptions.searchType == "basic" %}
-		<a id="toggleSearchType" class="button button-orange">show advanced search</a>
-	{% else %}
-		<a id="toggleSearchType" class="button button-orange">show basic search</a>
-	{% endif %}
-
+{# the form itself #}
 <form id="torrentSearch" name="torrentSearch" method="post">
 
 	{# csrf token #}
 	{{ form_token(query.server.REQUEST_URI) }}
 
-	{# main advanced search table #}
-  <section id="advancedSearch">
-  <h3>Advanced search</h3>
-	<table class="torrentSearch">
 
-		{# identifier / accession number / version #}
-		<tr id="numbers">
-			<th/>
-			<td>
-				<input type="text" name="numbers" placeholder="Identifier / accession number / version" value="{{ searchTerms.numbers }}"/>
-			</td>
-		</tr>
+	{# simple search form #}
+	<section id="simpleSearch">
+		<div id="searchFormHeader">
+		<h3>Simple search</h3>
+	<a id="showComplexSearch" class="button button-orange u-pull-right">show complex search</a>
+</div>
+		<table class="torrentSearch">
 
-		{# torrent title / organism / strain or variety #}
-		<tr id="album_torrent_title">
-			<th/>
-			<td>
-				<input type="text" name="advgroupname" placeholder="Torrent title / organism / strain or variety" value="{{ searchTerms.advgroupname }}"/>
-			</td>
-		</tr>
-
-		{# creator #}
-		<tr id="artist_name">
-			<th/>
-			<td>
-				<input type="text" id="artist" name="artistname" placeholder="Creator (ORCiD pending)" value="{{ searchTerms.artistname }}"/>
-			</td>
-		</tr>
-
-		{# department or lab / location #}
-		<tr id="location">
-			<th/>
-			<td>
-				<input
-				type="text" name="location" placeholder="Department or lab / location" value="{{ searchTerms.location }}"/>
-
-				{# Year #}
-				<input type="text" name="year" placeholder="Year" value="{{ searchTerms.year }}"/>
-			</td>
-		</tr>
-
-		{# torrent description #}
-		<tr id="torrent_description">
-			<th/>
-			<td>
-				<input type="text" name="description" placeholder="Torrent description" value="{{ searchTerms.description }}"/>
-				<label for="description">
-					Single torrent description, not torrent <em>group</em> description
-				</label>
-			</td>
-		</tr>
-
-		{# file list #}
-		<tr id="file_list">
-			<th/>
-			<td>
-				<input type="text" name="filelist" placeholder="File list" value="{{ searchTerms.filelist }}"/>
-				<label for="filelist">
-					Please use the basic search to find torrents by info hash
-				</label>
-			</td>
-		</tr>
-
-		{# platforms #}
-		<tr id="rip_specifics">
-			<th>Platforms</th>
-			<td class="selectFlex">
-
-				{# sequences #}
-				<select name="media">
-					<option>Sequences</option>
-					{% for platform in env.META.Platforms.Sequences %}
-						<option value="{{ platform }}" {{ (searchTerms.media == platform) ? "selected" : "" }}>
-							{{ platform }}
-						</option>
-					{% endfor %}
-				</select>
-
-				{# graphs #}
-				<select name="media" class="ft_media fti_advanced">
-					<option>Graphs</option>
-					{% for platform in env.META.Platforms.Graphs %}
-						<option value="{{ platform }}" {{ (searchTerms.media == platform) ? "selected" : "" }}>
-							{{ platform }}
-						</option>
-					{% endfor %}
-				</select>
-
-				{# images #}
-				<select name="media" class="ft_media fti_advanced">
-					<option>Images</option>
-					{% for platform in env.META.Platforms.Images %}
-						<option value="{{ platform }}" {{ (searchTerms.media == platform) ? "selected" : "" }}>
-							{{ platform }}
-						</option>
-					{% endfor %}
-				</select>
-
-				{# documents #}
-				<select name="media" class="ft_media fti_advanced">
-					<option>Documents</option>
-					{% for platform in env.META.Platforms.Documents %}
-						<option value="{{ platform }}" {{ (searchTerms.media == platform) ? "selected" : "" }}>
-							{{ platform }}
-						</option>
-					{% endfor %}
-				</select>
-
-			</td>
-		</tr>
-
-		{# formats #}
-		<tr id="rip_specifics">
-			<th>Formats</th>
-			<td class="selectFlex">
-
-				{# nucleoSeq #}
-				<select id="container" name="container">
-					<option>NucleoSeq</option>
-					{% for key, value in env.META.Formats.Sequences %}
-						<option value="{{ key }}" {{ (searchTerms.container == key) ? "selected" : "" }}>
-							{{ key }}
-						</option>
-					{% endfor %}
-				</select>
-
-				{# protSeq #}
-				<select id="container" name="container">
-					<option>ProtSeq</option>
-					{% for key, value in env.META.Formats.Proteins %}
-						<option value="{{ key }}" {{ (searchTerms.container == key) ? "selected" : "" }}>
-							{{ key }}
-						</option>
-					{% endfor %}
-				</select>
-
-
-				{# xml #}
-				<select id="container" name="container">
-					<option>XMLs</option>
-					{% for key, value in xmls %}
-						<option value="{{ key }}" {{ (searchTerms.container == key) ? "selected" : "" }}>
-							{{ key }}
-						</option>
-					{% endfor %}
-				</select>
-
-				{# raster #}
-				<select id="container" name="container">
-					<option>Raster</option>
-					{% for key, value in raster %}
-						<option value="{{ key }}" {{ (searchTerms.container == key) ? "selected" : "" }}>
-							{{ key }}
-						</option>
-					{% endfor %}
-				</select>
-
-				{# vector #}
-				<select id="container" name="container">
-					<option>Vector</option>
-					{% for key, value in vector %}
-						<option value="{{ key }}" {{ (searchTerms.container == key) ? "selected" : "" }}>
-							{{ key }}
-						</option>
-					{% endfor %}
-				</select>
-
-				{# other #}
-				<select id="container" name="container">
-					<option>Other</option>
-					{% for key, value in extras %}
-						<option value="{{ key }}" {{ (searchTerms.container == key) ? "selected" : "" }}>
-							{{ key }}
-						</option>
-					{% endfor %}
-				</select>
-
-			</td>
-		</tr>
-
-		{# misc #}
-		<tr id="misc">
-			<th>Misc</th>
-			<td class="selectFlex">
-
-				{# scope #}
-				<select name="resolution">
-					<option>Scope</option>
-					{% for resolution in resolutions %}
-						<option value="{{ resolution }}" {{ (searchTerms.resolution == resolution) ? "selected" : "" }}>
-							{{ resolution }}
-						</option>
-					{% endfor %}
-				</select>
-
-				{# alignment #}
-				<select name="censored">
-					<option>Alignment</option>
-					<option value="1" {{ (searchTerms.censored == "1") ? "selected" : "" }}>
-						Aligned
-					</option>
-
-					<option value="0" {{ (searchTerms.censored == "0") ? "selected" : "" }}>
-						Not aligned
-					</option>
-				</select>
-
-				{# leech status #}
-				<select name="freetorrent">
-					<option>Leech status</option>
-
-					<option value="1" {{ (searchTerms.freetorrent == "1") ? "selected" : "" }}>
-						Freeleech
-					</option>
-
-					<option value="2" {{ (searchTerms.freetorrent == "2") ? "selected" : "" }}>
-						Neutral leech
-					</option>
-
-					<option value="3" {{ (searchTerms.freetorrent == "3") ? "selected" : "" }}>
-						Either
-					</option>
-
-					<option value="0" {{ (searchTerms.freetorrent == "0") ? "selected" : "" }}>
-						None
-					</option>
-
-				</select>
-
-				{# license #}
-				<select name="codec">
-					<option>License</option>
-					{% for license in env.META.Licenses %}
-						<option value="{{ license }}" {{ (searchTerms.codec == license) ? "selected" : "" }}>
-							{{ license }}
-						</option>
-					{% endfor %}
-				</select>
-			</td>
-		</tr>
-
-		{# size #}
-		<tr id="size">
-			<th>Size</th>
-			<td class="selectFlex">
-
-				<input type="number" name="size_min" placeholder="Minimum" value="{{ searchTerms.size_min }}"/>
-
-				&ndash;
-
-				<input type="number" name="size_max" placeholder="Maximum" value="{{ searchTerms.size_max }}"/>
-
-				<select name="size_unit">
-					<option>Unit</option>
-
-					<option value="0" {{ (searchTerms.size_unit == 0) ? "selected" : "" }}>
-						B
-					</option>
-
-					<option value="1" {{ (searchTerms.size_unit == 1) ? "selected" : "" }}>
-						KiB
-					</option>
-
-					<option value="2" {{ (searchTerms.size_unit == 2) ? "selected" : "" }}>
-						MiB
-					</option>
-
-					<option value="3" {{ (searchTerms.size_unit == 3) ? "selected" : "" }}>
-						GiB
-					</option>
-
-					<option value="4" {{ (searchTerms.size_unit == 4) ? "selected" : "" }}>
-						TiB
-					</option>
-				</select>
-			</td>
-		</tr>
-	</table>
-	</section> {# advancedSearch #}
-
-	{# basic search form #}
-  <section id="basicSearch">
-  <h3>Basic search</h3>
-	<table class="torrentSearch">
-
-		{# universal search #}
-		<tr id="search_terms">
-			<th/>
-			<td>
-				<input type="text" name="search" placeholder="Universal search" value="{{ searchTerms.search }}">
-			</td>
-		</tr>
-	</table>
+			{# universal search #}
+			<tr id="search_terms">
+				{# <th/> #}
+				<td>
+					<input type="text" name="search" placeholder="Search for anything, anywhere" value="{{ searchTerms.search }}">
+				</td>
+			</tr>
+		</table>
 	</section> {# basicSearch #}
 
-{# sort options #}
-<section id="sortOptions">
-	<table class="torrentSearch">
 
-		{# Order By #}
-		<tr id="order">
-			<th>Order By</th>
-			<td>
-				<select name="orderBy">
-					<option value="time" {{ (searchTerms.orderBy == "time") ? "selected" : "" }}>
-						Time Added
-					</option>
+	{# complex search form #}
+	<section id="complexSearch">
+	<div id="searchFormHeader">
+		<h3>Complex search</h3>
+	<a id="showSimpleSearch" class="button button-orange u-pull-right">show simple search</a>
+</div>
 
-					<option value="year" {{ (searchTerms.orderBy == "year") ? "selected" : "" }}>
-						Year
-					</option>
+		<table class="torrentSearch">
 
-					<option value="size" {{ (searchTerms.orderBy == "size") ? "selected" : "" }}>
-						Size
-					</option>
+			{# essentials #}
+			<tr id="essentials">
+				<th>Essentials</th>
+				<td>
+					{# torrent title / organism / strain or variety #}
+					<input type="text" name="advgroupname" placeholder="Torrent title / organism / strain or variety" value="{{ searchTerms.advgroupname }}"/>
+				</td>
+			</tr>
 
-					<option value="snatched" {{ (searchTerms.orderBy == "snatched") ? "selected" : "" }}>
-						Snatched
-					</option>
+			{# numbers #}
+			<tr id="numbers">
+				<th>Numbers</th>
+				<td>
+					{# identifier / accession number / version #}
+					<input type="text" name="numbers" placeholder="Identifier / accession number / version" value="{{ searchTerms.numbers }}"/>
 
-					<option value="seeders" {{ (searchTerms.orderBy == "seeders") ? "selected" : "" }}>
-						Seeders
-					</option>
+					{# year #}
+					<input type="text" name="year" placeholder="Year" value="{{ searchTerms.year }}"/>
+				</td>
+			</tr>
 
-					<option value="leechers" {{ (searchTerms.orderBy == "leechers") ? "selected" : "" }}>
-						Leechers
-					</option>
+			{# people #}
+			<tr id="people">
+				<th>People</th>
+				<td>
+					{# department or lab / location #}
+					<input type="text" name="location" placeholder="Department or lab / location" value="{{ searchTerms.location }}"/>
 
-					<option value="cataloguenumber" {{ (searchTerms.orderBy == "cataloguenumber") ? "selected" : "" }}>
-						Accession Number
-					</option>
+					{# creator #}
+					<input type="text" id="artist" name="artistname" placeholder="Creator (ORCiD pending)" value="{{ searchTerms.artistname }}"/>
+				</td>
+			</tr>
 
-					<option value="random" {{ (searchTerms.orderBy == "random") ? "selected" : "" }}>
-						Random
-					</option>
+			{# files #}
+			<tr id="files">
+				<th>Files</th>
+				<td>
+					{# torrent description #}
+					<div>
+						<input type="text" name="description" placeholder="Torrent description" value="{{ searchTerms.description }}"/>
+						<br/>
+						<label for="description">
+							Single torrent description, not torrent <em>group</em> description
+						</label>
+					</div>
 
-				</select>
+					{# file list #}
+					<div>
+						<input type="text" name="filelist" placeholder="File list" value="{{ searchTerms.filelist }}"/>
+						<br/>
+						<label for="filelist">
+							Please use the simple search to find torrents by info hash
+						</label>
+					</div>
+				</td>
+			</tr>
 
-				<select name="orderWay" class="ft_orderWay" aria-label="Direction to order">
-					<option value="desc" {# {{ (query.post.orderWay == "desc") ?? "selected" }} #}>
-						Descending
-					</option>
+			{# platforms #}
+			<tr id="rip_specifics">
+				<th>Platforms</th>
+				<td>
 
-					<option value="asc" {# {{ (query.post.orderWay == "asc") ?? "selected" }} #}>
-						Ascending
-					</option>
-				</select>
+					{# sequences #}
+					<select name="media">
+						<option>Sequences</option>
+						{% for platform in env.META.Platforms.Sequences %}
+							<option value="{{ platform }}" {{ (searchTerms.media == platform) ? "selected" : "" }}>
+								{{ platform }}
+							</option>
+						{% endfor %}
+					</select>
+
+					{# graphs #}
+					<select name="media" class="ft_media fti_advanced">
+						<option>Graphs</option>
+						{% for platform in env.META.Platforms.Graphs %}
+							<option value="{{ platform }}" {{ (searchTerms.media == platform) ? "selected" : "" }}>
+								{{ platform }}
+							</option>
+						{% endfor %}
+					</select>
+
+					{# images #}
+					<select name="media" class="ft_media fti_advanced">
+						<option>Images</option>
+						{% for platform in env.META.Platforms.Images %}
+							<option value="{{ platform }}" {{ (searchTerms.media == platform) ? "selected" : "" }}>
+								{{ platform }}
+							</option>
+						{% endfor %}
+					</select>
+
+					{# documents #}
+					<select name="media" class="ft_media fti_advanced">
+						<option>Documents</option>
+						{% for platform in env.META.Platforms.Documents %}
+							<option value="{{ platform }}" {{ (searchTerms.media == platform) ? "selected" : "" }}>
+								{{ platform }}
+							</option>
+						{% endfor %}
+					</select>
+
+				</td>
+			</tr>
+
+			{# formats #}
+			<tr id="rip_specifics">
+				<th>Formats</th>
+				<td>
+
+					{# nucleoSeq #}
+					<select id="container" name="container">
+						<option>NucleoSeq</option>
+						{% for key, value in env.META.Formats.Sequences %}
+							<option value="{{ key }}" {{ (searchTerms.container == key) ? "selected" : "" }}>
+								{{ key }}
+							</option>
+						{% endfor %}
+					</select>
+
+					{# protSeq #}
+					<select id="container" name="container">
+						<option>ProtSeq</option>
+						{% for key, value in env.META.Formats.Proteins %}
+							<option value="{{ key }}" {{ (searchTerms.container == key) ? "selected" : "" }}>
+								{{ key }}
+							</option>
+						{% endfor %}
+					</select>
+
+					{# xml #}
+					<select id="container" name="container">
+						<option>XMLs</option>
+						{% for key, value in xmls %}
+							<option value="{{ key }}" {{ (searchTerms.container == key) ? "selected" : "" }}>
+								{{ key }}
+							</option>
+						{% endfor %}
+					</select>
+
+					{# raster #}
+					<select id="container" name="container">
+						<option>Raster</option>
+						{% for key, value in raster %}
+							<option value="{{ key }}" {{ (searchTerms.container == key) ? "selected" : "" }}>
+								{{ key }}
+							</option>
+						{% endfor %}
+					</select>
+
+					{# vector #}
+					<select id="container" name="container">
+						<option>Vector</option>
+						{% for key, value in vector %}
+							<option value="{{ key }}" {{ (searchTerms.container == key) ? "selected" : "" }}>
+								{{ key }}
+							</option>
+						{% endfor %}
+					</select>
+
+					{# other #}
+					<select id="container" name="container">
+						<option>Other</option>
+						{% for key, value in extras %}
+							<option value="{{ key }}" {{ (searchTerms.container == key) ? "selected" : "" }}>
+								{{ key }}
+							</option>
+						{% endfor %}
+					</select>
+
+				</td>
+			</tr>
+
+			{# misc #}
+			<tr id="misc">
+				<th>Misc</th>
+				<td>
+
+					{# scope #}
+					<select name="resolution">
+						<option>Scope</option>
+						{% for resolution in resolutions %}
+							<option value="{{ resolution }}" {{ (searchTerms.resolution == resolution) ? "selected" : "" }}>
+								{{ resolution }}
+							</option>
+						{% endfor %}
+					</select>
+
+					{# alignment #}
+					<select name="censored">
+						<option>Alignment</option>
+						<option value="1" {{ (searchTerms.censored == "1") ? "selected" : "" }}>
+							Aligned
+						</option>
+
+						<option value="0" {{ (searchTerms.censored == "0") ? "selected" : "" }}>
+							Not aligned
+						</option>
+					</select>
+
+					{# leech status #}
+					<select name="freetorrent">
+						<option>Leech status</option>
+
+						<option value="1" {{ (searchTerms.freetorrent == "1") ? "selected" : "" }}>
+							Freeleech
+						</option>
+
+						<option value="2" {{ (searchTerms.freetorrent == "2") ? "selected" : "" }}>
+							Neutral leech
+						</option>
+
+						<option value="3" {{ (searchTerms.freetorrent == "3") ? "selected" : "" }}>
+							Either
+						</option>
+
+						<option value="0" {{ (searchTerms.freetorrent == "0") ? "selected" : "" }}>
+							None
+						</option>
+
+					</select>
+
+					{# license #}
+					<select name="codec">
+						<option>License</option>
+						{% for license in env.META.Licenses %}
+							<option value="{{ license }}" {{ (searchTerms.codec == license) ? "selected" : "" }}>
+								{{ license }}
+							</option>
+						{% endfor %}
+					</select>
+
+				</td>
+			</tr>
+
+			{# size #}
+			<tr id="size">
+				<th>Size</th>
+				<td>
+
+{# file size #}
+					<input type="number" name="size_min" placeholder="Minimum" value="{{ searchTerms.size_min }}"/>
+					&ndash;
+					<input type="number" name="size_max" placeholder="Maximum" value="{{ searchTerms.size_max }}"/>
+
+{# units #}
+					<select name="size_unit">
+						<option>Unit</option>
+
+						<option value="0" {{ (searchTerms.size_unit == 0) ? "selected" : "" }}>
+							B
+						</option>
+
+						<option value="1" {{ (searchTerms.size_unit == 1) ? "selected" : "" }}>
+							KiB
+						</option>
+
+						<option value="2" {{ (searchTerms.size_unit == 2) ? "selected" : "" }}>
+							MiB
+						</option>
+
+						<option value="3" {{ (searchTerms.size_unit == 3) ? "selected" : "" }}>
+							GiB
+						</option>
+
+						<option value="4" {{ (searchTerms.size_unit == 4) ? "selected" : "" }}>
+							TiB
+						</option>
+					</select>
+
+				</td>
+			</tr>
+
+			{# tag filter #}
+      <tr id="tagFilter">
+      <th>Tags</th>
+			<td  id="tagColumn">
+      <div>
+				<input type="text" id="tags" name="taglist" placeholder="Tag list (comma-separated)" value="{{ searchTerms.taglist }}">
+</div>
+
+<div id="tagRow">
+        <a id="toggleTagList" class="button u-pull-right">toggle tag list</a>
+
+				<input type="radio" name="tags_type" id="tags_type0" value="0" {{ (searchTerms.tags_type == '0') ? "checked" : "" }}/>
+				<label for="tags_type0">Any tag</label>
+
+				<input type="radio" name="tags_type" id="tags_type1" value="1" {{ (searchTerms.tags_type == '1') ? "checked" : "" }}/>
+				<label for="tags_type1">All tags</label>
+
+        <p class="info">
+				Use !tag to exclude tags
+        </p>
+
+
+        </div>
 			</td>
 		</tr>
 
-		{# use torrent groups? #}
-		<tr id="search_groupResults">
-			<th>Group Torrents</th>
-			<td>
-				<input type="checkbox" value="1" name="groupResults" id="groupResults" {{ (searchTerms.groupResults) ? "checked" : "" }}/>
-				<label for="groupResults">Some descriptive text label</label>
-			</td>
-		</tr>
-	</table>
+{# tag list #}
+      <tr id="tagList">
+      <th />
+      <td class="wrapThis">
+      {% for item in officialTags %}
+      <a class="officialTag">{{ item }}</a>
+ {% endfor %}
+      </td>
+      </tr>
+
+		</table>
+	</section> {# advancedSearch #}
+
+
+	{# sort options #}
+	<section id="sortOptions">
+	<h3>Sorting options</h3>
+
+		<table class="torrentSearch">
+
+
+      			{# category list #}
+			<tr>
+				<th>Categories</th>
+				<td class="wrapThis">
+			{% for key, value in categories %}
+      {% set categoryId = key + 1 %}
+      {% if searchTerms.filter_cat.categoryId is defined and searchTerms.filter_cat.categoryId == categoryId %}
+      {% set checked = "checked" %}
+      {% else %}
+      {% set checked = "" %}
+      {% endif %}
+
+					<input type="checkbox" name="filter_cat[{{ categoryId }}]" id="cat_{{ categoryId }}" value="1" {{ checked }} />
+					<label for="cat_{{ categoryId }}">{{ value }}</label>
+			{% endfor %}
+				</td>
+			</tr>
+
+
+      			{# order by #}
+			<tr id="order">
+				<th>Order by</th>
+				<td>
+
+					<select name="orderBy">
+						<option value="time" {{ (searchTerms.orderBy == "time") ? "selected" : "" }}>
+							Time added
+						</option>
+
+						<option value="year" {{ (searchTerms.orderBy == "year") ? "selected" : "" }}>
+							Year
+						</option>
+
+						<option value="size" {{ (searchTerms.orderBy == "size") ? "selected" : "" }}>
+							Size
+						</option>
+
+						<option value="snatched" {{ (searchTerms.orderBy == "snatched") ? "selected" : "" }}>
+							Snatched
+						</option>
+
+						<option value="seeders" {{ (searchTerms.orderBy == "seeders") ? "selected" : "" }}>
+							Seeders
+						</option>
+
+						<option value="leechers" {{ (searchTerms.orderBy == "leechers") ? "selected" : "" }}>
+							Leechers
+						</option>
+
+						<option value="cataloguenumber" {{ (searchTerms.orderBy == "cataloguenumber") ? "selected" : "" }}>
+							Accession number
+						</option>
+
+						<option value="random" {{ (searchTerms.orderBy == "random") ? "selected" : "" }}>
+							Random
+						</option>
+
+					</select>
+
+{# order way #}
+					<select name="orderWay" class="ft_orderWay" aria-label="Direction to order">
+						<option value="desc" {{ (searchTerms.orderWay == "desc") ? "selected" : "" }}>
+							Descending
+						</option>
+
+						<option value="asc" {{ (searchTerms.orderWay == "asc") ? "selected" : "" }}>
+							Ascending
+						</option>
+					</select>
+
+				</td>
+			</tr>
+
+			{# use torrent groups? #}
+			<tr id="search_groupResults">
+				<th>Group torrents</th>
+				<td>
+					<input type="checkbox" value="1" name="groupResults" id="groupResults" {{ (searchTerms.groupResults) ? "checked" : "" }}/>
+					<label for="groupResults">Group related torrents in the search results</label>
+				</td>
+			</tr>
+
+			{# controls #}
+			<tr >
+      <th />
+				<td id="formControls">
+	<input type="submit" value="search" class="button-primary"/>
+
+	<input type="button" id="resetSearchForm" value="reset" />
+				</td>
+			</tr>
+
+
+		</table>
 	</section> {# sortOptions #}
 
-	{# categories #}
-  <section id="categories">
-	<table class="torrentSearch">
-		{% set x = 0 %}
-		{% for key, value in categories %}
-			{% if x % 6 == 0 %}
-				{% if x > 0 %}
-				</tr>
-			{% endif %}
-			<tr>
-			{% endif %}
-			{% set x = x + 1 %}
-			<td>
-				<input type="checkbox" name="filter_cat[{{ key + 1 }}]" id="cat_{{ key + 1 }}" value="1" {# {{ (query.post.filter_cat.{{ key + 1 }} ) ?? "checked" }} #}/>
-				<label for="cat_{{ key + 1 }}">{{ value }}</label>
-			</td>
-		{% endfor %}
-	</tr>
-</table>
-</section> {# categories #}
 
-{# tag options #}
-<section id="tagOptions">
-<table class="torrentSearch">
 
-		{# tag list #}
-		<tr id="tagfilter">
-			<th/>
-			<td>
-				<input type="text" id="tags" name="taglist" placeholder="Tag list (comma-separated)" value="{{ searchTerms.taglist }}">
-
-				<input type="radio" name="tags_type" id="tags_type0" value="0" {{ (searchTerms.tags_type == 0) ? "checked" : "" }}/>
-				<label for="tags_type0">
-					Any</label>
-
-				<input type="radio" name="tags_type" id="tags_type1" value="1" {{ (searchTerms.tags_type == 0) ? "checked" : "" }}/>
-				<label for="tags_type1">
-					All</label>
-
-				Use !tag to exclude tags
-			</td>
-		</tr>
-
-	<tr>
-		<td class="label">
-			<a class="brackets" data-toggle-target="#taglist" data-toggle-replace="<?=(empty($app->userNew->extra['ShowTags']) ? 'Hide tags' : 'View tags')?>"><?=(empty($app->userNew->extra['ShowTags']) ? 'View tags' : 'Hide tags')?></a>
-		</td>
-	</tr>
-</table>
-</section> {# tagOptions #}
-
-{# result count, submit, and reset #}
-<div class="submit ft_submit">
-	<span class="u-pull-left">
-		{{ resultCount }}
-		results
-	</span>
-
-	<input type="submit" value="Search" class="button-primary"/>
-
-	<input type="hidden" name="advanced_search" id="ft_type" value="{{ (advancedSearch) ? true : false }}"/>
-
-	<input type="hidden" name="searchsubmit" value="1"/>
-
-	<input type="button" value="Reset" <input type="button" value="Reset" onclick="window.location.href = 'torrents.php<?php if (isset($_GET['advanced_search']) && $_GET['advanced_search'] === 'true') { ?>?advanced_search=true<?php } ?>'" /> {# set/clear default search #} {# &emsp; {% if searchHasFilters %} <input type="submit" name="setdefault" value="Make Default" /> {% endif %} {% if user.extra.DefaultSearch is defined %} <input type="submit" name="cleardefault" value="Clear Default" /> {% endif %} #} </div> {# div class="submit ft_submit" #} </form>
+</form>

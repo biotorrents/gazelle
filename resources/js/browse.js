@@ -6,23 +6,37 @@
   "use strict";
 
   // toggle search type
-  $("#toggleSearchType").on("click", () => {
-    let searchType = $("#toggleSearchType").html();
-    //console.log(searchType);
+  siteOptions.searchType ??= null;
 
-    // show basic, hide advanced
-    if (searchType === "show basic search") {
-      $("#toggleSearchType").html("show advanced search");
-      $("#basicSearch").show();
-      $("#advancedSearch").hide();
-    }
+  if (siteOptions.searchType === "simple") {
+    $("#simpleSearch").hide();
+  }
 
-    // show advanced, hide basic
-    if (searchType === "show advanced search") {
-      $("#toggleSearchType").html("show basic search");
-      $("#advancedSearch").show();
-      $("#basicSearch").hide();
-    }
+  if (siteOptions.searchType === "complex") {
+    $("#complexSearch").hide();
+  }
+
+  // show simple, hide complex
+  $("#showSimpleSearch").on("click", () => {
+    $("#simpleSearch").show();
+    $("#complexSearch").hide();
+  });
+
+  // show complex, hide simple
+  $("#showComplexSearch").on("click", () => {
+    $("#complexSearch").show();
+    $("#simpleSearch").hide();
+  });
+
+  // toggle tag list
+  $("#toggleTagList").on("click", () => {
+    $("#tagList").toggle();
+  });
+
+  // reset the form
+  $("#resetSearchForm").on("click", () => {
+    let formObject = $("#torrentSearch").get(0);
+    formObject.reset();
   });
 })();
 
