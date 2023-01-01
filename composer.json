@@ -49,6 +49,7 @@
     "delight-im/auth": "^8.3",
     "erusev/parsedown": "1.8.0-beta-7",
     "erusev/parsedown-extra": "0.8.0",
+    "foolz/sphinxql-query-builder": "^3.0",
     "guzzlehttp/guzzle": "^7.4.1",
     "illuminate/support": "^9.44",
     "mikecao/flight": "^2.0",
