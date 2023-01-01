@@ -11,7 +11,36 @@ table.alternatingRows {
   }
 }
 
-/** */
+/**
+ * every table
+ */
+table {
+  width: 100%;
+}
+
+/**
+ * torrent search table
+ */
+
+.torrentSearch {
+  th {
+    text-align: right;
+    width: 10%;
+  }
+
+  td {
+    input[type="text"] {
+      width: 90%;
+    }
+
+    &.selectFlex {
+      display: flex;
+      flex-flow: row nowrap;
+      gap: 2rem;
+      align-items: center;
+    }
+  }
+}
 
 /**
  * sortable tables

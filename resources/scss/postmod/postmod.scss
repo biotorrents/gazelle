@@ -93,12 +93,14 @@ a[onclick]:active {
   outline: 0;
 }
 
+/*
 a[onclick^="AddArtistField"]:focus,
 a[onclick^="AddArtistField"]:active {
   outline: 0;
   background: transparent !important;
   padding: 0 !important;
 }
+*/
 
 h1,
 h2,
@@ -521,6 +523,7 @@ ul.nobullet {
   font-size: 16px;
 }
 
+/*
 table {
   width: 100%;
   border-collapse: collapse;
@@ -528,6 +531,7 @@ table {
   -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
+*/
 
 tr {
   border: none;
@@ -584,10 +588,12 @@ td.colhead,
   font-size: 12pt;
 }
 
+/*
 td.label {
   text-align: right;
   width: 180px;
 }
+*/
 
 #upload form table td.label {
   vertical-align: top;
@@ -688,13 +694,17 @@ ul.poll li.graph {
   padding-top: 5px;
 }
 
+/*
 #content form.search_form + .torrent_table {
   margin-top: 20px;
 }
+*/
 
+/*
 .cat_list tr td {
   border: none;
 }
+*/
 
 .torrent_table tr {
   vertical-align: top;

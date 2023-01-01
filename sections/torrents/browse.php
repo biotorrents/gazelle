@@ -104,6 +104,35 @@ $currentPages = Format::get_pages($currentPage, $resultCount, $pagination);
 $bookmarks = Bookmarks::all_bookmarks('torrent');
 
 
+/** collect the search terms */
+
+$searchTerms = [
+  "numbers" => $post["numbers"] ?? null,
+  "advgroupname" => $post["advgroupname"] ?? null,
+  "artistname" => $post["artistname"] ?? null,
+  "location" => $post["location"] ?? null,
+  "year" => $post["year"] ?? null,
+  "description" => $post["description"] ?? null,
+  "filelist" => $post["filelist"] ?? null,
+  "media" => $post["media"] ?? null,
+  "container" => $post["container"] ?? null,
+  "resolution" => $post["resolution"] ?? null,
+  "censored" => $post["censored"] ?? null,
+  "freetorrent" => $post["freetorrent"] ?? null,
+  "codec" => $post["codec"] ?? null,
+  "size_min" => $post["size_min"] ?? null,
+  "size_max" => $post["size_max"] ?? null,
+  "size_unit" => $post["size_unit"] ?? null,
+  "search" => $post["search"] ?? null,
+  "taglist" => $post["taglist"] ?? null,
+  "tags_type" => $post["tags_type"] ?? null,
+  "orderBy" => $post["orderBy"] ?? null,
+  "orderWay" => $post["orderWay"] ?? null,
+  "groupResults" => $post["groupResults"] ?? null,
+
+];
+
+
 /** legacy variables */
 
 
@@ -265,6 +294,7 @@ $app->twig->display("torrents/browse.twig", [
   "bullshit" => ($resultCount < ($currentPage - 1) * $pagination + 1),
   "categories" => $Categories,
 
+  "searchTerms" => $searchTerms,
   "searchResults" => $searchResults,
   "resultGroups" => $resultGroups,
 ]);

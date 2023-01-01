@@ -1,4 +1,34 @@
 /**
+ * torrent search page
+ */
+
+(() => {
+  "use strict";
+
+  // toggle search type
+  $("#toggleSearchType").on("click", () => {
+    let searchType = $("#toggleSearchType").html();
+    //console.log(searchType);
+
+    // show basic, hide advanced
+    if (searchType === "show basic search") {
+      $("#toggleSearchType").html("show advanced search");
+      $("#basicSearch").show();
+      $("#advancedSearch").hide();
+    }
+
+    // show advanced, hide basic
+    if (searchType === "show advanced search") {
+      $("#toggleSearchType").html("show basic search");
+      $("#advancedSearch").show();
+      $("#basicSearch").hide();
+    }
+  });
+})();
+
+/** legacy */
+
+/**
  * show_peers
  */
 function show_peers(TorrentID, Page) {
@@ -172,36 +202,6 @@ function toggle_group(groupid, link, event) {
       toReButton[i].className = "hide_torrents";
     }
   }
-}
-
-/**
- * toggleTorrentSearch
- */
-function toggleTorrentSearch(mode) {
-  if (mode == 0) {
-    var link = $("#ft_toggle").raw();
-    $("#ft_container").gtoggle();
-    link.innerHTML = link.textContent == "Hide" ? "Show" : "Hide";
-  }
-
-  if (mode == "basic") {
-    $(".fti_advanced").disable();
-    $(".fti_basic").enable();
-    $(".ftr_advanced").ghide(true);
-    $(".ftr_basic").gshow();
-    $("#ft_advanced").ghide();
-    $("#ft_basic").gshow();
-    $("#ft_type").raw().value = "basic";
-  } else if (mode == "advanced") {
-    $(".fti_advanced").enable();
-    $(".fti_basic").disable();
-    $(".ftr_advanced").gshow();
-    $(".ftr_basic").ghide();
-    $("#ft_advanced").gshow();
-    $("#ft_basic").ghide();
-    $("#ft_type").raw().value = "advanced";
-  }
-  return false;
 }
 
 /**

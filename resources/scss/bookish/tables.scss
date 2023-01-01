@@ -12,19 +12,6 @@
   }
 }
 
-/* every table */
-table {
-  border-collapse: collapse;
-  width: 100%;
-
-  /*
-  td,
-  td:first-child {
-    padding: 0.5rem !important;
-  }
-  */
-}
-
 /* special tables */
 .torrent_table,
 .collage_table,
@@ -80,11 +67,13 @@ table {
   border: 2px solid change-color(gold, $alpha: 0.5);
 }
 
+/*
 td.label {
   font-weight: bold;
   text-align: right;
   width: 180px;
 }
+*/
 
 table.slice {
   margin-top: -1px;

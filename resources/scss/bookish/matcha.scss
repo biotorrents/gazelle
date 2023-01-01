@@ -67,7 +67,7 @@ body.style_matcha {
     }
   }
 
-  #userInfoMinor>li>ul {
+  #userInfoMinor > li > ul {
     display: none;
     position: absolute;
     padding: 5px;
@@ -105,7 +105,7 @@ body.style_matcha {
   .artist_table,
   .request_table,
   .forum_index,
-  #userInfoMinor>li>ul,
+  #userInfoMinor > li > ul,
   .permissions table {
     box-shadow: 0 5px 4px -4px slategray;
   }
@@ -173,7 +173,8 @@ body.style_matcha {
     }
   }
 
-  /* Text input */
+  /* text input */
+  /*
   input.inputtext {
     border: none;
     border-bottom: 1px solid #edeae5;
@@ -186,6 +187,7 @@ body.style_matcha {
       border-bottom: 1px solid #fbe180;
     }
   }
+*/
 
   /* Cover images */
   #coverCont {
