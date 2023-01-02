@@ -82,11 +82,11 @@ class Manticore
 
     # attribute fields
     public $attributeFields = [
-        "categories" => null,
+        "categoryid" => null,
         "censored" => null,
-        "leechStatus" => null,
+        "freetorrent" => null,
         "sizeUnit" => null,
-        "year" => null,
+        #"year" => null,
     ];
 
     # map of sort mode => attribute name for ungrouped torrent page
@@ -103,6 +103,12 @@ class Manticore
 
     # raw search terms
     public $rawSearchTerms = [];
+
+    # the queryLanguage object
+    public $query = null;
+
+    # debug metadata
+    public $debug = null;
 
 
     /**
@@ -141,18 +147,18 @@ class Manticore
      * search
      *
      * Search an index.
+     * Example usage:
+     *
+     * $query = (new SphinxQL($conn))->select('column_one', 'colume_two')
+     *   ->from('index_ancient', 'index_main', 'index_delta')
+     *   ->match('comment', 'my opinion is superior to yours')
+     *   ->where('banned', '=', 1);
+     *
+     * $result = $query->execute();
      */
     public function search(string $what, array $terms = [])
     {
-        /*
-        # example usage
-        $query = (new SphinxQL($conn))->select('column_one', 'colume_two')
-            ->from('index_ancient', 'index_main', 'index_delta')
-            ->match('comment', 'my opinion is superior to yours')
-            ->where('banned', '=', 1);
-
-        $result = $query->execute();
-        */
+        $app = \App::go();
 
         # sanity check
         $allowedIndices = array_keys($this->indices);
@@ -161,10 +167,11 @@ class Manticore
         }
 
         # start the query
-        $query = $this->queryLanguage
+        $this->query = $this->queryLanguage
             ->select("*")
             ->from($this->indices[$what]);
-        #!d($query);exit;
+        #!d($this->query);exit;
+
 
         # orderBy and orderWay
         $orderBy = $terms["orderBy"] ??= "timeAdded";
@@ -181,16 +188,21 @@ class Manticore
 
         $this->sortOrders[$orderBy] ??= null;
         if ($this->sortOrders[$orderBy]) {
-            $query->orderBy($this->sortOrders[$orderBy], $orderWay);
+            $this->query->orderBy($this->sortOrders[$orderBy], $orderWay);
         }
 
         # does the heavy lifting of adding clauses
-        $query = $this->processSearchTerms($query, $terms);
+        $this->query = $this->processSearchTerms($terms);
 
+        # debug
+        if ($app->env->dev) {
+            $this->debug = $this->query->enqueue(
+                $this->helper->showMeta()
+            );
+            !d($this->debug);
+        }
 
-
-
-        $resultSet = $query->execute();
+        $resultSet = $this->query->execute();
         $results = $resultSet->fetchAllAssoc();
 
         return $results;
@@ -205,27 +217,26 @@ class Manticore
      *
      * Look at each search term and figure out what to do with it.
      *
-     * @param Foolz\SphinxQL\SphinxQL $query the queryLanguage object
      * @param array $terms array with search terms
      */
-    private function processSearchTerms(\Foolz\SphinxQL\SphinxQL $query, array $terms = []): \Foolz\SphinxQL\SphinxQL
+    private function processSearchTerms(array $terms = []): \Foolz\SphinxQL\SphinxQL
     {
         foreach ($terms as $key => $value) {
             # search field
             $this->searchFields[$key] ??= null;
             if ($this->searchFields[$key]) {
-                $query = $this->processSearchField($query, $key, $value);
+                $this->query = $this->processSearchField($key, $value);
             }
 
             # attribute field
             $this->attributeFields[$key] ??= null;
             if ($this->attributeFields[$key]) {
-                $query = $this->processAttributeField($query, $key, $value);
+                $this->query = $this->processAttributeField($key, $value);
             }
         }
 
         #$this->post_process();
-        return $query;
+        return $this->query;
     }
 
 
@@ -234,41 +245,71 @@ class Manticore
      *
      * Look at a fulltext search term and figure out if it needs special treatment
      *
-     * @param Foolz\SphinxQL\SphinxQL $query the queryLanguage object
      * @param string $key name of the search field
      * @param string $value search expression for the field
      */
-    private function processSearchField(\Foolz\SphinxQL\SphinxQL $query, string $key, string $value): \Foolz\SphinxQL\SphinxQL
+    private function processSearchField(string $key, string $value): \Foolz\SphinxQL\SphinxQL
     {
         $value = trim(strval($value));
 
         # empty
         if (empty($value)) {
-            return $query;
+            return $this->query;
         }
 
         # fileList: phrase boundary limits partial hits
         if ($key === "fileList") {
             $value = "{$value}~20";
-            $query->match("filelist", $value);
+            $this->query->match("filelist", $value);
 
-            return $query;
+            return $this->query;
         }
 
         # tagList: prepare tag searches
         if ($key === "tagList") {
             $value = str_replace($value, ".", "_");
-            $query->match("taglist", $value);
+            $this->query->match("taglist", $value);
 
-            return $query;
+            return $this->query;
         }
+
+        # year: not an attribute
+        if ($key === "year") {
+            $range = explode("-", $value);
+
+            # exact year
+            if (count($range) === 1) {
+                $this->query->where("year", intval($range[0]));
+
+                return $this->query;
+            }
+
+            # e.g., null - 2005
+            if (empty($range[0]) && !empty($range[1])) {
+                $this->query->where("year", "<=", intval($range[1]));
+
+                return $this->query;
+            }
+
+            # e.g., 2005 - null
+            if (!empty($range[0]) && empty($range[1])) {
+                $this->query->where("year", ">=", intval($range[0]));
+
+                return $this->query;
+            }
+
+            # e.g., 2005 - 2009
+            $this->query->where("year", "between", [ intval($range[0]), intval($range[1]) ]);
+
+            return $this->query;
+        } # if ($key === "year")
 
         # normal
         $this->searchFields[$key] ??= null;
         if ($this->searchFields[$key]) {
-            $query->match($this->searchFields[$key], $value);
+            $this->query->match($this->searchFields[$key], $value);
 
-            return $query;
+            return $this->query;
         }
     }
 
@@ -278,58 +319,26 @@ class Manticore
      *
      * Process attribute filters and store them in case we need to post-process grouped results.
      *
-     * @param Foolz\SphinxQL\SphinxQL $query the queryLanguage object
      * @param string $attribute name of the attribute to filter against
      * @param mixed $value the filter's condition for a match
      */
-    private function processAttributeField(\Foolz\SphinxQL\SphinxQL $query, string $key, string $value): \Foolz\SphinxQL\SphinxQL
+    private function processAttributeField(string $key, string $value): \Foolz\SphinxQL\SphinxQL
     {
         $value = trim(strval($value));
 
         # empty
         if (empty($value)) {
-            return $query;
+            return $this->query;
         }
-
-        # year
-        if ($key === "year") {
-            $range = explode("-", $value);
-
-            # exact year
-            if (count($range) === 1) {
-                $query->where("year", $range[0]);
-
-                return $query;
-            }
-
-            # e.g., null - 2005
-            if (empty($range[0]) && !empty($range[1])) {
-                $query->where("year", "<=", $range[1]);
-
-                return $query;
-            }
-
-            # e.g., 2005 - null
-            if (!empty($range[0]) && empty($range[1])) {
-                $query->where("year", ">=", $range[0]);
-
-                return $query;
-            }
-
-            # e.g., 2005 - 2009
-            $query->where("year", "between", [ $range[0], $range[1] ]);
-
-            return $query;
-        } # if ($key === "year")
 
         # sizeUnit
         if ($key === "sizeUnit") {
             $sizeMin = intval(($this->rawSearchTerms["size_min"] ?? 0) * (1024 ** $value));
             $sizeMax = intval(min(PHP_INT_MAX, ($this->rawSearchTerms["sizeMax"] ?? INF) * (1024 ** $value)));
 
-            $query->where("size", "between", [$sizeMin, $sizeMax ]);
+            $this->query->where("size", "between", [$sizeMin, $sizeMax ]);
 
-            return $query;
+            return $this->query;
         } # if ($key === "sizeUnit")
 
         # leechStatus
@@ -337,15 +346,15 @@ class Manticore
             $value = intval($value);
 
             if ($value === 3) {
-                $query->where("freetorrent", 0);
+                $this->query->where("freetorrent", 0);
 
-                return $query;
+                return $this->query;
             }
 
             if ($value >= 0 && $value < 3) {
-                $query->where("freetorrent", $value);
+                $this->query->where("freetorrent", $value);
 
-                return $query;
+                return $this->query;
             }
         } # if ($key === "leechStatus")
 
@@ -360,17 +369,17 @@ class Manticore
                 $categoryFilter[] = $categoryId;
             }
 
-            $query->where("categoryid", $categoryFilter);
+            $this->query->where("categoryid", $categoryFilter);
 
-            return $query;
+            return $this->query;
         } # if ($key === "categories")
 
         # check if the value is valid
         $this->attributeFields[$key] ??= null;
         if ($this->attributeFields[$key]) {
-            $query->where($key, $value);
+            $this->query->where($key, $value);
 
-            return $query;
+            return $this->query;
         } # if ($this->attributeFields[$key])
     } # processAttributeField
 } # class
