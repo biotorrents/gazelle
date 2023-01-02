@@ -164,15 +164,16 @@ else {
 
 # SphinxqlQuery needs constants to work
 # $app->env breaks the torrent and request pages
+# cuz the constructor uses constants lol
 define("SPHINXQL_HOST", "127.0.0.1");
 define("SPHINXQL_PORT", 9306);
 define("SPHINXQL_SOCK", false);
 define("SPHINX_MAX_MATCHES", 1000); # must be <= server max_matches (default 1000)
 
-ENV::setPub("sphinxHost", "127.0.0.1");
-ENV::setPub("sphinxPort", 9306);
-ENV::setPub("sphinxsocket", null);
-ENV::setPub("sphinxMaxMatches", 1000);
+ENV::setPub("manticoreHost", "127.0.0.1");
+ENV::setPub("manticorePort", 9306);
+ENV::setPub("manticoresocket", null);
+ENV::setPub("manticoreMaxMatches", 1000);
 
 
 /**

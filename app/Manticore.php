@@ -4,19 +4,24 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle\Sphinx
+ * Gazelle\Manticore
+ * 
+ * Uses Sphinx as the backend for now.
+ * Plans to replace with the Manticore fork.
  *
  * @see https://github.com/FoolCode/SphinxQL-Query-Builder
+ * @see https://manual.manticoresearch.com/Introduction
+ * @see https://github.com/biotorrents/gazelle/issues/41
  */
 
 namespace Gazelle;
 
-class Sphinx
+class Manticore
 {
-    # sphinx connection
+    # manticore connection
     private $connection = null;
 
-    # sphinx query language
+    # manticore query language
     public $queryLanguage = null;
 
     /**
@@ -29,8 +34,8 @@ class Sphinx
         # establish connection
         $this->connection = new \Foolz\SphinxQL\Drivers\Pdo\Connection();
         $this->connection->setParams([
-            "host" => $app->env->sphinxHost,
-            "port" => $app->env->sphinxPort,
+            "host" => $app->env->manticoreHost,
+            "port" => $app->env->manticorePort,
         ]);
 
         # instantiate query language
