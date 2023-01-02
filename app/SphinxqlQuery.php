@@ -141,7 +141,7 @@ class SphinxqlQuery
      */
     public function where_between($Attribute, $Values)
     {
-        if (empty($Attribute) || empty($Values) || count($Values) != 2 || !is_number($Values[0]) || !is_number($Values[1])) {
+        if (empty($Attribute) || empty($Values) || count($Values ?? []) != 2 || !is_number($Values[0]) || !is_number($Values[1])) {
             $this->error("Filter range requires array of two numerical boundaries as values.");
             return $this;
         }
@@ -312,7 +312,7 @@ class SphinxqlQuery
     {
         $QueryStartTime = microtime(true);
         $this->build_query();
-        if (count($this->Errors) > 0) {
+        if (count($this->Errors ?? []) > 0) {
             $ErrorMsg = implode("\n", $this->Errors);
             $this->Sphinxql->error("Query builder found errors:\n$ErrorMsg");
             return new SphinxqlResult(null, null, 1, $ErrorMsg);

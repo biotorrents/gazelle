@@ -14,7 +14,7 @@ Http::csrf();
 
 $get = Http::query("get");
 $post = Http::query("post");
-
+!d($post);exit;
 
 /** torrent search handling */
 
