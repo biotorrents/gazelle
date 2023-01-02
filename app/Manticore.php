@@ -138,11 +138,11 @@ class Manticore
 
 
     /**
-     * searchTorrents
+     * search
      *
-     * Search the torrents indices.
+     * Search an index.
      */
-    public function searchTorrents(array $terms = [])
+    public function search(string $what, array $terms = [])
     {
         /*
         # example usage
@@ -154,10 +154,17 @@ class Manticore
         $result = $query->execute();
         */
 
+        # sanity check
+        $allowedIndices = array_keys($this->indices);
+        if (!in_array($what, $allowedIndices)) {
+            throw new \Exception("expected one of " . implode(", ", $allowedIndices) . ", got {$what}");
+        }
+
         # start the query
         $query = $this->queryLanguage
             ->select("*")
-            ->from($this->indices["torrents"]);
+            ->from($this->indices[$what]);
+        #!d($query);exit;
 
         # orderBy and orderWay
         $orderBy = $terms["orderBy"] ??= "timeAdded";
@@ -190,30 +197,6 @@ class Manticore
     }
 
 
-    /**
-     * searchRequests
-     *
-     * Search the requests indices.
-     */
-    public function searchRequests(array $terms = [])
-    {
-        $indices = $this->indices["requests"];
-        throw new \Exception("not implemented");
-    }
-
-
-    /**
-     * searchLog
-     *
-     * Search the log indices.
-     */
-    public function searchLog(array $terms = [])
-    {
-        $indices = $this->indices["log"];
-        throw new \Exception("not implemented");
-    }
-
-
     /** private methods */
 
 
@@ -222,9 +205,10 @@ class Manticore
      *
      * Look at each search term and figure out what to do with it.
      *
+     * @param Foolz\SphinxQL\SphinxQL $query the queryLanguage object
      * @param array $terms array with search terms
      */
-    private function processSearchTerms($query, array $terms = [])
+    private function processSearchTerms(\Foolz\SphinxQL\SphinxQL $query, array $terms = []): \Foolz\SphinxQL\SphinxQL
     {
         foreach ($terms as $key => $value) {
             # search field
@@ -250,10 +234,11 @@ class Manticore
      *
      * Look at a fulltext search term and figure out if it needs special treatment
      *
+     * @param Foolz\SphinxQL\SphinxQL $query the queryLanguage object
      * @param string $key name of the search field
      * @param string $value search expression for the field
      */
-    private function processSearchField($query, string $key, string $value)
+    private function processSearchField(\Foolz\SphinxQL\SphinxQL $query, string $key, string $value): \Foolz\SphinxQL\SphinxQL
     {
         $value = trim(strval($value));
 
@@ -293,10 +278,11 @@ class Manticore
      *
      * Process attribute filters and store them in case we need to post-process grouped results.
      *
+     * @param Foolz\SphinxQL\SphinxQL $query the queryLanguage object
      * @param string $attribute name of the attribute to filter against
      * @param mixed $value the filter's condition for a match
      */
-    private function processAttributeField($query, string $key, string $value)
+    private function processAttributeField(\Foolz\SphinxQL\SphinxQL $query, string $key, string $value): \Foolz\SphinxQL\SphinxQL
     {
         $value = trim(strval($value));
 

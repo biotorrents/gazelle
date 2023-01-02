@@ -18,7 +18,7 @@ $post = Http::query("post");
 
 
 $manticore = new Gazelle\Manticore();
-$results = $manticore->searchTorrents($post);
+$results = $manticore->search("torrents", $post);
 !d($results);
 
 
