@@ -9,6 +9,12 @@ declare(strict_types=1);
  * Uses Sphinx as the backend for now.
  * Plans to replace with the Manticore fork.
  *
+ * Deprecates these legacy classes:
+ *  - Sphinxql
+ *  - SphinxqlQuery
+ *  - SphinxqlResult
+ *  - TorrentSearch
+ *
  * @see https://github.com/FoolCode/SphinxQL-Query-Builder
  * @see https://manual.manticoresearch.com/Introduction
  * @see https://github.com/biotorrents/gazelle/issues/41
@@ -56,7 +62,6 @@ class Manticore
         "rasterFormat" => "container",
         "vectorFormat" => "container",
         "otherFormat" => "container",
-        "nucleoSeqFormat" => "container",
 
         "scope" => "resolution",
         "alignment" => "censored",
@@ -69,17 +74,26 @@ class Manticore
         "tagList" => "taglist",
         "tagsType" => "", # todo
 
-        "categories" => "", # todo
+        "categories" => "categoryid",
         "orderBy" => "", # todo
         "orderWay" => "", # todo
         "groupResults" => "", # todo
+    ];
+
+    # attribute fields
+    public $attributeFields = [
+        "categories" => null,
+        "censored" => null,
+        "leechStatus" => null,
+        "sizeUnit" => null,
+        "year" => null,
     ];
 
     # map of sort mode => attribute name for ungrouped torrent page
     public $sortOrders = [
         "identifier" => "cataloguenumber",
         "leechers" => "leechers",
-        "random" => 1,
+        "random" => true,
         "seeders" => "seeders",
         "size" => "size",
         "snatched" => "snatched",
@@ -87,60 +101,14 @@ class Manticore
         "year" => "year",
     ];
 
-    /*
-    # map of sort mode => aggregate expression required for some grouped sort orders
-    private $aggregateExpressions = [
-        "leechers" => "sum(leechers) as sumleechers",
-        "seeders" => "sum(seeders) as sumseeders",
-        "size" => "max(size) as maxsize",
-        "snatched" => "sum(snatched) as sumsnatched",
-    ];
-    */
-
-    /*
-    # list of fields that can be used for fulltext searches
-    private $groupFields = [
-        "GroupTitle2" => 1, # organism
-        "Groupnamejp" => 1, # strain
-        "Version" => 1, # version
-        "advgroupname" => 1,
-        "archive" => 0, # todo
-        "artistname" => 1, # author
-        "cataloguenumber" => 1, # accession number
-        "codec" => 1, # license
-        "container" => 1, # format
-        "description" => 1, # not group desc
-        "filelist" => 1,
-        "groupname" => 1, # title
-        "location" => 1, # combined above
-        "media" => 1, # platform
-        "numbers" => 1, # combined above
-        "resolution" => 1, # scope
-        "search" => 1,
-        "series" => 1, # location
-        "studio" => 1, # department/lab
-        "taglist" => 1
-    ];
-    */
-
-    /*
-    # list of torrent-specific fields that can be used for filtering
-    private $torrentFields = [
-        "censored" => 1,
-        "description" => 1,
-        "encoding" => 1,
-        "filelist" => 1,
-        "format" => 1,
-        "media" => 1
-    ];
-    */
-
+    # raw search terms
+    public $rawSearchTerms = [];
 
 
     /**
      * __construct
      */
-    public function __construct(array $options = [])
+    public function __construct(array $data = [])
     {
         $app = \App::go();
 
@@ -160,6 +128,9 @@ class Manticore
 
             # https://github.com/FoolCode/SphinxQL-Query-Builder#percolate
             $this->percolate = new \Foolz\SphinxQL\Percolate($this->connection);
+
+            # raw search terms
+            $this->rawSearchTerms = $data;
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
@@ -187,24 +158,13 @@ class Manticore
             ->select("*")
             ->from($this->indices["torrents"]);
 
-        foreach ($terms as $key => $value) {
-            $query->match($this->searchFields[$key], $value);
-        }
+        # does the heavy lifting of adding clauses
+        $query = $this->processSearchTerms($query, $terms);
 
         $resultSet = $query->execute();
-        # !d($results);exit;
-
         $results = $resultSet->fetchAllAssoc();
 
-
         return $results;
-
-        $indices = $this->indices["torrents"];
-        $searchTerms = $this->processSearchTerms($terms);
-
-        foreach ($terms as $key => $value) {
-            $this->processSearchTerm($term);
-        }
     }
 
 
@@ -216,6 +176,7 @@ class Manticore
     public function searchRequests(array $terms = [])
     {
         $indices = $this->indices["requests"];
+        throw new \Exception("not implemented");
     }
 
 
@@ -227,6 +188,7 @@ class Manticore
     public function searchLog(array $terms = [])
     {
         $indices = $this->indices["log"];
+        throw new \Exception("not implemented");
     }
 
 
@@ -240,24 +202,167 @@ class Manticore
      *
      * @param array $terms array with search terms
      */
-    private function processSearchTerms(array $terms = [])
+    private function processSearchTerms($query, array $terms = [])
     {
         foreach ($terms as $key => $value) {
             # search field
             $this->searchFields[$key] ??= null;
             if ($this->searchFields[$key]) {
-                $this->process_field($key, $value);
+                $query = $this->processSearchField($query, $key, $value);
             }
 
-            # search attribute
-            $this->searchAttributes[$key] ??= null;
-            if ($this->searchAttributes[$key]) {
-                $this->process_attribute($key, $value);
+            # attribute field
+            $this->attributeFields[$key] ??= null;
+            if ($this->attributeFields[$key]) {
+                $query = $this->processAttributeField($query, $key, $value);
             }
-
-            $this->RawTerms[$key] = $value;
         }
 
-        $this->post_process();
+        #$this->post_process();
+        return $query;
     }
+
+
+    /**
+     * processSearchField
+     *
+     * Look at a fulltext search term and figure out if it needs special treatment
+     *
+     * @param string $key name of the search field
+     * @param string $value search expression for the field
+     */
+    private function processSearchField($query, string $key, string $value)
+    {
+        $value = trim(strval($value));
+
+        # empty
+        if (empty($value)) {
+            return $query;
+        }
+
+        # fileList: phrase boundary limits partial hits
+        if ($key === "fileList") {
+            $value = "{$value}~20";
+            $query->match("filelist", $value);
+
+            return $query;
+        }
+
+        # tagList: prepare tag searches
+        if ($key === "tagList") {
+            $value = str_replace($value, ".", "_");
+            $query->match("taglist", $value);
+
+            return $query;
+        }
+
+        # normal
+        $this->searchFields[$key] ??= null;
+        if ($this->searchFields[$key]) {
+            $query->match($this->searchFields[$key], $value);
+
+            return $query;
+        }
+    }
+
+
+    /**
+     * processAttributeField
+     *
+     * Process attribute filters and store them in case we need to post-process grouped results.
+     *
+     * @param string $attribute name of the attribute to filter against
+     * @param mixed $value the filter's condition for a match
+     */
+    private function processAttributeField($query, string $key, string $value)
+    {
+        $value = trim(strval($value));
+
+        # empty
+        if (empty($value)) {
+            return $query;
+        }
+
+        # year
+        if ($key === "year") {
+            $range = explode("-", $value);
+
+            # exact year
+            if (count($range) === 1) {
+                $query->where("year", $range[0]);
+
+                return $query;
+            }
+
+            # e.g., null - 2005
+            if (empty($range[0]) && !empty($range[1])) {
+                $query->where("year", "<=", $range[1]);
+
+                return $query;
+            }
+
+            # e.g., 2005 - null
+            if (!empty($range[0]) && empty($range[1])) {
+                $query->where("year", ">=", $range[0]);
+
+                return $query;
+            }
+
+            # e.g., 2005 - 2009
+            $query->where("year", "between", [ $range[0], $range[1] ]);
+
+            return $query;
+        } # if ($key === "year")
+
+        # sizeUnit
+        if ($key === "sizeUnit") {
+            $sizeMin = intval(($this->rawSearchTerms["size_min"] ?? 0) * (1024 ** $value));
+            $sizeMax = intval(min(PHP_INT_MAX, ($this->rawSearchTerms["sizeMax"] ?? INF) * (1024 ** $value)));
+
+            $query->where("size", "between", [$sizeMin, $sizeMax ]);
+
+            return $query;
+        } # if ($key === "sizeUnit")
+
+        # leechStatus
+        if ($key === "leechStatus") {
+            $value = intval($value);
+
+            if ($value === 3) {
+                $query->where("freetorrent", 0);
+
+                return $query;
+            }
+
+            if ($value >= 0 && $value < 3) {
+                $query->where("freetorrent", $value);
+
+                return $query;
+            }
+        } # if ($key === "leechStatus")
+
+        # categories
+        if ($key === "categories") {
+            if (!is_array($value)) {
+                $value = array_fill_keys(explode("|", $value), 1);
+            }
+
+            $categoryFilter = [];
+            foreach (array_keys($value) as $categoryId) {
+                $categoryFilter[] = $categoryId;
+            }
+
+            $query->where("categoryid", $categoryFilter);
+
+            return $query;
+        } # if ($key === "categories")
+
+        # check if the value is valid
+        $this->attributeFields[$key] ??= null;
+        if ($this->attributeFields[$key]) {
+            $query->where($key, $value);
+
+            return $query;
+        } # if ($this->attributeFields[$key])
+    } # processAttributeField
 } # class

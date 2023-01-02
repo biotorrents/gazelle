@@ -23,7 +23,7 @@
 			<tr>
 				{# <th/> #}
 				<td>
-					<input type="text" name="simpleSearch" placeholder="Search for anything, anywhere" value="{{ searchTerms.search }}">
+					<input type="text" name="simpleSearch" placeholder="Search for anything, anywhere" value="{{ searchTerms.simpleSearch }}">
 				</td>
 			</tr>
 		</table>
@@ -44,7 +44,7 @@
 				<th>Essentials</th>
 				<td>
 					{# torrent title / organism / strain or variety #}
-					<input type="text" name="complexSearch" placeholder="Torrent title / organism / strain or variety" value="{{ searchTerms.advgroupname }}"/>
+					<input type="text" name="complexSearch" placeholder="Torrent title / organism / strain or variety" value="{{ searchTerms.complexSearch }}"/>
 				</td>
 			</tr>
 
@@ -68,7 +68,7 @@
 					<input type="text" name="location" placeholder="Department or lab / location" value="{{ searchTerms.location }}"/>
 
 					{# creator #}
-					<input type="text" name="creator" placeholder="Creator (ORCiD pending)" value="{{ searchTerms.artistname }}"/>
+					<input type="text" name="creator" placeholder="Creator (ORCiD pending)" value="{{ searchTerms.creator }}"/>
 				</td>
 			</tr>
 
@@ -87,7 +87,7 @@
 
 					{# file list #}
 					<div>
-						<input type="text" name="fileList" placeholder="File list" value="{{ searchTerms.filelist }}"/>
+						<input type="text" name="fileList" placeholder="File list" value="{{ searchTerms.fileList }}"/>
 						<br/>
 						<label for="fileList">
 							Please use the simple search to find torrents by info hash
@@ -103,7 +103,7 @@
 
 					{# sequences #}
 					<select name="sequencePlatform">
-						<option>Sequences</option>
+						<option value="">Sequences</option>
 						{% for item in env.META.Platforms.Sequences %}
 							<option value="{{ item }}" {{ (searchTerms.sequencePlatform == item) ? "selected" : "" }}>
 								{{ item }}
@@ -113,7 +113,7 @@
 
 					{# graphs #}
 					<select name="graphPlatform" class="ft_media fti_advanced">
-						<option>Graphs</option>
+						<option value="">Graphs</option>
 						{% for item in env.META.Platforms.Graphs %}
 							<option value="{{ item }}" {{ (searchTerms.graphPlatform == item) ? "selected" : "" }}>
 								{{ item }}
@@ -123,7 +123,7 @@
 
 					{# images #}
 					<select name="imagePlatform" class="ft_media fti_advanced">
-						<option>Images</option>
+						<option value="">Images</option>
 						{% for item in env.META.Platforms.Images %}
 							<option value="{{ item }}" {{ (searchTerms.imagePlatform == item) ? "selected" : "" }}>
 								{{ item }}
@@ -133,7 +133,7 @@
 
 					{# documents #}
 					<select name="documentPlatform" class="ft_media fti_advanced">
-						<option>Documents</option>
+						<option value="">Documents</option>
 						{% for item in env.META.Platforms.Documents %}
 							<option value="{{ item }}" {{ (searchTerms.documentPlatform == item) ? "selected" : "" }}>
 								{{ item }}
@@ -151,7 +151,7 @@
 
 					{# nucleoSeq #}
 					<select name="nucleoSeqFormat">
-						<option>NucleoSeq</option>
+						<option value="">NucleoSeq</option>
 						{% for key, value in env.META.Formats.Sequences %}
 							<option value="{{ key }}" {{ (searchTerms.nucleoSeqFormat == key) ? "selected" : "" }}>
 								{{ key }}
@@ -161,7 +161,7 @@
 
 					{# protSeq #}
 					<select name="protSeqFormat">
-						<option>ProtSeq</option>
+						<option value="">ProtSeq</option>
 						{% for key, value in env.META.Formats.Proteins %}
 							<option value="{{ key }}" {{ (searchTerms.protSeqFormat == key) ? "selected" : "" }}>
 								{{ key }}
@@ -171,7 +171,7 @@
 
 					{# xml #}
 					<select name="xmlFormat">
-						<option>XMLs</option>
+						<option value="">XMLs</option>
 						{% for key, value in xmls %}
 							<option value="{{ key }}" {{ (searchTerms.xmlFormat == key) ? "selected" : "" }}>
 								{{ key }}
@@ -181,7 +181,7 @@
 
 					{# raster #}
 					<select name="rasterFormat">
-						<option>Raster</option>
+						<option value="">Raster</option>
 						{% for key, value in raster %}
 							<option value="{{ key }}" {{ (searchTerms.rasterFormat == key) ? "selected" : "" }}>
 								{{ key }}
@@ -191,7 +191,7 @@
 
 					{# vector #}
 					<select name="vectorFormat">
-						<option>Vector</option>
+						<option value="">Vector</option>
 						{% for key, value in vector %}
 							<option value="{{ key }}" {{ (searchTerms.vectorFormat == key) ? "selected" : "" }}>
 								{{ key }}
@@ -201,7 +201,7 @@
 
 					{# other #}
 					<select name="otherFormat">
-						<option>Other</option>
+						<option value="">Other</option>
 						{% for key, value in extras %}
 							<option value="{{ key }}" {{ (searchTerms.otherFormat == key) ? "selected" : "" }}>
 								{{ key }}
@@ -219,7 +219,7 @@
 
 					{# scope #}
 					<select name="scope">
-						<option>Scope</option>
+						<option value="">Scope</option>
 						{% for item in resolutions %}
 							<option value="{{ item }}" {{ (searchTerms.scope == item) ? "selected" : "" }}>
 								{{ item }}
@@ -229,7 +229,7 @@
 
 					{# alignment #}
 					<select name="alignment">
-						<option>Alignment</option>
+						<option value="">Alignment</option>
 						<option value="1" {{ (searchTerms.alignment == "1") ? "selected" : "" }}>
 							Aligned
 						</option>
@@ -241,7 +241,7 @@
 
 					{# leech status #}
 					<select name="leechStatus">
-						<option>Leech status</option>
+						<option value="">Leech status</option>
 
 						<option value="1" {{ (searchTerms.leechStatus == "1") ? "selected" : "" }}>
 							Freeleech
@@ -263,7 +263,7 @@
 
 					{# license #}
 					<select name="license">
-						<option>License</option>
+						<option value="">License</option>
 						{% for item in env.META.Licenses %}
 							<option value="{{ item }}" {{ (searchTerms.license == item) ? "selected" : "" }}>
 								{{ item }}
@@ -286,7 +286,7 @@
 
 {# units #}
 					<select name="sizeUnit">
-						<option>Unit</option>
+						<option value="">Unit</option>
 
 						<option value="0" {{ (searchTerms.sizeUnit == 0) ? "selected" : "" }}>
 							B
@@ -317,16 +317,16 @@
       <th>Tags</th>
 			<td  id="tagColumn">
       <div>
-				<input type="text" id="tags" name="tagList" placeholder="Tag list (comma-separated)" value="{{ searchTerms.taglist }}">
+				<input type="text" id="tags" name="tagList" placeholder="Tag list (comma-separated)" value="{{ searchTerms.tagList }}">
 </div>
 
 <div id="tagRow">
         <a id="toggleTagList" class="button u-pull-right">toggle tag list</a>
 
-				<input type="radio" name="tagsType" id="anyTags" value="0" {{ (searchTerms.tags_type == '0') ? "checked" : "" }}/>
+				<input type="radio" name="tagsType" id="anyTags" value="0" {{ (searchTerms.tagsType == "0") ? "checked" : "" }}/>
 				<label for="anyTags">Any tags</label>
 
-				<input type="radio" name="tagsType" id="allTags" value="1" {{ (searchTerms.tags_type == '1') ? "checked" : "" }}/>
+				<input type="radio" name="tagsType" id="allTags" value="1" {{ (searchTerms.tagsType == "1") ? "checked" : "" }}/>
 				<label for="allTags">All tags</label>
 
         <p>

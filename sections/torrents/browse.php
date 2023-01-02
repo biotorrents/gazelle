@@ -10,11 +10,17 @@ declare(strict_types=1);
 $app = App::go();
 
 # https://github.com/paragonie/anti-csrf
-Http::csrf();
+#Http::csrf();
 
 $get = Http::query("get");
 $post = Http::query("post");
-!d($post);exit;
+#!d($post);
+
+
+$manticore = new Gazelle\Manticore();
+$results = $manticore->searchTorrents($post);
+!d($results);
+
 
 /** torrent search handling */
 
@@ -27,6 +33,7 @@ if (!$post["groupResults"]) {
     $groupResults = false;
 }
 
+/*
 # ordered results field
 $post["orderBy"] ??= null;
 if (!$post["orderBy"] || !TorrentSearch::$sortOrders[ $post["orderBy"] ]) {
@@ -34,6 +41,7 @@ if (!$post["orderBy"] || !TorrentSearch::$sortOrders[ $post["orderBy"] ]) {
 } else {
     $orderBy = $post["orderBy"];
 }
+*/
 
 # ascending or descending?
 $post["orderWay"] ??= null;
@@ -48,10 +56,12 @@ $currentPage = intval($post["page"] ?? 1);
 $pagination = $app->env->paginationDefault;
 
 # TorrentSearch instance variables
+/*
 $torrentSearch = new TorrentSearch($groupResults, $orderBy, $orderWay, $currentPage, $pagination);
 $searchResults = $torrentSearch->query($post);
 $resultGroups = $torrentSearch->get_groups();
 $resultCount = $torrentSearch->record_count();
+*/
 
 # search by infoHash
 $post["search"] ??= null;
@@ -72,7 +82,7 @@ if ($post["search"] || $post["groupname"]) {
         $ref = $app->dbNew->row($query, [$infoHash]);
 
         if ($ref) {
-            Http::redirect("/torrents/{$ref["GroupID"]}/{$ref["ID"]}");
+            Http::redirect("/torrents/{$ref["groupId"]}/{$ref["id"]}");
         }
     }
 } # if ($post["search"] || $post["groupname"])
@@ -94,6 +104,7 @@ if ($advancedSearch) {
     $hideAdvanced = "";
 }
 
+/*
 # result pagination stuff
 if ($resultCount < ($currentPage - 1) * $pagination + 1) {
     $LastPage = ceil($resultCount / $pagination);
@@ -102,34 +113,59 @@ if ($resultCount < ($currentPage - 1) * $pagination + 1) {
 
 $currentPages = Format::get_pages($currentPage, $resultCount, $pagination);
 $bookmarks = Bookmarks::all_bookmarks('torrent');
-
+*/
 
 /** collect the search terms */
 
 $searchTerms = [
-  "numbers" => $post["numbers"] ?? null,
-  "advgroupname" => $post["advgroupname"] ?? null,
-  "artistname" => $post["artistname"] ?? null,
-  "location" => $post["location"] ?? null,
-  "year" => $post["year"] ?? null,
-  "description" => $post["description"] ?? null,
-  "filelist" => $post["filelist"] ?? null,
-  "media" => $post["media"] ?? null,
-  "container" => $post["container"] ?? null,
-  "resolution" => $post["resolution"] ?? null,
-  "censored" => $post["censored"] ?? null,
-  "freetorrent" => $post["freetorrent"] ?? null,
-  "codec" => $post["codec"] ?? null,
-  "size_min" => $post["size_min"] ?? null,
-  "size_max" => $post["size_max"] ?? null,
-  "size_unit" => $post["size_unit"] ?? null,
-  "search" => $post["search"] ?? null,
-  "taglist" => $post["taglist"] ?? null,
-  "tags_type" => $post["tags_type"] ?? null,
-  "orderBy" => $post["orderBy"] ?? null,
-  "orderWay" => $post["orderWay"] ?? null,
-  "groupResults" => $post["groupResults"] ?? null,
-  "filter_cat" => $post["filter_cat"] ?? null,
+
+
+
+
+    "simpleSearch" => $post["simpleSearch"] ?? null,
+    "complexSearch" => $post["complexSearch"] ?? null,
+
+    "numbers" => $post["numbers"] ?? null,
+    "year" => $post["year"] ?? null,
+
+    "location" => $post["location"] ?? null,
+    "creator" => $post["creator"] ?? null,
+
+    "description" => $post["description"] ?? null,
+    "fileList" => $post["fileList"] ?? null,
+
+    "sequencePlatform" => $post["sequencePlatform"] ?? null,
+    "graphPlatform" => $post["graphPlatform"] ?? null,
+    "imagePlatform" => $post["imagePlatform"] ?? null,
+    "documentPlatform" => $post["documentPlatform"] ?? null,
+
+    "nucleoSeqFormat" => $post["nucleoSeqFormat"] ?? null,
+    "protSeqFormat" => $post["protSeqFormat"] ?? null,
+    "xmlFormat" => $post["xmlFormat"] ?? null,
+    "rasterFormat" => $post["rasterFormat"] ?? null,
+    "vectorFormat" => $post["vectorFormat"] ?? null,
+    "otherFormat" => $post["otherFormat"] ?? null,
+
+    "scope" => $post["scope"] ?? null,
+    "alignment" => $post["alignment"] ?? null,
+    "leechStatus" => $post["leechStatus"] ?? null,
+    "license" => $post["license"] ?? null,
+    "sizeMin" => $post["sizeMin"] ?? null,
+    "sizeMax" => $post["sizeMax"] ?? null,
+    "sizeUnit" => $post["sizeUnit"] ?? null,
+
+    "tagList" => $post["tagList"] ?? null,
+    "tagsType" => $post["tagsType"] ?? null,
+
+    "categories" => $post["categories"] ?? null,
+    "orderBy" => $post["orderBy"] ?? null,
+    "orderWay" => $post["orderWay"] ?? null,
+    "groupResults" => $post["groupResults"] ?? null,
+
+
+
+
+
 
 ];
 
@@ -187,67 +223,6 @@ function header_link($SortKey, $DefaultWay = 'desc')
 }
 
 
-/*
-// Setting default search options
-if (!empty($post['setdefault'])) {
-    $UnsetList = ['page', 'setdefault'];
-    $UnsetRegexp = '/(&|^)('.implode('|', $UnsetList).')=.*?(&|$)/i';
-
-    $app->dbOld->query("
-      SELECT SiteOptions
-      FROM users_info
-      WHERE UserID = ?", $app->userNew->core["id"]);
-
-    list($SiteOptions) = $app->dbOld->next_record(MYSQLI_NUM, false);
-    $SiteOptions = json_decode($SiteOptions, true) ?? [];
-    $SiteOptions['DefaultSearch'] = preg_replace($UnsetRegexp, '', $_SERVER['QUERY_STRING']);
-
-    $app->dbOld->query("
-      UPDATE users_info
-      SET SiteOptions = ?
-      WHERE UserID = ?", json_encode($SiteOptions), $app->userNew->core["id"]);
-
-    $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
-    $app->cacheOld->update_row(false, ['DefaultSearch' => $SiteOptions['DefaultSearch']]);
-    $app->cacheOld->commit_transaction(0);
-
-// Clearing default search options
-} elseif (!empty($post['cleardefault'])) {
-    $app->dbOld->query("
-      SELECT SiteOptions
-      FROM users_info
-      WHERE UserID = ?", $app->userNew->core["id"]);
-
-    list($SiteOptions) = $app->dbOld->next_record(MYSQLI_NUM, false);
-    $SiteOptions = json_decode($SiteOptions, true) ?? [];
-    $SiteOptions['DefaultSearch'] = '';
-
-    $app->dbOld->query("
-      UPDATE users_info
-      SET SiteOptions = ?
-      WHERE UserID = ?", json_encode($SiteOptions), $app->userNew->core["id"]);
-
-    $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
-    $app->cacheOld->update_row(false, ['DefaultSearch' => '']);
-    $app->cacheOld->commit_transaction(0);
-
-// Use default search options
-} elseif (empty($_SERVER['QUERY_STRING']) || (count($post) === 1 && isset($post['page']))) {
-    if (!empty($app->userNew->extra['DefaultSearch'])) {
-        if (!empty($post['page'])) {
-            $currentPage = $post['page'];
-            parse_str($app->userNew->extra['DefaultSearch'], $post);
-            $post['page'] = $currentPage;
-        } else {
-            parse_str($app->userNew->extra['DefaultSearch'], $post);
-        }
-    }
-}
-*/
-
-
-
-
 
 
 
@@ -289,21 +264,36 @@ $app->twig->display("torrents/browse.twig", [
       $app->env->toArray($app->env->META->Formats->Plain)
   ),
 
+  /*
   "searchHasFilters" => $torrentSearch->has_filters(),
   "resultCount" => Text::float($resultCount),
+  */
+
+
+
+  # shutting twig up
+  "resultCount" => 0,
+  "bullshit" => null,
+  "pages" => null,
+  "searchResults" => [],
+
+
+
+
+
   "advancedSearch" => $advancedSearch,
   "groupResults" => $groupResults,
-  "tagList" => $torrentSearch->get_terms('taglist'),
+ # "tagList" => $torrentSearch->get_terms('taglist'),
   "hideFilter" => false, # legacy
-  "pages" => $currentPages,
+  #"pages" => $currentPages,
   "bookmarks" => Bookmarks::all_bookmarks('torrent'),
-  "lastPage" => $LastPage ?? null,
-  "page" => $currentPage,
-  "bullshit" => ($resultCount < ($currentPage - 1) * $pagination + 1),
+  #"lastPage" => $LastPage ?? null,
+  #"page" => $currentPage,
+  #"bullshit" => ($resultCount < ($currentPage - 1) * $pagination + 1),
   "categories" => $Categories,
   "officialTags" => $officialTags,
 
   "searchTerms" => $searchTerms,
-  "searchResults" => $searchResults,
-  "resultGroups" => $resultGroups,
+  #"searchResults" => $searchResults,
+  #"resultGroups" => $resultGroups,
 ]);
