@@ -91,9 +91,9 @@ class Manticore
 
     # map of sort mode => attribute name for ungrouped torrent page
     public $sortOrders = [
-        "identifier" => "cataloguenumber",
+        #"identifier" => "cataloguenumber", # todo?
         "leechers" => "leechers",
-        "random" => true,
+        "random" => "rand()",
         "seeders" => "seeders",
         "size" => "size",
         "snatched" => "snatched",
@@ -154,12 +154,34 @@ class Manticore
         $result = $query->execute();
         */
 
+        # start the query
         $query = $this->queryLanguage
             ->select("*")
             ->from($this->indices["torrents"]);
 
+        # orderBy and orderWay
+        $orderBy = $terms["orderBy"] ??= "timeAdded";
+        $orderWay = $terms["orderWay"] ??= "desc";
+        #!d($orderBy, $orderWay);exit;
+
+        unset($terms["orderBy"]);
+        unset($terms["orderWay"]);
+
+        # random order fix
+        if ($orderBy === "random") {
+            $orderWay = null;
+        }
+
+        $this->sortOrders[$orderBy] ??= null;
+        if ($this->sortOrders[$orderBy]) {
+            $query->orderBy($this->sortOrders[$orderBy], $orderWay);
+        }
+
         # does the heavy lifting of adding clauses
         $query = $this->processSearchTerms($query, $terms);
+
+
+
 
         $resultSet = $query->execute();
         $results = $resultSet->fetchAllAssoc();
