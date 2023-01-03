@@ -18,8 +18,8 @@ $post = Http::query("post");
 
 
 $manticore = new Gazelle\Manticore();
-#$results = $manticore->search("torrents", $post);
-#!d($results);
+$results = $manticore->search("torrents", $post);
+!d($results);
 
 
 /** torrent search handling */
@@ -134,6 +134,10 @@ $searchTerms = [
     "description" => $post["description"] ?? null,
     "fileList" => $post["fileList"] ?? null,
 
+    "platforms" => $post["platforms"] ?? [],
+    "formats" => $post["formats"] ?? [],
+
+    /*
     "sequencePlatforms" => $post["sequencePlatforms"] ?? [],
     "graphPlatforms" => $post["graphPlatforms"] ?? [],
     "imagePlatforms" => $post["imagePlatforms"] ?? [],
@@ -145,6 +149,8 @@ $searchTerms = [
     "rasterFormats" => $post["rasterFormats"] ?? [],
     "vectorFormats" => $post["vectorFormats"] ?? [],
     "otherFormats" => $post["otherFormats"] ?? [],
+    */
+
 
     "scope" => $post["scope"] ?? null,
     "alignment" => $post["alignment"] ?? null,

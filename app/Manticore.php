@@ -70,6 +70,10 @@ class Manticore
         "description" => "description",
         "fileList" => "filelist",
 
+        "platforms" => "media",
+        "formats" => "container",
+
+        /*
         "sequencePlatforms" => "media",
         "graphPlatforms" => "media",
         "imagePlatforms" => "media",
@@ -81,6 +85,7 @@ class Manticore
         "rasterFormats" => "container",
         "vectorFormats" => "container",
         "otherFormats" => "container",
+        */
 
         "scope" => "resolution",
         "alignment" => "censored",
@@ -173,7 +178,7 @@ class Manticore
         $cacheHit = $app->cacheOld->get_value($cacheKey);
 
         if ($cacheHit) {
-            return $cacheHit;
+            #return $cacheHit;
         }
 
         # sanity check
@@ -398,6 +403,24 @@ class Manticore
 
             return $this->query;
         } # if ($key === "year")
+
+        /**
+         * platforms
+         */
+        if ($key === "platforms") {
+            $this->query->where("media", "in", $value);
+
+            return $this->query;
+        }
+
+        /**
+         * formats
+         */
+        if ($key === "formats") {
+            $this->query->where("container", "in", $value);
+
+            return $this->query;
+        }
 
         /**
          * normal
