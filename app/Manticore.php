@@ -105,7 +105,7 @@ class Manticore
         # todo
     ];
 
-    # map of sort mode => attribute name for ungrouped torrent page
+    # map of sort mode => index field for sorting
     private $sortOrders = [
         #"identifier" => "cataloguenumber", # todo?
         "leechers" => "leechers",
@@ -121,7 +121,7 @@ class Manticore
     /**
      * __construct
      */
-    public function __construct(array $data = [])
+    public function __construct()
     {
         $app = \App::go();
 

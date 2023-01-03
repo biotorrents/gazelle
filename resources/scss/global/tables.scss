@@ -56,6 +56,11 @@ table {
     flex-wrap: wrap;
   }
 
+  .categoryLabel {
+    display: inline-flex;
+    gap: 1rem;
+  }
+
   /* start tagging */
   #tagFilter {
     th,

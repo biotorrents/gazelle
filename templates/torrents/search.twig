@@ -370,9 +370,10 @@
       {% else %}
       {% set checked = "" %}
       {% endif %}
-
+<span class="categoryLabel">
 					<input type="checkbox" name="categories[{{ categoryId }}]" id="category{{ categoryId }}" value="{{ categoryId }}" {{ checked }} />
 					<label for="category{{ categoryId }}">{{ value }}</label>
+					</span>
 			{% endfor %}
 				</td>
 			</tr>
