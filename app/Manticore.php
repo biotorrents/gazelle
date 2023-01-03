@@ -199,7 +199,7 @@ class Manticore
             $this->debug = $this->query->enqueue(
                 $this->helper->showMeta()
             );
-            !d($this->debug);
+            #!d($this->debug);
         }
 
         $resultSet = $this->query->execute();
@@ -303,6 +303,13 @@ class Manticore
 
             return $this->query;
         } # if ($key === "year")
+
+        # alignment: not an attriburte
+        if ($key === "alignment") {
+            $this->query->where("censored", intval($value));
+
+            return $this->query;
+        }
 
         # normal
         $this->searchFields[$key] ??= null;
