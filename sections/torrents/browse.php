@@ -14,7 +14,7 @@ $app = App::go();
 
 $get = Http::query("get");
 $post = Http::query("post");
-!d($post, $_POST);
+!d($post);
 
 
 $manticore = new Gazelle\Manticore();
@@ -134,17 +134,17 @@ $searchTerms = [
     "description" => $post["description"] ?? null,
     "fileList" => $post["fileList"] ?? null,
 
-    "sequencePlatforms" => $post["sequencePlatform"] ?? null,
-    "graphPlatforms" => $post["graphPlatform"] ?? null,
-    "imagePlatforms" => $post["imagePlatform"] ?? null,
-    "documentPlatforms" => $post["documentPlatform"] ?? null,
+    "sequencePlatforms" => $post["sequencePlatforms"] ?? [],
+    "graphPlatforms" => $post["graphPlatforms"] ?? [],
+    "imagePlatforms" => $post["imagePlatforms"] ?? [],
+    "documentPlatforms" => $post["documentPlatforms"] ?? [],
 
-    "nucleoSeqFormats" => $post["nucleoSeqFormat"] ?? null,
-    "protSeqFormats" => $post["protSeqFormat"] ?? null,
-    "xmlFormats" => $post["xmlFormat"] ?? null,
-    "rasterFormats" => $post["rasterFormat"] ?? null,
-    "vectorFormats" => $post["vectorFormat"] ?? null,
-    "otherFormats" => $post["otherFormat"] ?? null,
+    "nucleoSeqFormats" => $post["nucleoSeqFormats"] ?? [],
+    "protSeqFormats" => $post["protSeqFormats"] ?? [],
+    "xmlFormats" => $post["xmlFormats"] ?? [],
+    "rasterFormats" => $post["rasterFormats"] ?? [],
+    "vectorFormats" => $post["vectorFormats"] ?? [],
+    "otherFormats" => $post["otherFormats"] ?? [],
 
     "scope" => $post["scope"] ?? null,
     "alignment" => $post["alignment"] ?? null,
@@ -154,10 +154,10 @@ $searchTerms = [
     "sizeMax" => $post["sizeMax"] ?? null,
     "sizeUnit" => $post["sizeUnit"] ?? null,
 
-    "tagList" => $post["tagList"] ?? null,
+    "tagList" => $post["tagList"] ?? [],
     "tagsType" => $post["tagsType"] ?? null,
 
-    "categories" => $post["categories"] ?? null,
+    "categories" => $post["categories"] ?? [],
     "orderBy" => $post["orderBy"] ?? null,
     "orderWay" => $post["orderWay"] ?? null,
     "groupResults" => $post["groupResults"] ?? null,

@@ -102,7 +102,7 @@
 				<td>
 
 					{# sequences #}
-					<select id="sequencePlatform" name="sequencePlatforms[]" placeholder="Sequences" multiple>
+					<select id="sequencePlatforms" name="sequencePlatforms[]" placeholder="Sequences" multiple>
 						{% for item in env.META.Platforms.Sequences %}
 							<option value="{{ item }}" {{ (item in searchTerms.sequencePlatforms) ? "selected" : "" }}>
 								{{ item }}
@@ -111,27 +111,27 @@
 					</select>
 
 					{# graphs #}
-					<select id="graphPlatform" name="graphPlatforms[]" placeholder="Graphs" multiple>
+					<select id="graphPlatforms" name="graphPlatforms[]" placeholder="Graphs" multiple>
 						{% for item in env.META.Platforms.Graphs %}
-							<option value="{{ item }}" {{ (searchTerms.graphPlatforms == item) ? "selected" : "" }}>
+							<option value="{{ item }}" {{ (item in searchTerms.graphPlatforms) ? "selected" : "" }}>
 								{{ item }}
 							</option>
 						{% endfor %}
 					</select>
 
 					{# images #}
-					<select id="imagePlatform" name="imagePlatforms[]" placeholder="Images" multiple>
+					<select id="imagePlatforms" name="imagePlatforms[]" placeholder="Images" multiple>
 						{% for item in env.META.Platforms.Images %}
-							<option value="{{ item }}" {{ (searchTerms.imagePlatforms == item) ? "selected" : "" }}>
+							<option value="{{ item }}" {{ (item in searchTerms.imagePlatforms) ? "selected" : "" }}>
 								{{ item }}
 							</option>
 						{% endfor %}
 					</select>
 
 					{# documents #}
-					<select id="documentPlatform" name="documentPlatforms[]" placeholder="Documents" multiple>
+					<select id="documentPlatforms" name="documentPlatforms[]" placeholder="Documents" multiple>
 						{% for item in env.META.Platforms.Documents %}
-							<option value="{{ item }}" {{ (searchTerms.documentPlatforms == item) ? "selected" : "" }}>
+							<option value="{{ item }}" {{ (item in searchTerms.documentPlatforms) ? "selected" : "" }}>
 								{{ item }}
 							</option>
 						{% endfor %}
@@ -146,53 +146,55 @@
 				<td>
 
 					{# nucleoSeq #}
-					<select id="nucleoSeqFormat" name="nucleoSeqFormats[]" placeholder="NucleoSeq" multiple>
+					<select id="nucleoSeqFormats" name="nucleoSeqFormats[]" placeholder="NucleoSeq" multiple>
 						{% for key, value in env.META.Formats.Sequences %}
-							<option value="{{ key }}" {{ (searchTerms.nucleoSeqFormats == key) ? "selected" : "" }}>
+							<option value="{{ key }}" {{ (key in searchTerms.nucleoSeqFormats) ? "selected" : "" }}>
 								{{ key }}
 							</option>
 						{% endfor %}
 					</select>
 
 					{# protSeq #}
-					<select id="protSeqFormat" name="protSeqFormats[]" placeholder="ProtSeq" multiple>
+					<select id="protSeqFormats" name="protSeqFormats[]" placeholder="ProtSeq" multiple>
 						{% for key, value in env.META.Formats.Proteins %}
-							<option value="{{ key }}" {{ (searchTerms.protSeqFormats == key) ? "selected" : "" }}>
+							<option value="{{ key }}" {{ (key in searchTerms.protSeqFormats) ? "selected" : "" }}>
 								{{ key }}
 							</option>
 						{% endfor %}
 					</select>
 
 					{# xml #}
-					<select id="xmlFormat" name="xmlFormats[]" placeholder="XMLs" multiple>
+					<select id="xmlFormats" name="xmlFormats[]" placeholder="XMLs" multiple>
 						{% for key, value in xmls %}
-							<option value="{{ key }}" {{ (searchTerms.xmlFormats == key) ? "selected" : "" }}>
+							<option value="{{ key }}" {{ (key in searchTerms.xmlFormats) ? "selected" : "" }}>
 								{{ key }}
 							</option>
 						{% endfor %}
 					</select>
 
 					{# raster #}
-					<select id="rasterFormat" name="rasterFormats[]" placeholder="Raster" multiple>
+					<select id="rasterFormats" name="rasterFormats[]" placeholder="Raster" multiple>
 						{% for key, value in raster %}
-							<option value="{{ key }}" {{ (searchTerms.rasterFormats == key) ? "selected" : "" }}>
+							<option value="{{ key }}" {{ (key in searchTerms.rasterFormats) ? "selected" : "" }}>
 								{{ key }}
 							</option>
 						{% endfor %}
 					</select>
 
 					{# vector #}
-					<select id="vectorFormat" name="vectorFormats[]" placeholder="Vector" multiple>
+					<select id="vectorFormats" name="vectorFormats[]" placeholder="Vector" multiple>
 						{% for key, value in vector %}
-							<option value="{{ key }}" {{ (searchTerms.vectorFormats == key) ? "selected" : "" }}>
+							<option value="{{ key }}" {{ (key in searchTerms.vectorFormats) ? "selected" : "" }}>
 								{{ key }}
 							</option>
 						{% endfor %}
 					</select>
 
 					{# other #}
-					<select id="otherFormat" name="otherFormats[]" placeholder="Other" multiple>
+					<select id="otherFormats" name="otherFormats[]" placeholder="Other" multiple>
 						{% for key, value in extras %}
+							<option value="{{ key }}" {{ (key in searchTerms.otherFormats) ? "selected" : "" }}>
+
 								{{ key }}
 							</option>
 						{% endfor %}
@@ -308,7 +310,9 @@
 			{# <td id="tagColumn"> #}
 	  <select id="tagList" name="tagList[]" placeholder="Add or remove tags" multiple>
 	       {% for item in officialTags %}
-      <option value="{{ item }}">{{ item }}</option>
+      <option value="{{ item }}" {{ (item in searchTerms.tagList) ? "selected" : "" }}>
+	  {{ item }}
+	  </option>
  {% endfor %}
  </select>
  
@@ -362,12 +366,16 @@
 				<select id="categories" name="categories[]" placeholder="Categories" multiple>
 			{% for key, value in categories %}
       {% set categoryId = key + 1 %}
+	  {#
       {% if searchTerms.categories.categoryId is defined and searchTerms.categories.categoryId == categoryId %}
       {% set checked = "checked" %}
       {% else %}
       {% set checked = "" %}
       {% endif %}
-	  <option value="{{ categoryId }}">{{ value }}</option>
+	  #}
+	  <option value="{{ categoryId }}" {{ (categoryId in searchTerms.categories) ? "selected" : "" }}>
+	  {{ value }}
+	  </option>
 	  {#
 <span class="categoryLabel">
 					<input type="checkbox" name="categories[{{ categoryId }}]" id="category{{ categoryId }}" value="{{ categoryId }}" {{ checked }} />
