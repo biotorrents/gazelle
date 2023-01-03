@@ -25,20 +25,28 @@ namespace Gazelle;
 class Manticore
 {
     # library tools
-    public $connection = null;
-    public $queryLanguage = null;
-    public $helper = null;
-    public $percolate = null;
+    private $connection = null;
+    private $queryLanguage = null;
+    private $helper = null;
+    private $percolate = null;
+
+    # hash algo for cache keys
+    private $algorithm = "sha3-512";
+
+    # cache settings
+    private $cachePrefix = "manticore_";
+    private $cacheDuration = 60; # one minute
 
     # indices to search
-    public $indices = [
+    private $indices = [
         "torrents" => ["torrents", "delta"],
         "requests" => ["requests", "requests_delta"],
         "log" => ["log", "log_delta"],
     ];
 
     # map of search form fields => index fields
-    public $searchFields = [
+    private $searchFields = [
+        # main torrent search
         "simpleSearch" => "*",
         "complexSearch" => "*",
 
@@ -77,20 +85,17 @@ class Manticore
         "categories" => "categoryid",
         "orderBy" => null,
         "orderWay" => null,
-        "groupResults" => "", # todo
-    ];
+        "groupResults" => null,
 
-    # attribute fields
-    public $attributeFields = [
-        "categoryid" => null,
-        "censored" => null,
-        "freetorrent" => null,
-        #"sizeUnit" => null,
-        #"year" => null,
+        # request search
+        # todo
+
+        # log search
+        # todo
     ];
 
     # map of sort mode => attribute name for ungrouped torrent page
-    public $sortOrders = [
+    private $sortOrders = [
         #"identifier" => "cataloguenumber", # todo?
         "leechers" => "leechers",
         "random" => "rand()",
@@ -102,13 +107,13 @@ class Manticore
     ];
 
     # raw search terms
-    public $rawSearchTerms = [];
+    private $rawSearchTerms = [];
 
     # the queryLanguage object
-    public $query = null;
+    private $query = null;
 
     # debug metadata
-    public $debug = null;
+    private $debug = null;
 
 
     /**
@@ -152,10 +157,22 @@ class Manticore
      *   ->where('banned', '=', 1);
      *
      * $result = $query->execute();
+     *
+     * @param string $what maps to an array of indices
+     * @param array $data typically a post request
+     * @return array if you're on the dot
      */
-    public function search(string $what, array $terms = []): array
+    public function search(string $what, array $data = []): array
     {
         $app = \App::go();
+
+        # return cached if available
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode($data));
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
 
         # sanity check
         $allowedIndices = array_keys($this->indices);
@@ -164,7 +181,7 @@ class Manticore
         }
 
         # raw search terms
-        $this->rawSearchTerms = $terms;
+        $this->rawSearchTerms = $data;
         #!d($this->rawSearchTerms);
 
         # start the query
@@ -173,11 +190,11 @@ class Manticore
             ->from($this->indices[$what]);
 
         # orderBy and orderWay
-        $orderBy = $terms["orderBy"] ??= "timeAdded";
-        $orderWay = $terms["orderWay"] ??= "desc";
+        $orderBy = $data["orderBy"] ??= "timeAdded";
+        $orderWay = $data["orderWay"] ??= "desc";
 
-        unset($terms["orderBy"]);
-        unset($terms["orderWay"]);
+        unset($data["orderBy"]);
+        unset($data["orderWay"]);
 
         # random order fix
         if ($orderBy === "random") {
@@ -189,8 +206,22 @@ class Manticore
             $this->query->orderBy($this->sortOrders[$orderBy], $orderWay);
         }
 
+        # groupBy
+        $groupBy = $data["groupResults"] ??= true;
+        unset($data["groupResults"]);
+
+        # random order fix
+        if ($groupBy && $orderBy !== "random") {
+            $this->query->groupBy("groupid");
+        }
+
+        /** */
+
         # does the heavy lifting of adding clauses
-        $this->query = $this->processSearchTerms($terms);
+        # THIS IS THE ESSENTIAL QUERY FILTER FUNCTION
+        $this->query = $this->processSearchTerms($data);
+
+        /** */
 
         # debug
         if ($app->env->dev) {
@@ -204,6 +235,7 @@ class Manticore
             $resultSet = $this->query->execute();
             $results = $resultSet->fetchAllAssoc();
 
+            $app->cacheOld->cache_value($cacheKey, $results, $this->cacheDuration);
             return $results;
         } catch (\Exception $e) {
             #$app->debug["sphinx"] = $e->getMessage();
@@ -220,21 +252,15 @@ class Manticore
      *
      * Look at each search term and figure out what to do with it.
      *
-     * @param array $terms array with search terms
+     * @param array $data array with search terms
+     * @return $this->queryLanguage
      */
-    private function processSearchTerms(array $terms = []): \Foolz\SphinxQL\SphinxQL
+    private function processSearchTerms(array $data = []): \Foolz\SphinxQL\SphinxQL
     {
-        foreach ($terms as $key => $value) {
-            # search field
+        foreach ($data as $key => $value) {
             $this->searchFields[$key] ??= null;
             if ($this->searchFields[$key]) {
-                $this->query = $this->processSearchField($key, $value);
-            }
-
-            # attribute field
-            $this->attributeFields[$key] ??= null;
-            if ($this->attributeFields[$key]) {
-                $this->query = $this->processAttributeField($key, $value);
+                $this->query = $this->processSearchTerm($key, $value);
             }
         }
 
@@ -244,14 +270,15 @@ class Manticore
 
 
     /**
-     * processSearchField
+     * processSearchTerm
      *
-     * Look at a fulltext search term and figure out if it needs special treatment
+     * Look at a fulltext search term and figure out if it needs special treatment.
      *
      * @param string $key name of the search field
      * @param string|array $value search expression for the field
+     * @return $this->queryLanguage
      */
-    private function processSearchField(string $key, string|array $value): \Foolz\SphinxQL\SphinxQL
+    private function processSearchTerm(string $key, string|array $value): \Foolz\SphinxQL\SphinxQL
     {
         if (!is_array($value)) {
             $value = trim(strval($value));
@@ -264,7 +291,34 @@ class Manticore
 
         /** */
 
-        # fileList: phrase boundary limits partial hits
+        /**
+         * alignment
+         */
+        if ($key === "alignment") {
+            $this->query->where("censored", intval($value));
+
+            return $this->query;
+        }
+
+
+        /**
+         * categories
+         */
+        if ($key === "categories") {
+            # do nothing
+            if (!is_array($value)) {
+                return $this->query;
+            }
+
+            $this->query->where("categoryid", "in", array_keys($value));
+
+            return $this->query;
+        } # if ($key === "categories")
+
+
+        /**
+         * fileList: phrase boundary limits partial hits
+         */
         if ($key === "fileList") {
             $value = "{$value}~20";
             $this->query->match("filelist", $value);
@@ -273,7 +327,43 @@ class Manticore
         }
 
 
-        # tagList: prepare tag searches
+        /**
+         * leechStatus
+         */
+        if ($key === "leechStatus") {
+            $value = intval($value);
+
+            if ($value === 3) {
+                $this->query->where("freetorrent", 0);
+
+                return $this->query;
+            }
+
+            if ($value >= 0 && $value < 3) {
+                $this->query->where("freetorrent", $value);
+
+                return $this->query;
+            }
+        } # if ($key === "leechStatus")
+
+
+        /**
+         * sizeUnit
+         */
+        if ($key === "sizeUnit") {
+            $sizeMin = intval(($this->rawSearchTerms["sizeMin"] ?? 0) * (1024 ** $value));
+            $sizeMax = intval(min(PHP_INT_MAX, ($this->rawSearchTerms["sizeMax"] ?? INF) * (1024 ** $value)));
+            #!d($sizeMin, $sizeMax);
+
+            $this->query->where("size", "between", [$sizeMin, $sizeMax]);
+
+            return $this->query;
+        } # if ($key === "sizeUnit")
+
+
+        /**
+         * tagList
+         */
         if ($key === "tagList") {
             $value = str_replace($value, ".", "_");
             $this->query->match("taglist", $value);
@@ -282,7 +372,9 @@ class Manticore
         }
 
 
-        # year: not an attribute
+        /**
+         * year
+         */
         if ($key === "year") {
             $range = explode("-", $value);
 
@@ -314,63 +406,14 @@ class Manticore
         } # if ($key === "year")
 
 
-        # alignment: not an attribute
-        if ($key === "alignment") {
-            $this->query->where("censored", intval($value));
-
-            return $this->query;
-        }
-
-
-        # leechStatus: not an attribute
-        if ($key === "leechStatus") {
-            $value = intval($value);
-
-            if ($value === 3) {
-                $this->query->where("freetorrent", 0);
-
-                return $this->query;
-            }
-
-            if ($value >= 0 && $value < 3) {
-                $this->query->where("freetorrent", $value);
-
-                return $this->query;
-            }
-        } # if ($key === "leechStatus")
-
-
-        # sizeUnit
-        if ($key === "sizeUnit") {
-            $sizeMin = intval(($this->rawSearchTerms["sizeMin"] ?? 0) * (1024 ** $value));
-            $sizeMax = intval(min(PHP_INT_MAX, ($this->rawSearchTerms["sizeMax"] ?? INF) * (1024 ** $value)));
-            #!d($sizeMin, $sizeMax);
-
-            $this->query->where("size", "between", [$sizeMin, $sizeMax]);
-
-            return $this->query;
-        } # if ($key === "sizeUnit")
-
-
-        # categories
-        if ($key === "categories") {
-            # do nothing
-            if (!is_array($value)) {
-                return $this->query;
-            }
-
-            $this->query->where("categoryid", "in", array_keys($value));
-
-            return $this->query;
-        } # if ($key === "categories")
-
-
-        # normal
+        /**
+         * normal
+         */
         $this->searchFields[$key] ??= null;
         if ($this->searchFields[$key]) {
             $this->query->match($this->searchFields[$key], $value);
 
             return $this->query;
         } # if ($this->searchFields[$key])
-    } # processSearchField
+    } # processSearchTerm
 } # class
