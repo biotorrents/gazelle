@@ -75,8 +75,8 @@ class Manticore
         "tagsType" => "", # todo
 
         "categories" => "categoryid",
-        "orderBy" => "", # todo
-        "orderWay" => "", # todo
+        "orderBy" => null,
+        "orderWay" => null,
         "groupResults" => "", # todo
     ];
 
@@ -153,7 +153,7 @@ class Manticore
      *
      * $result = $query->execute();
      */
-    public function search(string $what, array $terms = [])
+    public function search(string $what, array $terms = []): array
     {
         $app = \App::go();
 
@@ -165,19 +165,16 @@ class Manticore
 
         # raw search terms
         $this->rawSearchTerms = $terms;
-        !d($this->rawSearchTerms);
+        #!d($this->rawSearchTerms);
 
         # start the query
         $this->query = $this->queryLanguage
             ->select("*")
             ->from($this->indices[$what]);
-        #!d($this->query);exit;
-
 
         # orderBy and orderWay
         $orderBy = $terms["orderBy"] ??= "timeAdded";
         $orderWay = $terms["orderWay"] ??= "desc";
-        #!d($orderBy, $orderWay);exit;
 
         unset($terms["orderBy"]);
         unset($terms["orderWay"]);
@@ -203,10 +200,15 @@ class Manticore
             #!d($this->debug);
         }
 
-        $resultSet = $this->query->execute();
-        $results = $resultSet->fetchAllAssoc();
+        try {
+            $resultSet = $this->query->execute();
+            $results = $resultSet->fetchAllAssoc();
 
-        return $results;
+            return $results;
+        } catch (\Exception $e) {
+            #$app->debug["sphinx"] = $e->getMessage();
+            throw new \Exception($e->getMessage());
+        }
     }
 
 
@@ -247,17 +249,20 @@ class Manticore
      * Look at a fulltext search term and figure out if it needs special treatment
      *
      * @param string $key name of the search field
-     * @param string $value search expression for the field
+     * @param string|array $value search expression for the field
      */
-    private function processSearchField(string $key, string $value): \Foolz\SphinxQL\SphinxQL
+    private function processSearchField(string $key, string|array $value): \Foolz\SphinxQL\SphinxQL
     {
-        $value = trim(strval($value));
+        if (!is_array($value)) {
+            $value = trim(strval($value));
+        }
 
         # empty
         if (empty($value)) {
             return $this->query;
         }
 
+        /** */
 
         # fileList: phrase boundary limits partial hits
         if ($key === "fileList") {
@@ -347,56 +352,25 @@ class Manticore
         } # if ($key === "sizeUnit")
 
 
+        # categories
+        if ($key === "categories") {
+            # do nothing
+            if (!is_array($value)) {
+                return $this->query;
+            }
+
+            $this->query->where("categoryid", "in", array_keys($value));
+
+            return $this->query;
+        } # if ($key === "categories")
+
+
         # normal
         $this->searchFields[$key] ??= null;
         if ($this->searchFields[$key]) {
             $this->query->match($this->searchFields[$key], $value);
 
             return $this->query;
-        }
-    }
-
-
-    /**
-     * processAttributeField
-     *
-     * Process attribute filters and store them in case we need to post-process grouped results.
-     *
-     * @param string $attribute name of the attribute to filter against
-     * @param mixed $value the filter's condition for a match
-     */
-    private function processAttributeField(string $key, string $value): \Foolz\SphinxQL\SphinxQL
-    {
-        $value = trim(strval($value));
-
-        # empty
-        if (empty($value)) {
-            return $this->query;
-        }
-
-
-        # categories
-        if ($key === "categories") {
-            if (!is_array($value)) {
-                $value = array_fill_keys(explode("|", $value), 1);
-            }
-
-            $categoryFilter = [];
-            foreach (array_keys($value) as $categoryId) {
-                $categoryFilter[] = $categoryId;
-            }
-
-            $this->query->where("categoryid", $categoryFilter);
-
-            return $this->query;
-        } # if ($key === "categories")
-
-        # check if the value is valid
-        $this->attributeFields[$key] ??= null;
-        if ($this->attributeFields[$key]) {
-            $this->query->where($key, $value);
-
-            return $this->query;
-        } # if ($this->attributeFields[$key])
-    } # processAttributeField
+        } # if ($this->searchFields[$key])
+    } # processSearchField
 } # class

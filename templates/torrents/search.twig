@@ -371,7 +371,7 @@
       {% set checked = "" %}
       {% endif %}
 
-					<input type="checkbox" name="categories[{{ categoryId }}]" id="category{{ categoryId }}" value="1" {{ checked }} />
+					<input type="checkbox" name="categories[{{ categoryId }}]" id="category{{ categoryId }}" value="{{ categoryId }}" {{ checked }} />
 					<label for="category{{ categoryId }}">{{ value }}</label>
 			{% endfor %}
 				</td>
