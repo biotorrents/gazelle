@@ -37,6 +37,17 @@ class Manticore
     private $cachePrefix = "manticore_";
     private $cacheDuration = 60; # one minute
 
+    # raw search terms
+    private $rawSearchTerms = [];
+
+    # the queryLanguage object
+    private $query = null;
+
+    # debug metadata
+    private $debug = null;
+
+    /** */
+
     # indices to search
     private $indices = [
         "torrents" => ["torrents", "delta"],
@@ -105,15 +116,6 @@ class Manticore
         "timeAdded" => "id",
         "year" => "year",
     ];
-
-    # raw search terms
-    private $rawSearchTerms = [];
-
-    # the queryLanguage object
-    private $query = null;
-
-    # debug metadata
-    private $debug = null;
 
 
     /**
@@ -232,6 +234,7 @@ class Manticore
         }
 
         try {
+            # execute the statement
             $resultSet = $this->query->execute();
             $results = $resultSet->fetchAllAssoc();
 
@@ -244,13 +247,10 @@ class Manticore
     }
 
 
-    /** private methods */
-
-
     /**
      * processSearchTerms
      *
-     * Look at each search term and figure out what to do with it.
+     * Look at the search terms and see what to do with them.
      *
      * @param array $data array with search terms
      * @return $this->queryLanguage
@@ -272,7 +272,7 @@ class Manticore
     /**
      * processSearchTerm
      *
-     * Look at a fulltext search term and figure out if it needs special treatment.
+     * Look at a search term and see what to do with it.
      *
      * @param string $key name of the search field
      * @param string|array $value search expression for the field
@@ -300,7 +300,6 @@ class Manticore
             return $this->query;
         }
 
-
         /**
          * categories
          */
@@ -315,7 +314,6 @@ class Manticore
             return $this->query;
         } # if ($key === "categories")
 
-
         /**
          * fileList: phrase boundary limits partial hits
          */
@@ -325,7 +323,6 @@ class Manticore
 
             return $this->query;
         }
-
 
         /**
          * leechStatus
@@ -346,7 +343,6 @@ class Manticore
             }
         } # if ($key === "leechStatus")
 
-
         /**
          * sizeUnit
          */
@@ -360,7 +356,6 @@ class Manticore
             return $this->query;
         } # if ($key === "sizeUnit")
 
-
         /**
          * tagList
          */
@@ -370,7 +365,6 @@ class Manticore
 
             return $this->query;
         }
-
 
         /**
          * year
@@ -404,7 +398,6 @@ class Manticore
 
             return $this->query;
         } # if ($key === "year")
-
 
         /**
          * normal
