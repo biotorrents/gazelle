@@ -304,12 +304,29 @@ class Manticore
             return $this->query;
         } # if ($key === "year")
 
-        # alignment: not an attriburte
+        # alignment: not an attribute
         if ($key === "alignment") {
             $this->query->where("censored", intval($value));
 
             return $this->query;
         }
+
+        # leechStatus: not an attribute
+        if ($key === "leechStatus") {
+            $value = intval($value);
+
+            if ($value === 3) {
+                $this->query->where("freetorrent", 0);
+
+                return $this->query;
+            }
+
+            if ($value >= 0 && $value < 3) {
+                $this->query->where("freetorrent", $value);
+
+                return $this->query;
+            }
+        } # if ($key === "leechStatus")
 
         # normal
         $this->searchFields[$key] ??= null;
@@ -347,23 +364,6 @@ class Manticore
 
             return $this->query;
         } # if ($key === "sizeUnit")
-
-        # leechStatus
-        if ($key === "leechStatus") {
-            $value = intval($value);
-
-            if ($value === 3) {
-                $this->query->where("freetorrent", 0);
-
-                return $this->query;
-            }
-
-            if ($value >= 0 && $value < 3) {
-                $this->query->where("freetorrent", $value);
-
-                return $this->query;
-            }
-        } # if ($key === "leechStatus")
 
         # categories
         if ($key === "categories") {
