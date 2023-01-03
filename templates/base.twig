@@ -50,50 +50,10 @@
     {{ include("_base/metaTags.twig") }}
 
 
-    {# start javascript block #}
-    {% block javascript %}
-
-    {# todo: app.js with vite #}
-    {# <script src="/js/app.min.js"></script> #}
-
-    {# jquery: do not defer #}
-    <script src="/js/vendor/jquery.min.js"></script>
-    <script src="/js/vendor/jquery-ui.min.js"></script>
-
-    {# instantpage: do not defer #}
-    <script src="/js/vendor/instantpage.min.js" type="module"></script>
-
-    {# easymde: do not defer #}
-    <script src="/js/vendor/easymde.min.js"></script>
-    <script src="/js/vendor/highlight.min.js"></script>
-
-    {# gazelle global: do not defer #}
-    <script src="/js/global.js"></script>
-
-    {# main menu #}
-    <script defer src="/js/menus.js"></script>
-
-    {# DebugBar #}
+    {# DebugBar: header #}
     {% if env.dev %}
     {{ debugHeader() }}
     {% endif %}
-    
-
-    {# plausible #}
-    {% if env.enablePlausible %}
-    <script defer data-domain="{{ env.siteDomain }}" src="https://stats.torrents.bio/js/plausible.js"></script>
-    {% endif %}
-
-    {# extra js #}
-    {# todo: figure out a way to not defer vendor scripts #}
-    {% if js is defined %}
-    {% for js in js %}
-    <script defer src="/js/{{ js }}.js"></script>
-    {% endfor %}
-    {% endif %}
-
-    {% endblock %}
-    {# end javascript block #}
 
 
     {# start stylesheets block #}
@@ -248,6 +208,7 @@
 
     {# footer #}
     <footer>
+
         {% block footer %}
         {% if authenticated %}
         {# private #}
@@ -258,10 +219,20 @@
         {{ include("_base/publicFooter.twig") }}
 
         {% endif %}
+
+        {# DebugBar: footer #}
+            {% if env.dev %}
+    {{ debugFooter() }}
+    {% endif %}
+
         {% endblock %}
     </footer>
 
-{# global inline javascript #}
+
+    {# start javascript block #}
+    {% block javascript %}
+
+    {# global inline javascript #}
 <script>
 
     // session-specific, for internal api calls
@@ -301,6 +272,45 @@
         '#f44336' + 50,
     ];
 </script>
+
+    {# todo: app.js with vite #}
+    {# <script src="/js/app.min.js"></script> #}
+
+    {# jquery: do not defer #}
+    <script src="/js/vendor/jquery.min.js"></script>
+    <script src="/js/vendor/jquery-ui.min.js"></script>
+
+    {# instantpage: do not defer #}
+    <script src="/js/vendor/instantpage.min.js" type="module"></script>
+
+    {# easymde: do not defer #}
+    <script src="/js/vendor/easymde.min.js"></script>
+    <script src="/js/vendor/highlight.min.js"></script>
+
+    {# gazelle global: do not defer #}
+    <script src="/js/global.js"></script>
+
+    {# main menu #}
+    <script src="/js/menus.js"></script>
+
+    
+
+    {# plausible #}
+    {% if env.enablePlausible %}
+    <script data-domain="{{ env.siteDomain }}" src="https://stats.torrents.bio/js/plausible.js"></script>
+    {% endif %}
+
+    {# extra js #}
+    {# todo: figure out a way to not defer vendor scripts #}
+    {% if js is defined %}
+    {% for js in js %}
+    <script src="/js/{{ js }}.js"></script>
+    {% endfor %}
+    {% endif %}
+
+    {% endblock %}
+    {# end javascript block #}
+
 </body>
 
 </html>

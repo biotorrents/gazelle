@@ -14,12 +14,12 @@ $app = App::go();
 
 $get = Http::query("get");
 $post = Http::query("post");
-#!d($post);
+!d($post, $_POST);
 
 
 $manticore = new Gazelle\Manticore();
-$results = $manticore->search("torrents", $post);
-!d($results);
+#$results = $manticore->search("torrents", $post);
+#!d($results);
 
 
 /** torrent search handling */
@@ -134,17 +134,17 @@ $searchTerms = [
     "description" => $post["description"] ?? null,
     "fileList" => $post["fileList"] ?? null,
 
-    "sequencePlatform" => $post["sequencePlatform"] ?? null,
-    "graphPlatform" => $post["graphPlatform"] ?? null,
-    "imagePlatform" => $post["imagePlatform"] ?? null,
-    "documentPlatform" => $post["documentPlatform"] ?? null,
+    "sequencePlatforms" => $post["sequencePlatform"] ?? null,
+    "graphPlatforms" => $post["graphPlatform"] ?? null,
+    "imagePlatforms" => $post["imagePlatform"] ?? null,
+    "documentPlatforms" => $post["documentPlatform"] ?? null,
 
-    "nucleoSeqFormat" => $post["nucleoSeqFormat"] ?? null,
-    "protSeqFormat" => $post["protSeqFormat"] ?? null,
-    "xmlFormat" => $post["xmlFormat"] ?? null,
-    "rasterFormat" => $post["rasterFormat"] ?? null,
-    "vectorFormat" => $post["vectorFormat"] ?? null,
-    "otherFormat" => $post["otherFormat"] ?? null,
+    "nucleoSeqFormats" => $post["nucleoSeqFormat"] ?? null,
+    "protSeqFormats" => $post["protSeqFormat"] ?? null,
+    "xmlFormats" => $post["xmlFormat"] ?? null,
+    "rasterFormats" => $post["rasterFormat"] ?? null,
+    "vectorFormats" => $post["vectorFormat"] ?? null,
+    "otherFormats" => $post["otherFormat"] ?? null,
 
     "scope" => $post["scope"] ?? null,
     "alignment" => $post["alignment"] ?? null,
@@ -233,7 +233,8 @@ function header_link($SortKey, $DefaultWay = 'desc')
  */
 
 $app->twig->display("torrents/browse.twig", [
-  "js" => ["browse"],
+  "js" => ["vendor/tom-select.complete.min", "browse"],
+  "css" => ["vendor/tom-select.bootstrap5.min"],
 
   "resolutions" => $Resolutions,
 

@@ -159,13 +159,24 @@ class Twig # extends Twig\Environment
         );
         */
 
-        # DebugBar
+        # DebugBar: header
         $twig->addFunction(new Twig\TwigFunction("debugHeader", function () {
             $app = App::go();
             $render = $app->debug->getJavascriptRenderer();
 
             return new Twig\Markup(
                 $render->renderHead(),
+                "UTF-8"
+            );
+        }));
+
+        # DebugBar: footer
+        $twig->addFunction(new Twig\TwigFunction("debugFooter", function () {
+            $app = App::go();
+            $render = $app->debug->getJavascriptRenderer();
+
+            return new Twig\Markup(
+                $render->render(),
                 "UTF-8"
             );
         }));

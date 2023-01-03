@@ -85,10 +85,19 @@ table {
     text-decoration: none;
   }
 
+  /* tom select */
+  .ts-control > * {
+    width: auto;
+  }
+
+  .ts-wrapper.multi .ts-control > div.active {
+    background: $skeletonDefault;
+  }
+  /* end tagging */
+
   #formControls {
     justify-content: center;
   }
-  /* end tagging */
 }
 
 /**

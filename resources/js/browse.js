@@ -28,18 +28,38 @@
     $("#simpleSearch").hide();
   });
 
+  // tom select
+  new TomSelect("#sequencePlatforms");
+  new TomSelect("#graphPlatforms");
+  new TomSelect("#imagePlatforms");
+  new TomSelect("#documentPlatforms");
+
+  new TomSelect("#nucleoSeqFormats");
+  new TomSelect("#protSeqFormats");
+  new TomSelect("#xmlFormats");
+  new TomSelect("#rasterFormats");
+  new TomSelect("#vectorFormats");
+  new TomSelect("#otherFormats");
+
+  new TomSelect("#categories");
+  new TomSelect("#tagList");
+
+  /*
   // toggle tag list
   $("#toggleTagList").on("click", () => {
     $("#officialTagList").toggle();
   });
+  */
 
+  /*
   // append tag to search
   $(".officialTag").on("click", (event) => {
     let tagList = $("#tagList").val();
     let value = $(event.target).html();
 
-    $("#tagList").val(tagList + " " + value);
+    $("#tagList").val(tagList + "," + value);
   });
+  */
 
   // reset the form
   $("#resetSearchForm").on("click", () => {
