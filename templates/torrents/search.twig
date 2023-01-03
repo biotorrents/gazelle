@@ -80,7 +80,7 @@
 					<div>
 						<input type="text" name="description" placeholder="Torrent description" value="{{ searchTerms.description }}"/>
 						<br/>
-						<label for="description">
+						<label for="description" class="info">
 							The single torrent description, not the torrent <em>group</em> description
 						</label>
 					</div>
@@ -89,7 +89,7 @@
 					<div>
 						<input type="text" name="fileList" placeholder="File list" value="{{ searchTerms.fileList }}"/>
 						<br/>
-						<label for="fileList">
+						<label for="fileList" class="info">
 							Please use the simple search to find torrents by info hash
 						</label>
 					</div>
@@ -317,7 +317,7 @@
       <th>Tags</th>
 			<td  id="tagColumn">
       <div>
-				<input type="text" id="tags" name="tagList" placeholder="Tag list (comma-separated)" value="{{ searchTerms.tagList }}">
+				<input type="text" id="tagList" name="tagList" placeholder="Tag list, separated by whitespace" value="{{ searchTerms.tagList }}">
 </div>
 
 <div id="tagRow">
@@ -329,7 +329,7 @@
 				<input type="radio" name="tagsType" id="allTags" value="1" {{ (searchTerms.tagsType == "1") ? "checked" : "" }}/>
 				<label for="allTags">All tags</label>
 
-        <p>
+        <p class="info">
 				Use !tag to exclude tags
         </p>
 
@@ -339,7 +339,7 @@
 		</tr>
 
 {# tag list #}
-      <tr id="tagList">
+      <tr id="officialTagList">
       <th />
       <td class="wrapThis">
       {% for item in officialTags %}

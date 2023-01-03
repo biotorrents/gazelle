@@ -30,7 +30,15 @@
 
   // toggle tag list
   $("#toggleTagList").on("click", () => {
-    $("#tagList").toggle();
+    $("#officialTagList").toggle();
+  });
+
+  // append tag to search
+  $(".officialTag").on("click", (event) => {
+    let tagList = $("#tagList").val();
+    let value = $(event.target).html();
+
+    $("#tagList").val(tagList + " " + value);
   });
 
   // reset the form
