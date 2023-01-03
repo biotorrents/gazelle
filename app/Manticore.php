@@ -67,9 +67,9 @@ class Manticore
         "alignment" => "censored",
         "leechStatus" => "freetorrent",
         "license" => "codec",
-        "sizeMin" => "", # todo
-        "sizeMax" => "", # todo
-        "sizeUnit" => "", # todo
+        "sizeMin" => null,
+        "sizeMax" => null,
+        "sizeUnit" => "size",
 
         "tagList" => "taglist",
         "tagsType" => "", # todo
@@ -85,7 +85,7 @@ class Manticore
         "categoryid" => null,
         "censored" => null,
         "freetorrent" => null,
-        "sizeUnit" => null,
+        #"sizeUnit" => null,
         #"year" => null,
     ];
 
@@ -134,9 +134,6 @@ class Manticore
 
             # https://github.com/FoolCode/SphinxQL-Query-Builder#percolate
             $this->percolate = new \Foolz\SphinxQL\Percolate($this->connection);
-
-            # raw search terms
-            $this->rawSearchTerms = $data;
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
@@ -165,6 +162,10 @@ class Manticore
         if (!in_array($what, $allowedIndices)) {
             throw new \Exception("expected one of " . implode(", ", $allowedIndices) . ", got {$what}");
         }
+
+        # raw search terms
+        $this->rawSearchTerms = $terms;
+        !d($this->rawSearchTerms);
 
         # start the query
         $this->query = $this->queryLanguage
@@ -257,6 +258,7 @@ class Manticore
             return $this->query;
         }
 
+
         # fileList: phrase boundary limits partial hits
         if ($key === "fileList") {
             $value = "{$value}~20";
@@ -265,6 +267,7 @@ class Manticore
             return $this->query;
         }
 
+
         # tagList: prepare tag searches
         if ($key === "tagList") {
             $value = str_replace($value, ".", "_");
@@ -272,6 +275,7 @@ class Manticore
 
             return $this->query;
         }
+
 
         # year: not an attribute
         if ($key === "year") {
@@ -304,12 +308,14 @@ class Manticore
             return $this->query;
         } # if ($key === "year")
 
+
         # alignment: not an attribute
         if ($key === "alignment") {
             $this->query->where("censored", intval($value));
 
             return $this->query;
         }
+
 
         # leechStatus: not an attribute
         if ($key === "leechStatus") {
@@ -327,6 +333,19 @@ class Manticore
                 return $this->query;
             }
         } # if ($key === "leechStatus")
+
+
+        # sizeUnit
+        if ($key === "sizeUnit") {
+            $sizeMin = intval(($this->rawSearchTerms["sizeMin"] ?? 0) * (1024 ** $value));
+            $sizeMax = intval(min(PHP_INT_MAX, ($this->rawSearchTerms["sizeMax"] ?? INF) * (1024 ** $value)));
+            #!d($sizeMin, $sizeMax);
+
+            $this->query->where("size", "between", [$sizeMin, $sizeMax]);
+
+            return $this->query;
+        } # if ($key === "sizeUnit")
+
 
         # normal
         $this->searchFields[$key] ??= null;
@@ -355,15 +374,6 @@ class Manticore
             return $this->query;
         }
 
-        # sizeUnit
-        if ($key === "sizeUnit") {
-            $sizeMin = intval(($this->rawSearchTerms["size_min"] ?? 0) * (1024 ** $value));
-            $sizeMax = intval(min(PHP_INT_MAX, ($this->rawSearchTerms["sizeMax"] ?? INF) * (1024 ** $value)));
-
-            $this->query->where("size", "between", [$sizeMin, $sizeMax ]);
-
-            return $this->query;
-        } # if ($key === "sizeUnit")
 
         # categories
         if ($key === "categories") {
