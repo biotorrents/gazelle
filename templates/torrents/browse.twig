@@ -38,7 +38,7 @@
 </div>
 
 {# start results table headings #}
-{% if groupResults %}
+{% if searchTerms.groupResults %}
 {% set grouping = "grouping" %}
 {% else %}
 {% set grouping = "no_grouping" %}
@@ -48,7 +48,7 @@
   <tr class="colhead">
 
 {# grouped #}
-  {% if groupResults %}
+  {% if searchTerms.groupResults %}
     <th class="small" />
   {% endif %}
 

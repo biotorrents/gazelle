@@ -223,8 +223,6 @@ $app->twig->display("torrents/browse.twig", [
 
 
 
-  "advancedSearch" => $advancedSearch,
-  "groupResults" => $groupResults,
  # "tagList" => $torrentSearch->get_terms('taglist'),
   "hideFilter" => false, # legacy
   #"pages" => $currentPages,

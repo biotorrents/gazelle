@@ -50,9 +50,9 @@ class Manticore
 
     # indices to search
     private $indices = [
-        "torrents" => ["torrents_base", "torrents_delta"],
-        "requests" => ["requests_base", "requests_delta"],
-        "collections" => ["collections_base", "collections_delta"],
+        "torrents" => ["torrents_main", "torrents_delta"],
+        "requests" => ["requests_main", "requests_delta"],
+        "collections" => ["collections_main", "collections_delta"],
     ];
 
     # map of search form fields => index fields

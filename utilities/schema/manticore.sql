@@ -27,7 +27,7 @@ create table `manticore_torrents_group` (
   `groupDescription` text,
   `picture` varchar(255),
 
-  -- todo
+  -- torrents_artists
   `creatorList` text,
 
   primary key (`id`)
@@ -97,26 +97,12 @@ create table `manticore_torrents_delta` (
   `snatches` int,
   `archive` varchar(16),
 
-  -- manticore_creators
+  -- torrents_artists
   `creatorList` text,
 
   primary key (`id`),
-  key `groupId` (`groupId`),
-  key `size` (`size`)
-) engine=InnoDB charset=utf8mb4;
-
-
--- manticore_creators
-create table `manticore_creators` (
-  `groupId` int not null,
-  `creatorList` text,
-
   key `groupId` (`groupId`)
 ) engine=InnoDB charset=utf8mb4;
-
-
--- manticore_creators_delta
--- todo?
 
 
 -- manticore_requests
@@ -124,8 +110,8 @@ create table `manticore_requests` (
   -- requests
   `id` int not null,
   `userId` int,
-  `timeAdded` int not null,
-  `lastVote` int not null,
+  `timeAdded` int,
+  `lastVote` int,
   `categoryId` smallint,
   `title` varchar(255),
   `subject` varchar(255),
@@ -133,7 +119,7 @@ create table `manticore_requests` (
   `picture` varchar(255),
   `description` text,
   `identifier` varchar(64),
-  `fillerId` int not null,
+  `fillerId` int,
   `torrentId` int,
   `timeFilled` int,
   `visible` binary(1),
@@ -142,15 +128,13 @@ create table `manticore_requests` (
   `bounty` bigint,
   `voteCount` bigint,
 
-  -- manticore_creators
+  -- requests_artists
   `creatorList` text,
 
-  primary key (`id`),
-  key `userId` (`userId`),
-  key `timeAdded` (`timeAdded`),
-  key `lastVote` (`lastVote`),
-  key `fillerId` (`fillerId`),
-  key `timeFilled` (`timeFilled`)
+  -- requests_tags
+  `tagList` text,
+
+  key (`id`)
 ) engine=InnoDB charset=utf8mb4;
 
 
@@ -158,9 +142,9 @@ create table `manticore_requests` (
 create table `manticore_requests_delta` (
   -- requests
   `id` int not null,
-  `userId` int not null,
-  `timeAdded` int not null,
-  `lastVote` int not null,
+  `userId` int,
+  `timeAdded` int,
+  `lastVote` int,
   `categoryId` smallint,
   `title` varchar(255),
   `subject` varchar(255),
@@ -168,7 +152,7 @@ create table `manticore_requests_delta` (
   `picture` varchar(255),
   `description` text,
   `identifier` varchar(64),
-  `fillerId` int not null,
+  `fillerId` int,
   `torrentId` int,
   `timeFilled` int,
   `visible` binary(1),
@@ -177,15 +161,13 @@ create table `manticore_requests_delta` (
   `bounty` bigint,
   `voteCount` bigint,
 
-  -- manticore_creators
+  -- requests_artists
   `creatorList` text,
 
-  primary key (`id`),
-  key `userId` (`userId`),
-  key `timeAdded` (`timeAdded`),
-  key `lastVote` (`lastVote`),
-  key `fillerId` (`fillerId`),
-  key `timeFilled` (`timeFilled`)
+  -- requests_tags
+  `tagList` text,
+
+  key (`id`)
 ) engine=InnoDB charset=utf8mb4;
 
 
