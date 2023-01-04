@@ -73,7 +73,7 @@ class Manticore
         "platforms" => "platform",
         "formats" => "format",
 
-        "scope" => "resolution",
+        "scope" => "scope",
         "alignment" => "alignment",
         "leechStatus" => "leechStatus",
         "license" => "license",
@@ -291,7 +291,7 @@ class Manticore
          * alignment
          */
         if ($key === "alignment") {
-            $this->query->where("alignment", intval($value));
+            $this->query->where("aligned", intval($value));
 
             return $this->query;
         }
@@ -326,17 +326,34 @@ class Manticore
         if ($key === "leechStatus") {
             $value = intval($value);
 
-            if ($value === 3) {
-                $this->query->where("leechStatus", 0);
+            # freeLeech
+            if ($value === 1) {
+                $this->query->where("leechStatus", 1);
 
                 return $this->query;
             }
 
+            # neutralLeech
+            if ($value === 2) {
+                $this->query->where("leechStatus", 2);
+
+                return $this->query;
+            }
+
+            # either
+            if ($value === 3) {
+                $this->query->where("leechStatus", "in", [1, 2]);
+
+                return $this->query;
+            }
+
+            /*
             if ($value >= 0 && $value < 3) {
                 $this->query->where("leechStatus", $value);
 
                 return $this->query;
             }
+            */
         } # if ($key === "leechStatus")
 
         /**
