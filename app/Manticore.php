@@ -68,23 +68,23 @@ class Manticore
         "creator" => "creatorList", # todo!
 
         "description" => ["torrentDescription", "groupDescription"],
-        "fileList" => "fileList",
+        "fileList" => ["fileList", "infoHash"],
 
-        "platforms" => "media",
-        "formats" => "container",
+        "platforms" => "platform",
+        "formats" => "format",
 
         "scope" => "resolution",
-        "alignment" => "censored",
-        "leechStatus" => "freetorrent",
-        "license" => "codec",
+        "alignment" => "alignment",
+        "leechStatus" => "leechStatus",
+        "license" => "license",
         "sizeMin" => null,
         "sizeMax" => null,
         "sizeUnit" => "size",
 
-        "tagList" => "taglist",
+        "tagList" => "tagList",
         "tagsType" => "", # todo
 
-        "categories" => "categoryid",
+        "categories" => "categoryId",
         "orderBy" => null,
         "orderWay" => null,
         "groupResults" => null,
@@ -291,7 +291,7 @@ class Manticore
          * alignment
          */
         if ($key === "alignment") {
-            $this->query->where("censored", intval($value));
+            $this->query->where("alignment", intval($value));
 
             return $this->query;
         }
@@ -305,7 +305,7 @@ class Manticore
                 return $this->query;
             }
 
-            $this->query->where("categoryid", "in", array_keys($value));
+            $this->query->where("categoryId", "in", array_keys($value));
 
             return $this->query;
         } # if ($key === "categories")
@@ -315,7 +315,7 @@ class Manticore
          */
         if ($key === "fileList") {
             #$value = "{$value}~20";
-            $this->query->match("filelist", $value);
+            $this->query->match("fileList", $value);
 
             return $this->query;
         }
@@ -327,13 +327,13 @@ class Manticore
             $value = intval($value);
 
             if ($value === 3) {
-                $this->query->where("freetorrent", 0);
+                $this->query->where("leechStatus", 0);
 
                 return $this->query;
             }
 
             if ($value >= 0 && $value < 3) {
-                $this->query->where("freetorrent", $value);
+                $this->query->where("leechStatus", $value);
 
                 return $this->query;
             }
@@ -399,7 +399,7 @@ class Manticore
          * platforms
          */
         if ($key === "platforms") {
-            $this->query->where("media", "in", $value);
+            $this->query->where("platform", "in", $value);
 
             return $this->query;
         }
@@ -408,7 +408,7 @@ class Manticore
          * formats
          */
         if ($key === "formats") {
-            $this->query->where("container", "in", $value);
+            $this->query->where("format", "in", $value);
 
             return $this->query;
         }
