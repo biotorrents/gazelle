@@ -25,31 +25,6 @@ $results = $manticore->search("torrents", $post);
 /** torrent search handling */
 
 
-# result grouping
-$groupResults = true;
-$post["groupResults"] ??= null;
-
-if (!$post["groupResults"]) {
-    $groupResults = false;
-}
-
-/*
-# ordered results field
-$post["orderBy"] ??= null;
-if (!$post["orderBy"] || !TorrentSearch::$sortOrders[ $post["orderBy"] ]) {
-    $orderBy = "time"; # for header links
-} else {
-    $orderBy = $post["orderBy"];
-}
-*/
-
-# ascending or descending?
-$post["orderWay"] ??= null;
-if ($post["orderWay"] && $post["orderWay"] === "asc") {
-    $orderWay = "asc";
-} else {
-    $orderWay = "desc";
-}
 
 # current search page
 $currentPage = intval($post["page"] ?? 1);
@@ -63,46 +38,6 @@ $resultGroups = $torrentSearch->get_groups();
 $resultCount = $torrentSearch->record_count();
 */
 
-# search by infoHash
-$post["search"] ??= null;
-$post["groupname"] ??= null;
-
-if ($post["search"] || $post["groupname"]) {
-    if ($post["search"]) {
-        $infoHash = $post["search"];
-    } else {
-        $infoHash = $post["groupname"];
-    }
-
-    $validInfoHash = TorrentFunctions::is_valid_torrenthash($infoHash);
-    if ($validInfoHash) {
-        $infoHash = pack("H*", $infoHash);
-
-        $query = "select id, groupId from torrents where info_hash = ?";
-        $ref = $app->dbNew->row($query, [$infoHash]);
-
-        if ($ref) {
-            Http::redirect("/torrents/{$ref["groupId"]}/{$ref["id"]}");
-        }
-    }
-} # if ($post["search"] || $post["groupname"])
-
-# advanced search stuff
-# disabled by default
-$advancedSearch = false;
-$post["advancedSearch"] ??= null;
-
-if ($post["advancedSearch"]) {
-    $advancedSearch = true;
-}
-
-$hideBasic = "";
-$hideAdvanced = "hidden";
-
-if ($advancedSearch) {
-    $hideBasic = "hidden";
-    $hideAdvanced = "";
-}
 
 /*
 # result pagination stuff
@@ -118,10 +53,6 @@ $bookmarks = Bookmarks::all_bookmarks('torrent');
 /** collect the search terms */
 
 $searchTerms = [
-
-
-
-
     "simpleSearch" => $post["simpleSearch"] ?? null,
     "complexSearch" => $post["complexSearch"] ?? null,
 
@@ -142,24 +73,42 @@ $searchTerms = [
     "alignment" => $post["alignment"] ?? null,
     "leechStatus" => $post["leechStatus"] ?? null,
     "license" => $post["license"] ?? null,
+
     "sizeMin" => $post["sizeMin"] ?? null,
     "sizeMax" => $post["sizeMax"] ?? null,
     "sizeUnit" => $post["sizeUnit"] ?? null,
 
-    "tagList" => $post["tagList"] ?? [],
-    "tagsType" => $post["tagsType"] ?? null,
-
     "categories" => $post["categories"] ?? [],
-    "orderBy" => $post["orderBy"] ?? null,
-    "orderWay" => $post["orderWay"] ?? null,
-    "groupResults" => $post["groupResults"] ?? null,
+    "tagList" => $post["tagList"] ?? [],
+    "tagsType" => $post["tagsType"] ?? "0",
 
-
-
-
-
-
+    "orderBy" => $post["orderBy"] ?? "timeAdded",
+    "orderWay" => $post["orderWay"] ?? "desc",
+    "groupResults" => $post["groupResults"] ?? !$app->userNew->extra["siteOptions"]["disableGrouping"],
 ];
+
+# search by infoHash: instant redirect
+if ($searchTerms["simpleSearch"] || $searchTerms["fileList"]) {
+    if ($searchTerms["simpleSearch"]) {
+        $infoHash = $searchTerms["simpleSearch"];
+    }
+
+    if ($searchTerms["fileList"]) {
+        $infoHash = $searchTerms["fileList"];
+    }
+
+    $validInfoHash = TorrentFunctions::is_valid_torrenthash($infoHash);
+    if ($validInfoHash) {
+        $infoHash = pack("H*", $infoHash);
+
+        $query = "select id, groupId from torrents where info_hash = ?";
+        $ref = $app->dbNew->row($query, [$infoHash]);
+
+        if ($ref) {
+            Http::redirect("/torrents/{$ref["groupId"]}/{$ref["id"]}");
+        }
+    }
+} # if ($searchTerms["simpleSearch"] || $searchTerms["fileList"])
 
 
 /** tags */

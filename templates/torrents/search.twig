@@ -14,28 +14,28 @@
 	{# simple search form #}
 	<section id="simpleSearch">
 		<div id="searchFormHeader">
-		<h3>Simple search</h3>
-	<a id="showComplexSearch" class="button button-orange u-pull-right">show complex search</a>
-</div>
+			<h3>Simple search</h3>
+			<a id="showComplexSearch" class="button button-orange u-pull-right">show complex search</a>
+		</div>
+
 		<table class="torrentSearch">
 
 			{# universal search #}
 			<tr>
-				{# <th/> #}
 				<td>
 					<input type="text" name="simpleSearch" placeholder="Search for anything, anywhere" value="{{ searchTerms.simpleSearch }}">
 				</td>
 			</tr>
 		</table>
-	</section> {# basicSearch #}
+	</section> {# simpleSearch #}
 
 
 	{# complex search form #}
 	<section id="complexSearch">
-	<div id="searchFormHeader">
-		<h3>Complex search</h3>
-	<a id="showSimpleSearch" class="button button-orange u-pull-right">show simple search</a>
-</div>
+		<div id="searchFormHeader">
+			<h3>Complex search</h3>
+			<a id="showSimpleSearch" class="button button-orange u-pull-right">show simple search</a>
+		</div>
 
 		<table class="torrentSearch">
 
@@ -77,16 +77,16 @@
 				<th>Files</th>
 				<td>
 					{# torrent description #}
-						<input type="text" name="description" placeholder="Torrent or group description" value="{{ searchTerms.description }}"/>
+					<input type="text" name="description" placeholder="Torrent or group description" value="{{ searchTerms.description }}"/>
 
 					{# file list #}
-						<input type="text" name="fileList" placeholder="File list or info hash" value="{{ searchTerms.fileList }}"/>
+					<input type="text" name="fileList" placeholder="File list or info hash" value="{{ searchTerms.fileList }}"/>
 				</td>
 			</tr>
 
 			{# platforms #}
 			<tr id="platforms">
-				<th>Platforms</th>
+				<th title="Start typing to filter the lists">Platforms</th>
 				<td>
 
 					{# sequences #}
@@ -130,7 +130,7 @@
 
 			{# formats #}
 			<tr id="formats">
-				<th>Formats</th>
+				<th title="Start typing to filter the lists">Formats</th>
 				<td>
 
 					{# sequenceFormats #}
@@ -143,7 +143,7 @@
 						{% endfor %}
 
 						<option disabled>Proteins</option>
-							{% for key, value in env.META.Formats.Proteins %}
+						{% for key, value in env.META.Formats.Proteins %}
 							<option value="{{ key }}" {{ (key in searchTerms.formats) ? "selected" : "" }}>
 								{{ key }}
 							</option>
@@ -165,15 +165,13 @@
 								{{ key }}
 							</option>
 						{% endfor %}
-
 					</select>
-
 
 					{# otherFormats #}
 					<select id="otherFormats" name="formats[]" placeholder="Other" multiple>
 
 						<option disabled>Structured data/XML</option>
-							{% for key, value in xmls %}
+						{% for key, value in xmls %}
 							<option value="{{ key }}" {{ (key in searchTerms.formats) ? "selected" : "" }}>
 								{{ key }}
 							</option>
@@ -187,16 +185,16 @@
 						{% endfor %}
 					</select>
 
-{# todo
-					{# archiveFormats # }
+					{# archiveFormats: todo #}
+					{#
 					<select id="archiveFormats" name="archives[]" placeholder="Archives" multiple>
-							{% for key, value in env.META.Formats.Archives %}
+						{% for key, value in env.META.Formats.Archives %}
 							<option value="{{ key }}" {{ (key in searchTerms.archives) ? "selected" : "" }}>
 								{{ key }}
 							</option>
 						{% endfor %}
 					</select>
-#}
+					#}
 
 				</td>
 			</tr>
@@ -208,7 +206,7 @@
 
 					{# scope #}
 					<select name="scope" id="scope">
-					<option value="">Scope</option>
+						<option value="">Scope</option>
 						{% for item in resolutions %}
 							<option value="{{ item }}" {{ (searchTerms.scope == item) ? "selected" : "" }}>
 								{{ item }}
@@ -216,23 +214,9 @@
 						{% endfor %}
 					</select>
 
-{# DELETE
-					{# alignment #
-					<select name="alignment" id="alignment" placeholder="Alignment">
-						<option value="">Alignment</option>
-						<option value="1" {{ (searchTerms.alignment == "1") ? "selected" : "" }}>
-							Aligned
-						</option>
-
-						<option value="0" {{ (searchTerms.alignment == "0") ? "selected" : "" }}>
-							Not aligned
-						</option>
-					</select>
-#}
-
 					{# leech status #}
 					<select name="leechStatus" id="leechStatus">
-					<option value="">Leech status</option>
+						<option value="">Leech status</option>
 
 						<option value="1" {{ (searchTerms.leechStatus == "1") ? "selected" : "" }}>
 							Freeleech
@@ -245,17 +229,11 @@
 						<option value="3" {{ (searchTerms.leechStatus == "3") ? "selected" : "" }}>
 							Either
 						</option>
-{#
-						<option value="0" {{ (searchTerms.leechStatus == "0") ? "selected" : "" }}>
-							None
-						</option>
-#}
-
 					</select>
 
 					{# license #}
 					<select name="license" id="license">
-					<option value="">License</option>
+						<option value="">License</option>
 
 						{% for item in env.META.Licenses %}
 							<option value="{{ item }}" {{ (searchTerms.license == item) ? "selected" : "" }}>
@@ -264,13 +242,12 @@
 						{% endfor %}
 					</select>
 
-
 					{# alignment #}
-				<input type="radio" name="alignment" id="yesAlighed" value="1" {{ (searchTerms.alignment == "1") ? "checked" : "" }}/>
-				<label for="yesAlighed">Aligned</label>
+					<input type="radio" name="alignment" id="yesAlighed" value="1" {{ (searchTerms.alignment == "1") ? "checked" : "" }}/>
+					<label for="yesAlighed">Aligned</label>
 
-				<input type="radio" name="alignment" id="noAligned" value="0" {{ (searchTerms.tagsType == "0") ? "checked" : "" }}/>
-				<label for="noAligned">Not&nbsp;aligned</label>
+					<input type="radio" name="alignment" id="noAligned" value="0" {{ (searchTerms.alignment == "0") ? "checked" : "" }}/>
+					<label for="noAligned">Not&nbsp;aligned</label>
 
 				</td>
 			</tr>
@@ -280,12 +257,12 @@
 				<th>Size</th>
 				<td>
 
-{# file size #}
+					{# file size #}
 					<input type="number" name="sizeMin" placeholder="Minimum" value="{{ searchTerms.sizeMin }}"/>
 					&ndash;
 					<input type="number" name="sizeMax" placeholder="Maximum" value="{{ searchTerms.sizeMax }}"/>
 
-{# units #}
+					{# units #}
 					<select name="sizeUnit">
 						<option value="">Unit</option>
 
@@ -312,98 +289,57 @@
 
 				</td>
 			</tr>
-
-			{# tag filter #}
-      <tr id="tagFilter">
-      <th>Tags</th>
-			<td>
-			{# <td id="tagColumn"> #}
-	  <select id="tagList" name="tagList[]" placeholder="Add or remove tags" multiple>
-	       {% for item in officialTags %}
-      <option value="{{ item }}" {{ (item in searchTerms.tagList) ? "selected" : "" }}>
-	  {{ item }}
-	  </option>
- {% endfor %}
- </select>
- 
-				{# <input type="text" id="tagList" name="tagList" placeholder="Tag list, separated by whitespace" value="{{ searchTerms.tagList }}"> #}
-
-{# <div id="tagRow"> #}
-{#
-        <a id="toggleTagList" class="button u-pull-right">toggle tag list</a>
-#}
-
-				<input type="radio" name="tagsType" id="anyTags" value="0" {{ (searchTerms.tagsType == "0") ? "checked" : "" }}/>
-				<label for="anyTags">Any&nbsp;tags</label>
-
-				<input type="radio" name="tagsType" id="allTags" value="1" {{ (searchTerms.tagsType == "1") ? "checked" : "" }}/>
-				<label for="allTags">All&nbsp;tags</label>
-{#
-        <p class="info">
-				Use !tag to exclude tags
-        </p>
-#}
-
-			</td>
-		</tr>
-
-{# tag list #}
-{#
-      <tr id="officialTagList">
-      <th />
-      <td class="wrapThis">
-      {% for item in officialTags %}
-      <a class="officialTag">{{ item }}</a>
- {% endfor %}
-      </td>
-      </tr>
-#}
 		</table>
 	</section> {# advancedSearch #}
 
 
 	{# sort options #}
 	<section id="sortOptions">
-	<h3>Sorting options</h3>
+		<h3>Sorting options</h3>
 
 		<table class="torrentSearch">
 
-
-      			{# category list #}
+			{# category list #}
 			<tr>
 				<th>Categories</th>
 				<td class="wrapThis">
-				<select id="categories" name="categories[]" placeholder="Categories" multiple>
-			{% for key, value in categories %}
-      {% set categoryId = key + 1 %}
-	  {#
-      {% if searchTerms.categories.categoryId is defined and searchTerms.categories.categoryId == categoryId %}
-      {% set checked = "checked" %}
-      {% else %}
-      {% set checked = "" %}
-      {% endif %}
-	  #}
-	  <option value="{{ categoryId }}" {{ (categoryId in searchTerms.categories) ? "selected" : "" }}>
-	  {{ value }}
-	  </option>
-	  {#
-<span class="categoryLabel">
-					<input type="checkbox" name="categories[{{ categoryId }}]" id="category{{ categoryId }}" value="{{ categoryId }}" {{ checked }} />
-					<label for="category{{ categoryId }}">{{ value }}</label>
-					</span>
-					#}
-			{% endfor %}
-			</select>
+					<select id="categories" name="categories[]" placeholder="Categories" multiple>
+						{% for key, value in categories %}
+							{% set categoryId = key + 1 %}
+							<option value="{{ categoryId }}" {{ (categoryId in searchTerms.categories) ? "selected" : "" }}>
+								{{ value }}
+							</option>
+						{% endfor %}
+					</select>
 				</td>
 			</tr>
 
+			{# tag filter #}
+			<tr id="tagFilter">
+				<th>Tags</th>
+				<td>
+					<select id="tagList" name="tagList[]" placeholder="Add or remove tags" multiple>
+						{% for item in officialTags %}
+							<option value="{{ item }}" {{ (item in searchTerms.tagList) ? "selected" : "" }}>
+								{{ item }}
+							</option>
+						{% endfor %}
+					</select>
 
-      			{# ordering #}
+					<input type="radio" name="tagsType" id="anyTags" value="0" {{ (searchTerms.tagsType == "0") ? "checked" : "" }}/>
+					<label for="anyTags">Any&nbsp;tags</label>
+
+					<input type="radio" name="tagsType" id="allTags" value="1" {{ (searchTerms.tagsType == "1") ? "checked" : "" }}/>
+					<label for="allTags">All&nbsp;tags</label>
+				</td>
+			</tr>
+
+			{# ordering #}
 			<tr id="ordering">
 				<th>Order by</th>
 				<td>
 
-					<select name="orderBy" id="orderBy">
+					<select name="orderBy" id="orderBy" placeholder="Attribute">
 						<option value="timeAdded" {{ (searchTerms.orderBy == "timeAdded") ? "selected" : "" }}>
 							Time added
 						</option>
@@ -438,8 +374,8 @@
 
 					</select>
 
-{# order way #}
-					<select name="orderWay" id="orderWay">
+					{# order way #}
+					<select name="orderWay" id="orderWay" placeholder="Direction">
 						<option value="desc" {{ (searchTerms.orderWay == "desc") ? "selected" : "" }}>
 							Descending
 						</option>
@@ -450,36 +386,25 @@
 					</select>
 
 					<div class="inlineFlex">
-					<input type="checkbox" value="1" name="groupResults" {{ (searchTerms.groupResults) ? "checked" : "" }}/>
-					<label for="groupResults">Group related torrents in the search results</label>
+						<input type="checkbox" value="true" name="groupResults" {{ (searchTerms.groupResults) ? "checked" : "" }}/>
+						<label for="groupResults">Group related torrents in the search results</label>
 					</div>
 
 				</td>
 			</tr>
 
-			{# use torrent groups? #}
-			<tr id="groupResults">
-				<th>Group torrents</th>
-				<td>
-					<input type="checkbox" value="1" name="groupResults" {{ (searchTerms.groupResults) ? "checked" : "" }}/>
-					<label for="groupResults">Group related torrents in the search results</label>
-				</td>
-			</tr>
-
-			{# controls #}
-			<tr >
-      <th />
+			{# formControls #}
+			<tr>
+				<th/>
 				<td id="formControls">
-	<input type="submit" value="search" class="button-primary"/>
+					<input type="submit" value="search" class="button-primary"/>
 
-	<input type="button" id="resetSearchForm" value="reset" />
+					<input type="button" id="resetSearchForm" value="reset"/>
 				</td>
 			</tr>
 
 
 		</table>
 	</section> {# sortOptions #}
-
-
 
 </form>

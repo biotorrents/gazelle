@@ -29,25 +29,27 @@
   });
 
   // tom select: probably a less dumb way to do this
-  new TomSelect("#sequencePlatforms");
-  new TomSelect("#graphPlatforms");
-  new TomSelect("#imagePlatforms");
-  new TomSelect("#documentPlatforms");
+  var tomSelects = [
+    new TomSelect("#sequencePlatforms"),
+    new TomSelect("#graphPlatforms"),
+    new TomSelect("#imagePlatforms"),
+    new TomSelect("#documentPlatforms"),
 
-  new TomSelect("#sequenceFormats");
-  new TomSelect("#imageFormats");
-  new TomSelect("#otherFormats");
-  //new TomSelect("#archiveFormats");
+    new TomSelect("#sequenceFormats"),
+    new TomSelect("#imageFormats"),
+    new TomSelect("#otherFormats"),
+    //new TomSelect("#archiveFormats"),
 
-  new TomSelect("#scope");
-  new TomSelect("#leechStatus");
-  new TomSelect("#license");
+    new TomSelect("#scope"),
+    new TomSelect("#leechStatus"),
+    new TomSelect("#license"),
 
-  new TomSelect("#categories");
-  new TomSelect("#tagList");
+    new TomSelect("#categories"),
+    new TomSelect("#tagList"),
 
-  new TomSelect("#orderBy");
-  new TomSelect("#orderWay");
+    new TomSelect("#orderBy"),
+    new TomSelect("#orderWay"),
+  ];
 
   /*
   // toggle tag list
@@ -68,8 +70,14 @@
 
   // reset the form
   $("#resetSearchForm").on("click", () => {
+    // normal form
     let formObject = $("#torrentSearch").get(0);
     formObject.reset();
+
+    // tom select elements
+    tomSelects.forEach((element) => {
+      element.clear();
+    });
   });
 })();
 
