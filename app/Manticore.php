@@ -57,7 +57,7 @@ class Manticore
 
     # map of search form fields => index fields
     private $searchFields = [
-        # main torrent search
+        # torrents search
         "simpleSearch" => "*",
         "complexSearch" => "*",
 
@@ -89,10 +89,10 @@ class Manticore
         "orderWay" => null,
         "groupResults" => null,
 
-        # request search
+        # requests search
         # todo
 
-        # log search
+        # collections search
         # todo
     ];
 
@@ -103,7 +103,7 @@ class Manticore
         "random" => "rand()",
         "seeders" => "seeders",
         "size" => "size",
-        "snatched" => "snatched",
+        "snatched" => "snatches",
         "timeAdded" => "id",
         "year" => "year",
     ];
@@ -120,8 +120,8 @@ class Manticore
             # https://github.com/FoolCode/SphinxQL-Query-Builder#connection
             $this->connection = new \Foolz\SphinxQL\Drivers\Pdo\Connection();
             $this->connection->setParams([
-                "host" => $app->env->manticoreHost,
-                "port" => $app->env->manticorePort,
+                "host" => $app->env->getPriv("manticoreHost"),
+                "port" => $app->env->getPriv("manticorePort"),
             ]);
 
             # https://github.com/FoolCode/SphinxQL-Query-Builder#sphinxql
