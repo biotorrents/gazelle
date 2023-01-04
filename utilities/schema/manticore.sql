@@ -175,10 +175,10 @@ create table `manticore_requests_delta` (
 -- to drop the tables
 --
 
-drop table manticore_counter;
-drop table manticore_torrents_group;
-drop table manticore_torrents;
-drop table manticore_torrents_delta;
-drop table manticore_creators;
-drop table manticore_requests;
-drop table manticore_requests_delta;
+--drop table manticore_counter;
+--drop table manticore_torrents_group;
+--drop table manticore_torrents;
+--drop table manticore_torrents_delta;
+--drop table manticore_creators;
+--drop table manticore_requests;
+--drop table manticore_requests_delta;
