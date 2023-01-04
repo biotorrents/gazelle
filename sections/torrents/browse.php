@@ -136,21 +136,7 @@ $searchTerms = [
 
     "platforms" => $post["platforms"] ?? [],
     "formats" => $post["formats"] ?? [],
-
-    /*
-    "sequencePlatforms" => $post["sequencePlatforms"] ?? [],
-    "graphPlatforms" => $post["graphPlatforms"] ?? [],
-    "imagePlatforms" => $post["imagePlatforms"] ?? [],
-    "documentPlatforms" => $post["documentPlatforms"] ?? [],
-
-    "nucleoSeqFormats" => $post["nucleoSeqFormats"] ?? [],
-    "protSeqFormats" => $post["protSeqFormats"] ?? [],
-    "xmlFormats" => $post["xmlFormats"] ?? [],
-    "rasterFormats" => $post["rasterFormats"] ?? [],
-    "vectorFormats" => $post["vectorFormats"] ?? [],
-    "otherFormats" => $post["otherFormats"] ?? [],
-    */
-
+    "archives" => $post["archives"] ?? [],
 
     "scope" => $post["scope"] ?? null,
     "alignment" => $post["alignment"] ?? null,

@@ -72,6 +72,7 @@ class Manticore
 
         "platforms" => "platform",
         "formats" => "format",
+        "archives" => "archive",
 
         "scope" => "scope",
         "alignment" => "alignment",
@@ -426,6 +427,15 @@ class Manticore
          */
         if ($key === "formats") {
             $this->query->where("format", "in", $value);
+
+            return $this->query;
+        }
+
+        /**
+         * archives
+         */
+        if ($key === "archives") {
+            $this->query->where("archive", "in", $value);
 
             return $this->query;
         }

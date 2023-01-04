@@ -56,12 +56,21 @@ table {
     flex-wrap: wrap;
   }
 
+  .inlineFlex {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  /*
   .categoryLabel {
     display: inline-flex;
     gap: 1rem;
   }
+  */
 
   /* start tagging */
+  /*
   #tagFilter {
     th,
     td {
@@ -84,6 +93,7 @@ table {
     cursor: pointer;
     text-decoration: none;
   }
+  */
 
   /* tom select */
   .ts-control > * {
@@ -93,7 +103,6 @@ table {
   .ts-wrapper.multi .ts-control > div.active {
     background: $skeletonDefault;
   }
-  /* end tagging */
 
   #formControls {
     justify-content: center;
