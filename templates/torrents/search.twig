@@ -77,18 +77,10 @@
 				<th>Files</th>
 				<td>
 					{# torrent description #}
-					<div>
-						<input type="text" name="description" placeholder="Torrent description" value="{{ searchTerms.description }}"/>
-					</div>
+						<input type="text" name="description" placeholder="Torrent or group description" value="{{ searchTerms.description }}"/>
 
 					{# file list #}
-					<div>
-						<input type="text" name="fileList" placeholder="File list" value="{{ searchTerms.fileList }}"/>
-						<br/>
-						<label for="fileList">
-							Please use the simple search to find torrents by info hash
-						</label>
-					</div>
+						<input type="text" name="fileList" placeholder="File list or info hash" value="{{ searchTerms.fileList }}"/>
 				</td>
 			</tr>
 

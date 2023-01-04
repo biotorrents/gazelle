@@ -68,7 +68,7 @@ class Manticore
         "creator" => "creatorList", # todo!
 
         "description" => ["torrentDescription", "groupDescription"],
-        "fileList" => "filelist",
+        "fileList" => "fileList",
 
         "platforms" => "media",
         "formats" => "container",
@@ -314,7 +314,7 @@ class Manticore
          * fileList: phrase boundary limits partial hits
          */
         if ($key === "fileList") {
-            $value = "{$value}~20";
+            #$value = "{$value}~20";
             $this->query->match("filelist", $value);
 
             return $this->query;
