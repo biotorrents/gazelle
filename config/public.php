@@ -170,7 +170,7 @@ define("SPHINXQL_PORT", 9306);
 define("SPHINXQL_SOCK", false);
 define("SPHINX_MAX_MATCHES", 1000); # must be <= server max_matches (default 1000)
 
-ENV::setPub("manticoreHost", "127.0.0.1");
+ENV::setPub("manticoreHost", "10.0.0.5");
 ENV::setPub("manticorePort", 9306);
 ENV::setPub("manticoresocket", null);
 ENV::setPub("manticoreMaxMatches", 1000);

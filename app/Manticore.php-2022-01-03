@@ -50,9 +50,9 @@ class Manticore
 
     # indices to search
     private $indices = [
-        "torrents" => ["torrents_base", "torrents_delta"],
-        "requests" => ["requests_base", "requests_delta"],
-        "collections" => ["collections_base", "collections_delta"],
+        "torrents" => ["torrents", "delta"],
+        "requests" => ["requests", "requests_delta"],
+        "log" => ["log", "log_delta"],
     ];
 
     # map of search form fields => index fields
@@ -61,17 +61,31 @@ class Manticore
         "simpleSearch" => "*",
         "complexSearch" => "*",
 
-        "numbers" => ["identifier", "version"],
+        "numbers" => ["cataloguenumber", "version"],
         "year" => ["year"],
 
-        "location" => ["workgroup", "location"],
-        "creator" => "creatorList", # todo!
+        "location" => ["series", "studio"],
+        "creator" => "artistname",
 
-        "description" => ["torrentDescription", "groupDescription"],
+        "description" => "description",
         "fileList" => "filelist",
 
         "platforms" => "media",
         "formats" => "container",
+
+        /*
+        "sequencePlatforms" => "media",
+        "graphPlatforms" => "media",
+        "imagePlatforms" => "media",
+        "documentPlatforms" => "media",
+
+        "nucleoSeqFormats" => "container",
+        "protSeqFormats" => "container",
+        "xmlFormats" => "container",
+        "rasterFormats" => "container",
+        "vectorFormats" => "container",
+        "otherFormats" => "container",
+        */
 
         "scope" => "resolution",
         "alignment" => "censored",
@@ -158,11 +172,6 @@ class Manticore
     public function search(string $what, array $data = []): array
     {
         $app = \App::go();
-
-        # temporary
-        if ($what === "collections") {
-            throw new \Exception("not implemented");
-        }
 
         # return cached if available
         $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode($data));

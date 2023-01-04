@@ -27,6 +27,9 @@ create table `manticore_torrents_group` (
   `groupDescription` text,
   `picture` varchar(255),
 
+  -- todo
+  `creatorList` text,
+
   primary key (`id`)
 ) engine=InnoDB charset=utf8mb4;
 
@@ -120,7 +123,7 @@ create table `manticore_creators` (
 create table `manticore_requests` (
   -- requests
   `id` int not null,
-  `userId` int not null,
+  `userId` int,
   `timeAdded` int not null,
   `lastVote` int not null,
   `categoryId` smallint,
