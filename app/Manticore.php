@@ -65,7 +65,7 @@ class Manticore
         "year" => ["year"],
 
         "location" => ["workgroup", "location"],
-        "creator" => "creatorList", # todo!
+        "creator" => "creatorList",
 
         "description" => ["torrentDescription", "groupDescription"],
         "fileList" => ["fileList", "infoHash"],
@@ -160,6 +160,9 @@ class Manticore
     {
         $app = \App::go();
 
+        # start debug
+        $app->debug["time"]->startMeasure("users", "manticore search");
+
         # temporary
         if ($what === "collections") {
             throw new \Exception("not implemented");
@@ -185,7 +188,8 @@ class Manticore
 
         # start the query
         $this->query = $this->queryLanguage
-            ->select("*")
+            ->select(["id", "groupId"])
+            #->select("*") # debug
             ->from($this->indices[$what]);
 
         # orderBy and orderWay
@@ -222,6 +226,16 @@ class Manticore
 
         /** */
 
+        # pagination
+        $data["page"] ??= 1;
+        $pagination = $app->userNew->extra["siteOptions"]["searchPagination"] ?? 20;
+        $offset = ($data["page"] - 1) * $pagination;
+
+        $this->query->limit(
+            $offset, # offset
+            $app->env->getPriv("manticoreMaxMatches") # limit: default 1000
+        );
+
         # debug
         if ($app->env->dev) {
             $this->debug = $this->query->enqueue(
@@ -234,6 +248,9 @@ class Manticore
             # execute the statement
             $resultSet = $this->query->execute();
             $results = $resultSet->fetchAllAssoc();
+
+            # end debug
+            $app->debug["time"]->stopMeasure("users", "user handling");
 
             $app->cacheOld->cache_value($cacheKey, $results, $this->cacheDuration);
             return $results;
@@ -323,6 +340,7 @@ class Manticore
 
         /**
          * leechStatus
+         * todo: is this accurate?
          */
         if ($key === "leechStatus") {
             $value = intval($value);

@@ -17,12 +17,14 @@ $post = Http::query("post");
 #!d($post);
 
 
+/** torrent search handling */
+
+
 $manticore = new Gazelle\Manticore();
 $results = $manticore->search("torrents", $post);
 !d($results);
+$resultCount = count($results);
 
-
-/** torrent search handling */
 
 
 
@@ -84,7 +86,7 @@ $searchTerms = [
 
     "orderBy" => $post["orderBy"] ?? "timeAdded",
     "orderWay" => $post["orderWay"] ?? "desc",
-    "groupResults" => $post["groupResults"] ?? !$app->userNew->extra["siteOptions"]["disableGrouping"],
+    "groupResults" => $post["groupResults"] ?? $app->userNew->extra["siteOptions"]["torrentGrouping"],
 ];
 
 # search by infoHash: instant redirect

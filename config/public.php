@@ -160,7 +160,7 @@ else {
 
 /**
  * search
- * 
+ *
  * THIS IS GOING AWAY!
  */
 
@@ -307,16 +307,14 @@ ENV::setPub(
 
 # default site options
 $defaultSiteOptions = [
-  "donorIcon" => true,
   "autoSubscribe" => true,
   "calmMode" => false,
   "communityStats" => true,
-  "coverArtCollections" => 25,
+  "coverArtCollections" => 20,
   "coverArtTorrents" => true,
   "coverArtTorrentsExtra" => true,
   "darkMode" => false,
-  "disableAvatars" => false,
-  "disableGrouping" => false,
+  "donorIcon" => true,
   "font" => "",
   "listUnreadsFirst" => true,
   "percentileStats" => true,
@@ -325,15 +323,16 @@ $defaultSiteOptions = [
   "recentSnatches" => true,
   "recentUploads" => true,
   "requestStats" => true,
+  "searchPagination" => 20,
   "searchType" => "basic",
   "showSnatched" => true,
-  "showTagFilter" => true,
-  "showTorrentFilter" => true,
   "styleId" => 1,
   "styleUri" => "",
   "torrentGrouping" => "open",
+  "torrentGrouping" => true,
   "torrentStats" => true,
   "unseededAlerts" => true,
+  "userAvatars" => true,
 ];
 
 ENV::setPub("defaultSiteOptions", json_encode($defaultSiteOptions));

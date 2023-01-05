@@ -7,19 +7,19 @@
 
   // toggle passkey
   $("#displayPassKey").hide();
-  $("#togglePassKey").click(() => {
+  $("#togglePassKey").on("click", () => {
     $("#displayPassKey").toggle();
   });
 
   // toggle authkey
   $("#displayAuthKey").hide();
-  $("#toggleAuthKey").click(() => {
+  $("#toggleAuthKey").on("click", () => {
     $("#displayAuthKey").toggle();
   });
 
   // toggle rss key
   $("#displayRssKey").hide();
-  $("#toggleRssKey").click(() => {
+  $("#toggleRssKey").on("click", () => {
     $("#displayRssKey").toggle();
   });
 })();
@@ -45,22 +45,5 @@ function ToggleWarningAdjust(selector) {
   } else {
     $("#ReduceWarningTR").ghide();
     $("#ReduceWarning").raw().disabled = true;
-  }
-}
-
-document.addEventListener("DOMContentLoaded", ToggleIdenticons);
-
-/**
- * ToggleIdenticons
- */
-function ToggleIdenticons() {
-  var disableAvatars = $("#disableavatars");
-  if (disableAvatars.length) {
-    var selected = disableAvatars[0].selectedIndex;
-    if (selected == 2 || selected == 3) {
-      $("#identicons").gshow();
-    } else {
-      $("#identicons").ghide();
-    }
   }
 }

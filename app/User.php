@@ -743,7 +743,8 @@ class User
      */
     public static function hasAvatarsEnabled(): bool
     {
-        return $this->extra["siteOptions"]["disableAvatars"];
+        # negating the return is a shim: this is used everywhere
+        return !$this->extra["siteOptions"]["userAvatars"];
     }
 
 
@@ -1298,7 +1299,6 @@ class User
 
             # siteOptions
             $siteOptions = [
-                "donorIcon" => Esc::bool($data["donorIcon"] ?? null),
                 "autoSubscribe" => Esc::bool($data["autoSubscribe"] ?? null),
                 "calmMode" => Esc::bool($data["calmMode"] ?? null),
                 "communityStats" => Esc::bool($data["communityStats"] ?? null),
@@ -1306,8 +1306,7 @@ class User
                 "coverArtTorrents" => Esc::bool($data["coverArtTorrents"] ?? null),
                 "coverArtTorrentsExtra" => Esc::bool($data["coverArtTorrentsExtra"] ?? null),
                 "darkMode" => Esc::bool($data["darkMode"] ?? null),
-                "disableAvatars" => Esc::bool($data["disableAvatars"] ?? null),
-                "disableGrouping" => Esc::bool($data["disableGrouping"] ?? null),
+                "donorIcon" => Esc::bool($data["donorIcon"] ?? null),
                 "font" => Esc::string($data["font"] ?? null),
                 "listUnreadsFirst" => Esc::bool($data["listUnreadsFirst"] ?? null),
                 "percentileStats" => Esc::bool($data["percentileStats"] ?? null),
@@ -1322,9 +1321,11 @@ class User
                 "showTorrentFilter" => Esc::bool($data["showTorrentFilter"] ?? null),
                 "styleId" => Esc::int($data["styleId"] ?? null),
                 "styleUri" => Esc::url($data["styleUri"] ?? null),
+                "torrentGrouping" => Esc::bool($data["torrentGrouping"] ?? null),
                 "torrentGrouping" => Esc::string($data["torrentGrouping"] ?? null),
                 "torrentStats" => Esc::bool($data["torrentStats"] ?? null),
                 "unseededAlerts" => Esc::bool($data["unseededAlerts"] ?? null),
+                "userAvatars" => Esc::bool($data["userAvatars"] ?? null),
             ];
 
             # this shouldn't be possible with normal ui usage

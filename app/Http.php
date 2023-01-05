@@ -362,7 +362,7 @@ class Http
      */
     public static function setCookie(array $cookie, string $when = "tomorrow"): void
     {
-        $app = App::go;
+        $app = App::go();
 
         foreach ($cookie as $key => $value) {
             if (empty($key)) {
