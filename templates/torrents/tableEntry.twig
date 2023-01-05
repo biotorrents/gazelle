@@ -1,63 +1,198 @@
 {##
+ # search results table entry
+ #}
+
+<tr>
+
+	{# grouped #}
+  <td>
+  <pre>
+    {# {{ dump(item) }} #}
+  </pre>
+  </td>
+
+
+	{# category icon #}
+	<td>
+    {{item.category_id|categoryIcon }}
+  </td>
+
+
+	{# title #}
+	<td>
+
+    {# title link #}
+    <a class="torrentTitle" href="torrents.php?id={{ item.id }}" {# open tag #}
+    
+    {% if item.picture %}
+      data-cover="{{ item.picture }}" {# open tag #}
+    {% endif %}
+    
+    dir="ltr">
+      {{ item.title }}
+    </a>
+
+<div class="flexRow">
+    {# year #}
+    {% if item.year %}
+      <span class="tooltip" title="Year">📅 {{ item.year }}</span>
+    {% endif %}
+
+    {# identifier #}
+    {% if item.identifier %}
+      <span class="tooltip" title="Identifier">🔑 {{ item.identifier }}</span>
+      
+    {% endif %}
+
+    {# subject #}
+    {% if item.subject %}
+      <span class="tooltip" title="Organism">
+        🦠 {{ item.subject }}
+        {# object #}
+        {{ (item.object) ? "<em>#{item.object}</em>"|raw : "" }}
+      </span>
+    {% endif %}
+
+{#
+{% if artists|default(false) %}
+  &ensp;{# emoji in artists class # }<span class="torrent_artists">{{ artists|raw }}</span>
+{% endif %}
+#}
+
+    {# workgroup #}
+    {% if item.workgroup %}
+      <span class="tooltip" title="Workgroup">🏫 {{ item.workgroup }}</span>
+    {% endif %}
+
+    {# location #}
+      {% if item.location %}
+        <span class="tooltip" title="Location">📍 {{ item.location }}</span>
+        
+      {% endif %}
+
+</div>
+{#
+{% if extra_info|default(false) %}
+  <br />
+  <span class="torrent_info">
+    {{ extra_info|raw }}
+  </span>
+{% endif %}
+#}
+
+{#
+{% if tags|default(false) %}
+  <br />
+  <span class="tags">
+    {{ tags|raw }}
+  </span>
+{% endif %}
+#}
+  </td>
+
+
+	{# timeAdded #}
+	<td>
+
+  </td>
+
+
+	{# file size #}
+	<td>
+
+  </td>
+
+
+	{# file count #}
+	<td>
+
+  </td>
+
+
+	{# seeders #}
+	<td>
+
+  </td>
+
+
+	{# leechers #}
+	<td>
+
+  </td>
+
+  
+  {# snatches #}
+	<td>
+
+  </td>
+
+</tr>
+
+
+
+
+
+
+{##
  # Main torrent group display name.
  # This seeks to replace the similar scattered versions:
  # torrents, requests, artists, collections, Top 10, etc.
  # They all use a verion of this HTML to populate the table.
- #}
+ # }
 
 <a
   class="torrent_title"
-  href="torrents.php?id={{ g.id }}" {# open tag #}
+  href="torrents.php?id={{ item.id }}" {# open tag # }
 
-  {% if cover_art %}
-    data-cover="{{ thumb }}" {# open tag #}
+  {% if item.picture %}
+    data-cover="{{ thumb }}" {# open tag # }
   {% endif %}
 
-  dir="ltr">{{ g.title }}
+  dir="ltr">{{ item.title }}
 </a>
 
-{% if g.year %}
+{% if item.year %}
   <br />
   <span class="tooltip" title="Year">
     📅&nbsp;
   </span>
-  <a href="torrents.php?{{ url }}&year={{ g.year }}">{{ g.year }}</a>
+  <a href="torrents.php?{{ url }}&year={{ item.year }}">{{ item.year }}</a>
 {% endif %}
 
-{% if g.identifier %}
+{% if item.identifier %}
 <span class="tooltip" title="Accession Number">
   &ensp;🔑&nbsp;
 </span>
-<a href="torrents.php?{{ url }}&numbers={{ g.identifier }}">{{ g.identifier }}</a>
+<a href="torrents.php?{{ url }}&numbers={{ item.identifier }}">{{ item.identifier }}</a>
 {% endif %}
 
-{% if g.subject %}
+{% if item.subject %}
 <span class="tooltip" title="Organism">
   &ensp;🦠&nbsp;
 </span>
-<a href="torrents.php?{{ url }}&advgroupname={{ g.subject }}"><em>{{ g.subject }}</em></a>
+<a href="torrents.php?{{ url }}&advgroupname={{ item.subject }}"><em>{{ item.subject }}</em></a>
 {% endif %}
 
-{% if g.object %}
-  <a href="torrents.php?{{ url }}&advgroupname={{ g.object }}">{{ g.object }}</a>
+{% if item.object %}
+  <a href="torrents.php?{{ url }}&advgroupname={{ item.object }}">{{ item.object }}</a>
 {% endif %}
 
 {% if artists|default(false) %}
-  &ensp;{# emoji in artists class #}<span class="torrent_artists">{{ artists|raw }}</span>
+  &ensp;{# emoji in artists class # }<span class="torrent_artists">{{ artists|raw }}</span>
 {% endif %}
 
-{% if g.workgroup %}
+{% if item.workgroup %}
 <span class="tooltip" title="Lab">
   &ensp;🏫&nbsp;
 </span>
-<a href="torrents.php?{{ url }}&location={{ g.workgroup }}">{{ g.workgroup }}</a>
+<a href="torrents.php?{{ url }}&location={{ item.workgroup }}">{{ item.workgroup }}</a>
 {% endif %}
 
-{% if g.location %}
+{% if item.location %}
 <span class="tooltip" title="Location">
   &ensp;📍&nbsp;
 </span>
-<a href="torrents.php?{{ url }}&location={{ g.location }}">{{ g.location }}</a>
+<a href="torrents.php?{{ url }}&location={{ item.location }}">{{ item.location }}</a>
 {% endif %}
 
 {% if extra_info|default(false) %}
@@ -73,3 +208,4 @@
     {{ tags|raw }}
   </span>
 {% endif %}
+#}

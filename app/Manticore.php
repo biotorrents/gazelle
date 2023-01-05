@@ -226,11 +226,14 @@ class Manticore
 
         /** */
 
+        /*
         # pagination
         $data["page"] ??= 1;
         $pagination = $app->userNew->extra["siteOptions"]["searchPagination"] ?? 20;
         $offset = ($data["page"] - 1) * $pagination;
+        */
 
+        $offset = 0; # todo
         $this->query->limit(
             $offset, # offset
             $app->env->getPriv("manticoreMaxMatches") # limit: default 1000

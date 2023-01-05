@@ -110,6 +110,36 @@ table {
 }
 
 /**
+ * torrent search results table
+ */
+
+#searchResultsHeader {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 2rem;
+  align-items: center;
+  justify-content: space-between;
+
+  #paginationControls {
+    display: inline-flex;
+    flex-flow: row wrap;
+    gap: 2rem;
+  }
+}
+
+#torrentSearchResults {
+  .torrentTitle {
+    font-size: larger;
+  }
+
+  .flexRow {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 0 2rem;
+  }
+}
+
+/**
  * sortable tables
  */
 

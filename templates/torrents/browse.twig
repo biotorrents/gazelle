@@ -14,13 +14,17 @@
 {% else %}
   {# resultCount and pagination controls #}
   {# todo: 1-20 is hardcoded lol #}
+  <div id="searchResultsHeader">
   <h3>1&ndash;20 of {{ resultCount }} results</h3>
 
-  <a class="button" id="firstPage">« first</a>
-  <a class="button" id="firstPage">‹ previous</a>
+<div id="paginationControls">
+  <a id="firstPage" class="button u-pull-right">« first</a>
+  <a id="previousPage" class="button u-pull-right">‹ previous</a>
 
-  <a class="button" id="lastPage">next ›</a>
-  <a class="button" id="lastPage">last »</a>
+  <a id="nextPage" class="button u-pull-right">next ›</a>
+  <a id="lastPage" class="button u-pull-right">last »</a>
+  </div>
+  </div>
 {% endif %}
 
 {# grouping options #}
@@ -32,45 +36,55 @@
 
 
 {# start the results table #}
-<table id="torrent_table" class="torrent_table cats {{ grouping }}">
+<table id="torrentSearchResults" class="{{ grouping }}">
 
 {# start results table headings #}
 {# todo: this can be reorganized to suck less #}
 <tr>
 
 	{# grouped #}
-	{% if searchTerms.groupResults %}
+  <th />
+
+	{#
+  {% if searchTerms.groupResults %}
 		<th />
 	{% endif %}
+  #}
 
 	{# category icon #}
 	<th class="cats_col" />
 
-	{# name/year #}
-	<th>Name / Year</th>
+	{# title #}
+	<th>Title</th>
 
-	{# files #}
-	<th>Files</th>
+	{# timeAdded #}
+	<th>Time&nbsp;added</th>
 
-	{# time #}
-	<th>Time</th>
+	{# file size #}
+	<th>File&nbsp;size</th>
 
-	{# size #}
-	<th>Size</th>
-
-	{# snatches #}
-	<th>Snatches ↻</th>
+	{# file count #}
+	<th>File&nbsp;count</th>
 
 	{# seeders #}
-	<th>Seeders ↑</th>
+	<th title="Seeders">↑</th>
+	{# <th>Seeders&nbsp;↑</th> #}
 
 	{# leechers #}
-	<th>Leechers ↓</th>
+	<th title="Leechers">↓</th>
+	{# <th>Leechers&nbsp;↓</th> #}
+
+  {# snatches #}
+	<th title="Snatches">↻</th>
+	{# <th>Snatches&nbsp;↻</th> #}
+
 </tr>
 {# end results table headings #}
 
 {# start the results themselves #}
-{% for item in searchResults %}
+{% for item in torrentGroups %}
+
+{% include "torrents/tableEntry.twig" with item %}
 
 {% endfor %}
 

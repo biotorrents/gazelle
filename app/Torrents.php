@@ -29,50 +29,101 @@ class Torrents
 
 
     /**
-     * get_groups
+     * getGroupsForReal
      *
-     * Function to get data and torrents for an array of GroupIDs. Order of keys doesn't matter
-     *
-     * @param array $GroupIDs
-     * @param boolean $Return if false, nothing is returned. For priming cache.
-     * @param boolean $GetArtists if true, each group will contain the result of
-     *  Artists::get_artists($GroupID), in result[$GroupID]['ExtendedArtists']
-     * @param boolean $Torrents if true, each group contains a list of torrents, in result[$GroupID]['Torrents']
-     *
-     * @return array each row of the following format:
-     * GroupID => (
-     *  ID
-     *  Name
-     *  Year
-     *  RecordLabel
-     *  CatalogueNumber
-     *  TagList
-     *  ReleaseType
-     *  VanityHouse
-     *  WikiImage
-     *  CategoryID
-     *  Torrents => {
-     *    ID => {
-     *      GroupID, Media, Format, Encoding, RemasterYear, Remastered,
-     *      RemasterTitle, RemasterRecordLabel, RemasterCatalogueNumber, Scene,
-     *      HasLog, HasCue, LogScore, FileCount, FreeTorrent, Size, Leechers,
-     *      Seeders, Snatched, Time, HasFile, PersonalFL, IsSnatched
-     *    }
-     *  }
-     *  Artists => {
-     *    {
-     *      id, name, aliasid // Only main artists
-     *    }
-     *  }
-     *  ExtendedArtists => {
-     *    [1-6] => { // See documentation on Artists::get_artists
-     *      id, name, aliasid
-     *    }
-     *  }
-     *  Flags => {
-     *    IsSnatched
-     *  }
+     * todo: finish this later
      */
+    public static function getGroupsForReal(array $groupIds): array
+    {
+        $app = App::go();
+
+        if (empty($groupIds)) {
+            return [];
+        }
+
+        $data = [];
+
+        # escape just in case, because `in()` can't into prepared queries
+        foreach ($groupIds as $key => $value) {
+            $groupIds[$key] = Esc::int($value);
+        }
+
+        $groupIds = array_filter($groupIds);
+        $groupIds = implode(", ", $groupIds);
+
+        $query = "
+            select id, category_id, title, subject, object, year,
+                workgroup, location, identifier, tag_list, timestamp, picture
+            from torrents_group where id in({$groupIds})
+        ";
+        $ref = $app->dbNew->multi($query, []);
+        $data["torrentGroups"] = $ref;
+        #!d($ref);exit;
+
+        # now do the torrents themselves
+        $query = "
+            select id, groupId, userId, media, container, codec, resolution,
+                version, censored, anonymous, hex(info_hash) as infoHash, fileCount,
+                size, leechers, seeders, freeTorrent, time, snatched, archive, shop_freeleeches.expiryTime
+            from torrents left join shop_freeleeches on shop_freeleeches.torrentId = torrents.id
+            where groupId in({$groupIds})
+        ";
+        $ref = $app->dbNew->multi($query, []);
+        $data["torrents"] = $ref;
+        #!d($ref);exit;
+
+        # now the creators
+        $data["creators"] = Artists::get_artists($groupIds) ?? [];
+
+        return $data;
+    }
+
+
+    /**
+      * get_groups
+      *
+      * Function to get data and torrents for an array of GroupIDs. Order of keys doesn't matter
+      *
+      * @param array $GroupIDs
+      * @param boolean $Return if false, nothing is returned. For priming cache.
+      * @param boolean $GetArtists if true, each group will contain the result of
+      *  Artists::get_artists($GroupID), in result[$GroupID]['ExtendedArtists']
+      * @param boolean $Torrents if true, each group contains a list of torrents, in result[$GroupID]['Torrents']
+      *
+      * @return array each row of the following format:
+      * GroupID => (
+      *  ID
+      *  Name
+      *  Year
+      *  RecordLabel
+      *  CatalogueNumber
+      *  TagList
+      *  ReleaseType
+      *  VanityHouse
+      *  WikiImage
+      *  CategoryID
+      *  Torrents => {
+      *    ID => {
+      *      GroupID, Media, Format, Encoding, RemasterYear, Remastered,
+      *      RemasterTitle, RemasterRecordLabel, RemasterCatalogueNumber, Scene,
+      *      HasLog, HasCue, LogScore, FileCount, FreeTorrent, Size, Leechers,
+      *      Seeders, Snatched, Time, HasFile, PersonalFL, IsSnatched
+      *    }
+      *  }
+      *  Artists => {
+      *    {
+      *      id, name, aliasid // Only main artists
+      *    }
+      *  }
+      *  ExtendedArtists => {
+      *    [1-6] => { // See documentation on Artists::get_artists
+      *      id, name, aliasid
+      *    }
+      *  }
+      *  Flags => {
+      *    IsSnatched
+      *  }
+      */
     public static function get_groups($GroupIDs, $Return = true, $GetArtists = true, $Torrents = true)
     {
         $app = App::go();
@@ -1435,7 +1486,7 @@ class Torrents
         || !empty($ExtendedArtists[4])
         || !empty($ExtendedArtists[5])
         || !empty($ExtendedArtists[6])
-      ) {
+            ) {
                 unset($ExtendedArtists[2], $ExtendedArtists[3]);
                 $DisplayName = \Artists::display_artists($ExtendedArtists, ($Mode & self::DISPLAYSTRING_LINKED));
             } else {

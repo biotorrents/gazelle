@@ -21,8 +21,20 @@ $post = Http::query("post");
 
 
 $manticore = new Gazelle\Manticore();
-$results = $manticore->search("torrents", $post);
-$resultCount = count($results);
+$searchResults = $manticore->search("torrents", $post);
+$resultCount = count($searchResults);
+#!d($searchResults);exit;
+
+# Torrents::get_groups
+# this is slow, only do current page
+$data["page"] ??= 1;
+$pagination = $app->userNew->extra["siteOptions"]["searchPagination"] ?? 20;
+$offset = ($data["page"] - 1) * $pagination;
+
+$groupIds = array_column($searchResults, "groupid");
+$groupIds = array_slice($groupIds, $offset, $pagination);
+$torrentGroups = Torrents::get_groups($groupIds);
+#!d($torrentGroups);exit;
 
 # current search page
 $currentPage = intval($post["page"] ?? 1);
@@ -184,11 +196,8 @@ $app->twig->display("torrents/browse.twig", [
   # shutting twig up
   "resultCount" => $resultCount,
   "pages" => null,
-  "searchResults" => [],
-
-
-
-
+  "searchResults" => $searchResults,
+  "torrentGroups" => $torrentGroups,
 
  # "tagList" => $torrentSearch->get_terms('taglist'),
   #"pages" => $currentPages,
@@ -198,6 +207,5 @@ $app->twig->display("torrents/browse.twig", [
   "officialTags" => $officialTags,
 
   "searchTerms" => $searchTerms,
-  #"searchResults" => $searchResults,
   #"resultGroups" => $resultGroups,
 ]);
