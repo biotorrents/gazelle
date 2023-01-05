@@ -22,23 +22,11 @@ $post = Http::query("post");
 
 $manticore = new Gazelle\Manticore();
 $results = $manticore->search("torrents", $post);
-!d($results);
 $resultCount = count($results);
-
-
-
 
 # current search page
 $currentPage = intval($post["page"] ?? 1);
-$pagination = $app->env->paginationDefault;
-
-# TorrentSearch instance variables
-/*
-$torrentSearch = new TorrentSearch($groupResults, $orderBy, $orderWay, $currentPage, $pagination);
-$searchResults = $torrentSearch->query($post);
-$resultGroups = $torrentSearch->get_groups();
-$resultCount = $torrentSearch->record_count();
-*/
+$pagination = $app->userNew->extra["siteOptions"]["searchPagination"] ?? 20;
 
 
 /*
@@ -115,6 +103,7 @@ if ($searchTerms["simpleSearch"] || $searchTerms["fileList"]) {
 
 /** tags */
 
+
 $query = "select name from tags where tagType = 'genre' order by name";
 $ref = $app->dbNew->multi($query, []);
 $officialTags = array_column($ref, "name");
@@ -149,21 +138,6 @@ $Categories = [
 ];
 $GroupedCategories = $Categories;
 
-// The "order by x" links on columns headers
-function header_link($SortKey, $DefaultWay = 'desc')
-{
-    global $orderBy, $orderWay;
-    if ($SortKey === $orderBy) {
-        if ($orderWay === 'desc') {
-            $NewWay = 'asc';
-        } else {
-            $NewWay = 'desc';
-        }
-    } else {
-        $NewWay = $DefaultWay;
-    }
-    return "torrents.php?orderWay=$NewWay&amp;orderBy=$SortKey&amp;".Format::get_url(['orderWay', 'orderBy']);
-}
 
 
 
@@ -179,13 +153,9 @@ $app->twig->display("torrents/browse.twig", [
   "js" => ["vendor/tom-select.complete.min", "browse"],
   "css" => ["vendor/tom-select.bootstrap5.min"],
 
+  # todo: this situation
+  "categories" => $Categories,
   "resolutions" => $Resolutions,
-
-  "hideBasic" => true,
-  #"hideBasic" => $hideBasic,
-
-  "hideAdvanced" => false,
-  #"hideAdvanced" => $hideAdvanced,
 
   "xmls" => array_merge(
       $app->env->toArray($app->env->META->Formats->GraphXml),
@@ -208,16 +178,11 @@ $app->twig->display("torrents/browse.twig", [
       $app->env->toArray($app->env->META->Formats->Plain)
   ),
 
-  /*
-  "searchHasFilters" => $torrentSearch->has_filters(),
-  "resultCount" => Text::float($resultCount),
-  */
 
 
 
   # shutting twig up
-  "resultCount" => 0,
-  "bullshit" => null,
+  "resultCount" => $resultCount,
   "pages" => null,
   "searchResults" => [],
 
@@ -226,13 +191,10 @@ $app->twig->display("torrents/browse.twig", [
 
 
  # "tagList" => $torrentSearch->get_terms('taglist'),
-  "hideFilter" => false, # legacy
   #"pages" => $currentPages,
   "bookmarks" => Bookmarks::all_bookmarks('torrent'),
   #"lastPage" => $LastPage ?? null,
   #"page" => $currentPage,
-  #"bullshit" => ($resultCount < ($currentPage - 1) * $pagination + 1),
-  "categories" => $Categories,
   "officialTags" => $officialTags,
 
   "searchTerms" => $searchTerms,

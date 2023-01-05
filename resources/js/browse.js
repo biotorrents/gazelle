@@ -9,11 +9,11 @@
   siteOptions.searchType ??= null;
 
   if (siteOptions.searchType === "simple") {
-    $("#simpleSearch").hide();
+    $("#complexSearch").hide();
   }
 
   if (siteOptions.searchType === "complex") {
-    $("#complexSearch").hide();
+    $("#simpleSearch").hide();
   }
 
   // show simple, hide complex

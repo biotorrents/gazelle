@@ -1,4 +1,7 @@
-{# https://symfony.com/doc/current/templates.html#template-inheritance-and-layouts #}
+{##
+ # https://symfony.com/doc/current/templates.html#template-inheritance-and-layouts
+ #}
+
 
 {#
 <pre>
@@ -9,31 +12,29 @@
 
 {# page title #}
 {% if title is defined %}
-{% set title = "#{title} #{env.separator} #{env.siteName}" %}
-
+	{% set title = "#{title} #{env.separator} #{env.siteName}" %}
 {% else %}
-{% set title = env.siteName %}
+	{% set title = env.siteName %}
 {% endif %}
 
 
 {# layout: sidebar? #}
 {% if sidebar is defined %}
-{% set layoutContent = "two-thirds column" %}
-{% set layoutSidebar = "one-third column" %}
-
+	{% set layoutContent = "two-thirds column" %}
+	{% set layoutSidebar = "one-third column" %}
 {% else %}
-{% set layoutContent = "column" %}
-{% set layoutSidebar = "" %}
+	{% set layoutContent = "column" %}
+	{% set layoutSidebar = "" %}
 {% endif %}
 
 
 {# user variables #}
 {% if authenticated %}
-{% set userId = user.core.id ?? null %}
-{% set rssKey = user.extra.RSS_Auth ?? null %}
-{% set passKey = user.extra.torrent_pass ?? null %}
-{% set authKey = user.extra.AuthKey ?? null %}
-{% set userStyle = user.extra.StyleName ?? "bookish" %}
+	{% set userId = user.core.id ?? null %}
+	{% set rssKey = user.extra.RSS_Auth ?? null %}
+	{% set passKey = user.extra.torrent_pass ?? null %}
+	{% set authKey = user.extra.AuthKey ?? null %}
+	{% set userStyle = user.extra.StyleName ?? "bookish" %}
 {% endif %}
 
 
@@ -41,244 +42,239 @@
 <!doctype html>
 <html>
 
-<head>
+	<head>
 
-    {# title #}
-    <title>{{ title }}</title>
+		{# title #}
+		<title>{{ title }}</title>
 
-    {# metaTags.twig #}
-    {{ include("_base/metaTags.twig") }}
+		{# metaTags.twig #}
+		{{ include("_base/metaTags.twig") }}
 
-
-    {# DebugBar: header #}
-    {% if env.dev %}
-    {{ debugHeader() }}
-    {% endif %}
-
-
-    {# start stylesheets block #}
-    {% block stylesheets %}
-
-    {# todo: app.css with vite #}
-    {# <link rel="stylesheet" type="text/css" href="/css/app.min.css"> #}
-
-    {# skeleton, normalize, and jquery #}
-    <link rel="stylesheet" type="text/css" href="/css/vendor/skeleton.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/vendor/normalize.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/vendor/jquery-ui.min.css">
-
-    {# gazelle global #}
-    <link rel="stylesheet" type="text/css" href="/css/global.css" />
-
-    {# easymde #}
-    <link rel="stylesheet" type="text/css" href="/css/vendor/easymde.min.css" />
-    <link rel="stylesheet" type="text/css" href="/css/vendor/highlight.min.css" />
-
-    {% if authenticated %}
-    {# private #}
-    <link rel="stylesheet" type="text/css" href="/css/bookish.css" />
-    {# <link rel="stylesheet" type="text/css" href="/css/{{ userStyle }}.css" />#}
-
-    {# external stylesheet #}
-    {% if user.extra.StyleURL is defined %}
-    <link rel="stylesheet" type="text/css" href="{{ user.extra.StyleURL }}" />
-    {% endif %}
-
-    {% else %}
-    {# public #}
-    <link rel="stylesheet" type="text/css" href="/css/public.css" />
-    {% endif %}
-
-    {% if env.dev %}
-    <link rel="stylesheet" type="text/css" href="/css/development.css" />
-    {% endif %}
-
-    {# extra css #}
-    {% if css is defined %}
-    {% for css in css %}
-    <link rel="stylesheet" type="text/css" href="/css/{{ css }}.css" />
-    {% endfor %}
-    {% endif %}
-
-    {% endblock %}
-    {# end stylesheets block #}
+		{# DebugBar: header #}
+		{% if env.dev %}
+			{{ debugHeader() }}
+		{% endif %}
 
 
-    {# start rss block #}
-    {% block rss %}
+		{# start stylesheets block #}
+		{% block stylesheets %}
 
-    {# user notification feeds #}
-    {# todo: test this #}
-    {#
-    {% if authenticated and user.extra.Notify is defined %}
-    {% for filter in user.extra.Notify %}
-    <link rel="alternate" type="application/rss+xml"
-        href="/feeds?feed=torrents_notify_{{ filter.ID }}_{{ passKey }}&user={{ userId }}&auth={{ rssKey }}&passkey={{ passKey }}&authkey={{ authKey }}"
-        title="{{ filter.Name }} {{ env.separator }} {{ env.siteName }}" />
-    {% endfor %}
-    {% endif %}
-    #}
+			{# todo: app.css with vite #}
+			{# <link rel="stylesheet" type="text/css" href="/css/app.min.css"> #}
 
-    {# new category uploads #}
-    {#
-    {% for category in env.CATS %}
-    <link rel="alternate" type="application/rss+xml"
-        href="feeds?feed=torrents_{{ category.Name|lower }}&user={{ userId }}&auth={{ rssKey }}&passkey={{ passKey }}&authkey={{ authKey }}"
-        title="New {{ category.Name }} Torrents {{ env.separator }} {{ env.siteName }}" />
-    {% endfor %}
-    #}
+			{# skeleton, normalize, and jquery #}
+			<link rel="stylesheet" type="text/css" href="/css/vendor/skeleton.min.css"> <link rel="stylesheet" type="text/css" href="/css/vendor/normalize.min.css">
+			<link rel="stylesheet" type="text/css" href="/css/vendor/jquery-ui.min.css">
 
-    {# all torrents #}
-    {#
-    <link rel="alternate" type="application/rss+xml"
-        href="feeds?feed=torrents_all&user={{ userId }}&auth={{ rssKey }}&passkey={{ passKey }}&authkey={{ authKey }}"
-        title="All New Torrents {{ env.separator }} {{ env.siteName }}" />
-    #}
-    
-    {# news #}
-    {#
-    <link rel="alternate" type="application/rss+xml"
-        href="feeds?feed=feed_news&user={{ userId }}&auth={{ rssKey }}&passkey={{ passKey }}&authkey={{ authKey }}"
-        title="Site News {{ env.separator }} {{ env.siteName }}" />
-    #}
-  
-    {# blog: same feed #}
-    {#
-    <link rel="alternate" type="application/rss+xml"
-        href="feeds?feed=feed_news&user={{ userId }}&auth={{ rssKey }}&passkey={{ passKey }}&authkey={{ authKey }}"
-        title="Blog {{ env.separator }} {{ env.siteName }}" />
-    #}
+			{# gazelle global #}
+			<link rel="stylesheet" type="text/css" href="/css/global.css"/>
 
-    {% endblock %}
-    {# end rss block #}
+			{# easymde #}
+			<link rel="stylesheet" type="text/css" href="/css/vendor/easymde.min.css"/>
+			<link rel="stylesheet" type="text/css" href="/css/vendor/highlight.min.css"/>
 
-</head>
+			{% if authenticated %}
+				{# private #}
+				<link rel="stylesheet" type="text/css" href="/css/bookish.css"/>
+				{# <link rel="stylesheet" type="text/css" href="/css/{{ userStyle }}.css" />#}
+
+				    {# external stylesheet #}
+					{% if user.extra.StyleURL is defined %}
+				        <link rel="stylesheet" type="text/css" href="{{ user.extra.StyleURL }}"/>
+                    {% endif %}
+			{% else %}
+				{# public #}
+				<link rel="stylesheet" type="text/css" href="/css/public.css"/>
+			{% endif %}
+
+			{% if env.dev %}
+				<link rel="stylesheet" type="text/css" href="/css/development.css"/>
+			{% endif %}
+
+			{# extra css #}
+			{% if css is defined %}
+				{% for css in css %}
+					<link rel="stylesheet" type="text/css" href="/css/{{ css }}.css"/>
+				{% endfor %}
+			{% endif %}
+
+		{% endblock %}
+		{# end stylesheets block #}
 
 
-{# head body break #}
+		{# start rss block #}
+		{% block rss %}
+            {# user notification feeds #}
+			{# todo: test this #}
+			{#
+			    {% if authenticated and user.extra.Notify is defined %}
+			    {% for filter in user.extra.Notify %}
+			    <link rel="alternate" type="application/rss+xml"
+			        href="/feeds?feed=torrents_notify_{{ filter.ID }}_{{ passKey }}&user={{ userId }}&auth={{ rssKey }}&passkey={{ passKey }}&authkey={{ authKey }}"
+			        title="{{ filter.Name }} {{ env.separator }} {{ env.siteName }}" />
+			    {% endfor %}
+			    {% endif %}
+			    #}
+
+			{# new category uploads #}
+			{#
+			    {% for category in env.CATS %}
+			    <link rel="alternate" type="application/rss+xml"
+			        href="feeds?feed=torrents_{{ category.Name|lower }}&user={{ userId }}&auth={{ rssKey }}&passkey={{ passKey }}&authkey={{ authKey }}"
+			        title="New {{ category.Name }} Torrents {{ env.separator }} {{ env.siteName }}" />
+			    {% endfor %}
+			    #}
+
+			{# all torrents #}
+			{#
+			    <link rel="alternate" type="application/rss+xml"
+			        href="feeds?feed=torrents_all&user={{ userId }}&auth={{ rssKey }}&passkey={{ passKey }}&authkey={{ authKey }}"
+			        title="All New Torrents {{ env.separator }} {{ env.siteName }}" />
+			    #}
+
+			{# news #}
+			{#
+			    <link rel="alternate" type="application/rss+xml"
+			        href="feeds?feed=feed_news&user={{ userId }}&auth={{ rssKey }}&passkey={{ passKey }}&authkey={{ authKey }}"
+			        title="Site News {{ env.separator }} {{ env.siteName }}" />
+			    #}
+
+			{# blog: same feed #}
+			{#
+			    <link rel="alternate" type="application/rss+xml"
+			        href="feeds?feed=feed_news&user={{ userId }}&auth={{ rssKey }}&passkey={{ passKey }}&authkey={{ authKey }}"
+			        title="Blog {{ env.separator }} {{ env.siteName }}" />
+			    #}
+
+		{% endblock %}
+		{# end rss block #}
 
 
-<body class="{{ bodyStyles }}">
-
-    <header>
-        {% if authenticated %}
-        {# private #}
-        {{ include("_base/mainMenu.twig") }}
-        {{ include("_base/userInfo.twig") }}
-
-        {% else %}
-        {# public #}
-        {{ include("_base/publicHeader.twig") }}
-
-        {% endif %}
-    </header>
+	</head>
 
 
-    <main class="container">
-        <div class="row">
+	{# head body break #}
 
 
-            {# splash logo #}
-            {% if not authenticated %}
-            <figure id="logo"></figure>
-            {% endif %}
+	<body class="{{ bodyStyles }}">
+
+		<header>
+			{% if authenticated %}
+				{# private #}
+				{{ include("_base/mainMenu.twig") }}
+				{{ include("_base/userInfo.twig") }}
+			{% else %}
+				{# public #}
+				{{ include("_base/publicHeader.twig") }}
+			{% endif %}
+		</header>
 
 
-            {# main content #}
-            {% if breadcrumbs is defined %}
-            <h2 id="breadcrumbs">{{ include("_base/breadcrumbs.twig") }}</h2>
-            {% endif %}
-
-            <section id="content" class="{{ layoutContent }}">
-                {% block content %}
-                {% endblock %}
-            </section>
+		<main class="container">
+			<div class="row">
 
 
-            {# sidebar #}
-            <section id="sidebar" class="{{ layoutSidebar }}">
-                {% block sidebar %}
-                {% endblock %}
-            </section>
+				{# splash logo #}
+				{% if not authenticated %}
+					<figure id="logo"></figure>
+				{% endif %}
 
 
-        </div>
-    </main>
+				{# breadcrumbs #}
+				{% if breadcrumbs is defined %}
+					<h2 id="breadcrumbs">{{ include("_base/breadcrumbs.twig") }}</h2>
+				{% endif %}
 
 
-    {# footer #}
-    <footer>
-
-        {% block footer %}
-        {% if authenticated %}
-        {# private #}
-        {{ include("_base/privateFooter.twig") }}
-
-        {% else %}
-        {# public #}
-        {{ include("_base/publicFooter.twig") }}
-
-        {% endif %}
-
-        {# DebugBar: footer #}
-            {% if env.dev %}
-    {{ debugFooter() }}
-    {% endif %}
-
-        {% endblock %}
-    </footer>
+                {# start content block #}
+				<section id="content" class="{{ layoutContent }}">
+                    {% block content %}
+                    {% endblock %}
+				</section>
+                {# end content block #}
 
 
-    {# start javascript block #}
-    {% block javascript %}
+				{# start sidebar block #}
+				<section id="sidebar" class="{{ layoutSidebar }}">
+                    {% block sidebar %}
+                    {% endblock %}
+				</section>
+				{# end sidebar block #}
 
-    {# global inline javascript #}
-<script>
-    // session-specific, for internal api calls
-    var frontendHash = "{{ frontendHash }}";
 
-    // site options: needs single quotes
-    var siteOptions = JSON.parse('{{ siteOptions|raw }}');
-</script>
+			</div>
+		</main>
 
-    {# todo: app.js with vite #}
-    {# <script src="/js/app.min.js"></script> #}
 
-    {# jquery: do not defer #}
-    <script src="/js/vendor/jquery.min.js"></script>
-    <script src="/js/vendor/jquery-ui.min.js"></script>
+		{# start footer block #}
+		<footer>
+			{% block footer %}
+				{% if authenticated %}
+					{# private #}
+					{{ include("_base/privateFooter.twig") }}
+				{% else %}
+					{# public #}
+					{{ include("_base/publicFooter.twig") }}
+				{% endif %}
 
-    {# instantpage: do not defer #}
-    <script src="/js/vendor/instantpage.min.js" type="module"></script>
+				{# DebugBar: footer #}
+				{% if env.dev %}
+					{{ debugFooter() }}
+				{% endif %}
 
-    {# easymde: do not defer #}
-    <script src="/js/vendor/easymde.min.js"></script>
-    <script src="/js/vendor/highlight.min.js"></script>
+			{% endblock %}
+		</footer>
+		{# end footer block #}
 
-    {# gazelle global: do not defer #}
-    <script src="/js/global.js"></script>
 
-    {# main menu #}
-    <script src="/js/menus.js"></script>
+		{# start javascript block #}
+		{% block javascript %}
 
-    
+			{# global inline javascript #}
+			<script>
+				// session-specific, for internal api calls
+                var frontendHash = "{{ frontendHash }}";
 
-    {# plausible #}
-    {% if env.enablePlausible %}
-    <script data-domain="{{ env.siteDomain }}" src="https://stats.torrents.bio/js/plausible.js"></script>
-    {% endif %}
+                // site options: needs single quotes
+                var siteOptions = JSON.parse('{{ siteOptions|json_encode|raw }}');
+			</script>
 
-    {# extra js #}
-    {# todo: figure out a way to not defer vendor scripts #}
-    {% if js is defined %}
-    {% for js in js %}
-    <script src="/js/{{ js }}.js"></script>
-    {% endfor %}
-    {% endif %}
+			{# todo: app.js with vite #}
+			{# <script src="/js/app.min.js"></script> #}
 
-    {% endblock %}
-    {# end javascript block #}
+			{# jquery: do not defer #}<script src="/js/vendor/jquery.min.js"> </script>
+			<script src="/js/vendor/jquery-ui.min.js"></script>
 
-</body>
+			{# instantpage: do not defer #}
+			<script src="/js/vendor/instantpage.min.js" type="module"></script>
+
+			{# easymde: do not defer #}
+			<script src="/js/vendor/easymde.min.js"></script>
+			<script src="/js/vendor/highlight.min.js"></script>
+
+			{# gazelle global: do not defer #}
+			<script src="/js/global.js"></script>
+
+			{# main menu #}
+			<script src="/js/menus.js"></script>
+
+
+			{# plausible #}
+			{% if env.enablePlausible %}
+				<script data-domain="{{ env.siteDomain }}" src="https://stats.torrents.bio/js/plausible.js"></script>
+			{% endif %}
+
+			{# extra js #}
+			{# todo: figure out a way to not defer vendor scripts #}
+			{% if js is defined %}
+				{% for js in js %}
+					<script src="/js/{{ js }}.js"></script>
+				{% endfor %}
+			{% endif %}
+
+		{% endblock %}
+		{# end javascript block #}
+
+	</body>
 
 </html>

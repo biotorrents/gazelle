@@ -81,7 +81,8 @@ class Twig # extends Twig\Environment
             [
                 "auto_reload" => true,
                 "autoescape" => "name",
-                "cache" => "{$app->env->webRoot}/cache/twig",
+                # don't cache in the dev environment
+                "cache" => (!$app->env->dev) ? "{$app->env->webRoot}/cache/twig" : false,
                 "debug" => $app->env->dev,
                 "strict_variables" => true,
             ]
@@ -101,10 +102,7 @@ class Twig # extends Twig\Environment
         $twig->addGlobal("authenticated", $app->userNew->isLoggedIn());
 
         # site options
-        $twig->addGlobal(
-            "siteOptions",
-            json_encode($app->userNew->extra["siteOptions"] ?? [])
-        );
+        $twig->addGlobal("siteOptions", $app->userNew->extra["siteOptions"] ?? []);
 
         # body styles
         $bodyStyles = [];
