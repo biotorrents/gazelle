@@ -14,46 +14,12 @@ $app = App::go();
 
 $get = Http::query("get");
 $post = Http::query("post");
-#!d($post);
-
+!d($post);
 
 /** torrent search handling */
 
 
-$manticore = new Gazelle\Manticore();
-$searchResults = $manticore->search("torrents", $post);
-$resultCount = count($searchResults);
-#!d($searchResults);exit;
-
-# Torrents::get_groups
-# this is slow, only do current page
-$data["page"] ??= 1;
-$pagination = $app->userNew->extra["siteOptions"]["searchPagination"] ?? 20;
-$offset = ($data["page"] - 1) * $pagination;
-
-$groupIds = array_column($searchResults, "groupid");
-$groupIds = array_slice($groupIds, $offset, $pagination);
-$torrentGroups = Torrents::get_groups($groupIds);
-#!d($torrentGroups);exit;
-
-# current search page
-$currentPage = intval($post["page"] ?? 1);
-$pagination = $app->userNew->extra["siteOptions"]["searchPagination"] ?? 20;
-
-
-/*
-# result pagination stuff
-if ($resultCount < ($currentPage - 1) * $pagination + 1) {
-    $LastPage = ceil($resultCount / $pagination);
-    $currentPages = Format::get_pages(0, $resultCount, $pagination);
-}
-
-$currentPages = Format::get_pages($currentPage, $resultCount, $pagination);
-$bookmarks = Bookmarks::all_bookmarks('torrent');
-*/
-
-/** collect the search terms */
-
+# collect the query
 $searchTerms = [
     "simpleSearch" => $post["simpleSearch"] ?? null,
     "complexSearch" => $post["complexSearch"] ?? null,
@@ -88,6 +54,80 @@ $searchTerms = [
     "orderWay" => $post["orderWay"] ?? "desc",
     "groupResults" => $post["groupResults"] ?? $app->userNew->extra["siteOptions"]["torrentGrouping"],
 ];
+
+# search manticore
+$manticore = new Gazelle\Manticore();
+$searchResults = $manticore->search("torrents", $post);
+$resultCount = count($searchResults);
+!d($searchResults);
+
+
+/** pagination */
+
+
+$pagination = [];
+
+# resultCount
+$pagination["resultCount"] = count($searchResults);
+
+# first page
+$pagination["firstPage"] = 1;
+
+# current page
+$pagination["currentPage"] = intval($post["page"] ?? 1);
+if (empty($pagination["currentPage"])) {
+    $pagination["currentPage"] = 1;
+}
+
+# page size, offset, and limit
+$pagination["pageSize"] = $app->userNew->extra["siteOptions"]["searchPagination"] ?? 20;
+$pagination["offset"] = ($pagination["currentPage"] - 1) * $pagination["pageSize"];
+$pagination["limit"] = $pagination["offset"] + $pagination["pageSize"];
+
+if ($pagination["limit"] > $pagination["resultCount"]) {
+    $pagination["limit"] = $pagination["resultCount"];
+}
+
+# last page
+$pagination["lastPage"] = ceil($pagination["resultCount"] / $pagination["pageSize"]);
+if ($pagination["currentPage"] > $pagination["lastPage"]) {
+    $pagination["currentPage"] = $pagination["lastPage"];
+}
+
+# previous page
+$pagination["previousPage"] = $pagination["currentPage"] - 1;
+if (empty($pagination["previousPage"]) || abs($pagination["previousPage"]) !== $pagination["previousPage"]) {
+    $pagination["previousPage"] = 1;
+}
+
+# next page
+$pagination["nextPage"] = $pagination["currentPage"] + 1;
+!d($pagination);
+
+
+/** torrent group info */
+
+
+# Torrents::get_groups
+# this is slow, only do the current page
+$groupIds = array_column($searchResults, "groupid");
+$groupIds = array_slice($groupIds, $pagination["offset"], $pagination["pageSize"]);
+
+$torrentGroups = Torrents::get_groups($groupIds);
+#!d($torrentGroups);exit;
+
+
+
+/*
+# result pagination stuff
+if ($resultCount < ($currentPage - 1) * $pagination + 1) {
+    $currentPages = Format::get_pages(0, $resultCount, $pagination);
+}
+
+$currentPages = Format::get_pages($currentPage, $resultCount, $pagination);
+$bookmarks = Bookmarks::all_bookmarks('torrent');
+*/
+
 
 # search by infoHash: instant redirect
 if ($searchTerms["simpleSearch"] || $searchTerms["fileList"]) {
@@ -208,4 +248,5 @@ $app->twig->display("torrents/browse.twig", [
 
   "searchTerms" => $searchTerms,
   #"resultGroups" => $resultGroups,
+  "pagination" => $pagination,
 ]);

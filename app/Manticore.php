@@ -161,7 +161,7 @@ class Manticore
         $app = \App::go();
 
         # start debug
-        $app->debug["time"]->startMeasure("users", "manticore search");
+        $app->debug["time"]->startMeasure("manticore", "manticore search");
 
         # temporary
         if ($what === "collections") {
@@ -188,9 +188,20 @@ class Manticore
 
         # start the query
         $this->query = $this->queryLanguage
-            ->select(["id", "groupId"])
-            #->select("*") # debug
+            #->select(["id", "groupId"])
+            ->select("*") # debug
             ->from($this->indices[$what]);
+
+        # pagination
+        $data["page"] ??= 1;
+        $pagination = $app->userNew->extra["siteOptions"]["searchPagination"] ?? 20;
+        $offset = ($data["page"] - 1) * $pagination;
+
+        $offset = 0; # todo
+        $this->query->limit(
+            $offset, # offset
+            $app->env->getPriv("manticoreMaxMatches") # limit: default 1000
+        );
 
         # orderBy and orderWay
         $orderBy = $data["orderBy"] ??= "timeAdded";
@@ -226,25 +237,12 @@ class Manticore
 
         /** */
 
-        /*
-        # pagination
-        $data["page"] ??= 1;
-        $pagination = $app->userNew->extra["siteOptions"]["searchPagination"] ?? 20;
-        $offset = ($data["page"] - 1) * $pagination;
-        */
-
-        $offset = 0; # todo
-        $this->query->limit(
-            $offset, # offset
-            $app->env->getPriv("manticoreMaxMatches") # limit: default 1000
-        );
-
         # debug
         if ($app->env->dev) {
             $this->debug = $this->query->enqueue(
                 $this->helper->showMeta()
             );
-            #!d($this->debug);
+            !d($this->debug);
         }
 
         try {
@@ -253,12 +251,12 @@ class Manticore
             $results = $resultSet->fetchAllAssoc();
 
             # end debug
-            $app->debug["time"]->stopMeasure("users", "user handling");
+            $app->debug["time"]->stopMeasure("manticore", "manticore search");
 
-            $app->cacheOld->cache_value($cacheKey, $results, $this->cacheDuration);
+            #$app->cacheOld->cache_value($cacheKey, $results, $this->cacheDuration);
             return $results;
         } catch (\Exception $e) {
-            #$app->debug["sphinx"] = $e->getMessage();
+            $app->debug["messages"]->addMessage("Gazelle\Manticore->search(): " . $e->getMessage());
             throw new \Exception($e->getMessage());
         }
     }

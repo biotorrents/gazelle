@@ -6,7 +6,7 @@
 {% include "torrents/search.twig" %}
 
 {# no results message #}
-{% if resultCount == 0 %}
+{% if pagination.resultCount == 0 %}
 	<div class="alertbar warning halfwide">
 		<h3>No search results :(</h3>
 		<p>Please sure all you didn't make too many typos or apply too many filters.</p>
@@ -15,7 +15,7 @@
   {# resultCount and pagination controls #}
   {# todo: 1-20 is hardcoded lol #}
   <div id="searchResultsHeader">
-  <h3>1&ndash;20 of {{ resultCount }} results</h3>
+  <h3>{{ pagination.offset + 1 }}&ndash;{{ pagination.limit }} of {{ pagination.resultCount }} results</h3>
 
 <div id="paginationControls">
   <a id="firstPage" class="button u-pull-right">« first</a>

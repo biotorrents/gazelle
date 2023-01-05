@@ -37,14 +37,14 @@ if (!isset($_GET['id']) || !is_number($_GET['id'])) {
 
     // Group details
     list($WikiBody, $WikiImage, $GroupID, $GroupName, $GroupTitle2, $GroupNameJP,
-    $GroupYear, $GroupStudio, $GroupSeries, $GroupCatalogueNumber,
-    $GroupCategoryID, $GroupDLSite, $GroupTime, $TorrentTags, $TorrentTagIDs,
-    $TorrentTagUserIDs, $Screenshots, $GroupFlags) = array_values($GroupDetails);
+        $GroupYear, $GroupStudio, $GroupSeries, $GroupCatalogueNumber,
+        $GroupCategoryID, $GroupDLSite, $GroupTime, $TorrentTags, $TorrentTagIDs,
+        $TorrentTagUserIDs, $Screenshots, $GroupFlags) = array_values($GroupDetails);
 
     $DisplayName = $GroupName;
     $AltName = $GroupName; // Goes in the alt text of the image
-  $Title = $GroupName; // Goes in <title>
-  $WikiBody = Text::parse($WikiBody);
+    $Title = $GroupName; // Goes in <title>
+    $WikiBody = Text::parse($WikiBody);
 
     // Get the artist name, group name etc.
     $Artists = Artists::get_artist($GroupID);
@@ -93,8 +93,8 @@ View::header('Report', 'reportsv2,browse,torrent,recommend');
       </tr>
       <?php
       $LangName = $GroupName ? $GroupName : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP);
-      TorrentFunctions::build_torrents_table($cache, $db, $user, $GroupID, $LangName, $GroupCategoryID, $TorrentList, $Types, $Username);
-      ?>
+TorrentFunctions::build_torrents_table($user, $GroupID, $LangName, $GroupCategoryID, $TorrentList, $Types, $Username);
+?>
     </table>
   </div>
 
@@ -114,21 +114,21 @@ View::header('Report', 'reportsv2,browse,torrent,recommend');
           <td>
             <select id="type" name="type" class="change_report_type">
 <?php
-        if (!empty($Types[$CategoryID])) {
-            $TypeList = $Types['master'] + $Types[$CategoryID];
-            $Priorities = [];
-            foreach ($TypeList as $Key => $Value) {
-                $Priorities[$Key] = $Value['priority'];
-            }
-            array_multisort($Priorities, SORT_ASC, $TypeList);
-        } else {
-            $TypeList = $Types['master'];
-        }
-        foreach ($TypeList as $Type => $Data) {
-            ?>
+  if (!empty($Types[$CategoryID])) {
+      $TypeList = $Types['master'] + $Types[$CategoryID];
+      $Priorities = [];
+      foreach ($TypeList as $Key => $Value) {
+          $Priorities[$Key] = $Value['priority'];
+      }
+      array_multisort($Priorities, SORT_ASC, $TypeList);
+  } else {
+      $TypeList = $Types['master'];
+  }
+  foreach ($TypeList as $Type => $Data) {
+      ?>
               <option value="<?=($Type)?>"><?=($Data['title'])?></option>
 <?php
-        } ?>
+  } ?>
             </select>
           </td>
         </tr>
@@ -138,11 +138,11 @@ View::header('Report', 'reportsv2,browse,torrent,recommend');
 
       <div id="dynamic_form">
 <?php
-        /**
-         * THIS IS WHERE SEXY AJAX COMES IN
-         * The following malarky is needed so that if you get sent back here, the fields are filled in.
-         */
-        ?>
+  /**
+   * THIS IS WHERE SEXY AJAX COMES IN
+   * The following malarky is needed so that if you get sent back here, the fields are filled in.
+   */
+?>
         <input id="sitelink" type="hidden" name="sitelink" size="50" value="<?=(!empty($_POST['sitelink']) ? Text::esc($_POST['sitelink']) : '')?>" />
         <input id="image" type="hidden" name="image" size="50" value="<?=(!empty($_POST['image']) ? Text::esc($_POST['image']) : '')?>" />
         <input id="track" type="hidden" name="track" size="8" value="<?=(!empty($_POST['track']) ? Text::esc($_POST['track']) : '')?>" />

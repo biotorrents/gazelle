@@ -52,27 +52,37 @@
   ];
 
   /*
-  // toggle tag list
-  $("#toggleTagList").on("click", () => {
-    $("#officialTagList").toggle();
-  });
-  */
+    // toggle tag list
+    $("#toggleTagList").on("click", () => {
+      $("#officialTagList").toggle();
+    });
+    */
 
   /*
-  // append tag to search
-  $(".officialTag").on("click", (event) => {
-    let tagList = $("#tagList").val();
-    let value = $(event.target).html();
-
-    $("#tagList").val(tagList + "," + value);
-  });
-  */
+    // append tag to search
+    $(".officialTag").on("click", (event) => {
+      let tagList = $("#tagList").val();
+      let value = $(event.target).html();
+  
+      $("#tagList").val(tagList + "," + value);
+    });
+    */
 
   // reset the form
   $("#resetSearchForm").on("click", () => {
     // normal form
     let formObject = $("#torrentSearch").get(0);
     formObject.reset();
+
+    // text inputs
+    $("input[type=text]").map(function () {
+      this.value = "";
+    });
+
+    // number inputs
+    $("input[type=number]").map(function () {
+      this.value = "";
+    });
 
     // tom select elements
     tomSelects.forEach((element) => {
