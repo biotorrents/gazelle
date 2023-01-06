@@ -17,7 +17,7 @@
 
 @mixin headingAttributes($size) {
   font-size: $size !important;
-  margin-top: 2rem !important;
+  letter-spacing: 0 !important;
 }
 
 h1:not(#logo) {

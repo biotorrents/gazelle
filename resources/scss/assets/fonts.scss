@@ -9,6 +9,19 @@
 $fontPath: "/fonts/";
 
 /**
+ * font variants
+ */
+body {
+  font-variant: oldstyle-nums;
+}
+
+code,
+pre,
+tt {
+  font-variant: normal;
+}
+
+/**
  * font awesome
  */
 
@@ -18,24 +31,6 @@ $fontAwesome: "FontAwesome";
 i.fa-thin {
   font-weight: 300;
 }
-
-/*
-.fa,
-.fas,
-.fa-solid,
-.far,
-.fa-regular,
-.fal,
-.fa-light,
-.fat,
-.fa-thin,
-.fad,
-.fa-duotone,
-.fab,
-.fa-brands {
-  font-family: $fontAwesome  !important;
-}
-*/
 
 /**
  * noto sans
@@ -226,17 +221,6 @@ $openDyslexicItalic: "OpenDyslexic-Italic";
     font-weight: normal;
   }
 
-  /* font awesome exception */
-  /*
-  i:not(.fa),
-  i:not(.fas):not(.fa-solid),
-  i:not(.far):not(.fa-regular),
-  i:not(.fal):not(.fa-light),
-  i:not(.fat):not(.fa-thin),
-  i:not(.fad):not(.fa-duotone),
-  i:not(.fab):not(.fa-brands),
-  i:not(.phpdebugbar-fa),
-  */
   em {
     font-family: $italic;
     font-style: normal;

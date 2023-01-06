@@ -230,34 +230,28 @@
 		{# start javascript block #}
 		{% block javascript %}
 
-			{# global inline javascript #}
-			<script>
-				// session-specific, for internal api calls
-                var frontendHash = "{{ frontendHash }}";
-
-                // site options: needs single quotes
-                var siteOptions = JSON.parse('{{ siteOptions|json_encode|raw }}');
-			</script>
-
 			{# todo: app.js with vite #}
 			{# <script src="/js/app.min.js"></script> #}
 
-			{# jquery: do not defer #}<script src="/js/vendor/jquery.min.js"> </script>
+			{# jquery #}
+			<script src="/js/vendor/jquery.min.js"> </script>
 			<script src="/js/vendor/jquery-ui.min.js"></script>
 
-			{# instantpage: do not defer #}
-			<script src="/js/vendor/instantpage.min.js" type="module"></script>
+			{# instantpage #}
+			<script src="/js/vendor/instantpage.min.js"></script>
 
-			{# easymde: do not defer #}
+			{# smart quotes #}
+			<script src="/js/vendor/smartquotes.min.js"></script>
+
+			{# easymde #}
 			<script src="/js/vendor/easymde.min.js"></script>
 			<script src="/js/vendor/highlight.min.js"></script>
 
-			{# gazelle global: do not defer #}
+			{# gazelle global #}
 			<script src="/js/global.js"></script>
 
 			{# main menu #}
 			<script src="/js/menus.js"></script>
-
 
 			{# plausible #}
 			{% if env.enablePlausible %}
@@ -271,6 +265,21 @@
 					<script src="/js/{{ js }}.js"></script>
 				{% endfor %}
 			{% endif %}
+
+			{# global inline javascript #}
+			<script>
+				// session-specific, for internal api calls
+                var frontendHash = "{{ frontendHash }}";
+
+                // site options: needs single quotes
+                var siteOptions = JSON.parse('{{ siteOptions|json_encode|raw }}');
+
+				// smart quotes
+				smartquotes();
+
+				// highlight.js
+				hljs.highlightAll();
+			</script>
 
 		{% endblock %}
 		{# end javascript block #}

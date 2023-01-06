@@ -59,7 +59,7 @@ class Manticore
     private $searchFields = [
         # torrents search
         "simpleSearch" => "*",
-        "complexSearch" => "*",
+        "complexSearch" => ["title", "subject", "object"],
 
         "numbers" => ["identifier", "version"],
         "year" => ["year"],
