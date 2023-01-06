@@ -14,7 +14,7 @@ $app = App::go();
 
 $get = Http::query("get");
 $post = Http::query("post");
-!d($post);
+
 
 /** torrent search handling */
 
@@ -117,44 +117,6 @@ $torrentGroups = Torrents::get_groups($groupIds);
 #!d($torrentGroups);exit;
 
 
-
-/*
-# result pagination stuff
-if ($resultCount < ($currentPage - 1) * $pagination + 1) {
-    $currentPages = Format::get_pages(0, $resultCount, $pagination);
-}
-
-$currentPages = Format::get_pages($currentPage, $resultCount, $pagination);
-$bookmarks = Bookmarks::all_bookmarks('torrent');
-*/
-
-
-/*
-# search by infoHash: instant redirect
-if ($searchTerms["simpleSearch"] || $searchTerms["fileList"]) {
-    if ($searchTerms["simpleSearch"]) {
-        $infoHash = $searchTerms["simpleSearch"];
-    }
-
-    if ($searchTerms["fileList"]) {
-        $infoHash = $searchTerms["fileList"];
-    }
-
-    $validInfoHash = TorrentFunctions::is_valid_torrenthash($infoHash);
-    if ($validInfoHash) {
-        $infoHash = pack("H*", $infoHash);
-
-        $query = "select id, groupId from torrents where info_hash = ?";
-        $ref = $app->dbNew->row($query, [$infoHash]);
-
-        if ($ref) {
-            Http::redirect("/torrents/{$ref["groupId"]}/{$ref["id"]}");
-        }
-    }
-} # if ($searchTerms["simpleSearch"] || $searchTerms["fileList"])
-*/
-
-
 /** tags */
 
 
@@ -193,12 +155,6 @@ $Categories = [
 $GroupedCategories = $Categories;
 
 
-
-
-
-
-
-
 /**
  * VIEW THE TWIG TEMPLATE HERE
  */
@@ -233,22 +189,12 @@ $app->twig->display("torrents/browse.twig", [
   ),
 
 
-
-
-  # shutting twig up
-  "resultCount" => $resultCount,
-  "pages" => null,
   "searchResults" => $searchResults,
   "torrentGroups" => $torrentGroups,
 
- # "tagList" => $torrentSearch->get_terms('taglist'),
-  #"pages" => $currentPages,
   "bookmarks" => Bookmarks::all_bookmarks('torrent'),
-  #"lastPage" => $LastPage ?? null,
-  #"page" => $currentPage,
   "officialTags" => $officialTags,
 
   "searchTerms" => $searchTerms,
-  #"resultGroups" => $resultGroups,
   "pagination" => $pagination,
 ]);

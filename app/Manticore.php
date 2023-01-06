@@ -170,12 +170,11 @@ class Manticore
         }
 
         # return cached if available
-        #$cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode($data));
-        #$cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode($data));
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
 
-        $cacheHit = null;
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # sanity check
@@ -186,7 +185,6 @@ class Manticore
 
         # raw search terms
         $this->rawSearchTerms = $data;
-        #!d($this->rawSearchTerms);
 
         # start the query
         $this->query = $this->queryLanguage
@@ -255,7 +253,7 @@ class Manticore
             # end debug
             $app->debug["time"]->stopMeasure("manticore", "manticore search");
 
-            #$app->cacheOld->cache_value($cacheKey, $results, $this->cacheDuration);
+            $app->cacheOld->cache_value($cacheKey, $results, $this->cacheDuration);
             return $results;
         } catch (\Exception $e) {
             $app->debug["messages"]->addMessage("Gazelle\Manticore->search(): " . $e->getMessage());
@@ -281,7 +279,6 @@ class Manticore
             }
         }
 
-        #$this->post_process();
         return $this->query;
     }
 
