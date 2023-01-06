@@ -38,7 +38,7 @@
     new TomSelect("#sequenceFormats"),
     new TomSelect("#imageFormats"),
     new TomSelect("#otherFormats"),
-    //new TomSelect("#archiveFormats"),
+    new TomSelect("#archiveFormats"),
 
     new TomSelect("#scope"),
     new TomSelect("#leechStatus"),
@@ -50,23 +50,6 @@
     new TomSelect("#orderBy"),
     new TomSelect("#orderWay"),
   ];
-
-  /*
-    // toggle tag list
-    $("#toggleTagList").on("click", () => {
-      $("#officialTagList").toggle();
-    });
-    */
-
-  /*
-    // append tag to search
-    $(".officialTag").on("click", (event) => {
-      let tagList = $("#tagList").val();
-      let value = $(event.target).html();
-  
-      $("#tagList").val(tagList + "," + value);
-    });
-    */
 
   // reset the form
   $("#resetSearchForm").on("click", () => {

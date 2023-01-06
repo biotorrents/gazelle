@@ -190,8 +190,8 @@ class Manticore
 
         # start the query
         $this->query = $this->queryLanguage
-            #->select(["id", "groupId"])
-            ->select("tagList") # debug
+            ->select(["id", "torrentId"])
+            #->select("*") # debug
             ->from($this->indices[$what]);
 
         # pagination
@@ -387,7 +387,6 @@ class Manticore
                 $value = implode(" or ", $value);
                 $value = preg_replace("/\./", "_", $value);
                 $value = "{$value} alwaysMatches";
-                !d($value);
 
                 $this->query->match("tagList", \Foolz\SphinxQL\SphinxQL::expr($value));
                 return $this->query;

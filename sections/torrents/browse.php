@@ -110,7 +110,7 @@ $pagination["nextPage"] = $pagination["currentPage"] + 1;
 
 # Torrents::get_groups
 # this is slow, only do the current page
-$groupIds = array_column($searchResults, "groupid");
+$groupIds = array_column($searchResults, "id");
 $groupIds = array_slice($groupIds, $pagination["offset"], $pagination["pageSize"]);
 
 $torrentGroups = Torrents::get_groups($groupIds);
