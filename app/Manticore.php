@@ -50,7 +50,8 @@ class Manticore
 
     # indices to search
     private $indices = [
-        "torrents" => ["torrents_main", "torrents_delta"],
+        "torrents" => ["torrents_main"],
+        #"torrents" => ["torrents_main", "torrents_delta"],
         "requests" => ["requests_main", "requests_delta"],
         "collections" => ["collections_main", "collections_delta"],
     ];
@@ -74,18 +75,18 @@ class Manticore
         "formats" => "format",
         "archives" => "archive",
 
-        "scope" => "scope",
+        "scopes" => "scope",
         "alignment" => "alignment",
         "leechStatus" => "leechStatus",
-        "license" => "license",
+        "licenses" => "license",
         "sizeMin" => null,
         "sizeMax" => null,
         "sizeUnit" => "size",
 
-        "tagList" => "tagList",
-        "tagsType" => "", # todo
-
         "categories" => "categoryId",
+        "tagList" => "tagList",
+        "tagsType" => null,
+
         "orderBy" => null,
         "orderWay" => null,
         "groupResults" => null,
@@ -169,9 +170,10 @@ class Manticore
         }
 
         # return cached if available
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode($data));
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        #$cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode($data));
+        #$cacheHit = $app->cacheOld->get_value($cacheKey);
 
+        $cacheHit = null;
         if ($cacheHit) {
             #return $cacheHit;
         }
@@ -189,7 +191,7 @@ class Manticore
         # start the query
         $this->query = $this->queryLanguage
             #->select(["id", "groupId"])
-            ->select("*") # debug
+            ->select("tagList") # debug
             ->from($this->indices[$what]);
 
         # pagination
@@ -226,7 +228,7 @@ class Manticore
 
         # random order fix
         if ($groupBy && $orderBy !== "random") {
-            $this->query->groupBy("groupid");
+            $this->query->groupBy("id");
         }
 
         /** */
@@ -242,7 +244,7 @@ class Manticore
             $this->debug = $this->query->enqueue(
                 $this->helper->showMeta()
             );
-            !d($this->debug);
+            #!d($this->debug);
         }
 
         try {
@@ -274,7 +276,7 @@ class Manticore
     {
         foreach ($data as $key => $value) {
             $this->searchFields[$key] ??= null;
-            if ($this->searchFields[$key]) {
+            if ($this->searchFields[$key] && !empty($value)) {
                 $this->query = $this->processSearchTerm($key, $value);
             }
         }
@@ -295,23 +297,11 @@ class Manticore
      */
     private function processSearchTerm(string $key, string|array $value): \Foolz\SphinxQL\SphinxQL
     {
-        if (!is_array($value)) {
-            $value = trim(strval($value));
-        }
-
-        # empty
-        if (empty($value)) {
-            return $this->query;
-        }
-
-        /** */
-
         /**
          * alignment
          */
         if ($key === "alignment") {
-            $this->query->where("aligned", intval($value));
-
+            $this->query->where("alignment", intval($value));
             return $this->query;
         }
 
@@ -325,19 +315,8 @@ class Manticore
             }
 
             $this->query->where("categoryId", "in", array_keys($value));
-
             return $this->query;
         } # if ($key === "categories")
-
-        /**
-         * fileList: phrase boundary limits partial hits
-         */
-        if ($key === "fileList") {
-            #$value = "{$value}~20";
-            $this->query->match("fileList", $value);
-
-            return $this->query;
-        }
 
         /**
          * leechStatus
@@ -349,28 +328,25 @@ class Manticore
             # freeLeech
             if ($value === 1) {
                 $this->query->where("leechStatus", 1);
-
                 return $this->query;
             }
 
             # neutralLeech
             if ($value === 2) {
                 $this->query->where("leechStatus", 2);
-
                 return $this->query;
             }
 
             # either
             if ($value === 3) {
                 $this->query->where("leechStatus", "in", [1, 2]);
-
                 return $this->query;
             }
 
             /*
+            # none
             if ($value >= 0 && $value < 3) {
                 $this->query->where("leechStatus", $value);
-
                 return $this->query;
             }
             */
@@ -382,21 +358,40 @@ class Manticore
         if ($key === "sizeUnit") {
             $sizeMin = intval(($this->rawSearchTerms["sizeMin"] ?? 0) * (1024 ** $value));
             $sizeMax = intval(min(PHP_INT_MAX, ($this->rawSearchTerms["sizeMax"] ?? INF) * (1024 ** $value)));
-            #!d($sizeMin, $sizeMax);
 
             $this->query->where("size", "between", [$sizeMin, $sizeMax]);
-
             return $this->query;
         } # if ($key === "sizeUnit")
 
         /**
-         * tagList
+         * tagList: this is lazy af
          */
         if ($key === "tagList") {
-            $value = str_replace($value, ".", "_");
-            $this->query->match("taglist", $value);
+            # include all tags
+            $this->rawSearchTerms["tagsType"] ??= "includeTags";
+            if ($this->rawSearchTerms["tagsType"] === "includeTags") {
+                $value = implode(" ", $value);
+                $value = preg_replace("/\./", "_", $value);
 
-            return $this->query;
+                $this->query->match("tagList", $value);
+                return $this->query;
+            }
+
+            # exclude any tag
+            if ($this->rawSearchTerms["tagsType"] === "excludeTags") {
+                foreach ($value as $k => $v) {
+                    # raw expression passed below
+                    $value[$k] = \Text::esc("-{$v}");
+                }
+
+                $value = implode(" or ", $value);
+                $value = preg_replace("/\./", "_", $value);
+                $value = "{$value} alwaysMatches";
+                !d($value);
+
+                $this->query->match("tagList", \Foolz\SphinxQL\SphinxQL::expr($value));
+                return $this->query;
+            }
         }
 
         /**
@@ -408,27 +403,23 @@ class Manticore
             # exact year
             if (count($range) === 1) {
                 $this->query->where("year", intval($range[0]));
-
                 return $this->query;
             }
 
             # e.g., null - 2005
             if (empty($range[0]) && !empty($range[1])) {
                 $this->query->where("year", "<=", intval($range[1]));
-
                 return $this->query;
             }
 
             # e.g., 2005 - null
             if (!empty($range[0]) && empty($range[1])) {
                 $this->query->where("year", ">=", intval($range[0]));
-
                 return $this->query;
             }
 
             # e.g., 2005 - 2009
             $this->query->where("year", "between", [ intval($range[0]), intval($range[1]) ]);
-
             return $this->query;
         } # if ($key === "year")
 
@@ -437,7 +428,6 @@ class Manticore
          */
         if ($key === "platforms") {
             $this->query->where("platform", "in", $value);
-
             return $this->query;
         }
 
@@ -446,7 +436,6 @@ class Manticore
          */
         if ($key === "formats") {
             $this->query->where("format", "in", $value);
-
             return $this->query;
         }
 
@@ -455,9 +444,25 @@ class Manticore
          */
         if ($key === "archives") {
             $this->query->where("archive", "in", $value);
-
             return $this->query;
         }
+
+        /**
+         * scopes
+         */
+        if ($key === "scopes") {
+            $this->query->where("scope", "in", $value);
+            return $this->query;
+        }
+
+        /**
+         * licenses
+         */
+        if ($key === "licenses") {
+            $this->query->where("license", "in", $value);
+            return $this->query;
+        }
+
 
         /**
          * normal
@@ -465,7 +470,6 @@ class Manticore
         $this->searchFields[$key] ??= null;
         if ($this->searchFields[$key]) {
             $this->query->match($this->searchFields[$key], $value);
-
             return $this->query;
         } # if ($this->searchFields[$key])
     } # processSearchTerm

@@ -37,10 +37,10 @@ $searchTerms = [
     "formats" => $post["formats"] ?? [],
     "archives" => $post["archives"] ?? [],
 
-    "scope" => $post["scope"] ?? null,
+    "scopes" => $post["scopes"] ?? [],
     "alignment" => $post["alignment"] ?? null,
     "leechStatus" => $post["leechStatus"] ?? null,
-    "license" => $post["license"] ?? null,
+    "licenses" => $post["licenses"] ?? [],
 
     "sizeMin" => $post["sizeMin"] ?? null,
     "sizeMax" => $post["sizeMax"] ?? null,
@@ -48,7 +48,7 @@ $searchTerms = [
 
     "categories" => $post["categories"] ?? [],
     "tagList" => $post["tagList"] ?? [],
-    "tagsType" => $post["tagsType"] ?? "0",
+    "tagsType" => $post["tagsType"] ?? "includeTags",
 
     "orderBy" => $post["orderBy"] ?? "timeAdded",
     "orderWay" => $post["orderWay"] ?? "desc",
@@ -129,6 +129,7 @@ $bookmarks = Bookmarks::all_bookmarks('torrent');
 */
 
 
+/*
 # search by infoHash: instant redirect
 if ($searchTerms["simpleSearch"] || $searchTerms["fileList"]) {
     if ($searchTerms["simpleSearch"]) {
@@ -151,6 +152,7 @@ if ($searchTerms["simpleSearch"] || $searchTerms["fileList"]) {
         }
     }
 } # if ($searchTerms["simpleSearch"] || $searchTerms["fileList"])
+*/
 
 
 /** tags */

@@ -186,7 +186,6 @@
 					</select>
 
 					{# archiveFormats: todo #}
-					{#
 					<select id="archiveFormats" name="archives[]" placeholder="Archives" multiple>
 						{% for key, value in env.META.Formats.Archives %}
 							<option value="{{ key }}" {{ (key in searchTerms.archives) ? "selected" : "" }}>
@@ -194,7 +193,6 @@
 							</option>
 						{% endfor %}
 					</select>
-					#}
 
 				</td>
 			</tr>
@@ -203,16 +201,6 @@
 			<tr id="misc">
 				<th>Misc</th>
 				<td>
-
-					{# scope #}
-					<select name="scope" id="scope">
-						<option value="">Scope</option>
-						{% for item in resolutions %}
-							<option value="{{ item }}" {{ (searchTerms.scope == item) ? "selected" : "" }}>
-								{{ item }}
-							</option>
-						{% endfor %}
-					</select>
 
 					{# leech status #}
 					<select name="leechStatus" id="leechStatus">
@@ -231,12 +219,22 @@
 						</option>
 					</select>
 
+					{# scope #}
+					<select name="scopes[]" id="scope" multiple>
+						<option value="">Scope</option>
+						{% for item in resolutions %}
+							<option value="{{ item }}" {{ (item in searchTerms.scopes) ? "selected" : "" }}>
+								{{ item }}
+							</option>
+						{% endfor %}
+					</select>
+
 					{# license #}
-					<select name="license" id="license">
+					<select name="licenses[]" id="license" multiple>
 						<option value="">License</option>
 
 						{% for item in env.META.Licenses %}
-							<option value="{{ item }}" {{ (searchTerms.license == item) ? "selected" : "" }}>
+							<option value="{{ item }}" {{ (item in searchTerms.licenses) ? "selected" : "" }}>
 								{{ item }}
 							</option>
 						{% endfor %}
@@ -326,11 +324,17 @@
 						{% endfor %}
 					</select>
 
-					<input type="radio" name="tagsType" id="anyTags" value="0" {{ (searchTerms.tagsType == "0") ? "checked" : "" }}/>
-					<label for="anyTags">Any&nbsp;tags</label>
+					<input type="radio" name="tagsType" id="includeTags" value="includeTags" {{ (searchTerms.tagsType == "includeTags") ? "checked" : "" }}/>
+					<label for="includeTags">Include&nbsp;<strong>all</strong></label>
 
-					<input type="radio" name="tagsType" id="allTags" value="1" {{ (searchTerms.tagsType == "1") ? "checked" : "" }}/>
-					<label for="allTags">All&nbsp;tags</label>
+					<input type="radio" name="tagsType" id="excludeTags" value="excludeTags" {{ (searchTerms.tagsType == "excludeTags") ? "checked" : "" }}/>
+					<label for="excludeTags">Exclude&nbsp;<strong>any</strong></label>
+
+					{#
+					<span>
+						Use <code>-tag</code> or <code>!tag</code> to exclude tags
+					</span>
+					#}
 				</td>
 			</tr>
 

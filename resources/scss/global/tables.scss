@@ -39,7 +39,7 @@ table {
     display: flex;
     flex-flow: row nowrap;
     gap: 2rem;
-    align-items: baseline;
+    align-items: center;
 
     label {
       display: block !important;
@@ -61,39 +61,6 @@ table {
     align-items: baseline;
     gap: 1rem;
   }
-
-  /*
-  .categoryLabel {
-    display: inline-flex;
-    gap: 1rem;
-  }
-  */
-
-  /* start tagging */
-  /*
-  #tagFilter {
-    th,
-    td {
-      border-bottom: none;
-    }
-
-    #tagColumn {
-      flex-direction: column;
-    }
-
-    #tagRow {
-      display: flex;
-      flex-flow: row nowrap;
-      gap: 2rem;
-      align-items: baseline;
-    }
-  }
-
-  .officialTag {
-    cursor: pointer;
-    text-decoration: none;
-  }
-  */
 
   /* tom select */
   .ts-control > * {
