@@ -50,8 +50,7 @@ class Manticore
 
     # indices to search
     private $indices = [
-        "torrents" => ["torrents_main"],
-        #"torrents" => ["torrents_main", "torrents_delta"],
+        "torrents" => ["torrents_main", "torrents_delta"],
         "requests" => ["requests_main", "requests_delta"],
         "collections" => ["collections_main", "collections_delta"],
     ];
@@ -163,11 +162,6 @@ class Manticore
 
         # start debug
         $app->debug["time"]->startMeasure("manticore", "manticore search");
-
-        # temporary
-        if ($what === "collections") {
-            throw new \Exception("not implemented");
-        }
 
         # return cached if available
         $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode($data));
