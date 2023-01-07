@@ -577,7 +577,7 @@ foreach ($Categories as $CatKey => $CatName) {
       if (isset($Artists)) {
           # Emoji in classes/astists.class.php
           $Label = '&ensp;';
-          $DisplayName .= $Label.'<div class="torrent_artists">'.Artists::display_artists($Artists).'</div>';
+          $DisplayName .= $Label.'<div>'.Artists::display_artists($Artists).'</div>';
       } ?>
 
       <tr

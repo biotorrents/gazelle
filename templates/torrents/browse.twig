@@ -94,7 +94,9 @@
 
 {# start the results themselves #}
 {% for item in torrentGroups %}
-
+<pre>
+{{ dump(item) }}
+</pre>
 {% include "torrents/tableEntry.twig" with item %}
 
 {% endfor %}
@@ -107,6 +109,9 @@
 
 {# end the results table #}
 </table>
+
+{# back to top: lazy af #}
+<a href="#searchResultsHeader" class="button">back to top</a>
 
 {% endblock %}
 
@@ -125,18 +130,18 @@
 
 {#}														  foreach ($Results as $Key => $GroupID) {
 														
-														        {% set groupInfo = resultGroups.key %}
-														      $GroupInfo = $Groups[$GroupID] ?? [];
+{% set groupInfo = resultGroups.key %}
+$GroupInfo = $Groups[$GroupID] ?? [];
 														
-														      {% if groupInfo.Torrents is empty %}
-														      {# todo: continue # }
-														      {% endif %} # }
-														      if (empty($GroupInfo['Torrents'])) {
-														          continue;
-														      }
+{% if groupInfo.Torrents is empty %}
+{# todo: continue # }
+{% endif %} # }
+if (empty($GroupInfo['Torrents'])) {
+continue;
+}
 														
 														
-														      {# NOT NEEDED #}
+{# NOT NEEDED #}
 	{#
 		      $CategoryID = $GroupInfo['category_id'];
 		      $GroupYear = $GroupInfo['year'];
@@ -178,7 +183,7 @@
 		
 		      /*
 		      if (isset($Artists)) {
-		          $DisplayName = '<div class="torrent_artists">'.Artists::display_artists($Artists).'</div> ';
+		          $DisplayName = '<div>'.Artists::display_artists($Artists).'</div> ';
 		      } else {
 		          $DisplayName = '';
 		      }

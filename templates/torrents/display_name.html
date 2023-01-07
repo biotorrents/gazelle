@@ -43,7 +43,7 @@
 {% endif %}
 
 {% if artists|default(false) %}
-  &ensp;{# emoji in artists class #}<span class="torrent_artists">{{ artists|raw }}</span>
+  &ensp;{# emoji in artists class #}<span>{{ artists|raw }}</span>
 {% endif %}
 
 {% if g.workgroup %}

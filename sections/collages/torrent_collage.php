@@ -101,11 +101,6 @@ foreach ($GroupIDs as $GroupID) {
   </td>
 
   <td class="center">
-    <!--
-    <div title="<?=null#$TorrentTags->title()?>"
-      class="tooltip <?=null#Format::css_category($GroupCategoryID)?> <?=null#$TorrentTags->css_name()?>">
-    </div>
-    -->
   </td>
 
   <td colspan="5">

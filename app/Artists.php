@@ -121,27 +121,27 @@ class Artists
             $link = '';
 
             switch (count($Artists)) {
-              case 0:
-                break;
+                case 0:
+                    break;
 
-              case 4:
-                $link .= Artists::display_artist($Artists[2], $MakeLink, $Escape). ", ";
-                // no break
+                case 4:
+                    $link .= Artists::display_artist($Artists[2], $MakeLink, $Escape). ", ";
+                    // no break
 
-              case 3:
-                $link .= Artists::display_artist($Artists[2], $MakeLink, $Escape). ", ";
-                // no break
+                case 3:
+                    $link .= Artists::display_artist($Artists[2], $MakeLink, $Escape). ", ";
+                    // no break
 
-              case 2:
-                $link .= Artists::display_artist($Artists[1], $MakeLink, $Escape). ", ";
-                // no break
+                case 2:
+                    $link .= Artists::display_artist($Artists[1], $MakeLink, $Escape). ", ";
+                    // no break
 
-              case 1:
-                $link .= Artists::display_artist($Artists[0], $MakeLink, $Escape);
-                break;
+                case 1:
+                    $link .= Artists::display_artist($Artists[0], $MakeLink, $Escape);
+                    break;
 
-              default:
-                $link = Artists::display_artist($Artists[0], $MakeLink, $Escape).' et al.';
+                default:
+                    $link = Artists::display_artist($Artists[0], $MakeLink, $Escape).' et al.';
             }
 
             return $link;
@@ -163,7 +163,7 @@ class Artists
         if ($MakeLink && !$Escape) {
             error('Invalid parameters to Artists::display_artist()');
         } elseif ($MakeLink) {
-            return '<a href="artist.php?id='.$Artist['id'].'">'.Text::esc($Artist['name']).'</a>';
+            return '<a href="/artist.php?id='.$Artist['id'].'">'.Text::esc($Artist['name']).'</a>';
         } elseif ($Escape) {
             return Text::esc($Artist['name']);
         } else {

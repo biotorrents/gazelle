@@ -179,22 +179,22 @@ class Manticore
 
         # start the query
         $this->query = $this->queryLanguage
-            ->select("id")
+            ->select(["id"])
             #->select("*") # debug
             ->from($this->indices[$what]);
 
         /*
         # pagination
         $data["page"] ??= 1;
-        $pagination = $app->userNew->extra["siteOptions"]["searchPagination"] ?? 20;
-        $offset = ($data["page"] - 1) * $pagination;
+        $limit = $app->userNew->extra["siteOptions"]["searchPagination"] ?? 20;
+        $offset = ($data["page"] - 1) * $limit;
         */
 
         # just get all results and paginate in the controllers
         $offset = 0;
         $this->query->limit(
-            $offset, # offset
-            $app->env->getPriv("manticoreMaxMatches") # limit: default 1000
+            $offset,
+            $app->env->getPriv("manticoreMaxMatches")
         );
 
         # orderBy and orderWay

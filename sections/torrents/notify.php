@@ -329,11 +329,6 @@ if (empty($Results)) {
             id="clear_<?=$TorrentID?>" tabindex="1" />
         </td>
         <td class="center cats_col">
-          <!--
-          <div title="<?=null#$TorrentTags->title()?>"
-            class="tooltip <?=null#Format::css_category($GroupCategoryID)?> <?=null#$TorrentTags->css_name()?>">
-          </div>
-              -->
         </td>
         <td class="big_info">
           <div class="group_info clear">

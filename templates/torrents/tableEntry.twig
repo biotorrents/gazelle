@@ -5,132 +5,119 @@
 <tr>
 
 	{# grouped #}
-  <td>
-  <pre>
-    {# {{ dump(item) }} #}
-  </pre>
-  </td>
+	<td>
+		<pre>
+    
+  </pre> {# {{ dump(item) }} #}
+	</td>
 
 
 	{# category icon #}
 	<td>
-    {{item.category_id|categoryIcon }}
-  </td>
+		{{item.category_id|categoryIcon }}
+	</td>
 
 
 	{# title #}
-	<td>
+	<td class="flexColumn">
 
-    {# title link #}
-    <a class="torrentTitle" href="torrents.php?id={{ item.id }}" {# open tag #}
-    
+		{# title link #}
+		<a class="torrentTitle" href="torrents.php?id={{ item.id }}" {# open tag #}
+
     {% if item.picture %}
-      data-cover="{{ item.picture }}" {# open tag #}
+        data-cover="{{ item.picture }}" {# open tag #}
     {% endif %}
-    
+
     dir="ltr">
-      {{ item.title }}
-    </a>
+			{{ item.title }}
+		</a>
 
-<div class="flexRow">
-    {# year #}
-    {% if item.year %}
-      <span class="tooltip" title="Year">📅 {{ item.year }}</span>
-    {% endif %}
+		<div class="flexRow">
+			{# year #}
+			{% if item.year %}
+				<span class="tooltip" title="Year">📅 {{ item.year }}</span>
+			{% endif %}
 
-    {# identifier #}
-    {% if item.identifier %}
-      <span class="tooltip" title="Identifier">🔑 {{ item.identifier }}</span>
-      
-    {% endif %}
+			{# identifier #}
+			{% if item.identifier %}
+				<span class="tooltip" title="Identifier">🔑 {{ item.identifier }}</span>
 
-    {# subject #}
-    {% if item.subject %}
-      <span class="tooltip" title="Organism">
-        🦠 {{ item.subject }}
-        {# object #}
-        {{ (item.object) ? "<em>#{item.object}</em>"|raw : "" }}
-      </span>
-    {% endif %}
+			{% endif %}
 
-{#
-{% if artists|default(false) %}
-  &ensp;{# emoji in artists class # }<span class="torrent_artists">{{ artists|raw }}</span>
-{% endif %}
-#}
+			{# subject #}
+			{% if item.subject %}
+				<span class="tooltip" title="Organism">🦠 {{ item.subject }}
+					{# object #}
+					{{ (item.object) ? "<em>#{item.object}</em>"|raw : "" }}
+				</span>
+			{% endif %}
 
-    {# workgroup #}
-    {% if item.workgroup %}
-      <span class="tooltip" title="Workgroup">🏫 {{ item.workgroup }}</span>
-    {% endif %}
+			{# workgroup #}
+			{% if item.workgroup %}
+				<span class="tooltip" title="Workgroup">🏫 {{ item.workgroup }}</span>
+			{% endif %}
 
-    {# location #}
-      {% if item.location %}
-        <span class="tooltip" title="Location">📍 {{ item.location }}</span>
-        
-      {% endif %}
+			{# location #}
+			{% if item.location %}
+				<span class="tooltip" title="Location">📍 {{ item.location }}</span>
+			{% endif %}
 
-</div>
-{#
-{% if extra_info|default(false) %}
-  <br />
-  <span class="torrent_info">
-    {{ extra_info|raw }}
-  </span>
-{% endif %}
-#}
+		</div>
 
-{#
-{% if tags|default(false) %}
-  <br />
-  <span class="tags">
-    {{ tags|raw }}
-  </span>
-{% endif %}
-#}
-  </td>
+		{# creators #}
+		{% if item.Artists is not empty %}
+			<div class="tooltip" title="Creators">🧑‍🔬 {{ displayCreators(item.Artists)|raw }}</div>
+		{% endif %}
+
+		{# tags #}
+		{% if item.tag_list is not empty %}
+			<div class="tooltip torrentTags" title="Tags">#️ {{ displayTags(item.tag_list)|raw }}</div>
+		{% endif %}
+
+		{#
+		{% if extra_info|default(false) %}
+		  <br />
+		  <span class="torrent_info">
+		    {{ extra_info|raw }}
+		  </span>
+		{% endif %}
+		#}
+
+		{#
+		{% if tags|default(false) %}
+		  <br />
+		  <span class="tags">
+		    {{ tags|raw }}
+		  </span>
+		{% endif %}
+		#}
+	</td>
 
 
 	{# timeAdded #}
-	<td>
-
-  </td>
+	<td></td>
 
 
 	{# file size #}
-	<td>
-
-  </td>
+	<td></td>
 
 
 	{# file count #}
-	<td>
-
-  </td>
+	<td></td>
 
 
 	{# seeders #}
-	<td>
-
-  </td>
+	<td></td>
 
 
 	{# leechers #}
-	<td>
+	<td></td>
 
-  </td>
 
-  
-  {# snatches #}
-	<td>
-
-  </td>
+	{# snatches #}
+	<td></td>
 
 </tr>
-
-
-
-
 
 
 {##
@@ -178,7 +165,7 @@
 {% endif %}
 
 {% if artists|default(false) %}
-  &ensp;{# emoji in artists class # }<span class="torrent_artists">{{ artists|raw }}</span>
+  &ensp;{# emoji in artists class # }<span>{{ artists|raw }}</span>
 {% endif %}
 
 {% if item.workgroup %}

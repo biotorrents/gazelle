@@ -11,7 +11,6 @@ $app = App::go();
 
 # it's actually way better if this uses GET
 $get = Http::query("get");
-$server = Http::query("server");
 
 
 /** torrent search handling */
@@ -66,7 +65,7 @@ $get["page"] ??= null;
 unset($get["page"]);
 
 $queryString = http_build_query($get);
-!d($queryString);
+#!d($queryString);
 
 # search manticore
 $manticore = new Gazelle\Manticore();
@@ -86,7 +85,7 @@ $pagination["pageSize"] = $app->userNew->extra["siteOptions"]["searchPagination"
 
 # current page
 $pagination["currentPage"] = intval($searchTerms["page"] ?? 1);
-if (empty($pagination["currentPage"])) {
+if (empty($pagination["currentPage"]) || $pagination["currentPage"] !== abs($pagination["currentPage"])) {
     $pagination["currentPage"] = 1;
 }
 
@@ -108,7 +107,6 @@ $pagination["nextPage"] = $pagination["currentPage"] + 1;
 # first page
 $pagination["firstPage"] = 1;
 
-
 # offset and limit
 $pagination["offset"] = intval(($pagination["currentPage"] - 1) * $pagination["pageSize"]);
 $pagination["limit"] = $pagination["offset"] + $pagination["pageSize"];
@@ -116,8 +114,6 @@ $pagination["limit"] = $pagination["offset"] + $pagination["pageSize"];
 if ($pagination["limit"] > $pagination["resultCount"]) {
     $pagination["limit"] = $pagination["resultCount"];
 }
-
-!d($pagination);
 
 
 /** torrent group info */
@@ -177,41 +173,42 @@ $GroupedCategories = $Categories;
  */
 
 $app->twig->display("torrents/browse.twig", [
-  "js" => ["vendor/tom-select.complete.min", "browse"],
-  "css" => ["vendor/tom-select.bootstrap5.min"],
+    "title" => "Browse",
+    "js" => ["vendor/tom-select.complete.min", "browse"],
+    "css" => ["vendor/tom-select.bootstrap5.min"],
 
-  # todo: this situation
-  "categories" => $Categories,
-  "resolutions" => $Resolutions,
+    # todo: this situation
+    "categories" => $Categories,
+    "resolutions" => $Resolutions,
 
-  "xmls" => array_merge(
-      $app->env->toArray($app->env->META->Formats->GraphXml),
-      $app->env->toArray($app->env->META->Formats->GraphTxt)
-  ),
+    "xmls" => array_merge(
+        $app->env->toArray($app->env->META->Formats->GraphXml),
+        $app->env->toArray($app->env->META->Formats->GraphTxt)
+    ),
 
-  "raster" => array_merge(
-      $app->env->toArray($app->env->META->Formats->ImgRaster),
-      $app->env->toArray($app->env->META->Formats->MapRaster)
-  ),
+    "raster" => array_merge(
+        $app->env->toArray($app->env->META->Formats->ImgRaster),
+        $app->env->toArray($app->env->META->Formats->MapRaster)
+    ),
 
-  "vector" => array_merge(
-      $app->env->toArray($app->env->META->Formats->ImgVector),
-      $app->env->toArray($app->env->META->Formats->MapVector)
-  ),
+    "vector" => array_merge(
+        $app->env->toArray($app->env->META->Formats->ImgVector),
+        $app->env->toArray($app->env->META->Formats->MapVector)
+    ),
 
-  "extras" => array_merge(
-      $app->env->toArray($app->env->META->Formats->BinDoc),
-      $app->env->toArray($app->env->META->Formats->CpuGen),
-      $app->env->toArray($app->env->META->Formats->Plain)
-  ),
+    "extras" => array_merge(
+        $app->env->toArray($app->env->META->Formats->BinDoc),
+        $app->env->toArray($app->env->META->Formats->CpuGen),
+        $app->env->toArray($app->env->META->Formats->Plain)
+    ),
 
-  "searchResults" => $searchResults,
-  "torrentGroups" => $torrentGroups,
+    "searchResults" => $searchResults,
+    "torrentGroups" => $torrentGroups,
 
-  "bookmarks" => Bookmarks::all_bookmarks('torrent'),
-  "officialTags" => $officialTags,
+    "bookmarks" => Bookmarks::all_bookmarks('torrent'),
+    "officialTags" => $officialTags,
 
-  "searchTerms" => $searchTerms,
-  "pagination" => $pagination,
-  "queryString" => $queryString,
+    "searchTerms" => $searchTerms,
+    "pagination" => $pagination,
+    "queryString" => $queryString,
 ]);

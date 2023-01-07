@@ -243,6 +243,24 @@ class Twig # extends Twig\Environment
             );
         }));
 
+        # Artists::display_artists
+        $twig->addFunction(new Twig\TwigFunction("displayCreators", function ($creators) {
+            return new Twig\Markup(
+                Artists::display_artists($creators),
+                "UTF-8"
+            );
+        }));
+
+        # new Tags()
+        $twig->addFunction(new Twig\TwigFunction("displayTags", function ($tagList) {
+            $tags = new Tags($tagList);
+
+            return new Twig\Markup(
+                $tags->format(""),
+                "UTF-8"
+            );
+        }));
+
         # Format::breadcrumbs
         $twig->addFunction(new Twig\TwigFunction("breadcrumbs", function () {
             return Format::breadcrumbs();

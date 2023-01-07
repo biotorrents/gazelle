@@ -115,7 +115,7 @@ if (!$NumResults) {
                 $DisplayName = '';
 
                 if (isset($Artists)) {
-                    $DisplayName .= '<div class="torrent_artists">'.Artists::display_artists($Artists).'</div> ';
+                    $DisplayName .= '<div>'.Artists::display_artists($Artists).'</div> ';
                 }
                 $DisplayName .= "<a class=\"torrentTitle\" href=\"torrents.php?id=$GroupID\" ";
                 if (!isset($user['CoverArt']) || $user['CoverArt']) {
@@ -191,7 +191,7 @@ if (!$NumResults) {
                     $DisplayName = '';
 
                     if (isset($Artists)) {
-                        $DisplayName .= '<div class="torrent_artists">'.Artists::display_artists($Artists).'</div> ';
+                        $DisplayName .= '<div>'.Artists::display_artists($Artists).'</div> ';
                     }
 
                     $DisplayName .= "<a class=\"torrentTitle\" href=\"torrents.php?id=$GroupID\" ";
