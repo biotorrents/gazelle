@@ -128,8 +128,6 @@ class Badges
 
     /**
      * displayBadges
-     *
-     * This should be a flexbox but idgaf.
      */
     public static function displayBadges(array $badgeIds, $tooltip = false): string
     {
@@ -139,7 +137,10 @@ class Badges
             $data[] = self::displayBadge($badgeId, $tooltip);
         }
 
-        return implode("&emsp;", $data);
+        $data = implode("", $data);
+        $data = "<span class='badges'>{$data}</span>";
+
+        return $data;
     }
 
 

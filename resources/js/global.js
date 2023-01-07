@@ -9,9 +9,13 @@
   // https://jqueryui.com/tooltip/
   $(document).tooltip();
 
+  // smart quotes
+  // https://smartquotes.js.org
+  smartquotes();
+
   // code syntax highlighting
   // https://highlightjs.org
-  hljs.highlightAll;
+  hljs.highlightAll();
 
   // start jquery extensions
   // todo: continue to prune

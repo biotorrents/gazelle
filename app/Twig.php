@@ -103,16 +103,16 @@ class Twig # extends Twig\Environment
         $twig->addGlobal("authenticated", $app->userNew->isLoggedIn());
 
         # site options
-        $twig->addGlobal("siteOptions", $app->userNew->extra["siteOptions"] ?? []);
+        $twig->addGlobal("siteOptions", $app->userNew->siteOptions ?? []);
 
         # body styles
         $bodyStyles = [];
         if (!empty($app->userNew->extra)) {
             $bodyStyles = [
                 ($app->env->dev) ? "development" : null,
-                ($app->userNew->extra["siteOptions"]["font"]) ?? null,
-                ($app->userNew->extra["siteOptions"]["calmMode"]) ? "calmMode" : null,
-                ($app->userNew->extra["siteOptions"]["darkMode"]) ? "darkMode" : null,
+                ($app->userNew->siteOptions["font"]) ?? null,
+                ($app->userNew->siteOptions["calmMode"]) ? "calmMode" : null,
+                ($app->userNew->siteOptions["darkMode"]) ? "darkMode" : null,
             ];
         }
 

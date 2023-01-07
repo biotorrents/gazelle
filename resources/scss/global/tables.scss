@@ -39,7 +39,7 @@ table {
     display: flex;
     flex-flow: row nowrap;
     gap: 2rem;
-    align-items: center;
+    align-items: baseline;
 
     label {
       display: block !important;

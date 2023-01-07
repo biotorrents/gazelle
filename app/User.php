@@ -24,7 +24,9 @@ class User
     # user info
     public $core = [];
     public $extra = [];
+
     public $permissions = [];
+    public $siteOptions = [];
 
     # legacy gazelle
     public $lightInfo = [];
@@ -160,9 +162,6 @@ class User
         $user["Permissions"]["MaxCollages"] += Donations::get_personal_collages($userId);
         */
 
-        # change necessary triggers in external components
-        #$app->cacheOld->CanClear = check_perms("admin_clear_cache");
-
         /*
         # notifications
         if ($user["Permissions"]["site_torrents_notify"]) {
@@ -218,6 +217,9 @@ class User
             if ($this->permissions["values"]) {
                 $this->permissions["values"] = json_decode($this->permissions["values"], true);
             }
+
+            # siteOptions
+            $this->siteOptions = json_decode($this->extra["SiteOptions"], true);
 
             # rss auth
             $this->extra["RSS_Auth"] = md5(
@@ -1315,6 +1317,7 @@ class User
                 "recentSnatches" => Esc::bool($data["recentSnatches"] ?? null),
                 "recentUploads" => Esc::bool($data["recentUploads"] ?? null),
                 "requestStats" => Esc::bool($data["requestStats"] ?? null),
+                "searchPagination" => Esc::int($data["searchPagination"] ?? null),
                 "searchType" => Esc::string($data["searchType"] ?? null),
                 "showSnatched" => Esc::bool($data["showSnatched"] ?? null),
                 "showTagFilter" => Esc::bool($data["showTagFilter"] ?? null),

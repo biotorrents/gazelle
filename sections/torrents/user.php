@@ -532,7 +532,7 @@ foreach ($Categories as $CatKey => $CatName) {
 
       # This is the torrent list formatting!
       $DisplayName = '';
-      $DisplayName .= '<a class="torrent_title" href="torrents.php?id='.$GroupID.'&amp;torrentid='.$TorrentID.'" ';
+      $DisplayName .= '<a class="torrentTitle" href="torrents.php?id='.$GroupID.'&amp;torrentid='.$TorrentID.'" ';
 
       # No cover art
       if (!isset($user['CoverArt']) || $user['CoverArt']) {

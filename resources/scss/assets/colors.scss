@@ -7,6 +7,11 @@
  * and can be used to develop your brand palette.
  */
 
+/* skeleton css */
+$skeletonDefault: #33c3f0;
+$skeletonFocus: #1eaedb;
+$skeletonHalfDark: scale-color($skeletonFocus, $lightness: -50%);
+
 /**
  * red
  */

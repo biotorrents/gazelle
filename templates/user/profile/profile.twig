@@ -27,6 +27,7 @@
 {% endif %}
 
 
+<section>
 {# profile title #}
 {% if data.extra.InfoTitle is not empty %}
 <h3>{{ data.extra.InfoTitle }}</h3>
@@ -34,13 +35,13 @@
 <h3>Autobiography</h3>
 {% endif %}
 
-
 {# profile content #}
 {% if data.extra.Info is not empty %}
 {{ data.extra.Info|parse }}
 {% else %}
 <p>This profile is empty. :(</p>
 {% endif %}
+</section>
 
 
 {# recent snatches #}

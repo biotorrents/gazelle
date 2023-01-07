@@ -6,9 +6,6 @@ declare(strict_types=1);
 /**
  * Gazelle\Manticore
  *
- * Uses Sphinx as the backend for now.
- * Plans to replace with the Manticore fork.
- *
  * Deprecates these legacy classes:
  *  - Sphinxql
  *  - SphinxqlQuery
@@ -182,16 +179,19 @@ class Manticore
 
         # start the query
         $this->query = $this->queryLanguage
-            ->select(["id", "torrentId"])
+            ->select("id")
             #->select("*") # debug
             ->from($this->indices[$what]);
 
+        /*
         # pagination
         $data["page"] ??= 1;
         $pagination = $app->userNew->extra["siteOptions"]["searchPagination"] ?? 20;
         $offset = ($data["page"] - 1) * $pagination;
+        */
 
-        $offset = 0; # todo
+        # just get all results and paginate in the controllers
+        $offset = 0;
         $this->query->limit(
             $offset, # offset
             $app->env->getPriv("manticoreMaxMatches") # limit: default 1000
@@ -262,7 +262,7 @@ class Manticore
      * Look at the search terms and see what to do with them.
      *
      * @param array $data array with search terms
-     * @return $this->queryLanguage
+     * @return $this->query
      */
     private function processSearchTerms(array $data = []): \Foolz\SphinxQL\SphinxQL
     {
@@ -284,7 +284,7 @@ class Manticore
      *
      * @param string $key name of the search field
      * @param string|array $value search expression for the field
-     * @return $this->queryLanguage
+     * @return $this->query
      */
     private function processSearchTerm(string $key, string|array $value): \Foolz\SphinxQL\SphinxQL
     {
@@ -355,7 +355,7 @@ class Manticore
         } # if ($key === "sizeUnit")
 
         /**
-         * tagList: this is lazy af
+         * tagList: lazy af
          */
         if ($key === "tagList") {
             # include all tags
@@ -419,7 +419,7 @@ class Manticore
         if ($key === "platforms") {
             $this->query->where("platform", "in", $value);
             return $this->query;
-        }
+        } # if ($key === "platforms")
 
         /**
          * formats
@@ -427,7 +427,7 @@ class Manticore
         if ($key === "formats") {
             $this->query->where("format", "in", $value);
             return $this->query;
-        }
+        } # if ($key === "formats")
 
         /**
          * archives
@@ -435,7 +435,7 @@ class Manticore
         if ($key === "archives") {
             $this->query->where("archive", "in", $value);
             return $this->query;
-        }
+        } # if ($key === "archives")
 
         /**
          * scopes
@@ -443,7 +443,7 @@ class Manticore
         if ($key === "scopes") {
             $this->query->where("scope", "in", $value);
             return $this->query;
-        }
+        } # if ($key === "scopes")
 
         /**
          * licenses
@@ -451,7 +451,7 @@ class Manticore
         if ($key === "licenses") {
             $this->query->where("license", "in", $value);
             return $this->query;
-        }
+        } #if ($key === "licenses")
 
 
         /**

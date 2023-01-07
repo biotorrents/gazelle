@@ -230,6 +230,15 @@
 		{# start javascript block #}
 		{% block javascript %}
 
+			{# global inline javascript #}
+			<script>
+				// session-specific, for internal api calls
+                var frontendHash = "{{ frontendHash }}";
+
+                // site options: needs single quotes
+                var siteOptions = JSON.parse('{{ siteOptions|json_encode|raw }}');
+			</script>
+
 			{# todo: app.js with vite #}
 			{# <script src="/js/app.min.js"></script> #}
 
@@ -265,21 +274,6 @@
 					<script src="/js/{{ js }}.js"></script>
 				{% endfor %}
 			{% endif %}
-
-			{# global inline javascript #}
-			<script>
-				// session-specific, for internal api calls
-                var frontendHash = "{{ frontendHash }}";
-
-                // site options: needs single quotes
-                var siteOptions = JSON.parse('{{ siteOptions|json_encode|raw }}');
-
-				// smart quotes
-				smartquotes();
-
-				// highlight.js
-				hljs.highlightAll();
-			</script>
 
 		{% endblock %}
 		{# end javascript block #}

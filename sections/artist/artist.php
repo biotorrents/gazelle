@@ -380,7 +380,7 @@ foreach ($TorrentList as $Group) {
 
         # Similar to torrents.class.php and
         # sections/torrents/browse.php
-        $DisplayName .= "<a class='torrent_title' href='torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID' ";
+        $DisplayName .= "<a class='torrentTitle' href='torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID' ";
 
         if (!isset($user['CoverArt']) || $user['CoverArt']) {
             $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';

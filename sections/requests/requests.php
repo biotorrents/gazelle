@@ -528,7 +528,7 @@ View::header($Title, 'requests');
 
             $ArtistForm = Requests::get_artists($RequestID);
             $ArtistLink = Artists::display_artists($ArtistForm, true, true);
-            $FullName = "<a class='torrent_title' href='requests.php?action=view&amp;id=$RequestID'><span ";
+            $FullName = "<a class='torrentTitle' href='requests.php?action=view&amp;id=$RequestID'><span ";
 
             if (!isset($user['CoverArt']) || $user['CoverArt']) {
                 $FullName .= 'data-cover="'.ImageTools::process($Request['Image']).'" ';

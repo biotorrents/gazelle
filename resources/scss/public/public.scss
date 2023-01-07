@@ -1,12 +1,4 @@
 /**
- * colors
- */
-
-$skeletonDefault: #33c3f0;
-$skeletonFocus: #1eaedb;
-$skeletonHalfdark: scale-color($skeletonFocus, $lightness: -50%);
-
-/**
  * typography
  */
 
@@ -46,7 +38,7 @@ header {
   line-height: 4.2rem;
   max-width: 100%;
 
-  background: $skeletonHalfdark;
+  background: $skeletonHalfDark;
   padding: 0 1%;
   position: sticky;
   text-align: right;

@@ -117,7 +117,7 @@ if (!$NumResults) {
                 if (isset($Artists)) {
                     $DisplayName .= '<div class="torrent_artists">'.Artists::display_artists($Artists).'</div> ';
                 }
-                $DisplayName .= "<a class=\"torrent_title\" href=\"torrents.php?id=$GroupID\" ";
+                $DisplayName .= "<a class=\"torrentTitle\" href=\"torrents.php?id=$GroupID\" ";
                 if (!isset($user['CoverArt']) || $user['CoverArt']) {
                     $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage).'" ';
                 }
@@ -194,7 +194,7 @@ if (!$NumResults) {
                         $DisplayName .= '<div class="torrent_artists">'.Artists::display_artists($Artists).'</div> ';
                     }
 
-                    $DisplayName .= "<a class=\"torrent_title\" href=\"torrents.php?id=$GroupID\" ";
+                    $DisplayName .= "<a class=\"torrentTitle\" href=\"torrents.php?id=$GroupID\" ";
                     if (!isset($user['CoverArt']) || $user['CoverArt']) {
                         $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage).'" ';
                     }
