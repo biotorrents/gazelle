@@ -13,16 +13,27 @@
 	</div>
 {% else %}
   {# resultCount and pagination controls #}
-  {# todo: 1-20 is hardcoded lol #}
   <div id="searchResultsHeader">
   <h3>{{ pagination.offset + 1 }}&ndash;{{ pagination.limit }} of {{ pagination.resultCount }} results</h3>
 
 <div id="paginationControls">
-  <a id="firstPage" class="button u-pull-right">« first</a>
-  <a id="previousPage" class="button u-pull-right">‹ previous</a>
 
-  <a id="nextPage" class="button u-pull-right">next ›</a>
-  <a id="lastPage" class="button u-pull-right">last »</a>
+  {% if pagination.currentPage != pagination.firstPage %}
+  <a href="/torrents/{{ queryString }}?page={{ pagination.firstPage }}" class="button u-pull-right">« first</a>
+  {% endif %}
+
+  {% if pagination.currentPage > pagination.previousPage %}
+  <a href="/torrents/{{ queryString }}?page={{ pagination.previousPage }}" class="button u-pull-right">‹ previous</a>
+  {% endif %}
+
+  {% if pagination.currentPage < pagination.nextPage and pagination.currentPage < pagination.lastPage %}
+  <a href="/torrents/{{ queryString }}?page={{ pagination.nextPage }}" class="button u-pull-right">next ›</a>
+    {% endif %}
+
+	  {% if pagination.currentPage != pagination.lastPage %}
+  <a href="/torrents/{{ queryString }}?page={{ pagination.lastPage }}" class="button u-pull-right">last »</a>
+     {% endif %}
+ 
   </div>
   </div>
 {% endif %}

@@ -108,9 +108,21 @@ class Http
         }
 
         foreach ($_GET as $key => $value) {
-            $key = Text::esc($key);
-            $value = Text::esc($value);
-            $safe["get"][$key] = $value;
+            # not recursive
+            if (is_array($value)) {
+                foreach ($value as $k => $v) {
+                    $k = Text::esc($k);
+                    $v = Text::esc($v);
+                    $safe["get"][$key][$v] = $v;
+                }
+            }
+
+            # normal key => value
+            else {
+                $key = Text::esc($key);
+                $value = Text::esc($value);
+                $safe["get"][$key] = $value;
+            }
         }
 
         foreach ($_POST as $key => $value) {

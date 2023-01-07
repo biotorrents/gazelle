@@ -5,10 +5,7 @@
 <h2>Torrents</h2>
 
 {# the form itself #}
-<form id="torrentSearch" name="torrentSearch" method="post">
-
-	{# csrf token #}
-	{{ form_token(query.server.REQUEST_URI) }}
+<form id="torrentSearch" name="torrentSearch" method="get">
 
 
 	{# simple search form #}

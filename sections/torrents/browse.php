@@ -9,11 +9,9 @@ declare(strict_types=1);
 
 $app = App::go();
 
-# https://github.com/paragonie/anti-csrf
-#Http::csrf();
-
+# it's actually way better if this uses GET
 $get = Http::query("get");
-$post = Http::query("post");
+$server = Http::query("server");
 
 
 /** torrent search handling */
@@ -21,45 +19,60 @@ $post = Http::query("post");
 
 # collect the query
 $searchTerms = [
-    "simpleSearch" => $post["simpleSearch"] ?? null,
-    "complexSearch" => $post["complexSearch"] ?? null,
+    "simpleSearch" => $get["simpleSearch"] ?? null,
+    "complexSearch" => $get["complexSearch"] ?? null,
 
-    "numbers" => $post["numbers"] ?? null,
-    "year" => $post["year"] ?? null,
+    "numbers" => $get["numbers"] ?? null,
+    "year" => $get["year"] ?? null,
 
-    "location" => $post["location"] ?? null,
-    "creator" => $post["creator"] ?? null,
+    "location" => $get["location"] ?? null,
+    "creator" => $get["creator"] ?? null,
 
-    "description" => $post["description"] ?? null,
-    "fileList" => $post["fileList"] ?? null,
+    "description" => $get["description"] ?? null,
+    "fileList" => $get["fileList"] ?? null,
 
-    "platforms" => $post["platforms"] ?? [],
-    "formats" => $post["formats"] ?? [],
-    "archives" => $post["archives"] ?? [],
+    "platforms" => $get["platforms"] ?? [],
+    "formats" => $get["formats"] ?? [],
+    "archives" => $get["archives"] ?? [],
 
-    "scopes" => $post["scopes"] ?? [],
-    "alignment" => $post["alignment"] ?? null,
-    "leechStatus" => $post["leechStatus"] ?? null,
-    "licenses" => $post["licenses"] ?? [],
+    "scopes" => $get["scopes"] ?? [],
+    "alignment" => $get["alignment"] ?? null,
+    "leechStatus" => $get["leechStatus"] ?? null,
+    "licenses" => $get["licenses"] ?? [],
 
-    "sizeMin" => $post["sizeMin"] ?? null,
-    "sizeMax" => $post["sizeMax"] ?? null,
-    "sizeUnit" => $post["sizeUnit"] ?? null,
+    "sizeMin" => $get["sizeMin"] ?? null,
+    "sizeMax" => $get["sizeMax"] ?? null,
+    "sizeUnit" => $get["sizeUnit"] ?? null,
 
-    "categories" => $post["categories"] ?? [],
-    "tagList" => $post["tagList"] ?? [],
-    "tagsType" => $post["tagsType"] ?? "includeTags",
+    "categories" => $get["categories"] ?? [],
+    "tagList" => $get["tagList"] ?? [],
+    "tagsType" => $get["tagsType"] ?? null,
 
-    "orderBy" => $post["orderBy"] ?? "timeAdded",
-    "orderWay" => $post["orderWay"] ?? "desc",
-    "groupResults" => $post["groupResults"] ?? $app->userNew->extra["siteOptions"]["torrentGrouping"],
+    "orderBy" => $get["orderBy"] ?? "timeAdded",
+    "orderWay" => $get["orderWay"] ?? "desc",
+    "groupResults" => $get["groupResults"] ?? $app->userNew->extra["siteOptions"]["torrentGrouping"],
+
+    "page" => $get["page"] ?? 1,
 ];
+
+# build query string (saving/sharing)
+foreach ($get as $key => $value) {
+    if (empty($value)) {
+        unset($get[$key]);
+    }
+}
+
+$get["page"] ??= null;
+unset($get["page"]);
+
+$queryString = http_build_query($get);
+!d($queryString);
 
 # search manticore
 $manticore = new Gazelle\Manticore();
-$searchResults = $manticore->search("torrents", $post);
+$searchResults = $manticore->search("torrents", $get);
 $resultCount = count($searchResults);
-!d($searchResults);
+#!d($searchResults);
 
 
 /** pagination */
@@ -67,25 +80,14 @@ $resultCount = count($searchResults);
 
 $pagination = [];
 
-# resultCount
+# resultCount and pageSize
 $pagination["resultCount"] = count($searchResults);
-
-# first page
-$pagination["firstPage"] = 1;
+$pagination["pageSize"] = $app->userNew->extra["siteOptions"]["searchPagination"] ?? 20;
 
 # current page
-$pagination["currentPage"] = intval($post["page"] ?? 1);
+$pagination["currentPage"] = intval($searchTerms["page"] ?? 1);
 if (empty($pagination["currentPage"])) {
     $pagination["currentPage"] = 1;
-}
-
-# page size, offset, and limit
-$pagination["pageSize"] = $app->userNew->extra["siteOptions"]["searchPagination"] ?? 20;
-$pagination["offset"] = ($pagination["currentPage"] - 1) * $pagination["pageSize"];
-$pagination["limit"] = $pagination["offset"] + $pagination["pageSize"];
-
-if ($pagination["limit"] > $pagination["resultCount"]) {
-    $pagination["limit"] = $pagination["resultCount"];
 }
 
 # last page
@@ -102,6 +104,19 @@ if (empty($pagination["previousPage"]) || abs($pagination["previousPage"]) !== $
 
 # next page
 $pagination["nextPage"] = $pagination["currentPage"] + 1;
+
+# first page
+$pagination["firstPage"] = 1;
+
+
+# offset and limit
+$pagination["offset"] = intval(($pagination["currentPage"] - 1) * $pagination["pageSize"]);
+$pagination["limit"] = $pagination["offset"] + $pagination["pageSize"];
+
+if ($pagination["limit"] > $pagination["resultCount"]) {
+    $pagination["limit"] = $pagination["resultCount"];
+}
+
 !d($pagination);
 
 
@@ -110,10 +125,12 @@ $pagination["nextPage"] = $pagination["currentPage"] + 1;
 
 # Torrents::get_groups
 # this is slow, only do the current page
+$app->debug["time"]->startMeasure("browse", "get torrent groups");
 $groupIds = array_column($searchResults, "id");
 $groupIds = array_slice($groupIds, $pagination["offset"], $pagination["pageSize"]);
 
 $torrentGroups = Torrents::get_groups($groupIds);
+$app->debug["time"]->stopMeasure("browse", "get torrent groups");
 #!d($torrentGroups);exit;
 
 
@@ -188,7 +205,6 @@ $app->twig->display("torrents/browse.twig", [
       $app->env->toArray($app->env->META->Formats->Plain)
   ),
 
-
   "searchResults" => $searchResults,
   "torrentGroups" => $torrentGroups,
 
@@ -197,4 +213,5 @@ $app->twig->display("torrents/browse.twig", [
 
   "searchTerms" => $searchTerms,
   "pagination" => $pagination,
+  "queryString" => $queryString,
 ]);
