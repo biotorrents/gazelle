@@ -54,7 +54,7 @@
 <tr>
 
 	{# grouped #}
-  <th />
+  	{# <th /> #}
 
 	{#
   {% if searchTerms.groupResults %}
@@ -65,17 +65,19 @@
 	{# category icon #}
 	<th class="cats_col" />
 
-	{# title #}
-	<th>Title</th>
+	{# torrent info #}
+	<th>Torrent&nbsp;info</th>
 
 	{# timeAdded #}
 	<th>Time&nbsp;added</th>
 
-	{# file size #}
-	<th>File&nbsp;size</th>
+	{# data size #}
+	<th>Data&nbsp;size</th>
 
 	{# file count #}
+	{#
 	<th>File&nbsp;count</th>
+	#}
 
 	{# seeders #}
 	<th title="Seeders">↑</th>
@@ -94,18 +96,10 @@
 
 {# start the results themselves #}
 {% for item in torrentGroups %}
-<pre>
-{{ dump(item) }}
-</pre>
+
 {% include "torrents/tableEntry.twig" with item %}
 
 {% endfor %}
-
-
-{# CONTINUE HERE #}
-
-
-
 
 {# end the results table #}
 </table>
