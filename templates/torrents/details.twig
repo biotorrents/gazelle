@@ -1,203 +1,143 @@
-<?php
+{% extends "base.twig" %}
 
-#declare(strict_types = 1);
+{% block content %}
 
+	<h2>{{ groupDetails.title }}</h2>
 
-/**
- * torrent details page
- */
+	{# essential details table #}
+	<section>
+		<table>
 
-$app = App::go();
+			{# organism #}
+			{% if groupDetails.subject %}
+				<tr>
+					<th>🦠 Organism</th>
 
-$get = Http::query("get");
-$groupId = intval($get["id"] ?? 0);
-$revisionId = intval($get["revisionId"] ?? 0);
+					<td>
+						{{ groupDetails.subject }}
+						{% if groupDetails.object %}
+							{{ "<em>#{groupDetails.object}</em>"|raw }}
+						{% endif %}
+					</td>
 
-if (empty($groupId)) {
-    # render error page
-}
+					<td>
+						<a href="/torrents.php?complexSearch={{ groupDetails.subject }} {{ groupDetails.object }}">Search »</a>
+					</td>
+				</tr>
+			{% endif %}
 
-# get torrent/group info
-$torrentCache = TorrentFunctions::get_group_info($groupId, true, $revisionId);
-$groupDetails = $torrentCache[0];
-$torrentDetails = $torrentCache[1];
-#!d($groupDetails, $torrentDetails);
+			{# year #}
+			{% if groupDetails.year %}
+				<tr>
+					<th>📅 Year</th>
 
-# description and creators
-$description = Text::parse($groupDetails["description"]);
-$creatorList = Artists::get_artist($groupId);
-#!d($creatorList);
+					<td>{{ groupDetails.year }}</td>
 
-# get an openai description if it exists
-$query = "select text from openai where groupId = ?";
-$openAiDescription = $app->dbNew->single($query, [$groupId]);
+					<td>
+						<a href="/torrents.php?year={{ groupDetails.year }}">Search »</a>
+					</td>
+				</tr>
+			{% endif %}
 
-# alternative pictures
-$query = "select id, image, summary, userId, time from cover_art where groupId = ? order by time asc";
-$coverArt = $app->dbNew->multi($query, [$groupId]) ?? [];
+			{# identifier #}
+			{% if groupDetails.identifier %}
+				<tr>
+					<th>🔑 Identifier</th>
 
+					<td>{{ groupDetails.identifier }}</td>
 
-# tagList
-$tagList = [];
+					<td/>
+				</tr>
+			{% endif %}
 
-$tagNames = explode("|", $groupDetails["GROUP_CONCAT(DISTINCT tags.`Name` SEPARATOR '|')"]);
-$tagIds = explode("|", $groupDetails["GROUP_CONCAT(DISTINCT tags.`ID` SEPARATOR '|')"]);
-$userIds = explode("|", $groupDetails["GROUP_CONCAT(tt.`UserID` SEPARATOR '|')"]);
+			{# workgroup #}
+			{% if groupDetails.workgroup %}
+				<tr>
+					<th>🏫 Workgroup</th>
 
-foreach ($tagNames as $key => $value) {
-    $tagList[$key]["name"] = $value;
-    $tagList[$key]["id"] = $tagIds[$key];
-    $tagList[$key]["userId"] = $userIds[$key];
+					<td>{{ groupDetails.workgroup }}</td>
 
-    /*
-    # not needed
-    $split = Tags::get_name_and_class($value);
-    $tags[$key]["display"] = $split["name"];
-    $tags[$key]["class"] = $split["class"];
-    */
-}
-#!d($tagList);
+					<td>
+						<a href="/torrents.php?location={{ groupDetails.workgroup }}">Search »</a>
+					</td>
+				</tr>
+			{% endif %}
 
+			{# location #}
+			{% if groupDetails.location %}
+				<tr>
+					<th>📍 Location</th>
 
-/** twig template */
+					<td>{{ groupDetails.location }}</td>
 
-if ($get["new"]) {
-    $app->twig->display("torrents/details.twig", [
-        "title" => $groupDetails["title"],
-        "sidebar" => true,
+					<td>
+						<a href="/torrents.php?location={{ groupDetails.location }}">Search »</a>
+					</td>
+				</tr>
+			{% endif %}
 
-        "js" => ["vendor/easymde.min", "vendor/tom-select.complete.min", "browse", "comments", "torrent", "recommend", "cover_art", "subscriptions"],
-        "css" => ["vendor/easymde.min", "vendor/tom-select.bootstrap5.min"],
+			{# tags #}
+		    {#
+			{% if groupDetails.tag_list is not empty %}
+				<tr>
+					<th>#️ Tags</th>
+		
+					<td>{{ displayTags(item.tag_list)|raw }}</td>
+		
+					<td/>
+				</tr>
+			{% endif %}
+		    #}
 
-        "groupId" => $groupId,
-        "revisionId" => $revisionId,
+			{# creators #}
+			{#
+			{% if groupDetails.tag_list is not empty %}
+				<tr>
+					<th>#️ Tags</th>
+			
+					<td>{{ displayTags(item.tag_list)|raw }}</td>
+			
+					<td/>
+				</tr>
+			{% endif %}
+			#}
 
-        "groupDetails" => $groupDetails,
-        "torrentDetails" => $torrentDetails,
+		</table>
+	</section>
 
-        "description" => $description,
-        "openAiDescription" => $openAiDescription,
-        "creatorList" => $creatorList,
+	{# description #}
+	<section>
+		<h3>Description</h3>
 
-        "coverArt" => $coverArt,
-        "tagList" => $tagList,
+		{{ description|raw }}
 
-        "isBookmarked" => Bookmarks::has_bookmarked("torrent", $groupId),
-        "isSubscribed" => Subscriptions::has_subscribed_comments("torrents", $groupId),
-    ]);
+        {# plz be my ai gf #}
+        {% if openAiDescription %}
+            <div class="faded">
+                <h4>OpenAI tl;dr</h4>
 
+                {{ openAiDescription }}
+            </div>
+        {% endif %}
+	</section>
 
-    exit;
-}
+    {# torrent list #}
+    <section>
 
+    </section>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-$ENV = ENV::go();
-$twig = Twig::go();
-
-define('MAX_PERS_COLLAGES', 3); // How many personal collages should be shown by default
-define('MAX_COLLAGES', 5); // How many normal collages should be shown by default
-
-$GroupID = ceil($_GET['id']);
-if (!empty($_GET['revisionid']) && is_number($_GET['revisionid'])) {
-    $RevisionID = $_GET['revisionid'];
-} else {
-    $RevisionID = 0;
-}
-
-
-$TorrentCache = TorrentFunctions::get_group_info($GroupID, true, $RevisionID);
-$TorrentDetails = $TorrentCache[0];
-$TorrentList = $TorrentCache[1];
-
-// Group details
-list($WikiBody, $WikiImage, $GroupID, $GroupName, $GroupTitle2, $GroupNameJP, $GroupYear,
-    $GroupStudio, $GroupSeries, $GroupCatalogueNumber, $GroupCategoryID,
-    $GroupTime, $TorrentTags, $TorrentTagIDs, $TorrentTagUserIDs,
-    $Screenshots, $Mirrors, $GroupFlags) = array_values($TorrentDetails);
-
-# Make the main headings
-$AltName = $GroupName; // Goes in the alt text of the image
-$Title = $GroupName; // Goes in <title>
-$WikiBody = Text::parse($WikiBody);
-$Artists = Artists::get_artist($GroupID);
+{% endblock %}
 
 
-$CoverArt = $app->cacheOld->get_value("torrents_cover_art_$GroupID");
-if (!$CoverArt) {
-    $app->dbOld->query("
-      SELECT ID, Image, Summary, UserID, Time
-      FROM cover_art
-      WHERE GroupID = '$GroupID'
-      ORDER BY Time ASC");
+{% block sidebar %}
 
-    $CoverArt = [];
-    $CoverArt = $app->dbOld->to_array();
+	{% include "torrents/sidebar.twig" %}
 
-    if ($app->dbOld->has_results()) {
-        $app->cacheOld->cache_value("torrents_cover_art_$GroupID", $CoverArt, 0);
-    }
-}
+{% endblock %}
 
 
-$Tags = [];
-if ($TorrentTags !== '') {
-    $TorrentTags = explode('|', $TorrentTags);
-    $TorrentTagIDs = explode('|', $TorrentTagIDs);
-    $TorrentTagUserIDs = explode('|', $TorrentTagUserIDs);
+{#
 
-    foreach ($TorrentTags as $TagKey => $TagName) {
-        $Tags[$TagKey]['name'] = $TagName;
-        $Tags[$TagKey]['id'] = $TorrentTagIDs[$TagKey];
-        $Tags[$TagKey]['userid'] = $TorrentTagUserIDs[$TagKey];
-
-        $Split = Tags::get_name_and_class($TagName);
-        $Tags[$TagKey]['display'] = $Split['name'];
-        $Tags[$TagKey]['class'] = $Split['class'];
-    }
-}
-
-
-# Render Twig
-$DisplayName = $twig->render(
-    'details/torrent_header.html',
-    [
-      'db' => $ENV->DB,
-      'g' => $TorrentDetails,
-      #'cat_icon' => $ENV->CATS->{$TorrentDetails['category_id']}->Icon,
-      'url' => Format::get_url($_GET),
-      'cover_art' => (!isset($user['CoverArt']) || $user['CoverArt']) ?? true,
-      'thumb' => ImageTools::process($CoverArt, 'thumb'),
-      'artists' => Artists::display_artists($Artists),
-    ]
-);
-
-// Comments (must be loaded before View::header so that subscriptions and quote notifications are handled properly)
-list($NumComments, $Page, $Thread, $LastRead) = Comments::load('torrents', $GroupID);
-
-// Start output
-View::header(
-    $Title,
-    'browse,comments,torrent,recommend,cover_art,subscriptions,vendor/easymde.min',
-    'vendor/easymde.min'
-);
-?>
 
 <section class="header">
   <h2 class="row">
@@ -859,13 +799,13 @@ HTML;
             </div>
 -->
             <?php
-        #}
+        # }
         #echo '</blockquote>';
 } ?>
           </td>
         </tr>
         <?php
-#}?>
+# }?>
       </table>
     </div>
     <?php
@@ -1160,3 +1100,6 @@ CommentsView::render_comments($Thread, $LastRead, "torrents.php?id=$GroupID");
   </div>
 </div>
 <?php View::footer();
+
+
+#}

@@ -7,6 +7,7 @@ declare(strict_types=1);
  * torents
  */
 
+ /*
 # multi ( row ( single ) )
 Flight::route("/torrents(/@group(/@torrent))", function ($group, $torrent) {
     $app = App::go();
@@ -21,11 +22,11 @@ Flight::route("/torrents(/@group(/@torrent))", function ($group, $torrent) {
         require_once "{$app->env->serverRoot}/sections/torrents/details.php";
     }
 });
+*/
 
 
+$ENV = ENV::go();
 
-
-/*
 
     #enforce_login();
 
@@ -70,7 +71,6 @@ Flight::route("/torrents(/@group(/@torrent))", function ($group, $torrent) {
     }
 
 
-$ENV = ENV::go();
 
 if (!empty($_REQUEST['action'])) {
     switch ($_REQUEST['action']) {
@@ -357,4 +357,3 @@ else {
         require_once "$ENV->serverRoot/sections/torrents/browse.php";
     }
 }
-*/

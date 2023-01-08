@@ -21,7 +21,7 @@ class ImageTools
      * @param string $thumbnail image proxy scale profile to use
      * @return string
      */
-    public static function process(string $uri, $thumbnail = false): string
+    public static function process(string|array $uri, $thumbnail = false): string
     {
         $app = App::go();
 

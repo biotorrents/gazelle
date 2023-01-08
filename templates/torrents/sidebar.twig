@@ -1,0 +1,176 @@
+{# cover art #}
+<section>
+
+	{% if user.siteOptions.coverArtTorrents %}
+		{% set uri = processImage(groupDetails.picture, "thumb") %}
+	{% else %}
+		{% set uri = processImage("#{env.staticServer}/common/noartwork.png", "thumb") %}
+	{% endif %}
+
+	<figure id="groupPicture" class="box_image box_image_albumart box_albumart">
+		<img src="{{ uri }}" lightbox-img="{{ uri }}" alt="{{ groupDetails.title }}" title="{{ groupDetails.title }}"/>
+	</figure>
+
+
+	{# extra cover art #}
+	{% if coverArt is not empty and user.siteOptions.coverArtTorrentsExtra %}
+
+		{% for index, item in coverArt %}
+
+			{# todo #}
+
+		{% endfor %}
+
+		{# controls #}
+		<a id="previousCover" class="button">‹ previous</a>
+		<a id="nextCover" class="button">next ›</a>
+
+	{% endif %}
+
+
+    {# add new picture #}
+    {% if can("site_edit_wiki") %}
+    <form>
+        <input type="hidden" name="groupId" value="{{ groupId }}" />
+
+        <input type="text" name="uri" placeholder="e.g., https://i.imgur.com/ZL9dsY8.jpg" />
+
+        <a class="button button-primary" id="addNewPicture">add new picture</a>
+    </form>
+
+    {% endif %}
+
+
+	{#}
+					        <?php
+					        if (count($CoverArt) > 0) {
+					            if (empty($user['ShowExtraCovers'])) {
+					                for ($Index = 0; $Index <= count($CoverArt); $Index++) { ?>
+					        <span id="cover_controls_<?=($Index)?>" <?=($Index > 0 ? ' style="display: none;"' : '')?>>
+					          <?php if ($Index === count($CoverArt)) { ?>
+					          <a class="brackets prev_cover"
+					            data-gazelle-prev-cover="<?=($Index - 1)?>"
+					            href="#">Prev</a>
+					          <a class="brackets show_all_covers" href="#">Show all</a>
+					          <span class="brackets next_cover">Next</span>
+					          <?php } elseif ($Index > 0) { ?>
+					          <a class="brackets prev_cover"
+					            data-gazelle-prev-cover="<?=($Index - 1)?>"
+					            href="#">Prev</a>
+					          <a class="brackets show_all_covers" href="#">Show all</a>
+					          <a class="brackets next_cover"
+					            data-gazelle-next-cover="<?=($Index + 1)?>"
+					            href="#">Next</a>
+					          <?php } elseif ($Index === 0 && count($CoverArt) > 0) { ?>
+					          <span class="brackets prev_cover">Prev</span>
+					          <a class="brackets show_all_covers" href="#">Show all</a>
+					          <a class="brackets next_cover"
+					            data-gazelle-next-cover="<?=($Index + 1)?>"
+					            href="#">Next</a>
+					          <?php } ?>
+					        </span>
+					        <?php
+					                }
+					            } else { ?>
+					        <span>
+					          <a class="brackets show_all_covers" href="#">Hide</a>
+					        </span>
+					        <?php
+					            }
+					        }
+					?>
+					      </div>
+					
+					      <?php $Index = 0; ?>
+					      <div id="covers">
+					        <div id="cover_div_<?=$Index?>">
+					$Index++;
+					?>
+					        </div>
+					
+					        <?php
+					        foreach ($CoverArt as $Cover) {
+					            list($ImageID, $Image, $Summary, $AddedBy) = $Cover; ?>
+					        <div id="cover_div_<?=$Index?>" <?=(empty($user['ShowExtraCovers']) ? ' style="display: none;"' : '')?>>
+					          <div>
+					            <?php
+					          if (empty($user['ShowExtraCovers'])) {
+					              $Src = 'src="" data-gazelle-temp-src="' . ImageTools::process($Image, 'thumb') . '" lightbox-img="'.ImageTools::process($Image).'"';
+					          } else {
+					              $Src = 'src="' . ImageTools::process($Image, 'thumb') . '" lightbox-img="'.ImageTools::process($Image).'"';
+					          } ?>
+					            <img id="cover_<?=$Index?>" class="lightbox-init"
+					              width="100%" <?=$Src?> alt="<?=$Summary?>" />
+					          </div>
+					
+					          <ul class="stats nobullet">
+					            <li>
+					              <?=$Summary?>
+					              <?=(check_perms('users_mod') ? ' added by ' . User::format_username($AddedBy, false, false, false, false, false) : '')?>
+					              <span class="remove remove_cover_art"><a href="#"
+					                  onclick="if (confirm('Do not delete useful alternative pictures. Are you sure you want to delete this picture?') === true) { ajax.get('torrents.php?action=remove_cover_art&amp;auth=<?=$user['AuthKey']?>&amp;id=<?=$ImageID?>&amp;groupid=<?=$GroupID?>'); this.parentNode.parentNode.parentNode.style.display = 'none'; this.parentNode.parentNode.parentNode.previousElementSibling.style.display = 'none'; } else { return false; }"
+					                  class="brackets tooltip" title="Remove image">X</a></span>
+					            </li>
+					          </ul>
+					        </div>
+					        <?php
+					        $Index++;
+					        } ?>
+					      </div>
+					
+					      <?php
+					    </div>
+					#}
+
+
+</section>
+
+
+{# actions #}
+<section>
+	<h3>Actions</h3>
+
+	<form>
+
+		{# edit group #}
+		{% if can("site_edit_wiki") %}
+			<a class="button button-primary" href="/torrents.php?action=editgroup&groupid={{ groupId }}">edit group</a>
+		{% endif %}
+
+		{# revision history #}
+		<a class="button" href="/torrents.php?action=history&groupid={{ groupId }}">revision history</a>
+
+		{# use this revision #}
+		{% if revisionId != 0 and can("site_edit_wiki") %}
+			<a class="button button-orange" href="/torrents.php?action=revert&groupid={{ groupId }}&revisionid={{ revisionId }}&auth={{ user.extra.AuthKey }}">use this revision</a>
+		{% endif %}
+
+        {# add new torrent #}
+		<a class="button button-green" href="/upload.php?groupid={{ groupId }}">add new torrent</a>
+
+		{# add new request #}
+		{% if can("site_submit_requests") %}
+			<a class="button button-green" href="/requests.php?action=new&groupid={{ groupId }}">add new request</a>
+		{% endif %}
+
+		{# toggle bookmark #}
+		{% if isBookmarked %}
+			<a class="button button-red" id="toggleGroupBookmark" data-groupid="{{ groupId }}">remove bookmark</a>
+		{% else %}
+			<a class="button button-orange" id="toggleGroupBookmark" data-groupid="{{ groupId }}">add bookmark</a>
+		{% endif %}
+
+		{# toggle subscription #}
+		{% if isSubscribed %}
+			<a class="button button-red" id="toggleGroupSubscription" data-groupid="{{ groupId }}">remove subscription</a>
+		{% else %}
+			<a class="button button-orange" id="toggleGroupSubscription" data-groupid="{{ groupId }}">add subscription</a>
+		{% endif %}
+
+
+		{# view log #}
+		<a class="button" href="/torrents.php?action=grouplog&groupid={{ groupId }}">view log</a>
+
+	</form>
+
+</section>

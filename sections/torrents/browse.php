@@ -168,9 +168,7 @@ $Categories = [
 $GroupedCategories = $Categories;
 
 
-/**
- * VIEW THE TWIG TEMPLATE HERE
- */
+/** twig template */
 
 $app->twig->display("torrents/browse.twig", [
     "title" => "Browse",

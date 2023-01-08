@@ -31,6 +31,14 @@
 		</a>
 
 		<div class="flexRow">
+			{# subject #}
+			{% if item.subject %}
+				<span class="tooltip" title="Organism">🦠 {{ item.subject }}
+					{# object #}
+					{{ (item.object) ? "<em>#{item.object}</em>"|raw : "" }}
+				</span>
+			{% endif %}
+
 			{# year #}
 			{% if item.year %}
 				<span class="tooltip" title="Year">📅 {{ item.year }}</span>
@@ -39,15 +47,6 @@
 			{# identifier #}
 			{% if item.identifier %}
 				<span class="tooltip" title="Identifier">🔑 {{ item.identifier }}</span>
-
-			{% endif %}
-
-			{# subject #}
-			{% if item.subject %}
-				<span class="tooltip" title="Organism">🦠 {{ item.subject }}
-					{# object #}
-					{{ (item.object) ? "<em>#{item.object}</em>"|raw : "" }}
-				</span>
 			{% endif %}
 
 			{# workgroup #}
@@ -140,7 +139,7 @@
 
   {# version #}
   {% if item.Version %}
-    <span title="Version"><i class="fa-light fa-square-code"></i> {{ item.Version }}</span>
+    <span title="Version"><img src="/images/icons/version.png" alt="version" class="icon" /> {{ item.Version }}</span>
   {% endif %}
 
   {# scope #}
@@ -150,7 +149,7 @@
 
   {# archive #}
   {% if item.Archive %}
-    <span title="Archive"><img src="/images/symbols/archive.png" alt="archive" class="icon" /> {{ item.Archive }}</span>
+    <span title="Archive"><img src="/images/icons/archive.png" alt="archive" class="icon" /> {{ item.Archive }}</span>
   {% endif %}
 
   {# license #}
