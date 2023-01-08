@@ -9,11 +9,11 @@
   siteOptions.searchType ??= null;
 
   if (siteOptions.searchType === "simple") {
-    $("#simpleSearch").hide();
+    $("#complexSearch").hide();
   }
 
   if (siteOptions.searchType === "complex") {
-    $("#complexSearch").hide();
+    $("#simpleSearch").hide();
   }
 
   // show simple, hide complex
@@ -28,15 +28,49 @@
     $("#simpleSearch").hide();
   });
 
-  // toggle tag list
-  $("#toggleTagList").on("click", () => {
-    $("#tagList").toggle();
-  });
+  // tom select: probably a less dumb way to do this
+  var tomSelects = [
+    new TomSelect("#sequencePlatforms"),
+    new TomSelect("#graphPlatforms"),
+    new TomSelect("#imagePlatforms"),
+    new TomSelect("#documentPlatforms"),
+
+    new TomSelect("#sequenceFormats"),
+    new TomSelect("#imageFormats"),
+    new TomSelect("#otherFormats"),
+    new TomSelect("#archiveFormats"),
+
+    new TomSelect("#scope"),
+    new TomSelect("#leechStatus"),
+    new TomSelect("#license"),
+
+    new TomSelect("#categories"),
+    new TomSelect("#tagList"),
+
+    new TomSelect("#orderBy"),
+    new TomSelect("#orderWay"),
+  ];
 
   // reset the form
   $("#resetSearchForm").on("click", () => {
+    // normal form
     let formObject = $("#torrentSearch").get(0);
     formObject.reset();
+
+    // text inputs
+    $("input[type=text]").map(function () {
+      this.value = "";
+    });
+
+    // number inputs
+    $("input[type=number]").map(function () {
+      this.value = "";
+    });
+
+    // tom select elements
+    tomSelects.forEach((element) => {
+      element.clear();
+    });
   });
 })();
 

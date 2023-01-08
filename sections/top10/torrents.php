@@ -521,7 +521,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
         // Generate torrent's title
         $DisplayName = '';
 
-        $DisplayName .= "<a class='torrent_title' href='torrents.php?id=$GroupID&amp;torrentid=$TorrentID' ";
+        $DisplayName .= "<a class='torrentTitle' href='torrents.php?id=$GroupID&amp;torrentid=$TorrentID' ";
         if (!isset($user['CoverArt']) || $user['CoverArt']) {
             $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
         }

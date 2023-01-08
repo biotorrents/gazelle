@@ -532,7 +532,7 @@ foreach ($Categories as $CatKey => $CatName) {
 
       # This is the torrent list formatting!
       $DisplayName = '';
-      $DisplayName .= '<a class="torrent_title" href="torrents.php?id='.$GroupID.'&amp;torrentid='.$TorrentID.'" ';
+      $DisplayName .= '<a class="torrentTitle" href="torrents.php?id='.$GroupID.'&amp;torrentid='.$TorrentID.'" ';
 
       # No cover art
       if (!isset($user['CoverArt']) || $user['CoverArt']) {
@@ -577,7 +577,7 @@ foreach ($Categories as $CatKey => $CatName) {
       if (isset($Artists)) {
           # Emoji in classes/astists.class.php
           $Label = '&ensp;';
-          $DisplayName .= $Label.'<div class="torrent_artists">'.Artists::display_artists($Artists).'</div>';
+          $DisplayName .= $Label.'<div>'.Artists::display_artists($Artists).'</div>';
       } ?>
 
       <tr

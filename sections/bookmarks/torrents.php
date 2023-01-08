@@ -91,8 +91,7 @@ foreach ($GroupIDs as $GroupID) {
   </td>
 
   <td class="center">
-    <div title="<?=$TorrentTags->title()?>"
-      class="tooltip <?=Format::css_category($GroupCategoryID)?>">
+    <div class="tooltip <?=Format::css_category($GroupCategoryID)?>">
     </div>
   </td>
 
@@ -181,9 +180,6 @@ foreach ($GroupIDs as $GroupID) {
   id="group_<?=$GroupID?>">
   <td></td>
   <td class="center">
-    <div title="<?=$TorrentTags->title()?>"
-      class="tooltip <?=Format::css_category($GroupCategoryID)?>">
-    </div>
   </td>
 
   <td>

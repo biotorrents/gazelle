@@ -5,435 +5,451 @@
 {# include the main search form #}
 {% include "torrents/search.twig" %}
 
-  {# no results message #}
-  {% if resultCount == 0 %}
-  <div class="torrents_nomatch box pad" align="center">
-    <h2>Your search did not match anything</h2>
-    <p>Make sure all names are spelled correctly, or try making your search less specific</p>
-  </div>
-</div>
+{# no results message #}
+{% if pagination.resultCount == 0 %}
+	<div class="alertbar warning halfwide">
+		<h3>No search results :(</h3>
+		<p>Please sure all you didn't make too many typos or apply too many filters.</p>
+	</div>
+{% else %}
+  {# resultCount and pagination controls #}
+  <div id="searchResultsHeader">
+  <h3>{{ pagination.offset + 1 }}&ndash;{{ pagination.limit }} of {{ pagination.resultCount }} results</h3>
 
-{# todo: footer and exit #}
+<div id="paginationControls">
 
+  {% if pagination.currentPage != pagination.firstPage %}
+  <a href="/torrents/{{ queryString }}?page={{ pagination.firstPage }}" class="button u-pull-right">« first</a>
   {% endif %}
 
+  {% if pagination.currentPage > pagination.previousPage %}
+  <a href="/torrents/{{ queryString }}?page={{ pagination.previousPage }}" class="button u-pull-right">‹ previous</a>
+  {% endif %}
 
+  {% if pagination.currentPage < pagination.nextPage and pagination.currentPage < pagination.lastPage %}
+  <a href="/torrents/{{ queryString }}?page={{ pagination.nextPage }}" class="button u-pull-right">next ›</a>
+    {% endif %}
 
-{% if bullshit %}
-<div class="torrents_nomatch box pad" align="center">
-  <h2>The requested page contains no matches</h2>
-  <p>You are requesting page {{ page }}, but the search returned only
-    {{ lastPage }} pages
-  </p>
-</div>
-<div class="linkbox">Go to page {{ pages }}
-</div>
-</div>
+	  {% if pagination.currentPage != pagination.lastPage %}
+  <a href="/torrents/{{ queryString }}?page={{ pagination.lastPage }}" class="button u-pull-right">last »</a>
+     {% endif %}
+ 
+  </div>
+  </div>
+{% endif %}
+
+{# grouping options #}
+{% if searchTerms.groupResults %}
+  {% set grouping = "grouping" %}
+{% else %}
+  {% set grouping = "no_grouping" %}
 {% endif %}
 
 
-{# pagination #}
-<div class="linkbox">
-{{ pages }}
-</div>
+{# start the results table #}
+<table id="torrentSearchResults" class="{{ grouping }}">
 
 {# start results table headings #}
-{% if groupResults %}
-{% set grouping = "grouping" %}
-{% else %}
-{% set grouping = "no_grouping" %}
-{% endif %}
+{# todo: this can be reorganized to suck less #}
+<tr>
 
-<table id="torrent_table" class="box torrent_table cats {{ grouping }}">
-  <tr class="colhead">
+	{# grouped #}
+  	{# <th /> #}
 
-{# grouped #}
-  {% if groupResults %}
-    <th class="small" />
-  {% endif %}
-
-{# category icon #}
-    <th class="small cats_col" />
-
-{# name/year #}
-    <th>
-    Name / <a href="<?=header_link('year')?>">Year</a>
-    </th>
-
-    {# files #}
-    <th>
-    Files
-    </th>
-
-    {# time #}
-    <th>
-    <a href="<?=header_link('time')?>">Time</a>
-    </th>
-
-    {# size #}
-    <th>
-    <a href="<?=header_link('size')?>">Size</a>
-    </th>
-
-    {# snatches #}
-    <th class="sign snatches">
-      <a href="<?=header_link('snatched')?>" aria-label="Sort by snatches">↻</a>
-    </th>
-
-    {# seeders #}
-    <th class="sign seeders">
-      <a href="<?=header_link('seeders')?>" aria-label="Sort by seeders">&uarr;</a>
-    </th>
-
-    {# leechers #}
-    <th class="sign leechers">
-      <a href="<?=header_link('leechers')?>" aria-label="Sort by leechers">&darr;</a>
-    </th>
-  </tr>
-  {# end results table headings #}
-
-{# start printing torrent list #}
-<pre>
-{{ dump(searchResults)}}
-</pre>
-{% for key, value in searchResults %}
-{#}
-  foreach ($Results as $Key => $GroupID) {
-
-        {% set groupInfo = resultGroups.key %}
-      $GroupInfo = $Groups[$GroupID] ?? [];
-
-      {% if groupInfo.Torrents is empty %}
-      {# todo: continue # }
-      {% endif %} # }
-      if (empty($GroupInfo['Torrents'])) {
-          continue;
-      }
-
-
-      {# NOT NEEDED #}
-      {#
-      $CategoryID = $GroupInfo['category_id'];
-      $GroupYear = $GroupInfo['year'];
-      $Artists = $GroupInfo['Artists'];
-      $GroupCatalogueNumber = $GroupInfo['identifier'];
-      $GroupStudio = $GroupInfo['workgroup'];
-      $GroupName = empty($GroupInfo['title']) ? (empty($GroupInfo['subject']) ? $GroupInfo['object'] : $GroupInfo['subject']) : $GroupInfo['title'];
-      $GroupTitle2 = $GroupInfo['subject'];
-      $GroupNameJP = $GroupInfo['object'];
-      #}
-
-      {# use torrent groups # }
-      {% if groupResults %}
-      if ($GroupResults) {
-          $Torrents = $GroupInfo['Torrents'];
-          $GroupTime = $MaxSize = $TotalLeechers = $TotalSeeders = $TotalSnatched = 0;
-          foreach ($Torrents as $T) {
-              $GroupTime = max($GroupTime, strtotime($T['Time']));
-              $MaxSize = max($MaxSize, $T['Size']);
-              $TotalLeechers += $T['Leechers'];
-              $TotalSeeders += $T['Seeders'];
-              $TotalSnatched += $T['Snatched'];
-          }
-      }
-
-      {# don't use torrent groups # }
-      {% else %}
-      
-      else {
-          $TorrentID = $Key;
-          $Torrents = [$TorrentID => $GroupInfo['Torrents'][$TorrentID]];
-      }
-      {% endif %} {# if groupResults # }
-
-      $TorrentTags = new Tags($GroupInfo['tag_list']);
-
-      # Start making $DisplayName (first torrent result line)
-      #$DisplayName = '';
-
-      /*
-      if (isset($Artists)) {
-          $DisplayName = '<div class="torrent_artists">'.Artists::display_artists($Artists).'</div> ';
-      } else {
-          $DisplayName = '';
-      }
-      */
-
-      $SnatchedGroupClass = $GroupInfo['Flags']['IsSnatched'] ? ' snatched_group' : '';
-
-      # Similar to the logic down the page, and on
-      # torrents.class.php and sections/artist/artist.php
-      if ($GroupResults && (count($Torrents) > 1 && isset($GroupedCategories[$CategoryID - 1]))) {
-          // These torrents are in a group
-          $CoverArt = $GroupInfo['picture'];
-
-          $DisplayName = $app->twig->render(
-              'torrents/display_name.html',
-              [
-                'g' => $GroupInfo,
-                'url' => Format::get_url($_GET),
-                'cover_art' => (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) ?? true,
-                'thumb' => ImageTools::process($CoverArt, 'thumb'),
-                'artists' => Artists::display_artists($Artists),
-                'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
-                'extra_info' => false,
-              ]
-          ); ?>
-  <tr class="group<?=$SnatchedGroupClass?>">
-    <?php
-      $ShowGroups = !(!empty($app->userNew->extra['TorrentGrouping']) && $app->userNew->extra['TorrentGrouping'] === 1); ?>
-    <td class="center">
-      <div id="showimg_<?=$GroupID?>"
-        class="<?=($ShowGroups ? 'hide' : 'show')?>_torrents">
-        <a class="tooltip show_torrents_link"
-          onclick="toggle_group(<?=$GroupID?>, this, event)"
-          title="Toggle this group (Hold &quot;Shift&quot; to toggle all groups)"></a>
-      </div>
-    </td>
-
-    <!-- Category icon -->
-    <td class="center cats_col">
-      <div title="<?=Format::pretty_category($CategoryID)?>"
-        class="tooltip <?=Format::css_category($CategoryID)?>">
-      </div>
-    </td>
-
-    <!-- [Bookmark] -->
-    <td colspan="2" class="big_info">
-      <div class="group_info clear">
-        <?=$DisplayName?>
-
-        <?php if (in_array($GroupID, $Bookmarks)) { ?>
-        <span class="remove_bookmark u-pull-right">
-          <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
-            class="brackets"
-            onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove
-            bookmark</a>
-        </span>
-
-        <?php } else { ?>
-        <span class="add_bookmark u-pull-right">
-          <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
-            class="brackets"
-            onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
-        </span>
-        <?php } ?>
-      </div>
-    </td>
-
-    <!-- Time -->
-    <td class="nobr"><?=time_diff($GroupTime, 1)?>
-    </td>
-
-    <!-- Size -->
-    <td class="number_column nobr"><?=Format::get_size($MaxSize)?>(Max)</td>
-
-    <!-- Snatches, seeders, and leechers -->
-    <td class="number_column"><?=Text::float($TotalSnatched)?>
-    </td>
-    <td
-      class="number_column<?=($TotalSeeders === 0 ? ' r00' : '')?>">
-      <?=Text::float($TotalSeeders)?>
-    </td>
-    <td class="number_column"><?=Text::float($TotalLeechers)?>
-    </td>
-  </tr>
-
-  <?php
-    foreach ($Torrents as $TorrentID => $Data) {
-        $Data['CategoryID'] = $CategoryID;
-        // All of the individual torrents in the group
-
-        // Get report info for each torrent, use the cache if available, if not, add to it
-        $Reported = false;
-        $Reports = Torrents::get_reports($TorrentID);
-        if (count($Reports) > 0) {
-            $Reported = true;
-        }
-
-        $SnatchedTorrentClass = $Data['IsSnatched'] ? ' snatched_torrent' : '';
-        $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$app->userNew->extra['AuthKey']."&amp;torrent_pass=".$app->userNew->extra['torrent_pass'];
-
-        if (!($TorrentFileName = $app->cacheOld->get_value('torrent_file_name_'.$TorrentID))) {
-            $TorrentFile = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
-            $Tor = new BencodeTorrent($TorrentFile, false, false);
-            $TorrentFileName = $Tor->Dec['info']['name'];
-            $app->cacheOld->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
-        } ?>
-  <tr
-    class="group_torrent groupid_<?=$GroupID?> <?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($app->userNew->extra['TorrentGrouping']) && $app->userNew->extra['TorrentGrouping'] === 1 ? ' hidden' : '')?>">
-    <td colspan="3">
-      <span class="u-pull-right">
-        [ <a href="<?=$TorrentDL?>" class="tooltip"
-          title="Download"><?=$Data['HasFile'] ? 'DL' : 'Missing'?></a>
-        <?php
-        if (Torrents::can_use_token($Data)) { ?>
-        | <a
-          href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>&amp;usetoken=1"
-          class="tooltip" title="Use a FL Token"
-          onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
-        <?php } ?>
-        | <a
-          href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>"
-          class="tooltip" title="Report">RP</a> ]
-      </span>
-      <a href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>#torrent<?=$TorrentID?>"
-        class="torrent_label tl_reported tooltip search_link"><strong>Details</strong></a>
-      | <?=Torrents::torrent_info($Data)?>
-      <?php if ($Reported) { ?>
-      | <strong class="torrent_label tl_reported tooltip search_link important_text"
-        title="Type: <?=ucfirst($Reports[0]['Type'])?><br>
-                Comment: <?=htmlentities(htmlentities($Reports[0]['UserComment']))?>">Reported</strong><?php } ?>
-    </td>
-    <td class="number_column"><?=$Data['FileCount']?>
-    </td>
-    <td class="nobr"><?=time_diff($Data['Time'], 1)?>
-    </td>
-    <td class="number_column nobr"><?=Format::get_size($Data['Size'])?>
-    </td>
-    <td class="number_column"><?=Text::float($Data['Snatched'])?>
-    </td>
-    <td
-      class="number_column<?=($Data['Seeders'] === 0) ? ' r00' : ''?>">
-      <?=Text::float($Data['Seeders'])?>
-    </td>
-    <td class="number_column"><?=Text::float($Data['Leechers'])?>
-    </td>
-  </tr>
-  <?php
-    }
-      } else {
-          // Viewing a type that does not require grouping
-          $TorrentID = key($Torrents);
-          $Data = current($Torrents);
-
-          $Reported = false;
-          $Reports = Torrents::get_reports($TorrentID);
-          if (count($Reports) > 0) {
-              $Reported = true;
-          }
-
-          # Main search result title link
-          # These are the main torrent search results
-          $Data['CategoryID'] = $CategoryID;
-          $CoverArt = $GroupInfo['picture'];
-
-          # Extra info (non-group metadata)
-          if (isset($GroupedCategories[$CategoryID - 1])) {
-              $ExtraInfo = Torrents::torrent_info($Data, true, true);
-          } elseif ($Data['IsSnatched']) {
-              $ExtraInfo = Format::torrent_label('Snatched!');
-          } else {
-              $ExtraInfo = '';
-          }
-
-          # Render Twig
-          $DisplayName = $app->twig->render(
-              'torrents/display_name.html',
-              [
-                'g' => $GroupInfo,
-                'url' => Format::get_url($_GET),
-                'cover_art' => (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) ?? true,
-                'thumb' => ImageTools::process($CoverArt, 'thumb'),
-                'artists' => Artists::display_artists($Artists),
-                'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
-                'extra_info' => Torrents::torrent_info($Data, true, true),
-              ]
-          );
-
-          $SnatchedTorrentClass = $Data['IsSnatched'] ? ' snatched_torrent' : '';
-          $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$app->userNew->extra['AuthKey']."&amp;torrent_pass=".$app->userNew->extra['torrent_pass'];
-
-          /*
-          # todo: bring this back
-          if (!($TorrentFileName = $app->cacheOld->get_value('torrent_file_name_'.$TorrentID))) {
-              $TorrentFile = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
-              $Tor = new BencodeTorrent($TorrentFile, false, false);
-              $TorrentFileName = $Tor->Dec['info']['name'];
-              $app->cacheOld->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
-          }
-          */ ?>
-  <tr
-    class="torrent<?=$SnatchedTorrentClass . $SnatchedGroupClass?>">
-    <?php if ($GroupResults) { ?>
-    <td></td>
-    <?php } ?>
-    <td class="center cats_col">
-      <div title="<?=Format::pretty_category($CategoryID)?>"
-        class="tooltip <?=Format::css_category($CategoryID)?>"></div>
-    </td>
-    <td class="big_info">
-      <div class="group_info clear">
-        <div class="torrent_interactions">
-          <span class="u-pull-right">
-            [ <a href="<?=$TorrentDL?>" class="tooltip"
-              title="Download">DL</a>
-            <?php
-          if (Torrents::can_use_token($Data)) { ?>
-            | <a
-              href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>&amp;usetoken=1"
-              class="tooltip" title="Use a FL Token"
-              onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
-            <?php } ?>
-            | <a
-              href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>"
-              class="tooltip" title="Report">RP</a> ]
-          </span>
-          <br />
-          <?php if (in_array($GroupID, $Bookmarks)) { ?>
-          <span class="remove_bookmark u-pull-right">
-            <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
-              class="brackets"
-              onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove
-              bookmark</a>
-          </span>
-          <?php } else { ?>
-          <span class="add_bookmark u-pull-right">
-            <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
-              class="brackets"
-              onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
-          </span>
-          <?php } ?>
-        </div>
-        <?=$DisplayName?>
-        <!--
-        <br />
-        <div style="display: inline;" class="torrent_info"><?=$ExtraInfo?>
-        -->
-        <?php if ($Reported) { ?>
-        / <strong class="torrent_label tl_reported tooltip important_text"
-          title="Type: <?=ucfirst($Reports[0]['Type'])?><br>Comment: <?=htmlentities(htmlentities($Reports[0]['UserComment']))?>">Reported</strong><?php } ?>
-      </div>
-      <!--
-        <div class="tags"><?=$TorrentTags->format("torrents.php?$Action&amp;taglist=")?>
-      </div>
-      -->
-      </div>
-    </td>
-    <td class="number_column"><?=$Data['FileCount']?>
-    </td>
-    <td class="nobr"><?=time_diff($Data['Time'], 1)?>
-    </td>
-    <td class="number_column nobr"><?=Format::get_size($Data['Size'])?>
-    </td>
-    <td class="number_column"><?=Text::float($Data['Snatched'])?>
-    </td>
-    <td
-      class="number_column<?=($Data['Seeders'] === 0) ? ' r00' : ''?>">
-      <?=Text::float($Data['Seeders'])?>
-    </td>
-    <td class="number_column"><?=Text::float($Data['Leechers'])?>
-    </td>
-  </tr>
-  <?php
-      }
-  }
+	{#
+  {% if searchTerms.groupResults %}
+		<th />
+	{% endif %}
   #}
-  {% endfor %} {# for key, value in searchResults #}
-?>
+
+	{# category icon #}
+	<th class="cats_col" />
+
+	{# torrent info #}
+	<th>Torrent&nbsp;info</th>
+
+	{# timeAdded #}
+	<th>Time&nbsp;added</th>
+
+	{# data size #}
+	<th>Data&nbsp;size</th>
+
+	{# file count #}
+	{#
+	<th>File&nbsp;count</th>
+	#}
+
+	{# seeders #}
+	<th title="Seeders">↑</th>
+	{# <th>Seeders&nbsp;↑</th> #}
+
+	{# leechers #}
+	<th title="Leechers">↓</th>
+	{# <th>Leechers&nbsp;↓</th> #}
+
+  {# snatches #}
+	<th title="Snatches">↻</th>
+	{# <th>Snatches&nbsp;↻</th> #}
+
+</tr>
+{# end results table headings #}
+
+{# start the results themselves #}
+{% for item in torrentGroups %}
+
+{% include "torrents/tableEntry.twig" with item %}
+
+{% endfor %}
+
+{# end the results table #}
 </table>
-<div class="linkbox">{{ pages }}
-</div>
-</div>
+
+{# back to top: lazy af #}
+<a href="#searchResultsHeader" class="button">back to top</a>
 
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{#}														  foreach ($Results as $Key => $GroupID) {
+														
+{% set groupInfo = resultGroups.key %}
+$GroupInfo = $Groups[$GroupID] ?? [];
+														
+{% if groupInfo.Torrents is empty %}
+{# todo: continue # }
+{% endif %} # }
+if (empty($GroupInfo['Torrents'])) {
+continue;
+}
+														
+														
+{# NOT NEEDED #}
+	{#
+		      $CategoryID = $GroupInfo['category_id'];
+		      $GroupYear = $GroupInfo['year'];
+		      $Artists = $GroupInfo['Artists'];
+		      $GroupCatalogueNumber = $GroupInfo['identifier'];
+		      $GroupStudio = $GroupInfo['workgroup'];
+		      $GroupName = empty($GroupInfo['title']) ? (empty($GroupInfo['subject']) ? $GroupInfo['object'] : $GroupInfo['subject']) : $GroupInfo['title'];
+		      $GroupTitle2 = $GroupInfo['subject'];
+		      $GroupNameJP = $GroupInfo['object'];
+		      #}
+
+	{# use torrent groups # }
+		      {% if groupResults %}
+		      if ($GroupResults) {
+		          $Torrents = $GroupInfo['Torrents'];
+		          $GroupTime = $MaxSize = $TotalLeechers = $TotalSeeders = $TotalSnatched = 0;
+		          foreach ($Torrents as $T) {
+		              $GroupTime = max($GroupTime, strtotime($T['Time']));
+		              $MaxSize = max($MaxSize, $T['Size']);
+		              $TotalLeechers += $T['Leechers'];
+		              $TotalSeeders += $T['Seeders'];
+		              $TotalSnatched += $T['Snatched'];
+		          }
+		      }
+		
+		      {# don't use torrent groups # }
+		      {% else %}
+		      
+		      else {
+		          $TorrentID = $Key;
+		          $Torrents = [$TorrentID => $GroupInfo['Torrents'][$TorrentID]];
+		      }
+		      {% endif %} {# if groupResults # }
+		
+		      $TorrentTags = new Tags($GroupInfo['tag_list']);
+		
+		      # Start making $DisplayName (first torrent result line)
+		      #$DisplayName = '';
+		
+		      /*
+		      if (isset($Artists)) {
+		          $DisplayName = '<div>'.Artists::display_artists($Artists).'</div> ';
+		      } else {
+		          $DisplayName = '';
+		      }
+		      */
+		
+		      $SnatchedGroupClass = $GroupInfo['Flags']['IsSnatched'] ? ' snatched_group' : '';
+		
+		      # Similar to the logic down the page, and on
+		      # torrents.class.php and sections/artist/artist.php
+		      if ($GroupResults && (count($Torrents) > 1 && isset($GroupedCategories[$CategoryID - 1]))) {
+		          // These torrents are in a group
+		          $CoverArt = $GroupInfo['picture'];
+		
+		          $DisplayName = $app->twig->render(
+		              'torrents/display_name.html',
+		              [
+		                'g' => $GroupInfo,
+		                'url' => Format::get_url($_GET),
+		                'cover_art' => (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) ?? true,
+		                'thumb' => ImageTools::process($CoverArt, 'thumb'),
+		                'artists' => Artists::display_artists($Artists),
+		                'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
+		                'extra_info' => false,
+		              ]
+		          ); ?>
+		  <tr class="group<?=$SnatchedGroupClass?>">
+		    <?php
+		      $ShowGroups = !(!empty($app->userNew->extra['TorrentGrouping']) && $app->userNew->extra['TorrentGrouping'] === 1); ?>
+		    <td class="center">
+		      <div id="showimg_<?=$GroupID?>"
+		        class="<?=($ShowGroups ? 'hide' : 'show')?>_torrents">
+		        <a class="tooltip show_torrents_link"
+		          onclick="toggle_group(<?=$GroupID?>, this, event)"
+		          title="Toggle this group (Hold &quot;Shift&quot; to toggle all groups)"></a>
+		      </div>
+		    </td>
+		
+		    <!-- Category icon -->
+		    <td class="center cats_col">
+		      <div title="<?=Format::pretty_category($CategoryID)?>"
+		        class="tooltip <?=Format::css_category($CategoryID)?>">
+		      </div>
+		    </td>
+		
+		    <!-- [Bookmark] -->
+		    <td colspan="2" class="big_info">
+		      <div class="group_info clear">
+		        <?=$DisplayName?>
+		
+		        <?php if (in_array($GroupID, $Bookmarks)) { ?>
+		        <span class="remove_bookmark u-pull-right">
+		          <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
+		            class="brackets"
+		            onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove
+		            bookmark</a>
+		        </span>
+		
+		        <?php } else { ?>
+		        <span class="add_bookmark u-pull-right">
+		          <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
+		            class="brackets"
+		            onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
+		        </span>
+		        <?php } ?>
+		      </div>
+		    </td>
+		
+		    <!-- Time -->
+		    <td class="nobr"><?=time_diff($GroupTime, 1)?>
+		    </td>
+		
+		    <!-- Size -->
+		    <td class="number_column nobr"><?=Format::get_size($MaxSize)?>(Max)</td>
+		
+		    <!-- Snatches, seeders, and leechers -->
+		    <td class="number_column"><?=Text::float($TotalSnatched)?>
+		    </td>
+		    <td
+		      class="number_column<?=($TotalSeeders === 0 ? ' r00' : '')?>">
+		      <?=Text::float($TotalSeeders)?>
+		    </td>
+		    <td class="number_column"><?=Text::float($TotalLeechers)?>
+		    </td>
+		  </tr>
+		
+		  <?php
+		    foreach ($Torrents as $TorrentID => $Data) {
+		        $Data['CategoryID'] = $CategoryID;
+		        // All of the individual torrents in the group
+		
+		        // Get report info for each torrent, use the cache if available, if not, add to it
+		        $Reported = false;
+		        $Reports = Torrents::get_reports($TorrentID);
+		        if (count($Reports) > 0) {
+		            $Reported = true;
+		        }
+		
+		        $SnatchedTorrentClass = $Data['IsSnatched'] ? ' snatched_torrent' : '';
+		        $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$app->userNew->extra['AuthKey']."&amp;torrent_pass=".$app->userNew->extra['torrent_pass'];
+		
+		        if (!($TorrentFileName = $app->cacheOld->get_value('torrent_file_name_'.$TorrentID))) {
+		            $TorrentFile = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
+		            $Tor = new BencodeTorrent($TorrentFile, false, false);
+		            $TorrentFileName = $Tor->Dec['info']['name'];
+		            $app->cacheOld->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
+		        } ?>
+		  <tr
+		    class="group_torrent groupid_<?=$GroupID?> <?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($app->userNew->extra['TorrentGrouping']) && $app->userNew->extra['TorrentGrouping'] === 1 ? ' hidden' : '')?>">
+		    <td colspan="3">
+		      <span class="u-pull-right">
+		        [ <a href="<?=$TorrentDL?>" class="tooltip"
+		          title="Download"><?=$Data['HasFile'] ? 'DL' : 'Missing'?></a>
+		        <?php
+		        if (Torrents::can_use_token($Data)) { ?>
+		        | <a
+		          href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>&amp;usetoken=1"
+		          class="tooltip" title="Use a FL Token"
+		          onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
+		        <?php } ?>
+		        | <a
+		          href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>"
+		          class="tooltip" title="Report">RP</a> ]
+		      </span>
+		      <a href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>#torrent<?=$TorrentID?>"
+		        class="torrent_label tl_reported tooltip search_link"><strong>Details</strong></a>
+		      | <?=Torrents::torrent_info($Data)?>
+		      <?php if ($Reported) { ?>
+		      | <strong class="torrent_label tl_reported tooltip search_link important_text"
+		        title="Type: <?=ucfirst($Reports[0]['Type'])?><br>
+		                Comment: <?=htmlentities(htmlentities($Reports[0]['UserComment']))?>">Reported</strong><?php } ?>
+		    </td>
+		    <td class="number_column"><?=$Data['FileCount']?>
+		    </td>
+		    <td class="nobr"><?=time_diff($Data['Time'], 1)?>
+		    </td>
+		    <td class="number_column nobr"><?=Format::get_size($Data['Size'])?>
+		    </td>
+		    <td class="number_column"><?=Text::float($Data['Snatched'])?>
+		    </td>
+		    <td
+		      class="number_column<?=($Data['Seeders'] === 0) ? ' r00' : ''?>">
+		      <?=Text::float($Data['Seeders'])?>
+		    </td>
+		    <td class="number_column"><?=Text::float($Data['Leechers'])?>
+		    </td>
+		  </tr>
+		  <?php
+		    }
+		      } else {
+		          // Viewing a type that does not require grouping
+		          $TorrentID = key($Torrents);
+		          $Data = current($Torrents);
+		
+		          $Reported = false;
+		          $Reports = Torrents::get_reports($TorrentID);
+		          if (count($Reports) > 0) {
+		              $Reported = true;
+		          }
+		
+		          # Main search result title link
+		          # These are the main torrent search results
+		          $Data['CategoryID'] = $CategoryID;
+		          $CoverArt = $GroupInfo['picture'];
+		
+		          # Extra info (non-group metadata)
+		          if (isset($GroupedCategories[$CategoryID - 1])) {
+		              $ExtraInfo = Torrents::torrent_info($Data, true, true);
+		          } elseif ($Data['IsSnatched']) {
+		              $ExtraInfo = Format::torrent_label('Snatched!');
+		          } else {
+		              $ExtraInfo = '';
+		          }
+		
+		          # Render Twig
+		          $DisplayName = $app->twig->render(
+		              'torrents/display_name.html',
+		              [
+		                'g' => $GroupInfo,
+		                'url' => Format::get_url($_GET),
+		                'cover_art' => (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) ?? true,
+		                'thumb' => ImageTools::process($CoverArt, 'thumb'),
+		                'artists' => Artists::display_artists($Artists),
+		                'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
+		                'extra_info' => Torrents::torrent_info($Data, true, true),
+		              ]
+		          );
+		
+		          $SnatchedTorrentClass = $Data['IsSnatched'] ? ' snatched_torrent' : '';
+		          $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$app->userNew->extra['AuthKey']."&amp;torrent_pass=".$app->userNew->extra['torrent_pass'];
+		
+		          /*
+		          # todo: bring this back
+		          if (!($TorrentFileName = $app->cacheOld->get_value('torrent_file_name_'.$TorrentID))) {
+		              $TorrentFile = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
+		              $Tor = new BencodeTorrent($TorrentFile, false, false);
+		              $TorrentFileName = $Tor->Dec['info']['name'];
+		              $app->cacheOld->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
+		          }
+		          */ ?>
+		  <tr
+		    class="torrent<?=$SnatchedTorrentClass . $SnatchedGroupClass?>">
+		    <?php if ($GroupResults) { ?>
+		    <td></td>
+		    <?php } ?>
+		    <td class="center cats_col">
+		      <div title="<?=Format::pretty_category($CategoryID)?>"
+		        class="tooltip <?=Format::css_category($CategoryID)?>"></div>
+		    </td>
+		    <td class="big_info">
+		      <div class="group_info clear">
+		        <div class="torrent_interactions">
+		          <span class="u-pull-right">
+		            [ <a href="<?=$TorrentDL?>" class="tooltip"
+		              title="Download">DL</a>
+		            <?php
+		          if (Torrents::can_use_token($Data)) { ?>
+		            | <a
+		              href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>&amp;usetoken=1"
+		              class="tooltip" title="Use a FL Token"
+		              onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
+		            <?php } ?>
+		            | <a
+		              href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>"
+		              class="tooltip" title="Report">RP</a> ]
+		          </span>
+		          <br />
+		          <?php if (in_array($GroupID, $Bookmarks)) { ?>
+		          <span class="remove_bookmark u-pull-right">
+		            <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
+		              class="brackets"
+		              onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove
+		              bookmark</a>
+		          </span>
+		          <?php } else { ?>
+		          <span class="add_bookmark u-pull-right">
+		            <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
+		              class="brackets"
+		              onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
+		          </span>
+		          <?php } ?>
+		        </div>
+		        <?=$DisplayName?>
+		        <!--
+		        <br />
+		        <div style="display: inline;" class="torrent_info"><?=$ExtraInfo?>
+		        -->
+		        <?php if ($Reported) { ?>
+		        / <strong class="torrent_label tl_reported tooltip important_text"
+		          title="Type: <?=ucfirst($Reports[0]['Type'])?><br>Comment: <?=htmlentities(htmlentities($Reports[0]['UserComment']))?>">Reported</strong><?php } ?>
+		      </div>
+		      <!--
+		        <div class="tags"><?=$TorrentTags->format("torrents.php?$Action&amp;taglist=")?>
+		      </div>
+		      -->
+		      </div>
+		    </td>
+		    <td class="number_column"><?=$Data['FileCount']?>
+		    </td>
+		    <td class="nobr"><?=time_diff($Data['Time'], 1)?>
+		    </td>
+		    <td class="number_column nobr"><?=Format::get_size($Data['Size'])?>
+		    </td>
+		    <td class="number_column"><?=Text::float($Data['Snatched'])?>
+		    </td>
+		    <td
+		      class="number_column<?=($Data['Seeders'] === 0) ? ' r00' : ''?>">
+		      <?=Text::float($Data['Seeders'])?>
+		    </td>
+		    <td class="number_column"><?=Text::float($Data['Leechers'])?>
+		    </td>
+		  </tr>
+		  <?php
+		      }
+		  }
+		  #}

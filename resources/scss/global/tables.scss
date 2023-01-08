@@ -56,34 +56,70 @@ table {
     flex-wrap: wrap;
   }
 
-  /* start tagging */
-  #tagFilter {
-    th,
-    td {
-      border-bottom: none;
-    }
-
-    #tagColumn {
-      flex-direction: column;
-    }
-
-    #tagRow {
-      display: flex;
-      flex-flow: row nowrap;
-      gap: 2rem;
-      align-items: baseline;
-    }
+  .inlineFlex {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 1rem;
   }
 
-  .officialTag {
-    cursor: pointer;
-    text-decoration: none;
+  /* tom select */
+  .ts-control > * {
+    width: auto;
+  }
+
+  .ts-wrapper.multi .ts-control > div.active {
+    background: $skeletonDefault;
   }
 
   #formControls {
     justify-content: center;
   }
-  /* end tagging */
+}
+
+/**
+ * torrent search results table
+ */
+
+#searchResultsHeader {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 2rem;
+  align-items: center;
+  justify-content: space-between;
+
+  #paginationControls {
+    display: inline-flex;
+    flex-flow: row wrap;
+    gap: 2rem;
+  }
+}
+
+#torrentSearchResults {
+  .torrentTitle {
+    font-size: larger;
+  }
+
+  /*
+  .torrentTags {
+    font-style: italic;
+  }
+  */
+
+  .tableGroup {
+    display: table-cell;
+  }
+
+  .flexColumn {
+    display: flex;
+    flex-flow: column wrap;
+    gap: 1rem;
+  }
+
+  .flexRow {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 0 2rem;
+  }
 }
 
 /**

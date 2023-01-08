@@ -160,11 +160,11 @@ class Auth # extends Delight\Auth\Auth
         # https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#login
         $message = $this->message;
 
-        $username = Esc::string($data["username"]);
-        $passphrase = Esc::string($data["passphrase"]);
-        $rememberMe = Esc::bool($data["rememberMe"]);
+        $username = Esc::string($data["username"] ?? null);
+        $passphrase = Esc::string($data["passphrase"] ?? null);
+        $rememberMe = Esc::bool($data["rememberMe"] ?? null);
 
-        $twoFactor = Esc::int($data["twoFactor"]) ?? null;
+        $twoFactor = Esc::int($data["twoFactor"] ?? null);
         $u2fRequest = $data["u2f-request"] ?? null;
         $u2fResponse = $data["u2f-response"] ?? null;
 

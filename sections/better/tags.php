@@ -81,7 +81,7 @@ foreach ($TorrentsInfo as $TorrentID => $Info) {
         $DisplayName = '';
     }
 
-    $DisplayName .= "<a href='torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID' class='torrent_title'>$GroupName</a>";
+    $DisplayName .= "<a href='torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID' class='torrentTitle'>$GroupName</a>";
 
     if ($GroupYear > 0) {
         $DisplayName .= " [$GroupYear]";

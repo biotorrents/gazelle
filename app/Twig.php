@@ -81,7 +81,9 @@ class Twig # extends Twig\Environment
             [
                 "auto_reload" => true,
                 "autoescape" => "name",
-                "cache" => "{$app->env->webRoot}/cache/twig",
+                # don't cache in the dev environment
+                #"cache" => "{$app->env->webRoot}/cache/twig",
+                "cache" => (!$app->env->dev) ? "{$app->env->webRoot}/cache/twig" : false,
                 "debug" => $app->env->dev,
                 "strict_variables" => true,
             ]
@@ -101,19 +103,16 @@ class Twig # extends Twig\Environment
         $twig->addGlobal("authenticated", $app->userNew->isLoggedIn());
 
         # site options
-        $twig->addGlobal(
-            "siteOptions",
-            json_encode($app->userNew->extra["siteOptions"] ?? [])
-        );
+        $twig->addGlobal("siteOptions", $app->userNew->siteOptions ?? []);
 
         # body styles
         $bodyStyles = [];
         if (!empty($app->userNew->extra)) {
             $bodyStyles = [
                 ($app->env->dev) ? "development" : null,
-                ($app->userNew->extra["siteOptions"]["font"]) ?? null,
-                ($app->userNew->extra["siteOptions"]["calmMode"]) ? "calmMode" : null,
-                ($app->userNew->extra["siteOptions"]["darkMode"]) ? "darkMode" : null,
+                ($app->userNew->siteOptions["font"]) ?? null,
+                ($app->userNew->siteOptions["calmMode"]) ? "calmMode" : null,
+                ($app->userNew->siteOptions["darkMode"]) ? "darkMode" : null,
             ];
         }
 
@@ -159,13 +158,24 @@ class Twig # extends Twig\Environment
         );
         */
 
-        # DebugBar
+        # DebugBar: header
         $twig->addFunction(new Twig\TwigFunction("debugHeader", function () {
             $app = App::go();
             $render = $app->debug->getJavascriptRenderer();
 
             return new Twig\Markup(
                 $render->renderHead(),
+                "UTF-8"
+            );
+        }));
+
+        # DebugBar: footer
+        $twig->addFunction(new Twig\TwigFunction("debugFooter", function () {
+            $app = App::go();
+            $render = $app->debug->getJavascriptRenderer();
+
+            return new Twig\Markup(
+                $render->render(),
                 "UTF-8"
             );
         }));
@@ -188,6 +198,15 @@ class Twig # extends Twig\Environment
         $twig->addFunction(new Twig\TwigFunction("processImage", function ($uri, $thumbnail) {
             return new Twig\Markup(
                 ImageTools::process($uri, $thumbnail),
+                "UTF-8"
+            );
+        }));
+
+        # Format::pretty_category
+        $twig->addFilter(new Twig\TwigFilter("categoryIcon", function ($categoryId) {
+            $markup = "<div title='" . Format::pretty_category($categoryId) . "' class='" . Format::css_category($categoryId) . "' />";
+            return new Twig\Markup(
+                $markup,
                 "UTF-8"
             );
         }));
@@ -220,6 +239,24 @@ class Twig # extends Twig\Environment
         $twig->addFunction(new Twig\TwigFunction("displayBadge", function ($badgeId) {
             return new Twig\Markup(
                 Badges::displayBadge($badgeId),
+                "UTF-8"
+            );
+        }));
+
+        # Artists::display_artists
+        $twig->addFunction(new Twig\TwigFunction("displayCreators", function ($creators) {
+            return new Twig\Markup(
+                Artists::display_artists($creators),
+                "UTF-8"
+            );
+        }));
+
+        # new Tags()
+        $twig->addFunction(new Twig\TwigFunction("displayTags", function ($tagList) {
+            $tags = new Tags($tagList);
+
+            return new Twig\Markup(
+                $tags->format(""),
                 "UTF-8"
             );
         }));

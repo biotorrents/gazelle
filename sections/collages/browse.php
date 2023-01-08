@@ -365,7 +365,7 @@ foreach ($Collages as $Collage) {
         href="collages.php?action=search&amp;cats[<?=(int)$CategoryID?>]=1"><?=$CollageCats[(int)$CategoryID]?></a>
     </td>
     <td>
-      <a class="torrent_title" id="collage_name"
+      <a class="torrentTitle" id="collage_name"
         href="collages.php?id=<?=$ID?>"><?=$Name?></a>
       <?php if ($BookmarkView) { ?>
       <span class="u-pull-right">

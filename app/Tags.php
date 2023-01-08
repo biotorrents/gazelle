@@ -1,6 +1,7 @@
 <?php
 #declare(strict_types=1);
 
+
 /**
  * Tags Class
  *
@@ -25,6 +26,7 @@
  * Each time a new Tags object is instantiated, the tag list is merged with the
  * overall total amount of tags to provide a Top Tags list. Merging is optional.
  */
+
 class Tags
 {
     /**
@@ -50,6 +52,7 @@ class Tags
      */
     private $Primary = '';
 
+
     /**
      * Filter tags array to remove empty spaces.
      *
@@ -73,6 +76,7 @@ class Tags
         }
     }
 
+
     /**
      * @return string Primary Tag
      */
@@ -80,6 +84,7 @@ class Tags
     {
         return $this->Primary;
     }
+
 
     /**
      * Set the primary tag
@@ -90,23 +95,6 @@ class Tags
         $this->Primary = (string)$Primary;
     }
 
-    /**
-     * Formats primary tag as a title
-     * @return string Title
-     */
-    public function title()
-    {
-        #return ucwords(str_replace('.', ' ', $this->Primary));
-    }
-
-    /**
-     * Formats primary tag as a CSS class
-     * @return string CSS Class Name
-     */
-    public function css_name()
-    {
-        #return 'tags_' . str_replace('.', '_', $this->Primary);
-    }
 
     /**
      * @return array Tags
@@ -116,6 +104,7 @@ class Tags
         return $this->Tags;
     }
 
+
     /**
      * @return array All tags
      */
@@ -123,6 +112,7 @@ class Tags
     {
         return self::$All;
     }
+
 
     /**
      * Counts and sorts All tags
@@ -134,6 +124,7 @@ class Tags
         arsort($Sorted);
         return $Sorted;
     }
+
 
     /**
      * Formats tags
@@ -153,11 +144,16 @@ class Tags
             $Class = $Split['class'];
 
             if (empty($this->TagLink[$Tag])) {
-                $this->TagLink[$Tag] = '<a class="' . $Class . '" href="' . $Link . $Tag . $ArtistName . '">' . $Name . '</a>';
+                if (empty($Link)) {
+                    $this->TagLink[$Tag] = "<span class='{$Class}'>$Name<span>";
+                } else {
+                    $this->TagLink[$Tag] = '<a class="' . $Class . '" href="' . $Link . $Tag . $ArtistName . '">' . $Name . '</a>';
+                }
             }
         }
         return implode(', ', $this->TagLink);
     }
+
 
     /**
      * Format a list of top tags
@@ -171,7 +167,7 @@ class Tags
 <li>No torrent tags</li>
 <?php
       return;
-    }
+        }
 
         if (!empty($ArtistName)) {
             $ArtistName = '&amp;artistname=' . urlencode($ArtistName) . '&amp;action=advanced&amp;searchsubmit=1';
@@ -187,6 +183,7 @@ class Tags
 <?php
         }
     }
+
 
     /**
      * General purpose method to get all tag aliases from the DB
@@ -220,6 +217,7 @@ class Tags
         }
         return $TagAliases;
     }
+
 
     /**
      * Replace bad tags with tag aliases
@@ -259,6 +257,7 @@ class Tags
         }
         return $Tags;
     }
+
 
     /**
      * Filters a list of include and exclude tags to be used in a Sphinx search
@@ -303,6 +302,7 @@ class Tags
 
         return ['input' => $TagList, 'predicate' => implode(' ', $QueryParts)];
     }
+
 
     /**
      * Breaks a tag down into name and namespace class

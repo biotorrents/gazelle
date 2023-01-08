@@ -316,7 +316,7 @@ class TorrentSearch
             $this->SphResults = $sphinxqlResult->collect("groupid");
 
             $groupIds = array_keys($this->SphResults);
-            $groupCount = count($groupIds);
+            $groupCount = count($groupIds ?? []);
 
             while ($sphinxqlResult->get_meta("total") < $totalCount && $groupCount < $this->PageSize) {
                 # make sure we get $pageSize results, or all of them if there are less than $pageSize hits
@@ -329,14 +329,14 @@ class TorrentSearch
 
                 $this->SphResults += $sphinxqlResult->collect("groupid");
                 $groupIds = array_keys($this->SphResults);
-                $groupCount = count($groupIds);
+                $groupCount = count($groupIds ?? []);
             }
 
             if ($groupCount > $this->PageSize) {
                 $this->SphResults = array_slice($this->SphResults, 0, $this->PageSize, true);
             }
 
-            $this->NumResults = count($this->SphResults);
+            $this->NumResults = count($this->SphResults ?? []);
         }
 
         # default handling
@@ -596,10 +596,10 @@ class TorrentSearch
     private function search_year($term)
     {
         $Years = explode("-", $term);
-        if (count($Years) === 1 && is_number($Years[0])) {
+        if (count($Years ?? []) === 1 && is_number($Years[0])) {
             // Exact year
             $this->SphQL->where("year", $Years[0]);
-        } elseif (count($Years) === 2) {
+        } elseif (count($Years ?? []) === 2) {
             if (empty($Years[0]) && is_number($Years[1])) {
                 // Range: 0 - 2005
                 $this->SphQL->where_lt("year", $Years[1], true);
@@ -731,7 +731,9 @@ class TorrentSearch
      */
     private function process_results()
     {
-        if (count($this->SphResults) === 0) {
+        !d($this->SphResults);
+        
+        if (count($this->SphResults ?? []) === 0) {
             return;
         }
 
@@ -762,7 +764,7 @@ class TorrentSearch
             }
         }
 
-        $torrentCount = count($allTorrents);
+        $torrentCount = count($allTorrents ?? []);
         $this->SphQLTor = new SphinxqlQuery();
         $this->SphQLTor->where_match("_all", "fake", false);
         $this->SphQLTor->select("id")->from("torrents, delta");

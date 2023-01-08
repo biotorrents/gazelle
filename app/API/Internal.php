@@ -156,4 +156,48 @@ class Internal extends Base
         # failure
         self::failure();
     }
+
+
+    /**
+     * createDefaultSearch
+     *
+     * Adds the "make default" feature on the torrent search.
+     */
+    public static function createDefaultSearch(int $userId, string $queryString): void
+    {
+        $app = \App::go();
+
+        self::validateFrontendHash();
+
+        # get existing siteOptions
+        $query = "select siteOptions from users_info where userId = ?";
+        $siteOptions = $app->dbNew->single($query, [$userId]);
+
+        # validate
+        $siteOptions = json_decode($siteOptions, true);
+        if (!$siteOptions) {
+            self::failure(400, "bad userId or siteOptions");
+        }
+
+        # set defaultSearch
+        $siteOptions["defaultSearch"] ??= null;
+        $siteOptions["defaultSearch"] = $queryString;
+
+        # update
+        $query = "update into users_info set siteOptions = ? where userId = ?";
+        $app->dbNew->do($query, [json_encode($siteOptions), $userId]);
+
+        self::success($siteOptions);
+    }
+
+
+    /**
+     * deleteDefaultSearch
+     *
+     * Adds the "clear default" feature on the torrent search.
+     */
+    public static function deleteDefaultSearch(int $userId): void
+    {
+        self::createDefaultSearch($userId, []);
+    }
 } # class

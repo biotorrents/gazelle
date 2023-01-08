@@ -124,11 +124,14 @@ img.torrent_header {
  * badges
  */
 
-img.badge {
-  max-width: 16px;
-  max-height: 16px;
+span.badges {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 1.5rem;
 }
 
-a.badge_icon {
-  white-space: nowrap;
+img.badge,
+img.icon {
+  max-width: 1.5rem;
+  max-height: 1.5rem;
 }

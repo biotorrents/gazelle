@@ -165,8 +165,8 @@
           <th>Torrent grouping</th>
 
           <td>
-              <input type="checkbox" id="disableGrouping" name="disableGrouping" {{ (siteOptions.disableGrouping == true) ? "checked" : "" }} />
-              <label for="disableGrouping">Disable torrent grouping</label>
+              <input type="checkbox" id="torrentGrouping" name="torrentGrouping" {{ (siteOptions.torrentGrouping == true) ? "checked" : "" }} />
+              <label for="torrentGrouping">Enable torrent grouping</label>
           </td>
         </tr>
 
@@ -221,8 +221,8 @@
               10
               </option>
 
-              <option value="25" {{ (siteOptions.coverArtCollections == 25) ? "selected" : "" }}>
-              25 (default)
+              <option value="20" {{ (siteOptions.coverArtCollections == 20) ? "selected" : "" }}>
+              20 (default)
               </option>
 
               <option value="50" {{ (siteOptions.coverArtCollections == 50) ? "selected" : "" }}>
@@ -247,18 +247,32 @@
           </td>
         </tr>
 
-        {# torrent search filters #}
+        {# search pagination #}
         <tr>
-          <th>Torrent search filters</th>
+          <th>Search pagination</th>
 
           <td>
-            <input type="checkbox" id="showTorrentFilter" name="showTorrentFilter" {{ (siteOptions.showTorrentFilter == true) ? "checked" : "" }} />
-            <label for="showTorrentFilter">Display filter controls</label>
+            <select id="searchPagination" name="searchPagination">
 
-            <br />
+              <option value="10" {{ (siteOptions.searchPagination == 10) ? "selected" : "" }}>
+              10
+              </option>
 
-           <input type="checkbox" id="showTagFilter" name="showTagFilter" {{ (siteOptions.showTagFilter == true) ? "checked" : "" }} />
-           <label for="showTagFilter">Display official tag filters</label>
+              <option value="20" {{ (siteOptions.searchPagination == 20) ? "selected" : "" }}>
+              20 (default)
+              </option>
+
+              <option value="50" {{ (siteOptions.searchPagination == 50) ? "selected" : "" }}>
+              50
+              </option>
+
+              <option value="100" {{ (siteOptions.searchPagination == 100) ? "selected" : "" }}>
+              100
+              </option>
+
+            </select>
+
+            search results per page
           </td>
         </tr>
 
@@ -323,8 +337,8 @@
           <th>Avatar display (posts)</th>
 
           <td>
-            <input type="checkbox" id="disableAvatars" name="disableAvatars" {{ (siteOptions.disableAvatars == true) ? "checked" : "" }} />
-            <label for="disableAvatars">Disable user avatars</label>
+            <input type="checkbox" id="userAvatars" name="userAvatars" {{ (siteOptions.userAvatars == true) ? "checked" : "" }} />
+            <label for="userAvatars">Enable custom user avatars</label>
           </td>
         </tr>
 

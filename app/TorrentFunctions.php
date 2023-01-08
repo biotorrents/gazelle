@@ -194,7 +194,7 @@ class TorrentFunctions
     public static function get_torrent_info($TorrentID, $Return = true, $RevisionID = 0, $PersonalProperties = true, $ApiCall = false)
     {
         $app = App::go();
-        
+
         $GroupID = (int)self::orrentid_to_groupid($TorrentID);
         $GroupInfo = get_group_info($GroupID, $Return, $RevisionID, $PersonalProperties, $ApiCall);
         if ($GroupInfo) {
@@ -220,7 +220,7 @@ class TorrentFunctions
      * is_valid_torrenthash
      */
     // Check if a givin string can be validated as a torrenthash
-    public function is_valid_torrenthash($Str)
+    public static function is_valid_torrenthash($Str)
     {
         // 6C19FF4C 6C1DD265 3B25832C 0F6228B2 52D743D5
         $Str = str_replace(' ', '', $Str);
@@ -235,10 +235,10 @@ class TorrentFunctions
      * torrenthash_to_torrentid
      */
     // Functionality for the API to resolve input into other data
-    public function torrenthash_to_torrentid($Str)
+    public static function torrenthash_to_torrentid($Str)
     {
         $app = App::go();
-        
+
         $app->dbOld->query("
       SELECT ID
       FROM torrents
@@ -255,10 +255,10 @@ class TorrentFunctions
     /**
      * torrenthash_to_groupid
      */
-    public function torrenthash_to_groupid($Str)
+    public static function torrenthash_to_groupid($Str)
     {
         $app = App::go();
-        
+
         $app->dbOld->query("
       SELECT GroupID
       FROM torrents
@@ -275,10 +275,10 @@ class TorrentFunctions
     /**
      * torrentid_to_groupid
      */
-    public function torrentid_to_groupid($TorrentID)
+    public static function torrentid_to_groupid($TorrentID)
     {
         $app = App::go();
-        
+
         $app->dbOld->query("
       SELECT GroupID
       FROM torrents
@@ -296,10 +296,10 @@ class TorrentFunctions
      * set_torrent_logscore
      */
     // After adjusting / deleting logs, recalculate the score for the torrent
-    public function set_torrent_logscore($TorrentID)
+    public static function set_torrent_logscore($TorrentID)
     {
         $app = App::go();
-        
+
         $app->dbOld->query("
       UPDATE torrents
       SET LogScore = (
@@ -314,10 +314,10 @@ class TorrentFunctions
     /**
      * get_group_requests
      */
-    public function get_group_requests($GroupID)
+    public static function get_group_requests($GroupID)
     {
         $app = App::go();
-        
+
         if (empty($GroupID) || !is_number($GroupID)) {
             return [];
         }
@@ -341,20 +341,24 @@ class TorrentFunctions
      * build_torrents_table
      */
     // Used by both sections/torrents/details.php and sections/reportsv2/report.php
-    public function build_torrents_table($app->cacheOld, $app->dbOld, $user, $GroupID, $GroupName, $GroupCategoryID, $TorrentList, $Types, $Username)
+    public static function build_torrents_table($user, $GroupID, $GroupName, $GroupCategoryID, $TorrentList, $Types, $Username)
     {
+        $app = App::go();
+
+        /*
         function filelist($Str)
         {
             return "</td>\n<td>" . Format::get_size($Str[1]) . "</td>\n</tr>";
         }
+        */
 
         $EditionID = 0;
         foreach ($TorrentList as $Torrent) {
             list($TorrentID, $Media, $Container, $Codec, $Resolution, $Version,
-  $Censored, $Anonymous, $Archive, $FileCount, $Size, $Seeders, $Leechers, $Snatched,
-  $FreeTorrent, $FreeLeechType, $TorrentTime, $Description, $FileList, $FilePath, $UserID,
-  $LastActive, $InfoHash, $BadTags, $BadFolders, $BadFiles, $LastReseedRequest,
-  $LogInDB, $HasFile, $PersonalFL, $IsSnatched, $IsSeeding, $IsLeeching) = array_values($Torrent);
+                $Censored, $Anonymous, $Archive, $FileCount, $Size, $Seeders, $Leechers, $Snatched,
+                $FreeTorrent, $FreeLeechType, $TorrentTime, $Description, $FileList, $FilePath, $UserID,
+                $LastActive, $InfoHash, $BadTags, $BadFolders, $BadFiles, $LastReseedRequest,
+                $LogInDB, $HasFile, $PersonalFL, $IsSnatched, $IsSeeding, $IsLeeching) = array_values($Torrent);
 
             $Reported = false;
             $Reports = Torrents::get_reports($TorrentID);
@@ -437,9 +441,9 @@ class TorrentFunctions
             $FileTable .= '</table>';
 
             $ExtraInfo = ''; // String that contains information on the torrent (e.g. format and encoding)
-        $AddExtra = '&thinsp;|&thinsp;'; // Separator between torrent properties
+            $AddExtra = '&thinsp;|&thinsp;'; // Separator between torrent properties
 
-        $TorrentUploader = $Username; // Save this for "Uploaded by:" below
+            $TorrentUploader = $Username; // Save this for "Uploaded by:" below
             // Similar to Torrents::torrent_info()
             if (!$ExtraInfo) {
                 $ExtraInfo = $GroupName;
@@ -529,23 +533,23 @@ class TorrentFunctions
             <em class="tooltip"
                 title="<?=User::user_info($UserID)['Username']?>">Anonymous</em>
             <?php } else {
-          ?><em>Anonymous</em><?php
-      }
+                ?><em>Anonymous</em><?php
+            }
   } else {
       print(User::format_username($UserID, false, false, false));
   } ?> <?=time_diff($TorrentTime); ?>
             <?php if ($Seeders === 0) {
-      if ($LastActive && time() - strtotime($LastActive) >= 1209600) { ?>
+                if ($LastActive && time() - strtotime($LastActive) >= 1209600) { ?>
             <br /><strong>Last active: <?=time_diff($LastActive);?></strong>
             <?php } else { ?>
             <br />Last active: <?=time_diff($LastActive);?>
             <?php }
-      if ($LastActive && time() - strtotime($LastActive) >= 345678 && time() - strtotime($LastReseedRequest) >= 864000) { ?>
+            if ($LastActive && time() - strtotime($LastActive) >= 345678 && time() - strtotime($LastReseedRequest) >= 864000) { ?>
             <br /><a
                 href="torrents.php?action=reseed&amp;torrentid=<?=($TorrentID)?>&amp;groupid=<?=($GroupID)?>"
                 class="brackets">Request re-seed</a>
             <?php }
-  } ?>
+            } ?>
         </blockquote>
         <?php if (check_perms('site_moderate_requests')) { ?>
         <div class="linkbox">
@@ -583,9 +587,9 @@ class TorrentFunctions
         <div id="reported_<?=($TorrentID)?>" class="hidden"><?=($ReportInfo)?>
         </div>
         <?php }
-            if (!empty($Description)) {
-                echo "<blockquote>" . Text::parse($Description) . '</blockquote>';
-            } ?>
+        if (!empty($Description)) {
+            echo "<blockquote>" . Text::parse($Description) . '</blockquote>';
+        } ?>
     </td>
 </tr>
 <?php

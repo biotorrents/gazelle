@@ -160,19 +160,17 @@ else {
 
 /**
  * search
+ *
+ * THIS IS GOING AWAY!
  */
 
 # SphinxqlQuery needs constants to work
 # $app->env breaks the torrent and request pages
+# cuz the constructor uses constants lol
 define("SPHINXQL_HOST", "127.0.0.1");
 define("SPHINXQL_PORT", 9306);
 define("SPHINXQL_SOCK", false);
 define("SPHINX_MAX_MATCHES", 1000); # must be <= server max_matches (default 1000)
-
-ENV::setPub("sphinxHost", "127.0.0.1");
-ENV::setPub("sphinxPort", 9306);
-ENV::setPub("sphinxsocket", null);
-ENV::setPub("sphinxMaxMatches", 1000);
 
 
 /**
@@ -309,16 +307,14 @@ ENV::setPub(
 
 # default site options
 $defaultSiteOptions = [
-  "donorIcon" => true,
   "autoSubscribe" => true,
   "calmMode" => false,
   "communityStats" => true,
-  "coverArtCollections" => 25,
+  "coverArtCollections" => 20,
   "coverArtTorrents" => true,
   "coverArtTorrentsExtra" => true,
   "darkMode" => false,
-  "disableAvatars" => false,
-  "disableGrouping" => false,
+  "donorIcon" => true,
   "font" => "",
   "listUnreadsFirst" => true,
   "percentileStats" => true,
@@ -327,15 +323,16 @@ $defaultSiteOptions = [
   "recentSnatches" => true,
   "recentUploads" => true,
   "requestStats" => true,
-  "searchType" => "basic",
+  "searchPagination" => 20,
+  "searchType" => "simple",
   "showSnatched" => true,
-  "showTagFilter" => true,
-  "showTorrentFilter" => true,
   "styleId" => 1,
   "styleUri" => "",
   "torrentGrouping" => "open",
+  "torrentGrouping" => true,
   "torrentStats" => true,
   "unseededAlerts" => true,
+  "userAvatars" => true,
 ];
 
 ENV::setPub("defaultSiteOptions", json_encode($defaultSiteOptions));
