@@ -284,6 +284,83 @@ class Twig # extends Twig\Environment
             return Text::float($number, $decimals);
         }));
 
+        # random creator
+        $twig->addFunction(new Twig\TwigFunction("randomCreator", function () {
+            $famousBiologists = [
+                "Alexander Fleming",
+                "Alfonso Valencia",
+                "Alfred Russel Wallace",
+                "Alister Hardy",
+                "Andreas Vesalius",
+                "Antoine Lavoisier",
+                "Antonie van Leeuwenhoek",
+                "Aristotle",
+                "Barbara McClintock",
+                "Carl Linnaeus",
+                "Carl Woese",
+                "Charles Darwin",
+                "Charles Nicolle",
+                "Craig Venter",
+                "David Baltimore",
+                "E. O. Wilson",
+                "Emmanuelle Charpentier",
+                "Eric S. Lander",
+                "Francesco Redi",
+                "Francis Crick",
+                "Galen",
+                "George Wald",
+                "George Washington Carver",
+                "Gregor Mendel",
+                "Hamilton O. Smith",
+                "He Jiankui",
+                "James Watson",
+                "Jennifer Doudna",
+                "Jerry A. Coyne",
+                "Karl Landsteiner",
+                "Linda B. Buck",
+                "Louis Pasteur",
+                "Marcus W. Feldman",
+                "Masatoshi Nei",
+                "Maurice Hilleman",
+                "Mónica Bettencourt-Dias",
+                "Nettie Stevens",
+                "Oswald Avery",
+                "Rachel Carson",
+                "Richard Dawkins",
+                "Richard Lewontin",
+                "Robert Hooke",
+                "Ronald Fisher",
+                "Rosalind Franklin",
+                "Selman Waksman",
+                "Sergei Winogradsky",
+                "Stephen Jay Gould",
+                "Stuart Kauffman",
+                "Susumu Tonegawa",
+                "Theodor Schwann",
+                "William Harvey",
+            ];
+
+            $randomKey = array_rand($famousBiologists);
+
+            return new Twig\Markup(
+                $famousBiologists[$randomKey],
+                "UTF-8"
+            );
+        }));
+
+        # random tag
+        $twig->addFunction(new Twig\TwigFunction("randomTag", function () {
+            $app = App::go();
+
+            $query = "select name from tags where tagType = ? order by rand() limit 1";
+            $randomTag = $app->dbNew->single($query, ["genre"]);
+
+            return new Twig\Markup(
+                $randomTag,
+                "UTF-8"
+            );
+        }));
+
 
         /**
          * OPS

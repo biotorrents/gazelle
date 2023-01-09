@@ -317,6 +317,7 @@ $defaultSiteOptions = [
   "donorIcon" => true,
   "font" => "",
   "listUnreadsFirst" => true,
+  "openaiContent" => true,
   "percentileStats" => true,
   "recentCollages" => true,
   "recentRequests" => true,

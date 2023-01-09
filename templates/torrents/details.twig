@@ -112,7 +112,7 @@
 		{{ description|raw }}
 
         {# plz be my ai gf #}
-        {% if openAiDescription %}
+        {% if openAiDescription and user.siteOptions.openaiContent %}
             <div class="faded">
                 <h4>OpenAI tl;dr</h4>
 
@@ -121,10 +121,24 @@
         {% endif %}
 	</section>
 
+
     {# torrent list #}
     <section>
+    <h3>Torrents</h3>
+
+    todo
 
     </section>
+
+
+    {# conversation #}
+    <section>
+    <h3>Conversation</h3>
+
+    todo
+    
+    </section>
+
 
 {% endblock %}
 

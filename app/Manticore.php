@@ -64,7 +64,7 @@ class Manticore
         "location" => ["workgroup", "location"],
         "creator" => "creatorList",
 
-        "description" => ["torrentDescription", "groupDescription"],
+        "description" => ["torrentDescription", "groupDescription", "openaiDescription"],
         "fileList" => ["fileList", "infoHash"],
 
         "platforms" => "platform",
@@ -86,6 +86,8 @@ class Manticore
         "orderBy" => null,
         "orderWay" => null,
         "groupResults" => null,
+
+        "openaiContent" => null,
 
         # requests search
         # todo
@@ -176,6 +178,12 @@ class Manticore
 
         # raw search terms
         $this->rawSearchTerms = $data;
+
+        # disable openai
+        $data["openaiContent"] ?? null;
+        if (!$data["openaiContent"]) {
+            $this->searchFields["description"] = ["torrentDescription", "groupDescription"];
+        }
 
         # start the query
         $this->query = $this->queryLanguage

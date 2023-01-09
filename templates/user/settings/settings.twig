@@ -276,6 +276,16 @@
           </td>
         </tr>
 
+        {# openai content #}
+        <tr>
+          <th>OpenAI content</th>
+
+          <td>
+              <input type="checkbox" id="openaiContent" name="openaiContent" {{ (siteOptions.openaiContent == true) ? "checked" : "" }} />
+              <label for="openaiContent">Enable OpenAI content in search and display</label>
+          </td>
+        </tr>
+
 {# torrent text files #}
 {#
           <tr id="tor_dltext_tr">

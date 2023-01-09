@@ -321,6 +321,7 @@
 						{% endfor %}
 					</select>
 
+					<div class="inlineFlex">
 					<input type="radio" name="tagsType" id="includeTags" value="includeTags" {{ (searchTerms.tagsType == "includeTags") ? "checked" : "" }}/>
 					<label for="includeTags">Include&nbsp;<strong>all</strong></label>
 
@@ -332,6 +333,8 @@
 						Use <code>-tag</code> or <code>!tag</code> to exclude tags
 					</span>
 					#}
+					</div>
+					
 				</td>
 			</tr>
 
@@ -388,7 +391,10 @@
 
 					<div class="inlineFlex">
 						<input type="checkbox" value="true" name="groupResults" {{ (searchTerms.groupResults) ? "checked" : "" }}/>
-						<label for="groupResults">Group related torrents in the search results</label>
+						<label for="groupResults">Group&nbsp;torrents</label>
+
+						<input type="checkbox" value="true" name="openaiContent" {{ (searchTerms.openaiContent) ? "checked" : "" }}/>
+						<label for="openaiContent">OpenAI&nbsp;content</label>
 					</div>
 
 				</td>

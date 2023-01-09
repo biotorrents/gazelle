@@ -1311,6 +1311,7 @@ class User
                 "donorIcon" => Esc::bool($data["donorIcon"] ?? null),
                 "font" => Esc::string($data["font"] ?? null),
                 "listUnreadsFirst" => Esc::bool($data["listUnreadsFirst"] ?? null),
+                "openaiContent" => Esc::bool($data["openaiContent"] ?? null),
                 "percentileStats" => Esc::bool($data["percentileStats"] ?? null),
                 "recentCollages" => Esc::bool($data["recentCollages"] ?? null),
                 "recentRequests" => Esc::bool($data["recentRequests"] ?? null),

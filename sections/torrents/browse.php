@@ -49,9 +49,11 @@ $searchTerms = [
 
     "orderBy" => $get["orderBy"] ?? "timeAdded",
     "orderWay" => $get["orderWay"] ?? "desc",
-    "groupResults" => $get["groupResults"] ?? $app->userNew->extra["siteOptions"]["torrentGrouping"],
+    "groupResults" => $get["groupResults"] ?? $app->userNew->siteOptions["torrentGrouping"],
 
     "page" => $get["page"] ?? 1,
+
+    "openaiContent" => $get["openaiContent"] ?? $app->userNew->siteOptions["openaiContent"],
 ];
 
 # build query string (saving/sharing)

@@ -131,20 +131,6 @@
 	<h3>Actions</h3>
 
 	<form>
-
-		{# edit group #}
-		{% if can("site_edit_wiki") %}
-			<a class="button button-primary" href="/torrents.php?action=editgroup&groupid={{ groupId }}">edit group</a>
-		{% endif %}
-
-		{# revision history #}
-		<a class="button" href="/torrents.php?action=history&groupid={{ groupId }}">revision history</a>
-
-		{# use this revision #}
-		{% if revisionId != 0 and can("site_edit_wiki") %}
-			<a class="button button-orange" href="/torrents.php?action=revert&groupid={{ groupId }}&revisionid={{ revisionId }}&auth={{ user.extra.AuthKey }}">use this revision</a>
-		{% endif %}
-
         {# add new torrent #}
 		<a class="button button-green" href="/upload.php?groupid={{ groupId }}">new torrent</a>
 
@@ -167,6 +153,20 @@
 			<a class="button button-orange" id="toggleGroupSubscription" data-groupid="{{ groupId }}">add subscription</a>
 		{% endif %}
 
+		<hr />
+
+		{# edit group #}
+		{% if can("site_edit_wiki") %}
+			<a class="button button-primary" href="/torrents.php?action=editgroup&groupid={{ groupId }}">edit group</a>
+		{% endif %}
+
+		{# use this revision #}
+		{% if revisionId != 0 and can("site_edit_wiki") %}
+			<a class="button button-orange" href="/torrents.php?action=revert&groupid={{ groupId }}&revisionid={{ revisionId }}&auth={{ user.extra.AuthKey }}">use this revision</a>
+		{% endif %}
+
+		{# revision history #}
+		<a class="button" href="/torrents.php?action=history&groupid={{ groupId }}">revision history</a>
 
 		{# view log #}
 		<a class="button" href="/torrents.php?action=grouplog&groupid={{ groupId }}">view log</a>
@@ -205,7 +205,7 @@
 <form>
 <input type="hidden" name="groupId" value="{{ groupId }}" />
 
-<input type="text" id="creatorName" placeholder="e.g., Antonie van Leeuwenhoek" />
+<input type="text" id="creatorName" placeholder="e.g., {{ randomCreator() }}" />
 
 <a class="button button-primary" id="addNewCreator">new creator</a>
 </form>
@@ -218,14 +218,12 @@
 
 <table class="compact">
 
+{# normal tags #}
 {% for item in tagList %}
+{% if item.tagType != "openai" %}
 <tr>
 
-{% if item.tagType != "openai" %}
 <th>{{ item.name }}</th>
-{% else %}
-<th class="openaiTorrentTag">{{ item.name }}</th>
-{% endif %}
 
 <td class="right">
 {% if can("torrents_edit") %}
@@ -234,7 +232,28 @@
 
 </td>
 </tr>
+{% endif %}
 {% endfor %}
+
+{# openai tags #}
+{% for item in tagList %}
+{% if item.tagType == "openai" and user.siteOptions.openaiContent %}
+
+<tr>
+
+<th class="openaiTorrentTag">{{ item.name }}</th>
+
+<td class="right">
+{% if can("torrents_edit") %}
+<a id="deleteTagFromTorrent" data-tagId={{ item.id }} class="button button-red">×</a>
+{% endif %}
+
+</td>
+</tr>
+{% endif %}
+
+{% endfor %}
+
 
 </table>
 
@@ -242,7 +261,7 @@
 <form>
 <input type="hidden" name="groupId" value="{{ groupId }}" />
 
-<input type="text" id="tagName" placeholder="e.g., secondary.metabolites" />
+<input type="text" id="tagName" placeholder="e.g., {{ randomTag() }}" />
 
 <a class="button button-primary" id="addNewTag">new tag</a>
 </form>
