@@ -251,6 +251,14 @@ class Twig # extends Twig\Environment
             );
         }));
 
+        # Artists::display_artist
+        $twig->addFunction(new Twig\TwigFunction("displayCreator", function ($creator) {
+            return new Twig\Markup(
+                Artists::display_artist($creator),
+                "UTF-8"
+            );
+        }));
+
         # new Tags()
         $twig->addFunction(new Twig\TwigFunction("displayTags", function ($tagList) {
             $tags = new Tags($tagList);

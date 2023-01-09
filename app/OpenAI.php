@@ -207,6 +207,7 @@ class OpenAI
         # convert to gazelle tags
         $keywords = array_unique($keywords);
         foreach ($keywords as $key => $value) {
+            /*
             $value = strtolower(trim($value));
 
             $value = str_replace(" ", ".", $value);
@@ -215,7 +216,9 @@ class OpenAI
 
             $value = str_replace("..", ".", $value);
             $value = \Text::esc($value);
+            */
 
+            $value = \Illuminate\Support\Str::slug($value, ".");
             $keywords[$key] = $value;
         }
 
@@ -226,20 +229,20 @@ class OpenAI
 
             # inset into tags
             $query = "
-                insert into tags (name, userId) values (?, 0)
+                insert into tags (name, tagType, userId) values (?, ?, ?)
                 on duplicate key update uses = uses + 1
             ";
-            $app->dbNew->do($query, [$keyword]);
+            $app->dbNew->do($query, [$keyword, "openai", 0]);
 
             # get tagId
             $tagId = $app->dbNew->pdo->lastInsertId();
 
             # insert into torrents_tags
             $query = "
-                insert into torrents_tags (tagId, groupId, userId) values (?, ?, 0)
+                insert into torrents_tags (tagId, groupId, userId) values (?, ?, ?)
                 on duplicate key update tagId = tagId
             ";
-            $app->dbNew->do($query, [$tagId, $groupId]);
+            $app->dbNew->do($query, [$tagId, $groupId, 0]);
         }
 
         $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);

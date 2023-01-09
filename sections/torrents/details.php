@@ -37,7 +37,18 @@ $query = "select id, image, summary, userId, time from cover_art where groupId =
 $coverArt = $app->dbNew->multi($query, [$groupId]) ?? [];
 
 
-# tagList
+# tagList: new
+$query = "
+    select tags.id, name, tagType from torrents_tags
+    left join tags on tags.id = torrents_tags.tagId
+    where groupId = ?
+";
+
+$tagList = $app->dbNew->multi($query, [$groupId]);
+#!d($tagList);exit;
+
+/*
+# tagList: old
 $tagList = [];
 
 $tagNames = explode("|", $groupDetails["GROUP_CONCAT(DISTINCT tags.`Name` SEPARATOR '|')"]);
@@ -48,15 +59,8 @@ foreach ($tagNames as $key => $value) {
     $tagList[$key]["name"] = $value;
     $tagList[$key]["id"] = $tagIds[$key];
     $tagList[$key]["userId"] = $userIds[$key];
-
-    /*
-    # not needed
-    $split = Tags::get_name_and_class($value);
-    $tags[$key]["display"] = $split["name"];
-    $tags[$key]["class"] = $split["class"];
-    */
 }
-#!d($tagList);
+*/
 
 
 /** twig template */

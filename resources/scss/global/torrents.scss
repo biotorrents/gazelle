@@ -1,0 +1,125 @@
+/**
+ * torrent search table
+ */
+
+#searchFormHeader {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.torrentSearch {
+  th {
+    text-align: right;
+    width: 10%;
+  }
+
+  td {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 2rem;
+    align-items: baseline;
+
+    label {
+      display: block !important;
+      margin-top: 1rem;
+    }
+
+    div,
+    input[type="text"] {
+      width: 100%;
+    }
+  }
+
+  .wrapThis {
+    flex-wrap: wrap;
+  }
+
+  .inlineFlex {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  /* tom select */
+  .ts-control > * {
+    width: auto;
+  }
+
+  .ts-wrapper.multi .ts-control > div.active {
+    background: $skeletonDefault;
+  }
+
+  #formControls {
+    justify-content: center;
+  }
+}
+
+/**
+ * torrent search results table
+ */
+
+#searchResultsHeader {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 2rem;
+  align-items: center;
+  justify-content: space-between;
+
+  #paginationControls {
+    display: inline-flex;
+    flex-flow: row wrap;
+    gap: 2rem;
+  }
+}
+
+#torrentSearchResults {
+  .torrentTitle {
+    font-size: larger;
+  }
+
+  /*
+    .torrentTags {
+      font-style: italic;
+    }
+    */
+
+  .tableGroup {
+    display: table-cell;
+  }
+
+  .flexColumn {
+    display: flex;
+    flex-flow: column wrap;
+    gap: 1rem;
+  }
+
+  .flexRow {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 0 2rem;
+  }
+}
+
+/**
+ * torrent details page
+ */
+
+/* creator list */
+#creatorListHeader {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+/* openai torrent tags */
+.openaiTorrentTag {
+  opacity: 0.75;
+
+  &:after {
+    content: " [AI]";
+    font-size: xx-small;
+    vertical-align: super;
+  }
+}

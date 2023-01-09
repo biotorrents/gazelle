@@ -2,9 +2,6 @@
 
 {% block content %}
 
-<h2>Profile for {{ data.core.username }}</h2>
-
-
 {# ratio watch: unblockable shaming notice #}
 {% if data.extra.RatioWatchEnds %}
 <div class="alertbar error">
@@ -30,9 +27,9 @@
 <section>
 {# profile title #}
 {% if data.extra.InfoTitle is not empty %}
-<h3>{{ data.extra.InfoTitle }}</h3>
+<h2>{{ data.extra.InfoTitle }}</h2>
 {% else %}
-<h3>Autobiography</h3>
+<h2>Profile for {{ data.core.username }}</h2>
 {% endif %}
 
 {# profile content #}

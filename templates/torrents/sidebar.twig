@@ -33,9 +33,9 @@
     <form>
         <input type="hidden" name="groupId" value="{{ groupId }}" />
 
-        <input type="text" name="uri" placeholder="e.g., https://i.imgur.com/ZL9dsY8.jpg" />
+        <input type="text" name="pictureLocation" placeholder="e.g., https://i.imgur.com/ZL9dsY8.jpg" />
 
-        <a class="button button-primary" id="addNewPicture">add new picture</a>
+        <a class="button button-primary" id="addNewPicture">new picture</a>
     </form>
 
     {% endif %}
@@ -146,11 +146,11 @@
 		{% endif %}
 
         {# add new torrent #}
-		<a class="button button-green" href="/upload.php?groupid={{ groupId }}">add new torrent</a>
+		<a class="button button-green" href="/upload.php?groupid={{ groupId }}">new torrent</a>
 
 		{# add new request #}
 		{% if can("site_submit_requests") %}
-			<a class="button button-green" href="/requests.php?action=new&groupid={{ groupId }}">add new request</a>
+			<a class="button button-green" href="/requests.php?action=new&groupid={{ groupId }}">new request</a>
 		{% endif %}
 
 		{# toggle bookmark #}
@@ -173,4 +173,77 @@
 
 	</form>
 
+</section>
+
+
+{# creators #}
+<section>
+<span id="creatorListHeader">
+<h3>Creators</h3>
+<a class="button button-orange">edit</a>
+</span>
+
+<table class="compact">
+
+{% for item in creatorList %}
+<tr>
+<th>{{ displayCreator(item) }}</th>
+
+<td class="right">
+{% if can("torrents_edit") %}
+
+<a id="deleteCreatorFromTorrent" data-creatorId={{ item.id }} class="button button-red">×</a>
+
+{% endif %}
+</td>
+</tr>
+{% endfor %}
+
+</table>
+
+{# add new #}
+<form>
+<input type="hidden" name="groupId" value="{{ groupId }}" />
+
+<input type="text" id="creatorName" placeholder="e.g., Antonie van Leeuwenhoek" />
+
+<a class="button button-primary" id="addNewCreator">new creator</a>
+</form>
+</section>
+
+
+{# tags #}
+<section>
+<h3>Tags</h3>
+
+<table class="compact">
+
+{% for item in tagList %}
+<tr>
+
+{% if item.tagType != "openai" %}
+<th>{{ item.name }}</th>
+{% else %}
+<th class="openaiTorrentTag">{{ item.name }}</th>
+{% endif %}
+
+<td class="right">
+{% if can("torrents_edit") %}
+<a id="deleteTagFromTorrent" data-tagId={{ item.id }} class="button button-red">×</a>
+{% endif %}
+
+</td>
+</tr>
+{% endfor %}
+
+</table>
+
+{# add new #}
+<form>
+<input type="hidden" name="groupId" value="{{ groupId }}" />
+
+<input type="text" id="tagName" placeholder="e.g., secondary.metabolites" />
+
+<a class="button button-primary" id="addNewTag">new tag</a>
+</form>
 </section>
