@@ -35,7 +35,7 @@
 
         <input type="text" name="pictureLocation" placeholder="e.g., https://i.imgur.com/ZL9dsY8.jpg" />
 
-        <a class="button button-primary" id="addNewPicture">new picture</a>
+        <a class="button button-primary" id="addNewPicture">add new picture</a>
     </form>
 
     {% endif %}
@@ -132,12 +132,14 @@
 
 	<form>
         {# add new torrent #}
-		<a class="button button-green" href="/upload.php?groupid={{ groupId }}">new torrent</a>
+		<a class="button button-green" href="/upload.php?groupid={{ groupId }}">add new format</a>
 
-		{# add new request #}
+{#
+		{# add new request # }
 		{% if can("site_submit_requests") %}
 			<a class="button button-green" href="/requests.php?action=new&groupid={{ groupId }}">new request</a>
 		{% endif %}
+#}
 
 		{# toggle bookmark #}
 		{% if isBookmarked %}

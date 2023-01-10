@@ -55,6 +55,10 @@
 			{{ debugHeader() }}
 		{% endif %}
 
+		{# plausible analytics #}
+		{% if env.enablePlausible %}
+		<script defer data-domain="{{ env.siteDomain }}" src="https://stats.torrents.bio/js/script.js"></script>
+		{% endif %}
 
 		{# start stylesheets block #}
 		{% block stylesheets %}
@@ -261,11 +265,6 @@
 
 			{# main menu #}
 			<script src="/js/menus.js"></script>
-
-			{# plausible #}
-			{% if env.enablePlausible %}
-				<script data-domain="{{ env.siteDomain }}" src="https://stats.torrents.bio/js/plausible.js"></script>
-			{% endif %}
 
 			{# extra js #}
 			{# todo: figure out a way to not defer vendor scripts #}

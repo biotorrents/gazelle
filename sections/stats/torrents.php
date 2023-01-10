@@ -7,8 +7,8 @@ declare(strict_types=1);
  * torrent stats page
  */
 
+$app = App::go();
 $stats = new Stats();
-$twig = Twig::go();
 
 
 $economyOverTime = $stats->economyOverTime();
@@ -27,17 +27,13 @@ $databaseSpecifics = $stats->databaseSpecifics();
 #!d($databaseSpecifics);
 
 
-View::header('Detailed torrent statistics', 'vendor/chart.min');
+$app->twig->display("stats/torrents.twig", [
+    "title" => "Detailed torrent statistics",
+    "js" => ["vendor/chart.min"],
 
-echo $twig->render(
-    'stats/torrents.twig',
-    [
-        'economyOverTime' => $economyOverTime,
-        'trackerEconomy' => $trackerEconomy,
-        'torrentsTimeline' => $torrentsTimeline,
-        'categoryDistribution' => $categoryDistribution,
-        'databaseSpecifics' => $databaseSpecifics,
-    ]
-);
-
-View::footer();
+    "economyOverTime" => $economyOverTime,
+    "trackerEconomy" => $trackerEconomy,
+    "torrentsTimeline" => $torrentsTimeline,
+    "categoryDistribution" => $categoryDistribution,
+    "databaseSpecifics" => $databaseSpecifics,
+]);

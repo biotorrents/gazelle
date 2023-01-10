@@ -34,7 +34,7 @@ class Stats
 
         $this->baseUri = $app->env->plausibleUri;
         $this->siteId = $app->env->siteDomain;
-        $this->token = $app-env->getPriv("plausibleKey");
+        $this->token = $app->env->getPriv("plausibleKey");
     }
 
 
