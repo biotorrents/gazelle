@@ -33,9 +33,9 @@
 		<div class="flexRow">
 			{# subject #}
 			{% if item.subject %}
-				<span class="tooltip" title="Organism">🦠 {{ item.subject }}
+				<span class="tooltip" title="Organism">🦠 {{ "<em>#{item.subject}</em>"|raw }}
 					{# object #}
-					{{ (item.object) ? "<em>#{item.object}</em>"|raw : "" }}
+					{{ (item.object) ? item.object : "" }}
 				</span>
 			{% endif %}
 

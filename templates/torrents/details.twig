@@ -14,10 +14,10 @@
 					<th>🦠 Organism</th>
 
 					<td>
-						{{ groupDetails.subject }}
-						{% if groupDetails.object %}
-							{{ "<em>#{groupDetails.object}</em>"|raw }}
-						{% endif %}
+            {# subject #}
+          	{{ "<em>#{groupDetails.subject}</em>"|raw }}
+						{# object #}
+					  {{ (groupDetails.object) ? groupDetails.object : "" }}
 					</td>
 
 					<td>
@@ -55,7 +55,7 @@
 				<tr>
 					<th>🏫 Workgroup</th>
 
-					<td>{{ groupDetails.workgroup }}</td>
+					<td>{{ groupDetails.workgroup|raw }}</td>
 
 					<td>
 						<a href="/torrents.php?location={{ groupDetails.workgroup }}">Search »</a>
@@ -68,7 +68,7 @@
 				<tr>
 					<th>📍 Location</th>
 
-					<td>{{ groupDetails.location }}</td>
+					<td>{{ groupDetails.location|raw }}</td>
 
 					<td>
 						<a href="/torrents.php?location={{ groupDetails.location }}">Search »</a>
@@ -126,14 +126,249 @@
     <section>
     <h3>Torrents</h3>
 
-    todo
+    {# individual torrents #}
+{% for item in torrentDetails %}
+
+    <table id="torrentId-{{ item.ID }}" class="torrentDetails">
+
+    <tr>
+
+    {# permalink #}
+    <th />
+
+	{# torrent info #}
+	<th>Torrent&nbsp;info</th>
+
+	{# timeAdded #}
+	<th>Time&nbsp;added</th>
+
+	{# data size #}
+	<th>Data&nbsp;size</th>
+
+	{# seeders #}
+	<th title="Seeders">↑</th>
+
+	{# leechers #}
+	<th title="Leechers">↓</th>
+
+  {# snatches #}
+	<th title="Snatches">↻</th>
+
+</tr>
+
+
+<tr>
+
+{# permalink #}
+<td class="center" title="Permalink (click to copy)">
+<a class="permalink" href="#torrentId-{{ item.ID }}" data-permalink="https://{{ env.siteDomain }}/torrents.php?torrentid={{ item.ID }}">🔗</a>
+</td>
+
+	{# title #}
+	<td class="flexRow">
+
+  {# platform #}
+  {% if item.Media %}
+    <span title="Platform">📦 {{ item.Media }}</span>
+  {% endif %}
+
+  {# format #}
+  {% if item.Container %}
+    <span title="Format">💾 {{ item.Container }}</span>
+  {% endif %}
+
+  {# version #}
+  {% if item.Version %}
+    <span title="Version"><img src="/images/icons/version.png" alt="version" class="icon" /> {{ item.Version }}</span>
+  {% endif %}
+
+  {# scope #}
+  {% if item.Resolution %}
+    <span title="Scope">🔎 {{ item.Resolution }}</span>
+  {% endif %}
+
+  {# archive #}
+  {% if item.Archive %}
+    <span title="Archive"><img src="/images/icons/archive.png" alt="archive" class="icon" /> {{ item.Archive }}</span>
+  {% endif %}
+
+  {# license #}
+  {% if item.Codec %}
+    <span title="License">📜 {{ item.Codec }}</span>
+  {% endif %}
+
+  {# alignment #}
+  {% if item.Censored %}
+    <span title="Alignment" class="good">Aligned</span>
+  {% else %}
+      <span title="Alignment" class="bad">Not aligned</span>
+  {% endif %}
+
+</td>
+
+	{# timeAdded #}
+	<td class="nobr" title="{{ item.Time }}">
+  {{ item.Time|relativeTime }}
+  </td>
+
+
+	{# data size #}
+	<td class="nobr">
+  {{ item.Size|get_size }}
+  </td>
+
+	{# seeders #}
+	<td class="nobr">
+    {{ item.Seeders|number_format }}
+  </td>
+
+
+	{# leechers #}
+	<td class="nobr">
+    {{ item.Leechers|number_format }}
+</td>
+
+
+	{# snatches #}
+	<td class="nobr">
+    {{ item.Snatched|number_format }}
+</td>
+</tr>
+
+{# second row: buttons #}
+<tr>
+
+{# controls #}
+<td colspan="7">
+
+<div class="flexRow">
+{# download #}
+<a class="button button-primary" href="/torrents.php?action=download&id={{ item.ID }}&authkey={{ user.extra.AuthKey }}&torrent_pass={{ user.extra.torrent_pass}}">download</a>
+
+{# freeleech token #}
+{% if canUseToken(item.ID) %}
+<a class="button button-purple useFreeleechToken" href="/torrents.php?action=download&id={{ item.ID }}&authkey={{ user.extra.AuthKey }}&torrent_pass={{ user.extra.torrent_pass}}&usetoken=1">freeleech</a>
+{% endif %}
+
+{# update #}
+{% if can("torrents_edit") or item.UserID == user.core.id %}
+<a class="button button-orange" href="/torrents.php?action=edit&id={{ item.ID }}">update</a>
+{% endif %}
+
+{# report #}
+<a class="button button-red" href="/reportsv2.php?action=report&id={{ item.ID }}">report</a>
+
+{# delete #}
+{% if can("torrents_delete") or item.UserID == user.core.id %}
+<a class="button button-red" href="/torrents.php?action=delete&torrentid={{ item.ID }}">delete</a>
+{% endif %}
+</div>
+</td>
+</tr>
+
+{# third row:description #}
+{% if item.Description is not empty %}
+<tr>
+
+{# description #}
+<td colspan="7">
+<h4>Description</h4>
+{{ item.Description }}
+</td>
+{% endif %}
+</tr>
+
+
+{# citation #}
+<tr>
+
+<td colspan="7">
+
+<span class="flexHeader">
+<h4>Cite this dataset</h4>
+<a class="button" class="toggleBibtex">toggle bibtex</a>
+</span>
+
+{##
+ # https://en.wikibooks.org/wiki/LaTeX/Bibliography_Management#biblatex
+ #
+ # @misc{ enwiki:1116502991,
+ #   author = "{Wikipedia contributors}",
+ #   title = "Biber (LaTeX) --- {Wikipedia}{,} The Free Encyclopedia",
+ #   year = "2022",
+ #   howpublished = "\url{https://en.wikipedia.org/w/index.php?title=Biber_(LaTeX)&oldid=1116502991}",
+ #   note = "[Online; accessed 10-January-2023]"
+ # }
+ #}
+
+<textarea class="bibtexCitation" rows="10">
+@online{ BioTorrents.de-torrentId-{{ item.ID }}
+  title = {{ groupDetails.title }},
+  author = todo,
+  organization = {{ groupDetails.workgroup }},
+  year = {{ groupDetails.year }},
+  url = \href{https://{{ env.siteDomain }}/torrents.php?torrentid={{ item.ID }}},
+  urldate = {{ "now"|date }},
+  note = todo: infoHash
+}
+</textarea>
+</td>
+
+</tr>
+
+{#}
+                  if (!empty($Description)) {
+                      echo '<blockquote class="torrent_description">'.Text::parse($Description).'</blockquote>';
+                  }
+
+                  echo "\n<blockquote>"; ?>
+            <div class="spoilerContainer hideContainer">
+              <?php
+                  # Make a BibTeX citation
+                  # todo: Expand this and move HTTP/FTP, IPFS, Dat, etc.
+                  $EntryName = "BioTorrents.de-$TorrentID";
+    $Today = strftime('%Y-%m-%d');
+
+    # Author format handling
+    $ArtistArray = [];
+    foreach ($Artists as $Num => $Artist) {
+        array_push($ArtistArray, $Artist['name']);
+    }
+
+    # Not sure if inline newlines are valid
+    $ArtistString = (count($ArtistArray) > 3)
+        ? implode("\n    and ", $ArtistArray)
+        : implode(' and ', $ArtistArray);
+
+    # DOI number
+    $BibtexDOI = (count($Screenshots) > 0)
+        ? $Screenshots[0]['Image']
+        : null;
+
+
+    ?>
+
+
+#}
+
+</table>
+{% endfor %}
 
     </section>
 
 
     {# conversation #}
     <section>
+
+    <span class="flexHeader">
     <h3>Conversation</h3>
+		{# toggle subscription #}
+		{% if isSubscribed %}
+			<a class="button button-red" id="toggleGroupSubscription" data-groupid="{{ groupId }}">remove subscription</a>
+		{% else %}
+			<a class="button button-orange" id="toggleGroupSubscription" data-groupid="{{ groupId }}">add subscription</a>
+		{% endif %}
+    </span>
 
     todo
     
@@ -339,24 +574,6 @@ $Index++;
       </ul>
     </div>
 
-    <?php
-    if (check_perms('torrents_add_artist')) { ?>
-    <div class="box box_addartists">
-      <div class="head"><strong>Add Author</strong></div>
-      <div class="body">
-        <form class="flex_input_container" name="artists" action="torrents.php" method="post">
-          <input type="hidden" name="action" value="add_alias" />
-          <input type="hidden" name="auth"
-            value="<?=$user['AuthKey']?>" />
-          <input type="hidden" name="groupid"
-            value="<?=$GroupID?>" />
-          <input type="text" id="artist" name="artistname[]" />
-          <input type="submit" class="button-primary" value="Add" />
-        </form>
-      </div>
-    </div>
-    <?php
-    } ?>
 
     <div class="box box_tags">
       <div class="head">
@@ -412,27 +629,7 @@ if (!empty($DeletedTag)) { ?>
       <?php } ?>
     </div>
     <?php
-    if (empty($user['DisableTagging'])) {
-        ?>
-    <div class="box box_addtag">
-      <div class="head"><strong>Add Tag</strong></div>
-      <div class="body">
-        <form class="flex_input_container" name="tags" action="torrents.php" method="post">
-          <input type="hidden" name="action" value="add_tag" />
-          <input type="hidden" name="auth"
-            value="<?=$user['AuthKey']?>" />
-          <input type="hidden" name="groupid"
-            value="<?=$GroupID?>" />
-          <input type="text" name="tagname" id="tagname" />
-          <input type="submit" class="button-primary" value="Add" />
-        </form>
-        <br />
-        <strong><a href="/rules/tags" class="brackets">View tagging rules</a></strong>
-      </div>
-    </div>
-    <?php
-    } ?>
-  </div>
+
 
   <!-- Main torrent display -->
   <div class="main_column two-thirds column">
@@ -545,42 +742,13 @@ foreach ($TorrentList as $Torrent) {
     $AddExtra = '&Tab;|&Tab;'; // Separator between torrent properties
 
     // Similar to Torrents::torrent_info()
-    if ($Media) {
-        $ExtraInfo .= '<x style="tooltip" title="Platform">'.Text::esc($Media).'</x>';
-    }
 
-    if ($Container) {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Format">'.Text::esc($Container).'</x>';
-    }
 
-    if ($Archive) {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Archive">'.Text::esc($Archive).'</x>';
-    }
 
-    if ($Codec) {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="License">'.Text::esc($Codec).'</x>';
-    }
 
-    if ($Resolution) {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Scope">'.Text::esc($Resolution).'</x>';
-    }
 
-    /*
-    if ($Version) {
-        $ExtraInfo.=$AddExtra.Text::esc($Version);
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Accession Number">'.Text::esc($Version).'</x>';
-    }
-    */
 
-    if ($Censored) {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Aligned/Annotated">Yes</x>';
-    } else {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Aligned/Annotated">No</x>';
-    }
 
-    if (!$ExtraInfo) {
-        $ExtraInfo = $GroupName;
-    }
 
     if ($IsLeeching) {
         $ExtraInfo .= $AddExtra.Format::torrent_label('Leeching', 'important_text_semi');
@@ -633,7 +801,6 @@ foreach ($TorrentList as $Torrent) {
         $ExtraInfo .= $AddExtra.Format::torrent_label('Bad File Names', 'important_text');
     }
 
-    $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$user['AuthKey']."&amp;torrent_pass=".$user['torrent_pass'];
     if (!($TorrentFileName = $app->cacheOld->get_value('torrent_file_name_'.$TorrentID))) {
         $TorrentFile = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
         $Tor = new BencodeTorrent($TorrentFile, false, false);
@@ -645,15 +812,7 @@ foreach ($TorrentList as $Torrent) {
           class="torrent_row groupid_<?=$GroupID?> group_torrent<?=($IsSnatched ? ' snatched_torrent' : '')?>"
           style="font-weight: normal;" id="torrent<?=$TorrentID?>">
           <td>
-            <span>[ <a href="<?=$TorrentDL?>" class="tooltip"
-                title="Download"><?=($HasFile ? 'DL' : 'Missing')?></a>
               <?php
-    if (Torrents::can_use_token($Torrent)) { ?>
-              | <a
-                href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>&amp;usetoken=1"
-                class="tooltip" title="Use a FL Token"
-                onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
-              <?php } ?>
               | <a
                 href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>"
                 class="tooltip" title="Report">RP</a>
@@ -662,11 +821,6 @@ foreach ($TorrentList as $Torrent) {
                 href="torrents.php?action=edit&amp;id=<?=$TorrentID ?>"
                 class="tooltip" title="Edit release">ED</a>
               <?php }
-              if (check_perms('torrents_delete') || $UserID == $user['ID']) { ?>
-              | <a
-                href="torrents.php?action=delete&amp;torrentid=<?=$TorrentID ?>"
-                class="tooltip" title="Remove">RM</a>
-              <?php } ?>
               | <a href="torrents.php?torrentid=<?=$TorrentID ?>"
                 class="tooltip" title="Permalink">PL</a>
               ]
@@ -751,57 +905,6 @@ foreach ($TorrentList as $Torrent) {
             </div>
             <?php
             }
-                  if (!empty($Description)) {
-                      echo '<blockquote class="torrent_description">'.Text::parse($Description).'</blockquote>';
-                  }
-
-                  echo "\n<blockquote>"; ?>
-            <div class="spoilerContainer hideContainer">
-              <?php
-                  # Make a BibTeX citation
-                  # todo: Expand this and move HTTP/FTP, IPFS, Dat, etc.
-                  $EntryName = "BioTorrents.de-$TorrentID";
-    $Today = strftime('%Y-%m-%d');
-
-    # Author format handling
-    $ArtistArray = [];
-    foreach ($Artists as $Num => $Artist) {
-        array_push($ArtistArray, $Artist['name']);
-    }
-
-    # Not sure if inline newlines are valid
-    $ArtistString = (count($ArtistArray) > 3)
-        ? implode("\n    and ", $ArtistArray)
-        : implode(' and ', $ArtistArray);
-
-    # DOI number
-    $BibtexDOI = (count($Screenshots) > 0)
-        ? $Screenshots[0]['Image']
-        : null;
-
-    # Starting newline necessary
-    $BibtexCitation = <<<TEX
-
-@misc{ $EntryName
-  title  = {{$GroupName}},
-  author = {{$ArtistString}},
-  year   = {{$GroupYear}},
-  doi    = {{$BibtexDOI}},
-  url    = \href{https://biotorrents.de/torrents.php?torrentid=$TorrentID},
-  note   = {On BitTorrent; accessed $Today}
-}
-TEX;
-    ?>
-
-<details>
-    <summary>Show/Hide BibTeX</summary>
-    <?= <<<HTML
-    <pre>
-      $BibtexCitation
-    </pre>
-HTML;
-    ?>
-</details>
 
 
 
@@ -1112,8 +1215,6 @@ CommentsView::render_comments($Thread, $LastRead, "torrents.php?id=$GroupID");
 ?>
     </div>
   </div>
-</div>
-<?php View::footer();
 
 
 #}

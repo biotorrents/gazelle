@@ -44,17 +44,6 @@ section {
   flex-shrink: 1;
 }
 
-/* text input */
-.flex_input_container {
-  display: flex;
-}
-
-.flex_input_container > input[type="text"] {
-  flex-grow: 1;
-  box-sizing: border-box;
-  width: 50%;
-}
-
 /**
  * aside elements
  */

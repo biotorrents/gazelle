@@ -146,13 +146,6 @@
 			<a class="button button-orange" id="toggleGroupBookmark" data-groupid="{{ groupId }}">add bookmark</a>
 		{% endif %}
 
-		{# toggle subscription #}
-		{% if isSubscribed %}
-			<a class="button button-red" id="toggleGroupSubscription" data-groupid="{{ groupId }}">remove subscription</a>
-		{% else %}
-			<a class="button button-orange" id="toggleGroupSubscription" data-groupid="{{ groupId }}">add subscription</a>
-		{% endif %}
-
 		<hr />
 
 		{# edit group #}
@@ -192,7 +185,7 @@
 <td class="right">
 {% if can("torrents_edit") %}
 
-<a id="deleteCreatorFromTorrent" data-creatorId={{ item.id }} class="button button-red">×</a>
+<a id="deleteCreatorFromTorrent" data-creatorId={{ item.id }} class="button">×</a>
 
 {% endif %}
 </td>
@@ -202,6 +195,7 @@
 </table>
 
 {# add new #}
+{% if can("torrents_add_artist") %}
 <form>
 <input type="hidden" name="groupId" value="{{ groupId }}" />
 
@@ -209,6 +203,7 @@
 
 <a class="button button-primary" id="addNewCreator">new creator</a>
 </form>
+{% endif %}
 </section>
 
 
@@ -227,7 +222,7 @@
 
 <td class="right">
 {% if can("torrents_edit") %}
-<a id="deleteTagFromTorrent" data-tagId={{ item.id }} class="button button-red">×</a>
+<a id="deleteTagFromTorrent" data-tagId={{ item.id }} class="button">×</a>
 {% endif %}
 
 </td>
@@ -245,7 +240,7 @@
 
 <td class="right">
 {% if can("torrents_edit") %}
-<a id="deleteTagFromTorrent" data-tagId={{ item.id }} class="button button-red">×</a>
+<a id="deleteTagFromTorrent" data-tagId={{ item.id }} class="button">×</a>
 {% endif %}
 
 </td>

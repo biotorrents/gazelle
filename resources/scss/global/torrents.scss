@@ -114,6 +114,13 @@
   justify-content: space-between;
 }
 
+/* flex header (generic) */
+.flexHeader {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
 /* openai torrent tags */
 .openaiTorrentTag {
   opacity: 0.75;
@@ -123,4 +130,24 @@
     font-size: xx-small;
     vertical-align: super;
   }
+}
+
+/* individual torrent table */
+.torrentDetails {
+  .flexRow {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 0 2rem;
+  }
+}
+
+/* permalinks */
+a.permalink {
+  text-decoration: none;
+}
+
+/* bibtex */
+textarea.bibtexCitation {
+  width: 100%;
+  height: auto;
 }

@@ -1,4 +1,22 @@
 /**
+ * torrent details page
+ */
+(() => {
+  "use strict";
+
+  // click to copy permalink
+  $(".permalink").on("click", (element) => {
+    let text = $(element.target).data("permalink");
+    navigator.clipboard.writeText(text);
+  });
+
+  // confirm freeleech use
+  $(".useFreeleechToken").on("click", () => {
+    return confirm("Are you sure you want to use a freeleech token here?");
+  });
+})();
+
+/**
  * ArtistManager
  */
 function ArtistManager() {

@@ -387,27 +387,8 @@ $Index++;
         </li>
         <?php } ?>
       </ul>
-    </div>
-
-    <?php
-    if (check_perms('torrents_add_artist')) { ?>
-    <div class="box box_addartists">
-      <div class="head"><strong>Add Author</strong></div>
-      <div class="body">
-        <form class="flex_input_container" name="artists" action="torrents.php" method="post">
-          <input type="hidden" name="action" value="add_alias" />
-          <input type="hidden" name="auth"
-            value="<?=$user['AuthKey']?>" />
-          <input type="hidden" name="groupid"
-            value="<?=$GroupID?>" />
-          <input type="text" id="artist" name="artistname[]" />
-          <input type="submit" class="button-primary" value="Add" />
-        </form>
-      </div>
-    </div>
-    <?php
-    } ?>
-
+          </div>
+    
     <div class="box box_tags">
       <div class="head">
         <strong>Tags</strong>
@@ -461,28 +442,7 @@ if (!empty($DeletedTag)) { ?>
       </ul>
       <?php } ?>
     </div>
-    <?php
-    if (empty($user['DisableTagging'])) {
-        ?>
-    <div class="box box_addtag">
-      <div class="head"><strong>Add Tag</strong></div>
-      <div class="body">
-        <form class="flex_input_container" name="tags" action="torrents.php" method="post">
-          <input type="hidden" name="action" value="add_tag" />
-          <input type="hidden" name="auth"
-            value="<?=$user['AuthKey']?>" />
-          <input type="hidden" name="groupid"
-            value="<?=$GroupID?>" />
-          <input type="text" name="tagname" id="tagname" />
-          <input type="submit" class="button-primary" value="Add" />
-        </form>
-        <br />
-        <strong><a href="/rules/tags" class="brackets">View tagging rules</a></strong>
-      </div>
-    </div>
-    <?php
-    } ?>
-  </div>
+ </div>
 
   <!-- Main torrent display -->
   <div class="main_column two-thirds column">
