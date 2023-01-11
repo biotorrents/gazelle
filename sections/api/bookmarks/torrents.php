@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 if (!empty($_GET['userid'])) {
     if (!check_perms('users_override_paranoia')) {
         error(403);
@@ -12,7 +14,7 @@ if (!empty($_GET['userid'])) {
         error(404);
     }
 
-    $db->query("
+    $app->dbOld->query("
     SELECT
       `Username`
     FROM
@@ -20,7 +22,7 @@ if (!empty($_GET['userid'])) {
     WHERE
       `ID` = '$UserID'
     ");
-    list($Username) = $db->next_record();
+    list($Username) = $app->dbOld->next_record();
 } else {
     $UserID = $user['ID'];
 }

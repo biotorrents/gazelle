@@ -1,19 +1,21 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 if (!isset($_GET['groupid']) || !is_number($_GET['groupid'])) {
     error(0);
 }
 $GroupID = (int)$_GET['groupid'];
 
-$db->query("
+$app->dbOld->query("
   SELECT `title`
   FROM `torrents_group`
   WHERE `id` = $GroupID");
-if (!$db->has_results()) {
+if (!$app->dbOld->has_results()) {
     error(404);
 }
-list($Name) = $db->next_record();
+list($Name) = $app->dbOld->next_record();
 
 View::header("Revision history for $Name");
 ?>

@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 if (!isset($_GET['userid']) || !is_number($_GET['userid'])) {
     json_die('failure');
 }
@@ -26,14 +28,14 @@ function check_paranoia_here($Setting)
 }
 
 if (check_paranoia_here('seeding+') || check_paranoia_here('leeching+')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT IF(remaining = 0, 'Seeding', 'Leeching') AS Type, COUNT(x.uid)
     FROM xbt_files_users AS x
       INNER JOIN torrents AS t ON t.ID = x.fid
     WHERE x.uid = '$UserID'
       AND x.active = 1
     GROUP BY Type");
-    $PeerCount = $db->to_array(0, MYSQLI_NUM, false);
+    $PeerCount = $app->dbOld->to_array(0, MYSQLI_NUM, false);
     if (check_paranoia('seeding+')) {
         $Seeding = isset($PeerCount['Seeding']) ? $PeerCount['Seeding'][1] : 0;
         $CommStats['seeding'] = Text::float($Seeding);
@@ -43,12 +45,12 @@ if (check_paranoia_here('seeding+') || check_paranoia_here('leeching+')) {
     }
 }
 if (check_paranoia_here('snatched+')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT COUNT(x.uid), COUNT(DISTINCT x.fid)
     FROM xbt_snatched AS x
       INNER JOIN torrents AS t ON t.ID = x.fid
     WHERE x.uid = '$UserID'");
-    list($Snatched, $UniqueSnatched) = $db->next_record(MYSQLI_NUM, false);
+    list($Snatched, $UniqueSnatched) = $app->dbOld->next_record(MYSQLI_NUM, false);
     $CommStats['snatched'] = Text::float($Snatched);
     if (check_perms('site_view_torrent_snatchlist', $User['Class'])) {
         $CommStats['usnatched'] = Text::float($UniqueSnatched);
@@ -58,12 +60,12 @@ if (check_paranoia_here('snatched+')) {
     }
 }
 if (check_perms('site_view_torrent_snatchlist', $Class)) {
-    $db->query("
+    $app->dbOld->query("
     SELECT COUNT(ud.UserID), COUNT(DISTINCT ud.TorrentID)
     FROM users_downloads AS ud
       JOIN torrents AS t ON t.ID = ud.TorrentID
     WHERE ud.UserID = '$UserID'");
-    list($NumDownloads, $UniqueDownloads) = $db->next_record(MYSQLI_NUM, false);
+    list($NumDownloads, $UniqueDownloads) = $app->dbOld->next_record(MYSQLI_NUM, false);
     $CommStats['downloaded'] = Text::float($NumDownloads);
     $CommStats['udownloaded'] = Text::float($UniqueDownloads);
 }

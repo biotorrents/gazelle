@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 define('COLLAGES_PER_PAGE', 25);
 
 list($Page, $Limit) = Format::page_limit(COLLAGES_PER_PAGE);
@@ -123,11 +125,11 @@ if (!empty($_GET['userid'])) {
         if (!check_paranoia('collagecontribs', $User['Paranoia'], $UserClass, $UserID)) {
             error(403);
         }
-        $db->query("
+        $app->dbOld->query("
       SELECT DISTINCT CollageID
       FROM collages_torrents
       WHERE UserID = $UserID");
-        $CollageIDs = $db->collect('CollageID');
+        $CollageIDs = $app->dbOld->collect('CollageID');
         if (empty($CollageIDs)) {
             $SQL .= " AND 0";
         } else {
@@ -156,10 +158,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'mine') {
 $SQL .= "
   ORDER BY $Order $Way
   LIMIT $Limit";
-$db->query($SQL);
-$Collages = $db->to_array();
-$db->query('SELECT FOUND_ROWS()');
-list($NumResults) = $db->next_record();
+$app->dbOld->query($SQL);
+$Collages = $app->dbOld->to_array();
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
 
 View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
 ?>
@@ -276,16 +278,16 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
     <?php
       }
       if (check_perms('site_collages_personal')) {
-          $db->query("
+          $app->dbOld->query("
         SELECT ID
         FROM collages
         WHERE UserID = '$user[ID]'
           AND CategoryID = '0'
           AND Deleted = '0'");
-          $CollageCount = $db->record_count();
+          $CollageCount = $app->dbOld->record_count();
 
           if ($CollageCount === 1) {
-              list($CollageID) = $db->next_record(); ?>
+              list($CollageID) = $app->dbOld->next_record(); ?>
     <a href="collages.php?id=<?=$CollageID?>"
       class="brackets">Personal collection</a>
     <?php

@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 $Title = 'Browse wiki articles';
 if (!empty($_GET['letter'])) {
     $Letter = strtoupper(substr($_GET['letter'], 0, 1));
@@ -29,7 +31,7 @@ if ($Letter !== '1') {
 }
 
 $sql .= " ORDER BY Title";
-$db->prepared_query($sql);
+$app->dbOld->prepared_query($sql);
 ?>
 
 <div>
@@ -49,7 +51,7 @@ if ($Letter) { ?>
       </tr>
 
       <?php
-while (list($ID, $Title, $Date, $UserID) = $db->next_record()) { ?>
+while (list($ID, $Title, $Date, $UserID) = $app->dbOld->next_record()) { ?>
       <tr>
         <td><a href="wiki.php?action=article&amp;id=<?=$ID?>"><?=$Title?></a></td>
         <td><?=$Date?>

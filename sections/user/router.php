@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+
+$app = App::go();
+
 /**
  * Flight router
  * @see https://flightphp.com/learn
@@ -43,15 +46,15 @@ switch ($_REQUEST['action']) {
   case 'notify_delete':
     authorize();
     if ($_GET['id'] && is_number($_GET['id'])) {
-        $db->query("DELETE FROM users_notify_filters WHERE ID='".db_string($_GET['id'])."' AND UserID='$user[ID]'");
-        $ArtistNotifications = $cache->get_value('notify_artists_'.$user['ID']);
+        $app->dbOld->query("DELETE FROM users_notify_filters WHERE ID='".db_string($_GET['id'])."' AND UserID='$user[ID]'");
+        $ArtistNotifications = $app->cacheOld->get_value('notify_artists_'.$user['ID']);
 
         if (is_array($ArtistNotifications) && $ArtistNotifications['ID'] == $_GET['id']) {
-            $cache->delete_value('notify_artists_'.$user['ID']);
+            $app->cacheOld->delete_value('notify_artists_'.$user['ID']);
         }
     }
 
-    $cache->delete_value('notify_filters_'.$user['ID']);
+    $app->cacheOld->delete_value('notify_filters_'.$user['ID']);
     Http::redirect("user.php?action=notify");
     break;
 

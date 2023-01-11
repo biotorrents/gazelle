@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 $ENV = ENV::go();
 
 $Orders = ['Time', 'Name', 'Seeders', 'Leechers', 'Snatched', 'Size'];
@@ -248,7 +250,7 @@ if ((empty($_GET['search'])
       ORDER BY $Order $Way
       LIMIT $Limit";
 } else {
-    $db->query("
+    $app->dbOld->query("
       CREATE TEMPORARY TABLE `temp_sections_torrents_user` (
         `GroupID` int(10) unsigned not null,
         `TorrentID` int(10) unsigned not null,
@@ -261,7 +263,7 @@ if ((empty($_GET['search'])
         `Size` bigint(12) unsigned,
       PRIMARY KEY (`TorrentID`)) CHARSET=utf8");
 
-    $db->query("
+    $app->dbOld->query("
       INSERT IGNORE INTO `temp_sections_torrents_user`
       SELECT
         t.`GroupID`,
@@ -305,12 +307,12 @@ if ((empty($_GET['search'])
       LIMIT $Limit";
 }
 
-$db->query($SQL);
-$GroupIDs = $db->collect('GroupID');
-$TorrentsInfo = $db->to_array('TorrentID', MYSQLI_ASSOC);
+$app->dbOld->query($SQL);
+$GroupIDs = $app->dbOld->collect('GroupID');
+$TorrentsInfo = $app->dbOld->to_array('TorrentID', MYSQLI_ASSOC);
 
-$db->query('SELECT FOUND_ROWS()');
-list($TorrentCount) = $db->next_record();
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($TorrentCount) = $app->dbOld->next_record();
 
 $Results = Torrents::get_groups($GroupIDs);
 $Action = Text::esc($_GET['type']);

@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 if (!empty($_GET['userid']) && is_number($_GET['userid'])) {
     $UserID = $_GET['userid'];
 } else {
@@ -52,7 +54,7 @@ if (empty($_GET['type'])) {
   }
 }
 
-$DownloadsQ = $db->query("
+$DownloadsQ = $app->dbOld->query("
   SELECT
     t.ID AS TorrentID,
     DATE_FORMAT($Month, '%Y - %m') AS Month,

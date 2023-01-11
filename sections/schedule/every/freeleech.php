@@ -2,22 +2,24 @@
 
 declare(strict_types=1);
 
+$app = App::go();
+
 // We use this to control 6 hour freeleeches. They're actually 7 hours, but don't tell anyone.
 $TimeMinus = time_minus(3600 * 7);
 
-$db->query("
+$app->dbOld->query("
   SELECT DISTINCT GroupID
   FROM torrents
   WHERE FreeTorrent = '1'
     AND FreeLeechType = '4'
     AND Time < '$TimeMinus'");
 
-while (list($GroupID) = $db->next_record()) {
-    $cache->delete_value("torrents_details_$GroupID");
-    $cache->delete_value("torrent_group_$GroupID");
+while (list($GroupID) = $app->dbOld->next_record()) {
+    $app->cacheOld->delete_value("torrents_details_$GroupID");
+    $app->cacheOld->delete_value("torrent_group_$GroupID");
 }
 
-$db->query("
+$app->dbOld->query("
   UPDATE torrents
   SET FreeTorrent = '0',
     FreeLeechType = '0'

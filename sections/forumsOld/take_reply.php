@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 authorize();
 $ENV = ENV::go();
 
@@ -65,17 +67,17 @@ if (isset($_POST['subscribe']) && Subscriptions::has_subscribed($TopicID) === fa
 // Now lets handle the special case of merging posts, we can skip bumping the thread and all that fun
 if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forums_double_post') || isset($_POST['merge'])))) {
     // Get the id for this post in the database to append
-    $db->query("
+    $app->dbOld->query("
     SELECT ID, Body
     FROM forums_posts
     WHERE TopicID = ?
       AND AuthorID = ?
     ORDER BY ID DESC
     LIMIT 1", $TopicID, $user['ID']);
-    list($PostID, $OldBody) = $db->next_record(MYSQLI_NUM, false);
+    list($PostID, $OldBody) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
     //Edit the post
-    $db->query("
+    $app->dbOld->query("
     UPDATE forums_posts
     SET
       Body = CONCAT(Body, '\n\n', ?),
@@ -84,12 +86,12 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
     WHERE ID = ?", $Body, $user['ID'], $SQLTime, $PostID);
 
     //Store edit history
-    $db->query("
+    $app->dbOld->query("
     INSERT INTO comments_edits
       (Page, PostID, EditUser, EditTime, Body)
     VALUES
       ('forums', ?, ?, ?, ?)", $PostID, $user['ID'], $SQLTime, $OldBody);
-    $cache->delete_value("forums_edits_$PostID");
+    $app->cacheOld->delete_value("forums_edits_$PostID");
 
     //Get the catalogue it is in
     $CatalogueID = floor((POSTS_PER_PAGE * ceil($ThreadInfo['Posts'] / POSTS_PER_PAGE) - POSTS_PER_PAGE) / THREAD_CATALOGUE);
@@ -104,23 +106,23 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
         $ThreadInfo['StickyPost']['Body'] .= "\n\n".$Body;
         $ThreadInfo['StickyPost']['EditedUserID'] = $user['ID'];
         $ThreadInfo['StickyPost']['EditedTime'] = $SQLTime;
-        $cache->cache_value("thread_$TopicID".'_info', $ThreadInfo, 0);
+        $app->cacheOld->cache_value("thread_$TopicID".'_info', $ThreadInfo, 0);
     }
 
     //Edit the post in the cache
-    $cache->begin_transaction("thread_$TopicID"."_catalogue_$CatalogueID");
-    $cache->update_row($Key, [
-    'Body' => $cache->MemcacheDBArray[$Key]['Body']."\n\n$Body",
+    $app->cacheOld->begin_transaction("thread_$TopicID"."_catalogue_$CatalogueID");
+    $app->cacheOld->update_row($Key, [
+    'Body' => $app->cacheOld->MemcacheDBArray[$Key]['Body']."\n\n$Body",
     'EditedUserID' => $user['ID'],
     'EditedTime' => $SQLTime,
     'Username' => $user['Username']
   ]);
-    $cache->commit_transaction(0);
+    $app->cacheOld->commit_transaction(0);
 
 //Now we're dealing with a normal post
 } else {
     //Insert the post into the posts database
-    $db->query(
+    $app->dbOld->query(
         "
     INSERT INTO forums_posts (TopicID, AuthorID, AddedTime, Body)
     VALUES (?, ?, ?, ?)",
@@ -130,10 +132,10 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
         $Body
     );
 
-    $PostID = $db->inserted_id();
+    $PostID = $app->dbOld->inserted_id();
 
     //This updates the root index
-    $db->query("
+    $app->dbOld->query("
     UPDATE forums
     SET
       NumPosts = NumPosts + 1,
@@ -144,7 +146,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
     WHERE ID = ?", $PostID, $user['ID'], $TopicID, $SQLTime, $ForumID);
 
     //Update the topic
-    $db->query("
+    $app->dbOld->query("
     UPDATE forums_topics
     SET
       NumPosts = NumPosts + 1,
@@ -154,7 +156,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
     WHERE ID = ?", $PostID, $user['ID'], $SQLTime, $TopicID);
 
     // if cache exists modify it, if not, then it will be correct when selected next, and we can skip this block
-    if ($Forum = $cache->get_value("forums_$ForumID")) {
+    if ($Forum = $app->cacheOld->get_value("forums_$ForumID")) {
         list($Forum, , , $Stickies) = $Forum;
 
         // if the topic is already on this page
@@ -176,7 +178,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
             // Never know if we get a page full of stickies...
             if ($Stickies < TOPICS_PER_PAGE || $ThreadInfo['IsSticky'] == 1) {
                 //Pull the data for the thread we're bumping
-                $db->query("
+                $app->dbOld->query("
           SELECT
             f.AuthorID,
             f.IsLocked,
@@ -186,7 +188,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
           FROM forums_topics AS f
             LEFT JOIN forums_polls AS p ON p.TopicID = f.ID
           WHERE f.ID = ?", $TopicID);
-                list($AuthorID, $IsLocked, $IsSticky, $NumPosts, $NoPoll) = $db->next_record();
+                list($AuthorID, $IsLocked, $IsSticky, $NumPosts, $NoPoll) = $app->dbOld->next_record();
                 $Part2 = [
           $TopicID => [
             'ID'               => $TopicID,
@@ -223,11 +225,11 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
         } else {
             $Forum = $Part1 + $Part2 + $Part3; //Merge it
         }
-        $cache->cache_value("forums_$ForumID", [$Forum, '', 0, $Stickies], 0);
+        $app->cacheOld->cache_value("forums_$ForumID", [$Forum, '', 0, $Stickies], 0);
 
         //Update the forum root
-        $cache->begin_transaction('forums_list');
-        $cache->update_row($ForumID, [
+        $app->cacheOld->begin_transaction('forums_list');
+        $app->cacheOld->update_row($ForumID, [
       'NumPosts'         => '+1',
       'LastPostID'       => $PostID,
       'LastPostAuthorID' => $user['ID'],
@@ -237,10 +239,10 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
       'IsLocked'         => $ThreadInfo['IsLocked'],
       'IsSticky'         => $ThreadInfo['IsSticky']
     ]);
-        $cache->commit_transaction(0);
+        $app->cacheOld->commit_transaction(0);
     } else {
         //If there's no cache, we have no data, and if there's no data
-        $cache->delete_value('forums_list');
+        $app->cacheOld->delete_value('forums_list');
     }
 
 
@@ -248,8 +250,8 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
     $CatalogueID = floor((POSTS_PER_PAGE * ceil($ThreadInfo['Posts'] / POSTS_PER_PAGE) - POSTS_PER_PAGE) / THREAD_CATALOGUE);
 
     //Insert the post into the thread catalogue (block of 500 posts)
-    $cache->begin_transaction("thread_$TopicID"."_catalogue_$CatalogueID");
-    $cache->insert('', [
+    $app->cacheOld->begin_transaction("thread_$TopicID"."_catalogue_$CatalogueID");
+    $app->cacheOld->insert('', [
     'ID'           => $PostID,
     'AuthorID'     => $user['ID'],
     'AddedTime'    => $SQLTime,
@@ -258,22 +260,22 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
     'EditedTime'   => null,
     'Username'     => $user['Username'] // todo: Remove, it's never used?
   ]);
-    $cache->commit_transaction(0);
+    $app->cacheOld->commit_transaction(0);
 
     //Update the thread info
-    $cache->begin_transaction("thread_$TopicID".'_info');
-    $cache->update_row(false, ['Posts' => '+1', 'LastPostAuthorID' => $user['ID']]);
-    $cache->commit_transaction(0);
+    $app->cacheOld->begin_transaction("thread_$TopicID".'_info');
+    $app->cacheOld->update_row(false, ['Posts' => '+1', 'LastPostAuthorID' => $user['ID']]);
+    $app->cacheOld->commit_transaction(0);
 
     //Increment this now to make sure we redirect to the correct page
     $ThreadInfo['Posts']++;
 
     //Award a badge if necessary
-    $db->query("
+    $app->dbOld->query("
     SELECT COUNT(ID)
     FROM forums_posts
     WHERE AuthorID = '$user[ID]'");
-    list($UserPosts) = $db->next_record(MYSQLI_NUM, false);
+    list($UserPosts) = $app->dbOld->next_record(MYSQLI_NUM, false);
     foreach ($ENV->AUTOMATED_BADGE_IDS->Posts as $Count => $Badge) {
         if ((int) $UserPosts >= $Count) {
             $Success = Badges::awardBadge($user['ID'], $Badge);

@@ -5,6 +5,8 @@
  * User subscription page
  */
 
+$app = App::go();
+
 $debug = Debug::go();
 
 if (isset($user['PostsPerPage'])) {
@@ -37,7 +39,7 @@ $ShowCollapsed = (!isset($_GET['collapse']) && !isset($HeavyInfo['SubscriptionsC
  * LastReadAvatar
  * LastReadEditedUserID
  */
-$db->prepared_query("
+$app->dbOld->prepared_query("
   (SELECT
     SQL_CALC_FOUND_ROWS
     s.`Page`,
@@ -90,9 +92,9 @@ $db->prepared_query("
   ORDER BY `LastPostTime` DESC
   LIMIT $Limit");
 
-$Results = $db->to_array(false, MYSQLI_ASSOC, false);
-$db->prepared_query('SELECT FOUND_ROWS()');
-list($NumResults) = $db->next_record();
+$Results = $app->dbOld->to_array(false, MYSQLI_ASSOC, false);
+$app->dbOld->prepared_query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
 
 #$debug->log_var($Results, 'Results');
 
@@ -123,12 +125,12 @@ if (!$ShowUnread) {
         unread replies</a>&nbsp;&nbsp;&nbsp;
       <?php
 } else {
-        ?>
+    ?>
       <br /><br />
       <a href="userhistory.php?action=subscriptions&amp;showunread=0" class="brackets">Show all
         subscriptions</a>&nbsp;&nbsp;&nbsp;
       <?php
-    }
+}
 if ($NumResults) {
     ?>
       <a href="#" onclick="Collapse(); return false;" id="collapselink" class="brackets"><?=$ShowCollapsed ? 'Show' : 'Hide' ?>
@@ -151,69 +153,69 @@ if (!$NumResults) {
   </div>
   <?php
 } else {
-        ?>
+    ?>
   <div class="linkbox">
     <?php
   $Pages = Format::get_pages($Page, $NumResults, $PerPage, 11);
-        echo $Pages; ?>
+    echo $Pages; ?>
   </div>
   <?php
   foreach ($Results as $Result) {
       switch ($Result['Page']) {
-      case 'artist':
-        $Links = 'Artist: <a href="artist.php?id=' . $Result['PageID'] . '">' . Text::esc($Result['Name']) . '</a>';
-        $JumpLink = 'artist.php?id=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
-        break;
+          case 'artist':
+              $Links = 'Artist: <a href="artist.php?id=' . $Result['PageID'] . '">' . Text::esc($Result['Name']) . '</a>';
+              $JumpLink = 'artist.php?id=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
+              break;
 
 
-      case 'collages':
-        $Links = 'Collage: <a href="collages.php?id=' . $Result['PageID'] . '">' . Text::esc($Result['Name']) . '</a>';
-        $JumpLink = 'collages.php?action=comments&collageid=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
-        break;
+          case 'collages':
+              $Links = 'Collage: <a href="collages.php?id=' . $Result['PageID'] . '">' . Text::esc($Result['Name']) . '</a>';
+              $JumpLink = 'collages.php?action=comments&collageid=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
+              break;
 
 
-      case 'requests':
-        if (!isset($Requests[$Result['PageID']])) {
-            continue;
-        }
+          case 'requests':
+              if (!isset($Requests[$Result['PageID']])) {
+                  continue;
+              }
 
-        $Request = $Requests[$Result['PageID']];
-        $CategoryName = $Categories[$CategoryID - 1];
+              $Request = $Requests[$Result['PageID']];
+              $CategoryName = $Categories[$CategoryID - 1];
 
-        $Links = 'Request: ';
-            $Links .= '<a href="requests.php?action=view&amp;id=' . $Result['PageID'] . '">' . $Request['Title'] . "</a>";
-        $JumpLink = 'requests.php?action=view&amp;id=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
-        break;
-
-
-      case 'torrents':
-        if (!isset($TorrentGroups[$Result['PageID']])) {
-            continue;
-        }
-
-        $GroupInfo = $TorrentGroups[$Result['PageID']];
-        $Links = 'Torrent: ' . Artists::display_artists($GroupInfo['ExtendedArtists']) . '<a href="torrents.php?id=' . $GroupInfo['id'] . '" dir="ltr">' . $GroupInfo['title'] . '</a>';
-
-        if ($GroupInfo['year'] > 0) {
-            $Links .= " [" . $GroupInfo['year'] . "]";
-        }
-
-        $JumpLink = 'torrents.php?id=' . $GroupInfo['ID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
-        break;
+              $Links = 'Request: ';
+              $Links .= '<a href="requests.php?action=view&amp;id=' . $Result['PageID'] . '">' . $Request['Title'] . "</a>";
+              $JumpLink = 'requests.php?action=view&amp;id=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
+              break;
 
 
-      case 'forums':
-        $Links = 'Forums: <a href="forums.php?action=viewforum&amp;forumid=' . $Result['ForumID'] . '">' . Text::esc($Result['ForumName']) . '</a> &gt; ' .
-          '<a href="forums.php?action=viewthread&amp;threadid=' . $Result['PageID'] .
-            '" class="tooltip" title="' . Text::esc($Result['Name']) . '">' .
-            Text::esc(Format::cut_string($Result['Name'], 75)) .
-          '</a>';
-        $JumpLink = 'forums.php?action=viewthread&amp;threadid=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
-        break;
+          case 'torrents':
+              if (!isset($TorrentGroups[$Result['PageID']])) {
+                  continue;
+              }
 
-      default:
-        error(0);
-    } ?>
+              $GroupInfo = $TorrentGroups[$Result['PageID']];
+              $Links = 'Torrent: ' . Artists::display_artists($GroupInfo['ExtendedArtists']) . '<a href="torrents.php?id=' . $GroupInfo['id'] . '" dir="ltr">' . $GroupInfo['title'] . '</a>';
+
+              if ($GroupInfo['year'] > 0) {
+                  $Links .= " [" . $GroupInfo['year'] . "]";
+              }
+
+              $JumpLink = 'torrents.php?id=' . $GroupInfo['ID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
+              break;
+
+
+          case 'forums':
+              $Links = 'Forums: <a href="forums.php?action=viewforum&amp;forumid=' . $Result['ForumID'] . '">' . Text::esc($Result['ForumName']) . '</a> &gt; ' .
+                '<a href="forums.php?action=viewthread&amp;threadid=' . $Result['PageID'] .
+                  '" class="tooltip" title="' . Text::esc($Result['Name']) . '">' .
+                  Text::esc(Format::cut_string($Result['Name'], 75)) .
+                '</a>';
+              $JumpLink = 'forums.php?action=viewthread&amp;threadid=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
+              break;
+
+          default:
+              error(0);
+      } ?>
 
   <table
     class="forum_post box vertical_margin<?=(!User::hasAvatarsEnabled() ? ' noavatar' : '')?>">
@@ -286,7 +288,7 @@ if (!$NumResults) {
     <?=$Pages?>
   </div>
   <?php
-    }?>
+}?>
 </div>
 
 <?php View::footer();

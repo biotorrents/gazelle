@@ -1,5 +1,7 @@
 <?php
 
+$app = App::go();
+
 if (!($IsFLS)) {
     // Logged in user is not FLS or Staff
     error(403);
@@ -7,11 +9,11 @@ if (!($IsFLS)) {
 
 if ($ConvID = (int)$_GET['convid']) {
     // FLS, check level of conversation
-    $db->query("
+    $app->dbOld->query("
     SELECT Level
     FROM staff_pm_conversations
     WHERE ID = $ConvID");
-    list($Level) = $db->next_record();
+    list($Level) = $app->dbOld->next_record();
 
     if ($Level == 0) {
         // FLS conversation, assign to staff (moderator)
@@ -29,12 +31,12 @@ if ($ConvID = (int)$_GET['convid']) {
           break;
       }
 
-            $db->query("
+            $app->dbOld->query("
         UPDATE staff_pm_conversations
         SET Status = 'Unanswered',
           Level = $Level
         WHERE ID = $ConvID");
-            $cache->delete_value("num_staff_pms_$user[ID]");
+            $app->cacheOld->delete_value("num_staff_pms_$user[ID]");
             Http::redirect("staffpm.php");
         } else {
             error(404);
@@ -45,11 +47,11 @@ if ($ConvID = (int)$_GET['convid']) {
     }
 } elseif ($ConvID = (int)$_POST['convid']) {
     // Staff (via AJAX), get current assign of conversation
-    $db->query("
+    $app->dbOld->query("
     SELECT Level, AssignedToUser
     FROM staff_pm_conversations
     WHERE ID = $ConvID");
-    list($Level, $AssignedToUser) = $db->next_record();
+    list($Level, $AssignedToUser) = $app->dbOld->next_record();
 
     $LevelCap = 1000;
 
@@ -59,13 +61,13 @@ if ($ConvID = (int)$_GET['convid']) {
 
         if ($LevelType == 'class') {
             // Assign to class
-            $db->query("
+            $app->dbOld->query("
         UPDATE staff_pm_conversations
         SET Status = 'Unanswered',
           Level = $NewLevel,
           AssignedToUser = NULL
         WHERE ID = $ConvID");
-            $cache->delete_value("num_staff_pms_$user[ID]");
+            $app->cacheOld->delete_value("num_staff_pms_$user[ID]");
         } else {
             $UserInfo = User::user_info($NewLevel);
             $Level = $Classes[$UserInfo['PermissionID']]['Level'];
@@ -74,13 +76,13 @@ if ($ConvID = (int)$_GET['convid']) {
             }
 
             // Assign to user
-            $db->query("
+            $app->dbOld->query("
         UPDATE staff_pm_conversations
         SET Status = 'Unanswered',
           AssignedToUser = $NewLevel,
           Level = $Level
         WHERE ID = $ConvID");
-            $cache->delete_value("num_staff_pms_$user[ID]");
+            $app->cacheOld->delete_value("num_staff_pms_$user[ID]");
         }
         echo '1';
     } else {

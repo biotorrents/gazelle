@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 if (!(check_perms('users_mod') || check_perms('site_tag_aliases_read'))) {
     error(403);
 }
@@ -12,7 +15,7 @@ if (check_perms('users_mod')) {
         $badtag = db_string($_POST['badtag']);
         $aliastag = db_string($_POST['aliastag']);
 
-        $db->query("
+        $app->dbOld->query("
       INSERT INTO tag_aliases (BadTag, AliasTag)
       VALUES ('$badtag', '$aliastag')");
     }
@@ -23,17 +26,17 @@ if (check_perms('users_mod')) {
         $aliastag = db_string($_POST['aliastag']);
 
         if ($_POST['save']) {
-            $db->query("
+            $app->dbOld->query("
         UPDATE tag_aliases
         SET BadTag = '$badtag', AliasTag = '$aliastag'
         WHERE ID = '$aliasid' ");
         }
         if ($_POST['delete']) {
-            $db->query("
+            $app->dbOld->query("
         DELETE FROM tag_aliases
         WHERE ID = '$aliasid'");
         }
-        $cache->delete_value('tag_aliases_search');
+        $app->cacheOld->delete_value('tag_aliases_search');
     }
 }
 ?>
@@ -70,11 +73,11 @@ if (check_perms('users_mod')) {
     </form>
   </tr>
 <?php
-$db->query("
+$app->dbOld->query("
   SELECT ID, BadTag, AliasTag
   FROM tag_aliases
   ORDER BY $orderby");
-while (list($ID, $BadTag, $AliasTag) = $db->next_record()) {
+while (list($ID, $BadTag, $AliasTag) = $app->dbOld->next_record()) {
     ?>
   <tr>
     <form class="manage_form" name="aliases" method="post" action="">

@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 authorize();
 
 $TorrentID = $_POST['torrentid'];
@@ -8,11 +10,11 @@ if (!$TorrentID || !is_number($TorrentID)) {
     error(404);
 }
 
-if ($cache->get_value("torrent_{$TorrentID}_lock")) {
+if ($app->cacheOld->get_value("torrent_{$TorrentID}_lock")) {
     error('Torrent cannot be deleted because the upload process is not completed yet. Please try again later.');
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT
     t.UserID,
     t.GroupID,
@@ -28,7 +30,7 @@ $db->query("
     LEFT JOIN artists_group AS ag ON ag.ArtistID = ta.ArtistID
     LEFT JOIN xbt_snatched AS x ON x.fid = t.ID
   WHERE t.ID = '$TorrentID'");
-list($UploaderID, $GroupID, $Size, $InfoHash, $Name, $ArtistName, $Time, $Snatches) = $db->next_record(MYSQLI_NUM, false);
+list($UploaderID, $GroupID, $Size, $InfoHash, $Name, $ArtistName, $Time, $Snatches) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
 if ($user['ID'] != $UploaderID && !check_perms('torrents_delete')) {
     error(403);

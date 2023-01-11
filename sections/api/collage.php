@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 define('ARTIST_COLLAGE', 'Artists');
 
 if (empty($_GET['id']) || !is_number($_GET['id'])) {
@@ -10,12 +12,12 @@ if (empty($_GET['id']) || !is_number($_GET['id'])) {
 
 $CollageID = $_GET['id'];
 $cacheKey = "collage_$CollageID";
-$CollageData = $cache->get_value($cacheKey);
+$CollageData = $app->cacheOld->get_value($cacheKey);
 
 if ($CollageData) {
     list($Name, $Description, $CommentList, $Deleted, $CollageCategoryID, $CreatorID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Updated, $Subscribers) = $CollageData;
 } else {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       `Name`,
       `Description`,
@@ -33,17 +35,17 @@ if ($CollageData) {
       `ID` = '$CollageID'
     ");
 
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         json_die("failure");
     }
 
-    list($Name, $Description, $CreatorID, $Deleted, $CollageCategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Updated, $Subscribers) = $db->next_record(MYSQLI_NUM);
+    list($Name, $Description, $CreatorID, $Deleted, $CollageCategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Updated, $Subscribers) = $app->dbOld->next_record(MYSQLI_NUM);
     $CommentList = null;
     $SetCache = true;
 }
 
 // todo: Cache this
-$db->query("
+$app->dbOld->query("
 SELECT
   `GroupID`
 FROM
@@ -51,7 +53,7 @@ FROM
 WHERE
   `CollageID` = $CollageID
 ");
-$TorrentGroups = $db->collect('GroupID');
+$TorrentGroups = $app->dbOld->collect('GroupID');
 
 $JSON = array(
   'id'                  => (int) $CollageID,
@@ -72,7 +74,7 @@ $JSON = array(
 if ($CollageCategoryID !== array_search(ARTIST_COLLAGE, $CollageCats)) {
     // Torrent collage
     $TorrentGroups = [];
-    $db->query("
+    $app->dbOld->query("
     SELECT
       ct.`GroupID`
     FROM
@@ -86,7 +88,7 @@ if ($CollageCategoryID !== array_search(ARTIST_COLLAGE, $CollageCats)) {
       ct.`Sort`
     ");
 
-    $GroupIDs = $db->collect('GroupID');
+    $GroupIDs = $app->dbOld->collect('GroupID');
     $GroupList = Torrents::get_groups($GroupIDs);
 
     foreach ($GroupIDs as $GroupID) {
@@ -125,7 +127,7 @@ if ($CollageCategoryID !== array_search(ARTIST_COLLAGE, $CollageCats)) {
     $JSON['torrentgroups'] = $TorrentGroups;
 } else {
     // Artist collage
-    $db->query("
+    $app->dbOld->query("
     SELECT
       ca.`ArtistID`,
       ag.`Name`,
@@ -145,7 +147,7 @@ if ($CollageCategoryID !== array_search(ARTIST_COLLAGE, $CollageCats)) {
     ");
 
     $Artists = [];
-    while (list($ArtistID, $ArtistName, $ArtistImage) = $db->next_record()) {
+    while (list($ArtistID, $ArtistName, $ArtistImage) = $app->dbOld->next_record()) {
         $Artists[] = array(
           'id'      => (int) $ArtistID,
           'name'    => $ArtistName,
@@ -169,7 +171,7 @@ if (isset($SetCache)) {
       $Updated,
       (int) $Subscribers
     );
-    $cache->cache_value($cacheKey, $CollageData, 3600);
+    $app->cacheOld->cache_value($cacheKey, $CollageData, 3600);
 }
 
 json_print('success', $JSON);

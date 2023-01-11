@@ -1,5 +1,7 @@
 <?php
 
+$app = App::go();
+
 authorize();
 if (!empty($user['DisableTagging'])) {
     error(403);
@@ -14,7 +16,7 @@ if (!is_number($GroupID) || !$GroupID) {
 
 //Delete cached tag used for undos
 if (isset($_POST['undo'])) {
-    $cache->delete_value("deleted_tags_$GroupID".'_'.$user['ID']);
+    $app->cacheOld->delete_value("deleted_tags_$GroupID".'_'.$user['ID']);
 }
 
 $Tags = explode(',', $_POST['tagname']);
@@ -24,27 +26,27 @@ foreach ($Tags as $TagName) {
     if (!empty($TagName)) {
         $TagName = Misc::get_alias_tag($TagName);
         // Check DB for tag matching name
-        $db->query("
+        $app->dbOld->query("
       SELECT ID
       FROM tags
       WHERE Name LIKE '$TagName'");
-        list($TagID) = $db->next_record();
+        list($TagID) = $app->dbOld->next_record();
 
         if (!$TagID) { // Tag doesn't exist yet - create tag
-            $db->query("
+            $app->dbOld->query("
         INSERT INTO tags (Name, UserID)
         VALUES ('$TagName', $UserID)");
-            $TagID = $db->inserted_id();
+            $TagID = $app->dbOld->inserted_id();
         }
 
-        $db->query("
+        $app->dbOld->query("
       INSERT INTO torrents_tags
         (TagID, GroupID, UserID)
       VALUES
         ('$TagID', '$GroupID', '$UserID')
       ON DUPLICATE KEY UPDATE TagID=TagID");
 
-        $db->query("
+        $app->dbOld->query("
       INSERT INTO group_log
         (GroupID, UserID, Time, Info)
       VALUES

@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 if (!empty($user['DisableForums'])) {
     error(403);
 }
@@ -9,8 +12,8 @@ if ($_GET['showall'] ?? false) {
 }
 
 if ($_GET['catchup'] ?? false) {
-    $db->query("UPDATE users_notify_quoted SET UnRead = '0' WHERE UserID = '$user[ID]'");
-    $cache->delete_value('notify_quoted_' . $user['ID']);
+    $app->dbOld->query("UPDATE users_notify_quoted SET UnRead = '0' WHERE UserID = '$user[ID]'");
+    $app->cacheOld->delete_value('notify_quoted_' . $user['ID']);
     Http::redirect("userhistory.php?action=quote_notifications");
     error();
 }
@@ -49,10 +52,10 @@ $sql = "
     $UnreadSQL
   ORDER BY q.Date DESC
   LIMIT $Limit";
-$db->query($sql);
-$Results = $db->to_array(false, MYSQLI_ASSOC, false);
-$db->query('SELECT FOUND_ROWS()');
-list($NumResults) = $db->next_record();
+$app->dbOld->query($sql);
+$Results = $app->dbOld->to_array(false, MYSQLI_ASSOC, false);
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
 
 $TorrentGroups = $Requests = [];
 foreach ($Results as $Result) {

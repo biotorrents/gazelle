@@ -1,12 +1,14 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 $UserID = $user['ID'];
 $PermID = $user['PermissionID'];
 
 if (!$user['DisablePoints']) {
     $PointsRate = 0;
-    $getTorrents = $db->prepared_query("
+    $getTorrents = $app->dbOld->prepared_query("
       SELECT um.BonusPoints,
         COUNT(DISTINCT x.fid) AS Torrents,
         SUM(t.Size) AS Size,
@@ -27,8 +29,8 @@ if (!$user['DisablePoints']) {
 
     # BASE BONUS POINTS RATE
     # See /wiki.php?action=article&name=bonuspoints
-    if ($db->has_results()) {
-        list($BonusPoints, $NumTorr, $TSize, $TTime, $TSeeds) = $db->next_record();
+    if ($app->dbOld->has_results()) {
+        list($BonusPoints, $NumTorr, $TSize, $TTime, $TSeeds) = $app->dbOld->next_record();
 
         $ENV = ENV::go();
         $PointsRate = ($ENV->BP_COEFF + (0.55*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5, ($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3)))**0.95;
@@ -271,14 +273,14 @@ View::header('Store');
       </tr>
 
       <?php
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT ID AS BadgeID, Name, Description
   FROM badges
   WHERE ID IN (40, 41, 42, 43, 44, 45, 46, 47, 48)
 ");
 
-if ($db->has_results()) {
-    $Badges = $db->to_array();
+if ($app->dbOld->has_results()) {
+    $Badges = $app->dbOld->to_array();
     foreach ($Badges as $ID => $Badge) { ?>
       <tr class="row">
         <?php

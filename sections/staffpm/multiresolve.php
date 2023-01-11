@@ -1,16 +1,18 @@
 <?php
 
+$app = App::go();
+
 if ($IDs = $_POST['id']) {
     $Queries = [];
     foreach ($IDs as &$ID) {
         $ID = (int)$ID;
 
         // Check if conversation belongs to user
-        $db->query("
+        $app->dbOld->query("
       SELECT UserID, AssignedToUser
       FROM staff_pm_conversations
       WHERE ID = $ID");
-        list($UserID, $AssignedToUser) = $db->next_record();
+        list($UserID, $AssignedToUser) = $app->dbOld->next_record();
 
         if ($UserID == $user['ID'] || $DisplayStaff == '1' || $UserID == $AssignedToUser) {
             // Conversation belongs to user or user is staff, queue query
@@ -26,11 +28,11 @@ if ($IDs = $_POST['id']) {
 
     // Run queries
     foreach ($Queries as $Query) {
-        $db->query($Query);
+        $app->dbOld->query($Query);
     }
     // Clear cache for user
-    $cache->delete_value("staff_pm_new_$user[ID]");
-    $cache->delete_value("num_staff_pms_$user[ID]");
+    $app->cacheOld->delete_value("staff_pm_new_$user[ID]");
+    $app->cacheOld->delete_value("num_staff_pms_$user[ID]");
 
     // Done! Return to inbox
     Http::redirect("staffpm.php");

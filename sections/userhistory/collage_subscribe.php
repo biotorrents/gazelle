@@ -1,5 +1,7 @@
 <?php
 
+$app = App::go();
+
 // perform the back end of subscribing to collages
 authorize();
 
@@ -9,24 +11,24 @@ if (!is_number($_GET['collageid'])) {
 
 $CollageID = (int)$_GET['collageid'];
 
-if (!$UserSubscriptions = $cache->get_value('collage_subs_user_'.$user['ID'])) {
-    $db->prepared_query('
+if (!$UserSubscriptions = $app->cacheOld->get_value('collage_subs_user_'.$user['ID'])) {
+    $app->dbOld->prepared_query('
     SELECT CollageID
     FROM users_collage_subs
     WHERE UserID = '.db_string($user['ID']));
-    $UserSubscriptions = $db->collect(0);
-    $cache->cache_value('collage_subs_user_'.$user['ID'], $UserSubscriptions, 0);
+    $UserSubscriptions = $app->dbOld->collect(0);
+    $app->cacheOld->cache_value('collage_subs_user_'.$user['ID'], $UserSubscriptions, 0);
 }
 
 if (($Key = array_search($CollageID, $UserSubscriptions)) !== false) {
-    $db->prepared_query('
+    $app->dbOld->prepared_query('
     DELETE FROM users_collage_subs
     WHERE UserID = '.db_string($user['ID'])."
       AND CollageID = $CollageID");
     unset($UserSubscriptions[$Key]);
     Collages::decrease_subscriptions($CollageID);
 } else {
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
     INSERT IGNORE INTO users_collage_subs
       (UserID, CollageID, LastVisit)
     VALUES
@@ -34,6 +36,6 @@ if (($Key = array_search($CollageID, $UserSubscriptions)) !== false) {
     array_push($UserSubscriptions, $CollageID);
     Collages::increase_subscriptions($CollageID);
 }
-$cache->replace_value('collage_subs_user_'.$user['ID'], $UserSubscriptions, 0);
-$cache->delete_value('collage_subs_user_new_'.$user['ID']);
-$cache->delete_value("collage_$CollageID");
+$app->cacheOld->replace_value('collage_subs_user_'.$user['ID'], $UserSubscriptions, 0);
+$app->cacheOld->delete_value('collage_subs_user_new_'.$user['ID']);
+$app->cacheOld->delete_value("collage_$CollageID");

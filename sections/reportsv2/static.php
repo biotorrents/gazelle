@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+$app = App::go();
+
 /**
  * This page is used for viewing reports in every viewpoint except auto.
  * It doesn't AJAX grab a new report when you resolve each one, use auto
@@ -62,11 +64,11 @@ if (!$ID) {
 } else {
     switch ($View) {
     case 'staff':
-      $db->prepared_query("
+      $app->dbOld->prepared_query("
         SELECT `Username`
         FROM `users_main`
         WHERE `ID` = $ID");
-      list($Username) = $db->next_record();
+      list($Username) = $app->dbOld->next_record();
       if ($Username) {
           $Title = "$Username's in-progress reports";
       } else {
@@ -78,11 +80,11 @@ if (!$ID) {
       break;
 
     case 'resolver':
-      $db->prepared_query("
+      $app->dbOld->prepared_query("
         SELECT `Username`
         FROM `users_main`
         WHERE `ID` = $ID");
-      list($Username) = $db->next_record();
+      list($Username) = $app->dbOld->next_record();
       if ($Username) {
           $Title = "$Username's resolved reports";
       } else {
@@ -112,11 +114,11 @@ if (!$ID) {
       break;
 
     case 'reporter':
-      $db->prepared_query("
+      $app->dbOld->prepared_query("
         SELECT `Username`
         FROM `users_main`
         WHERE `ID` = $ID");
-      list($Username) = $db->next_record();
+      list($Username) = $app->dbOld->next_record();
       if ($Username) {
           $Title = "All torrents reported by $Username";
       } else {
@@ -127,11 +129,11 @@ if (!$ID) {
       break;
 
     case 'uploader':
-      $db->prepared_query("
+      $app->dbOld->prepared_query("
         SELECT `Username`
         FROM `users_main`
         WHERE `ID` = $ID");
-      list($Username) = $db->next_record();
+      list($Username) = $app->dbOld->next_record();
       if ($Username) {
           $Title = "All reports for torrents uploaded by $Username";
       } else {
@@ -158,7 +160,7 @@ if (!$ID) {
 /**
  * The large query
  */
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT
     SQL_CALC_FOUND_ROWS
     r.`ID`,
@@ -209,10 +211,10 @@ $db->prepared_query("
   $Order
   LIMIT $Limit");
 
-$Reports = $db->to_array();
+$Reports = $app->dbOld->to_array();
 
-$db->prepared_query('SELECT FOUND_ROWS()');
-list($Results) = $db->next_record();
+$app->dbOld->prepared_query('SELECT FOUND_ROWS()');
+list($Results) = $app->dbOld->next_record();
 $PageLinks = Format::get_pages($Page, $Results, REPORTS_PER_PAGE, 11);
 
 View::header('Reports V2!', 'reportsv2');
@@ -257,14 +259,14 @@ if (count($Reports) === 0) {
 
           if (!$GroupID && $Status != 'Resolved') {
               //Torrent already deleted
-              $db->prepared_query("
+              $app->dbOld->prepared_query("
         UPDATE `reportsv2`
         SET
           `Status` = 'Resolved',
           `LastChangeTime` = NOW(),
           `ModComment` = 'Report already dealt with (torrent deleted)'
         WHERE `ID` = $ReportID");
-              $cache->decrement('num_torrent_reportsv2'); ?>
+              $app->cacheOld->decrement('num_torrent_reportsv2'); ?>
   <div id="report<?=$ReportID?>" class="report box pad center"
     data-load-report="<?=$ReportID?>">
     <a href="reportsv2.php?view=report&amp;id=<?=$ReportID?>">Report
@@ -347,13 +349,13 @@ if (count($Reports) === 0) {
                 <strong><?=$ReportType['title']?></strong>
               </div>
               <?php if ($Status != 'Resolved') {
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
             SELECT r.`ID`
             FROM `reportsv2` AS r
               LEFT JOIN `torrents` AS t ON t.`ID` = r.`TorrentID`
             WHERE r.`Status` != 'Resolved'
               AND t.`GroupID` = $GroupID");
-    $GroupOthers = ($db->record_count() - 1);
+    $GroupOthers = ($app->dbOld->record_count() - 1);
 
     if ($GroupOthers > 0) { ?>
               <div style="text-align: right;">
@@ -364,13 +366,13 @@ if (count($Reports) === 0) {
               </div>
               <?php }
 
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
             SELECT t.`UserID`
             FROM `reportsv2` AS r
               JOIN `torrents` AS t ON t.`ID` = r.`TorrentID`
             WHERE r.`Status` != 'Resolved'
               AND t.`UserID` = $UploaderID");
-    $UploaderOthers = ($db->record_count() - 1);
+    $UploaderOthers = ($app->dbOld->record_count() - 1);
 
     if ($UploaderOthers > 0) { ?>
               <div style="text-align: right;">
@@ -381,7 +383,7 @@ if (count($Reports) === 0) {
               </div>
               <?php }
 
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
             SELECT DISTINCT req.`ID`,
               req.`FillerID`,
               um.`Username`,
@@ -393,9 +395,9 @@ if (count($Reports) === 0) {
             WHERE rep.`Status` != 'Resolved'
               AND req.`TimeFilled` > '2010-03-04 02:31:49'
               AND req.`TorrentID` = $TorrentID");
-    $Requests = ($db->has_results());
+    $Requests = ($app->dbOld->has_results());
     if ($Requests > 0) {
-        while (list($RequestID, $FillerID, $FillerName, $FilledTime) = $db->next_record()) {
+        while (list($RequestID, $FillerID, $FillerName, $FilledTime) = $app->dbOld->next_record()) {
             ?>
               <div style="text-align: right;">
                 <strong class="important_text"><a
@@ -444,7 +446,7 @@ if (count($Reports) === 0) {
         $First = true;
         $Extras = explode(' ', $ExtraIDs);
         foreach ($Extras as $ExtraID) {
-            $db->prepared_query("
+            $app->dbOld->prepared_query("
             SELECT
               COALESCE(NULLIF(tg.`title`, ''), NULLIF(tg.`subject`, ''), tg.`object`) AS Name,
               tg.`id`,
@@ -469,7 +471,7 @@ if (count($Reports) === 0) {
             GROUP BY tg.`id`", $ExtraID);
 
             list($ExtraGroupName, $ExtraGroupID, $ExtraArtistID, $ExtraArtistName, $ExtraYear, $ExtraTime,
-            $ExtraMedia, $ExtraSize, $ExtraUploaderID, $ExtraUploaderName) = Misc::display_array($db->next_record());
+            $ExtraMedia, $ExtraSize, $ExtraUploaderID, $ExtraUploaderName) = Misc::display_array($app->dbOld->next_record());
             if ($ExtraGroupName) {
                 if ($ArtistID == 0 && empty($ArtistName)) {
                     $ExtraLinkName = "<a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName".($ExtraYear ? " ($ExtraYear)" : '')."</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [$ExtraFormat/$ExtraEncoding/$ExtraMedia]</a> ".' ('.Text::float($ExtraSize / (1024 * 1024), 2).' MB)';

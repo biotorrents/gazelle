@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 # todo: Go through line by line
 
 /**********|| Page to show individual forums || ********************************\
@@ -37,10 +39,10 @@ list($Page, $Limit) = Format::page_limit(TOPICS_PER_PAGE);
 // Caching anything beyond the first page of any given forum is just wasting ram
 // users are more likely to search then to browse to page 2
 if ($Page === 1) {
-    list($Forum, , , $Stickies) = $cache->get_value("forums_$ForumID");
+    list($Forum, , , $Stickies) = $app->cacheOld->get_value("forums_$ForumID");
 }
 if (!isset($Forum) || !is_array($Forum)) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       ID,
       Title,
@@ -55,15 +57,15 @@ if (!isset($Forum) || !is_array($Forum)) {
     WHERE ForumID = '$ForumID'
     ORDER BY IsSticky DESC, LastPostTime DESC
     LIMIT $Limit"); // Can be cached until someone makes a new post
-    $Forum = $db->to_array('ID', MYSQLI_ASSOC, false);
+    $Forum = $app->dbOld->to_array('ID', MYSQLI_ASSOC, false);
     if ($Page === 1) {
-        $db->query("
+        $app->dbOld->query("
       SELECT COUNT(ID)
       FROM forums_topics
       WHERE ForumID = '$ForumID'
         AND IsSticky = '1'");
-        list($Stickies) = $db->next_record();
-        $cache->cache_value("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
+        list($Stickies) = $app->dbOld->next_record();
+        $app->cacheOld->cache_value("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
     }
 }
 
@@ -103,7 +105,7 @@ if (count($Forum) === 0) {
     );
 } else {
     // forums_last_read_topics is a record of the last post a user read in a topic, and what page that was on
-    $db->query("
+    $app->dbOld->query("
     SELECT
       l.TopicID,
       l.PostID,
@@ -123,7 +125,7 @@ if (count($Forum) === 0) {
     // forums_last_read_topics.TopicID as the key.
     // This is done here so we get the benefit of the caching, and we
     // don't have to make a database query for each topic on the page
-    $LastRead = $db->to_array('TopicID');
+    $LastRead = $app->dbOld->to_array('TopicID');
 
     $JsonTopics = [];
     foreach ($Forum as $Topic) {

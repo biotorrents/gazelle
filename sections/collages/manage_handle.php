@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 authorize();
 
 $CollageID = $_POST['collageid'];
@@ -9,11 +11,11 @@ if (!is_number($CollageID)) {
     error(404);
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT UserID, CategoryID
   FROM collages
   WHERE ID = '$CollageID'");
-list($UserID, $CategoryID) = $db->next_record();
+list($UserID, $CategoryID) = $app->dbOld->next_record();
 if ($CategoryID === '0' && $UserID != $user['ID'] && !check_perms('site_collages_delete')) {
     error(403);
 }
@@ -25,18 +27,18 @@ if (!is_number($GroupID)) {
 }
 
 if ($_POST['submit'] === 'Remove') {
-    $db->query("
+    $app->dbOld->query("
     DELETE FROM collages_torrents
     WHERE CollageID = '$CollageID'
       AND GroupID = '$GroupID'");
-    $Rows = $db->affected_rows();
-    $db->query("
+    $Rows = $app->dbOld->affected_rows();
+    $app->dbOld->query("
     UPDATE collages
     SET NumTorrents = NumTorrents - $Rows
     WHERE ID = '$CollageID'");
-    $cache->delete_value("torrents_details_$GroupID");
-    $cache->delete_value("torrent_collages_$GroupID");
-    $cache->delete_value("torrent_collages_personal_$GroupID");
+    $app->cacheOld->delete_value("torrents_details_$GroupID");
+    $app->cacheOld->delete_value("torrent_collages_$GroupID");
+    $app->cacheOld->delete_value("torrent_collages_personal_$GroupID");
 } elseif (isset($_POST['drag_drop_collage_sort_order'])) {
     @parse_str($_POST['drag_drop_collage_sort_order'], $Series);
     $Series = @array_shift($Series);
@@ -57,19 +59,19 @@ if ($_POST['submit'] === 'Remove') {
       ON DUPLICATE KEY UPDATE
         Sort = VALUES (Sort)';
 
-        $db->query($SQL);
+        $app->dbOld->query($SQL);
     }
 } else {
     $Sort = $_POST['sort'];
     if (!is_number($Sort)) {
         error(404);
     }
-    $db->query("
+    $app->dbOld->query("
     UPDATE collages_torrents
     SET Sort = '$Sort'
     WHERE CollageID = '$CollageID'
       AND GroupID = '$GroupID'");
 }
 
-$cache->delete_value("collage_$CollageID");
+$app->cacheOld->delete_value("collage_$CollageID");
 Http::redirect("collages.php?action=manage&collageid=$CollageID");

@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 $GroupID = $_GET['groupid'];
 $TorrentID = $_GET['torrentid'];
 
@@ -8,7 +10,7 @@ if (!is_number($GroupID) || !is_number($TorrentID)) {
     error(0);
 }
 
-$db->query("
+$app->dbOld->query("
 SELECT
   `last_action`,
   `LastReseedRequest`,
@@ -19,7 +21,7 @@ FROM
 WHERE
   `ID` = '$TorrentID'
 ");
-list($LastActive, $LastReseedRequest, $UploaderID, $UploadedTime) = $db->next_record();
+list($LastActive, $LastReseedRequest, $UploaderID, $UploadedTime) = $app->dbOld->next_record();
 
 if (!check_perms('users_mod')) {
     if (time() - strtotime($LastReseedRequest) < 864000) {
@@ -31,7 +33,7 @@ if (!check_perms('users_mod')) {
     }
 }
 
-$db->query("
+$app->dbOld->query("
 UPDATE
   `torrents`
 SET
@@ -47,7 +49,7 @@ $Name = '';
 #$Name .= Artists::display_artists(array('1' => $Artists), false, true);
 $Name .= $GroupName;
 
-$db->query("
+$app->dbOld->query("
 SELECT
   `uid`,
   MAX(`tstamp`) AS tstamp
@@ -63,12 +65,12 @@ DESC
 LIMIT 10
 ");
 
-if ($db->has_results()) {
-    $Users = $db->to_array();
+if ($app->dbOld->has_results()) {
+    $Users = $app->dbOld->to_array();
     foreach ($Users as $User) {
         $UserID = $User['uid'];
 
-        $db->query("
+        $app->dbOld->query("
         SELECT
           `UserID`
         FROM
@@ -77,7 +79,7 @@ if ($db->has_results()) {
           `UserID` = '$UserID'
         ");
 
-        if ($db->has_results()) {
+        if ($app->dbOld->has_results()) {
             continue;
         }
 

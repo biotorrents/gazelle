@@ -1,5 +1,7 @@
 <?php
 
+$app = App::go();
+
 authorize();
 
 $UserID = $user['ID'];
@@ -18,18 +20,18 @@ foreach ($Messages as $ConvID) {
     }
 }
 $ConvIDs = implode(',', $Messages);
-$db->query("
+$app->dbOld->query("
   SELECT COUNT(ConvID)
   FROM pm_conversations_users
   WHERE ConvID IN ($ConvIDs)
     AND UserID=$UserID");
-list($MessageCount) = $db->next_record();
+list($MessageCount) = $app->dbOld->next_record();
 if ($MessageCount != count($Messages)) {
     error(0);
 }
 
 if (isset($_POST['delete'])) {
-    $db->query("
+    $app->dbOld->query("
     UPDATE pm_conversations_users
     SET
       InInbox = '0',
@@ -39,18 +41,18 @@ if (isset($_POST['delete'])) {
     WHERE ConvID IN($ConvIDs)
       AND UserID = $UserID");
 } elseif (isset($_POST['unread'])) {
-    $db->query("
+    $app->dbOld->query("
     UPDATE pm_conversations_users
     SET Unread = '1'
     WHERE ConvID IN($ConvIDs)
     AND InInbox = '1'
     AND UserID = $UserID");
 } elseif (isset($_POST['read'])) {
-    $db->query("
+    $app->dbOld->query("
     UPDATE pm_conversations_users
     SET Unread = '0'
     WHERE ConvID IN($ConvIDs) AND UserID = $UserID");
 }
-$cache->delete_value('inbox_new_'.$UserID);
+$app->cacheOld->delete_value('inbox_new_'.$UserID);
 
 header('Location: ' . Inbox::get_inbox_link());

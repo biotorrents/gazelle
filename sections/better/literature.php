@@ -25,9 +25,9 @@ exit;
 
 View::header('Torrent groups with no publications');
 
-$Groups = $db->to_array('id', MYSQLI_ASSOC);
-$db->prepared_query('SELECT FOUND_ROWS()');
-list($NumResults) = $db->next_record();
+$Groups = $app->dbOld->to_array('id', MYSQLI_ASSOC);
+$app->dbOld->prepared_query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
 $Results = Torrents::get_groups(array_keys($Groups)); ?>
 
 <div class="header">

@@ -1,7 +1,10 @@
 <?php
+
+$app = App::go();
+
 $UserID = $user['ID'];
 
-$db->query("
+$app->dbOld->query("
   SELECT
     g.ID,
     g.Name,
@@ -18,8 +21,8 @@ $db->query("
   JOIN torrents_group AS g ON g.ID = t.GroupID
   LEFT JOIN xbt_files_users AS f ON s.TorrentID = f.fid AND s.UserID = f.uid
   WHERE s.UserID = $UserID");
-if ($db->has_results()) {
-    $Torrents = $db->to_array(false, MYSQLI_ASSOC, false);
+if ($app->dbOld->has_results()) {
+    $Torrents = $app->dbOld->to_array(false, MYSQLI_ASSOC, false);
 }
 
 //Include the header

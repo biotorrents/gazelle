@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 /*
 User collage subscription page
 */
@@ -39,9 +41,9 @@ if (!$ShowAll) {
     GROUP BY c.ID";
 }
 
-$db->prepared_query($sql);
-$NumResults = $db->record_count();
-$CollageSubs = $db->to_array();
+$app->dbOld->prepared_query($sql);
+$NumResults = $app->dbOld->record_count();
+$CollageSubs = $app->dbOld->to_array();
 ?>
 <div>
   <div class="header">
@@ -85,15 +87,15 @@ if (!$NumResults) {
             $TorrentTable = '';
 
             list($CollageID, $CollageName, $CollageSize, $LastVisit) = $Collage;
-            $RS = $db->prepared_query("
+            $RS = $app->dbOld->prepared_query("
       SELECT GroupID
       FROM collages_torrents
       WHERE CollageID = $CollageID
         AND AddedOn > '" . db_string($LastVisit) . "'
       ORDER BY AddedOn");
-            $NewTorrentCount = $db->record_count();
+            $NewTorrentCount = $app->dbOld->record_count();
 
-            $GroupIDs = $db->collect('GroupID', false);
+            $GroupIDs = $app->dbOld->collect('GroupID', false);
             if (count($GroupIDs) > 0) {
                 $TorrentList = Torrents::get_groups($GroupIDs);
             } else {

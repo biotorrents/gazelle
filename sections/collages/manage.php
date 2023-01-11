@@ -1,10 +1,12 @@
 <?php
 declare(strict_types=1);
 
+$app = App::go();
+
 $CollageID = (int) $_GET['collageid'];
 Security::int($CollageID);
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
 SELECT
   `Name`,
   `UserID`,
@@ -14,7 +16,7 @@ FROM
 WHERE
   `ID` = '$CollageID'
 ");
-list($Name, $UserID, $CategoryID) = $db->next_record();
+list($Name, $UserID, $CategoryID) = $app->dbOld->next_record();
 
 if ($CategoryID === 0 && $UserID !== $user['ID'] && !check_perms('site_collages_delete')) {
     error(403);
@@ -24,7 +26,7 @@ if ($CategoryID === array_search(ARTIST_COLLAGE, $CollageCats)) {
     error(404);
 }
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
 SELECT
   ct.`GroupID`,
   um.`ID`,
@@ -45,9 +47,9 @@ ORDER BY
   ct.`Sort`
 ");
 
-$GroupIDs = $db->collect('GroupID');
+$GroupIDs = $app->dbOld->collect('GroupID');
 
-$CollageDataList = $db->to_array('GroupID', MYSQLI_ASSOC);
+$CollageDataList = $app->dbOld->to_array('GroupID', MYSQLI_ASSOC);
 if (count($GroupIDs) > 0) {
     $TorrentList = Torrents::get_groups($GroupIDs);
 } else {

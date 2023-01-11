@@ -1,12 +1,14 @@
 <?php
 
+$app = App::go();
+
 if ($ID = (int)($_GET['id'])) {
     // Check if conversation belongs to user
-    $db->query("
+    $app->dbOld->query("
     SELECT UserID, Level, AssignedToUser
     FROM staff_pm_conversations
     WHERE ID = $ID");
-    list($UserID, $Level, $AssignedToUser) = $db->next_record();
+    list($UserID, $Level, $AssignedToUser) = $app->dbOld->next_record();
 
     if ($UserID == $user['ID']
     || ($IsFLS && $Level == 0)
@@ -18,12 +20,12 @@ if ($ID = (int)($_GET['id'])) {
         }*/
 
         // Conversation belongs to user or user is staff, unresolve it
-        $db->query("
+        $app->dbOld->query("
       UPDATE staff_pm_conversations
       SET Status = 'Unanswered'
       WHERE ID = $ID");
         // Clear cache for user
-        $cache->delete_value("num_staff_pms_$user[ID]");
+        $app->cacheOld->delete_value("num_staff_pms_$user[ID]");
 
         Http::redirect("staffpm.php");
     } else {

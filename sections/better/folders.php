@@ -24,14 +24,14 @@ exit;
 
 
 View::header('Torrents with bad folder names');
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT tbf.TorrentID, t.GroupID
   FROM torrents_bad_folders AS tbf
     JOIN torrents AS t ON t.ID = tbf.TorrentID
     $Join
   ORDER BY tbf.TimeAdded ASC");
 
-$TorrentsInfo = $db->to_array('TorrentID', MYSQLI_ASSOC);
+$TorrentsInfo = $app->dbOld->to_array('TorrentID', MYSQLI_ASSOC);
 foreach ($TorrentsInfo as $Torrent) {
     $GroupIDs[] = $Torrent['GroupID'];
 }

@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 $Cost = 5000;
 
 if (isset($_POST['title'])) {
@@ -11,28 +13,28 @@ if (isset($_POST['title'])) {
     $Title = htmlspecialchars($_POST['title'], ENT_QUOTES);
     $UserID = $user['ID'];
 
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
       SELECT BonusPoints
       FROM users_main
       WHERE ID = $UserID");
 
-    if ($db->has_results()) {
-        list($Points) = $db->next_record();
+    if ($app->dbOld->has_results()) {
+        list($Points) = $app->dbOld->next_record();
 
         if ($Points >= $Cost) {
-            $db->prepared_query("
+            $app->dbOld->prepared_query("
               UPDATE users_main
               SET BonusPoints = BonusPoints - $Cost,
                 Title = ?
               WHERE ID = ?", $Title, $UserID);
 
-            $db->prepared_query("
+            $app->dbOld->prepared_query("
               UPDATE users_info
               SET AdminComment = CONCAT(NOW(), ' - Changed title to ', ?, ' via the store\n\n', AdminComment)
               WHERE UserID = ?", $Title, $UserID);
 
-            $cache->delete_value('user_info_'.$UserID);
-            $cache->delete_value('user_info_heavy_'.$UserID);
+            $app->cacheOld->delete_value('user_info_'.$UserID);
+            $app->cacheOld->delete_value('user_info_heavy_'.$UserID);
         } else {
             error("Not enough points");
         }

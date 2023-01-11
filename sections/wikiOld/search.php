@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 if (empty($_GET['nojump'])) {
     $ArticleID = Wiki::alias_to_id($_GET['search']);
     if ($ArticleID) {
@@ -63,13 +65,13 @@ if ($Search !== '') {
 $SQL .= "
   ORDER BY $Order $Way
   LIMIT $Limit ";
-$RS = $db->query($SQL);
-$db->query("
+$RS = $app->dbOld->query($SQL);
+$app->dbOld->query("
   SELECT FOUND_ROWS()");
-list($NumResults) = $db->next_record();
+list($NumResults) = $app->dbOld->next_record();
 
 View::header('Search Articles');
-$db->set_query_id($RS);
+$app->dbOld->set_query_id($RS);
 ?>
 
 <div>
@@ -178,7 +180,7 @@ $db->set_query_id($RS);
     </tr>
 
     <?php
-    while (list($ID, $Title, $Date, $UserID) = $db->next_record()) { ?>
+    while (list($ID, $Title, $Date, $UserID) = $app->dbOld->next_record()) { ?>
     <tr>
       <td><a href="wiki.php?action=article&amp;id=<?=$ID?>"><?=$Title?></a></td>
       <td><?=$Date?>

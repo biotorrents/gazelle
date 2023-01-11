@@ -1,5 +1,7 @@
 <?php
 
+$app = App::go();
+
 if (!check_perms('users_warn')) {
     error(404);
 }
@@ -11,14 +13,14 @@ $Body = $_POST['body'];
 $Length = $_POST['length'];
 $PostID = (int)$_POST['postid'];
 
-$db->query("
+$app->dbOld->query("
   SELECT AuthorID
   FROM comments
   WHERE ID = $PostID");
-if (!$db->has_results()) {
+if (!$app->dbOld->has_results()) {
     error(404);
 }
-list($AuthorID) = $db->next_record();
+list($AuthorID) = $app->dbOld->next_record();
 
 $UserInfo = User::user_info($AuthorID);
 if ($UserInfo['Class'] > $user['Class']) {
@@ -39,7 +41,7 @@ if ($Length !== 'verbal') {
     $AdminComment = date('Y-m-d') . ' - Verbally warned by ' . $user['Username'] . " for $URL\nReason: $Reason\n\n";
     Tools::update_user_notes($AuthorID, $AdminComment);
 }
-$db->query("
+$app->dbOld->query("
   INSERT INTO users_warnings_forums
     (UserID, Comment)
   VALUES

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+$app = App::go();
+
 
 /**
  * torents
@@ -33,7 +35,7 @@ $ENV = ENV::go();
     if (!empty($_GET['id'])) {
         require_once "$ENV->serverRoot/sections/torrents/details.php";
     } elseif (isset($_GET['torrentid']) && is_number($_GET['torrentid'])) {
-        $db->query("
+        $app->dbOld->query("
         SELECT
           `GroupID`
         FROM
@@ -41,7 +43,7 @@ $ENV = ENV::go();
         WHERE
           `ID` = '$_GET[torrentid]'
         ");
-        list($GroupID) = $db->next_record();
+        list($GroupID) = $app->dbOld->next_record();
 
         if ($GroupID) {
             header("Location: torrents.php?id=$GroupID&torrentid=".$_GET['torrentid'].'#torrent'.$_GET['torrentid']);
@@ -51,7 +53,7 @@ $ENV = ENV::go();
     } elseif (!empty($_GET['type'])) {
         require_once "$ENV->serverRoot/sections/torrents/user.php";
     } elseif (!empty($_GET['groupname']) && !empty($_GET['forward'])) {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
         SELECT
           `id`
         FROM
@@ -59,7 +61,7 @@ $ENV = ENV::go();
         WHERE
           `title` LIKE '$_GET[groupname]'
         ");
-        list($GroupID) = $db->next_record();
+        list($GroupID) = $app->dbOld->next_record();
 
         if ($GroupID) {
             Http::redirect("torrents.php?id=$GroupID");
@@ -251,7 +253,7 @@ if (!empty($_REQUEST['action'])) {
                 ) {
                 authorize();
 
-                $db->prepared_query("
+                $app->dbOld->prepared_query("
                 SELECT
                   COUNT(`ID`)
                 FROM
@@ -259,7 +261,7 @@ if (!empty($_REQUEST['action'])) {
                 WHERE
                   `GroupID` = '$_GET[groupid]'
                 ");
-                list($Count) = $db->next_record();
+                list($Count) = $app->dbOld->next_record();
 
                 if ($Count === 0) {
                     Torrents::delete_group($_GET['groupid']);
@@ -293,7 +295,7 @@ if (!empty($_REQUEST['action'])) {
             if (!empty($_GET['id'])) {
                 require_once "$ENV->serverRoot/sections/torrents/details.php";
             } elseif (isset($_GET['torrentid']) && is_number($_GET['torrentid'])) {
-                $db->query("
+                $app->dbOld->query("
                 SELECT
                   `GroupID`
                 FROM
@@ -301,7 +303,7 @@ if (!empty($_REQUEST['action'])) {
                 WHERE
                   `ID` = '$_GET[torrentid]'
                 ");
-                list($GroupID) = $db->next_record();
+                list($GroupID) = $app->dbOld->next_record();
 
                 if ($GroupID) {
                     header("Location: torrents.php?id=$GroupID&torrentid=".$_GET['torrentid']);
@@ -320,7 +322,7 @@ else {
     if (!empty($_GET['id'])) {
         require_once "$ENV->serverRoot/sections/torrents/details.php";
     } elseif (isset($_GET['torrentid']) && is_number($_GET['torrentid'])) {
-        $db->query("
+        $app->dbOld->query("
         SELECT
           `GroupID`
         FROM
@@ -328,7 +330,7 @@ else {
         WHERE
           `ID` = '$_GET[torrentid]'
         ");
-        list($GroupID) = $db->next_record();
+        list($GroupID) = $app->dbOld->next_record();
 
         if ($GroupID) {
             header("Location: torrents.php?id=$GroupID&torrentid=".$_GET['torrentid'].'#torrent'.$_GET['torrentid']);
@@ -338,7 +340,7 @@ else {
     } elseif (!empty($_GET['type'])) {
         require_once "$ENV->serverRoot/sections/torrents/user.php";
     } elseif (!empty($_GET['groupname']) && !empty($_GET['forward'])) {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
         SELECT
           `id`
         FROM
@@ -346,7 +348,7 @@ else {
         WHERE
           `title` LIKE '$_GET[groupname]'
         ");
-        list($GroupID) = $db->next_record();
+        list($GroupID) = $app->dbOld->next_record();
 
         if ($GroupID) {
             Http::redirect("torrents.php?id=$GroupID");

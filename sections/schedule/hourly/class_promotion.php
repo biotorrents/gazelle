@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 $ENV = ENV::go();
 
 sleep(5);
@@ -81,25 +83,25 @@ foreach ($Criteria as $L) { // $L = Level
         $Query .= ' AND '.$L['Extra'];
     }
 
-    $db->query($Query);
-    $UserIDs = $db->collect('ID');
+    $app->dbOld->query($Query);
+    $UserIDs = $app->dbOld->collect('ID');
 
     if (count($UserIDs) > 0) {
-        $db->query("
+        $app->dbOld->query("
           UPDATE users_main
           SET PermissionID = ".$L['To']."
           WHERE ID IN(".implode(',', $UserIDs).')');
 
         foreach ($UserIDs as $UserID) {
-            $cache->begin_transaction("user_info_$UserID");
-            $cache->update_row(false, array('PermissionID' => $L['To']));
-            $cache->commit_transaction(0);
-            $cache->delete_value("user_info_$UserID");
-            $cache->delete_value("user_info_heavy_$UserID");
-            $cache->delete_value("user_stats_$UserID");
-            $cache->delete_value("enabled_$UserID");
+            $app->cacheOld->begin_transaction("user_info_$UserID");
+            $app->cacheOld->update_row(false, array('PermissionID' => $L['To']));
+            $app->cacheOld->commit_transaction(0);
+            $app->cacheOld->delete_value("user_info_$UserID");
+            $app->cacheOld->delete_value("user_info_heavy_$UserID");
+            $app->cacheOld->delete_value("user_stats_$UserID");
+            $app->cacheOld->delete_value("enabled_$UserID");
 
-            $db->query("
+            $app->dbOld->query("
               UPDATE users_info
               SET AdminComment = CONCAT('".sqltime()." - Class changed to ".User::make_class_string($L['To'])." by System\n\n', AdminComment)
               WHERE UserID = $UserID");
@@ -128,25 +130,25 @@ foreach ($Criteria as $L) { // $L = Level
         )
       AND Enabled = '1'";
 
-    $db->query($Query);
-    $UserIDs = $db->collect('ID');
+    $app->dbOld->query($Query);
+    $UserIDs = $app->dbOld->collect('ID');
 
     if (count($UserIDs) > 0) {
-        $db->query("
+        $app->dbOld->query("
           UPDATE users_main
           SET PermissionID = ".$L['From']."
           WHERE ID IN(".implode(',', $UserIDs).')');
 
         foreach ($UserIDs as $UserID) {
-            $cache->begin_transaction("user_info_$UserID");
-            $cache->update_row(false, array('PermissionID' => $L['From']));
-            $cache->commit_transaction(0);
-            $cache->delete_value("user_info_$UserID");
-            $cache->delete_value("user_info_heavy_$UserID");
-            $cache->delete_value("user_stats_$UserID");
-            $cache->delete_value("enabled_$UserID");
+            $app->cacheOld->begin_transaction("user_info_$UserID");
+            $app->cacheOld->update_row(false, array('PermissionID' => $L['From']));
+            $app->cacheOld->commit_transaction(0);
+            $app->cacheOld->delete_value("user_info_$UserID");
+            $app->cacheOld->delete_value("user_info_heavy_$UserID");
+            $app->cacheOld->delete_value("user_stats_$UserID");
+            $app->cacheOld->delete_value("enabled_$UserID");
 
-            $db->query("
+            $app->dbOld->query("
               UPDATE users_info
               SET AdminComment = CONCAT('".sqltime()." - Class changed to ".User::make_class_string($L['From'])." by System\n\n', AdminComment)
               WHERE UserID = $UserID");

@@ -5,13 +5,13 @@
 $app = App::go();
 $ENV = ENV::go();
 
-if (!$UserCount = $cache->get_value('stats_user_count')) {
-    $db->query("
+if (!$UserCount = $app->cacheOld->get_value('stats_user_count')) {
+    $app->dbOld->query("
     SELECT COUNT(ID)
     FROM users_main
     WHERE Enabled = '1'");
-    list($UserCount) = $db->next_record();
-    $cache->cache_value('stats_user_count', $UserCount, 0);
+    list($UserCount) = $app->dbOld->next_record();
+    $app->cacheOld->cache_value('stats_user_count', $UserCount, 0);
 }
 
 $UserID = $user['ID'];
@@ -25,11 +25,11 @@ if (!apcu_exists('DBKEY')) {
 // This is where we handle things passed to us
 authorize();
 
-$db->query("
+$app->dbOld->query("
   SELECT can_leech
   FROM users_main
   WHERE ID = $UserID");
-list($CanLeech) = $db->next_record();
+list($CanLeech) = $app->dbOld->next_record();
 
 if ($user['RatioWatch']
   || !$CanLeech
@@ -69,12 +69,12 @@ foreach ($Emails as $CurEmail) {
             error();
         }
     }
-    $db->query("
+    $app->dbOld->query("
     SELECT Email
     FROM invites
     WHERE InviterID = ".$user['ID']);
-    if ($db->has_results()) {
-        while (list($MaybeEmail) = $db->next_record()) {
+    if ($app->dbOld->has_results()) {
+        while (list($MaybeEmail) = $app->dbOld->next_record()) {
             if (Crypto::decrypt($MaybeEmail) == $CurEmail) {
                 error('You already have a pending invite to that address!');
                 Http::redirect("user.php?action=invite");
@@ -104,20 +104,20 @@ Thank you,
 $SiteName Staff
 EOT;
 
-    $db->query("
+    $app->dbOld->query("
     INSERT INTO invites
       (InviterID, InviteKey, Email, Expires, Reason)
     VALUES
       ('$user[ID]', '$InviteKey', '".Crypto::encrypt($CurEmail)."', '$InviteExpires', '$InviteReason')");
 
     if (!check_perms('site_send_unlimited_invites')) {
-        $db->query("
+        $app->dbOld->query("
       UPDATE users_main
       SET Invites = GREATEST(Invites, 1) - 1
       WHERE ID = '$user[ID]'");
-        $cache->begin_transaction('user_info_heavy_'.$user['ID']);
-        $cache->update_row(false, array('Invites' => '-1'));
-        $cache->commit_transaction(0);
+        $app->cacheOld->begin_transaction('user_info_heavy_'.$user['ID']);
+        $app->cacheOld->update_row(false, array('Invites' => '-1'));
+        $app->cacheOld->commit_transaction(0);
     }
 
     App::email($CurEmail, "You have been invited to $ENV->siteName", $Message);

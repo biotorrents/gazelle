@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 if (!check_perms('admin_reports')) {
     error(403);
 }
@@ -27,11 +30,11 @@ if (!empty($user['DisablePM']) && !isset($StaffIDs[$ToID])) {
     error(403);
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT Username
   FROM users_main
   WHERE ID = ?", $ToID);
-list($ComposeToUsername) = $db->next_record();
+list($ComposeToUsername) = $app->dbOld->next_record();
 if (!$ComposeToUsername) {
     error(404);
 }
@@ -40,54 +43,54 @@ View::header('Compose', 'inbox');
 // $TypeLink is placed directly in the <textarea> when composing a PM
 switch ($Type) {
   case 'user':
-    $db->query("
+    $app->dbOld->query("
       SELECT Username
       FROM users_main
       WHERE ID = ?", $ThingID);
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         $Error = 'No user with the reported ID found';
     } else {
-        list($Username) = $db->next_record();
+        list($Username) = $app->dbOld->next_record();
         $TypeLink = "the user [user]{$Username}[/user]";
         $Subject = 'User Report: '.Text::esc($Username);
     }
     break;
   case 'request':
   case 'request_update':
-    $db->query("
+    $app->dbOld->query("
       SELECT Title
       FROM requests
       WHERE ID = ?", $ThingID);
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         $Error = 'No request with the reported ID found';
     } else {
-        list($Name) = $db->next_record();
+        list($Name) = $app->dbOld->next_record();
         $TypeLink = 'the request [url='.site_url()."requests.php?action=view&amp;id=$ThingID]".Text::esc($Name).'[/url]';
         $Subject = 'Request Report: '.Text::esc($Name);
     }
     break;
   case 'collage':
-    $db->query("
+    $app->dbOld->query("
       SELECT Name
       FROM collages
       WHERE ID = ?", $ThingID);
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         $Error = 'No collage with the reported ID found';
     } else {
-        list($Name) = $db->next_record();
+        list($Name) = $app->dbOld->next_record();
         $TypeLink = 'the collage [url='.site_url()."collage.php?id=$ThingID]".Text::esc($Name).'[/url]';
         $Subject = 'Collage Report: '.Text::esc($Name);
     }
     break;
   case 'thread':
-    $db->query("
+    $app->dbOld->query("
       SELECT Title
       FROM forums_topics
       WHERE ID = ?", $ThingID);
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         $Error = 'No forum thread with the reported ID found';
     } else {
-        list($Title) = $db->next_record();
+        list($Title) = $app->dbOld->next_record();
         $TypeLink = 'the forum thread [url='.site_url()."forums.php?action=viewthread&amp;threadid=$ThingID]".Text::esc($Title).'[/url]';
         $Subject = 'Forum Thread Report: '.Text::esc($Title);
     }
@@ -98,7 +101,7 @@ switch ($Type) {
     } else {
         $PerPage = POSTS_PER_PAGE;
     }
-    $db->query("
+    $app->dbOld->query("
       SELECT
         p.ID,
         p.Body,
@@ -111,20 +114,20 @@ switch ($Type) {
         ) AS PostNum
       FROM forums_posts AS p
       WHERE p.ID = ?", $ThingID);
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         $Error = 'No forum post with the reported ID found';
     } else {
-        list($PostID, $Body, $TopicID, $PostNum) = $db->next_record();
+        list($PostID, $Body, $TopicID, $PostNum) = $app->dbOld->next_record();
         $TypeLink = 'this [url='.site_url()."forums.php?action=viewthread&amp;threadid=$TopicID&amp;post=$PostNum#post$PostID]forum post[/url]";
         $Subject = 'Forum Post Report: Post ID #'.Text::esc($PostID);
     }
     break;
   case 'comment':
-    $db->query("
+    $app->dbOld->query("
       SELECT 1
       FROM comments
       WHERE ID = ?", $ThingID);
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         $Error = 'No comment with the reported ID found';
     } else {
         $TypeLink = '[url='.site_url()."comments.php?action=jump&amp;postid=$ThingID]this comment[/url]";
@@ -139,11 +142,11 @@ if (isset($Error)) {
     error($Error);
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT Reason
   FROM reports
   WHERE ID = ?", $ReportID);
-list($Reason) = $db->next_record();
+list($Reason) = $app->dbOld->next_record();
 
 $Body = "You reported $TypeLink for the reason:\n[quote]{$Reason}[/quote]";
 

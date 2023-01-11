@@ -1,5 +1,7 @@
 <?php
 
+$app = App::go();
+
 authorize();
 if (!check_perms('site_edit_wiki')) {
     error(403);
@@ -13,21 +15,21 @@ if (!is_number($ID) || !is_number($ID) || !is_number($GroupID) || !is_number($Gr
     error(404);
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT Image, Summary
   FROM cover_art
   WHERE ID = '$ID'");
-list($Image, $Summary) = $db->next_record();
+list($Image, $Summary) = $app->dbOld->next_record();
 
-$db->query("
+$app->dbOld->query("
   DELETE FROM cover_art
   WHERE ID = '$ID'");
 
-$db->query("
+$app->dbOld->query("
   INSERT INTO group_log
     (GroupID, UserID, Time, Info)
   VALUES
     ('$GroupID', ".$user['ID'].", NOW(), '".db_string("Additional cover \"$Summary - $Image\" removed from group")."')");
 
-$cache->delete_value("torrents_cover_art_$GroupID");
+$app->cacheOld->delete_value("torrents_cover_art_$GroupID");
 header('Location: '.$_SERVER['HTTP_REFERER']);

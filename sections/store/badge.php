@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 $UserID = $user['ID'];
 $BadgeID = $_GET['badge'];
 
@@ -29,30 +31,30 @@ if (!$BadgeID) {
 
 if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
     if (!isset($Err)) {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
           SELECT BonusPoints
           FROM users_main
           WHERE ID = $UserID");
 
-        if ($db->has_results()) {
-            list($BP) =  $db->next_record();
+        if ($app->dbOld->has_results()) {
+            list($BP) =  $app->dbOld->next_record();
             $BP = (int) $BP;
 
             if ($BP >= $Prices[$BadgeID]) {
                 if (!Badges::awardBadge($UserID, $BadgeID)) {
                     $Err = 'Could not award badge, unknown error occurred.';
                 } else {
-                    $db->prepared_query("
+                    $app->dbOld->prepared_query("
                       UPDATE users_main
                       SET BonusPoints = BonusPoints - " . $Prices[$BadgeID] ."
                       WHERE ID = $UserID");
 
-                    $db->prepared_query("
+                    $app->dbOld->prepared_query("
                       UPDATE users_info
                       SET AdminComment = CONCAT('".sqltime()." - Purchased badge $BadgeID from store\n\n', AdminComment)
                       WHERE UserID = $UserID");
 
-                    $cache->delete_value("user_info_heavy_$UserID");
+                    $app->cacheOld->delete_value("user_info_heavy_$UserID");
                 }
             } else {
                 $Err = 'Not enough '.bonusPoints.'.';

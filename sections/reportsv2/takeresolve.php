@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 /*
  * This is the backend of the AJAXy reports resolve (When you press the shiny submit button).
  * This page shouldn't output anything except in error. If you do want output, it will be put
@@ -58,7 +61,7 @@ if (!isset($CategoryID)) {
 $TorrentID = $Escaped['torrentid'];
 $RawName = $Escaped['raw_name'];
 
-if (isset($Escaped['delete']) && $cache->get_value("torrent_$TorrentID".'_lock')) {
+if (isset($Escaped['delete']) && $app->cacheOld->get_value("torrent_$TorrentID".'_lock')) {
     echo "You requested to delete the torrent $TorrentID, but this is currently not possible because the upload process is still running. Please try again later.";
     error();
 }
@@ -74,7 +77,7 @@ if (($Escaped['resolve_type'] == 'manual' || $Escaped['resolve_type'] == 'dismis
         }
     }
 
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
     UPDATE reportsv2
     SET
       Status = 'Resolved',
@@ -84,9 +87,9 @@ if (($Escaped['resolve_type'] == 'manual' || $Escaped['resolve_type'] == 'dismis
     WHERE ID = '$ReportID'
       AND Status != 'Resolved'");
 
-    if ($db->affected_rows() > 0) {
-        $cache->delete_value('num_torrent_reportsv2');
-        $cache->delete_value("reports_torrent_$TorrentID");
+    if ($app->dbOld->affected_rows() > 0) {
+        $app->cacheOld->delete_value('num_torrent_reportsv2');
+        $app->cacheOld->delete_value("reports_torrent_$TorrentID");
     } else {
         //Someone beat us to it. Inform the staffer.
 ?>
@@ -116,13 +119,13 @@ if (!isset($Escaped['resolve_type'])) {
     error();
 }
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT ID
   FROM torrents
   WHERE ID = $TorrentID");
-$TorrentExists = ($db->has_results());
+$TorrentExists = ($app->dbOld->has_results());
 if (!$TorrentExists) {
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
     UPDATE reportsv2
     SET Status = 'Resolved',
       LastChangeTime = NOW(),
@@ -130,12 +133,12 @@ if (!$TorrentExists) {
       ModComment = 'Report already dealt with (torrent deleted).'
     WHERE ID = $ReportID");
 
-    $cache->decrement('num_torrent_reportsv2');
+    $app->cacheOld->decrement('num_torrent_reportsv2');
 }
 
 if ($Report) {
     //Resolve with a parallel check
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
     UPDATE reportsv2
     SET Status = 'Resolved',
       LastChangeTime = NOW(),
@@ -145,10 +148,10 @@ if ($Report) {
 }
 
 //See if it we managed to resolve
-if ($db->affected_rows() > 0 || !$Report) {
+if ($app->dbOld->affected_rows() > 0 || !$Report) {
     //We did, lets do all our shit
     if ($Report) {
-        $cache->decrement('num_torrent_reportsv2');
+        $app->cacheOld->decrement('num_torrent_reportsv2');
     }
 
 
@@ -159,81 +162,81 @@ if ($db->affected_rows() > 0 || !$Report) {
     }
 
     if ($_POST['resolve_type'] == 'tags_lots') {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
       INSERT IGNORE INTO torrents_bad_tags
         (TorrentID, UserID, TimeAdded)
       VALUES
         ($TorrentID, ".$user['ID']." , NOW())");
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
       SELECT GroupID
       FROM torrents
       WHERE ID = $TorrentID");
-        list($GroupID) = $db->next_record();
-        $cache->delete_value("torrents_details_$GroupID");
+        list($GroupID) = $app->dbOld->next_record();
+        $app->cacheOld->delete_value("torrents_details_$GroupID");
         $SendPM = true;
     }
 
     if ($_POST['resolve_type'] == 'folders_bad') {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
       INSERT IGNORE INTO torrents_bad_folders
         (TorrentID, UserID, TimeAdded)
       VALUES
         ($TorrentID, ".$user['ID'].", NOW())");
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
       SELECT GroupID
       FROM torrents
       WHERE ID = $TorrentID");
-        list($GroupID) = $db->next_record();
-        $cache->delete_value("torrents_details_$GroupID");
+        list($GroupID) = $app->dbOld->next_record();
+        $app->cacheOld->delete_value("torrents_details_$GroupID");
         $SendPM = true;
     }
     if ($_POST['resolve_type'] == 'filename') {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
       INSERT IGNORE INTO torrents_bad_files
         (TorrentID, UserID, TimeAdded)
       VALUES
         ($TorrentID, ".$user['ID'].", NOW())");
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
       SELECT GroupID
       FROM torrents
       WHERE ID = $TorrentID");
-        list($GroupID) = $db->next_record();
-        $cache->delete_value("torrents_details_$GroupID");
+        list($GroupID) = $app->dbOld->next_record();
+        $app->cacheOld->delete_value("torrents_details_$GroupID");
         $SendPM = true;
     }
     if ($_POST['resolve_type'] == 'trump') {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
       SELECT
         r.ExtraID,
         HEX(t.info_hash)
       FROM reportsv2 AS r
       LEFT JOIN torrents AS t ON r.ExtraID = t.ID
       WHERE r.ID = $ReportID");
-        if ($db->has_results()) {
-            list($ExtraID, $InfoHash) = $db->next_record();
+        if ($app->dbOld->has_results()) {
+            list($ExtraID, $InfoHash) = $app->dbOld->next_record();
             $ExtraID = explode(' ', $ExtraID)[0];
 
             $AffectedUsers = [];
-            $db->prepared_query("
+            $app->dbOld->prepared_query("
         SELECT UserID
         FROM torrents
         WHERE ID = $TorrentID");
-            if ($db->has_results()) {
-                list($AffectedUsers[]) = $db->next_record();
+            if ($app->dbOld->has_results()) {
+                list($AffectedUsers[]) = $app->dbOld->next_record();
             }
-            $db->prepared_query("
+            $app->dbOld->prepared_query("
         SELECT uid
         FROM xbt_snatched
         WHERE fid = $TorrentID");
-            if ($db->has_results()) {
-                while (list($UserID) = $db->next_record()) {
+            if ($app->dbOld->has_results()) {
+                while (list($UserID) = $app->dbOld->next_record()) {
                     $AffectedUsers[] = $UserID;
                 }
             }
             $AffectedUsers = array_unique($AffectedUsers);
             foreach ($AffectedUsers as $UserID) {
                 Tracker::update_tracker('add_token', ['info_hash' => substr('%'.chunk_split($InfoHash, 2, '%'), 0, -1), 'userid' => $UserID]);
-                $db->prepared_query("
+                $app->dbOld->prepared_query("
           INSERT INTO users_freeleeches (UserID, TorrentID, Time, Uses)
           VALUES ($UserID, $ExtraID, NOW(), 0)
           ON DUPLICATE KEY UPDATE
@@ -241,28 +244,28 @@ if ($db->affected_rows() > 0 || !$Report) {
             Expired = FALSE,
             Uses = Uses");
                 Misc::send_pm($UserID, 0, "Torrent Deleted: ".$RawName, "A torrent you have snatched (or uploaded) has been trumped by a more recent torrent. This new torrent will be freeleech for you for the next 4 days.\r\n\r\nYou can find the new torrent [url=".site_url()."torrents.php?torrentid=$ExtraID]here[/url]");
-                $cache->delete_value("users_tokens_$UserID");
+                $app->cacheOld->delete_value("users_tokens_$UserID");
             }
         }
     }
 
     //Log and delete
     if (isset($Escaped['delete']) && check_perms('torrents_delete')) {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
       SELECT Username
       FROM users_main
       WHERE ID = $UploaderID");
-        list($UpUsername) = $db->next_record();
+        list($UpUsername) = $app->dbOld->next_record();
         $Log = "Torrent $TorrentID ($RawName) uploaded by $UpUsername was deleted by ".$user['Username'];
         $Log .= ($Escaped['resolve_type'] == 'custom' ? '' : ' for the reason: '.$ResolveType['title'].".");
         if (isset($Escaped['log_message']) && $Escaped['log_message'] != '') {
             $Log .= ' ( '.$Escaped['log_message'].' )';
         }
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
       SELECT GroupID, hex(info_hash)
       FROM torrents
       WHERE ID = $TorrentID");
-        list($GroupID, $InfoHash) = $db->next_record();
+        list($GroupID, $InfoHash) = $app->dbOld->next_record();
         Torrents::delete_torrent($TorrentID, 0, $ResolveType['reason']);
 
         //$InfoHash = unpack("H*", $InfoHash);
@@ -276,11 +279,11 @@ if ($db->affected_rows() > 0 || !$Report) {
 
     //Warnings / remove upload
     if ($Upload) {
-        $cache->begin_transaction("user_info_heavy_$UploaderID");
-        $cache->update_row(false, array('DisableUpload' => '1'));
-        $cache->commit_transaction(0);
+        $app->cacheOld->begin_transaction("user_info_heavy_$UploaderID");
+        $app->cacheOld->update_row(false, array('DisableUpload' => '1'));
+        $app->cacheOld->commit_transaction(0);
 
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
       UPDATE users_info
       SET DisableUpload = '1'
       WHERE UserID = $UploaderID");
@@ -312,7 +315,7 @@ if ($db->affected_rows() > 0 || !$Report) {
         if ($AdminComment) {
             $AdminComment = date('Y-m-d') . " - $AdminComment\n\n";
 
-            $db->prepared_query("
+            $app->dbOld->prepared_query("
         UPDATE users_info
         SET AdminComment = CONCAT('".db_string($AdminComment)."', AdminComment)
         WHERE UserID = '".db_string($UploaderID)."'");
@@ -356,11 +359,11 @@ if ($db->affected_rows() > 0 || !$Report) {
         Misc::send_pm($UploaderID, 0, $Escaped['raw_name'], $PM);
     }
 
-    $cache->delete_value("reports_torrent_$TorrentID");
+    $app->cacheOld->delete_value("reports_torrent_$TorrentID");
 
     // Now we've done everything, update the DB with values
     if ($Report) {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
       UPDATE reportsv2
       SET
         Type = '".$Escaped['resolve_type']."',

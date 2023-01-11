@@ -23,11 +23,11 @@ if (!isset($_GET['threadid']) || !is_number($_GET['threadid'])) {
     if (isset($_GET['topicid']) && is_number($_GET['topicid'])) {
         $ThreadID = $_GET['topicid'];
     } elseif (isset($_GET['postid']) && is_number($_GET['postid'])) {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
       SELECT TopicID
       FROM forums_posts
       WHERE ID = $_GET[postid]");
-        list($ThreadID) = $db->next_record();
+        list($ThreadID) = $app->dbOld->next_record();
         if ($ThreadID) {
             Http::redirect("forums.php?action=viewthread&threadid=$ThreadID&postid=$_GET[postid]#post$_GET[postid]");
             error();
@@ -79,8 +79,8 @@ if ($ThreadInfo['Posts'] > $PerPage) {
         if ($ThreadInfo['StickyPostID'] < $_GET['postid']) {
             $SQL .= " AND ID != $ThreadInfo[StickyPostID]";
         }
-        $db->prepared_query($SQL);
-        list($PostNum) = $db->next_record();
+        $app->dbOld->prepared_query($SQL);
+        list($PostNum) = $app->dbOld->next_record();
     } else {
         $PostNum = 1;
     }
@@ -94,8 +94,8 @@ if (($Page - 1) * $PerPage > $ThreadInfo['Posts']) {
 list($CatalogueID, $CatalogueLimit) = Format::catalogue_limit($Page, $PerPage, THREAD_CATALOGUE);
 
 // Cache catalogue from which the page is selected, allows block caches and future ability to specify posts per page
-if (!$Catalogue = $cache->get_value("thread_{$ThreadID}_catalogue_$CatalogueID")) {
-    $db->prepared_query("
+if (!$Catalogue = $app->cacheOld->get_value("thread_{$ThreadID}_catalogue_$CatalogueID")) {
+    $app->dbOld->prepared_query("
     SELECT
       p.ID,
       p.AuthorID,
@@ -109,9 +109,9 @@ if (!$Catalogue = $cache->get_value("thread_{$ThreadID}_catalogue_$CatalogueID")
     WHERE p.TopicID = '$ThreadID'
       AND p.ID != '".$ThreadInfo['StickyPostID']."'
     LIMIT $CatalogueLimit");
-    $Catalogue = $db->to_array(false, MYSQLI_ASSOC);
+    $Catalogue = $app->dbOld->to_array(false, MYSQLI_ASSOC);
     if (!$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky']) {
-        $cache->cache_value("thread_{$ThreadID}_catalogue_$CatalogueID", $Catalogue, 0);
+        $app->cacheOld->cache_value("thread_{$ThreadID}_catalogue_$CatalogueID", $Catalogue, 0);
     }
 }
 $Thread = Format::catalogue_select($Catalogue, $Page, $PerPage, THREAD_CATALOGUE);
@@ -128,14 +128,14 @@ if ($ThreadInfo['Posts'] <= $PerPage*$Page && $ThreadInfo['StickyPostID'] > $Las
 //Why would we skip this on locked or stickied threads?
 //if (!$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky']) {
 
-  $db->prepared_query("
+  $app->dbOld->prepared_query("
     SELECT PostID
     FROM forums_last_read_topics
     WHERE UserID = '$user[ID]'
       AND TopicID = '$ThreadID'");
-  list($LastRead) = $db->next_record();
+  list($LastRead) = $app->dbOld->next_record();
   if ($LastRead < $LastPost) {
-      $db->prepared_query("
+      $app->dbOld->prepared_query("
       INSERT INTO forums_last_read_topics
         (UserID, TopicID, PostID)
       VALUES
@@ -153,13 +153,13 @@ if (empty($UserSubscriptions)) {
 }
 
 if (in_array($ThreadID, $UserSubscriptions)) {
-    $cache->delete_value('subscriptions_user_new_'.$user['ID']);
+    $app->cacheOld->delete_value('subscriptions_user_new_'.$user['ID']);
 }
 
 
-$QuoteNotificationsCount = $cache->get_value('notify_quoted_' . $user['ID']);
+$QuoteNotificationsCount = $app->cacheOld->get_value('notify_quoted_' . $user['ID']);
 if ($QuoteNotificationsCount === false || $QuoteNotificationsCount > 0) {
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
     UPDATE users_notify_quoted
     SET UnRead = false
     WHERE UserID = '$user[ID]'
@@ -167,7 +167,7 @@ if ($QuoteNotificationsCount === false || $QuoteNotificationsCount > 0) {
       AND PageID = '$ThreadID'
       AND PostID >= '$FirstPost'
       AND PostID <= '$LastPost'");
-    $cache->delete_value('notify_quoted_' . $user['ID']);
+    $app->cacheOld->delete_value('notify_quoted_' . $user['ID']);
 }
 
 // Start printing
@@ -243,19 +243,19 @@ $Pages = Format::get_pages($Page, $ThreadInfo['Posts'], $PerPage, 9);
 echo $Pages;
 
 if ($ThreadInfo['NoPoll'] == 0) {
-    if (!list($Question, $Answers, $Votes, $Featured, $Closed) = $cache->get_value("polls_$ThreadID")) {
-        $db->prepared_query("
+    if (!list($Question, $Answers, $Votes, $Featured, $Closed) = $app->cacheOld->get_value("polls_$ThreadID")) {
+        $app->dbOld->prepared_query("
       SELECT Question, Answers, Featured, Closed
       FROM forums_polls
       WHERE TopicID = '$ThreadID'");
-        list($Question, $Answers, $Featured, $Closed) = $db->next_record(MYSQLI_NUM, array(1));
+        list($Question, $Answers, $Featured, $Closed) = $app->dbOld->next_record(MYSQLI_NUM, array(1));
         $Answers = unserialize($Answers);
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
       SELECT Vote, COUNT(UserID)
       FROM forums_polls_votes
       WHERE TopicID = '$ThreadID'
       GROUP BY Vote");
-        $VoteArray = $db->to_array(false, MYSQLI_NUM);
+        $VoteArray = $app->dbOld->to_array(false, MYSQLI_NUM);
 
         $Votes = [];
         foreach ($VoteArray as $VoteSet) {
@@ -268,7 +268,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
                 $Votes[$i] = 0;
             }
         }
-        $cache->cache_value("polls_$ThreadID", array($Question, $Answers, $Votes, $Featured, $Closed), 0);
+        $app->cacheOld->cache_value("polls_$ThreadID", array($Question, $Answers, $Votes, $Featured, $Closed), 0);
     }
 
     if (!empty($Votes)) {
@@ -282,12 +282,12 @@ if ($ThreadInfo['NoPoll'] == 0) {
     #$RevealVoters = in_array($ForumID, FORUMS_TO_REVEAL_VOTERS);
 
     // Polls lose the you voted arrow thingy
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
     SELECT Vote
     FROM forums_polls_votes
     WHERE UserID = '".$user['ID']."'
       AND TopicID = '$ThreadID'");
-    list($UserResponse) = $db->next_record(); ?>
+    list($UserResponse) = $app->dbOld->next_record(); ?>
 <div class="box thin clear">
   <div class="head colhead_dark"><strong>Poll<?php if ($Closed) {
         echo ' [Closed]';
@@ -350,7 +350,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
             $StaffNames[] = $Staffer['Username'];
         }
 
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
         SELECT
           fpv.Vote AS Vote,
           GROUP_CONCAT(um.Username SEPARATOR ', ')
@@ -359,7 +359,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
         WHERE TopicID = $ThreadID
         GROUP BY fpv.Vote");
 
-        $StaffVotesTmp = $db->to_array();
+        $StaffVotesTmp = $app->dbOld->to_array();
         $StaffCount = count($StaffNames);
 
         $StaffVotes = [];

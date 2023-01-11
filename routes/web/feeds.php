@@ -188,7 +188,7 @@ Flight::route("/feed/blog/@authKey/@passKey", function (string $authKey, string 
     $feed->open();
     $feed->channel('Blog', 'RSS feed for site blog.');
 
-    $blog = $cache->get_value('blog');
+    $blog = $app->cacheOld->get_value('blog');
     if (!$blog) {
         $app->dbOld->query("
             select blog.ID, users_main.Username, blog.UserID, blog.Title, blog.Body, blog.Time, blog.ThreadID from blog
@@ -196,7 +196,7 @@ Flight::route("/feed/blog/@authKey/@passKey", function (string $authKey, string 
             order by Time desc limit 20
         ");
 
-        $blog = $db->to_array();
+        $blog = $app->dbOld->to_array();
         $app->cacheOld->cache_value('blog', $blog, 1209600);
     }
 

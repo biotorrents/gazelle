@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 // Error out on invalid requests (before caching)
 if (isset($_GET['details'])) {
     if (in_array($_GET['details'], ['ut','ur'])) {
@@ -27,8 +29,8 @@ $Limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
 $Limit = in_array($Limit, [10,100,250]) ? $Limit : 10;
 
 if ($Details == 'all' || $Details == 'ut') {
-    if (!$TopUsedTags = $cache->get_value('topusedtag_'.$Limit)) {
-        $db->prepared_query("
+    if (!$TopUsedTags = $app->cacheOld->get_value('topusedtag_'.$Limit)) {
+        $app->dbOld->prepared_query("
         SELECT
           t.ID,
           t.Name,
@@ -38,16 +40,16 @@ if ($Details == 'all' || $Details == 'ut') {
         GROUP BY tt.TagID
           ORDER BY Uses DESC
           LIMIT $Limit");
-        $TopUsedTags = $db->to_array();
-        $cache->cache_value('topusedtag_'.$Limit, $TopUsedTags, 3600 * 12);
+        $TopUsedTags = $app->dbOld->to_array();
+        $app->cacheOld->cache_value('topusedtag_'.$Limit, $TopUsedTags, 3600 * 12);
     }
 
     generate_tag_table('Most Used Torrent Tags', 'ut', $TopUsedTags, $Limit);
 }
 
 if ($Details == 'all' || $Details == 'ur') {
-    if (!$TopRequestTags = $cache->get_value('toprequesttag_'.$Limit)) {
-        $db->prepared_query("
+    if (!$TopRequestTags = $app->cacheOld->get_value('toprequesttag_'.$Limit)) {
+        $app->dbOld->prepared_query("
         SELECT
           t.ID,
           t.Name,
@@ -57,8 +59,8 @@ if ($Details == 'all' || $Details == 'ur') {
         GROUP BY r.TagID
           ORDER BY Uses DESC
           LIMIT $Limit");
-        $TopRequestTags = $db->to_array();
-        $cache->cache_value('toprequesttag_'.$Limit, $TopRequestTags, 3600 * 12);
+        $TopRequestTags = $app->dbOld->to_array();
+        $app->cacheOld->cache_value('toprequesttag_'.$Limit, $TopRequestTags, 3600 * 12);
     }
 
     generate_tag_table('Most Used Request Tags', 'ur', $TopRequestTags, $Limit, true);

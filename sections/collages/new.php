@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 View::header(
     'Create a collection',
     'vendor/easymde.min',
@@ -62,13 +64,13 @@ foreach ($CollageCats as $CatID => $CatName) { ?>
               <?php
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT COUNT(ID)
   FROM collages
   WHERE UserID = '$user[ID]'
     AND CategoryID = '0'
     AND Deleted = '0'");
-list($CollageCount) = $db->next_record();
+list($CollageCount) = $app->dbOld->next_record();
 if (($CollageCount < $user['Permissions']['MaxCollages']) && check_perms('site_collages_personal')) { ?>
               <option value="0" <?=(($Category === '0') ? ' selected="selected"' : '')?>>Personal
               </option>

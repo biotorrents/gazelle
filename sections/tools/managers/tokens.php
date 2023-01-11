@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 if (!check_perms('users_mod')) {
     error(403);
 }
@@ -18,7 +21,7 @@ if (isset($_REQUEST['addtokens'])) {
         $sql .= "
       AND can_leech = 1";
     }
-    $db->query($sql);
+    $app->dbOld->query($sql);
     $sql = "
     SELECT ID
     FROM users_main
@@ -27,9 +30,9 @@ if (isset($_REQUEST['addtokens'])) {
         $sql .= "
       AND can_leech = 1";
     }
-    $db->query($sql);
-    while (list($UserID) = $db->next_record()) {
-        $cache->delete_value("user_info_heavy_$UserID");
+    $app->dbOld->query($sql);
+    while (list($UserID) = $app->dbOld->next_record()) {
+        $app->cacheOld->delete_value("user_info_heavy_$UserID");
     }
     $message = '<strong>' . Text::float($Tokens) . 'freeleech tokens added to all enabled users' . (!isset($_REQUEST['leechdisabled']) ? ' with enabled leeching privs' : '') . '.</strong><br /><br />';
 } elseif (isset($_REQUEST['cleartokens'])) {
@@ -47,19 +50,19 @@ if (isset($_REQUEST['addtokens'])) {
     } else {
         $Where = "WHERE Enabled = '1' OR FLTokens > $Tokens";
     }
-    $db->query("
+    $app->dbOld->query("
     SELECT ID
     FROM users_main
     $Where");
-    $Users = $db->to_array();
-    $db->query("
+    $Users = $app->dbOld->to_array();
+    $app->dbOld->query("
     UPDATE users_main
     SET FLTokens = $Tokens
     $Where");
 
     foreach ($Users as $UserID) {
         list($UserID) = $UserID;
-        $cache->delete_value("user_info_heavy_$UserID");
+        $app->cacheOld->delete_value("user_info_heavy_$UserID");
     }
 
     $where = '';

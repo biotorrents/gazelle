@@ -1,32 +1,34 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 $Cost = 10000;
 
 $Purchase = "1 invite";
 $UserID = $user['ID'];
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT BonusPoints
   FROM users_main
   WHERE ID = $UserID");
 
-if ($db->has_results()) {
-    list($Points) = $db->next_record();
+if ($app->dbOld->has_results()) {
+    list($Points) = $app->dbOld->next_record();
 
     if ($Points >= $Cost) {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
           UPDATE users_main
           SET BonusPoints = BonusPoints - $Cost,
             Invites = Invites + 1
           WHERE ID = $UserID");
 
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
           UPDATE users_info
           SET AdminComment = CONCAT('".sqltime()." - Purchased an invite from the store\n\n', AdminComment)
           WHERE UserID = $UserID");
 
-        $cache->delete_value('user_info_heavy_'.$UserID);
+        $app->cacheOld->delete_value('user_info_heavy_'.$UserID);
         $Worked = true;
     } else {
         $Worked = false;

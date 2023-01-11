@@ -1,16 +1,18 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 $CollageID = $_GET['collageid'];
 if (!is_number($CollageID) || !$CollageID) {
     error(404);
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT Name, CategoryID, UserID
   FROM collages
   WHERE ID = '$CollageID'");
-list($Name, $CategoryID, $UserID) = $db->next_record();
+list($Name, $CategoryID, $UserID) = $app->dbOld->next_record();
 
 if (!check_perms('site_collages_delete') && $UserID != $user['ID']) {
     error(403);

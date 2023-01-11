@@ -1,5 +1,7 @@
 <?php
 
+$app = App::go();
+
 authorize();
 
 if (!check_perms('admin_manage_forums')) {
@@ -10,7 +12,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Delete') { //Delete
     if (!is_number($_POST['id']) || $_POST['id'] == '') {
         error(0);
     }
-    $db->query('
+    $app->dbOld->query('
     DELETE FROM forums
     WHERE ID = '.$_POST['id']);
 } else { //Edit & Create, Shared Validation
@@ -34,20 +36,20 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Delete') { //Delete
         if (!is_number($_POST['id']) || $_POST['id'] == '') {
             error(0);
         }
-        $db->query('
+        $app->dbOld->query('
       SELECT MinClassRead
       FROM forums
       WHERE ID = ' . $P['id']);
-        if (!$db->has_results()) {
+        if (!$app->dbOld->has_results()) {
             error(404);
         } else {
-            list($MinClassRead) = $db->next_record();
+            list($MinClassRead) = $app->dbOld->next_record();
             if ($MinClassRead > $user['Class']) {
                 error(403);
             }
         }
 
-        $db->query("
+        $app->dbOld->query("
       UPDATE forums
       SET
         Sort = '$P[sort]',
@@ -59,7 +61,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Delete') { //Delete
         MinClassCreate = '$P[minclasscreate]'
       WHERE ID = '$P[id]'");
     } else { //Create
-        $db->query("
+        $app->dbOld->query("
       INSERT INTO forums
         (Sort, CategoryID, Name, Description, MinClassRead, MinClassWrite, MinClassCreate)
       VALUES
@@ -67,7 +69,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Delete') { //Delete
     }
 }
 
-$cache->delete_value('forums_list'); // Clear cache
+$app->cacheOld->delete_value('forums_list'); // Clear cache
 
 // Go back
 header('Location: tools.php?action=forum');

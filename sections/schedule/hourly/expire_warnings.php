@@ -2,18 +2,20 @@
 
 declare(strict_types=1);
 
-$db->query("
+$app = App::go();
+
+$app->dbOld->query("
   SELECT UserID
   FROM users_info
   WHERE Warned < '$sqltime'");
 
-while (list($UserID) = $db->next_record()) {
-    $cache->begin_transaction("user_info_$UserID");
-    $cache->update_row(false, array('Warned' => null));
-    $cache->commit_transaction(2592000);
+while (list($UserID) = $app->dbOld->next_record()) {
+    $app->cacheOld->begin_transaction("user_info_$UserID");
+    $app->cacheOld->update_row(false, array('Warned' => null));
+    $app->cacheOld->commit_transaction(2592000);
 }
 
-$db->query("
+$app->dbOld->query("
   UPDATE users_info
   SET Warned = NULL
   WHERE Warned < '$sqltime'");

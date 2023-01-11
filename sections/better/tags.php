@@ -25,14 +25,14 @@ exit;
 
 View::header('Torrents with bad tags');
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT tbt.TorrentID, t.GroupID
   FROM torrents_bad_tags AS tbt
     JOIN torrents AS t ON t.ID = tbt.TorrentID
     $Join
   ORDER BY tbt.TimeAdded ASC
   ");
-$TorrentsInfo = $db->to_array('TorrentID', MYSQLI_ASSOC);
+$TorrentsInfo = $app->dbOld->to_array('TorrentID', MYSQLI_ASSOC);
 
 foreach ($TorrentsInfo as $Torrent) {
     $GroupIDs[] = $Torrent['GroupID'];

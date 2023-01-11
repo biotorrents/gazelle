@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+$app = App::go();
+
 /**
  * New Staff PM conversation backend
  */
@@ -11,7 +13,7 @@ if ($Message = db_string($_POST['message'])) {
         // New staff PM conversation
         # This needs to be a Security::checkInt call
         #assert_numbers($_POST, array('level'), 'Invalid recipient');
-        $db->query(
+        $app->dbOld->query(
             "
       INSERT INTO staff_pm_conversations
         (Subject, Status, Level, UserID, Date)
@@ -20,8 +22,8 @@ if ($Message = db_string($_POST['message'])) {
         );
 
         // New message
-        $ConvID = $db->inserted_id();
-        $db->query(
+        $ConvID = $app->dbOld->inserted_id();
+        $app->dbOld->query(
             "
       INSERT INTO staff_pm_messages
         (UserID, SentDate, Message, ConvID)
@@ -32,18 +34,18 @@ if ($Message = db_string($_POST['message'])) {
         Http::redirect("staffpm.php");
     } elseif ($ConvID = (int)$_POST['convid']) {
         // Check if conversation belongs to user
-        $db->query("
+        $app->dbOld->query("
       SELECT UserID, AssignedToUser, Level
       FROM staff_pm_conversations
       WHERE ID = $ConvID");
-        list($UserID, $AssignedToUser, $Level) = $db->next_record();
+        list($UserID, $AssignedToUser, $Level) = $app->dbOld->next_record();
 
         $LevelCap = 1000;
         $Level = min($Level, $LevelCap);
 
         if ($UserID == $user['ID'] || ($IsFLS && $user['EffectiveClass'] >= $Level) || $UserID == $AssignedToUser) {
             // Response to existing conversation
-            $db->query(
+            $app->dbOld->query(
                 "
         INSERT INTO staff_pm_messages
           (UserID, SentDate, Message, ConvID)
@@ -54,16 +56,16 @@ if ($Message = db_string($_POST['message'])) {
             // Update conversation
             if ($IsFLS) {
                 // FLS/Staff
-                $db->query("
+                $app->dbOld->query("
           UPDATE staff_pm_conversations
           SET Date = NOW(),
             Unread = true,
             Status = 'Open'
           WHERE ID = $ConvID");
-                $cache->delete_value("num_staff_pms_$user[ID]");
+                $app->cacheOld->delete_value("num_staff_pms_$user[ID]");
             } else {
                 // User
-                $db->query("
+                $app->dbOld->query("
           UPDATE staff_pm_conversations
           SET Date = NOW(),
             Unread = true,
@@ -72,8 +74,8 @@ if ($Message = db_string($_POST['message'])) {
             }
 
             // Clear cache for user
-            $cache->delete_value("staff_pm_new_$UserID");
-            $cache->delete_value("staff_pm_new_$user[ID]");
+            $app->cacheOld->delete_value("staff_pm_new_$UserID");
+            $app->cacheOld->delete_value("staff_pm_new_$user[ID]");
 
             Http::redirect("staffpm.php?action=viewconv&id=$ConvID");
         } else {

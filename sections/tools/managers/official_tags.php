@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 if (!check_perms('users_mod')) {
     error(403);
 }
@@ -15,7 +18,7 @@ if (isset($_POST['doit'])) {
         }
         $OldTagIDs = implode(', ', $OldTagIDs);
 
-        $db->query("
+        $app->dbOld->query("
       UPDATE tags
       SET TagType = 'other'
       WHERE ID IN ($OldTagIDs)");
@@ -24,28 +27,28 @@ if (isset($_POST['doit'])) {
     if ($_POST['newtag']) {
         $TagName = Misc::sanitize_tag($_POST['newtag']);
 
-        $db->query("
+        $app->dbOld->query("
       SELECT ID
       FROM tags
       WHERE Name LIKE '$TagName'");
-        list($TagID) = $db->next_record();
+        list($TagID) = $app->dbOld->next_record();
 
         if ($TagID) {
-            $db->query("
+            $app->dbOld->query("
         UPDATE tags
         SET TagType = 'genre'
         WHERE ID = $TagID");
         } else { // Tag doesn't exist yet - create tag
-            $db->query("
+            $app->dbOld->query("
         INSERT INTO tags
           (Name, UserID, TagType, Uses)
         VALUES
           ('$TagName', ".$user['ID'].", 'genre', 0)");
-            $TagID = $db->inserted_id();
+            $TagID = $app->dbOld->inserted_id();
         }
     }
 
-    $cache->delete_value('genre_tags');
+    $app->cacheOld->delete_value('genre_tags');
 }
 
 View::header('Official Tags Manager');
@@ -75,13 +78,13 @@ View::header('Official Tags Manager');
         </tr>
 <?php
 $i = 0;
-$db->query("
+$app->dbOld->query("
   SELECT ID, Name, Uses
   FROM tags
   WHERE TagType = 'genre'
   ORDER BY Name ASC");
-$TagCount = $db->record_count();
-$Tags = $db->to_array();
+$TagCount = $app->dbOld->record_count();
+$Tags = $app->dbOld->to_array();
 for ($i = 0; $i < $TagCount / 3; $i++) {
     list($TagID1, $TagName1, $TagUses1) = $Tags[$i];
     if (isset($Tags[ceil($TagCount / 3) + $i])) {

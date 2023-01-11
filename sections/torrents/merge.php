@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 if (!check_perms('torrents_edit')) {
     error(403);
 }
@@ -18,25 +20,25 @@ if (!$NewGroupID || !is_number($NewGroupID)) {
 if ($NewGroupID == $GroupID) {
     error('Old group ID is the same as new group ID!');
 }
-$db->query("
+$app->dbOld->query("
   SELECT CategoryID, Name
   FROM torrents_group
   WHERE ID = '$NewGroupID'");
-if (!$db->has_results()) {
+if (!$app->dbOld->has_results()) {
     error('Target group does not exist.');
 }
-list($CategoryID, $NewName) = $db->next_record();
+list($CategoryID, $NewName) = $app->dbOld->next_record();
 /*
 if ($Categories[$CategoryID - 1] != 'Music') {
   error('Only music groups can be merged.');
 }
 */
 
-$db->query("
+$app->dbOld->query("
   SELECT `title`
   FROM `torrents_group`
   WHERE `id` = $GroupID");
-list($Name) = $db->next_record();
+list($Name) = $app->dbOld->next_record();
 
 // Everything is legit, let's just confim they're not retarded
 if (empty($_POST['confirm'])) {
@@ -71,11 +73,11 @@ if (empty($_POST['confirm'])) {
 } else {
     authorize();
 
-    $db->query("
+    $app->dbOld->query("
     UPDATE torrents
     SET GroupID = '$NewGroupID'
     WHERE GroupID = '$GroupID'");
-    $db->query("
+    $app->dbOld->query("
     UPDATE wiki_torrents
     SET PageID = '$NewGroupID'
     WHERE PageID = '$GroupID'");
@@ -84,59 +86,59 @@ if (empty($_POST['confirm'])) {
     Comments::merge('torrents', $OldGroupID, $NewGroupID);
 
     //Collages
-  $db->query("
+  $app->dbOld->query("
     SELECT CollageID
     FROM collages_torrents
     WHERE GroupID = '$OldGroupID'"); // Select all collages that contain edited group
-  while (list($CollageID) = $db->next_record()) {
-      $db->query("
+  while (list($CollageID) = $app->dbOld->next_record()) {
+      $app->dbOld->query("
       UPDATE IGNORE collages_torrents
       SET GroupID = '$NewGroupID'
       WHERE GroupID = '$OldGroupID'
         AND CollageID = '$CollageID'"); // Change collage group ID to new ID
-      $db->query("
+      $app->dbOld->query("
       DELETE FROM collages_torrents
       WHERE GroupID = '$OldGroupID'
         AND CollageID = '$CollageID'");
-      $cache->delete_value("collage_$CollageID");
+      $app->cacheOld->delete_value("collage_$CollageID");
   }
-    $cache->delete_value("torrent_collages_$NewGroupID");
-    $cache->delete_value("torrent_collages_personal_$NewGroupID");
+    $app->cacheOld->delete_value("torrent_collages_$NewGroupID");
+    $app->cacheOld->delete_value("torrent_collages_personal_$NewGroupID");
 
     // Requests
-    $db->query("
+    $app->dbOld->query("
     SELECT ID
     FROM requests
     WHERE GroupID = '$OldGroupID'");
-    $Requests = $db->collect('ID');
-    $db->query("
+    $Requests = $app->dbOld->collect('ID');
+    $app->dbOld->query("
     UPDATE requests
     SET GroupID = '$NewGroupID'
     WHERE GroupID = '$OldGroupID'");
     foreach ($Requests as $RequestID) {
-        $cache->delete_value("request_$RequestID");
+        $app->cacheOld->delete_value("request_$RequestID");
     }
-    $cache->delete_value('requests_group_'.$NewGroupID);
+    $app->cacheOld->delete_value('requests_group_'.$NewGroupID);
 
     Torrents::delete_group($GroupID);
 
     Torrents::write_group_log($NewGroupID, 0, $user['ID'], "Merged Group $GroupID ($Name) to $NewGroupID ($NewName)", 0);
-    $db->query("
+    $app->dbOld->query("
     UPDATE group_log
     SET GroupID = $NewGroupID
     WHERE GroupID = $GroupID");
 
     $GroupID = $NewGroupID;
 
-    $db->query("
+    $app->dbOld->query("
     SELECT ID
     FROM torrents
     WHERE GroupID = '$OldGroupID'");
-    while (list($TorrentID) = $db->next_record()) {
-        $cache->delete_value("torrent_download_$TorrentID");
+    while (list($TorrentID) = $app->dbOld->next_record()) {
+        $app->cacheOld->delete_value("torrent_download_$TorrentID");
     }
-    $cache->delete_value("torrents_details_$GroupID");
-    $cache->delete_value("groups_artists_$GroupID");
+    $app->cacheOld->delete_value("torrents_details_$GroupID");
+    $app->cacheOld->delete_value("groups_artists_$GroupID");
     Torrents::update_hash($GroupID);
 
     header("Location: torrents.php?id=" . $GroupID);

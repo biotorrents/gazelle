@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 View::header('Manage Permissions');
 ?>
 <script type="text/javascript">//<![CDATA[
@@ -18,7 +21,7 @@ function confirmDelete(id) {
     </div>
   </div>
 <?php
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT
     p.ID,
     p.Name,
@@ -30,7 +33,7 @@ $db->prepared_query("
     LEFT JOIN users_levels AS l ON l.PermissionID = p.ID
   GROUP BY p.ID
   ORDER BY p.Secondary ASC, p.Level ASC");
-if ($db->has_results()) {
+if ($app->dbOld->has_results()) {
     ?>
   <div class="box">
   <table class="skeletonFix">
@@ -40,7 +43,7 @@ if ($db->has_results()) {
       <td>User count</td>
       <td class="center">Actions</td>
     </tr>
-<?php while (list($ID, $Name, $Level, $Secondary, $UserCount) = $db->next_record()) { ?>
+<?php while (list($ID, $Name, $Level, $Secondary, $UserCount) = $app->dbOld->next_record()) { ?>
     <tr>
       <td><?=Text::esc($Name); ?></td>
       <td><?=($Secondary ? 'Secondary' : $Level) ?></td>

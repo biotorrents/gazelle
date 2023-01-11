@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 authorize();
 
 if (!check_perms('torrents_edit')) {
@@ -21,33 +23,33 @@ if (empty($NewArtistName) && (!$NewArtistID || !is_number($NewArtistID))) {
     error('Please enter a valid artist ID number or a valid artist name.');
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT Name
   FROM artists_group
   WHERE ArtistID = $ArtistID
   LIMIT 1");
-if (!(list($ArtistName) = $db->next_record(MYSQLI_NUM, false))) {
+if (!(list($ArtistName) = $app->dbOld->next_record(MYSQLI_NUM, false))) {
     error('An error has occurred.');
 }
 
 if ($NewArtistID > 0) {
     // Make sure that's a real artist ID number, and grab the name
-    $db->query("
+    $app->dbOld->query("
     SELECT Name
     FROM artists_group
     WHERE ArtistID = $NewArtistID
     LIMIT 1");
-    if (!(list($NewArtistName) = $db->next_record())) {
+    if (!(list($NewArtistName) = $app->dbOld->next_record())) {
         error('Please enter a valid artist ID number.');
     }
 } else {
     // Didn't give an ID, so try to grab based on the name
-    $db->query("
+    $app->dbOld->query("
     SELECT ArtistID
     FROM artists_alias
     WHERE Name = '".db_string($NewArtistName)."'
     LIMIT 1");
-    if (!(list($NewArtistID) = $db->next_record())) {
+    if (!(list($NewArtistID) = $app->dbOld->next_record())) {
         error('No artist by that name was found.');
     }
 }
@@ -57,116 +59,116 @@ if ($ArtistID == $NewArtistID) {
 }
 if (isset($_POST['confirm'])) {
     // Get the information for the cache update
-    $db->query("
+    $app->dbOld->query("
     SELECT DISTINCT GroupID
     FROM torrents_artists
     WHERE ArtistID = $ArtistID");
-    $Groups = $db->collect('GroupID');
-    $db->query("
+    $Groups = $app->dbOld->collect('GroupID');
+    $app->dbOld->query("
     SELECT DISTINCT RequestID
     FROM requests_artists
     WHERE ArtistID = $ArtistID");
-    $Requests = $db->collect('RequestID');
-    $db->query("
+    $Requests = $app->dbOld->collect('RequestID');
+    $app->dbOld->query("
     SELECT DISTINCT UserID
     FROM bookmarks_artists
     WHERE ArtistID = $ArtistID");
-    $BookmarkUsers = $db->collect('UserID');
-    $db->query("
+    $BookmarkUsers = $app->dbOld->collect('UserID');
+    $app->dbOld->query("
     SELECT DISTINCT ct.CollageID
     FROM collages_torrents AS ct
       JOIN torrents_artists AS ta ON ta.GroupID = ct.GroupID
     WHERE ta.ArtistID = $ArtistID");
-    $Collages = $db->collect('CollageID');
+    $Collages = $app->dbOld->collect('CollageID');
 
     // And the info to avoid double-listing an artist if it and the target are on the same group
-    $db->query("
+    $app->dbOld->query("
     SELECT DISTINCT GroupID
     FROM torrents_artists
     WHERE ArtistID = $NewArtistID");
-    $NewArtistGroups = $db->collect('GroupID');
+    $NewArtistGroups = $app->dbOld->collect('GroupID');
     $NewArtistGroups[] = '0';
     $NewArtistGroups = implode(',', $NewArtistGroups);
 
-    $db->query("
+    $app->dbOld->query("
     SELECT DISTINCT RequestID
     FROM requests_artists
     WHERE ArtistID = $NewArtistID");
-    $NewArtistRequests = $db->collect('RequestID');
+    $NewArtistRequests = $app->dbOld->collect('RequestID');
     $NewArtistRequests[] = '0';
     $NewArtistRequests = implode(',', $NewArtistRequests);
 
-    $db->query("
+    $app->dbOld->query("
     SELECT DISTINCT UserID
     FROM bookmarks_artists
     WHERE ArtistID = $NewArtistID");
-    $NewArtistBookmarks = $db->collect('UserID');
+    $NewArtistBookmarks = $app->dbOld->collect('UserID');
     $NewArtistBookmarks[] = '0';
     $NewArtistBookmarks = implode(',', $NewArtistBookmarks);
 
     // Merge all of this artist's aliases onto the new artist
-    $db->query("
+    $app->dbOld->query("
     UPDATE artists_alias
     SET ArtistID = $NewArtistID
     WHERE ArtistID = $ArtistID");
 
     // Update the torrent groups, requests, and bookmarks
-    $db->query("
+    $app->dbOld->query("
     UPDATE IGNORE torrents_artists
     SET ArtistID = $NewArtistID
     WHERE ArtistID = $ArtistID
       AND GroupID NOT IN ($NewArtistGroups)");
-    $db->query("
+    $app->dbOld->query("
     DELETE FROM torrents_artists
     WHERE ArtistID = $ArtistID");
-    $db->query("
+    $app->dbOld->query("
     UPDATE IGNORE requests_artists
     SET ArtistID = $NewArtistID
     WHERE ArtistID = $ArtistID
       AND RequestID NOT IN ($NewArtistRequests)");
-    $db->query("
+    $app->dbOld->query("
     DELETE FROM requests_artists
     WHERE ArtistID = $ArtistID");
-    $db->query("
+    $app->dbOld->query("
     UPDATE IGNORE bookmarks_artists
     SET ArtistID = $NewArtistID
     WHERE ArtistID = $ArtistID
       AND UserID NOT IN ($NewArtistBookmarks)");
-    $db->query("
+    $app->dbOld->query("
     DELETE FROM bookmarks_artists
     WHERE ArtistID = $ArtistID");
 
     // Cache clearing
     if (!empty($Groups)) {
         foreach ($Groups as $GroupID) {
-            $cache->delete_value("groups_artists_$GroupID");
+            $app->cacheOld->delete_value("groups_artists_$GroupID");
             Torrents::update_hash($GroupID);
         }
     }
     if (!empty($Requests)) {
         foreach ($Requests as $RequestID) {
-            $cache->delete_value("request_artists_$RequestID");
+            $app->cacheOld->delete_value("request_artists_$RequestID");
             Requests::update_sphinx_requests($RequestID);
         }
     }
     if (!empty($BookmarkUsers)) {
         foreach ($BookmarkUsers as $UserID) {
-            $cache->delete_value("notify_artists_$UserID");
+            $app->cacheOld->delete_value("notify_artists_$UserID");
         }
     }
     if (!empty($Collages)) {
         foreach ($Collages as $CollageID) {
-            $cache->delete_value("collage_$CollageID");
+            $app->cacheOld->delete_value("collage_$CollageID");
         }
     }
 
-    $cache->delete_value("artist_$ArtistID");
-    $cache->delete_value("artist_$NewArtistID");
-    $cache->delete_value("artist_groups_$ArtistID");
-    $cache->delete_value("artist_groups_$NewArtistID");
+    $app->cacheOld->delete_value("artist_$ArtistID");
+    $app->cacheOld->delete_value("artist_$NewArtistID");
+    $app->cacheOld->delete_value("artist_groups_$ArtistID");
+    $app->cacheOld->delete_value("artist_groups_$NewArtistID");
 
     // Delete the old artist
-    $db->query("
+    $app->dbOld->query("
     DELETE FROM artists_group
     WHERE ArtistID = $ArtistID");
 

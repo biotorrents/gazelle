@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 # todo: Fix multiple authors and bounty preview
 
 /*
@@ -61,18 +63,18 @@ if (!$NewRequest) {
 }
 
   if ($NewRequest && !empty($_GET['artistid']) && is_number($_GET['artistid'])) {
-      $db->query("
+      $app->dbOld->query("
         SELECT Name
         FROM artists_group
         WHERE artistid = ".$_GET['artistid']."
         LIMIT 1");
-      list($ArtistName) = $db->next_record();
+      list($ArtistName) = $app->dbOld->next_record();
       $ArtistForm = array(
       1 => array(array('name' => trim($ArtistName))),
     );
   } elseif ($NewRequest && !empty($_GET['groupid']) && is_number($_GET['groupid'])) {
       $ArtistForm = Artists::get_artist($_GET['groupid']);
-      $db->query("
+      $app->dbOld->query("
         SELECT
         tg.`title`,
         tg.`subject`,
@@ -88,7 +90,7 @@ if (!$NewRequest) {
         JOIN `torrents_tags` AS tt ON tt.`GroupID` = tg.`id`
         JOIN `tags` AS t ON t.`ID` = tt.`TagID`
         WHERE tg.`id` = ".$_GET['groupid']);
-      if (list($Title, $Title2, $TitleJP, $Year, $Studio, $Series, $CatalogueNumber, $Image, $Tags, $CategoryID) = $db->next_record()) {
+      if (list($Title, $Title2, $TitleJP, $Year, $Studio, $Series, $CatalogueNumber, $Image, $Tags, $CategoryID) = $app->dbOld->next_record()) {
           $GroupID = trim($_REQUEST['groupid']);
           $CategoryName = $Categories[$CategoryID - 1];
           $Disabled = 'readonly="readonly"';
@@ -280,15 +282,15 @@ View::header(
 
           <td>
             <?php
-              $GenreTags = $cache->get_value('genre_tags');
+              $GenreTags = $app->cacheOld->get_value('genre_tags');
                 if (!$GenreTags) {
-                    $db->query('
+                    $app->dbOld->query('
                     SELECT Name
                     FROM tags
                     WHERE TagType = \'genre\'
                     ORDER BY Name');
-                    $GenreTags = $db->collect('Name');
-                    $cache->cache_value('genre_tags', $GenreTags, 3600 * 6);
+                    $GenreTags = $app->dbOld->collect('Name');
+                    $app->cacheOld->cache_value('genre_tags', $GenreTags, 3600 * 6);
                 }
 
                 if (!empty($Disabled)) { ?>

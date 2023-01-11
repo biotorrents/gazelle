@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 $ENV = ENV::go();
 
 if (isset($_GET['userid']) && check_perms('users_view_invites')) {
@@ -11,13 +13,13 @@ if (isset($_GET['userid']) && check_perms('users_view_invites')) {
     $UserID=$_GET['userid'];
     $Sneaky = true;
 } else {
-    if (!$UserCount = $cache->get_value('stats_user_count')) {
-        $db->query("
+    if (!$UserCount = $app->cacheOld->get_value('stats_user_count')) {
+        $app->dbOld->query("
       SELECT COUNT(ID)
       FROM users_main
       WHERE Enabled = '1'");
-        list($UserCount) = $db->next_record();
-        $cache->cache_value('stats_user_count', $UserCount, 0);
+        list($UserCount) = $app->dbOld->next_record();
+        $app->cacheOld->cache_value('stats_user_count', $UserCount, 0);
     }
 
     $UserID = $user['ID'];
@@ -26,12 +28,12 @@ if (isset($_GET['userid']) && check_perms('users_view_invites')) {
 
 list($UserID, $Username, $PermissionID) = array_values(User::user_info($UserID));
 
-$db->query("
+$app->dbOld->query("
   SELECT InviteKey, Email, Expires
   FROM invites
   WHERE InviterID = '$UserID'
   ORDER BY Expires");
-$Pending = $db->to_array();
+$Pending = $app->dbOld->to_array();
 
 $OrderWays = array('username', 'email', 'joined', 'lastseen', 'uploaded', 'downloaded', 'ratio');
 
@@ -82,7 +84,7 @@ switch ($CurrentOrder) {
 
 $CurrentURL = Format::get_url(array('action', 'order', 'sort'));
 
-$db->query("
+$app->dbOld->query("
   SELECT
     ID,
     Email,
@@ -95,7 +97,7 @@ $db->query("
   WHERE ui.Inviter = '$UserID'
   ORDER BY $OrderBy $CurrentSort");
 
-$Invited = $db->to_array();
+$Invited = $app->dbOld->to_array();
 
 View::header('Invites');
 ?>
@@ -124,11 +126,11 @@ View::header('Invites');
     - Cannot 'invite always' and the user limit is reached
 */
 
-$db->query("
+$app->dbOld->query("
   SELECT can_leech
   FROM users_main
   WHERE ID = $UserID");
-list($CanLeech) = $db->next_record();
+list($CanLeech) = $app->dbOld->next_record();
 
 if (!$Sneaky
   && !$user['RatioWatch']

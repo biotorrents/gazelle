@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 authorize();
 
 $P = [];
@@ -15,13 +17,13 @@ $Val->SetFields('title', '1', 'string', 'The title must be between 3 and 100 cha
 $Err = $Val->ValidateForm($_POST);
 
 if (!$Err) {
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
       SELECT ID
       FROM wiki_articles
       WHERE Title = '$P[title]'");
 
-    if ($db->has_results()) {
-        list($ID) = $db->next_record();
+    if ($app->dbOld->has_results()) {
+        list($ID) = $app->dbOld->next_record();
         $Err = 'An article with that name already exists <a href="wiki.php?action=article&amp;id='.$ID.'">here</a>.';
     }
 }
@@ -54,18 +56,18 @@ if (check_perms('admin_manage_wiki')) {
     $Edit = 100;
 }
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
   INSERT INTO wiki_articles
     (Revision, Title, Body, MinClassRead, MinClassEdit, Date, Author)
   VALUES
     ('1', '$P[title]', '$P[body]', '$Read', '$Edit', NOW(), '$user[ID]')");
 
-$ArticleID = $db->inserted_id();
+$ArticleID = $app->dbOld->inserted_id();
 $TitleAlias = Wiki::normalize_alias($_POST['title']);
 $Dupe = Wiki::alias_to_id($_POST['title']);
 
 if ($TitleAlias !== '' && $Dupe === false) {
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
       INSERT INTO wiki_aliases (Alias, ArticleID)
       VALUES ('".db_string($TitleAlias)."', '$ArticleID')");
     Wiki::flush_aliases();

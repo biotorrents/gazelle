@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 # todo: Go through line by line
 function error_out($reason = '')
 {
@@ -60,13 +62,13 @@ if ($ShowGrouped) {
     GROUP BY t.ID
     ORDER BY p.ID DESC
     LIMIT $Limit";
-    $PostIDs = $db->query($SQL);
-    $db->query('SELECT FOUND_ROWS()');
-    list($Results) = $db->next_record();
+    $PostIDs = $app->dbOld->query($SQL);
+    $app->dbOld->query('SELECT FOUND_ROWS()');
+    list($Results) = $app->dbOld->next_record();
 
     if ($Results > $PerPage * ($Page - 1)) {
-        $db->set_query_id($PostIDs);
-        $PostIDs = $db->collect('ID');
+        $app->dbOld->set_query_id($PostIDs);
+        $PostIDs = $app->dbOld->collect('ID');
         $SQL = "
       SELECT
         p.ID,
@@ -90,7 +92,7 @@ if ($ShowGrouped) {
         LEFT JOIN forums_last_read_topics AS l ON l.UserID = $UserID AND l.TopicID = t.ID
       WHERE p.ID IN (".implode(',', $PostIDs).')
       ORDER BY p.ID DESC';
-        $Posts = $db->query($SQL);
+        $Posts = $app->dbOld->query($SQL);
     }
 } else {
     $SQL = '
@@ -148,16 +150,16 @@ if ($ShowGrouped) {
 
     $SQL .= "
     LIMIT $Limit";
-    $Posts = $db->query($SQL);
+    $Posts = $app->dbOld->query($SQL);
 
-    $db->query('SELECT FOUND_ROWS()');
-    list($Results) = $db->next_record();
+    $app->dbOld->query('SELECT FOUND_ROWS()');
+    list($Results) = $app->dbOld->next_record();
 
-    $db->set_query_id($Posts);
+    $app->dbOld->set_query_id($Posts);
 }
 
 $JsonResults = [];
-while (list($PostID, $AddedTime, $Body, $EditedUserID, $EditedTime, $EditedUsername, $TopicID, $ThreadTitle, $LastPostID, $LastRead, $Locked, $Sticky) = $db->next_record()) {
+while (list($PostID, $AddedTime, $Body, $EditedUserID, $EditedTime, $EditedUsername, $TopicID, $ThreadTitle, $LastPostID, $LastRead, $Locked, $Sticky) = $app->dbOld->next_record()) {
     $JsonResults[] = array(
     'postId' => (int)$PostID,
     'topicId' => (int)$TopicID,

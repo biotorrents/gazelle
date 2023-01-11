@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+$app = App::go();
+
 /**
  * Flight router
  * @see https://flightphp.com/learn
@@ -112,16 +114,16 @@ if (!empty($_POST['action'])) {
     } elseif (!empty($_GET['artistname'])) {
         $NameSearch = str_replace('\\', '\\\\', trim($_GET['artistname']));
         /*
-            $db->query("
+            $app->dbOld->query("
               SELECT ArtistID, Name
               FROM artists_alias
               WHERE Name LIKE '" . db_string($NameSearch) . "'");
         */
-        $db->query("
+        $app->dbOld->query("
       SELECT ArtistID, Name
       FROM artists_group
       WHERE Name LIKE '" . db_string($NameSearch) . "'");
-        if (!$db->has_results()) {
+        if (!$app->dbOld->has_results()) {
             if (isset($user['SearchType']) && $user['SearchType']) {
                 header('Location: torrents.php?action=advanced&artistname=' . urlencode($_GET['artistname']));
             } else {
@@ -129,12 +131,12 @@ if (!empty($_POST['action'])) {
             }
             error();
         }
-        list($FirstID, $Name) = $db->next_record(MYSQLI_NUM, false);
-        if ($db->record_count() === 1 || !strcasecmp($Name, $NameSearch)) {
+        list($FirstID, $Name) = $app->dbOld->next_record(MYSQLI_NUM, false);
+        if ($app->dbOld->record_count() === 1 || !strcasecmp($Name, $NameSearch)) {
             Http::redirect("artist.php?id=$FirstID");
             error();
         }
-        while (list($ID, $Name) = $db->next_record(MYSQLI_NUM, false)) {
+        while (list($ID, $Name) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
             if (!strcasecmp($Name, $NameSearch)) {
                 Http::redirect("artist.php?id=$ID");
                 error();

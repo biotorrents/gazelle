@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 /************************************************************************
  ************************************************************************/
 if (!check_perms('admin_reports') && !check_perms('project_team') && !check_perms('site_moderate_forums')) {
@@ -42,7 +45,7 @@ if (!check_perms('admin_reports')) {
     }
 }
 
-$Reports = $db->query("
+$Reports = $app->dbOld->query("
   SELECT
     SQL_CALC_FOUND_ROWS
     r.ID,
@@ -63,11 +66,11 @@ $Reports = $db->query("
   LIMIT $Limit");
 
 // Number of results (for pagination)
-$db->query('SELECT FOUND_ROWS()');
-list($Results) = $db->next_record();
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($Results) = $app->dbOld->next_record();
 
 // Done with the number of results. Move $db back to the result set for the reports
-$db->set_query_id($Reports);
+$app->dbOld->set_query_id($Reports);
 
 // Start printing stuff
 ?>
@@ -88,7 +91,7 @@ $db->set_query_id($Reports);
     ?>
   </div>
 <?php
-  while (list($ReportID, $SnitchID, $SnitchName, $ThingID, $Short, $ReportedTime, $Reason, $Status, $ClaimerID, $Notes, $ResolverID) = $db->next_record()) {
+  while (list($ReportID, $SnitchID, $SnitchName, $ThingID, $Short, $ReportedTime, $Reason, $Status, $ClaimerID, $Notes, $ResolverID) = $app->dbOld->next_record()) {
       $Type = $Types[$Short];
       $Reference = "reports.php?id=$ReportID#report$ReportID"; ?>
     <div id="report_<?=$ReportID?>" style="margin-bottom: 1em;" class="pending_report_v1 box pad">
@@ -105,51 +108,51 @@ $db->set_query_id($Reports);
             <strong>
 <?php              switch ($Short) {
                 case 'user':
-                  $db->query("
+                  $app->dbOld->query("
                     SELECT Username
                     FROM users_main
                     WHERE ID = $ThingID");
-                  if (!$db->has_results()) {
+                  if (!$app->dbOld->has_results()) {
                       echo 'No user with the reported ID found';
                   } else {
-                      list($Username) = $db->next_record();
+                      list($Username) = $app->dbOld->next_record();
                       echo "<a href=\"user.php?id=$ThingID\">" . Text::esc($Username) . '</a>';
                   }
                   break;
                 case 'request':
                 case 'request_update':
-                  $db->query("
+                  $app->dbOld->query("
                     SELECT Title
                     FROM requests
                     WHERE ID = $ThingID");
-                  if (!$db->has_results()) {
+                  if (!$app->dbOld->has_results()) {
                       echo 'No request with the reported ID found';
                   } else {
-                      list($Name) = $db->next_record();
+                      list($Name) = $app->dbOld->next_record();
                       echo "<a href=\"requests.php?action=view&amp;id=$ThingID\">" . Text::esc($Name) . '</a>';
                   }
                   break;
                 case 'collage':
-                  $db->query("
+                  $app->dbOld->query("
                     SELECT Name
                     FROM collages
                     WHERE ID = $ThingID");
-                  if (!$db->has_results()) {
+                  if (!$app->dbOld->has_results()) {
                       echo 'No collage with the reported ID found';
                   } else {
-                      list($Name) = $db->next_record();
+                      list($Name) = $app->dbOld->next_record();
                       echo "<a href=\"collages.php?id=$ThingID\">" . Text::esc($Name) . '</a>';
                   }
                   break;
                 case 'thread':
-                  $db->query("
+                  $app->dbOld->query("
                     SELECT Title
                     FROM forums_topics
                     WHERE ID = $ThingID");
-                  if (!$db->has_results()) {
+                  if (!$app->dbOld->has_results()) {
                       echo 'No forum thread with the reported ID found';
                   } else {
-                      list($Title) = $db->next_record();
+                      list($Title) = $app->dbOld->next_record();
                       echo "<a href=\"forums.php?action=viewthread&amp;threadid=$ThingID\">" . Text::esc($Title) . '</a>';
                   }
                   break;
@@ -159,7 +162,7 @@ $db->set_query_id($Reports);
                   } else {
                       $PerPage = POSTS_PER_PAGE;
                   }
-                  $db->query("
+                  $app->dbOld->query("
                     SELECT
                       p.ID,
                       p.Body,
@@ -172,19 +175,19 @@ $db->set_query_id($Reports);
                       ) AS PostNum
                     FROM forums_posts AS p
                     WHERE p.ID = $ThingID");
-                  if (!$db->has_results()) {
+                  if (!$app->dbOld->has_results()) {
                       echo 'No forum post with the reported ID found';
                   } else {
-                      list($PostID, $Body, $TopicID, $PostNum) = $db->next_record();
+                      list($PostID, $Body, $TopicID, $PostNum) = $app->dbOld->next_record();
                       echo "<a href=\"forums.php?action=viewthread&amp;threadid=$TopicID&amp;post=$PostNum#post$PostID\">FORUM POST ID #$PostID</a>";
                   }
                   break;
                 case 'comment':
-                  $db->query("
+                  $app->dbOld->query("
                     SELECT 1
                     FROM comments
                     WHERE ID = $ThingID");
-                  if (!$db->has_results()) {
+                  if (!$app->dbOld->has_results()) {
                       echo 'No comment with the reported ID found';
                   } else {
                       echo "<a href=\"comments.php?action=jump&amp;postid=$ThingID\">COMMENT</a>";
@@ -239,7 +242,7 @@ $db->set_query_id($Reports);
       </table>
     </div>
 <?php
-    $db->set_query_id($Reports);
+    $app->dbOld->set_query_id($Reports);
   }
   ?>
   <div class="linkbox">

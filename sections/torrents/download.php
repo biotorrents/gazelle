@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 if (!isset($_REQUEST['authkey']) || !isset($_REQUEST['torrent_pass'])) {
     enforce_login();
     $TorrentPass = $user['torrent_pass'];
@@ -12,9 +14,9 @@ if (!isset($_REQUEST['authkey']) || !isset($_REQUEST['torrent_pass'])) {
         error(404);
     }
 
-    $UserInfo = $cache->get_value('user_'.$_REQUEST['torrent_pass']);
+    $UserInfo = $app->cacheOld->get_value('user_'.$_REQUEST['torrent_pass']);
     if (!is_array($UserInfo)) {
-        $db->query("
+        $app->dbOld->query("
           SELECT ID, la.UserID
           FROM users_main AS m
             INNER JOIN users_info AS i ON i.UserID = m.ID
@@ -22,8 +24,8 @@ if (!isset($_REQUEST['authkey']) || !isset($_REQUEST['torrent_pass'])) {
           WHERE m.torrent_pass = '".db_string($_REQUEST['torrent_pass'])."'
             AND m.Enabled = '1'");
 
-        $UserInfo = $db->next_record();
-        $cache->cache_value('user_'.$_REQUEST['torrent_pass'], $UserInfo, 3600);
+        $UserInfo = $app->dbOld->next_record();
+        $app->cacheOld->cache_value('user_'.$_REQUEST['torrent_pass'], $UserInfo, 3600);
     }
 
     $UserInfo = array($UserInfo);
@@ -51,22 +53,22 @@ Security::int($TorrentID);
  */
 $ScriptUAs = array('BTWebClient*', 'Python-urllib*', 'python-requests*');
 if (Misc::in_array_partial($_SERVER['HTTP_USER_AGENT'], $ScriptUAs)) {
-    $db->query("
+    $app->dbOld->query("
       SELECT 1
       FROM users_downloads
       WHERE UserID = $UserID
         AND TorrentID = $TorrentID
       LIMIT 4");
 
-    if ($db->record_count() === 4) {
+    if ($app->dbOld->record_count() === 4) {
         error('You have already downloaded this torrent file four times. If you need to download it again, please do so from your browser.', true);
         error();
     }
 }
 
-$Info = $cache->get_value('torrent_download_'.$TorrentID);
+$Info = $app->cacheOld->get_value('torrent_download_'.$TorrentID);
 if (!is_array($Info) || !array_key_exists('PlainArtists', $Info) || empty($Info[10])) {
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
       SELECT
         t.`Media`,
         t.`Version`,
@@ -84,15 +86,15 @@ if (!is_array($Info) || !array_key_exists('PlainArtists', $Info) || empty($Info[
       WHERE t.`ID` = '".db_string($TorrentID)."'");
 
 
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error(404);
     }
 
-    $Info = array($db->next_record(MYSQLI_NUM, array(4, 5, 6, 10)));
+    $Info = array($app->dbOld->next_record(MYSQLI_NUM, array(4, 5, 6, 10)));
     $Artists = Artists::get_artist($Info[0][4], false);
     $Info['Artists'] = Artists::display_artists($Artists, false, true);
     $Info['PlainArtists'] = Artists::display_artists($Artists, false, true, false);
-    $cache->cache_value("torrent_download_$TorrentID", $Info, 0);
+    $app->cacheOld->cache_value("torrent_download_$TorrentID", $Info, 0);
 }
 
 if (!is_array($Info[0])) {
@@ -134,7 +136,7 @@ if ($_REQUEST['usetoken'] && $FreeTorrent === '0') {
         }
 
         if (!Torrents::has_token($TorrentID)) {
-            $db->query("
+            $app->dbOld->query("
               INSERT INTO users_freeleeches (UserID, TorrentID, Time)
               VALUES ($UserID, $TorrentID, NOW())
               ON DUPLICATE KEY UPDATE
@@ -142,7 +144,7 @@ if ($_REQUEST['usetoken'] && $FreeTorrent === '0') {
                 Expired = FALSE,
                 Uses = Uses + 1");
 
-            $db->query("
+            $app->dbOld->query("
               UPDATE users_main
               SET FLTokens = FLTokens - 1
               WHERE ID = $UserID");
@@ -151,18 +153,18 @@ if ($_REQUEST['usetoken'] && $FreeTorrent === '0') {
             $UInfo = User::user_heavy_info($UserID);
             $FLTokens = $UInfo['FLTokens'];
 
-            $cache->begin_transaction("user_info_heavy_$UserID");
-            $cache->update_row(false, array('FLTokens' => ($FLTokens - 1)));
-            $cache->commit_transaction(0);
+            $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
+            $app->cacheOld->update_row(false, array('FLTokens' => ($FLTokens - 1)));
+            $app->cacheOld->commit_transaction(0);
 
-            $cache->delete_value("users_tokens_$UserID");
+            $app->cacheOld->delete_value("users_tokens_$UserID");
         }
     }
 }
 
 // Stupid Recent Snatches On User Page
 if ($Image !== '') {
-    $RecentSnatches = $cache->get_value("recent_snatches_$UserID");
+    $RecentSnatches = $app->cacheOld->get_value("recent_snatches_$UserID");
     if (!empty($RecentSnatches)) {
         $Snatch = array(
         'ID' => $GroupID,
@@ -178,11 +180,11 @@ if ($Image !== '') {
         } elseif (!is_array($RecentSnatches)) {
             $RecentSnatches = array($Snatch);
         }
-        $cache->cache_value("recent_snatches_$UserID", $RecentSnatches, 0);
+        $app->cacheOld->cache_value("recent_snatches_$UserID", $RecentSnatches, 0);
     }
 }
 
-$db->query("
+$app->dbOld->query("
   INSERT IGNORE INTO users_downloads (UserID, TorrentID, Time)
   VALUES ('$UserID', '$TorrentID', NOW())");
 

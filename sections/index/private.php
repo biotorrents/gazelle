@@ -11,10 +11,10 @@ $news = $app->dbNew->row($query);
 
 /*
 if ($user['LastReadNews'] !== $News[0][0] && count($News) > 0) {
-    $cache->begin_transaction("user_info_heavy_{$userId}");
-    $cache->update_row(false, array('LastReadNews' => $News[0][0]));
-    $cache->commit_transaction(0);
-    $db->query("
+    $app->cacheOld->begin_transaction("user_info_heavy_{$userId}");
+    $app->cacheOld->update_row(false, array('LastReadNews' => $News[0][0]));
+    $app->cacheOld->commit_transaction(0);
+    $app->dbOld->query("
         UPDATE users_info SET LastReadNews = '".$News[0][0]."' WHERE UserID = $userId
     ");
     $user['LastReadNews'] = $News[0][0];
@@ -92,30 +92,30 @@ exit;
 
   <!-- Polls -->
   <?php /*
-if (($TopicID = $cache->get_value('polls_featured')) === false) {
-    $db->query("
+if (($TopicID = $app->cacheOld->get_value('polls_featured')) === false) {
+    $app->dbOld->query("
     SELECT TopicID
     FROM forums_polls
     ORDER BY Featured DESC
     LIMIT 1");
-    list($TopicID) = $db->next_record();
-    $cache->cache_value('polls_featured', $TopicID, 0);
+    list($TopicID) = $app->dbOld->next_record();
+    $app->cacheOld->cache_value('polls_featured', $TopicID, 0);
 }
 if ($TopicID) {
-    if (($Poll = $cache->get_value("polls_$TopicID")) === false) {
-        $db->query("
+    if (($Poll = $app->cacheOld->get_value("polls_$TopicID")) === false) {
+        $app->dbOld->query("
       SELECT Question, Answers, Featured, Closed
       FROM forums_polls
       WHERE TopicID = '$TopicID'");
-        list($Question, $Answers, $Featured, $Closed) = $db->next_record(MYSQLI_NUM, array(1));
+        list($Question, $Answers, $Featured, $Closed) = $app->dbOld->next_record(MYSQLI_NUM, array(1));
         $Answers = unserialize($Answers);
-        $db->query("
+        $app->dbOld->query("
       SELECT Vote, COUNT(UserID)
       FROM forums_polls_votes
       WHERE TopicID = '$TopicID'
         AND Vote != '0'
       GROUP BY Vote");
-        $VoteArray = $db->to_array(false, MYSQLI_NUM);
+        $VoteArray = $app->dbOld->to_array(false, MYSQLI_NUM);
 
         $Votes = [];
         foreach ($VoteArray as $VoteSet) {
@@ -128,7 +128,7 @@ if ($TopicID) {
                 $Votes[$i] = 0;
             }
         }
-        $cache->cache_value("polls_$TopicID", array($Question, $Answers, $Votes, $Featured, $Closed), 0);
+        $app->cacheOld->cache_value("polls_$TopicID", array($Question, $Answers, $Votes, $Featured, $Closed), 0);
     } else {
         list($Question, $Answers, $Votes, $Featured, $Closed) = $Poll;
     }
@@ -141,12 +141,12 @@ if ($TopicID) {
         $MaxVotes = 0;
     }
 
-    $db->query("
+    $app->dbOld->query("
     SELECT Vote
     FROM forums_polls_votes
     WHERE UserID = '".$user['ID']."'
       AND TopicID = '$TopicID'");
-    list($UserResponse) = $db->next_record(); ?>
+    list($UserResponse) = $app->dbOld->next_record(); ?>
 
       <div class="box">
         <div class="head colhead_dark"><strong>Poll<?php if ($Closed) {
@@ -210,11 +210,11 @@ if ($TopicID) {
 <div class="main_column two-thirds column">
   <?php
 /*
-$Recommend = $cache->get_value('recommend');
-$Recommend_artists = $cache->get_value('recommend_artists');
+$Recommend = $app->cacheOld->get_value('recommend');
+$Recommend_artists = $app->cacheOld->get_value('recommend_artists');
 
 if (!is_array($Recommend) || !is_array($Recommend_artists)) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       tr.`GroupID`,
       tr.`UserID`,
@@ -235,15 +235,15 @@ if (!is_array($Recommend) || !is_array($Recommend_artists)) {
     LIMIT 10
     ");
 
-    $Recommend = $db->to_array();
-    $cache->cache_value('recommend', $Recommend, 1209600);
+    $Recommend = $app->dbOld->to_array();
+    $app->cacheOld->cache_value('recommend', $Recommend, 1209600);
 
-    $Recommend_artists = Artists::get_artists($db->collect('GroupID'));
-    $cache->cache_value('recommend_artists', $Recommend_artists, 1209600);
+    $Recommend_artists = Artists::get_artists($app->dbOld->collect('GroupID'));
+    $app->cacheOld->cache_value('recommend_artists', $Recommend_artists, 1209600);
 }
 
 if (count($Recommend) >= 4) {
-    $cache->increment('usage_index'); ?>
+    $app->cacheOld->increment('usage_index'); ?>
   <div class="box" id="recommended">
     <div class="head colhead_dark">
       <strong>Latest Vanity House additions</strong>

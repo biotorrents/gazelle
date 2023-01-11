@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 $GroupID = $_GET['groupid'];
 if (!is_number($GroupID)) {
     error(404);
@@ -30,26 +32,26 @@ if (!empty($Groups[$GroupID])) {
       <td>Info</td>
     </tr>
 <?php
-  $db->query("SELECT UserID FROM torrents WHERE GroupID = ? AND Anonymous='1'", $GroupID);
-  $AnonUsers = $db->collect("UserID");
-  $Log = $db->query("
+  $app->dbOld->query("SELECT UserID FROM torrents WHERE GroupID = ? AND Anonymous='1'", $GroupID);
+  $AnonUsers = $app->dbOld->collect("UserID");
+  $Log = $app->dbOld->query("
       SELECT TorrentID, UserID, Info, Time
       FROM group_log
       WHERE GroupID = ?
       ORDER BY Time DESC", $GroupID);
-  $LogEntries = $db->to_array(false, MYSQLI_NUM);
+  $LogEntries = $app->dbOld->to_array(false, MYSQLI_NUM);
   foreach ($LogEntries as $LogEntry) {
       list($TorrentID, $UserID, $Info, $Time) = $LogEntry; ?>
     <tr class="row">
       <td><?=$Time?></td>
 <?php
       if ($TorrentID != 0) {
-          $db->query("
+          $app->dbOld->query("
           SELECT Container, Version, Media
           FROM torrents
           WHERE ID = $TorrentID");
-          list($Container, $Version, $Media) = $db->next_record();
-          if (!$db->has_results()) { ?>
+          list($Container, $Version, $Media) = $app->dbOld->next_record();
+          if (!$app->dbOld->has_results()) { ?>
           <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a> (Deleted)</td><?php
         } elseif ($Media == '') { ?>
           <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a></td><?php

@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 if (!check_perms('site_view_flow')) {
     error(403);
 }
@@ -9,7 +11,7 @@ View::header('Upscale Pool');
 define('USERS_PER_PAGE', 50);
 list($Page, $Limit) = Format::page_limit(USERS_PER_PAGE);
 
-$RS = $db->query("
+$RS = $app->dbOld->query("
   SELECT
     SQL_CALC_FOUND_ROWS
     m.ID,
@@ -31,17 +33,17 @@ $RS = $db->query("
   ORDER BY i.RatioWatchEnds ASC
   LIMIT $Limit");
 
-$db->query('SELECT FOUND_ROWS()');
-list($Results) = $db->next_record();
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($Results) = $app->dbOld->next_record();
 
-$db->query("
+$app->dbOld->query("
   SELECT COUNT(UserID)
   FROM users_info
   WHERE BanDate IS NOT NULL
     AND BanReason = '2'");
 
-list($TotalDisabled) = $db->next_record();
-$db->set_query_id($RS);
+list($TotalDisabled) = $app->dbOld->next_record();
+$app->dbOld->set_query_id($RS);
 ?>
 
 <div class="header">
@@ -49,7 +51,7 @@ $db->set_query_id($RS);
 </div>
 
 <?php
-if ($db->has_results()) {
+if ($app->dbOld->has_results()) {
     ?>
 <div class="box pad">
   <p>There are currently <?=Text::float($Results)?> enabled users
@@ -78,7 +80,7 @@ if ($db->has_results()) {
   </tr>
 
   <?php
-  while (list($UserID, $Username, $Uploaded, $Downloaded, $PermissionID, $Enabled, $Donor, $Warned, $Joined, $RatioWatchEnds, $RatioWatchDownload, $RequiredRatio) = $db->next_record()) {
+  while (list($UserID, $Username, $Uploaded, $Downloaded, $PermissionID, $Enabled, $Donor, $Warned, $Joined, $RatioWatchEnds, $RatioWatchDownload, $RequiredRatio) = $app->dbOld->next_record()) {
       ?>
   <tr class="row">
     <td>

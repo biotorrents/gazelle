@@ -1,7 +1,10 @@
 <?php
 
-if (!$News = $cache->get_value('news')) {
-    $db->query("
+
+$app = App::go();
+
+if (!$News = $app->cacheOld->get_value('news')) {
+    $app->dbOld->query("
     SELECT
       ID,
       Title,
@@ -10,24 +13,24 @@ if (!$News = $cache->get_value('news')) {
     FROM news
     ORDER BY Time DESC
     LIMIT 5");
-    $News = $db->to_array(false, MYSQLI_NUM, false);
-    $cache->cache_value('news', $News, 3600 * 24 * 30);
-    $cache->cache_value('news_latest_id', $News[0][0], 0);
+    $News = $app->dbOld->to_array(false, MYSQLI_NUM, false);
+    $app->cacheOld->cache_value('news', $News, 3600 * 24 * 30);
+    $app->cacheOld->cache_value('news_latest_id', $News[0][0], 0);
 }
 
 if ($user['LastReadNews'] != $News[0][0]) {
-    $cache->begin_transaction("user_info_heavy_$UserID");
-    $cache->update_row(false, array('LastReadNews' => $News[0][0]));
-    $cache->commit_transaction(0);
-    $db->query("
+    $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
+    $app->cacheOld->update_row(false, array('LastReadNews' => $News[0][0]));
+    $app->cacheOld->commit_transaction(0);
+    $app->dbOld->query("
     UPDATE users_info
     SET LastReadNews = '".$News[0][0]."'
     WHERE UserID = $UserID");
     $user['LastReadNews'] = $News[0][0];
 }
 
-if (($Blog = $cache->get_value('blog')) === false) {
-    $db->query("
+if (($Blog = $app->cacheOld->get_value('blog')) === false) {
+    $app->dbOld->query("
     SELECT
       b.ID,
       um.Username,
@@ -40,8 +43,8 @@ if (($Blog = $cache->get_value('blog')) === false) {
       LEFT JOIN users_main AS um ON b.UserID = um.ID
     ORDER BY Time DESC
     LIMIT 20");
-    $Blog = $db->to_array();
-    $cache->cache_value('blog', $Blog, 1209600);
+    $Blog = $app->dbOld->to_array();
+    $app->cacheOld->cache_value('blog', $Blog, 1209600);
 }
 $JsonBlog = [];
 for ($i = 0; $i < 5; $i++) {

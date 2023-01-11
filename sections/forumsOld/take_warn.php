@@ -1,5 +1,7 @@
 <?php
 
+$app = App::go();
+
 if (!check_perms('users_warn')) {
     error(404);
 }
@@ -35,7 +37,7 @@ if ($WarningLength !== 'verbal') {
     Tools::update_user_notes($UserID, $AdminComment);
 }
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
   INSERT INTO users_warnings_forums
     (UserID, Comment)
   VALUES
@@ -45,7 +47,7 @@ $db->prepared_query("
 Misc::send_pm($UserID, $user['ID'], $Subject, $PrivateMessage);
 
 //edit the post
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT
     p.Body,
     p.AuthorID,
@@ -63,10 +65,10 @@ $db->prepared_query("
     JOIN forums_topics AS t ON p.TopicID = t.ID
     JOIN forums AS f ON t.ForumID = f.ID
   WHERE p.ID = '$PostID'");
-list($OldBody, $AuthorID, $TopicID, $ForumID, $Page) = $db->next_record();
+list($OldBody, $AuthorID, $TopicID, $ForumID, $Page) = $app->dbOld->next_record();
 
 // Perform the update
-$db->prepared_query("
+$app->dbOld->prepared_query("
   UPDATE forums_posts
   SET Body = '" . db_string($Body) . "',
     EditedUserID = '$UserID',
@@ -74,21 +76,21 @@ $db->prepared_query("
   WHERE ID = '$PostID'");
 
 $CatalogueID = floor((POSTS_PER_PAGE * $Page - POSTS_PER_PAGE) / THREAD_CATALOGUE);
-$cache->begin_transaction("thread_$TopicID" . "_catalogue_$CatalogueID");
-if ($cache->MemcacheDBArray[$Key]['ID'] != $PostID) {
-    $cache->cancel_transaction();
-    $cache->delete_value("thread_$TopicID" . "_catalogue_$CatalogueID");
+$app->cacheOld->begin_transaction("thread_$TopicID" . "_catalogue_$CatalogueID");
+if ($app->cacheOld->MemcacheDBArray[$Key]['ID'] != $PostID) {
+    $app->cacheOld->cancel_transaction();
+    $app->cacheOld->delete_value("thread_$TopicID" . "_catalogue_$CatalogueID");
 //just clear the cache for would be cache-screwer-uppers
 } else {
-    $cache->update_row($Key, array(
-            'ID' => $cache->MemcacheDBArray[$Key]['ID'],
-            'AuthorID' => $cache->MemcacheDBArray[$Key]['AuthorID'],
-            'AddedTime' => $cache->MemcacheDBArray[$Key]['AddedTime'],
+    $app->cacheOld->update_row($Key, array(
+            'ID' => $app->cacheOld->MemcacheDBArray[$Key]['ID'],
+            'AuthorID' => $app->cacheOld->MemcacheDBArray[$Key]['AuthorID'],
+            'AddedTime' => $app->cacheOld->MemcacheDBArray[$Key]['AddedTime'],
             'Body' => $Body, //Don't url decode.
             'EditedUserID' => $user['ID'],
             'EditedTime' => $SQLTime,
             'Username' => $user['Username']));
-    $cache->commit_transaction(3600 * 24 * 5);
+    $app->cacheOld->commit_transaction(3600 * 24 * 5);
 }
 $ThreadInfo = Forums::get_thread_info($TopicID);
 if ($ThreadInfo === null) {
@@ -98,14 +100,14 @@ if ($ThreadInfo['StickyPostID'] == $PostID) {
     $ThreadInfo['StickyPost']['Body'] = $Body;
     $ThreadInfo['StickyPost']['EditedUserID'] = $user['ID'];
     $ThreadInfo['StickyPost']['EditedTime'] = $SQLTime;
-    $cache->cache_value("thread_$TopicID" . '_info', $ThreadInfo, 0);
+    $app->cacheOld->cache_value("thread_$TopicID" . '_info', $ThreadInfo, 0);
 }
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
   INSERT INTO comments_edits
     (Page, PostID, EditUser, EditTime, Body)
   VALUES
     ('forums', $PostID, $UserID, '$SQLTime', '" . db_string($OldBody) . "')");
-$cache->delete_value("forums_edits_$PostID");
+$app->cacheOld->delete_value("forums_edits_$PostID");
 
 Http::redirect("forums.php?action=viewthread&postid=$PostID#post$PostID");

@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 if (!empty($_GET['userid'])) {
     if (!check_perms('users_override_paranoia')) {
         json_die('failure');
@@ -14,7 +16,7 @@ if (!empty($_GET['userid'])) {
         json_die('failure');
     }
 
-    $db->query("
+    $app->dbOld->query("
     SELECT
       `Username`
     FROM
@@ -22,14 +24,14 @@ if (!empty($_GET['userid'])) {
     WHERE
       `ID` = '$UserID'
     ");
-    list($Username) = $db->next_record();
+    list($Username) = $app->dbOld->next_record();
 } else {
     $UserID = $user['ID'];
 }
 
 //$ArtistList = Bookmarks::all_bookmarks('artist', $UserID);
 
-$db->query("
+$app->dbOld->query("
 SELECT
   ag.`ArtistID`,
   ag.`Name`
@@ -42,7 +44,7 @@ WHERE
   ba.`UserID` = $UserID
 ");
 
-$ArtistList = $db->to_array();
+$ArtistList = $app->dbOld->to_array();
 $JsonArtists = [];
 
 foreach ($ArtistList as $Artist) {

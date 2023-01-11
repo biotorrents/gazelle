@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 /************************************************************************
 ||------------|| User IP history page ||---------------------------||
 
@@ -23,13 +25,13 @@ if (!is_number($UserID)) {
     error(404);
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT um.Username,
     p.Level AS Class
   FROM users_main AS um
     LEFT JOIN permissions AS p ON p.ID = um.PermissionID
   WHERE um.ID = $UserID");
-list($Username, $Class) = $db->next_record();
+list($Username, $Class) = $app->dbOld->next_record();
 
 if (!check_perms('users_view_ips', $Class)) {
     error(403);
@@ -52,7 +54,7 @@ if ($Perms['site_disable_ip_history']) {
     $Limit = 0;
 }
 
-$TrackerIps = $db->query("
+$TrackerIps = $app->dbOld->query("
   SELECT IP, fid, tstamp
   FROM xbt_snatched
   WHERE uid = $UserID
@@ -60,9 +62,9 @@ $TrackerIps = $db->query("
   ORDER BY tstamp DESC
   LIMIT $Limit");
 
-$db->query('SELECT FOUND_ROWS()');
-list($NumResults) = $db->next_record();
-$db->set_query_id($TrackerIps);
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
+$app->dbOld->set_query_id($TrackerIps);
 
 $Pages = Format::get_pages($Page, $NumResults, IPS_PER_PAGE, 9);
 
@@ -81,7 +83,7 @@ $Pages = Format::get_pages($Page, $NumResults, IPS_PER_PAGE, 9);
       <td>Time</td>
     </tr>
     <?php
-$Results = $db->to_array();
+$Results = $app->dbOld->to_array();
 foreach ($Results as $Index => $Result) {
     list($IP, $TorrentID, $Time) = $Result; ?>
     <tr class="row">

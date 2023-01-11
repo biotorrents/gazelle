@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+$app = App::go();
+
 // peerupdate.php is apparently shit so this is a crappy bandaid to fix the problem of
 // all the cached "0 seeds" on the first search page from peerupdate missing the changes.
 // It used to be in a sandbox that I just ran whenever I saw something wrong with
@@ -19,7 +21,7 @@ $IDs = [];
 $Seeds = [];
 
 foreach ($Results as $i) {
-    $GroupCache = $cache->get_value('torrent_group_'.$i['groupid']);
+    $GroupCache = $app->cacheOld->get_value('torrent_group_'.$i['groupid']);
     if (!$GroupCache) {
         continue;
     }
@@ -34,10 +36,10 @@ for ($i = 0; $i < sizeof($IDs); $i++) {
 }
 
 $query = 'SELECT GroupID FROM torrents WHERE '.implode(' OR ', $QueryParts);
-$db->query($query);
-if ($db->has_results()) {
-    foreach ($db->collect('GroupID') as $GID) {
-        $cache->delete_value('torrent_group_'.$GID);
+$app->dbOld->query($query);
+if ($app->dbOld->has_results()) {
+    foreach ($app->dbOld->collect('GroupID') as $GID) {
+        $app->cacheOld->delete_value('torrent_group_'.$GID);
     }
 }
 */

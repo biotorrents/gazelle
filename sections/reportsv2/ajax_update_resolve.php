@@ -1,5 +1,7 @@
 <?php
 
+$app = App::go();
+
 // perform the back end of updating a resolve type
 
 if (!check_perms('admin_reports')) {
@@ -31,7 +33,7 @@ if (!array_key_exists($NewType, $TypeList)) {
     error();
 }
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
   UPDATE reportsv2
   SET Type = '$NewType'
   WHERE ID = $ReportID");

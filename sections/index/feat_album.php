@@ -1,7 +1,10 @@
 <?php
-$FeaturedAlbum = $cache->get_value('featured_album');
+
+$app = App::go();
+
+$FeaturedAlbum = $app->cacheOld->get_value('featured_album');
 if ($FeaturedAlbum === false) {
-    $db->query('
+    $app->dbOld->query('
     SELECT
       fa.GroupID,
       tg.Name,
@@ -11,8 +14,8 @@ if ($FeaturedAlbum === false) {
     FROM featured_albums AS fa
       JOIN torrents_group AS tg ON tg.ID = fa.GroupID
     WHERE Ended = 0');
-    $FeaturedAlbum = $db->next_record();
-    $cache->cache_value('featured_album', $FeaturedAlbum, 0);
+    $FeaturedAlbum = $app->dbOld->next_record();
+    $app->cacheOld->cache_value('featured_album', $FeaturedAlbum, 0);
 }
 if (is_number($FeaturedAlbum['GroupID'])) {
     $Artists = Artists::get_artist($FeaturedAlbum['GroupID']); ?>

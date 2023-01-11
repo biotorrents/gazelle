@@ -235,13 +235,13 @@ foreach ($Badges as $BadgeID => $OldDisplayed) {
 
 
 if ($BadgesChanged) {
-    $db->query("
+    $app->dbOld->query("
       UPDATE users_badges
       SET Displayed = 0
       WHERE UserID = ?", $UserID);
 
     if (!empty($BadgeIDs)) {
-        $db->query("
+        $app->dbOld->query("
           UPDATE users_badges
           SET Displayed = 1
           WHERE UserID = $UserID

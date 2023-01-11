@@ -10,6 +10,8 @@ ID of the artist, and must be set.
 
 ************************************************************************/
 
+$app = App::go();
+
 $ArtistID = $_GET['artistid'];
 if (!is_number($ArtistID)) {
     error(0);
@@ -17,7 +19,7 @@ if (!is_number($ArtistID)) {
 
 // Get the artist name and the body of the last revision
 /*
-$db->query("
+$app->dbOld->query("
   SELECT
     Name,
     Image,
@@ -27,7 +29,7 @@ $db->query("
     LEFT JOIN wiki_artists ON wiki_artists.RevisionID = a.RevisionID
   WHERE a.ArtistID = '$ArtistID'");
 */
-$db->query("
+$app->dbOld->query("
   SELECT
     Name,
     Image,
@@ -36,11 +38,11 @@ $db->query("
     LEFT JOIN wiki_artists ON wiki_artists.RevisionID = a.RevisionID
   WHERE a.ArtistID = '$ArtistID'");
 
-if (!$db->has_results()) {
+if (!$app->dbOld->has_results()) {
     error("Cannot find an artist with the ID {$ArtistID}: See the <a href=\"log.php?search=Artist+$ArtistID\">site log</a>.");
 }
 
-list($Name, $Image, $Body) = $db->next_record(MYSQLI_NUM, true);
+list($Name, $Image, $Body) = $app->dbOld->next_record(MYSQLI_NUM, true);
 
 // Start printing form
 View::header('Edit artist');
@@ -109,11 +111,11 @@ View::header('Edit artist');
       <ul>
 
 <?php
-  $db->query("
+  $app->dbOld->query("
     SELECT AliasID, Name, UserID, Redirect
     FROM artists_alias
     WHERE ArtistID = '$ArtistID'");
-  while (list($AliasID, $AliasName, $User, $Redirect) = $db->next_record(MYSQLI_NUM, true)) {
+  while (list($AliasID, $AliasName, $User, $Redirect) = $app->dbOld->next_record(MYSQLI_NUM, true)) {
     if ($AliasName == $Name) {
       $DefaultRedirectID = $AliasID;
     }

@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 define('EMAILS_PER_PAGE', 25);
 if (!check_perms('users_view_email')) {
     error(403);
@@ -20,7 +23,7 @@ if (!empty($_POST['comment'])) {
     }
     $Where .= " Comment LIKE '%$Comment%'";
 }
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT
     SQL_CALC_FOUND_ROWS
     ID,
@@ -32,9 +35,9 @@ $db->prepared_query("
   $Where
   ORDER BY Time DESC
   LIMIT $Limit");
-$Results = $db->to_array(false, MYSQLI_ASSOC, false);
-$db->prepared_query('SELECT FOUND_ROWS()');
-list($NumResults) = $db->next_record();
+$Results = $app->dbOld->to_array(false, MYSQLI_ASSOC, false);
+$app->dbOld->prepared_query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
 ?>
 <div class="header">
   <h2>Email Blacklist</h2>

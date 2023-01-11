@@ -1,9 +1,11 @@
 <?php
 
+$app = App::go();
+
 enforce_login();
 
 // Get user level
-$db->query(
+$app->dbOld->query(
     "
   SELECT
     i.SupportFor,
@@ -13,7 +15,7 @@ $db->query(
     JOIN permissions AS p ON p.ID = m.PermissionID
   WHERE i.UserID = ".$user['ID']
 );
-list($SupportFor, $DisplayStaff) = $db->next_record();
+list($SupportFor, $DisplayStaff) = $app->dbOld->next_record();
 
 if (!$IsFLS) {
     // Logged in user is not FLS or Staff
@@ -21,11 +23,11 @@ if (!$IsFLS) {
 }
 
 if ($ID = (int)$_GET['id']) {
-    $db->query("
+    $app->dbOld->query("
     SELECT Message
     FROM staff_pm_responses
     WHERE ID = $ID");
-    list($Message) = $db->next_record();
+    list($Message) = $app->dbOld->next_record();
     if ($_GET['plain'] == 1) {
         echo $Message;
     } else {

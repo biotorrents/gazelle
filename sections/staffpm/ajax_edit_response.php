@@ -1,8 +1,10 @@
 <?php
 
+$app = App::go();
+
 enforce_login();
 // Get user level
-$db->query(
+$app->dbOld->query(
     '
   SELECT
     i.SupportFor,
@@ -12,7 +14,7 @@ $db->query(
     JOIN permissions AS p ON p.ID = m.PermissionID
   WHERE i.UserID = '.$user['ID']
 );
-list($SupportFor, $DisplayStaff) = $db->next_record();
+list($SupportFor, $DisplayStaff) = $app->dbOld->next_record();
 
 if (!($SupportFor != '' || $DisplayStaff == '1')) {
     // Logged in user is not FLS or Staff
@@ -24,25 +26,25 @@ if (($Message = db_string($_POST['message'])) && ($Name = db_string($_POST['name
     if (is_numeric($ID)) {
         if ($ID == 0) {
             // Create new response
-            $db->query("
+            $app->dbOld->query("
         INSERT INTO staff_pm_responses (Message, Name)
         VALUES ('$Message', '$Name')");
             echo '1';
         } else {
-            $db->query("
+            $app->dbOld->query("
         SELECT *
         FROM staff_pm_responses
         WHERE ID = $ID");
-            if ($db->has_results()) {
+            if ($app->dbOld->has_results()) {
                 // Edit response
-                $db->query("
+                $app->dbOld->query("
           UPDATE staff_pm_responses
           SET Message = '$Message', Name = '$Name'
           WHERE ID = $ID");
                 echo '2';
             } else {
                 // Create new response
-                $db->query("
+                $app->dbOld->query("
           INSERT INTO staff_pm_responses (Message, Name)
           VALUES ('$Message', '$Name')");
                 echo '1';

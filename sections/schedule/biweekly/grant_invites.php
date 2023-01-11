@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 /*
 Well Endowed (POWER) have a cap of 2 invites. Bombshells (ELITE) have a cap of 3, Top Heavy (TORRENT_MASTER) have a cap of 4
 Every month, on the 8th and the 22nd, each user gets one invite up to their max.
@@ -17,7 +19,7 @@ This cascades, so if you qualify for the last bonus group, you also qualify for 
 The bonus invites cannot put a user over their cap.
 */
 
-$db->query("
+$app->dbOld->query("
   SELECT ID
   FROM users_main AS um
     JOIN users_info AS ui ON ui.UserID = um.ID
@@ -30,15 +32,15 @@ $db->query("
       OR (um.PermissionID = ".TORRENT_MASTER."
         AND um.Invites < 4))");
 
-$UserIDs = $db->collect('ID');
+$UserIDs = $app->dbOld->collect('ID');
 if (count($UserIDs) > 0) {
     foreach ($UserIDs as $UserID) {
-        $cache->begin_transaction("user_info_heavy_$UserID");
-        $cache->update_row(false, array('Invites' => '+1'));
-        $cache->commit_transaction(0);
+        $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
+        $app->cacheOld->update_row(false, array('Invites' => '+1'));
+        $app->cacheOld->commit_transaction(0);
     }
 
-    $db->query('
+    $app->dbOld->query('
       UPDATE users_main
       SET Invites = Invites + 1
       WHERE ID IN ('.implode(',', $UserIDs).')');
@@ -50,14 +52,14 @@ $BonusReqs = array(
   array(3.0, 20 * 1024 * 1024 * 1024));
 
 // Since MySQL doesn't like subselecting from the target table during an update, we must create a temporary table
-$db->query("
+$app->dbOld->query("
   CREATE TEMPORARY TABLE temp_sections_schedule_index
   SELECT SUM(Uploaded) AS Upload, SUM(Downloaded) AS Download, Inviter
   FROM users_main AS um
     JOIN users_info AS ui ON ui.UserID = um.ID
   GROUP BY Inviter");
 
-$db->query("
+$app->dbOld->query("
   SELECT ID
   FROM users_main AS um
     JOIN users_info AS ui ON ui.UserID = um.ID
@@ -73,21 +75,21 @@ $db->query("
        OR (um.PermissionID = ".TORRENT_MASTER."
         AND um.Invites < 4))");
 
-$UserIDs = $db->collect('ID');
+$UserIDs = $app->dbOld->collect('ID');
 if (count($UserIDs) > 0) {
     foreach ($UserIDs as $UserID) {
-        $cache->begin_transaction("user_info_heavy_$UserID");
-        $cache->update_row(false, array('Invites' => '+1'));
-        $cache->commit_transaction(0);
+        $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
+        $app->cacheOld->update_row(false, array('Invites' => '+1'));
+        $app->cacheOld->commit_transaction(0);
     }
 
-    $db->query('
+    $app->dbOld->query('
     UPDATE users_main
     SET Invites = Invites + 1
     WHERE ID IN ('.implode(',', $UserIDs).')');
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT ID
   FROM users_main AS um
     JOIN users_info AS ui ON ui.UserID = um.ID
@@ -102,21 +104,21 @@ $db->query("
         AND um.Invites < 4)
       )");
 
-$UserIDs = $db->collect('ID');
+$UserIDs = $app->dbOld->collect('ID');
 if (count($UserIDs) > 0) {
     foreach ($UserIDs as $UserID) {
-        $cache->begin_transaction("user_info_heavy_$UserID");
-        $cache->update_row(false, array('Invites' => '+1'));
-        $cache->commit_transaction(0);
+        $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
+        $app->cacheOld->update_row(false, array('Invites' => '+1'));
+        $app->cacheOld->commit_transaction(0);
     }
 
-    $db->query('
+    $app->dbOld->query('
       UPDATE users_main
       SET Invites = Invites + 1
       WHERE ID IN ('.implode(',', $UserIDs).')');
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT ID
   FROM users_main AS um
     JOIN users_info AS ui ON ui.UserID = um.ID
@@ -128,15 +130,15 @@ $db->query("
     AND (um.PermissionID = ".TORRENT_MASTER."
         AND um.Invites < 4)");
 
-$UserIDs = $db->collect('ID');
+$UserIDs = $app->dbOld->collect('ID');
 if (count($UserIDs) > 0) {
     foreach ($UserIDs as $UserID) {
-        $cache->begin_transaction("user_info_heavy_$UserID");
-        $cache->update_row(false, array('Invites' => '+1'));
-        $cache->commit_transaction(0);
+        $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
+        $app->cacheOld->update_row(false, array('Invites' => '+1'));
+        $app->cacheOld->commit_transaction(0);
     }
 
-    $db->query('
+    $app->dbOld->query('
       UPDATE users_main
       SET Invites = Invites + 1
       WHERE ID IN ('.implode(',', $UserIDs).')');

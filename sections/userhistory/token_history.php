@@ -10,6 +10,8 @@ declare(strict_types=1);
  * Non-mods and empty userid show $user['ID']'s history.
  */
 
+$app = App::go();
+
 # Validate user ID
 if (isset($_GET['userid'])) {
     $UserID = (int) $_GET['userid'];
@@ -40,7 +42,7 @@ if (isset($_GET['expire'])) {
     $TorrentID = (int) $_GET['torrentid'];
     Security::int($UserID, $TorrentID);
 
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
     SELECT
       HEX(`info_hash`)
     FROM
@@ -50,8 +52,8 @@ if (isset($_GET['expire'])) {
     ");
 
 
-    if (list($InfoHash) = $db->next_record(MYSQLI_NUM, false)) {
-        $db->prepared_query("
+    if (list($InfoHash) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
+        $app->dbOld->prepared_query("
         UPDATE
           `users_freeleeches`
         SET
@@ -61,7 +63,7 @@ if (isset($_GET['expire'])) {
         ");
 
 
-        $cache->delete_value("users_tokens_$UserID");
+        $app->cacheOld->delete_value("users_tokens_$UserID");
         Tracker::update_tracker(
             'remove_token',
             ['info_hash' => substr('%'.chunk_split($InfoHash, 2, '%'), 0, -1), 'userid' => $UserID]
@@ -74,7 +76,7 @@ if (isset($_GET['expire'])) {
 View::header('Freeleech token history');
 list($Page, $Limit) = Format::page_limit(25);
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
 SELECT SQL_CALC_FOUND_ROWS
   f.`TorrentID`,
   t.`GroupID`,
@@ -100,9 +102,9 @@ LIMIT $Limit
 ");
 
 
-$Tokens = $db->to_array();
-$db->prepared_query('SELECT FOUND_ROWS()');
-list($NumResults) = $db->next_record();
+$Tokens = $app->dbOld->to_array();
+$app->dbOld->prepared_query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
 $Pages = Format::get_pages($Page, $NumResults, 25);
 ?>
 

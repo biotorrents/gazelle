@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 if (!check_perms('users_mod')) {
     error(404);
 }
@@ -60,9 +62,9 @@ if (!empty($_GET['date'])) {
         AND Type = 'Weekly'";
     }
 
-    $Details = $cache->get_value("top10_history_$SQLTime");
+    $Details = $app->cacheOld->get_value("top10_history_$SQLTime");
     if ($Details === false) {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
         SELECT
           tht.`Rank`,
           tht.`TitleString`,
@@ -98,9 +100,9 @@ if (!empty($_GET['date'])) {
           tht.`Rank` ASC
         ");
 
-        $Details = $db->to_array();
+        $Details = $app->dbOld->to_array();
 
-        $cache->cache_value("top10_history_$SQLTime", $Details, 3600 * 24);
+        $app->cacheOld->cache_value("top10_history_$SQLTime", $Details, 3600 * 24);
     } ?>
 
   <br />

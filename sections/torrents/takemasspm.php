@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 //******************************************************************************//
 //--------------- Take mass PM -------------------------------------------------//
 // This pages handles the backend of the 'Send Mass PM' function. It checks     //
@@ -42,14 +44,14 @@ if ($Err) {
 //******************************************************************************//
 //--------------- Send PMs to users --------------------------------------------//
 
-$db->query("
+$app->dbOld->query("
   SELECT uid
   FROM xbt_snatched
   WHERE fid = $TorrentID");
 
-if ($db->has_results()) {
+if ($app->dbOld->has_results()) {
     // Save this because send_pm uses $db to run its own query... Oops...
-    $Snatchers = $db->to_array();
+    $Snatchers = $app->dbOld->to_array();
     foreach ($Snatchers as $UserID) {
         Misc::send_pm($UserID[0], 0, $Subject, $Message);
     }

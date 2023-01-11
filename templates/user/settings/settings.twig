@@ -1060,7 +1060,7 @@ END PARANOIA CLUSTERFUCK #}
     if ($Type === 'U2F-E') {
         try {
             $U2FReg = $U2F->doRegister(json_decode($_POST['u2f-request']), json_decode($_POST['u2f-response']));
-            $db->query("
+            $app->dbOld->query("
               INSERT INTO u2f
                 (UserID, KeyHandle, PublicKey, Certificate, Counter, Valid)
               Values ($UserID, '".db_string($U2FReg->keyHandle)."', '".db_string($U2FReg->publicKey)."', '".db_string($U2FReg->certificate)."', '".db_string($U2FReg->counter)."', '1')");
@@ -1071,20 +1071,20 @@ END PARANOIA CLUSTERFUCK #}
     }
 
     if ($Type === 'U2F-D') {
-        $db->query("
+        $app->dbOld->query("
           DELETE FROM u2f
           WHERE UserID = $UserID");
         $Message = 'U2F tokens deregistered';
     }
 
 $U2FRegs = [];
-$db->query("
+$app->dbOld->query("
   SELECT KeyHandle, PublicKey, Certificate, Counter
   FROM u2f
   WHERE UserID = $UserID");
 
 // Needs to be an array of objects, so we can't use to_array()
-while (list($KeyHandle, $PublicKey, $Certificate, $Counter) = $db->next_record()) {
+while (list($KeyHandle, $PublicKey, $Certificate, $Counter) = $app->dbOld->next_record()) {
     $U2FRegs[] = (object)['keyHandle'=>$KeyHandle, 'publicKey'=>$PublicKey, 'certificate'=>$Certificate, 'counter'=>$Counter];
 }
 #}

@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 /**
  * Input validation
  */
@@ -15,7 +17,7 @@ $NewTitle = $_POST['name'];
 $NewSubject = $_POST['Title2'];
 $NewObject = $_POST['namejp'];
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
 SELECT
   `ID`
 FROM
@@ -25,7 +27,7 @@ WHERE
 ");
 
 
-$Contributed = $db->has_results();
+$Contributed = $app->dbOld->has_results();
 if (!($Contributed || check_perms('torrents_edit'))) {
     error(403);
 }
@@ -35,7 +37,7 @@ if (empty($NewTitle)) {
     error('Torrent groups must have a name');
 }
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
 UPDATE
   `torrents_group`
 SET
@@ -47,10 +49,10 @@ WHERE
 ");
 
 
-$cache->delete_value("torrents_details_$group_id");
+$app->cacheOld->delete_value("torrents_details_$group_id");
 Torrents::update_hash($group_id);
 
-$db->query("
+$app->dbOld->query("
 SELECT
   `title`,
   `subject`,
@@ -60,7 +62,7 @@ FROM
 WHERE
   `id` = '$group_id'
 ");
-list($OldTitle, $OldSubject, $OldObject) = $db->next_record(MYSQLI_NUM, false);
+list($OldTitle, $OldSubject, $OldObject) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
 # Map metadata over generic database fields
 # todo: Work into $ENV in classes/config.php

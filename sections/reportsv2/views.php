@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 /*
  * This page is to outline all of the views built into reports v2.
  * It's used as the main page as it also lists the current reports by type
@@ -13,12 +16,12 @@ View::header('Reports V2', 'reportsv2');
 
 
 //Grab owner's ID, just for examples
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT ID, Username
   FROM users_main
   ORDER BY ID ASC
   LIMIT 1");
-list($OwnerID, $Owner) = $db->next_record();
+list($OwnerID, $Owner) = $app->dbOld->next_record();
 $Owner = Text::esc($Owner);
 
 ?>
@@ -29,7 +32,7 @@ $Owner = Text::esc($Owner);
 <div class="u-cf">
   <div class="two_columns pad">
 <?php
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT
     um.ID,
     um.Username,
@@ -39,7 +42,7 @@ $db->prepared_query("
   WHERE r.LastChangeTime > NOW() - INTERVAL 24 HOUR
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-$Results = $db->to_array();
+$Results = $app->dbOld->to_array();
 ?>
     <h3>Reports resolved in the last 24 hours</h3>
     <table class="box border">
@@ -64,7 +67,7 @@ foreach ($Results as $Result) {
 ?>
     </table>
 <?php
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT
     um.ID,
     um.Username,
@@ -74,7 +77,7 @@ $db->prepared_query("
   WHERE r.LastChangeTime > NOW() - INTERVAL 1 WEEK
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-$Results = $db->to_array();
+$Results = $app->dbOld->to_array();
 ?>
     <h3>Reports resolved in the last week</h3>
     <table class="box border">
@@ -99,7 +102,7 @@ foreach ($Results as $Result) {
 ?>
     </table>
 <?php
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT
     um.ID,
     um.Username,
@@ -109,7 +112,7 @@ $db->prepared_query("
   WHERE r.LastChangeTime > NOW() - INTERVAL 1 MONTH
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-$Results = $db->to_array();
+$Results = $app->dbOld->to_array();
 ?>
     <h3>Reports resolved in the last month</h3>
     <table class="box border">
@@ -134,7 +137,7 @@ foreach ($Results as $Result) {
 ?>
     </table>
 <?php
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT
     um.ID,
     um.Username,
@@ -143,7 +146,7 @@ $db->prepared_query("
     JOIN users_main AS um ON um.ID = r.ResolverID
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-$Results = $db->to_array();
+$Results = $app->dbOld->to_array();
 ?>
     <h3>Reports resolved ever</h3>
     <table class="box border">
@@ -228,7 +231,7 @@ foreach ($Results as $Result) {
   </div>
   <div class="two_columns pad">
 <?php
-  $db->prepared_query("
+  $app->dbOld->prepared_query("
     SELECT
       r.ResolverID,
       um.Username,
@@ -238,7 +241,7 @@ foreach ($Results as $Result) {
     WHERE r.Status = 'InProgress'
     GROUP BY r.ResolverID");
 
-  $Staff = $db->to_array();
+  $Staff = $app->dbOld->to_array();
 ?>
     <h3>Currently assigned reports by staff member</h3>
     <table class="box border">
@@ -264,14 +267,14 @@ foreach ($Results as $Result) {
     </table>
     <h3>Different view modes by report type</h3>
 <?php
-  $db->prepared_query("
+  $app->dbOld->prepared_query("
     SELECT
       Type,
       COUNT(ID) AS Count
     FROM reportsv2
     WHERE Status = 'New'
     GROUP BY Type");
-  $Current = $db->to_array();
+  $Current = $app->dbOld->to_array();
   if (!empty($Current)) {
       ?>
     <table class="box border">

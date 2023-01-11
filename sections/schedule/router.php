@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+$app = App::go();
+
 /**
  * Flight router
  * @see https://flightphp.com/learn
@@ -62,7 +64,7 @@ if ($AS) {
 }
 $ASBreak = $AS ? '<br />' : "\n";
 
-$db->query("
+$app->dbOld->query("
 SELECT
   `NextHour`,
   `NextDay`,
@@ -70,13 +72,13 @@ SELECT
 FROM
   `schedule`
 ");
-list($Hour, $Day, $BiWeek) = $db->next_record();
+list($Hour, $Day, $BiWeek) = $app->dbOld->next_record();
 
 $NextHour = date('H');
 $NextDay = date('d');
 $NextBiWeek = (date('d') < 22 && date('d') >= 8) ? 22 : 8;
 
-$db->query("
+$app->dbOld->query("
 UPDATE
   `schedule`
 SET

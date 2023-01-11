@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+$app = App::go();
+
 authorize();
 $ENV = ENV::go();
 
@@ -82,22 +84,22 @@ if (empty($_POST['question']) || empty($_POST['answers']) || !check_perms('forum
     }
 }
 
-$db->query("
+$app->dbOld->query("
   INSERT INTO forums_topics
     (Title, AuthorID, ForumID, LastPostTime, LastPostAuthorID, CreatedTime)
   Values
     ('".db_string($Title)."', '".$user['ID']."', '$ForumID', NOW(), '".$user['ID']."', NOW())");
-$TopicID = $db->inserted_id();
+$TopicID = $app->dbOld->inserted_id();
 
-$db->query("
+$app->dbOld->query("
   INSERT INTO forums_posts
     (TopicID, AuthorID, AddedTime, Body)
   VALUES
     ('$TopicID', '".$user['ID']."', NOW(), '".db_string($Body)."')");
 
-$PostID = $db->inserted_id();
+$PostID = $app->dbOld->inserted_id();
 
-$db->query("
+$app->dbOld->query("
   UPDATE forums
   SET
     NumPosts         = NumPosts + 1,
@@ -108,7 +110,7 @@ $db->query("
     LastPostTime     = NOW()
   WHERE ID = '$ForumID'");
 
-$db->query("
+$app->dbOld->query("
   UPDATE forums_topics
   SET
     NumPosts         = NumPosts + 1,
@@ -122,11 +124,11 @@ if (isset($_POST['subscribe'])) {
 }
 
 //Award a badge if necessary
-$db->query("
+$app->dbOld->query("
   SELECT COUNT(ID)
   FROM forums_posts
   WHERE AuthorID = '$user[ID]'");
-list($UserPosts) = $db->next_record(MYSQLI_NUM, false);
+list($UserPosts) = $app->dbOld->next_record(MYSQLI_NUM, false);
 foreach ($ENV->AUTOMATED_BADGE_IDS->Posts as $Count => $Badge) {
     if ((int) $UserPosts >= $Count) {
         $Success = Badges::awardBadge($user['ID'], $Badge);
@@ -137,12 +139,12 @@ foreach ($ENV->AUTOMATED_BADGE_IDS->Posts as $Count => $Badge) {
 }
 
 if (!$NoPoll) { // god, I hate double negatives...
-    $db->query("
+    $app->dbOld->query("
     INSERT INTO forums_polls
       (TopicID, Question, Answers)
     VALUES
       ('$TopicID', '".db_string($Question)."', '".db_string(serialize($Answers))."')");
-    $cache->cache_value("polls_$TopicID", array($Question, $Answers, $Votes, null, '0'), 0);
+    $app->cacheOld->cache_value("polls_$TopicID", array($Question, $Answers, $Votes, null, '0'), 0);
 
     if ($ForumID === STAFF_FORUM) {
         send_irc(STAFF_CHAN, 'Poll created by '.$user['Username'].": '$Question' ".site_url()."forums.php?action=viewthread&threadid=$TopicID");
@@ -150,7 +152,7 @@ if (!$NoPoll) { // god, I hate double negatives...
 }
 
 // if cache exists modify it, if not, then it will be correct when selected next, and we can skip this block
-if ($Forum = $cache->get_value("forums_$ForumID")) {
+if ($Forum = $app->cacheOld->get_value("forums_$ForumID")) {
     list($Forum, , , $Stickies) = $Forum;
 
     // Remove the last thread from the index
@@ -179,11 +181,11 @@ if ($Forum = $cache->get_value("forums_$ForumID")) {
   )); // Bumped
     $Forum = $Part1 + $Part2 + $Part3;
 
-    $cache->cache_value("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
+    $app->cacheOld->cache_value("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
 
     // Update the forum root
-    $cache->begin_transaction('forums_list');
-    $cache->update_row($ForumID, array(
+    $app->cacheOld->begin_transaction('forums_list');
+    $app->cacheOld->update_row($ForumID, array(
     'NumPosts' => '+1',
     'NumTopics' => '+1',
     'LastPostID' => $PostID,
@@ -194,13 +196,13 @@ if ($Forum = $cache->get_value("forums_$ForumID")) {
     'IsLocked' => 0,
     'IsSticky' => 0
     ));
-    $cache->commit_transaction(0);
+    $app->cacheOld->commit_transaction(0);
 } else {
     // If there's no cache, we have no data, and if there's no data
-    $cache->delete_value('forums_list');
+    $app->cacheOld->delete_value('forums_list');
 }
 
-$cache->begin_transaction("thread_$TopicID".'_catalogue_0');
+$app->cacheOld->begin_transaction("thread_$TopicID".'_catalogue_0');
 $Post = array(
   'ID' => $PostID,
   'AuthorID' => $user['ID'],
@@ -209,12 +211,12 @@ $Post = array(
   'EditedUserID' => 0,
   'EditedTime' => null
   );
-$cache->insert('', $Post);
-$cache->commit_transaction(0);
+$app->cacheOld->insert('', $Post);
+$app->cacheOld->commit_transaction(0);
 
-$cache->begin_transaction("thread_$TopicID".'_info');
-$cache->update_row(false, array('Posts' => '+1', 'LastPostAuthorID' => $user['ID']));
-$cache->commit_transaction(0);
+$app->cacheOld->begin_transaction("thread_$TopicID".'_info');
+$app->cacheOld->update_row(false, array('Posts' => '+1', 'LastPostAuthorID' => $user['ID']));
+$app->cacheOld->commit_transaction(0);
 
 
 Http::redirect("forums.php?action=viewthread&threadid=$TopicID");

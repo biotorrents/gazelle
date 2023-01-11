@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 # todo: Go through line by line
 if (isset($user['PostsPerPage'])) {
     $PerPage = $user['PostsPerPage'];
@@ -19,7 +21,7 @@ foreach ($Forums as $Forum) {
 
 // Now if we have IDs' we run the query
 if (!empty($TopicIDs)) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       l.TopicID,
       l.PostID,
@@ -34,16 +36,16 @@ if (!empty($TopicIDs)) {
     FROM forums_last_read_topics AS l
     WHERE l.TopicID IN(".implode(',', $TopicIDs).")
       AND l.UserID = '$user[ID]'");
-    $LastRead = $db->to_array('TopicID', MYSQLI_ASSOC);
+    $LastRead = $app->dbOld->to_array('TopicID', MYSQLI_ASSOC);
 } else {
     $LastRead = [];
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT RestrictedForums
   FROM users_info
   WHERE UserID = ".$user['ID']);
-list($RestrictedForums) = $db->next_record();
+list($RestrictedForums) = $app->dbOld->next_record();
 $RestrictedForums = explode(',', $RestrictedForums);
 $PermittedForums = array_keys($user['PermittedForums']);
 

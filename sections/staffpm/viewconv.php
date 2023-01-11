@@ -1,13 +1,15 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 if ($ConvID = (int)$_GET['id']) {
     // Get conversation info
-    $db->query("
+    $app->dbOld->query("
     SELECT Subject, UserID, Level, AssignedToUser, Unread, Status
     FROM staff_pm_conversations
     WHERE ID = $ConvID");
-    list($Subject, $UserID, $Level, $AssignedToUser, $Unread, $Status) = $db->next_record();
+    list($Subject, $UserID, $Level, $AssignedToUser, $Unread, $Status) = $app->dbOld->next_record();
 
     $LevelCap = 1000;
     $PMLevel = $Level;
@@ -23,12 +25,12 @@ if ($ConvID = (int)$_GET['id']) {
     }
     // User is trying to view their own unread conversation, set it to read
     if ($UserID == $user['ID'] && $Unread) {
-        $db->query("
+        $app->dbOld->query("
       UPDATE staff_pm_conversations
       SET Unread = false
       WHERE ID = $ConvID");
         // Clear cache for user
-        $cache->delete_value("staff_pm_new_$user[ID]");
+        $app->cacheOld->delete_value("staff_pm_new_$user[ID]");
     }
 
     View::header(
@@ -75,12 +77,12 @@ if ($ConvID = (int)$_GET['id']) {
   <div id="inbox">
     <?php
   // Get messages
-  $StaffPMs = $db->query("
+  $StaffPMs = $app->dbOld->query("
     SELECT UserID, SentDate, Message, ID
     FROM staff_pm_messages
     WHERE ConvID = $ConvID");
 
-    while (list($UserID, $SentDate, $Message, $MessageID) = $db->next_record()) {
+    while (list($UserID, $SentDate, $Message, $MessageID) = $app->dbOld->next_record()) {
         // Set user string
         if ($UserID == $OwnerID) {
             // User, use prepared string
@@ -111,7 +113,7 @@ if ($ConvID = (int)$_GET['id']) {
     </div>
     <div align="center" style="display: none;"></div>
     <?php
-    $db->set_query_id($StaffPMs);
+    $app->dbOld->set_query_id($StaffPMs);
     }
 
     // Common responses
@@ -130,10 +132,10 @@ if ($ConvID = (int)$_GET['id']) {
           <option id="first_common_response">Select a message</option>
           <?php
     // List common responses
-    $db->query("
+    $app->dbOld->query("
       SELECT ID, Name
       FROM staff_pm_responses");
-        while (list($ID, $Name) = $db->next_record()) {
+        while (list($ID, $Name) = $app->dbOld->next_record()) {
             ?>
           <option value="<?=$ID?>"><?=$Name?>
           </option>
@@ -197,7 +199,7 @@ if ($ConvID = (int)$_GET['id']) {
             </optgroup>
             <optgroup label="Staff">
               <?php // Staff members
-    $db->query(
+    $app->dbOld->query(
         "
       SELECT
         m.ID,
@@ -207,7 +209,7 @@ if ($ConvID = (int)$_GET['id']) {
       WHERE p.DisplayStaff = '1'
       ORDER BY p.Level DESC, m.Username ASC"
     );
-      while (list($ID, $Name) = $db->next_record()) {
+      while (list($ID, $Name) = $app->dbOld->next_record()) {
           // Create one <option> for each staff member
       $Selected = (($AssignedToUser == $ID) ? ' selected="selected"' : ''); ?>
               <option value="user_<?=$ID?>" <?=$Selected?>><?=$Name?>
@@ -218,7 +220,7 @@ if ($ConvID = (int)$_GET['id']) {
             <optgroup label="First Line Support">
               <?php
     // FLS users
-    $db->query("
+    $app->dbOld->query("
       SELECT
         m.ID,
         m.Username
@@ -229,7 +231,7 @@ if ($ConvID = (int)$_GET['id']) {
         AND i.SupportFor != ''
       ORDER BY m.Username ASC
     ");
-      while (list($ID, $Name) = $db->next_record()) {
+      while (list($ID, $Name) = $app->dbOld->next_record()) {
           // Create one <option> for each FLS user
       $Selected = (($AssignedToUser == $ID) ? ' selected="selected"' : ''); ?>
               <option value="user_<?=$ID?>" <?=$Selected?>><?=$Name?>

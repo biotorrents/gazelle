@@ -1,17 +1,20 @@
 <?php
+
+$app = App::go();
+
 if (!is_number($_GET['artistid'])) {
     error(0);
 }
 $ArtistID = (int)$_GET['artistid'];
 
-$db->query("
+$app->dbOld->query("
   SELECT Name
   FROM artists_group
   WHERE ArtistID = $ArtistID");
-if (!$db->has_results()) {
+if (!$app->dbOld->has_results()) {
     error(404);
 }
-list($Name) = $db->next_record();
+list($Name) = $app->dbOld->next_record();
 
 View::header("Revision history for $Name");
 ?>

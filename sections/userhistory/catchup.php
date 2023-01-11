@@ -1,9 +1,11 @@
 <?php
 
+$app = App::go();
+
 authorize();
 $UserSubscriptions = Subscriptions::get_subscriptions();
 if (!empty($UserSubscriptions)) {
-    $db->query("
+    $app->dbOld->query("
     INSERT INTO forums_last_read_topics (UserID, TopicID, PostID)
       SELECT '$user[ID]', ID, LastPostID
       FROM forums_topics
@@ -11,7 +13,7 @@ if (!empty($UserSubscriptions)) {
     ON DUPLICATE KEY UPDATE
       PostID = LastPostID');
 }
-$db->query("
+$app->dbOld->query("
   INSERT INTO users_comments_last_read (UserID, Page, PageID, PostID)
   SELECT $user[ID], t.Page, t.PageID, t.LastPostID
   FROM (
@@ -30,5 +32,5 @@ $db->query("
   ) AS t
   ON DUPLICATE KEY UPDATE
     PostID = LastPostID");
-$cache->delete_value('subscriptions_user_new_'.$user['ID']);
+$app->cacheOld->delete_value('subscriptions_user_new_'.$user['ID']);
 Http::redirect("userhistory.php?action=subscriptions");

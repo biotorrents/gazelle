@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 if (!isset($_POST['topicid']) || !is_number($_POST['topicid'])) {
     error(0, true);
 }
@@ -12,8 +14,8 @@ if (!empty($_POST['large'])) {
     $Size = 140;
 }
 
-if (!$ThreadInfo = $cache->get_value("thread_$TopicID".'_info')) {
-    $db->query("
+if (!$ThreadInfo = $app->cacheOld->get_value("thread_$TopicID".'_info')) {
+    $app->dbOld->query("
     SELECT
       t.Title,
       t.ForumID,
@@ -27,18 +29,18 @@ if (!$ThreadInfo = $cache->get_value("thread_$TopicID".'_info')) {
       LEFT JOIN forums_polls AS p ON p.TopicID = t.ID
     WHERE t.ID = '$TopicID'
     GROUP BY fp.TopicID");
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error();
     }
-    $ThreadInfo = $db->next_record(MYSQLI_ASSOC);
+    $ThreadInfo = $app->dbOld->next_record(MYSQLI_ASSOC);
     if (!$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky']) {
-        $cache->cache_value("thread_$TopicID".'_info', $ThreadInfo, 0);
+        $app->cacheOld->cache_value("thread_$TopicID".'_info', $ThreadInfo, 0);
     }
 }
 $ForumID = $ThreadInfo['ForumID'];
 
-if (!list($Question, $Answers, $Votes, $Featured, $Closed) = $cache->get_value("polls_$TopicID")) {
-    $db->query("
+if (!list($Question, $Answers, $Votes, $Featured, $Closed) = $app->cacheOld->get_value("polls_$TopicID")) {
+    $app->dbOld->query("
     SELECT
       Question,
       Answers,
@@ -46,15 +48,15 @@ if (!list($Question, $Answers, $Votes, $Featured, $Closed) = $cache->get_value("
       Closed
     FROM forums_polls
     WHERE TopicID = '$TopicID'");
-    list($Question, $Answers, $Featured, $Closed) = $db->next_record(MYSQLI_NUM, array(1));
+    list($Question, $Answers, $Featured, $Closed) = $app->dbOld->next_record(MYSQLI_NUM, array(1));
     $Answers = unserialize($Answers);
-    $db->query("
+    $app->dbOld->query("
     SELECT Vote, COUNT(UserID)
     FROM forums_polls_votes
     WHERE TopicID = '$TopicID'
       AND Vote != '0'
     GROUP BY Vote");
-    $VoteArray = $db->to_array(false, MYSQLI_NUM);
+    $VoteArray = $app->dbOld->to_array(false, MYSQLI_NUM);
 
     $Votes = [];
     foreach ($VoteArray as $VoteSet) {
@@ -67,7 +69,7 @@ if (!list($Question, $Answers, $Votes, $Featured, $Closed) = $cache->get_value("
             $Votes[$i] = 0;
         }
     }
-    $cache->cache_value("polls_$TopicID", array($Question, $Answers, $Votes, $Featured, $Closed), 0);
+    $app->cacheOld->cache_value("polls_$TopicID", array($Question, $Answers, $Votes, $Featured, $Closed), 0);
 }
 
 
@@ -113,15 +115,15 @@ if (!isset($_POST['vote']) || !is_number($_POST['vote'])) {
         }
 
         //Add our vote
-        $db->query("
+        $app->dbOld->query("
     INSERT IGNORE INTO forums_polls_votes
       (TopicID, UserID, Vote)
     VALUES
       ($TopicID, " . $user['ID'] . ", $Vote)");
-        if ($db->affected_rows() == 1 && $Vote != 0) {
-            $cache->begin_transaction("polls_$TopicID");
-            $cache->update_row(2, array($Vote => '+1'));
-            $cache->commit_transaction(0);
+        if ($app->dbOld->affected_rows() == 1 && $Vote != 0) {
+            $app->cacheOld->begin_transaction("polls_$TopicID");
+            $app->cacheOld->update_row(2, array($Vote => '+1'));
+            $app->cacheOld->commit_transaction(0);
             $Votes[$Vote]++;
             $TotalVotes++;
             $MaxVotes++;
@@ -150,7 +152,7 @@ if (!isset($_POST['vote']) || !is_number($_POST['vote'])) {
         }
     } else {
         //Staff forum, output voters, not percentages
-        $db->query("
+        $app->dbOld->query("
         SELECT GROUP_CONCAT(um.Username SEPARATOR ', '),
           fpv.Vote
         FROM users_main AS um
@@ -158,7 +160,7 @@ if (!isset($_POST['vote']) || !is_number($_POST['vote'])) {
         WHERE TopicID = $TopicID
         GROUP BY fpv.Vote");
 
-        $StaffVotes = $db->to_array();
+        $StaffVotes = $app->dbOld->to_array();
         foreach ($StaffVotes as $StaffVote) {
             list($StaffString, $StaffVoted) = $StaffVote; ?>
   <li><a

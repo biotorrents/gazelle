@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 enforce_login();
 if (!check_perms('site_moderate_forums')) {
     error(403);
@@ -14,7 +16,7 @@ if (!is_number($ForumID)) {
 if (!empty($_POST['add']) || (!empty($_POST['del']))) {
     if (!empty($_POST['add'])) {
         if (is_number($_POST['new_thread'])) {
-            $db->query("
+            $app->dbOld->query("
             INSERT INTO forums_specific_rules (ForumID, ThreadID)
             VALUES ($ForumID, ".$_POST['new_thread'].')');
         }
@@ -22,20 +24,20 @@ if (!empty($_POST['add']) || (!empty($_POST['del']))) {
 
     if (!empty($_POST['del'])) {
         if (is_number($_POST['threadid'])) {
-            $db->query("
+            $app->dbOld->query("
             DELETE FROM forums_specific_rules
             WHERE ForumID = $ForumID
               AND ThreadID = ".$_POST['threadid']);
         }
     }
-    $cache->delete_value('forums_list');
+    $app->cacheOld->delete_value('forums_list');
 }
 
-$db->query("
+$app->dbOld->query("
 SELECT ThreadID
 FROM forums_specific_rules
   WHERE ForumID = $ForumID");
-$ThreadIDs = $db->collect('ThreadID');
+$ThreadIDs = $app->dbOld->collect('ThreadID');
 
 $ENV = ENV::go();
 View::header();

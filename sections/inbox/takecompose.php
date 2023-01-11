@@ -1,5 +1,7 @@
 <?php
 
+$app = App::go();
+
 authorize();
 
 if (empty($_POST['toid'])) {
@@ -19,12 +21,12 @@ if (isset($_POST['convid']) && is_number($_POST['convid'])) {
             $Err = 'A recipient does not exist.';
         }
     }
-    $db->query("
+    $app->dbOld->query("
     SELECT UserID
     FROM pm_conversations_users
     WHERE UserID = '$user[ID]'
       AND ConvID = '$ConvID'");
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error(403);
     }
 } else {

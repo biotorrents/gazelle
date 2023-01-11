@@ -13,7 +13,7 @@ if (!$GroupID || !is_number($GroupID)) {
 }
 
 if (!check_perms('torrents_edit') && !check_perms('screenshots_add') && !check_perms('screenshots_delete')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       `UserID`
     FROM
@@ -22,7 +22,7 @@ if (!check_perms('torrents_edit') && !check_perms('screenshots_add') && !check_p
       `GroupID` = '$GroupID'
     ")
     ;
-    if (!in_array($user['ID'], $db->collect('UserID'))) {
+    if (!in_array($user['ID'], $app->dbOld->collect('UserID'))) {
         error(403);
     }
 }
@@ -38,7 +38,7 @@ if (count($Screenshots) > 10) {
     error("You cannot add more than 10 publications to a group");
 }
 
-$db->query("
+$app->dbOld->query("
 SELECT
   `user_id`,
   `doi`
@@ -50,8 +50,8 @@ WHERE
 
 // $Old is an array of the form URL => UserID where UserID is the ID of the User who originally uploaded that image.
 $Old = [];
-if ($db->has_results()) {
-    while ($S = $db->next_record(MYSQLI_ASSOC)) {
+if ($app->dbOld->has_results()) {
+    while ($S = $app->dbOld->next_record(MYSQLI_ASSOC)) {
         $Old[$S['Image']] = $S['UserID'];
     }
 }
@@ -82,7 +82,7 @@ if (!empty($Deleted)) {
 
     if (!empty($DeleteList)) {
         $ScreenDel = '';
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
         DELETE
         FROM
           `literature`
@@ -101,7 +101,7 @@ if (!empty($Deleted)) {
 // New screenshots
 if (!empty($New)) {
     $Screenshot = '';
-    $db->prepared_query(
+    $app->dbOld->prepared_query(
         "
     INSERT INTO `literature`
       (`group_id`, `user_id`, `timestamp`, `doi`)
@@ -119,5 +119,5 @@ if (!empty($New)) {
     Misc::write_log("Screenshots ( ".implode(' , ', $New)." ) added to Torrent Group ".$GroupID." by ".$user['Username']);
 }
 
-$cache->delete_value("torrents_details_".$GroupID);
+$app->cacheOld->delete_value("torrents_details_".$GroupID);
 Http::redirect("torrents.php?id=$GroupID");

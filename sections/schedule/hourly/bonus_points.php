@@ -2,7 +2,9 @@
 
 #declare(strict_types=1);
 
-$getUsers = $db->query("
+$app = App::go();
+
+$getUsers = $app->dbOld->query("
   SELECT um.ID,
     um.BonusPoints,
     COUNT(DISTINCT x.fid) AS Torrents,
@@ -22,10 +24,10 @@ $getUsers = $db->query("
     AND x.Remaining = 0
   GROUP BY um.ID");
 
-if ($db->has_results()) {
+if ($app->dbOld->has_results()) {
     $QueryPart = '';
 
-    while (list($UserID, $BonusPoints, $NumTorr, $TSize, $TTime, $TSeeds) = $db->next_record()) {
+    while (list($UserID, $BonusPoints, $NumTorr, $TSize, $TTime, $TSeeds) = $app->dbOld->next_record()) {
         $Points = (0.5 + (0.55*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5, ($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3)))**0.95;
         $Points = intval(max(min($Points, ($Points * 2) - ($BonusPoints/1440)), 0));
 
@@ -35,11 +37,11 @@ if ($db->has_results()) {
 
         if ($Points > 0) {
             $QueryPart .= "WHEN $UserID THEN BonusPoints+$Points ";
-            $cache->delete_value('user_info_heavy_'.$UserID);
+            $app->cacheOld->delete_value('user_info_heavy_'.$UserID);
         }
     }
 
-    $db->query("
+    $app->dbOld->query("
       UPDATE users_main
       SET BonusPoints = CASE ID "
       .$QueryPart.

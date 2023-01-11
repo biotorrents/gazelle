@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+$app = App::go();
+
 authorize();
 include(serverRoot.'/sections/user/linkedfunctions.php');
 
@@ -19,22 +21,22 @@ switch ($_REQUEST['dupeaction']) {
   case 'update':
     if ($_REQUEST['target']) {
         $Target = $_REQUEST['target'];
-        $db->query("
+        $app->dbOld->query("
         SELECT ID
         FROM users_main
         WHERE Username LIKE '".db_string($Target)."'");
-        if (list($TargetID) = $db->next_record()) {
+        if (list($TargetID) = $app->dbOld->next_record()) {
             link_users($UserID, $TargetID);
         } else {
             error("User '$Target' not found.");
         }
     }
 
-    $db->query("
+    $app->dbOld->query("
       SELECT GroupID
       FROM users_dupes
       WHERE UserID = '$UserID'");
-    list($GroupID) = $db->next_record();
+    list($GroupID) = $app->dbOld->next_record();
 
     if ($_REQUEST['dupecomments'] && $GroupID) {
         dupe_comments($GroupID, $_REQUEST['dupecomments']);

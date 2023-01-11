@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 /**
  * Main friends page
  *
@@ -20,7 +22,7 @@ $UserID = $user['ID'];
 list($Page, $Limit) = Format::page_limit(FRIENDS_PER_PAGE);
 
 // Main query
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT
     SQL_CALC_FOUND_ROWS
     f.`FriendID`,
@@ -38,11 +40,11 @@ $db->prepared_query("
   WHERE f.`UserID` = '$UserID'
   ORDER BY `Username`
   LIMIT $Limit");
-$Friends = $db->to_array(false, MYSQLI_BOTH, array(6, 'Paranoia'));
+$Friends = $app->dbOld->to_array(false, MYSQLI_BOTH, array(6, 'Paranoia'));
 
 // Number of results (for pagination)
-$db->prepared_query('SELECT FOUND_ROWS()');
-list($Results) = $db->next_record();
+$app->dbOld->prepared_query('SELECT FOUND_ROWS()');
+list($Results) = $app->dbOld->next_record();
 
 // Start printing stuff?>
 

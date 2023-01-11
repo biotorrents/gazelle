@@ -1,13 +1,15 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 $TorrentID = $_GET['torrentid'];
 if (!$TorrentID || !is_number($TorrentID)) {
     error(404);
 }
 
 
-$db->query("
+$app->dbOld->query("
   SELECT
     t.UserID,
     t.Time,
@@ -17,16 +19,16 @@ $db->query("
   WHERE t.ID = $TorrentID
   GROUP BY t.UserID");
 
-if (!$db->has_results()) {
+if (!$app->dbOld->has_results()) {
     error('Torrent already deleted.');
 }
 
-if ($cache->get_value('torrent_'.$TorrentID.'_lock')) {
+if ($app->cacheOld->get_value('torrent_'.$TorrentID.'_lock')) {
     error('Torrent cannot be deleted because the upload process is not completed yet. Please try again later.');
 }
 
 
-list($UserID, $Time, $Snatches) = $db->next_record();
+list($UserID, $Time, $Snatches) = $app->dbOld->next_record();
 
 
 if ($user['ID'] != $UserID && !check_perms('torrents_delete')) {
@@ -87,7 +89,7 @@ if (check_perms('admin_reports')) {
     require(serverRoot.'/sections/reportsv2/array.php');
     $ReportID = 0;
     /*
-      $db->query("
+      $app->dbOld->query("
           SELECT
             tg.Name,
             tg.ID,
@@ -122,7 +124,7 @@ if (check_perms('admin_reports')) {
             LEFT JOIN users_main AS uploader ON uploader.ID = t.UserID
           WHERE t.ID = $TorrentID");
     */
-    $db->query("
+    $app->dbOld->query("
       SELECT
         tg.Name,
         tg.ID,
@@ -150,11 +152,11 @@ if (check_perms('admin_reports')) {
         LEFT JOIN users_main AS uploader ON uploader.ID = t.UserID
       WHERE t.ID = $TorrentID");
 
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error();
     }
     list($GroupName, $GroupID, $ArtistID, $ArtistName, $Year, $CategoryID, $Time,
-    $Media, $Size, $UploaderID, $UploaderName) = $db->next_record();
+    $Media, $Size, $UploaderID, $UploaderName) = $app->dbOld->next_record();
 
     $Type = 'dupe'; //hardcoded default
 
@@ -212,13 +214,13 @@ if (check_perms('admin_reports')) {
             <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>" class="brackets tooltip" title="Download">DL</a>
             uploaded by <a href="user.php?id=<?=$UploaderID?>"><?=$UploaderName?></a> <?=time_diff($Time)?>
             <br />
-<?php $db->query("
+<?php $app->dbOld->query("
         SELECT r.ID
         FROM reportsv2 AS r
           LEFT JOIN torrents AS t ON t.ID = r.TorrentID
         WHERE r.Status != 'Resolved'
           AND t.GroupID = $GroupID");
-      $GroupOthers = ($db->has_results());
+      $GroupOthers = ($app->dbOld->has_results());
 
       if ($GroupOthers > 0) { ?>
             <div style="text-align: right;">
@@ -226,13 +228,13 @@ if (check_perms('admin_reports')) {
             </div>
 <?php }
 
-      $db->query("
+      $app->dbOld->query("
         SELECT t.UserID
         FROM reportsv2 AS r
           JOIN torrents AS t ON t.ID = r.TorrentID
         WHERE r.Status != 'Resolved'
           AND t.UserID = $UploaderID");
-      $UploaderOthers = ($db->has_results());
+      $UploaderOthers = ($app->dbOld->has_results());
 
       if ($UploaderOthers > 0) { ?>
             <div style="text-align: right;">
@@ -240,7 +242,7 @@ if (check_perms('admin_reports')) {
             </div>
 <?php }
 
-      $db->query("
+      $app->dbOld->query("
         SELECT DISTINCT req.ID,
           req.FillerID,
           um.Username,
@@ -248,9 +250,9 @@ if (check_perms('admin_reports')) {
         FROM requests AS req
           JOIN users_main AS um ON um.ID = req.FillerID
         AND req.TorrentID = $TorrentID");
-      $Requests = ($db->has_results());
+      $Requests = ($app->dbOld->has_results());
       if ($Requests > 0) {
-          while (list($RequestID, $FillerID, $FillerName, $FilledTime) = $db->next_record()) {
+          while (list($RequestID, $FillerID, $FillerName, $FilledTime) = $app->dbOld->next_record()) {
               ?>
             <div style="text-align: right;">
               <strong class="important_text"><a href="user.php?id=<?=$FillerID?>"><?=$FillerName?></a> used this torrent to fill <a href="requests.php?action=viewrequest&amp;id=<?=$RequestID?>">this request</a> <?=time_diff($FilledTime)?></strong>

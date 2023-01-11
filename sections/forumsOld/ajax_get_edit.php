@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 if (!check_perms('site_admin_forums')) {
     error(403);
 }
@@ -20,15 +23,15 @@ if (empty($_GET['type']) || !in_array($_GET['type'], array('forums', 'collages',
 }
 $Type = $_GET['type'];
 
-$Edits = $cache->get_value($Type.'_edits_'.$PostID);
+$Edits = $app->cacheOld->get_value($Type.'_edits_'.$PostID);
 if (!is_array($Edits)) {
-    $db->query("
+    $app->dbOld->query("
     SELECT EditUser, EditTime, Body
     FROM comments_edits
     WHERE Page = '$Type' AND PostID = $PostID
     ORDER BY EditTime DESC");
-    $Edits = $db->to_array();
-    $cache->cache_value($Type.'_edits_'.$PostID, $Edits, 0);
+    $Edits = $app->dbOld->to_array();
+    $app->cacheOld->cache_value($Type.'_edits_'.$PostID, $Edits, 0);
 }
 
 list($UserID, $Time) = $Edits[$Depth];
@@ -39,21 +42,21 @@ if ($Depth != 0) {
     switch ($Type) {
     case 'forums':
       //Get from normal forum stuffs
-      $db->query("
+      $app->dbOld->query("
         SELECT Body
         FROM forums_posts
         WHERE ID = $PostID");
-      list($Body) = $db->next_record();
+      list($Body) = $app->dbOld->next_record();
       break;
     case 'collages':
     case 'requests':
     case 'artist':
     case 'torrents':
-      $db->query("
+      $app->dbOld->query("
         SELECT Body
         FROM comments
         WHERE Page = '$Type' AND ID = $PostID");
-      list($Body) = $db->next_record();
+      list($Body) = $app->dbOld->next_record();
       break;
   }
 }

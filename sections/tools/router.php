@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+$app = App::go();
+
 /**
  * Flight router
  * @see https://flightphp.com/learn
@@ -109,14 +111,14 @@ switch ($_REQUEST['action']) {
     }
 
     if (is_number($_POST['newsid'])) {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
           UPDATE news
           SET Title = '".db_string($_POST['title'])."',
             Body = '".db_string($_POST['body'])."'
           WHERE ID = '".db_string($_POST['newsid'])."'");
 
-        $cache->delete_value('news');
-        $cache->delete_value('feed_news');
+        $app->cacheOld->delete_value('news');
+        $app->cacheOld->delete_value('feed_news');
     }
     Http::redirect("index.php");
     break;
@@ -128,18 +130,18 @@ switch ($_REQUEST['action']) {
 
     if (is_number($_GET['id'])) {
         authorize();
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
           DELETE FROM news
           WHERE ID = '".db_string($_GET['id'])."'");
 
-        $cache->delete_value('news');
-        $cache->delete_value('feed_news');
+        $app->cacheOld->delete_value('news');
+        $app->cacheOld->delete_value('feed_news');
 
         // Deleting latest news
-        $LatestNews = $cache->get_value('news_latest_id');
+        $LatestNews = $app->cacheOld->get_value('news_latest_id');
         if ($LatestNews !== false && $LatestNews === $_GET['id']) {
-            $cache->delete_value('news_latest_id');
-            $cache->delete_value('news_latest_title');
+            $app->cacheOld->delete_value('news_latest_id');
+            $app->cacheOld->delete_value('news_latest_title');
         }
     }
     Http::redirect("index.php");
@@ -150,13 +152,13 @@ switch ($_REQUEST['action']) {
         error(403);
     }
 
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
       INSERT INTO news (UserID, Title, Body, Time)
       VALUES ('$user[ID]', '".db_string($_POST['title'])."', '".db_string($_POST['body'])."', NOW())");
 
-    $cache->delete_value('news_latest_id');
-    $cache->delete_value('news_latest_title');
-    $cache->delete_value('news');
+    $app->cacheOld->delete_value('news_latest_id');
+    $app->cacheOld->delete_value('news_latest_title');
+    $app->cacheOld->delete_value('news');
 
     Http::redirect("index.php");
     break;
@@ -209,13 +211,13 @@ switch ($_REQUEST['action']) {
         //$Val->SetFields('test', true, 'number', 'You did not enter a valid level for this permission set.');
 
         if (is_numeric($_REQUEST['id'])) {
-            $db->prepared_query("
+            $app->dbOld->prepared_query("
               SELECT p.ID, p.Name, p.Abbreviation, p.Level, p.Secondary, p.PermittedForums, p.Values, p.DisplayStaff, COUNT(u.ID)
               FROM permissions AS p
                 LEFT JOIN users_main AS u ON u.PermissionID = p.ID
               WHERE p.ID = '".db_string($_REQUEST['id'])."'
               GROUP BY p.ID");
-            list($ID, $Name, $Abbreviation, $Level, $Secondary, $Forums, $Values, $DisplayStaff, $UserCount) = $db->next_record(MYSQLI_NUM, array(6));
+            list($ID, $Name, $Abbreviation, $Level, $Secondary, $Forums, $Values, $DisplayStaff, $UserCount) = $app->dbOld->next_record(MYSQLI_NUM, array(6));
 
             if ($Level > $user['EffectiveClass'] || (isset($_REQUEST['level']) && $_REQUEST['level'] > $user['EffectiveClass'])) {
                 error(403);
@@ -228,11 +230,11 @@ switch ($_REQUEST['action']) {
             $Err = $Val->ValidateForm($_POST);
 
             if (!is_numeric($_REQUEST['id'])) {
-                $db->prepared_query("
+                $app->dbOld->prepared_query("
                   SELECT ID
                   FROM permissions
                   WHERE Level = '".db_string($_REQUEST['level'])."'");
-                list($DupeCheck)=$db->next_record();
+                list($DupeCheck)=$app->dbOld->next_record();
 
                 if ($DupeCheck) {
                     $Err = 'There is already a permission class with that level.';
@@ -256,7 +258,7 @@ switch ($_REQUEST['action']) {
 
             if (!$Err) {
                 if (!is_numeric($_REQUEST['id'])) {
-                    $db->prepared_query("
+                    $app->dbOld->prepared_query("
                       INSERT INTO permissions (Level, Name, Abbreviation, Secondary, PermittedForums, `Values`, DisplayStaff)
                       VALUES ('".db_string($Level)."',
                         '".db_string($Name)."',
@@ -266,7 +268,7 @@ switch ($_REQUEST['action']) {
                         '".db_string(serialize($Values))."',
                         '".db_string($DisplayStaff)."')");
                 } else {
-                    $db->prepared_query("
+                    $app->dbOld->prepared_query("
                       UPDATE permissions
                       SET Level = '".db_string($Level)."',
                         Name = '".db_string($Name)."',
@@ -277,19 +279,19 @@ switch ($_REQUEST['action']) {
                         DisplayStaff = '".db_string($DisplayStaff)."'
                       WHERE ID = '".db_string($_REQUEST['id'])."'");
 
-                    $cache->delete_value('perm_'.$_REQUEST['id']);
+                    $app->cacheOld->delete_value('perm_'.$_REQUEST['id']);
                     if ($Secondary) {
-                        $db->prepared_query("
+                        $app->dbOld->prepared_query("
                           SELECT DISTINCT UserID
                           FROM users_levels
                           WHERE PermissionID = ".db_string($_REQUEST['id']));
 
-                        while (list($UserID) = $db->next_record()) {
-                            $cache->delete_value("user_info_heavy_$UserID");
+                        while (list($UserID) = $app->dbOld->next_record()) {
+                            $app->cacheOld->delete_value("user_info_heavy_$UserID");
                         }
                     }
                 }
-                $cache->delete_value('classes');
+                $app->cacheOld->delete_value('classes');
             } else {
                 error($Err);
             }
@@ -298,39 +300,39 @@ switch ($_REQUEST['action']) {
         include serverRoot.'/sections/tools/managers/permissions_alter.php';
     } else {
         if (!empty($_REQUEST['removeid'])) {
-            $db->prepared_query("
+            $app->dbOld->prepared_query("
               DELETE FROM permissions
               WHERE ID = '".db_string($_REQUEST['removeid'])."'");
 
-            $db->prepared_query("
+            $app->dbOld->prepared_query("
               SELECT UserID
               FROM users_levels
               WHERE PermissionID = '".db_string($_REQUEST['removeid'])."'");
 
-            while (list($UserID) = $db->next_record()) {
-                $cache->delete_value("user_info_$UserID");
-                $cache->delete_value("user_info_heavy_$UserID");
+            while (list($UserID) = $app->dbOld->next_record()) {
+                $app->cacheOld->delete_value("user_info_$UserID");
+                $app->cacheOld->delete_value("user_info_heavy_$UserID");
             }
-            $db->prepared_query("
+            $app->dbOld->prepared_query("
               DELETE FROM users_levels
               WHERE PermissionID = '".db_string($_REQUEST['removeid'])."'");
 
-            $db->prepared_query("
+            $app->dbOld->prepared_query("
               SELECT ID
               FROM users_main
               WHERE PermissionID = '".db_string($_REQUEST['removeid'])."'");
 
-            while (list($UserID) = $db->next_record()) {
-                $cache->delete_value("user_info_$UserID");
-                $cache->delete_value("user_info_heavy_$UserID");
+            while (list($UserID) = $app->dbOld->next_record()) {
+                $app->cacheOld->delete_value("user_info_$UserID");
+                $app->cacheOld->delete_value("user_info_heavy_$UserID");
             }
 
-            $db->prepared_query("
+            $app->dbOld->prepared_query("
               UPDATE users_main
               SET PermissionID = '".USER."'
               WHERE PermissionID = '".db_string($_REQUEST['removeid'])."'");
 
-            $cache->delete_value('classes');
+            $app->cacheOld->delete_value('classes');
         }
 
         include serverRoot.'/sections/tools/managers/permissions_list.php';

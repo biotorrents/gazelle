@@ -1,8 +1,10 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 // todo: Cache this
-$db->query("
+$app->dbOld->query("
   SELECT
     ca.ArtistID,
     ag.Name,
@@ -14,7 +16,7 @@ $db->query("
   WHERE ca.CollageID = '$CollageID'
   ORDER BY ca.Sort");
 
-$Artists = $db->to_array('ArtistID', MYSQLI_ASSOC);
+$Artists = $app->dbOld->to_array('ArtistID', MYSQLI_ASSOC);
 
 // Loop through the result set, building up $Collage and $TorrentTable
 // Then we print them.
@@ -234,7 +236,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
     <h3>Comments</h3>
     <?php
 if ($CommentList === null) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       c.ID,
       c.Body,
@@ -247,7 +249,7 @@ if ($CommentList === null) {
       AND c.PageID = $CollageID
     ORDER BY c.ID DESC
     LIMIT 15");
-    $CommentList = $db->to_array(false, MYSQLI_NUM);
+    $CommentList = $app->dbOld->to_array(false, MYSQLI_NUM);
 }
 
 foreach ($CommentList as $Comment) {

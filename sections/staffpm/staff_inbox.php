@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 View::header('Staff Inbox');
 
 $View = (isset($_GET['view'])) ? Text::esc($_GET['view']) : '';
@@ -56,7 +58,7 @@ if ($ViewString == 'Your Unanswered') {
 
 list($Page, $Limit) = Format::page_limit(MESSAGES_PER_PAGE);
 // Get messages
-$StaffPMs = $db->query("
+$StaffPMs = $app->dbOld->query("
   SELECT
     SQL_CALC_FOUND_ROWS
     spc.ID,
@@ -77,9 +79,9 @@ $StaffPMs = $db->query("
   LIMIT $Limit
 ");
 
-$db->query('SELECT FOUND_ROWS()');
-list($NumResults) = $db->next_record();
-$db->set_query_id($StaffPMs);
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
+$app->dbOld->set_query_id($StaffPMs);
 
 $CurURL = Format::get_url();
 if (empty($CurURL)) {
@@ -111,7 +113,7 @@ $Pages = Format::get_pages($Page, $NumResults, MESSAGES_PER_PAGE, 9);
   <div class="box pad" id="inbox">
     <?php
 
-if (!$db->has_results()) {
+if (!$app->dbOld->has_results()) {
     // No messages
 ?>
     <h2>No messages</h2>
@@ -147,7 +149,7 @@ if (!$db->has_results()) {
         <?php
 
   // List messages
-  while (list($ID, $Subject, $UserID, $Status, $Level, $AssignedToUser, $Date, $Unread, $NumReplies, $ResolverID) = $db->next_record()) {
+  while (list($ID, $Subject, $UserID, $Status, $Level, $AssignedToUser, $Date, $Unread, $NumReplies, $ResolverID) = $app->dbOld->next_record()) {
 
     //$UserInfo = User::user_info($UserID);
       $UserStr = User::format_username($UserID, true, true, true, true);
@@ -195,7 +197,7 @@ if (!$db->has_results()) {
         </tr>
         <?php
 
-    $db->set_query_id($StaffPMs);
+    $app->dbOld->set_query_id($StaffPMs);
   } //while
 
     // Close table and multiresolve form?>
@@ -207,7 +209,7 @@ if (!$db->has_results()) {
     </form>
     <?php
   }
-} //if (!$db->has_results())
+} //if (!$app->dbOld->has_results())
 ?>
   </div>
   <div class="linkbox">

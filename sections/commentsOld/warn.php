@@ -1,18 +1,21 @@
 <?php
+
+$app = App::go();
+
 if (!check_perms('users_warn')) {
     error(404);
 }
 Http::assertRequest($_POST, array('postid'));
 
 $PostID = (int)$_POST['postid'];
-$db->query("
+$app->dbOld->query("
   SELECT Body, AuthorID
   FROM comments
   WHERE ID = $PostID");
-if (!$db->has_results()) {
+if (!$app->dbOld->has_results()) {
     error(404);
 }
-list($PostBody, $AuthorID) = $db->next_record();
+list($PostBody, $AuthorID) = $app->dbOld->next_record();
 $UserInfo = User::user_info($AuthorID);
 
 View::header('Warn User');

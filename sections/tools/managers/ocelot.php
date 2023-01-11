@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 $ENV = ENV::go();
 
 $Key = $_REQUEST['key'];
@@ -33,9 +35,9 @@ switch ($Type) {
           UPDATE users_freeleeches
           SET Expired = TRUE
           WHERE ".implode(" OR ", $Cond);
-            $db->query($Query);
+            $app->dbOld->query($Query);
             foreach ($UserIDs as $UserID) {
-                $cache->delete_value("users_tokens_$UserID");
+                $app->cacheOld->delete_value("users_tokens_$UserID");
             }
         }
     } else {
@@ -44,12 +46,12 @@ switch ($Type) {
         if (!is_number($TorrentID) || !is_number($UserID)) {
             error(403);
         }
-        $db->query("
+        $app->dbOld->query("
         UPDATE users_freeleeches
         SET Expired = TRUE
         WHERE UserID = $UserID
           AND TorrentID = $TorrentID");
-        $cache->delete_value("users_tokens_$UserID");
+        $app->cacheOld->delete_value("users_tokens_$UserID");
     }
     break;
 }

@@ -1,11 +1,13 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 $GroupID = (int) $_GET['id'];
 $TorrentID = (int) $_GET['torrentid'];
 Security::int($GroupID, $TorrentID);
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
 SELECT
   t.`Media`,
   t.`FreeTorrent`,
@@ -30,7 +32,7 @@ WHERE
 ");
 
 
-list($Properties) = $db->to_array(false, MYSQLI_BOTH);
+list($Properties) = $app->dbOld->to_array(false, MYSQLI_BOTH);
 if (!$Properties) {
     error(404);
 }

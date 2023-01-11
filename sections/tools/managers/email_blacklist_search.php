@@ -1,5 +1,7 @@
 <?php
 
+$app = App::go();
+
 $Search = db_string($_GET['email']);
 $JSON = [];
 if (!check_perms('users_view_email') || empty($Search)) {
@@ -10,7 +12,7 @@ if (!check_perms('users_view_email') || empty($Search)) {
     $JSON['status'] = 'success';
 }
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT
     ID,
     UserID,
@@ -20,10 +22,10 @@ $db->prepared_query("
   FROM email_blacklist
   WHERE Email LIKE '%$Search%'");
 
-$EmailResults = $db->to_array(false, MYSQLI_ASSOC, false);
+$EmailResults = $app->dbOld->to_array(false, MYSQLI_ASSOC, false);
 
 $Results = [];
-$Count = $db->record_count();
+$Count = $app->dbOld->record_count();
 $Results['count'] = $Count;
 
 $Emails = [];

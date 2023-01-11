@@ -1,5 +1,7 @@
 <?php
 
+$app = App::go();
+
 // perform the back end of subscribing to topics
 authorize();
 
@@ -13,12 +15,12 @@ if (!is_number($_GET['topicid'])) {
 
 $TopicID = (int)$_GET['topicid'];
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT f.ID
   FROM forums_topics AS t
     JOIN forums AS f ON f.ID = t.ForumID
   WHERE t.ID = $TopicID");
-list($ForumID) = $db->next_record();
+list($ForumID) = $app->dbOld->next_record();
 if (!Forums::check_forumperm($ForumID)) {
     error();
 }

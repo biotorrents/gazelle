@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 if (!check_perms('users_view_invites')) {
     error(403);
 }
@@ -13,7 +15,7 @@ list($Page, $Limit) = Format::page_limit(INVITES_PER_PAGE);
 if (!empty($_POST['invitekey']) && check_perms('users_edit_invites')) {
     authorize();
 
-    $db->query("
+    $app->dbOld->query("
       DELETE FROM invites
       WHERE InviteKey = '".db_string($_POST['invitekey'])."'");
 }
@@ -43,11 +45,11 @@ if ($Search) {
 $sql .= "
   ORDER BY i.Expires DESC
   LIMIT $Limit";
-$RS = $db->query($sql);
+$RS = $app->dbOld->query($sql);
 
-$db->query('SELECT FOUND_ROWS()');
-list($Results) = $db->next_record();
-$db->set_query_id($RS);
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($Results) = $app->dbOld->next_record();
+$app->dbOld->set_query_id($RS);
 ?>
 
 <div class="header">
@@ -103,7 +105,7 @@ $db->set_query_id($RS);
   </tr>
 
   <?php
-  while (list($UserID, $IP, $InviteKey, $Expires, $Email) = $db->next_record()) {
+  while (list($UserID, $IP, $InviteKey, $Expires, $Email) = $app->dbOld->next_record()) {
       $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
       $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'; ?>
   <tr class="row">

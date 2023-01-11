@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 if (!($IsFLS)) {
     // Logged in user is not FLS or Staff
     error(403);
@@ -58,11 +61,11 @@ View::header('Staff PMs', 'staffpm');
 <?php
 
 // List common responses
-$db->query("
+$app->dbOld->query("
   SELECT ID, Message, Name
   FROM staff_pm_responses
   ORDER BY ID DESC");
-while (list($ID, $Message, $Name) = $db->next_record()) {
+while (list($ID, $Message, $Name) = $app->dbOld->next_record()) {
     ?>
     <br />
     <div id="ajax_message_<?=$ID?>" class="hidden center alertbar"></div>

@@ -1,5 +1,7 @@
 <?php
 
+$app = App::go();
+
 authorize();
 if (!check_perms('site_moderate_forums')) {
     error(404);
@@ -9,11 +11,11 @@ $ThreadID = $_GET['threadid'];
 $PollOption = $_GET['vote'];
 
 if (is_number($ThreadID) && is_number($PollOption)) {
-    $db->query("
+    $app->dbOld->query("
     SELECT ForumID
     FROM forums_topics
     WHERE ID = $ThreadID");
-    list($ForumID) = $db->next_record();
+    list($ForumID) = $app->dbOld->next_record();
 
     /*
     if (!in_array($ForumID, FORUMS_TO_REVEAL_VOTERS)) {
@@ -21,29 +23,29 @@ if (is_number($ThreadID) && is_number($PollOption)) {
     }
     */
 
-    $db->query("
+    $app->dbOld->query("
     SELECT Answers
     FROM forums_polls
     WHERE TopicID = $ThreadID");
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error(404);
     }
 
-    list($Answers) = $db->next_record(MYSQLI_NUM, false);
+    list($Answers) = $app->dbOld->next_record(MYSQLI_NUM, false);
     $Answers = unserialize($Answers);
     unset($Answers[$PollOption]);
     $Answers = serialize($Answers);
 
-    $db->query("
+    $app->dbOld->query("
     UPDATE forums_polls
     SET Answers = '".db_string($Answers)."'
     WHERE TopicID = $ThreadID");
-    $db->query("
+    $app->dbOld->query("
     DELETE FROM forums_polls_votes
     WHERE Vote = $PollOption
       AND TopicID = $ThreadID");
 
-    $cache->delete_value("polls_$ThreadID");
+    $app->cacheOld->delete_value("polls_$ThreadID");
     Http::redirect("forums.php?action=viewthread&threadid=$ThreadID");
 } else {
     error(404);

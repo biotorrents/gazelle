@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 /*
 User post history page
 */
@@ -52,13 +55,13 @@ if ($ShowGrouped) {
     GROUP BY t.ID
     ORDER BY p.ID DESC
     LIMIT $Limit";
-    $PostIDs = $db->query($sql);
-    $db->query('SELECT FOUND_ROWS()');
-    list($Results) = $db->next_record();
+    $PostIDs = $app->dbOld->query($sql);
+    $app->dbOld->query('SELECT FOUND_ROWS()');
+    list($Results) = $app->dbOld->next_record();
 
     if ($Results > $PerPage * ($Page - 1)) {
-        $db->set_query_id($PostIDs);
-        $PostIDs = $db->collect('ID');
+        $app->dbOld->set_query_id($PostIDs);
+        $PostIDs = $app->dbOld->collect('ID');
         $sql = "
       SELECT
         p.ID,
@@ -83,7 +86,7 @@ if ($ShowGrouped) {
             AND l.TopicID = t.ID
       WHERE p.ID IN (".implode(',', $PostIDs).')
       ORDER BY p.ID DESC';
-        $Posts = $db->query($sql);
+        $Posts = $app->dbOld->query($sql);
     }
 } else {
     $sql = '
@@ -139,12 +142,12 @@ if ($ShowGrouped) {
     }
 
     $sql .= " LIMIT $Limit";
-    $Posts = $db->query($sql);
+    $Posts = $app->dbOld->query($sql);
 
-    $db->query('SELECT FOUND_ROWS()');
-    list($Results) = $db->next_record();
+    $app->dbOld->query('SELECT FOUND_ROWS()');
+    list($Results) = $app->dbOld->next_record();
 
-    $db->set_query_id($Posts);
+    $app->dbOld->set_query_id($Posts);
 }
 
 ?>
@@ -182,14 +185,14 @@ if ($ViewingOwn) {
 <?php } else { ?>
       <a href="userhistory.php?action=posts&amp;userid=<?=$UserID?>&amp;showunread=1&amp;group=0" class="brackets">Only display posts with unread replies</a>&nbsp;&nbsp;&nbsp;
 <?php }
-  } ?>
+} ?>
       <a href="userhistory.php?action=subscriptions" class="brackets">Go to subscriptions</a>
 <?php
 } else {
-      ?>
+    ?>
       <a href="forums.php?action=search&amp;type=body&amp;user=<?=$Username?>" class="brackets">Search</a>
 <?php
-  }
+}
 ?>
     </div>
   </div>
@@ -201,16 +204,16 @@ if (empty($Results)) {
   </div>
 <?php
 } else {
-        ?>
+    ?>
   <div class="linkbox">
 <?php
   $Pages = Format::get_pages($Page, $Results, $PerPage, 11);
-        echo $Pages; ?>
+    echo $Pages; ?>
   </div>
 <?php
-  $QueryID = $db->get_query_id();
-        while (list($PostID, $AddedTime, $Body, $EditedUserID, $EditedTime, $EditedUsername, $TopicID, $ThreadTitle, $LastPostID, $LastRead, $Locked, $Sticky) = $db->next_record()) {
-            ?>
+  $QueryID = $app->dbOld->get_query_id();
+    while (list($PostID, $AddedTime, $Body, $EditedUserID, $EditedTime, $EditedUsername, $TopicID, $ThreadTitle, $LastPostID, $LastRead, $Locked, $Sticky) = $app->dbOld->next_record()) {
+        ?>
   <table class="box forum_post vertical_margin<?=!User::hasAvatarsEnabled() ? ' noavatar' : '' ?>" id="post<?=$PostID ?>">
     <colgroup>
 <?php if (User::hasAvatarsEnabled()) { ?>
@@ -228,18 +231,18 @@ if (empty($Results)) {
         if ((!$Locked || $Sticky) && (!$LastRead || $LastRead < $LastPostID)) { ?>
           <span class="new">(New!)</span>
 <?php
-      } ?>
+        } ?>
         </span>
 <?php if (!empty($LastRead)) { ?>
         <span class="u-pull-left tooltip last_read" title="Jump to last read">
           <a href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>&amp;postid=<?=$LastRead?>#post<?=$LastRead?>"></a>
         </span>
 <?php }
-    } else {
-        ?>
+} else {
+    ?>
         </span>
 <?php
-    } ?>
+} ?>
         <span id="bar<?=$PostID ?>" class="u-pull-right">
 <?php if ($ViewingOwn && !in_array($TopicID, $UserSubscriptions)) { ?>
           <a href="#" onclick="Subscribe(<?=$TopicID?>); $('.subscribelink<?=$TopicID?>').remove(); return false;" class="brackets subscribelink<?=$TopicID?>">Subscribe</a>
@@ -250,8 +253,8 @@ if (empty($Results)) {
       </td>
     </tr>
 <?php
-    if (!$ShowGrouped) {
-        ?>
+if (!$ShowGrouped) {
+    ?>
     <tr>
 <?php if (User::hasAvatarsEnabled()) { ?>
       <td class="avatar" valign="top">
@@ -274,15 +277,15 @@ if (empty($Results)) {
       </td>
     </tr>
 <?php
-    }
-            $db->set_query_id($QueryID); ?>
+}
+        $app->dbOld->set_query_id($QueryID); ?>
   </table>
 <?php
-        } ?>
+    } ?>
   <div class="linkbox">
 <?=$Pages?>
   </div>
 <?php
-    } ?>
+} ?>
 </div>
 <?php View::footer(); ?>

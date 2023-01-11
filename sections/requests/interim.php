@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 if (!isset($_GET['id']) || !is_number($_GET['id'])) {
     error(404);
 }
@@ -8,11 +11,11 @@ if ($Action !== 'unfill' && $Action !== 'delete') {
     error(404);
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT UserID, FillerID
   FROM requests
   WHERE ID = ".$_GET['id']);
-list($RequestorID, $FillerID) = $db->next_record();
+list($RequestorID, $FillerID) = $app->dbOld->next_record();
 
 if ($Action === 'unfill') {
     if ($user['ID'] !== $RequestorID && $user['ID'] !== $FillerID && !check_perms('site_moderate_requests')) {

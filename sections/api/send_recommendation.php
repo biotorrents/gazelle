@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+$app = App::go();
+
 $FriendID = (int) $_POST['friend'];
 $Type = $_POST['type'];
 $ID = (int) $_POST['id'];
@@ -13,7 +15,7 @@ if (empty($FriendID) || empty($Type) || empty($ID)) {
 }
 
 // Make sure the recipient is on your friends list and not some random dude.
-$db->prepared_query("
+$app->dbOld->prepared_query("
 SELECT
   f.`FriendID`,
   u.`Username`
@@ -30,7 +32,7 @@ WHERE
 ");
 
 
-if (!$db->has_results()) {
+if (!$app->dbOld->has_results()) {
     echo json_encode(array('status' => 'error', 'response' => 'Not on friend list.'));
     error();
 }
@@ -43,7 +45,7 @@ $Article = 'a';
 switch ($Type) {
     case 'torrent':
     $Link = "torrents.php?id=$ID";
-    $db->query("
+    $app->dbOld->query("
     SELECT
       `title`
     FROM
@@ -56,7 +58,7 @@ switch ($Type) {
     case 'artist':
     $Article = 'an';
     $Link = "artist.php?id=$ID";
-    $db->query("
+    $app->dbOld->query("
     SELECT
       `Name`
     FROM
@@ -68,7 +70,7 @@ switch ($Type) {
 
     case 'collage':
     $Link = "collages.php?id=$ID";
-    $db->query("
+    $app->dbOld->query("
     SELECT
       `Name`
     FROM
@@ -82,7 +84,7 @@ switch ($Type) {
     break;
 }
 
-list($Name) = $db->next_record();
+list($Name) = $app->dbOld->next_record();
 $Subject = $user['Username'] . " recommended you $Article $Type!";
 $Body = $user['Username'] . " recommended you the $Type [url=".site_url()."$Link]$Name".'[/url].';
 

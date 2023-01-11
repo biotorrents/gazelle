@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 if (!check_perms('users_warn')) {
     error(404);
 }
@@ -11,7 +13,7 @@ $UserID = (int) $_POST['userid'];
 $Key = (int) $_POST['key'];
 $UserInfo = User::user_info($UserID);
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT p.Body, t.ForumID
   FROM forums_posts AS p
     JOIN forums_topics AS t ON p.TopicID = t.ID

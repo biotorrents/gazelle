@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 if (!isset($_GET['torrentid']) || !is_number($_GET['torrentid'])) {
     error(404);
 }
@@ -12,7 +15,7 @@ if (!empty($_GET['page']) && is_number($_GET['page'])) {
     $Limit = 100;
 }
 
-$Result = $db->query("
+$Result = $app->dbOld->query("
   SELECT
     SQL_CALC_FOUND_ROWS
     xu.uid,
@@ -29,9 +32,9 @@ $Result = $db->query("
     AND um.Visible = '1'
   ORDER BY xu.uid = '$user[ID]' DESC, xu.uploaded DESC
   LIMIT $Limit");
-$db->query('SELECT FOUND_ROWS()');
-list($NumResults) = $db->next_record();
-$db->set_query_id($Result);
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
+$app->dbOld->set_query_id($Result);
 
 ?>
 <h4>Peer List</h4>
@@ -49,7 +52,7 @@ $db->set_query_id($Result);
     <td>Client</td>
   </tr>
 <?php
-while (list($PeerUserID, $Size, $Active, $Connectable, $Uploaded, $Remaining, $UserAgent) = $db->next_record()) {
+while (list($PeerUserID, $Size, $Active, $Connectable, $Uploaded, $Remaining, $UserAgent) = $app->dbOld->next_record()) {
     ?>
   <tr class="row">
 <?php

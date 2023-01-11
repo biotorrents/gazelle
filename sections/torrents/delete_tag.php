@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 if (!empty($user['DisableTagging']) || !check_perms('site_delete_tag')) {
     error(403);
 }
@@ -13,44 +15,44 @@ if (!is_number($TagID) || !is_number($GroupID)) {
     error(404);
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT Name
   FROM tags
   WHERE ID = '$TagID'");
 
-if (list($TagName) = $db->next_record()) {
-    $db->query("
+if (list($TagName) = $app->dbOld->next_record()) {
+    $app->dbOld->query("
       INSERT INTO group_log
         (GroupID, UserID, Time, Info)
       VALUES
         ('$GroupID',".$user['ID'].", NOW(),'".db_string('Tag "'.$TagName.'" removed from group')."')");
 }
 
-$db->query("
+$app->dbOld->query("
   DELETE FROM torrents_tags
   WHERE GroupID = '$GroupID'
     AND TagID = '$TagID'");
 
 Torrents::update_hash($GroupID);
 
-$db->query("
+$app->dbOld->query("
   SELECT COUNT(GroupID)
   FROM torrents_tags
   WHERE TagID = $TagID");
-list($Count) = $db->next_record();
+list($Count) = $app->dbOld->next_record();
 
 if ($Count < 1) {
-    $db->query("
+    $app->dbOld->query("
     SELECT Name
     FROM tags
     WHERE ID = $TagID");
-    list($TagName) = $db->next_record();
+    list($TagName) = $app->dbOld->next_record();
 
-    $db->query("
+    $app->dbOld->query("
     DELETE FROM tags
     WHERE ID = $TagID");
 }
 
 // Cache the deleted tag for 5 minutes
-$cache->cache_value('deleted_tags_'.$GroupID.'_'.$user['ID'], $TagName, 300);
+$app->cacheOld->cache_value('deleted_tags_'.$GroupID.'_'.$user['ID'], $TagName, 300);
 header('Location: '.$_SERVER['HTTP_REFERER']);

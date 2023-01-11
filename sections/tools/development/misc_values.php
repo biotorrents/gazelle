@@ -56,7 +56,7 @@ exit;
 
 if (!check_perms('admin_manage_permissions')) {
     View::header('Site Options');
-    $db->prepared_query("SELECT Name, First, Second FROM misc"); ?>
+    $app->dbOld->prepared_query("SELECT Name, First, Second FROM misc"); ?>
 
 <div class="header">
   <h1>Miscellaneous Values</h1>
@@ -70,7 +70,7 @@ if (!check_perms('admin_manage_permissions')) {
   </tr>
 
   <?php
-  while (list($Name, $First, $Second) = $db->next_record()) {
+  while (list($Name, $First, $Second) = $app->dbOld->next_record()) {
       ?>
   <tr class="row">
     <td>
@@ -99,7 +99,7 @@ if (isset($_POST['submit'])) {
 
     if ($_POST['submit'] === 'Delete') {
         $Name = db_string($_POST['name']);
-        $db->prepared_query("DELETE FROM misc WHERE Name = '" . $Name . "'");
+        $app->dbOld->prepared_query("DELETE FROM misc WHERE Name = '" . $Name . "'");
     } else {
         $Val->SetFields('name', '1', 'regex', 'The name must be separated by underscores. No spaces are allowed.', array('regex' => '/^[a-z][:_a-z0-9]{0,63}$/i'));
         $Val->SetFields('first', '1', 'string', 'You must specify the first value.');
@@ -115,10 +115,10 @@ if (isset($_POST['submit'])) {
         $Second = db_string($_POST['second']);
 
         if ($_POST['submit'] === 'Edit') {
-            $db->prepared_query("SELECT Name FROM misc WHERE ID = '" . db_string($_POST['id']) . "'");
-            list($OldName) = $db->next_record();
+            $app->dbOld->prepared_query("SELECT Name FROM misc WHERE ID = '" . db_string($_POST['id']) . "'");
+            list($OldName) = $app->dbOld->next_record();
 
-            $db->prepared_query("
+            $app->dbOld->prepared_query("
               UPDATE misc
               SET
                 Name = '$Name',
@@ -127,7 +127,7 @@ if (isset($_POST['submit'])) {
               WHERE ID = '" . db_string($_POST['id']) . "'
             ");
         } else {
-            $db->prepared_query("
+            $app->dbOld->prepared_query("
               INSERT INTO misc (Name, First, Second)
               VALUES ('$Name', '$First', '$Second')
             ");
@@ -135,7 +135,7 @@ if (isset($_POST['submit'])) {
     }
 }
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT
     ID,
     Name,
@@ -188,7 +188,7 @@ View::header('Miscellaneous Values');
     </tr>
 
     <?php
-while (list($ID, $Name, $First, $Second) = $db->next_record()) {
+while (list($ID, $Name, $First, $Second) = $app->dbOld->next_record()) {
     ?>
     <tr>
       <form class="manage_form" name="misc_values" action="" method="post">

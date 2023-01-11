@@ -620,7 +620,7 @@ class Stats
         return $trackerEconomy;
 
         /*
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
         SELECT COUNT(ID)
         FROM users_main
         WHERE (
@@ -868,13 +868,13 @@ class Stats
       <?php
 }
 
-if (($UserCount = $cache->get_value('stats_user_count')) === false) {
-    $db->query("
+if (($UserCount = $app->cacheOld->get_value('stats_user_count')) === false) {
+    $app->dbOld->query("
     SELECT COUNT(ID)
     FROM users_main
     WHERE Enabled = '1'");
-    list($UserCount) = $db->next_record();
-    $cache->cache_value('stats_user_count', $UserCount, 86400);
+    list($UserCount) = $app->dbOld->next_record();
+    $app->cacheOld->cache_value('stats_user_count', $UserCount, 86400);
 }
 $UserCount = (int)$UserCount;
 ?>
@@ -885,29 +885,29 @@ $UserCount = (int)$UserCount;
       </li>
       <?php
 
-if (($UserStats = $cache->get_value('stats_users')) === false) {
-    $db->query("
+if (($UserStats = $app->cacheOld->get_value('stats_users')) === false) {
+    $app->dbOld->query("
     SELECT COUNT(ID)
     FROM users_main
     WHERE Enabled = '1'
       AND LastAccess > '".time_minus(3600 * 24)."'");
-    list($UserStats['Day']) = $db->next_record();
+    list($UserStats['Day']) = $app->dbOld->next_record();
 
-    $db->query("
+    $app->dbOld->query("
     SELECT COUNT(ID)
     FROM users_main
     WHERE Enabled = '1'
       AND LastAccess > '".time_minus(3600 * 24 * 7)."'");
-    list($UserStats['Week']) = $db->next_record();
+    list($UserStats['Week']) = $app->dbOld->next_record();
 
-    $db->query("
+    $app->dbOld->query("
     SELECT COUNT(ID)
     FROM users_main
     WHERE Enabled = '1'
       AND LastAccess > '".time_minus(3600 * 24 * 30)."'");
-    list($UserStats['Month']) = $db->next_record();
+    list($UserStats['Month']) = $app->dbOld->next_record();
 
-    $cache->cache_value('stats_users', $UserStats, 0);
+    $app->cacheOld->cache_value('stats_users', $UserStats, 0);
 }
 ?>
       <li>Users active today: <?=Text::float($UserStats['Day'])?>
@@ -921,28 +921,28 @@ if (($UserStats = $cache->get_value('stats_users')) === false) {
       </li>
       <?php
 
-if (($TorrentCount = $cache->get_value('stats_torrent_count')) === false) {
-    $db->query("
+if (($TorrentCount = $app->cacheOld->get_value('stats_torrent_count')) === false) {
+    $app->dbOld->query("
     SELECT COUNT(ID)
     FROM torrents");
-    list($TorrentCount) = $db->next_record();
-    $cache->cache_value('stats_torrent_count', $TorrentCount, 86400); // 1 day cache
+    list($TorrentCount) = $app->dbOld->next_record();
+    $app->cacheOld->cache_value('stats_torrent_count', $TorrentCount, 86400); // 1 day cache
 }
 
-if (($GroupCount = $cache->get_value('stats_group_count')) === false) {
-    $db->query("
+if (($GroupCount = $app->cacheOld->get_value('stats_group_count')) === false) {
+    $app->dbOld->query("
     SELECT COUNT(ID)
     FROM torrents_group");
-    list($GroupCount) = $db->next_record();
-    $cache->cache_value('stats_group_count', $GroupCount, 86400); // 1 day cache
+    list($GroupCount) = $app->dbOld->next_record();
+    $app->cacheOld->cache_value('stats_group_count', $GroupCount, 86400); // 1 day cache
 }
 
-if (($TorrentSizeTotal = $cache->get_value('stats_torrent_size_total')) === false) {
-    $db->query("
+if (($TorrentSizeTotal = $app->cacheOld->get_value('stats_torrent_size_total')) === false) {
+    $app->dbOld->query("
     SELECT SUM(Size)
     FROM torrents");
-    list($TorrentSizeTotal) = $db->next_record();
-    $cache->cache_value('stats_torrent_size_total', $TorrentSizeTotal, 86400); // 1 day cache
+    list($TorrentSizeTotal) = $app->dbOld->next_record();
+    $app->cacheOld->cache_value('stats_torrent_size_total', $TorrentSizeTotal, 86400); // 1 day cache
 }
 ?>
       <li>
@@ -951,12 +951,12 @@ if (($TorrentSizeTotal = $cache->get_value('stats_torrent_size_total')) === fals
       </li>
 
       <?php
-if (($ArtistCount = $cache->get_value('stats_artist_count')) === false) {
-    $db->query("
+if (($ArtistCount = $app->cacheOld->get_value('stats_artist_count')) === false) {
+    $app->dbOld->query("
     SELECT COUNT(ArtistID)
     FROM artists_group");
-    list($ArtistCount) = $db->next_record();
-    $cache->cache_value('stats_artist_count', $ArtistCount, 86400); // 1 day cache
+    list($ArtistCount) = $app->dbOld->next_record();
+    $app->cacheOld->cache_value('stats_artist_count', $ArtistCount, 86400); // 1 day cache
 }
 
 ?>
@@ -973,17 +973,17 @@ if (($ArtistCount = $cache->get_value('stats_artist_count')) === false) {
       <?php
 // End Torrent Stats
 
-if (($RequestStats = $cache->get_value('stats_requests')) === false) {
-    $db->query("
+if (($RequestStats = $app->cacheOld->get_value('stats_requests')) === false) {
+    $app->dbOld->query("
     SELECT COUNT(ID)
     FROM requests");
-    list($RequestCount) = $db->next_record();
-    $db->query("
+    list($RequestCount) = $app->dbOld->next_record();
+    $app->dbOld->query("
     SELECT COUNT(ID)
     FROM requests
     WHERE FillerID > 0");
-    list($FilledCount) = $db->next_record();
-    $cache->cache_value('stats_requests', array($RequestCount, $FilledCount), 11280);
+    list($FilledCount) = $app->dbOld->next_record();
+    $app->cacheOld->cache_value('stats_requests', array($RequestCount, $FilledCount), 11280);
 } else {
     list($RequestCount, $FilledCount) = $RequestStats;
 }
@@ -999,28 +999,28 @@ if ($RequestCount > 0) {
       <li>Requests: <?=Text::float($RequestCount)?> (<?=Text::float($RequestsFilledPercent, 2)?>% filled)</li>
       <?php
 
-if ($SnatchStats = $cache->get_value('stats_snatches')) {
+if ($SnatchStats = $app->cacheOld->get_value('stats_snatches')) {
     ?>
       <li>Snatches: <?=Text::float($SnatchStats)?>
       </li>
       <?php
 }
 
-if (($PeerStats = $cache->get_value('stats_peers')) === false) {
+if (($PeerStats = $app->cacheOld->get_value('stats_peers')) === false) {
     // Cache lock!
-    $PeerStatsLocked = $cache->get_value('stats_peers_lock');
+    $PeerStatsLocked = $app->cacheOld->get_value('stats_peers_lock');
     if (!$PeerStatsLocked) {
-        $cache->cache_value('stats_peers_lock', 1, 30);
-        $db->query("
+        $app->cacheOld->cache_value('stats_peers_lock', 1, 30);
+        $app->dbOld->query("
       SELECT IF(remaining=0,'Seeding','Leeching') AS Type, COUNT(uid)
       FROM xbt_files_users
       WHERE active = 1
       GROUP BY Type");
-        $PeerCount = $db->to_array(0, MYSQLI_NUM, false);
+        $PeerCount = $app->dbOld->to_array(0, MYSQLI_NUM, false);
         $SeederCount = $PeerCount['Seeding'][1] ?: 0;
         $LeecherCount = $PeerCount['Leeching'][1] ?: 0;
-        $cache->cache_value('stats_peers', array($LeecherCount, $SeederCount), 604800); // 1 week cache
-        $cache->delete_value('stats_peers_lock');
+        $app->cacheOld->cache_value('stats_peers', array($LeecherCount, $SeederCount), 604800); // 1 week cache
+        $app->cacheOld->delete_value('stats_peers_lock');
     }
 } else {
     $PeerStatsLocked = false;

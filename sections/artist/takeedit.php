@@ -43,28 +43,28 @@ if ($_GET['action'] === 'revert') { // if we're reverting to a previous revision
 
 // Insert revision
 if (!$RevisionID) { // edit
-  $db->query("
+  $app->dbOld->query("
     INSERT INTO wiki_artists
       (PageID, Body, Image, UserID, Summary, Time)
     VALUES
       ('$ArtistID', '$Body', '$Image', '$UserID', '$Summary', NOW())");
 } else { // revert
-    $db->query("
+    $app->dbOld->query("
     INSERT INTO wiki_artists (PageID, Body, Image, UserID, Summary, Time)
     SELECT '$ArtistID', Body, Image, '$UserID', 'Reverted to revision $RevisionID', NOW()
     FROM wiki_artists
     WHERE RevisionID = '$RevisionID'");
 }
 
-$RevisionID = $db->inserted_id();
+$RevisionID = $app->dbOld->inserted_id();
 
 // Update artists table (technically, we don't need the RevisionID column, but we can use it for a join which is nice and fast)
-$db->query("
+$app->dbOld->query("
   UPDATE artists_group
   SET
     RevisionID = '$RevisionID'
   WHERE ArtistID = '$ArtistID'");
 
 // There we go, all done!
-$cache->delete_value("artist_$ArtistID"); // Delete artist cache
+$app->cacheOld->delete_value("artist_$ArtistID"); // Delete artist cache
 Http::redirect("artist.php?id=$ArtistID");

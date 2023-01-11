@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+$app = App::go();
+
 /**
  * Edit torrent group wiki page
  *
@@ -12,7 +14,7 @@ $group_id = (int) $_GET['groupid'];
 Security::int($group_id);
 
 // Get the torrent group name and the body of the last revision
-$db->prepared_query("
+$app->dbOld->prepared_query("
 SELECT
   tg.`title`,
   tg.`subject`,
@@ -36,12 +38,12 @@ WHERE
 ");
 
 
-if (!$db->has_results()) {
+if (!$app->dbOld->has_results()) {
     error(404);
 }
-list($title, $subject, $object, $Image, $Body, $picture, $description, $published, $workgroup, $location, $identifier, $category_id) = $db->next_record();
+list($title, $subject, $object, $Image, $Body, $picture, $description, $published, $workgroup, $location, $identifier, $category_id) = $app->dbOld->next_record();
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
 SELECT
   `id`,
   `user_id`,
@@ -54,9 +56,9 @@ WHERE
 ");
 
 
-if ($db->has_results()) {
+if ($app->dbOld->has_results()) {
     $Screenshots = [];
-    while ($S = $db->next_record(MYSQLI_ASSOC, true)) {
+    while ($S = $app->dbOld->next_record(MYSQLI_ASSOC, true)) {
         $Screenshots[] = $S;
     }
 }
@@ -105,7 +107,7 @@ View::textarea(
     value: Text::esc($Body) ?? '',
 );
 
-  $db->query("
+  $app->dbOld->query("
   SELECT
     `UserID`
   FROM
@@ -113,7 +115,7 @@ View::textarea(
   WHERE
     `GroupID` = '$group_id'
   ");
-  $Contributed = in_array($user['ID'], $db->collect('UserID'));
+  $Contributed = in_array($user['ID'], $app->dbOld->collect('UserID'));
 ?>
 
     <h3>

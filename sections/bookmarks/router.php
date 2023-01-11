@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+$app = App::go();
+
 /**
  * Flight router
  * @see https://flightphp.com/learn
@@ -40,25 +42,25 @@ switch ($_REQUEST['action']) {
 
   case 'remove_snatched':
     authorize();
-    $db->query("
+    $app->dbOld->query("
       CREATE TEMPORARY TABLE snatched_groups_temp
         (GroupID int PRIMARY KEY)");
 
-    $db->query("
+    $app->dbOld->query("
       INSERT INTO snatched_groups_temp
       SELECT DISTINCT GroupID
       FROM torrents AS t
         JOIN xbt_snatched AS s ON s.fid = t.ID
       WHERE s.uid = '$user[ID]'");
 
-    $db->query("
+    $app->dbOld->query("
       DELETE b
       FROM bookmarks_torrents AS b
         JOIN snatched_groups_temp AS s
       USING(GroupID)
       WHERE b.UserID = '$user[ID]'");
 
-    $cache->delete_value("bookmarks_group_ids_$UserID");
+    $app->cacheOld->delete_value("bookmarks_group_ids_$UserID");
     Http::redirect("bookmarks.php");
     error();
     break;

@@ -387,12 +387,12 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
 
     <?php
      if (check_perms('users_view_ips', $Class)) {
-         $db->query("
+         $app->dbOld->query("
         SELECT COUNT(DISTINCT IP)
         FROM xbt_snatched
         WHERE uid = '$UserID'
           AND IP != ''");
-         list($TrackerIPs) = $db->next_record();
+         list($TrackerIPs) = $app->dbOld->next_record();
      }
       ?>
     <div class="box box_info box_userinfo_history">
@@ -448,11 +448,11 @@ if (check_perms('users_view_invites')) {
         </li>
         <li>Invites:
           <?php
-        $db->query("
+        $app->dbOld->query("
           SELECT COUNT(InviterID)
           FROM invites
           WHERE InviterID = '$UserID'");
-    list($Pending) = $db->next_record();
+    list($Pending) = $app->dbOld->next_record();
     if ($DisableInvites) {
         echo 'X';
     } else {
@@ -465,11 +465,11 @@ if (check_perms('users_view_invites')) {
 }
 
 if (!isset($SupportFor)) {
-    $db->query('
+    $app->dbOld->query('
     SELECT SupportFor
     FROM users_info
     WHERE UserID = '.$user['ID']);
-    list($SupportFor) = $db->next_record();
+    list($SupportFor) = $app->dbOld->next_record();
 }
 
 
@@ -511,7 +511,7 @@ if ((check_perms('users_view_invites')) && $Invited > 0) {
 $IsFLS = isset($user['ExtraClasses'][FLS_TEAM]);
 if (check_perms('users_mod', $Class) || $IsFLS) {
     $UserLevel = $user['EffectiveClass'];
-    $db->query("
+    $app->dbOld->query("
     SELECT
       SQL_CALC_FOUND_ROWS
       ID,
@@ -525,8 +525,8 @@ if (check_perms('users_mod', $Class) || $IsFLS) {
     WHERE UserID = $UserID
       AND (Level <= $UserLevel OR AssignedToUser = '".$user['ID']."')
     ORDER BY Date DESC");
-    if ($db->has_results()) {
-        $StaffPMs = $db->to_array(); ?>
+    if ($app->dbOld->has_results()) {
+        $StaffPMs = $app->dbOld->to_array(); ?>
   <div class="box" id="staffpms_box">
     <div class="head">
       Staff PMs <a data-toggle-target="#staffpms" class="brackets u-pull-right">Toggle</a>
@@ -579,12 +579,12 @@ if (check_perms('users_mod', $Class) || $IsFLS) {
 
 // Displays a table of forum warnings viewable only to Forum Moderators
 if ($user['Class'] == 650 && check_perms('users_warn', $Class)) {
-    $db->query("
+    $app->dbOld->query("
     SELECT Comment
     FROM users_warnings_forums
     WHERE UserID = '$UserID'");
-    list($ForumWarnings) = $db->next_record();
-    if ($db->has_results()) {
+    list($ForumWarnings) = $app->dbOld->next_record();
+    if ($app->dbOld->has_results()) {
         ?>
   <div class="box">
     <div class="head">Forum warnings</div>
@@ -707,14 +707,14 @@ if (check_perms('users_mod', $Class)) { ?>
         <td class="label">Secondary classes:</td>
         <td>
           <?php
-    $db->query("
+    $app->dbOld->query("
       SELECT p.ID, p.Name, l.UserID
       FROM permissions AS p
         LEFT JOIN users_levels AS l ON l.PermissionID = p.ID AND l.UserID = '$UserID'
       WHERE p.Secondary = 1
       ORDER BY p.Name");
     $i = 0;
-    while (list($PermID, $PermName, $IsSet) = $db->next_record()) {
+    while (list($PermID, $PermName, $IsSet) = $app->dbOld->next_record()) {
         $i++; ?>
           <input type="checkbox" id="perm_<?=$PermID?>"
             name="secondary_classes[]" value="<?=$PermID?>" <?php if ($IsSet) { ?> checked="checked"
@@ -769,7 +769,7 @@ if (check_perms('users_mod', $Class)) { ?>
           <?php
 if (!$DisablePoints) {
           $PointsRate = 0;
-          $getTorrents = $db->query("
+          $getTorrents = $app->dbOld->query("
     SELECT COUNT(DISTINCT x.fid) AS Torrents,
            SUM(t.Size) AS Size,
            SUM(xs.seedtime) AS Seedtime,
@@ -786,8 +786,8 @@ if (!$DisablePoints) {
       AND x.completed = 0
       AND x.Remaining = 0
     GROUP BY um.ID");
-          if ($db->has_results()) {
-              list($NumTorr, $TSize, $TTime, $TSeeds) = $db->next_record();
+          if ($app->dbOld->has_results()) {
+              list($NumTorr, $TSize, $TTime, $TSeeds) = $app->dbOld->next_record();
 
               $ENV = ENV::go();
               $PointsRate = ($ENV->BP_COEFF + (0.55*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5, ($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3)))**0.95;

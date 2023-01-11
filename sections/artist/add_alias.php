@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 authorize();
 
 if (!check_perms('torrents_edit')) {
@@ -31,12 +33,12 @@ if ($AliasName == '') {
  * 3. For foo, there's two, same ArtistID, diff names, no redirect
  */
 
-$db->query("
+$app->dbOld->query("
   SELECT AliasID, ArtistID, Name, Redirect
   FROM artists_alias
   WHERE Name = '$dbAliasName'");
-if ($db->has_results()) {
-    while (list($CloneAliasID, $CloneArtistID, $CloneAliasName, $CloneRedirect) = $db->next_record(MYSQLI_NUM, false)) {
+if ($app->dbOld->has_results()) {
+    while (list($CloneAliasID, $CloneArtistID, $CloneAliasName, $CloneRedirect) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
         if (!strcasecmp($CloneAliasName, $AliasName)) {
             break;
         }
@@ -44,7 +46,7 @@ if ($db->has_results()) {
     if ($CloneAliasID) {
         if ($ArtistID == $CloneArtistID && $Redirect == 0) {
             if ($CloneRedirect != 0) {
-                $db->query("
+                $app->dbOld->query("
           UPDATE artists_alias
           SET ArtistID = '$ArtistID', Redirect = 0
           WHERE AliasID = '$CloneAliasID'");
@@ -59,14 +61,14 @@ if ($db->has_results()) {
 }
 if (!$CloneAliasID) {
     if ($Redirect) {
-        $db->query("
+        $app->dbOld->query("
       SELECT ArtistID, Redirect
       FROM artists_alias
       WHERE AliasID = $Redirect");
-        if (!$db->has_results()) {
+        if (!$app->dbOld->has_results()) {
             error('Cannot redirect to a nonexistent artist alias.');
         }
-        list($FoundArtistID, $FoundRedirect) = $db->next_record();
+        list($FoundArtistID, $FoundRedirect) = $app->dbOld->next_record();
         if ($ArtistID != $FoundArtistID) {
             error('Redirection must target an alias for the current artist.');
         }
@@ -74,18 +76,18 @@ if (!$CloneAliasID) {
             $Redirect = $FoundRedirect;
         }
     }
-    $db->query("
+    $app->dbOld->query("
     INSERT INTO artists_alias
       (ArtistID, Name, Redirect, UserID)
     VALUES
       ($ArtistID, '$dbAliasName', $Redirect, ".$user['ID'].')');
-    $AliasID = $db->inserted_id();
+    $AliasID = $app->dbOld->inserted_id();
 
-    $db->query("
+    $app->dbOld->query("
     SELECT Name
     FROM artists_group
     WHERE ArtistID = $ArtistID");
-    list($ArtistName) = $db->next_record(MYSQLI_NUM, false);
+    list($ArtistName) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
     Misc::write_log("The alias $AliasID ($dbAliasName) was added to the artist $ArtistID (".db_string($ArtistName).') by user '.$user['ID'].' ('.$user['Username'].')');
 }

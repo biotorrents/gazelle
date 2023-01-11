@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+$app = App::go();
+
 /**********|| Page to show individual threads || ********************************\
 
 Things to expect in $_GET:
@@ -20,11 +22,11 @@ $CollageID = (int)$_GET['collageid'];
 
 list($NumComments, $Page, $Thread, $LastRead) = Comments::load('collages', $CollageID);
 
-$db->query("
+$app->dbOld->query("
   SELECT Name
   FROM collages
   WHERE ID = '$CollageID'");
-list($Name) = $db->next_record();
+list($Name) = $app->dbOld->next_record();
 
 // Start printing
 View::header(

@@ -1,5 +1,7 @@
 <?php
 
+$app = App::go();
+
 authorize();
 
 $UserID = $user['ID'];
@@ -10,48 +12,48 @@ if (!is_number($GroupID) || !$GroupID) {
     error(0);
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT `title`
   FROM `torrents_group`
   WHERE `id` = $GroupID");
-if (!$db->has_results()) {
+if (!$app->dbOld->has_results()) {
     error(404);
 }
-list($GroupName) = $db->next_record(MYSQLI_NUM, false);
+list($GroupName) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
 for ($i = 0; $i < count($ArtistNames); $i++) {
     $ArtistName = Artists::normalise_artist_name($ArtistNames[$i]);
 
     if (strlen($ArtistName) > 0) {
-        $db->query("
+        $app->dbOld->query("
       SELECT ArtistID
       FROM artists_group
       WHERE Name = ?", $ArtistName);
 
-        if ($db->has_results()) {
-            list($ArtistID) = $db->next_record(MYSQLI_NUM, false);
+        if ($app->dbOld->has_results()) {
+            list($ArtistID) = $app->dbOld->next_record(MYSQLI_NUM, false);
         }
 
         if (!$ArtistID) {
             $ArtistName = db_string($ArtistName);
-            $db->query("
+            $app->dbOld->query("
         INSERT INTO artists_group (Name)
         VALUES ( ? )", $ArtistName);
-            $ArtistID = $db->inserted_id();
+            $ArtistID = $app->dbOld->inserted_id();
         }
 
-        $db->query("
+        $app->dbOld->query("
       INSERT IGNORE INTO torrents_artists
         (GroupID, ArtistID, UserID)
       VALUES
         ('$GroupID', '$ArtistID', '$UserID')");
 
-        if ($db->affected_rows()) {
+        if ($app->dbOld->affected_rows()) {
             Misc::write_log("Artist $ArtistID ($ArtistName) was added to the group $GroupID ($GroupName) by user ".$user['ID'].' ('.$user['Username'].')');
             Torrents::write_group_log($GroupID, 0, $user['ID'], "added artist $ArtistName", 0);
-            $cache->delete_value("torrents_details_$GroupID");
-            $cache->delete_value("groups_artists_$GroupID"); // Delete group artist cache
-      $cache->delete_value("artist_groups_$ArtistID"); // Delete artist group cache
+            $app->cacheOld->delete_value("torrents_details_$GroupID");
+            $app->cacheOld->delete_value("groups_artists_$GroupID"); // Delete group artist cache
+      $app->cacheOld->delete_value("artist_groups_$ArtistID"); // Delete artist group cache
       Torrents::update_hash($GroupID);
         }
     }

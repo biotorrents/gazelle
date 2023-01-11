@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 /*
  * This page is for creating a report using AJAX.
  * It should have the following posted fields:
@@ -23,15 +26,15 @@ if (!is_number($_POST['torrentid'])) {
     $TorrentID = $_POST['torrentid'];
 }
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT tg.CategoryID
   FROM torrents_group AS tg
     JOIN torrents AS t ON t.GroupID = tg.ID
   WHERE t.ID = $TorrentID");
-if (!$db->has_results()) {
+if (!$app->dbOld->has_results()) {
     $Err = 'No torrent with that ID exists!';
 } else {
-    list($CategoryID) = $db->next_record();
+    list($CategoryID) = $app->dbOld->next_record();
 }
 
 if (!isset($_POST['type'])) {
@@ -63,25 +66,25 @@ if (!empty($Err)) {
     error();
 }
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT ID
   FROM reportsv2
   WHERE TorrentID = $TorrentID
     AND ReporterID = ".db_string($user['ID'])."
     AND ReportedTime > '".time_minus(3)."'");
-if ($db->has_results()) {
+if ($app->dbOld->has_results()) {
     error();
 }
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
   INSERT INTO reportsv2
     (ReporterID, TorrentID, Type, UserComment, Status, ReportedTime, ExtraID)
   VALUES
     (".db_string($user['ID']).", $TorrentID, '$Type', '$Extra', 'New', NOW(), '$ExtraID')");
 
-$ReportID = $db->inserted_id();
+$ReportID = $app->dbOld->inserted_id();
 
-$cache->delete_value("reports_torrent_$TorrentID");
-$cache->increment('num_torrent_reportsv2');
+$app->cacheOld->delete_value("reports_torrent_$TorrentID");
+$app->cacheOld->increment('num_torrent_reportsv2');
 
 echo $ReportID;

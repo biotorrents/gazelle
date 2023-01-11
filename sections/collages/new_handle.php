@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 authorize();
 
 $Val = new Validate();
@@ -15,14 +17,14 @@ if ($P['category'] > 0 || check_perms('site_collages_renamepersonal')) {
     // Get a collage name and make sure it's unique
     $name = $user['Username']."'s personal collage";
     $P['name'] = db_string($name);
-    $db->query("
+    $app->dbOld->query("
     SELECT ID
     FROM collages
     WHERE Name = '".$P['name']."'");
     $i = 2;
-    while ($db->has_results()) {
+    while ($app->dbOld->has_results()) {
         $P['name'] = db_string("$name no. $i");
-        $db->query("
+        $app->dbOld->query("
       SELECT ID
       FROM collages
       WHERE Name = '".$P['name']."'");
@@ -34,13 +36,13 @@ $Val->SetFields('description', '1', 'string', 'The description must be between 1
 $Err = $Val->ValidateForm($_POST);
 
 if (!$Err && $P['category'] === '0') {
-    $db->query("
+    $app->dbOld->query("
     SELECT COUNT(ID)
     FROM collages
     WHERE UserID = '$user[ID]'
       AND CategoryID = '0'
       AND Deleted = '0'");
-    list($CollageCount) = $db->next_record();
+    list($CollageCount) = $app->dbOld->next_record();
     if (($CollageCount >= $user['Permissions']['MaxCollages']) || !check_perms('site_collages_personal')) {
         $Err = 'You may not create a personal collage.';
     } elseif (check_perms('site_collages_renamepersonal') && !stristr($P['name'], $user['Username'])) {
@@ -49,12 +51,12 @@ if (!$Err && $P['category'] === '0') {
 }
 
 if (!$Err) {
-    $db->query("
+    $app->dbOld->query("
     SELECT ID, Deleted
     FROM collages
     WHERE Name = '$P[name]'");
-    if ($db->has_results()) {
-        list($ID, $Deleted) = $db->next_record();
+    if ($app->dbOld->has_results()) {
+        list($ID, $Deleted) = $app->dbOld->next_record();
         if ($Deleted) {
             $Err = 'That collection already exists but needs to be recovered. Please <a href="staffpm.php">contact</a> the staff team.';
         } else {
@@ -84,13 +86,13 @@ foreach ($TagList as $ID => $Tag) {
 }
 $TagList = implode(' ', $TagList);
 
-$db->query("
+$app->dbOld->query("
   INSERT INTO collages
     (Name, Description, UserID, TagList, CategoryID)
   VALUES
     ('$P[name]', '$P[description]', $user[ID], '$TagList', '$P[category]')");
 
-$CollageID = $db->inserted_id();
-$cache->delete_value("collage_$CollageID");
+$CollageID = $app->dbOld->inserted_id();
+$app->cacheOld->delete_value("collage_$CollageID");
 Misc::write_log("Collage $CollageID (".$_POST['name'].') was created by '.$user['Username']);
 Http::redirect("collages.php?id=$CollageID");

@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 include serverRoot.'/sections/reports/array.php';
 
 if (empty($_GET['type']) || empty($_GET['id']) || !is_number($_GET['id'])) {
@@ -17,68 +19,68 @@ $ID = $_GET['id'];
 
 switch ($Short) {
   case 'user':
-    $db->query("
+    $app->dbOld->query("
       SELECT Username
       FROM users_main
       WHERE ID = $ID");
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error(404);
     }
-    list($Username) = $db->next_record();
+    list($Username) = $app->dbOld->next_record();
     break;
 
   case 'request_update':
     $NoReason = true;
-    $db->query("
+    $app->dbOld->query("
       SELECT Title, Description, TorrentID, CategoryID, Year
       FROM requests
       WHERE ID = $ID");
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error(404);
     }
-    list($Name, $Desc, $Filled, $CategoryID, $Year) = $db->next_record();
+    list($Name, $Desc, $Filled, $CategoryID, $Year) = $app->dbOld->next_record();
     if ($Filled || ($CategoryID != 0 && ($Categories[$CategoryID - 1] != 'Music' || $Year != 0))) {
         error(403);
     }
     break;
 
   case 'request':
-    $db->query("
+    $app->dbOld->query("
       SELECT Title, Description, TorrentID
       FROM requests
       WHERE ID = $ID");
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error(404);
     }
-    list($Name, $Desc, $Filled) = $db->next_record();
+    list($Name, $Desc, $Filled) = $app->dbOld->next_record();
     break;
 
   case 'collage':
-    $db->query("
+    $app->dbOld->query("
       SELECT Name, Description
       FROM collages
       WHERE ID = $ID");
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error(404);
     }
-    list($Name, $Desc) = $db->next_record();
+    list($Name, $Desc) = $app->dbOld->next_record();
     break;
 
   case 'thread':
-    $db->query("
+    $app->dbOld->query("
       SELECT ft.Title, ft.ForumID, um.Username
       FROM forums_topics AS ft
         JOIN users_main AS um ON um.ID = ft.AuthorID
       WHERE ft.ID = $ID");
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error(404);
     }
-    list($Title, $ForumID, $Username) = $db->next_record();
-    $db->query("
+    list($Title, $ForumID, $Username) = $app->dbOld->next_record();
+    $app->dbOld->query("
       SELECT MinClassRead
       FROM forums
       WHERE ID = $ForumID");
-    list($MinClassRead) = $db->next_record();
+    list($MinClassRead) = $app->dbOld->next_record();
     if (!empty($user['DisableForums'])
         || ($MinClassRead > $user['EffectiveClass'] && (!isset($user['CustomForums'][$ForumID]) || $user['CustomForums'][$ForumID] == 0))
         || (isset($user['CustomForums'][$ForumID]) && $user['CustomForums'][$ForumID] == 0)) {
@@ -87,25 +89,25 @@ switch ($Short) {
     break;
 
   case 'post':
-    $db->query("
+    $app->dbOld->query("
       SELECT fp.Body, fp.TopicID, um.Username
       FROM forums_posts AS fp
         JOIN users_main AS um ON um.ID = fp.AuthorID
       WHERE fp.ID = $ID");
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error(404);
     }
-    list($Body, $TopicID, $Username) = $db->next_record();
-    $db->query("
+    list($Body, $TopicID, $Username) = $app->dbOld->next_record();
+    $app->dbOld->query("
       SELECT ForumID
       FROM forums_topics
       WHERE ID = $TopicID");
-    list($ForumID) = $db->next_record();
-    $db->query("
+    list($ForumID) = $app->dbOld->next_record();
+    $app->dbOld->query("
       SELECT MinClassRead
       FROM forums
       WHERE ID = $ForumID");
-    list($MinClassRead) = $db->next_record();
+    list($MinClassRead) = $app->dbOld->next_record();
     if (!empty($user['DisableForums'])
         || ($MinClassRead > $user['EffectiveClass'] && (!isset($user['CustomForums'][$ForumID]) || $user['CustomForums'][$ForumID] == 0))
         || (isset($user['CustomForums'][$ForumID]) && $user['CustomForums'][$ForumID] == 0)) {
@@ -114,15 +116,15 @@ switch ($Short) {
     break;
 
   case 'comment':
-    $db->query("
+    $app->dbOld->query("
       SELECT c.Body, um.Username
       FROM comments AS c
         JOIN users_main AS um ON um.ID = c.AuthorID
       WHERE c.ID = $ID");
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error(404);
     }
-    list($Body, $Username) = $db->next_record();
+    list($Body, $Username) = $app->dbOld->next_record();
     break;
 }
 

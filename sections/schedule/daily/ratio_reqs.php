@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
+$app = App::go();
+
 // Clear old seed time history
-$db->query("
+$app->dbOld->query("
   DELETE FROM users_torrent_history
   WHERE Date < DATE(NOW() - INTERVAL 7 DAY) + 0");
 
 // Store total seeded time for each user in a temp table
-$db->query("TRUNCATE TABLE users_torrent_history_temp");
-$db->query("
+$app->dbOld->query("TRUNCATE TABLE users_torrent_history_temp");
+$app->dbOld->query("
   INSERT INTO users_torrent_history_temp
     (UserID, SumTime)
   SELECT UserID, SUM(Time)
@@ -18,7 +20,7 @@ $db->query("
 
 // Insert new row with <NumTorrents> = 0 with <Time> being number of seconds short of 72 hours.
 // This is where we penalize torrents seeded for less than 72 hours
-$db->query("
+$app->dbOld->query("
   INSERT INTO users_torrent_history
     (UserID, NumTorrents, Date, Time)
   SELECT UserID, 0, UTC_DATE() + 0, 259200 - SumTime
@@ -26,14 +28,14 @@ $db->query("
   WHERE SumTime < 259200");
 
 // Set <Weight> to the time seeding <NumTorrents> torrents
-$db->query("
+$app->dbOld->query("
   UPDATE users_torrent_history
   SET Weight = NumTorrents * Time");
 
 // Calculate average time spent seeding each of the currently active torrents.
 // This rounds the results to the nearest integer because SeedingAvg is an int column.
-$db->query("TRUNCATE TABLE users_torrent_history_temp");
-$db->query("
+$app->dbOld->query("TRUNCATE TABLE users_torrent_history_temp");
+$app->dbOld->query("
   INSERT INTO users_torrent_history_temp
     (UserID, SeedingAvg)
   SELECT UserID, SUM(Weight) / SUM(Time)
@@ -41,13 +43,13 @@ $db->query("
   GROUP BY UserID");
 
 // Remove dummy entry for torrents seeded less than 72 hours
-$db->query("
+$app->dbOld->query("
   DELETE FROM users_torrent_history
   WHERE NumTorrents = '0'");
 
 // Get each user's amount of snatches of existing torrents
-$db->query("TRUNCATE TABLE users_torrent_history_snatch");
-$db->query("
+$app->dbOld->query("TRUNCATE TABLE users_torrent_history_snatch");
+$app->dbOld->query("
   INSERT INTO users_torrent_history_snatch (UserID, NumSnatches)
   SELECT xs.uid, COUNT(DISTINCT xs.fid)
   FROM xbt_snatched AS xs
@@ -56,7 +58,7 @@ $db->query("
 
 // Get the fraction of snatched torrents seeded for at least 72 hours this week
 // Essentially take the total number of hours seeded this week and divide that by 72 hours * <NumSnatches>
-$db->query("
+$app->dbOld->query("
   UPDATE users_main AS um
     JOIN users_torrent_history_temp AS t ON t.UserID = um.ID
     JOIN users_torrent_history_snatch AS s ON s.UserID = um.ID
@@ -69,13 +71,13 @@ $DownloadBarrier = PHP_INT_MAX;
 foreach (RATIO_REQUIREMENTS as $Requirement) {
     list($Download, $Ratio, $MinRatio) = $Requirement;
 
-    $db->query("
+    $app->dbOld->query("
       UPDATE users_main
       SET RequiredRatio = RequiredRatioWork * $Ratio
       WHERE Downloaded >= $Download
         AND Downloaded < $DownloadBarrier");
 
-    $db->query("
+    $app->dbOld->query("
       UPDATE users_main
       SET RequiredRatio = $MinRatio
       WHERE Downloaded >= $Download

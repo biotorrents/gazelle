@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 /*
 This page is something of a hack so those
 easily scared off by funky solutions, don't
@@ -10,7 +13,7 @@ it's slow to run sub queries, so we had to get
 creative for this one.
 
 The solution I settled on abuses the way
-$db->to_array() works. What we've done, is
+$app->dbOld->to_array() works. What we've done, is
 backwards ordering. The results returned by the
 query have the best one for each GroupID last,
 and while to_array traverses the results, it
@@ -44,11 +47,11 @@ $Preferences = array('RemasterTitle DESC', 'Seeders ASC', 'Size ASC');
 $CollageID = $_REQUEST['collageid'];
 $Preference = $Preferences[$_REQUEST['preference']];
 
-$db->query("
+$app->dbOld->query("
   SELECT Name
   FROM collages
   WHERE ID = '$CollageID'");
-list($CollageName) = $db->next_record(MYSQLI_NUM, false);
+list($CollageName) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
 $SQL = "
 SELECT
@@ -78,7 +81,7 @@ ORDER BY
   t.$Preference
 ";
 
-$DownloadsQ = $db->query($SQL);
+$DownloadsQ = $app->dbOld->query($SQL);
 $Collector = new TorrentsDL($DownloadsQ, $CollageName);
 
 while (list($Downloads, $GroupIDs) = $Collector->get_downloads('GroupID')) {

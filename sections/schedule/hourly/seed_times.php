@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-$db->query("
+$app = App::go();
+
+$app->dbOld->query("
 UPDATE xbt_snatched AS xs
 INNER JOIN xbt_files_users AS xfu
   ON xs.uid = xfu.uid AND xs.fid = xfu.fid

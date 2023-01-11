@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 /**********************************************************************
  *>>>>>>>>>>>>>>>>>>>>>>>>>>> User search <<<<<<<<<<<<<<<<<<<<<<<<<<<<*
  **********************************************************************/
@@ -22,7 +25,7 @@ if (isset($_GET['username'])) {
             $Page = 10;
             $Limit = sprintf("%d, %d", ($Page - 1) * USERS_PER_PAGE, USERS_PER_PAGE);
         }
-        $db->query("
+        $app->dbOld->query("
       SELECT
         SQL_CALC_FOUND_ROWS
         ID,
@@ -36,9 +39,9 @@ if (isset($_GET['username'])) {
       WHERE Username LIKE '%".db_string($_GET['username'], true)."%'
       ORDER BY Username
       LIMIT $Limit");
-        $Results = $db->to_array();
-        $db->query('SELECT FOUND_ROWS()');
-        list($NumResults) = $db->next_record();
+        $Results = $app->dbOld->to_array();
+        $app->dbOld->query('SELECT FOUND_ROWS()');
+        list($NumResults) = $app->dbOld->next_record();
         if ($NumResults > 300) {
             $NumResults = 300;
         }

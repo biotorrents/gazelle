@@ -1,12 +1,14 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 $ENV = ENV::go();
 $twig = Twig::go();
 
 // Build the data for the collage and the torrent list
 // todo: Cache this
-$db->prepared_query("
+$app->dbOld->prepared_query("
 SELECT
   ct.`GroupID`,
   ct.`UserID`
@@ -16,8 +18,8 @@ WHERE ct.`CollageID` = '$CollageID'
 ORDER BY ct.`Sort`
 ");
 
-$GroupIDs = $db->collect('GroupID');
-$Contributors = $db->to_pair('GroupID', 'UserID', false);
+$GroupIDs = $app->dbOld->collect('GroupID');
+$Contributors = $app->dbOld->to_pair('GroupID', 'UserID', false);
 
 if (count($GroupIDs) > 0) {
     $TorrentList = Torrents::get_groups($GroupIDs);
@@ -604,7 +606,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
     <h3>Comments</h3>
     <?php
 if ($CommentList === null) {
-        $db->query("
+        $app->dbOld->query("
     SELECT
       c.ID,
       c.Body,
@@ -617,7 +619,7 @@ if ($CommentList === null) {
       AND c.PageID = $CollageID
     ORDER BY c.ID DESC
     LIMIT 15");
-        $CommentList = $db->to_array(false, MYSQLI_NUM);
+        $CommentList = $app->dbOld->to_array(false, MYSQLI_NUM);
     }
 foreach ($CommentList as $Comment) {
     list($CommentID, $Body, $UserID, $Username, $CommentTime) = $Comment; ?>

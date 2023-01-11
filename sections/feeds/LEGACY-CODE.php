@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+$app = App::go();
+
 
 /** LEGACY ROUTES */
 
@@ -33,11 +35,11 @@ require_once "classes/env.class.php";
 $ENV = ENV::go();
 
 $User = (int) $_GET["user"];
-if (!$Enabled = $cache->get_value("enabled_$User")) {
+if (!$Enabled = $app->cacheOld->get_value("enabled_$User")) {
     require_once serverRoot."/classes/db.class.php";
     $db = new DB(); // Load the database wrapper
 
-    $db->query("
+    $app->dbOld->query("
     SELECT
       `Enabled`
     FROM
@@ -46,8 +48,8 @@ if (!$Enabled = $cache->get_value("enabled_$User")) {
       `ID` = \"$User\"
     ");
 
-    list($Enabled) = $db->next_record();
-    $cache->cache_value("enabled_$User", $Enabled, 0);
+    list($Enabled) = $app->dbOld->next_record();
+    $app->cacheOld->cache_value("enabled_$User", $Enabled, 0);
 }
 
 # Check for RSS auth

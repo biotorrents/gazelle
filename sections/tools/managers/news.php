@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+
+$app = App::go();
+
 enforce_login();
 if (!check_perms('admin_manage_news')) {
     error(403);
@@ -21,12 +24,12 @@ switch ($_GET['action']) {
     if (is_number($_POST['newsid'])) {
         authorize();
 
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
         UPDATE news
         SET Title = '".db_string($_POST['title'])."', Body = '".db_string($_POST['body'])."'
         WHERE ID = '".db_string($_POST['newsid'])."'");
-        $cache->delete_value('news');
-        $cache->delete_value('feed_news');
+        $app->cacheOld->delete_value('news');
+        $app->cacheOld->delete_value('feed_news');
     }
 
     Http::redirect("index.php");
@@ -36,11 +39,11 @@ switch ($_GET['action']) {
   case 'editnews':
     if (is_number($_GET['id'])) {
         $NewsID = $_GET['id'];
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
         SELECT Title, Body
         FROM news
         WHERE ID = $NewsID");
-        list($Title, $Body) = $db->next_record();
+        list($Title, $Body) = $app->dbOld->next_record();
     }
 } ?>
 
@@ -85,7 +88,7 @@ $Textarea = View::textarea(
 
   <h2>News archive</h2>
   <?php
-$db->prepared_query('
+$app->dbOld->prepared_query('
   SELECT
     ID,
     Title,
@@ -93,7 +96,7 @@ $db->prepared_query('
     Time
   FROM news
   ORDER BY Time DESC');// LIMIT 20
-while (list($NewsID, $Title, $Body, $NewsTime) = $db->next_record()) {
+while (list($NewsID, $Title, $Body, $NewsTime) = $app->dbOld->next_record()) {
     ?>
   <div class="box vertical_space news_post">
     <div class="head">

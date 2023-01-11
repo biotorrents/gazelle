@@ -1,7 +1,9 @@
 <?php
 
-if (($Results = $cache->get_value('better_single_groupids')) === false) {
-    $db->query("
+$app = App::go();
+
+if (($Results = $app->cacheOld->get_value('better_single_groupids')) === false) {
+    $app->dbOld->query("
     SELECT
       t.ID AS TorrentID,
       t.GroupID AS GroupID
@@ -13,8 +15,8 @@ if (($Results = $cache->get_value('better_single_groupids')) === false) {
     ORDER BY t.LogScore DESC, t.Time ASC
     LIMIT 30");
 
-    $Results = $db->to_pair('GroupID', 'TorrentID', false);
-    $cache->cache_value('better_single_groupids', $Results, 30 * 60);
+    $Results = $app->dbOld->to_pair('GroupID', 'TorrentID', false);
+    $app->cacheOld->cache_value('better_single_groupids', $Results, 30 * 60);
 }
 
 $Groups = Torrents::get_groups(array_keys($Results));

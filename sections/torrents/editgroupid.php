@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 /***************************************************************
 * This page handles the backend of the "edit group ID" function
 * (found on edit.php). It simply changes the group ID of a
@@ -25,22 +27,22 @@ if ($OldGroupID == $GroupID) {
 
 //Everything is legit, let's just confim they're not retarded
 if (empty($_POST['confirm'])) {
-    $db->query("
+    $app->dbOld->query("
     SELECT Name
     FROM torrents_group
     WHERE ID = $OldGroupID");
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         //Trying to move to an empty group? I think not!
         set_message('The destination torrent group does not exist!');
         header('Location: '.$_SERVER['HTTP_REFERER']);
         error();
     }
-    list($Name) = $db->next_record();
-    $db->query("
+    list($Name) = $app->dbOld->next_record();
+    $app->dbOld->query("
     SELECT CategoryID, Name
     FROM torrents_group
     WHERE ID = $GroupID");
-    list($CategoryID, $NewName) = $db->next_record();
+    list($CategoryID, $NewName) = $app->dbOld->next_record();
 
     $Artists = Artists::get_artists(array($OldGroupID, $GroupID));
 
@@ -74,25 +76,25 @@ if (empty($_POST['confirm'])) {
 } else {
     authorize();
 
-    $db->query("
+    $app->dbOld->query("
     UPDATE torrents
     SET GroupID = '$GroupID'
     WHERE ID = $TorrentID");
 
     // Delete old torrent group if it's empty now
-    $db->query("
+    $app->dbOld->query("
     SELECT COUNT(ID)
     FROM torrents
     WHERE GroupID = '$OldGroupID'");
-    list($TorrentsInGroup) = $db->next_record();
+    list($TorrentsInGroup) = $app->dbOld->next_record();
     if ($TorrentsInGroup == 0) {
-        $db->query("
+        $app->dbOld->query("
       UPDATE comments
       SET PageID = '$GroupID'
       WHERE Page = 'torrents'
         AND PageID = '$OldGroupID'");
-        $cache->delete_value("torrent_comments_{$GroupID}_catalogue_0");
-        $cache->delete_value("torrent_comments_$GroupID");
+        $app->cacheOld->delete_value("torrent_comments_{$GroupID}_catalogue_0");
+        $app->cacheOld->delete_value("torrent_comments_$GroupID");
         Torrents::delete_group($OldGroupID);
     } else {
         Torrents::update_hash($OldGroupID);
@@ -101,13 +103,13 @@ if (empty($_POST['confirm'])) {
 
     Misc::write_log("Torrent $TorrentID was edited by " . $user['Username']); // TODO: this is probably broken
     Torrents::write_group_log($GroupID, 0, $user['ID'], "merged group $OldGroupID", 0);
-    $db->query("
+    $app->dbOld->query("
     UPDATE group_log
     SET GroupID = $GroupID
     WHERE GroupID = $OldGroupID");
 
-    $cache->delete_value("torrents_details_$GroupID");
-    $cache->delete_value("torrent_download_$TorrentID");
+    $app->cacheOld->delete_value("torrents_details_$GroupID");
+    $app->cacheOld->delete_value("torrent_download_$TorrentID");
 
     Http::redirect("torrents.php?id=$GroupID");
 }

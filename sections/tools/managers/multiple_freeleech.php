@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 if (!check_perms('users_mod')) {
     error(403);
 }
@@ -19,11 +22,11 @@ if (isset($_POST['torrents'])) {
             $Data = explode("id=", $Element);
             if (!empty($Data[1])) {
                 $CollageID = (int) $Data[1];
-                $db->query("
+                $app->dbOld->query("
                     SELECT GroupID
                     FROM collages_torrents
                     WHERE CollageID = '$CollageID'");
-                while (list($GroupID) = $db->next_record()) {
+                while (list($GroupID) = $app->dbOld->next_record()) {
                     $GroupIDs[] = (int) $GroupID;
                 }
             }
@@ -40,11 +43,11 @@ if (isset($_POST['torrents'])) {
             $Err = 'Invalid freeleech type or freeleech reason';
         } else {
             // Get the torrent IDs
-            $db->query("
+            $app->dbOld->query("
                 SELECT ID
                 FROM torrents
                 WHERE GroupID IN (".implode(', ', $GroupIDs).")");
-            $TorrentIDs = $db->collect('ID');
+            $TorrentIDs = $app->dbOld->collect('ID');
 
             if (sizeof($TorrentIDs) == 0) {
                 $Err = 'Invalid group IDs';
@@ -59,12 +62,12 @@ if (isset($_POST['torrents'])) {
                     } else {
                         $Bytes = Format::get_bytes($Size . $Units);
 
-                        $db->query("
+                        $app->dbOld->query("
                             SELECT ID
                             FROM torrents
                             WHERE ID IN (".implode(', ', $TorrentIDs).")
                               AND Size > '$Bytes'");
-                        $LargeTorrents = $db->collect('ID');
+                        $LargeTorrents = $app->dbOld->collect('ID');
                         $TorrentIDs = array_diff($TorrentIDs, $LargeTorrents);
                     }
                 }

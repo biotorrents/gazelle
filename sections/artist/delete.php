@@ -1,5 +1,7 @@
 <?php
 
+$app = App::go();
+
 /*
 /************************************************************************
 ||------------|| Delete artist ||--------------------------------------||
@@ -22,19 +24,19 @@ if (!check_perms('site_delete_artist') || !check_perms('torrents_delete')) {
 
 View::header('Artist deleted');
 
-$db->query("
+$app->dbOld->query("
   SELECT Name
   FROM artists_group
   WHERE ArtistID = $ArtistID");
-list($Name) = $db->next_record();
+list($Name) = $app->dbOld->next_record();
 
-$db->query("
+$app->dbOld->query("
   SELECT tg.Name, tg.ID
   FROM torrents_group AS tg
     LEFT JOIN torrents_artists AS ta ON ta.GroupID = tg.ID
   WHERE ta.ArtistID = $ArtistID");
-$Count = $db->record_count();
-if ($db->has_results()) {
+$Count = $app->dbOld->record_count();
+if ($app->dbOld->has_results()) {
 ?>
 <div>
   There are still torrents that have <a
@@ -44,7 +46,7 @@ if ($db->has_results()) {
   <div class="box pad">
     <ul>
       <?php
-  while (list($GroupName, $GroupID) = $db->next_record(MYSQLI_NUM, true)) {
+  while (list($GroupName, $GroupID) = $app->dbOld->next_record(MYSQLI_NUM, true)) {
 ?>
       <li>
         <a href="torrents.php?id=<?=$GroupID?>" class="tooltip"
@@ -59,13 +61,13 @@ if ($db->has_results()) {
 <?php
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT r.Title, r.ID
   FROM requests AS r
     LEFT JOIN requests_artists AS ra ON ra.RequestID = r.ID
   WHERE ra.ArtistID = $ArtistID");
-$Count += $db->record_count();
-if ($db->has_results()) {
+$Count += $app->dbOld->record_count();
+if ($app->dbOld->has_results()) {
 ?>
 <div>
   There are still requests that have <a
@@ -75,7 +77,7 @@ if ($db->has_results()) {
   <div class="box pad">
     <ul>
       <?php
-  while (list($RequestName, $RequestID) = $db->next_record(MYSQLI_NUM, true)) {
+  while (list($RequestName, $RequestID) = $app->dbOld->next_record(MYSQLI_NUM, true)) {
 ?>
       <li>
         <a href="requests.php?action=view&amp;id=<?=$RequestID?>"

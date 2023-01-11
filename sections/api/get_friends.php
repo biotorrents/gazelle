@@ -2,7 +2,9 @@
 
 #declare(strict_types=1);
 
-$db->query("
+$app = App::go();
+
+$app->dbOld->query("
 SELECT
   f.FriendID,
   u.Username
@@ -16,7 +18,7 @@ WHERE f.UserID = '$user[ID]'
 ORDER BY u.Username ASC
 ");
 
-json_die('success', json_encode($db->to_array(false, MYSQLI_ASSOC)));
+json_die('success', json_encode($app->dbOld->to_array(false, MYSQLI_ASSOC)));
 
-#echo json_encode($db->to_array(false, MYSQLI_ASSOC));
+#echo json_encode($app->dbOld->to_array(false, MYSQLI_ASSOC));
 #die();

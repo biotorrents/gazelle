@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 if (!check_perms('site_moderate_forums') || empty($_POST['id'])) {
     print
     json_encode(
@@ -13,11 +15,11 @@ if (!check_perms('site_moderate_forums') || empty($_POST['id'])) {
 }
 
 $ID = (int)$_POST['id'];
-$db->query("
+$app->dbOld->query("
   SELECT ClaimerID
   FROM reports
   WHERE ID = '$ID'");
-list($ClaimerID) = $db->next_record();
+list($ClaimerID) = $app->dbOld->next_record();
 if ($ClaimerID) {
     print
     json_encode(
@@ -28,7 +30,7 @@ if ($ClaimerID) {
     die();
 } else {
     $UserID = $user['ID'];
-    $db->query("
+    $app->dbOld->query("
     UPDATE reports
     SET ClaimerID = '$UserID'
     WHERE ID = '$ID'");

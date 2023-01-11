@@ -3,6 +3,8 @@
  *>>>>>>>>>>>>>>>>>>>>>>>>>>> User search <<<<<<<<<<<<<<<<<<<<<<<<<<<<*
  **********************************************************************/
 
+$app = App::go();
+
 if (empty($_GET['search'])) {
     json_die("failure", "no search terms");
 } else {
@@ -15,7 +17,7 @@ if (isset($_GET['username'])) {
     $_GET['username'] = trim($_GET['username']);
 
     list($Page, $Limit) = Format::page_limit(USERS_PER_PAGE);
-    $db->query("
+    $app->dbOld->query("
     SELECT
       SQL_CALC_FOUND_ROWS
       ID,
@@ -30,9 +32,9 @@ if (isset($_GET['username'])) {
     WHERE Username LIKE '%".db_string($_GET['username'])."%'
     ORDER BY Username
     LIMIT $Limit");
-    $Results = $db->to_array();
-    $db->query('SELECT FOUND_ROWS();');
-    list($NumResults) = $db->next_record();
+    $Results = $app->dbOld->to_array();
+    $app->dbOld->query('SELECT FOUND_ROWS();');
+    list($NumResults) = $app->dbOld->next_record();
 }
 
 $JsonUsers = [];

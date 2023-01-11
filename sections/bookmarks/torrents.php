@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 # todo: Go through line by line
 $ENV = ENV::go();
 
@@ -16,11 +18,11 @@ if (!empty($_GET['userid'])) {
         error(404);
     }
 
-    $db->query("
+    $app->dbOld->query("
       SELECT Username
       FROM users_main
       WHERE ID = '$UserID'");
-    list($Username) = $db->next_record();
+    list($Username) = $app->dbOld->next_record();
 } else {
     $UserID = $user['ID'];
 }

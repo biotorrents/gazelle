@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 if (!isset($_GET['torrentid']) || !is_number($_GET['torrentid']) || !check_perms('site_view_torrent_snatchlist')) {
     error(404);
 }
@@ -12,7 +15,7 @@ if (!empty($_GET['page']) && is_number($_GET['page'])) {
     $Limit = 100;
 }
 
-$Result = $db->query("
+$Result = $app->dbOld->query("
       SELECT
         SQL_CALC_FOUND_ROWS
         uid,
@@ -21,10 +24,10 @@ $Result = $db->query("
       WHERE fid = '$TorrentID'
       ORDER BY tstamp DESC
       LIMIT $Limit");
-$Results = $db->to_array('uid', MYSQLI_ASSOC);
+$Results = $app->dbOld->to_array('uid', MYSQLI_ASSOC);
 
-$db->query('SELECT FOUND_ROWS()');
-list($NumResults) = $db->next_record();
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
 
 ?>
 <h4 class="tooltip" title="List of users that have reported a snatch to the tracker">List of Snatchers</h4>

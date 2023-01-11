@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+$app = App::go();
+
 /**
  * Flight router
  * @see https://flightphp.com/learn
@@ -23,7 +25,7 @@ if (!isset($_REQUEST['action'])) {
 }
 
 // Get user level
-$db->query(
+$app->dbOld->query(
     "
   SELECT
     i.SupportFor,
@@ -33,7 +35,7 @@ $db->query(
     JOIN permissions AS p ON p.ID = m.PermissionID
   WHERE i.UserID = ".$user['ID']
 );
-list($SupportFor, $DisplayStaff) = $db->next_record();
+list($SupportFor, $DisplayStaff) = $app->dbOld->next_record();
 // Logged in user is staff
 $IsStaff = ($DisplayStaff == 1);
 // Logged in user is Staff or FLS

@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 /***************************************************************
 * Temp handler for changing the category for a single torrent.
 ****************************************************************/
@@ -21,35 +23,35 @@ if (!is_number($OldGroupID) || !is_number($TorrentID) || !$OldGroupID || !$Torre
     error(0);
 }
 
-$db->query("
+$app->dbOld->query("
   UPDATE torrents
   SET GroupID = '$GroupID'
   WHERE ID = '$TorrentID'");
 
 // Delete old group if needed
-$db->query("
+$app->dbOld->query("
   SELECT ID
   FROM torrents
   WHERE GroupID = '$OldGroupID'");
-if (!$db->has_results()) {
-    $db->query("
+if (!$app->dbOld->has_results()) {
+    $app->dbOld->query("
     UPDATE comments
     SET PageID = '$GroupID'
     WHERE Page = 'torrents'
       AND PageID = '$OldGroupID'");
     Torrents::delete_group($OldGroupID);
-    $cache->delete_value("torrent_comments_{$GroupID}_catalogue_0");
+    $app->cacheOld->delete_value("torrent_comments_{$GroupID}_catalogue_0");
 } else {
     Torrents::update_hash($OldGroupID);
 }
 
 Torrents::update_hash($GroupID);
-$cache->delete_value("torrent_download_$TorrentID");
+$app->cacheOld->delete_value("torrent_download_$TorrentID");
 
 Misc::write_log("Torrent $TorrentID was edited by $user[Username]");
 Torrents::write_group_log($GroupID, 0, $user['ID'], "merged from group $OldGroupID", 0);
 
-$db->query("
+$app->dbOld->query("
   UPDATE group_log
   SET GroupID = $GroupID
   WHERE GroupID = $OldGroupID");

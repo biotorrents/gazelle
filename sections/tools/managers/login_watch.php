@@ -1,22 +1,25 @@
 <?php
+
+$app = App::go();
+
 if (!check_perms('admin_login_watch')) {
     error(403);
 }
 
 if (isset($_POST['submit']) && isset($_POST['ip']) && $_POST['submit'] == 'Unban') {
     authorize();
-    $cache->delete_value('login_attempts_'.$_POST['ip']);
+    $app->cacheOld->delete_value('login_attempts_'.$_POST['ip']);
 }
 
 View::header('Login Watch');
 
-$AttemptIPs = $cache->get_value('login_attempts');
+$AttemptIPs = $app->cacheOld->get_value('login_attempts');
 $AllAttempts = [];
 foreach ($AttemptIPs as $IP => $Time) {
     if (time() > $Time) {
         continue;
     }
-    list($Attempts, $Banned) = $cache->get_value('login_attempts_'.$IP);
+    list($Attempts, $Banned) = $app->cacheOld->get_value('login_attempts_'.$IP);
     if (!isset($Attempts) && !isset($Banned)) {
         continue;
     }

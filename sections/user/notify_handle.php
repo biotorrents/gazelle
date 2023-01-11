@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 if (!check_perms('site_torrents_notify')) {
     error(403);
 }
@@ -82,12 +84,12 @@ if ($_POST['users'.$FormID]) {
         $EscapedUsernames[] = db_string(trim($Username));
     }
 
-    $db->query("
+    $app->dbOld->query("
     SELECT ID, Paranoia
     FROM users_main
     WHERE Username IN ('" . implode("', '", $EscapedUsernames) . "')
       AND ID != $user[ID]");
-    while (list($UserID, $Paranoia) = $db->next_record()) {
+    while (list($UserID, $Paranoia) = $app->dbOld->next_record()) {
         $Paranoia = unserialize($Paranoia);
         if (!in_array('notifications', $Paranoia)) {
             $Users .= '|' . $UserID . '|';
@@ -114,7 +116,7 @@ $NotTagList = str_replace('||', '|', $NotTagList);
 $Users = str_replace('||', '|', $Users);
 
 if ($_POST['id'.$FormID] && is_number($_POST['id'.$FormID])) {
-    $db->query("
+    $app->dbOld->query("
     UPDATE users_notify_filters
     SET
       Artists='$ArtistList',
@@ -127,15 +129,15 @@ if ($_POST['id'.$FormID] && is_number($_POST['id'.$FormID])) {
     WHERE ID='".$_POST['id'.$FormID]."'
       AND UserID='$user[ID]'");
 } else {
-    $db->query("
+    $app->dbOld->query("
     INSERT INTO users_notify_filters
       (UserID, Label, Artists, NewGroupsOnly, Tags, NotTags, Categories, Media, Users)
     VALUES
       ('$user[ID]','".db_string($_POST['label'.$FormID])."','$ArtistList','$NewGroupsOnly','$TagList','$NotTagList','$CategoryList','$MediaList','$Users')");
 }
 
-$cache->delete_value('notify_filters_'.$user['ID']);
-if (($Notify = $cache->get_value('notify_artists_'.$user['ID'])) !== false && $Notify['ID'] === $_POST['id'.$FormID]) {
-    $cache->delete_value('notify_artists_'.$user['ID']);
+$app->cacheOld->delete_value('notify_filters_'.$user['ID']);
+if (($Notify = $app->cacheOld->get_value('notify_artists_'.$user['ID'])) !== false && $Notify['ID'] === $_POST['id'.$FormID]) {
+    $app->cacheOld->delete_value('notify_artists_'.$user['ID']);
 }
 Http::redirect("user.php?action=notify");

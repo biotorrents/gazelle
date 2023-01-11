@@ -1,28 +1,30 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 $ConvID = $_GET['id'];
 if (!$ConvID || !is_number($ConvID)) {
     error(404);
 }
 
 $UserID = $user['ID'];
-$db->query("
+$app->dbOld->query("
   SELECT InInbox, InSentbox
   FROM pm_conversations_users
   WHERE UserID = '$UserID'
     AND ConvID = '$ConvID'");
-if (!$db->has_results()) {
+if (!$app->dbOld->has_results()) {
     error(403);
 }
-list($InInbox, $InSentbox) = $db->next_record();
+list($InInbox, $InSentbox) = $app->dbOld->next_record();
 
 if (!$InInbox && !$InSentbox) {
     error(404);
 }
 
 // Get information on the conversation
-$db->query("
+$app->dbOld->query("
   SELECT
     c.Subject,
     cu.Sticky,
@@ -32,15 +34,15 @@ $db->query("
     JOIN pm_conversations_users AS cu ON c.ID = cu.ConvID
   WHERE c.ID = '$ConvID'
     AND UserID = '$UserID'");
-list($Subject, $Sticky, $UnRead, $ForwardedID) = $db->next_record();
+list($Subject, $Sticky, $UnRead, $ForwardedID) = $app->dbOld->next_record();
 
-$db->query("
+$app->dbOld->query("
   SELECT um.ID, Username
   FROM pm_messages AS pm
     JOIN users_main AS um ON um.ID = pm.SenderID
   WHERE pm.ConvID = '$ConvID'");
 
-$ConverstionParticipants = $db->to_array();
+$ConverstionParticipants = $app->dbOld->to_array();
 
 foreach ($ConverstionParticipants as $Participant) {
     $PMUserID = (int)$Participant['ID'];
@@ -52,13 +54,13 @@ $Users[0]['UserStr'] = 'System'; // in case it's a message from the system
 $Users[0]['Username'] = 'System';
 
 if ($UnRead == '1') {
-    $db->query("
+    $app->dbOld->query("
     UPDATE pm_conversations_users
     SET UnRead = '0'
     WHERE ConvID = '$ConvID'
       AND UserID = '$UserID'");
     // Clear the caches of the inbox and sentbox
-    $cache->decrement("inbox_new_$UserID");
+    $app->cacheOld->decrement("inbox_new_$UserID");
 }
 
 View::header(
@@ -68,7 +70,7 @@ View::header(
 );
 
 // Get messages
-$db->query("
+$app->dbOld->query("
   SELECT SentDate, SenderID, Body, ID
   FROM pm_messages
   WHERE ConvID = '$ConvID'
@@ -83,7 +85,7 @@ $db->query("
   </div>
   <?php
 
-while (list($SentDate, $SenderID, $Body, $MessageID) = $db->next_record()) {
+while (list($SentDate, $SenderID, $Body, $MessageID) = $app->dbOld->next_record()) {
     $Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[url=https://'.siteDomain.'/wiki.php?action=article&name=databaseencryption][Encrypted][/url]'; ?>
   <div class="box vertical_space">
     <div class="head" style="overflow: hidden;">
@@ -101,13 +103,13 @@ while (list($SentDate, $SenderID, $Body, $MessageID) = $db->next_record()) {
   </div>
   <?php
 }
-$db->query("
+$app->dbOld->query("
   SELECT UserID
   FROM pm_conversations_users
   WHERE UserID != '$user[ID]'
     AND ConvID = '$ConvID'
     AND (ForwardedTo = 0 OR ForwardedTo = UserID)");
-$ReceiverIDs = $db->collect('UserID');
+$ReceiverIDs = $app->dbOld->collect('UserID');
 
 
 if (!empty($ReceiverIDs) && (empty($user['DisablePM']) || array_intersect($ReceiverIDs, array_keys($StaffIDs)))) {
@@ -169,11 +171,11 @@ if (!empty($ReceiverIDs) && (empty($user['DisablePM']) || array_intersect($Recei
     </div>
   </form>
   <?php
-$db->query("
+$app->dbOld->query("
   SELECT SupportFor
   FROM users_info
   WHERE UserID = ".$user['ID']);
-list($FLS) = $db->next_record();
+list($FLS) = $app->dbOld->next_record();
 if ((check_perms('users_mod') || $FLS != '') && (!$ForwardedID || $ForwardedID == $user['ID'])) {
     ?>
   <h3>Forward conversation</h3>

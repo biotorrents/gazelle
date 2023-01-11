@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+$app = App::go();
+
 authorize();
 
 $CollageID = $_POST['collageid'];
@@ -9,11 +11,11 @@ if (!is_number($CollageID)) {
     error(0);
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT UserID, CategoryID, Locked, MaxGroups, MaxGroupsPerUser
   FROM collages
   WHERE ID = '$CollageID'");
-list($UserID, $CategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser) = $db->next_record();
+list($UserID, $CategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser) = $app->dbOld->next_record();
 
 if ($CategoryID === 0
 && $UserID !== $user['ID']
@@ -22,15 +24,15 @@ if ($CategoryID === 0
 }
 
 if (isset($_POST['name'])) {
-    $db->query("
+    $app->dbOld->query("
     SELECT ID, Deleted
     FROM collages
     WHERE Name = '".db_string($_POST['name'])."'
       AND ID != '$CollageID'
     LIMIT 1");
 
-    if ($db->has_results()) {
-        list($ID, $Deleted) = $db->next_record();
+    if ($app->dbOld->has_results()) {
+        list($ID, $Deleted) = $app->dbOld->next_record();
         if ($Deleted) {
             $Err = 'A collage with that name already exists but needs to be recovered, please <a href="staffpm.php">contact</a> the staff team!';
         } else {
@@ -65,7 +67,7 @@ if (isset($_POST['featured'])
 && (($user['ID'] === $UserID
 && check_perms('site_collages_personal'))
 || check_perms('site_collages_delete'))) {
-    $db->query("
+    $app->dbOld->query("
     UPDATE collages
     SET Featured = 0
     WHERE CategoryID = 0
@@ -103,11 +105,11 @@ if (check_perms('site_collages_delete')) {
 }
 
 if (!empty($Updates)) {
-    $db->query('
+    $app->dbOld->query('
     UPDATE collages
     SET '.implode(', ', $Updates)."
     WHERE ID = $CollageID");
 }
 
-$cache->delete_value('collage_'.$CollageID);
+$app->cacheOld->delete_value('collage_'.$CollageID);
 header('Location: collages.php?id='.$CollageID);

@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 if (!check_perms('site_torrents_notify')) {
     error(403);
 }
@@ -17,7 +19,7 @@ View::header('Manage notifications'); ?>
   </div>
 
   <?php
-$db->query("
+$app->dbOld->query("
   SELECT
     `ID`,
     `Label`,
@@ -37,9 +39,9 @@ $db->query("
   WHERE `UserID` = $user[ID]
 ");
 
-$NumFilters = $db->record_count();
+$NumFilters = $app->dbOld->record_count();
 
-$Notifications = $db->to_array();
+$Notifications = $app->dbOld->to_array();
 $Notifications[] = array(
   'ID' => false,
   'Label' => '',

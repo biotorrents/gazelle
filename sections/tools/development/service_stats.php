@@ -1,18 +1,20 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 if (!check_perms('site_debug') || !check_perms('admin_clear_cache')) {
     error(403);
 }
 
 if (isset($_POST['global_flush'])) {
     authorize();
-    $cache->flush();
+    $app->cacheOld->flush();
 }
 
-$db->prepared_query('SHOW GLOBAL STATUS');
-$dbStats = $db->to_array('Variable_name');
-$MemStats = $cache->getStats();
+$app->dbOld->prepared_query('SHOW GLOBAL STATUS');
+$dbStats = $app->dbOld->to_array('Variable_name');
+$MemStats = $app->cacheOld->getStats();
 
 View::header("Service Stats"); ?>
 

@@ -3,6 +3,8 @@
 User topic subscription page
 */
 
+$app = App::go();
+
 if (!empty($user['DisableForums'])) {
     json_die('failure');
 }
@@ -36,13 +38,13 @@ $sql .= "
   GROUP BY t.ID
   ORDER BY t.LastPostID DESC
   LIMIT $Limit";
-$PostIDs = $db->query($sql);
-$db->query('SELECT FOUND_ROWS()');
-list($NumResults) = $db->next_record();
+$PostIDs = $app->dbOld->query($sql);
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
 
 if ($NumResults > $PerPage * ($Page - 1)) {
-    $db->set_query_id($PostIDs);
-    $PostIDs = $db->collect('ID');
+    $app->dbOld->set_query_id($PostIDs);
+    $PostIDs = $app->dbOld->collect('ID');
     $sql = '
     SELECT
       f.ID AS ForumID,
@@ -68,11 +70,11 @@ if ($NumResults > $PerPage * ($Page - 1)) {
       LEFT JOIN users_main AS ed ON ed.ID = um.ID
     WHERE p.ID IN ('.implode(',', $PostIDs).')
     ORDER BY f.Name ASC, t.LastPostID DESC';
-    $db->query($sql);
+    $app->dbOld->query($sql);
 }
 
 $JsonPosts = [];
-while (list($ForumID, $ForumName, $TopicID, $ThreadTitle, $Body, $LastPostID, $Locked, $Sticky, $PostID, $AuthorID, $AuthorName, $AuthorAvatar, $EditedUserID, $EditedTime, $EditedUsername) = $db->next_record()) {
+while (list($ForumID, $ForumName, $TopicID, $ThreadTitle, $Body, $LastPostID, $Locked, $Sticky, $PostID, $AuthorID, $AuthorName, $AuthorAvatar, $EditedUserID, $EditedTime, $EditedUsername) = $app->dbOld->next_record()) {
     $JsonPost = array(
     'forumId' => (int)$ForumID,
     'forumName' => $ForumName,

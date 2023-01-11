@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 list($Page, $Limit) = Format::page_limit(LOG_ENTRIES_PER_PAGE);
 
 if (!empty($_GET['search'])) {
@@ -43,8 +45,8 @@ DESC
 LIMIT $Limit
 ";
 
-$Log = $db->query($SQL);
-$db->query('SELECT FOUND_ROWS()');
-list($NumResults) = $db->next_record();
+$Log = $app->dbOld->query($SQL);
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
 $TotalMatches = $NumResults;
-$db->set_query_id($Log);
+$app->dbOld->set_query_id($Log);

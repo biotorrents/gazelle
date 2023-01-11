@@ -161,7 +161,7 @@ exit;
 
 
 
-$db->query("
+$app->dbOld->query("
   SELECT SUM(t.Size)
   FROM xbt_files_users AS xfu
   JOIN torrents AS t on t.ID = xfu.fid
@@ -169,8 +169,8 @@ $db->query("
     xfu.uid = '$userId'
     AND xfu.active = 1
     AND xfu.Remaining = 0");
-if ($db->has_results()) {
-    list($TotalSeeding) = $db->next_record(MYSQLI_NUM, false);
+if ($app->dbOld->has_results()) {
+    list($TotalSeeding) = $app->dbOld->next_record(MYSQLI_NUM, false);
 }
 
 
@@ -258,50 +258,50 @@ if (check_perms('site_proxy_images') && !empty($CustomTitle)) {
     <?php
 
 if (check_paranoia_here('requestsfilled_count') || check_paranoia_here('requestsfilled_bounty')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       COUNT(DISTINCT r.ID),
       SUM(rv.Bounty)
     FROM requests AS r
       LEFT JOIN requests_votes AS rv ON r.ID = rv.RequestID
     WHERE r.FillerID = $userId");
-    list($RequestsFilled, $TotalBounty) = $db->next_record();
+    list($RequestsFilled, $TotalBounty) = $app->dbOld->next_record();
 } else {
     $RequestsFilled = $TotalBounty = 0;
 }
 
 if (check_paranoia_here('requestsvoted_count') || check_paranoia_here('requestsvoted_bounty')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT COUNT(RequestID), SUM(Bounty)
     FROM requests_votes
     WHERE UserID = $userId");
-    list($RequestsVoted, $TotalSpent) = $db->next_record();
-    $db->query("
+    list($RequestsVoted, $TotalSpent) = $app->dbOld->next_record();
+    $app->dbOld->query("
     SELECT COUNT(r.ID), SUM(rv.Bounty)
     FROM requests AS r
       LEFT JOIN requests_votes AS rv ON rv.RequestID = r.ID AND rv.UserID = r.UserID
     WHERE r.UserID = $userId");
-    list($RequestsCreated, $RequestsCreatedSpent) = $db->next_record();
+    list($RequestsCreated, $RequestsCreatedSpent) = $app->dbOld->next_record();
 } else {
     $RequestsVoted = $TotalSpent = $RequestsCreated = $RequestsCreatedSpent = 0;
 }
 
 if (check_paranoia_here('uploads+')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT COUNT(ID)
     FROM torrents
     WHERE UserID = '$userId'");
-    list($Uploads) = $db->next_record();
+    list($Uploads) = $app->dbOld->next_record();
 } else {
     $Uploads = 0;
 }
 
 if (check_paranoia_here('artistsadded')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT COUNT(DISTINCT ArtistID)
     FROM torrents_artists
     WHERE UserID = $userId");
-    list($ArtistsAdded) = $db->next_record();
+    list($ArtistsAdded) = $app->dbOld->next_record();
 } else {
     $ArtistsAdded = 0;
 }
@@ -386,12 +386,12 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
     </div>
     <?php
            if (check_perms('users_view_ips', $Class)) {
-               $db->query("
+               $app->dbOld->query("
         SELECT COUNT(DISTINCT IP)
         FROM xbt_snatched
         WHERE uid = '$userId'
           AND IP != ''");
-               list($TrackerIPs) = $db->next_record();
+               list($TrackerIPs) = $app->dbOld->next_record();
            }
 ?>
     <div class="box box_info box_userinfo_history">
@@ -483,11 +483,11 @@ if (check_perms('users_view_invites')) {
         </li>
         <li>Invites:
           <?php
-        $db->query("
+        $app->dbOld->query("
           SELECT COUNT(InviterID)
           FROM invites
           WHERE InviterID = '$userId'");
-    list($Pending) = $db->next_record();
+    list($Pending) = $app->dbOld->next_record();
     if ($DisableInvites) {
         echo 'X';
     } else {
@@ -500,21 +500,21 @@ if (check_perms('users_view_invites')) {
 }
 
 if (!isset($SupportFor)) {
-    $db->query('
+    $app->dbOld->query('
     SELECT SupportFor
     FROM users_info
     WHERE UserID = '.$user['ID']);
-    list($SupportFor) = $db->next_record();
+    list($SupportFor) = $app->dbOld->next_record();
 }
 if ($Override = check_perms('users_mod') || $isOwnProfile || !empty($SupportFor)) {
     ?>
         <li<?=(($Override === 2 || $SupportFor) ? ' class="paranoia_override"' : '')?>>Clients:
           <?php
-    $db->query("
+    $app->dbOld->query("
       SELECT DISTINCT useragent
       FROM xbt_files_users
       WHERE uid = $userId");
-    $Clients = $db->collect(0);
+    $Clients = $app->dbOld->collect(0);
     echo implode('; ', $Clients); ?>
           </li>
           <?php
@@ -561,9 +561,9 @@ if (!$Info) {
     <?php
 
 if (check_paranoia_here('snatched')) {
-    $RecentSnatches = $cache->get_value("recent_snatches_$userId");
+    $RecentSnatches = $app->cacheOld->get_value("recent_snatches_$userId");
     if ($RecentSnatches === false) {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
         SELECT
           g.`id`,
           g.`title`,
@@ -589,14 +589,14 @@ if (check_paranoia_here('snatched')) {
         LIMIT 5
         ");
 
-        $RecentSnatches = $db->to_array();
+        $RecentSnatches = $app->dbOld->to_array();
 
-        $Artists = Artists::get_artists($db->collect('ID'));
+        $Artists = Artists::get_artists($app->dbOld->collect('ID'));
         foreach ($RecentSnatches as $Key => $SnatchInfo) {
             $RecentSnatches[$Key]['Artist'] = Artists::display_artists($Artists[$SnatchInfo['ID']], false, true);
         }
 
-        $cache->cache_value("recent_snatches_$userId", $RecentSnatches, 0); //inf cache
+        $app->cacheOld->cache_value("recent_snatches_$userId", $RecentSnatches, 0); //inf cache
     }
 
     if (!empty($RecentSnatches)) {
@@ -630,9 +630,9 @@ if (check_paranoia_here('snatched')) {
 }
 
 if (check_paranoia_here('uploads')) {
-    $RecentUploads = $cache->get_value("recent_uploads_$userId");
+    $RecentUploads = $app->cacheOld->get_value("recent_uploads_$userId");
     if ($RecentUploads === false) {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
         SELECT
           g.`id`,
           g.`title`,
@@ -655,14 +655,14 @@ if (check_paranoia_here('uploads')) {
         LIMIT 5
         ");
 
-        $RecentUploads = $db->to_array();
+        $RecentUploads = $app->dbOld->to_array();
 
-        $Artists = Artists::get_artists($db->collect('ID'));
+        $Artists = Artists::get_artists($app->dbOld->collect('ID'));
         foreach ($RecentUploads as $Key => $UploadInfo) {
             $RecentUploads[$Key]['Artist'] = Artists::display_artists($Artists[$UploadInfo['ID']], false, true);
         }
 
-        $cache->cache_value("recent_uploads_$userId", $RecentUploads, 0); // inf cache
+        $app->cacheOld->cache_value("recent_uploads_$userId", $RecentUploads, 0); // inf cache
     }
 
     if (!empty($RecentUploads)) {
@@ -695,7 +695,7 @@ if (check_paranoia_here('uploads')) {
     }
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT ID, Name
   FROM collages
   WHERE UserID = '$userId'
@@ -703,11 +703,11 @@ $db->query("
     AND Deleted = '0'
   ORDER BY Featured DESC,
     Name ASC");
-$Collages = $db->to_array(false, MYSQLI_NUM, false);
+$Collages = $app->dbOld->to_array(false, MYSQLI_NUM, false);
 foreach ($Collages as $CollageInfo) {
     list($CollageID, $CName) = $CollageInfo;
 
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
     SELECT
       ct.GroupID,
       tg.`picture`,
@@ -725,7 +725,7 @@ foreach ($Collages as $CollageInfo) {
     ");
 
 
-    $Collage = $db->to_array(false, MYSQLI_ASSOC, false); ?>
+    $Collage = $app->dbOld->to_array(false, MYSQLI_ASSOC, false); ?>
     <div class="box" id="collage<?=$CollageID?>_box">
       <div class="head">
         <?=Text::esc($CName)?> - <a
@@ -885,7 +885,7 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
 $IsFLS = isset($user['ExtraClasses'][FLS_TEAM]);
 if (check_perms('users_mod', $Class) || $IsFLS) {
     $UserLevel = $user['EffectiveClass'];
-    $db->query("
+    $app->dbOld->query("
     SELECT
       SQL_CALC_FOUND_ROWS
       ID,
@@ -899,8 +899,8 @@ if (check_perms('users_mod', $Class) || $IsFLS) {
     WHERE UserID = $userId
       AND (Level <= $UserLevel OR AssignedToUser = '".$user['ID']."')
     ORDER BY Date DESC");
-    if ($db->has_results()) {
-        $StaffPMs = $db->to_array(); ?>
+    if ($app->dbOld->has_results()) {
+        $StaffPMs = $app->dbOld->to_array(); ?>
   <div class="box" id="staffpms_box">
     <div class="head">
       Staff PMs <a data-toggle-target="#staffpms" class="brackets u-pull-right">Toggle</a>
@@ -953,12 +953,12 @@ if (check_perms('users_mod', $Class) || $IsFLS) {
 
 // Displays a table of forum warnings viewable only to Forum Moderators
 if ($user['Class'] == 650 && check_perms('users_warn', $Class)) {
-    $db->query("
+    $app->dbOld->query("
     SELECT Comment
     FROM users_warnings_forums
     WHERE UserID = '$userId'");
-    list($ForumWarnings) = $db->next_record();
-    if ($db->has_results()) {
+    list($ForumWarnings) = $app->dbOld->next_record();
+    if ($app->dbOld->has_results()) {
         ?>
   <div class="box">
     <div class="head">Forum warnings</div>
@@ -1081,14 +1081,14 @@ if (check_perms('users_mod', $Class)) { ?>
         <td class="label">Secondary classes:</td>
         <td>
           <?php
-    $db->query("
+    $app->dbOld->query("
       SELECT p.ID, p.Name, l.UserID
       FROM permissions AS p
         LEFT JOIN users_levels AS l ON l.PermissionID = p.ID AND l.UserID = '$userId'
       WHERE p.Secondary = 1
       ORDER BY p.Name");
       $i = 0;
-      while (list($PermID, $PermName, $IsSet) = $db->next_record()) {
+      while (list($PermID, $PermName, $IsSet) = $app->dbOld->next_record()) {
           $i++; ?>
           <input type="checkbox" id="perm_<?=$PermID?>"
             name="secondary_classes[]" value="<?=$PermID?>" <?php if ($IsSet) { ?> checked="checked"
@@ -1143,7 +1143,7 @@ if (check_perms('users_mod', $Class)) { ?>
           <?php
 if (!$DisablePoints) {
     $PointsRate = 0;
-    $getTorrents = $db->query("
+    $getTorrents = $app->dbOld->query("
     SELECT COUNT(DISTINCT x.fid) AS Torrents,
            SUM(t.Size) AS Size,
            SUM(xs.seedtime) AS Seedtime,
@@ -1160,8 +1160,8 @@ if (!$DisablePoints) {
       AND x.completed = 0
       AND x.Remaining = 0
     GROUP BY um.ID");
-    if ($db->has_results()) {
-        list($NumTorr, $TSize, $TTime, $TSeeds) = $db->next_record();
+    if ($app->dbOld->has_results()) {
+        list($NumTorr, $TSize, $TTime, $TSeeds) = $app->dbOld->next_record();
 
         $ENV = ENV::go();
         $PointsRate = ($ENV->BP_COEFF + (0.55*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5, ($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3)))**0.95;

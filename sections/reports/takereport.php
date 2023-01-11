@@ -1,5 +1,7 @@
 <?php
 
+$app = App::go();
+
 authorize();
 
 if (empty($_POST['id']) || !is_number($_POST['id']) || empty($_POST['type']) || ($_POST['type'] !== 'request_update' && empty($_POST['reason']))) {
@@ -43,7 +45,7 @@ switch ($Short) {
     $Link = "forums.php?action=viewthread&threadid=$ID";
     break;
   case 'post':
-    $db->query("
+    $app->dbOld->query("
       SELECT
         p.ID,
         p.TopicID,
@@ -55,7 +57,7 @@ switch ($Short) {
         ) AS PostNum
       FROM forums_posts AS p
       WHERE p.ID = $ID");
-    list($PostID, $TopicID, $PostNum) = $db->next_record();
+    list($PostID, $TopicID, $PostNum) = $app->dbOld->next_record();
     $Link = "forums.php?action=viewthread&threadid=$TopicID&post=$PostNum#post$PostID";
     break;
   case 'comment':
@@ -63,17 +65,17 @@ switch ($Short) {
     break;
 }
 
-$db->query('
+$app->dbOld->query('
   INSERT INTO reports
     (UserID, ThingID, Type, ReportedTime, Reason)
   VALUES
     ('.db_string($user['ID']).", $ID, '$Short', NOW(), '".db_string($Reason)."')");
-$ReportID = $db->inserted_id();
+$ReportID = $app->dbOld->inserted_id();
 
 $Channels = [];
 if ($Short === 'request_update') {
     $Channels[] = '#requestedits';
-    $cache->increment('num_update_reports');
+    $app->cacheOld->increment('num_update_reports');
 }
 
 if (in_array($Short, array('comment', 'post', 'thread'))) {
@@ -81,5 +83,5 @@ if (in_array($Short, array('comment', 'post', 'thread'))) {
 }
 
 send_irc($Channels, "$ReportID - ".$user['Username']." just reported a $Short: ".site_url()."$Link : ".strtr($Reason, "\n", ' '));
-$cache->delete_value('num_other_reports');
+$app->cacheOld->delete_value('num_other_reports');
 Http::redirect("$Link");

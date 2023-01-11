@@ -1,5 +1,8 @@
 <?php
 
+
+$app = App::go();
+
 authorize();
 
 $CollageID = $_POST['collageid'];
@@ -7,11 +10,11 @@ if (!is_number($CollageID) || !$CollageID) {
     error(404);
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT Name, CategoryID, UserID
   FROM collages
   WHERE ID = '$CollageID'");
-list($Name, $CategoryID, $UserID) = $db->next_record(MYSQLI_NUM, false);
+list($Name, $CategoryID, $UserID) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
 if (!check_perms('site_collages_delete') && $UserID != $user['ID']) {
     error(403);
@@ -22,27 +25,27 @@ if (!$Reason) {
     error('You must enter a reason!');
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT GroupID
   FROM collages_torrents
   WHERE CollageID = '$CollageID'");
-while (list($GroupID) = $db->next_record()) {
-    $cache->delete_value("torrents_details_$GroupID");
-    $cache->delete_value("torrent_collages_$GroupID");
-    $cache->delete_value("torrent_collages_personal_$GroupID");
+while (list($GroupID) = $app->dbOld->next_record()) {
+    $app->cacheOld->delete_value("torrents_details_$GroupID");
+    $app->cacheOld->delete_value("torrent_collages_$GroupID");
+    $app->cacheOld->delete_value("torrent_collages_personal_$GroupID");
 }
 
 //Personal collages have CategoryID 0
 if ($CategoryID == 0) {
-    $db->query("
+    $app->dbOld->query("
     DELETE FROM collages
     WHERE ID = '$CollageID'");
-    $db->query("
+    $app->dbOld->query("
     DELETE FROM collages_torrents
     WHERE CollageID = '$CollageID'");
     Comments::delete_page('collages', $CollageID);
 } else {
-    $db->query("
+    $app->dbOld->query("
     UPDATE collages
     SET Deleted = '1'
     WHERE ID = '$CollageID'");
@@ -52,5 +55,5 @@ if ($CategoryID == 0) {
 
 Misc::write_log("Collage $CollageID ($Name) was deleted by ".$user['Username'].": $Reason");
 
-$cache->delete_value("collage_$CollageID");
+$app->cacheOld->delete_value("collage_$CollageID");
 Http::redirect("collages.php");

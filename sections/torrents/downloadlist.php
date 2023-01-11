@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 if (!isset($_GET['torrentid']) || !is_number($_GET['torrentid']) || !check_perms('site_view_torrent_snatchlist')) {
     error(404);
 }
@@ -12,7 +15,7 @@ if (!empty($_GET['page']) && is_number($_GET['page'])) {
     $Limit = 100;
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT
     SQL_CALC_FOUND_ROWS
     UserID,
@@ -21,28 +24,28 @@ $db->query("
   WHERE TorrentID = '$TorrentID'
   ORDER BY Time DESC
   LIMIT $Limit");
-$UserIDs = $db->collect('UserID');
-$Results = $db->to_array('UserID', MYSQLI_ASSOC);
+$UserIDs = $app->dbOld->collect('UserID');
+$Results = $app->dbOld->to_array('UserID', MYSQLI_ASSOC);
 
-$db->query('SELECT FOUND_ROWS()');
-list($NumResults) = $db->next_record();
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
 
 if (count($UserIDs) > 0) {
     $UserIDs = implode(',', $UserIDs);
-    $db->query("
+    $app->dbOld->query("
     SELECT uid
     FROM xbt_snatched
     WHERE fid = '$TorrentID'
       AND uid IN($UserIDs)");
-    $Snatched = $db->to_array('uid');
+    $Snatched = $app->dbOld->to_array('uid');
 
-    $db->query("
+    $app->dbOld->query("
     SELECT uid
     FROM xbt_files_users
     WHERE fid = '$TorrentID'
       AND Remaining = 0
       AND uid IN($UserIDs)");
-    $Seeding = $db->to_array('uid');
+    $Seeding = $app->dbOld->to_array('uid');
 }
 ?>
 <h4 class="tooltip" title="List of users that have clicked the &quot;DL&quot; button">List of Downloaders</h4>

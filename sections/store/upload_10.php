@@ -1,34 +1,36 @@
 <?php
 declare(strict_types=1);
 
+$app = App::go();
+
 $UserID = $user['ID'];
 $Purchase = "1 GiB upload";
 
 $GiB = 1024*1024*1024;
 $Cost = 150;
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT BonusPoints
   FROM users_main
   WHERE ID = $UserID");
 
-if ($db->has_results()) {
-    list($Points) = $db->next_record();
+if ($app->dbOld->has_results()) {
+    list($Points) = $app->dbOld->next_record();
 
     if ($Points >= $Cost) {
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
           UPDATE users_main
           SET BonusPoints = BonusPoints - $Cost,
             Uploaded = Uploaded + ($GiB * 1)
           WHERE ID = $UserID");
 
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
           UPDATE users_info
           SET AdminComment = CONCAT('".sqltime()." - $Purchase from the store\n\n', AdminComment)
           WHERE UserID = $UserID");
 
-        $cache->delete_value('user_info_heavy_'.$UserID);
-        $cache->delete_value('user_stats_'.$UserID);
+        $app->cacheOld->delete_value('user_info_heavy_'.$UserID);
+        $app->cacheOld->delete_value('user_stats_'.$UserID);
         $Worked = true;
     } else {
         $Worked = false;

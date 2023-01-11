@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 if (!isset($_GET['id']) || !is_number($_GET['id'])) {
     error(404);
 }
@@ -58,7 +60,7 @@ View::header("Revisions of ".$Title);
       </tr>
 
       <?php
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT
     Revision,
     Title,
@@ -68,7 +70,7 @@ $db->prepared_query("
   WHERE ID = '$ArticleID'
   ORDER BY Revision DESC");
 
-while (list($Revision, $Title, $AuthorID, $Date) = $db->next_record()) { ?>
+while (list($Revision, $Title, $AuthorID, $Date) = $app->dbOld->next_record()) { ?>
       <tr>
         <td>
           <?=$Revision?>

@@ -2,6 +2,8 @@
 
 #declare(strict_types = 1);
 
+$app = App::go();
+
 // todo: Freeleech in ratio hit calculations, in addition to a warning of whats freeleech in the Summary.txt
 /*
 This page is something of a hack so those
@@ -14,7 +16,7 @@ it's slow to run sub queries, so we had to get
 creative for this one.
 
 The solution I settled on abuses the way
-$db->to_array() works. What we've done, is
+$app->dbOld->to_array() works. What we've done, is
 backwards ordering. The results returned by the
 query have the best one for each GroupID last,
 and while to_array traverses the results, it
@@ -48,20 +50,20 @@ $Preferences = array('RemasterTitle DESC', 'Seeders ASC', 'Size ASC');
 $ArtistID = $_REQUEST['artistid'];
 $Preference = $Preferences[$_REQUEST['preference']];
 
-$db->query("
+$app->dbOld->query("
   SELECT Name
   FROM artists_group
   WHERE ArtistID = '$ArtistID'");
-list($ArtistName) = $db->next_record(MYSQLI_NUM, false);
+list($ArtistName) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
-$db->query("
+$app->dbOld->query("
   SELECT GroupID, Importance
   FROM torrents_artists
   WHERE ArtistID = '$ArtistID'");
-if (!$db->has_results()) {
+if (!$app->dbOld->has_results()) {
     error(404);
 }
-$Releases = $db->to_array('GroupID', MYSQLI_ASSOC, false);
+$Releases = $app->dbOld->to_array('GroupID', MYSQLI_ASSOC, false);
 $GroupIDs = array_keys($Releases);
 
 $SQL = "
@@ -80,7 +82,7 @@ FROM torrents AS t
 ORDER BY t.GroupID ASC, Rank DESC, t.$Preference
 ";
 
-$DownloadsQ = $db->query($SQL);
+$DownloadsQ = $app->dbOld->query($SQL);
 $Collector = new TorrentsDL($DownloadsQ, $ArtistName);
 while (list($Downloads, $GroupIDs) = $Collector->get_downloads('GroupID')) {
     $Artists = Artists::get_artists($GroupIDs);

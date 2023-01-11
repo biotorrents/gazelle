@@ -18,8 +18,8 @@ if (isset($_POST['submit'])) {
         if (!is_number($_POST['id']) || $_POST['id'] === '') {
             error(0);
         }
-        $db->query('DELETE FROM ip_bans WHERE ID='.$_POST['id']);
-        $cache->delete_value('ip_bans_'.$IPA);
+        $app->dbOld->query('DELETE FROM ip_bans WHERE ID='.$_POST['id']);
+        $app->cacheOld->delete_value('ip_bans_'.$IPA);
     } else { //Edit & Create, Shared Validation
         $Val->SetFields('start', '1', 'regex', 'You must include the starting IP address.', array('regex'=>'/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/i'));
         $Val->SetFields('end', '1', 'regex', 'You must include the ending IP address.', array('regex'=>'/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/i'));
@@ -37,7 +37,7 @@ if (isset($_POST['submit'])) {
         if (empty($_POST['id']) || !is_number($_POST['id'])) {
             error(404);
         }
-        $db->query("
+        $app->dbOld->query("
         UPDATE ip_bans
         SET
           FromIP=$Start,
@@ -45,13 +45,13 @@ if (isset($_POST['submit'])) {
           Reason='$Notes'
         WHERE ID='".$_POST['id']."'");
     } else { //Create
-        $db->query("
+        $app->dbOld->query("
         INSERT INTO ip_bans
           (FromIP, ToIP, Reason)
         VALUES
           ('$Start','$End', '$Notes')");
     }
-        $cache->delete_value('ip_bans_'.$IPA);
+        $app->cacheOld->delete_value('ip_bans_'.$IPA);
     }
 }
 
@@ -81,15 +81,15 @@ if (!empty($_REQUEST['ip']) && preg_match($app->env->regexIp, $_REQUEST['ip'])) 
 
 $sql .= "ORDER BY FromIP ASC";
 $sql .= " LIMIT ".$Limit;
-$Bans = $db->query($sql);
+$Bans = $app->dbOld->query($sql);
 
-$db->query('SELECT FOUND_ROWS()');
-list($Results) = $db->next_record();
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($Results) = $app->dbOld->next_record();
 
 $PageLinks = Format::get_pages($Page, $Results, BANS_PER_PAGE, 11);
 
 View::header('IP Address Bans');
-$db->set_query_id($Bans);
+$app->dbOld->set_query_id($Bans);
 ?>
 
 <div class="header">
@@ -151,7 +151,7 @@ $db->set_query_id($Bans);
     </form>
   </tr>
   <?php
-while (list($ID, $Start, $End, $Reason) = $db->next_record()) {
+while (list($ID, $Start, $End, $Reason) = $app->dbOld->next_record()) {
     $Start = long2ip($Start);
     $End = long2ip($End); ?>
   <tr class="row">

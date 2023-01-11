@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 if (empty($_GET['query'])) {
     error(400);
 }
@@ -16,11 +18,11 @@ if (strtolower(substr($FullName, 0, 4)) === 'the ') {
 
 $KeySize = min($MaxKeySize, max(1, strlen($FullName)));
 $Letters = strtolower(substr($FullName, 0, $KeySize));
-$AutoSuggest = $cache->get('autocomplete_artist_'.$KeySize.'_'.$Letters);
+$AutoSuggest = $app->cacheOld->get('autocomplete_artist_'.$KeySize.'_'.$Letters);
 
 if (!$AutoSuggest) {
     $Limit = (($KeySize === $MaxKeySize) ? 250 : 10);
-    $db->query("
+    $app->dbOld->query("
     SELECT
       a.ArtistID,
       a.Name
@@ -31,8 +33,8 @@ if (!$AutoSuggest) {
     GROUP BY ta.ArtistID
     ORDER BY t.Snatched DESC
     LIMIT $Limit");
-    $AutoSuggest = $db->to_array(false, MYSQLI_NUM, false);
-    $cache->cache_value('autocomplete_artist_'.$KeySize.'_'.$Letters, $AutoSuggest, 1800 + 7200 * ($MaxKeySize - $KeySize)); // Can't cache things for too long in case names are edited
+    $AutoSuggest = $app->dbOld->to_array(false, MYSQLI_NUM, false);
+    $app->cacheOld->cache_value('autocomplete_artist_'.$KeySize.'_'.$Letters, $AutoSuggest, 1800 + 7200 * ($MaxKeySize - $KeySize)); // Can't cache things for too long in case names are edited
 }
 
 $Matched = 0;

@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+$app = App::go();
+
 /**
  * $_REQUEST['action'] is artist, collages, requests or torrents (default torrents)
  * $_REQUEST['type'] depends on the page:
@@ -180,28 +182,28 @@ $SQL = "
   ORDER BY `comments`.`ID` DESC
   LIMIT $Limit";
 
-$Comments = $db->query($SQL);
-$Count = $db->record_count();
+$Comments = $app->dbOld->query($SQL);
+$Count = $app->dbOld->record_count();
 
-$db->query("SELECT FOUND_ROWS()");
-list($Results) = $db->next_record();
+$app->dbOld->query("SELECT FOUND_ROWS()");
+list($Results) = $app->dbOld->next_record();
 $Pages = Format::get_pages($Page, $Results, $PerPage, 11);
-$db->set_query_id($Comments);
+$app->dbOld->set_query_id($Comments);
 
 # Remove the weird comment headings on torrent and request comments
 /*
 if ($Action === 'requests') {
-  $RequestIDs = array_flip(array_flip($db->collect('PageID')));
+  $RequestIDs = array_flip(array_flip($app->dbOld->collect('PageID')));
   $Artists = [];
 
   foreach ($RequestIDs as $RequestID) {
     $Artists[$RequestID] = Requests::get_artists($RequestID);
   }
-  $db->set_query_id($Comments);
+  $app->dbOld->set_query_id($Comments);
 } elseif ($Action === 'torrents') {
-  $GroupIDs = array_flip(array_flip($db->collect('PageID')));
+  $GroupIDs = array_flip(array_flip($app->dbOld->collect('PageID')));
   $Artists = Artists::get_artists($GroupIDs);
-  $db->set_query_id($Comments);
+  $app->dbOld->set_query_id($Comments);
 }
 */
 
@@ -292,8 +294,8 @@ View::header($Title, 'comments');
   </div>
   <?php
 if ($Count > 0) {
-    $db->set_query_id($Comments);
-    while (list($AuthorID, $Page, $PageID, $Name, $PostID, $Body, $AddedTime, $EditedTime, $EditedUserID) = $db->next_record()) {
+    $app->dbOld->set_query_id($Comments);
+    while (list($AuthorID, $Page, $PageID, $Name, $PostID, $Body, $AddedTime, $EditedTime, $EditedUserID) = $app->dbOld->next_record()) {
         $Link = Comments::get_url($Page, $PageID, $PostID);
         switch ($Page) {
       case 'artist':

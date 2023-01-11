@@ -2,14 +2,16 @@
 
 #declare(strict_types=1);
 
-$db->query("
+$app = App::go();
+
+$app->dbOld->query("
   INSERT INTO top10_history (Date, Type)
   VALUES ('$sqltime', 'Weekly')");
-$HistoryID = $db->inserted_id();
+$HistoryID = $app->dbOld->inserted_id();
 
-$Top10 = $cache->get_value('top10tor_week_10');
+$Top10 = $app->cacheOld->get_value('top10tor_week_10');
 if ($Top10 === false) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       t.`ID`,
       g.`id`,
@@ -38,7 +40,7 @@ if ($Top10 === false) {
     LIMIT 10;
     ");
 
-    $Top10 = $db->to_array();
+    $Top10 = $app->dbOld->to_array();
 }
 
 $i = 1;
@@ -81,7 +83,7 @@ foreach ($Top10 as $Torrent) {
     $TitleString = "$DisplayName $ExtraInfo";
     $TagString = str_replace('|', ' ', $TorrentTags);
 
-    $db->query("
+    $app->dbOld->query("
     INSERT INTO top10_history_torrents(
       `HistoryID`,
       `Rank`,

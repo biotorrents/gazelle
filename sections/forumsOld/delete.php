@@ -1,5 +1,7 @@
 <?php
 
+$app = App::go();
+
 authorize();
 // Quick SQL injection check
 if (!isset($_GET['postid']) || !is_number($_GET['postid'])) {
@@ -13,7 +15,7 @@ if (!check_perms('site_admin_forums')) {
 }
 
 // Get topic ID, forum ID, number of pages
-$db->query("
+$app->dbOld->query("
   SELECT
     TopicID,
     ForumID,
@@ -28,7 +30,7 @@ $db->query("
       WHERE ID = '$PostID'
       )
   GROUP BY t.ID");
-list($TopicID, $ForumID, $Pages, $Page, $StickyPostID) = $db->next_record();
+list($TopicID, $ForumID, $Pages, $Page, $StickyPostID) = $app->dbOld->next_record();
 if (!$TopicID) {
     // Post is deleted or thread doesn't exist
   error(0); // This is evil, but the ajax call doesn't check the response
@@ -38,16 +40,16 @@ if (!$TopicID) {
 // $Page = which page the post is on
 // These are set for cache clearing.
 
-$db->query("
+$app->dbOld->query("
   DELETE FROM forums_posts
   WHERE ID = '$PostID'");
 
-$db->query("
+$app->dbOld->query("
   SELECT MAX(ID)
   FROM forums_posts
   WHERE TopicID = '$TopicID'");
-list($LastID) = $db->next_record();
-$db->query("
+list($LastID) = $app->dbOld->next_record();
+$app->dbOld->query("
   UPDATE forums AS f, forums_topics AS t
   SET f.NumPosts = f.NumPosts - 1,
     t.NumPosts = t.NumPosts - 1
@@ -55,20 +57,20 @@ $db->query("
     AND t.ID = '$TopicID'");
 
 if ($LastID < $PostID) { // Last post in a topic was removed
-    $db->query("
+    $app->dbOld->query("
     SELECT p.AuthorID, u.Username, p.AddedTime
     FROM forums_posts AS p
       LEFT JOIN users_main AS u ON u.ID = p.AuthorID
     WHERE p.ID = '$LastID'");
-    list($LastAuthorID, $LastAuthorName, $LastTime) = $db->next_record();
-    $db->query("
+    list($LastAuthorID, $LastAuthorName, $LastTime) = $app->dbOld->next_record();
+    $app->dbOld->query("
     UPDATE forums_topics
     SET
       LastPostID = '$LastID',
       LastPostAuthorID = '$LastAuthorID',
       LastPostTime = '$LastTime'
     WHERE ID = '$TopicID'");
-    $db->query("
+    $app->dbOld->query("
     SELECT
       t.ID,
       t.Title,
@@ -82,10 +84,10 @@ if ($LastID < $PostID) { // Last post in a topic was removed
       AND t.ID != '$TopicID'
     ORDER BY LastPostID DESC
     LIMIT 1");
-    list($LastTopicID, $LastTopicTitle, $LastTopicPostID, $LastTopicPostTime, $LastTopicAuthorID, $LastTopicAuthorName) = $db->next_record(MYSQLI_BOTH, false);
+    list($LastTopicID, $LastTopicTitle, $LastTopicPostID, $LastTopicPostTime, $LastTopicAuthorID, $LastTopicAuthorName) = $app->dbOld->next_record(MYSQLI_BOTH, false);
 
     if ($LastID < $LastTopicPostID) { // Topic is no longer the most recent in its forum
-        $db->query("
+        $app->dbOld->query("
       UPDATE forums
       SET
         LastPostTopicID = '$LastTopicID',
@@ -102,7 +104,7 @@ if ($LastID < $PostID) { // Last post in a topic was removed
       'LastPostTopicID' => $LastTopicID,
       'Title' => $LastTopicTitle);
     } else { // Topic is still the most recent in its forum
-        $db->query("
+        $app->dbOld->query("
       UPDATE forums
       SET
         LastPostID = '$LastID',
@@ -123,7 +125,7 @@ if ($LastID < $PostID) { // Last post in a topic was removed
 }
 
 if ($StickyPostID == $PostID) {
-    $db->query("
+    $app->dbOld->query("
     UPDATE forums_topics
     SET StickyPostID = 0
     WHERE ID = $TopicID");
@@ -133,24 +135,24 @@ if ($StickyPostID == $PostID) {
 $ThisCatalogue = floor((POSTS_PER_PAGE * $Page - POSTS_PER_PAGE) / THREAD_CATALOGUE);
 $LastCatalogue = floor((POSTS_PER_PAGE * $Pages - POSTS_PER_PAGE) / THREAD_CATALOGUE);
 for ($i = $ThisCatalogue; $i <= $LastCatalogue; $i++) {
-    $cache->delete_value("thread_$TopicID"."_catalogue_$i");
+    $app->cacheOld->delete_value("thread_$TopicID"."_catalogue_$i");
 }
 
-$cache->begin_transaction("thread_$TopicID".'_info');
-$cache->update_row(false, $UpdateArrayThread);
-$cache->commit_transaction();
+$app->cacheOld->begin_transaction("thread_$TopicID".'_info');
+$app->cacheOld->update_row(false, $UpdateArrayThread);
+$app->cacheOld->commit_transaction();
 
-$cache->begin_transaction('forums_list');
-$cache->update_row($ForumID, $UpdateArrayForums);
-$cache->commit_transaction();
+$app->cacheOld->begin_transaction('forums_list');
+$app->cacheOld->update_row($ForumID, $UpdateArrayForums);
+$app->cacheOld->commit_transaction();
 
-$cache->delete_value("forums_$ForumID");
+$app->cacheOld->delete_value("forums_$ForumID");
 
 Subscriptions::flush_subscriptions('forums', $TopicID);
 
 // quote notifications
 Subscriptions::flush_quote_notifications('forums', $TopicID);
-$db->query("
+$app->dbOld->query("
   DELETE FROM users_notify_quoted
   WHERE Page = 'forums'
     AND PostID = '$PostID'");

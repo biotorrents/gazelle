@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 $UserID = $user['ID'];
 
 if (empty($_GET['action'])) {
@@ -72,11 +74,11 @@ $sql .= "
   GROUP BY c.ID
   ORDER BY cu.Sticky, $Sort
   LIMIT $Limit";
-$Results = $db->query($sql);
-$db->query('SELECT FOUND_ROWS()');
-list($NumResults) = $db->next_record();
-$db->set_query_id($Results);
-$Count = $db->record_count();
+$Results = $app->dbOld->query($sql);
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
+$app->dbOld->set_query_id($Results);
+$Count = $app->dbOld->record_count();
 
 $Pages = Format::get_pages($Page, $NumResults, MESSAGES_PER_PAGE, 9);
 echo $Pages;
@@ -143,7 +145,7 @@ echo $Pages;
         <td colspan="5">No results.</td>
       </tr>
       <?php } else {
-      while (list($ConvID, $Subject, $Unread, $Sticky, $ForwardedID, $SenderID, $Date) = $db->next_record()) {
+      while (list($ConvID, $Subject, $Unread, $Sticky, $ForwardedID, $SenderID, $Date) = $app->dbOld->next_record()) {
           if ($Unread === '1') {
               $RowClass = 'unreadpm';
           } else {
@@ -177,7 +179,7 @@ echo $Pages;
         <?php } ?>
       </tr>
       <?php
-    $db->set_query_id($Results);
+    $app->dbOld->set_query_id($Results);
       }
   } ?>
     </table>

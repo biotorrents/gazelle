@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+$app = App::go();
+
 // todo: Redo HTML
 if (!check_perms('admin_manage_permissions')) {
     error(403);
@@ -11,12 +13,12 @@ if (!isset($_REQUEST['userid']) || !is_number($_REQUEST['userid'])) {
 
 list($UserID, $Username, $PermissionID) = array_values(User::user_info($_REQUEST['userid']));
 
-$db->query("
+$app->dbOld->query("
   SELECT CustomPermissions
   FROM users_main
   WHERE ID = '$UserID'");
 
-list($Customs) = $db->next_record(MYSQLI_NUM, false);
+list($Customs) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
 
 $Defaults = Permissions::get_permissions_for_user($UserID, []);
@@ -38,10 +40,10 @@ if (isset($_POST['action'])) {
     }
     $Delta['MaxCollages'] = $_POST['maxcollages'];
 
-    $cache->begin_transaction("user_info_heavy_$UserID");
-    $cache->update_row(false, array('CustomPermissions' => $Delta));
-    $cache->commit_transaction(0);
-    $db->query("
+    $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
+    $app->cacheOld->update_row(false, array('CustomPermissions' => $Delta));
+    $app->cacheOld->commit_transaction(0);
+    $app->dbOld->query("
     UPDATE users_main
     SET CustomPermissions = '".db_string(serialize($Delta))."'
     WHERE ID = '$UserID'");

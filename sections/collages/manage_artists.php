@@ -1,16 +1,18 @@
 <?php
 declare(strict_types=1);
 
+$app = App::go();
+
 $CollageID = $_GET['collageid'];
 if (!is_number($CollageID)) {
     error(0);
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT Name, UserID, CategoryID
   FROM collages
   WHERE ID = '$CollageID'");
-list($Name, $UserID, $CategoryID) = $db->next_record();
+list($Name, $UserID, $CategoryID) = $app->dbOld->next_record();
 if ($CategoryID === '0' && $UserID != $user['ID'] && !check_perms('site_collages_delete')) {
     error(403);
 }
@@ -18,7 +20,7 @@ if ($CategoryID != array_search(ARTIST_COLLAGE, $CollageCats)) {
     error(404);
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT
     ca.ArtistID,
     ag.Name,
@@ -31,7 +33,7 @@ $db->query("
   WHERE ca.CollageID = '$CollageID'
   ORDER BY ca.Sort");
 
-$Artists = $db->to_array('ArtistID', MYSQLI_ASSOC);
+$Artists = $app->dbOld->to_array('ArtistID', MYSQLI_ASSOC);
 
 
 View::header(

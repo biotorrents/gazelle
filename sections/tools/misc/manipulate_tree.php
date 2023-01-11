@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 // Props to Leto of StC.
 if (!check_perms('users_view_invites') && !check_perms('users_disable_users') && !check_perms('users_edit_invites') && !check_perms('users_disable_any')) {
     error(404);
@@ -19,7 +22,7 @@ if ($_POST['id']) {
         $Comment .= "\n" . "Manipulate Tree used by " . $user['Username'];
     }
     $UserID = $_POST['id'];
-    $db->query("
+    $app->dbOld->query("
       SELECT
         t1.TreePosition,
         t1.TreeID,
@@ -36,14 +39,14 @@ if ($_POST['id']) {
         ) AS MaxPosition
       FROM invite_tree AS t1
       WHERE t1.UserID = $UserID");
-    list($TreePosition, $TreeID, $TreeLevel, $MaxPosition) = $db->next_record();
+    list($TreePosition, $TreeID, $TreeLevel, $MaxPosition) = $app->dbOld->next_record();
     if (!$MaxPosition) {
         $MaxPosition = 1000000;
     } // $MaxPermission is null if the user is the last one in that tree on that level
     if (!$TreeID) {
         return;
     }
-    $db->query("
+    $app->dbOld->query("
       SELECT
         UserID
       FROM invite_tree
@@ -54,7 +57,7 @@ if ($_POST['id']) {
       ORDER BY TreePosition");
     $BanList = [];
 
-    while (list($Invitee) = $db->next_record()) {
+    while (list($Invitee) = $app->dbOld->next_record()) {
         $BanList[] = $Invitee;
     }
 
@@ -67,7 +70,7 @@ if ($_POST['id']) {
             $Msg = "Successfully banned entire invite tree!";
         } elseif ($_POST['perform'] === 'inviteprivs') { // DisableInvites =1
             Tools::update_user_notes($InviteeID, $Comment . "\n\n");
-            $db->query("
+            $app->dbOld->query("
         UPDATE users_info
         SET DisableInvites = '1'
         WHERE UserID = '$InviteeID'");

@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+$app = App::go();
+
+
 /**
  * Flight router
  * @see https://flightphp.com/learn
@@ -18,18 +21,18 @@ declare(strict_types=1);
 
 enforce_login();
 
-$StaffIDs = $cache->get_value('staff_ids');
+$StaffIDs = $app->cacheOld->get_value('staff_ids');
 if (!is_array($StaffIDs)) {
-    $db->query("
+    $app->dbOld->query("
     SELECT m.ID, m.Username
     FROM users_main AS m
       JOIN permissions AS p ON p.ID=m.PermissionID
     WHERE p.DisplayStaff='1'");
-    while (list($StaffID, $StaffName) = $db->next_record()) {
+    while (list($StaffID, $StaffName) = $app->dbOld->next_record()) {
         $StaffIDs[$StaffID] = $StaffName;
     }
     uasort($StaffIDs, 'strcasecmp');
-    $cache->cache_value('staff_ids', $StaffIDs);
+    $app->cacheOld->cache_value('staff_ids', $StaffIDs);
 }
 
 if (!isset($_REQUEST['action'])) {

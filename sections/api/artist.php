@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 # todo: Go through line by line
 
 if (!empty($_GET['artistreleases'])) {
@@ -20,11 +22,11 @@ if ($ArtistID && !is_number($ArtistID)) {
 if (empty($ArtistID)) {
     if (!empty($_GET['artistname'])) {
         $Name = db_string(trim($_GET['artistname']));
-        $db->query("
+        $app->dbOld->query("
       SELECT ArtistID
       FROM artists_alias
       WHERE Name LIKE '$Name'");
-        if (!(list($ArtistID) = $db->next_record(MYSQLI_NUM, false))) {
+        if (!(list($ArtistID) = $app->dbOld->next_record(MYSQLI_NUM, false))) {
             json_die('failure');
         }
         // If we get here, we got the ID!
@@ -36,9 +38,9 @@ if (!empty($_GET['revisionid'])) { // if they're viewing an old revision
     if (!is_number($RevisionID)) {
         error(0);
     }
-    $Data = $cache->get_value("artist_$ArtistID"."_revision_$RevisionID");
+    $Data = $app->cacheOld->get_value("artist_$ArtistID"."_revision_$RevisionID");
 } else { // viewing the live version
-    $Data = $cache->get_value("artist_$ArtistID");
+    $Data = $app->cacheOld->get_value("artist_$ArtistID");
     $RevisionID = false;
 }
 if ($Data) {
@@ -86,22 +88,22 @@ if ($Data) {
       WHERE a.ArtistID = '$ArtistID' ";
     }
     $sql .= " GROUP BY a.ArtistID";
-    $db->query($sql);
+    $app->dbOld->query($sql);
 
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         json_die('failure');
     }
 
-    //  list($Name, $Image, $Body, $VanityHouseArtist) = $db->next_record(MYSQLI_NUM, array(0));
-    list($Name, $Image, $Body) = $db->next_record(MYSQLI_NUM, array(0));
+    //  list($Name, $Image, $Body, $VanityHouseArtist) = $app->dbOld->next_record(MYSQLI_NUM, array(0));
+    list($Name, $Image, $Body) = $app->dbOld->next_record(MYSQLI_NUM, array(0));
 }
 
 // Requests
 $Requests = [];
 if (empty($user['DisableRequests'])) {
-    $Requests = $cache->get_value("artists_requests_$ArtistID");
+    $Requests = $app->cacheOld->get_value("artists_requests_$ArtistID");
     if (!is_array($Requests)) {
-        $db->query("
+        $app->dbOld->query("
       SELECT
         r.ID,
         r.CategoryID,
@@ -118,18 +120,18 @@ if (empty($user['DisableRequests'])) {
       GROUP BY r.ID
       ORDER BY Votes DESC");
 
-        if ($db->has_results()) {
-            $Requests = $db->to_array('ID', MYSQLI_ASSOC, false);
+        if ($app->dbOld->has_results()) {
+            $Requests = $app->dbOld->to_array('ID', MYSQLI_ASSOC, false);
         } else {
             $Requests = [];
         }
-        $cache->cache_value("artists_requests_$ArtistID", $Requests);
+        $app->cacheOld->cache_value("artists_requests_$ArtistID", $Requests);
     }
 }
 $NumRequests = count($Requests);
 
-if (($Importances = $cache->get_value("artist_groups_$ArtistID")) === false) {
-    $db->query("
+if (($Importances = $app->cacheOld->get_value("artist_groups_$ArtistID")) === false) {
+    $app->dbOld->query("
     SELECT DISTINCTROW
       ta.`GroupID`,
       ta.`Importance`,
@@ -147,9 +149,9 @@ if (($Importances = $cache->get_value("artist_groups_$ArtistID")) === false) {
     DESC
     ");
 
-    $GroupIDs = $db->collect('GroupID');
-    $Importances = $db->to_array(false, MYSQLI_BOTH, false);
-    $cache->cache_value("artist_groups_$ArtistID", $Importances, 0);
+    $GroupIDs = $app->dbOld->collect('GroupID');
+    $Importances = $app->dbOld->to_array(false, MYSQLI_BOTH, false);
+    $app->cacheOld->cache_value("artist_groups_$ArtistID", $Importances, 0);
 } else {
     $GroupIDs = [];
     foreach ($Importances as $Group) {
@@ -307,15 +309,15 @@ foreach ($Requests as $RequestID => $Request) {
 //notifications disabled by default
 $notificationsEnabled = false;
 if (check_perms('site_torrents_notify')) {
-    if (($Notify = $cache->get_value('notify_artists_'.$user['ID'])) === false) {
-        $db->query("
+    if (($Notify = $app->cacheOld->get_value('notify_artists_'.$user['ID'])) === false) {
+        $app->dbOld->query("
       SELECT ID, Artists
       FROM users_notify_filters
       WHERE UserID = '$user[ID]'
         AND Label = 'Artist notifications'
       LIMIT 1");
-        $Notify = $db->next_record(MYSQLI_ASSOC, false);
-        $cache->cache_value('notify_artists_'.$user['ID'], $Notify, 0);
+        $Notify = $app->dbOld->next_record(MYSQLI_ASSOC, false);
+        $app->cacheOld->cache_value('notify_artists_'.$user['ID'], $Notify, 0);
     }
     if (stripos($Notify['Artists'], "|$Name|") === false) {
         $notificationsEnabled = false;
@@ -334,7 +336,7 @@ if ($RevisionID) {
 
 $Data = array(array($Name, $Image, $Body));
 
-$cache->cache_value($Key, $Data, 3600);
+$app->cacheOld->cache_value($Key, $Data, 3600);
 
 json_die('success', array(
   'id' => (int)$ArtistID,

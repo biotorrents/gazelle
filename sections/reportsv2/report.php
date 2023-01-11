@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 /**
  * This is the frontend of reporting a torrent, it's what users see when
  * they visit reportsv2.php?id=xxx
@@ -16,13 +18,13 @@ if (!isset($_GET['id']) || !is_number($_GET['id'])) {
     }
 } else {
     $TorrentID = $_GET['id'];
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
     SELECT tg.`category_id`, t.`GroupID`, u.`Username`
     FROM `torrents_group` AS tg
       LEFT JOIN `torrents` AS t ON t.`GroupID` = tg.`id`
       LEFT JOIN `users_main` AS u ON t.`UserID` = u.`ID`
     WHERE t.`ID` = " . $_GET['id']);
-    list($CategoryID, $GroupID, $Username) = $db->next_record();
+    list($CategoryID, $GroupID, $Username) = $app->dbOld->next_record();
     $Artists = Artists::get_artist($GroupID);
     $TorrentCache = TorrentFunctions::get_group_info($GroupID, true);
     $GroupDetails = $TorrentCache[0];

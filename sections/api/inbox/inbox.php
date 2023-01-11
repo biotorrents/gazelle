@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 $UserID = $user['ID'];
 
 
@@ -71,10 +73,10 @@ $sql .= "
   GROUP BY c.ID
   ORDER BY cu.Sticky, $Sort
   LIMIT $Limit";
-$Results = $db->query($sql);
-$db->query('SELECT FOUND_ROWS()');
-list($NumResults) = $db->next_record();
-$db->set_query_id($Results);
+$Results = $app->dbOld->query($sql);
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
+$app->dbOld->set_query_id($Results);
 
 $CurURL = Format::get_url(array('sort'));
 if (empty($CurURL)) {
@@ -86,7 +88,7 @@ if (empty($CurURL)) {
 $Pages = Format::get_pages($Page, $NumResults, MESSAGES_PER_PAGE, 9);
 
 $JsonMessages = [];
-while (list($ConvID, $Subject, $Unread, $Sticky, $ForwardedID, $ForwardedName, $SenderID, $Username, $Donor, $Warned, $Enabled, $Avatar, $Date) = $db->next_record()) {
+while (list($ConvID, $Subject, $Unread, $Sticky, $ForwardedID, $ForwardedName, $SenderID, $Username, $Donor, $Warned, $Enabled, $Avatar, $Date) = $app->dbOld->next_record()) {
     $JsonMessage = array(
     'convId' => (int)$ConvID,
     'subject' => $Subject,

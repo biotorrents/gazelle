@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 /*
  * This is the AJAX page that gets called from the JavaScript
  * function NewReport(), any changes here should probably be
@@ -10,7 +13,7 @@ if (!check_perms('admin_reports')) {
 }
 
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT
     r.ID,
     r.ReporterID,
@@ -69,24 +72,24 @@ $db->prepared_query("
   ORDER BY ReportedTime ASC
   LIMIT 1");
 
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error();
     }
 
     list($ReportID, $ReporterID, $ReporterName, $TorrentID, $Type, $UserComment, $ResolverID, $ResolverName, $Status, $ReportedTime, $LastChangeTime,
       $ModComment, $Tracks, $Images, $ExtraIDs, $Links, $LogMessage, $GroupName, $GroupID, $ArtistID, $ArtistName, $Year, $CategoryID, $Time, $Remastered, $RemasterTitle,
-      $RemasterYear, $Media, $Format, $Encoding, $Size, $HasCue, $HasLog, $LogScore, $UploaderID, $UploaderName) = $db->next_record(MYSQLI_BOTH, array("ModComment"));
+      $RemasterYear, $Media, $Format, $Encoding, $Size, $HasCue, $HasLog, $LogScore, $UploaderID, $UploaderName) = $app->dbOld->next_record(MYSQLI_BOTH, array("ModComment"));
 
     if (!$GroupID) {
         //Torrent already deleted
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
         UPDATE reportsv2
         SET
           Status = 'Resolved',
           LastChangeTime = NOW(),
           ModComment = 'Report already dealt with (torrent deleted)'
         WHERE ID = $ReportID");
-        $cache->decrement('num_torrent_reportsv2'); ?>
+        $app->cacheOld->decrement('num_torrent_reportsv2'); ?>
 <div id="report<?=$ReportID?>" class="report box pad center"
   data-reportid="<?=$ReportID?>">
   <a href="reportsv2.php?view=report&amp;id=<?=$ReportID?>">Report
@@ -97,7 +100,7 @@ $db->prepared_query("
 <?php
       error();
     }
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
       UPDATE reportsv2
       SET Status = 'InProgress',
         ResolverID = ".$user['ID']."
@@ -173,13 +176,13 @@ $db->prepared_query("
           <br />
           <div style="text-align: right;">was reported by <a
               href="user.php?id=<?=$ReporterID?>"><?=$ReporterName?></a> <?=time_diff($ReportedTime)?> for the reason: <strong><?=$ReportType['title']?></strong></div>
-          <?php $db->prepared_query("
+          <?php $app->dbOld->prepared_query("
             SELECT r.ID
             FROM reportsv2 AS r
               LEFT JOIN torrents AS t ON t.ID = r.TorrentID
             WHERE r.Status != 'Resolved'
               AND t.GroupID = $GroupID");
-        $GroupOthers = ($db->record_count() - 1);
+        $GroupOthers = ($app->dbOld->record_count() - 1);
 
         if ($GroupOthers > 0) { ?>
           <div style="text-align: right;">
@@ -187,13 +190,13 @@ $db->prepared_query("
               <?=(($GroupOthers > 1) ? "are $GroupOthers other reports" : "is 1 other report")?>
               for torrents in this group</a>
           </div>
-          <?php $db->prepared_query("
+          <?php $app->dbOld->prepared_query("
             SELECT t.UserID
             FROM reportsv2 AS r
               JOIN torrents AS t ON t.ID = r.TorrentID
             WHERE r.Status != 'Resolved'
               AND t.UserID = $UploaderID");
-        $UploaderOthers = ($db->record_count() - 1);
+        $UploaderOthers = ($app->dbOld->record_count() - 1);
 
         if ($UploaderOthers > 0) { ?>
           <div style="text-align: right;">
@@ -204,7 +207,7 @@ $db->prepared_query("
           </div>
           <?php }
 
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
             SELECT DISTINCT req.ID,
               req.FillerID,
               um.Username,
@@ -216,9 +219,9 @@ $db->prepared_query("
             WHERE rep.Status != 'Resolved'
               AND req.TimeFilled > '2010-03-04 02:31:49'
               AND req.TorrentID = $TorrentID");
-        $Requests = $db->has_results();
+        $Requests = $app->dbOld->has_results();
         if ($Requests > 0) {
-            while (list($RequestID, $FillerID, $FillerName, $FilledTime) = $db->next_record()) {
+            while (list($RequestID, $FillerID, $FillerName, $FilledTime) = $app->dbOld->next_record()) {
                 ?>
           <div style="text-align: right;">
             <strong class="important_text"><a
@@ -266,7 +269,7 @@ $db->prepared_query("
         $First = true;
         $Extras = explode(' ', $ExtraIDs);
         foreach ($Extras as $ExtraID) {
-            $db->prepared_query("
+            $app->dbOld->prepared_query("
                 SELECT
                   tg.Name,
                   tg.ID,
@@ -303,7 +306,7 @@ $db->prepared_query("
                 GROUP BY tg.ID");
 
             list($ExtraGroupName, $ExtraGroupID, $ExtraArtistID, $ExtraArtistName, $ExtraYear, $ExtraTime, $ExtraRemastered, $ExtraRemasterTitle,
-              $ExtraRemasterYear, $ExtraMedia, $ExtraFormat, $ExtraEncoding, $ExtraSize, $ExtraHasCue, $ExtraHasLog, $ExtraLogScore, $ExtraUploaderID, $ExtraUploaderName) = Misc::display_array($db->next_record());
+              $ExtraRemasterYear, $ExtraMedia, $ExtraFormat, $ExtraEncoding, $ExtraSize, $ExtraHasCue, $ExtraHasLog, $ExtraLogScore, $ExtraUploaderID, $ExtraUploaderName) = Misc::display_array($app->dbOld->next_record());
 
 
             if ($ExtraGroupName) {

@@ -68,10 +68,10 @@ else {
     $description = $_POST['body'];
     $picture = $_POST['image'];
 
-    if (($GroupInfo = $cache->get_value('torrents_details_'.$group_id)) && !isset($GroupInfo[0][0])) {
+    if (($GroupInfo = $app->cacheOld->get_value('torrents_details_'.$group_id)) && !isset($GroupInfo[0][0])) {
         $GroupCategoryID = $GroupInfo[0]['category_id'];
     } else {
-        $db->query("
+        $app->dbOld->query("
         SELECT
           `category_id`
         FROM
@@ -79,7 +79,7 @@ else {
         WHERE
           `id` = '$group_id'
         ");
-        list($GroupCategoryID) = $db->next_record();
+        list($GroupCategoryID) = $app->dbOld->next_record();
     }
 
     // Trickery
@@ -93,7 +93,7 @@ else {
 
 // Insert revision
 if (empty($revision_id)) { // edit
-  $db->prepared_query("
+  $app->dbOld->prepared_query("
   INSERT INTO `wiki_torrents`(
     `PageID`,
     `Body`,
@@ -112,7 +112,7 @@ if (empty($revision_id)) { // edit
   )
   ");
 } else { // revert
-    $db->query("
+    $app->dbOld->query("
     SELECT
       `PageID`,
       `Body`,
@@ -122,13 +122,13 @@ if (empty($revision_id)) { // edit
     WHERE
       `RevisionID` = '$revision_id'
     ");
-    list($PossibleGroupID, $Body, $Image) = $db->next_record();
+    list($PossibleGroupID, $Body, $Image) = $app->dbOld->next_record();
 
     if ($PossibleGroupID !== $group_id) {
         error(404);
     }
 
-    $db->query("
+    $app->dbOld->query("
     INSERT INTO `wiki_torrents`(
       `PageID`,
       `Body`,
@@ -151,12 +151,12 @@ if (empty($revision_id)) { // edit
     ");
 }
 
-$revision_id = $db->inserted_id();
+$revision_id = $app->dbOld->inserted_id();
 $description = db_string($description);
 $picture = db_string($picture);
 
 // Update torrents table (technically, we don't need the revision_id column, but we can use it for a join which is nice and fast)
-$db->query("
+$app->dbOld->query("
 UPDATE
   `torrents_group`
 SET
@@ -168,10 +168,10 @@ WHERE
 ");
 
 // There we go, all done!
-$cache->delete_value('torrents_details_'.$group_id);
-$cache->delete_value('torrent_group_'.$group_id);
+$app->cacheOld->delete_value('torrents_details_'.$group_id);
+$app->cacheOld->delete_value('torrent_group_'.$group_id);
 
-$db->query("
+$app->dbOld->query("
 SELECT
   `CollageID`
 FROM
@@ -180,14 +180,14 @@ WHERE
   `GroupID` = '$group_id'
 ");
 
-if ($db->has_results()) {
-    while (list($CollageID) = $db->next_record()) {
-        $cache->delete_value('collage_'.$CollageID);
+if ($app->dbOld->has_results()) {
+    while (list($CollageID) = $app->dbOld->next_record()) {
+        $app->cacheOld->delete_value('collage_'.$CollageID);
     }
 }
 
 // Fix Recent Uploads/Downloads for image change
-$db->query("
+$app->dbOld->query("
 SELECT DISTINCT
   `UserID`
 FROM
@@ -199,25 +199,25 @@ WHERE
   tg.`id` = '$group_id'
 ");
 
-$user_ids = $db->collect('UserID');
+$user_ids = $app->dbOld->collect('UserID');
 foreach ($user_ids as $user_id) {
-    $RecentUploads = $cache->get_value('recent_uploads_'.$user_id);
+    $RecentUploads = $app->cacheOld->get_value('recent_uploads_'.$user_id);
 
     if (is_array($RecentUploads)) {
         foreach ($RecentUploads as $Key => $Recent) {
             if ($Recent['id'] === $group_id) {
                 if ($Recent['picture'] !== $picture) {
                     $Recent['picture'] = $picture;
-                    $cache->begin_transaction('recent_uploads_'.$user_id);
-                    $cache->update_row($Key, $Recent);
-                    $cache->commit_transaction(0);
+                    $app->cacheOld->begin_transaction('recent_uploads_'.$user_id);
+                    $app->cacheOld->update_row($Key, $Recent);
+                    $app->cacheOld->commit_transaction(0);
                 }
             }
         }
     }
 }
 
-$db->query("
+$app->dbOld->query("
 SELECT
   `ID`
 FROM
@@ -226,9 +226,9 @@ WHERE
   `GroupID` = '$group_id'
 ");
 
-if ($db->has_results()) {
-    $TorrentIDs = implode(',', $db->collect('ID'));
-    $db->query("
+if ($app->dbOld->has_results()) {
+    $TorrentIDs = implode(',', $app->dbOld->collect('ID'));
+    $app->dbOld->query("
     SELECT DISTINCT
       `uid`
     FROM
@@ -237,18 +237,18 @@ if ($db->has_results()) {
       `fid` IN($TorrentIDs)
     ");
 
-    $Snatchers = $db->collect('uid');
+    $Snatchers = $app->dbOld->collect('uid');
     foreach ($Snatchers as $user_id) {
-        $RecentSnatches = $cache->get_value('recent_snatches_'.$user_id);
+        $RecentSnatches = $app->cacheOld->get_value('recent_snatches_'.$user_id);
 
         if (is_array($RecentSnatches)) {
             foreach ($RecentSnatches as $Key => $Recent) {
                 if ($Recent['id'] == $group_id) {
                     if ($Recent['picture'] !== $picture) {
                         $Recent['picture'] = $picture;
-                        $cache->begin_transaction('recent_snatches_'.$user_id);
-                        $cache->update_row($Key, $Recent);
-                        $cache->commit_transaction(0);
+                        $app->cacheOld->begin_transaction('recent_snatches_'.$user_id);
+                        $app->cacheOld->update_row($Key, $Recent);
+                        $app->cacheOld->commit_transaction(0);
                     }
                 }
             }

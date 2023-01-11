@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 /**
  * Edit form
  *
@@ -18,7 +20,7 @@ if (!is_number($_GET['id']) || !$_GET['id']) {
 # DB query for the main torrent parameters
 # todo: Simplify based on unused tables
 $TorrentID = $_GET['id'];
-$db->query("
+$app->dbOld->query("
 SELECT
   t.`Media`,
   t.`Container`,
@@ -71,7 +73,7 @@ WHERE
 ");
 
 # Error on no results
-list($Properties) = $db->to_array(false, MYSQLI_BOTH);
+list($Properties) = $app->dbOld->to_array(false, MYSQLI_BOTH);
 if (!$Properties) {
     error(404);
 }

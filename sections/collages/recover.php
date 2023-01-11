@@ -1,4 +1,7 @@
 <?php
+
+$app = App::go();
+
 if (!check_perms('site_collages_recover')) {
     error(403);
 }
@@ -7,18 +10,18 @@ if ($_POST['collage_id'] && is_number($_POST['collage_id'])) {
     authorize();
     $CollageID = $_POST['collage_id'];
 
-    $db->query("
+    $app->dbOld->query("
     SELECT Name
     FROM collages
     WHERE ID = $CollageID");
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error('Collage is completely deleted');
     } else {
-        $db->query("
+        $app->dbOld->query("
       UPDATE collages
       SET Deleted = '0'
       WHERE ID = $CollageID");
-        $cache->delete_value("collage_$CollageID");
+        $app->cacheOld->delete_value("collage_$CollageID");
         Misc::write_log("Collage $CollageID was recovered by ".$user['Username']);
         Http::redirect("collages.php?id=$CollageID");
     }

@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     json_die('failure', 'bad id parameter');
 }
@@ -14,7 +16,7 @@ if ($UserID === $user['ID']) {
 }
 
 // Always view as a normal user
-$db->query("
+$app->dbOld->query("
 SELECT
   m.`Username`,
   m.`Email`,
@@ -60,11 +62,11 @@ GROUP BY
 ");
 
 // If user doesn't exist
-if (!$db->has_results()) {
+if (!$app->dbOld->has_results()) {
     json_die('failure', 'no such user');
 }
 
-list($Username, $Email, $LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $Enabled, $Paranoia, $Invites, $CustomTitle, $torrent_pass, $DisableLeech, $JoinDate, $Info, $Avatar, $Donor, $Warned, $ForumPosts, $InviterID, $DisableInvites, $InviterName) = $db->next_record(MYSQLI_NUM, array(9, 11));
+list($Username, $Email, $LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $Enabled, $Paranoia, $Invites, $CustomTitle, $torrent_pass, $DisableLeech, $JoinDate, $Info, $Avatar, $Donor, $Warned, $ForumPosts, $InviterID, $DisableInvites, $InviterName) = $app->dbOld->next_record(MYSQLI_NUM, array(9, 11));
 
 $Paranoia = unserialize($Paranoia);
 if (!is_array($Paranoia)) {
@@ -90,7 +92,7 @@ function check_paranoia_here($Setting)
 }
 
 $Friend = false;
-$db->query("
+$app->dbOld->query("
 SELECT
   `FriendID`
 FROM
@@ -100,12 +102,12 @@ WHERE
   AND `FriendID` = '$UserID'
 ");
 
-if ($db->has_results()) {
+if ($app->dbOld->has_results()) {
     $Friend = true;
 }
 
 if (check_paranoia_here('requestsfilled_count') || check_paranoia_here('requestsfilled_bounty')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       COUNT(DISTINCT r.`ID`),
       SUM(rv.`Bounty`)
@@ -117,9 +119,9 @@ if (check_paranoia_here('requestsfilled_count') || check_paranoia_here('requests
     WHERE
       r.`FillerID` = $UserID
     ");
-    list($RequestsFilled, $TotalBounty) = $db->next_record();
+    list($RequestsFilled, $TotalBounty) = $app->dbOld->next_record();
 
-    $db->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`RequestID`),
       SUM(`Bounty`)
@@ -128,9 +130,9 @@ if (check_paranoia_here('requestsfilled_count') || check_paranoia_here('requests
     WHERE
       `UserID` = $UserID
     ");
-    list($RequestsVoted, $TotalSpent) = $db->next_record();
+    list($RequestsVoted, $TotalSpent) = $app->dbOld->next_record();
 
-    $db->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`ID`)
     FROM
@@ -138,7 +140,7 @@ if (check_paranoia_here('requestsfilled_count') || check_paranoia_here('requests
     WHERE
       `UserID` = '$UserID'
     ");
-    list($Uploads) = $db->next_record();
+    list($Uploads) = $app->dbOld->next_record();
 } else {
     $RequestsFilled = null;
     $TotalBounty = null;
@@ -147,7 +149,7 @@ if (check_paranoia_here('requestsfilled_count') || check_paranoia_here('requests
 }
 
 if (check_paranoia_here('uploads+')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`ID`)
     FROM
@@ -155,13 +157,13 @@ if (check_paranoia_here('uploads+')) {
     WHERE
       `UserID` = '$UserID'
     ");
-    list($Uploads) = $db->next_record();
+    list($Uploads) = $app->dbOld->next_record();
 } else {
     $Uploads = null;
 }
 
 if (check_paranoia_here('artistsadded')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`ArtistID`)
     FROM
@@ -169,7 +171,7 @@ if (check_paranoia_here('artistsadded')) {
     WHERE
       `UserID` = $UserID
     ");
-    list($ArtistsAdded) = $db->next_record();
+    list($ArtistsAdded) = $app->dbOld->next_record();
 } else {
     $ArtistsAdded = null;
 }
@@ -229,7 +231,7 @@ if (check_paranoia_here(array('uploaded', 'downloaded', 'uploads+', 'requestsfil
 
 // Community section
 if (check_paranoia_here('snatched+')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       COUNT(x.`uid`),
       COUNT(DISTINCT x.`fid`)
@@ -241,11 +243,11 @@ if (check_paranoia_here('snatched+')) {
     WHERE
       x.`uid` = '$UserID'
     ");
-    list($Snatched, $UniqueSnatched) = $db->next_record();
+    list($Snatched, $UniqueSnatched) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('torrentcomments+')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`ID`)
     FROM
@@ -254,11 +256,11 @@ if (check_paranoia_here('torrentcomments+')) {
       `Page` = 'torrents'
       AND `AuthorID` = '$UserID'
     ");
-    list($NumComments) = $db->next_record();
+    list($NumComments) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('torrentcomments+')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`ID`)
     FROM
@@ -267,11 +269,11 @@ if (check_paranoia_here('torrentcomments+')) {
       `Page` = 'artist'
       AND `AuthorID` = '$UserID'
     ");
-    list($NumArtistComments) = $db->next_record();
+    list($NumArtistComments) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('torrentcomments+')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`ID`)
     FROM
@@ -280,11 +282,11 @@ if (check_paranoia_here('torrentcomments+')) {
       `Page` = 'collages'
       AND `AuthorID` = '$UserID'
     ");
-    list($NumCollageComments) = $db->next_record();
+    list($NumCollageComments) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('torrentcomments+')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`ID`)
     FROM
@@ -293,11 +295,11 @@ if (check_paranoia_here('torrentcomments+')) {
       `Page` = 'requests'
       AND `AuthorID` = '$UserID'
     ");
-    list($NumRequestComments) = $db->next_record();
+    list($NumRequestComments) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('collages+')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`ID`)
     FROM
@@ -306,11 +308,11 @@ if (check_paranoia_here('collages+')) {
       `Deleted` = '0'
       AND `UserID` = '$UserID'
     ");
-    list($NumCollages) = $db->next_record();
+    list($NumCollages) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('collagecontribs+')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       COUNT(DISTINCT ct.`CollageID`)
     FROM
@@ -322,11 +324,11 @@ if (check_paranoia_here('collagecontribs+')) {
       c.`Deleted` = '0'
       AND ct.`UserID` = '$UserID'
     ");
-    list($NumCollageContribs) = $db->next_record();
+    list($NumCollageContribs) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('uniquegroups+')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       COUNT(DISTINCT `GroupID`)
     FROM
@@ -334,11 +336,11 @@ if (check_paranoia_here('uniquegroups+')) {
     WHERE
       `UserID` = '$UserID'
     ");
-    list($UniqueGroups) = $db->next_record();
+    list($UniqueGroups) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('seeding+')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       COUNT(x.`uid`)
     FROM
@@ -350,11 +352,11 @@ if (check_paranoia_here('seeding+')) {
       x.`uid` = '$UserID'
       AND x.`remaining` = 0
     ");
-    list($Seeding) = $db->next_record();
+    list($Seeding) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('leeching+')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       COUNT(x.`uid`)
     FROM
@@ -366,11 +368,11 @@ if (check_paranoia_here('leeching+')) {
       x.`uid` = '$UserID'
       AND x.`remaining` > 0
     ");
-    list($Leeching) = $db->next_record();
+    list($Leeching) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('invitedcount')) {
-    $db->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`UserID`)
     FROM
@@ -378,7 +380,7 @@ if (check_paranoia_here('invitedcount')) {
     WHERE
       `Inviter` = '$UserID'
     ");
-    list($Invited) = $db->next_record();
+    list($Invited) = $app->dbOld->next_record();
 }
 
 if (!$OwnProfile) {

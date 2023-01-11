@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 # todo: I like the idea of store-based promotions expanded to other factors,
 # e.g., under an HnR threshold or minimum account age
 $UserID = $user['ID'];
@@ -64,15 +66,15 @@ $Classes = array(
 );
 
 $To = -1;
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT PermissionID, BonusPoints, Warned, Uploaded, Downloaded, (Uploaded / Downloaded) AS Ratio, Enabled, COUNT(torrents.ID) AS Uploads, COUNT(DISTINCT torrents.GroupID) AS Groups
   FROM users_main
     JOIN users_info ON users_main.ID = users_info.UserID
     JOIN torrents ON torrents.UserID = users_main.ID
   WHERE users_main.ID = $UserID");
 
-if ($db->has_results()) {
-    list($PermID, $BP, $Warned, $Upload, $Download, $Ratio, $Enabled, $Uploads, $Groups) = $db->next_record();
+if ($app->dbOld->has_results()) {
+    list($PermID, $BP, $Warned, $Upload, $Download, $Ratio, $Enabled, $Uploads, $Groups) = $app->dbOld->next_record();
 
     switch ($PermID) {
     case USER:
@@ -100,7 +102,7 @@ if ($db->has_results()) {
         $Err[] = "This account is disabled, how did you get here?";
     } else {
         if ($Classes[$To]['NonSmall'] > 0) {
-            $db->prepared_query("
+            $app->dbOld->prepared_query("
               SELECT COUNT(torrents.ID)
               FROM torrents
               JOIN torrents_group ON torrents.GroupID = torrents_group.ID
@@ -108,8 +110,8 @@ if ($db->has_results()) {
                 OR (torrents_group.CategoryID = 3 AND torrents_group.Pages >= 50))
                 AND torrents.UserID = $UserID");
 
-            if ($db->has_results()) {
-                list($NonSmall) = $db->next_record();
+            if ($app->dbOld->has_results()) {
+                list($NonSmall) = $app->dbOld->next_record();
 
                 if ($NonSmall < $Classes[$To]['NonSmall']) {
                     $Err[] = "You do not have enough large uploads.";
@@ -159,20 +161,20 @@ if ($db->has_results()) {
         }
 
         if (!isset($Err)) {
-            $db->prepared_query("
+            $app->dbOld->prepared_query("
               UPDATE users_main
               SET
                 BonusPoints = BonusPoints - ".$Classes[$To]['Price'].",
                 PermissionID = $To
               WHERE ID = $UserID");
 
-            $db->prepared_query("
+            $app->dbOld->prepared_query("
               UPDATE users_info
               SET AdminComment = CONCAT('".sqltime()." - Class changed to ".User::make_class_string($To)." via store purchase\n\n', AdminComment)
               WHERE UserID = $UserID");
 
-            $cache->delete_value("user_info_$UserID");
-            $cache->delete_value("user_info_heavy_$UserID");
+            $app->cacheOld->delete_value("user_info_$UserID");
+            $app->cacheOld->delete_value("user_info_heavy_$UserID");
         }
     }
 }

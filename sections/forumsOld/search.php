@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 // todo: Clean up this fucking mess
 
 /*
@@ -39,11 +41,11 @@ if ((!empty($PostAfterDate)) || (!empty($PostBeforeDate))) {
 // Searching for posts by a specific user
 if (!empty($_GET['user'])) {
     $User = trim($_GET['user']);
-    $db->query("
+    $app->dbOld->query("
     SELECT ID
     FROM users_main
     WHERE Username = '".db_string($User)."'");
-    list($AuthorID) = $db->next_record();
+    list($AuthorID) = $app->dbOld->next_record();
     if ($AuthorID === null) {
         $AuthorID = 0;
         // This will cause the search to return 0 results
@@ -77,8 +79,8 @@ if (!empty($_GET['threadid']) && is_number($_GET['threadid'])) {
       JOIN forums AS f ON f.ID = t.ForumID
     WHERE t.ID = $ThreadID
       AND " . Forums::user_forums_sql();
-    $db->query($SQL);
-    if (list($Title) = $db->next_record()) {
+    $app->dbOld->query($SQL);
+    if (list($Title) = $app->dbOld->next_record()) {
         $Title = " &gt; <a href=\"forums.php?action=viewthread&amp;threadid=$ThreadID\">$Title</a>";
     } else {
         error(404);
@@ -327,10 +329,10 @@ if ($Type == 'body') {
 }
 
 // Perform the query
-$Records = $db->query($SQL);
-$db->query('SELECT FOUND_ROWS()');
-list($Results) = $db->next_record();
-$db->set_query_id($Records);
+$Records = $app->dbOld->query($SQL);
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($Results) = $app->dbOld->next_record();
+$app->dbOld->set_query_id($Records);
 
 $Pages = Format::get_pages($Page, $Results, POSTS_PER_PAGE, 9);
 echo $Pages;
@@ -344,14 +346,14 @@ echo $Pages;
       <td>Topic creation time</td>
       <td>Last post time</td>
     </tr>
-    <?php if (!$db->has_results()) { ?>
+    <?php if (!$app->dbOld->has_results()) { ?>
     <tr>
       <td colspan="4">Nothing found<?=((isset($AuthorID) && $AuthorID == 0) ? ' (unknown username)' : '')?>!
       </td>
     </tr>
     <?php }
 
-while (list($ID, $Title, $ForumID, $ForumName, $LastTime, $PostID, $Body, $ThreadCreatedTime) = $db->next_record()) {
+while (list($ID, $Title, $ForumID, $ForumName, $LastTime, $PostID, $Body, $ThreadCreatedTime) = $app->dbOld->next_record()) {
     // Print results?>
     <tr class="row">
       <td>

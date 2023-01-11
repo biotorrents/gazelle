@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
+$app = App::go();
+
 /*
 $Security = new Security();
 $UserID = $Security->checkUser('users_override_paranoia');
 
-$db->query("
+$app->dbOld->query("
 SELECT
   `Username`
 FROM
@@ -14,7 +16,7 @@ FROM
 WHERE
   `ID` = '$UserID'
 ");
-list($Username) = $db->next_record();
+list($Username) = $app->dbOld->next_record();
 
 View::header(
     'Organize Bookmarks',

@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 if (!empty($_GET['collageid']) && is_number($_GET['collageid'])) {
     $CollageID = $_GET['collageid'];
 }
@@ -8,11 +10,11 @@ if (!is_number($CollageID)) {
     error(0);
 }
 
-$db->query("
+$app->dbOld->query("
   SELECT Name, Description, TagList, UserID, CategoryID, Locked, MaxGroups, MaxGroupsPerUser, Featured
   FROM collages
   WHERE ID = '$CollageID'");
-list($Name, $Description, $TagList, $UserID, $CategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Featured) = $db->next_record();
+list($Name, $Description, $TagList, $UserID, $CategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Featured) = $app->dbOld->next_record();
 $TagList = implode(', ', explode(' ', $TagList));
 
 if ($CategoryID == 0 && $UserID != $user['ID'] && !check_perms('site_collages_delete')) {

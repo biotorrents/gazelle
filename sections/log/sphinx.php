@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 $debug = Debug::go();
 
 if (!empty($_GET['page']) && is_number($_GET['page'])) {
@@ -13,7 +15,7 @@ if (!empty($_GET['page']) && is_number($_GET['page'])) {
 }
 
 if (empty($_GET['search']) || trim($_GET['search']) === '') {
-    $Log = $db->query(
+    $Log = $app->dbOld->query(
         "
     SELECT
       `ID`,
@@ -27,7 +29,7 @@ if (empty($_GET['search']) || trim($_GET['search']) === '') {
     LIMIT $Offset, ".LOG_ENTRIES_PER_PAGE
     );
 
-    $NumResults = $db->record_count();
+    $NumResults = $app->dbOld->record_count();
     if (!$NumResults) {
         $TotalMatches = 0;
     } elseif ($NumResults === LOG_ENTRIES_PER_PAGE) {
@@ -62,7 +64,7 @@ if (empty($_GET['search']) || trim($_GET['search']) === '') {
 
     if ($NumResults > 0) {
         $LogIDs = $Result->collect('id');
-        $Log = $db->query("
+        $Log = $app->dbOld->query("
         SELECT
           `ID`,
           `Message`,
@@ -76,6 +78,6 @@ if (empty($_GET['search']) || trim($_GET['search']) === '') {
         DESC
         ");
     } else {
-        $Log = $db->query("SET @nothing = 0");
+        $Log = $app->dbOld->query("SET @nothing = 0");
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+$app = App::go();
+
 // perform the back end of updating a report comment
 
 authorize();
@@ -13,13 +15,13 @@ $ReportID = (int) $_POST['reportid'];
 $Message = db_string($_POST['comment']);
 //Message can be blank!
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT ModComment
   FROM reportsv2
   WHERE ID = $ReportID");
-list($ModComment) = $db->next_record();
+list($ModComment) = $app->dbOld->next_record();
 if (isset($ModComment)) {
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
     UPDATE reportsv2
     SET ModComment = '$Message'
     WHERE ID = $ReportID");

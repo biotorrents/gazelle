@@ -1,20 +1,22 @@
 <?php
 
+$app = App::go();
+
 authorize();
 if (!isset($_GET['forumid']) || ($_GET['forumid'] != 'all' && !is_number($_GET['forumid']))) {
     error(403);
 }
 
 if ($_GET['forumid'] == 'all') {
-    $db->query("
+    $app->dbOld->query("
     UPDATE users_info
     SET CatchupTime = NOW()
     WHERE UserID = $user[ID]");
-    $cache->delete_value('user_info_'.$user['ID']);
+    $app->cacheOld->delete_value('user_info_'.$user['ID']);
     Http::redirect("forums.php");
 } else {
     // Insert a value for each topic
-    $db->query("
+    $app->dbOld->query("
     INSERT INTO forums_last_read_topics (UserID, TopicID, PostID)
     SELECT '$user[ID]', ID, LastPostID
     FROM forums_topics

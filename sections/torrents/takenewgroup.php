@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
+$app = App::go();
+
 /**
  * This page handles the backend of the "new group" function
  * which splits a torrent off into a new group.
@@ -65,50 +67,50 @@ if (empty($_POST['confirm'])) {
 <?php
   View::footer();
 } else {
-    $db->query("
+    $app->dbOld->query("
     SELECT ArtistID,  Name
     FROM artists_group
     WHERE Name = '$ArtistName'");
-    if (!$db->has_results()) {
-        $db->query("
+    if (!$app->dbOld->has_results()) {
+        $app->dbOld->query("
       INSERT INTO artists_group (Name)
       VALUES ('$ArtistName')");
-        $ArtistID = $db->inserted_id();
+        $ArtistID = $app->dbOld->inserted_id();
     } else {
-        list($ArtistID, $ArtistName) = $db->next_record();
+        list($ArtistID, $ArtistName) = $app->dbOld->next_record();
     }
 
-    $db->query("
+    $app->dbOld->query("
     SELECT CategoryID
     FROM torrents_group
     WHERE ID = $OldGroupID");
 
-    list($CategoryID) = $db->next_record();
+    list($CategoryID) = $app->dbOld->next_record();
 
-    $db->query("
+    $app->dbOld->query("
     INSERT INTO torrents_group
       (CategoryID, Name, Year, Time, WikiBody, WikiImage)
     VALUES
       ('$CategoryID', '$Title', '$Year', NOW(), '', '')");
-    $GroupID = $db->inserted_id();
+    $GroupID = $app->dbOld->inserted_id();
 
-    $db->query("
+    $app->dbOld->query("
     INSERT INTO torrents_artists
       (GroupID, ArtistID, UserID)
     VALUES
       ('$GroupID', '$ArtistID', '$user[ID]')");
 
-    $db->query("
+    $app->dbOld->query("
     UPDATE torrents
     SET GroupID = '$GroupID'
     WHERE ID = '$TorrentID'");
 
     // Delete old group if needed
-    $db->query("
+    $app->dbOld->query("
     SELECT ID
     FROM torrents
     WHERE GroupID = '$OldGroupID'");
-    if (!$db->has_results()) {
+    if (!$app->dbOld->has_results()) {
         Torrents::delete_group($OldGroupID);
     } else {
         Torrents::update_hash($OldGroupID);
@@ -116,7 +118,7 @@ if (empty($_POST['confirm'])) {
 
     Torrents::update_hash($GroupID);
 
-    $cache->delete_value("torrent_download_$TorrentID");
+    $app->cacheOld->delete_value("torrent_download_$TorrentID");
 
     Misc::write_log("Torrent $TorrentID was edited by " . $user['Username']);
 

@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 if (!check_perms('admin_reports') && !check_perms('site_moderate_forums')) {
     error(403);
 }
@@ -19,7 +21,7 @@ View::header('Other reports stats');
   <div class="two_columns pad">
 <?php
 if (check_perms('admin_reports')) {
-    $db->query("
+    $app->dbOld->query("
   SELECT um.Username,
     COUNT(r.ID) AS Reports
   FROM reports AS r
@@ -28,7 +30,7 @@ if (check_perms('admin_reports')) {
     AND r.ReportedTime > NOW() - INTERVAL 24 HOUR
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-    $Results = $db->to_array(); ?>
+    $Results = $app->dbOld->to_array(); ?>
     <h3><strong>Reports resolved in the last 24 hours</strong></h3>
     <table class="box border">
       <tr class="colhead">
@@ -51,7 +53,7 @@ if (check_perms('admin_reports')) {
   } ?>
     </table>
 <?php
-$db->query("
+$app->dbOld->query("
   SELECT um.Username,
     COUNT(r.ID) AS Reports
   FROM reports AS r
@@ -60,7 +62,7 @@ $db->query("
     AND r.ReportedTime > NOW() - INTERVAL 1 WEEK
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-    $Results = $db->to_array(); ?>
+    $Results = $app->dbOld->to_array(); ?>
     <h3><strong>Reports resolved in the last week</strong></h3>
     <table class="box border">
       <tr class="colhead">
@@ -83,7 +85,7 @@ $db->query("
   } ?>
     </table>
 <?php
-$db->query("
+$app->dbOld->query("
   SELECT um.Username,
     COUNT(r.ID) AS Reports
   FROM reports AS r
@@ -92,7 +94,7 @@ $db->query("
     AND r.ReportedTime > NOW() - INTERVAL 1 MONTH
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-    $Results = $db->to_array(); ?>
+    $Results = $app->dbOld->to_array(); ?>
     <h3><strong>Reports resolved in the last month</strong></h3>
     <table class="box border">
       <tr class="colhead">
@@ -115,14 +117,14 @@ $db->query("
   } ?>
     </table>
 <?php
-$db->query("
+$app->dbOld->query("
   SELECT um.Username,
     COUNT(r.ID) AS Reports
   FROM reports AS r
     JOIN users_main AS um ON um.ID = r.ResolverID
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-    $Results = $db->to_array(); ?>
+    $Results = $app->dbOld->to_array(); ?>
     <h3><strong>Reports resolved since "other" reports (2009-08-21)</strong></h3>
     <table class="box border">
       <tr class="colhead">
@@ -152,7 +154,7 @@ $db->query("
 
   $TrashForumIDs = '12';
 
-  $db->query("
+  $app->dbOld->query("
     SELECT u.Username,
       COUNT(f.LastPostAuthorID) as Trashed
     FROM forums_topics AS f
@@ -161,7 +163,7 @@ $db->query("
     GROUP BY f.LastPostAuthorID
     ORDER BY Trashed DESC
     LIMIT 30");
-  $Results = $db->to_array();
+  $Results = $app->dbOld->to_array();
 ?>
     <h3><strong>Threads trashed since the beginning of time</strong></h3>
     <table class="box border">

@@ -1,5 +1,7 @@
 <?php
 
+$app = App::go();
+
 if (!check_perms('users_view_email')) {
     error(403);
 }
@@ -10,7 +12,7 @@ if ($_POST['submit'] === 'Delete') { // Delete
     if (!is_number($_POST['id']) || $_POST['id'] === '') {
         error(0);
     }
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
     DELETE FROM email_blacklist
     WHERE ID = $_POST[id]");
 } else { // Edit & Create, Shared Validation
@@ -28,7 +30,7 @@ if ($_POST['submit'] === 'Delete') { // Delete
         if (!is_number($_POST['id']) || $_POST['id'] === '') {
             error(0);
         }
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
       UPDATE email_blacklist
       SET
         Email = '$P[email]',
@@ -37,7 +39,7 @@ if ($_POST['submit'] === 'Delete') { // Delete
         Time = NOW()
       WHERE ID = '$P[id]'");
     } else { // Create
-        $db->prepared_query("
+        $app->dbOld->prepared_query("
       INSERT INTO email_blacklist (Email, Comment, UserID, Time)
       VALUES ('$P[email]', '$P[comment]', '$user[ID]', NOW())");
     }

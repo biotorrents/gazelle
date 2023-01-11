@@ -34,19 +34,19 @@ for ($i = 0; $i < count($Images); $i++) {
     // sanitize inputs
     $Image = db_string($Image);
     $Summary = db_string($Summary);
-    $db->query("
+    $app->dbOld->query("
     INSERT IGNORE INTO cover_art
       (GroupID, Image, Summary, UserID, Time)
     VALUES
       ('$GroupID', '$Image', '$Summary', '$UserID', '$Time')");
 
-    if ($db->affected_rows()) {
+    if ($app->dbOld->affected_rows()) {
         $Changed = true;
     }
 }
 
 if ($Changed) {
-    $cache->delete_value("torrents_cover_art_$GroupID");
+    $app->cacheOld->delete_value("torrents_cover_art_$GroupID");
 }
 
 header('Location: '.$_SERVER['HTTP_REFERER']);

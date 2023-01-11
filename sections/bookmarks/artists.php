@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 if (!empty($_GET['userid'])) {
     if (!check_perms('users_override_paranoia')) {
         error(403);
@@ -13,11 +15,11 @@ if (!empty($_GET['userid'])) {
         error(404);
     }
 
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
       SELECT Username
       FROM users_main
       WHERE ID = '$UserID'");
-    list($Username) = $db->next_record();
+    list($Username) = $app->dbOld->next_record();
 } else {
     $UserID = $user['ID'];
 }
@@ -25,13 +27,13 @@ if (!empty($_GET['userid'])) {
 $Sneaky = $UserID !== $user['ID'];
 //$ArtistList = Bookmarks::all_bookmarks('artist', $UserID);
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT ag.ArtistID, ag.Name
   FROM bookmarks_artists AS ba
     INNER JOIN artists_group AS ag ON ba.ArtistID = ag.ArtistID
   WHERE ba.UserID = $UserID
   ORDER BY ag.Name");
-$ArtistList = $db->to_array();
+$ArtistList = $app->dbOld->to_array();
 
 $Title = $Sneaky ? "$Username's bookmarked artists" : 'Your bookmarked artists';
 View::header($Title, 'browse');
@@ -80,16 +82,16 @@ foreach ($ArtistList as $Artist) {
       <span class="u-pull-right">
         <?php
   if (check_perms('site_torrents_notify')) {
-      if (($Notify = $cache->get_value('notify_artists_'.$user['ID'])) === false) {
-          $db->prepared_query("
+      if (($Notify = $app->cacheOld->get_value('notify_artists_'.$user['ID'])) === false) {
+          $app->dbOld->prepared_query("
             SELECT ID, Artists
             FROM users_notify_filters
             WHERE UserID = '$user[ID]'
               AND Label = 'Artist notifications'
             LIMIT 1");
 
-          $Notify = $db->next_record(MYSQLI_ASSOC);
-          $cache->cache_value('notify_artists_'.$user['ID'], $Notify, 0);
+          $Notify = $app->dbOld->next_record(MYSQLI_ASSOC);
+          $app->cacheOld->cache_value('notify_artists_'.$user['ID'], $Notify, 0);
       }
 
       if (stripos($Notify['Artists'], "|$Name|") === false) { ?>
@@ -117,4 +119,4 @@ foreach ($ArtistList as $Artist) {
 
 <?php
 View::footer();
-$cache->cache_value('bookmarks_'.$UserID, serialize(array(array($Username, $TorrentList, $CollageDataList))), 3600);
+$app->cacheOld->cache_value('bookmarks_'.$UserID, serialize(array(array($Username, $TorrentList, $CollageDataList))), 3600);

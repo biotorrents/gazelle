@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 authorize();
 
 $ThreadID = $_GET['threadid'];
@@ -9,7 +11,7 @@ $NewVote = $_GET['vote'];
 
 if (is_number($ThreadID) && is_number($NewVote)) {
     if (!check_perms('site_moderate_forums')) {
-        $db->query("
+        $app->dbOld->query("
         SELECT
           `ForumID`
         FROM
@@ -17,7 +19,7 @@ if (is_number($ThreadID) && is_number($NewVote)) {
         WHERE
           `ID` = $ThreadID
         ");
-        list($ForumID) = $db->next_record();
+        list($ForumID) = $app->dbOld->next_record();
 
         /*
         if (!in_array($ForumID, FORUMS_TO_REVEAL_VOTERS)) {
@@ -26,7 +28,7 @@ if (is_number($ThreadID) && is_number($NewVote)) {
         */
     }
 
-    $db->query(
+    $app->dbOld->query(
         "
     UPDATE
       `forums_polls_votes`
@@ -37,7 +39,7 @@ if (is_number($ThreadID) && is_number($NewVote)) {
       AND `UserID` = ".$user['ID']
     );
 
-    $cache->delete_value("polls_$ThreadID");
+    $app->cacheOld->delete_value("polls_$ThreadID");
     Http::redirect("forums.php?action=viewthread&threadid=$ThreadID");
 } else {
     error(404);

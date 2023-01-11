@@ -1,9 +1,11 @@
 <?php
 
+$app = App::go();
+
 switch ($_GET['action']) {
   case 'notify_clear':
-    $db->query("DELETE FROM users_notify_torrents WHERE UserID = '$user[ID]' AND UnRead = '0'");
-    $cache->delete_value('notifications_new_'.$user['ID']);
+    $app->dbOld->query("DELETE FROM users_notify_torrents WHERE UserID = '$user[ID]' AND UnRead = '0'");
+    $app->cacheOld->delete_value('notifications_new_'.$user['ID']);
     Http::redirect("torrents.php?action=notify");
     break;
 
@@ -12,8 +14,8 @@ switch ($_GET['action']) {
     if (!isset($_GET['torrentid']) || !is_number($_GET['torrentid'])) {
         error(0);
     }
-    $db->query("DELETE FROM users_notify_torrents WHERE UserID = '$user[ID]' AND TorrentID = '$_GET[torrentid]'");
-    $cache->delete_value('notifications_new_'.$user['ID']);
+    $app->dbOld->query("DELETE FROM users_notify_torrents WHERE UserID = '$user[ID]' AND TorrentID = '$_GET[torrentid]'");
+    $app->cacheOld->delete_value('notifications_new_'.$user['ID']);
     break;
 
   case 'notify_clear_items':
@@ -26,8 +28,8 @@ switch ($_GET['action']) {
             error(0);
         }
     }
-    $db->query("DELETE FROM users_notify_torrents WHERE UserID = $user[ID] AND TorrentID IN ($_GET[torrentids])");
-    $cache->delete_value('notifications_new_'.$user['ID']);
+    $app->dbOld->query("DELETE FROM users_notify_torrents WHERE UserID = $user[ID] AND TorrentID IN ($_GET[torrentids])");
+    $app->cacheOld->delete_value('notifications_new_'.$user['ID']);
     break;
 
   case 'notify_clear_filter':
@@ -35,15 +37,15 @@ switch ($_GET['action']) {
     if (!isset($_GET['filterid']) || !is_number($_GET['filterid'])) {
         error(0);
     }
-    $db->query("DELETE FROM users_notify_torrents WHERE UserID = '$user[ID]' AND FilterID = '$_GET[filterid]' AND UnRead = '0'");
-    $cache->delete_value('notifications_new_'.$user['ID']);
+    $app->dbOld->query("DELETE FROM users_notify_torrents WHERE UserID = '$user[ID]' AND FilterID = '$_GET[filterid]' AND UnRead = '0'");
+    $app->cacheOld->delete_value('notifications_new_'.$user['ID']);
     Http::redirect("torrents.php?action=notify");
     break;
 
   case 'notify_catchup':
-    $db->query("UPDATE users_notify_torrents SET UnRead = '0' WHERE UserID=$user[ID]");
-    if ($db->affected_rows()) {
-        $cache->delete_value('notifications_new_'.$user['ID']);
+    $app->dbOld->query("UPDATE users_notify_torrents SET UnRead = '0' WHERE UserID=$user[ID]");
+    if ($app->dbOld->affected_rows()) {
+        $app->cacheOld->delete_value('notifications_new_'.$user['ID']);
     }
     Http::redirect("torrents.php?action=notify");
     break;
@@ -52,9 +54,9 @@ switch ($_GET['action']) {
     if (!isset($_GET['filterid']) || !is_number($_GET['filterid'])) {
         error(0);
     }
-    $db->query("UPDATE users_notify_torrents SET UnRead='0' WHERE UserID = $user[ID] AND FilterID = $_GET[filterid]");
-    if ($db->affected_rows()) {
-        $cache->delete_value('notifications_new_'.$user['ID']);
+    $app->dbOld->query("UPDATE users_notify_torrents SET UnRead='0' WHERE UserID = $user[ID] AND FilterID = $_GET[filterid]");
+    if ($app->dbOld->affected_rows()) {
+        $app->cacheOld->delete_value('notifications_new_'.$user['ID']);
     }
     Http::redirect("torrents.php?action=notify");
     break;

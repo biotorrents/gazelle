@@ -1,16 +1,18 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 $UserID = $user['ID'];
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT First, Second
   FROM misc
   WHERE Name='CoinBadge'");
 
-if ($db->has_results()) {
-    list($Purchases, $Price) = $db->next_record();
+if ($app->dbOld->has_results()) {
+    list($Purchases, $Price) = $app->dbOld->next_record();
 } else {
-    $db->prepared_query("
+    $app->dbOld->prepared_query("
     INSERT INTO misc
       (Name, First, Second)
     VALUES ('CoinBadge', 0, 1000)");
@@ -24,33 +26,33 @@ View::header('Store');
   if (isset($_GET['confirm'])
    && $_GET['confirm'] === 1
    && !Badges::hasBadge($UserID, 255)) {
-      $db->prepared_query("
+      $app->dbOld->prepared_query("
       SELECT BonusPoints
       FROM users_main
       WHERE ID = $UserID");
 
-      list($Points) = $db->has_results() ? $db->next_record() : [0];
+      list($Points) = $app->dbOld->has_results() ? $app->dbOld->next_record() : [0];
       if ($Points > $Price) {
           if (!Badges::awardBadge($UserID, 255)) {
               $Err = 'Could not award badge, unknown error occurred.';
           } else {
-              $db->prepared_query("
+              $app->dbOld->prepared_query("
               UPDATE users_main
               SET BonusPoints = BonusPoints - $Price
               WHERE ID = $UserID");
 
-              $db->prepared_query("
+              $app->dbOld->prepared_query("
               UPDATE users_info
               SET AdminComment = CONCAT('".sqltime()." - Purchased badge 255 from store\n\n', AdminComment)
               WHERE UserID = $UserID");
 
-              $cache->delete_value("user_info_heavy_$UserID");
+              $app->cacheOld->delete_value("user_info_heavy_$UserID");
               // Calculate new badge values
               $Purchases += 1;
               $x = $Purchases;
               $Price = 1000+$x*(10000+1400*((sin($x/1.3)+cos($x/4.21))+(sin($x/2.6)+cos(2*$x/4.21))/2));
 
-              $db->prepared_query("
+              $app->dbOld->prepared_query("
               UPDATE misc
               SET First  = $Purchases,
                 Second = $Price

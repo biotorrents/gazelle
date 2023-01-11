@@ -35,7 +35,7 @@ if (!(preg_match($app->env->regexImage, $URL, $Matches) || preg_match($app->env-
 */
 
 if (isset($_GET['c'])) {
-    list($Data, $FileType) = $cache->get_value('image_cache_'.md5($URL));
+    list($Data, $FileType) = $app->cacheOld->get_value('image_cache_'.md5($URL));
     $cached = true;
 }
 
@@ -59,7 +59,7 @@ if (!isset($Data) || !$Data) {
     }
 
     if (isset($_GET['c']) && strlen($Data) < 524288 && substr($Data, 0, 1) != '<') {
-        $cache->cache_value('image_cache_'.md5($URL), array($Data, $FileType), 3600 * 24 * 7);
+        $app->cacheOld->cache_value('image_cache_'.md5($URL), array($Data, $FileType), 3600 * 24 * 7);
     }
 }
 

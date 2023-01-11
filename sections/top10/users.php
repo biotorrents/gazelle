@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 // Error out on invalid requests (before caching)
 if (isset($_GET['details'])) {
     if (in_array($_GET['details'], array('ul','dl','numul','uls','dls'))) {
@@ -47,46 +49,46 @@ $BaseQuery = "
   GROUP BY u.ID";
 
   if ($Details == 'all' || $Details == 'ul') {
-      if (!$TopUserUploads = $cache->get_value('topuser_ul_'.$Limit)) {
-          $db->prepared_query("$BaseQuery ORDER BY u.Uploaded DESC LIMIT $Limit;");
-          $TopUserUploads = $db->to_array();
-          $cache->cache_value('topuser_ul_'.$Limit, $TopUserUploads, 3600 * 12);
+      if (!$TopUserUploads = $app->cacheOld->get_value('topuser_ul_'.$Limit)) {
+          $app->dbOld->prepared_query("$BaseQuery ORDER BY u.Uploaded DESC LIMIT $Limit;");
+          $TopUserUploads = $app->dbOld->to_array();
+          $app->cacheOld->cache_value('topuser_ul_'.$Limit, $TopUserUploads, 3600 * 12);
       }
       generate_user_table('Uploaders', 'ul', $TopUserUploads, $Limit);
   }
 
   if ($Details == 'all' || $Details == 'dl') {
-      if (!$TopUserDownloads = $cache->get_value('topuser_dl_'.$Limit)) {
-          $db->prepared_query("$BaseQuery ORDER BY u.Downloaded DESC LIMIT $Limit;");
-          $TopUserDownloads = $db->to_array();
-          $cache->cache_value('topuser_dl_'.$Limit, $TopUserDownloads, 3600 * 12);
+      if (!$TopUserDownloads = $app->cacheOld->get_value('topuser_dl_'.$Limit)) {
+          $app->dbOld->prepared_query("$BaseQuery ORDER BY u.Downloaded DESC LIMIT $Limit;");
+          $TopUserDownloads = $app->dbOld->to_array();
+          $app->cacheOld->cache_value('topuser_dl_'.$Limit, $TopUserDownloads, 3600 * 12);
       }
       generate_user_table('Downloaders', 'dl', $TopUserDownloads, $Limit);
   }
 
   if ($Details == 'all' || $Details == 'numul') {
-      if (!$TopUserNumUploads = $cache->get_value('topuser_numul_'.$Limit)) {
-          $db->prepared_query("$BaseQuery ORDER BY NumUploads DESC LIMIT $Limit;");
-          $TopUserNumUploads = $db->to_array();
-          $cache->cache_value('topuser_numul_'.$Limit, $TopUserNumUploads, 3600 * 12);
+      if (!$TopUserNumUploads = $app->cacheOld->get_value('topuser_numul_'.$Limit)) {
+          $app->dbOld->prepared_query("$BaseQuery ORDER BY NumUploads DESC LIMIT $Limit;");
+          $TopUserNumUploads = $app->dbOld->to_array();
+          $app->cacheOld->cache_value('topuser_numul_'.$Limit, $TopUserNumUploads, 3600 * 12);
       }
       generate_user_table('Torrents Uploaded', 'numul', $TopUserNumUploads, $Limit);
   }
 
   if ($Details == 'all' || $Details == 'uls') {
-      if (!$TopUserUploadSpeed = $cache->get_value('topuser_ulspeed_'.$Limit)) {
-          $db->prepared_query("$BaseQuery ORDER BY UpSpeed DESC LIMIT $Limit;");
-          $TopUserUploadSpeed = $db->to_array();
-          $cache->cache_value('topuser_ulspeed_'.$Limit, $TopUserUploadSpeed, 3600 * 12);
+      if (!$TopUserUploadSpeed = $app->cacheOld->get_value('topuser_ulspeed_'.$Limit)) {
+          $app->dbOld->prepared_query("$BaseQuery ORDER BY UpSpeed DESC LIMIT $Limit;");
+          $TopUserUploadSpeed = $app->dbOld->to_array();
+          $app->cacheOld->cache_value('topuser_ulspeed_'.$Limit, $TopUserUploadSpeed, 3600 * 12);
       }
       generate_user_table('Fastest Uploaders', 'uls', $TopUserUploadSpeed, $Limit);
   }
 
   if ($Details == 'all' || $Details == 'dls') {
-      if (!$TopUserDownloadSpeed = $cache->get_value('topuser_dlspeed_'.$Limit)) {
-          $db->prepared_query("$BaseQuery ORDER BY DownSpeed DESC LIMIT $Limit;");
-          $TopUserDownloadSpeed = $db->to_array();
-          $cache->cache_value('topuser_dlspeed_'.$Limit, $TopUserDownloadSpeed, 3600 * 12);
+      if (!$TopUserDownloadSpeed = $app->cacheOld->get_value('topuser_dlspeed_'.$Limit)) {
+          $app->dbOld->prepared_query("$BaseQuery ORDER BY DownSpeed DESC LIMIT $Limit;");
+          $TopUserDownloadSpeed = $app->dbOld->to_array();
+          $app->cacheOld->cache_value('topuser_dlspeed_'.$Limit, $TopUserDownloadSpeed, 3600 * 12);
       }
       generate_user_table('Fastest Downloaders', 'dls', $TopUserDownloadSpeed, $Limit);
   }

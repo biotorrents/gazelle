@@ -1,10 +1,12 @@
 <?php
 #declare(strict_types=1);
 
+$app = App::go();
+
 View::header('Staff PMs', 'staffpm');
 
 // Get messages
-$StaffPMs = $db->query(
+$StaffPMs = $app->dbOld->query(
     "
   SELECT
     ID,
@@ -35,7 +37,7 @@ $StaffPMs = $db->query(
   <div class="box pad" id="inbox">
 <?php
 
-if (!$db->has_results()) {
+if (!$app->dbOld->has_results()) {
     // No messages
 ?>
     <h2>No messages</h2>
@@ -56,7 +58,7 @@ if (!$db->has_results()) {
 <?php
   // List messages
   $ShowBox = 1;
-    while (list($ID, $Subject, $UserID, $Status, $Level, $AssignedToUser, $Date, $Unread) = $db->next_record()) {
+    while (list($ID, $Subject, $UserID, $Status, $Level, $AssignedToUser, $Date, $Unread) = $app->dbOld->next_record()) {
         if ($Unread === '1') {
             $RowClass = 'unreadpm';
         } else {
@@ -97,7 +99,7 @@ if (!$db->has_results()) {
           <td><?=$Assigned?></td>
         </tr>
 <?php
-    $db->set_query_id($StaffPMs);
+    $app->dbOld->set_query_id($StaffPMs);
     }
 
     // Close table and multiresolve form

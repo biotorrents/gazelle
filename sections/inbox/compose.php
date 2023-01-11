@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+$app = App::go();
+
 if (empty($Return)) {
     $ToID = $_GET['to'];
     /*
@@ -19,11 +21,11 @@ if (!empty($user['DisablePM']) && !isset($StaffIDs[$ToID])) {
     error(403);
 }
 
-$db->prepared_query("
+$app->dbOld->prepared_query("
   SELECT Username
   FROM users_main
   WHERE ID='$ToID'");
-list($Username) = $db->next_record();
+list($Username) = $app->dbOld->next_record();
 if (!$Username) {
     error(404);
 }

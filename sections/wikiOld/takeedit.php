@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+$app = App::go();
+
 authorize();
 
 if (!isset($_POST['id']) || !is_number($_POST['id'])) {
@@ -56,7 +58,7 @@ if ($MyRevision !== $OldRevision) {
 }
 
 // Store previous revision
-$db->prepared_query("
+$app->dbOld->prepared_query("
   INSERT INTO wiki_revisions
     (ID, Revision, Title, Body, Date, Author)
   VALUES
@@ -81,6 +83,6 @@ $SQL .= "
     Author = '$user[ID]'
   WHERE ID = '$P[id]'";
 
-$db->prepared_query($SQL);
+$app->dbOld->prepared_query($SQL);
 Wiki::flush_article($ArticleID);
 Http::redirect("wiki.php?action=article&id=$ArticleID");

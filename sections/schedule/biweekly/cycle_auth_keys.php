@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-$db->query("
+$app = App::go();
+
+$app->dbOld->query("
 UPDATE
   `users_info`
 SET

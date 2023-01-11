@@ -2,18 +2,20 @@
 
 declare(strict_types=1);
 
+$app = App::go();
+
 // Get a list of user IDs for clearing cache keys
-$db->query("
+$app->dbOld->query("
   SELECT UserID
   FROM users_info AS ui
     JOIN users_main AS um ON um.ID = ui.UserID
   WHERE um.LastAccess IS NULL
     AND ui.JoinDate < (NOW() - INTERVAL 7 DAY)
     AND um.Enabled != '2'");
-$UserIDs = $db->collect('UserID');
+$UserIDs = $app->dbOld->collect('UserID');
 
 // Disable the users
-$db->query("
+$app->dbOld->query("
   UPDATE users_info AS ui
     JOIN users_main AS um ON um.ID = ui.UserID
   SET um.Enabled = '2',
@@ -23,10 +25,10 @@ $db->query("
   WHERE um.LastAccess IS NULL
     AND ui.JoinDate < (NOW() - INTERVAL 7 DAY)
     AND um.Enabled != '2'");
-$cache->decrement('stats_user_count', $db->affected_rows());
+$app->cacheOld->decrement('stats_user_count', $app->dbOld->affected_rows());
 
 // Clear the appropriate cache keys
 foreach ($UserIDs as $UserID) {
-    $cache->delete_value("user_info_$UserID");
+    $app->cacheOld->delete_value("user_info_$UserID");
 }
 echo "disabled unconfirmed\n";
