@@ -286,11 +286,12 @@
 
 <span class="flexHeader">
 <h4>Cite this dataset</h4>
-<a class="button" class="toggleBibtex">toggle bibtex</a>
+<a class="button" class="toggleBibtex">biblatex</a>
 </span>
 
 {##
  # https://en.wikibooks.org/wiki/LaTeX/Bibliography_Management#biblatex
+ # https://ctan.math.washington.edu/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf
  #
  # @misc{ enwiki:1116502991,
  #   author = "{Wikipedia contributors}",
@@ -302,14 +303,24 @@
  #}
 
 <textarea class="bibtexCitation" rows="10">
-@online{ BioTorrents.de-torrentId-{{ item.ID }}
+@dataset{ BioTorrents.de-torrentId-{{ item.ID }}
   title = {{ groupDetails.title }},
   author = todo,
+  {% if groupDetails.workgroup %}
   organization = {{ groupDetails.workgroup }},
+  {% endif %}
+  {% if groupDetails.year %}
   year = {{ groupDetails.year }},
+  {% endif %}
+  {% if item.Version %}
+  version = {{ item.Version }},
+  {% endif %}
   url = \href{https://{{ env.siteDomain }}/torrents.php?torrentid={{ item.ID }}},
   urldate = {{ "now"|date }},
-  note = todo: infoHash
+  {% if groupDetails.Screenshots is not empty %}
+  doi = {{ groupDetails.Screenshots.doi }},
+  {% endif %}
+  note = BitTorrent info hash: {{ item.InfoHash }}
 }
 </textarea>
 </td>

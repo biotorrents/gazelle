@@ -809,7 +809,7 @@ class User
         FROM
           `torrents`
         WHERE
-          `UserID` = ".$app->userOld['ID']
+          `UserID` = ".$app->userNew->core["id"]
         );
 
         list($Uploads) = $app->dbOld->next_record();
