@@ -4,13 +4,11 @@
 
 	<h2>Torrent stats</h2>
 
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 	{# overview: torrents #}
 	<section>
 		<table>
 			<tr>
-				<th></th>
+				<th />
 				<th>Totals</th>
 				<th>Averages</th>
 			</tr>
@@ -18,12 +16,12 @@
 			<tr>
 				<th>Torrents</th>
 				<td>{{ economyOverTime.torrents.count|number_format }}</td>
-				<td></td>
+				<td />
 			</tr>
 
 			<tr>
 				<th>Ratio</th>
-				<td></td>
+				<td />
 				<td>{{ trackerEconomy.users.averageRatio }}</td>
 			</tr>
 
@@ -41,13 +39,13 @@
 
 			<tr>
 				<th>File size</th>
-				<td></td>
+				<td />
 				<td>{{ economyOverTime.torrents.averageFileSize|get_size }}</td>
 			</tr>
 
 			<tr>
 				<th>Torrents per user</th>
-				<td></td>
+				<td />
 				<td>{{ economyOverTime.users.torrentsPerUser|number_format }}</td>
 			</tr>
 
@@ -72,13 +70,13 @@
 			<tr>
 				<th>Request bounty</th>
 				<td>{{ trackerEconomy.requests.totalBounty|get_size }}</td>
-				<td></td>
+				<td />
 			</tr>
 
 			<tr>
 				<th>Available bounty</th>
 				<td>{{ trackerEconomy.requests.availableBounty|get_size }}</td>
-				<td></td>
+				<td />
 			</tr>
 		</table>
 	</section>
@@ -86,483 +84,479 @@
 
 	{# torrentsTimeline #}
 	<section>
-		<h3>Torrents over time</h3>
+		<h3>Uploads and deletions</h3>
 
 		<canvas class="chart" id="torrentsTimeline"></canvas>
 		<script>
 			(() => {
-'use strict';
+				'use strict';
 
-let torrentsTimelineCanvas = document.getElementById('torrentsTimeline').getContext('2d');
-let torrentsTimelineData = JSON.parse('{{ torrentsTimeline|json_encode|raw }}');
+				let torrentsTimelineCanvas = document.getElementById('torrentsTimeline').getContext('2d');
+				let torrentsTimelineData = JSON.parse('{{ torrentsTimeline|json_encode|raw }}');
 
-let torrentsTimelineChart = new Chart(torrentsTimelineCanvas, {
-type: 'line',
-data: {
-labels: Object.keys(torrentsTimelineData.uploads),
-datasets: [
-{
-label: 'Uploaded torrents',
-data: Object.values(torrentsTimelineData.uploads),
-// $blue500: #2196f3;
-borderColor: '#2196f3',
-backgroundColor: '#2196f3' + 50
-}, {
-label: 'Deleted torrents',
-data: Object.values(torrentsTimelineData.deletes),
-// $orange500: #ff9800;
-borderColor: '#ff9800',
-backgroundColor: '#ff9800' + 50
-}
-]
-},
+				let torrentsTimelineChart = new Chart(torrentsTimelineCanvas, {
+					type: 'line',
+					data: {
+						labels: Object.keys(torrentsTimelineData.uploads),
+						datasets: [
+							{
+								label: 'Uploaded torrents',
+								data: Object.values(torrentsTimelineData.uploads),
+								// $blue500: #2196f3;
+								borderColor: '#2196f3',
+								backgroundColor: '#2196f3' + 50
+							}, {
+								label: 'Deleted torrents',
+								data: Object.values(torrentsTimelineData.deletes),
+								// $orange500: #ff9800;
+								borderColor: '#ff9800',
+								backgroundColor: '#ff9800' + 50
+							}
+						]
+					},
 
-options: {
-plugins: {
-title: {
-display: true,
-text: 'Uploads and deletions'
-}
-}
-}
-});
-})();
+					options: {
+						plugins: {
+							title: {
+								display: true,
+								text: 'Uploads and deletions'
+							}
+						}
+					}
+				});
+			})();
 		</script>
 	</section>
 
 
+	{# categoryDistribution #}
 	<section>
 		<h3>Category distribution</h3>
 
 		<canvas class="chart" id="categoryDistribution"></canvas>
 		<script>
 			(() => {
-'use strict';
+				'use strict';
 
-let categoryDistributionCanvas = document.getElementById('categoryDistribution').getContext('2d');
-let categoryDistributionData = JSON.parse('{{ categoryDistribution|json_encode|raw }}');
+				let categoryDistributionCanvas = document.getElementById('categoryDistribution').getContext('2d');
+				let categoryDistributionData = JSON.parse('{{ categoryDistribution|json_encode|raw }}');
 
-let categoryDistributionChart = new Chart(categoryDistributionCanvas, {
-type: 'doughnut',
-data: {
-labels: Object.keys(categoryDistributionData),
-datasets: [
-{
-data: Object.values(categoryDistributionData),
-// all shades 500: every other forward
-backgroundColor: [
-'#f44336' + 50,
-'#9c27b0' + 50,
-'#3f51b5' + 50,
-'#03a9f4' + 50,
-'#009688' + 50,
-'#8bc34a' + 50,
-'#ffeb3b' + 50,
-'#ff9800' + 50,
-'#795548' + 50,
-'#607d8b' + 50,
-]
-}
-]
-},
+				let categoryDistributionChart = new Chart(categoryDistributionCanvas, {
+					type: 'doughnut',
+						data: {
+							labels: Object.keys(categoryDistributionData),
+							datasets: [
+								{
+									data: Object.values(categoryDistributionData),
+									// all shades 500: every other forward
+									backgroundColor: [
+										'#f44336' + 50,
+										'#9c27b0' + 50,
+										'#3f51b5' + 50,
+										'#03a9f4' + 50,
+										'#009688' + 50,
+										'#8bc34a' + 50,
+										'#ffeb3b' + 50,
+										'#ff9800' + 50,
+										'#795548' + 50,
+										'#607d8b' + 50,
+									]
+								}
+							]
+						},
 
-options: {
-plugins: {
-title: {
-display: true,
-text: 'Category distribution'
-}
-}
-}
-});
-})();
+					options: {
+						plugins: {
+							title: {
+								display: true,
+								text: 'Category distribution'
+							}
+						}
+					}
+				});
+			})();
 		</script>
 	</section>
 
 
-	<section>
-		<h3>Seeders and leechers</h3>
+	{# seeders and leechers: controls #}
+	<span class="flexHeader">
+		<h3>Seeders, leechers, and snatches</h3>
 
-		{# buttons: total and average seeders : leechers #}
-		<a class="button button-primary" id="seedersLeechersTotalButton" onclick="visible('seedersLeechersTotal', this.id)">Total</a>
-		<a class="button" id="seedersLeechersAverageButton" onclick="visible('seedersLeechersAverage', this.id)">Average</a>
-	</section>
+		<span class="buttons">
+			<a class="button button-primary" id="seedersLeechersTotalButton" onclick="visible('seedersLeechersTotal', this.id)">Total</a>
+			<a class="button" id="seedersLeechersAverageButton" onclick="visible('seedersLeechersAverage', this.id)">Average</a>
+		</span>
+	</span>
 
 	<section>
 		{# seedersLeechersTotal #}
 		<canvas class="chart" id="seedersLeechersTotal"></canvas>
 		<script>
 			(() => {
-'use strict';
+				'use strict';
 
-let seedersLeechersTotalCanvas = document.getElementById('seedersLeechersTotal').getContext('2d');
-let seedersLeechersTotalData = ['{{ trackerEconomy.peers.seeders }}', '{{ trackerEconomy.peers.leechers }}', '{{ trackerEconomy.snatches.active }}',];
+				let seedersLeechersTotalCanvas = document.getElementById('seedersLeechersTotal').getContext('2d');
+				let seedersLeechersTotalData = ['{{ trackerEconomy.peers.seeders }}', '{{ trackerEconomy.peers.leechers }}', '{{ trackerEconomy.snatches.active }}',];
 
-let seedersLeechersTotalChart = new Chart(seedersLeechersTotalCanvas, {
-type: 'doughnut',
-data: {
-labels: [
-'Seeders', 'Leechers', 'Snatches'
-],
-datasets: [
-{
-data: seedersLeechersTotalData,
-/*
-            $blue500: #2196f3;
-            $orange500: #ff9800;
-            $green500: #4caf50;
-            */
-backgroundColor: [
-'#2196f3' + 50,
-'#ff9800' + 50,
-'#4caf50' + 50,
-]
-}
-]
-},
+				let seedersLeechersTotalChart = new Chart(seedersLeechersTotalCanvas, {
+					type: 'doughnut',
+					data: {
+						labels: ['Seeders', 'Leechers', 'Snatches'],
+						datasets: [
+							{
+								data: seedersLeechersTotalData,
+								/*
+								$blue500: #2196f3;
+								$orange500: #ff9800;
+								$green500: #4caf50;
+								*/
+								backgroundColor: [
+									'#2196f3' + 50,
+									'#ff9800' + 50,
+									'#4caf50' + 50,
+								]
+							}
+						]
+					},
 
-options: {
-plugins: {
-title: {
-display: true,
-text: 'Total seeders, leechers, and snatches'
-}
-}
-}
-});
-})();
+					options: {
+						plugins: {
+							title: {
+								display: true,
+								text: 'Total seeders, leechers, and snatches'
+							}
+						}
+					}
+				});
+			})();
 		</script>
 
 		{# seedersLeechersAverage #}
 		<canvas class="chart" id="seedersLeechersAverage"></canvas>
 		<script>
 			(() => {
-'use strict';
+				'use strict';
 
-let seedersLeechersAverageCanvas = document.getElementById('seedersLeechersAverage').getContext('2d');
-let seedersLeechersAverageData = ['{{ trackerEconomy.peers.seeders / economyOverTime.torrents.count }}', '{{ trackerEconomy.peers.leechers / economyOverTime.torrents.count }}', '{{ trackerEconomy.snatches.active / economyOverTime.torrents.count }}',];
+				let seedersLeechersAverageCanvas = document.getElementById('seedersLeechersAverage').getContext('2d');
+				let seedersLeechersAverageData = ['{{ trackerEconomy.peers.seeders / economyOverTime.torrents.count }}', '{{ trackerEconomy.peers.leechers / economyOverTime.torrents.count }}', '{{ trackerEconomy.snatches.active / economyOverTime.torrents.count }}',];
 
-let seedersLeechersAverageChart = new Chart(seedersLeechersAverageCanvas, {
-type: 'doughnut',
-data: {
-labels: [
-'Seeders', 'Leechers', 'Snatches'
-],
-datasets: [
-{
-data: seedersLeechersAverageData,
-/*
-            $blue500: #2196f3;
-            $orange500: #ff9800;
-            $green500: #4caf50;
-            */
-backgroundColor: [
-'#2196f3' + 50,
-'#ff9800' + 50,
-'#4caf50' + 50,
-]
-}
-]
-},
+				let seedersLeechersAverageChart = new Chart(seedersLeechersAverageCanvas, {
+					type: 'doughnut',
+					data: {
+					labels: ['Seeders', 'Leechers', 'Snatches'],
+						datasets: [
+							{
+								data: seedersLeechersAverageData,
+								/*
+								$blue500: #2196f3;
+								$orange500: #ff9800;
+								$green500: #4caf50;
+								*/
+								backgroundColor: [
+									'#2196f3' + 50,
+									'#ff9800' + 50,
+									'#4caf50' + 50,
+								]
+							}
+						]
+					},
 
-options: {
-plugins: {
-title: {
-display: true,
-text: 'Average seeders, leechers, and snatches per torrent'
-}
-}
-}
-});
-})();
+					options: {
+						plugins: {
+							title: {
+								display: true,
+								text: 'Average seeders, leechers, and snatches per torrent'
+							}
+						}
+					}
+				});
+			})();
 		</script>
 	</section>
 
 
-	<section>
+	{# torrents over time: controls #}
+	<span class="flexHeader">
 		<h3>Torrents over time</h3>
-		{# buttons: daily, weekly, monthly torrents #}
-		<a class="button button-primary" id="dailyTorrentsButton" onclick="visible('dailyTorrents', this.id)">Daily</a>
-		<a class="button" id="weeklyTorrentsButton" onclick="visible('weeklyTorrents', this.id)">Weekly</a>
-		<a class="button" id="monthlyTorrentsButton" onclick="visible('monthlyTorrents', this.id)">Monthly</a>
-	</section>
+
+		<span class="buttons">
+			<a class="button button-primary" id="dailyTorrentsButton" onclick="visible('dailyTorrents', this.id)">Daily</a>
+			<a class="button" id="weeklyTorrentsButton" onclick="visible('weeklyTorrents', this.id)">Weekly</a>
+			<a class="button" id="monthlyTorrentsButton" onclick="visible('monthlyTorrents', this.id)">Monthly</a>
+		</span>
+	</span>
 
 	<section>
 		{# dailyTorrents #}
 		<canvas class="chart" id="dailyTorrents"></canvas>
 		<script>
 			(() => {
-'use strict';
+				'use strict';
 
-let dailyTorrentsCanvas = document.getElementById('dailyTorrents').getContext('2d');
-let dailyTorrentsData = JSON.parse('{{ economyOverTime|json_encode|raw }}');
+				let dailyTorrentsCanvas = document.getElementById('dailyTorrents').getContext('2d');
+				let dailyTorrentsData = JSON.parse('{{ economyOverTime|json_encode|raw }}');
 
-let dailyTorrentsChart = new Chart(dailyTorrentsCanvas, {
-type: 'bar',
-data: {
-labels: Object.keys(dailyTorrentsData.daily),
-datasets: [
-{
-label: 'Day',
-data: Object.values(dailyTorrentsData.daily),
-// $purple500: #9c27b0;
-backgroundColor: '#9c27b0' + 50
-}
-]
-},
+				let dailyTorrentsChart = new Chart(dailyTorrentsCanvas, {
+					type: 'bar',
+					data: {
+						labels: Object.keys(dailyTorrentsData.daily),
+						datasets: [
+							{
+								label: 'Day',
+								data: Object.values(dailyTorrentsData.daily),
+								// $purple500: #9c27b0;
+								backgroundColor: '#9c27b0' + 50
+							}
+						]
+					},
 
-options: {
-plugins: {
-title: {
-display: true,
-text: 'Daily torrent uploads'
-}
-}
-}
-});
-})();
+					options: {
+						plugins: {
+							title: {
+								display: true,
+								text: 'Daily torrent uploads'
+							}
+						}
+					}
+				});
+			})();
 		</script>
 
 		{# weeklyTorrents #}
 		<canvas class="chart" id="weeklyTorrents"></canvas>
 		<script>
 			(() => {
-'use strict';
+				'use strict';
 
-let weeklyTorrentsCanvas = document.getElementById('weeklyTorrents').getContext('2d');
-let weeklyTorrentsData = JSON.parse('{{ economyOverTime|json_encode|raw }}');
+				let weeklyTorrentsCanvas = document.getElementById('weeklyTorrents').getContext('2d');
+				let weeklyTorrentsData = JSON.parse('{{ economyOverTime|json_encode|raw }}');
 
-let weeklyTorrentsChart = new Chart(weeklyTorrentsCanvas, {
-type: 'bar',
-data: {
-labels: Object.keys(weeklyTorrentsData.weekly),
-datasets: [
-{
-label: 'Week',
-data: Object.values(weeklyTorrentsData.weekly),
-// $purple500: #9c27b0;
-backgroundColor: '#9c27b0' + 50
-}
-]
-},
+				let weeklyTorrentsChart = new Chart(weeklyTorrentsCanvas, {
+					type: 'bar',
+					data: {
+						labels: Object.keys(weeklyTorrentsData.weekly),
+						datasets: [
+							{
+								label: 'Week',
+								data: Object.values(weeklyTorrentsData.weekly),
+								// $purple500: #9c27b0;
+								backgroundColor: '#9c27b0' + 50
+							}
+						]
+					},
 
-options: {
-plugins: {
-title: {
-display: true,
-text: 'Weekly torrent uploads'
-}
-}
-}
-});
-})();
+					options: {
+						plugins: {
+							title: {
+								display: true,
+								text: 'Weekly torrent uploads'
+							}
+						}
+					}
+				});
+			})();
 		</script>
 
 		{# monthlyTorrents #}
 		<canvas class="chart" id="monthlyTorrents"></canvas>
 		<script>
 			(() => {
-'use strict';
+				'use strict';
 
-let monthlyTorrentsCanvas = document.getElementById('monthlyTorrents').getContext('2d');
-let monthlyTorrentsData = JSON.parse('{{ economyOverTime|json_encode|raw }}');
+				let monthlyTorrentsCanvas = document.getElementById('monthlyTorrents').getContext('2d');
+				let monthlyTorrentsData = JSON.parse('{{ economyOverTime|json_encode|raw }}');
 
-let monthlyTorrentsChart = new Chart(monthlyTorrentsCanvas, {
-type: 'bar',
-data: {
-labels: Object.keys(monthlyTorrentsData.monthly),
-datasets: [
-{
-label: 'Month',
-data: Object.values(monthlyTorrentsData.monthly),
-// $purple500: #9c27b0;
-backgroundColor: '#9c27b0' + 50
-}
-]
-},
+				let monthlyTorrentsChart = new Chart(monthlyTorrentsCanvas, {
+					type: 'bar',
+					data: {
+						labels: Object.keys(monthlyTorrentsData.monthly),
+						datasets: [
+							{
+								label: 'Month',
+								data: Object.values(monthlyTorrentsData.monthly),
+								// $purple500: #9c27b0;
+								backgroundColor: '#9c27b0' + 50
+							}
+						]
+					},
 
-options: {
-plugins: {
-title: {
-display: true,
-text: 'Monthly torrent uploads'
-}
-}
-}
-});
-})();
+					options: {
+						plugins: {
+							title: {
+								display: true,
+								text: 'Monthly torrent uploads'
+							}
+						}
+					}
+				});
+			})();
 		</script>
 	</section>
 
 
+	{# database specifics #}
 	<section>
 		<h3>Database specifics</h3>
 
 		<canvas class="chart" id="databaseSpecifics"></canvas>
 		<script>
 			(() => {
-'use strict';
+				'use strict';
 
-let databaseSpecificsCanvas = document.getElementById('databaseSpecifics').getContext('2d');
-let databaseSpecificsData = JSON.parse('{{ databaseSpecifics|json_encode|raw }}');
+				let databaseSpecificsCanvas = document.getElementById('databaseSpecifics').getContext('2d');
+				let databaseSpecificsData = JSON.parse('{{ databaseSpecifics|json_encode|raw }}');
 
-let databaseSpecificsChart = new Chart(databaseSpecificsCanvas, {
-type: 'bar',
-data: {
-labels: Object.values(databaseSpecificsData.name),
+				let databaseSpecificsChart = new Chart(databaseSpecificsCanvas, {
+					type: 'bar',
+					data: {
+						labels: Object.values(databaseSpecificsData.name),
 
-datasets: [
-{
-label: 'Records',
-yAxisID: 'yRecords',
-data: Object.values(databaseSpecificsData.rows),
-// all shades 500: every other forward
-backgroundColor: [
-'#f44336' + 50,
-'#9c27b0' + 50,
-'#3f51b5' + 50,
-'#03a9f4' + 50,
-'#009688' + 50,
-'#8bc34a' + 50,
-'#ffeb3b' + 50,
-'#ff9800' + 50,
-'#795548' + 50,
-'#607d8b' + 50,
-]
-}, {
-type: 'line',
-label: 'Size',
-yAxisID: 'ySize',
-data: Object.values(databaseSpecificsData.dataSize),
-// $gray500: #9e9e9e;
-borderColor: '#9e9e9e',
-backgroundColor: '#9e9e9e' + 50
-}
-]
-},
+						datasets: [
+							{
+								label: 'Records',
+								yAxisID: 'yRecords',
+								data: Object.values(databaseSpecificsData.rows),
+								// all shades 500: every other forward
+								backgroundColor: [
+									'#f44336' + 50,
+									'#9c27b0' + 50,
+									'#3f51b5' + 50,
+									'#03a9f4' + 50,
+									'#009688' + 50,
+									'#8bc34a' + 50,
+									'#ffeb3b' + 50,
+									'#ff9800' + 50,
+									'#795548' + 50,
+									'#607d8b' + 50,
+								]
+							}, {
+								type: 'line',
+								label: 'Size',
+								yAxisID: 'ySize',
+								data: Object.values(databaseSpecificsData.dataSize),
+								// $gray500: #9e9e9e;
+								borderColor: '#9e9e9e',
+								backgroundColor: '#9e9e9e' + 50
+							}
+						]
+					},
 
-options: {
-plugins: {
-title: {
-display: true,
-text: 'Database specifics'
-}
-},
+					options: {
+						plugins: {
+							title: {
+								display: true,
+								text: 'Database specifics'
+							}
+						},
 
-scales: {
-x: {
-grid: {
-drawOnChartArea: false
-},
-/*
-              ticks: {
-                autoSkip: false,
-              },
-              */
-},
+						scales: {
+							x: {
+								grid: {
+									drawOnChartArea: false
+								},
+							},
 
-yRecords: {
-type: 'logarithmic',
-display: true,
-position: 'left',
-grid: {
-drawOnChartArea: false
-},
-title: {
-display: true,
-text: 'Absolute number of records'
-}
-},
+							yRecords: {
+								type: 'logarithmic',
+								display: true,
+								position: 'left',
+								grid: {
+									drawOnChartArea: false
+								},
+								title: {
+									display: true,
+									text: 'Absolute number of records'
+								}
+							},
 
-ySize: {
-type: 'logarithmic',
-display: true,
-position: 'right',
-grid: {
-drawOnChartArea: false
-},
-title: {
-display: true,
-text: 'Data and index size in MiB'
-}
-}
-}
-}
-});
-})();
+							ySize: {
+								type: 'logarithmic',
+								display: true,
+								position: 'right',
+								grid: {
+									drawOnChartArea: false
+								},
+								title: {
+									display: true,
+									text: 'Data and index size in MiB'
+								}
+							}
+						}
+					}
+				});
+			})();
 		</script>
 	</section>
-	<br/><br/>
 
 
 	<script>
 		// toggle visibility
-function visible(canvas, button) { // canvas
-$('#' + canvas).parent().children(':not(#' + canvas + ')').hide();
-$('#' + canvas).show();
+		function visible(canvas, button) {
+			// canvas
+			$('#' + canvas).parent().children(':not(#' + canvas + ')').hide();
+			$('#' + canvas).show();
 
-// button
-$('#' + button).parent().children(':not(#' + button + ')').removeClass('button-primary');
-$('#' + button).addClass('button-primary');
-}
+			// button
+			$('#' + button).parent().children(':not(#' + button + ')').removeClass('button-primary');
+			$('#' + button).addClass('button-primary');
+		}
 
-// hidden by default
-(() => {
-$('#seedersLeechersAverage').hide();
-
-$('#weeklyTorrents').hide();
-$('#monthlyTorrents').hide();
-})();
+		// hidden by default
+		(() => {
+			$('#seedersLeechersAverage').hide();
+			$('#weeklyTorrents').hide();
+			$('#monthlyTorrents').hide();
+		})();
 	</script>
 
-
-	{#
-	<ul class="stats nobullet">
-	  <li>
-	    <strong>Seeder/leecher ratio:</strong>
-	    <?=Format::get_ratio_html($TotalSeeders, $TotalLeechers)?>
-	  </li>
-	
-	  <li>
-	    <strong>Seeder/snatch ratio:</strong>
-	    <?=Format::get_ratio_html($TotalSeeders, $TotalOverallSnatches)?>
-	  </li>
-	
-	  <li>
-	    <strong>Mean seeding per user:</strong>
-	    <?=number_format($TotalSeeders / $NumUsers, 2)?>
-	  </li>
-	
-	  <li>
-	    <strong>Mean leeching per user:</strong>
-	    <?=number_format($TotalLeechers / $NumUsers, 2)?>
-	  </li>
-	
-	  <li>
-	    <strong>Mean snatches per user:</strong>
-	    <?=number_format($TotalOverallSnatches / $NumUsers, 2)?>
-	  </li>
-	
-	  <li>
-	    <strong>Total users in at least 1 swarm:</strong>
-	    <?=number_format($TotalPeerUsers)?>
-	  </li>
-	
-	  <li>
-	    <strong>Mean seeding per user in at least 1 swarm:</strong>
-	    <?=number_format($TotalSeeders / $TotalPeerUsers, 2)?>
-	  </li>
-	
-	  <li>
-	    <strong>Mean leeching per user in at least 1 swarm:</strong>
-	    <?=number_format($TotalLeechers / $TotalPeerUsers, 2)?>
-	  </li>
-	
-	  <li>
-	    <strong>Mean snatches per user in at least 1 swarm:</strong>
-	    <?=number_format($TotalSnatches / $TotalPeerUsers, 2)?>
-	  </li>
-	</ul>
-	#}
-
 {% endblock %}
+
+{#
+<ul class="stats nobullet">
+	<li>
+		<strong>Seeder/leecher ratio:</strong>
+		<?=Format::get_ratio_html($TotalSeeders, $TotalLeechers)?>
+	</li>
+
+	<li>
+		<strong>Seeder/snatch ratio:</strong>
+		<?=Format::get_ratio_html($TotalSeeders, $TotalOverallSnatches)?>
+	</li>
+
+	<li>
+		<strong>Mean seeding per user:</strong>
+		<?=number_format($TotalSeeders / $NumUsers, 2)?>
+	</li>
+
+	<li>
+		<strong>Mean leeching per user:</strong>
+		<?=number_format($TotalLeechers / $NumUsers, 2)?>
+	</li>
+
+	<li>
+		<strong>Mean snatches per user:</strong>
+		<?=number_format($TotalOverallSnatches / $NumUsers, 2)?>
+	</li>
+
+	<li>
+		<strong>Total users in at least 1 swarm:</strong>
+		<?=number_format($TotalPeerUsers)?>
+	</li>
+
+	<li>
+		<strong>Mean seeding per user in at least 1 swarm:</strong>
+		<?=number_format($TotalSeeders / $TotalPeerUsers, 2)?>
+	</li>
+
+	<li>
+		<strong>Mean leeching per user in at least 1 swarm:</strong>
+		<?=number_format($TotalLeechers / $TotalPeerUsers, 2)?>
+	</li>
+
+	<li>
+		<strong>Mean snatches per user in at least 1 swarm:</strong>
+		<?=number_format($TotalSnatches / $TotalPeerUsers, 2)?>
+	</li>
+</ul>
+#}

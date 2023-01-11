@@ -47,24 +47,20 @@ $classDistribution = $stats->classDistribution();
  * view
  */
 
-View::header("Detailed user statistics", "vendor/chart.min,vendor/chartjs-chart-graph.min");
+$app->twig->display("stats/users.twig", [
+    "title" => "Detailed user statistics",
+    "js" => ["vendor/chart.min", "vendor/chartjs-chart-graph.min"],
 
-echo $app->twig->render(
-    "stats/users.twig",
-    [
-        # plausible
-        "realtime" => $realtime,
-        "overview" => $overview,
-        "overTime" => $overTime,
-        "topPages" => $topPages,
-        "sources" => $sources,
-        "devices" => $devices,
-        "locations" => $locations,
+    # plausible
+    "realtime" => $realtime,
+    "overview" => $overview,
+    "overTime" => $overTime,
+    "topPages" => $topPages,
+    "sources" => $sources,
+    "devices" => $devices,
+    "locations" => $locations,
 
-        # database
-        "usersTimeline" => $usersTimeline,
-        "classDistribution" => $classDistribution,
-    ]
-);
-
-View::footer();
+    # database
+    "usersTimeline" => $usersTimeline,
+    "classDistribution" => $classDistribution,
+]);

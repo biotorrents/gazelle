@@ -119,6 +119,11 @@
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
+
+  .buttons {
+    display: inline-flex;
+    gap: 2rem;
+  }
 }
 
 /* openai torrent tags */
