@@ -20,8 +20,8 @@ $ENV = ENV::go();
   the latter of which is an array
 */
 
-if (isset($user['PostsPerPage'])) {
-    $PerPage = $user['PostsPerPage'];
+if (isset($app->userNew->extra['PostsPerPage'])) {
+    $PerPage = $app->userNew->extra['PostsPerPage'];
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
@@ -43,7 +43,7 @@ if (empty($_POST['body']) || empty($_POST['title'])) {
 
 $Body = $_POST['body'];
 
-if ($user['DisablePosting']) {
+if ($app->userNew->extra['DisablePosting']) {
     error('Your posting privileges have been removed.');
 }
 
@@ -88,14 +88,14 @@ $app->dbOld->query("
   INSERT INTO forums_topics
     (Title, AuthorID, ForumID, LastPostTime, LastPostAuthorID, CreatedTime)
   Values
-    ('".db_string($Title)."', '".$user['ID']."', '$ForumID', NOW(), '".$user['ID']."', NOW())");
+    ('".db_string($Title)."', '".$app->userNew->core['id']."', '$ForumID', NOW(), '".$app->userNew->core['id']."', NOW())");
 $TopicID = $app->dbOld->inserted_id();
 
 $app->dbOld->query("
   INSERT INTO forums_posts
     (TopicID, AuthorID, AddedTime, Body)
   VALUES
-    ('$TopicID', '".$user['ID']."', NOW(), '".db_string($Body)."')");
+    ('$TopicID', '".$app->userNew->core['id']."', NOW(), '".db_string($Body)."')");
 
 $PostID = $app->dbOld->inserted_id();
 
@@ -105,7 +105,7 @@ $app->dbOld->query("
     NumPosts         = NumPosts + 1,
     NumTopics        = NumTopics + 1,
     LastPostID       = '$PostID',
-    LastPostAuthorID = '".$user['ID']."',
+    LastPostAuthorID = '".$app->userNew->core['id']."',
     LastPostTopicID  = '$TopicID',
     LastPostTime     = NOW()
   WHERE ID = '$ForumID'");
@@ -115,7 +115,7 @@ $app->dbOld->query("
   SET
     NumPosts         = NumPosts + 1,
     LastPostID       = '$PostID',
-    LastPostAuthorID = '".$user['ID']."',
+    LastPostAuthorID = '".$app->userNew->core['id']."',
     LastPostTime     = NOW()
   WHERE ID = '$TopicID'");
 
@@ -127,13 +127,13 @@ if (isset($_POST['subscribe'])) {
 $app->dbOld->query("
   SELECT COUNT(ID)
   FROM forums_posts
-  WHERE AuthorID = '$user[ID]'");
+  WHERE AuthorID = '$app->userNew->core[id]'");
 list($UserPosts) = $app->dbOld->next_record(MYSQLI_NUM, false);
 foreach ($ENV->AUTOMATED_BADGE_IDS->Posts as $Count => $Badge) {
     if ((int) $UserPosts >= $Count) {
-        $Success = Badges::awardBadge($user['ID'], $Badge);
+        $Success = Badges::awardBadge($app->userNew->core['id'], $Badge);
         if ($Success) {
-            Misc::send_pm($user['ID'], 0, 'You have received a badge!', "You have received a badge for making ".$Count." forum posts.\n\nIt can be enabled from your user settings.");
+            Misc::send_pm($app->userNew->core['id'], 0, 'You have received a badge!', "You have received a badge for making ".$Count." forum posts.\n\nIt can be enabled from your user settings.");
         }
     }
 }
@@ -147,7 +147,7 @@ if (!$NoPoll) { // god, I hate double negatives...
     $app->cacheOld->cache_value("polls_$TopicID", array($Question, $Answers, $Votes, null, '0'), 0);
 
     if ($ForumID === STAFF_FORUM) {
-        send_irc(STAFF_CHAN, 'Poll created by '.$user['Username'].": '$Question' ".site_url()."forums.php?action=viewthread&threadid=$TopicID");
+        send_irc(STAFF_CHAN, 'Poll created by '.$app->userNew->core['username'].": '$Question' ".site_url()."forums.php?action=viewthread&threadid=$TopicID");
     }
 }
 
@@ -170,13 +170,13 @@ if ($Forum = $app->cacheOld->get_value("forums_$ForumID")) {
     $Part2 = array($TopicID => array(
     'ID' => $TopicID,
     'Title' => $Title,
-    'AuthorID' => $user['ID'],
+    'AuthorID' => $app->userNew->core['id'],
     'IsLocked' => 0,
     'IsSticky' => 0,
     'NumPosts' => 1,
     'LastPostID' => $PostID,
     'LastPostTime' => sqltime(),
-    'LastPostAuthorID' => $user['ID'],
+    'LastPostAuthorID' => $app->userNew->core['id'],
     'NoPoll' => $NoPoll
   )); // Bumped
     $Forum = $Part1 + $Part2 + $Part3;
@@ -189,7 +189,7 @@ if ($Forum = $app->cacheOld->get_value("forums_$ForumID")) {
     'NumPosts' => '+1',
     'NumTopics' => '+1',
     'LastPostID' => $PostID,
-    'LastPostAuthorID' => $user['ID'],
+    'LastPostAuthorID' => $app->userNew->core['id'],
     'LastPostTopicID' => $TopicID,
     'LastPostTime' => sqltime(),
     'Title' => $Title,
@@ -205,7 +205,7 @@ if ($Forum = $app->cacheOld->get_value("forums_$ForumID")) {
 $app->cacheOld->begin_transaction("thread_$TopicID".'_catalogue_0');
 $Post = array(
   'ID' => $PostID,
-  'AuthorID' => $user['ID'],
+  'AuthorID' => $app->userNew->core['id'],
   'AddedTime' => sqltime(),
   'Body' => $Body,
   'EditedUserID' => 0,
@@ -215,7 +215,7 @@ $app->cacheOld->insert('', $Post);
 $app->cacheOld->commit_transaction(0);
 
 $app->cacheOld->begin_transaction("thread_$TopicID".'_info');
-$app->cacheOld->update_row(false, array('Posts' => '+1', 'LastPostAuthorID' => $user['ID']));
+$app->cacheOld->update_row(false, array('Posts' => '+1', 'LastPostAuthorID' => $app->userNew->core['id']));
 $app->cacheOld->commit_transaction(0);
 
 

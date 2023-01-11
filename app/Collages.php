@@ -64,19 +64,19 @@ class Collages
         FROM
           `collages`
         WHERE
-          `UserID` = '".$app->userNew['ID']."' AND `CategoryID` = '0' AND `Deleted` = '0'
+          `UserID` = '".$app->userNew->core['id']."' AND `CategoryID` = '0' AND `Deleted` = '0'
         ");
         list($CollageCount) = $app->dbOld->next_record();
 
-        if ($CollageCount >= $app->userNew['Permissions']['MaxCollages']) {
+        if ($CollageCount >= $app->userNew->extra['Permissions']['MaxCollages']) {
             // todo: Fix this, the query was for COUNT(ID), so I highly doubt that this works... - Y
             list($CollageID) = $app->dbOld->next_record();
             Http::redirect("collage.php?id=$CollageID");
             error();
         }
 
-        $NameStr = db_string($app->userNew['Username']."'s personal collage".($CollageCount > 0 ? ' no. '.($CollageCount + 1) : ''));
-        $Description = db_string('Personal collage for '.$app->userNew['Username'].'. The first 5 albums will appear on his or her [url='.site_url().'user.php?id= '.$app->userNew['ID'].']profile[/url].');
+        $NameStr = db_string($app->userNew->core['username']."'s personal collage".($CollageCount > 0 ? ' no. '.($CollageCount + 1) : ''));
+        $Description = db_string('Personal collage for '.$app->userNew->core['username'].'. The first 5 albums will appear on his or her [url='.site_url().'user.php?id= '.$app->userNew->core['id'].']profile[/url].');
 
         $app->dbOld->prepared_query("
         INSERT INTO `collages`(
@@ -89,7 +89,7 @@ class Collages
           '$NameStr',
           '$Description',
           '0',
-          ".$app->userNew['ID']."
+          ".$app->userNew->core['id']."
         )
         ");
 

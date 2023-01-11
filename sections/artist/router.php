@@ -124,7 +124,7 @@ if (!empty($_POST['action'])) {
       FROM artists_group
       WHERE Name LIKE '" . db_string($NameSearch) . "'");
         if (!$app->dbOld->has_results()) {
-            if (isset($user['SearchType']) && $user['SearchType']) {
+            if (isset($app->userNew->extra['SearchType']) && $app->userNew->extra['SearchType']) {
                 header('Location: torrents.php?action=advanced&artistname=' . urlencode($_GET['artistname']));
             } else {
                 header('Location: torrents.php?search=' . urlencode($_GET['artistname']));

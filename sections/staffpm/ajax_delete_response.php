@@ -13,7 +13,7 @@ $app->dbOld->query(
   FROM users_info AS i
     JOIN users_main AS m ON m.ID = i.UserID
     JOIN permissions AS p ON p.ID = m.PermissionID
-  WHERE i.UserID = ".$user['ID']
+  WHERE i.UserID = ".$app->userNew->core['id']
 );
 list($SupportFor, $DisplayStaff) = $app->dbOld->next_record();
 

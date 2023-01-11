@@ -10,7 +10,7 @@ if (!empty($_GET['userid'])) {
     }
 
     $UserID = $_GET['userid'];
-    $Sneaky = ($UserID !== $user['ID']);
+    $Sneaky = ($UserID !== $app->userNew->core['id']);
 
     if (!is_number($UserID)) {
         json_die('failure');
@@ -26,7 +26,7 @@ if (!empty($_GET['userid'])) {
     ");
     list($Username) = $app->dbOld->next_record();
 } else {
-    $UserID = $user['ID'];
+    $UserID = $app->userNew->core['id'];
 }
 
 //$ArtistList = Bookmarks::all_bookmarks('artist', $UserID);

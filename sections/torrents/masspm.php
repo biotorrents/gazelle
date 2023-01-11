@@ -55,7 +55,7 @@ if (!check_perms('site_moderate_requests')) {
   <form class="send_form" name="mass_message" action="torrents.php" method="post">
     <input type="hidden" name="action" value="takemasspm" />
     <input type="hidden" name="auth"
-      value="<?=$user['AuthKey']?>" />
+      value="<?=$app->userNew->extra['AuthKey']?>" />
     <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
     <input type="hidden" name="groupid" value="<?=$GroupID?>" />
 

@@ -13,7 +13,7 @@ $app->dbOld->query("
   FROM collages
   WHERE ID = '$CollageID'");
 list($Name, $UserID, $CategoryID) = $app->dbOld->next_record();
-if ($CategoryID === '0' && $UserID != $user['ID'] && !check_perms('site_collages_delete')) {
+if ($CategoryID === '0' && $UserID != $app->userNew->core['id'] && !check_perms('site_collages_delete')) {
     error(403);
 }
 if ($CategoryID != array_search(ARTIST_COLLAGE, $CollageCats)) {
@@ -125,7 +125,7 @@ View::header(
           <td class="nobr">
             <input type="hidden" name="action" value="manage_artists_handle" />
             <input type="hidden" name="auth"
-              value="<?=$user['AuthKey']?>" />
+              value="<?=$app->userNew->extra['AuthKey']?>" />
             <input type="hidden" name="collageid"
               value="<?=$CollageID?>" />
             <input type="hidden" name="artistid"
@@ -146,7 +146,7 @@ View::header(
     <div>
       <input type="hidden" name="action" value="manage_artists_handle" />
       <input type="hidden" name="auth"
-        value="<?=$user['AuthKey']?>" />
+        value="<?=$app->userNew->extra['AuthKey']?>" />
       <input type="hidden" name="collageid"
         value="<?=$CollageID?>" />
       <input type="hidden" name="artistid" value="1" />

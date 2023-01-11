@@ -29,7 +29,7 @@ $UserAdditions = [];
 
 foreach ($Artists as $Artist) {
     $UserID = $Artist['UserID'];
-    if ($UserID === $user['ID']) {
+    if ($UserID === $app->userNew->core['id']) {
         $NumGroupsByUser++;
     }
 
@@ -69,7 +69,7 @@ if (!check_perms('site_collages_delete') && ($Locked || ($MaxGroups > 0 && $NumG
 }
 
 // Silly hack for people who are on the old setting
-$CollageCovers = (isset($user['CollageCovers']) ? $user['CollageCovers'] : 25 * (abs($user['HideCollage'] - 1)));
+$CollageCovers = (isset($app->userNew->extra['CollageCovers']) ? $app->userNew->extra['CollageCovers'] : 25 * (abs($app->userNew->extra['HideCollage'] - 1)));
 $CollagePages = [];
 
 // Pad it out
@@ -136,8 +136,8 @@ View::header($Name, 'browse,collage,recommend');
   } ?>
       <a href="reports.php?action=report&amp;type=collage&amp;id=<?=$CollageID?>"
         class="brackets">Report collage</a>
-      <?php if (check_perms('site_collages_delete') || $CreatorID === $user['ID']) { ?>
-      <a href="collages.php?action=delete&amp;collageid=<?=$CollageID?>&amp;auth=<?=$user['AuthKey']?>"
+      <?php if (check_perms('site_collages_delete') || $CreatorID === $app->userNew->core['id']) { ?>
+      <a href="collages.php?action=delete&amp;collageid=<?=$CollageID?>&amp;auth=<?=$app->userNew->extra['AuthKey']?>"
         class="brackets" onclick="return confirm('Are you sure you want to delete this collage?');">Delete</a>
       <?php } ?>
     </div>
@@ -201,7 +201,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
         <form class="add_form" name="artist" action="collages.php" method="post">
           <input type="hidden" name="action" value="add_artist" />
           <input type="hidden" name="auth"
-            value="<?=$user['AuthKey']?>" />
+            value="<?=$app->userNew->extra['AuthKey']?>" />
           <input type="hidden" name="collageid"
             value="<?=$CollageID?>" />
           <div>
@@ -218,7 +218,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
         <form class="add_form" name="artists" action="collages.php" method="post">
           <input type="hidden" name="action" value="add_artist_batch" />
           <input type="hidden" name="auth"
-            value="<?=$user['AuthKey']?>" />
+            value="<?=$app->userNew->extra['AuthKey']?>" />
           <input type="hidden" name="collageid"
             value="<?=$CollageID?>" />
           <div>
@@ -275,7 +275,7 @@ foreach ($CommentList as $Comment) {
     </div>
 
     <?php
-if (!$user['DisablePosting']) {
+if (!$app->userNew->extra['DisablePosting']) {
     ?>
     <div class="box box_addcomment">
       <div class="head"><strong>Comment</strong></div>
@@ -284,7 +284,7 @@ if (!$user['DisablePosting']) {
         <input type="hidden" name="action" value="take_post" />
         <input type="hidden" name="page" value="collages" />
         <input type="hidden" name="auth"
-          value="<?=$user['AuthKey']?>" />
+          value="<?=$app->userNew->extra['AuthKey']?>" />
         <input type="hidden" name="pageid" value="<?=$CollageID?>" />
         <div class="pad">
           <div>

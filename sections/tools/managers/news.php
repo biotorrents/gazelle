@@ -60,7 +60,7 @@ switch ($_GET['action']) {
       <input type="hidden" name="action"
         value="<?= ($_GET['action'] === 'news') ? 'takenewnews' : 'takeeditnews';?>">
       <input type="hidden" name="auth"
-        value="<?=$user['AuthKey']?>">
+        value="<?=$app->userNew->extra['AuthKey']?>">
 
       <?php if ($_GET['action'] === 'editnews') { ?>
       <input type="hidden" name="newsid" value="<?=$NewsID; ?>">
@@ -103,7 +103,7 @@ while (list($NewsID, $Title, $Body, $NewsTime) = $app->dbOld->next_record()) {
       <strong><?=Text::esc($Title) ?></strong> - posted <?=time_diff($NewsTime) ?>
       - <a href="tools.php?action=editnews&amp;id=<?=$NewsID?>"
         class="brackets">Edit</a>
-      <a href="tools.php?action=deletenews&amp;id=<?=$NewsID?>&amp;auth=<?=$user['AuthKey']?>"
+      <a href="tools.php?action=deletenews&amp;id=<?=$NewsID?>&amp;auth=<?=$app->userNew->extra['AuthKey']?>"
         class="brackets">Delete</a>
     </div>
     <div class="pad"><?=Text::parse($Body) ?>

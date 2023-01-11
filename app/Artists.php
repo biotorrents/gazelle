@@ -272,8 +272,8 @@ class Artists
         $app->cacheOld->delete_value("artist_groups_$ArtistID");
 
         // Record in log
-        if (!empty($app->userNew['Username'])) {
-            $Username = $app->userNew['Username'];
+        if (!empty($app->userNew->core['username'])) {
+            $Username = $app->userNew->core['username'];
         } else {
             $Username = 'System';
         }

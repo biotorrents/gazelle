@@ -53,7 +53,7 @@ $Results = $app->dbOld->to_array();
 <?php
 foreach ($Results as $Result) {
     list($UserID, $Username, $Reports) = $Result;
-    if ($Username == $user['Username']) {
+    if ($Username == $app->userNew->core['username']) {
         $RowClass = ' class="highlight"';
     } else {
         $RowClass = '';
@@ -88,7 +88,7 @@ $Results = $app->dbOld->to_array();
 <?php
 foreach ($Results as $Result) {
     list($UserID, $Username, $Reports) = $Result;
-    if ($Username == $user['Username']) {
+    if ($Username == $app->userNew->core['username']) {
         $RowClass = ' class="highlight"';
     } else {
         $RowClass = '';
@@ -123,7 +123,7 @@ $Results = $app->dbOld->to_array();
 <?php
 foreach ($Results as $Result) {
     list($UserID, $Username, $Reports) = $Result;
-    if ($Username == $user['Username']) {
+    if ($Username == $app->userNew->core['username']) {
         $RowClass = ' class="highlight"';
     } else {
         $RowClass = '';
@@ -157,7 +157,7 @@ $Results = $app->dbOld->to_array();
 <?php
 foreach ($Results as $Result) {
     list($UserID, $Username, $Reports) = $Result;
-    if ($Username == $user['Username']) {
+    if ($Username == $app->userNew->core['username']) {
         $RowClass = ' class="highlight"';
     } else {
         $RowClass = '';
@@ -251,7 +251,7 @@ foreach ($Results as $Result) {
       </tr>
 <?php
   foreach ($Staff as $Array) {
-      if ($Array['Username'] == $user['Username']) {
+      if ($Array['Username'] == $app->userNew->core['username']) {
           $RowClass = ' class="highlight"';
       } else {
           $RowClass = '';

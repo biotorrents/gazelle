@@ -83,7 +83,7 @@ if (($Escaped['resolve_type'] == 'manual' || $Escaped['resolve_type'] == 'dismis
       Status = 'Resolved',
       LastChangeTime = NOW(),
       ModComment = '$Comment',
-      ResolverID = '".$user['ID']."'
+      ResolverID = '".$app->userNew->core['id']."'
     WHERE ID = '$ReportID'
       AND Status != 'Resolved'");
 
@@ -129,7 +129,7 @@ if (!$TorrentExists) {
     UPDATE reportsv2
     SET Status = 'Resolved',
       LastChangeTime = NOW(),
-      ResolverID = '".$user['ID']."',
+      ResolverID = '".$app->userNew->core['id']."',
       ModComment = 'Report already dealt with (torrent deleted).'
     WHERE ID = $ReportID");
 
@@ -142,7 +142,7 @@ if ($Report) {
     UPDATE reportsv2
     SET Status = 'Resolved',
       LastChangeTime = NOW(),
-      ResolverID = '".$user['ID']."'
+      ResolverID = '".$app->userNew->core['id']."'
     WHERE ID = $ReportID
       AND Status != 'Resolved'");
 }
@@ -166,7 +166,7 @@ if ($app->dbOld->affected_rows() > 0 || !$Report) {
       INSERT IGNORE INTO torrents_bad_tags
         (TorrentID, UserID, TimeAdded)
       VALUES
-        ($TorrentID, ".$user['ID']." , NOW())");
+        ($TorrentID, ".$app->userNew->core['id']." , NOW())");
         $app->dbOld->prepared_query("
       SELECT GroupID
       FROM torrents
@@ -181,7 +181,7 @@ if ($app->dbOld->affected_rows() > 0 || !$Report) {
       INSERT IGNORE INTO torrents_bad_folders
         (TorrentID, UserID, TimeAdded)
       VALUES
-        ($TorrentID, ".$user['ID'].", NOW())");
+        ($TorrentID, ".$app->userNew->core['id'].", NOW())");
         $app->dbOld->prepared_query("
       SELECT GroupID
       FROM torrents
@@ -195,7 +195,7 @@ if ($app->dbOld->affected_rows() > 0 || !$Report) {
       INSERT IGNORE INTO torrents_bad_files
         (TorrentID, UserID, TimeAdded)
       VALUES
-        ($TorrentID, ".$user['ID'].", NOW())");
+        ($TorrentID, ".$app->userNew->core['id'].", NOW())");
         $app->dbOld->prepared_query("
       SELECT GroupID
       FROM torrents
@@ -256,7 +256,7 @@ if ($app->dbOld->affected_rows() > 0 || !$Report) {
       FROM users_main
       WHERE ID = $UploaderID");
         list($UpUsername) = $app->dbOld->next_record();
-        $Log = "Torrent $TorrentID ($RawName) uploaded by $UpUsername was deleted by ".$user['Username'];
+        $Log = "Torrent $TorrentID ($RawName) uploaded by $UpUsername was deleted by ".$app->userNew->core['username'];
         $Log .= ($Escaped['resolve_type'] == 'custom' ? '' : ' for the reason: '.$ResolveType['title'].".");
         if (isset($Escaped['log_message']) && $Escaped['log_message'] != '') {
             $Log .= ' ( '.$Escaped['log_message'].' )';
@@ -272,7 +272,7 @@ if ($app->dbOld->affected_rows() > 0 || !$Report) {
         $Log .= ' ('.strtoupper($InfoHash).')';
         Misc::write_log($Log);
         $Log = 'deleted torrent for the reason: '.$ResolveType['title'].'. ( '.$Escaped['log_message'].' )';
-        Torrents::write_group_log($GroupID, $TorrentID, $user['ID'], $Log, 0);
+        Torrents::write_group_log($GroupID, $TorrentID, $app->userNew->core['id'], $Log, 0);
     } else {
         $Log = "No log message (torrent wasn't deleted).";
     }
@@ -305,7 +305,7 @@ if ($app->dbOld->affected_rows() > 0 || !$Report) {
         $AdminComment = '';
         if ($Upload) {
             //They removed upload
-            $AdminComment .= 'Upload privileges removed by '.$user['Username'];
+            $AdminComment .= 'Upload privileges removed by '.$app->userNew->core['username'];
             $AdminComment .= "\nReason: Uploader of torrent ($TorrentID) ".db_string($RawName).' which was resolved with the preset: '.$ResolveType['title'].". (Report ID: $ReportID)";
         }
         if ($Escaped['admin_message']) {
@@ -351,10 +351,10 @@ if ($app->dbOld->affected_rows() > 0 || !$Report) {
         }
 
         if ($Escaped['uploader_pm']) {
-            $PM .= "Message from ".$user['Username'].": $PMMessage\n\n";
+            $PM .= "Message from ".$app->userNew->core['username'].": $PMMessage\n\n";
         }
 
-        $PM .= "Report was handled by [user]".$user['Username'].'[/user].';
+        $PM .= "Report was handled by [user]".$app->userNew->core['username'].'[/user].';
 
         Misc::send_pm($UploaderID, 0, $Escaped['raw_name'], $PM);
     }

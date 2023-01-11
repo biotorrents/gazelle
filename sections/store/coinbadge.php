@@ -3,7 +3,7 @@
 
 $app = App::go();
 
-$UserID = $user['ID'];
+$UserID = $app->userNew->core['id'];
 $app->dbOld->prepared_query("
   SELECT First, Second
   FROM misc

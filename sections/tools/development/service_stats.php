@@ -119,7 +119,7 @@ View::header("Service Stats"); ?>
           <form class="delete_form" name="cache" action="" method="post">
             <input type="hidden" name="action" value="service_stats" />
             <input type="hidden" name="auth"
-              value="<?=$user['AuthKey']?>" />
+              value="<?=$app->userNew->extra['AuthKey']?>" />
             <input type="hidden" name="global_flush" value="1" />
             <input type="submit" class="button-primary" value="Flush" />
           </form>

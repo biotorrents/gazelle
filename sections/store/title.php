@@ -11,7 +11,7 @@ if (isset($_POST['title'])) {
     }
 
     $Title = htmlspecialchars($_POST['title'], ENT_QUOTES);
-    $UserID = $user['ID'];
+    $UserID = $app->userNew->core['id'];
 
     $app->dbOld->prepared_query("
       SELECT BonusPoints

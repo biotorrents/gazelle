@@ -16,21 +16,21 @@ if ($ConvID = (int)$_GET['id']) {
     $Level = min($Level, $LevelCap);
 
     if (!(
-        ($UserID == $user['ID'])
-      || ($AssignedToUser == $user['ID'])
-      || (($Level > 0 && $Level <= $user['EffectiveClass']) || ($Level == 0 && $IsFLS))
+        ($UserID == $app->userNew->core['id'])
+      || ($AssignedToUser == $app->userNew->core['id'])
+      || (($Level > 0 && $Level <= $app->userNew->extra['EffectiveClass']) || ($Level == 0 && $IsFLS))
     )) {
         // User is trying to view someone else's conversation
         error(403);
     }
     // User is trying to view their own unread conversation, set it to read
-    if ($UserID == $user['ID'] && $Unread) {
+    if ($UserID == $app->userNew->core['id'] && $Unread) {
         $app->dbOld->query("
       UPDATE staff_pm_conversations
       SET Unread = false
       WHERE ID = $ConvID");
         // Clear cache for user
-        $app->cacheOld->delete_value("staff_pm_new_$user[ID]");
+        $app->cacheOld->delete_value("staff_pm_new_$app->userNew->core[id]");
     }
 
     View::header(
@@ -274,7 +274,7 @@ if ($ConvID = (int)$_GET['id']) {
           <form action="staffpm.php" method="post">
             <input type="hidden" name="action" value="make_donor" />
             <input type="hidden" name="auth"
-              value="<?=$user['AuthKey']?>" />
+              value="<?=$app->userNew->extra['AuthKey']?>" />
             <input type="hidden" name="id" value="<?=$ConvID?>" />
             <strong>Amount: </strong>
             <input type="text" name="donation_amount" onkeypress="return isNumberKey(event);" />

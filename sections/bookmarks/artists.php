@@ -9,7 +9,7 @@ if (!empty($_GET['userid'])) {
     }
 
     $UserID = $_GET['userid'];
-    $Sneaky = $UserID !== $user['ID'];
+    $Sneaky = $UserID !== $app->userNew->core['id'];
 
     if (!is_number($UserID)) {
         error(404);
@@ -21,10 +21,10 @@ if (!empty($_GET['userid'])) {
       WHERE ID = '$UserID'");
     list($Username) = $app->dbOld->next_record();
 } else {
-    $UserID = $user['ID'];
+    $UserID = $app->userNew->core['id'];
 }
 
-$Sneaky = $UserID !== $user['ID'];
+$Sneaky = $UserID !== $app->userNew->core['id'];
 //$ArtistList = Bookmarks::all_bookmarks('artist', $UserID);
 
 $app->dbOld->prepared_query("
@@ -82,24 +82,24 @@ foreach ($ArtistList as $Artist) {
       <span class="u-pull-right">
         <?php
   if (check_perms('site_torrents_notify')) {
-      if (($Notify = $app->cacheOld->get_value('notify_artists_'.$user['ID'])) === false) {
+      if (($Notify = $app->cacheOld->get_value('notify_artists_'.$app->userNew->core['id'])) === false) {
           $app->dbOld->prepared_query("
             SELECT ID, Artists
             FROM users_notify_filters
-            WHERE UserID = '$user[ID]'
+            WHERE UserID = '$app->userNew->core[id]'
               AND Label = 'Artist notifications'
             LIMIT 1");
 
           $Notify = $app->dbOld->next_record(MYSQLI_ASSOC);
-          $app->cacheOld->cache_value('notify_artists_'.$user['ID'], $Notify, 0);
+          $app->cacheOld->cache_value('notify_artists_'.$app->userNew->core['id'], $Notify, 0);
       }
 
       if (stripos($Notify['Artists'], "|$Name|") === false) { ?>
-        <a href="artist.php?action=notify&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$user['AuthKey']?>"
+        <a href="artist.php?action=notify&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$app->userNew->extra['AuthKey']?>"
           class="brackets">Notify of new uploads</a>
         <?php
       } else { ?>
-        <a href="artist.php?action=notifyremove&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$user['AuthKey']?>"
+        <a href="artist.php?action=notifyremove&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$app->userNew->extra['AuthKey']?>"
           class="brackets">Do not notify of new uploads</a>
         <?php
       }

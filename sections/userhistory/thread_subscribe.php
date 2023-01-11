@@ -5,7 +5,7 @@ $app = App::go();
 // perform the back end of subscribing to topics
 authorize();
 
-if (!empty($user['DisableForums'])) {
+if (!empty($app->userNew->extra['DisableForums'])) {
     error(403);
 }
 

@@ -23,7 +23,7 @@ $RequestTax = 0.1;
 // Also change in static/js/requests.js
 $MinimumVote = 20 * 1024 * 1024;
 
-if (!empty($user['DisableRequests'])) {
+if (!empty($app->userNew->extra['DisableRequests'])) {
     error('Your request privileges have been removed.');
 }
 

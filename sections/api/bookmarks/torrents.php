@@ -24,10 +24,10 @@ if (!empty($_GET['userid'])) {
     ");
     list($Username) = $app->dbOld->next_record();
 } else {
-    $UserID = $user['ID'];
+    $UserID = $app->userNew->core['id'];
 }
 
-$Sneaky = ($UserID !== $user['ID']);
+$Sneaky = ($UserID !== $app->userNew->core['id']);
 $JsonBookmarks = [];
 
 list($GroupIDs, $CollageDataList, $GroupList) = User::get_bookmarks($UserID);

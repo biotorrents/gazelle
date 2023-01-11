@@ -545,7 +545,7 @@ if (!isset($GroupID) || !$GroupID) {
     foreach ($ArtistForm as $Num => $Artist) {
         $app->dbOld->query("
           INSERT IGNORE INTO torrents_artists (GroupID, ArtistID, UserID)
-          VALUES ( ?, ?, ? )", $GroupID, $Artist['id'], $user['ID']);
+          VALUES ( ?, ?, ? )", $GroupID, $Artist['id'], $app->userNew->core['id']);
 
         $app->cacheOld->increment('stats_album_count');
         $app->cacheOld->delete_value('artist_groups_'.$Artist['id']);
@@ -568,7 +568,7 @@ if (!isset($GroupID) || !$GroupID) {
             $app->dbOld->query("
             INSERT INTO `literature`
             (`group_id`, `user_id`, `timestamp`, `doi`)
-          VALUES (?, ?, NOW(), ?)", $GroupID, $user['ID'], $Screenshot);
+          VALUES (?, ?, NOW(), ?)", $GroupID, $app->userNew->core['id'], $Screenshot);
         }
     }
 }
@@ -591,7 +591,7 @@ if (!isset($NoRevision) || !$NoRevision) {
       INSERT INTO wiki_torrents
         (PageID, Body, UserID, Summary, Time, Image)
       VALUES
-        ( ?, ?, ?, 'Uploaded new torrent', NOW(), ? )", $GroupID, $T['GroupDescription'], $user['ID'], $T['Image']);
+        ( ?, ?, ?, 'Uploaded new torrent', NOW(), ? )", $GroupID, $T['GroupDescription'], $app->userNew->core['id'], $T['Image']);
     $RevisionID = $app->dbOld->inserted_id();
 
     // Revision ID
@@ -618,7 +618,7 @@ if (!$T['GroupID']) {
             VALUES
               ( ?, ? )
             ON DUPLICATE KEY UPDATE
-              Uses = Uses + 1;", $Tag, $user['ID']);
+              Uses = Uses + 1;", $Tag, $app->userNew->core['id']);
             $TagID = $app->dbOld->inserted_id();
 
             $app->dbOld->query("
@@ -626,7 +626,7 @@ if (!$T['GroupID']) {
               (TagID, GroupID, UserID)
             VALUES
               ( ?, ?, ? )
-            ON DUPLICATE KEY UPDATE TagID=TagID", $TagID, $GroupID, $user['ID']);
+            ON DUPLICATE KEY UPDATE TagID=TagID", $TagID, $GroupID, $app->userNew->core['id']);
         }
     }
 }
@@ -672,7 +672,7 @@ $app->dbOld->query(
       ?, ?, ?, ?, ?, ?, ?, NOW(),
       ?, ?, ? )",
     $GroupID,
-    $user['ID'],
+    $app->userNew->core['id'],
     $T['Media'],
     $T['Container'],
     $T['Codec'],
@@ -715,7 +715,7 @@ if (!empty($T['Mirrors'])) {
           (`torrent_id`, `user_id`, `timestamp`, `uri`)
         VALUES (?, ?, NOW(), ?)",
             $TorrentID,
-            $user['ID'],
+            $app->userNew->core['id'],
             $Mirror
         );
     }
@@ -750,7 +750,7 @@ if ($ENV->FEATURE_BIOPHP && !empty($T['Seqhash'])) {
                `name`, `seqhash`)
             VALUES (?, ?, NOW(), ?, ?)",
                 $TorrentID,
-                $user['ID'],
+                $app->userNew->core['id'],
                 $Parsed['name'],
                 $Seqhash
             );
@@ -785,15 +785,15 @@ if (($Type === "Movies" || $Type === "Anime") && ($T['Container'] === 'ISO' || $
     $app->dbOld->query("
       UPDATE users_main
       SET BonusPoints = BonusPoints + ?
-        WHERE ID = ?", $BPAmt, $user['ID']);
+        WHERE ID = ?", $BPAmt, $app->userNew->core['id']);
 
     $app->dbOld->query("
       UPDATE users_info
       SET AdminComment = CONCAT(NOW(), ' - Received $BPAmt ".bonusPoints." for uploading a torrent $TorrentID\n\n', AdminComment)
-        WHERE UserID = ?", $user['ID']);
+        WHERE UserID = ?", $app->userNew->core['id']);
 
-    $app->cacheOld->delete_value('user_info_heavy_'.$user['ID']);
-    $app->cacheOld->delete_value('user_stats_'.$user['ID']);
+    $app->cacheOld->delete_value('user_info_heavy_'.$app->userNew->core['id']);
+    $app->cacheOld->delete_value('user_stats_'.$app->userNew->core['id']);
 }
 
 // Add to shop freeleeches if necessary
@@ -829,8 +829,8 @@ $FileName = "$ENV->torrentStore/$TorrentID.torrent";
 file_put_contents($FileName, $Tor->encode());
 chmod($FileName, 0400);
 
-Misc::write_log("Torrent $TorrentID ($LogName) (".Text::float($TotalSize / (1024 * 1024), 2).' MB) was uploaded by ' . $user['Username']);
-Torrents::write_group_log($GroupID, $TorrentID, $user['ID'], 'uploaded ('.Text::float($TotalSize / (1024 * 1024), 2).' MB)', 0);
+Misc::write_log("Torrent $TorrentID ($LogName) (".Text::float($TotalSize / (1024 * 1024), 2).' MB) was uploaded by ' . $app->userNew->core['username']);
+Torrents::write_group_log($GroupID, $TorrentID, $app->userNew->core['id'], 'uploaded ('.Text::float($TotalSize / (1024 * 1024), 2).' MB)', 0);
 
 Torrents::update_hash($GroupID);
 $debug['upload']->info('sphinx updated');
@@ -893,7 +893,7 @@ if ($PublicTorrent) {
 <?php
   View::footer();
 } elseif ($RequestID) {
-    header("Location: requests.php?action=takefill&requestid=$RequestID&torrentid=$TorrentID&auth=".$user['AuthKey']);
+    header("Location: requests.php?action=takefill&requestid=$RequestID&torrentid=$TorrentID&auth=".$app->userNew->extra['AuthKey']);
 } else {
     Http::redirect("torrents.php?id=$GroupID&torrentid=$TorrentID");
 }
@@ -975,7 +975,7 @@ $Item = $Feed->item(
     $Announce,
     $Body,
     'torrents.php?action=download&amp;authkey=[[AUTHKEY]]&amp;torrent_pass=[[PASSKEY]]&amp;id='.$TorrentID,
-    $Properties['Anonymous'] ? 'Anonymous' : $user['Username'],
+    $Properties['Anonymous'] ? 'Anonymous' : $app->userNew->core['username'],
     'torrents.php?id='.$GroupID,
     trim($T['TagList'])
 );
@@ -1066,7 +1066,7 @@ if ($T['Year']) {
     $SQL .= " AND (FromYear = 0 AND ToYear = 0) ";
 }
 
-$SQL .= " AND UserID != '".$user['ID']."' ";
+$SQL .= " AND UserID != '".$app->userNew->core['id']."' ";
 
 $app->dbOld->query("
 SELECT
@@ -1074,7 +1074,7 @@ SELECT
 FROM
   `users_main`
 WHERE
-  `ID` = $user[ID]
+  `ID` = $app->userNew->core[id]
 ");
 
 list($Paranoia) = $app->dbOld->next_record();
@@ -1085,10 +1085,10 @@ if (!is_array($Paranoia)) {
 }
 
 if (!in_array('notifications', $Paranoia)) {
-    $SQL .= " AND (Users LIKE '%|".$user['ID']."|%' OR Users = '') ";
+    $SQL .= " AND (Users LIKE '%|".$app->userNew->core['id']."|%' OR Users = '') ";
 }
 
-$SQL .= " AND UserID != '".$user['ID']."' ";
+$SQL .= " AND UserID != '".$app->userNew->core['id']."' ";
 $app->dbOld->query($SQL);
 $debug['upload']->info('notification query finished');
 

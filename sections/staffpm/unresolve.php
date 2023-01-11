@@ -10,10 +10,10 @@ if ($ID = (int)($_GET['id'])) {
     WHERE ID = $ID");
     list($UserID, $Level, $AssignedToUser) = $app->dbOld->next_record();
 
-    if ($UserID == $user['ID']
+    if ($UserID == $app->userNew->core['id']
     || ($IsFLS && $Level == 0)
-    || $AssignedToUser == $user['ID']
-    || ($IsStaff && $Level <= $user['EffectiveClass'])
+    || $AssignedToUser == $app->userNew->core['id']
+    || ($IsStaff && $Level <= $app->userNew->extra['EffectiveClass'])
     ) {
         /*if ($Level != 0 && $IsStaff == false) {
           error(403);
@@ -25,7 +25,7 @@ if ($ID = (int)($_GET['id'])) {
       SET Status = 'Unanswered'
       WHERE ID = $ID");
         // Clear cache for user
-        $app->cacheOld->delete_value("num_staff_pms_$user[ID]");
+        $app->cacheOld->delete_value("num_staff_pms_$app->userNew->core[id]");
 
         Http::redirect("staffpm.php");
     } else {

@@ -52,7 +52,7 @@ if (empty($_POST['confirm'])) {
   <div class="box pad">
     <form class="confirm_form" name="torrent_group" action="torrents.php" method="post">
       <input type="hidden" name="action" value="merge" />
-      <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
       <input type="hidden" name="confirm" value="true" />
       <input type="hidden" name="groupid" value="<?=$GroupID?>" />
       <input type="hidden" name="targetgroupid" value="<?=$NewGroupID?>" />
@@ -122,7 +122,7 @@ if (empty($_POST['confirm'])) {
 
     Torrents::delete_group($GroupID);
 
-    Torrents::write_group_log($NewGroupID, 0, $user['ID'], "Merged Group $GroupID ($Name) to $NewGroupID ($NewName)", 0);
+    Torrents::write_group_log($NewGroupID, 0, $app->userNew->core['id'], "Merged Group $GroupID ($Name) to $NewGroupID ($NewName)", 0);
     $app->dbOld->query("
     UPDATE group_log
     SET GroupID = $NewGroupID

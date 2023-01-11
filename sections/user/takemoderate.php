@@ -180,7 +180,7 @@ if (!check_perms('users_mod', $Cur['Class'])) {
 
 // If we're deleting the user, we can ignore all the other crap
 if ($_POST['UserStatus'] === 'delete' && check_perms('users_delete_users')) {
-    Misc::write_log("User account $UserID (".$Cur['Username'].") was deleted by ".$user['Username']);
+    Misc::write_log("User account $UserID (".$Cur['Username'].") was deleted by ".$app->userNew->core['username']);
 
     $app->dbOld->query("
       DELETE FROM users_main
@@ -275,8 +275,8 @@ if (($_POST['ResetSession'] || $_POST['LogOut']) && check_perms('users_logout'))
 // Start building SQL query and edit summary
 if ($Classes[$Class]['Level'] != $Cur['Class']
   && (
-      ($Classes[$Class]['Level'] < $user['Class'] && check_perms('users_promote_below', $Cur['Class']))
-    || ($Classes[$Class]['Level'] <= $user['Class'] && check_perms('users_promote_to', $Cur['Class'] - 1))
+      ($Classes[$Class]['Level'] < $app->userNew->extra['Class'] && check_perms('users_promote_below', $Cur['Class']))
+    || ($Classes[$Class]['Level'] <= $app->userNew->extra['Class'] && check_perms('users_promote_to', $Cur['Class'] - 1))
   )
   ) {
     $UpdateSet[] = "PermissionID = '$Class'";
@@ -394,26 +394,26 @@ if ($Visible != $Cur['Visible'] && check_perms('users_make_invisible')) {
 }
 
 if ($Uploaded != $Cur['Uploaded'] && $Uploaded != $_POST['OldUploaded'] && (check_perms('users_edit_ratio')
-  || (check_perms('users_edit_own_ratio') && $UserID == $user['ID']))) {
+  || (check_perms('users_edit_own_ratio') && $UserID == $app->userNew->core['id']))) {
     $UpdateSet[] = "Uploaded = '$Uploaded'";
     $EditSummary[] = "uploaded changed from ".Format::get_size($Cur['Uploaded']).' to '.Format::get_size($Uploaded);
     $app->cacheOld->delete_value("user_stats_$UserID");
 }
 
 if ($Downloaded != $Cur['Downloaded'] && $Downloaded != $_POST['OldDownloaded'] && (check_perms('users_edit_ratio')
-  || (check_perms('users_edit_own_ratio') && $UserID == $user['ID']))) {
+  || (check_perms('users_edit_own_ratio') && $UserID == $app->userNew->core['id']))) {
     $UpdateSet[] = "Downloaded = '$Downloaded'";
     $EditSummary[] = "downloaded changed from ".Format::get_size($Cur['Downloaded']).' to '.Format::get_size($Downloaded);
     $app->cacheOld->delete_value("user_stats_$UserID");
 }
 
-if ($BonusPoints != $Cur['BonusPoints'] && (check_perms('users_edit_ratio') || (check_perms('users_edit_own_ratio') && $UserID == $user['ID']))) {
+if ($BonusPoints != $Cur['BonusPoints'] && (check_perms('users_edit_ratio') || (check_perms('users_edit_own_ratio') && $UserID == $app->userNew->core['id']))) {
     $UpdateSet[] = "BonusPoints = $BonusPoints";
     $EditSummary[] = "Bonus Points changed from ".$Cur['BonusPoints']." to $BonusPoints";
     $HeavyUpdates['BonusPoints'] = $BonusPoints;
 }
 
-if ($FLTokens != $Cur['FLTokens'] && (check_perms('users_edit_ratio') || (check_perms('users_edit_own_ratio') && $UserID == $user['ID']))) {
+if ($FLTokens != $Cur['FLTokens'] && (check_perms('users_edit_ratio') || (check_perms('users_edit_own_ratio') && $UserID == $app->userNew->core['id']))) {
     $UpdateSet[] = "FLTokens = $FLTokens";
     $EditSummary[] = "Freeleech Tokens changed from ".$Cur['FLTokens']." to $FLTokens";
     $HeavyUpdates['FLTokens'] = $FLTokens;
@@ -449,7 +449,7 @@ if (check_perms('users_edit_badges')) {
 
 if ($Warned == 1 && !$Cur['Warned'] && check_perms('users_warn')) {
     $Weeks = 'week' . ($WarnLength === 1 ? '' : 's');
-    Misc::send_pm($UserID, 0, 'You have received a warning', "You have been [url=".site_url()."wiki.php?action=article&amp;name=warnings]warned for $WarnLength {$Weeks}[/url] by [user]".$user['Username']."[/user]. The reason given was:
+    Misc::send_pm($UserID, 0, 'You have received a warning', "You have been [url=".site_url()."wiki.php?action=article&amp;name=warnings]warned for $WarnLength {$Weeks}[/url] by [user]".$app->userNew->core['username']."[/user]. The reason given was:
 [quote]{$WarnReason}[/quote]");
     $UpdateSet[] = "Warned = NOW() + INTERVAL $WarnLength WEEK";
     $Msg = "warned for $WarnLength $Weeks";
@@ -466,7 +466,7 @@ if ($Warned == 1 && !$Cur['Warned'] && check_perms('users_warn')) {
     $LightUpdates['Warned'] = null;
 } elseif ($Warned == 1 && $ExtendWarning != '---' && check_perms('users_warn')) {
     $Weeks = 'week' . ($ExtendWarning === 1 ? '' : 's');
-    Misc::send_pm($UserID, 0, 'Your warning has been extended', "Your warning has been extended by $ExtendWarning $Weeks by [user]".$user['Username']."[/user]. The reason given was:
+    Misc::send_pm($UserID, 0, 'Your warning has been extended', "Your warning has been extended by $ExtendWarning $Weeks by [user]".$app->userNew->core['username']."[/user]. The reason given was:
 [quote]{$WarnReason}[/quote]");
 
     $UpdateSet[] = "Warned = Warned + INTERVAL $ExtendWarning WEEK";
@@ -486,7 +486,7 @@ if ($Warned == 1 && !$Cur['Warned'] && check_perms('users_warn')) {
     $LightUpdates['Warned'] = $WarnedUntil;
 } elseif ($Warned == 1 && $ExtendWarning == '---' && $ReduceWarning != '---' && check_perms('users_warn')) {
     $Weeks = 'week' . ($ReduceWarning === 1 ? '' : 's');
-    Misc::send_pm($UserID, 0, 'Your warning has been reduced', "Your warning has been reduced by $ReduceWarning $Weeks by [user]".$user['Username']."[/user]. The reason given was:
+    Misc::send_pm($UserID, 0, 'Your warning has been reduced', "Your warning has been reduced by $ReduceWarning $Weeks by [user]".$app->userNew->core['username']."[/user]. The reason given was:
 [quote]{$WarnReason}[/quote]");
     $UpdateSet[] = "Warned = Warned - INTERVAL $ReduceWarning WEEK";
     $app->dbOld->query("
@@ -505,7 +505,7 @@ if ($Warned == 1 && !$Cur['Warned'] && check_perms('users_warn')) {
     $LightUpdates['Warned'] = $WarnedUntil;
 }
 
-if ($SupportFor != db_string($Cur['SupportFor']) && (check_perms('admin_manage_fls') || (check_perms('users_mod') && $UserID == $user['ID']))) {
+if ($SupportFor != db_string($Cur['SupportFor']) && (check_perms('admin_manage_fls') || (check_perms('users_mod') && $UserID == $app->userNew->core['id']))) {
     $UpdateSet[] = "SupportFor = '$SupportFor'";
     $EditSummary[] = "First-Line Support status changed to \"$SupportFor\"";
 }
@@ -521,7 +521,7 @@ if ($PermittedForums != db_string($Cur['PermittedForums']) && check_perms('users
     $ForumList = [];
 
     foreach ($ForumSet as $ForumID) {
-        if ($Forums[$ForumID]['MinClassCreate'] <= $user['EffectiveClass']) {
+        if ($Forums[$ForumID]['MinClassCreate'] <= $app->userNew->extra['EffectiveClass']) {
             $ForumList[] = $ForumID;
         }
     }
@@ -738,7 +738,7 @@ if ($MergeStatsFrom && check_perms('users_edit_ratio')) {
           SET
             um.Uploaded = 0,
             um.Downloaded = 0,
-            ui.AdminComment = CONCAT('".sqltime().' - Stats (Uploaded: '.Format::get_size($MergeUploaded).', Downloaded: '.Format::get_size($MergeDownloaded).', Ratio: '.Format::get_ratio($MergeUploaded, $MergeDownloaded).') merged into '.site_url()."user.php?id=$UserID (".$Cur['Username'].') by '.$user['Username']."\n\n', ui.AdminComment)
+            ui.AdminComment = CONCAT('".sqltime().' - Stats (Uploaded: '.Format::get_size($MergeUploaded).', Downloaded: '.Format::get_size($MergeDownloaded).', Ratio: '.Format::get_ratio($MergeUploaded, $MergeDownloaded).') merged into '.site_url()."user.php?id=$UserID (".$Cur['Username'].') by '.$app->userNew->core['username']."\n\n', ui.AdminComment)
           WHERE ID = $MergeID");
 
         $UpdateSet[] = "Uploaded = Uploaded + '$MergeUploaded'";
@@ -807,7 +807,7 @@ if ($DeleteKeys) {
 $Summary = '';
 // Create edit summary
 if ($EditSummary) {
-    $Summary = implode(', ', $EditSummary) . ' by ' . $user['Username'];
+    $Summary = implode(', ', $EditSummary) . ' by ' . $app->userNew->core['username'];
     $Summary = sqltime() . ' - ' . ucfirst($Summary);
 
     if ($Reason) {
@@ -817,7 +817,7 @@ if ($EditSummary) {
 
     $Summary .= "\n\n$AdminComment";
 } elseif (empty($UpdateSet) && empty($EditSummary) && $Cur['AdminComment'] == $_POST['AdminComment']) {
-    $Summary = sqltime() . ' - Comment added by ' . $user['Username'] . ': ' . "$Reason\n\n";
+    $Summary = sqltime() . ' - Comment added by ' . $app->userNew->core['username'] . ': ' . "$Reason\n\n";
 }
 
 if (!empty($Summary)) {

@@ -154,7 +154,7 @@ switch ($_REQUEST['action']) {
 
     $app->dbOld->prepared_query("
       INSERT INTO news (UserID, Title, Body, Time)
-      VALUES ('$user[ID]', '".db_string($_POST['title'])."', '".db_string($_POST['body'])."', NOW())");
+      VALUES ('$app->userNew->core[id]', '".db_string($_POST['title'])."', '".db_string($_POST['body'])."', NOW())");
 
     $app->cacheOld->delete_value('news_latest_id');
     $app->cacheOld->delete_value('news_latest_title');
@@ -219,7 +219,7 @@ switch ($_REQUEST['action']) {
               GROUP BY p.ID");
             list($ID, $Name, $Abbreviation, $Level, $Secondary, $Forums, $Values, $DisplayStaff, $UserCount) = $app->dbOld->next_record(MYSQLI_NUM, array(6));
 
-            if ($Level > $user['EffectiveClass'] || (isset($_REQUEST['level']) && $_REQUEST['level'] > $user['EffectiveClass'])) {
+            if ($Level > $app->userNew->extra['EffectiveClass'] || (isset($_REQUEST['level']) && $_REQUEST['level'] > $app->userNew->extra['EffectiveClass'])) {
                 error(403);
             }
 

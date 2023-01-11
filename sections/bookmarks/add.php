@@ -27,7 +27,7 @@ SELECT
 FROM
   $Table
 WHERE
-  `UserID` = '$user[ID]' AND $Col = $PageID
+  `UserID` = '$app->userNew->core[id]' AND $Col = $PageID
 ");
 
 if (!$app->dbOld->has_results()) {
@@ -38,7 +38,7 @@ if (!$app->dbOld->has_results()) {
         FROM
           `bookmarks_torrents`
         WHERE
-          `UserID` = $user[ID]
+          `UserID` = $app->userNew->core[id]
         ");
 
         list($Sort) = $app->dbOld->next_record();
@@ -51,7 +51,7 @@ if (!$app->dbOld->has_results()) {
         INSERT IGNORE
         INTO $Table(`UserID`, $Col, `Time`, `Sort`)
         VALUES(
-          '$user[ID]',
+          '$app->userNew->core[id]',
           $PageID,
           NOW(),
           $Sort
@@ -62,14 +62,14 @@ if (!$app->dbOld->has_results()) {
         INSERT IGNORE
         INTO $Table(`UserID`, $Col, `Time`)
         VALUES(
-          '$user[ID]',
+          '$app->userNew->core[id]',
           $PageID,
           NOW()
         )
         ");
     }
 
-    $app->cacheOld->delete_value('bookmarks_'.$Type.'_'.$user['ID']);
+    $app->cacheOld->delete_value('bookmarks_'.$Type.'_'.$app->userNew->core['id']);
     if ($Type === 'torrent') {
         $app->cacheOld->delete_value("bookmarks_group_ids_$UserID");
         $app->dbOld->prepared_query("
@@ -115,7 +115,7 @@ if (!$app->dbOld->has_results()) {
                 "torrents.php?id=$PageID",
                 trim($TagList)
             );
-            $Feed->populate('torrents_bookmarks_t_'.$user['torrent_pass'], $Item);
+            $Feed->populate('torrents_bookmarks_t_'.$app->userNew->extra['torrent_pass'], $Item);
         }
     } elseif ($Type === 'request') {
         $app->dbOld->prepared_query("

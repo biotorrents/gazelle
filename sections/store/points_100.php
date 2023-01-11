@@ -5,7 +5,7 @@ $app = App::go();
 
 $ENV = ENV::go();
 
-$UserID = $user['ID'];
+$UserID = $app->userNew->core['id'];
 $Purchase = "1,000 $ENV->bonusPoints";
 
 $GiB = 1024 * 1024 * 1024;

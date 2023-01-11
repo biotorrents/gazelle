@@ -41,7 +41,7 @@ if (empty($_POST['confirm'])) {
     <form class="confirm_form" name="torrent_group" action="torrents.php" method="post">
       <input type="hidden" name="action" value="newgroup" />
       <input type="hidden" name="auth"
-        value="<?=$user['AuthKey']?>" />
+        value="<?=$app->userNew->extra['AuthKey']?>" />
       <input type="hidden" name="confirm" value="true" />
       <input type="hidden" name="torrentid"
         value="<?=$TorrentID?>" />
@@ -98,7 +98,7 @@ if (empty($_POST['confirm'])) {
     INSERT INTO torrents_artists
       (GroupID, ArtistID, UserID)
     VALUES
-      ('$GroupID', '$ArtistID', '$user[ID]')");
+      ('$GroupID', '$ArtistID', '$app->userNew->core[id]')");
 
     $app->dbOld->query("
     UPDATE torrents
@@ -120,7 +120,7 @@ if (empty($_POST['confirm'])) {
 
     $app->cacheOld->delete_value("torrent_download_$TorrentID");
 
-    Misc::write_log("Torrent $TorrentID was edited by " . $user['Username']);
+    Misc::write_log("Torrent $TorrentID was edited by " . $app->userNew->core['username']);
 
     Http::redirect("torrents.php?id=$GroupID");
 }

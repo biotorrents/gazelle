@@ -172,7 +172,7 @@ if (isset($_POST['confirm'])) {
     DELETE FROM artists_group
     WHERE ArtistID = $ArtistID");
 
-    Misc::write_log("The artist $ArtistID ($ArtistName) was made into a non-redirecting alias of artist $NewArtistID ($NewArtistName) by user ".$user['ID']." (".$user['Username'].')');
+    Misc::write_log("The artist $ArtistID ($ArtistName) was made into a non-redirecting alias of artist $NewArtistID ($NewArtistName) by user ".$app->userNew->core['id']." (".$app->userNew->core['username'].')');
 
     Http::redirect("artist.php?action=edit&artistid=$NewArtistID");
 } else {
@@ -183,7 +183,7 @@ if (isset($_POST['confirm'])) {
 <form class="merge_form" name="artist" action="artist.php" method="post">
   <input type="hidden" name="action" value="change_artistid" />
   <input type="hidden" name="auth"
-    value="<?=$user['AuthKey']?>" />
+    value="<?=$app->userNew->extra['AuthKey']?>" />
   <input type="hidden" name="artistid" value="<?=$ArtistID?>" />
   <input type="hidden" name="newartistid"
     value="<?=$NewArtistID?>" />

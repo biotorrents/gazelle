@@ -14,7 +14,7 @@ if (!$UserCount = $app->cacheOld->get_value('stats_user_count')) {
     $app->cacheOld->cache_value('stats_user_count', $UserCount, 0);
 }
 
-$UserID = $user['ID'];
+$UserID = $app->userNew->core['id'];
 
 if (!apcu_exists('DBKEY')) {
     error('Invites disabled until database decrypted');
@@ -31,10 +31,10 @@ $app->dbOld->query("
   WHERE ID = $UserID");
 list($CanLeech) = $app->dbOld->next_record();
 
-if ($user['RatioWatch']
+if ($app->userNew->extra['RatioWatch']
   || !$CanLeech
-  || $user['DisableInvites'] == '1'
-  || $user['Invites'] == 0
+  || $app->userNew->extra['DisableInvites'] == '1'
+  || $app->userNew->extra['Invites'] == 0
   && !check_perms('site_send_unlimited_invites')
   || (
       $UserCount >= USER_LIMIT
@@ -46,7 +46,7 @@ if ($user['RatioWatch']
 }
 
 $Email = trim($_POST['email']);
-$Username = $user['Username'];
+$Username = $app->userNew->core['username'];
 $SiteName =  $ENV->siteName ;
 $SiteURL = site_url();
 $InviteExpires = time_plus(60 * 60 * 24 * 3); // 3 days
@@ -72,7 +72,7 @@ foreach ($Emails as $CurEmail) {
     $app->dbOld->query("
     SELECT Email
     FROM invites
-    WHERE InviterID = ".$user['ID']);
+    WHERE InviterID = ".$app->userNew->core['id']);
     if ($app->dbOld->has_results()) {
         while (list($MaybeEmail) = $app->dbOld->next_record()) {
             if (Crypto::decrypt($MaybeEmail) == $CurEmail) {
@@ -108,14 +108,14 @@ EOT;
     INSERT INTO invites
       (InviterID, InviteKey, Email, Expires, Reason)
     VALUES
-      ('$user[ID]', '$InviteKey', '".Crypto::encrypt($CurEmail)."', '$InviteExpires', '$InviteReason')");
+      ('$app->userNew->core[id]', '$InviteKey', '".Crypto::encrypt($CurEmail)."', '$InviteExpires', '$InviteReason')");
 
     if (!check_perms('site_send_unlimited_invites')) {
         $app->dbOld->query("
       UPDATE users_main
       SET Invites = GREATEST(Invites, 1) - 1
-      WHERE ID = '$user[ID]'");
-        $app->cacheOld->begin_transaction('user_info_heavy_'.$user['ID']);
+      WHERE ID = '$app->userNew->core[id]'");
+        $app->cacheOld->begin_transaction('user_info_heavy_'.$app->userNew->core['id']);
         $app->cacheOld->update_row(false, array('Invites' => '-1'));
         $app->cacheOld->commit_transaction(0);
     }

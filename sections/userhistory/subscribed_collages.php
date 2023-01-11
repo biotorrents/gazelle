@@ -24,7 +24,7 @@ if (!$ShowAll) {
     FROM collages AS c
       JOIN users_collage_subs AS s ON s.CollageID = c.ID
       JOIN collages_torrents AS ct ON ct.CollageID = c.ID
-    WHERE s.UserID = $user[ID] AND c.Deleted = '0'
+    WHERE s.UserID = $app->userNew->core[id] AND c.Deleted = '0'
       AND ct.AddedOn > s.LastVisit
     GROUP BY c.ID";
 } else {
@@ -37,7 +37,7 @@ if (!$ShowAll) {
     FROM collages AS c
       JOIN users_collage_subs AS s ON s.CollageID = c.ID
       LEFT JOIN collages_torrents AS ct ON ct.CollageID = c.ID
-    WHERE s.UserID = $user[ID] AND c.Deleted = '0'
+    WHERE s.UserID = $app->userNew->core[id] AND c.Deleted = '0'
     GROUP BY c.ID";
 }
 
@@ -66,7 +66,7 @@ if ($ShowAll) {
       <?php
     }
 ?>
-      <a href="userhistory.php?action=catchup_collages&amp;auth=<?=$user['AuthKey']?>"
+      <a href="userhistory.php?action=catchup_collages&amp;auth=<?=$app->userNew->extra['AuthKey']?>"
         class="brackets">Catch up</a>&nbsp;&nbsp;&nbsp;
     </div>
   </div>
@@ -120,7 +120,7 @@ if (!$NumResults) {
                     $DisplayName .= '<div>'.Artists::display_artists($Artists).'</div> ';
                 }
                 $DisplayName .= "<a class=\"torrentTitle\" href=\"torrents.php?id=$GroupID\" ";
-                if (!isset($user['CoverArt']) || $user['CoverArt']) {
+                if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
                     $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage).'" ';
                 }
                 $DisplayName .= "dir=\"ltr\">".($GroupName ? $GroupName : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP))."</a>";
@@ -165,7 +165,7 @@ if (!$NumResults) {
     class="group_torrent groupid_<?=$CollageID?>_<?=$GroupID?> hidden<?=$SnatchedTorrentClass . $SnatchedGroupClass?>">
     <td colspan="3">
       <span>
-        <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>"
+        <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>"
           title="Download" class="brackets tooltip">DL</a>
       </span>
       &nbsp;&nbsp;&raquo;&nbsp;<a
@@ -197,7 +197,7 @@ if (!$NumResults) {
                     }
 
                     $DisplayName .= "<a class=\"torrentTitle\" href=\"torrents.php?id=$GroupID\" ";
-                    if (!isset($user['CoverArt']) || $user['CoverArt']) {
+                    if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
                         $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage).'" ';
                     }
 
@@ -223,7 +223,7 @@ if (!$NumResults) {
       <div class="group_info clear">
         <span>
           [ <a
-            href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>"
+            href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>"
             class="tooltip" title="Download">DL</a>
           | <a
             href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>"
@@ -261,7 +261,7 @@ if (!$NumResults) {
           <a data-toggle-target="#discog_table_<?=$CollageID?>"
             data-toggle-replace="<?=($ShowAll ? 'Hide' : 'Show')?>"
             class="brackets"><?=($ShowAll ? 'Show' : 'Hide')?></a>&nbsp;&nbsp;&nbsp;<a
-            href="userhistory.php?action=catchup_collages&amp;auth=<?=$user['AuthKey']?>&amp;collageid=<?=$CollageID?>"
+            href="userhistory.php?action=catchup_collages&amp;auth=<?=$app->userNew->extra['AuthKey']?>&amp;collageid=<?=$CollageID?>"
             class="brackets">Catch up</a>&nbsp;&nbsp;&nbsp;<a href="#"
             onclick="CollageSubscribe(<?=$CollageID?>); return false;"
             id="subscribelink<?=$CollageID?>"

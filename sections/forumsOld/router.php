@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 enforce_login();
 
-if (!empty($user['DisableForums'])) {
+if (!empty($app->userNew->extra['DisableForums'])) {
     error(403);
 }
 

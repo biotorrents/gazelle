@@ -6,7 +6,7 @@ if (!isset($_POST['postid']) || !is_number($_POST['postid']) || !isset($_POST['b
     error(0);
 }
 
-if ($user['DisablePosting']) {
+if ($app->userNew->extra['DisablePosting']) {
     error('Your posting privileges have been removed.');
 }
 

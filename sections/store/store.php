@@ -3,10 +3,10 @@
 
 $app = App::go();
 
-$UserID = $user['ID'];
-$PermID = $user['PermissionID'];
+$UserID = $app->userNew->core['id'];
+$PermID = $app->userNew->extra['PermissionID'];
 
-if (!$user['DisablePoints']) {
+if (!$app->userNew->extra['DisablePoints']) {
     $PointsRate = 0;
     $getTorrents = $app->dbOld->prepared_query("
       SELECT um.BonusPoints,
@@ -55,7 +55,7 @@ View::header('Store');
   <div class="box">
     <h3 id="lists" class="u-pull-left">
       You have
-      <?=Text::float($user['BonusPoints'])?>
+      <?=Text::float($app->userNew->extra['BonusPoints'])?>
       <?=bonusPoints?>
       to spend
     </h3>
@@ -284,8 +284,8 @@ if ($app->dbOld->has_results()) {
     foreach ($Badges as $ID => $Badge) { ?>
       <tr class="row">
         <?php
-        if (($ID === 0 || Badges::hasBadge($user['ID'], $Badges[$ID-1]['BadgeID']))
-        && !Badges::hasBadge($user['ID'], $Badge['BadgeID'])) {
+        if (($ID === 0 || Badges::hasBadge($app->userNew->core['id'], $Badges[$ID-1]['BadgeID']))
+        && !Badges::hasBadge($app->userNew->core['id'], $Badge['BadgeID'])) {
             $BadgeText = '<a href="store.php?item=badge&badge='.$Badge['BadgeID'].'">'.$Badge['Name'].'</a>';
         } else {
             $BadgeText = $Badge['Name'];

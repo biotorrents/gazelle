@@ -6,7 +6,7 @@ $app = App::go();
 if (empty($Return)) {
     $ToID = $_GET['to'];
     /*
-      if ($ToID == $user['ID']) {
+      if ($ToID == $app->userNew->core['id']) {
         error('You cannot start a conversation with yourself!');
         header('Location: ' . Inbox::get_inbox_link());
       }
@@ -17,7 +17,7 @@ if (!$ToID || !is_number($ToID)) {
     error(404);
 }
 
-if (!empty($user['DisablePM']) && !isset($StaffIDs[$ToID])) {
+if (!empty($app->userNew->extra['DisablePM']) && !isset($StaffIDs[$ToID])) {
     error(403);
 }
 
@@ -44,7 +44,7 @@ View::header(
       <input type="hidden" name="action" value="takecompose" />
       <input type="hidden" name="toid" value="<?=$ToID?>" />
       <input type="hidden" name="auth"
-        value="<?=$user['AuthKey']?>" />
+        value="<?=$app->userNew->extra['AuthKey']?>" />
 
       <div id="quickpost">
         <h3>Subject</h3>

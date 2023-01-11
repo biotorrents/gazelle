@@ -11,19 +11,19 @@ if (!is_number($_GET['collageid'])) {
 
 $CollageID = (int)$_GET['collageid'];
 
-if (!$UserSubscriptions = $app->cacheOld->get_value('collage_subs_user_'.$user['ID'])) {
+if (!$UserSubscriptions = $app->cacheOld->get_value('collage_subs_user_'.$app->userNew->core['id'])) {
     $app->dbOld->prepared_query('
     SELECT CollageID
     FROM users_collage_subs
-    WHERE UserID = '.db_string($user['ID']));
+    WHERE UserID = '.db_string($app->userNew->core['id']));
     $UserSubscriptions = $app->dbOld->collect(0);
-    $app->cacheOld->cache_value('collage_subs_user_'.$user['ID'], $UserSubscriptions, 0);
+    $app->cacheOld->cache_value('collage_subs_user_'.$app->userNew->core['id'], $UserSubscriptions, 0);
 }
 
 if (($Key = array_search($CollageID, $UserSubscriptions)) !== false) {
     $app->dbOld->prepared_query('
     DELETE FROM users_collage_subs
-    WHERE UserID = '.db_string($user['ID'])."
+    WHERE UserID = '.db_string($app->userNew->core['id'])."
       AND CollageID = $CollageID");
     unset($UserSubscriptions[$Key]);
     Collages::decrease_subscriptions($CollageID);
@@ -32,10 +32,10 @@ if (($Key = array_search($CollageID, $UserSubscriptions)) !== false) {
     INSERT IGNORE INTO users_collage_subs
       (UserID, CollageID, LastVisit)
     VALUES
-      ($user[ID], $CollageID, NOW())");
+      ($app->userNew->core[id], $CollageID, NOW())");
     array_push($UserSubscriptions, $CollageID);
     Collages::increase_subscriptions($CollageID);
 }
-$app->cacheOld->replace_value('collage_subs_user_'.$user['ID'], $UserSubscriptions, 0);
-$app->cacheOld->delete_value('collage_subs_user_new_'.$user['ID']);
+$app->cacheOld->replace_value('collage_subs_user_'.$app->userNew->core['id'], $UserSubscriptions, 0);
+$app->cacheOld->delete_value('collage_subs_user_new_'.$app->userNew->core['id']);
 $app->cacheOld->delete_value("collage_$CollageID");

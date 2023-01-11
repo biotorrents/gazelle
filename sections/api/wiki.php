@@ -23,7 +23,7 @@ if (!$Article) {
 }
 
 list($Revision, $Title, $Body, $Read, $Edit, $Date, $AuthorID, $AuthorName, $Aliases, $UserIDs) = array_shift($Article);
-if ($Read > $user['EffectiveClass']) {
+if ($Read > $app->userNew->extra['EffectiveClass']) {
     json_die('failure', 'higher user class required to view article');
 }
 

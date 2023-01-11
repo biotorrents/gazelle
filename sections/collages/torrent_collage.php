@@ -50,7 +50,7 @@ foreach ($GroupIDs as $GroupID) {
 
     // Handle stats and stuff
     $Number++;
-    if ($UserID === $user['ID']) {
+    if ($UserID === $app->userNew->core['id']) {
         $NumGroupsByUser++;
     }
 
@@ -75,7 +75,7 @@ foreach ($GroupIDs as $GroupID) {
         [
           'g' => $Group,
           'url' => Format::get_url($_GET),
-          'cover_art' => (!isset($user['CoverArt']) || $user['CoverArt']) ?? true,
+          'cover_art' => (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) ?? true,
           'thumb' => ImageTools::process($CoverArt, 'thumb'),
           'artists' => Artists::display_artists($Artists),
           'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
@@ -89,7 +89,7 @@ foreach ($GroupIDs as $GroupID) {
 
     if (count($Torrents) > 1) {
         // Grouped torrents
-        $ShowGroups = !(!empty($user['TorrentGrouping']) && $user['TorrentGrouping'] === 1); ?>
+        $ShowGroups = !(!empty($app->userNew->extra['TorrentGrouping']) && $app->userNew->extra['TorrentGrouping'] === 1); ?>
 
 <tr class="group <?=$SnatchedGroupClass?>"
   id="group_<?=$GroupID?>">
@@ -135,15 +135,15 @@ foreach ($GroupIDs as $GroupID) {
     foreach ($Torrents as $TorrentID => $Torrent) {
         $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : ''; ?>
 <tr
-  class="group_torrent torrent_row groupid_<?=$GroupID?> <?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($user['TorrentGrouping']) && $user['TorrentGrouping'] === 1 ? ' hidden' : '')?>">
+  class="group_torrent torrent_row groupid_<?=$GroupID?> <?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($app->userNew->extra['TorrentGrouping']) && $app->userNew->extra['TorrentGrouping'] === 1 ? ' hidden' : '')?>">
 
   <td colspan="3">
     <span class="brackets u-pull-right">
-      <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>"
+      <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>"
         class="tooltip" title="Download">DL</a>
       <?php if (Torrents::can_use_token($Torrent)) { ?>
       | <a
-        href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>&amp;usetoken=1"
+        href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>&amp;usetoken=1"
         class="tooltip" title="Use a FL Token"
         onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
       <?php } ?>
@@ -185,7 +185,7 @@ foreach ($GroupIDs as $GroupID) {
             [
               'g' => $Group,
               'url' => Format::get_url($_GET),
-              'cover_art' => (!isset($user['CoverArt']) || $user['CoverArt']) ?? true,
+              'cover_art' => (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) ?? true,
               'thumb' => ImageTools::process($CoverArt, 'thumb'),
               'artists' => Artists::display_artists($Artists),
               'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
@@ -226,11 +226,11 @@ foreach ($GroupIDs as $GroupID) {
 
   <td>
     <span class="brackets u-pull-right">
-      <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>"
+      <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>"
         class="tooltip" title="Download">DL</a>
       <?php if (Torrents::can_use_token($Torrent)) { ?>
       | <a
-        href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>&amp;usetoken=1"
+        href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>&amp;usetoken=1"
         class="tooltip" title="Use a FL Token"
         onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
       <?php } ?>
@@ -303,7 +303,7 @@ foreach ($GroupIDs as $GroupID) {
 }
 
 if ($CollageCategoryID === '0' && !check_perms('site_collages_delete')) {
-    if (!check_perms('site_collages_personal') || $CreatorID !== $user['ID']) {
+    if (!check_perms('site_collages_personal') || $CreatorID !== $app->userNew->core['id']) {
         $PreventAdditions = true;
     }
 }
@@ -319,7 +319,7 @@ if (!check_perms('site_collages_delete')
 }
 
 // Silly hack for people who are on the old setting
-$CollageCovers = isset($user['CollageCovers']) ? $user['CollageCovers'] : 25 * (abs($user['HideCollage'] - 1));
+$CollageCovers = isset($app->userNew->extra['CollageCovers']) ? $app->userNew->extra['CollageCovers'] : 25 * (abs($app->userNew->extra['HideCollage'] - 1));
 $CollagePages = [];
 
 if ($CollageCovers) {
@@ -385,8 +385,8 @@ View::header(
   } ?>
       <a href="reports.php?action=report&amp;type=collage&amp;id=<?=$CollageID?>"
         class="brackets">Report collection</a>
-      <?php if (check_perms('site_collages_delete') || $CreatorID == $user['ID']) { ?>
-      <a href="collages.php?action=delete&amp;collageid=<?=$CollageID?>&amp;auth=<?=$user['AuthKey']?>"
+      <?php if (check_perms('site_collages_delete') || $CreatorID == $app->userNew->core['id']) { ?>
+      <a href="collages.php?action=delete&amp;collageid=<?=$CollageID?>&amp;auth=<?=$app->userNew->extra['AuthKey']?>"
         class="brackets" onclick="return confirm('Are you sure you want to delete this collage?');">Delete</a>
       <?php } ?>
     </div>
@@ -406,8 +406,8 @@ View::header(
 // I'm actually commenting this out
 /*
 if (check_perms('zip_downloader')) {
-  if (isset($user['Collector'])) {
-    list($ZIPList, $ZIPPrefs) = $user['Collector'];
+  if (isset($app->userNew->extra['Collector'])) {
+    list($ZIPList, $ZIPPrefs) = $app->userNew->extra['Collector'];
     $ZIPList = explode(':', $ZIPList);
   } else {
     $ZIPList = array('00', '11');
@@ -419,7 +419,7 @@ if (check_perms('zip_downloader')) {
       <div class="pad">
         <form class="download_form" name="zip" action="collages.php" method="post">
         <input type="hidden" name="action" value="download" />
-        <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
+        <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
         <input type="hidden" name="collageid" value="<?=$CollageID?>" />
         <ul id="list" class="nobullet">
 <?php foreach ($ZIPList as $ListItem) { ?>
@@ -570,7 +570,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
         <form class="add_form" name="torrent" action="collages.php" method="post">
           <input type="hidden" name="action" value="add_torrent" />
           <input type="hidden" name="auth"
-            value="<?=$user['AuthKey']?>" />
+            value="<?=$app->userNew->extra['AuthKey']?>" />
           <input type="hidden" name="collageid"
             value="<?=$CollageID?>" />
 
@@ -586,7 +586,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
         <form class="add_form" name="torrents" action="collages.php" method="post">
           <input type="hidden" name="action" value="add_torrent_batch" />
           <input type="hidden" name="auth"
-            value="<?=$user['AuthKey']?>" />
+            value="<?=$app->userNew->extra['AuthKey']?>" />
           <input type="hidden" name="collageid"
             value="<?=$CollageID?>" />
           <div>
@@ -644,7 +644,7 @@ foreach ($CommentList as $Comment) {
     </div>
 
     <?php
-if (!$user['DisablePosting']) {
+if (!$app->userNew->extra['DisablePosting']) {
     ?>
     <div class="box box_addcomment">
       <div class="head"><strong>Comment</strong></div>
@@ -653,7 +653,7 @@ if (!$user['DisablePosting']) {
         <input type="hidden" name="action" value="take_post" />
         <input type="hidden" name="page" value="collages" />
         <input type="hidden" name="auth"
-          value="<?=$user['AuthKey']?>" />
+          value="<?=$app->userNew->extra['AuthKey']?>" />
         <input type="hidden" name="pageid" value="<?=$CollageID?>" />
         <div class="pad">
           <div>

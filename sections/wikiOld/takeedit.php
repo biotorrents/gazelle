@@ -27,7 +27,7 @@ $P = db_array($_POST);
 $Article = Wiki::get_article($ArticleID);
 list($OldRevision, $OldTitle, $OldBody, $CurRead, $CurEdit, $OldDate, $OldAuthor) = array_shift($Article);
 
-if ($CurEdit > $user['EffectiveClass']) {
+if ($CurEdit > $app->userNew->extra['EffectiveClass']) {
     error(403);
 }
 
@@ -43,7 +43,7 @@ if (check_perms('admin_manage_wiki')) {
         error(0);
     }
 
-    if ($Edit > $user['EffectiveClass']) {
+    if ($Edit > $app->userNew->extra['EffectiveClass']) {
         error('You can\'t restrict articles above your own level.');
     }
 
@@ -80,7 +80,7 @@ if ($Read && $Edit) {
 
 $SQL .= "
     Date = NOW(),
-    Author = '$user[ID]'
+    Author = '$app->userNew->core[id]'
   WHERE ID = '$P[id]'";
 
 $app->dbOld->prepared_query($SQL);

@@ -28,7 +28,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Delete') { //Delete
         error($Err);
     }
 
-    if ($P['minclassread'] > $user['Class'] || $P['minclasswrite'] > $user['Class'] || $P['minclasscreate'] > $user['Class']) {
+    if ($P['minclassread'] > $app->userNew->extra['Class'] || $P['minclasswrite'] > $app->userNew->extra['Class'] || $P['minclasscreate'] > $app->userNew->extra['Class']) {
         error(403);
     }
 
@@ -44,7 +44,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Delete') { //Delete
             error(404);
         } else {
             list($MinClassRead) = $app->dbOld->next_record();
-            if ($MinClassRead > $user['Class']) {
+            if ($MinClassRead > $app->userNew->extra['Class']) {
                 error(403);
             }
         }

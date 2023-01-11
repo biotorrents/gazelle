@@ -4,7 +4,7 @@ $app = App::go();
 
 authorize();
 
-$UserID = $user['ID'];
+$UserID = $app->userNew->core['id'];
 $ConvID = $_POST['convid'];
 $ReceiverID = $_POST['receiverid'];
 if (!is_number($ConvID) || !is_number($ReceiverID)) {

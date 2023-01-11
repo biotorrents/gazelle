@@ -44,7 +44,7 @@ if (check_perms('admin_manage_wiki')) {
         error(0);
     }
 
-    if ($Edit > $user['EffectiveClass']) {
+    if ($Edit > $app->userNew->extra['EffectiveClass']) {
         error('You can\'t restrict articles above your own level');
     }
 
@@ -60,7 +60,7 @@ $app->dbOld->prepared_query("
   INSERT INTO wiki_articles
     (Revision, Title, Body, MinClassRead, MinClassEdit, Date, Author)
   VALUES
-    ('1', '$P[title]', '$P[body]', '$Read', '$Edit', NOW(), '$user[ID]')");
+    ('1', '$P[title]', '$P[body]', '$Read', '$Edit', NOW(), '{$app->userNew->core[id]}')");
 
 $ArticleID = $app->dbOld->inserted_id();
 $TitleAlias = Wiki::normalize_alias($_POST['title']);
@@ -73,5 +73,5 @@ if ($TitleAlias !== '' && $Dupe === false) {
     Wiki::flush_aliases();
 }
 
-Misc::write_log("Wiki article $ArticleID (".$_POST['title'].") was created by ".$user['Username']);
+Misc::write_log("Wiki article $ArticleID (".$_POST['title'].") was created by ".$app->userNew->core['username']);
 Http::redirect("wiki.php?action=article&id=$ArticleID");

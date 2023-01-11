@@ -16,7 +16,7 @@ if (!check_perms('site_edit_wiki')) {
 }
 
 # Variables for database input
-$user_id = (int) $user['ID'];
+$user_id = (int) $app->userNew->core['id'];
 $group_id = (int) $_REQUEST['groupid'];
 Security::int($user_id, $group_id);
 
@@ -41,7 +41,7 @@ if (!empty($_GET['action']) && $_GET['action'] === 'revert') {
     <form class="confirm_form" name="torrent_group" action="torrents.php" method="get">
       <input type="hidden" name="action" value="revert" />
       <input type="hidden" name="auth"
-        value="<?=$user['AuthKey']?>" />
+        value="<?=$app->userNew->extra['AuthKey']?>" />
       <input type="hidden" name="confirm" value="true" />
       <input type="hidden" name="groupid" value="<?=$group_id?>" />
       <input type="hidden" name="revisionid"

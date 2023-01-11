@@ -14,7 +14,7 @@ $app->dbOld->query("
   WHERE ID = '$CollageID'");
 list($Name, $CategoryID, $UserID) = $app->dbOld->next_record();
 
-if (!check_perms('site_collages_delete') && $UserID != $user['ID']) {
+if (!check_perms('site_collages_delete') && $UserID != $app->userNew->core['id']) {
     error(403);
 }
 
@@ -28,7 +28,7 @@ View::header('Delete collage');
     <div class="pad">
       <form class="delete_form" name="collage" action="collages.php" method="post">
         <input type="hidden" name="action" value="take_delete" />
-        <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
+        <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
         <input type="hidden" name="collageid" value="<?=$CollageID?>" />
 <?php
 if ($CategoryID == 0) {

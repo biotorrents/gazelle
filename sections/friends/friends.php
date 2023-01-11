@@ -18,7 +18,7 @@ define('FRIENDS_PER_PAGE', '20');
 
 View::header('Friends');
 
-$UserID = $user['ID'];
+$UserID = $app->userNew->core['id'];
 list($Page, $Limit) = Format::page_limit(FRIENDS_PER_PAGE);
 
 // Main query
@@ -71,7 +71,7 @@ foreach ($Friends as $Friend) {
     list($FriendID, $Comment, $Username, $Uploaded, $Downloaded, $Class, $Paranoia, $LastAccess, $Avatar) = $Friend; ?>
     <form class="manage_form" name="friends" action="friends.php" method="post">
       <input type="hidden" name="auth"
-        value="<?=$user['AuthKey']?>" />
+        value="<?=$app->userNew->extra['AuthKey']?>" />
       <table class="friends_table vertical_margin">
         <tr class="colhead">
           <td colspan="<?=(User::hasAvatarsEnabled() ? 3 : 2)?>">

@@ -3,7 +3,7 @@
 
 $app = App::go();
 
-$UserID = $user['ID'];
+$UserID = $app->userNew->core['id'];
 $BadgeID = $_GET['badge'];
 
 $ShopBadgeIDs = [40, 41, 42, 43, 44, 45, 46, 47, 48];

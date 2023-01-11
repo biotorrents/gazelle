@@ -74,7 +74,7 @@ $app->dbOld->query("
   GROUP BY p.TopicID");
 list($OldForumID, $OldForumName, $MinClassWrite, $Posts, $ThreadAuthorID, $OldTitle, $OldLocked, $OldSticky, $OldRanking) = $app->dbOld->next_record(MYSQLI_BOTH, false);
 
-if ($MinClassWrite > $user['Class']) {
+if ($MinClassWrite > $app->userNew->extra['Class']) {
     error(403);
 }
 

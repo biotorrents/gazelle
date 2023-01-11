@@ -22,7 +22,7 @@ if (isset($_GET['userid']) && check_perms('users_view_invites')) {
         $app->cacheOld->cache_value('stats_user_count', $UserCount, 0);
     }
 
-    $UserID = $user['ID'];
+    $UserID = $app->userNew->core['id'];
     $Sneaky = false;
 }
 
@@ -133,10 +133,10 @@ $app->dbOld->query("
 list($CanLeech) = $app->dbOld->next_record();
 
 if (!$Sneaky
-  && !$user['RatioWatch']
+  && !$app->userNew->extra['RatioWatch']
   && $CanLeech
-  && empty($user['DisableInvites'])
-  && ($user['Invites'] > 0 || check_perms('site_send_unlimited_invites'))
+  && empty($app->userNew->extra['DisableInvites'])
+  && ($app->userNew->extra['Invites'] > 0 || check_perms('site_send_unlimited_invites'))
   && ($UserCount <= USER_LIMIT || USER_LIMIT === 0 || check_perms('site_can_invite_always'))
   ) { ?>
   <div class="box pad">
@@ -160,7 +160,7 @@ if (!$Sneaky
     <form class="send_form pad" name="invite" action="user.php" method="post">
       <input type="hidden" name="action" value="take_invite" />
       <input type="hidden" name="auth"
-        value="<?=$user['AuthKey']?>" />
+        value="<?=$app->userNew->extra['AuthKey']?>" />
       <div>
         <div class="label"><strong>Email Address</strong></div>
         <div class="input">
@@ -180,13 +180,13 @@ if (!$Sneaky
   </div>
 
   <?php
-} elseif (!empty($user['DisableInvites'])) { ?>
+} elseif (!empty($app->userNew->extra['DisableInvites'])) { ?>
   <div class="box pad" style="text-align: center;">
     <strong class="important_text">Your invites have been disabled. Please read <a
         href="wiki.php?action=article&amp;name=cantinvite">this article</a> for more information.</strong>
   </div>
   <?php
-} elseif ($user['RatioWatch'] || !$CanLeech) { ?>
+} elseif ($app->userNew->extra['RatioWatch'] || !$CanLeech) { ?>
   <div class="box pad" style="text-align: center;">
     <strong class="important_text">You may not send invites while on Ratio Watch or while your leeching privileges are
       disabled. Please read <a href="wiki.php?action=article&amp;name=cantinvite">this article</a> for more
@@ -215,7 +215,7 @@ if (!empty($Pending)) {
         <td><?=time_diff($Expires)?>
         </td>
         <td><a
-            href="user.php?action=delete_invite&amp;invite=<?=$InviteKey?>&amp;auth=<?=$user['AuthKey']?>"
+            href="user.php?action=delete_invite&amp;invite=<?=$InviteKey?>&amp;auth=<?=$app->userNew->extra['AuthKey']?>"
             onclick="return confirm('Are you sure you want to delete this invite?');">Delete invite</a></td>
       </tr>
       <?php

@@ -86,7 +86,7 @@ $BaseSQL = $SQL = "
   WHERE Deleted = '0'";
 
 if ($BookmarkView) {
-    $SQL .= " AND bc.UserID = '" . $user['ID'] . "'";
+    $SQL .= " AND bc.UserID = '" . $app->userNew->core['id'] . "'";
 }
 
 if (!empty($Search)) {
@@ -151,7 +151,7 @@ if (!empty($Categories)) {
 if (isset($_GET['action']) && $_GET['action'] === 'mine') {
     $SQL = $BaseSQL;
     $SQL .= "
-    AND c.UserID = '".$user['ID']."'
+    AND c.UserID = '".$app->userNew->core['id']."'
     AND c.CategoryID = 0";
 }
 
@@ -281,7 +281,7 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
           $app->dbOld->query("
         SELECT ID
         FROM collages
-        WHERE UserID = '$user[ID]'
+        WHERE UserID = '$app->userNew->core[id]'
           AND CategoryID = '0'
           AND Deleted = '0'");
           $CollageCount = $app->dbOld->record_count();
@@ -311,9 +311,9 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
     <br />
     <?php
       } ?>
-    <a href="collages.php?userid=<?=$user['ID']?>"
+    <a href="collages.php?userid=<?=$app->userNew->core['id']?>"
       class="brackets">Collections you started</a>
-    <a href="collages.php?userid=<?=$user['ID']?>&amp;contrib=1"
+    <a href="collages.php?userid=<?=$app->userNew->core['id']?>&amp;contrib=1"
       class="brackets">Collections you contributed to</a>
     <br /><br />
     <?php

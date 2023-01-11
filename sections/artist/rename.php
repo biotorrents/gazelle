@@ -69,7 +69,7 @@ if (!$TargetAliasID) {
       INSERT INTO artists_alias
         (ArtistID, Name, Redirect, UserID)
       VALUES
-        ($ArtistID, '".db_string($NewName)."', '0', '$user[ID]')");
+        ($ArtistID, '".db_string($NewName)."', '0', '$app->userNew->core[id]')");
     $TargetAliasID = $app->dbOld->inserted_id();
 
     $app->dbOld->query("

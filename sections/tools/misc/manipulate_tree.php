@@ -19,7 +19,7 @@ if ($_POST['id']) {
     } else {
         $Comment = date('Y-m-d H:i:s') . " - ";
         $Comment .= db_string($_POST['comment']);
-        $Comment .= "\n" . "Manipulate Tree used by " . $user['Username'];
+        $Comment .= "\n" . "Manipulate Tree used by " . $app->userNew->core['username'];
     }
     $UserID = $_POST['id'];
     $app->dbOld->query("
@@ -90,7 +90,7 @@ if ($_POST['id']) {
 <?php } ?>
   <form class="manage_form" name="user" action="" method="post">
     <input type="hidden" id="action" name="action" value="manipulate_tree" />
-    <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
+    <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
     <table class="layout">
       <tr>
         <td class="label"><strong>UserID</strong></td>

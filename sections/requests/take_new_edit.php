@@ -20,7 +20,7 @@ if (!$NewRequest) {
 }
 
 if ($NewRequest) {
-    if (!check_perms('site_submit_requests') || $user['BytesUploaded'] < 250 * 1024 * 1024) {
+    if (!check_perms('site_submit_requests') || $app->userNew->extra['BytesUploaded'] < 250 * 1024 * 1024) {
         error(403);
     }
 } else {
@@ -38,7 +38,7 @@ if ($NewRequest) {
     $IsFilled = !empty($Request['TorrentID']);
     $CategoryName = $Categories[$Request['CategoryID'] - 1];
     $ProjectCanEdit = (check_perms('project_team') && !$IsFilled && ($Request['CategoryID'] === '0' || ($CategoryName === 'Music' && $Year === '0')));
-    $CanEdit = ((!$IsFilled && $user['ID'] === $Request['UserID'] && $VoteCount < 2) || $ProjectCanEdit || check_perms('site_moderate_requests'));
+    $CanEdit = ((!$IsFilled && $app->userNew->core['id'] === $Request['UserID'] && $VoteCount < 2) || $ProjectCanEdit || check_perms('site_moderate_requests'));
 
     if (!$CanEdit) {
         error(403);
@@ -181,7 +181,7 @@ if ($NewRequest) {
       UserID, TimeAdded, LastVote, CategoryID, Title, Title2, TitleJP, Image, Description,
       CatalogueNumber, Visible, GroupID)
     VALUES
-      ('.$user['ID'].", NOW(), NOW(), $CategoryID, '".db_string($Title)."', '".db_string($Title2)."', '".db_string($TitleJP)."', '".db_string($Image)."', '".db_string($Description)."',
+      ('.$app->userNew->core['id'].", NOW(), NOW(), $CategoryID, '".db_string($Title)."', '".db_string($Title2)."', '".db_string($TitleJP)."', '".db_string($Image)."', '".db_string($Description)."',
           '".db_string($CatalogueNumber)."', '1', '$GroupID')");
 
     $RequestID = $app->dbOld->inserted_id();
@@ -317,7 +317,7 @@ foreach ($Tags as $Index => $Tag) {
     INSERT INTO tags
       (Name, UserID)
     VALUES
-      ('$Tag', ".$user['ID'].")
+      ('$Tag', ".$app->userNew->core['id'].")
     ON DUPLICATE KEY UPDATE
       Uses = Uses + 1");
 
@@ -336,13 +336,13 @@ if ($NewRequest) {
     INSERT INTO requests_votes
       (RequestID, UserID, Bounty)
     VALUES
-      ($RequestID, ".$user['ID'].', '.($Bytes * (1 - $RequestTax)).')');
+      ($RequestID, ".$app->userNew->core['id'].', '.($Bytes * (1 - $RequestTax)).')');
 
     $app->dbOld->query("
     UPDATE users_main
     SET Uploaded = (Uploaded - $Bytes)
-    WHERE ID = ".$user['ID']);
-    $app->cacheOld->delete_value('user_stats_'.$user['ID']);
+    WHERE ID = ".$app->userNew->core['id']);
+    $app->cacheOld->delete_value('user_stats_'.$app->userNew->core['id']);
 
     $AnnounceTitle = empty($Title) ? (empty($Title2) ? $TitleJP : $Title2) : $Title;
 

@@ -6,17 +6,17 @@ $app = App::go();
 User post history page
 */
 
-if (!empty($user['DisableForums'])) {
+if (!empty($app->userNew->extra['DisableForums'])) {
     error(403);
 }
 
-$UserID = empty($_GET['userid']) ? $user['ID'] : $_GET['userid'];
+$UserID = empty($_GET['userid']) ? $app->userNew->core['id'] : $_GET['userid'];
 if (!is_number($UserID)) {
     error(0);
 }
 
-if (isset($user['PostsPerPage'])) {
-    $PerPage = $user['PostsPerPage'];
+if (isset($app->userNew->extra['PostsPerPage'])) {
+    $PerPage = $app->userNew->extra['PostsPerPage'];
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
@@ -28,7 +28,7 @@ extract(array_intersect_key($UserInfo, array_flip(array('Username', 'Enabled', '
 
 View::header("Post history for $Username", 'subscriptions,comments');
 
-$ViewingOwn = ($UserID == $user['ID']);
+$ViewingOwn = ($UserID == $app->userNew->core['id']);
 $ShowUnread = ($ViewingOwn && (!isset($_GET['showunread']) || !!$_GET['showunread']));
 $ShowGrouped = ($ViewingOwn && (!isset($_GET['group']) || !!$_GET['group']));
 if ($ShowGrouped) {
@@ -40,7 +40,7 @@ if ($ShowGrouped) {
       LEFT JOIN forums_topics AS t ON t.ID = p.TopicID';
     if ($ShowUnread) {
         $sql .= '
-      LEFT JOIN forums_last_read_topics AS l ON l.TopicID = t.ID AND l.UserID = '.$user['ID'];
+      LEFT JOIN forums_last_read_topics AS l ON l.TopicID = t.ID AND l.UserID = '.$app->userNew->core['id'];
     }
     $sql .= "
       LEFT JOIN forums AS f ON f.ID = t.ForumID
@@ -108,7 +108,7 @@ if ($ShowGrouped) {
       p.TopicID,
       t.Title,
       t.LastPostID,';
-    $sql .= ($UserID == $user['ID']) ? '
+    $sql .= ($UserID == $app->userNew->core['id']) ? '
       l.PostID AS LastRead,' : '
       true AS LastRead,';
     $sql .= "

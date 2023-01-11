@@ -6,7 +6,7 @@ if (!isset($_REQUEST['page']) || !in_array($_REQUEST['page'], array('artist', 'c
     error(0);
 }
 
-if ($user['DisablePosting']) {
+if ($app->userNew->extra['DisablePosting']) {
     error('Your posting privileges have been removed.');
 }
 

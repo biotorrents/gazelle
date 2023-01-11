@@ -29,7 +29,7 @@ if ($ClaimerID) {
     );
     die();
 } else {
-    $UserID = $user['ID'];
+    $UserID = $app->userNew->core['id'];
     $app->dbOld->query("
     UPDATE reports
     SET ClaimerID = '$UserID'
@@ -38,7 +38,7 @@ if ($ClaimerID) {
     json_encode(
         array(
         'status' => 'success',
-        'username' => $user['Username']
+        'username' => $app->userNew->core['username']
       )
     );
     die();

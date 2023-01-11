@@ -52,7 +52,7 @@ function authorize($Ajax = false)
         return true;
     } else {
         if (empty($_REQUEST['auth']) || $_REQUEST['auth'] !== $app->userNew->extra['AuthKey']) {
-            send_irc(DEBUG_CHAN, $app->userNew->extra['Username']." just failed authorize on ".$_SERVER['REQUEST_URI'].(!empty($_SERVER['HTTP_REFERER']) ? " coming from ".$_SERVER['HTTP_REFERER'] : ""));
+            send_irc(DEBUG_CHAN, $app->userNew->core['username']." just failed authorize on ".$_SERVER['REQUEST_URI'].(!empty($_SERVER['HTTP_REFERER']) ? " coming from ".$_SERVER['HTTP_REFERER'] : ""));
             error('Invalid authorization key. Go back, refresh, and try again.', $NoHTML = true);
             return false;
         }

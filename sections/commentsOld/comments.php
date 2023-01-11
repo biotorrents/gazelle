@@ -23,7 +23,7 @@ if (isset($_GET['id']) && is_number($_GET['id'])) {
     $UserInfo = User::user_info($UserID);
     $Username = $UserInfo['Username'];
 
-    if ($user['ID'] === $UserID) {
+    if ($app->userNew->core['id'] === $UserID) {
         $Self = true;
     } else {
         $Self = false;
@@ -36,14 +36,14 @@ if (isset($_GET['id']) && is_number($_GET['id'])) {
         error(403);
     }
 } else {
-    $UserID = $user['ID'];
-    $Username = $user['Username'];
+    $UserID = $app->userNew->core['id'];
+    $Username = $app->userNew->core['username'];
     $Self = true;
 }
 
 // Posts per page limit stuff
-if (isset($user['PostsPerPage'])) {
-    $PerPage = $user['PostsPerPage'];
+if (isset($app->userNew->extra['PostsPerPage'])) {
+    $PerPage = $app->userNew->extra['PostsPerPage'];
 } else {
     $PerPage = POSTS_PER_PAGE;
 }

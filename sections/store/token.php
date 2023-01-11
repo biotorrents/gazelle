@@ -6,7 +6,7 @@ $app = App::go();
 $Cost = 1000;
 
 $Purchase = "1 freeleech token";
-$UserID = $user['ID'];
+$UserID = $app->userNew->core['id'];
 
 $app->dbOld->prepared_query("
   SELECT BonusPoints

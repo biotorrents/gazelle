@@ -2,7 +2,7 @@
 
 $app = App::go();
 
-$UserID = $user['ID'];
+$UserID = $app->userNew->core['id'];
 
 $app->dbOld->query("
   SELECT
@@ -43,7 +43,7 @@ View::header('Snatch List');
 <?php
 foreach ($Torrents as $Torrent) {
     $DisplayName = "<a href=\"torrents.php?id=$Torrent[ID]&torrentid=$Torrent[TorrentID]\" ";
-    if (!isset($user['CoverArt']) || $user['CoverArt']) {
+    if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
         $DisplayName .= 'data-cover="'.ImageTools::process($Torrent['WikiImage'], 'thumb').'" ';
     }
     $DisplayName .= "dir=\"ltr\">$Torrent[Name]</a>";

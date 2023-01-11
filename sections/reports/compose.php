@@ -8,7 +8,7 @@ if (!check_perms('admin_reports')) {
 
 if (empty($Return)) {
     $ToID = $_GET['to'];
-    if ($ToID == $user['ID']) {
+    if ($ToID == $app->userNew->core['id']) {
         error("You cannot start a conversation with yourself!");
         Http::redirect("inbox.php");
     }
@@ -26,7 +26,7 @@ if (!$ReportID || !is_number($ReportID) || !$ThingID || !is_number($ThingID) || 
     error(403);
 }
 
-if (!empty($user['DisablePM']) && !isset($StaffIDs[$ToID])) {
+if (!empty($app->userNew->extra['DisablePM']) && !isset($StaffIDs[$ToID])) {
     error(403);
 }
 
@@ -96,8 +96,8 @@ switch ($Type) {
     }
     break;
   case 'post':
-    if (isset($user['PostsPerPage'])) {
-        $PerPage = $user['PostsPerPage'];
+    if (isset($app->userNew->extra['PostsPerPage'])) {
+        $PerPage = $app->userNew->extra['PostsPerPage'];
     } else {
         $PerPage = POSTS_PER_PAGE;
     }
@@ -161,7 +161,7 @@ $Body = "You reported $TypeLink for the reason:\n[quote]{$Reason}[/quote]";
     <div class="box pad">
       <input type="hidden" name="action" value="takecompose" />
       <input type="hidden" name="toid" value="<?=$ToID?>" />
-      <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
       <div id="quickpost">
         <h3>Subject</h3>
         <input type="text" name="subject" size="95" value="<?=(!empty($Subject) ? $Subject : '')?>" />

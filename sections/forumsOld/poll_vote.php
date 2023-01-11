@@ -91,7 +91,7 @@ if (!isset($_POST['vote']) || !is_number($_POST['vote'])) {
 <form class="vote_form" name="poll" id="poll" action="">
   <input type="hidden" name="action" value="poll" />
   <input type="hidden" name="auth"
-    value="<?=$user['AuthKey']?>" />
+    value="<?=$app->userNew->extra['AuthKey']?>" />
   <input type="hidden" name="large"
     value="<?=Text::esc($_POST['large'])?>" />
   <input type="hidden" name="topicid" value="<?=$TopicID?>" />
@@ -119,7 +119,7 @@ if (!isset($_POST['vote']) || !is_number($_POST['vote'])) {
     INSERT IGNORE INTO forums_polls_votes
       (TopicID, UserID, Vote)
     VALUES
-      ($TopicID, " . $user['ID'] . ", $Vote)");
+      ($TopicID, " . $app->userNew->core['id'] . ", $Vote)");
         if ($app->dbOld->affected_rows() == 1 && $Vote != 0) {
             $app->cacheOld->begin_transaction("polls_$TopicID");
             $app->cacheOld->update_row(2, array($Vote => '+1'));
@@ -164,7 +164,7 @@ if (!isset($_POST['vote']) || !is_number($_POST['vote'])) {
         foreach ($StaffVotes as $StaffVote) {
             list($StaffString, $StaffVoted) = $StaffVote; ?>
   <li><a
-      href="forums.php?action=change_vote&amp;threadid=<?=$TopicID?>&amp;auth=<?=$user['AuthKey']?>&amp;vote=<?=(int)$StaffVoted?>"><?=Text::esc(empty($Answers[$StaffVoted]) ? 'Blank' : $Answers[$StaffVoted])?></a>
+      href="forums.php?action=change_vote&amp;threadid=<?=$TopicID?>&amp;auth=<?=$app->userNew->extra['AuthKey']?>&amp;vote=<?=(int)$StaffVoted?>"><?=Text::esc(empty($Answers[$StaffVoted]) ? 'Blank' : $Answers[$StaffVoted])?></a>
     - <?=$StaffString?>
   </li>
   <?php

@@ -39,7 +39,7 @@ if (!$authenticated || empty($app->userNew->core)) {
 # allow some possibly useful banned pages
 # todo: banning prevents login and therefore participation
 $allowedPages = ["api", "locked", "login", "logout"];
-if (isset($user["LockedAccount"]) && !in_array($document, $allowedPages)) {
+if (isset($app->userNew->extra["LockedAccount"]) && !in_array($document, $allowedPages)) {
     require_once "{$app->env->serverRoot}/sections/locked/index.php";
     exit;
 }

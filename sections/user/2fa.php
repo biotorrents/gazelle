@@ -175,7 +175,7 @@ View::header("2FA Settings", 'u2f');
         <input type="text" size="60" name="twofasecret" id="twofasecret"
           value="<?=$TwoFASecret?>" readonly><br>
         <img
-          src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$user['Username'], $TwoFASecret)?>" />
+          src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$app->userNew->core['username'], $TwoFASecret)?>" />
         <br />
 
         <input type="text" size="20" maxlength="6" pattern="[0-9]{0,6}" name="twofa" id="twofa"
@@ -206,7 +206,7 @@ View::header("2FA Settings", 'u2f');
 
         <p>
           <img
-            src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$user['Username'], $TwoFASecret)?>" />
+            src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$app->userNew->core['username'], $TwoFASecret)?>" />
         </p>
 
         <p>

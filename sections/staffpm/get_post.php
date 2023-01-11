@@ -31,7 +31,7 @@ $app->dbOld->query("
   WHERE m.ID = '$PostID'");
 list($Message, $Level, $UserID) = $app->dbOld->next_record(MYSQLI_NUM);
 
-if (($user['ID'] === $UserID) || ($IsFLS && $user['Class'] >= $Level)) {
+if (($app->userNew->core['id'] === $UserID) || ($IsFLS && $app->userNew->extra['Class'] >= $Level)) {
     // This gets sent to the browser, which echoes it wherever
     echo trim($Message);
 } else {

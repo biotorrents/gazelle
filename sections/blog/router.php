@@ -91,7 +91,7 @@ if (check_perms('admin_manage_blog')) {
                         Http::redirect("blog.php");
                     }
                 } else {
-                    $ThreadID = Misc::create_thread($ENV->ANNOUNCEMENT_FORUM, $user['ID'], $Title, $Body);
+                    $ThreadID = Misc::create_thread($ENV->ANNOUNCEMENT_FORUM, $app->userNew->core['id'], $Title, $Body);
                     if ($ThreadID < 1) {
                         error(0);
                     }
@@ -101,7 +101,7 @@ if (check_perms('admin_manage_blog')) {
           INSERT INTO blog
             (UserID, Title, Body, Time, ThreadID, Important)
           VALUES
-            ('".$user['ID']."',
+            ('".$app->userNew->core['id']."',
             '".db_string($_POST['title'])."',
             '".db_string($_POST['body'])."',
             NOW(),
@@ -114,8 +114,8 @@ if (check_perms('admin_manage_blog')) {
                 if (isset($_POST['subscribe'])) {
                     $app->dbOld->prepared_query("
             INSERT IGNORE INTO users_subscriptions
-            VALUES ('$user[ID]', $ThreadID)");
-                    $app->cacheOld->delete_value('subscriptions_user_'.$user['ID']);
+            VALUES ('$app->userNew->core[id]', $ThreadID)");
+                    $app->cacheOld->delete_value('subscriptions_user_'.$app->userNew->core['id']);
                 }
 
                 Http::redirect("blog.php");
@@ -132,7 +132,7 @@ if (check_perms('admin_manage_blog')) {
             <input type="hidden" name="action"
                 value="<?=empty($_GET['action']) ? 'takenewblog' : 'takeeditblog'?>" />
             <input type="hidden" name="auth"
-                value="<?=$user['AuthKey']?>" />
+                value="<?=$app->userNew->extra['AuthKey']?>" />
             <?php if (!empty($_GET['action']) && $_GET['action'] == 'editblog') { ?>
             <input type="hidden" name="blogid"
                 value="<?=$BlogID; ?>" />
@@ -186,15 +186,15 @@ if (!$Blog = $app->cacheOld->get_value('blog')) {
     $app->cacheOld->cache_value('blog', $Blog, 1209600);
 }
 
-if ($user['LastReadBlog'] < $Blog[0][0]) {
-    $app->cacheOld->begin_transaction('user_info_heavy_'.$user['ID']);
+if ($app->userNew->extra['LastReadBlog'] < $Blog[0][0]) {
+    $app->cacheOld->begin_transaction('user_info_heavy_'.$app->userNew->core['id']);
     $app->cacheOld->update_row(false, array('LastReadBlog' => $Blog[0][0]));
     $app->cacheOld->commit_transaction(0);
     $app->dbOld->prepared_query("
     UPDATE users_info
     SET LastReadBlog = '".$Blog[0][0]."'
-    WHERE UserID = ".$user['ID']);
-    $user['LastReadBlog'] = $Blog[0][0];
+    WHERE UserID = ".$app->userNew->core['id']);
+    $app->userNew->extra['LastReadBlog'] = $Blog[0][0];
 }
 
 foreach ($Blog as $BlogItem) {
@@ -206,7 +206,7 @@ foreach ($Blog as $BlogItem) {
             <?php if (check_perms('admin_manage_blog')) { ?>
             - <a href="blog.php?action=editblog&amp;id=<?=$BlogID?>"
                 class="brackets">Edit</a>
-            <a href="blog.php?action=deleteblog&amp;id=<?=$BlogID?>&amp;auth=<?=$user['AuthKey']?>"
+            <a href="blog.php?action=deleteblog&amp;id=<?=$BlogID?>&amp;auth=<?=$app->userNew->extra['AuthKey']?>"
                 class="brackets">Delete</a>
             <?php } ?>
         </div>
@@ -218,7 +218,7 @@ foreach ($Blog as $BlogItem) {
                     href="forums.php?action=viewthread&amp;threadid=<?=$ThreadID?>">Discuss
                     this post here</a></em>
             <?php if (check_perms('admin_manage_blog')) { ?>
-            <a href="blog.php?action=deadthread&amp;id=<?=$BlogID?>&amp;auth=<?=$user['AuthKey']?>"
+            <a href="blog.php?action=deadthread&amp;id=<?=$BlogID?>&amp;auth=<?=$app->userNew->extra['AuthKey']?>"
                 class="brackets">Remove link</a>
             <?php
             }

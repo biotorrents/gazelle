@@ -24,10 +24,10 @@ if (!empty($_GET['userid'])) {
       WHERE ID = '$UserID'");
     list($Username) = $app->dbOld->next_record();
 } else {
-    $UserID = $user['ID'];
+    $UserID = $app->userNew->core['id'];
 }
 
-$Sneaky = $UserID != $user['ID'];
+$Sneaky = $UserID != $app->userNew->core['id'];
 $Title = $Sneaky ? "$Username's bookmarked torrent groups" : 'Your bookmarked torrent groups';
 
 // Loop through the result set, building up $Collage and $TorrentTable
@@ -66,7 +66,7 @@ foreach ($GroupIDs as $GroupID) {
     $GroupName = empty($title) ? (empty($subject) ? $object : $subject) : $title;
 
     $DisplayName .= '<a href="torrents.php?id='.$GroupID.'" ';
-    if (!isset($user['CoverArt']) || $user['CoverArt']) {
+    if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
         $DisplayName .= 'data-cover="'.ImageTools::process($picture, 'thumb').'" ';
     }
 
@@ -80,7 +80,7 @@ foreach ($GroupIDs as $GroupID) {
     ob_start();
     if (count($Torrents) > 1) {
         // Grouped torrents
-        $ShowGroups = !(!empty($user['TorrentGrouping']) && $user['TorrentGrouping'] === 1); ?>
+        $ShowGroups = !(!empty($app->userNew->extra['TorrentGrouping']) && $app->userNew->extra['TorrentGrouping'] === 1); ?>
 
 <tr class="group" id="group_<?=$GroupID?>">
   <td class="center">
@@ -117,14 +117,14 @@ foreach ($GroupIDs as $GroupID) {
     foreach ($Torrents as $TorrentID => $Torrent) {
         $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : ''; ?>
 <tr
-  class="group_torrent torrent_row groupid_<?=$GroupID?> <?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($user['TorrentGrouping']) && $user['TorrentGrouping'] === 1 ? ' hidden' : '')?>">
+  class="group_torrent torrent_row groupid_<?=$GroupID?> <?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($app->userNew->extra['TorrentGrouping']) && $app->userNew->extra['TorrentGrouping'] === 1 ? ' hidden' : '')?>">
   <td colspan="3">
     <span>[ <a
-        href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>"
+        href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>"
         class="tooltip" title="Download">DL</a>
       <?php if (Torrents::can_use_token($Torrent)) { ?>
       | <a
-        href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>&amp;usetoken=1"
+        href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>&amp;usetoken=1"
         class="tooltip" title="Use a FL Token"
         onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
       <?php } ?>
@@ -157,7 +157,7 @@ foreach ($GroupIDs as $GroupID) {
         #$DisplayName = Artists::display_artists(Artists::get_artist($GroupID));
         $DisplayName .= '<a href="torrents.php?id='.$GroupID.'" ';
 
-        if (!isset($user['CoverArt']) || $user['CoverArt']) {
+        if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
             $DisplayName .= 'data-cover="'.ImageTools::process($picture, 'thumb').'" ';
         }
 
@@ -187,11 +187,11 @@ foreach ($GroupIDs as $GroupID) {
   <td>
     <span>
       [ <a
-        href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>"
+        href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>"
         class="tooltip" title="Download">DL</a>
       <?php if (Torrents::can_use_token($Torrent)) { ?>
       | <a
-        href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$user['AuthKey']?>&amp;torrent_pass=<?=$user['torrent_pass']?>&amp;usetoken=1"
+        href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>&amp;usetoken=1"
         class="tooltip" title="Use a FL Token"
         onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
       <?php } ?>
@@ -260,7 +260,7 @@ foreach ($GroupIDs as $GroupID) {
   $Collage[] = ob_get_clean();
 }
 
-$CollageCovers = isset($user['CollageCovers']) ? (int)$user['CollageCovers'] : 10;
+$CollageCovers = isset($app->userNew->extra['CollageCovers']) ? (int)$app->userNew->extra['CollageCovers'] : 10;
 $CollagePages = [];
 
 if ($CollageCovers > 0) {
@@ -281,7 +281,7 @@ View::header($Title, 'browse,collage,wall');
 <div>
   <div class="header">
     <h2><?php if (!$Sneaky) { ?><a
-        href="feeds.php?feed=torrents_bookmarks_t_<?=$user['torrent_pass']?>&amp;user=<?=$user['ID']?>&amp;auth=<?=$user['RSS_Auth']?>&amp;passkey=<?=$user['torrent_pass']?>&amp;authkey=<?=$user['AuthKey']?>&amp;name=<?=urlencode($ENV->siteName.': Bookmarked Torrents')?>"><img
+        href="feeds.php?feed=torrents_bookmarks_t_<?=$app->userNew->extra['torrent_pass']?>&amp;user=<?=$app->userNew->core['id']?>&amp;auth=<?=$app->userNew->extra['RSS_Auth']?>&amp;passkey=<?=$app->userNew->extra['torrent_pass']?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;name=<?=urlencode($ENV->siteName.': Bookmarked Torrents')?>"><img
           src="<?=staticServer?>/images/symbols/rss.png"
           alt="RSS feed" /></a>&nbsp;<?php } ?><?=$Title?>
     </h2>
@@ -292,7 +292,7 @@ View::header($Title, 'browse,collage,wall');
       <a href="bookmarks.php?type=requests" class="brackets">Requests</a>
       <?php if (count($TorrentList) > 0) { ?>
       <br /><br />
-      <a href="bookmarks.php?action=remove_snatched&amp;auth=<?=$user['AuthKey']?>"
+      <a href="bookmarks.php?action=remove_snatched&amp;auth=<?=$app->userNew->extra['AuthKey']?>"
         class="brackets"
         onclick="return confirm('Are you sure you want to remove the bookmarks for all items you\'ve snatched?');">Remove
         snatched</a>

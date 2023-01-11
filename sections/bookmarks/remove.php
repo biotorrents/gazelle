@@ -19,7 +19,7 @@ $PageID = $_GET['id'];
 
 $app->dbOld->query("
   DELETE FROM $Table
-  WHERE UserID = $user[ID]
+  WHERE UserID = $app->userNew->core[id]
     AND $Col = $PageID");
 $app->cacheOld->delete_value("bookmarks_{$Type}_$UserID");
 

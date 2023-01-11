@@ -80,9 +80,9 @@ if (!$Properties) {
 
 # Error on bad permissions
 $UploadForm = $Categories[$Properties['CategoryID'] - 1];
-if (($user['ID'] !== $Properties['UserID']
+if (($app->userNew->core['id'] !== $Properties['UserID']
   && !check_perms('torrents_edit'))
-  || $user['DisableWiki']) {
+  || $app->userNew->extra['DisableWiki']) {
     error(403);
 }
 
@@ -126,7 +126,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
     <input type="hidden" name="action" value="editgroupid" />
 
     <input type="hidden" name="auth"
-      value="<?=$user['AuthKey']?>" />
+      value="<?=$app->userNew->extra['AuthKey']?>" />
 
     <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
 
@@ -172,7 +172,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
     <input type="hidden" name="action" value="newgroup" />
 
     <input type="hidden" name="auth"
-      value="<?=$user['AuthKey']?>" />
+      value="<?=$app->userNew->extra['AuthKey']?>" />
 
     <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
 
@@ -264,7 +264,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
   <form action="torrents.php" method="post">
     <input type="hidden" name="action" value="changecategory" />
     <input type="hidden" name="auth"
-      value="<?=$user['AuthKey']?>" />
+      value="<?=$app->userNew->extra['AuthKey']?>" />
     <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
     <input type="hidden" name="oldgroupid"
       value="<?=$Properties['GroupID']?>" />

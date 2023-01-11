@@ -69,7 +69,7 @@ list($NumResults) = $app->dbOld->next_record();
   <tr class="row">
     <form class="add_form" name="email_blacklist" action="tools.php" method="post">
       <input type="hidden" name="action" value="email_blacklist_alter" />
-      <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
       <td><input type="text" name="email" size="30" /></td>
       <td colspan="2"><input type="text" name="comment" size="50" /></td>
       <td><input type="submit" class="button-primary" value="Create" /></td>
@@ -82,7 +82,7 @@ list($NumResults) = $app->dbOld->next_record();
     <form class="manage_form" name="email_blacklist" action="tools.php" method="post">
       <td>
         <input type="hidden" name="action" value="email_blacklist_alter" />
-        <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
+        <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
         <input type="hidden" name="id" value="<?=$Result['ID']?>" />
         <input type="email" name="email" value="<?=Text::esc($Result['Email'])?>" size="30" />
       </td>

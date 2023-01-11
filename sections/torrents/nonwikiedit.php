@@ -21,7 +21,7 @@ if (!check_perms('torrents_edit')) {
     ");
 
 
-    if (!in_array($user['ID'], $app->dbOld->collect('UserID'))) {
+    if (!in_array($app->userNew->core['id'], $app->dbOld->collect('UserID'))) {
         error(403);
     }
 }
@@ -88,7 +88,7 @@ if ($OldYear !== $year) {
     INSERT INTO `group_log`(`GroupID`, `UserID`, `Time`, `Info`)
     VALUES(
       '$group_id',
-      '$user[ID]',
+      '$app->userNew->core[id]',
       NOW(),
       '$Message')
     ");
@@ -140,11 +140,11 @@ foreach ($Artists as $Artist) {
         VALUES(
           '$group_id',
           '$ArtistID',
-          '$user[ID]'
+          '$app->userNew->core[id]'
         )
         ON DUPLICATE KEY
         UPDATE
-          `UserID` = '$user[ID]'
+          `UserID` = '$app->userNew->core[id]'
         "); // Why does this even happen
 
         $app->cacheOld->delete_value('artist_groups_'.$ArtistID);

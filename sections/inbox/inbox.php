@@ -3,7 +3,7 @@
 
 $app = App::go();
 
-$UserID = $user['ID'];
+$UserID = $app->userNew->core['id'];
 
 if (empty($_GET['action'])) {
     $Section = 'inbox';
@@ -123,7 +123,7 @@ echo $Pages;
   <form class="manage_form" name="messages" action="inbox.php" method="post" id="messageform">
     <input type="hidden" name="action" value="masschange" />
     <input type="hidden" name="auth"
-      value="<?=$user['AuthKey']?>" />
+      value="<?=$app->userNew->extra['AuthKey']?>" />
     <input type="submit" name="read" class="button-primary" value="Mark as read" />
     <input type="submit" name="unread" value="Mark as unread" />
     <input type="submit" name="delete" value="Delete message(s)" />
@@ -174,7 +174,7 @@ echo $Pages;
         <td><?=time_diff($Date)?>
         </td>
         <?php if (check_perms('users_mod')) { ?>
-        <td><?=(($ForwardedID && $ForwardedID != $user['ID']) ? User::format_username($ForwardedID, false, false, false) : '')?>
+        <td><?=(($ForwardedID && $ForwardedID != $app->userNew->core['id']) ? User::format_username($ForwardedID, false, false, false) : '')?>
         </td>
         <?php } ?>
       </tr>
@@ -184,7 +184,7 @@ echo $Pages;
   } ?>
     </table>
     <?php
-    $MsgLimit = ($user['PostsPerPage']) ? $user['PostsPerPage'] : MESSAGES_PER_PAGE;
+    $MsgLimit = ($app->userNew->extra['PostsPerPage']) ? $app->userNew->extra['PostsPerPage'] : MESSAGES_PER_PAGE;
     if ($Count > $MsgLimit) { ?>
     <input type="submit" name="read" class="button-primary" value="Mark as read" />
     <input type="submit" name="unread" value="Mark as unread" />

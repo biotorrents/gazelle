@@ -100,7 +100,7 @@ if ($Data) {
 
 // Requests
 $Requests = [];
-if (empty($user['DisableRequests'])) {
+if (empty($app->userNew->extra['DisableRequests'])) {
     $Requests = $app->cacheOld->get_value("artists_requests_$ArtistID");
     if (!is_array($Requests)) {
         $app->dbOld->query("
@@ -309,15 +309,15 @@ foreach ($Requests as $RequestID => $Request) {
 //notifications disabled by default
 $notificationsEnabled = false;
 if (check_perms('site_torrents_notify')) {
-    if (($Notify = $app->cacheOld->get_value('notify_artists_'.$user['ID'])) === false) {
+    if (($Notify = $app->cacheOld->get_value('notify_artists_'.$app->userNew->core['id'])) === false) {
         $app->dbOld->query("
       SELECT ID, Artists
       FROM users_notify_filters
-      WHERE UserID = '$user[ID]'
+      WHERE UserID = '{$app->userNew->core[id]}'
         AND Label = 'Artist notifications'
       LIMIT 1");
         $Notify = $app->dbOld->next_record(MYSQLI_ASSOC, false);
-        $app->cacheOld->cache_value('notify_artists_'.$user['ID'], $Notify, 0);
+        $app->cacheOld->cache_value('notify_artists_'.$app->userNew->core['id'], $Notify, 0);
     }
     if (stripos($Notify['Artists'], "|$Name|") === false) {
         $notificationsEnabled = false;

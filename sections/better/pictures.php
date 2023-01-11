@@ -63,7 +63,7 @@ foreach ($Results as $Result) {
     $TorrentTags = new Tags($tag_list);
 
     $DisplayName = "<a href='torrents.php?id=$id' ";
-    if (!isset($user['CoverArt']) || $user['CoverArt']) {
+    if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
         $DisplayName .= 'data-cover="'.ImageTools::process($picture, 'thumb').'" ';
     }
 

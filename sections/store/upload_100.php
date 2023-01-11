@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 $app = App::go();
 
-$UserID = $user['ID'];
+$UserID = $app->userNew->core['id'];
 $Purchase = "10 GiB upload";
 
 $GiB = 1024*1024*1024;

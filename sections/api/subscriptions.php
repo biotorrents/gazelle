@@ -5,12 +5,12 @@ User topic subscription page
 
 $app = App::go();
 
-if (!empty($user['DisableForums'])) {
+if (!empty($app->userNew->extra['DisableForums'])) {
     json_die('failure');
 }
 
-if (isset($user['PostsPerPage'])) {
-    $PerPage = $user['PostsPerPage'];
+if (isset($app->userNew->extra['PostsPerPage'])) {
+    $PerPage = $app->userNew->extra['PostsPerPage'];
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
@@ -27,7 +27,7 @@ $sql = '
     JOIN users_subscriptions AS s ON s.TopicID = t.ID
     LEFT JOIN forums AS f ON f.ID = t.ForumID
     LEFT JOIN forums_last_read_topics AS l ON p.TopicID = l.TopicID AND l.UserID = s.UserID
-  WHERE s.UserID = '.$user['ID'].'
+  WHERE s.UserID = '.$app->userNew->core['id'].'
     AND p.ID <= IFNULL(l.PostID, t.LastPostID)
     AND ' . Forums::user_forums_sql();
 if ($ShowUnread) {

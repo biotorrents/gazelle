@@ -32,7 +32,7 @@ $app->dbOld->query("
   SET Status = 'Resolved',
     ResolvedTime = NOW(),
     ResolverID = ?
-  WHERE ID = ?", $user['ID'], $user['ID']);
+  WHERE ID = ?", $app->userNew->core['id'], $app->userNew->core['id']);
 
 $Channels = [];
 
@@ -52,6 +52,6 @@ $app->dbOld->query("
   WHERE Status = 'New'");
 list($Remaining) = $app->dbOld->next_record();
 
-send_irc($Channels, "Report $ReportID resolved by ".preg_replace('/^(.{2})/', '$1·', $user['Username']).' on site ('.(int) $Remaining.' remaining).');
+send_irc($Channels, "Report $ReportID resolved by ".preg_replace('/^(.{2})/', '$1·', $app->userNew->core['username']).' on site ('.(int) $Remaining.' remaining).');
 $app->cacheOld->delete_value('num_other_reports');
 Http::redirect("reports.php");

@@ -45,18 +45,18 @@ if ($Deleted === '1') {
 }
 
 // Handle subscriptions
-if (($CollageSubscriptions = $app->cacheOld->get_value('collage_subs_user_'.$user['ID'])) === false) {
+if (($CollageSubscriptions = $app->cacheOld->get_value('collage_subs_user_'.$app->userNew->core['id'])) === false) {
     $app->dbOld->query("
     SELECT
       `CollageID`
     FROM
       `users_collage_subs`
     WHERE
-      `UserID` = '$user[ID]'
+      `UserID` = '$app->userNew->core[id]'
     ");
 
     $CollageSubscriptions = $app->dbOld->collect(0);
-    $app->cacheOld->cache_value('collage_subs_user_'.$user['ID'], $CollageSubscriptions, 0);
+    $app->cacheOld->cache_value('collage_subs_user_'.$app->userNew->core['id'], $CollageSubscriptions, 0);
 }
 
 if (!empty($CollageSubscriptions) && in_array($CollageID, $CollageSubscriptions)) {
@@ -66,10 +66,10 @@ if (!empty($CollageSubscriptions) && in_array($CollageID, $CollageSubscriptions)
     SET
       `LastVisit` = NOW()
     WHERE
-      `UserID` = ".$user['ID']."
+      `UserID` = ".$app->userNew->core['id']."
       AND `CollageID` = $CollageID
     ");
-    $app->cacheOld->delete_value('collage_subs_user_new_'.$user['ID']);
+    $app->cacheOld->delete_value('collage_subs_user_new_'.$app->userNew->core['id']);
 }
 
 if ($CollageCategoryID === array_search(ARTIST_COLLAGE, $CollageCats)) {

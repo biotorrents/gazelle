@@ -6,9 +6,9 @@ $app = App::go();
 
 if (!isset($_REQUEST['authkey']) || !isset($_REQUEST['torrent_pass'])) {
     enforce_login();
-    $TorrentPass = $user['torrent_pass'];
-    $UserID = $user['ID'];
-    $AuthKey = $user['AuthKey'];
+    $TorrentPass = $app->userNew->extra['torrent_pass'];
+    $UserID = $app->userNew->core['id'];
+    $AuthKey = $app->userNew->extra['AuthKey'];
 } else {
     if (strpos($_REQUEST['torrent_pass'], '_') !== false) {
         error(404);
@@ -107,9 +107,9 @@ $Artists = $Info['Artists'];
 // If he's trying use a token on this, we need to make sure he has one,
 // deduct it, add this to the FLs table, and update his cache key.
 if ($_REQUEST['usetoken'] && $FreeTorrent === '0') {
-    if (isset($user)) {
-        $FLTokens = $user['FLTokens'];
-        if ($user['CanLeech'] !== 1) {
+    if (isset($app->userNew)) {
+        $FLTokens = $app->userNew->extra['FLTokens'];
+        if ($app->userNew->extra['CanLeech'] !== 1) {
             error('You cannot use tokens while leech disabled.');
         }
     } else {

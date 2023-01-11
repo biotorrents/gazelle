@@ -18,7 +18,7 @@ View::header('Manage Permissions', 'validate');
 <form class="manage_form" name="permissions" id="permissionsform" method="post" action="" onsubmit="return formVal();">
   <input type="hidden" name="action" value="permissions" />
   <input type="hidden" name="auth"
-    value="<?=$user['AuthKey']?>" />
+    value="<?=$app->userNew->extra['AuthKey']?>" />
   <input type="hidden" name="id"
     value="<?=Text::esc($_REQUEST['id']); ?>" />
   <div class="linkbox">

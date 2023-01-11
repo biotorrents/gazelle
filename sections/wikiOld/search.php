@@ -54,7 +54,7 @@ $SQL = "
     Date,
     Author
   FROM wiki_articles
-  WHERE MinClassRead <= '".$user['EffectiveClass']."'";
+  WHERE MinClassRead <= '".$app->userNew->extra['EffectiveClass']."'";
 
 if ($Search !== '') {
     $SQL .= " AND $Type LIKE '%";

@@ -32,11 +32,11 @@ if (empty($_POST['body']) || !isset($_POST['body'])) {
     error();
 }
 
-if (!empty($user['DisablePosting'])) {
+if (!empty($app->userNew->extra['DisablePosting'])) {
     error('Your posting privileges have been removed.');
 }
 
-$PerPage = $user['PostsPerPage'] ?? POSTS_PER_PAGE;
+$PerPage = $app->userNew->extra['PostsPerPage'] ?? POSTS_PER_PAGE;
 $Body = $_POST['body'];
 $TopicID = $_POST['thread'];
 $ThreadInfo = Forums::get_thread_info($TopicID);
@@ -52,7 +52,7 @@ if (!Forums::check_forumperm($ForumID)) {
     error(403);
 }
 
-if (!Forums::check_forumperm($ForumID, 'Write') || $user['DisablePosting'] || $ThreadInfo['IsLocked'] == '1' && !check_perms('site_moderate_forums')) {
+if (!Forums::check_forumperm($ForumID, 'Write') || $app->userNew->extra['DisablePosting'] || $ThreadInfo['IsLocked'] == '1' && !check_perms('site_moderate_forums')) {
     error(403);
 }
 
@@ -65,7 +65,7 @@ if (isset($_POST['subscribe']) && Subscriptions::has_subscribed($TopicID) === fa
 }
 
 // Now lets handle the special case of merging posts, we can skip bumping the thread and all that fun
-if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forums_double_post') || isset($_POST['merge'])))) {
+if ($ThreadInfo['LastPostAuthorID'] == $app->userNew->core['id'] && ((!check_perms('site_forums_double_post') || isset($_POST['merge'])))) {
     // Get the id for this post in the database to append
     $app->dbOld->query("
     SELECT ID, Body
@@ -73,7 +73,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
     WHERE TopicID = ?
       AND AuthorID = ?
     ORDER BY ID DESC
-    LIMIT 1", $TopicID, $user['ID']);
+    LIMIT 1", $TopicID, $app->userNew->core['id']);
     list($PostID, $OldBody) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
     //Edit the post
@@ -83,14 +83,14 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
       Body = CONCAT(Body, '\n\n', ?),
       EditedUserID = ?,
       EditedTime = ?
-    WHERE ID = ?", $Body, $user['ID'], $SQLTime, $PostID);
+    WHERE ID = ?", $Body, $app->userNew->core['id'], $SQLTime, $PostID);
 
     //Store edit history
     $app->dbOld->query("
     INSERT INTO comments_edits
       (Page, PostID, EditUser, EditTime, Body)
     VALUES
-      ('forums', ?, ?, ?, ?)", $PostID, $user['ID'], $SQLTime, $OldBody);
+      ('forums', ?, ?, ?, ?)", $PostID, $app->userNew->core['id'], $SQLTime, $OldBody);
     $app->cacheOld->delete_value("forums_edits_$PostID");
 
     //Get the catalogue it is in
@@ -104,7 +104,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
     }
     if ($ThreadInfo['StickyPostID'] == $PostID) {
         $ThreadInfo['StickyPost']['Body'] .= "\n\n".$Body;
-        $ThreadInfo['StickyPost']['EditedUserID'] = $user['ID'];
+        $ThreadInfo['StickyPost']['EditedUserID'] = $app->userNew->core['id'];
         $ThreadInfo['StickyPost']['EditedTime'] = $SQLTime;
         $app->cacheOld->cache_value("thread_$TopicID".'_info', $ThreadInfo, 0);
     }
@@ -113,9 +113,9 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
     $app->cacheOld->begin_transaction("thread_$TopicID"."_catalogue_$CatalogueID");
     $app->cacheOld->update_row($Key, [
     'Body' => $app->cacheOld->MemcacheDBArray[$Key]['Body']."\n\n$Body",
-    'EditedUserID' => $user['ID'],
+    'EditedUserID' => $app->userNew->core['id'],
     'EditedTime' => $SQLTime,
-    'Username' => $user['Username']
+    'Username' => $app->userNew->core['username']
   ]);
     $app->cacheOld->commit_transaction(0);
 
@@ -127,7 +127,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
     INSERT INTO forums_posts (TopicID, AuthorID, AddedTime, Body)
     VALUES (?, ?, ?, ?)",
         $TopicID,
-        $user['ID'],
+        $app->userNew->core['id'],
         $SQLTime,
         $Body
     );
@@ -143,7 +143,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
       LastPostAuthorID = ?,
       LastPostTopicID = ?,
       LastPostTime = ?
-    WHERE ID = ?", $PostID, $user['ID'], $TopicID, $SQLTime, $ForumID);
+    WHERE ID = ?", $PostID, $app->userNew->core['id'], $TopicID, $SQLTime, $ForumID);
 
     //Update the topic
     $app->dbOld->query("
@@ -153,7 +153,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
       LastPostID = ?,
       LastPostAuthorID = ?,
       LastPostTime = ?
-    WHERE ID = ?", $PostID, $user['ID'], $SQLTime, $TopicID);
+    WHERE ID = ?", $PostID, $app->userNew->core['id'], $SQLTime, $TopicID);
 
     // if cache exists modify it, if not, then it will be correct when selected next, and we can skip this block
     if ($Forum = $app->cacheOld->get_value("forums_$ForumID")) {
@@ -166,7 +166,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
             $Thread['NumPosts'] = $Thread['NumPosts'] + 1; // Increment post count
       $Thread['LastPostID'] = $PostID; // Set post ID for read/unread
       $Thread['LastPostTime'] = $SQLTime; // Time of last post
-      $Thread['LastPostAuthorID'] = $user['ID']; // Last poster ID
+      $Thread['LastPostAuthorID'] = $app->userNew->core['id']; // Last poster ID
       $Part2 = [$TopicID => $Thread]; // Bumped thread
 
     // if we're bumping from an older page
@@ -199,7 +199,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
             'NumPosts'         => $NumPosts,
             'LastPostID'       => $PostID,
             'LastPostTime'     => $SQLTime,
-            'LastPostAuthorID' => $user['ID'],
+            'LastPostAuthorID' => $app->userNew->core['id'],
             'NoPoll'           => $NoPoll
           ]
         ]; //Bumped
@@ -232,7 +232,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
         $app->cacheOld->update_row($ForumID, [
       'NumPosts'         => '+1',
       'LastPostID'       => $PostID,
-      'LastPostAuthorID' => $user['ID'],
+      'LastPostAuthorID' => $app->userNew->core['id'],
       'LastPostTopicID'  => $TopicID,
       'LastPostTime'     => $SQLTime,
       'Title'            => $ThreadInfo['Title'],
@@ -253,18 +253,18 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
     $app->cacheOld->begin_transaction("thread_$TopicID"."_catalogue_$CatalogueID");
     $app->cacheOld->insert('', [
     'ID'           => $PostID,
-    'AuthorID'     => $user['ID'],
+    'AuthorID'     => $app->userNew->core['id'],
     'AddedTime'    => $SQLTime,
     'Body'         => $Body,
     'EditedUserID' => 0,
     'EditedTime'   => null,
-    'Username'     => $user['Username'] // todo: Remove, it's never used?
+    'Username'     => $app->userNew->core['username'] // todo: Remove, it's never used?
   ]);
     $app->cacheOld->commit_transaction(0);
 
     //Update the thread info
     $app->cacheOld->begin_transaction("thread_$TopicID".'_info');
-    $app->cacheOld->update_row(false, ['Posts' => '+1', 'LastPostAuthorID' => $user['ID']]);
+    $app->cacheOld->update_row(false, ['Posts' => '+1', 'LastPostAuthorID' => $app->userNew->core['id']]);
     $app->cacheOld->commit_transaction(0);
 
     //Increment this now to make sure we redirect to the correct page
@@ -274,13 +274,13 @@ if ($ThreadInfo['LastPostAuthorID'] == $user['ID'] && ((!check_perms('site_forum
     $app->dbOld->query("
     SELECT COUNT(ID)
     FROM forums_posts
-    WHERE AuthorID = '$user[ID]'");
+    WHERE AuthorID = '$app->userNew->core[id]'");
     list($UserPosts) = $app->dbOld->next_record(MYSQLI_NUM, false);
     foreach ($ENV->AUTOMATED_BADGE_IDS->Posts as $Count => $Badge) {
         if ((int) $UserPosts >= $Count) {
-            $Success = Badges::awardBadge($user['ID'], $Badge);
+            $Success = Badges::awardBadge($app->userNew->core['id'], $Badge);
             if ($Success) {
-                Misc::send_pm($user['ID'], 0, 'You have received a badge!', "You have received a badge for making ".$Count." forum posts.\n\nIt can be enabled from your user settings.");
+                Misc::send_pm($app->userNew->core['id'], 0, 'You have received a badge!', "You have received a badge for making ".$Count." forum posts.\n\nIt can be enabled from your user settings.");
             }
         }
     }

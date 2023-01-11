@@ -4,7 +4,7 @@
 
 $app = App::go();
 
-$UserID = $user['ID'];
+$UserID = $app->userNew->core['id'];
 
 
 if (empty($_GET['type'])) {

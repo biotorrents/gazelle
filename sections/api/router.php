@@ -66,7 +66,7 @@ array_push($UserExceptions, 0, 1);
  * e.g., array(5, 10) = 5 requests every 10 seconds.
  */
 $AjaxLimit = array(1, 6);
-$UserID = $user['ID'];
+$UserID = $app->userNew->core['id'];
 
 # Set proper headers for JSON output
 # https://github.com/OPSnet/Gazelle/blob/master/sections/api/index.php

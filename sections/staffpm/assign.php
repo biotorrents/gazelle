@@ -36,7 +36,7 @@ if ($ConvID = (int)$_GET['convid']) {
         SET Status = 'Unanswered',
           Level = $Level
         WHERE ID = $ConvID");
-            $app->cacheOld->delete_value("num_staff_pms_$user[ID]");
+            $app->cacheOld->delete_value("num_staff_pms_$app->userNew->core[id]");
             Http::redirect("staffpm.php");
         } else {
             error(404);
@@ -55,7 +55,7 @@ if ($ConvID = (int)$_GET['convid']) {
 
     $LevelCap = 1000;
 
-    if ($user['EffectiveClass'] >= min($Level, $LevelCap) || $AssignedToUser == $user['ID']) {
+    if ($app->userNew->extra['EffectiveClass'] >= min($Level, $LevelCap) || $AssignedToUser == $app->userNew->core['id']) {
         // Staff member is allowed to assign conversation, assign
         list($LevelType, $NewLevel) = explode('_', db_string($_POST['assign']));
 
@@ -67,7 +67,7 @@ if ($ConvID = (int)$_GET['convid']) {
           Level = $NewLevel,
           AssignedToUser = NULL
         WHERE ID = $ConvID");
-            $app->cacheOld->delete_value("num_staff_pms_$user[ID]");
+            $app->cacheOld->delete_value("num_staff_pms_$app->userNew->core[id]");
         } else {
             $UserInfo = User::user_info($NewLevel);
             $Level = $Classes[$UserInfo['PermissionID']]['Level'];
@@ -82,7 +82,7 @@ if ($ConvID = (int)$_GET['convid']) {
           AssignedToUser = $NewLevel,
           Level = $Level
         WHERE ID = $ConvID");
-            $app->cacheOld->delete_value("num_staff_pms_$user[ID]");
+            $app->cacheOld->delete_value("num_staff_pms_$app->userNew->core[id]");
         }
         echo '1';
     } else {

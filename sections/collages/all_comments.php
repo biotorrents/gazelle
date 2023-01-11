@@ -60,7 +60,7 @@ if ($Pages) {
 //---------- Begin printing
 CommentsView::render_comments($Thread, $LastRead, "collages.php?action=comments&amp;collageid=$CollageID");
 if (!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
-    if ($ThreadInfo['MinClassWrite'] <= $user['Class'] && !$user['DisablePosting']) {
+    if ($ThreadInfo['MinClassWrite'] <= $app->userNew->extra['Class'] && !$app->userNew->extra['DisablePosting']) {
         View::parse('generic/reply/quickreply.php', array(
       'InputName' => 'pageid',
       'InputID' => $CollageID,

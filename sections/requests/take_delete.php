@@ -25,7 +25,7 @@ $app->dbOld->query("
   WHERE ID = $RequestID");
 list($UserID, $Title, $CategoryID, $GroupID) = $app->dbOld->next_record();
 
-if ($user['ID'] != $UserID && !check_perms('site_moderate_requests')) {
+if ($app->userNew->core['id'] != $UserID && !check_perms('site_moderate_requests')) {
     error(403);
 }
 
@@ -67,11 +67,11 @@ $app->dbOld->query("
   VALUES
     ($RequestID)");
 
-if ($UserID != $user['ID']) {
-    Misc::send_pm($UserID, 0, 'A request you created has been deleted', "The request \"$FullName\" was deleted by [url=".site_url().'user.php?id='.$user['ID'].']'.$user['Username'].'[/url] for the reason: [quote]'.$_POST['reason'].'[/quote]');
+if ($UserID != $app->userNew->core['id']) {
+    Misc::send_pm($UserID, 0, 'A request you created has been deleted', "The request \"$FullName\" was deleted by [url=".site_url().'user.php?id='.$app->userNew->core['id'].']'.$app->userNew->core['username'].'[/url] for the reason: [quote]'.$_POST['reason'].'[/quote]');
 }
 
-Misc::write_log("Request $RequestID ($FullName) was deleted by user ".$user['ID'].' ('.$user['Username'].') for the reason: '.$_POST['reason']);
+Misc::write_log("Request $RequestID ($FullName) was deleted by user ".$app->userNew->core['id'].' ('.$app->userNew->core['username'].') for the reason: '.$_POST['reason']);
 
 $app->cacheOld->delete_value("request_$RequestID");
 $app->cacheOld->delete_value("request_votes_$RequestID");

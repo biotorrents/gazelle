@@ -537,7 +537,7 @@ foreach ($Categories as $CatKey => $CatName) {
       $DisplayName .= '<a class="torrentTitle" href="torrents.php?id='.$GroupID.'&amp;torrentid='.$TorrentID.'" ';
 
       # No cover art
-      if (!isset($user['CoverArt']) || $user['CoverArt']) {
+      if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
           $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
       }
 
@@ -595,7 +595,7 @@ foreach ($Categories as $CatKey => $CatName) {
           <div class="group_info clear">
             <span class="torrent_links_block">
               [ <a
-                href="torrents.php?action=download&amp;id=<?= $TorrentID ?>&amp;authkey=<?= $user['AuthKey'] ?>&amp;torrent_pass=<?= $user['torrent_pass'] ?>"
+                href="torrents.php?action=download&amp;id=<?= $TorrentID ?>&amp;authkey=<?= $app->userNew->extra['AuthKey'] ?>&amp;torrent_pass=<?= $app->userNew->extra['torrent_pass'] ?>"
                 class="tooltip" title="Download">DL</a>
               | <a
                 href="reportsv2.php?action=report&amp;id=<?= $TorrentID ?>"

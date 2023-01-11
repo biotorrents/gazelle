@@ -11,7 +11,7 @@ if (isset($_POST['donation'])) {
         error('Invalid donation');
     }
 
-    $UserID = $user['ID'];
+    $UserID = $app->userNew->core['id'];
     $app->dbOld->prepared_query("
       SELECT BonusPoints
       FROM users_main

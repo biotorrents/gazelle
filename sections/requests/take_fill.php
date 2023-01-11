@@ -54,8 +54,8 @@ if (!$app->dbOld->has_results()) {
 }
 list($UploaderID, $UploadTime, $TorrentCategoryID, $TorrentCatalogueNumber) = $app->dbOld->next_record();
 
-$FillerID = $user['ID'];
-$FillerUsername = $user['Username'];
+$FillerID = $app->userNew->core['id'];
+$FillerUsername = $app->userNew->core['username'];
 
 if (!empty($_POST['user']) && check_perms('site_moderate_requests')) {
     $FillerUsername = $_POST['user'];

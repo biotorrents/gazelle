@@ -33,13 +33,13 @@ $app->dbOld->query(
   FROM users_info AS i
     JOIN users_main AS m ON m.ID = i.UserID
     JOIN permissions AS p ON p.ID = m.PermissionID
-  WHERE i.UserID = ".$user['ID']
+  WHERE i.UserID = ".$app->userNew->core['id']
 );
 list($SupportFor, $DisplayStaff) = $app->dbOld->next_record();
 // Logged in user is staff
 $IsStaff = ($DisplayStaff == 1);
 // Logged in user is Staff or FLS
-$IsFLS = ($IsStaff || ($user['ExtraClasses'] && $user['ExtraClasses'][FLS_TEAM]));
+$IsFLS = ($IsStaff || ($app->userNew->extra['ExtraClasses'] && $app->userNew->extra['ExtraClasses'][FLS_TEAM]));
 
 switch ($_REQUEST['action']) {
   case 'viewconv':

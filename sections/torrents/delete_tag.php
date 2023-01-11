@@ -4,7 +4,7 @@
 
 $app = App::go();
 
-if (!empty($user['DisableTagging']) || !check_perms('site_delete_tag')) {
+if (!empty($app->userNew->extra['DisableTagging']) || !check_perms('site_delete_tag')) {
     error(403);
 }
 
@@ -25,7 +25,7 @@ if (list($TagName) = $app->dbOld->next_record()) {
       INSERT INTO group_log
         (GroupID, UserID, Time, Info)
       VALUES
-        ('$GroupID',".$user['ID'].", NOW(),'".db_string('Tag "'.$TagName.'" removed from group')."')");
+        ('$GroupID',".$app->userNew->core['id'].", NOW(),'".db_string('Tag "'.$TagName.'" removed from group')."')");
 }
 
 $app->dbOld->query("
@@ -54,5 +54,5 @@ if ($Count < 1) {
 }
 
 // Cache the deleted tag for 5 minutes
-$app->cacheOld->cache_value('deleted_tags_'.$GroupID.'_'.$user['ID'], $TagName, 300);
+$app->cacheOld->cache_value('deleted_tags_'.$GroupID.'_'.$app->userNew->core['id'], $TagName, 300);
 header('Location: '.$_SERVER['HTTP_REFERER']);

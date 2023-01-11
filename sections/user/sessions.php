@@ -10,7 +10,7 @@ if (isset($_GET['userid']) && check_perms('users_view_ips') && check_perms('user
     }
     $UserID = $_GET['userid'];
 } else {
-    $UserID = $user['ID'];
+    $UserID = $app->userNew->core['id'];
 }
 
 if (isset($_POST['all'])) {
@@ -58,7 +58,7 @@ View::header($Username.' &gt; Sessions');
         <td>
           <form class="manage_form" name="sessions" action="" method="post">
             <input type="hidden" name="action" value="sessions" />
-            <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
+            <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
             <input type="hidden" name="all" value="1" />
             <input type="submit" value="Log out all" />
           </form>
@@ -76,7 +76,7 @@ View::header($Username.' &gt; Sessions');
         <td>
           <form class="delete_form" name="session" action="" method="post">
             <input type="hidden" name="action" value="sessions" />
-            <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
+            <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
             <input type="hidden" name="session" value="<?=$ThisSessionID?>" />
             <input type="submit" value="<?=(($ThisSessionID == $SessionID) ? 'Current" disabled="disabled' : 'Log out') ?>" />
           </form>

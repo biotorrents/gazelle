@@ -3,11 +3,11 @@
 $app = App::go();
 
 authorize();
-if (!empty($user['DisableTagging'])) {
+if (!empty($app->userNew->extra['DisableTagging'])) {
     error(403);
 }
 
-$UserID = $user['ID'];
+$UserID = $app->userNew->core['id'];
 $GroupID = $_POST['groupid'];
 
 if (!is_number($GroupID) || !$GroupID) {
@@ -16,7 +16,7 @@ if (!is_number($GroupID) || !$GroupID) {
 
 //Delete cached tag used for undos
 if (isset($_POST['undo'])) {
-    $app->cacheOld->delete_value("deleted_tags_$GroupID".'_'.$user['ID']);
+    $app->cacheOld->delete_value("deleted_tags_$GroupID".'_'.$app->userNew->core['id']);
 }
 
 $Tags = explode(',', $_POST['tagname']);
@@ -50,7 +50,7 @@ foreach ($Tags as $TagName) {
       INSERT INTO group_log
         (GroupID, UserID, Time, Info)
       VALUES
-        ('$GroupID', ".$user['ID'].", NOW(), '".db_string("Tag \"$TagName\" added to group")."')");
+        ('$GroupID', ".$app->userNew->core['id'].", NOW(), '".db_string("Tag \"$TagName\" added to group")."')");
     }
 }
 

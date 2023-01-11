@@ -18,7 +18,7 @@ $app->dbOld->query("
 list($UserID, $CategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser) = $app->dbOld->next_record();
 
 if ($CategoryID === 0
-&& $UserID !== $user['ID']
+&& $UserID !== $app->userNew->core['id']
 && !check_perms('site_collages_delete')) {
     error(403);
 }
@@ -55,16 +55,16 @@ $Updates = array("Description='".db_string($_POST['description'])."', TagList='"
 
 if (!check_perms('site_collages_delete')
 && ($CategoryID === 0
-&& $UserID === $user['ID']
+&& $UserID === $app->userNew->core['id']
 && check_perms('site_collages_renamepersonal'))) {
-    if (!stristr($_POST['name'], $user['Username'])) {
+    if (!stristr($_POST['name'], $app->userNew->core['username'])) {
         error("Your personal collage's title must include your username.");
     }
 }
 
 if (isset($_POST['featured'])
 && $CategoryID === 0
-&& (($user['ID'] === $UserID
+&& (($app->userNew->core['id'] === $UserID
 && check_perms('site_collages_personal'))
 || check_perms('site_collages_delete'))) {
     $app->dbOld->query("
@@ -77,7 +77,7 @@ if (isset($_POST['featured'])
 
 if (check_perms('site_collages_delete')
 || ($CategoryID === 0
-&& $UserID === $user['ID']
+&& $UserID === $app->userNew->core['id']
 && check_perms('site_collages_renamepersonal'))) {
     $Updates[] = "Name = '".db_string($_POST['name'])."'";
 }

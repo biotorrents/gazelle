@@ -134,7 +134,7 @@ $app->dbOld->set_query_id($RS);
       <form class="delete_form" name="invite" action="" method="post">
         <input type="hidden" name="action" value="invite_pool" />
         <input type="hidden" name="auth"
-          value="<?=$user['AuthKey']?>" />
+          value="<?=$app->userNew->extra['AuthKey']?>" />
         <input type="hidden" name="invitekey"
           value="<?=Text::esc($InviteKey)?>" />
         <input type="submit" value="Delete" />

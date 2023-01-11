@@ -28,13 +28,13 @@ $app->dbOld->prepared_query("
   WHERE ArtistID = '$ArtistID'");
 list($ArtistAliases) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
-$Notify = $app->cacheOld->get_value('notify_artists_'.$user['ID']);
+$Notify = $app->cacheOld->get_value('notify_artists_'.$app->userNew->core['id']);
 if (empty($Notify)) {
     $app->dbOld->prepared_query("
     SELECT ID, Artists
     FROM users_notify_filters
     WHERE Label = 'Artist notifications'
-      AND UserID = '$user[ID]'
+      AND UserID = '$app->userNew->core[id]'
     ORDER BY ID
     LIMIT 1");
 } else {
@@ -49,10 +49,10 @@ if (empty($Notify) && !$app->dbOld->has_results()) {
     INSERT INTO users_notify_filters
       (UserID, Label, Artists)
     VALUES
-      ('$user[ID]', 'Artist notifications', '|".db_string($ArtistAliases)."|')");
+      ('$app->userNew->core[id]', 'Artist notifications', '|".db_string($ArtistAliases)."|')");
     $FilterID = $app->dbOld->inserted_id();
-    $app->cacheOld->delete_value('notify_filters_'.$user['ID']);
-    $app->cacheOld->delete_value('notify_artists_'.$user['ID']);
+    $app->cacheOld->delete_value('notify_filters_'.$app->userNew->core['id']);
+    $app->cacheOld->delete_value('notify_artists_'.$app->userNew->core['id']);
 } else {
     list($ID, $ArtistNames) = $app->dbOld->next_record(MYSQLI_NUM, false);
     if (stripos($ArtistNames, "|$ArtistAliases|") === false) {
@@ -61,8 +61,8 @@ if (empty($Notify) && !$app->dbOld->has_results()) {
       UPDATE users_notify_filters
       SET Artists = '".db_string($ArtistNames)."'
       WHERE ID = '$ID'");
-        $app->cacheOld->delete_value('notify_filters_'.$user['ID']);
-        $app->cacheOld->delete_value('notify_artists_'.$user['ID']);
+        $app->cacheOld->delete_value('notify_filters_'.$app->userNew->core['id']);
+        $app->cacheOld->delete_value('notify_artists_'.$app->userNew->core['id']);
     }
 }
 header('Location: '.$_SERVER['HTTP_REFERER']);

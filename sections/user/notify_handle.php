@@ -88,7 +88,7 @@ if ($_POST['users'.$FormID]) {
     SELECT ID, Paranoia
     FROM users_main
     WHERE Username IN ('" . implode("', '", $EscapedUsernames) . "')
-      AND ID != $user[ID]");
+      AND ID != $app->userNew->core[id]");
     while (list($UserID, $Paranoia) = $app->dbOld->next_record()) {
         $Paranoia = unserialize($Paranoia);
         if (!in_array('notifications', $Paranoia)) {
@@ -127,17 +127,17 @@ if ($_POST['id'.$FormID] && is_number($_POST['id'.$FormID])) {
       Media='$MediaList',
       Users ='$Users'
     WHERE ID='".$_POST['id'.$FormID]."'
-      AND UserID='$user[ID]'");
+      AND UserID='$app->userNew->core[id]'");
 } else {
     $app->dbOld->query("
     INSERT INTO users_notify_filters
       (UserID, Label, Artists, NewGroupsOnly, Tags, NotTags, Categories, Media, Users)
     VALUES
-      ('$user[ID]','".db_string($_POST['label'.$FormID])."','$ArtistList','$NewGroupsOnly','$TagList','$NotTagList','$CategoryList','$MediaList','$Users')");
+      ('$app->userNew->core[id]','".db_string($_POST['label'.$FormID])."','$ArtistList','$NewGroupsOnly','$TagList','$NotTagList','$CategoryList','$MediaList','$Users')");
 }
 
-$app->cacheOld->delete_value('notify_filters_'.$user['ID']);
-if (($Notify = $app->cacheOld->get_value('notify_artists_'.$user['ID'])) !== false && $Notify['ID'] === $_POST['id'.$FormID]) {
-    $app->cacheOld->delete_value('notify_artists_'.$user['ID']);
+$app->cacheOld->delete_value('notify_filters_'.$app->userNew->core['id']);
+if (($Notify = $app->cacheOld->get_value('notify_artists_'.$app->userNew->core['id'])) !== false && $Notify['ID'] === $_POST['id'.$FormID]) {
+    $app->cacheOld->delete_value('notify_artists_'.$app->userNew->core['id']);
 }
 Http::redirect("user.php?action=notify");

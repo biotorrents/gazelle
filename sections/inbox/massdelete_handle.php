@@ -4,7 +4,7 @@ $app = App::go();
 
 authorize();
 
-$UserID = $user['ID'];
+$UserID = $app->userNew->core['id'];
 
 if (!isset($_POST['messages']) || !is_array($_POST['messages'])) {
     error('You forgot to select messages to delete.');

@@ -20,7 +20,7 @@ if (!check_perms('site_edit_wiki')) {
 }
 
 // Variables for database input
-$UserID = $user['ID'];
+$UserID = $app->userNew->core['id'];
 $ArtistID = $_REQUEST['artistid'];
 
 

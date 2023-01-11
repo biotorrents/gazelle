@@ -12,7 +12,7 @@ if (!apcu_exists('DBKEY')) {
 }
 
 $ENV = ENV::go();
-$userId = (int) ($_GET['user_id'] ?? $user['ID']);
+$userId = (int) ($_GET['user_id'] ?? $app->userNew->core['id']);
 
 $tokenId = (int) ($_GET['token_id'] ?? 0);
 $error = null;
@@ -20,7 +20,7 @@ $token = null;
 $tokenName = '';
 
 $_GET['do'] = $_GET['do'] ?? '';
-if (!empty($_GET['do']) && $userId !== $user['ID'] && !check_perms('users_mod')) {
+if (!empty($_GET['do']) && $userId !== $app->userNew->core['id'] && !check_perms('users_mod')) {
     error(403);
 }
 

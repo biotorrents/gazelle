@@ -26,8 +26,8 @@ if (!is_number($ForumID)) {
 
 if (isset($_GET['pp'])) {
     $PerPage = intval($_GET['pp']);
-} elseif (isset($user['PostsPerPage'])) {
-    $PerPage = $user['PostsPerPage'];
+} elseif (isset($app->userNew->extra['PostsPerPage'])) {
+    $PerPage = $app->userNew->extra['PostsPerPage'];
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
@@ -74,11 +74,11 @@ if (!isset($Forums[$ForumID])) {
 }
 // Make sure they're allowed to look at the page
 if (!check_perms('site_moderate_forums')) {
-    if (isset($user['CustomForums'][$ForumID]) && $user['CustomForums'][$ForumID] === 0) {
+    if (isset($app->userNew->extra['CustomForums'][$ForumID]) && $app->userNew->extra['CustomForums'][$ForumID] === 0) {
         json_die("failure", "insufficient permissions to view page");
     }
 }
-if ($user['CustomForums'][$ForumID] != 1 && $Forums[$ForumID]['MinClassRead'] > $user['Class']) {
+if ($app->userNew->extra['CustomForums'][$ForumID] != 1 && $Forums[$ForumID]['MinClassRead'] > $app->userNew->extra['Class']) {
     json_die("failure", "insufficient permissions to view page");
 }
 
@@ -119,7 +119,7 @@ if (count($Forum) === 0) {
       ) AS Page
     FROM forums_last_read_topics AS l
     WHERE l.TopicID IN(".implode(', ', array_keys($Forum)).')
-      AND l.UserID = \''.$user['ID'].'\'');
+      AND l.UserID = \''.$app->userNew->core['id'].'\'');
 
     // Turns the result set into a multi-dimensional array, with
     // forums_last_read_topics.TopicID as the key.
@@ -134,7 +134,7 @@ if (count($Forum) === 0) {
         // Handle read/unread posts - the reason we can't cache the whole page
         if ((!$Locked || $Sticky)
         && ((empty($LastRead[$TopicID]) || $LastRead[$TopicID]['PostID'] < $LastID)
-          && strtotime($LastTime) > $user['CatchupTime'])
+          && strtotime($LastTime) > $app->userNew->extra['CatchupTime'])
     ) {
             $Read = 'unread';
         } else {

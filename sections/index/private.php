@@ -10,14 +10,14 @@ $query = "select * from news order by time desc";
 $news = $app->dbNew->row($query);
 
 /*
-if ($user['LastReadNews'] !== $News[0][0] && count($News) > 0) {
-    $app->cacheOld->begin_transaction("user_info_heavy_{$userId}");
+if ($app->userNew->extra['LastReadNews'] !== $News[0][0] && count($News) > 0) {
+    $app->cacheOld->begin_transaction("user_info_heavy_{$app->userNewId}");
     $app->cacheOld->update_row(false, array('LastReadNews' => $News[0][0]));
     $app->cacheOld->commit_transaction(0);
     $app->dbOld->query("
-        UPDATE users_info SET LastReadNews = '".$News[0][0]."' WHERE UserID = $userId
+        UPDATE users_info SET LastReadNews = '".$News[0][0]."' WHERE UserID = $app->userNewId
     ");
-    $user['LastReadNews'] = $News[0][0];
+    $app->userNew->extra['LastReadNews'] = $News[0][0];
 }
 */
 
@@ -144,7 +144,7 @@ if ($TopicID) {
     $app->dbOld->query("
     SELECT Vote
     FROM forums_polls_votes
-    WHERE UserID = '".$user['ID']."'
+    WHERE UserID = '".$app->userNew->core['id']."'
       AND TopicID = '$TopicID'");
     list($UserResponse) = $app->dbOld->next_record(); ?>
 
@@ -181,7 +181,7 @@ if ($TopicID) {
             <form class="vote_form" name="poll" id="poll" action="">
               <input type="hidden" name="action" value="poll" />
               <input type="hidden" name="auth"
-                value="<?=$user['AuthKey']?>" />
+                value="<?=$app->userNew->extra['AuthKey']?>" />
               <input type="hidden" name="topicid"
                 value="<?=$TopicID?>" />
               <?php foreach ($Answers as $i => $Answer) { ?>
@@ -253,7 +253,7 @@ if (count($Recommend) >= 4) {
     <table class="torrent_table hidden" id="vanityhouse">
       <?php
   foreach ($Recommend as $Recommendations) {
-      list($GroupID, $userId, $Username, $GroupName, $TagList) = $Recommendations;
+      list($GroupID, $app->userNewId, $Username, $GroupName, $TagList) = $Recommendations;
       $TagsStr = '';
       if ($TagList) {
           // No vanity.house tag.
@@ -270,7 +270,7 @@ if (count($Recommend) >= 4) {
       <tr>
         <td>
           <?=Artists::display_artists($Recommend_artists[$GroupID]) ?>
-          <a href="torrents.php?id=<?=$GroupID?>"><?=$GroupName?></a> (by <?=User::format_username($userId, false, false, false)?>)
+          <a href="torrents.php?id=<?=$GroupID?>"><?=$GroupName?></a> (by <?=User::format_username($app->userNewId, false, false, false)?>)
           <?=$TagStr?>
         </td>
       </tr>

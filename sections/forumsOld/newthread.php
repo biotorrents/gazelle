@@ -75,7 +75,7 @@ View::header(
       <tr class="colhead_dark">
         <td colspan="<?=User::hasAvatarsEnabled() ? 2 : 1 ?>">
           <span class="u-pull-left"><a href="#newthreadpreview">#XXXXXX</a>
-            by <strong><?=User::format_username($user['ID'], true, true, true, true, true)?></strong>
+            by <strong><?=User::format_username($app->userNew->core['id'], true, true, true, true, true)?></strong>
             Just now
           </span>
           <span id="barpreview" class="u-pull-right">
@@ -88,7 +88,7 @@ View::header(
       <tr>
         <?php if (User::hasAvatarsEnabled()) { ?>
         <td class="avatar" valign="top">
-          <?=User::displayAvatar($user['Avatar'], $user['Username'])?>
+          <?=User::displayAvatar($app->userNew->extra['Avatar'], $app->userNew->core['username'])?>
         </td>
         <?php } ?>
         <td class="body" valign="top">
@@ -101,7 +101,7 @@ View::header(
     <form name="forum_thread" action="" id="newthreadform" method="post">
       <input type="hidden" name="action" value="new" />
       <input type="hidden" name="auth"
-        value="<?=$user['AuthKey']?>" />
+        value="<?=$app->userNew->extra['AuthKey']?>" />
       <input type="hidden" name="forum" value="<?=$ForumID?>" />
       <table id="newthreadtext" class="new_thread skeletonFix">
         <tr>

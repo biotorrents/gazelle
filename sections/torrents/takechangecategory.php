@@ -48,8 +48,8 @@ if (!$app->dbOld->has_results()) {
 Torrents::update_hash($GroupID);
 $app->cacheOld->delete_value("torrent_download_$TorrentID");
 
-Misc::write_log("Torrent $TorrentID was edited by $user[Username]");
-Torrents::write_group_log($GroupID, 0, $user['ID'], "merged from group $OldGroupID", 0);
+Misc::write_log("Torrent $TorrentID was edited by $app->userNew->core[username]");
+Torrents::write_group_log($GroupID, 0, $app->userNew->core['id'], "merged from group $OldGroupID", 0);
 
 $app->dbOld->query("
   UPDATE group_log

@@ -8,7 +8,7 @@ if (!check_perms('site_edit_wiki')) {
     error(403);
 }
 
-$UserID = $user['ID'];
+$UserID = $app->userNew->core['id'];
 $GroupID = db_string($_POST['groupid']);
 $Summaries = $_POST['summary'];
 $Images = $_POST['image'];

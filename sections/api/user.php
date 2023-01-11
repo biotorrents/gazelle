@@ -9,7 +9,7 @@ if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 
 $UserID = $_GET['id'];
-if ($UserID === $user['ID']) {
+if ($UserID === $app->userNew->core['id']) {
     $OwnProfile = true;
 } else {
     $OwnProfile = false;
@@ -98,7 +98,7 @@ SELECT
 FROM
   `friends`
 WHERE
-  `UserID` = '$user[ID]'
+  `UserID` = '$app->userNew->core[id]'
   AND `FriendID` = '$UserID'
 ");
 

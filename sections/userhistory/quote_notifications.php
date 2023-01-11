@@ -2,7 +2,7 @@
 
 $app = App::go();
 
-if (!empty($user['DisableForums'])) {
+if (!empty($app->userNew->extra['DisableForums'])) {
     error(403);
 }
 
@@ -12,14 +12,14 @@ if ($_GET['showall'] ?? false) {
 }
 
 if ($_GET['catchup'] ?? false) {
-    $app->dbOld->query("UPDATE users_notify_quoted SET UnRead = '0' WHERE UserID = '$user[ID]'");
-    $app->cacheOld->delete_value('notify_quoted_' . $user['ID']);
+    $app->dbOld->query("UPDATE users_notify_quoted SET UnRead = '0' WHERE UserID = '$app->userNew->core[id]'");
+    $app->cacheOld->delete_value('notify_quoted_' . $app->userNew->core['id']);
     Http::redirect("userhistory.php?action=quote_notifications");
     error();
 }
 
-if (isset($user['PostsPerPage'])) {
-    $PerPage = $user['PostsPerPage'];
+if (isset($app->userNew->extra['PostsPerPage'])) {
+    $PerPage = $app->userNew->extra['PostsPerPage'];
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
@@ -46,7 +46,7 @@ $sql = "
     LEFT JOIN forums AS f ON f.ID = t.ForumID
     LEFT JOIN artists_group AS a ON a.ArtistID = q.PageID
     LEFT JOIN collages AS c ON c.ID = q.PageID
-  WHERE q.UserID = $user[ID]
+  WHERE q.UserID = $app->userNew->core[id]
     AND (q.Page != 'forums' OR " . Forums::user_forums_sql() . ")
     AND (q.Page != 'collages' OR c.Deleted = '0')
     $UnreadSQL

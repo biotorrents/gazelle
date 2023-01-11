@@ -7,7 +7,7 @@ declare(strict_types=1);
  * It gets called if $_GET['action'] === 'token_history.'
  *
  * Using $_GET['userid'] allows a mod to see any user's token history.
- * Non-mods and empty userid show $user['ID']'s history.
+ * Non-mods and empty userid show $app->userNew->core['id']'s history.
  */
 
 $app = App::go();
@@ -16,7 +16,7 @@ $app = App::go();
 if (isset($_GET['userid'])) {
     $UserID = (int) $_GET['userid'];
 } else {
-    $UserID = (int) $user['ID'];
+    $UserID = (int) $app->userNew->core['id'];
 }
 
 Security::int($UserID);
@@ -28,7 +28,7 @@ $UserClass = $Perms['Class'];
 
 # Validate mod permissions
 if (!check_perms('users_mod')) {
-    if ($user['ID'] !== $UserID && !check_paranoia(false, $User['Paranoia'], $UserClass, $UserID)) {
+    if ($app->userNew->core['id'] !== $UserID && !check_paranoia(false, $User['Paranoia'], $UserClass, $UserID)) {
         error(403);
     }
 }

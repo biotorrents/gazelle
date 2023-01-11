@@ -54,7 +54,7 @@ View::header('Edit artist');
   <div class="box pad">
     <form class="edit_form" name="artist" action="artist.php" method="post">
       <input type="hidden" name="action" value="edit" />
-      <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
       <input type="hidden" name="artistid" value="<?=$ArtistID?>" />
       <div>
         <h3>Image:</h3>
@@ -74,7 +74,7 @@ View::header('Edit artist');
   <div class="box pad">
     <form class="rename_form" name="artist" action="artist.php" method="post">
       <input type="hidden" name="action" value="rename" />
-      <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
       <input type="hidden" name="artistid" value="<?=$ArtistID?>" />
       <div>
         <input type="text" name="name" size="92" value="<?=$Name?>" />
@@ -89,7 +89,7 @@ View::header('Edit artist');
   <div class="box pad">
     <form class="merge_form" name="artist" action="artist.php" method="post">
       <input type="hidden" name="action" value="change_artistid" />
-      <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
       <input type="hidden" name="artistid" value="<?=$ArtistID?>" />
       <div>
         <p>Merges this artist ("<?=$Name?>") into the artist specified below (without redirection), so that ("<?=$Name?>") and its aliases will appear as a non-redirecting alias of the artist entered in the text box below.</p><br />
@@ -128,7 +128,7 @@ View::header('Edit artist');
     if ($Redirect) { ?>
           (writes redirect to <span class="tooltip" title="Target alias ID"><?=$Redirect?></span>)
 <?php } ?>
-          <a href="artist.php?action=delete_alias&amp;aliasid=<?=$AliasID?>&amp;auth=<?=$user['AuthKey']?>" title="Delete this alias" class="brackets tooltip">X</a>
+          <a href="artist.php?action=delete_alias&amp;aliasid=<?=$AliasID?>&amp;auth=<?=$app->userNew->extra['AuthKey']?>" title="Delete this alias" class="brackets tooltip">X</a>
         </li>
 <?php }
 ?>
@@ -140,7 +140,7 @@ View::header('Edit artist');
       <p>This redirects artist names as they are written (e.g. when new torrents are uploaded or artists added). All uses of this new alias will be redirected to the alias ID you enter here. Use for common misspellings, inclusion of diacritical marks, etc.</p>
       <form class="add_form" name="aliases" action="artist.php" method="post">
         <input type="hidden" name="action" value="add_alias" />
-        <input type="hidden" name="auth" value="<?=$user['AuthKey']?>" />
+        <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
         <input type="hidden" name="artistid" value="<?=$ArtistID?>" />
         <div>
           <span class="label"><strong>Name:</strong></span>

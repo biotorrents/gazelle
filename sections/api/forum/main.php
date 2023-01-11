@@ -5,8 +5,8 @@
 $app = App::go();
 
 # todo: Go through line by line
-if (isset($user['PostsPerPage'])) {
-    $PerPage = $user['PostsPerPage'];
+if (isset($app->userNew->extra['PostsPerPage'])) {
+    $PerPage = $app->userNew->extra['PostsPerPage'];
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
@@ -35,7 +35,7 @@ if (!empty($TopicIDs)) {
       ) AS Page
     FROM forums_last_read_topics AS l
     WHERE l.TopicID IN(".implode(',', $TopicIDs).")
-      AND l.UserID = '$user[ID]'");
+      AND l.UserID = '$app->userNew->core[id]'");
     $LastRead = $app->dbOld->to_array('TopicID', MYSQLI_ASSOC);
 } else {
     $LastRead = [];
@@ -44,18 +44,18 @@ if (!empty($TopicIDs)) {
 $app->dbOld->query("
   SELECT RestrictedForums
   FROM users_info
-  WHERE UserID = ".$user['ID']);
+  WHERE UserID = ".$app->userNew->core['id']);
 list($RestrictedForums) = $app->dbOld->next_record();
 $RestrictedForums = explode(',', $RestrictedForums);
-$PermittedForums = array_keys($user['PermittedForums']);
+$PermittedForums = array_keys($app->userNew->extra['PermittedForums']);
 
 $JsonCategories = [];
 $JsonCategory = [];
 $JsonForums = [];
 foreach ($Forums as $Forum) {
     list($ForumID, $CategoryID, $ForumName, $ForumDescription, $MinRead, $MinWrite, $MinCreate, $NumTopics, $NumPosts, $LastPostID, $LastAuthorID, $LastTopicID, $LastTime, $SpecificRules, $LastTopic, $Locked, $Sticky) = array_values($Forum);
-    if ($user['CustomForums'][$ForumID] != 1
-      && ($MinRead > $user['Class']
+    if ($app->userNew->extra['CustomForums'][$ForumID] != 1
+      && ($MinRead > $app->userNew->extra['Class']
       || array_search($ForumID, $RestrictedForums) !== false)
   ) {
         continue;
@@ -78,7 +78,7 @@ foreach ($Forums as $Forum) {
     if ((!$Locked || $Sticky)
       && $LastPostID != 0
       && ((empty($LastRead[$LastTopicID]) || $LastRead[$LastTopicID]['PostID'] < $LastPostID)
-        && strtotime($LastTime) > $user['CatchupTime'])
+        && strtotime($LastTime) > $app->userNew->extra['CatchupTime'])
   ) {
         $Read = 'unread';
     } else {

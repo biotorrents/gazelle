@@ -22,8 +22,8 @@ if (!is_number($ForumID)) {
 
 $Tooltip = "tooltip";
 
-if (isset($user['PostsPerPage'])) {
-    $PerPage = $user['PostsPerPage'];
+if (isset($app->userNew->extra['PostsPerPage'])) {
+    $PerPage = $app->userNew->extra['PostsPerPage'];
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
@@ -73,7 +73,7 @@ if (!isset($Forums[$ForumID])) {
 
 // Make sure they're allowed to look at the page
 if (!check_perms('site_moderate_forums')) {
-    if (isset($user['CustomForums'][$ForumID]) && $user['CustomForums'][$ForumID] === 0) {
+    if (isset($app->userNew->extra['CustomForums'][$ForumID]) && $app->userNew->extra['CustomForums'][$ForumID] === 0) {
         error(403);
     }
 }
@@ -220,7 +220,7 @@ if (count($Forum) === 0) {
       ) AS Page
     FROM forums_last_read_topics AS l
     WHERE l.TopicID IN (".implode(', ', array_keys($Forum)).')
-      AND l.UserID = \''.$user['ID'].'\'');
+      AND l.UserID = \''.$app->userNew->core['id'].'\'');
 
         // Turns the result set into a multi-dimensional array, with
         // forums_last_read_topics.TopicID as the key.
@@ -256,7 +256,7 @@ if (count($Forum) === 0) {
             }
 
             // handle read/unread posts - the reason we can't cache the whole page
-            if ((!$Locked || $Sticky) && ((empty($LastRead[$TopicID]) || $LastRead[$TopicID]['PostID'] < $LastID) && strtotime($LastTime) > $user['CatchupTime'])) {
+            if ((!$Locked || $Sticky) && ((empty($LastRead[$TopicID]) || $LastRead[$TopicID]['PostID'] < $LastID) && strtotime($LastTime) > $app->userNew->extra['CatchupTime'])) {
                 $Read = 'unread';
             } else {
                 $Read = 'read';
@@ -321,7 +321,7 @@ if (count($Forum) === 0) {
 </div>
 
 <div class="linkbox"><a
-    href="forums.php?action=catchup&amp;forumid=<?=$ForumID?>&amp;auth=<?=$user['AuthKey']?>"
+    href="forums.php?action=catchup&amp;forumid=<?=$ForumID?>&amp;auth=<?=$app->userNew->extra['AuthKey']?>"
     class="brackets">Catch up</a></div>
 </div>
 

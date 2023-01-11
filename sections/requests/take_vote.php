@@ -32,21 +32,21 @@ $app->dbOld->query("
   WHERE ID = $RequestID");
 list($Filled) = $app->dbOld->next_record();
 
-if ($user['BytesUploaded'] >= $Amount && empty($Filled)) {
+if ($app->userNew->extra['BytesUploaded'] >= $Amount && empty($Filled)) {
 
   // Create vote!
     $app->dbOld->query("
     INSERT IGNORE INTO requests_votes
       (RequestID, UserID, Bounty)
     VALUES
-      ($RequestID, ".$user['ID'].", $Bounty)");
+      ($RequestID, ".$app->userNew->core['id'].", $Bounty)");
 
     if ($app->dbOld->affected_rows() < 1) {
         //Insert failed, probably a dupe vote, just increase their bounty.
         $app->dbOld->query("
         UPDATE requests_votes
         SET Bounty = (Bounty + $Bounty)
-        WHERE UserID = ".$user['ID']."
+        WHERE UserID = ".$app->userNew->core['id']."
           AND RequestID = $RequestID");
         echo 'dupe';
     }
@@ -70,8 +70,8 @@ if ($user['BytesUploaded'] >= $Amount && empty($Filled)) {
     $app->dbOld->query("
     UPDATE users_main
     SET Uploaded = (Uploaded - $Amount)
-    WHERE ID = ".$user['ID']);
-    $app->cacheOld->delete_value('user_stats_'.$user['ID']);
+    WHERE ID = ".$app->userNew->core['id']);
+    $app->cacheOld->delete_value('user_stats_'.$app->userNew->core['id']);
 
     Requests::update_sphinx_requests($RequestID);
     echo 'success';
@@ -79,11 +79,11 @@ if ($user['BytesUploaded'] >= $Amount && empty($Filled)) {
     SELECT UserID
     FROM requests_votes
     WHERE RequestID = '$RequestID'
-      AND UserID != '$user[ID]'");
+      AND UserID != '$app->userNew->core[id]'");
     $UserIDs = [];
     while (list($UserID) = $app->dbOld->next_record()) {
         $UserIDs[] = $UserID;
     }
-} elseif ($user['BytesUploaded'] < $Amount) {
+} elseif ($app->userNew->extra['BytesUploaded'] < $Amount) {
     echo 'bankrupt';
 }

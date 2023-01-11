@@ -161,7 +161,7 @@ foreach ($TorrentList as $GroupID => $Group) {
 }
 
 $OpenTable = false;
-$ShowGroups = !isset($user['TorrentGrouping']) || $user['TorrentGrouping'] === 0;
+$ShowGroups = !isset($app->userNew->extra['TorrentGrouping']) || $app->userNew->extra['TorrentGrouping'] === 0;
 $HideTorrents = ($ShowGroups ? '' : ' hidden');
 $OldGroupID = 0;
 ?>
@@ -202,7 +202,7 @@ foreach ($TorrentList as $Group) {
             [
               'g' => $Group,
               'url' => Format::get_url($_GET),
-              'cover_art' => (!isset($user['CoverArt']) || $user['CoverArt']) ?? true,
+              'cover_art' => (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) ?? true,
               'thumb' => ImageTools::process($CoverArt, 'thumb'),
               'artists' => Artists::display_artists($Artists),
               'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
@@ -216,7 +216,7 @@ foreach ($TorrentList as $Group) {
         #$DisplayName = Artists::display_artists(Artists::get_artist($GroupID), true, true);
 
         $DisplayName .= "<a href='torrents.php?id=$GroupID' class='tooltip' title='View torrent group' ";
-        if (!isset($user['CoverArt']) || $user['CoverArt']) {
+        if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
             $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
         }
 
@@ -254,13 +254,13 @@ foreach ($TorrentList as $Group) {
         */
 
         if (check_perms('users_mod') || check_perms('torrents_fix_ghosts')) {
-            $DisplayName .= ' <a href="torrents.php?action=fix_group&amp;groupid='.$GroupID.'&amp;artistid='.$ArtistID.'&amp;auth='.$user['AuthKey'].'" class="brackets tooltip" title="Fix ghost DB entry">Fix</a>';
+            $DisplayName .= ' <a href="torrents.php?action=fix_group&amp;groupid='.$GroupID.'&amp;artistid='.$ArtistID.'&amp;auth='.$app->userNew->extra['AuthKey'].'" class="brackets tooltip" title="Fix ghost DB entry">Fix</a>';
         }
 
         $SnatchedGroupClass = ($GroupFlags['IsSnatched'] ? ' snatched_group' : ''); ?>
     <tr class="group<?=$SnatchedGroupClass?>">
       <?php
-    $ShowGroups = !(!empty($user['TorrentGrouping']) && $user['TorrentGrouping'] === 1); ?>
+    $ShowGroups = !(!empty($app->userNew->extra['TorrentGrouping']) && $app->userNew->extra['TorrentGrouping'] === 1); ?>
       <td class="center">
         <div id="showimg_<?=$GroupID?>"
           class="<?=($ShowGroups ? 'hide' : 'show')?>_torrents">
@@ -354,7 +354,7 @@ foreach ($TorrentList as $Group) {
             [
               'g' => $Group,
               'url' => Format::get_url($_GET),
-              'cover_art' => (!isset($user['CoverArt']) || $user['CoverArt']) ?? true,
+              'cover_art' => (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) ?? true,
               'thumb' => ImageTools::process(($CoverArt ?? ""), 'thumb'),
               'artists' => Artists::display_artists($Artists),
               'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
@@ -377,7 +377,7 @@ foreach ($TorrentList as $Group) {
         # sections/torrents/browse.php
         $DisplayName .= "<a class='torrentTitle' href='torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID' ";
 
-        if (!isset($user['CoverArt']) || $user['CoverArt']) {
+        if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
             $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
         }
 
@@ -609,8 +609,8 @@ if (check_perms('site_torrents_notify')) {
  * https://dev.biotorrents.de/forums.php?action=viewthread&threadid=9
  *
 if (check_perms('zip_downloader')) {
-    if (isset($user['Collector'])) {
-        list($ZIPList, $ZIPPrefs) = $user['Collector'];
+    if (isset($app->userNew->extra['Collector'])) {
+        list($ZIPList, $ZIPPrefs) = $app->userNew->extra['Collector'];
         $ZIPList = explode(':', $ZIPList);
     } else {
         $ZIPList = array('00', '11');

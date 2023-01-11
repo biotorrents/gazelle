@@ -81,9 +81,9 @@ switch ($Short) {
       FROM forums
       WHERE ID = $ForumID");
     list($MinClassRead) = $app->dbOld->next_record();
-    if (!empty($user['DisableForums'])
-        || ($MinClassRead > $user['EffectiveClass'] && (!isset($user['CustomForums'][$ForumID]) || $user['CustomForums'][$ForumID] == 0))
-        || (isset($user['CustomForums'][$ForumID]) && $user['CustomForums'][$ForumID] == 0)) {
+    if (!empty($app->userNew->extra['DisableForums'])
+        || ($MinClassRead > $app->userNew->extra['EffectiveClass'] && (!isset($app->userNew->extra['CustomForums'][$ForumID]) || $app->userNew->extra['CustomForums'][$ForumID] == 0))
+        || (isset($app->userNew->extra['CustomForums'][$ForumID]) && $app->userNew->extra['CustomForums'][$ForumID] == 0)) {
         error(403);
     }
     break;
@@ -108,9 +108,9 @@ switch ($Short) {
       FROM forums
       WHERE ID = $ForumID");
     list($MinClassRead) = $app->dbOld->next_record();
-    if (!empty($user['DisableForums'])
-        || ($MinClassRead > $user['EffectiveClass'] && (!isset($user['CustomForums'][$ForumID]) || $user['CustomForums'][$ForumID] == 0))
-        || (isset($user['CustomForums'][$ForumID]) && $user['CustomForums'][$ForumID] == 0)) {
+    if (!empty($app->userNew->extra['DisableForums'])
+        || ($MinClassRead > $app->userNew->extra['EffectiveClass'] && (!isset($app->userNew->extra['CustomForums'][$ForumID]) || $app->userNew->extra['CustomForums'][$ForumID] == 0))
+        || (isset($app->userNew->extra['CustomForums'][$ForumID]) && $app->userNew->extra['CustomForums'][$ForumID] == 0)) {
         error(403);
     }
     break;
@@ -180,7 +180,7 @@ switch ($Short) {
     <form id="report_form" name="report" action="" method="post">
       <input type="hidden" name="action" value="takereport" />
       <input type="hidden" name="auth"
-        value="<?=$user['AuthKey']?>" />
+        value="<?=$app->userNew->extra['AuthKey']?>" />
       <input type="hidden" name="id" value="<?=$ID?>" />
       <input type="hidden" name="type" value="<?=$Short?>" />
       <table class="layout">
@@ -312,7 +312,7 @@ if (empty($NoReason)) {
     <form name="report" id="report_form" action="" method="post">
       <input type="hidden" name="action" value="takereport" />
       <input type="hidden" name="auth"
-        value="<?=$user['AuthKey']?>" />
+        value="<?=$app->userNew->extra['AuthKey']?>" />
       <input type="hidden" name="id" value="<?=$ID?>" />
       <input type="hidden" name="type" value="<?=$Short?>" />
       <textarea class="required" rows="10" cols="95" name="reason"></textarea><br /><br />

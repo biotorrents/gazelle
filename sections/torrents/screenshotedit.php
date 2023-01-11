@@ -22,7 +22,7 @@ if (!check_perms('torrents_edit') && !check_perms('screenshots_add') && !check_p
       `GroupID` = '$GroupID'
     ")
     ;
-    if (!in_array($user['ID'], $app->dbOld->collect('UserID'))) {
+    if (!in_array($app->userNew->core['id'], $app->dbOld->collect('UserID'))) {
         error(403);
     }
 }
@@ -72,7 +72,7 @@ if (!empty($Deleted)) {
         foreach ($Deleted as $S) {
 
             // If the user who submitted this request uploaded the image, add the image to the list.
-            if ($Old[$S] === $user['ID']) {
+            if ($Old[$S] === $app->userNew->core['id']) {
                 $DeleteList[] = $S;
             } else {
                 error(403);
@@ -93,8 +93,8 @@ if (!empty($Deleted)) {
         foreach ($DeleteList as $ScreenDel) {
         }
 
-        Torrents::write_group_log($GroupID, 0, $user['ID'], "Deleted screenshot(s) ".implode(' , ', $DeleteList), 0);
-        Misc::write_log("Screenshots ( ".implode(' , ', $DeleteList)." ) deleted from Torrent Group ".$GroupID." by ".$user['Username']);
+        Torrents::write_group_log($GroupID, 0, $app->userNew->core['id'], "Deleted screenshot(s) ".implode(' , ', $DeleteList), 0);
+        Misc::write_log("Screenshots ( ".implode(' , ', $DeleteList)." ) deleted from Torrent Group ".$GroupID." by ".$app->userNew->core['username']);
     }
 }
 
@@ -108,15 +108,15 @@ if (!empty($New)) {
     VALUES
       (?, ?, NOW(), ?)",
         $GroupID,
-        $user['ID'],
+        $app->userNew->core['id'],
         $Screenshot
     );
 
     foreach ($New as $Screenshot) {
     }
 
-    Torrents::write_group_log($GroupID, 0, $user['ID'], "Added screenshot(s) ".implode(' , ', $New), 0);
-    Misc::write_log("Screenshots ( ".implode(' , ', $New)." ) added to Torrent Group ".$GroupID." by ".$user['Username']);
+    Torrents::write_group_log($GroupID, 0, $app->userNew->core['id'], "Added screenshot(s) ".implode(' , ', $New), 0);
+    Misc::write_log("Screenshots ( ".implode(' , ', $New)." ) added to Torrent Group ".$GroupID." by ".$app->userNew->core['username']);
 }
 
 $app->cacheOld->delete_value("torrents_details_".$GroupID);
