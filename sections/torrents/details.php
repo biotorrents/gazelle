@@ -65,35 +65,32 @@ foreach ($tagNames as $key => $value) {
 
 /** twig template */
 
-if ($get["new"]) {
-    $app->twig->display("torrents/details.twig", [
-        "title" => $groupDetails["title"],
-        "sidebar" => true,
+$app->twig->display("torrents/details.twig", [
+    "title" => $groupDetails["title"],
+    "sidebar" => true,
 
-        "js" => ["vendor/easymde.min", "vendor/tom-select.complete.min", "browse", "comments", "torrent", "recommend", "cover_art", "subscriptions"],
-        "css" => ["vendor/easymde.min", "vendor/tom-select.bootstrap5.min"],
+    "js" => ["vendor/easymde.min", "vendor/tom-select.complete.min", "browse", "comments", "torrent", "recommend", "cover_art", "subscriptions"],
+    "css" => ["vendor/easymde.min", "vendor/tom-select.bootstrap5.min"],
 
-        "groupId" => $groupId,
-        "revisionId" => $revisionId,
+    "groupId" => $groupId,
+    "revisionId" => $revisionId,
 
-        "groupDetails" => $groupDetails,
-        "torrentDetails" => $torrentDetails,
+    "groupDetails" => $groupDetails,
+    "torrentDetails" => $torrentDetails,
 
-        "description" => $description,
-        "openAiDescription" => $openAiDescription,
-        "creatorList" => $creatorList,
+    "description" => $description,
+    "openAiDescription" => $openAiDescription,
+    "creatorList" => $creatorList,
 
-        "coverArt" => $coverArt,
-        "tagList" => $tagList,
+    "coverArt" => $coverArt,
+    "tagList" => $tagList,
 
-        "isBookmarked" => Bookmarks::has_bookmarked("torrent", $groupId),
-        "isSubscribed" => Subscriptions::has_subscribed_comments("torrents", $groupId),
-    ]);
+    "isBookmarked" => Bookmarks::has_bookmarked("torrent", $groupId),
+    "isSubscribed" => Subscriptions::has_subscribed_comments("torrents", $groupId),
+]);
 
 
-    exit;
-}
-
+exit;
 
 
 

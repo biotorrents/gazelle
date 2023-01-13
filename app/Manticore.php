@@ -180,7 +180,7 @@ class Manticore
         $this->rawSearchTerms = $data;
 
         # disable openai
-        $data["openaiContent"] ?? null;
+        $data["openaiContent"] ??= null;
         if (!$data["openaiContent"]) {
             $this->searchFields["description"] = ["torrentDescription", "groupDescription"];
         }

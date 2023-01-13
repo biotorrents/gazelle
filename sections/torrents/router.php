@@ -6,7 +6,7 @@ $app = App::go();
 
 
 /**
- * torents
+ * torrents
  */
 
  /*
@@ -79,144 +79,172 @@ if (!empty($_REQUEST['action'])) {
         case 'edit':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/edit.php";
+            exit;
             break;
 
         case 'editgroup':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/editgroup.php";
+            exit;
             break;
 
         case 'editgroupid':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/editgroupid.php";
+            exit;
             break;
 
         case 'changecategory':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/takechangecategory.php";
+            exit;
             break;
 
         case 'grouplog':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/grouplog.php";
+            exit;
             break;
 
         case 'takeedit':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/takeedit.php";
+            exit;
             break;
 
         case 'newgroup':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/takenewgroup.php";
+            exit;
             break;
 
         case 'peerlist':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/peerlist.php";
+            exit;
             break;
 
         case 'snatchlist':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/snatchlist.php";
+            exit;
             break;
 
         case 'downloadlist':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/downloadlist.php";
+            exit;
             break;
 
         case 'redownload':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/redownload.php";
+            exit;
             break;
 
         case 'revert':
         case 'takegroupedit':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/takegroupedit.php";
+            exit;
             break;
 
         case 'screenshotedit':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/screenshotedit.php";
+            exit;
             break;
 
         case 'nonwikiedit':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/nonwikiedit.php";
+            exit;
             break;
 
         case 'rename':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/rename.php";
+            exit;
             break;
 
         case 'merge':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/merge.php";
+            exit;
             break;
 
         case 'add_alias':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/add_alias.php";
+            exit;
             break;
 
         case 'delete_alias':
             enforce_login();
             authorize();
             require_once "$ENV->serverRoot/sections/torrents/delete_alias.php";
+            exit;
             break;
 
         case 'history':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/history.php";
+            exit;
             break;
 
         case 'delete':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/delete.php";
+            exit;
             break;
 
         case 'takedelete':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/takedelete.php";
+            exit;
             break;
 
         case 'masspm':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/masspm.php";
+            exit;
             break;
 
         case 'reseed':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/reseed.php";
+            exit;
             break;
 
         case 'takemasspm':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/takemasspm.php";
+            exit;
             break;
 
         case 'add_tag':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/add_tag.php";
+            exit;
             break;
 
         case 'delete_tag':
             enforce_login();
             authorize();
             require_once "$ENV->serverRoot/sections/torrents/delete_tag.php";
+            exit;
             break;
 
         case 'notify':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/notify.php";
+            exit;
             break;
 
         case 'manage_artists':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/manage_artists.php";
+            exit;
             break;
 
         case 'notify_clear':
@@ -230,10 +258,12 @@ if (!empty($_REQUEST['action'])) {
             enforce_login();
             authorize();
             require_once "$ENV->serverRoot/sections/torrents/notify_actions.php";
+            exit;
             break;
 
         case 'download':
             require_once "$ENV->serverRoot/sections/torrents/download.php";
+            exit;
             break;
 
         case 'regen_filelist':
@@ -244,6 +274,7 @@ if (!empty($_REQUEST['action'])) {
             } else {
                 error(403);
             }
+            exit;
             break;
 
         case 'fix_group':
@@ -275,18 +306,22 @@ if (!empty($_REQUEST['action'])) {
             } else {
                 error(403);
             }
+            exit;
             break;
 
         case 'add_cover_art':
             require_once "$ENV->serverRoot/sections/torrents/add_cover_art.php";
+            exit;
             break;
 
         case 'remove_cover_art':
             require_once "$ENV->serverRoot/sections/torrents/remove_cover_art.php";
+            exit;
             break;
 
         case 'autocomplete_tags':
             require_once "$ENV->serverRoot/sections/torrents/autocomplete_tags.php";
+            exit;
             break;
 
         default:
@@ -311,6 +346,7 @@ if (!empty($_REQUEST['action'])) {
             } else {
                 require_once "$ENV->serverRoot/sections/torrents/browse.php";
             }
+            exit;
             break;
     } # switch
 }

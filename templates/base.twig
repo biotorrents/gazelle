@@ -56,7 +56,7 @@
 		{% endif %}
 
 
-				{# start javascript block #}
+		{# start javascript block #}
 		{% block javascript %}
 
 			{# global inline javascript #}
@@ -71,6 +71,8 @@
 			{# todo: app.js with vite #}
 			{# <script src="/js/app.min.js"></script> #}
 
+			{# start libraries #}
+
 			{# jquery #}
 			<script src="/js/vendor/jquery.min.js"> </script>
 			<script src="/js/vendor/jquery-ui.min.js"></script>
@@ -81,14 +83,20 @@
 			{# smart quotes #}
 			<script src="/js/vendor/smartquotes.min.js"></script>
 
-					{# plausible analytics #}
-		{% if env.enablePlausible %}
-		<script defer data-domain="{{ env.siteDomain }}" src="https://stats.torrents.bio/js/script.js"></script>
-		{% endif %}
+			{# plausible analytics #}
+			{% if env.enablePlausible %}
+				<script defer data-domain="{{ env.siteDomain }}" src="https://stats.torrents.bio/js/script.js"></script>
+			{% endif %}
 
 			{# easymde #}
 			<script src="/js/vendor/easymde.min.js"></script>
 			<script src="/js/vendor/highlight.min.js"></script>
+
+			{# tom select #}
+			<script src="/js/vendor/tom-select.complete.min.js"></script>
+
+			{# end libraries #}
+
 
 			{# gazelle global #}
 			<script src="/js/global.js"></script>
@@ -114,16 +122,24 @@
 			{# todo: app.css with vite #}
 			{# <link rel="stylesheet" type="text/css" href="/css/app.min.css"> #}
 
+			{# start libraries #}
+
 			{# skeleton, normalize, and jquery #}
 			<link rel="stylesheet" type="text/css" href="/css/vendor/skeleton.min.css"> <link rel="stylesheet" type="text/css" href="/css/vendor/normalize.min.css">
 			<link rel="stylesheet" type="text/css" href="/css/vendor/jquery-ui.min.css">
 
-			{# gazelle global #}
-			<link rel="stylesheet" type="text/css" href="/css/global.css"/>
-
 			{# easymde #}
 			<link rel="stylesheet" type="text/css" href="/css/vendor/easymde.min.css"/>
 			<link rel="stylesheet" type="text/css" href="/css/vendor/highlight.min.css"/>
+
+			{# tom select #}
+			<link rel="stylesheet" type="text/css" href="/css/vendor/tom-select.bootstrap5.min.css"/>
+
+			{# end libraries #}
+
+			{# gazelle global #}
+			<link rel="stylesheet" type="text/css" href="/css/global.css"/>
+
 
 			{% if authenticated %}
 				{# private #}

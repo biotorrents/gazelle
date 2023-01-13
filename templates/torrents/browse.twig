@@ -95,14 +95,20 @@
 {# end results table headings #}
 
 {# start the results themselves #}
-{% for item in torrentGroups %}
+{% for group in torrentGroups %}
 
-{% include "torrents/tableEntry.twig" with item %}
+{% include "torrents/tableEntry.twig" with group %}
 
 {% endfor %}
 
 {# end the results table #}
 </table>
+
+{# todo: share search #}
+{# <a id="searchParamsPermalink" class="button">link this search</a> #}
+
+{# todo: download all this page #}
+{# <a id="downloadAllThisPage" class="button">download all this page</a> #}
 
 {# back to top: lazy af #}
 <a href="#searchResultsHeader" class="button">back to top</a>

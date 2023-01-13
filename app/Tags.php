@@ -1,30 +1,23 @@
 <?php
-#declare(strict_types=1);
+
+declare(strict_types=1);
 
 
 /**
- * Tags Class
+ * Tags
  *
- * Formatting and sorting methods for tags and tag lists
+ * Formatting and sorting methods for tags and tag accessories.
  *
- * Example:
- * <pre>&lt;?php
- * $Tags = new Tags('pop rock hip.hop');
- * $Tags->Format(); // returns a tag link list
+ * e.g., returns a tag link list
+ *   $tags = new Tags("pop rock hip.hop");
+ *   $tags->format();
  *
- * $Tags2 = new Tags('pop rock indie');
+ * e.g., returns a list of tags ordered by use
+ *   Tags::format_top();
  *
- * // returns a tag link list of tags ordered by amount
- * Tags::format_top();
- * ?></pre>
- * e.g.:
- *  pop (2)
- *  rock (2)
- *  hip.hop (1)
- *  indie (1)
- *
- * Each time a new Tags object is instantiated, the tag list is merged with the
- * overall total amount of tags to provide a Top Tags list. Merging is optional.
+ * Each time a new Tags object is instantiated,
+ * the tag list is merged with the complete tag list.
+ * This provides a Top Tags list, and merging is optional.
  */
 
 class Tags
@@ -324,5 +317,24 @@ class Tags
         }
         */
         return array("name" => Text::esc($Name), "class" => Text::esc($Class));
+    }
+
+
+    /** new stuff below */
+
+
+    /**
+     * getOfficialTags
+     *
+     * These are called "genre" tags.
+     */
+    public static function getOfficialTags()
+    {
+        $app = App::go();
+
+        $query = "select * from tags where tagType = ?";
+        $ref = $app->dbNew->multi($query, ["genre"]);
+
+        return $ref;
     }
 }

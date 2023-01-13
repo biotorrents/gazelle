@@ -11,7 +11,7 @@
 
 	{# category icon #}
 	<td class="center">
-		{{item.category_id|categoryIcon }}
+		{{group.category_id|categoryIcon }}
 	</td>
 
 
@@ -20,54 +20,54 @@
 <div class="flexColumn">
 
 		{# title link #}
-		<a class="torrentTitle" href="torrents.php?id={{ item.id }}" {# open tag #}
+		<a class="torrentTitle" href="torrents.php?id={{ group.id }}" {# open tag #}
 
-    {% if item.picture %}
-        data-cover="{{ item.picture }}" {# open tag #}
+    {% if group.picture %}
+        data-cover="{{ group.picture }}" {# open tag #}
     {% endif %}
 
     dir="ltr">
-			{{ item.title|raw }}
+			{{ group.title|raw }}
 		</a>
 
 		<div class="flexRow">
 			{# subject #}
-			{% if item.subject %}
-				<span class="tooltip" title="Organism">🦠 {{ "<em>#{item.subject}</em>"|raw }}
+			{% if group.subject %}
+				<span class="tooltip" title="Organism">🦠 {{ "<em>#{group.subject}</em>"|raw }}
 					{# object #}
-					{{ (item.object) ? item.object : "" }}
+					{{ (group.object) ? group.object : "" }}
 				</span>
 			{% endif %}
 
 			{# year #}
-			{% if item.year %}
-				<span class="tooltip" title="Year">📅 {{ item.year }}</span>
+			{% if group.year %}
+				<span class="tooltip" title="Year">📅 {{ group.year }}</span>
 			{% endif %}
 
 			{# identifier #}
-			{% if item.identifier %}
-				<span class="tooltip" title="Identifier">🔑 {{ item.identifier }}</span>
+			{% if group.identifier %}
+				<span class="tooltip" title="Identifier">🔑 {{ group.identifier }}</span>
 			{% endif %}
 
 			{# workgroup #}
-			{% if item.workgroup %}
-				<span class="tooltip" title="Workgroup">🏫 {{ item.workgroup|raw }}</span>
+			{% if group.workgroup %}
+				<span class="tooltip" title="Workgroup">🏫 {{ group.workgroup|raw }}</span>
 			{% endif %}
 
 			{# location #}
-			{% if item.location %}
-				<span class="tooltip" title="Location">📍 {{ item.location|raw }}</span>
+			{% if group.location %}
+				<span class="tooltip" title="Location">📍 {{ group.location|raw }}</span>
 			{% endif %}
 		</div>
 
 		{# tags #}
-		{% if item.tag_list is not empty %}
-			<div class="tooltip torrentTags" title="Tags">#️ {{ displayTags(item.tag_list)|raw }}</div>
+		{% if group.tag_list is not empty %}
+			<div class="tooltip torrentTags" title="Tags">#️ {{ displayTags(group.tag_list)|raw }}</div>
 		{% endif %}
 
 		{# creators #}
-		{% if item.Artists is not empty %}
-			<div class="tooltip" title="Creators">🧑‍🔬 {{ displayCreators(item.Artists)|raw }}</div>
+		{% if group.Artists is not empty %}
+			<div class="tooltip" title="Creators">🧑‍🔬 {{ displayCreators(group.Artists)|raw }}</div>
 		{% endif %}
 
 		{#
@@ -111,7 +111,7 @@
 
 
 {# individual torrents #}
-{% for item in item.Torrents %}
+{% for torrent in group.Torrents %}
 <tr>
 
 	{# grouped #}
@@ -120,7 +120,7 @@
 
 	{# category icon #}
 <td class="center">
-<a href="#">Go »</a>
+<a href="/torrents.php?id={{ group.id }}#torrentId-{{ torrent.ID }}">Go »</a>
 </td>
 
 
@@ -128,37 +128,37 @@
 	<td class="flexRow">
 
   {# platform #}
-  {% if item.Media %}
-    <span title="Platform">📦 {{ item.Media }}</span>
+  {% if torrent.Media %}
+    <span title="Platform">📦 {{ torrent.Media }}</span>
   {% endif %}
 
   {# format #}
-  {% if item.Container %}
-    <span title="Format">💾 {{ item.Container }}</span>
+  {% if torrent.Container %}
+    <span title="Format">💾 {{ torrent.Container }}</span>
   {% endif %}
 
   {# version #}
-  {% if item.Version %}
-    <span title="Version"><img src="/images/icons/version.png" alt="version" class="icon" /> {{ item.Version }}</span>
+  {% if torrent.Version %}
+    <span title="Version"><img src="/images/icons/version.png" alt="version" class="icon" /> {{ torrent.Version }}</span>
   {% endif %}
 
   {# scope #}
-  {% if item.Resolution %}
-    <span title="Scope">🔎 {{ item.Resolution }}</span>
+  {% if torrent.Resolution %}
+    <span title="Scope">🔎 {{ torrent.Resolution }}</span>
   {% endif %}
 
   {# archive #}
-  {% if item.Archive %}
-    <span title="Archive"><img src="/images/icons/archive.png" alt="archive" class="icon" /> {{ item.Archive }}</span>
+  {% if torrent.Archive %}
+    <span title="Archive"><img src="/images/icons/archive.png" alt="archive" class="icon" /> {{ torrent.Archive }}</span>
   {% endif %}
 
   {# license #}
-  {% if item.Codec %}
-    <span title="License">📜 {{ item.Codec }}</span>
+  {% if torrent.Codec %}
+    <span title="License">📜 {{ torrent.Codec }}</span>
   {% endif %}
 
   {# alignment #}
-  {% if item.Censored %}
+  {% if torrent.Censored %}
     <span title="Alignment" class="good">Aligned</span>
   {% else %}
       <span title="Alignment" class="bad">Not aligned</span>
@@ -168,40 +168,40 @@
 
 
 	{# timeAdded #}
-	<td class="nobr" title="{{ item.Time }}">
-  {{ item.Time|relativeTime }}
+	<td class="nobr" title="{{ torrent.Time }}">
+  {{ torrent.Time|relativeTime }}
   </td>
 
 
 	{# data size #}
 	<td class="nobr">
-  {{ item.Size|get_size }}
+  {{ torrent.Size|get_size }}
   </td>
 
 
 	{# file count #}
   {#
 	<td class="nobr">
-  {{ item.HasFile|number_format }}
+  {{ torrent.HasFile|number_format }}
   </td>
   #}
 
 
 	{# seeders #}
 	<td class="nobr">
-    {{ item.Seeders|number_format }}
+    {{ torrent.Seeders|number_format }}
   </td>
 
 
 	{# leechers #}
 	<td class="nobr">
-    {{ item.Leechers|number_format }}
+    {{ torrent.Leechers|number_format }}
 </td>
 
 
 	{# snatches #}
 	<td class="nobr">
-    {{ item.Snatched|number_format }}
+    {{ torrent.Snatched|number_format }}
 </td>
 </tr>
 {% endfor %}

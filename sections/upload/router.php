@@ -22,9 +22,11 @@ if (!check_perms('site_upload')) {
     error('Please read the site wiki for information on how to become a Member and gain upload privileges.');
 }
 
+/*
 if ($app->userNew->extra['DisableUpload']) {
     error('Your upload privileges have been revoked.');
 }
+*/
 
 // Build the page
 if (!empty($_POST['submit'])) {
