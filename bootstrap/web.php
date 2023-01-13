@@ -27,10 +27,11 @@ $server = Http::query("server");
  * $document is determined by the public index
  */
 
+$document ??= "index";
 
 # redirect unauthenticated to login page
-$authenticated ??= true; # todo
-if (!$authenticated || empty($app->userNew->core)) {
+$allowedPages = ["login", "register", "recover", "about", "privacy", "dmca"];
+if (!$app->userNew->isLoggedIn() && !in_array($document, $allowedPages)) {
     require_once "{$app->env->serverRoot}/sections/user/auth/login.php";
     exit;
 }
@@ -46,7 +47,6 @@ if (isset($app->userNew->extra["LockedAccount"]) && !in_array($document, $allowe
 */
 
 # index page
-$document ??= "index";
 if ($document === "index") {
     require_once "{$app->env->serverRoot}/sections/index/private.php";
     exit;

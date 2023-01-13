@@ -153,6 +153,7 @@
 			{% else %}
 				{# public #}
 				<link rel="stylesheet" type="text/css" href="/css/public.css"/>
+				<link rel="stylesheet" type="text/css" href="/css/bookish.css"/>
 			{% endif %}
 
 			{% if env.dev %}
@@ -244,7 +245,9 @@
 
 				{# splash logo #}
 				{% if not authenticated %}
-					<figure id="logo"></figure>
+					<figure id="publicLogo">
+						<img src="/images/logos/torrents.bio.png" alt="logo" />
+					</figure>
 				{% endif %}
 
 
@@ -282,7 +285,8 @@
 					{{ include("_base/privateFooter.twig") }}
 				{% else %}
 					{# public #}
-					{{ include("_base/publicFooter.twig") }}
+					{{ include("_base/privateFooter.twig") }}
+					{# {{ include("_base/publicFooter.twig") }} #}
 				{% endif %}
 
 				{# DebugBar: footer #}
@@ -294,7 +298,11 @@
 		</footer>
 		{# end footer block #}
 
+			{# gazelle global #}
+			<script src="/js/global.js"></script>
 
+			{# main menu #}
+			<script src="/js/menus.js"></script>
 
 	</body>
 

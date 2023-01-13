@@ -52,7 +52,6 @@ Our Plausible instance is self-hosted on our own infrastructure, and a subset of
 For more information, please visit the
 [Plausible data policy](https://plausible.io/data-policy).
 To opt out, please block `stats.torrents.bio` according to the
-
 [Plausible documentation](https://plausible.io/docs/excluding).
 The uMatrix browser plugin lets you easily opt out of web analytics:
 

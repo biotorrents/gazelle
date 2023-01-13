@@ -114,6 +114,8 @@ class Twig # extends Twig\Environment
                 ($app->userNew->siteOptions["calmMode"]) ? "calmMode" : null,
                 ($app->userNew->siteOptions["darkMode"]) ? "darkMode" : null,
             ];
+        } else {
+            $bodyStyles = ["notoSans"];
         }
 
         $bodyStyles = implode(" ", array_filter($bodyStyles));
