@@ -10,6 +10,10 @@ declare(strict_types=1);
 $app = App::go();
 #!d($app->userNew);exit;
 
+if ($app->userNew->isLoggedIn()) {
+    Http::redirect();
+}
+
 # https://github.com/paragonie/anti-csrf
 Http::csrf();
 
@@ -25,6 +29,11 @@ $post = Http::query("post");
 if (!empty($post)) {
     $response = $auth->login($post);
     #!d($response);exit;
+
+    # silence is golden
+    if (!$response) {
+        Http::redirect();
+    }
 }
 
 
@@ -80,11 +89,6 @@ try {
 
 /** twig template */
 
-
-# try to load the user
-if ($app->userNew->isLoggedIn()) {
-    Http::redirect();
-}
 
 $app->twig->display("user/auth/login.twig", [
   "response" => $response ?? null,

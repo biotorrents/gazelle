@@ -30,7 +30,8 @@ class Auth # extends Delight\Auth\Auth
     private $longRemember = 60 * 60 * 24 * 7;
 
     # hash algo for passwords
-    private static $algorithm = "sha3-512";
+    private static $algorithm = "sha512"; # legacy: remove after 2024-04-01
+    #private static $algorithm = "sha3-512";
 
     # https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#authentication-and-error-messages
     private $message = "Invalid username, passphrase, or 2FA";
@@ -80,7 +81,7 @@ class Auth # extends Delight\Auth\Auth
     {
         $app = App::go();
 
-        $email = Esc::email($email);
+        $email = Crypto::encrypt(Esc::email($email));
         $passphrase = Esc::string($passphrase);
         $confirmPassphrase = Esc::string($confirmPassphrase);
         $username = Esc::username($username);
@@ -89,7 +90,7 @@ class Auth # extends Delight\Auth\Auth
         try {
             # disallow registration if the database is encrypted
             if (!apcu_exists("DBKEY")) {
-                #throw new Exception("Registration temporarily disabled due to degraded database access");
+                throw new Exception("Registration temporarily disabled due to degraded database access");
             }
 
             # disallow registration without invite if site is closed
@@ -160,22 +161,52 @@ class Auth # extends Delight\Auth\Auth
         # https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#login
         $message = $this->message;
 
-        $username = Esc::string($data["username"] ?? null);
+        $username = Esc::username($data["username"] ?? null);
         $passphrase = Esc::string($data["passphrase"] ?? null);
         $rememberMe = Esc::bool($data["rememberMe"] ?? null);
 
-        $twoFactor = Esc::int($data["twoFactor"] ?? null);
+        # 2fa code needs to be a string (RobThree)
+        $twoFactor = Esc::string($data["twoFactor"] ?? null);
         $u2fRequest = $data["u2f-request"] ?? null;
         $u2fResponse = $data["u2f-response"] ?? null;
 
-        $query = "select id from users_main where username = ?";
+        $query = "select id from users where username = ?";
         $userId = $app->dbNew->single($query, [$username]);
 
         # delight-im/auth
         try {
+            # legacy: remove after 2024-04-01
+            # fucking gazelle, hashing hashes with hardcoded algorithms
+            # this idiotic bullshit is actually insane
+
+            $query = "select isPassphraseMigrated from users_info where userId = ?";
+            $isPassphraseMigrated = $app->dbNew->single($query, [$userId]);
+
+            if (boolval($isPassphraseMigrated) === false) {
+                $query = "select password from users where id = ?";
+                $hash = $app->dbNew->single($query, [$userId]);
+
+                $good = self::checkHash($passphrase, $hash);
+                if (!$good) {
+                    throw new Exception("current passphrase doesn't match");
+                }
+
+                # the current passphrase is good, just update it to a real hash
+                # Delight\Auth\UserManager->updatePasswordInternal()
+                $passphraseHash = password_hash($passphrase, PASSWORD_DEFAULT);
+                $query = "update users set password = ? where id = ?";
+                $app->dbNew->do($query, [$passphraseHash, $userId]);
+
+                # update isPassphraseMigrated to not deal with this shit again
+                $query = "update users_info set isPassphraseMigrated = ? where userId = ?";
+                $app->dbNew->do($query, [1, $userId]);
+            }
+
+            # end the dumb legacy upgrade clusterfuck
+            # resume normal, relatively sane code below
+
             # simply call the method loginWithUsername instead of method login
             # make sure to catch both UnknownUsernameException and AmbiguousUsernameException
-            $username = Esc::username($username);
             $this->library->loginWithUsername($username, $passphrase, $this->remember($rememberMe));
 
             /*
@@ -208,7 +239,7 @@ class Auth # extends Delight\Auth\Auth
         # gazelle u2f
         if (!empty($u2fRequest) && !empty($u2fResponse)) {
             try {
-                $this->verify2FA($userId, $twoFactor);
+                $this->verifyU2F($userId, $twoFactor);
             } catch (Exception $e) {
                 #!d($e);exit;
                 return $message;
@@ -228,7 +259,7 @@ class Auth # extends Delight\Auth\Auth
     /**
      * verify2FA
      */
-    public function verify2FA(int $userId, int $twoFactorCode)
+    public function verify2FA(int $userId, string $twoFactorCode)
     {
         $app = App::go();
 

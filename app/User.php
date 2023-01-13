@@ -204,6 +204,9 @@ class User
             $row = $app->dbNew->row($query, [$userId]);
             $this->core = $row ?? [];
 
+            # decrypt email
+            $this->core["email"] = Crypto::decrypt($this->core["email"]);
+
             # extra: gazelle
             $query = "select * from users_main cross join users_info on users_main.id = users_info.userId where id = ?";
             $row = $app->dbNew->row($query, [$userId]);
@@ -1120,10 +1123,12 @@ class User
             if (!$moderatorUpdate) {
                 $currentPassphrase = Esc::string($data["currentPassphrase"]);
 
+                /*
                 $hash = Auth::makeHash($currentPassphrase);
-                $good = Auth::checkhash($currentPassphrase, $hash);
-                #$good = $this->auth->library->reconfirmPassword($currentPassphrase);
+                $good = Auth::checkHash($currentPassphrase, $hash);
+                */
 
+                $good = $this->auth->library->reconfirmPassword($currentPassphrase);
                 if (!$good) {
                     throw new Exception("current passphrase doesn't match");
                 }
