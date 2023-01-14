@@ -98,19 +98,20 @@
 			{# end libraries #}
 
 
-			{# gazelle global #}
+			{# gazelle global # }
 			<script src="/js/global.js"></script>
 
-			{# main menu #}
+			{# main menu # }
 			<script src="/js/menus.js"></script>
 
-			{# extra js #}
-			{# todo: figure out a way to not defer vendor scripts #}
+			{# extra js # }
+			{# todo: figure out a way to not defer vendor scripts # }
 			{% if js is defined %}
 				{% for js in js %}
 					<script src="/js/{{ js }}.js"></script>
 				{% endfor %}
 			{% endif %}
+			#}
 
 		{% endblock %}
 		{# end javascript block #}
@@ -303,6 +304,14 @@
 
 			{# main menu #}
 			<script src="/js/menus.js"></script>
+
+			{# extra js #}
+			{# todo: figure out a way to not defer vendor scripts #}
+			{% if js is defined %}
+				{% for js in js %}
+					<script src="/js/{{ js }}.js"></script>
+				{% endfor %}
+			{% endif %}
 
 	</body>
 

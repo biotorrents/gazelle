@@ -1,256 +1,104 @@
-{#
-How to Build a Responsive Navigation Bar With Flexbox
-https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-bar-with-flexbox--cms-33535
+{##
+ # main menu
+ #}
 
-1. Create the HTML
+<nav id="mainMenu">
 
-<nav>
-  <ul class="menu">
-    <li class="logo"><a href="#">Creative Mind Agency</a></li>
-    <li class="item"><a href="#">Home</a></li>
-    <li class="item"><a href="#">About</a></li>
-    <li class="item has-submenu">
-      <a tabindex="0">Services</a>
-      <ul class="submenu">
-        <li class="subitem"><a href="#">Design</a></li>
-        <li class="subitem"><a href="#">Development</a></li>
-        <li class="subitem"><a href="#">SEO</a></li>
-        <li class="subitem"><a href="#">Copywriting</a></li>
-      </ul>
-    </li>
-    <li class="item has-submenu">
-      <a tabindex="0">Plans</a>
-      <ul class="submenu">
-        <li class="subitem"><a href="#">Freelancer</a></li>
-        <li class="subitem"><a href="#">Startup</a></li>
-        <li class="subitem"><a href="#">Enterprise</a></li>
-      </ul>
-    </li>
-    <li class="item"><a href="#">Blog</a></li>
-    <li class="item"><a href="#">Contact</a></li>
-    <li class="item button"><a href="#">Log In</a></li>
-    <li class="item button secondary"><a href="#">Sign Up</a></li>
-    <li class="toggle"><a href="#"><i class="fas fa-bars"></i></a></li>
-  </ul>
-</nav>
-#}
+	{# logo #}
+	<div id="logo">
+		<a href="/" aria-label="Home"></a>
+	</div>
 
-<nav id="main-menu">
-  <ul class="menu">
+	{# spacer #}
+	{# <div class="spacer" /> #}
 
-    {# logo #}
-    <li id="logo">
-      <a href="/" aria-label="Home"></a>
-    </li>
+	{# search #}
+		<div id="searchForm">
+      <form id="universalSearch" name="universalSearch" method="get">
 
-    {# search # }
-    <li class="item">
-      <form id="select_search" name="select_search" method="get">
+			{# workaround for some endpoints that need &action=search #}
+			<input type="hidden" name="action" value="search"/>
 
-        {#
-        workaround for some endpoints that need &action=search
-        needed for forums, wiki, and users
-        # }
-        <input type="hidden" name="action" value="search" />
+			{# the universal search bar itself #}
+			<input type="text" id="search" name="search" size="50" placeholder="Search the site for anything"/>
 
-        {# advanced vs. basic search from user settings # }
-        {% if app.user.SearchType %}
-        <input type="hidden" name="advanced_search" value="true">
-        {% endif %}
+			{# select which site area to search #}
+			<select id="searchWhat" name="searchWhat" {# class="select" #}>
+				<option value="torrents" selected>Torrents</option>
+				{# <option value="artist">Authors</option> #}
+				<option value="requests">Requests</option>
+				<option value="forums">Forums</option>
+				<option value="wiki">Wiki</option>
+				<option value="log">Log</option>
+				<option value="user">Users</option>
+			</select>
 
-        {# select which site area to search # }
-        <select id="search_what" name="search_what">
-          <option value="torrents">Torrents</option>
-          {# <option value="artist">Authors</option> # }
-          <option value="requests">Requests</option>
-          <option value="forums">Forums</option>
-          <option value="wiki">Wiki</option>
-          <option value="log">Log</option>
-          <option value="user">Users</option>
-        </select>
+			{# submit button, maybe unnecessary #}
+			<input type="submit" class="button-primary" value="go">
+		</form>
+	</div>
 
-        {#
-        the universal search bar itself
-        todo: change "search" to "advgroupname" if app.user.SearchType && search-what = torrents
-        # }
-        <input type="text" id="search" name="search" aria-label="Search the site" placeholder="Search the site"
-          maxlength="10000" size="30" autocomplete="off" spellcheck="false" />
+	{# hamburger icon #}
+	<div id="hamburger">
+		<a id="toggleIcon">
+			<i class="fal fa-bars"></i>
+		</a>
+	</div>
 
-        {# submit button, maybe unnecessary # }
-        {# <input type="submit" value="🔎"> # }
-      </form>
-    </li>
-    #}
-
-    {# spacer #}
-    <li class="spacer"></li>
-
-    {# torrents #}
-    <li class="item">
-      <a href="/torrents">🌊&nbsp;Torrents</a>
-    </li>
-
-    {# collections #}
-    <li class="item">
-      <a href="/collections">🪙&nbsp;Collections</a>
-    </li>
-
-    {# community #}
-    <li class="item ">
-      <a tabindex="0">📣&nbsp;Boards</a>
-      <ul class="submenu">
-
-        {# boards #}
-        <li class="item">
-          <a href="/boards">📣&nbsp;Boards</a>
-        </li>
-
-        {# wiki #}
-        <li class="subitem">
-          <a href="/wiki.php">Wiki</a>
-        </li>
-      </ul>
-    </li>
+</nav> {# mainMenu #}
 
 
+{# submenu #}
+<nav id="subMenu">
 
-    {# torrents # }
-    <li class="item has-submenu">
-      <a tabindex="0">🌊&nbsp;Torrents</a>
-      <ul class="submenu">
+	{# torrents #}
+	<div id="torrents">
+		<h3 id="torrentsHeader">Torrents</h3>
+		<ul>
+			<li><a href="/torrents.php">Browse</a></li>
+			<li><a href="/collages.php">Collections</a></li>
+			<li><a href="/requests.php">Requests</a></li>
+			<li><a href="/top10.php">Top 10</a></li>
+			<li><a href="/better.php">Better</a></li>
+		</ul>
+	</div>
 
-        {# search # }
-        <li class="subitem">
-          <a href="/torrents.php">Search</a>
-        </li>
+	{# more #}
+	<div id="more">
+		<h3 id="moreHeader">More</h3>
+		<ul>
+			<li><a href="/torrents.php?type=uploaded&userid={{ user.core.id }}">Uploads</a></li>
+			<li><a href="/bookmarks.php?type=torrents">Bookmarks</a></li>
+			<li><a href="/user.php?action=notify">Notifications</a></li>
+			<li><a href="/userhistory.php?action=subscriptions">Subscriptions</a></li>
+		</ul>
+	</div>
 
-        {# collages # }
-        <li class="subitem">
-          <a href="/collages.php">Collections</a>
-        </li>
+	{# community #}
+	<div id="community">
+		<h3 id="communityHeader">Community</h3>
+		<ul>
+			<li><a href="/forums.php">Forums</a></li>
+			<li><a href="/rules">Rules</a></li>
+			<li><a href="/wiki.php">Wiki</a></li>
+			<li><a href="/comments.php">Comments</a></li>
+			<li><a href="/friends.php">Friends</a></li>
+			<li><a href="https://slack.{{ env.siteDomain }}" target="_blank">Slack</a></li>
+		</ul>
+	</div>
 
-        {# requests # }
-        <li class="subitem">
-          <a href="/requests.php">Requests</a>
-        </li>
+	{# user #}
+	<div id="user">
+		<h3 id="userHeader">User</h3>
+		<ul>
+			<li><a href="/user.php?id={{ user.core.id }}">Profile</a></li>
+			{# <li><a href="/user.php?id={{ user.core.id }}">{{ user.core.username }}</a></li> #}
+			<li><a href="/user.php?action=edit&amp;userid={{ user.core.id }}">Settings</a></li>
+			<li><a href="/goesNowhere">Inbox</a></li>
+			{# <li><a href="/{{ inbox }}">Inbox</a></li> #}
+			<li><a href="/staffpm.php">Staff&nbsp;Inbox</a></li>
+			<li><a href="/logout">Logout</a></li>
+		</ul>
+	</div>
 
-        {# top 10 # }
-        <li class="subitem">
-          <a href="/top10.php">Top&nbsp;10</a>
-        </li>
-
-        {# better # }
-        <li class="subitem">
-          <a href="/better.php">Better</a>
-        </li>
-      </ul>
-    </li>
-    #}
-
-    {# community #}
-    <li class="item has-submenu">
-      <a tabindex="0">📣&nbsp;Community</a>
-      <ul class="submenu">
-
-        {# forums #}
-        <li class="subitem">
-          <a href="/forums.php">Forums</a>
-        </li>
-
-        {# slack #}
-        {% if env.announceSlack %}
-        <li class="subitem">
-          <a href="https://slack.{{ env.siteDomain }}" target="_blank">Slack</a>
-        </li>
-        {% endif %}
-
-        {# rules #}
-        <li class="subitem">
-          <a href="/rules">Rules</a>
-        </li>
-
-        {# wiki #}
-        <li class="subitem">
-          <a href="/wiki.php">Wiki</a>
-        </li>
-      </ul>
-    </li>
-
-    {# user #}
-    <li class="item has-submenu">
-      <a tabindex="0">👤&nbsp;User</a>
-      <ul class="submenu">
-
-        {# profile #}
-        <li class="subitem">
-          <a href="/user.php?id={{ user.core.id }}">{{ user.core.username }}</a>
-        </li>
-
-        {# settings #}
-        <li class="subitem">
-          <a href="/user.php?action=edit&amp;userid={{ user.core.id }}">Settings</a>
-        </li>
-
-        {# inbox # }
-        <li class="subitem">
-          <a href="/{{ inbox }}">Inbox</a>
-        </li>
-        #}
-
-        {# staff inbox #}
-        <li class="subitem">
-          <a href="/staffpm.php">Staff&nbsp;Inbox</a>
-        </li>
-
-        {# logout #}
-        <li class="subitem">
-          <a href="/logout">Logout</a>
-        </li>
-      </ul>
-    </li>
-
-    {# links #}
-    <li class="item has-submenu">
-      <a tabindex="0">🔔&nbsp;More</a>
-      <ul class="submenu">
-
-        {# uploads #}
-        <li class="subitem">
-          <a href="/torrents.php?type=uploaded&amp;userid={{ user.core.id }}">Uploads</a>
-        </li>
-
-        {# bookmarks #}
-        <li class="subitem">
-          <a href="/bookmarks.php?type=torrents">Bookmarks</a>
-        </li>
-
-        {# notifications #}
-        {% if notify is defined %}
-        <li class="subitem">
-          <a href="/user.php?action=notify">Notifications</a>
-        </li>
-        {% endif %}
-
-        {# subscriptions #}
-        <li class="subitem">
-          <a href="/userhistory.php?action=subscriptions">Subscriptions</a>
-        </li>
-
-        {# comments #}
-        <li class="subitem">
-          <a href="/comments.php">Comments</a>
-        </li>
-
-        {# friends #}
-        <li class="subitem">
-          <a href="/friends.php">Friends</a>
-        </li>
-      </ul>
-    </li>
-
-    {# hamburger menu #}
-    <li class="toggle">
-      <a href="#"><i class="fal fa-bars"></i></a>
-    </li>
-  </ul>
-</nav>
+</nav> {# subMenu #}

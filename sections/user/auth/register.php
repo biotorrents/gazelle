@@ -38,6 +38,8 @@ try {
 
 $app->twig->display("user/auth/register.twig", [
     "title" => "Register",
+    "js" => ["user"],
+
     "response" => $response ?? null,
     "emailSent" => $emailSent ?? null,
 ]);

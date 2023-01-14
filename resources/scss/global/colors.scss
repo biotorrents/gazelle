@@ -102,6 +102,14 @@ body {
   opacity: 0.75;
 }
 
+.infoBorder {
+  border: 1px solid green !important;
+}
+
+.errorBorder {
+  border: 1px solid red !important;
+}
+
 /**
  * ratio redness intensity
  */

@@ -1,97 +1,10 @@
-/**
- * How to Build a Responsive Navigation Bar With Flexbox
- * https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-bar-with-flexbox--cms-33535
- */
-
-/**
- * 2. Add Some Basic Styling
- */
-
-nav {
-  ul {
-    margin: 0 !important;
-
-    li {
-      margin: 1rem;
-    }
-  }
-}
-
-.menu,
-.submenu {
-  list-style-type: none !important;
-}
-
-.menu {
+nav#mainMenu {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  flex-flow: row nowrap;
+  gap: 5rem;
   align-items: center;
-
-  li a {
-    display: block;
-    letter-spacing: 0.1rem;
-    line-height: 50px;
-    text-transform: uppercase;
-    text-decoration: none;
-  }
-}
-
-#select_search {
-  padding: 0.5rem;
-}
-
-.spacer {
-  flex-grow: 999;
-}
-
-.subitem {
-  margin: 0 2rem;
-}
-
-/**
- * 3. Start With the Mobile Navigation
- */
-
-@media (max-aspect-ratio: 4/3) {
-  .item {
-    order: 3;
-    width: 100%;
-    text-align: center;
-    display: none;
-  }
-
-  .active .item {
-    display: block;
-  }
-
-  .toggle {
-    font-size: xx-large;
-  }
-}
-
-/**
- * 4. Style the Submenu
- */
-
-.submenu {
-  display: none;
-}
-
-.submenu-active .submenu {
-  display: block;
-}
-
-/**
- * 8. Create the Desktop Menu
- */
-
-@media (min-aspect-ratio: 4/3) {
-  .menu {
-    align-items: flex-start;
-    flex-wrap: nowrap;
-    background: none;
-  }
+  justify-content: space-between;
+  margin: 2rem;
 
   #logo {
     order: 0;
@@ -110,40 +23,103 @@ nav {
     }
   }
 
-  .item {
-    position: relative;
-    display: block;
-    /* line-height: 50px; */
-    width: auto;
+  .spacer {
+    flex-grow: 666;
+  }
 
-    a:not(.subitem a) {
-      border-radius: 4px;
-      padding: 1rem 2rem;
+  #universalSearch {
+    display: inline-flex;
+    flex-flow: row nowrap;
+    gap: 2rem;
+    margin-bottom: 0;
+  }
 
-      &:hover {
-        background: change-color($color: #1eaedb, $alpha: 0.1);
-        /* background: change-color($color: $skeletonFocus, $alpha: 0.1); */
-        color: #222;
-      }
+  #hamburger {
+    font-size: xx-large;
+  }
+}
+
+nav#subMenu {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 2rem 5rem;
+  justify-content: space-around;
+  max-width: 1280px;
+  margin: 2rem auto;
+
+  #torrentsHeader {
+    &:before {
+      content: "🌊 ";
     }
   }
 
-  .submenu-active .submenu {
-    display: block;
-    position: absolute;
-    right: 0;
-    top: 7rem;
-    background: white;
-    border-radius: 4px;
-    border: 1px solid #bbb;
-    box-shadow: $shadow;
-    text-align: center;
-    z-index: 999;
-    min-width: 100%;
+  #communityHeader {
+    &:before {
+      content: "📣 ";
+    }
   }
 
-  .toggle {
-    display: none;
+  #userHeader {
+    &:before {
+      content: "👤 ";
+    }
+  }
+
+  #moreHeader {
+    &:before {
+      content: "🔔 ";
+    }
+  }
+
+  ul {
+    list-style-type: none !important;
+    margin-left: 1.25rem;
+
+    li {
+      font-size: larger;
+    }
+  }
+
+  a {
+    color: #222;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+/**
+ * main user info bar
+ */
+
+#userInfo {
+  color: #222;
+  text-align: center;
+  margin-bottom: 5rem;
+  width: 100%;
+
+  a {
+    color: #222;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  ul {
+    display: inline;
+    margin: 0 1%;
+
+    li {
+      display: inline;
+      margin: 0 0.1rem;
+      line-height: 2rem;
+      vertical-align: middle;
+      padding: 1rem;
+    }
   }
 }
 

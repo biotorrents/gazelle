@@ -1,0 +1,159 @@
+/**
+ * How to Build a Responsive Navigation Bar With Flexbox
+ * https://webdesign.tutsplus.com/tutorials/how-to-build-a-responsive-navigation-bar-with-flexbox--cms-33535
+ */
+
+/**
+ * 2. Add Some Basic Styling
+ */
+
+nav {
+  ul {
+    margin: 0 !important;
+
+    li {
+      margin: 1rem;
+    }
+  }
+}
+
+.menu,
+.submenu {
+  list-style-type: none !important;
+}
+
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+
+  li a {
+    display: block;
+    letter-spacing: 0.1rem;
+    line-height: 50px;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+}
+
+#select_search {
+  padding: 0.5rem;
+}
+
+.spacer {
+  flex-grow: 999;
+}
+
+.subitem {
+  margin: 0 2rem;
+}
+
+/**
+ * 3. Start With the Mobile Navigation
+ */
+
+@media (max-aspect-ratio: 4/3) {
+  .item {
+    order: 3;
+    width: 100%;
+    text-align: center;
+    display: none;
+  }
+
+  .active .item {
+    display: block;
+  }
+
+  .toggle {
+    font-size: xx-large;
+  }
+}
+
+/**
+ * 4. Style the Submenu
+ */
+
+.submenu {
+  display: none;
+}
+
+.submenu-active .submenu {
+  display: block;
+}
+
+/**
+ * 8. Create the Desktop Menu
+ */
+
+@media (min-aspect-ratio: 4/3) {
+  .menu {
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    background: none;
+  }
+
+  #logo {
+    order: 0;
+
+    background: url("/images/logos/liquidrop-bookish-1k.png");
+    background-size: contain;
+    width: 50px;
+    min-width: 50px;
+    height: 100%;
+    min-height: 100%;
+    margin-left: 1rem;
+
+    a {
+      display: block;
+      height: 50px;
+    }
+  }
+
+  .item {
+    position: relative;
+    display: block;
+    /* line-height: 50px; */
+    width: auto;
+
+    a:not(.subitem a) {
+      border-radius: 4px;
+      padding: 1rem 2rem;
+
+      &:hover {
+        background: change-color($color: #1eaedb, $alpha: 0.1);
+        /* background: change-color($color: $skeletonFocus, $alpha: 0.1); */
+        color: #222;
+      }
+    }
+  }
+
+  .submenu-active .submenu {
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 7rem;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #bbb;
+    box-shadow: $shadow;
+    text-align: center;
+    z-index: 999;
+    min-width: 100%;
+  }
+
+  .toggle {
+    display: none;
+  }
+}
+
+/**
+ * optional sticky header
+ */
+
+header.sticky {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 666;
+}
