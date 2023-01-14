@@ -90,8 +90,7 @@ class User
         $app->debug["time"]->startMeasure("users", "user handling");
 
         # auth class
-        $auth = new Auth();
-        $this->auth = $auth;
+        $this->auth = new Auth();
 
         # untrusted input
         $sessionId = Http::getCookie("sessionId") ?? null;
@@ -156,13 +155,6 @@ class User
         */
 
         /*
-        THIS IS GOING AWAY
-        # permissions
-        $user["Permissions"] = Permissions::get_permissions_for_user($userId, $user["CustomPermissions"]);
-        $user["Permissions"]["MaxCollages"] += Donations::get_personal_collages($userId);
-        */
-
-        /*
         # notifications
         if ($user["Permissions"]["site_torrents_notify"]) {
             $user["Notify"] = $app->cacheOld->get_value("notify_filters_{$userId}");
@@ -186,11 +178,6 @@ class User
             # current and new
             $currentIp = $user["IP"];
             $newIp = $server["REMOTE_ADDR"];
-
-            # cache
-            $app->cacheOld->begin_transaction("user_info_heavy_{$userId}");
-            $app->cacheOld->update_row(false, [ "ip" => Crypto::encrypt($server["REMOTE_ADDR"]) ]);
-            $app->cacheOld->commit_transaction(0);
         }
         */
 

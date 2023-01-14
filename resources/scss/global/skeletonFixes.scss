@@ -151,6 +151,15 @@ ul {
   }
 }
 
+/* bold buttons */
+.button,
+button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  font-weight: normal !important;
+}
+
 /**
  * extra button colors
  */

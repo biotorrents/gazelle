@@ -76,15 +76,16 @@ class Auth # extends Delight\Auth\Auth
      *
      * @see https://github.com/delight-im/PHP-Auth#registration-sign-up
      */
-    public function register(string $email, string $passphrase, string $confirmPassphrase, string $username, string $invite = "", array $post = []): string|int
+    public function register(array $data): string|int
     {
         $app = App::go();
 
-        $email = Esc::email($email);
-        $passphrase = Esc::passphrase($passphrase);
-        $confirmPassphrase = Esc::passphrase($confirmPassphrase);
-        $username = Esc::username($username);
-        $invite = Esc::string($invite);
+        # escape the inputs
+        $email = Esc::email($data["email"] ?? null);
+        $passphrase = Esc::passphrase($data["passphrase"] ?? null);
+        $confirmPassphrase = Esc::passphrase($data["confirmPassphrase"] ?? null);
+        $username = Esc::username($data["username"] ?? null);
+        $invite = Esc::string($data["invite"] ?? null);
 
         try {
             # disallow registration if the database is encrypted
@@ -92,9 +93,19 @@ class Auth # extends Delight\Auth\Auth
                 throw new Exception("Registration temporarily disabled due to degraded database access");
             }
 
-            # disallow registration without invite if site is closed
-            if (!$app->env->openRegistration && empty($invite)) {
-                throw new Exception("Open registration is disabled, no invite code provided");
+            # make sure the essential info isn't empty
+            if (empty($email) || empty($passphrase) || empty($confirmPassphrase) || empty($username)) {
+                throw new Exception("Please fill out all the fields");
+            }
+
+            # extra form fields (privacy consent, age check, etc.)
+            if (empty($post["isAdult"]) || empty($post["privacyConsent"]) || empty($post["ruleWikiPledge"])) {
+                throw new Exception("You need to check the legal age, privacy consent, and rules/wiki boxes");
+            }
+
+            # passphrase mismatch
+            if ($passphrase !== $confirmPassphrase) {
+                throw new Exception("The entered passphrases don't match");
             }
 
             # you may want to exclude non-printing control characters and certain printable special characters
@@ -107,13 +118,19 @@ class Auth # extends Delight\Auth\Auth
                 throw new Exception("You can't have a username of 0 or 1");
             }
 
-            # extra form fields (privacy consent, age check, etc.)
-            if ($passphrase !== $confirmPassphrase) {
-                throw new Exception("The entered passphrases don't match");
+            # disallow registration without invite if site is closed
+            if (!$app->env->openRegistration && empty($invite)) {
+                throw new Exception("Open registration is disabled, no invite code provided");
             }
 
-            if (!isset($post["isAdult"]) || !isset($post["privacyConsent"]) || !isset($post["ruleWikiPledge"])) {
-                throw new Exception("You need to check the legal age, privacy consent, and rules/wiki boxes");
+            # check the validity of the invite code
+            if (!empty($invite)) {
+                $query = "select 1 from invites where inviteKey = ?";
+                $good = $app->dbNew->single($query, [$invite]);
+
+                if (!$good) {
+                    throw new Exception("Invalid invite code");
+                }
             }
 
             # if you want to enforce unique usernames, simply call registerWithUniqueUsername instead of register, and be prepared to catch the DuplicateUsernameException
@@ -127,8 +144,8 @@ class Auth # extends Delight\Auth\Auth
                 $subject = "Confirm your new {$app->env->siteName} account";
                 $body = $app->twig->render("email/verifyRegistration.twig", ["env" => $app->env, "uri" => $uri]);
 
+                # send the email
                 App::email($email, $subject, $body);
-                $app->cacheOld->increment("stats_user_count");
             });
         } catch (Delight\Auth\InvalidEmailException $e) {
             return "Please use a different email";
@@ -144,6 +161,152 @@ class Auth # extends Delight\Auth\Auth
             return $e->getMessage();
         }
     } # register
+
+
+    /**
+     * hydrateUserInfo
+     *
+     * Populates some defaults in the Gazelle user tables.
+     */
+    public function hydrateUserInfo(int $userId, array $data = [])
+    {
+        $app = App::go();
+
+        # http query vars
+        $server = Http::query("server");
+
+        # escape the inputs
+        $email = Esc::email($data["email"] ?? null);
+        $passphrase = Esc::passphrase($data["passphrase"] ?? null);
+        $confirmPassphrase = Esc::passphrase($data["confirmPassphrase"] ?? null);
+        $username = Esc::username($data["username"] ?? null);
+        $invite = Esc::string($data["invite"] ?? null);
+
+        # generate keys
+        $torrent_pass = Text::random(32);
+        $authKey = Text::random(32);
+        $resetKey = Text::random(32);
+
+        try {
+            # users_main
+            $query = "
+                insert into users_main (
+                    userId, username, email, passHash,
+                    ip, uploaded, enabled, invites, permissionId, torrent_pass, flTokens)
+                values (
+                    :userId, :username, :email, :passHash,
+                    :ip, :uploaded, :enabled, :invites, :permissionId, :torrent_pass, :flTokens)
+            ";
+
+            $app->dbNew->do($query, [
+                # this will become the primary key
+                "userId" => $userId,
+
+                # legacy not null fields
+                "username" => $username,
+                "email" => $email,
+                "passHash" => password_hash($passphrase, PASSWORD_DEFAULT),
+
+                # everything else
+                "ip" => Crypto::encrypt($server["REMOTE_ADDR"]),
+                "uploaded" => $app->env->STARTING_UPLOAD,
+                "enabled" => 0,
+                "invites" => $app->env->STARTING_INVITES,
+                "permissionId" => USER, # todo: constant
+                "torrent_pass" => $torrent_pass,
+                "flTokens" => $app->env->STARTING_TOKENS,
+            ]);
+
+            /** */
+
+            # invite tree stuff
+            if (!empty($invite)) {
+                $query = "select inviterId, email, reason from invites where inviteKey = ?";
+                $row = $app->dbNew->row($query, [$invite]) ?? [];
+
+                # user created, delete invite
+                $query = "delete from invites where inviteKey = ?";
+                $app->dbNew->do($query, [$invite]);
+
+                # manage invite trees
+                $inviterId = $row["inviterId"] ?? null;
+                if ($inviterId) {
+                    $query = "select treePosition, treeId, treeLevel from invite_tree where userId = ?";
+                    $row = $app->dbNew->row($query, [$inviterId]) ?? [];
+
+                    $treePosition = $row["treePosition"] ?? null;
+                    $treeId = $row["treeId"] ?? null;
+                    $treeLevel = $row["treeLevel"] ?? null;
+
+                    # if the inviter doesn't have an invite tree
+                    # note: this should never happen unless you've transferred from another database like what.cd did
+                    if (empty($row)) {
+                        $query = "select max(treeId) + 1 from invite_tree";
+                        $treeId = $app->dbNew->single($query);
+
+                        $query = "
+                            insert into invite_tree (userId, inviterId, treePosition, treeId, treeLevel)
+                            values (?, ?, ?, ?, ?)
+                        ";
+                        $app->dbNew->do($query, [$inviterId, 0, 1, $treeId, 1]);
+
+                        $treePosition = 2;
+                        $treeLevel = 2;
+                    }
+
+                    # normal tree position calculation
+                    $query = "select treePosition from invite_tree where treePosition = ? and treeLevel = ? and treeId = ?";
+                    $treePosition = $app->dbNew->single($query, [$treePosition, $treeLevel, $treeId]) ?? null;
+
+                    if ($treePosition) {
+                        $query = "update invite_tree set treePosition = treePosition + 1 where treeId = ? and treePosition >= ?";
+                        $app->dbNew->do($query, [$treeId, $treePosition]);
+                    } else {
+                        $query = "select treePosition + 1 from invite_tree where treeId = ? order by treePosition desc";
+                        $treePosition = $app->dbNew->single($query, [$treeId]);
+                        $treeLevel++;
+
+                        # create invite tree record
+                        $query = "
+                            insert into invite_tree (userId, inviterId, treePosition, treeId, treeLevel)
+                            values (?, ?, ?, ?, ?)
+                        ";
+                        $app->dbNew->do($query, [$userId, $inviterId, $treePosition, $treeId, $treeLevel]);
+                    }
+                } # if inviterId
+            } # if invite
+
+            /** */
+
+            # default stylesheet
+            $query = "select id from stylesheets where `default` = 1";
+            $styleId = $app->dbNew->single($query, []) ?? 1;
+
+            # users_info
+            $query = "
+                insert into users_info (userId, styleId, siteOptions, authKey, resetKey, inviter)
+                values (:userId, :styleId, :siteOptions, :authKey, :resetKey, :inviter)
+            ";
+
+            $app->dbNew->do($query, [
+                "userId" => $userId,
+                "styleId" => $styleId,
+                "siteOptions" => $app->env->defaultSiteOptions,
+                "authKey" => $authKey,
+                "resetKey" => $resetKey,
+                "inviter" => $inviterId ?? null,
+            ]);
+
+            # users_notifications_settings
+            $query = "insert into users_notifications_settings (userId) values (?)";
+            $app->dbNew->do($query, [$userId]);
+
+            # update ocelot with the new user
+            Tracker::update_tracker("add_user", ["id" => $userId, "passkey" => $torrent_pass]);
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    } # hydrateUserInfo
 
 
     /**

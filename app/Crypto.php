@@ -19,7 +19,7 @@ class Crypto
      * Encrypts input text for use in database.
      *
      * @param string $plaintext
-     * @return Encrypted string or false if DB key not accessible
+     * @return encrypted string or false if DB key not accessible
      */
     public static function encrypt(mixed $plaintext): string|bool
     {
@@ -51,7 +51,7 @@ class Crypto
      * Decrypts input text from database.
      *
      * @param string $ciphertext
-     * @return Decrypted string or false if DB key not accessible
+     * @return decrypted string or false if DB key not accessible
      */
     public static function decrypt(mixed $ciphertext): string|bool
     {
