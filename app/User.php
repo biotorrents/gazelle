@@ -1121,14 +1121,9 @@ class User
             # validate the passphrase
             # only if it's the current user
             if (!$moderatorUpdate) {
-                $currentPassphrase = Esc::string($data["currentPassphrase"]);
-
-                /*
-                $hash = Auth::makeHash($currentPassphrase);
-                $good = Auth::checkHash($currentPassphrase, $hash);
-                */
-
+                $currentPassphrase = Esc::passphrase($data["currentPassphrase"]);
                 $good = $this->auth->library->reconfirmPassword($currentPassphrase);
+
                 if (!$good) {
                     throw new Exception("current passphrase doesn't match");
                 }
@@ -1146,8 +1141,8 @@ class User
 
 
             # update the passphrase
-            $newPassphrase1 = Esc::string($data["newPassphrase1"]);
-            $newPassphrase2 = Esc::string($data["newPassphrase2"]);
+            $newPassphrase1 = Esc::passphrase($data["newPassphrase1"]);
+            $newPassphrase2 = Esc::passphrase($data["newPassphrase2"]);
 
             if (!empty($newPassphrase1) && !empty($newPassphrase2)) {
                 # do they match?
@@ -1217,7 +1212,6 @@ class User
 
             # ircKey
             $ircKey = Esc::string($data["ircKey"]);
-            $hash = Auth::makeHash($ircKey);
 
             if (!empty($ircKey)) {
                 if (strlen($ircKey) < 8 || strlen($ircKey) > 32) {
@@ -1227,7 +1221,8 @@ class User
 
             # theoretically an admin can't set it to the user's passphrase
             # unless they're my brother and use something like "butthole1"
-            if (Auth::checkHash($this->core["password"], $hash)) {
+            $bad = password_verify($ircKey, $this->core["password"]);
+            if ($bad) {
                 throw new Exception("ircKey can't be your passphrase");
             }
 

@@ -12,7 +12,6 @@ declare(strict_types=1);
  * Functions like an oracle service:
  * takes queries and returns messages.
  *
- *
  * @see https://github.com/delight-im/PHP-Auth
  */
 
@@ -30,8 +29,8 @@ class Auth # extends Delight\Auth\Auth
     private $longRemember = 60 * 60 * 24 * 7;
 
     # hash algo for passwords
-    private static $algorithm = "sha512"; # legacy: remove after 2024-04-01
-    #private static $algorithm = "sha3-512";
+    # legacy: remove after 2024-04-01
+    private static $algorithm = "sha512";
 
     # https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#authentication-and-error-messages
     private $message = "Invalid username, passphrase, or 2FA";
@@ -77,13 +76,13 @@ class Auth # extends Delight\Auth\Auth
      *
      * @see https://github.com/delight-im/PHP-Auth#registration-sign-up
      */
-    public function register(string $email, string $passphrase, string $confirmPassphrase, string $username, string $invite = "", array $post = [])
+    public function register(string $email, string $passphrase, string $confirmPassphrase, string $username, string $invite = "", array $post = []): string|int
     {
         $app = App::go();
 
-        $email = Crypto::encrypt(Esc::email($email));
-        $passphrase = Esc::string($passphrase);
-        $confirmPassphrase = Esc::string($confirmPassphrase);
+        $email = Esc::email($email);
+        $passphrase = Esc::passphrase($passphrase);
+        $confirmPassphrase = Esc::passphrase($confirmPassphrase);
         $username = Esc::username($username);
         $invite = Esc::string($invite);
 
@@ -98,12 +97,10 @@ class Auth # extends Delight\Auth\Auth
                 throw new Exception("Open registration is disabled, no invite code provided");
             }
 
-            /*
             # you may want to exclude non-printing control characters and certain printable special characters
-            if (preg_match("/[\x00-\x1f\x7f\/:\\\\]/", $username) === 1) {
+            if (preg_match("/[\x00-\x1f\x7f\/:\\\\]/", $username)) {
                 throw new Exception("Registering usernames with control characters isn't allowed");
             }
-            */
 
             # don't allow a username of "0" or "1" due to PHP's type juggling
             if (trim($username) === "0" || trim($username) === "1") {
@@ -162,7 +159,7 @@ class Auth # extends Delight\Auth\Auth
         $message = $this->message;
 
         $username = Esc::username($data["username"] ?? null);
-        $passphrase = Esc::string($data["passphrase"] ?? null);
+        $passphrase = Esc::passphrase($data["passphrase"] ?? null);
         $rememberMe = Esc::bool($data["rememberMe"] ?? null);
 
         # 2fa code needs to be a string (RobThree)
@@ -192,10 +189,7 @@ class Auth # extends Delight\Auth\Auth
                 }
 
                 # the current passphrase is good, just update it to a real hash
-                # Delight\Auth\UserManager->updatePasswordInternal()
-                $passphraseHash = password_hash($passphrase, PASSWORD_DEFAULT);
-                $query = "update users set password = ? where id = ?";
-                $app->dbNew->do($query, [$passphraseHash, $userId]);
+                $this->library->admin()->changePasswordForUserById($userId, $passphrase);
 
                 # update isPassphraseMigrated to not deal with this shit again
                 $query = "update users_info set isPassphraseMigrated = ? where userId = ?";
@@ -259,7 +253,7 @@ class Auth # extends Delight\Auth\Auth
     /**
      * verify2FA
      */
-    public function verify2FA(int $userId, string $twoFactorCode)
+    public function verify2FA(int $userId, string $twoFactorCode): void
     {
         $app = App::go();
 
@@ -276,16 +270,13 @@ class Auth # extends Delight\Auth\Auth
         if (!$this->twoFactor->verifyCode($twoFactorSecret, $twoFactorCode)) {
             throw new Exception("Unable to verify the 2FA token");
         }
-
-        # okay
-        return true;
     }
 
 
     /**
      * verifyU2F
      */
-    public function verifyU2F(int $userId, $request, $response)
+    public function verifyU2F(int $userId, $request, $response): void
     {
         $app = App::go();
 
@@ -328,9 +319,6 @@ class Auth # extends Delight\Auth\Auth
             # I know it's lazy
             throw new Exception($e->getMessage());
         }
-
-        # okay
-        return true;
     }
 
 
@@ -363,7 +351,7 @@ class Auth # extends Delight\Auth\Auth
      *
      * @see https://github.com/delight-im/PHP-Auth#keeping-the-user-logged-in
      */
-    private function remember(bool $enabled = false)
+    private function remember(bool $enabled = false): int
     {
         $app = App::go();
 
@@ -457,8 +445,8 @@ class Auth # extends Delight\Auth\Auth
 
         $selector = Esc::string($selector);
         $token = Esc::string($token);
-        $passphrase = Esc::string($passphrase);
-        $confirmPassphrase = Esc::string($confirmPassphrase);
+        $passphrase = Esc::passphrase($passphrase);
+        $confirmPassphrase = Esc::passphrase($confirmPassphrase);
 
         try {
             if ($passphrase !== $confirmPassphrase) {
@@ -483,8 +471,8 @@ class Auth # extends Delight\Auth\Auth
 
         $message = "Unable to update passphrase";
 
-        $oldPassphrase = Esc::string($oldPassphrase);
-        $newPassphrase = Esc::string($newPassphrase);
+        $oldPassphrase = Esc::passphrase($oldPassphrase);
+        $newPassphrase = Esc::passphrase($newPassphrase);
 
         try {
             $auth->changePassword($oldPassphrase, $newPassphrase);
@@ -506,17 +494,19 @@ class Auth # extends Delight\Auth\Auth
         $message = "Unable to update email";
 
         $newEmail = Esc::email($newEmail);
-        $passphrase = Esc::string($passphrase);
+        $passphrase = Esc::passphrase($passphrase);
 
         try {
-            if ($auth->reconfirmPassword($passphrase)) {
-                $auth->changeEmail($newEmail, function ($selector, $token) use ($newEmail) {
+            $reconfirmed = $this->library->reconfirmPassword($passphrase);
+
+            if ($reconfirmed) {
+                $this->library->changeEmail($newEmail, function ($selector, $token) use ($newEmail) {
                     echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email to the *new* address)';
                     echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
                     echo '  For SMS, consider using a third-party service and a compatible SDK';
                 });
             } else {
-                die("We can't say if the user is who they claim to be");
+                throw new Exception("We can't say if the user is who they claim to be");
             }
         } catch (Exception $e) {
             return $message;
@@ -538,7 +528,7 @@ class Auth # extends Delight\Auth\Auth
         $email = Esc::email($email);
 
         try {
-            $auth->resendConfirmationForEmail($email, function ($selector, $token) {
+            $this->library->resendConfirmationForEmail($email, function ($selector, $token) {
                 echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email)';
                 echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
                 echo '  For SMS, consider using a third-party service and a compatible SDK';
@@ -562,13 +552,12 @@ class Auth # extends Delight\Auth\Auth
         $message = "Unable to log out: please manually clear cookies";
 
         try {
+            # you can destroy the entire session by calling a second method
             $this->library->logOutEverywhere();
+            $this->library->destroySession();
         } catch (Exception $e) {
             return $message;
         }
-
-        # you can destroy the entire session by calling a second method
-        $this->library->destroySession();
     } # logout
 
 
@@ -601,7 +590,7 @@ If you need the custom user information only rarely, you may just retrieve it as
 
         $message = $this->message;
 
-        $passphrase = Esc::string($passphrase);
+        $passphrase = Esc::passphrase($passphrase);
 
         try {
             $this->library->reconfirmPassword($passphrase);
@@ -623,11 +612,13 @@ If you need the custom user information only rarely, you may just retrieve it as
         $message = "Unable to update reset preference";
 
         $enabled = Esc::bool($enabled);
-        $passphrase = Esc::string($passphrase);
+        $passphrase = Esc::passphrase($passphrase);
 
         try {
-            if ($auth->reconfirmPassword($passphrase)) {
-                $auth->setPasswordResetEnabled(boolval($enabled));
+            $reconfirmed = $this->library->reconfirmPassword($passphrase);
+
+            if ($reconfirmed) {
+                $this->library->setPasswordResetEnabled(boolval($enabled));
             } else {
                 throw new Exception("We can't say if the user is who they claim to be");
             }
@@ -642,8 +633,10 @@ If you need the custom user information only rarely, you may just retrieve it as
      *
      * @see https://github.com/delight-im/PHP-Auth#how-can-i-implement-custom-password-requirements
      */
-    public function isPassphraseAllowed(string $passphrase)
+    public function isPassphraseAllowed(string $passphrase): bool
     {
+        $passphrase = Esc::passphrase($passphrase);
+
         # failure
         if (strlen($passphrase) < 15) {
             return false;
@@ -662,22 +655,13 @@ If you need the custom user information only rarely, you may just retrieve it as
      * makeHash
      *
      * Create a salted hash for a string.
+     * TODO: DELETE THIS AFTER 2024-04-01.
      *
      * @param string $string plaintext
      * @return string salted hash
      */
     public static function makeHash(string $string): string
     {
-        $string = Esc::string($string);
-        $hash = password_hash(
-            hash(self::$algorithm, $string, true),
-            PASSWORD_DEFAULT
-        );
-
-        return $hash;
-
-        /*
-        # old: str_replace
         return password_hash(
             str_replace(
                 "\0",
@@ -686,7 +670,6 @@ If you need the custom user information only rarely, you may just retrieve it as
             ),
             PASSWORD_DEFAULT
         );
-        */
     }
 
 
@@ -694,6 +677,7 @@ If you need the custom user information only rarely, you may just retrieve it as
      * checkHash
      *
      * Verify a passphrase against a passphrase hash.
+     * TODO: DELETE THIS AFTER 2024-04-01.
      *
      * @param string $string plaintext
      * @param string $hash passphrase hash
@@ -701,16 +685,6 @@ If you need the custom user information only rarely, you may just retrieve it as
      */
     public static function checkHash(string $string, string $hash): bool
     {
-        $string = Esc::string($string);
-        $hash = Esc::string($hash);
-
-        return password_verify(
-            hash(self::$algorithm, $string, true),
-            $hash
-        );
-
-        /*
-        # old: str_replace
         return password_verify(
             str_replace(
                 "\0",
@@ -719,7 +693,6 @@ If you need the custom user information only rarely, you may just retrieve it as
             ),
             $hash
         );
-        */
     }
 
 

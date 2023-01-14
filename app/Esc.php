@@ -148,4 +148,18 @@ class Esc
         # failure
         return strval("");
     }
+
+
+    /**
+     * passphrase
+     */
+    public static function passphrase(mixed $unsafe): string
+    {
+        $app = App::go();
+
+        $safe = self::string($unsafe);
+        $safe = str_replace("\0", "", $safe);
+
+        return strval($safe);
+    }
 } # class
