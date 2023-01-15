@@ -132,14 +132,14 @@ function send_irc($Channels = null, $Message = '')
 
 
 /**
- * Error handling
+ * error
  *
  * Displays an HTTP status code with description and triggers an error.
  * If you use your own string for $error, it becomes the error description.
  *
- * @param int|string $error Error type or message
+ * @param int|string $error error type or message
  */
-function error(int|string $error = 400, $NoHTML = false, $Log = false)
+function error(int|string $error = 400, $noHtmlUnused = false, $logUnused = false): void
 {
     $app = App::go();
 
@@ -161,23 +161,23 @@ function error(int|string $error = 400, $NoHTML = false, $Log = false)
         ],
     ];
 
+    # page content
     if (array_key_exists($error, $map)) {
-        $title = $map[$error][0];
+        $subject = $map[$error][0];
         $body = $map[$error][1];
     } else {
-        $title = "Other Error";
+        $subject = "Other error";
         $body = "A function supplied this error message: {$error}";
     }
 
-    # Output HTML error page
-    View::header($title);
+    # twig
+    $app->twig->display("error.twig", [
+        "title" => "Error",
+        "subject" => $subject,
+        "body" => $body
+    ]);
 
-    echo $app->twig->display(
-        "error.twig",
-        ["title" => $title, "body" => $body]
-    );
-
-    View::footer();
+    exit;
 }
 
 
@@ -419,6 +419,8 @@ define("PARANOIA_OVERRIDDEN", 2);
 
 function check_paranoia($Property, $Paranoia = false, $UserClass = false, $UserID = false)
 {
+    $app = App::go();
+
     global $Classes;
     if ($Property == false) {
         return false;
@@ -514,97 +516,9 @@ function time_ago($TimeStamp)
  * Returns a <span> by default but can optionally return the raw time
  * difference in text (e.g., "16 hours and 28 minutes", "1 day, 18 hours").
  */
-function time_diff(int $timestamp, $unusedLevels = 2, $unusedSpan = true, $unusedLowercase = false)
+function time_diff(int|string $timestamp, $unusedLevels = 2, $unusedSpan = true, $unusedLowercase = false)
 {
     return Carbon\Carbon::createFromTimeStamp($timestamp)->diffForHumans();
-
-    /*
-    if (!$TimeStamp) {
-        return 'Never';
-    }
-    if (!is_number($TimeStamp)) { // Assume that $TimeStamp is SQL timestamp
-        $TimeStamp = strtotime($TimeStamp);
-    }
-    $Time = time() - $TimeStamp;
-
-    // If the time is negative, then it expires in the future.
-    if ($Time < 0) {
-        $Time = -$Time;
-        $HideAgo = true;
-    }
-
-    $Years = floor($Time / 31556926); // seconds in one year
-    $Remain = $Time - $Years * 31556926;
-
-    $Months = floor($Remain / 2629744); // seconds in one month
-    $Remain = $Remain - $Months * 2629744;
-
-    $Weeks = floor($Remain / 604800); // seconds in one week
-    $Remain = $Remain - $Weeks * 604800;
-
-    $Days = floor($Remain / 86400); // seconds in one day
-    $Remain = $Remain - $Days * 86400;
-
-    $Hours=floor($Remain / 3600); // seconds in one hour
-    $Remain = $Remain - $Hours * 3600;
-
-    $Minutes = floor($Remain / 60); // seconds in one minute
-    $Remain = $Remain - $Minutes * 60;
-
-    $Seconds = $Remain;
-
-    $Return = '';
-
-    if ($Years > 0 && $Levels > 0) {
-        $Return .= "$Years year".(($Years > 1) ? 's' : '');
-        $Levels--;
-    }
-
-    if ($Months > 0 && $Levels > 0) {
-        $Return .= ($Return != '') ? ', ' : '';
-        $Return .= "$Months month".(($Months > 1) ? 's' : '');
-        $Levels--;
-    }
-
-    if ($Weeks > 0 && $Levels > 0) {
-        $Return .= ($Return != '') ? ', ' : '';
-        $Return .= "$Weeks week".(($Weeks > 1) ? 's' : '');
-        $Levels--;
-    }
-
-    if ($Days > 0 && $Levels > 0) {
-        $Return .= ($Return != '') ? ', ' : '';
-        $Return .= "$Days day".(($Days > 1) ? 's' : '');
-        $Levels--;
-    }
-
-    if ($Hours > 0 && $Levels > 0) {
-        $Return .= ($Return != '') ? ', ' : '';
-        $Return .= "$Hours hour".(($Hours > 1) ? 's' : '');
-        $Levels--;
-    }
-
-    if ($Minutes > 0 && $Levels > 0) {
-        $Return .= ($Return != '') ? ' and ' : '';
-        $Return .= "$Minutes min".(($Minutes > 1) ? 's' : '');
-    }
-
-    if ($Return == '') {
-        $Return = 'Just now';
-    } elseif (!isset($HideAgo)) {
-        $Return .= ' ago';
-    }
-
-    if ($Lowercase) {
-        $Return = strtolower($Return);
-    }
-
-    if ($Span) {
-        return '<span class="time tooltip" title="'.date('M d Y, H:i', $TimeStamp).'">'.$Return.'</span>';
-    } else {
-        return $Return;
-    }
-    */
 }
 
 

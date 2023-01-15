@@ -2,11 +2,16 @@
 
 {% block content %}
 
-<h2>{{ title }}</h2>
+	<section>
+		<h2>{{ subject }}</h2>
 
-<p>{{ content }}</p>
-<p><a href="/search/log/{{ title }}">Search the site log</a></p>
+		<p>{{ body }}</p>
 
-{{ content|raw }}
+        {#
+		<p>
+			<a href="/search/log/{{ subject }}">Search the site log</a>
+		</p>
+        #}
+	</section>
 
 {% endblock %}

@@ -24,8 +24,8 @@ if ($ENV->dev) {
 
 <head>
   <?php if ($ENV->dev) {
-    echo $Render->renderHead();
-} ?>
+      echo $Render->renderHead();
+  } ?>
 
   <title>
     <?= Text::esc($PageTitle) ?>
@@ -34,13 +34,13 @@ if ($ENV->dev) {
     src="https://stats.torrents.bio/js/plausible.js"></script>
 
   <?=
-    $twig->render(
-        '_base/metaTags.twig',
-        [
-        'title' => Text::esc($PageTitle)
+      $twig->render(
+          '_base/metaTags.twig',
+          [
+          'title' => Text::esc($PageTitle)
       ]
-    );
-  ?>
+      );
+?>
 
   <?php
 # Load JS
@@ -260,28 +260,40 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
     <?= $twig->render(
     '_base/mainMenu.twig',
     [
+              'inbox' => Inbox::get_inbox_link(),
+              'notify' => check_perms('site_torrents_notify'),
+            ]
+);
+?>
+
+<?= $twig->render(
+    '_base/userInfo.twig',
+    [
           'inbox' => Inbox::get_inbox_link(),
           'notify' => check_perms('site_torrents_notify'),
         ]
 );
-        ?>
+?>
 
     <?php
 if (isset($app->userNew->extra['SearchType']) && $app->userNew->extra['SearchType']) { // Advanced search
-            $UseAdvancedSearch = true;
-        } else {
-            $UseAdvancedSearch = false;
-        }
+    $UseAdvancedSearch = true;
+} else {
+    $UseAdvancedSearch = false;
+}
 ?>
 
+<!-- OLD USER INFO
     <div id="userinfo">
       <ul id="userinfo_major">
 
         <li id="nav_upload">
           <a href="upload.php">Upload</a>
         </li>
+-->
 
         <?php
+        /* OLD USER INFO
 if (check_perms('site_send_unlimited_invites')) {
     $Invites = ' (∞)';
 } elseif ($app->userNew->extra['Invites'] > 0) {
@@ -289,18 +301,22 @@ if (check_perms('site_send_unlimited_invites')) {
 } else {
     $Invites = '';
 }
+*/
 ?>
-
+<!-- OLD USER INFO
         <li id="nav_invite">
-          <a href="user.php?action=invite">Invite<?=$Invites?></a>
+          <a href="user.php?action=invite">Invite<?=null#$Invites?></a>
         </li>
-
+-->
         <?php if ($ENV->enableDonations) { ?>
+<!-- OLD USER INFO
         <li id="nav_donate">
           <a href="donate.php">Donate</a>
         </li>
+-->
         <?php } ?>
 
+<!-- OLD USER INFO
         <li id="nav_staff">
           <a href="staff.php">Staff</a>
         </li>
@@ -309,31 +325,35 @@ if (check_perms('site_send_unlimited_invites')) {
       <ul id="userinfo_stats">
         <li id="stats_seeding">
           <a
-            href="torrents.php?type=seeding&amp;userid=<?=$app->userNew->core["id"]?>">Up</a>:
+            href="torrents.php?type=seeding&amp;userid=<?=null#$app->userNew->core["id"]?>">Up</a>:
           <span class="stat tooltip"
-            title="<?=Format::get_size($app->userNew->extra['Uploaded'], 5)?>"><?=Format::get_size($app->userNew->extra['Uploaded'])?></span>
+            title="<?=null#Format::get_size($app->userNew->extra['Uploaded'], 5)?>"><?=null#Format::get_size($app->userNew->extra['Uploaded'])?></span>
         </li>
 
         <li id="stats_leeching">
           <a
-            href="torrents.php?type=leeching&amp;userid=<?=$app->userNew->core["id"]?>">Down</a>:
+            href="torrents.php?type=leeching&amp;userid=<?=null#$app->userNew->core["id"]?>">Down</a>:
           <span class="stat tooltip"
-            title="<?=Format::get_size($app->userNew->extra['Downloaded'], 5)?>"><?=Format::get_size($app->userNew->extra['Downloaded'])?></span>
+            title="<?=null#Format::get_size($app->userNew->extra['Downloaded'], 5)?>"><?=null#Format::get_size($app->userNew->extra['Downloaded'])?></span>
         </li>
 
         <li id="stats_ratio">
-          Ratio: <span class="stat"><?=Format::get_ratio_html($app->userNew->extra['Uploaded'], $app->userNew->extra['Downloaded'])?></span>
+          Ratio: <span class="stat"><?=null#Format::get_ratio_html($app->userNew->extra['Uploaded'], $app->userNew->extra['Downloaded'])?></span>
         </li>
+-->
         <?php if (!empty($app->userNew->extra['RequiredRatio']) && $app->userNew->extra['RequiredRatio'] > 0) { ?>
+<!-- OLD USER INFO
         <li id="stats_required">
           <a href="/rules/ratio">Required</a>:
           <span class="stat tooltip"
-            title="<?=Text::float($app->userNew->extra['RequiredRatio'], 5)?>"><?=Text::float($app->userNew->extra['RequiredRatio'], 2)?></span>
+            title="<?=null#Text::float($app->userNew->extra['RequiredRatio'], 5)?>"><?=null#Text::float($app->userNew->extra['RequiredRatio'], 2)?></span>
         </li>
         <?php } ?>
       </ul>
+-->
 
 
+<!-- OLD USER INFO
       <ul id="userinfo_extra">
 
         <?php if ($app->userNew->extra['FLTokens'] > 0) { ?>
@@ -341,15 +361,15 @@ if (check_perms('site_send_unlimited_invites')) {
           <a href="wiki.php?action=article&amp;name=tokens">Tokens</a>:
           <span class="stat">
             <a
-              href="userhistory.php?action=token_history&amp;userid=<?=$app->userNew->core["id"]?>"><?=$app->userNew->extra['FLTokens']?></a>
+              href="userhistory.php?action=token_history&amp;userid=<?=null#$app->userNew->core["id"]?>"><?=null#$app->userNew->extra['FLTokens']?></a>
           </span>
         </li>
         <?php } ?>
 
         <li id="bonus_points">
-          <a href="wiki.php?action=article&amp;name=bonuspoints"><?=bonusPoints?></a>:
+          <a href="wiki.php?action=article&amp;name=bonuspoints"><?=null#bonusPoints?></a>:
           <span class="stat">
-            <a href="store.php"><?=Text::float($app->userNew->extra['BonusPoints'])?></a>
+            <a href="store.php"><?=null#Text::float($app->userNew->extra['BonusPoints'])?></a>
           </span>
         </li>
 
@@ -357,12 +377,13 @@ if (check_perms('site_send_unlimited_invites')) {
         <li id="hnr">
           <a href="snatchlist.php">HnRs</a>:
           <span class="stat">
-            <a><?=$app->userNew->extra['HnR']?></a>
+            <a><?=null#$app->userNew->extra['HnR']?></a>
           </span>
         </li>
         <?php } ?>
       </ul>
     </div>
+-->
 
     <?php if (!apcu_exists('DBKEY')) { ?>
     <a id="dbcrypt" class="tooltip" href="wiki.php?action=article&amp;name=databaseencryption"
@@ -529,22 +550,23 @@ if (!empty($Alerts) || !empty($ModBar)) { ?>
       <?=$Alert?>
     </div>
     <?php
-  }
+    }
 
   if (!empty($ModBar)) { ?>
     <div class="alertbar modbar">
-      <?=implode(' ', $ModBar); echo "\n"?>
+      <?=implode(' ', $ModBar);
+      echo "\n"?>
     </div>
     <?php }
 
-if (check_perms('site_debug') && !apcu_exists('DBKEY')) { ?>
+  if (check_perms('site_debug') && !apcu_exists('DBKEY')) { ?>
     <div class="alertbar error">
       Warning: <a href="tools.php?action=database_key">no DB key</a>
     </div>
     <?php } ?>
   </div>
   <?php
-    // Done handling alertbars
+      // Done handling alertbars
 }
 
 # #content is Gazelle, .container is Skeleton

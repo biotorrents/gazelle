@@ -472,7 +472,7 @@ class User
         }
 
         # Warned?
-        if (strtotime($UserInfo['Warned']) < time()) {
+        if (strtotime($UserInfo['Warned'] ?? "now") < time()) {
             $UserInfo['Warned'] = null;
             $app->cacheOld->cache_value("user_info_$UserID", $UserInfo, 2592000);
         }
@@ -592,6 +592,9 @@ class User
         $Username = $UserInfo['Username'];
         $Paranoia = $UserInfo['Paranoia'];
 
+        $OverrideParanoia = check_perms('users_override_paranoia');
+
+        /*
         $UserInfo['Class'] ??= [];
         if ($UserInfo['Class'] < $Classes[MOD]['Level']) {
             $OverrideParanoia = check_perms('users_override_paranoia', $UserInfo['Class']);
@@ -599,6 +602,7 @@ class User
             // Don't override paranoia for mods who don't want to show their donor heart
             $OverrideParanoia = false;
         }
+        */
 
         # Show donor icon?
         $ShowDonorIcon = (!in_array('hide_donor_heart', $Paranoia) || $OverrideParanoia);
