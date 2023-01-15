@@ -205,10 +205,10 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
 
             <label for="tags_type0"> Any</label>&nbsp;&nbsp;
             <input type="radio" name="tags_type" id="tags_type1" value="1" <?Format::selected(
-    'tags_type',
-    1,
-    'checked'
-)?> />
+                'tags_type',
+                1,
+                'checked'
+            )?> />
 
             <label for="tags_type1"> All</label>
           </td>
@@ -230,12 +230,12 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
           <td class="label">Search In</td>
           <td>
             <input type="radio" name="type" value="c.name" <?php if ($Type==='c.name') {
-                  echo 'checked="checked" ' ;
-              }
-              ?>/> Names&nbsp;&nbsp;
+                echo 'checked="checked" ' ;
+            }
+      ?>/> Names&nbsp;&nbsp;
             <input type="radio" name="type" value="description" <?php if ($Type==='description') {
-                  echo 'checked="checked" ' ;
-              } ?>/> Descriptions
+                echo 'checked="checked" ' ;
+            } ?>/> Descriptions
           </td>
         </tr>
         <tr id="order_by">
@@ -281,7 +281,7 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
           $app->dbOld->query("
         SELECT ID
         FROM collages
-        WHERE UserID = '$app->userNew->core[id]'
+        WHERE UserID = '{$app->userNew->core['id']}'
           AND CategoryID = '0'
           AND Deleted = '0'");
           $CollageCount = $app->dbOld->record_count();
@@ -294,7 +294,7 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
           } elseif ($CollageCount > 1) { ?>
     <a href="collages.php?action=mine" class="brackets">Personal collections</a>
     <?php
-      }
+          }
       }
       if (check_perms('site_collages_subscribe')) {
           ?>
@@ -326,7 +326,7 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
     <?php
   }
   $Pages = Format::get_pages($Page, $NumResults, COLLAGES_PER_PAGE, 9);
-  echo $Pages;
+echo $Pages;
 ?>
   </div>
   <?php if (count($Collages) === 0) { ?>
@@ -342,7 +342,7 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
 </div>
 <!--content-->
 <?php View::footer();
-    error();
+      error();
   }
 ?>
 <table width="100%" id="collage_table" class="collage_table box">
@@ -383,7 +383,7 @@ foreach ($Collages as $Collage) {
     </td>
     <td class="number_column"><?=Text::float((int)$Subscribers)?>
     </td>
-    <td class="nobr"><?=time_diff($Updated)?>
+    <td class="nobr"><?=time_diff(intval($Updated))?>
     </td>
     <td><?=User::format_username($UserID, false, false, false)?>
     </td>

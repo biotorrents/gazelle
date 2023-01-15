@@ -49,31 +49,35 @@ nav#subMenu {
 
   #torrentsHeader {
     &:before {
-      content: "🌊 ";
+      content: "🌊";
+      margin-right: 1rem;
     }
   }
 
   #communityHeader {
     &:before {
-      content: "📣 ";
+      content: "📣";
+      margin-right: 1rem;
     }
   }
 
   #userHeader {
     &:before {
-      content: "👤 ";
+      content: "👤";
+      margin-right: 1rem;
     }
   }
 
   #moreHeader {
     &:before {
-      content: "🔔 ";
+      content: "🔔";
+      margin-right: 1rem;
     }
   }
 
   ul {
     list-style-type: none !important;
-    margin-left: 1.25rem;
+    margin-left: 1.5rem;
 
     li {
       font-size: larger;

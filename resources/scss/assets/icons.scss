@@ -121,6 +121,117 @@ img.torrent_header {
 }
 
 /**
+ * torrent table icons
+ */
+
+/* torrentGroup icons */
+.subjectObject {
+  &:before {
+    content: "🦠";
+    margin-right: 0.5rem;
+  }
+}
+
+.year {
+  &:before {
+    content: "📅";
+    margin-right: 0.5rem;
+  }
+}
+
+.identifier {
+  &:before {
+    content: "🔑";
+    margin-right: 0.5rem;
+  }
+}
+
+.workgroup {
+  &:before {
+    content: "🏫";
+    margin-right: 0.5rem;
+  }
+}
+
+.location {
+  &:before {
+    content: "📍";
+    margin-right: 0.5rem;
+  }
+}
+
+.tagList {
+  &:before {
+    content: "#️";
+    margin-right: 0.5rem;
+  }
+}
+
+.creatorList {
+  &:before {
+    content: "🧑‍🔬";
+    margin-right: 0.5rem;
+  }
+}
+
+/* torrent icons */
+.platform {
+  &:before {
+    content: "📦";
+    margin-right: 0.5rem;
+  }
+}
+
+.format {
+  &:before {
+    content: "💾";
+    margin-right: 0.5rem;
+  }
+}
+
+.version {
+  &:before {
+    content: "";
+    margin-right: 0.5rem;
+
+    background-image: url("/images/icons/version.png");
+    background-size: 100% 100%;
+    display: inline-block;
+
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.scope {
+  &:before {
+    content: "🔎";
+    margin-right: 0.5rem;
+  }
+}
+
+.archive {
+  &:before {
+    content: "";
+    margin-right: 0.5rem;
+
+    background-image: url("/images/icons/archive.png");
+    background-size: 100% 100%;
+    display: inline-block;
+
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.license {
+  &:before {
+    content: "📜";
+    margin-right: 0.5rem;
+  }
+}
+
+/**
  * badges
  */
 

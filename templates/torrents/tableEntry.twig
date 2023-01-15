@@ -33,7 +33,7 @@
 		<div class="flexRow">
 			{# subject #}
 			{% if group.subject %}
-				<span class="tooltip" title="Organism">🦠 {{ "<em>#{group.subject}</em>"|raw }}
+				<span class="tooltip subjectObject" title="Organism">{{ "<em>#{group.subject}</em>"|raw }}
 					{# object #}
 					{{ (group.object) ? group.object : "" }}
 				</span>
@@ -41,33 +41,33 @@
 
 			{# year #}
 			{% if group.year %}
-				<span class="tooltip" title="Year">📅 {{ group.year }}</span>
+				<span class="tooltip year" title="Year">{{ group.year }}</span>
 			{% endif %}
 
 			{# identifier #}
 			{% if group.identifier %}
-				<span class="tooltip" title="Identifier">🔑 {{ group.identifier }}</span>
+				<span class="tooltip identifier" title="Identifier">{{ group.identifier }}</span>
 			{% endif %}
 
 			{# workgroup #}
 			{% if group.workgroup %}
-				<span class="tooltip" title="Workgroup">🏫 {{ group.workgroup|raw }}</span>
+				<span class="tooltip workgroup" title="Workgroup">{{ group.workgroup|raw }}</span>
 			{% endif %}
 
 			{# location #}
 			{% if group.location %}
-				<span class="tooltip" title="Location">📍 {{ group.location|raw }}</span>
+				<span class="tooltip location" title="Location">{{ group.location|raw }}</span>
 			{% endif %}
 		</div>
 
 		{# tags #}
 		{% if group.tag_list is not empty %}
-			<div class="tooltip torrentTags" title="Tags">#️ {{ displayTags(group.tag_list)|raw }}</div>
+			<div class="tooltip tagList" title="Tags">{{ displayTags(group.tag_list)|raw }}</div>
 		{% endif %}
 
 		{# creators #}
 		{% if group.Artists is not empty %}
-			<div class="tooltip" title="Creators">🧑‍🔬 {{ displayCreators(group.Artists)|raw }}</div>
+			<div class="tooltip creatorList" title="Creators">{{ displayCreators(group.Artists)|raw }}</div>
 		{% endif %}
 
 		{#
@@ -120,7 +120,7 @@
 
 	{# category icon #}
 <td class="center">
-<a href="/torrents.php?id={{ group.id }}#torrentId-{{ torrent.ID }}">Go »</a>
+<a href="/torrents.php?id={{ group.id }}#torrentId-{{ torrent.ID }}">Go&nbsp;»</a>
 </td>
 
 
@@ -129,32 +129,32 @@
 
   {# platform #}
   {% if torrent.Media %}
-    <span title="Platform">📦 {{ torrent.Media }}</span>
+    <span class="platform" title="Platform">{{ torrent.Media }}</span>
   {% endif %}
 
   {# format #}
   {% if torrent.Container %}
-    <span title="Format">💾 {{ torrent.Container }}</span>
+    <span class="format" title="Format">{{ torrent.Container }}</span>
   {% endif %}
 
   {# version #}
   {% if torrent.Version %}
-    <span title="Version"><img src="/images/icons/version.png" alt="version" class="icon" /> {{ torrent.Version }}</span>
+    <span class="version" title="Version">{{ torrent.Version }}</span>
   {% endif %}
 
   {# scope #}
   {% if torrent.Resolution %}
-    <span title="Scope">🔎 {{ torrent.Resolution }}</span>
+    <span class="scope" title="Scope">{{ torrent.Resolution }}</span>
   {% endif %}
 
   {# archive #}
   {% if torrent.Archive %}
-    <span title="Archive"><img src="/images/icons/archive.png" alt="archive" class="icon" /> {{ torrent.Archive }}</span>
+    <span class="archive" title="Archive">{{ torrent.Archive }}</span>
   {% endif %}
 
   {# license #}
   {% if torrent.Codec %}
-    <span title="License">📜 {{ torrent.Codec }}</span>
+    <span class="license" title="License">{{ torrent.Codec }}</span>
   {% endif %}
 
   {# alignment #}

@@ -11,7 +11,7 @@
 			{# organism #}
 			{% if groupDetails.subject %}
 				<tr>
-					<th>🦠 Organism</th>
+					<th><span class="subjectObject nobr">Organism</span></th>
 
 					<td>
             {# subject #}
@@ -21,7 +21,7 @@
 					</td>
 
 					<td>
-						<a href="/torrents.php?complexSearch={{ groupDetails.subject }} {{ groupDetails.object }}">Search »</a>
+						<a href="/torrents.php?complexSearch={{ groupDetails.subject }} {{ groupDetails.object }}">Search&nbsp;»</a>
 					</td>
 				</tr>
 			{% endif %}
@@ -29,12 +29,12 @@
 			{# year #}
 			{% if groupDetails.year %}
 				<tr>
-					<th>📅 Year</th>
+					<th><span class="year nobr">Year</span></th>
 
 					<td>{{ groupDetails.year }}</td>
 
 					<td>
-						<a href="/torrents.php?year={{ groupDetails.year }}">Search »</a>
+						<a href="/torrents.php?year={{ groupDetails.year }}">Search&nbsp;»</a>
 					</td>
 				</tr>
 			{% endif %}
@@ -42,7 +42,7 @@
 			{# identifier #}
 			{% if groupDetails.identifier %}
 				<tr>
-					<th>🔑 Identifier</th>
+					<th><span class="identifier nobr">Identifier</span></th>
 
 					<td>{{ groupDetails.identifier }}</td>
 
@@ -53,12 +53,12 @@
 			{# workgroup #}
 			{% if groupDetails.workgroup %}
 				<tr>
-					<th>🏫 Workgroup</th>
+					<th><span class="workgroup nobr">Workgroup</span></th>
 
 					<td>{{ groupDetails.workgroup|raw }}</td>
 
 					<td>
-						<a href="/torrents.php?location={{ groupDetails.workgroup }}">Search »</a>
+						<a href="/torrents.php?location={{ groupDetails.workgroup }}">Search&nbsp;»</a>
 					</td>
 				</tr>
 			{% endif %}
@@ -66,12 +66,12 @@
 			{# location #}
 			{% if groupDetails.location %}
 				<tr>
-					<th>📍 Location</th>
+					<th><span class="location nobr">Location</span></th>
 
 					<td>{{ groupDetails.location|raw }}</td>
 
 					<td>
-						<a href="/torrents.php?location={{ groupDetails.location }}">Search »</a>
+						<a href="/torrents.php?location={{ groupDetails.location }}">Search&nbsp;»</a>
 					</td>
 				</tr>
 			{% endif %}
