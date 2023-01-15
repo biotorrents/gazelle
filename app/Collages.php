@@ -1,100 +1,73 @@
 <?php
 
-#declare(strict_types=1);
+declare(strict_types=1);
+
 
 /**
  * Collages
+ *
+ * todo: make this more useful (crud, etc.)
  */
+
 class Collages
 {
     /**
-     * increase_subscriptions
+     * addSubscription
      */
-    public static function increase_subscriptions($CollageID)
+    public static function addSubscription(int $collageId): void
     {
         $app = App::go();
 
-        $QueryID = $app->dbOld->get_query_id();
-        $app->dbOld->prepared_query("
-        UPDATE
-          `collages`
-        SET
-          `Subscribers` = `Subscribers` + 1
-        WHERE
-          `ID` = '$CollageID'
-        ");
-        $app->dbOld->set_query_id($QueryID);
+        $query = "update collages set subscribers = subscribers + 1 where id = ?";
+        $app->dbNew->do($query, [$collageId]);
     }
 
 
     /**
-     * decrease_subscriptions
+     * subtractSubscription
      */
-    public static function decrease_subscriptions($CollageID)
+    public static function subtractSubscription(int $collageId): void
     {
         $app = App::go();
 
-        $QueryID = $app->dbOld->get_query_id();
-        $app->dbOld->prepared_query("
-        UPDATE
-          `collages`
-        SET
-          `Subscribers` = IF(
-            `Subscribers` < 1,
-            0,
-            `Subscribers` - 1
-          )
-        WHERE
-          `ID` = '$CollageID'
-        ");
-        $app->dbOld->set_query_id($QueryID);
-    }
+        $query = "select subscribers from collages where id = ?";
+        $subscriberCount = $app->dbNew->single($query, [$collageId]) ?? 0;
 
-
-    /**
-     * create_personal_collage
-     */
-    public static function create_personal_collage()
-    {
-        $app = App::go();
-
-        $app->dbOld->prepared_query("
-        SELECT
-          COUNT(`ID`)
-        FROM
-          `collages`
-        WHERE
-          `UserID` = '".$app->userNew->core['id']."' AND `CategoryID` = '0' AND `Deleted` = '0'
-        ");
-        list($CollageCount) = $app->dbOld->next_record();
-
-        if ($CollageCount >= $app->userNew->extra['Permissions']['MaxCollages']) {
-            // todo: Fix this, the query was for COUNT(ID), so I highly doubt that this works... - Y
-            list($CollageID) = $app->dbOld->next_record();
-            Http::redirect("collage.php?id=$CollageID");
-            error();
+        if (empty($subscriberCount)) {
+            return;
         }
 
-        $NameStr = db_string($app->userNew->core['username']."'s personal collage".($CollageCount > 0 ? ' no. '.($CollageCount + 1) : ''));
-        $Description = db_string('Personal collage for '.$app->userNew->core['username'].'. The first 5 albums will appear on his or her [url='.site_url().'user.php?id= '.$app->userNew->core['id'].']profile[/url].');
+        $query = "update collages set subscribers = subscribers - 1 where id = ?";
+        $app->dbNew->do($query, [$collageId]);
+    }
 
-        $app->dbOld->prepared_query("
-        INSERT INTO `collages`(
-          `Name`,
-          `Description`,
-          `CategoryID`,
-          `UserID`
-        )
-        VALUES(
-          '$NameStr',
-          '$Description',
-          '0',
-          ".$app->userNew->core['id']."
-        )
-        ");
 
-        $CollageID = $app->dbOld->inserted_id();
-        Http::redirect("collage.php?id=$CollageID");
-        error();
+    /**
+     * createPersonal
+     */
+    public static function createPersonal(): void
+    {
+        $app = App::go();
+
+        $query = "select count(id) from collages where userId = ? and categoryId = ? and deleted = ?";
+        $collageCount = $app->dbNew->single($query, [$app->userNew->core["id"], 0, 0]) ?? 0;
+
+        # todo: permissions are meh and this iss hardcoded
+        $maxCollages = $app->userNew->permissions["MaxCollages"] ?? 2;
+        if ($collageCount >= $maxCollages) {
+            return;
+        }
+
+        # default title and description
+        $title = "{$app->userNew->core["username"]}'s personal collage";
+        $description = "Personal collage for {$app->userNew->core["username"]}";
+
+        # database insert
+        $query = "insert into collages (name, description, categoryId, userId) values (?, ?, ?, ?)";
+        $app->dbNew->do($query, [ $title, $description, 0, $app->userNew->core["id"] ]);
+
+        # redirect to new collage
+        $collageId = $app->dbNew->lastInsertId();
+        Http::redirect("/collages.php?id={$collageId}");
     }
 }

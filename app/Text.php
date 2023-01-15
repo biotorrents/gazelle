@@ -17,7 +17,7 @@ class Text
 
     # cache settings
     private static $cachePrefix = "text_";
-    private static $cacheDuration = 0; # forever
+    private static $cacheDuration = 86400; # one day
 
 
     /**

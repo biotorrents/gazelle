@@ -513,12 +513,11 @@ function time_ago($TimeStamp)
 
 
 /**
- * Returns a <span> by default but can optionally return the raw time
- * difference in text (e.g., "16 hours and 28 minutes", "1 day, 18 hours").
+ * time_diff
  */
-function time_diff(int|string $timestamp, $unusedLevels = 2, $unusedSpan = true, $unusedLowercase = false)
+function time_diff(int|string $time, $unusedLevels = 2, $unusedSpan = true, $unusedLowercase = false)
 {
-    return Carbon\Carbon::createFromTimeStamp($timestamp)->diffForHumans();
+    return Carbon\Carbon::parse($time)->diffForHumans();
 }
 
 

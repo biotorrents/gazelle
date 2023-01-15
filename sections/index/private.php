@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 
 $app = App::go();
+#!d($app->userNew);
 
 # get the news
 # todo: use discourse

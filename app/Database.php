@@ -274,6 +274,17 @@ class Database extends PDO
 
 
     /**
+     * lastInsertId
+     *
+     * Gets the last inserted id.
+     */
+    public function lastInsertId(?string $name = null): string|false
+    {
+        return $this->pdo->lastInsertId();
+    }
+
+
+    /**
      * rowCount
      *
      * Gets the number of rows.

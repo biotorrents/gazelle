@@ -26,7 +26,7 @@ if (($Key = array_search($CollageID, $UserSubscriptions)) !== false) {
     WHERE UserID = '.db_string($app->userNew->core['id'])."
       AND CollageID = $CollageID");
     unset($UserSubscriptions[$Key]);
-    Collages::decrease_subscriptions($CollageID);
+    Collages::subtractSubscription($CollageID);
 } else {
     $app->dbOld->prepared_query("
     INSERT IGNORE INTO users_collage_subs
@@ -34,7 +34,7 @@ if (($Key = array_search($CollageID, $UserSubscriptions)) !== false) {
     VALUES
       ({$app->userNew->core['id']}, $CollageID, NOW())");
     array_push($UserSubscriptions, $CollageID);
-    Collages::increase_subscriptions($CollageID);
+    Collages::addSubscription($CollageID);
 }
 $app->cacheOld->replace_value('collage_subs_user_'.$app->userNew->core['id'], $UserSubscriptions, 0);
 $app->cacheOld->delete_value('collage_subs_user_new_'.$app->userNew->core['id']);

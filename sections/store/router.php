@@ -16,6 +16,8 @@ declare(strict_types=1);
 
 
 enforce_login();
+
+$app->userNew->extra['DisablePoints'] ??= null;
 if ($app->userNew->extra['DisablePoints']) {
     View::header('Store'); ?>
 <div>

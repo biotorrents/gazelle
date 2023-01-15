@@ -6,6 +6,7 @@ $app = App::go();
 $UserID = $app->userNew->core['id'];
 $PermID = $app->userNew->extra['PermissionID'];
 
+$app->userNew->extra['DisablePoints'] ??= null;
 if (!$app->userNew->extra['DisablePoints']) {
     $PointsRate = 0;
     $getTorrents = $app->dbOld->prepared_query("
@@ -269,7 +270,6 @@ View::header('Store');
       <tr class="colhead">
         <td style="width: 100px;">Badge</td>
         <td style="width: 100px;">Cost</td>
-        <td style="width: 400px;">Description</td>
       </tr>
 
       <?php

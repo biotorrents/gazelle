@@ -109,7 +109,7 @@ switch ($_REQUEST['action']) {
     if (!check_perms('site_collages_personal')) {
         error(403);
     } else {
-        Collages::create_personal_collage();
+        Collages::createPersonal();
     }
     break;
 

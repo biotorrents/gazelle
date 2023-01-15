@@ -293,7 +293,7 @@ class Torrents
           'title' => $Group['title'],
           'subject' => $Group['subject'],
           'object' => $Group['object'],
-          'published' => $Group['published'],
+          'year' => $Group['year'],
           'category_id' => $Group['category_id'],
           'identifier' => $Group['identifier'],
           'workgroup' => $Group['workgroup'],

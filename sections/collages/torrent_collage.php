@@ -70,13 +70,16 @@ foreach ($GroupIDs as $GroupID) {
     }
     $UserAdditions[$UserID]++;
 
+    $CoverArt ??= "";
+    $Action ??= null;
+
     $DisplayName = $twig->render(
         'torrents/display_name.html',
         [
           'g' => $Group,
           'url' => Format::get_url($_GET),
           'cover_art' => (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) ?? true,
-          'thumb' => ImageTools::process($CoverArt, 'thumb'),
+          'thumb' => ImageTools::process(($CoverArt), 'thumb'),
           'artists' => Artists::display_artists($Artists),
           'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
           'extra_info' => false,
@@ -228,7 +231,10 @@ foreach ($GroupIDs as $GroupID) {
     <span class="brackets u-pull-right">
       <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>"
         class="tooltip" title="Download">DL</a>
-      <?php if (Torrents::can_use_token($Torrent)) { ?>
+      <?php
+      $Torrent ??= ["Size" => 0, "Snatched" => 0, "Seeders" => 0, "Leechers" => 0];
+
+      if (Torrents::can_use_token($Torrent)) { ?>
       | <a
         href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>&amp;usetoken=1"
         class="tooltip" title="Use a FL Token"
@@ -277,6 +283,7 @@ foreach ($GroupIDs as $GroupID) {
     #$DisplayName .= Artists::display_artists($Artists, false);
     $DisplayName .= $title;
 
+    $GroupYear ??= null;
     if ($GroupYear > 0) {
         $DisplayName = "$DisplayName [$GroupYear]";
     }
@@ -319,6 +326,7 @@ if (!check_perms('site_collages_delete')
 }
 
 // Silly hack for people who are on the old setting
+$app->userNew->extra['HideCollage'] ??= 0;
 $CollageCovers = isset($app->userNew->extra['CollageCovers']) ? $app->userNew->extra['CollageCovers'] : 25 * (abs($app->userNew->extra['HideCollage'] - 1));
 $CollagePages = [];
 
@@ -644,6 +652,7 @@ foreach ($CommentList as $Comment) {
     </div>
 
     <?php
+    $app->userNew->extra['DisablePosting'] ??= null;
 if (!$app->userNew->extra['DisablePosting']) {
     ?>
     <div class="box box_addcomment">

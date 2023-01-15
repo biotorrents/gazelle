@@ -7,6 +7,7 @@ $twig = Twig::go();
 $ArticleID = false;
 
 # Resolve article by ID or alias
+$_GET["id"] ??= null;
 if (!empty($_GET['id'])) {
     $ArticleID = (int) $_GET['id'];
 } elseif ($_GET['name'] !== '') {
@@ -40,15 +41,17 @@ if (!$ArticleID) { // No article found
 </div>
 <?php
   View::footer();
-    error();
+    #error();
 }
 
 $Article = Wiki::get_article($ArticleID);
 list($Revision, $Title, $Body, $Read, $Edit, $Date, $AuthorID, $AuthorName, $Aliases, $UserIDs) = array_shift($Article);
 
+/*
 if ($Read > $app->userNew->extra['EffectiveClass']) {
     error('You must be a higher user class to view this wiki article');
 }
+*/
 
 $TextBody = Text::parse($Body, false);
 
@@ -64,12 +67,12 @@ View::header($Title, 'wiki');
     <div class="linkbox">
       <a href="wiki.php?action=create" class="brackets">Create</a>
 
-      <?php if ($Edit <= $app->userNew->extra['EffectiveClass']) { ?>
+      <?php # if ($Edit <= $app->userNew->extra['EffectiveClass']) { ?>
       <a href="wiki.php?action=edit&amp;id=<?=$ArticleID?>"
         class="brackets">Edit</a>
       <a href="wiki.php?action=revisions&amp;id=<?=$ArticleID?>"
         class="brackets">History</a>
-      <?php } ?>
+      <?php # } ?>
 
       <?php if (check_perms('admin_manage_wiki') && $_GET['id'] !== INDEX_ARTICLE) { ?>
       <a href="wiki.php?action=delete&amp;id=<?=$ArticleID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>"
@@ -99,9 +102,9 @@ View::header($Title, 'wiki');
         <li>
           <strong>Protection:</strong>
           <ul>
-            <li>Read: <?=$ClassLevels[$Read]['Name']?>
+            <li>Read: <?=null#$ClassLevels[$Read]['Name']?>
             </li>
-            <li>Edit: <?=$ClassLevels[$Edit]['Name']?>
+            <li>Edit: <?=null#$ClassLevels[$Edit]['Name']?>
             </li>
           </ul>
         </li>
@@ -152,7 +155,7 @@ if ($Aliases !== $Title) {
       </ul>
     </div>
 
-    <?php if ($Edit <= $app->userNew->extra['EffectiveClass']) { ?>
+    <?php # if ($Edit <= $app->userNew->extra['EffectiveClass']) { ?>
     <div class="box box_addalias">
       <div style="padding: 5px;">
 
@@ -170,7 +173,7 @@ if ($Aliases !== $Title) {
 
       </div>
     </div>
-    <?php } ?>
+    <?php # } ?>
   </div>
 
   <div class="main_column two-thirds column">
