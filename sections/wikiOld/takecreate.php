@@ -60,7 +60,7 @@ $app->dbOld->prepared_query("
   INSERT INTO wiki_articles
     (Revision, Title, Body, MinClassRead, MinClassEdit, Date, Author)
   VALUES
-    ('1', '$P[title]', '$P[body]', '$Read', '$Edit', NOW(), '{$app->userNew->core[id]}')");
+    ('1', '$P[title]', '$P[body]', '$Read', '$Edit', NOW(), '{{$app->userNew->core['id']}}')");
 
 $ArticleID = $app->dbOld->inserted_id();
 $TitleAlias = Wiki::normalize_alias($_POST['title']);

@@ -346,7 +346,7 @@ if (check_perms('users_mod')) {
     if (!$btID && $Properties['BadTags']) {
         $app->dbOld->query("
           INSERT INTO torrents_bad_tags
-          VALUES ($TorrentID, $app->userNew->core[id], NOW())");
+          VALUES ($TorrentID, {$app->userNew->core['id']}, NOW())");
     }
 
     if ($btID && !$Properties['BadTags']) {
@@ -364,7 +364,7 @@ if (check_perms('users_mod')) {
     if (!$bfID && $Properties['BadFolders']) {
         $app->dbOld->query("
           INSERT INTO torrents_bad_folders
-          VALUES ($TorrentID, $app->userNew->core[id], NOW())");
+          VALUES ($TorrentID, {$app->userNew->core['id']}, NOW())");
     }
 
     if ($bfID && !$Properties['BadFolders']) {
@@ -382,7 +382,7 @@ if (check_perms('users_mod')) {
     if (!$bfiID && $Properties['BadFiles']) {
         $app->dbOld->query("
           INSERT INTO torrents_bad_files
-          VALUES ($TorrentID, $app->userNew->core[id], NOW())");
+          VALUES ($TorrentID, {$app->userNew->core['id']}, NOW())");
     }
 
     if ($bfiID && !$Properties['BadFiles']) {

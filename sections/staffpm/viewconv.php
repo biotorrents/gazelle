@@ -30,7 +30,7 @@ if ($ConvID = (int)$_GET['id']) {
       SET Unread = false
       WHERE ID = $ConvID");
         // Clear cache for user
-        $app->cacheOld->delete_value("staff_pm_new_$app->userNew->core[id]");
+        $app->cacheOld->delete_value("staff_pm_new_{$app->userNew->core['id']}");
     }
 
     View::header(

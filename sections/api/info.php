@@ -47,12 +47,12 @@ if (check_perms('site_torrents_notify')) {
         $app->dbOld->query("
       SELECT COUNT(UserID)
       FROM users_notify_torrents
-      WHERE UserID = '$app->userNew->core[id]'
+      WHERE UserID = '{$app->userNew->core['id']}'
         AND UnRead = '1'");
         list($NewNotifications) = $app->dbOld->next_record();
         /* if ($NewNotifications && !check_perms('site_torrents_notify')) {
-            $app->dbOld->query("DELETE FROM users_notify_torrents WHERE UserID='$app->userNew->core[id]'");
-            $app->dbOld->query("DELETE FROM users_notify_filters WHERE UserID='$app->userNew->core[id]'");
+            $app->dbOld->query("DELETE FROM users_notify_torrents WHERE UserID='{$app->userNew->core['id']}'");
+            $app->dbOld->query("DELETE FROM users_notify_filters WHERE UserID='{$app->userNew->core['id']}'");
         } */
         $app->cacheOld->cache_value('notifications_new_' . $app->userNew->core['id'], $NewNotifications, 0);
     }

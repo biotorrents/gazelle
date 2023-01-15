@@ -50,6 +50,6 @@ $app->dbOld->query("
   SET Redirect='0'
   WHERE Redirect='$AliasID'");
 
-Misc::write_log("The alias $AliasID ($AliasName) was removed from the artist $ArtistID ($ArtistName) by user $app->userNew->core[id] ($app->userNew->core[username])");
+Misc::write_log("The alias $AliasID ($AliasName) was removed from the artist $ArtistID ($ArtistName) by user {$app->userNew->core['id']} ($app->userNew->core[username])");
 
 Http::redirect("$_SERVER[HTTP_REFERER]");

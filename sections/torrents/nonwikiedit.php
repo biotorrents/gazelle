@@ -88,7 +88,7 @@ if ($OldYear !== $year) {
     INSERT INTO `group_log`(`GroupID`, `UserID`, `Time`, `Info`)
     VALUES(
       '$group_id',
-      '$app->userNew->core[id]',
+      '{$app->userNew->core['id']}',
       NOW(),
       '$Message')
     ");
@@ -140,11 +140,11 @@ foreach ($Artists as $Artist) {
         VALUES(
           '$group_id',
           '$ArtistID',
-          '$app->userNew->core[id]'
+          '{$app->userNew->core['id']}'
         )
         ON DUPLICATE KEY
         UPDATE
-          `UserID` = '$app->userNew->core[id]'
+          `UserID` = '{$app->userNew->core['id']}'
         "); // Why does this even happen
 
         $app->cacheOld->delete_value('artist_groups_'.$ArtistID);

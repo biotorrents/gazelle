@@ -30,7 +30,7 @@ $Result = $app->dbOld->query("
     JOIN torrents AS t ON t.ID = xu.fid
   WHERE xu.fid = '$TorrentID'
     AND um.Visible = '1'
-  ORDER BY xu.uid = '$app->userNew->core[id]' DESC, xu.uploaded DESC
+  ORDER BY xu.uid = '{$app->userNew->core['id']}' DESC, xu.uploaded DESC
   LIMIT $Limit");
 $app->dbOld->query('SELECT FOUND_ROWS()');
 list($NumResults) = $app->dbOld->next_record();

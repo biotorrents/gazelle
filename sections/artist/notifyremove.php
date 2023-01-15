@@ -17,7 +17,7 @@ if (($Notify = $app->cacheOld->get_value('notify_artists_'.$app->userNew->core['
     SELECT ID, Artists
     FROM users_notify_filters
     WHERE Label = 'Artist notifications'
-      AND UserID = '$app->userNew->core[id]'
+      AND UserID = '{$app->userNew->core['id']}'
     ORDER BY ID
     LIMIT 1");
 } else {

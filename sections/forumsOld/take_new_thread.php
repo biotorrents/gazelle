@@ -127,7 +127,7 @@ if (isset($_POST['subscribe'])) {
 $app->dbOld->query("
   SELECT COUNT(ID)
   FROM forums_posts
-  WHERE AuthorID = '$app->userNew->core[id]'");
+  WHERE AuthorID = '{$app->userNew->core['id']}'");
 list($UserPosts) = $app->dbOld->next_record(MYSQLI_NUM, false);
 foreach ($ENV->AUTOMATED_BADGE_IDS->Posts as $Count => $Badge) {
     if ((int) $UserPosts >= $Count) {

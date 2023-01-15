@@ -98,7 +98,7 @@ if (empty($_POST['confirm'])) {
     INSERT INTO torrents_artists
       (GroupID, ArtistID, UserID)
     VALUES
-      ('$GroupID', '$ArtistID', '$app->userNew->core[id]')");
+      ('$GroupID', '$ArtistID', '{$app->userNew->core['id']}')");
 
     $app->dbOld->query("
     UPDATE torrents

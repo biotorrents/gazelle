@@ -79,7 +79,7 @@ if ($app->userNew->extra['BytesUploaded'] >= $Amount && empty($Filled)) {
     SELECT UserID
     FROM requests_votes
     WHERE RequestID = '$RequestID'
-      AND UserID != '$app->userNew->core[id]'");
+      AND UserID != '{$app->userNew->core['id']}'");
     $UserIDs = [];
     while (list($UserID) = $app->dbOld->next_record()) {
         $UserIDs[] = $UserID;

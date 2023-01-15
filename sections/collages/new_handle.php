@@ -39,7 +39,7 @@ if (!$Err && $P['category'] === '0') {
     $app->dbOld->query("
     SELECT COUNT(ID)
     FROM collages
-    WHERE UserID = '$app->userNew->core[id]'
+    WHERE UserID = '{$app->userNew->core['id']}'
       AND CategoryID = '0'
       AND Deleted = '0'");
     list($CollageCount) = $app->dbOld->next_record();
@@ -90,7 +90,7 @@ $app->dbOld->query("
   INSERT INTO collages
     (Name, Description, UserID, TagList, CategoryID)
   VALUES
-    ('$P[name]', '$P[description]', $app->userNew->core[id], '$TagList', '$P[category]')");
+    ('$P[name]', '$P[description]', {$app->userNew->core['id']}, '$TagList', '$P[category]')");
 
 $CollageID = $app->dbOld->inserted_id();
 $app->cacheOld->delete_value("collage_$CollageID");

@@ -1074,7 +1074,7 @@ SELECT
 FROM
   `users_main`
 WHERE
-  `ID` = $app->userNew->core[id]
+  `ID` = {$app->userNew->core['id']}
 ");
 
 list($Paranoia) = $app->dbOld->next_record();

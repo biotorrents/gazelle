@@ -14,10 +14,10 @@ if ($ID = (int)($_GET['id'])) {
         // Conversation belongs to user or user is staff, resolve it
         $app->dbOld->query("
       UPDATE staff_pm_conversations
-      SET Status = 'Resolved', ResolverID = $app->userNew->core[id]
+      SET Status = 'Resolved', ResolverID = {$app->userNew->core['id']}
       WHERE ID = $ID");
-        $app->cacheOld->delete_value("staff_pm_new_$app->userNew->core[id]");
-        $app->cacheOld->delete_value("num_staff_pms_$app->userNew->core[id]");
+        $app->cacheOld->delete_value("staff_pm_new_{$app->userNew->core['id']}");
+        $app->cacheOld->delete_value("num_staff_pms_{$app->userNew->core['id']}");
 
         Http::redirect("staffpm.php");
     } else {

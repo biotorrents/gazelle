@@ -86,7 +86,7 @@ foreach ($ArtistList as $Artist) {
           $app->dbOld->prepared_query("
             SELECT ID, Artists
             FROM users_notify_filters
-            WHERE UserID = '$app->userNew->core[id]'
+            WHERE UserID = '{$app->userNew->core['id']}'
               AND Label = 'Artist notifications'
             LIMIT 1");
 

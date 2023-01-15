@@ -36,7 +36,7 @@ $app->dbOld->query("
     `ToYear`,
     `Users`
   FROM `users_notify_filters`
-  WHERE `UserID` = $app->userNew->core[id]
+  WHERE `UserID` = {$app->userNew->core['id']}
 ");
 
 $NumFilters = $app->dbOld->record_count();

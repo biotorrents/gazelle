@@ -52,7 +52,7 @@ if (($CollageSubscriptions = $app->cacheOld->get_value('collage_subs_user_'.$app
     FROM
       `users_collage_subs`
     WHERE
-      `UserID` = '$app->userNew->core[id]'
+      `UserID` = '{$app->userNew->core['id']}'
     ");
 
     $CollageSubscriptions = $app->dbOld->collect(0);

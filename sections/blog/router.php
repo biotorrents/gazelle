@@ -114,7 +114,7 @@ if (check_perms('admin_manage_blog')) {
                 if (isset($_POST['subscribe'])) {
                     $app->dbOld->prepared_query("
             INSERT IGNORE INTO users_subscriptions
-            VALUES ('$app->userNew->core[id]', $ThreadID)");
+            VALUES ('{$app->userNew->core['id']}', $ThreadID)");
                     $app->cacheOld->delete_value('subscriptions_user_'.$app->userNew->core['id']);
                 }
 

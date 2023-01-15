@@ -26,7 +26,7 @@ if (isset($_POST['convid']) && is_number($_POST['convid'])) {
     $app->dbOld->query("
     SELECT UserID
     FROM pm_conversations_users
-    WHERE UserID = '$app->userNew->core[id]'
+    WHERE UserID = '{$app->userNew->core['id']}'
       AND ConvID = '$ConvID'");
     if (!$app->dbOld->has_results()) {
         error(403);

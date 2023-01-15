@@ -51,14 +51,14 @@ switch ($_REQUEST['action']) {
       SELECT DISTINCT GroupID
       FROM torrents AS t
         JOIN xbt_snatched AS s ON s.fid = t.ID
-      WHERE s.uid = '$app->userNew->core[id]'");
+      WHERE s.uid = '{$app->userNew->core['id']}'");
 
     $app->dbOld->query("
       DELETE b
       FROM bookmarks_torrents AS b
         JOIN snatched_groups_temp AS s
       USING(GroupID)
-      WHERE b.UserID = '$app->userNew->core[id]'");
+      WHERE b.UserID = '{$app->userNew->core['id']}'");
 
     $app->cacheOld->delete_value("bookmarks_group_ids_$UserID");
     Http::redirect("bookmarks.php");

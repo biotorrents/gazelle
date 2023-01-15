@@ -131,7 +131,7 @@ if ($ThreadInfo['Posts'] <= $PerPage*$Page && $ThreadInfo['StickyPostID'] > $Las
   $app->dbOld->prepared_query("
     SELECT PostID
     FROM forums_last_read_topics
-    WHERE UserID = '$app->userNew->core[id]'
+    WHERE UserID = '{$app->userNew->core['id']}'
       AND TopicID = '$ThreadID'");
   list($LastRead) = $app->dbOld->next_record();
   if ($LastRead < $LastPost) {
@@ -139,7 +139,7 @@ if ($ThreadInfo['Posts'] <= $PerPage*$Page && $ThreadInfo['StickyPostID'] > $Las
       INSERT INTO forums_last_read_topics
         (UserID, TopicID, PostID)
       VALUES
-        ('$app->userNew->core[id]', '$ThreadID', '".db_string($LastPost)."')
+        ('{$app->userNew->core['id']}', '$ThreadID', '".db_string($LastPost)."')
       ON DUPLICATE KEY UPDATE
         PostID = '$LastPost'");
   }
@@ -162,7 +162,7 @@ if ($QuoteNotificationsCount === false || $QuoteNotificationsCount > 0) {
     $app->dbOld->prepared_query("
     UPDATE users_notify_quoted
     SET UnRead = false
-    WHERE UserID = '$app->userNew->core[id]'
+    WHERE UserID = '{$app->userNew->core['id']}'
       AND Page = 'forums'
       AND PageID = '$ThreadID'
       AND PostID >= '$FirstPost'

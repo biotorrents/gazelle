@@ -98,7 +98,7 @@ SELECT
 FROM
   `friends`
 WHERE
-  `UserID` = '$app->userNew->core[id]'
+  `UserID` = '{$app->userNew->core['id']}'
   AND `FriendID` = '$UserID'
 ");
 

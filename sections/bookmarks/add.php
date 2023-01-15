@@ -27,7 +27,7 @@ SELECT
 FROM
   $Table
 WHERE
-  `UserID` = '$app->userNew->core[id]' AND $Col = $PageID
+  `UserID` = '{$app->userNew->core['id']}' AND $Col = $PageID
 ");
 
 if (!$app->dbOld->has_results()) {
@@ -38,7 +38,7 @@ if (!$app->dbOld->has_results()) {
         FROM
           `bookmarks_torrents`
         WHERE
-          `UserID` = $app->userNew->core[id]
+          `UserID` = {$app->userNew->core['id']}
         ");
 
         list($Sort) = $app->dbOld->next_record();
@@ -51,7 +51,7 @@ if (!$app->dbOld->has_results()) {
         INSERT IGNORE
         INTO $Table(`UserID`, $Col, `Time`, `Sort`)
         VALUES(
-          '$app->userNew->core[id]',
+          '{$app->userNew->core['id']}',
           $PageID,
           NOW(),
           $Sort
@@ -62,7 +62,7 @@ if (!$app->dbOld->has_results()) {
         INSERT IGNORE
         INTO $Table(`UserID`, $Col, `Time`)
         VALUES(
-          '$app->userNew->core[id]',
+          '{$app->userNew->core['id']}',
           $PageID,
           NOW()
         )

@@ -124,7 +124,7 @@ if ($_GET['updatelastread'] !== '0') {
         $app->dbOld->query("
         SELECT PostID
         FROM forums_last_read_topics
-          WHERE UserID = '$app->userNew->core[id]'
+          WHERE UserID = '{$app->userNew->core['id']}'
           AND TopicID = '$ThreadID'");
         list($LastRead) = $app->dbOld->next_record();
 
@@ -133,7 +133,7 @@ if ($_GET['updatelastread'] !== '0') {
             INSERT INTO forums_last_read_topics
               (UserID, TopicID, PostID)
             VALUES
-              ('$app->userNew->core[id]', '$ThreadID', '".db_string($LastPost)."')
+              ('{$app->userNew->core['id']}', '$ThreadID', '".db_string($LastPost)."')
             ON DUPLICATE KEY UPDATE
               PostID = '$LastPost'");
         }

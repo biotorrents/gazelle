@@ -106,7 +106,7 @@ while (list($SentDate, $SenderID, $Body, $MessageID) = $app->dbOld->next_record(
 $app->dbOld->query("
   SELECT UserID
   FROM pm_conversations_users
-  WHERE UserID != '$app->userNew->core[id]'
+  WHERE UserID != '{$app->userNew->core['id']}'
     AND ConvID = '$ConvID'
     AND (ForwardedTo = 0 OR ForwardedTo = UserID)");
 $ReceiverIDs = $app->dbOld->collect('UserID');

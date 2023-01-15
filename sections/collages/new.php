@@ -67,7 +67,7 @@ foreach ($CollageCats as $CatID => $CatName) { ?>
 $app->dbOld->query("
   SELECT COUNT(ID)
   FROM collages
-  WHERE UserID = '$app->userNew->core[id]'
+  WHERE UserID = '{$app->userNew->core['id']}'
     AND CategoryID = '0'
     AND Deleted = '0'");
 list($CollageCount) = $app->dbOld->next_record();

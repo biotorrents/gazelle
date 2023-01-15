@@ -35,7 +35,7 @@ if (!empty($TopicIDs)) {
       ) AS Page
     FROM forums_last_read_topics AS l
     WHERE l.TopicID IN(".implode(',', $TopicIDs).")
-      AND l.UserID = '$app->userNew->core[id]'");
+      AND l.UserID = '{$app->userNew->core['id']}'");
     $LastRead = $app->dbOld->to_array('TopicID', MYSQLI_ASSOC);
 } else {
     $LastRead = [];

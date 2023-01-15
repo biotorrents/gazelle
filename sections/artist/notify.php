@@ -34,7 +34,7 @@ if (empty($Notify)) {
     SELECT ID, Artists
     FROM users_notify_filters
     WHERE Label = 'Artist notifications'
-      AND UserID = '$app->userNew->core[id]'
+      AND UserID = '{$app->userNew->core['id']}'
     ORDER BY ID
     LIMIT 1");
 } else {
@@ -49,7 +49,7 @@ if (empty($Notify) && !$app->dbOld->has_results()) {
     INSERT INTO users_notify_filters
       (UserID, Label, Artists)
     VALUES
-      ('$app->userNew->core[id]', 'Artist notifications', '|".db_string($ArtistAliases)."|')");
+      ('{$app->userNew->core['id']}', 'Artist notifications', '|".db_string($ArtistAliases)."|')");
     $FilterID = $app->dbOld->inserted_id();
     $app->cacheOld->delete_value('notify_filters_'.$app->userNew->core['id']);
     $app->cacheOld->delete_value('notify_artists_'.$app->userNew->core['id']);

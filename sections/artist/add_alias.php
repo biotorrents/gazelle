@@ -50,7 +50,7 @@ if ($app->dbOld->has_results()) {
           UPDATE artists_alias
           SET ArtistID = '$ArtistID', Redirect = 0
           WHERE AliasID = '$CloneAliasID'");
-                Misc::write_log("Redirection for the alias $CloneAliasID ($dbAliasName) for the artist $ArtistID was removed by user $app->userNew->core[id] ($app->userNew[username])");
+                Misc::write_log("Redirection for the alias $CloneAliasID ($dbAliasName) for the artist $ArtistID was removed by user {$app->userNew->core['id']} ($app->userNew[username])");
             } else {
                 error('No changes were made as the target alias did not redirect anywhere.');
             }

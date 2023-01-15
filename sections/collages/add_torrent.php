@@ -30,7 +30,7 @@ function add_torrent($CollageID, $GroupID)
       INSERT IGNORE INTO collages_torrents
         (CollageID, GroupID, UserID, Sort, AddedOn)
       VALUES
-        ('$CollageID', '$GroupID', '$app->userNew->core[id]', '$Sort', '" . sqltime() . "')");
+        ('$CollageID', '$GroupID', '{$app->userNew->core['id']}', '$Sort', '" . sqltime() . "')");
 
         $app->dbOld->query("
       UPDATE collages
@@ -83,7 +83,7 @@ if ($MaxGroupsPerUser > 0) {
     SELECT COUNT(*)
     FROM collages_torrents
     WHERE CollageID = '$CollageID'
-      AND UserID = '$app->userNew->core[id]'");
+      AND UserID = '{$app->userNew->core['id']}'");
     list($GroupsForUser) = $app->dbOld->next_record();
     if (!check_perms('site_collages_delete') && $GroupsForUser >= $MaxGroupsPerUser) {
         error(403);

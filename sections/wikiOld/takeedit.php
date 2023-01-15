@@ -80,7 +80,7 @@ if ($Read && $Edit) {
 
 $SQL .= "
     Date = NOW(),
-    Author = '$app->userNew->core[id]'
+    Author = '{$app->userNew->core['id']}'
   WHERE ID = '$P[id]'";
 
 $app->dbOld->prepared_query($SQL);

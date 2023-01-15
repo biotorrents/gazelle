@@ -33,7 +33,7 @@ function add_artist($CollageID, $ArtistID)
       INSERT IGNORE INTO collages_artists
         (CollageID, ArtistID, UserID, Sort, AddedOn)
       VALUES
-        ('$CollageID', '$ArtistID', '$app->userNew->core[id]', '$Sort', '" . sqltime() . "')");
+        ('$CollageID', '$ArtistID', '{$app->userNew->core['id']}', '$Sort', '" . sqltime() . "')");
 
         $app->dbOld->query("
       UPDATE collages
@@ -85,7 +85,7 @@ if ($MaxGroupsPerUser > 0) {
     SELECT COUNT(*)
     FROM collages_artists
     WHERE CollageID = '$CollageID'
-      AND UserID = '$app->userNew->core[id]'");
+      AND UserID = '{$app->userNew->core['id']}'");
     list($GroupsForUser) = $app->dbOld->next_record();
     if (!check_perms('site_collages_delete') && $GroupsForUser >= $MaxGroupsPerUser) {
         error(403);

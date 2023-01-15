@@ -313,7 +313,7 @@ if (check_perms('site_torrents_notify')) {
         $app->dbOld->query("
       SELECT ID, Artists
       FROM users_notify_filters
-      WHERE UserID = '{$app->userNew->core[id]}'
+      WHERE UserID = '{{$app->userNew->core['id']}}'
         AND Label = 'Artist notifications'
       LIMIT 1");
         $Notify = $app->dbOld->next_record(MYSQLI_ASSOC, false);

@@ -108,13 +108,13 @@ EOT;
     INSERT INTO invites
       (InviterID, InviteKey, Email, Expires, Reason)
     VALUES
-      ('$app->userNew->core[id]', '$InviteKey', '".Crypto::encrypt($CurEmail)."', '$InviteExpires', '$InviteReason')");
+      ('{$app->userNew->core['id']}', '$InviteKey', '".Crypto::encrypt($CurEmail)."', '$InviteExpires', '$InviteReason')");
 
     if (!check_perms('site_send_unlimited_invites')) {
         $app->dbOld->query("
       UPDATE users_main
       SET Invites = GREATEST(Invites, 1) - 1
-      WHERE ID = '$app->userNew->core[id]'");
+      WHERE ID = '{$app->userNew->core['id']}'");
         $app->cacheOld->begin_transaction('user_info_heavy_'.$app->userNew->core['id']);
         $app->cacheOld->update_row(false, array('Invites' => '-1'));
         $app->cacheOld->commit_transaction(0);

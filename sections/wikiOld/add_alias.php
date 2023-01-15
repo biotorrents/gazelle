@@ -32,7 +32,7 @@ if ($NewAlias !== '' && $NewAlias!== 'addalias' && $Dupe === false) { // Not nul
     INSERT INTO `wiki_aliases`(`Alias`, `UserID`, `ArticleID`)
     VALUES(
       '$NewAlias',
-      '$app->userNew->core[id]',
+      '{$app->userNew->core['id']}',
       '$ArticleID'
     )
     ");

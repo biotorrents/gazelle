@@ -32,7 +32,7 @@ if (($Key = array_search($CollageID, $UserSubscriptions)) !== false) {
     INSERT IGNORE INTO users_collage_subs
       (UserID, CollageID, LastVisit)
     VALUES
-      ($app->userNew->core[id], $CollageID, NOW())");
+      ({$app->userNew->core['id']}, $CollageID, NOW())");
     array_push($UserSubscriptions, $CollageID);
     Collages::increase_subscriptions($CollageID);
 }

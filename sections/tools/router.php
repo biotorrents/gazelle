@@ -154,7 +154,7 @@ switch ($_REQUEST['action']) {
 
     $app->dbOld->prepared_query("
       INSERT INTO news (UserID, Title, Body, Time)
-      VALUES ('$app->userNew->core[id]', '".db_string($_POST['title'])."', '".db_string($_POST['body'])."', NOW())");
+      VALUES ('{$app->userNew->core['id']}', '".db_string($_POST['title'])."', '".db_string($_POST['body'])."', NOW())");
 
     $app->cacheOld->delete_value('news_latest_id');
     $app->cacheOld->delete_value('news_latest_title');

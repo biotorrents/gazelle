@@ -24,7 +24,7 @@ if (!$ShowAll) {
     FROM collages AS c
       JOIN users_collage_subs AS s ON s.CollageID = c.ID
       JOIN collages_torrents AS ct ON ct.CollageID = c.ID
-    WHERE s.UserID = $app->userNew->core[id] AND c.Deleted = '0'
+    WHERE s.UserID = {$app->userNew->core['id']} AND c.Deleted = '0'
       AND ct.AddedOn > s.LastVisit
     GROUP BY c.ID";
 } else {
@@ -37,7 +37,7 @@ if (!$ShowAll) {
     FROM collages AS c
       JOIN users_collage_subs AS s ON s.CollageID = c.ID
       LEFT JOIN collages_torrents AS ct ON ct.CollageID = c.ID
-    WHERE s.UserID = $app->userNew->core[id] AND c.Deleted = '0'
+    WHERE s.UserID = {$app->userNew->core['id']} AND c.Deleted = '0'
     GROUP BY c.ID";
 }
 

@@ -28,7 +28,7 @@ RIGHT JOIN `users_main` AS u
 ON
   u.`ID` = f.`FriendID`
 WHERE
-  f.`UserID` = '$app->userNew->core[id]' AND f.`FriendID` = '$FriendID'
+  f.`UserID` = '{$app->userNew->core['id']}' AND f.`FriendID` = '$FriendID'
 ");
 
 

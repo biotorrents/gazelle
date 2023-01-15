@@ -23,7 +23,7 @@ SELECT
 FROM
   `torrents`
 WHERE
-  `GroupID` = '$group_id' AND `UserID` = '$app->userNew->core[id]'
+  `GroupID` = '$group_id' AND `UserID` = '{$app->userNew->core['id']}'
 ");
 
 
