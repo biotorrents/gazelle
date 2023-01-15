@@ -80,7 +80,7 @@ if (!check_perms('site_moderate_forums')) {
 
 $ForumName = Text::esc($Forums[$ForumID]['Name']);
 if (!Forums::check_forumperm($ForumID)) {
-    error(403);
+    #error(403);
 }
 
 // Start printing

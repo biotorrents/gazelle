@@ -418,9 +418,11 @@ class User
                 $UserInfo = $app->dbOld->next_record(MYSQLI_ASSOC, ['Paranoia', 'Title']);
                 $UserInfo['CatchupTime'] = strtotime($UserInfo['CatchupTime']);
 
+                /*
                 if (!is_array($UserInfo['Paranoia'])) {
                     $UserInfo['Paranoia'] = json_decode($UserInfo['Paranoia'], true);
                 }
+                */
 
                 if (!$UserInfo['Paranoia']) {
                     $UserInfo['Paranoia'] = [];
@@ -605,7 +607,8 @@ class User
         */
 
         # Show donor icon?
-        $ShowDonorIcon = (!in_array('hide_donor_heart', $Paranoia) || $OverrideParanoia);
+        $ShowDonorIcon = true;
+        #$ShowDonorIcon = (!in_array('hide_donor_heart', $Paranoia) || $OverrideParanoia);
 
         if ($Title) {
             $Str .= "<strong><a href='user.php?id=$UserID'>$Username</a></strong>";

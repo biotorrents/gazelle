@@ -18,9 +18,11 @@ declare(strict_types=1);
 
 enforce_login();
 
+/*
 if (!empty($app->userNew->extra['DisableForums'])) {
     error(403);
 }
+*/
 
 $Forums = Forums::get_forums();
 $ForumCats = Forums::get_forum_categories();

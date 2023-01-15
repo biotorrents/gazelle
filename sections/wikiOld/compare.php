@@ -61,11 +61,13 @@ function get_body($ID, $Rev)
     $app = App::go();
 
     # $Rev is a str, $Revision an int
-    global $Revision, $Body;
+    #global $Revision, $Body;
 
+    /*
     if ((int) $Rev === $Revision) {
         $Str = $Body;
     } else {
+        */
         $app->dbOld->prepared_query("
           SELECT Body
           FROM wiki_revisions
@@ -74,9 +76,10 @@ function get_body($ID, $Rev)
 
         if (!$app->dbOld->has_results()) {
             error(404);
+            exit;
         }
         list($Str) = $app->dbOld->next_record();
-    }
+    #}
     return $Str;
 }
 
@@ -98,9 +101,11 @@ $ArticleID = (int) $_GET['id'];
 $Article = Wiki::get_article($ArticleID);
 list($Revision, $Title, $Body, $Read, $Edit, $Date, $AuthorID, $AuthorName) = array_shift($Article);
 
+/*
 if ($Edit > $app->userNew->extra['EffectiveClass']) {
     error(404);
 }
+*/
 
 View::header('Compare Article Revisions');
 $Diff2 = get_body($ArticleID, $_GET['new']);

@@ -60,7 +60,7 @@ $IsDonorForum = ($ForumID == DONOR_FORUM);
 
 // Make sure they're allowed to look at the page
 if (!Forums::check_forumperm($ForumID)) {
-    error(403);
+    #error(403);
 }
 //Escape strings for later display
 $ThreadTitle = Text::esc($ThreadInfo['Title']);
@@ -304,6 +304,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
     <?php if ($UserResponse !== null || $Closed || $ThreadInfo['IsLocked'] || !Forums::check_forumperm($ForumID)) { ?>
     <ul class="poll nobullet">
       <?php
+      $RevealVoters = null;
     if (!$RevealVoters) {
         foreach ($Answers as $i => $Answer) {
             if (!empty($Votes[$i]) && $TotalVotes > 0) {
