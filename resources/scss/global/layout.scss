@@ -31,6 +31,16 @@ section {
  * flex elements
  */
 
+/* the headers that have something floating right */
+/* todo: find a new name for this (collision) */
+.flexHeader {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 2rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .flex {
   display: flex;
 }

@@ -1,0 +1,80 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+	<section>
+
+		{# create or edit #}
+		{% if edit %}
+			<h2>Edit news post</h2>
+
+			{% set formAction = "update" %}
+			{% set formButton = "<input type='submit' class='button-orange' value='update news'>" %}
+
+		{% else %}
+			<h2>Create news post</h2>
+
+			{% set formAction = "create" %}
+			{% set formButton = "<input type='submit' class='button-primary' value='create news'>" %}
+		{% endif %}
+
+		{# start the news form (subject and body should be nullable in the controller) #}
+		<form name="siteNews" method="post" action="/tools.php?action=news">
+			{{ form_token(query.server.REQUEST_URI) }}
+
+			<input type="hidden" name="auth" value="{{ user.extra.AuthKey }}">
+
+			<input type="hidden" name="formAction" value="{{ formAction }}">
+
+			<input type="hidden" name="newsId" value="{{ newsId }}">
+
+			{# subject #}
+			<h3>Subject</h3>
+			<input type="text" name="subject" value="{{ subject }}" placeholder="Good evening and welcome to Tucker Carlson Tonight">
+
+			{# body #}
+			<h3>Body</h3>
+			{# https://www.foxnews.com/opinion/tucker-carlson-society-hates-children-would-allow-this #}
+			{% set placeholder = "As the Canadian journalist Jonathan Kay put it, Hanna 'has been dressing (like this) for a while, but only recently have students within the school gone public with this fact.' So, they've been enduring this for a while. Kay also notes that Hanna's costume is based on the style of Japanese Internet pornography, which translates roughly into English as 'exploding milk porn.'" %}
+			{% set variables = { "id": "body", "name": "body", "placeholder": placeholder, "value": body } %}
+			{% include "_base/textarea.twig" with variables %}
+
+			{# submit #}
+			{{ formButton|raw }}
+
+		</form>
+	</section>
+
+
+	{# news archive controls #}
+	<section>
+		<h2>Older news posts</h2>
+
+		{% for item in oldNews %}
+
+			<div class="flexHeader">
+				<h3>{{ item.subject }}</h3>
+				<p>{{ item.created|relativeTime }}</p>
+			</div>
+
+			<p>{{ item.body|parse }}</p>
+
+			<p>
+				<a class="button button-orange" href="/tools.php?action=news&newsId={{ item.id }}">update</a>
+				<a class="button button-red" href="/tools.php?action=news&newsId={{ item.id }}&delete=true&auth={{ user.extra.AuthKey }}">delete</a>
+			</p>
+
+			<hr/>
+
+		{% endfor %}
+
+	</section>
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+	{{ include("admin/sidebar.twig") }}
+
+{% endblock %}
