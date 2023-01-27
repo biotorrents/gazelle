@@ -143,9 +143,9 @@
 
 		{# toggle bookmark #}
 		{% if isBookmarked %}
-			<a class="button button-red" id="toggleGroupBookmark" data-groupid="{{ groupId }}">remove bookmark</a>
+			<a class="button button-red" id="toggleGroupBookmark" data-userid="{{ user.core.id }}" data-groupid="{{ groupId }}">remove bookmark</a>
 		{% else %}
-			<a class="button button-orange" id="toggleGroupBookmark" data-groupid="{{ groupId }}">add bookmark</a>
+			<a class="button button-orange" id="toggleGroupBookmark" data-userid="{{ user.core.id }}" data-groupid="{{ groupId }}">add bookmark</a>
 		{% endif %}
 
 		<hr />

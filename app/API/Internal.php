@@ -214,14 +214,22 @@ class Internal extends Base
     /**
      * createBookmark
      */
-    public static function createBookmark(int $userId, array $data = []): void
+    public static function createBookmark(): void
     {
         $app = \App::go();
 
         self::validateFrontendHash();
 
+        $post = \Http::query("post");
+
         try {
-            \Bookmarks::create($userId, $data);
+            \Bookmarks::create(
+                $app->userNew->core["id"] ?? null,
+                intval($post["contentId"] ?? null),
+                strval($post["contentType"] ?? null)
+            );
+
+            self::success("bookmark created");
         } catch (\Exception $e) {
             self::failure(400, $e->getMessage());
         }
@@ -231,14 +239,22 @@ class Internal extends Base
     /**
      * deleteBookmark
      */
-    public static function deleteBookmark(int $userId, array $data = []): void
+    public static function deleteBookmark(): void
     {
         $app = \App::go();
 
         self::validateFrontendHash();
 
+        $post = \Http::query("post");
+
         try {
-            \Bookmarks::delete($userId, $data);
+            \Bookmarks::delete(
+                $app->userNew->core["id"] ?? null,
+                intval($post["contentId"] ?? null),
+                strval($post["contentType"] ?? null)
+            );
+
+            self::success("bookmark deleted");
         } catch (\Exception $e) {
             self::failure(400, $e->getMessage());
         }

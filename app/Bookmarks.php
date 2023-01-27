@@ -14,9 +14,9 @@ class Bookmarks
      *
      * Check if can bookmark.
      */
-    public static function can_bookmark(string $type): bool
+    public static function can_bookmark(string $contentType): bool
     {
-        $type = strtolower(strval($type));
+        $contentType = strtolower(strval($contentType));
         $allowedTypes = [
             "torrent",
             "artist", "creator",
@@ -24,7 +24,7 @@ class Bookmarks
             "request"
         ];
 
-        return in_array($type, $allowedTypes);
+        return in_array($contentType, $allowedTypes);
     }
 
 
@@ -34,13 +34,13 @@ class Bookmarks
      * Get the bookmark schema, e.g.:
      * list($table, $column) = bookmark_schema("torrent");
      *
-     * @param string $type the type to get the schema for
+     * @param string $contentType the type to get the schema for
      */
-    public static function bookmark_schema(string $type): array
+    public static function bookmark_schema(string $contentType): array
     {
-        $type = strtolower(strval($type));
+        $contentType = strtolower(strval($contentType));
 
-        switch ($type) {
+        switch ($contentType) {
             case "torrent":
                 return ["bookmarks_torrents", "GroupID"];
                 break;
@@ -71,13 +71,13 @@ class Bookmarks
      *
      * Check if something is bookmarked.
      *
-     * @param string $type the type of bookmarks to check
+     * @param string $contentType the type of bookmarks to check
      * @param int $id the bookmark's id
      * @return boolean
      */
-    public static function has_bookmarked(string $type, int $id): bool
+    public static function has_bookmarked(string $contentType, int $id): bool
     {
-        return in_array($id, self::all_bookmarks($type));
+        return in_array($id, self::all_bookmarks($contentType));
     }
 
 
@@ -87,25 +87,25 @@ class Bookmarks
      * Fetch all bookmarks of a certain type for a user.
      * If $userId is empty, defaults to $app->userNew->core["id"].
      *
-     * @param string $type the type of bookmarks to fetch
+     * @param string $contentType the type of bookmarks to fetch
      * @param int $userId the userId whose bookmarks to get
      * @return array the bookmarks
      */
-    public static function all_bookmarks(string $type, int $userId = 0): array
+    public static function all_bookmarks(string $contentType, int $userId = 0): array
     {
         $app = App::go();
 
-        $type = strtolower(strval($type));
+        $contentType = strtolower(strval($contentType));
 
         if (empty($userId)) {
             $userId = $app->userNew->core["id"];
         }
 
-        $cacheKey = "bookmarks_{$type}_{$userId}";
+        $cacheKey = "bookmarks_{$contentType}_{$userId}";
         $bookmarks = $app->cacheOld->get_value($cacheKey);
 
         if (!$bookmarks) {
-            list($table, $column) = self::bookmark_schema($type);
+            list($table, $column) = self::bookmark_schema($contentType);
             $queryId = $app->dbOld->get_query_id();
 
             $app->dbOld->prepared_query("select {$column} from {$table} where userId = {$userId}");
@@ -131,14 +131,14 @@ class Bookmarks
     {
         $app = App::go();
 
-        $type = $data[0] ?? null;
+        $contentType = $data[0] ?? null;
         $contentId = $data[1] ?? null;
 
-        if (!$type || !$contentId) {
+        if (!$contentType || !$contentId) {
             throw new Exception("invalid data parameter");
         }
 
-        list($table, $column) = self::bookmark_schema($type);
+        list($table, $column) = self::bookmark_schema($contentType);
 
         $query = "select 1 from {$table} where userId = ? and {$column} = ?";
         $good = $app->dbNew->single($query, [$userId, contentId]);
@@ -152,21 +152,18 @@ class Bookmarks
      *
      * Adds a bookmark for a piece of content.
      */
-    public static function create(int $userId, array $data = []): void
+    public static function create(int $userId, int $contentId, string $contentType): void
     {
         $app = App::go();
 
-        $type = $data[0] ?? null;
-        $contentId = $data[1] ?? null;
-
-        if (!$type || !$contentId) {
-            throw new Exception("invalid data parameter");
+        if (empty($userId) || empty($contentId) || empty($contentType)) {
+            throw new Exception("unable to validate parameters");
         }
 
-        list($table, $column) = self::bookmark_schema($type);
+        list($table, $column) = self::bookmark_schema($contentType);
 
         # special torrent handling
-        if ($type === "torrent") {
+        if ($contentType === "torrent") {
             $query = "select max(sort) from bookmarks_torrents where userId = ?";
             $sort = $app->dbNew->single($query, [$userId]);
 
@@ -199,18 +196,15 @@ class Bookmarks
      *
      * Deletes a bookmark, obviously.
      */
-    public static function delete(int $userId, array $data = []): void
+    public static function delete(int $userId, int $contentId, string $contentType): void
     {
         $app = App::go();
 
-        $type = $data[0] ?? null;
-        $contentId = $data[1] ?? null;
-
-        if (!$type || !$contentId) {
-            throw new Exception("invalid data parameter");
+        if (empty($userId) || empty($contentId) || empty($contentType)) {
+            throw new Exception("unable to validate parameters");
         }
 
-        list($table, $column) = self::bookmark_schema($type);
+        list($table, $column) = self::bookmark_schema($contentType);
 
         $query = "delete from {$table} where userId = ? and {$column} = ?";
         $app->dbNew->do($query, [$userId, $contentId]);

@@ -245,6 +245,14 @@ class Twig # extends Twig\Environment
             return Format::relativeTime($time);
         }));
 
+        # curlyBraces (for biblatex)
+        $twig->addFilter(new Twig\TwigFilter("curlyBraces", function ($string) {
+            return new Twig\Markup(
+                "{{$string}}",
+                "UTF-8"
+            );
+        }));
+
         # Badges::displayBadge
         $twig->addFunction(new Twig\TwigFunction("displayBadge", function ($badgeId) {
             return new Twig\Markup(

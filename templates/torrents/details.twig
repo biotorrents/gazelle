@@ -286,7 +286,7 @@
 
 <span class="flexHeader">
 <h4>Cite this dataset</h4>
-<a class="button" class="toggleBibtex">biblatex</a>
+<a class="button toggleBibtex" data-torrentid="{{ item.ID }}">biblatex</a>
 </span>
 
 {##
@@ -300,27 +300,29 @@
  #   howpublished = "\url{https://en.wikipedia.org/w/index.php?title=Biber_(LaTeX)&oldid=1116502991}",
  #   note = "[Online; accessed 10-January-2023]"
  # }
+ #
+ # important: the weird indentation below is absolutely necessary due to the textarea
  #}
 
-<textarea class="bibtexCitation" rows="10">
+<textarea class="bibtexCitation" id="bibtexCitation-{{ item.ID }}" rows="10">
 @dataset{ BioTorrents.de-torrentId-{{ item.ID }}
-  title = {{ groupDetails.title }},
+  title = {{ groupDetails.title|curlyBraces }},
   author = todo,
-  {% if groupDetails.workgroup %}
-  organization = {{ groupDetails.workgroup }},
-  {% endif %}
-  {% if groupDetails.year %}
-  year = {{ groupDetails.year }},
-  {% endif %}
-  {% if item.Version %}
-  version = {{ item.Version }},
-  {% endif %}
+{% if groupDetails.workgroup %}
+  organization = {{ groupDetails.workgroup|curlyBraces }},
+{% endif %}
+{% if groupDetails.year %}
+  year = {{ groupDetails.year|curlyBraces }},
+{% endif %}
+{% if item.Version %}
+  version = {{ item.Version|curlyBraces }},
+{% endif %}
   url = \href{https://{{ env.siteDomain }}/torrents.php?torrentid={{ item.ID }}},
-  urldate = {{ "now"|date }},
-  {% if groupDetails.Screenshots is not empty %}
-  doi = {{ groupDetails.Screenshots.doi }},
-  {% endif %}
-  note = BitTorrent info hash: {{ item.InfoHash }}
+  urldate = {{ "now"|date|curlyBraces }},
+{% if groupDetails.Screenshots is not empty %}
+  doi = {{ groupDetails.Screenshots.doi|curlyBraces }},
+{% endif %}
+  note = {{ "BitTorrent info hash: #{item.InfoHash}"|curlyBraces }}
 }
 </textarea>
 </td>

@@ -14,11 +14,145 @@
   $(".useFreeleechToken").on("click", () => {
     return confirm("Are you sure you want to use a freeleech token here?");
   });
+
+  // toggle biblatex citation
+  $(".bibtexCitation").hide();
+  $(".toggleBibtex").on("click", (event) => {
+    let torrentId = $(event.target).data("torrentid");
+    $("#bibtexCitation-" + torrentId).toggle();
+  });
+
+  // create bookmark
+  $("#createGroupBookmark").on("click", (event) => {
+    // the data to send
+    var request = {
+      frontendHash: frontendHash,
+      userId: $(event.target).data("userid"),
+      contentId: $(event.target).data("groupid"),
+      contentType: "torrent",
+    };
+
+    // ajax request
+    $.post("/api/internal/createBookmark", request, (response) => {
+      if (response.status === "success") {
+        $(event.target).removeClass("button-orange");
+        $(event.target).addClass("button-red");
+        $(event.target).html("remove bookmark");
+        $(event.target).attr("id", "deleteGroupBookmark");
+      }
+
+      if (response.status === "failure") {
+        console.log(response);
+      }
+    });
+  });
+
+  // toggle bookmark
+  $("#toggleGroupBookmark").on("click", (event) => {
+    // determine action
+    if ($(event.target).html() === "add bookmark") {
+      var action = "create";
+    }
+
+    if ($(event.target).html() === "remove bookmark") {
+      var action = "delete";
+    }
+
+    // the data to send
+    var request = {
+      frontendHash: frontendHash,
+      userId: $(event.target).data("userid"),
+      contentId: $(event.target).data("groupid"),
+      contentType: "torrent",
+    };
+
+    // ajax request
+    if (action === "create") {
+      $.post("/api/internal/createBookmark", request, (response) => {
+        if (response.status === "success") {
+          $(event.target).removeClass("button-orange");
+          $(event.target).addClass("button-red");
+          $(event.target).html("remove bookmark");
+        }
+
+        if (response.status === "failure") {
+          console.log(response);
+        }
+      });
+    }
+
+    if (action === "delete") {
+      $.post("/api/internal/deleteBookmark", request, (response) => {
+        if (response.status === "success") {
+          $(event.target).removeClass("button-red");
+          $(event.target).addClass("button-orange");
+          $(event.target).html("add bookmark");
+        }
+
+        if (response.status === "failure") {
+          console.log(response);
+        }
+      });
+    }
+  });
+
+
+  /*
+      // create bookmark
+  $("#createGroupBookmark").on("click", (event) => {
+      // the data to send
+      var request = {
+          frontendHash: frontendHash,
+          userId: $(event.target).data("userid"),
+          contentId: $(event.target).data("groupid"),
+          contentType: "torrent",
+      };
+
+      // ajax request
+      $.post("/api/internal/createBookmark", request, (response) => {
+          if (response.status === "success") {
+              $(event.target).removeClass("button-orange");
+              $(event.target).addClass("button-red");
+              $(event.target).html("remove bookmark");
+              $(event.target).attr("id", "deleteGroupBookmark");
+          }
+
+          if (response.status === "failure") {
+              console.log(response);
+          }
+      });
+  });
+
+  // delete bookmark
+  $("#deleteGroupBookmark").on("click", (event) => {
+      // the data to send
+      var request = {
+          frontendHash: frontendHash,
+          userId: $(event.target).data("userid"),
+          contentId: $(event.target).data("groupid"),
+          contentType: "torrent",
+      };
+
+      // ajax request
+      $.post("/api/internal/deleteBookmark", request, (response) => {
+          if (response.status === "success") {
+              $(event.target).removeClass("button-red");
+              $(event.target).addClass("button-orange");
+              $(event.target).html("add bookmark");
+              $(event.target).attr("id", "createGroupBookmark");
+          }
+
+          if (response.status === "failure") {
+              console.log(response);
+          }
+      });
+  });
+*/
 })();
 
 /**
- * ArtistManager
- */
+* ArtistManager
+*/
 function ArtistManager() {
   var GroupID = window.location.search.match(/[?&]id=(\d+)/);
   if (typeof GroupID == "undefined") {
@@ -111,8 +245,8 @@ function ArtistManager() {
 }
 
 /**
- * SelectArtist
- */
+* SelectArtist
+*/
 function SelectArtist(e, obj) {
   if (window.event) {
     e = window.event;
@@ -133,8 +267,8 @@ function SelectArtist(e, obj) {
 }
 
 /**
- * ArtistManagerSubmit
- */
+* ArtistManagerSubmit
+*/
 function ArtistManagerSubmit() {
   var Selection = new Array();
   var MainSelectionCount = 0;
@@ -151,8 +285,8 @@ function ArtistManagerSubmit() {
     ($("#manager_action").raw().value == "delete" &&
       !confirm(
         "Are you sure you want to delete " +
-          Selection.length +
-          " artists from this group?"
+        Selection.length +
+        " artists from this group?"
       ))
   ) {
     return;
@@ -178,8 +312,8 @@ function ArtistManagerSubmit() {
 }
 
 /**
- * ArtistManagerDelete
- */
+* ArtistManagerDelete
+*/
 function ArtistManagerDelete() {
   $("#manager_action").raw().value = "delete";
   ArtistManagerSubmit();
@@ -187,8 +321,8 @@ function ArtistManagerDelete() {
 }
 
 /**
- * Vote
- */
+* Vote
+*/
 function Vote(amount, requestid) {
   if (typeof amount == "undefined") {
     amount = parseInt($("#amount").raw().value);
@@ -211,17 +345,17 @@ function Vote(amount, requestid) {
 
   ajax.get(
     "requests.php?action=takevote&id=" +
-      requestid +
-      "&auth=" +
-      authkey +
-      "&amount=" +
-      amount,
+    requestid +
+    "&auth=" +
+    authkey +
+    "&amount=" +
+    amount,
     function (response) {
       if (response == "bankrupt") {
         save_message(
           "You do not have sufficient upload credit to add " +
-            get_size(amount) +
-            " to this request",
+          get_size(amount) +
+          " to this request",
           true
         );
         return;
@@ -239,10 +373,10 @@ function Vote(amount, requestid) {
 
         save_message(
           "Your vote of " +
-            get_size(amount) +
-            ", adding a " +
-            get_size(amount * (1 - $("#request_tax").raw().value)) +
-            " bounty, has been added"
+          get_size(amount) +
+          ", adding a " +
+          get_size(amount * (1 - $("#request_tax").raw().value)) +
+          " bounty, has been added"
         );
         $("#button").raw().disabled = true;
       } else {

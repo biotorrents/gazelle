@@ -20,3 +20,7 @@ Flight::route("POST /api/internal/deleteTwoFactor", ["Gazelle\API\Internal", "de
 
 # suggest a passphrase
 Flight::route("POST /api/internal/createPassphrase", ["Gazelle\API\Internal", "createPassphrase"]);
+
+# manage bookmarks
+Flight::route("POST /api/internal/createBookmark", ["Gazelle\API\Internal", "createBookmark"]);
+Flight::route("POST /api/internal/deleteBookmark", ["Gazelle\API\Internal", "deleteBookmark"]);
