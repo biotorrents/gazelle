@@ -47,6 +47,9 @@ class Internal extends Base
     }
 
 
+    /** */
+
+
     /**
      * createTwoFactor
      */
@@ -158,6 +161,9 @@ class Internal extends Base
     }
 
 
+    /** */
+
+
     /**
      * createDefaultSearch
      *
@@ -199,5 +205,42 @@ class Internal extends Base
     public static function deleteDefaultSearch(int $userId): void
     {
         self::createDefaultSearch($userId, []);
+    }
+
+
+    /** */
+
+
+    /**
+     * createBookmark
+     */
+    public static function createBookmark(int $userId, array $data = []): void
+    {
+        $app = \App::go();
+
+        self::validateFrontendHash();
+
+        try {
+            \Bookmarks::create($userId, $data);
+        } catch (\Exception $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
+    /**
+     * deleteBookmark
+     */
+    public static function deleteBookmark(int $userId, array $data = []): void
+    {
+        $app = \App::go();
+
+        self::validateFrontendHash();
+
+        try {
+            \Bookmarks::delete($userId, $data);
+        } catch (\Exception $e) {
+            self::failure(400, $e->getMessage());
+        }
     }
 } # class

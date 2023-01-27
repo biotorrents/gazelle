@@ -10,7 +10,10 @@ declare(strict_types=1);
 # index
 Flight::route("/better", function () {
     $app = App::go();
-    $app->twig->display("better/index.twig");
+    $app->twig->display("better/index.twig", [
+        "title" => "Better",
+        "sidebar" => true,
+    ]);
 });
 
 

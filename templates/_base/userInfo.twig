@@ -93,7 +93,7 @@
         <li id="bonus_points">
             <a href="/wiki.php?action=article&name=bonuspoints">{{ env.bonusPoints }}</a>:
             <span class="stat">
-                <a href="/store.php">{{ user.extra.BonusPoints }}</a>
+                <a href="/store.php">{{ user.extra.BonusPoints|number_format }}</a>
             </span>
         </li>
 

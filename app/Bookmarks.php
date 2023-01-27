@@ -1,6 +1,6 @@
 <?php
 
-#declare(strict_types=1);
+declare(strict_types=1);
 
 
 /**
@@ -17,16 +17,22 @@ class Bookmarks
     public static function can_bookmark(string $type): bool
     {
         $type = strtolower(strval($type));
-        $allowedTypes = ["torrent", "artist", "collage", "request"];
+        $allowedTypes = [
+            "torrent",
+            "artist", "creator",
+            "collage", "collection",
+            "request"
+        ];
 
         return in_array($type, $allowedTypes);
     }
+
 
     /**
      * bookmark_schema
      *
      * Get the bookmark schema, e.g.:
-     * list($table, $column) = bookmark_schema('torrent');
+     * list($table, $column) = bookmark_schema("torrent");
      *
      * @param string $type the type to get the schema for
      */
@@ -35,27 +41,30 @@ class Bookmarks
         $type = strtolower(strval($type));
 
         switch ($type) {
-          case 'torrent':
-              return ['bookmarks_torrents', 'GroupID'];
-              break;
+            case "torrent":
+                return ["bookmarks_torrents", "GroupID"];
+                break;
 
-          case 'artist':
-              return ['bookmarks_artists', 'ArtistID'];
-              break;
+            case "artist":
+            case "creator":
+                return ["bookmarks_artists", "ArtistID"];
+                break;
 
-          case 'collage':
-              return ['bookmarks_collages', 'CollageID'];
-              break;
+            case "collage":
+            case "collection":
+                return ["bookmarks_collages", "CollageID"];
+                break;
 
-          case 'request':
-              return ['bookmarks_requests', 'RequestID'];
-              break;
+            case "request":
+                return ["bookmarks_requests", "RequestID"];
+                break;
 
-          default:
-              Http::response(403);
-              break;
+            default:
+                throw new Exception("invalid bookmark type");
+                break;
         }
     }
+
 
     /**
      * has_bookmarked
@@ -70,6 +79,7 @@ class Bookmarks
     {
         return in_array($id, self::all_bookmarks($type));
     }
+
 
     /**
      * all_bookmarks
@@ -107,4 +117,102 @@ class Bookmarks
 
         return $bookmarks;
     }
-}
+
+
+    /**
+     * isBookmarked
+     *
+     * Is a piece of content already bookmarked?
+     *
+     * @param int userId the user to check the bookmark for
+     * @param array data e.g., [ "torrent" => intval(torrentId) ]
+     */
+    public static function isBookmarked(int $userId, array $data = []): bool
+    {
+        $app = App::go();
+
+        $type = $data[0] ?? null;
+        $contentId = $data[1] ?? null;
+
+        if (!$type || !$contentId) {
+            throw new Exception("invalid data parameter");
+        }
+
+        list($table, $column) = self::bookmark_schema($type);
+
+        $query = "select 1 from {$table} where userId = ? and {$column} = ?";
+        $good = $app->dbNew->single($query, [$userId, contentId]);
+
+        return boolval($good);
+    }
+
+
+    /**
+     * create
+     *
+     * Adds a bookmark for a piece of content.
+     */
+    public static function create(int $userId, array $data = []): void
+    {
+        $app = App::go();
+
+        $type = $data[0] ?? null;
+        $contentId = $data[1] ?? null;
+
+        if (!$type || !$contentId) {
+            throw new Exception("invalid data parameter");
+        }
+
+        list($table, $column) = self::bookmark_schema($type);
+
+        # special torrent handling
+        if ($type === "torrent") {
+            $query = "select max(sort) from bookmarks_torrents where userId = ?";
+            $sort = $app->dbNew->single($query, [$userId]);
+
+            if (!$sort) {
+                $sort = 0;
+            }
+
+            $sort += 1;
+
+            $query = "
+                insert ignore into {$table} (userId, {$column}, time, sort)
+                values (?, ?, now(), ?)
+            ";
+            $app->dbNew->do($query, [$userId, $contentId, $sort]);
+
+            return;
+        }
+
+        # normal bookmark handling
+        $query = "
+            insert ignore into {$table} (userId, {$column}, time)
+            values (?, ?, now())
+        ";
+        $app->dbNew->do($query, [$userId, $contentId]);
+    }
+
+
+    /**
+     * delete
+     *
+     * Deletes a bookmark, obviously.
+     */
+    public static function delete(int $userId, array $data = []): void
+    {
+        $app = App::go();
+
+        $type = $data[0] ?? null;
+        $contentId = $data[1] ?? null;
+
+        if (!$type || !$contentId) {
+            throw new Exception("invalid data parameter");
+        }
+
+        list($table, $column) = self::bookmark_schema($type);
+
+        $query = "delete from {$table} where userId = ? and {$column} = ?";
+        $app->dbNew->do($query, [$userId, $contentId]);
+    }
+} # class

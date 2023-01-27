@@ -1,21 +1,50 @@
 <?php
+
 declare(strict_types=1);
 
+
+/**
+ * tags
+ */
+
 $app = App::go();
+
+$get = Http::query("get");
+$snatchedOnly = $get["snatches"] ?? null;
+
+# snatched vs. all
+$allTorrents = true;
+if ($snatchedOnly) {
+    $allTorrents = false;
+    $subQuery = "
+        join xbt_snatched on xbt_snatched.fid = torrents_bad_tags.torrentId
+        and xbt_snatched.uid = {$app->userNew->core["id"]}
+    ";
+} else {
+    $subQuery = "";
+}
 
 $query = "
     select torrents_bad_tags.torrentId, torrents.groupId
     from torrents_bad_tags
     join torrents on torrents_bad_tags.torrentId = torrents.id
+    {$subQuery}
     order by rand() limit 20
 ";
 
 $ref = $app->dbNew->multi($query) ?? [];
+$ref = $app->dbNew->multi($query) ?? [];
+$groupIds = array_column($ref, "groupId");
+$torrentGroups = Torrents::get_groups($groupIds);
+#!d($torrentGroups);exit;
 
-$groups = [];
-foreach ($ref as $row) {
-    $groups[] = Torrents::get_groups($row["torrentId"]);
-}
+# twig template
+$app->twig->display("better/list.twig", [
+  "title" => "Better",
+  "header" => "Torrents with bad tags",
+  "sidebar" => true,
+  "torrentGroups" => $torrentGroups,
+]);
 
 exit;
 

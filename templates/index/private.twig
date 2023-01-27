@@ -31,31 +31,24 @@
 {% endif %}
 
 {% if news is defined %}
-<h3>
-    {{ news.Title }}
+<section>
+    <div class="flexHeader">
+        <h3>{{ news.Title }}</h3>
+        <p>{{ news.Time|relativeTime }}</p>
+    </div>
 
-    <span class="u-pull-right small">
-        {{ news.Time|relativeTime }}
-    </span>
-</h3>
+    {{ news.Body|parse }}
+</section>
 
-{{ news.Body }}
-
-<div id="more_news">
+<section id="more_news">
     <h3>More news</h3>
 
     <p>
         To browse past site news, please
-        <a href="/boards/news">visit the news archive</a>.
+        <a href="/forums.php?action=viewforum&forumid=1">visit the news archive</a>.
+        {# <a href="/boards/news">visit the news archive</a>. #}
     </p>
-</div>
-
-{#
-<?php if (check_perms('admin_manage_news')) { ?>
-&ndash;
-<a href="tools.php?action=editnews&amp;id=<?=$NewsID?>" class="brackets">Edit</a>
-<?php } ?>
-#}
+</section>
 {% endif %}
 
 {% endblock %}

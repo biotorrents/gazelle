@@ -1,5 +1,11 @@
 <?php
+
 declare(strict_types=1);
+
+
+/**
+ * single-seeder torrents
+ */
 
 $app = App::go();
 
@@ -12,13 +18,20 @@ $query = "
 ";
 
 $ref = $app->dbNew->multi($query) ?? [];
-!d($ref);exit;
+$groupIds = array_column($ref, "id");
+$torrentGroups = Torrents::get_groups($groupIds);
+#!d($torrentGroups);exit;
 
-$groups = [];
-foreach ($ref as $row) {
-    $groups[] = Torrents::get_groups($row["id"]);
-}
+# twig template
+$app->twig->display("better/list.twig", [
+    "title" => "Better",
+    "header" => "Torrents with only one seeder",
+    "sidebar" => true,
+    "torrentGroups" => $torrentGroups,
+]);
 
+
+exit;
 
 
 /** continue */
