@@ -39,6 +39,15 @@ table {
 }
 
 /**
+ * sidebar, e.g., homepage stats
+ */
+table.sidebar {
+  td {
+    text-align: right;
+  }
+}
+
+/**
  * sortable tables
  */
 

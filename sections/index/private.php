@@ -1,9 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 
+/**
+ * private homepage
+ */
+
 $app = App::go();
-#!d($app->userNew);
+
 
 # get the news
 # todo: use discourse
@@ -63,12 +68,26 @@ if (!$freeleeches) {
 }
 
 
+# sidebar stats
+$stats = new Stats();
+$activeUsers = $stats->activeUsers();
+$torrentAggregates = $stats->torrentAggregates();
+$trackerAggregates = $stats->trackerAggregates();
+
+
 /** twig template */
 
 
 $app->twig->display("index/private.twig", [
     "sidebar" => true,
     "news" => $news,
+
+    # stats
+    "activeUsers" => $activeUsers,
+    "torrentAggregates" => $torrentAggregates,
+    "trackerAggregates" => $trackerAggregates,
+
+
 
     /*
       "breadcrumbs" => true,
