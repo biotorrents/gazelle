@@ -3,7 +3,7 @@
 #declare(strict_types=1);
 
 # Fix random memory exhaustion errors
-ini_set('memory_limit', '256MB');
+ini_set('memory_limit', '256M');
 
 /**
  * The decode class is simple and straightforward. The only thing to
@@ -99,55 +99,54 @@ class BencodeDecode extends Bencode
     private function _bdec()
     {
         switch ($this->Data[$this->Pos]) {
+            case 'i':
+                $this->Pos++;
+                $Value = substr($this->Data, $this->Pos, strpos($this->Data, 'e', $this->Pos) - $this->Pos);
+                if (!ctype_digit($Value) && !($Value[0] == '-' && ctype_digit(substr($Value, 1)))) {
+                    return $this->error();
+                }
+                $this->Pos += strlen($Value) + 1;
+                return Int64::make($Value);
 
-      case 'i':
-        $this->Pos++;
-        $Value = substr($this->Data, $this->Pos, strpos($this->Data, 'e', $this->Pos) - $this->Pos);
-        if (!ctype_digit($Value) && !($Value[0] == '-' && ctype_digit(substr($Value, 1)))) {
-            return $this->error();
-        }
-        $this->Pos += strlen($Value) + 1;
-        return Int64::make($Value);
+            case 'l':
+                $Value = [];
+                $this->Pos++;
+                while ($this->Data[$this->Pos] != 'e') {
+                    if ($this->Pos >= $this->Length) {
+                        return $this->error();
+                    }
+                    $Value[] = $this->_bdec();
+                }
+                $this->Pos++;
+                return $Value;
 
-      case 'l':
-        $Value = [];
-        $this->Pos++;
-        while ($this->Data[$this->Pos] != 'e') {
-            if ($this->Pos >= $this->Length) {
-                return $this->error();
-            }
-            $Value[] = $this->_bdec();
-        }
-        $this->Pos++;
-        return $Value;
+            case 'd':
+                $Value = [];
+                $this->Pos++;
+                while ($this->Data[$this->Pos] != 'e') {
+                    $Length = substr($this->Data, $this->Pos, strpos($this->Data, ':', $this->Pos) - $this->Pos);
+                    if (!ctype_digit($Length)) {
+                        return $this->error();
+                    }
+                    $this->Pos += strlen($Length) + $Length + 1;
+                    $Key = substr($this->Data, $this->Pos - $Length, $Length);
+                    if ($this->Pos >= $this->Length) {
+                        return $this->error();
+                    }
+                    $Value[$Key] = $this->_bdec();
+                }
+                $this->Pos++;
+                // Use boolean true to keep track of empty dictionaries
+                return empty($Value) ? true : $Value;
 
-      case 'd':
-        $Value = [];
-        $this->Pos++;
-        while ($this->Data[$this->Pos] != 'e') {
-            $Length = substr($this->Data, $this->Pos, strpos($this->Data, ':', $this->Pos) - $this->Pos);
-            if (!ctype_digit($Length)) {
-                return $this->error();
-            }
-            $this->Pos += strlen($Length) + $Length + 1;
-            $Key = substr($this->Data, $this->Pos - $Length, $Length);
-            if ($this->Pos >= $this->Length) {
-                return $this->error();
-            }
-            $Value[$Key] = $this->_bdec();
+            default:
+                $Length = substr($this->Data, $this->Pos, strpos($this->Data, ':', $this->Pos) - $this->Pos);
+                if (!ctype_digit($Length)) {
+                    return $this->error(); // Even if the string is likely to be decoded correctly without this check, it's malformed
+                }
+                $this->Pos += strlen($Length) + $Length + 1;
+                return substr($this->Data, $this->Pos - $Length, $Length);
         }
-        $this->Pos++;
-        // Use boolean true to keep track of empty dictionaries
-        return empty($Value) ? true : $Value;
-
-      default:
-        $Length = substr($this->Data, $this->Pos, strpos($this->Data, ':', $this->Pos) - $this->Pos);
-        if (!ctype_digit($Length)) {
-            return $this->error(); // Even if the string is likely to be decoded correctly without this check, it's malformed
-        }
-        $this->Pos += strlen($Length) + $Length + 1;
-        return substr($this->Data, $this->Pos - $Length, $Length);
-    }
     }
 
     /**

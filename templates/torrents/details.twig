@@ -243,11 +243,11 @@
 
 <div class="flexRow">
 {# download #}
-<a class="button button-primary" href="/torrents.php?action=download&id={{ item.ID }}&authkey={{ user.extra.AuthKey }}&torrent_pass={{ user.extra.torrent_pass}}">download</a>
+<a class="button button-primary" href="/torrents.php?action=download&torrentId={{ item.ID }}&authkey={{ user.extra.AuthKey }}&torrent_pass={{ user.extra.torrent_pass}}">download</a>
 
 {# freeleech token #}
 {% if canUseToken(item.ID) %}
-<a class="button button-purple useFreeleechToken" href="/torrents.php?action=download&id={{ item.ID }}&authkey={{ user.extra.AuthKey }}&torrent_pass={{ user.extra.torrent_pass}}&usetoken=1">freeleech</a>
+<a class="button button-purple useFreeleechToken" href="/torrents.php?action=download&torrentId={{ item.ID }}&authkey={{ user.extra.AuthKey }}&torrent_pass={{ user.extra.torrent_pass}}&usetoken=1">freeleech</a>
 {% endif %}
 
 {# update #}

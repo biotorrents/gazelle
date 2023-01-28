@@ -3,12 +3,16 @@
 #declare(strict_types=1);
 
 /**
- * Class for functions related to the features involving torrent downloads
+ * TorrentsDL
+ *
+ * Class for functions related to the features involving torrent downloads.
  */
+
 class TorrentsDL
 {
     public const ChunkSize = 100;
     public const MaxPathLength = 200;
+
     private $QueryResult;
     private $QueryRowNum = 0;
     private $Zip;
@@ -22,8 +26,11 @@ class TorrentsDL
     private $AnnounceURL;
     private $AnnounceList;
 
+
     /**
-     * Create a Zip object and store the query results
+     * __construct
+     *
+     * Create a Zip object and store the query results.
      *
      * @param mysqli_result $QueryResult results from a query on the collector pages
      * @param string $Title name of the collection that will be created
@@ -59,8 +66,11 @@ class TorrentsDL
         $this->Zip = new Zip(Misc::file_string($Title));
     }
 
+
     /**
-     * Store the results from a DB query in smaller chunks to save memory
+     * get_downloads
+     *
+     * Store the results from a DB query in smaller chunks to save memory.
      *
      * @param string $Key the key to use in the result hash map
      * @return array with results and torrent group IDs or false if there are no results left
@@ -104,7 +114,10 @@ class TorrentsDL
         return array($Downloads, $GroupIDs);
     }
 
+
     /**
+     * add_file
+     *
      * Add a file to the zip archive
      *
      * @param string $TorrentData bencoded torrent without announce url (new format) or TORRENT object (old format)
@@ -126,7 +139,10 @@ class TorrentsDL
         return;
     }
 
+
     /**
+     * fail_file
+     *
      * Add a file to the list of files that could not be downloaded
      *
      * @param array $Info file info stored as an array with at least the keys Artist, Name and Year
@@ -136,7 +152,10 @@ class TorrentsDL
         $this->FailedFiles[] = $Info['Artist'] . ' - ' . $Info['Name'] . ' - ' . $Info['Year'];
     }
 
+
     /**
+     * skip_file
+     *
      * Add a file to the list of files that did not match the user's format or quality requirements
      *
      * @param array $Info file info stored as an array with at least the keys Artist, Name and Year
@@ -146,7 +165,10 @@ class TorrentsDL
         $this->SkippedFiles[] = $Info['Artist'] . ' - ' . $Info['Name'] . ' - ' . $Info['Year'];
     }
 
+
     /**
+     * finalize
+     *
      * Add a summary to the archive and include a list of files that could not be added. Close the zip archive
      *
      * @param bool $FilterStats whether to include filter stats in the report
@@ -160,7 +182,10 @@ class TorrentsDL
         $this->Zip->close_stream();
     }
 
+
     /**
+     * summary
+     *
      * Produce a summary text over the collector results
      *
      * @param bool $FilterStats whether to include filter stats in the report
@@ -200,7 +225,10 @@ class TorrentsDL
         : "");
     }
 
+
     /**
+     * errors
+     *
      * Compile a list of files that could not be added to the archive
      *
      * @return list of files
@@ -213,7 +241,10 @@ class TorrentsDL
       . implode("\r\n", $this->FailedFiles) . "\r\n";
     }
 
+
     /**
+     * construct_file_name
+     *
      * Combine a bunch of torrent info into a standardized file name
      *
      * @params most input variables are self-explanatory
@@ -235,7 +266,10 @@ class TorrentsDL
         */
     }
 
+
     /**
+     * get_file
+     *
      * Convert a stored torrent into a binary file that can be loaded in a torrent client
      *
      * @param mixed $TorrentData bencoded torrent without announce URL (new format) or TORRENT object (old format)
@@ -263,4 +297,4 @@ class TorrentsDL
         unset($Tor->Val['libtorrent_resume']);
         return $Tor->enc();
     }
-}
+} # class
