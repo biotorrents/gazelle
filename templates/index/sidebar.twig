@@ -91,8 +91,8 @@
 
 <ul class="stats nobullet">
 
-    {% if constant('USER_LIMIT') > 0 %}
-    <li>Maximum users: {{ constant('USER_LIMIT')|number_format }}</li>
+    {% if constant('userLimit') > 0 %}
+    <li>Maximum users: {{ constant('userLimit')|number_format }}</li>
     {% endif %}
 
     <li>Enabled users: {{ user_count|number_format }} <a href="/stats/users" class="brackets">Details</a></li>

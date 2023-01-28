@@ -2,6 +2,11 @@
 
 #declare(strict_types=1);
 
+
+/**
+ * THIS IS GOING AWAY
+ */
+
 class Sphinxql extends mysqli
 {
     private static $Connections = [];
@@ -155,7 +160,6 @@ class Sphinxql extends mysqli
      */
     public static function register_query($QueryString, $QueryProcessTime)
     {
-
         #$debug = Debug::go();
         #$debug['sphinx']->info(self::$Queries);
         self::$Queries[] = array($QueryString, $QueryProcessTime);

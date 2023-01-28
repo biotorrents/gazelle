@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 /**
+ * THIS IS GOING AWAY!
+ *
  * MySQL wrapper class
  *
  * This class provides an interface to mysqli.

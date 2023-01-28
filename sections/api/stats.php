@@ -150,7 +150,7 @@ if (($PeerStats = $app->cacheOld->get_value('stats_peers')) === false) {
 }
 
 json_print('success', array(
-  'maxUsers' => USER_LIMIT,
+  'maxUsers' => userLimit,
   'enabledUsers' => (int) $UserCount,
   'usersActiveThisDay' => (int) $UserStats['Day'],
   'usersActiveThisWeek' => (int) $UserStats['Week'],

@@ -24,7 +24,7 @@
 {% elseif not invites_open %}
 <div class="box pad notice">
     <p>The user limit has been reached: you are unable to send invites at this time.
-    Please wait until the enabled user count falls below {{ constant('USER_LIMIT') }}.</p>
+    Please wait until the enabled user count falls below {{ constant('userLimit') }}.</p>
 </div>
 
 {% elseif own_profile and user.canInvite %}

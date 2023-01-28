@@ -358,10 +358,10 @@ class Twig # extends Twig\Environment
                 "William Harvey",
             ];
 
-            $randomKey = array_rand($famousBiologists);
+            $randomKey = array_rand($randomCreators);
 
             return new Twig\Markup(
-                $famousBiologists[$randomKey],
+                $randomCreators[$randomKey],
                 "UTF-8"
             );
         }));

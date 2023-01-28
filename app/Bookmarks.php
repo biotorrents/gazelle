@@ -18,7 +18,7 @@ class Bookmarks
     {
         $contentType = strtolower(strval($contentType));
         $allowedTypes = [
-            "torrent",
+            "torrent", "group",
             "artist", "creator",
             "collage", "collection",
             "request"
@@ -42,21 +42,22 @@ class Bookmarks
 
         switch ($contentType) {
             case "torrent":
-                return ["bookmarks_torrents", "GroupID"];
+            case "group":
+                return ["bookmarks_torrents", "groupId"];
                 break;
 
             case "artist":
             case "creator":
-                return ["bookmarks_artists", "ArtistID"];
+                return ["bookmarks_artists", "artistId"];
                 break;
 
             case "collage":
             case "collection":
-                return ["bookmarks_collages", "CollageID"];
+                return ["bookmarks_collages", "collageId"];
                 break;
 
             case "request":
-                return ["bookmarks_requests", "RequestID"];
+                return ["bookmarks_requests", "requestId"];
                 break;
 
             default:

@@ -6,7 +6,7 @@ declare(strict_types=1);
 /**
  * spl_autoload_register
  *
- * Load classes automatically when they"re needed.
+ * Load classes automatically when they're needed.
  * Temporary fix for class/filename mismatches.
  *
  * @param string $class the class name

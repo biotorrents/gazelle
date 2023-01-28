@@ -37,11 +37,11 @@ if ($app->userNew->extra['RatioWatch']
   || $app->userNew->extra['Invites'] == 0
   && !check_perms('site_send_unlimited_invites')
   || (
-      $UserCount >= USER_LIMIT
-    && USER_LIMIT != 0
+      $UserCount >= userLimit
+    && userLimit != 0
     && !check_perms('site_can_invite_always')
   )
-  ) {
+) {
     error(403);
 }
 

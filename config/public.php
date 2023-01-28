@@ -281,8 +281,8 @@ ENV::setPub(
 );
 
 # The maximum number of users the site can have, 0 for no limit
-define("USER_LIMIT", 0);
-ENV::setPub("USER_LIMIT", 0);
+define("userLimit", 0);
+ENV::setPub("userLimit", 0);
 
 # User perks
 ENV::setPub("STARTING_INVITES", 2);

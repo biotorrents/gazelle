@@ -56,30 +56,30 @@ if (empty($_GET['order'])) {
 }
 
 switch ($CurrentOrder) {
-  case 'username':
-    $OrderBy = "um.Username";
-    break;
-  case 'email':
-    $OrderBy = "um.Email";
-    break;
-  case 'joined':
-    $OrderBy = "ui.JoinDate";
-    break;
-  case 'lastseen':
-    $OrderBy = "um.LastAccess";
-    break;
-  case 'uploaded':
-    $OrderBy = "um.Uploaded";
-    break;
-  case 'downloaded':
-    $OrderBy = "um.Downloaded";
-    break;
-  case 'ratio':
-    $OrderBy = "(um.Uploaded / um.Downloaded)";
-    break;
-  default:
-    $OrderBy = "um.ID";
-    break;
+    case 'username':
+        $OrderBy = "um.Username";
+        break;
+    case 'email':
+        $OrderBy = "um.Email";
+        break;
+    case 'joined':
+        $OrderBy = "ui.JoinDate";
+        break;
+    case 'lastseen':
+        $OrderBy = "um.LastAccess";
+        break;
+    case 'uploaded':
+        $OrderBy = "um.Uploaded";
+        break;
+    case 'downloaded':
+        $OrderBy = "um.Downloaded";
+        break;
+    case 'ratio':
+        $OrderBy = "(um.Uploaded / um.Downloaded)";
+        break;
+    default:
+        $OrderBy = "um.ID";
+        break;
 }
 
 $CurrentURL = Format::get_url(array('action', 'order', 'sort'));
@@ -107,26 +107,26 @@ View::header('Invites');
       &gt; Invites</h2>
     <div class="linkbox">
       <a href="user.php?action=invitetree<?php if ($Sneaky) {
-    echo '&amp;userid='.$UserID;
-} ?>" class="brackets">Invite tree</a>
+          echo '&amp;userid='.$UserID;
+      } ?>" class="brackets">Invite tree</a>
     </div>
   </div>
-  <?php if ($UserCount >= USER_LIMIT && !check_perms('site_can_invite_always')) { ?>
+  <?php if ($UserCount >= userLimit && !check_perms('site_can_invite_always')) { ?>
   <div class="box pad notice">
     <p>Because the user limit has been reached you are unable to send invites at this time.</p>
   </div>
   <?php }
 
-/*
-  Users cannot send invites if they:
-    - Are on ratio watch
-    - Have disabled leeching
-    - Have disabled invites
-    - Have no invites (Unless have unlimited)
-    - Cannot 'invite always' and the user limit is reached
-*/
+  /*
+    Users cannot send invites if they:
+      - Are on ratio watch
+      - Have disabled leeching
+      - Have disabled invites
+      - Have no invites (Unless have unlimited)
+      - Cannot 'invite always' and the user limit is reached
+  */
 
-$app->dbOld->query("
+      $app->dbOld->query("
   SELECT can_leech
   FROM users_main
   WHERE ID = $UserID");
@@ -137,8 +137,8 @@ if (!$Sneaky
   && $CanLeech
   && empty($app->userNew->extra['DisableInvites'])
   && ($app->userNew->extra['Invites'] > 0 || check_perms('site_send_unlimited_invites'))
-  && ($UserCount <= USER_LIMIT || USER_LIMIT === 0 || check_perms('site_can_invite_always'))
-  ) { ?>
+  && ($UserCount <= userLimit || userLimit === 0 || check_perms('site_can_invite_always'))
+) { ?>
   <div class="box pad">
     <p>
       Do not trade or sell invites under any circumstances.
@@ -256,7 +256,7 @@ if (!empty($Pending)) {
   foreach ($Invited as $User) {
       list($ID, $Email, $Uploaded, $Downloaded, $JoinDate, $LastAccess) = $User;
       $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'
-?>
+      ?>
       <tr class="row">
         <td><?=User::format_username($ID, true, true, true, true)?>
         </td>

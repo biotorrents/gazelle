@@ -5,6 +5,8 @@
 
 /**
  * TorrentSearch
+ *
+ * THIS IS GOING AWAY
  */
 
 class TorrentSearch
@@ -732,7 +734,7 @@ class TorrentSearch
     private function process_results()
     {
         !d($this->SphResults);
-        
+
         if (count($this->SphResults ?? []) === 0) {
             return;
         }

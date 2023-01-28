@@ -854,197 +854,153 @@ class Stats
     }
 
 
-    /** homepage stats */
+    /**
+     * END DATABASE
+     * START HOMEPAGE
+     */
 
 
-    /*
-  <!-- Stats -->
-  <div class="box">
-    <div class="head colhead_dark"><strong>Stats</strong></div>
-    <ul class="stats nobullet">
-      <?php if (USER_LIMIT > 0) { ?>
-      <li>Maximum users: <?=Text::float(USER_LIMIT) ?>
-      </li>
-      <?php
-}
+    /**
+     * activeUsers
+     *
+     * Homepage user activity stats:
+     * total, limit, daily, weekly, monthly active, etc.
+     *
+     * todo: rewrite this to use the new delight-im/auth table
+     */
+    public function activeUsers(): array
+    {
+        $app = App::go();
 
-if (($UserCount = $app->cacheOld->get_value('stats_user_count')) === false) {
-    $app->dbOld->query("
-    SELECT COUNT(ID)
-    FROM users_main
-    WHERE Enabled = '1'");
-    list($UserCount) = $app->dbOld->next_record();
-    $app->cacheOld->cache_value('stats_user_count', $UserCount, 86400);
-}
-$UserCount = (int)$UserCount;
-?>
-      <?php /*
-      <li>
-        Enabled users: <?=Text::float($UserCount)?>
-      <a href="/stats/users" class="brackets">Details</a>
-      </li>
-      <?php
+        $cacheKey = $this->cachePrefix . __FUNCTION__;
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
 
-if (($UserStats = $app->cacheOld->get_value('stats_users')) === false) {
-    $app->dbOld->query("
-    SELECT COUNT(ID)
-    FROM users_main
-    WHERE Enabled = '1'
-      AND LastAccess > '".time_minus(3600 * 24)."'");
-    list($UserStats['Day']) = $app->dbOld->next_record();
+        if ($cacheHit) {
+            return $cacheHit;
+        }
 
-    $app->dbOld->query("
-    SELECT COUNT(ID)
-    FROM users_main
-    WHERE Enabled = '1'
-      AND LastAccess > '".time_minus(3600 * 24 * 7)."'");
-    list($UserStats['Week']) = $app->dbOld->next_record();
+        $data = [];
 
-    $app->dbOld->query("
-    SELECT COUNT(ID)
-    FROM users_main
-    WHERE Enabled = '1'
-      AND LastAccess > '".time_minus(3600 * 24 * 30)."'");
-    list($UserStats['Month']) = $app->dbOld->next_record();
+        # maximum users (display if userLimit > 0)
+        $data["userLimit"] = $app->env->userLimit;
 
-    $app->cacheOld->cache_value('stats_users', $UserStats, 0);
-}
-?>
-      <li>Users active today: <?=Text::float($UserStats['Day'])?>
-        (<?=Text::float($UserStats['Day'] / $UserCount * 100, 2)?>%)
-      </li>
-      <li>Users active this week: <?=Text::float($UserStats['Week'])?>
-        (<?=Text::float($UserStats['Week'] / $UserCount * 100, 2)?>%)
-      </li>
-      <li>Users active this month: <?=Text::float($UserStats['Month'])?>
-        (<?=Text::float($UserStats['Month'] / $UserCount * 100, 2)?>%)
-      </li>
-      <?php
+        # enabled user count
+        $query = "select count(userId) from users_main where enabled = 1";
+        $data["userCount"] = $app->dbNew->single($query, []) ?? 1; # division by zero fix
 
-if (($TorrentCount = $app->cacheOld->get_value('stats_torrent_count')) === false) {
-    $app->dbOld->query("
-    SELECT COUNT(ID)
-    FROM torrents");
-    list($TorrentCount) = $app->dbOld->next_record();
-    $app->cacheOld->cache_value('stats_torrent_count', $TorrentCount, 86400); // 1 day cache
-}
+        # daily active users
+        $query = "select count(userId) from users_main where enabled = 1 and lastAccess > ?";
+        $data["activeDailyCount"] = $app->dbNew->single($query, [ time_minus(3600 * 24) ]);
+        $data["activeDailyPercent"] = $data["activeDailyCount"] / ($data["userCount"] * 100);
 
-if (($GroupCount = $app->cacheOld->get_value('stats_group_count')) === false) {
-    $app->dbOld->query("
-    SELECT COUNT(ID)
-    FROM torrents_group");
-    list($GroupCount) = $app->dbOld->next_record();
-    $app->cacheOld->cache_value('stats_group_count', $GroupCount, 86400); // 1 day cache
-}
+        # weekly active users
+        $query = "select count(userId) from users_main where enabled = 1 and lastAccess > ?";
+        $data["activeWeeklyCount"] = $app->dbNew->single($query, [ time_minus(3600 * 24 * 7) ]);
+        $data["activeWeeklyPercent"] = $data["activeWeeklyCount"] / ($data["userCount"] * 100);
 
-if (($TorrentSizeTotal = $app->cacheOld->get_value('stats_torrent_size_total')) === false) {
-    $app->dbOld->query("
-    SELECT SUM(Size)
-    FROM torrents");
-    list($TorrentSizeTotal) = $app->dbOld->next_record();
-    $app->cacheOld->cache_value('stats_torrent_size_total', $TorrentSizeTotal, 86400); // 1 day cache
-}
-?>
-      <li>
-        Total size of torrents:
-        <?=Format::get_size($TorrentSizeTotal)?>
-      </li>
+        # monthly active users
+        $query = "select count(userId) from users_main where enabled = 1 and lastAccess > ?";
+        $data["activeMonthlyCount"] = $app->dbNew->single($query, [ time_minus(3600 * 24 * 30) ]);
+        $data["activeMonthlyPercent"] = $data["activeMonthlyCount"] / ($data["userCount"] * 100);
 
-      <?php
-if (($ArtistCount = $app->cacheOld->get_value('stats_artist_count')) === false) {
-    $app->dbOld->query("
-    SELECT COUNT(ArtistID)
-    FROM artists_group");
-    list($ArtistCount) = $app->dbOld->next_record();
-    $app->cacheOld->cache_value('stats_artist_count', $ArtistCount, 86400); // 1 day cache
-}
-
-?>
-      <li>
-        Torrents:
-        <?=Text::float($TorrentCount)?>
-        <a href="/stats/torrents" class="brackets">Details</a>
-      </li>
-
-      <li>Torrent Groups: <?=Text::float($GroupCount)?>
-      </li>
-      <li>Artists: <?=Text::float($ArtistCount)?>
-      </li>
-      <?php
-// End Torrent Stats
-
-if (($RequestStats = $app->cacheOld->get_value('stats_requests')) === false) {
-    $app->dbOld->query("
-    SELECT COUNT(ID)
-    FROM requests");
-    list($RequestCount) = $app->dbOld->next_record();
-    $app->dbOld->query("
-    SELECT COUNT(ID)
-    FROM requests
-    WHERE FillerID > 0");
-    list($FilledCount) = $app->dbOld->next_record();
-    $app->cacheOld->cache_value('stats_requests', array($RequestCount, $FilledCount), 11280);
-} else {
-    list($RequestCount, $FilledCount) = $RequestStats;
-}
-
-// Do not divide by zero
-if ($RequestCount > 0) {
-    $RequestsFilledPercent = $FilledCount / $RequestCount * 100;
-} else {
-    $RequestsFilledPercent = 0;
-}
-
-?>
-      <li>Requests: <?=Text::float($RequestCount)?> (<?=Text::float($RequestsFilledPercent, 2)?>% filled)</li>
-      <?php
-
-if ($SnatchStats = $app->cacheOld->get_value('stats_snatches')) {
-    ?>
-      <li>Snatches: <?=Text::float($SnatchStats)?>
-      </li>
-      <?php
-}
-
-if (($PeerStats = $app->cacheOld->get_value('stats_peers')) === false) {
-    // Cache lock!
-    $PeerStatsLocked = $app->cacheOld->get_value('stats_peers_lock');
-    if (!$PeerStatsLocked) {
-        $app->cacheOld->cache_value('stats_peers_lock', 1, 30);
-        $app->dbOld->query("
-      SELECT IF(remaining=0,'Seeding','Leeching') AS Type, COUNT(uid)
-      FROM xbt_files_users
-      WHERE active = 1
-      GROUP BY Type");
-        $PeerCount = $app->dbOld->to_array(0, MYSQLI_NUM, false);
-        $SeederCount = $PeerCount['Seeding'][1] ?: 0;
-        $LeecherCount = $PeerCount['Leeching'][1] ?: 0;
-        $app->cacheOld->cache_value('stats_peers', array($LeecherCount, $SeederCount), 604800); // 1 week cache
-        $app->cacheOld->delete_value('stats_peers_lock');
+        $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
+        return $data;
     }
-} else {
-    $PeerStatsLocked = false;
-    list($LeecherCount, $SeederCount) = $PeerStats;
-}
 
-if (!$PeerStatsLocked) {
-    $Ratio = Format::get_ratio_html($SeederCount, $LeecherCount);
-    $PeerCount = Text::float($SeederCount + $LeecherCount);
-    $SeederCount = Text::float($SeederCount);
-    $LeecherCount = Text::float($LeecherCount);
-} else {
-    $PeerCount = $SeederCount = $LeecherCount = $Ratio = 'Server busy';
-}
-?>
-      <li>Peers: <?=$PeerCount?>
-      </li>
-      <li>Seeders: <?=$SeederCount?>
-      </li>
-      <li>Leechers: <?=$LeecherCount?>
-      </li>
-      <li>Seeder/leecher ratio: <?=$Ratio?>
-      </li>
-    </ul>
-  </div>
-*/
+
+    /**
+     * torrentAggregates
+     *
+     * Homepage torrent data stats:
+     * torrent count, group count, data size, creator count, requests vs. filled, etc.
+     */
+    public function torrentAggregates(): array
+    {
+        $app = App::go();
+
+        $cacheKey = $this->cachePrefix . __FUNCTION__;
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        $data = [];
+
+        # torrent count
+        $query = "select count(id) from torrents";
+        $data["torrentCount"] = $app->dbNew->single($query, []);
+
+        # torrent group count
+        $query = "select count(id) from torrents_group";
+        $data["groupCount"] = $app->dbNew->single($query, []);
+
+        # total data size
+        $query = "select sum(size) from torrents";
+        $data["dataSize"] = $app->dbNew->single($query, []);
+
+        # creator count
+        $query = "select count(artistId) from artists_group";
+        $data["creatorCount"] = $app->dbNew->single($query, []);
+
+        # request total count
+        $query = "select count(id) from requests";
+        $data["requestTotalCount"] = $app->dbNew->single($query, []) ?? 1; # division by zero fix
+
+        # request filled count
+        $query = "select count(id) from requests where fillerId > 0";
+        $data["requestFilledCount"] = $app->dbNew->single($query, []);
+
+        # request filled percent
+        $data["requestFilledPercent"] = $data["requestFilledCount"] / ($data["requestTotalCount"] * 100);
+
+        $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
+        return $data;
+    }
+
+
+    /**
+     * trackerAggregates
+     *
+     * Homepage tracker economy stats:
+     * seeders, leechers, snatches, share ratio, etc.
+     *
+     * todo: test this on production (working tracker)
+     */
+    public function trackerAggregates()
+    {
+        $app = App::go();
+
+        $cacheKey = $this->cachePrefix . __FUNCTION__;
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        $data = [];
+
+        # snatch count (holla)
+        $query = "select count(uid) from xbt_snatched";
+        $data["snatchCount"] = $app->dbNew->single($query, []);
+
+        # seeders, leechers, and snatches
+        # todo: this uses the old database class
+        $query = "
+            select if(remaining = 0, 'seeding', 'leeching') as peerType, count(uid)
+            from xbt_files_users where active = 1 group by peerType
+        ";
+
+        $app->dbOld->query($query);
+        $peerStats = $app->dbOld->to_array(0, MYSQLI_NUM, false);
+
+        # populate return data
+        $data["seederCount"] = $peerStats["seeding"][1] ?? 0;
+        $data["leecherCount"] = $peerStats["leeching"][1] ?? 0;
+        $data["peerCount"] = $data["seederCount"] + $data["leecherCount"];
+        $data["seederLeecherRatio"] = Format::get_ratio($data["seederCount"], $data["leecherCount"]);
+
+        $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
+        return $data;
+    }
 } # class
