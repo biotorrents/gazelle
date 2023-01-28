@@ -181,7 +181,7 @@ $app->twig->display("user/settings/settings.twig", [
  "ircKeyPlaceholder" => Text::random(32),
 
  # notifications manager (legacy)
- "notificationsManagerSettings" => NotificationsManagerView::render_settings(NotificationsManager::get_settings($app->userNew->core["id"])),
+ #"notificationsManagerSettings" => NotificationsManagerView::render_settings(NotificationsManager::get_settings($app->userNew->core["id"])),
 
  "error" => $error ?? null,
 ]);

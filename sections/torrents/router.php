@@ -74,8 +74,12 @@ if (!empty($_GET['id'])) {
 }
 */
 
-if (empty($_REQUEST['action'])) {
+if (empty($_REQUEST['action']) && empty($_REQUEST["id"])) {
     require_once "$ENV->serverRoot/sections/torrents/browse.php";
+}
+
+if (!empty($_REQUEST["id"])) {
+    require_once "$ENV->serverRoot/sections/torrents/details.php";
 }
 
 

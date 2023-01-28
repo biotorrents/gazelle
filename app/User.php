@@ -128,7 +128,9 @@ class User
             return false;
         }
 
+        /*
         # check enabled
+        # todo: migrate to delight-im/auth
         $query = "select enabled from users_main where id = ?";
         $enabled = $app->dbNew->single($query, [$userId]);
 
@@ -136,6 +138,7 @@ class User
         if (intval($enabled) === 2) {
             return false;
         }
+        */
 
         # user stats
         $query = "select uploaded, downloaded, requiredRatio from users_main where id = ?";

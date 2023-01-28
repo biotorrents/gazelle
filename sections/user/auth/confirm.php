@@ -2,15 +2,27 @@
 
 declare(strict_types=1);
 
+
+/**
+ * confirm account
+ */
+
 $app = App::go();
 
 $auth = new Auth();
 
+#!d($selector, $token);exit;
 if (empty($selector) || empty($token)) {
     Http::response(403);
 }
 
-$response = $auth->confirmEmail($selector, $token);
+try {
+    $response = $auth->confirmEmail($selector, $token);
+    #!d($response);exit;
+} catch (Exception $e) {
+    $response = $e->getMessage();
+    $success = false;
+}
 
 # success
 if (is_array($response)) {

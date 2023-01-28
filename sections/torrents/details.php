@@ -21,7 +21,7 @@ if (empty($groupId)) {
 $torrentCache = TorrentFunctions::get_group_info($groupId, true, $revisionId);
 $groupDetails = $torrentCache[0];
 $torrentDetails = $torrentCache[1];
-!d($groupDetails, $torrentDetails);
+#!d($groupDetails, $torrentDetails);
 
 # description and creators
 $description = Text::parse($groupDetails["description"]);

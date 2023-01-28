@@ -28,9 +28,10 @@ $server = Http::query("server");
  */
 
 $document ??= "index";
+#!d($document);exit;
 
 # redirect unauthenticated to login page
-$allowedPages = ["login", "register", "recover", "about", "privacy", "dmca"];
+$allowedPages = ["login", "register", "recover", "about", "privacy", "dmca", "confirm"];
 if (!$app->userNew->isLoggedIn() && !in_array($document, $allowedPages)) {
     require_once "{$app->env->serverRoot}/sections/user/auth/login.php";
     exit;

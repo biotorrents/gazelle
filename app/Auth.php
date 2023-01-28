@@ -99,7 +99,7 @@ class Auth # extends Delight\Auth\Auth
             }
 
             # extra form fields (privacy consent, age check, etc.)
-            if (empty($post["isAdult"]) || empty($post["privacyConsent"]) || empty($post["ruleWikiPledge"])) {
+            if (empty($data["isAdult"]) || empty($data["privacyConsent"]) || empty($data["ruleWikiPledge"])) {
                 throw new Exception("You need to check the legal age, privacy consent, and rules/wiki boxes");
             }
 
@@ -108,10 +108,12 @@ class Auth # extends Delight\Auth\Auth
                 throw new Exception("The entered passphrases don't match");
             }
 
+            /*
             # you may want to exclude non-printing control characters and certain printable special characters
             if (preg_match("/[\x00-\x1f\x7f\/:\\\\]/", $username)) {
                 throw new Exception("Registering usernames with control characters isn't allowed");
             }
+            */
 
             # don't allow a username of "0" or "1" due to PHP's type juggling
             if (trim($username) === "0" || trim($username) === "1") {
@@ -134,7 +136,7 @@ class Auth # extends Delight\Auth\Auth
             }
 
             # if you want to enforce unique usernames, simply call registerWithUniqueUsername instead of register, and be prepared to catch the DuplicateUsernameException
-            $this->library->registerWithUniqueUsername($email, $passphrase, $username, function ($selector, $token) use ($email) {
+            $response = $this->library->registerWithUniqueUsername($email, $passphrase, $username, function ($selector, $token) use ($email) {
                 $app = App::go();
 
                 # build the verification uri
@@ -147,6 +149,8 @@ class Auth # extends Delight\Auth\Auth
                 # send the email
                 App::email($email, $subject, $body);
             });
+
+            return $response;
         } catch (Delight\Auth\InvalidEmailException $e) {
             return "Please use a different email";
         } catch (Delight\Auth\InvalidPasswordException $e) {
@@ -284,8 +288,8 @@ class Auth # extends Delight\Auth\Auth
 
             # users_info
             $query = "
-                insert into users_info (userId, styleId, siteOptions, authKey, resetKey, inviter)
-                values (:userId, :styleId, :siteOptions, :authKey, :resetKey, :inviter)
+                insert into users_info (userId, styleId, siteOptions, authKey, resetKey, inviter, isPassphraseMigrated)
+                values (:userId, :styleId, :siteOptions, :authKey, :resetKey, :inviter, :isPassphraseMigrated)
             ";
 
             $app->dbNew->do($query, [
@@ -295,6 +299,7 @@ class Auth # extends Delight\Auth\Auth
                 "authKey" => $authKey,
                 "resetKey" => $resetKey,
                 "inviter" => $inviterId ?? null,
+                "isPassphraseMigrated" => 1,
             ]);
 
             # users_notifications_settings

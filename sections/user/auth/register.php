@@ -18,6 +18,7 @@ try {
     # delight-im/auth
     if (!empty(["post"]) && isset($post["submit"])) {
         $response = $auth->register($post);
+        #!d($response);exit;
 
         # failure
         if (!is_int($response)) {

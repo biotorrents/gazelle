@@ -19,19 +19,19 @@
 <div id="paginationControls">
 
   {% if pagination.currentPage != pagination.firstPage %}
-  <a href="/torrents/{{ queryString }}?page={{ pagination.firstPage }}" class="button u-pull-right">« first</a>
+  <a href="/torrents.php{{ queryString }}?page={{ pagination.firstPage }}" class="button u-pull-right">« first</a>
   {% endif %}
 
   {% if pagination.currentPage > pagination.previousPage %}
-  <a href="/torrents/{{ queryString }}?page={{ pagination.previousPage }}" class="button u-pull-right">‹ previous</a>
+  <a href="/torrents.php{{ queryString }}?page={{ pagination.previousPage }}" class="button u-pull-right">‹ previous</a>
   {% endif %}
 
   {% if pagination.currentPage < pagination.nextPage and pagination.currentPage < pagination.lastPage %}
-  <a href="/torrents/{{ queryString }}?page={{ pagination.nextPage }}" class="button u-pull-right">next ›</a>
+  <a href="/torrents.php{{ queryString }}?page={{ pagination.nextPage }}" class="button u-pull-right">next ›</a>
     {% endif %}
 
 	  {% if pagination.currentPage != pagination.lastPage %}
-  <a href="/torrents/{{ queryString }}?page={{ pagination.lastPage }}" class="button u-pull-right">last »</a>
+  <a href="/torrents.php{{ queryString }}?page={{ pagination.lastPage }}" class="button u-pull-right">last »</a>
      {% endif %}
  
   </div>
