@@ -149,82 +149,82 @@ $Perms = Permissions::get_permissions($User['PermissionID']);
 $UserClass = $Perms['Class'];
 
 switch ($_GET['type']) {
-  case 'snatched':
-    if (!check_paranoia('snatched', $User['Paranoia'], $UserClass, $UserID)) {
-        error(403);
-    }
-    $Time = 'xs.`tstamp`';
-    $UserField = 'xs.`uid`';
-    $ExtraWhere = '';
-    $From = "
+    case 'snatched':
+        if (!check_paranoia('snatched', $User['Paranoia'], $UserClass, $UserID)) {
+            error(403);
+        }
+        $Time = 'xs.`tstamp`';
+        $UserField = 'xs.`uid`';
+        $ExtraWhere = '';
+        $From = "
       `xbt_snatched` AS xs
         JOIN `torrents` AS t ON t.`ID` = xs.`fid`";
-    break;
+        break;
 
-  case 'seeding':
-    if (!check_paranoia('seeding', $User['Paranoia'], $UserClass, $UserID)) {
-        error(403);
-    }
-    $Time = '(xfu.`mtime` - xfu.`timespent`)';
-    $UserField = 'xfu.`uid`';
-    $ExtraWhere = '
+    case 'seeding':
+        if (!check_paranoia('seeding', $User['Paranoia'], $UserClass, $UserID)) {
+            error(403);
+        }
+        $Time = '(xfu.`mtime` - xfu.`timespent`)';
+        $UserField = 'xfu.`uid`';
+        $ExtraWhere = '
       AND xfu.`active` = 1
       AND xfu.`Remaining` = 0';
-    $From = "
+        $From = "
       `xbt_files_users` AS xfu
         JOIN `torrents` AS t ON t.`ID` = xfu.`fid`";
-    break;
+        break;
 
-  case 'contest':
-    $Time = 'unix_timestamp(t.`Time`)';
-    $UserField = 't.`UserID`';
-    $ExtraWhere = "
+    case 'contest':
+        $Time = 'unix_timestamp(t.`Time`)';
+        $UserField = 't.`UserID`';
+        $ExtraWhere = "
       AND t.`ID` IN (
         SELECT `TorrentID`
         FROM `library_contest`
         WHERE `UserID` = $UserID
       )";
-    $From = '`torrents` AS t';
-    break;
+        $From = '`torrents` AS t';
+        break;
 
-  case 'leeching':
-    if (!check_paranoia('leeching', $User['Paranoia'], $UserClass, $UserID)) {
-        error(403);
-    }
-    $Time = '(xfu.`mtime` - xfu.`timespent`)';
-    $UserField = 'xfu.`uid`';
-    $ExtraWhere = '
+    case 'leeching':
+        if (!check_paranoia('leeching', $User['Paranoia'], $UserClass, $UserID)) {
+            error(403);
+        }
+        $Time = '(xfu.`mtime` - xfu.`timespent`)';
+        $UserField = 'xfu.`uid`';
+        $ExtraWhere = '
       AND xfu.`active` = 1
       AND xfu.`Remaining` > 0';
-    $From = "
+        $From = "
       `xbt_files_users` AS xfu
         JOIN `torrents` AS t ON t.`ID` = xfu.`fid`";
-    break;
+        break;
 
-  case 'uploaded':
-    if ((empty($_GET['filter']) || $_GET['filter'] !== 'perfectflac') && !check_paranoia('uploads', $User['Paranoia'], $UserClass, $UserID)) {
-        error(403);
-    }
-    $Time = 'unix_timestamp(t.`Time`)';
-    $UserField = 't.`UserID`';
-    $ExtraWhere = '';
-    $From = "`torrents` AS t";
-    break;
+    case 'uploaded':
+        if ((empty($_GET['filter']) || $_GET['filter'] !== 'perfectflac') && !check_paranoia('uploads', $User['Paranoia'], $UserClass, $UserID)) {
+            error(403);
+        }
+        $Time = 'unix_timestamp(t.`Time`)';
+        $UserField = 't.`UserID`';
+        $ExtraWhere = '';
+        $From = "`torrents` AS t";
+        break;
 
-  case 'downloaded':
-    if (!check_perms('site_view_torrent_snatchlist')) {
-        error(403);
-    }
-    $Time = 'unix_timestamp(ud.`Time`)';
-    $UserField = 'ud.`UserID`';
-    $ExtraWhere = '';
-    $From = "
+    case 'downloaded':
+        if (!check_perms('site_view_torrent_snatchlist')) {
+            error(403);
+        }
+        $Time = 'unix_timestamp(ud.`Time`)';
+        $UserField = 'ud.`UserID`';
+        $ExtraWhere = '';
+        $From = "
       `users_downloads` AS ud
         JOIN `torrents` AS t ON t.`ID` = ud.`TorrentID`";
-    break;
+        break;
 
-  default:
-    error(404);
+    default:
+        error(404);
 }
 
 if (empty($GroupBy)) {
@@ -490,7 +490,7 @@ foreach ($Categories as $CatKey => $CatName) {
   <div class="box">
     <table class="torrent_table cats" width="100%">
       <tr class="colhead">
-        <td class="cats_col"></td>
+        <td class="categoryColumn"></td>
 
         <td>
           <a
@@ -526,65 +526,65 @@ foreach ($Categories as $CatKey => $CatName) {
       <!-- Results list -->
       <?php
   $PageSize = 0;
-  foreach ($TorrentsInfo as $TorrentID => $Info) {
-      list($GroupID, , $Time) = array_values($Info);
-      extract(Torrents::array_group($Results[$GroupID]));
-      $Torrent = $Torrents[$TorrentID];
-      $TorrentTags = new Tags($TagList);
+      foreach ($TorrentsInfo as $TorrentID => $Info) {
+          list($GroupID, , $Time) = array_values($Info);
+          extract(Torrents::array_group($Results[$GroupID]));
+          $Torrent = $Torrents[$TorrentID];
+          $TorrentTags = new Tags($TagList);
 
-      # This is the torrent list formatting!
-      $DisplayName = '';
-      $DisplayName .= '<a class="torrentTitle" href="torrents.php?id='.$GroupID.'&amp;torrentid='.$TorrentID.'" ';
+          # This is the torrent list formatting!
+          $DisplayName = '';
+          $DisplayName .= '<a class="torrentTitle" href="torrents.php?id='.$GroupID.'&amp;torrentid='.$TorrentID.'" ';
 
-      # No cover art
-      if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
-          $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
-      }
+          # No cover art
+          if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
+              $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
+          }
 
-      # Old concatenated title: EN, JP, RJ
-      #$GroupName = empty($GroupName) ? (empty($GroupTitle2) ? $GroupNameJP : $GroupTitle2) : $GroupName;
-      $DisplayName .= 'dir="ltr">'.$GroupName.'</a>';
+          # Old concatenated title: EN, JP, RJ
+          #$GroupName = empty($GroupName) ? (empty($GroupTitle2) ? $GroupNameJP : $GroupTitle2) : $GroupName;
+          $DisplayName .= 'dir="ltr">'.$GroupName.'</a>';
 
-      # Year
-      if ($GroupYear) {
-          $Label = '<br />📅&nbsp;';
-          $DisplayName .= $Label."<a href='torrents.php?action=search&year=$GroupYear'>$GroupYear</a>";
-      }
+          # Year
+          if ($GroupYear) {
+              $Label = '<br />📅&nbsp;';
+              $DisplayName .= $Label."<a href='torrents.php?action=search&year=$GroupYear'>$GroupYear</a>";
+          }
 
-      # Studio
-      if ($GroupStudio) {
-          $Label = '&ensp;📍&nbsp;';
-          $DisplayName .= $Label."<a href='torrents.php?action=search&location=$GroupStudio'>$GroupStudio</a>";
-      }
+          # Studio
+          if ($GroupStudio) {
+              $Label = '&ensp;📍&nbsp;';
+              $DisplayName .= $Label."<a href='torrents.php?action=search&location=$GroupStudio'>$GroupStudio</a>";
+          }
 
-      # Catalogue Number
-      if ($GroupCatalogueNumber) {
-          $Label = '&ensp;🔑&nbsp;';
-          $DisplayName .= $Label."<a href='torrents.php?action=search&numbers=$GroupCatalogueNumber'>$GroupCatalogueNumber</a>";
-      }
+          # Catalogue Number
+          if ($GroupCatalogueNumber) {
+              $Label = '&ensp;🔑&nbsp;';
+              $DisplayName .= $Label."<a href='torrents.php?action=search&numbers=$GroupCatalogueNumber'>$GroupCatalogueNumber</a>";
+          }
 
-      # Organism
-      if ($GroupTitle2) {
-          $Label = '&ensp;🦠&nbsp;';
-          $DisplayName .= $Label."<a href='torrents.php?action=search&advgroupname=$GroupTitle2'><em>$GroupTitle2</em></a>";
-      }
+          # Organism
+          if ($GroupTitle2) {
+              $Label = '&ensp;🦠&nbsp;';
+              $DisplayName .= $Label."<a href='torrents.php?action=search&advgroupname=$GroupTitle2'><em>$GroupTitle2</em></a>";
+          }
 
-      # Strain/Variety
-      if ($GroupNameJP) {
-          $Label = '&nbsp;';
-          $DisplayName .= $Label."<a href='torrents.php?action=search&advgroupname=$GroupNameJP'>$GroupNameJP</a>";
-      }
+          # Strain/Variety
+          if ($GroupNameJP) {
+              $Label = '&nbsp;';
+              $DisplayName .= $Label."<a href='torrents.php?action=search&advgroupname=$GroupNameJP'>$GroupNameJP</a>";
+          }
 
-      # Authors
-      if (isset($Artists)) {
-          # Emoji in classes/astists.class.php
-          $Label = '&ensp;';
-          $DisplayName .= $Label.'<div>'.Artists::display_artists($Artists).'</div>';
-      } ?>
+          # Authors
+          if (isset($Artists)) {
+              # Emoji in classes/astists.class.php
+              $Label = '&ensp;';
+              $DisplayName .= $Label.'<div>'.Artists::display_artists($Artists).'</div>';
+          } ?>
 
       <tr
         class="torrent torrent_row<?= ($Torrent['IsSnatched'] ? ' snatched_torrent' : '') . ($GroupFlags['IsSnatched'] ? ' snatched_group' : '') ?>">
-        <td class="center cats_col">
+        <td class="center categoryColumn">
           <div
             title="<?= Format::pretty_category($GroupCategoryID) ?>"
             class="tooltip <?= Format::css_category($GroupCategoryID) ?>">
@@ -604,10 +604,10 @@ foreach ($Categories as $CatKey => $CatName) {
 
             <?= "$DisplayName\n"; ?>
             <?php
-      $ExtraInfo = Torrents::torrent_info($Torrent);
-      if ($ExtraInfo) {
-          echo "<br />$ExtraInfo";
-      } ?>
+          $ExtraInfo = Torrents::torrent_info($Torrent);
+          if ($ExtraInfo) {
+              echo "<br />$ExtraInfo";
+          } ?>
             <div class="tags"><?= $TorrentTags->format('torrents.php?type='.$Action.'&amp;userid='.$UserID.'&amp;tags=') ?>
             </div>
           </div>
@@ -626,7 +626,7 @@ foreach ($Categories as $CatKey => $CatName) {
         </td>
       </tr>
       <?php
-  } ?>
+      } ?>
     </table>
   </div>
   <?php } ?>

@@ -74,7 +74,7 @@ if (!empty($_GET['id'])) {
 }
 */
 
-if (empty($_REQUEST['action']) && empty($_REQUEST["id"])) {
+if (empty($_REQUEST['action']) && empty($_REQUEST["id"]) && empty($_REQUEST["type"])) {
     require_once "$ENV->serverRoot/sections/torrents/browse.php";
 }
 
@@ -82,6 +82,9 @@ if (!empty($_REQUEST["id"])) {
     require_once "$ENV->serverRoot/sections/torrents/details.php";
 }
 
+if (!empty($_GET['type'])) {
+    require_once "$ENV->serverRoot/sections/torrents/user.php";
+}
 
 if (!empty($_REQUEST['action'])) {
     switch ($_REQUEST['action']) {
@@ -324,6 +327,7 @@ if (!empty($_REQUEST['action'])) {
     } # switch
 }
 
+/*
 # If $_REQUEST['action'] is empty
 else {
     #enforce_login();
@@ -368,3 +372,4 @@ else {
         require_once "$ENV->serverRoot/sections/torrents/browse.php";
     }
 }
+*/

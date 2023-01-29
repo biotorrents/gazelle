@@ -119,8 +119,8 @@ if (!empty($_GET['date'])) {
       <?php
   foreach ($Details as $Detail) {
       list($Rank, $TitleString, $TagString, $TorrentID, $GroupID, $GroupName, $GroupCategoryID, $TorrentTags,
-      $Format, $Encoding, $Media, $Scene, $HasLog, $HasCue, $LogScore, $Year, $GroupYear,
-      $RemasterTitle, $Snatched, $Seeders, $Leechers, $Data) = $Detail;
+          $Format, $Encoding, $Media, $Scene, $HasLog, $HasCue, $LogScore, $Year, $GroupYear,
+          $RemasterTitle, $Snatched, $Seeders, $Leechers, $Data) = $Detail;
 
       if ($GroupID) {
           // Group still exists
@@ -185,10 +185,10 @@ if (!empty($_GET['date'])) {
           $TorrentTags = new Tags($TagString);
       } // if ($GroupID)
 
-?>
+      ?>
       <tr class="group_torrent row">
         <td style="padding: 8px; text-align: center;"><strong><?=$Rank?></strong></td>
-        <td class="center cats_col">
+        <td class="center categoryColumn">
         </td>
         <td>
           <span><?=($GroupID ? '<a href="torrents.php?action=download&amp;id='.$TorrentID.'&amp;authkey='.$app->userNew->extra['AuthKey'].'&amp;torrent_pass='.$app->userNew->extra['torrent_pass'].' title="Download" class="brackets tooltip">DL</a>' : '(Deleted)')?></span>
@@ -199,7 +199,7 @@ if (!empty($_GET['date'])) {
       </tr>
       <?php
   } // foreach ($Details as $Detail)
-?>
+    ?>
     </table><br />
   </div>
 </div>

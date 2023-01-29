@@ -304,7 +304,7 @@ class Twig # extends Twig\Environment
 
         # random creator
         $twig->addFunction(new Twig\TwigFunction("randomCreator", function () {
-            $famousBiologists = [
+            $randomCreators = [
                 "Alexander Fleming",
                 "Alfonso Valencia",
                 "Alfred Russel Wallace",

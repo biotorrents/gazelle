@@ -192,7 +192,7 @@ if ($Sneaky) {
     <?=$Pages?>
   </div>
   <?php
-}
+  }
 if (empty($Results)) {
     ?>
   <table class="layout border slight_margin">
@@ -204,19 +204,19 @@ if (empty($Results)) {
   </table>
   <?php
 } else {
-        $FilterGroups = [];
-        foreach ($Results as $Result) {
-            if (!isset($FilterGroups[$Result['FilterID']])) {
-                $FilterGroups[$Result['FilterID']] = [];
-                $FilterGroups[$Result['FilterID']]['FilterLabel'] = isset($Filters[$Result['FilterID']])
+    $FilterGroups = [];
+    foreach ($Results as $Result) {
+        if (!isset($FilterGroups[$Result['FilterID']])) {
+            $FilterGroups[$Result['FilterID']] = [];
+            $FilterGroups[$Result['FilterID']]['FilterLabel'] = isset($Filters[$Result['FilterID']])
         ? $Filters[$Result['FilterID']]['Label']
         : false;
-            }
-            $FilterGroups[$Result['FilterID']][] = $Result;
         }
+        $FilterGroups[$Result['FilterID']][] = $Result;
+    }
 
-        foreach ($FilterGroups as $FilterID => $FilterResults) {
-            ?>
+    foreach ($FilterGroups as $FilterID => $FilterResults) {
+        ?>
   <div class="header">
     <h3>
       <?php if ($FilterResults['FilterLabel'] !== false) { ?>
@@ -245,7 +245,7 @@ if (empty($Results)) {
         <td style="text-align: center;"><input type="checkbox" name="toggle"
             onclick="toggleChecks('notificationform_<?=$FilterID?>', this, '.notify_box')" />
         </td>
-        <td class="small cats_col"></td>
+        <td class="small categoryColumn"></td>
         <td style="width: 100%;">Name<?=$TorrentCount <= NOTIFICATIONS_MAX_SLOWSORT ? ' / <a href="'.header_link('year').'">Year</a>' : ''?>
         </td>
         <td>Files</td>
@@ -267,60 +267,60 @@ if (empty($Results)) {
       </tr>
       <?php
     unset($FilterResults['FilterLabel']);
-            foreach ($FilterResults as $Result) {
-                $TorrentID = $Result['TorrentID'];
-                $GroupID = $Result['GroupID'];
-                $GroupInfo = $TorrentGroups[$Result['GroupID']];
-                if (!isset($GroupInfo['Torrents'][$TorrentID]) || !isset($GroupInfo['ID'])) {
-                    // If $GroupInfo['ID'] is unset, the torrent group associated with the torrent doesn't exist
-                    continue;
-                }
-                $GroupName = empty($GroupInfo['Name']) ? (empty($GroupInfo['Title2']) ? $GroupInfo['NameJP'] : $GroupInfo['Title2']) : $GroupInfo['Name'];
-                $TorrentInfo = $GroupInfo['Torrents'][$TorrentID];
-                // generate torrent's title
-                $DisplayName = '';
-                if (!empty($GroupInfo['Artists'])) {
-                    $MatchingArtists = [];
-                    foreach ($GroupInfo['Artists'] as $GroupArtists) {
-                        foreach ($GroupArtists as $GroupArtist) {
-                            if (isset($Filters[$FilterID]['Artists'][mb_strtolower($GroupArtist['name'], 'UTF-8')])) {
-                                $MatchingArtists[] = $GroupArtist['name'];
-                            }
+        foreach ($FilterResults as $Result) {
+            $TorrentID = $Result['TorrentID'];
+            $GroupID = $Result['GroupID'];
+            $GroupInfo = $TorrentGroups[$Result['GroupID']];
+            if (!isset($GroupInfo['Torrents'][$TorrentID]) || !isset($GroupInfo['ID'])) {
+                // If $GroupInfo['ID'] is unset, the torrent group associated with the torrent doesn't exist
+                continue;
+            }
+            $GroupName = empty($GroupInfo['Name']) ? (empty($GroupInfo['Title2']) ? $GroupInfo['NameJP'] : $GroupInfo['Title2']) : $GroupInfo['Name'];
+            $TorrentInfo = $GroupInfo['Torrents'][$TorrentID];
+            // generate torrent's title
+            $DisplayName = '';
+            if (!empty($GroupInfo['Artists'])) {
+                $MatchingArtists = [];
+                foreach ($GroupInfo['Artists'] as $GroupArtists) {
+                    foreach ($GroupArtists as $GroupArtist) {
+                        if (isset($Filters[$FilterID]['Artists'][mb_strtolower($GroupArtist['name'], 'UTF-8')])) {
+                            $MatchingArtists[] = $GroupArtist['name'];
                         }
                     }
-                    $MatchingArtistsText = (!empty($MatchingArtists) ? 'Caught by filter for '.implode(', ', $MatchingArtists) : '');
-                    $DisplayName = Artists::display_artists($GroupInfo['Artists'], true, true);
                 }
-                $DisplayName .= "<a href=\"torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID\" ";
-                if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
-                    $DisplayName .= 'data-cover="'.ImageTools::process($GroupInfo['WikiImage'], 'thumb').'" ';
-                }
-                $DisplayName .= "class=\"tooltip\" title=\"View torrent\" dir=\"ltr\">" . $GroupName . '</a>';
+                $MatchingArtistsText = (!empty($MatchingArtists) ? 'Caught by filter for '.implode(', ', $MatchingArtists) : '');
+                $DisplayName = Artists::display_artists($GroupInfo['Artists'], true, true);
+            }
+            $DisplayName .= "<a href=\"torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID\" ";
+            if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
+                $DisplayName .= 'data-cover="'.ImageTools::process($GroupInfo['WikiImage'], 'thumb').'" ';
+            }
+            $DisplayName .= "class=\"tooltip\" title=\"View torrent\" dir=\"ltr\">" . $GroupName . '</a>';
 
-                $GroupCategoryID = $GroupInfo['CategoryID'];
-                /*
-                      if ($GroupCategoryID === 1) {
-                */
-                if ($GroupInfo['Year'] > 0) {
-                    $DisplayName .= " [$GroupInfo[Year]]";
-                }
-                /*
-                        if ($GroupInfo['ReleaseType'] > 0) {
-                          $DisplayName .= ' ['.$ReleaseTypes[$GroupInfo['ReleaseType']].']';
-                        }
-                      }
-                */
+            $GroupCategoryID = $GroupInfo['CategoryID'];
+            /*
+                  if ($GroupCategoryID === 1) {
+            */
+            if ($GroupInfo['Year'] > 0) {
+                $DisplayName .= " [$GroupInfo[Year]]";
+            }
+            /*
+                    if ($GroupInfo['ReleaseType'] > 0) {
+                      $DisplayName .= ' ['.$ReleaseTypes[$GroupInfo['ReleaseType']].']';
+                    }
+                  }
+            */
 
-                // append extra info to torrent title
-                $ExtraInfo = Torrents::torrent_info($TorrentInfo, true, true);
+            // append extra info to torrent title
+            $ExtraInfo = Torrents::torrent_info($TorrentInfo, true, true);
 
-                $TorrentTags = new Tags($GroupInfo['TagList']);
+            $TorrentTags = new Tags($GroupInfo['TagList']);
 
-                if ($GroupInfo['TagList'] === '') {
-                    $TorrentTags->set_primary($Categories[$GroupCategoryID - 1]);
-                }
+            if ($GroupInfo['TagList'] === '') {
+                $TorrentTags->set_primary($Categories[$GroupCategoryID - 1]);
+            }
 
-                // echo row?>
+            // echo row?>
       <tr
         class="torrent torrent_row<?=($TorrentInfo['IsSnatched'] ? ' snatched_torrent' : '') . ($GroupInfo['Flags']['IsSnatched'] ? ' snatched_group' : '') . ($MatchingArtistsText ? ' tooltip" title="'.Text::esc($MatchingArtistsText) : '')?>"
         id="torrent<?=$TorrentID?>">
@@ -330,7 +330,7 @@ if (empty($Results)) {
             value="<?=$TorrentID?>"
             id="clear_<?=$TorrentID?>" tabindex="1" />
         </td>
-        <td class="center cats_col">
+        <td class="center categoryColumn">
         </td>
         <td class="big_info">
           <div class="group_info clear">
@@ -344,8 +344,8 @@ if (empty($Results)) {
                 class="tooltip" title="Use a FL Token"
                 onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
               <?php
-      }
-                if (!$Sneaky) { ?>
+              }
+            if (!$Sneaky) { ?>
               | <a href="#"
                 onclick="clearItem(<?=$TorrentID?>); return false;"
                 class="tooltip" title="Remove from notifications list">CL</a>
@@ -355,8 +355,8 @@ if (empty($Results)) {
             <div class="torrent_info">
               <?=$ExtraInfo?>
               <?php if ($Result['UnRead']) {
-                    echo '<strong class="new">New!</strong>';
-                } ?>
+                  echo '<strong class="new">New!</strong>';
+              } ?>
               <?php if (Bookmarks::has_bookmarked('torrent', $GroupID)) { ?>
               <span class="remove_bookmark u-pull-right">
                 <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
@@ -390,12 +390,12 @@ if (empty($Results)) {
         </td>
       </tr>
       <?php
-            } ?>
+        } ?>
     </table>
   </form>
   <?php
-        }
     }
+}
 
   if ($Pages) { ?>
   <div class="linkbox"><?=$Pages?>

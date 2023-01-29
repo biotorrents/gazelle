@@ -454,7 +454,7 @@ View::header($Title, 'requests');
     <?php } ?>
     <table id="request_table" class="request_table border" cellpadding="6" cellspacing="1" border="0" width="100%">
         <tr class="colhead_dark">
-            <th class="small cats_col"></th>
+            <th class="small categoryColumn"></th>
             <th style="width: 38%;" class="nobr">
                 <strong>Request Name</strong>
             </th>
@@ -551,7 +551,7 @@ View::header($Title, 'requests');
                     $Tags = $Request['Tags']; ?>
 
         <tr class="request">
-            <td class="center cats_col">
+            <td class="center categoryColumn">
                 <div title="<?=Format::pretty_category($Request['CategoryID'])?>"
                     class="tooltip <?=Format::css_category($Request['CategoryID'])?>">
                 </div>

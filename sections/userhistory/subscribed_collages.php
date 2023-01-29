@@ -59,12 +59,12 @@ if ($ShowAll) {
         new additions</a>&nbsp;&nbsp;&nbsp;
       <?php
 } else {
-        ?>
+    ?>
       <br /><br />
       <a href="userhistory.php?action=subscribed_collages&amp;showall=1" class="brackets">Show all subscribed
         collections</a>&nbsp;&nbsp;&nbsp;
       <?php
-    }
+}
 ?>
       <a href="userhistory.php?action=catchup_collages&amp;auth=<?=$app->userNew->extra['AuthKey']?>"
         class="brackets">Catch up</a>&nbsp;&nbsp;&nbsp;
@@ -78,62 +78,62 @@ if (!$NumResults) {
   </div>
   <?php
 } else {
-        $HideGroup = '';
-        $ActionTitle = 'Hide';
-        $ActionURL = 'hide';
-        $ShowGroups = 0;
+    $HideGroup = '';
+    $ActionTitle = 'Hide';
+    $ActionURL = 'hide';
+    $ShowGroups = 0;
 
-        foreach ($CollageSubs as $Collage) {
-            $TorrentTable = '';
+    foreach ($CollageSubs as $Collage) {
+        $TorrentTable = '';
 
-            list($CollageID, $CollageName, $CollageSize, $LastVisit) = $Collage;
-            $RS = $app->dbOld->prepared_query("
+        list($CollageID, $CollageName, $CollageSize, $LastVisit) = $Collage;
+        $RS = $app->dbOld->prepared_query("
       SELECT GroupID
       FROM collages_torrents
       WHERE CollageID = $CollageID
         AND AddedOn > '" . db_string($LastVisit) . "'
       ORDER BY AddedOn");
-            $NewTorrentCount = $app->dbOld->record_count();
+        $NewTorrentCount = $app->dbOld->record_count();
 
-            $GroupIDs = $app->dbOld->collect('GroupID', false);
-            if (count($GroupIDs) > 0) {
-                $TorrentList = Torrents::get_groups($GroupIDs);
-            } else {
-                $TorrentList = [];
+        $GroupIDs = $app->dbOld->collect('GroupID', false);
+        if (count($GroupIDs) > 0) {
+            $TorrentList = Torrents::get_groups($GroupIDs);
+        } else {
+            $TorrentList = [];
+        }
+
+        $Artists = Artists::get_artists($GroupIDs);
+        $Number = 0;
+
+        foreach ($GroupIDs as $GroupID) {
+            if (!isset($TorrentList[$GroupID])) {
+                continue;
+            }
+            $Group = $TorrentList[$GroupID];
+            extract(Torrents::array_group($Group));
+
+            $TorrentTags = new Tags($TagList);
+
+            $DisplayName = '';
+
+            if (isset($Artists)) {
+                $DisplayName .= '<div>'.Artists::display_artists($Artists).'</div> ';
+            }
+            $DisplayName .= "<a class=\"torrentTitle\" href=\"torrents.php?id=$GroupID\" ";
+            if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
+                $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage).'" ';
+            }
+            $DisplayName .= "dir=\"ltr\">".($GroupName ? $GroupName : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP))."</a>";
+            if ($GroupYear > 0) {
+                $DisplayName = "$DisplayName [$GroupYear]";
             }
 
-            $Artists = Artists::get_artists($GroupIDs);
-            $Number = 0;
+            $SnatchedGroupClass = $GroupFlags['IsSnatched'] ? ' snatched_group' : '';
 
-            foreach ($GroupIDs as $GroupID) {
-                if (!isset($TorrentList[$GroupID])) {
-                    continue;
-                }
-                $Group = $TorrentList[$GroupID];
-                extract(Torrents::array_group($Group));
-
-                $TorrentTags = new Tags($TagList);
-
-                $DisplayName = '';
-
-                if (isset($Artists)) {
-                    $DisplayName .= '<div>'.Artists::display_artists($Artists).'</div> ';
-                }
-                $DisplayName .= "<a class=\"torrentTitle\" href=\"torrents.php?id=$GroupID\" ";
-                if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
-                    $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage).'" ';
-                }
-                $DisplayName .= "dir=\"ltr\">".($GroupName ? $GroupName : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP))."</a>";
-                if ($GroupYear > 0) {
-                    $DisplayName = "$DisplayName [$GroupYear]";
-                }
-
-                $SnatchedGroupClass = $GroupFlags['IsSnatched'] ? ' snatched_group' : '';
-
-                // Start an output buffer, so we can store this output in $TorrentTable
-                ob_start();
-                if (count($Torrents) > 1 || $GroupCategoryID == 1) {
-                    ?>
+            // Start an output buffer, so we can store this output in $TorrentTable
+            ob_start();
+            if (count($Torrents) > 1 || $GroupCategoryID == 1) {
+                ?>
   <tr class="group<?=$SnatchedGroupClass?>"
     id="group_<?=$CollageID?>_<?=$GroupID?>">
     <td class="center">
@@ -145,7 +145,7 @@ if (!$NumResults) {
           title="Toggle this group (Hold &quot;Shift&quot; to toggle all groups)"></a>
       </div>
     </td>
-    <td class="center cats_col">
+    <td class="center categoryColumn">
       <div title="<?=Format::pretty_category($GroupCategoryID)?>"
         class="tooltip <?=Format::css_category($GroupCategoryID)?>">
       </div>
@@ -184,32 +184,32 @@ if (!$NumResults) {
   </tr>
   <?php
         }
-                } else {
-                    // Viewing a type that does not require grouping
+            } else {
+                // Viewing a type that does not require grouping
 
-                    $TorrentID = key($Torrents);
-                    $Torrent = current($Torrents);
+                $TorrentID = key($Torrents);
+                $Torrent = current($Torrents);
 
-                    $DisplayName = '';
+                $DisplayName = '';
 
-                    if (isset($Artists)) {
-                        $DisplayName .= '<div>'.Artists::display_artists($Artists).'</div> ';
-                    }
+                if (isset($Artists)) {
+                    $DisplayName .= '<div>'.Artists::display_artists($Artists).'</div> ';
+                }
 
-                    $DisplayName .= "<a class=\"torrentTitle\" href=\"torrents.php?id=$GroupID\" ";
-                    if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
-                        $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage).'" ';
-                    }
+                $DisplayName .= "<a class=\"torrentTitle\" href=\"torrents.php?id=$GroupID\" ";
+                if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
+                    $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage).'" ';
+                }
 
-                    $DisplayName .= "dir=\"ltr\">".($GroupName ? $GroupName : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP))."</a>";
-                    if ($Torrent['IsSnatched']) {
-                        $DisplayName .= ' ' . Format::torrent_label('Snatched', 'bold');
-                    }
+                $DisplayName .= "dir=\"ltr\">".($GroupName ? $GroupName : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP))."</a>";
+                if ($Torrent['IsSnatched']) {
+                    $DisplayName .= ' ' . Format::torrent_label('Snatched', 'bold');
+                }
 
-                    if (!empty($Torrent['FreeTorrent'])) {
-                        $DisplayName .= ' ' . Format::torrent_label('Freeleech', 'important_text_alt');
-                    }
-                    $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : ''; ?>
+                if (!empty($Torrent['FreeTorrent'])) {
+                    $DisplayName .= ' ' . Format::torrent_label('Freeleech', 'important_text_alt');
+                }
+                $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : ''; ?>
 
   <tr class="torrent<?=$SnatchedTorrentClass?>"
     id="group_<?=$CollageID?>_<?=$GroupID?>">
@@ -246,9 +246,9 @@ if (!$NumResults) {
     </td>
   </tr>
   <?php
-                }
-                $TorrentTable .= ob_get_clean();
-            } ?>
+            }
+            $TorrentTable .= ob_get_clean();
+        } ?>
   <!-- I hate that proton is making me do it like this -->
   <!--<div class="head colhead_dark" style="margin-top: 8px;">-->
   <table style="margin-top: 8px;" class="subscribed_collages_table">
@@ -276,7 +276,7 @@ if (!$NumResults) {
     id="discog_table_<?=$CollageID?>">
     <tr class="colhead">
       <td class="small"></td>
-      <td class="small cats_col"></td>
+      <td class="small categoryColumn"></td>
       <td><strong>Torrents</strong></td>
       <td>Size</td>
       <td class="sign snatches">
@@ -292,8 +292,8 @@ if (!$NumResults) {
     <?=$TorrentTable?>
   </table>
   <?php
-        } // foreach ()
-    } // else -- if (empty($NumResults))
+    } // foreach ()
+} // else -- if (empty($NumResults))
 ?>
 </div>
 

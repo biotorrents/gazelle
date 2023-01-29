@@ -69,8 +69,8 @@ if (check_perms('site_advanced_top10')) {
                     <td class="label">Tags (comma-separated)</td>
                     <td class="ft_taglist">
                         <input type="text" name="tags" id="tags" size="65" value="<?php if (!empty($_GET['tags'])) {
-        echo Text::esc($_GET['tags']);
-    } ?>" />&nbsp;
+                            echo Text::esc($_GET['tags']);
+                        } ?>" />&nbsp;
                         <input type="radio" id="rdoAll" name="anyall" value="all" <?=((!isset($_GET['anyall'])||$_GET['anyall']!=='any') ? ' checked="checked"' : '')?>
                         /><label for="rdoAll"> All</label>&nbsp;&nbsp;
                         <input type="radio" id="rdoAny" name="anyall" value="any" <?=((!isset($_GET['anyall'])||$_GET['anyall']==='any') ? ' checked="checked"' : '')?>
@@ -420,7 +420,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
     <small class="top10_quantity_links">
         <?php
     switch ($Limit) {
-      case 100: ?>
+        case 100: ?>
         &ndash; <a href="top10.php?details=<?=$Tag?>"
             class="brackets">Top
             10</a>
@@ -430,7 +430,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
             class="brackets">Top 250</a>
         <?php break;
 
-      case 250: ?>
+        case 250: ?>
         &ndash; <a href="top10.php?details=<?=$Tag?>"
             class="brackets">Top
             10</a>
@@ -440,7 +440,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
         &ndash; <span class="brackets">Top 250</span>
         <?php break;
 
-      default: ?>
+        default: ?>
         &ndash; <span class="brackets">Top 10</span>
         &ndash; <a
             href="top10.php?type=torrents&amp;limit=100&amp;details=<?=$Tag?>"
@@ -456,7 +456,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
 <table class="torrent_table cats numbering border">
     <tr class="colhead">
         <td class="center" style="width: 15px;"></td>
-        <td class="cats_col"></td>
+        <td class="categoryColumn"></td>
         <td>Name</td>
         <td style="text-align: right;">Size</td>
         <td style="text-align: right;">Data</td>
@@ -508,7 +508,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
 
     foreach ($Details as $Detail) {
         list($TorrentID, $GroupID, $GroupName, $GroupTitle2, $GroupNameJP, $GroupCategoryID, $WikiImage, $TagsList,
-      $Media, $Year, $Studio, $Snatched, $Seeders, $Leechers, $Data, $Size) = $Detail;
+            $Media, $Year, $Studio, $Snatched, $Seeders, $Leechers, $Data, $Size) = $Detail;
 
         /*
         list($TorrentID, $GroupID, $GroupName, $GroupTitle2, $GroupNameJP, $GroupCategoryID, $WikiImage, $TagsList,
@@ -600,7 +600,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
 <tr
     class="torrent row<?=($IsBookmarked ? ' bookmarked' : '') . ($IsSnatched ? ' snatched_torrent' : '')?>">
     <td style="padding: 8px; text-align: center;"><strong><?=$Rank?></strong></td>
-    <td class="center cats_col">
+    <td class="center categoryColumn">
         <div title="<?=Format::pretty_category($GroupCategoryID)?>"
             class="tooltip <?=Format::css_category($GroupCategoryID)?>">
         </div>
@@ -651,7 +651,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
 </tr>
 <?php
     } // foreach ($Details as $Detail)
-?>
+    ?>
 </table>
 <br />
 <?php
