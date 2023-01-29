@@ -59,7 +59,7 @@ $JsonTorrentDetails = [
   'categoryId'   => (int) $TorrentDetails['category_id'],
   'icategoryName' => $CategoryName,
   'timestamp'         => $TorrentDetails['timestamp'],
-  'bookmarked' => Bookmarks::has_bookmarked('torrent', $GroupID),
+  'bookmarked' => Bookmarks::isBookmarked('torrent', $GroupID),
   'tagList'         => $TagList
 ];
 

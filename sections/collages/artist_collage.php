@@ -105,7 +105,7 @@ View::header($Name, 'browse,collage,recommend');
       <a href="#" id="subscribelink<?=$CollageID?>" class="brackets"
         onclick="CollageSubscribe(<?=$CollageID?>); return false;"><?=(in_array($CollageID, $CollageSubscriptions) ? 'Unsubscribe' : 'Subscribe')?></a>
       <?php
-  }
+      }
   if (check_perms('site_collages_delete') || (check_perms('site_edit_wiki') && !$Locked)) {
       ?>
       <a href="collages.php?action=edit&amp;collageid=<?=$CollageID?>"
@@ -115,7 +115,7 @@ View::header($Name, 'browse,collage,recommend');
       <span class="brackets">Locked</span>
       <?php
   }
-  if (Bookmarks::has_bookmarked('collage', $CollageID)) {
+  if (Bookmarks::isBookmarked('collage', $CollageID)) {
       ?>
       <a href="#" id="bookmarklink_collage_<?=$CollageID?>"
         class="brackets"
@@ -367,7 +367,7 @@ if ($CollageCovers !== 0) {
       //]]>
     </script>
     <?php
-  }
+    }
 }
 ?>
 

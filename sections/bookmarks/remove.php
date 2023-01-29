@@ -5,7 +5,7 @@
 $app = App::go();
 
 authorize();
-if (!Bookmarks::can_bookmark($_GET['type'])) {
+if (!Bookmarks::validateType($_GET['type'])) {
     error(404);
 }
 

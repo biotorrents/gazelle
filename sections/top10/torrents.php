@@ -515,7 +515,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
       $Media, $Year, $Snatched, $Seeders, $Leechers, $Data, $Size) = $Detail;
       */
 
-        $IsBookmarked = Bookmarks::has_bookmarked('torrent', $GroupID);
+        $IsBookmarked = Bookmarks::isBookmarked('torrent', $GroupID);
         $IsSnatched = Torrents::has_snatched($TorrentID);
 
         $Rank++;

@@ -10,11 +10,11 @@ declare(strict_types=1);
 class Bookmarks
 {
     /**
-     * can_bookmark
+     * validateType
      *
-     * Check if can bookmark.
+     * Check if the bookmark type is valid.
      */
-    public static function can_bookmark(string $contentType): bool
+    public static function validateType(string $contentType): bool
     {
         $contentType = strtolower(strval($contentType));
         $allowedTypes = [
@@ -68,21 +68,6 @@ class Bookmarks
 
 
     /**
-     * has_bookmarked
-     *
-     * Check if something is bookmarked.
-     *
-     * @param string $contentType the type of bookmarks to check
-     * @param int $id the bookmark's id
-     * @return boolean
-     */
-    public static function has_bookmarked(string $contentType, int $id): bool
-    {
-        return in_array($id, self::all_bookmarks($contentType));
-    }
-
-
-    /**
      * all_bookmarks
      *
      * Fetch all bookmarks of a certain type for a user.
@@ -123,26 +108,24 @@ class Bookmarks
     /**
      * isBookmarked
      *
-     * Is a piece of content already bookmarked?
+     * Is a piece of content bookmarked?
      *
-     * @param int userId the user to check the bookmark for
-     * @param array data e.g., [ "torrent" => intval(torrentId) ]
+     * @param string $contentType the type of bookmarks to check
+     * @param int $contentId the bookmark's id
+     * @return boolean
      */
-    public static function isBookmarked(int $userId, array $data = []): bool
+    public static function isBookmarked(string $contentType, int $contentId): bool
     {
         $app = App::go();
 
-        $contentType = $data[0] ?? null;
-        $contentId = $data[1] ?? null;
-
-        if (!$contentType || !$contentId) {
-            throw new Exception("invalid data parameter");
+        if (empty($userId) || empty($contentId) || empty($contentType)) {
+            throw new Exception("unable to validate parameters");
         }
 
         list($table, $column) = self::bookmark_schema($contentType);
 
         $query = "select 1 from {$table} where userId = ? and {$column} = ?";
-        $good = $app->dbNew->single($query, [$userId, contentId]);
+        $good = $app->dbNew->single($query, [$userId, $contentId]);
 
         return boolval($good);
     }
@@ -153,11 +136,11 @@ class Bookmarks
      *
      * Adds a bookmark for a piece of content.
      */
-    public static function create(int $userId, int $contentId, string $contentType): void
+    public static function create(string $contentType, int $contentId): void
     {
         $app = App::go();
 
-        if (empty($userId) || empty($contentId) || empty($contentType)) {
+        if (empty($contentType) || empty($contentId)) {
             throw new Exception("unable to validate parameters");
         }
 
@@ -188,7 +171,7 @@ class Bookmarks
             insert ignore into {$table} (userId, {$column}, time)
             values (?, ?, now())
         ";
-        $app->dbNew->do($query, [$userId, $contentId]);
+        $app->dbNew->do($query, [$app->userNew->core["id"], $contentId]);
     }
 
 
@@ -197,17 +180,17 @@ class Bookmarks
      *
      * Deletes a bookmark, obviously.
      */
-    public static function delete(int $userId, int $contentId, string $contentType): void
+    public static function delete(string $contentType, int $contentId): void
     {
         $app = App::go();
 
-        if (empty($userId) || empty($contentId) || empty($contentType)) {
+        if (empty($contentType) || empty($contentId)) {
             throw new Exception("unable to validate parameters");
         }
 
         list($table, $column) = self::bookmark_schema($contentType);
 
         $query = "delete from {$table} where userId = ? and {$column} = ?";
-        $app->dbNew->do($query, [$userId, $contentId]);
+        $app->dbNew->do($query, [$app->userNew->core["id"], $contentId]);
     }
 } # class

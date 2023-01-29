@@ -90,7 +90,7 @@ json_die('success', array(
   'requestId'       => (int)$RequestID,
   'requestorId'     => (int)$Request['UserID'],
   'requestorName'   => $Requestor['Username'],
-  'isBookmarked'    => Bookmarks::has_bookmarked('request', $RequestID),
+  'isBookmarked'    => Bookmarks::isBookmarked('request', $RequestID),
   'requestTax'      => (float)$RequestTax,
   'timeAdded'       => $Request['TimeAdded'],
   'canEdit'         => (bool)$CanEdit,

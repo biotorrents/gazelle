@@ -86,11 +86,11 @@ View::header(
       <a href="requests.php?action=edit&amp;id=<?=$RequestID?>"
         class="brackets">Edit</a>
       <?php }
-  if ($UserCanEdit || check_perms('users_mod')) { //check_perms('site_moderate_requests')) {?>
+      if ($UserCanEdit || check_perms('users_mod')) { //check_perms('site_moderate_requests')) {?>
       <a href="requests.php?action=delete&amp;id=<?=$RequestID?>"
         class="brackets">Delete</a>
       <?php }
-  if (Bookmarks::has_bookmarked('request', $RequestID)) { ?>
+      if (Bookmarks::isBookmarked('request', $RequestID)) { ?>
       <a href="#" id="bookmarklink_request_<?=$RequestID?>"
         onclick="Unbookmark('request', <?=$RequestID?>, 'Bookmark'); return false;"
         class="brackets">Remove bookmark</a>
@@ -108,7 +108,7 @@ View::header(
       <a href="upload.php?requestid=<?=$RequestID?><?=($Request['GroupID'] ? "&amp;groupid=$Request[GroupID]" : '')?>"
         class="brackets">Upload request</a>
       <?php }
-  if (!$IsFilled && ($Request['CategoryID'] === '0' || ($CategoryName === 'Music' && $Request['Year'] === '0'))) { ?>
+      if (!$IsFilled && ($Request['CategoryID'] === '0' || ($CategoryName === 'Music' && $Request['Year'] === '0'))) { ?>
       <a href="reports.php?action=report&amp;type=request_update&amp;id=<?=$RequestID?>"
         class="brackets">Request update</a>
       <?php } ?>
@@ -147,30 +147,30 @@ $encoded_artist = urlencode($encoded_artist);
       </div>
     </div>
     <?php
-  }
+    }
 
   $ArtistVariant = "Author(s)";
-  /*
-  switch ($CategoryName) {
-    case "Movies":
-      $ArtistVariant = "Idols";
-      break;
-    case "Anime":
-      $ArtistVariant = "Studios";
-      break;
-    case "Manga":
-      $ArtistVariant = "Artists";
-      break;
-    case "Games":
-      $ArtistVariant = "Developers";
-      break;
-    case "Other":
-      $ArtistVariant = "Creators";
-      break;
-    default:
-      $ArtistVariant = "Artists";
-  }
-  */
+/*
+switch ($CategoryName) {
+  case "Movies":
+    $ArtistVariant = "Idols";
+    break;
+  case "Anime":
+    $ArtistVariant = "Studios";
+    break;
+  case "Manga":
+    $ArtistVariant = "Artists";
+    break;
+  case "Games":
+    $ArtistVariant = "Developers";
+    break;
+  case "Other":
+    $ArtistVariant = "Creators";
+    break;
+  default:
+    $ArtistVariant = "Artists";
+}
+*/
 ?>
     <div class="box box_artists">
       <div class="head"><strong><?= $ArtistVariant ?></strong></div>
@@ -186,29 +186,29 @@ $encoded_artist = urlencode($encoded_artist);
       <div class="head"><strong>Tags</strong></div>
       <ul class="stats nobullet">
         <?php foreach ($Request['Tags'] as $TagID => $TagName) {
-    $Split = Tags::get_name_and_class($TagName); ?>
+            $Split = Tags::get_name_and_class($TagName); ?>
         <li>
           <a class="<?= $Split['class']?>"
             href="torrents.php?taglist=<?=$TagName?>"><?=Text::esc($Split['name']) ?></a>
           <br style="clear: both;" />
         </li>
         <?php
-} ?>
+        } ?>
       </ul>
     </div>
     <div class="box box_votes">
       <div class="head"><strong>Top Contributors</strong></div>
       <table class="layout" id="request_top_contrib">
         <?php
-  $VoteMax = ($VoteCount < 5 ? $VoteCount : 5);
-  $ViewerVote = false;
-  for ($i = 0; $i < $VoteMax; $i++) {
-      $User = array_shift($RequestVotes['Voters']);
-      $Boldify = false;
-      if ($User['UserID'] === $app->userNew->core['id']) {
-          $ViewerVote = true;
-          $Boldify = true;
-      } ?>
+          $VoteMax = ($VoteCount < 5 ? $VoteCount : 5);
+$ViewerVote = false;
+for ($i = 0; $i < $VoteMax; $i++) {
+    $User = array_shift($RequestVotes['Voters']);
+    $Boldify = false;
+    if ($User['UserID'] === $app->userNew->core['id']) {
+        $ViewerVote = true;
+        $Boldify = true;
+    } ?>
         <tr>
           <td>
             <a
@@ -219,11 +219,11 @@ $encoded_artist = urlencode($encoded_artist);
           </td>
         </tr>
         <?php
-  }
-  reset($RequestVotes['Voters']);
-  if (!$ViewerVote) {
-      foreach ($RequestVotes['Voters'] as $User) {
-          if ($User['UserID'] === $app->userNew->core['id']) { ?>
+}
+reset($RequestVotes['Voters']);
+if (!$ViewerVote) {
+    foreach ($RequestVotes['Voters'] as $User) {
+        if ($User['UserID'] === $app->userNew->core['id']) { ?>
         <tr>
           <td>
             <a
@@ -234,8 +234,8 @@ $encoded_artist = urlencode($encoded_artist);
           </td>
         </tr>
         <?php }
-      }
-  }
+        }
+}
 ?>
       </table>
     </div>
@@ -253,39 +253,39 @@ $encoded_artist = urlencode($encoded_artist);
             </td>
           </tr>
           <?php if ($CategoryName == 'Movies') {
-    if (!empty($Request['CatalogueNumber'])) { ?>
+              if (!empty($Request['CatalogueNumber'])) { ?>
           <tr>
             <td class="label">Catalogue number</td>
             <td><?= $Request['CatalogueNumber'] ?>
             </td>
           </tr>
           <?php
-    }
-}
+              }
+          }
 
 /*
-  $Worldcat = '';
-  $OCLC = str_replace(' ', '', $Request['OCLC']);
-  if ($OCLC !== '') {
-    $OCLCs = explode(',', $OCLC);
-    for ($i = 0; $i < count($OCLCs); $i++) {
-      if (!empty($Worldcat)) {
-        $Worldcat .= ', <a href="https://www.worldcat.org/oclc/'.$OCLCs[$i].'">'.$OCLCs[$i].'</a>';
-      } else {
-        $Worldcat = '<a href="https://www.worldcat.org/oclc/'.$OCLCs[$i].'">'.$OCLCs[$i].'</a>';
-      }
-    }
-  }
-  if (!empty($Worldcat)) {
-?>
-          <tr>
-            <td class="label">WorldCat (OCLC) ID</td>
-            <td><?=$Worldcat?>
-            </td>
-          </tr>
-          <?php
-  }
-*/
+            $Worldcat = '';
+            $OCLC = str_replace(' ', '', $Request['OCLC']);
+            if ($OCLC !== '') {
+              $OCLCs = explode(',', $OCLC);
+              for ($i = 0; $i < count($OCLCs); $i++) {
+                if (!empty($Worldcat)) {
+                  $Worldcat .= ', <a href="https://www.worldcat.org/oclc/'.$OCLCs[$i].'">'.$OCLCs[$i].'</a>';
+                } else {
+                  $Worldcat = '<a href="https://www.worldcat.org/oclc/'.$OCLCs[$i].'">'.$OCLCs[$i].'</a>';
+                }
+              }
+            }
+            if (!empty($Worldcat)) {
+          ?>
+                    <tr>
+                      <td class="label">WorldCat (OCLC) ID</td>
+                      <td><?=$Worldcat?>
+                      </td>
+                    </tr>
+                    <?php
+            }
+          */
   if ($Request['GroupID']) {
       ?>
           <tr>
@@ -312,7 +312,7 @@ $encoded_artist = urlencode($encoded_artist);
             </td>
           </tr>
           <?php
-  }
+          }
   if ($CanVote) {
       ?>
           <tr id="voting">

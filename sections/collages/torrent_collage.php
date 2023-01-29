@@ -110,7 +110,7 @@ foreach ($GroupIDs as $GroupID) {
 
   <td colspan="5">
     <?=$DisplayName?>
-    <?php if (Bookmarks::has_bookmarked('torrent', $GroupID)) { ?>
+    <?php if (Bookmarks::isBookmarked('torrent', $GroupID)) { ?>
     <span class="remove_bookmark u-pull-right">
       <a class="u-pull-right" href="#"
         id="bookmarklink_torrent_<?=$GroupID?>"
@@ -234,7 +234,7 @@ foreach ($GroupIDs as $GroupID) {
       <?php
       $Torrent ??= ["Size" => 0, "Snatched" => 0, "Seeders" => 0, "Leechers" => 0];
 
-      if (Torrents::can_use_token($Torrent)) { ?>
+        if (Torrents::can_use_token($Torrent)) { ?>
       | <a
         href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>&amp;usetoken=1"
         class="tooltip" title="Use a FL Token"
@@ -361,7 +361,7 @@ View::header(
       <a href="#" id="subscribelink<?=$CollageID?>" class="brackets"
         onclick="CollageSubscribe(<?=$CollageID?>); return false;"><?=(in_array($CollageID, $CollageSubscriptions) ? 'Unsubscribe' : 'Subscribe')?></a>
       <?php
-  }
+      }
   if (check_perms('site_collages_delete') || (check_perms('site_edit_wiki') && !$Locked)) {
       ?>
       <a href="collages.php?action=edit&amp;collageid=<?=$CollageID?>"
@@ -371,7 +371,7 @@ View::header(
       <span class="brackets">Locked</span>
       <?php
   }
-  if (Bookmarks::has_bookmarked('collage', $CollageID)) {
+  if (Bookmarks::isBookmarked('collage', $CollageID)) {
       ?>
       <a href="#" id="bookmarklink_collage_<?=$CollageID?>"
         class="brackets"
@@ -531,17 +531,17 @@ foreach ($ZIPOptions as $Option) {
         <ol style="padding-left: 5px;">
           <?php
     $i = 0;
-    foreach ($TopArtists as $ID => $Artist) {
-        $i++;
-        if ($i > 10) {
-            break;
-        } ?>
+        foreach ($TopArtists as $ID => $Artist) {
+            $i++;
+            if ($i > 10) {
+                break;
+            } ?>
 
           <li>
             <a href="artist.php?id=<?=$ID?>"><?=$Artist['name']?></a> (<?=Text::float($Artist['count'])?>)
           </li>
           <?php
-    } ?>
+        } ?>
         </ol>
       </div>
     </div>
@@ -614,7 +614,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
     <h3>Comments</h3>
     <?php
 if ($CommentList === null) {
-        $app->dbOld->query("
+    $app->dbOld->query("
     SELECT
       c.ID,
       c.Body,
@@ -627,8 +627,8 @@ if ($CommentList === null) {
       AND c.PageID = $CollageID
     ORDER BY c.ID DESC
     LIMIT 15");
-        $CommentList = $app->dbOld->to_array(false, MYSQLI_NUM);
-    }
+    $CommentList = $app->dbOld->to_array(false, MYSQLI_NUM);
+}
 foreach ($CommentList as $Comment) {
     list($CommentID, $Body, $UserID, $Username, $CommentTime) = $Comment; ?>
     <div class="box comment">
@@ -688,10 +688,10 @@ if ($CollageCovers != 0) { ?>
         data-wall-min="2">
         <?php
   $Page1 = array_slice($Collage, 0, $CollageCovers);
-  foreach ($Page1 as $Group) {
-      echo $Group;
-  }
-?>
+    foreach ($Page1 as $Group) {
+        echo $Group;
+    }
+    ?>
       </div>
     </div>
 
@@ -745,7 +745,7 @@ if ($CollageCovers != 0) { ?>
       $(() => collageShow.init( <?=json_encode($CollagePages)?> ));
     </script>
     <?php
-  }
+    }
 }
 ?>
 

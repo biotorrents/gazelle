@@ -101,7 +101,7 @@ $JsonTorrentDetails = [
     'picture'       => $TorrentDetails['picture'],
     'tagList'      => $TagList,
 
-    'bookmarked'    => Bookmarks::has_bookmarked('torrent', $GroupID),
+    'bookmarked'    => Bookmarks::isBookmarked('torrent', $GroupID),
     'timestamp'     => $TorrentDetails['timestamp'],
 ];
 

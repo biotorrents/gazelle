@@ -224,9 +224,8 @@ class Internal extends Base
 
         try {
             \Bookmarks::create(
-                $app->userNew->core["id"] ?? null,
-                intval($post["contentId"] ?? null),
-                strval($post["contentType"] ?? null)
+                strval($post["contentType"] ?? null),
+                intval($post["contentId"] ?? null)
             );
 
             self::success("bookmark created");
@@ -249,9 +248,8 @@ class Internal extends Base
 
         try {
             \Bookmarks::delete(
-                $app->userNew->core["id"] ?? null,
-                intval($post["contentId"] ?? null),
-                strval($post["contentType"] ?? null)
+                strval($post["contentType"] ?? null),
+                intval($post["contentId"] ?? null)
             );
 
             self::success("bookmark deleted");

@@ -4,7 +4,7 @@
 
 authorize();
 if ($UserID !== $app->userNew->core['id']
- || !Bookmarks::can_bookmark('torrent')) {
+ || !Bookmarks::validateType('torrent')) {
     error(403);
 }
 

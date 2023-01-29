@@ -357,7 +357,7 @@ if (empty($Results)) {
               <?php if ($Result['UnRead']) {
                   echo '<strong class="new">New!</strong>';
               } ?>
-              <?php if (Bookmarks::has_bookmarked('torrent', $GroupID)) { ?>
+              <?php if (Bookmarks::isBookmarked('torrent', $GroupID)) { ?>
               <span class="remove_bookmark u-pull-right">
                 <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
                   class="brackets"

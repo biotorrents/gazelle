@@ -85,7 +85,7 @@ $app->twig->display("torrents/details.twig", [
     "coverArt" => $coverArt,
     "tagList" => $tagList,
 
-    "isBookmarked" => Bookmarks::has_bookmarked("torrent", $groupId),
+    "isBookmarked" => Bookmarks::isBookmarked("torrent", $groupId),
     "isSubscribed" => Subscriptions::has_subscribed_comments("torrents", $groupId),
 ]);
 
@@ -219,7 +219,7 @@ View::header(
       class="brackets">Revert to this revision</a>
     <?php
     }
-    if (Bookmarks::has_bookmarked('torrent', $GroupID)) {
+    if (Bookmarks::isBookmarked('torrent', $GroupID)) {
         ?>
     <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
       class="remove_bookmark brackets"

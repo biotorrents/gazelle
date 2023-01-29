@@ -63,9 +63,9 @@ ob_start();
 
 // Requests
 $Requests = [];
-    $Requests = $app->cacheOld->get_value("artists_requests_$ArtistID");
-    if (!is_array($Requests)) {
-        $app->dbOld->query("
+$Requests = $app->cacheOld->get_value("artists_requests_$ArtistID");
+if (!is_array($Requests)) {
+    $app->dbOld->query("
       SELECT
         r.ID,
         r.CategoryID,
@@ -84,13 +84,13 @@ $Requests = [];
       GROUP BY r.ID
       ORDER BY Votes DESC");
 
-        if ($app->dbOld->has_results()) {
-            $Requests = $app->dbOld->to_array('ID', MYSQLI_ASSOC, false);
-        } else {
-            $Requests = [];
-        }
-        $app->cacheOld->cache_value("artists_requests_$ArtistID", $Requests);
+    if ($app->dbOld->has_results()) {
+        $Requests = $app->dbOld->to_array('ID', MYSQLI_ASSOC, false);
+    } else {
+        $Requests = [];
     }
+    $app->cacheOld->cache_value("artists_requests_$ArtistID", $Requests);
+}
 $NumRequests = count($Requests);
 
 if (($GroupIDs = $app->cacheOld->get_value("artist_groups_$ArtistID")) === false) {
@@ -275,7 +275,7 @@ foreach ($TorrentList as $Group) {
             <?=$DisplayName?>
           </strong>
 
-          <?php if (Bookmarks::has_bookmarked('torrent', $GroupID)) { ?>
+          <?php if (Bookmarks::isBookmarked('torrent', $GroupID)) { ?>
           <span class="remove_bookmark u-pull-right">
             <a class="u-pull-right" href="#"
               id="bookmarklink_torrent_<?=$GroupID?>"
@@ -447,7 +447,7 @@ foreach ($TorrentList as $Group) {
                 class="tooltip" title="Report">RP</a> ]
             </span>
             <br />
-            <?php if (Bookmarks::has_bookmarked('torrent', $GroupID)) { ?>
+            <?php if (Bookmarks::isBookmarked('torrent', $GroupID)) { ?>
             <span class="remove_bookmark u-pull-right">
               <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
                 class="brackets"
@@ -537,7 +537,7 @@ if (check_perms('site_torrents_notify')) {
     }
 }
 
-  if (Bookmarks::has_bookmarked('artist', $ArtistID)) {
+  if (Bookmarks::isBookmarked('artist', $ArtistID)) {
       ?>
       <a href="#" id="bookmarklink_artist_<?=$ArtistID?>"
         onclick="Unbookmark('artist', <?=$ArtistID?>, 'Bookmark'); return false;"
