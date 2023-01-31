@@ -12,6 +12,12 @@ $app = App::go();
 # it's actually way better if this uses GET
 $get = Http::query("get");
 
+# workaround for main navigation search
+$get["search"] ??= null;
+if ($get["search"]) {
+    $get["simpleSearch"] = $get["search"];
+}
+
 
 /** torrent search handling */
 

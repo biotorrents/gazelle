@@ -13,8 +13,8 @@
 	{# <div class="spacer" /> #}
 
 	{# search #}
-		<div id="searchForm">
-      <form id="universalSearch" name="universalSearch" method="get">
+	<div id="searchForm">
+		<form id="universalSearch" name="universalSearch" method="get" action="torrents.php">
 
 			{# workaround for some endpoints that need &action=search #}
 			<input type="hidden" name="action" value="search"/>
@@ -25,7 +25,7 @@
 			{# select which site area to search #}
 			<select id="searchWhat" name="searchWhat" {# class="select" #}>
 				<option value="torrents" selected>Torrents</option>
-				{# <option value="artist">Authors</option> #}
+				{# <option value="artist">Creators</option> #}
 				<option value="requests">Requests</option>
 				<option value="forums">Forums</option>
 				<option value="wiki">Wiki</option>

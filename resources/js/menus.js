@@ -28,14 +28,14 @@
         $("#toggleIcon").html("<i class='fal fa-bars'></i>");
       }
     });
+  });
 
-    /**
-     * change the search bar target
-     * https://stackoverflow.com/a/16750165
-     */
-    $("#searchForm").on("change", function () {
-      var action = $("#searchWhat").val();
-      $("#searchForm").attr("action", action + ".php");
-    });
+  /**
+   * change the search bar target
+   * https://stackoverflow.com/a/16750165
+   */
+  $("#searchWhat").on("change", function () {
+    let action = $(this).val();
+    $("#universalSearch").attr("action", action + ".php");
   });
 })();
