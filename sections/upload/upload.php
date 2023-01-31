@@ -15,6 +15,73 @@ declare(strict_types=1);
 
 $app = App::go();
 
+# announce and source
+#$announceUris = ANNOUNCE_URLS[0];
+$announceUris = call_user_func_array("array_merge", ANNOUNCE_URLS);
+
+$passKey = $app->userNew->extra["torrent_pass"];
+$sourceKey = User::get_upload_sources()[0];
+
+
+
+
+
+
+
+
+
+
+
+
+
+# twig template
+$app->twig->display("torrents/upload.twig", [
+    "title" => "Upload",
+    "sidebar" => true,
+    "js" => ["upload", "vendor/easymde.min"],
+    "css" => ["vendor/easymde.min"],
+
+    # upload form variables
+    "newTorrent" => true, # todo: make programmatic
+    "announceUris" => $announceUris,
+    "passKey" => $passKey,
+    "sourceKey" => $sourceKey,
+
+    # todo: this needs to be torrentGroup
+    "torrent" => [
+      "identifier" => null,
+      "GroupID" => null,
+      "RequestID" => null,
+      "version" => null,
+      "title" => null,
+      "subject" => null,
+      "object" => null,
+      "creatorList" => null,
+      "workgroup" => null,
+      "location" => null,
+      "year" => null,
+      "license" => null,
+      "platform" => null,
+    ],
+
+
+
+]);
+
+
+exit;
+
+
+
+
+
+
+
+
+
+
+
+
 View::header(
     'Upload',
     'upload,vendor/easymde.min',

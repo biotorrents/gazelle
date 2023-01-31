@@ -1,0 +1,209 @@
+{##
+ # torrent upload form
+ #}
+
+{% extends "base.twig" %}
+
+{% block content %}
+
+	<h2>Upload a torrent</h2>
+
+	{# upload form notice #}
+	{% if newTorrent %}
+		<div class="alertbar info">
+			Please consult the
+			<a href="/rules/upload">Upload Rules</a>
+			and the
+			<a href="/wiki.php?action=article&name=categories">Categories Wiki</a>
+			to help fill out the upload form correctly.
+																
+						The site adds the Announce and Source automatically.
+						Just download and seed the new torrent after uploading it.
+		</div>
+	{% endif %}
+
+	{# announce and source #}
+	{% if newTorrent %}
+		<section>
+			<table id="announceSource">
+				<tr>
+					<th id="announce">Announce URIs</th>
+					<th id="source">Source key</th>
+				</tr>
+
+				<tr>
+					<td>
+						{% for item in announceUris %}
+							<input type="text" value="{{ item }}/{{ passKey }}/announce" onclick="this.select()" readonly/>
+						{% endfor %}
+					</td>
+
+					<td>
+						<input type="text" value="{{ sourceKey }}" onclick="this.select()" readonly/>
+					</td>
+				</tr>
+			</table>
+		</section>
+	{% endif %}
+
+
+	{# the upload form itself #}
+	<section>
+		<form
+			method="post">
+
+			{# hidden fields #}
+			{{ form_token(query.server.REQUEST_URI) }}
+			<input type="hidden" name="submit" value="true"/>
+			<input type="hidden" name="auth" value="{{ user.extra.AuthKey }}"/>
+
+			{% if not newTorrent %}
+				<input type="hidden" name="action" value="takeedit"/>
+				<input type="hidden" name="torrentId" value="{{ torrentId }}"/>
+				<input type="hidden" name="categoryId" value="{{ categoryId }}"/>
+			{% endif %}
+
+
+			{% if torrent and torrent.GroupID %}
+				<input type="hidden" name="groupId" value="{{ torrent.GroupID }}"/>
+				<input type="hidden" name="categoryId" value="{{ torrent.CategoryID }}"/>
+			{% endif %}
+
+			{% if torrent and torrent.RequestID %}
+				<input type="hidden" name="requestId" value="{{ torrent.RequestID }}"/>
+			{% endif %}
+
+			{# start the table #}
+			<table class="torrent_form">
+
+				{% if newTorrent %}
+					<h3>Basic info</h3>
+
+					{# upload .torrent file #}
+					<tr>
+						<th>
+							<label for="file_input" class="required">Torrent file</label>
+						</th>
+
+						<td>
+							<input id="file" type="file" name="file_input" size="50"/>
+
+							<p>
+								Set the private flag, e.g.,
+								<code>mktorrent -p -a
+									{{ "announce uri"|curlyBraces }}
+									{{ "target folder"|curlyBraces }}</code>
+							</p>
+						</td>
+					</tr>
+
+					{# category select #}
+					<tr>
+						<th>
+							<label for="categoryId" class="required">
+								Category
+							</label>
+						</th>
+					</tr>
+
+					<tr>
+						<td>
+							<select id="categories" name="categoryId" onchange="Categories()">
+
+								{% for item in env.CATS %}
+									<option value="{{ item.ID }}">{{ item.Name }}</option>
+								{% endfor %}
+							</select>
+
+							<p
+								id="category_description" class="">
+								<!-- $Cat->Description will live here -->
+								Please see the
+								<a href="/wiki.php?action=article&name=categories">Categories Wiki</a>
+								for details
+							</p>
+						</td>
+					</tr>
+				</table>
+			{% endif %}
+
+			{# start the dynamic form #}
+			<div id="dynamic_form">
+
+				<h3>Torrent Form</h3>
+
+				<table
+					class="torrent_form skeletonFix">
+
+					{# identifier #}
+					{% set variables = {"db": env.DB.identifier, "value": (torrent.identifier) ? torrent.identifier : ""} %}
+					{% include "torrentForm/identifier.twig" with variables %}
+
+					{# version #}
+					{% set variables = {"db": env.DB.version, "value": (torrent.version) ? torrent.version : ""} %}
+					{% include "torrentForm/version.twig" with variables %}
+
+					{# title, subject, and object #}
+					{% if newTorrent %}
+						{% set variables = {
+							"db": env.DB,
+							"title": (torrent.title) ? torrent.title : "",
+							"subject": (torrent.subject) ? torrent.subject : "",
+							"object": (torrent.object) ? torrent.object : "",
+						} %}
+						{% include "torrentForm/titles.twig" with variables %}
+					{% endif %}
+
+					{# creatorList #}
+					{% if newTorrent %}
+					{% set variables = {"db": env.DB.version, "value": (torrent.creatorList) ? torrent.creatorList : ""} %}
+					{% include "torrentForm/creatorList.twig" with variables %}
+					{% endif %}
+
+					{# workgroup #}
+					{% if newTorrent %}
+					{% set variables = {"db": env.DB.workgroup, "value": (torrent.workgroup) ? torrent.workgroup : ""} %}
+					{% include "torrentForm/workgroup.twig" with variables %}
+					{% endif %}
+
+					{# location #}
+					{% if newTorrent %}
+					{% set variables = {"db": env.DB.location, "value": (torrent.location) ? torrent.location : ""} %}
+					{% include "torrentForm/location.twig" with variables %}
+					{% endif %}
+
+					{# year #}
+					{% set variables = {"db": env.DB.year, "value": (torrent.year) ? torrent.year : ""} %}
+					{% include "torrentForm/year.twig" with variables %}
+
+					{# license #}
+					{% set variables = {"db": env.DB.license, "value": (torrent.license) ? torrent.license : ""} %}
+					{% include "torrentForm/license.twig" with variables %}
+
+					{# platform #}
+					{% set variables = {"db": env.META.Platforms, "value": (torrent.platform) ? torrent.platform : ""} %}
+					{% include "torrentForm/platforms.twig" with variables %}
+
+
+
+
+
+
+
+				</table>
+				{# torrent_form #}
+
+
+			</div>
+			{# dynamic_form #}
+
+		</form>
+	</section>
+{% endblock %}
+
+
+{% block sidebar %}
+
+	{% include "torrentForm/sidebar.twig" %}
+
+{% endblock %}

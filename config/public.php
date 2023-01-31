@@ -143,7 +143,12 @@ else {
     define("ANNOUNCE_URLS", [
       [ # tier 1
         "https://trx.biotorrents.de:443",
-      ], [] # tier 2
+      ],
+      [ # tier 2
+      #"udp://tracker.coppersurfer.tk:6969/announce",
+      #"udp://tracker.cyberia.is:6969/announce",
+      #"udp://tracker.leechers-paradise.org:6969/announce",
+    ],
     ]);
 
     $AnnounceURLs = [

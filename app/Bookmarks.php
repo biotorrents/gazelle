@@ -118,14 +118,14 @@ class Bookmarks
     {
         $app = App::go();
 
-        if (empty($userId) || empty($contentId) || empty($contentType)) {
+        if (empty($contentType) || empty($contentId)) {
             throw new Exception("unable to validate parameters");
         }
 
         list($table, $column) = self::bookmark_schema($contentType);
 
         $query = "select 1 from {$table} where userId = ? and {$column} = ?";
-        $good = $app->dbNew->single($query, [$userId, $contentId]);
+        $good = $app->dbNew->single($query, [$app->userNew->core["id"], $contentId]);
 
         return boolval($good);
     }
@@ -149,7 +149,7 @@ class Bookmarks
         # special torrent handling
         if ($contentType === "torrent") {
             $query = "select max(sort) from bookmarks_torrents where userId = ?";
-            $sort = $app->dbNew->single($query, [$userId]);
+            $sort = $app->dbNew->single($query, [$app->userNew->core["id"]]);
 
             if (!$sort) {
                 $sort = 0;
@@ -161,7 +161,7 @@ class Bookmarks
                 insert ignore into {$table} (userId, {$column}, time, sort)
                 values (?, ?, now(), ?)
             ";
-            $app->dbNew->do($query, [$userId, $contentId, $sort]);
+            $app->dbNew->do($query, [$app->userNew->core["id"], $contentId, $sort]);
 
             return;
         }

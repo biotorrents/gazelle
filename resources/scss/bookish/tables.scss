@@ -25,21 +25,6 @@
   }
 }
 
-/**
- * torrent form
- */
-
-.torrent_form,
-#dynamic_form {
-  label {
-    float: right;
-  }
-
-  td {
-    vertical-align: top;
-  }
-}
-
 /* torrent and collage tables */
 .torrent_table .group_torrent .torrent span {
   font-weight: normal;

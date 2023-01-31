@@ -720,9 +720,12 @@ class User
      * @param string $username the username
      * @return string the html, obviously
      */
-    public static function displayAvatar(string $uri, string $username): string
+    public static function displayAvatar(?string $uri, string $username): string
     {
         $app = App::go();
+
+        # workaround for null avatars
+        $uri = strval($uri);
 
         # ImageTools::process
         $uri = ImageTools::process($uri, "avatar");
@@ -785,38 +788,53 @@ class User
     }
 
 
-    /*
-     * @return array of strings that can be added to next source flag ( [current, old] )
+    /**
+     * get_upload_sources
+     *
+     * @return array of strings that can be added to next source flag [current, old]
      */
-    public static function get_upload_sources()
+    public static function get_upload_sources(): array
     {
         $app = App::go();
 
-        if (!($SourceKey = $app->cacheOld->get_value('source_key_new'))) {
-            $app->cacheOld->cache_value('source_key_new', $SourceKey = [Text::random(), time()]);
+        # try the cache
+        $sourceKeyNew = $app->cacheOld->get_value("source_key_new");
+        if (!$sourceKeyNew) {
+            $sourceKeyNew = [Text::random(), time()];
+            $app->cacheOld->cache_value("source_key_new", $sourceKeyNew);
         }
 
-        $SourceKeyOld = $app->cacheOld->get_value('source_key_old');
-        if ($SourceKey[1]-time() > 3600) {
-            $app->cacheOld->cache_value('source_key_old', $SourceKeyOld = $SourceKey);
-            $app->cacheOld->cache_value('source_key_new', $SourceKey = [Text::random(), time()]);
+        $sourceKeyOld = $app->cacheOld->get_value("source_key_old");
+        if ($sourceKeyNew[1] - time() > 3600) {
+            $sourceKeyOld = $sourceKeyNew;
+            $sourceKeyNew = [Text::random(), time()];
+
+            $app->cacheOld->cache_value("source_key_old", $sourceKeyOld);
+            $app->cacheOld->cache_value("source_key_new", $sourceKeyNew);
         }
 
-        $app->dbOld->query(
-            "
-        SELECT
-          COUNT(`ID`)
-        FROM
-          `torrents`
-        WHERE
-          `UserID` = ".$app->userNew->core["id"]
-        );
+        $query = "select count(id) from torrents where userId = ?";
+        $uploadCount = $app->dbNew->single($query, [ $app->userNew->core["id"] ]);
 
-        list($Uploads) = $app->dbOld->next_record();
-        $Source[0] = $app->env->siteName.'-'.substr(hash('sha256', $SourceKey[0].$app->userOld['ID'].$Uploads), 0, 10);
-        $Source[1] = $SourceKeyOld ? $app->env->siteName.'-'.substr(hash('sha256', $SourceKeyOld[0].$app->userOld['ID'].$Uploads), 0, 10) : $Source[0];
+        $sourceKeys = [
+            # new
+            $app->env->siteName
+                . "-"
+                . substr(hash(
+                    "sha256",
+                    $sourceKeyNew[0] . $app->userNew->core["id"] . $uploadCount
+                ), 0, 10),
 
-        return $Source;
+            # old
+            $app->env->siteName
+                . "-"
+                . substr(hash(
+                    "sha256",
+                    $sourceKeyOld[0] . $app->userNew->core["id"] . $uploadCount
+                ), 0, 10),
+        ];
+
+        return $sourceKeys;
     }
 
 

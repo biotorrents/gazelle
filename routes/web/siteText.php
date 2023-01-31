@@ -20,7 +20,7 @@ Flight::route("/about", function () {
 Flight::route("/canary", function () {
     $app = App::go();
 
-    header("Content-Type: content/plain; charset=utf-8");
+    header("Content-Type: text/plain; charset=utf-8");
     require_once "{$app->env->serverRoot}/templates/siteText/legal/canary.txt";
 });
 
@@ -46,7 +46,7 @@ Flight::route("/dmca", function () {
 # manifest
 Flight::route("/manifest", function () {
     header("Content-Type: application/json; charset=utf-8");
-    echo json_encode(App::manifest());
+    echo json_encode(App::manifest(), JSON_UNESCAPED_SLASHES);
 });
 
 

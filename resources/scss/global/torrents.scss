@@ -150,3 +150,23 @@ textarea.bibtexCitation {
   width: 100%;
   height: auto;
 }
+
+/**
+ * upload form
+ */
+
+table#announceSource {
+  #announce {
+    width: 66%;
+  }
+
+  /*
+  #source {
+    width: 33%;
+  }
+  */
+
+  input {
+    width: 100%;
+  }
+}

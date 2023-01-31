@@ -22,8 +22,20 @@
  */
 
 .torrent_form {
+  input[type="text"] {
+    width: 100%;
+  }
+
   label {
-    font-weight: bold;
+    float: right;
+  }
+
+  tr {
+    vertical-align: top;
+  }
+
+  th {
+    width: 33%;
   }
 
   .required {

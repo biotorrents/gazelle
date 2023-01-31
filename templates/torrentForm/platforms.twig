@@ -1,0 +1,24 @@
+{% if newTorrent %}
+	{% for key, values in db %}
+		<tr id="media_{{ key|lower }}_tr">
+			<th>
+				<label for="media" class="required">
+					{{ key }}
+				</label>
+			</th>
+
+			<td>
+				<select name="media" class="tomSelect">
+					<option>---</option>
+					{% for item in values %}
+						<option value="{{ item }}">{{ item }}</option>
+					{% endfor %}
+				</select>
+				<p>The class of technology used</p>
+			</td>
+		</tr>
+	{% endfor %}
+
+{% else %}
+	<input type="hidden" name="media" value="{{ torrent.platform }}"/>
+{% endif %}
