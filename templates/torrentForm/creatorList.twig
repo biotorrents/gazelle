@@ -1,12 +1,13 @@
 {# creatorList #}
-<tr id="artists_tr">
+<tr>
 	<th>
-		<label for="artistfields" class="required">
+		<label for="creatorList" class="required">
 			Creator(s)
 		</label>
 	</th>
 
-	<td id="artistfields">
-		<input type="text" class="tomSelect" value="{{ value }}" placeholder="Comma separated list of creators"/>
+	<td>
+		<textarea id="creatorList" name="creatorList" placeholder="List of creators, one per line">{{ value }}</textarea>
+		{# <input class="select" value="{{ value }}" placeholder="Comma separated list of creators"/> #}
 	</td>
 </tr>

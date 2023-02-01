@@ -104,20 +104,15 @@
 						</th>
 
 						<td>
-							<select id="categoryId" name="categoryId" onchange="Categories()">
-
+							<select id="categoryId" name="categoryId">
 								{% for item in env.CATS %}
 									<option value="{{ item.ID }}">{{ item.Name }}</option>
 								{% endfor %}
 							</select>
 
-							<p
-								id="category_description" class="">
-								<!-- $Cat->Description will live here -->
-								Please see the
-								<a href="/wiki.php?action=article&name=categories">Categories Wiki</a>
-								for details
-							</p>
+							<aside id="categoryDescription">
+								{# category description #}
+							</aside>
 						</td>
 					</tr>
 				</table>

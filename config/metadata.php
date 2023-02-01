@@ -743,7 +743,7 @@ $CATS = [
     1 => [
         "ID" => 1,
         "Name" => "Sequences",
-        "Description" => "For data that's ACGT, ACGU, amino acid letters on disk.",
+        "Description" => "For data that's ACGT, ACGU, amino acid letters on disk",
         "Platforms" => $env->META->Platforms->Sequences,
         "Formats" => [
             $env->META->Formats->Sequences,
@@ -767,7 +767,7 @@ $CATS = [
     3 => [
         "ID" => 3,
         "Name" => "Systems",
-        "Description" => "For data that examines one facet broadly, not one subject deeply.",
+        "Description" => "For data that examines one facet broadly, not one subject deeply",
         "Platforms" => $env->META->Platforms->Graphs,
         "Formats" => [
             $env->META->Formats->GraphXml,
@@ -779,7 +779,7 @@ $CATS = [
     4 => [
         "ID" => 4,
         "Name" => "Geometric",
-        "Description" => "For structured data (XML, etc.) that describes the subject's orientation in space.",
+        "Description" => "For structured data (XML, etc.) that describes the subject's orientation in space",
         "Platforms" => $env->META->Platforms->Graphs,
         "Formats" => [
             $env->META->Formats->GraphXml,
@@ -791,7 +791,7 @@ $CATS = [
     5 => [
         "ID" => 5,
         "Name" => "Scalars/Vectors",
-        "Description" => "For data that describes observations over time and/or space.",
+        "Description" => "For data that describes observations over time and/or space",
         "Platforms" => $env->META->Platforms->Graphs,
         "Formats" => [
             $env->META->Formats->GraphXml,
@@ -803,7 +803,7 @@ $CATS = [
     6 => [
         "ID" => 6,
         "Name" => "Patterns",
-        "Description" => "For data that describes recurring structures in nature such as common pathways or motifs in the proteome or metabolome.",
+        "Description" => "For data that describes recurring structures in nature such as common pathways or motifs in the proteome or metabolome",
         "Platforms" => $env->META->Platforms->Graphs,
         "Formats" => [
             $env->META->Formats->GraphXml,
@@ -838,7 +838,7 @@ $CATS = [
     9 => [
         "ID" => 9,
         "Name" => "Spatial",
-        "Description" => "For data that's limited to specific locations or otherwise describes macroscopic space.",
+        "Description" => "For data that's limited to specific locations or otherwise describes macroscopic space",
         "Platforms" => $env->META->Platforms->Graphs,
         "Formats" => [
             $env->META->Formats->MapRaster,
@@ -851,7 +851,7 @@ $CATS = [
     10 => [
         "ID" => 10,
         "Name" => "Models",
-        "Description" => "For projections, simulations, and other hypothetical or computer-generated data.",
+        "Description" => "For projections, simulations, and other hypothetical or computer-generated data",
         "Platforms" => $env->META->Platforms->Graphs,
         "Formats" => [
             $env->META->Formats->MapRaster,
@@ -864,7 +864,7 @@ $CATS = [
     11 => [
         "ID" => 11,
         "Name" => "Documents",
-        "Description" => "For documentation, software, disk images, and literature datasets.",
+        "Description" => "For documentation, software, disk images, and literature datasets",
         "Platforms" => $env->META->Platforms->Documents,
         "Formats" => [
             $env->META->Formats->BinDoc,
@@ -876,7 +876,7 @@ $CATS = [
     12 => [
         "ID" => 12,
         "Name" => "Machine Data",
-        "Description" => "For raw reads and machine data of any category.",
+        "Description" => "For raw reads and machine data of any category",
         "Platforms" => $env->META->Platforms->Raw,
         "Formats" => [
             $env->META->Formats->Plain,

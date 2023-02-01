@@ -1,5 +1,5 @@
 {# title #}
-<tr id="title_tr">
+<tr>
 	<th>
 		<label for="title" class="required">{{ db.title.name }}</label>
 	</th>
@@ -10,23 +10,23 @@
 </tr>
 
 {# subject #}
-<tr id="title_rj_tr">
+<tr>
 	<th>
-		<label for="title_rj">{{ db.subject.name }}</label>
+		<label for="subject">{{ db.subject.name }}</label>
 	</th>
 
 	<td>
-		<input type="text" id="title_rj" name="title_rj" placeholder="{{ db.subject.desc }}" value="{{ subject }}"/>
+		<input type="text" id="subject" name="subject" placeholder="{{ db.subject.desc }}" value="{{ subject }}"/>
 	</td>
 </tr>
 
 {# object #}
-<tr id="title_jp_tr">
+<tr>
 	<th>
-		<label for="title_jp">{{ db.object.name }}</label>
+		<label for="object">{{ db.object.name }}</label>
 	</th>
 
 	<td>
-		<input type="text" id="title_jp" name="title_jp" placeholder="{{ db.object.desc }}" value="{{ object }}"/>
+		<input type="text" id="object" name="object" placeholder="{{ db.object.desc }}" value="{{ object }}"/>
 	</td>
 </tr>

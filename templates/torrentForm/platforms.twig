@@ -3,7 +3,8 @@
 	{% for key, value in env.CATS %}
 		<tr id="{{ value.Name|camel }}Platform">
 			<th>
-				<label for="platform" class="required">Platform ({{ value.Name }})</label>
+				<label for="platform" class="required">Platform</label>
+				{# <label for="platform" class="required">Platform ({{ value.Name }})</label> #}
 			</th>
 
 			<td>
