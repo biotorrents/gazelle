@@ -1,0 +1,26 @@
+{# scopes #}
+{% if newTorrent %}
+	{% for key, value in env.CATS %}
+		<tr id="{{ value.Name|camel }}Scope">
+			<th>
+				<label for="scope" class="required">Scope</label>
+				{# <label for="scope" class="required">Scope ({{ value.Name }})</label> #}
+			</th>
+
+			<td>
+				<select name="scope" class="select">
+					<option value="">The data's concrete or abstract resolution</option>
+					{% for label, items in value.scopes %}
+						<option disabled>{{ label }}</option>
+						{% for item in items %}
+							<option value="{{ item }}">{{ item }}</option>
+						{% endfor %}
+					{% endfor %}
+				</select>
+			</td>
+		</tr>
+	{% endfor %}
+
+{% else %}
+	<input type="hidden" name="scope" value="{{ torrent.scope }}"/>
+{% endif %}

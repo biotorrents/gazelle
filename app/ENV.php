@@ -205,11 +205,9 @@ class ENV
     {
         $new = [];
         foreach ($array as $k => $v) {
-            /*
              if (is_object($v)) {
                 $v = $this->toArray($v);
             }
-            */
 
             if (is_array($v)) {
                 $new = array_merge($new, $this->flatten($v));
@@ -358,5 +356,11 @@ class RecursiveArrayObject extends ArrayObject
     public function __unset($name)
     {
         unset($this[$name]);
+    }
+
+
+    function toArray() {
+        $env = ENV::go();
+        return $env->toArray($this);
     }
 } # class

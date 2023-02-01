@@ -179,9 +179,13 @@
 					{% set variables = {"db": env.META.Formats, "value": (torrent.format) ? torrent.format : ""} %}
 					{% include "torrentForm/formats.twig" with variables %}
 
+					{# archive #}
+					{% set variables = {"db": env.META.Formats, "value": (torrent.archive) ? torrent.archive : ""} %}
+					{% include "torrentForm/archive.twig" with variables %}
 
-
-
+					{# scopes #}
+					{% set variables = {"db": env.META.Formats, "value": (torrent.scope) ? torrent.scope : ""} %}
+					{% include "torrentForm/scopes.twig" with variables %}
 
 				</table>
 				{# torrent_form #}

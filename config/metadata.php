@@ -207,7 +207,7 @@ $Resolutions = [
  * $env->DB
  *
  * One flat array with all possible torrent/group fields.
- * These are mostly used in Twig templates as {{ db.title }}.
+ * These are mostly used in Twig templates as {{ env.db.title }}.
  * Meta abstraction layer for flavor text *around* DB fields.
  * Gazelle"s job is to query the right tables, which will shift.
  */
@@ -228,13 +228,13 @@ $db = [
     "description" => ["name" => "Group Description", "desc" => ""],
     "picture" => ["name" => "Picture", "desc" => "A meaningful picture, e.g., the specimen or a thumbnail"],
 
-    # from the non-renamed `torrents` table
+    # from the non-renamed torrents table
     "version" => ["name" => "Version", "desc" => "Start with 0.1.0", "note" => "Please see <a href='https://semver.org' target='_blank' class='external'>Semantic Versioning</a>"],
-    "license" => ["name" => "License", "desc" => "", "note" => "Please see <a href=\"http://www.dcc.ac.uk/resources/how-guides/license-research-data\" target=\"_blank\">How to License Research Data</a>"],
+    "license" => ["name" => "License", "desc" => "", "note" => "Please see <a href='http://www.dcc.ac.uk/resources/how-guides/license-research-data' target='_blank' class='external'>How to License Research Data</a>"],
     "mirrors" => ["name" => "Mirrors", "desc" => "Up to two FTP/HTTP addresses that either point directly to a file, or for multi-file torrents, to the enclosing folder"],
 
     # original fields
-    "seqhash" => ["name" => "Seqhash", "desc" => "Sample genome sequence in FASTA format (GenBank pending)", "note" => "Please see <a href=\"https://blog.libredna.org/post/seqhash/\" target=\"_blank\">The Seqhash Algorithm</a>"],
+    "seqhash" => ["name" => "Seqhash", "desc" => "Sample genome sequence in FASTA format (GenBank pending)", "note" => "Please see <a href='https://blog.libredna.org/post/seqhash/' target='_blank' class='external'>The Seqhash Algorithm</a>"],
 ];
 ENV::setPub(
     "DB",
@@ -278,7 +278,8 @@ $META = [
             "Roche 454",
             "Sanger",
             "SOLiD",
-            # RNA, Protein, etc.
+
+            # RNA, protein, etc.
             "De Novo",
             "HPLC",
             "Mass Spec",
@@ -342,10 +343,11 @@ $META = [
          * Documents
          */
         "Documents" => [
-            # Composed
+            # composed
             "Literature",
             "Software",
-            # Generated
+
+            # generated
             "Kernel",
             "Metadata",
             "Notebook",
@@ -359,7 +361,7 @@ $META = [
             "Binary",
             "Text",
         ],
-    ], # End $env->META->Platforms
+    ], # end $env->metadata->platforms
 
     /**
      * 1.
@@ -597,7 +599,7 @@ $META = [
             "Jupyter"      => ["ipynb"],
             "Ontology"     => ["cgif", "cl", "clif", "csv", "htm", "html", "kif", "obo", "owl", "rdf", "rdfa", "rdfs", "rif", "tsv", "xcl", "xht", "xhtml", "xml"],
         ],
-    ], # End $env->META->Formats
+    ], # end $env->metadata->formats
 
 
     /**
@@ -693,7 +695,7 @@ $META = [
             "Velocity",
             "Weight",
         ],
-    ], # End $env->META->Scopes
+    ], # end $env->metadata->scopes
 
     /**
      * 1.
@@ -719,7 +721,7 @@ $META = [
         "OpenMTA",
         "Public Domain",
         "Unspecified",
-    ], # End $env->META->Licenses
+    ], # end $env->metadata->licenses
 ];
 ENV::setPub(
     "META",
@@ -750,6 +752,10 @@ $CATS = [
             $env->META->Formats->Proteins,
             $env->META->Formats->Plain,
         ],
+        "scopes" => [
+            "Sequences" => $env->META->Scopes->Sequences,
+            "Metric" => $env->META->Scopes->SI,
+        ],
     ],
 
     2 => [
@@ -761,8 +767,12 @@ $CATS = [
             $env->META->Formats->GraphXml,
             $env->META->Formats->GraphTxt,
             $env->META->Formats->Plain,
-     ],
-    ],
+        ],
+        "scopes" => [
+            "XML" => $env->META->Scopes->Sequences,
+            "Metric" => $env->META->Scopes->SI,
+        ],
+        ],
 
     3 => [
         "ID" => 3,
@@ -773,6 +783,10 @@ $CATS = [
             $env->META->Formats->GraphXml,
             $env->META->Formats->GraphTxt,
             $env->META->Formats->Plain,
+        ],
+        "scopes" => [
+            "XML" => $env->META->Scopes->Sequences,
+            "Metric" => $env->META->Scopes->SI,
         ],
     ],
 
@@ -786,6 +800,10 @@ $CATS = [
             $env->META->Formats->GraphTxt,
             $env->META->Formats->Plain,
         ],
+        "scopes" => [
+            "XML" => $env->META->Scopes->Sequences,
+            "Metric" => $env->META->Scopes->SI,
+        ],
     ],
 
     5 => [
@@ -797,6 +815,10 @@ $CATS = [
             $env->META->Formats->GraphXml,
             $env->META->Formats->GraphTxt,
             $env->META->Formats->Plain,
+        ],
+        "scopes" => [
+            "Scalar" => $env->META->Scopes->Scalar,
+            "Vector" => $env->META->Scopes->Vector
         ],
     ],
 
@@ -810,6 +832,10 @@ $CATS = [
             $env->META->Formats->GraphTxt,
             $env->META->Formats->Plain,
         ],
+        "scopes" => [
+            "XML" => $env->META->Scopes->Sequences,
+            "Metric" => $env->META->Scopes->SI,
+        ],
     ],
 
     7 => [
@@ -822,6 +848,10 @@ $CATS = [
             $env->META->Formats->GraphTxt,
             $env->META->Formats->Plain,
         ],
+        "scopes" => [
+            "XML" => $env->META->Scopes->Sequences,
+            "Metric" => $env->META->Scopes->SI,
+        ],
     ],
 
     8 => [
@@ -832,6 +862,9 @@ $CATS = [
         "Formats" => [
             $env->META->Formats->ImgRaster,
             $env->META->Formats->ImgVector,
+        ],
+        "scopes" => [
+            "Metric" => $env->META->Scopes->SI,
         ],
     ],
 
@@ -846,6 +879,10 @@ $CATS = [
             $env->META->Formats->ImgRaster,
             $env->META->Formats->ImgVector,
         ],
+        "scopes" => [
+            "Locations" => $env->META->Scopes->Locations,
+            "Metric" => $env->META->Scopes->SI,
+        ],
     ],
 
     10 => [
@@ -859,6 +896,11 @@ $CATS = [
             $env->META->Formats->ImgRaster,
             $env->META->Formats->ImgVector,
         ],
+        "scopes" => [
+            "XML" => $env->META->Scopes->Sequences,
+            "Metric" => $env->META->Scopes->SI,
+        ],
+
     ],
 
     11 => [
@@ -871,6 +913,10 @@ $CATS = [
             $env->META->Formats->CpuGen,
             $env->META->Formats->Plain,
         ],
+        "scopes" => [
+            "XML" => $env->META->Scopes->Sequences,
+            "Metric" => $env->META->Scopes->SI,
+        ],
     ],
 
     12 => [
@@ -880,6 +926,9 @@ $CATS = [
         "Platforms" => $env->META->Platforms->Raw,
         "Formats" => [
             $env->META->Formats->Plain,
+        ],
+        "scopes" => [
+            "Metric" => $env->META->Scopes->SI,
         ],
     ],
 ];
