@@ -26,8 +26,8 @@ class ENV
     private static $instance = null;
 
     # config options receptacles
+    public static $public = []; # site meta, options, resources, etc.
     private static $private = []; # passwords, app keys, database, etc.
-    private static $public = []; # site meta, options, resources, etc.
 
 
     /**

@@ -1,3 +1,4 @@
+{# version #}
 <tr id="audio_tr">
 	<th>
 		<label for="version">{{ db.name }}</label>
@@ -6,6 +7,6 @@
 	<td>
 		<input type="text" id="version" name="version" pattern="\d+\.*\d*\.*\d*" placeholder="{{ db.desc }}" value="{{ value }}"/>
 
-		<p>{{ db.note|raw }}</p>
+		<aside>{{ db.note|raw }}</aside>
 	</td>
 </tr>

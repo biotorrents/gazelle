@@ -17,8 +17,8 @@
 			<a href="/wiki.php?action=article&name=categories">Categories Wiki</a>
 			to help fill out the upload form correctly.
 																
-						The site adds the Announce and Source automatically.
-						Just download and seed the new torrent after uploading it.
+			The site adds the Announce and Source automatically.
+			Just download and seed the new torrent after uploading it.
 		</div>
 	{% endif %}
 
@@ -90,9 +90,7 @@
 
 							<p>
 								Set the private flag, e.g.,
-								<code>mktorrent -p -a
-									{{ "announce uri"|curlyBraces }}
-									{{ "target folder"|curlyBraces }}</code>
+								<code>mktorrent -p -a {{ "announce uri"|curlyBraces }} {{ "target folder"|curlyBraces }}</code>
 							</p>
 						</td>
 					</tr>
@@ -104,11 +102,9 @@
 								Category
 							</label>
 						</th>
-					</tr>
 
-					<tr>
 						<td>
-							<select id="categories" name="categoryId" onchange="Categories()">
+							<select id="categoryId" name="categoryId" onchange="Categories()">
 
 								{% for item in env.CATS %}
 									<option value="{{ item.ID }}">{{ item.Name }}</option>
@@ -184,7 +180,9 @@
 					{% set variables = {"db": env.META.Platforms, "value": (torrent.platform) ? torrent.platform : ""} %}
 					{% include "torrentForm/platforms.twig" with variables %}
 
-
+					{# format #}
+					{% set variables = {"db": env.META.Formats, "value": (torrent.format) ? torrent.format : ""} %}
+					{% include "torrentForm/formats.twig" with variables %}
 
 
 

@@ -96,7 +96,7 @@ class Twig # extends Twig\Environment
 
         # globals: app and env
         $twig->addGlobal("app", $app);
-        $twig->addGlobal("env", $app->env);
+        $twig->addGlobal("env", $app->env::$public);
 
         # user and authenticated
         $twig->addGlobal("user", $app->userNew);
@@ -300,6 +300,14 @@ class Twig # extends Twig\Environment
         # Text::float
         $twig->addFilter(new Twig\TwigFilter("float", function ($number, $decimals = 2) {
             return Text::float($number, $decimals);
+        }));
+
+        # Illuminate\Support\Str::camel
+        $twig->addFilter(new Twig\TwigFilter("camel", function ($string) {
+            $string = Illuminate\Support\Str::camel($string);
+            $string = preg_replace("/[\W]/", '', $string);
+
+            return $string;
         }));
 
         # random creator

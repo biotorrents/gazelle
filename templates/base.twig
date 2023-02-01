@@ -60,11 +60,14 @@
 
 			{# global inline javascript #}
 			<script>
-				// session-specific, for internal api calls
-                var frontendHash = "{{ frontendHash }}";
+				// environment variables
+				var env = JSON.parse("{{ env|json_encode|escape('js') }}");
 
-                // site options: needs single quotes
-                var siteOptions = JSON.parse('{{ siteOptions|json_encode|raw }}');
+				// for internal api calls
+                var frontendHash = "{{ frontendHash|escape('js') }}";
+
+                // site options
+                var siteOptions = JSON.parse("{{ siteOptions|json_encode|escape('js') }}");
 			</script>
 
 			{# todo: app.js with vite #}

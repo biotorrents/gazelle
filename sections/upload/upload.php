@@ -62,6 +62,7 @@ $app->twig->display("torrents/upload.twig", [
       "year" => null,
       "license" => null,
       "platform" => null,
+      "format" => null,
     ],
 
 

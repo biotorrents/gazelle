@@ -41,7 +41,12 @@
   .required {
     &:after {
       color: red;
-      content: "*";
+      content: " *";
     }
+  }
+
+  /* extra info */
+  aside {
+    margin-top: 1rem;
   }
 }

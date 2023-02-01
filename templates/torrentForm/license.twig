@@ -1,3 +1,4 @@
+{# license #}
 <tr id="codec_tr">
 	<th>
 		<label for="codec" class="required">
@@ -6,17 +7,17 @@
 	</th>
 
 	<td>
-		<select name="codec" class="tomSelect">
-			<option>---</option>
+		<select name="codec" class="select">
+			<option value="">Only libre licenses supported</option>
 			{% for item in env.META.Licenses %}
 
 				<option value="{{ item }}">{{ item }}</option>
 			{% endfor %}
 		</select>
 
-		<p>
+		<aside>
 			Please see
-			<a href="http://www.dcc.ac.uk/resources/how-guides/license-research-data" target="_blank">How to License Research Data</a>
-		</p>
+			<a href="http://www.dcc.ac.uk/resources/how-guides/license-research-data" class="external" target="_blank">How to License Research Data</a>
+		</aside>
 	</td>
 </tr>

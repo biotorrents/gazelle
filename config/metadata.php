@@ -229,7 +229,7 @@ $db = [
     "picture" => ["name" => "Picture", "desc" => "A meaningful picture, e.g., the specimen or a thumbnail"],
 
     # from the non-renamed `torrents` table
-    "version" => ["name" => "Version", "desc" => "Start with 0.1.0", "note" => "Please see <a href=\"https://semver.org\" target=\"_blank\">Semantic Versioning</a>"],
+    "version" => ["name" => "Version", "desc" => "Start with 0.1.0", "note" => "Please see <a href='https://semver.org' target='_blank' class='external'>Semantic Versioning</a>"],
     "license" => ["name" => "License", "desc" => "", "note" => "Please see <a href=\"http://www.dcc.ac.uk/resources/how-guides/license-research-data\" target=\"_blank\">How to License Research Data</a>"],
     "mirrors" => ["name" => "Mirrors", "desc" => "Up to two FTP/HTTP addresses that either point directly to a file, or for multi-file torrents, to the enclosing folder"],
 
@@ -761,7 +761,7 @@ $CATS = [
             $env->META->Formats->GraphXml,
             $env->META->Formats->GraphTxt,
             $env->META->Formats->Plain,
-        ],
+     ],
     ],
 
     3 => [
