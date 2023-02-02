@@ -180,6 +180,13 @@
 					{% set variables = {"db": env.DB.description, "value": (torrent.torrentDescription) ? torrent.torrentDescription : ""} %}
 					{% include "torrentForm/torrentDescription.twig" with variables %}
 
+					{# booleans #}
+					{% set variables = {
+						"db": env.DB.description,
+						"annotated": (torrent.annotated) ? torrent.annotated : "",
+						"anonymous": (torrent.anonymous) ? torrent.anonymous : "",
+					} %}
+					{% include "torrentForm/booleans.twig" with variables %}
 				</table>
 			</section>
 

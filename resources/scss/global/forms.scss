@@ -27,6 +27,12 @@
     width: 100%;
   }
 
+  input[type="checkbox"],
+  input[type="radio"] {
+    margin: 0.5rem;
+    margin-left: 0;
+  }
+
   #creatorList,
   #literature,
   #seqhash {
@@ -34,7 +40,7 @@
     height: 20rem;
   }
 
-  label:not(.seqhash) {
+  label:not(.seqhash):not(.boolean) {
     float: right;
   }
 
@@ -64,18 +70,10 @@
     display: flex;
     flex-flow: row nowrap;
     gap: 2rem;
-
-    input[type="radio"] {
-      margin: 0.5rem;
-    }
   }
 
   #seqhashTable {
     margin-top: 1rem;
     margin-bottom: 0;
-
-    input[type="radio"] {
-      margin: 0.5rem;
-    }
   }
 }

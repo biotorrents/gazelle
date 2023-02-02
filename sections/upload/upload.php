@@ -67,6 +67,8 @@ $app->twig->display("torrents/upload.twig", [
       "seqhash" => null,
       "groupDescription" => null,
       "torrentDescription" => null,
+      "annotated" => null,
+      "anonymous" => null,
     ],
 
 
