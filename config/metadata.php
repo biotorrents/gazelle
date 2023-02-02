@@ -59,7 +59,7 @@ $SeqFormats = [
 ];
 
 # Protein Formats
-# DON"T PARSE RAW FILES. TOO MANY COMPETING VENDORS
+# DON'T PARSE RAW FILES. TOO MANY COMPETING VENDORS
 $ProtFormats = [
   "ABI/Sciex"      => ["t2d", "wiff"],
   "APML"           => ["apml"],
@@ -180,7 +180,7 @@ $BinDocFormats = [
 ];
 
 # Extra Formats
-# DON"T PARSE IMG OR ISO FILES
+# DON'T PARSE IMG OR ISO FILES
 # https://en.wikipedia.org/wiki/Disk_image#File_formats
 # http://dcjtech.info/topic/python-file-extensions/
 $CpuGenFormats = [
@@ -203,8 +203,11 @@ $Resolutions = [
 ];
 
 
+/** */
+
+
 /**
- * $env->DB
+ * $env->database
  *
  * One flat array with all possible torrent/group fields.
  * These are mostly used in Twig templates as {{ env.db.title }}.
@@ -212,7 +215,7 @@ $Resolutions = [
  * Gazelle"s job is to query the right tables, which will shift.
  */
 
-$db = [
+$database = [
     # torrents_group
     "category_id" => ["name" => "Category", "desc" => ""],
     "title" => ["name" => "Torrent Title", "desc" => "Definition line, e.g., Alcohol dehydrogenase ADH1"],
@@ -236,14 +239,18 @@ $db = [
     # original fields
     "seqhash" => ["name" => "Seqhash", "desc" => "Sample genome sequence in FASTA format (GenBank pending)", "note" => "Please see <a href='https://blog.libredna.org/post/seqhash/' target='_blank' class='external'>The Seqhash Algorithm</a>"],
 ];
+
 ENV::setPub(
     "DB",
-    $env->convert($db)
+    $env->convert($database)
 );
 
 
+/** */
+
+
 /**
- * $env->META
+ * $env->metadata
  *
  * Main metadata object.
  * Responsible for defining field values.
@@ -251,7 +258,8 @@ ENV::setPub(
  * so take care to define them well here.
  * Avoid nesting > 3 levels deep.
  */
-$META = [
+
+$metadata = [
 
     /**
      * 1.
@@ -723,15 +731,20 @@ $META = [
         "Unspecified",
     ], # end $env->metadata->licenses
 ];
+
 ENV::setPub(
     "META",
-    $env->convert($META)
+    $env->convert($metadata)
 );
 
 
+/** */
+
+
 /**
- * Categories
- * https://www.ncbi.nlm.nih.gov/books/NBK25464/
+ * categories
+ *
+ * @see https://www.ncbi.nlm.nih.gov/books/NBK25464/
  */
 
 $CollageCats = [
@@ -741,16 +754,16 @@ $CollageCats = [
   3 => "Group Picks",
 ];
 
-$CATS = [
+$categories = [
     1 => [
         "ID" => 1,
         "Name" => "Sequences",
         "Description" => "For data that's ACGT, ACGU, amino acid letters on disk",
         "Platforms" => $env->META->Platforms->Sequences,
         "Formats" => [
-            $env->META->Formats->Sequences,
-            $env->META->Formats->Proteins,
-            $env->META->Formats->Plain,
+            "Nucleotides" => $env->META->Formats->Sequences,
+            "Proteins" => $env->META->Formats->Proteins,
+            "Plaintext" => $env->META->Formats->Plain,
         ],
         "scopes" => [
             "Sequences" => $env->META->Scopes->Sequences,
@@ -764,12 +777,12 @@ $CATS = [
         "Description" => "For pathway and regulatory network data, structured taxonomies, etc.",
         "Platforms" => $env->META->Platforms->Graphs,
         "Formats" => [
-            $env->META->Formats->GraphXml,
-            $env->META->Formats->GraphTxt,
-            $env->META->Formats->Plain,
+            "Graph XML" => $env->META->Formats->GraphXml,
+            "Graph text" => $env->META->Formats->GraphTxt,
+            "Plaintext" => $env->META->Formats->Plain,
         ],
         "scopes" => [
-            "XML" => $env->META->Scopes->Sequences,
+            "XML" => $env->META->Scopes->XML,
             "Metric" => $env->META->Scopes->SI,
         ],
         ],
@@ -780,12 +793,12 @@ $CATS = [
         "Description" => "For data that examines one facet broadly, not one subject deeply",
         "Platforms" => $env->META->Platforms->Graphs,
         "Formats" => [
-            $env->META->Formats->GraphXml,
-            $env->META->Formats->GraphTxt,
-            $env->META->Formats->Plain,
+            "Graph XML" => $env->META->Formats->GraphXml,
+            "Graph text" => $env->META->Formats->GraphTxt,
+            "Plaintext" => $env->META->Formats->Plain,
         ],
         "scopes" => [
-            "XML" => $env->META->Scopes->Sequences,
+            "XML" => $env->META->Scopes->XML,
             "Metric" => $env->META->Scopes->SI,
         ],
     ],
@@ -796,12 +809,12 @@ $CATS = [
         "Description" => "For structured data (XML, etc.) that describes the subject's orientation in space",
         "Platforms" => $env->META->Platforms->Graphs,
         "Formats" => [
-            $env->META->Formats->GraphXml,
-            $env->META->Formats->GraphTxt,
-            $env->META->Formats->Plain,
+            "Graph XML" => $env->META->Formats->GraphXml,
+            "Graph text" => $env->META->Formats->GraphTxt,
+            "Plaintext" => $env->META->Formats->Plain,
         ],
         "scopes" => [
-            "XML" => $env->META->Scopes->Sequences,
+            "XML" => $env->META->Scopes->XML,
             "Metric" => $env->META->Scopes->SI,
         ],
     ],
@@ -812,9 +825,9 @@ $CATS = [
         "Description" => "For data that describes observations over time and/or space",
         "Platforms" => $env->META->Platforms->Graphs,
         "Formats" => [
-            $env->META->Formats->GraphXml,
-            $env->META->Formats->GraphTxt,
-            $env->META->Formats->Plain,
+            "Graph XML" => $env->META->Formats->GraphXml,
+            "Graph text" => $env->META->Formats->GraphTxt,
+            "Plaintext" => $env->META->Formats->Plain,
         ],
         "scopes" => [
             "Scalar" => $env->META->Scopes->Scalar,
@@ -828,12 +841,12 @@ $CATS = [
         "Description" => "For data that describes recurring structures in nature such as common pathways or motifs in the proteome or metabolome",
         "Platforms" => $env->META->Platforms->Graphs,
         "Formats" => [
-            $env->META->Formats->GraphXml,
-            $env->META->Formats->GraphTxt,
-            $env->META->Formats->Plain,
+            "Graph XML" => $env->META->Formats->GraphXml,
+            "Graph text" => $env->META->Formats->GraphTxt,
+            "Plaintext" => $env->META->Formats->Plain,
         ],
         "scopes" => [
-            "XML" => $env->META->Scopes->Sequences,
+            "XML" => $env->META->Scopes->XML,
             "Metric" => $env->META->Scopes->SI,
         ],
     ],
@@ -844,12 +857,12 @@ $CATS = [
         "Description" => "For data that records experimental control behavior, checks readings against known physical constants, tracks the thermodynamic limits of reactions, etc.",
         "Platforms" => $env->META->Platforms->Graphs,
         "Formats" => [
-            $env->META->Formats->GraphXml,
-            $env->META->Formats->GraphTxt,
-            $env->META->Formats->Plain,
+            "Graph XML" => $env->META->Formats->GraphXml,
+            "Graph text" => $env->META->Formats->GraphTxt,
+            "Plaintext" => $env->META->Formats->Plain,
         ],
         "scopes" => [
-            "XML" => $env->META->Scopes->Sequences,
+            "XML" => $env->META->Scopes->XML,
             "Metric" => $env->META->Scopes->SI,
         ],
     ],
@@ -860,8 +873,8 @@ $CATS = [
         "Description" => "For data you can look at!",
         "Platforms" => $env->META->Platforms->Images,
         "Formats" => [
-            $env->META->Formats->ImgRaster,
-            $env->META->Formats->ImgVector,
+            "Raster images" => $env->META->Formats->ImgRaster,
+            "Vector images" => $env->META->Formats->ImgVector,
         ],
         "scopes" => [
             "Metric" => $env->META->Scopes->SI,
@@ -874,10 +887,10 @@ $CATS = [
         "Description" => "For data that's limited to specific locations or otherwise describes macroscopic space",
         "Platforms" => $env->META->Platforms->Graphs,
         "Formats" => [
-            $env->META->Formats->MapRaster,
-            $env->META->Formats->MapVector,
-            $env->META->Formats->ImgRaster,
-            $env->META->Formats->ImgVector,
+            "Raster images" => $env->META->Formats->ImgRaster,
+            "Raster maps" => $env->META->Formats->MapRaster,
+            "Vector images" => $env->META->Formats->ImgVector,
+            "Vector maps" => $env->META->Formats->MapVector,
         ],
         "scopes" => [
             "Locations" => $env->META->Scopes->Locations,
@@ -891,13 +904,13 @@ $CATS = [
         "Description" => "For projections, simulations, and other hypothetical or computer-generated data",
         "Platforms" => $env->META->Platforms->Graphs,
         "Formats" => [
-            $env->META->Formats->MapRaster,
-            $env->META->Formats->MapVector,
-            $env->META->Formats->ImgRaster,
-            $env->META->Formats->ImgVector,
+            "Raster images" => $env->META->Formats->ImgRaster,
+            "Raster maps" => $env->META->Formats->MapRaster,
+            "Vector images" => $env->META->Formats->ImgVector,
+            "Vector maps" => $env->META->Formats->MapVector,
         ],
         "scopes" => [
-            "XML" => $env->META->Scopes->Sequences,
+            "XML" => $env->META->Scopes->XML,
             "Metric" => $env->META->Scopes->SI,
         ],
 
@@ -909,12 +922,12 @@ $CATS = [
         "Description" => "For documentation, software, disk images, and literature datasets",
         "Platforms" => $env->META->Platforms->Documents,
         "Formats" => [
-            $env->META->Formats->BinDoc,
-            $env->META->Formats->CpuGen,
-            $env->META->Formats->Plain,
+            "Binary documents" => $env->META->Formats->BinDoc,
+            "Computer-generated" => $env->META->Formats->CpuGen,
+            "Plaintext" => $env->META->Formats->Plain,
         ],
         "scopes" => [
-            "XML" => $env->META->Scopes->Sequences,
+            "XML" => $env->META->Scopes->XML,
             "Metric" => $env->META->Scopes->SI,
         ],
     ],
@@ -925,14 +938,15 @@ $CATS = [
         "Description" => "For raw reads and machine data of any category",
         "Platforms" => $env->META->Platforms->Raw,
         "Formats" => [
-            $env->META->Formats->Plain,
+            "Plaintext" => $env->META->Formats->Plain,
         ],
         "scopes" => [
             "Metric" => $env->META->Scopes->SI,
         ],
     ],
 ];
+
 ENV::setPub(
     "CATS",
-    $env->convert($CATS)
+    $env->convert($categories)
 );

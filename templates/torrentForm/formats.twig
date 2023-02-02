@@ -9,9 +9,10 @@
 		<td>
 			<select name="format" class="select">
 				<option value="">The data's main file format</option>
-				{% for trash, fileTypes in value.Formats %}
-					{% for name, extensions in fileTypes %}
-						<option value="{{ name }}">{{ name }}</option>
+				{% for label, items in value.Formats %}
+					<option disabled>{{ label }}</option>
+					{% for item, extensions in items %}
+						<option value="{{ item }}">{{ item }}</option>
 					{% endfor %}
 				{% endfor %}
 			</select>

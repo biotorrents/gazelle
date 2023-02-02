@@ -1,0 +1,23 @@
+{# announce and source #}
+{% if newTorrent %}
+	<section>
+		<table id="announceSource">
+			<tr>
+				<th id="announce">Announce URIs</th>
+				<th id="source">Source key</th>
+			</tr>
+
+			<tr>
+				<td>
+					{% for item in announceUris %}
+						<input type="text" value="{{ item }}/{{ user.extra.torrent_pass }}/announce" onclick="this.select()" readonly/>
+					{% endfor %}
+				</td>
+
+				<td>
+					<input type="text" value="{{ sourceKey }}" onclick="this.select()" readonly/>
+				</td>
+			</tr>
+		</table>
+	</section>
+{% endif %}
