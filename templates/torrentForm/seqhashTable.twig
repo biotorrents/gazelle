@@ -1,0 +1,69 @@
+{# seqhash #}
+{% if newTorrent and env.FEATURE_BIOPHP %}
+	<tr id="seqhashRow">
+		<th>
+			<label for="seqhash">{{ db.name }}</label>
+		</th>
+
+		<td>
+			<textarea name="seqhash" id="seqhash" placeholder="{{ db.desc }}">{{ value }}</textarea>
+
+			<table id="seqhashTable" class="compact">
+				<tr>
+					<td>
+						{# dna #}
+						<input type="radio" id="dna" name="seqhashAlphabet" value="dna" checked/>
+						<label class="seqhash" for="dna">DNA</label>
+					</td>
+
+					<td>
+						{# rna #}
+						<input type="radio" id="rna" name="seqhashAlphabet" value="rna"/>
+						<label class="seqhash" for="rna">RNA</label>
+					</td>
+
+					<td>
+						{# protein #}
+						<input type="radio" id="protein" name="seqhashAlphabet" value="protein"/>
+						<label class="seqhash" for="protein">Protein</label>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						{# linear #}
+						<input type="radio" id="linear" name="seqhashShape" value="false" checked/>
+						<label class="seqhash" for="linear">Linear</label>
+					</td>
+
+					<td>
+						{# circular #}
+						<input type="radio" id="circular" name="seqhashShape" value="true"/>
+						<label class="seqhash" for="circular">Circular</label>
+					</td>
+
+					<td/>
+				</tr>
+
+				<tr>
+					<td>
+						{# double-stranded #}
+						<input type="radio" id="doubleStranded" name="seqhashHelix" value="doubleStranded" checked/>
+						<label class="seqhash" for="doubleStranded">Double-stranded</label>
+					</td>
+
+					<td>
+						{# single-stranded #}
+						<input type="radio" id="singleStranded" name="seqhashHelix" value="singleStranded"/>
+						<label class="seqhash" for="singleStranded">Single-stranded</label>
+					</td>
+
+					<td/>
+				</tr>
+			</table>
+
+			<aside>{{ db.note|raw }}</aside>
+
+		</td>
+	</tr>
+{% endif %}

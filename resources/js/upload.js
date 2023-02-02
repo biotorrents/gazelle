@@ -13,30 +13,25 @@
         // category { id: name } from env
         let categories = [];
 
-        // format and platform selectors
+        // changing selectors
         let formats = [];
         let platforms = [];
+        let scopes = [];
 
         Object.values(env.CATS).forEach(element => {
             categories.push(
                 { [element.ID]: _.camelCase(element.Name) }
             );
 
-            platforms.push("#" + _.camelCase(element.Name) + "Platform");
             formats.push("#" + _.camelCase(element.Name) + "Format");
+            platforms.push("#" + _.camelCase(element.Name) + "Platform");
+            scopes.push("#" + _.camelCase(element.Name) + "Scope");
         });
 
         // hide all but selected
         let categoryId = $(event.target).val();
-        platforms.forEach((element, index) => {
-            let categoryIndex = categoryId - 1;
-            if (categoryIndex !== index) {
-                $(element).hide();
-            } else {
-                $(element).show();
-            }
-        });
 
+        // formats
         formats.forEach((element, index) => {
             let categoryIndex = categoryId - 1;
             if (categoryIndex !== index) {
@@ -46,11 +41,31 @@
             }
         });
 
+        // platforms
+        platforms.forEach((element, index) => {
+            let categoryIndex = categoryId - 1;
+            if (categoryIndex !== index) {
+                $(element).hide();
+            } else {
+                $(element).show();
+            }
+        });
+
+        // scopes
+        scopes.forEach((element, index) => {
+            let categoryIndex = categoryId - 1;
+            if (categoryIndex !== index) {
+                $(element).hide();
+            } else {
+                $(element).show();
+            }
+        });
+
         // hardcoded seqhash handling
-        if (categoryId === 1) {
-            $("#seqhash").show();
+        if (categoryId === "1") {
+            $("#seqhashRow").show();
         } else {
-            $("#seqhash").hide();
+            $("#seqhashRow").hide();
         }
 
         // display the correct category description

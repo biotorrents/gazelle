@@ -269,8 +269,8 @@ ENV::setPub("FEATURE_SET_ENC_KEY_PUBLIC", false);
 
 # Attempt to support the BioPHP library
 # https://packagist.org/packages/biotorrents/biophp
-# https://blog.libredna.org/post/seqhash/
-ENV::setPub("FEATURE_BIOPHP", false);
+# https://pkg.go.dev/github.com/TimothyStiles/poly/seqhash
+ENV::setPub("FEATURE_BIOPHP", true);
 
 
 /**

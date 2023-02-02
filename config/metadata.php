@@ -228,16 +228,16 @@ $database = [
     "tag_list" => ["name" => "Tag list", "desc" => "Please select at least 5 tags"],
     "timestamp" => ["name" => "Uploaded on", "desc" => ""],
     "revision_id" => ["name" => "Revision ID", "desc" => ""],
-    "description" => ["name" => "Group description", "desc" => ""],
-    "picture" => ["name" => "Picture", "desc" => "A meaningful picture, e.g., the specimen or a thumbnail"],
+    "description" => ["name" => "Group description", "desc" => "General info about the study's function or significance"],
+    "picture" => ["name" => "Picture", "desc" => "A picture, e.g., of the specimen or a figure"],
 
     # from the non-renamed torrents table
     "version" => ["name" => "Version", "desc" => "Start with 0.1.0", "note" => "Please see <a href='https://semver.org' target='_blank' class='external'>Semantic Versioning</a>"],
     "license" => ["name" => "License", "desc" => "Only libre licenses are supported ;)", "note" => "Please see <a href='http://www.dcc.ac.uk/resources/how-guides/license-research-data' target='_blank' class='external'>How to License Research Data</a>"],
-    "mirrors" => ["name" => "Mirrors", "desc" => "Up to two FTP/HTTP addresses that either point directly to a file, or for multi-file torrents, to the enclosing folder"],
+    "mirrors" => ["name" => "Mirrors", "desc" => "Two HTTP/FTP addresses, one per line, that point to the enclosing folder"],
 
     # original fields
-    "seqhash" => ["name" => "Seqhash", "desc" => "Sample genome sequence in FASTA format (GenBank pending)", "note" => "Please see <a href='https://blog.libredna.org/post/seqhash/' target='_blank' class='external'>The Seqhash Algorithm</a>"],
+    "seqhash" => ["name" => "Seqhash", "desc" => "One sample genome sequence in FASTA format (GenBank pending)", "note" => "Please see <a href='https://pkg.go.dev/github.com/TimothyStiles/poly/seqhash' target='_blank' class='external'>the reference implementation</a>"],
 ];
 
 ENV::setPub(

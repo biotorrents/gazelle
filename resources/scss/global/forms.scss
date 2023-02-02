@@ -22,16 +22,19 @@
  */
 
 .torrent_form {
-  input[type="text"] {
+  input[type="text"],
+  textarea {
     width: 100%;
   }
 
-  #creatorList {
+  #creatorList,
+  #literature,
+  #seqhash {
     width: 100%;
     height: 20rem;
   }
 
-  label {
+  label:not(.seqhash) {
     float: right;
   }
 
@@ -53,5 +56,26 @@
   /* extra info */
   aside {
     margin-top: 1rem;
+  }
+
+  /* seqhash mini form */
+  .flexRow {
+    margin-top: 1rem;
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 2rem;
+
+    input[type="radio"] {
+      margin: 0.5rem;
+    }
+  }
+
+  #seqhashTable {
+    margin-top: 1rem;
+    margin-bottom: 0;
+
+    input[type="radio"] {
+      margin: 0.5rem;
+    }
   }
 }

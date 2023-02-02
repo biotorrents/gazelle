@@ -61,6 +61,12 @@ $app->twig->display("torrents/upload.twig", [
       "archive" => null,
       "scope" => null,
       "tagList" => null,
+      "picture" => null,
+      "mirrors" => null,
+      "literature" => null,
+      "seqhash" => null,
+      "groupDescription" => null,
+      "torrentDescription" => null,
     ],
 
 

@@ -118,7 +118,19 @@
 
 					{# tagList #}
 					{% set variables = {"db": env.DB.tag_list, "value": (torrent.tagList) ? torrent.tagList : ""} %}
-					{% include "torrentForm/tagList.twig" with variables %}	
+					{% include "torrentForm/tagList.twig" with variables %}
+
+					{# picture #}
+					{% set variables = {"db": env.DB.picture, "value": (torrent.picture) ? torrent.picture : ""} %}
+					{% include "torrentForm/picture.twig" with variables %}
+
+					{# literature #}
+					{% set variables = {"db": env.DB.picture, "value": (torrent.literature) ? torrent.literature : ""} %}
+					{% include "torrentForm/literature.twig" with variables %}
+
+					{# groupDescription #}
+					{% set variables = {"db": env.DB.description, "value": (torrent.groupDescription) ? torrent.groupDescription : ""} %}
+					{% include "torrentForm/groupDescription.twig" with variables %}
 
 				</table>
 			</section>
@@ -156,6 +168,18 @@
 					{% set variables = {"db": env.DB.license, "value": (torrent.license) ? torrent.license : ""} %}
 					{% include "torrentForm/license.twig" with variables %}
 
+					{# mirrors #}
+					{% set variables = {"db": env.DB.mirrors, "value": (torrent.mirrors) ? torrent.mirrors : ""} %}
+					{% include "torrentForm/mirrors.twig" with variables %}
+
+					{# seqhash #}
+					{% set variables = {"db": env.DB.seqhash, "value": (torrent.seqhash) ? torrent.seqhash : ""} %}
+					{% include "torrentForm/seqhashTable.twig" with variables %}
+
+					{# torrentDescription #}
+					{% set variables = {"db": env.DB.description, "value": (torrent.torrentDescription) ? torrent.torrentDescription : ""} %}
+					{% include "torrentForm/torrentDescription.twig" with variables %}
+
 				</table>
 			</section>
 
@@ -168,5 +192,4 @@
 {% block sidebar %}
 
 	{% include "torrentForm/sidebar.twig" %}
-
 {% endblock %}

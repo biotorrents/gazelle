@@ -1,0 +1,13 @@
+{# groupDescription #}
+{% if newTorrent %}
+	<tr>
+		<th>
+			<label for="groupDescription" class="required">{{ db.name }}</label>
+		</th>
+
+		<td>
+			{% set variables = {"id": "groupDescription", "name": "groupDescription", "placeholder": db.desc, "value": value} %}
+			{% include "_base/textarea.twig" with variables %}
+		</td>
+	</tr>
+{% endif %}
