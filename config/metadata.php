@@ -218,22 +218,22 @@ $Resolutions = [
 $database = [
     # torrents_group
     "category_id" => ["name" => "Category", "desc" => ""],
-    "title" => ["name" => "Torrent Title", "desc" => "Definition line, e.g., Alcohol dehydrogenase ADH1"],
+    "title" => ["name" => "Torrent title", "desc" => "Definition line, e.g., Alcohol dehydrogenase ADH1"],
     "subject" => ["name" => "Organism", "desc" => "Organism line binomial, e.g., Saccharomyces cerevisiae", "icon" => "🦠"],
-    "object" => ["name" => "Strain/Variety", "desc" => "Organism line if any, e.g., S288C"],
+    "object" => ["name" => "Strain or variety", "desc" => "Organism line if any, e.g., S288C"],
     "year" => ["name" => "Year", "desc" => "Publication year", "icon" => "📅"],
-    "workgroup" => ["name" => "Department/Lab", "desc" => "Last author's institution, e.g., Lawrence Berkeley Laboratory", "icon" => "🏫"],
+    "workgroup" => ["name" => "Department or lab", "desc" => "Last author's institution, e.g., Lawrence Berkeley Laboratory", "icon" => "🏫"],
     "location" => ["name" => "Location", "desc" => "Physical location, e.g., Berkeley, CA 94720", "icon" => "📍"],
-    "identifier" => ["name" => "Accession Number", "desc" => "RefSeq and UniProt preferred", "icon" => "🔑"],
-    "tag_list" => ["name" => "Tag List", "desc" => "Comma-seperated list of at least 5 tags"],
-    "timestamp" => ["name" => "Uploaded On", "desc" => ""],
+    "identifier" => ["name" => "Accession number", "desc" => "RefSeq and UniProt preferred", "icon" => "🔑"],
+    "tag_list" => ["name" => "Tag list", "desc" => "Please select at least 5 tags"],
+    "timestamp" => ["name" => "Uploaded on", "desc" => ""],
     "revision_id" => ["name" => "Revision ID", "desc" => ""],
-    "description" => ["name" => "Group Description", "desc" => ""],
+    "description" => ["name" => "Group description", "desc" => ""],
     "picture" => ["name" => "Picture", "desc" => "A meaningful picture, e.g., the specimen or a thumbnail"],
 
     # from the non-renamed torrents table
     "version" => ["name" => "Version", "desc" => "Start with 0.1.0", "note" => "Please see <a href='https://semver.org' target='_blank' class='external'>Semantic Versioning</a>"],
-    "license" => ["name" => "License", "desc" => "", "note" => "Please see <a href='http://www.dcc.ac.uk/resources/how-guides/license-research-data' target='_blank' class='external'>How to License Research Data</a>"],
+    "license" => ["name" => "License", "desc" => "Only libre licenses are supported ;)", "note" => "Please see <a href='http://www.dcc.ac.uk/resources/how-guides/license-research-data' target='_blank' class='external'>How to License Research Data</a>"],
     "mirrors" => ["name" => "Mirrors", "desc" => "Up to two FTP/HTTP addresses that either point directly to a file, or for multi-file torrents, to the enclosing folder"],
 
     # original fields
@@ -622,15 +622,32 @@ $metadata = [
          * SI
          */
         "SI" => [
-            "Nano",
-            "Micro",
-            "Milli",
-            "Centi",
-            "Kilo",
-            "Mega",
-            "Giga",
-            "Tera",
+            "Nanounit",  # 10 ^ -9
+            "Microunit", # 10 ^ -6
+            "Milliunit", # 10 ^ -3
+            "Centiunit", # 10 ^ -2
+            "Deciunit",  # 10 ^ -1
+            "Decaunit",  # 10 ^  1
+            "Hectounit", # 10 ^  2
+            "Kilounit",  # 10 ^  3
+            "Megaunit",  # 10 ^  6
+            "Gigaunit",  # 10 ^  9
         ],
+
+        /*
+        "SI" => [
+            "Nano",  # 10 ^ -9
+            "Micro", # 10 ^ -6
+            "Milli", # 10 ^ -3
+            "Centi", # 10 ^ -2
+            "Deci",  # 10 ^ -1
+            "Deca",  # 10 ^  1
+            "Hecto", # 10 ^  2
+            "Kilo",  # 10 ^  3
+            "Mega",  # 10 ^  6
+            "Giga",  # 10 ^  9
+        ],
+        */
 
         /**
          * 2.

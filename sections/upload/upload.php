@@ -22,15 +22,9 @@ $announceUris = call_user_func_array("array_merge", ANNOUNCE_URLS);
 $passKey = $app->userNew->extra["torrent_pass"];
 $sourceKey = User::get_upload_sources()[0];
 
-
-
-
-
-
-
-
-
-
+# tagList
+$query = "select name from tags where tagType = ? order by name";
+$tagList = $app->dbNew->column($query, "name", ["genre"]);
 
 
 
@@ -46,6 +40,7 @@ $app->twig->display("torrents/upload.twig", [
     "announceUris" => $announceUris,
     "passKey" => $passKey,
     "sourceKey" => $sourceKey,
+    "tagList" => $tagList,
 
     # todo: this needs to be torrentGroup
     "torrent" => [
@@ -65,6 +60,7 @@ $app->twig->display("torrents/upload.twig", [
       "format" => null,
       "archive" => null,
       "scope" => null,
+      "tagList" => null,
     ],
 
 

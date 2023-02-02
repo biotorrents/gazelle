@@ -240,7 +240,7 @@ class Database extends PDO
         $ref = $statement->fetchColumn();
         */
 
-        $ref = $this->multi($query, []);
+        $ref = $this->multi($query, $args);
         $ref = array_column($ref, $column);
 
         $app->cacheOld->cache_value($cacheKey, $ref, $this->cacheDuration);

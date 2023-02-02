@@ -2,6 +2,8 @@
 
 #declare(strict_types=1);
 
+# THIS IS GOING AWAY!
+
 // This class is used in upload.php to display the upload form, and the edit
 // section of torrents.php to display a shortened version of the same form
 class TorrentForm

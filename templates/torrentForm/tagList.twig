@@ -1,0 +1,17 @@
+{# tagList #}
+{% if newTorrent %}
+	<tr>
+		<th>
+			<label for="tagList" class="required">{{ db.name }}</label>
+		</th>
+
+		<td>
+			<select id="tagList" name="tagList" class="select" multiple>
+				<option value="">{{ db.desc }}</option>
+				{% for item in tagList %}
+					<option value="{{ item }}">{{ item }}</option>
+				{% endfor %}
+			</select>
+		</td>
+	</tr>
+{% endif %}

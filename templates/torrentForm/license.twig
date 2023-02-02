@@ -8,7 +8,7 @@
 
 	<td>
 		<select name="license" class="select">
-			<option value="">Only libre licenses are supported ;)</option>
+			<option value="">{{ db.desc }}</option>
 			{% for item in env.META.Licenses %}
 
 				<option value="{{ item }}">{{ item }}</option>
@@ -16,8 +16,7 @@
 		</select>
 
 		<aside>
-			Please see
-			<a href="http://www.dcc.ac.uk/resources/how-guides/license-research-data" class="external" target="_blank">How to License Research Data</a>
+			{{ db.note|raw }}
 		</aside>
 	</td>
 </tr>

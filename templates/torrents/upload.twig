@@ -45,147 +45,128 @@
 			{% endif %}
 
 			{# start the table #}
-			<table class="torrent_form">
+			{% if newTorrent %}
+				<section>
+					<table class="torrent_form">
 
-				{% if newTorrent %}
-					<h3>Basic info</h3>
+						<h3>Basic info</h3>
 
-					{# upload .torrent file #}
-					<tr>
-						<th>
-							<label for="file_input" class="required">Torrent file</label>
-						</th>
+						{# upload .torrent file #}
+						{% set variables = {"foo": "bar"} %}
+						{% include "torrentForm/torrentFile.twig" with variables %}
 
-						<td>
-							<input id="file" type="file" name="file_input" size="50"/>
+						{# category select #}
+						{% set variables = {"foo": "bar"} %}
+						{% include "torrentForm/categoryId.twig" with variables %}
 
-							<p>
-								Set the private flag, e.g.,
-								<code>mktorrent -p -a
-									{{ "announce uri"|curlyBraces }}
-									{{ "target folder"|curlyBraces }}</code>
-							</p>
-						</td>
-					</tr>
-
-					{# category select #}
-					<tr>
-						<th>
-							<label for="categoryId" class="required">
-								Category
-							</label>
-						</th>
-
-						<td>
-							<select id="categoryId" name="categoryId">
-								{% for item in env.CATS %}
-									<option value="{{ item.ID }}">{{ item.Name }}</option>
-								{% endfor %}
-							</select>
-
-							<aside
-								id="categoryDescription">{# category description #}
-							</aside>
-						</td>
-					</tr>
-				</table>
+					</table>
+				</section>
 			{% endif %}
-		</section>
 
-		{# torrent group information #}
-		<section>
-			<h3>About the study</h3>
-			<p>
-				Information about the
-				<em>torrent group,</em>
-				that relates to the overall study
-			</p>
+			{# torrent group information #}
+			<section>
+				<h3>About the study</h3>
+				<p>
+					Information about the
+					<em>torrent group,</em>
+					that relates to the overall study
+				</p>
 
-			<table
-				class="torrent_form skeletonFix">
+				<table
+					class="torrent_form skeletonFix">
 
-				{# identifier #}
-				{% set variables = {"db": env.DB.identifier, "value": (torrent.identifier) ? torrent.identifier : ""} %}
-				{% include "torrentForm/identifier.twig" with variables %}
+					{# identifier #}
+					{% set variables = {"db": env.DB.identifier, "value": (torrent.identifier) ? torrent.identifier : ""} %}
+					{% include "torrentForm/identifier.twig" with variables %}
 
-				{# version #}
-				{% set variables = {"db": env.DB.version, "value": (torrent.version) ? torrent.version : ""} %}
-				{% include "torrentForm/version.twig" with variables %}
+					{# version #}
+					{% set variables = {"db": env.DB.version, "value": (torrent.version) ? torrent.version : ""} %}
+					{% include "torrentForm/version.twig" with variables %}
 
-				{# title, subject, and object #}
-				{% if newTorrent %}
-					{% set variables = {
+					{# title, subject, and object #}
+					{% if newTorrent %}
+						{% set variables = {
 							"db": env.DB,
 							"title": (torrent.title) ? torrent.title : "",
 							"subject": (torrent.subject) ? torrent.subject : "",
 							"object": (torrent.object) ? torrent.object : "",
 						} %}
-					{% include "torrentForm/titles.twig" with variables %}
-				{% endif %}
+						{% include "torrentForm/titles.twig" with variables %}
+					{% endif %}
 
-				{# creatorList #}
-				{% if newTorrent %}
-					{% set variables = {"db": env.DB.version, "value": (torrent.creatorList) ? torrent.creatorList : ""} %}
-					{% include "torrentForm/creatorList.twig" with variables %}
-				{% endif %}
+					{# creatorList #}
+					{% if newTorrent %}
+						{% set variables = {"db": env.DB.version, "value": (torrent.creatorList) ? torrent.creatorList : ""} %}
+						{% include "torrentForm/creatorList.twig" with variables %}
+					{% endif %}
 
-				{# workgroup #}
-				{% if newTorrent %}
-					{% set variables = {"db": env.DB.workgroup, "value": (torrent.workgroup) ? torrent.workgroup : ""} %}
-					{% include "torrentForm/workgroup.twig" with variables %}
-				{% endif %}
+					{# workgroup #}
+					{% if newTorrent %}
+						{% set variables = {"db": env.DB.workgroup, "value": (torrent.workgroup) ? torrent.workgroup : ""} %}
+						{% include "torrentForm/workgroup.twig" with variables %}
+					{% endif %}
 
-				{# location #}
-				{% if newTorrent %}
-					{% set variables = {"db": env.DB.location, "value": (torrent.location) ? torrent.location : ""} %}
-					{% include "torrentForm/location.twig" with variables %}
-				{% endif %}
+					{# location #}
+					{% if newTorrent %}
+						{% set variables = {"db": env.DB.location, "value": (torrent.location) ? torrent.location : ""} %}
+						{% include "torrentForm/location.twig" with variables %}
+					{% endif %}
 
-				{# year #}
-				{% set variables = {"db": env.DB.year, "value": (torrent.year) ? torrent.year : ""} %}
-				{% include "torrentForm/year.twig" with variables %}
+					{# year #}
+					{% set variables = {"db": env.DB.year, "value": (torrent.year) ? torrent.year : ""} %}
+					{% include "torrentForm/year.twig" with variables %}
 
-			</table>
-		</section>
+					{# tagList #}
+					{% set variables = {"db": env.DB.tag_list, "value": (torrent.tagList) ? torrent.tagList : ""} %}
+					{% include "torrentForm/tagList.twig" with variables %}	
 
-
-		{# individual torrent information #}
-		<section>
-			<h3>About the data</h3>
-			<p>
-				Information about the
-				<em>individual torrent,</em>
-				that appears as part of the group
-			</p>
-
-			<table
-				class="torrent_form skeletonFix">
-
-				{# platform #}
-				{% set variables = {"db": env.META.Platforms, "value": (torrent.platform) ? torrent.platform : ""} %}
-				{% include "torrentForm/platforms.twig" with variables %}
-
-				{# format #}
-				{% set variables = {"db": env.META.Formats, "value": (torrent.format) ? torrent.format : ""} %}
-				{% include "torrentForm/formats.twig" with variables %}
-
-				{# scopes #}
-				{% set variables = {"db": env.META.Formats, "value": (torrent.scope) ? torrent.scope : ""} %}
-				{% include "torrentForm/scopes.twig" with variables %}
-
-				{# archive #}
-				{% set variables = {"db": env.META.Formats, "value": (torrent.archive) ? torrent.archive : ""} %}
-				{% include "torrentForm/archive.twig" with variables %}
-
-				{# license #}
-				{% set variables = {"db": env.DB.license, "value": (torrent.license) ? torrent.license : ""} %}
-				{% include "torrentForm/license.twig" with variables %}
-
-			</table>
-		</section>
+				</table>
+			</section>
 
 
-	</form>
-</section>{% endblock %}{% block sidebar %}
+			{# individual torrent information #}
+			<section>
+				<h3>About the data</h3>
+				<p>
+					Information about the
+					<em>individual torrent,</em>
+					that appears as part of the group
+				</p>
 
-{% include "torrentForm/sidebar.twig" %}{% endblock %}
+				<table
+					class="torrent_form skeletonFix">
+
+					{# platform #}
+					{% set variables = {"db": env.META.Platforms, "value": (torrent.platform) ? torrent.platform : ""} %}
+					{% include "torrentForm/platforms.twig" with variables %}
+
+					{# format #}
+					{% set variables = {"db": env.META.Formats, "value": (torrent.format) ? torrent.format : ""} %}
+					{% include "torrentForm/formats.twig" with variables %}
+
+					{# scopes #}
+					{% set variables = {"db": env.META.Formats, "value": (torrent.scope) ? torrent.scope : ""} %}
+					{% include "torrentForm/scopes.twig" with variables %}
+
+					{# archive #}
+					{% set variables = {"db": env.META.Formats, "value": (torrent.archive) ? torrent.archive : ""} %}
+					{% include "torrentForm/archive.twig" with variables %}
+
+					{# license #}
+					{% set variables = {"db": env.DB.license, "value": (torrent.license) ? torrent.license : ""} %}
+					{% include "torrentForm/license.twig" with variables %}
+
+				</table>
+			</section>
+
+
+		</form>
+	</section>
+{% endblock %}
+
+
+{% block sidebar %}
+
+	{% include "torrentForm/sidebar.twig" %}
+
+{% endblock %}

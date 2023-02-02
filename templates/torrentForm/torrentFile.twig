@@ -1,0 +1,15 @@
+{# torrentFile #}
+<tr>
+	<th>
+		<label for="torrentFile" class="required">Torrent file</label>
+	</th>
+
+	<td>
+		<input type="file" id="torrentFile" name="torrentFile"/>
+
+		<p>
+			Set the private flag, e.g.,
+			<code>mktorrent -p -a {{ "announce uri"|curlyBraces }} {{ "target folder"|curlyBraces }}</code>
+		</p>
+	</td>
+</tr>
