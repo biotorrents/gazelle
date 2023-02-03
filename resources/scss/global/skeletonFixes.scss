@@ -267,3 +267,13 @@ input[type="button"].button-purple:focus {
   background-color: rgba(purple, 0.75);
   border-color: rgba(purple, 0.75);
 }
+
+/**
+ * not technically skeleton
+ * fixes for other weird library stuff
+ */
+
+/* tom select */
+.ts-dropdown .optgroup-header {
+  font-size: inherit !important;
+}

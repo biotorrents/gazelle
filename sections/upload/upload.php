@@ -41,6 +41,7 @@ $app->twig->display("torrents/upload.twig", [
     "passKey" => $passKey,
     "sourceKey" => $sourceKey,
     "tagList" => $tagList,
+    "submitType" => "create",
 
     # todo: this needs to be torrentGroup
     "torrent" => [

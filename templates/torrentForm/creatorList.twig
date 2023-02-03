@@ -1,13 +1,15 @@
 {# creatorList #}
-<tr>
-	<th>
-		<label for="creatorList" class="required">
-			Creator(s)
-		</label>
-	</th>
+{% if newTorrent %}
+	<tr>
+		<th>
+			<label for="creatorList" class="required">
+				Creator(s)
+			</label>
+		</th>
 
-	<td>
-		<textarea id="creatorList" name="creatorList" placeholder="List of creators, one per line">{{ value }}</textarea>
-		{# <input class="select" value="{{ value }}" placeholder="Comma separated list of creators"/> #}
-	</td>
-</tr>
+		<td>
+			<textarea id="creatorList" name="creatorList" placeholder="List of creators, one per line">{{ value }}</textarea>
+			{# <input class="select" value="{{ value }}" placeholder="Comma separated list of creators"/> #}
+		</td>
+	</tr>
+{% endif %}

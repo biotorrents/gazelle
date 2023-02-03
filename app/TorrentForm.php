@@ -223,7 +223,7 @@ HTML;
         /**
          * Start printing the torrent form
          */
-        $HTML .= '<table class="torrent_form">';
+        $HTML .= '<table class="torrentForm">';
 
         /**
          * New torrent options:
@@ -302,7 +302,7 @@ HTML;
     private function foot()
     {
         $Torrent = $this->Torrent;
-        echo '<table class="torrent_form>';
+        echo '<table class="torrentForm>';
 
         /**
          * Freeleech type
@@ -428,7 +428,7 @@ HTML;
 
         # Start printing the form
         echo '<h2 class="header">Torrent Form</h2>';
-        echo '<table class="torrent_form skeletonFix">';
+        echo '<table class="torrentForm skeletonFix">';
 
 
         /**

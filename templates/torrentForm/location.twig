@@ -1,10 +1,12 @@
 {# location #}
-<tr>
-	<th>
-		<label for="location">{{ db.name }}</label>
-	</th>
+{% if newTorrent %}
+	<tr>
+		<th>
+			<label for="location">{{ db.name }}</label>
+		</th>
 
-	<td>
-		<input type="text" id="location" name="location" placeholder="{{ db.desc }}" value="{{ value }}"/>
-	</td>
-</tr>
+		<td>
+			<input type="text" id="location" name="location" placeholder="{{ db.desc }}" value="{{ value }}"/>
+		</td>
+	</tr>
+{% endif %}

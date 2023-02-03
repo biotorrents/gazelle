@@ -21,7 +21,7 @@
  * upload form
  */
 
-.torrent_form {
+.torrentForm {
   input[type="text"],
   textarea {
     width: 100%;
@@ -76,4 +76,11 @@
     margin-top: 1rem;
     margin-bottom: 0;
   }
+}
+
+#formControls {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 2rem;
+  justify-content: center;
 }

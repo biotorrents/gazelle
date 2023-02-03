@@ -226,7 +226,7 @@
 
 	<body class="{{ bodyStyles }}">
 
-		<header>
+		<header id="top">
 			{% if authenticated %}
 				{# private #}
 				{{ include("_base/mainMenu.twig") }}
@@ -277,7 +277,7 @@
 
 
 		{# start footer block #}
-		<footer>
+		<footer id="bottom">
 			{% block footer %}
 				{% if authenticated %}
 					{# private #}

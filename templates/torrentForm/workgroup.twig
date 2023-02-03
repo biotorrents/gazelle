@@ -1,10 +1,12 @@
 {# workgroup #}
-<tr>
-	<th>
-		<label for="workgroup" class="required">{{ db.name }}</label>
-	</th>
+{% if newTorrent %}
+	<tr>
+		<th>
+			<label for="workgroup" class="required">{{ db.name }}</label>
+		</th>
 
-	<td>
-		<input type="text" id="workgroup" name="workgroup" placeholder="{{ db.desc }}" value="{{ value }}"/>
-	</td>
-</tr>
+		<td>
+			<input type="text" id="workgroup" name="workgroup" placeholder="{{ db.desc }}" value="{{ value }}"/>
+		</td>
+	</tr>
+{% endif %}
