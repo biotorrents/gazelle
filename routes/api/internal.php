@@ -24,3 +24,6 @@ Flight::route("POST /api/internal/createPassphrase", ["Gazelle\API\Internal", "c
 # manage bookmarks
 Flight::route("POST /api/internal/createBookmark", ["Gazelle\API\Internal", "createBookmark"]);
 Flight::route("POST /api/internal/deleteBookmark", ["Gazelle\API\Internal", "deleteBookmark"]);
+
+# doi number autofill
+Flight::route("POST /api/internal/doiNumberAutofill", ["Gazelle\API\Internal", "doiNumberAutofill"]);

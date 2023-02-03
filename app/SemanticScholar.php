@@ -79,7 +79,7 @@ class SemanticScholar
         ]));
 
         if ($app->cacheOld->get_value($cacheKey)) {
-            #return $app->cacheOld->get_value($cacheKey);
+            return $app->cacheOld->get_value($cacheKey);
         }
 
         # fields
@@ -115,7 +115,7 @@ class SemanticScholar
         $info = curl_getinfo($ch);
         curl_close($ch);
 
-        #$app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
+        $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 
@@ -139,7 +139,7 @@ class SemanticScholar
                 continue;
             }
 
-            # fn names
+            # functions names
             switch ($key) {
                 case "paperId":
                     $endpoints[$value] = array_merge($endpoints, ["paper", "recommendations"]);
@@ -187,7 +187,7 @@ class SemanticScholar
         if ($save) {
             try {
                 $this->upsert($data, $options);
-            } catch (PDOException $e) {
+            } catch (Exception $e) {
                 return $e;
             }
         }
@@ -252,7 +252,7 @@ class SemanticScholar
         try {
             $query = "select * from semanticScholar where id = ?";
             $app->dbNew->row($query, [$id]);
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             return $e;
         }
 
@@ -260,7 +260,7 @@ class SemanticScholar
     }
 
 
-    /** ACADEMIC GRAPH API */
+    /** academic graph api */
 
 
     /**
@@ -478,7 +478,7 @@ class SemanticScholar
     }
 
 
-    /** RECOMMENDATIONS API */
+    /** recommendations api */
 
 
     /**
@@ -511,7 +511,7 @@ class SemanticScholar
     }
 
 
-    /** DATASETS API */
+    /** datasets api */
 
 
     /**

@@ -1,6 +1,10 @@
 (() => {
     "use strict";
 
+    /**
+     * change fields on category select
+     */
+
     // trigger categoryId change on load
     $(() => {
         $("#categoryId").trigger("change", (event) => {
@@ -72,167 +76,41 @@
         $("#categoryDescription").html(env.CATS[categoryId].Description);
     });
 
-    /**
-     * Categories
-     *
-     * Toggle category metadata.
-     * Displays dynamic selects on upload.php.
-     * These change with each category.
-     */
-    function Categories() {
-        /*
-        let def = [
-            "javdb", // Accession Number
-            "audio", // Version
-            "title", // Torrent Title
-            "title_rj", // Organism
-            "title_jp", // Strain/Variety
-            "artists", // Authors(s)
-            "studio", // Department/Lab
-            "series", // Location
-            "year", // Year
-            "codec", // License
-            // Platform *changes below*
-            "resolution", // Scope *changes below*
-            // Format *changes below*
-            "archive", // Archive
-            "tags", // Tags
-            "cover", // Picture
-            "mirrors", // Mirrors
-            "screenshots", // Publications
-            //'seqhash', // Seqhash
-            "group_desc", // Torrent Group Description
-            "release_desc", // Torrent Description
-            "censored", // Aligned/Annotated
-            "anon", // Upload Anonymously
-        ];
-  
-        let cats = [
-            {
-                // Sequences
-                media: {}, // Platform
-                container: {}, // Format
-                seqhash: {}, // Seqhash
-            },
-            {
-                // Graphs
-                media_graphs: {}, // Platform
-                container_graphs: {}, // Format
-            },
-            {
-                // Systems
-                media_graphs: {}, // Platform
-                container_graphs: {}, // Format
-            },
-            {
-                // Geometric
-                media_graphs: {}, // Platform
-                container_graphs: {}, // Format
-            },
-            {
-                // Scalars/Vectors
-                media_scalars_vectors: {}, // Platform
-                container_scalars_vectors: {}, // Format
-            },
-            {
-                // Patterns
-                media_graphs: {}, // Platform
-                container_graphs: {}, // Format
-            },
-            {
-                // Constraints
-                media_graphs: {}, // Platform
-                container_graphs: {}, // Format
-            },
-            {
-                // Images
-                media_images: {}, // Platform
-                container_images: {}, // Format
-            },
-            {
-                // Spatial
-                media_graphs: {}, // Platform
-                container_spatial: {}, // Format
-            },
-            {
-                // Models
-                media_graphs: {}, // Platform
-                container_spatial: {}, // Format
-            },
-            {
-                // Documents
-                media_documents: {}, // Platform
-                container_documents: {}, // Format
-            },
-            {
-                // Machine Data
-                media_machine_data: {}, // Platform
-                container: {}, // Format
-            },
-        ];
-  
-        let active = {};
-        for (let field of def) active[field] = {};
-  
-        let category = 0;
-        if ($('input[name="type"]').raw())
-            category = $('input[name="type"]').raw().value;
-        if ($("#categoryId").raw()) category = $("#categoryId").raw().value;
-        active = Object.assign(active, cats[category]);
-  
-        let hide = (el) => {
-            Array.from(
-                $(`#${el.id} input, #${el.id} select, #${el.id} textarea`)
-            ).forEach((inp) => (inp.disabled = true));
-            $(el).ghide();
-        };
-  
-        let show = (el) => {
-            Array.from(
-                $(`#${el.id} input, #${el.id} select, #${el.id} textarea`)
-            ).forEach((inp) => (inp.disabled = false));
-            $(el).gshow();
-        };
-  
-        let trs = $("#dynamic_form tr");
-        for (let tr of trs) {
-            let field = tr.id.slice(0, -3);
-            if (active[field]) {
-                if (active[field].name) {
-                    tr.children[0].innerHTML = active[field].name;
-                }
-  
-                let notes = $(`#${tr.id} p.notes`).raw();
-                if (notes) notes.innerHTML = active[field].notes || "";
-                show(tr);
-            } else {
-                hide(tr);
-            }
-        }
-        */
-    }
 
     /**
-     * add_tag
+     * autofill by doi number
      */
-    function add_tag() {
-        if ($("#tags").raw().value == "") {
-            $("#tags").raw().value =
-                $("#genre_tags").raw().options[
-                    $("#genre_tags").raw().selectedIndex
-                ].value;
-        } else if (
-            $("#genre_tags").raw().options[$("#genre_tags").raw().selectedIndex]
-                .value == "---"
-        ) {
-        } else {
-            $("#tags").raw().value =
-                $("#tags").raw().value +
-                ", " +
-                $("#genre_tags").raw().options[$("#genre_tags").raw().selectedIndex]
-                    .value;
+
+    $("#doiNumberAutofill").on("click", () => {
+        // the data to send
+        var request = {
+            frontendHash: frontendHash,
+            paperId: $("#doiNumberInput").val(),
+        };
+
+        // sanity check
+        if (!request.paperId || request.paperId.length === 0) {
+            return false;
         }
-    }
+
+        // ajax request
+        $.post("/api/internal/doiNumberAutofill", request, (response) => {
+            if (response.status === "success") {
+                $("#title").val(response.data.title);
+                $("#groupDescription").html(response.data.groupDescription);
+                $("#groupDescription").trigger("change", () => { });
+                $("#year").val(response.data.year);
+                $("#literature").val(response.data.literature.join("\n"));
+                $("#creatorList").val(response.data.creatorList.join("\n"));
+                $("#workgroup").val(response.data.workgroup);
+            }
+
+            if (response.status === "failure") {
+                // do something
+            }
+        });
+    });
+
 
     /**
      * AddArtistField
@@ -464,25 +342,5 @@
         }
     }
 
-    /**
-     * initAutofill
-     */
-    function initAutofill() {
-        $("[autofill]").each(function (i, el) {
-            el.addEventListener("click", function (event) {
-                ({ douj: MangaAutofill, anime: AnimeAutofill, jav: JavAutofill }[
-                    el.attributes["autofill"].value
-                ]());
-            });
-        });
-    }
 
-    /**
-     * jQuery
-     */
-    $(function () {
-        initAutofill();
-        $(document).on("click", ".add_artist_button", AddArtistField);
-        $(document).on("click", ".remove_artist_button", RemoveArtistField);
-    });
 })();

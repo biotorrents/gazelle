@@ -118,13 +118,13 @@ ENV::setPub("SRI", "sha512");
 if (!$env->dev) {
     define("ANNOUNCE_URLS", [
          [ # tier 1
-           "https://track.biotorrents.de:443",
+           "https://track.torrents.bio:443",
           ], [] # tier 2
       ]);
 
     $AnnounceURLs = [
       [ # tier 1
-        "https://track.biotorrents.de:443",
+        "https://track.torrents.bio:443",
       ],
       [ # tier 2
         #"udp://tracker.coppersurfer.tk:6969/announce",
@@ -142,7 +142,7 @@ if (!$env->dev) {
 else {
     define("ANNOUNCE_URLS", [
       [ # tier 1
-        "https://trx.biotorrents.de:443",
+        "https://trx.torrents.bio:443",
       ],
       [ # tier 2
       #"udp://tracker.coppersurfer.tk:6969/announce",
@@ -153,7 +153,7 @@ else {
 
     $AnnounceURLs = [
       [ # tier 1
-        "https://trx.biotorrents.de:443",
+        "https://trx.torrents.bio:443",
       ], [], # tier 2
     ];
     ENV::setPub(

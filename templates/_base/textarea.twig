@@ -58,6 +58,13 @@ https://twig.symfony.com/doc/3.x/tags/include.html
                     "drawTable": "Cmd-Alt-T",
                 },
             });
+
+            // update easymde on textarea change
+            $("#{{ id }}").on("change", (event) => {
+                easyMDE.value(
+                    $(event.target).val()
+                );
+            });
         });
 
     })();

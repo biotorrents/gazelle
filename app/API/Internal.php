@@ -257,4 +257,110 @@ class Internal extends Base
             self::failure(400, $e->getMessage());
         }
     }
+
+
+    /** */
+
+
+    /**
+     * doiNumberAutofill
+     *
+     * Fills out the torrent form with Semantic Scholar data.
+     */
+    public static function doiNumberAutofill(): void
+    {
+        $app = \App::go();
+
+        self::validateFrontendHash();
+
+        $post = \Http::query("post");
+
+        try {
+            $semanticScholar = new \SemanticScholar([
+                "paperId" => $post["paperId"] ?? null,
+            ]);
+
+            $response = $semanticScholar->paper();
+            #~d($response);exit;
+
+            # format the result for the upload form
+            # todo: prolly move this to the SS class
+            $data = [
+                "title" => $response["title"] ?? null,
+                "groupDescription" => $response["abstract"] ?? null,
+                "year" => $response["year"] ?? null,
+            ];
+
+            # doi numbers: the paper itself is first
+            $data["literature"] = [ $response["externalIds"]["DOI"] ?? null ];
+
+            # sort citations by citationCount, descending
+            usort($response["citations"], function ($a, $b) {
+                if ($a["citationCount"] === $b["citationCount"]) {
+                    return 0;
+                }
+
+                return ($a["citationCount"] > $b["citationCount"])
+                    ? -1
+                    : 1;
+            });
+
+            # grab the top nine influentian citations
+            $citationCount = 1;
+            $citationLimit = 9;
+
+            foreach ($response["citations"] as $citation) {
+                $citation["externalIds"]["DOI"] ??= null;
+                if (!$citation["externalIds"]["DOI"]) {
+                    continue;
+                }
+
+                if ($citationCount > $citationLimit) {
+                    break;
+                }
+
+                # add the doi number to the array
+                $data["literature"][] = $citation["externalIds"]["DOI"];
+                $citationCount++;
+            } # foreach ($response["citations"] as $citation)
+
+            # creatorList
+            foreach ($response["authors"] as $creator) {
+                if (!$creator["name"] || empty($creator["name"])) {
+                    continue;
+                }
+
+                # get the longest name
+                $canonicalName = $creator["name"];
+                $longestAlias = "";
+
+                # check aliases
+                $creator["aliases"] ??= null;
+                if (!empty($creator["aliases"])) {
+                    $longestAlias = max($creator["aliases"]);
+                }
+
+                # compare lengths
+                if (strlen($canonicalName) < strlen($longestAlias)) {
+                    $creatorName = $longestAlias;
+                } else {
+                    $creatorName = $canonicalName;
+                }
+
+                # add longest name only
+                $data["creatorList"][] = $creator["name"];
+
+                # get the last author's affiliation
+                # (or the last affiliation in the response)
+                $creator["affiliations"] ??= null;
+                if (!empty($creator["affiliations"])) {
+                    $data["workgroup"] = current($creator["affiliations"]);
+                }
+            } # foreach ($response["authors"] as $creator)
+
+            self::success($data);
+        } catch (\Exception $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
 } # class
