@@ -246,3 +246,74 @@ img.icon {
   max-width: 1.5rem;
   max-height: 1.5rem;
 }
+
+/**
+ * loading spinner element
+ * https://css-tricks.com/single-element-loaders-the-spinner/
+ */
+
+/* dark */
+.loaderDark {
+  width: 1rem; /* control the size */
+  aspect-ratio: 1;
+  display: inline-grid;
+  -webkit-mask: conic-gradient(from 22deg, #0003, #000);
+  mask: conic-gradient(from 22deg, #0003, #000);
+  animation: load 1s steps(8) infinite;
+  margin: 0 0.5rem;
+}
+
+.loaderDark,
+.loaderDark:before {
+  --_g: linear-gradient(#222 0 0) 50%; /* update the color here */
+  background: var(--_g) / 34% 8% space no-repeat,
+    var(--_g) / 8% 34% no-repeat space;
+}
+
+.loaderDark:before {
+  content: "";
+  transform: rotate(45deg);
+}
+
+@keyframes load {
+  from {
+    transform: rotate(0turn);
+  }
+
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* light */
+.loaderLight {
+  width: 1rem; /* control the size */
+  aspect-ratio: 1;
+  display: inline-grid;
+  -webkit-mask: conic-gradient(from 22deg, #0003, #000);
+  mask: conic-gradient(from 22deg, #0003, #000);
+  animation: load 1s steps(8) infinite;
+  margin: 0 0.5rem;
+}
+
+.loaderLight,
+.loaderLight:before {
+  --_g: linear-gradient(white 0 0) 50%; /* update the color here */
+  background: var(--_g) / 34% 8% space no-repeat,
+    var(--_g) / 8% 34% no-repeat space;
+}
+
+.loaderLight:before {
+  content: "";
+  transform: rotate(45deg);
+}
+
+@keyframes load {
+  from {
+    transform: rotate(0turn);
+  }
+
+  to {
+    transform: rotate(1turn);
+  }
+}
