@@ -5,7 +5,7 @@
 	</th>
 
 	<td>
-		<select name="archive" class="select">
+		<select id="archive" name="archive" class="select">
 			<option value="">The compression algorithm, if any</option>
 			{% for key, value in env.META.Formats.Archives %}
 				<option value="{{ key }}">{{ key }}</option>

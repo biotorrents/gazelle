@@ -1,16 +1,13 @@
 {# license #}
 <tr>
 	<th>
-		<label for="license" class="required">
-			License
-		</label>
+		<label for="license" class="required">License</label>
 	</th>
 
 	<td>
-		<select name="license" class="select">
+		<select id="license" name="license" class="select">
 			<option value="">{{ db.desc }}</option>
 			{% for item in env.META.Licenses %}
-
 				<option value="{{ item }}">{{ item }}</option>
 			{% endfor %}
 		</select>

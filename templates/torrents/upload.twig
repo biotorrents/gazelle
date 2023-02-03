@@ -19,7 +19,7 @@
 	{% include "torrentForm/announceSource.twig" with variables %}
 
 	{# the upload form itself #}
-	<form method="post">
+	<form id="torrentForm" method="post">
 
 		{# hidden fields #}
 		{{ form_token(query.server.REQUEST_URI) }}

@@ -69,11 +69,11 @@ class Internal extends Base
 
         try {
             $app->userNew->create2FA($post["secret"], $post["code"]);
+
+            self::success("successfully created a 2fa key");
         } catch (\Exception $e) {
             self::failure(400, $e->getMessage());
         }
-
-        self::success("successfully created a 2fa key");
     }
 
 
@@ -96,11 +96,11 @@ class Internal extends Base
 
         try {
             $app->userNew->delete2FA($post["secret"], $post["code"]);
+
+            self::success("successfully deleted a 2fa key");
         } catch (\Exception $e) {
             self::failure(400, $e->getMessage());
         }
-
-        self::success("successfully deleted a 2fa key");
     }
 
 
@@ -190,7 +190,7 @@ class Internal extends Base
         $siteOptions["defaultSearch"] = $queryString;
 
         # update
-        $query = "update into users_info set siteOptions = ? where userId = ?";
+        $query = "update users_info set siteOptions = ? where userId = ?";
         $app->dbNew->do($query, [json_encode($siteOptions), $userId]);
 
         self::success($siteOptions);
@@ -276,8 +276,13 @@ class Internal extends Base
         $post = \Http::query("post");
 
         try {
+            $paperId = trim($post["paperId"] ?? null);
+            if (!$paperId) {
+                self::failure();
+            }
+
             $semanticScholar = new \SemanticScholar([
-                "paperId" => $post["paperId"] ?? null,
+                "paperId" => $paperId,
             ]);
 
             $response = $semanticScholar->paper();

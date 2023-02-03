@@ -34,7 +34,7 @@ class SemanticScholar
 
     # cache settings
     private $cachePrefix = "semanticScholar_";
-    private $cacheDuration = 86400; # one day
+    private $cacheDuration = "one week";
 
     # hash algo for cache keys
     private $algorithm = "sha3-512";

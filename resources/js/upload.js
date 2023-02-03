@@ -122,6 +122,37 @@
 
 
     /**
+     * frontend form validation
+     * todo: this is kinda stupid
+     */
+
+    $("#validateForm").on("click", () => {
+        let requiredElements = [
+            "#archive",
+            "#categoryId",
+            "#creatorList",
+            "#format",
+            "#groupDescription",
+            "#license",
+            "#platform",
+            "#scope",
+            "#tagList",
+            "#title",
+            "#torrentFile",
+            "#workgroup",
+            "#year",
+        ];
+
+        requiredElements.forEach(element => {
+            let value = $(element).val();
+            if (value.length === 0) {
+                console.log("required element " + element + " isn't filled in");
+            }
+        });
+    });
+
+
+    /**
      * AddScreenshotField
      */
 
