@@ -205,7 +205,7 @@ class ENV
     {
         $new = [];
         foreach ($array as $k => $v) {
-             if (is_object($v)) {
+            if (is_object($v)) {
                 $v = $this->toArray($v);
             }
 
@@ -336,7 +336,7 @@ class RecursiveArrayObject extends ArrayObject
         } elseif (array_key_exists($name, $this)) {
             return $this[$name];
         } else {
-            throw new InvalidArgumentException("The instance doesn't have the property {$name}");
+            throw new InvalidArgumentException("the instance doesn't have the property {$name}");
         }
     }
 
@@ -359,8 +359,26 @@ class RecursiveArrayObject extends ArrayObject
     }
 
 
-    function toArray() {
-        $env = ENV::go();
-        return $env->toArray($this);
+    /**
+     * __call
+     *
+     * Enables the use of all PHP array functions,
+     * e.g., $app->env->array_keys() and similar.
+     *
+     * @see https://www.php.net/manual/en/class.arrayobject.php#107079
+     */
+    public function __call($function, $arguments)
+    {
+        if (!is_callable($function) || substr($function, 0, 6) !== "array_") {
+            throw new BadMethodCallException(__CLASS__ . "->" . $function);
+        }
+
+        return call_user_func_array(
+            $function,
+            array_merge(
+                [$this->getArrayCopy()],
+                $arguments
+            )
+        );
     }
 } # class

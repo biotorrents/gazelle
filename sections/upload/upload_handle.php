@@ -37,7 +37,7 @@ $validate = new Validate();
 
 
 /**
- * form data
+ * collect the form data
  *
  * Http::query automagically escapes all this as strings
  * also, we're a good boi and we use parameterized queries
@@ -96,6 +96,23 @@ if ($data["groupId"]) {
     $data["creatorList"] = Artists::get_artist($data["groupId"]);
 }
 
+
+/**
+ * validate the form data
+ */
+
+# categoryId
+if ($data["categoryId"]) {
+    $validate->setField("categoryId", [
+        "errorMessage" => "Please select a valid category",
+        "inArray" => $app->env->CATS->array_keys(),
+        "maxLength" => $data["maxLength"] ?? null,
+        "minLength" => $data["minLength"] ?? null,
+        "regex" => $data["regex"] ?? null,
+        "required" => true,
+        "type" => $data["type"] ?? null,
+    ]);
+}
 
 /** TODO: START HERE */
 
