@@ -47,6 +47,18 @@
 
 class Validate
 {
+    # varchar field limits
+    public $varcharFull = 255;
+    public $varcharHalf = 128;
+    public $varcharQuarter = 64;
+    public $varcharEighth = 32;
+
+
+    /**
+     * SO I'M GONNA REWRITE MY HALF DONE REWRITE
+     */
+
+
     /**
      * mirrors
      *

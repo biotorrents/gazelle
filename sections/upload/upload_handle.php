@@ -1,112 +1,104 @@
 <?php
-#declare(strict_types=1);
+
+declare(strict_types=1);
+
+
+/**
+ * upload form handling
+ *
+ * this should remain as its own dedicated script
+ * it does a lot of stuff in a specific order:
+ *
+ * 1. checks csrf, collects form data, validates it
+ * 2. formats the data to be suitable for the database
+ * 3. writes all this metadata to the database
+ * 4. does some special stuff with custom fields
+ * 5. writes a proper (private) .torrent file to disk
+ * 6. does some cachery to populate recent uploads
+ * 7. sings from the rooftops, announces on channels
+ */
 
 
 $app = App::go();
 
-/**
- * Take upload
- *
- * This pages handles the backend of the torrent upload function.
- * It checks the data, and if it all validates, it builds the torrent file,
- * then writes the data to the database and the torrent to the disk.
- */
+# https://github.com/paragonie/anti-csrf
+Http::csrf();
 
-$ENV = ENV::go();
-$debug = Debug::go();
-
-$Feed = new Feed();
-$Validate = new Validate();
-
-
-enforce_login();
 authorize();
+enforce_login();
+
+# request vars
+$post = Http::query("post");
+$files = Http::query("files");
+
+# gazelle libraries
+$feed = new Feed();
+$validate = new Validate();
 
 
 /**
- * Set $Properties array
+ * form data
  *
- * This is used if the form doesn't validate,
- * and when the time comes to enter it into the database.
- *
- * todo: Do something about this mess
+ * Http::query automagically escapes all this as strings
+ * also, we're a good boi and we use parameterized queries
+ * thank god for null coalescing, it cleans this up a lot
  */
 
-$Properties = [];
-$Type = $Categories[(int) $_POST['type']];
-$TypeID = $_POST['type'] + 1;
+$data = [];
 
-$Properties['CategoryID'] = $TypeID;
-$Properties['CategoryName'] = $Type;
+# basic info
+$data["categoryId"] = $post["categoryId"] ?? null;
+$data["torrentFile"] = $files["torrentFile"] ?? null;
 
-$Properties['Title'] = $_POST['title']; # Title1
-$Properties['Title2'] = $_POST['title_rj']; # Title2
-$Properties['TitleJP'] = $_POST['title_jp']; # Title3
-$Properties['CatalogueNumber'] = isset($_POST['catalogue']) ? $_POST['catalogue'] : '';
+# torrent group
+$data["creatorList"] = $post["creatorList"] ?? null;
+$data["groupDescription"] = $post["groupDescription"] ?? null;
+$data["identifier"] = $post["identifier"] ?? null;
+$data["literature"] = $post["literature"] ?? null;
+$data["location"] = $post["location"] ?? null;
+$data["object"] = $post["object"] ?? null;
+$data["picture"] = $post["picture"] ?? null;
+$data["subject"] = $post["subject"] ?? null;
+$data["tagList"] = $post["tagList"] ?? null;
+$data["title"] = $post["title"] ?? null;
+$data["version"] = $post["version"] ?? null;
+$data["workgroup"] = $post["workgroup"] ?? null;
+$data["year"] = $post["year"] ?? null;
 
-$Properties['Year'] = $_POST['year'];
-$Properties['Studio'] = isset($_POST['studio']) ? $_POST['studio'] : '';
-$Properties['Series'] = isset($_POST['series']) ? $_POST['series'] : '';
-$Properties['Container'] = isset($_POST['container']) ? $_POST['container'] : '';
-$Properties['Media'] = $_POST['media'];
-$Properties['Codec'] = isset($_POST['codec']) ? $_POST['codec'] : '';
+# single torrent
+$data["annotated"] = $post["annotated"] ?? null;
+$data["anonymous"] = $post["anonymous"] ?? null;
+$data["archive"] = $post["archive"] ?? null;
+$data["format"] = $post["format"] ?? null;
+$data["license"] = $post["license"] ?? null;
+$data["mirrors"] = $post["mirrors"] ?? null;
+$data["platform"] = $post["platform"] ?? null;
+$data["scope"] = $post["scope"] ?? null;
+$data["torrentDescription"] = $post["torrentDescription"] ?? null;
 
-if (!($_POST['resolution'] ?? false)) {
-    $_POST['resolution'] = $_POST['ressel'] ?? '';
+# seqhash
+$data["seqhashAlphabet"] = $post["seqhashAlphabet"] ?? null;
+$data["seqhashHelix"] = $post["seqhashHelix"] ?? null;
+$data["seqhashSequence"] = $post["seqhashSequence"] ?? null;
+$data["seqhashShape"] = $post["seqhashShape"] ?? null;
+
+# freeleech
+$data["freeleechReason"] = $post["freeleechReason"] ?? null;
+$data["freeleechType"] = $post["freeleechType"] ?? null;
+
+# hidden fields
+$data["groupId"] = $post["groupId"] ?? null;
+$data["requestId"] = $post["requestId"] ?? null;
+$data["torrentId"] = $post["torrentId"] ?? null;
+
+# get creators (unsure if needed)
+if ($data["groupId"]) {
+    $data["creatorList"] = Artists::get_artist($data["groupId"]);
 }
 
-$Properties['Resolution'] = $_POST['resolution'] ?? '';
-$Properties['Version'] = $_POST['version'] ?? '';
-$Properties['Censored'] = (isset($_POST['censored'])) ? '1' : '0';
-$Properties['Anonymous'] = (isset($_POST['anonymous'])) ? '1' : '0';
-$Properties['Archive'] = (isset($_POST['archive']) && $_POST['archive'] !== '---') ? $_POST['archive'] : '';
 
-if (isset($_POST['library_image'])) {
-    $Properties['LibraryImage'] = $_POST['library_image'];
-}
+/** TODO: START HERE */
 
-if (isset($_POST['tags'])) {
-    $Properties['TagList'] = implode(',', array_unique(explode(',', str_replace(' ', '', $_POST['tags']))));
-}
-
-if (isset($_POST['image'])) {
-    $Properties['Image'] = $_POST['image'];
-}
-
-if (isset($_POST['release'])) {
-    $Properties['ReleaseGroup'] = $_POST['release'];
-}
-
-$Properties['GroupDescription'] = trim($_POST['album_desc']);
-$Properties['TorrentDescription'] = $_POST['release_desc'];
-$Properties['Screenshots'] = isset($_POST['screenshots']) ? $_POST['screenshots'] : '';
-$Properties['Mirrors'] = isset($_POST['mirrors']) ? $_POST['mirrors'] : '';
-$Properties['Seqhash'] = isset($_POST['seqhash']) ? $_POST['seqhash'] : '';
-
-if ($_POST['album_desc']) {
-    $Properties['GroupDescription'] = trim($_POST['album_desc']);
-} elseif ($_POST['desc']) {
-    $Properties['GroupDescription'] = trim($_POST['desc']);
-}
-
-if (isset($_POST['groupid'])) {
-    $Properties['GroupID'] = $_POST['groupid'];
-}
-
-if (isset($Properties['GroupID'])) {
-    $Properties['Artists'] = Artists::get_artist($Properties['GroupID']);
-}
-
-if (empty($_POST['artists'])) {
-    $Err = "You didn't enter any creators";
-} else {
-    $Artists = $_POST['artists'];
-}
-
-if (!empty($_POST['requestid'])) {
-    $RequestID = $_POST['requestid'];
-    $Properties['RequestID'] = $RequestID;
-}
 
 
 /**
@@ -114,7 +106,7 @@ if (!empty($_POST['requestid'])) {
  */
 
 # Submit button
-$Validate->SetFields(
+$validate->SetFields(
     'type',
     '1',
     'inarray',
@@ -123,7 +115,7 @@ $Validate->SetFields(
 );
 
 # torrents_group.category_id
-$Validate->SetFields(
+$validate->SetFields(
     'type',
     '1',
     'inarray',
@@ -133,7 +125,7 @@ $Validate->SetFields(
 
 if (!$_POST['groupid']) {
     # torrents_group.identifier
-    $Validate->SetFields(
+    $validate->SetFields(
         'catalogue',
         '0',
         'string',
@@ -142,7 +134,7 @@ if (!$_POST['groupid']) {
     );
 
     # torrents.Version
-    $Validate->SetFields(
+    $validate->SetFields(
         'version',
         '0',
         'string',
@@ -151,7 +143,7 @@ if (!$_POST['groupid']) {
     );
 
     # torrents_group.title
-    $Validate->SetFields(
+    $validate->SetFields(
         'title',
         '1',
         'string',
@@ -160,7 +152,7 @@ if (!$_POST['groupid']) {
     );
 
     # torrents_group.subject
-    $Validate->SetFields(
+    $validate->SetFields(
         'title_rj',
         '0',
         'string',
@@ -169,7 +161,7 @@ if (!$_POST['groupid']) {
     );
 
     # torrents_group.object
-    $Validate->SetFields(
+    $validate->SetFields(
         'title_jp',
         '0',
         'string',
@@ -178,7 +170,7 @@ if (!$_POST['groupid']) {
     );
 
     # torrents_group.workgroup
-    $Validate->SetFields(
+    $validate->SetFields(
         'studio',
         '1',
         'string',
@@ -187,7 +179,7 @@ if (!$_POST['groupid']) {
     );
 
     # torrents_group.location
-    $Validate->SetFields(
+    $validate->SetFields(
         'series',
         '0',
         'string',
@@ -197,7 +189,7 @@ if (!$_POST['groupid']) {
 
     /* todo: Fix the year validation
     # torrents_group.year
-    $Validate->SetFields(
+    $validate->SetFields(
         'year',
         '1',
         'number',
@@ -207,17 +199,17 @@ if (!$_POST['groupid']) {
     */
 
     # torrents.Media
-    $Validate->SetFields(
+    $validate->SetFields(
         'media',
         '1',
         'inarray',
         'Please select a valid platform.',
-        array('inarray' => $ENV->META->Platforms)
+        array('inarray' => $app->env->META->Platforms)
     );
 
     /*
     # torrents.Container
-    $Validate->SetFields(
+    $validate->SetFields(
         'container',
         '1',
         'inarray',
@@ -227,7 +219,7 @@ if (!$_POST['groupid']) {
     */
 
     # torrents.Resolution
-    $Validate->SetFields(
+    $validate->SetFields(
         'resolution',
         '1',
         'string',
@@ -236,7 +228,7 @@ if (!$_POST['groupid']) {
     );
 
     # torrents_group.tag_list
-    $Validate->SetFields(
+    $validate->SetFields(
         'tags',
         '1',
         'string',
@@ -245,7 +237,7 @@ if (!$_POST['groupid']) {
     );
 
     # torrents_group.picture
-    $Validate->SetFields(
+    $validate->SetFields(
         'image',
         '0',
         'link',
@@ -255,7 +247,7 @@ if (!$_POST['groupid']) {
 }
 
 # torrents_group.description
-$Validate->SetFields(
+$validate->SetFields(
     'album_desc',
     '1',
     'string',
@@ -265,7 +257,7 @@ $Validate->SetFields(
 
 /* todo: Fix the Group ID validation
 # torrents_group.id
-$Validate->SetFields(
+$validate->SetFields(
     'groupid',
     '0',
     'number',
@@ -273,10 +265,10 @@ $Validate->SetFields(
 );
 */
 
-$Err = $Validate->ValidateForm($_POST); // Validate the form
+$Err = $validate->ValidateForm($_POST); // Validate the form
 
 # todo: Move all this validation code to the Validate class
-if (count(explode(',', $Properties['TagList'])) < 5) {
+if (count(explode(',', $data['TagList'])) < 5) {
     $Err = 'You must enter at least 5 tags.';
 }
 
@@ -295,7 +287,7 @@ if (!is_uploaded_file($TorrentName) || !filesize($TorrentName)) {
 
 // Multiple artists!
 $LogName = '';
-if (empty($Properties['GroupID']) && empty($ArtistForm)) {
+if (empty($data['GroupID']) && empty($ArtistForm)) {
     $ArtistNames = [];
     $ArtistForm = [];
     for ($i = 0; $i < count($Artists); $i++) {
@@ -313,7 +305,7 @@ if (empty($Properties['GroupID']) && empty($ArtistForm)) {
       FROM torrents_artists AS ta
         JOIN artists_group AS ag ON ta.ArtistID = ag.ArtistID
       WHERE ta.GroupID = ?
-      ORDER BY ag.Name ASC", $Properties['GroupID']);
+      ORDER BY ag.Name ASC", $data['GroupID']);
 
     $ArtistForm = [];
     while (list($ArtistID, $ArtistName) = $app->dbOld->next_record(MYSQLI_BOTH, false)) {
@@ -329,7 +321,7 @@ if ($Err) { // Show the upload form, with the data the user entered
     error(400, $NoHTML = true);
 }
 
-ImageTools::blacklisted($Properties['Image']);
+ImageTools::blacklisted($data['Image']);
 
 
 /**
@@ -338,7 +330,7 @@ ImageTools::blacklisted($Properties['Image']);
  * Prepared SQL statements do this for us,
  * so there is nothing to do here anymore.
  */
-$T = $Properties;
+$T = $data;
 
 
 /**
@@ -378,7 +370,7 @@ if (count($TooLongPaths) > 0) {
 }
 $FilePath = $DirName;
 $FileString = implode("\n", $TmpFileList);
-$debug['upload']->info('torrent decoded');
+$app->debug['upload']->info('torrent decoded');
 
 if (!empty($Err)) { // Show the upload form, with the data the user entered
     $UploadForm = $Type;
@@ -391,7 +383,7 @@ if (!empty($Err)) { // Show the upload form, with the data the user entered
 
 if ($T['Container'] === 'Autofill') {
     # torrents.Container
-    $T['Container'] = $Validate->ParseExtensions(
+    $T['Container'] = $validate->ParseExtensions(
         # $FileList
         $Tor->file_list(),
 
@@ -405,15 +397,15 @@ if ($T['Container'] === 'Autofill') {
 
 if ($T['Archive'] === 'Autofill') {
     # torrents.Archive
-    $T['Archive'] = $Validate->ParseExtensions(
+    $T['Archive'] = $validate->ParseExtensions(
         # $FileList
         $Tor->file_list(),
 
         # $Category
-        array_keys($ENV->META->Formats->Archives),
+        array_keys($app->env->META->Formats->Archives),
 
         # $FileTypes
-        array_merge($ENV->META->Formats->Archives),
+        array_merge($app->env->META->Formats->Archives),
     );
 }
 
@@ -561,7 +553,7 @@ if (!isset($GroupID) || !$GroupID) {
      * THESE ARE ASSOCIATED WITH TORRENT GROUPS.s
      */
     if (!empty($T['Screenshots'])) {
-        $Screenshots = $Validate->textarea2array($T['Screenshots'], $ENV->regexDoi);
+        $Screenshots = $validate->textarea2array($T['Screenshots'], $app->env->regexDoi);
         $Screenshots = array_slice($Screenshots, 0, 10);
 
         foreach ($Screenshots as $Screenshot) {
@@ -705,7 +697,7 @@ $Tor->Dec['comment'] = 'https://'.siteDomain.'/torrents.php?torrentid='.$Torrent
  */
 
 if (!empty($T['Mirrors'])) {
-    $Mirrors = $Validate->textarea2array($T['Mirrors'], $ENV->regexUri);
+    $Mirrors = $validate->textarea2array($T['Mirrors'], $app->env->regexUri);
     $Screenshots = array_slice($Screenshots, 0, 5);
 
     foreach ($Mirrors as $Mirror) {
@@ -727,7 +719,7 @@ if (!empty($T['Mirrors'])) {
  *
  * Elementary Seqhash support
  */
-if ($ENV->FEATURE_BIOPHP && !empty($T['Seqhash'])) {
+if ($app->env->FEATURE_BIOPHP && !empty($T['Seqhash'])) {
     $BioIO = new \BioPHP\IO();
     $BioSeqhash = new \BioPHP\Seqhash();
 
@@ -771,7 +763,7 @@ Tracker::update_tracker('add_torrent', [
   'info_hash'   => rawurlencode($InfoHash),
   'freetorrent' => $T['FreeTorrent']
 ]);
-$debug['upload']->info('ocelot updated');
+$app->debug['upload']->info('ocelot updated');
 
 // Prevent deletion of this torrent until the rest of the upload process is done
 // (expire the key after 10 minutes to prevent locking it for too long in case there's a fatal error below)
@@ -825,7 +817,7 @@ if ($T['FreeLeechType'] === 3) {
 //******************************************************************************//
 //--------------- Write torrent file -------------------------------------------//
 
-$FileName = "$ENV->torrentStore/$TorrentID.torrent";
+$FileName = "$app->env->torrentStore/$TorrentID.torrent";
 file_put_contents($FileName, $Tor->encode());
 chmod($FileName, 0400);
 
@@ -833,7 +825,7 @@ Misc::write_log("Torrent $TorrentID ($LogName) (".Text::float($TotalSize / (1024
 Torrents::write_group_log($GroupID, $TorrentID, $app->userNew->core['id'], 'uploaded ('.Text::float($TotalSize / (1024 * 1024), 2).' MB)', 0);
 
 Torrents::update_hash($GroupID);
-$debug['upload']->info('sphinx updated');
+$app->debug['upload']->info('sphinx updated');
 
 //******************************************************************************//
 //---------------------- Recent Uploads ----------------------------------------//
@@ -965,17 +957,17 @@ $Announce .= ' - '.site_url()."torrents.php?action=download&id=$TorrentID";
 
 // ENT_QUOTES is needed to decode single quotes/apostrophes
 send_irc(ANNOUNCE_CHAN, html_entity_decode($Announce, ENT_QUOTES));
-$debug['upload']->info('announced on irc');
+$app->debug['upload']->info('announced on irc');
 
 /**
  * Manage motifications
  */
 // For RSS
-$Item = $Feed->item(
+$Item = $feed->item(
     $Announce,
     $Body,
     'torrents.php?action=download&amp;authkey=[[AUTHKEY]]&amp;torrent_pass=[[PASSKEY]]&amp;id='.$TorrentID,
-    $Properties['Anonymous'] ? 'Anonymous' : $app->userNew->core['username'],
+    $data['Anonymous'] ? 'Anonymous' : $app->userNew->core['username'],
     'torrents.php?id='.$GroupID,
     trim($T['TagList'])
 );
@@ -1090,7 +1082,7 @@ if (!in_array('notifications', $Paranoia)) {
 
 $SQL .= " AND UserID != '".$app->userNew->core['id']."' ";
 $app->dbOld->query($SQL);
-$debug['upload']->info('notification query finished');
+$app->debug['upload']->info('notification query finished');
 
 if ($app->dbOld->has_results()) {
     $UserArray = $app->dbOld->to_array('UserID');
@@ -1104,17 +1096,17 @@ if ($app->dbOld->has_results()) {
     foreach ($UserArray as $User) {
         list($FilterID, $UserID, $Passkey) = $User;
         $Rows[] = "('$UserID', '$GroupID', '$TorrentID', '$FilterID')";
-        $Feed->populate("torrents_notify_$Passkey", $Item);
+        $feed->populate("torrents_notify_$Passkey", $Item);
         $app->cacheOld->delete_value("notifications_new_$UserID");
     }
 
     $InsertSQL .= implode(',', $Rows);
     $app->dbOld->query($InsertSQL);
-    $debug['upload']->info('notification inserts finished');
+    $app->debug['upload']->info('notification inserts finished');
 
     foreach ($FilterArray as $Filter) {
         list($FilterID, $UserID, $Passkey) = $Filter;
-        $Feed->populate("torrents_notify_{$FilterID}_$Passkey", $Item);
+        $feed->populate("torrents_notify_{$FilterID}_$Passkey", $Item);
     }
 }
 
@@ -1133,12 +1125,12 @@ WHERE
 ");
 
 while (list($UserID, $Passkey) = $app->dbOld->next_record()) {
-    $Feed->populate("torrents_bookmarks_t_$Passkey", $Item);
+    $feed->populate("torrents_bookmarks_t_$Passkey", $Item);
 }
 
-$Feed->populate('torrents_all', $Item);
-$Feed->populate('torrents_'.strtolower($Type), $Item);
-$debug['upload']->info('notifications handled');
+$feed->populate('torrents_all', $Item);
+$feed->populate('torrents_'.strtolower($Type), $Item);
+$app->debug['upload']->info('notifications handled');
 
 # Clear cache
 $app->cacheOld->delete_value("torrents_details_$GroupID");

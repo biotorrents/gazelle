@@ -6,7 +6,7 @@
 		</th>
 
 		<td>
-			<select id="tagList" name="tagList" class="select" multiple>
+			<select id="tagList" name="tagList[]" class="select" multiple>
 				<option value="">{{ db.desc }}</option>
 				{% for item in tagList %}
 					<option value="{{ item }}">{{ item }}</option>

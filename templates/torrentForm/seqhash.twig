@@ -2,11 +2,11 @@
 {% if newTorrent and env.FEATURE_BIOPHP %}
 	<tr id="seqhashRow">
 		<th>
-			<label for="seqhash">{{ db.name }}</label>
+			<label for="seqhashSequence">{{ db.name }}</label>
 		</th>
 
 		<td>
-			<textarea name="seqhash" id="seqhash" placeholder="{{ db.desc }}">{{ value }}</textarea>
+			<textarea name="seqhashSequence" id="seqhashSequence" placeholder="{{ db.desc }}">{{ value }}</textarea>
 
 			<table id="seqhashTable" class="compact">
 				<tr>

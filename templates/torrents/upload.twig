@@ -182,7 +182,7 @@
 
 				{# seqhash #}
 				{% set variables = {"db": env.DB.seqhash, "value": (torrent.seqhash) ? torrent.seqhash : ""} %}
-				{% include "torrentForm/seqhashTable.twig" with variables %}
+				{% include "torrentForm/seqhash.twig" with variables %}
 
 				{## #}
 
