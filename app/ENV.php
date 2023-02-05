@@ -25,7 +25,7 @@ class ENV
     # disinstantiates itself
     private static $instance = null;
 
-    # config options receptacles
+    # config option receptacles
     public static $public = []; # site meta, options, resources, etc.
     private static $private = []; # passwords, app keys, database, etc.
 
@@ -76,27 +76,23 @@ class ENV
 
 
     /**
-     * Gets n' Sets
+     * go
+     *
+     * calls its self's creation or returns itself
      */
-
-    # calls its self's creation or returns itself
     public static function go(array $options = []): ENV
     {
         if (self::$instance === null) {
             self::$instance = new self();
-            #self::$instance->factory($options);
         }
 
         return self::$instance;
     }
 
-    # getPriv
-    public function getPriv($key)
-    {
-        return isset(self::$private[$key])
-            ? self::$private[$key]
-            : false;
-    }
+
+    /**
+     * gets n sets: public
+     */
 
     # getPub
     public function getPub($key)
@@ -106,16 +102,30 @@ class ENV
             : false;
     }
 
-    # setPriv
-    public static function setPriv($key, $value)
-    {
-        return self::$private[$key] = $value;
-    }
-
     # setPub
     public static function setPub($key, $value)
     {
         return self::$public[$key] = $value;
+    }
+
+
+    /**
+     * gets n sets: private
+     */
+
+    # getPriv
+    public function getPriv($key)
+    {
+        return isset(self::$private[$key])
+            ? self::$private[$key]
+            : false;
+    }
+
+
+    # setPriv
+    public static function setPriv($key, $value)
+    {
+        return self::$private[$key] = $value;
     }
 
 
@@ -140,7 +150,7 @@ class ENV
                 return new RecursiveArrayObject($object);
 
             default:
-                return trigger_error("ENV->convert expects a JSON string, array, or object.", E_USER_ERROR);
+                return trigger_error("ENV->convert expects a JSON string, array, or object", E_USER_ERROR);
                 break;
         }
     }
@@ -200,19 +210,24 @@ class ENV
      * Takes an $app->env node or array of them,
      * and flattens out the multi-dimensionality.
      * It returns a flat array with keys intact.
+     *
+     * @param array|object $object the thing to flatten
+     * @param int $level currently unused (this function is buggy)
+     * @return array the flattened array
      */
-    public function flatten(array|object $array, int $level = null): array
+    public function flatten(array|object $object, int $level = null): array
     {
         $new = [];
-        foreach ($array as $k => $v) {
-            if (is_object($v)) {
-                $v = $this->toArray($v);
+
+        foreach ($object as $key => $value) {
+            if (is_object($value)) {
+                $value = $this->toArray($value);
             }
 
-            if (is_array($v)) {
-                $new = array_merge($new, $this->flatten($v));
+            if (is_array($value)) {
+                $new = array_merge($new, $this->flatten($value));
             } else {
-                $new[$k] = $v;
+                $new[$key] = $value;
             }
         }
 
@@ -227,23 +242,23 @@ class ENV
      * Maps a callback (or default) to an object.
      *
      * Example output:
-     * $hashes = $app->env->map("md5", $app->env->CATS->{6});
+     * $hashes = $app->env->map("md5", $app->env->categories->{6});
      * var_dump($hashes);
      *
      * object(RecursiveArrayObject)#324 (1) {
      *   ["storage":"ArrayObject":private]=>
      *   array(6) {
-     *     ["ID"]=>
+     *     ["id"]=>
      *     string(32) "28c8edde3d61a0411511d3b1866f0636"
-     *     ["Name"]=>
+     *     ["name"]=>
      *     string(32) "fe83ccb5dc96dbc0658b3c4672c7d5fe"
-     *     ["Icon"]=>
+     *     ["icon"]=>
      *     string(32) "52963afccc006d2bce3c890ad9e8f73a"
-     *     ["Platforms"]=>
+     *     ["platforms"]=>
      *     string(32) "d41d8cd98f00b204e9800998ecf8427e"
-     *     ["Formats"]=>
+     *     ["formats"]=>
      *     string(32) "d41d8cd98f00b204e9800998ecf8427e"
-     *     ["Description"]=>
+     *     ["description"]=>
      *     string(32) "ca6628e8c13411c800d1d9d0eaccd849"
      *   }
      * }
@@ -292,6 +307,9 @@ class ENV
 } # class
 
 
+/** */
+
+
 /**
  * @author: etconsilium@github
  * @license: BSDLv2
@@ -301,8 +319,10 @@ class ENV
 class RecursiveArrayObject extends ArrayObject
 {
     /**
-     * __construct
+     * __functions
      */
+
+    # __construct
     public function __construct($input = null, $flags = self::ARRAY_AS_PROPS, $iterator_class = "ArrayIterator")
     {
         foreach ($input as $key => $value) {
@@ -312,23 +332,7 @@ class RecursiveArrayObject extends ArrayObject
         return $this;
     }
 
-
-    /**
-     * __set
-     */
-    public function __set($name, $value)
-    {
-        if (is_array($value) || is_object($value)) {
-            $this->offsetSet($name, (new self($value)));
-        } else {
-            $this->offsetSet($name, $value);
-        }
-    }
-
-
-    /**
-     * __get
-     */
+    # __get
     public function __get($name)
     {
         if ($this->offsetExists($name)) {
@@ -340,19 +344,23 @@ class RecursiveArrayObject extends ArrayObject
         }
     }
 
+    # __set
+    public function __set($name, $value)
+    {
+        if (is_array($value) || is_object($value)) {
+            $this->offsetSet($name, (new self($value)));
+        } else {
+            $this->offsetSet($name, $value);
+        }
+    }
 
-    /**
-     * __isset
-     */
+    # __isset
     public function __isset($name)
     {
         return array_key_exists($name, $this);
     }
 
-
-    /**
-     * __unset
-     */
+    # __unset
     public function __unset($name)
     {
         unset($this[$name]);
@@ -380,5 +388,16 @@ class RecursiveArrayObject extends ArrayObject
                 $arguments
             )
         );
+    }
+
+
+    /**
+     * toArray
+     */
+    public function toArray(): array|string
+    {
+        $app = App::go();
+
+        return $app->env->toArray($this);
     }
 } # class
