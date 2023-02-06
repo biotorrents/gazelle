@@ -596,7 +596,7 @@ class Validate
         $app = App::go();
 
         # error key
-        $key = "mirrors";
+        $key = "torrentFile";
         $this->errors[$key] ??= [];
 
         # return data

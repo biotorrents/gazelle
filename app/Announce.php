@@ -197,7 +197,7 @@ class Announce
             );
 
             # set api version
-           # $connection->setApiVersion("2");
+            # $connection->setApiVersion("2");
             $content = $connection->get("account/verify_credentials");
             !d($content);
             $statues = $connection->post("statuses/update", ["status" => "hello world"]);
@@ -220,5 +220,14 @@ class Announce
             Text::figlet("twitter failure", "red");
             !d($e->getMessage());
         }
+    }
+
+
+    /**
+     * mastodon
+     */
+    public static function mastodon()
+    {
+        # todo
     }
 } # class

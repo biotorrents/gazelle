@@ -327,7 +327,7 @@ if (!preg_match("/{$app->env->regexImage}/", $data["picture"])) {
 
 
 /**
- * torrent file handling
+ * torrent file validation
  */
 
 # this is our torrent file
@@ -345,51 +345,14 @@ $infoHash = pack('H*', $torrent->info_hash());
 # validate torrent data and get info
 $torrentData = $validate->bencoded($torrent);
 
-/*
 # there are errors, bail out with data
 if (!empty($validate->errors)) {
-    $app->display("torrents/upload.twig", [
-        "foo" => "bar",
-    ]);
+    $data = $data;
+    $errors = $validate->errors;
+
+    require_once "{$app->env->serverRoot}/sections/upload/upload.php";
     exit;
 }
-*/
-
-/*
-# encrypted files
-if (isset($torrent->Dec["encrypted_files"])) {
-    $Err = 'This torrent contains an encrypted file list which is not supported here.';
-}
-
-// File list and size
-list($TotalSize, $FileList) = $torrent->file_list();
-$numFiles = count($FileList);
-$TmpFileList = [];
-$TooLongPaths = [];
-$DirName = (isset($torrent->Dec['info']['files']) ? Text::utf8($torrent->get_name()) : '');
-foreach ($FileList as $File) {
-    list($Size, $Name) = $File;
-     // Make sure the filename is not too long
-    if (mb_strlen($Name, 'UTF-8') + mb_strlen($DirName, 'UTF-8') + 1 > 255) { # MAX_FILENAME_LENGTH
-        $TooLongPaths[] = "$DirName/$Name";
-    }
-    // Add file info to array
-    $TmpFileList[] = Torrents::filelist_format_file($File);
-}
-if (count($TooLongPaths) > 0) {
-    $Names = implode(' <br />', $TooLongPaths);
-    $Err = "The torrent contained one or more files with too long a name:<br /> $Names";
-}
-$FilePath = $DirName;
-$FileString = implode("\n", $TmpFileList);
-$app->debug['upload']->info('torrent decoded');
-
-if (!empty($Err)) { // Show the upload form, with the data the user entered
-    $UploadForm = $Type;
-    include(serverRoot.'/sections/upload/upload.php');
-    error();
-}
-*/
 
 
 /**
@@ -474,16 +437,19 @@ $data["mirrors"] = array_unique($data["mirrors"]);
  */
 
 # key shorthand variables
+$categoryId = $data["categotyId"];
+$categoryName = $app->env->CATS->{$categoryId}->Name;
+
 $groupId = $data["groupId"] ?? null;
 $revisionId = $data["revisionId"] ?? null;
 
 # does it belong in a group?
 if ($groupId) {
     $query = "
-        select id, picture, description, revision_id, title. year, tag_list
+        select id, picture, description, revision_id, title, year, tag_list
         from torrents_group where id = ?
     ";
-    $row = $app->dbNew->row($query, [ $groupId ]);
+    $row = $app->dbNew->row($query, [$groupId]);
 
     if ($row) {
         # tagList
@@ -637,6 +603,34 @@ if ($torrentData["dataSize"] > $neutralLeechThreshold) {
     $data["freeleechType"] = 2;
     $data["freeleechReason"] = 2;
 }
+
+/*
+# todo: add to shop freeleeches if necessary
+if ($data["freeleechReason"] === 3) {
+    # figure out which duration to use
+    $Expiry = 0;
+
+    foreach ($FreeLeechTags as $Tag => $Exp) {
+        if ($Tag === 'global' || in_array($Tag, $Tags)) {
+            if (((int) $FreeLeechTags[$Tag]['First']) > $Expiry) {
+                $Expiry = (int) $FreeLeechTags[$Tag]['First'];
+            }
+        }
+    }
+
+    if ($Expiry > 0) {
+        $app->dbOld->query("
+          INSERT INTO shop_freeleeches
+            (TorrentID, ExpiryTime)
+          VALUES
+            (" . $torrentID . ", FROM_UNIXTIME(" . $Expiry . "))
+          ON DUPLICATE KEY UPDATE
+            ExpiryTime = FROM_UNIXTIME(UNIX_TIMESTAMP(ExpiryTime) + ($Expiry - FROM_UNIXTIME(NOW())))");
+    } else {
+        Torrents::freeleech_torrents($torrentID, 0, 0);
+    }
+}
+*/
 
 # the torrent entry itself
 $query = "
@@ -844,88 +838,57 @@ if (function_exists('fastcgi_finish_request')) {
 */
 
 
+/**
+ * announce on different channels
+ */
+
+# construct message
+$announceMessage = "[{$categoryName}]"
+    . " " . Illuminate\Support\Str::limit($data["title"]) . " "
+    . "[ " . Torrents::torrent_info($data, true, false, false) . " ]"
+    . " - " . trim($data["tagList"])
+    . " - " . site_url() . "torrents.php?id={$groupId}&torrentId={$torrentId}"
+    . " - " . site_url() . "torrents.php?action=download&id={$torrentId}";
+
+
+# announce on irc
+# ENT_QUOTES is needed to decode single quotes/apostrophes
+Announce::irc($announceMessage);
+$app->debug["upload"]->info("announced on irc");
+
+# announce on slack
+Announce::slack($announceMessage);
+$app->debug["upload"]->info("announced on slack");
+
+# announce on rss
+$item = $feed->item(
+    $announceMessage,
+    $data["groupDescription"],
+    "/torrents.php?action=download&authkey=[[AUTHKEY]]&torrent_pass=[[PASSKEY]]&id={$torrentId}",
+    $data["anonymous"] ? "Anonymous" : $app->userNew->core["username"],
+    "/torrents.php?id={$groupId}",
+    trim($data["tagList"])
+);
+
+
+/**
+ * manage notifications
+ */
+
 
 /** TODO: START HERE */
 exit;
 
-// Add to shop freeleeches if necessary
-if ($data["freeleechReason"] === 3) {
-    // Figure out which duration to use
-    $Expiry = 0;
 
-    foreach ($FreeLeechTags as $Tag => $Exp) {
-        if ($Tag === 'global' || in_array($Tag, $Tags)) {
-            if (((int) $FreeLeechTags[$Tag]['First']) > $Expiry) {
-                $Expiry = (int) $FreeLeechTags[$Tag]['First'];
-            }
-        }
-    }
-
-    if ($Expiry > 0) {
-        $app->dbOld->query("
-          INSERT INTO shop_freeleeches
-            (TorrentID, ExpiryTime)
-          VALUES
-            (" . $torrentID . ", FROM_UNIXTIME(" . $Expiry . "))
-          ON DUPLICATE KEY UPDATE
-            ExpiryTime = FROM_UNIXTIME(UNIX_TIMESTAMP(ExpiryTime) + ($Expiry - FROM_UNIXTIME(NOW())))");
-    } else {
-        Torrents::freeleech_torrents($torrentID, 0, 0);
-    }
-}
 
 
 /** ALL THE STUFF AFTER POST-PROCESSING */
 
 
-/**
- * IRC announce and feeds
- */
-
-$Announce = '';
-
-# Category and title
-$Announce .= '['.$data['CategoryName'].'] ';
-$Announce .= substr(trim(empty($data['Title']) ? (empty($data['Title2']) ? $data['TitleJP'] : $data['Title2']) : $data['Title']), 0, 100);
-$Announce .= ' ';
-
-# Exploded for sanity
-$Announce .= '[ '
-    . Torrents::torrent_info(
-        $Data = $T,
-        $ShowMedia = true,
-        $ShowEdition = false,
-        $HTMLy = false
-    )
-    . ' ]';
-
-
-# Tags and link
-$Announce .= ' - '.trim($data['TagList']);
-$Announce .= ' - '.site_url()."torrents.php?id=$GroupID&torrentid=$torrentID";
-$Announce .= ' - '.site_url()."torrents.php?action=download&id=$torrentID";
-
-# Unused
-#$Title = '['.$data['CategoryName'].'] '.$Announce;
-#$Announce .= Artists::display_artists($ArtistForm, false);
-
-// ENT_QUOTES is needed to decode single quotes/apostrophes
-send_irc(ANNOUNCE_CHAN, html_entity_decode($Announce, ENT_QUOTES));
-$app->debug['upload']->info('announced on irc');
 
 /**
  * Manage motifications
  */
-// For RSS
-$item = $feed->item(
-    $Announce,
-    $Body,
-    'torrents.php?action=download&amp;authkey=[[AUTHKEY]]&amp;torrent_pass=[[PASSKEY]]&amp;id='.$torrentID,
-    $data['Anonymous'] ? 'Anonymous' : $app->userNew->core['username'],
-    'torrents.php?id='.$GroupID,
-    trim($data['TagList'])
-);
-
 // Notifications
 $SQL = "
 SELECT
