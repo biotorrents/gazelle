@@ -15,7 +15,7 @@ if ($_GET['id'] && $_GET['artistname']) {
 }
 
 $ArtistID = $_GET['id'];
-if ($ArtistID && !is_number($ArtistID)) {
+if ($ArtistID && !is_numeric($ArtistID)) {
     json_die('failure');
 }
 
@@ -35,7 +35,7 @@ if (empty($ArtistID)) {
 
 if (!empty($_GET['revisionid'])) { // if they're viewing an old revision
     $RevisionID = $_GET['revisionid'];
-    if (!is_number($RevisionID)) {
+    if (!is_numeric($RevisionID)) {
         error(0);
     }
     $Data = $app->cacheOld->get_value("artist_$ArtistID"."_revision_$RevisionID");

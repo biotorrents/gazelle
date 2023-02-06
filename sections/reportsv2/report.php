@@ -12,7 +12,7 @@ $ENV = ENV::go();
 
 
 // If we're not coming from torrents.php, check we're being returned because of an error.
-if (!isset($_GET['id']) || !is_number($_GET['id'])) {
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     if (!isset($Err)) {
         error(404);
     }

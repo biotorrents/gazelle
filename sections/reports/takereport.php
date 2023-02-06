@@ -4,7 +4,7 @@ $app = App::go();
 
 authorize();
 
-if (empty($_POST['id']) || !is_number($_POST['id']) || empty($_POST['type']) || ($_POST['type'] !== 'request_update' && empty($_POST['reason']))) {
+if (empty($_POST['id']) || !is_numeric($_POST['id']) || empty($_POST['type']) || ($_POST['type'] !== 'request_update' && empty($_POST['reason']))) {
     error(404);
 }
 
@@ -17,14 +17,14 @@ $Short = $_POST['type'];
 $Type = $Types[$Short];
 $ID = $_POST['id'];
 if ($Short === 'request_update') {
-    if (empty($_POST['year']) || !is_number($_POST['year'])) {
+    if (empty($_POST['year']) || !is_numeric($_POST['year'])) {
         error('Year must be specified.');
         Http::redirect("reports.php?action=report&type=request_update&id=$ID");
         die();
     }
     $Reason = '[b]Year[/b]: '.$_POST['year'].".\n\n";
     // If the release type is somehow invalid, return "Not given"; otherwise, return the release type.
-    $Reason .= '[b]Release type[/b]: '.((empty($_POST['releasetype']) || !is_number($_POST['releasetype']) || $_POST['releasetype'] === '0') ? 'Not given' : $ReleaseTypes[$_POST['releasetype']]).". \n\n";
+    $Reason .= '[b]Release type[/b]: '.((empty($_POST['releasetype']) || !is_numeric($_POST['releasetype']) || $_POST['releasetype'] === '0') ? 'Not given' : $ReleaseTypes[$_POST['releasetype']]).". \n\n";
     $Reason .= '[b]Additional comments[/b]: '.$_POST['comment'];
 } else {
     $Reason = $_POST['reason'];

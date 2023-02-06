@@ -2,7 +2,7 @@
 
 authorize();
 
-if (!isset($_REQUEST['page']) || !in_array($_REQUEST['page'], array('artist', 'collages', 'requests', 'torrents')) || !isset($_POST['pageid']) || !is_number($_POST['pageid']) || !isset($_POST['body']) || trim($_POST['body']) === '') {
+if (!isset($_REQUEST['page']) || !in_array($_REQUEST['page'], array('artist', 'collages', 'requests', 'torrents')) || !isset($_POST['pageid']) || !is_numeric($_POST['pageid']) || !isset($_POST['body']) || trim($_POST['body']) === '') {
     error(0);
 }
 

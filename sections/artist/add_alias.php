@@ -17,7 +17,7 @@ if (!$Redirect) {
     $Redirect = 0;
 }
 
-if (!is_number($ArtistID) || !($Redirect === 0 || is_number($Redirect)) || !$ArtistID) {
+if (!is_numeric($ArtistID) || !($Redirect === 0 || is_numeric($Redirect)) || !$ArtistID) {
     error(0);
 }
 

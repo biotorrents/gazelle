@@ -132,7 +132,7 @@ class Torrents
         $Key = $Torrents ? 'torrent_group_' : 'torrent_group_light_';
 
         foreach ($GroupIDs as $i => $GroupID) {
-            if (!is_number($GroupID)) {
+            if (!is_numeric($GroupID)) {
                 unset($GroupIDs[$i], $Found[$GroupID], $NotFound[$GroupID]);
                 continue;
             }

@@ -143,7 +143,7 @@ class Misc
     {
         $app = App::go();
 
-        if (!$ForumID || !$AuthorID || !is_number($AuthorID) || !$Title || !$PostBody) {
+        if (!$ForumID || !$AuthorID || !is_numeric($AuthorID) || !$Title || !$PostBody) {
             return -1;
         }
 

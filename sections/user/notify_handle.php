@@ -18,7 +18,7 @@ $MediaList = '';
 $Users = '';
 $HasFilter = false;
 
-if ($_POST['formid'] && is_number($_POST['formid'])) {
+if ($_POST['formid'] && is_numeric($_POST['formid'])) {
     $FormID = $_POST['formid'];
 }
 
@@ -115,7 +115,7 @@ $TagList = str_replace('||', '|', $TagList);
 $NotTagList = str_replace('||', '|', $NotTagList);
 $Users = str_replace('||', '|', $Users);
 
-if ($_POST['id'.$FormID] && is_number($_POST['id'.$FormID])) {
+if ($_POST['id'.$FormID] && is_numeric($_POST['id'.$FormID])) {
     $app->dbOld->query("
     UPDATE users_notify_filters
     SET

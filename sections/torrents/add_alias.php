@@ -8,7 +8,7 @@ $UserID = $app->userNew->core['id'];
 $GroupID = db_string($_POST['groupid']);
 $ArtistNames = $_POST['artistname'];
 
-if (!is_number($GroupID) || !$GroupID) {
+if (!is_numeric($GroupID) || !$GroupID) {
     error(0);
 }
 

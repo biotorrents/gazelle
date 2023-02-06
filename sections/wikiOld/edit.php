@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-if (!isset($_GET['id']) || !is_number($_GET['id'])) {
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     error(404);
 }
 

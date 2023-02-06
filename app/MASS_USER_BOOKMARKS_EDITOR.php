@@ -53,7 +53,7 @@ class MASS_USER_BOOKMARKS_EDITOR extends MASS_USER_TORRENTS_EDITOR
 
         $SQL = [];
         foreach ($_POST['remove'] as $GroupID => $K) {
-            if (is_number($GroupID)) {
+            if (is_numeric($GroupID)) {
                 $SQL[] = sprintf('%d', $GroupID);
             }
         }
@@ -84,7 +84,7 @@ class MASS_USER_BOOKMARKS_EDITOR extends MASS_USER_TORRENTS_EDITOR
 
         $SQL = [];
         foreach ($_POST['sort'] as $GroupID => $Sort) {
-            if (is_number($Sort) && is_number($GroupID)) {
+            if (is_numeric($Sort) && is_numeric($GroupID)) {
                 $SQL[] = sprintf('(%d, %d, %d)', $GroupID, $Sort, $app->userNew->core["id"]);
             }
         }

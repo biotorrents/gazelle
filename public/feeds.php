@@ -25,20 +25,6 @@ $Feed = new Feed();
 
 
 /**
- * is_number
- */
-function is_number($Str)
-{
-    if ($Str < 0) {
-        return false;
-    }
-
-    # we're converting input to an int, then string, and comparing to the original
-    return ($Str === strval(intval($Str)));
-}
-
-
-/**
  * display_array
  */
 function display_array($Array, $Escape = [])

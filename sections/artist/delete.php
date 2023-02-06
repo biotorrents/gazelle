@@ -14,7 +14,7 @@ requests and torrents. It is called when $_GET['action'] == 'delete'.
 authorize();
 
 $ArtistID = $_GET['artistid'];
-if (!is_number($ArtistID) || empty($ArtistID)) {
+if (!is_numeric($ArtistID) || empty($ArtistID)) {
   error(0);
 }
 

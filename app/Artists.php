@@ -35,7 +35,7 @@ class Artists
         $dbs = [];
 
         foreach ($GroupIDs as $GroupID) {
-            if (!is_number($GroupID)) {
+            if (!is_numeric($GroupID)) {
                 continue;
             }
 

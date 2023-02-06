@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-if (!empty($_GET['id']) && is_number($_GET['id'])) {
+if (!empty($_GET['id']) && is_numeric($_GET['id'])) {
     // Visiting article via ID
     $ArticleID = $_GET['id'];
 } elseif ($_GET['name'] !== '') {

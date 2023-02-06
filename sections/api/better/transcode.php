@@ -1,6 +1,6 @@
 <?php
 
-if (!isset($_GET['type']) || !is_number($_GET['type']) || $_GET['type'] > 3) {
+if (!isset($_GET['type']) || !is_numeric($_GET['type']) || $_GET['type'] > 3) {
     error(0);
 }
 

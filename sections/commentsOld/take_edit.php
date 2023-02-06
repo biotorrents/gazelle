@@ -2,7 +2,7 @@
 
 authorize();
 
-if (!isset($_POST['postid']) || !is_number($_POST['postid']) || !isset($_POST['body'])) {
+if (!isset($_POST['postid']) || !is_numeric($_POST['postid']) || !isset($_POST['body'])) {
     error(0);
 }
 

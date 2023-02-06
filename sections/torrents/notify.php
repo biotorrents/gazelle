@@ -30,7 +30,7 @@ if (!empty($_GET['order_way']) && $_GET['order_way'] === 'asc') {
     $OrderWay = 'DESC';
 }
 
-if (!empty($_GET['filterid']) && is_number($_GET['filterid'])) {
+if (!empty($_GET['filterid']) && is_numeric($_GET['filterid'])) {
     $FilterID = $_GET['filterid'];
 } else {
     $FilterID = false;
@@ -54,7 +54,7 @@ function header_link($SortKey, $DefaultWay = 'desc')
     return "?action=notify&amp;order_way=$NewWay&amp;order_by=$SortKey&amp;".Format::get_url(array('page', 'order_way', 'order_by'));
 }
 //Perhaps this should be a feature at some point
-if (check_perms('users_mod') && !empty($_GET['userid']) && is_number($_GET['userid']) && $_GET['userid'] != $app->userNew->core['id']) {
+if (check_perms('users_mod') && !empty($_GET['userid']) && is_numeric($_GET['userid']) && $_GET['userid'] != $app->userNew->core['id']) {
     $UserID = $_GET['userid'];
     $Sneaky = true;
 } else {

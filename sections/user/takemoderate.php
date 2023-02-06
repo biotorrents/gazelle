@@ -5,7 +5,7 @@
 $app = App::go();
 
 // Are they being tricky blighters?
-if (!$_POST['userid'] || !is_number($_POST['userid'])) {
+if (!$_POST['userid'] || !is_numeric($_POST['userid'])) {
     error(404);
 } elseif (!check_perms('users_mod')) {
     error(403);
@@ -31,7 +31,7 @@ $Artist = isset($_POST['Artist']) ? 1 : 0;
 
 $SecondaryClasses = isset($_POST['secondary_classes']) ? $_POST['secondary_classes'] : [];
 foreach ($SecondaryClasses as $i => $Val) {
-    if (!is_number($Val)) {
+    if (!is_numeric($Val)) {
         unset($SecondaryClasses[$i]);
     }
 }
@@ -53,18 +53,18 @@ if (isset($_POST['Uploaded']) && isset($_POST['Downloaded'])) {
         $Downloaded += max(-$Downloaded, Format::get_bytes($Arithmetic));
     }
 
-    if (!is_number($Uploaded) || !is_number($Downloaded)) {
+    if (!is_numeric($Uploaded) || !is_numeric($Downloaded)) {
         error(0);
     }
 }
 
 $BonusPoints = isset($_POST['BonusPoints']) ? $_POST['BonusPoints'] : 0;
-if (!is_number($BonusPoints)) {
+if (!is_numeric($BonusPoints)) {
     error(0);
 }
 
 $FLTokens = isset($_POST['FLTokens']) ? $_POST['FLTokens'] : 0;
-if (!is_number($FLTokens)) {
+if (!is_numeric($FLTokens)) {
     error(0);
 }
 

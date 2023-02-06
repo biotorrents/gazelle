@@ -4,7 +4,7 @@
 
 $app = App::go();
 
-if (empty($_POST['importance']) || empty($_POST['artists']) || empty($_POST['groupid']) || !is_number($_POST['importance']) || !is_number($_POST['groupid'])) {
+if (empty($_POST['importance']) || empty($_POST['artists']) || empty($_POST['groupid']) || !is_numeric($_POST['importance']) || !is_numeric($_POST['groupid'])) {
     error(0);
 }
 if (!check_perms('torrents_edit')) {
@@ -20,7 +20,7 @@ $ArtistsString = '0';
 
 foreach ($Artists as $i => $Artist) {
     list($Importance, $ArtistID) = explode(';', $Artist);
-    if (is_number($ArtistID) && is_number($Importance)) {
+    if (is_numeric($ArtistID) && is_numeric($Importance)) {
         $CleanArtists[] = array($Importance, $ArtistID);
         $ArtistIDs[] = $ArtistID;
     }

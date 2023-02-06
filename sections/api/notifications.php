@@ -24,7 +24,7 @@ $Results = $app->dbOld->query("
       JOIN torrents AS t ON t.ID = unt.TorrentID
       LEFT JOIN users_notify_filters AS unf ON unf.ID = unt.FilterID
     WHERE unt.UserID = {$app->userNew->core['id']}".
-    ((!empty($_GET['filterid']) && is_number($_GET['filterid']))
+    ((!empty($_GET['filterid']) && is_numeric($_GET['filterid']))
       ? " AND unf.ID = '$_GET[filterid]'"
       : '')."
     ORDER BY TorrentID DESC

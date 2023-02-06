@@ -28,7 +28,7 @@ if ($Type == "resolve") {
 
     if (is_array($IDs) && count($IDs) == 0) {
         json_error("You must select at least one reuqest to use this option");
-    } elseif (!is_array($IDs) && !is_number($IDs)) {
+    } elseif (!is_array($IDs) && !is_numeric($IDs)) {
         json_error("You must select at least 1 request");
     }
 

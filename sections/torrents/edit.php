@@ -13,7 +13,7 @@ $app = App::go();
  */
 
 require_once serverRoot.'/classes/torrent_form.class.php';
-if (!is_number($_GET['id']) || !$_GET['id']) {
+if (!is_numeric($_GET['id']) || !$_GET['id']) {
     error(400);
 }
 

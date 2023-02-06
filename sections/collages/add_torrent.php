@@ -53,7 +53,7 @@ function add_torrent($CollageID, $GroupID)
 }
 
 $CollageID = $_POST['collageid'];
-if (!is_number($CollageID)) {
+if (!is_numeric($CollageID)) {
     error(404);
 }
 $app->dbOld->query("

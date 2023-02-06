@@ -68,19 +68,6 @@ function authorize($Ajax = false)
 
 
 /**
- * Return true if the given string is numeric.
- * Should be Security::checkInt but it's used a lot.
- *
- * @param mixed $Str
- * @return bool
- */
-function is_number($Str)
-{
-    return is_numeric($str);
-}
-
-
-/**
  * Send a message to an IRC bot listening on SOCKET_LISTEN_PORT
  *
  * @param string $Raw An IRC protocol snippet to send.
@@ -504,7 +491,7 @@ function time_ago($TimeStamp)
     if (!$TimeStamp) {
         return false;
     }
-    if (!is_number($TimeStamp)) { // Assume that $TimeStamp is SQL timestamp
+    if (!is_numeric($TimeStamp)) { // Assume that $TimeStamp is SQL timestamp
         $TimeStamp = strtotime($TimeStamp);
     }
     return time() - $TimeStamp;

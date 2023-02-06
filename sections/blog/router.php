@@ -26,7 +26,7 @@ if (check_perms('admin_manage_blog')) {
     if (!empty($_REQUEST['action'])) {
         switch ($_REQUEST['action']) {
             case 'deadthread':
-                if (is_number($_GET['id'])) {
+                if (is_numeric($_GET['id'])) {
                     $app->dbOld->prepared_query("
             UPDATE blog
             SET ThreadID = NULL
@@ -39,7 +39,7 @@ if (check_perms('admin_manage_blog')) {
 
             case 'takeeditblog':
                 authorize();
-                if (is_number($_POST['blogid']) && is_number($_POST['thread'])) {
+                if (is_numeric($_POST['blogid']) && is_numeric($_POST['thread'])) {
                     $app->dbOld->prepared_query("
             UPDATE blog
             SET
@@ -54,7 +54,7 @@ if (check_perms('admin_manage_blog')) {
                 break;
 
             case 'editblog':
-                if (is_number($_GET['id'])) {
+                if (is_numeric($_GET['id'])) {
                     $BlogID = $_GET['id'];
                     $app->dbOld->prepared_query("
             SELECT Title, Body, ThreadID
@@ -65,7 +65,7 @@ if (check_perms('admin_manage_blog')) {
                 break;
 
             case 'deleteblog':
-                if (is_number($_GET['id'])) {
+                if (is_numeric($_GET['id'])) {
                     authorize();
                     $app->dbOld->prepared_query("
             DELETE FROM blog
@@ -81,7 +81,7 @@ if (check_perms('admin_manage_blog')) {
                 $Title = db_string($_POST['title']);
                 $Body = db_string($_POST['body']);
                 $ThreadID = $_POST['thread'];
-                if ($ThreadID && is_number($ThreadID)) {
+                if ($ThreadID && is_numeric($ThreadID)) {
                     $app->dbOld->prepared_query("
             SELECT ForumID
             FROM forums_topics

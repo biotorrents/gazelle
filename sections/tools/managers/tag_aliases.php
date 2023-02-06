@@ -20,7 +20,7 @@ if (check_perms('users_mod')) {
       VALUES ('$badtag', '$aliastag')");
     }
 
-    if (isset($_POST['changealias']) && is_number($_POST['aliasid'])) {
+    if (isset($_POST['changealias']) && is_numeric($_POST['aliasid'])) {
         $aliasid = $_POST['aliasid'];
         $badtag = db_string($_POST['badtag']);
         $aliastag = db_string($_POST['aliastag']);

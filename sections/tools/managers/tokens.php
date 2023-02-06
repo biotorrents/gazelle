@@ -10,7 +10,7 @@ if (isset($_REQUEST['addtokens'])) {
     authorize();
     $Tokens = $_REQUEST['numtokens'];
 
-    if (!is_number($Tokens) || ($Tokens < 0)) {
+    if (!is_numeric($Tokens) || ($Tokens < 0)) {
         error('Please enter a valid number of tokens.');
     }
     $sql = "
@@ -39,7 +39,7 @@ if (isset($_REQUEST['addtokens'])) {
     authorize();
     $Tokens = $_REQUEST['numtokens'];
 
-    if (!is_number($Tokens) || ($Tokens < 0)) {
+    if (!is_numeric($Tokens) || ($Tokens < 0)) {
         error('Please enter a valid number of tokens.');
     }
 

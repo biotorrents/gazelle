@@ -10,7 +10,7 @@ if (!empty($app->userNew->extra['DisableTagging'])) {
 $UserID = $app->userNew->core['id'];
 $GroupID = $_POST['groupid'];
 
-if (!is_number($GroupID) || !$GroupID) {
+if (!is_numeric($GroupID) || !$GroupID) {
     error(0);
 }
 

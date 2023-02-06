@@ -17,7 +17,7 @@ $OldGroupID = $_POST['oldgroupid'];
 $GroupID = $_POST['groupid'];
 $TorrentID = $_POST['torrentid'];
 
-if (!is_number($OldGroupID) || !is_number($GroupID) || !is_number($TorrentID) || !$OldGroupID || !$GroupID || !$TorrentID) {
+if (!is_numeric($OldGroupID) || !is_numeric($GroupID) || !is_numeric($TorrentID) || !$OldGroupID || !$GroupID || !$TorrentID) {
     error(0);
 }
 if ($OldGroupID == $GroupID) {

@@ -472,7 +472,7 @@ class TorrentSearch
             }
             $categoryFilter = [];
             foreach (array_keys($value) as $category) {
-                if (is_number($category)) {
+                if (is_numeric($category)) {
                     $categoryFilter[] = $category;
                 } else {
                     global $Categories;
@@ -484,7 +484,7 @@ class TorrentSearch
             }
             $this->SphQL->where("categoryid", ($categoryFilter ?? 0));
         } else {
-            if (!is_number($value) && self::$attributes[$attribute] !== false) {
+            if (!is_numeric($value) && self::$attributes[$attribute] !== false) {
                 // Check if the submitted value can be converted to a valid one
                 $validValuesVarname = self::$attributes[$attribute];
                 global $$validValuesVarname;
@@ -598,17 +598,17 @@ class TorrentSearch
     private function search_year($term)
     {
         $Years = explode("-", $term);
-        if (count($Years ?? []) === 1 && is_number($Years[0])) {
+        if (count($Years ?? []) === 1 && is_numeric($Years[0])) {
             // Exact year
             $this->SphQL->where("year", $Years[0]);
         } elseif (count($Years ?? []) === 2) {
-            if (empty($Years[0]) && is_number($Years[1])) {
+            if (empty($Years[0]) && is_numeric($Years[1])) {
                 // Range: 0 - 2005
                 $this->SphQL->where_lt("year", $Years[1], true);
-            } elseif (empty($Years[1]) && is_number($Years[0])) {
+            } elseif (empty($Years[1]) && is_numeric($Years[0])) {
                 // Range: 2005 - 2^32-1
                 $this->SphQL->where_gt("year", $Years[0], true);
-            } elseif (is_number($Years[0]) && is_number($Years[1])) {
+            } elseif (is_numeric($Years[0]) && is_numeric($Years[1])) {
                 // Range: 2005 - 2009
                 $this->SphQL->where_between("year", [min($Years), max($Years)]);
             } else {

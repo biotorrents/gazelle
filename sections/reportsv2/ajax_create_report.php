@@ -19,7 +19,7 @@ if (!check_perms('admin_reports')) {
 
 authorize();
 
-if (!is_number($_POST['torrentid'])) {
+if (!is_numeric($_POST['torrentid'])) {
     echo 'No Torrent ID';
     error();
 } else {

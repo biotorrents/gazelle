@@ -4,7 +4,7 @@
 $app = App::go();
 
 $TorrentID = $_GET['torrentid'];
-if (!$TorrentID || !is_number($TorrentID)) {
+if (!$TorrentID || !is_numeric($TorrentID)) {
     error(404);
 }
 

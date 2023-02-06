@@ -5,7 +5,7 @@ $app = App::go();
 $ArtistID = db_string($_GET['artistid']);
 $GroupID = db_string($_GET['groupid']);
 
-if (!is_number($ArtistID) || !is_number($GroupID)) {
+if (!is_numeric($ArtistID) || !is_numeric($GroupID)) {
     error(404);
 }
 if (!check_perms('torrents_edit')) {

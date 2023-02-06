@@ -318,7 +318,7 @@ class TorrentFunctions
     {
         $app = App::go();
 
-        if (empty($GroupID) || !is_number($GroupID)) {
+        if (empty($GroupID) || !is_numeric($GroupID)) {
             return [];
         }
 

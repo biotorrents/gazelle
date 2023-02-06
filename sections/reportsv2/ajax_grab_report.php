@@ -12,7 +12,7 @@ if (!check_perms('admin_reports')) {
     error();
 }
 
-if (!is_number($_GET['id'])) {
+if (!is_numeric($_GET['id'])) {
     error();
 }
 

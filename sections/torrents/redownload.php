@@ -4,7 +4,7 @@
 
 $app = App::go();
 
-if (!empty($_GET['userid']) && is_number($_GET['userid'])) {
+if (!empty($_GET['userid']) && is_numeric($_GET['userid'])) {
     $UserID = $_GET['userid'];
 } else {
     error(0);

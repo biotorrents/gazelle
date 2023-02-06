@@ -12,13 +12,13 @@ if (!check_perms('site_vote')) {
 
 authorize();
 
-if (empty($_GET['id']) || !is_number($_GET['id'])) {
+if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     error(0);
 }
 
 $RequestID = $_GET['id'];
 
-if (empty($_GET['amount']) || !is_number($_GET['amount']) || $_GET['amount'] < $MinimumVote) {
+if (empty($_GET['amount']) || !is_numeric($_GET['amount']) || $_GET['amount'] < $MinimumVote) {
     $Amount = $MinimumVote;
 } else {
     $Amount = $_GET['amount'];

@@ -27,11 +27,11 @@ if (isset($app->userNew->extra['PostsPerPage'])) {
 }
 
 
-if (isset($_POST['thread']) && !is_number($_POST['thread'])) {
+if (isset($_POST['thread']) && !is_numeric($_POST['thread'])) {
     error(0);
 }
 
-if (isset($_POST['forum']) && !is_number($_POST['forum'])) {
+if (isset($_POST['forum']) && !is_numeric($_POST['forum'])) {
     error(0);
 }
 

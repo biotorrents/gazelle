@@ -30,8 +30,8 @@ heart. -A9
 if (
   !isset($_REQUEST['collageid'])
   || !isset($_REQUEST['preference'])
-  || !is_number($_REQUEST['preference'])
-  || !is_number($_REQUEST['collageid'])
+  || !is_numeric($_REQUEST['preference'])
+  || !is_numeric($_REQUEST['collageid'])
   || $_REQUEST['preference'] > 2
   || count($_REQUEST['list']) === 0
 ) {

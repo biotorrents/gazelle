@@ -9,7 +9,7 @@ authorize();
 $ThreadID = $_POST['threadid'];
 $NewOption = $_POST['new_option'];
 
-if (!is_number($ThreadID)) {
+if (!is_numeric($ThreadID)) {
     error(404);
 }
 

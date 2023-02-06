@@ -6,7 +6,7 @@ $app = App::go();
 
 $debug = Debug::go();
 
-if (!empty($_GET['page']) && is_number($_GET['page'])) {
+if (!empty($_GET['page']) && is_numeric($_GET['page'])) {
     $Page = min(SPHINX_MAX_MATCHES / LOG_ENTRIES_PER_PAGE, $_GET['page']);
     $Offset = ($Page - 1) * LOG_ENTRIES_PER_PAGE;
 } else {

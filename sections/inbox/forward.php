@@ -7,7 +7,7 @@ authorize();
 $UserID = $app->userNew->core['id'];
 $ConvID = $_POST['convid'];
 $ReceiverID = $_POST['receiverid'];
-if (!is_number($ConvID) || !is_number($ReceiverID)) {
+if (!is_numeric($ConvID) || !is_numeric($ReceiverID)) {
     error(404);
 }
 if (!check_perms('users_mod') && !isset($StaffIDs[$ReceiverID])) {

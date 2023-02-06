@@ -7,7 +7,7 @@ authorize();
 if (!check_perms('forums_polls_moderate')) {
     error(403, true);
 }
-if (!isset($_POST['topicid']) || !is_number($_POST['topicid'])) {
+if (!isset($_POST['topicid']) || !is_numeric($_POST['topicid'])) {
     error(0, true);
 }
 $TopicID = $_POST['topicid'];

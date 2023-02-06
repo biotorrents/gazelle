@@ -2,7 +2,7 @@
 
 $app = App::go();
 
-if (!is_number($_GET['artistid'])) {
+if (!is_numeric($_GET['artistid'])) {
     error(0);
 }
 $ArtistID = (int)$_GET['artistid'];

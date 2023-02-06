@@ -5,7 +5,7 @@ $app = App::go();
 
 include serverRoot.'/sections/reports/array.php';
 
-if (empty($_GET['type']) || empty($_GET['id']) || !is_number($_GET['id'])) {
+if (empty($_GET['type']) || empty($_GET['id']) || !is_numeric($_GET['id'])) {
     error(404);
 }
 

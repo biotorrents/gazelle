@@ -7,7 +7,7 @@ $app = App::go();
 authorize();
 
 $CollageID = $_POST['collageid'];
-if (!is_number($CollageID)) {
+if (!is_numeric($CollageID)) {
     error(0);
 }
 
@@ -95,11 +95,11 @@ if (check_perms('site_collages_delete')) {
         $Updates[] = 'Locked = ' . ($Locked ? "'0'" : "'1'");
     }
 
-    if (isset($_POST['maxgroups']) && ($_POST['maxgroups'] === 0 || is_number($_POST['maxgroups'])) && $_POST['maxgroups'] !== $MaxGroups) {
+    if (isset($_POST['maxgroups']) && ($_POST['maxgroups'] === 0 || is_numeric($_POST['maxgroups'])) && $_POST['maxgroups'] !== $MaxGroups) {
         $Updates[] = 'MaxGroups = ' . $_POST['maxgroups'];
     }
 
-    if (isset($_POST['maxgroups']) && ($_POST['maxgroupsperuser'] === 0 || is_number($_POST['maxgroupsperuser'])) && $_POST['maxgroupsperuser'] !== $MaxGroupsPerUser) {
+    if (isset($_POST['maxgroups']) && ($_POST['maxgroupsperuser'] === 0 || is_numeric($_POST['maxgroupsperuser'])) && $_POST['maxgroupsperuser'] !== $MaxGroupsPerUser) {
         $Updates[] = 'MaxGroupsPerUser = ' . $_POST['maxgroupsperuser'];
     }
 }

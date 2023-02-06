@@ -19,10 +19,10 @@ Things to expect in $_GET:
 //---------- Things to sort out before it can start printing/generating content
 
 // Check for lame SQL injection attempts
-if (!isset($_GET['threadid']) || !is_number($_GET['threadid'])) {
-    if (isset($_GET['topicid']) && is_number($_GET['topicid'])) {
+if (!isset($_GET['threadid']) || !is_numeric($_GET['threadid'])) {
+    if (isset($_GET['topicid']) && is_numeric($_GET['topicid'])) {
         $ThreadID = $_GET['topicid'];
-    } elseif (isset($_GET['postid']) && is_number($_GET['postid'])) {
+    } elseif (isset($_GET['postid']) && is_numeric($_GET['postid'])) {
         $app->dbOld->prepared_query("
       SELECT TopicID
       FROM forums_posts
@@ -68,9 +68,9 @@ $ForumName = Text::esc($Forums[$ForumID]['Name']);
 
 //Post links utilize the catalogue & key params to prevent issues with custom posts per page
 if ($ThreadInfo['Posts'] > $PerPage) {
-    if (isset($_GET['post']) && is_number($_GET['post'])) {
+    if (isset($_GET['post']) && is_numeric($_GET['post'])) {
         $PostNum = $_GET['post'];
-    } elseif (isset($_GET['postid']) && is_number($_GET['postid']) && $_GET['postid'] != $ThreadInfo['StickyPostID']) {
+    } elseif (isset($_GET['postid']) && is_numeric($_GET['postid']) && $_GET['postid'] != $ThreadInfo['StickyPostID']) {
         $SQL = "
       SELECT COUNT(ID)
       FROM forums_posts

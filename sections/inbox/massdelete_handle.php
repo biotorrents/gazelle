@@ -15,7 +15,7 @@ if (!isset($_POST['messages']) || !is_array($_POST['messages'])) {
 $Messages = $_POST['messages'];
 foreach ($Messages as $ConvID) {
     $ConvID = trim($ConvID);
-    if (!is_number($ConvID)) {
+    if (!is_numeric($ConvID)) {
         error(0);
     }
 }

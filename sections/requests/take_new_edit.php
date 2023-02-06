@@ -25,7 +25,7 @@ if ($NewRequest) {
     }
 } else {
     $RequestID = $_POST['requestid'];
-    if (!is_number($RequestID)) {
+    if (!is_numeric($RequestID)) {
         error(0);
     }
 
@@ -84,7 +84,7 @@ if ($NewRequest) {
         $Err = 'You forgot to enter any bounty!';
     } else {
         $Bounty = trim($_POST['amount']);
-        if (!is_number($Bounty)) {
+        if (!is_numeric($Bounty)) {
             $Err = 'Your entered bounty is not a number';
         } elseif ($Bounty < 100 * 1024 * 1024) {
             $Err = 'Minimum bounty is 100 MB.';
@@ -128,7 +128,7 @@ if (!empty($_POST['cataloguenumber']) && $CategoryName === 'Movies') {
 // GroupID
 if (!empty($_POST['groupid'])) {
     $GroupID = $_POST['groupid'];
-    if (is_number($GroupID)) {
+    if (is_numeric($GroupID)) {
         $app->dbOld->query("
       SELECT CategoryID
       FROM torrents_group

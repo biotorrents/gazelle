@@ -3,7 +3,7 @@
 
 $app = App::go();
 
-if (!isset($_POST['topicid']) || !is_number($_POST['topicid'])) {
+if (!isset($_POST['topicid']) || !is_numeric($_POST['topicid'])) {
     error(0, true);
 }
 $TopicID = $_POST['topicid'];
@@ -85,7 +85,7 @@ if (!empty($Votes)) {
     $MaxVotes = 0;
 }
 
-if (!isset($_POST['vote']) || !is_number($_POST['vote'])) {
+if (!isset($_POST['vote']) || !is_numeric($_POST['vote'])) {
     ?>
 <span class="error">Please select an option.</span><br />
 <form class="vote_form" name="poll" id="poll" action="">

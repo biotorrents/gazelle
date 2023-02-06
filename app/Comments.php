@@ -360,7 +360,7 @@ class Comments
 
         // If a postid was passed, we need to determine which page that comment is on.
         // Format::page_limit handles a potential $_GET['page']
-        if (isset($_GET['postid']) && is_number($_GET['postid']) && $NumComments > TORRENT_COMMENTS_PER_PAGE) {
+        if (isset($_GET['postid']) && is_numeric($_GET['postid']) && $NumComments > TORRENT_COMMENTS_PER_PAGE) {
             $app->dbOld->query("
             SELECT
               COUNT(`ID`)

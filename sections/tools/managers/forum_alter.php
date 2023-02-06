@@ -9,7 +9,7 @@ if (!check_perms('admin_manage_forums')) {
 }
 $P = db_array($_POST);
 if (isset($_POST['submit']) && $_POST['submit'] == 'Delete') { //Delete
-    if (!is_number($_POST['id']) || $_POST['id'] == '') {
+    if (!is_numeric($_POST['id']) || $_POST['id'] == '') {
         error(0);
     }
     $app->dbOld->query('
@@ -33,7 +33,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Delete') { //Delete
     }
 
     if (isset($_POST['submit']) && $_POST['submit'] == 'Edit') { //Edit
-        if (!is_number($_POST['id']) || $_POST['id'] == '') {
+        if (!is_numeric($_POST['id']) || $_POST['id'] == '') {
             error(0);
         }
         $app->dbOld->query('

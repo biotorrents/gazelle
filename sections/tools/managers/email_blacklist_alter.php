@@ -9,7 +9,7 @@ if (!check_perms('users_view_email')) {
 authorize();
 
 if ($_POST['submit'] === 'Delete') { // Delete
-    if (!is_number($_POST['id']) || $_POST['id'] === '') {
+    if (!is_numeric($_POST['id']) || $_POST['id'] === '') {
         error(0);
     }
     $app->dbOld->prepared_query("
@@ -27,7 +27,7 @@ if ($_POST['submit'] === 'Delete') { // Delete
     $P = db_array($_POST); // Sanitize the form
 
     if ($_POST['submit'] === 'Edit') { // Edit
-        if (!is_number($_POST['id']) || $_POST['id'] === '') {
+        if (!is_numeric($_POST['id']) || $_POST['id'] === '') {
             error(0);
         }
         $app->dbOld->prepared_query("

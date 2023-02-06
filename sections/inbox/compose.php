@@ -13,7 +13,7 @@ if (empty($Return)) {
     */
 }
 
-if (!$ToID || !is_number($ToID)) {
+if (!$ToID || !is_numeric($ToID)) {
     error(404);
 }
 

@@ -37,7 +37,7 @@ $Submitted = !empty($_GET['submit']);
 
 // Paranoia
 if (!empty($_GET['userid'])) {
-    if (!is_number($_GET['userid'])) {
+    if (!is_numeric($_GET['userid'])) {
         error('User ID must be an integer');
     }
     $UserInfo = User::user_info($_GET['userid']);
@@ -274,7 +274,7 @@ if (!empty($_GET['releases'])) {
 }
 
 if (!empty($_GET['requestor'])) {
-    if (is_number($_GET['requestor'])) {
+    if (is_numeric($_GET['requestor'])) {
         $SphQL->where('userid', $_GET['requestor']);
     } else {
         error(404);
@@ -282,14 +282,14 @@ if (!empty($_GET['requestor'])) {
 }
 
 if (isset($_GET['year'])) {
-    if (is_number($_GET['year']) || $_GET['year'] === '0') {
+    if (is_numeric($_GET['year']) || $_GET['year'] === '0') {
         $SphQL->where('year', $_GET['year']);
     } else {
         error(404);
     }
 }
 
-if (!empty($_GET['page']) && is_number($_GET['page']) && $_GET['page'] > 0) {
+if (!empty($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0) {
     $Page = $_GET['page'];
     $Offset = ($Page - 1) * REQUESTS_PER_PAGE;
     $SphQL->limit($Offset, REQUESTS_PER_PAGE, $Offset + REQUESTS_PER_PAGE);
@@ -354,7 +354,7 @@ View::header($Title, 'requests');
             value="<?=$_GET['type']?>" />
         <?php } ?>
         <input type="hidden" name="submit" value="true" />
-        <?php if (!empty($_GET['userid']) && is_number($_GET['userid'])) { ?>
+        <?php if (!empty($_GET['userid']) && is_numeric($_GET['userid'])) { ?>
         <input type="hidden" name="userid"
             value="<?=$_GET['userid']?>" />
         <?php } ?>

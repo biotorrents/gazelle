@@ -35,7 +35,7 @@ $ENV = ENV::go();
 /*
 if (!empty($_GET['id'])) {
     require_once "$ENV->serverRoot/sections/torrents/details.php";
-} elseif (isset($_GET['torrentid']) && is_number($_GET['torrentid'])) {
+} elseif (isset($_GET['torrentid']) && is_numeric($_GET['torrentid'])) {
     $app->dbOld->query("
     SELECT
       `GroupID`
@@ -249,7 +249,7 @@ if (!empty($_REQUEST['action'])) {
             break;
 
         case 'regen_filelist':
-            if (check_perms('users_mod') && !empty($_GET['torrentid']) && is_number($_GET['torrentid'])) {
+            if (check_perms('users_mod') && !empty($_GET['torrentid']) && is_numeric($_GET['torrentid'])) {
                 Torrents::regenerate_filelist($_GET['torrentid']);
                 header('Location: torrents.php?torrentid='.$_GET['torrentid']);
                 error();
@@ -261,7 +261,7 @@ if (!empty($_REQUEST['action'])) {
         case 'fix_group':
             if ((check_perms('users_mod') || check_perms('torrents_fix_ghosts'))
               && !empty($_GET['groupid'])
-              && is_number($_GET['groupid'])
+              && is_numeric($_GET['groupid'])
             ) {
                 authorize();
 
@@ -279,7 +279,7 @@ if (!empty($_REQUEST['action'])) {
                     Torrents::delete_group($_GET['groupid']);
                 }
 
-                if (!empty($_GET['artistid']) && is_number($_GET['artistid'])) {
+                if (!empty($_GET['artistid']) && is_numeric($_GET['artistid'])) {
                     header('Location: artist.php?id='.$_GET['artistid']);
                 } else {
                     header('Location: torrents.php?id='.$_GET['groupid']);
@@ -306,7 +306,7 @@ if (!empty($_REQUEST['action'])) {
 
             if (!empty($_GET['id'])) {
                 require_once "$ENV->serverRoot/sections/torrents/details.php";
-            } elseif (isset($_GET['torrentid']) && is_number($_GET['torrentid'])) {
+            } elseif (isset($_GET['torrentid']) && is_numeric($_GET['torrentid'])) {
                 $app->dbOld->query("
                 SELECT
                   `GroupID`
@@ -334,7 +334,7 @@ else {
 
     if (!empty($_GET['id'])) {
         require_once "$ENV->serverRoot/sections/torrents/details.php";
-    } elseif (isset($_GET['torrentid']) && is_number($_GET['torrentid'])) {
+    } elseif (isset($_GET['torrentid']) && is_numeric($_GET['torrentid'])) {
         $app->dbOld->query("
         SELECT
           `GroupID`

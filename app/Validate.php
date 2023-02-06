@@ -782,102 +782,13 @@ class Validate
     }
 
 
-
-
-
     /**
-     * SO I'M GONNA REWRITE MY HALF DONE REWRITE
+     * legacy class methods
      */
 
 
     /**
-     * mirrors
-     *
-     * @param string $String The raw textarea, e.g., from torrent_form.class.php
-     * @param string $Regex  The regex to test against, e.g., from $ENV
-     * @return array An array of unique values that match the regex
-     */
-    public function textarea2array(string $String, string $Regex)
-    {
-        $ENV = ENV::go();
-
-        $String = array_map(
-            'trim',
-            explode(
-                "\n",
-                $String
-            )
-        );
-
-        return array_unique(
-            preg_grep(
-                "/^$Regex$/i",
-                $String
-            )
-        );
-    }
-
-
-    /**
-     * title
-     *
-     * Check if a torrent title is valid.
-     * If so, return the sanitized title.
-     * If not, return an error.
-     */
-    public function textInput($String)
-    {
-        # Previously a constant
-        $MinLength = 10;
-        $MaxLength = 255;
-
-        # Does it exist and is it valid?
-        if (!$String || !is_string($String)) {
-            error('No or invalid $String parameter.');
-        }
-
-        # Is it too long or short?
-        if (count($String)) {
-        }
-    }
-
-
-    /**
-     * Torrent errors
-     *
-     * Responsible for the red error messages on bad upload attemps.
-     * todo: Test $this->TorrentError() on new file checker functions
-     */
-    public function TorrentError($Suspect)
-    {
-        global $Err;
-
-        if (!$Suspect) {
-            error('No error source :^)');
-        }
-
-        switch (false) {
-            case $this->hasExtensions($Suspect, 1):
-                return $Err = "The torrent has one or more files without extensions:\n" . Text::esc($Suspect);
-
-            case $this->cruftFree($Suspect):
-                return $Err = "The torrent has one or more junk files:\n" . Text::esc($Suspect);
-
-            case $this->safeCharacters($Suspect):
-                $BadChars = $this->safeCharacters('', true);
-                return $Err = "One or more files has the forbidden characters $BadChars:\n" . Text::esc($Suspect);
-
-            default:
-                return;
-        }
-
-        return;
-    }
-
-
-
-    /**
-     * Legacy class
+     * SetFields
      */
     public function SetFields($fieldName, $Required, $fieldType, $ErrorMessage, $Options = [])
     {
@@ -914,6 +825,10 @@ class Validate
         }
     }
 
+
+    /**
+     * ValidateForm
+     */
     public function ValidateForm($ValidateArray)
     {
         $app = App::go();
@@ -1051,77 +966,4 @@ class Validate
             }
         } // while
     } // function
-} // class
-
-
-/**
- * File checker stub class
- *
- * Not technically part of the Validate class (yet).
- * Useful torrent file functions such as finding disallowed characters.
- * This will eventually move inside Validate for upload_handle.php.
- */
-
-$keywords = array(
-  'ahashare.com', 'demonoid.com', 'demonoid.me', 'djtunes.com', 'h33t', 'housexclusive.net',
-  'limetorrents.com', 'mixesdb.com', 'mixfiend.blogstop', 'mixtapetorrent.blogspot',
-  'plixid.com', 'reggaeme.com' , 'scc.nfo', 'thepiratebay.org', 'torrentday');
-
-function check_file($Type, $name)
-{
-    check_name($name);
-}
-
-function check_name($name)
-{
-    global $keywords;
-    $nameLC = strtolower($name);
-
-    foreach ($keywords as &$value) {
-        if (strpos($nameLC, $value) !== false) {
-            forbidden_error($name);
-        }
-    }
-
-    if (preg_match('/INCOMPLETE~\*/i', $name)) {
-        forbidden_error($name);
-    }
-
-    /*
-     * These characters are invalid in NTFS on Windows systems:
-     *    : ? / < > \ * | "
-     *
-     * todo: Add "/" to the blacklist. This causes problems with nested dirs, apparently
-     * todo: Make possible preg_match($AllBlockedChars, $name, $Matches)
-     *
-     * Only the following characters need to be escaped (see the link below):
-     *    \ - ^ ]
-     *
-     * http://www.php.net/manual/en/regexp.reference.character-classes.php
-     */
-    $AllBlockedChars = ' : ? < > \ * | " ';
-    if (preg_match('/[\\:?<>*|"]/', $name, $Matches)) {
-        character_error($Matches[0], $AllBlockedChars);
-    }
-}
-
-
-/**
- * Error functions
- *
- * Responsible for the red error messages on bad upload attemps.
- * todo: Make one function, e.g., Validate->error($type)
- */
-
-
-function forbidden_error($name)
-{
-    global $Err;
-    $Err = 'The torrent contained one or more forbidden files (' . Text::esc($name) . ')';
-}
-
-function character_error($Character, $AllBlockedChars)
-{
-    global $Err;
-    $Err = "One or more of the files or folders in the torrent has a name that contains the forbidden character '$Character'. Please rename the files as necessary and recreate the torrent.<br /><br />\nNote: The complete list of characters that are disallowed are shown below:<br />\n\t\t$AllBlockedChars";
-}
+} # class

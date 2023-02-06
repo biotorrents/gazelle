@@ -10,7 +10,7 @@ if (!check_perms('site_moderate_forums')) {
 $ThreadID = $_GET['threadid'];
 $PollOption = $_GET['vote'];
 
-if (is_number($ThreadID) && is_number($PollOption)) {
+if (is_numeric($ThreadID) && is_numeric($PollOption)) {
     $app->dbOld->query("
     SELECT ForumID
     FROM forums_topics

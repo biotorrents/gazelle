@@ -33,8 +33,8 @@ heart. -A9
 if (
   !isset($_REQUEST['artistid'])
   || !isset($_REQUEST['preference'])
-  || !is_number($_REQUEST['preference'])
-  || !is_number($_REQUEST['artistid'])
+  || !is_numeric($_REQUEST['preference'])
+  || !is_numeric($_REQUEST['artistid'])
   || $_REQUEST['preference'] > 2
   || count($_REQUEST['list']) === 0
 ) {

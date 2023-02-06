@@ -4,7 +4,7 @@ declare(strict_types=1);
 $app = App::go();
 
 $CollageID = $_GET['collageid'];
-if (!is_number($CollageID)) {
+if (!is_numeric($CollageID)) {
     error(0);
 }
 

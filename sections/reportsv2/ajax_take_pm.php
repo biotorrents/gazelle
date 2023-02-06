@@ -19,7 +19,7 @@ if (isset($_POST['uploader_pm']) && $_POST['uploader_pm'] != '') {
     error();
 }
 
-if (!is_number($_POST['categoryid']) || !is_number($TorrentID)) {
+if (!is_numeric($_POST['categoryid']) || !is_numeric($TorrentID)) {
     echo 'Hax on category ID!';
     error();
 } else {
@@ -38,7 +38,7 @@ if (array_key_exists($_POST['type'], $Types[$CategoryID])) {
 
 if (!isset($_POST['from_delete'])) {
     $Report = true;
-} elseif (!is_number($_POST['from_delete'])) {
+} elseif (!is_numeric($_POST['from_delete'])) {
     echo 'Hax occurred in from_delete';
 }
 
@@ -58,7 +58,7 @@ if ($Recipient == 'Uploader') {
 
 $Subject = $_POST['raw_name'];
 
-if (!is_number($ToID)) {
+if (!is_numeric($ToID)) {
     $Err = "Haxx occurring, non-number present";
 }
 

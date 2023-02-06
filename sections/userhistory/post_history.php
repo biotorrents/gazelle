@@ -11,7 +11,7 @@ if (!empty($app->userNew->extra['DisableForums'])) {
 }
 
 $UserID = empty($_GET['userid']) ? $app->userNew->core['id'] : $_GET['userid'];
-if (!is_number($UserID)) {
+if (!is_numeric($UserID)) {
     error(0);
 }
 

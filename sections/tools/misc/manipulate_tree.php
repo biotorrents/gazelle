@@ -11,7 +11,7 @@ View::header('Manipulate Invite Tree');
 if ($_POST['id']) {
     authorize();
 
-    if (!is_number($_POST['id'])) {
+    if (!is_numeric($_POST['id'])) {
         error(403);
     }
     if (!$_POST['comment']) {

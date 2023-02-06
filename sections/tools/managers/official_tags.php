@@ -12,7 +12,7 @@ if (isset($_POST['doit'])) {
     if (isset($_POST['oldtags'])) {
         $OldTagIDs = $_POST['oldtags'];
         foreach ($OldTagIDs as $OldTagID) {
-            if (!is_number($OldTagID)) {
+            if (!is_numeric($OldTagID)) {
                 error(403);
             }
         }

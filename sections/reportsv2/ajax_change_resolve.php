@@ -8,7 +8,7 @@ if (!check_perms('admin_reports')) {
     error(403);
 }
 
-if (is_number($_GET['id'])) {
+if (is_numeric($_GET['id'])) {
     $ReportID = $_GET['id'];
 } else {
     echo 'HAX on report ID';

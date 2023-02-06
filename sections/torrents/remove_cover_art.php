@@ -11,7 +11,7 @@ $ID = $_GET['id'];
 $GroupID = $_GET['groupid'];
 
 
-if (!is_number($ID) || !is_number($ID) || !is_number($GroupID) || !is_number($GroupID)) {
+if (!is_numeric($ID) || !is_numeric($ID) || !is_numeric($GroupID) || !is_numeric($GroupID)) {
     error(404);
 }
 

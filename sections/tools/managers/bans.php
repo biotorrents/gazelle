@@ -15,7 +15,7 @@ if (isset($_POST['submit'])) {
 
     $IPA = substr($_POST['start'], 0, strcspn($_POST['start'], '.'));
     if ($_POST['submit'] === 'Delete') { //Delete
-        if (!is_number($_POST['id']) || $_POST['id'] === '') {
+        if (!is_numeric($_POST['id']) || $_POST['id'] === '') {
             error(0);
         }
         $app->dbOld->query('DELETE FROM ip_bans WHERE ID='.$_POST['id']);
@@ -34,7 +34,7 @@ if (isset($_POST['submit'])) {
     $End = Tools::ip_to_unsigned($_POST['end']); //See above
 
     if ($_POST['submit'] === 'Edit') { //Edit
-        if (empty($_POST['id']) || !is_number($_POST['id'])) {
+        if (empty($_POST['id']) || !is_numeric($_POST['id'])) {
             error(404);
         }
         $app->dbOld->query("

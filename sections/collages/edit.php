@@ -3,10 +3,10 @@
 
 $app = App::go();
 
-if (!empty($_GET['collageid']) && is_number($_GET['collageid'])) {
+if (!empty($_GET['collageid']) && is_numeric($_GET['collageid'])) {
     $CollageID = $_GET['collageid'];
 }
-if (!is_number($CollageID)) {
+if (!is_numeric($CollageID)) {
     error(0);
 }
 

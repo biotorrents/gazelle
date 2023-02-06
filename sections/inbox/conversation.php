@@ -4,7 +4,7 @@
 $app = App::go();
 
 $ConvID = $_GET['id'];
-if (!$ConvID || !is_number($ConvID)) {
+if (!$ConvID || !is_numeric($ConvID)) {
     error(404);
 }
 

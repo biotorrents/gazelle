@@ -6,7 +6,7 @@ $app = App::go();
 authorize();
 
 $TorrentID = $_POST['torrentid'];
-if (!$TorrentID || !is_number($TorrentID)) {
+if (!$TorrentID || !is_numeric($TorrentID)) {
     error(404);
 }
 

@@ -21,7 +21,7 @@ $Escaped = db_array($_POST, array('log_message', 'admin_message', 'raw_name'));
 //If we're here from the delete torrent page instead of the reports page.
 if (!isset($Escaped['from_delete'])) {
     $Report = true;
-} elseif (!is_number($Escaped['from_delete'])) {
+} elseif (!is_numeric($Escaped['from_delete'])) {
     echo 'Hax occurred in from_delete';
 } else {
     $Report = false;
@@ -29,7 +29,7 @@ if (!isset($Escaped['from_delete'])) {
 
 $PMMessage = $_POST['uploader_pm'];
 
-if (is_number($Escaped['reportid'])) {
+if (is_numeric($Escaped['reportid'])) {
     $ReportID = $Escaped['reportid'];
 } else {
     echo 'Hax occurred in the reportid';
@@ -41,13 +41,13 @@ if ($Escaped['pm_type'] != 'Uploader') {
 }
 
 $UploaderID = (int)$Escaped['uploaderid'];
-if (!is_number($UploaderID)) {
+if (!is_numeric($UploaderID)) {
     echo 'Hax occurring on the uploaderid';
     error();
 }
 
 $Warning = (int)$Escaped['warning'];
-if (!is_number($Warning)) {
+if (!is_numeric($Warning)) {
     echo 'Hax occurring on the warning';
     error();
 }

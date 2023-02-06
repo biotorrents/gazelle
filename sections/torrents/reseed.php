@@ -6,7 +6,7 @@ $app = App::go();
 $GroupID = $_GET['groupid'];
 $TorrentID = $_GET['torrentid'];
 
-if (!is_number($GroupID) || !is_number($TorrentID)) {
+if (!is_numeric($GroupID) || !is_numeric($TorrentID)) {
     error(0);
 }
 

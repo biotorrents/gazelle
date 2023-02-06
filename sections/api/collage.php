@@ -6,7 +6,7 @@ $app = App::go();
 
 define('ARTIST_COLLAGE', 'Artists');
 
-if (empty($_GET['id']) || !is_number($_GET['id'])) {
+if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     json_die('failure', 'bad parameters');
 }
 

@@ -11,7 +11,7 @@ if (!empty($_GET['userid'])) {
     $UserID = $_GET['userid'];
     $Sneaky = $UserID !== $app->userNew->core['id'];
 
-    if (!is_number($UserID)) {
+    if (!is_numeric($UserID)) {
         error(404);
     }
 

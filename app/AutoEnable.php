@@ -166,7 +166,7 @@ EOT;
         }
 
         foreach ($IDs as $ID) {
-            if (!is_number($ID)) {
+            if (!is_numeric($ID)) {
                 error(404);
             }
         }

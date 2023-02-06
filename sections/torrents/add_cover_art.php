@@ -14,7 +14,7 @@ $Summaries = $_POST['summary'];
 $Images = $_POST['image'];
 $Time = sqltime();
 
-if (!is_number($GroupID) || !$GroupID) {
+if (!is_numeric($GroupID) || !$GroupID) {
     error(0);
 }
 

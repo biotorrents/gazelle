@@ -14,7 +14,7 @@ if (!empty($_GET['userid'])) {
     }
 
     $UserID = $_GET['userid'];
-    if (!is_number($UserID)) {
+    if (!is_numeric($UserID)) {
         error(404);
     }
 

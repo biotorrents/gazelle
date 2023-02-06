@@ -9,7 +9,7 @@ if (!empty($app->userNew->extra['DisableForums'])) {
     error(403);
 }
 
-if (!is_number($_GET['topicid'])) {
+if (!is_numeric($_GET['topicid'])) {
     error(0);
 }
 

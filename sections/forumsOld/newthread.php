@@ -12,7 +12,7 @@ Information to be expected in $_GET:
 */
 
 $ForumID = $_GET['forumid'];
-if (!is_number($ForumID)) {
+if (!is_numeric($ForumID)) {
     error(404);
 }
 

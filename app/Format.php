@@ -246,7 +246,7 @@ class Format
             }
             $Limit = $PerPage;
         } else {
-            if (!is_number($_GET['page'])) {
+            if (!is_numeric($_GET['page'])) {
                 error(0);
             }
             $Page = $_GET['page'];

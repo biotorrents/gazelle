@@ -14,7 +14,7 @@ Security::int($RequestID);
 authorize();
 
 # Validation
-if (!empty($_GET['torrentid']) && is_number($_GET['torrentid'])) {
+if (!empty($_GET['torrentid']) && is_numeric($_GET['torrentid'])) {
     $TorrentID = $_GET['torrentid'];
 } else {
     if (empty($_POST['link'])) {
@@ -27,7 +27,7 @@ if (!empty($_GET['torrentid']) && is_number($_GET['torrentid'])) {
             $TorrentID = $Matches[4];
         }
     }
-    if (!$TorrentID || !is_number($TorrentID)) {
+    if (!$TorrentID || !is_numeric($TorrentID)) {
         error(404);
     }
 }

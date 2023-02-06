@@ -86,9 +86,9 @@ function get_body($ID, $Rev)
 if (!isset($_GET['old'])
   || !isset($_GET['new'])
   || !isset($_GET['id'])
-  || !is_number($_GET['old'])
-  || !is_number($_GET['new'])
-  || !is_number($_GET['id'])
+  || !is_numeric($_GET['old'])
+  || !is_numeric($_GET['new'])
+  || !is_numeric($_GET['id'])
 ) {
     error(400);
 }

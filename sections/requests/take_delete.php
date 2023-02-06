@@ -11,7 +11,7 @@ $app = App::go();
 authorize();
 
 $RequestID = $_POST['id'];
-if (!is_number($RequestID)) {
+if (!is_numeric($RequestID)) {
     error(0);
 }
 

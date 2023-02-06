@@ -29,8 +29,6 @@ enforce_login();
 # request vars
 $post = Http::query("post");
 $files = Http::query("files");
-!d($post, $files, $_FILES);
-exit;
 
 # gazelle libraries
 $feed = new Feed();
@@ -319,8 +317,7 @@ $validate->setField("torrentId", [
 
 # validate the whole form
 $validate->allFields($data);
-!d($validate->errors);
-exit;
+#!d($validate->errors);exit;
 
 # image trickery
 ImageTools::blacklisted($data['Image']);
@@ -370,11 +367,8 @@ $numFiles = count($FileList);
 $TmpFileList = [];
 $TooLongPaths = [];
 $DirName = (isset($torrent->Dec['info']['files']) ? Text::utf8($torrent->get_name()) : '');
-check_name($DirName); // Check the folder name against the blacklist
 foreach ($FileList as $File) {
     list($Size, $Name) = $File;
-    // Check file name and extension against blacklist/whitelist
-    check_file($Type, $Name);
      // Make sure the filename is not too long
     if (mb_strlen($Name, 'UTF-8') + mb_strlen($DirName, 'UTF-8') + 1 > 255) { # MAX_FILENAME_LENGTH
         $TooLongPaths[] = "$DirName/$Name";
@@ -753,7 +747,7 @@ $app->debug["upload"]->info("ocelot updated");
 
 
 /**
- * write torrent file
+ * write the torrent file
  */
 
 $fileName = "{$app->env->torrentStore}/{$torrentId}.torrent";
@@ -802,19 +796,57 @@ if ($data["picture"]) {
 }
 
 
+/**
+ * post-processing
+ *
+ * because tracker updates and notifications can be slow,
+ * we're redirecting the user to the destination page and flushing the buffers,
+ * to make it seem like the PHP process is working in the background
+ */
 
+/*
+if ($publicTorrent) {
+   View::header('Warning'); ?>
+<h1>Warning</h1>
+<p>
+   <strong>Your torrent has been uploaded but you must re-download your torrent file from
+       <a
+           href="torrents.php?id=<?=$GroupID?>&torrentid=<?=$torrentID?>">here</a>
+       because the site modified it to make it private.</strong>
+</p>
+<?php
+ View::footer();
+} elseif ($unsourcedTorrent) {
+   View::header('Warning'); ?>
+<h1>Warning</h1>
+<p>
+   <strong>Your torrent has been uploaded but you must re-download your torrent file from
+       <a
+           href="torrents.php?id=<?=$GroupID?>&torrentid=<?=$torrentID?>">here</a>
+       because the site modified it to add a source flag.</strong>
+</p>
+<?php
+ View::footer();
+} elseif ($RequestID) {
+   header("Location: requests.php?action=takefill&requestid=$RequestID&torrentid=$torrentID&auth=".$app->userNew->extra['AuthKey']);
+} else {
+   Http::redirect("torrents.php?id=$GroupID&torrentid=$torrentID");
+}
+
+if (function_exists('fastcgi_finish_request')) {
+   fastcgi_finish_request();
+} else {
+   ignore_user_abort(true);
+   ob_flush();
+   flush();
+   ob_start(); // So we don't keep sending data to the client
+}
+*/
 
 
 
 /** TODO: START HERE */
 exit;
-
-
-
-//******************************************************************************//
-//--------------- Start database stuff -----------------------------------------//
-
-
 
 // Add to shop freeleeches if necessary
 if ($data["freeleechReason"] === 3) {
@@ -843,53 +875,7 @@ if ($data["freeleechReason"] === 3) {
 }
 
 
-
-
-
-
-/**
- * Post-processing
- *
- * Because tracker updates and notifications can be slow, we're redirecting the user to the destination page
- * and flushing the buffers to make it seem like the PHP process is working in the background.
- */
-
-if ($publicTorrent) {
-    View::header('Warning'); ?>
-<h1>Warning</h1>
-<p>
-    <strong>Your torrent has been uploaded but you must re-download your torrent file from
-        <a
-            href="torrents.php?id=<?=$GroupID?>&torrentid=<?=$torrentID?>">here</a>
-        because the site modified it to make it private.</strong>
-</p>
-<?php
-  View::footer();
-} elseif ($unsourcedTorrent) {
-    View::header('Warning'); ?>
-<h1>Warning</h1>
-<p>
-    <strong>Your torrent has been uploaded but you must re-download your torrent file from
-        <a
-            href="torrents.php?id=<?=$GroupID?>&torrentid=<?=$torrentID?>">here</a>
-        because the site modified it to add a source flag.</strong>
-</p>
-<?php
-  View::footer();
-} elseif ($RequestID) {
-    header("Location: requests.php?action=takefill&requestid=$RequestID&torrentid=$torrentID&auth=".$app->userNew->extra['AuthKey']);
-} else {
-    Http::redirect("torrents.php?id=$GroupID&torrentid=$torrentID");
-}
-
-if (function_exists('fastcgi_finish_request')) {
-    fastcgi_finish_request();
-} else {
-    ignore_user_abort(true);
-    ob_flush();
-    flush();
-    ob_start(); // So we don't keep sending data to the client
-}
+/** ALL THE STUFF AFTER POST-PROCESSING */
 
 
 /**

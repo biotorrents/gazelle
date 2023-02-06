@@ -4,7 +4,7 @@ $app = App::go();
 
 enforce_login();
 
-if (!$_GET['postid'] || !is_number($_GET['postid'])) {
+if (!$_GET['postid'] || !is_numeric($_GET['postid'])) {
     error(0);
 }
 

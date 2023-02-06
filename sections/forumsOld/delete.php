@@ -4,7 +4,7 @@ $app = App::go();
 
 authorize();
 // Quick SQL injection check
-if (!isset($_GET['postid']) || !is_number($_GET['postid'])) {
+if (!isset($_GET['postid']) || !is_numeric($_GET['postid'])) {
     error(0);
 }
 $PostID = $_GET['postid'];

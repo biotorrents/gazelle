@@ -10,7 +10,7 @@ if (!check_perms('admin_whitelist')) {
 }
 
 if ($_POST['submit'] == 'Delete') {
-    if (!is_number($_POST['id']) || $_POST['id'] == '') {
+    if (!is_numeric($_POST['id']) || $_POST['id'] == '') {
         error('1');
     }
 
@@ -34,7 +34,7 @@ if ($_POST['submit'] == 'Delete') {
     $PeerID = db_string($_POST['peer_id']);
 
     if ($_POST['submit'] == 'Edit') { //Edit
-        if (empty($_POST['id']) || !is_number($_POST['id'])) {
+        if (empty($_POST['id']) || !is_numeric($_POST['id'])) {
             error('3');
         } else {
             $app->dbOld->query('

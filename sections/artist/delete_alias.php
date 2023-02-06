@@ -9,7 +9,7 @@ if (!check_perms('torrents_edit')) {
 
 $AliasID = $_GET['aliasid'];
 
-if (!is_number($AliasID)) {
+if (!is_numeric($AliasID)) {
     error(0);
 }
 

@@ -19,7 +19,7 @@ Things to expect in $_GET:
 
 // Check for lame SQL injection attempts
 $ForumID = $_GET['forumid'];
-if (!is_number($ForumID)) {
+if (!is_numeric($ForumID)) {
     echo json_encode(array('status' => 'failure'));
     error();
 }

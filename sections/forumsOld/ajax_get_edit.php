@@ -6,13 +6,13 @@ if (!check_perms('site_admin_forums')) {
     error(403);
 }
 
-if (empty($_GET['postid']) || !is_number($_GET['postid'])) {
+if (empty($_GET['postid']) || !is_numeric($_GET['postid'])) {
     error();
 }
 
 $PostID = $_GET['postid'];
 
-if (!isset($_GET['depth']) || !is_number($_GET['depth'])) {
+if (!isset($_GET['depth']) || !is_numeric($_GET['depth'])) {
     error();
 }
 

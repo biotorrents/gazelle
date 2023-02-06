@@ -12,7 +12,7 @@ if (!Bookmarks::validateType($_GET['type'])) {
 $Type = $_GET['type'];
 list($Table, $Col) = Bookmarks::bookmark_schema($Type);
 
-if (!is_number($_GET['id'])) {
+if (!is_numeric($_GET['id'])) {
     error(0);
 }
 $PageID = $_GET['id'];

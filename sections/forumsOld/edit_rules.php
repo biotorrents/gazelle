@@ -9,13 +9,13 @@ if (!check_perms('site_moderate_forums')) {
 }
 
 $ForumID = $_GET['forumid'];
-if (!is_number($ForumID)) {
+if (!is_numeric($ForumID)) {
     error(404);
 }
 
 if (!empty($_POST['add']) || (!empty($_POST['del']))) {
     if (!empty($_POST['add'])) {
-        if (is_number($_POST['new_thread'])) {
+        if (is_numeric($_POST['new_thread'])) {
             $app->dbOld->query("
             INSERT INTO forums_specific_rules (ForumID, ThreadID)
             VALUES ($ForumID, ".$_POST['new_thread'].')');
@@ -23,7 +23,7 @@ if (!empty($_POST['add']) || (!empty($_POST['del']))) {
     }
 
     if (!empty($_POST['del'])) {
-        if (is_number($_POST['threadid'])) {
+        if (is_numeric($_POST['threadid'])) {
             $app->dbOld->query("
             DELETE FROM forums_specific_rules
             WHERE ForumID = $ForumID

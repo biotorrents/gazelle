@@ -16,7 +16,7 @@ $Feed = new Feed();
 $Type = $_GET['type'];
 list($Table, $Col) = Bookmarks::bookmark_schema($Type);
 
-if (!is_number($_GET['id'])) {
+if (!is_numeric($_GET['id'])) {
     error(0);
 }
 

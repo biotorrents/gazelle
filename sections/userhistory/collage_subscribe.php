@@ -5,7 +5,7 @@ $app = App::go();
 // perform the back end of subscribing to collages
 authorize();
 
-if (!is_number($_GET['collageid'])) {
+if (!is_numeric($_GET['collageid'])) {
     error(0);
 }
 

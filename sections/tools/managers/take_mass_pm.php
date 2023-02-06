@@ -12,7 +12,7 @@ if (!check_perms("users_mod")) {
     error(403);
 }
 
-if (!is_number($_POST['class_id']) || empty($_POST['subject']) || empty($_POST['body'])) {
+if (!is_numeric($_POST['class_id']) || empty($_POST['subject']) || empty($_POST['body'])) {
     error("Error in message form");
 }
 

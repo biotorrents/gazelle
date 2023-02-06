@@ -19,7 +19,7 @@ the front page.
 $ENV = ENV::go();
 
 // Quick SQL injection check
-if (!is_number($_POST['threadid'])) {
+if (!is_numeric($_POST['threadid'])) {
     error(404);
 }
 if ($_POST['title'] === '') {

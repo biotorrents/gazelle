@@ -19,7 +19,7 @@ It will be accompanied with:
 \*********************************************************************/
 
 // Quick SQL injection check
-if (!$_POST['post'] || !is_number($_POST['post']) || !is_number($_POST['key'])) {
+if (!$_POST['post'] || !is_numeric($_POST['post']) || !is_numeric($_POST['key'])) {
     error(0, true);
 }
 // End injection check

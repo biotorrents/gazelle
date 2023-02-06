@@ -17,7 +17,7 @@ if ($FeaturedAlbum === false) {
     $FeaturedAlbum = $app->dbOld->next_record();
     $app->cacheOld->cache_value('featured_album', $FeaturedAlbum, 0);
 }
-if (is_number($FeaturedAlbum['GroupID'])) {
+if (is_numeric($FeaturedAlbum['GroupID'])) {
     $Artists = Artists::get_artist($FeaturedAlbum['GroupID']); ?>
     <div class="box">
       <div class="head colhead_dark"><strong>Featured Album</strong></div>

@@ -4,7 +4,7 @@
 
 $app = App::go();
 
-if (!isset($_GET['userid']) || !is_number($_GET['userid'])) {
+if (!isset($_GET['userid']) || !is_numeric($_GET['userid'])) {
     json_die('failure');
 }
 

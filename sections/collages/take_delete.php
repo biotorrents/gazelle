@@ -6,7 +6,7 @@ $app = App::go();
 authorize();
 
 $CollageID = $_POST['collageid'];
-if (!is_number($CollageID) || !$CollageID) {
+if (!is_numeric($CollageID) || !$CollageID) {
     error(404);
 }
 

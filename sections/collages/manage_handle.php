@@ -7,7 +7,7 @@ $app = App::go();
 authorize();
 
 $CollageID = $_POST['collageid'];
-if (!is_number($CollageID)) {
+if (!is_numeric($CollageID)) {
     error(404);
 }
 
@@ -22,7 +22,7 @@ if ($CategoryID === '0' && $UserID != $app->userNew->core['id'] && !check_perms(
 
 
 $GroupID = $_POST['groupid'];
-if (!is_number($GroupID)) {
+if (!is_numeric($GroupID)) {
     error(404);
 }
 
@@ -45,7 +45,7 @@ if ($_POST['submit'] === 'Remove') {
     if (is_array($Series)) {
         $SQL = [];
         foreach ($Series as $Sort => $GroupID) {
-            if (is_number($Sort) && is_number($GroupID)) {
+            if (is_numeric($Sort) && is_numeric($GroupID)) {
                 $Sort = ($Sort + 1) * 10;
                 $SQL[] = sprintf('(%d, %d, %d)', $GroupID, $Sort, $CollageID);
             }
@@ -63,7 +63,7 @@ if ($_POST['submit'] === 'Remove') {
     }
 } else {
     $Sort = $_POST['sort'];
-    if (!is_number($Sort)) {
+    if (!is_numeric($Sort)) {
         error(404);
     }
     $app->dbOld->query("

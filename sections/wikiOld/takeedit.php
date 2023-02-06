@@ -6,7 +6,7 @@ $app = App::go();
 
 authorize();
 
-if (!isset($_POST['id']) || !is_number($_POST['id'])) {
+if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {
     error(0);
 }
 
@@ -35,11 +35,11 @@ if (check_perms('admin_manage_wiki')) {
     $Read=$_POST['minclassread'];
     $Edit=$_POST['minclassedit'];
 
-    if (!is_number($Read)) {
+    if (!is_numeric($Read)) {
         error(0); // int?
     }
 
-    if (!is_number($Edit)) {
+    if (!is_numeric($Edit)) {
         error(0);
     }
 

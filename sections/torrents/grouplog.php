@@ -4,7 +4,7 @@
 $app = App::go();
 
 $GroupID = $_GET['groupid'];
-if (!is_number($GroupID)) {
+if (!is_numeric($GroupID)) {
     error(404);
 }
 

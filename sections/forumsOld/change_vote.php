@@ -9,7 +9,7 @@ authorize();
 $ThreadID = $_GET['threadid'];
 $NewVote = $_GET['vote'];
 
-if (is_number($ThreadID) && is_number($NewVote)) {
+if (is_numeric($ThreadID) && is_numeric($NewVote)) {
     if (!check_perms('site_moderate_forums')) {
         $app->dbOld->query("
         SELECT

@@ -18,7 +18,7 @@ include(serverRoot . '/sections/reports/array.php');
 // Header
 View::header('Reports', 'reports');
 
-if (isset($_GET['id']) && $_GET['id'] && is_number($_GET['id'])) {
+if (isset($_GET['id']) && $_GET['id'] && is_numeric($_GET['id'])) {
     $View = 'Single report';
     $Where = 'r.ID = ' . $_GET['id'];
 } elseif (empty($_GET['view'])) {

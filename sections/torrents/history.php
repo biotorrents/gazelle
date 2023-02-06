@@ -3,7 +3,7 @@
 
 $app = App::go();
 
-if (!isset($_GET['groupid']) || !is_number($_GET['groupid'])) {
+if (!isset($_GET['groupid']) || !is_numeric($_GET['groupid'])) {
     error(0);
 }
 $GroupID = (int)$_GET['groupid'];

@@ -8,7 +8,7 @@ if (!check_perms('admin_manage_wiki')) {
     error(403);
 }
 
-if (!isset($_GET['id']) || !is_number($_GET['id'])) {
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     error(404);
 }
 

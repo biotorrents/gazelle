@@ -5,7 +5,7 @@ $app = App::go();
 
 //todo: restrict to viewing below class, username in h2
 if (isset($_GET['userid']) && check_perms('users_view_ips') && check_perms('users_logout')) {
-    if (!is_number($_GET['userid'])) {
+    if (!is_numeric($_GET['userid'])) {
         error(404);
     }
     $UserID = $_GET['userid'];

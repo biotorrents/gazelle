@@ -19,7 +19,7 @@ $Title = db_string(trim($_POST['title']));
 $OldCategoryID = $_POST['oldcategoryid'];
 $NewCategoryID = $_POST['newcategoryid'];
 
-if (!is_number($OldGroupID) || !is_number($TorrentID) || !$OldGroupID || !$TorrentID || empty($Title)) {
+if (!is_numeric($OldGroupID) || !is_numeric($TorrentID) || !$OldGroupID || !$TorrentID || empty($Title)) {
     error(0);
 }
 

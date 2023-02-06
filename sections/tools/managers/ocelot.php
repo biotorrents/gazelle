@@ -24,7 +24,7 @@ switch ($Type) {
         $Cond = $UserIDs = [];
         foreach ($Tokens as $Key => $Token) {
             list($UserID, $TorrentID) = explode(':', $Token);
-            if (!is_number($UserID) || !is_number($TorrentID)) {
+            if (!is_numeric($UserID) || !is_numeric($TorrentID)) {
                 continue;
             }
             $Cond[] = "(UserID = $UserID AND TorrentID = $TorrentID)";
@@ -43,7 +43,7 @@ switch ($Type) {
     } else {
         $TorrentID = $_REQUEST['torrentid'];
         $UserID = $_REQUEST['userid'];
-        if (!is_number($TorrentID) || !is_number($UserID)) {
+        if (!is_numeric($TorrentID) || !is_numeric($UserID)) {
             error(403);
         }
         $app->dbOld->query("

@@ -13,7 +13,7 @@ ID of the artist, and must be set.
 $app = App::go();
 
 $ArtistID = $_GET['artistid'];
-if (!is_number($ArtistID)) {
+if (!is_numeric($ArtistID)) {
     error(0);
 }
 

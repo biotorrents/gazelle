@@ -7,7 +7,7 @@ $app = App::go();
 if (!check_perms('admin_manage_permissions')) {
     error(403);
 }
-if (!isset($_REQUEST['userid']) || !is_number($_REQUEST['userid'])) {
+if (!isset($_REQUEST['userid']) || !is_numeric($_REQUEST['userid'])) {
     error(404);
 }
 
@@ -35,7 +35,7 @@ if (isset($_POST['action'])) {
             $Delta[$Perm] = $Setting;
         }
     }
-    if (!is_number($_POST['maxcollages']) && !empty($_POST['maxcollages'])) {
+    if (!is_numeric($_POST['maxcollages']) && !empty($_POST['maxcollages'])) {
         error("Please enter a valid number of extra personal collages");
     }
     $Delta['MaxCollages'] = $_POST['maxcollages'];

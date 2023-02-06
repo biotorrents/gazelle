@@ -16,10 +16,10 @@ $NewArtistID = (int)$_POST['newartistid'];
 $NewArtistName = $_POST['newartistname'];
 
 
-if (!is_number($ArtistID) || !$ArtistID) {
+if (!is_numeric($ArtistID) || !$ArtistID) {
     error('Please select a valid artist to change.');
 }
-if (empty($NewArtistName) && (!$NewArtistID || !is_number($NewArtistID))) {
+if (empty($NewArtistName) && (!$NewArtistID || !is_numeric($NewArtistID))) {
     error('Please enter a valid artist ID number or a valid artist name.');
 }
 

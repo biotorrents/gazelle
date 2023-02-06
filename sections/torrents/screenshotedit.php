@@ -8,7 +8,7 @@ $app = App::go();
 authorize();
 
 $GroupID = $_POST['groupid'];
-if (!$GroupID || !is_number($GroupID)) {
+if (!$GroupID || !is_numeric($GroupID)) {
     error(404);
 }
 

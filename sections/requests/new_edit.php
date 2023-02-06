@@ -15,7 +15,7 @@ $NewRequest = $_GET['action'] === 'new';
 
 if (!$NewRequest) {
     $RequestID = $_GET['id'];
-    if (!is_number($RequestID)) {
+    if (!is_numeric($RequestID)) {
         error(404);
     }
 }
@@ -62,7 +62,7 @@ if (!$NewRequest) {
     }
 }
 
-  if ($NewRequest && !empty($_GET['artistid']) && is_number($_GET['artistid'])) {
+  if ($NewRequest && !empty($_GET['artistid']) && is_numeric($_GET['artistid'])) {
       $app->dbOld->query("
         SELECT Name
         FROM artists_group
@@ -72,7 +72,7 @@ if (!$NewRequest) {
       $ArtistForm = array(
       1 => array(array('name' => trim($ArtistName))),
     );
-  } elseif ($NewRequest && !empty($_GET['groupid']) && is_number($_GET['groupid'])) {
+  } elseif ($NewRequest && !empty($_GET['groupid']) && is_numeric($_GET['groupid'])) {
       $ArtistForm = Artists::get_artist($_GET['groupid']);
       $app->dbOld->query("
         SELECT

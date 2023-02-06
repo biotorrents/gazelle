@@ -10,7 +10,7 @@ function link_users($UserID, $TargetID)
         error(403);
     }
 
-    if (!is_number($UserID) || !is_number($TargetID)) {
+    if (!is_numeric($UserID) || !is_numeric($TargetID)) {
         error(403);
     }
 
@@ -94,7 +94,7 @@ function unlink_user($UserID)
         error(403);
     }
 
-    if (!is_number($UserID)) {
+    if (!is_numeric($UserID)) {
         error(403);
     }
 
@@ -127,7 +127,7 @@ function delete_dupegroup($GroupID)
         error(403);
     }
 
-    if (!is_number($GroupID)) {
+    if (!is_numeric($GroupID)) {
         error(403);
     }
 
@@ -143,7 +143,7 @@ function dupe_comments($GroupID, $Comments)
         error(403);
     }
 
-    if (!is_number($GroupID)) {
+    if (!is_numeric($GroupID)) {
         error(403);
     }
 
@@ -182,8 +182,8 @@ function user_dupes_table($UserID)
         error(403);
     }
 
-    # todo: Strict equality in is_number() breaks admin view
-    if (!is_number($UserID)) {
+    # todo: Strict equality in is_numeric() breaks admin view
+    if (!is_numeric($UserID)) {
         error(403);
     }
 

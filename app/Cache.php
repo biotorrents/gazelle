@@ -403,13 +403,13 @@ class Cache extends Memcache
             }
 
             if ($value === '+1') {
-                if (!is_number($updateArray[$key])) {
+                if (!is_numeric($updateArray[$key])) {
                     trigger_error("Tried to increment non-number {$key} for cache {$this->memcacheDBKey}");
                 }
 
                 $updateArray[$key]++; // Increment value
             } elseif ($value === '-1') {
-                if (!is_number($updateArray[$key])) {
+                if (!is_numeric($updateArray[$key])) {
                     trigger_error("Tried to decrement non-number {$key} for cache {$this->memcacheDBKey}");
                 }
 
@@ -450,7 +450,7 @@ class Cache extends Memcache
                 trigger_error("Bad transaction key {$key} for cache {$this->memcacheDBKey}");
             }
 
-            if (!is_number($value)) {
+            if (!is_numeric($value)) {
                 trigger_error("Tried to increment with non-number {$key} for cache {$this->memcacheDBKey}");
             }
             $updateArray[$key] += $value; // Increment value

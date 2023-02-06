@@ -98,7 +98,7 @@ View::header(
     'vendor/easymde.min'
 );
 
-if (empty($Properties) && !empty($_GET['groupid']) && is_number($_GET['groupid'])) {
+if (empty($Properties) && !empty($_GET['groupid']) && is_numeric($_GET['groupid'])) {
     $GroupID = $_GET['groupid'];
     $app->dbOld->prepared_query("
       SELECT
@@ -140,10 +140,10 @@ if (empty($Properties) && !empty($_GET['groupid']) && is_number($_GET['groupid']
         unset($_GET['groupid']);
     }
 
-    if (!empty($_GET['requestid']) && is_number($_GET['requestid'])) {
+    if (!empty($_GET['requestid']) && is_numeric($_GET['requestid'])) {
         $Properties['RequestID'] = $_GET['requestid'];
     }
-} elseif (empty($Properties) && isset($_GET['requestid']) && is_number($_GET['requestid'])) {
+} elseif (empty($Properties) && isset($_GET['requestid']) && is_numeric($_GET['requestid'])) {
     $RequestID = $_GET['requestid'];
     $app->dbOld->query("
     SELECT

@@ -87,7 +87,7 @@ class BENCODE2
     // Decode an element based on the type. The type is really just an indicator.
     public function decode($Type, $Key)
     {
-        if (is_number($Type)) { // Element is a string
+        if (is_numeric($Type)) { // Element is a string
             // Get length of string
             $StrLen = $Type;
             while ($this->Str[$this->Pos + 1] !== ':') {

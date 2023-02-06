@@ -9,13 +9,13 @@ $app = App::go();
 
 
 $ArtistID = $_GET['id'];
-if (!is_number($ArtistID)) {
+if (!is_numeric($ArtistID)) {
     error(0);
 }
 
 if (!empty($_GET['revisionid'])) { // If they're viewing an old revision
     $RevisionID = $_GET['revisionid'];
-    if (!is_number($RevisionID)) {
+    if (!is_numeric($RevisionID)) {
         error(0);
     }
     $Data = $app->cacheOld->get_value("artist_{$ArtistID}_revision_$RevisionID", true);

@@ -8,7 +8,7 @@ $Cost = 2000;
 
 if (isset($_POST['torrent'])) {
     // Validation
-    if (!empty($_GET['torrentid']) && is_number($_GET['torrentid'])) {
+    if (!empty($_GET['torrentid']) && is_numeric($_GET['torrentid'])) {
         $TorrentID = $_GET['torrentid'];
     } else {
         if (empty($_POST['torrent'])) {
@@ -22,7 +22,7 @@ if (isset($_POST['torrent'])) {
             }
         }
 
-        if (!$TorrentID || !is_number($TorrentID)) {
+        if (!$TorrentID || !is_numeric($TorrentID)) {
             error(404);
         }
     }

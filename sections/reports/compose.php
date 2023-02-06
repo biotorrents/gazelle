@@ -14,7 +14,7 @@ if (empty($Return)) {
     }
 }
 
-if (!$ToID || !is_number($ToID)) {
+if (!$ToID || !is_numeric($ToID)) {
     error(404);
 }
 
@@ -22,7 +22,7 @@ $ReportID = $_GET['reportid'];
 $Type = $_GET['type'];
 $ThingID = $_GET['thingid'];
 
-if (!$ReportID || !is_number($ReportID) || !$ThingID || !is_number($ThingID) || !$Type) {
+if (!$ReportID || !is_numeric($ReportID) || !$ThingID || !is_numeric($ThingID) || !$Type) {
     error(403);
 }
 

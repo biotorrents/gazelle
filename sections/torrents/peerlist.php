@@ -2,12 +2,12 @@
 
 $app = App::go();
 
-if (!isset($_GET['torrentid']) || !is_number($_GET['torrentid'])) {
+if (!isset($_GET['torrentid']) || !is_numeric($_GET['torrentid'])) {
     error(404);
 }
 $TorrentID = $_GET['torrentid'];
 
-if (!empty($_GET['page']) && is_number($_GET['page'])) {
+if (!empty($_GET['page']) && is_numeric($_GET['page'])) {
     $Page = $_GET['page'];
     $Limit = (string)(($Page - 1) * 100) .', 100';
 } else {

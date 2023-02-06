@@ -11,10 +11,10 @@ $GroupID = $_POST['groupid'];
 $OldGroupID = $GroupID;
 $NewGroupID = db_string($_POST['targetgroupid']);
 
-if (!$GroupID || !is_number($GroupID)) {
+if (!$GroupID || !is_numeric($GroupID)) {
     error(404);
 }
-if (!$NewGroupID || !is_number($NewGroupID)) {
+if (!$NewGroupID || !is_numeric($NewGroupID)) {
     error(404);
 }
 if ($NewGroupID == $GroupID) {

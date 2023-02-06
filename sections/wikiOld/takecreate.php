@@ -36,11 +36,11 @@ if (check_perms('admin_manage_wiki')) {
     $Read = $_POST['minclassread'];
     $Edit = $_POST['minclassedit'];
 
-    if (!is_number($Read)) {
+    if (!is_numeric($Read)) {
         error(0); // int?
     }
 
-    if (!is_number($Edit)) {
+    if (!is_numeric($Edit)) {
         error(0);
     }
 

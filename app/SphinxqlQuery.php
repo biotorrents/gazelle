@@ -76,7 +76,7 @@ class SphinxqlQuery
         $Filters = [];
         if (is_array($Values)) {
             foreach ($Values as $Value) {
-                if (!is_number($Value)) {
+                if (!is_numeric($Value)) {
                     $this->error("Filters only support numeric values.");
                     return $this;
                 }
@@ -87,7 +87,7 @@ class SphinxqlQuery
                 $Filters[] = "$Attribute IN (".implode(",", $Values).")";
             }
         } else {
-            if (!is_number($Values)) {
+            if (!is_numeric($Values)) {
                 $this->error("Filters only support numeric values.");
                 return $this;
             }
@@ -111,7 +111,7 @@ class SphinxqlQuery
      */
     public function where_lt($Attribute, $Value, $Inclusive = false)
     {
-        if (empty($Attribute) || !isset($Value) || !is_number($Value)) {
+        if (empty($Attribute) || !isset($Value) || !is_numeric($Value)) {
             $this->error("Attribute name is required and only numeric filters are supported.");
             return $this;
         }
@@ -129,7 +129,7 @@ class SphinxqlQuery
      */
     public function where_gt($Attribute, $Value, $Inclusive = false)
     {
-        if (empty($Attribute) || !isset($Value) || !is_number($Value)) {
+        if (empty($Attribute) || !isset($Value) || !is_numeric($Value)) {
             $this->error("Attribute name is required and only numeric filters are supported.");
             return $this;
         }
@@ -146,7 +146,7 @@ class SphinxqlQuery
      */
     public function where_between($Attribute, $Values)
     {
-        if (empty($Attribute) || empty($Values) || count($Values ?? []) != 2 || !is_number($Values[0]) || !is_number($Values[1])) {
+        if (empty($Attribute) || empty($Values) || count($Values ?? []) != 2 || !is_numeric($Values[0]) || !is_numeric($Values[1])) {
             $this->error("Filter range requires array of two numerical boundaries as values.");
             return $this;
         }

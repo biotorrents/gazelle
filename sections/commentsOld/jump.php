@@ -1,6 +1,6 @@
 <?php
 
-if (!isset($_REQUEST['postid']) || !is_number($_REQUEST['postid'])) {
+if (!isset($_REQUEST['postid']) || !is_numeric($_REQUEST['postid'])) {
     error(0);
 }
 

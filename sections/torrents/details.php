@@ -116,7 +116,7 @@ define('MAX_PERS_COLLAGES', 3); // How many personal collages should be shown by
 define('MAX_COLLAGES', 5); // How many normal collages should be shown by default
 
 $GroupID = ceil($_GET['id']);
-if (!empty($_GET['revisionid']) && is_number($_GET['revisionid'])) {
+if (!empty($_GET['revisionid']) && is_numeric($_GET['revisionid'])) {
     $RevisionID = $_GET['revisionid'];
 } else {
     $RevisionID = 0;

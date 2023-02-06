@@ -6,7 +6,7 @@ if (!check_perms('site_moderate_forums')) {
     error(403);
 }
 
-if (!isset($_POST['topicid'], $_POST['body']) || !is_number($_POST['topicid']) || $_POST['body'] == '') {
+if (!isset($_POST['topicid'], $_POST['body']) || !is_numeric($_POST['topicid']) || $_POST['body'] == '') {
     error(404);
 }
 

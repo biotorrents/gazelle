@@ -14,12 +14,12 @@ if (!empty($app->userNew->extra['DisablePM']) && !isset($StaffIDs[$_POST['toid']
 }
 
 
-if (isset($_POST['convid']) && is_number($_POST['convid'])) {
+if (isset($_POST['convid']) && is_numeric($_POST['convid'])) {
     $ConvID = $_POST['convid'];
     $Subject = '';
     $ToID = explode(',', $_POST['toid']);
     foreach ($ToID as $TID) {
-        if (!is_number($TID)) {
+        if (!is_numeric($TID)) {
             $Err = 'A recipient does not exist.';
         }
     }
@@ -33,7 +33,7 @@ if (isset($_POST['convid']) && is_number($_POST['convid'])) {
     }
 } else {
     $ConvID = '';
-    if (!is_number($_POST['toid'])) {
+    if (!is_numeric($_POST['toid'])) {
         $Err = 'This recipient does not exist.';
     } else {
         $ToID = $_POST['toid'];

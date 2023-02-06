@@ -12,7 +12,7 @@ $MinimumVote = 20 * 1024 * 1024;
  * This is the page that displays the request to the end user after being created.
  */
 
-if (empty($_GET['id']) || !is_number($_GET['id'])) {
+if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     json_die("failure");
 }
 

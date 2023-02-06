@@ -116,7 +116,7 @@ function reset_image($UserID, $Type, $AdminComment, $PrivMessage)
 // Enforce avatar rules
 if (isset($_GET['type']) && isset($_GET['userid'])) {
     $ValidTypes = array('avatar', 'avatar2', 'donoricon');
-    if (!is_number($_GET['userid']) || !in_array($_GET['type'], $ValidTypes)) {
+    if (!is_numeric($_GET['userid']) || !in_array($_GET['type'], $ValidTypes)) {
         error();
     }
 

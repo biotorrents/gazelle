@@ -59,7 +59,7 @@ if (!empty($_GET['user'])) {
 if (isset($_GET['forums']) && is_array($_GET['forums'])) {
     $ForumArray = [];
     foreach ($_GET['forums'] as $Forum) {
-        if (is_number($Forum)) {
+        if (is_numeric($Forum)) {
             $ForumArray[] = $Forum;
         }
     }
@@ -69,7 +69,7 @@ if (isset($_GET['forums']) && is_array($_GET['forums'])) {
 }
 
 // Searching for posts in a specific thread
-if (!empty($_GET['threadid']) && is_number($_GET['threadid'])) {
+if (!empty($_GET['threadid']) && is_numeric($_GET['threadid'])) {
     $ThreadID = $_GET['threadid'];
     $Type = 'body';
     $SQL = "

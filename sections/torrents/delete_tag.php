@@ -11,7 +11,7 @@ if (!empty($app->userNew->extra['DisableTagging']) || !check_perms('site_delete_
 $TagID = $_GET['tagid'];
 $GroupID = $_GET['groupid'];
 
-if (!is_number($TagID) || !is_number($GroupID)) {
+if (!is_numeric($TagID) || !is_numeric($GroupID)) {
     error(404);
 }
 

@@ -25,11 +25,11 @@ function header_link($SortKey, $DefaultWay = 'DESC')
 }
 
 $UserID = $_GET['userid'];
-if (!is_number($UserID)) {
+if (!is_numeric($UserID)) {
     error(0);
 }
 
-if (!empty($_GET['page']) && is_number($_GET['page']) && $_GET['page'] > 0) {
+if (!empty($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0) {
     $Page = $_GET['page'];
     $Limit = ($Page - 1) * TORRENTS_PER_PAGE.', '.TORRENTS_PER_PAGE;
 } else {
@@ -94,7 +94,7 @@ if (isset($_GET['censored'])
 if (!empty($_GET['categories'])) {
     $Cats = [];
     foreach (array_keys($_GET['categories']) as $Cat) {
-        if (!is_number($Cat)) {
+        if (!is_numeric($Cat)) {
             error(0);
         }
         $Cats[] = "tg.`category_id` = '".db_string($Cat)."'";

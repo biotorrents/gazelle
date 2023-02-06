@@ -18,7 +18,7 @@ $app = App::go();
  */
 
 // User ID
-if (isset($_GET['id']) && is_number($_GET['id'])) {
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $UserID = (int)$_GET['id'];
     $UserInfo = User::user_info($UserID);
     $Username = $UserInfo['Username'];
