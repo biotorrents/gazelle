@@ -452,7 +452,7 @@ $data["mirrors"] = array_unique($data["mirrors"]);
  */
 
 # key shorthand variables
-$categoryId = $data["categotyId"];
+$categoryId = $data["categoryId"];
 $categoryName = $app->env->CATS->{$categoryId}->Name;
 
 $groupId = $data["groupId"] ?? null;
@@ -494,8 +494,9 @@ if (!$groupId) {
     foreach ($data["creatorList"] as $key => $creator) {
         $query = "select artistId, name from artists_group where name = ?";
         $row = $app->dbNew->row($query, [$creator]);
+        #!d($row);
 
-        if ($row && !strcasecmp($creator["name"], $row["name"])) {
+        if ($row && !strcasecmp($creator, $row["name"])) {
             $data["creatorList"][$key] = [ "id" => $row["artistId"], "name" => $row["name"] ];
         }
     }
@@ -505,7 +506,7 @@ if (!$groupId) {
 if (!$groupId) {
     foreach ($data["creatorList"] as $creator) {
         $query = "insert ignore into artists_group (name) values (?)";
-        $app->dbNew->do($query, [$creator]);
+        $app->dbNew->do($query, [ $creator["name"] ]);
 
         $app->cacheOld->increment("stats_artist_count");
     }
@@ -572,6 +573,7 @@ if ($groupId) {
 }
 
 # description if not noRevision
+$noRevision ??= null;
 if (!$noRevision) {
     $query = "
         insert into wiki_torrents (pageId, body, userId, summary, time, image)
@@ -744,7 +746,7 @@ if ($app->env->FEATURE_BIOPHP && !empty($data['Seqhash'])) {
  */
 
 Tracker::update_tracker("add_torrent", [
-   "id" => $torrentID,
+   "id" => $torrentId,
    "info_hash" => rawurlencode($infoHash),
    "freetorrent" => $data["freeleechType"]
  ]);
@@ -752,17 +754,22 @@ Tracker::update_tracker("add_torrent", [
 # prevent deletion of this torrent until the rest of the upload process is done
 # (expire the key after 10 minutes to prevent locking it for too long in case there's a fatal error below)
 $app->cacheOld->cache_value("torrent_{$torrentId}_lock", true, 600);
-$app->debug["upload"]->info("ocelot updated");
+$app->debug["messages"]->info("ocelot updated");
 
 
 /**
  * write the torrent file
  */
 
+# coerce type
+$groupId = intval($groupId);
+
+# write to disk
 $fileName = "{$app->env->torrentStore}/{$torrentId}.torrent";
 file_put_contents($fileName, $torrent->encode());
 chmod($fileName, 0400);
 
+# update site logs
 $torrentLogMessage = "Torrent {$torrentId} - {$data["title"]} - "
     . Text::float($torrentData["dataSize"] / (1024 * 1024), 2)
     ." MB - uploaded by {$app->userNew->core["username"]}";
@@ -771,8 +778,9 @@ Misc::write_log($torrentLogMessage);
 $groupLogMessage = "uploaded " . Text::float($torrentData["dataSize"] / (1024 * 1024), 2) . " MB";
 Torrents::write_group_log($groupId, $torrentId, $app->userNew->core["id"], $groupLogMessage, 0);
 
+# update hash
 Torrents::update_hash($groupId);
-$app->debug["upload"]->info("manticore updated");
+$app->debug["messages"]->info("manticore updated");
 
 
 /**
@@ -861,19 +869,20 @@ if (function_exists('fastcgi_finish_request')) {
 $announceMessage = "[{$categoryName}]"
     . " " . Illuminate\Support\Str::limit($data["title"]) . " "
     . "[ " . Torrents::torrent_info($data, true, false, false) . " ]"
-    . " - " . trim($data["tagList"])
-    . " - " . site_url() . "torrents.php?id={$groupId}&torrentId={$torrentId}"
-    . " - " . site_url() . "torrents.php?action=download&id={$torrentId}";
+    . " - " . trim(implode(", ", $data["tagList"]))
+    . " - " . site_url() . "/torrents.php?id={$groupId}&torrentId={$torrentId}"
+    . " - " . site_url() . "/torrents.php?action=download&id={$torrentId}";
 
-
+/*
 # announce on irc
 # ENT_QUOTES is needed to decode single quotes/apostrophes
 Announce::irc($announceMessage);
-$app->debug["upload"]->info("announced on irc");
+$app->debug["messages"]->info("announced on irc");
+*/
 
 # announce on slack
 Announce::slack($announceMessage);
-$app->debug["upload"]->info("announced on slack");
+$app->debug["messages"]->info("announced on slack");
 
 # announce on rss
 $item = $feed->item(
@@ -882,7 +891,7 @@ $item = $feed->item(
     "/torrents.php?action=download&authkey=[[AUTHKEY]]&torrent_pass=[[PASSKEY]]&id={$torrentId}",
     $data["anonymous"] ? "Anonymous" : $app->userNew->core["username"],
     "/torrents.php?id={$groupId}",
-    trim($data["tagList"])
+    trim(implode(", ", $data["tagList"]))
 );
 
 
@@ -896,9 +905,7 @@ exit;
 
 
 
-
 /** ALL THE STUFF AFTER POST-PROCESSING */
-
 
 
 /**
@@ -993,7 +1000,7 @@ if ($data['Year']) {
 
 $SQL .= " AND UserID != '".$app->userNew->core['id']."' ";
 $app->dbOld->query($SQL);
-$app->debug['upload']->info('notification query finished');
+$app->debug["messages"]->info('notification query finished');
 
 if ($app->dbOld->has_results()) {
     $UserArray = $app->dbOld->to_array('UserID');
@@ -1013,7 +1020,7 @@ if ($app->dbOld->has_results()) {
 
     $InsertSQL .= implode(',', $Rows);
     $app->dbOld->query($InsertSQL);
-    $app->debug['upload']->info('notification inserts finished');
+    $app->debug["messages"]->info('notification inserts finished');
 
     foreach ($FilterArray as $Filter) {
         list($FilterID, $UserID, $Passkey) = $Filter;
@@ -1041,7 +1048,7 @@ while (list($UserID, $Passkey) = $app->dbOld->next_record()) {
 
 $feed->populate('torrents_all', $item);
 $feed->populate('torrents_'.strtolower($Type), $item);
-$app->debug['upload']->info('notifications handled');
+$app->debug["messages"]->info('notifications handled');
 
 # Clear cache
 $app->cacheOld->delete_value("torrents_details_$GroupID");
