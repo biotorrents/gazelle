@@ -15,7 +15,7 @@ class Validate
     public $fields = [];
 
     # collect the error messages
-    public $errorMessages = [];
+    public $errors = [];
 
     # varchar field limits
     public $varcharFull = 255;
@@ -60,7 +60,7 @@ class Validate
      *
      * Loops through $this->fields and checks various conditions.
      *
-     * @return void $this->errorMessages = [ "fieldName" => ["message one", "message two", "etc."] ]
+     * @return void $this->errors = [ "fieldName" => ["message one", "message two", "etc."] ]
      */
     public function allFields(array $dataToValidate): void
     {
@@ -74,14 +74,14 @@ class Validate
             # defined field missing from $dataToValidate
             $valueToValidate = $dataToValidate[$key] ?? null;
             if (!$valueToValidate) {
-                $this->errorMessages[$key][] = "server error: the data to validate is missing a value for a defined field";
+                $this->errors[$key][] = "server error: the data to validate is missing a value for a defined field";
             }
 
             # allowComma: note double negative
             if ($field["allowComma"]) {
                 $good = (!preg_match("/^[0-9,]/", strval($valueToValidate)));
                 if (!$good) {
-                    $this->errorMessages[$key][] = "the number doesn't allow a comma";
+                    $this->errors[$key][] = "the number doesn't allow a comma";
                 }
             }
 
@@ -89,7 +89,7 @@ class Validate
             if ($field["allowPeriod"]) {
                 $good = (!preg_match("/^[0-9\.]/", strval($valueToValidate)));
                 if (!$good) {
-                    $this->errorMessages[$key][] = "the number doesn't allow a period";
+                    $this->errors[$key][] = "the number doesn't allow a period";
                 }
             }
 
@@ -97,7 +97,7 @@ class Validate
             if ($field["compareField"]) {
                 $good = ($dataToValidate[ $field["compareField"] ] !== $valueToValidate);
                 if (!$good) {
-                    $this->errorMessages[$key][] = "the value doesn't match the comparison field {$field["compareField"]}";
+                    $this->errors[$key][] = "the value doesn't match the comparison field {$field["compareField"]}";
                 }
             }
 
@@ -106,7 +106,7 @@ class Validate
                 $good = array_search($valueToValidate, $field["inArray"]);
                 if (!$good) {
                     $imploded = implode(", ", $field["inArray"]);
-                    $this->errorMessages[$key][] = "{$valueToValidate} not in array of {$imploded}";
+                    $this->errors[$key][] = "{$valueToValidate} not in array of {$imploded}";
                 }
             }
 
@@ -114,7 +114,7 @@ class Validate
             if ($field["maxLength"]) {
                 $good = (strlen($valueToValidate) < $field["maxLength"]);
                 if (!$good) {
-                    $this->errorMessages[$key][] = "maximum length {$field["maxLength"]} exceeded";
+                    $this->errors[$key][] = "maximum length {$field["maxLength"]} exceeded";
                 }
             }
 
@@ -122,7 +122,7 @@ class Validate
             if ($field["minLength"]) {
                 $good = (strlen($valueToValidate) >= $field["minLength"]);
                 if (!$good) {
-                    $this->errorMessages[$key][] = "minimum length {$field["minLength"]} not met";
+                    $this->errors[$key][] = "minimum length {$field["minLength"]} not met";
                 }
             }
 
@@ -130,7 +130,7 @@ class Validate
             if ($field["regex"]) {
                 $good = preg_match($field["regex"], strval($valueToValidate));
                 if (!$good) {
-                    $this->errorMessages[$key][] = "failed to satisfy regex {$field["regex"]}";
+                    $this->errors[$key][] = "failed to satisfy regex {$field["regex"]}";
                 }
             }
 
@@ -138,7 +138,7 @@ class Validate
             if ($field["required"]) {
                 $good = !empty($field["required"]);
                 if (!$good) {
-                    $this->errorMessages[$key][] = "this required field is empty";
+                    $this->errors[$key][] = "this required field is empty";
                 }
             }
 
@@ -151,7 +151,7 @@ class Validate
             if ($field["type"] === "email") {
                 $good = (Esc::email($valueToValidate) === strval($valueToValidate));
                 if (!$good) {
-                    $this->errorMessages[$key][] = "this field requires a valid email";
+                    $this->errors[$key][] = "this field requires a valid email";
                 }
             }
 
@@ -159,7 +159,7 @@ class Validate
             if ($field["type"] === "float" || $field["type"] === "decimal") {
                 $good = (Esc::float($valueToValidate) === floatval($valueToValidate));
                 if (!$good) {
-                    $this->errorMessages[$key][] = "this field requires a valid float";
+                    $this->errors[$key][] = "this field requires a valid float";
                 }
             }
 
@@ -167,7 +167,7 @@ class Validate
             if ($field["type"] === "int" || $field["type"] === "integer" || $field["type"] === "number") {
                 $good = (Esc::int($valueToValidate) === intval($valueToValidate));
                 if (!$good) {
-                    $this->errorMessages[$key][] = "this field requires a valid int";
+                    $this->errors[$key][] = "this field requires a valid int";
                 }
             }
 
@@ -175,7 +175,7 @@ class Validate
             if ($field["type"] === "string") {
                 $good = (Esc::string($valueToValidate) === strval($valueToValidate));
                 if (!$good) {
-                    $this->errorMessages[$key][] = "this field requires a valid string";
+                    $this->errors[$key][] = "this field requires a valid string";
                 }
             }
 
@@ -183,7 +183,7 @@ class Validate
             if ($field["type"] === "url" || $field["type"] === "uri") {
                 $good = (Esc::url($valueToValidate) === strval($valueToValidate));
                 if (!$good) {
-                    $this->errorMessages[$key][] = "this field requires a valid url";
+                    $this->errors[$key][] = "this field requires a valid url";
                 }
             }
 
@@ -191,7 +191,7 @@ class Validate
             if ($field["type"] === "bool" || $field["type"] === "boolean") {
                 $good = (Esc::bool($valueToValidate) === boolval($valueToValidate));
                 if (!$good) {
-                    $this->errorMessages[$key][] = "this field requires a valid bool";
+                    $this->errors[$key][] = "this field requires a valid bool";
                 }
             }
 
@@ -199,7 +199,7 @@ class Validate
             if ($field["type"] === "domain") {
                 $good = (Esc::domain($valueToValidate) === strval($valueToValidate));
                 if (!$good) {
-                    $this->errorMessages[$key][] = "this field requires a valid domain";
+                    $this->errors[$key][] = "this field requires a valid domain";
                 }
             }
 
@@ -207,7 +207,7 @@ class Validate
             if ($field["type"] === "ip" || $field["type"] === "ipAddress") {
                 $good = (Esc::ip($valueToValidate) === strval($valueToValidate));
                 if (!$good) {
-                    $this->errorMessages[$key][] = "this field requires a valid ip";
+                    $this->errors[$key][] = "this field requires a valid ip";
                 }
             }
 
@@ -216,7 +216,7 @@ class Validate
             if ($field["type"] === "mac" || $field["type"] === "macAddress") {
                 $good = (Esc::mac($valueToValidate) === strval($valueToValidate));
                 if (!$good) {
-                    $this->errorMessages[$key][] = "this field requires a valid mac";
+                    $this->errors[$key][] = "this field requires a valid mac";
                 }
             }
 
@@ -224,7 +224,7 @@ class Validate
             if ($field["type"] === "regex") {
                 $good = (Esc::regex($valueToValidate) === strval($valueToValidate));
                 if (!$good) {
-                    $this->errorMessages[$key][] = "this field requires a valid regex";
+                    $this->errors[$key][] = "this field requires a valid regex";
                 }
             }
 
@@ -233,7 +233,7 @@ class Validate
             if ($field["type"] === "username") {
                 $good = (Esc::username($valueToValidate) === strval($valueToValidate));
                 if (!$good) {
-                    $this->errorMessages[$key][] = "this field requires a valid username";
+                    $this->errors[$key][] = "this field requires a valid username";
                 }
             }
 
@@ -241,7 +241,7 @@ class Validate
             if ($field["type"] === "passphrase" || $field["type"] === "password") {
                 $good = (Esc::passphrase($valueToValidate) === strval($valueToValidate));
                 if (!$good) {
-                    $this->errorMessages[$key][] = "this field requires a valid passphrase";
+                    $this->errors[$key][] = "this field requires a valid passphrase";
                 }
             }
 
@@ -254,7 +254,7 @@ class Validate
             if ($field["type"] === "torrentFile") {
                 $good = ($this->torrentFile($valueToValidate));
                 if (!$good) {
-                    $this->errorMessages[$key][] = "something was wrong with your torrent file";
+                    $this->errors[$key][] = "torrentFile validation failed";
                 }
             }
 
@@ -262,7 +262,15 @@ class Validate
             if ($field["type"] === "literature") {
                 $good = ($this->literature($valueToValidate));
                 if (!$good) {
-                    $this->errorMessages[$key][] = "";
+                    $this->errors[$key][] = "literature validation failed";
+                }
+            }
+
+            # tagList
+            if ($field["type"] === "tagList") {
+                $good = ($this->tagList($valueToValidate));
+                if (!$good) {
+                    $this->errors[$key][] = "tagList validation failed";
                 }
             }
 
@@ -270,7 +278,7 @@ class Validate
             if ($field["type"] === "year") {
                 $good = ($this->year($valueToValidate));
                 if (!$good) {
-                    $this->errorMessages[$key][] = "";
+                    $this->errors[$key][] = "year validation failed";
                 }
             }
 
@@ -278,7 +286,7 @@ class Validate
             if ($field["type"] === "mirrors") {
                 $good = ($this->mirrors($valueToValidate));
                 if (!$good) {
-                    $this->errorMessages[$key][] = "";
+                    $this->errors[$key][] = "mirrors validation failed";
                 }
             }
         } # foreach
@@ -297,7 +305,7 @@ class Validate
     {
         # error key
         $key = "torrentFile";
-        $this->errorMessages[$key] ??= [];
+        $this->errors[$key] ??= [];
 
         # nothing to do
         if (empty($data)) {
@@ -308,12 +316,12 @@ class Validate
         $parsedData = pathinfo($data["name"] ?? "");
         $parsedData["basename"] ??= null;
         if (!$data["basename"] || empty($data["basename"])) {
-            $this->errorMessages[$key][] = "unable to parse";
+            $this->errors[$key][] = "unable to parse";
         }
 
         $parsedData["filename"] ??= null;
         if (!$data["filename"] || empty($data["filename"])) {
-            $this->errorMessages[$key][] = "unable to parse";
+            $this->errors[$key][] = "unable to parse";
         }
 
         /** $_FILES */
@@ -321,52 +329,57 @@ class Validate
         # an error occurred
         $data["error"] ??= null;
         if (!empty($data["error"])) {
-            $this->errorMessages[$key][] = "an error occurred";
+            $this->errors[$key][] = "an error occurred";
         }
 
         # no filename
         $data["name"] ??= null;
         if (!$data["name"] || empty($data["name"])) {
-            $this->errorMessages[$key][] = "no filename";
+            $this->errors[$key][] = "no filename";
         }
 
         # long filename
         if (strlen($data["name"]) > 255) {
-            $this->errorMessages[$key][] = "long filename";
+            $this->errors[$key][] = "long filename";
         }
 
         # unsafe filename
         if (Text::esc($data["name"]) !== $data["name"]) {
-            $this->errorMessages[$key][] = "unsafe filename";
+            $this->errors[$key][] = "unsafe filename";
         }
 
         # name, full_name mismatch
         $data["full_name"] ??= null;
         if ($data["name"] !== $data["full_name"]) {
-            $this->errorMessages[$key][] = "name, full_name mismatch";
+            $this->errors[$key][] = "name, full_name mismatch";
         }
 
         # no content type
         $data["type"] ??= null;
         if (!$data["type"] || empty($data["type"])) {
-            $this->errorMessages[$key][] = "no content type";
+            $this->errors[$key][] = "no content type";
         }
 
         # bad content type
         $contentType = mime_content_type($data["tmp_name"]);
         if ($contentType !== "application/x-bittorrent" || $data["type"] !== "application/x-bittorrent") {
-            $this->errorMessages[$key][] = "bad content type";
+            $this->errors[$key][] = "bad content type";
         }
 
         # no file extension
         $parsedData["extension"] ??= null;
         if (!$parsedData["extension"] || empty($parsedData["extension"])) {
-            $this->errorMessages[$key][] = "no file extension";
+            $this->errors[$key][] = "no file extension";
         }
 
         # bad file extension
         if ($parsedData["extension"] !== "torrent") {
-            $this->errorMessages[$key][] = "bad file extension";
+            $this->errors[$key][] = "bad file extension";
+        }
+
+        # not uploaded by POST
+        if (!is_uploaded_file($data["tmp_name"])) {
+            $this->errors[$key][] = "not uploaded by POST";
         }
 
         /** file contents */
@@ -374,55 +387,55 @@ class Validate
         # no temporary filename
         $data["tmp_name"] ??= null;
         if (!$data["tmp_name"] || empty($data["tmp_name"])) {
-            $this->errorMessages[$key][] = "no temporary filename";
+            $this->errors[$key][] = "no temporary filename";
             return false;
         }
 
         # unsafe temporary filename
         if (Text::esc($data["tmp_name"]) !== $data["tmp_name"]) {
-            $this->errorMessages[$key][] = "unsafe temporary filename";
+            $this->errors[$key][] = "unsafe temporary filename";
         }
 
         # file doesn't exist
         if (!file_exists($data["tmp_name"])) {
-            $this->errorMessages[$key][] = "file doesn't exist";
+            $this->errors[$key][] = "file doesn't exist";
         }
 
         # upload path is deceptive
         if (realpath($data["tmp_name"]) !== $data["tmp_name"]) {
-            $this->errorMessages[$key][] = "upload path is deceptive";
+            $this->errors[$key][] = "upload path is deceptive";
         }
 
         # file is empty
         $fileSize = filesize($data["tmp_name"]);
         if (empty($fileSize)) {
-            $this->errorMessages[$key][] = "file is empty";
+            $this->errors[$key][] = "file is empty";
         }
 
         # file is big
         $fileSizeLimit = 1024 * 1024 * 5; # number of megabytes
         if ($fileSize > $fileSizeLimit) {
-            $this->errorMessages[$key][] = "file is big";
+            $this->errors[$key][] = "file is big";
         }
 
         # file size mismatch
         $data["size"] ??= null;
         if ($fileSize !== $data["size"]) {
-            $this->errorMessages[$key][] = "file size mismatch";
+            $this->errors[$key][] = "file size mismatch";
         }
 
         # file is executable
         if (is_executable($data["tmp_name"])) {
-            $this->errorMessages[$key][] = "file is executable";
+            $this->errors[$key][] = "file is executable";
         }
 
         # return
-        if (empty($this->errorMessages[$key])) {
+        if (empty($this->errors[$key])) {
             return true;
         } else {
             return false;
         }
-    }
+    } # function
 
 
     /**
@@ -432,7 +445,7 @@ class Validate
     {
         # error key
         $key = "literature";
-        $this->errorMessages[$key] ??= [];
+        $this->errors[$key] ??= [];
 
         # nothing to do
         if (empty($data)) {
@@ -442,18 +455,46 @@ class Validate
         # unable to parse
         $parsedData = explode("\n", $data);
         if (!is_array($parsedData) || empty($parsedData)) {
-            $this->errorMessages[$key][] = "unable to parse";
+            $this->errors[$key][] = "unable to parse";
         }
 
         # invalid doi number
         foreach ($parsedData as $item) {
             if (!preg_match("/{$app->env->regexDoi}/", $item)) {
-                $this->errorMessages[$key][] = "invalid doi number";
+                $this->errors[$key][] = "invalid doi number";
             }
         }
 
         # return
-        if (empty($this->errorMessages[$key])) {
+        if (empty($this->errors[$key])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     * tagList
+     */
+    public function tagList(array $data): bool
+    {
+        # error key
+        $key = "tagList";
+        $this->errors[$key] ??= [];
+
+        # nothing to do
+        if (empty($data)) {
+            return true;
+        }
+
+        # not enough tags
+        if (count($tagList) < 5) {
+            $this->errors[$key][] = "not enough tags";
+        }
+
+        # return
+        if (empty($this->errors[$key])) {
             return true;
         } else {
             return false;
@@ -468,23 +509,35 @@ class Validate
     {
         # error key
         $key = "year";
-        $this->errorMessages[$key] ??= [];
+        $this->errors[$key] ??= [];
 
         # nothing to do
         if (empty($data)) {
             return true;
         }
 
-        # not four digits
-        if (strlen($data) !== 4) {
-            $this->errorMessages[$key][] = "not four digits";
+        # not numeric
+        if (!is_numeric($data)) {
+            $this->errors[$key][] = "not numeric";
         }
 
+        # not four digits
+        if (strlen($data) !== 4) {
+            $this->errors[$key][] = "not four digits";
+        }
 
+        # not a positive number
+        if (abs(intval($data)) !== intval($data)) {
+            $this->errors[$key][] = "not a positive number";
+        }
 
+        # in the future
+        if (intval($data) > intval(date("Y"))) {
+            $this->errors[$key][] = "in the future";
+        }
 
         # return
-        if (empty($this->errorMessages[$key])) {
+        if (empty($this->errors[$key])) {
             return true;
         } else {
             return false;
@@ -499,21 +552,237 @@ class Validate
     {
         # error key
         $key = "mirrors";
-        $this->errorMessages[$key] ??= [];
+        $this->errors[$key] ??= [];
 
         # nothing to do
         if (empty($data)) {
             return true;
         }
 
+        # unable to parse
+        $parsedData = explode("\n", $data);
+        if (!is_array($parsedData) || empty($parsedData)) {
+            $this->errors[$key][] = "unable to parse";
+        }
+
+        # invalid url
+        foreach ($parsedData as $item) {
+            if (!preg_match("/{$app->env->regexUri}/", $item)) {
+                $this->errors[$key][] = "invalid uri";
+            }
+        }
 
         # return
-        if (empty($this->errorMessages[$key])) {
+        if (empty($this->errors[$key])) {
             return true;
         } else {
             return false;
         }
     }
+
+
+    /** bencoded torrent validation */
+
+
+    /**
+     * bencoded
+     *
+     * Inspects a BencodeTorrent object.
+     *
+     * @return array torrent object data
+     */
+    public function bencoded(BencodeTorrent $torrent): array
+    {
+        $app = App::go();
+
+        # error key
+        $key = "mirrors";
+        $this->errors[$key] ??= [];
+
+        # return data
+        $data = [];
+
+        # encrypted files
+        if (isset($torrent->Dec["encrypted_files"])) {
+            $this->errors[$key][] = "the torrent contains an encrypted file list, which is not supported here";
+        }
+
+        # file list and size
+        list($dataSize, $fileList) = $torrent->file_list();
+
+        $data["dataSize"] = $dataSize;
+        $data["fileList"] = $fileList;
+        $data["fileCount"] = count($fileList);
+
+        # start validation
+        $temporaryFileList = [];
+        $tooLongPaths = [];
+
+        $directoryName = (isset($torrent->Dec["info"]["files"]))
+            ? Text::utf8($torrent->get_name())
+            : "";
+        $data["directoryName"] = $directoryName;
+
+        # garbage directory name
+        $good = $this->cruftFree($directoryName);
+        if (!$good) {
+            $this->errors[$key][] = "garbage directory name";
+        }
+
+        # check individual files
+        foreach ($fileList as $file) {
+            # size and name
+            list($size, $name) = $file;
+
+            # garbage filename
+            $good = $this->cruftFree($name);
+            if (!$good) {
+                $this->errors[$key][] = "garbage filename";
+            }
+
+            # too long filename
+            $fileNameLength = mb_strlen($name, "UTF-8") + mb_strlen($directoryName, "UTF-8") + 1;
+            if ($fileNameLength > 255) {
+                $tooLongPaths[] = "{$directoryName}/{$name}";
+            }
+
+            # check for extensions
+            $good = $this->hasExtensions($name);
+            if (!$good) {
+                $this->errors[$key][] = "the torrent has one or more files without extensions: \n {$name}";
+            }
+
+            # unsafe characters
+            $good = $this->safeCharacters($name);
+            if (!$good) {
+                $badCharacters = implode(", ", $app->env->BAD_CHARS);
+                $this->errors[$key][] = "one or more files has the forbidden characters {$badCharacters}: \n {$name}";
+            }
+
+            # add file info to array
+            $temporaryFileList[] = Torrents::filelist_format_file($file);
+        } # foreach ($fileList as $file)
+
+
+        # too long paths
+        if (count($tooLongPaths) > 0) {
+            $names = implode("<br />", $tooLongPaths);
+            $this->errors[$key][] = "the torrent contained one or more files with too long a name:<br /> {$names}";
+        }
+
+        # last $data additions
+        $data["filePath"] = $directoryName;
+        $data["fileString"] = implode("\n", $temporaryFileList);
+
+        # okay?
+        $app->debug["upload"]->info("torrent decoded");
+        return $data;
+    }
+
+
+    /**
+     * cruftFree
+     *
+     * Check if a file is junk according to a filename blacklist.
+     */
+    public function cruftFree(string $fileName): bool
+    {
+        $keywords = [
+            "ahashare.com",
+            "demonoid.com",
+            "demonoid.me",
+            "djtunes.com",
+            "h33t",
+            "housexclusive.net",
+            "limetorrents.com",
+            "mixesdb.com",
+            "mixfiend.blogstop",
+            "mixtapetorrent.blogspot",
+            "plixid.com",
+            "reggaeme.com",
+            "scc.nfo",
+            "thepiratebay.org",
+            "torrentday",
+        ];
+
+        # $keywords match
+        foreach ($keywords as &$value) {
+            if (strpos(strtolower($fileName), $value) !== false) {
+                return false;
+            }
+        }
+
+        # incomplete data
+        if (preg_match("/INCOMPLETE~\*/i", $fileName)) {
+            return false;
+        }
+
+        # okay
+        return true;
+    }
+
+
+    /**
+     * hasExtensions
+     *
+     * Check if a file has no extension and return false.
+     * Otherwise, return an array of the last $x extensions.
+     */
+    private function hasExtensions(string $fileName, int $x = 1)
+    {
+        # force positive
+        $x = abs($x);
+
+        if (!strstr(".", $fileName)) {
+            return false;
+        }
+
+        $extensions = array_slice(
+            explode(
+                ".",
+                strtolower($fileName)
+            ),
+            -$x,
+            $x
+        );
+
+        return (!empty($extensions))
+            ? $extensions
+            : false;
+    }
+
+
+    /**
+     * safeCharacters
+     *
+     * If no $fileName, return the list of bad characters.
+     * If $fileName contains a bad character, return false.
+     * Otherwise, return true.
+     */
+    public function safeCharacters(string $fileName = "")
+    {
+        $app = App::go();
+
+        if (empty($fileName)) {
+            $badCharacters = implode(", ", $app->env->BAD_CHARS);
+
+            return $badCharacters;
+        }
+
+        $data = [];
+
+        $regex = "/[" . implode("", $app->env->BAD_CHARS) . "]/";
+        $good = !preg_match($regex, $fileName);
+
+        if (!$good) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+
 
 
     /**
@@ -588,14 +857,14 @@ class Validate
         }
 
         switch (false) {
-            case $this->HasExtensions($Suspect, 1):
+            case $this->hasExtensions($Suspect, 1):
                 return $Err = "The torrent has one or more files without extensions:\n" . Text::esc($Suspect);
 
-            case $this->CruftFree($Suspect):
+            case $this->cruftFree($Suspect):
                 return $Err = "The torrent has one or more junk files:\n" . Text::esc($Suspect);
 
-            case $this->SafeCharacters($Suspect):
-                $BadChars = $this->SafeCharacters('', true);
+            case $this->safeCharacters($Suspect):
+                $BadChars = $this->safeCharacters('', true);
                 return $Err = "One or more files has the forbidden characters $BadChars:\n" . Text::esc($Suspect);
 
             default:
@@ -605,147 +874,6 @@ class Validate
         return;
     }
 
-    /**
-     * Check if a file has no extension and return false.
-     * Otherwise, return an array of the last $x extensions.
-     */
-    private function HasExtensions($FileName, $x)
-    {
-        if (!is_int($x) || $x <= 0) {
-            error('Requested number of extensions must be <= 0');
-        }
-
-        if (!strstr('.', $FileName)) {
-            return false;
-        }
-
-        $Extensions = array_slice(explode('.', strtolower($FileName)), -$x, $x);
-        return (!empty($Extensions)) ? $Extensions : false;
-    }
-
-    /**
-     * Check if a file is junk according to a filename blacklist.
-     * todo: Change $Keywords into an array of regexes
-     */
-    public function CruftFree($FileName)
-    {
-        $Keywords = [
-            'ahashare.com',
-            'demonoid.com',
-            'demonoid.me',
-            'djtunes.com',
-            'h33t',
-            'housexclusive.net',
-            'limetorrents.com',
-            'mixesdb.com',
-            'mixfiend.blogstop',
-            'mixtapetorrent.blogspot',
-            'plixid.com',
-            'reggaeme.com',
-            'scc.nfo',
-            'thepiratebay.org',
-            'torrentday',
-        ];
-
-        # $Keywords match
-        foreach ($Keywords as &$Value) {
-            if (strpos(strtolower($FileName), $Value) !== false) {
-                return false;
-            }
-        }
-
-        # Incomplete data
-        if (preg_match('/INCOMPLETE~\*/i', $FileName)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * These characters are invalid on Windows NTFS:
-     *   : ? / < > \ * | "
-     *
-     * If no $FileName, return the list of bad characters.
-     * If $FileName contains, a bad character, return false.
-     * Otherwise, return true.
-     *
-     * todo: Add "/" to the blacklist. This causes problems with nested dirs, apparently
-     * todo: Make possible preg_match($AllBlockedChars, $Name, $Matches)
-     */
-    public function SafeCharacters($FileName, $Pretty = false)
-    {
-        $InvalidChars = ':?<>\*|"';
-
-        if (empty($FileName)) {
-            return (!$Pretty) ? $InvalidChars : implode(' ', str_split($InvalidChars));
-        }
-
-        # todo: Regain functionality to return the invalid character
-        if (preg_match(implode('\\', str_split($InvalidChars)), $Name, $Matches)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Extension Parser
-     *
-     * Takes an associative array of file types and extension, e.g.,
-     * $ENV->META->Archives = [
-     *   '7z'     => ['7z'],
-     *   'bzip2'  => ['bz2', 'bzip2'],
-     *   'gzip'   => ['gz', 'gzip', 'tgz', 'tpz'],
-     *   ...
-     * ];
-     *
-     * Then it finds all the extensions in a torrent file list,
-     * organizes them by file size, and returns the heaviest match.
-     *
-     * That way, you can have, e.g., 5 GiB FASTQ sequence data in one file,
-     * and 100 other small files, and get the format of the actual data.
-     */
-    public function ParseExtensions($FileList, $Category, $FileTypes)
-    {
-        # Sort $Tor->file_list() output by size
-        $UnNested = array_values($FileList[1]);
-        $Sorted = (usort($UnNested, function ($a, $b) {
-            return $b <=> $a;
-        })) ? $UnNested : null;  # Ternary wrap because &uarr; returns true
-
-        # Harvest the wheat
-        # todo: Entries seem duplicated here
-        $Heaviest = array_slice($Sorted, 0, 20);
-        $Matches = [];
-
-        # Distill the file format
-        $FileTypes = $FileTypes[$Category];
-        $FileTypeNames = array_keys($FileTypes);
-
-        foreach ($Heaviest as $Heaviest) {
-            # Collect the last 2 period-separated tokens
-            $Extensions = array_slice(explode('.', strtolower($Heaviest[1])), -2, 2);
-            $Matches = array_merge($Extensions);
-
-            # todo: Reduce nesting by one level
-            foreach ($Matches as $Match) {
-                $Match = strtolower($Match);
-
-                foreach ($FileTypeNames as $FileTypeName) {
-                    $SearchMe = [ $FileTypeName, $FileTypes[$FileTypeName] ];
-
-                    if (in_array($Match, $SearchMe[1])) {
-                        return $SearchMe[0];
-                        break;
-                    }
-                }
-
-                # Return the last element (Other or None)
-                return array_key_last($FileTypes);
-            }
-        }
-    }
 
 
     /**
@@ -934,30 +1062,29 @@ class Validate
  * This will eventually move inside Validate for upload_handle.php.
  */
 
-$Keywords = array(
+$keywords = array(
   'ahashare.com', 'demonoid.com', 'demonoid.me', 'djtunes.com', 'h33t', 'housexclusive.net',
   'limetorrents.com', 'mixesdb.com', 'mixfiend.blogstop', 'mixtapetorrent.blogspot',
   'plixid.com', 'reggaeme.com' , 'scc.nfo', 'thepiratebay.org', 'torrentday');
 
-function check_file($Type, $Name)
+function check_file($Type, $name)
 {
-    check_name($Name);
-    check_extensions($Type, $Name);
+    check_name($name);
 }
 
-function check_name($Name)
+function check_name($name)
 {
-    global $Keywords;
-    $NameLC = strtolower($Name);
+    global $keywords;
+    $nameLC = strtolower($name);
 
-    foreach ($Keywords as &$Value) {
-        if (strpos($NameLC, $Value) !== false) {
-            forbidden_error($Name);
+    foreach ($keywords as &$value) {
+        if (strpos($nameLC, $value) !== false) {
+            forbidden_error($name);
         }
     }
 
-    if (preg_match('/INCOMPLETE~\*/i', $Name)) {
-        forbidden_error($Name);
+    if (preg_match('/INCOMPLETE~\*/i', $name)) {
+        forbidden_error($name);
     }
 
     /*
@@ -965,7 +1092,7 @@ function check_name($Name)
      *    : ? / < > \ * | "
      *
      * todo: Add "/" to the blacklist. This causes problems with nested dirs, apparently
-     * todo: Make possible preg_match($AllBlockedChars, $Name, $Matches)
+     * todo: Make possible preg_match($AllBlockedChars, $name, $Matches)
      *
      * Only the following characters need to be escaped (see the link below):
      *    \ - ^ ]
@@ -973,25 +1100,11 @@ function check_name($Name)
      * http://www.php.net/manual/en/regexp.reference.character-classes.php
      */
     $AllBlockedChars = ' : ? < > \ * | " ';
-    if (preg_match('/[\\:?<>*|"]/', $Name, $Matches)) {
+    if (preg_match('/[\\:?<>*|"]/', $name, $Matches)) {
         character_error($Matches[0], $AllBlockedChars);
     }
 }
 
-function check_extensions($Type, $Name)
-{
-    # todo: Make generic or subsume into Validate->ParseExtensions()
-    /*
-    if (!isset($MusicExtensions[get_file_extension($Name)])) {
-        invalid_error($Name);
-    }
-    */
-}
-
-function get_file_extension($FileName)
-{
-    return strtolower(substr(strrchr($FileName, '.'), 1));
-}
 
 /**
  * Error functions
@@ -1001,10 +1114,10 @@ function get_file_extension($FileName)
  */
 
 
-function forbidden_error($Name)
+function forbidden_error($name)
 {
     global $Err;
-    $Err = 'The torrent contained one or more forbidden files (' . Text::esc($Name) . ')';
+    $Err = 'The torrent contained one or more forbidden files (' . Text::esc($name) . ')';
 }
 
 function character_error($Character, $AllBlockedChars)

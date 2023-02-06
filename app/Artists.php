@@ -39,9 +39,9 @@ class Artists
                 continue;
             }
 
-            $Artists = $app->cacheOld->get_value('groups_artists_'.$GroupID);
-            if (is_array($Artists)) {
-                $Results[$GroupID] = $Artists;
+            $creators = $app->cacheOld->get_value('groups_artists_'.$GroupID);
+            if (is_array($creators)) {
+                $Results[$GroupID] = $creators;
             } else {
                 $dbs[] = $GroupID;
             }
@@ -71,9 +71,9 @@ class Artists
               ag.`Name` ASC;
             ");
 
-            while (list($GroupID, $ArtistID, $ArtistName) = $app->dbOld->next_record(MYSQLI_BOTH, false)) {
-                $Results[$GroupID][] = array('id' => $ArtistID, 'name' => $ArtistName);
-                $New[$GroupID][] = array('id' => $ArtistID, 'name' => $ArtistName);
+            while (list($GroupID, $creatorID, $creatorName) = $app->dbOld->next_record(MYSQLI_BOTH, false)) {
+                $Results[$GroupID][] = array('id' => $creatorID, 'name' => $creatorName);
+                $New[$GroupID][] = array('id' => $creatorID, 'name' => $creatorName);
             }
 
             $app->dbOld->set_query_id($QueryID);
@@ -114,34 +114,34 @@ class Artists
      * @param boolean $IncludeHyphen FEATURE REMOVED, ARGUMENT KEPT FOR COMPATIBILITY
      * @param $Escape if true, output will be escaped. Think carefully before setting it false.
      */
-    public static function display_artists($Artists, $MakeLink = true, $IncludeHyphen = true, $Escape = true)
+    public static function display_artists($creators, $MakeLink = true, $IncludeHyphen = true, $Escape = true)
     {
-        if (!empty($Artists)) {
+        if (!empty($creators)) {
             $ampersand = ($Escape) ? ' &amp; ' : ' & ';
             $link = '';
 
-            switch (count($Artists)) {
+            switch (count($creators)) {
                 case 0:
                     break;
 
                 case 4:
-                    $link .= Artists::display_artist($Artists[2], $MakeLink, $Escape). ", ";
+                    $link .= Artists::display_artist($creators[2], $MakeLink, $Escape). ", ";
                     // no break
 
                 case 3:
-                    $link .= Artists::display_artist($Artists[2], $MakeLink, $Escape). ", ";
+                    $link .= Artists::display_artist($creators[2], $MakeLink, $Escape). ", ";
                     // no break
 
                 case 2:
-                    $link .= Artists::display_artist($Artists[1], $MakeLink, $Escape). ", ";
+                    $link .= Artists::display_artist($creators[1], $MakeLink, $Escape). ", ";
                     // no break
 
                 case 1:
-                    $link .= Artists::display_artist($Artists[0], $MakeLink, $Escape);
+                    $link .= Artists::display_artist($creators[0], $MakeLink, $Escape);
                     break;
 
                 default:
-                    $link = Artists::display_artist($Artists[0], $MakeLink, $Escape).' et al.';
+                    $link = Artists::display_artist($creators[0], $MakeLink, $Escape).' et al.';
             }
 
             return $link;
@@ -153,21 +153,21 @@ class Artists
     /**
      * Formats a single artist name.
      *
-     * @param array $Artist an array of the form ('id' => ID, 'name' => Name)
+     * @param array $creator an array of the form ('id' => ID, 'name' => Name)
      * @param boolean $MakeLink If true, links to the artist page.
      * @param boolean $Escape If false and $MakeLink is false, returns the unescaped, unadorned artist name.
      * @return string Formatted artist name.
      */
-    public static function display_artist($Artist, $MakeLink = true, $Escape = true)
+    public static function display_artist($creator, $MakeLink = true, $Escape = true)
     {
         if ($MakeLink && !$Escape) {
             error('Invalid parameters to Artists::display_artist()');
         } elseif ($MakeLink) {
-            return '<a href="/artist.php?id='.$Artist['id'].'">'.Text::esc($Artist['name']).'</a>';
+            return '<a href="/artist.php?id='.$creator['id'].'">'.Text::esc($creator['name']).'</a>';
         } elseif ($Escape) {
-            return Text::esc($Artist['name']);
+            return Text::esc($creator['name']);
         } else {
-            return $Artist['name'];
+            return $creator['name'];
         }
     }
 
@@ -175,9 +175,9 @@ class Artists
      * Deletes an artist and their requests, wiki, and tags.
      * Does NOT delete their torrents.
      *
-     * @param int $ArtistID
+     * @param int $creatorID
      */
-    public static function delete_artist($ArtistID)
+    public static function delete_artist($creatorID)
     {
         $app = App::go();
 
@@ -188,7 +188,7 @@ class Artists
         FROM
           `artists_group`
         WHERE
-          `ArtistID` = $ArtistID
+          `ArtistID` = $creatorID
         ");
         list($Name) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
@@ -199,7 +199,7 @@ class Artists
         FROM
           `requests_artists`
         WHERE
-          `ArtistID` = $ArtistID AND `ArtistID` != 0
+          `ArtistID` = $creatorID AND `ArtistID` != 0
         ");
 
         $Requests = $app->dbOld->to_array();
@@ -244,7 +244,7 @@ class Artists
         FROM
           `artists_group`
         WHERE
-          `ArtistID` = '$ArtistID'
+          `ArtistID` = '$creatorID'
         ");
         $app->cacheOld->decrement('stats_artist_count');
 
@@ -254,7 +254,7 @@ class Artists
         FROM
           `wiki_artists`
         WHERE
-          `PageID` = '$ArtistID'
+          `PageID` = '$creatorID'
         ");
 
         // Delete tags
@@ -263,13 +263,13 @@ class Artists
         FROM
           `artists_tags`
         WHERE
-          `ArtistID` = '$ArtistID'
+          `ArtistID` = '$creatorID'
         ");
 
         // Delete artist comments, subscriptions and quote notifications
-        Comments::delete_page('artist', $ArtistID);
-        $app->cacheOld->delete_value("artist_$ArtistID");
-        $app->cacheOld->delete_value("artist_groups_$ArtistID");
+        Comments::delete_page('artist', $creatorID);
+        $app->cacheOld->delete_value("artist_$creatorID");
+        $app->cacheOld->delete_value("artist_groups_$creatorID");
 
         // Record in log
         if (!empty($app->userNew->core['username'])) {
@@ -278,7 +278,7 @@ class Artists
             $Username = 'System';
         }
 
-        Misc::write_log("Artist $ArtistID ($Name) was deleted by $Username");
+        Misc::write_log("Artist $creatorID ($Name) was deleted by $Username");
         $app->dbOld->set_query_id($QueryID);
     }
 
@@ -287,14 +287,17 @@ class Artists
      * If we don't do this, we get seemingly duplicate artist names.
      * todo: make stricter, e.g., on all whitespace characters or Unicode normalisation
      *
-     * @param string $ArtistName
+     * @param string $creatorName
      */
-    public static function normalise_artist_name($ArtistName)
+    public static function normalise_artist_name($creatorName)
     {
-        // \u200e is &lrm;
-        $ArtistName = trim($ArtistName);
-        $ArtistName = preg_replace('/^(\xE2\x80\x8E)+/', '', $ArtistName);
-        $ArtistName = preg_replace('/(\xE2\x80\x8E)+$/', '', $ArtistName);
-        return trim(preg_replace('/ +/', ' ', $ArtistName));
+        # \u200e is &lrm;
+        $creatorName = trim($creatorName);
+
+        $creatorName = preg_replace("/^(\xE2\x80\x8E)+/", "", $creatorName);
+        $creatorName = preg_replace("/(\xE2\x80\x8E)+$/", "", $creatorName);
+        $creatorName = trim(preg_replace("/ +/", " ", $creatorName));
+
+        return $creatorName;
     }
-}
+} # class
