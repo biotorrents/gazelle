@@ -46,7 +46,7 @@ $validate = new Validate();
 $data = [];
 
 # basic info
-$data["categoryId"] = $post["categoryId"] ?? null;
+$data["categoryId"] = Esc::int($post["categoryId"] ?? null);
 $data["torrentFile"] = $_FILES["torrentFile"] ?? null; # todo: make Http::query() recursive
 #$data["torrentFile"] = $files["torrentFile"] ?? null;
 
@@ -63,11 +63,11 @@ $data["tagList"] = $post["tagList"] ?? null;
 $data["title"] = $post["title"] ?? null;
 $data["version"] = $post["version"] ?? null;
 $data["workgroup"] = $post["workgroup"] ?? null;
-$data["year"] = $post["year"] ?? null;
+$data["year"] = Esc::int($post["year"] ?? null);
 
 # single torrent
-$data["annotated"] = $post["annotated"] ?? null;
-$data["anonymous"] = $post["anonymous"] ?? null;
+$data["annotated"] = Esc::bool($post["annotated"] ?? null);
+$data["anonymous"] = Esc::bool($post["anonymous"] ?? null);
 $data["archive"] = $post["archive"] ?? null;
 $data["format"] = $post["format"] ?? null;
 $data["license"] = $post["license"] ?? null;
@@ -83,13 +83,13 @@ $data["seqhashSequence"] = $post["seqhashSequence"] ?? null;
 $data["seqhashShape"] = $post["seqhashShape"] ?? null;
 
 # freeleech
-$data["freeleechReason"] = $post["freeleechReason"] ?? null;
-$data["freeleechType"] = $post["freeleechType"] ?? null;
+$data["freeleechReason"] = Esc::int($post["freeleechReason"] ?? null);
+$data["freeleechType"] = Esc::int($post["freeleechType"] ?? null);
 
 # hidden fields
-$data["groupId"] = $post["groupId"] ?? null;
-$data["requestId"] = $post["requestId"] ?? null;
-$data["torrentId"] = $post["torrentId"] ?? null;
+$data["groupId"] = Esc::int($post["groupId"] ?? null);
+$data["requestId"] = Esc::int($post["requestId"] ?? null);
+$data["torrentId"] = Esc::int($post["torrentId"] ?? null);
 
 # get creators (unsure if needed)
 if ($data["groupId"]) {
@@ -224,7 +224,7 @@ $validate->setField("format", [
 
 # license
 $validate->setField("license", [
-    "inArray" => $app->env->META->Licenses,
+    "inArray" => $app->env->META->Licenses->toArray(),
     "maxLength" => 32,
     "required" => true,
     "type" => "string",
@@ -238,7 +238,7 @@ $validate->setField("mirrors", [
 
 # platform
 $validate->setField("platform", [
-    "inArray" => $app->env->META->Platforms,
+    #"inArray" => $app->env->META->Platforms->toArray(),
     "maxLength" => 32,
     "required" => true,
     "type" => "string",
@@ -246,7 +246,7 @@ $validate->setField("platform", [
 
 # scope
 $validate->setField("scope", [
-    "inArray" => $app->env->META->Scopes,
+    #"inArray" => $app->env->META->Scopes->toArray(),
     "maxLength" => 32,
     "required" => true,
     "type" => "string",
@@ -317,11 +317,12 @@ $validate->setField("torrentId", [
 
 # validate the whole form
 $validate->allFields($data);
-#!d($validate->errors);exit;
+!d($validate->errors);
+exit;
 
 # image trickery
-ImageTools::blacklisted($data['Image']);
-if (!preg_match("/{$app->env->regexImage}/", $data["picture"])) {
+ImageTools::blacklisted($data["picture"]);
+if (!preg_match("/{$app->env->regexImage}/i", $data["picture"])) {
     $data["picture"] = null;
 }
 
@@ -350,9 +351,12 @@ if (!empty($validate->errors)) {
     $data = $data;
     $errors = $validate->errors;
 
-    require_once "{$app->env->serverRoot}/sections/upload/upload.php";
-    exit;
+    #require_once "{$app->env->serverRoot}/sections/upload/upload.php";
+    #exit;
 }
+
+!d($data, $validate->errors);
+exit;
 
 
 /**

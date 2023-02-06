@@ -1,6 +1,6 @@
 <?php
 
-#declare(strict_types=1);
+declare(strict_types=1);
 
 
 /**
@@ -45,7 +45,7 @@ class Validate
             "allowComma" => $data["allowComma"] ?? null,
             "allowPeriod" => $data["allowPeriod"] ?? null,
             "compareField" => $data["compareField"] ?? null,
-            "inArray" => $data["inArray"] ?? null, # array of acceptable values
+            "inArray" => $data["inArray"] ?? [], # array of acceptable values
             "maxLength" => $data["maxLength"] ?? 255,
             "minLength" => $data["minLength"] ?? 0,
             "regex" => $data["regex"] ?? null, # full regex, e.g., "/([A-Z])\w+/"
@@ -74,7 +74,12 @@ class Validate
             # defined field missing from $dataToValidate
             $valueToValidate = $dataToValidate[$key] ?? null;
             if (!$valueToValidate) {
-                $this->errors[$key][] = "server error: the data to validate is missing a value for a defined field";
+                #$this->errors[$key][] = "server error: the data to validate is missing a value for a defined field";
+            }
+
+            # skip iterable
+            if (is_iterable($valueToValidate)) {
+                continue;
             }
 
             # allowComma: note double negative
@@ -103,8 +108,8 @@ class Validate
 
             # inArray
             if ($field["inArray"]) {
-                $good = array_search($valueToValidate, $field["inArray"]);
-                if (!$good) {
+                $good = array_search($valueToValidate, $field["inArray"], true);
+                if ($good === false) {
                     $imploded = implode(", ", $field["inArray"]);
                     $this->errors[$key][] = "{$valueToValidate} not in array of {$imploded}";
                 }
@@ -112,7 +117,7 @@ class Validate
 
             # maxLength
             if ($field["maxLength"]) {
-                $good = (strlen($valueToValidate) < $field["maxLength"]);
+                $good = (strlen(strval($valueToValidate)) < $field["maxLength"]);
                 if (!$good) {
                     $this->errors[$key][] = "maximum length {$field["maxLength"]} exceeded";
                 }
@@ -120,7 +125,7 @@ class Validate
 
             # minLength
             if ($field["minLength"]) {
-                $good = (strlen($valueToValidate) >= $field["minLength"]);
+                $good = (strlen(strval($valueToValidate)) >= $field["minLength"]);
                 if (!$good) {
                     $this->errors[$key][] = "minimum length {$field["minLength"]} not met";
                 }
@@ -443,9 +448,10 @@ class Validate
      */
     public function literature(string $data): bool
     {
+        $app = App::go();
+
         # error key
         $key = "literature";
-        $this->errors[$key] ??= [];
 
         # nothing to do
         if (empty($data)) {
@@ -460,8 +466,10 @@ class Validate
 
         # invalid doi number
         foreach ($parsedData as $item) {
-            if (!preg_match("/{$app->env->regexDoi}/", $item)) {
-                $this->errors[$key][] = "invalid doi number";
+            $item = trim(strval($item));
+            $good = preg_match("/{$app->env->regexDoi}/i", $item);
+            if (!$good) {
+                $this->errors[$key][] = "invalid doi number {$item}";
             }
         }
 
@@ -481,7 +489,6 @@ class Validate
     {
         # error key
         $key = "tagList";
-        $this->errors[$key] ??= [];
 
         # nothing to do
         if (empty($data)) {
@@ -509,7 +516,6 @@ class Validate
     {
         # error key
         $key = "year";
-        $this->errors[$key] ??= [];
 
         # nothing to do
         if (empty($data)) {
@@ -522,7 +528,7 @@ class Validate
         }
 
         # not four digits
-        if (strlen($data) !== 4) {
+        if (strlen(strval($data)) !== 4) {
             $this->errors[$key][] = "not four digits";
         }
 
@@ -552,7 +558,6 @@ class Validate
     {
         # error key
         $key = "mirrors";
-        $this->errors[$key] ??= [];
 
         # nothing to do
         if (empty($data)) {
@@ -597,7 +602,6 @@ class Validate
 
         # error key
         $key = "torrentFile";
-        $this->errors[$key] ??= [];
 
         # return data
         $data = [];

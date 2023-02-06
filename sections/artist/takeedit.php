@@ -36,14 +36,14 @@ if ($_GET['action'] === 'revert') { // if we're reverting to a previous revision
     $Image = db_string($_POST['image']);
     ImageTools::blacklisted($Image);
     // Trickery
-    if (!preg_match($app->env->regexImage, $Image)) {
+    if (!preg_match("/{$app->env->regexImage}/i", $Image)) {
         $Image = '';
     }
 }
 
 // Insert revision
 if (!$RevisionID) { // edit
-  $app->dbOld->query("
+    $app->dbOld->query("
     INSERT INTO wiki_artists
       (PageID, Body, Image, UserID, Summary, Time)
     VALUES

@@ -8,7 +8,7 @@ $ENV = ENV::go();
 
 if (!$_GET['doi']) {
     json_error('expected doi param');
-} elseif (!preg_match($app->env->regexDoi, strtoupper($_GET['doi']))) {
+} elseif (!preg_match("/{$app->env->regexDoi}/i", strtoupper($_GET['doi']))) {
     json_error('expected valid doi');
 } else {
     $DOI = $_GET['doi'];

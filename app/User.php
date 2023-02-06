@@ -1206,7 +1206,7 @@ class User
 
             # avatar
             $avatar = Esc::url($data["avatar"]);
-            $good = preg_match($app->env->regexImage, $avatar);
+            $good = preg_match("/{$app->env->regexImage}/i", $avatar);
 
             if (!$good && !empty($avatar)) {
                 throw new Exception("invalid avatar");

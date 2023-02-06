@@ -83,7 +83,7 @@ else {
     }
 
     // Trickery
-    if (!preg_match($app->env->regexImage, $picture)) {
+    if (!preg_match("/{$app->env->regexImage}/i", $picture)) {
         $picture = '';
     }
 
@@ -93,7 +93,7 @@ else {
 
 // Insert revision
 if (empty($revision_id)) { // edit
-  $app->dbOld->prepared_query("
+    $app->dbOld->prepared_query("
   INSERT INTO `wiki_torrents`(
     `PageID`,
     `Body`,

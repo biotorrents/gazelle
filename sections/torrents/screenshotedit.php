@@ -30,7 +30,7 @@ if (!check_perms('torrents_edit') && !check_perms('screenshots_add') && !check_p
 $Screenshots = $_POST['screenshots'] ?? [];
 $Screenshots = array_map("trim", $Screenshots);
 $Screenshots = array_filter($Screenshots, function ($s) {
-    return preg_match($app->env->regexDoi, $s);
+    return preg_match("/{$app->env->regexDoi}/i", $s);
 });
 $Screenshots = array_unique($Screenshots);
 
@@ -70,7 +70,6 @@ if (!empty($Deleted)) {
     } else {
         $DeleteList = [];
         foreach ($Deleted as $S) {
-
             // If the user who submitted this request uploaded the image, add the image to the list.
             if ($Old[$S] === $app->userNew->core['id']) {
                 $DeleteList[] = $S;

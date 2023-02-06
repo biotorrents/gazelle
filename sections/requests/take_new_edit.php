@@ -97,7 +97,7 @@ if (empty($_POST['image'])) {
     $Image = '';
 } else {
     ImageTools::blacklisted($_POST['image']);
-    if (preg_match($app->env->regexImage, trim($_POST['image'])) > 0) {
+    if (preg_match("/{$app->env->regexImage}/i", trim($_POST['image'])) > 0) {
         $Image = trim($_POST['image']);
     } else {
         $Err = Text::esc($_POST['image']).' does not appear to be a valid link to an image.';
@@ -258,7 +258,7 @@ if (isset($ArtistForm)) {
         ($RequestID, ".$Artist['id'].")");
         $app->cacheOld->delete_value('artists_requests_'.$Artist['id']);
     }
-    // End music only
+// End music only
 } else {
     // Not a music request anymore, delete music only fields.
     if (!$NewRequest) {

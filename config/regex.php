@@ -60,7 +60,7 @@ ENV::setPub(
 #define("regexImage", regexUri."\/\S+\.(jpg|jpeg|tif|tiff|png|gif|bmp)(\?\S*)?");
 ENV::setPub(
     "regexImage",
-    "/{$env->regexUri}\/\S+\.(jpg|jpeg|tif|tiff|png|gif|bmp)(\?\S*)?/i"
+    "{$env->regexUri}\/\S+\.(jpg|jpeg|tif|tiff|png|gif|bmp)(\?\S*)?"
 );
 
 
@@ -120,7 +120,7 @@ ENV::setPub(
 # https://www.crossref.org/blog/dois-and-matching-regular-expressions/
 ENV::setPub(
     "regexDoi",
-    "10.\d{4,9}\/[-._;()\/:A-Z0-9]+"
+    "^10.\d{4,9}\/[-._;()\/:A-Z0-9]+$"
 );
 
 

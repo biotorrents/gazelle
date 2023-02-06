@@ -29,7 +29,7 @@ if (!extension_loaded('openssl') && strtoupper($URL[4]) === 'S') {
 }
 
 /*
-if (!(preg_match($app->env->regexImage, $URL, $Matches) || preg_match($app->env->regexVideo, $URL, $Matches))) {
+if (!(preg_match("/{$app->env->regexImage}/i", $URL, $Matches) || preg_match($app->env->regexVideo, $URL, $Matches))) {
   img_error('invalid');
 }
 */
