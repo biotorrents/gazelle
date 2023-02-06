@@ -44,10 +44,12 @@ $app->twig->display("torrents/upload.twig", [
     "submitType" => "create",
 
     # todo: this needs to be torrentGroup
-    "torrent" => [
+    "data" => [
+      "categoryId" => null,
       "identifier" => null,
-      "GroupID" => null,
-      "RequestID" => null,
+      "groupId" => null,
+      "requestId" => null,
+      "torrentId" => null,
       "version" => null,
       "title" => null,
       "subject" => null,

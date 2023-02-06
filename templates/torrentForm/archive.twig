@@ -5,10 +5,10 @@
 	</th>
 
 	<td>
-		<select id="archive" name="archive" class="select">
+		<select id="archive" name="archive" class="select" required>
 			<option value="">The compression algorithm, if any</option>
 			{% for key, value in env.META.Formats.Archives %}
-				<option value="{{ key }}">{{ key }}</option>
+				<option value="{{ key }}" {{ (data.archive == key) ? "selected" : "" }}>{{ key }}</option>
 			{% endfor %}
 		</select>
 	</td>

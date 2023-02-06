@@ -11,15 +11,13 @@
 	<h2>Upload a torrent</h2>
 
 	{# notice #}
-	{% set variables = {"foo": "bar"} %}
-	{% include "torrentForm/notice.twig" with variables %}
+	{% include "torrentForm/notice.twig" %}
 
 	{# announce and source #}
-	{% set variables = {"foo": "bar"} %}
-	{% include "torrentForm/announceSource.twig" with variables %}
+	{% include "torrentForm/announceSource.twig" %}
 
 	{# the upload form itself #}
-	<form id="torrentForm" method="post">
+	<form id="torrentForm" method="post" enctype="multipart/form-data">
 
 		{# hidden fields #}
 		{{ form_token(query.server.REQUEST_URI) }}
@@ -27,19 +25,25 @@
 		<input type="hidden" name="auth" value="{{ user.extra.AuthKey }}"/>
 
 		{% if not newTorrent %}
-			<input type="hidden" name="action" value="takeedit"/>
-			<input type="hidden" name="torrentId" value="{{ torrentId }}"/>
-			<input type="hidden" name="categoryId" value="{{ categoryId }}"/>
+			<input type="hidden" name="action" value="update"/>
 		{% endif %}
 
-		{% if torrent and torrent.GroupID %}
-			<input type="hidden" name="groupId" value="{{ torrent.GroupID }}"/>
-			<input type="hidden" name="categoryId" value="{{ torrent.CategoryID }}"/>
+		{% if data and data.categoryId %}
+			<input type="hidden" name="categoryId" value="{{ data.categoryId }}"/>
 		{% endif %}
 
-		{% if torrent and torrent.RequestID %}
-			<input type="hidden" name="requestId" value="{{ torrent.RequestID }}"/>
+		{% if data and data.groupId %}
+			<input type="hidden" name="groupId" value="{{ data.groupId }}"/>
 		{% endif %}
+
+		{% if data and data.requestId %}
+			<input type="hidden" name="requestId" value="{{ data.requestId }}"/>
+		{% endif %}
+
+		{% if data and data.torrentId %}
+			<input type="hidden" name="torrentId" value="{{ data.torrentId }}"/>
+		{% endif %}
+
 
 		{# start the table #}
 		{% if newTorrent %}
@@ -49,11 +53,10 @@
 				<table class="torrentForm">
 
 					{# upload .torrent file #}
-					{% set variables = {"foo": "bar"} %}
-					{% include "torrentForm/torrentFile.twig" with variables %}
+					{% include "torrentForm/torrentFile.twig" %}
 
 					{# category select #}
-					{% set variables = {"foo": "bar"} %}
+					{% set variables = {"value": (data.categoryId) ? data.categoryId : ""} %}
 					{% include "torrentForm/categoryId.twig" with variables %}
 
 				</table>
@@ -76,60 +79,60 @@
 				{# title, subject, and object #}
 				{% set variables = {
 					"db": env.DB,
-					"title": (torrent.title) ? torrent.title : "",
-					"subject": (torrent.subject) ? torrent.subject : "",
-					"object": (torrent.object) ? torrent.object : "",
+					"title": (data.title) ? data.title : "",
+					"subject": (data.subject) ? data.subject : "",
+					"object": (data.object) ? data.object : "",
 				} %}
 				{% include "torrentForm/titles.twig" with variables %}
 
 				{## #}
 
 				{# year #}
-				{% set variables = {"db": env.DB.year, "value": (torrent.year) ? torrent.year : ""} %}
+				{% set variables = {"db": env.DB.year, "value": (data.year) ? data.year : ""} %}
 				{% include "torrentForm/year.twig" with variables %}
 
 				{# workgroup #}
-				{% set variables = {"db": env.DB.workgroup, "value": (torrent.workgroup) ? torrent.workgroup : ""} %}
+				{% set variables = {"db": env.DB.workgroup, "value": (data.workgroup) ? data.workgroup : ""} %}
 				{% include "torrentForm/workgroup.twig" with variables %}
 
 				{# location #}
-				{% set variables = {"db": env.DB.location, "value": (torrent.location) ? torrent.location : ""} %}
+				{% set variables = {"db": env.DB.location, "value": (data.location) ? data.location : ""} %}
 				{% include "torrentForm/location.twig" with variables %}
 
 				{## #}
 
 				{# identifier #}
-				{% set variables = {"db": env.DB.identifier, "value": (torrent.identifier) ? torrent.identifier : ""} %}
+				{% set variables = {"db": env.DB.identifier, "value": (data.identifier) ? data.identifier : ""} %}
 				{% include "torrentForm/identifier.twig" with variables %}
 
 				{# version #}
-				{% set variables = {"db": env.DB.version, "value": (torrent.version) ? torrent.version : ""} %}
+				{% set variables = {"db": env.DB.version, "value": (data.version) ? data.version : ""} %}
 				{% include "torrentForm/version.twig" with variables %}
 
 				{## #}
 
 				{# groupDescription #}
-				{% set variables = {"db": env.DB.description, "value": (torrent.groupDescription) ? torrent.groupDescription : ""} %}
+				{% set variables = {"db": env.DB.description, "value": (data.groupDescription) ? data.groupDescription : "", "required": true} %}
 				{% include "torrentForm/groupDescription.twig" with variables %}
 
 				{## #}
 
 				{# creatorList #}
-				{% set variables = {"db": env.DB.version, "value": (torrent.creatorList) ? torrent.creatorList : ""} %}
+				{% set variables = {"db": env.DB.version, "value": (data.creatorList) ? data.creatorList : ""} %}
 				{% include "torrentForm/creatorList.twig" with variables %}
 
 				{# tagList #}
-				{% set variables = {"db": env.DB.tag_list, "value": (torrent.tagList) ? torrent.tagList : ""} %}
+				{% set variables = {"db": env.DB.tag_list, "value": (data.tagList) ? data.tagList : ""} %}
 				{% include "torrentForm/tagList.twig" with variables %}
 
 				{## #}
 
 				{# picture #}
-				{% set variables = {"db": env.DB.picture, "value": (torrent.picture) ? torrent.picture : ""} %}
+				{% set variables = {"db": env.DB.picture, "value": (data.picture) ? data.picture : ""} %}
 				{% include "torrentForm/picture.twig" with variables %}
 
 				{# literature #}
-				{% set variables = {"db": env.DB.picture, "value": (torrent.literature) ? torrent.literature : ""} %}
+				{% set variables = {"db": env.DB.picture, "value": (data.literature) ? data.literature : ""} %}
 				{% include "torrentForm/literature.twig" with variables %}
 
 			</table>
@@ -149,39 +152,39 @@
 			<table class="torrentForm">
 
 				{# platform #}
-				{% set variables = {"db": env.META.Platforms, "value": (torrent.platform) ? torrent.platform : ""} %}
+				{% set variables = {"db": env.META.Platforms, "value": (data.platform) ? data.platform : ""} %}
 				{% include "torrentForm/platforms.twig" with variables %}
 
 				{# format #}
-				{% set variables = {"db": env.META.Formats, "value": (torrent.format) ? torrent.format : ""} %}
+				{% set variables = {"db": env.META.Formats, "value": (data.format) ? data.format : ""} %}
 				{% include "torrentForm/formats.twig" with variables %}
 
 				{# scopes #}
-				{% set variables = {"db": env.META.Formats, "value": (torrent.scope) ? torrent.scope : ""} %}
+				{% set variables = {"db": env.META.Formats, "value": (data.scope) ? data.scope : ""} %}
 				{% include "torrentForm/scopes.twig" with variables %}
 
 				{# archive #}
-				{% set variables = {"db": env.META.Formats, "value": (torrent.archive) ? torrent.archive : ""} %}
+				{% set variables = {"db": env.META.Formats, "value": (data.archive) ? data.archive : ""} %}
 				{% include "torrentForm/archive.twig" with variables %}
 
 				{# license #}
-				{% set variables = {"db": env.DB.license, "value": (torrent.license) ? torrent.license : ""} %}
+				{% set variables = {"db": env.DB.license, "value": (data.license) ? data.license : ""} %}
 				{% include "torrentForm/license.twig" with variables %}
 
 				{## #}
 
 				{# torrentDescription #}
-				{% set variables = {"db": env.DB.description, "value": (torrent.torrentDescription) ? torrent.torrentDescription : ""} %}
+				{% set variables = {"db": env.DB.description, "value": (data.torrentDescription) ? data.torrentDescription : ""} %}
 				{% include "torrentForm/torrentDescription.twig" with variables %}
 
 				{## #}
 
 				{# mirrors #}
-				{% set variables = {"db": env.DB.mirrors, "value": (torrent.mirrors) ? torrent.mirrors : ""} %}
+				{% set variables = {"db": env.DB.mirrors, "value": (data.mirrors) ? data.mirrors : ""} %}
 				{% include "torrentForm/mirrors.twig" with variables %}
 
 				{# seqhash #}
-				{% set variables = {"db": env.DB.seqhash, "value": (torrent.seqhash) ? torrent.seqhash : ""} %}
+				{% set variables = {"db": env.DB.seqhash, "value": (data.seqhash) ? data.seqhash : ""} %}
 				{% include "torrentForm/seqhash.twig" with variables %}
 
 				{## #}
@@ -189,13 +192,13 @@
 				{# booleans #}
 				{% set variables = {
 					"db": env.DB.description,
-					"annotated": (torrent.annotated) ? torrent.annotated : "",
-					"anonymous": (torrent.anonymous) ? torrent.anonymous : "",
+					"annotated": (data.annotated) ? data.annotated : "",
+					"anonymous": (data.anonymous) ? data.anonymous : "",
 				} %}
 				{% include "torrentForm/booleans.twig" with variables %}
 
 				{# freeleech #}
-				{% set variables = {"db": env.DB.description, "value": (torrent.torrentDescription) ? torrent.torrentDescription : ""} %}
+				{% set variables = {"db": env.DB.description, "value": (data.torrentDescription) ? data.torrentDescription : ""} %}
 				{% include "torrentForm/freeleech.twig" with variables %}
 
 			</table>

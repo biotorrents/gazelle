@@ -102,9 +102,14 @@ class Http
         }
 
         foreach ($_FILES as $key => $value) {
-            $key = Text::esc($key);
-            $value = Text::esc($value);
-            $safe["files"][$key] = $value;
+            # not recursive
+            if (is_array($value)) {
+                foreach ($value as $k => $v) {
+                    $k = Text::esc($k);
+                    $v = Text::esc($v);
+                    $safe["files"][$key][$v] = $v;
+                }
+            }
         }
 
         foreach ($_GET as $key => $value) {

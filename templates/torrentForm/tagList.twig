@@ -9,9 +9,18 @@
 			<select id="tagList" name="tagList[]" class="select" multiple>
 				<option value="">{{ db.desc }}</option>
 				{% for item in tagList %}
-					<option value="{{ item }}">{{ item }}</option>
+
+					{% set selected = "" %}
+					{% if item in value %}
+						{% set selected = "selected" %}
+					{% endif %}
+
+					<option value="{{ item }}" {{ selected }}>{{ item }}</option>
+
 				{% endfor %}
 			</select>
+
+			<aside>You can search within selections</aside>
 		</td>
 	</tr>
 {% endif %}

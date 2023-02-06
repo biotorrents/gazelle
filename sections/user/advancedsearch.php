@@ -11,7 +11,7 @@ if (!empty($_GET['search'])) {
         } elseif (preg_match($app->env->regexEmail, $_GET['search'])) {
             $_GET['email'] = $_GET['search'];
         */
-    } elseif (preg_match($app->env->regexUsername, $_GET['search'])) {
+    } elseif (preg_match("/{$app->env->regexUsername}/", $_GET['search'])) {
         $app->dbOld->query("
       SELECT ID
       FROM users_main

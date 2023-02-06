@@ -6,7 +6,7 @@
 		</th>
 
 		<td>
-			<input type="text" id="title" name="title" placeholder="{{ db.title.desc }}" value="{{ title }}"/>
+			<input type="text" id="title" name="title" maxlength="255" placeholder="{{ db.title.desc }}" value="{{ title }}" required/>
 		</td>
 	</tr>
 
@@ -17,7 +17,7 @@
 		</th>
 
 		<td>
-			<input type="text" id="subject" name="subject" placeholder="{{ db.subject.desc }}" value="{{ subject }}"/>
+			<input type="text" id="subject" name="subject" maxlength="255" placeholder="{{ db.subject.desc }}" value="{{ subject }}"/>
 		</td>
 	</tr>
 
@@ -28,7 +28,7 @@
 		</th>
 
 		<td>
-			<input type="text" id="object" name="object" placeholder="{{ db.object.desc }}" value="{{ object }}"/>
+			<input type="text" id="object" name="object" maxlength="255" placeholder="{{ db.object.desc }}" value="{{ object }}"/>
 		</td>
 	</tr>
 {% endif %}

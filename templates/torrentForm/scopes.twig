@@ -4,7 +4,6 @@
 		<tr id="{{ value.Name|camel }}Scope">
 			<th>
 				<label for="scope" class="required">Scope</label>
-				{# <label for="scope" class="required">Scope ({{ value.Name }})</label> #}
 			</th>
 
 			<td>
@@ -23,7 +22,7 @@
 	{% endfor %}
 
 {% else %}
-	<input type="hidden" id="scope" name="scope" value="{{ torrent.scope }}"/>
+	<input type="hidden" id="scope" name="scope" value="{{ value }}"/>
 {% endif %}
 
 {#

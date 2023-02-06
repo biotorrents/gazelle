@@ -76,8 +76,7 @@ function authorize($Ajax = false)
  */
 function is_number($Str)
 {
-    # todo: Strict equality breaks everything
-    return $Str == strval(intval($Str));
+    return is_numeric($str);
 }
 
 

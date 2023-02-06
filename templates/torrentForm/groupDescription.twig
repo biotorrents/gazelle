@@ -6,7 +6,7 @@
 		</th>
 
 		<td>
-			{% set variables = {"id": "groupDescription", "name": "groupDescription", "placeholder": db.desc, "value": value} %}
+			{% set variables = {"id": "groupDescription", "name": "groupDescription", "placeholder": db.desc, "value": value, "required": true} %}
 			{% include "_base/textarea.twig" with variables %}
 		</td>
 	</tr>

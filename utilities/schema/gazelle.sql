@@ -1,15 +1,3 @@
--- Please see the limits for kinds of fields below.
--- The commented dates above each table refer to when I last manually reconciled the schema.
---
---   * Integers, ID numbers, etc.
---   * Warning: #1681 Integer display width is deprecated and will be removed in a future release
---
---   * Accession numbers:  varchar(50)
---   * Gazelle titles:     varchar(50)
---   * Torrent titles:     varchar(255)
---   * Ocelot tokens:      char(32)
---   * Tag lists:          varchar(500)
-
 -- Development or production?
 SET FOREIGN_KEY_CHECKS = 0;
 CREATE DATABASE gazelle_development CHARACTER SET utf8mb4;
@@ -943,11 +931,11 @@ CREATE TABLE `torrents` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `GroupID` int NOT NULL DEFAULT '0',
   `UserID` int DEFAULT NULL,
-  `Media` varchar(25) DEFAULT NULL,
-  `Container` varchar(25) DEFAULT NULL,
-  `Codec` varchar(25) DEFAULT NULL,
-  `Resolution` varchar(25) DEFAULT NULL,
-  `Version` varchar(10) DEFAULT NULL,
+  `Media` varchar(32) DEFAULT NULL,
+  `Container` varchar(32) DEFAULT NULL,
+  `Codec` varchar(32) DEFAULT NULL,
+  `Resolution` varchar(32) DEFAULT NULL,
+  `Version` varchar(32) DEFAULT NULL,
   `Censored` tinyint NOT NULL DEFAULT '1',
   `Anonymous` tinyint NOT NULL DEFAULT '0',
   `info_hash` blob NOT NULL,
@@ -965,7 +953,7 @@ CREATE TABLE `torrents` (
   `Snatched` int unsigned NOT NULL DEFAULT '0',
   `balance` bigint NOT NULL DEFAULT '0',
   `LastReseedRequest` datetime,
-  `Archive` varchar(10) NOT NULL DEFAULT '',
+  `Archive` varchar(32) NOT NULL DEFAULT '',
   PRIMARY KEY (`ID`),
   UNIQUE KEY `InfoHash` (`info_hash`(40)),
   KEY `GroupID` (`GroupID`),
@@ -1027,10 +1015,10 @@ CREATE TABLE `torrents_group` (
   `subject` varchar(255) DEFAULT NULL,
   `object` varchar(255) DEFAULT NULL,
   `year` smallint DEFAULT NULL,
-  `workgroup` varchar(100) DEFAULT NULL,
-  `location` varchar(100) DEFAULT NULL,
-  `identifier` varchar(50) DEFAULT NULL,
-  `tag_list` varchar(500) DEFAULT NULL,
+  `workgroup` varchar(128) DEFAULT NULL,
+  `location` varchar(128) DEFAULT NULL,
+  `identifier` varchar(64) DEFAULT NULL,
+  `tag_list` varchar(512) DEFAULT NULL,
   `timestamp` datetime DEFAULT NULL,
   `revision_id` int DEFAULT NULL,
   `description` text DEFAULT NULL,
@@ -1300,7 +1288,7 @@ CREATE TABLE `users_levels` (
 
 CREATE TABLE `users_main` (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
-  `Username` varchar(25) NOT NULL DEFAULT '',
+  `Username` varchar(32) NOT NULL DEFAULT '',
   `Email` varchar(255) NOT NULL DEFAULT '',
   `PassHash` varchar(60) NOT NULL DEFAULT '',
   `TwoFactor` varchar(255) DEFAULT NULL,

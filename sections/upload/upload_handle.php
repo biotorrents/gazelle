@@ -18,11 +18,10 @@ declare(strict_types=1);
  * 7. sings from the rooftops, announces on channels
  */
 
-
 $app = App::go();
 
 # https://github.com/paragonie/anti-csrf
-Http::csrf();
+#Http::csrf();
 
 authorize();
 enforce_login();
@@ -30,6 +29,8 @@ enforce_login();
 # request vars
 $post = Http::query("post");
 $files = Http::query("files");
+!d($post, $files, $_FILES);
+exit;
 
 # gazelle libraries
 $feed = new Feed();
@@ -48,7 +49,8 @@ $data = [];
 
 # basic info
 $data["categoryId"] = $post["categoryId"] ?? null;
-$data["torrentFile"] = $files["torrentFile"] ?? null;
+$data["torrentFile"] = $_FILES["torrentFile"] ?? null; # todo: make Http::query() recursive
+#$data["torrentFile"] = $files["torrentFile"] ?? null;
 
 # torrent group
 $data["creatorList"] = $post["creatorList"] ?? null;
@@ -102,17 +104,236 @@ if ($data["groupId"]) {
  */
 
 # categoryId
-if ($data["categoryId"]) {
-    $validate->setField("categoryId", [
-        "errorMessage" => "Please select a valid category",
-        "inArray" => $app->env->CATS->array_keys(),
-        "maxLength" => $data["maxLength"] ?? null,
-        "minLength" => $data["minLength"] ?? null,
-        "regex" => $data["regex"] ?? null,
-        "required" => true,
-        "type" => $data["type"] ?? null,
-    ]);
-}
+$validate->setField("categoryId", [
+    "inArray" => $app->env->CATS->array_keys(),
+    "required" => true,
+    "type" => "integer",
+]);
+
+# torrentFile
+$validate->setField("torrentFile", [
+    "required" => true,
+    "type" => "torrentFile",
+]);
+
+/** */
+
+# creatorList
+$validate->setField("creatorList", [
+    "maxLength" => 65535,
+    "required" => true,
+    "type" => "string",
+]);
+
+# groupDescription
+$validate->setField("groupDescription", [
+    "maxLength" => 65535,
+    "required" => true,
+    "type" => "string",
+]);
+
+# identifier
+$validate->setField("identifier", [
+    "maxLength" => 64,
+    "required" => true,
+    "type" => "string",
+]);
+
+# literature
+$validate->setField("literature", [
+    "maxLength" => 512,
+    "required" => true,
+    "type" => "literature",
+]);
+
+# location
+$validate->setField("location", [
+    "maxLength" => 128,
+    "required" => true,
+    "type" => "string",
+]);
+
+# object
+$validate->setField("object", [
+    "required" => true,
+    "type" => "string",
+]);
+
+# picture
+$validate->setField("picture", [
+    "required" => true,
+    "type" => "url",
+]);
+
+# subject
+$validate->setField("subject", [
+    "required" => true,
+    "type" => "string",
+]);
+
+# tagList
+$validate->setField("tagList", [
+    "required" => true,
+]);
+
+# title
+$validate->setField("title", [
+    "required" => true,
+    "type" => "string",
+]);
+
+# version
+$validate->setField("version", [
+    "maxLength" => 32,
+    "type" => "string",
+]);
+
+# workgroup
+$validate->setField("workgroup", [
+    "maxLength" => 128,
+    "required" => true,
+    "type" => "string",
+]);
+
+# year
+$validate->setField("year", [
+    "required" => true,
+    "type" => "year",
+]);
+
+/** */
+
+# annotated
+$validate->setField("annotated", [
+    "type" => "boolean",
+]);
+
+# anonymous
+$validate->setField("anonymous", [
+    "type" => "boolean",
+]);
+
+# archive
+$validate->setField("archive", [
+    "inArray" => $app->env->META->Formats->Archives->array_keys(),
+    "maxLength" => 32,
+    "required" => true,
+    "type" => "string",
+]);
+
+# format
+$validate->setField("format", [
+    "maxLength" => 32,
+    "required" => true,
+    "type" => "string",
+]);
+
+# license
+$validate->setField("license", [
+    "inArray" => $app->env->META->Licenses,
+    "maxLength" => 32,
+    "required" => true,
+    "type" => "string",
+]);
+
+# mirrors
+$validate->setField("mirrors", [
+    "maxLength" => 512,
+    "required" => true,
+    "type" => "mirrors",
+]);
+
+# platform
+$validate->setField("platform", [
+    "maxLength" => 32,
+    "required" => true,
+    "type" => "string",
+]);
+
+# scope
+$validate->setField("scope", [
+    "inArray" => $app->env->META->Scopes,
+    "maxLength" => 32,
+    "required" => true,
+    "type" => "string",
+]);
+
+# torrentDescription
+$validate->setField("torrentDescription", [
+    "maxLength" => 65535,
+    "type" => "string",
+]);
+
+/** */
+
+# seqhashAlphabet
+$validate->setField("seqhashAlphabet", [
+    "inArray" => ["dna", "rna", "protein"],
+    "type" => "string",
+]);
+
+# seqhashHelix
+$validate->setField("seqhashHelix", [
+    "inArray" => ["doubleStranded", "singleStranded"],
+    "type" => "string",
+]);
+
+# seqhashSequence
+$validate->setField("seqhashSequence", [
+    "maxLength" => 65535,
+    "type" => "string",
+]);
+
+# seqhashShape
+$validate->setField("seqhashShape", [
+    "inArray" => ["linear", "circular"],
+    "type" => "string",
+]);
+
+/** */
+
+# freeleechReason
+$validate->setField("freeleechReason", [
+    "type" => "integer",
+]);
+
+# freeleechType
+$validate->setField("freeleechType", [
+    "type" => "integer",
+]);
+
+/** */
+
+# groupId
+$validate->setField("groupId", [
+    "type" => "integer",
+]);
+
+# requestId
+$validate->setField("requestId", [
+    "type" => "integer",
+]);
+
+# torrentId
+$validate->setField("torrentId", [
+    "type" => "integer",
+]);
+
+/** */
+
+# validate the whole form
+$errorMessages = $validate->allFields($data);
+
+
+/**
+ * ad hoc field validation and normalization
+ */
+
+
+
+
+
+
 
 /** TODO: START HERE */
 
@@ -122,146 +343,121 @@ if ($data["categoryId"]) {
  * Validate data in upload form
  */
 
-# Submit button
+
+
+
+# torrents.Version
 $validate->SetFields(
-    'type',
-    '1',
-    'inarray',
-    'Please select a valid type.',
-    array('inarray' => array_keys($Categories))
+    'version',
+    '0',
+    'string',
+    'Version must be between 0 and 10 characters.',
+    array('maxlength' => 10, 'minlength' => 0)
 );
 
-# torrents_group.category_id
+# torrents_group.title
 $validate->SetFields(
-    'type',
+    'title',
     '1',
-    'inarray',
-    'Please select a valid type.',
-    array('inarray' => array_keys($Categories))
+    'string',
+    'Torrent Title must be between 10 and 255 characters.',
+    array('maxlength' => 255, 'minlength' => 10)
 );
 
-if (!$_POST['groupid']) {
-    # torrents_group.identifier
-    $validate->SetFields(
-        'catalogue',
-        '0',
-        'string',
-        'Accession Number must be between 0 and 50 characters.',
-        array('maxlength' => 50, 'minlength' => 0)
-    );
+# torrents_group.subject
+$validate->SetFields(
+    'title_rj',
+    '0',
+    'string',
+    'Organism must be between 0 and 255 characters.',
+    array('maxlength' => 255, 'minlength' => 0)
+);
 
-    # torrents.Version
-    $validate->SetFields(
-        'version',
-        '0',
-        'string',
-        'Version must be between 0 and 10 characters.',
-        array('maxlength' => 10, 'minlength' => 0)
-    );
+# torrents_group.object
+$validate->SetFields(
+    'title_jp',
+    '0',
+    'string',
+    'Strain/Variety must be between 0 and 255 characters.',
+    array('maxlength' => 255, 'minlength' => 0)
+);
 
-    # torrents_group.title
-    $validate->SetFields(
-        'title',
-        '1',
-        'string',
-        'Torrent Title must be between 10 and 255 characters.',
-        array('maxlength' => 255, 'minlength' => 10)
-    );
+# torrents_group.workgroup
+$validate->SetFields(
+    'studio',
+    '1',
+    'string',
+    'Department/Lab must be between 0 and 100 characters.',
+    array('maxlength' => 100, 'minlength' => 0)
+);
 
-    # torrents_group.subject
-    $validate->SetFields(
-        'title_rj',
-        '0',
-        'string',
-        'Organism must be between 0 and 255 characters.',
-        array('maxlength' => 255, 'minlength' => 0)
-    );
+# torrents_group.location
+$validate->SetFields(
+    'series',
+    '0',
+    'string',
+    'Location must be between 0 and 100 characters.',
+    array('maxlength' => 100, 'minlength' => 0)
+);
 
-    # torrents_group.object
-    $validate->SetFields(
-        'title_jp',
-        '0',
-        'string',
-        'Strain/Variety must be between 0 and 255 characters.',
-        array('maxlength' => 255, 'minlength' => 0)
-    );
+/* todo: Fix the year validation
+# torrents_group.year
+$validate->SetFields(
+    'year',
+    '1',
+    'number',
+    'The year of the original release must be entered.',
+    array('maxlength' => 4, 'minlength' => 4)
+);
+*/
 
-    # torrents_group.workgroup
-    $validate->SetFields(
-        'studio',
-        '1',
-        'string',
-        'Department/Lab must be between 0 and 100 characters.',
-        array('maxlength' => 100, 'minlength' => 0)
-    );
+# torrents.Media
+$validate->SetFields(
+    'media',
+    '1',
+    'inarray',
+    'Please select a valid platform.',
+    array('inarray' => $app->env->META->Platforms)
+);
 
-    # torrents_group.location
-    $validate->SetFields(
-        'series',
-        '0',
-        'string',
-        'Location must be between 0 and 100 characters.',
-        array('maxlength' => 100, 'minlength' => 0)
-    );
+/*
+# torrents.Container
+$validate->SetFields(
+    'container',
+    '1',
+    'inarray',
+    'Please select a valid format.',
+    array('inarray' => array_merge($Containers, $ContainersGames))
+);
+*/
 
-    /* todo: Fix the year validation
-    # torrents_group.year
-    $validate->SetFields(
-        'year',
-        '1',
-        'number',
-        'The year of the original release must be entered.',
-        array('maxlength' => 4, 'minlength' => 4)
-    );
-    */
+# torrents.Resolution
+$validate->SetFields(
+    'resolution',
+    '1',
+    'string',
+    'Scope must be between 4 and 20 characters.',
+    array('maxlength' => 20, 'minlength' => 4)
+);
 
-    # torrents.Media
-    $validate->SetFields(
-        'media',
-        '1',
-        'inarray',
-        'Please select a valid platform.',
-        array('inarray' => $app->env->META->Platforms)
-    );
+# torrents_group.tag_list
+$validate->SetFields(
+    'tags',
+    '1',
+    'string',
+    'You must enter at least five tags. Maximum length is 500 characters.',
+    array('maxlength' => 500, 'minlength' => 10)
+);
 
-    /*
-    # torrents.Container
-    $validate->SetFields(
-        'container',
-        '1',
-        'inarray',
-        'Please select a valid format.',
-        array('inarray' => array_merge($Containers, $ContainersGames))
-    );
-    */
+# torrents_group.picture
+$validate->SetFields(
+    'image',
+    '0',
+    'link',
+    'The image URL you entered was invalid.',
+    array('maxlength' => 255, 'minlength' => 10) # x.yz/a.bc
+);
 
-    # torrents.Resolution
-    $validate->SetFields(
-        'resolution',
-        '1',
-        'string',
-        'Scope must be between 4 and 20 characters.',
-        array('maxlength' => 20, 'minlength' => 4)
-    );
-
-    # torrents_group.tag_list
-    $validate->SetFields(
-        'tags',
-        '1',
-        'string',
-        'You must enter at least five tags. Maximum length is 500 characters.',
-        array('maxlength' => 500, 'minlength' => 10)
-    );
-
-    # torrents_group.picture
-    $validate->SetFields(
-        'image',
-        '0',
-        'link',
-        'The image URL you entered was invalid.',
-        array('maxlength' => 255, 'minlength' => 10) # x.yz/a.bc
-    );
-}
 
 # torrents_group.description
 $validate->SetFields(

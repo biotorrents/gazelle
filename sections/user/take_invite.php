@@ -60,7 +60,7 @@ if (strpos($Email, '|') !== false && check_perms('site_send_unlimited_invites'))
 }
 
 foreach ($Emails as $CurEmail) {
-    if (!preg_match($app->env->regexEmail, $CurEmail)) {
+    if (!preg_match("/{$app->env->regexEmail}/", $CurEmail)) {
         if (count($Emails) > 1) {
             continue;
         } else {

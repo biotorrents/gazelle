@@ -414,7 +414,7 @@ $metadata = [
             "RAR"      => ["rar", "rev"],
             "tar"      => ["tar"],
             "ZIP"      => ["zip", "zipx"],
-            "None"     => [""],
+            "None"     => ["None"],
         ],
 
         /**

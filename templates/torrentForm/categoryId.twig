@@ -5,9 +5,9 @@
 	</th>
 
 	<td>
-		<select id="categoryId" name="categoryId">
+		<select id="categoryId" name="categoryId" required>
 			{% for item in env.CATS %}
-				<option value="{{ item.ID }}">{{ item.Name }}</option>
+				<option value="{{ item.ID }}" {{ (value == item.ID) ? "selected" : "" }}>{{ item.Name }}</option>
 			{% endfor %}
 		</select>
 

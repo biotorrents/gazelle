@@ -5,12 +5,17 @@
 
 /**
  * Validate
+ *
+ * @see https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html
  */
 
 class Validate
 {
     # collect the validated fields
     public $fields = [];
+
+    # collect the error messages
+    public $errorMessages = [];
 
     # varchar field limits
     public $varcharFull = 255;
@@ -34,19 +39,480 @@ class Validate
             throw new Exception("empty fieldName");
         }
 
-        # set $this->fields
+        # set $this->fields with sensible defaults
+        # this should be a list of test names and conditions
         $this->fields[$fieldName] = [
             "allowComma" => $data["allowComma"] ?? null,
             "allowPeriod" => $data["allowPeriod"] ?? null,
             "compareField" => $data["compareField"] ?? null,
-            "errorMessage" => $data["errorMessage"] ?? null,
-            "inArray" => $data["inArray"] ?? null,
-            "maxLength" => $data["maxLength"] ?? null,
-            "minLength" => $data["minLength"] ?? null,
-            "regex" => $data["regex"] ?? null,
-            "required" => $data["required"] ?? null,
-            "type" => $data["type"] ?? null,
+            "inArray" => $data["inArray"] ?? null, # array of acceptable values
+            "maxLength" => $data["maxLength"] ?? 255,
+            "minLength" => $data["minLength"] ?? 0,
+            "regex" => $data["regex"] ?? null, # full regex, e.g., "/([A-Z])\w+/"
+            "required" => $data["required"] ?? false,
+            "type" => $data["type"] ?? null, # used to call specific validation types
         ];
+    }
+
+
+    /**
+     * allFields
+     *
+     * Loops through $this->fields and checks various conditions.
+     *
+     * @return void $this->errorMessages = [ "fieldName" => ["message one", "message two", "etc."] ]
+     */
+    public function allFields(array $dataToValidate): void
+    {
+        $app = App::go();
+
+        reset($this->fields);
+        #!d($this->fields);exit;
+
+        # the big loop
+        foreach ($this->fields as $key => $field) {
+            # defined field missing from $dataToValidate
+            $valueToValidate = $dataToValidate[$key] ?? null;
+            if (!$valueToValidate) {
+                $this->errorMessages[$key][] = "server error: the data to validate is missing a value for a defined field";
+            }
+
+            # allowComma: note double negative
+            if ($field["allowComma"]) {
+                $good = (!preg_match("/^[0-9,]/", strval($valueToValidate)));
+                if (!$good) {
+                    $this->errorMessages[$key][] = "the number doesn't allow a comma";
+                }
+            }
+
+            # allowPeriod: note double negative
+            if ($field["allowPeriod"]) {
+                $good = (!preg_match("/^[0-9\.]/", strval($valueToValidate)));
+                if (!$good) {
+                    $this->errorMessages[$key][] = "the number doesn't allow a period";
+                }
+            }
+
+            # compareField
+            if ($field["compareField"]) {
+                $good = ($dataToValidate[ $field["compareField"] ] !== $valueToValidate);
+                if (!$good) {
+                    $this->errorMessages[$key][] = "the value doesn't match the comparison field {$field["compareField"]}";
+                }
+            }
+
+            # inArray
+            if ($field["inArray"]) {
+                $good = array_search($valueToValidate, $field["inArray"]);
+                if (!$good) {
+                    $imploded = implode(", ", $field["inArray"]);
+                    $this->errorMessages[$key][] = "{$valueToValidate} not in array of {$imploded}";
+                }
+            }
+
+            # maxLength
+            if ($field["maxLength"]) {
+                $good = (strlen($valueToValidate) < $field["maxLength"]);
+                if (!$good) {
+                    $this->errorMessages[$key][] = "maximum length {$field["maxLength"]} exceeded";
+                }
+            }
+
+            # minLength
+            if ($field["minLength"]) {
+                $good = (strlen($valueToValidate) >= $field["minLength"]);
+                if (!$good) {
+                    $this->errorMessages[$key][] = "minimum length {$field["minLength"]} not met";
+                }
+            }
+
+            # regex
+            if ($field["regex"]) {
+                $good = preg_match($field["regex"], strval($valueToValidate));
+                if (!$good) {
+                    $this->errorMessages[$key][] = "failed to satisfy regex {$field["regex"]}";
+                }
+            }
+
+            # required
+            if ($field["required"]) {
+                $good = !empty($field["required"]);
+                if (!$good) {
+                    $this->errorMessages[$key][] = "this required field is empty";
+                }
+            }
+
+            /** */
+
+            # the $field["type"] tests use assertions from Esc::class
+            # this is used to enforce type checking where appropriate
+
+            # email
+            if ($field["type"] === "email") {
+                $good = (Esc::email($valueToValidate) === strval($valueToValidate));
+                if (!$good) {
+                    $this->errorMessages[$key][] = "this field requires a valid email";
+                }
+            }
+
+            # float
+            if ($field["type"] === "float" || $field["type"] === "decimal") {
+                $good = (Esc::float($valueToValidate) === floatval($valueToValidate));
+                if (!$good) {
+                    $this->errorMessages[$key][] = "this field requires a valid float";
+                }
+            }
+
+            # int
+            if ($field["type"] === "int" || $field["type"] === "integer" || $field["type"] === "number") {
+                $good = (Esc::int($valueToValidate) === intval($valueToValidate));
+                if (!$good) {
+                    $this->errorMessages[$key][] = "this field requires a valid int";
+                }
+            }
+
+            # string
+            if ($field["type"] === "string") {
+                $good = (Esc::string($valueToValidate) === strval($valueToValidate));
+                if (!$good) {
+                    $this->errorMessages[$key][] = "this field requires a valid string";
+                }
+            }
+
+            # url
+            if ($field["type"] === "url" || $field["type"] === "uri") {
+                $good = (Esc::url($valueToValidate) === strval($valueToValidate));
+                if (!$good) {
+                    $this->errorMessages[$key][] = "this field requires a valid url";
+                }
+            }
+
+            # bool
+            if ($field["type"] === "bool" || $field["type"] === "boolean") {
+                $good = (Esc::bool($valueToValidate) === boolval($valueToValidate));
+                if (!$good) {
+                    $this->errorMessages[$key][] = "this field requires a valid bool";
+                }
+            }
+
+            # domain
+            if ($field["type"] === "domain") {
+                $good = (Esc::domain($valueToValidate) === strval($valueToValidate));
+                if (!$good) {
+                    $this->errorMessages[$key][] = "this field requires a valid domain";
+                }
+            }
+
+            # ip
+            if ($field["type"] === "ip" || $field["type"] === "ipAddress") {
+                $good = (Esc::ip($valueToValidate) === strval($valueToValidate));
+                if (!$good) {
+                    $this->errorMessages[$key][] = "this field requires a valid ip";
+                }
+            }
+
+
+            # mac
+            if ($field["type"] === "mac" || $field["type"] === "macAddress") {
+                $good = (Esc::mac($valueToValidate) === strval($valueToValidate));
+                if (!$good) {
+                    $this->errorMessages[$key][] = "this field requires a valid mac";
+                }
+            }
+
+            # regex
+            if ($field["type"] === "regex") {
+                $good = (Esc::regex($valueToValidate) === strval($valueToValidate));
+                if (!$good) {
+                    $this->errorMessages[$key][] = "this field requires a valid regex";
+                }
+            }
+
+
+            # username
+            if ($field["type"] === "username") {
+                $good = (Esc::username($valueToValidate) === strval($valueToValidate));
+                if (!$good) {
+                    $this->errorMessages[$key][] = "this field requires a valid username";
+                }
+            }
+
+            # passphrase
+            if ($field["type"] === "passphrase" || $field["type"] === "password") {
+                $good = (Esc::passphrase($valueToValidate) === strval($valueToValidate));
+                if (!$good) {
+                    $this->errorMessages[$key][] = "this field requires a valid passphrase";
+                }
+            }
+
+            /** */
+
+            # now for some custom types
+            # these are specific to uploads
+
+            # torrentFile
+            if ($field["type"] === "torrentFile") {
+                $good = ($this->torrentFile($valueToValidate));
+                if (!$good) {
+                    $this->errorMessages[$key][] = "something was wrong with your torrent file";
+                }
+            }
+
+            # literature
+            if ($field["type"] === "literature") {
+                $good = ($this->literature($valueToValidate));
+                if (!$good) {
+                    $this->errorMessages[$key][] = "";
+                }
+            }
+
+            # year
+            if ($field["type"] === "year") {
+                $good = ($this->year($valueToValidate));
+                if (!$good) {
+                    $this->errorMessages[$key][] = "";
+                }
+            }
+
+            # mirrors
+            if ($field["type"] === "mirrors") {
+                $good = ($this->mirrors($valueToValidate));
+                if (!$good) {
+                    $this->errorMessages[$key][] = "";
+                }
+            }
+        } # foreach
+    } # function
+
+
+    /** boolean custom validators */
+
+
+    /**
+     * torrentFile
+     *
+     * @see https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html
+     */
+    public function torrentFile(array $data): bool
+    {
+        # error key
+        $key = "torrentFile";
+        $this->errorMessages[$key] ??= [];
+
+        # nothing to do
+        if (empty($data)) {
+            return true;
+        }
+
+        # unable to parse
+        $parsedData = pathinfo($data["name"] ?? "");
+        $parsedData["basename"] ??= null;
+        if (!$data["basename"] || empty($data["basename"])) {
+            $this->errorMessages[$key][] = "unable to parse";
+        }
+
+        $parsedData["filename"] ??= null;
+        if (!$data["filename"] || empty($data["filename"])) {
+            $this->errorMessages[$key][] = "unable to parse";
+        }
+
+        /** $_FILES */
+
+        # an error occurred
+        $data["error"] ??= null;
+        if (!empty($data["error"])) {
+            $this->errorMessages[$key][] = "an error occurred";
+        }
+
+        # no filename
+        $data["name"] ??= null;
+        if (!$data["name"] || empty($data["name"])) {
+            $this->errorMessages[$key][] = "no filename";
+        }
+
+        # long filename
+        if (strlen($data["name"]) > 255) {
+            $this->errorMessages[$key][] = "long filename";
+        }
+
+        # unsafe filename
+        if (Text::esc($data["name"]) !== $data["name"]) {
+            $this->errorMessages[$key][] = "unsafe filename";
+        }
+
+        # name, full_name mismatch
+        $data["full_name"] ??= null;
+        if ($data["name"] !== $data["full_name"]) {
+            $this->errorMessages[$key][] = "name, full_name mismatch";
+        }
+
+        # no content type
+        $data["type"] ??= null;
+        if (!$data["type"] || empty($data["type"])) {
+            $this->errorMessages[$key][] = "no content type";
+        }
+
+        # bad content type
+        $contentType = mime_content_type($data["tmp_name"]);
+        if ($contentType !== "application/x-bittorrent" || $data["type"] !== "application/x-bittorrent") {
+            $this->errorMessages[$key][] = "bad content type";
+        }
+
+        # no file extension
+        $parsedData["extension"] ??= null;
+        if (!$parsedData["extension"] || empty($parsedData["extension"])) {
+            $this->errorMessages[$key][] = "no file extension";
+        }
+
+        # bad file extension
+        if ($parsedData["extension"] !== "torrent") {
+            $this->errorMessages[$key][] = "bad file extension";
+        }
+
+        /** file contents */
+
+        # no temporary filename
+        $data["tmp_name"] ??= null;
+        if (!$data["tmp_name"] || empty($data["tmp_name"])) {
+            $this->errorMessages[$key][] = "no temporary filename";
+            return false;
+        }
+
+        # unsafe temporary filename
+        if (Text::esc($data["tmp_name"]) !== $data["tmp_name"]) {
+            $this->errorMessages[$key][] = "unsafe temporary filename";
+        }
+
+        # file doesn't exist
+        if (!file_exists($data["tmp_name"])) {
+            $this->errorMessages[$key][] = "file doesn't exist";
+        }
+
+        # upload path is deceptive
+        if (realpath($data["tmp_name"]) !== $data["tmp_name"]) {
+            $this->errorMessages[$key][] = "upload path is deceptive";
+        }
+
+        # file is empty
+        $fileSize = filesize($data["tmp_name"]);
+        if (empty($fileSize)) {
+            $this->errorMessages[$key][] = "file is empty";
+        }
+
+        # file is big
+        $fileSizeLimit = 1024 * 1024 * 5; # number of megabytes
+        if ($fileSize > $fileSizeLimit) {
+            $this->errorMessages[$key][] = "file is big";
+        }
+
+        # file size mismatch
+        $data["size"] ??= null;
+        if ($fileSize !== $data["size"]) {
+            $this->errorMessages[$key][] = "file size mismatch";
+        }
+
+        # file is executable
+        if (is_executable($data["tmp_name"])) {
+            $this->errorMessages[$key][] = "file is executable";
+        }
+
+        # return
+        if (empty($this->errorMessages[$key])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     * literature
+     */
+    public function literature(string $data): bool
+    {
+        # error key
+        $key = "literature";
+        $this->errorMessages[$key] ??= [];
+
+        # nothing to do
+        if (empty($data)) {
+            return true;
+        }
+
+        # unable to parse
+        $parsedData = explode("\n", $data);
+        if (!is_array($parsedData) || empty($parsedData)) {
+            $this->errorMessages[$key][] = "unable to parse";
+        }
+
+        # invalid doi number
+        foreach ($parsedData as $item) {
+            if (!preg_match("/{$app->env->regexDoi}/", $item)) {
+                $this->errorMessages[$key][] = "invalid doi number";
+            }
+        }
+
+        # return
+        if (empty($this->errorMessages[$key])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     * year
+     */
+    public function year(int|string $data): bool
+    {
+        # error key
+        $key = "year";
+        $this->errorMessages[$key] ??= [];
+
+        # nothing to do
+        if (empty($data)) {
+            return true;
+        }
+
+        # not four digits
+        if (strlen($data) !== 4) {
+            $this->errorMessages[$key][] = "not four digits";
+        }
+
+
+
+
+        # return
+        if (empty($this->errorMessages[$key])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     * mirrors
+     */
+    public function mirrors(): bool
+    {
+        # error key
+        $key = "mirrors";
+        $this->errorMessages[$key] ??= [];
+
+        # nothing to do
+        if (empty($data)) {
+            return true;
+        }
+
+
+        # return
+        if (empty($this->errorMessages[$key])) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
@@ -285,38 +751,38 @@ class Validate
     /**
      * Legacy class
      */
-    public function SetFields($FieldName, $Required, $FieldType, $ErrorMessage, $Options = [])
+    public function SetFields($fieldName, $Required, $fieldType, $ErrorMessage, $Options = [])
     {
-        $this->fields[$FieldName]['Type'] = strtolower($FieldType);
-        $this->fields[$FieldName]['Required'] = $Required;
-        $this->fields[$FieldName]['ErrorMessage'] = $ErrorMessage;
+        $this->fields[$fieldName]['Type'] = strtolower($fieldType);
+        $this->fields[$fieldName]['Required'] = $Required;
+        $this->fields[$fieldName]['ErrorMessage'] = $ErrorMessage;
 
         if (!empty($Options['maxlength'])) {
-            $this->fields[$FieldName]['MaxLength'] = $Options['maxlength'];
+            $this->fields[$fieldName]['MaxLength'] = $Options['maxlength'];
         }
 
         if (!empty($Options['minlength'])) {
-            $this->fields[$FieldName]['MinLength'] = $Options['minlength'];
+            $this->fields[$fieldName]['MinLength'] = $Options['minlength'];
         }
 
         if (!empty($Options['comparefield'])) {
-            $this->fields[$FieldName]['CompareField'] = $Options['comparefield'];
+            $this->fields[$fieldName]['CompareField'] = $Options['comparefield'];
         }
 
         if (!empty($Options['allowperiod'])) {
-            $this->fields[$FieldName]['AllowPeriod'] = $Options['allowperiod'];
+            $this->fields[$fieldName]['AllowPeriod'] = $Options['allowperiod'];
         }
 
         if (!empty($Options['allowcomma'])) {
-            $this->fields[$FieldName]['AllowComma'] = $Options['allowcomma'];
+            $this->fields[$fieldName]['AllowComma'] = $Options['allowcomma'];
         }
 
         if (!empty($Options['inarray'])) {
-            $this->fields[$FieldName]['InArray'] = $Options['inarray'];
+            $this->fields[$fieldName]['InArray'] = $Options['inarray'];
         }
 
         if (!empty($Options['regex'])) {
-            $this->fields[$FieldName]['Regex'] = $Options['regex'];
+            $this->fields[$fieldName]['Regex'] = $Options['regex'];
         }
     }
 
@@ -325,133 +791,133 @@ class Validate
         $app = App::go();
 
         reset($this->fields);
-        foreach ($this->fields as $FieldKey => $Field) {
-            $ValidateVar = $ValidateArray[$FieldKey];
+        foreach ($this->fields as $fieldKey => $field) {
+            $ValidateVar = $ValidateArray[$fieldKey];
 
             # todo: Change this to a switch statement
-            if ($ValidateVar !== '' || !empty($Field['Required']) || $Field['Type'] === 'date') {
-                if ($Field['Type'] === 'string') {
-                    if (isset($Field['MaxLength'])) {
-                        $MaxLength = $Field['MaxLength'];
+            if ($ValidateVar !== '' || !empty($field['Required']) || $field['Type'] === 'date') {
+                if ($field['Type'] === 'string') {
+                    if (isset($field['MaxLength'])) {
+                        $MaxLength = $field['MaxLength'];
                     } else {
                         $MaxLength = 255;
                     }
 
-                    if (isset($Field['MinLength'])) {
-                        $MinLength = $Field['MinLength'];
+                    if (isset($field['MinLength'])) {
+                        $MinLength = $field['MinLength'];
                     } else {
                         $MinLength = 1;
                     }
 
                     if (strlen($ValidateVar) > $MaxLength) {
-                        return $Field['ErrorMessage'];
+                        return $field['ErrorMessage'];
                     } elseif (strlen($ValidateVar) < $MinLength) {
-                        return $Field['ErrorMessage'];
+                        return $field['ErrorMessage'];
                     }
-                } elseif ($Field['Type'] === 'number') {
-                    if (isset($Field['MaxLength'])) {
-                        $MaxLength = $Field['MaxLength'];
+                } elseif ($field['Type'] === 'number') {
+                    if (isset($field['MaxLength'])) {
+                        $MaxLength = $field['MaxLength'];
                     } else {
                         $MaxLength = '';
                     }
 
-                    if (isset($Field['MinLength'])) {
-                        $MinLength = $Field['MinLength'];
+                    if (isset($field['MinLength'])) {
+                        $MinLength = $field['MinLength'];
                     } else {
                         $MinLength = 0;
                     }
 
                     $Match = '0-9';
-                    if (isset($Field['AllowPeriod'])) {
+                    if (isset($field['AllowPeriod'])) {
                         $Match .= '.';
                     }
 
-                    if (isset($Field['AllowComma'])) {
+                    if (isset($field['AllowComma'])) {
                         $Match .= ',';
                     }
 
                     if (preg_match('/[^'.$Match.']/', $ValidateVar) || strlen($ValidateVar) < 1) {
-                        return $Field['ErrorMessage'];
+                        return $field['ErrorMessage'];
                     } elseif ($MaxLength !== '' && $ValidateVar > $MaxLength) {
-                        return $Field['ErrorMessage'].'!!';
+                        return $field['ErrorMessage'].'!!';
                     } elseif ($ValidateVar < $MinLength) {
-                        return $Field['ErrorMessage']."$MinLength";
+                        return $field['ErrorMessage']."$MinLength";
                     }
-                } elseif ($Field['Type'] === 'email') {
-                    if (isset($Field['MaxLength'])) {
-                        $MaxLength = $Field['MaxLength'];
+                } elseif ($field['Type'] === 'email') {
+                    if (isset($field['MaxLength'])) {
+                        $MaxLength = $field['MaxLength'];
                     } else {
                         $MaxLength = 255;
                     }
 
-                    if (isset($Field['MinLength'])) {
-                        $MinLength = $Field['MinLength'];
+                    if (isset($field['MinLength'])) {
+                        $MinLength = $field['MinLength'];
                     } else {
                         $MinLength = 6;
                     }
 
                     if (!preg_match($app->env->regexEmail, $ValidateVar)) {
-                        return $Field['ErrorMessage'];
+                        return $field['ErrorMessage'];
                     } elseif (strlen($ValidateVar) > $MaxLength) {
-                        return $Field['ErrorMessage'];
+                        return $field['ErrorMessage'];
                     } elseif (strlen($ValidateVar) < $MinLength) {
-                        return $Field['ErrorMessage'];
+                        return $field['ErrorMessage'];
                     }
-                } elseif ($Field['Type'] === 'link') {
-                    if (isset($Field['MaxLength'])) {
-                        $MaxLength = $Field['MaxLength'];
+                } elseif ($field['Type'] === 'link') {
+                    if (isset($field['MaxLength'])) {
+                        $MaxLength = $field['MaxLength'];
                     } else {
                         $MaxLength = 255;
                     }
 
-                    if (isset($Field['MinLength'])) {
-                        $MinLength = $Field['MinLength'];
+                    if (isset($field['MinLength'])) {
+                        $MinLength = $field['MinLength'];
                     } else {
                         $MinLength = 10;
                     }
 
                     if (!preg_match($app->env->regexUri, $ValidateVar)) {
-                        return $Field['ErrorMessage'];
+                        return $field['ErrorMessage'];
                     } elseif (strlen($ValidateVar) > $MaxLength) {
-                        return $Field['ErrorMessage'];
+                        return $field['ErrorMessage'];
                     } elseif (strlen($ValidateVar) < $MinLength) {
-                        return $Field['ErrorMessage'];
+                        return $field['ErrorMessage'];
                     }
-                } elseif ($Field['Type'] === 'username') {
-                    if (isset($Field['MaxLength'])) {
-                        $MaxLength = $Field['MaxLength'];
+                } elseif ($field['Type'] === 'username') {
+                    if (isset($field['MaxLength'])) {
+                        $MaxLength = $field['MaxLength'];
                     } else {
                         $MaxLength = 20;
                     }
 
-                    if (isset($Field['MinLength'])) {
-                        $MinLength = $Field['MinLength'];
+                    if (isset($field['MinLength'])) {
+                        $MinLength = $field['MinLength'];
                     } else {
                         $MinLength = 1;
                     }
 
                     if (!preg_match($app->env->regexUsername, $ValidateVar)) {
-                        return $Field['ErrorMessage'];
+                        return $field['ErrorMessage'];
                     } elseif (strlen($ValidateVar) > $MaxLength) {
-                        return $Field['ErrorMessage'];
+                        return $field['ErrorMessage'];
                     } elseif (strlen($ValidateVar) < $MinLength) {
-                        return $Field['ErrorMessage'];
+                        return $field['ErrorMessage'];
                     }
-                } elseif ($Field['Type'] === 'checkbox') {
-                    if (!isset($ValidateArray[$FieldKey])) {
-                        return $Field['ErrorMessage'];
+                } elseif ($field['Type'] === 'checkbox') {
+                    if (!isset($ValidateArray[$fieldKey])) {
+                        return $field['ErrorMessage'];
                     }
-                } elseif ($Field['Type'] === 'compare') {
-                    if ($ValidateArray[$Field['CompareField']] !== $ValidateVar) {
-                        return $Field['ErrorMessage'];
+                } elseif ($field['Type'] === 'compare') {
+                    if ($ValidateArray[$field['CompareField']] !== $ValidateVar) {
+                        return $field['ErrorMessage'];
                     }
-                } elseif ($Field['Type'] === 'inarray') {
-                    if (array_search($ValidateVar, $Field['InArray']) === false) {
-                        return $Field['ErrorMessage'];
+                } elseif ($field['Type'] === 'inarray') {
+                    if (array_search($ValidateVar, $field['InArray']) === false) {
+                        return $field['ErrorMessage'];
                     }
-                } elseif ($Field['Type'] === 'regex') {
-                    if (!preg_match($Field['Regex'], $ValidateVar)) {
-                        return $Field['ErrorMessage'];
+                } elseif ($field['Type'] === 'regex') {
+                    if (!preg_match($field['Regex'], $ValidateVar)) {
+                        return $field['ErrorMessage'];
                     }
                 }
             }
