@@ -307,7 +307,7 @@ ENV::setPub("BP_COEFF", 1.5); # OT default 0.5
 # Banned stuff (file characters, browsers, etc.)
 ENV::setPub(
     "BAD_CHARS",
-    ["\"", "*", "/", ":", "<", ">", "?", "\\", "|"]
+    ["\"", "*", "\/", ":", "<", ">", "?", "\\", "|"]
 );
 
 # default site options

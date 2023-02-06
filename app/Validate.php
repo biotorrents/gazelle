@@ -650,11 +650,13 @@ class Validate
                 $tooLongPaths[] = "{$directoryName}/{$name}";
             }
 
+            /*
             # check for extensions
             $good = $this->hasExtensions($name);
             if (!$good) {
                 $this->errors[$key][] = "the torrent has one or more files without extensions: \n {$name}";
             }
+            */
 
             # unsafe characters
             $good = $this->safeCharacters($name);
@@ -679,7 +681,7 @@ class Validate
         $data["fileString"] = implode("\n", $temporaryFileList);
 
         # okay?
-        $app->debug["upload"]->info("torrent decoded");
+        $app->debug["messages"]->info("torrent decoded");
         return $data;
     }
 

@@ -317,8 +317,7 @@ $validate->setField("torrentId", [
 
 # validate the whole form
 $validate->allFields($data);
-!d($validate->errors);
-exit;
+#!d($validate->errors);exit;
 
 # image trickery
 ImageTools::blacklisted($data["picture"]);
@@ -336,15 +335,27 @@ $torrentFile = $_FILES["torrentFile"] ??= null;
 $torrentFile["tmp_name"] ??= null;
 
 # torrent bencode
-$torrent = new BencodeTorrent($torrentFile["tmp_name"], true);
+try {
+    /*
+    # todo: upgrade to orpheus libraries
+    $bencode = new OrpheusNET\BencodeTorrent\Bencode();
+    $bencode->decodeFile($torrentFile["tmp_name"]);
+    */
 
-# private and source fields
-$publicTorrent = $torrent->make_private();
-$unsourcedTorrent = $torrent->make_sourced();
-$infoHash = pack('H*', $torrent->info_hash());
+    $torrent = new BencodeTorrent($torrentFile["tmp_name"], true);
+    #!d($torrent);exit;
 
-# validate torrent data and get info
-$torrentData = $validate->bencoded($torrent);
+    # private and source fields
+    $publicTorrent = $torrent->make_private();
+    $unsourcedTorrent = $torrent->make_sourced();
+    $infoHash = pack('H*', $torrent->info_hash());
+
+    # validate torrent data and get info
+    $torrentData = $validate->bencoded($torrent);
+    #!d($torrentData);exit;
+} catch (Exception $e) {
+    $validate->errors["torrentFile"] = $e->getMessage();
+}
 
 # there are errors, bail out with data
 if (!empty($validate->errors)) {
@@ -355,9 +366,6 @@ if (!empty($validate->errors)) {
     #exit;
 }
 
-!d($data, $validate->errors);
-exit;
-
 
 /**
  * ad hoc field normalization
@@ -365,7 +373,7 @@ exit;
 
 # multiple artists!
 $data["creatorList"] = explode("\n", $data["creatorList"]);
-if ($empty($data["groupId"])) {
+if (empty($data["groupId"])) {
     foreach ($data["creatorList"] as $key => $value) {
         # escape and normalize
         $data["creatorList"][$key] = Esc::string($value);
@@ -433,6 +441,9 @@ $data["mirrors"] = array_slice($data["mirrors"], 0, 2);
 
 $data["mirrors"] = array_filter($data["mirrors"]);
 $data["mirrors"] = array_unique($data["mirrors"]);
+
+# debug
+#!d($data);exit;
 
 
 /**
