@@ -213,12 +213,12 @@ class Auth # extends Delight\Auth\Auth
 
                 # everything else
                 "ip" => Crypto::encrypt($server["REMOTE_ADDR"]),
-                "uploaded" => $app->env->STARTING_UPLOAD,
+                "uploaded" => $app->env->newUserUpload,
                 "enabled" => 0,
-                "invites" => $app->env->STARTING_INVITES,
+                "invites" => $app->env->newUserInvites,
                 "permissionId" => USER, # todo: constant
                 "torrent_pass" => $torrent_pass,
-                "flTokens" => $app->env->STARTING_TOKENS,
+                "flTokens" => $app->env->newUserTokens,
             ]);
 
             /** */

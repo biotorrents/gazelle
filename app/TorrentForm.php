@@ -1102,7 +1102,7 @@ HTML;
          * Seqhash
          */
 
-        if ($ENV->FEATURE_BIOPHP && !$this->DisabledFlag && $this->NewTorrent) {
+        if ($ENV->enableBioPhp && !$this->DisabledFlag && $this->NewTorrent) {
             $TorrentSeqhash = Text::esc($Torrent['Seqhash']);
             echo $twig->render(
                 'torrent_form/seqhash.html',

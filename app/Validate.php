@@ -661,8 +661,8 @@ class Validate
             # unsafe characters
             $good = $this->safeCharacters($name);
             if (!$good) {
-                $badCharacters = implode(", ", $app->env->BAD_CHARS);
-                $this->errors[$key][] = "one or more files has the forbidden characters {$badCharacters}: \n {$name}";
+                $imploded = implode(", ", $app->env->illegalCharacters);
+                $this->errors[$key][] = "one or more files has the forbidden characters {$imploded}: \n {$name}";
             }
 
             # add file info to array
@@ -770,14 +770,14 @@ class Validate
         $app = App::go();
 
         if (empty($fileName)) {
-            $badCharacters = implode(", ", $app->env->BAD_CHARS);
+            $imploded = implode(", ", $app->env->illegalCharacters);
 
-            return $badCharacters;
+            return $imploded;
         }
 
         $data = [];
 
-        $regex = "/[" . implode("", $app->env->BAD_CHARS) . "]/";
+        $regex = "/[" . implode("", $app->env->illegalCharacters) . "]/";
         $good = !preg_match($regex, $fileName);
 
         if (!$good) {

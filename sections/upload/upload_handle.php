@@ -704,7 +704,7 @@ if (!empty($data["mirrors"])) {
 
 /*
 # todo: seqhash
-if ($app->env->FEATURE_BIOPHP && !empty($data['Seqhash'])) {
+if ($app->env->enableBioPhp && !empty($data['Seqhash'])) {
     $BioIO = new \BioPHP\IO();
     $BioSeqhash = new \BioPHP\Seqhash();
 

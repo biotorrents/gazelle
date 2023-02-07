@@ -15,6 +15,10 @@ if (!$env->dev) {
     Kint\Kint::$enabled_mode	= false;
 }
 
+# allow the site encryption key to be set without an account
+# (should only be used for initial setup)
+ENV::setPub("enablePublicEncryptionKey", false);
+
 
 /**
  * site identity
@@ -53,7 +57,7 @@ ENV::setPub(
 );
 
 # old domain, to handle the biotorrents.de => torrents.bio migration
-# if not needed, simply set to the same values as $env->siteDomainNew
+# if not needed, simply set to the same values as $env->siteDomain
 ENV::setPub(
     "oldSiteDomain",
     (!$env->dev
@@ -74,35 +78,35 @@ ENV::setPub("webRoot", "/var/www");
 # e.g., /var/www/html/dev.torrents.bio
 ( # old format
     !$env->dev
-        ? define("serverRoot", "/var/www/html/biotorrents.de/") # production
+        ? define("serverRoot", "/var/www/html/biotorrents.de") # production
         : define("serverRoot", "/var/www/html/dev.torrents.bio") # development
 );
 
 ENV::setPub(
     "serverRoot",
     (!$env->dev
-      ? "/var/www/html/biotorrents.de/" # production
+      ? "/var/www/html/biotorrents.de" # production
       : "/var/www/html/dev.torrents.bio") # development
 );
 
 # where torrent files are stored, e.g., /var/www/torrents-dev/
 ( # old format
     !$env->dev
-        ? define("torrentStore", "/var/www/torrents/") # production
+        ? define("torrentStore", "/var/www/torrents") # production
         : define("torrentStore", "/var/www/torrents-dev") # development
 );
 
 ENV::setPub(
     "torrentStore",
     (!$env->dev
-        ? "/var/www/torrents/" # production
+        ? "/var/www/torrents" # production
         : "/var/www/torrents-dev") # development);
 );
 
 # allows you to run static content off another server
 # the default is usually what you want though
-define("staticServer", "/public/");
-ENV::setPub("staticServer", "/public/");
+define("staticServer", "/public");
+ENV::setPub("staticServer", "/public");
 
 # hash algorithm used for SRI
 ENV::setPub("SRI", "sha512");
@@ -263,14 +267,11 @@ ENV::setPub("FEATURE_EMAIL_REENABLE", true);
 # attempt to send email from the site
 ENV::setPub("enableSiteEmail", true);
 
-# Allow the site encryption key to be set without an account
-# (should only be used for initial setup)
-ENV::setPub("FEATURE_SET_ENC_KEY_PUBLIC", false);
 
 # Attempt to support the BioPHP library
 # https://packagist.org/packages/biotorrents/biophp
 # https://pkg.go.dev/github.com/TimothyStiles/poly/seqhash
-ENV::setPub("FEATURE_BIOPHP", true);
+ENV::setPub("enableBioPhp", true);
 
 
 /**
@@ -289,26 +290,34 @@ ENV::setPub(
 define("userLimit", 0);
 ENV::setPub("userLimit", 0);
 
-# User perks
-ENV::setPub("STARTING_INVITES", 2);
-ENV::setPub("STARTING_TOKENS", 2);
-ENV::setPub("STARTING_UPLOAD", 5368709120);
-ENV::setPub("DONOR_INVITES", 2);
+# user perks on new registration
+ENV::setPub("newUserInvites", 2);
+ENV::setPub("newUserTokens", 2);
+ENV::setPub("newUserUpload", 5368709120); # 5 GiB
 
-# Bonus Points
+# bonus points (unit name)
 define("bonusPoints", "Bonus Points");
 ENV::setPub("bonusPoints", "Bonus Points");
 
-ENV::setPub("BP_COEFF", 1.5); # OT default 0.5
+# award formula coefficient
+ENV::setPub("bonusPointsCoefficient", 1.5); # oppaitime default 0.5
 
-# Tag namespaces (configurable via CSS selectors)
+# tag namespaces (configurable via CSS selectors)
 #ENV::setPub("tagNamespaces", ["male", "female", "parody", "character"]);
 
-# Banned stuff (file characters, browsers, etc.)
+# https://www.mtu.edu/umc/services/websites/writing/characters-avoid/
 ENV::setPub(
-    "BAD_CHARS",
+    "illegalCharacters",
+    [ "#", "%", "&", "{", "}", "\\", "<", ">", "*", "?", "/", " ", "$", "!", "'", "\"", ":", "@", "+", "`", "|", "=" ]
+);
+
+/*
+# inherited from oppaitime
+ENV::setPub(
+    "illegalCharacters",
     ["\"", "*", "\/", ":", "<", ">", "?", "\\", "|"]
 );
+*/
 
 # default site options
 $defaultSiteOptions = [
