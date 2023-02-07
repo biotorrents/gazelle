@@ -1,15 +1,28 @@
-# 🧪 BioGazelle
+# 🧫 BioGazelle
 
 This software is twice removed from the original
 [What.cd Gazelle](https://github.com/WhatCD/Gazelle).
 It's based on the security hardened PHP7 fork
-[Oppaitime Gazelle](https://git.oppaiti.me/Oppaitime/Gazelle).
+[Oppaitime Gazelle](https://github.com/biotorrents/oppaiMirror).
 It shares several features with
 [Orpheus Gazelle](https://github.com/OPSnet/Gazelle).
 The goal is to organize a functional database with pleasant interfaces,
 and render insightful views using data from robust external sources.
 
 # Changelog: Bio ← OT
+
+## Full stack search engine rewrite
+
+Data indexing is important, so BioGazelle has upgraded to
+[Manticore Search](https://manticoresearch.com),
+the successor to Sphinx.
+This upgrade also involved a
+[rewrite of the search configuration](utilities/config/manticore.conf)
+from scratch, based on AnimeBytes' example.
+The Gazelle frontend itself uses
+[a rewritten browse.php controller](sections/torrents/browse.php)
+and
+[a brand new Twig template](templates/torrents/search.twig).
 
 ## Bearer token authorization
 
@@ -31,6 +44,7 @@ It uses
 to generate tl;dr summaries and tags from torrent descriptions.
 Just paste your abstract into the torrent group description
 and get a succinct natural language summary with torrent and SEO tags.
+It's possible to disable AI content display in the user settings, btw.
 
 ## Good typography
 
@@ -40,6 +54,9 @@ with the appropriate bold/italic glyphs and monospace.
 These options are available to every theme.
 Font Awesome 5 is also universally available.
 [Download the fonts](https://torrents.bio/fonts.tgz).
+Also, there are two simple color modes,
+[calm mode and dark mode](resources/scss/global/colors.scss),
+that I like to think are pleasing to the eye.
 
 ## Markdown and BBcode support
 
@@ -79,7 +96,7 @@ No more mixed PHP code and HTML markup!
 ## Active data minimization
 
 BioTorrents.de has
-[real lawyer-vetted policies](templates/legal).
+[real lawyer-vetted policies](templates/siteText/legal).
 In the process of matching the tech to the legal word,
 we dropped support for a number of compromising features:
 
@@ -122,6 +139,7 @@ There's just a dev mode that spits everything out, and a prod mode that doesn't.
 - Dead simple PDO database wrapper, fully parameterized
 - Simple and fast Redis cache (WIP)
 - Polite copy; the site says "please" and "thank you"
+- The codebase runs on PHP8 with minimal warnings
 
 # Changelog: OT ← WCD
 
