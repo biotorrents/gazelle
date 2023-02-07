@@ -640,11 +640,11 @@ if ($data["freeleechReason"] === 3) {
           INSERT INTO shop_freeleeches
             (TorrentID, ExpiryTime)
           VALUES
-            (" . $torrentID . ", FROM_UNIXTIME(" . $Expiry . "))
+            (" . $torrentId . ", FROM_UNIXTIME(" . $Expiry . "))
           ON DUPLICATE KEY UPDATE
             ExpiryTime = FROM_UNIXTIME(UNIX_TIMESTAMP(ExpiryTime) + ($Expiry - FROM_UNIXTIME(NOW())))");
     } else {
-        Torrents::freeleech_torrents($torrentID, 0, 0);
+        Torrents::freeleech_torrents($torrentId, 0, 0);
     }
 }
 */
@@ -726,7 +726,7 @@ if ($app->env->FEATURE_BIOPHP && !empty($data['Seqhash'])) {
               (`torrent_id`, `user_id`, `timestamp`,
                `name`, `seqhash`)
             VALUES (?, ?, NOW(), ?, ?)",
-                $torrentID,
+                $torrentId,
                 $app->userNew->core['id'],
                 $Parsed['name'],
                 $Seqhash
@@ -828,7 +828,7 @@ if ($publicTorrent) {
 <p>
    <strong>Your torrent has been uploaded but you must re-download your torrent file from
        <a
-           href="torrents.php?id=<?=$GroupID?>&torrentid=<?=$torrentID?>">here</a>
+           href="torrents.php?id=<?=$GroupID?>&torrentid=<?=$torrentId?>">here</a>
        because the site modified it to make it private.</strong>
 </p>
 <?php
@@ -839,15 +839,15 @@ if ($publicTorrent) {
 <p>
    <strong>Your torrent has been uploaded but you must re-download your torrent file from
        <a
-           href="torrents.php?id=<?=$GroupID?>&torrentid=<?=$torrentID?>">here</a>
+           href="torrents.php?id=<?=$GroupID?>&torrentid=<?=$torrentId?>">here</a>
        because the site modified it to add a source flag.</strong>
 </p>
 <?php
  View::footer();
 } elseif ($RequestID) {
-   header("Location: requests.php?action=takefill&requestid=$RequestID&torrentid=$torrentID&auth=".$app->userNew->extra['AuthKey']);
+   header("Location: requests.php?action=takefill&requestid=$RequestID&torrentid=$torrentId&auth=".$app->userNew->extra['AuthKey']);
 } else {
-   Http::redirect("torrents.php?id=$GroupID&torrentid=$torrentID");
+   Http::redirect("torrents.php?id=$GroupID&torrentid=$torrentId");
 }
 
 if (function_exists('fastcgi_finish_request')) {
@@ -866,9 +866,18 @@ if (function_exists('fastcgi_finish_request')) {
  */
 
 # construct message
+$torrentInfo = [
+    "Censored" => $data["annotated"],
+    "IsLeeching" => false,
+    "IsSeeding" => false,
+    "IsSnatched" => false,
+    "FreeTorrent" => $data["freeleechType"],
+    "PersonalFL" => false,
+];
+
 $announceMessage = "[{$categoryName}]"
     . " " . Illuminate\Support\Str::limit($data["title"]) . " "
-    . "[ " . Torrents::torrent_info($data, true, false, false) . " ]"
+    . "[ " . Torrents::torrent_info($torrentInfo, true, false, false) . " ]"
     . " - " . trim(implode(", ", $data["tagList"]))
     . " - " . site_url() . "/torrents.php?id={$groupId}&torrentId={$torrentId}"
     . " - " . site_url() . "/torrents.php?action=download&id={$torrentId}";
@@ -1013,7 +1022,7 @@ if ($app->dbOld->has_results()) {
     $Rows = [];
     foreach ($UserArray as $User) {
         list($FilterID, $UserID, $Passkey) = $User;
-        $Rows[] = "('$UserID', '$GroupID', '$torrentID', '$FilterID')";
+        $Rows[] = "('$UserID', '$GroupID', '$torrentId', '$FilterID')";
         $feed->populate("torrents_notify_$Passkey", $item);
         $app->cacheOld->delete_value("notifications_new_$UserID");
     }
@@ -1055,4 +1064,4 @@ $app->cacheOld->delete_value("torrents_details_$GroupID");
 $app->cacheOld->delete_value("contest_scores");
 
 # Allow deletion of this torrent now
-$app->cacheOld->delete_value("torrent_{$torrentID}_lock");
+$app->cacheOld->delete_value("torrent_{$torrentId}_lock");
