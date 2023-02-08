@@ -91,7 +91,7 @@ if ($MaxGroupsPerUser > 0) {
 }
 
 if ($_REQUEST['action'] == 'add_torrent') {
-    $Val->SetFields('url', '1', 'regex', 'The URL must be a link to a torrent on the site.', array('regex' => $app->env->regexTorrentGroup));
+    $Val->SetFields('url', '1', 'regex', 'The URL must be a link to a torrent on the site.', array('regex' => "/{$app->env->regexTorrentGroup}/i"));
     $Err = $Val->ValidateForm($_POST);
 
     if ($Err) {
@@ -101,7 +101,7 @@ if ($_REQUEST['action'] == 'add_torrent') {
     $URL = $_POST['url'];
 
     // Get torrent ID
-    preg_match($app->env->regexTorrentGroup, $URL, $Matches);
+    preg_match("/{$app->env->regexTorrentGroup}/i", $URL, $Matches);
     $TorrentID = (int) $Matches[4];
     Security::int($TorrentID);
 
@@ -138,7 +138,7 @@ if ($_REQUEST['action'] == 'add_torrent') {
 
     foreach ($URLs as $URL) {
         $Matches = [];
-        if (preg_match($app->env->regexTorrentGroup, $URL, $Matches)) {
+        if (preg_match("/{$app->env->regexTorrentGroup}/i", $URL, $Matches)) {
             $GroupIDs[] = $Matches[4];
             $GroupID = $Matches[4];
         } else {

@@ -42,10 +42,10 @@
         formats.forEach((element, index) => {
             let categoryIndex = categoryId - 1;
             if (categoryIndex !== index) {
-                $(element + " select:first").prop('disabled', true);
+                $(element + " select:first").prop("disabled", true);
                 $(element).hide();
             } else {
-                $(element + " select:first").prop('disabled', false);
+                $(element + " select:first").prop("disabled", false);
                 $(element).show();
             }
         });
@@ -54,10 +54,10 @@
         platforms.forEach((element, index) => {
             let categoryIndex = categoryId - 1;
             if (categoryIndex !== index) {
-                $(element + " select:first").prop('disabled', true);
+                $(element + " select:first").prop("disabled", true);
                 $(element).hide();
             } else {
-                $(element + " select:first").prop('disabled', false);
+                $(element + " select:first").prop("disabled", false);
                 $(element).show();
             }
         });
@@ -66,10 +66,10 @@
         scopes.forEach((element, index) => {
             let categoryIndex = categoryId - 1;
             if (categoryIndex !== index) {
-                $(element + " select:first").prop('disabled', true);
+                $(element + " select:first").prop("disabled", true);
                 $(element).hide();
             } else {
-                $(element + " select:first").prop('disabled', false);
+                $(element + " select:first").prop("disabled", false);
                 $(element).show();
             }
         });

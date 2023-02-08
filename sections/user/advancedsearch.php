@@ -8,10 +8,10 @@ if (!empty($_GET['search'])) {
     if (preg_match("/{$app->env->regexIp}/", $_GET['search'])) {
         $_GET['ip'] = $_GET['search'];
         /*
-        } elseif (preg_match($app->env->regexEmail, $_GET['search'])) {
+        } elseif (preg_match("/{$app->env->regexEmail}/", $_GET['search'])) {
             $_GET['email'] = $_GET['search'];
         */
-    } elseif (preg_match("/{$app->env->regexUsername}/", $_GET['search'])) {
+    } elseif (preg_match("/{$app->env->regexUsername}/iD", $_GET['search'])) {
         $app->dbOld->query("
       SELECT ID
       FROM users_main

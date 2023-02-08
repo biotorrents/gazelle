@@ -31,26 +31,26 @@ if (isset($_POST['submit'])) {
 
         $Notes = db_string($_POST['notes']);
         $Start = Tools::ip_to_unsigned($_POST['start']); //Sanitized by Validation regex
-    $End = Tools::ip_to_unsigned($_POST['end']); //See above
+        $End = Tools::ip_to_unsigned($_POST['end']); //See above
 
-    if ($_POST['submit'] === 'Edit') { //Edit
-        if (empty($_POST['id']) || !is_numeric($_POST['id'])) {
-            error(404);
-        }
-        $app->dbOld->query("
+        if ($_POST['submit'] === 'Edit') { //Edit
+            if (empty($_POST['id']) || !is_numeric($_POST['id'])) {
+                error(404);
+            }
+            $app->dbOld->query("
         UPDATE ip_bans
         SET
           FromIP=$Start,
           ToIP='$End',
           Reason='$Notes'
         WHERE ID='".$_POST['id']."'");
-    } else { //Create
-        $app->dbOld->query("
+        } else { //Create
+            $app->dbOld->query("
         INSERT INTO ip_bans
           (FromIP, ToIP, Reason)
         VALUES
           ('$Start','$End', '$Notes')");
-    }
+        }
         $app->cacheOld->delete_value('ip_bans_'.$IPA);
     }
 }
@@ -71,7 +71,7 @@ if (!empty($_REQUEST['notes'])) {
     $sql .= "WHERE Reason LIKE '%".db_string($_REQUEST['notes'])."%' ";
 }
 
-if (!empty($_REQUEST['ip']) && preg_match($app->env->regexIp, $_REQUEST['ip'])) {
+if (!empty($_REQUEST['ip']) && preg_match("/{$app->env->regexIp}/", $_REQUEST['ip'])) {
     if (!empty($_REQUEST['notes'])) {
         $sql .= "AND '".Tools::ip_to_unsigned($_REQUEST['ip'])."' BETWEEN FromIP AND ToIP ";
     } else {

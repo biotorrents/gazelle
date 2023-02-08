@@ -140,7 +140,7 @@ class Esc
         $app = App::go();
 
         $safe = self::string($unsafe);
-        if (preg_match($app->env->regexUsername, $safe)) {
+        if (preg_match("/{$app->env->regexUsername}/iD", $safe)) {
             # success
             return strval($safe);
         }

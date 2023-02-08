@@ -572,7 +572,7 @@ class Validate
 
         # invalid url
         foreach ($parsedData as $item) {
-            if (!preg_match("/{$app->env->regexUri}/", $item)) {
+            if (!preg_match("/{$app->env->regexUri}/i", $item)) {
                 $this->errors[$key][] = "invalid uri";
             }
         }
@@ -905,7 +905,7 @@ class Validate
                         $MinLength = 6;
                     }
 
-                    if (!preg_match($app->env->regexEmail, $ValidateVar)) {
+                    if (!preg_match("/{$app->env->regexEmail}/", $ValidateVar)) {
                         return $field['ErrorMessage'];
                     } elseif (strlen($ValidateVar) > $MaxLength) {
                         return $field['ErrorMessage'];
@@ -925,7 +925,7 @@ class Validate
                         $MinLength = 10;
                     }
 
-                    if (!preg_match($app->env->regexUri, $ValidateVar)) {
+                    if (!preg_match("/{$app->env->regexUri}/i", $ValidateVar)) {
                         return $field['ErrorMessage'];
                     } elseif (strlen($ValidateVar) > $MaxLength) {
                         return $field['ErrorMessage'];
@@ -945,7 +945,7 @@ class Validate
                         $MinLength = 1;
                     }
 
-                    if (!preg_match($app->env->regexUsername, $ValidateVar)) {
+                    if (!preg_match("/{$app->env->regexUsername}/iD", $ValidateVar)) {
                         return $field['ErrorMessage'];
                     } elseif (strlen($ValidateVar) > $MaxLength) {
                         return $field['ErrorMessage'];

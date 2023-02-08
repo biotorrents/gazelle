@@ -1298,7 +1298,7 @@ class User
             # styleSheetUri
             $data["styleSheetUri"] ??= null;
             $styleSheetUri = Esc::url($data["styleSheetUri"]);
-            $good = preg_match($app->env->regexCss, $styleSheetUri);
+            $good = preg_match("/{$app->env->regexCss}/i", $styleSheetUri);
 
             if (!$good && !empty($styleSheetUri)) {
                 throw new Exception("invalid styleSheetUri");

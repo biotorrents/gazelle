@@ -45,7 +45,7 @@ foreach ($ReportType['report_fields'] as $Field => $Value) {
 }
 
 if (!empty($_POST['sitelink'])) {
-    if (preg_match_all($app->env->regexTorrent, $_POST['sitelink'], $Matches)) {
+    if (preg_match_all("/{$app->env->regexTorrent}/i", $_POST['sitelink'], $Matches)) {
         $ExtraIDs = implode(' ', $Matches[4]);
 
         if (in_array($TorrentID, $Matches[4])) {
@@ -58,7 +58,7 @@ if (!empty($_POST['sitelink'])) {
 
 if (!empty($_POST['link'])) {
     // resource_type://domain:port/filepathname?query_string#anchor
-    if (preg_match_all($app->env->regexUri, $_POST['link'], $Matches)) {
+    if (preg_match_all("/{$app->env->regexUri}/i", $_POST['link'], $Matches)) {
         $Links = implode(' ', $Matches[0]);
     } else {
         $Err = "The extra links you provided weren't links...";

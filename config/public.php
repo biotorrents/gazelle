@@ -308,7 +308,7 @@ ENV::setPub("bonusPointsCoefficient", 1.5); # oppaitime default 0.5
 # https://www.mtu.edu/umc/services/websites/writing/characters-avoid/
 ENV::setPub(
     "illegalCharacters",
-    [ "#", "%", "&", "{", "}", "\\", "<", ">", "*", "?", "/", " ", "$", "!", "'", "\"", ":", "@", "+", "`", "|", "=" ]
+    [ "#", "%", "&", "{", "}", "\\", "<", ">", "*", "?", "\/", "$", "!", "'", "\"", ":", "@", "+", "`", "|", "=" ]
 );
 
 /*

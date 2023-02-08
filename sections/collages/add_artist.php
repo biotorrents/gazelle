@@ -93,7 +93,7 @@ if ($MaxGroupsPerUser > 0) {
 }
 
 if ($_REQUEST['action'] == 'add_artist') {
-    $Val->SetFields('url', '1', 'regex', 'The URL must be a link to a artist on the site.', array('regex' => $app->env->regexArtist));
+    $Val->SetFields('url', '1', 'regex', 'The URL must be a link to a artist on the site.', array('regex' => "/{$app->env->regexCreator}/i"));
     $Err = $Val->ValidateForm($_POST);
 
     if ($Err) {
@@ -103,7 +103,7 @@ if ($_REQUEST['action'] == 'add_artist') {
     $URL = $_POST['url'];
 
     // Get artist ID
-    preg_match($app->env->regexArtist, $URL, $Matches);
+    preg_match("/{$app->env->regexCreator}/i", $URL, $Matches);
     $ArtistID = $Matches[4];
     if (!$ArtistID || (int)$ArtistID === 0) {
         error(404);
@@ -142,7 +142,7 @@ if ($_REQUEST['action'] == 'add_artist') {
 
     foreach ($URLs as $URL) {
         $Matches = [];
-        if (preg_match($app->env->regexArtist, $URL, $Matches)) {
+        if (preg_match("/{$app->env->regexCreator}/i", $URL, $Matches)) {
             $ArtistIDs[] = $Matches[4];
             $ArtistID = $Matches[4];
         } else {

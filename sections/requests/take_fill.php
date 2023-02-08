@@ -21,7 +21,7 @@ if (!empty($_GET['torrentid']) && is_numeric($_GET['torrentid'])) {
         error('You forgot to supply a link to the filling torrent');
     } else {
         $Link = $_POST['link'];
-        if (!preg_match($app->env->regexTorrent, $Link, $Matches)) {
+        if (!preg_match("/{$app->env->regexTorrent}/i", $Link, $Matches)) {
             error('Your link didn\'t seem to be a valid torrent link');
         } else {
             $TorrentID = $Matches[4];

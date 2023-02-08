@@ -49,7 +49,7 @@ class Text
         $string = self::esc($string);
 
         # here's the magic pattern:
-        if (!preg_match($app->env->regexBBCode, $string)) {
+        if (!preg_match("/{$app->env->regexBBCode}/s", $string)) {
             # markdown
             $parsedown = new ParsedownExtra();
             $safe ?? $parsedown->setSafeMode(true);

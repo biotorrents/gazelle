@@ -15,7 +15,7 @@ if (isset($_POST['torrent'])) {
             error('You forgot to supply a link to the torrent to freeleech');
         } else {
             $Link = $_POST['torrent'];
-            if (!preg_match($app->env->regexTorrent, $Link, $Matches)) {
+            if (!preg_match("/{$app->env->regexTorrent}/i", $Link, $Matches)) {
                 error('Your link didn\'t seem to be a valid torrent link');
             } else {
                 $TorrentID = $Matches[4];

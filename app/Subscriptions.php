@@ -39,7 +39,7 @@ class Subscriptions
             $Level = 0;
             foreach ($Matches as $M) {
                 if ($M[0] != '[/quote]') {
-                    if ($Level == 0 && isset($M[1]) && strlen($M[1]) > 0 && preg_match($app->env->regexUsername, $M[1])) {
+                    if ($Level == 0 && isset($M[1]) && strlen($M[1]) > 0 && preg_match("/{$app->env->regexUsername}/iD", $M[1])) {
                         $Usernames[] = preg_replace('/(^[.,]*)|([.,]*$)/', '', $M[1]); // wut?
                     }
                     ++$Level;
