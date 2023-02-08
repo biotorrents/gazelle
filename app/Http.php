@@ -95,12 +95,28 @@ class Http
 
         # escape each untrusted superglobal
         # sucks less than filter_input_array
+
+        # cookie
+        $safe["cookie"] = $_COOKIE;
+        array_walk_recursive($safe["cookie"], function ($value) {
+            return Text::esc($value);
+        });
+
+        /*
         foreach ($_COOKIE as $key => $value) {
             $key = Text::esc($key);
             $value = Text::esc($value);
             $safe["cookie"][$key] = $value;
         }
+        */
 
+        # files
+        $safe["files"] = $_FILES;
+        array_walk_recursive($safe["files"], function ($value) {
+            return Text::esc($value);
+        });
+
+        /*
         foreach ($_FILES as $key => $value) {
             # not recursive
             if (is_array($value)) {
@@ -111,7 +127,15 @@ class Http
                 }
             }
         }
+        */
 
+        # get
+        $safe["get"] = $_GET;
+        array_walk_recursive($safe["get"], function ($value) {
+            return Text::esc($value);
+        });
+
+        /*
         foreach ($_GET as $key => $value) {
             # not recursive
             if (is_array($value)) {
@@ -129,7 +153,15 @@ class Http
                 $safe["get"][$key] = $value;
             }
         }
+        */
 
+        # post
+        $safe["post"] = $_POST;
+        array_walk_recursive($safe["post"], function ($value) {
+            return Text::esc($value);
+        });
+
+        /*
         foreach ($_POST as $key => $value) {
             # not recursive
             if (is_array($value)) {
@@ -147,7 +179,15 @@ class Http
                 $safe["post"][$key] = $value;
             }
         }
+        */
 
+        # request
+        $safe["request"] = $_REQUEST;
+        array_walk_recursive($safe["request"], function ($value) {
+            return Text::esc($value);
+        });
+
+        /*
         foreach ($_REQUEST as $key => $value) {
             # not recursive
             if (is_array($value)) {
@@ -165,7 +205,15 @@ class Http
                 $safe["request"][$key] = $value;
             }
         }
+        */
 
+        # server
+        $safe["server"] = $_SERVER;
+        array_walk_recursive($safe["server"], function ($value) {
+            return Text::esc($value);
+        });
+
+        /*
         foreach ($_SERVER as $key => $value) {
             # sanitize client spoofed keys
             if (str_starts_with($key, "HTTP_") || str_starts_with($key, "REMOTE_")) {
@@ -180,6 +228,7 @@ class Http
                 $safe["server"][$key] = $value;
             }
         }
+        */
 
         # should be okay
         if (!empty($method)) {

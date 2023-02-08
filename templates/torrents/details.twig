@@ -304,6 +304,13 @@
  # important: the weird indentation below is absolutely necessary due to the textarea
  #}
 
+{% if groupDetails.Screenshots is not empty %}
+  {% set firstDoi = groupDetails.Screenshots|first %}
+  {% set firstDoi = firstDoi.doi %}
+{% else %}
+  {% set firstDoi = "" %}
+{% endif %}
+
 <textarea class="bibtexCitation" id="bibtexCitation-{{ item.ID }}" rows="10">
 @dataset{ BioTorrents.de-torrentId-{{ item.ID }}
   title = {{ groupDetails.title|curlyBraces }},
@@ -319,8 +326,8 @@
 {% endif %}
   url = \href{https://{{ env.siteDomain }}/torrents.php?torrentid={{ item.ID }}},
   urldate = {{ "now"|date|curlyBraces }},
-{% if groupDetails.Screenshots is not empty %}
-  doi = {{ groupDetails.Screenshots.doi|curlyBraces }},
+{% if firstDoi is not empty %}
+  doi = {{ firstDoi|curlyBraces }},
 {% endif %}
   note = {{ "BitTorrent info hash: #{item.InfoHash}"|curlyBraces }}
 }
