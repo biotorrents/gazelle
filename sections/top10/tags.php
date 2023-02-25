@@ -1,5 +1,11 @@
 <?php
-#declare(strict_types=1);
+
+declare(strict_types=1);
+
+
+/**
+ * top10 tags
+ */
 
 $app = App::go();
 
@@ -33,6 +39,7 @@ View::header('Top 10 Tags');
 $Limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
 $Limit = in_array($Limit, [10,100,250]) ? $Limit : 10;
 
+# Top10::torrentTags()
 if ($Details == 'all' || $Details == 'ut') {
     if (!$TopUsedTags = $app->cacheOld->get_value('topusedtag_'.$Limit)) {
         $app->dbOld->prepared_query("
@@ -52,6 +59,7 @@ if ($Details == 'all' || $Details == 'ut') {
     generate_tag_table('Most Used Torrent Tags', 'ut', $TopUsedTags, $Limit);
 }
 
+# Top10::requestTags()
 if ($Details == 'all' || $Details == 'ur') {
     if (!$TopRequestTags = $app->cacheOld->get_value('toprequesttag_'.$Limit)) {
         $app->dbOld->prepared_query("

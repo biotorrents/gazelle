@@ -1,5 +1,11 @@
 <?php
-#declare(strict_types=1);
+
+declare(strict_types=1);
+
+
+/**
+ * top10 users
+ */
 
 $app = App::go();
 
@@ -181,7 +187,7 @@ function generate_user_table($Caption, $Tag, $Details, $Limit)
       </td>
       <td class="number_column"><?=Text::float($Detail['NumUploads'])?>
       </td>
-      <td class="number_column"><?=Format::get_ratio_html($Detail['Uploaded'], $Detail['Downloaded'])?>
+      <td class="number_column"><?=Format::get_ratio_html(intval($Detail['Uploaded']), intval($Detail['Downloaded']))?>
       </td>
       <td class="number_column"><?=time_diff($Detail['JoinDate'])?>
       </td>
