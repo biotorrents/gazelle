@@ -14,15 +14,15 @@ class Top10
     /**
      * render_linkbox
      */
-    public static function render_linkbox($Selected)
+    public static function render_linkbox($selected)
     {
         $ENV = ENV::go(); ?>
 <div class="linkbox">
-  <a href="/top10" class="brackets"><?=self::get_selected_link("Torrents", $Selected === "torrents")?></a>
-  <a href="/top10/users" class="brackets"><?=self::get_selected_link("Users", $Selected === "users")?></a>
-  <a href="/top10/tags" class="brackets"><?=self::get_selected_link("Tags", $Selected === "tags")?></a>
+  <a href="/top10" class="brackets"><?=self::get_selected_link("Torrents", $selected === "torrents")?></a>
+  <a href="/top10/users" class="brackets"><?=self::get_selected_link("Users", $selected === "users")?></a>
+  <a href="/top10/tags" class="brackets"><?=self::get_selected_link("Tags", $selected === "tags")?></a>
   <?php if ($ENV->enableDonations) { ?>
-  <a href="/top10/donors" class="brackets"><?=self::get_selected_link("Donors", $Selected === "donors")?></a>
+  <a href="/top10/donors" class="brackets"><?=self::get_selected_link("Donors", $selected === "donors")?></a>
   <?php } ?>
 </div>
 <?php
@@ -32,12 +32,12 @@ class Top10
     /**
      * get_selected_link
      */
-    private static function get_selected_link($String, $Selected)
+    private static function get_selected_link($string, $selected)
     {
-        if ($Selected) {
-            return "<strong>$String</strong>";
+        if ($selected) {
+            return "<strong>$string</strong>";
         } else {
-            return $String;
+            return $string;
         }
     }
 
@@ -45,13 +45,13 @@ class Top10
     /**
      * render_artist_tile
      */
-    public static function render_artist_tile($Artist, $Category)
+    public static function render_artist_tile($artist, $category)
     {
-        if (self::is_valid_artist($Artist)) {
-            switch ($Category) {
-                case 'weekly':
-                case 'hyped':
-                    self::render_tile("artist.php?artistname=", $Artist['name'], $Artist['image'][3]['#text']);
+        if (self::is_valid_artist($artist)) {
+            switch ($category) {
+                case "weekly":
+                case "hyped":
+                    self::render_tile("artist.php?artistname=", $artist["name"], $artist["image"][3]["#text"]);
                     break;
                 default:
                     break;
@@ -63,16 +63,16 @@ class Top10
     /**
      * render_tile
      */
-    private static function render_tile($Url, $Name, $Image)
+    private static function render_tile($url, $name, $image)
     {
-        if (!empty($Image)) {
-            $Name = Text::esc($Name); ?>
+        if (!empty($image)) {
+            $name = Text::esc($name); ?>
 <li>
   <a
-    href="<?=$Url?><?=$Name?>">
-    <img class="tooltip large_tile" alt="<?=$Name?>"
-      title="<?=$Name?>"
-      src="<?=ImageTools::process($Image)?>" />
+    href="<?=$url?><?=$name?>">
+    <img class="tooltip large_tile" alt="<?=$name?>"
+      title="<?=$name?>"
+      src="<?=ImageTools::process($image)?>" />
   </a>
 </li>
 <?php
@@ -83,13 +83,13 @@ class Top10
     /**
      * render_artist_list
      */
-    public static function render_artist_list($Artist, $Category)
+    public static function render_artist_list($artist, $category)
     {
-        if (self::is_valid_artist($Artist)) {
-            switch ($Category) {
-                case 'weekly':
-                case 'hyped':
-                    self::render_list("artist.php?artistname=", $Artist['name'], $Artist['image'][3]['#text']);
+        if (self::is_valid_artist($artist)) {
+            switch ($category) {
+                case "weekly":
+                case "hyped":
+                    self::render_list("artist.php?artistname=", $artist["name"], $artist["image"][3]["#text"]);
                     break;
                 default:
                     break;
@@ -101,15 +101,15 @@ class Top10
     /**
      * render_list
      */
-    private static function render_list($Url, $Name, $Image)
+    private static function render_list($url, $name, $image)
     {
-        if (!empty($Image)) {
-            $Image = ImageTools::process($Image);
-            $Title = "title=\"&lt;img class=&quot;large_tile&quot; src=&quot;$Image&quot; alt=&quot;&quot; /&gt;\"";
-            $Name = Text::esc($Name); ?>
+        if (!empty($image)) {
+            $image = ImageTools::process($image);
+            $title = "title=\"&lt;img class=&quot;large_tile&quot; src=&quot;$image&quot; alt=&quot;&quot; /&gt;\"";
+            $name = Text::esc($name); ?>
 
 <li>
-  <a class="tooltip_image" data-title-plain="<?=$Name?>" <?=$Title?> href="<?=$Url?><?=$Name?>"><?=$Name?></a>
+  <a class="tooltip_image" data-title-plain="<?=$name?>" <?=$title?> href="<?=$url?><?=$name?>"><?=$name?></a>
 </li>
 <?php
         }
@@ -119,8 +119,8 @@ class Top10
     /**
      * is_valid_artist
      */
-    private static function is_valid_artist($Artist)
+    private static function is_valid_artist($artist)
     {
-        return $Artist['name'] !== '[unknown]';
+        return $artist["name"] !== "[unknown]";
     }
 }
