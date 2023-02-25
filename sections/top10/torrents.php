@@ -3,6 +3,11 @@
 
 $app = App::go();
 
+enforce_login();
+if (!check_perms('site_top10')) {
+    error(403);
+}
+
 $Where = [];
 
 if (!empty($_GET['advanced']) && check_perms('site_advanced_top10')) {
@@ -55,7 +60,7 @@ View::header("Top $Limit Torrents", 'browse');
 <div>
     <div class="header">
         <h2>Top <?=$Limit?> Torrents</h2>
-        <?php Top10View::render_linkbox("torrents"); ?>
+        <?php Top10::render_linkbox("torrents"); ?>
     </div>
     <?php
 

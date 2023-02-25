@@ -3,8 +3,13 @@
 
 $app = App::go();
 
+enforce_login();
 if (!check_perms('users_mod')) {
     error(404);
+}
+
+if (!check_perms('site_top10')) {
+    error(403);
 }
 
 // if (!check_perms('site_top10_history')) {
@@ -17,7 +22,7 @@ View::header('Top 10 Torrents history!');
 <div>
   <div class="header">
     <h2>Top 10 Torrents</h2>
-    <?php Top10View::render_linkbox(); ?>
+    <?php Top10::render_linkbox(); ?>
   </div>
   <div class="pad box">
     <form class="search_form" name="top10" method="get" action="">

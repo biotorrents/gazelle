@@ -3,6 +3,11 @@
 
 $app = App::go();
 
+enforce_login();
+if (!check_perms('site_top10')) {
+    error(403);
+}
+
 // Error out on invalid requests (before caching)
 if (isset($_GET['details'])) {
     if (in_array($_GET['details'], ['ut','ur'])) {
@@ -19,7 +24,7 @@ View::header('Top 10 Tags');
 <div>
   <div class="header">
     <h2>Top 10 Tags</h2>
-    <?php Top10View::render_linkbox("tags"); ?>
+    <?php Top10::render_linkbox("tags"); ?>
   </div>
 
   <?php
@@ -82,7 +87,7 @@ function generate_tag_table($Caption, $Tag, $Details, $Limit, $RequestsTable = f
     <small class="top10_quantity_links">
       <?php
   switch ($Limit) {
-    case 100: ?>
+      case 100: ?>
       &ndash; <a href="top10.php?type=tags&amp;details=<?=$Tag?>"
         class="brackets">Top 10</a>
       &ndash; <span class="brackets">Top 100</span>
@@ -90,7 +95,7 @@ function generate_tag_table($Caption, $Tag, $Details, $Limit, $RequestsTable = f
         href="top10.php?type=tags&amp;limit=250&amp;details=<?=$Tag?>"
         class="brackets">Top 250</a>
       <?php break;
-    case 250: ?>
+      case 250: ?>
       &ndash; <a href="top10.php?type=tags&amp;details=<?=$Tag?>"
         class="brackets">Top 10</a>
       &ndash; <a
@@ -98,7 +103,7 @@ function generate_tag_table($Caption, $Tag, $Details, $Limit, $RequestsTable = f
         class="brackets">Top 100</a>
       &ndash; <span class="brackets">Top 250</span>
       <?php break;
-    default: ?>
+      default: ?>
       &ndash; <span class="brackets">Top 10</span>
       &ndash; <a
         href="top10.php?type=tags&amp;limit=100&amp;details=<?=$Tag?>"
@@ -129,7 +134,7 @@ function generate_tag_table($Caption, $Tag, $Details, $Limit, $RequestsTable = f
     </table><br />';
       return;
   }
-    $Rank = 0;
+      $Rank = 0;
     foreach ($Details as $Detail) {
         $Rank++;
         $Split = Tags::get_name_and_class($Detail['Name']);
@@ -137,7 +142,7 @@ function generate_tag_table($Caption, $Tag, $Details, $Limit, $RequestsTable = f
         $Class = $Split['class'];
 
         // Print row
-?>
+        ?>
     <tr class="row">
       <td class="center"><?=$Rank?>
       </td>
