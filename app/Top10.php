@@ -7,6 +7,8 @@ declare(strict_types=1);
  * Top10
  *
  * Generates stats for top torrents, tags, users, donors, etc.
+ *
+ * todo: test the user functions in production
  */
 
 class Top10
@@ -17,6 +19,34 @@ class Top10
 
     # default result limit
     public static $defaultLimit = 10;
+
+    # shared user query
+    private static $userQuery = "
+        select users.id, users.username, users.registered, users_main.uploaded, users_main.downloaded,
+        abs(users_main.uploaded - :uploadIgnore) / (:uploadNow - unix_timestamp(users.registered)) as uploadSpeed,
+        users_main.downloaded / (:downloadNow - unix_timestamp(users.registered)) as downloadSpeed,
+        count(torrents.id) as uploadCount from users
+
+        join users_main on users_main.userId = users.id
+        left join users_info on users_info.userId = users.id
+        left join torrents on torrents.userId = users.id
+
+        where users.status = :status and users.verified = :verified
+        and users_main.uploaded >= :uploadCutoff and users_main.downloaded > :downloadCutoff
+        group by users.id
+    ";
+
+    # named parameters for user queries
+    private static $userVariables = [
+        "downloadCutoff" => 0,
+        "downloadNow" => null, # self::hydrateUserVariables
+        "limit" => null, # self::hydrateUserVariables
+        "status" => 0,
+        "uploadCutoff" => null, # self::hydrateUserVariables
+        "uploadIgnore" => null, # self::hydrateUserVariables
+        "uploadNow" => null, # self::hydrateUserVariables
+        "verified" => 1,
+    ];
 
 
     /**
@@ -108,32 +138,78 @@ class Top10
 
 
     /**
+     * hydrateUserVariables
+     *
+     * Gets around the static property issues in user queries.
+     */
+    private static function hydrateUserVariables(int $limit = null): array
+    {
+        $app = App::go();
+
+        $variables = self::$userVariables;
+
+        # times
+        $now = time();
+        $variables["downloadNow"] = $now;
+        $variables["uploadNow"] = $now;
+
+        # limit
+        $limit ??= self::$defaultLimit;
+        $variables["limit"] = $limit;
+
+        # upload to disregard
+        $variables["uploadCutoff"] = $app->env->newUserUploads;
+        $variables["uploadIgnore"] = $app->env->newUserUploads;
+
+        return $variables;
+    }
+
+
+    /**
      * dataUploaded
      *
      * Gets the top users by upload amount.
+     *
+     * $BaseQuery = "
+     *   SELECT
+     *     u.ID,
+     *     ui.JoinDate,
+     *     u.Uploaded,
+     *     u.Downloaded,
+     *     ABS(u.Uploaded-524288000) / (".time()." - UNIX_TIMESTAMP(ui.JoinDate)) AS UpSpeed,
+     *     u.Downloaded / (".time()." - UNIX_TIMESTAMP(ui.JoinDate)) AS DownSpeed,
+     *     COUNT(t.ID) AS NumUploads
+     *   FROM users_main AS u
+     *     JOIN users_info AS ui ON ui.UserID = u.ID
+     *     LEFT JOIN torrents AS t ON t.UserID=u.ID
+     *   WHERE u.Enabled='1'
+     *     AND Uploaded>='". 500*1024*1024 ."'
+     *     AND Downloaded>='". 0 ."'
+     *     AND u.ID > 2
+     *     AND (Paranoia IS NULL OR (Paranoia NOT LIKE '%\"uploaded\"%' AND Paranoia NOT LIKE '%\"downloaded\"%'))
+     *   GROUP BY u.ID";
      */
     public static function dataUploaded(int $limit = null): array
     {
-        $BaseQuery = "
-  SELECT
-    u.ID,
-    ui.JoinDate,
-    u.Uploaded,
-    u.Downloaded,
-    ABS(u.Uploaded-524288000) / (".time()." - UNIX_TIMESTAMP(ui.JoinDate)) AS UpSpeed,
-    u.Downloaded / (".time()." - UNIX_TIMESTAMP(ui.JoinDate)) AS DownSpeed,
-    COUNT(t.ID) AS NumUploads
-  FROM users_main AS u
-    JOIN users_info AS ui ON ui.UserID = u.ID
-    LEFT JOIN torrents AS t ON t.UserID=u.ID
-  WHERE u.Enabled='1'
-    AND Uploaded>='". 500*1024*1024 ."'
-    AND Downloaded>='". 0 ."'
-    AND u.ID > 2
-    AND (Paranoia IS NULL OR (Paranoia NOT LIKE '%\"uploaded\"%' AND Paranoia NOT LIKE '%\"downloaded\"%'))
-  GROUP BY u.ID";
+        $app = App::go();
 
-        $app->dbOld->prepared_query("$BaseQuery ORDER BY u.Uploaded DESC LIMIT $Limit;");
+        # return cached if available
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
+
+        if ($cacheHit) {
+            #return $cacheHit;
+        }
+
+        # set limit and variables
+        $limit ??= self::$defaultLimit;
+        $variables = self::hydrateUserVariables($limit);
+
+        $query = self::$userQuery . "order by users_main.uploaded desc limit :limit";
+        $ref = $app->dbNew->multi($query, $variables);
+
+        $app->cacheOld->cache_value($cacheKey, $ref, self::$cacheDuration);
+        return $ref;
     }
 
 
@@ -144,26 +220,25 @@ class Top10
      */
     public static function dataDownloaded(int $limit = null): array
     {
-        $BaseQuery = "
-  SELECT
-    u.ID,
-    ui.JoinDate,
-    u.Uploaded,
-    u.Downloaded,
-    ABS(u.Uploaded-524288000) / (".time()." - UNIX_TIMESTAMP(ui.JoinDate)) AS UpSpeed,
-    u.Downloaded / (".time()." - UNIX_TIMESTAMP(ui.JoinDate)) AS DownSpeed,
-    COUNT(t.ID) AS NumUploads
-  FROM users_main AS u
-    JOIN users_info AS ui ON ui.UserID = u.ID
-    LEFT JOIN torrents AS t ON t.UserID=u.ID
-  WHERE u.Enabled='1'
-    AND Uploaded>='". 500*1024*1024 ."'
-    AND Downloaded>='". 0 ."'
-    AND u.ID > 2
-    AND (Paranoia IS NULL OR (Paranoia NOT LIKE '%\"uploaded\"%' AND Paranoia NOT LIKE '%\"downloaded\"%'))
-  GROUP BY u.ID";
+        $app = App::go();
 
-        $app->dbOld->prepared_query("$BaseQuery ORDER BY u.Downloaded DESC LIMIT $Limit;");
+        # return cached if available
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
+
+        if ($cacheHit) {
+            #return $cacheHit;
+        }
+
+        # set limit and variables
+        $limit ??= self::$defaultLimit;
+        $variables = self::hydrateUserVariables($limit);
+
+        $query = self::$userQuery . "order by users_main.downloaded desc limit :limit";
+        $ref = $app->dbNew->multi($query, $variables);
+
+        $app->cacheOld->cache_value($cacheKey, $ref, self::$cacheDuration);
+        return $ref;
     }
 
 
@@ -174,26 +249,25 @@ class Top10
      */
     public static function uploadCount(int $limit = null): array
     {
-        $BaseQuery = "
-  SELECT
-    u.ID,
-    ui.JoinDate,
-    u.Uploaded,
-    u.Downloaded,
-    ABS(u.Uploaded-524288000) / (".time()." - UNIX_TIMESTAMP(ui.JoinDate)) AS UpSpeed,
-    u.Downloaded / (".time()." - UNIX_TIMESTAMP(ui.JoinDate)) AS DownSpeed,
-    COUNT(t.ID) AS NumUploads
-  FROM users_main AS u
-    JOIN users_info AS ui ON ui.UserID = u.ID
-    LEFT JOIN torrents AS t ON t.UserID=u.ID
-  WHERE u.Enabled='1'
-    AND Uploaded>='". 500*1024*1024 ."'
-    AND Downloaded>='". 0 ."'
-    AND u.ID > 2
-    AND (Paranoia IS NULL OR (Paranoia NOT LIKE '%\"uploaded\"%' AND Paranoia NOT LIKE '%\"downloaded\"%'))
-  GROUP BY u.ID";
+        $app = App::go();
 
-        $app->dbOld->prepared_query("$BaseQuery ORDER BY NumUploads DESC LIMIT $Limit;");
+        # return cached if available
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
+
+        if ($cacheHit) {
+            #return $cacheHit;
+        }
+
+        # set limit and variables
+        $limit ??= self::$defaultLimit;
+        $variables = self::hydrateUserVariables($limit);
+
+        $query = self::$userQuery . "order by uploadCount desc limit :limit";
+        $ref = $app->dbNew->multi($query, $variables);
+
+        $app->cacheOld->cache_value($cacheKey, $ref, self::$cacheDuration);
+        return $ref;
     }
 
 
@@ -204,26 +278,25 @@ class Top10
      */
     public static function uploadSpeed(int $limit = null): array
     {
-        $BaseQuery = "
-  SELECT
-    u.ID,
-    ui.JoinDate,
-    u.Uploaded,
-    u.Downloaded,
-    ABS(u.Uploaded-524288000) / (".time()." - UNIX_TIMESTAMP(ui.JoinDate)) AS UpSpeed,
-    u.Downloaded / (".time()." - UNIX_TIMESTAMP(ui.JoinDate)) AS DownSpeed,
-    COUNT(t.ID) AS NumUploads
-  FROM users_main AS u
-    JOIN users_info AS ui ON ui.UserID = u.ID
-    LEFT JOIN torrents AS t ON t.UserID=u.ID
-  WHERE u.Enabled='1'
-    AND Uploaded>='". 500*1024*1024 ."'
-    AND Downloaded>='". 0 ."'
-    AND u.ID > 2
-    AND (Paranoia IS NULL OR (Paranoia NOT LIKE '%\"uploaded\"%' AND Paranoia NOT LIKE '%\"downloaded\"%'))
-  GROUP BY u.ID";
+        $app = App::go();
 
-        $app->dbOld->prepared_query("$BaseQuery ORDER BY UpSpeed DESC LIMIT $Limit;");
+        # return cached if available
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
+
+        if ($cacheHit) {
+            #return $cacheHit;
+        }
+
+        # set limit and variables
+        $limit ??= self::$defaultLimit;
+        $variables = self::hydrateUserVariables($limit);
+
+        $query = self::$userQuery . "order by uploadSpeed desc limit :limit";
+        $ref = $app->dbNew->multi($query, $variables);
+
+        $app->cacheOld->cache_value($cacheKey, $ref, self::$cacheDuration);
+        return $ref;
     }
 
 
@@ -234,26 +307,25 @@ class Top10
      */
     public static function downloadSpeed(int $limit = null): array
     {
-        $BaseQuery = "
-  SELECT
-    u.ID,
-    ui.JoinDate,
-    u.Uploaded,
-    u.Downloaded,
-    ABS(u.Uploaded-524288000) / (".time()." - UNIX_TIMESTAMP(ui.JoinDate)) AS UpSpeed,
-    u.Downloaded / (".time()." - UNIX_TIMESTAMP(ui.JoinDate)) AS DownSpeed,
-    COUNT(t.ID) AS NumUploads
-  FROM users_main AS u
-    JOIN users_info AS ui ON ui.UserID = u.ID
-    LEFT JOIN torrents AS t ON t.UserID=u.ID
-  WHERE u.Enabled='1'
-    AND Uploaded>='". 500*1024*1024 ."'
-    AND Downloaded>='". 0 ."'
-    AND u.ID > 2
-    AND (Paranoia IS NULL OR (Paranoia NOT LIKE '%\"uploaded\"%' AND Paranoia NOT LIKE '%\"downloaded\"%'))
-  GROUP BY u.ID";
+        $app = App::go();
 
-        $app->dbOld->prepared_query("$BaseQuery ORDER BY DownSpeed DESC LIMIT $Limit;");
+        # return cached if available
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
+        $cacheHit = $app->cacheOld->get_value($cacheKey);
+
+        if ($cacheHit) {
+            #return $cacheHit;
+        }
+
+        # set limit and variables
+        $limit ??= self::$defaultLimit;
+        $variables = self::hydrateUserVariables($limit);
+
+        $query = self::$userQuery . "order by downloadSpeed desc limit :limit";
+        $ref = $app->dbNew->multi($query, $variables);
+
+        $app->cacheOld->cache_value($cacheKey, $ref, self::$cacheDuration);
+        return $ref;
     }
 
     /**
