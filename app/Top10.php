@@ -16,7 +16,7 @@ class Top10
     private static $cacheDuration = 86400; # one day
 
     # default result limit
-    private static $defaultLimit = 10;
+    public static $defaultLimit = 10;
 
 
     /**
