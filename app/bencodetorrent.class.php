@@ -4,6 +4,7 @@
 
 # todo: Replace this with https://github.com/OPSnet/bencode-torrent
 
+
 /**
  * Torrent class that contains some convenient functions related to torrent meta data
  */
@@ -12,6 +13,7 @@ class BencodeTorrent extends BencodeDecode
     private $PathKey = 'path';
     public $Files = [];
     public $Size = 0;
+
 
     /**
      * Create a list of the files in the torrent and their sizes as well as the total torrent size
@@ -57,6 +59,7 @@ class BencodeTorrent extends BencodeDecode
         return array($this->Size, $this->Files);
     }
 
+
     /**
      * Find out the name of the torrent
      *
@@ -72,6 +75,7 @@ class BencodeTorrent extends BencodeDecode
         }
         return $this->Dec['info']['name'];
     }
+
 
     /**
      * Find out the total size of the torrent
@@ -89,6 +93,7 @@ class BencodeTorrent extends BencodeDecode
         return $FileList[0];
     }
 
+
     /**
      * Checks if the "private" flag is present in the torrent
      *
@@ -101,6 +106,8 @@ class BencodeTorrent extends BencodeDecode
         }
         return isset($this->Dec['info']['private']) && Int64::get($this->Dec['info']['private']) == 1;
     }
+
+
     /**
      * Add the "private" flag to the torrent
      *
@@ -119,24 +126,27 @@ class BencodeTorrent extends BencodeDecode
         return true;
     }
 
+
     /**
-     * Add the "source" field to the torrent
+     * make_sourced
+     * 
+     * Add the "source" field to the torrent.
+     * This is used to make a unique info hash.
      *
      * @return true if a change was required
      */
-    public function make_sourced()
+    public function make_sourced(): bool
     {
-        $Sources = User::get_upload_sources();
         if (empty($this->Dec)) {
             return false;
         }
-        if (isset($this->Dec['info']['source']) && ($this->Dec['info']['source'] == $Sources[0] || $this->Dec['info']['source'] == $Sources[1])) {
-            return false;
-        }
-        $this->Dec['info']['source'] = $Sources[0];
-        ksort($this->Dec['info']);
+
+        $this->Dec["info"]["source"] = User::uploadSource();
+        ksort($this->Dec["info"]);
+
         return true;
     }
+
 
     /**
      * Calculate the torrent's info hash
@@ -151,6 +161,7 @@ class BencodeTorrent extends BencodeDecode
         return sha1($this->encode(false, 'info'));
     }
 
+
     /**
      * Add the announce URL to a torrent
      */
@@ -158,6 +169,7 @@ class BencodeTorrent extends BencodeDecode
     {
         return 'd8:announce'.strlen($Url).':'.$Url.substr($Data, 1);
     }
+
 
     /**
      * Add list of announce URLs to a torrent
@@ -174,4 +186,4 @@ class BencodeTorrent extends BencodeDecode
         }
         return $r.'e'.substr($Data, 1);
     }
-}
+} # class

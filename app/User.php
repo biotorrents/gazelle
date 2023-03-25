@@ -789,52 +789,15 @@ class User
 
 
     /**
-     * get_upload_sources
+     * uploadSource
      *
-     * @return array of strings that can be added to next source flag [current, old]
+     * @return string e.g., "demo-1234567890abcdef"
      */
-    public static function get_upload_sources(): array
+    public static function uploadSource(): string
     {
         $app = App::go();
 
-        # try the cache
-        $sourceKeyNew = $app->cacheOld->get_value("source_key_new");
-        if (!$sourceKeyNew) {
-            $sourceKeyNew = [Text::random(), time()];
-            $app->cacheOld->cache_value("source_key_new", $sourceKeyNew);
-        }
-
-        $sourceKeyOld = $app->cacheOld->get_value("source_key_old");
-        if ($sourceKeyNew[1] - time() > 3600) {
-            $sourceKeyOld = $sourceKeyNew;
-            $sourceKeyNew = [Text::random(), time()];
-
-            $app->cacheOld->cache_value("source_key_old", $sourceKeyOld);
-            $app->cacheOld->cache_value("source_key_new", $sourceKeyNew);
-        }
-
-        $query = "select count(id) from torrents where userId = ?";
-        $uploadCount = $app->dbNew->single($query, [ $app->userNew->core["id"] ]);
-
-        $sourceKeys = [
-            # new
-            $app->env->siteName
-                . "-"
-                . substr(hash(
-                    "sha256",
-                    $sourceKeyNew[0] . $app->userNew->core["id"] . $uploadCount
-                ), 0, 10),
-
-            # old
-            $app->env->siteName
-                . "-"
-                . substr(hash(
-                    "sha256",
-                    $sourceKeyOld[0] . $app->userNew->core["id"] . $uploadCount
-                ), 0, 10),
-        ];
-
-        return $sourceKeys;
+        return "{$app->env->siteName}-" . Text::random(16);
     }
 
 

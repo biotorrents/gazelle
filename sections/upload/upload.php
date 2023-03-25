@@ -20,7 +20,7 @@ $app = App::go();
 $announceUris = call_user_func_array("array_merge", ANNOUNCE_URLS);
 
 $passKey = $app->userNew->extra["torrent_pass"];
-$sourceKey = User::get_upload_sources()[0];
+$sourceKey = User::uploadSource();
 
 # tagList
 $query = "select name from tags where tagType = ? order by name";
