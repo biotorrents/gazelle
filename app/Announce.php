@@ -226,8 +226,26 @@ class Announce
     /**
      * mastodon
      */
-    public static function mastodon()
+    public static function mastodon(string $message)
     {
-        # todo
+        $app = App::go();
+
+        # check if mastodon is enabled
+        if (!$app->env->enableMastodon) {
+            return false;
+        }
+
+        try {
+            # mastodon api announce bot
+            $mastodon = new Mastodon(
+                "https://botsin.space",
+                "your_access_token"
+            );
+
+            $mastodon->postStatus($message);
+        } catch (Exception $e) {
+            Text::figlet("mastodon failure", "red");
+            !d($e->getMessage());
+        }
     }
 } # class
