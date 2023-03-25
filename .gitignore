@@ -43,3 +43,6 @@ yarn-error.log
 
 # config
 /config/private.php
+
+# https://marketplace.visualstudio.com/items?itemName=mtxr.sqltools
+*.session.sql
