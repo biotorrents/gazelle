@@ -50,6 +50,7 @@ spl_autoload_register(function (string $class) {
         $path = "{$app->env->serverRoot}/app/{$name}.php";
     }
 
+    $name ??= null;
     if ($name) {
         require_once $path;
     }

@@ -19,7 +19,7 @@ declare(strict_types=1);
 enforce_login();
 $P = db_array($_POST);
 
-$FriendID = (int) $_REQUEST['friendid'];
+$FriendID = (int) $_REQUEST['friendid'] ?? 0;
 Security::int($FriendID);
 
 if (!empty($_REQUEST['action'])) {

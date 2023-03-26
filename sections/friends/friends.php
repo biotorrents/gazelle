@@ -1,7 +1,18 @@
 <?php
-#declare(strict_types=1);
+
+declare(strict_types=1);
+
+
+/**
+ * friends page
+ */
 
 $app = App::go();
+
+$get = Http::query("get");
+$post = Http::query("post");
+
+$friends = Friends::read();
 
 /**
  * Main friends page
