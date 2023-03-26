@@ -310,6 +310,14 @@ class Twig # extends Twig\Environment
             return $string;
         }));
 
+        # User::displayAvatar
+        $twig->addFunction(new Twig\TwigFunction("displayAvatar", function ($uri, $username) {
+            return new Twig\Markup(
+                User::displayAvatar($uri, $username),
+                "UTF-8"
+            );
+        }));
+
         # random creator
         $twig->addFunction(new Twig\TwigFunction("randomCreator", function () {
             $randomCreators = [

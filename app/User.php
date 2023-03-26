@@ -334,6 +334,26 @@ class User
 
 
     /**
+     * exists
+     *
+     * Returns true if the user exists.
+     */
+    public static function exists(int $userId): bool
+    {
+        $app = App::go();
+
+        $query = "select 1 from users where id = ?";
+        $ref = $app->dbNew->single($query, [$userId]);
+
+        if ($ref) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /**
      * THIS IS GOING AWAY!
      *
      * Get user info, is used for the current user and usernames all over the site.

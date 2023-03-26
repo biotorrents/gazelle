@@ -1,0 +1,80 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+<div class="header">
+  <h2>{{ user.core.username }}'s friends</h2>
+</div>
+
+{% if error %}
+    <div class="alertbar error">
+    {{ error }}
+    </div>
+{% endif %}
+
+<section>
+    {# todo: style this table #}
+    <table id="friendsList">
+        <tr>
+            <th />
+            <th>Username</th>
+            <th>Ratio</th>
+            <th>Comment</th>
+            <th>Befriended</th>
+            <th>Actions</th>
+        </tr>
+
+        {# no friends #}
+        {% if friends is empty %}
+            <tr>
+                <td colspan="6">
+                    <p>You have no friends :(</p>
+                </td>
+            </tr>
+        {% endif %}
+
+        {# print friends list #}
+        {% for friend in friends %}
+            <tr>
+                <td style="width: 5rem">
+                    {{ displayAvatar(friend.avatar, friend.username) }}
+                </td>
+
+                <td>
+                    <a href="/user.php?id={{ friend.friendId }}">{{ friend.username }}</a>
+                </td>
+
+                <td>
+                    {{ ratio(friend.uploaded, friend.downloaded) }}
+                </td>
+
+                <td>
+                    <input type="text" name="comment" value="{{ friend.comment }}" placeholder="What did you bond over?" />
+                </td>
+
+                <td>
+                    <span class="tooltip" title="{{ friend.created }}">
+                        {{ friend.created|relativeTime }}
+                    </span>
+                </td>
+
+                <td class="buttonRow">
+                    <a class="button button-primary" id="sendMessage">message</a>
+                    <a class="button button-orange" id="sendMessage">update</a>
+                    <a class="button button-red" id="deleteFriend">delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+</section>
+
+{% endblock %}
+
+
+{#
+{% block sidebar %}
+
+{{ include("user/sidebar.twig") }}
+
+{% endblock %}
+#}

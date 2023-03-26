@@ -27,3 +27,8 @@ Flight::route("POST /api/internal/deleteBookmark", ["Gazelle\API\Internal", "del
 
 # doi number autofill
 Flight::route("POST /api/internal/doiNumberAutofill", ["Gazelle\API\Internal", "doiNumberAutofill"]);
+
+# friends
+Flight::route("POST /api/internal/createFriend", ["Gazelle\API\Internal", "createFriend"]);
+Flight::route("POST /api/internal/updateFriend", ["Gazelle\API\Internal", "updateFriend"]);
+Flight::route("POST /api/internal/deleteFriend", ["Gazelle\API\Internal", "deleteFriend"]);

@@ -368,4 +368,84 @@ class Internal extends Base
             self::failure(400, $e->getMessage());
         }
     }
+
+
+    /** */
+
+
+    /**
+     * createFriend
+     *
+     * Adds a friend to the user's friend list.
+     */
+    public static function createFriend(): void
+    {
+        $app = \App::go();
+
+        self::validateFrontendHash();
+
+        $post = \Http::query("post");
+
+        try {
+            $post["friendId"] ??= null;
+            $post["comment"] ??= null;
+
+            Friends::create($post["friendId"], $post["comment"]);
+
+            self::success("successfully created a friend");
+        } catch (\Exception $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
+    /**
+     * updateFriend
+     *
+     * Updates a friend's comment.
+     */
+    public static function updateFriend(int $friendId, string $comment = ""): void
+    {
+        $app = \App::go();
+
+        self::validateFrontendHash();
+
+        $post = \Http::query("post");
+
+        try {
+            $post["friendId"] ??= null;
+            $post["comment"] ??= null;
+
+            Friends::update($post["friendId"], $post["comment"]);
+
+            self::success("successfully updated a friend");
+        } catch (\Exception $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
+    /**
+     * deleteFriend
+     *
+     * Deletes a friend from the user's friend list.
+     */
+    public static function deleteFriend(int $friendId): void
+    {
+        $app = \App::go();
+
+        self::validateFrontendHash();
+
+        $post = \Http::query("post");
+
+        try {
+            $post["friendId"] ??= null;
+
+            Friends::delete($post["friendId"]);
+
+            self::success("successfully deleted a friend");
+        } catch (\Exception $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
 } # class

@@ -18,12 +18,17 @@ class Friends
      *
      * Adds a friend.
      */
-    public static function create(int $userId, string $comment = ""): int
+    public static function create(int $friendId, string $comment = ""): int
     {
         $app = \App::go();
 
+        $good = User::exists($friendId);
+        if (!$good) {
+            throw new \Exception("invalid friendId");
+        }
+
         $query = "replace into users_friends (userId, friendId, comment) values (?, ?, ?)";
-        $app->dbNew->do($query, [$app->userNew->core["id"], $userId, $comment]);
+        $app->dbNew->do($query, [$app->userNew->core["id"], $friendId, $comment]);
 
         return $app->dbNew->lastInsertId();
     }
@@ -48,7 +53,7 @@ class Friends
             where users_friends.userId = ?
             order by users.username
         ";
-        $ref = $app->dbNew->multi($query, [$userId]);
+        $ref = $app->dbNew->multi($query, [ $app->userNew->core["id"] ]);
 
         return $ref;
     }
@@ -59,12 +64,17 @@ class Friends
      *
      * Changes a friend's comment.
      */
-    public static function update(int $userId, string $comment): void
+    public static function update(int $friendId, string $comment): void
     {
         $app = \App::go();
 
+        $good = User::exists($friendId);
+        if (!$good) {
+            throw new \Exception("invalid friendId");
+        }
+
         $query = "update users_friends set comment = ? where userId = ? and friendId = ?";
-        $app->dbNew->do($query, [$comment, $app->userNew->core["id"], $userId]);
+        $app->dbNew->do($query, [$comment, $app->userNew->core["id"], $friendId]);
     }
 
 
@@ -73,11 +83,36 @@ class Friends
      *
      * Removes a friend.
      */
-    public static function delete(int $userId): void
+    public static function delete(int $friendId): void
     {
         $app = \App::go();
 
+        $good = User::exists($friendId);
+        if (!$good) {
+            throw new \Exception("invalid friendId");
+        }
+
         $query = "delete from users_friends where userId = ? and friendId = ?";
-        $app->dbNew->do($query, [$app->userNew->core["id"], $userId]);
+        $app->dbNew->do($query, [$app->userNew->core["id"], $friendId]);
+    }
+
+
+    /**
+     * isFriend
+     *
+     * Returns true if a friend exists.
+     */
+    public static function isFriend(int $friendId): bool
+    {
+        $app = \App::go();
+
+        $query = "select 1 from users_friends where userId = ? and friendId = ?";
+        $ref = $app->dbNew->single($query, [$app->userNew->core["id"], $friendId]);
+
+        if ($ref) {
+            return true;
+        }
+
+        return false;
     }
 } # class

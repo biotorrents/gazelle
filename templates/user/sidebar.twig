@@ -1,0 +1,17 @@
+{##
+ # generic user sidebar
+ #}
+
+<section>
+	<h3>Actions</h3>
+
+	<form>
+
+		{# edit settings #}
+		<a href="/user/update/{{ userId }}" class="button button-primary">edit settings</a>
+
+		{# preview as other #}
+		<a href="/user/{{ userId }}" class="button button-orange">view profile</a>
+
+	</form>
+</section>
