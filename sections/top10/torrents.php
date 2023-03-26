@@ -147,11 +147,11 @@ if (isset($_GET['groups']) && $_GET['groups'] === 'show') {
     $GroupBySum = md5($GroupBy);
 } ?>
     <div style="text-align: right;" class="linkbox">
-        <a href="top10.php?<?=$FreeleechToggleQuery?>"
+        <a href="/top10?<?=$FreeleechToggleQuery?>"
             class="brackets"><?=ucfirst($FreeleechToggleName)?>
             freeleech in Top 10</a>
         <?php if (check_perms('users_mod')) { ?>
-        <a href="top10.php?<?=$GroupByToggleQuery?>"
+        <a href="/top10?<?=$GroupByToggleQuery?>"
             class="brackets"><?=ucfirst($GroupByToggleName)?>
             top groups</a>
         <?php } ?>
@@ -425,6 +425,8 @@ View::footer();
 // Generate a table based on data from most recent query to $db
 function generate_torrent_table($Caption, $Tag, $Details, $Limit)
 {
+    $app = App::go();
+
     global $user, $Categories, $ReleaseTypes, $GroupBy; ?>
 <h3>Top <?="$Limit $Caption"?>
     <?php if (empty($_GET['advanced'])) { ?>
@@ -432,21 +434,21 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
         <?php
     switch ($Limit) {
         case 100: ?>
-        &ndash; <a href="top10.php?details=<?=$Tag?>"
+        &ndash; <a href="/top10?details=<?=$Tag?>"
             class="brackets">Top
             10</a>
         &ndash; <span class="brackets">Top 100</span>
         &ndash; <a
-            href="top10.php?type=torrents&amp;limit=250&amp;details=<?=$Tag?>"
+            href="/top10?type=torrents&amp;limit=250&amp;details=<?=$Tag?>"
             class="brackets">Top 250</a>
         <?php break;
 
         case 250: ?>
-        &ndash; <a href="top10.php?details=<?=$Tag?>"
+        &ndash; <a href="/top10?details=<?=$Tag?>"
             class="brackets">Top
             10</a>
         &ndash; <a
-            href="top10.php?type=torrents&amp;limit=100&amp;details=<?=$Tag?>"
+            href="/top10?type=torrents&amp;limit=100&amp;details=<?=$Tag?>"
             class="brackets">Top 100</a>
         &ndash; <span class="brackets">Top 250</span>
         <?php break;
@@ -454,10 +456,10 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
         default: ?>
         &ndash; <span class="brackets">Top 10</span>
         &ndash; <a
-            href="top10.php?type=torrents&amp;limit=100&amp;details=<?=$Tag?>"
+            href="/top10?type=torrents&amp;limit=100&amp;details=<?=$Tag?>"
             class="brackets">Top 100</a>
         &ndash; <a
-            href="top10.php?type=torrents&amp;limit=250&amp;details=<?=$Tag?>"
+            href="/top10?type=torrents&amp;limit=250&amp;details=<?=$Tag?>"
             class="brackets">Top 250</a>
         <?php } ?>
     </small>
@@ -526,7 +528,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
       $Media, $Year, $Snatched, $Seeders, $Leechers, $Data, $Size) = $Detail;
       */
 
-        $IsBookmarked = Bookmarks::isBookmarked('torrent', $GroupID);
+        $IsBookmarked = Bookmarks::isBookmarked('torrent', intval($GroupID));
         $IsSnatched = Torrents::has_snatched($TorrentID);
 
         $Rank++;
@@ -567,6 +569,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
             }
 
             # Catalogue Number
+            $CatalogueNumber ??= null;
             if ($CatalogueNumber) {
                 $Label = '&ensp;🔑&nbsp;';
                 $DisplayName .= $Label."<a href='torrents.php?action=search&numbers=$CatalogueNumber'>$CatalogueNumber</a>";
