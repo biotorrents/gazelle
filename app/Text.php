@@ -27,9 +27,9 @@ class Text
      * This class used to be a nightmare.
      * Now it calls one of two good parsers.
      *
-     * @param string $string Markdown preferred
-     * @param bool $safe Whether or not to use safe mode
-     * @return string Parsed XHTML text
+     * @param string $string markdown strongly preferred
+     * @param bool $safe whether or not to use safe mode
+     * @return string parsed XHTML text
      */
     public static function parse(string $string, bool $safe = true): string
     {
@@ -81,6 +81,9 @@ class Text
      * Make it so that internal links are in the form "/section?p=foo"
      * and that external links are secure and look like Wikipedia.
      * Takes an already-parsed input, from Markdown or BBcode.
+     *
+     * @param string $parsed the parsed text
+     * @return string the text with fixed links
      */
     private static function fixLinks(string $parsed): string
     {
@@ -122,8 +125,13 @@ class Text
      *
      * Make a silly willy, goofery ballery.
      * @see https://docs.laminas.dev/laminas-text/figlet/
+     *
+     * @param string $message the message to figlet
+     * @param string $color the color of the figlet
+     * @param string $font the font of the figlet
+     * @return void
      */
-    public static function figlet(string $message, string $color = "black", string $font = "small")
+    public static function figlet(string $message, string $color = "black", string $font = "small"): void
     {
         # escape the input
         $string = self::esc($message);
@@ -142,6 +150,9 @@ class Text
      *
      * Simple string escape.
      * Replaces display_str.
+     *
+     * @param mixed $string the string to escape
+     * @return string the escaped string
      */
     public static function esc(mixed $string): string
     {
@@ -160,8 +171,8 @@ class Text
      * Magical function (the preg_match).
      * Format::is_utf8 + Format::make_utf8.
      *
-     * @param string $string The string to convert
-     * @return string The converted utf8 string
+     * @param string $string the string to convert
+     * @return string the converted utf8 string
      */
     public static function utf8(string $string): string
     {
@@ -217,6 +228,10 @@ class Text
      * Hopefully temporary until we clean up the data.
      *
      * @see https://www.php.net/manual/en/function.number-format.php
+     *
+     * @param mixed $number
+     * @param int $decimals
+     * @return float
      */
     public static function float(mixed $number, int $decimals = 2): float
     {
@@ -246,6 +261,9 @@ class Text
 
     /**
      * toSeconds
+     *
+     * @param string $string
+     * @return int
      */
     public static function toSeconds(string $string): int
     {
@@ -258,6 +276,9 @@ class Text
      * oneLine
      *
      * Makes a multi-line string into a single-line one.
+     *
+     * @param string $string
+     * @return string
      */
     public static function oneLine(string $string): string
     {
@@ -267,6 +288,31 @@ class Text
 
         $string = preg_replace("/\s+/", " ", $string);
         $string = trim($string);
+
+        return $string;
+    }
+
+
+    /**
+     * userGeneratedContent
+     *
+     * @param string $string
+     * @return string
+     */
+    public static function userGeneratedContent(string $string): string
+    {
+        $app = App::go();
+
+        # escape the input
+        $string = self::esc($string);
+
+        # call BanBuilder
+        $censor = new CensorWords();
+        $string = $censor->censorString($string);
+
+        # ding the user account
+        # todo: do something with this
+        $app->userNew->extra["demerits"]++;
 
         return $string;
     }
