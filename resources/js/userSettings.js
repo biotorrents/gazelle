@@ -171,4 +171,48 @@
      * maybe
      */
   });
+
+  /**
+   * createBearerToken
+   */
+  $("#createBearerToken").on("click", () => {
+    // the data to send
+    var request = {
+      frontendHash: frontendHash,
+      tokenName: $("#tokenName").val(),
+    };
+
+    // ajax request
+    $.post("/api/internal/createBearerToken", request, (response) => {
+      $("#newTokenMessage").html(response.data);
+    });
+  });
+
+  /**
+   * deleteBearerToken
+   */
+  $(".deleteBearerToken").on("click", (event) => {
+    // confirm deletion
+    if (!confirm("Are you sure you want to delete this token?")) {
+      return;
+    }
+
+    // the data to send
+    var request = {
+      frontendHash: frontendHash,
+      tokenId: $(event.target).data("tokenid"),
+    };
+
+    // ajax request
+    $.post("/api/internal/deleteBearerToken", request, (response) => {
+      if (response.status === "success") {
+        $("#tokenId-" + request.tokenId).hide();
+      }
+
+      if (response.status === "failure") {
+        // todo: communicate the failure somehow
+      }
+    });
+  });
+
 })();

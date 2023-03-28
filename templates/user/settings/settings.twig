@@ -975,7 +975,7 @@ END PARANOIA CLUSTERFUCK #}
             </p>
 
             {# no tokens #}
-            {% if user.extra.bearerTokens is empty %}
+            {% if bearerTokens is empty %}
             <p id="emptyTokenMessage">
             You have no API bearer tokens. :(
             </p>
@@ -984,24 +984,22 @@ END PARANOIA CLUSTERFUCK #}
             {% else %}
             <table id="bearerTokens">
             <tr>
-                <th class="hidden">ID</th>
                 <th>Name</th>
                 <th>Created</th>
-                <th>Revoke</th>
+                <th>Actions</th>
             </tr>
 
-            {% for item in user.extra.bearerTokens %}
-            <tr>
-              <td class="hidden"><span id="bearerTokenId-{{ item.ID }}">{{ item.ID }}</span></td>
-              <td>{{ item.Name }}</td>
-              <td>{{ item.Created|time_diff }}</td>
-              <td><a id="deleteBearerToken" class="button">revoke</a></td>
+            {% for item in bearerTokens %}
+            <tr id="tokenId-{{ item.ID }}">
+              <td>{{ item.name }}</td>
+              <td><span class="tooltip" title="{{ item.Created }}">{{ item.Created|relativeTime }}</span></td>
+              <td><a class="button deleteBearerToken" data-tokenId="{{ item.ID }}">revoke</a></td>
             </tr>
             {% endfor %}
 
             </table>
 
-            {% endif %} {# if user.extra.bearerTokens is empty #}
+            {% endif %} {# if bearerTokens is empty #}
 
             {# bearer token creation controls #}
             <p><strong>Create a new token</strong></p>

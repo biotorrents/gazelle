@@ -21,6 +21,9 @@ $post = Http::query("post");
 $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
 $u2f = new u2flib_server\U2F("https://{$app->env->siteDomain}");
 
+# bearer tokens
+$bearerTokens = Auth::readBearerToken();
+
 
 /** gpg/2fa/u2f stuff */
 
@@ -175,6 +178,8 @@ $app->twig->display("user/settings/settings.twig", [
  # 2fa (totp)
  "twoFactorSecret" => $twoFactorSecret ?? null,
  "twoFactorImage" => $twoFactorImage ?? null,
+
+ "bearerTokens" => $bearerTokens,
 
  # random placeholders
  "twoFactorPlaceHolder" => random_int(100000, 999999),

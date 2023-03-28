@@ -210,7 +210,7 @@ class Internal extends Base
         }
 
         try {
-            \Auth::deleteBearerToken($post["tokenId"]);
+            \Auth::deleteBearerToken(intval($post["tokenId"]));
 
             self::success("successfully deleted a bearer token");
         } catch (\Exception $e) {

@@ -956,7 +956,8 @@ If you need the custom user information only rarely, you may just retrieve it as
         $app = App::go();
 
         $token = Text::random(128);
-        $name ??= \Carbon\Carbon::now()->toDateTimeString();
+        $name ??= Text::random(16);
+        #$name ??= "Token from " . \Carbon\Carbon::now()->toDateTimeString();
 
         $query = "
             insert into api_user_tokens (userId, name, token, revoked)
@@ -985,8 +986,8 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = App::go();
 
-        $query = "select * from api_user_tokens where userId = ?";
-        $ref = $app->dbNew->multi($query, [ $app->userNew->core["id"] ]);
+        $query = "select * from api_user_tokens where userId = ? and revoked = ?";
+        $ref = $app->dbNew->multi($query, [$app->userNew->core["id"], 0]);
 
         return $ref;
     }
@@ -1002,16 +1003,16 @@ If you need the custom user information only rarely, you may just retrieve it as
 
 
     /**
-         * deleteBearerToken
-         *
-         * @param int $tokenId
-         * @return void
-         */
+     * deleteBearerToken
+     *
+     * @param int $tokenId
+     * @return void
+     */
     public static function deleteBearerToken(int $tokenId): void
     {
         $app = App::go();
 
-        $query = "delete from api_user_tokens where id = ? and userId = ?";
-        $app->dbNew->do($query, [ $tokenId, $app->userNew->core["id"] ]);
+        $query = "update api_user_tokens set revoked = ? where id = ?";
+        $app->dbNew->do($query, [1, $tokenId]);
     }
 } # class
