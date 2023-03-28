@@ -6,7 +6,8 @@ $app = App::go();
 View::header('Staff Inbox');
 
 $View = (isset($_GET['view'])) ? Text::esc($_GET['view']) : '';
-$UserLevel = $app->userNew->extra['EffectiveClass'];
+$UserLevel = 0;
+#$UserLevel = $app->userNew->extra['EffectiveClass'];
 
 $LevelCap = 1000;
 
@@ -33,12 +34,16 @@ switch ($View) {
     break;
   default:
     $Status = "Unanswered";
+    $ViewString = 'Unanswered';
+
+    /*
     if ($UserLevel >= $Classes[MOD]['Level'] || $UserLevel == $Classes[FORUM_MOD]['Level']) {
         $ViewString = 'Your Unanswered';
     } else {
         // FLS
         $ViewString = 'Unanswered';
     }
+    */
     break;
 }
 
