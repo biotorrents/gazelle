@@ -71,12 +71,15 @@ function get_fls()
 function generate_staff_query($StaffLevel)
 {
     global $Classes;
+
+    $PLevel = null;
+
     if ($StaffLevel == 'forum_staff') {
         $PName = ''; // only needed for full staff
-        $PLevel = 'p.Level < ' . $Classes[MOD]['Level'];
+        #$PLevel = 'p.Level < ' . $Classes[MOD]['Level'];
     } elseif ($StaffLevel == 'staff') {
         $PName = 'p.Name,';
-        $PLevel = 'p.Level >= ' . $Classes[MOD]['Level'];
+        #$PLevel = 'p.Level >= ' . $Classes[MOD]['Level'];
     }
 
     $SQL = "
@@ -92,7 +95,6 @@ function generate_staff_query($StaffLevel)
       JOIN users_info AS i ON m.ID = i.UserID
       JOIN permissions AS p ON p.ID = m.PermissionID
     WHERE p.DisplayStaff = '1'
-      AND $PLevel
     ORDER BY p.Level";
     if (check_perms('users_mod')) {
         $SQL .= ', m.LastAccess ASC';
