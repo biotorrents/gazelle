@@ -255,7 +255,7 @@ class Text
      */
     public static function random($length = 32): string
     {
-        return Illuminate\Support\Str::random($length);
+        return \Illuminate\Support\Str::random($length);
     }
 
 
@@ -307,7 +307,7 @@ class Text
         $string = self::esc($string);
 
         # call BanBuilder
-        $censor = new CensorWords();
+        $censor = new \Snipe\BanBuilder\CensorWords();
         $string = $censor->censorString($string);
 
         # ding the user account

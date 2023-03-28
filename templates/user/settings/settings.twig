@@ -976,15 +976,13 @@ END PARANOIA CLUSTERFUCK #}
 
             {# no tokens #}
             {% if user.extra.bearerTokens is empty %}
-            <p>
+            <p id="emptyTokenMessage">
             You have no API bearer tokens. :(
             </p>
 
-            <a id="createBearerToken" class="button button-primary">create new token</a>
-
             {# yes tokens #}
             {% else %}
-            <table class="bearerTokens">
+            <table id="bearerTokens">
             <tr>
                 <th class="hidden">ID</th>
                 <th>Name</th>
@@ -1004,6 +1002,25 @@ END PARANOIA CLUSTERFUCK #}
             </table>
 
             {% endif %} {# if user.extra.bearerTokens is empty #}
+
+            {# bearer token creation controls #}
+            <p><strong>Create a new token</strong></p>
+
+            <p>
+            <input type="text" id="bearerTokenName" name="bearerTokenName" placeholder="e.g., my personal token" />
+            </p>
+
+            <p>
+            <a id="createBearerToken" class="button button-primary">create new token</a>
+            </p>
+
+            {# the new token appears here #}
+            <p>
+            Your new token will appear here.
+            <span class="warning">Please store it securely, because it'll only be shown once!</span>
+            </p>
+            
+            <textarea id="newTokenMessage"></textarea>
 
           </td>
         </tr>

@@ -32,3 +32,7 @@ Flight::route("POST /api/internal/doiNumberAutofill", ["Gazelle\API\Internal", "
 Flight::route("POST /api/internal/createFriend", ["Gazelle\API\Internal", "createFriend"]);
 Flight::route("POST /api/internal/updateFriend", ["Gazelle\API\Internal", "updateFriend"]);
 Flight::route("POST /api/internal/deleteFriend", ["Gazelle\API\Internal", "deleteFriend"]);
+
+# bearer tokens
+Flight::route("POST /api/internal/createBearerToken", ["Gazelle\API\Internal", "createBearerToken"]);
+Flight::route("POST /api/internal/deleteBearerToken", ["Gazelle\API\Internal", "deleteBearerToken"]);

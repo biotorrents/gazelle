@@ -940,4 +940,78 @@ If you need the custom user information only rarely, you may just retrieve it as
 
         Http::flushCookies();
     }
+
+
+    /** bearer tokens */
+
+
+    /**
+     * createBearerToken
+     *
+     * @param string $name
+     * @return string
+     */
+    public static function createBearerToken(?string $name = null): string
+    {
+        $app = App::go();
+
+        $token = Text::random(128);
+        $name ??= \Carbon\Carbon::now()->toDateTimeString();
+
+        $query = "
+            insert into api_user_tokens (userId, name, token, revoked)
+            values (:userId, :name, :token, :revoked)
+        ";
+
+        $app->dbNew->do($query, [
+            "userId" => $app->userNew->core["id"],
+            "name" => $name,
+            "token" => password_hash($token, PASSWORD_DEFAULT),
+            "revoked" => 0,
+        ]);
+
+        return $token;
+    }
+
+
+    /**
+     * readBearerToken
+     *
+     * Gets the token ID and name for a given user.
+     *
+     * @return array|null
+     */
+    public static function readBearerToken(): ?array
+    {
+        $app = App::go();
+
+        $query = "select * from api_user_tokens where userId = ?";
+        $ref = $app->dbNew->multi($query, [ $app->userNew->core["id"] ]);
+
+        return $ref;
+    }
+
+
+    /**
+     * updateBearerToken
+     */
+    public static function updateBearerToken()
+    {
+        throw new Exception("not implemented");
+    }
+
+
+    /**
+         * deleteBearerToken
+         *
+         * @param int $tokenId
+         * @return void
+         */
+    public static function deleteBearerToken(int $tokenId): void
+    {
+        $app = App::go();
+
+        $query = "delete from api_user_tokens where id = ? and userId = ?";
+        $app->dbNew->do($query, [ $tokenId, $app->userNew->core["id"] ]);
+    }
 } # class

@@ -161,6 +161,63 @@ class Internal extends Base
     }
 
 
+    /**
+     * createBearerToken
+     *
+     * Creates a bearer token for the user.
+     */
+    public static function createBearerToken(): void
+    {
+        $app = \App::go();
+
+        self::validateFrontendHash();
+
+        $post = \Http::query("post");
+        $post["name"] ??= null;
+
+        /*
+        if (empty($post["name"])) {
+            self::failure(400, "empty name");
+        }
+        */
+
+        try {
+            $token = \Auth::createBearerToken($post["name"]);
+
+            self::success($token);
+        } catch (\Exception $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
+    /**
+     * deleteBearerToken
+     *
+     * Deletes a bearer token for the user.
+     */
+    public static function deleteBearerToken(): void
+    {
+        $app = \App::go();
+
+        self::validateFrontendHash();
+
+        $post = \Http::query("post");
+        $post["tokenId"] ??= null;
+
+        if (empty($post["tokenId"])) {
+            self::failure(400, "tokenId required");
+        }
+
+        try {
+            \Auth::deleteBearerToken($post["tokenId"]);
+
+            self::success("successfully deleted a bearer token");
+        } catch (\Exception $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
     /** */
 
 
