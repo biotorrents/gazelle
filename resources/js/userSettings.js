@@ -193,7 +193,8 @@
    */
   $(".deleteBearerToken").on("click", (event) => {
     // confirm deletion
-    if (!confirm("Are you sure you want to delete this token?")) {
+    let confirm = confirm("Are you sure you want to delete this token?")
+    if (!confirm) {
       return;
     }
 

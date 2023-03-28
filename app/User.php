@@ -601,8 +601,10 @@ class User
     {
         global $Classes;
 
+        $UserID = intval($UserID);
+
         # Scripts may pass strings
-        if ((int) $UserID === 0) {
+        if ($UserID === 0) {
             return 'System';
         }
 
@@ -615,23 +617,9 @@ class User
         $Str = '';
 
         $Username = $UserInfo['Username'];
-        $Paranoia = $UserInfo['Paranoia'];
-
-        $OverrideParanoia = check_perms('users_override_paranoia');
-
-        /*
-        $UserInfo['Class'] ??= [];
-        if ($UserInfo['Class'] < $Classes[MOD]['Level']) {
-            $OverrideParanoia = check_perms('users_override_paranoia', $UserInfo['Class']);
-        } else {
-            // Don't override paranoia for mods who don't want to show their donor heart
-            $OverrideParanoia = false;
-        }
-        */
 
         # Show donor icon?
         $ShowDonorIcon = true;
-        #$ShowDonorIcon = (!in_array('hide_donor_heart', $Paranoia) || $OverrideParanoia);
 
         if ($Title) {
             $Str .= "<strong><a href='user.php?id=$UserID'>$Username</a></strong>";
@@ -693,8 +681,11 @@ class User
      */
     public static function make_class_string($ClassID)
     {
+        /*
         global $Classes;
+
         return $Classes[$ClassID]['Name'];
+        */
     }
 
 

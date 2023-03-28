@@ -132,6 +132,7 @@ View::header('Invites');
   WHERE ID = $UserID");
 list($CanLeech) = $app->dbOld->next_record();
 
+$app->userNew->extra['RatioWatch'] ??= null;
 if (!$Sneaky
   && !$app->userNew->extra['RatioWatch']
   && $CanLeech
