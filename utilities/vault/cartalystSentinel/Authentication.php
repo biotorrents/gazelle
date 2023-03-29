@@ -61,7 +61,7 @@ class Authentication
             ]);
 
             $capsule->bootEloquent();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $e->getMessage();
         }
 
@@ -69,7 +69,7 @@ class Authentication
         try {
             $this->twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
             $this->u2f = new u2flib_server\U2F("https://{$app->env->siteDomain}");
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $e->getMessage();
         }
     }
@@ -87,7 +87,7 @@ class Authentication
     {
         try {
             return Sentinel::authenticate($credentials, $remember, $login);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $this->message;
         }
     }
@@ -146,7 +146,7 @@ class Authentication
         try {
             $user = Sentinel::register($credentials, function () {
             });
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $e->getMessage();
         }
     }

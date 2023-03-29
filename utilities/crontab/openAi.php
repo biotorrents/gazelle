@@ -54,7 +54,7 @@ foreach ($ref as $row) {
             sleep(10);
 
             break;
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             Text::figlet("error", "red");
             ~d($e->getMessage());
 
@@ -77,7 +77,7 @@ foreach ($ref as $row) {
             sleep(10);
 
             break;
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             Text::figlet("error", "red");
             ~d($e->getMessage());
 

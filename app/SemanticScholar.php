@@ -162,7 +162,7 @@ class SemanticScholar
                 try {
                     $data[$id][$endpoint] ??= [];
                     $data[$id][$endpoint] = call_user_func([$this, $endpoint]);
-                } catch (Exception $e) {
+                } catch (Throwable $e) {
                     return $e->getMesage();
                 }
             }
@@ -177,7 +177,7 @@ class SemanticScholar
                     $data[$this->releaseId]["downloadLinks"][$dataset["name"]]
                         = $this->downloadLinks($dataset["name"])
                         ?? [];
-                } catch (Exception $e) {
+                } catch (Throwable $e) {
                     return $e->getMesage();
                 }
             }
@@ -187,8 +187,8 @@ class SemanticScholar
         if ($save) {
             try {
                 $this->upsert($data, $options);
-            } catch (Exception $e) {
-                return $e;
+            } catch (Throwable $e) {
+                return $e->getMessage();
             }
         }
 
@@ -252,8 +252,8 @@ class SemanticScholar
         try {
             $query = "select * from semanticScholar where id = ?";
             $app->dbNew->row($query, [$id]);
-        } catch (Exception $e) {
-            return $e;
+        } catch (Throwable $e) {
+            return $e->getMessage();
         }
 
         return $data;

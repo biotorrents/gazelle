@@ -79,7 +79,7 @@ try {
     # delete all stored sessions
     $query = "delete from users_sessions where userId = ?";
     $app->dbNew->do($query, [$userId]);
-} catch (Exception $e) {
+} catch (Throwable $e) {
     $response = $e->getMessage();
 }
 

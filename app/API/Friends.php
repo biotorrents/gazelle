@@ -52,7 +52,7 @@ class Friends extends Base
             $row = $app->dbNew->row($query, [$app->dbNew->pdo->lastInsertId()]);
 
             self::success($row);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
     }
@@ -107,7 +107,7 @@ class Friends extends Base
             $app->dbNew->do($query, [$app->userNew->core["id"], $userId]);
 
             self::success($row);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
     }

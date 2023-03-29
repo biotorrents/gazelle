@@ -59,7 +59,7 @@ class Auth # extends Delight\Auth\Auth
 
             $this->twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
             $this->u2f = new u2flib_server\U2F("https://{$app->env->siteDomain}");
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return $e->getMessage();
         }
     }
@@ -161,7 +161,7 @@ class Auth # extends Delight\Auth\Auth
             return "Please try again later";
         } catch (Delight\Auth\DuplicateUsernameException $e) {
             return "Please use a different username";
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return $e->getMessage();
         }
     } # register
@@ -308,7 +308,7 @@ class Auth # extends Delight\Auth\Auth
 
             # update ocelot with the new user
             Tracker::update_tracker("add_user", ["id" => $userId, "passkey" => $torrent_pass]);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return $e->getMessage();
         }
     } # hydrateUserInfo
@@ -383,7 +383,7 @@ class Auth # extends Delight\Auth\Auth
                 $response = $this->library->loginWithUsername($username, $passphrase, $this->remember($rememberMe));
             }
             */
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             #!d($e);exit;
             return $message;
         }
@@ -392,7 +392,7 @@ class Auth # extends Delight\Auth\Auth
         if (!empty($twoFactor)) {
             try {
                 $this->verify2FA($userId, $twoFactor);
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 #!d($e);exit;
                 return $message;
             }
@@ -402,7 +402,7 @@ class Auth # extends Delight\Auth\Auth
         if (!empty($u2fRequest) && !empty($u2fResponse)) {
             try {
                 $this->verifyU2F($userId, $twoFactor);
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 #!d($e);exit;
                 return $message;
             }
@@ -411,7 +411,7 @@ class Auth # extends Delight\Auth\Auth
         # gazelle session
         try {
             $this->createSession($userId, $rememberMe);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             #!d($e);exit;
             return $message;
         }
@@ -475,7 +475,7 @@ class Auth # extends Delight\Auth\Auth
 
             $query = "update u2f set counter = ? where keyHandle = ? and userId = ?";
             $app->dbNew->do($query, [$response->counter, $response->keyHandle, $userId]);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             # hardcoded u2f library exception here?
             if ($e->getMessage() === "Counter too low.") {
                 $badHandle = json_decode($post["u2f-response"], true)["keyHandle"];
@@ -508,7 +508,7 @@ class Auth # extends Delight\Auth\Auth
             # if you want the user to be automatically signed in after successful confirmation,
             # just call confirmEmailAndSignIn instead of confirmEmail
             $this->library->confirmEmailAndSignIn($selector, $token, $this->remember());
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return $message;
         }
     } # confirmEmail
@@ -566,7 +566,7 @@ class Auth # extends Delight\Auth\Auth
                 App::email($to, $subject, $body);
                 Announce::slack("{$to}\n{$subject}\n{$body}", ["debug"]);
             });
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return $message;
         }
     } # recoverStart
@@ -592,7 +592,7 @@ class Auth # extends Delight\Auth\Auth
             # put the selector and token in hidden fields
             # ask the user for their new passphrase
             $this->library->canResetPasswordOrThrow($selector, $token);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return $message;
         }
     } # recoverMiddle
@@ -622,7 +622,7 @@ class Auth # extends Delight\Auth\Auth
             }
 
             $this->library->resetPassword($selector, $token, $passphrase);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return $message;
         }
     } # recoverEnd
@@ -644,7 +644,7 @@ class Auth # extends Delight\Auth\Auth
 
         try {
             $auth->changePassword($oldPassphrase, $newPassphrase);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return $message;
         }
     } # changePassphrase
@@ -676,7 +676,7 @@ class Auth # extends Delight\Auth\Auth
             } else {
                 throw new Exception("We can't say if the user is who they claim to be");
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return $message;
         }
     } # changeEmail
@@ -704,7 +704,7 @@ class Auth # extends Delight\Auth\Auth
 
 
             echo 'The user may now respond to the confirmation request (usually by clicking a link)';
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return $message;
         }
     } # resendConfirmation
@@ -723,7 +723,7 @@ class Auth # extends Delight\Auth\Auth
             # you can destroy the entire session by calling a second method
             $this->library->logOutEverywhere();
             $this->library->destroySession();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return $message;
         }
     } # logout
@@ -762,7 +762,7 @@ If you need the custom user information only rarely, you may just retrieve it as
 
         try {
             $this->library->reconfirmPassword($passphrase);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return $message;
         }
     } # enforceLogin
@@ -790,7 +790,7 @@ If you need the custom user information only rarely, you may just retrieve it as
             } else {
                 throw new Exception("We can't say if the user is who they claim to be");
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return $message;
         }
     } # toggleReset

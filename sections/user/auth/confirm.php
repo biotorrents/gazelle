@@ -19,7 +19,7 @@ if (empty($selector) || empty($token)) {
 try {
     $response = $auth->confirmEmail($selector, $token);
     #!d($response);exit;
-} catch (Exception $e) {
+} catch (Throwable $e) {
     $response = $e->getMessage();
     $success = false;
 }

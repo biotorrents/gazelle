@@ -48,7 +48,7 @@ foreach ($ref as $row) {
         # save memory
         $semanticScholar = null;
         unset($semanticScholar);
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         Text::figlet("failure!", "red");
         !d($e);
         continue;

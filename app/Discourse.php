@@ -46,7 +46,7 @@ class Discourse
             $this->token = $app->env->getPriv("discourseKey");
             $this->username = "system"; # todo
             $this->connectSecret = $app->env->getPriv("connectSecret");
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return $e->getMessage();
         }
     }

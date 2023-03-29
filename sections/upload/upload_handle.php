@@ -353,7 +353,7 @@ try {
     # validate torrent data and get info
     $torrentData = $validate->bencoded($torrent);
     #!d($torrentData);exit;
-} catch (Exception $e) {
+} catch (Throwable $e) {
     $validate->errors["torrentFile"] = $e->getMessage();
 }
 
@@ -731,7 +731,7 @@ if ($app->env->enableBioPhp && !empty($data['Seqhash'])) {
                 $Parsed['name'],
                 $Seqhash
             );
-        } catch (Exception $Err) {
+        } catch (Throwable $Err) {
             $UploadForm = $Type;
             require_once serverRoot.'/sections/upload/upload.php' ;
             error($Err->getMessage(), $NoHTML = true);

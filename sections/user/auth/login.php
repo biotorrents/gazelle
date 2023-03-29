@@ -68,7 +68,7 @@ try {
 
             $query = "update u2f set counter = ? where keyHandle = ? and userId = ?";
             $app->dbNew->do($query, [$response->counter, $response->keyHandle, $userId]);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             # hardcoded u2f library exception here?
             if ($e->getMessage() === "Counter too low.") {
                 $badHandle = json_decode($post["u2f-response"], true)["keyHandle"];
@@ -81,7 +81,7 @@ try {
             throw new Exception($e->getMessage());
         }
     }
-} catch (Exception $e) {
+} catch (Throwable $e) {
     $response = $e->getMessage();
 }
 */

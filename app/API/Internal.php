@@ -71,7 +71,7 @@ class Internal extends Base
             $app->userNew->create2FA($post["secret"], $post["code"]);
 
             self::success("successfully created a 2fa key");
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
     }
@@ -98,7 +98,7 @@ class Internal extends Base
             $app->userNew->delete2FA($post["secret"], $post["code"]);
 
             self::success("successfully deleted a 2fa key");
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
     }
@@ -185,7 +185,7 @@ class Internal extends Base
             $token = \Auth::createBearerToken($post["name"]);
 
             self::success($token);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
     }
@@ -213,7 +213,7 @@ class Internal extends Base
             \Auth::deleteBearerToken(intval($post["tokenId"]));
 
             self::success("successfully deleted a bearer token");
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
     }
@@ -286,7 +286,7 @@ class Internal extends Base
             );
 
             self::success("bookmark created");
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
     }
@@ -310,7 +310,7 @@ class Internal extends Base
             );
 
             self::success("bookmark deleted");
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
     }
@@ -421,7 +421,7 @@ class Internal extends Base
             } # foreach ($response["authors"] as $creator)
 
             self::success($data);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
     }
@@ -450,7 +450,7 @@ class Internal extends Base
             Friends::create($post["friendId"], $post["comment"]);
 
             self::success("successfully created a friend");
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
     }
@@ -476,7 +476,7 @@ class Internal extends Base
             Friends::update($post["friendId"], $post["comment"]);
 
             self::success("successfully updated a friend");
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
     }
@@ -501,7 +501,7 @@ class Internal extends Base
             Friends::delete($post["friendId"]);
 
             self::success("successfully deleted a friend");
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
     }

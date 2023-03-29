@@ -34,7 +34,7 @@ $post["pgpPublicKey"] ??= null;
 if ($post["pgpPublicKey"]) {
     try {
         $app->userNew->createPGP($post["pgpPublicKey"]);
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         # do something with the error
         !d($e->getMessage());
     }
@@ -50,7 +50,7 @@ $post["twoFactorCode"] ??= null;
 if ($post["twoFactorSecret"] && $post["twoFactorCode"]) {
     try {
         $app->userNew->create2FA($post["twoFactorSecret"], $post["twoFactorCode"]);
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         # do something with the error
         !d($e->getMessage());
     }
@@ -60,7 +60,7 @@ $post["twoFactorDelete"] ??= null;
 if ($post["twoFactorDelete"]) {
     try {
         $app->userNew->delete2FA();
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         # do something with the error
         !d($e->getMessage());
     }
@@ -84,7 +84,7 @@ if (!empty($app->userNew->extra["TwoFactor"])) {
             "{$app->env->siteName}:{$app->userNew->core["username"]}",
             $twoFactorSecret
         );
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         # do something
     }
 }
@@ -98,7 +98,7 @@ $post["u2fResponse"] ??= null;
 if ($post["u2fRequest"] && $post["u2fResponse"]) {
     try {
         $app->userNew->createU2F($post["u2fRequest"], $post["u2fResponse"]);
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         # do something with the error
         !d($e->getMessage());
     }
@@ -108,7 +108,7 @@ $post["u2fDelete"] ??= null;
 if ($post["u2fDelete"]) {
     try {
         $app->userNew->deleteU2F();
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         # do something with the error
         !d($e->getMessage());
     }
@@ -156,7 +156,7 @@ if (!empty($post)) {
     try {
         $app->userNew->updateSettings($post);
         NotificationsManager::save_settings($app->userNew->core["id"]);
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         $error = $e->getMessage();
     }
 }

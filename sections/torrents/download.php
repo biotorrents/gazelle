@@ -172,7 +172,7 @@ if ($useToken && intval($leechStatus) === 0) {
                 "add_token",
                 ["info_hash" => substr("%".chunk_split($infoHash, 2, "%"), 0, -1), "userid" => $userId]
             );
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             error("
                 Sorry!
                 An error occurred while trying to register your token.

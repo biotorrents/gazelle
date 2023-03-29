@@ -124,7 +124,7 @@ class Database extends PDO
 
             $this->eloquent->setAsGlobal();
             $this->eloquent->bootEloquent();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             throw new Exception($e->getMessage(), intval($e->getCode()));
         }
         */

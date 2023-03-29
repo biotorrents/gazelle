@@ -99,7 +99,7 @@ class Announce
             $socket = fsockopen(self::$ircAddress, self::$ircPort);
             fwrite($socket, $command);
             fclose($socket);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             Text::figlet("irc failure", "red");
             !d($e->getMessage());
         }
@@ -122,7 +122,7 @@ class Announce
 
         try {
             # todo
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             Text::figlet("rss failure", "red");
             !d($e->getMessage());
         }
@@ -216,7 +216,7 @@ class Announce
             return $statues = $connection->post("statuses/update", ["status" => "hello world"]);
 
             return $content = $connection->get("account/verify_credentials");
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             Text::figlet("twitter failure", "red");
             !d($e->getMessage());
         }
@@ -243,7 +243,7 @@ class Announce
             );
 
             $mastodon->postStatus($message);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             Text::figlet("mastodon failure", "red");
             !d($e->getMessage());
         }

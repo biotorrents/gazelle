@@ -1080,7 +1080,7 @@ END PARANOIA CLUSTERFUCK #}
                 (UserID, KeyHandle, PublicKey, Certificate, Counter, Valid)
               Values ($UserID, '".db_string($U2FReg->keyHandle)."', '".db_string($U2FReg->publicKey)."', '".db_string($U2FReg->certificate)."', '".db_string($U2FReg->counter)."', '1')");
             $Message = "U2F token registered";
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $Error = "Failed to register U2F token";
         }
     }

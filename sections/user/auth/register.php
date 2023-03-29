@@ -32,7 +32,7 @@ try {
         # success
         $emailSent = true;
     }
-} catch (Exception $e) {
+} catch (Throwable $e) {
     $response = $e->getMessage();
 }
 

@@ -132,7 +132,7 @@ class Manticore
 
             # https://github.com/FoolCode/SphinxQL-Query-Builder#percolate
             $this->percolate = new \Foolz\SphinxQL\Percolate($this->connection);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw new \Exception($e->getMessage());
         }
     }
@@ -257,7 +257,7 @@ class Manticore
 
             $app->cacheOld->cache_value($cacheKey, $results, $this->cacheDuration);
             return $results;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $app->debug["messages"]->addMessage("Gazelle\Manticore->search(): " . $e->getMessage());
             throw new \Exception($e->getMessage());
         }

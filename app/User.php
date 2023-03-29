@@ -248,7 +248,7 @@ class User
                     ksort($this->$key);
                 }
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return $e->getMessage();
         }
 
@@ -1149,7 +1149,7 @@ class User
                 try {
                     $this->auth->library->admin()->changePasswordForUserById($userId, $newPassphrase1);
                     #$this->auth->library->logOutEverywhereElse();
-                } catch (Exception $e) {
+                } catch (Throwable $e) {
                     throw new Exception($e->getMessage());
                 }
             } # if (!empty($newPassphrase1) && !empty($newPassphrase2))
@@ -1235,7 +1235,7 @@ class User
             try {
                 $publicKey = Esc::string($data["publicKey"]);
                 $this->updatePGP($publicKey);
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 throw new Exception($e->getMessage());
             }
 
@@ -1332,7 +1332,7 @@ class User
 
             # commit the transaction
             $app->dbNew->commit();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $app->dbNew->rollback();
             throw new Exception($e->getMessage());
         }

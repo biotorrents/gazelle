@@ -50,7 +50,7 @@ if ($Type = $_POST['type'] ?? false) {
                 (UserID, KeyHandle, PublicKey, Certificate, Counter, Valid)
               Values ($UserID, '".db_string($U2FReg->keyHandle)."', '".db_string($U2FReg->publicKey)."', '".db_string($U2FReg->certificate)."', '".db_string($U2FReg->counter)."', '1')");
             $Message = "U2F token registered";
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $Error = "Failed to register U2F token";
         }
     }
@@ -91,7 +91,7 @@ View::header("2FA Settings", 'u2f');
   </div>
   <?php }
 
-   if (isset($Error)) { ?>
+  if (isset($Error)) { ?>
   <div class="alertbar error"><?=$Error?>
   </div>
   <?php } ?>
@@ -103,7 +103,7 @@ View::header("2FA Settings", 'u2f');
 
     <div class="pad">
       <?php if (empty($PublicKey)) {
-       if (!empty($TwoFactor) || sizeof($U2FRegs) > 0) { ?>
+          if (!empty($TwoFactor) || sizeof($U2FRegs) > 0) { ?>
       <strong class="important_text">
         You have a form of 2FA enabled but no PGP key associated with your account.
         If you lose access to your 2FA device, you will permanently lose access to your account.
@@ -130,7 +130,7 @@ View::header("2FA Settings", 'u2f');
         from loss (backup) or theft (revocation certificate).
       </p>
       <?php
-   } else { ?>
+      } else { ?>
       <p>
         The PGP public key associated with your account is shown below.
       </p>
@@ -163,8 +163,8 @@ View::header("2FA Settings", 'u2f');
 
     <div class="pad">
       <?php $TwoFASecret = empty($TwoFactor) ? $TwoFA->createSecret() : $TwoFactor;
-      if (empty($TwoFactor)) {
-          if (sizeof($U2FRegs) === 0) { ?>
+if (empty($TwoFactor)) {
+    if (sizeof($U2FRegs) === 0) { ?>
       <p>
         Two Factor Authentication is not currently enabled for this account.
         To enable it, add the secret key below to your 2FA client either manually or by scanning the QR code, then enter
