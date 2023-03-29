@@ -27,7 +27,7 @@ $openai = new Gazelle\OpenAI();
 $query = "
     select torrents_group.id from torrents_group
     left join openai on torrents_group.id = openai.groupId
-    where openai.groupId is null and openai.failCount < 3
+    where openai.groupId is null
 ";
 
 $ref = $app->dbNew->multi($query, []);
@@ -35,6 +35,11 @@ $ref = $app->dbNew->multi($query, []);
 
 # loop through each groupId
 foreach ($ref as $row) {
+    # skip previously failed jobs
+    if ($row["failCount"] > 2) {
+        continue;
+    }
+
     # summary
     $failCount = 0;
     while ($failCount < 3) {
