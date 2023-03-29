@@ -19,6 +19,7 @@ declare(strict_types=1);
 enforce_login();
 
 // fix old links
+$_REQUEST['action'] ??= null;
 if ($_REQUEST['action'] === 'artists') {
     $_REQUEST['action'] = 'artist';
 } elseif ($_REQUEST['action'] === 'my_torrents') {
