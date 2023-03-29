@@ -176,7 +176,7 @@ if (!$NumResults) {
 
           case 'requests':
               if (!isset($Requests[$Result['PageID']])) {
-                  continue;
+                  continue 2;
               }
 
               $Request = $Requests[$Result['PageID']];
@@ -190,7 +190,7 @@ if (!$NumResults) {
 
           case 'torrents':
               if (!isset($TorrentGroups[$Result['PageID']])) {
-                  continue;
+                  continue 2;
               }
 
               $GroupInfo = $TorrentGroups[$Result['PageID']];
