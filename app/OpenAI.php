@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * OpenAI
+ * Gazelle\OpenAI
  *
  * Client for the OpenAI API.
  * Example request for a common use case:
@@ -46,8 +46,6 @@ CREATE TABLE `openai` (
     `type` VARCHAR(16),
     PRIMARY KEY (`id`,`jobId`,`groupId`)
 );
- *
- * todo: just namespace the app already
  */
 
 namespace Gazelle;
@@ -56,7 +54,7 @@ class OpenAI
 {
     # client and params
     public $client = null;
-    private $maxTokens = 1000; # $0.02
+    private $maxTokens = 2500; # $0.05
     private $model = "text-davinci-003";
 
     # cache settings
@@ -66,6 +64,11 @@ class OpenAI
 
     /**
      * __construct
+     *
+     * Load the OpenAI client.
+     *
+     * @param array $options
+     * @return void
      */
     public function __construct(array $options = [])
     {
@@ -77,13 +80,16 @@ class OpenAI
 
         $openAiApi = $app->env->getPriv("openAiApi");
         $this->client = \OpenAI::client($openAiApi["secretKey"]);
-
-        return $this;
     }
 
 
     /**
      * test
+     *
+     * Test the OpenAI API.
+     *
+     * @param string $prompt
+     * @return OpenAI\Responses\Completions\CreateResponse
      */
     public function test(string $prompt = "hello"): OpenAI\Responses\Completions\CreateResponse
     {
@@ -104,6 +110,9 @@ class OpenAI
      * Store the summary in the database for later use.
      *
      * @see https://beta.openai.com/docs/api-reference/completions
+     *
+     * @param int $groupId
+     * @return array
      */
     public function summarize(int $groupId): array
     {
@@ -131,16 +140,20 @@ class OpenAI
         $description = $this->processDescription($description);
 
         # query the openai api
-        $response = $this->client->completions()->create([
-            "model" => $this->model,
-            "prompt" => "Summarize in 100 words: {$description}",
-            "max_tokens" => $this->maxTokens,
-        ]);
-        !d($response);
+        try {
+            $response = $this->client->completions()->create([
+                "model" => $this->model,
+                "prompt" => "Summarize in 100 words: {$description}",
+                "max_tokens" => $this->maxTokens,
+            ]);
+            !d($response);
 
-        # cast to an array and save to the database
-        $response = $response->toArray();
-        $this->insertResponse($groupId, "summary", $response);
+            # cast to an array and save to the database
+            $response = $response->toArray();
+            $this->insertResponse($groupId, "summary", $response);
+        } catch (\Throwable $e) {
+            throw new \Exception($e->getMessage());
+        }
 
         $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
         return $response;
@@ -151,9 +164,12 @@ class OpenAI
      * keywords
      *
      * Generate a list of keywords from a summary (good) or a torrent group description (bad).
-     * Store the summary in the database for later use.
+     * Store the keywords in the database for later use and add them to `torrents_tags`.
      *
      * @see https://beta.openai.com/docs/api-reference/completions
+     *
+     * @param int $groupId
+     * @return array
      */
     public function keywords(int $groupId): array
     {
@@ -170,8 +186,8 @@ class OpenAI
         }
 
         # try to get a tl;dr summary
-        $query = "select text from openai where groupId = ?";
-        $description = $app->dbNew->single($query, [$groupId]);
+        $query = "select text from openai where groupId = ? and type = ?";
+        $description = $app->dbNew->single($query, [$groupId, "summary"]);
 
         # get a description if no summary exists
         if (!$description || empty($description)) {
@@ -187,16 +203,20 @@ class OpenAI
         $description = $this->processDescription($description);
 
         # query the openai api
-        $response = $this->client->completions()->create([
-            "model" => $this->model,
-            "prompt" => "List 10 keywords in the format [\"one\", \"two\", \"three\"]: {$description}",
-            "max_tokens" => $this->maxTokens,
-        ]);
-        !d($response);
+        try {
+            $response = $this->client->completions()->create([
+                "model" => $this->model,
+                "prompt" => "List 10 keywords in the format [\"one\", \"two\", \"three\"]: {$description}",
+                "max_tokens" => $this->maxTokens,
+            ]);
+            !d($response);
 
-        # cast to an array and save to the database
-        $response = $response->toArray();
-        $this->insertResponse($groupId, "keywords", $response);
+            # cast to an array and save to the database
+            $response = $response->toArray();
+            $this->insertResponse($groupId, "keywords", $response);
+        } catch (\Throwable $e) {
+            throw new \Exception($e->getMessage());
+        }
 
         # process response into an array
         $keywords = json_decode(\Text::oneLine($response["choices"][0]["text"]), true);
@@ -207,17 +227,6 @@ class OpenAI
         # convert to gazelle tags
         $keywords = array_unique($keywords);
         foreach ($keywords as $key => $value) {
-            /*
-            $value = strtolower(trim($value));
-
-            $value = str_replace(" ", ".", $value);
-            $value = str_replace("-", ".", $value);
-            $value = str_replace(["(", ")"], "", $value);
-
-            $value = str_replace("..", ".", $value);
-            $value = \Text::esc($value);
-            */
-
             $value = \Illuminate\Support\Str::slug($value, ".");
             $keywords[$key] = $value;
         }
@@ -254,6 +263,9 @@ class OpenAI
      * processDescription
      *
      * Remove garbage from a text prompt.
+     *
+     * @param string $description
+     * @return string
      */
     private function processDescription(string $description): string
     {
@@ -269,8 +281,13 @@ class OpenAI
      * insertResponse
      *
      * Write an OpenAI API response to the database.
+     *
+     * @param int $groupId
+     * @param string $type
+     * @param array $response
+     * @return void
      */
-    private function insertResponse(int $groupId, string $type, array $response)
+    private function insertResponse(int $groupId, string $type, array $response): void
     {
         $app = \App::go();
 

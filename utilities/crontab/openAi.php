@@ -21,16 +21,18 @@ if ($currentWorkers > 1) {
 # load up an openai instance
 $openai = new Gazelle\OpenAI();
 
+/** */
+
 # select all groupId's without an ai gf
 $query = "
-    select distinct torrents_group.id from torrents_group
+    select torrents_group.id from torrents_group
     left join openai on torrents_group.id = openai.groupId
     where openai.groupId is null
 ";
 
 /*
 $query = "
-    select distinct torrents_group.id from torrents_group
+    select torrents_group.id from torrents_group
     left join openai on torrents_group.id = openai.groupId
     where openai.groupId is null and openai.failCount < 3
 ";
@@ -39,43 +41,56 @@ $query = "
 $ref = $app->dbNew->multi($query, []);
 #!d($ref);exit;
 
+# loop through each groupId
 foreach ($ref as $row) {
     # summary
-    try {
-        Text::figlet("summary: groupId {$row["id"]}", "green");
-        $openai->summarize($row["id"]);
+    $failCount = 0;
+    while ($failCount < 3) {
+        try {
+            Text::figlet("summary: groupId {$row["id"]}", "green");
+            $openai->summarize($row["id"]);
 
-        echo "\n\n sleeping 10s \n\n";
-        sleep(10);
-    } catch (Exception $e) {
-        Text::figlet("error", "red");
-        ~d($e->getMessage());
+            echo "\n\n sleeping 10s \n\n";
+            sleep(10);
 
-        # update failCount
-        $query = "update openai set failCount = failCount + 1 where groupId = ? and type = 'summary'";
-        $app->dbNew->do($query, [ $row["id"] ]);
+            break;
+        } catch (Exception $e) {
+            Text::figlet("error", "red");
+            ~d($e->getMessage());
 
-        continue;
-    }
+            # update failCount
+            $query = "update openai set failCount = failCount + 1 where groupId = ? and type = ?";
+            $app->dbNew->do($query, [ $row["id"], "summary" ]);
+
+            $failCount++;
+        }
+    } # while
 
     # keywords
-    try {
-        Text::figlet("keywords: groupId {$row["id"]}", "green");
-        $openai->keywords($row["id"]);
+    $failCount = 0;
+    while ($failCount < 3) {
+        try {
+            Text::figlet("keywords: groupId {$row["id"]}", "green");
+            $openai->keywords($row["id"]);
 
-        echo "\n\n sleeping 10s \n\n";
-        sleep(10);
-    } catch (Exception $e) {
-        Text::figlet("error", "red");
-        ~d($e->getMessage());
+            echo "\n\n sleeping 10s \n\n";
+            sleep(10);
 
-        # update failCount
-        $query = "update openai set failCount = failCount + 1 where groupId = ? and type = 'keywords'";
-        $app->dbNew->do($query, [ $row["id"] ]);
+            break;
+        } catch (Exception $e) {
+            Text::figlet("error", "red");
+            ~d($e->getMessage());
 
-        continue;
-    }
-}
+            # update failCount
+            $query = "update openai set failCount = failCount + 1 where groupId = ? and type = ?";
+            $app->dbNew->do($query, [ $row["id"], "keywords" ]);
+
+            $failCount++;
+        }
+    } # while
+} # foreach
+
+/** */
 
 # clean up the stragglers
 $query = "select jobId, text, finishReason from openai";
@@ -89,4 +104,4 @@ foreach ($ref as $row) {
         $query = "delete from openai where jobId = ?";
         $app->dbNew->do($query, [ $row["jobId"] ]);
     }
-}
+} # foreach
