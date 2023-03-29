@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+
 /**
  * Feed
  *
@@ -12,23 +13,24 @@ declare(strict_types=1);
 class Feed
 {
     /**
-     * __construct
+     * authenticate
+     *
+     * @return void
      */
-    public function authenticate()
+    public function authenticate(): void
     {
         $get = Http::query("get");
 
-        if (
-            empty($_GET['feed'])
-            || empty($_GET['authkey'])
-            || empty($_GET['auth'])
-            || empty($_GET['passkey'])
-            || empty($_GET['user'])
-            || !is_numeric($_GET['user'])
-            || strlen($_GET['authkey']) !== 32
-            || strlen($_GET['passkey']) !== 32
-            || strlen($_GET['auth']) !== 32
-          ) {
+        if (empty($get["feed"])
+            || empty($get["authkey"])
+            || empty($get["auth"])
+            || empty($get["passkey"])
+            || empty($get["user"])
+            || !is_numeric($get["user"])
+            || strlen($get["authkey"]) !== 32
+            || strlen($get["passkey"]) !== 32
+            || strlen($get["auth"]) !== 32
+        ) {
             Http::response(400);
         }
     }
@@ -36,8 +38,10 @@ class Feed
 
     /**
      * open
+     *
+     * @return bool
      */
-    public function open()
+    public function open(): bool
     {
         if (headers_sent()) {
             return false;
@@ -45,14 +49,16 @@ class Feed
 
         header("Content-Type: application/xml; charset=utf-8");
         echo "<?xml version='1.0' encoding='utf-8'?>",
-             "<rss xmlns:dc='http://purl.org/dc/elements/1.1/' version='2.0'><channel>";
+        "<rss xmlns:dc='http://purl.org/dc/elements/1.1/' version='2.0'><channel>";
     }
 
 
     /**
      * close
+     *
+     * @return void
      */
-    public function close()
+    public function close(): void
     {
         echo "</channel></rss>";
     }
@@ -60,8 +66,13 @@ class Feed
 
     /**
      * channel
+     *
+     * @param string $title
+     * @param string $description
+     * @param string $section
+     * @return void
      */
-    public function channel(string $title, string $description, string $section = "")
+    public function channel(string $title, string $description, string $section = ""): void
     {
         $app = App::go();
 
@@ -70,19 +81,28 @@ class Feed
 
         # echo commas because <<<XML would copy whitespace
         echo "<title>{$title} {$app->env->separator} {$app->env->siteName}</title>",
-             "<link>{$site}{$section}</link>",
-             "<description>{$description}</description>",
-             "<language>en-us</language>",
-             "<lastBuildDate>{$date}</lastBuildDate>",
-             "<docs>http://blogs.law.harvard.edu/tech/rss</docs>",
-             "<generator>Gazelle Feed Class</generator>";
+        "<link>{$site}{$section}</link>",
+        "<description>{$description}</description>",
+        "<language>en-us</language>",
+        "<lastBuildDate>{$date}</lastBuildDate>",
+        "<docs>http://blogs.law.harvard.edu/tech/rss</docs>",
+        "<generator>Gazelle Feed Class</generator>";
     }
 
 
     /**
      * item
+     *
+     * @param string $title
+     * @param string $description
+     * @param string $page
+     * @param string $creator
+     * @param string $comments
+     * @param string $category
+     * @param string $date
+     * @return string
      */
-    public function item(string $title, string $description, string $page, string $creator, string $comments = "", string $category = "", string $date = "")
+    public function item(string $title, string $description, string $page, string $creator, string $comments = "", string $category = "", string $date = ""): string
     {
         $site = site_url();
 
@@ -116,8 +136,13 @@ class Feed
 
     /**
      * retrieve
+     *
+     * @param string $cacheKey
+     * @param string $authKey
+     * @param string $passKey
+     * @return void
      */
-    public function retrieve(string $cacheKey, string $authKey, string $passKey)
+    public function retrieve(string $cacheKey, string $authKey, string $passKey): void
     {
         $app = App::go();
 
@@ -138,8 +163,12 @@ class Feed
 
     /**
      * populate
+     *
+     * @param string $cacheKey
+     * @param string $item
+     * @return void
      */
-    public function populate(string $cacheKey, string $item)
+    public function populate(string $cacheKey, string $item): void
     {
         $app = App::go();
 
