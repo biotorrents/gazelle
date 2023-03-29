@@ -27,16 +27,8 @@ $openai = new Gazelle\OpenAI();
 $query = "
     select torrents_group.id from torrents_group
     left join openai on torrents_group.id = openai.groupId
-    where openai.groupId is null
-";
-
-/*
-$query = "
-    select torrents_group.id from torrents_group
-    left join openai on torrents_group.id = openai.groupId
     where openai.groupId is null and openai.failCount < 3
 ";
-*/
 
 $ref = $app->dbNew->multi($query, []);
 #!d($ref);exit;
