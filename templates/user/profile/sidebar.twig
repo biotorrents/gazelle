@@ -237,39 +237,39 @@
 			{% endif %}
 
 			{# update settings #}
-			{# user.php?action=edit&userid={{ userId }} #}
+			{# /user/edit/{{ userId }} #}
 			{% if can("users_edit_profiles") %}
-				<a href="/user/edit/{{ userId }}" class="button">user settings</a>
+				<a href="/user.php?action=edit&userid={{ userId }}" class="button">user settings</a>
 			{% endif %}
 
 			{# read invites #}
-			{# user.php?action=invite&userid={{ userId }} #}
+			{# /user/invites/{{ userId }} #}
 			{% if can("users_view_invites") %}
-				<a href="/user/invites/{{ userId }}" class="button">invites</a>
+				<a href="/user.php?action=invite&userid={{ userId }}" class="button">invites</a>
 			{% endif %}
 
 			{# update permissions #}
-			{# user.php?action=permissions&userid={{ userId }} #}
+			{# /user/permissions/{{ userId }} #}
 			{% if can("admin_manage_permissions") %}
-				<a href="/user/permissions/{{ userId }}" class="button">permissions</a>
+				<a href="/user.php?action=permissions&userid={{ userId }}" class="button">permissions</a>
 			{% endif %}
 
 			{# read sessions #}
-			{# user.php?action=sessions&userid={{ userId }} #}
+			{# /user/sessions/{{ userId }} #}
 			{% if can("users_view_ips") %}
-				<a href="/user/sessions/{{ userId }}" class="button">sessions</a>
+				<a href="/user.php?action=sessions&userid={{ userId }}" class="button">sessions</a>
 			{% endif %}
 
 			{# read reports #}
-			{# reportsv2.php?view=reporter&id={{ userId }} #}
+			{# /user/reports/{{ userId }} #}
 			{% if can("admin_reports") %}
-				<a href="/user/reports/{{ userId }}" class="button">reports</a>
+				<a href="/reportsv2.php?view=reporter&id={{ userId }}" class="button">reports</a>
 			{% endif %}
 
 			{# read freeleech token history #}
-			{# userhistory.php?action=token_history&userid={{ userId }} #}
+			{# /user/history/{{ userId }} #}
 			{% if can("users_mod") %}
-				<a href="/user/history/{{ userId }}" class="button">freeleech tokens</a>
+				<a href="/userhistory.php?action=token_history&userid={{ userId }}" class="button">freeleech tokens</a>
 			{% endif %}
 
 		</form>

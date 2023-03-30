@@ -156,6 +156,7 @@ if (!empty($post)) {
     try {
         $app->userNew->updateSettings($post);
         NotificationsManager::save_settings($app->userNew->core["id"]);
+        Http::redirect("user.php?id={$app->userNew->core["id"]}");
     } catch (Throwable $e) {
         $error = $e->getMessage();
     }

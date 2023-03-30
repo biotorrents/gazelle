@@ -1111,8 +1111,14 @@ class User
             # only if it's the current user
             if (!$moderatorUpdate) {
                 $currentPassphrase = Esc::passphrase($data["currentPassphrase"]);
-                $good = $this->auth->library->reconfirmPassword($currentPassphrase);
 
+                # Delight\Auth\NotLoggedInException workaround
+                #$good = $this->auth->library->reconfirmPassword($currentPassphrase);
+
+                $query = "select password from users where id = ?";
+                $databasePassphrase = $app->dbNew->single($query, [ $this->core["id"] ]);
+
+                $good = password_verify($currentPassphrase, $databasePassphrase);
                 if (!$good) {
                     throw new Exception("current passphrase doesn't match");
                 }
