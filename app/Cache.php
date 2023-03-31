@@ -76,21 +76,28 @@ class Cache # extends \Redis
     {
         $app = \Gazelle\App::go();
 
+        # establish connection
         $redis = new \Redis();
         $redis->connect(
             $app->env->getPriv("redisHost"),
             $app->env->getPriv("redisPort"),
         );
 
+        # failure
         if (!$redis->isConnected()) {
             throw new \Exception("unable to establish PhpRedis cache connection");
         }
 
+        # set options
+        $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_JSON);
+        $redis->setOption(\Redis::OPT_PREFIX, "gazelle:");
+
+        # done
         self::$redis = $redis;
     }
 
 
-    /** non-singleton methods */
+    /** */
 
 
     /**
@@ -103,16 +110,7 @@ class Cache # extends \Redis
      */
     public function get(string $key): mixed
     {
-        $value = self::$redis->get($key);
-
-        # try to decode a serialized value
-        $decoded = json_decode($value, true);
-        if ($decoded) {
-            return $decoded;
-        }
-
-        # it's just a single value
-        return $value;
+        return self::$redis->get($key);
     }
 
 
@@ -147,11 +145,6 @@ class Cache # extends \Redis
             $cacheDuration = time() + $cacheDuration;
         }
 
-        # serialize the value if it's an array or object
-        if (is_array($value) || is_object($value)) {
-            $value = json_encode($value);
-        }
-
         # store the value
         self::$redis->set($key, $value);
         self::$redis->expireAt($key, $cacheDuration);
@@ -169,6 +162,62 @@ class Cache # extends \Redis
     {
         return $this->set($key, $value, $cacheDuration);
     }
+
+
+    /**
+     * delete
+     *
+     * @param string ...$keys the keys to delete
+     * @return void
+     *
+     * @see https://github.com/phpredis/phpredis#del-delete-unlink
+     */
+    public function delete(string ...$keys): void
+    {
+        foreach ($keys as $key) {
+            self::$redis->unlink($key);
+        }
+    }
+
+
+    /**
+     * delete_value
+     *
+     * Wrapper for the old cache class.
+     */
+    public function delete_value(string ...$keys)
+    {
+        return $this->delete($keys);
+    }
+
+
+    /**
+     * increment
+     *
+     * @param string $key the cache key
+     * @param int $value the value to increment by
+     * @return int the new value
+     */
+    public function increment(string $key, int $value = 1): int
+    {
+        return self::$redis->incrBy($key, $value);
+    }
+
+
+    /**
+     * decrement
+     *
+     * @param string $key the cache key
+     * @param int $value the value to decrement by
+     * @return int the new value
+     */
+    public function decrement(string $key, int $value = 1): int
+    {
+        return self::$redis->decrBy($key, $value);
+    }
+
+
+    /** */
 
 
     /**
@@ -222,27 +271,6 @@ class Cache # extends \Redis
     public function flush(): bool
     {
         return self::$redis->flushAll();
-    }
-
-
-    /**
-     * delete
-     *
-     * @param bool $now whether to delete immediately or wait for the next garbage collection
-     * @param string ...$keys the keys to delete
-     * @return void
-     *
-     * @see https://github.com/phpredis/phpredis#del-delete-unlink
-     */
-    public function delete(bool $now = false, string ...$keys): void
-    {
-        foreach ($keys as $key) {
-            if (!$now) {
-                self::$redis->unlink($key);
-            } else {
-                self::$redis->del($key);
-            }
-        }
     }
 
 
