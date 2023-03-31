@@ -6,8 +6,9 @@ declare(strict_types=1);
 /**
  * Gazelle\Cache
  *
+ * A wrapper for the PhpRedis extension.
+ *
  * @see https://github.com/phpredis/phpredis
- * @see https://www.tutorialspoint.com/redis/redis_php.htm
  */
 
 namespace Gazelle;
@@ -100,7 +101,34 @@ class Cache # extends \Redis
     }
 
 
-    /** */
+    /** crud */
+
+
+    /**
+     * set
+     *
+     * @param string $key the cache key
+     * @param mixed $value the value to store
+     * @param int $cacheDuration the number of seconds to store the value
+     * @return array the key/value pair
+     *
+     * @see https://github.com/phpredis/phpredis#set
+     */
+    public function set(string $key, mixed $value, ?int $cacheDuration = null): array
+    {
+        # default expiration time in seconds
+        if (!$cacheDuration) {
+            $cacheDuration = time() + $this->cacheDuration;
+        } else {
+            $cacheDuration = time() + $cacheDuration;
+        }
+
+        # store the value
+        self::$redis->set($key, $value);
+        self::$redis->expireAt($key, $cacheDuration);
+
+        return [$key => $value];
+    }
 
 
     /**
@@ -118,30 +146,80 @@ class Cache # extends \Redis
 
 
     /**
-     * set
+     * exists
      *
      * @param string $key the cache key
-     * @param mixed $value the value to store
-     * @param int $cacheDuration the number of seconds to store the value
-     * @return array the key/value pair
+     * @return bool true if the key exists, false otherwise
      *
-     * @see https://github.com/phpredis/phpredis#set
-     * @see https://github.com/phpredis/phpredis#mset-msetnx
+     * @see https://github.com/phpredis/phpredis#exists
      */
-    public function set(string $key, mixed $value, ?int $cacheDuration = null): array
+    public function exists(string $key): bool
     {
-        # default expiration time in seconds
-        if (!$cacheDuration) {
-            $cacheDuration = time() + $this->cacheDuration;
-        } else {
-            $cacheDuration = time() + $cacheDuration;
+        return self::$redis->exists($key);
+    }
+
+
+    /**
+     * append
+     *
+     * @param string $key the cache key
+     * @param string $value the value to append
+     * @return int the new string length
+     *
+     * @see https://github.com/phpredis/phpredis#append
+     */
+    public function append(string $key, string $value): int
+    {
+        return self::$redis->append($key, $value);
+    }
+
+
+    /**
+     * increment
+     *
+     * @param string $key the cache key
+     * @param int|float $value the value to increment by
+     * @return int the new value
+     *
+     * @see https://github.com/phpredis/phpredis#incr-incrby
+     * @see https://github.com/phpredis/phpredis#incrbyfloat
+     */
+    public function increment(string $key, int|float $value = 1): int|float
+    {
+        if (!is_int($value)) {
+            return self::$redis->incrByFloat($key, $value);
         }
 
-        # store the value
-        self::$redis->set($key, $value);
-        self::$redis->expireAt($key, $cacheDuration);
+        return self::$redis->incrBy($key, $value);
+    }
 
-        return [$key => $value];
+
+    /**
+     * decrement
+     *
+     * @param string $key the cache key
+     * @param int $value the value to decrement by
+     * @return int the new value
+     *
+     * @see https://github.com/phpredis/phpredis#decr-decrby
+     */
+    public function decrement(string $key, int $value = 1): int
+    {
+        return self::$redis->decrBy($key, $value);
+    }
+
+
+    /**
+     * persist
+     *
+     * @param string $key the cache key
+     * @return bool true on success, false on failure
+     *
+     * @see https://github.com/phpredis/phpredis#persist
+     */
+    public function persist(string $key): bool
+    {
+        return self::$redis->persist($key);
     }
 
 
@@ -162,32 +240,60 @@ class Cache # extends \Redis
 
 
     /**
-     * increment
+     * flush
      *
-     * @param string $key the cache key
-     * @param int $value the value to increment by
-     * @return int the new value
+     * @return bool true on success, false on failure
+     *
+     * @see https://github.com/phpredis/phpredis#flushall
      */
-    public function increment(string $key, int $value = 1): int
+    public function flush(): bool
     {
-        return self::$redis->incrBy($key, $value);
+        return self::$redis->flushAll();
+    }
+
+
+    /** meta */
+
+
+    /**
+     * info
+     *
+     * @return array the server info
+     *
+     * @see https://github.com/phpredis/phpredis#info
+     * @see https://redis.io/commands/info/
+     */
+    public function info(string $pattern = ""): array
+    {
+        return self::$redis->info($pattern);
     }
 
 
     /**
-     * decrement
+     * error
      *
-     * @param string $key the cache key
-     * @param int $value the value to decrement by
-     * @return int the new value
+     * @return ?string the last error message
+     *
+     * @see https://github.com/phpredis/phpredis#getlasterror
      */
-    public function decrement(string $key, int $value = 1): int
+    public function error(): ?string
     {
-        return self::$redis->decrBy($key, $value);
+        return self::$redis->getLastError();
     }
 
 
-    /** */
+    /**
+     * slowLog
+     *
+     * @param int $limit the number of entries to return
+     * @return array the slow log entries
+     *
+     * @see https://github.com/phpredis/phpredis#slowlog
+     */
+    public function slowLog(int $limit = 10): array
+    {
+        return self::$redis->slowLog("get", $limit);
+    }
 
 
     /**
@@ -205,15 +311,15 @@ class Cache # extends \Redis
 
 
     /**
-     * info
+     * count
      *
-     * @return array the server info
+     * @return int the number of keys in the database
      *
-     * @see https://github.com/phpredis/phpredis#info
+     * @see https://github.com/phpredis/phpredis#dbsize
      */
-    public function info(): array
+    public function count(): int
     {
-        return self::$redis->info();
+        return self::$redis->dbSize();
     }
 
 
@@ -232,32 +338,27 @@ class Cache # extends \Redis
 
 
     /**
-     * flush
+     * raw
      *
-     * @return bool true on success, false on failure
+     * @param string $command the command to run
+     * @param array $arguments the arguments to pass
+     * @return mixed the response
      *
-     * @see https://github.com/phpredis/phpredis#flushall
+     * @see https://github.com/phpredis/phpredis#rawcommand
      */
-    public function flush(): bool
+    public function raw(string $command, array $arguments = []): mixed
     {
-        return self::$redis->flushAll();
+        return self::$redis->rawCommand($command, ...$arguments);
     }
 
 
-    /**
-     * count
-     *
-     * @return int the number of keys in the database
-     *
-     * @see https://github.com/phpredis/phpredis#mset-msetnx
-     */
-    public function count(): int
-    {
-        return self::$redis->dbSize();
-    }
+    /** transactions */
 
 
-    /** */
+    # todo
+
+
+    /** query locks (legacy) */
 
 
     /**
