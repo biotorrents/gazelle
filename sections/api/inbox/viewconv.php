@@ -10,7 +10,7 @@ if (!$ConvID || !is_numeric($ConvID)) {
 
 
 
-$UserID = $app->userNew->core['id'];
+$UserID = $app->user->core['id'];
 $app->dbOld->query("
   SELECT InInbox, InSentbox
   FROM pm_conversations_users

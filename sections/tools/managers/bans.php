@@ -137,7 +137,7 @@ $app->dbOld->set_query_id($Bans);
     <form name="ban" action="" method="post">
       <input type="hidden" name="action" value="ip_ban" />
       <input type="hidden" name="auth"
-        value="<?=$app->userNew->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <td colspan="2">
         <input type="text" size="12" name="start" />
         <input type="text" size="12" name="end" />
@@ -159,7 +159,7 @@ while (list($ID, $Start, $End, $Reason) = $app->dbOld->next_record()) {
       <input type="hidden" name="id" value="<?=$ID?>" />
       <input type="hidden" name="action" value="ip_ban" />
       <input type="hidden" name="auth"
-        value="<?=$app->userNew->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <td colspan="2">
         <input type="text" size="12" name="start"
           value="<?=$Start?>" />

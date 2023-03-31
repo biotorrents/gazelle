@@ -20,7 +20,7 @@ class Inbox
     {
         $app = \Gazelle\App::go();
 
-        $ListFirst = isset($app->userNew->extra['ListUnreadPMsFirst']) ? $app->userNew->extra['ListUnreadPMsFirst'] : false;
+        $ListFirst = isset($app->user->extra['ListUnreadPMsFirst']) ? $app->user->extra['ListUnreadPMsFirst'] : false;
 
         if ($WhichBox === 'inbox') {
             if ($ListFirst) {

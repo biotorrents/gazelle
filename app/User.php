@@ -633,7 +633,7 @@ class User
 
         # Warned?
         $Str .= ($IsWarned && $UserInfo['Warned'])
-          ? '<a href="wiki.php?action=article&amp;name=warnings"'.'><img src="'.staticServer.'common/symbols/warned.png" alt="Warned" title="Warned'.($app->userOld['ID'] === $UserID ? ' - Expires '.date('Y-m-d H:i', strtotime($UserInfo['Warned']))
+          ? '<a href="wiki.php?action=article&amp;name=warnings"'.'><img src="'.staticServer.'common/symbols/warned.png" alt="Warned" title="Warned'.($app->user->core['id'] === $UserID ? ' - Expires '.date('Y-m-d H:i', strtotime($UserInfo['Warned']))
           : '').'" class="tooltip" /></a>'
           : '';
 

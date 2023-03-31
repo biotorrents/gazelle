@@ -3,7 +3,7 @@
 #declare(strict_types=1);
 
 authorize();
-if ($UserID !== $app->userNew->core['id']
+if ($UserID !== $app->user->core['id']
  || !Bookmarks::validateType('torrent')) {
     error(403);
 }

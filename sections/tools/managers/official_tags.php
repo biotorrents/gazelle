@@ -43,7 +43,7 @@ if (isset($_POST['doit'])) {
         INSERT INTO tags
           (Name, UserID, TagType, Uses)
         VALUES
-          ('$TagName', ".$app->userNew->core['id'].", 'genre', 0)");
+          ('$TagName', ".$app->user->core['id'].", 'genre', 0)");
             $TagID = $app->dbOld->inserted_id();
         }
     }
@@ -60,7 +60,7 @@ View::header('Official Tags Manager');
   <div style="display: inline-block;">
     <form class="manage_form" name="tags" method="post" action="">
       <input type="hidden" name="action" value="official_tags" />
-      <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
       <input type="hidden" name="doit" value="1" />
       <table class="tags_table layout box slight_margin">
         <tr class="colhead_dark">

@@ -105,7 +105,7 @@ class Authentication
     {
         $app = \Gazelle\App::go();
 
-        return ($app->userNew = Sentinel::check());
+        return ($app->user = Sentinel::check());
     }
 
 
@@ -129,7 +129,7 @@ class Authentication
     {
         $app = \Gazelle\App::go();
 
-        return ($app->userNew = Sentinel::getUser());
+        return ($app->user = Sentinel::getUser());
     }
 
 

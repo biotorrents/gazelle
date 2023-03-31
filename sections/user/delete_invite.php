@@ -15,7 +15,7 @@ list($UserID) = $app->dbOld->next_record();
 if (!$app->dbOld->has_results()) {
     error(404);
 }
-if ($UserID != $app->userNew->core['id'] && $app->userNew->extra['PermissionID'] != SYSOP) {
+if ($UserID != $app->user->core['id'] && $app->user->extra['PermissionID'] != SYSOP) {
     error(403);
 }
 

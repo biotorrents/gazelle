@@ -77,7 +77,7 @@ function link_users($UserID, $TargetID)
         $app->dbOld->query("INSERT INTO users_dupes (UserID, GroupID) VALUES ($UserID, $GroupID)");
     }
 
-    $AdminComment = sqltime()." - Linked accounts updated: [user]".$UserInfo['Username']."[/user] and [user]".$TargetInfo['Username']."[/user] linked by ".$app->userNew->core['username'];
+    $AdminComment = sqltime()." - Linked accounts updated: [user]".$UserInfo['Username']."[/user] and [user]".$TargetInfo['Username']."[/user] linked by ".$app->user->core['username'];
     $app->dbOld->query("
     UPDATE users_info AS i
       JOIN users_dupes AS d ON d.UserID = i.UserID
@@ -103,7 +103,7 @@ function unlink_user($UserID)
         return;
     }
 
-    $AdminComment = sqltime()." - Linked accounts updated: [user]".$UserInfo['Username']."[/user] unlinked by ".$app->userNew->core['username'];
+    $AdminComment = sqltime()." - Linked accounts updated: [user]".$UserInfo['Username']."[/user] unlinked by ".$app->user->core['username'];
     $app->dbOld->query("
     UPDATE users_info AS i
       JOIN users_dupes AS d1 ON d1.UserID = i.UserID
@@ -153,7 +153,7 @@ function dupe_comments($GroupID, $Comments)
     WHERE ID = $GroupID");
     list($OldCommentHash) = $app->dbOld->next_record();
     if ($OldCommentHash != sha1($Comments)) {
-        $AdminComment = sqltime()." - Linked accounts updated: Comments updated by ".$app->userNew->core['username'];
+        $AdminComment = sqltime()." - Linked accounts updated: Comments updated by ".$app->user->core['username'];
         if ($_POST['form_comment_hash'] == $OldCommentHash) {
             $app->dbOld->query("
         UPDATE dupe_groups
@@ -210,7 +210,7 @@ function user_dupes_table($UserID)
   <input type="hidden" name="dupeaction" value="update" />
   <input type="hidden" name="userid" value="<?=$UserID?>" />
   <input type="hidden" id="auth" name="auth"
-    value="<?=$app->userNew->extra['AuthKey']?>" />
+    value="<?=$app->user->extra['AuthKey']?>" />
   <input type="hidden" id="form_comment_hash" name="form_comment_hash"
     value="<?=$CommentHash?>" />
   <div class="box" id="l_a_box">
@@ -227,7 +227,7 @@ function user_dupes_table($UserID)
         list($DupeID) = $Dupe;
         $DupeInfo = User::user_info($DupeID); ?>
       <td align="left"><?=User::format_username($DupeID, true, true, true, true)?>
-        <a href="user.php?action=dupes&amp;dupeaction=remove&amp;auth=<?=$app->userNew->extra['AuthKey']?>&amp;userid=<?=$UserID?>&amp;removeid=<?=$DupeID?>"
+        <a href="user.php?action=dupes&amp;dupeaction=remove&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;userid=<?=$UserID?>&amp;removeid=<?=$DupeID?>"
           onclick="return confirm('Are you sure you wish to remove <?=$DupeInfo['Username']?> from this group?');"
           class="brackets tooltip" title="Remove linked account">X</a>
       </td>

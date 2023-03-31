@@ -8,9 +8,9 @@ declare(strict_types=1);
  */
 
 $app = \Gazelle\App::go();
-#!d($app->userNew);exit;
+#!d($app->user);exit;
 
-if ($app->userNew->isLoggedIn()) {
+if ($app->user->isLoggedIn()) {
     Http::redirect();
 }
 

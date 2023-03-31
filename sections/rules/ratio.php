@@ -87,7 +87,7 @@ View::header('Ratio requirements');
       </tr>
 
       <?php
-$DL = $app->userNew->extra['Downloaded'];
+$DL = $app->user->extra['Downloaded'];
 $GB = 1024*1024*1024;
 ?>
 

@@ -23,7 +23,7 @@ $Results = $app->dbOld->query("
     FROM users_notify_torrents AS unt
       JOIN torrents AS t ON t.ID = unt.TorrentID
       LEFT JOIN users_notify_filters AS unf ON unf.ID = unt.FilterID
-    WHERE unt.UserID = {$app->userNew->core['id']}".
+    WHERE unt.UserID = {$app->user->core['id']}".
     ((!empty($_GET['filterid']) && is_numeric($_GET['filterid']))
       ? " AND unf.ID = '$_GET[filterid]'"
       : '')."
@@ -39,8 +39,8 @@ if (count($GroupIDs)) {
     $app->dbOld->query("
     UPDATE users_notify_torrents
     SET UnRead = '0'
-    WHERE UserID = {$app->userNew->core['id']}");
-    $app->cacheNew->delete("notifications_new_{$app->userNew->core['id']}");
+    WHERE UserID = {$app->user->core['id']}");
+    $app->cacheNew->delete("notifications_new_{$app->user->core['id']}");
 }
 
 $app->dbOld->set_query_id($Results);

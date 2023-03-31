@@ -194,7 +194,7 @@ class Manticore
         /*
         # pagination
         $data["page"] ??= 1;
-        $limit = $app->userNew->extra["siteOptions"]["searchPagination"] ?? 20;
+        $limit = $app->user->extra["siteOptions"]["searchPagination"] ?? 20;
         $offset = ($data["page"] - 1) * $limit;
         */
 

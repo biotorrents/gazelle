@@ -8,7 +8,7 @@ declare(strict_types=1);
  */
 
 $app = \Gazelle\App::go();
-#!d($app->userNew->extra);exit;
+#!d($app->user->extra);exit;
 
 # https://github.com/paragonie/anti-csrf
 Http::csrf();
@@ -33,7 +33,7 @@ $bearerTokens = Auth::readBearerToken();
 $post["pgpPublicKey"] ??= null;
 if ($post["pgpPublicKey"]) {
     try {
-        $app->userNew->createPGP($post["pgpPublicKey"]);
+        $app->user->createPGP($post["pgpPublicKey"]);
     } catch (Throwable $e) {
         # do something with the error
         !d($e->getMessage());
@@ -49,7 +49,7 @@ $post["twoFactorCode"] ??= null;
 
 if ($post["twoFactorSecret"] && $post["twoFactorCode"]) {
     try {
-        $app->userNew->create2FA($post["twoFactorSecret"], $post["twoFactorCode"]);
+        $app->user->create2FA($post["twoFactorSecret"], $post["twoFactorCode"]);
     } catch (Throwable $e) {
         # do something with the error
         !d($e->getMessage());
@@ -59,7 +59,7 @@ if ($post["twoFactorSecret"] && $post["twoFactorCode"]) {
 $post["twoFactorDelete"] ??= null;
 if ($post["twoFactorDelete"]) {
     try {
-        $app->userNew->delete2FA();
+        $app->user->delete2FA();
     } catch (Throwable $e) {
         # do something with the error
         !d($e->getMessage());
@@ -68,20 +68,20 @@ if ($post["twoFactorDelete"]) {
 */
 
 # no settings exist
-if (empty($app->userNew->extra["TwoFactor"])) {
+if (empty($app->user->extra["TwoFactor"])) {
     $twoFactorSecret = $twoFactor->createSecret();
     $twoFactorImage = $twoFactor->getQRCodeImageAsDataUri(
-        "{$app->env->siteName}:{$app->userNew->core["username"]}",
+        "{$app->env->siteName}:{$app->user->core["username"]}",
         $twoFactorSecret
     );
 }
 
 # yes settings exist
-if (!empty($app->userNew->extra["TwoFactor"])) {
+if (!empty($app->user->extra["TwoFactor"])) {
     try {
-        $twoFactorSecret = $app->userNew->read2FA();
+        $twoFactorSecret = $app->user->read2FA();
         $twoFactorImage = $twoFactor->getQRCodeImageAsDataUri(
-            "{$app->env->siteName}:{$app->userNew->core["username"]}",
+            "{$app->env->siteName}:{$app->user->core["username"]}",
             $twoFactorSecret
         );
     } catch (Throwable $e) {
@@ -97,7 +97,7 @@ $post["u2fResponse"] ??= null;
 
 if ($post["u2fRequest"] && $post["u2fResponse"]) {
     try {
-        $app->userNew->createU2F($post["u2fRequest"], $post["u2fResponse"]);
+        $app->user->createU2F($post["u2fRequest"], $post["u2fResponse"]);
     } catch (Throwable $e) {
         # do something with the error
         !d($e->getMessage());
@@ -107,7 +107,7 @@ if ($post["u2fRequest"] && $post["u2fResponse"]) {
 $post["u2fDelete"] ??= null;
 if ($post["u2fDelete"]) {
     try {
-        $app->userNew->deleteU2F();
+        $app->user->deleteU2F();
     } catch (Throwable $e) {
         # do something with the error
         !d($e->getMessage());
@@ -119,7 +119,7 @@ if ($post["u2fDelete"]) {
 /** stylesheets, paranoia, options */
 
 # badges
-$badges = Badges::getBadges($app->userNew->core["id"]);
+$badges = Badges::getBadges($app->user->core["id"]);
 
 # get the stylesheets
 $query = "
@@ -131,7 +131,7 @@ $query = "
 $stylesheets = $app->dbNew->multi($query, []);
 
 # site options
-$siteOptions = $app->userNew->extra["siteOptions"];
+$siteOptions = $app->user->extra["siteOptions"];
 #!d($siteOptions);exit;
 
 
@@ -154,9 +154,9 @@ $ProfileRewards = null;
 
 if (!empty($post)) {
     try {
-        $app->userNew->updateSettings($post);
-        NotificationsManager::save_settings($app->userNew->core["id"]);
-        Http::redirect("user.php?id={$app->userNew->core["id"]}");
+        $app->user->updateSettings($post);
+        NotificationsManager::save_settings($app->user->core["id"]);
+        Http::redirect("user.php?id={$app->user->core["id"]}");
     } catch (Throwable $e) {
         $error = $e->getMessage();
     }
@@ -187,7 +187,7 @@ $app->twig->display("user/settings/settings.twig", [
  "ircKeyPlaceholder" => Text::random(32),
 
  # notifications manager (legacy)
- #"notificationsManagerSettings" => NotificationsManagerView::render_settings(NotificationsManager::get_settings($app->userNew->core["id"])),
+ #"notificationsManagerSettings" => NotificationsManagerView::render_settings(NotificationsManager::get_settings($app->user->core["id"])),
 
  "error" => $error ?? null,
 ]);

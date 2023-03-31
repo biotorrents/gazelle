@@ -24,12 +24,12 @@ if (!$_POST['post'] || !is_numeric($_POST['post']) || !is_numeric($_POST['key'])
 }
 // End injection check
 
-if ($app->userNew->extra['DisablePosting']) {
+if ($app->user->extra['DisablePosting']) {
     error('Your posting privileges have been removed.');
 }
 
 // Variables for database input
-$UserID = $app->userNew->core['id'];
+$UserID = $app->user->core['id'];
 $Body = $_POST['body']; //Don't URL Decode
 $PostID = $_POST['post'];
 $Key = $_POST['key'];
@@ -66,7 +66,7 @@ if (!Forums::check_forumperm($ForumID, 'Write') || ($IsLocked && !check_perms('s
 if ($UserID != $AuthorID && !check_perms('site_moderate_forums')) {
     error(403, true);
 }
-if ($app->userNew->extra['DisablePosting']) {
+if ($app->user->extra['DisablePosting']) {
     error('Your posting privileges have been removed.', true);
 }
 if (!$app->dbOld->has_results()) {
@@ -77,7 +77,7 @@ if (!$app->dbOld->has_results()) {
 if ($UserID != $AuthorID && $DoPM) {
     $PMSubject = "Your post #$PostID has been edited";
     $PMurl = site_url()."forums.php?action=viewthread&postid=$PostID#post$PostID";
-    $ProfLink = '[url='.site_url()."user.php?id=$UserID]".$app->userNew->core['username'].'[/url]';
+    $ProfLink = '[url='.site_url()."user.php?id=$UserID]".$app->user->core['username'].'[/url]';
     $PMBody = "One of your posts has been edited by $ProfLink: [url]{$PMurl}[/url]";
     Misc::send_pm($AuthorID, 0, $PMSubject, $PMBody);
 }
@@ -102,9 +102,9 @@ if ($app->cacheOld->MemcacheDBArray[$Key]['ID'] != $PostID) {
       'AuthorID'=>$app->cacheOld->MemcacheDBArray[$Key]['AuthorID'],
       'AddedTime'=>$app->cacheOld->MemcacheDBArray[$Key]['AddedTime'],
       'Body'=>$Body, //Don't url decode.
-      'EditedUserID'=>$app->userNew->core['id'],
+      'EditedUserID'=>$app->user->core['id'],
       'EditedTime'=>$SQLTime,
-      'Username'=>$app->userNew->core['username']
+      'Username'=>$app->user->core['username']
       ));
     $app->cacheOld->commit_transaction(3600 * 24 * 5);
 }
@@ -114,7 +114,7 @@ if ($ThreadInfo === null) {
 }
 if ($ThreadInfo['StickyPostID'] == $PostID) {
     $ThreadInfo['StickyPost']['Body'] = $Body;
-    $ThreadInfo['StickyPost']['EditedUserID'] = $app->userNew->core['id'];
+    $ThreadInfo['StickyPost']['EditedUserID'] = $app->user->core['id'];
     $ThreadInfo['StickyPost']['EditedTime'] = $SQLTime;
     $app->cacheNew->set("thread_$TopicID".'_info', $ThreadInfo, 0);
 }
@@ -130,4 +130,4 @@ echo Text::parse($Body);
 ?>
 <br /><br />
 <div class="last_edited">Last edited by <a
-    href="user.php?id=<?=$app->userNew->core['id']?>"><?=$app->userNew->core['username']?></a> Just now</div>
+    href="user.php?id=<?=$app->user->core['id']?>"><?=$app->user->core['username']?></a> Just now</div>

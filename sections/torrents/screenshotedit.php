@@ -22,7 +22,7 @@ if (!check_perms('torrents_edit') && !check_perms('screenshots_add') && !check_p
       `GroupID` = '$GroupID'
     ")
     ;
-    if (!in_array($app->userNew->core['id'], $app->dbOld->collect('UserID'))) {
+    if (!in_array($app->user->core['id'], $app->dbOld->collect('UserID'))) {
         error(403);
     }
 }
@@ -71,7 +71,7 @@ if (!empty($Deleted)) {
         $DeleteList = [];
         foreach ($Deleted as $S) {
             // If the user who submitted this request uploaded the image, add the image to the list.
-            if ($Old[$S] === $app->userNew->core['id']) {
+            if ($Old[$S] === $app->user->core['id']) {
                 $DeleteList[] = $S;
             } else {
                 error(403);
@@ -92,8 +92,8 @@ if (!empty($Deleted)) {
         foreach ($DeleteList as $ScreenDel) {
         }
 
-        Torrents::write_group_log($GroupID, 0, $app->userNew->core['id'], "Deleted screenshot(s) ".implode(' , ', $DeleteList), 0);
-        Misc::write_log("Screenshots ( ".implode(' , ', $DeleteList)." ) deleted from Torrent Group ".$GroupID." by ".$app->userNew->core['username']);
+        Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "Deleted screenshot(s) ".implode(' , ', $DeleteList), 0);
+        Misc::write_log("Screenshots ( ".implode(' , ', $DeleteList)." ) deleted from Torrent Group ".$GroupID." by ".$app->user->core['username']);
     }
 }
 
@@ -107,15 +107,15 @@ if (!empty($New)) {
     VALUES
       (?, ?, NOW(), ?)",
         $GroupID,
-        $app->userNew->core['id'],
+        $app->user->core['id'],
         $Screenshot
     );
 
     foreach ($New as $Screenshot) {
     }
 
-    Torrents::write_group_log($GroupID, 0, $app->userNew->core['id'], "Added screenshot(s) ".implode(' , ', $New), 0);
-    Misc::write_log("Screenshots ( ".implode(' , ', $New)." ) added to Torrent Group ".$GroupID." by ".$app->userNew->core['username']);
+    Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "Added screenshot(s) ".implode(' , ', $New), 0);
+    Misc::write_log("Screenshots ( ".implode(' , ', $New)." ) added to Torrent Group ".$GroupID." by ".$app->user->core['username']);
 }
 
 $app->cacheNew->delete("torrents_details_".$GroupID);

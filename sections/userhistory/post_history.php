@@ -6,17 +6,17 @@ $app = \Gazelle\App::go();
 User post history page
 */
 
-if (!empty($app->userNew->extra['DisableForums'])) {
+if (!empty($app->user->extra['DisableForums'])) {
     error(403);
 }
 
-$UserID = empty($_GET['userid']) ? $app->userNew->core['id'] : $_GET['userid'];
+$UserID = empty($_GET['userid']) ? $app->user->core['id'] : $_GET['userid'];
 if (!is_numeric($UserID)) {
     error(0);
 }
 
-if (isset($app->userNew->extra['PostsPerPage'])) {
-    $PerPage = $app->userNew->extra['PostsPerPage'];
+if (isset($app->user->extra['PostsPerPage'])) {
+    $PerPage = $app->user->extra['PostsPerPage'];
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
@@ -28,7 +28,7 @@ extract(array_intersect_key($UserInfo, array_flip(array('Username', 'Enabled', '
 
 View::header("Post history for $Username", 'subscriptions,comments');
 
-$ViewingOwn = ($UserID == $app->userNew->core['id']);
+$ViewingOwn = ($UserID == $app->user->core['id']);
 $ShowUnread = ($ViewingOwn && (!isset($_GET['showunread']) || !!$_GET['showunread']));
 $ShowGrouped = ($ViewingOwn && (!isset($_GET['group']) || !!$_GET['group']));
 if ($ShowGrouped) {
@@ -40,7 +40,7 @@ if ($ShowGrouped) {
       LEFT JOIN forums_topics AS t ON t.ID = p.TopicID';
     if ($ShowUnread) {
         $sql .= '
-      LEFT JOIN forums_last_read_topics AS l ON l.TopicID = t.ID AND l.UserID = '.$app->userNew->core['id'];
+      LEFT JOIN forums_last_read_topics AS l ON l.TopicID = t.ID AND l.UserID = '.$app->user->core['id'];
     }
     $sql .= "
       LEFT JOIN forums AS f ON f.ID = t.ForumID
@@ -108,7 +108,7 @@ if ($ShowGrouped) {
       p.TopicID,
       t.Title,
       t.LastPostID,';
-    $sql .= ($UserID == $app->userNew->core['id']) ? '
+    $sql .= ($UserID == $app->user->core['id']) ? '
       l.PostID AS LastRead,' : '
       true AS LastRead,';
     $sql .= "

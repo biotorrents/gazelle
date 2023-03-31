@@ -4,7 +4,7 @@ $app = \Gazelle\App::go();
 
 authorize();
 
-$UserID = $app->userNew->core['id'];
+$UserID = $app->user->core['id'];
 $ConvID = $_POST['convid'];
 $ReceiverID = $_POST['receiverid'];
 if (!is_numeric($ConvID) || !is_numeric($ReceiverID)) {

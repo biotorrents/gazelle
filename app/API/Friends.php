@@ -23,7 +23,7 @@ class Friends extends Base
     {
         $app = \Gazelle\App::go();
 
-        self::checkToken($app->userNew->core["id"]);
+        self::checkToken($app->user->core["id"]);
 
         $post = \Http::query("post");
         $userId = \Esc::int($post["userId"]);
@@ -46,7 +46,7 @@ class Friends extends Base
             }
 
             $query = "insert ignore into users_friends (userId, friendId, comment) values (?, ?, ?)";
-            $app->dbNew->do($query, [$app->userNew->core["id"], $userId, $comment]);
+            $app->dbNew->do($query, [$app->user->core["id"], $userId, $comment]);
 
             $query = "select * from users_friends where id = ?";
             $row = $app->dbNew->row($query, [$app->dbNew->pdo->lastInsertId()]);
@@ -83,7 +83,7 @@ class Friends extends Base
     {
         $app = \Gazelle\App::go();
 
-        self::checkToken($app->userNew->core["id"]);
+        self::checkToken($app->user->core["id"]);
 
         $post = \Http::query("post");
         $userId = \Esc::int($post["userId"]);
@@ -104,7 +104,7 @@ class Friends extends Base
             $row = $app->dbNew->row($query, [$app->dbNew->pdo->lastInsertId()]);
 
             $query = "delete from users_friends where userId = ? and friendId = ?";
-            $app->dbNew->do($query, [$app->userNew->core["id"], $userId]);
+            $app->dbNew->do($query, [$app->user->core["id"], $userId]);
 
             self::success($row);
         } catch (\Throwable $e) {

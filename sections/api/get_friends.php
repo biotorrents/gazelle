@@ -14,7 +14,7 @@ FROM friends AS f
     AND r.Enable = 1
   RIGHT JOIN users_main AS u
   ON u.ID = f.FriendID
-WHERE f.UserID = '{{$app->userNew->core['id']}}'
+WHERE f.UserID = '{{$app->user->core['id']}}'
 ORDER BY u.Username ASC
 ");
 

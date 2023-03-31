@@ -50,7 +50,7 @@ if ($app->dbOld->has_results()) {
           UPDATE artists_alias
           SET ArtistID = '$ArtistID', Redirect = 0
           WHERE AliasID = '$CloneAliasID'");
-                Misc::write_log("Redirection for the alias $CloneAliasID ($dbAliasName) for the artist $ArtistID was removed by user {$app->userNew->core['id']} ($app->userNew[username])");
+                Misc::write_log("Redirection for the alias $CloneAliasID ($dbAliasName) for the artist $ArtistID was removed by user {$app->user->core['id']} ($app->user[username])");
             } else {
                 error('No changes were made as the target alias did not redirect anywhere.');
             }
@@ -80,7 +80,7 @@ if (!$CloneAliasID) {
     INSERT INTO artists_alias
       (ArtistID, Name, Redirect, UserID)
     VALUES
-      ($ArtistID, '$dbAliasName', $Redirect, ".$app->userNew->core['id'].')');
+      ($ArtistID, '$dbAliasName', $Redirect, ".$app->user->core['id'].')');
     $AliasID = $app->dbOld->inserted_id();
 
     $app->dbOld->query("
@@ -89,6 +89,6 @@ if (!$CloneAliasID) {
     WHERE ArtistID = $ArtistID");
     list($ArtistName) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
-    Misc::write_log("The alias $AliasID ($dbAliasName) was added to the artist $ArtistID (".db_string($ArtistName).') by user '.$app->userNew->core['id'].' ('.$app->userNew->core['username'].')');
+    Misc::write_log("The alias $AliasID ($dbAliasName) was added to the artist $ArtistID (".db_string($ArtistName).') by user '.$app->user->core['id'].' ('.$app->user->core['username'].')');
 }
 header('Location: '.$_SERVER['HTTP_REFERER']);

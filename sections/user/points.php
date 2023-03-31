@@ -6,14 +6,14 @@ $app = \Gazelle\App::go();
 
 $Amount = (int) db_string($_POST['amount']);
 $To = (int) db_string($_POST['to']);
-$UserID = (int) $app->userNew->core['id'];
+$UserID = (int) $app->user->core['id'];
 $Adjust = isset($_POST['adjust']) ? true : false;
 $Message = $_POST['message'];
 
 // 10% tax
 $Tax = 0.1;
 
-if ($app->userNew->extra['DisablePoints']) {
+if ($app->user->extra['DisablePoints']) {
     $Err = 'You are not allowed to send '.bonusPoints.'.';
 } else {
     if ($Adjust) {

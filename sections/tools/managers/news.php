@@ -27,7 +27,7 @@ $edit = false;
 # create
 if ($post["formAction"] === "create") {
     $query = "insert into news (userId, title, body, time) values (?, ?, ?, now())";
-    $app->dbNew->do($query, [ $app->userNew->core["id"], $post["subject"], $post["body"] ]);
+    $app->dbNew->do($query, [ $app->user->core["id"], $post["subject"], $post["body"] ]);
 
     $app->cacheNew->delete('news_latest_id');
     $app->cacheNew->delete('news_latest_title');

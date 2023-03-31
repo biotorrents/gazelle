@@ -29,7 +29,7 @@ $app->dbOld->query("
   INSERT INTO group_log
     (GroupID, UserID, Time, Info)
   VALUES
-    ('$GroupID', ".$app->userNew->core['id'].", NOW(), '".db_string("Additional cover \"$Summary - $Image\" removed from group")."')");
+    ('$GroupID', ".$app->user->core['id'].", NOW(), '".db_string("Additional cover \"$Summary - $Image\" removed from group")."')");
 
 $app->cacheNew->delete("torrents_cover_art_$GroupID");
 header('Location: '.$_SERVER['HTTP_REFERER']);

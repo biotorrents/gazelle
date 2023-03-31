@@ -51,6 +51,9 @@ class CacheOld extends Memcache
         'notifications_one_reads_*',
     ];
 
+    # php 8.2 warnings
+    protected $connection;
+
 
     /**
      * __construct

@@ -4,7 +4,7 @@
 
 $app = \Gazelle\App::go();
 
-if (!empty($app->userNew->extra['DisableTagging']) || !check_perms('site_delete_tag')) {
+if (!empty($app->user->extra['DisableTagging']) || !check_perms('site_delete_tag')) {
     error(403);
 }
 
@@ -25,7 +25,7 @@ if (list($TagName) = $app->dbOld->next_record()) {
       INSERT INTO group_log
         (GroupID, UserID, Time, Info)
       VALUES
-        ('$GroupID',".$app->userNew->core['id'].", NOW(),'".db_string('Tag "'.$TagName.'" removed from group')."')");
+        ('$GroupID',".$app->user->core['id'].", NOW(),'".db_string('Tag "'.$TagName.'" removed from group')."')");
 }
 
 $app->dbOld->query("
@@ -54,5 +54,5 @@ if ($Count < 1) {
 }
 
 // Cache the deleted tag for 5 minutes
-$app->cacheNew->set('deleted_tags_'.$GroupID.'_'.$app->userNew->core['id'], $TagName, 300);
+$app->cacheNew->set('deleted_tags_'.$GroupID.'_'.$app->user->core['id'], $TagName, 300);
 header('Location: '.$_SERVER['HTTP_REFERER']);

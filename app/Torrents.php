@@ -1063,8 +1063,8 @@ class Torrents
             list($TorrentID, $GroupID, $InfoHash) = $Torrent;
             Tracker::update_tracker('update_torrent', array('info_hash' => rawurlencode($InfoHash), 'freetorrent' => $FreeNeutral));
             $app->cacheNew->delete("torrent_download_$TorrentID");
-            Misc::write_log(($app->userNew->core["username"]??'System')." marked torrent $TorrentID freeleech type $FreeLeechType");
-            Torrents::write_group_log($GroupID, $TorrentID, ($app->userNew->core["id"]??0), "marked as freeleech type $FreeLeechType", 0);
+            Misc::write_log(($app->user->core["username"]??'System')." marked torrent $TorrentID freeleech type $FreeLeechType");
+            Torrents::write_group_log($GroupID, $TorrentID, ($app->user->core["id"]??0), "marked as freeleech type $FreeLeechType", 0);
 
             if ($Announce && ($FreeLeechType === 1 || $FreeLeechType === 3)) {
                 send_irc(ANNOUNCE_CHAN, 'FREELEECH - '.site_url()."torrents.php?id=$GroupID / ".site_url()."torrents.php?action=download&id=$TorrentID");
@@ -1121,12 +1121,12 @@ class Torrents
     {
         $app = \Gazelle\App::go();
 
-        if (empty($app->userNew->core)) {
+        if (empty($app->user->core)) {
             return false;
         }
 
         static $TokenTorrents;
-        $UserID = $app->userNew->core["id"];
+        $UserID = $app->user->core["id"];
         if (!isset($TokenTorrents)) {
             $TokenTorrents = $app->cacheNew->get("users_tokens_$UserID");
 
@@ -1158,15 +1158,15 @@ class Torrents
      */
     public static function can_use_token($Torrent)
     {
-        if (empty($app->userNew->core)) {
+        if (empty($app->user->core)) {
             return false;
         }
 
-        return ($app->userNew->extra['FLTokens'] > 0
+        return ($app->user->extra['FLTokens'] > 0
       && $Torrent['Size'] <= 10737418240
       && !$Torrent['PersonalFL']
       && empty($Torrent['FreeTorrent'])
-      && $app->userNew->extra['CanLeech'] == '1');
+      && $app->user->extra['CanLeech'] == '1');
     }
 
 
@@ -1182,11 +1182,11 @@ class Torrents
     {
         $app = \Gazelle\App::go();
 
-        if (empty($app->userNew->core) || !isset($app->userNew->extra['ShowSnatched']) || !$app->userNew->extra['ShowSnatched']) {
+        if (empty($app->user->core) || !isset($app->user->extra['ShowSnatched']) || !$app->user->extra['ShowSnatched']) {
             return false;
         }
 
-        $UserID = $app->userNew->core["id"];
+        $UserID = $app->user->core["id"];
         $Buckets = 64;
         $LastBucket = $Buckets - 1;
         $BucketID = $TorrentID & $LastBucket;
@@ -1268,11 +1268,11 @@ class Torrents
      */
     public static function is_seeding($TorrentID)
     {
-        if (empty($app->userNew->core) || !isset($app->userNew->extra['ShowSnatched']) || !$app->userNew->extra['ShowSnatched']) {
+        if (empty($app->user->core) || !isset($app->user->extra['ShowSnatched']) || !$app->user->extra['ShowSnatched']) {
             return false;
         }
 
-        $UserID = $app->userNew->core["id"];
+        $UserID = $app->user->core["id"];
         $Buckets = 64;
         $LastBucket = $Buckets - 1;
         $BucketID = $TorrentID & $LastBucket;
@@ -1360,11 +1360,11 @@ class Torrents
     {
         $app = \Gazelle\App::go();
 
-        if (empty($app->userNew->core) || !isset($app->userNew->extra['ShowSnatched']) || !$app->userNew->extra['ShowSnatched']) {
+        if (empty($app->user->core) || !isset($app->user->extra['ShowSnatched']) || !$app->user->extra['ShowSnatched']) {
             return false;
         }
 
-        $UserID = $app->userNew->core["id"];
+        $UserID = $app->user->core["id"];
         $Buckets = 64;
         $LastBucket = $Buckets - 1;
         $BucketID = $TorrentID & $LastBucket;

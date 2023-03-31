@@ -8,7 +8,7 @@ if (!$ConvID || !is_numeric($ConvID)) {
     error(404);
 }
 
-$UserID = $app->userNew->core['id'];
+$UserID = $app->user->core['id'];
 $app->dbOld->query("
   SELECT InInbox, InSentbox
   FROM pm_conversations_users
@@ -106,20 +106,20 @@ while (list($SentDate, $SenderID, $Body, $MessageID) = $app->dbOld->next_record(
 $app->dbOld->query("
   SELECT UserID
   FROM pm_conversations_users
-  WHERE UserID != '{$app->userNew->core['id']}'
+  WHERE UserID != '{$app->user->core['id']}'
     AND ConvID = '$ConvID'
     AND (ForwardedTo = 0 OR ForwardedTo = UserID)");
 $ReceiverIDs = $app->dbOld->collect('UserID');
 
 
-if (!empty($ReceiverIDs) && (empty($app->userNew->extra['DisablePM']) || array_intersect($ReceiverIDs, array_keys($StaffIDs)))) {
+if (!empty($ReceiverIDs) && (empty($app->user->extra['DisablePM']) || array_intersect($ReceiverIDs, array_keys($StaffIDs)))) {
     ?>
   <h3>Reply</h3>
   <form class="send_form" name="reply" action="inbox.php" method="post" id="messageform">
     <div class="box pad">
       <input type="hidden" name="action" value="takecompose" />
       <input type="hidden" name="auth"
-        value="<?=$app->userNew->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <input type="hidden" name="toid"
         value="<?=implode(',', $ReceiverIDs)?>" />
       <input type="hidden" name="convid" value="<?=$ConvID?>" />
@@ -144,7 +144,7 @@ if (!empty($ReceiverIDs) && (empty($app->userNew->extra['DisablePM']) || array_i
       <input type="hidden" name="action" value="takeedit" />
       <input type="hidden" name="convid" value="<?=$ConvID?>" />
       <input type="hidden" name="auth"
-        value="<?=$app->userNew->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
 
       <table class="layout" width="100%">
         <tr>
@@ -174,9 +174,9 @@ if (!empty($ReceiverIDs) && (empty($app->userNew->extra['DisablePM']) || array_i
 $app->dbOld->query("
   SELECT SupportFor
   FROM users_info
-  WHERE UserID = ".$app->userNew->core['id']);
+  WHERE UserID = ".$app->user->core['id']);
 list($FLS) = $app->dbOld->next_record();
-if ((check_perms('users_mod') || $FLS != '') && (!$ForwardedID || $ForwardedID == $app->userNew->core['id'])) {
+if ((check_perms('users_mod') || $FLS != '') && (!$ForwardedID || $ForwardedID == $app->user->core['id'])) {
     ?>
   <h3>Forward conversation</h3>
   <form class="send_form" name="forward" action="inbox.php" method="post">
@@ -184,12 +184,12 @@ if ((check_perms('users_mod') || $FLS != '') && (!$ForwardedID || $ForwardedID =
       <input type="hidden" name="action" value="forward" />
       <input type="hidden" name="convid" value="<?=$ConvID?>" />
       <input type="hidden" name="auth"
-        value="<?=$app->userNew->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <label for="receiverid">Forward to</label>
       <select id="receiverid" name="receiverid">
         <?php
   foreach ($StaffIDs as $StaffID => $StaffName) {
-      if ($StaffID == $app->userNew->core['id'] || in_array($StaffID, $ReceiverIDs)) {
+      if ($StaffID == $app->user->core['id'] || in_array($StaffID, $ReceiverIDs)) {
           continue;
       } ?>
         <option value="<?=$StaffID?>"><?=$StaffName?>

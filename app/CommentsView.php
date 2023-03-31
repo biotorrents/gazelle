@@ -60,7 +60,7 @@ class CommentsView
         - <a href="#quickpost"
           onclick="Quote('<?=$PostID?>','<?=$UserInfo['Username']?>', true);"
           class="brackets">Quote</a>
-        <?php if ($AuthorID == $app->userNew->core["id"] || check_perms('site_moderate_forums')) { ?>
+        <?php if ($AuthorID == $app->user->core["id"] || check_perms('site_moderate_forums')) { ?>
         - <a href="#post<?=$PostID?>"
           onclick="Edit_Form('<?=$PostID?>','');"
           class="brackets">Edit</a>
@@ -75,7 +75,7 @@ class CommentsView
         <a href="reports.php?action=report&amp;type=comment&amp;id=<?=$PostID?>"
           class="brackets">Report</a>
         <?php
-      if (check_perms('users_warn') && $AuthorID != $app->userNew->core["id"] && $app->userNew->extra['Class'] >= $UserInfo['Class']) {
+      if (check_perms('users_warn') && $AuthorID != $app->user->core["id"] && $app->user->extra['Class'] >= $UserInfo['Class']) {
           ?>
         <form class="manage_form hidden" name="user"
           id="warn<?=$PostID?>" action="comments.php" method="post">

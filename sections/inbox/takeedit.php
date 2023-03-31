@@ -4,7 +4,7 @@ $app = \Gazelle\App::go();
 
 authorize();
 
-$UserID = $app->userNew->core['id'];
+$UserID = $app->user->core['id'];
 $ConvID = $_POST['convid'];
 
 $app->dbOld->query("

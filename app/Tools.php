@@ -206,7 +206,7 @@ class Tools
                 "When you received your latest warning (set to expire on ".date('Y-m-d', (time() + $Duration)).'), you already had a different warning (set to expire on '.date('Y-m-d', strtotime($OldDate)).").\n\n Due to this collision, your warning status will now expire at $NewExpDate."
             );
 
-            $AdminComment = date('Y-m-d')." - Warning (Clash) extended to expire at $NewExpDate by " . $app->userNew->core["username"] . "\nReason: $Reason\n\n";
+            $AdminComment = date('Y-m-d')." - Warning (Clash) extended to expire at $NewExpDate by " . $app->user->core["username"] . "\nReason: $Reason\n\n";
 
             $app->dbOld->query('
             UPDATE users_info
@@ -223,7 +223,7 @@ class Tools
             $app->cacheOld->update_row(false, array('Warned' => $WarnTime));
             $app->cacheOld->commit_transaction(0);
 
-            $AdminComment = date('Y-m-d')." - Warned until $WarnTime by " . $app->userNew->core["username"] . "\nReason: $Reason\n\n";
+            $AdminComment = date('Y-m-d')." - Warned until $WarnTime by " . $app->user->core["username"] . "\nReason: $Reason\n\n";
 
             $app->dbOld->query('
             UPDATE users_info

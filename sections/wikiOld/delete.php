@@ -29,7 +29,7 @@ if (!$app->dbOld->has_results()) {
 list($Title) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
 // Log
-Misc::write_log("Wiki article $ID ($Title) was deleted by ".$app->userNew->core['username']);
+Misc::write_log("Wiki article $ID ($Title) was deleted by ".$app->user->core['username']);
 
 // Delete
 $app->dbOld->prepared_query("DELETE FROM wiki_articles WHERE ID = $ID");

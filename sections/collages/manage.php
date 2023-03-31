@@ -18,7 +18,7 @@ WHERE
 ");
 list($Name, $UserID, $CategoryID) = $app->dbOld->next_record();
 
-if ($CategoryID === 0 && $UserID !== $app->userNew->core['id'] && !check_perms('site_collages_delete')) {
+if ($CategoryID === 0 && $UserID !== $app->user->core['id'] && !check_perms('site_collages_delete')) {
     error(403);
 }
 
@@ -148,7 +148,7 @@ View::header(
           <td class="nobr">
             <input type="hidden" name="action" value="manage_handle" />
             <input type="hidden" name="auth"
-              value="<?=$app->userNew->extra['AuthKey']?>" />
+              value="<?=$app->user->extra['AuthKey']?>" />
             <input type="hidden" name="collageid"
               value="<?=$CollageID?>" />
             <input type="hidden" name="groupid"
@@ -169,7 +169,7 @@ View::header(
     <div>
       <input type="hidden" name="action" value="manage_handle" />
       <input type="hidden" name="auth"
-        value="<?=$app->userNew->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <input type="hidden" name="collageid"
         value="<?=$CollageID?>" />
       <input type="hidden" name="groupid" value="1" />

@@ -22,7 +22,7 @@ if (isset($_GET['userid']) && check_perms('users_view_invites')) {
         $app->cacheNew->set('stats_user_count', $UserCount, 0);
     }
 
-    $UserID = $app->userNew->core['id'];
+    $UserID = $app->user->core['id'];
     $Sneaky = false;
 }
 
@@ -132,12 +132,12 @@ View::header('Invites');
   WHERE ID = $UserID");
 list($CanLeech) = $app->dbOld->next_record();
 
-$app->userNew->extra['RatioWatch'] ??= null;
+$app->user->extra['RatioWatch'] ??= null;
 if (!$Sneaky
-  && !$app->userNew->extra['RatioWatch']
+  && !$app->user->extra['RatioWatch']
   && $CanLeech
-  && empty($app->userNew->extra['DisableInvites'])
-  && ($app->userNew->extra['Invites'] > 0 || check_perms('site_send_unlimited_invites'))
+  && empty($app->user->extra['DisableInvites'])
+  && ($app->user->extra['Invites'] > 0 || check_perms('site_send_unlimited_invites'))
   && ($UserCount <= userLimit || userLimit === 0 || check_perms('site_can_invite_always'))
 ) { ?>
   <div class="box pad">
@@ -161,7 +161,7 @@ if (!$Sneaky
     <form class="send_form pad" name="invite" action="user.php" method="post">
       <input type="hidden" name="action" value="take_invite" />
       <input type="hidden" name="auth"
-        value="<?=$app->userNew->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <div>
         <div class="label"><strong>Email Address</strong></div>
         <div class="input">
@@ -181,13 +181,13 @@ if (!$Sneaky
   </div>
 
   <?php
-} elseif (!empty($app->userNew->extra['DisableInvites'])) { ?>
+} elseif (!empty($app->user->extra['DisableInvites'])) { ?>
   <div class="box pad" style="text-align: center;">
     <strong class="important_text">Your invites have been disabled. Please read <a
         href="wiki.php?action=article&amp;name=cantinvite">this article</a> for more information.</strong>
   </div>
   <?php
-} elseif ($app->userNew->extra['RatioWatch'] || !$CanLeech) { ?>
+} elseif ($app->user->extra['RatioWatch'] || !$CanLeech) { ?>
   <div class="box pad" style="text-align: center;">
     <strong class="important_text">You may not send invites while on Ratio Watch or while your leeching privileges are
       disabled. Please read <a href="wiki.php?action=article&amp;name=cantinvite">this article</a> for more
@@ -216,7 +216,7 @@ if (!empty($Pending)) {
         <td><?=time_diff($Expires)?>
         </td>
         <td><a
-            href="user.php?action=delete_invite&amp;invite=<?=$InviteKey?>&amp;auth=<?=$app->userNew->extra['AuthKey']?>"
+            href="user.php?action=delete_invite&amp;invite=<?=$InviteKey?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
             onclick="return confirm('Are you sure you want to delete this invite?');">Delete invite</a></td>
       </tr>
       <?php

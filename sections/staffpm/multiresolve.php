@@ -14,11 +14,11 @@ if ($IDs = $_POST['id']) {
       WHERE ID = $ID");
         list($UserID, $AssignedToUser) = $app->dbOld->next_record();
 
-        if ($UserID == $app->userNew->core['id'] || $DisplayStaff == '1' || $UserID == $AssignedToUser) {
+        if ($UserID == $app->user->core['id'] || $DisplayStaff == '1' || $UserID == $AssignedToUser) {
             // Conversation belongs to user or user is staff, queue query
             $Queries[] = "
         UPDATE staff_pm_conversations
-        SET Status = 'Resolved', ResolverID = ".$app->userNew->core['id']."
+        SET Status = 'Resolved', ResolverID = ".$app->user->core['id']."
         WHERE ID = $ID";
         } else {
             // Trying to run disallowed query
@@ -31,8 +31,8 @@ if ($IDs = $_POST['id']) {
         $app->dbOld->query($Query);
     }
     // Clear cache for user
-    $app->cacheNew->delete("staff_pm_new_{$app->userNew->core['id']}");
-    $app->cacheNew->delete("num_staff_pms_{$app->userNew->core['id']}");
+    $app->cacheNew->delete("staff_pm_new_{$app->user->core['id']}");
+    $app->cacheNew->delete("num_staff_pms_{$app->user->core['id']}");
 
     // Done! Return to inbox
     Http::redirect("staffpm.php");

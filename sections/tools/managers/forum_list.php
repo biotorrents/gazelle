@@ -83,7 +83,7 @@ while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinCla
     <form class="manage_form" name="forums" action="" method="post">
       <input type="hidden" name="id" value="<?=$ID?>" />
       <input type="hidden" name="action" value="forum_alter" />
-      <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
       <td>
         <select name="categoryid">
 <?php reset($ForumCats);
@@ -136,7 +136,7 @@ while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinCla
   <tr class="row">
     <form name="forum" action="" method="post">
       <input type="hidden" name="action" value="forum_alter" />
-      <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
       <td>
         <select name="categoryid">
 <?php reset($ForumCats);

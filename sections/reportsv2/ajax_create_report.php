@@ -70,7 +70,7 @@ $app->dbOld->prepared_query("
   SELECT ID
   FROM reportsv2
   WHERE TorrentID = $TorrentID
-    AND ReporterID = ".db_string($app->userNew->core['id'])."
+    AND ReporterID = ".db_string($app->user->core['id'])."
     AND ReportedTime > '".time_minus(3)."'");
 if ($app->dbOld->has_results()) {
     error();
@@ -80,7 +80,7 @@ $app->dbOld->prepared_query("
   INSERT INTO reportsv2
     (ReporterID, TorrentID, Type, UserComment, Status, ReportedTime, ExtraID)
   VALUES
-    (".db_string($app->userNew->core['id']).", $TorrentID, '$Type', '$Extra', 'New', NOW(), '$ExtraID')");
+    (".db_string($app->user->core['id']).", $TorrentID, '$Type', '$Extra', 'New', NOW(), '$ExtraID')");
 
 $ReportID = $app->dbOld->inserted_id();
 

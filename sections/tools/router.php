@@ -159,7 +159,7 @@ switch ($_REQUEST['action']) {
               GROUP BY p.ID");
                 list($ID, $Name, $Abbreviation, $Level, $Secondary, $Forums, $Values, $DisplayStaff, $UserCount) = $app->dbOld->next_record(MYSQLI_NUM, array(6));
 
-                if ($Level > $app->userNew->extra['EffectiveClass'] || (isset($_REQUEST['level']) && $_REQUEST['level'] > $app->userNew->extra['EffectiveClass'])) {
+                if ($Level > $app->user->extra['EffectiveClass'] || (isset($_REQUEST['level']) && $_REQUEST['level'] > $app->user->extra['EffectiveClass'])) {
                     error(403);
                 }
 

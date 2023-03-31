@@ -11,7 +11,7 @@ declare(strict_types=1);
 Flight::route("/login", function () {
     $app = \Gazelle\App::go();
 
-    if (!empty($app->userNew->core)) {
+    if (!empty($app->user->core)) {
         Http::redirect();
     } else {
         require_once "{$app->env->serverRoot}/sections/user/auth/login.php";
@@ -30,7 +30,7 @@ Flight::route("/disabled", function () {
 Flight::route("/enable/@token", function (string $token) {
     $app = \Gazelle\App::go();
 
-    if (isset($app->userOld["ID"]) || !isset($token) || !$app->env->FEATURE_EMAIL_REENABLE) {
+    if (isset($app->user->core["id"]) || !isset($token) || !$app->env->FEATURE_EMAIL_REENABLE) {
         Http::redirect();
     }
 

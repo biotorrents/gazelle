@@ -23,7 +23,7 @@ if (!$NewRequest) {
 $Disabled = '';
 
 /* todo: Fix this or configure the limit with good error message
-if ($NewRequest && ($app->userNew->extra['BytesUploaded'] < 250 * 1024 * 1024 || !check_perms('site_submit_requests'))) {
+if ($NewRequest && ($app->user->extra['BytesUploaded'] < 250 * 1024 * 1024 || !check_perms('site_submit_requests'))) {
     error('You do not have enough uploaded to make a request');
 }
 */
@@ -51,7 +51,7 @@ if (!$NewRequest) {
         $CategoryName = $Categories[$CategoryID - 1];
 
         $ProjectCanEdit = (check_perms('project_team') && !$IsFilled && $CategoryID === '0');
-        $CanEdit = ((!$IsFilled && $app->userNew->core['id'] === $Request['UserID'] && $VoteCount < 2) || $ProjectCanEdit || check_perms('site_moderate_requests'));
+        $CanEdit = ((!$IsFilled && $app->user->core['id'] === $Request['UserID'] && $VoteCount < 2) || $ProjectCanEdit || check_perms('site_moderate_requests'));
 
         if (!$CanEdit) {
             error(403);
@@ -123,7 +123,7 @@ View::header(
         <?php } ?>
 
         <input type="hidden" name="auth"
-          value="<?= $app->userNew->extra['AuthKey'] ?>" />
+          value="<?= $app->user->extra['AuthKey'] ?>" />
 
         <input type="hidden" name="action"
           value="<?= ($NewRequest ? 'takenew' : 'takeedit') ?>" />
@@ -414,10 +414,10 @@ View::header(
               value="<?= (!empty($Bounty) ? $Bounty : '100') ?>" />
 
             <input type="hidden" id="current_uploaded"
-              value="<?= $app->userNew->extra['BytesUploaded'] ?>" />
+              value="<?= $app->user->extra['BytesUploaded'] ?>" />
 
             <input type="hidden" id="current_downloaded"
-              value="<?= $app->userNew->extra['BytesDownloaded'] ?>" />
+              value="<?= $app->user->extra['BytesDownloaded'] ?>" />
 
             <ul>
               <!-- todo: Return this feature
@@ -428,12 +428,12 @@ View::header(
 
               <li>
                 <strong>Uploaded:</strong>
-                <span id="new_uploaded"><?= Format::get_size($app->userNew->extra['BytesUploaded']) ?></span>
+                <span id="new_uploaded"><?= Format::get_size($app->user->extra['BytesUploaded']) ?></span>
               </li>
 
               <li>
                 <strong>Ratio:</strong>
-                <span id="new_ratio"><?= Format::get_ratio_html($app->userNew->extra['BytesUploaded'], $app->userNew->extra['BytesDownloaded']) ?></span>
+                <span id="new_ratio"><?= Format::get_ratio_html($app->user->extra['BytesUploaded'], $app->user->extra['BytesDownloaded']) ?></span>
               </li>
             </ul>
           </td>

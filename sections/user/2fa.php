@@ -175,7 +175,7 @@ if (empty($TwoFactor)) {
         <input type="text" size="60" name="twofasecret" id="twofasecret"
           value="<?=$TwoFASecret?>" readonly><br>
         <img
-          src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$app->userNew->core['username'], $TwoFASecret)?>" />
+          src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$app->user->core['username'], $TwoFASecret)?>" />
         <br />
 
         <input type="text" size="20" maxlength="6" pattern="[0-9]{0,6}" name="twofa" id="twofa"
@@ -206,7 +206,7 @@ if (empty($TwoFactor)) {
 
         <p>
           <img
-            src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$app->userNew->core['username'], $TwoFASecret)?>" />
+            src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$app->user->core['username'], $TwoFASecret)?>" />
         </p>
 
         <p>

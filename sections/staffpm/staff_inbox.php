@@ -7,12 +7,12 @@ View::header('Staff Inbox');
 
 $View = (isset($_GET['view'])) ? Text::esc($_GET['view']) : '';
 $UserLevel = 0;
-#$UserLevel = $app->userNew->extra['EffectiveClass'];
+#$UserLevel = $app->user->extra['EffectiveClass'];
 
 $LevelCap = 1000;
 
 // Setup for current view mode
-$SortStr = 'IF(AssignedToUser = '.$app->userNew->core['id'].', 0, 1) ASC, ';
+$SortStr = 'IF(AssignedToUser = '.$app->user->core['id'].', 0, 1) ASC, ';
 switch ($View) {
   case 'unanswered':
     $ViewString = 'Unanswered';
@@ -50,7 +50,7 @@ switch ($View) {
 $WhereCondition = "
   WHERE (
     LEAST($LevelCap, spc.Level) <= $UserLevel
-    OR spc.AssignedToUser = '".$app->userNew->core['id']."')
+    OR spc.AssignedToUser = '".$app->user->core['id']."')
   AND spc.Status IN ('$Status')";
 
 if ($ViewString == 'Your Unanswered') {

@@ -3,7 +3,7 @@
 
 $app = \Gazelle\App::go();
 
-$UserID = $app->userNew->core['id'];
+$UserID = $app->user->core['id'];
 $app->dbOld->prepared_query("
   SELECT First, Second
   FROM misc

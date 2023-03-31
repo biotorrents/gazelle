@@ -35,7 +35,7 @@ class MASS_USER_BOOKMARKS_EDITOR extends MASS_USER_TORRENTS_EDITOR
 
         $QueryID = $app->dbOld->get_query_id();
         if (is_string($sql) && $app->dbOld->query($sql)) {
-            $app->cacheNew->delete('bookmarks_group_ids_' . $app->userNew->core["id"]);
+            $app->cacheNew->delete('bookmarks_group_ids_' . $app->user->core["id"]);
         }
         $app->dbOld->set_query_id($QueryID);
     }
@@ -65,7 +65,7 @@ class MASS_USER_BOOKMARKS_EDITOR extends MASS_USER_TORRENTS_EDITOR
               WHERE UserID = %d
               AND GroupID IN (%s)',
                 $this->Table,
-                $app->userNew->core["id"],
+                $app->user->core["id"],
                 implode(', ', $SQL)
             );
             $this->query_and_clear_cache($SQL);
@@ -85,7 +85,7 @@ class MASS_USER_BOOKMARKS_EDITOR extends MASS_USER_TORRENTS_EDITOR
         $SQL = [];
         foreach ($_POST['sort'] as $GroupID => $Sort) {
             if (is_numeric($Sort) && is_numeric($GroupID)) {
-                $SQL[] = sprintf('(%d, %d, %d)', $GroupID, $Sort, $app->userNew->core["id"]);
+                $SQL[] = sprintf('(%d, %d, %d)', $GroupID, $Sort, $app->user->core["id"]);
             }
         }
 

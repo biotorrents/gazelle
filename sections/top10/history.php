@@ -202,7 +202,7 @@ if (!empty($_GET['date'])) {
         <td class="center categoryColumn">
         </td>
         <td>
-          <span><?=($GroupID ? '<a href="torrents.php?action=download&amp;id='.$TorrentID.'&amp;authkey='.$app->userNew->extra['AuthKey'].'&amp;torrent_pass='.$app->userNew->extra['torrent_pass'].' title="Download" class="brackets tooltip">DL</a>' : '(Deleted)')?></span>
+          <span><?=($GroupID ? '<a href="torrents.php?action=download&amp;id='.$TorrentID.'&amp;authkey='.$app->user->extra['AuthKey'].'&amp;torrent_pass='.$app->user->extra['torrent_pass'].' title="Download" class="brackets tooltip">DL</a>' : '(Deleted)')?></span>
           <?=$DisplayName?>
           <div class="tags"><?=$TorrentTags->format()?>
           </div>

@@ -4,7 +4,7 @@ $app = \Gazelle\App::go();
 
 authorize();
 
-$UserID = $app->userNew->core['id'];
+$UserID = $app->user->core['id'];
 
 if (!isset($_POST['messages']) || !is_array($_POST['messages'])) {
     error('You forgot to select messages to delete.');

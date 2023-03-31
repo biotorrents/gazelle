@@ -102,7 +102,7 @@ $Article = Wiki::get_article($ArticleID);
 list($Revision, $Title, $Body, $Read, $Edit, $Date, $AuthorID, $AuthorName) = array_shift($Article);
 
 /*
-if ($Edit > $app->userNew->extra['EffectiveClass']) {
+if ($Edit > $app->user->extra['EffectiveClass']) {
     error(404);
 }
 */

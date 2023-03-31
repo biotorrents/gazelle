@@ -165,7 +165,7 @@ class MASS_USER_TORRENTS_TABLE_VIEW
       <input type="hidden" name="type"
         value="<?=Text::esc($this->EditType)?>" />
       <input type="hidden" name="auth"
-        value="<?=$app->userNew->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
     </div>
   </form>
 </div>

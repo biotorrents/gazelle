@@ -9,7 +9,7 @@ if (empty($_POST['toid'])) {
     error(404);
 }
 
-if (!empty($app->userNew->extra['DisablePM']) && !isset($StaffIDs[$_POST['toid']])) {
+if (!empty($app->user->extra['DisablePM']) && !isset($StaffIDs[$_POST['toid']])) {
     error(403);
 }
 
@@ -26,7 +26,7 @@ if (isset($_POST['convid']) && is_numeric($_POST['convid'])) {
     $app->dbOld->query("
     SELECT UserID
     FROM pm_conversations_users
-    WHERE UserID = '{$app->userNew->core['id']}'
+    WHERE UserID = '{$app->user->core['id']}'
       AND ConvID = '$ConvID'");
     if (!$app->dbOld->has_results()) {
         error(403);
@@ -57,6 +57,6 @@ if (!empty($Err)) {
     die();
 }
 
-$ConvID = Misc::send_pm($ToID, $app->userNew->core['id'], $Subject, $Body, $ConvID);
+$ConvID = Misc::send_pm($ToID, $app->user->core['id'], $Subject, $Body, $ConvID);
 
 Http::redirect("reports.php");

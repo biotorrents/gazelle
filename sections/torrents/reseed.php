@@ -91,7 +91,7 @@ if ($app->dbOld->has_results()) {
         Hi $Username,
         
         The user
-        [url=".site_url()."user.php?id={$app->userNew->core['id']}]$app->userNew[username][/url]
+        [url=".site_url()."user.php?id={$app->user->core['id']}]$app->user[username][/url]
         has requested a re-seed for the torrent
         [url=".site_url()."torrents.php?id=$GroupID&torrentid=$TorrentID]{$Name}[/url],
         which you snatched on ".date('M d Y', $TimeStamp).".
@@ -113,7 +113,7 @@ if ($app->dbOld->has_results()) {
     Hi $Username,
     
     The user
-    [url=".site_url()."user.php?id={$app->userNew->core['id']}]$app->userNew[username][/url]
+    [url=".site_url()."user.php?id={$app->user->core['id']}]$app->user[username][/url]
     has requested a re-seed for the torrent
     [url=".site_url()."torrents.php?id=$GroupID&torrentid=$TorrentID]{$Name}[/url],
     which you uploaded on ".date('M d Y', strtotime($UploadedTime)).".

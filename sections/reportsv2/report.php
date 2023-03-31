@@ -95,7 +95,7 @@ View::header('Report', 'reportsv2,browse,torrent,recommend');
       </tr>
       <?php
       $LangName = $GroupName ? $GroupName : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP);
-TorrentFunctions::build_torrents_table($app->userNew, $GroupID, $LangName, $GroupCategoryID, $TorrentList, $Types, $Username);
+TorrentFunctions::build_torrents_table($app->user, $GroupID, $LangName, $GroupCategoryID, $TorrentList, $Types, $Username);
 ?>
     </table>
   </div>
@@ -103,7 +103,7 @@ TorrentFunctions::build_torrents_table($app->userNew, $GroupID, $LangName, $Grou
   <form name="report" action="reportsv2.php?action=takereport" enctype="multipart/form-data" method="post" id="reportform">
     <div>
       <input type="hidden" name="submit" value="true" />
-      <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
       <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
       <input type="hidden" name="categoryid" value="<?=$CategoryID?>" />
     </div>

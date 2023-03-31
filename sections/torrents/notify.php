@@ -54,12 +54,12 @@ function header_link($SortKey, $DefaultWay = 'desc')
     return "?action=notify&amp;order_way=$NewWay&amp;order_by=$SortKey&amp;".Format::get_url(array('page', 'order_way', 'order_by'));
 }
 //Perhaps this should be a feature at some point
-if (check_perms('users_mod') && !empty($_GET['userid']) && is_numeric($_GET['userid']) && $_GET['userid'] != $app->userNew->core['id']) {
+if (check_perms('users_mod') && !empty($_GET['userid']) && is_numeric($_GET['userid']) && $_GET['userid'] != $app->user->core['id']) {
     $UserID = $_GET['userid'];
     $Sneaky = true;
 } else {
     $Sneaky = false;
-    $UserID = $app->userNew->core['id'];
+    $UserID = $app->user->core['id'];
 }
 
 // Sorting by release year requires joining torrents_group, which is slow. Using a temporary table
@@ -158,9 +158,9 @@ if (!empty($GroupIDs)) {
         $app->dbOld->query("
       UPDATE users_notify_torrents
       SET UnRead = '0'
-      WHERE UserID = ".$app->userNew->core['id'].'
+      WHERE UserID = ".$app->user->core['id'].'
         AND TorrentID IN ('.implode(',', $UnReadIDs).')');
-        $app->cacheNew->delete('notifications_new_'.$app->userNew->core['id']);
+        $app->cacheNew->delete('notifications_new_'.$app->user->core['id']);
     }
 }
 if ($Sneaky) {
@@ -179,10 +179,10 @@ if ($Sneaky) {
     <a href="torrents.php?action=notify<?=($Sneaky ? "&amp;userid=$UserID" : '')?>"
       class="brackets">View all</a>&nbsp;&nbsp;&nbsp;
     <?php } elseif (!$Sneaky) { ?>
-    <a href="torrents.php?action=notify_clear&amp;auth=<?=$app->userNew->extra['AuthKey']?>"
+    <a href="torrents.php?action=notify_clear&amp;auth=<?=$app->user->extra['AuthKey']?>"
       class="brackets">Clear all old</a>&nbsp;&nbsp;&nbsp;
     <a href="#" onclick="clearSelected(); return false;" class="brackets">Clear selected</a>&nbsp;&nbsp;&nbsp;
-    <a href="torrents.php?action=notify_catchup&amp;auth=<?=$app->userNew->extra['AuthKey']?>"
+    <a href="torrents.php?action=notify_catchup&amp;auth=<?=$app->user->extra['AuthKey']?>"
       class="brackets">Catch up</a>&nbsp;&nbsp;&nbsp;
     <?php } ?>
     <a href="user.php?action=notify" class="brackets">Edit filters</a>&nbsp;&nbsp;&nbsp;
@@ -232,9 +232,9 @@ if (empty($Results)) {
     <a href="#"
       onclick="clearSelected(<?=$FilterID?>); return false;"
       class="brackets">Clear selected in filter</a>
-    <a href="torrents.php?action=notify_clear_filter&amp;filterid=<?=$FilterID?>&amp;auth=<?=$app->userNew->extra['AuthKey']?>"
+    <a href="torrents.php?action=notify_clear_filter&amp;filterid=<?=$FilterID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
       class="brackets">Clear all old in filter</a>
-    <a href="torrents.php?action=notify_catchup_filter&amp;filterid=<?=$FilterID?>&amp;auth=<?=$app->userNew->extra['AuthKey']?>"
+    <a href="torrents.php?action=notify_catchup_filter&amp;filterid=<?=$FilterID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
       class="brackets">Mark all in filter as read</a>
     <?php } ?>
   </div>
@@ -292,7 +292,7 @@ if (empty($Results)) {
                 $DisplayName = Artists::display_artists($GroupInfo['Artists'], true, true);
             }
             $DisplayName .= "<a href=\"torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID\" ";
-            if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
+            if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
                 $DisplayName .= 'data-cover="'.ImageTools::process($GroupInfo['WikiImage'], 'thumb').'" ';
             }
             $DisplayName .= "class=\"tooltip\" title=\"View torrent\" dir=\"ltr\">" . $GroupName . '</a>';
@@ -336,11 +336,11 @@ if (empty($Results)) {
           <div class="group_info clear">
             <span>
               [ <a
-                href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>"
+                href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>"
                 class="tooltip" title="Download">DL</a>
               <?php if (Torrents::can_use_token($TorrentInfo)) { ?>
               | <a
-                href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>&amp;usetoken=1"
+                href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>&amp;usetoken=1"
                 class="tooltip" title="Use a FL Token"
                 onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
               <?php

@@ -82,7 +82,7 @@ class Permissions
         $app = \Gazelle\App::go();
 
         $query = "select id, name, values from permissions where id = ?";
-        $row = $app->dbNew->row($query, [  $app->userNew->extra["PermissionID"] ]);
+        $row = $app->dbNew->row($query, [  $app->user->extra["PermissionID"] ]);
 
         return $row;
     }
@@ -396,6 +396,9 @@ class Permissions
      */
     public static function check_perms($PermissionName, $MinClass = 0)
     {
+        return check_perms($PermissionName, $MinClass);
+
+        /*
         $app = \Gazelle\App::go();
 
         $app->userOld['EffectiveClass'] ??= 1000;
@@ -408,6 +411,7 @@ class Permissions
         } // MinClass failure
 
         return $app->userOld['Permissions'][$PermissionName] ?? false; // Return actual permission
+        */
     }
 
 

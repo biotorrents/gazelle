@@ -157,8 +157,8 @@ $app->dbOld->set_query_id($Reports);
                   }
                   break;
                 case 'post':
-                  if (isset($app->userNew->extra['PostsPerPage'])) {
-                      $PerPage = $app->userNew->extra['PostsPerPage'];
+                  if (isset($app->user->extra['PostsPerPage'])) {
+                      $PerPage = $app->user->extra['PostsPerPage'];
                   } else {
                       $PerPage = POSTS_PER_PAGE;
                   }
@@ -202,7 +202,7 @@ $app->dbOld->set_query_id($Reports);
         </tr>
         <tr>
           <td colspan="2">
-<?php          if ($ClaimerID == $app->userNew->core['id']) { ?>
+<?php          if ($ClaimerID == $app->user->core['id']) { ?>
             <span id="claimed_<?=$ReportID?>">Claimed by <?=User::format_username($ClaimerID, false, false, false, false)?> <a href="#" onclick="unClaim(<?=$ReportID?>); return false;" class="brackets">Unclaim</a></span>
 <?php          } elseif ($ClaimerID) { ?>
             <span id="claimed_<?=$ReportID?>">Claimed by <?=User::format_username($ClaimerID, false, false, false, false)?></span>
@@ -224,8 +224,8 @@ $app->dbOld->set_query_id($Reports);
           <td class="center" colspan="2">
             <form id="report_form_<?=$ReportID?>" action="">
               <input type="hidden" name="reportid" value="<?=$ReportID?>" />
-              <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
-              <input type="submit" onclick="return resolve(<?=$ReportID?>, <?=(($ClaimerID == $app->userNew->core['id'] || !$ClaimerID) ? 'true' : 'false')?>)" name="submit" value="Resolve" />
+              <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
+              <input type="submit" onclick="return resolve(<?=$ReportID?>, <?=(($ClaimerID == $app->user->core['id'] || !$ClaimerID) ? 'true' : 'false')?>)" name="submit" value="Resolve" />
             </form>
           </td>
         </tr>

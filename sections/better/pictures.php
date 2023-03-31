@@ -19,7 +19,7 @@ if ($snatchedOnly) {
     $subQuery = "
         join torrents on torrents.groupId = torrents_group.id
         join xbt_snatched on xbt_snatched.fid = torrents.id
-        and xbt_snatched.uid = {$app->userNew->core["id"]}
+        and xbt_snatched.uid = {$app->user->core["id"]}
     ";
 } else {
     $subQuery = "";
@@ -92,7 +92,7 @@ foreach ($Results as $Result) {
     $TorrentTags = new Tags($tag_list);
 
     $DisplayName = "<a href='torrents.php?id=$id' ";
-    if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
+    if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
         $DisplayName .= 'data-cover="'.ImageTools::process($picture, 'thumb').'" ';
     }
 

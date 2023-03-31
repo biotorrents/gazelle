@@ -18,7 +18,7 @@ $StaffPMs = $app->dbOld->query(
     Date,
     Unread
   FROM staff_pm_conversations
-  WHERE UserID = ".$app->userNew->core['id']."
+  WHERE UserID = ".$app->user->core['id']."
   ORDER BY Status, Date DESC"
 );
 

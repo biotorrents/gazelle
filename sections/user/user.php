@@ -23,12 +23,12 @@ $get["previewMode"] ??= null;
 $previewMode = Esc::bool($get["previewMode"]);
 
 # user data
-$data = $app->userNew->readProfile($userId);
+$data = $app->user->readProfile($userId);
 #!d($data);exit;
 
 # own profile?
 $isOwnProfile = false;
-if ($userId === $app->userNew->core["id"]) {
+if ($userId === $app->user->core["id"]) {
     $isOwnProfile = true;
 }
 
@@ -39,7 +39,7 @@ if ($isOwnProfile && $previewMode) {
 
 # is the user your friend?
 $query = "select 1 from users_friends where userId = ? and friendId = ?";
-$good = $app->dbNew->single($query, [$app->userNew->core["id"], $userId]);
+$good = $app->dbNew->single($query, [$app->user->core["id"], $userId]);
 
 $isFriend = false;
 if ($good) {
@@ -62,23 +62,23 @@ if ($isOwnProfile) {
 /** recent torrent activity */
 
 
-$recentSnatches = $app->userNew->recentSnatches($userId);
+$recentSnatches = $app->user->recentSnatches($userId);
 #!d($recentSnatches);exit;
 
-$recentUploads = $app->userNew->recentUploads($userId);
+$recentUploads = $app->user->recentUploads($userId);
 #!d($recentUploads);exit;
 
-$recentRequests = $app->userNew->recentRequests($userId);
+$recentRequests = $app->user->recentRequests($userId);
 #!d($recentRequests);exit;
 
-$recentCollages = $app->userNew->recentCollages($userId);
+$recentCollages = $app->user->recentCollages($userId);
 #!d($recentCollages);exit;
 
 
 /** user stats */
 
 
-$communityStats = $app->userNew->communityStats($userId);
+$communityStats = $app->user->communityStats($userId);
 #!d($communityStats);exit;
 
 # build request stats
@@ -100,7 +100,7 @@ unset($communityStats["torrentComments"]);
 unset($communityStats["ircLines"]);
 
 
-$torrentStats = $app->userNew->torrentStats($userId);
+$torrentStats = $app->user->torrentStats($userId);
 #!d($torrentStats);exit;
 
 # unset misc
@@ -110,7 +110,7 @@ unset($torrentStats["ratio"]);
 $torrentClients = $torrentStats["torrentClients"];
 unset($torrentStats["torrentClients"]);
 
-$percentileStats = $app->userNew->percentileStats($userId);
+$percentileStats = $app->user->percentileStats($userId);
 #!d($percentileStats);exit;
 
 

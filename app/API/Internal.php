@@ -36,7 +36,7 @@ class Internal extends Base
         }
 
         $query = "select sessionId from users_sessions where userId = ? order by expires desc limit 1";
-        $sessionId = $app->dbNew->single($query, [ $app->userNew->core["id"] ]);
+        $sessionId = $app->dbNew->single($query, [ $app->user->core["id"] ]);
 
         $backendKey = implode(".", [$sessionId, $app->env->getPriv("siteApiSecret")]);
         $good = \Auth::checkHash($backendKey, $frontendHash);
@@ -68,7 +68,7 @@ class Internal extends Base
         }
 
         try {
-            $app->userNew->create2FA($post["secret"], $post["code"]);
+            $app->user->create2FA($post["secret"], $post["code"]);
 
             self::success("successfully created a 2fa key");
         } catch (\Throwable $e) {
@@ -95,7 +95,7 @@ class Internal extends Base
         }
 
         try {
-            $app->userNew->delete2FA($post["secret"], $post["code"]);
+            $app->user->delete2FA($post["secret"], $post["code"]);
 
             self::success("successfully deleted a 2fa key");
         } catch (\Throwable $e) {

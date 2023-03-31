@@ -31,7 +31,7 @@ if ($app->cacheNew->get('torrent_'.$TorrentID.'_lock')) {
 list($UserID, $Time, $Snatches) = $app->dbOld->next_record();
 
 
-if ($app->userNew->core['id'] != $UserID && !check_perms('torrents_delete')) {
+if ($app->user->core['id'] != $UserID && !check_perms('torrents_delete')) {
     error(403);
 }
 
@@ -58,7 +58,7 @@ View::header('Delete torrent', 'reportsv2');
     <div class="pad">
       <form class="delete_form" name="torrent" action="torrents.php" method="post">
         <input type="hidden" name="action" value="takedelete" />
-        <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
+        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
         <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
         <div>
           <strong>Reason: </strong>
@@ -191,7 +191,7 @@ if (check_perms('admin_reports')) {
         */
       ?>
       <div>
-        <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
+        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
         <input type="hidden" id="reportid<?=$ReportID?>" name="reportid" value="<?=$ReportID?>" />
         <input type="hidden" id="torrentid<?=$ReportID?>" name="torrentid" value="<?=$TorrentID?>" />
         <input type="hidden" id="uploader<?=$ReportID?>" name="uploader" value="<?=$UploaderName?>" />
@@ -211,7 +211,7 @@ if (check_perms('admin_reports')) {
             <a href="log.php?search=Torrent+<?=$TorrentID?>"><?=$TorrentID?></a> (Deleted)
 <?php } else { ?>
             <?=$LinkName?>
-            <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>" class="brackets tooltip" title="Download">DL</a>
+            <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>" class="brackets tooltip" title="Download">DL</a>
             uploaded by <a href="user.php?id=<?=$UploaderID?>"><?=$UploaderName?></a> <?=time_diff($Time)?>
             <br />
 <?php $app->dbOld->query("

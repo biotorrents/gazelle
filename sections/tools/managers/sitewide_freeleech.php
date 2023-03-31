@@ -112,7 +112,7 @@ if (isset($_POST['type'])) {
       <input type="hidden" name="action" value="freeleech" />
       <input type="hidden" name="type" value="tag">
       <input type="hidden" name="auth"
-        value="<?=$app->userNew->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <strong>Single Tag Freeleech</strong>
       <br />
       <input id="tag_name" type="text" name="tag" placeholder="Tag" value="" />
@@ -127,7 +127,7 @@ if (isset($_POST['type'])) {
       <input type="hidden" name="action" value="freeleech" />
       <input type="hidden" name="type" value="global" />
       <input type="hidden" name="auth"
-        value="<?=$app->userNew->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <strong>Global Freeleech</strong>
       <br />
       <input id="global_duration" type="number" name="duration" placeholder="Duration (hours)" value="" />

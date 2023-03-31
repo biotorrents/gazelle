@@ -140,7 +140,7 @@ if ($ToolsHTML) {
 
 // begin Development category
 $ToolsHTML = "";
-create_row("Schedule", "schedule.php?auth={$app->userNew->extra["AuthKey"]}", check_perms("site_debug"));
+create_row("Schedule", "schedule.php?auth={$app->user->extra["AuthKey"]}", check_perms("site_debug"));
 create_row("Service stats", "tools.php?action=service_stats", check_perms("site_debug"));
 create_row("Miscellaneous values", "tools.php?action=misc_values", check_perms('users_mod'));
 create_row("Tracker info", "tools.php?action=ocelot_info", check_perms("users_mod"));

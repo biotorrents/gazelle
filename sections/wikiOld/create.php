@@ -14,7 +14,7 @@ View::header(
     <form name="wiki_article" action="wiki.php" method="post">
       <input type="hidden" name="action" value="create" />
       <input type="hidden" name="auth"
-        value="<?=$app->userNew->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
 
       <div>
         <h3>Title</h3>

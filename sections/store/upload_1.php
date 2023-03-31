@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 $app = \Gazelle\App::go();
 
-$UserID = $app->userNew->core['id'];
+$UserID = $app->user->core['id'];
 $Purchase = "0.1 GiB upload";
 
 $GiB = 1024*1024*1024;

@@ -6,7 +6,7 @@ $app = \Gazelle\App::go();
 if (empty($Return)) {
     $ToID = $_GET['to'];
     /*
-      if ($ToID == $app->userNew->core['id']) {
+      if ($ToID == $app->user->core['id']) {
         error('You cannot start a conversation with yourself!');
         header('Location: ' . Inbox::get_inbox_link());
       }
@@ -17,7 +17,7 @@ if (!$ToID || !is_numeric($ToID)) {
     error(404);
 }
 
-if (!empty($app->userNew->extra['DisablePM']) && !isset($StaffIDs[$ToID])) {
+if (!empty($app->user->extra['DisablePM']) && !isset($StaffIDs[$ToID])) {
     error(403);
 }
 
@@ -44,7 +44,7 @@ View::header(
       <input type="hidden" name="action" value="takecompose" />
       <input type="hidden" name="toid" value="<?=$ToID?>" />
       <input type="hidden" name="auth"
-        value="<?=$app->userNew->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
 
       <div id="quickpost">
         <h3>Subject</h3>

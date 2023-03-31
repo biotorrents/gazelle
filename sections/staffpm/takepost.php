@@ -18,7 +18,7 @@ if ($Message = db_string($_POST['message'])) {
       INSERT INTO staff_pm_conversations
         (Subject, Status, Level, UserID, Date)
       VALUES
-        ('$Subject', 'Unanswered', $_POST[level], {$app->userNew->core['id']}, NOW())"
+        ('$Subject', 'Unanswered', $_POST[level], {$app->user->core['id']}, NOW())"
         );
 
         // New message
@@ -28,7 +28,7 @@ if ($Message = db_string($_POST['message'])) {
       INSERT INTO staff_pm_messages
         (UserID, SentDate, Message, ConvID)
       VALUES
-        ({$app->userNew->core['id']}, NOW(), '$Message', $ConvID)"
+        ({$app->user->core['id']}, NOW(), '$Message', $ConvID)"
         );
 
         Http::redirect("staffpm.php");
@@ -43,14 +43,14 @@ if ($Message = db_string($_POST['message'])) {
         $LevelCap = 1000;
         $Level = min($Level, $LevelCap);
 
-        if ($UserID == $app->userNew->core['id'] || ($IsFLS && $app->userNew->extra['EffectiveClass'] >= $Level) || $UserID == $AssignedToUser) {
+        if ($UserID == $app->user->core['id'] || ($IsFLS && $app->user->extra['EffectiveClass'] >= $Level) || $UserID == $AssignedToUser) {
             // Response to existing conversation
             $app->dbOld->query(
                 "
         INSERT INTO staff_pm_messages
           (UserID, SentDate, Message, ConvID)
         VALUES
-          (".$app->userNew->core['id'].", NOW(), '$Message', $ConvID)"
+          (".$app->user->core['id'].", NOW(), '$Message', $ConvID)"
             );
 
             // Update conversation
@@ -62,7 +62,7 @@ if ($Message = db_string($_POST['message'])) {
             Unread = true,
             Status = 'Open'
           WHERE ID = $ConvID");
-                $app->cacheNew->delete("num_staff_pms_{$app->userNew->core['id']}");
+                $app->cacheNew->delete("num_staff_pms_{$app->user->core['id']}");
             } else {
                 // User
                 $app->dbOld->query("
@@ -75,7 +75,7 @@ if ($Message = db_string($_POST['message'])) {
 
             // Clear cache for user
             $app->cacheNew->delete("staff_pm_new_$UserID");
-            $app->cacheNew->delete("staff_pm_new_{$app->userNew->core['id']}");
+            $app->cacheNew->delete("staff_pm_new_{$app->user->core['id']}");
 
             Http::redirect("staffpm.php?action=viewconv&id=$ConvID");
         } else {

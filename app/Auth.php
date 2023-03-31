@@ -965,7 +965,7 @@ If you need the custom user information only rarely, you may just retrieve it as
         ";
 
         $app->dbNew->do($query, [
-            "userId" => $app->userNew->core["id"],
+            "userId" => $app->user->core["id"],
             "name" => $name,
             "token" => password_hash($token, PASSWORD_DEFAULT),
             "revoked" => 0,
@@ -987,7 +987,7 @@ If you need the custom user information only rarely, you may just retrieve it as
         $app = \Gazelle\App::go();
 
         $query = "select * from api_user_tokens where userId = ? and revoked = ?";
-        $ref = $app->dbNew->multi($query, [$app->userNew->core["id"], 0]);
+        $ref = $app->dbNew->multi($query, [$app->user->core["id"], 0]);
 
         return $ref;
     }

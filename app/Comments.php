@@ -55,7 +55,7 @@ class Comments
         VALUES(
           '$Page',
           $PageID,
-          ".$app->userNew->core["id"].",
+          ".$app->user->core["id"].",
           NOW(), '".db_string($Body)."')
         ");
         $PostID = $app->dbOld->inserted_id();
@@ -102,7 +102,7 @@ class Comments
         }
         list($OldBody, $AuthorID, $Page, $PageID, $AddedTime) = $app->dbOld->next_record();
 
-        if ($app->userNew->core["id"] != $AuthorID && !check_perms('site_moderate_forums')) {
+        if ($app->user->core["id"] != $AuthorID && !check_perms('site_moderate_forums')) {
             return false;
         }
 
@@ -124,7 +124,7 @@ class Comments
           `comments`
         SET
           `Body` = '".db_string($NewBody)."',
-          `EditedUserID` = ".$app->userNew->core["id"].",
+          `EditedUserID` = ".$app->user->core["id"].",
           `EditedTime` = NOW()
         WHERE
           `ID` = $PostID
@@ -150,16 +150,16 @@ class Comments
         VALUES(
           '$Page',
           $PostID,
-          ".$app->userNew->core["id"].",
+          ".$app->user->core["id"].",
           NOW(), '".db_string($OldBody)."')
         ");
         $app->dbOld->set_query_id($QueryID);
 
-        if ($SendPM && $app->userNew->core["id"] !== $AuthorID) {
+        if ($SendPM && $app->user->core["id"] !== $AuthorID) {
             // Send a PM to the user to notify them of the edit
             $PMSubject = "Your comment #$PostID has been edited";
             $PMurl = site_url()."comments.php?action=jump&postid=$PostID";
-            $ProfLink = '[url='.site_url().'user.php?id='.$app->userNew->core["id"].']'.$app->userNew->core["username"].'[/url]';
+            $ProfLink = '[url='.site_url().'user.php?id='.$app->user->core["id"].']'.$app->user->core["username"].'[/url]';
             $PMBody = "One of your comments has been edited by $ProfLink: [url]{$PMurl}[/url]";
             Misc::send_pm($AuthorID, 0, $PMSubject, $PMBody);
         }
@@ -423,7 +423,7 @@ class Comments
             SET
               `UnRead` = FALSE
             WHERE
-              `UserID` = ".$app->userNew->core["id"]."
+              `UserID` = ".$app->user->core["id"]."
               AND `Page` = '$Page'
               AND `PageID` = $PageID
               AND `PostID` >= $FirstPost
@@ -431,7 +431,7 @@ class Comments
             ");
 
             if ($app->dbOld->affected_rows()) {
-                $app->cacheNew->delete('notify_quoted_' . $app->userNew->core["id"]);
+                $app->cacheNew->delete('notify_quoted_' . $app->user->core["id"]);
             }
 
             // Last read
@@ -441,7 +441,7 @@ class Comments
             FROM
               `users_comments_last_read`
             WHERE
-              `UserID` = ".$app->userNew->core["id"]."
+              `UserID` = ".$app->user->core["id"]."
               AND `Page` = '$Page'
               AND `PageID` = $PageID
             ");
@@ -451,7 +451,7 @@ class Comments
                 $app->dbOld->query("
                 INSERT INTO `users_comments_last_read`(`UserID`, `Page`, `PageID`, `PostID`)
                 VALUES(
-                  ".$app->userNew->core["id"].",
+                  ".$app->user->core["id"].",
                   '$Page',
                   $PageID,
                   $LastPost
@@ -460,7 +460,7 @@ class Comments
                 UPDATE
                   `PostID` = $LastPost
                 ");
-                $app->cacheNew->delete('subscriptions_user_new_' . $app->userNew->core["id"]);
+                $app->cacheNew->delete('subscriptions_user_new_' . $app->user->core["id"]);
             }
         } else {
             $LastRead = false;

@@ -17,8 +17,8 @@ declare(strict_types=1);
 
 enforce_login();
 
-$app->userNew->extra['DisablePoints'] ??= null;
-if ($app->userNew->extra['DisablePoints']) {
+$app->user->extra['DisablePoints'] ??= null;
+if ($app->user->extra['DisablePoints']) {
     View::header('Store'); ?>
 <div>
     <h2>Denied</h2>

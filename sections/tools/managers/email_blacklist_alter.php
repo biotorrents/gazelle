@@ -35,13 +35,13 @@ if ($_POST['submit'] === 'Delete') { // Delete
       SET
         Email = '$P[email]',
         Comment = '$P[comment]',
-        UserID = '{$app->userNew->core['id']}',
+        UserID = '{$app->user->core['id']}',
         Time = NOW()
       WHERE ID = '$P[id]'");
     } else { // Create
         $app->dbOld->prepared_query("
       INSERT INTO email_blacklist (Email, Comment, UserID, Time)
-      VALUES ('$P[email]', '$P[comment]', '{$app->userNew->core['id']}', NOW())");
+      VALUES ('$P[email]', '$P[comment]', '{$app->user->core['id']}', NOW())");
     }
 }
 

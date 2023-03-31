@@ -18,7 +18,7 @@ if ($snatchedOnly) {
     $allTorrents = false;
     $subQuery = "
         join xbt_snatched on xbt_snatched.fid = torrents_bad_tags.torrentId
-        and xbt_snatched.uid = {$app->userNew->core["id"]}
+        and xbt_snatched.uid = {$app->user->core["id"]}
     ";
 } else {
     $subQuery = "";
@@ -125,7 +125,7 @@ foreach ($TorrentsInfo as $TorrentID => $Info) {
       class="torrent torrent_row<?=$Torrents[$TorrentID]['IsSnatched'] ? ' snatched_torrent' : ''?>">
       <td>
         <span class="torrent_links_block">
-          <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>"
+          <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>"
             class="brackets tooltip" title="Download">DL</a>
         </span>
 

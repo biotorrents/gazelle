@@ -41,8 +41,8 @@ if (count($CleanArtists) > 0) {
         $ArtistNames = $app->dbOld->to_array('ArtistID', MYSQLI_ASSOC, false);
         foreach ($CleanArtists as $Artist) {
             list($Importance, $ArtistID) = $Artist;
-            Misc::write_log("Artist $ArtistID (".$ArtistNames[$ArtistID]['Name'].") was removed from the group ".$_POST['groupid']." ($GroupName) by user ".$app->userNew->core['id'].' ('.$app->userNew->core['username'].')');
-            Torrents::write_group_log($GroupID, 0, $app->userNew->core['id'], "Removed artist ".$ArtistNames[$ArtistID]['Name'], 0);
+            Misc::write_log("Artist $ArtistID (".$ArtistNames[$ArtistID]['Name'].") was removed from the group ".$_POST['groupid']." ($GroupName) by user ".$app->user->core['id'].' ('.$app->user->core['username'].')');
+            Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "Removed artist ".$ArtistNames[$ArtistID]['Name'], 0);
             $app->dbOld->query("
         DELETE FROM torrents_artists
         WHERE GroupID = '$GroupID'

@@ -33,7 +33,7 @@ function add_artist($CollageID, $ArtistID)
       INSERT IGNORE INTO collages_artists
         (CollageID, ArtistID, UserID, Sort, AddedOn)
       VALUES
-        ('$CollageID', '$ArtistID', '{$app->userNew->core['id']}', '$Sort', '" . sqltime() . "')");
+        ('$CollageID', '$ArtistID', '{$app->user->core['id']}', '$Sort', '" . sqltime() . "')");
 
         $app->dbOld->query("
       UPDATE collages
@@ -68,7 +68,7 @@ if (!check_perms('site_collages_delete')) {
     if ($Locked) {
         $Err = 'This collage is locked';
     }
-    if ($CategoryID == 0 && $UserID != $app->userNew->core['id']) {
+    if ($CategoryID == 0 && $UserID != $app->user->core['id']) {
         $Err = 'You cannot edit someone else\'s personal collage.';
     }
     if ($MaxGroups > 0 && $NumTorrents >= $MaxGroups) {
@@ -85,7 +85,7 @@ if ($MaxGroupsPerUser > 0) {
     SELECT COUNT(*)
     FROM collages_artists
     WHERE CollageID = '$CollageID'
-      AND UserID = '{$app->userNew->core['id']}'");
+      AND UserID = '{$app->user->core['id']}'");
     list($GroupsForUser) = $app->dbOld->next_record();
     if (!check_perms('site_collages_delete') && $GroupsForUser >= $MaxGroupsPerUser) {
         error(403);

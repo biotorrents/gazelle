@@ -5,7 +5,7 @@ $app = \Gazelle\App::go();
 
 # todo: I like the idea of store-based promotions expanded to other factors,
 # e.g., under an HnR threshold or minimum account age
-$UserID = $app->userNew->core['id'];
+$UserID = $app->user->core['id'];
 $GiB = 1024*1024*1024;
 
 $Classes = array(
@@ -125,7 +125,7 @@ if ($app->dbOld->has_results()) {
             $Err[] = "You cannot be promoted while warned";
         }
 
-        if ($app->userNew->extra['DisablePromotion']) {
+        if ($app->user->extra['DisablePromotion']) {
             $Err[] = "You have been banned from purchasing promotions";
         }
 

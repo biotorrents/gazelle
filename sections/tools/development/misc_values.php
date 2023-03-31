@@ -167,7 +167,7 @@ View::header('Miscellaneous Values');
       <form name="misc_values" action="" method="post">
         <input type="hidden" name="action" value="misc_values" />
         <input type="hidden" name="auth"
-          value="<?=$app->userNew->extra['AuthKey']?>" />
+          value="<?=$app->user->extra['AuthKey']?>" />
 
         <td>
           <input type="text" size="20" name="name" />
@@ -195,7 +195,7 @@ while (list($ID, $Name, $First, $Second) = $app->dbOld->next_record()) {
         <input type="hidden" name="id" value="<?=$ID?>" />
         <input type="hidden" name="action" value="misc_values" />
         <input type="hidden" name="auth"
-          value="<?=$app->userNew->extra['AuthKey']?>" />
+          value="<?=$app->user->extra['AuthKey']?>" />
 
         <td>
           <input type="text" size="20" name="name"

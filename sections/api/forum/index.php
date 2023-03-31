@@ -5,7 +5,7 @@
 // Already done in /sections/ajax/index.php
 //enforce_login();
 
-if (!empty($app->userNew->extra['DisableForums'])) {
+if (!empty($app->user->extra['DisableForums'])) {
     echo json_encode(array('status' => 'failure'));
     error();
 } else {

@@ -23,7 +23,7 @@ SELECT
 FROM
   `torrents`
 WHERE
-  `GroupID` = '$group_id' AND `UserID` = '{$app->userNew->core['id']}'
+  `GroupID` = '$group_id' AND `UserID` = '{$app->user->core['id']}'
 ");
 
 
@@ -71,18 +71,18 @@ $Title2 = 'Organism';
 $Title3 = 'Strain/Variety';
 
 if ($OldTitle !== $NewTitle) {
-    Misc::write_log("Torrent Group $group_id ($OldTitle)'s $Title1 was changed to '$NewTitle' from '$OldTitle' by ".$app->userNew->core['username']);
-    Torrents::write_group_log($group_id, 0, $app->userNew->core['id'], "$Title1 changed to '$NewTitle' from '$OldTitle'", 0);
+    Misc::write_log("Torrent Group $group_id ($OldTitle)'s $Title1 was changed to '$NewTitle' from '$OldTitle' by ".$app->user->core['username']);
+    Torrents::write_group_log($group_id, 0, $app->user->core['id'], "$Title1 changed to '$NewTitle' from '$OldTitle'", 0);
 }
 
 if ($OldSubject !== $NewSubject) {
-    Misc::write_log("Torrent Group $group_id ($OldSubject)'s $Title2 was changed to '$NewSubject' from '$OldSubject' by ".$app->userNew->core['username']);
-    Torrents::write_group_log($group_id, 0, $app->userNew->core['id'], "$Title2 changed to '$NewSubject' from '$OldSubject'", 0);
+    Misc::write_log("Torrent Group $group_id ($OldSubject)'s $Title2 was changed to '$NewSubject' from '$OldSubject' by ".$app->user->core['username']);
+    Torrents::write_group_log($group_id, 0, $app->user->core['id'], "$Title2 changed to '$NewSubject' from '$OldSubject'", 0);
 }
 
 if ($OldObject !== $NewObject) {
-    Misc::write_log("Torrent Group $group_id ($OldObject)'s $Title3 was changed to '$NewObject' from '$OldObject' by ".$app->userNew->core['username']);
-    Torrents::write_group_log($group_id, 0, $app->userNew->core['id'], "$Title3 changed to '$NewObject' from '$OldObject'", 0);
+    Misc::write_log("Torrent Group $group_id ($OldObject)'s $Title3 was changed to '$NewObject' from '$OldObject' by ".$app->user->core['username']);
+    Torrents::write_group_log($group_id, 0, $app->user->core['id'], "$Title3 changed to '$NewObject' from '$OldObject'", 0);
 }
 
 Http::redirect("torrents.php?id=$group_id");

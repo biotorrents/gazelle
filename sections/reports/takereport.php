@@ -69,7 +69,7 @@ $app->dbOld->query('
   INSERT INTO reports
     (UserID, ThingID, Type, ReportedTime, Reason)
   VALUES
-    ('.db_string($app->userNew->core['id']).", $ID, '$Short', NOW(), '".db_string($Reason)."')");
+    ('.db_string($app->user->core['id']).", $ID, '$Short', NOW(), '".db_string($Reason)."')");
 $ReportID = $app->dbOld->inserted_id();
 
 $Channels = [];
@@ -82,6 +82,6 @@ if (in_array($Short, array('comment', 'post', 'thread'))) {
     $Channels[] = '#forumreports';
 }
 
-send_irc($Channels, "$ReportID - ".$app->userNew->core['username']." just reported a $Short: ".site_url()."$Link : ".strtr($Reason, "\n", ' '));
+send_irc($Channels, "$ReportID - ".$app->user->core['username']." just reported a $Short: ".site_url()."$Link : ".strtr($Reason, "\n", ' '));
 $app->cacheNew->delete('num_other_reports');
 Http::redirect("$Link");

@@ -16,7 +16,7 @@ $app->dbOld->query("
   FROM collages
   WHERE ID = '$CollageID'");
 list($UserID, $CategoryID) = $app->dbOld->next_record();
-if ($CategoryID === '0' && $UserID != $app->userNew->core['id'] && !check_perms('site_collages_delete')) {
+if ($CategoryID === '0' && $UserID != $app->user->core['id'] && !check_perms('site_collages_delete')) {
     error(403);
 }
 

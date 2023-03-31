@@ -28,7 +28,7 @@ RIGHT JOIN `users_main` AS u
 ON
   u.`ID` = f.`FriendID`
 WHERE
-  f.`UserID` = '{$app->userNew->core['id']}' AND f.`FriendID` = '$FriendID'
+  f.`UserID` = '{$app->user->core['id']}' AND f.`FriendID` = '$FriendID'
 ");
 
 
@@ -85,13 +85,13 @@ switch ($Type) {
 }
 
 list($Name) = $app->dbOld->next_record();
-$Subject = $app->userNew->core['username'] . " recommended you $Article $Type!";
-$Body = $app->userNew->core['username'] . " recommended you the $Type [url=".site_url()."$Link]$Name".'[/url].';
+$Subject = $app->user->core['username'] . " recommended you $Article $Type!";
+$Body = $app->user->core['username'] . " recommended you the $Type [url=".site_url()."$Link]$Name".'[/url].';
 
 if (!empty($Note)) {
     $Body = "$Body\n\n$Note";
 }
 
-Misc::send_pm($FriendID, $app->userNew->core['id'], $Subject, $Body);
+Misc::send_pm($FriendID, $app->user->core['id'], $Subject, $Body);
 echo json_encode(array('status' => 'success', 'response' => 'Sent!'));
 die();

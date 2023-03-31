@@ -20,7 +20,7 @@ WHERE
 ");
 list($MinClassEdit) = $app->dbOld->next_record();
 
-if ($MinClassEdit > $app->userNew->extra['EffectiveClass']) {
+if ($MinClassEdit > $app->user->extra['EffectiveClass']) {
     error(403);
 }
 
@@ -32,7 +32,7 @@ if ($NewAlias !== '' && $NewAlias!== 'addalias' && $Dupe === false) { // Not nul
     INSERT INTO `wiki_aliases`(`Alias`, `UserID`, `ArticleID`)
     VALUES(
       '$NewAlias',
-      '{$app->userNew->core['id']}',
+      '{$app->user->core['id']}',
       '$ArticleID'
     )
     ");

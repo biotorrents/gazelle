@@ -32,8 +32,7 @@ class App
     public $debug = null;
     public $twig = null;
 
-    public $userOld = null; # old
-    public $userNew = null; # new
+    public $user = null;
 
 
     /**
@@ -92,14 +91,13 @@ class App
 
         # database
         $this->dbNew = \Gazelle\Database::go(); # new
-        $this->dbOld = new \DB(); # old
+        $this->dbOld = new \DatabaseOld(); # old
 
         # debug
         $this->debug = \Debug::go();
 
         # user
-        $this->userNew = \User::go(); # new
-        $this->userOld =& $user; # old
+        $this->user = \User::go(); # new
 
         # twig: LAST
         $this->twig = \Twig::go();

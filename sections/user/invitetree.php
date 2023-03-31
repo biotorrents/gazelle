@@ -20,7 +20,7 @@ if (isset($_GET['userid']) && check_perms('users_view_invites')) {
         $app->cacheNew->set('stats_user_count', $UserCount, 0);
     }
 
-    $UserID = $app->userNew->core['id'];
+    $UserID = $app->user->core['id'];
     $Sneaky = false;
 }
 list($UserID, $Username, $PermissionID) = array_values(User::user_info($UserID));

@@ -114,7 +114,7 @@ if (check_perms('site_advanced_top10')) {
 }
 
 // Default setting to have them shown
-$DisableFreeTorrentTop10 = (isset($app->userNew->extra['DisableFreeTorrentTop10']) ? $app->userNew->extra['DisableFreeTorrentTop10'] : 0);
+$DisableFreeTorrentTop10 = (isset($app->user->extra['DisableFreeTorrentTop10']) ? $app->user->extra['DisableFreeTorrentTop10'] : 0);
 
 // Modify the Where query
 if ($DisableFreeTorrentTop10) {
@@ -537,7 +537,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
         $DisplayName = '';
 
         $DisplayName .= "<a class='torrentTitle' href='torrents.php?id=$GroupID&amp;torrentid=$TorrentID' ";
-        if (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) {
+        if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
             $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
         }
 
@@ -623,7 +623,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
         <div class="group_info clear">
 
             <span class="u-pull-right">
-                <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>"
+                <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>"
                     title="Download" class="brackets tooltip">DL</a>
                 </span>
 

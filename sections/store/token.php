@@ -6,7 +6,7 @@ $app = \Gazelle\App::go();
 $Cost = 1000;
 
 $Purchase = "1 freeleech token";
-$UserID = $app->userNew->core['id'];
+$UserID = $app->user->core['id'];
 
 $app->dbOld->prepared_query("
   SELECT BonusPoints

@@ -50,7 +50,7 @@ class Security
         if ($_GET['userid'] && empty($UserID)) {
             $UserID = $_GET['userid'];
         } else {
-            $UserID = $app->userNew->core["id"];
+            $UserID = $app->user->core["id"];
         }
 
         # NaN

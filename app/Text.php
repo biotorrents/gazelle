@@ -312,7 +312,7 @@ class Text
 
         # ding the user account
         # todo: do something with this
-        $app->userNew->extra["demerits"]++;
+        $app->user->extra["demerits"]++;
 
         return $string;
     }

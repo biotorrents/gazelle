@@ -3,11 +3,11 @@
 $app = \Gazelle\App::go();
 
 authorize();
-if (!empty($app->userNew->extra['DisableTagging'])) {
+if (!empty($app->user->extra['DisableTagging'])) {
     error(403);
 }
 
-$UserID = $app->userNew->core['id'];
+$UserID = $app->user->core['id'];
 $GroupID = $_POST['groupid'];
 
 if (!is_numeric($GroupID) || !$GroupID) {
@@ -16,7 +16,7 @@ if (!is_numeric($GroupID) || !$GroupID) {
 
 //Delete cached tag used for undos
 if (isset($_POST['undo'])) {
-    $app->cacheNew->delete("deleted_tags_$GroupID".'_'.$app->userNew->core['id']);
+    $app->cacheNew->delete("deleted_tags_$GroupID".'_'.$app->user->core['id']);
 }
 
 $Tags = explode(',', $_POST['tagname']);
@@ -50,7 +50,7 @@ foreach ($Tags as $TagName) {
       INSERT INTO group_log
         (GroupID, UserID, Time, Info)
       VALUES
-        ('$GroupID', ".$app->userNew->core['id'].", NOW(), '".db_string("Tag \"$TagName\" added to group")."')");
+        ('$GroupID', ".$app->user->core['id'].", NOW(), '".db_string("Tag \"$TagName\" added to group")."')");
     }
 }
 

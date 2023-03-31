@@ -12,12 +12,12 @@ if (!check_perms('site_torrents_notify')) {
 $ArtistID = (int) $_GET['artistid'];
 Security::int($ArtistID);
 
-if (($Notify = $app->cacheNew->get('notify_artists_'.$app->userNew->core['id'])) === false) {
+if (($Notify = $app->cacheNew->get('notify_artists_'.$app->user->core['id'])) === false) {
     $app->dbOld->prepared_query("
     SELECT ID, Artists
     FROM users_notify_filters
     WHERE Label = 'Artist notifications'
-      AND UserID = '{$app->userNew->core['id']}'
+      AND UserID = '{$app->user->core['id']}'
     ORDER BY ID
     LIMIT 1");
 } else {
@@ -51,6 +51,6 @@ if ($Artists == '|') {
     WHERE ID = '$ID'");
 }
 
-$app->cacheNew->delete('notify_filters_'.$app->userNew->core['id']);
-$app->cacheNew->delete('notify_artists_'.$app->userNew->core['id']);
+$app->cacheNew->delete('notify_filters_'.$app->user->core['id']);
+$app->cacheNew->delete('notify_artists_'.$app->user->core['id']);
 header('Location: '.$_SERVER['HTTP_REFERER']);

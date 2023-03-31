@@ -47,8 +47,8 @@ if (!isset($_GET['threadid']) || !is_numeric($_GET['threadid'])) {
 
 if (isset($_GET['pp'])) {
     $PerPage = $_GET['pp'];
-} elseif (isset($app->userNew->extra['PostsPerPage'])) {
-    $PerPage = $app->userNew->extra['PostsPerPage'];
+} elseif (isset($app->user->extra['PostsPerPage'])) {
+    $PerPage = $app->user->extra['PostsPerPage'];
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
@@ -124,7 +124,7 @@ if ($_GET['updatelastread'] !== '0') {
         $app->dbOld->query("
         SELECT PostID
         FROM forums_last_read_topics
-          WHERE UserID = '{$app->userNew->core['id']}'
+          WHERE UserID = '{$app->user->core['id']}'
           AND TopicID = '$ThreadID'");
         list($LastRead) = $app->dbOld->next_record();
 
@@ -133,7 +133,7 @@ if ($_GET['updatelastread'] !== '0') {
             INSERT INTO forums_last_read_topics
               (UserID, TopicID, PostID)
             VALUES
-              ('{$app->userNew->core['id']}', '$ThreadID', '".db_string($LastPost)."')
+              ('{$app->user->core['id']}', '$ThreadID', '".db_string($LastPost)."')
             ON DUPLICATE KEY UPDATE
               PostID = '$LastPost'");
         }
@@ -148,7 +148,7 @@ if (empty($UserSubscriptions)) {
 }
 
 if (in_array($ThreadID, $UserSubscriptions)) {
-    $app->cacheNew->delete('subscriptions_user_new_'.$app->userNew->core['id']);
+    $app->cacheNew->delete('subscriptions_user_new_'.$app->user->core['id']);
 }
 
 $JsonPoll = [];
@@ -195,7 +195,7 @@ if ($ThreadInfo['NoPoll'] === 0) {
     $app->dbOld->query("
     SELECT Vote
     FROM forums_polls_votes
-      WHERE UserID = '".$app->userNew->core['id']."'
+      WHERE UserID = '".$app->user->core['id']."'
       AND TopicID = '$ThreadID'");
     list($UserResponse) = $app->dbOld->next_record();
     if (!empty($UserResponse) && $UserResponse !== 0) {
@@ -229,7 +229,7 @@ if ($ThreadInfo['NoPoll'] === 0) {
     );
     }
 
-    if ($UserResponse !== null || $Closed || $ThreadInfo['IsLocked'] || $app->userNew->extra['Class'] < $Forums[$ForumID]['MinClassWrite']) {
+    if ($UserResponse !== null || $Closed || $ThreadInfo['IsLocked'] || $app->user->extra['Class'] < $Forums[$ForumID]['MinClassWrite']) {
         $JsonPoll['voted'] = true;
     } else {
         $JsonPoll['voted'] = false;

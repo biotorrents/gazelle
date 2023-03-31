@@ -17,7 +17,7 @@ $Key = (int)$_POST['key'];
 $SQLTime = sqltime();
 
 $UserInfo = User::user_info($UserID);
-if ($UserInfo['Class'] > $app->userNew->extra['Class']) {
+if ($UserInfo['Class'] > $app->user->extra['Class']) {
     error(403);
 }
 
@@ -29,11 +29,11 @@ if ($WarningLength !== 'verbal') {
     $PrivateMessage = "You have received a $WarningLength week warning for [url=$URL]this post[/url].\n\n" . $PrivateMessage;
 
     $WarnTime = time_plus($Time);
-    $AdminComment = date('Y-m-d') . " - Warned until $WarnTime by " . $app->userNew->core['username'] . " for $URL\nReason: $Reason\n\n";
+    $AdminComment = date('Y-m-d') . " - Warned until $WarnTime by " . $app->user->core['username'] . " for $URL\nReason: $Reason\n\n";
 } else {
     $Subject = 'You have received a verbal warning';
     $PrivateMessage = "You have received a verbal warning for [url=$URL]this post[/url].\n\n" . $PrivateMessage;
-    $AdminComment = date('Y-m-d') . ' - Verbally warned by ' . $app->userNew->core['username'] . " for $URL\nReason: $Reason\n\n";
+    $AdminComment = date('Y-m-d') . ' - Verbally warned by ' . $app->user->core['username'] . " for $URL\nReason: $Reason\n\n";
     Tools::update_user_notes($UserID, $AdminComment);
 }
 
@@ -44,7 +44,7 @@ $app->dbOld->prepared_query("
     ('$UserID', '" . db_string($AdminComment) . "')
   ON DUPLICATE KEY UPDATE
     Comment = CONCAT('" . db_string($AdminComment) . "', Comment)");
-Misc::send_pm($UserID, $app->userNew->core['id'], $Subject, $PrivateMessage);
+Misc::send_pm($UserID, $app->user->core['id'], $Subject, $PrivateMessage);
 
 //edit the post
 $app->dbOld->prepared_query("
@@ -87,9 +87,9 @@ if ($app->cacheOld->MemcacheDBArray[$Key]['ID'] != $PostID) {
             'AuthorID' => $app->cacheOld->MemcacheDBArray[$Key]['AuthorID'],
             'AddedTime' => $app->cacheOld->MemcacheDBArray[$Key]['AddedTime'],
             'Body' => $Body, //Don't url decode.
-            'EditedUserID' => $app->userNew->core['id'],
+            'EditedUserID' => $app->user->core['id'],
             'EditedTime' => $SQLTime,
-            'Username' => $app->userNew->core['username']));
+            'Username' => $app->user->core['username']));
     $app->cacheOld->commit_transaction(3600 * 24 * 5);
 }
 $ThreadInfo = Forums::get_thread_info($TopicID);
@@ -98,7 +98,7 @@ if ($ThreadInfo === null) {
 }
 if ($ThreadInfo['StickyPostID'] == $PostID) {
     $ThreadInfo['StickyPost']['Body'] = $Body;
-    $ThreadInfo['StickyPost']['EditedUserID'] = $app->userNew->core['id'];
+    $ThreadInfo['StickyPost']['EditedUserID'] = $app->user->core['id'];
     $ThreadInfo['StickyPost']['EditedTime'] = $SQLTime;
     $app->cacheNew->set("thread_$TopicID" . '_info', $ThreadInfo, 0);
 }

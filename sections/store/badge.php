@@ -3,7 +3,7 @@
 
 $app = \Gazelle\App::go();
 
-$UserID = $app->userNew->core['id'];
+$UserID = $app->user->core['id'];
 $BadgeID = $_GET['badge'];
 
 $ShopBadgeIDs = [40, 41, 42, 43, 44, 45, 46, 47, 48];

@@ -23,7 +23,7 @@ if (!check_perms('site_upload')) {
 }
 
 /*
-if ($app->userNew->extra['DisableUpload']) {
+if ($app->user->extra['DisableUpload']) {
     error('Your upload privileges have been revoked.');
 }
 */

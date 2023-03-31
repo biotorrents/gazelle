@@ -16,7 +16,7 @@ $app->dbOld->query("
   WHERE ID = '$CollageID'");
 list($Name, $CategoryID, $UserID) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
-if (!check_perms('site_collages_delete') && $UserID != $app->userNew->core['id']) {
+if (!check_perms('site_collages_delete') && $UserID != $app->user->core['id']) {
     error(403);
 }
 
@@ -53,7 +53,7 @@ if ($CategoryID == 0) {
     Subscriptions::flush_quote_notifications('collages', $CollageID);
 }
 
-Misc::write_log("Collage $CollageID ($Name) was deleted by ".$app->userNew->core['username'].": $Reason");
+Misc::write_log("Collage $CollageID ($Name) was deleted by ".$app->user->core['username'].": $Reason");
 
 $app->cacheNew->delete("collage_$CollageID");
 Http::redirect("collages.php");

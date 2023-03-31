@@ -50,21 +50,21 @@ class Collages
         $app = \Gazelle\App::go();
 
         $query = "select count(id) from collages where userId = ? and categoryId = ? and deleted = ?";
-        $collageCount = $app->dbNew->single($query, [$app->userNew->core["id"], 0, 0]) ?? 0;
+        $collageCount = $app->dbNew->single($query, [$app->user->core["id"], 0, 0]) ?? 0;
 
         # todo: permissions are meh and this iss hardcoded
-        $maxCollages = $app->userNew->permissions["MaxCollages"] ?? 2;
+        $maxCollages = $app->user->permissions["MaxCollages"] ?? 2;
         if ($collageCount >= $maxCollages) {
             return;
         }
 
         # default title and description
-        $title = "{$app->userNew->core["username"]}'s personal collage";
-        $description = "Personal collage for {$app->userNew->core["username"]}";
+        $title = "{$app->user->core["username"]}'s personal collage";
+        $description = "Personal collage for {$app->user->core["username"]}";
 
         # database insert
         $query = "insert into collages (name, description, categoryId, userId) values (?, ?, ?, ?)";
-        $app->dbNew->do($query, [ $title, $description, 0, $app->userNew->core["id"] ]);
+        $app->dbNew->do($query, [ $title, $description, 0, $app->user->core["id"] ]);
 
         # redirect to new collage
         $collageId = $app->dbNew->lastInsertId();

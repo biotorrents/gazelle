@@ -273,7 +273,7 @@ class Misc
 
         $Post = array(
             'ID' => $PostID,
-            'AuthorID' => $app->userNew->core["id"],
+            'AuthorID' => $app->user->core["id"],
             'AddedTime' => sqltime(),
             'Body' => $PostBody,
             'EditedUserID' => 0,

@@ -5,7 +5,7 @@ $app = \Gazelle\App::go();
 // perform the back end of subscribing to topics
 authorize();
 
-if (!empty($app->userNew->extra['DisableForums'])) {
+if (!empty($app->user->extra['DisableForums'])) {
     error(403);
 }
 

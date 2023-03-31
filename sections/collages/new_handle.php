@@ -15,7 +15,7 @@ if ($P['category'] > 0 || check_perms('site_collages_renamepersonal')) {
     $Val->SetFields('name', '1', 'string', 'The name must be between 5 and 255 characters.', array('maxlength' => 255, 'minlength' => 5));
 } else {
     // Get a collage name and make sure it's unique
-    $name = $app->userNew->core['username']."'s personal collage";
+    $name = $app->user->core['username']."'s personal collage";
     $P['name'] = db_string($name);
     $app->dbOld->query("
     SELECT ID
@@ -39,13 +39,13 @@ if (!$Err && $P['category'] === '0') {
     $app->dbOld->query("
     SELECT COUNT(ID)
     FROM collages
-    WHERE UserID = '{$app->userNew->core['id']}'
+    WHERE UserID = '{$app->user->core['id']}'
       AND CategoryID = '0'
       AND Deleted = '0'");
     list($CollageCount) = $app->dbOld->next_record();
-    if (($CollageCount >= $app->userNew->extra['Permissions']['MaxCollages']) || !check_perms('site_collages_personal')) {
+    if (($CollageCount >= $app->user->extra['Permissions']['MaxCollages']) || !check_perms('site_collages_personal')) {
         $Err = 'You may not create a personal collage.';
-    } elseif (check_perms('site_collages_renamepersonal') && !stristr($P['name'], $app->userNew->core['username'])) {
+    } elseif (check_perms('site_collages_renamepersonal') && !stristr($P['name'], $app->user->core['username'])) {
         $Err = "Your personal collage's title must include your username.";
     }
 }
@@ -90,9 +90,9 @@ $app->dbOld->query("
   INSERT INTO collages
     (Name, Description, UserID, TagList, CategoryID)
   VALUES
-    ('$P[name]', '$P[description]', {$app->userNew->core['id']}, '$TagList', '$P[category]')");
+    ('$P[name]', '$P[description]', {$app->user->core['id']}, '$TagList', '$P[category]')");
 
 $CollageID = $app->dbOld->inserted_id();
 $app->cacheNew->delete("collage_$CollageID");
-Misc::write_log("Collage $CollageID (".$_POST['name'].') was created by '.$app->userNew->core['username']);
+Misc::write_log("Collage $CollageID (".$_POST['name'].') was created by '.$app->user->core['username']);
 Http::redirect("collages.php?id=$CollageID");

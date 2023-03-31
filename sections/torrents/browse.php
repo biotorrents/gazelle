@@ -55,11 +55,11 @@ $searchTerms = [
 
     "orderBy" => $get["orderBy"] ?? "timeAdded",
     "orderWay" => $get["orderWay"] ?? "desc",
-    "groupResults" => $get["groupResults"] ?? $app->userNew->siteOptions["torrentGrouping"],
+    "groupResults" => $get["groupResults"] ?? $app->user->siteOptions["torrentGrouping"],
 
     "page" => $get["page"] ?? 1,
 
-    "openaiContent" => $get["openaiContent"] ?? $app->userNew->siteOptions["openaiContent"],
+    "openaiContent" => $get["openaiContent"] ?? $app->user->siteOptions["openaiContent"],
 ];
 
 # build query string (saving/sharing)
@@ -89,7 +89,7 @@ $pagination = [];
 
 # resultCount and pageSize
 $pagination["resultCount"] = count($searchResults);
-$pagination["pageSize"] = $app->userNew->extra["siteOptions"]["searchPagination"] ?? 20;
+$pagination["pageSize"] = $app->user->extra["siteOptions"]["searchPagination"] ?? 20;
 
 # current page
 $pagination["currentPage"] = intval($searchTerms["page"] ?? 1);

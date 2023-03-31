@@ -32,7 +32,7 @@ $document ??= "index";
 
 # redirect unauthenticated to login page
 $allowedPages = ["login", "register", "recover", "about", "privacy", "dmca", "confirm"];
-if (!$app->userNew->isLoggedIn() && !in_array($document, $allowedPages)) {
+if (!$app->user->isLoggedIn() && !in_array($document, $allowedPages)) {
     require_once "{$app->env->serverRoot}/sections/user/auth/login.php";
     exit;
 }
@@ -41,7 +41,7 @@ if (!$app->userNew->isLoggedIn() && !in_array($document, $allowedPages)) {
 # allow some possibly useful banned pages
 # todo: banning prevents login and therefore participation
 $allowedPages = ["api", "locked", "login", "logout"];
-if (isset($app->userNew->extra["LockedAccount"]) && !in_array($document, $allowedPages)) {
+if (isset($app->user->extra["LockedAccount"]) && !in_array($document, $allowedPages)) {
     require_once "{$app->env->serverRoot}/sections/locked/index.php";
     exit;
 }

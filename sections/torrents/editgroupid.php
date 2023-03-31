@@ -54,7 +54,7 @@ if (empty($_POST['confirm'])) {
     <div class="box pad">
       <form class="confirm_form" name="torrent_group" action="torrents.php" method="post">
         <input type="hidden" name="action" value="editgroupid" />
-        <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
+        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
         <input type="hidden" name="confirm" value="true" />
         <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
         <input type="hidden" name="oldgroupid" value="<?=$OldGroupID?>" />
@@ -101,8 +101,8 @@ if (empty($_POST['confirm'])) {
     }
     Torrents::update_hash($GroupID);
 
-    Misc::write_log("Torrent $TorrentID was edited by " . $app->userNew->core['username']); // TODO: this is probably broken
-    Torrents::write_group_log($GroupID, 0, $app->userNew->core['id'], "merged group $OldGroupID", 0);
+    Misc::write_log("Torrent $TorrentID was edited by " . $app->user->core['username']); // TODO: this is probably broken
+    Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "merged group $OldGroupID", 0);
     $app->dbOld->query("
     UPDATE group_log
     SET GroupID = $GroupID

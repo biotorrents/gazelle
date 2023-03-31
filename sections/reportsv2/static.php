@@ -231,7 +231,7 @@ View::header('Reports V2!', 'reportsv2');
   <span class="tooltip" title="Assigns all of the reports on the page to you!"><input type="button" onclick="Grab();"
       value="Claim all" /></span>
   <?php }
-  if ($View === 'staff' && $app->userNew->core['id'] == $ID) { ?>
+  if ($View === 'staff' && $app->user->core['id'] == $ID) { ?>
   | <span class="tooltip" title="Unclaim all of the reports currently displayed"><input type="button"
       onclick="GiveBack();" value="Unclaim all" /></span>
   <?php } ?>
@@ -305,7 +305,7 @@ if (count($Reports) === 0) {
 ?>
       <div>
         <input type="hidden" name="auth"
-          value="<?=$app->userNew->extra['AuthKey']?>" />
+          value="<?=$app->user->extra['AuthKey']?>" />
         <input type="hidden" id="reportid<?=$ReportID?>"
           name="reportid" value="<?=$ReportID?>" />
         <input type="hidden" id="torrentid<?=$ReportID?>"
@@ -336,7 +336,7 @@ if (count($Reports) === 0) {
               <a href="log.php?search=Torrent+<?=$TorrentID?>"><?=$TorrentID?></a> (Deleted)
               <?php } else { ?>
               <?=$LinkName?>
-              <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>"
+              <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>"
                 title="Download" class="brackets tooltip">DL</a>
               uploaded by <a
                 href="user.php?id=<?=$UploaderID?>"><?=$UploaderName?></a> <?=time_diff($Time)?>
@@ -482,7 +482,7 @@ if (count($Reports) === 0) {
                 } ?>
               <?=($First ? '' : '<br />')?>
               <?=$ExtraLinkName?>
-              <a href="torrents.php?action=download&amp;id=<?=$ExtraID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>"
+              <a href="torrents.php?action=download&amp;id=<?=$ExtraID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>"
                 title="Download" class="brackets tooltip">DL</a>
               uploaded by <a
                 href="user.php?id=<?=$ExtraUploaderID?>"><?=$ExtraUploaderName?></a> <?=time_diff($ExtraTime)?> <a href="#"
@@ -642,7 +642,7 @@ if (count($Reports) === 0) {
                 onclick="Dismiss(<?=$ReportID?>);" />
               <input type="button" value="Resolve report manually"
                 onclick="ManualResolve(<?=$ReportID?>);" />
-              <?php if ($Status == 'InProgress' && $app->userNew->core['id'] == $ResolverID) { ?>
+              <?php if ($Status == 'InProgress' && $app->user->core['id'] == $ResolverID) { ?>
               | <input type="button" value="Unclaim"
                 onclick="GiveBack(<?=$ReportID?>);" />
               <?php } else { ?>

@@ -46,7 +46,7 @@ foreach ($Results as $GroupID => $FlacID) {
     'artist' => $JsonArtists,
     'groupName' => $GroupName,
     'groupYear' => (int)$GroupYear,
-    'downloadUrl' => "torrents.php?action=download&id=$FlacID&authkey=".$app->userNew->extra['AuthKey'].'&torrent_pass='.$app->userNew->extra['torrent_pass']
+    'downloadUrl' => "torrents.php?action=download&id=$FlacID&authkey=".$app->user->extra['AuthKey'].'&torrent_pass='.$app->user->extra['torrent_pass']
   );
 }
 

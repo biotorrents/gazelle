@@ -17,7 +17,7 @@ $app->dbOld->query("
 list($Name, $Description, $TagList, $UserID, $CategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Featured) = $app->dbOld->next_record();
 $TagList = implode(', ', explode(' ', $TagList));
 
-if ($CategoryID == 0 && $UserID != $app->userNew->core['id'] && !check_perms('site_collages_delete')) {
+if ($CategoryID == 0 && $UserID != $app->user->core['id'] && !check_perms('site_collages_delete')) {
     error(403);
 }
 
@@ -43,11 +43,11 @@ if (!empty($Err)) {
     <form class="edit_form" name="collage" action="collages.php" method="post">
       <input type="hidden" name="action" value="edit_handle" />
       <input type="hidden" name="auth"
-        value="<?=$app->userNew->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <input type="hidden" name="collageid"
         value="<?=$CollageID?>" />
       <table id="edit_collage" class="layout collage_edit">
-        <?php if (check_perms('site_collages_delete') || ($CategoryID == 0 && $UserID == $app->userNew->core['id'] && check_perms('site_collages_renamepersonal'))) { ?>
+        <?php if (check_perms('site_collages_delete') || ($CategoryID == 0 && $UserID == $app->user->core['id'] && check_perms('site_collages_renamepersonal'))) { ?>
         <tr>
           <td class="label">Name</td>
           <td><input type="text" name="name" size="60"

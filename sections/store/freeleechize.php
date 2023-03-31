@@ -26,7 +26,7 @@ if (isset($_POST['torrent'])) {
             error(404);
         }
     }
-    $UserID = $app->userNew->core['id'];
+    $UserID = $app->user->core['id'];
 
     // Make sure torrent exists
     $app->dbOld->prepared_query("

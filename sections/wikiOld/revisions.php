@@ -12,11 +12,11 @@ $Latest = Wiki::get_article($ArticleID);
 list($Revision, $Title, $Body, $Read, $Edit, $Date, $AuthorID, $AuthorName) = array_shift($Latest);
 
 /*
-if ($Read > $app->userNew->extra['EffectiveClass']) {
+if ($Read > $app->user->extra['EffectiveClass']) {
     error(404);
 }
 
-if ($Edit > $app->userNew->extra['EffectiveClass']) {
+if ($Edit > $app->user->extra['EffectiveClass']) {
     error(403);
 }
 */

@@ -5,8 +5,8 @@
 $app = \Gazelle\App::go();
 
 # todo: Go through line by line
-if (isset($app->userNew->extra['PostsPerPage'])) {
-    $PerPage = $app->userNew->extra['PostsPerPage'];
+if (isset($app->user->extra['PostsPerPage'])) {
+    $PerPage = $app->user->extra['PostsPerPage'];
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
@@ -35,7 +35,7 @@ if (!empty($TopicIDs)) {
       ) AS Page
     FROM forums_last_read_topics AS l
     WHERE l.TopicID IN(".implode(',', $TopicIDs).")
-      AND l.UserID = '{$app->userNew->core['id']}'");
+      AND l.UserID = '{$app->user->core['id']}'");
     $LastRead = $app->dbOld->to_array('TopicID', MYSQLI_ASSOC);
 } else {
     $LastRead = [];
@@ -44,18 +44,18 @@ if (!empty($TopicIDs)) {
 $app->dbOld->query("
   SELECT RestrictedForums
   FROM users_info
-  WHERE UserID = ".$app->userNew->core['id']);
+  WHERE UserID = ".$app->user->core['id']);
 list($RestrictedForums) = $app->dbOld->next_record();
 $RestrictedForums = explode(',', $RestrictedForums);
-$PermittedForums = array_keys($app->userNew->extra['PermittedForums']);
+$PermittedForums = array_keys($app->user->extra['PermittedForums']);
 
 $JsonCategories = [];
 $JsonCategory = [];
 $JsonForums = [];
 foreach ($Forums as $Forum) {
     list($ForumID, $CategoryID, $ForumName, $ForumDescription, $MinRead, $MinWrite, $MinCreate, $NumTopics, $NumPosts, $LastPostID, $LastAuthorID, $LastTopicID, $LastTime, $SpecificRules, $LastTopic, $Locked, $Sticky) = array_values($Forum);
-    if ($app->userNew->extra['CustomForums'][$ForumID] != 1
-      && ($MinRead > $app->userNew->extra['Class']
+    if ($app->user->extra['CustomForums'][$ForumID] != 1
+      && ($MinRead > $app->user->extra['Class']
       || array_search($ForumID, $RestrictedForums) !== false)
   ) {
         continue;
@@ -78,7 +78,7 @@ foreach ($Forums as $Forum) {
     if ((!$Locked || $Sticky)
       && $LastPostID != 0
       && ((empty($LastRead[$LastTopicID]) || $LastRead[$LastTopicID]['PostID'] < $LastPostID)
-        && strtotime($LastTime) > $app->userNew->extra['CatchupTime'])
+        && strtotime($LastTime) > $app->user->extra['CatchupTime'])
   ) {
         $Read = 'unread';
     } else {

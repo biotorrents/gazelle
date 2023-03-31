@@ -139,7 +139,7 @@ function db_array($Array, $DontEscape = [], $Quote = false)
 /**
  * DB::class
  */
-class DB
+class DatabaseOld
 {
     protected $Errno = 0;
     protected $Error = '';
@@ -152,6 +152,17 @@ class DB
     public $LinkID = false;
     public $Queries = [];
     public $Time = 0.0;
+
+    # php 8.2 warnings
+    private $Database;
+    private $User;
+    private $Pass;
+    private $Server;
+    private $Port;
+    private $Socket;
+    private $Key;
+    private $Cert;
+    private $CA;
 
 
     /**

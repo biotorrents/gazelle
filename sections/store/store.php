@@ -3,11 +3,11 @@
 
 $app = \Gazelle\App::go();
 
-$UserID = $app->userNew->core['id'];
-$PermID = $app->userNew->extra['PermissionID'];
+$UserID = $app->user->core['id'];
+$PermID = $app->user->extra['PermissionID'];
 
-$app->userNew->extra['DisablePoints'] ??= null;
-if (!$app->userNew->extra['DisablePoints']) {
+$app->user->extra['DisablePoints'] ??= null;
+if (!$app->user->extra['DisablePoints']) {
     $PointsRate = 0;
     $getTorrents = $app->dbOld->prepared_query("
       SELECT um.BonusPoints,
@@ -56,7 +56,7 @@ View::header('Store');
   <div class="box">
     <h3 id="lists" class="u-pull-left">
       You have
-      <?=Text::float($app->userNew->extra['BonusPoints'])?>
+      <?=Text::float($app->user->extra['BonusPoints'])?>
       <?=bonusPoints?>
       to spend
     </h3>
@@ -284,8 +284,8 @@ if ($app->dbOld->has_results()) {
     foreach ($Badges as $ID => $Badge) { ?>
       <tr class="row">
         <?php
-        if (($ID === 0 || Badges::hasBadge($app->userNew->core['id'], $Badges[$ID-1]['BadgeID']))
-        && !Badges::hasBadge($app->userNew->core['id'], $Badge['BadgeID'])) {
+        if (($ID === 0 || Badges::hasBadge($app->user->core['id'], $Badges[$ID-1]['BadgeID']))
+        && !Badges::hasBadge($app->user->core['id'], $Badge['BadgeID'])) {
             $BadgeText = '<a href="store.php?item=badge&badge='.$Badge['BadgeID'].'">'.$Badge['Name'].'</a>';
         } else {
             $BadgeText = $Badge['Name'];

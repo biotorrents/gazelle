@@ -29,7 +29,7 @@ function enforce_login()
 {
     $app = \Gazelle\App::go();
 
-    if (empty($app->userNew->core)) {
+    if (empty($app->user->core)) {
         Http::setCookie(['redirect' => $_SERVER['REQUEST_URI']]);
         #logout();
     }
@@ -51,8 +51,8 @@ function authorize($Ajax = false)
     if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
         return true;
     } else {
-        if (empty($_REQUEST['auth']) || $_REQUEST['auth'] !== $app->userNew->extra['AuthKey']) {
-            send_irc(DEBUG_CHAN, $app->userNew->core['username']." just failed authorize on ".$_SERVER['REQUEST_URI'].(!empty($_SERVER['HTTP_REFERER']) ? " coming from ".$_SERVER['HTTP_REFERER'] : ""));
+        if (empty($_REQUEST['auth']) || $_REQUEST['auth'] !== $app->user->extra['AuthKey']) {
+            send_irc(DEBUG_CHAN, $app->user->core['username']." just failed authorize on ".$_SERVER['REQUEST_URI'].(!empty($_SERVER['HTTP_REFERER']) ? " coming from ".$_SERVER['HTTP_REFERER'] : ""));
             error('Invalid authorization key. Go back, refresh, and try again.', $NoHTML = true);
             return false;
         }
@@ -174,7 +174,7 @@ function check_perms(string $permission, $unused = 0)
 {
     $app = \Gazelle\App::go();
 
-    return $app->userNew->can($permission);
+    return $app->user->can($permission);
 }
 
 
@@ -427,7 +427,7 @@ function check_paranoia($Property, $Paranoia = false, $UserClass = false, $UserI
         }
         return $all;
     } else {
-        if (($UserID !== false) && ($app->userNew->core["id"] == $UserID)) {
+        if (($UserID !== false) && ($app->user->core["id"] == $UserID)) {
             return PARANOIA_ALLOWED;
         }
 

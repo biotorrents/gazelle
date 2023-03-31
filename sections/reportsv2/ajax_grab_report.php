@@ -19,7 +19,7 @@ if (!is_numeric($_GET['id'])) {
 $app->dbOld->prepared_query("
   UPDATE reportsv2
   SET Status = 'InProgress',
-    ResolverID = " . $app->userNew->core['id'] . "
+    ResolverID = " . $app->user->core['id'] . "
   WHERE ID = " . $_GET['id']);
 
 if ($app->dbOld->affected_rows() == 0) {

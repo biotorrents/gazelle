@@ -119,7 +119,7 @@ foreach ($TorrentGroups as $GroupID => $Editions) {
       'missingV2' => !isset($Edition['Formats']['V2 (VBR)']),
       'missingV0' => !isset($Edition['Formats']['V0 (VBR)']),
       'missing320' => !isset($Encodings['Formats']['320']),
-      'downloadUrl' => 'torrents.php?action=download&id='.$Edition['FlacID'].'&authkey='.$app->userNew->extra['AuthKey'].'&torrent_pass='.$app->userNew->extra['torrent_pass']
+      'downloadUrl' => 'torrents.php?action=download&id='.$Edition['FlacID'].'&authkey='.$app->user->extra['AuthKey'].'&torrent_pass='.$app->user->extra['torrent_pass']
     );
     }
 }

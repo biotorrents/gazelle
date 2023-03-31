@@ -19,7 +19,7 @@ $app = \Gazelle\App::go();
 #$announceUris = ANNOUNCE_URLS[0];
 $announceUris = call_user_func_array("array_merge", ANNOUNCE_URLS);
 
-$passKey = $app->userNew->extra["torrent_pass"];
+$passKey = $app->user->extra["torrent_pass"];
 $sourceKey = User::uploadSource();
 
 # tagList

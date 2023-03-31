@@ -10,14 +10,14 @@ if ($ID = (int)($_GET['id'])) {
     WHERE ID = $ID");
     list($UserID, $AssignedToUser) = $app->dbOld->next_record();
 
-    if ($UserID == $app->userNew->core['id'] || $IsFLS || $AssignedToUser == $app->userNew->core['id']) {
+    if ($UserID == $app->user->core['id'] || $IsFLS || $AssignedToUser == $app->user->core['id']) {
         // Conversation belongs to user or user is staff, resolve it
         $app->dbOld->query("
       UPDATE staff_pm_conversations
-      SET Status = 'Resolved', ResolverID = {$app->userNew->core['id']}
+      SET Status = 'Resolved', ResolverID = {$app->user->core['id']}
       WHERE ID = $ID");
-        $app->cacheNew->delete("staff_pm_new_{$app->userNew->core['id']}");
-        $app->cacheNew->delete("num_staff_pms_{$app->userNew->core['id']}");
+        $app->cacheNew->delete("staff_pm_new_{$app->user->core['id']}");
+        $app->cacheNew->delete("num_staff_pms_{$app->user->core['id']}");
 
         Http::redirect("staffpm.php");
     } else {

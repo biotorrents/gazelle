@@ -71,7 +71,7 @@ class Bookmarks
      * all_bookmarks
      *
      * Fetch all bookmarks of a certain type for a user.
-     * If $userId is empty, defaults to $app->userNew->core["id"].
+     * If $userId is empty, defaults to $app->user->core["id"].
      *
      * @param string $contentType the type of bookmarks to fetch
      * @param int $userId the userId whose bookmarks to get
@@ -84,7 +84,7 @@ class Bookmarks
         $contentType = strtolower(strval($contentType));
 
         if (empty($userId)) {
-            $userId = $app->userNew->core["id"];
+            $userId = $app->user->core["id"];
         }
 
         $cacheKey = "bookmarks_{$contentType}_{$userId}";
@@ -125,7 +125,7 @@ class Bookmarks
         list($table, $column) = self::bookmark_schema($contentType);
 
         $query = "select 1 from {$table} where userId = ? and {$column} = ?";
-        $good = $app->dbNew->single($query, [$app->userNew->core["id"], $contentId]);
+        $good = $app->dbNew->single($query, [$app->user->core["id"], $contentId]);
 
         return boolval($good);
     }
@@ -149,7 +149,7 @@ class Bookmarks
         # special torrent handling
         if ($contentType === "torrent") {
             $query = "select max(sort) from bookmarks_torrents where userId = ?";
-            $sort = $app->dbNew->single($query, [$app->userNew->core["id"]]);
+            $sort = $app->dbNew->single($query, [$app->user->core["id"]]);
 
             if (!$sort) {
                 $sort = 0;
@@ -161,7 +161,7 @@ class Bookmarks
                 insert ignore into {$table} (userId, {$column}, time, sort)
                 values (?, ?, now(), ?)
             ";
-            $app->dbNew->do($query, [$app->userNew->core["id"], $contentId, $sort]);
+            $app->dbNew->do($query, [$app->user->core["id"], $contentId, $sort]);
 
             return;
         }
@@ -171,7 +171,7 @@ class Bookmarks
             insert ignore into {$table} (userId, {$column}, time)
             values (?, ?, now())
         ";
-        $app->dbNew->do($query, [$app->userNew->core["id"], $contentId]);
+        $app->dbNew->do($query, [$app->user->core["id"], $contentId]);
     }
 
 
@@ -191,6 +191,6 @@ class Bookmarks
         list($table, $column) = self::bookmark_schema($contentType);
 
         $query = "delete from {$table} where userId = ? and {$column} = ?";
-        $app->dbNew->do($query, [$app->userNew->core["id"], $contentId]);
+        $app->dbNew->do($query, [$app->user->core["id"], $contentId]);
     }
 } # class

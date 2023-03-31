@@ -103,7 +103,7 @@ if (!$app->dbOld->has_results()) {
 // list($UserID, $Remastered, $RemasterYear, $CurFreeLeech) = $app->dbOld->next_record(MYSQLI_BOTH, false);
 list($UserID, $CurFreeLeech) = $app->dbOld->next_record(MYSQLI_BOTH, false);
 
-if ($app->userNew->core['id'] != $UserID && !check_perms('torrents_edit')) {
+if ($app->user->core['id'] != $UserID && !check_perms('torrents_edit')) {
     error(403);
 }
 
@@ -115,7 +115,7 @@ if ($Remastered == '1' && !$RemasterYear && !check_perms('edit_unknowns')) {
 
 if ($Properties['UnknownRelease'] && !($Remastered == '1' && !$RemasterYear) && !check_perms('edit_unknowns')) {
     // It's Unknown now, and it wasn't before
-    if ($app->userNew->core['id'] != $UserID) {
+    if ($app->user->core['id'] != $UserID) {
         // Hax
         error();
     }
@@ -218,7 +218,7 @@ $Err = $Validate->ValidateForm($_POST); // Validate the form
 
 if ($Properties['Remastered'] && !$Properties['RemasterYear']) {
     //Unknown Edit!
-    if ($app->userNew->core['id'] == $UserID || check_perms('edit_unknowns')) {
+    if ($app->user->core['id'] == $UserID || check_perms('edit_unknowns')) {
         //Fine!
     } else {
         $Err = "You may not edit someone else's upload to unknown release.";
@@ -346,7 +346,7 @@ if (check_perms('users_mod')) {
     if (!$btID && $Properties['BadTags']) {
         $app->dbOld->query("
           INSERT INTO torrents_bad_tags
-          VALUES ($TorrentID, {$app->userNew->core['id']}, NOW())");
+          VALUES ($TorrentID, {$app->user->core['id']}, NOW())");
     }
 
     if ($btID && !$Properties['BadTags']) {
@@ -364,7 +364,7 @@ if (check_perms('users_mod')) {
     if (!$bfID && $Properties['BadFolders']) {
         $app->dbOld->query("
           INSERT INTO torrents_bad_folders
-          VALUES ($TorrentID, {$app->userNew->core['id']}, NOW())");
+          VALUES ($TorrentID, {$app->user->core['id']}, NOW())");
     }
 
     if ($bfID && !$Properties['BadFolders']) {
@@ -382,7 +382,7 @@ if (check_perms('users_mod')) {
     if (!$bfiID && $Properties['BadFiles']) {
         $app->dbOld->query("
           INSERT INTO torrents_bad_files
-          VALUES ($TorrentID, {$app->userNew->core['id']}, NOW())");
+          VALUES ($TorrentID, {$app->user->core['id']}, NOW())");
     }
 
     if ($bfiID && !$Properties['BadFiles']) {
@@ -453,8 +453,8 @@ $app->dbOld->query("
   WHERE `id` = $GroupID");
 list($Name) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
-Misc::write_log("Torrent $TorrentID ($Name) in group $GroupID was edited by ".$app->userNew->core['username']." ($LogDetails)"); // TODO: this is probably broken
-Torrents::write_group_log($GroupID, $TorrentID, $app->userNew->core['id'], $LogDetails, 0);
+Misc::write_log("Torrent $TorrentID ($Name) in group $GroupID was edited by ".$app->user->core['username']." ($LogDetails)"); // TODO: this is probably broken
+Torrents::write_group_log($GroupID, $TorrentID, $app->user->core['id'], $LogDetails, 0);
 
 $app->cacheNew->delete("torrents_details_$GroupID");
 $app->cacheNew->delete("torrent_download_$TorrentID");

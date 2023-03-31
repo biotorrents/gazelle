@@ -36,7 +36,7 @@ if (is_numeric($ThreadID) && is_numeric($NewVote)) {
       `Vote` = $NewVote
     WHERE
       `TopicID` = $ThreadID
-      AND `UserID` = ".$app->userNew->core['id']
+      AND `UserID` = ".$app->user->core['id']
     );
 
     $app->cacheNew->delete("polls_$ThreadID");

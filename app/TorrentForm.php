@@ -111,7 +111,7 @@ class TorrentForm
             $Announces = ANNOUNCE_URLS[0];
             #$Announces = call_user_func_array('array_merge', ANNOUNCE_URLS);
 
-            $TorrentPass = $app->userNew->extra['torrent_pass'];
+            $TorrentPass = $app->user->extra['torrent_pass'];
             $TorrentSource = User::uploadSource();
 
             echo $twig->render(
@@ -174,12 +174,12 @@ HTML;
         FROM
           `torrents`
         WHERE
-          `UserID` = ".$app->userNew->core["id"]
+          `UserID` = ".$app->user->core["id"]
         );
         list($Uploads) = $app->dbOld->next_record();
 
         # Torrent form hidden values
-        $AuthKey = $app->userNew->extra['AuthKey'];
+        $AuthKey = $app->user->extra['AuthKey'];
         $HTML = <<<HTML
         <form class="box pad" name="torrent" action="" enctype="multipart/form-data" method="post"
           onsubmit="$('#post').raw().disabled = 'disabled';">

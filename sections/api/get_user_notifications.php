@@ -5,5 +5,5 @@
 $Skip = [];
 $Skip[] = db_string($_GET['skip']);
 
-$NotificationsManager = new NotificationsManager($app->userNew->core['id'], $Skip);
+$NotificationsManager = new NotificationsManager($app->user->core['id'], $Skip);
 json_die('success', $NotificationsManager->get_notifications());

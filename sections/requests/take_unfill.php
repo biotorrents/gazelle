@@ -34,7 +34,7 @@ if (!$UploaderID) {
     $UploaderID = $FillerID;
 }
 
-if ((($app->userNew->core['id'] !== $UserID && $app->userNew->core['id'] !== $FillerID) && !check_perms('site_moderate_requests')) || $FillerID === '0') {
+if ((($app->user->core['id'] !== $UserID && $app->user->core['id'] !== $FillerID) && !check_perms('site_moderate_requests')) || $FillerID === '0') {
     error(403);
 }
 
@@ -122,18 +122,18 @@ if (intval($RequestVotes['TotalBounty']*(3/4)) > $UploaderUploaded) {
     SET Uploaded = Uploaded - '.intval($RequestVotes['TotalBounty']*(3/4))."
     WHERE ID = $UploaderID");
 }
-Misc::send_pm($FillerID, 0, 'A request you filled has been unfilled', "The request \"[url=".site_url()."requests.php?action=view&amp;id=$RequestID]$FullName"."[/url]\" was unfilled by [url=".site_url().'user.php?id='.$app->userNew->core['id'].']'.$app->userNew->core['username'].'[/url] for the reason: [quote]'.$_POST['reason']."[/quote]\nIf you feel like this request was unjustly unfilled, please [url=".site_url()."reports.php?action=report&amp;type=request&amp;id=$RequestID]report the request[/url] and explain why this request should not have been unfilled.");
+Misc::send_pm($FillerID, 0, 'A request you filled has been unfilled', "The request \"[url=".site_url()."requests.php?action=view&amp;id=$RequestID]$FullName"."[/url]\" was unfilled by [url=".site_url().'user.php?id='.$app->user->core['id'].']'.$app->user->core['username'].'[/url] for the reason: [quote]'.$_POST['reason']."[/quote]\nIf you feel like this request was unjustly unfilled, please [url=".site_url()."reports.php?action=report&amp;type=request&amp;id=$RequestID]report the request[/url] and explain why this request should not have been unfilled.");
 if ($UploaderID != $FillerID) {
-    Misc::send_pm($UploaderID, 0, 'A request filled with your torrent has been unfilled', "The request \"[url=".site_url()."requests.php?action=view&amp;id=$RequestID]$FullName"."[/url]\" was unfilled by [url=".site_url().'user.php?id='.$app->userNew->core['id'].']'.$app->userNew->core['username'].'[/url] for the reason: [quote]'.$_POST['reason']."[/quote]\nIf you feel like this request was unjustly unfilled, please [url=".site_url()."reports.php?action=report&amp;type=request&amp;id=$RequestID]report the request[/url] and explain why this request should not have been unfilled.");
+    Misc::send_pm($UploaderID, 0, 'A request filled with your torrent has been unfilled', "The request \"[url=".site_url()."requests.php?action=view&amp;id=$RequestID]$FullName"."[/url]\" was unfilled by [url=".site_url().'user.php?id='.$app->user->core['id'].']'.$app->user->core['username'].'[/url] for the reason: [quote]'.$_POST['reason']."[/quote]\nIf you feel like this request was unjustly unfilled, please [url=".site_url()."reports.php?action=report&amp;type=request&amp;id=$RequestID]report the request[/url] and explain why this request should not have been unfilled.");
 }
 
 $app->cacheNew->delete("user_stats_$FillerID");
 
-if ($UserID != $app->userNew->core['id']) {
-    Misc::send_pm($UserID, 0, 'A request you created has been unfilled', "The request \"[url=".site_url()."requests.php?action=view&amp;id=$RequestID]$FullName"."[/url]\" was unfilled by [url=".site_url().'user.php?id='.$app->userNew->core['id'].']'.$app->userNew->core['username']."[/url] for the reason: [quote]".$_POST['reason'].'[/quote]');
+if ($UserID != $app->user->core['id']) {
+    Misc::send_pm($UserID, 0, 'A request you created has been unfilled', "The request \"[url=".site_url()."requests.php?action=view&amp;id=$RequestID]$FullName"."[/url]\" was unfilled by [url=".site_url().'user.php?id='.$app->user->core['id'].']'.$app->user->core['username']."[/url] for the reason: [quote]".$_POST['reason'].'[/quote]');
 }
 
-Misc::write_log("Request $RequestID ($FullName), with a ".Format::get_size($RequestVotes['TotalBounty']).' bounty, was unfilled by user '.$app->userNew->core['id'].' ('.$app->userNew->core['username'].') for the reason: '.$_POST['reason']);
+Misc::write_log("Request $RequestID ($FullName), with a ".Format::get_size($RequestVotes['TotalBounty']).' bounty, was unfilled by user '.$app->user->core['id'].' ('.$app->user->core['username'].') for the reason: '.$_POST['reason']);
 
 $app->cacheNew->delete("request_$RequestID");
 $app->cacheNew->delete("request_artists_$RequestID");

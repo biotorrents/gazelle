@@ -36,7 +36,7 @@ $app->dbOld->query("
     `ToYear`,
     `Users`
   FROM `users_notify_filters`
-  WHERE `UserID` = {$app->userNew->core['id']}
+  WHERE `UserID` = {$app->user->core['id']}
 ");
 
 $NumFilters = $app->dbOld->record_count();
@@ -96,11 +96,11 @@ foreach ($Notifications as $N) { // $N stands for Notifications
     } elseif ($NumFilters > 0) { ?>
   <h3>
     <a
-      href="feeds.php?feed=torrents_notify_<?=$N['ID']?>_<?=$app->userNew->extra['torrent_pass']?>&amp;user=<?=$app->userNew->core['id']?>&amp;auth=<?=$app->userNew->extra['RSS_Auth']?>&amp;passkey=<?=$app->userNew->extra['torrent_pass']?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;name=<?=urlencode($N['Label'])?>"><img
+      href="feeds.php?feed=torrents_notify_<?=$N['ID']?>_<?=$app->user->extra['torrent_pass']?>&amp;user=<?=$app->user->core['id']?>&amp;auth=<?=$app->user->extra['RSS_Auth']?>&amp;passkey=<?=$app->user->extra['torrent_pass']?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;name=<?=urlencode($N['Label'])?>"><img
         src="<?=staticServer?>/images/symbols/rss.png"
         alt="RSS feed"></a>
     <?=Text::esc($N['Label'])?>
-    <a href="user.php?action=notify_delete&amp;id=<?=$N['ID']?>&amp;auth=<?=$app->userNew->extra['AuthKey']?>"
+    <a href="user.php?action=notify_delete&amp;id=<?=$N['ID']?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
       onclick="return confirm('Are you sure you want to delete this notification filter?')" class="brackets">Delete</a>
     <a data-toggle-target="#filter_<?=$N['ID']?>"
       class="brackets">Show</a>
@@ -113,7 +113,7 @@ foreach ($Notifications as $N) { // $N stands for Notifications
     <input type="hidden" name="formid" value="<?=$i?>">
     <input type="hidden" name="action" value="notify_handle">
     <input type="hidden" name="auth"
-      value="<?=$app->userNew->extra['AuthKey']?>">
+      value="<?=$app->user->extra['AuthKey']?>">
     <?php if (!$NewFilter) { ?>
     <input type="hidden" name="id<?=$i?>"
       value="<?=$N['ID']?>">

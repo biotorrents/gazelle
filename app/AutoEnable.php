@@ -224,7 +224,7 @@ EOT;
         }
 
         // User notes stuff
-        $StaffID = $app->userNew->core['id'] ?? 0;
+        $StaffID = $app->user->core['id'] ?? 0;
         $app->dbOld->query("
         SELECT
           `Username`
@@ -298,7 +298,7 @@ EOT;
         FROM
           `users_main`
         WHERE
-          `ID` = '".$app->userNew->core['id']."'
+          `ID` = '".$app->user->core['id']."'
         ");
         list($StaffUser) = $app->dbOld->next_record();
 

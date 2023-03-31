@@ -544,7 +544,7 @@ if (!$groupId) {
     # add creators to the group
     foreach ($data["creatorList"] as $id => $name) {
         $query = "insert ignore into torrents_artists (groupId, artistId, userId) values (?, ?, ?)";
-        $app->dbNew->do($query, [ $groupId, $id, $app->userNew->core["id"] ]);
+        $app->dbNew->do($query, [ $groupId, $id, $app->user->core["id"] ]);
 
         $app->cacheNew->increment("stats_album_count");
         $app->cacheNew->delete("artist_groups_{$id}");
@@ -557,7 +557,7 @@ if (!$groupId) {
     if (!empty($data["literature"])) {
         foreach ($data["literature"] as $literature) {
             $query = "insert into literature (group_id, user_id, timestamp, doi) values (?, ?, now(), ?)";
-            $app->dbNew->do($query, [ $groupId, $app->userNew->core["id"], $literature]);
+            $app->dbNew->do($query, [ $groupId, $app->user->core["id"], $literature]);
         }
     }
 }
@@ -583,7 +583,7 @@ if (!$noRevision) {
     $variables = [
         "pageId" => $groupId,
         "body" => $data["groupDescription"],
-        "userId" => $app->userNew->core["id"],
+        "userId" => $app->user->core["id"],
         "summary" => "uploaded new torrent",
         "image" => $data["picture"],
     ];
@@ -604,12 +604,12 @@ if (!$groupId) {
             on duplicate key update uses = uses + 1
         ";
 
-        $app->dbNew->do($query, [ $tag, $app->userNew->core["id"] ]);
+        $app->dbNew->do($query, [ $tag, $app->user->core["id"] ]);
         $tagId = $app->dbNew->lastInsertId();
 
         # torrents_tags
         $query = "insert into torrents_tags (tagId, groupId, userId) values (?, ?, ?)";
-        $app->dbNew->do($query, [ $tagId, $groupId, $app->userNew->core["id"] ]);
+        $app->dbNew->do($query, [ $tagId, $groupId, $app->user->core["id"] ]);
     }
 }
 
@@ -665,7 +665,7 @@ $query = "
 
 $variables = [
     "groupId" => $groupId,
-    "userId" => $app->userNew->core["id"],
+    "userId" => $app->user->core["id"],
     "media" => $data["platform"],
     "container" => $data["format"],
     "codec" => $data["license"],
@@ -698,7 +698,7 @@ $torrent->Dec["comment"] = "https://{$app->env->siteDomain}/torrents.php?torrent
 if (!empty($data["mirrors"])) {
     foreach ($data["mirrors"] as $mirror) {
         $query = "insert into torrents_mirrors (torrent_id, user_id, timestamp, uri) values (?, ?, now(), ?)";
-        $app->dbNew->do($query, [$torrentId, $app->userNew->core["id"], $mirror]);
+        $app->dbNew->do($query, [$torrentId, $app->user->core["id"], $mirror]);
     }
 }
 
@@ -727,7 +727,7 @@ if ($app->env->enableBioPhp && !empty($data['Seqhash'])) {
                `name`, `seqhash`)
             VALUES (?, ?, NOW(), ?, ?)",
                 $torrentId,
-                $app->userNew->core['id'],
+                $app->user->core['id'],
                 $Parsed['name'],
                 $Seqhash
             );
@@ -772,11 +772,11 @@ chmod($fileName, 0400);
 # update site logs
 $torrentLogMessage = "Torrent {$torrentId} - {$data["title"]} - "
     . Text::float($torrentData["dataSize"] / (1024 * 1024), 2)
-    ." MB - uploaded by {$app->userNew->core["username"]}";
+    ." MB - uploaded by {$app->user->core["username"]}";
 Misc::write_log($torrentLogMessage);
 
 $groupLogMessage = "uploaded " . Text::float($torrentData["dataSize"] / (1024 * 1024), 2) . " MB";
-Torrents::write_group_log($groupId, $torrentId, $app->userNew->core["id"], $groupLogMessage, 0);
+Torrents::write_group_log($groupId, $torrentId, $app->user->core["id"], $groupLogMessage, 0);
 
 # update hash
 Torrents::update_hash($groupId);
@@ -787,7 +787,7 @@ $app->debug["messages"]->info("manticore updated");
  * recent uploads
  */
 if ($data["picture"]) {
-    $recentUploads = $app->cacheNew->get("recent_uploads_{$app->userNew->core["id"]}");
+    $recentUploads = $app->cacheNew->get("recent_uploads_{$app->user->core["id"]}");
     if (is_array($recentUploads)) {
         do {
             foreach ($recentUploads as $item) {
@@ -807,7 +807,7 @@ if ($data["picture"]) {
                 "Artist" => Artists::display_artists($data["creatorList"], false, true),
                 "WikiImage" => $data["picture"],
             ]);
-            $app->cacheNew->set("recent_uploads_{$app->userNew->core["id"]}", $recentUploads, 0);
+            $app->cacheNew->set("recent_uploads_{$app->user->core["id"]}", $recentUploads, 0);
         } while (0);
     }
 }
@@ -845,7 +845,7 @@ if ($publicTorrent) {
 <?php
  View::footer();
 } elseif ($RequestID) {
-   header("Location: requests.php?action=takefill&requestid=$RequestID&torrentid=$torrentId&auth=".$app->userNew->extra['AuthKey']);
+   header("Location: requests.php?action=takefill&requestid=$RequestID&torrentid=$torrentId&auth=".$app->user->extra['AuthKey']);
 } else {
    Http::redirect("torrents.php?id=$GroupID&torrentid=$torrentId");
 }
@@ -898,7 +898,7 @@ $item = $feed->item(
     $announceMessage,
     $data["groupDescription"],
     "/torrents.php?action=download&authkey=[[AUTHKEY]]&torrent_pass=[[PASSKEY]]&id={$torrentId}",
-    $data["anonymous"] ? "Anonymous" : $app->userNew->core["username"],
+    $data["anonymous"] ? "Anonymous" : $app->user->core["username"],
     "/torrents.php?id={$groupId}",
     trim(implode(", ", $data["tagList"]))
 );
@@ -1007,7 +1007,7 @@ if ($data['Year']) {
 }
 
 
-$SQL .= " AND UserID != '".$app->userNew->core['id']."' ";
+$SQL .= " AND UserID != '".$app->user->core['id']."' ";
 $app->dbOld->query($SQL);
 $app->debug["messages"]->info('notification query finished');
 

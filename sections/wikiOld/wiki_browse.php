@@ -22,7 +22,7 @@ $sql = "
     Date,
     Author
   FROM wiki_articles
-  WHERE MinClassRead <= '".$app->userNew->extra['EffectiveClass']."'";
+  WHERE MinClassRead <= '".$app->user->extra['EffectiveClass']."'";
 
 if ($Letter !== '1') {
     $sql .= " AND LEFT(Title,1) = '".db_string($Letter)."'";

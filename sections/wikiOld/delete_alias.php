@@ -10,7 +10,7 @@ $ArticleID = Wiki::alias_to_id($_GET['alias']);
 
 $app->dbOld->prepared_query("SELECT MinClassEdit FROM wiki_articles WHERE ID = $ArticleID");
 list($MinClassEdit) = $app->dbOld->next_record();
-if ($MinClassEdit > $app->userNew->extra['EffectiveClass']) {
+if ($MinClassEdit > $app->user->extra['EffectiveClass']) {
     error(403);
 }
 

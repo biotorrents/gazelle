@@ -23,9 +23,9 @@ if (!$authKey || !$passKey) {
     # this still works?
     enforce_login();
 
-    $userId = $app->userNew->core["id"];
-    $authKey = $app->userNew->extra["AuthKey"];
-    $passKey = $app->userNew->extra["torrent_pass"];
+    $userId = $app->user->core["id"];
+    $authKey = $app->user->extra["AuthKey"];
+    $passKey = $app->user->extra["torrent_pass"];
 }
 
 # no userId
@@ -51,7 +51,7 @@ $query = "
     left join locked_accounts on locked_accounts.userId = users_main.id
     where users_main.torrent_pass = ? and users_main.enabled = ?
 ";
-$row = $app->dbNew->row($query, [ $app->userNew->extra["torrent_pass"], 1 ]);
+$row = $app->dbNew->row($query, [ $app->user->extra["torrent_pass"], 1 ]);
 */
 
 /** */
@@ -128,13 +128,13 @@ $leechStatus = $app->dbNew->single($query, [$torrentId]);
 
 if ($useToken && intval($leechStatus) === 0) {
     # check for leech status and collect token count
-    $isLoggedIn = $app->userNew->isLoggedIn();
+    $isLoggedIn = $app->user->isLoggedIn();
 
     # logged in
     if ($isLoggedIn) {
-        $tokenCount = $app->userNew->extra["FLTokens"];
+        $tokenCount = $app->user->extra["FLTokens"];
 
-        if (!$app->userNew->extra["CanLeech"]) {
+        if (!$app->user->extra["CanLeech"]) {
             error("You can't use freeleech tokens while your leeching privileges are disabled.");
             exit;
         }

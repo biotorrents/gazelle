@@ -31,7 +31,7 @@ $TextPrev = new TEXTAREA_PREVIEW(
 
     <strong>Send to: </strong>
     <select name="level">
-      <?php if (!isset($app->userNew->extra['LockedAccount'])) { ?>
+      <?php if (!isset($app->user->extra['LockedAccount'])) { ?>
       <option value="0" selected="selected">First Line Support</option>
       <option value="800">Forum Moderators</option>
       <?php } ?>

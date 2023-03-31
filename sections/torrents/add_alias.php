@@ -4,7 +4,7 @@ $app = \Gazelle\App::go();
 
 authorize();
 
-$UserID = $app->userNew->core['id'];
+$UserID = $app->user->core['id'];
 $GroupID = db_string($_POST['groupid']);
 $ArtistNames = $_POST['artistname'];
 
@@ -49,8 +49,8 @@ for ($i = 0; $i < count($ArtistNames); $i++) {
         ('$GroupID', '$ArtistID', '$UserID')");
 
         if ($app->dbOld->affected_rows()) {
-            Misc::write_log("Artist $ArtistID ($ArtistName) was added to the group $GroupID ($GroupName) by user ".$app->userNew->core['id'].' ('.$app->userNew->core['username'].')');
-            Torrents::write_group_log($GroupID, 0, $app->userNew->core['id'], "added artist $ArtistName", 0);
+            Misc::write_log("Artist $ArtistID ($ArtistName) was added to the group $GroupID ($GroupName) by user ".$app->user->core['id'].' ('.$app->user->core['username'].')');
+            Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "added artist $ArtistName", 0);
             $app->cacheNew->delete("torrents_details_$GroupID");
             $app->cacheNew->delete("groups_artists_$GroupID"); // Delete group artist cache
       $app->cacheNew->delete("artist_groups_$ArtistID"); // Delete artist group cache

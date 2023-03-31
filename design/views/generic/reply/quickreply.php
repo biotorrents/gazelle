@@ -42,7 +42,7 @@ $app = \Gazelle\App::go();
 
 global $HeavyInfo, $UserSubscriptions, $ThreadInfo, $Document;
 
-if ($app->userNew->extra['DisablePosting']) {
+if ($app->user->extra['DisablePosting']) {
     return;
 }
 
@@ -80,14 +80,14 @@ if (!isset($InputTitle)) {
       onsubmit="quickpostform.submit_button.disabled = true;"
       <?php } ?>
 
-      <?php if (!$app->userNew->extra['DisableAutoSave']) { ?>
+      <?php if (!$app->user->extra['DisableAutoSave']) { ?>
       data-autosave-text="quickpost"
       <?php } ?>>
 
       <input type="hidden" name="action" value="<?=$InputAction?>" />
 
       <input type="hidden" name="auth"
-        value="<?=$app->userNew->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
 
       <input type="hidden" name="<?=$InputName?>"
         data-autosave-id="<?=$InputID?>"
@@ -134,7 +134,7 @@ if (!isset($InputTitle)) {
             <div class="u-pull-left">
               <a href="#quickreplypreview">#xyz</a>
               by <strong>
-                <?=User::format_username($app->userNew->core["id"], true, true, true, true)?>
+                <?=User::format_username($app->user->core["id"], true, true, true, true)?>
               </strong>
               Just now
             </div>
@@ -152,8 +152,8 @@ if (!isset($InputTitle)) {
           <td class="avatar valign_top">
             <?=
           User::displayAvatar(
-              $app->userNew->extra['Avatar'],
-              $app->userNew->core['Username']
+              $app->user->extra['Avatar'],
+              $app->user->core['Username']
           )
           ?>
           </td>
@@ -189,7 +189,7 @@ if (!isset($InputTitle)) {
         <?php
       }
 
-      if ($ThreadInfo['LastPostAuthorID'] === $app->userNew->core["id"]
+      if ($ThreadInfo['LastPostAuthorID'] === $app->user->core["id"]
           && (check_perms('site_forums_double_post'))) { ?>
         <input id="mergebox" type="checkbox" name="merge" tabindex="2" />
         <label for="mergebox">Merge</label>

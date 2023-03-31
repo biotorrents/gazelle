@@ -113,7 +113,7 @@ $app->dbOld->prepared_query("
   SELECT `ID`
   FROM `reportsv2`
   WHERE `TorrentID` = '$TorrentID'
-    AND `ReporterID` = ".db_string($app->userNew->core['id'])."
+    AND `ReporterID` = ".db_string($app->user->core['id'])."
     AND `ReportedTime` > '".time_minus(3)."'");
 if ($app->dbOld->has_results()) {
     Http::redirect("torrents.php?torrentid=$TorrentID");
@@ -124,7 +124,7 @@ $app->dbOld->prepared_query("
   INSERT INTO `reportsv2`
     (`ReporterID`, `TorrentID`, `Type`, `UserComment`, `Status`, `ReportedTime`, `Track`, `Image`, `ExtraID`, `Link`)
   VALUES
-    (".db_string($app->userNew->core['id']).", $TorrentID, '".db_string($Type)."', '$Extra', 'New', NOW(), '".db_string($Tracks)."', '".db_string($Images)."', '".db_string($ExtraIDs)."', '".db_string($Links)."')");
+    (".db_string($app->user->core['id']).", $TorrentID, '".db_string($Type)."', '$Extra', 'New', NOW(), '".db_string($Tracks)."', '".db_string($Images)."', '".db_string($ExtraIDs)."', '".db_string($Links)."')");
 
 $ReportID = $app->dbOld->inserted_id();
 

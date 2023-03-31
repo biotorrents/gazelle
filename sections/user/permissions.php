@@ -111,7 +111,7 @@ View::header("$Username &gt; Permissions");
   </table>
   <input type="hidden" name="action" value="permissions" />
   <input type="hidden" name="auth"
-    value="<?=$app->userNew->extra['AuthKey']?>" />
+    value="<?=$app->user->extra['AuthKey']?>" />
   <input type="hidden" name="id"
     value="<?=$_REQUEST['userid']?>" />
   <?php

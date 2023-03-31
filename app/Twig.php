@@ -99,20 +99,20 @@ class Twig # extends Twig\Environment
         $twig->addGlobal("env", $app->env::$public);
 
         # user and authenticated
-        $twig->addGlobal("user", $app->userNew);
-        $twig->addGlobal("authenticated", $app->userNew->isLoggedIn());
+        $twig->addGlobal("user", $app->user);
+        $twig->addGlobal("authenticated", $app->user->isLoggedIn());
 
         # site options
-        $twig->addGlobal("siteOptions", $app->userNew->siteOptions ?? []);
+        $twig->addGlobal("siteOptions", $app->user->siteOptions ?? []);
 
         # body styles
         $bodyStyles = [];
-        if (!empty($app->userNew->extra)) {
+        if (!empty($app->user->extra)) {
             $bodyStyles = [
                 ($app->env->dev) ? "development" : null,
-                ($app->userNew->siteOptions["font"]) ?? null,
-                ($app->userNew->siteOptions["calmMode"]) ? "calmMode" : null,
-                ($app->userNew->siteOptions["darkMode"]) ? "darkMode" : null,
+                ($app->user->siteOptions["font"]) ?? null,
+                ($app->user->siteOptions["calmMode"]) ? "calmMode" : null,
+                ($app->user->siteOptions["darkMode"]) ? "darkMode" : null,
             ];
         } else {
             $bodyStyles = ["notoSans"];
@@ -186,14 +186,14 @@ class Twig # extends Twig\Environment
         $twig->addFunction(new Twig\TwigFunction("can", function ($permission) {
             $app = \Gazelle\App::go();
 
-            return $app->userNew->can($permission);
+            return $app->user->can($permission);
         }));
 
         # cant
         $twig->addFunction(new Twig\TwigFunction("cant", function ($permission) {
             $app = \Gazelle\App::go();
 
-            return $app->userNew->cant($permission);
+            return $app->user->cant($permission);
         }));
 
         # ImageTools::process

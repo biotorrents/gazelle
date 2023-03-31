@@ -57,12 +57,12 @@ class Subscriptions
         LEFT JOIN users_info AS i ON i.UserID = m.ID
       WHERE m.Username IN ('" . implode("', '", $Usernames) . "')
         AND i.NotifyOnQuote = '1'
-        AND i.UserID != " . $app->userNew->core["id"]);
+        AND i.UserID != " . $app->user->core["id"]);
 
         $Results = $app->dbOld->to_array();
         foreach ($Results as $Result) {
             $UserID = db_string($Result['ID']);
-            $QuoterID = db_string($app->userNew->core["id"]);
+            $QuoterID = db_string($app->user->core["id"]);
             $Page = db_string($Page);
             $PageID = db_string($PageID);
             $PostID = db_string($PostID);
@@ -74,7 +74,7 @@ class Subscriptions
         VALUES
           (    ?,               ?,               ?,      ?,       ?,   NOW())",
                 $Result['ID'],
-                $app->userNew->core["id"],
+                $app->user->core["id"],
                 $Page,
                 $PageID,
                 $PostID
@@ -93,7 +93,7 @@ class Subscriptions
      * subscribe
      *
      * (Un)subscribe from a forum thread.
-     * If UserID == 0, $app->userNew->core["id"] is used
+     * If UserID == 0, $app->user->core["id"] is used
      * @param int $TopicID
      * @param int $UserID
      */
@@ -102,7 +102,7 @@ class Subscriptions
         $app = \Gazelle\App::go();
 
         if ($UserID == 0) {
-            $UserID = $app->userNew->core["id"];
+            $UserID = $app->user->core["id"];
         }
         $QueryID = $app->dbOld->get_query_id();
         $UserSubscriptions = self::get_subscriptions();
@@ -128,7 +128,7 @@ class Subscriptions
      * subscribe_comments
      *
      * (Un)subscribe from comments.
-     * If UserID == 0, $app->userNew->core["id"] is used
+     * If UserID == 0, $app->user->core["id"] is used
      * @param string $Page 'artist', 'collages', 'requests' or 'torrents'
      * @param int $PageID ArtistID, CollageID, RequestID or GroupID
      * @param int $UserID
@@ -138,7 +138,7 @@ class Subscriptions
         $app = \Gazelle\App::go();
 
         if ($UserID == 0) {
-            $UserID = $app->userNew->core["id"];
+            $UserID = $app->user->core["id"];
         }
         $QueryID = $app->dbOld->get_query_id();
         $UserCommentSubscriptions = self::get_comment_subscriptions();
@@ -167,7 +167,7 @@ class Subscriptions
      * get_subscriptions
      *
      * Read $UserID's subscriptions. If the cache key isn't set, it gets filled.
-     * If UserID == 0, $app->userNew->core["id"] is used
+     * If UserID == 0, $app->user->core["id"] is used
      * @param int $UserID
      * @return array Array of TopicIDs
      */
@@ -176,7 +176,7 @@ class Subscriptions
         $app = \Gazelle\App::go();
 
         if ($UserID == 0) {
-            $UserID = $app->userNew->core["id"];
+            $UserID = $app->user->core["id"];
         }
         $QueryID = $app->dbOld->get_query_id();
         $UserSubscriptions = $app->cacheNew->get("subscriptions_user_$UserID");
@@ -204,7 +204,7 @@ class Subscriptions
         $app = \Gazelle\App::go();
 
         if ($UserID == 0) {
-            $UserID = $app->userNew->core["id"];
+            $UserID = $app->user->core["id"];
         }
         $QueryID = $app->dbOld->get_query_id();
         $UserCommentSubscriptions = $app->cacheNew->get("subscriptions_comments_user_$UserID");
@@ -232,7 +232,7 @@ class Subscriptions
 
         $QueryID = $app->dbOld->get_query_id();
 
-        $NewSubscriptions = $app->cacheNew->get('subscriptions_user_new_' . $app->userNew->core["id"]);
+        $NewSubscriptions = $app->cacheNew->get('subscriptions_user_new_' . $app->user->core["id"]);
         if ($NewSubscriptions === false) {
             // forum subscriptions
             $app->dbOld->query("
@@ -243,7 +243,7 @@ class Subscriptions
             JOIN forums AS f ON f.ID = t.ForumID
           WHERE " . Forums::user_forums_sql() . "
             AND IF(t.IsLocked = '1' AND t.IsSticky = '0'" . ", t.LastPostID, IF(l.PostID IS NULL, 0, l.PostID)) < t.LastPostID
-            AND s.UserID = " . $app->userNew->core["id"]);
+            AND s.UserID = " . $app->user->core["id"]);
             list($NewForumSubscriptions) = $app->dbOld->next_record();
 
             // comment subscriptions
@@ -253,13 +253,13 @@ class Subscriptions
             LEFT JOIN users_comments_last_read AS lr ON lr.UserID = s.UserID AND lr.Page = s.Page AND lr.PageID = s.PageID
             LEFT JOIN comments AS c ON c.ID = (SELECT MAX(ID) FROM comments WHERE Page = s.Page AND PageID = s.PageID)
             LEFT JOIN collages AS co ON s.Page = 'collages' AND co.ID = s.PageID
-          WHERE s.UserID = " . $app->userNew->core["id"] . "
+          WHERE s.UserID = " . $app->user->core["id"] . "
             AND (s.Page != 'collages' OR co.Deleted = '0')
             AND IF(lr.PostID IS NULL, 0, lr.PostID) < c.ID");
             list($NewCommentSubscriptions) = $app->dbOld->next_record();
 
             $NewSubscriptions = $NewForumSubscriptions + $NewCommentSubscriptions;
-            $app->cacheNew->set('subscriptions_user_new_' . $app->userNew->core["id"], $NewSubscriptions, 0);
+            $app->cacheNew->set('subscriptions_user_new_' . $app->user->core["id"], $NewSubscriptions, 0);
         }
         $app->dbOld->set_query_id($QueryID);
         return (int)$NewSubscriptions;
@@ -275,7 +275,7 @@ class Subscriptions
     {
         $app = \Gazelle\App::go();
 
-        $QuoteNotificationsCount = $app->cacheNew->get('notify_quoted_' . $app->userNew->core["id"]);
+        $QuoteNotificationsCount = $app->cacheNew->get('notify_quoted_' . $app->user->core["id"]);
         if ($QuoteNotificationsCount === false) {
             $sql = "
         SELECT COUNT(1)
@@ -283,7 +283,7 @@ class Subscriptions
           LEFT JOIN forums_topics AS t ON t.ID = q.PageID
           LEFT JOIN forums AS f ON f.ID = t.ForumID
           LEFT JOIN collages AS c ON q.Page = 'collages' AND c.ID = q.PageID
-        WHERE q.UserID = " . $app->userNew->core["id"] . "
+        WHERE q.UserID = " . $app->user->core["id"] . "
           AND q.UnRead
           AND (q.Page != 'forums' OR " . Forums::user_forums_sql() . ")
           AND (q.Page != 'collages' OR c.Deleted = '0')";
@@ -291,7 +291,7 @@ class Subscriptions
             $app->dbOld->query($sql);
             list($QuoteNotificationsCount) = $app->dbOld->next_record();
             $app->dbOld->set_query_id($QueryID);
-            $app->cacheNew->set('notify_quoted_' . $app->userNew->core["id"], $QuoteNotificationsCount, 0);
+            $app->cacheNew->set('notify_quoted_' . $app->user->core["id"], $QuoteNotificationsCount, 0);
         }
         return (int)$QuoteNotificationsCount;
     }

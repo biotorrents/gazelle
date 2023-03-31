@@ -18,11 +18,11 @@ $app->dbOld->query("
 list($RequestorID, $FillerID) = $app->dbOld->next_record();
 
 if ($Action === 'unfill') {
-    if ($app->userNew->core['id'] !== $RequestorID && $app->userNew->core['id'] !== $FillerID && !check_perms('site_moderate_requests')) {
+    if ($app->user->core['id'] !== $RequestorID && $app->user->core['id'] !== $FillerID && !check_perms('site_moderate_requests')) {
         error(403);
     }
 } elseif ($Action === 'delete') {
-    if ($app->userNew->core['id'] !== $RequestorID && !check_perms('site_moderate_requests')) {
+    if ($app->user->core['id'] !== $RequestorID && !check_perms('site_moderate_requests')) {
         error(403);
     }
 }
@@ -37,7 +37,7 @@ View::header(ucwords($Action) . ' Request');
     <div class="pad">
       <form class="<?=(($Action === 'delete') ? 'delete_form' : 'edit_form')?>" name="request" action="requests.php" method="post">
         <input type="hidden" name="action" value="take<?=$Action?>" />
-        <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
+        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
         <input type="hidden" name="id" value="<?=$_GET['id']?>" />
 <?php if ($Action === 'delete') { ?>
         <div class="warning">You will <strong>not</strong> get your bounty back if you delete this request.</div>

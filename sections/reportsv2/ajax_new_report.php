@@ -103,7 +103,7 @@ $app->dbOld->prepared_query("
     $app->dbOld->prepared_query("
       UPDATE reportsv2
       SET Status = 'InProgress',
-        ResolverID = ".$app->userNew->core['id']."
+        ResolverID = ".$app->user->core['id']."
       WHERE ID = $ReportID");
 
     if (array_key_exists($Type, $Types[$CategoryID])) {
@@ -142,7 +142,7 @@ $app->dbOld->prepared_query("
         ?>
     <div>
       <input type="hidden" name="auth"
-        value="<?=$app->userNew->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <input type="hidden" id="reportid<?=$ReportID?>"
         name="reportid" value="<?=$ReportID?>" />
       <input type="hidden" id="torrentid<?=$ReportID?>"
@@ -170,7 +170,7 @@ $app->dbOld->prepared_query("
           <a href="log.php?search=Torrent+<?=$TorrentID?>"><?=$TorrentID?></a> (Deleted)
           <?php } else { ?>
           <?=$LinkName?>
-          <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>"
+          <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>"
             title="Download" class="brackets tooltip">DL</a>
           uploaded by <a href="user.php?id=<?=$UploaderID?>"><?=$UploaderName?></a> <?=time_diff($Time)?>
           <br />
@@ -319,7 +319,7 @@ $app->dbOld->prepared_query("
                 } ?>
           <?=($First ? '' : '<br />')?>
           <?=$ExtraLinkName?>
-          <a href="torrents.php?action=download&amp;id=<?=$ExtraID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>"
+          <a href="torrents.php?action=download&amp;id=<?=$ExtraID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>"
             title="Download" class="brackets tooltip">DL</a>
           uploaded by <a
             href="user.php?id=<?=$ExtraUploaderID?>"><?=$ExtraUploaderName?></a> <?=time_diff($ExtraTime)?> <a href="#"

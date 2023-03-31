@@ -22,7 +22,7 @@ if ($_POST['collage_id'] && is_numeric($_POST['collage_id'])) {
       SET Deleted = '0'
       WHERE ID = $CollageID");
         $app->cacheNew->delete("collage_$CollageID");
-        Misc::write_log("Collage $CollageID was recovered by ".$app->userNew->core['username']);
+        Misc::write_log("Collage $CollageID was recovered by ".$app->user->core['username']);
         Http::redirect("collages.php?id=$CollageID");
     }
 }
@@ -36,7 +36,7 @@ View::header('Collage recovery!');
     <div class="pad">
       <form class="undelete_form" name="collage" action="collages.php" method="post">
         <input type="hidden" name="action" value="recover" />
-        <input type="hidden" name="auth" value="<?=$app->userNew->extra['AuthKey']?>" />
+        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
         <div>
           <strong>Collage ID: </strong>
           <input type="text" name="collage_id" size="8" />

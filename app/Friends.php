@@ -28,7 +28,7 @@ class Friends
         }
 
         $query = "replace into users_friends (userId, friendId, comment) values (?, ?, ?)";
-        $app->dbNew->do($query, [$app->userNew->core["id"], $friendId, $comment]);
+        $app->dbNew->do($query, [$app->user->core["id"], $friendId, $comment]);
 
         return $app->dbNew->lastInsertId();
     }
@@ -53,7 +53,7 @@ class Friends
             where users_friends.userId = ?
             order by users.username
         ";
-        $ref = $app->dbNew->multi($query, [ $app->userNew->core["id"] ]);
+        $ref = $app->dbNew->multi($query, [ $app->user->core["id"] ]);
 
         return $ref;
     }
@@ -74,7 +74,7 @@ class Friends
         }
 
         $query = "update users_friends set comment = ? where userId = ? and friendId = ?";
-        $app->dbNew->do($query, [$comment, $app->userNew->core["id"], $friendId]);
+        $app->dbNew->do($query, [$comment, $app->user->core["id"], $friendId]);
     }
 
 
@@ -93,7 +93,7 @@ class Friends
         }
 
         $query = "delete from users_friends where userId = ? and friendId = ?";
-        $app->dbNew->do($query, [$app->userNew->core["id"], $friendId]);
+        $app->dbNew->do($query, [$app->user->core["id"], $friendId]);
     }
 
 
@@ -107,7 +107,7 @@ class Friends
         $app = \Gazelle\App::go();
 
         $query = "select 1 from users_friends where userId = ? and friendId = ?";
-        $ref = $app->dbNew->single($query, [$app->userNew->core["id"], $friendId]);
+        $ref = $app->dbNew->single($query, [$app->user->core["id"], $friendId]);
 
         if ($ref) {
             return true;

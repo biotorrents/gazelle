@@ -40,7 +40,7 @@ if (check_perms('admin_reports')) {
 <?php
   foreach ($Results as $Result) {
       list($Username, $Reports) = $Result;
-      if ($Username == $app->userNew->core['username']) {
+      if ($Username == $app->user->core['username']) {
           $RowClass = ' class="highlight"';
       } else {
           $RowClass = '';
@@ -72,7 +72,7 @@ $app->dbOld->query("
 <?php
   foreach ($Results as $Result) {
       list($Username, $Reports) = $Result;
-      if ($Username == $app->userNew->core['username']) {
+      if ($Username == $app->user->core['username']) {
           $RowClass = ' class="highlight"';
       } else {
           $RowClass = '';
@@ -104,7 +104,7 @@ $app->dbOld->query("
 <?php
   foreach ($Results as $Result) {
       list($Username, $Reports) = $Result;
-      if ($Username == $app->userNew->core['username']) {
+      if ($Username == $app->user->core['username']) {
           $RowClass = ' class="highlight"';
       } else {
           $RowClass = '';
@@ -134,7 +134,7 @@ $app->dbOld->query("
 <?php
   foreach ($Results as $Result) {
       list($Username, $Reports) = $Result;
-      if ($Username == $app->userNew->core['username']) {
+      if ($Username == $app->user->core['username']) {
           $RowClass = ' class="highlight"';
       } else {
           $RowClass = '';
@@ -176,7 +176,7 @@ $app->dbOld->query("
   $i = 1;
   foreach ($Results as $Result) {
       list($Username, $Trashed) = $Result;
-      if ($Username == $app->userNew->core['username']) {
+      if ($Username == $app->user->core['username']) {
           $RowClass = ' class="highlight"';
       } else {
           $RowClass = '';

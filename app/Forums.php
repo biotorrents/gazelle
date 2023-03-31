@@ -108,15 +108,15 @@ class Forums
         $app = \Gazelle\App::go();
 
         $Forums = self::get_forums();
-        if (isset($app->userNew->extra['CustomForums'][$ForumID]) && $app->userNew->extra['CustomForums'][$ForumID] === 1) {
+        if (isset($app->user->extra['CustomForums'][$ForumID]) && $app->user->extra['CustomForums'][$ForumID] === 1) {
             return true;
         }
 
-        if ($Forums[$ForumID]['MinClass' . $Perm] > $app->userNew->extra['Class'] && (!isset($app->userNew->extra['CustomForums'][$ForumID]) || $app->userNew->extra['CustomForums'][$ForumID] == 0)) {
+        if ($Forums[$ForumID]['MinClass' . $Perm] > $app->user->extra['Class'] && (!isset($app->user->extra['CustomForums'][$ForumID]) || $app->user->extra['CustomForums'][$ForumID] == 0)) {
             return false;
         }
 
-        if (isset($app->userNew->extra['CustomForums'][$ForumID]) && $app->userNew->extra['CustomForums'][$ForumID] === 0) {
+        if (isset($app->user->extra['CustomForums'][$ForumID]) && $app->user->extra['CustomForums'][$ForumID] === 0) {
             return false;
         }
 
@@ -277,8 +277,8 @@ class Forums
     {
         $app = \Gazelle\App::go();
 
-        if (isset($app->userNew->extra['CustomForums'])) {
-            return (array)array_keys($app->userNew->extra['CustomForums'], 1);
+        if (isset($app->user->extra['CustomForums'])) {
+            return (array)array_keys($app->user->extra['CustomForums'], 1);
         } else {
             return [];
         }
@@ -292,8 +292,8 @@ class Forums
     {
         $app = \Gazelle\App::go();
 
-        if (isset($app->userNew->extra['CustomForums'])) {
-            return (array)array_keys($app->userNew->extra['CustomForums'], 0);
+        if (isset($app->user->extra['CustomForums'])) {
+            return (array)array_keys($app->user->extra['CustomForums'], 0);
         } else {
             return [];
         }
@@ -308,8 +308,8 @@ class Forums
     {
         $app = \Gazelle\App::go();
 
-        if (isset($app->userNew->extra['PostsPerPage'])) {
-            $PerPage = $app->userNew->extra['PostsPerPage'];
+        if (isset($app->user->extra['PostsPerPage'])) {
+            $PerPage = $app->user->extra['PostsPerPage'];
         } else {
             $PerPage = POSTS_PER_PAGE;
         }
@@ -343,7 +343,7 @@ class Forums
             WHERE
               l.`TopicID` IN(".implode(',', $TopicIDs).") AND l.`UserID` = ? ",
                 $PerPage,
-                $app->userNew->core["id"]
+                $app->user->core["id"]
             );
 
             $LastRead = $app->dbOld->to_array('TopicID', MYSQLI_ASSOC);
@@ -366,7 +366,7 @@ class Forums
         $app = \Gazelle\App::go();
 
         if ($UserID === null) {
-            $UserID = $app->userNew->core["id"];
+            $UserID = $app->user->core["id"];
         }
 
         $QueryID = $app->dbOld->get_query_id();
@@ -407,7 +407,7 @@ class Forums
             && $LastPostID !== 0
             && (
                 (empty($LastRead[$LastTopicID]) || $LastRead[$LastTopicID]['PostID'] < $LastPostID)
-                && strtotime($LastTime) > $app->userNew->extra['CatchupTime']
+                && strtotime($LastTime) > $app->user->extra['CatchupTime']
             );
     }
 
@@ -424,7 +424,7 @@ class Forums
         $RestrictedForums = self::get_restricted_forums();
         $PermittedForums = self::get_permitted_forums();
 
-        $SQL = "((f.`MinClassRead` <= '" . $app->userNew->extra['Class'] . "'";
+        $SQL = "((f.`MinClassRead` <= '" . $app->user->extra['Class'] . "'";
         if (count($RestrictedForums)) {
             $SQL .= " AND f.`ID` NOT IN ('" . implode("', '", $RestrictedForums) . "')";
         }

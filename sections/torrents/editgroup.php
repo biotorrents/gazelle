@@ -86,7 +86,7 @@ View::header(
     <input type="hidden" name="action" value="takegroupedit" />
 
     <input type="hidden" name="auth"
-      value="<?=$app->userNew->extra['AuthKey']?>" />
+      value="<?=$app->user->extra['AuthKey']?>" />
 
     <input type="hidden" name="groupid" value="<?=$group_id?>" />
 
@@ -115,7 +115,7 @@ View::textarea(
   WHERE
     `GroupID` = '$group_id'
   ");
-  $Contributed = in_array($app->userNew->core['id'], $app->dbOld->collect('UserID'));
+  $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
 ?>
 
     <h3>
@@ -145,7 +145,7 @@ View::textarea(
     <input type="hidden" name="action" value="screenshotedit" />
 
     <input type="hidden" name="auth"
-      value="<?=$app->userNew->extra['AuthKey']?>" />
+      value="<?=$app->user->extra['AuthKey']?>" />
 
     <input type="hidden" name="groupid" value="<?=$group_id?>" />
 
@@ -183,7 +183,7 @@ View::textarea(
     <input type="hidden" name="action" value="nonwikiedit" />
 
     <input type="hidden" name="auth"
-      value="<?=$app->userNew->extra['AuthKey']?>" />
+      value="<?=$app->user->extra['AuthKey']?>" />
 
     <input type="hidden" name="groupid" value="<?=$group_id?>" />
 
@@ -297,7 +297,7 @@ View::textarea(
       <input type="hidden" name="action" value="rename" />
 
       <input type="hidden" name="auth"
-        value="<?=$app->userNew->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
 
       <input type="hidden" name="groupid" value="<?=$group_id?>" />
 
@@ -353,7 +353,7 @@ View::textarea(
     <input type="hidden" name="action" value="merge" />
 
     <input type="hidden" name="auth"
-      value="<?=$app->userNew->extra['AuthKey']?>" />
+      value="<?=$app->user->extra['AuthKey']?>" />
 
     <input type="hidden" name="groupid" value="<?=$group_id?>" />
 

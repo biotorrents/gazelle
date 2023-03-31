@@ -48,7 +48,7 @@ $Article = Wiki::get_article($ArticleID);
 list($Revision, $Title, $Body, $Read, $Edit, $Date, $AuthorID, $AuthorName, $Aliases, $UserIDs) = array_shift($Article);
 
 /*
-if ($Read > $app->userNew->extra['EffectiveClass']) {
+if ($Read > $app->user->extra['EffectiveClass']) {
     error('You must be a higher user class to view this wiki article');
 }
 */
@@ -67,7 +67,7 @@ View::header($Title, 'wiki');
     <div class="linkbox">
       <a href="wiki.php?action=create" class="brackets">Create</a>
 
-      <?php # if ($Edit <= $app->userNew->extra['EffectiveClass']) { ?>
+      <?php # if ($Edit <= $app->user->extra['EffectiveClass']) { ?>
       <a href="wiki.php?action=edit&amp;id=<?=$ArticleID?>"
         class="brackets">Edit</a>
       <a href="wiki.php?action=revisions&amp;id=<?=$ArticleID?>"
@@ -75,7 +75,7 @@ View::header($Title, 'wiki');
       <?php # } ?>
 
       <?php if (check_perms('admin_manage_wiki') && $_GET['id'] !== INDEX_ARTICLE) { ?>
-      <a href="wiki.php?action=delete&amp;id=<?=$ArticleID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>"
+      <a href="wiki.php?action=delete&amp;id=<?=$ArticleID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>"
         class="brackets" onclick="return confirm('Are you sure you want to delete?')">Delete</a>
       <?php } ?>
     </div>
@@ -155,14 +155,14 @@ if ($Aliases !== $Title) {
       </ul>
     </div>
 
-    <?php # if ($Edit <= $app->userNew->extra['EffectiveClass']) { ?>
+    <?php # if ($Edit <= $app->user->extra['EffectiveClass']) { ?>
     <div class="box box_addalias">
       <div style="padding: 5px;">
 
         <form class="add_form" name="aliases" action="wiki.php" method="post">
           <input type="hidden" name="action" value="add_alias" />
           <input type="hidden" name="auth"
-            value="<?=$app->userNew->extra['AuthKey']?>" />
+            value="<?=$app->user->extra['AuthKey']?>" />
           <input type="hidden" name="article"
             value="<?=$ArticleID?>" />
           <input onfocus="if (this.value == 'Add alias') this.value='';"

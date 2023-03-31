@@ -57,5 +57,5 @@ if ($app->dbOld->has_results()) {
     }
 }
 
-Misc::write_log($app->userNew->core['username']." sent mass notice to snatchers of torrent $TorrentID in group $GroupID");
+Misc::write_log($app->user->core['username']." sent mass notice to snatchers of torrent $TorrentID in group $GroupID");
 Http::redirect("torrents.php?id=$GroupID");

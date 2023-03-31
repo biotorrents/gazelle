@@ -4,7 +4,7 @@
 
 $app = \Gazelle\App::go();
 
-$UserID = $app->userNew->core['id'];
+$UserID = $app->user->core['id'];
 
 
 if (empty($_GET['type'])) {
