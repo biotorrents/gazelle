@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 // todo: Make this use the cache version of the thread, save the db query
 

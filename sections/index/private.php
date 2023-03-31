@@ -7,7 +7,7 @@ declare(strict_types=1);
  * private homepage
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 
 # get the news

@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (!check_perms('users_mod')) {
     error(403);

@@ -3,7 +3,7 @@
 
 function link_users($UserID, $TargetID)
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     authorize();
     if (!check_perms('users_mod')) {
@@ -87,7 +87,7 @@ function link_users($UserID, $TargetID)
 
 function unlink_user($UserID)
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     authorize();
     if (!check_perms('users_mod')) {
@@ -120,7 +120,7 @@ function unlink_user($UserID)
 
 function delete_dupegroup($GroupID)
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     authorize();
     if (!check_perms('users_mod')) {
@@ -136,7 +136,7 @@ function delete_dupegroup($GroupID)
 
 function dupe_comments($GroupID, $Comments)
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     authorize();
     if (!check_perms('users_mod')) {
@@ -176,7 +176,7 @@ function dupe_comments($GroupID, $Comments)
 
 function user_dupes_table($UserID)
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     if (!check_perms('users_mod')) {
         error(403);

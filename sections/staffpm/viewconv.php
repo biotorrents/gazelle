@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types = 1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if ($ConvID = (int)$_GET['id']) {
     // Get conversation info

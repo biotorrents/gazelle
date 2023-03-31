@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 // Send warnings to uploaders of torrents that will be deleted this week
 $app->dbOld->query("

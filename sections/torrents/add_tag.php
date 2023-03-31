@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 authorize();
 if (!empty($app->userNew->extra['DisableTagging'])) {

@@ -20,7 +20,7 @@
  * We can add these features eventually.                        *
  ****************************************************************/
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 authorize();
 

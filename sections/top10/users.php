@@ -7,7 +7,7 @@ declare(strict_types=1);
  * top10 users
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 enforce_login();
 if (!check_perms('site_top10')) {

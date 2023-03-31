@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 // Record who's seeding how much, used for ratio watch
 $app->dbOld->query("TRUNCATE TABLE users_torrent_history_temp");

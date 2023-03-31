@@ -19,7 +19,7 @@ final class ApiUserTokens extends AbstractMigration
      */
     public function change(): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # change data types
         $query = "

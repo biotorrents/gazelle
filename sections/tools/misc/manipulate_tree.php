@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 // Props to Leto of StC.
 if (!check_perms('users_view_invites') && !check_perms('users_disable_users') && !check_perms('users_edit_invites') && !check_perms('users_disable_any')) {

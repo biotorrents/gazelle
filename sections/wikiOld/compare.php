@@ -58,7 +58,7 @@ function diff($OldText, $NewText)
 
 function get_body($ID, $Rev)
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     # $Rev is a str, $Revision an int
     #global $Revision, $Body;

@@ -44,7 +44,7 @@ class Wiki
      */
     public static function get_aliases()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $Aliases = $app->cacheOld->get_value('wiki_aliases');
         if (!$Aliases) {
@@ -73,7 +73,7 @@ class Wiki
      */
     public static function flush_aliases()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $app->cacheOld->delete_value('wiki_aliases');
     }
@@ -107,7 +107,7 @@ class Wiki
      */
     public static function get_article($ArticleID, $Error = true)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $Contents = $app->cacheOld->get_value('wiki_article_'.$ArticleID);
         if (!$Contents) {
@@ -164,7 +164,7 @@ class Wiki
      */
     public static function flush_article($ArticleID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $app->cacheOld->delete_value('wiki_article_'.$ArticleID);
     }

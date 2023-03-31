@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 // todo: make this use the cache version of the thread, save the db query
 

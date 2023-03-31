@@ -25,7 +25,7 @@ class Permissions
      */
     public static function listRoles()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # this table should be called "roles" tbh
         $query = "select id, name from permissions";
@@ -79,7 +79,7 @@ class Permissions
      */
     public static function getUserRole()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select id, name, values from permissions where id = ?";
         $row = $app->dbNew->row($query, [  $app->userNew->extra["PermissionID"] ]);
@@ -336,7 +336,7 @@ class Permissions
      */
     public static function createRole(string $roleName, array $permissions, bool $staffRole = false)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "replace into permissions (name, values, displayStaff) values (?, ?, ?)";
         $app->dbNew->do($query, [$roleName, json_encode($permissions), $staffRole]);
@@ -350,7 +350,7 @@ class Permissions
      */
     public static function readRole(string $roleName)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select name, values, displayStaff from permissions where name = ?";
         $row = $app->dbNew->row($query, [$roleName]);
@@ -377,7 +377,7 @@ class Permissions
      */
     public static function deleteRole(string $roleName)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "delete from permissions where name = ?";
         $app->dbNew->do($query, [$roleName]);
@@ -396,7 +396,7 @@ class Permissions
      */
     public static function check_perms($PermissionName, $MinClass = 0)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $app->userOld['EffectiveClass'] ??= 1000;
         if ($app->userOld['EffectiveClass'] >= 1000) {
@@ -419,7 +419,7 @@ class Permissions
      */
     public static function get_permissions($PermissionID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $Permission = $app->cacheOld->get_value("perm_$PermissionID");
         if (empty($Permission)) {
@@ -449,7 +449,7 @@ class Permissions
      */
     public static function get_permissions_for_user($UserID, $CustomPermissions = false)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $UserInfo = User::user_info($UserID);
 

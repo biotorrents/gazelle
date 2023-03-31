@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (!check_perms('site_moderate_forums') || empty($_POST['id']) || empty($_POST['remove'])) {
     print

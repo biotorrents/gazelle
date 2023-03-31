@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 # golden
 Flight::route("/rules", function () {
-    $app = App::go();
+    $app = \Gazelle\App::go();
     $content = Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/rules/golden.md"));
     $app->twig->display("siteText/rules.twig", ["title" => "Golden rules", "content" => $content]);
 });
@@ -17,7 +17,7 @@ Flight::route("/rules", function () {
 
 # chat
 Flight::route("/rules/chat", function () {
-    $app = App::go();
+    $app = \Gazelle\App::go();
     $content = Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/rules/chat.md"));
     $app->twig->display("siteText/rules.twig", ["title" => "Chat rules", "content" => $content]);
 });
@@ -25,14 +25,14 @@ Flight::route("/rules/chat", function () {
 
 # clients
 Flight::route("/rules/clients", function () {
-    $app = App::go();
+    $app = \Gazelle\App::go();
     require_once "/{$app->env->serverRoot}/sections/rules/clients.php";
 });
 
 
 # collages
 Flight::route("/rules/collages", function () {
-    $app = App::go();
+    $app = \Gazelle\App::go();
     $content = Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/rules/collages.md"));
     $app->twig->display("siteText/rules.twig", ["title" => "Collection rules", "content" => $content]);
 });
@@ -40,14 +40,14 @@ Flight::route("/rules/collages", function () {
 
 # ratio
 Flight::route("/rules/ratio", function () {
-    $app = App::go();
+    $app = \Gazelle\App::go();
     require_once "/{$app->env->serverRoot}/sections/rules/ratio.php";
 });
 
 
 # requests
 Flight::route("/rules/requests", function () {
-    $app = App::go();
+    $app = \Gazelle\App::go();
     $content = Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/rules/requests.md"));
     $app->twig->display("siteText/rules.twig", ["title" => "Request rules", "content" => $content]);
 });
@@ -55,7 +55,7 @@ Flight::route("/rules/requests", function () {
 
 # tags
 Flight::route("/rules/tags", function () {
-    $app = App::go();
+    $app = \Gazelle\App::go();
     $content = Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/rules/tags.md"));
     $app->twig->display("siteText/rules.twig", ["title" => "Tagging rules", "content" => $content]);
 });
@@ -63,6 +63,6 @@ Flight::route("/rules/tags", function () {
 
 # upload
 Flight::route("/rules/upload", function () {
-    $app = App::go();
+    $app = \Gazelle\App::go();
     require_once "/{$app->env->serverRoot}/sections/rules/upload.php";
 });

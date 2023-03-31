@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (!empty($_GET['userid'])) {
     if (!check_perms('users_override_paranoia')) {

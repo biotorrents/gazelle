@@ -161,7 +161,7 @@ class NotificationsManager
      */
     public static function get_notification_enabled_users($Type, $UserID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $Type = db_string($Type);
         $UserWhere = '';
@@ -189,7 +189,7 @@ class NotificationsManager
      */
     public function load_one_reads()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $OneReads = $app->cacheOld->get_value('notifications_one_reads_' . $app->userNew->core["id"]);
         if (is_array($OneReads)) {
@@ -203,7 +203,7 @@ class NotificationsManager
      */
     public static function clear_one_read($ID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $OneReads = $app->cacheOld->get_value('notifications_one_reads_' . $app->userNew->core["id"]);
         if ($OneReads) {
@@ -222,7 +222,7 @@ class NotificationsManager
      */
     public function load_global_notification()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $GlobalNotification = $app->cacheOld->get_value('global_notification');
         if ($GlobalNotification) {
@@ -239,7 +239,7 @@ class NotificationsManager
      */
     public static function get_global_notification()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         return $app->cacheOld->get_value('global_notification');
     }
@@ -250,7 +250,7 @@ class NotificationsManager
      */
     public static function set_global_notification($Message, $URL, $Importance, $Expiration)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (empty($Message) || empty($Expiration)) {
             error('Error setting notification');
@@ -264,7 +264,7 @@ class NotificationsManager
      */
     public static function delete_global_notification()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $app->cacheOld->delete_value('global_notification');
     }
@@ -275,7 +275,7 @@ class NotificationsManager
      */
     public static function clear_global_notification()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $GlobalNotification = $app->cacheOld->get_value('global_notification');
         if ($GlobalNotification) {
@@ -293,7 +293,7 @@ class NotificationsManager
      */
     public function load_news()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $MyNews = $app->userNew->extra['LastReadNews'];
         $CurrentNews = $app->cacheOld->get_value('news_latest_id');
@@ -325,7 +325,7 @@ class NotificationsManager
      */
     public function load_blog()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $MyBlog = $app->userNew->extra['LastReadBlog'];
         $CurrentBlog = $app->cacheOld->get_value('blog_latest_id');
@@ -358,7 +358,7 @@ class NotificationsManager
      */
     public function load_staff_pms()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $NewStaffPMs = $app->cacheOld->get_value('staff_pm_new_' . $app->userNew->core["id"]);
         if ($NewStaffPMs === false) {
@@ -385,7 +385,7 @@ class NotificationsManager
      */
     public function load_inbox()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $NewMessages = $app->cacheOld->get_value('inbox_new_' . $app->userNew->core["id"]);
         if ($NewMessages === false) {
@@ -413,7 +413,7 @@ class NotificationsManager
      */
     public function load_torrent_notifications()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (check_perms('site_torrents_notify')) {
             $NewNotifications = $app->cacheOld->get_value('notifications_new_' . $app->userNew->core["id"]);
@@ -441,7 +441,7 @@ class NotificationsManager
      */
     public function load_collage_subscriptions()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (check_perms('site_collages_subscribe')) {
             $NewCollages = $app->cacheOld->get_value('collage_subs_user_new_' . $app->userNew->core["id"]);
@@ -472,7 +472,7 @@ class NotificationsManager
      */
     public function load_quote_notifications()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (isset($app->userNew->extra['NotifyOnQuote']) && $app->userNew->extra['NotifyOnQuote']) {
             $QuoteNotificationsCount = Subscriptions::has_new_quote_notifications();
@@ -502,7 +502,7 @@ class NotificationsManager
      */
     public static function clear_news($News)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         if (!$News) {
@@ -540,7 +540,7 @@ class NotificationsManager
      */
     public static function clear_blog($Blog)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         if (!isset($Blog) || !$Blog) {
@@ -580,7 +580,7 @@ class NotificationsManager
      */
     public static function clear_staff_pms()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query("
@@ -609,7 +609,7 @@ class NotificationsManager
      */
     public static function clear_inbox()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query("
@@ -639,7 +639,7 @@ class NotificationsManager
      */
     public static function clear_torrents()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query("
@@ -669,7 +669,7 @@ class NotificationsManager
      */
     public static function clear_collages()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query("
@@ -686,7 +686,7 @@ class NotificationsManager
      */
     public static function clear_quotes()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query("
@@ -703,7 +703,7 @@ class NotificationsManager
      */
     public static function clear_subscriptions()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         if (($UserSubscriptions = $app->cacheOld->get_value('subscriptions_user_' . $app->userNew->core["id"])) === false) {
@@ -734,7 +734,7 @@ class NotificationsManager
      */
     public static function get_settings($UserID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $Results = $app->cacheOld->get_value("users_notifications_settings_$UserID");
         if (!$Results) {
@@ -756,7 +756,7 @@ class NotificationsManager
      */
     public static function save_settings($UserID, $Settings = false)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (!is_array($Settings)) {
             // A little cheat technique, gets all keys in the $_POST array starting with 'notifications_'

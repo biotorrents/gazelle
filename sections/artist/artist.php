@@ -5,7 +5,7 @@
  * Main artist page
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 
 $ArtistID = $_GET['id'];

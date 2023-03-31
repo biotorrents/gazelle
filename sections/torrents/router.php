@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 
 /**
@@ -12,7 +12,7 @@ $app = App::go();
 /*
 # multi ( row ( single ) )
 Flight::route("/torrents(/@group(/@torrent))", function ($group, $torrent) {
-   $app = App::go();
+   $app = \Gazelle\App::go();
 
    # browse
    if (!$group) {

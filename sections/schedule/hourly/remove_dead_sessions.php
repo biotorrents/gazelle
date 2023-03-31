@@ -7,7 +7,7 @@ declare(strict_types=1);
  * remove dead sessions
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $now = Carbon\Carbon::now()->toDateTimeString();
 

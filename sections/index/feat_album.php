@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $FeaturedAlbum = $app->cacheOld->get_value('featured_album');
 if ($FeaturedAlbum === false) {

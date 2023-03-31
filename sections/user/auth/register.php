@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-$app = App::go();
+$app = \Gazelle\App::go();
 $auth = new Auth();
 
 # https://github.com/paragonie/anti-csrf

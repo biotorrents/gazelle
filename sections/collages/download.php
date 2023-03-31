@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 /*
 This page is something of a hack so those

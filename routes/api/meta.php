@@ -9,13 +9,13 @@ declare(strict_types=1);
 
 # manifest
 Flight::route("/api/manifest", function () {
-    Gazelle\API::success(App::manifest());
+    Gazelle\API::success(\Gazelle\App::manifest());
 });
 
 
 # metadata
 Flight::route("/api/metadata", function () {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     Gazelle\API::success($app->env->CATS);
 });

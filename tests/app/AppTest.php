@@ -10,14 +10,14 @@ declare(strict_types=1);
 final class AppTest extends PHPUnit\Framework\TestCase
 {
     /**
-     * @covers App::go()
+     * @covers \Gazelle\App::go()
      */
     public function testGo(): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $this->assertSame(
-            App::go(),
+            \Gazelle\App::go(),
             $app
         );
     }

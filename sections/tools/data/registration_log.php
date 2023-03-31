@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (!check_perms('users_view_ips') || !check_perms('users_view_email')) {
     error(403);

@@ -7,7 +7,7 @@ declare(strict_types=1);
  * tags
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $get = Http::query("get");
 $snatchedOnly = $get["snatches"] ?? null;

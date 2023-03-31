@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 authorize();
 if (!check_perms('site_torrents_notify')) {

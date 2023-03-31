@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (!isset($_GET['torrentid']) || !is_numeric($_GET['torrentid']) || !check_perms('site_view_torrent_snatchlist')) {
     error(404);
@@ -50,7 +50,7 @@ if (count($UserIDs) > 0) {
 ?>
 <h4 class="tooltip" title="List of users that have clicked the &quot;DL&quot; button">List of Downloaders</h4>
 <?php if ($NumResults > 100) { ?>
-<div class="linkbox"><?=App::ajaxPagination('show_downloads', $_GET['torrentid'], $NumResults, $Page)?></div>
+<div class="linkbox"><?=\Gazelle\App::ajaxPagination('show_downloads', $_GET['torrentid'], $NumResults, $Page)?></div>
 <?php } ?>
 <table>
   <tr class="colhead_dark" style="font-weight: bold;">
@@ -89,5 +89,5 @@ foreach ($Results as $ID=>$Data) {
   </tr>
 </table>
 <?php if ($NumResults > 100) { ?>
-<div class="linkbox"><?=App::ajaxPagination('show_downloads', $_GET['torrentid'], $NumResults, $Page)?></div>
+<div class="linkbox"><?=\Gazelle\App::ajaxPagination('show_downloads', $_GET['torrentid'], $NumResults, $Page)?></div>
 <?php } ?>

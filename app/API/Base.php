@@ -27,7 +27,7 @@ class Base
      */
     public static function checkToken(int $userId, string $token = "")
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         # get the token off the headers
         if (empty($token)) {
@@ -180,7 +180,7 @@ class Base
         return [];
 
         /*
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         if ($app->env->dev) {
             return [
@@ -201,7 +201,7 @@ class Base
      */
     private static function info()
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         return [
             "source" => $app->env->siteName,

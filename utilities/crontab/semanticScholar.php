@@ -28,7 +28,7 @@ CREATE TABLE `semanticScholar` (
 require_once __DIR__."/../../bootstrap/cli.php";
 
 # unlimit
-App::unlimit();
+\Gazelle\App::unlimit();
 
 # find torrent groups with identifiers
 $query = "select * from torrents_doi";

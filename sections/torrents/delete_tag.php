@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (!empty($app->userNew->extra['DisableTagging']) || !check_perms('site_delete_tag')) {
     error(403);

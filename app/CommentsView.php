@@ -38,7 +38,7 @@ class CommentsView
      */
     public static function render_comment($AuthorID, $PostID, $Body, $AddedTime, $EditedUserID, $EditedTime, $Link, $Unread = false, $Header = '', $Tools = true)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $UserInfo = User::user_info($AuthorID);
         $Header = User::format_username($AuthorID, true, true, true, true, true) . time_diff($AddedTime) . $Header; ?>

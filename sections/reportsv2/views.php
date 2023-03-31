@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 /*
  * This page is to outline all of the views built into reports v2.

@@ -7,7 +7,7 @@ declare(strict_types=1);
  * download torrent file
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 # variables
 $get = Http::query("get");

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 $ENV = ENV::go();
 
-$app = App::go();
+$app = \Gazelle\App::go();
 $db = $app->dbOld;
 
 $TwoFA = new RobThree\Auth\TwoFactorAuth($ENV->siteName);

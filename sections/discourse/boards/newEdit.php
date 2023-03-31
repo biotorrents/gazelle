@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 Http::csrf();
 
-$app = App::go();
+$app = \Gazelle\App::go();
 $discourse = new Discourse();
 
 /*

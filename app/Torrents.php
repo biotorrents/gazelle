@@ -35,7 +35,7 @@ class Torrents
      */
     public static function getGroupsForReal(array $groupIds): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (empty($groupIds)) {
             return [];
@@ -126,7 +126,7 @@ class Torrents
       */
     public static function get_groups($GroupIDs, $Return = true, $GetArtists = true, $Torrents = true)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $Found = $NotFound = array_fill_keys($GroupIDs, false);
         $Key = $Torrents ? 'torrent_group_' : 'torrent_group_light_';
@@ -358,7 +358,7 @@ class Torrents
      */
     public static function write_group_log($GroupID, $TorrentID, $UserID, $Message, $Hidden)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query("
@@ -394,7 +394,7 @@ class Torrents
      */
     public static function delete_torrent($ID, $GroupID = 0, $OcelotReason = -1)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         if (!$GroupID) {
@@ -511,7 +511,7 @@ class Torrents
      */
     public static function delete_group($GroupID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
 
@@ -664,7 +664,7 @@ class Torrents
      */
     public static function update_hash(int $GroupID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
 
@@ -1037,7 +1037,7 @@ class Torrents
      */
     public static function freeleech_torrents($TorrentIDs, $FreeNeutral = 1, $FreeLeechType = 0, $Announce = true)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (!is_array($TorrentIDs)) {
             $TorrentIDs = array($TorrentIDs);
@@ -1088,7 +1088,7 @@ class Torrents
      */
     public static function freeleech_groups($GroupIDs, $FreeNeutral = 1, $FreeLeechType = 0)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
 
@@ -1119,7 +1119,7 @@ class Torrents
      */
     public static function has_token($TorrentID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (empty($app->userNew->core)) {
             return false;
@@ -1180,7 +1180,7 @@ class Torrents
      */
     public static function has_snatched($TorrentID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (empty($app->userNew->core) || !isset($app->userNew->extra['ShowSnatched']) || !$app->userNew->extra['ShowSnatched']) {
             return false;
@@ -1358,7 +1358,7 @@ class Torrents
      */
     public static function is_leeching($TorrentID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (empty($app->userNew->core) || !isset($app->userNew->extra['ShowSnatched']) || !$app->userNew->extra['ShowSnatched']) {
             return false;
@@ -1455,7 +1455,7 @@ class Torrents
      */
     public static function set_snatch_update_time($UserID, $Time, $Force = false)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (!$UpdateTime = $app->cacheOld->get_value("users_snatched_{$UserID}_time")) {
             return;
@@ -1518,7 +1518,7 @@ class Torrents
     // Used to get reports info on a unison cache in both browsing pages and torrent pages.
     public static function get_reports($TorrentID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $Reports = $app->cacheOld->get_value("reports_torrent_$TorrentID");
         if ($Reports === false) {

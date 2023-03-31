@@ -7,7 +7,7 @@ declare(strict_types=1);
  * friends page
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $friends = \Gazelle\Friends::read();
 #!d($friends);exit;

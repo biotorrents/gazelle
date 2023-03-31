@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (!check_perms('site_torrents_notify')) {
     error(403);

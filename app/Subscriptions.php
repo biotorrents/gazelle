@@ -20,7 +20,7 @@ class Subscriptions
      */
     public static function quote_notify($Body, $PostID, $Page, $PageID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         /*
@@ -99,7 +99,7 @@ class Subscriptions
      */
     public static function subscribe($TopicID, $UserID = 0)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if ($UserID == 0) {
             $UserID = $app->userNew->core["id"];
@@ -135,7 +135,7 @@ class Subscriptions
      */
     public static function subscribe_comments($Page, $PageID, $UserID = 0)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if ($UserID == 0) {
             $UserID = $app->userNew->core["id"];
@@ -173,7 +173,7 @@ class Subscriptions
      */
     public static function get_subscriptions($UserID = 0)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if ($UserID == 0) {
             $UserID = $app->userNew->core["id"];
@@ -201,7 +201,7 @@ class Subscriptions
      */
     public static function get_comment_subscriptions($UserID = 0)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if ($UserID == 0) {
             $UserID = $app->userNew->core["id"];
@@ -228,7 +228,7 @@ class Subscriptions
      */
     public static function has_new_subscriptions()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
 
@@ -273,7 +273,7 @@ class Subscriptions
      */
     public static function has_new_quote_notifications()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QuoteNotificationsCount = $app->cacheOld->get_value('notify_quoted_' . $app->userNew->core["id"]);
         if ($QuoteNotificationsCount === false) {
@@ -333,7 +333,7 @@ class Subscriptions
      */
     public static function flush_subscriptions($Page, $PageID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         if ($Page == 'forums') {
@@ -366,7 +366,7 @@ class Subscriptions
      */
     public static function move_subscriptions($Page, $OldPageID, $NewPageID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         self::flush_subscriptions($Page, $OldPageID);
         $QueryID = $app->dbOld->get_query_id();
@@ -456,7 +456,7 @@ class Subscriptions
      */
     public static function flush_quote_notifications($Page, $PageID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query("

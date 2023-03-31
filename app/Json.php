@@ -23,7 +23,7 @@ class Json
      */
     public function __construct()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $this->mode = 0;
         $this->source = $app->env->siteName;
@@ -38,7 +38,7 @@ class Json
      */
     public function checkToken(int $userId, string $token = "")
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # get the token off the headers
         if (empty($token)) {
@@ -191,7 +191,7 @@ class Json
         return [];
 
         /*
-        $app = App::go();
+        $app = \Gazelle\App::go();
         $debug = Debug::go();
 
         if ($app->env->dev) {

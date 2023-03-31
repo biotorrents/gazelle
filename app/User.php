@@ -84,7 +84,7 @@ class User
      */
     private function factory(array $options = [])
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # start debug
         $app->debug["time"]->startMeasure("users", "user handling");
@@ -297,7 +297,7 @@ class User
      */
     private function enabledState(): int
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select enabled from users_main where id = ?";
         $enabled = $app->dbNew->single($query, [ $this->core["id"] ]);
@@ -340,7 +340,7 @@ class User
      */
     public static function exists(int $userId): bool
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select 1 from users where id = ?";
         $ref = $app->dbNew->single($query, [$userId]);
@@ -378,7 +378,7 @@ class User
      */
     public static function user_info($UserID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         global $Classes;
         $UserInfo = $app->cacheOld->get_value("user_info_".$UserID);
@@ -518,7 +518,7 @@ class User
      */
     public static function user_heavy_info($UserID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $HeavyInfo = $app->cacheOld->get_value("user_info_heavy_$UserID");
         if (empty($HeavyInfo)) {
@@ -696,7 +696,7 @@ class User
      */
     public static function get_bookmarks($UserID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $UserID = (int)$UserID;
 
@@ -733,7 +733,7 @@ class User
      */
     public static function displayAvatar(?string $uri, string $username): string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # workaround for null avatars
         $uri = strval($uri);
@@ -773,7 +773,7 @@ class User
      */
     public static function reset_password($UserID, $Username, $Email)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $ResetKey = Text::random();
         $app->dbOld->query("
@@ -795,7 +795,7 @@ class User
         ]
         );
 
-        App::email($Email, 'Password reset information for ' . $app->env->siteName, $email);
+        \Gazelle\App::email($Email, 'Password reset information for ' . $app->env->siteName, $email);
     }
 
 
@@ -806,7 +806,7 @@ class User
      */
     public static function uploadSource(): string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         return "{$app->env->siteName}-" . Text::random(16);
     }
@@ -819,7 +819,7 @@ class User
      */
     public function createApiToken(int $id, string $name, string $key): string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $suffix = sprintf('%014d', $id);
         $token = base64UrlEncode(Crypto::encrypt(random_bytes(32) . $suffix, $key));
@@ -849,7 +849,7 @@ class User
      */
     public function hasTokenByName(int $id, string $name)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select 1 from user_api_tokens where userId = ? and name = ?";
         $good = $app->dbNew->single($query, [$id, $name]);
@@ -863,7 +863,7 @@ class User
      */
     public function revokeApiTokenById(int $id, int $tokenId)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "update user_api_tokens set revoked = 1 where userId = ? and id = ?";
         $app->dbNew->do($query, [$id, $tokenId]);
@@ -878,7 +878,7 @@ class User
      */
     public function createPGP(string $publicKey): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # nested but much easier to read
         $publicKey = Esc::string($publicKey);
@@ -902,7 +902,7 @@ class User
      */
     public function readPGP(): ?string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select publicKey from users_main where id = ?";
         $publicKey = $app->dbNew->single($query, [ $this->core["id"] ]);
@@ -925,7 +925,7 @@ class User
      */
     public function deletePGP(): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "update users_main set publicKey = null where id = ?";
         $app->dbNew->do($query, [ $this->core["id"] ]);
@@ -937,7 +937,7 @@ class User
      */
     public function create2FA(string $secret, string $code): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
         $good = $twoFactor->verifyCode($secret, $code);
@@ -956,7 +956,7 @@ class User
      */
     public function read2FA(): ?string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select twoFactor from users_main where id = ?";
         $secret = $app->dbNew->single($query, [ $this->core["id"] ]);
@@ -979,7 +979,7 @@ class User
      */
     public function delete2FA(string $secret, string $code): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
         $good = $twoFactor->verifyCode($secret, $code);
@@ -1000,7 +1000,7 @@ class User
      */
     public function createU2F(string $request, string $response): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $u2f = new u2flib_server\U2F("https://{$app->env->siteDomain}");
         $good = $u2f->doRegister($request, $response);
@@ -1034,7 +1034,7 @@ class User
      */
     public function readU2F(): ?array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select * from u2f where userId = ?";
         $row = $app->dbNew->row($query, [ $this->core["id"] ]);
@@ -1057,7 +1057,7 @@ class User
      */
     public function deleteU2F(): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "delete from u2f where userId = ?";
         $app->dbNew->do($query, [ $this->core["id"] ]);
@@ -1075,7 +1075,7 @@ class User
      */
     public function updateSettings(array $data): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # make sure the data exists
         if (empty($data)) {
@@ -1353,7 +1353,7 @@ class User
      */
     public function defaultSiteOptions(): string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         return $app->env->defaultSiteOptions;
     }
@@ -1369,7 +1369,7 @@ class User
      */
     public function readProfile(int $userId): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # return basically $this
         $data = [ "core" => [], "extra" => [], "permissions" => [] ];
@@ -1419,7 +1419,7 @@ class User
      */
     public function recentSnatches(int $userId): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -1461,7 +1461,7 @@ class User
      */
     public function recentUploads(int $userId): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -1505,7 +1505,7 @@ class User
         # todo
         return [];
 
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -1542,7 +1542,7 @@ class User
      */
     public function recentCollages(int $userId): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -1614,7 +1614,7 @@ class User
      */
     public function communityStats(int $userId): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -1761,7 +1761,7 @@ class User
      */
     public function torrentStats(int $userId): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -1874,7 +1874,7 @@ class User
      */
     public function percentileStats(int $userId): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);

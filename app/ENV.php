@@ -396,7 +396,7 @@ class RecursiveArrayObject extends ArrayObject
      */
     public function toArray(): array|string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         return $app->env->toArray($this);
     }

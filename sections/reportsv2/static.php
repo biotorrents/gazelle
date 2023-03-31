@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 /**
  * This page is used for viewing reports in every viewpoint except auto.

@@ -43,7 +43,7 @@ class Tracker
      */
     public static function update_tracker(string $action, array $updates, bool $toIrc = false)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $ENV = ENV::go();
 
@@ -282,7 +282,7 @@ class Tracker
      */
     public static function allowedClients(): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $allowedClients = $app->cacheOld->get_value(self::$cachePrefix. __FUNCTION__) ?? [];
 

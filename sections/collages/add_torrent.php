@@ -3,7 +3,7 @@
 #declare(strict_types=1);
 
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 authorize();
 
@@ -11,7 +11,7 @@ $Val = new Validate();
 
 function add_torrent($CollageID, $GroupID)
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     $app->dbOld->query("
     SELECT MAX(Sort)

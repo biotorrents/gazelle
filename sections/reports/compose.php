@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (!check_perms('admin_reports')) {
     error(403);

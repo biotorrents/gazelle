@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 // If a user has downloaded more than 10 GiBs while on ratio watch, disable leeching privileges, and send the user a message
 $app->dbOld->query("

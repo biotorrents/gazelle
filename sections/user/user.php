@@ -7,7 +7,7 @@ declare(strict_types=1);
  * user profile page
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 # https://github.com/paragonie/anti-csrf
 Http::csrf();

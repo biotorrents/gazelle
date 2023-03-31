@@ -19,7 +19,7 @@ final class UpdateTorrentVarcharColumns extends AbstractMigration
      */
     public function change(): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # torrents_group
         $query = "

@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (!($IsFLS)) {
     // Logged in user is not FLS or Staff

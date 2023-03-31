@@ -17,7 +17,7 @@ require_once __DIR__."/../config/app.php";
 require_once __DIR__."/utilities.php";
 
 # load the app
-$app = App::go();
+$app = \Gazelle\App::go();
 
 # start time
 $startTime = microtime(true);

@@ -14,7 +14,7 @@ declare(strict_types=1);
  */
 
 spl_autoload_register(function (string $class) {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     $path = "{$app->env->serverRoot}/app/{$class}.php";
     if (!file_exists($path)) {

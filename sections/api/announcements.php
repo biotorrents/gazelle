@@ -1,7 +1,7 @@
 <?php
 
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (!$News = $app->cacheOld->get_value('news')) {
     $app->dbOld->query("

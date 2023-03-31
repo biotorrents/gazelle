@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types = 1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (!empty($_GET['collageid']) && is_numeric($_GET['collageid'])) {
     $CollageID = $_GET['collageid'];

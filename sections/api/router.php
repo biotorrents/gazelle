@@ -23,7 +23,7 @@ declare(strict_types=1);
  * The required page is determined by $_GET['action'].
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $ENV = ENV::go();
 

@@ -119,7 +119,7 @@ class View
         string $placeholder = '',
         string $value = '',
     ) {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $name = (empty($name)) ?? $id;
         $uuid = uniqid(); # autosave

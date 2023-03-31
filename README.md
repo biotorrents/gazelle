@@ -76,7 +76,7 @@ uses extensible ArrayObjects with by the
 [ENV special class](app/ENV.php).
 Also, the whole app is always instantly available:
 the config, database, cache, current user, Twig engine, etc.,
-are accessible with a simple call to `App::go()`.
+are accessible with a simple call to `\Gazelle\App::go()`.
 
 ## Twig template system
 

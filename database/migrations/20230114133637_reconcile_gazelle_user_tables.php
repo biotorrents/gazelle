@@ -19,7 +19,7 @@ final class ReconcileGazelleUserTables extends AbstractMigration
      */
     public function change()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # todo: move everything into a users_extra table later
         # the existing schema has significance for ocelot

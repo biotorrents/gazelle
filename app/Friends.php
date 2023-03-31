@@ -20,7 +20,7 @@ class Friends
      */
     public static function create(int $friendId, string $comment = ""): int
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         $good = User::exists($friendId);
         if (!$good) {
@@ -41,7 +41,7 @@ class Friends
      */
     public static function read(): array
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         $query = "
             select users_friends.friendId, users_friends.comment, users_friends.created,
@@ -66,7 +66,7 @@ class Friends
      */
     public static function update(int $friendId, string $comment): void
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         $good = User::exists($friendId);
         if (!$good) {
@@ -85,7 +85,7 @@ class Friends
      */
     public static function delete(int $friendId): void
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         $good = User::exists($friendId);
         if (!$good) {
@@ -104,7 +104,7 @@ class Friends
      */
     public static function isFriend(int $friendId): bool
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select 1 from users_friends where userId = ? and friendId = ?";
         $ref = $app->dbNew->single($query, [$app->userNew->core["id"], $friendId]);

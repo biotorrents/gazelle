@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 // Don't allow bigger queries than specified below regardless of called function
 $SizeLimit = 10;

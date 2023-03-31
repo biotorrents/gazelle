@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 // The SQL query's line below controls the deletion clock
 //   (t.last_action < (NOW() - INTERVAL 28 DAY) AND t.last_action IS NOT NULL)

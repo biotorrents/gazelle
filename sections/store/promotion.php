@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 # todo: I like the idea of store-based promotions expanded to other factors,
 # e.g., under an HnR threshold or minimum account age

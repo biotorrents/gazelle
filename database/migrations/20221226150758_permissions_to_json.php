@@ -19,7 +19,7 @@ final class PermissionsToJson extends AbstractMigration
      */
     public function change()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select id, `values` from permissions";
         $ref = $app->dbNew->multi($query, []);

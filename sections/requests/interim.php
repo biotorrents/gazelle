@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     error(404);

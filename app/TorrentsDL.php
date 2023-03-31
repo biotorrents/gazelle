@@ -38,10 +38,10 @@ class TorrentsDL
      */
     public function __construct(&$QueryResult, $Title)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $app->cacheOld->InternalCache = false; // The internal cache is almost completely useless for this
-        App::unlimit(); // Need more memory and longer timeout
+        \Gazelle\App::unlimit(); // Need more memory and longer timeout
         $this->QueryResult = $QueryResult;
         $this->Title = $Title;
         $this->User = $app->userNew;
@@ -49,7 +49,7 @@ class TorrentsDL
 
         function add_passkey($Ann)
         {
-            $app = App::go();
+            $app = \Gazelle\App::go();
 
             return (is_array($Ann)) ? array_map('add_passkey', $Ann) : $Ann."/".$app->userNew->extra['torrent_pass']."/announce";
         }
@@ -77,7 +77,7 @@ class TorrentsDL
      */
     public function get_downloads($Key)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $GroupIDs = $Downloads = [];
         $OldQuery = $app->dbOld->get_query_id();

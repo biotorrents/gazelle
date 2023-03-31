@@ -22,7 +22,7 @@ class LockedAccounts
      */
     public static function lock_account($UserID, $Type, $Message, $Reason, $LockedByUserID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if ($LockedByUserID === 0) {
             $Username = "System";
@@ -53,7 +53,7 @@ class LockedAccounts
      */
     public static function unlock_account($UserID, $Type, $Message, $Reason, $UnlockedByUserID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if ($UnlockedByUserID === 0) {
             $Username = "System";

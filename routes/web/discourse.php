@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @see app/Discourse.php
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if ($app->env->enableDiscourse) {
     /** FORUMS */
@@ -16,13 +16,13 @@ if ($app->env->enableDiscourse) {
     # new/edit thread
     # must come first
     Flight::route("/boards/post", function () {
-        $app = App::go();
+        $app = \Gazelle\App::go();
         require_once "{$app->env->serverRoot}/sections/discourse/boards/newEdit.php";
     });
 
     # e.g., /boards/staff/about-the-staff-category
     Flight::route("/boards(/@categorySlug(/@topicSlug))", function ($categorySlug, $topicSlug) {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # topic
         if (!empty($topicSlug)) {
@@ -46,7 +46,7 @@ if ($app->env->enableDiscourse) {
 
     # blog
     Flight::route("/blog(/@slug)", function ($slug) {
-        $app = App::go();
+        $app = \Gazelle\App::go();
         require_once "{$app->env->serverRoot}/sections/discourse/blog/index.php";
     });
 
@@ -58,7 +58,7 @@ if ($app->env->enableDiscourse) {
 
     # inbox and outbox
     Flight::route("/userNew/@username/messages(/@filter)", function ($username, $filter) {
-        $app = App::go();
+        $app = \Gazelle\App::go();
         require_once "{$app->env->serverRoot}/sections/discourse/messages/index.php";
     });
 
@@ -68,7 +68,7 @@ if ($app->env->enableDiscourse) {
 
     # e.g., /wiki/bonus-points
     Flight::route("/wiki(/@slug)", function ($slug) {
-        $app = App::go();
+        $app = \Gazelle\App::go();
         require_once "{$app->env->serverRoot}/sections/discourse/wiki/index.php";
     });
 } # if enableDiscourse

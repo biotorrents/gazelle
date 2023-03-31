@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types = 1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $GroupID = $_GET['groupid'];
 $TorrentID = $_GET['torrentid'];

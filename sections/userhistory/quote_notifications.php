@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (!empty($app->userNew->extra['DisableForums'])) {
     error(403);

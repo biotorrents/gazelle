@@ -19,7 +19,7 @@ final class UsersFriendsTable extends AbstractMigration
      */
     public function change()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "drop table if exists friends";
         $app->dbNew->do($query, []);

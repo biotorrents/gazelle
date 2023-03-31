@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 // Begin user stats
 if (($UserCount = $app->cacheOld->get_value('stats_user_count')) === false) {

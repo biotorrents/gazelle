@@ -21,7 +21,7 @@ class Friends extends Base
      */
     public static function create()
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         self::checkToken($app->userNew->core["id"]);
 
@@ -81,7 +81,7 @@ class Friends extends Base
      */
     public static function delete()
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         self::checkToken($app->userNew->core["id"]);
 

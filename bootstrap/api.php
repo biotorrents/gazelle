@@ -18,7 +18,7 @@ if (headers_sent()) {
 # https://github.com/OPSnet/Gazelle/blob/master/sections/api/index.php
 #header("Content-Type: application/json; charset=utf-8");
 
-$app = App::go();
+$app = \Gazelle\App::go();
 $json = new Json();
 
 $get = Http::query("get");

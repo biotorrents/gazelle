@@ -50,7 +50,7 @@ EOT;
      */
     public static function new_request($Username, $Email)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (empty($Username)) {
             Http::redirect('login');
@@ -150,7 +150,7 @@ EOT;
      */
     public static function handle_requests($IDs, $Status, $Comment)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # Error checking
         if ($Status !== self::APPROVED && $Status !== self::DENIED && $Status !== self::DISCARDED) {
@@ -214,7 +214,7 @@ EOT;
                 // Send email
                 $Subject = "Your enable request for $ENV->siteName has been ";
                 $Subject .= ($Status === self::APPROVED) ? 'approved' : 'denied';
-                App::email($Email, $Subject, $email);
+                \Gazelle\App::email($Email, $Subject, $email);
             }
         } else {
             foreach ($Results as $Result) {
@@ -270,7 +270,7 @@ EOT;
      */
     public static function unresolve_request($ID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $ID = (int) $ID;
         if (empty($ID)) {
@@ -344,7 +344,7 @@ EOT;
      */
     public static function handle_token($Token)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $Token = db_string($Token);
         $app->dbOld->query("

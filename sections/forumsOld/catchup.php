@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 authorize();
 if (!isset($_GET['forumid']) || ($_GET['forumid'] != 'all' && !is_numeric($_GET['forumid']))) {

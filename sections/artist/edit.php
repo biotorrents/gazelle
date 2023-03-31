@@ -10,7 +10,7 @@ ID of the artist, and must be set.
 
 ************************************************************************/
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $ArtistID = $_GET['artistid'];
 if (!is_numeric($ArtistID)) {

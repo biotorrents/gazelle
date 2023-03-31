@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 /** LEGACY ROUTES */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 
 if (!check_perms('site_proxy_images')) {

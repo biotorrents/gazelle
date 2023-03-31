@@ -10,7 +10,7 @@ declare(strict_types=1);
  * Non-mods and empty userid show $app->userNew->core['id']'s history.
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 # Validate user ID
 if (isset($_GET['userid'])) {

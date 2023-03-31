@@ -43,7 +43,7 @@ class Auth # extends Delight\Auth\Auth
      */
     public function __construct()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if ($app->env->dev) {
             $throttling = false;
@@ -78,7 +78,7 @@ class Auth # extends Delight\Auth\Auth
      */
     public function register(array $data): string|int
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # escape the inputs
         $email = Esc::email($data["email"] ?? null);
@@ -137,7 +137,7 @@ class Auth # extends Delight\Auth\Auth
 
             # if you want to enforce unique usernames, simply call registerWithUniqueUsername instead of register, and be prepared to catch the DuplicateUsernameException
             $response = $this->library->registerWithUniqueUsername($email, $passphrase, $username, function ($selector, $token) use ($email) {
-                $app = App::go();
+                $app = \Gazelle\App::go();
 
                 # build the verification uri
                 $uri = "https://{$app->env->siteDomain}/confirm/{$selector}/{$token}";
@@ -147,7 +147,7 @@ class Auth # extends Delight\Auth\Auth
                 $body = $app->twig->render("email/verifyRegistration.twig", ["env" => $app->env, "uri" => $uri]);
 
                 # send the email
-                App::email($email, $subject, $body);
+                \Gazelle\App::email($email, $subject, $body);
             });
 
             return $response;
@@ -174,7 +174,7 @@ class Auth # extends Delight\Auth\Auth
      */
     public function hydrateUserInfo(int $userId, array $data = [])
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # http query vars
         $server = Http::query("server");
@@ -321,7 +321,7 @@ class Auth # extends Delight\Auth\Auth
      */
     public function login(array $data)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#login
         $message = $this->message;
@@ -423,7 +423,7 @@ class Auth # extends Delight\Auth\Auth
      */
     public function verify2FA(int $userId, string $twoFactorCode): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # get the secret
         $query = "select twoFactor from users_main where id = ? and twoFactor is not null";
@@ -446,7 +446,7 @@ class Auth # extends Delight\Auth\Auth
      */
     public function verifyU2F(int $userId, $request, $response): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select * from u2f where userId = ? and twoFactor is not null";
         $ref = $app->dbNew->row($query, [$userId]);
@@ -497,7 +497,7 @@ class Auth # extends Delight\Auth\Auth
      */
     public function confirmEmail(string $selector, string $token)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $message = "Invalid selector or token";
 
@@ -521,7 +521,7 @@ class Auth # extends Delight\Auth\Auth
      */
     private function remember(bool $enabled = false): int
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $enabled = Esc::bool($enabled);
 
@@ -544,7 +544,7 @@ class Auth # extends Delight\Auth\Auth
      */
     public function recoverStart(string $email, string $ip)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $message = "Unable to start account recovery";
 
@@ -553,7 +553,7 @@ class Auth # extends Delight\Auth\Auth
 
         try {
             $this->library->forgotPassword($email, function ($selector, $token) use ($email, $ip) {
-                $app = App::go();
+                $app = \Gazelle\App::go();
 
                 # build the verification uri
                 $uri = "https://{$app->env->siteDomain}/recover/{$selector}/{$token}";
@@ -563,7 +563,7 @@ class Auth # extends Delight\Auth\Auth
                 $subject = "Your {$app->env->siteName} passphrase recovery";
                 $body = $app->twig->render("email/passphraseReset.twig", ["uri" => $uri, "ip" => $ip]);
 
-                App::email($to, $subject, $body);
+                \Gazelle\App::email($to, $subject, $body);
                 Announce::slack("{$to}\n{$subject}\n{$body}", ["debug"]);
             });
         } catch (Throwable $e) {
@@ -581,7 +581,7 @@ class Auth # extends Delight\Auth\Auth
      */
     public function recoverMiddle(string $selector, string $token)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $message = "Unable to continue account recovery";
 
@@ -607,7 +607,7 @@ class Auth # extends Delight\Auth\Auth
      */
     public function recoverEnd(string $selector, string $token, string $passphrase, string $confirmPassphrase)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $message = "Unable to finish account recovery";
 
@@ -635,7 +635,7 @@ class Auth # extends Delight\Auth\Auth
      */
     public function changePassphrase(string $oldPassphrase, string $newPassphrase)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $message = "Unable to update passphrase";
 
@@ -657,7 +657,7 @@ class Auth # extends Delight\Auth\Auth
      */
     public function changeEmail(string $newEmail, string $passphrase)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $message = "Unable to update email";
 
@@ -689,7 +689,7 @@ class Auth # extends Delight\Auth\Auth
      */
     public function resendConfirmation(string $email)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $message = "Unable to resend confirmation email";
 
@@ -754,7 +754,7 @@ If you need the custom user information only rarely, you may just retrieve it as
      */
     public function enforceLogin(string $passphrase)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $message = $this->message;
 
@@ -775,7 +775,7 @@ If you need the custom user information only rarely, you may just retrieve it as
      */
     public function toggleReset(bool $enabled, string $passphrase)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $message = "Unable to update reset preference";
 
@@ -872,7 +872,7 @@ If you need the custom user information only rarely, you may just retrieve it as
      */
     public function createSession(int $userId, bool $rememberMe = false)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $server = Http::query("server");
 
@@ -905,7 +905,7 @@ If you need the custom user information only rarely, you may just retrieve it as
      */
     public function readSession(string $sessionId)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select * from users_sessions where sessionId = ?";
         $row = $app->dbNew->row($query, [$sessionId]);
@@ -919,7 +919,7 @@ If you need the custom user information only rarely, you may just retrieve it as
      */
     public function updateSession(string $sessionId, bool $rememberMe = false)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $expires = Carbon\Carbon::createFromTimestamp($this->remember($rememberMe))->toDateString();
 
@@ -933,7 +933,7 @@ If you need the custom user information only rarely, you may just retrieve it as
      */
     public function deleteSession(string $sessionId)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "delete from users_sessions where sessionId = ?";
         $app->dbNew->do($query, [$sessionId]);
@@ -953,7 +953,7 @@ If you need the custom user information only rarely, you may just retrieve it as
      */
     public static function createBearerToken(?string $name = null): string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $token = Text::random(128);
         $name ??= Text::random(16);
@@ -984,7 +984,7 @@ If you need the custom user information only rarely, you may just retrieve it as
      */
     public static function readBearerToken(): ?array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select * from api_user_tokens where userId = ? and revoked = ?";
         $ref = $app->dbNew->multi($query, [$app->userNew->core["id"], 0]);
@@ -1010,7 +1010,7 @@ If you need the custom user information only rarely, you may just retrieve it as
      */
     public static function deleteBearerToken(int $tokenId): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "update api_user_tokens set revoked = ? where id = ?";
         $app->dbNew->do($query, [1, $tokenId]);

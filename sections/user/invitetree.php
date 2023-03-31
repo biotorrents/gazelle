@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (isset($_GET['userid']) && check_perms('users_view_invites')) {
     if (!is_numeric($_GET['userid'])) {

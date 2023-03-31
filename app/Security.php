@@ -38,7 +38,7 @@ class Security
      */
     public function checkUser($Permissions = [], $UserID = null)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         /*
         if (!$UserID) {

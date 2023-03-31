@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 /**
  * This is the frontend of reporting a torrent, it's what users see when

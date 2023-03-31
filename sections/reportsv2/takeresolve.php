@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 /*
  * This is the backend of the AJAXy reports resolve (When you press the shiny submit button).

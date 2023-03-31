@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $SphQL = new SphinxqlQuery();
 $SphQL->where_match('_all', 'fake', false);

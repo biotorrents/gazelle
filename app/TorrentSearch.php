@@ -186,7 +186,7 @@ class TorrentSearch
      */
     public function __construct(bool $groupResults, string $orderBy, string $orderWay, int $page, int $pageSize)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # bad arguments
         if ($groupResults && !isset(self::$sortOrdersGrouped[$orderBy])

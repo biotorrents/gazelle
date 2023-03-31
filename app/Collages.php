@@ -16,7 +16,7 @@ class Collages
      */
     public static function addSubscription(int $collageId): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "update collages set subscribers = subscribers + 1 where id = ?";
         $app->dbNew->do($query, [$collageId]);
@@ -28,7 +28,7 @@ class Collages
      */
     public static function subtractSubscription(int $collageId): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select subscribers from collages where id = ?";
         $subscriberCount = $app->dbNew->single($query, [$collageId]) ?? 0;
@@ -47,7 +47,7 @@ class Collages
      */
     public static function createPersonal(): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select count(id) from collages where userId = ? and categoryId = ? and deleted = ?";
         $collageCount = $app->dbNew->single($query, [$app->userNew->core["id"], 0, 0]) ?? 0;

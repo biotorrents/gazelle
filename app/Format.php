@@ -571,7 +571,7 @@ class Format
      */
     public static function breadcrumbs()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
         $server = Http::query("server");
 
         $path = explode("/", $server["REQUEST_URI"]);

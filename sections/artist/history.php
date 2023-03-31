@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (!is_numeric($_GET['artistid'])) {
     error(0);

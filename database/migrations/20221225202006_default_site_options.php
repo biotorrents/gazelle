@@ -19,7 +19,7 @@ final class DefaultSiteOptions extends AbstractMigration
      */
     public function change()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "update users_info set siteOptions = ?";
         $app->dbNew->do($query, [$app->env->defaultSiteOptions]);

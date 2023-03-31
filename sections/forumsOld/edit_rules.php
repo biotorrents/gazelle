@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 enforce_login();
 if (!check_perms('site_moderate_forums')) {

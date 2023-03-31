@@ -19,7 +19,7 @@ final class MigrateUserData extends AbstractMigration
      */
     public function change()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # drop the existing table
         $query = "drop table if exists users";

@@ -7,7 +7,7 @@ declare(strict_types=1);
  * main user settings page
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 #!d($app->userNew->extra);exit;
 
 # https://github.com/paragonie/anti-csrf

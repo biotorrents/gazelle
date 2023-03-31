@@ -7,7 +7,7 @@ declare(strict_types=1);
  * top10 torrents
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 enforce_login();
 if (!check_perms('site_top10')) {
@@ -425,7 +425,7 @@ View::footer();
 // Generate a table based on data from most recent query to $db
 function generate_torrent_table($Caption, $Tag, $Details, $Limit)
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     global $user, $Categories, $ReleaseTypes, $GroupBy; ?>
 <h3>Top <?="$Limit $Caption"?>

@@ -7,7 +7,7 @@ declare(strict_types=1);
  * torrent stats page
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 $stats = new Stats();
 
 

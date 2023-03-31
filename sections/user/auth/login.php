@@ -7,7 +7,7 @@ declare(strict_types=1);
  * user login page
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 #!d($app->userNew);exit;
 
 if ($app->userNew->isLoggedIn()) {

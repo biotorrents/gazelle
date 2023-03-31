@@ -27,7 +27,7 @@ function carbon($when = "")
  */
 function enforce_login()
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     if (empty($app->userNew->core)) {
         Http::setCookie(['redirect' => $_SERVER['REQUEST_URI']]);
@@ -45,7 +45,7 @@ function enforce_login()
  */
 function authorize($Ajax = false)
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     # Ugly workaround for API tokens
     if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
@@ -127,7 +127,7 @@ function send_irc($Channels = null, $Message = '')
  */
 function error(int|string $error = 400, $noHtmlUnused = false, $logUnused = false): void
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     # https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
     $map = [
@@ -172,7 +172,7 @@ function error(int|string $error = 400, $noHtmlUnused = false, $logUnused = fals
  */
 function check_perms(string $permission, $unused = 0)
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     return $app->userNew->can($permission);
 }
@@ -183,7 +183,7 @@ function check_perms(string $permission, $unused = 0)
  */
 function site_url()
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     return "https://{$app->env->siteDomain}";
 }
@@ -405,7 +405,7 @@ define("PARANOIA_OVERRIDDEN", 2);
 
 function check_paranoia($Property, $Paranoia = false, $UserClass = false, $UserID = false)
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     global $Classes;
     if ($Property == false) {
@@ -541,7 +541,7 @@ function time_minus($Offset, $Fuzzy = false)
  */
 function sqltime($timestamp = null)
 {
-    return App::sqlTime($timestamp);
+    return \Gazelle\App::sqlTime($timestamp);
 }
 
 

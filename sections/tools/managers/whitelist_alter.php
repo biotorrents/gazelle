@@ -1,7 +1,7 @@
 <?php
 
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 authorize();
 

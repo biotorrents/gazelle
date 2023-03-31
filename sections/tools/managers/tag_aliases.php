@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (!(check_perms('users_mod') || check_perms('site_tag_aliases_read'))) {
     error(403);

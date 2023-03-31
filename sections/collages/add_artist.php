@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 //NumTorrents is actually the number of things in the collage, the name just isn't generic.
 
@@ -13,7 +13,7 @@ $Val = new Validate();
 
 function add_artist($CollageID, $ArtistID)
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
 
     $app->dbOld->query("

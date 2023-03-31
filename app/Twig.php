@@ -73,7 +73,7 @@ class Twig # extends Twig\Environment
      */
     private static function factory(array $options = []): Twig\Environment
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # https://twig.symfony.com/doc/3.x/api.html
         $twig = new Twig\Environment(
@@ -162,7 +162,7 @@ class Twig # extends Twig\Environment
 
         # DebugBar: header
         $twig->addFunction(new Twig\TwigFunction("debugHeader", function () {
-            $app = App::go();
+            $app = \Gazelle\App::go();
             $render = $app->debug->getJavascriptRenderer();
 
             return new Twig\Markup(
@@ -173,7 +173,7 @@ class Twig # extends Twig\Environment
 
         # DebugBar: footer
         $twig->addFunction(new Twig\TwigFunction("debugFooter", function () {
-            $app = App::go();
+            $app = \Gazelle\App::go();
             $render = $app->debug->getJavascriptRenderer();
 
             return new Twig\Markup(
@@ -184,14 +184,14 @@ class Twig # extends Twig\Environment
 
         # can
         $twig->addFunction(new Twig\TwigFunction("can", function ($permission) {
-            $app = App::go();
+            $app = \Gazelle\App::go();
 
             return $app->userNew->can($permission);
         }));
 
         # cant
         $twig->addFunction(new Twig\TwigFunction("cant", function ($permission) {
-            $app = App::go();
+            $app = \Gazelle\App::go();
 
             return $app->userNew->cant($permission);
         }));
@@ -384,7 +384,7 @@ class Twig # extends Twig\Environment
 
         # random tag
         $twig->addFunction(new Twig\TwigFunction("randomTag", function () {
-            $app = App::go();
+            $app = \Gazelle\App::go();
 
             $query = "select name from tags where tagType = ? order by rand() limit 1";
             $randomTag = $app->dbNew->single($query, ["genre"]);

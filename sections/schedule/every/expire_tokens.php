@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 // Expire old FL tokens and clear cache where needed
 $app->dbOld->query("

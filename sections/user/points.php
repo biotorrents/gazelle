@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $Amount = (int) db_string($_POST['amount']);
 $To = (int) db_string($_POST['to']);

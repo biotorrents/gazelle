@@ -77,7 +77,7 @@ class Database extends PDO
      */
     private function factory(array $options = [])
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # vars
         $host = $app->env->getPriv("sqlHost");
@@ -138,7 +138,7 @@ class Database extends PDO
      */
     public function do(string $query, array $args = [])
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # debug
         if ($app->env->dev) {
@@ -178,7 +178,7 @@ class Database extends PDO
      */
     public function single(string $query, array $args = [])
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
         if ($app->cacheOld->get_value($cacheKey) && !$app->env->dev) {
@@ -204,7 +204,7 @@ class Database extends PDO
      */
     public function row(string $query, array $args = [])
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
         if ($app->cacheOld->get_value($cacheKey) && !$app->env->dev) {
@@ -228,7 +228,7 @@ class Database extends PDO
      */
     public function column(string $query, string $column, array $args = [])
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
         if ($app->cacheOld->get_value($cacheKey) && !$app->env->dev) {
@@ -255,7 +255,7 @@ class Database extends PDO
      */
     public function multi(string $query, array $args = []): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
         if ($app->cacheOld->get_value($cacheKey) && !$app->env->dev) {

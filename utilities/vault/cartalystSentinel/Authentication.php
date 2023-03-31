@@ -44,7 +44,7 @@ class Authentication
      */
     public function __construct()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # eloquent capsule
         try {
@@ -103,7 +103,7 @@ class Authentication
      */
     public function check(): bool
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         return ($app->userNew = Sentinel::check());
     }
@@ -127,7 +127,7 @@ class Authentication
      */
     public function getUser(bool $check = true)
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         return ($app->userNew = Sentinel::getUser());
     }

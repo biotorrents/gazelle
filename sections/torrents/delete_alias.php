@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $ArtistID = db_string($_GET['artistid']);
 $GroupID = db_string($_GET['groupid']);

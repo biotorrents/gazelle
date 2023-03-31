@@ -21,7 +21,7 @@ class Forums
      */
     public static function get_thread_info($ThreadID, $Return = true, $SelectiveCache = false)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if ((!$ThreadInfo = $app->cacheOld->get_value('thread_' . $ThreadID . '_info')) || !isset($ThreadInfo['Ranking'])) {
             $QueryID = $app->dbOld->get_query_id();
@@ -105,7 +105,7 @@ class Forums
      */
     public static function check_forumperm($ForumID, $Perm = 'Read')
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $Forums = self::get_forums();
         if (isset($app->userNew->extra['CustomForums'][$ForumID]) && $app->userNew->extra['CustomForums'][$ForumID] === 1) {
@@ -130,7 +130,7 @@ class Forums
      */
     public static function get_forum_info($ForumID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $Forum = $app->cacheOld->get_value("ForumInfo_$ForumID");
         if (!$Forum) {
@@ -172,7 +172,7 @@ class Forums
      */
     public static function get_forum_categories()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $ForumCats = $app->cacheOld->get_value('forums_categories');
         if ($ForumCats === false) {
@@ -202,7 +202,7 @@ class Forums
      */
     public static function get_forums()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (!$Forums = $app->cacheOld->get_value('forums_list')) {
             $QueryID = $app->dbOld->get_query_id();
@@ -275,7 +275,7 @@ class Forums
      */
     public static function get_permitted_forums()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (isset($app->userNew->extra['CustomForums'])) {
             return (array)array_keys($app->userNew->extra['CustomForums'], 1);
@@ -290,7 +290,7 @@ class Forums
      */
     public static function get_restricted_forums()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (isset($app->userNew->extra['CustomForums'])) {
             return (array)array_keys($app->userNew->extra['CustomForums'], 0);
@@ -306,7 +306,7 @@ class Forums
      */
     public static function get_last_read($Forums)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (isset($app->userNew->extra['PostsPerPage'])) {
             $PerPage = $app->userNew->extra['PostsPerPage'];
@@ -363,7 +363,7 @@ class Forums
      */
     public static function add_topic_note($TopicID, $Note, $UserID = null)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if ($UserID === null) {
             $UserID = $app->userNew->core["id"];
@@ -401,7 +401,7 @@ class Forums
      */
     public static function is_unread($Locked, $Sticky, $LastPostID, $LastRead, $LastTopicID, $LastTime)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         return (!$Locked || $Sticky)
             && $LastPostID !== 0
@@ -418,7 +418,7 @@ class Forums
      */
     public static function user_forums_sql()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         // I couldn't come up with a good name, please rename this if you can. -- Y
         $RestrictedForums = self::get_restricted_forums();

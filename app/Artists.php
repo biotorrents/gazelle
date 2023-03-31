@@ -29,7 +29,7 @@ class Artists
      */
     public static function get_artists($GroupIDs)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $Results = [];
         $dbs = [];
@@ -179,7 +179,7 @@ class Artists
      */
     public static function delete_artist($creatorID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->prepared_query("

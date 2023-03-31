@@ -23,7 +23,7 @@ class ImageTools
      */
     public static function process(string|array $uri, $thumbnail = false): string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $presharedKey = $app->env->getPriv("imagePsk");
 

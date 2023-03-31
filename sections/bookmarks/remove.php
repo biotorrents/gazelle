@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 authorize();
 if (!Bookmarks::validateType($_GET['type'])) {

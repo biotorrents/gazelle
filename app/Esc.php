@@ -137,7 +137,7 @@ class Esc
      */
     public static function username(mixed $unsafe): string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $safe = self::string($unsafe);
         if (preg_match("/{$app->env->regexUsername}/iD", $safe)) {
@@ -155,7 +155,7 @@ class Esc
      */
     public static function passphrase(mixed $unsafe): string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $safe = self::string($unsafe);
         $safe = str_replace("\0", "", $safe);

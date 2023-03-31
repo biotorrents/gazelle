@@ -18,7 +18,7 @@ class Tools
      */
     public static function site_ban_ip($IP)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $debug = Debug::go();
 
@@ -111,7 +111,7 @@ class Tools
      */
     public static function disable_users($UserIDs, $AdminComment, $BanReason = 1)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         if (!is_array($UserIDs)) {
@@ -185,7 +185,7 @@ class Tools
      */
     public static function warn_user($UserID, $Duration, $Reason)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query("
@@ -246,7 +246,7 @@ class Tools
      */
     public static function update_user_notes($UserID, $AdminComment)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query('

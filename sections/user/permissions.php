@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 // todo: Redo HTML
 if (!check_perms('admin_manage_permissions')) {

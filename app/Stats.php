@@ -30,7 +30,7 @@ class Stats
      */
     public function __construct()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $this->baseUri = $app->env->plausibleUri;
         $this->siteId = $app->env->siteDomain;
@@ -99,7 +99,7 @@ class Stats
      */
     public function overview(array $options = [])
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -128,7 +128,7 @@ class Stats
      */
     public function topPages(array $options = []): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -176,7 +176,7 @@ class Stats
      */
     public function sources(array $options = []): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -215,7 +215,7 @@ class Stats
      */
     public function overTime(array $options = []): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -270,7 +270,7 @@ class Stats
      */
     public function locations(array $options = []): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -300,7 +300,7 @@ class Stats
      */
     public function devices(array $options = []): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -416,7 +416,7 @@ class Stats
      */
     public function economyOverTime()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -509,7 +509,7 @@ class Stats
      */
     public function trackerEconomy(): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -638,7 +638,7 @@ class Stats
      */
     public function torrentsTimeline(): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -686,7 +686,7 @@ class Stats
      */
     public function usersTimeline(): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -734,7 +734,7 @@ class Stats
      */
     public function categoryDistribution(): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -771,7 +771,7 @@ class Stats
      */
     public function classDistribution(): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -804,7 +804,7 @@ class Stats
      */
     public function databaseSpecifics(): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -870,7 +870,7 @@ class Stats
      */
     public function activeUsers(): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -921,7 +921,7 @@ class Stats
      */
     public function torrentAggregates(): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);
@@ -974,7 +974,7 @@ class Stats
      */
     public function trackerAggregates()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cacheOld->get_value($cacheKey);

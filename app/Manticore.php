@@ -114,7 +114,7 @@ class Manticore
      */
     public function __construct()
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         try {
             # https://github.com/FoolCode/SphinxQL-Query-Builder#connection
@@ -157,7 +157,7 @@ class Manticore
      */
     public function search(string $what, array $data = []): array
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         # start debug
         $app->debug["time"]->startMeasure("manticore", "manticore search");

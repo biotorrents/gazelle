@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 define('EMAILS_PER_PAGE', 25);
 if (!check_perms('users_view_email')) {

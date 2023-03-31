@@ -8,10 +8,10 @@ declare(strict_types=1);
  */
 
 # quick sanity checks
-App::gotcha();
+\Gazelle\App::gotcha();
 
 # load the app
-$app = App::go();
+$app = \Gazelle\App::go();
 
 # query vars
 $get = Http::query("get");

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 /*
 $ENV = ENV::go();
@@ -40,7 +40,7 @@ if (apcu_exists('DBKEY')) {
     while (list($Username, $Email) = $app->dbOld->next_record()) {
         $Email = Crypto::decrypt($Email);
         $Body = "Hi $Username,\n\nIt has been almost a year since you used your account at ".site_url().". This is an automated email to inform you that your account will be disabled in 10 days if you do not sign in.";
-        App::email($Email, "Your $ENV->siteName account is about to be disabled", $Body);
+        \Gazelle\App::email($Email, "Your $ENV->siteName account is about to be disabled", $Body);
     }
 
     # The actual deletion clock

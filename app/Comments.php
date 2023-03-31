@@ -26,7 +26,7 @@ class Comments
      */
     public static function post($Page, $PageID, $Body)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query("
@@ -81,7 +81,7 @@ class Comments
      */
     public static function edit($PostID, $NewBody, $SendPM = false)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query("
@@ -173,7 +173,7 @@ class Comments
      */
     public static function delete($PostID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         // Get page, pageid
@@ -301,7 +301,7 @@ class Comments
      */
     public static function get_url_query($PostID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query("
@@ -339,7 +339,7 @@ class Comments
      */
     public static function load($Page, $PageID, $HandleSubscriptions = true)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
 
@@ -478,7 +478,7 @@ class Comments
      */
     public static function merge($Page, $PageID, $TargetPageID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
 
@@ -537,7 +537,7 @@ class Comments
      */
     public static function delete_page($Page, $PageID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
 

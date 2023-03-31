@@ -16,7 +16,7 @@ class TorrentFunctions
      */
     public static function get_group_info($GroupID, $Return = true, $RevisionID = 0, $PersonalProperties = true, $ApiCall = false)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (!$RevisionID) {
             $TorrentCache = $app->cacheOld->get_value("torrents_details_$GroupID");
@@ -193,7 +193,7 @@ class TorrentFunctions
      */
     public static function get_torrent_info($TorrentID, $Return = true, $RevisionID = 0, $PersonalProperties = true, $ApiCall = false)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $GroupID = (int)self::orrentid_to_groupid($TorrentID);
         $GroupInfo = get_group_info($GroupID, $Return, $RevisionID, $PersonalProperties, $ApiCall);
@@ -237,7 +237,7 @@ class TorrentFunctions
     // Functionality for the API to resolve input into other data
     public static function torrenthash_to_torrentid($Str)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $app->dbOld->query("
       SELECT ID
@@ -257,7 +257,7 @@ class TorrentFunctions
      */
     public static function torrenthash_to_groupid($Str)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $app->dbOld->query("
       SELECT GroupID
@@ -277,7 +277,7 @@ class TorrentFunctions
      */
     public static function torrentid_to_groupid($TorrentID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $app->dbOld->query("
       SELECT GroupID
@@ -298,7 +298,7 @@ class TorrentFunctions
     // After adjusting / deleting logs, recalculate the score for the torrent
     public static function set_torrent_logscore($TorrentID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $app->dbOld->query("
       UPDATE torrents
@@ -316,7 +316,7 @@ class TorrentFunctions
      */
     public static function get_group_requests($GroupID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (empty($GroupID) || !is_numeric($GroupID)) {
             return [];
@@ -343,7 +343,7 @@ class TorrentFunctions
     // Used by both sections/torrents/details.php and sections/reportsv2/report.php
     public static function build_torrents_table($user, $GroupID, $GroupName, $GroupCategoryID, $TorrentList, $Types, $Username)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         /*
         function filelist($Str)

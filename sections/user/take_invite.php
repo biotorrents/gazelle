@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 $ENV = ENV::go();
 
 if (!$UserCount = $app->cacheOld->get_value('stats_user_count')) {
@@ -120,7 +120,7 @@ EOT;
         $app->cacheOld->commit_transaction(0);
     }
 
-    App::email($CurEmail, "You have been invited to $ENV->siteName", $Message);
+    \Gazelle\App::email($CurEmail, "You have been invited to $ENV->siteName", $Message);
 }
 
 Http::redirect("user.php?action=invite");

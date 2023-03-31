@@ -19,7 +19,7 @@ class Badges
      */
     public static function getBadges(int $userId): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select badgeId, displayed from users_badges where userId = ?";
         $ref = $app->dbNew->multi($query, [$userId]);
@@ -46,7 +46,7 @@ class Badges
      */
     public static function awardBadge(int $userId, int $badgeId): bool
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (self::hasBadge($userId, $badgeId)) {
             return false;
@@ -111,7 +111,7 @@ class Badges
      */
     public static function displayBadge(int $badgeId, bool $tooltip = true): string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select * from badges where id = ?";
         $row = $app->dbNew->row($query, [$badgeId]);
@@ -149,7 +149,7 @@ class Badges
      */
     public static function getAllBadges(): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select * from badges";
         $ref = $app->dbNew->multi($query, []);

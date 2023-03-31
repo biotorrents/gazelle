@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 # todo: Not working since 2020-04-24
 if (isset($_POST['donation'])) {

@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (!isset($_GET['userid']) || !is_numeric($_GET['userid'])) {
     json_die('failure');

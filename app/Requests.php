@@ -18,7 +18,7 @@ class Requests
      */
     public static function update_sphinx_requests($RequestID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query("
@@ -76,7 +76,7 @@ class Requests
     // In places where the output from this is merged with sphinx filters, it will be in a different order.
     public static function get_requests($RequestIDs, $Return = true)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $Found = $NotFound = array_fill_keys($RequestIDs, false);
         // Try to fetch the requests from the cache first.
@@ -187,7 +187,7 @@ class Requests
      */
     public static function get_artists($RequestID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $Artists = $app->cacheOld->get_value("request_artists_$RequestID");
         if (is_array($Artists)) {
@@ -222,7 +222,7 @@ class Requests
      */
     public static function get_tags($RequestIDs)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (empty($RequestIDs)) {
             return [];
@@ -260,7 +260,7 @@ class Requests
      */
     public static function get_votes_array($RequestID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $RequestVotes = $app->cacheOld->get_value("request_votes_$RequestID");
         if (!is_array($RequestVotes)) {

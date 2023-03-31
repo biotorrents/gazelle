@@ -7,7 +7,7 @@ declare(strict_types=1);
  * main torrent search interface
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 # it's actually way better if this uses GET
 $get = Http::query("get");

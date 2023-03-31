@@ -13,7 +13,7 @@ declare(strict_types=1);
  * and this page must be called again.
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 # announce and source
 #$announceUris = ANNOUNCE_URLS[0];

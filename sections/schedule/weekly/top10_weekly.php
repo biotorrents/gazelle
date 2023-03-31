@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $app->dbOld->query("
   INSERT INTO top10_history (Date, Type)

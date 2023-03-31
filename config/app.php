@@ -10,7 +10,7 @@ declare(strict_types=1);
  * (fine-grained scoping, ephemeral access lifetime, public vs. private, etc.),
  * please follow the example below.
  *
- *   $app = App::go();
+ *   $app = \Gazelle\App::go();
  *   $app->env->publicValue;
  *   $app->env->getPriv("privateValue");
  *
@@ -23,7 +23,7 @@ declare(strict_types=1);
  *     $app->env->convert($longArray)
  *   );
  *
- *   $app = App::go();
+ *   $app = \Gazelle\App::go();
  *   foreach ($app->env->categories as $category) {
  *     var_dump($category->name);
  *   }

@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $Search = db_string($_GET['email']);
 $JSON = [];

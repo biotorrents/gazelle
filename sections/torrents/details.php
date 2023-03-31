@@ -7,7 +7,7 @@
  * torrent details page
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $get = Http::query("get");
 $groupId = intval($get["id"] ?? 0);

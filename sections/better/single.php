@@ -7,7 +7,7 @@ declare(strict_types=1);
  * single-seeder torrents
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $query = "
     select torrents.id, torrents.groupId from xbt_files_users

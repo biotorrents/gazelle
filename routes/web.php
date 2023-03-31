@@ -8,7 +8,7 @@ declare(strict_types=1);
  */
 
 # require the route files
-App::recursiveGlob(__DIR__."/web", "php");
+\Gazelle\App::recursiveGlob(__DIR__."/web", "php");
 
 # not found
 Flight::route("*", function () {

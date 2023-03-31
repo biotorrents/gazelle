@@ -32,7 +32,7 @@ class Validate
      */
     public function setField(string $fieldName, array $data = []): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # empty fieldName
         if (empty($fieldName)) {
@@ -64,7 +64,7 @@ class Validate
      */
     public function allFields(array $dataToValidate): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         reset($this->fields);
         #!d($this->fields);exit;
@@ -448,7 +448,7 @@ class Validate
      */
     public function literature(string $data): bool
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # error key
         $key = "literature";
@@ -598,7 +598,7 @@ class Validate
      */
     public function bencoded(BencodeTorrent $torrent): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # error key
         $key = "torrentFile";
@@ -767,7 +767,7 @@ class Validate
      */
     public function safeCharacters(string $fileName = "")
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (empty($fileName)) {
             $imploded = implode(", ", $app->env->illegalCharacters);
@@ -837,7 +837,7 @@ class Validate
      */
     public function ValidateForm($ValidateArray)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         reset($this->fields);
         foreach ($this->fields as $fieldKey => $field) {

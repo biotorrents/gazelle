@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $app->dbOld->query('TRUNCATE TABLE top_snatchers;');
 $app->dbOld->query("

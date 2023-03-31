@@ -67,7 +67,7 @@ class Announce
      */
     public static function irc(string $message, array $channels = [])
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # check if IRC is enabled
         if (!$app->env->announceIrc) {
@@ -113,7 +113,7 @@ class Announce
      */
     public static function rss(string $message)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # check if RSS is enabled
         if (!$app->env->announceRss) {
@@ -136,7 +136,7 @@ class Announce
      */
     public static function slack(string $message, array $channels = [])
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # check if slack is enabled
         if (!$app->env->announceSlack) {
@@ -179,7 +179,7 @@ class Announce
      */
     public static function twitter(string $message)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # check if twitter is enabled
         if (!$app->env->enableTwitter) {
@@ -228,7 +228,7 @@ class Announce
      */
     public static function mastodon(string $message)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # check if mastodon is enabled
         if (!$app->env->enableMastodon) {

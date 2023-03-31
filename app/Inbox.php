@@ -18,7 +18,7 @@ class Inbox
      */
     public static function get_inbox_link($WhichBox = 'inbox')
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $ListFirst = isset($app->userNew->extra['ListUnreadPMsFirst']) ? $app->userNew->extra['ListUnreadPMsFirst'] : false;
 

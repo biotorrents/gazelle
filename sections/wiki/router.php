@@ -23,7 +23,7 @@ define('INDEX_ARTICLE', '1');
 
 function class_list($Selected = 0)
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     global $Classes;
     $Return = '';

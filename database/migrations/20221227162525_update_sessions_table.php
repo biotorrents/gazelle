@@ -19,7 +19,7 @@ final class UpdateSessionsTable extends AbstractMigration
      */
     public function change()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "drop table users_sessions";
         $app->dbNew->do($query, []);

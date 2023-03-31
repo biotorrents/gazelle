@@ -23,7 +23,7 @@ if (isset($_GET["clearcache"])) {
 }
 
 # load the classes
-$app = App::go();
+$app = \Gazelle\App::go();
 $feed = new Feed();
 
 
@@ -64,7 +64,7 @@ function display_array($array, $escape = []): array
 /*
 function site_url(): string
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     return "https://{$app->env->siteDomain}/";
 }

@@ -14,7 +14,7 @@ declare(strict_types=1);
  */
 
 # require the route files
-App::recursiveGlob(__DIR__."/api", "php");
+\Gazelle\App::recursiveGlob(__DIR__."/api", "php");
 
 # not found
 Flight::route("*", function () {

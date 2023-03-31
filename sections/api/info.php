@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 //calculate ratio
 //returns 0 for DNE and -1 for infinity, because we don't want strings being returned for a numeric value in our java

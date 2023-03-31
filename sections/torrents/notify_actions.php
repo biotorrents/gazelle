@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 switch ($_GET['action']) {
   case 'notify_clear':

@@ -22,7 +22,7 @@ class Internal extends Base
      */
     private static function validateFrontendHash(): void
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         if (headers_sent()) {
             self::failure();
@@ -55,7 +55,7 @@ class Internal extends Base
      */
     public static function createTwoFactor(): void
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         self::validateFrontendHash();
 
@@ -82,7 +82,7 @@ class Internal extends Base
      */
     public static function deleteTwoFactor(): void
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         self::validateFrontendHash();
 
@@ -109,7 +109,7 @@ class Internal extends Base
      */
     public static function createPassphrase(string $type = "diceware"): void
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         self::validateFrontendHash();
 
@@ -168,7 +168,7 @@ class Internal extends Base
      */
     public static function createBearerToken(): void
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         self::validateFrontendHash();
 
@@ -198,7 +198,7 @@ class Internal extends Base
      */
     public static function deleteBearerToken(): void
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         self::validateFrontendHash();
 
@@ -228,7 +228,7 @@ class Internal extends Base
      */
     public static function createDefaultSearch(int $userId, string $queryString): void
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         self::validateFrontendHash();
 
@@ -273,7 +273,7 @@ class Internal extends Base
      */
     public static function createBookmark(): void
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         self::validateFrontendHash();
 
@@ -297,7 +297,7 @@ class Internal extends Base
      */
     public static function deleteBookmark(): void
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         self::validateFrontendHash();
 
@@ -326,7 +326,7 @@ class Internal extends Base
      */
     public static function doiNumberAutofill(): void
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         self::validateFrontendHash();
 
@@ -437,7 +437,7 @@ class Internal extends Base
      */
     public static function createFriend(): void
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         self::validateFrontendHash();
 
@@ -463,7 +463,7 @@ class Internal extends Base
      */
     public static function updateFriend(int $friendId, string $comment = ""): void
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         self::validateFrontendHash();
 
@@ -489,7 +489,7 @@ class Internal extends Base
      */
     public static function deleteFriend(int $friendId): void
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         self::validateFrontendHash();
 

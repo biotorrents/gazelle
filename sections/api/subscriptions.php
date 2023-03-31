@@ -3,7 +3,7 @@
 User topic subscription page
 */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (!empty($app->userNew->extra['DisableForums'])) {
     json_die('failure');

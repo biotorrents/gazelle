@@ -19,7 +19,7 @@ final class DeleteStyleSheets extends AbstractMigration
      */
     public function change()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "delete from stylesheets where name in('oppai', 'beluga')";
         $app->dbNew->do($query, []);

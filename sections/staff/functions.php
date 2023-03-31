@@ -35,7 +35,7 @@ function make_staff_row($ID, $Paranoia, $Class, $LastAccess, $Remark = '', $Hidd
 
 function get_fls()
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     static $FLS;
     if (is_array($FLS)) {
@@ -106,7 +106,7 @@ function generate_staff_query($StaffLevel)
 
 function get_forum_staff()
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     static $ForumStaff;
     if (is_array($ForumStaff)) {
@@ -132,7 +132,7 @@ function get_forum_staff()
 
 function get_staff()
 {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     static $Staff;
     if (is_array($Staff)) {

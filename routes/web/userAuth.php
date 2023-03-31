@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 # login
 Flight::route("/login", function () {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     if (!empty($app->userNew->core)) {
         Http::redirect();
@@ -21,14 +21,14 @@ Flight::route("/login", function () {
 
 # disabled
 Flight::route("/disabled", function () {
-    $app = App::go();
+    $app = \Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/user/auth/disabled.php";
 });
 
 
 # enable: todo
 Flight::route("/enable/@token", function (string $token) {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     if (isset($app->userOld["ID"]) || !isset($token) || !$app->env->FEATURE_EMAIL_REENABLE) {
         Http::redirect();
@@ -46,7 +46,7 @@ Flight::route("/enable/@token", function (string $token) {
 
 # recover
 Flight::route("/recover", function () {
-    $app = App::go();
+    $app = \Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/user/auth/recover.php";
 });
 
@@ -61,14 +61,14 @@ Flight::route("/logout", function () {
 
 # register
 Flight::route("/register(/@invite)", function ($invite) {
-    $app = App::go();
+    $app = \Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/user/auth/register.php";
 });
 
 
 # confirm email
 Flight::route("/confirm/@selector/@token", function ($selector, $token) {
-    $app = App::go();
+    $app = \Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/user/auth/confirm.php";
 });
 
@@ -76,7 +76,7 @@ Flight::route("/confirm/@selector/@token", function ($selector, $token) {
 /*
 # pwgen
 Flight::route("/pwgen(/@method)", function ($method) {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     if ($method === "diceware") {
         header("Content-Type: text/plain; charset=utf-8");
@@ -95,7 +95,7 @@ Flight::route("/pwgen(/@method)", function ($method) {
 # https://meta.discourse.org/t/discourseconnect-official-single-sign-on-for-discourse-sso/13045
 # e.g., https://somesite.com/sso?sso=PAYLOAD&sig=SIG
 Flight::route("/discourse?sso=@payload&sig=@signature", function () {
-    $app = App::go();
+    $app = \Gazelle\App::go();
 
     if ($app->env->enableDiscourse === true) {
         require_once "{$app->env->serverRoot}/sections/social/discourseConnect.php";

@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 /*
  * This is the AJAX page that gets called from the JavaScript

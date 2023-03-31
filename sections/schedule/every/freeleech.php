@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 // We use this to control 6 hour freeleeches. They're actually 7 hours, but don't tell anyone.
 $TimeMinus = time_minus(3600 * 7);

@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if ($ID = (int)($_GET['id'])) {
     // Check if conversation belongs to user

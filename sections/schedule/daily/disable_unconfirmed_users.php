@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 // Get a list of user IDs for clearing cache keys
 $app->dbOld->query("

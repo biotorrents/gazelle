@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (!isset($_GET['torrentid']) || !is_numeric($_GET['torrentid']) || !check_perms('site_view_torrent_snatchlist')) {
     error(404);
@@ -33,7 +33,7 @@ list($NumResults) = $app->dbOld->next_record();
 <h4 class="tooltip" title="List of users that have reported a snatch to the tracker">List of Snatchers</h4>
 
 <?php if ($NumResults > 100) { ?>
-<div class="linkbox"><?=App::ajaxPagination('show_snatches', $_GET['torrentid'], $NumResults, $Page)?></div>
+<div class="linkbox"><?=\Gazelle\App::ajaxPagination('show_snatches', $_GET['torrentid'], $NumResults, $Page)?></div>
 <?php } ?>
 
 <table>
@@ -66,5 +66,5 @@ foreach ($Results as $ID=>$Data) {
   </tr>
 </table>
 <?php if ($NumResults > 100) { ?>
-<div class="linkbox"><?=App::ajaxPagination('show_snatches', $_GET['torrentid'], $NumResults, $Page)?></div>
+<div class="linkbox"><?=\Gazelle\App::ajaxPagination('show_snatches', $_GET['torrentid'], $NumResults, $Page)?></div>
 <?php } ?>

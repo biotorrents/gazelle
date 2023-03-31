@@ -79,7 +79,7 @@ class Bookmarks
      */
     public static function all_bookmarks(string $contentType, int $userId = 0): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $contentType = strtolower(strval($contentType));
 
@@ -116,7 +116,7 @@ class Bookmarks
      */
     public static function isBookmarked(string $contentType, int $contentId): bool
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (empty($contentType) || empty($contentId)) {
             throw new Exception("unable to validate parameters");
@@ -138,7 +138,7 @@ class Bookmarks
      */
     public static function create(string $contentType, int $contentId): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (empty($contentType) || empty($contentId)) {
             throw new Exception("unable to validate parameters");
@@ -182,7 +182,7 @@ class Bookmarks
      */
     public static function delete(string $contentType, int $contentId): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (empty($contentType) || empty($contentId)) {
             throw new Exception("unable to validate parameters");

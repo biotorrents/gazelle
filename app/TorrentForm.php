@@ -92,7 +92,7 @@ class TorrentForm
      */
     public function render()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $ENV = ENV::go();
         $twig  = Twig::go();
@@ -164,7 +164,7 @@ HTML;
      */
     private function head()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $ENV = ENV::go();
         $app->dbOld->query(
@@ -418,7 +418,7 @@ HTML;
      */
     public function upload_form()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $ENV = ENV::go();
         $twig = Twig::go();

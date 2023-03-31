@@ -11,7 +11,7 @@ declare(strict_types=1);
  * Bear this in mind when you try to use bootstrap functions.
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (empty($_GET["feed"])
   || empty($_GET["authkey"])

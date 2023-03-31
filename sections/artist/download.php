@@ -2,7 +2,7 @@
 
 #declare(strict_types = 1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 // todo: Freeleech in ratio hit calculations, in addition to a warning of whats freeleech in the Summary.txt
 /*

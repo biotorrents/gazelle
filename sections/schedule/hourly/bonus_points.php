@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $getUsers = $app->dbOld->query("
   SELECT um.ID,

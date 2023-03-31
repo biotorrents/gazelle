@@ -76,7 +76,7 @@ class Top10
      */
     public static function torrentTags(int $limit = null): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
@@ -110,7 +110,7 @@ class Top10
      */
     public static function requestTags(int $limit = null): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
@@ -144,7 +144,7 @@ class Top10
      */
     private static function hydrateUserVariables(int $limit = null): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $variables = self::$userVariables;
 
@@ -191,7 +191,7 @@ class Top10
      */
     public static function dataUploaded(int $limit = null): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
@@ -220,7 +220,7 @@ class Top10
      */
     public static function dataDownloaded(int $limit = null): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
@@ -249,7 +249,7 @@ class Top10
      */
     public static function uploadCount(int $limit = null): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
@@ -278,7 +278,7 @@ class Top10
      */
     public static function uploadSpeed(int $limit = null): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
@@ -307,7 +307,7 @@ class Top10
      */
     public static function downloadSpeed(int $limit = null): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";

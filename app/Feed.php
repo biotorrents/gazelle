@@ -74,7 +74,7 @@ class Feed
      */
     public function channel(string $title, string $description, string $section = ""): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $date = date("r");
         $site = site_url();
@@ -144,7 +144,7 @@ class Feed
      */
     public function retrieve(string $cacheKey, string $authKey, string $passKey): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $entries = $app->cacheOld->get_value($cacheKey);
         if (!$entries) {
@@ -170,7 +170,7 @@ class Feed
      */
     public function populate(string $cacheKey, string $item): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $entries = $app->cacheOld->get_value($cacheKey, true);
         if (!$entries) {

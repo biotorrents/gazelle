@@ -23,7 +23,7 @@ class UserRank
      */
     private static function build_table($cacheKey, $query)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $queryId = $app->dbOld->get_query_id();
 
@@ -213,7 +213,7 @@ class UserRank
      */
     public static function get_rank($tableName, $value)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if ($value === 0) {
             return 0;

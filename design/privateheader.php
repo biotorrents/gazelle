@@ -6,7 +6,7 @@
  * THIS WHOLE FILE IS GOING AWAY
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 #!d($app->userNew);exit;
 
 $ENV = ENV::go();

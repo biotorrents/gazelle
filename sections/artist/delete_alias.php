@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 authorize();
 if (!check_perms('torrents_edit')) {

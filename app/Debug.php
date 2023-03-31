@@ -70,7 +70,7 @@ class Debug # extends DebugBar\StandardDebugBar
      */
     private static function factory(array $options = [])
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # https://stackify.com/display-php-errors/
         if ($app->env->dev) {

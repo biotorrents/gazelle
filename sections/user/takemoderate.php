@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 // Are they being tricky blighters?
 if (!$_POST['userid'] || !is_numeric($_POST['userid'])) {
@@ -721,7 +721,7 @@ if ($ResetAuthkey == 1 && check_perms('users_edit_reset_keys')) {
 
 if ($SendHackedMail && check_perms('users_disable_any')) {
     $EditSummary[] = "hacked account email sent to $HackedEmail";
-    App::email($HackedEmail, "Your $ENV->siteName account", "Your $ENV->siteName account appears to have been compromised. As a security measure, we have disabled your account. To resolve this, please visit us on Slack.");
+    \Gazelle\App::email($HackedEmail, "Your $ENV->siteName account", "Your $ENV->siteName account appears to have been compromised. As a security measure, we have disabled your account. To resolve this, please visit us on Slack.");
 }
 
 if ($MergeStatsFrom && check_perms('users_edit_ratio')) {

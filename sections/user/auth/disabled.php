@@ -6,7 +6,7 @@ declare(strict_types=1);
 Http::csrf();
 
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 # variables
 $post = Http::query("post");

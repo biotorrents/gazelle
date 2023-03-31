@@ -152,7 +152,7 @@ class MASS_USER_TORRENTS_TABLE_VIEW
      */
     public function footer()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if ($this->HasTorrents) { ?>
       </tbody>

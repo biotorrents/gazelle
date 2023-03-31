@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 //todo: restrict to viewing below class, username in h2
 if (isset($_GET['userid']) && check_perms('users_view_ips') && check_perms('users_logout')) {

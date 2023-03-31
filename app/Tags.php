@@ -184,7 +184,7 @@ class Tags
      */
     public static function get_aliases()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $TagAliases = $app->cacheOld->get_value('tag_aliases_search');
         if ($TagAliases === false) {
@@ -330,7 +330,7 @@ class Tags
      */
     public static function getOfficialTags()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select * from tags where tagType = ?";
         $ref = $app->dbNew->multi($query, ["genre"]);

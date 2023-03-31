@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 # todo: Go through line by line
 // todo: Normalize thread_*_info don't need to waste all that ram on things that are already in other caches

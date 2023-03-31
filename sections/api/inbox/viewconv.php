@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $ConvID = $_GET['id'];
 if (!$ConvID || !is_numeric($ConvID)) {

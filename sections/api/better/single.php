@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (($Results = $app->cacheOld->get_value('better_single_groupids')) === false) {
     $app->dbOld->query("

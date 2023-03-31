@@ -35,7 +35,7 @@ class Discourse
      */
     public function __construct()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (!$app->env->enableDiscourse) {
             throw new Exception("you must set \$app.env.enableDiscourse = true in config/private.php");
@@ -60,7 +60,7 @@ class Discourse
      */
     private function curl(string $path, string $method = "get", array $options = [])
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # normalize
         $method = strtolower($method);
@@ -199,7 +199,7 @@ class Discourse
      */
     public function listCategoryTopics(string $slug)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $discourseCategories = (array) $app->env->discourseCategories;
         $id = array_search($slug, $discourseCategories);
@@ -216,7 +216,7 @@ class Discourse
      */
     public function getCategory(string $slug)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $discourseCategories = (array) $app->env->discourseCategories;
         $id = array_search($slug, $discourseCategories);

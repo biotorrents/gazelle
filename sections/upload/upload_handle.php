@@ -18,7 +18,7 @@ declare(strict_types=1);
  * 7. sings from the rooftops, announces on channels
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 # https://github.com/paragonie/anti-csrf
 #Http::csrf();

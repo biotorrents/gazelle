@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $UserID = $app->userNew->core['id'];
 $BadgeID = $_GET['badge'];

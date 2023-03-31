@@ -23,7 +23,7 @@ class Misc
      */
     public static function send_pm($ToID, $FromID, $Subject, $Body, $ConvID = '')
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $UnescapedSubject = $Subject;
         $UnescapedBody = $Body;
@@ -141,7 +141,7 @@ class Misc
      */
     public static function create_thread($ForumID, $AuthorID, $Title, $PostBody)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (!$ForumID || !$AuthorID || !is_numeric($AuthorID) || !$Title || !$PostBody) {
             return -1;
@@ -335,7 +335,7 @@ class Misc
      */
     public static function get_tags($TagNames)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $TagIDs = [];
         foreach ($TagNames as $Index => $TagName) {
@@ -375,7 +375,7 @@ class Misc
      */
     public static function get_alias_tag($BadTag)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query("
@@ -403,7 +403,7 @@ class Misc
      */
     public static function write_log($Message)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query("

@@ -75,7 +75,7 @@ class Session
      */
     public function authorize($api = false): bool
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $request = Http::query("request");
         $server = Http::query("server");
@@ -106,7 +106,7 @@ class Session
     /*
     public function logout()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         Http::deleteCookie("session");
         Http::deleteCookie("userid");
@@ -141,7 +141,7 @@ class Session
     /*
     public function logoutAll()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $app->dbOld->prepared_query("
             delete from users_sessions where UserID = '{$this->userId}'
@@ -160,7 +160,7 @@ class Session
      */
     public function logAttempt()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $server = Http::query("server");
 

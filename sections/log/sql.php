@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 list($Page, $Limit) = Format::page_limit(LOG_ENTRIES_PER_PAGE);
 

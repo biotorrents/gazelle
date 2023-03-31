@@ -19,7 +19,7 @@ final class CleanUserExtra extends AbstractMigration
      */
     public function change()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "
             alter table users_info

@@ -71,7 +71,7 @@ class SemanticScholar
      */
     private function curl(string $uri, array $fields, string $search = "")
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # return cached if available
         $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([
@@ -201,7 +201,7 @@ class SemanticScholar
      */
     private function upsert(array $data, array $options = [])
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         if (empty($options["torrentGroupId"])) {
             throw new Exception("you need to pass at least \$options[\"torrentGroupId\"]");
@@ -247,7 +247,7 @@ class SemanticScholar
      */
     public function fetch(string $id)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         try {
             $query = "select * from semanticScholar where id = ?";

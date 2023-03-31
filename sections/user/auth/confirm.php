@@ -7,7 +7,7 @@ declare(strict_types=1);
  * confirm account
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $auth = new Auth();
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 // peerupdate.php is apparently shit so this is a crappy bandaid to fix the problem of
 // all the cached "0 seeds" on the first search page from peerupdate missing the changes.

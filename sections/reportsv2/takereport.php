@@ -3,7 +3,7 @@
 #declare(strict_types = 1);
 
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 /**
  * This page handles the backend from when a user submits a report.

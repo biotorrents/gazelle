@@ -29,7 +29,7 @@ class INVITE_TREE
      */
     public function make_tree()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         $UserID = $this->UserID; ?>

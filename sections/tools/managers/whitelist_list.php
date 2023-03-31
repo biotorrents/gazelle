@@ -7,7 +7,7 @@ declare(strict_types=1);
  * torrent client whitelist
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 # https://github.com/paragonie/anti-csrf
 Http::csrf();

@@ -5,7 +5,7 @@
  * User subscription page
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $debug = Debug::go();
 

@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 /***************************************************************
 * Temp handler for changing the category for a single torrent.

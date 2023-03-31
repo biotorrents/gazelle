@@ -19,7 +19,7 @@ class RevisionHistory
      */
     public static function get_revision_history($Page, $PageID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $Table = ($Page == 'artists') ? 'wiki_artists' : 'wiki_torrents';
         $QueryID = $app->dbOld->get_query_id();

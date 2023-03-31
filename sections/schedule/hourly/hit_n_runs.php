@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 // This will never work until we start keeping track of upload/download stats
 // past the end of a session

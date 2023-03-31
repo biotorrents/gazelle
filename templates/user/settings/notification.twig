@@ -2,25 +2,25 @@
 {% macro check_popup(name, value) %}
     <label>
         <input type="checkbox" name="notifications_{{ name }}_popup" id="notifications_{{ name }}_popup"{{ checked(value in [
-            constant('\\Gazelle\\Manager\\Notification::OPT_POPUP'),
-            constant('\\Gazelle\\Manager\\Notification::OPT_POPUP_PUSH'),
+            constant('\Gazelle\\Manager\\Notification::OPT_POPUP'),
+            constant('\Gazelle\\Manager\\Notification::OPT_POPUP_PUSH'),
         ]) }} /> Pop-up
     </label>
 {% endmacro %}
 {% macro check_push(name, value) %}
     <label>
         <input type="checkbox" name="notifications_{{ name }}_push" id="notifications_{{ name }}_push"{{ checked(value in [
-            constant('\\Gazelle\\Manager\\Notification::OPT_PUSH'),
-            constant('\\Gazelle\\Manager\\Notification::OPT_POPUP_PUSH'),
-            constant('\\Gazelle\\Manager\\Notification::OPT_TRADITIONAL_PUSH'),
+            constant('\Gazelle\\Manager\\Notification::OPT_PUSH'),
+            constant('\Gazelle\\Manager\\Notification::OPT_POPUP_PUSH'),
+            constant('\Gazelle\\Manager\\Notification::OPT_TRADITIONAL_PUSH'),
         ]) }} /> Push
     </label>
 {% endmacro %}
 {% macro check_trad(name, value) %}
     <label>
         <input type="checkbox" name="notifications_{{ name }}_traditional" id="notifications_{{ name }}_traditional"{{ checked(value in [
-            constant('\\Gazelle\\Manager\\Notification::OPT_TRADITIONAL'),
-            constant('\\Gazelle\\Manager\\Notification::OPT_TRADITIONAL_PUSH'),
+            constant('\Gazelle\\Manager\\Notification::OPT_TRADITIONAL'),
+            constant('\Gazelle\\Manager\\Notification::OPT_TRADITIONAL_PUSH'),
         ]) }} /> Traditional
     </label>
 {% endmacro %}

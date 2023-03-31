@@ -19,7 +19,7 @@ final class UpdateOpenAITags extends AbstractMigration
      */
     public function change()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # change data definition
         $query = "alter table tags modify tagType varchar(16)";

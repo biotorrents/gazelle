@@ -31,7 +31,7 @@ class MASS_USER_BOOKMARKS_EDITOR extends MASS_USER_TORRENTS_EDITOR
      */
     protected function query_and_clear_cache($sql)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
         if (is_string($sql) && $app->dbOld->query($sql)) {
@@ -49,7 +49,7 @@ class MASS_USER_BOOKMARKS_EDITOR extends MASS_USER_TORRENTS_EDITOR
      */
     public function mass_remove()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $SQL = [];
         foreach ($_POST['remove'] as $GroupID => $K) {
@@ -80,7 +80,7 @@ class MASS_USER_BOOKMARKS_EDITOR extends MASS_USER_TORRENTS_EDITOR
      */
     public function mass_update()
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $SQL = [];
         foreach ($_POST['sort'] as $GroupID => $Sort) {

@@ -15,7 +15,7 @@ declare(strict_types=1);
  * nonce=ABCD&return_sso_url=https%3A%2F%2Fdiscourse_site%2Fsession%2Fsso_login, this raw payload is base 64 219 encoded.
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 $payload ??= null;
 $signature ??= null;

@@ -7,7 +7,7 @@ declare(strict_types=1);
  * top10 history
  */
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 enforce_login();
 if (!check_perms('users_mod')) {

@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 
 /**
- * App
+ * Gazelle\App
  *
  * The main app is now a singleton.
  * Holds the various globals and some methods.
  * Supersedes G::class and ENV::go().
  * Will eventually kill Misc::class.
  */
+
+namespace Gazelle;
 
 class App
 {
@@ -82,25 +84,25 @@ class App
     private function factory(array $options = [])
     {
         # env: FIRST
-        $this->env = ENV::go();
+        $this->env = \ENV::go();
 
         # cache
-        #$this->cacheNew = CacheRedis::go(); # new
-        $this->cacheOld = new Cache(); # old
+        $this->cacheNew = \Gazelle\Cache::go(); # new
+        $this->cacheOld = new \CacheOld(); # old
 
         # database
-        $this->dbNew = Database::go(); # new
-        $this->dbOld = new DB(); # old
+        $this->dbNew = \Database::go(); # new
+        $this->dbOld = new \DB(); # old
 
         # debug
-        $this->debug = Debug::go();
+        $this->debug = \Debug::go();
 
         # user
-        $this->userNew = User::go(); # new
+        $this->userNew = \User::go(); # new
         $this->userOld =& $user; # old
 
         # twig: LAST
-        $this->twig = Twig::go();
+        $this->twig = \Twig::go();
     }
 
 

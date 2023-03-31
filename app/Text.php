@@ -33,7 +33,7 @@ class Text
      */
     public static function parse(string $string, bool $safe = true): string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $app->debug["time"]->startMeasure("parse", "parse markdown text");
 
@@ -87,7 +87,7 @@ class Text
      */
     private static function fixLinks(string $parsed): string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $app->debug["time"]->startMeasure("process", "post-process text");
 
@@ -301,7 +301,7 @@ class Text
      */
     public static function userGeneratedContent(string $string): string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # escape the input
         $string = self::esc($string);

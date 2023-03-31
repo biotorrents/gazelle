@@ -72,7 +72,7 @@ class OpenAI
      */
     public function __construct(array $options = [])
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         if (!$app->env->enableOpenAi) {
             throw new \Exception("OpenAI support is disabled in the app config");
@@ -116,7 +116,7 @@ class OpenAI
      */
     public function summarize(int $groupId): array
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         $app->debug["time"]->startMeasure("summarize", "openai: summarize groupId {$groupId}");
 
@@ -173,7 +173,7 @@ class OpenAI
      */
     public function keywords(int $groupId): array
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         $app->debug["time"]->startMeasure("keywords", "openai: keywords for groupId {$groupId}");
 
@@ -289,7 +289,7 @@ class OpenAI
      */
     private function insertResponse(int $groupId, string $type, array $response): void
     {
-        $app = \App::go();
+        $app = \Gazelle\App::go();
 
         $allowedTypes = ["summary", "keywords"];
         if (!in_array($type, $allowedTypes)) {

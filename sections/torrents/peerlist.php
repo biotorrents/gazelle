@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 if (!isset($_GET['torrentid']) || !is_numeric($_GET['torrentid'])) {
     error(404);
@@ -39,7 +39,7 @@ $app->dbOld->set_query_id($Result);
 ?>
 <h4>Peer List</h4>
 <?php if ($NumResults > 100) { ?>
-<div class="linkbox"><?=App::ajaxPagination('show_peers', $_GET['torrentid'], $NumResults, $Page)?></div>
+<div class="linkbox"><?=\Gazelle\App::ajaxPagination('show_peers', $_GET['torrentid'], $NumResults, $Page)?></div>
 <?php } ?>
 
 <table>
@@ -76,5 +76,5 @@ while (list($PeerUserID, $Size, $Active, $Connectable, $Uploaded, $Remaining, $U
 ?>
 </table>
 <?php if ($NumResults > 100) { ?>
-<div class="linkbox"><?=App::ajaxPagination('show_peers', $_GET['torrentid'], $NumResults, $Page)?></div>
+<div class="linkbox"><?=\Gazelle\App::ajaxPagination('show_peers', $_GET['torrentid'], $NumResults, $Page)?></div>
 <?php } ?>

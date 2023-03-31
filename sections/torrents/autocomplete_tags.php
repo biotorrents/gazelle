@@ -1,6 +1,6 @@
 <?php
 
-$app = App::go();
+$app = \Gazelle\App::go();
 
 header('Content-Type: application/json; charset=utf-8');
 
