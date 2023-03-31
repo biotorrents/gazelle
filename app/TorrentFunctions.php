@@ -159,15 +159,18 @@ class TorrentFunctions
                 return;
             }
 
+            /*
             if (in_array(0, $app->dbOld->collect('Seeders'))) {
                 $app->cacheOldTime = 600;
             } else {
                 $app->cacheOldTime = 3600;
             }
+            */
 
             // Store it all in cache
             if (!$RevisionID) {
-                $app->cacheNew->set("torrents_details_$GroupID", array($TorrentDetails, $TorrentList), $app->cacheOldTime);
+                $app->cacheNew->set("torrents_details_$GroupID", array($TorrentDetails, $TorrentList), 600);
+                #$app->cacheNew->set("torrents_details_$GroupID", array($TorrentDetails, $TorrentList), $app->cacheOldTime);
             }
         } else { // If we're reading from cache
             $TorrentDetails = $TorrentCache[0];

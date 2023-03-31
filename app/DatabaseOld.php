@@ -94,7 +94,7 @@ declare(strict_types=1);
 function db_string($String, $DisableWildcards = false)
 {
     # tard fix
-    $db = new DB();
+    $db = new \DatabaseOld();
     $db->connect(0);
 
     # Connect and mysqli_real_escape_string()
