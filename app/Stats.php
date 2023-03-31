@@ -21,8 +21,8 @@ class Stats
     private $period = "30d";
 
     # cache settings
-    private $cachePrefix = "stats_";
-    private $cacheDuration = 3600; # one hour
+    private $cachePrefix = "stats:";
+    private $cacheDuration = "1 hour";
 
 
     /**

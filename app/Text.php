@@ -16,8 +16,8 @@ class Text
     private static $algorithm = "sha3-512";
 
     # cache settings
-    private static $cachePrefix = "text_";
-    private static $cacheDuration = 86400; # one day
+    private static $cachePrefix = "text:";
+    private static $cacheDuration = "1 week";
 
 
     /**

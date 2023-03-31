@@ -31,8 +31,8 @@ class Database extends \PDO
     private $algorithm = "sha3-512";
 
     # cache settings
-    private $cachePrefix = "database_";
-    private $cacheDuration = 60; # one minute
+    private $cachePrefix = "database:";
+    private $cacheDuration = "1 minute";
 
 
     /**

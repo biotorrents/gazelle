@@ -31,8 +31,8 @@ class Manticore
     private $algorithm = "sha3-512";
 
     # cache settings
-    private $cachePrefix = "manticore_";
-    private $cacheDuration = 60; # one minute
+    private $cachePrefix = "manticore:";
+    private $cacheDuration = "1 minute";
 
     # raw search terms
     private $rawSearchTerms = [];

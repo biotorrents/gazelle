@@ -20,8 +20,8 @@ class Discourse
     private $username = null;
 
     # cache settings
-    private $cachePrefix = "social_";
-    private $cacheDuration = 300; # five minutes
+    private $cachePrefix = "discourse:";
+    private $cacheDuration = "5 minutes";
 
     # hash algo for cache keys
     private $algorithm = "sha3-512";

@@ -14,8 +14,8 @@ declare(strict_types=1);
 class Top10
 {
     # cache settings
-    private static $cachePrefix = "top10_";
-    private static $cacheDuration = 86400; # one day
+    private static $cachePrefix = "top10:";
+    private static $cacheDuration = "1 day";
 
     # default result limit
     public static $defaultLimit = 10;

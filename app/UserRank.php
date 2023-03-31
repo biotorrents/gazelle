@@ -9,8 +9,9 @@ declare(strict_types=1);
 
 class UserRank
 {
-    # prefix for memcache keys, to make life easier
-    private static $cachePrefix = 'percentiles_';
+    # prefix for cache keys, to make life easier
+    private static $cachePrefix = "userRank:";
+    private static $cacheDuration = "1 hour";
 
 
     /**
@@ -85,7 +86,7 @@ class UserRank
     {
         switch ($tableName) {
             case 'uploaded':
-            $query =  "
+                $query =  "
             SELECT
               `Uploaded`
             FROM
@@ -95,10 +96,10 @@ class UserRank
             ORDER BY
               `Uploaded`;
             ";
-            break;
+                break;
 
             case 'downloaded':
-            $query =  "
+                $query =  "
             SELECT
               `Downloaded`
             FROM
@@ -108,10 +109,10 @@ class UserRank
             ORDER BY
               `Downloaded`;
             ";
-            break;
+                break;
 
             case 'uploads':
-            $query = "
+                $query = "
             SELECT
               COUNT(t.`ID`) AS `Uploads`
             FROM
@@ -126,10 +127,10 @@ class UserRank
             ORDER BY
               `Uploads`;
             ";
-            break;
+                break;
 
             case 'requests':
-            $query = "
+                $query = "
             SELECT
               COUNT(r.`ID`) AS `Requests`
             FROM
@@ -144,10 +145,10 @@ class UserRank
             ORDER BY
               `Requests`;
             ";
-            break;
+                break;
 
             case 'posts':
-            $query = "
+                $query = "
             SELECT
               COUNT(p.`ID`) AS `Posts`
             FROM
@@ -162,10 +163,10 @@ class UserRank
             ORDER BY
               `Posts`;
             ";
-            break;
+                break;
 
             case 'bounty':
-            $query = "
+                $query = "
             SELECT
               SUM(rv.`Bounty`) AS `Bounty`
             FROM
@@ -180,10 +181,10 @@ class UserRank
             ORDER BY
               `Bounty`;
             ";
-            break;
+                break;
 
             case 'artists':
-            $query = "
+                $query = "
             SELECT
               COUNT(ta.`ArtistID`) AS `Artists`
             FROM
@@ -201,7 +202,7 @@ class UserRank
             ORDER BY
               `Artists` ASC
             ";
-            break;
+                break;
         }
 
         return $query;

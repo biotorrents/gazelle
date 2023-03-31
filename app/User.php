@@ -36,8 +36,8 @@ class User
     private $algorithm = "sha3-512";
 
     # cache settings
-    private $cachePrefix = "user_";
-    private $cacheDuration = 300; # five minutes
+    private $cachePrefix = "user:";
+    private $cacheDuration = "5 minutes";
 
 
     /**

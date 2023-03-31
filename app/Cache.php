@@ -22,10 +22,14 @@ class Cache # extends \Redis
     private static $redis = null;
 
     # default key lifetime (seconds)
-    private $cacheDuration = 86400; # one day
+    private $cachePrefix = "gazelle:";
+    private $cacheDuration = "1 hour";
 
     # torrent group cache version
-    public const GROUP_VERSION = 5;
+    public const GROUP_VERSION = "2023-04-01";
+
+    # are we in a transaction?
+    private $transactionMode = false;
 
 
     /**
@@ -94,7 +98,7 @@ class Cache # extends \Redis
 
         # set options
         $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_JSON);
-        $redis->setOption(\Redis::OPT_PREFIX, "gazelle:");
+        $redis->setOption(\Redis::OPT_PREFIX, $this->cachePrefixs);
 
         # done
         self::$redis = $redis;
@@ -109,18 +113,30 @@ class Cache # extends \Redis
      *
      * @param string $key the cache key
      * @param mixed $value the value to store
-     * @param int $cacheDuration the number of seconds to store the value
+     * @param int|string $cacheDuration the number of seconds to store the value
      * @return array the key/value pair
      *
      * @see https://github.com/phpredis/phpredis#set
      */
-    public function set(string $key, mixed $value, ?int $cacheDuration = null): array
+    public function set(string $key, mixed $value, int|string $cacheDuration = null): array
     {
+        # we passed an integer
+        if (is_int($cacheDuration)) {
+            $cacheDuration = time() + $cacheDuration;
+        }
+
+        # we passed a string, god help us
+        if (is_string($cacheDuration)) {
+            try {
+                $cacheDuration = \Carbon\Carbon::parse($cacheDuration);
+            } catch (\Throwable $e) {
+                $cacheDuration = null;
+            }
+        }
+
         # default expiration time in seconds
         if (!$cacheDuration) {
             $cacheDuration = time() + $this->cacheDuration;
-        } else {
-            $cacheDuration = time() + $cacheDuration;
         }
 
         # store the value

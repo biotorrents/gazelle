@@ -58,8 +58,8 @@ class OpenAI
     private $model = "text-davinci-003";
 
     # cache settings
-    private $cachePrefix = "openai_";
-    private $cacheDuration = 3600; # one hour
+    private $cachePrefix = "openai:";
+    private $cacheDuration = "1 day";
 
 
     /**
@@ -125,7 +125,7 @@ class OpenAI
         $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # get the torrent group description
@@ -182,7 +182,7 @@ class OpenAI
         $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # try to get a tl;dr summary

@@ -19,8 +19,8 @@ class Tracker
     public static $requests = [];
 
     # cache settings
-    private static $cachePrefix = 'tracker_';
-    private static $cacheDuration = 3600;
+    private static $cachePrefix = "tracker:";
+    private static $cacheDuration = "1 minute";
 
 
     /**
