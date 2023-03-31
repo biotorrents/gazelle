@@ -21,9 +21,9 @@ class Cache # extends \Redis
     # redis
     private static $redis = null;
 
-    # default key lifetime (seconds)
-    private $cachePrefix = "gazelle:";
-    private $cacheDuration = "1 hour";
+    # global default cache settings
+    private $cachePrefix = "gazelle:"; # e.g., gazelle:stats:overview
+    private $cacheDuration = 3600; # one hour, if not otherwise specified
 
     # torrent group cache version
     public const GROUP_VERSION = "2023-04-01";
@@ -98,7 +98,7 @@ class Cache # extends \Redis
 
         # set options
         $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_JSON);
-        $redis->setOption(\Redis::OPT_PREFIX, $this->cachePrefixs);
+        $redis->setOption(\Redis::OPT_PREFIX, $this->cachePrefix);
 
         # done
         self::$redis = $redis;
@@ -128,7 +128,7 @@ class Cache # extends \Redis
         # we passed a string, god help us
         if (is_string($cacheDuration)) {
             try {
-                $cacheDuration = \Carbon\Carbon::parse($cacheDuration);
+                $cacheDuration = \Carbon\Carbon::parse($cacheDuration)->timestamp;
             } catch (\Throwable $e) {
                 $cacheDuration = null;
             }
